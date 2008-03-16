@@ -1,0 +1,520 @@
+# Database for area detector control using asyn driver and standard asyn device support
+# Mark Rivers
+# March 9, 2008
+
+record(ao, "$(P)$(D)Temperature")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMPERATURE")
+   field(PREC, "2")
+}
+
+record(ai, "$(P)$(D)Temperature_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMPERATURE")
+   field(PREC, "2")
+   field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(D)ADC")
+{
+   field(VAL, "0")
+   field(ZNAM, "Slow")
+   field(ONAM, "Fast")
+}
+
+# Records controlling acquisition
+record(longout, "$(P)$(D)BinX")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BIN_X")
+}
+
+record(longin, "$(P)$(D)BinX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BIN_X")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(D)BinY")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BIN_Y")
+}
+
+record(longin, "$(P)$(D)BinY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BIN_Y")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(D)MinX")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_X")
+}
+
+record(longin, "$(P)$(D)MinX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_X")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(D)MinY")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_Y")
+}
+
+record(longin, "$(P)$(D)MinY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_Y")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(D)SizeX")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIZE_X")
+}
+
+record(longin, "$(P)$(D)SizeX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIZE_X")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(D)SizeY")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIZE_Y")
+}
+
+record(longin, "$(P)$(D)SizeY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIZE_Y")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(D)ImageSizeX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_SIZE_X")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(D)ImageSizeY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_SIZE_Y")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(D)ImageSize_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(D)Gain")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GAIN")
+}
+
+record(ai, "$(P)$(D)Gain_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GAIN")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(D)AcquireTime")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQ_TIME")
+   field(PREC, "3")
+}
+
+record(ai, "$(P)$(D)AcquireTime_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQ_TIME")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(D)AcquirePeriod")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQ_PERIOD")
+   field(PREC, "3")
+}
+
+record(ai, "$(P)$(D)AcquirePeriod_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQ_PERIOD")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(D)FrameMode")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FRAME_MODE")
+   field(ZRST, "Single")
+   field(ZRVL, "0")
+   field(ONST, "Multiple")
+   field(ONVL, "1")
+   field(TWST, "Continuous")
+   field(TWVL, "2")
+}
+
+record(mbbi, "$(P)$(D)FrameMode_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FRAME_MODE")
+   field(ZRST, "Single")
+   field(ZRVL, "0")
+   field(ONST, "Multiple")
+   field(ONVL, "1")
+   field(TWST, "Continuous")
+   field(TWVL, "2")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(D)NumExposures")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NEXPOSURES")
+}
+
+record(longin, "$(P)$(D)NumExposures_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NEXPOSURES")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(D)NumFrames")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NFRAMES")
+}
+
+record(longin, "$(P)$(D)NumFrames_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NFRAMES")
+   field(SCAN, "I/O Intr")
+}
+
+# Frame counter.  Increments by 1 each time an image data callback occurs
+record(longout, "$(P)$(D)FrameCounter")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FRAME_COUNTER")
+}
+
+record(longin, "$(P)$(D)FrameCounter_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FRAME_COUNTER")
+    field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(D)Acquire")
+{
+   field(ZNAM, "Done")
+   field(ONAM, "Acquire")
+   field(OUT,  "$(P)$(D)AcquireFanout PP MS")
+}
+
+record(dfanout, "$(P)$(D)AcquireFanout")
+{
+   field(OUTA, "$(P)$(D)StartAcquireCalc.PROC PP MS")
+   field(OUTB, "$(P)$(D)DoAcquire PP MS")
+}
+
+record(calcout, "$(P)$(D)StartAcquireCalc")
+{
+    field(INPA, "$(P)$(D)Acquire")
+    field(CALC, "A")
+    field(OUT,  "$(P)$(D)AcquireBusy PP MS")
+    field(OOPT, "Transition To Non-zero")
+}
+
+record(busy, "$(P)$(D)AcquireBusy")
+{
+}
+
+record(longout, "$(P)$(D)DoAcquire")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQUIRE")
+}
+
+record(longin, "$(P)$(D)Acquire_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQUIRE")
+    field(SCAN, "I/O Intr")
+    field(FLNK, "$(P)$(D)AcquireDoneCalc")
+}
+
+record(calcout, "$(P)$(D)AcquireDoneCalc")
+{
+    field(INPA, "$(P)$(D)Acquire_RBV")
+    field(CALC, "A")
+    field(OUT,  "$(P)$(D)AcquireDoneFanout PP MS")
+    field(OOPT, "Transition To Zero")
+}
+
+record(dfanout, "$(P)$(D)AcquireDoneFanout")
+{
+   field(VAL, "0")
+   field(OUTA, "$(P)$(D)Acquire CA MS")
+   field(OUTB, "$(P)$(D)AcquireBusy CA MS")
+}
+
+record(stringout, "$(P)$(D)FileTemplate")
+{
+   field(VAL, "test")
+}
+
+record(longin, "$(P)$(D)SeqNumber")
+{
+   field(VAL, "1")
+}
+
+record(mbbo, "$(P)$(D)Compression")
+{
+   field(ZRST,  "None")
+   field(ONST,  "LZW")
+   field(TWST, "Skip-Huff")
+   field(THST, "RL Encoding")
+}
+
+# The following PVs are new to this database, they don't exist in Brian Tieman's
+# portable channel access server application
+
+record(bi, "$(P)$(D)ConnectState")
+{
+   field(VAL, "0")
+   field(ZNAM, "Disconnected")
+   field(ZSV, "MAJOR")
+   field(ONAM, "Connected")
+   field(OSV, "NO_ALARM")
+}
+
+record(mbbi, "$(P)$(D)DetectorState")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))STATUS")
+    field(ZRST, "Idle")
+    field(ZRVL, "0")
+    field(ZRSV, "NO_ALARM")
+    field(ONST, "Acquire")
+    field(ONVL, "1")
+    field(ONSV, "MINOR")
+    field(TWST, "Readout")
+    field(TWVL, "2")
+    field(TWSV, "MINOR")
+    field(THST, "Correct")
+    field(THVL, "3")
+    field(THSV, "MINOR")
+    field(FRST, "Saving")
+    field(FRVL, "4")
+    field(FRSV, "MINOR")
+    field(FVST, "Aborting")
+    field(FVVL, "5")
+    field(FVSV, "MINOR")
+    field(SXST, "Error")
+    field(SXVL, "6")
+    field(SXSV, "MAJOR")
+    field(SVST, "Disconnected")
+    field(SVVL, "0")
+    field(SVSV, "MAJOR")
+    field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(D)AutoSave")
+{
+   field(VAL, "1")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(busy, "$(P)$(D)SaveFile")
+{
+}
+
+record(stringout, "$(P)$(D)FilePath")
+{
+   field(VAL, "./")
+}
+
+record(stringout, "$(P)$(D)FilenameFormat")
+{
+   field(VAL, "%s.%3.3d")
+}
+
+record(stringout, "$(P)$(D)FullFilename")
+{
+   field(VAL, " ")
+}
+
+record(bi, "$(P)$(D)CorrectBackground")
+{
+   field(VAL, "0")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(D)CorrectFlatfield")
+{
+   field(VAL, "0")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(D)CorrectSpatial")
+{
+   field(VAL, "0")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(mbbo, "$(P)$(D)FrameType")
+{
+   field(VAL, "0")
+   field(ZRST, "Normal")
+   field(ONST, "Dbl correlation")
+   field(TWST, "Background")
+   field(THST, "Flatfield")
+}
+
+record(ao, "$(P)$(D)TimeRemaining")
+{
+   field(VAL, "0")
+   field(PREC, "1")
+}
+
+record(stringout, "$(P)$(D)OpenShutterStr")
+{
+   field(VAL, "1")
+}
+
+record(bo, "$(P)$(D)OpenShutter")
+{
+}
+
+record(stringout, "$(P)$(D)CloseShutterStr")
+{
+   field(VAL, "0")
+}
+
+record(bo, "$(P)$(D)CloseShutter")
+{
+}
+
+record(ao, "$(P)$(D)OpenShutterDly")
+{
+   field(VAL, ".05")
+   field(PREC, "3")
+}
+
+record(ao, "$(P)$(D)CloseShutterDly")
+{
+   field(VAL, ".05")
+   field(PREC, "3")
+}
+
+record(mbbo, "$(P)$(D)ShutterMode")
+{
+   field(VAL, "2")
+   field(ZRST, "None")
+   field(ONST, "Camera output")
+   field(TWST, "EPICS PV")
+}
+
+record(bo, "$(P)$(D)Shutter")
+{
+   field(PINI, "YES")
+   field(VAL, "0")
+   field(ZNAM, "Closed")
+   field(ZSV, "MAJOR")
+   field(ONAM, "Open")
+   field(OSV, "NO_ALARM")
+}
+
+record(stringin, "$(P)$(D)ShutterStatus")
+{
+   field(PINI, "YES")
+   field(INP, "$(P)$(D)Shutter CP MS")
+}
+
+record(bi, "$(P)$(D)DebugFlag")
+{
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(stringout, "$(P)$(D)DetInStr")
+{
+}
+
+record(stringout, "$(P)$(D)DetOutStr")
+{
+}
+
+record(stringin, "$(P)$(D)Comment1")
+{
+   field(DESC, "Comment 1")
+}
+
+record(stringin, "$(P)$(D)Comment2")
+{
+   field(DESC, "Comment 2")
+}
+
+record(stringin, "$(P)$(D)Comment3")
+{
+   field(DESC, "Comment 3")
+}
+
+record(stringin, "$(P)$(D)Comment4")
+{
+   field(DESC, "Comment 4")
+}
+
+record(stringin, "$(P)$(D)Comment5")
+{
+   field(DESC, "Comment 5")
+}
+
+record(stringin, "$(P)$(D)Comment6")
+{
+   field(DESC, "Comment 6")
+}
+
+# This asynRecord is used for interactive communication and debug flags for
+# with TCP/IP servers. 
+# Set ASYN_TRACEIO_ESCAPE bit
+record(asyn,"$(P)$(D)AsynIO")
+{
+    field(PORT, $(PORT))
+    field(TIB1,"1")
+    field(IEOS,"\n")
+    field(OEOS,"\n")
+}

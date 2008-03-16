@@ -1,0 +1,44 @@
+# Image posting flag
+record(mbbo, "$(P)$(D)PostImages")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))POST_IMAGES")
+    field(ZRST, "No")
+    field(ZRVL, "0")
+    field(ONST, "Yes")
+    field(ONVL, "1")
+}
+
+# Minimum time between updates for image waveform record
+record(ao, "$(P)$(D)MinImageUpdate")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_UPDATE_TIME")
+    field(VAL,  "1.0")
+    field(EGU,  "s")
+    field(PREC, "3")
+}
+
+# Image counter.  Increments by 1 each time an image is posted on any interface
+record(longout, "$(P)$(D)ImageCounter")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_COUNTER")
+}
+
+record(longin, "$(P)$(D)ImageCounter_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_COUNTER")
+    field(SCAN, "I/O Intr")
+}
+
+# The image data waveform record
+record(waveform, "$(P)$(D)ImageData")
+{
+    field(DTYP, "asynInt$(SIZE)ArrayIn")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_DATA")
+    field(FTVL, "$(FTVL)")
+    field(NELM, "$(NPIXELS)")
+    field(SCAN, "I/O Intr")
+}
