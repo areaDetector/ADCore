@@ -1,0 +1,1230 @@
+/*
+ * drvAreaDetectorAsyn.c
+ * 
+ * Asyn driver for area detectors
+ *
+ * Original Author: Mark Rivers
+ * Current Author: Mark Rivers
+ *
+ * Created March 6, 2008
+ */
+
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+
+#include <iocsh.h>
+#include <epicsExport.h>
+#include <epicsThread.h>
+#include <epicsString.h>
+#include <epicsTimer.h>
+#include <epicsMutex.h>
+#include <epicsMessageQueue.h>
+#include <errlog.h>
+#include <cantProceed.h>
+
+#include <asynDriver.h>
+#include <asynInt32.h>
+#include <asynInt8Array.h>
+#include <asynInt16Array.h>
+#include <asynInt32Array.h>
+#include <asynFloat64.h>
+#include <asynOctet.h>
+#include <asynDrvUser.h>
+
+#include <drvSup.h>
+#include <registryDriverSupport.h>
+
+#include "areaDetectorInterface.h"
+
+typedef enum
+{
+    ADCmdUpdateTime           /* (float64, r/w) Minimum time between image updates */
+     = MAX_DRIVER_COMMANDS+1, /*  These commands need to avoid conflict with driver parameters */
+    ADCmdPostImages,          /* (int32,   r/w) Post images (1=Yes, 0=No) */
+    ADCmdImageCounter,        /* (int32,   r/w) Image counter.  Increments by 1 when image posted */
+    ADCmdFrameCounter,        /* (int32,   r/w) Frame counter.  Increments by 1 when image callback */
+    ADCmdImageData            /* (void*,   r/w) Image data waveform */
+} ADCommand_t;
+
+typedef struct {
+    ADCommand_t command;
+    char *commandString;
+} ADCommandStruct;
+
+/* The command strings are the userParam argument for asyn device support links
+ * The asynDrvUser interface in this driver parses these strings and puts the
+ * corresponding enum value in pasynUser->reason */
+static ADCommandStruct ADCommands[] = {
+    {ADManufacturer,   "MANUFACTURER"},  
+    {ADModel,          "MODEL"       },  
+    {ADTemperature,    "TEMPERATURE" }, 
+    {ADBinX,           "BIN_X"       },
+    {ADBinY,           "BIN_Y"       },
+    {ADMinX,           "MIN_X"       },
+    {ADMinY,           "MIN_Y"       },
+    {ADSizeX,          "SIZE_X"      },
+    {ADSizeY,          "SIZE_Y"      },
+    {ADImageSizeX,     "IMAGE_SIZE_X" },
+    {ADImageSizeY,     "IMAGE_SIZE_Y" },
+    {ADImageSize,      "IMAGE_SIZE"  },
+    {ADFrameMode,      "FRAME_MODE"  },
+    {ADDataType,       "DATA_TYPE"   },
+    {ADGain,           "GAIN"        },
+    {ADNumExposures,   "NEXPOSURES"  },
+    {ADNumFrames,      "NFRAMES"     },
+    {ADAcquireTime,    "ACQ_TIME"    },
+    {ADAcquirePeriod,  "ACQ_PERIOD"  },
+    {ADStatus,         "STATUS"      },
+    {ADShutter,        "SHUTTER"     },
+    {ADAcquire,        "ACQUIRE"     },
+ 
+    /* These commands are for the EPICS asyn layer */
+    {ADCmdUpdateTime,  "IMAGE_UPDATE_TIME" },
+    {ADCmdPostImages,  "POST_IMAGES" },
+    {ADCmdImageCounter,"IMAGE_COUNTER"},
+    {ADCmdFrameCounter,"FRAME_COUNTER"},
+    {ADCmdImageData,   "IMAGE_DATA"  }
+};
+
+typedef struct drvAreaDetectorPvt {
+    char *portName;
+    ADDrvSET_t *drvset;
+    DETECTOR_HDL  pDetector;
+    
+    /* Housekeeping */
+    epicsMutexId lock;
+    int rebooting;
+    
+    /* Detector data information */
+    size_t imageSize;
+    void *imageBuffer;
+    
+    /* Image data posting */
+    double minImageUpdateTime;
+    epicsTimeStamp lastImagePostTime;
+    int imageCounter;
+    int frameCounter;
+    int postImages;
+    
+    /* Asyn interfaces */
+    asynInterface common;
+    asynInterface int32;
+    void *int32InterruptPvt;
+    asynInterface float64;
+    void *float64InterruptPvt;
+    asynInterface int8Array;
+    void *int8ArrayInterruptPvt;
+    asynInterface int16Array;
+    void *int16ArrayInterruptPvt;
+    asynInterface int32Array;
+    void *int32ArrayInterruptPvt;
+    asynInterface octet;
+    void *octetInterruptPvt;
+    asynInterface drvUser;
+    asynUser *pasynUser;
+} drvAreaDetectorPvt;
+
+/* These functions are used by the interfaces */
+static asynStatus readInt32         (void *drvPvt, asynUser *pasynUser,
+                                     epicsInt32 *value);
+static asynStatus writeInt32        (void *drvPvt, asynUser *pasynUser,
+                                     epicsInt32 value);
+static asynStatus getBounds         (void *drvPvt, asynUser *pasynUser,
+                                     epicsInt32 *low, epicsInt32 *high);
+static asynStatus readInt8Array     (void *drvPvt, asynUser *pasynUser,
+                                     epicsInt8 *value, size_t nelements, size_t *nIn);
+static asynStatus writeInt8Array    (void *drvPvt, asynUser *pasynUser,
+                                     epicsInt8 *value, size_t nelements);
+static asynStatus readInt16Array    (void *drvPvt, asynUser *pasynUser,
+                                     epicsInt16 *value, size_t nelements, size_t *nIn);
+static asynStatus writeInt16Array   (void *drvPvt, asynUser *pasynUser,
+                                     epicsInt16 *value, size_t nelements);
+static asynStatus readInt32Array    (void *drvPvt, asynUser *pasynUser,
+                                     epicsInt32 *value, size_t nelements, size_t *nIn);
+static asynStatus writeInt32Array   (void *drvPvt, asynUser *pasynUser,
+                                     epicsInt32 *value, size_t nelements);
+static asynStatus readFloat64       (void *drvPvt, asynUser *pasynUser,
+                                     epicsFloat64 *value);
+static asynStatus writeFloat64      (void *drvPvt, asynUser *pasynUser,
+                                     epicsFloat64 value);
+static asynStatus readOctet         (void *drvPvt, asynUser *pasynUser,
+                                     char *value, size_t maxChars, size_t *nActual,
+                                     int *eomReason);
+static asynStatus writeOctet        (void *drvPvt, asynUser *pasynUser,
+                                     const char *value, size_t nChars, size_t *nActual);
+static asynStatus drvUserCreate     (void *drvPvt, asynUser *pasynUser,
+                                     const char *drvInfo, 
+                                     const char **pptypeName, size_t *psize);
+static asynStatus drvUserGetType    (void *drvPvt, asynUser *pasynUser,
+                                     const char **pptypeName, size_t *psize);
+static asynStatus drvUserDestroy    (void *drvPvt, asynUser *pasynUser);
+
+static void report                  (void *drvPvt, FILE *fp, int details);
+static asynStatus connect           (void *drvPvt, asynUser *pasynUser);
+static asynStatus disconnect        (void *drvPvt, asynUser *pasynUser);
+
+
+static asynCommon drvAreaDetectorCommon = {
+    report,
+    connect,
+    disconnect
+};
+
+static asynInt32 drvAreaDetectorInt32 = {
+    writeInt32,
+    readInt32,
+    getBounds
+};
+
+static asynFloat64 drvAreaDetectorFloat64 = {
+    writeFloat64,
+    readFloat64
+};
+
+static asynOctet drvAreaDetectorOctet = {
+    writeOctet,
+    NULL,
+    readOctet,
+};
+
+static asynInt8Array drvAreaDetectorInt8Array = {
+    writeInt8Array,
+    readInt8Array,
+};
+
+static asynInt16Array drvAreaDetectorInt16Array = {
+    writeInt16Array,
+    readInt16Array,
+};
+
+static asynInt32Array drvAreaDetectorInt32Array = {
+    writeInt32Array,
+    readInt32Array,
+};
+
+static asynDrvUser drvAreaDetectorDrvUser = {
+    drvUserCreate,
+    drvUserGetType,
+    drvUserDestroy
+};
+
+
+/* Local functions, not in any interface */
+
+static int convertToInt8(drvAreaDetectorPvt *pPvt, ADDataType_t dataType, 
+                         int nPixels, void *input, epicsInt8 *output)
+{
+    /* Converts data from native data type to epicsInt8 */
+    int i;
+
+    switch(dataType) {
+    case ADInt8: {
+        memcpy(output, input, nPixels/sizeof(epicsInt8));       
+        break; }
+   case ADUInt8: {
+        memcpy(output, input, nPixels/sizeof(epicsUInt8));       
+        break; }
+    case ADInt16: {
+        epicsInt16 *buff = (epicsInt16 *)input;
+        for (i=0; i<nPixels; i++) output[i] = (epicsInt8) buff[i];       
+        break; }
+    case ADUInt16: {
+        epicsUInt16 *buff = (epicsUInt16 *)input;
+        for (i=0; i<nPixels; i++) output[i] = (epicsInt8) buff[i];       
+        break; }
+    case ADInt32: {
+        epicsInt32 *buff = (epicsInt32 *)input;
+        for (i=0; i<nPixels; i++) output[i] = (epicsInt8) buff[i];       
+        break; }
+    case ADUInt32: {
+        epicsUInt32 *buff = (epicsUInt32 *)input;
+        for (i=0; i<nPixels; i++) output[i] = (epicsInt8) buff[i];       
+        break; }
+    case ADFloat32: {
+        epicsFloat32 *buff = (epicsFloat32 *)input;
+        for (i=0; i<nPixels; i++) output[i] = (epicsInt8) buff[i];       
+        break; }
+    case ADFloat64: {
+        epicsFloat64 *buff = (epicsFloat64 *)input;
+        for (i=0; i<nPixels; i++) output[i] = (epicsInt8) buff[i];       
+        break; }
+    default:
+        epicsSnprintf(pPvt->pasynUser->errorMessage, pPvt->pasynUser->errorMessageSize,
+                      "drvAreaDetectorAsyn::convertToInt8 unknown dataType %d", dataType);
+        return(asynError);
+        break;
+    }
+    return(asynSuccess);
+}
+
+
+static int convertToInt16(drvAreaDetectorPvt *pPvt, ADDataType_t dataType, 
+                          int nPixels, void *input, epicsInt16 *output)
+{
+    /* Converts data from native data type to epicsInt16 */
+    int i;
+
+    switch(dataType) {
+    case ADInt8: {
+        epicsInt8 *buff = (epicsInt8 *)input;
+        for (i=0; i<nPixels; i++) output[i] = (epicsInt16) buff[i];       
+        break; }
+   case ADUInt8: {
+        epicsUInt8 *buff = (epicsUInt8 *)input;
+        for (i=0; i<nPixels; i++) output[i] = (epicsInt16) buff[i];       
+        break; }
+    case ADInt16: {
+        memcpy(output, input, nPixels/sizeof(epicsInt16));       
+        break; }
+    case ADUInt16: {
+        memcpy(output, input, nPixels/sizeof(epicsUInt16));       
+        break; }
+    case ADInt32: {
+        epicsInt32 *buff = (epicsInt32 *)input;
+        for (i=0; i<nPixels; i++) output[i] = (epicsInt16) buff[i];       
+        break; }
+    case ADUInt32: {
+        epicsUInt32 *buff = (epicsUInt32 *)input;
+        for (i=0; i<nPixels; i++) output[i] = (epicsInt16) buff[i];       
+        break; }
+    case ADFloat32: {
+        epicsFloat32 *buff = (epicsFloat32 *)input;
+        for (i=0; i<nPixels; i++) output[i] = (epicsInt16) buff[i];       
+        break; }
+    case ADFloat64: {
+        epicsFloat64 *buff = (epicsFloat64 *)input;
+        for (i=0; i<nPixels; i++) output[i] = (epicsInt16) buff[i];       
+        break; }
+    default:
+        epicsSnprintf(pPvt->pasynUser->errorMessage, pPvt->pasynUser->errorMessageSize,
+                      "drvAreaDetectorAsyn::convertToInt16 unknown dataType %d", dataType);
+        return(asynError);
+        break;
+    }
+    return(asynSuccess);
+}
+
+static int convertToInt32(drvAreaDetectorPvt *pPvt, ADDataType_t dataType, 
+                          int nPixels, void *input, epicsInt32 *output)
+{
+    /* Converts data from native data type to epicsInt32 */
+    int i;
+
+    switch(dataType) {
+    case ADInt8: {
+        epicsInt8 *buff = (epicsInt8 *)input;
+        for (i=0; i<nPixels; i++) output[i] = (epicsInt32) buff[i];
+        break; }
+   case ADUInt8: {
+        epicsUInt8 *buff = (epicsUInt8 *)input;
+        for (i=0; i<nPixels; i++) output[i] = (epicsInt32) buff[i];
+        break; }
+    case ADInt16: {
+        epicsInt16 *buff = (epicsInt16 *)input;
+        for (i=0; i<nPixels; i++) output[i] = (epicsInt32) buff[i];       
+        break; }
+    case ADUInt16: {
+        epicsUInt16 *buff = (epicsUInt16 *)input;
+        for (i=0; i<nPixels; i++) output[i] = (epicsInt32) buff[i];       
+        break; }
+    case ADInt32: {
+        memcpy(output, input, nPixels/sizeof(epicsInt32));       
+        break; }
+    case ADUInt32: {
+        memcpy(output, input, nPixels/sizeof(epicsUInt32));       
+        break; }
+    case ADFloat32: {
+        epicsFloat32 *buff = (epicsFloat32 *)input;
+        for (i=0; i<nPixels; i++) output[i] = (epicsInt32) buff[i];       
+        break; }
+    case ADFloat64: {
+        epicsFloat64 *buff = (epicsFloat64 *)input;
+        for (i=0; i<nPixels; i++) output[i] = (epicsInt32) buff[i];       
+        break; }
+    default:
+        epicsSnprintf(pPvt->pasynUser->errorMessage, pPvt->pasynUser->errorMessageSize,
+                      "drvAreaDetectorAsyn::convertToInt32 unknown dataType %d", dataType);
+        return(asynError);
+        break;
+    }
+    return(asynSuccess);
+}
+
+static int allocateImageBuffer(drvAreaDetectorPvt *pPvt, size_t imageSize)
+{
+    if (imageSize > pPvt->imageSize) {
+        pPvt->imageSize = imageSize;
+        free(pPvt->imageBuffer);
+        pPvt->imageBuffer = malloc(pPvt->imageSize*sizeof(char));
+        if (!pPvt->imageBuffer) return(asynError);
+    }
+    return(asynSuccess);
+}
+
+static int getImageDimensions(drvAreaDetectorPvt *pPvt, asynUser *pasynUser,
+                              int *imageSize, int *nx, int *ny, int *dataType)
+{
+    int status;
+    
+    status = (*pPvt->drvset->getInteger)(pPvt->pDetector, ADImageSize, imageSize);
+    if (status != AREA_DETECTOR_OK) {
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                     "drvAreaDetectorAsyn::getImageDimensions error reading imageSize=%d", status);
+        return(asynError);
+    }
+    status = (*pPvt->drvset->getInteger)(pPvt->pDetector, ADImageSizeX, nx);
+    if (status != AREA_DETECTOR_OK) {
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                     "drvAreaDetectorAsyn::getImageDimensions error reading nx=%d", status);
+        return(asynError);
+    }
+    status = (*pPvt->drvset->getInteger)(pPvt->pDetector, ADImageSizeY, ny);
+    if (status != AREA_DETECTOR_OK) {
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                     "drvAreaDetectorAsyn::getImageDimensions error reading ny=%d", status);
+        return(asynError);
+    }
+    status = (*pPvt->drvset->getInteger)(pPvt->pDetector, ADDataType, dataType);
+    if (status != AREA_DETECTOR_OK) {
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                     "drvAreaDetectorAsyn::getImageDimensions error reading dataType=%d", status);
+        return(asynError);
+    }
+    return(asynSuccess);
+}
+
+static int logFunc(void *userParam,
+                   const ADLogMask_t logMask,
+                   const char *pFormat, ...)
+{
+    va_list     pvar;
+    asynUser    *pasynUser = (asynUser *)userParam;
+
+    va_start(pvar, pFormat);
+    switch(logMask) {
+    case ADTraceError:
+        pasynTrace->vprint(pasynUser, ASYN_TRACE_ERROR, pFormat, pvar);
+        break;
+    case ADTraceIODevice:
+        pasynTrace->vprint(pasynUser, ASYN_TRACEIO_DEVICE, pFormat, pvar);
+        break;
+    case ADTraceIOFilter:
+        pasynTrace->vprint(pasynUser, ASYN_TRACEIO_FILTER, pFormat, pvar);
+        break;
+    case ADTraceIODriver:
+        pasynTrace->vprint(pasynUser, ASYN_TRACEIO_DRIVER, pFormat, pvar);
+        break;
+    case ADTraceFlow:
+        pasynTrace->vprint(pasynUser, ASYN_TRACE_FLOW, pFormat, pvar);
+        break;
+    default:
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, "drvAreaDetectorAsyn:logFunc unknown logMask %d\n", logMask);
+    }
+    va_end (pvar);
+    return(AREA_DETECTOR_OK);
+}
+
+
+/* Callback routines from driver.  These call the asyn callbacks. */
+
+static void int32Callback(void *drvPvt, int command, int value)
+{
+    drvAreaDetectorPvt *pPvt = drvPvt;
+    unsigned int reason;
+    ELLLIST *pclientList;
+    interruptNode *pnode;
+
+    /* Pass int32 interrupts */
+    pasynManager->interruptStart(pPvt->int32InterruptPvt, &pclientList);
+    pnode = (interruptNode *)ellFirst(pclientList);
+    while (pnode) {
+        asynInt32Interrupt *pint32Interrupt = pnode->drvPvt;
+        reason = pint32Interrupt->pasynUser->reason;
+        if (command == reason) {
+            pint32Interrupt->callback(pint32Interrupt->userPvt, 
+                                      pint32Interrupt->pasynUser,
+                                      value);
+        }
+        pnode = (interruptNode *)ellNext(&pnode->node);
+    }
+    pasynManager->interruptEnd(pPvt->int32InterruptPvt);
+}
+
+static void float64Callback(void *drvPvt, int command, double value)
+{
+    drvAreaDetectorPvt *pPvt = drvPvt;
+    unsigned int reason;
+    ELLLIST *pclientList;
+    interruptNode *pnode;
+
+    /* Pass float64 interrupts */
+    pasynManager->interruptStart(pPvt->float64InterruptPvt, &pclientList);
+    pnode = (interruptNode *)ellFirst(pclientList);
+    while (pnode) {
+        asynFloat64Interrupt *pfloat64Interrupt = pnode->drvPvt;
+        reason = pfloat64Interrupt->pasynUser->reason;
+        if (command == reason) {
+            pfloat64Interrupt->callback(pfloat64Interrupt->userPvt, 
+                                        pfloat64Interrupt->pasynUser,
+                                        value);
+        }
+        pnode = (interruptNode *)ellNext(&pnode->node);
+    }
+    pasynManager->interruptEnd(pPvt->float64InterruptPvt);
+}
+
+static void imageDataCallback(void *drvPvt, void *value,  
+                              ADDataType_t dataType, size_t nBytes, int nx, int ny)
+{
+    drvAreaDetectorPvt *pPvt = drvPvt;
+    ELLLIST *pclientList;
+    unsigned int reason;
+    int nPixels = nx*ny;
+    interruptNode *pnode;
+    epicsTimeStamp tCheck;
+    double deltaTime;
+    int int8Initialized=0;
+    int int16Initialized=0;
+    int int32Initialized=0;
+    epicsInt8  *pInt8Data=NULL;
+    epicsInt16 *pInt16Data=NULL;
+    epicsInt32 *pInt32Data=NULL;
+
+    epicsTimeGetCurrent(&tCheck);
+    deltaTime = epicsTimeDiffInSeconds(&tCheck, &pPvt->lastImagePostTime);
+
+    /* Update the frame counter */
+    pPvt->frameCounter++;
+    int32Callback(pPvt, ADCmdFrameCounter, pPvt->frameCounter);
+
+    /* Pass interrupts for int8Array data*/
+    pasynManager->interruptStart(pPvt->int8ArrayInterruptPvt, &pclientList);
+    pnode = (interruptNode *)ellFirst(pclientList);
+    while (pnode) {
+        asynInt8ArrayInterrupt *pint8ArrayInterrupt = pnode->drvPvt;
+        reason = pint8ArrayInterrupt->pasynUser->reason;
+        if (reason == ADCmdImageData) {
+            if (!pPvt->postImages) break;  /* We are not being asked to post image data */
+            if (deltaTime < pPvt->minImageUpdateTime) break;
+            memcpy(&pPvt->lastImagePostTime, &tCheck, sizeof(epicsTimeStamp));
+        }
+        if (!int8Initialized) {
+            int8Initialized = 1;
+            /* If the data type is compatible with epicsInt8 just set the pointer */
+            if ((dataType == ADInt8) || (dataType == ADUInt8)) {
+                pInt8Data = (epicsInt8*)value;
+            } else {
+                /* We need to convert the data to epicsInt8 */
+                allocateImageBuffer(pPvt, nPixels*sizeof(epicsInt8));
+                convertToInt8(pPvt, dataType, nPixels, value, (epicsInt8 *)pPvt->imageBuffer);
+                pInt8Data = (epicsInt8*)pPvt->imageBuffer;
+            }
+        }
+        pint8ArrayInterrupt->callback(pint8ArrayInterrupt->userPvt, 
+                                      pint8ArrayInterrupt->pasynUser,
+                                      pInt8Data, nPixels);
+        pnode = (interruptNode *)ellNext(&pnode->node);
+        if (reason == ADCmdImageData) {
+            /* Update the image Counter */
+            pPvt->imageCounter++;
+            int32Callback(pPvt, ADCmdImageCounter, pPvt->imageCounter);
+        }
+    }
+    pasynManager->interruptEnd(pPvt->int32ArrayInterruptPvt);
+
+    /* Pass interrupts for int16Array data*/
+    pasynManager->interruptStart(pPvt->int16ArrayInterruptPvt, &pclientList);
+    pnode = (interruptNode *)ellFirst(pclientList);
+    while (pnode) {
+        asynInt16ArrayInterrupt *pint16ArrayInterrupt = pnode->drvPvt;
+        reason = pint16ArrayInterrupt->pasynUser->reason;
+        if (reason == ADCmdImageData) {
+            if (!pPvt->postImages) break;  /* We are not being asked to post image data */
+            if (deltaTime < pPvt->minImageUpdateTime) break;
+            memcpy(&pPvt->lastImagePostTime, &tCheck, sizeof(epicsTimeStamp));
+        }
+        if (!int16Initialized) {
+            int16Initialized = 1;
+            /* If the data type is compatible with epicsInt16 just set the pointer */
+            if ((dataType == ADInt16) || (dataType == ADUInt16)) {
+                pInt16Data = (epicsInt16*)value;
+            } else {
+                /* We need to convert the data to epicsInt16 */
+                allocateImageBuffer(pPvt, nPixels*sizeof(epicsInt16));
+                convertToInt16(pPvt, dataType, nPixels, value, (epicsInt16 *)pPvt->imageBuffer);
+                pInt16Data = (epicsInt16*)pPvt->imageBuffer;
+            }
+        }
+        pint16ArrayInterrupt->callback(pint16ArrayInterrupt->userPvt, 
+                                       pint16ArrayInterrupt->pasynUser,
+                                       pInt16Data, nPixels);
+        pnode = (interruptNode *)ellNext(&pnode->node);
+        if (reason == ADCmdImageData) {
+            /* Update the image Counter */
+            pPvt->imageCounter++;
+            int32Callback(pPvt, ADCmdImageCounter, pPvt->imageCounter);
+        }
+    }
+    pasynManager->interruptEnd(pPvt->int32ArrayInterruptPvt);
+
+    /* Pass interrupts for int32Array data*/
+    pasynManager->interruptStart(pPvt->int32ArrayInterruptPvt, &pclientList);
+    pnode = (interruptNode *)ellFirst(pclientList);
+    while (pnode) {
+        asynInt32ArrayInterrupt *pint32ArrayInterrupt = pnode->drvPvt;
+        reason = pint32ArrayInterrupt->pasynUser->reason;
+        if (reason == ADCmdImageData) {
+            if (!pPvt->postImages) break;  /* We are not being asked to post image data */
+            if (deltaTime < pPvt->minImageUpdateTime) break;
+            memcpy(&pPvt->lastImagePostTime, &tCheck, sizeof(epicsTimeStamp));
+        }
+        if (!int32Initialized) {
+            int32Initialized = 1;
+            /* If the data type is compatible with epicsInt32 just set the pointer */
+            if ((dataType == ADInt32) || (dataType == ADUInt32)) {
+                pInt32Data = (epicsInt32*)value;
+            } else {
+                /* We need to convert the data to epicsInt32 */
+                allocateImageBuffer(pPvt, nPixels*sizeof(epicsInt32));
+                convertToInt32(pPvt, dataType, nPixels, value, (epicsInt32 *)pPvt->imageBuffer);
+                pInt32Data = (epicsInt32*)pPvt->imageBuffer;
+            }
+        }
+        pint32ArrayInterrupt->callback(pint32ArrayInterrupt->userPvt, 
+                                       pint32ArrayInterrupt->pasynUser,
+                                       pInt32Data, nPixels);
+        pnode = (interruptNode *)ellNext(&pnode->node);
+        if (reason == ADCmdImageData) {
+            /* Update the image Counter */
+            pPvt->imageCounter++;
+            int32Callback(pPvt, ADCmdImageCounter, pPvt->imageCounter);
+        }
+    }
+    pasynManager->interruptEnd(pPvt->int32ArrayInterruptPvt);
+}
+
+
+/* asynInt32 interface methods */
+static asynStatus readInt32(void *drvPvt, asynUser *pasynUser, 
+                            epicsInt32 *value)
+{
+    drvAreaDetectorPvt *pPvt = (drvAreaDetectorPvt *)drvPvt;
+    ADCommand_t command = pasynUser->reason;
+    asynStatus status = asynSuccess;
+
+    switch(command) {
+    case ADCmdPostImages:
+        *value = pPvt->postImages;
+        break;
+    case ADCmdImageCounter:
+        *value = pPvt->imageCounter;
+        break;
+    case ADCmdFrameCounter:
+        *value = pPvt->frameCounter;
+        break;
+    default:
+        status = (*pPvt->drvset->getInteger)(pPvt->pDetector, command, value);
+        break;
+    }
+    asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+              "drvAreaDetectorAsyn::readInt32, reason=%d, value=%d\n", 
+              command, *value);
+    return(status);
+}
+
+static asynStatus writeInt32(void *drvPvt, asynUser *pasynUser, 
+                             epicsInt32 value)
+{
+    drvAreaDetectorPvt *pPvt = (drvAreaDetectorPvt *)drvPvt;
+    ADCommand_t command = pasynUser->reason;
+    asynStatus status = asynSuccess;
+
+    switch(command) {
+    case ADCmdPostImages:
+        pPvt->postImages = value;
+        break;
+     case ADCmdImageCounter:
+        pPvt->imageCounter = value;
+        int32Callback(pPvt, ADCmdImageCounter, pPvt->imageCounter);
+        break;
+     case ADCmdFrameCounter:
+        pPvt->frameCounter = value;
+        int32Callback(pPvt, ADCmdFrameCounter, pPvt->frameCounter);
+        break;
+   default:
+        status = (*pPvt->drvset->setInteger)(pPvt->pDetector, command, value);
+        break;
+    }
+    asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+          "drvAreaDetectorAsyn::writeInt32, reason=%d, value=%d\n",
+          command, value);
+    return(status);
+}
+
+static asynStatus getBounds(void *drvPvt, asynUser *pasynUser,
+                            epicsInt32 *low, epicsInt32 *high)
+{
+    /* This is only needed for the asynInt32 interface when the device uses raw units.
+       Our interface is using engineering units. */
+    *low = 0;
+    *high = 65535;
+    asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+              "drvAreaDetectorAsyn::getBounds,low=%d, high=%d\n", *low, *high);
+    return(asynSuccess);
+}
+
+
+/* asynFloat64 interface methods */
+static asynStatus readFloat64(void *drvPvt, asynUser *pasynUser,
+                              epicsFloat64 *value)
+{
+    drvAreaDetectorPvt *pPvt = (drvAreaDetectorPvt *)drvPvt;
+    ADCommand_t command = pasynUser->reason;
+    asynStatus status = asynSuccess;
+
+    switch(command) {
+    case ADCmdUpdateTime:
+        *value = pPvt->minImageUpdateTime;
+        break;
+    default:
+        (*pPvt->drvset->getDouble)(pPvt->pDetector, command, value);
+        break;
+    }
+    asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+              "drvAreaDetectorAsyn::readFloat64, reason=%d, value=%f\n", 
+              command, *value);
+    return(status);
+}
+
+static asynStatus writeFloat64(void *drvPvt, asynUser *pasynUser, 
+                               epicsFloat64 value)
+{
+    drvAreaDetectorPvt *pPvt = (drvAreaDetectorPvt *)drvPvt;
+    ADCommand_t command = pasynUser->reason;
+    asynStatus status = asynSuccess;
+
+    switch(command) {
+    case ADCmdUpdateTime:
+        pPvt->minImageUpdateTime = value;
+        break;
+    default:
+        status = (*pPvt->drvset->setDouble)(pPvt->pDetector, command, value);
+        break;
+    }
+    asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+              "drvAreaDetectorAsyn::writeFloat64, reason=%d, value=%f\n",
+              command, value);
+    return(status);
+}
+
+
+/* asynOctet interface methods */
+static asynStatus readOctet(void *drvPvt, asynUser *pasynUser,
+                            char *value, size_t maxChars, size_t *nActual,
+                            int *eomReason)
+{
+    drvAreaDetectorPvt *pPvt = (drvAreaDetectorPvt *)drvPvt;
+    ADCommand_t command = pasynUser->reason;
+    asynStatus status = asynSuccess;
+
+    switch(command) {
+    default:
+        status = (*pPvt->drvset->getString)(pPvt->pDetector, command, maxChars, value);
+        break;
+    }
+    asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+              "drvAreaDetectorAsyn::readOctet, reason=%d, value=%s\n",
+              command, value);
+    *eomReason = ASYN_EOM_END;
+    *nActual = strlen(value);
+    return(status);
+}
+
+static asynStatus writeOctet(void *drvPvt, asynUser *pasynUser,
+                             const char *value, size_t nChars, size_t *nActual)
+{
+    drvAreaDetectorPvt *pPvt = (drvAreaDetectorPvt *)drvPvt;
+    ADCommand_t command = pasynUser->reason;
+    asynStatus status = asynSuccess;
+
+    switch(command) {
+    default:
+        status = (*pPvt->drvset->setString)(pPvt->pDetector, command, value);
+        break;
+    }
+    asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+              "drvAreaDetectorAsyn::writeOctet, reason=%d, value=%s\n",
+              command, value);
+    return(status);
+}
+
+
+/* asynInt8Array interface methods */
+static asynStatus readInt8Array(void *drvPvt, asynUser *pasynUser,
+                                epicsInt8 *value, size_t nelements, size_t *nIn)
+{
+    drvAreaDetectorPvt *pPvt = (drvAreaDetectorPvt *)drvPvt;
+    ADCommand_t command = pasynUser->reason;
+    asynStatus status;
+    int imageSize, nx, ny, nPixels;
+    int dataType;
+    
+    switch(command) {
+    case ADCmdImageData:
+        status = getImageDimensions(pPvt, pasynUser, &imageSize, &nx, &ny, &dataType);
+        if (status != asynSuccess) {
+            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                         "drvAreaDetectorAsyn::readInt8Array error reading image dimensions\n");
+            return(asynError);
+        }
+
+        nPixels = nx * ny;
+        /* Make sure our buffer is large enough to hold data.  If not free it and allocate a new one. */
+        status = allocateImageBuffer(pPvt, imageSize);
+        if (status != asynSuccess) {
+            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                         "drvAreaDetectorAsyn::readInt8Array error allocating memory=%d", status);
+            return(asynError);
+        }
+        status = (*pPvt->drvset->getImage)(pPvt->pDetector, imageSize, pPvt->imageBuffer);
+        if (status != AREA_DETECTOR_OK) {
+            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                         "drvAreaDetectorAsyn::readInt8Array error reading imageBuffer=%d", status);
+            return(asynError);
+        }
+        /* Convert data from its actual data type to epicsInt8.  */
+        status = convertToInt8(pPvt, dataType, nPixels, pPvt->imageBuffer, value);
+        break;
+    default:
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                     "drvAreaDetectorAsyn::readInt8Array unknown command %d", command);
+        return(asynError);
+        break;
+    }
+    return(asynSuccess);
+}
+
+
+static asynStatus writeInt8Array   (void *drvPvt, asynUser *pasynUser,
+                                     epicsInt8 *value, size_t nelements)
+{
+    /* Note yet implemented */
+    asynPrint(pasynUser, ASYN_TRACE_ERROR,
+              "drvAreaDetectorAsyn::writeInt8Array not yet implemented\n");
+    return(asynError);
+   
+}
+
+
+/* asynInt16Array interface methods */
+static asynStatus readInt16Array(void *drvPvt, asynUser *pasynUser,
+                                 epicsInt16 *value, size_t nelements, size_t *nIn)
+{
+    drvAreaDetectorPvt *pPvt = (drvAreaDetectorPvt *)drvPvt;
+    ADCommand_t command = pasynUser->reason;
+    asynStatus status;
+    int imageSize, nx, ny, nPixels;
+    int dataType;
+    
+    switch(command) {
+    case ADCmdImageData:
+        status = getImageDimensions(pPvt, pasynUser, &imageSize, &nx, &ny, &dataType);
+        if (status != asynSuccess) {
+            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                         "drvAreaDetectorAsyn::readInt16Array error reading image dimensions\n");
+            return(asynError);
+        }
+
+        nPixels = nx * ny;
+        /* Make sure our buffer is large enough to hold data.  If not free it and allocate a new one. */
+        status = allocateImageBuffer(pPvt, imageSize);
+        if (status != asynSuccess) {
+            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                         "drvAreaDetectorAsyn::readInt16Array error allocating memory=%d", status);
+            return(asynError);
+        }
+        status = (*pPvt->drvset->getImage)(pPvt->pDetector, imageSize, pPvt->imageBuffer);
+        if (status != AREA_DETECTOR_OK) {
+            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                         "drvAreaDetectorAsyn::readInt16Array error reading imageBuffer=%d", status);
+            return(asynError);
+        }
+        /* Convert data from its actual data type to epicsInt16.  */
+        status = convertToInt16(pPvt, dataType, nPixels, pPvt->imageBuffer, value);
+        break;
+    default:
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                     "drvAreaDetectorAsyn::readInt16Array unknown command %d", command);
+        return(asynError);
+        break;
+    }
+    return(asynSuccess);
+}
+
+
+static asynStatus writeInt16Array   (void *drvPvt, asynUser *pasynUser,
+                                     epicsInt16 *value, size_t nelements)
+{
+    /* Note yet implemented */
+    asynPrint(pasynUser, ASYN_TRACE_ERROR,
+              "drvAreaDetectorAsyn::writeInt16Array not yet implemented\n");
+    return(asynError);
+   
+}
+
+
+/* asynInt32Array interface methods */
+static asynStatus readInt32Array(void *drvPvt, asynUser *pasynUser,
+                                 epicsInt32 *value, size_t nelements, size_t *nIn)
+{
+    drvAreaDetectorPvt *pPvt = (drvAreaDetectorPvt *)drvPvt;
+    ADCommand_t command = pasynUser->reason;
+    asynStatus status;
+    int imageSize, nx, ny, nPixels;
+    int dataType;
+    
+    switch(command) {
+    case ADCmdImageData:
+        status = getImageDimensions(pPvt, pasynUser, &imageSize, &nx, &ny, &dataType);
+        if (status != asynSuccess) {
+            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                         "drvAreaDetectorAsyn::readInt32Array error reading image dimensions\n");
+            return(asynError);
+        }
+
+        nPixels = nx * ny;
+        /* Make sure our buffer is large enough to hold data.  If not free it and allocate a new one. */
+        status = allocateImageBuffer(pPvt, imageSize);
+        if (status != asynSuccess) {
+            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                         "drvAreaDetectorAsyn::readInt32Array error allocating memory=%d", status);
+            return(asynError);
+        }
+        status = (*pPvt->drvset->getImage)(pPvt->pDetector, imageSize, pPvt->imageBuffer);
+        if (status != AREA_DETECTOR_OK) {
+            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                         "drvAreaDetectorAsyn::readInt32Array error reading imageBuffer=%d", status);
+            return(asynError);
+        }
+        /* Convert data from its actual data type to epicsInt32.  */
+        status = convertToInt32(pPvt, dataType, nPixels, pPvt->imageBuffer, value);
+        break;
+    default:
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                     "drvAreaDetectorAsyn::readInt32Array unknown command %d", command);
+        return(asynError);
+        break;
+    }
+    return(asynSuccess);
+}
+
+
+static asynStatus writeInt32Array   (void *drvPvt, asynUser *pasynUser,
+                                     epicsInt32 *value, size_t nelements)
+{
+    /* Note yet implemented */
+    asynPrint(pasynUser, ASYN_TRACE_ERROR,
+              "drvAreaDetectorAsyn::writeInt32Array not yet implemented\n");
+    return(asynError);
+   
+}
+
+
+static void rebootCallback(void *drvPvt)
+{
+    drvAreaDetectorPvt *pPvt = (drvAreaDetectorPvt *)drvPvt;
+    /* Anything special we have to do on reboot */
+    pPvt->rebooting = 1;
+}
+
+
+/* asynDrvUser routines */
+static asynStatus drvUserCreate(void *drvPvt, asynUser *pasynUser,
+                                const char *drvInfo, 
+                                const char **pptypeName, size_t *psize)
+{
+    int i;
+    char *pstring;
+    int ncommands = sizeof(ADCommands)/sizeof(ADCommands[0]);
+
+    asynPrint(pasynUser, ASYN_TRACE_FLOW,
+              "drvAreaDetectorAsyn::drvUserCreate, drvInfo=%s, pptypeName=%p, psize=%p, pasynUser=%p\n", 
+              drvInfo, pptypeName, psize, pasynUser);
+
+    for (i=0; i < ncommands; i++) {
+        pstring = ADCommands[i].commandString;
+        if (epicsStrCaseCmp(drvInfo, pstring) == 0) {
+            break;
+        }
+    }
+    if (i < ncommands) {
+        pasynUser->reason = ADCommands[i].command;
+        if (pptypeName) {
+            *pptypeName = epicsStrDup(pstring);
+        }
+        if (psize) {
+            *psize = sizeof(ADCommands[i].command);
+        }
+        asynPrint(pasynUser, ASYN_TRACE_FLOW,
+                  "drvAreaDetectorAsyn::drvUserCreate, command=%s\n", pstring);
+        return(asynSuccess);
+    } else {
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                     "drvAreaDetectorAsyn::drvUserCreate, unknown command=%s", drvInfo);
+        return(asynError);
+    }
+}
+    
+static asynStatus drvUserGetType(void *drvPvt, asynUser *pasynUser,
+                                 const char **pptypeName, size_t *psize)
+{
+    ADCommand_t command = pasynUser->reason;
+
+    asynPrint(pasynUser, ASYN_TRACE_FLOW,
+              "drvAreaDetectorAsyn::drvUserGetType entered");
+
+    *pptypeName = NULL;
+    *psize = 0;
+    if (pptypeName)
+        *pptypeName = epicsStrDup(ADCommands[command].commandString);
+    if (psize) *psize = sizeof(command);
+    return(asynSuccess);
+}
+
+static asynStatus drvUserDestroy(void *drvPvt, asynUser *pasynUser)
+{
+    asynPrint(pasynUser, ASYN_TRACE_FLOW,
+              "drvAreaDetectorAsyn::drvUserDestroy, drvPvt=%p, pasynUser=%p\n",
+          drvPvt, pasynUser);
+
+    return(asynSuccess);
+}
+
+/* asynCommon routines */
+
+static void report(void *drvPvt, FILE *fp, int details)
+{
+    drvAreaDetectorPvt *pPvt = (drvAreaDetectorPvt *)drvPvt;
+    interruptNode *pnode;
+    ELLLIST *pclientList;
+
+    fprintf(fp, "Port: %s\n", pPvt->portName);
+    if (details >= 1) {
+        /* Report int32 interrupts */
+        pasynManager->interruptStart(pPvt->int32InterruptPvt, &pclientList);
+        pnode = (interruptNode *)ellFirst(pclientList);
+        while (pnode) {
+            asynInt32Interrupt *pint32Interrupt = pnode->drvPvt;
+            fprintf(fp, "    int32 callback client address=%p, addr=%d, reason=%d\n",
+                    pint32Interrupt->callback, pint32Interrupt->addr, 
+                    pint32Interrupt->pasynUser->reason);
+            pnode = (interruptNode *)ellNext(&pnode->node);
+        }
+        pasynManager->interruptEnd(pPvt->int32InterruptPvt);
+
+        /* Report float64 interrupts */
+        pasynManager->interruptStart(pPvt->float64InterruptPvt, &pclientList);
+        pnode = (interruptNode *)ellFirst(pclientList);
+        while (pnode) {
+            asynFloat64Interrupt *pfloat64Interrupt = pnode->drvPvt;
+            fprintf(fp, "    float64 callback client address=%p, addr=%d, reason=%d\n",
+                    pfloat64Interrupt->callback, pfloat64Interrupt->addr, 
+                    pfloat64Interrupt->pasynUser->reason);
+            pnode = (interruptNode *)ellNext(&pnode->node);
+        }
+        pasynManager->interruptEnd(pPvt->float64InterruptPvt);
+
+        /* Report asynInt32Array interrupts */
+        pasynManager->interruptStart(pPvt->int32ArrayInterruptPvt, &pclientList);
+        pnode = (interruptNode *)ellFirst(pclientList);
+        while (pnode) {
+            asynInt32ArrayInterrupt *pint32ArrayInterrupt = pnode->drvPvt;
+            fprintf(fp, "    int32Array callback client address=%p, addr=%d, reason=%d\n",
+                    pint32ArrayInterrupt->callback, pint32ArrayInterrupt->addr, 
+                    pint32ArrayInterrupt->pasynUser->reason);
+            pnode = (interruptNode *)ellNext(&pnode->node);
+        }
+        pasynManager->interruptEnd(pPvt->int32ArrayInterruptPvt);
+
+    }
+}
+
+static asynStatus connect(void *drvPvt, asynUser *pasynUser)
+{
+    pasynManager->exceptionConnect(pasynUser);
+
+    asynPrint(pasynUser, ASYN_TRACE_FLOW,
+          "drvAreaDetectorAsyn::connect, pasynUser=%p\n", pasynUser);
+    return(asynSuccess);
+}
+
+
+static asynStatus disconnect(void *drvPvt, asynUser *pasynUser)
+{
+    pasynManager->exceptionDisconnect(pasynUser);
+    return(asynSuccess);
+}
+
+
+/* Configuration routine, called from startup script either directly (on vxWorks) or from shell */
+
+int drvAsynAreaDetectorConfigure(const char *portName, const char *driverName, int detector)
+{
+    drvAreaDetectorPvt *pPvt;
+    asynStatus status;
+
+    pPvt = callocMustSucceed(1, sizeof(*pPvt), "drvAsynAreaDetectorConfigure");
+    pPvt->portName = epicsStrDup(portName);
+    pPvt->drvset = (ADDrvSET_t *) registryDriverSupportFind( driverName );
+    if (pPvt->drvset == NULL) {
+        errlogPrintf("drvAsynAreaDetectorConfigure ERROR: Can't find driver: %s\n", driverName);
+    return -1;
+    }
+
+    /* Link with higher level routines */
+    pPvt->common.interfaceType = asynCommonType;
+    pPvt->common.pinterface  = (void *)&drvAreaDetectorCommon;
+    pPvt->common.drvPvt = pPvt;
+    pPvt->int32.interfaceType = asynInt32Type;
+    pPvt->int32.pinterface  = (void *)&drvAreaDetectorInt32;
+    pPvt->int32.drvPvt = pPvt;
+    pPvt->float64.interfaceType = asynFloat64Type;
+    pPvt->float64.pinterface  = (void *)&drvAreaDetectorFloat64;
+    pPvt->float64.drvPvt = pPvt;
+    pPvt->int8Array.interfaceType = asynInt8ArrayType;
+    pPvt->int8Array.pinterface  = (void *)&drvAreaDetectorInt8Array;
+    pPvt->int8Array.drvPvt = pPvt;
+    pPvt->int16Array.interfaceType = asynInt16ArrayType;
+    pPvt->int16Array.pinterface  = (void *)&drvAreaDetectorInt16Array;
+    pPvt->int16Array.drvPvt = pPvt;
+    pPvt->int32Array.interfaceType = asynInt32ArrayType;
+    pPvt->int32Array.pinterface  = (void *)&drvAreaDetectorInt32Array;
+    pPvt->int32Array.drvPvt = pPvt;
+    pPvt->octet.interfaceType = asynOctetType;
+    pPvt->octet.pinterface  = (void *)&drvAreaDetectorOctet;
+    pPvt->octet.drvPvt = pPvt;
+    pPvt->drvUser.interfaceType = asynDrvUserType;
+    pPvt->drvUser.pinterface  = (void *)&drvAreaDetectorDrvUser;
+    pPvt->drvUser.drvPvt = pPvt;
+
+    status = pasynManager->registerPort(portName,
+                                        ASYN_MULTIDEVICE | ASYN_CANBLOCK,
+                                        1,  /*  autoconnect */
+                                        0,  /* medium priority */
+                                        0); /* default stack size */
+    if (status != asynSuccess) {
+        errlogPrintf("drvAsynAreaDetectorConfigure ERROR: Can't register port\n");
+        return -1;
+    }
+    status = pasynManager->registerInterface(portName,&pPvt->common);
+    if (status != asynSuccess) {
+        errlogPrintf("drvAsynAreaDetectorConfigure ERROR: Can't register common.\n");
+        return -1;
+    }
+
+    status = pasynInt32Base->initialize(pPvt->portName,&pPvt->int32);
+    if (status != asynSuccess) {
+        errlogPrintf("drvAsynAreaDetectorConfigure ERROR: Can't register int32\n");
+        return -1;
+    }
+    pasynManager->registerInterruptSource(portName, &pPvt->int32,
+                                          &pPvt->int32InterruptPvt);
+
+    status = pasynFloat64Base->initialize(pPvt->portName,&pPvt->float64);
+    if (status != asynSuccess) {
+        errlogPrintf("drvAsynAreaDetectorConfigure ERROR: Can't register float64\n");
+        return -1;
+    }
+    pasynManager->registerInterruptSource(portName, &pPvt->float64,
+                                          &pPvt->float64InterruptPvt);
+
+    status = pasynInt8ArrayBase->initialize(pPvt->portName,&pPvt->int8Array);
+    if (status != asynSuccess) {
+        errlogPrintf("drvAsynAreaDetectorConfigure ERROR: Can't register int8Array\n");
+        return -1;
+    }
+
+    pasynManager->registerInterruptSource(portName, &pPvt->int8Array,
+                                          &pPvt->int8ArrayInterruptPvt);
+
+    status = pasynInt16ArrayBase->initialize(pPvt->portName,&pPvt->int16Array);
+    if (status != asynSuccess) {
+        errlogPrintf("drvAsynAreaDetectorConfigure ERROR: Can't register int16Array\n");
+        return -1;
+    }
+
+    pasynManager->registerInterruptSource(portName, &pPvt->int16Array,
+                                          &pPvt->int16ArrayInterruptPvt);
+
+    status = pasynInt32ArrayBase->initialize(pPvt->portName,&pPvt->int32Array);
+    if (status != asynSuccess) {
+        errlogPrintf("drvAsynAreaDetectorConfigure ERROR: Can't register int32Array\n");
+        return -1;
+    }
+
+    pasynManager->registerInterruptSource(portName, &pPvt->int32Array,
+                                          &pPvt->int32ArrayInterruptPvt);
+
+    status = pasynOctetBase->initialize(pPvt->portName,&pPvt->octet,0,0,0);
+    if (status != asynSuccess) {
+        errlogPrintf("drvAsynAreaDetectorConfigure ERROR: Can't register octet\n");
+        return -1;
+    }
+
+    status = pasynManager->registerInterface(pPvt->portName,&pPvt->drvUser);
+    if (status != asynSuccess) {
+        errlogPrintf("drvAsynAreaDetectorConfigure ERROR: Can't register drvUser\n");
+        return -1;
+    }
+    /* Create asynUser for debugging */
+    pPvt->pasynUser = pasynManager->createAsynUser(0, 0);
+
+    /* Connect to device */
+    status = pasynManager->connectDevice(pPvt->pasynUser, portName, 0);
+    if (status != asynSuccess) {
+        errlogPrintf("drvAsynAreaDetectorConfigure, connectDevice failed\n");
+        return -1;
+    }
+
+    pPvt->lock = epicsMutexCreate();
+
+    pPvt->pDetector = (*pPvt->drvset->open)(detector, "");
+    if (!pPvt->pDetector) {
+        asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR, 
+                  "drvAsynAreaDetectorConfigure: Failed to open detector\n");
+        return -1;
+    }
+
+    /* Setup callbacks */
+    (*pPvt->drvset->setInt32Callback)    (pPvt->pDetector, int32Callback,     (void *)pPvt);
+    (*pPvt->drvset->setFloat64Callback)  (pPvt->pDetector, float64Callback,   (void *)pPvt);
+    (*pPvt->drvset->setImageDataCallback)(pPvt->pDetector, imageDataCallback, (void *)pPvt);
+
+    /* All other parameters are initialised to zero at allocation */
+    (*pPvt->drvset->setLog)(pPvt->pDetector, logFunc, pPvt->pasynUser );
+
+    return 0;
+}
+
+
+/* EPICS iocsh shell commands */
+
+static const iocshArg initArg0 = { "portName",iocshArgString};
+static const iocshArg initArg1 = { "driverName",iocshArgString};
+static const iocshArg initArg2 = { "Detector number",iocshArgInt};
+static const iocshArg * const initArgs[3] = {&initArg0,
+                                             &initArg1,
+                                             &initArg2};
+static const iocshFuncDef initFuncDef = {"drvAreaDetectorAsynConfigure",3,initArgs};
+static void initCallFunc(const iocshArgBuf *args)
+{
+    drvAsynAreaDetectorConfigure(args[0].sval, args[1].sval, args[2].ival);
+}
+
+void areaDetectorRegister(void)
+{
+    iocshRegister(&initFuncDef,initCallFunc);
+}
+
+epicsExportRegistrar(areaDetectorRegister);
