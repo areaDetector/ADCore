@@ -101,6 +101,120 @@ static int numCameras;
 /* Pointer to array of controller strutures */
 static camera_t *allCameras=NULL;
 
+
+static int ADBytesPerPixel(int dataType, int *size)
+{
+    int numTypes;
+    int sizes[] = AD_BYTES_PER_PIXEL;
+
+    numTypes = sizeof(sizes)/sizeof(size_t);
+    if (dataType < numTypes) {
+        *size = sizes[dataType];
+        return AREA_DETECTOR_OK;
+    }
+    return AREA_DETECTOR_ERROR;
+}
+
+static void ADComputeImage(DETECTOR_HDL pCamera)
+{
+    int bytesPerPixel;
+    int status = AREA_DETECTOR_OK;
+    int dataType;
+    int sizeX, sizeY, imageSize;
+    int simMode;
+    int i;
+    epicsUInt8 *pData=(epicsUInt8 *)pCamera->imageBuffer;
+
+    ADParam->getInteger(pCamera->params, ADSizeX, &sizeX);
+    ADParam->getInteger(pCamera->params, ADSizeY, &sizeY);
+    ADParam->getInteger(pCamera->params, ADDataType, &dataType);
+    ADParam->getInteger(pCamera->params, SimMode, &simMode);
+
+    /* Make sure the image buffer we have allocated is large enough */
+    status = ADBytesPerPixel(dataType, &bytesPerPixel);
+    imageSize = sizeX * sizeY * bytesPerPixel;
+    if (imageSize > pCamera->bufferSize) {
+        free(pCamera->imageBuffer);
+        pCamera->imageBuffer = calloc(bytesPerPixel, sizeX*sizeY);
+    }
+    pCamera->imageSize = imageSize;
+    
+    /* We just make a linear ramp for now */
+    for (i=0; i<sizeX*sizeY; i++) {
+       (*pData++)++;
+    }
+
+}
+
+static void ADUpdateImage(DETECTOR_HDL pCamera)
+{
+    int i;
+    int dataType;
+    int sizeX, sizeY, imageSize, binX, binY, startX, startY;
+    int simMode;
+    epicsUInt8 *pData=(epicsUInt8 *)pCamera->imageBuffer;
+
+    ADParam->getInteger(pCamera->params, ADSizeX, &sizeX);
+    ADParam->getInteger(pCamera->params, ADSizeY, &sizeY);
+    ADParam->getInteger(pCamera->params, ADDataType, &dataType);
+    ADParam->getInteger(pCamera->params, SimMode, &simMode);
+
+    /* Update the image.  Just increment each pixel by 1 for now */
+    for (i=0, pData=pCamera->imageBuffer; i<sizeX*sizeY; i++) {
+        (*pData++)++;
+    }
+    /* Get the subimage, including binning */
+}    
+
+
+static void ADSimulateTask(DETECTOR_HDL pCamera)
+{
+    /* This thread computes new frame data */
+    int status = AREA_DETECTOR_OK;
+    int dataType;
+    int sizeX, sizeY, imageSize;
+    int acquire;
+    double delay;
+
+    /* Loop forever */
+    while (1) {
+    
+        /* Is acquisition active? */
+        ADParam->getInteger(pCamera->params, ADAcquire, &acquire);
+        
+        /* If we are not acquiring then wait for a semaphore that is given when acquisition is started */
+        if (!acquire) status = epicsEventWait(pCamera->eventId);
+        
+        /* We are acquiring */
+        
+        /* Update the image */
+        ADUpdateImage(pCamera);
+        
+        /* Get the current parameters */
+        ADParam->getInteger(pCamera->params, ADSizeX, &sizeX);
+        ADParam->getInteger(pCamera->params, ADSizeY, &sizeY);
+        ADParam->getInteger(pCamera->params, ADImageSize, &imageSize);
+        ADParam->getInteger(pCamera->params, ADDataType, &dataType);
+
+        /* Call the imageData callback */
+        pCamera->pImageDataCallback(pCamera->imageDataCallbackParam, 
+                                    pCamera->imageBuffer,
+                                    dataType, imageSize, sizeX, sizeY);
+
+        /* See if acquisition is done */
+        if (pCamera->framesRemaining > 0) pCamera->framesRemaining--;
+        if (pCamera->framesRemaining == 0) {
+            ADParam->setInteger(pCamera->params, ADAcquire, 0);
+            ADParam->setInteger(pCamera->params, ADStatus, ADStatusIdle);
+            ADParam->callCallbacks(pCamera->params);
+        }
+        
+        /* Wait for the frame delay period */
+        ADParam->getDouble(pCamera->params, SimDelay, &delay);
+        if (delay > 0.0) epicsThreadSleep(delay);
+    }
+}
+
 static void ADReport(int level)
 {
     int i;
@@ -247,6 +361,10 @@ static int ADSetInteger(DETECTOR_HDL pCamera, int function, int value)
                 pCamera->framesRemaining = -1;
                 break;
             }
+            /* Compute the initial image */
+            ADComputeImage(pCamera);
+            /* Send an event to wake up the simulation task */
+            epicsEventSignal(pCamera->eventId);
         } 
         break;
     }
@@ -347,58 +465,6 @@ static int ADSetImage(DETECTOR_HDL pCamera, int maxBytes, void *buffer)
 }
 
 
-
-static void ADSimulateTask(DETECTOR_HDL pCamera)
-{
-    /* This thread computes new frame data */
-    int status = AREA_DETECTOR_OK;
-    int dataType;
-    int sizeX, sizeY;
-    int acquire;
-    SimParam_t simType;
-    int imageSize;
-    double delay;
-
-    /* Loop forever */
-    while (1) {
-    
-        /* Is acquisition active? */
-        ADParam->getInteger(pCamera->params, ADAcquire, &acquire);
-        
-        /* If we are not acquiring then wait for a semaphore that is given when acquisition is started */
-        if (!acquire) status = epicsEventWait(pCamera->eventId);
-        
-        /* We are acquiring.  Get the image parameters */
-        ADParam->getInteger(pCamera->params, ADSizeX, &sizeX);
-        ADParam->getInteger(pCamera->params, ADSizeY, &sizeY);
-        ADParam->getInteger(pCamera->params, ADDataType, &dataType);
-
-        /* Make sure the image buffer we have allocated is large enough */
-        imageSize = sizeX * sizeY * ADBytesPerPixel(dataType);
-        if (imageSize > pCamera->bufferSize) {
-            free(pCamera->imageBuffer);
-            pCamera->imageBuffer = malloc(imageSize);
-        }
-        pCamera->imageSize = imageSize;
-    
-        pCamera->pImageDataCallback(pCamera->imageDataCallbackParam, 
-                                    pCamera->imageBuffer,
-                                    dataType, imageSize, sizeX, sizeY);
-
-        /* See if acquisition is done */
-        if (pCamera->framesRemaining > 0) pCamera->framesRemaining--;
-        if (pCamera->framesRemaining == 0) {
-            ADParam->setInteger(pCamera->params, ADAcquire, 0);
-            ADParam->setInteger(pCamera->params, ADStatus, ADStatusIdle);
-            ADParam->callCallbacks(pCamera->params);
-        }
-        
-        /* Wait for the frame delay period */
-        ADParam->getDouble(pCamera->params, SimDelay, &delay);
-        epicsThreadSleep(delay);
-    }
-}
-
 static int ADLogMsg(void * param, const ADLogMask_t mask, const char *pFormat, ...)
 {
 
@@ -463,6 +529,20 @@ int simDetectorConfig(int camera, int sizeX, int sizeY, int dataType)     /* Cam
     status |= ADParam->setInteger(pCamera->params, ADDataType, dataType);
     if (status) {
         printf("simDetectorConfig: unable to set camera parameters\n");
+        return AREA_DETECTOR_ERROR;
+    }
+    
+    /* Create the epicsEvent for signaling to the simulate task when acquisition starts */
+    pCamera->eventId = epicsEventCreate(epicsEventEmpty);
+    
+    /* Create the thread that updates the images */
+    status = (epicsThreadCreate("SimDetTask",
+                                epicsThreadPriorityMedium,
+                                epicsThreadGetStackSize(epicsThreadStackMedium),
+                                (EPICSTHREADFUNC)ADSimulateTask,
+                                pCamera) == NULL);
+    if (status) {
+        printf("simDetectorConfig: epicsThreadCreate failure\n");
         return AREA_DETECTOR_ERROR;
     }
     
