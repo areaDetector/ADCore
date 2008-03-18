@@ -27,7 +27,8 @@ data structures when accessing them.
 
 This is particularly important when calling the callback routine. All
 asynchronous communication back to the upper level software is done
-through the callback function set by areaDatectorSetCallback(). The rule is
+through the callback function set by ADSetXXXCallback(), where XXX
+is Int32, Float64, or ImageData. The rule is
 that the driver can assume that once this callback is completed all
 side effects have been handled by the upper level software. However,
 until it is called the driver must protect against updates.
@@ -52,22 +53,21 @@ out of order results in a deadlock.
 
 Detector state information is accessed using the detector parameter
 ADGetInteger(), ADSetInteger(), ADGetDouble(),
-ADSetDouble() and ADCallbackFunc() routines (the latter
-set with ADSetCallback()). Parameters are identified by the
+ADSetDouble(), ADGetString, ADSetString, and ADXXXCallbackFunc() routines (the latter
+set with ADSetXXXCallback()). Parameters are identified by the
 ADParam_t enumerated type. Since this is common to all detectors,
-the paramLib library is provided in the ccd application for drivers
+the ADParamLib library is provided in the areaDetector application for drivers
 to use. Using this is optional, but it generally saves effort. A
 specific driver's get and callback routines are typically just wrappers
-around the corresponding paramLib routines, and the set routines are
+around the corresponding ADParamLib routines, and the set routines are
 also wrappers, but inevitably have some detector specific action to
 pass the parameter value down to the detector.
 
                 Background detector polling task.
 
-All detectors will probably need a background polling task to
+Some detectors will need a background polling task to
 update the state kept as parameters within the drivers. Typically,
-there is one task per detector, so multiple detectors can be
-polled simultaneously. If there is a state change this will result in
+there is one task per detector. If there is a state change this will result in
 upper level software being called back in the context this task, so may be
 a consideration in setting the task priority.
 
@@ -279,6 +279,21 @@ typedef int (*ADCloseFunc)( DETECTOR_HDL pDetector );
 static int ADClose( DETECTOR_HDL pDetector );
 #endif
 
+typedef int (*ADFindParamFunc)( DETECTOR_HDL pDetector, const char *paramString, int *function );
+
+/*  Translates a parameter string to a driver-specific function code
+
+    pDetector  [in]   Pointer to detector handle returned by ADOpen.
+    paramString [in]  Parameter string for this parameter.
+    function    [out] Function code corresponding to this paramString
+
+    returns 0 (AREA_DETECTOR_OK) for success or non-zero for failure. 
+*/
+
+#ifdef DEFINE_AREA_DETECTOR_PROTOTYPES
+static int ADFindParam( DETECTOR_HDL pDetector, const char *paramString, int *function );
+#endif
+
 /*  Callback Routines to handle callbacks of status information */
 
 typedef void (*ADInt32CallbackFunc)    ( void *param, int function, int value );
@@ -290,20 +305,15 @@ typedef int (*ADSetImageDataCallbackFunc)( DETECTOR_HDL pDetector, ADImageDataCa
 
 /*  Set a callback function to be called when detector information changes
 
-    This routine sets a function to be called by the driver if the detector data changes.
+    These routine set functions to be called by the driver if the detector data changes.
     
-    It is the responsbility of the callback function to free the memory pointed to by value.
-
-    If function=ADImageData then the value passed back is a frame pointer.  The callback routine must free
-    the image data array as well as the frame pointer.
-    
-    Only one callback function is allowed per DETECTOR_HDL, and so subsequent calls to
-    this function using the original detector identifier will replace the original
+    Only one callback function of each data type is allowed per DETECTOR_HDL, and so subsequent calls to
+    these functions using the original detector identifier will replace the original
     callback. Setting the callback function to a NULL pointer will delete the
     callback hook.
 
     pDetector [in]   Pointer to detector handle returned by ADOpen.
-    callback  [in]   Pointer to a callback function taking a void parameter.
+    callback  [in]   Pointer to a callback function of the appropriate type.
     param     [in]   Void pointer to parameter that should be used when calling the callback
 
     Returns 0 (AREA_DETECTOR_OK) for success or non-zero for failure. 
@@ -315,109 +325,104 @@ static int ADSetFloat64Callback  ( DETECTOR_HDL pDetector, ADFloat64CallbackFunc
 static int ADSetImageDataCallback( DETECTOR_HDL pDetector, ADImageDataCallbackFunc callback, void *param );
 #endif
 
-/* Routines that set detector control parameters */
 
-typedef int (*ADGetIntegerFunc)( DETECTOR_HDL pDetector,  ADParam_t function, int *value );
+/* Routines that read and write detector control parameters */
+
+typedef int (*ADGetIntegerFunc)( DETECTOR_HDL pDetector,  int function, int *value );
 
 /*  Gets an integer parameter in the detector.
 
-    The function parameter is described in the description of the ADParam_t enumeration.
-
     pDetector [in]   Pointer to detector handle returned by ADOpen.
-    function  [in]   One of the #ADParam_t values indicating which parameter to set.
+    function  [in]   One of the ADParam_t values, or a driver-specific function code, 
+                     indicating which parameter to get.
     value     [in]   Value of the parameter.
 
     Returns 0 (AREA_DETECTOR_OK) for success or non-zero for failure or not supported. 
 */
 
 #ifdef DEFINE_AREA_DETECTOR_PROTOTYPES
-static int ADGetInteger( DETECTOR_HDL pDetector, ADParam_t function, int * value );
+static int ADGetInteger( DETECTOR_HDL pDetector, int function, int * value );
 #endif
 
-typedef int (*ADSetIntegerFunc)( DETECTOR_HDL pDetector,  ADParam_t function, int value );
+typedef int (*ADSetIntegerFunc)( DETECTOR_HDL pDetector,  int function, int value );
 
 /*  Sets an integer parameter in the detector.
 
-    The function parameter is described in the description of the ADParam_t enumeration.
- 
     pDetector [in]   Pointer to detector handle returned by ADOpen.
-    function  [in]   One of the ADParam_t values indicating which parameter to set.
+    function  [in]   One of the ADParam_t values, or a driver-specific function code, 
+                     indicating which parameter to set.
     value     [in]   Value to be assigned to the parameter.
 
     Returns 0 (AREA_DETECTOR_OK) for success or non-zero for failure or not supported. 
 */
 
 #ifdef DEFINE_AREA_DETECTOR_PROTOTYPES
-static int ADSetInteger( DETECTOR_HDL pDetector, ADParam_t function, int value );
+static int ADSetInteger( DETECTOR_HDL pDetector, int function, int value );
 #endif
 
-typedef int (*ADGetDoubleFunc)( DETECTOR_HDL pDetector, ADParam_t function, double *value );
+typedef int (*ADGetDoubleFunc)( DETECTOR_HDL pDetector, int function, double *value );
 
 /*  Gets a double parameter in the detector.
 
-    The function parameter is described in the description of the ADParam_t enumeration.
-
     pDetector [in]   Pointer to detector handle returned by ADOpen.
-    function  [in]   One of the ADParam_t values indicating which parameter to get.
+    function  [in]   One of the ADParam_t values, or a driver-specific function code, 
+                     indicating which parameter to get.
     value     [out]  Value of the parameter.
 
-    \return Integer indicating 0 (AREA_DETECTOR_OK) for success or non-zero for failure or not supported. 
+    Returns 0 (AREA_DETECTOR_OK) for success or non-zero for failure or not supported. 
 */
 
 #ifdef DEFINE_AREA_DETECTOR_PROTOTYPES
-static int ADGetDouble( DETECTOR_HDL pDetector, ADParam_t function, double * value );
+static int ADGetDouble( DETECTOR_HDL pDetector, int function, double * value );
 #endif
 
-typedef int (*ADSetDoubleFunc)( DETECTOR_HDL pDetector, ADParam_t function, double value);
+typedef int (*ADSetDoubleFunc)( DETECTOR_HDL pDetector, int function, double value);
 
 /*  Sets a double parameter in the detector.
 
-    The function parameter is described in the description of the ADParam_t enumeration.
-
     pDetector [in]   Pointer to detector handle returned by ADOpen.
-    function  [in]   One of the ADParam_t values indicating which parameter to set.
+    function  [in]   One of the ADParam_t values, or a driver-specific function code, 
+                     indicating which parameter to set.
     value     [in]   Value to be assigned to the parameter.
 
-    Returns 0 (AREA_DETECTOR_OK) for success or non-zero for failure or not supported. 
+    Returns:  0 (AREA_DETECTOR_OK) for success or non-zero for failure or not supported. 
 */
 
 #ifdef DEFINE_AREA_DETECTOR_PROTOTYPES
-static int ADSetDouble( DETECTOR_HDL pDetector, ADParam_t function, double value );
+static int ADSetDouble( DETECTOR_HDL pDetector, int function, double value );
 #endif
 
-typedef int (*ADGetStringFunc)( DETECTOR_HDL pDetector, ADParam_t function, int maxChars, char *value );
+typedef int (*ADGetStringFunc)( DETECTOR_HDL pDetector, int function, int maxChars, char *value );
 
 /*  Gets a double parameter in the detector.
 
-    The function parameter is described in the description of the ADParam_t enumeration.
-
     pDetector [in]   Pointer to detector handle returned by ADOpen.
-    function  [in]   One of the ADParam_t values indicating which parameter to get.
+    function  [in]   One of the ADParam_t values, or a driver-specific function code, 
+                     indicating which parameter to get.
     maxChars  [in]   Maximum length of string
     value     [out]  Value of the parameter.
 
-    \return Integer indicating 0 (AREA_DETECTOR_OK) for success or non-zero for failure or not supported. 
+    Returns:  0 (AREA_DETECTOR_OK) for success or non-zero for failure or not supported. 
 */
 
 #ifdef DEFINE_AREA_DETECTOR_PROTOTYPES
-static int ADGetString( DETECTOR_HDL pDetector, ADParam_t function, int maxChars, char *value );
+static int ADGetString( DETECTOR_HDL pDetector, int function, int maxChars, char *value );
 #endif
 
-typedef int (*ADSetStringFunc)( DETECTOR_HDL pDetector, ADParam_t function, const char *value);
+typedef int (*ADSetStringFunc)( DETECTOR_HDL pDetector, int function, const char *value);
 
 /*  Sets a string parameter in the detector.
 
-    The function parameter is described in the description of the ADParam_t enumeration.
-
     pDetector [in]   Pointer to detector handle returned by ADOpen.
-    function  [in]   One of the ADParam_t values indicating which parameter to set.
+    function  [in]   One of the ADParam_t values, or a driver-specific function code, 
+                     indicating which parameter to set.
     value     [in]   Value to be assigned to the parameter.
 
     Returns 0 (AREA_DETECTOR_OK) for success or non-zero for failure or not supported. 
 */
 
 #ifdef DEFINE_AREA_DETECTOR_PROTOTYPES
-static int ADSetString( DETECTOR_HDL pDetector, ADParam_t function, const char *value );
+static int ADSetString( DETECTOR_HDL pDetector, int function, const char *value );
 #endif
 
 /* Routines to read and write image data */
@@ -433,6 +438,8 @@ typedef int (*ADGetImageFunc)( DETECTOR_HDL pDetector,  int maxBytes, void *buff
 
     Returns 0 (AREA_DETECTOR_OK) for success or non-zero for failure or not supported. 
 */
+
+/* Routines to read and write the image data */
 
 #ifdef DEFINE_AREA_DETECTOR_PROTOTYPES
 static int ADGetImage( DETECTOR_HDL pDetector, int maxBytes, void *buffer );
@@ -466,6 +473,7 @@ typedef struct
     ADSetLogFunc          setLog;            /* Defines an external logging function (optional) */
     ADOpenFunc            open;              /* Driver open function */
     ADCloseFunc           close;             /* Driver close function */
+    ADFindParamFunc       findParam;         /* Parameter lookup function */
     ADSetInt32CallbackFunc     setInt32Callback;      /* Provides a callback function the driver can call when an int32 value changes */
     ADSetFloat64CallbackFunc   setFloat64Callback;    /* Provides a callback function the driver can call when a float64 value changes */
     ADSetImageDataCallbackFunc setImageDataCallback;  /* Provides a callback function the driver can call when there is new image data */
