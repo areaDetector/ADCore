@@ -8,7 +8,8 @@ include $(TOP)/configure/CONFIG
 #USR_CXXFLAGS +=
 
 LIBRARY_IOC = simDetector
-LIB_LIBS += AD
+LIB_SRCS += drvSimDetector.c
+LIB_LIBS += areaDetector
 LIB_LIBS += sscan autosave
 LIB_LIBS += asyn
 LIB_LIBS += $(EPICS_BASE_IOC_LIBS)
@@ -25,7 +26,6 @@ simDetectorApp_SRCS_vxWorks += simDetectorApp_registerRecordDeviceDriver.cpp
 
 # Add locally compiled object code
 simDetectorApp_LIBS += simDetector
-simDetectorApp_LIBS += PvAPI
 simDetectorApp_LIBS += areaDetector
 simDetectorApp_LIBS += sscan autosave 
 simDetectorApp_LIBS += asyn
