@@ -245,7 +245,7 @@ static int paramGetString( PARAMS params, paramIndex index, int maxChars, char *
     if (index >= 0 && index < params->nvals)
     {
         if (params->vals[index].type == paramString) {
-            strncmp(value, params->vals[index].data.sval, maxChars);
+            strncpy(value, params->vals[index].data.sval, maxChars);
             status = PARAM_OK;
         }
     }
