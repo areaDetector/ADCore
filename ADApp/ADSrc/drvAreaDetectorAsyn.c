@@ -944,30 +944,34 @@ static asynStatus drvUserCreate(void *drvPvt, asynUser *pasynUser,
                                 const char *drvInfo, 
                                 const char **pptypeName, size_t *psize)
 {
-    int i;
-    char *pstring;
+    drvAreaDetectorPvt *pPvt = (drvAreaDetectorPvt *)drvPvt;
+    int i, status;
     int ncommands = sizeof(ADCommands)/sizeof(ADCommands[0]);
-
-    asynPrint(pasynUser, ASYN_TRACE_FLOW,
-              "drvAreaDetectorAsyn::drvUserCreate, drvInfo=%s, pptypeName=%p, psize=%p, pasynUser=%p\n", 
-              drvInfo, pptypeName, psize, pasynUser);
+    int command=-1;
 
     for (i=0; i < ncommands; i++) {
-        pstring = ADCommands[i].commandString;
-        if (epicsStrCaseCmp(drvInfo, pstring) == 0) {
+        if (epicsStrCaseCmp(drvInfo, ADCommands[i].commandString) == 0) {
+            command = ADCommands[i].command;
             break;
         }
     }
-    if (i < ncommands) {
-        pasynUser->reason = ADCommands[i].command;
+    /* If the command was not one of the standard ones in this driver's table, then see if
+     * it is a driver-specific command */
+    if (command < 0) {
+        status = (*pPvt->drvset->findParam)(pPvt->pDetector, drvInfo, &command);
+        if (!status) command = -1;
+    }
+ 
+    if (command >= 0) {
+        pasynUser->reason = command;
         if (pptypeName) {
-            *pptypeName = epicsStrDup(pstring);
+            *pptypeName = epicsStrDup(drvInfo);
         }
         if (psize) {
-            *psize = sizeof(ADCommands[i].command);
+            *psize = sizeof(command);
         }
         asynPrint(pasynUser, ASYN_TRACE_FLOW,
-                  "drvAreaDetectorAsyn::drvUserCreate, command=%s\n", pstring);
+                  "drvAreaDetectorAsyn::drvUserCreate, command=%s, command=%d\n", drvInfo, command);
         return(asynSuccess);
     } else {
         epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
@@ -979,17 +983,14 @@ static asynStatus drvUserCreate(void *drvPvt, asynUser *pasynUser,
 static asynStatus drvUserGetType(void *drvPvt, asynUser *pasynUser,
                                  const char **pptypeName, size_t *psize)
 {
-    ADCommand_t command = pasynUser->reason;
+    /* This is not currently supported, because we can't get the strings for driver-specific commands */
 
     asynPrint(pasynUser, ASYN_TRACE_FLOW,
               "drvAreaDetectorAsyn::drvUserGetType entered");
 
     *pptypeName = NULL;
     *psize = 0;
-    if (pptypeName)
-        *pptypeName = epicsStrDup(ADCommands[command].commandString);
-    if (psize) *psize = sizeof(command);
-    return(asynSuccess);
+    return(asynError);
 }
 
 static asynStatus drvUserDestroy(void *drvPvt, asynUser *pasynUser)
