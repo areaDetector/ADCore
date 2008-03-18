@@ -5,6 +5,8 @@
 extern "C" {
 #endif
 
+#include <epicsTypes.h>
+
 /**  EPICS Area Detector API
 
                  How use this API
@@ -105,6 +107,17 @@ typedef enum
    ADFloat32,
    ADFloat64
 } ADDataType_t;
+
+/* The following array must be consistent with the ADDataType_t enum */
+#define AD_BYTES_PER_PIXEL      {sizeof(epicsInt8),\
+                                sizeof(epicsUInt8),\
+                                sizeof(epicsInt16),\
+                                sizeof(epicsUInt16),\
+                                sizeof(epicsInt32),\
+                                sizeof(epicsUInt32),\
+                                sizeof(epicsFloat32),\
+                                sizeof(epicsFloat64)\
+                                }
 
 /* Enumeration of detector status */
 typedef enum
