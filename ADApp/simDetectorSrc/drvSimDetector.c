@@ -18,7 +18,7 @@
 
 #define DEFINE_AREA_DETECTOR_PROTOTYPES 1
 #include "ADParamLib.h"
-#include "areaDetectorInterface.h"
+#include "ADInterface.h"
 
 /* If we have any private driver commands they begin with ADFirstDriverCommand and should end
    with ADLastDriverParam, which is used for setting the size of the parameter library table */
@@ -123,8 +123,9 @@ static void ADComputeImage(DETECTOR_HDL pCamera)
     int sizeX, sizeY, imageSize;
     int simMode;
     int i;
-    epicsUInt8 *pData=(epicsUInt8 *)pCamera->imageBuffer;
+    epicsUInt8 *pData;
 
+    PRINT(pCamera->logParam, TRACE_FLOW, "ADComputeImage: entry\n");
     ADParam->getInteger(pCamera->params, ADSizeX, &sizeX);
     ADParam->getInteger(pCamera->params, ADSizeY, &sizeY);
     ADParam->getInteger(pCamera->params, ADDataType, &dataType);
@@ -136,8 +137,9 @@ static void ADComputeImage(DETECTOR_HDL pCamera)
     if (imageSize > pCamera->bufferSize) {
         free(pCamera->imageBuffer);
         pCamera->imageBuffer = calloc(bytesPerPixel, sizeX*sizeY);
+        pCamera->bufferSize = imageSize;
     }
-    pCamera->imageSize = imageSize;
+    pData=(epicsUInt8 *)pCamera->imageBuffer;
     
     /* We just make a linear ramp for now */
     for (i=0; i<sizeX*sizeY; i++) {
@@ -154,6 +156,7 @@ static void ADUpdateImage(DETECTOR_HDL pCamera)
     int simMode;
     epicsUInt8 *pData=(epicsUInt8 *)pCamera->imageBuffer;
 
+    PRINT(pCamera->logParam, TRACE_FLOW, "ADUpdateImage: entry\n");
     ADParam->getInteger(pCamera->params, ADSizeX, &sizeX);
     ADParam->getInteger(pCamera->params, ADSizeY, &sizeY);
     ADParam->getInteger(pCamera->params, ADDataType, &dataType);
@@ -183,7 +186,10 @@ static void ADSimulateTask(DETECTOR_HDL pCamera)
         ADParam->getInteger(pCamera->params, ADAcquire, &acquire);
         
         /* If we are not acquiring then wait for a semaphore that is given when acquisition is started */
-        if (!acquire) status = epicsEventWait(pCamera->eventId);
+        if (!acquire) {
+             PRINT(pCamera->logParam, TRACE_FLOW, "ADSimulateTask: waiting for acquire to start\n");
+             status = epicsEventWait(pCamera->eventId);
+        }
         
         /* We are acquiring */
         
@@ -197,6 +203,7 @@ static void ADSimulateTask(DETECTOR_HDL pCamera)
         ADParam->getInteger(pCamera->params, ADDataType, &dataType);
 
         /* Call the imageData callback */
+        PRINT(pCamera->logParam, TRACE_FLOW, "ADSimulateTask: calling imageData callback\n");
         pCamera->pImageDataCallback(pCamera->imageDataCallbackParam, 
                                     pCamera->imageBuffer,
                                     dataType, imageSize, sizeX, sizeY);
@@ -207,6 +214,7 @@ static void ADSimulateTask(DETECTOR_HDL pCamera)
             ADParam->setInteger(pCamera->params, ADAcquire, 0);
             ADParam->setInteger(pCamera->params, ADStatus, ADStatusIdle);
             ADParam->callCallbacks(pCamera->params);
+            PRINT(pCamera->logParam, TRACE_FLOW, "ADSimulateTask: acquisition completed\n");
         }
         
         /* Wait for the frame delay period */
