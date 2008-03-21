@@ -105,7 +105,7 @@ static ADCommandStruct ADCommands[] = {
 
 typedef struct drvADPvt {
     char *portName;
-    ADDrvSET_t *drvset;
+    ADDrvSet_t *drvset;
     DETECTOR_HDL  pDetector;
     
     /* Housekeeping */
@@ -1119,7 +1119,7 @@ int drvAsynADConfigure(const char *portName, const char *driverName, int detecto
 
     pPvt = callocMustSucceed(1, sizeof(*pPvt), "drvAsynADConfigure");
     pPvt->portName = epicsStrDup(portName);
-    pPvt->drvset = (ADDrvSET_t *) registryDriverSupportFind( driverName );
+    pPvt->drvset = (ADDrvSet_t *) registryDriverSupportFind( driverName );
     if (pPvt->drvset == NULL) {
         errlogPrintf("drvAsynADConfigure ERROR: Can't find driver: %s\n", driverName);
     return -1;

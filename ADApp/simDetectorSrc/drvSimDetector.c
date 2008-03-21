@@ -47,7 +47,7 @@ static SimCommandStruct SimCommands[] = {
     {SimMode,    "SIM_MODE"}  
 };
 
-ADDrvSeT_t ADSimDetector = 
+ADDrvSet_t ADSimDetector = 
   {
     18,
     ADReport,            /* Standard EPICS driver report function (optional) */

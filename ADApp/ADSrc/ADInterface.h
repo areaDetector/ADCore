@@ -526,7 +526,7 @@ typedef struct
     ADSetStringFunc       setString;         /* Pointer to function to set a string value */
     ADGetImageFunc        getImage;          /* Pointer to function to getImage acquisition */
     ADSetImageFunc        setImage;          /* Pointer to function to setImage acquisition */
-} ADDrvSET_t;
+} ADDrvSet_t;
 
 #ifdef __cplusplus
 }
