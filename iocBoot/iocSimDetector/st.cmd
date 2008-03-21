@@ -8,9 +8,9 @@ dbLoadRecords("$(AD)/ADApp/Db/ADAsynImage.db","P=13SIM1:,D=cam1:,PORT=SIM1,ADDR=
 
 simDetectorSetup(1)
 simDetectorConfig(0, 640, 480, 1)
-drvAreaDetectorAsynConfigure("SIM1", "ADSimDetector", 0)
+drvADAsynConfigure("SIM1", "ADSimDetector", 0)
 
-asynSetTraceMask("SIM1",0,255)
+#asynSetTraceMask("SIM1",0,255)
 
 set_requestfile_path("./")
 set_savefile_path("./autosave")
