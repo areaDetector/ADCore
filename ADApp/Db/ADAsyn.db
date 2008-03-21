@@ -168,6 +168,22 @@ record(longin, "$(P)$(D)SizeY_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(longin, "$(P)$(D)MaxSizeX_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_SIZE_X")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(D)MaxSizeY_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_SIZE_Y")
+   field(SCAN, "I/O Intr")
+}
+
 record(longin, "$(P)$(D)ImageSizeX_RBV")
 {
    field(PINI, "1")
@@ -363,27 +379,6 @@ record(dfanout, "$(P)$(D)AcquireDoneFanout")
    field(OUTB, "$(P)$(D)AcquireBusy CA MS")
 }
 
-record(stringout, "$(P)$(D)FileTemplate")
-{
-   field(VAL, "test")
-}
-
-record(longin, "$(P)$(D)SeqNumber")
-{
-   field(VAL, "1")
-}
-
-record(mbbo, "$(P)$(D)Compression")
-{
-   field(ZRST,  "None")
-   field(ONST,  "LZW")
-   field(TWST, "Skip-Huff")
-   field(THST, "RL Encoding")
-}
-
-# The following PVs are new to this database, they don't exist in Brian Tieman's
-# portable channel access server application
-
 record(bi, "$(P)$(D)ConnectState")
 {
    field(VAL, "0")
@@ -425,30 +420,170 @@ record(mbbi, "$(P)$(D)DetectorState")
     field(SCAN, "I/O Intr")
 }
 
-record(bo, "$(P)$(D)AutoSave")
+# File related records
+# *********************************
+
+# File path.
+record(waveform, "$(P)$(D)FilePath")
 {
-   field(VAL, "1")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
+    field(PINI, "1")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_PATH")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
 }
 
-record(busy, "$(P)$(D)SaveFile")
+record(waveform, "$(P)$(D)FilePath_RBV")
 {
+    field(PINI, "1")
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_PATH")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
 }
 
-record(stringout, "$(P)$(D)FilePath")
+# Filename
+record(waveform, "$(P)$(D)FileName")
 {
-   field(VAL, "./")
+    field(PINI, "1")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NAME")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
 }
 
-record(stringout, "$(P)$(D)FilenameFormat")
+record(waveform, "$(P)$(D)FileName_RBV")
 {
-   field(VAL, "%s.%3.3d")
+    field(PINI, "1")
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NAME")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
 }
 
-record(stringout, "$(P)$(D)FullFilename")
+# File number
+record(longout, "$(P)$(D)FileNumber")
 {
-   field(VAL, " ")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NUMBER")
+}
+
+record(longin, "$(P)$(D)FileNumber_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NUMBER")
+    field(SCAN, "I/O Intr")
+}
+
+# Autoincrement flag
+record(mbbo, "$(P)$(D)AutoIncrement")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_INCREMENT")
+    field(ZRST, "No")
+    field(ZRVL, "0")
+    field(ONST, "Yes")
+    field(ONVL, "1")
+}
+
+record(mbbo, "$(P)$(D)AutoIncrement_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_INCREMENT")
+    field(ZRST, "No")
+    field(ZRVL, "0")
+    field(ONST, "Yes")
+    field(ONVL, "1")
+    field(SCAN, "I/O Intr")
+}
+
+# File template
+record(waveform, "$(P)$(D)FileTemplate")
+{
+    field(PINI,  "1")
+    field(DTYP, "asynOctetWrite")
+    field(INP,   "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_TEMPLATE")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(D)FileTemplate_RBV")
+{
+    field(PINI,  "1")
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_TEMPLATE")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
+# Full filename, including path
+record(waveform, "$(P)$(D)FullFileName_RBV")
+{
+    field(PINI,  "1")
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FULL_FILE_NAME")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
+# Autosave flag
+record(mbbo, "$(P)$(D)AutoSave")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_SAVE")
+    field(ZRST, "No")
+    field(ZRVL, "0")
+    field(ONST, "Yes")
+    field(ONVL, "1")
+}
+
+record(mbbi, "$(P)$(D)AutoSave_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_SAVE")
+    field(ZRST, "No")
+    field(ZRVL, "0")
+    field(ONST, "Yes")
+    field(ONVL, "1")
+    field(SCAN, "I/O Intr")
+}
+
+# Save file
+record(longout, "$(P)$(D)SaveFile")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SAVE_FILE")
+}
+
+# File data format 
+record(stringout, "$(P)$(D)FileFormat")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetWrite")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_FORMAT")
+}
+
+record(stringin, "$(P)$(D)FileFormat_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_FORMAT")
+    field(SCAN, "I/O Intr")
+}
+
+
+# Needs works past here
+record(mbbo, "$(P)$(D)Compression")
+{
+   field(ZRST,  "None")
+   field(ONST,  "LZW")
+   field(TWST, "Skip-Huff")
+   field(THST, "RL Encoding")
 }
 
 record(bi, "$(P)$(D)CorrectBackground")
