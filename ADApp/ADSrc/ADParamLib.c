@@ -11,6 +11,7 @@ callback notification simpler for EPICS area detector drivers.
 
 #include <epicsString.h>
 #include "ADParamLib.h"
+#include "ADInterface.h"
 
 typedef enum { paramUndef, paramInt, paramDouble, paramString} paramType;
 
@@ -81,6 +82,21 @@ static PARAMS paramCreate( paramIndex startVal, paramIndex nvals )
     {
         paramDestroy( params );
     }
+    
+    /* Set some reasonable defaults for some parameters */
+    ADParam->setInteger(params, ADMinX,         0);
+    ADParam->setInteger(params, ADMinY,         0);
+    ADParam->setInteger(params, ADBinX,         1);
+    ADParam->setInteger(params, ADBinY,         1);
+    ADParam->setDouble( params, ADGain,         1.0);
+    ADParam->setDouble (params, ADAcquireTime,  1.0);
+    ADParam->setInteger(params, ADNumExposures, 1);
+    ADParam->setInteger(params, ADNumFrames,    1);
+    ADParam->setInteger(params, ADFrameMode,    ADSingleFrame);
+    ADParam->setInteger(params, ADFileNumber,   1);
+    ADParam->setInteger(params, ADAutoIncrement,1);
+    ADParam->setInteger(params, ADAutoSave,     1);
+    ADParam->setInteger(params, ADSaveFile,     1);
 
     return params;
 }
@@ -390,6 +406,7 @@ static void paramDump( PARAMS params )
         }
     }
 }
+
 
 static paramSupport ADParamSupport =
 {
