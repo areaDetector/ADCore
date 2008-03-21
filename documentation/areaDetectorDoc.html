@@ -1,0 +1,1035 @@
+<HTML>
+<HEAD>
+<TITLE>EPICS Support for Area Detectors</TITLE>
+</HEAD>
+<BODY>
+<H1>areaDetector: EPICS Area Detector Support</H1>
+
+<H2> R1-0beta</H2>
+<H2> March 21, 2008</H2>
+<H2> Mark Rivers</H2>
+<H2> University of Chicago</H2>
+</CENTER>
+
+<P>&nbsp;</P>
+
+<CENTER><H2>Contents</H2></CENTER>
+<UL>
+  <LI><A href="#Overview">
+                Overview</A> 
+  <LI><A href="#Architecture">
+                Architecture</A> 
+  <LI><A href="#EPICS records">
+                EPICS records</A> 
+    <UL>
+      <LI><A href="#Acquisition related records">
+                    Acquisition related records</A> 
+      <LI><A href="#Detector related records">
+                    Detector related records</A> 
+      <LI><A href="#File name related records">
+                    File name related records</A> 
+      <LI><A href="#ROI related records">
+                    ROI related records</A> 
+      <LI><A href="#Image related records">
+                    Image related records</A> 
+      <LI><A href="#Bad pixel map related records">
+                    Bad pixel map related records</A> 
+      <LI><A href="#Flat field correction related records">
+                    Flat field correction related records</A> 
+      <LI><A href="#Communication related records">
+                    Communication related records</A> 
+      <LI><A href="#Scan related records">
+                    Scan related records</A> 
+    </UL>
+  <LI><A href="#EPICS startup script">
+                EPICS startup script</A> 
+  <LI><A href="#MEDM screens">
+                MEDM Screens</A> 
+  <LI><A href="#IDL Image Display Client">
+                IDL Image Display Client</A> 
+  <LI><A href="#SPEC interface">
+                SPEC interface</A> 
+  <LI><A href="#Performance measurements">
+                Performance measurements</A> 
+  <LI><A href="#Hardware notes">
+                Hardware notes</A> 
+  <LI><A href="#Restrictions">
+                Restrictions</A> 
+</UL>
+
+<P>&nbsp;</P>
+
+<CENTER><H2><A name=Overview>
+                    Overview</A></H2></CENTER>
+<P>
+The areaDetector module provides a general-purpose interface for area (2-D) detectors in EPICS.
+It is intended to be used with a wide variety of detectors and cameras, ranging from high frame rate
+video cameras, pixel-array detectors such as the Pilatus, and large format detectors like the
+MAR-345 online imaging plate.</P>
+
+The goals of this module are:
+<UL>
+  <LI> Minimize the amount of code that needs to be written to implement a
+       new detector.
+  <LI> Provide a standard interface defining the functions and parameters that
+       a detector driver must support.
+  <LI> Provide a set of base EPICS records that will be present for every detector
+       using this module.  This allows the use of generic EPICS clients for
+       displaying images and controlling cameras and detectors.
+  <LI> Allow easy extensibility to take advantage of detector-specific features
+       beyond the standard parameters.
+  <LI> Have high-performance.  Applications can be written to get the detector
+       image data through EPICS, but hooks are also provided to get the detector
+       data at a lower-level for very high performance.
+  <LI> Provide an optional Region-Of-Interest (ROI) driver that performs computations
+       on regions within the image data.  A basic ROI driver is included in the module,
+       and it is easy to add addtional ROI drivers for specific applications.
+  <LI> Provide detector drivers for commonly used detectors in synchrotron applications.
+       These include Prosilica GigE video cameras, MAR-CCD x-ray detectors, MAR-345 online
+       imaging plate detectors, the Pilatus pixel-array detector, and the Roper Scientific CCD
+       cameras.
+</UL>
+
+
+<P>&nbsp;</P>
+
+<CENTER><H2><A name=Architecture>
+                    Architecture</A></H2></CENTER>
+<P>
+The architecture of the areaDetector module is shown in Figure 1.
+  
+<CENTER><H3>Figure 1.  Architecture of areaDetector module.</H3>
+<IMG src="areaDetectorArchitecture.png"></CENTER>
+
+The EPICS implementation consists of the following:</P>
+<UL>
+  <LI>A State-Notation-Language (SNL) program, <CODE>pilatusROI.st</CODE>.  
+      This program implements all of the logic for acquiring images, reading
+      the TIFF files, computing ROIs, and making the data available to EPICS. 
+  <LI>Database files, <CODE>pilatusROI.template, pilatusROI_N.template</CODE>. 
+      These databases 
+      contain almost no "logic" with no links between records in the database. 
+      Some of the records use "streamDevice" for communication with camserver. Other 
+      records are simply variables which channel access clients and the State 
+      Notation Language (SNL) program use.
+  <LI>A streamDevice protocol file, <CODE>pilatusROI.protocol</CODE>.  
+      This file defines the protocol used for
+      communicating with camserver.
+  <LI>Autosave request files, <CODE>pilatusROI_settings.req, pilatusROI_N_settings.req</CODE>.  
+      These files define the EPICS PVs
+      that will be automatically saved and restored when the EPICS IOC is restarted, so that
+      state information is preserved.
+  <LI>MEDM screens, <CODE>pilatusROI.adl, 
+      pilatus8ROIs.adl, pilatusROI_waveform.adl</CODE>. These screens are 
+      used to control image acquisition, and definition and display of ROI data.
+  <LI>An IDL display program, <CODE>epics_image_display.pro</CODE> for displaying the images 
+      as they are sent to EPICS.  This program is also available as a pre-built IDL ".sav" file 
+      that can be run for free under the IDL Virtual Machine.
+  <LI>SPEC macros that use the ROI counts as spec counters.  These work in both conventional
+      step scanning mode, and also in 
+      <A href="http://cars.uchicago.edu/software/epics/trajectoryScan.html">trajectory scanning</A> mode
+      with the Newport MM4005 and XPS motor controllers.
+</UL>
+
+<P>&nbsp;</P>
+
+<CENTER><H2><A name="EPICS records">
+                     EPICS records</A></H2></CENTER>
+<P>
+The following EPICS records are used by pilatusROI.  All records are prefixed by the macro
+$(DET) which must be passed to the template file when the records are loaded.</P>
+<H3><A name="Acquisition related records">
+             Acquisition related records</A></H3>
+<UL>
+  <LI><CODE>AcquireMode</CODE> (mbbo)<BR>
+      This record controls the acquisition mode.  The allowed values are:
+    <UL>
+      <LI>0 ("Internal")  Internal exposure mode, external signal not used.
+      <LI>1 ("Ext. Enable") External enable mode.  External signal controls acquire and readout.
+      <LI>2 ("Ext. Trigger") External trigger mode.  External signal triggers an acquisition sequence.
+      <LI>3 ("Mult. Trigger") Multiple trigger mode.  Each external trigger edge triggers a single acquisition 
+          for the programmed exposure time.
+      <LI>4 ("Alignment") Alignment mode. Repetitively collects single images as quickly as possible.  
+          The images are written to a temporary file.  
+          The <CODE>MinImageUpdateTime</CODE> PV is ignorred in
+          this mode, so that all images are sent to EPICS for display.  
+          It is similar to the <CODE>exposem</CODE> command in TVX. 
+    </UL>
+    The first 4 acquisition modes correspond directly to the camserver commands <CODE>Exposure</CODE>,
+    <CODE>ExtEnable</CODE>, <CODE>ExtTrigger</CODE>, and <CODE>ExtMTrigger</CODE>respectively.  
+    Alignment mode uses the <CODE>Exposure</CODE> command as well, but continuously takes images into
+    the same temporary file (<CODE>alignment.tif</CODE>).
+  <LI><CODE>ExposureTime</CODE> (ao)<BR>
+      This record controls the exposure time in seconds.  In External Enable mode this value is not
+      used by camserver.  However, it should be set larger than the maximum time exposure time from the 
+      external source, so that pilatusROI.st can estimate how long 
+      to wait for the data files to be created before timing out.
+  <LI><CODE>NImages</CODE> (longout)<BR>
+      This record controls the number of images to acquire.  It applies in all acquisition modes except
+      Alignment.
+  <LI><CODE>ExposurePeriod</CODE> (ao)<BR>
+      This record controls the exposure period in seconds.  It is only in Internal or External Trigger modes
+      when NImages>1.
+  <LI><CODE>NExposures (longout)</CODE><BR>
+      This record controls the number of exposures per image.  It is only used in External Enable mode.
+  <LI><CODE>DelayTime</CODE> (ao)<BR>
+      This record controls the delay in seconds between the external trigger 
+      and the start of image acquisition.  It only applies in External Trigger mode.
+  <LI><CODE>Acquire</CODE> (busy)<BR>
+      This record controls the acquisition. Setting this record to 1 ("Busy") starts image acquisition.
+      The SNL program sets the record to 0 ("Done") when acquisition is complete.  This means an entire
+      acquisition series if NImages>1. This record is an EPICS
+      "busy" record from the synApps sscan module.  This record does not call recGblFwdLink until
+      acquisition is complete.  It can thus be used with the sscan record as a detector trigger that
+      will wait for acquisition to complete before going to the next point in the scan.  It can also
+      be used with EPICS caPutCallback to wait for acquisition to complete before the callback completes.
+  <LI><CODE>Armed</CODE> (bo)<BR>
+      This record signals when the Pilatus is ready to accept trigger pulses.  It changes from 0 to 1 
+      after camserver sends a response to an acquire start command indicating that the Pilatus is ready to
+      begin taking data. The SNL program sets the record to 0 when acquisition is complete.
+      This PV should be used by clients to indicate when it is OK to start sending trigger pulses
+      to the Pilatus.  If pulses are send before Armed=1 then the Pilatus may miss them, leading to
+      DMA timeout errors from camserver.
+  <LI><CODE>Abort</CODE> (bo)<BR>
+      This record aborts an acquisition. Setting this record to 1 stops whatever acquisition is in progress.
+      If pilatusROI
+      was currently acquiring imges (Acquire=Busy) then this record will cause the "K" (Kill) command to
+      be sent to camserver.  It will also set Acquire back to Done.
+  <LI><CODE>StatusMessage</CODE> (stringout)<BR>
+      This record contains a string that provides status information on the state of pilatusROI.  It contains
+      strings like "Starting exposure", "Waiting for TIFF file", etc.
+</UL>
+<P>
+<H3><A name="Detector related records">
+             Detector related records</A></H3>
+<UL>
+  <LI><CODE>ThresholdEnergy</CODE> (ao)<BR>
+      This record controls the threshold energy in eV.
+  <LI><CODE>Gain</CODE> (mbbo)<BR>
+      This record controls the value of Vrf, which in determines the shaping time and gain of the
+      input amplifiers.  The allowed values are:
+    <UL>
+      <LI>0 ("Fast/Low")  Fastest shaping time (~125ns) and lowest gain. 
+      <LI>1 ("Medium/Medium") Medium shaping time (~200 ns) and medium gain.
+      <LI>2 ("Slow/High") Slow shaping time (~400 ns) and high gain.
+      <LI>3 ("Slow/Ultrahigh") Slowest peaking time (? ns) and highest gain.
+    </UL>
+</UL>
+<P>
+<H3><A name="File name related records">
+             File name related records</A></H3>
+The FilePath, Filename, FileNumber, and FileFormat PVs are all used to create the final FullFilename.
+      <UL>
+  <LI><CODE>FilePath</CODE> (waveform, FTVL=UCHAR, NELM=256)<BR>
+      This record controls the path for saving images.  It must be a valid path for camserver 
+      <i>and</i> for the SNL program.  
+      If camserver and the EPICS IOC are not running on the same machine then soft links
+      will typically be used to make the paths look identical.<P>
+      This record is an EPICS waveform record with FTVL=UCHAR and NELM=256.  
+      This removes the 40 character
+      restriction on path name lengths that arise if an EPICS "string" PV is used.  medm allows one to
+      edit and display such records correctly.  EPICS clients will typically need to convert the path
+      name from a string to an integer or byte array before sending the path name to EPICS.  This is easy
+      to do in clients like SPEC, Matlab, and IDL.
+  <LI><CODE>Filename</CODE> (stringout)<BR>
+      This record controls the base file name for saving images.  It is limited to 40 characters. 
+  <LI><CODE>FileNumber</CODE> (longout)<BR>
+      This record controls the number of the next file for saving images.
+  <LI><CODE>FileFormat</CODE> (stringout)<BR>
+      This record controls how the FilePath, Filename, and FileNumber are combined to form the final
+      file name.  The format string is limited to 40 characters. 
+      The final file name (which can be up to 256 characters) is created with the following code:
+      <PRE>
+            epicsSnprintf(FullFilename, sizeof(FullFilename), FileFormat, 
+                          FilePath, Filename, FileNumber);
+     </PRE>
+     FilePath, Filename, FileNumber are converted in that order with FileFormat.  
+     The default file format is <CODE>"%s%s%4.4d.tif"</CODE>.  The first %s converts the FilePath,
+     followed immediately by another %s for Filename.  
+     FileNumber is formatted with %4.4d, which results in a
+     fixed field with of 4 digits, with leading zeros as required.  Finally, the .tif extension 
+     is added to the file name.  This will make camserver save files in TIFF format with that extension.
+     <P>
+     This mechanism for creating file names is very flexible.  Other characters, such as _ can be put
+     in Filename or FileFormat as desired.  If one does not want to have FileNumber in the file name 
+     at all, then just omit the %d format specifier from FileFormat.
+     <P>
+     Note that when saving multiple images (NImages>1) camserver has its own rules for creating the
+     names of the individual files.  The rules are as follows:
+     <P>
+     The name constructed using the above algorithm is used as a basename. 
+     The following examples show the interpretation of the basename.
+     <PRE>
+     Basename            Files produced
+     
+     test6.tif           test6_00000.tif,  test6_00001.tif, ...
+     test6_.tif          test6_00000.tif,  test6_00001.tif, ...
+     test6_000.tif       test6_000.tif,    test6_001.tif, ...
+     test6_014.tif       test6_014.tif,    test6_015.tif, ...
+     test6_0008.tif      test6_0008.tif,   test6_0009.tif, ...
+     test6_2_0035.tif    test6_2_0035.tif, test6_2_0036.tif, ...
+     </PRE>
+
+     The numbers following the last '_' are taken as a format template,
+     and as a start value.  The minimum format is 3; there is no maximum; the
+     default is 5.  The format is also constrained by the requested number of images.
+  <LI><CODE>AutoIncrement</CODE> (bo)<BR>
+      This record controls whether FileNumber is automatically incremented by 1 each time an acquisition
+      completes. 0=No, 1=Yes.
+  <LI><CODE>FullFilename</CODE> (waveform, FTVL=UCHAR, NELM=256)<BR>
+      This is a read-only record that contains the full filename of the current file, after the above
+      code has been executed.  Note that the FullFilename is not constructed until Acquire is set to 1.
+</UL>
+<H3><A name="ROI related records">
+             ROI related records</A></H3>
+The SNL code supports up to 32 rectangular ROIs.  Fewer ROIs can be used by loading the pilatusROI_N.template file
+fewer than 32 times, and passing NROIS<32 to the SNL program when it is started.  In the following
+record names $(N) is a number from 1 to 32.  ROIs can be any size from a single pixel to the entire
+chip. 
+An ROI is considered invalid and ignorred by the SNL program if any of Xmin, Xmax, YMin, YMax is less than 0 or
+greater than the size of the chip in that direction.  The ROI is also invalid if Xmin>XMax or YMin>YMax.  
+<UL>
+  <LI><CODE>ROI$(N)XMin</CODE> (longout)<BR>
+      The minimum value of X for ROI N. 
+  <LI><CODE>ROI$(N)XMax</CODE> (longout)<BR>
+      The maximum value of X for ROI N.
+  <LI><CODE>ROI$(N)YMin</CODE> (longout)<BR>
+      The minimum value of Y for ROI N. 
+  <LI><CODE>ROI$(N)YMax</CODE> (longout)<BR>
+      The maximum value of Y for ROI N.
+  <LI><CODE>ROI$(N)BgdWidth</CODE> (longout)<BR>
+      The background width ROI N.  ROI$(N)BgdWidth<=0 means no background subtraction is done, and
+      ROI$(N)NetCounts=ROI$(N)TotalCounts.  The background region is defined as follows:
+   <UL>
+     <LI>If ROI$(N)BgdWidth=1 then the background is one pixel outside of the perimeter of the ROI, 
+         i.e the single-pixel wide
+         rectangular box defined by ROI$(N)XMin-1, ROI$(N)XMax+1, ROI$(N)YMin-1, and ROI$(N)YMax+1.
+         However, if any of those locations would be outside of the chip then that dimension is changed
+         to be on the perimeter of the ROI. This ensures that
+         a valid background region can be defined even if the ROI touches the edge of the detector.
+     <LI>If ROI$(N)BgdWidth>1 then the background is a rectangular box of width ROI$(N)BgdWidth, moving
+         out from the ROI location defined above.  However, if the background would go
+         beyond the edge of the detector, then it is clipped to the largest valid width in
+         that direction.
+    </UL>
+  <LI><CODE>ROI$(N)TotalCounts</CODE> (ao)<BR>
+      The total counts in ROI N.
+  <LI><CODE>ROI$(N)NetCounts</CODE> (ao)<BR>
+      The net counts in ROI N, i.e. the total counts minus the background counts.  This is determined
+      by computing the average number of counts per pixel in the background, and subtracting this from
+      the counts in the ROI.
+  <LI><CODE>ROI$(N)MinCounts</CODE> (longout)<BR>
+      The minimum counts in any pixel in ROI N.
+  <LI><CODE>ROI$(N)MaxCounts</CODE> (longout)<BR>
+      The maximum counts in any pixel in ROI N.  This can be useful to monitor to make sure that the 20-bit
+      limit of 1,048,575 is not being approached.
+  <LI><CODE>ROI$(N)Label</CODE> (stringout)<BR>
+      The string label for ROI N.
+  <LI><CODE>ROI$(N)WFTotalCounts</CODE> (waveform, FTVL=DOUBLE, NELM=$(NCHANS))<BR>
+      The total counts in ROI N in a waveform record.  Valid when NImages>1.
+  <LI><CODE>ROI$(N)WFNetCounts</CODE> (waveform, FTVL=DOUBLE, NELM=$(NCHANS))<BR>
+      The net counts in ROI N in a waveform record. Valid when NImages>1.
+  <LI><CODE>MinWFUpdateTime</CODE> (ao)<BR>
+      This record controls the minimum time between posting the ROI$(N)WFTotalCounts and ROI$(N)WFNetCounts
+      arrays to EPICS.  
+      This should normally be set to a value >0.1 second to reduce the network bandwidth use. The SNL
+      program always posts the arrays when acquisition completes, so that the final ROI data for the 
+      series is sent to EPICS.
+</UL>
+The ROI$(N)TotalCounts and ROI$(N)NetCounts are computed as each TIFF file is read, regardless of the
+value of NImages.  The ROI$(N)WFTotalCounts and ROI$(N)WFNetCounts arrays are computed and posted to 
+EPICS when acquiring data with NImages>1.  The first element in each array is the for the first image
+in the series, etc.
+
+<H3><A name="Image related records">
+             Image related records</A></H3>
+<UL>
+  <LI><CODE>ImageData</CODE> (waveform, FTVL=LONG, NELM=$(NPIXELS))<BR>
+      The detector image data as an EPICS waveform record. In order for EPICS clients
+      to receive this data they must be built with EPICS R3.14 (not R3.13), and the environment variable
+      EPICS_CA_MAX_ARRAY_BYTES on both the EPICS IOC computer and EPICS client computer must be set to a value 
+      at least as large as the image size in bytes, i.e. to 379860 or more.
+  <LI><CODE>NXPixels</CODE> (longout)<BR>
+      The number of pixels in the X direction on the detector. The SNL program needs to know this value.
+      EPICS clients can use this value to reformat ImageData from
+      a 1-D array to a 2-D array.
+  <LI><CODE>NYPixels</CODE> (longout)<BR>
+      The number of pixels in the Y direction on the detector.  The SNL program needs to know this value.
+      EPICS clients can use this value to reformat ImageData from
+      a 1-D array to a 2-D array.
+  <LI><CODE>HighlightROIs</CODE> (bo)<BR>
+      This record controls the whether the SNL program highlights the ROI borders in the image before
+      sending the images to EPICS.  If selected then the pixels on the ROI borders are replaced with the
+      value of the most intense pixel in the image, so they will always be visible in the display.  
+      0=No, don't highlight, 1=Yes, highlight.
+  <LI><CODE>PostImages</CODE> (bo)<BR>
+      This record controls the whether the SNL program sends ImageData to EPICS.  
+      0=No, don't send, 1=Yes, send.  This can be set to 0 to reduce the network bandwidth use.
+  <LI><CODE>MinImageUpdateTime</CODE> (ao)<BR>
+      This record controls the minimum time between posting ImageData to EPICS.  
+      This should normally be set to a value >0.5 second to reduce the network bandwidth use. This
+      means that not all images may be sent to EPICS.  This value is ignorred when AcquireMode=Alignment.
+</UL>
+
+<H3><A name="Bad pixel map related records">
+             Bad pixel map related records</A></H3>
+<UL>
+  <LI><CODE>BadPixelFile</CODE> (waveform, FTVL=UCHAR, NELM=256)<BR>
+      This record contains the name of a file to be used to replace bad pixels.
+      If this record does not point to a valid bad pixel file then no bad pixel mapping is performed.  
+      See the notes on theFilePath regarding using waveform records for long strings.
+      The bad pixel map
+      is used before computing the ROIs and before sending ImageData to EPICS.  It does not modify
+      the data in the files that camserver writes.  This is a simple ASCII file with the following
+      format:
+      <PRE>
+      badX1,badY1 replacementX1,replacementY1 
+      badX2,badY2 replacementX2,replacementY2
+      ...
+      </PRE>
+      The X and Y coordinates range from 0 to NXPixels-1 and NYPixels-1. Up to 100 bad pixels can be defined.
+      The bad pixel mapping simply replaces the bad pixels with another pixel's value.
+      It does not do any averaging.  It is felt that this is sufficient for the purpose for which 
+      pilatusROI was written, namely fast on-line viewing of ROIs and ImageData.  More sophisticated
+      algorithms can be used for offline analysis of the image files themselves.
+      The following is an example bad pixel file for the GSECARS detector:
+      <PRE>
+          263,3   262,3
+          264,3   266,3
+          263,3   266,3
+          300,85  299,85
+          300,86  299,86
+          471,129 472,129
+      </PRE>
+  <LI><CODE>NBadPixels</CODE> (longout)<BR>
+      The number of bad pixels defined in the bad pixel file.  
+      Useful for seeing if the bad pixel file was read correctly.
+</UL>
+
+<H3><A name="Flat field correction related records">
+             Flat field correction related records</A></H3>
+<UL>
+  <LI><CODE>FlatFieldFile</CODE> (waveform, FTVL=UCHAR, NELM=256)<BR>
+      This record contains the name of a file to be used to correct for the flat field.  
+      If this record does not point to a valid flat field file then no flat field correction is performed.  
+      See the notes on theFilePath regarding using waveform records for long strings.
+      The flat field file is simply a TIFF file collected by the Pilatus that is used to correct for
+      spatial non-uniformity in the response of the detector.  It should be collected with a spatially uniform
+      intensity on the detector at roughly the same energy as the measurements being corrected.
+      When the flat field file is read, the average pixel value (averageFlatField) is computed
+      using all pixels with intensities > MinFlatField.  All pixels with intensity < MinFlatField
+      in the flat field are replaced with averageFlatField.  
+      When images are collected, before the ROIs are computed, and before the images
+      are sent to EPICS, the following per-pixel correction is applied:
+      <PRE>
+          ImageData[i] = (averageFlatField * ImageData[i])/flatField[i];
+      </PRE>
+  <LI><CODE>MinFlatField</CODE> (ao)<BR>
+      The mimimum valid intensity in the flat field.  This value must be set > 0 to prevent divide by 0 errors.  
+      If the flat field was collected with some pixels having very low intensity then this value can be used to
+      replace those pixels with the average response.
+  <LI><CODE>FlatFieldValid</CODE> (bo)<BR>
+      This record indicates if a valid flat field file has been read. 0=No, 1=Yes.
+</UL>
+
+<H3><A name="Communication related records">
+             Communication related records</A></H3>
+<UL>
+  <LI><CODE>ReadTiffTimeout</CODE> (ao)<BR>
+      This record controls the timeout in seconds between when the SNL program thinks a TIFF file should be ready
+      to read, and when a timeout will occur.  It should be set to several seconds, because there can be delays
+      for various reasons.  One reason is that there is sometimes a delay between when an External Enable
+      acquisition is started and when the first external pulse occurs.  Another is that it can take some time for
+      camserver processes to finish writing the files.
+  <LI><CODE>SendMessage</CODE> (waveform, FTVL=UCHAR, NELM=256)<BR>
+      This read-only record contains the most recent message sent from the SNL program to camserver.  
+  <LI><CODE>ReplyMessage</CODE> (waveform, FTVL=UCHAR, NELM=256)<BR>
+      This read-only record contains the most recent reply message from camserver to the SNL program.  
+  <LI><CODE>Connect</CODE> (bo)<BR>
+      Processing this record causes the drvAsynIPPort server to connect to camserver.  
+      This normally happens once in the
+      startup script, and does not need to be processed again unless Disconnect is processed.  
+<LI><CODE>Disconnect</CODE> (bo)<BR>
+      Processing this record causes the drvAsynIPPort server to disconnect from camserver.  
+      This can be used to allow another
+      program, such as TVX, to temporarily take control of camserver, without restarting the EPICS IOC.  Use
+      the Connect record to reconnect the IOC to camserver.
+</UL>
+
+<H3><A name="Scan related records">
+             Scan related records</A></H3>
+<UL>
+  <LI><CODE>scan1, scan2, scan3, scan4, scanH</CODE> (sscan)<BR>
+      The example IOC startup script loads the scan.sb database from the SSCAN module.  This loads 5 sscan
+      records which can be used to perform up to 4-dimensional scans with any EPICS PV as positioners and
+      detectors.  The scan records are very useful with the Pilatus for scanning the ThresholdEnergy PV
+      and plotting the counts in an ROI that includes the entire detector.  This allows setting the energy
+      threshold to detect the x-rays of interest.
+ 
+<P>&nbsp;</P>
+
+<CENTER><H2><A name="EPICS startup script">
+                     EPICS startup script</A></H2></CENTER>
+<P>
+pilatusROI.template is loaded with the following macro parameters:
+<TABLE style="TEXT-ALIGN: left" cellSpacing=2 cellPadding=2 border=1>
+  <TBODY>
+  <TR>
+    <TH>Macro parameter</TH>
+    <TH>Description</TH>
+  </TR>
+  <TR>
+    <TD><CODE>$(DET)</CODE></TD>
+    <TD>PV name prefix.  This identifies this Pilatus detector from others that may be
+        running on the same subnet.
+    </TD>
+  </TR>
+  <TR>
+    <TD><CODE>$(NXPIXELS)</CODE></TD>
+    <TD>The number of pixels in the X (fast index) direction on the detector. This is 487 for the Pilatus 100K.</TD>
+  </TR>
+  <TR>
+    <TD><CODE>$(NYPIXELS)</CODE></TD>
+    <TD>The number of pixels in the Y (slow index) direction on the detector.  This is 195 for the Pilatus 100K.</TD>
+  </TR>
+  <TR>
+    <TD><CODE>$(NPIXELS)</CODE></TD>
+    <TD>The total number of pixels on the detector.  This is NXPIXELS*NYPIXELS=94965 for the Pilatus 100K.</TD>
+  </TR>
+  <TR>
+    <TD><CODE>$(PORT)</CODE></TD>
+    <TD>The name of the asyn port connected to the Pilatus via a TCP/IP socket.</TD>
+  </TR>
+</TBODY>
+</TABLE>
+
+<P>
+pilatusROI_N.template is loaded for each ROI with the following macro parameters:
+<TABLE style="TEXT-ALIGN: left" cellSpacing=2 cellPadding=2 border=1>
+  <TBODY>
+  <TR>
+    <TH>Macro parameter</TH>
+    <TH>Description</TH>
+  <TR>
+    <TD><CODE>$(DET)</CODE></TD>
+    <TD>PV name prefix.  This identifies this Pilatus detector from others that may be
+        running on the same subnet.</TD>
+  </TR>
+  <TR>
+    <TD><CODE>$(N)</CODE></TD>
+    <TD>The number of this ROI. Starts with 1.</TD>
+  </TR>
+  <TR>
+    <TD><CODE>$(XMIN)</CODE></TD>
+    <TD>The minimum value of X for this ROI. Starts with 0.</TD>
+  </TR>
+  <TR>
+    <TD><CODE>$(XMAX)</CODE></TD>
+    <TD>The maximum value of X for this ROI. Starts with 0.</TD>
+  </TR>
+  <TR>
+    <TD><CODE>$(YMIN)</CODE></TD>
+    <TD>The minimum value of Y for this ROI. Starts with 0.</TD>
+  </TR>
+  <TR>
+    <TD><CODE>$(YMAX)</CODE></TD>
+    <TD>The maximum value of Y for this ROI. Starts with 0.</TD>
+  </TR>
+  <TR>
+    <TD><CODE>$(BGD_WIDTH)</CODE></TD>
+    <TD>The background width for this ROI.  
+    If BGD_WIDTH <=0 then no background subtraction is done, and NetCounts=TotalCounts.</TD>
+  </TR>
+  <TR>
+    <TD><CODE>$(NCHANS)</CODE></TD>
+    <TD>The maximum number of elements in the WFTotalCounts and WFNetCounts waveform arrays.
+        This sets the maximum value of NImages for collecting ROI arrays.</TD>
+  </TR>
+</TBODY>
+</TABLE>
+
+<P>
+The pilatusROIs SNL program is started with the following macro parameters:
+<TABLE style="TEXT-ALIGN: left" cellSpacing=2 cellPadding=2 border=1>
+  <TBODY>
+  <TR>
+    <TH>Macro parameter</TH>
+    <TH>Description</TH>
+  <TR>
+    <TD><CODE>DET</CODE></TD>
+    <TD>PV name prefix.  This identifies this Pilatus detector from others that may be
+        running on the same subnet.</TD>
+  </TR>
+  <TR>
+    <TD><CODE>PORT</CODE></TD>
+    <TD>The name of the asyn port connected to the Pilatus via a TCP/IP socket.</TD>
+  </TR>
+  <TR>
+    <TD><CODE>NROIS</CODE></TD>
+    <TD>The number of ROIs loaded in the substitutions file with pilatusROI_N.template.
+        Maximum=32.</TD>
+  </TR>
+</TBODY>
+</TABLE>
+
+<P>
+The following is an example st.cmd startup script:
+<PRE>
+< envPaths
+
+###
+# Load the EPICS database file
+dbLoadDatabase("$(PILATUS)/dbd/pilatus.dbd")
+pilatus_registerRecordDeviceDriver(pdbbase)
+
+###
+# Create the asyn port to talk to the Pilatus on port 41234.
+drvAsynIPPortConfigure("pilatus","gse-pilatus1:41234")
+# Set the input and output terminators.
+asynOctetSetInputEos("pilatus", 0, "\030")
+asynOctetSetOutputEos("pilatus", 0, "\n")
+# Define the environment variable pointing to stream protocol files.
+epicsEnvSet("STREAM_PROTOCOL_PATH", "$(PILATUS)/pilatusApp/Db")
+
+###
+# Specify where save files should be
+set_savefile_path(".", "autosave")
+
+###
+# Specify what save files should be restored.  Note these files must be
+# in the directory specified in set_savefile_path(), or, if that function
+# has not been called, from the directory current when iocInit is invoked
+set_pass0_restoreFile("auto_settings.sav")
+set_pass1_restoreFile("auto_settings.sav")
+
+###
+# Specify directories in which to to search for included request files
+set_requestfile_path("./")
+set_requestfile_path("$(AUTOSAVE)", "asApp/Db")
+set_requestfile_path("$(CALC)",     "calcApp/Db")
+set_requestfile_path("$(SSCAN)",    "sscanApp/Db")
+set_requestfile_path("$(PILATUS)",  "pilatusApp/Db")
+
+###
+# Load the save/restore status PVs
+dbLoadRecords("$(AUTOSAVE)/asApp/Db/save_restoreStatus.db", "P=PILATUS:")
+
+###
+# Load the substitutions for for this IOC
+dbLoadTemplate("PILATUS_all.subs")
+# Load an asyn record for debugging
+dbLoadRecords("$(ASYN)/db/asynRecord.db", "P=PILATUS:,R=asyn1,PORT=pilatus,ADDR=0,IMAX=80,OMAX=80")
+
+# Load sscan records for scanning
+dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=PILATUS:,MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=2048")
+
+###
+# Set debugging flags if desired
+#asynSetTraceIOMask("pilatus",0,2)
+#asynSetTraceMask("pilatus",0,3)
+
+###
+# Start the IOC
+iocInit
+
+###
+# Save settings every thirty seconds
+create_monitor_set("auto_settings.req", 30, "P=PILATUS:")
+
+###
+# Start the SNL program
+seq(pilatusROIs, "DET=PILATUS:, PORT=pilatus, NROIS=16")
+</PRE>
+
+The following is the substutitions file PILATUS_all.subs referenced above. 
+It creates 16 ROIS, and defines 5 valid ones: the entire chip, and the 4 quadrants of the chip:
+<PRE>
+ffile $(PILATUS)/db/pilatusROI.template {
+pattern 
+{DET,       NXPIXELS,  NYPIXELS,  NPIXELS,   PORT}
+{PILATUS:,       487,       195,    94965,   pilatus}
+}
+
+file $(PILATUS)/db/pilatusROI_N.template {
+pattern 
+{DET,       N,  XMIN,   XMAX,  YMIN,  YMAX,  BGD_WIDTH,  NCHANS}
+{PILATUS:,  1,     0,    486,     0,   194,          1,    2000}
+{PILATUS:,  2,     0,    243,     0,    97,          1,    2000}
+{PILATUS:,  3,     0,    243,    98,   194,          1,    2000}
+{PILATUS:,  4,   244,    486,     0,    97,          1,    2000}
+{PILATUS:,  5,   244,    486,    98,   194,          1,    2000}
+{PILATUS:,  6,    -1,     -1,    -1,    -1,          1,    2000}
+{PILATUS:,  7,    -1,     -1,    -1,    -1,          1,    2000}
+{PILATUS:,  8,    -1,     -1,    -1,    -1,          1,    2000}
+{PILATUS:,  9,    -1,     -1,    -1,    -1,          1,    2000}
+{PILATUS:, 10,    -1,     -1,    -1,    -1,          1,    2000}
+{PILATUS:, 11,    -1,     -1,    -1,    -1,          1,    2000}
+{PILATUS:, 12,    -1,     -1,    -1,    -1,          1,    2000}
+{PILATUS:, 13,    -1,     -1,    -1,    -1,          1,    2000}
+{PILATUS:, 14,    -1,     -1,    -1,    -1,          1,    2000}
+{PILATUS:, 15,    -1,     -1,    -1,    -1,          1,    2000}
+{PILATUS:, 16,    -1,     -1,    -1,    -1,          1,    2000}
+}
+</PRE>
+
+<P>&nbsp;</P>
+
+<CENTER><H2><A name="MEDM screens">
+                     MEDM screens</A></H2></CENTER>
+<P>
+The following show the MEDM screens that are used to control the pilatusROI software.</P>
+
+<P>&nbsp;</P>
+
+<CODE>pilatusROI.adl</CODE> is the main screen used to control the pilatusROI SNL
+program. All records except those that are specific to each ROI are accessed through this
+screen.  
+<CENTER><H3>pilatusROI.adl</H3>
+<IMG src="pilatusROI.png"></CENTER>
+
+<P>&nbsp;</P>
+
+<CODE>pilatus8ROIs.adl</CODE> is used to define the ROIs, and to display the statistics for
+each ROI.  In this example there are 2 valid ROIs defined.  ROI 1 is a small rectangle near the center
+containing the Bragg diffraction peak from a crystal.  ROI 2 is the entire chip.
+<CENTER><H3>pilatus8ROIs.adl</H3>
+<IMG src="pilatus8ROIs.png"></CENTER>
+
+<P>&nbsp;</P>
+
+<CODE>pilatusROI_waveform.adl</CODE> is used to plot the net or total counts in an ROI when
+NImages>1.  In this example the plot is the net counts in ROI 1 as the diffractometer chi was scanned
++- 1 degree with 1000 points at .02 seconds/point.  This was done with the SPEC command
+<PRE>
+lup chi -1 1 1000 .02
+</PRE>
+using trajectory scanning on a Newport kappa diffractometer.  This was a compound motor scan with the
+Newport XPS putting out pulses every .02 seconds.  These pulses triggered the Pilatus in External Enable mode.
+The pilatusROI program read each TIFF file as it was created and updated this plot every 0.2 seconds.
+The total time to collect this scan with 1000 images was 20 seconds.
+<CENTER><H3>pilatusROI_waveform.adl</H3>
+<IMG src="pilatusROI_waveform.png"></CENTER>
+
+<P>&nbsp;</P>
+
+<CODE>scan_more.adl</CODE> is used to define a scan.  In this example the sscan record is set up
+to scan the ThresholdEnergy PV and to collect the total counts in ROI2, which was defined to include
+the entire detector.
+<CENTER><H3>scan_more.adl</H3>
+<IMG src="pilatusROI_scan_more.png"></CENTER>
+
+<P>&nbsp;</P>
+
+<CODE>scanDetPlot.adl</CODE> is used to plot the results of a scan after it is complete.  
+In this example the total counts in ROI 2 are plotted as a function of the ThresholdEnergy as it was
+scanned from 3000 to 10000 eV in 250 eV steps.  The source was Fe55, and the cut-off is at 6 keV, as
+expected for the Mn Ka and Mn Kb x-rays that this source produces.
+<CENTER><H3>scanDetPlot.adl</H3>
+<IMG src="pilatusROI_scan_plot.png"></CENTER>
+
+
+<P>&nbsp;</P>
+
+<CODE>asynRecord.adl</CODE> is used to control the debugging information printed by the asyn TCP/IP driver
+(asynTraceIODriver) and the SNL program (asynTraceIODevice).
+<CENTER><H3>asynRecord.adl</H3>
+<IMG src="pilatusAsynRecord.png"></CENTER>
+
+<P>&nbsp;</P>
+
+<CODE>asynOctet.adl</CODE> can be used to send any command to camserver and display the response.  It can
+be loaded from the More menu in asynRecord.adl above.
+<CENTER><H3>asynOctet.adl</H3>
+<IMG src="pilatusAsynOctet.png"></CENTER>
+
+<P>&nbsp;</P>
+
+<CENTER><H2><A name="IDL Image Display Client">
+                     IDL Image Display Client</A></H2></CENTER>
+
+There is an IDL program called <CODE>epics_image_display</CODE> 
+that can be used to display the ImageData PV that pilatusROI sends over EPICS.  This IDL
+client is available as source code (which requires an IDL license), and also as a pre-built IDL .sav 
+file that can be run for free under the IDL Virtual Machine.  This IDL program can run on any machine that IDL
+runs on, and that has the ezcaIDL shareable library built for it.  This includes Windows, Linux, Solaris, and Mac.
+<CODE>epics_image_display</CODE> is included in the 
+<A HREF="http://cars.uchicago.edu/software/IDL/imaging.html">CARS IDL imaging software.</A>
+
+<P>
+The control window for <CODE>epics_image_display</CODE> is shown below.  It has fields to input the name of
+the EPICS PV with the image data, which is $(DET)ImageData in the case of pilatusROI.  It also has fields
+for the number of pixels in the X and Y directions.  This is needed because EPICS waveform records are
+1-dimensional only, and so do not contain the information on the number of rows and columns in the image.
+
+<CENTER><H3>Main window for IDL epics_image_display</H3>
+<IMG src="pilatusROI_EPICS_ImageDisplay.png"></CENTER>
+
+<P>&nbsp;</P>
+
+<CODE>epics_image_display</CODE> uses the routine 
+<A HREF="http://cars.uchicago.edu/software/IDL/imaging_routines.html#IMAGE_DISPLAY">image_display.pro</A>
+to display the images.  This routine displays row and column profiles as the cursor is moved.  It allows
+changing the color lookup tables, and zooming in and out with the left and right mouse buttons.  The following
+is an example of <CODE>image_display</CODE> displaying a Pilatus image with an Fe55 source in front of the detector.
+
+<CENTER><H3>IDL image_display with Fe55 radioactive source</H3>
+<IMG src="pilatusROI_IDL_ImageDisplay.png"></CENTER>
+
+<P>&nbsp;</P>
+
+<CENTER><H2><A name="SPEC interface">
+                     SPEC interface</A></H2></CENTER>
+
+At the GSECARS beamlines (13-ID-C and 13-BM-C) at the APS we use SPEC to control our Newport diffractometers.
+We have added and modified SPEC macros to use pilatusROI to treat the Pilatus detector as a SPEC
+counter.  This works in both traditional step-scanning mode, as well as in 
+<A href="http://cars.uchicago.edu/software/epics/trajectoryScan.html">trajectory scanning</A> mode.
+Here are some snippets from the SPEC macros for the Pilatus.  We can supply the source files on request.
+
+<PRE>
+# need some more globals (kludge)
+global    PILATUS_ROI_PV    
+global    PILATUS_IMGPATH_PV
+global    PILATUS_FNAME_PV
+global    PILATUS_FILENUMBER_PV
+global    PILATUS_FILEFORMAT_PV
+global    PILATUS_EXPSRTM_PV
+global    PILATUS_NFRAME_PV
+global    PILATUS_EXPPRD_PV
+global    PILATUS_NEXPFRM_PV
+global    PILATUS_ACQ_PV
+global    PILATUS_ACQMODE_PV
+
+###############################################################
+def _setup_img '{
+     local j, str
+		
+     # PILATUS_PREFIX should be detector aquisition pv (GSE-PILATUS1:)
+     if ( PILATUS_PREFIX == "") PILATUS_PREFIX = "GSE-PILATUS1:"
+     PILATUS_PREFIX = getval("Enter PILATUS pv prefix",PILATUS_PREFIX)
+
+     # rois pvs
+     PILATUS_ROI_PV    = PILATUS_PREFIX "ROI1NetCounts"
+     PILATUS_IMGPATH_PV = PILATUS_PREFIX "FilePath"
+     PILATUS_FNAME_PV   = PILATUS_PREFIX "Filename"
+     PILATUS_FILENUMBER_PV   = PILATUS_PREFIX "FileNumber"
+     PILATUS_FILEFORMAT_PV = PILATUS_PREFIX "FileFormat"
+     PILATUS_EXPSRTM_PV = PILATUS_PREFIX "ExposureTime"
+     PILATUS_NFRAME_PV  = PILATUS_PREFIX "NImages"
+     PILATUS_EXPPRD_PV  = PILATUS_PREFIX "ExposurePeriod"
+     PILATUS_NEXPFRM_PV = PILATUS_PREFIX "NExposures"
+     PILATUS_ACQ_PV     = PILATUS_PREFIX "Acquire"
+     PILATUS_ACQMODE_PV = PILATUS_PREFIX "AcquireMode"
+...
+
+def epics_pilatus_count '{
+...
+     # write to data base fields
+     # Need to convert path from string to byte array
+     # Note: we use the "wait" parameter in epics_put here (new to spec5.7.02) so that
+     # it uses ca_put_callback, to know that all PVs have been processed
+     # before we start counting.  Use 1 second timeout, will actually be
+     # much faster than this unless something is wrong.
+     array _temp[256]
+     _temp = PILATUS_IMAGE_DIR
+     # Do not change path for now
+     #epics_put(PILATUS_IMGPATH_PV,_temp, 1)
+     epics_put(PILATUS_FNAME_PV,img_fname, 1)
+     epics_put(PILATUS_FILENUMBER_PV,NPTS, 1)
+     epics_put(PILATUS_FILEFORMAT_PV,_fileformat, 1)
+     epics_put(sc_prtm_pv,cnt_time_val, 1)
+     epics_put(PILATUS_EXPSRTM_PV,cnt_time_val, 1)
+     epics_put(PILATUS_ACQMODE_PV,0, 1)  # Internal trigger 
+     epics_put(PILATUS_NFRAME_PV, 1, 1)
+     epics_put(PILATUS_NEXPFRM_PV, 1, 1)
+
+
+def user_getcounts '{
+    local pv_roi, j, pv
+
+...
+   # using image_count routine  
+    } else if ( EPICS_COUNT == 4 ) {
+        S[iroi] = 0
+        S[iroi] = epics_get(PILATUS_ROI_PV)
+</PRE>
+  
+<P>&nbsp;</P>
+
+<CENTER><H2><A name="Performance measurements">
+                     Performance measurements</A></H2></CENTER>
+
+The following measurements were done to demonstrate the performance that can be obtained with pilatusROI.
+<OL>
+  <LI>AcquireMode=Internal, NImages=1000, ExposureTime=.005, ExposurePeriod=.01, NExposures=1.  
+      The time to collect this series should be exactly 10.0 seconds.  
+      The actual time was measured using the EPICS camonitor program. It printed the time when 
+      acquisition was started (Acquire changed to Busy) and when acquisition was complete (Acquire changed to Done).
+      The time was 10.274 seconds.  This includes the time for camserver to save all 1000 images to disk (366 MB), 
+      and for pilatusROI to read each file, correct the bad pixels and flat field, compute the ROIs, and post the ROIs
+      to EPICS.  It also posted the images to EPICS at 1Hz (10 images total).  The total additional time was less
+      than 0.3 seconds for all 1000 images.
+  <LI>AcquireMode=Internal, NImages=1, ExposureTime=.01, NExposures=1.  
+      An EPICS sscan record was used to collect 1000 points.  
+      There were no positioner PVs (to eliminate motor overhead).  
+      The only detector trigger was the pilatusROI Acquire PV.  The only detector PV was ROI1TotalCounts.
+      In this mode camserver is being told to individually collect each file. 
+      If there were no overhead then time to collect this series should be exactly 10.0 seconds.  
+      The actual time measured using the EPICS camonitor program was 49.161 seconds.  
+      The overhead is thus 39.161 seconds, or 39 ms per point.  
+      In this single-frame mode pilatusROI is thus able to collect >20 images/second.
+      For comparison, another measurement was done using the same EPICS sscan record, 
+      but using a Joerger VSC16 scaler as the detector
+      trigger and detector.  The preset time was also .01 seconds.  The elapsed time for a 1000 point scan was
+      16.068 seconds, so the overhead was 6.068 seconds, or 6 ms per point.
+  <LI>AcquireMode=Ext. Enable, NImages=1000, NExposures=1.  
+      SPEC was used to collect 1000 points using
+      <A href="http://cars.uchicago.edu/software/epics/trajectoryScan.html">trajectory scanning</A> mode
+      with the Newport XPS motor controller.  The following SPEC command was used:
+      <PRE>
+      lup chi -2 2 1000 .015
+      </PRE>
+      This tells SPEC to do a relative scan of the chi axis from -2 degrees to +2 degrees with 1000 points 
+      at .015 seconds/point.  On our kappa diffractometer this entails a coordinated motion of the phi, kappa
+      and omega axes.  The EPICS trajectory scanning software downloads the non-linear trajectory that SPEC computes
+      into the XPS controller, which executes it.  As the motors are moving the XPS outputs synchronization pulses
+      at the period of the collection time, .015 seconds in this case.  These pulses are stretched
+      (see <A href="#Hardware notes">Hardware notes</A> below) and used as the external input to the Pilatus.
+      The time to execute this scan should be 15.0 seconds.  The actual time was 16.3 seconds, measured
+      using camonitor on the Acquire PV.  Again, this includes the time for camserver to save all 1000 images to disk 
+      (366 MB), and for pilatusROI to read each file, correct the bad pixels and flat field, compute the ROIs, and post the ROIs
+      to EPICS.  It also posted the images to EPICS at 1Hz (15 images total).  The total additional time was less
+      than 1.3 seconds for all 1000 images.  As soon as the acquisition was complete SPEC plotted the net counts in
+      the first ROI (containing the Bragg peak) as follows:
+      <CENTER><H3>1000 point SPEC scan with 15 ms per point collected in 16.3 seconds</H3>
+      <IMG src="pilatusROI_spec.png"></CENTER>
+      <P>
+      For comparison this identical scan was executed in traditional step-scanning mode, where the motors stopped
+      at each point in the scan.  The Pilatus was run in Internal mode with NImages=1.  The total time for the scan
+      was 870 seconds (more than 14 minutes), compared to 16.3 seconds in trajectory mode.  Most of this overhead
+      is the settling time for the motors, with only a small fraction due to the Pilatus single-exposure mode. The
+      trajectory scanning mode is thus more than 50 times faster to execute the identical SPEC scan.
+</OL>
+
+<P>&nbsp;</P>
+
+<CENTER><H2><A name="Hardware notes">
+                     Hardware notes</A></H2></CENTER>
+ 
+<H3>Trigger pulses</H3>
+The Pilatus supports 3 types of external triggering.  In External Trigger mode (the camserver ExtTrigger command)
+the Pilatus uses the programmed values of ExposureTime, ExposurePeriod, NImages and NExposures.  It waits for
+a single external trigger, then waits for Delay seconds and then collects the entire sequence.  It is very similar
+to Internal mode with NImages>1, except that it waits for a trigger to begin collecting the sequence.  
+
+<P>In External Enable mode (the camserver ExtEnable command) the Pilatus uses the external signal to control acquisition.  
+Only NImages and NExposures are used, ExposureTime and ExposurePeriod are not used.  When the signal
+is high the detector counts, and on the transition to low it begins its readout.  
+
+<P>In External MultiTrigger Mode (the camserver ExtMTrigger command) the Pilatus uses the programmed ExposureTime, 
+in addition to NImages and NExposures.  Each external trigger pulse causes the Pilatus to collect one image
+at the programmed exposure time.  This mode works well with a trigger source like the Newport motor controllers
+or the SIS380x multichannel scaler,
+that put out a short trigger pulse for each image.  One only needs to take care that the time between external trigger
+pulses is at least 4msec longer than the programmed exposure time, to allow time for the detector to read out before
+the next trigger pulse arrives.
+
+<P>When using the External Enable mode, we use an inexpensive analog pulse generator
+to convert the trigger pulses from the MM4005 and XPS to a form suitable for External Enable mode 
+with the Pilatus.  This is the solution we have developed that seems to be reliable:
+<UL>
+  <LI>The synchonization pulses from the Newport MM4005 or XPS controller are input into the external next pulse
+      (channel advance, control signal 1) input of the SIS3801 multiscaler.  
+      This is the normal configuration used for MCS counting
+      without the Pilatus in trajectory scanning mode.
+  <LI>The Copy In Progress (CIP) output of the SIS3801 (control signal 5) is connected to the Trigger Input of a
+      Tenma TGP110 10 MHz Pulse Generator.  CIP will output a pulse whenever the SIS3801 does a channel advance,
+      either in external mode with the motor controller pulse input, or in internal timed channel advance mode.
+      The TGP100 Pulse Generator is configured as follows:
+      <UL>
+        <LI>Trigger Input connected to CIP output of SIS3801.
+        <LI>Triggered mode.
+        <LI>Complement output.
+        <LI>Pulse duration set with knobs to 3msec.
+        <LI>TTL Output connected to the External Input of the Pilatus.
+      </UL>
+  <LI>With this configuration the SIS3801 CIP output is normally at 5V, and outputs a 0V pulse 1 microsecond long.  
+      The trailing (rising) edge of that pulse triggers the TGP110.  The TGP110 TTL output is also normally at 5V,
+      and outputs a 0V pulse 3 milliseconds long each time the SIS3801 pulses.  That output is connected to the
+      Pilatus External Input.  In External Enable mode when Pilatus External Input is
+      high the Pilatus is counting.  When the External Input is low the Pilatus reads out.  The readout time is
+      set via the knobs on the pulse generator to be 3 ms, which is close to the minimum time allowed on the
+      Pilatus.
+</UL>
+The Tenma TGP110 seems to be currently called a Tenma 72-6860, and lists for about $350 new 
+at <A href="http://www.newark.com">Newark</A>.
+
+<H3>Detector Voltage</H3>
+When we were initially testing the Pilatus in the lab, we had many errors in External Enable mode, where it did
+not seem to be seeing the external pulses.  camserver would get DMA timeouts, and need to be restarted.  Dectris 
+said these were happening because the cables on our detector are longer than normal, and the voltage
+drop from the power supply to the detector was leading to marginal voltage values.  They suggested shortening
+the cables or increasing the supply voltage slightly.  When moving the detector to the hutch these
+problems initially went away.  However, they then recurred, and we fixed the problem by increasing 
+the power supply voltage from 4.4 to 4.7 volts at the detector.
+<P>
+Dectris has since informed me that they have increased the power supply voltage on all new Pilatus systems, 
+so this should no longer be an issue.
+
+     
+<P>&nbsp;</P>
+
+<CENTER><H2><A name="Restrictions">
+                     Restrictions</A></H2></CENTER>
+The following are some current restrictions of the pilatusROI SNL program:
+<UL>
+  <LI>Limited to TIFF file format.  
+      camserver can save files in other formats, but pilatusROI can currently only read TIFF files. 
+      Furthermore, it
+      has a very simple TIFF reader.  It does not read the TIFF tags at all, but simply assumes that there
+      is a 4096 byte header, followed by the 32-bit image data.  The size of the image data is controlled
+      by the NXPixels and NYPixels PVs, which thus must be correctly set.
+  <LI>The EPICS IOC should be run on the same computer as camserver.
+      This is not strictly necessary, and places a small additional load on the CPU and network 
+      on that computer.  However, we have found that TIFF files are available to be read within 10ms after
+      camserver says they have been written if the IOC is running on the same machine as camserver.  This is true
+      even if the files are being saved on a remote NFS or SMB file system.  On the other hand, if the IOC and
+      camserver are running on separate machines, then the filesystem can wait up to 1 second after camserver
+      says the TIFF file has been written before the IOC can read it.  This is true even if the files are being
+      written to the computer that the IOC is running on!  This 1 second delay is often unacceptable for fast 
+      single-exposure scans, i.e. with NImages=1.
+  <LI>pilatusROI keeps retrying to read each TIFF file until
+      the modification date of the TIFF file is <I>after</I> the time that the exposure command was issued.  
+      If it did not
+      do this check then it could be reading and displaying old files that happen to have the same name as the
+      current files being collected.  This check requires that the computer that is running the soft IOC must
+      have its clock well synchronized with the
+      clock on the computer on which the files are being written 
+      (i.e. the computer generating the file modification time).
+      If the clocks are not synchronized then the files may appear to be stale when they are not,
+      and pilatusROI will time out.  pilatusROI actually tolerates up to 10 second clock skew betweeen the computers
+      but any more than this may lead to problems.
+  <LI>The Abort PV does not always work because camserver does not reliably implement the "K" command to stop
+      an exposure sequence.  In particular with NImages>1 camserver seems to often ignore
+      the K command completely, even with exposure times/periods as long as 10 seconds.
+      With NImages=1 it does kill the exposure after a few seconds.
+  <LI>The following items are hardcoded in the SNL program.  They can be changed before compiling if necessary.
+      Some could be changed to be EPICS PVs, so they could be controlled at run-time, but others must be defined
+      at compile time because of limitations in the SNL semantics.
+    <UL>
+      <LI>MAX_MESSAGE_SIZE=256  The maximum size of message to/from camserver.
+      <LI>MAX_FILENAME_LEN=256  The maximum size of a complete file name including path and extension.
+      <LI>FILE_READ_DELAY=.01 seconds.  The time between polling to see if the TIFF file exists
+          or if it is the expected size.
+      <LI>MAX_BAD_PIXELS=100  The maximum number of bad pixels.
+      <LI>MAX_ROIS=32  The maximum number of ROIs
+      <LI>MAX_CHANS=2000 The maximum number of points in the ROI waveform arrays.
+      <LI>MAX_PIXELS=94965  The maximum number of pixels in the ImageData array.  Because of SNL semantics
+          limitations this value must be defined at compile time, and cannot be changed at run time.
+      <LI>MAX_READ_ERRORS=3  The maximum number of TIFF file read errors before the SNL gives up and aborts
+          acquisition.
+    </UL>
+</UL>
+
+</BODY>
+</HTML>
