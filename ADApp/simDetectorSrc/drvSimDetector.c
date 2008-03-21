@@ -47,9 +47,9 @@ static SimCommandStruct SimCommands[] = {
     {SimMode,    "SIM_MODE"}  
 };
 
-ADDrvSET_t ADSimDetector = 
+ADDrvSeT_t ADSimDetector = 
   {
-    17,
+    18,
     ADReport,            /* Standard EPICS driver report function (optional) */
     ADInit,              /* Standard EPICS driver initialisation function (optional) */
     ADSetLog,            /* Defines an external logging function (optional) */
@@ -58,6 +58,7 @@ ADDrvSET_t ADSimDetector =
     ADFindParam,         /* Parameter lookup function */
     ADSetInt32Callback,     /* Provides a callback function the driver can call when an int32 value updates */
     ADSetFloat64Callback,   /* Provides a callback function the driver can call when a float64 value updates */
+    ADSetStringCallback,    /* Provides a callback function the driver can call when a string value updates */
     ADSetImageDataCallback, /* Provides a callback function the driver can call when the image data updates */
     ADGetInteger,        /* Pointer to function to get an integer value */
     ADSetInteger,        /* Pointer to function to set an integer value */
@@ -120,30 +121,37 @@ static void ADComputeImage(DETECTOR_HDL pCamera)
     int bytesPerPixel;
     int status = AREA_DETECTOR_OK;
     int dataType;
-    int sizeX, sizeY, imageSize;
+    int maxSizeX, maxSizeY, imageSize;
+    double exposureTime, gain, intensity, pixelValue;
     int simMode;
     int i;
-    epicsUInt8 *pData;
+    epicsUInt8 *pData, pxlValInt;
 
     PRINT(pCamera->logParam, TRACE_FLOW, "ADComputeImage: entry\n");
-    ADParam->getInteger(pCamera->params, ADSizeX, &sizeX);
-    ADParam->getInteger(pCamera->params, ADSizeY, &sizeY);
+    ADParam->getInteger(pCamera->params, ADMaxSizeX, &maxSizeX);
+    ADParam->getInteger(pCamera->params, ADMaxSizeY, &maxSizeY);
     ADParam->getInteger(pCamera->params, ADDataType, &dataType);
+    ADParam->getDouble(pCamera->params, ADAcquireTime, &exposureTime);
+    ADParam->getDouble(pCamera->params, ADGain, &gain);
     ADParam->getInteger(pCamera->params, SimMode, &simMode);
 
     /* Make sure the image buffer we have allocated is large enough */
     status = ADBytesPerPixel(dataType, &bytesPerPixel);
-    imageSize = sizeX * sizeY * bytesPerPixel;
+    imageSize = maxSizeX * maxSizeY * bytesPerPixel;
     if (imageSize > pCamera->bufferSize) {
         free(pCamera->imageBuffer);
-        pCamera->imageBuffer = calloc(bytesPerPixel, sizeX*sizeY);
+        pCamera->imageBuffer = calloc(bytesPerPixel, maxSizeX*maxSizeY);
         pCamera->bufferSize = imageSize;
     }
     pData=(epicsUInt8 *)pCamera->imageBuffer;
     
     /* We just make a linear ramp for now */
-    for (i=0; i<sizeX*sizeY; i++) {
-       (*pData++)++;
+    /* The pixel increments are gain*exposure time in ms */
+    intensity = gain * exposureTime / 1000.;
+    pixelValue = 0.;
+    for (i=0; i<maxSizeX*maxSizeY; i++) {
+       (*pData++) = (epicsUInt8)pixelValue;
+       pixelValue += intensity;
     }
 
 }
@@ -311,6 +319,17 @@ static int ADSetFloat64Callback(DETECTOR_HDL pCamera, ADFloat64CallbackFunc call
     if (pCamera == NULL) return AREA_DETECTOR_ERROR;
     
     status = ADParam->setDoubleCallback(pCamera->params, callback, param);
+    
+    return(status);
+}
+
+static int ADSetStringCallback(DETECTOR_HDL pCamera, ADStringCallbackFunc callback, void * param)
+{
+    int status = AREA_DETECTOR_OK;
+    
+    if (pCamera == NULL) return AREA_DETECTOR_ERROR;
+    
+    status = ADParam->setStringCallback(pCamera->params, callback, param);
     
     return(status);
 }
@@ -500,7 +519,7 @@ int simDetectorSetup(int num_cameras)   /* number of simulated cameras in system
 }
 
 
-int simDetectorConfig(int camera, int sizeX, int sizeY, int dataType)     /* Camera number */
+int simDetectorConfig(int camera, int maxSizeX, int maxSizeY, int dataType)     /* Camera number */
 
 {
     DETECTOR_HDL pCamera;
@@ -532,8 +551,12 @@ int simDetectorConfig(int camera, int sizeX, int sizeY, int dataType)     /* Cam
     status |= ADParam->setString(pCamera->params, ADModel, "Basic simulator");
     status |= ADParam->setInteger(pCamera->params, ADStatus, ADStatusIdle);
     status |= ADParam->setInteger(pCamera->params, ADAcquire, 0);
-    status |= ADParam->setInteger(pCamera->params, ADSizeX, sizeX);
-    status |= ADParam->setInteger(pCamera->params, ADSizeY, sizeY);
+    status |= ADParam->setInteger(pCamera->params, ADMaxSizeX, maxSizeX);
+    status |= ADParam->setInteger(pCamera->params, ADMaxSizeY, maxSizeY);
+    status |= ADParam->setInteger(pCamera->params, ADSizeX, maxSizeX);
+    status |= ADParam->setInteger(pCamera->params, ADSizeY, maxSizeY);
+    status |= ADParam->setInteger(pCamera->params, ADImageSizeX, maxSizeX);
+    status |= ADParam->setInteger(pCamera->params, ADImageSizeY, maxSizeY);
     status |= ADParam->setInteger(pCamera->params, ADDataType, dataType);
     if (status) {
         printf("simDetectorConfig: unable to set camera parameters\n");
@@ -571,8 +594,8 @@ static void setupsimDetectorCallFunc(const iocshArgBuf *args)
 
 /* simDetectorConfig */
 static const iocshArg simDetectorConfigArg0 = {"Camera being configured", iocshArgInt};
-static const iocshArg simDetectorConfigArg1 = {"X size", iocshArgInt};
-static const iocshArg simDetectorConfigArg2 = {"Y size", iocshArgInt};
+static const iocshArg simDetectorConfigArg1 = {"Max X size", iocshArgInt};
+static const iocshArg simDetectorConfigArg2 = {"Max Y size", iocshArgInt};
 static const iocshArg simDetectorConfigArg3 = {"Data type", iocshArgInt};
 static const iocshArg * const simDetectorConfigArgs[4] = {&simDetectorConfigArg0,
                                                           &simDetectorConfigArg1,
