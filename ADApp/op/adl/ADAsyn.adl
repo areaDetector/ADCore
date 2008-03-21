@@ -8,7 +8,7 @@ display {
 		x=62
 		y=35
 		width=1020
-		height=700
+		height=750
 	}
 	clr=14
 	bclr=4
@@ -1468,7 +1468,7 @@ rectangle {
 		x=2
 		y=365
 		width=335
-		height=320
+		height=350
 	}
 	"basic attribute" {
 		clr=14
@@ -1491,7 +1491,7 @@ text {
 text {
 	object {
 		x=50
-		y=441
+		y=468
 		width=70
 		height=20
 	}
@@ -1504,7 +1504,7 @@ text {
 "text entry" {
 	object {
 		x=129
-		y=441
+		y=468
 		width=60
 		height=20
 	}
@@ -1519,7 +1519,7 @@ text {
 "text entry" {
 	object {
 		x=227
-		y=441
+		y=468
 		width=60
 		height=20
 	}
@@ -1534,7 +1534,7 @@ text {
 "text update" {
 	object {
 		x=129
-		y=420
+		y=447
 		width=61
 		height=18
 	}
@@ -1550,7 +1550,7 @@ text {
 "text update" {
 	object {
 		x=227
-		y=420
+		y=447
 		width=61
 		height=18
 	}
@@ -1566,7 +1566,7 @@ text {
 text {
 	object {
 		x=70
-		y=486
+		y=513
 		width=50
 		height=20
 	}
@@ -1579,7 +1579,7 @@ text {
 "text entry" {
 	object {
 		x=129
-		y=486
+		y=513
 		width=60
 		height=20
 	}
@@ -1594,7 +1594,7 @@ text {
 "text entry" {
 	object {
 		x=227
-		y=486
+		y=513
 		width=60
 		height=20
 	}
@@ -1609,7 +1609,7 @@ text {
 "text update" {
 	object {
 		x=129
-		y=465
+		y=492
 		width=61
 		height=18
 	}
@@ -1625,7 +1625,7 @@ text {
 "text update" {
 	object {
 		x=227
-		y=465
+		y=492
 		width=61
 		height=18
 	}
@@ -1641,7 +1641,7 @@ text {
 text {
 	object {
 		x=80
-		y=531
+		y=573
 		width=40
 		height=20
 	}
@@ -1654,7 +1654,7 @@ text {
 "text entry" {
 	object {
 		x=129
-		y=531
+		y=573
 		width=60
 		height=20
 	}
@@ -1669,7 +1669,7 @@ text {
 "text entry" {
 	object {
 		x=227
-		y=531
+		y=573
 		width=60
 		height=20
 	}
@@ -1684,7 +1684,7 @@ text {
 "text update" {
 	object {
 		x=129
-		y=510
+		y=552
 		width=61
 		height=18
 	}
@@ -1700,7 +1700,7 @@ text {
 "text update" {
 	object {
 		x=227
-		y=510
+		y=552
 		width=61
 		height=18
 	}
@@ -1978,7 +1978,7 @@ text {
 "text entry" {
 	object {
 		x=129
-		y=616
+		y=643
 		width=60
 		height=20
 	}
@@ -1993,7 +1993,7 @@ text {
 text {
 	object {
 		x=79
-		y=616
+		y=643
 		width=40
 		height=20
 	}
@@ -2006,7 +2006,7 @@ text {
 "text update" {
 	object {
 		x=204
-		y=617
+		y=644
 		width=61
 		height=18
 	}
@@ -2246,7 +2246,7 @@ text {
 text {
 	object {
 		x=81
-		y=564
+		y=596
 		width=40
 		height=20
 	}
@@ -2259,7 +2259,7 @@ text {
 "text update" {
 	object {
 		x=127
-		y=565
+		y=597
 		width=61
 		height=18
 	}
@@ -2275,7 +2275,7 @@ text {
 "text update" {
 	object {
 		x=225
-		y=565
+		y=597
 		width=61
 		height=18
 	}
@@ -2291,7 +2291,7 @@ text {
 text {
 	object {
 		x=156
-		y=592
+		y=619
 		width=40
 		height=20
 	}
@@ -2304,7 +2304,7 @@ text {
 "text update" {
 	object {
 		x=222
-		y=592
+		y=619
 		width=61
 		height=18
 	}
@@ -2320,7 +2320,7 @@ text {
 text {
 	object {
 		x=30
-		y=646
+		y=673
 		width=89
 		height=20
 	}
@@ -2333,7 +2333,7 @@ text {
 menu {
 	object {
 		x=128
-		y=646
+		y=673
 		width=100
 		height=20
 	}
@@ -2346,7 +2346,7 @@ menu {
 "text update" {
 	object {
 		x=239
-		y=648
+		y=675
 		width=79
 		height=18
 	}
@@ -2357,6 +2357,51 @@ menu {
 	}
 	align="horiz. centered"
 	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=68
+		y=420
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Sensor Size"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=128
+		y=420
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(D)MaxSizeX_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=226
+		y=420
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(D)MaxSizeY_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
 	limits {
 	}
 }
