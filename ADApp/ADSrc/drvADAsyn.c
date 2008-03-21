@@ -455,12 +455,12 @@ static void int32Callback(void *drvPvt, int command, int value)
     pasynManager->interruptStart(pPvt->int32InterruptPvt, &pclientList);
     pnode = (interruptNode *)ellFirst(pclientList);
     while (pnode) {
-        asynInt32Interrupt *pint32Interrupt = pnode->drvPvt;
-        reason = pint32Interrupt->pasynUser->reason;
+        asynInt32Interrupt *pInterrupt = pnode->drvPvt;
+        reason = pInterrupt->pasynUser->reason;
         if (command == reason) {
-            pint32Interrupt->callback(pint32Interrupt->userPvt, 
-                                      pint32Interrupt->pasynUser,
-                                      value);
+            pInterrupt->callback(pInterrupt->userPvt, 
+                                 pInterrupt->pasynUser,
+                                 value);
         }
         pnode = (interruptNode *)ellNext(&pnode->node);
     }
@@ -478,16 +478,39 @@ static void float64Callback(void *drvPvt, int command, double value)
     pasynManager->interruptStart(pPvt->float64InterruptPvt, &pclientList);
     pnode = (interruptNode *)ellFirst(pclientList);
     while (pnode) {
-        asynFloat64Interrupt *pfloat64Interrupt = pnode->drvPvt;
-        reason = pfloat64Interrupt->pasynUser->reason;
+        asynFloat64Interrupt *pInterrupt = pnode->drvPvt;
+        reason = pInterrupt->pasynUser->reason;
         if (command == reason) {
-            pfloat64Interrupt->callback(pfloat64Interrupt->userPvt, 
-                                        pfloat64Interrupt->pasynUser,
-                                        value);
+            pInterrupt->callback(pInterrupt->userPvt, 
+                                 pInterrupt->pasynUser,
+                                 value);
         }
         pnode = (interruptNode *)ellNext(&pnode->node);
     }
     pasynManager->interruptEnd(pPvt->float64InterruptPvt);
+}
+
+static void stringCallback(void *drvPvt, int command, char *value)
+{
+    drvADPvt *pPvt = drvPvt;
+    unsigned int reason;
+    ELLLIST *pclientList;
+    interruptNode *pnode;
+
+    /* Pass octet interrupts */
+    pasynManager->interruptStart(pPvt->octetInterruptPvt, &pclientList);
+    pnode = (interruptNode *)ellFirst(pclientList);
+    while (pnode) {
+        asynOctetInterrupt *pInterrupt = pnode->drvPvt;
+        reason = pInterrupt->pasynUser->reason;
+        if (command == reason) {
+            pInterrupt->callback(pInterrupt->userPvt, 
+                                 pInterrupt->pasynUser,
+                                 value, strlen(value), ASYN_EOM_END);
+        }
+        pnode = (interruptNode *)ellNext(&pnode->node);
+    }
+    pasynManager->interruptEnd(pPvt->octetInterruptPvt);
 }
 
 static void imageDataCallback(void *drvPvt, void *value,  
@@ -1222,6 +1245,7 @@ int drvAsynADConfigure(const char *portName, const char *driverName, int detecto
     /* Setup callbacks */
     (*pPvt->drvset->setInt32Callback)    (pPvt->pDetector, int32Callback,     (void *)pPvt);
     (*pPvt->drvset->setFloat64Callback)  (pPvt->pDetector, float64Callback,   (void *)pPvt);
+    (*pPvt->drvset->setStringCallback)   (pPvt->pDetector, stringCallback,    (void *)pPvt);
     (*pPvt->drvset->setImageDataCallback)(pPvt->pDetector, imageDataCallback, (void *)pPvt);
 
     /* All other parameters are initialised to zero at allocation */

@@ -335,9 +335,11 @@ static int ADFindParam( DETECTOR_HDL pDetector, const char *paramString, int *fu
 
 typedef void (*ADInt32CallbackFunc)    ( void *param, int function, int value );
 typedef void (*ADFloat64CallbackFunc)  ( void *param, int function, double value );
+typedef void (*ADStringCallbackFunc)   ( void *param, int function, char *value );
 typedef void (*ADImageDataCallbackFunc)( void *param, void *value, ADDataType_t dataType, size_t nBytes, int nx, int ny );
 typedef int (*ADSetInt32CallbackFunc)    ( DETECTOR_HDL pDetector, ADInt32CallbackFunc     callback, void *param);
 typedef int (*ADSetFloat64CallbackFunc)  ( DETECTOR_HDL pDetector, ADFloat64CallbackFunc   callback, void *param );
+typedef int (*ADSetStringCallbackFunc)   ( DETECTOR_HDL pDetector, ADStringCallbackFunc    callback, void *param );
 typedef int (*ADSetImageDataCallbackFunc)( DETECTOR_HDL pDetector, ADImageDataCallbackFunc callback, void *param );
 
 /*  Set a callback function to be called when detector information changes
@@ -357,9 +359,10 @@ typedef int (*ADSetImageDataCallbackFunc)( DETECTOR_HDL pDetector, ADImageDataCa
 */
 
 #ifdef DEFINE_AREA_DETECTOR_PROTOTYPES
-static int ADSetInt32Callback    ( DETECTOR_HDL pDetector, ADInt32CallbackFunc     callback, void *param );
-static int ADSetFloat64Callback  ( DETECTOR_HDL pDetector, ADFloat64CallbackFunc   callback, void *param );
-static int ADSetImageDataCallback( DETECTOR_HDL pDetector, ADImageDataCallbackFunc callback, void *param );
+static int ADSetInt32Callback     ( DETECTOR_HDL pDetector, ADInt32CallbackFunc     callback, void *param );
+static int ADSetFloat64Callback   ( DETECTOR_HDL pDetector, ADFloat64CallbackFunc   callback, void *param );
+static int ADSetStringCallback    ( DETECTOR_HDL pDetector, ADStringCallbackFunc    callback, void *param );
+static int ADSetImageDataCallback ( DETECTOR_HDL pDetector, ADImageDataCallbackFunc callback, void *param );
 #endif
 
 
@@ -513,6 +516,7 @@ typedef struct
     ADFindParamFunc       findParam;         /* Parameter lookup function */
     ADSetInt32CallbackFunc     setInt32Callback;      /* Provides a callback function the driver can call when an int32 value changes */
     ADSetFloat64CallbackFunc   setFloat64Callback;    /* Provides a callback function the driver can call when a float64 value changes */
+    ADSetStringCallbackFunc    setStringCallback;     /* Provides a callback function the driver can call when a string value changes */
     ADSetImageDataCallbackFunc setImageDataCallback;  /* Provides a callback function the driver can call when there is new image data */
     ADGetIntegerFunc      getInteger;        /* Pointer to function to get an integer value */
     ADSetIntegerFunc      setInteger;        /* Pointer to function to set an integer value */
