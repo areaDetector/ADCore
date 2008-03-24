@@ -1,7 +1,15 @@
-/*Simple parameter system that can be used for EPICS area detectors
+/* Simple parameter system that can be used for EPICS area detectors
 
-This is a simple parameter system designed to make parameter storage and 
-callback notification simpler for EPICS area detector drivers. 
+   This is a simple parameter system designed to make parameter storage and 
+   callback notification simpler for EPICS area detector drivers. 
+
+   It is based on the parameter library for the EPICS asyn motor drivers
+   written by Nick Rees and Peter Denison from DLS.
+   
+   Mark Rivers
+   University of Chicago
+   March 24, 2008
+
 
 */
 
@@ -18,7 +26,6 @@ typedef enum { paramUndef, paramInt, paramDouble, paramString} paramType;
 typedef struct
 {
     paramType type;
-    int  flag;
     union
     {
         double dval;
@@ -31,6 +38,8 @@ typedef struct paramList
 {
     paramIndex startVal;
     paramIndex nvals;
+    int nflags;
+    int *flags;
     paramVal * vals;
     paramIntCallback   intCallback;
     paramDoubleCallback doubleCallback;
@@ -52,6 +61,7 @@ typedef struct paramList
 static void paramDestroy( PARAMS params )
 {
     if (params->vals != NULL) free( params->vals );
+    if (params->flags != NULL) free( params->flags );
     free( params );
     params = NULL;
 }
@@ -71,12 +81,14 @@ static PARAMS paramCreate( paramIndex startVal, paramIndex nvals )
 {
     PARAMS params = (PARAMS) calloc( 1, sizeof(paramList ));
 
-    if ( nvals > 0 &&
-         (params != NULL) &&
-         ((params->vals = (paramVal *) calloc( nvals, sizeof(paramVal)) ) != NULL ) )
+    if ((nvals > 0) &&
+        (params != NULL) &&
+        ((params->vals = (paramVal *) calloc( nvals, sizeof(paramVal))) != NULL ) &&
+        ((params->flags = (int *)calloc( nvals, sizeof(int))) != NULL))
     {
         params->startVal = startVal;
         params->nvals = nvals;
+        params->nflags = 0;
     }
     else
     {
@@ -102,6 +114,31 @@ static PARAMS paramCreate( paramIndex startVal, paramIndex nvals )
 }
 
 
+/** Sets the flag indicating that a parameter has changed.
+
+
+    params [in]   Pointer to PARAM handle returned by paramCreate.
+    index  [in]   Index number of the parameter.
+
+    returns Integer indicating 0 (PARAM_OK) for success or non-zero for index out of range. 
+*/
+static int paramSetFlag( PARAMS params, paramIndex index )
+{
+    int status = PARAM_ERROR;
+
+    index -= params->startVal;
+    if (index >= 0 && index < params->nvals)
+    {
+        int i;
+        /* See if we have already set the flag for this parameter */
+        for (i=0; i<params->nflags; i++) if (params->flags[i] == index) break;
+        /* If not found add a flag */
+        if (i == params->nflags) params->flags[params->nflags++] = index;
+        status = PARAM_OK;
+    }
+    return status;
+}
+
 /** Sets the value of an integer parameter.
 
     Sets the value of the parameter associated with a given index to an integer value.
@@ -122,7 +159,7 @@ static int paramSetInteger( PARAMS params, paramIndex index, int value )
         if ( params->vals[index].type != paramInt ||
              params->vals[index].data.ival != value )
         {
-            params->vals[index].flag = 1;
+            paramSetFlag(params, index);
             params->vals[index].type = paramInt;
             params->vals[index].data.ival = value;
         }
@@ -151,7 +188,7 @@ static int paramSetDouble( PARAMS params, paramIndex index, double value )
         if ( params->vals[index].type != paramDouble ||
              params->vals[index].data.dval != value )
         {
-            params->vals[index].flag = 1;
+            paramSetFlag(params, index);
             params->vals[index].type = paramDouble;
             params->vals[index].data.dval = value;
         }
@@ -180,7 +217,7 @@ static int paramSetString( PARAMS params, paramIndex index, char *value )
         if ( params->vals[index].type != paramString ||
              strcmp(params->vals[index].data.sval, value))
         {
-            params->vals[index].flag = 1;
+            paramSetFlag(params, index);
             params->vals[index].type = paramString;
             free(params->vals[index].data.sval);
             params->vals[index].data.sval = epicsStrDup(value);
@@ -295,7 +332,7 @@ static int paramSetIntCallback( PARAMS params, paramIntCallback callback, void *
     {
         int i;
         for (i = 0; i < params->nvals; i++)
-            if (params->vals[i].type == paramInt) params->vals[i].flag = 1;
+            if (params->vals[i].type == paramInt) params->flags[params->nflags++] = i;
     }
 
     return PARAM_OK;
@@ -311,7 +348,7 @@ static int paramSetDoubleCallback( PARAMS params, paramDoubleCallback callback, 
     {
         int i;
         for (i = 0; i < params->nvals; i++)
-            if (params->vals[i].type == paramDouble) params->vals[i].flag = 1;
+            if (params->vals[i].type == paramDouble)  params->flags[params->nflags++] = i;
     }
 
     return PARAM_OK;
@@ -327,7 +364,7 @@ static int paramSetStringCallback( PARAMS params, paramStringCallback callback, 
     {
         int i;
         for (i = 0; i < params->nvals; i++)
-            if (params->vals[i].type == paramString) params->vals[i].flag = 1;
+            if (params->vals[i].type == paramString)  params->flags[params->nflags++] = i;
     }
 
     return PARAM_OK;
@@ -344,33 +381,31 @@ static int paramSetStringCallback( PARAMS params, paramStringCallback callback, 
 */
 static void paramCallCallbacks( PARAMS params )
 {
-    int i;
+    int i, index;
     int command;
 
-    for (i = 0; i < params->nvals; i++)
+    for (i = 0; i < params->nflags; i++)
     {
-        command = i + params->startVal;
-        if (params->vals[i].flag)
-        {
-            switch(params->vals[i].type) {
-            case paramUndef:
-                break;
-            case paramInt:
-                if (params->intCallback != NULL ) 
-                    params->intCallback( params->intParam, command, params->vals[i].data.ival );
-                break;
-            case paramDouble:
-                if (params->doubleCallback != NULL ) 
-                    params->doubleCallback( params->doubleParam, command, params->vals[i].data.dval );
-                break;
-            case paramString:
-                if (params->stringCallback != NULL ) 
-                    params->stringCallback( params->stringParam, command, params->vals[i].data.sval );
-                break;
-            }
-            params->vals[i].flag = 0;
+        index = params->flags[i];
+        command = index + params->startVal;
+        switch(params->vals[index].type) {
+        case paramUndef:
+            break;
+        case paramInt:
+            if (params->intCallback != NULL ) 
+                params->intCallback( params->intParam, command, params->vals[index].data.ival );
+            break;
+        case paramDouble:
+            if (params->doubleCallback != NULL ) 
+                params->doubleCallback( params->doubleParam, command, params->vals[index].data.dval );
+            break;
+        case paramString:
+            if (params->stringCallback != NULL ) 
+                params->stringCallback( params->stringParam, command, params->vals[index].data.sval );
+            break;
         }
     }
+    params->nflags=0;
 }
 
 /*  Prints the current values in the parameter system to stdout
