@@ -1,0 +1,229 @@
+
+file {
+	name="/home/epics/devel/areaDetector/1-1/ADApp/op/adl/simDetector.adl"
+	version=030000
+}
+display {
+	object {
+		x=520
+		y=280
+		width=245
+		height=197
+	}
+	clr=14
+	bclr=4
+	cmap=""
+	gridSpacing=5
+	gridOn=0
+	snapToGrid=0
+}
+"color map" {
+	ncolors=65
+	colors {
+		ffffff,
+		ececec,
+		dadada,
+		c8c8c8,
+		bbbbbb,
+		aeaeae,
+		9e9e9e,
+		919191,
+		858585,
+		787878,
+		696969,
+		5a5a5a,
+		464646,
+		2d2d2d,
+		000000,
+		00d800,
+		1ebb00,
+		339900,
+		2d7f00,
+		216c00,
+		fd0000,
+		de1309,
+		be190b,
+		a01207,
+		820400,
+		5893ff,
+		597ee1,
+		4b6ec7,
+		3a5eab,
+		27548d,
+		fbf34a,
+		f9da3c,
+		eeb62b,
+		e19015,
+		cd6100,
+		ffb0ff,
+		d67fe2,
+		ae4ebc,
+		8b1a96,
+		610a75,
+		a4aaff,
+		8793e2,
+		6a73c1,
+		4d52a4,
+		343386,
+		c7bb6d,
+		b79d5c,
+		a47e3c,
+		7d5627,
+		58340f,
+		99ffff,
+		73dfff,
+		4ea5f9,
+		2a63e4,
+		0a00b8,
+		ebf1b5,
+		d4db9d,
+		bbc187,
+		a6a462,
+		8b8239,
+		73ff6b,
+		52da3b,
+		3cb420,
+		289315,
+		1a7309,
+	}
+}
+text {
+	object {
+		x=8
+		y=6
+		width=228
+		height=25
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Simulation Detector"
+}
+"related display" {
+	object {
+		x=92
+		y=161
+		width=60
+		height=20
+	}
+	display[0] {
+		label="Simulator general records"
+		name="ADAsyn.adl"
+		args="P=$(P), D=$(D)"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=80
+		y=36
+		width=84
+		height=25
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Control"
+}
+text {
+	object {
+		x=18
+		y=124
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Gain"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=67
+		y=124
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(D)GainX"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=165
+		y=124
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(D)GainY"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=67
+		y=103
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(D)GainX_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=165
+		y=103
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(D)GainY_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=101
+		y=80
+		width=10
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="X"
+	align="horiz. right"
+}
+text {
+	object {
+		x=193
+		y=80
+		width=10
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Y"
+	align="horiz. right"
+}
