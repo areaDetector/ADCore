@@ -3,8 +3,9 @@ errlogInit(20000)
 
 dbLoadDatabase("$(AD)/dbd/simDetectorApp.dbd")
 simDetectorApp_registerRecordDeviceDriver(pdbbase) 
-dbLoadRecords("$(AD)/ADApp/Db/ADAsyn.db","P=13SIM1:,D=cam1:,PORT=SIM1,ADDR=0,TIMEOUT=1")
-dbLoadRecords("$(AD)/ADApp/Db/ADAsynImage.db","P=13SIM1:,D=cam1:,PORT=SIM1,ADDR=0,TIMEOUT=1,SIZE=8,FTVL=UCHAR,NPIXELS=1392640")
+dbLoadRecords("$(AD)/ADApp/Db/ADAsyn.template",     "P=13SIM1:,D=cam1:,PORT=SIM1,ADDR=0,TIMEOUT=1")
+dbLoadRecords("$(AD)/ADApp/Db/simDetector.template","P=13SIM1:,D=cam1:,PORT=SIM1,ADDR=0,TIMEOUT=1")
+dbLoadRecords("$(AD)/ADApp/Db/ADAsynImage.template","P=13SIM1:,D=cam1:,PORT=SIM1,ADDR=0,TIMEOUT=1,SIZE=8,FTVL=UCHAR,NPIXELS=1392640")
 
 simDetectorSetup(1)
 simDetectorConfig(0, 640, 480, 1)
