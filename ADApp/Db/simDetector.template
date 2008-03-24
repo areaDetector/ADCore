@@ -1,0 +1,36 @@
+# Database for the records specific to the simulated detector driver
+# Mark Rivers
+# March 23, 2008
+
+record(ao, "$(P)$(D)GainX")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAINX")
+   field(PREC, "2")
+}
+
+record(ai, "$(P)$(D)GainX_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAINX")
+   field(PREC, "2")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(D)GainY")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAINY")
+   field(PREC, "2")
+}
+
+record(ai, "$(P)$(D)GainY_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAINY")
+   field(PREC, "2")
+   field(SCAN, "I/O Intr")
+}
+
