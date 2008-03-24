@@ -107,13 +107,23 @@ text {
 		height=21
 	}
 	display[0] {
-		label="Simulator"
+		label="Simulator general"
 		name="ADAsyn.adl"
 		args="P=13SIM1:, D=cam1:"
 	}
 	display[1] {
-		label="Prosilica CCD"
+		label="Simulator specific"
+		name="simDetector.adl"
+		args="P=13SIM1:, D=cam1:"
+	}
+	display[2] {
+		label="Prosilica general"
 		name="ADAsyn.adl"
+		args="P=13PS1:, D=cam1:"
+	}
+	display[3] {
+		label="Prosilica specfic"
+		name="prosilica.adl"
 		args="P=13PS1:, D=cam1:"
 	}
 	clr=14
