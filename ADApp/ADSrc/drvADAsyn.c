@@ -1001,7 +1001,7 @@ static asynStatus drvUserCreate(void *drvPvt, asynUser *pasynUser,
      * it is a driver-specific command */
     if (command < 0) {
         status = (*pPvt->drvset->findParam)(pPvt->pDetector, drvInfo, &command);
-        if (!status) command = -1;
+        if (status) command = -1;
     }
  
     if (command >= 0) {
