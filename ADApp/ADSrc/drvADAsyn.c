@@ -28,7 +28,9 @@
 #include <asynInt8Array.h>
 #include <asynInt16Array.h>
 #include <asynInt32Array.h>
+#include <asynFloat32Array.h>
 #include <asynFloat64.h>
+#include <asynFloat64Array.h>
 #include <asynOctet.h>
 #include <asynDrvUser.h>
 
@@ -36,6 +38,7 @@
 #include <registryDriverSupport.h>
 
 #include "ADInterface.h"
+#include "ADUtils.h"
 
 typedef enum
 {
@@ -135,6 +138,10 @@ typedef struct drvADPvt {
     void *int16ArrayInterruptPvt;
     asynInterface int32Array;
     void *int32ArrayInterruptPvt;
+    asynInterface float32Array;
+    void *float32ArrayInterruptPvt;
+    asynInterface float64Array;
+    void *float64ArrayInterruptPvt;
     asynInterface octet;
     void *octetInterruptPvt;
     asynInterface drvUser;
@@ -160,6 +167,14 @@ static asynStatus readInt32Array    (void *drvPvt, asynUser *pasynUser,
                                      epicsInt32 *value, size_t nelements, size_t *nIn);
 static asynStatus writeInt32Array   (void *drvPvt, asynUser *pasynUser,
                                      epicsInt32 *value, size_t nelements);
+static asynStatus readFloat32Array    (void *drvPvt, asynUser *pasynUser,
+                                     epicsFloat32 *value, size_t nelements, size_t *nIn);
+static asynStatus writeFloat32Array   (void *drvPvt, asynUser *pasynUser,
+                                     epicsFloat32 *value, size_t nelements);
+static asynStatus readFloat64Array    (void *drvPvt, asynUser *pasynUser,
+                                     epicsFloat64 *value, size_t nelements, size_t *nIn);
+static asynStatus writeFloat64Array   (void *drvPvt, asynUser *pasynUser,
+                                     epicsFloat64 *value, size_t nelements);
 static asynStatus readFloat64       (void *drvPvt, asynUser *pasynUser,
                                      epicsFloat64 *value);
 static asynStatus writeFloat64      (void *drvPvt, asynUser *pasynUser,
@@ -219,6 +234,16 @@ static asynInt32Array drvADInt32Array = {
     readInt32Array,
 };
 
+static asynFloat32Array drvADFloat32Array = {
+    writeFloat32Array,
+    readFloat32Array,
+};
+
+static asynFloat64Array drvADFloat64Array = {
+    writeFloat64Array,
+    readFloat64Array,
+};
+
 static asynDrvUser drvADDrvUser = {
     drvUserCreate,
     drvUserGetType,
@@ -227,145 +252,6 @@ static asynDrvUser drvADDrvUser = {
 
 
 /* Local functions, not in any interface */
-
-static int convertToInt8(drvADPvt *pPvt, ADDataType_t dataType, 
-                         int nPixels, void *input, epicsInt8 *output)
-{
-    /* Converts data from native data type to epicsInt8 */
-    int i;
-
-    switch(dataType) {
-    case ADInt8: {
-        memcpy(output, input, nPixels/sizeof(epicsInt8));       
-        break; }
-   case ADUInt8: {
-        memcpy(output, input, nPixels/sizeof(epicsUInt8));       
-        break; }
-    case ADInt16: {
-        epicsInt16 *buff = (epicsInt16 *)input;
-        for (i=0; i<nPixels; i++) output[i] = (epicsInt8) buff[i];       
-        break; }
-    case ADUInt16: {
-        epicsUInt16 *buff = (epicsUInt16 *)input;
-        for (i=0; i<nPixels; i++) output[i] = (epicsInt8) buff[i];       
-        break; }
-    case ADInt32: {
-        epicsInt32 *buff = (epicsInt32 *)input;
-        for (i=0; i<nPixels; i++) output[i] = (epicsInt8) buff[i];       
-        break; }
-    case ADUInt32: {
-        epicsUInt32 *buff = (epicsUInt32 *)input;
-        for (i=0; i<nPixels; i++) output[i] = (epicsInt8) buff[i];       
-        break; }
-    case ADFloat32: {
-        epicsFloat32 *buff = (epicsFloat32 *)input;
-        for (i=0; i<nPixels; i++) output[i] = (epicsInt8) buff[i];       
-        break; }
-    case ADFloat64: {
-        epicsFloat64 *buff = (epicsFloat64 *)input;
-        for (i=0; i<nPixels; i++) output[i] = (epicsInt8) buff[i];       
-        break; }
-    default:
-        epicsSnprintf(pPvt->pasynUser->errorMessage, pPvt->pasynUser->errorMessageSize,
-                      "drvADAsyn::convertToInt8 unknown dataType %d", dataType);
-        return(asynError);
-        break;
-    }
-    return(asynSuccess);
-}
-
-
-static int convertToInt16(drvADPvt *pPvt, ADDataType_t dataType, 
-                          int nPixels, void *input, epicsInt16 *output)
-{
-    /* Converts data from native data type to epicsInt16 */
-    int i;
-
-    switch(dataType) {
-    case ADInt8: {
-        epicsInt8 *buff = (epicsInt8 *)input;
-        for (i=0; i<nPixels; i++) output[i] = (epicsInt16) buff[i];       
-        break; }
-   case ADUInt8: {
-        epicsUInt8 *buff = (epicsUInt8 *)input;
-        for (i=0; i<nPixels; i++) output[i] = (epicsInt16) buff[i];       
-        break; }
-    case ADInt16: {
-        memcpy(output, input, nPixels/sizeof(epicsInt16));       
-        break; }
-    case ADUInt16: {
-        memcpy(output, input, nPixels/sizeof(epicsUInt16));       
-        break; }
-    case ADInt32: {
-        epicsInt32 *buff = (epicsInt32 *)input;
-        for (i=0; i<nPixels; i++) output[i] = (epicsInt16) buff[i];       
-        break; }
-    case ADUInt32: {
-        epicsUInt32 *buff = (epicsUInt32 *)input;
-        for (i=0; i<nPixels; i++) output[i] = (epicsInt16) buff[i];       
-        break; }
-    case ADFloat32: {
-        epicsFloat32 *buff = (epicsFloat32 *)input;
-        for (i=0; i<nPixels; i++) output[i] = (epicsInt16) buff[i];       
-        break; }
-    case ADFloat64: {
-        epicsFloat64 *buff = (epicsFloat64 *)input;
-        for (i=0; i<nPixels; i++) output[i] = (epicsInt16) buff[i];       
-        break; }
-    default:
-        epicsSnprintf(pPvt->pasynUser->errorMessage, pPvt->pasynUser->errorMessageSize,
-                      "drvADAsyn::convertToInt16 unknown dataType %d", dataType);
-        return(asynError);
-        break;
-    }
-    return(asynSuccess);
-}
-
-static int convertToInt32(drvADPvt *pPvt, ADDataType_t dataType, 
-                          int nPixels, void *input, epicsInt32 *output)
-{
-    /* Converts data from native data type to epicsInt32 */
-    int i;
-
-    switch(dataType) {
-    case ADInt8: {
-        epicsInt8 *buff = (epicsInt8 *)input;
-        for (i=0; i<nPixels; i++) output[i] = (epicsInt32) buff[i];
-        break; }
-   case ADUInt8: {
-        epicsUInt8 *buff = (epicsUInt8 *)input;
-        for (i=0; i<nPixels; i++) output[i] = (epicsInt32) buff[i];
-        break; }
-    case ADInt16: {
-        epicsInt16 *buff = (epicsInt16 *)input;
-        for (i=0; i<nPixels; i++) output[i] = (epicsInt32) buff[i];       
-        break; }
-    case ADUInt16: {
-        epicsUInt16 *buff = (epicsUInt16 *)input;
-        for (i=0; i<nPixels; i++) output[i] = (epicsInt32) buff[i];       
-        break; }
-    case ADInt32: {
-        memcpy(output, input, nPixels/sizeof(epicsInt32));       
-        break; }
-    case ADUInt32: {
-        memcpy(output, input, nPixels/sizeof(epicsUInt32));       
-        break; }
-    case ADFloat32: {
-        epicsFloat32 *buff = (epicsFloat32 *)input;
-        for (i=0; i<nPixels; i++) output[i] = (epicsInt32) buff[i];       
-        break; }
-    case ADFloat64: {
-        epicsFloat64 *buff = (epicsFloat64 *)input;
-        for (i=0; i<nPixels; i++) output[i] = (epicsInt32) buff[i];       
-        break; }
-    default:
-        epicsSnprintf(pPvt->pasynUser->errorMessage, pPvt->pasynUser->errorMessageSize,
-                      "drvADAsyn::convertToInt32 unknown dataType %d", dataType);
-        return(asynError);
-        break;
-    }
-    return(asynSuccess);
-}
 
 static int allocateImageBuffer(drvADPvt *pPvt, size_t imageSize)
 {
@@ -520,127 +406,88 @@ static void imageDataCallback(void *drvPvt, void *value,
     ELLLIST *pclientList;
     unsigned int reason;
     int nPixels = nx*ny;
+    int nxt, nyt;
     interruptNode *pnode;
     epicsTimeStamp tCheck;
     double deltaTime;
     int int8Initialized=0;
     int int16Initialized=0;
     int int32Initialized=0;
-    epicsInt8  *pInt8Data=NULL;
-    epicsInt16 *pInt16Data=NULL;
-    epicsInt32 *pInt32Data=NULL;
+    int float32Initialized=0;
+    int float64Initialized=0;
 
     epicsTimeGetCurrent(&tCheck);
     deltaTime = epicsTimeDiffInSeconds(&tCheck, &pPvt->lastImagePostTime);
 
-    /* Update the frame counter */
-    pPvt->frameCounter++;
-    int32Callback(pPvt, ADCmdFrameCounter, pPvt->frameCounter);
+
+    /* This macro saves a lot of code, since there are 5 types of array interrupts that we support */
+    #define ARRAY_INTERRUPT_CALLBACK(INTERRUPT_PVT, INTERRUPT_TYPE, INITIALIZED, \
+                                     SIGNED_TYPE, UNSIGNED_TYPE, EPICS_TYPE) { \
+        EPICS_TYPE *pData=NULL;\
+        pasynManager->interruptStart(INTERRUPT_PVT, &pclientList); \
+        pnode = (interruptNode *)ellFirst(pclientList); \
+        while (pnode) { \
+            INTERRUPT_TYPE *pInterrupt = pnode->drvPvt; \
+            reason = pInterrupt->pasynUser->reason; \
+            if (reason == ADCmdImageData) { \
+                if (!pPvt->postImages) break;  /* We are not being asked to post image data */ \
+                if (deltaTime < pPvt->minImageUpdateTime) break; \
+                memcpy(&pPvt->lastImagePostTime, &tCheck, sizeof(epicsTimeStamp)); \
+            } \
+            if (!INITIALIZED) { \
+                INITIALIZED = 1; \
+                /* If the data type is compatible with this type just set the pointer */ \
+                if ((dataType == SIGNED_TYPE) || (dataType == UNSIGNED_TYPE)) { \
+                    pData = (EPICS_TYPE *)value; \
+                } else { \
+                    /* We need to convert the data */ \
+                    allocateImageBuffer(pPvt, nPixels*sizeof(EPICS_TYPE)); \
+                    ADUtils->convertImage(value, dataType, \
+                                          nx, ny, \
+                                          pPvt->imageBuffer, SIGNED_TYPE, \
+                                          1, 1, 0, 0, \
+                                          nx, ny, &nxt, &nyt); \
+                    pData = (EPICS_TYPE *)pPvt->imageBuffer; \
+                } \
+            } \
+            pInterrupt->callback(pInterrupt->userPvt, \
+                                 pInterrupt->pasynUser, \
+                                 pData, nPixels); \
+            pnode = (interruptNode *)ellNext(&pnode->node); \
+            if (reason == ADCmdImageData) { \
+                /* Update the image Counter */ \
+                pPvt->imageCounter++; \
+                int32Callback(pPvt, ADCmdImageCounter, pPvt->imageCounter); \
+            } \
+        } \
+        pasynManager->interruptEnd(INTERRUPT_PVT); \
+    }
 
     /* Pass interrupts for int8Array data*/
-    pasynManager->interruptStart(pPvt->int8ArrayInterruptPvt, &pclientList);
-    pnode = (interruptNode *)ellFirst(pclientList);
-    while (pnode) {
-        asynInt8ArrayInterrupt *pint8ArrayInterrupt = pnode->drvPvt;
-        reason = pint8ArrayInterrupt->pasynUser->reason;
-        if (reason == ADCmdImageData) {
-            if (!pPvt->postImages) break;  /* We are not being asked to post image data */
-            if (deltaTime < pPvt->minImageUpdateTime) break;
-            memcpy(&pPvt->lastImagePostTime, &tCheck, sizeof(epicsTimeStamp));
-        }
-        if (!int8Initialized) {
-            int8Initialized = 1;
-            /* If the data type is compatible with epicsInt8 just set the pointer */
-            if ((dataType == ADInt8) || (dataType == ADUInt8)) {
-                pInt8Data = (epicsInt8*)value;
-            } else {
-                /* We need to convert the data to epicsInt8 */
-                allocateImageBuffer(pPvt, nPixels*sizeof(epicsInt8));
-                convertToInt8(pPvt, dataType, nPixels, value, (epicsInt8 *)pPvt->imageBuffer);
-                pInt8Data = (epicsInt8*)pPvt->imageBuffer;
-            }
-        }
-        pint8ArrayInterrupt->callback(pint8ArrayInterrupt->userPvt, 
-                                      pint8ArrayInterrupt->pasynUser,
-                                      pInt8Data, nPixels);
-        pnode = (interruptNode *)ellNext(&pnode->node);
-        if (reason == ADCmdImageData) {
-            /* Update the image Counter */
-            pPvt->imageCounter++;
-            int32Callback(pPvt, ADCmdImageCounter, pPvt->imageCounter);
-        }
-    }
-    pasynManager->interruptEnd(pPvt->int32ArrayInterruptPvt);
-
+    ARRAY_INTERRUPT_CALLBACK(pPvt->int8ArrayInterruptPvt, asynInt8ArrayInterrupt,
+                             int8Initialized, ADInt8, ADUInt8, epicsInt8);
+    
     /* Pass interrupts for int16Array data*/
-    pasynManager->interruptStart(pPvt->int16ArrayInterruptPvt, &pclientList);
-    pnode = (interruptNode *)ellFirst(pclientList);
-    while (pnode) {
-        asynInt16ArrayInterrupt *pint16ArrayInterrupt = pnode->drvPvt;
-        reason = pint16ArrayInterrupt->pasynUser->reason;
-        if (reason == ADCmdImageData) {
-            if (!pPvt->postImages) break;  /* We are not being asked to post image data */
-            if (deltaTime < pPvt->minImageUpdateTime) break;
-            memcpy(&pPvt->lastImagePostTime, &tCheck, sizeof(epicsTimeStamp));
-        }
-        if (!int16Initialized) {
-            int16Initialized = 1;
-            /* If the data type is compatible with epicsInt16 just set the pointer */
-            if ((dataType == ADInt16) || (dataType == ADUInt16)) {
-                pInt16Data = (epicsInt16*)value;
-            } else {
-                /* We need to convert the data to epicsInt16 */
-                allocateImageBuffer(pPvt, nPixels*sizeof(epicsInt16));
-                convertToInt16(pPvt, dataType, nPixels, value, (epicsInt16 *)pPvt->imageBuffer);
-                pInt16Data = (epicsInt16*)pPvt->imageBuffer;
-            }
-        }
-        pint16ArrayInterrupt->callback(pint16ArrayInterrupt->userPvt, 
-                                       pint16ArrayInterrupt->pasynUser,
-                                       pInt16Data, nPixels);
-        pnode = (interruptNode *)ellNext(&pnode->node);
-        if (reason == ADCmdImageData) {
-            /* Update the image Counter */
-            pPvt->imageCounter++;
-            int32Callback(pPvt, ADCmdImageCounter, pPvt->imageCounter);
-        }
-    }
-    pasynManager->interruptEnd(pPvt->int32ArrayInterruptPvt);
-
+    ARRAY_INTERRUPT_CALLBACK(pPvt->int16ArrayInterruptPvt, asynInt16ArrayInterrupt,
+                             int16Initialized, ADInt16, ADUInt16, epicsInt16);
+    
     /* Pass interrupts for int32Array data*/
-    pasynManager->interruptStart(pPvt->int32ArrayInterruptPvt, &pclientList);
-    pnode = (interruptNode *)ellFirst(pclientList);
-    while (pnode) {
-        asynInt32ArrayInterrupt *pint32ArrayInterrupt = pnode->drvPvt;
-        reason = pint32ArrayInterrupt->pasynUser->reason;
-        if (reason == ADCmdImageData) {
-            if (!pPvt->postImages) break;  /* We are not being asked to post image data */
-            if (deltaTime < pPvt->minImageUpdateTime) break;
-            memcpy(&pPvt->lastImagePostTime, &tCheck, sizeof(epicsTimeStamp));
-        }
-        if (!int32Initialized) {
-            int32Initialized = 1;
-            /* If the data type is compatible with epicsInt32 just set the pointer */
-            if ((dataType == ADInt32) || (dataType == ADUInt32)) {
-                pInt32Data = (epicsInt32*)value;
-            } else {
-                /* We need to convert the data to epicsInt32 */
-                allocateImageBuffer(pPvt, nPixels*sizeof(epicsInt32));
-                convertToInt32(pPvt, dataType, nPixels, value, (epicsInt32 *)pPvt->imageBuffer);
-                pInt32Data = (epicsInt32*)pPvt->imageBuffer;
-            }
-        }
-        pint32ArrayInterrupt->callback(pint32ArrayInterrupt->userPvt, 
-                                       pint32ArrayInterrupt->pasynUser,
-                                       pInt32Data, nPixels);
-        pnode = (interruptNode *)ellNext(&pnode->node);
-        if (reason == ADCmdImageData) {
-            /* Update the image Counter */
-            pPvt->imageCounter++;
-            int32Callback(pPvt, ADCmdImageCounter, pPvt->imageCounter);
-        }
-    }
-    pasynManager->interruptEnd(pPvt->int32ArrayInterruptPvt);
+    ARRAY_INTERRUPT_CALLBACK(pPvt->int32ArrayInterruptPvt, asynInt32ArrayInterrupt,
+                             int32Initialized, ADInt32, ADUInt32, epicsInt32);
+    
+    /* Pass interrupts for float32Array data*/
+    ARRAY_INTERRUPT_CALLBACK(pPvt->float32ArrayInterruptPvt, asynFloat32ArrayInterrupt,
+                             float32Initialized, ADFloat32, ADFloat32, epicsFloat32);
+    
+    /* Pass interrupts for float64Array data*/
+    ARRAY_INTERRUPT_CALLBACK(pPvt->float64ArrayInterruptPvt, asynFloat64ArrayInterrupt,
+                             float64Initialized, ADFloat64, ADFloat64, epicsFloat64);
+    
+
+    /* Update the frame counter.  This should be done after the image data callbacks, since
+     * some clients may be monitoring this PV to see when new data are available. */
+    pPvt->frameCounter++;
+    int32Callback(pPvt, ADCmdFrameCounter, pPvt->frameCounter);
 }
 
 
@@ -802,176 +649,85 @@ static asynStatus writeOctet(void *drvPvt, asynUser *pasynUser,
 }
 
 
+/* The following macros save a lot of code, since we have 5 array types to support */
+#define DEFINE_READ_ARRAY(FUNCTION_NAME, EPICS_TYPE, AD_TYPE) \
+static asynStatus FUNCTION_NAME(void *drvPvt, asynUser *pasynUser, \
+                                EPICS_TYPE *value, size_t nelements, size_t *nIn) \
+{ \
+    drvADPvt *pPvt = (drvADPvt *)drvPvt; \
+    ADCommand_t command = pasynUser->reason; \
+    asynStatus status; \
+    int imageSize, nx, ny, nPixels; \
+    int nxt, nyt; \
+    int dataType; \
+    \
+    switch(command) { \
+    case ADCmdImageData: \
+        status = getImageDimensions(pPvt, pasynUser, &imageSize, &nx, &ny, &dataType); \
+        if (status != asynSuccess) { \
+            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, \
+                         "drvADAsyn::READ_ARRAY error reading image dimensions\n"); \
+            return(asynError); \
+        }\
+        nPixels = nx * ny; \
+        /* Make sure our buffer is large enough to hold data.  If not free it and allocate a new one. */ \
+        status = allocateImageBuffer(pPvt, imageSize); \
+        if (status != asynSuccess) { \
+            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, \
+                         "drvADAsyn::READ_ARRAY error allocating memory=%d", status); \
+            return(asynError); \
+        } \
+        status = (*pPvt->drvset->getImage)(pPvt->pDetector, imageSize, pPvt->imageBuffer); \
+        if (status != AREA_DETECTOR_OK) { \
+            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, \
+                         "drvADAsyn::READ_ARRAY error reading imageBuffer=%d", status); \
+            return(asynError); \
+        } \
+        /* Convert data from its actual data type.  */ \
+        status = ADUtils->convertImage(pPvt->imageBuffer, dataType, nx, ny, \
+                                       value, AD_TYPE, \
+                                       1, 1, 0, 0, \
+                                       nx, ny, &nxt, &nyt); \
+        break; \
+    default: \
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, \
+                     "drvADAsyn::READ_ARRAT unknown command %d", command); \
+        return(asynError); \
+        break; \
+    } \
+    return(asynSuccess); \
+}
+
+#define DEFINE_WRITE_ARRAY(FUNCTION_NAME, EPICS_TYPE, AD_TYPE) \
+static asynStatus FUNCTION_NAME(void *drvPvt, asynUser *pasynUser, \
+                                EPICS_TYPE *value, size_t nelements) \
+{ \
+    /* Note yet implemented */ \
+    asynPrint(pasynUser, ASYN_TRACE_ERROR, \
+              "drvADAsyn::WRITE_ARRAY not yet implemented\n"); \
+    return(asynError); \
+}
+
 /* asynInt8Array interface methods */
-static asynStatus readInt8Array(void *drvPvt, asynUser *pasynUser,
-                                epicsInt8 *value, size_t nelements, size_t *nIn)
-{
-    drvADPvt *pPvt = (drvADPvt *)drvPvt;
-    ADCommand_t command = pasynUser->reason;
-    asynStatus status;
-    int imageSize, nx, ny, nPixels;
-    int dataType;
+DEFINE_READ_ARRAY(readInt8Array, epicsInt8, ADInt8)
+DEFINE_WRITE_ARRAY(writeInt8Array, epicsInt8, ADInt8)
     
-    switch(command) {
-    case ADCmdImageData:
-        status = getImageDimensions(pPvt, pasynUser, &imageSize, &nx, &ny, &dataType);
-        if (status != asynSuccess) {
-            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                         "drvADAsyn::readInt8Array error reading image dimensions\n");
-            return(asynError);
-        }
-
-        nPixels = nx * ny;
-        /* Make sure our buffer is large enough to hold data.  If not free it and allocate a new one. */
-        status = allocateImageBuffer(pPvt, imageSize);
-        if (status != asynSuccess) {
-            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                         "drvADAsyn::readInt8Array error allocating memory=%d", status);
-            return(asynError);
-        }
-        status = (*pPvt->drvset->getImage)(pPvt->pDetector, imageSize, pPvt->imageBuffer);
-        if (status != AREA_DETECTOR_OK) {
-            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                         "drvADAsyn::readInt8Array error reading imageBuffer=%d", status);
-            return(asynError);
-        }
-        /* Convert data from its actual data type to epicsInt8.  */
-        status = convertToInt8(pPvt, dataType, nPixels, pPvt->imageBuffer, value);
-        break;
-    default:
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                     "drvADAsyn::readInt8Array unknown command %d", command);
-        return(asynError);
-        break;
-    }
-    return(asynSuccess);
-}
-
-
-static asynStatus writeInt8Array   (void *drvPvt, asynUser *pasynUser,
-                                     epicsInt8 *value, size_t nelements)
-{
-    /* Note yet implemented */
-    asynPrint(pasynUser, ASYN_TRACE_ERROR,
-              "drvADAsyn::writeInt8Array not yet implemented\n");
-    return(asynError);
-   
-}
-
-
 /* asynInt16Array interface methods */
-static asynStatus readInt16Array(void *drvPvt, asynUser *pasynUser,
-                                 epicsInt16 *value, size_t nelements, size_t *nIn)
-{
-    drvADPvt *pPvt = (drvADPvt *)drvPvt;
-    ADCommand_t command = pasynUser->reason;
-    asynStatus status;
-    int imageSize, nx, ny, nPixels;
-    int dataType;
+DEFINE_READ_ARRAY(readInt16Array, epicsInt16, ADInt16)
+DEFINE_WRITE_ARRAY(writeInt16Array, epicsInt16, ADInt16)
     
-    switch(command) {
-    case ADCmdImageData:
-        status = getImageDimensions(pPvt, pasynUser, &imageSize, &nx, &ny, &dataType);
-        if (status != asynSuccess) {
-            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                         "drvADAsyn::readInt16Array error reading image dimensions\n");
-            return(asynError);
-        }
-
-        nPixels = nx * ny;
-        /* Make sure our buffer is large enough to hold data.  If not free it and allocate a new one. */
-        status = allocateImageBuffer(pPvt, imageSize);
-        if (status != asynSuccess) {
-            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                         "drvADAsyn::readInt16Array error allocating memory=%d", status);
-            return(asynError);
-        }
-        status = (*pPvt->drvset->getImage)(pPvt->pDetector, imageSize, pPvt->imageBuffer);
-        if (status != AREA_DETECTOR_OK) {
-            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                         "drvADAsyn::readInt16Array error reading imageBuffer=%d", status);
-            return(asynError);
-        }
-        /* Convert data from its actual data type to epicsInt16.  */
-        status = convertToInt16(pPvt, dataType, nPixels, pPvt->imageBuffer, value);
-        break;
-    default:
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                     "drvADAsyn::readInt16Array unknown command %d", command);
-        return(asynError);
-        break;
-    }
-    return(asynSuccess);
-}
-
-
-static asynStatus writeInt16Array   (void *drvPvt, asynUser *pasynUser,
-                                     epicsInt16 *value, size_t nelements)
-{
-    /* Note yet implemented */
-    asynPrint(pasynUser, ASYN_TRACE_ERROR,
-              "drvADAsyn::writeInt16Array not yet implemented\n");
-    return(asynError);
-   
-}
-
-
 /* asynInt32Array interface methods */
-static asynStatus readInt32Array(void *drvPvt, asynUser *pasynUser,
-                                 epicsInt32 *value, size_t nelements, size_t *nIn)
-{
-    drvADPvt *pPvt = (drvADPvt *)drvPvt;
-    ADCommand_t command = pasynUser->reason;
-    asynStatus status;
-    int imageSize, nx, ny, nPixels;
-    int dataType;
+DEFINE_READ_ARRAY(readInt32Array, epicsInt32, ADInt32)
+DEFINE_WRITE_ARRAY(writeInt32Array, epicsInt32, ADInt32)
     
-    switch(command) {
-    case ADCmdImageData:
-        status = getImageDimensions(pPvt, pasynUser, &imageSize, &nx, &ny, &dataType);
-        if (status != asynSuccess) {
-            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                         "drvADAsyn::readInt32Array error reading image dimensions\n");
-            return(asynError);
-        }
-
-        nPixels = nx * ny;
-        /* Make sure our buffer is large enough to hold data.  If not free it and allocate a new one. */
-        status = allocateImageBuffer(pPvt, imageSize);
-        if (status != asynSuccess) {
-            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                         "drvADAsyn::readInt32Array error allocating memory=%d", status);
-            return(asynError);
-        }
-        status = (*pPvt->drvset->getImage)(pPvt->pDetector, imageSize, pPvt->imageBuffer);
-        if (status != AREA_DETECTOR_OK) {
-            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                         "drvADAsyn::readInt32Array error reading imageBuffer=%d", status);
-            return(asynError);
-        }
-        /* Convert data from its actual data type to epicsInt32.  */
-        status = convertToInt32(pPvt, dataType, nPixels, pPvt->imageBuffer, value);
-        break;
-    default:
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                     "drvADAsyn::readInt32Array unknown command %d", command);
-        return(asynError);
-        break;
-    }
-    return(asynSuccess);
-}
-
-
-static asynStatus writeInt32Array   (void *drvPvt, asynUser *pasynUser,
-                                     epicsInt32 *value, size_t nelements)
-{
-    /* Note yet implemented */
-    asynPrint(pasynUser, ASYN_TRACE_ERROR,
-              "drvADAsyn::writeInt32Array not yet implemented\n");
-    return(asynError);
-   
-}
-
+/* asynFloat32Array interface methods */
+DEFINE_READ_ARRAY(readFloat32Array, epicsFloat32, ADFloat32)
+DEFINE_WRITE_ARRAY(writeFloat32Array, epicsFloat32, ADFloat32)
+    
+/* asynFloat64Array interface methods */
+DEFINE_READ_ARRAY(readFloat64Array, epicsFloat64, ADFloat64)
+DEFINE_WRITE_ARRAY(writeFloat64Array, epicsFloat64, ADFloat64)
+    
 
 static void rebootCallback(void *drvPvt)
 {
@@ -1144,6 +900,12 @@ int drvAsynADConfigure(const char *portName, const char *driverName, int detecto
     pPvt->int32Array.interfaceType = asynInt32ArrayType;
     pPvt->int32Array.pinterface  = (void *)&drvADInt32Array;
     pPvt->int32Array.drvPvt = pPvt;
+    pPvt->float32Array.interfaceType = asynFloat32ArrayType;
+    pPvt->float32Array.pinterface  = (void *)&drvADFloat32Array;
+    pPvt->float32Array.drvPvt = pPvt;
+    pPvt->float64Array.interfaceType = asynFloat64ArrayType;
+    pPvt->float64Array.pinterface  = (void *)&drvADFloat64Array;
+    pPvt->float64Array.drvPvt = pPvt;
     pPvt->octet.interfaceType = asynOctetType;
     pPvt->octet.pinterface  = (void *)&drvADOctet;
     pPvt->octet.drvPvt = pPvt;
@@ -1208,6 +970,24 @@ int drvAsynADConfigure(const char *portName, const char *driverName, int detecto
 
     pasynManager->registerInterruptSource(portName, &pPvt->int32Array,
                                           &pPvt->int32ArrayInterruptPvt);
+
+    status = pasynFloat32ArrayBase->initialize(pPvt->portName,&pPvt->float32Array);
+    if (status != asynSuccess) {
+        errlogPrintf("drvAsynADConfigure ERROR: Can't register float32Array\n");
+        return -1;
+    }
+
+    pasynManager->registerInterruptSource(portName, &pPvt->float32Array,
+                                          &pPvt->float32ArrayInterruptPvt);
+
+    status = pasynFloat64ArrayBase->initialize(pPvt->portName,&pPvt->float64Array);
+    if (status != asynSuccess) {
+        errlogPrintf("drvAsynADConfigure ERROR: Can't register float64Array\n");
+        return -1;
+    }
+
+    pasynManager->registerInterruptSource(portName, &pPvt->float64Array,
+                                          &pPvt->float64ArrayInterruptPvt);
 
     status = pasynOctetBase->initialize(pPvt->portName,&pPvt->octet,0,0,0);
     if (status != asynSuccess) {
