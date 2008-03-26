@@ -30,6 +30,7 @@
 
 #define DEFINE_AREA_DETECTOR_PROTOTYPES 1
 #include "ADParamLib.h"
+#include "ADUtils.h"
 #include "ADInterface.h"
 
 /* If we have any private driver parameters they begin with ADFirstDriverParam and should end
@@ -98,9 +99,6 @@ typedef struct ADHandle {
 } simDetector_t;
 
 #define PRINT   (pCamera->logFunc)
-#define TRACE_FLOW    ADTraceFlow
-#define TRACE_ERROR   ADTraceError
-#define TRACE_IODRIVER  ADTraceIODriver
 
 static int numCameras;
 
@@ -108,33 +106,21 @@ static int numCameras;
 static simDetector_t *allCameras=NULL;
 
 
-static int simBytesPerPixel(int dataType, int *size)
-{
-    int numTypes;
-    int sizes[] = AD_BYTES_PER_PIXEL;
-
-    numTypes = sizeof(sizes)/sizeof(size_t);
-    if (dataType < numTypes) {
-        *size = sizes[dataType];
-        return AREA_DETECTOR_OK;
-    }
-    return AREA_DETECTOR_ERROR;
-}
-
 static void simComputeImage(DETECTOR_HDL pCamera)
 {
     int bytesPerPixel;
     int status = AREA_DETECTOR_OK;
     int dataType;
     int binX, binY, minX, minY, sizeX, sizeY, maxSizeX, maxSizeY, resetImage;
+    int imageSizeX, imageSizeY, imageSize;
     int bufferSize;
     double exposureTime, gain, gainX, gainY, scaleX, scaleY;
-    double dval, increment;
+    double increment;
     int i, j;
 
     /* NOTE: The caller of this function must have taken the mutex */
     
-    PRINT(pCamera->logParam, TRACE_FLOW, "ADComputeImage: entry\n");
+    PRINT(pCamera->logParam, ADTraceFlow, "ADComputeImage: entry\n");
     ADParam->getInteger(pCamera->params, ADBinX,        &binX);
     ADParam->getInteger(pCamera->params, ADBinY,        &binY);
     ADParam->getInteger(pCamera->params, ADMinX,        &minX);
@@ -163,7 +149,7 @@ static void simComputeImage(DETECTOR_HDL pCamera)
     /* Make sure the buffers we have allocated are large enough.
      * rawBuffer is for the entire image, imageBuffer is for the subregion with binning
      * We allocated them both the same size for simplicity and efficiency */
-    status = simBytesPerPixel(dataType, &bytesPerPixel);
+    status = ADUtils->bytesPerPixel(dataType, &bytesPerPixel);
     bufferSize = maxSizeX * maxSizeY * bytesPerPixel;
     if (bufferSize != pCamera->bufferSize) {
         free(pCamera->rawBuffer);
@@ -174,7 +160,7 @@ static void simComputeImage(DETECTOR_HDL pCamera)
     }
 
     /* The intensity at each pixel[i,j] is:
-     * (i * xGain + j* yGain) + frameCounter * gain * exposureTime * 1000. */
+     * (i * gainX + j* gainY) + frameCounter * gain * exposureTime * 1000. */
     increment = gain * exposureTime * 1000.;
     scaleX = 0.;
     scaleY = 0.;
@@ -183,11 +169,12 @@ static void simComputeImage(DETECTOR_HDL pCamera)
 
     #define COMPUTE_ARRAY(DATA_TYPE) {                      \
         DATA_TYPE *pData = (DATA_TYPE *)pCamera->rawBuffer; \
-        if (resetImage) {                   \
+        DATA_TYPE inc = (DATA_TYPE)increment;               \
+        if (resetImage) {                                   \
             for (i=0; i<maxSizeY; i++) {                    \
                 scaleX = 0.;                                \
                 for (j=0; j<maxSizeX; j++) {                \
-                    (*pData++) = (DATA_TYPE)(scaleX + scaleY + increment);  \
+                    (*pData++) = (DATA_TYPE)(scaleX + scaleY + inc);  \
                     scaleX += gainX;                        \
                 }                                           \
                 scaleY += gainY;                            \
@@ -195,8 +182,7 @@ static void simComputeImage(DETECTOR_HDL pCamera)
         } else {                                            \
             for (i=0; i<maxSizeY; i++) {                    \
                 for (j=0; j<maxSizeX; j++) {                \
-                     dval = (double) *pData + increment;    \
-                    (*pData++) = (DATA_TYPE) dval;         \
+                     *pData++ += inc;                       \
                 }                                           \
             }                                               \
         }                                                   \
@@ -230,73 +216,23 @@ static void simComputeImage(DETECTOR_HDL pCamera)
             break;
     }
     
-    /* If no binning or a subregion is defined then just set the pointer to the raw buffer */
-    if ((binX == 1) && (binY == 1) && 
-        (minX == 0) && (minY == 0) &&
-        (sizeX == maxSizeX) && (sizeY == maxSizeY)) {
-        pCamera->imageBuffer = pCamera->rawBuffer;
-        ADParam->setInteger(pCamera->params, ADImageSize, bufferSize);
-        ADParam->setInteger(pCamera->params, ADImageSizeX, maxSizeX);
-        ADParam->setInteger(pCamera->params, ADImageSizeY, maxSizeY);
-    } else {
-        /* We need to read a subregion or bin the image */
-        int imageSizeX = sizeX/binX;
-        int imageSizeY = sizeY/binY;
-        int imageSize = imageSizeX * imageSizeY * bytesPerPixel;
-
-        ADParam->setInteger(pCamera->params, ADImageSize,  imageSize);
-        ADParam->setInteger(pCamera->params, ADImageSizeX, imageSizeX);
-        ADParam->setInteger(pCamera->params, ADImageSizeY, imageSizeY);
-         
-        /* The following macro simplifies the code */
-
-        #define COMPUTE_REGION(DATA_TYPE) {                  \
-            int xb, yb, inRow=0, outRow, outCol;             \
-            DATA_TYPE *pOut;                                 \
-            DATA_TYPE *pIn;                                  \
-            for (outRow=0; outRow<sizeY; outRow++) {         \
-                pOut = (DATA_TYPE *)pCamera->imageBuffer;    \
-                pOut += outRow * imageSizeX;                 \
-                for (yb=0; yb<binY; yb++, inRow++) {         \
-                    pIn = (DATA_TYPE *)(pCamera->rawBuffer); \
-                    pIn += inRow*maxSizeX + minX;            \
-                    for (outCol=0; outCol<sizeX; outCol++, pOut++) {          \
-                        *pOut = *pIn++;                      \
-                        for (xb=1; xb<binX; xb++) {          \
-                            *pOut += *pIn++;                 \
-                        } /* Next xbin */                    \
-                    } /* Next outCol */                      \
-                } /* Next ybin */                            \
-            } /* Next outRow */                              \
-        }
-
-        switch (dataType) {
-            case ADInt8: 
-                COMPUTE_REGION(epicsInt8);
-                break;
-            case ADUInt8: 
-                COMPUTE_REGION(epicsUInt8);
-                break;
-            case ADInt16: 
-                COMPUTE_REGION(epicsInt16);
-                break;
-            case ADUInt16: 
-                COMPUTE_REGION(epicsUInt16);
-                break;
-            case ADInt32: 
-                COMPUTE_REGION(epicsInt32);
-                break;
-            case ADUInt32: 
-                COMPUTE_REGION(epicsUInt32);
-                break;
-            case ADFloat32: 
-                COMPUTE_REGION(epicsFloat32);
-                break;
-            case ADFloat64: 
-                COMPUTE_REGION(epicsFloat64);
-                break;
-        }
-    }
+    /* Extract the region of interest with binning.  
+     * If the entire image is being used (no ROI or binning) that's OK because
+     * convertImage detects that case and is very efficient */
+    ADUtils->convertImage(pCamera->rawBuffer, 
+                          dataType,
+                          maxSizeX, maxSizeY,
+                          pCamera->imageBuffer,
+                          dataType,
+                          binX, binY,
+                          minX, minY,
+                          sizeX, sizeY,
+                          &imageSizeX, &imageSizeY);
+    
+    imageSize = imageSizeX * imageSizeY * bytesPerPixel;
+    ADParam->setInteger(pCamera->params, ADImageSize,  imageSize);
+    ADParam->setInteger(pCamera->params, ADImageSizeX, imageSizeX);
+    ADParam->setInteger(pCamera->params, ADImageSizeY, imageSizeY);
   
     ADParam->setInteger(pCamera->params, SimResetImage, 0);
 
@@ -309,7 +245,10 @@ static void simTask(DETECTOR_HDL pCamera)
     int dataType;
     int imageSizeX, imageSizeY, imageSize;
     int acquire;
+    ADStatus_t acquiring;
     double acquireTime, acquirePeriod, delay;
+    epicsTimeStamp startTime, endTime;
+    double computeTime;
 
     /* Loop forever */
     while (1) {
@@ -325,14 +264,17 @@ static void simTask(DETECTOR_HDL pCamera)
             ADParam->callCallbacks(pCamera->params);
             /* Release the lock while we wait for an event that says acquire has started, then lock again */
             epicsMutexUnlock(pCamera->mutexId);
-            PRINT(pCamera->logParam, TRACE_FLOW, "ADSimulateTask: waiting for acquire to start\n");
+            PRINT(pCamera->logParam, ADTraceFlow, "drvSimDetector:simTask: waiting for acquire to start\n");
             status = epicsEventWait(pCamera->eventId);
             epicsMutexLock(pCamera->mutexId);
         }
         
         /* We are acquiring. */
+        /* Get the current time */
+        epicsTimeGetCurrent(&startTime);
         
-        ADParam->setInteger(pCamera->params, ADStatus, ADStatusAcquire);
+        acquiring = ADStatusAcquire;
+        ADParam->setInteger(pCamera->params, ADStatus, acquiring);
         
         /* Update the image */
         simComputeImage(pCamera);
@@ -344,7 +286,8 @@ static void simTask(DETECTOR_HDL pCamera)
         ADParam->getInteger(pCamera->params, ADDataType,   &dataType);
 
         /* Call the imageData callback */
-        PRINT(pCamera->logParam, TRACE_FLOW, "ADSimulateTask: calling imageData callback\n");
+        PRINT(pCamera->logParam, ADTraceFlow, 
+             "drvSimDetector:simTask: calling imageData callback\n");
         pCamera->pImageDataCallback(pCamera->imageDataCallbackParam, 
                                     pCamera->imageBuffer,
                                     dataType, imageSize, imageSizeX, imageSizeY);
@@ -352,8 +295,10 @@ static void simTask(DETECTOR_HDL pCamera)
         /* See if acquisition is done */
         if (pCamera->framesRemaining > 0) pCamera->framesRemaining--;
         if (pCamera->framesRemaining == 0) {
-            ADParam->setInteger(pCamera->params, ADAcquire, 0);
-            PRINT(pCamera->logParam, TRACE_FLOW, "ADSimulateTask: acquisition completed\n");
+            acquiring = ADStatusIdle;
+            ADParam->setInteger(pCamera->params, ADAcquire, acquiring);
+            PRINT(pCamera->logParam, ADTraceFlow, 
+                  "drvSimDetector:simTask: acquisition completed\n");
         }
         
         /* Call the callbacks to update any changes */
@@ -365,10 +310,19 @@ static void simTask(DETECTOR_HDL pCamera)
         /* We are done accessing data structures, release the lock */
         epicsMutexUnlock(pCamera->mutexId);
         
-        /* Wait for the larger of the exposure time or the exposure period */
-        delay = acquireTime;
-        if (acquirePeriod > delay) delay = acquirePeriod;
-        if (delay > 0) epicsThreadSleep(delay);
+        /* If we are acquiring then wait for the larger of the exposure time or the exposure period,
+           minus the time we have already spent computing this image. */
+        if (acquiring) {
+            epicsTimeGetCurrent(&endTime);
+            delay = acquireTime;
+            computeTime = epicsTimeDiffInSeconds(&endTime, &startTime);
+            if (acquirePeriod > delay) delay = acquirePeriod;
+            delay -= computeTime;
+            PRINT(pCamera->logParam, ADTraceFlow, 
+                  "drvSimDetector:simTask: computeTime=%f, delay=%f\n",
+                  computeTime, delay);            
+            if (delay > 0) status = epicsEventWaitWithTimeout(pCamera->eventId, delay);
+        }
     }
 }
 
@@ -429,16 +383,26 @@ static int ADClose(DETECTOR_HDL pCamera)
 static int ADFindParam( DETECTOR_HDL pCamera, const char *paramString, int *function )
 {
     int i;
+    int status = AREA_DETECTOR_ERROR;
     int ncommands = sizeof(SimCommands)/sizeof(SimCommands[0]);
 
     if (pCamera == NULL) return AREA_DETECTOR_ERROR;
     for (i=0; i < ncommands; i++) {
         if (epicsStrCaseCmp(paramString, SimCommands[i].commandString) == 0) {
             *function = SimCommands[i].command;
-            return AREA_DETECTOR_OK;
+            status = AREA_DETECTOR_OK;
+            break;
         }
     }
-    return AREA_DETECTOR_ERROR;
+    if (status) 
+        PRINT(pCamera->logParam, ADTraceIODriver, 
+              "drvSimDetector:ADFindParam: not a valid string=%s\n", 
+              paramString);
+    else        
+        PRINT(pCamera->logParam, ADTraceIODriver, 
+              "drvSimDetector:ADFindParam: found value string=%s, function=%d\n",
+              paramString, *function);
+    return status;
 }
 
 static int ADSetInt32Callback(DETECTOR_HDL pCamera, ADInt32CallbackFunc callback, void * param)
@@ -494,9 +458,14 @@ static int ADGetInteger(DETECTOR_HDL pCamera, int function, int * value)
     /* We just read the current value of the parameter from the parameter library.
      * Those values are updated whenever anything could cause them to change */
     status = ADParam->getInteger(pCamera->params, function, value);
-    if (status) PRINT(pCamera->logParam, TRACE_ERROR, "ADGetInteger error, status=%d function=%d, value=%d\n", 
-                      status, function, *value);
-
+    if (status) 
+        PRINT(pCamera->logParam, ADTraceError, 
+              "drvSimDetector:ADGetInteger error, status=%d function=%d, value=%d\n", 
+              status, function, *value);
+    else        
+        PRINT(pCamera->logParam, ADTraceIODriver, 
+              "drvSimDetector:ADGetInteger: function=%d, value=%d\n", 
+              function, *value);
     epicsMutexUnlock(pCamera->mutexId);
     return(status);
 }
@@ -504,6 +473,7 @@ static int ADGetInteger(DETECTOR_HDL pCamera, int function, int * value)
 static int ADSetInteger(DETECTOR_HDL pCamera, int function, int value)
 {
     int status = AREA_DETECTOR_OK;
+    int reset=0;
 
     if (pCamera == NULL) return AREA_DETECTOR_ERROR;
     epicsMutexLock(pCamera->mutexId);
@@ -534,19 +504,63 @@ static int ADSetInteger(DETECTOR_HDL pCamera, int function, int value)
                 pCamera->framesRemaining = -1;
                 break;
             }
-            /* Reset the image */
-            status |= ADParam->setInteger(pCamera->params, SimResetImage, 1);
-            /* Send an event to wake up the simulation task */
+            reset = 1;
+            /* Send an event to wake up the simulation task.  
+             * It won't actually start generating new images until we release the lock below */
             epicsEventSignal(pCamera->eventId);
         } 
         break;
+    case ADBinX:
+    case ADBinY:
+    case ADMinX:
+    case ADMinY:
+    case ADSizeX:
+    case ADSizeY:
+    case ADDataType:
+        reset = 1;
+        break;
+    case SimResetImage:
+        if (value) reset = 1;
+        break;
+    case ADFrameMode: 
+        /* The frame mode may have changed while we are acquiring, 
+         * set the frames remaining appropriately. */
+        switch (value) {
+        case ADSingleFrame:
+            pCamera->framesRemaining = 1;
+            break;
+        case ADMultipleFrame: {
+            int numFrames;
+            ADParam->getInteger(pCamera->params, ADNumFrames, &numFrames);
+            pCamera->framesRemaining = numFrames; }
+            break;
+        case ADContinuousFrame:
+            pCamera->framesRemaining = -1;
+            break;
+        }
+        break;
+     }
+    
+    /* Reset the image if the reset flag was set above */
+    if (reset) {
+        status |= ADParam->setInteger(pCamera->params, SimResetImage, 1);
+        /* Compute the image when parameters change.  
+         * This won't post data, but will cause any parameter changes to be computed and readbacks to update.
+         * Don't compute the image if this is an accquire command, since that will be done next. */
+        if (function != ADAcquire) simComputeImage(pCamera);
     }
     
     /* Do callbacks so higher layers see any changes */
     ADParam->callCallbacks(pCamera->params);
     
-    if (status) PRINT(pCamera->logParam, TRACE_ERROR, "ADSetInteger error, status=%d, function=%d, value=%d\n", 
-                      status, function, value);
+    if (status) 
+        PRINT(pCamera->logParam, ADTraceError, 
+              "drvSimDetector:ADSetInteger error, status=%d function=%d, value=%d\n", 
+              status, function, value);
+    else        
+        PRINT(pCamera->logParam, ADTraceIODriver, 
+              "drvSimDetector:ADSetInteger: function=%d, value=%d\n", 
+              function, value);
     epicsMutexUnlock(pCamera->mutexId);
     return status;
 }
@@ -561,8 +575,14 @@ static int ADGetDouble(DETECTOR_HDL pCamera, int function, double * value)
     /* We just read the current value of the parameter from the parameter library.
      * Those values are updated whenever anything could cause them to change */
     status = ADParam->getDouble(pCamera->params, function, value);
-    if (status) PRINT(pCamera->logParam, TRACE_ERROR, "ADGetDouble error, status=%d, function=%d, value=%f\n", 
-                      status, function, *value);
+    if (status) 
+        PRINT(pCamera->logParam, ADTraceError, 
+              "drvSimDetector:ADGetDouble error, status=%d function=%d, value=%f\n", 
+              status, function, *value);
+    else        
+        PRINT(pCamera->logParam, ADTraceIODriver, 
+              "drvSimDetector:ADGetDouble: function=%d, value=%f\n", 
+              function, *value);
     epicsMutexUnlock(pCamera->mutexId);
     return(status);
 }
@@ -584,13 +604,21 @@ static int ADSetDouble(DETECTOR_HDL pCamera, int function, double value)
     case SimGainX:
     case SimGainY:
         status |= ADParam->setInteger(pCamera->params, SimResetImage, 1);
+        /* Compute the image.  This won't post data, but will cause any readbacks to update */
+        simComputeImage(pCamera);
         break;
     }
 
     /* Do callbacks so higher layers see any changes */
     ADParam->callCallbacks(pCamera->params);
-    if (status) PRINT(pCamera->logParam, TRACE_ERROR, "ADSetDouble error, status=%d, function=%d, value=%f\n", 
-                      status, function, value);
+    if (status) 
+        PRINT(pCamera->logParam, ADTraceError, 
+              "drvSimDetector:ADSetDouble error, status=%d function=%d, value=%f\n", 
+              status, function, value);
+    else        
+        PRINT(pCamera->logParam, ADTraceIODriver, 
+              "drvSimDetector:ADSetDouble: function=%d, value=%f\n", 
+              function, value);
     epicsMutexUnlock(pCamera->mutexId);
     return status;
 }
@@ -604,8 +632,14 @@ static int ADGetString(DETECTOR_HDL pCamera, int function, int maxChars, char * 
     /* We just read the current value of the parameter from the parameter library.
      * Those values are updated whenever anything could cause them to change */
     status = ADParam->getString(pCamera->params, function, maxChars, value);
-    if (status) PRINT(pCamera->logParam, TRACE_ERROR, "ADGetString error, status=%d, function=%d, value=%s\n", 
-                      status, function, value);
+    if (status) 
+        PRINT(pCamera->logParam, ADTraceError, 
+              "drvSimDetector:ADGetString error, status=%d function=%d, value=%s\n", 
+              status, function, value);
+    else        
+        PRINT(pCamera->logParam, ADTraceIODriver, 
+              "drvSimDetector:ADGetString: function=%d, value=%s\n", 
+              function, value);
     epicsMutexUnlock(pCamera->mutexId);
     return(status);
 }
@@ -621,8 +655,14 @@ static int ADSetString(DETECTOR_HDL pCamera, int function, const char *value)
     status |= ADParam->setString(pCamera->params, function, (char *)value);
     /* Do callbacks so higher layers see any changes */
     ADParam->callCallbacks(pCamera->params);
-    if (status) PRINT(pCamera->logParam, TRACE_ERROR, "ADGetString error, status=%d, function=%d, value=%s\n", 
-                      status, function, value);
+    if (status) 
+        PRINT(pCamera->logParam, ADTraceError, 
+              "drvSimDetector:ADSetString error, status=%d function=%d, value=%s\n", 
+              status, function, value);
+    else        
+        PRINT(pCamera->logParam, ADTraceIODriver, 
+              "drvSimDetector:ASGetString: function=%d, value=%s\n", 
+              function, value);
     epicsMutexUnlock(pCamera->mutexId);
     return status;
 }
@@ -630,12 +670,21 @@ static int ADSetString(DETECTOR_HDL pCamera, int function, const char *value)
 static int ADGetImage(DETECTOR_HDL pCamera, int maxBytes, void *buffer)
 {
     int imageSize;
+    int status = AREA_DETECTOR_OK;
     
     if (pCamera == NULL) return AREA_DETECTOR_ERROR;
     epicsMutexLock(pCamera->mutexId);
-    ADParam->getInteger(pCamera->params, ADImageSize, &imageSize);
+    status |= ADParam->getInteger(pCamera->params, ADImageSize, &imageSize);
     if (imageSize > maxBytes) imageSize = maxBytes;
     memcpy(buffer, pCamera->imageBuffer, imageSize);
+    if (status) 
+        PRINT(pCamera->logParam, ADTraceError, 
+              "drvSimDetector:ADGetImage error, status=%d maxBytes=%d, buffer=%p\n", 
+              status, maxBytes, buffer);
+    else        
+        PRINT(pCamera->logParam, ADTraceIODriver, 
+              "drvSimDetector:ADGetImage error, maxBytes=%d, buffer=%p\n", 
+              maxBytes, buffer);
     epicsMutexUnlock(pCamera->mutexId);
     return AREA_DETECTOR_OK;
 }
@@ -646,6 +695,8 @@ static int ADSetImage(DETECTOR_HDL pCamera, int maxBytes, void *buffer)
     if (pCamera == NULL) return AREA_DETECTOR_ERROR;
 
     /* The simDetector does not allow downloading image data */    
+    PRINT(pCamera->logParam, ADTraceIODriver, 
+          "drvSimDetector:ADSetImage not currently supported\n");
     return AREA_DETECTOR_ERROR;
 }
 
@@ -718,11 +769,12 @@ int simDetectorConfig(int camera, int maxSizeX, int maxSizeY, int dataType)     
         return AREA_DETECTOR_ERROR;
     }
     
+    /* Use the utility library to set some defaults */
+    status = ADUtils->setParamDefaults(pCamera->params);
+    
     /* Set some default values for parameters */
     status =  ADParam->setString (pCamera->params, ADManufacturer, "Simulated detector");
     status |= ADParam->setString (pCamera->params, ADModel, "Basic simulator");
-    status |= ADParam->setInteger(pCamera->params, ADStatus, ADStatusIdle);
-    status |= ADParam->setInteger(pCamera->params, ADAcquire, 0);
     status |= ADParam->setInteger(pCamera->params, ADMaxSizeX, maxSizeX);
     status |= ADParam->setInteger(pCamera->params, ADMaxSizeY, maxSizeY);
     status |= ADParam->setInteger(pCamera->params, ADSizeX, maxSizeX);
@@ -732,6 +784,7 @@ int simDetectorConfig(int camera, int maxSizeX, int maxSizeY, int dataType)     
     status |= ADParam->setInteger(pCamera->params, ADDataType, dataType);
     status |= ADParam->setInteger(pCamera->params, ADFrameMode, ADContinuousFrame);
     status |= ADParam->setDouble (pCamera->params, ADAcquireTime, .001);
+    status |= ADParam->setDouble (pCamera->params, ADAcquirePeriod, .005);
     status |= ADParam->setInteger(pCamera->params, ADNumFrames, 100);
     status |= ADParam->setInteger(pCamera->params, SimResetImage, 1);
     status |= ADParam->setDouble (pCamera->params, SimGainX, 1);
@@ -771,7 +824,7 @@ static void setupsimDetectorCallFunc(const iocshArgBuf *args)
 
 
 /* simDetectorConfig */
-static const iocshArg simDetectorConfigArg0 = {"Camera being configured", iocshArgInt};
+static const iocshArg simDetectorConfigArg0 = {"Camera # being configured", iocshArgInt};
 static const iocshArg simDetectorConfigArg1 = {"Max X size", iocshArgInt};
 static const iocshArg simDetectorConfigArg2 = {"Max Y size", iocshArgInt};
 static const iocshArg simDetectorConfigArg3 = {"Data type", iocshArgInt};
