@@ -37,23 +37,25 @@
    with ADLastDriverParam, which is used for setting the size of the parameter library table */
 
 typedef enum {
-   SimGainX = ADFirstDriverParam,
-   SimGainY,
-   SimResetImage,
+   DetGainX = ADFirstDriverParam,
+   DetGainY,
+   DetResetImage,
    ADLastDriverParam
-} SimParam_t;
+} DetParam_t;
 
 typedef struct {
-    SimParam_t command;
+    DetParam_t command;
     char *commandString;
-} SimCommandStruct;
+} DetCommandStruct;
 
 /* The command strings are the input to FindParam, which returns the corresponding parameter enum value */
-static SimCommandStruct SimCommands[] = {
-    {SimGainX,      "SIM_GAINX"},  
-    {SimGainY,      "SIM_GAINY"},  
-    {SimResetImage, "RESET_IMAGE"}  
+static DetCommandStruct DetCommands[] = {
+    {DetGainX,      "SIM_GAINX"},  
+    {DetGainY,      "SIM_GAINY"},  
+    {DetResetImage, "RESET_IMAGE"}  
 };
+
+static char* driverName = "drvSimDetector";
 
 ADDrvSet_t ADSimDetector = 
   {
@@ -120,7 +122,6 @@ static void simComputeImage(DETECTOR_HDL pCamera)
 
     /* NOTE: The caller of this function must have taken the mutex */
     
-    PRINT(pCamera->logParam, ADTraceFlow, "ADComputeImage: entry\n");
     ADParam->getInteger(pCamera->params, ADBinX,        &binX);
     ADParam->getInteger(pCamera->params, ADBinY,        &binY);
     ADParam->getInteger(pCamera->params, ADMinX,        &minX);
@@ -130,11 +131,11 @@ static void simComputeImage(DETECTOR_HDL pCamera)
     ADParam->getInteger(pCamera->params, ADMaxSizeX,    &maxSizeX);
     ADParam->getInteger(pCamera->params, ADMaxSizeY,    &maxSizeY);
     ADParam->getInteger(pCamera->params, ADDataType,    &dataType);
-    ADParam->getInteger(pCamera->params, SimResetImage, &resetImage);
+    ADParam->getInteger(pCamera->params, DetResetImage, &resetImage);
     ADParam->getDouble (pCamera->params, ADAcquireTime, &exposureTime);
     ADParam->getDouble (pCamera->params, ADGain,        &gain);
-    ADParam->getDouble (pCamera->params, SimGainX,      &gainX);
-    ADParam->getDouble (pCamera->params, SimGainY,      &gainY);
+    ADParam->getDouble (pCamera->params, DetGainX,      &gainX);
+    ADParam->getDouble (pCamera->params, DetGainY,      &gainY);
 
     /* Make sure parameters are consistent, fix them if they are not */
     if (binX < 0) {binX = 0; ADParam->setInteger(pCamera->params, ADBinX, binX);}
@@ -234,7 +235,7 @@ static void simComputeImage(DETECTOR_HDL pCamera)
     ADParam->setInteger(pCamera->params, ADImageSizeX, imageSizeX);
     ADParam->setInteger(pCamera->params, ADImageSizeY, imageSizeY);
   
-    ADParam->setInteger(pCamera->params, SimResetImage, 0);
+    ADParam->setInteger(pCamera->params,DetResetImage, 0);
 
 }
 
@@ -264,7 +265,8 @@ static void simTask(DETECTOR_HDL pCamera)
             ADParam->callCallbacks(pCamera->params);
             /* Release the lock while we wait for an event that says acquire has started, then lock again */
             epicsMutexUnlock(pCamera->mutexId);
-            PRINT(pCamera->logParam, ADTraceFlow, "drvSimDetector:simTask: waiting for acquire to start\n");
+            PRINT(pCamera->logParam, ADTraceFlow, 
+                "%s:simTask: waiting for acquire to start\n", driverName);
             status = epicsEventWait(pCamera->eventId);
             epicsMutexLock(pCamera->mutexId);
         }
@@ -287,7 +289,7 @@ static void simTask(DETECTOR_HDL pCamera)
 
         /* Call the imageData callback */
         PRINT(pCamera->logParam, ADTraceFlow, 
-             "drvSimDetector:simTask: calling imageData callback\n");
+             "%s:simTask: calling imageData callback\n", driverName);
         pCamera->pImageDataCallback(pCamera->imageDataCallbackParam, 
                                     pCamera->imageBuffer,
                                     dataType, imageSize, imageSizeX, imageSizeY);
@@ -298,7 +300,7 @@ static void simTask(DETECTOR_HDL pCamera)
             acquiring = ADStatusIdle;
             ADParam->setInteger(pCamera->params, ADAcquire, acquiring);
             PRINT(pCamera->logParam, ADTraceFlow, 
-                  "drvSimDetector:simTask: acquisition completed\n");
+                  "%s:simTask: acquisition completed\n", driverName);
         }
         
         /* Call the callbacks to update any changes */
@@ -319,8 +321,8 @@ static void simTask(DETECTOR_HDL pCamera)
             if (acquirePeriod > delay) delay = acquirePeriod;
             delay -= computeTime;
             PRINT(pCamera->logParam, ADTraceFlow, 
-                  "drvSimDetector:simTask: computeTime=%f, delay=%f\n",
-                  computeTime, delay);            
+                  "%s:simTask: computeTime=%f, delay=%f\n",
+                  driverName, computeTime, delay);            
             if (delay > 0) status = epicsEventWaitWithTimeout(pCamera->eventId, delay);
         }
     }
@@ -384,24 +386,24 @@ static int ADFindParam( DETECTOR_HDL pCamera, const char *paramString, int *func
 {
     int i;
     int status = AREA_DETECTOR_ERROR;
-    int ncommands = sizeof(SimCommands)/sizeof(SimCommands[0]);
+    int ncommands = sizeof(DetCommands)/sizeof(DetCommands[0]);
 
     if (pCamera == NULL) return AREA_DETECTOR_ERROR;
     for (i=0; i < ncommands; i++) {
-        if (epicsStrCaseCmp(paramString, SimCommands[i].commandString) == 0) {
-            *function = SimCommands[i].command;
+        if (epicsStrCaseCmp(paramString, DetCommands[i].commandString) == 0) {
+            *function = DetCommands[i].command;
             status = AREA_DETECTOR_OK;
             break;
         }
     }
     if (status) 
         PRINT(pCamera->logParam, ADTraceIODriver, 
-              "drvSimDetector:ADFindParam: not a valid string=%s\n", 
-              paramString);
+              "%s:ADFindParam: not a valid string=%s\n", 
+              driverName, paramString);
     else        
         PRINT(pCamera->logParam, ADTraceIODriver, 
-              "drvSimDetector:ADFindParam: found value string=%s, function=%d\n",
-              paramString, *function);
+              "%s:ADFindParam: found value string=%s, function=%d\n",
+              driverName, paramString, *function);
     return status;
 }
 
@@ -460,12 +462,12 @@ static int ADGetInteger(DETECTOR_HDL pCamera, int function, int * value)
     status = ADParam->getInteger(pCamera->params, function, value);
     if (status) 
         PRINT(pCamera->logParam, ADTraceError, 
-              "drvSimDetector:ADGetInteger error, status=%d function=%d, value=%d\n", 
-              status, function, *value);
+              "%s:ADGetInteger error, status=%d function=%d, value=%d\n", 
+              driverName, status, function, *value);
     else        
         PRINT(pCamera->logParam, ADTraceIODriver, 
-              "drvSimDetector:ADGetInteger: function=%d, value=%d\n", 
-              function, *value);
+              "%s:ADGetInteger: function=%d, value=%d\n", 
+              driverName, function, *value);
     epicsMutexUnlock(pCamera->mutexId);
     return(status);
 }
@@ -519,7 +521,7 @@ static int ADSetInteger(DETECTOR_HDL pCamera, int function, int value)
     case ADDataType:
         reset = 1;
         break;
-    case SimResetImage:
+    case DetResetImage:
         if (value) reset = 1;
         break;
     case ADFrameMode: 
@@ -543,7 +545,7 @@ static int ADSetInteger(DETECTOR_HDL pCamera, int function, int value)
     
     /* Reset the image if the reset flag was set above */
     if (reset) {
-        status |= ADParam->setInteger(pCamera->params, SimResetImage, 1);
+        status |= ADParam->setInteger(pCamera->params, DetResetImage, 1);
         /* Compute the image when parameters change.  
          * This won't post data, but will cause any parameter changes to be computed and readbacks to update.
          * Don't compute the image if this is an accquire command, since that will be done next. */
@@ -555,12 +557,12 @@ static int ADSetInteger(DETECTOR_HDL pCamera, int function, int value)
     
     if (status) 
         PRINT(pCamera->logParam, ADTraceError, 
-              "drvSimDetector:ADSetInteger error, status=%d function=%d, value=%d\n", 
-              status, function, value);
+              "%s:ADSetInteger error, status=%d function=%d, value=%d\n", 
+              driverName, status, function, value);
     else        
         PRINT(pCamera->logParam, ADTraceIODriver, 
-              "drvSimDetector:ADSetInteger: function=%d, value=%d\n", 
-              function, value);
+              "%s:ADSetInteger: function=%d, value=%d\n", 
+              driverName, function, value);
     epicsMutexUnlock(pCamera->mutexId);
     return status;
 }
@@ -577,12 +579,12 @@ static int ADGetDouble(DETECTOR_HDL pCamera, int function, double * value)
     status = ADParam->getDouble(pCamera->params, function, value);
     if (status) 
         PRINT(pCamera->logParam, ADTraceError, 
-              "drvSimDetector:ADGetDouble error, status=%d function=%d, value=%f\n", 
-              status, function, *value);
+              "%s:ADGetDouble error, status=%d function=%d, value=%f\n", 
+              driverName, status, function, *value);
     else        
         PRINT(pCamera->logParam, ADTraceIODriver, 
-              "drvSimDetector:ADGetDouble: function=%d, value=%f\n", 
-              function, *value);
+              "%s:ADGetDouble: function=%d, value=%f\n", 
+              driverName, function, *value);
     epicsMutexUnlock(pCamera->mutexId);
     return(status);
 }
@@ -601,9 +603,9 @@ static int ADSetDouble(DETECTOR_HDL pCamera, int function, double value)
     switch (function) {
     case ADAcquireTime:
     case ADGain:
-    case SimGainX:
-    case SimGainY:
-        status |= ADParam->setInteger(pCamera->params, SimResetImage, 1);
+    case DetGainX:
+    case DetGainY:
+        status |= ADParam->setInteger(pCamera->params, DetResetImage, 1);
         /* Compute the image.  This won't post data, but will cause any readbacks to update */
         simComputeImage(pCamera);
         break;
@@ -613,12 +615,12 @@ static int ADSetDouble(DETECTOR_HDL pCamera, int function, double value)
     ADParam->callCallbacks(pCamera->params);
     if (status) 
         PRINT(pCamera->logParam, ADTraceError, 
-              "drvSimDetector:ADSetDouble error, status=%d function=%d, value=%f\n", 
-              status, function, value);
+              "%s:ADSetDouble error, status=%d function=%d, value=%f\n", 
+              driverName, status, function, value);
     else        
         PRINT(pCamera->logParam, ADTraceIODriver, 
-              "drvSimDetector:ADSetDouble: function=%d, value=%f\n", 
-              function, value);
+              "%s:ADSetDouble: function=%d, value=%f\n", 
+              driverName, function, value);
     epicsMutexUnlock(pCamera->mutexId);
     return status;
 }
@@ -634,12 +636,12 @@ static int ADGetString(DETECTOR_HDL pCamera, int function, int maxChars, char * 
     status = ADParam->getString(pCamera->params, function, maxChars, value);
     if (status) 
         PRINT(pCamera->logParam, ADTraceError, 
-              "drvSimDetector:ADGetString error, status=%d function=%d, value=%s\n", 
-              status, function, value);
+              "%s:ADGetString error, status=%d function=%d, value=%s\n", 
+              driverName, status, function, value);
     else        
         PRINT(pCamera->logParam, ADTraceIODriver, 
-              "drvSimDetector:ADGetString: function=%d, value=%s\n", 
-              function, value);
+              "%s:ADGetString: function=%d, value=%s\n", 
+              driverName, function, value);
     epicsMutexUnlock(pCamera->mutexId);
     return(status);
 }
@@ -657,12 +659,12 @@ static int ADSetString(DETECTOR_HDL pCamera, int function, const char *value)
     ADParam->callCallbacks(pCamera->params);
     if (status) 
         PRINT(pCamera->logParam, ADTraceError, 
-              "drvSimDetector:ADSetString error, status=%d function=%d, value=%s\n", 
-              status, function, value);
+              "%s:ADSetString error, status=%d function=%d, value=%s\n", 
+              driverName, status, function, value);
     else        
         PRINT(pCamera->logParam, ADTraceIODriver, 
-              "drvSimDetector:ASGetString: function=%d, value=%s\n", 
-              function, value);
+              "%s:ASGetString: function=%d, value=%s\n", 
+              driverName, function, value);
     epicsMutexUnlock(pCamera->mutexId);
     return status;
 }
@@ -679,12 +681,12 @@ static int ADGetImage(DETECTOR_HDL pCamera, int maxBytes, void *buffer)
     memcpy(buffer, pCamera->imageBuffer, imageSize);
     if (status) 
         PRINT(pCamera->logParam, ADTraceError, 
-              "drvSimDetector:ADGetImage error, status=%d maxBytes=%d, buffer=%p\n", 
-              status, maxBytes, buffer);
+              "%s:ADGetImage error, status=%d maxBytes=%d, buffer=%p\n", 
+              driverName, status, maxBytes, buffer);
     else        
         PRINT(pCamera->logParam, ADTraceIODriver, 
-              "drvSimDetector:ADGetImage error, maxBytes=%d, buffer=%p\n", 
-              maxBytes, buffer);
+              "%s:ADGetImage error, maxBytes=%d, buffer=%p\n", 
+              driverName, maxBytes, buffer);
     epicsMutexUnlock(pCamera->mutexId);
     return AREA_DETECTOR_OK;
 }
@@ -696,7 +698,7 @@ static int ADSetImage(DETECTOR_HDL pCamera, int maxBytes, void *buffer)
 
     /* The simDetector does not allow downloading image data */    
     PRINT(pCamera->logParam, ADTraceIODriver, 
-          "drvSimDetector:ADSetImage not currently supported\n");
+          "%s:ADSetImage not currently supported\n", driverName);
     return AREA_DETECTOR_ERROR;
 }
 
@@ -786,9 +788,9 @@ int simDetectorConfig(int camera, int maxSizeX, int maxSizeY, int dataType)     
     status |= ADParam->setDouble (pCamera->params, ADAcquireTime, .001);
     status |= ADParam->setDouble (pCamera->params, ADAcquirePeriod, .005);
     status |= ADParam->setInteger(pCamera->params, ADNumFrames, 100);
-    status |= ADParam->setInteger(pCamera->params, SimResetImage, 1);
-    status |= ADParam->setDouble (pCamera->params, SimGainX, 1);
-    status |= ADParam->setDouble (pCamera->params, SimGainY, 1);
+    status |= ADParam->setInteger(pCamera->params, DetResetImage, 1);
+    status |= ADParam->setDouble (pCamera->params, DetGainX, 1);
+    status |= ADParam->setDouble (pCamera->params, DetGainY, 1);
     if (status) {
         printf("simDetectorConfig: unable to set camera parameters\n");
         return AREA_DETECTOR_ERROR;
