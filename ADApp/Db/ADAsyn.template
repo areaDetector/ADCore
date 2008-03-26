@@ -64,6 +64,7 @@ record(mbbo, "$(P)$(D)DataType")
 
 record(mbbi, "$(P)$(D)DataType_RBV")
 {
+   field(PINI, "1")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DATA_TYPE")
    field(ZRST, "Int8")
@@ -82,6 +83,7 @@ record(mbbi, "$(P)$(D)DataType_RBV")
    field(SXVL, "6")
    field(SVST, "Float64")
    field(SVVL, "7")
+   field(SCAN, "I/O Intr")
 }
 
 record(longout, "$(P)$(D)BinX")
