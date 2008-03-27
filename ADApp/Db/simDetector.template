@@ -34,3 +34,28 @@ record(ai, "$(P)$(D)GainY_RBV")
    field(SCAN, "I/O Intr")
 }
 
+# File data format. NOTE: This replaces the record that is in ASAsyn.template.
+record(mbbo, "$(P)$(D)FileFormat")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_FORMAT")
+    field(ZRST, "Binary")
+    field(ZRVL, "0")
+    field(ONST, "ASCII")
+    field(ONVL, "1")
+}
+
+record(mbbi, "$(P)$(D)FileFormat_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_FORMAT")
+    field(ZRST, "Binary")
+    field(ZRVL, "0")
+    field(ONST, "ASCII")
+    field(ONVL, "1")
+    field(SCAN, "I/O Intr")
+}
+
+
