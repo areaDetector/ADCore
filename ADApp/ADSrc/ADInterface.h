@@ -183,12 +183,11 @@ typedef enum
     ADFileTemplate,    /* (string,  r/w) The format string. */
     ADAutoIncrement,   /* (integer, r/w) Autoincrement file number. 0=No, 1=Yes */
     ADFullFileName,    /* (string,  r/o) The actual complete file name for the last file saved. */
-    ADFileFormat,      /* (string,  r/w) The data format to use for saving the file.  
-                                         The allowed values are not specified in this interface,
-                                         but the values should be intuitive and case-insensitive,
-                                         such as TIFF, JPEG, AVI, etc. */
+    ADFileFormat,      /* (integer, r/w) The data format to use for saving the file.  
+                                         The values are enums that will be detector-specific. */
     ADAutoSave,        /* (integer, r/w) Automatically save files */
-    ADSaveFile,        /* (integer, r/w) Manually save the last file when value=1 */
+    ADWriteFile,       /* (integer, r/w) Manually save the most recent image to a file when value=1 */
+    ADReadFile,        /* (integer, r/w) Manually read file when value=1 */
     
     ADLastStandardParam  /* The last command, used by the standard driver */
 } ADParam_t;
@@ -326,7 +325,7 @@ static int ADFindParam( DETECTOR_HDL pDetector, const char *paramString, int *fu
 typedef void (*ADInt32CallbackFunc)    ( void *param, int function, int value );
 typedef void (*ADFloat64CallbackFunc)  ( void *param, int function, double value );
 typedef void (*ADStringCallbackFunc)   ( void *param, int function, char *value );
-typedef void (*ADImageDataCallbackFunc)( void *param, void *value, ADDataType_t dataType, size_t nBytes, int nx, int ny );
+typedef void (*ADImageDataCallbackFunc)( void *param, void *value, ADDataType_t dataType, int nx, int ny );
 typedef int (*ADSetInt32CallbackFunc)    ( DETECTOR_HDL pDetector, ADInt32CallbackFunc     callback, void *param);
 typedef int (*ADSetFloat64CallbackFunc)  ( DETECTOR_HDL pDetector, ADFloat64CallbackFunc   callback, void *param );
 typedef int (*ADSetStringCallbackFunc)   ( DETECTOR_HDL pDetector, ADStringCallbackFunc    callback, void *param );
