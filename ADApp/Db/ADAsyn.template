@@ -16,22 +16,6 @@ record(stringin, "$(P)$(D)Model_RBV")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MODEL")
 }
 
-record(ao, "$(P)$(D)Temperature")
-{
-   field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMPERATURE")
-   field(PREC, "2")
-}
-
-record(ai, "$(P)$(D)Temperature_RBV")
-{
-   field(PINI, "1")
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMPERATURE")
-   field(PREC, "2")
-   field(SCAN, "I/O Intr")
-}
-
 record(bo, "$(P)$(D)ADC")
 {
    field(VAL, "0")
@@ -555,26 +539,41 @@ record(mbbi, "$(P)$(D)AutoSave_RBV")
     field(SCAN, "I/O Intr")
 }
 
-# Save file
-record(longout, "$(P)$(D)SaveFile")
+# Write file
+record(longout, "$(P)$(D)WriteFile")
 {
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SAVE_FILE")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WRITE_FILE")
+}
+
+# Write file
+record(longout, "$(P)$(D)ReadFile")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))READ_FILE")
 }
 
 # File data format 
-record(stringout, "$(P)$(D)FileFormat")
+record(mbbo, "$(P)$(D)FileFormat")
 {
     field(PINI, "1")
-    field(DTYP, "asynOctetWrite")
+    field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_FORMAT")
+    field(ZRST, "Default")
+    field(ZRVL, "0")
+    field(ONST, "Invalid")
+    field(ONVL, "1")
 }
 
-record(stringin, "$(P)$(D)FileFormat_RBV")
+record(mbbi, "$(P)$(D)FileFormat_RBV")
 {
     field(PINI, "1")
-    field(DTYP, "asynOctetRead")
+    field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_FORMAT")
+    field(ZRST, "Default")
+    field(ZRVL, "0")
+    field(ONST, "Invalid")
+    field(ONVL, "1")
     field(SCAN, "I/O Intr")
 }
 
@@ -678,12 +677,6 @@ record(stringin, "$(P)$(D)ShutterStatus")
    field(INP, "$(P)$(D)Shutter CP MS")
 }
 
-record(bi, "$(P)$(D)DebugFlag")
-{
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
-}
-
 record(stringout, "$(P)$(D)DetInStr")
 {
 }
@@ -722,13 +715,10 @@ record(stringin, "$(P)$(D)Comment6")
    field(DESC, "Comment 6")
 }
 
-# This asynRecord is used for interactive communication and debug flags for
-# with TCP/IP servers. 
+# This asynRecord is used for debug flags
 # Set ASYN_TRACEIO_ESCAPE bit
 record(asyn,"$(P)$(D)AsynIO")
 {
     field(PORT, $(PORT))
     field(TIB1,"1")
-    field(IEOS,"\n")
-    field(OEOS,"\n")
 }
