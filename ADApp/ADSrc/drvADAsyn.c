@@ -96,7 +96,8 @@ static ADCommandStruct ADCommands[] = {
     {ADFullFileName,   "FULL_FILE_NAME"},
     {ADFileFormat,     "FILE_FORMAT"   },
     {ADAutoSave,       "AUTO_SAVE"     },
-    {ADSaveFile,       "SAVE_FILE"     },
+    {ADWriteFile,      "WRITE_FILE"    },
+    {ADReadFile,       "READ_FILE"     },
 
     /* These commands are for the EPICS asyn layer */
     {ADCmdUpdateTime,  "IMAGE_UPDATE_TIME" },
@@ -400,7 +401,7 @@ static void stringCallback(void *drvPvt, int command, char *value)
 }
 
 static void imageDataCallback(void *drvPvt, void *value,  
-                              ADDataType_t dataType, size_t nBytes, int nx, int ny)
+                              ADDataType_t dataType, int nx, int ny)
 {
     drvADPvt *pPvt = drvPvt;
     ELLLIST *pclientList;
