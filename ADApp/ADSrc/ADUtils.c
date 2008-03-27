@@ -204,8 +204,10 @@ static int setParamDefaults( void *params)
     status |= ADParam->setInteger(params, ADFrameMode,    ADSingleFrame);
     status |= ADParam->setInteger(params, ADFileNumber,   1);
     status |= ADParam->setInteger(params, ADAutoIncrement,1);
-    status |= ADParam->setInteger(params, ADAutoSave,     1);
-    status |= ADParam->setInteger(params, ADSaveFile,     1);
+    status |= ADParam->setInteger(params, ADAutoSave,     0);
+    status |= ADParam->setInteger(params, ADWriteFile,    0);
+    status |= ADParam->setInteger(params, ADReadFile,     0);
+    status |= ADParam->setInteger(params, ADFileFormat,   0);
 
     return status;
 }
