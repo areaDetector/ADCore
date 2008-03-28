@@ -763,13 +763,13 @@ static int ADSetInteger(DETECTOR_HDL pCamera, int function, int value)
             status |= ADParam->getInteger(pCamera->params, ADFrameMode, &frameMode);
             status |= ADParam->getInteger(pCamera->params, ADNumFrames, &numFrames);
             switch(frameMode) {
-            case ADSingleFrame:
+            case ADFrameSingle:
                 pCamera->framesRemaining = 1;
                 break;
-            case ADMultipleFrame:
+            case ADFrameMultiple:
                 pCamera->framesRemaining = numFrames;
                 break;
-            case ADContinuousFrame:
+            case ADFrameContinuous:
                 pCamera->framesRemaining = -1;
                 break;
             }
@@ -795,15 +795,15 @@ static int ADSetInteger(DETECTOR_HDL pCamera, int function, int value)
         /* The frame mode may have changed while we are acquiring, 
          * set the frames remaining appropriately. */
         switch (value) {
-        case ADSingleFrame:
+        case ADFrameSingle:
             pCamera->framesRemaining = 1;
             break;
-        case ADMultipleFrame: {
+        case ADFrameMultiple: {
             int numFrames;
             ADParam->getInteger(pCamera->params, ADNumFrames, &numFrames);
             pCamera->framesRemaining = numFrames; }
             break;
-        case ADContinuousFrame:
+        case ADFrameContinuous:
             pCamera->framesRemaining = -1;
             break;
         }
@@ -1062,7 +1062,7 @@ int simDetectorConfig(int camera, int maxSizeX, int maxSizeY, int dataType)     
     status |= ADParam->setInteger(pCamera->params, ADImageSizeX, maxSizeX);
     status |= ADParam->setInteger(pCamera->params, ADImageSizeY, maxSizeY);
     status |= ADParam->setInteger(pCamera->params, ADDataType, dataType);
-    status |= ADParam->setInteger(pCamera->params, ADFrameMode, ADContinuousFrame);
+    status |= ADParam->setInteger(pCamera->params, ADFrameMode, ADFrameContinuous);
     status |= ADParam->setDouble (pCamera->params, ADAcquireTime, .001);
     status |= ADParam->setDouble (pCamera->params, ADAcquirePeriod, .005);
     status |= ADParam->setInteger(pCamera->params, ADNumFrames, 100);
