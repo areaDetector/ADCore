@@ -2,6 +2,11 @@
 # Mark Rivers
 # March 9, 2008
 
+###################################################################
+#  These records control basic information                        #
+#  about the detector                                             # 
+###################################################################
+
 record(stringin, "$(P)$(D)Manufacturer_RBV")
 {
    field(PINI, "1")
@@ -16,6 +21,22 @@ record(stringin, "$(P)$(D)Model_RBV")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MODEL")
 }
 
+record(longin, "$(P)$(D)MaxSizeX_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_SIZE_X")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(D)MaxSizeY_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_SIZE_Y")
+   field(SCAN, "I/O Intr")
+}
+
 record(bo, "$(P)$(D)ADC")
 {
    field(VAL, "0")
@@ -23,7 +44,10 @@ record(bo, "$(P)$(D)ADC")
    field(ONAM, "Fast")
 }
 
-# Records controlling acquisition
+###################################################################
+#  These records control the data type                            # 
+###################################################################
+
 record(mbbo, "$(P)$(D)DataType")
 {
    field(DTYP, "asynInt32")
@@ -69,6 +93,11 @@ record(mbbi, "$(P)$(D)DataType_RBV")
    field(SVVL, "7")
    field(SCAN, "I/O Intr")
 }
+
+###################################################################
+#  These records control the detector readout                     #
+#  including binning, region start and size                       # 
+###################################################################
 
 record(longout, "$(P)$(D)BinX")
 {
@@ -154,22 +183,6 @@ record(longin, "$(P)$(D)SizeY_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(D)MaxSizeX_RBV")
-{
-   field(PINI, "1")
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_SIZE_X")
-   field(SCAN, "I/O Intr")
-}
-
-record(longin, "$(P)$(D)MaxSizeY_RBV")
-{
-   field(PINI, "1")
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_SIZE_Y")
-   field(SCAN, "I/O Intr")
-}
-
 record(longin, "$(P)$(D)ImageSizeX_RBV")
 {
    field(PINI, "1")
@@ -194,21 +207,10 @@ record(longin, "$(P)$(D)ImageSize_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(ao, "$(P)$(D)Gain")
-{
-   field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GAIN")
-}
-
-record(ai, "$(P)$(D)Gain_RBV")
-{
-   field(PINI, "1")
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GAIN")
-   field(PREC, "3")
-   field(SCAN, "I/O Intr")
-}
-
+###################################################################
+#  These records control the acquisition time and                 #
+#  period                                                         # 
+###################################################################
 record(ao, "$(P)$(D)AcquireTime")
 {
    field(DTYP, "asynFloat64")
@@ -241,6 +243,29 @@ record(ai, "$(P)$(D)AcquirePeriod_RBV")
    field(SCAN, "I/O Intr")
 }
 
+
+
+###################################################################
+#  These records control the gain                                 # 
+###################################################################
+record(ao, "$(P)$(D)Gain")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GAIN")
+}
+
+record(ai, "$(P)$(D)Gain_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GAIN")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records control the acquisition mode                     # 
+###################################################################
 record(mbbo, "$(P)$(D)FrameMode")
 {
    field(DTYP, "asynInt32")
@@ -267,6 +292,35 @@ record(mbbi, "$(P)$(D)FrameMode_RBV")
    field(SCAN, "I/O Intr")
 }
 
+###################################################################
+#  These records control the trigger mode                         # 
+###################################################################
+record(mbbo, "$(P)$(D)TriggerMode")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TRIGGER_MODE")
+   field(ZRST, "Internal")
+   field(ZRVL, "0")
+   field(ONST, "External")
+   field(ONVL, "1")
+}
+
+record(mbbi, "$(P)$(D)TiggerMode_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TRIGGER_MODE")
+   field(ZRST, "Internal")
+   field(ZRVL, "0")
+   field(ONST, "External")
+   field(ONVL, "1")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records control the number of exposures and              #
+#  number of frames                                               # 
+###################################################################
 record(longout, "$(P)$(D)NumExposures")
 {
    field(DTYP, "asynInt32")
@@ -295,6 +349,58 @@ record(longin, "$(P)$(D)NumFrames_RBV")
    field(SCAN, "I/O Intr")
 }
 
+###################################################################
+#  These records control posting of images                        #
+###################################################################
+# Image posting flag
+record(mbbo, "$(P)$(D)PostImages")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))POST_IMAGES")
+    field(ZRST, "No")
+    field(ZRVL, "0")
+    field(ONST, "Yes")
+    field(ONVL, "1")
+}
+
+# Minimum time between updates for image waveform record
+record(ao, "$(P)$(D)MinImageUpdate")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_UPDATE_TIME")
+    field(VAL,  "1.0")
+    field(EGU,  "s")
+    field(PREC, "3")
+}
+
+###################################################################
+#  These records control statistics on frames                     # 
+#  and rates                                                      #
+###################################################################
+
+# Image counter.  Increments by 1 each time an image is posted on any interface
+record(longout, "$(P)$(D)ImageCounter")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_COUNTER")
+}
+
+record(longin, "$(P)$(D)ImageCounter_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_COUNTER")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(D)ImageRate_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_RATE")
+    field(PREC, "3")
+    field(SCAN, "I/O Intr")
+}
+
 # Frame counter.  Increments by 1 each time an image data callback occurs
 record(longout, "$(P)$(D)FrameCounter")
 {
@@ -309,6 +415,20 @@ record(longin, "$(P)$(D)FrameCounter_RBV")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FRAME_COUNTER")
     field(SCAN, "I/O Intr")
 }
+
+record(ai, "$(P)$(D)FrameRate_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FRAME_RATE")
+    field(PREC, "3")
+    field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records control  acquisition start and                   # 
+#  and stop                                                       #
+###################################################################
 
 record(bo, "$(P)$(D)Acquire")
 {
@@ -365,6 +485,10 @@ record(dfanout, "$(P)$(D)AcquireDoneFanout")
    field(OUTB, "$(P)$(D)AcquireBusy CA MS")
 }
 
+###################################################################
+#  These records control connection management                    # 
+###################################################################
+
 record(bi, "$(P)$(D)ConnectState")
 {
    field(VAL, "0")
@@ -373,6 +497,10 @@ record(bi, "$(P)$(D)ConnectState")
    field(ONAM, "Connected")
    field(OSV, "NO_ALARM")
 }
+
+###################################################################
+#  These records control the detector state                       # 
+###################################################################
 
 record(mbbi, "$(P)$(D)DetectorState")
 {
@@ -406,8 +534,9 @@ record(mbbi, "$(P)$(D)DetectorState")
     field(SCAN, "I/O Intr")
 }
 
-# File related records
-# *********************************
+###################################################################
+#  These records control file I/O                                 # 
+###################################################################
 
 # File path.
 record(waveform, "$(P)$(D)FilePath")
@@ -577,6 +706,9 @@ record(mbbi, "$(P)$(D)FileFormat_RBV")
     field(SCAN, "I/O Intr")
 }
 
+###################################################################
+#  Records past here need work!!!!                                # 
+###################################################################
 
 # Needs works past here
 record(mbbo, "$(P)$(D)Compression")
