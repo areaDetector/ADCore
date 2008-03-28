@@ -8,7 +8,11 @@ extern "C" {
 #include <stdlib.h>
 #include <epicsTypes.h>
 
-/**  EPICS Area Detector API
+/**             EPICS Area Detector API
+
+                  Mark Rivers
+              University of Chicago
+                March 27, 2008
 
                  How use this API
 
@@ -99,35 +103,43 @@ typedef enum
 /* Enumeration of image data types */
 typedef enum
 {
-   ADInt8,
-   ADUInt8,
-   ADInt16,
-   ADUInt16,
-   ADInt32,
-   ADUInt32,
-   ADFloat32,
-   ADFloat64
+    ADInt8,
+    ADUInt8,
+    ADInt16,
+    ADUInt16,
+    ADInt32,
+    ADUInt32,
+    ADFloat32,
+    ADFloat64
 } ADDataType_t;
 
 /* Enumeration of detector status */
 typedef enum
 {
-   ADStatusIdle,
-   ADStatusAcquire,
-   ADStatusReadout,
-   ASStatusCorrect,
-   ADStatusSaving,
-   ADStatusBusy,
-   ADStatusAborting,
-   ADStatusError,
+    ADStatusIdle,
+    ADStatusAcquire,
+    ADStatusReadout,
+    ASStatusCorrect,
+    ADStatusSaving,
+    ADStatusBusy,
+    ADStatusAborting,
+    ADStatusError,
 } ADStatus_t;
 
 typedef enum
 {
-   ADSingleFrame,
-   ADMultipleFrame,
-   ADContinuousFrame
+    ADFrameSingle,
+    ADFrameMultiple,
+    ADFrameContinuous
 } ADFrameMode_t;
+
+typedef enum
+{
+    ADTriggerInternal,
+    ADTriggerExternal
+} ADTriggerMode_t;
+
+    
 
 /* The total number of commands that a driver can use, including those in the ADParam_t enum. */
 #define MAX_DRIVER_COMMANDS 1000
@@ -168,7 +180,8 @@ typedef enum
     ADAcquireTime,     /* (double,  r/w) Acquisition time per frame. */
     ADAcquirePeriod,   /* (double,  r/w) Acquisition period between frames */
     ADConnect,         /* (integer, r/w) Connection request and connection status */
-    ADStatus,          /* (integer, r/o) Acquisition status (ADStatus_t)*/
+    ADStatus,          /* (integer, r/o) Acquisition status (ADStatus_t) */
+    ADTriggerMode,     /* (integer, r/w) Trigger mode (ADTriggerMode_t) */
     ADShutter,         /* (integer, r/w) Shutter control (ADShutterStatus_t) */
     ADAcquire,         /* (integer, r/w) Start(1) or Stop(0) acquisition */
     /* File name related parameters for saving data.
