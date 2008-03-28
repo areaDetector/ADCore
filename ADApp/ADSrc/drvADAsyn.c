@@ -40,13 +40,17 @@
 #include "ADInterface.h"
 #include "ADUtils.h"
 
+#define RATE_TIME 2.0  /* Time between computing frame and image rates */
+
 typedef enum
 {
     ADCmdUpdateTime           /* (float64, r/w) Minimum time between image updates */
      = MAX_DRIVER_COMMANDS+1, /*  These commands need to avoid conflict with driver parameters */
     ADCmdPostImages,          /* (int32,   r/w) Post images (1=Yes, 0=No) */
     ADCmdImageCounter,        /* (int32,   r/w) Image counter.  Increments by 1 when image posted */
+    ADCmdImageRate,           /* (float64, r/o) Image rate.  Rate at which images are being posted */
     ADCmdFrameCounter,        /* (int32,   r/w) Frame counter.  Increments by 1 when image callback */
+    ADCmdFrameRate,           /* (float64, r/o) Frame rate.  Rate at which images are being received by driver */
     ADCmdImageData            /* (void*,   r/w) Image data waveform */
 } ADCommand_t;
 
@@ -85,6 +89,7 @@ static ADCommandStruct ADCommands[] = {
     {ADAcquirePeriod,  "ACQ_PERIOD"  },
     {ADConnect,        "CONNECT"     },
     {ADStatus,         "STATUS"      },
+    {ADTriggerMode,    "TRIGGER_MODE"},
     {ADShutter,        "SHUTTER"     },
     {ADAcquire,        "ACQUIRE"     },
 
@@ -101,10 +106,12 @@ static ADCommandStruct ADCommands[] = {
 
     /* These commands are for the EPICS asyn layer */
     {ADCmdUpdateTime,  "IMAGE_UPDATE_TIME" },
-    {ADCmdPostImages,  "POST_IMAGES" },
+    {ADCmdPostImages,  "POST_IMAGES"  },
     {ADCmdImageCounter,"IMAGE_COUNTER"},
+    {ADCmdImageRate,   "IMAGE_RATE"   },
     {ADCmdFrameCounter,"FRAME_COUNTER"},
-    {ADCmdImageData,   "IMAGE_DATA"  }
+    {ADCmdFrameRate,   "FRAME_RATE"   },
+    {ADCmdImageData,   "IMAGE_DATA"   }
 };
 
 typedef struct drvADPvt {
@@ -122,9 +129,12 @@ typedef struct drvADPvt {
     
     /* Image data posting */
     double minImageUpdateTime;
+    epicsTimeStamp lastRateTime;
     epicsTimeStamp lastImagePostTime;
     int imageCounter;
+    int imageRateCounter;
     int frameCounter;
+    int frameRateCounter;
     int postImages;
     
     /* Asyn interfaces */
@@ -411,6 +421,7 @@ static void imageDataCallback(void *drvPvt, void *value,
     interruptNode *pnode;
     epicsTimeStamp tCheck;
     double deltaTime;
+    double rate;
     int int8Initialized=0;
     int int16Initialized=0;
     int int32Initialized=0;
@@ -434,6 +445,8 @@ static void imageDataCallback(void *drvPvt, void *value,
                 if (!pPvt->postImages) break;  /* We are not being asked to post image data */ \
                 if (deltaTime < pPvt->minImageUpdateTime) break; \
                 memcpy(&pPvt->lastImagePostTime, &tCheck, sizeof(epicsTimeStamp)); \
+                pPvt->imageCounter++; \
+                pPvt->imageRateCounter++; \
             } \
             if (!INITIALIZED) { \
                 INITIALIZED = 1; \
@@ -455,11 +468,6 @@ static void imageDataCallback(void *drvPvt, void *value,
                                  pInterrupt->pasynUser, \
                                  pData, nPixels); \
             pnode = (interruptNode *)ellNext(&pnode->node); \
-            if (reason == ADCmdImageData) { \
-                /* Update the image Counter */ \
-                pPvt->imageCounter++; \
-                int32Callback(pPvt, ADCmdImageCounter, pPvt->imageCounter); \
-            } \
         } \
         pasynManager->interruptEnd(INTERRUPT_PVT); \
     }
@@ -488,7 +496,24 @@ static void imageDataCallback(void *drvPvt, void *value,
     /* Update the frame counter.  This should be done after the image data callbacks, since
      * some clients may be monitoring this PV to see when new data are available. */
     pPvt->frameCounter++;
+    pPvt->frameRateCounter++;
     int32Callback(pPvt, ADCmdFrameCounter, pPvt->frameCounter);
+    int32Callback(pPvt, ADCmdImageCounter, pPvt->imageCounter);
+
+    /* See if it is time to compute the rates */
+    deltaTime = epicsTimeDiffInSeconds(&tCheck, &pPvt->lastRateTime);
+    if (deltaTime > RATE_TIME) {
+        /* First do the frame rate */
+        rate = pPvt->frameRateCounter / deltaTime;
+        float64Callback(pPvt, ADCmdFrameRate, rate);
+        pPvt->frameRateCounter = 0;
+        /* Now do the image rate */
+        rate = pPvt->imageRateCounter / deltaTime;
+        float64Callback(pPvt, ADCmdImageRate, rate);
+        pPvt->imageRateCounter = 0;
+        memcpy(&pPvt->lastRateTime, &tCheck, sizeof(epicsTimeStamp));
+    }
+       
 }
 
 
