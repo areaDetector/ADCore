@@ -1,0 +1,140 @@
+# Database for the records specific to the Prosilica cameras
+# Mark Rivers
+# March 27, 2008
+
+###############################################################################
+#  These records are for network and frame statistics                         #
+###############################################################################
+record(longout, "$(P)$(D)PSReadStatistics")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_READ_STATISTICS")
+   field(SCAN, "5 second")
+}
+
+record(stringin, "$(P)$(D)PSDriverType")
+{
+   field(PINI, "1")
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_DRIVER_TYPE")
+   field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(D)PSFilterVersion")
+{
+   field(PINI, "1")
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_FILTER_VERSION")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(D)PSFrameRate")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_FRAME_RATE")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(D)PSFramesCompleted")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_FRAMES_COMPLETED")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(D)PSFramesDropped")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_FRAMES_DROPPED")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(D)PSPacketsErroneous")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_ERRONEOUS")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(D)PSPacketsMissed")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_MISSED")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(D)PSPacketsReceived")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_RECEIVED")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(D)PSPacketsRequested")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_REQUESTED")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(D)PSPacketsResent")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_RESENT")
+   field(SCAN, "I/O Intr")
+}
+
+###############################################################################
+#  These records control the trigger mode.                                    # 
+#  Note that these records replace those in ADAsyn.template                   #
+###############################################################################
+record(mbbo, "$(P)$(D)TriggerMode")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TRIGGER_MODE")
+   field(ZRST, "Free Run")
+   field(ZRVL, "0")
+   field(ONST, "Sync In 1")
+   field(ONVL, "1")
+   field(TWST, "Sync In 2")
+   field(TWVL, "2")
+   field(THST, "Sync In 3")
+   field(THVL, "3")
+   field(FRST, "Sync In 4")
+   field(FRVL, "4")
+   field(FVST, "Fixed Rate")
+   field(FVVL, "5")
+   field(SXST, "Software")
+   field(SXVL, "6")
+ }
+
+record(mbbi, "$(P)$(D)TriggerMode_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TRIGGER_MODE")
+   field(ZRST, "Free Run")
+   field(ZRVL, "0")
+   field(ONST, "Sync In 1")
+   field(ONVL, "1")
+   field(TWST, "Sync In 2")
+   field(TWVL, "2")
+   field(THST, "Sync In 3")
+   field(THVL, "3")
+   field(FRST, "Sync In 4")
+   field(FRVL, "4")
+   field(FVST, "Fixed Rate")
+   field(FVVL, "5")
+   field(SXST, "Software")
+   field(SXVL, "6")
+   field(SCAN, "I/O Intr")
+}
