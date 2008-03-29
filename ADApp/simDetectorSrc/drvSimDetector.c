@@ -35,8 +35,6 @@
 #include "ADInterface.h"
 
 
-#define MAX_FILENAME_LEN 256
-
 /* Note that the file format enum must agree with the mbbo/mbbi records in the simDetector.template file */
 typedef enum {
    SimFormatBinary,
@@ -138,27 +136,6 @@ static int simAllocateBuffer(DETECTOR_HDL pCamera, int sizeX, int sizeY, int dat
     return(status);
 }
 
-static int simCreateFileName(DETECTOR_HDL pCamera, int maxChars, char *fullFileName)
-{
-    /* Formats a complete file name from the components defined in ADInterface.h */
-    int status = AREA_DETECTOR_OK;
-    char filePath[MAX_FILENAME_LEN];
-    char fileName[MAX_FILENAME_LEN];
-    char fileTemplate[MAX_FILENAME_LEN];
-    int fileNumber;
-    int len;
-    
-    status |= ADParam->getString(pCamera->params, ADFilePath, sizeof(filePath), filePath); 
-    status |= ADParam->getString(pCamera->params, ADFileName, sizeof(fileName), fileName); 
-    status |= ADParam->getString(pCamera->params, ADFileTemplate, sizeof(fileTemplate), fileTemplate); 
-    status |= ADParam->getInteger(pCamera->params, ADFileNumber, &fileNumber);
-    if (status) return(status);
-    len = epicsSnprintf(fullFileName, maxChars, fileTemplate, 
-                        filePath, fileName, fileNumber);
-    if (len < 0) status |= AREA_DETECTOR_ERROR;
-    return(status);
-}
-
 static int simWriteFile(DETECTOR_HDL pCamera)
 {
     /* Writes current frame to disk in simple binary or ASCII format.
@@ -180,7 +157,7 @@ static int simWriteFile(DETECTOR_HDL pCamera)
     ADParam->getInteger(pCamera->params, ADAutoIncrement, &autoIncrement);
     ADUtils->bytesPerPixel(dataType, &bytesPerPixel);
 
-    status |= simCreateFileName(pCamera, MAX_FILENAME_LEN, fullFileName);
+    status |= ADUtils->createFileName(pCamera->params, MAX_FILENAME_LEN, fullFileName);
     if (status) { 
         PRINT(pCamera->logParam, ADTraceError, 
               "%s:SimWriteFile error creating full file name, fullFileName=%s, status=%d\n", 
@@ -280,7 +257,7 @@ static int simReadFile(DETECTOR_HDL pCamera)
     ADParam->getInteger(pCamera->params, ADAutoIncrement, &autoIncrement);
     ADParam->getInteger(pCamera->params, ADFileNumber,    &fileNumber);
 
-    status |= simCreateFileName(pCamera, MAX_FILENAME_LEN, fullFileName);
+    status |= ADUtils->createFileName(pCamera->params, MAX_FILENAME_LEN, fullFileName);
     if (status) { 
         PRINT(pCamera->logParam, ADTraceError, 
               "%s:SimReadFile error creating full file name, fullFileName=%s, status=%d\n", 
