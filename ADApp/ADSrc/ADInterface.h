@@ -8,6 +8,8 @@ extern "C" {
 #include <stdlib.h>
 #include <epicsTypes.h>
 
+#define MAX_FILENAME_LEN 256
+
 /**             EPICS Area Detector API
 
                   Mark Rivers
@@ -175,13 +177,13 @@ typedef enum
     ADImageSize,       /* (integer, r/o) Total size of image data in bytes */
     ADDataType,        /* (integer, r/w) Data type (ADDataType_t) */
     ADFrameMode,       /* (integer, r/w) Frame mode (ADFrameMode_t) */
+    ADTriggerMode,     /* (integer, r/w) Trigger mode (ADTriggerMode_t) */
     ADNumExposures,    /* (integer, r/w) Number of exposures per frame to acquire */
     ADNumFrames,       /* (integer, r/w) Number of frames to acquire in one acquisition sequence */
     ADAcquireTime,     /* (double,  r/w) Acquisition time per frame. */
     ADAcquirePeriod,   /* (double,  r/w) Acquisition period between frames */
     ADConnect,         /* (integer, r/w) Connection request and connection status */
     ADStatus,          /* (integer, r/o) Acquisition status (ADStatus_t) */
-    ADTriggerMode,     /* (integer, r/w) Trigger mode (ADTriggerMode_t) */
     ADShutter,         /* (integer, r/w) Shutter control (ADShutterStatus_t) */
     ADAcquire,         /* (integer, r/w) Start(1) or Stop(0) acquisition */
     /* File name related parameters for saving data.
