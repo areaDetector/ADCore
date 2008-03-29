@@ -305,7 +305,7 @@ record(mbbo, "$(P)$(D)TriggerMode")
    field(ONVL, "1")
 }
 
-record(mbbi, "$(P)$(D)TiggerMode_RBV")
+record(mbbi, "$(P)$(D)TriggerMode_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -489,13 +489,28 @@ record(dfanout, "$(P)$(D)AcquireDoneFanout")
 #  These records control connection management                    # 
 ###################################################################
 
-record(bi, "$(P)$(D)ConnectState")
+record(mbbo, "$(P)$(D)Connect")
 {
-   field(VAL, "0")
-   field(ZNAM, "Disconnected")
-   field(ZSV, "MAJOR")
-   field(ONAM, "Connected")
-   field(OSV, "NO_ALARM")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CONNECT")
+   field(ZRST, "Disconnect")
+   field(ZRVL, "0")
+   field(ONST, "Connect")
+   field(ONVL, "1")
+}
+
+record(mbbi, "$(P)$(D)Connect_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CONNECT")
+   field(ZRST, "Disconnected")
+   field(ZRVL, "0")
+   field(ZRSV, "MAJOR")
+   field(ONST, "Connected")
+   field(ONVL, "1")
+   field(ONSV, "NO_ALARM")
+   field(SCAN, "I/O Intr")
 }
 
 ###################################################################
