@@ -21,17 +21,18 @@ extern "C" {
 
 typedef struct
 {
-  int  (*setParamDefaults)   ( void *params);
-  int  (*bytesPerPixel)      ( ADDataType_t dataType, int *size);
-  int  (*convertImage)       ( void *imageIn, 
-                               int dataTypeIn,
-                               int sizeXIn, int sizeYIn,
-                               void *imageOut,
-                               int dataTypeOut,
-                               int binX, int binY,
-                               int startX, int startY,
-                               int regionSizeX, int regionSizeY,
-                               int *SizeXOut, int *sizeYOut);
+    int  (*setParamDefaults)    (void *params);
+    int  (*bytesPerPixel)       (ADDataType_t dataType, int *size);
+    int  (*convertImage)        (void *imageIn, 
+                                 int dataTypeIn,
+                                 int sizeXIn, int sizeYIn,
+                                 void *imageOut,
+                                 int dataTypeOut,
+                                 int binX, int binY,
+                                 int startX, int startY,
+                                 int regionSizeX, int regionSizeY,
+                                 int *SizeXOut, int *sizeYOut);
+    int  (*createFileName)       (void *params, int maxChars, char *fullFileName);
 } ADUtilsSupport;
 
 extern ADUtilsSupport *ADUtils;

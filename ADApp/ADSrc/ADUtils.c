@@ -11,6 +11,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <epicsStdio.h>
 #include "ADUtils.h"
 #include "ADParamLib.h"
 #include "ADInterface.h"
@@ -296,12 +297,34 @@ static int convertImage(void *imageIn,
     return AREA_DETECTOR_OK;
 }
 
+static int createFileName(void *params, int maxChars, char *fullFileName)
+{
+    /* Formats a complete file name from the components defined in ADInterface.h */
+    int status = AREA_DETECTOR_OK;
+    char filePath[MAX_FILENAME_LEN];
+    char fileName[MAX_FILENAME_LEN];
+    char fileTemplate[MAX_FILENAME_LEN];
+    int fileNumber;
+    int len;
+    
+    status |= ADParam->getString(params, ADFilePath, sizeof(filePath), filePath); 
+    status |= ADParam->getString(params, ADFileName, sizeof(fileName), fileName); 
+    status |= ADParam->getString(params, ADFileTemplate, sizeof(fileTemplate), fileTemplate); 
+    status |= ADParam->getInteger(params, ADFileNumber, &fileNumber);
+    if (status) return(status);
+    len = epicsSnprintf(fullFileName, maxChars, fileTemplate, 
+                        filePath, fileName, fileNumber);
+    if (len < 0) status |= AREA_DETECTOR_ERROR;
+    return(status);
+}
+
 
 static ADUtilsSupport utilsSupport =
 {
   setParamDefaults,
   bytesPerPixel,
-  convertImage
+  convertImage,
+  createFileName
 };
 
 ADUtilsSupport *ADUtils = &utilsSupport;
