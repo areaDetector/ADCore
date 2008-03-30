@@ -94,13 +94,16 @@ record(longin, "$(P)$(D)PSPacketsResent")
 }
 
 ###############################################################################
+#  Note: The following are records defined in ADAsyn.template.                #
+#        We are changing some of the fields here to reflect valid values for  #
+#        Prosilica                                                            #
+###############################################################################
+
+###############################################################################
 #  These records control the trigger mode.                                    # 
-#  Note that these records replace those in ADAsyn.template                   #
 ###############################################################################
 record(mbbo, "$(P)$(D)TriggerMode")
 {
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TRIGGER_MODE")
    field(ZRST, "Free Run")
    field(ZRVL, "0")
    field(ONST, "Sync In 1")
@@ -119,9 +122,6 @@ record(mbbo, "$(P)$(D)TriggerMode")
 
 record(mbbi, "$(P)$(D)TriggerMode_RBV")
 {
-   field(PINI, "1")
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TRIGGER_MODE")
    field(ZRST, "Free Run")
    field(ZRVL, "0")
    field(ONST, "Sync In 1")
@@ -137,4 +137,23 @@ record(mbbi, "$(P)$(D)TriggerMode_RBV")
    field(SXST, "Software")
    field(SXVL, "6")
    field(SCAN, "I/O Intr")
+}
+
+###############################################################################
+#  These records control the file format.                                     # 
+###############################################################################
+record(mbbo, "$(P)$(D)FileFormat")
+{
+    field(ZRST, "TIFF")
+    field(ZRVL, "0")
+    field(ONST, "Invalid")
+    field(ONVL, "1")
+}
+
+record(mbbi, "$(P)$(D)FileFormat_RBV")
+{
+    field(ZRST, "TIFF")
+    field(ZRVL, "0")
+    field(ONST, "Invalid")
+    field(ONVL, "1")
 }
