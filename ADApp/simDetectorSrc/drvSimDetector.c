@@ -17,7 +17,6 @@
 #include <errno.h>
 #include <string.h>
 
-#include <epicsFindSymbol.h>
 #include <epicsTime.h>
 #include <epicsThread.h>
 #include <epicsEvent.h>
@@ -25,14 +24,12 @@
 #include <epicsString.h>
 #include <epicsStdio.h>
 #include <epicsMutex.h>
-#include <iocsh.h>
-#include <drvSup.h>
-#include <epicsExport.h>
 
 #define DEFINE_AREA_DETECTOR_PROTOTYPES 1
 #include "ADParamLib.h"
 #include "ADUtils.h"
 #include "ADInterface.h"
+#include "drvSimDetector.h"
 
 
 /* Note that the file format enum must agree with the mbbo/mbbi records in the simDetector.template file */
@@ -86,8 +83,6 @@ ADDrvSet_t ADSimDetector =
     ADGetImage,          /* Pointer to function to read image data */
     ADSetImage           /* Pointer to function to write image data */
   };
-
-epicsExportAddress(drvet, ADSimDetector);
 
 typedef struct ADHandle {
     /* The first set of items in this structure will be needed by all drivers */
@@ -1067,41 +1062,3 @@ int simDetectorConfig(int camera, int maxSizeX, int maxSizeY, int dataType)     
     
     return AREA_DETECTOR_OK;
 }
-
-/* Code for iocsh registration */
-
-/* simDetectorSetup */
-static const iocshArg simDetectorSetupArg0 = {"Number of simulated detectors", iocshArgInt};
-static const iocshArg * const simDetectorSetupArgs[1] =  {&simDetectorSetupArg0};
-static const iocshFuncDef setupsimDetector = {"simDetectorSetup", 1, simDetectorSetupArgs};
-static void setupsimDetectorCallFunc(const iocshArgBuf *args)
-{
-    simDetectorSetup(args[0].ival);
-}
-
-
-/* simDetectorConfig */
-static const iocshArg simDetectorConfigArg0 = {"Camera # being configured", iocshArgInt};
-static const iocshArg simDetectorConfigArg1 = {"Max X size", iocshArgInt};
-static const iocshArg simDetectorConfigArg2 = {"Max Y size", iocshArgInt};
-static const iocshArg simDetectorConfigArg3 = {"Data type", iocshArgInt};
-static const iocshArg * const simDetectorConfigArgs[4] = {&simDetectorConfigArg0,
-                                                          &simDetectorConfigArg1,
-                                                          &simDetectorConfigArg2,
-                                                          &simDetectorConfigArg3};
-static const iocshFuncDef configsimDetector = {"simDetectorConfig", 4, simDetectorConfigArgs};
-static void configsimDetectorCallFunc(const iocshArgBuf *args)
-{
-    simDetectorConfig(args[0].ival, args[1].ival, args[2].ival, args[3].ival);
-}
-
-
-static void simDetectorRegister(void)
-{
-
-    iocshRegister(&setupsimDetector,  setupsimDetectorCallFunc);
-    iocshRegister(&configsimDetector, configsimDetectorCallFunc);
-}
-
-epicsExportRegistrar(simDetectorRegister);
-
