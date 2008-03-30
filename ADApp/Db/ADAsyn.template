@@ -37,13 +37,6 @@ record(longin, "$(P)$(D)MaxSizeY_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(bo, "$(P)$(D)ADC")
-{
-   field(VAL, "0")
-   field(ZNAM, "Slow")
-   field(ONAM, "Fast")
-}
-
 ###################################################################
 #  These records control the data type                            # 
 ###################################################################
@@ -252,6 +245,7 @@ record(ao, "$(P)$(D)Gain")
 {
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GAIN")
+   field(PREC, "3")
 }
 
 record(ai, "$(P)$(D)Gain_RBV")
@@ -514,10 +508,10 @@ record(mbbi, "$(P)$(D)Connect_RBV")
 }
 
 ###################################################################
-#  These records control the detector state                       # 
+#  These records are for the detector state                       # 
 ###################################################################
 
-record(mbbi, "$(P)$(D)DetectorState")
+record(mbbi, "$(P)$(D)DetectorState_RBV")
 {
     field(PINI, "1")
     field(DTYP, "asynInt32")
@@ -546,6 +540,17 @@ record(mbbi, "$(P)$(D)DetectorState")
     field(SVST, "Disconnected")
     field(SVVL, "0")
     field(SVSV, "MAJOR")
+    field(SCAN, "I/O Intr")
+}
+
+# File path.
+record(waveform, "$(P)$(D)StatusString_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))STATUS_STRING")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
     field(SCAN, "I/O Intr")
 }
 
@@ -606,6 +611,13 @@ record(longin, "$(P)$(D)FileNumber_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NUMBER")
     field(SCAN, "I/O Intr")
+}
+
+record(calcout, "$(P)$(D)FileNumber_Sync")
+{
+    field(INPA, "$(P)$(D)FileNumber_RBV CP")
+    field(CALC, "A")
+    field(OUT,  "$(P)$(D)FileNumber PP")
 }
 
 # Autoincrement flag
@@ -683,6 +695,7 @@ record(mbbi, "$(P)$(D)AutoSave_RBV")
     field(SCAN, "I/O Intr")
 }
 
+# NOTE: These should be busy records, but wait till we get asynBusy record
 # Write file
 record(longout, "$(P)$(D)WriteFile")
 {
@@ -690,7 +703,7 @@ record(longout, "$(P)$(D)WriteFile")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WRITE_FILE")
 }
 
-# Write file
+# Read file
 record(longout, "$(P)$(D)ReadFile")
 {
     field(DTYP, "asynInt32")
