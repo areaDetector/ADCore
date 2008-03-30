@@ -9,6 +9,7 @@ include $(TOP)/configure/CONFIG
 
 LIBRARY_IOC = simDetector
 LIB_SRCS += drvSimDetector.c
+LIB_SRCS += drvSimDetectorEpics.c
 LIB_LIBS += areaDetector
 LIB_LIBS += sscan autosave
 LIB_LIBS += asyn
