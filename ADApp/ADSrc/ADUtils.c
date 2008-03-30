@@ -305,17 +305,26 @@ static int createFileName(void *params, int maxChars, char *fullFileName)
     char fileName[MAX_FILENAME_LEN];
     char fileTemplate[MAX_FILENAME_LEN];
     int fileNumber;
+    int autoIncrement;
     int len;
     
     status |= ADParam->getString(params, ADFilePath, sizeof(filePath), filePath); 
     status |= ADParam->getString(params, ADFileName, sizeof(fileName), fileName); 
     status |= ADParam->getString(params, ADFileTemplate, sizeof(fileTemplate), fileTemplate); 
     status |= ADParam->getInteger(params, ADFileNumber, &fileNumber);
+    status |= ADParam->getInteger(params, ADAutoIncrement, &autoIncrement);
     if (status) return(status);
     len = epicsSnprintf(fullFileName, maxChars, fileTemplate, 
                         filePath, fileName, fileNumber);
-    if (len < 0) status |= AREA_DETECTOR_ERROR;
-    return(status);
+    if (len < 0) {
+        status |= AREA_DETECTOR_ERROR;
+        return(status);
+    }
+    if (autoIncrement) {
+        fileNumber++;
+        status |= ADParam->setInteger(params, ADFileNumber, fileNumber);
+    }
+    return(status);   
 }
 
 
