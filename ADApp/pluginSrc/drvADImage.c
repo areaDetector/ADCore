@@ -1,20 +1,18 @@
 /*
- * drvADAsynImage.c
+ * drvADImage.c
  * 
- * Asyn driver for area detectors
+ * Asyn driver for callbacks to asyn array interfaces for area detectors.
+ * This is commonly used for EPICS waveform records.
  *
- * Original Author: Mark Rivers
- * Current Author: Mark Rivers
+ * Author: Mark Rivers
  *
- * Created March 6, 2008
+ * Created April 2, 2008
  */
 
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 
-#include <iocsh.h>
-#include <epicsExport.h>
 #include <epicsThread.h>
 #include <epicsString.h>
 #include <epicsTimer.h>
@@ -28,6 +26,7 @@
 #include "ADInterface.h"
 #include "ADParamLib.h"
 #include "ADUtils.h"
+#include "drvADImage.h"
 #include "asynADImage.h"
 
 #define RATE_TIME 2.0  /* Time between computing frame and image rates */
@@ -151,6 +150,7 @@ static void ADImageCallback(void *drvPvt, asynUser *pasynUser, void *value,
     epicsMutexUnlock(pPvt->mutexId);
 }
 
+
 static void ADImageDoCallbacks(drvADPvt *pPvt)
 {
     /* This function calls back any registered clients on the standard asyn array interfaces with 
@@ -240,6 +240,7 @@ static void ADImageDoCallbacks(drvADPvt *pPvt)
     ADParam->callCallbacks(pPvt->params);
 }
 
+
 static void ADImageTask(drvADPvt *pPvt)
 {
     /* This thread does the callbacks to the clients when a new frame arrives */
@@ -548,7 +549,7 @@ DEFINE_READ_ARRAY(readFloat64Array, epicsFloat64, ADFloat64)
 DEFINE_WRITE_ARRAY(writeFloat64Array, epicsFloat64, ADFloat64)
     
 
-/* asynDrvUser routines */
+/* asynDrvUser interface methods */
 static asynStatus drvUserCreate(void *drvPvt, asynUser *pasynUser,
                                 const char *drvInfo, 
                                 const char **pptypeName, size_t *psize)
@@ -601,7 +602,7 @@ static asynStatus drvUserDestroy(void *drvPvt, asynUser *pasynUser)
     return(asynSuccess);
 }
 
-/* asynCommon routines */
+/* asynCommon interface methods */
 
 static void report(void *drvPvt, FILE *fp, int details)
 {
@@ -669,8 +670,7 @@ static asynStatus disconnect(void *drvPvt, asynUser *pasynUser)
 }
 
 
-/* Configuration routine, called from startup script either directly (on vxWorks) or from shell */
-
+/* Structures with function pointers for each of the asyn interfaces */
 static asynCommon drvADCommon = {
     report,
     connect,
@@ -724,6 +724,9 @@ static asynDrvUser drvADDrvUser = {
     drvUserGetType,
     drvUserDestroy
 };
+
+
+/* Configuration routine.  Called directly, or from the iocsh function in drvADImageEpics */
 
 int drvADImageConfigure(const char *portName, const char *detectorPortName)
 {
@@ -853,22 +856,3 @@ int drvADImageConfigure(const char *portName, const char *detectorPortName)
     return asynSuccess;
 }
 
-
-/* EPICS iocsh shell commands */
-
-static const iocshArg initArg0 = { "portName",iocshArgString};
-static const iocshArg initArg1 = { "detectorPortName",iocshArgString};
-static const iocshArg * const initArgs[2] = {&initArg0,
-                                             &initArg1};
-static const iocshFuncDef initFuncDef = {"drvADImageConfigure",2,initArgs};
-static void initCallFunc(const iocshArgBuf *args)
-{
-    drvADImageConfigure(args[0].sval, args[1].sval);
-}
-
-void ADImageRegister(void)
-{
-    iocshRegister(&initFuncDef,initCallFunc);
-}
-
-epicsExportRegistrar(ADImageRegister);
