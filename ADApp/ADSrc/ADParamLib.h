@@ -6,6 +6,7 @@ extern "C" {
 #endif
 
 #include <epicsTypes.h>
+#include <asynStandardInterfaces.h>
 
 #define PARAM_OK (0)
 #define PARAM_ERROR (-1)
@@ -18,18 +19,16 @@ typedef void (*paramStringCallback)( void *, int, char * );
 
 typedef struct
 {
-  PARAMS (*create)           ( paramIndex startVal, paramIndex nvals );
+  PARAMS (*create)           ( paramIndex startVal, paramIndex nvals, 
+                               asynStandardInterfaces *pasynInterfaces );
   void (*destroy)            ( PARAMS params );
   int  (*setInteger)         ( PARAMS params, paramIndex index, int value );
   int  (*setDouble)          ( PARAMS params, paramIndex index, double value );
   int  (*setString)          ( PARAMS params, paramIndex index, char *value );
-  void (*callCallbacks)      ( PARAMS params );
+  int  (*callCallbacks)      ( PARAMS params );
   int  (*getInteger)         ( PARAMS params, paramIndex index, int * value );
   int  (*getDouble)          ( PARAMS params, paramIndex index, double * value );
   int  (*getString)          ( PARAMS params, paramIndex index, int maxChars, char *value  );
-  int  (*setIntCallback)     ( PARAMS params, paramIntCallback callback, void * param );
-  int  (*setDoubleCallback)  ( PARAMS params, paramDoubleCallback callback, void * param );
-  int  (*setStringCallback)  ( PARAMS params, paramStringCallback callback, void * param );
   void (*dump)               ( PARAMS params );
 } paramSupport;
 

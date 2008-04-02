@@ -18,6 +18,9 @@
 #include <string.h>
 
 #include <epicsString.h>
+
+#include <asynStandardInterfaces.h>
+
 #include "ADParamLib.h"
 
 typedef enum { paramUndef, paramInt, paramDouble, paramString} paramType;
@@ -40,12 +43,10 @@ typedef struct paramList
     int nflags;
     int *flags;
     paramVal * vals;
-    paramIntCallback   intCallback;
-    paramDoubleCallback doubleCallback;
-    paramStringCallback  stringCallback;
     void * intParam;
     void * doubleParam;
     void * stringParam;
+    asynStandardInterfaces *pasynInterfaces;
 } paramList;
 
 /*  Deletes a parameter system created by paramCreate.
@@ -73,21 +74,24 @@ static void paramDestroy( PARAMS params )
 
     startVal  [in]   Index of first parameter to be created.
     nvals     [in]   Number of parameters.
+    pasynInterfaces [in]   Pointer to asynStandardInterfaces structure for callbacks
 
-    Handle to be passed to other parameter system routines or NULL if system cannot be created.
+    returns: Handle to be passed to other parameter system routines or NULL if system cannot be created.
 */
-static PARAMS paramCreate( paramIndex startVal, paramIndex nvals )
+static PARAMS paramCreate( paramIndex startVal, paramIndex nvals, asynStandardInterfaces *pasynInterfaces )
 {
     PARAMS params = (PARAMS) calloc( 1, sizeof(paramList ));
 
     if ((nvals > 0) &&
         (params != NULL) &&
+        (pasynInterfaces != NULL) &&
         ((params->vals = (paramVal *) calloc( nvals, sizeof(paramVal))) != NULL ) &&
         ((params->flags = (int *)calloc( nvals, sizeof(int))) != NULL))
     {
         params->startVal = startVal;
         params->nvals = nvals;
         params->nflags = 0;
+        params->pasynInterfaces = pasynInterfaces;
     }
     else
     {
@@ -290,83 +294,90 @@ static int paramGetString( PARAMS params, paramIndex index, int maxChars, char *
     return status;
 }
 
-/** Sets a callback routing to call when parameters change
-
-    This sets the value of a routine which is called whenever the user calls paramCallCallback and
-    a value in the parameter system has been changed.
-
-    params   [in]   Pointer to PARAM handle returned by paramCreate.
-    callback [in]   Index number of the parameter. This must be a routine that
-                           takes three parameters and returns void.
-                           The first paramet is the pointer passed as the third parameter to this routine.
-			   The second is an integer indicating the number of parameters that have changed.
-			   The third is an array of parameter indices that indicates the parameters that
-			   have changed.
-    param    [in]   Pointer to a paramemter to be passed to the callback routine.
-
-    \return Integer indicating 0 (PARAM_OK) for success or non-zero for index out of range. 
-*/
-static int paramSetIntCallback( PARAMS params, paramIntCallback callback, void * param )
+static int intCallback( PARAMS params, int command, int value)
 {
-    params->intCallback = callback;
-    params->intParam = param;
+    ELLLIST *pclientList;
+    interruptNode *pnode;
+    asynStandardInterfaces *pInterfaces = params->pasynInterfaces;
 
-    /* Force a callback on all defined int parameters if the callback changes */
-    if ( params->intCallback )
-    {
-        int i;
-        for (i = 0; i < params->nvals; i++)
-            if (params->vals[i].type == paramInt) params->flags[params->nflags++] = i;
+    /* Pass int32 interrupts */
+    if (!pInterfaces->int32InterruptPvt) return(PARAM_ERROR);
+    pasynManager->interruptStart(pInterfaces->int32InterruptPvt, &pclientList);
+    pnode = (interruptNode *)ellFirst(pclientList);
+    while (pnode) {
+        asynInt32Interrupt *pInterrupt = pnode->drvPvt;
+        if (command == pInterrupt->pasynUser->reason) {
+            pInterrupt->callback(pInterrupt->userPvt, 
+                                 pInterrupt->pasynUser,
+                                 value);
+        }
+        pnode = (interruptNode *)ellNext(&pnode->node);
     }
-
-    return PARAM_OK;
+    pasynManager->interruptEnd(pInterfaces->int32InterruptPvt);
+    return(PARAM_OK);
 }
 
-static int paramSetDoubleCallback( PARAMS params, paramDoubleCallback callback, void * param )
+static int doubleCallback( PARAMS params, int command, double value)
 {
-    params->doubleCallback = callback;
-    params->doubleParam = param;
+    ELLLIST *pclientList;
+    interruptNode *pnode;
+    asynStandardInterfaces *pInterfaces = params->pasynInterfaces;
 
-    /* Force a callback on all defined double parameters if the callback changes */
-    if ( params->doubleCallback )
-    {
-        int i;
-        for (i = 0; i < params->nvals; i++)
-            if (params->vals[i].type == paramDouble)  params->flags[params->nflags++] = i;
+    /* Pass float64 interrupts */
+    if (!pInterfaces->float64InterruptPvt) return(PARAM_ERROR);
+    pasynManager->interruptStart(pInterfaces->float64InterruptPvt, &pclientList);
+    pnode = (interruptNode *)ellFirst(pclientList);
+    while (pnode) {
+        asynFloat64Interrupt *pInterrupt = pnode->drvPvt;
+        if (command == pInterrupt->pasynUser->reason) {
+            pInterrupt->callback(pInterrupt->userPvt, 
+                                 pInterrupt->pasynUser,
+                                 value);
+        }
+        pnode = (interruptNode *)ellNext(&pnode->node);
     }
-
-    return PARAM_OK;
+    pasynManager->interruptEnd(pInterfaces->float64InterruptPvt);
+    return(PARAM_OK);
 }
 
-static int paramSetStringCallback( PARAMS params, paramStringCallback callback, void * param )
+static int stringCallback( PARAMS params, int command, char *value)
 {
-    params->stringCallback = callback;
-    params->stringParam = param;
+    ELLLIST *pclientList;
+    interruptNode *pnode;
+    asynStandardInterfaces *pInterfaces = params->pasynInterfaces;
 
-    /* Force a callback on all defined string parameters if the callback changes */
-    if ( params->stringCallback )
-    {
-        int i;
-        for (i = 0; i < params->nvals; i++)
-            if (params->vals[i].type == paramString)  params->flags[params->nflags++] = i;
+    /* Pass octet interrupts */
+    if (!pInterfaces->octetInterruptPvt) return(PARAM_ERROR);
+    pasynManager->interruptStart(pInterfaces->octetInterruptPvt, &pclientList);
+    pnode = (interruptNode *)ellFirst(pclientList);
+    while (pnode) {
+        asynOctetInterrupt *pInterrupt = pnode->drvPvt;
+        if (command == pInterrupt->pasynUser->reason) {
+            pInterrupt->callback(pInterrupt->userPvt, 
+                                 pInterrupt->pasynUser,
+                                 value, strlen(value), ASYN_EOM_END);
+        }
+        pnode = (interruptNode *)ellNext(&pnode->node);
     }
-
-    return PARAM_OK;
+    pasynManager->interruptEnd(pInterfaces->octetInterruptPvt);
+    return(PARAM_OK);
 }
+
 
 /** Calls the callback routines indicating which parameters have changed.
 
     This routine should be called whenever you have changed a number of parameters and wish
-    to notify someone (via the callback routine) that they have changed.
+    to notify someone (via the asyn callback routines) that they have changed.
 
     params   [in]   Pointer to PARAM handle returned by paramCreate.
 
     returns: void
 */
-static void paramCallCallbacks( PARAMS params )
+static int paramCallCallbacks( PARAMS params )
 {
     int i, index;
     int command;
+    int status = PARAM_OK;
 
     for (i = 0; i < params->nflags; i++)
     {
@@ -376,20 +387,18 @@ static void paramCallCallbacks( PARAMS params )
         case paramUndef:
             break;
         case paramInt:
-            if (params->intCallback != NULL ) 
-                params->intCallback( params->intParam, command, params->vals[index].data.ival );
+                status |= intCallback( params, command, params->vals[index].data.ival );
             break;
         case paramDouble:
-            if (params->doubleCallback != NULL ) 
-                params->doubleCallback( params->doubleParam, command, params->vals[index].data.dval );
+                status |= doubleCallback( params, command, params->vals[index].data.dval );
             break;
         case paramString:
-            if (params->stringCallback != NULL ) 
-                params->stringCallback( params->stringParam, command, params->vals[index].data.sval );
+                status |= stringCallback( params, command, params->vals[index].data.sval );
             break;
         }
     }
     params->nflags=0;
+    return(status);
 }
 
 /*  Prints the current values in the parameter system to stdout
@@ -438,9 +447,6 @@ static paramSupport ADParamSupport =
   paramGetInteger,
   paramGetDouble,
   paramGetString,
-  paramSetIntCallback,
-  paramSetDoubleCallback,
-  paramSetStringCallback,
   paramDump
 };
 
