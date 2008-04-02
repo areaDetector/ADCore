@@ -1,9 +1,0 @@
-# The image data waveform record
-record(waveform, "$(P)$(D)ImageData")
-{
-    field(DTYP, "asynInt$(SIZE)ArrayIn")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_DATA")
-    field(FTVL, "$(FTVL)")
-    field(NELM, "$(NPIXELS)")
-    field(SCAN, "I/O Intr")
-}
