@@ -16,9 +16,7 @@
 extern "C" {
 #endif
 
-extern ADDrvSet_t ADSimDetector;
-int simDetectorSetup(int num_cameras);
-int simDetectorConfig(int camera, int maxSizeX, int maxSizeY, int dataType);
+int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int dataType);
 
 #ifdef __cplusplus
 }
