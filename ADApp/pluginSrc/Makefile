@@ -6,8 +6,11 @@ include $(TOP)/configure/CONFIG
 
 DBD += ADPluginSupport.dbd
 
+INC += drvADImage.h
+
 LIBRARY_IOC = ADPlugin
 LIB_SRCS += drvADImage.c
+LIB_SRCS += drvADImageEpics.c
 
 include $(TOP)/configure/RULES
 #----------------------------------------
