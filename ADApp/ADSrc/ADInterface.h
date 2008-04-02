@@ -5,9 +5,6 @@
 extern "C" {
 #endif
 
-#include <stdlib.h>
-#include <epicsTypes.h>
-
 #define MAX_FILENAME_LEN 256
 
 /**             EPICS Area Detector API
@@ -80,17 +77,10 @@ there is one task per detector. If there is a state change this will result in
 upper level software being called back in the context this task, so may be
 a consideration in setting the task priority.
 
-               Using the ADSetLog routine.
-
-The ADSetLog() routine is provided to hook into higher level
-EPICS reporting routines without compromising the EPICS independence
-of this interface. Implementing is done most easily by copying an
-existing driver.
 
 */
 
 /** Forward declaration of DETECTOR_HDL, which is a pointer to an internal driver-dependent handle */
-typedef struct ADHandle * DETECTOR_HDL;
 
 #define AREA_DETECTOR_OK (0)
 #define AREA_DETECTOR_ERROR (-1)
@@ -142,395 +132,124 @@ typedef enum
 } ADTriggerMode_t;
 
     
-
-/* The total number of commands that a driver can use, including those in the ADParam_t enum. */
-#define MAX_DRIVER_COMMANDS 1000
 /**
 
     This is an enumeration of parameters that affect the behaviour of the
-    detector. They are used by the functions ADSetDouble(),
-    ADSetInteger() and other associated functions.
+    detector. These are the values that asyn will place in pasynUser->reason when the
+    standard asyn interface methods are called.
 */
 
 typedef enum
 {
-    ADManufacturer,    /* (string,  r/o) Detector manufacturer name */ 
-    ADModel,           /* (string,  r/o) Detector model name */
-    ADTemperature,     /* (double,  r/w) Detector temperature */
-    ADGain,            /* (double,  r/w) Gain. */
+    /*    Name          asyn interface  access   Description  */
+    
+    ADManufacturer,    /* (asynOctet,    r/o) Detector manufacturer name */ 
+    ADModel,           /* (asynOctet,    r/o) Detector model name */
+    ADGain,            /* (asynFloat64,  r/w) Gain. */
+
     /* Parameters that control the detector binning */
-    ADBinX,            /* (integer, r/w) Binning in the X direction */
-    ADBinY,            /* (integer. r/w) Binning in the Y dieection */
+    ADBinX,            /* (asynInt32,    r/w) Binning in the X direction */
+    ADBinY,            /* (asynInt32.    r/w) Binning in the Y dieection */
+
     /* Parameters the control the region of the detector to be read out.
     * ADMinX, ADMinY, ADSizeX, and ADSizeY are in unbinned pixel units */
-    ADMinX,            /* (integer, r/w) First pixel in the X direction.  0 is the first pixel on the detector */
-    ADMinY,            /* (integer, r/w) First pixel in the Y direction.  0 is the first pixel on the detector */
-    ADSizeX,           /* (integer, r/w) Size of the region to read in the X direction. */
-    ADSizeY,           /* (integer, r/w) Size of the region to read in the Y direction. */
-    ADMaxSizeX,        /* (integer, r/o) Maximum (sensor) size in the X direction. */
-    ADMaxSizeY,        /* (integer, r/o) Maximum (sensro) size in the Y direction. */
+    ADMinX,            /* (asynInt32,    r/w) First pixel in the X direction.  0 is the first pixel on the detector */
+    ADMinY,            /* (asynInt32,    r/w) First pixel in the Y direction.  0 is the first pixel on the detector */
+    ADSizeX,           /* (asynInt32,    r/w) Size of the region to read in the X direction. */
+    ADSizeY,           /* (asynInt32,    r/w) Size of the region to read in the Y direction. */
+    ADMaxSizeX,        /* (asynInt32,    r/o) Maximum (sensor) size in the X direction. */
+    ADMaxSizeY,        /* (asynInt32,    r/o) Maximum (sensro) size in the Y direction. */
+
     /* Parameters defining the size of the image data from the detector.
      * ADImageSizeX and ADImageSizeY are the actual dimensions of the image data, 
      * including effects of the region definition and binning */
-    ADImageSizeX,      /* (integer, r/o) Size of the image data in the X direction */
-    ADImageSizeY,      /* (integer, r/o) Size of the image data in the Y direction */
-    ADImageSize,       /* (integer, r/o) Total size of image data in bytes */
-    ADDataType,        /* (integer, r/w) Data type (ADDataType_t) */
-    ADFrameMode,       /* (integer, r/w) Frame mode (ADFrameMode_t) */
-    ADTriggerMode,     /* (integer, r/w) Trigger mode (ADTriggerMode_t) */
-    ADNumExposures,    /* (integer, r/w) Number of exposures per frame to acquire */
-    ADNumFrames,       /* (integer, r/w) Number of frames to acquire in one acquisition sequence */
-    ADAcquireTime,     /* (double,  r/w) Acquisition time per frame. */
-    ADAcquirePeriod,   /* (double,  r/w) Acquisition period between frames */
-    ADConnect,         /* (integer, r/w) Connection request and connection status */
-    ADStatus,          /* (integer, r/o) Acquisition status (ADStatus_t) */
-    ADShutter,         /* (integer, r/w) Shutter control (ADShutterStatus_t) */
-    ADAcquire,         /* (integer, r/w) Start(1) or Stop(0) acquisition */
+    ADImageSizeX,      /* (asynInt32,    r/o) Size of the image data in the X direction */
+    ADImageSizeY,      /* (asynInt32,    r/o) Size of the image data in the Y direction */
+    ADImageSize,       /* (asynInt32,    r/o) Total size of image data in bytes */
+    ADDataType,        /* (asynInt32,    r/w) Data type (ADDataType_t) */
+    ADFrameMode,       /* (asynInt32,    r/w) Frame mode (ADFrameMode_t) */
+    ADTriggerMode,     /* (asynInt32,    r/w) Trigger mode (ADTriggerMode_t) */
+    ADNumExposures,    /* (asynInt32,    r/w) Number of exposures per frame to acquire */
+    ADNumFrames,       /* (asynInt32,    r/w) Number of frames to acquire in one acquisition sequence */
+    ADAcquireTime,     /* (asynFloat64,  r/w) Acquisition time per frame. */
+    ADAcquirePeriod,   /* (asynFloat64,  r/w) Acquisition period between frames */
+    ADStatus,          /* (asynInt32,    r/o) Acquisition status (ADStatus_t) */
+    ADShutter,         /* (asynInt32,    r/w) Shutter control (ADShutterStatus_t) */
+    ADAcquire,         /* (asynInt32,    r/w) Start(1) or Stop(0) acquisition */
+
     /* File name related parameters for saving data.
      * Drivers are not required to implement file saving, but if they do these parameters
      * should be used.
      * The driver will normally combine ADFilePath, ADFileName, and ADFileNumber into
      * a file name that order using the format specification in ADFileTemplate. 
      * For example ADFileTemplate might be "%s%s_%d.tif". */
-    ADFilePath,        /* (string,  r/w) The file path. */
-    ADFileName,        /* (string,  r/w) The file name. */
-    ADFileNumber,      /* (integer, r/w) The next file number. */
-    ADFileTemplate,    /* (string,  r/w) The format string. */
-    ADAutoIncrement,   /* (integer, r/w) Autoincrement file number. 0=No, 1=Yes */
-    ADFullFileName,    /* (string,  r/o) The actual complete file name for the last file saved. */
-    ADFileFormat,      /* (integer, r/w) The data format to use for saving the file.  
-                                         The values are enums that will be detector-specific. */
-    ADAutoSave,        /* (integer, r/w) Automatically save files */
-    ADWriteFile,       /* (integer, r/w) Manually save the most recent image to a file when value=1 */
-    ADReadFile,        /* (integer, r/w) Manually read file when value=1 */
+    ADFilePath,        /* (asynOctet,    r/w) The file path. */
+    ADFileName,        /* (asynOctet,    r/w) The file name. */
+    ADFileNumber,      /* (asynInt32,    r/w) The next file number. */
+    ADFileTemplate,    /* (asynOctet,    r/w) The format asynOctet. */
+    ADAutoIncrement,   /* (asynInt32,    r/w) Autoincrement file number. 0=No, 1=Yes */
+    ADFullFileName,    /* (asynOctet,    r/o) The actual complete file name for the last file saved. */
+    ADFileFormat,      /* (asynInt32,    r/w) The data format to use for saving the file.  
+                                              The values are enums that will be detector-specific. */
+    ADAutoSave,        /* (asynInt32,    r/w) Automatically save files */
+    ADWriteFile,       /* (asynInt32,    r/w) Manually save the most recent image to a file when value=1 */
+    ADReadFile,        /* (asynInt32,    r/w) Manually read file when value=1 */
     
-    ADLastStandardParam  /* The last command, used by the standard driver */
+    ADFirstDriverParam  /* The last parameter, used by the standard driver */
+                        /* Drivers that use ADParamLib should begin their parameters with this value. */
 } ADParam_t;
 
-#define ADFirstDriverParam ADLastStandardParam
+typedef struct {
+    int param;
+    char *paramString;
+} ADParamString_t;
 
-/* EPICS EPICS driver support interface routines */
+#ifdef DEFINE_STANDARD_PARAM_STRINGS
+/* The parameter strings are the userParam argument for asyn device support links
+ * The asynDrvUser interface in this driver parses these strings and puts the
+ * corresponding enum value in pasynUser->reason */
+static ADParamString_t ADStandardParamString[] = {
+    {ADManufacturer,   "MANUFACTURER"},  
+    {ADModel,          "MODEL"       },  
+    {ADGain,           "GAIN"        },
 
-typedef void (*ADReportFunc)( int level );
-/** Print the status of the detector to stdout
-    This optional routine is intended to provide a debugging log about the detector
-    and will typically be called by the EPICS dbior function. The level indicates
-    the level of detail - typically level 0 prints a one line summary and higher
-    levels provide increasing amount of detail.
-*/
+    {ADBinX,           "BIN_X"       },
+    {ADBinY,           "BIN_Y"       },
 
-#ifdef DEFINE_AREA_DETECTOR_PROTOTYPES
-static void ADReport( int level );
+    {ADMinX,           "MIN_X"       },
+    {ADMinY,           "MIN_Y"       },
+    {ADSizeX,          "SIZE_X"      },
+    {ADSizeY,          "SIZE_Y"      },
+    {ADMaxSizeX,       "MAX_SIZE_X"  },
+    {ADMaxSizeY,       "MAX_SIZE_Y"  },
+
+    {ADImageSizeX,     "IMAGE_SIZE_X"},
+    {ADImageSizeY,     "IMAGE_SIZE_Y"},
+    {ADImageSize,      "IMAGE_SIZE"  },
+    {ADDataType,       "DATA_TYPE"   },
+    {ADFrameMode,      "FRAME_MODE"  },
+    {ADNumExposures,   "NEXPOSURES"  },
+    {ADNumFrames,      "NFRAMES"     },
+    {ADAcquireTime,    "ACQ_TIME"    },
+    {ADAcquirePeriod,  "ACQ_PERIOD"  },
+    {ADStatus,         "STATUS"      },
+    {ADTriggerMode,    "TRIGGER_MODE"},
+    {ADShutter,        "SHUTTER"     },
+    {ADAcquire,        "ACQUIRE"     },
+
+    {ADFilePath,       "FILE_PATH"     },
+    {ADFileName,       "FILE_NAME"     },
+    {ADFileNumber,     "FILE_NUMBER"   },
+    {ADFileTemplate,   "FILE_TEMPLATE" },
+    {ADAutoIncrement,  "AUTO_INCREMENT"},
+    {ADFullFileName,   "FULL_FILE_NAME"},
+    {ADFileFormat,     "FILE_FORMAT"   },
+    {ADAutoSave,       "AUTO_SAVE"     },
+    {ADWriteFile,      "WRITE_FILE"    },
+    {ADReadFile,       "READ_FILE"     },
+};
+#define NUM_AD_STANDARD_PARAMS (sizeof(ADStandardParamString)/sizeof(ADStandardParamString[0]))
 #endif
-
-typedef int (*ADInitFunc)( void );
-
-/** EPICS driver support entry function initialisation routine.
-
-    This optional routine is provided purely so the detector driver support entry table 
-    (ADDrvSET_t) is compatible with an EPICS driver support entry table.
-    Typically it won't be provided and the driver support entry table
-    initialised with a null pointer. However, if provided, it will be called
-    at iocInit.
-
-    Returns 0 (AREA_DETECTOR_OK) for success or non-zero for failure. 
-*/
-
-#ifdef DEFINE_AREA_DETECTOR_PROTOTYPES
-static int ADInit( void );
-#endif
-
-typedef enum
-{
-    ADTraceError   =0x0001,
-    ADTraceIODevice=0x0002,
-    ADTraceIOFilter=0x0004,
-    ADTraceIODriver=0x0008,
-    ADTraceFlow    =0x0010
-} ADLogMask_t;
-
-typedef int (*ADLogFunc)( void * userParam,
-                          const ADLogMask_t logMask,
-                          const char *pFormat, ...);
-
-typedef int (*ADSetLogFunc)( DETECTOR_HDL pDetector, ADLogFunc logFunc, void * param );
-
-/* Provide an external logging routine.
-
-    This is an optional function which allows external software to hook
-    the driver log routine into an external logging system. The
-    external log function is a standard printf style routine with the
-    exception that it has a first parameter that can be used to set external
-    data on an detector by detector basis and a second parameter which is a message
-    tracing indicator. This is set to be compatible with the asynTrace reasons
-    - enabling tracing of errors, flow, and device filter and driver layers.
-    infomational, minor, major or fatal.
-
-    If pDetector is NULL, then this logging function and parameter should be used as
-    a default - i.e. when logging is not taking place in the context of a single
-    detector (a background polling task, for example).
-
-    pDetector   [in] Pointer to detector handle returned by ADOpen.
-    logFunc [in] Pointer to function of ADLogFunc type.
-    param   [in] Pointer to the user parameter to be used for logging on this detector
-
-    Returns 0 (AREA_DETECTOR_OK) for success or non-zero for failure. 
-*/
-
-#ifdef DEFINE_AREA_DETECTOR_PROTOTYPES
-static int ADSetLog( DETECTOR_HDL pDetector, ADLogFunc logFunc, void * param );
-#endif
-
-
-/* Access Routines to open and close a connection to a detector. */
-
-typedef DETECTOR_HDL (*ADOpenFunc)( int detector, char * param );
-
-/** Initialise connection to a detector.
-
-    This routine should open a connection to a detector
-    and return a driver dependent handle that can be used for subsequent calls to
-    other routines supported by the detector. The driver should support
-    multiple opens on a single detector and process all calls from separate threads on a
-    fifo basis.
-
-    param     [in] Arbitrary, driver defined, parameter string.
-
-    returns DETECTOR_HDL - pointer to handle for using to future calls to areaDetector routines
-*/
-
-#ifdef DEFINE_AREA_DETECTOR_PROTOTYPES
-static DETECTOR_HDL ADOpen( int detector, char * param );
-#endif
-
-typedef int (*ADCloseFunc)( DETECTOR_HDL pDetector );
-
-/*  Close a connection to a detector.
-
-    This routine should close the connection to a detector previously
-    opened with ADOpen, and clean up all space specifically allocated to this 
-    detector handle.
-
-    pDetector  [in]   Pointer to detector handle returned by ADOpen.
-
-    returns 0 (AREA_DETECTOR_OK) for success or non-zero for failure. 
-*/
-
-#ifdef DEFINE_AREA_DETECTOR_PROTOTYPES
-static int ADClose( DETECTOR_HDL pDetector );
-#endif
-
-typedef int (*ADFindParamFunc)( DETECTOR_HDL pDetector, const char *paramString, int *function );
-
-/*  Translates a parameter string to a driver-specific function code
-
-    pDetector  [in]   Pointer to detector handle returned by ADOpen.
-    paramString [in]  Parameter string for this parameter.
-    function    [out] Function code corresponding to this paramString
-
-    returns 0 (AREA_DETECTOR_OK) for success or non-zero for failure. 
-*/
-
-#ifdef DEFINE_AREA_DETECTOR_PROTOTYPES
-static int ADFindParam( DETECTOR_HDL pDetector, const char *paramString, int *function );
-#endif
-
-/*  Callback Routines to handle callbacks of status information */
-
-typedef void (*ADInt32CallbackFunc)    ( void *param, int function, int value );
-typedef void (*ADFloat64CallbackFunc)  ( void *param, int function, double value );
-typedef void (*ADStringCallbackFunc)   ( void *param, int function, char *value );
-typedef void (*ADImageDataCallbackFunc)( void *param, void *value, ADDataType_t dataType, int nx, int ny );
-typedef int (*ADSetInt32CallbackFunc)    ( DETECTOR_HDL pDetector, ADInt32CallbackFunc     callback, void *param);
-typedef int (*ADSetFloat64CallbackFunc)  ( DETECTOR_HDL pDetector, ADFloat64CallbackFunc   callback, void *param );
-typedef int (*ADSetStringCallbackFunc)   ( DETECTOR_HDL pDetector, ADStringCallbackFunc    callback, void *param );
-typedef int (*ADSetImageDataCallbackFunc)( DETECTOR_HDL pDetector, ADImageDataCallbackFunc callback, void *param );
-
-/*  Set a callback function to be called when detector information changes
-
-    These routine set functions to be called by the driver if the detector data changes.
-    
-    Only one callback function of each data type is allowed per DETECTOR_HDL, and so subsequent calls to
-    these functions using the original detector identifier will replace the original
-    callback. Setting the callback function to a NULL pointer will delete the
-    callback hook.
-
-    pDetector [in]   Pointer to detector handle returned by ADOpen.
-    callback  [in]   Pointer to a callback function of the appropriate type.
-    param     [in]   Void pointer to parameter that should be used when calling the callback
-
-    Returns 0 (AREA_DETECTOR_OK) for success or non-zero for failure. 
-*/
-
-#ifdef DEFINE_AREA_DETECTOR_PROTOTYPES
-static int ADSetInt32Callback     ( DETECTOR_HDL pDetector, ADInt32CallbackFunc     callback, void *param );
-static int ADSetFloat64Callback   ( DETECTOR_HDL pDetector, ADFloat64CallbackFunc   callback, void *param );
-static int ADSetStringCallback    ( DETECTOR_HDL pDetector, ADStringCallbackFunc    callback, void *param );
-static int ADSetImageDataCallback ( DETECTOR_HDL pDetector, ADImageDataCallbackFunc callback, void *param );
-#endif
-
-
-/* Routines that read and write detector control parameters */
-
-typedef int (*ADGetIntegerFunc)( DETECTOR_HDL pDetector,  int function, int *value );
-
-/*  Gets an integer parameter in the detector.
-
-    pDetector [in]   Pointer to detector handle returned by ADOpen.
-    function  [in]   One of the ADParam_t values, or a driver-specific function code, 
-                     indicating which parameter to get.
-    value     [in]   Value of the parameter.
-
-    Returns 0 (AREA_DETECTOR_OK) for success or non-zero for failure or not supported. 
-*/
-
-#ifdef DEFINE_AREA_DETECTOR_PROTOTYPES
-static int ADGetInteger( DETECTOR_HDL pDetector, int function, int * value );
-#endif
-
-typedef int (*ADSetIntegerFunc)( DETECTOR_HDL pDetector,  int function, int value );
-
-/*  Sets an integer parameter in the detector.
-
-    pDetector [in]   Pointer to detector handle returned by ADOpen.
-    function  [in]   One of the ADParam_t values, or a driver-specific function code, 
-                     indicating which parameter to set.
-    value     [in]   Value to be assigned to the parameter.
-
-    Returns 0 (AREA_DETECTOR_OK) for success or non-zero for failure or not supported. 
-*/
-
-#ifdef DEFINE_AREA_DETECTOR_PROTOTYPES
-static int ADSetInteger( DETECTOR_HDL pDetector, int function, int value );
-#endif
-
-typedef int (*ADGetDoubleFunc)( DETECTOR_HDL pDetector, int function, double *value );
-
-/*  Gets a double parameter in the detector.
-
-    pDetector [in]   Pointer to detector handle returned by ADOpen.
-    function  [in]   One of the ADParam_t values, or a driver-specific function code, 
-                     indicating which parameter to get.
-    value     [out]  Value of the parameter.
-
-    Returns 0 (AREA_DETECTOR_OK) for success or non-zero for failure or not supported. 
-*/
-
-#ifdef DEFINE_AREA_DETECTOR_PROTOTYPES
-static int ADGetDouble( DETECTOR_HDL pDetector, int function, double * value );
-#endif
-
-typedef int (*ADSetDoubleFunc)( DETECTOR_HDL pDetector, int function, double value);
-
-/*  Sets a double parameter in the detector.
-
-    pDetector [in]   Pointer to detector handle returned by ADOpen.
-    function  [in]   One of the ADParam_t values, or a driver-specific function code, 
-                     indicating which parameter to set.
-    value     [in]   Value to be assigned to the parameter.
-
-    Returns:  0 (AREA_DETECTOR_OK) for success or non-zero for failure or not supported. 
-*/
-
-#ifdef DEFINE_AREA_DETECTOR_PROTOTYPES
-static int ADSetDouble( DETECTOR_HDL pDetector, int function, double value );
-#endif
-
-typedef int (*ADGetStringFunc)( DETECTOR_HDL pDetector, int function, int maxChars, char *value );
-
-/*  Gets a double parameter in the detector.
-
-    pDetector [in]   Pointer to detector handle returned by ADOpen.
-    function  [in]   One of the ADParam_t values, or a driver-specific function code, 
-                     indicating which parameter to get.
-    maxChars  [in]   Maximum length of string
-    value     [out]  Value of the parameter.
-
-    Returns:  0 (AREA_DETECTOR_OK) for success or non-zero for failure or not supported. 
-*/
-
-#ifdef DEFINE_AREA_DETECTOR_PROTOTYPES
-static int ADGetString( DETECTOR_HDL pDetector, int function, int maxChars, char *value );
-#endif
-
-typedef int (*ADSetStringFunc)( DETECTOR_HDL pDetector, int function, const char *value);
-
-/*  Sets a string parameter in the detector.
-
-    pDetector [in]   Pointer to detector handle returned by ADOpen.
-    function  [in]   One of the ADParam_t values, or a driver-specific function code, 
-                     indicating which parameter to set.
-    value     [in]   Value to be assigned to the parameter.
-
-    Returns 0 (AREA_DETECTOR_OK) for success or non-zero for failure or not supported. 
-*/
-
-#ifdef DEFINE_AREA_DETECTOR_PROTOTYPES
-static int ADSetString( DETECTOR_HDL pDetector, int function, const char *value );
-#endif
-
-/* Routines to read and write image data */
-typedef int (*ADGetImageFunc)( DETECTOR_HDL pDetector,  int maxBytes, void *buffer );
-
-/*  Reads the data for the current image from the detector.
-
-    pDetector [in]   Pointer to detector handle returned by ADOpen.
-    maxBytes  [in]   The maximum number of bytes to return in buffer.
-    buffer    [out]  The image data to be read from the detector.  
-                     The data type of the pointer must be appropriate for the
-                     current data type of the detector.
-
-    Returns 0 (AREA_DETECTOR_OK) for success or non-zero for failure or not supported. 
-*/
-
-/* Routines to read and write the image data */
-
-#ifdef DEFINE_AREA_DETECTOR_PROTOTYPES
-static int ADGetImage( DETECTOR_HDL pDetector, int maxBytes, void *buffer );
-#endif
-
-typedef int (*ADSetImageFunc)( DETECTOR_HDL pDetector,  int maxBytes, void *buffer );
-
-/*  Writes the data for the current image from the detector.
-
-    pDetector [in]   Pointer to detector handle returned by ADOpen.
-    maxBytes  [in]   The number of bytes in buffer.
-    buffer    [in]   The image data to be sent to the detector.  
-                     The data type of the pointer must be appropriate for the
-                     current data type of the detector.
-
-    Returns 0 (AREA_DETECTOR_OK) for success or non-zero for failure or not supported. 
-*/
-
-#ifdef DEFINE_AREA_DETECTOR_PROTOTYPES
-static int ADSetImage( DETECTOR_HDL pDetector, int maxBytes, void *buffer );
-#endif
-
-
-/** The driver support entry table */
-
-typedef struct
-{
-    int number;
-    ADReportFunc          report;            /* Standard EPICS driver report function (optional) */
-    ADInitFunc            init;              /* Standard EPICS dirver initialisation function (optional) */
-    ADSetLogFunc          setLog;            /* Defines an external logging function (optional) */
-    ADOpenFunc            open;              /* Driver open function */
-    ADCloseFunc           close;             /* Driver close function */
-    ADFindParamFunc       findParam;         /* Parameter lookup function */
-    ADSetInt32CallbackFunc     setInt32Callback;      /* Provides a callback function the driver can call when an int32 value changes */
-    ADSetFloat64CallbackFunc   setFloat64Callback;    /* Provides a callback function the driver can call when a float64 value changes */
-    ADSetStringCallbackFunc    setStringCallback;     /* Provides a callback function the driver can call when a string value changes */
-    ADSetImageDataCallbackFunc setImageDataCallback;  /* Provides a callback function the driver can call when there is new image data */
-    ADGetIntegerFunc      getInteger;        /* Pointer to function to get an integer value */
-    ADSetIntegerFunc      setInteger;        /* Pointer to function to set an integer value */
-    ADGetDoubleFunc       getDouble;         /* Pointer to function to get a double value */
-    ADSetDoubleFunc       setDouble;         /* Pointer to function to set a double value */
-    ADGetStringFunc       getString;         /* Pointer to function to get a string value */
-    ADSetStringFunc       setString;         /* Pointer to function to set a string value */
-    ADGetImageFunc        getImage;          /* Pointer to function to getImage acquisition */
-    ADSetImageFunc        setImage;          /* Pointer to function to setImage acquisition */
-} ADDrvSet_t;
 
 #ifdef __cplusplus
 }
