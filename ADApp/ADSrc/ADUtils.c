@@ -12,9 +12,11 @@
 #include <string.h>
 #include <stdio.h>
 #include <epicsStdio.h>
+#include <epicsString.h>
 #include "ADUtils.h"
 #include "ADParamLib.h"
 #include "ADInterface.h"
+#include "asynADImage.h"
 
 /* The following macros save an enormous amount of code when converting data types */
 
@@ -327,13 +329,45 @@ static int createFileName(void *params, int maxChars, char *fullFileName)
     return(status);   
 }
 
+static void ADImageCallback( void *ADImageInterruptPvt, void *data, ADDataType_t dataType,
+                             int nx, int ny)
+{
+    ELLLIST *pclientList;
+    interruptNode *pnode;
+
+    pasynManager->interruptStart(ADImageInterruptPvt, &pclientList);
+    pnode = (interruptNode *)ellFirst(pclientList);
+    while (pnode) {
+        asynADImageInterrupt *pInterrupt = pnode->drvPvt;
+        pInterrupt->callback(pInterrupt->userPvt, 
+                             pInterrupt->pasynUser,
+                             data, dataType, nx, ny);
+        pnode = (interruptNode *)ellNext(&pnode->node);
+    }
+    pasynManager->interruptEnd(ADImageInterruptPvt);
+}
+
+static int findParam(ADParamString_t *paramTable, int numParams, const char *paramName, int *param)
+{
+    int i;
+    for (i=0; i < numParams; i++) {
+        if (epicsStrCaseCmp(paramName, paramTable[i].paramString) == 0) {
+            *param = paramTable[i].param;
+            return(AREA_DETECTOR_OK);
+        }
+    }
+    return(AREA_DETECTOR_ERROR);
+}
+
 
 static ADUtilsSupport utilsSupport =
 {
-  setParamDefaults,
-  bytesPerPixel,
-  convertImage,
-  createFileName
+    setParamDefaults,
+    bytesPerPixel,
+    convertImage,
+    createFileName,
+    ADImageCallback,
+    findParam
 };
 
 ADUtilsSupport *ADUtils = &utilsSupport;

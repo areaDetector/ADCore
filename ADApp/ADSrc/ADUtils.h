@@ -32,7 +32,11 @@ typedef struct
                                  int startX, int startY,
                                  int regionSizeX, int regionSizeY,
                                  int *SizeXOut, int *sizeYOut);
-    int  (*createFileName)       (void *params, int maxChars, char *fullFileName);
+    int  (*createFileName)      (void *params, int maxChars, char *fullFileName);
+    void (*ADImageCallback)     (void *ADImageInterruptPvt, void *data, 
+                                 ADDataType_t dataType, int nx, int ny);
+    int  (*findParam)           (ADParamString_t *paramTable, int numParams, 
+                                 const char *paramName, int *param);
 } ADUtilsSupport;
 
 extern ADUtilsSupport *ADUtils;
