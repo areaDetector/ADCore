@@ -2,6 +2,7 @@ TOP = ..
 include $(TOP)/configure/CONFIG
 
 DIRS += ADSrc
+DIRS += pluginSrc
 DIRS += simDetectorSrc
 DIRS += prosilicaSrc
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *db*))
