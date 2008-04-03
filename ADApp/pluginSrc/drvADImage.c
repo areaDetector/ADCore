@@ -29,8 +29,6 @@
 #include "drvADImage.h"
 #include "asynADImage.h"
 
-#define RATE_TIME 2.0  /* Time between computing frame and image rates */
-
 #define driverName "drvADImage"
 
 typedef enum
@@ -39,8 +37,7 @@ typedef enum
     ADCmdPostImages,          /* (int32,   r/w) Post images (1=Yes, 0=No) */
     ADCmdImageCounter,        /* (int32,   r/w) Image counter.  Increments by 1 when image posted */
     ADCmdImageRate,           /* (float64, r/o) Image rate.  Rate at which images are being posted */
-    ADCmdFrameCounter,        /* (int32,   r/w) Frame counter.  Increments by 1 when image callback */
-    ADCmdFrameRate,           /* (float64, r/o) Frame rate.  Rate at which images are being received by driver */
+    ADCmdImageRateTime,       /* (float64, r/o) Time over which to average ADCmdImageRate */
     ADCmdImageData            /* (void*,   r/w) Image data waveform */
 } DetParam_t;
 
@@ -52,6 +49,7 @@ static ADParamString_t DetParamString[] = {
     {ADCmdPostImages,  "POST_IMAGES"  },
     {ADCmdImageCounter,"IMAGE_COUNTER"},
     {ADCmdImageRate,   "IMAGE_RATE"   },
+    {ADCmdImageRateTime,"IMAGE_RATE_TIME"   },
     {ADCmdImageData,   "IMAGE_DATA"   }
 };
 
@@ -81,7 +79,6 @@ typedef struct drvADPvt {
     int nx;
     int ny;
     int imageRateCounter;
-    int frameRateCounter;
     ADDataType_t dataType;
     epicsTimeStamp lastRateTime;
     epicsTimeStamp lastImagePostTime;
@@ -163,7 +160,7 @@ static void ADImageDoCallbacks(drvADPvt *pPvt)
     int nxt, nyt;
     interruptNode *pnode;
     epicsTimeStamp tCheck;
-    double deltaTime, rate;
+    double deltaTime, rate, imageRateTime;
     int imageCounter;
     int int8Initialized=0;
     int int16Initialized=0;
@@ -229,7 +226,8 @@ static void ADImageDoCallbacks(drvADPvt *pPvt)
 
     /* See if it is time to compute the rates */
     deltaTime = epicsTimeDiffInSeconds(&tCheck, &pPvt->lastRateTime);
-    if (deltaTime > RATE_TIME) {
+    ADParam->getDouble(pPvt->params, ADCmdImageRateTime, &imageRateTime);
+    if (deltaTime > imageRateTime) {
         /* Now do the image rate */
         rate = pPvt->imageRateCounter / deltaTime;
         ADParam->setDouble(pPvt->params, ADCmdImageRate, rate);
@@ -602,6 +600,7 @@ static asynStatus drvUserDestroy(void *drvPvt, asynUser *pasynUser)
     return(asynSuccess);
 }
 
+
 /* asynCommon interface methods */
 
 static void report(void *drvPvt, FILE *fp, int details)
@@ -671,55 +670,55 @@ static asynStatus disconnect(void *drvPvt, asynUser *pasynUser)
 
 
 /* Structures with function pointers for each of the asyn interfaces */
-static asynCommon drvADCommon = {
+static asynCommon ifaceCommon = {
     report,
     connect,
     disconnect
 };
 
-static asynInt32 drvADInt32 = {
+static asynInt32 ifaceInt32 = {
     writeInt32,
     readInt32,
     getBounds
 };
 
-static asynFloat64 drvADFloat64 = {
+static asynFloat64 ifaceFloat64 = {
     writeFloat64,
     readFloat64
 };
 
-static asynOctet drvADOctet = {
+static asynOctet ifaceOctet = {
     writeOctet,
     NULL,
     readOctet,
 };
 
-static asynInt8Array drvADInt8Array = {
+static asynInt8Array ifaceInt8Array = {
     writeInt8Array,
     readInt8Array,
 };
 
-static asynInt16Array drvADInt16Array = {
+static asynInt16Array ifaceInt16Array = {
     writeInt16Array,
     readInt16Array,
 };
 
-static asynInt32Array drvADInt32Array = {
+static asynInt32Array ifaceInt32Array = {
     writeInt32Array,
     readInt32Array,
 };
 
-static asynFloat32Array drvADFloat32Array = {
+static asynFloat32Array ifaceFloat32Array = {
     writeFloat32Array,
     readFloat32Array,
 };
 
-static asynFloat64Array drvADFloat64Array = {
+static asynFloat64Array ifaceFloat64Array = {
     writeFloat64Array,
     readFloat64Array,
 };
 
-static asynDrvUser drvADDrvUser = {
+static asynDrvUser ifaceDrvUser = {
     drvUserCreate,
     drvUserGetType,
     drvUserDestroy
@@ -757,16 +756,16 @@ int drvADImageConfigure(const char *portName, const char *detectorPortName)
     /* Set addresses of asyn interfaces */
     pInterfaces = &pPvt->asynInterfaces;
     
-    pInterfaces->common.pinterface        = (void *)&drvADCommon;
-    pInterfaces->drvUser.pinterface       = (void *)&drvADDrvUser;
-    pInterfaces->octet.pinterface         = (void *)&drvADOctet;
-    pInterfaces->int32.pinterface         = (void *)&drvADInt32;
-    pInterfaces->float64.pinterface       = (void *)&drvADFloat64;
-    pInterfaces->int8Array.pinterface     = (void *)&drvADInt8Array;
-    pInterfaces->int16Array.pinterface    = (void *)&drvADInt16Array;
-    pInterfaces->int32Array.pinterface    = (void *)&drvADInt32Array;
-    pInterfaces->float32Array.pinterface  = (void *)&drvADFloat32Array;
-    pInterfaces->float64Array.pinterface  = (void *)&drvADFloat64Array;
+    pInterfaces->common.pinterface        = (void *)&ifaceCommon;
+    pInterfaces->drvUser.pinterface       = (void *)&ifaceDrvUser;
+    pInterfaces->octet.pinterface         = (void *)&ifaceOctet;
+    pInterfaces->int32.pinterface         = (void *)&ifaceInt32;
+    pInterfaces->float64.pinterface       = (void *)&ifaceFloat64;
+    pInterfaces->int8Array.pinterface     = (void *)&ifaceInt8Array;
+    pInterfaces->int16Array.pinterface    = (void *)&ifaceInt16Array;
+    pInterfaces->int32Array.pinterface    = (void *)&ifaceInt32Array;
+    pInterfaces->float32Array.pinterface  = (void *)&ifaceFloat32Array;
+    pInterfaces->float64Array.pinterface  = (void *)&ifaceFloat64Array;
 
     /* Define which interfaces can generate interrupts */
     pInterfaces->octetCanInterrupt        = 1;
@@ -849,9 +848,7 @@ int drvADImageConfigure(const char *portName, const char *detectorPortName)
 
     /* Set the initial values of some parameters */
     ADParam->setInteger(pPvt->params, ADCmdImageCounter, 0);
-    ADParam->setInteger(pPvt->params, ADCmdFrameCounter, 0);
-    ADParam->setDouble(pPvt->params, ADCmdImageRate, 0.0);
-    ADParam->setDouble(pPvt->params, ADCmdFrameRate, 0.0);
+    ADParam->setDouble(pPvt->params, ADCmdImageRateTime, 2.0);
     
     return asynSuccess;
 }
