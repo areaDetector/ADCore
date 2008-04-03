@@ -38,30 +38,6 @@
 #include "drvSimDetector.h"
 
 
-/* Note that the file format enum must agree with the mbbo/mbbi records in the simDetector.template file */
-typedef enum {
-   SimFormatBinary,
-   SimFormatASCII
-} SimFormat_t;
-
-/* If we have any private driver parameters they begin with ADFirstDriverParam and should end
-   with ADLastDriverParam, which is used for setting the size of the parameter library table */
-typedef enum {
-   SimGainX = ADFirstDriverParam,
-   SimGainY,
-   SimResetImage,
-   ADLastDriverParam
-} DetParam_t;
-
-/* The command strings are the input to ADUtils->FindParam, which returns the corresponding parameter enum value */
-static ADParamString_t DetParamString[] = {
-    {SimGainX,      "SIM_GAINX"},  
-    {SimGainY,      "SIM_GAINY"},  
-    {SimResetImage, "RESET_IMAGE"}  
-};
-
-#define NUM_DET_PARAMS (sizeof(DetParamString)/sizeof(DetParamString[0]))
-
 static char *driverName = "drvSimDetector";
 
 typedef struct drvADPvt {
@@ -84,7 +60,7 @@ typedef struct drvADPvt {
 } drvADPvt;
 
 
-static int simAllocateBuffer(drvADPvt *pCamera, int sizeX, int sizeY, int dataType)
+static int simAllocateBuffer(drvADPvt *pPvt, int sizeX, int sizeY, int dataType)
 {
     int status = asynSuccess;
     int bytesPerPixel;
@@ -95,17 +71,17 @@ static int simAllocateBuffer(drvADPvt *pCamera, int sizeX, int sizeY, int dataTy
      * We allocated them both the same size for simplicity and efficiency */
     status |= ADUtils->bytesPerPixel(dataType, &bytesPerPixel);
     bufferSize = sizeX * sizeY * bytesPerPixel;
-    if (bufferSize != pCamera->bufferSize) {
-        free(pCamera->rawBuffer);
-        free(pCamera->imageBuffer);
-        pCamera->rawBuffer   = malloc(bytesPerPixel*sizeX*sizeY);
-        pCamera->imageBuffer = malloc(bytesPerPixel*sizeX*sizeY);
-        pCamera->bufferSize = bufferSize;
+    if (bufferSize != pPvt->bufferSize) {
+        free(pPvt->rawBuffer);
+        free(pPvt->imageBuffer);
+        pPvt->rawBuffer   = malloc(bytesPerPixel*sizeX*sizeY);
+        pPvt->imageBuffer = malloc(bytesPerPixel*sizeX*sizeY);
+        pPvt->bufferSize = bufferSize;
     }
     return(status);
 }
 
-static int simWriteFile(drvADPvt *pCamera)
+static int simWriteFile(drvADPvt *pPvt)
 {
     /* Writes current frame to disk in simple binary or ASCII format.
      * In either case the data written are imageSizeX, imageSizeY, dataType, data */
@@ -118,27 +94,27 @@ static int simWriteFile(drvADPvt *pCamera)
     FILE *fp;
 
     /* Get the current parameters */
-    ADParam->getInteger(pCamera->params, ADImageSizeX, &imageSizeX);
-    ADParam->getInteger(pCamera->params, ADImageSizeY, &imageSizeY);
-    ADParam->getInteger(pCamera->params, ADImageSize,  &imageSize);
-    ADParam->getInteger(pCamera->params, ADDataType,   &dataType);
-    ADParam->getInteger(pCamera->params, ADFileNumber, &fileNumber);
-    ADParam->getInteger(pCamera->params, ADAutoIncrement, &autoIncrement);
+    ADParam->getInteger(pPvt->params, ADImageSizeX, &imageSizeX);
+    ADParam->getInteger(pPvt->params, ADImageSizeY, &imageSizeY);
+    ADParam->getInteger(pPvt->params, ADImageSize,  &imageSize);
+    ADParam->getInteger(pPvt->params, ADDataType,   &dataType);
+    ADParam->getInteger(pPvt->params, ADFileNumber, &fileNumber);
+    ADParam->getInteger(pPvt->params, ADAutoIncrement, &autoIncrement);
     ADUtils->bytesPerPixel(dataType, &bytesPerPixel);
 
-    status |= ADUtils->createFileName(pCamera->params, MAX_FILENAME_LEN, fullFileName);
+    status |= ADUtils->createFileName(pPvt->params, MAX_FILENAME_LEN, fullFileName);
     if (status) { 
-        asynPrint(pCamera->pasynUser, ASYN_TRACE_ERROR, 
+        asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR, 
               "%s:SimWriteFile error creating full file name, fullFileName=%s, status=%d\n", 
               driverName, fullFileName, status);
         return(status);
     }
-    status |= ADParam->getInteger(pCamera->params, ADFileFormat, &fileFormat);
+    status |= ADParam->getInteger(pPvt->params, ADFileFormat, &fileFormat);
     switch (fileFormat) {
     case SimFormatBinary:
         fp = fopen(fullFileName, "wb");
         if (!fp) {
-            asynPrint(pCamera->pasynUser, ASYN_TRACE_ERROR, 
+            asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR, 
                   "%s:SimWriteFile error creating file, fullFileName=%s, errno=%d\n", 
                   driverName, fullFileName, errno);
             return(asynError);
@@ -146,13 +122,13 @@ static int simWriteFile(drvADPvt *pCamera)
         fwrite(&imageSizeX, sizeof(imageSizeX), 1, fp);
         fwrite(&imageSizeY, sizeof(imageSizeY), 1, fp);
         fwrite(&dataType, sizeof(dataType), 1, fp);
-        fwrite(pCamera->imageBuffer, bytesPerPixel, imageSizeX*imageSizeY, fp);
+        fwrite(pPvt->imageBuffer, bytesPerPixel, imageSizeX*imageSizeY, fp);
         fclose(fp);
         break;
     case SimFormatASCII:
         fp = fopen(fullFileName, "w");
         if (!fp) {
-            asynPrint(pCamera->pasynUser, ASYN_TRACE_ERROR, 
+            asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR, 
                   "%s:SimWriteFile error creating file, fullFileName=%s, errno=%d\n", 
                   driverName, fullFileName, errno);
             return(asynError);
@@ -162,35 +138,35 @@ static int simWriteFile(drvADPvt *pCamera)
         fprintf(fp, "%d\n", dataType);
         switch (dataType) {
             case ADInt8: {
-                epicsInt8 *pData = (epicsInt8 *)pCamera->imageBuffer;
+                epicsInt8 *pData = (epicsInt8 *)pPvt->imageBuffer;
                 for (i=0; i<imageSizeX*imageSizeY; i++) fprintf(fp, "%d\n", pData[i]); }
                 break;
             case ADUInt8: {
-                epicsUInt8 *pData = (epicsUInt8 *)pCamera->imageBuffer;
+                epicsUInt8 *pData = (epicsUInt8 *)pPvt->imageBuffer;
                 for (i=0; i<imageSizeX*imageSizeY; i++) fprintf(fp, "%u\n", pData[i]); }
                 break;
             case ADInt16: {
-                epicsInt16 *pData = (epicsInt16 *)pCamera->imageBuffer;
+                epicsInt16 *pData = (epicsInt16 *)pPvt->imageBuffer;
                 for (i=0; i<imageSizeX*imageSizeY; i++) fprintf(fp, "%d\n", pData[i]); }
                 break;
             case ADUInt16: {
-                epicsUInt16 *pData = (epicsUInt16 *)pCamera->imageBuffer;
+                epicsUInt16 *pData = (epicsUInt16 *)pPvt->imageBuffer;
                 for (i=0; i<imageSizeX*imageSizeY; i++) fprintf(fp, "%u\n", pData[i]); }
                 break;
             case ADInt32: {
-                epicsInt32 *pData = (epicsInt32 *)pCamera->imageBuffer;
+                epicsInt32 *pData = (epicsInt32 *)pPvt->imageBuffer;
                 for (i=0; i<imageSizeX*imageSizeY; i++) fprintf(fp, "%d\n", pData[i]); }
                 break;
             case ADUInt32: {
-                epicsUInt32 *pData = (epicsUInt32 *)pCamera->imageBuffer;
+                epicsUInt32 *pData = (epicsUInt32 *)pPvt->imageBuffer;
                 for (i=0; i<imageSizeX*imageSizeY; i++) fprintf(fp, "%u\n", pData[i]); }
                 break;
             case ADFloat32: {
-                epicsFloat32 *pData = (epicsFloat32 *)pCamera->imageBuffer;
+                epicsFloat32 *pData = (epicsFloat32 *)pPvt->imageBuffer;
                 for (i=0; i<imageSizeX*imageSizeY; i++) fprintf(fp, "%f\n", pData[i]); }
                 break;
             case ADFloat64: {
-                epicsFloat64 *pData = (epicsFloat64 *)pCamera->imageBuffer;
+                epicsFloat64 *pData = (epicsFloat64 *)pPvt->imageBuffer;
                 for (i=0; i<imageSizeX*imageSizeY; i++) fprintf(fp, "%f\n", pData[i]); }
                 break;
         }
@@ -202,17 +178,17 @@ static int simWriteFile(drvADPvt *pCamera)
     if (status) return(status);
     
     /* Update the full file name */
-    ADParam->setString(pCamera->params, ADFullFileName, fullFileName);
+    ADParam->setString(pPvt->params, ADFullFileName, fullFileName);
 
     /* If autoincrement is set then increment file number */
     if (autoIncrement) {
         fileNumber++;
-        ADParam->setInteger(pCamera->params, ADFileNumber, fileNumber);
+        ADParam->setInteger(pPvt->params, ADFileNumber, fileNumber);
     }
     return(status);
 }
 
-static int simReadFile(drvADPvt *pCamera)
+static int simReadFile(drvADPvt *pPvt)
 {
     /* Reads a file written by simWriteFile from disk in either binary or ASCII format. */
     int status = asynSuccess;
@@ -223,22 +199,22 @@ static int simReadFile(drvADPvt *pCamera)
     FILE *fp;
 
     /* Get the current parameters */
-    ADParam->getInteger(pCamera->params, ADAutoIncrement, &autoIncrement);
-    ADParam->getInteger(pCamera->params, ADFileNumber,    &fileNumber);
+    ADParam->getInteger(pPvt->params, ADAutoIncrement, &autoIncrement);
+    ADParam->getInteger(pPvt->params, ADFileNumber,    &fileNumber);
 
-    status |= ADUtils->createFileName(pCamera->params, MAX_FILENAME_LEN, fullFileName);
+    status |= ADUtils->createFileName(pPvt->params, MAX_FILENAME_LEN, fullFileName);
     if (status) { 
-        asynPrint(pCamera->pasynUser, ASYN_TRACE_ERROR, 
+        asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR, 
               "%s:SimReadFile error creating full file name, fullFileName=%s, status=%d\n", 
               driverName, fullFileName, status);
         return(status);
     }
-    status |= ADParam->getInteger(pCamera->params, ADFileFormat, &fileFormat);
+    status |= ADParam->getInteger(pPvt->params, ADFileFormat, &fileFormat);
     switch (fileFormat) {
     case SimFormatBinary:
         fp = fopen(fullFileName, "rb");
         if (!fp) {
-            asynPrint(pCamera->pasynUser, ASYN_TRACE_ERROR, 
+            asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR, 
                   "%s:SimReadFile error opening file, fullFileName=%s, errno=%d\n", 
                   driverName, fullFileName, errno);
             return(asynError);
@@ -247,14 +223,14 @@ static int simReadFile(drvADPvt *pCamera)
         fread(&imageSizeY, sizeof(imageSizeY), 1, fp);
         fread(&dataType, sizeof(dataType), 1, fp);
         ADUtils->bytesPerPixel(dataType, &bytesPerPixel);
-        simAllocateBuffer(pCamera, imageSizeX, imageSizeY, dataType);
-        fread(pCamera->imageBuffer, bytesPerPixel, imageSizeX*imageSizeY, fp);
+        simAllocateBuffer(pPvt, imageSizeX, imageSizeY, dataType);
+        fread(pPvt->imageBuffer, bytesPerPixel, imageSizeX*imageSizeY, fp);
         fclose(fp);
         break;
     case SimFormatASCII:
         fp = fopen(fullFileName, "r");
         if (!fp) {
-            asynPrint(pCamera->pasynUser, ASYN_TRACE_ERROR, 
+            asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR, 
                   "%s:SimReadFile error opening file, fullFileName=%s, errno=%d\n", 
                   driverName, fullFileName, errno);
             return(asynError);
@@ -262,40 +238,40 @@ static int simReadFile(drvADPvt *pCamera)
         fscanf(fp, "%d", &imageSizeX);
         fscanf(fp, "%d", &imageSizeY);
         fscanf(fp, "%d", &dataType);
-        simAllocateBuffer(pCamera, imageSizeX, imageSizeY, dataType);
+        simAllocateBuffer(pPvt, imageSizeX, imageSizeY, dataType);
         switch (dataType) {
             case ADInt8: {
                 int tmp;
-                epicsInt8 *pData = (epicsInt8 *)pCamera->imageBuffer;
+                epicsInt8 *pData = (epicsInt8 *)pPvt->imageBuffer;
                 for (i=0; i<imageSizeX*imageSizeY; i++) {fscanf(fp, "%d", &tmp); pData[i]=tmp;}}
                 break;
             case ADUInt8: {
                 unsigned int tmp;
-                epicsUInt8 *pData = (epicsUInt8 *)pCamera->imageBuffer;
+                epicsUInt8 *pData = (epicsUInt8 *)pPvt->imageBuffer;
                 for (i=0; i<imageSizeX*imageSizeY; i++) {fscanf(fp, "%u", &tmp); pData[i]=tmp;}}
                 break;
             case ADInt16: {
-                epicsInt16 *pData = (epicsInt16 *)pCamera->imageBuffer;
+                epicsInt16 *pData = (epicsInt16 *)pPvt->imageBuffer;
                 for (i=0; i<imageSizeX*imageSizeY; i++) fscanf(fp, "%hd", &pData[i]); }
                 break;
             case ADUInt16: {
-                epicsUInt16 *pData = (epicsUInt16 *)pCamera->imageBuffer;
+                epicsUInt16 *pData = (epicsUInt16 *)pPvt->imageBuffer;
                 for (i=0; i<imageSizeX*imageSizeY; i++) fscanf(fp, "%hu", &pData[i]); }
                 break;
             case ADInt32: {
-                epicsInt32 *pData = (epicsInt32 *)pCamera->imageBuffer;
+                epicsInt32 *pData = (epicsInt32 *)pPvt->imageBuffer;
                 for (i=0; i<imageSizeX*imageSizeY; i++) fscanf(fp, "%d", &pData[i]); }
                 break;
             case ADUInt32: {
-                epicsUInt32 *pData = (epicsUInt32 *)pCamera->imageBuffer;
+                epicsUInt32 *pData = (epicsUInt32 *)pPvt->imageBuffer;
                 for (i=0; i<imageSizeX*imageSizeY; i++) fscanf(fp, "%u", &pData[i]); }
                 break;
             case ADFloat32: {
-                epicsFloat32 *pData = (epicsFloat32 *)pCamera->imageBuffer;
+                epicsFloat32 *pData = (epicsFloat32 *)pPvt->imageBuffer;
                 for (i=0; i<imageSizeX*imageSizeY; i++) fscanf(fp, "%f", &pData[i]); }
                 break;
             case ADFloat64: {
-                epicsFloat64 *pData = (epicsFloat64 *)pCamera->imageBuffer;
+                epicsFloat64 *pData = (epicsFloat64 *)pPvt->imageBuffer;
                 for (i=0; i<imageSizeX*imageSizeY; i++) fscanf(fp, "%lf", &pData[i]); }
                 break;
         }
@@ -307,26 +283,26 @@ static int simReadFile(drvADPvt *pCamera)
     if (status) return(status);
     
     /* Update the full file name */
-    ADParam->setString(pCamera->params, ADFullFileName, fullFileName);
+    ADParam->setString(pPvt->params, ADFullFileName, fullFileName);
 
     /* If autoincrement is set then increment file number */
     if (autoIncrement) {
         fileNumber++;
-        ADParam->setInteger(pCamera->params, ADFileNumber, fileNumber);
+        ADParam->setInteger(pPvt->params, ADFileNumber, fileNumber);
     }
     
     /* Update the new values of imageSizeX, imageSizeY, dataType and the image data */
-    ADParam->setInteger(pCamera->params, ADImageSizeX, imageSizeX);
-    ADParam->setInteger(pCamera->params, ADImageSizeY, imageSizeY);
-    ADParam->setInteger(pCamera->params, ADDataType, dataType);
-    ADUtils->ADImageCallback(pCamera->ADImageInterruptPvt, 
-                             pCamera->imageBuffer,
+    ADParam->setInteger(pPvt->params, ADImageSizeX, imageSizeX);
+    ADParam->setInteger(pPvt->params, ADImageSizeY, imageSizeY);
+    ADParam->setInteger(pPvt->params, ADDataType, dataType);
+    ADUtils->ADImageCallback(pPvt->ADImageInterruptPvt, 
+                             pPvt->imageBuffer,
                              dataType, imageSizeX, imageSizeY);
     
     return(status);
 }
 
-static int simComputeImage(drvADPvt *pCamera)
+static int simComputeImage(drvADPvt *pPvt)
 {
     int status = asynSuccess;
     int dataType;
@@ -338,34 +314,34 @@ static int simComputeImage(drvADPvt *pCamera)
 
     /* NOTE: The caller of this function must have taken the mutex */
     
-    status |= ADParam->getInteger(pCamera->params, ADBinX,        &binX);
-    status |= ADParam->getInteger(pCamera->params, ADBinY,        &binY);
-    status |= ADParam->getInteger(pCamera->params, ADMinX,        &minX);
-    status |= ADParam->getInteger(pCamera->params, ADMinY,        &minY);
-    status |= ADParam->getInteger(pCamera->params, ADSizeX,       &sizeX);
-    status |= ADParam->getInteger(pCamera->params, ADSizeY,       &sizeY);
-    status |= ADParam->getInteger(pCamera->params, ADMaxSizeX,    &maxSizeX);
-    status |= ADParam->getInteger(pCamera->params, ADMaxSizeY,    &maxSizeY);
-    status |= ADParam->getInteger(pCamera->params, ADDataType,    &dataType);
-    status |= ADParam->getInteger(pCamera->params, SimResetImage, &resetImage);
-    status |= ADParam->getDouble (pCamera->params, ADAcquireTime, &exposureTime);
-    status |= ADParam->getDouble (pCamera->params, ADGain,        &gain);
-    status |= ADParam->getDouble (pCamera->params, SimGainX,      &gainX);
-    status |= ADParam->getDouble (pCamera->params, SimGainY,      &gainY);
+    status |= ADParam->getInteger(pPvt->params, ADBinX,        &binX);
+    status |= ADParam->getInteger(pPvt->params, ADBinY,        &binY);
+    status |= ADParam->getInteger(pPvt->params, ADMinX,        &minX);
+    status |= ADParam->getInteger(pPvt->params, ADMinY,        &minY);
+    status |= ADParam->getInteger(pPvt->params, ADSizeX,       &sizeX);
+    status |= ADParam->getInteger(pPvt->params, ADSizeY,       &sizeY);
+    status |= ADParam->getInteger(pPvt->params, ADMaxSizeX,    &maxSizeX);
+    status |= ADParam->getInteger(pPvt->params, ADMaxSizeY,    &maxSizeY);
+    status |= ADParam->getInteger(pPvt->params, ADDataType,    &dataType);
+    status |= ADParam->getInteger(pPvt->params, SimResetImage, &resetImage);
+    status |= ADParam->getDouble (pPvt->params, ADAcquireTime, &exposureTime);
+    status |= ADParam->getDouble (pPvt->params, ADGain,        &gain);
+    status |= ADParam->getDouble (pPvt->params, SimGainX,      &gainX);
+    status |= ADParam->getDouble (pPvt->params, SimGainY,      &gainY);
     status |= ADUtils->bytesPerPixel(dataType, &bytesPerPixel);
 
     /* Make sure parameters are consistent, fix them if they are not */
-    if (binX < 0) {binX = 0; status |= ADParam->setInteger(pCamera->params, ADBinX, binX);}
-    if (binY < 0) {binY = 0; status |= ADParam->setInteger(pCamera->params, ADBinY, binY);}
-    if (minX < 0) {minX = 0; status |= ADParam->setInteger(pCamera->params, ADMinX, minX);}
-    if (minY < 0) {minY = 0; status |= ADParam->setInteger(pCamera->params, ADMinY, minY);}
-    if (minX > maxSizeX-1) {minX = maxSizeX-1; status |= ADParam->setInteger(pCamera->params, ADMinX, minX);}
-    if (minY > maxSizeY-1) {minY = maxSizeY-1; status |= ADParam->setInteger(pCamera->params, ADMinY, minY);}
-    if (minX+sizeX > maxSizeX) {sizeX = maxSizeX-minX; status |= ADParam->setInteger(pCamera->params, ADSizeX, sizeX);}
-    if (minY+sizeY > maxSizeY) {sizeY = maxSizeY-minY; status |= ADParam->setInteger(pCamera->params, ADSizeY, sizeY);}
+    if (binX < 0) {binX = 0; status |= ADParam->setInteger(pPvt->params, ADBinX, binX);}
+    if (binY < 0) {binY = 0; status |= ADParam->setInteger(pPvt->params, ADBinY, binY);}
+    if (minX < 0) {minX = 0; status |= ADParam->setInteger(pPvt->params, ADMinX, minX);}
+    if (minY < 0) {minY = 0; status |= ADParam->setInteger(pPvt->params, ADMinY, minY);}
+    if (minX > maxSizeX-1) {minX = maxSizeX-1; status |= ADParam->setInteger(pPvt->params, ADMinX, minX);}
+    if (minY > maxSizeY-1) {minY = maxSizeY-1; status |= ADParam->setInteger(pPvt->params, ADMinY, minY);}
+    if (minX+sizeX > maxSizeX) {sizeX = maxSizeX-minX; status |= ADParam->setInteger(pPvt->params, ADSizeX, sizeX);}
+    if (minY+sizeY > maxSizeY) {sizeY = maxSizeY-minY; status |= ADParam->setInteger(pPvt->params, ADSizeY, sizeY);}
 
     /* Make sure the buffers we have allocated are large enough. */
-    status |= simAllocateBuffer(pCamera, maxSizeX, maxSizeY, dataType);
+    status |= simAllocateBuffer(pPvt, maxSizeX, maxSizeY, dataType);
 
     /* The intensity at each pixel[i,j] is:
      * (i * gainX + j* gainY) + frameCounter * gain * exposureTime * 1000. */
@@ -376,7 +352,7 @@ static int simComputeImage(drvADPvt *pCamera)
     /* The following macro simplifies the code */
 
     #define COMPUTE_ARRAY(DATA_TYPE) {                      \
-        DATA_TYPE *pData = (DATA_TYPE *)pCamera->rawBuffer; \
+        DATA_TYPE *pData = (DATA_TYPE *)pPvt->rawBuffer; \
         DATA_TYPE inc = (DATA_TYPE)increment;               \
         if (resetImage) {                                   \
             for (i=0; i<maxSizeY; i++) {                    \
@@ -427,10 +403,10 @@ static int simComputeImage(drvADPvt *pCamera)
     /* Extract the region of interest with binning.  
      * If the entire image is being used (no ROI or binning) that's OK because
      * convertImage detects that case and is very efficient */
-    status |= ADUtils->convertImage(pCamera->rawBuffer, 
+    status |= ADUtils->convertImage(pPvt->rawBuffer, 
                                     dataType,
                                     maxSizeX, maxSizeY,
-                                    pCamera->imageBuffer,
+                                    pPvt->imageBuffer,
                                     dataType,
                                     binX, binY,
                                     minX, minY,
@@ -438,19 +414,20 @@ static int simComputeImage(drvADPvt *pCamera)
                                     &imageSizeX, &imageSizeY);
     
     imageSize = imageSizeX * imageSizeY * bytesPerPixel;
-    status |= ADParam->setInteger(pCamera->params, ADImageSize,  imageSize);
-    status |= ADParam->setInteger(pCamera->params, ADImageSizeX, imageSizeX);
-    status |= ADParam->setInteger(pCamera->params, ADImageSizeY, imageSizeY);
-    status |= ADParam->setInteger(pCamera->params,SimResetImage, 0);
+    status |= ADParam->setInteger(pPvt->params, ADImageSize,  imageSize);
+    status |= ADParam->setInteger(pPvt->params, ADImageSizeX, imageSizeX);
+    status |= ADParam->setInteger(pPvt->params, ADImageSizeY, imageSizeY);
+    status |= ADParam->setInteger(pPvt->params,SimResetImage, 0);
     return(status);
 }
 
-static void simTask(drvADPvt *pCamera)
+static void simTask(drvADPvt *pPvt)
 {
     /* This thread computes new frame data and does the callbacks to send it to higher layers */
     int status = asynSuccess;
     int dataType;
     int imageSizeX, imageSizeY, imageSize;
+    int frameCounter;
     int acquire, autoSave;
     ADStatus_t acquiring;
     double acquireTime, acquirePeriod, delay;
@@ -460,21 +437,21 @@ static void simTask(drvADPvt *pCamera)
     /* Loop forever */
     while (1) {
     
-        epicsMutexLock(pCamera->mutexId);
+        epicsMutexLock(pPvt->mutexId);
 
         /* Is acquisition active? */
-        ADParam->getInteger(pCamera->params, ADAcquire, &acquire);
+        ADParam->getInteger(pPvt->params, ADAcquire, &acquire);
         
         /* If we are not acquiring then wait for a semaphore that is given when acquisition is started */
         if (!acquire) {
-            ADParam->setInteger(pCamera->params, ADStatus, ADStatusIdle);
-            ADParam->callCallbacks(pCamera->params);
+            ADParam->setInteger(pPvt->params, ADStatus, ADStatusIdle);
+            ADParam->callCallbacks(pPvt->params);
             /* Release the lock while we wait for an event that says acquire has started, then lock again */
-            epicsMutexUnlock(pCamera->mutexId);
-            asynPrint(pCamera->pasynUser, ASYN_TRACE_FLOW, 
+            epicsMutexUnlock(pPvt->mutexId);
+            asynPrint(pPvt->pasynUser, ASYN_TRACE_FLOW, 
                 "%s:simTask: waiting for acquire to start\n", driverName);
-            status = epicsEventWait(pCamera->eventId);
-            epicsMutexLock(pCamera->mutexId);
+            status = epicsEventWait(pPvt->eventId);
+            epicsMutexLock(pPvt->mutexId);
         }
         
         /* We are acquiring. */
@@ -482,45 +459,48 @@ static void simTask(drvADPvt *pCamera)
         epicsTimeGetCurrent(&startTime);
         
         acquiring = ADStatusAcquire;
-        ADParam->setInteger(pCamera->params, ADStatus, acquiring);
+        ADParam->setInteger(pPvt->params, ADStatus, acquiring);
         
         /* Update the image */
-        simComputeImage(pCamera);
+        simComputeImage(pPvt);
         
         /* Get the current parameters */
-        ADParam->getInteger(pCamera->params, ADImageSizeX, &imageSizeX);
-        ADParam->getInteger(pCamera->params, ADImageSizeY, &imageSizeY);
-        ADParam->getInteger(pCamera->params, ADImageSize,  &imageSize);
-        ADParam->getInteger(pCamera->params, ADDataType,   &dataType);
-        ADParam->getInteger(pCamera->params, ADAutoSave,   &autoSave);
+        ADParam->getInteger(pPvt->params, ADImageSizeX, &imageSizeX);
+        ADParam->getInteger(pPvt->params, ADImageSizeY, &imageSizeY);
+        ADParam->getInteger(pPvt->params, ADImageSize,  &imageSize);
+        ADParam->getInteger(pPvt->params, ADDataType,   &dataType);
+        ADParam->getInteger(pPvt->params, ADAutoSave,   &autoSave);
+        ADParam->getInteger(pPvt->params, ADFrameCounter, &frameCounter);
+        frameCounter++;
+        ADParam->setInteger(pPvt->params, ADFrameCounter, frameCounter);
 
         /* Call the imageData callback */
-        asynPrint(pCamera->pasynUser, ASYN_TRACE_FLOW, 
+        asynPrint(pPvt->pasynUser, ASYN_TRACE_FLOW, 
              "%s:simTask: calling imageData callback\n", driverName);
-        ADUtils->ADImageCallback(pCamera->ADImageInterruptPvt, 
-                                 pCamera->imageBuffer,
+        ADUtils->ADImageCallback(pPvt->ADImageInterruptPvt, 
+                                 pPvt->imageBuffer,
                                  dataType, imageSizeX, imageSizeY);
 
         /* See if acquisition is done */
-        if (pCamera->framesRemaining > 0) pCamera->framesRemaining--;
-        if (pCamera->framesRemaining == 0) {
+        if (pPvt->framesRemaining > 0) pPvt->framesRemaining--;
+        if (pPvt->framesRemaining == 0) {
             acquiring = ADStatusIdle;
-            ADParam->setInteger(pCamera->params, ADAcquire, acquiring);
-            asynPrint(pCamera->pasynUser, ASYN_TRACE_FLOW, 
+            ADParam->setInteger(pPvt->params, ADAcquire, acquiring);
+            asynPrint(pPvt->pasynUser, ASYN_TRACE_FLOW, 
                   "%s:simTask: acquisition completed\n", driverName);
         }
         
         /* If autosave is enabled then save the file */
-        if (autoSave) simWriteFile(pCamera);
+        if (autoSave) simWriteFile(pPvt);
         
         /* Call the callbacks to update any changes */
-        ADParam->callCallbacks(pCamera->params);
+        ADParam->callCallbacks(pPvt->params);
         
-        ADParam->getDouble(pCamera->params, ADAcquireTime, &acquireTime);
-        ADParam->getDouble(pCamera->params, ADAcquirePeriod, &acquirePeriod);
+        ADParam->getDouble(pPvt->params, ADAcquireTime, &acquireTime);
+        ADParam->getDouble(pPvt->params, ADAcquirePeriod, &acquirePeriod);
         
         /* We are done accessing data structures, release the lock */
-        epicsMutexUnlock(pCamera->mutexId);
+        epicsMutexUnlock(pPvt->mutexId);
         
         /* If we are acquiring then wait for the larger of the exposure time or the exposure period,
            minus the time we have already spent computing this image. */
@@ -530,49 +510,65 @@ static void simTask(drvADPvt *pCamera)
             computeTime = epicsTimeDiffInSeconds(&endTime, &startTime);
             if (acquirePeriod > delay) delay = acquirePeriod;
             delay -= computeTime;
-            asynPrint(pCamera->pasynUser, ASYN_TRACE_FLOW, 
+            asynPrint(pPvt->pasynUser, ASYN_TRACE_FLOW, 
                   "%s:simTask: computeTime=%f, delay=%f\n",
                   driverName, computeTime, delay);            
-            if (delay > 0) status = epicsEventWaitWithTimeout(pCamera->eventId, delay);
+            if (delay > 0) status = epicsEventWaitWithTimeout(pPvt->eventId, delay);
         }
     }
 }
 
-static void report(void *drvPvt, FILE *fp, int details)
+static void simRateTask(drvADPvt *pPvt)
 {
-    drvADPvt *pCamera = (drvADPvt *)drvPvt;
-
-    fprintf(fp, "Simulation detector %s\n", pCamera->portName);
-    if (details > 0) {
-        int nx, ny, dataType;
-        ADParam->getInteger(pCamera->params, ADSizeX, &nx);
-        ADParam->getInteger(pCamera->params, ADSizeY, &ny);
-        ADParam->getInteger(pCamera->params, ADDataType, &dataType);
-        fprintf(fp, "  NX, NY:            %d  %d\n", nx, ny);
-        fprintf(fp, "  Data type:         %d\n", dataType);
-    }
-    if (details > 5) {
-        fprintf(fp, "\nParameter library contents:\n");
-        ADParam->dump(pCamera->params);
+    /* This thread just computes the average frame rate */
+    int frameCounter, prevFrameCounter;
+    double rate, frameRateTime, deltaTime;
+    epicsTimeStamp tNow, tPrevious;
+    
+    epicsMutexLock(pPvt->mutexId);
+    ADParam->getInteger(pPvt->params, ADFrameCounter, &prevFrameCounter);
+    epicsTimeGetCurrent(&tPrevious);
+    /* Get the time we need to sleep before the next frame rate computation */
+    ADParam->getDouble(pPvt->params, ADFrameRateTime, &frameRateTime);
+    epicsMutexUnlock(pPvt->mutexId);
+    
+    /* Loop forever */
+    while (1) {
+        /* Sleep for the frameRateTime */
+        epicsThreadSleep(frameRateTime);
+        epicsMutexLock(pPvt->mutexId);
+        
+        /* Measure exactly how long since the last update */
+        epicsTimeGetCurrent(&tNow);
+        deltaTime = epicsTimeDiffInSeconds(&tNow, &tPrevious);
+        
+        /* Compute the rate */
+        ADParam->getInteger(pPvt->params, ADFrameCounter, &frameCounter);
+        rate = (frameCounter - prevFrameCounter) / deltaTime;
+        ADParam->setDouble(pPvt->params, ADFrameRate, rate);
+        
+        /* Store the new values */
+        prevFrameCounter = frameCounter;
+        memcpy(&tPrevious, &tNow, sizeof(tNow));
+        ADParam->callCallbacks(pPvt->params);
+        epicsMutexUnlock(pPvt->mutexId);
     }
 }
 
-
-/* Note: ADSetLog, ADFindParam, ADSetInt32Callback, ADSetFloat64Callback, 
- * and ADSetImageDataCallback can usually be used with no modifications in new drivers. */
- 
+
+/* asynInt32 interface functions */
 static asynStatus readInt32(void *drvPvt, asynUser *pasynUser, 
                             epicsInt32 *value)
 {
-    drvADPvt *pCamera = (drvADPvt *)drvPvt;
+    drvADPvt *pPvt = (drvADPvt *)drvPvt;
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
 
-    epicsMutexLock(pCamera->mutexId);
+    epicsMutexLock(pPvt->mutexId);
     
     /* We just read the current value of the parameter from the parameter library.
      * Those values are updated whenever anything could cause them to change */
-    status = ADParam->getInteger(pCamera->params, function, value);
+    status = ADParam->getInteger(pPvt->params, function, value);
     if (status) 
         asynPrint(pasynUser, ASYN_TRACE_ERROR, 
                   "%s:readInt32 error, status=%d function=%d, value=%d\n", 
@@ -581,23 +577,23 @@ static asynStatus readInt32(void *drvPvt, asynUser *pasynUser,
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
               "%s:readInt32: function=%d, value=%d\n", 
               driverName, function, *value);
-    epicsMutexUnlock(pCamera->mutexId);
+    epicsMutexUnlock(pPvt->mutexId);
     return(status);
 }
 
 static asynStatus writeInt32(void *drvPvt, asynUser *pasynUser, 
                              epicsInt32 value)
 {
-    drvADPvt *pCamera = (drvADPvt *)drvPvt;
+    drvADPvt *pPvt = (drvADPvt *)drvPvt;
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
     int reset=0;
 
-    epicsMutexLock(pCamera->mutexId);
+    epicsMutexLock(pPvt->mutexId);
 
     /* Set the parameter in the parameter library.  This may be overwritten when we read back the
      * status at the end, but that's OK */
-    status |= ADParam->setInteger(pCamera->params, function, value);
+    status |= ADParam->setInteger(pPvt->params, function, value);
 
     /* For a real detector this is where the parameter is sent to the hardware */
     switch (function) {
@@ -608,23 +604,23 @@ static asynStatus writeInt32(void *drvPvt, asynUser *pasynUser,
                many frames have been requested.  If we are in continuous mode then set the number of
                remaining frames to -1. */
             int frameMode, numFrames;
-            status |= ADParam->getInteger(pCamera->params, ADFrameMode, &frameMode);
-            status |= ADParam->getInteger(pCamera->params, ADNumFrames, &numFrames);
+            status |= ADParam->getInteger(pPvt->params, ADFrameMode, &frameMode);
+            status |= ADParam->getInteger(pPvt->params, ADNumFrames, &numFrames);
             switch(frameMode) {
             case ADFrameSingle:
-                pCamera->framesRemaining = 1;
+                pPvt->framesRemaining = 1;
                 break;
             case ADFrameMultiple:
-                pCamera->framesRemaining = numFrames;
+                pPvt->framesRemaining = numFrames;
                 break;
             case ADFrameContinuous:
-                pCamera->framesRemaining = -1;
+                pPvt->framesRemaining = -1;
                 break;
             }
             reset = 1;
             /* Send an event to wake up the simulation task.  
              * It won't actually start generating new images until we release the lock below */
-            epicsEventSignal(pCamera->eventId);
+            epicsEventSignal(pPvt->eventId);
         } 
         break;
     case ADBinX:
@@ -644,37 +640,37 @@ static asynStatus writeInt32(void *drvPvt, asynUser *pasynUser,
          * set the frames remaining appropriately. */
         switch (value) {
         case ADFrameSingle:
-            pCamera->framesRemaining = 1;
+            pPvt->framesRemaining = 1;
             break;
         case ADFrameMultiple: {
             int numFrames;
-            ADParam->getInteger(pCamera->params, ADNumFrames, &numFrames);
-            pCamera->framesRemaining = numFrames; }
+            ADParam->getInteger(pPvt->params, ADNumFrames, &numFrames);
+            pPvt->framesRemaining = numFrames; }
             break;
         case ADFrameContinuous:
-            pCamera->framesRemaining = -1;
+            pPvt->framesRemaining = -1;
             break;
         }
         break;
     case ADWriteFile:
-        status = simWriteFile(pCamera);
+        status = simWriteFile(pPvt);
         break; 
     case ADReadFile:
-        status = simReadFile(pCamera);
+        status = simReadFile(pPvt);
         break; 
     }
     
     /* Reset the image if the reset flag was set above */
     if (reset) {
-        status |= ADParam->setInteger(pCamera->params, SimResetImage, 1);
+        status |= ADParam->setInteger(pPvt->params, SimResetImage, 1);
         /* Compute the image when parameters change.  
          * This won't post data, but will cause any parameter changes to be computed and readbacks to update.
          * Don't compute the image if this is an accquire command, since that will be done next. */
-        if (function != ADAcquire) simComputeImage(pCamera);
+        if (function != ADAcquire) simComputeImage(pPvt);
     }
     
     /* Do callbacks so higher layers see any changes */
-    ADParam->callCallbacks(pCamera->params);
+    ADParam->callCallbacks(pPvt->params);
     
     if (status) 
         asynPrint(pasynUser, ASYN_TRACE_ERROR, 
@@ -684,7 +680,7 @@ static asynStatus writeInt32(void *drvPvt, asynUser *pasynUser,
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
               "%s:writeInt32: function=%d, value=%d\n", 
               driverName, function, value);
-    epicsMutexUnlock(pCamera->mutexId);
+    epicsMutexUnlock(pPvt->mutexId);
     return status;
 }
 
@@ -701,17 +697,19 @@ static asynStatus getBounds(void *drvPvt, asynUser *pasynUser,
     return(asynSuccess);
 }
 
+
+/* asynFloat64 interface methods */
 static asynStatus readFloat64(void *drvPvt, asynUser *pasynUser,
                               epicsFloat64 *value)
 {
-    drvADPvt *pCamera = (drvADPvt *)drvPvt;
+    drvADPvt *pPvt = (drvADPvt *)drvPvt;
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
     
-    epicsMutexLock(pCamera->mutexId);
+    epicsMutexLock(pPvt->mutexId);
     /* We just read the current value of the parameter from the parameter library.
      * Those values are updated whenever anything could cause them to change */
-    status = ADParam->getDouble(pCamera->params, function, value);
+    status = ADParam->getDouble(pPvt->params, function, value);
     if (status) 
         asynPrint(pasynUser, ASYN_TRACE_ERROR, 
               "%s:readFloat64 error, status=%d function=%d, value=%f\n", 
@@ -720,22 +718,22 @@ static asynStatus readFloat64(void *drvPvt, asynUser *pasynUser,
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
               "%s:readFloat64: function=%d, value=%f\n", 
               driverName, function, *value);
-    epicsMutexUnlock(pCamera->mutexId);
+    epicsMutexUnlock(pPvt->mutexId);
     return(status);
 }
 
 static asynStatus writeFloat64(void *drvPvt, asynUser *pasynUser, 
                                epicsFloat64 value)
 {
-    drvADPvt *pCamera = (drvADPvt *)drvPvt;
+    drvADPvt *pPvt = (drvADPvt *)drvPvt;
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
 
-    epicsMutexLock(pCamera->mutexId);
+    epicsMutexLock(pPvt->mutexId);
 
     /* Set the parameter in the parameter library.  This may be overwritten when we read back the
      * status at the end, but that's OK */
-    status |= ADParam->setDouble(pCamera->params, function, value);
+    status |= ADParam->setDouble(pPvt->params, function, value);
 
     /* Changing any of the following parameters requires recomputing the base image */
     switch (function) {
@@ -743,14 +741,14 @@ static asynStatus writeFloat64(void *drvPvt, asynUser *pasynUser,
     case ADGain:
     case SimGainX:
     case SimGainY:
-        status |= ADParam->setInteger(pCamera->params, SimResetImage, 1);
+        status |= ADParam->setInteger(pPvt->params, SimResetImage, 1);
         /* Compute the image.  This won't post data, but will cause any readbacks to update */
-        simComputeImage(pCamera);
+        simComputeImage(pPvt);
         break;
     }
 
     /* Do callbacks so higher layers see any changes */
-    ADParam->callCallbacks(pCamera->params);
+    ADParam->callCallbacks(pPvt->params);
     if (status) 
         asynPrint(pasynUser, ASYN_TRACE_ERROR, 
               "%s:writeFloat64 error, status=%d function=%d, value=%f\n", 
@@ -759,22 +757,24 @@ static asynStatus writeFloat64(void *drvPvt, asynUser *pasynUser,
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
               "%s:writeFloat64: function=%d, value=%f\n", 
               driverName, function, value);
-    epicsMutexUnlock(pCamera->mutexId);
+    epicsMutexUnlock(pPvt->mutexId);
     return status;
 }
 
+
+/* asynOctet interface methods */
 static asynStatus readOctet(void *drvPvt, asynUser *pasynUser,
                             char *value, size_t maxChars, size_t *nActual,
                             int *eomReason)
 {
-    drvADPvt *pCamera = (drvADPvt *)drvPvt;
+    drvADPvt *pPvt = (drvADPvt *)drvPvt;
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
    
-    epicsMutexLock(pCamera->mutexId);
+    epicsMutexLock(pPvt->mutexId);
     /* We just read the current value of the parameter from the parameter library.
      * Those values are updated whenever anything could cause them to change */
-    status = ADParam->getString(pCamera->params, function, maxChars, value);
+    status = ADParam->getString(pPvt->params, function, maxChars, value);
     if (status) 
         asynPrint(pasynUser, ASYN_TRACE_ERROR, 
               "%s:readOctet error, status=%d function=%d, value=%s\n", 
@@ -785,23 +785,23 @@ static asynStatus readOctet(void *drvPvt, asynUser *pasynUser,
               driverName, function, value);
     *eomReason = ASYN_EOM_END;
     *nActual = strlen(value);
-    epicsMutexUnlock(pCamera->mutexId);
+    epicsMutexUnlock(pPvt->mutexId);
     return(status);
 }
 
 static asynStatus writeOctet(void *drvPvt, asynUser *pasynUser,
                              const char *value, size_t nChars, size_t *nActual)
 {
-    drvADPvt *pCamera = (drvADPvt *)drvPvt;
+    drvADPvt *pPvt = (drvADPvt *)drvPvt;
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
 
-    epicsMutexLock(pCamera->mutexId);
+    epicsMutexLock(pPvt->mutexId);
     /* Set the parameter in the parameter library.  This may be overwritten when we read back the
      * status at the end, but that's OK */
-    status |= ADParam->setString(pCamera->params, function, (char *)value);
+    status |= ADParam->setString(pPvt->params, function, (char *)value);
     /* Do callbacks so higher layers see any changes */
-    ADParam->callCallbacks(pCamera->params);
+    ADParam->callCallbacks(pPvt->params);
     if (status) 
         asynPrint(pasynUser, ASYN_TRACE_ERROR, 
               "%s:writeOctet error, status=%d function=%d, value=%s\n", 
@@ -811,25 +811,26 @@ static asynStatus writeOctet(void *drvPvt, asynUser *pasynUser,
               "%s:writeOctet: function=%d, value=%s\n", 
               driverName, function, value);
     *nActual = nChars;
-    epicsMutexUnlock(pCamera->mutexId);
+    epicsMutexUnlock(pPvt->mutexId);
     return status;
 }
 
+/* asynADImage interface methods */
 static asynStatus readADImage(void *drvPvt, asynUser *pasynUser, void *data, int maxBytes,
                        int *dataType, int *nx, int *ny)
 {
-    drvADPvt *pCamera = (drvADPvt *)drvPvt;
+    drvADPvt *pPvt = (drvADPvt *)drvPvt;
     int imageSize, bytesPerPixel;
     int status = asynSuccess;
     
-    epicsMutexLock(pCamera->mutexId);
-    status |= ADParam->getInteger(pCamera->params, ADImageSizeX, nx);
-    status |= ADParam->getInteger(pCamera->params, ADImageSizeY, ny);
-    status |= ADParam->getInteger(pCamera->params, ADDataType, dataType);
+    epicsMutexLock(pPvt->mutexId);
+    status |= ADParam->getInteger(pPvt->params, ADImageSizeX, nx);
+    status |= ADParam->getInteger(pPvt->params, ADImageSizeY, ny);
+    status |= ADParam->getInteger(pPvt->params, ADDataType, dataType);
     status |= ADUtils->bytesPerPixel(*dataType, &bytesPerPixel);
     imageSize = bytesPerPixel * *nx * *ny;
     if (imageSize > maxBytes) imageSize = maxBytes;
-    memcpy(data, pCamera->imageBuffer, imageSize);
+    memcpy(data, pPvt->imageBuffer, imageSize);
     if (status) 
         asynPrint(pasynUser, ASYN_TRACE_ERROR, 
               "%s:readADImage error, status=%d maxBytes=%d, data=%p\n", 
@@ -838,24 +839,24 @@ static asynStatus readADImage(void *drvPvt, asynUser *pasynUser, void *data, int
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
               "%s:readADImage error, maxBytes=%d, data=%p\n", 
               driverName, maxBytes, data);
-    epicsMutexUnlock(pCamera->mutexId);
+    epicsMutexUnlock(pPvt->mutexId);
     return status;
 }
 
 static asynStatus writeADImage(void *drvPvt, asynUser *pasynUser, void *data,
                         int dataType, int nx, int ny)
 {
-    drvADPvt *pCamera = (drvADPvt *)drvPvt;
+    drvADPvt *pPvt = (drvADPvt *)drvPvt;
     int status = asynSuccess;
     
-    if (pCamera == NULL) return asynError;
-    epicsMutexLock(pCamera->mutexId);
+    if (pPvt == NULL) return asynError;
+    epicsMutexLock(pPvt->mutexId);
 
     /* The simDetector does not allow downloading image data */    
     asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
           "%s:ADSetImage not currently supported\n", driverName);
     status = asynError;
-    epicsMutexUnlock(pCamera->mutexId);
+    epicsMutexUnlock(pPvt->mutexId);
     return status;
 }
 
@@ -873,7 +874,7 @@ static asynStatus drvUserCreate(void *drvPvt, asynUser *pasynUser,
                                 drvInfo, &param);
                                 
     /* If we did not find it in that table try our driver-specific table */
-    if (status) status = ADUtils->findParam(DetParamString, NUM_DET_PARAMS, 
+    if (status) status = ADUtils->findParam(SimDetParamString, NUM_SIM_DET_PARAMS, 
                                             drvInfo, &param);
     
     if (status == asynSuccess) {
@@ -918,6 +919,9 @@ static asynStatus drvUserDestroy(void *drvPvt, asynUser *pasynUser)
     return(asynSuccess);
 }
 
+
+/* asynCommon interface methods */
+
 static asynStatus connect(void *drvPvt, asynUser *pasynUser)
 {
     pasynManager->exceptionConnect(pasynUser);
@@ -935,8 +939,28 @@ static asynStatus disconnect(void *drvPvt, asynUser *pasynUser)
     return(asynSuccess);
 }
 
+static void report(void *drvPvt, FILE *fp, int details)
+{
+    drvADPvt *pPvt = (drvADPvt *)drvPvt;
+
+    fprintf(fp, "Simulation detector %s\n", pPvt->portName);
+    if (details > 0) {
+        int nx, ny, dataType;
+        ADParam->getInteger(pPvt->params, ADSizeX, &nx);
+        ADParam->getInteger(pPvt->params, ADSizeY, &ny);
+        ADParam->getInteger(pPvt->params, ADDataType, &dataType);
+        fprintf(fp, "  NX, NY:            %d  %d\n", nx, ny);
+        fprintf(fp, "  Data type:         %d\n", dataType);
+    }
+    if (details > 5) {
+        fprintf(fp, "\nParameter library contents:\n");
+        ADParam->dump(pPvt->params);
+    }
+}
+
 
 
+/* Structures with function pointers for each of the asyn interfaces */
 static asynCommon ifaceCommon = {
     report,
     connect,
@@ -974,13 +998,13 @@ static asynADImage ifaceADImage = {
 int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int dataType)
 
 {
-    drvADPvt *pCamera;
+    drvADPvt *pPvt;
     int status = asynSuccess;
     char *functionName = "simDetectorConfig";
     asynStandardInterfaces *pInterfaces;
 
-    pCamera = callocMustSucceed(1, sizeof(*pCamera), functionName);
-    pCamera->portName = epicsStrDup(portName);
+    pPvt = callocMustSucceed(1, sizeof(*pPvt), functionName);
+    pPvt->portName = epicsStrDup(portName);
 
     status = pasynManager->registerPort(portName,
                                         ASYN_MULTIDEVICE | ASYN_CANBLOCK,
@@ -993,9 +1017,9 @@ int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int data
     }
 
     /* Create asynUser for debugging */
-    pCamera->pasynUser = pasynManager->createAsynUser(0, 0);
+    pPvt->pasynUser = pasynManager->createAsynUser(0, 0);
 
-    pInterfaces = &pCamera->asynInterfaces;
+    pInterfaces = &pPvt->asynInterfaces;
     
     /* Initialize interface pointers */
     pInterfaces->common.pinterface        = (void *)&ifaceCommon;
@@ -1010,70 +1034,70 @@ int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int data
     pInterfaces->float64CanInterrupt      = 1;
 
     status = pasynStandardInterfacesBase->initialize(portName, pInterfaces,
-                                                     pCamera->pasynUser, pCamera);
+                                                     pPvt->pasynUser, pPvt);
     if (status != asynSuccess) {
         printf("%s ERROR: Can't register interfaces: %s.\n",
-               functionName, pCamera->pasynUser->errorMessage);
+               functionName, pPvt->pasynUser->errorMessage);
         return(asynError);
     }
     
     /* Register the asynADImage interface */
-    pCamera->asynADImage.interfaceType = asynADImageType;
-    pCamera->asynADImage.pinterface = (void *)&ifaceADImage;
-    pCamera->asynADImage.drvPvt = pCamera;
-    status = pasynADImageBase->initialize(portName, &pCamera->asynADImage);
+    pPvt->asynADImage.interfaceType = asynADImageType;
+    pPvt->asynADImage.pinterface = (void *)&ifaceADImage;
+    pPvt->asynADImage.drvPvt = pPvt;
+    status = pasynADImageBase->initialize(portName, &pPvt->asynADImage);
     if (status != asynSuccess) {
         printf("%s: Can't register asynADImage\n", functionName);
         return(asynError);
     }
-    status = pasynManager->registerInterruptSource(portName, &pCamera->asynADImage,
-                                                   &pCamera->ADImageInterruptPvt);
+    status = pasynManager->registerInterruptSource(portName, &pPvt->asynADImage,
+                                                   &pPvt->ADImageInterruptPvt);
     if (status != asynSuccess) {
         printf("%s: Can't register asynADImage interrupt\n", functionName);
         return(asynError);
     }
 
     /* Create the epicsMutex for locking access to data structures from other threads */
-    pCamera->mutexId = epicsMutexCreate();
-    if (!pCamera->mutexId) {
+    pPvt->mutexId = epicsMutexCreate();
+    if (!pPvt->mutexId) {
         printf("%s: epicsMutexCreate failure\n", functionName);
         return asynError;
     }
     
     /* Create the epicsEvent for signaling to the simulate task when acquisition starts */
-    pCamera->eventId = epicsEventCreate(epicsEventEmpty);
-    if (!pCamera->eventId) {
+    pPvt->eventId = epicsEventCreate(epicsEventEmpty);
+    if (!pPvt->eventId) {
         printf("%s: epicsEventCreate failure\n", functionName);
         return asynError;
     }
     
     /* Initialize the parameter library */
-    pCamera->params = ADParam->create(0, ADLastDriverParam, &pCamera->asynInterfaces);
-    if (!pCamera->params) {
+    pPvt->params = ADParam->create(0, ADLastDriverParam, &pPvt->asynInterfaces);
+    if (!pPvt->params) {
         printf("%s: unable to create parameter library\n", functionName);
         return asynError;
     }
     
     /* Use the utility library to set some defaults */
-    status = ADUtils->setParamDefaults(pCamera->params);
+    status = ADUtils->setParamDefaults(pPvt->params);
     
     /* Set some default values for parameters */
-    status =  ADParam->setString (pCamera->params, ADManufacturer, "Simulated detector");
-    status |= ADParam->setString (pCamera->params, ADModel, "Basic simulator");
-    status |= ADParam->setInteger(pCamera->params, ADMaxSizeX, maxSizeX);
-    status |= ADParam->setInteger(pCamera->params, ADMaxSizeY, maxSizeY);
-    status |= ADParam->setInteger(pCamera->params, ADSizeX, maxSizeX);
-    status |= ADParam->setInteger(pCamera->params, ADSizeY, maxSizeY);
-    status |= ADParam->setInteger(pCamera->params, ADImageSizeX, maxSizeX);
-    status |= ADParam->setInteger(pCamera->params, ADImageSizeY, maxSizeY);
-    status |= ADParam->setInteger(pCamera->params, ADDataType, dataType);
-    status |= ADParam->setInteger(pCamera->params, ADFrameMode, ADFrameContinuous);
-    status |= ADParam->setDouble (pCamera->params, ADAcquireTime, .001);
-    status |= ADParam->setDouble (pCamera->params, ADAcquirePeriod, .005);
-    status |= ADParam->setInteger(pCamera->params, ADNumFrames, 100);
-    status |= ADParam->setInteger(pCamera->params, SimResetImage, 1);
-    status |= ADParam->setDouble (pCamera->params, SimGainX, 1);
-    status |= ADParam->setDouble (pCamera->params, SimGainY, 1);
+    status =  ADParam->setString (pPvt->params, ADManufacturer, "Simulated detector");
+    status |= ADParam->setString (pPvt->params, ADModel, "Basic simulator");
+    status |= ADParam->setInteger(pPvt->params, ADMaxSizeX, maxSizeX);
+    status |= ADParam->setInteger(pPvt->params, ADMaxSizeY, maxSizeY);
+    status |= ADParam->setInteger(pPvt->params, ADSizeX, maxSizeX);
+    status |= ADParam->setInteger(pPvt->params, ADSizeY, maxSizeY);
+    status |= ADParam->setInteger(pPvt->params, ADImageSizeX, maxSizeX);
+    status |= ADParam->setInteger(pPvt->params, ADImageSizeY, maxSizeY);
+    status |= ADParam->setInteger(pPvt->params, ADDataType, dataType);
+    status |= ADParam->setInteger(pPvt->params, ADFrameMode, ADFrameContinuous);
+    status |= ADParam->setDouble (pPvt->params, ADAcquireTime, .001);
+    status |= ADParam->setDouble (pPvt->params, ADAcquirePeriod, .005);
+    status |= ADParam->setInteger(pPvt->params, ADNumFrames, 100);
+    status |= ADParam->setInteger(pPvt->params, SimResetImage, 1);
+    status |= ADParam->setDouble (pPvt->params, SimGainX, 1);
+    status |= ADParam->setDouble (pPvt->params, SimGainY, 1);
     if (status) {
         printf("%s: unable to set camera parameters\n", functionName);
         return asynError;
@@ -1084,14 +1108,25 @@ int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int data
                                 epicsThreadPriorityMedium,
                                 epicsThreadGetStackSize(epicsThreadStackMedium),
                                 (EPICSTHREADFUNC)simTask,
-                                pCamera) == NULL);
+                                pPvt) == NULL);
     if (status) {
-        printf("%s: epicsThreadCreate failure\n", functionName);
+        printf("%s: epicsThreadCreate failure for image task\n", functionName);
+        return asynError;
+    }
+
+    /* Create the thread that updates the frame rate */
+    status = (epicsThreadCreate("SimRateTask",
+                                epicsThreadPriorityLow,
+                                epicsThreadGetStackSize(epicsThreadStackMedium),
+                                (EPICSTHREADFUNC)simRateTask,
+                                pPvt) == NULL);
+    if (status) {
+        printf("%s: epicsThreadCreate failure for rate task\n", functionName);
         return asynError;
     }
 
     /* Compute the first image */
-    simComputeImage(pCamera);
+    simComputeImage(pPvt);
     
     return asynSuccess;
 }
