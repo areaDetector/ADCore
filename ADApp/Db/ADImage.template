@@ -27,8 +27,8 @@ record(ao, "$(P)$(D)MinImageUpdate")
 }
 
 ###################################################################
-#  These records control statistics on frames                     # 
-#  and rates                                                      #
+#  These records provide statistics on image callbacks and        #
+#  image callback rates                                           # 
 ###################################################################
 
 # Image counter.  Increments by 1 each time an image is posted on any interface
@@ -50,30 +50,6 @@ record(ai, "$(P)$(D)ImageRate_RBV")
     field(PINI, "1")
     field(DTYP, "asynFloat64")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_RATE")
-    field(PREC, "3")
-    field(SCAN, "I/O Intr")
-}
-
-# Frame counter.  Increments by 1 each time an image data callback occurs
-record(longout, "$(P)$(D)FrameCounter")
-{
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FRAME_COUNTER")
-}
-
-record(longin, "$(P)$(D)FrameCounter_RBV")
-{
-    field(PINI, "1")
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FRAME_COUNTER")
-    field(SCAN, "I/O Intr")
-}
-
-record(ai, "$(P)$(D)FrameRate_RBV")
-{
-    field(PINI, "1")
-    field(DTYP, "asynFloat64")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FRAME_RATE")
     field(PREC, "3")
     field(SCAN, "I/O Intr")
 }
