@@ -11,76 +11,17 @@ extern "C" {
 
                   Mark Rivers
               University of Chicago
-                March 27, 2008
+                April 2, 2008
 
-                 How use this API
+Detector drivers are written to use the standard asyn interfaces asynInt32, asynFloat64 and asynOctet.
+They must implement those interfaces, and additionally must implement the asynADImage interface
+for reading and writing images.  
 
-This API is used to provide a general interface to area detectors
-used by EPICS.  To provide EPICS support the driver must
-implement the area_detector API by defining a table of function pointers
-of type #ADDrvSET_t. 
-
-However, there are a couple of things that should be born in mind
-and these are outined in the following three subsections.
-
-      Locking and multi-thread considerations
-
-The driver writer can assume that any call to this library will be in
-the context of a thread that can block for a reasonable length of
-time. Hence, I/O to the detector can be synchronous. However, you
-cannot assume that only one thread is active, so routines must lock
-data structures when accessing them.
-
-This is particularly important when calling the callback routine. All
-asynchronous communication back to the upper level software is done
-through the callback function set by ADSetXXXCallback(), where XXX
-is Int32, Float64, or ImageData. The rule is
-that the driver can assume that once this callback is completed all
-side effects have been handled by the upper level software. However,
-until it is called the driver must protect against updates.
-
-The way this is normally implemented is that each detector has a mutex
-semaphore that is used to lock the following three operations
-together:
-
-  A call to get information from the hardware. 
-  This call often blocks while the data is returned from the detector.
-  
-  A call to update the parameters to represent the new hardware state.
-  
-  A callback to inform the upper level software that things have changed. 
-
-Note, in implementing this the upper level software makes sure that
-this API is never called in record processing context - so the
-detector mutex is always called before the dbScanLock mutex. Getting this
-out of order results in a deadlock.
-
-                     Detector Parameters
-
-Detector state information is accessed using the detector parameter
-ADGetInteger(), ADSetInteger(), ADGetDouble(),
-ADSetDouble(), ADGetString, ADSetString, and ADXXXCallbackFunc() routines (the latter
-set with ADSetXXXCallback()). Parameters are identified by the
-ADParam_t enumerated type. Since this is common to all detectors,
-the ADParamLib library is provided in the areaDetector application for drivers
-to use. Using this is optional, but it generally saves effort. A
-specific driver's get and callback routines are typically just wrappers
-around the corresponding ADParamLib routines, and the set routines are
-also wrappers, but inevitably have some detector specific action to
-pass the parameter value down to the detector.
-
-                Background detector polling task.
-
-Some detectors will need a background polling task to
-update the state kept as parameters within the drivers. Typically,
-there is one task per detector. If there is a state change this will result in
-upper level software being called back in the context this task, so may be
-a consideration in setting the task priority.
+Whenever any parameter changes the driver must perform the callbacks
+on those interfaces.  This can be done conveniently by using the ADParamLib library.
 
 
 */
-
-/** Forward declaration of DETECTOR_HDL, which is a pointer to an internal driver-dependent handle */
 
 #define AREA_DETECTOR_OK (0)
 #define AREA_DETECTOR_ERROR (-1)
@@ -92,7 +33,8 @@ typedef enum
     ADShutterOpen
 } ADShutterStatus_t;
 
-/* Enumeration of image data types */
+/* Enumeration of image data types
+ * This list will grow when color image models are supported */
 typedef enum
 {
     ADInt8,
@@ -177,6 +119,11 @@ typedef enum
     ADShutter,         /* (asynInt32,    r/w) Shutter control (ADShutterStatus_t) */
     ADAcquire,         /* (asynInt32,    r/w) Start(1) or Stop(0) acquisition */
 
+   /* Statistics on number of frames collected and the frame rate. */
+    ADFrameCounter,    /* (asynInt32,    r/w) Number of frames acquired since last reset */
+    ADFrameRate,       /* (asynFloat64,  r/o) Frame rate, averaged over ADFrameRateTime. */
+    ADFrameRateTime,   /* (asynFloat64,  r/w) Time over which to average frame rate */
+ 
     /* File name related parameters for saving data.
      * Drivers are not required to implement file saving, but if they do these parameters
      * should be used.
@@ -206,8 +153,9 @@ typedef struct {
 
 #ifdef DEFINE_STANDARD_PARAM_STRINGS
 /* The parameter strings are the userParam argument for asyn device support links
- * The asynDrvUser interface in this driver parses these strings and puts the
+ * The asynDrvUser interface in the drivers parses these strings and puts the
  * corresponding enum value in pasynUser->reason */
+ 
 static ADParamString_t ADStandardParamString[] = {
     {ADManufacturer,   "MANUFACTURER"},  
     {ADModel,          "MODEL"       },  
@@ -237,6 +185,10 @@ static ADParamString_t ADStandardParamString[] = {
     {ADShutter,        "SHUTTER"     },
     {ADAcquire,        "ACQUIRE"     },
 
+    {ADFrameCounter,   "FRAME_COUNTER"     }, 
+    {ADFrameRate,      "FRAME_RATE"        },
+    {ADFrameRateTime,  "FRAME_RATE_TIME"   },
+
     {ADFilePath,       "FILE_PATH"     },
     {ADFileName,       "FILE_NAME"     },
     {ADFileNumber,     "FILE_NUMBER"   },
@@ -248,6 +200,7 @@ static ADParamString_t ADStandardParamString[] = {
     {ADWriteFile,      "WRITE_FILE"    },
     {ADReadFile,       "READ_FILE"     },
 };
+
 #define NUM_AD_STANDARD_PARAMS (sizeof(ADStandardParamString)/sizeof(ADStandardParamString[0]))
 #endif
 
