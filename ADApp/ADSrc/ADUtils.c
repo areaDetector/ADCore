@@ -329,8 +329,8 @@ static int createFileName(void *params, int maxChars, char *fullFileName)
     return(status);   
 }
 
-static void ADImageCallback( void *ADImageInterruptPvt, void *data, ADDataType_t dataType,
-                             int nx, int ny)
+static void ADImageCallback(void *ADImageInterruptPvt, void *data, ADDataType_t dataType,
+                            int nx, int ny)
 {
     ELLLIST *pclientList;
     interruptNode *pnode;
