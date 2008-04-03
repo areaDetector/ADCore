@@ -10,7 +10,7 @@ include $(TOP)/configure/CONFIG
 LIBRARY_IOC = simDetector
 LIB_SRCS += drvSimDetector.c
 LIB_SRCS += drvSimDetectorEpics.c
-LIB_LIBS += areaDetector ADPlugin
+LIB_LIBS += ADBase ADPlugin
 LIB_LIBS += sscan autosave
 LIB_LIBS += asyn
 LIB_LIBS += $(EPICS_BASE_IOC_LIBS)
@@ -27,7 +27,7 @@ simDetectorApp_SRCS_vxWorks += simDetectorApp_registerRecordDeviceDriver.cpp
 
 # Add locally compiled object code
 simDetectorApp_LIBS += simDetector
-simDetectorApp_LIBS += areaDetector ADPlugin
+simDetectorApp_LIBS += ADBase ADPlugin
 simDetectorApp_LIBS += sscan autosave 
 simDetectorApp_LIBS += asyn
 simDetectorApp_LIBS += $(EPICS_BASE_IOC_LIBS)
