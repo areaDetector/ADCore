@@ -9,4 +9,16 @@
  * Created April 2, 2008
  */
 
+#ifndef DRV_ADIMAGE_H
+#define DRV_ADIMAGE_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int drvADImageConfigure(const char *portName, const char *detectorPortName);
+
+#ifdef __cplusplus
+}
+#endif
+#endif
