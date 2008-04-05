@@ -3,10 +3,43 @@
 # March 9, 2008
 
 ###################################################################
+#  These records control the connection of the server to          #
+#  an image port and address                                      #
+###################################################################
+# Image port name
+record(stringout, "$(P)$(I)ImagePort")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_PORT")
+}
+
+record(stringin, "$(P)$(I)ImagePort_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_PORT")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(I)ImageAddress")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_ADDR")
+}
+
+record(longin, "$(P)$(I)ImageAddress_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_ADDR")
+    field(SCAN, "I/O Intr")
+}
+
+####################################################################
 #  These records control posting of images                        #
 ###################################################################
 # Image posting flag
-record(mbbo, "$(P)$(D)PostImages")
+record(mbbo, "$(P)$(I)PostImages")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))POST_IMAGES")
@@ -17,7 +50,7 @@ record(mbbo, "$(P)$(D)PostImages")
 }
 
 # Minimum time between updates for image waveform record
-record(ao, "$(P)$(D)MinImageUpdate")
+record(ao, "$(P)$(I)MinImageUpdate")
 {
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_UPDATE_TIME")
@@ -27,35 +60,79 @@ record(ao, "$(P)$(D)MinImageUpdate")
 }
 
 ###################################################################
-#  These records provide statistics on image callbacks and        #
-#  image callback rates                                           # 
+#  These records are the image size and data type                 #
 ###################################################################
-
-# Image counter.  Increments by 1 each time an image is posted on any interface
-record(longout, "$(P)$(D)ImageCounter")
+record(longin, "$(P)$(I)ImageSizeX_RBV")
 {
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_COUNTER")
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_SIZE_X")
+   field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(D)ImageCounter_RBV")
+record(longin, "$(P)$(I)ImageSizeY_RBV")
 {
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_COUNTER")
-    field(SCAN, "I/O Intr")
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_SIZE_Y")
+   field(SCAN, "I/O Intr")
 }
 
-record(ai, "$(P)$(D)ImageRate_RBV")
+record(mbbi, "$(P)$(I)DataType_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DATA_TYPE")
+   field(ZRST, "Int8")
+   field(ZRVL, "0")
+   field(ONST, "UInt8")
+   field(ONVL, "1")
+   field(TWST, "Int16")
+   field(TWVL, "2")
+   field(THST, "UInt16")
+   field(THVL, "3")
+   field(FRST, "Int32")
+   field(FRVL, "4")
+   field(FVST, "UInt32")
+   field(FVVL, "5")
+   field(SXST, "Float32")
+   field(SXVL, "6")
+   field(SVST, "Float64")
+   field(SVVL, "7")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records provide statistics on frame callbacks and        #
+#  frame callback rates                                           # 
+###################################################################
+record(longout, "$(P)$(I)ImageCounter")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FRAME_COUNTER")
+}
+
+record(longin, "$(P)$(I)ImageCounter_RBV")
 {
     field(PINI, "1")
-    field(DTYP, "asynFloat64")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_RATE")
-    field(PREC, "3")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FRAME_COUNTER")
     field(SCAN, "I/O Intr")
+}
+
+# This record needs work, because B should reflect the time since last processed
+record(calc, "$(P)$(I)ImageRate_RBV")
+{
+    field(INPA, "$(P)$(I)ImageRate_RBV.B NPP NMS")  # Previous counter value
+    field(INPB, "$(P)$(I)ImageCounter_RBV NPP NMS") # Current counter value
+    field(INPC, "1.0")                              # Delta time, needs work
+    field(CALC, "(B-A)/C")
+    field(PREC, "1")
+    field(SCAN, "1 second")
 }
 
 # The image data waveform record
-record(waveform, "$(P)$(D)ImageData")
+record(waveform, "$(P)$(I)ImageData")
 {
     field(DTYP, "asynInt$(SIZE)ArrayIn")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_DATA")
@@ -63,3 +140,15 @@ record(waveform, "$(P)$(D)ImageData")
     field(NELM, "$(NPIXELS)")
     field(SCAN, "I/O Intr")
 }
+
+###################################################################
+#  The asynRecord is used for mainly for trace mask               # 
+###################################################################
+ 
+# Set ASYN_TRACEIO_HEX bit by default
+record(asyn,"$(P)$(I)AsynIO")
+{
+    field(PORT, $(PORT))
+    field(TIB2,"1")
+}
+
