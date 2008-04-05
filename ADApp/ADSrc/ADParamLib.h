@@ -24,7 +24,7 @@ typedef struct
   void (*destroy)            ( PARAMS params );
   int  (*setInteger)         ( PARAMS params, paramIndex index, int value );
   int  (*setDouble)          ( PARAMS params, paramIndex index, double value );
-  int  (*setString)          ( PARAMS params, paramIndex index, char *value );
+  int  (*setString)          ( PARAMS params, paramIndex index, const char *value );
   int  (*callCallbacks)      ( PARAMS params );
   int  (*getInteger)         ( PARAMS params, paramIndex index, int * value );
   int  (*getDouble)          ( PARAMS params, paramIndex index, double * value );

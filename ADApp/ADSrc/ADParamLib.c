@@ -195,7 +195,7 @@ static int paramSetDouble( PARAMS params, paramIndex index, double value )
 
     returns: Integer indicating 0 (PARAM_OK) for success or non-zero for index out of range. 
 */
-static int paramSetString( PARAMS params, paramIndex index, char *value )
+static int paramSetString( PARAMS params, paramIndex index, const char *value )
 {
     int status = PARAM_ERROR;
 
