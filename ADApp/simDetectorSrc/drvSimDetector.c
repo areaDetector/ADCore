@@ -40,6 +40,32 @@
 
 static char *driverName = "drvSimDetector";
 
+/* Note that the file format enum must agree with the mbbo/mbbi records in the simDetector.template file */
+typedef enum {
+   SimFormatBinary,
+   SimFormatASCII
+} SimFormat_t;
+
+/* If we have any private driver parameters they begin with ADFirstDriverParam and should end
+   with ADLastDriverParam, which is used for setting the size of the parameter library table */
+typedef enum {
+   SimGainX = ADFirstDriverParam,
+   SimGainY,
+   SimResetImage,
+   ADLastDriverParam
+} SimDetParam_t;
+
+/* The command strings are the input to ADUtils->FindParam, which returns the corresponding parameter enum value */
+static ADParamString_t SimDetParamString[] = {
+    {SimGainX,      "SIM_GAINX"},  
+    {SimGainY,      "SIM_GAINY"},  
+    {SimResetImage, "RESET_IMAGE"}  
+};
+
+#define NUM_SIM_DET_PARAMS (sizeof(SimDetParamString)/sizeof(SimDetParamString[0]))
+
+
+
 typedef struct drvADPvt {
     /* The first set of items in this structure will be needed by all drivers */
     char *portName;
@@ -515,43 +541,6 @@ static void simTask(drvADPvt *pPvt)
                   driverName, computeTime, delay);            
             if (delay > 0) status = epicsEventWaitWithTimeout(pPvt->eventId, delay);
         }
-    }
-}
-
-static void simRateTask(drvADPvt *pPvt)
-{
-    /* This thread just computes the average frame rate */
-    int frameCounter, prevFrameCounter;
-    double rate, frameRateTime, deltaTime;
-    epicsTimeStamp tNow, tPrevious;
-    
-    epicsMutexLock(pPvt->mutexId);
-    ADParam->getInteger(pPvt->params, ADFrameCounter, &prevFrameCounter);
-    epicsTimeGetCurrent(&tPrevious);
-    /* Get the time we need to sleep before the next frame rate computation */
-    ADParam->getDouble(pPvt->params, ADFrameRateTime, &frameRateTime);
-    epicsMutexUnlock(pPvt->mutexId);
-    
-    /* Loop forever */
-    while (1) {
-        /* Sleep for the frameRateTime */
-        epicsThreadSleep(frameRateTime);
-        epicsMutexLock(pPvt->mutexId);
-        
-        /* Measure exactly how long since the last update */
-        epicsTimeGetCurrent(&tNow);
-        deltaTime = epicsTimeDiffInSeconds(&tNow, &tPrevious);
-        
-        /* Compute the rate */
-        ADParam->getInteger(pPvt->params, ADFrameCounter, &frameCounter);
-        rate = (frameCounter - prevFrameCounter) / deltaTime;
-        ADParam->setDouble(pPvt->params, ADFrameRate, rate);
-        
-        /* Store the new values */
-        prevFrameCounter = frameCounter;
-        memcpy(&tPrevious, &tNow, sizeof(tNow));
-        ADParam->callCallbacks(pPvt->params);
-        epicsMutexUnlock(pPvt->mutexId);
     }
 }
 
@@ -1111,17 +1100,6 @@ int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int data
                                 pPvt) == NULL);
     if (status) {
         printf("%s: epicsThreadCreate failure for image task\n", functionName);
-        return asynError;
-    }
-
-    /* Create the thread that updates the frame rate */
-    status = (epicsThreadCreate("SimRateTask",
-                                epicsThreadPriorityLow,
-                                epicsThreadGetStackSize(epicsThreadStackMedium),
-                                (EPICSTHREADFUNC)simRateTask,
-                                pPvt) == NULL);
-    if (status) {
-        printf("%s: epicsThreadCreate failure for rate task\n", functionName);
         return asynError;
     }
 
