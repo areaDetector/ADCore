@@ -107,24 +107,19 @@ text {
 		height=21
 	}
 	display[0] {
-		label="Simulator general"
-		name="ADAsyn.adl"
-		args="P=13SIM1:, D=cam1:"
+		label="Simulator #1"
+		name="simDetector.adl"
+		args="P=13SIM1:, D=cam1:, I=image1:"
 	}
 	display[1] {
-		label="Simulator specific"
+		label="Simulator #2"
 		name="simDetector.adl"
-		args="P=13SIM1:, D=cam1:"
+		args="P=13SIM1:, D=cam2:, I=image2::"
 	}
 	display[2] {
-		label="Prosilica general"
-		name="ADAsyn.adl"
-		args="P=13PS1:, D=cam1:"
-	}
-	display[3] {
-		label="Prosilica specfic"
+		label="Prosilica"
 		name="prosilica.adl"
-		args="P=13PS1:, D=cam1:"
+		args="P=13PS1:, D=cam1:, I=image1:"
 	}
 	clr=14
 	bclr=4
