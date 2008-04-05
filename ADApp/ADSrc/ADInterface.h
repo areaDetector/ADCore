@@ -119,10 +119,8 @@ typedef enum
     ADShutter,         /* (asynInt32,    r/w) Shutter control (ADShutterStatus_t) */
     ADAcquire,         /* (asynInt32,    r/w) Start(1) or Stop(0) acquisition */
 
-   /* Statistics on number of frames collected and the frame rate. */
+    /* Statistics on number of frames collected and the frame rate. */
     ADFrameCounter,    /* (asynInt32,    r/w) Number of frames acquired since last reset */
-    ADFrameRate,       /* (asynFloat64,  r/o) Frame rate, averaged over ADFrameRateTime. */
-    ADFrameRateTime,   /* (asynFloat64,  r/w) Time over which to average frame rate */
  
     /* File name related parameters for saving data.
      * Drivers are not required to implement file saving, but if they do these parameters
@@ -185,9 +183,7 @@ static ADParamString_t ADStandardParamString[] = {
     {ADShutter,        "SHUTTER"     },
     {ADAcquire,        "ACQUIRE"     },
 
-    {ADFrameCounter,   "FRAME_COUNTER"     }, 
-    {ADFrameRate,      "FRAME_RATE"        },
-    {ADFrameRateTime,  "FRAME_RATE_TIME"   },
+    {ADFrameCounter,   "FRAME_COUNTER" }, 
 
     {ADFilePath,       "FILE_PATH"     },
     {ADFileName,       "FILE_NAME"     },
