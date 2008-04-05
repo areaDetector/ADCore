@@ -98,18 +98,24 @@ text {
 		clr=14
 	}
 	textix="Prosilica Camera"
+	align="horiz. centered"
 }
 "related display" {
 	object {
 		x=132
-		y=295
+		y=304
 		width=60
 		height=20
 	}
 	display[0] {
-		label="Prosilica general records"
-		name="ADAsyn.adl"
+		label="Detector control"
+		name="ADBase.adl"
 		args="P=$(P), D=$(D)"
+	}
+	display[1] {
+		label="Image control"
+		name="ADImage.adl"
+		args="P=$(P), I=$(I)"
 	}
 	clr=14
 	bclr=51
@@ -117,7 +123,7 @@ text {
 text {
 	object {
 		x=18
-		y=113
+		y=131
 		width=144
 		height=15
 	}
@@ -130,7 +136,7 @@ text {
 "text update" {
 	object {
 		x=170
-		y=113
+		y=131
 		width=120
 		height=15
 	}
@@ -146,7 +152,7 @@ text {
 text {
 	object {
 		x=36
-		y=133
+		y=151
 		width=126
 		height=15
 	}
@@ -159,7 +165,7 @@ text {
 "text update" {
 	object {
 		x=170
-		y=133
+		y=151
 		width=120
 		height=15
 	}
@@ -175,7 +181,7 @@ text {
 text {
 	object {
 		x=9
-		y=153
+		y=171
 		width=153
 		height=15
 	}
@@ -188,7 +194,7 @@ text {
 "text update" {
 	object {
 		x=170
-		y=153
+		y=171
 		width=120
 		height=15
 	}
@@ -204,7 +210,7 @@ text {
 text {
 	object {
 		x=63
-		y=269
+		y=278
 		width=99
 		height=15
 	}
@@ -217,7 +223,7 @@ text {
 menu {
 	object {
 		x=170
-		y=267
+		y=276
 		width=100
 		height=18
 	}
@@ -230,7 +236,7 @@ menu {
 text {
 	object {
 		x=36
-		y=173
+		y=191
 		width=126
 		height=15
 	}
@@ -243,7 +249,7 @@ text {
 "text update" {
 	object {
 		x=170
-		y=173
+		y=191
 		width=120
 		height=15
 	}
@@ -259,7 +265,7 @@ text {
 text {
 	object {
 		x=18
-		y=193
+		y=211
 		width=144
 		height=15
 	}
@@ -272,7 +278,7 @@ text {
 "text update" {
 	object {
 		x=170
-		y=193
+		y=211
 		width=120
 		height=15
 	}
@@ -288,7 +294,7 @@ text {
 text {
 	object {
 		x=9
-		y=213
+		y=231
 		width=153
 		height=15
 	}
@@ -301,7 +307,7 @@ text {
 "text update" {
 	object {
 		x=170
-		y=213
+		y=231
 		width=120
 		height=15
 	}
@@ -317,7 +323,7 @@ text {
 text {
 	object {
 		x=36
-		y=233
+		y=251
 		width=126
 		height=15
 	}
@@ -330,7 +336,7 @@ text {
 "text update" {
 	object {
 		x=170
-		y=233
+		y=251
 		width=120
 		height=15
 	}
@@ -346,7 +352,7 @@ text {
 text {
 	object {
 		x=63
-		y=53
+		y=71
 		width=99
 		height=15
 	}
@@ -359,7 +365,7 @@ text {
 "text update" {
 	object {
 		x=170
-		y=53
+		y=71
 		width=120
 		height=15
 	}
@@ -375,7 +381,7 @@ text {
 text {
 	object {
 		x=36
-		y=73
+		y=91
 		width=126
 		height=15
 	}
@@ -388,7 +394,7 @@ text {
 "text update" {
 	object {
 		x=170
-		y=73
+		y=91
 		width=120
 		height=15
 	}
@@ -404,7 +410,7 @@ text {
 text {
 	object {
 		x=72
-		y=93
+		y=111
 		width=90
 		height=15
 	}
@@ -417,7 +423,7 @@ text {
 "text update" {
 	object {
 		x=170
-		y=93
+		y=111
 		width=120
 		height=15
 	}
@@ -429,4 +435,17 @@ text {
 	align="horiz. centered"
 	limits {
 	}
+}
+text {
+	object {
+		x=102
+		y=36
+		width=96
+		height=25
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="$(P)$(D)"
+	align="horiz. centered"
 }
