@@ -205,6 +205,8 @@ static int setParamDefaults( void *params)
     status |= ADParam->setInteger(params, ADNumExposures, 1);
     status |= ADParam->setInteger(params, ADNumFrames,    1);
     status |= ADParam->setInteger(params, ADFrameMode,    ADFrameSingle);
+    status |= ADParam->setInteger(params, ADFrameCounter, 0);
+    status |= ADParam->setInteger(params, ADTriggerMode,  ADTriggerInternal);
     status |= ADParam->setInteger(params, ADFileNumber,   1);
     status |= ADParam->setInteger(params, ADAutoIncrement,1);
     status |= ADParam->setInteger(params, ADAutoSave,     0);
