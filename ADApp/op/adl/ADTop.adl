@@ -5,10 +5,10 @@ file {
 }
 display {
 	object {
-		x=88
-		y=153
-		width=233
-		height=86
+		x=119
+		y=99
+		width=300
+		height=170
 	}
 	clr=14
 	bclr=4
@@ -89,7 +89,7 @@ display {
 }
 text {
 	object {
-		x=16
+		x=50
 		y=6
 		width=201
 		height=30
@@ -101,26 +101,139 @@ text {
 }
 "related display" {
 	object {
-		x=84
+		x=220
 		y=53
 		width=64
 		height=21
 	}
 	display[0] {
-		label="Simulator #1"
-		name="simDetector.adl"
-		args="P=13SIM1:, D=cam1:, I=image1:"
+		label="Simulator #1 General"
+		name="ADBase.adl"
+		args="P=13SIM1:, D=cam1:"
 	}
 	display[1] {
-		label="Simulator #2"
+		label="Simulator #1 Specific"
 		name="simDetector.adl"
-		args="P=13SIM1:, D=cam2:, I=image2::"
+		args="P=13SIM1:, D=cam1:"
 	}
 	display[2] {
-		label="Prosilica"
-		name="prosilica.adl"
-		args="P=13PS1:, D=cam1:, I=image1:"
+		label="Simulator #2 General"
+		name="ADBase.adl"
+		args="P=13SIM1:, D=cam2:"
+	}
+	display[3] {
+		label="Simulator #2 Specific"
+		name="simDetector.ad"
+		args="P=13SIM1:, D=cam2:"
 	}
 	clr=14
-	bclr=4
+	bclr=51
+}
+text {
+	object {
+		x=42
+		y=53
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Simulator Drivers"
+}
+"related display" {
+	object {
+		x=220
+		y=79
+		width=64
+		height=21
+	}
+	display[0] {
+		label="Prosilica general"
+		name="ADBase.adl"
+		args="P=13PS1:, D=cam1:"
+	}
+	display[1] {
+		label="Prosilica specific"
+		name="prosilica.adl"
+		args="P=13PS1:, D=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=42
+		y=79
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Prosilica Drivers"
+}
+"related display" {
+	object {
+		x=220
+		y=105
+		width=64
+		height=21
+	}
+	display[0] {
+		label="Image #1"
+		name="ADImage.adl"
+		args="P=13SIM1:, I=image1:"
+	}
+	display[1] {
+		label="File #1"
+		name="ADFile.adl"
+		args="P=13SIM1:, F=file1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=32
+		y=105
+		width=80
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Simulator Plug-ins"
+}
+"related display" {
+	object {
+		x=220
+		y=131
+		width=64
+		height=21
+	}
+	display[0] {
+		label="Image #1"
+		name="ADImage.adl"
+		args="P=13PS1:, I=image1:"
+	}
+	display[1] {
+		label="File #1"
+		name="ADFile.adl"
+		args="P=13PS1:, F=file1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=32
+		y=131
+		width=80
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Prosilica Plug-ins"
 }

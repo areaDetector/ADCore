@@ -602,7 +602,7 @@ text {
 	"basic attribute" {
 		clr=14
 	}
-	textix="Frame type"
+	textix="Image type"
 	align="horiz. right"
 }
 menu {
@@ -613,7 +613,7 @@ menu {
 		height=20
 	}
 	control {
-		chan="$(P)$(D)FrameType"
+		chan="$(P)$(D)ImageType"
 		clr=14
 		bclr=51
 	}
@@ -787,7 +787,7 @@ composite {
 			"basic attribute" {
 				clr=14
 			}
-			textix="# frames"
+			textix="# images"
 			align="horiz. right"
 		}
 		"text entry" {
@@ -798,7 +798,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(D)NumFrames"
+				chan="$(P)$(D)NumImages"
 				clr=14
 				bclr=51
 			}
@@ -813,7 +813,7 @@ composite {
 				height=18
 			}
 			monitor {
-				chan="$(P)$(D)NumFrames_RBV"
+				chan="$(P)$(D)NumImages_RBV"
 				clr=54
 				bclr=4
 			}
@@ -833,7 +833,7 @@ text {
 	"basic attribute" {
 		clr=14
 	}
-	textix="# exp./frame"
+	textix="# exp./image"
 	align="horiz. right"
 }
 "text entry" {
@@ -875,7 +875,7 @@ text {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(D)FrameType_RBV"
+		chan="$(P)$(D)ImageType_RBV"
 		clr=54
 		bclr=4
 	}
@@ -887,7 +887,7 @@ text {
 composite {
 	object {
 		x=60
-		y=60
+		y=92
 		width=268
 		height=20
 	}
@@ -896,7 +896,7 @@ composite {
 		text {
 			object {
 				x=168
-				y=61
+				y=93
 				width=160
 				height=18
 			}
@@ -908,7 +908,7 @@ composite {
 		text {
 			object {
 				x=60
-				y=60
+				y=92
 				width=100
 				height=20
 			}
@@ -923,7 +923,7 @@ composite {
 composite {
 	object {
 		x=40
-		y=85
+		y=117
 		width=288
 		height=20
 	}
@@ -932,7 +932,7 @@ composite {
 		text {
 			object {
 				x=40
-				y=85
+				y=117
 				width=120
 				height=20
 			}
@@ -945,7 +945,7 @@ composite {
 		"text update" {
 			object {
 				x=168
-				y=86
+				y=118
 				width=160
 				height=18
 			}
@@ -2095,7 +2095,7 @@ composite {
 			"basic attribute" {
 				clr=14
 			}
-			textix="Frame mode"
+			textix="Image mode"
 			align="horiz. right"
 		}
 		menu {
@@ -2106,7 +2106,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(D)FrameMode"
+				chan="$(P)$(D)ImageMode"
 				clr=14
 				bclr=51
 			}
@@ -2119,7 +2119,7 @@ composite {
 				height=18
 			}
 			monitor {
-				chan="$(P)$(D)FrameMode_RBV"
+				chan="$(P)$(D)ImageMode_RBV"
 				clr=54
 				bclr=4
 			}
@@ -2173,49 +2173,38 @@ menu {
 	limits {
 	}
 }
-composite {
+text {
 	object {
 		x=110
-		y=110
-		width=218
+		y=142
+		width=50
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=110
-				y=110
-				width=50
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Model"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=168
-				y=111
-				width=160
-				height=18
-			}
-			monitor {
-				chan="$(P)$(D)Model_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Model"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=168
+		y=143
+		width=160
+		height=18
+	}
+	monitor {
+		chan="$(P)$(D)Model_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
 	}
 }
 text {
 	object {
 		x=60
-		y=180
+		y=192
 		width=100
 		height=20
 	}
@@ -2228,7 +2217,7 @@ text {
 "message button" {
 	object {
 		x=168
-		y=180
+		y=192
 		width=80
 		height=20
 	}
@@ -2243,7 +2232,7 @@ text {
 "message button" {
 	object {
 		x=253
-		y=180
+		y=192
 		width=80
 		height=20
 	}
@@ -2274,7 +2263,7 @@ composite {
 			"basic attribute" {
 				clr=14
 			}
-			textix="Frame counter"
+			textix="Image counter"
 			align="horiz. right"
 		}
 		"text update" {
@@ -2285,7 +2274,7 @@ composite {
 				height=18
 			}
 			monitor {
-				chan="$(P)$(D)FrameCounter_RBV"
+				chan="$(P)$(D)ImageCounter_RBV"
 				clr=54
 				bclr=4
 			}
@@ -2300,7 +2289,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(D)FrameCounter"
+				chan="$(P)$(D)ImageCounter"
 				clr=14
 				bclr=51
 			}
@@ -2319,7 +2308,7 @@ text {
 	"basic attribute" {
 		clr=14
 	}
-	textix="Frame rate"
+	textix="Image rate"
 	align="horiz. right"
 }
 "text update" {
@@ -2330,7 +2319,7 @@ text {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(D)FrameRate_RBV"
+		chan="$(P)$(D)ImageRate_RBV"
 		clr=54
 		bclr=4
 	}
@@ -2340,7 +2329,7 @@ text {
 text {
 	object {
 		x=199
-		y=153
+		y=165
 		width=90
 		height=20
 	}
@@ -2358,7 +2347,7 @@ text {
 text {
 	object {
 		x=184
-		y=153
+		y=165
 		width=120
 		height=20
 	}
@@ -2405,5 +2394,33 @@ composite {
 			textix="Area Detector Control - $(P)$(D)"
 			align="horiz. centered"
 		}
+	}
+}
+text {
+	object {
+		x=60
+		y=67
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="asyn port"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=168
+		y=68
+		width=160
+		height=18
+	}
+	monitor {
+		chan="$(P)$(D)PortName_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
 	}
 }

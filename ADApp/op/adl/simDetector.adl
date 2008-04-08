@@ -111,11 +111,6 @@ text {
 		name="ADBase.adl"
 		args="P=$(P), D=$(D)"
 	}
-	display[1] {
-		label="Image display"
-		name="ADImage.adl"
-		args="P=$(P), I=$(I)"
-	}
 	clr=14
 	bclr=51
 }
@@ -258,6 +253,6 @@ text {
 	"basic attribute" {
 		clr=14
 	}
-	textix="$(P($D)"
+	textix="$(P)$(D)"
 	align="horiz. centered"
 }
