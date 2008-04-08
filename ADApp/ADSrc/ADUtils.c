@@ -203,9 +203,9 @@ static int setParamDefaults( void *params)
     status |= ADParam->setInteger(params, ADAcquire,      0);
     status |= ADParam->setDouble (params, ADAcquireTime,  1.0);
     status |= ADParam->setInteger(params, ADNumExposures, 1);
-    status |= ADParam->setInteger(params, ADNumFrames,    1);
-    status |= ADParam->setInteger(params, ADFrameMode,    ADFrameSingle);
-    status |= ADParam->setInteger(params, ADFrameCounter, 0);
+    status |= ADParam->setInteger(params, ADNumImages,    1);
+    status |= ADParam->setInteger(params, ADImageMode,    ADImageSingle);
+    status |= ADParam->setInteger(params, ADImageCounter, 0);
     status |= ADParam->setInteger(params, ADTriggerMode,  ADTriggerInternal);
     status |= ADParam->setInteger(params, ADFileNumber,   1);
     status |= ADParam->setInteger(params, ADAutoIncrement,1);
@@ -331,8 +331,7 @@ static int createFileName(void *params, int maxChars, char *fullFileName)
     return(status);   
 }
 
-static void ADImageCallback(void *ADImageInterruptPvt, void *data, ADDataType_t dataType,
-                            int nx, int ny)
+static void ADImageCallback(void *ADImageInterruptPvt, ADImage_t *pImage)
 {
     ELLLIST *pclientList;
     interruptNode *pnode;
@@ -343,7 +342,7 @@ static void ADImageCallback(void *ADImageInterruptPvt, void *data, ADDataType_t 
         asynADImageInterrupt *pInterrupt = pnode->drvPvt;
         pInterrupt->callback(pInterrupt->userPvt, 
                              pInterrupt->pasynUser,
-                             data, dataType, nx, ny);
+                             pImage);
         pnode = (interruptNode *)ellNext(&pnode->node);
     }
     pasynManager->interruptEnd(ADImageInterruptPvt);
