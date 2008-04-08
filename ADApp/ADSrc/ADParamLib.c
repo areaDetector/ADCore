@@ -230,6 +230,7 @@ static int paramGetInteger( PARAMS params, paramIndex index, int * value )
     int status = PARAM_ERROR;
 
     index -= params->startVal;
+    *value = 0;
     if (index >= 0 && index < params->nvals)
     {
         if (params->vals[index].type == paramInt) {
@@ -256,6 +257,7 @@ static int paramGetDouble( PARAMS params, paramIndex index, double * value )
     int status = PARAM_OK;
 
     index -= params->startVal;
+    *value = 0.;
     if (index >= 0 && index < params->nvals)
     {
         if (params->vals[index].type == paramDouble) {
@@ -283,6 +285,7 @@ static int paramGetString( PARAMS params, paramIndex index, int maxChars, char *
     int status = PARAM_OK;
 
     index -= params->startVal;
+    value[0]=0;
     if (index >= 0 && index < params->nvals)
     {
         if (params->vals[index].type == paramString) {
