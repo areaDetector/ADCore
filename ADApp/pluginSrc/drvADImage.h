@@ -16,7 +16,8 @@
 extern "C" {
 #endif
 
-int drvADImageConfigure(const char *portName, int maxFrames, const char *imagePort, int imageAddr);
+int drvADImageConfigure(const char *portName, int queueSize, int blockingCallbacks, 
+                        const char *imagePort, int imageAddr);
 
 #ifdef __cplusplus
 }
