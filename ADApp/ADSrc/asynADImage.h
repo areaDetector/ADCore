@@ -19,12 +19,14 @@
 #include <epicsTypes.h>
 #include <shareLib.h>
 
+#include <ADInterface.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif  /* __cplusplus */
 
 typedef void (*interruptCallbackADImage)(void *userPvt, asynUser *pasynUser,
-              void *data, int dataType, int nx, int ny);
+              ADImage_t *pImage);
               
 typedef struct asynADImageInterrupt {
     asynUser *pasynUser;
@@ -35,10 +37,8 @@ typedef struct asynADImageInterrupt {
 
 #define asynADImageType "asynADImage"
 typedef struct asynADImage {
-    asynStatus (*write)(void *drvPvt, asynUser *pasynUser, void *value,
-                    int dataType, int nx, int ny);
-    asynStatus (*read)(void *drvPvt, asynUser *pasynUser, void *value,
-                    int maxBytes, int *dataType, int *nx, int *ny);
+    asynStatus (*write)(void *drvPvt, asynUser *pasynUser, ADImage_t *pImage);
+    asynStatus (*read)(void *drvPvt, asynUser *pasynUser, int maxBytes, ADImage_t *pImage);
     asynStatus (*registerInterruptUser)(void *drvPvt, asynUser *pasynUser,
                     interruptCallbackADImage callback, void *userPvt, void **registrarPvt);
     asynStatus (*cancelInterruptUser)(void *drvPvt, asynUser *pasynUser,

@@ -18,7 +18,9 @@
 
 #define epicsExportSharedSymbols
 #include <shareLib.h>
-#include "asynDriver.h"
+#include <asynDriver.h>
+
+#include "ADInterface.h"
 #include "asynADImage.h"
 
 static asynStatus initialize(const char *portName, asynInterface *pADImageInterface);
@@ -26,10 +28,8 @@ static asynStatus initialize(const char *portName, asynInterface *pADImageInterf
 static asynADImageBase ADImageBase = {initialize};
 epicsShareDef asynADImageBase *pasynADImageBase = &ADImageBase;
 
-static asynStatus writeDefault(void *drvPvt, asynUser *pasynUser, void *value,
-                    int dataType, int nx, int ny);
-static asynStatus readDefault(void *drvPvt, asynUser *pasynUser, void *value,
-                    int maxBytes, int *dataType, int *nx, int *ny);
+static asynStatus writeDefault(void *drvPvt, asynUser *pasynUser, ADImage_t *pImage);
+static asynStatus readDefault(void *drvPvt, asynUser *pasynUser, int maxBytes, ADImage_t *pImage);
 static asynStatus registerInterruptUser(void *drvPvt, asynUser *pasynUser,
                     interruptCallbackADImage callback, void *userPvt, void **registrarPvt);
 static asynStatus cancelInterruptUser(void *drvPvt, asynUser *pasynUser,
@@ -49,8 +49,7 @@ static asynStatus initialize(const char *portName, asynInterface *pdriver)
     return pasynManager->registerInterface(portName, pdriver);
 }
 
-static asynStatus writeDefault(void *drvPvt, asynUser *pasynUser, void *value,
-                    int dataType, int nx, int ny)
+static asynStatus writeDefault(void *drvPvt, asynUser *pasynUser, ADImage_t *pImage)
 {
     const char *portName;
     asynStatus status;
@@ -67,8 +66,7 @@ static asynStatus writeDefault(void *drvPvt, asynUser *pasynUser, void *value,
     return asynError;
 }
 
-static asynStatus readDefault(void *drvPvt, asynUser *pasynUser, void *value,
-                    int maxBytes, int *dataType, int *nx, int *ny)
+static asynStatus readDefault(void *drvPvt, asynUser *pasynUser, int maxBytes, ADImage_t *pImage)
 {
     const char *portName;
     asynStatus status;
