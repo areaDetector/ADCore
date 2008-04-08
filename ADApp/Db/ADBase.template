@@ -43,6 +43,7 @@ record(longin, "$(P)$(D)MaxSizeY_RBV")
 
 record(mbbo, "$(P)$(D)DataType")
 {
+   field(PINI, "1")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DATA_TYPE")
    field(ZRST, "Int8")
@@ -94,6 +95,7 @@ record(mbbi, "$(P)$(D)DataType_RBV")
 
 record(longout, "$(P)$(D)BinX")
 {
+   field(PINI, "1")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BIN_X")
 }
@@ -108,6 +110,7 @@ record(longin, "$(P)$(D)BinX_RBV")
 
 record(longout, "$(P)$(D)BinY")
 {
+   field(PINI, "1")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BIN_Y")
 }
@@ -122,6 +125,7 @@ record(longin, "$(P)$(D)BinY_RBV")
 
 record(longout, "$(P)$(D)MinX")
 {
+   field(PINI, "1")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_X")
 }
@@ -136,6 +140,7 @@ record(longin, "$(P)$(D)MinX_RBV")
 
 record(longout, "$(P)$(D)MinY")
 {
+   field(PINI, "1")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_Y")
 }
@@ -150,6 +155,7 @@ record(longin, "$(P)$(D)MinY_RBV")
 
 record(longout, "$(P)$(D)SizeX")
 {
+   field(PINI, "1")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIZE_X")
 }
@@ -164,6 +170,7 @@ record(longin, "$(P)$(D)SizeX_RBV")
 
 record(longout, "$(P)$(D)SizeY")
 {
+   field(PINI, "1")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIZE_Y")
 }
@@ -206,6 +213,7 @@ record(longin, "$(P)$(D)ImageSize_RBV")
 ###################################################################
 record(ao, "$(P)$(D)AcquireTime")
 {
+   field(PINI, "1")
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQ_TIME")
    field(PREC, "3")
@@ -222,6 +230,7 @@ record(ai, "$(P)$(D)AcquireTime_RBV")
 
 record(ao, "$(P)$(D)AcquirePeriod")
 {
+   field(PINI, "1")
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQ_PERIOD")
    field(PREC, "3")
@@ -243,6 +252,7 @@ record(ai, "$(P)$(D)AcquirePeriod_RBV")
 ###################################################################
 record(ao, "$(P)$(D)Gain")
 {
+   field(PINI, "1")
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GAIN")
    field(PREC, "3")
@@ -260,10 +270,11 @@ record(ai, "$(P)$(D)Gain_RBV")
 ###################################################################
 #  These records control the acquisition mode                     # 
 ###################################################################
-record(mbbo, "$(P)$(D)FrameMode")
+record(mbbo, "$(P)$(D)ImageMode")
 {
+   field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FRAME_MODE")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_MODE")
    field(ZRST, "Single")
    field(ZRVL, "0")
    field(ONST, "Multiple")
@@ -272,11 +283,11 @@ record(mbbo, "$(P)$(D)FrameMode")
    field(TWVL, "2")
 }
 
-record(mbbi, "$(P)$(D)FrameMode_RBV")
+record(mbbi, "$(P)$(D)ImageMode_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FRAME_MODE")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_MODE")
    field(ZRST, "Single")
    field(ZRVL, "0")
    field(ONST, "Multiple")
@@ -291,6 +302,7 @@ record(mbbi, "$(P)$(D)FrameMode_RBV")
 ###################################################################
 record(mbbo, "$(P)$(D)TriggerMode")
 {
+   field(PINI, "1")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TRIGGER_MODE")
    field(ZRST, "Internal")
@@ -313,10 +325,11 @@ record(mbbi, "$(P)$(D)TriggerMode_RBV")
 
 ###################################################################
 #  These records control the number of exposures and              #
-#  number of frames                                               # 
+#  number of images                                               # 
 ###################################################################
 record(longout, "$(P)$(D)NumExposures")
 {
+   field(PINI, "1")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NEXPOSURES")
 }
@@ -329,17 +342,18 @@ record(longin, "$(P)$(D)NumExposures_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(longout, "$(P)$(D)NumFrames")
-{
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NFRAMES")
-}
-
-record(longin, "$(P)$(D)NumFrames_RBV")
+record(longout, "$(P)$(D)NumImages")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NFRAMES")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NIMAGES")
+}
+
+record(longin, "$(P)$(D)NumImages_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NIMAGES")
    field(SCAN, "I/O Intr")
 }
 
@@ -404,28 +418,28 @@ record(dfanout, "$(P)$(D)AcquireDoneFanout")
 }
 
 ###################################################################
-#  These records provide statistics on frame callbacks and        #
-#  frame callback rates                                           # 
+#  These records provide statistics on image callbacks and        #
+#  image callback rates                                           # 
 ###################################################################
-record(longout, "$(P)$(D)FrameCounter")
+record(longout, "$(P)$(D)ImageCounter")
 {
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FRAME_COUNTER")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_COUNTER")
 }
 
-record(longin, "$(P)$(D)FrameCounter_RBV")
+record(longin, "$(P)$(D)ImageCounter_RBV")
 {
     field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FRAME_COUNTER")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_COUNTER")
     field(SCAN, "I/O Intr")
 }
 
-# This record needs work, because B should reflect the time since last processed
-record(calc, "$(P)$(D)FrameRate_RBV")
+# This record needs work, because .B should reflect the time since last processed
+record(calc, "$(P)$(D)ImageRate_RBV")
 {
-    field(INPA, "$(P)$(D)FrameRate_RBV.B NPP NMS")  # Previous counter value
-    field(INPB, "$(P)$(D)FrameCounter_RBV NPP NMS") # Current counter value
+    field(INPA, "$(P)$(D)ImageRate_RBV.B NPP NMS")  # Previous counter value
+    field(INPB, "$(P)$(D)ImageCounter_RBV NPP NMS") # Current counter value
     field(INPC, "1.0")                              # Delta time, needs work
     field(CALC, "(B-A)/C")
     field(PREC, "1")
@@ -516,6 +530,8 @@ record(waveform, "$(P)$(D)FileName_RBV")
 # File number
 record(longout, "$(P)$(D)FileNumber")
 {
+    field(PINI, "1")
+    field(VAL,  "1")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NUMBER")
 }
@@ -538,6 +554,7 @@ record(calcout, "$(P)$(D)FileNumber_Sync")
 # Autoincrement flag
 record(mbbo, "$(P)$(D)AutoIncrement")
 {
+    field(PINI,  "1")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_INCREMENT")
     field(ZRST, "No")
@@ -591,6 +608,7 @@ record(waveform, "$(P)$(D)FullFileName_RBV")
 # Autosave flag
 record(mbbo, "$(P)$(D)AutoSave")
 {
+    field(PINI,  "1")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_SAVE")
     field(ZRST, "No")
@@ -694,7 +712,7 @@ record(bi, "$(P)$(D)CorrectSpatial")
    field(ONAM, "Yes")
 }
 
-record(mbbo, "$(P)$(D)FrameType")
+record(mbbo, "$(P)$(D)ImageType")
 {
    field(VAL, "0")
    field(ZRST, "Normal")
