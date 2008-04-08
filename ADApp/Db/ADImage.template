@@ -35,12 +35,14 @@ record(longin, "$(P)$(I)ImageAddress_RBV")
     field(SCAN, "I/O Intr")
 }
 
-####################################################################
+###################################################################
 #  These records control posting of images                        #
 ###################################################################
 # Image posting flag
 record(mbbo, "$(P)$(I)PostImages")
 {
+    field(PINI, "1")
+    field(VAL,  "1")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))POST_IMAGES")
     field(ZRST, "No")
@@ -49,15 +51,68 @@ record(mbbo, "$(P)$(I)PostImages")
     field(ONVL, "1")
 }
 
+# Image posting flag
+record(mbbi, "$(P)$(I)PostImages_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))POST_IMAGES")
+    field(ZRST, "No")
+    field(ZRVL, "0")
+    field(ONST, "Yes")
+    field(ONVL, "1")
+    field(SCAN, "I/O Intr")
+}
+
 # Minimum time between updates for image waveform record
 record(ao, "$(P)$(I)MinImageUpdate")
 {
+    field(PINI, "1")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_UPDATE_TIME")
     field(VAL,  "1.0")
     field(EGU,  "s")
     field(PREC, "3")
 }
+
+record(ai, "$(P)$(I)MinImageUpdate_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_UPDATE_TIME")
+    field(VAL,  "1.0")
+    field(EGU,  "s")
+    field(PREC, "3")
+    field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records control whether callbacks block or not           #
+###################################################################
+record(mbbo, "$(P)$(I)BlockingCallbacks")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BLOCKING_CALLBACKS")
+    field(ZRST, "No")
+    field(ZRVL, "0")
+    field(ONST, "Yes")
+    field(ONVL, "1")
+}
+
+# Image posting flag
+record(mbbi, "$(P)$(I)BlockingCallbacks_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BLOCKING_CALLBACKS")
+    field(ZRST, "No")
+    field(ZRVL, "0")
+    field(ONST, "Yes")
+    field(ONVL, "1")
+    field(SCAN, "I/O Intr")
+}
+
 
 ###################################################################
 #  These records are the image size and data type                 #
@@ -103,20 +158,20 @@ record(mbbi, "$(P)$(I)DataType_RBV")
 }
 
 ###################################################################
-#  These records provide statistics on frame callbacks and        #
-#  frame callback rates                                           # 
+#  These records provide statistics on image callbacks and        #
+#  image callback rates                                           # 
 ###################################################################
 record(longout, "$(P)$(I)ImageCounter")
 {
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FRAME_COUNTER")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_COUNTER")
 }
 
 record(longin, "$(P)$(I)ImageCounter_RBV")
 {
     field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FRAME_COUNTER")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_COUNTER")
     field(SCAN, "I/O Intr")
 }
 
@@ -140,6 +195,21 @@ record(waveform, "$(P)$(I)ImageData")
     field(NELM, "$(NPIXELS)")
     field(SCAN, "I/O Intr")
 }
+
+record(longout, "$(P)$(I)DroppedImages")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DROPPED_IMAGES")
+}
+
+record(longin, "$(P)$(I)DroppedImages_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DROPPED_IMAGES")
+    field(SCAN, "I/O Intr")
+}
+
 
 ###################################################################
 #  The asynRecord is used for mainly for trace mask               # 
