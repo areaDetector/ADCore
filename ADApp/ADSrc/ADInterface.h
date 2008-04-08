@@ -1,6 +1,9 @@
 #ifndef AREA_DETECTOR_INTERFACE_H
 #define AREA_DETECTOR_INTERFACE_H
 
+#include <ellLib.h>
+#include <epicsMutex.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -25,6 +28,19 @@ on those interfaces.  This can be done conveniently by using the ADParamLib libr
 
 #define AREA_DETECTOR_OK (0)
 #define AREA_DETECTOR_ERROR (-1)
+
+/* An ADImage structure.  Used in asynADImage interface and 
+ * ADImageBuffer buffer allocation routines */
+typedef struct ADImage {
+    ELLNODE node;
+    int nx;
+    int ny;
+    int dataType;
+    int dataSize;
+    void *pData;
+    int referenceCount;
+    epicsMutexId imageLock;
+} ADImage_t;
 
 /* Enumeration of shutter status */
 typedef enum
@@ -62,10 +78,10 @@ typedef enum
 
 typedef enum
 {
-    ADFrameSingle,
-    ADFrameMultiple,
-    ADFrameContinuous
-} ADFrameMode_t;
+    ADImageSingle,
+    ADImageMultiple,
+    ADImageContinuous
+} ADImageMode_t;
 
 typedef enum
 {
@@ -109,18 +125,18 @@ typedef enum
     ADImageSizeY,      /* (asynInt32,    r/o) Size of the image data in the Y direction */
     ADImageSize,       /* (asynInt32,    r/o) Total size of image data in bytes */
     ADDataType,        /* (asynInt32,    r/w) Data type (ADDataType_t) */
-    ADFrameMode,       /* (asynInt32,    r/w) Frame mode (ADFrameMode_t) */
+    ADImageMode,       /* (asynInt32,    r/w) Image mode (ADImageMode_t) */
     ADTriggerMode,     /* (asynInt32,    r/w) Trigger mode (ADTriggerMode_t) */
-    ADNumExposures,    /* (asynInt32,    r/w) Number of exposures per frame to acquire */
-    ADNumFrames,       /* (asynInt32,    r/w) Number of frames to acquire in one acquisition sequence */
-    ADAcquireTime,     /* (asynFloat64,  r/w) Acquisition time per frame. */
-    ADAcquirePeriod,   /* (asynFloat64,  r/w) Acquisition period between frames */
+    ADNumExposures,    /* (asynInt32,    r/w) Number of exposures per image to acquire */
+    ADNumImages,       /* (asynInt32,    r/w) Number of images to acquire in one acquisition sequence */
+    ADAcquireTime,     /* (asynFloat64,  r/w) Acquisition time per image. */
+    ADAcquirePeriod,   /* (asynFloat64,  r/w) Acquisition period between images */
     ADStatus,          /* (asynInt32,    r/o) Acquisition status (ADStatus_t) */
     ADShutter,         /* (asynInt32,    r/w) Shutter control (ADShutterStatus_t) */
     ADAcquire,         /* (asynInt32,    r/w) Start(1) or Stop(0) acquisition */
 
-    /* Statistics on number of frames collected and the frame rate. */
-    ADFrameCounter,    /* (asynInt32,    r/w) Number of frames acquired since last reset */
+    /* Statistics on number of imagess collected and the image rate. */
+    ADImageCounter,    /* (asynInt32,    r/w) Number of images acquired since last reset */
  
     /* File name related parameters for saving data.
      * Drivers are not required to implement file saving, but if they do these parameters
@@ -173,9 +189,9 @@ static ADParamString_t ADStandardParamString[] = {
     {ADImageSizeY,     "IMAGE_SIZE_Y"},
     {ADImageSize,      "IMAGE_SIZE"  },
     {ADDataType,       "DATA_TYPE"   },
-    {ADFrameMode,      "FRAME_MODE"  },
+    {ADImageMode,      "IMAGE_MODE"  },
     {ADNumExposures,   "NEXPOSURES"  },
-    {ADNumFrames,      "NFRAMES"     },
+    {ADNumImages,      "NIMAGES"     },
     {ADAcquireTime,    "ACQ_TIME"    },
     {ADAcquirePeriod,  "ACQ_PERIOD"  },
     {ADStatus,         "STATUS"      },
@@ -183,7 +199,7 @@ static ADParamString_t ADStandardParamString[] = {
     {ADShutter,        "SHUTTER"     },
     {ADAcquire,        "ACQUIRE"     },
 
-    {ADFrameCounter,   "FRAME_COUNTER" }, 
+    {ADImageCounter,   "IMAGE_COUNTER" }, 
 
     {ADFilePath,       "FILE_PATH"     },
     {ADFileName,       "FILE_NAME"     },
