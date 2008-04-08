@@ -16,8 +16,7 @@
 extern "C" {
 #endif
 
-#include <ADInterface.h>
-
+#include "ADInterface.h"
 
 typedef struct
 {
@@ -33,8 +32,7 @@ typedef struct
                                  int regionSizeX, int regionSizeY,
                                  int *SizeXOut, int *sizeYOut);
     int  (*createFileName)      (void *params, int maxChars, char *fullFileName);
-    void (*ADImageCallback)     (void *ADImageInterruptPvt, void *data, 
-                                 ADDataType_t dataType, int nx, int ny);
+    void (*ADImageCallback)     (void *ADImageInterruptPvt, ADImage_t *pImage);
     int  (*findParam)           (ADParamString_t *paramTable, int numParams, 
                                  const char *paramName, int *param);
 } ADUtilsSupport;
