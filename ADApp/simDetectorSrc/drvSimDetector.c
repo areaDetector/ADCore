@@ -32,19 +32,14 @@
 #define DEFINE_STANDARD_PARAM_STRINGS 1
 #include "ADParamLib.h"
 #include "ADUtils.h"
-
 #include "ADInterface.h"
 #include "asynADImage.h"
+#include "ADImageBuff.h"
+
 #include "drvSimDetector.h"
 
 
 static char *driverName = "drvSimDetector";
-
-/* Note that the file format enum must agree with the mbbo/mbbi records in the simDetector.template file */
-typedef enum {
-   SimFormatBinary,
-   SimFormatASCII
-} SimFormat_t;
 
 /* If we have any private driver parameters they begin with ADFirstDriverParam and should end
    with ADLastDriverParam, which is used for setting the size of the parameter library table */
@@ -71,17 +66,20 @@ typedef struct drvADPvt {
     char *portName;
     epicsMutexId mutexId;              /* A mutex to lock access to data structures. */
     PARAMS params;
-    /* asyn interfaces */
+
+    /* The asyn interfaces this driver implements */
     asynStandardInterfaces asynInterfaces;
     asynInterface asynADImage;
     void *ADImageInterruptPvt;
+
+    /* asynUser connected to ourselves for asynTrace */
     asynUser *pasynUser;
 
     /* These items are specific to the Simulator driver */
-    int framesRemaining;
+    int imagesRemaining;
     epicsEventId eventId;
     void *rawBuffer;
-    void *imageBuffer;
+    ADImage_t *pImage;
     int bufferSize;
 } drvADPvt;
 
@@ -92,239 +90,15 @@ static int simAllocateBuffer(drvADPvt *pPvt, int sizeX, int sizeY, int dataType)
     int bytesPerPixel;
     int bufferSize;
     
-    /* Make sure the buffers we have allocated are large enough.
-     * rawBuffer is for the entire image, imageBuffer is for the subregion with binning
-     * We allocated them both the same size for simplicity and efficiency */
+    /* Make sure the raw buffer we have allocated is large enough.
+     * rawBuffer is for the entire image */
     status |= ADUtils->bytesPerPixel(dataType, &bytesPerPixel);
     bufferSize = sizeX * sizeY * bytesPerPixel;
     if (bufferSize != pPvt->bufferSize) {
         free(pPvt->rawBuffer);
-        free(pPvt->imageBuffer);
         pPvt->rawBuffer   = malloc(bytesPerPixel*sizeX*sizeY);
-        pPvt->imageBuffer = malloc(bytesPerPixel*sizeX*sizeY);
         pPvt->bufferSize = bufferSize;
     }
-    return(status);
-}
-
-static int simWriteFile(drvADPvt *pPvt)
-{
-    /* Writes current frame to disk in simple binary or ASCII format.
-     * In either case the data written are imageSizeX, imageSizeY, dataType, data */
-    int status = asynSuccess;
-    char fullFileName[MAX_FILENAME_LEN];
-    int fileFormat;
-    int fileNumber;
-    int imageSizeX, imageSizeY, imageSize, dataType, bytesPerPixel;
-    int i, autoIncrement;
-    FILE *fp;
-
-    /* Get the current parameters */
-    ADParam->getInteger(pPvt->params, ADImageSizeX, &imageSizeX);
-    ADParam->getInteger(pPvt->params, ADImageSizeY, &imageSizeY);
-    ADParam->getInteger(pPvt->params, ADImageSize,  &imageSize);
-    ADParam->getInteger(pPvt->params, ADDataType,   &dataType);
-    ADParam->getInteger(pPvt->params, ADFileNumber, &fileNumber);
-    ADParam->getInteger(pPvt->params, ADAutoIncrement, &autoIncrement);
-    ADUtils->bytesPerPixel(dataType, &bytesPerPixel);
-
-    status |= ADUtils->createFileName(pPvt->params, MAX_FILENAME_LEN, fullFileName);
-    if (status) { 
-        asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR, 
-              "%s:SimWriteFile error creating full file name, fullFileName=%s, status=%d\n", 
-              driverName, fullFileName, status);
-        return(status);
-    }
-    status |= ADParam->getInteger(pPvt->params, ADFileFormat, &fileFormat);
-    switch (fileFormat) {
-    case SimFormatBinary:
-        fp = fopen(fullFileName, "wb");
-        if (!fp) {
-            asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR, 
-                  "%s:SimWriteFile error creating file, fullFileName=%s, errno=%d\n", 
-                  driverName, fullFileName, errno);
-            return(asynError);
-        }
-        fwrite(&imageSizeX, sizeof(imageSizeX), 1, fp);
-        fwrite(&imageSizeY, sizeof(imageSizeY), 1, fp);
-        fwrite(&dataType, sizeof(dataType), 1, fp);
-        fwrite(pPvt->imageBuffer, bytesPerPixel, imageSizeX*imageSizeY, fp);
-        fclose(fp);
-        break;
-    case SimFormatASCII:
-        fp = fopen(fullFileName, "w");
-        if (!fp) {
-            asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR, 
-                  "%s:SimWriteFile error creating file, fullFileName=%s, errno=%d\n", 
-                  driverName, fullFileName, errno);
-            return(asynError);
-        }
-        fprintf(fp, "%d\n", imageSizeX);
-        fprintf(fp, "%d\n", imageSizeY);
-        fprintf(fp, "%d\n", dataType);
-        switch (dataType) {
-            case ADInt8: {
-                epicsInt8 *pData = (epicsInt8 *)pPvt->imageBuffer;
-                for (i=0; i<imageSizeX*imageSizeY; i++) fprintf(fp, "%d\n", pData[i]); }
-                break;
-            case ADUInt8: {
-                epicsUInt8 *pData = (epicsUInt8 *)pPvt->imageBuffer;
-                for (i=0; i<imageSizeX*imageSizeY; i++) fprintf(fp, "%u\n", pData[i]); }
-                break;
-            case ADInt16: {
-                epicsInt16 *pData = (epicsInt16 *)pPvt->imageBuffer;
-                for (i=0; i<imageSizeX*imageSizeY; i++) fprintf(fp, "%d\n", pData[i]); }
-                break;
-            case ADUInt16: {
-                epicsUInt16 *pData = (epicsUInt16 *)pPvt->imageBuffer;
-                for (i=0; i<imageSizeX*imageSizeY; i++) fprintf(fp, "%u\n", pData[i]); }
-                break;
-            case ADInt32: {
-                epicsInt32 *pData = (epicsInt32 *)pPvt->imageBuffer;
-                for (i=0; i<imageSizeX*imageSizeY; i++) fprintf(fp, "%d\n", pData[i]); }
-                break;
-            case ADUInt32: {
-                epicsUInt32 *pData = (epicsUInt32 *)pPvt->imageBuffer;
-                for (i=0; i<imageSizeX*imageSizeY; i++) fprintf(fp, "%u\n", pData[i]); }
-                break;
-            case ADFloat32: {
-                epicsFloat32 *pData = (epicsFloat32 *)pPvt->imageBuffer;
-                for (i=0; i<imageSizeX*imageSizeY; i++) fprintf(fp, "%f\n", pData[i]); }
-                break;
-            case ADFloat64: {
-                epicsFloat64 *pData = (epicsFloat64 *)pPvt->imageBuffer;
-                for (i=0; i<imageSizeX*imageSizeY; i++) fprintf(fp, "%f\n", pData[i]); }
-                break;
-        }
-        fclose(fp);
-        break;
-    }
-
-    /* If we got an error then return */
-    if (status) return(status);
-    
-    /* Update the full file name */
-    ADParam->setString(pPvt->params, ADFullFileName, fullFileName);
-
-    /* If autoincrement is set then increment file number */
-    if (autoIncrement) {
-        fileNumber++;
-        ADParam->setInteger(pPvt->params, ADFileNumber, fileNumber);
-    }
-    return(status);
-}
-
-static int simReadFile(drvADPvt *pPvt)
-{
-    /* Reads a file written by simWriteFile from disk in either binary or ASCII format. */
-    int status = asynSuccess;
-    char fullFileName[MAX_FILENAME_LEN];
-    int fileFormat, fileNumber;
-    int imageSizeX, imageSizeY, dataType, bytesPerPixel;
-    int i, autoIncrement;
-    FILE *fp;
-
-    /* Get the current parameters */
-    ADParam->getInteger(pPvt->params, ADAutoIncrement, &autoIncrement);
-    ADParam->getInteger(pPvt->params, ADFileNumber,    &fileNumber);
-
-    status |= ADUtils->createFileName(pPvt->params, MAX_FILENAME_LEN, fullFileName);
-    if (status) { 
-        asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR, 
-              "%s:SimReadFile error creating full file name, fullFileName=%s, status=%d\n", 
-              driverName, fullFileName, status);
-        return(status);
-    }
-    status |= ADParam->getInteger(pPvt->params, ADFileFormat, &fileFormat);
-    switch (fileFormat) {
-    case SimFormatBinary:
-        fp = fopen(fullFileName, "rb");
-        if (!fp) {
-            asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR, 
-                  "%s:SimReadFile error opening file, fullFileName=%s, errno=%d\n", 
-                  driverName, fullFileName, errno);
-            return(asynError);
-        }
-        fread(&imageSizeX, sizeof(imageSizeX), 1, fp);
-        fread(&imageSizeY, sizeof(imageSizeY), 1, fp);
-        fread(&dataType, sizeof(dataType), 1, fp);
-        ADUtils->bytesPerPixel(dataType, &bytesPerPixel);
-        simAllocateBuffer(pPvt, imageSizeX, imageSizeY, dataType);
-        fread(pPvt->imageBuffer, bytesPerPixel, imageSizeX*imageSizeY, fp);
-        fclose(fp);
-        break;
-    case SimFormatASCII:
-        fp = fopen(fullFileName, "r");
-        if (!fp) {
-            asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR, 
-                  "%s:SimReadFile error opening file, fullFileName=%s, errno=%d\n", 
-                  driverName, fullFileName, errno);
-            return(asynError);
-        }
-        fscanf(fp, "%d", &imageSizeX);
-        fscanf(fp, "%d", &imageSizeY);
-        fscanf(fp, "%d", &dataType);
-        simAllocateBuffer(pPvt, imageSizeX, imageSizeY, dataType);
-        switch (dataType) {
-            case ADInt8: {
-                int tmp;
-                epicsInt8 *pData = (epicsInt8 *)pPvt->imageBuffer;
-                for (i=0; i<imageSizeX*imageSizeY; i++) {fscanf(fp, "%d", &tmp); pData[i]=tmp;}}
-                break;
-            case ADUInt8: {
-                unsigned int tmp;
-                epicsUInt8 *pData = (epicsUInt8 *)pPvt->imageBuffer;
-                for (i=0; i<imageSizeX*imageSizeY; i++) {fscanf(fp, "%u", &tmp); pData[i]=tmp;}}
-                break;
-            case ADInt16: {
-                epicsInt16 *pData = (epicsInt16 *)pPvt->imageBuffer;
-                for (i=0; i<imageSizeX*imageSizeY; i++) fscanf(fp, "%hd", &pData[i]); }
-                break;
-            case ADUInt16: {
-                epicsUInt16 *pData = (epicsUInt16 *)pPvt->imageBuffer;
-                for (i=0; i<imageSizeX*imageSizeY; i++) fscanf(fp, "%hu", &pData[i]); }
-                break;
-            case ADInt32: {
-                epicsInt32 *pData = (epicsInt32 *)pPvt->imageBuffer;
-                for (i=0; i<imageSizeX*imageSizeY; i++) fscanf(fp, "%d", &pData[i]); }
-                break;
-            case ADUInt32: {
-                epicsUInt32 *pData = (epicsUInt32 *)pPvt->imageBuffer;
-                for (i=0; i<imageSizeX*imageSizeY; i++) fscanf(fp, "%u", &pData[i]); }
-                break;
-            case ADFloat32: {
-                epicsFloat32 *pData = (epicsFloat32 *)pPvt->imageBuffer;
-                for (i=0; i<imageSizeX*imageSizeY; i++) fscanf(fp, "%f", &pData[i]); }
-                break;
-            case ADFloat64: {
-                epicsFloat64 *pData = (epicsFloat64 *)pPvt->imageBuffer;
-                for (i=0; i<imageSizeX*imageSizeY; i++) fscanf(fp, "%lf", &pData[i]); }
-                break;
-        }
-        fclose(fp);
-        break;
-    }
-
-    /* If we got an error then return */
-    if (status) return(status);
-    
-    /* Update the full file name */
-    ADParam->setString(pPvt->params, ADFullFileName, fullFileName);
-
-    /* If autoincrement is set then increment file number */
-    if (autoIncrement) {
-        fileNumber++;
-        ADParam->setInteger(pPvt->params, ADFileNumber, fileNumber);
-    }
-    
-    /* Update the new values of imageSizeX, imageSizeY, dataType and the image data */
-    ADParam->setInteger(pPvt->params, ADImageSizeX, imageSizeX);
-    ADParam->setInteger(pPvt->params, ADImageSizeY, imageSizeY);
-    ADParam->setInteger(pPvt->params, ADDataType, dataType);
-    ADUtils->ADImageCallback(pPvt->ADImageInterruptPvt, 
-                             pPvt->imageBuffer,
-                             dataType, imageSizeX, imageSizeY);
-    
     return(status);
 }
 
@@ -333,10 +107,11 @@ static int simComputeImage(drvADPvt *pPvt)
     int status = asynSuccess;
     int dataType;
     int binX, binY, minX, minY, sizeX, sizeY, maxSizeX, maxSizeY, resetImage;
-    int imageSizeX, imageSizeY, imageSize, bytesPerPixel;
+    int imageSize, bytesPerPixel;
     double exposureTime, gain, gainX, gainY, scaleX, scaleY;
     double increment;
     int i, j;
+    const char* functionName = "simComputeImage";
 
     /* NOTE: The caller of this function must have taken the mutex */
     
@@ -366,11 +141,16 @@ static int simComputeImage(drvADPvt *pPvt)
     if (minX+sizeX > maxSizeX) {sizeX = maxSizeX-minX; status |= ADParam->setInteger(pPvt->params, ADSizeX, sizeX);}
     if (minY+sizeY > maxSizeY) {sizeY = maxSizeY-minY; status |= ADParam->setInteger(pPvt->params, ADSizeY, sizeY);}
 
-    /* Make sure the buffers we have allocated are large enough. */
+    /* Make sure the buffer we have allocated is large enough. */
     status |= simAllocateBuffer(pPvt, maxSizeX, maxSizeY, dataType);
+    pPvt->pImage = ADImageBuff->alloc(maxSizeX, maxSizeY, dataType, 0, NULL);
+    if (!pPvt->pImage) 
+        asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR, 
+                  "%s:%s ERROR cannot allocate image buffer\n", 
+                  driverName, functionName);
 
     /* The intensity at each pixel[i,j] is:
-     * (i * gainX + j* gainY) + frameCounter * gain * exposureTime * 1000. */
+     * (i * gainX + j* gainY) + imageCounter * gain * exposureTime * 1000. */
     increment = gain * exposureTime * 1000.;
     scaleX = 0.;
     scaleY = 0.;
@@ -432,28 +212,28 @@ static int simComputeImage(drvADPvt *pPvt)
     status |= ADUtils->convertImage(pPvt->rawBuffer, 
                                     dataType,
                                     maxSizeX, maxSizeY,
-                                    pPvt->imageBuffer,
+                                    pPvt->pImage->pData,
                                     dataType,
                                     binX, binY,
                                     minX, minY,
                                     sizeX, sizeY,
-                                    &imageSizeX, &imageSizeY);
+                                    &pPvt->pImage->nx, &pPvt->pImage->ny);
     
-    imageSize = imageSizeX * imageSizeY * bytesPerPixel;
+    imageSize = pPvt->pImage->nx * pPvt->pImage->ny * bytesPerPixel;
     status |= ADParam->setInteger(pPvt->params, ADImageSize,  imageSize);
-    status |= ADParam->setInteger(pPvt->params, ADImageSizeX, imageSizeX);
-    status |= ADParam->setInteger(pPvt->params, ADImageSizeY, imageSizeY);
+    status |= ADParam->setInteger(pPvt->params, ADImageSizeX, pPvt->pImage->nx);
+    status |= ADParam->setInteger(pPvt->params, ADImageSizeY, pPvt->pImage->ny);
     status |= ADParam->setInteger(pPvt->params,SimResetImage, 0);
     return(status);
 }
 
 static void simTask(drvADPvt *pPvt)
 {
-    /* This thread computes new frame data and does the callbacks to send it to higher layers */
+    /* This thread computes new image data and does the callbacks to send it to higher layers */
     int status = asynSuccess;
     int dataType;
     int imageSizeX, imageSizeY, imageSize;
-    int frameCounter;
+    int imageCounter;
     int acquire, autoSave;
     ADStatus_t acquiring;
     double acquireTime, acquirePeriod, delay;
@@ -486,7 +266,11 @@ static void simTask(drvADPvt *pPvt)
         
         acquiring = ADStatusAcquire;
         ADParam->setInteger(pPvt->params, ADStatus, acquiring);
-        
+
+        /* We save the most recent image buffer so it can be used in the read() function.
+         * Now release it.  simComputeImage will get a new one. */
+        if (pPvt->pImage) ADImageBuff->release(pPvt->pImage);
+
         /* Update the image */
         simComputeImage(pPvt);
         
@@ -496,28 +280,23 @@ static void simTask(drvADPvt *pPvt)
         ADParam->getInteger(pPvt->params, ADImageSize,  &imageSize);
         ADParam->getInteger(pPvt->params, ADDataType,   &dataType);
         ADParam->getInteger(pPvt->params, ADAutoSave,   &autoSave);
-        ADParam->getInteger(pPvt->params, ADFrameCounter, &frameCounter);
-        frameCounter++;
-        ADParam->setInteger(pPvt->params, ADFrameCounter, frameCounter);
+        ADParam->getInteger(pPvt->params, ADImageCounter, &imageCounter);
+        imageCounter++;
+        ADParam->setInteger(pPvt->params, ADImageCounter, imageCounter);
 
         /* Call the imageData callback */
         asynPrint(pPvt->pasynUser, ASYN_TRACE_FLOW, 
              "%s:simTask: calling imageData callback\n", driverName);
-        ADUtils->ADImageCallback(pPvt->ADImageInterruptPvt, 
-                                 pPvt->imageBuffer,
-                                 dataType, imageSizeX, imageSizeY);
+        ADUtils->ADImageCallback(pPvt->ADImageInterruptPvt, pPvt->pImage);
 
         /* See if acquisition is done */
-        if (pPvt->framesRemaining > 0) pPvt->framesRemaining--;
-        if (pPvt->framesRemaining == 0) {
+        if (pPvt->imagesRemaining > 0) pPvt->imagesRemaining--;
+        if (pPvt->imagesRemaining == 0) {
             acquiring = ADStatusIdle;
             ADParam->setInteger(pPvt->params, ADAcquire, acquiring);
             asynPrint(pPvt->pasynUser, ASYN_TRACE_FLOW, 
                   "%s:simTask: acquisition completed\n", driverName);
         }
-        
-        /* If autosave is enabled then save the file */
-        if (autoSave) simWriteFile(pPvt);
         
         /* Call the callbacks to update any changes */
         ADParam->callCallbacks(pPvt->params);
@@ -588,22 +367,22 @@ static asynStatus writeInt32(void *drvPvt, asynUser *pasynUser,
     switch (function) {
     case ADAcquire:
         if (value) {
-            /* We need to set the number of frames we expect to collect, so the frame callback function
+            /* We need to set the number of images we expect to collect, so the image callback function
                can know when acquisition is complete.  We need to find out what mode we are in and how
-               many frames have been requested.  If we are in continuous mode then set the number of
-               remaining frames to -1. */
-            int frameMode, numFrames;
-            status |= ADParam->getInteger(pPvt->params, ADFrameMode, &frameMode);
-            status |= ADParam->getInteger(pPvt->params, ADNumFrames, &numFrames);
-            switch(frameMode) {
-            case ADFrameSingle:
-                pPvt->framesRemaining = 1;
+               many images have been requested.  If we are in continuous mode then set the number of
+               remaining images to -1. */
+            int imageMode, numImages;
+            status |= ADParam->getInteger(pPvt->params, ADImageMode, &imageMode);
+            status |= ADParam->getInteger(pPvt->params, ADNumImages, &numImages);
+            switch(imageMode) {
+            case ADImageSingle:
+                pPvt->imagesRemaining = 1;
                 break;
-            case ADFrameMultiple:
-                pPvt->framesRemaining = numFrames;
+            case ADImageMultiple:
+                pPvt->imagesRemaining = numImages;
                 break;
-            case ADFrameContinuous:
-                pPvt->framesRemaining = -1;
+            case ADImageContinuous:
+                pPvt->imagesRemaining = -1;
                 break;
             }
             reset = 1;
@@ -624,29 +403,23 @@ static asynStatus writeInt32(void *drvPvt, asynUser *pasynUser,
     case SimResetImage:
         if (value) reset = 1;
         break;
-    case ADFrameMode: 
-        /* The frame mode may have changed while we are acquiring, 
-         * set the frames remaining appropriately. */
+    case ADImageMode: 
+        /* The image mode may have changed while we are acquiring, 
+         * set the images remaining appropriately. */
         switch (value) {
-        case ADFrameSingle:
-            pPvt->framesRemaining = 1;
+        case ADImageSingle:
+            pPvt->imagesRemaining = 1;
             break;
-        case ADFrameMultiple: {
-            int numFrames;
-            ADParam->getInteger(pPvt->params, ADNumFrames, &numFrames);
-            pPvt->framesRemaining = numFrames; }
+        case ADImageMultiple: {
+            int numImages;
+            ADParam->getInteger(pPvt->params, ADNumImages, &numImages);
+            pPvt->imagesRemaining = numImages; }
             break;
-        case ADFrameContinuous:
-            pPvt->framesRemaining = -1;
+        case ADImageContinuous:
+            pPvt->imagesRemaining = -1;
             break;
         }
         break;
-    case ADWriteFile:
-        status = simWriteFile(pPvt);
-        break; 
-    case ADReadFile:
-        status = simReadFile(pPvt);
-        break; 
     }
     
     /* Reset the image if the reset flag was set above */
@@ -805,35 +578,41 @@ static asynStatus writeOctet(void *drvPvt, asynUser *pasynUser,
 }
 
 /* asynADImage interface methods */
-static asynStatus readADImage(void *drvPvt, asynUser *pasynUser, void *data, int maxBytes,
-                       int *dataType, int *nx, int *ny)
+static asynStatus readADImage(void *drvPvt, asynUser *pasynUser, int maxBytes, ADImage_t *pImage)
 {
     drvADPvt *pPvt = (drvADPvt *)drvPvt;
     int imageSize, bytesPerPixel;
     int status = asynSuccess;
+    const char* functionName = "readADImage";
     
     epicsMutexLock(pPvt->mutexId);
-    status |= ADParam->getInteger(pPvt->params, ADImageSizeX, nx);
-    status |= ADParam->getInteger(pPvt->params, ADImageSizeY, ny);
-    status |= ADParam->getInteger(pPvt->params, ADDataType, dataType);
-    status |= ADUtils->bytesPerPixel(*dataType, &bytesPerPixel);
-    imageSize = bytesPerPixel * *nx * *ny;
-    if (imageSize > maxBytes) imageSize = maxBytes;
-    memcpy(data, pPvt->imageBuffer, imageSize);
+    if (!pPvt->pImage) {
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, 
+              "%s:functionName error, no valid image available\n", 
+              driverName, functionName);
+        status = asynError;
+    } else {
+        pImage->nx = pPvt->pImage->nx;
+        pImage->ny = pPvt->pImage->ny;
+        pImage->dataType = pPvt->pImage->dataType;
+        status |= ADUtils->bytesPerPixel(pImage->dataType, &bytesPerPixel);
+        imageSize = bytesPerPixel * pImage->nx * pImage->ny;
+        if (imageSize > maxBytes) imageSize = maxBytes;
+        memcpy(pImage->pData, pPvt->pImage->pData, imageSize);
+    }
     if (status) 
         asynPrint(pasynUser, ASYN_TRACE_ERROR, 
-              "%s:readADImage error, status=%d maxBytes=%d, data=%p\n", 
-              driverName, status, maxBytes, data);
+              "%s:%s error, status=%d maxBytes=%d, data=%p\n", 
+              driverName, functionName, status, maxBytes, pImage->pData);
     else        
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:readADImage error, maxBytes=%d, data=%p\n", 
-              driverName, maxBytes, data);
+              "%s:%s error, maxBytes=%d, data=%p\n", 
+              driverName, functionName, maxBytes, pImage->pData);
     epicsMutexUnlock(pPvt->mutexId);
     return status;
 }
 
-static asynStatus writeADImage(void *drvPvt, asynUser *pasynUser, void *data,
-                        int dataType, int nx, int ny)
+static asynStatus writeADImage(void *drvPvt, asynUser *pasynUser, ADImage_t *pImage)
 {
     drvADPvt *pPvt = (drvADPvt *)drvPvt;
     int status = asynSuccess;
@@ -944,6 +723,8 @@ static void report(void *drvPvt, FILE *fp, int details)
     if (details > 5) {
         fprintf(fp, "\nParameter library contents:\n");
         ADParam->dump(pPvt->params);
+        fprintf(fp, "\nImage buffer library:\n");
+        ADImageBuff->report(details);
     }
 }
 
@@ -1080,10 +861,10 @@ int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int data
     status |= ADParam->setInteger(pPvt->params, ADImageSizeX, maxSizeX);
     status |= ADParam->setInteger(pPvt->params, ADImageSizeY, maxSizeY);
     status |= ADParam->setInteger(pPvt->params, ADDataType, dataType);
-    status |= ADParam->setInteger(pPvt->params, ADFrameMode, ADFrameContinuous);
+    status |= ADParam->setInteger(pPvt->params, ADImageMode, ADImageContinuous);
     status |= ADParam->setDouble (pPvt->params, ADAcquireTime, .001);
     status |= ADParam->setDouble (pPvt->params, ADAcquirePeriod, .005);
-    status |= ADParam->setInteger(pPvt->params, ADNumFrames, 100);
+    status |= ADParam->setInteger(pPvt->params, ADNumImages, 100);
     status |= ADParam->setInteger(pPvt->params, SimResetImage, 1);
     status |= ADParam->setDouble (pPvt->params, SimGainX, 1);
     status |= ADParam->setDouble (pPvt->params, SimGainY, 1);
