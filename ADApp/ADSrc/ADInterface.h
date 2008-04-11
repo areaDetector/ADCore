@@ -32,14 +32,14 @@ on those interfaces.  This can be done conveniently by using the ADParamLib libr
 /* An ADImage structure.  Used in asynADImage interface and 
  * ADImageBuffer buffer allocation routines */
 typedef struct ADImage {
+    /* The first 2 fields are used by ADImageBuff for the freelist */
     ELLNODE node;
+    int referenceCount;
     int nx;
     int ny;
     int dataType;
     int dataSize;
     void *pData;
-    int referenceCount;
-    epicsMutexId imageLock;
 } ADImage_t;
 
 /* Enumeration of shutter status */

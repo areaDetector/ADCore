@@ -11,11 +11,8 @@ extern "C" {
 #define PARAM_OK (0)
 #define PARAM_ERROR (-1)
 
-typedef  int paramIndex;
+typedef int paramIndex;
 typedef struct paramList * PARAMS;
-typedef void (*paramIntCallback)   ( void *, int, int ); 
-typedef void (*paramDoubleCallback)( void *, int, double ); 
-typedef void (*paramStringCallback)( void *, int, char * ); 
 
 typedef struct
 {
@@ -25,10 +22,10 @@ typedef struct
   int  (*setInteger)         ( PARAMS params, paramIndex index, int value );
   int  (*setDouble)          ( PARAMS params, paramIndex index, double value );
   int  (*setString)          ( PARAMS params, paramIndex index, const char *value );
-  int  (*callCallbacks)      ( PARAMS params );
   int  (*getInteger)         ( PARAMS params, paramIndex index, int * value );
   int  (*getDouble)          ( PARAMS params, paramIndex index, double * value );
   int  (*getString)          ( PARAMS params, paramIndex index, int maxChars, char *value  );
+  int  (*callCallbacks)      ( PARAMS params );
   void (*dump)               ( PARAMS params );
 } paramSupport;
 

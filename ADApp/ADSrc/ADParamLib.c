@@ -446,10 +446,10 @@ static paramSupport ADParamSupport =
   paramSetInteger,
   paramSetDouble,
   paramSetString,
-  paramCallCallbacks,
   paramGetInteger,
   paramGetDouble,
   paramGetString,
+  paramCallCallbacks,
   paramDump
 };
 
