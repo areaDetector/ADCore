@@ -5,8 +5,8 @@ file {
 }
 display {
 	object {
-		x=165
-		y=73
+		x=93
+		y=561
 		width=380
 		height=345
 	}
@@ -182,34 +182,6 @@ composite {
 			limits {
 			}
 		}
-	}
-}
-text {
-	object {
-		x=64
-		y=126
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Min. time"
-	align="horiz. right"
-}
-"text entry" {
-	object {
-		x=164
-		y=126
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(I)MinImageUpdate"
-		clr=14
-		bclr=51
-	}
-	limits {
 	}
 }
 "text entry" {
@@ -462,21 +434,6 @@ text {
 	textix="Dropped images"
 	align="horiz. right"
 }
-"text update" {
-	object {
-		x=270
-		y=127
-		width=100
-		height=18
-	}
-	monitor {
-		chan="$(P)$(I)MinImageUpdate_RBV"
-		clr=54
-		bclr=4
-	}
-	limits {
-	}
-}
 composite {
 	object {
 		x=44
@@ -593,4 +550,58 @@ text {
 	}
 	textix="ADImage - $(P)$(I)"
 	align="horiz. centered"
+}
+composite {
+	object {
+		x=64
+		y=126
+		width=306
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=64
+				y=126
+				width=90
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Min. time"
+			align="horiz. right"
+		}
+		"text entry" {
+			object {
+				x=164
+				y=126
+				width=100
+				height=20
+			}
+			control {
+				chan="$(P)$(I)MinImageUpdate"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=270
+				y=127
+				width=100
+				height=18
+			}
+			monitor {
+				chan="$(P)$(I)MinImageUpdate_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+	}
 }
