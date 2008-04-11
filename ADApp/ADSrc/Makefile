@@ -18,6 +18,8 @@ LIB_SRCS += ADUtils.c
 LIB_SRCS += ADImageBuff.h
 LIB_SRCS += ADImageBuffEpics.h
 LIB_SRCS += asynADImageBase.c
+LIB_LIBS += asyn
+LIB_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 include $(TOP)/configure/RULES
 #----------------------------------------
