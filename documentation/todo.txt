@@ -1,0 +1,41 @@
+    General
+- Add ADFrameTimeStamp to interface, drivers should update?
+  just before image callback.
+- Write ROI driver
+- Documentation
+- Performance measurements
+- Implement and improve connection management
+- Make any asynBusy record, same as bo, except:
+    - Does not call recGblFwdLink until VAL=0.
+    - Soft device support is same as bo record.
+    - Flag indicating callback from device support, don't write output.
+- Implement image reversal in X and Y in convertImage
+
+    drvADFile
+- Test reading
+
+    drvADImage
+- Test more, blocking and non-blocking
+
+    drvSimDetector driver
+- Test all image data types with all waveform data types
+- Add connection state
+- Fix any other parameter errors on startup
+
+    drvProsilica driver
+- Connection management
+  - Sense disconnect, autoreconnect
+    See link callback.  When matches uniqueID, call Disconnect or Connect
+
+    Other drivers
+- Roper using WinView/OLE
+- Pilatus
+- MAR-CCD
+- MAR-345
+
+   IDL
+- Fix image_display
+  - Change table widgets to text widgets or CW_field widgets
+  - Use rotate rather than order keyword on tv
+  - Check if data is byte and scaling is 0 to 255 don't scale the image
+- Data saving?
