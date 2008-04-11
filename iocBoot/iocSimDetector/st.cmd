@@ -1,4 +1,5 @@
-< envPaths
+# Must have loaded envPaths via st.cmd.linux or st.cmd.win32
+
 errlogInit(20000)
 
 dbLoadDatabase("$(AD)/dbd/simDetectorApp.dbd")
