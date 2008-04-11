@@ -385,7 +385,6 @@ static asynStatus writeInt32(void *drvPvt, asynUser *pasynUser,
                 pPvt->imagesRemaining = -1;
                 break;
             }
-            reset = 1;
             /* Send an event to wake up the simulation task.  
              * It won't actually start generating new images until we release the lock below */
             epicsEventSignal(pPvt->eventId);
@@ -426,9 +425,8 @@ static asynStatus writeInt32(void *drvPvt, asynUser *pasynUser,
     if (reset) {
         status |= ADParam->setInteger(pPvt->params, SimResetImage, 1);
         /* Compute the image when parameters change.  
-         * This won't post data, but will cause any parameter changes to be computed and readbacks to update.
-         * Don't compute the image if this is an accquire command, since that will be done next. */
-        if (function != ADAcquire) simComputeImage(pPvt);
+         * This won't post data, but will cause any parameter changes to be computed and readbacks to update. */
+        simComputeImage(pPvt);
     }
     
     /* Do callbacks so higher layers see any changes */
