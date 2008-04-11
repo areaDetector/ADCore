@@ -39,7 +39,7 @@ record(longin, "$(P)$(F)ImageAddress_RBV")
 #  These records control the minimum time between file writes     #
 ###################################################################
 
-record(ao, "$(P)$(I)MinWriteTime")
+record(ao, "$(P)$(F)MinWriteTime")
 {
     field(PINI, "1")
     field(DTYP, "asynFloat64")
@@ -49,7 +49,7 @@ record(ao, "$(P)$(I)MinWriteTime")
     field(PREC, "3")
 }
 
-record(ai, "$(P)$(I)MinWriteTime_RBV")
+record(ai, "$(P)$(F)MinWriteTime_RBV")
 {
     field(PINI, "1")
     field(DTYP, "asynFloat64")
