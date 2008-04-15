@@ -8,16 +8,14 @@ DBD += ADSupport.dbd
 
 INC += ADParamLib.h
 INC += ADUtils.h
-INC += ADImageBuff.h
-INC += asynADImage.h
+INC += NDArrayBuff.h
 INC += ADInterface.h
 
 LIBRARY_IOC = ADBase
 LIB_SRCS += ADParamLib.c
 LIB_SRCS += ADUtils.c
-LIB_SRCS += ADImageBuff.h
-LIB_SRCS += ADImageBuffEpics.h
-LIB_SRCS += asynADImageBase.c
+LIB_SRCS += NDArrayBuff.h
+LIB_SRCS += NDArrayBuffEpics.h
 LIB_LIBS += asyn
 LIB_LIBS += $(EPICS_BASE_IOC_LIBS)
 
