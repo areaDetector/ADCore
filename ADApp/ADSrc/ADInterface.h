@@ -29,39 +29,12 @@ on those interfaces.  This can be done conveniently by using the ADParamLib libr
 #define AREA_DETECTOR_OK (0)
 #define AREA_DETECTOR_ERROR (-1)
 
-/* An ADImage structure.  Used in asynADImage interface and 
- * ADImageBuffer buffer allocation routines */
-typedef struct ADImage {
-    /* The first 2 fields are used by ADImageBuff for the freelist */
-    ELLNODE node;
-    int referenceCount;
-    int nx;
-    int ny;
-    int dataType;
-    int dataSize;
-    void *pData;
-} ADImage_t;
-
 /* Enumeration of shutter status */
 typedef enum
 {
     ADShutterClosed, 
     ADShutterOpen
 } ADShutterStatus_t;
-
-/* Enumeration of image data types
- * This list will grow when color image models are supported */
-typedef enum
-{
-    ADInt8,
-    ADUInt8,
-    ADInt16,
-    ADUInt16,
-    ADInt32,
-    ADUInt32,
-    ADFloat32,
-    ADFloat64
-} ADDataType_t;
 
 /* Enumeration of detector status */
 typedef enum
