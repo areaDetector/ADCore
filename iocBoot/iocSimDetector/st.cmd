@@ -5,8 +5,8 @@ errlogInit(20000)
 dbLoadDatabase("$(AD)/dbd/simDetectorApp.dbd")
 simDetectorApp_registerRecordDeviceDriver(pdbbase) 
 
-# Initialize the ADImageBuff buffer allocation library
-ADImageBuffInit(50, 50000000)
+# Initialize the NDArrayBuff buffer allocation library
+NDArrayBuffInit(50, 50000000)
 
 # Create a simDetector driver
 simDetectorConfig("SIM1", 640, 480, 1)
