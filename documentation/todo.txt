@@ -13,16 +13,20 @@
 
     drvADFile
 - Test reading
+- Eliminate binary and ASCII, replace with netCDF.
 
     drvADImage
 - Test more, blocking and non-blocking
 
     drvSimDetector driver
+- Add timestamp and uniqueId to all frames
 - Test all image data types with all waveform data types
 - Add connection state
 - Fix any other parameter errors on startup
 
     drvProsilica driver
+- Something is missing when camera has been powered off, all data are 0.  If
+  run their viewer first then it works.
 - Connection management
   - Sense disconnect, autoreconnect
     See link callback.  When matches uniqueID, call Disconnect or Connect
