@@ -21,18 +21,8 @@ extern "C" {
 typedef struct
 {
     int  (*setParamDefaults)    (void *params);
-    int  (*bytesPerPixel)       (ADDataType_t dataType, int *size);
-    int  (*convertImage)        (void *imageIn, 
-                                 int dataTypeIn,
-                                 int sizeXIn, int sizeYIn,
-                                 void *imageOut,
-                                 int dataTypeOut,
-                                 int binX, int binY,
-                                 int startX, int startY,
-                                 int regionSizeX, int regionSizeY,
-                                 int *SizeXOut, int *sizeYOut);
     int  (*createFileName)      (void *params, int maxChars, char *fullFileName);
-    void (*ADImageCallback)     (void *ADImageInterruptPvt, ADImage_t *pImage);
+    void (*handleCallback)      (void *handleInterruptPvt, void *handle);
     int  (*findParam)           (ADParamString_t *paramTable, int numParams, 
                                  const char *paramName, int *param);
 } ADUtilsSupport;
