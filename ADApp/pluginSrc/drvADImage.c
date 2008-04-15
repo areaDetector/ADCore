@@ -25,10 +25,10 @@
 
 #define DEFINE_STANDARD_PARAM_STRINGS 1
 #include "ADInterface.h"
-#include "ADImageBuff.h"
+#include "NDArrayBuff.h"
 #include "ADParamLib.h"
 #include "ADUtils.h"
-#include "asynADImage.h"
+#include "asynHandle.h"
 #include "drvADImage.h"
 
 #define driverName "drvADImage"
@@ -67,21 +67,21 @@ typedef struct drvADPvt {
     epicsMutexId mutexId;
     epicsMessageQueueId msgQId;
     PARAMS params;
+    NDArray_t *pImage;
     
     /* The asyn interfaces this driver implements */
     asynStandardInterfaces asynStdInterfaces;
     
     /* The asyn interfaces we access as a client */
-    asynADImage *pasynADImage;
-    void *asynADImagePvt;
-    void *asynADImageInterruptPvt;
-    asynUser *pasynUserADImage;
+    asynHandle *pasynHandle;
+    void *asynHandlePvt;
+    void *asynHandleInterruptPvt;
+    asynUser *pasynUserHandle;
     
     /* asynUser connected to ourselves for asynTrace */
     asynUser *pasynUser;
     
     /* These fields are specific to the ADImage driver */
-    ADImage_t *pLastImage;
     epicsTimeStamp lastImagePostTime;
 } drvADPvt;
 
@@ -89,7 +89,7 @@ typedef struct drvADPvt {
 /* Local functions, not in any interface */
 
 
-static void ADImageDoCallbacks(drvADPvt *pPvt, ADImage_t *pImage)
+static void ADImageDoCallbacks(drvADPvt *pPvt, NDArray_t *pImage)
 {
     /* This function calls back any registered clients on the standard asyn array interfaces with 
      * the data in our private buffer.
@@ -105,10 +105,11 @@ static void ADImageDoCallbacks(drvADPvt *pPvt, ADImage_t *pImage)
     int int32Initialized=0;
     int float32Initialized=0;
     int float64Initialized=0;
+    int i;
     asynStandardInterfaces *pInterfaces = &pPvt->asynStdInterfaces;
-    const char* functionName = "ADImageDoCallbacks";
+    /* const char* functionName = "ADImageDoCallbacks"; */
 
-    nPixels = pImage->nx * pImage->ny;
+    for (i=0, nPixels=1; i<pImage->ndims; i++) nPixels = nPixels * pImage->dims[i].size;
     
     /* This function is called with the lock taken, and it must be set when we exit.
      * The following code can be exected without the mutex because we are not accessing pPvt */
@@ -118,7 +119,8 @@ static void ADImageDoCallbacks(drvADPvt *pPvt, ADImage_t *pImage)
     #define ARRAY_INTERRUPT_CALLBACK(INTERRUPT_PVT, INTERRUPT_TYPE, INITIALIZED, \
                                      SIGNED_TYPE, UNSIGNED_TYPE, EPICS_TYPE) { \
         EPICS_TYPE *pData=NULL;\
-        ADImage_t *pOutput=NULL; \
+        NDArray_t *pOutput=NULL; \
+        NDDimension_t outDims[ND_ARRAY_MAX_DIMS]; \
          \
         pasynManager->interruptStart(pInterfaces->INTERRUPT_PVT, &pclientList); \
         pnode = (interruptNode *)ellFirst(pclientList); \
@@ -126,18 +128,12 @@ static void ADImageDoCallbacks(drvADPvt *pPvt, ADImage_t *pImage)
             INTERRUPT_TYPE *pInterrupt = pnode->drvPvt; \
             if (!INITIALIZED) { \
                 INITIALIZED = 1; \
-                pOutput = ADImageBuff->alloc(pImage->nx, pImage->ny, pImage->dataType, nPixels*sizeof(EPICS_TYPE), NULL); \
-                if (!pOutput) { \
-                    asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR, \
-                              "%s:%s: unable to allocate output buffer\n", \
-                              driverName, functionName); \
-                    break; \
+                for (i=0; i<pImage->ndims; i++)  {\
+                    NDArrayBuff->initDimension(&outDims[i], pImage->dims[i].size); \
                 } \
-                ADUtils->convertImage(pImage->pData, pImage->dataType, \
-                                      pImage->nx, pImage->ny, \
-                                      pOutput->pData, SIGNED_TYPE, \
-                                      1, 1, 0, 0, \
-                                      pImage->nx, pImage->ny, &pOutput->nx, &pOutput->ny); \
+                NDArrayBuff->convert(pImage, &pOutput, \
+                                     SIGNED_TYPE, \
+                                     outDims); \
                 pData = (EPICS_TYPE *)pOutput->pData; \
              } \
             pInterrupt->callback(pInterrupt->userPvt, \
@@ -146,38 +142,38 @@ static void ADImageDoCallbacks(drvADPvt *pPvt, ADImage_t *pImage)
             pnode = (interruptNode *)ellNext(&pnode->node); \
         } \
         pasynManager->interruptEnd(pInterfaces->INTERRUPT_PVT); \
-        if (pOutput) ADImageBuff->release(pOutput); \
+        if (pOutput) NDArrayBuff->release(pOutput); \
     }
 
     /* Pass interrupts for int8Array data*/
     ARRAY_INTERRUPT_CALLBACK(int8ArrayInterruptPvt, asynInt8ArrayInterrupt,
-                             int8Initialized, ADInt8, ADUInt8, epicsInt8);
+                             int8Initialized, NDInt8, NDUInt8, epicsInt8);
     
     /* Pass interrupts for int16Array data*/
     ARRAY_INTERRUPT_CALLBACK(int16ArrayInterruptPvt, asynInt16ArrayInterrupt,
-                             int16Initialized, ADInt16, ADUInt16, epicsInt16);
+                             int16Initialized, NDInt16, NDUInt16, epicsInt16);
     
     /* Pass interrupts for int32Array data*/
     ARRAY_INTERRUPT_CALLBACK(int32ArrayInterruptPvt, asynInt32ArrayInterrupt,
-                             int32Initialized, ADInt32, ADUInt32, epicsInt32);
+                             int32Initialized, NDInt32, NDUInt32, epicsInt32);
     
     /* Pass interrupts for float32Array data*/
     ARRAY_INTERRUPT_CALLBACK(float32ArrayInterruptPvt, asynFloat32ArrayInterrupt,
-                             float32Initialized, ADFloat32, ADFloat32, epicsFloat32);
+                             float32Initialized, NDFloat32, NDFloat32, epicsFloat32);
     
     /* Pass interrupts for float64Array data*/
     ARRAY_INTERRUPT_CALLBACK(float64ArrayInterruptPvt, asynFloat64ArrayInterrupt,
-                             float64Initialized, ADFloat64, ADFloat64, epicsFloat64);
+                             float64Initialized, NDFloat64, NDFloat64, epicsFloat64);
 
     /* We must exit with the mutex locked */
     epicsMutexLock(pPvt->mutexId);
     /* We always keep the last image so read() can use it.  Release it now */
-    if (pPvt->pLastImage) ADImageBuff->release(pPvt->pLastImage);
-    pPvt->pLastImage = pImage;
+    if (pPvt->pImage) NDArrayBuff->release(pPvt->pImage);
+    pPvt->pImage = pImage;
     /* Update the parameters.  The counter should be updated after data are posted
      * because we are using that with ezca to detect new data */
-    ADParam->setInteger(pPvt->params, ADImageSizeX, pImage->nx);
-    ADParam->setInteger(pPvt->params, ADImageSizeY, pImage->ny);
+    ADParam->setInteger(pPvt->params, ADImageSizeX, pImage->dims[0].size);
+    ADParam->setInteger(pPvt->params, ADImageSizeY, pImage->dims[1].size);
     ADParam->setInteger(pPvt->params, ADDataType, pImage->dataType);
     ADParam->getInteger(pPvt->params, ADImageCounter, &imageCounter);    
     imageCounter++;
@@ -186,7 +182,7 @@ static void ADImageDoCallbacks(drvADPvt *pPvt, ADImage_t *pImage)
     
 }
 
-static void ADImageCallback(void *drvPvt, asynUser *pasynUser, ADImage_t *pImage)
+static void ADImageCallback(void *drvPvt, asynUser *pasynUser, void *handle)
 {
     /* This callback function is called from the detector driver when a new image arrives.
      * It calls back registered clients on the standard asynXXXArray interfaces.
@@ -196,6 +192,7 @@ static void ADImageCallback(void *drvPvt, asynUser *pasynUser, ADImage_t *pImage
      */
      
     drvADPvt *pPvt = drvPvt;
+    NDArray_t *pImage = handle;
     epicsTimeStamp tNow;
     double minImageUpdateTime, deltaTime;
     int status;
@@ -222,7 +219,7 @@ static void ADImageCallback(void *drvPvt, asynUser *pasynUser, ADImage_t *pImage
          * If non-blocking we put the image on the queue and it executes
          * in our background thread. */
         /* Reserve (increase reference count) on new image */
-        ADImageBuff->reserve(pImage);
+        NDArrayBuff->reserve(pImage);
         /* Update the time we last posted an image */
         epicsTimeGetCurrent(&tNow);
         memcpy(&pPvt->lastImagePostTime, &tNow, sizeof(tNow));
@@ -231,7 +228,7 @@ static void ADImageCallback(void *drvPvt, asynUser *pasynUser, ADImage_t *pImage
         } else {
             /* Increase the reference count again on this image
              * It will be released in the background task when processing is done */
-            ADImageBuff->reserve(pImage);
+            NDArrayBuff->reserve(pImage);
             /* Try to put this image on the message queue.  If there is no room then return
              * immediately. */
             status = epicsMessageQueueTrySend(pPvt->msgQId, &pImage, sizeof(&pImage));
@@ -243,8 +240,8 @@ static void ADImageCallback(void *drvPvt, asynUser *pasynUser, ADImage_t *pImage
                 status |= ADParam->setInteger(pPvt->params, ADImgDroppedImages, droppedImages);
                  /* This buffer needs to be released twice, because it never made it onto the queue where
                  * it would be released later */
-                ADImageBuff->release(pImage);
-                ADImageBuff->release(pImage);
+                NDArrayBuff->release(pImage);
+                NDArrayBuff->release(pImage);
             }
         }
     }
@@ -258,7 +255,7 @@ static void ADImageTask(drvADPvt *pPvt)
     /* This thread does the callbacks to the clients when a new image arrives */
 
     /* Loop forever */
-    ADImage_t *pImage;
+    NDArray_t *pImage;
     
     while (1) {
         /* Wait for an image to arrive from the queue */    
@@ -272,7 +269,7 @@ static void ADImageTask(drvADPvt *pPvt)
         epicsMutexUnlock(pPvt->mutexId); 
         
         /* We are done with this image buffer */       
-        ADImageBuff->release(pImage);
+        NDArrayBuff->release(pImage);
     }
 }
 
@@ -282,39 +279,39 @@ static int setImageInterrupt(drvADPvt *pPvt, int connect)
     const char *functionName = "setImageInterrupt";
     
     /* Lock the port.  May not be necessary to do this. */
-    status = pasynManager->lockPort(pPvt->pasynUserADImage);
+    status = pasynManager->lockPort(pPvt->pasynUserHandle);
     if (status != asynSuccess) {
         asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,
             "%s::%s ERROR: Can't lock image port: %s\n",
-            driverName, functionName, pPvt->pasynUserADImage->errorMessage);
+            driverName, functionName, pPvt->pasynUserHandle->errorMessage);
         return(status);
     }
     if (connect) {
-        status = pPvt->pasynADImage->registerInterruptUser(
-                    pPvt->asynADImagePvt, pPvt->pasynUserADImage,
-                    ADImageCallback, pPvt, &pPvt->asynADImageInterruptPvt);
+        status = pPvt->pasynHandle->registerInterruptUser(
+                    pPvt->asynHandlePvt, pPvt->pasynUserHandle,
+                    ADImageCallback, pPvt, &pPvt->asynHandleInterruptPvt);
         if (status != asynSuccess) {
             asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,
                 "%s::%s ERROR: Can't register for interrupt callbacks on detector port: %s\n",
-                driverName, functionName, pPvt->pasynUserADImage->errorMessage);
+                driverName, functionName, pPvt->pasynUserHandle->errorMessage);
             return(status);
         }
     } else {
-        status = pPvt->pasynADImage->cancelInterruptUser(pPvt->asynADImagePvt, 
-                        pPvt->pasynUserADImage, pPvt->asynADImageInterruptPvt);
+        status = pPvt->pasynHandle->cancelInterruptUser(pPvt->asynHandlePvt, 
+                        pPvt->pasynUserHandle, pPvt->asynHandleInterruptPvt);
         if (status != asynSuccess) {
             asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,
                 "%s::%s ERROR: Can't unregister for interrupt callbacks on detector port: %s\n",
-                driverName, functionName, pPvt->pasynUserADImage->errorMessage);
+                driverName, functionName, pPvt->pasynUserHandle->errorMessage);
             return(status);
         }
     }
     /* Unlock the port.  May not be necessary to do this. */
-    status = pasynManager->unlockPort(pPvt->pasynUserADImage);
+    status = pasynManager->unlockPort(pPvt->pasynUserHandle);
     if (status != asynSuccess) {
         asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,
             "%s::%s ERROR: Can't unlock image port: %s\n",
-            driverName, functionName, pPvt->pasynUserADImage->errorMessage);
+            driverName, functionName, pPvt->pasynUserHandle->errorMessage);
         return(status);
     }
     return(asynSuccess);
@@ -325,7 +322,7 @@ static int connectToImagePort(drvADPvt *pPvt)
     asynStatus status;
     asynInterface *pasynInterface;
     int currentlyPosting;
-    ADImage_t image;
+    NDArray_t image;
     int isConnected;
     char imagePort[20];
     int imageAddr;
@@ -335,7 +332,7 @@ static int connectToImagePort(drvADPvt *pPvt)
     ADParam->getInteger(pPvt->params, ADImgImageAddr, &imageAddr);
     status = ADParam->getInteger(pPvt->params, ADImgPostImages, &currentlyPosting);
     if (status) currentlyPosting = 0;
-    status = pasynManager->isConnected(pPvt->pasynUserADImage, &isConnected);
+    status = pasynManager->isConnected(pPvt->pasynUserHandle, &isConnected);
     if (status) isConnected=0;
 
     /* If we are currently connected and there is a callback registered, cancel it */    
@@ -345,59 +342,60 @@ static int connectToImagePort(drvADPvt *pPvt)
     
     /* Disconnect the image port from our asynUser.  Ignore error if there is no device
      * currently connected. */
-    pasynManager->exceptionCallbackRemove(pPvt->pasynUserADImage);
-    pasynManager->disconnect(pPvt->pasynUserADImage);
+    pasynManager->exceptionCallbackRemove(pPvt->pasynUserHandle);
+    pasynManager->disconnect(pPvt->pasynUserHandle);
 
     /* Connect to the image port driver */
-    status = pasynManager->connectDevice(pPvt->pasynUserADImage, imagePort, imageAddr);
+    status = pasynManager->connectDevice(pPvt->pasynUserHandle, imagePort, imageAddr);
     if (status != asynSuccess) {
         asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,
                   "%s::%s ERROR: Can't connect to image port %s address %d: %s\n",
-                  driverName, functionName, imagePort, imageAddr, pPvt->pasynUserADImage->errorMessage);
+                  driverName, functionName, imagePort, imageAddr, pPvt->pasynUserHandle->errorMessage);
         pasynManager->exceptionDisconnect(pPvt->pasynUser);
         return (status);
     }
 
-    /* Find the asynADImage interface in that driver */
-    pasynInterface = pasynManager->findInterface(pPvt->pasynUserADImage, asynADImageType, 1);
+    /* Find the asynHandle interface in that driver */
+    pasynInterface = pasynManager->findInterface(pPvt->pasynUserHandle, asynHandleType, 1);
     if (!pasynInterface) {
         asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,
-                  "%s::connectToPort ERROR: Can't find asynADImage interface on image port %s address %d\n",
+                  "%s::connectToPort ERROR: Can't find asynHandle interface on image port %s address %d\n",
                   driverName, imagePort, imageAddr);
         pasynManager->exceptionDisconnect(pPvt->pasynUser);
         return(asynError);
     }
-    pPvt->pasynADImage = pasynInterface->pinterface;
-    pPvt->asynADImagePvt = pasynInterface->drvPvt;
+    pPvt->pasynHandle = pasynInterface->pinterface;
+    pPvt->asynHandlePvt = pasynInterface->drvPvt;
     pasynManager->exceptionConnect(pPvt->pasynUser);
 
     /* Read the current image parameters from the image driver */
     /* Lock the port. Defintitely necessary to do this. */
-    status = pasynManager->lockPort(pPvt->pasynUserADImage);
+    status = pasynManager->lockPort(pPvt->pasynUserHandle);
     if (status != asynSuccess) {
         asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,
             "%s::%s ERROR: Can't lock image port: %s\n",
-            driverName, functionName, pPvt->pasynUserADImage->errorMessage);
+            driverName, functionName, pPvt->pasynUserHandle->errorMessage);
     }
     /* Read the current image, but only request 0 bytes so no data are actually transferred */
-    status = pPvt->pasynADImage->read(pPvt->asynADImagePvt,pPvt->pasynUserADImage, 0, &image);
+    image.dataSize = 0;
+    status = pPvt->pasynHandle->read(pPvt->asynHandlePvt,pPvt->pasynUserHandle, &image);
     if (status != asynSuccess) {
         asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,
             "%s::%s ERROR: reading image data:%s\n",
-            driverName, functionName, pPvt->pasynUserADImage->errorMessage);
+            driverName, functionName, pPvt->pasynUserHandle->errorMessage);
         status = asynError;
     } else {
-        ADParam->setInteger(pPvt->params, ADImageSizeX, image.nx);
-        ADParam->setInteger(pPvt->params, ADImageSizeY, image.ny);
+        ADParam->setInteger(pPvt->params, ADImageSizeX, image.dims[0].size);
+        ADParam->setInteger(pPvt->params, ADImageSizeY, image.dims[1].size);
         ADParam->setInteger(pPvt->params, ADDataType, image.dataType);
         ADParam->callCallbacks(pPvt->params);
     }
     /* Unlock the port.  Definitely necessary to do this. */
-    status = pasynManager->unlockPort(pPvt->pasynUserADImage);
+    status = pasynManager->unlockPort(pPvt->pasynUserHandle);
     if (status != asynSuccess) {
         asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,
             "%s::%s ERROR: Can't unlock image port: %s\n",
-            driverName, functionName, pPvt->pasynUserADImage->errorMessage);
+            driverName, functionName, pPvt->pasynUserHandle->errorMessage);
     }
     
     /* If we are posting enable interrupt callbacks */
@@ -447,7 +445,7 @@ static asynStatus writeInt32(void *drvPvt, asynUser *pasynUser,
     epicsMutexLock(pPvt->mutexId);
 
     /* See if we are connected */
-    status = pasynManager->isConnected(pPvt->pasynUserADImage, &isConnected);
+    status = pasynManager->isConnected(pPvt->pasynUserHandle, &isConnected);
     if (status) {isConnected=0; status=asynSuccess;}
 
     /* Get the current value of ADImgPost images, so we don't add more than 1 callback request */
@@ -462,7 +460,7 @@ static asynStatus writeInt32(void *drvPvt, asynUser *pasynUser,
             if (value) {  
                 if (isConnected && !currentlyPosting) {
                     /* We need to register to be called with interrupts from the detector driver on 
-                     * the asynADImage interface. */
+                     * the asynHandle interface. */
                     status |= setImageInterrupt(pPvt, 1);
                 }
             } else {
@@ -637,33 +635,33 @@ static asynStatus FUNCTION_NAME(void *drvPvt, asynUser *pasynUser, \
     drvADPvt *pPvt = (drvADPvt *)drvPvt; \
     int command = pasynUser->reason; \
     asynStatus status = asynSuccess; \
-    int nPixels; \
+    NDArray_t *pOutput; \
+    NDArrayInfo_t arrayInfo; \
+    NDDimension_t outDims[ND_ARRAY_MAX_DIMS]; \
+    int i; \
     int dataType; \
-    int nx, ny, nxt, nyt; \
     \
     epicsMutexLock(pPvt->mutexId); \
-    nx = pPvt->pLastImage->nx; \
-    ny = pPvt->pLastImage->ny; \
-    dataType = pPvt->pLastImage->dataType; \
-    nPixels = nx * ny; \
-    if (nPixels > (int)nelements) { \
+    dataType = pPvt->pImage->dataType; \
+    NDArrayBuff->getInfo(pPvt->pImage, &arrayInfo); \
+    if (arrayInfo.nElements > (int)nelements) { \
         /* We have been requested fewer pixels than we have.  \
-         * Just pass the first nelements pixels.  Do this by \
-         * faking the values for convertImage, which will just copy the \
-         * first nelements pixels. */ \
-         nx = nelements; \
-         ny = 1; \
+         * Just pass the first nelements. */ \
+         arrayInfo.nElements = nelements; \
     } \
     switch(command) { \
         case ADImgImageData: \
             /* We are guaranteed to have the most recent data in our buffer.  No need to call the driver, \
              * just copy the data from our buffer */ \
             /* Convert data from its actual data type.  */ \
-            if (!pPvt->pLastImage || !pPvt->pLastImage->pData) break; \
-            status = ADUtils->convertImage(pPvt->pLastImage->pData, dataType, nx, ny, \
-                                           value, AD_TYPE, \
-                                           1, 1, 0, 0, \
-                                           nx, ny, &nxt, &nyt); \
+            if (!pPvt->pImage || !pPvt->pImage->pData) break; \
+            for (i=0; i<pPvt->pImage->ndims; i++)  {\
+                NDArrayBuff->initDimension(&outDims[i], pPvt->pImage->dims[i].size); \
+            } \
+            status = NDArrayBuff->convert(pPvt->pImage, \
+                                          &pOutput, \
+                                          AD_TYPE, \
+                                          outDims); \
             break; \
         default: \
             asynPrint(pasynUser, ASYN_TRACE_ERROR, \
@@ -686,24 +684,24 @@ static asynStatus FUNCTION_NAME(void *drvPvt, asynUser *pasynUser, \
 }
 
 /* asynInt8Array interface methods */
-DEFINE_READ_ARRAY(readInt8Array, epicsInt8, ADInt8)
-DEFINE_WRITE_ARRAY(writeInt8Array, epicsInt8, ADInt8)
+DEFINE_READ_ARRAY(readInt8Array, epicsInt8, NDInt8)
+DEFINE_WRITE_ARRAY(writeInt8Array, epicsInt8, NDInt8)
     
 /* asynInt16Array interface methods */
-DEFINE_READ_ARRAY(readInt16Array, epicsInt16, ADInt16)
-DEFINE_WRITE_ARRAY(writeInt16Array, epicsInt16, ADInt16)
+DEFINE_READ_ARRAY(readInt16Array, epicsInt16, NDInt16)
+DEFINE_WRITE_ARRAY(writeInt16Array, epicsInt16, NDInt16)
     
 /* asynInt32Array interface methods */
-DEFINE_READ_ARRAY(readInt32Array, epicsInt32, ADInt32)
-DEFINE_WRITE_ARRAY(writeInt32Array, epicsInt32, ADInt32)
+DEFINE_READ_ARRAY(readInt32Array, epicsInt32, NDInt32)
+DEFINE_WRITE_ARRAY(writeInt32Array, epicsInt32, NDInt32)
     
 /* asynFloat32Array interface methods */
-DEFINE_READ_ARRAY(readFloat32Array, epicsFloat32, ADFloat32)
-DEFINE_WRITE_ARRAY(writeFloat32Array, epicsFloat32, ADFloat32)
+DEFINE_READ_ARRAY(readFloat32Array, epicsFloat32, NDFloat32)
+DEFINE_WRITE_ARRAY(writeFloat32Array, epicsFloat32, NDFloat32)
     
 /* asynFloat64Array interface methods */
-DEFINE_READ_ARRAY(readFloat64Array, epicsFloat64, ADFloat64)
-DEFINE_WRITE_ARRAY(writeFloat64Array, epicsFloat64, ADFloat64)
+DEFINE_READ_ARRAY(readFloat64Array, epicsFloat64, NDFloat64)
+DEFINE_WRITE_ARRAY(writeFloat64Array, epicsFloat64, NDFloat64)
     
 
 /* asynDrvUser interface methods */
@@ -815,7 +813,7 @@ static void report(void *drvPvt, FILE *fp, int details)
     }
     if (details > 5) {
         ADParam->dump(pPvt->params);
-        ADImageBuff->report(details);
+        NDArrayBuff->report(details);
     }
 }
 
@@ -962,7 +960,7 @@ int drvADImageConfigure(const char *portName, int queueSize, int blockingCallbac
     /* Create asynUser for communicating with image port */
     pasynUser = pasynManager->createAsynUser(0, 0);
     pasynUser->userPvt = pPvt;
-    pPvt->pasynUserADImage = pasynUser;
+    pPvt->pasynUserHandle = pasynUser;
 
     /* Create the epicsMutex for locking access to data structures from other threads */
     pPvt->mutexId = epicsMutexCreate();
@@ -972,7 +970,7 @@ int drvADImageConfigure(const char *portName, int queueSize, int blockingCallbac
     }
 
     /* Create the message queue for the input images */
-    pPvt->msgQId = epicsMessageQueueCreate(queueSize, sizeof(ADImage_t*));
+    pPvt->msgQId = epicsMessageQueueCreate(queueSize, sizeof(NDArray_t*));
     if (!pPvt->msgQId) {
         printf("%s: epicsMessageQueueCreate failure\n", functionName);
         return asynError;

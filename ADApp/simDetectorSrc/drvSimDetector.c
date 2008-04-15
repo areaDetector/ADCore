@@ -33,8 +33,7 @@
 #include "ADParamLib.h"
 #include "ADUtils.h"
 #include "ADInterface.h"
-#include "asynADImage.h"
-#include "ADImageBuff.h"
+#include "NDArrayBuff.h"
 
 #include "drvSimDetector.h"
 
@@ -68,9 +67,7 @@ typedef struct drvADPvt {
     PARAMS params;
 
     /* The asyn interfaces this driver implements */
-    asynStandardInterfaces asynInterfaces;
-    asynInterface asynADImage;
-    void *ADImageInterruptPvt;
+    asynStandardInterfaces asynStdInterfaces;
 
     /* asynUser connected to ourselves for asynTrace */
     asynUser *pasynUser;
@@ -78,26 +75,23 @@ typedef struct drvADPvt {
     /* These items are specific to the Simulator driver */
     int imagesRemaining;
     epicsEventId eventId;
-    void *rawBuffer;
-    ADImage_t *pImage;
-    int bufferSize;
+    NDArray_t *pRaw;
+    NDArray_t *pImage;
 } drvADPvt;
 
 
-static int simAllocateBuffer(drvADPvt *pPvt, int sizeX, int sizeY, int dataType)
+static int simAllocateBuffer(drvADPvt *pPvt)
 {
     int status = asynSuccess;
-    int bytesPerPixel;
-    int bufferSize;
+    NDArrayInfo_t arrayInfo;
     
-    /* Make sure the raw buffer we have allocated is large enough.
-     * rawBuffer is for the entire image */
-    status |= ADUtils->bytesPerPixel(dataType, &bytesPerPixel);
-    bufferSize = sizeX * sizeY * bytesPerPixel;
-    if (bufferSize != pPvt->bufferSize) {
-        free(pPvt->rawBuffer);
-        pPvt->rawBuffer   = malloc(bytesPerPixel*sizeX*sizeY);
-        pPvt->bufferSize = bufferSize;
+    /* Make sure the raw array we have allocated is large enough. 
+     * We are allowed to change its size because we have exclusive use of it */
+    NDArrayBuff->getInfo(pPvt->pRaw, &arrayInfo);
+    if (arrayInfo.totalBytes < pPvt->pRaw->dataSize) {
+        free(pPvt->pRaw->pData);
+        pPvt->pRaw->pData  = malloc(arrayInfo.totalBytes);
+        pPvt->pRaw->dataSize = arrayInfo.totalBytes;
     }
     return(status);
 }
@@ -107,7 +101,8 @@ static int simComputeImage(drvADPvt *pPvt)
     int status = asynSuccess;
     int dataType;
     int binX, binY, minX, minY, sizeX, sizeY, maxSizeX, maxSizeY, resetImage;
-    int imageSize, bytesPerPixel;
+    NDDimension_t dimsOut[2];
+    NDArrayInfo_t arrayInfo;
     double exposureTime, gain, gainX, gainY, scaleX, scaleY;
     double increment;
     int i, j;
@@ -129,7 +124,6 @@ static int simComputeImage(drvADPvt *pPvt)
     status |= ADParam->getDouble (pPvt->params, ADGain,        &gain);
     status |= ADParam->getDouble (pPvt->params, SimGainX,      &gainX);
     status |= ADParam->getDouble (pPvt->params, SimGainY,      &gainY);
-    status |= ADUtils->bytesPerPixel(dataType, &bytesPerPixel);
 
     /* Make sure parameters are consistent, fix them if they are not */
     if (binX < 0) {binX = 0; status |= ADParam->setInteger(pPvt->params, ADBinX, binX);}
@@ -142,13 +136,8 @@ static int simComputeImage(drvADPvt *pPvt)
     if (minY+sizeY > maxSizeY) {sizeY = maxSizeY-minY; status |= ADParam->setInteger(pPvt->params, ADSizeY, sizeY);}
 
     /* Make sure the buffer we have allocated is large enough. */
-    status |= simAllocateBuffer(pPvt, maxSizeX, maxSizeY, dataType);
-    pPvt->pImage = ADImageBuff->alloc(maxSizeX, maxSizeY, dataType, 0, NULL);
-    if (!pPvt->pImage) 
-        asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR, 
-                  "%s:%s ERROR cannot allocate image buffer\n", 
-                  driverName, functionName);
-
+    pPvt->pRaw->dataType = dataType;
+    status |= simAllocateBuffer(pPvt);
     /* The intensity at each pixel[i,j] is:
      * (i * gainX + j* gainY) + imageCounter * gain * exposureTime * 1000. */
     increment = gain * exposureTime * 1000.;
@@ -158,7 +147,7 @@ static int simComputeImage(drvADPvt *pPvt)
     /* The following macro simplifies the code */
 
     #define COMPUTE_ARRAY(DATA_TYPE) {                      \
-        DATA_TYPE *pData = (DATA_TYPE *)pPvt->rawBuffer; \
+        DATA_TYPE *pData = (DATA_TYPE *)pPvt->pRaw->pData; \
         DATA_TYPE inc = (DATA_TYPE)increment;               \
         if (resetImage) {                                   \
             for (i=0; i<maxSizeY; i++) {                    \
@@ -180,28 +169,28 @@ static int simComputeImage(drvADPvt *pPvt)
         
 
     switch (dataType) {
-        case ADInt8: 
+        case NDInt8: 
             COMPUTE_ARRAY(epicsInt8);
             break;
-        case ADUInt8: 
+        case NDUInt8: 
             COMPUTE_ARRAY(epicsUInt8);
             break;
-        case ADInt16: 
+        case NDInt16: 
             COMPUTE_ARRAY(epicsInt16);
             break;
-        case ADUInt16: 
+        case NDUInt16: 
             COMPUTE_ARRAY(epicsUInt16);
             break;
-        case ADInt32: 
+        case NDInt32: 
             COMPUTE_ARRAY(epicsInt32);
             break;
-        case ADUInt32: 
+        case NDUInt32: 
             COMPUTE_ARRAY(epicsUInt32);
             break;
-        case ADFloat32: 
+        case NDFloat32: 
             COMPUTE_ARRAY(epicsFloat32);
             break;
-        case ADFloat64: 
+        case NDFloat64: 
             COMPUTE_ARRAY(epicsFloat64);
             break;
     }
@@ -209,21 +198,24 @@ static int simComputeImage(drvADPvt *pPvt)
     /* Extract the region of interest with binning.  
      * If the entire image is being used (no ROI or binning) that's OK because
      * convertImage detects that case and is very efficient */
-    status |= ADUtils->convertImage(pPvt->rawBuffer, 
-                                    dataType,
-                                    maxSizeX, maxSizeY,
-                                    pPvt->pImage->pData,
-                                    dataType,
-                                    binX, binY,
-                                    minX, minY,
-                                    sizeX, sizeY,
-                                    &pPvt->pImage->nx, &pPvt->pImage->ny);
-    
-    imageSize = pPvt->pImage->nx * pPvt->pImage->ny * bytesPerPixel;
-    status |= ADParam->setInteger(pPvt->params, ADImageSize,  imageSize);
-    status |= ADParam->setInteger(pPvt->params, ADImageSizeX, pPvt->pImage->nx);
-    status |= ADParam->setInteger(pPvt->params, ADImageSizeY, pPvt->pImage->ny);
-    status |= ADParam->setInteger(pPvt->params,SimResetImage, 0);
+    NDArrayBuff->initDimension(&dimsOut[0], sizeX);
+    dimsOut[0].binning = binX;
+    dimsOut[0].offset = minX;
+    NDArrayBuff->initDimension(&dimsOut[1], sizeY);
+    dimsOut[1].binning = binY;
+    dimsOut[1].offset = minY;
+    status |= NDArrayBuff->convert(pPvt->pRaw,
+                                   &pPvt->pImage,
+                                   dataType,
+                                   dimsOut);
+    NDArrayBuff->getInfo(pPvt->pImage, &arrayInfo);
+    status |= ADParam->setInteger(pPvt->params, ADImageSize,  arrayInfo.totalBytes);
+    status |= ADParam->setInteger(pPvt->params, ADImageSizeX, pPvt->pImage->dims[0].size);
+    status |= ADParam->setInteger(pPvt->params, ADImageSizeY, pPvt->pImage->dims[1].size);
+    status |= ADParam->setInteger(pPvt->params, SimResetImage, 0);
+    if (status) asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,
+                    "%s:%s: ERROR, status=%d\n",
+                    driverName, functionName, status);
     return(status);
 }
 
@@ -269,7 +261,7 @@ static void simTask(drvADPvt *pPvt)
 
         /* We save the most recent image buffer so it can be used in the read() function.
          * Now release it.  simComputeImage will get a new one. */
-        if (pPvt->pImage) ADImageBuff->release(pPvt->pImage);
+        if (pPvt->pImage) NDArrayBuff->release(pPvt->pImage);
 
         /* Update the image */
         simComputeImage(pPvt);
@@ -287,7 +279,7 @@ static void simTask(drvADPvt *pPvt)
         /* Call the imageData callback */
         asynPrint(pPvt->pasynUser, ASYN_TRACE_FLOW, 
              "%s:simTask: calling imageData callback\n", driverName);
-        ADUtils->ADImageCallback(pPvt->ADImageInterruptPvt, pPvt->pImage);
+        ADUtils->handleCallback(pPvt->asynStdInterfaces.handleInterruptPvt, pPvt->pImage);
 
         /* See if acquisition is done */
         if (pPvt->imagesRemaining > 0) pPvt->imagesRemaining--;
@@ -575,11 +567,13 @@ static asynStatus writeOctet(void *drvPvt, asynUser *pasynUser,
     return status;
 }
 
-/* asynADImage interface methods */
-static asynStatus readADImage(void *drvPvt, asynUser *pasynUser, int maxBytes, ADImage_t *pImage)
+/* asynHandle interface methods */
+static asynStatus readADImage(void *drvPvt, asynUser *pasynUser, void *handle)
 {
     drvADPvt *pPvt = (drvADPvt *)drvPvt;
-    int imageSize, bytesPerPixel;
+    NDArray_t *pImage = handle;
+    NDArrayInfo_t arrayInfo;
+    int dataSize=0;
     int status = asynSuccess;
     const char* functionName = "readADImage";
     
@@ -590,29 +584,30 @@ static asynStatus readADImage(void *drvPvt, asynUser *pasynUser, int maxBytes, A
               driverName, functionName);
         status = asynError;
     } else {
-        pImage->nx = pPvt->pImage->nx;
-        pImage->ny = pPvt->pImage->ny;
+        pImage->ndims = pPvt->pImage->ndims;
+        memcpy(pImage->dims, pPvt->pImage->dims, sizeof(pImage->dims));
         pImage->dataType = pPvt->pImage->dataType;
-        status |= ADUtils->bytesPerPixel(pImage->dataType, &bytesPerPixel);
-        imageSize = bytesPerPixel * pImage->nx * pImage->ny;
-        if (imageSize > maxBytes) imageSize = maxBytes;
-        memcpy(pImage->pData, pPvt->pImage->pData, imageSize);
+        NDArrayBuff->getInfo(pPvt->pImage, &arrayInfo);
+        dataSize = arrayInfo.totalBytes;
+        if (dataSize > pImage->dataSize) dataSize = pImage->dataSize;
+        memcpy(pImage->pData, pPvt->pImage->pData, dataSize);
     }
     if (status) 
         asynPrint(pasynUser, ASYN_TRACE_ERROR, 
-              "%s:%s error, status=%d maxBytes=%d, data=%p\n", 
-              driverName, functionName, status, maxBytes, pImage->pData);
+              "%s:%s error, status=%d pData=%p\n", 
+              driverName, functionName, status, pImage->pData);
     else        
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
               "%s:%s error, maxBytes=%d, data=%p\n", 
-              driverName, functionName, maxBytes, pImage->pData);
+              driverName, functionName, dataSize, pImage->pData);
     epicsMutexUnlock(pPvt->mutexId);
     return status;
 }
 
-static asynStatus writeADImage(void *drvPvt, asynUser *pasynUser, ADImage_t *pImage)
+static asynStatus writeADImage(void *drvPvt, asynUser *pasynUser, void *handle)
 {
     drvADPvt *pPvt = (drvADPvt *)drvPvt;
+    NDArray_t *pImage = handle;
     int status = asynSuccess;
     
     if (pPvt == NULL) return asynError;
@@ -620,7 +615,8 @@ static asynStatus writeADImage(void *drvPvt, asynUser *pasynUser, ADImage_t *pIm
 
     /* The simDetector does not allow downloading image data */    
     asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-          "%s:ADSetImage not currently supported\n", driverName);
+          "%s:ADSetImage not currently supported, pImage=%p\n", 
+          driverName, pImage);
     status = asynError;
     epicsMutexUnlock(pPvt->mutexId);
     return status;
@@ -722,7 +718,7 @@ static void report(void *drvPvt, FILE *fp, int details)
         fprintf(fp, "\nParameter library contents:\n");
         ADParam->dump(pPvt->params);
         fprintf(fp, "\nImage buffer library:\n");
-        ADImageBuff->report(details);
+        NDArrayBuff->report(details);
     }
 }
 
@@ -758,7 +754,7 @@ static asynDrvUser ifaceDrvUser = {
     drvUserDestroy
 };
 
-static asynADImage ifaceADImage = {
+static asynHandle ifaceHandle = {
     writeADImage,
     readADImage
 };
@@ -770,6 +766,7 @@ int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int data
     int status = asynSuccess;
     char *functionName = "simDetectorConfig";
     asynStandardInterfaces *pInterfaces;
+    int dims[2];
 
     pPvt = callocMustSucceed(1, sizeof(*pPvt), functionName);
     pPvt->portName = epicsStrDup(portName);
@@ -787,7 +784,7 @@ int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int data
     /* Create asynUser for debugging */
     pPvt->pasynUser = pasynManager->createAsynUser(0, 0);
 
-    pInterfaces = &pPvt->asynInterfaces;
+    pInterfaces = &pPvt->asynStdInterfaces;
     
     /* Initialize interface pointers */
     pInterfaces->common.pinterface        = (void *)&ifaceCommon;
@@ -795,11 +792,13 @@ int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int data
     pInterfaces->octet.pinterface         = (void *)&ifaceOctet;
     pInterfaces->int32.pinterface         = (void *)&ifaceInt32;
     pInterfaces->float64.pinterface       = (void *)&ifaceFloat64;
+    pInterfaces->handle.pinterface        = (void *)&ifaceHandle;
 
     /* Define which interfaces can generate interrupts */
     pInterfaces->octetCanInterrupt        = 1;
     pInterfaces->int32CanInterrupt        = 1;
     pInterfaces->float64CanInterrupt      = 1;
+    pInterfaces->handleCanInterrupt       = 1;
 
     status = pasynStandardInterfacesBase->initialize(portName, pInterfaces,
                                                      pPvt->pasynUser, pPvt);
@@ -809,22 +808,6 @@ int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int data
         return(asynError);
     }
     
-    /* Register the asynADImage interface */
-    pPvt->asynADImage.interfaceType = asynADImageType;
-    pPvt->asynADImage.pinterface = (void *)&ifaceADImage;
-    pPvt->asynADImage.drvPvt = pPvt;
-    status = pasynADImageBase->initialize(portName, &pPvt->asynADImage);
-    if (status != asynSuccess) {
-        printf("%s: Can't register asynADImage\n", functionName);
-        return(asynError);
-    }
-    status = pasynManager->registerInterruptSource(portName, &pPvt->asynADImage,
-                                                   &pPvt->ADImageInterruptPvt);
-    if (status != asynSuccess) {
-        printf("%s: Can't register asynADImage interrupt\n", functionName);
-        return(asynError);
-    }
-
     /* Create the epicsMutex for locking access to data structures from other threads */
     pPvt->mutexId = epicsMutexCreate();
     if (!pPvt->mutexId) {
@@ -840,12 +823,17 @@ int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int data
     }
     
     /* Initialize the parameter library */
-    pPvt->params = ADParam->create(0, ADLastDriverParam, &pPvt->asynInterfaces);
+    pPvt->params = ADParam->create(0, ADLastDriverParam, &pPvt->asynStdInterfaces);
     if (!pPvt->params) {
         printf("%s: unable to create parameter library\n", functionName);
         return asynError;
     }
-    
+
+    /* Allocate the raw buffer we use to compute images.  Only do this once */
+    dims[0] = maxSizeX;
+    dims[1] = maxSizeY;
+    pPvt->pRaw = NDArrayBuff->alloc(2, dims, dataType, 0, NULL);
+
     /* Use the utility library to set some defaults */
     status = ADUtils->setParamDefaults(pPvt->params);
     
