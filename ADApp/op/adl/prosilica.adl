@@ -8,7 +8,7 @@ display {
 		x=583
 		y=236
 		width=300
-		height=330
+		height=350
 	}
 	clr=14
 	bclr=4
@@ -100,21 +100,6 @@ text {
 	textix="Prosilica Camera"
 	align="horiz. centered"
 }
-"related display" {
-	object {
-		x=132
-		y=304
-		width=60
-		height=20
-	}
-	display[0] {
-		label="Detector control"
-		name="ADBase.adl"
-		args="P=$(P), D=$(D)"
-	}
-	clr=14
-	bclr=51
-}
 text {
 	object {
 		x=18
@@ -204,32 +189,6 @@ text {
 }
 text {
 	object {
-		x=63
-		y=278
-		width=99
-		height=15
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Update rate"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=170
-		y=276
-		width=100
-		height=18
-	}
-	control {
-		chan="$(P)$(D)PSReadStatistics.SCAN"
-		clr=14
-		bclr=51
-	}
-}
-text {
-	object {
 		x=36
 		y=191
 		width=126
@@ -308,35 +267,6 @@ text {
 	}
 	monitor {
 		chan="$(P)$(D)PSPacketsRequested"
-		clr=54
-		bclr=3
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-text {
-	object {
-		x=36
-		y=251
-		width=126
-		height=15
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Packets resent"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=170
-		y=251
-		width=120
-		height=15
-	}
-	monitor {
-		chan="$(P)$(D)PSPacketsResent"
 		clr=54
 		bclr=3
 	}
@@ -443,4 +373,125 @@ text {
 	}
 	textix="$(P)$(D)"
 	align="horiz. centered"
+}
+composite {
+	object {
+		x=63
+		y=296
+		width=207
+		height=48
+	}
+	"composite name"=""
+	children {
+		"related display" {
+			object {
+				x=132
+				y=324
+				width=60
+				height=20
+			}
+			display[0] {
+				label="Detector control"
+				name="ADBase.adl"
+				args="P=$(P), D=$(D)"
+			}
+			clr=14
+			bclr=51
+		}
+		text {
+			object {
+				x=63
+				y=298
+				width=99
+				height=15
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Update rate"
+			align="horiz. right"
+		}
+		menu {
+			object {
+				x=170
+				y=296
+				width=100
+				height=18
+			}
+			control {
+				chan="$(P)$(D)PSReadStatistics.SCAN"
+				clr=14
+				bclr=51
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=36
+		y=251
+		width=254
+		height=15
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=36
+				y=251
+				width=126
+				height=15
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Packets resent"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=170
+				y=251
+				width=120
+				height=15
+			}
+			monitor {
+				chan="$(P)$(D)PSPacketsResent"
+				clr=54
+				bclr=3
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+	}
+}
+text {
+	object {
+		x=36
+		y=271
+		width=126
+		height=15
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Bad frames"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=170
+		y=271
+		width=120
+		height=15
+	}
+	monitor {
+		chan="$(P)$(D)PSBadFrameCounter"
+		clr=54
+		bclr=3
+	}
+	align="horiz. centered"
+	limits {
+	}
 }
