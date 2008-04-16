@@ -29,7 +29,7 @@
 #include "ADParamLib.h"
 #include "ADUtils.h"
 #include "asynHandle.h"
-#include "drvADImage.h"
+#include "drvADFile.h"
 
 #define driverName "drvADFile"
 
