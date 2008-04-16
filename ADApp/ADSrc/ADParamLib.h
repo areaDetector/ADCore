@@ -1,12 +1,12 @@
 #ifndef AD_PARAM_LIB_H
 #define AD_PARAM_LIB_H
 
+#include <epicsTypes.h>
+#include <asynStandardInterfaces.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include <epicsTypes.h>
-#include <asynStandardInterfaces.h>
 
 #define PARAM_OK (0)
 #define PARAM_ERROR (-1)
