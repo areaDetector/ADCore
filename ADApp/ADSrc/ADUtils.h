@@ -12,17 +12,20 @@
 #ifndef AD_UTILS_H
 #define AD_UTILS_H
 
+#include "ADInterface.h"
+#include "NDArrayBuff.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "ADInterface.h"
 
 typedef struct
 {
     int  (*setParamDefaults)    (void *params);
     int  (*createFileName)      (void *params, int maxChars, char *fullFileName);
     void (*handleCallback)      (void *handleInterruptPvt, void *handle);
+    void (*dimensionCallback)   (void *int32ArrayInterruptPvt, int *dimsPrev, 
+                                 NDArray_t *pArray, int reason);
     int  (*findParam)           (ADParamString_t *paramTable, int numParams, 
                                  const char *paramName, int *param);
 } ADUtilsSupport;
