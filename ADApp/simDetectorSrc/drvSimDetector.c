@@ -808,7 +808,14 @@ int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int data
         return(asynError);
     }
     
-    /* Create the epicsMutex for locking access to data structures from other threads */
+    /* Connect to our device for asynTrace */
+    status = pasynManager->connectDevice(pPvt->pasynUser, portName, 0);
+    if (status != asynSuccess) {
+        printf("%s, connectDevice failed\n", functionName);
+        return -1;
+    }
+
+     /* Create the epicsMutex for locking access to data structures from other threads */
     pPvt->mutexId = epicsMutexCreate();
     if (!pPvt->mutexId) {
         printf("%s: epicsMutexCreate failure\n", functionName);
