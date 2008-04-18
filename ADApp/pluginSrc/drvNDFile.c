@@ -48,16 +48,17 @@ typedef enum {
 
 typedef enum
 {
-    NDFileImagePort           /* (asynOctet,    r/w) The port for the ADImage interface */
+    NDFileArrayPort           /* (asynOctet,    r/w) The port for the NDArray interface */
       = ADFirstDriverParam,
-    NDFileImageAddr,          /* (asynInt32,    r/w) The address on the port */
+    NDFileArrayAddr,          /* (asynInt32,    r/w) The address on the port */
     NDFileMinWriteTime,       /* (asynFloat64,  r/w) Minimum time between file writes */
-    NDFileDroppedImages,      /* (asynInt32,    r/w) Number of dropped images */
+    NDFileDroppedArrays,      /* (asynInt32,    r/w) Number of dropped arrays */
+    NDFileArrayCounter,       /* (asynInt32,    r/w) Number of arrays processed */
     NDFileBlockingCallbacks,  /* (asynInt32,    r/w) Callbacks block (1=Yes, 0=No) */
-    NDFileWriteMode,           /* (asynInt32,    r/w) File saving mode (NDFileMode_t) */
-    NDFileNumCapture,         /* (asynInt32,    r/w) Number of images to capture */
-    NDFileNumCaptured,        /* (asynInt32,    r/w) Number of images already captured */
-    NDFileCapture,            /* (asynInt32,    r/w) Start or stop capturing images */
+    NDFileWriteMode,          /* (asynInt32,    r/w) File saving mode (NDFileMode_t) */
+    NDFileNumCapture,         /* (asynInt32,    r/w) Number of arrays to capture */
+    NDFileNumCaptured,        /* (asynInt32,    r/w) Number of arrays already captured */
+    NDFileCapture,            /* (asynInt32,    r/w) Start or stop capturing arrays */
     NDFileLastDriverParam
 } NDFileParam_t;
 
@@ -65,10 +66,11 @@ typedef enum
  * The asynDrvUser interface in this driver parses these strings and puts the
  * corresponding enum value in pasynUser->reason */
 static ADParamString_t NDFileParamString[] = {
-    {NDFileImagePort,         "IMAGE_PORT" },
-    {NDFileImageAddr,         "IMAGE_ADDR" },
+    {NDFileArrayPort,         "NDARRAY_PORT" },
+    {NDFileArrayAddr,         "NDARRAY_ADDR" },
     {NDFileMinWriteTime,      "FILE_MIN_TIME" },
-    {NDFileDroppedImages,     "DROPPED_IMAGES" },
+    {NDFileDroppedArrays,     "DROPPED_ARRAYS" },
+    {NDFileArrayCounter,      "ARRAY_COUNTER"},
     {NDFileBlockingCallbacks, "BLOCKING_CALLBACKS" },
     {NDFileWriteMode,         "WRITE_MODE" },
     {NDFileNumCapture,        "NUM_CAPTURE" },
@@ -84,7 +86,7 @@ typedef struct drvADPvt {
     epicsMutexId mutexId;
     epicsMessageQueueId msgQId;
     PARAMS params;
-    NDArray_t *pImage;
+    NDArray_t *pArray;
 
     /* The asyn interfaces this driver implements */
     asynStandardInterfaces asynStdInterfaces;
@@ -115,9 +117,9 @@ static int NDFileReadFile(drvADPvt *pPvt)
     int status = asynSuccess;
     char fullFileName[MAX_FILENAME_LEN];
     int fileFormat, fileNumber;
-    int imageSizeX, imageSizeY, dataType;
+    int dataType=0;
     int autoIncrement;
-    NDArray_t *pImage=NULL;
+    NDArray_t *pArray=NULL;
     const char* functionName = "NDFileReadFile";
 
     /* Get the current parameters */
@@ -149,17 +151,15 @@ static int NDFileReadFile(drvADPvt *pPvt)
         ADParam->setInteger(pPvt->params, ADFileNumber, fileNumber);
     }
     
-    /* Update the new values of imageSizeX, imageSizeY, dataType and the image data */
-    ADParam->setInteger(pPvt->params, ADImageSizeX, imageSizeX);
-    ADParam->setInteger(pPvt->params, ADImageSizeY, imageSizeY);
+    /* Update the new values of dimensions and the array data */
     ADParam->setInteger(pPvt->params, ADDataType, dataType);
     
     /* Call any registered clients */
-    ADUtils->handleCallback(pPvt->asynStdInterfaces.handleInterruptPvt, pImage);
+    ADUtils->handleCallback(pPvt->asynStdInterfaces.handleInterruptPvt, pArray);
 
-    /* Set the last image to be this one */
-    NDArrayBuff->release(pPvt->pImage);
-    pPvt->pImage = pImage;    
+    /* Set the last arrat to be this one */
+    NDArrayBuff->release(pPvt->pArray);
+    pPvt->pArray = pArray;    
     
     return(status);
 }
@@ -175,10 +175,10 @@ static int NDFileWriteFile(drvADPvt *pPvt)
     int fileOpenComplete = 0;
     const char* functionName = "NDFileWriteFile";
 
-    /* Make sure there is a valid image */
-    if (!pPvt->pImage) {
+    /* Make sure there is a valid array */
+    if (!pPvt->pArray) {
         asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,
-            "%s:%s: ERROR, must collect an image to get dimensions first\n",
+            "%s:%s: ERROR, must collect an array to get dimensions first\n",
             driverName, functionName);
         return(asynError);
     }
@@ -207,7 +207,7 @@ static int NDFileWriteFile(drvADPvt *pPvt)
                     close = 1;
                     numArrays = 1;
                     append = 0;
-                    status = NDFileWriteNetCDF(fullFileName, &pPvt->netCDFState, pPvt->pImage, numArrays, append, close);
+                    status = NDFileWriteNetCDF(fullFileName, &pPvt->netCDFState, pPvt->pArray, numArrays, append, close);
                     if (status == asynSuccess) fileOpenComplete = 1;
                     break;
             }
@@ -241,7 +241,7 @@ static int NDFileWriteFile(drvADPvt *pPvt)
                             close = 0;
                             append = 0;
                             numArrays = -1;
-                            status = NDFileWriteNetCDF(fullFileName, &pPvt->netCDFState, pPvt->pImage, numArrays, append, close);
+                            status = NDFileWriteNetCDF(fullFileName, &pPvt->netCDFState, pPvt->pArray, numArrays, append, close);
                             if (status == asynSuccess) fileOpenComplete = 1;
                             break;
                     }
@@ -252,7 +252,7 @@ static int NDFileWriteFile(drvADPvt *pPvt)
                             close = 0;
                             append = 1;
                             numArrays = 1;
-                            status = NDFileWriteNetCDF(NULL, &pPvt->netCDFState, pPvt->pImage, numArrays, append, close);
+                            status = NDFileWriteNetCDF(NULL, &pPvt->netCDFState, pPvt->pArray, numArrays, append, close);
                             break;
                     }
                 }
@@ -264,7 +264,7 @@ static int NDFileWriteFile(drvADPvt *pPvt)
                             close = 1;
                             append = 1;
                             numArrays = 0;
-                            status = NDFileWriteNetCDF(NULL, &pPvt->netCDFState, pPvt->pImage, numArrays, append, close);
+                            status = NDFileWriteNetCDF(NULL, &pPvt->netCDFState, pPvt->pArray, numArrays, append, close);
                             break;
                     }
                 }
@@ -313,7 +313,7 @@ static int NDFileDoCapture(drvADPvt *pPvt)
         case NDFileModeCapture:
             if (capture) {
                 /* Capturing was just started */
-                /* We need to read an image from our image source to get its dimensions */
+                /* We need to read an array from our array source to get its dimensions */
                 array.dataSize = 0;
                 status = pPvt->pasynHandle->read(pPvt->asynHandlePvt,pPvt->pasynUserHandle, &array);
                 ADParam->setInteger(pPvt->params, NDFileNumCaptured, 0);
@@ -354,36 +354,36 @@ static int NDFileDoCapture(drvADPvt *pPvt)
     return(status);
 }
 
-static int NDProcessFile(drvADPvt *pPvt, NDArray_t *pImage)
+static int NDProcessFile(drvADPvt *pPvt, NDArray_t *pArray)
 {
     int fileWriteMode, autoSave, capture;
-    int imageCounter;
+    int arrayCounter;
     int status=asynSuccess;
     int numCapture, numCaptured;
 
     ADParam->getInteger(pPvt->params, ADAutoSave, &autoSave);
     ADParam->getInteger(pPvt->params, NDFileCapture, &capture);    
     ADParam->getInteger(pPvt->params, NDFileWriteMode, &fileWriteMode);    
-    ADParam->getInteger(pPvt->params, ADImageCounter, &imageCounter);    
+    ADParam->getInteger(pPvt->params, NDFileArrayCounter, &arrayCounter);    
     ADParam->getInteger(pPvt->params, NDFileNumCapture, &numCapture);    
     ADParam->getInteger(pPvt->params, NDFileNumCaptured, &numCaptured); 
 
-    /* We always keep the last image so read() can use it.  Release it now */
-    if (pPvt->pImage) NDArrayBuff->release(pPvt->pImage);
-    pPvt->pImage = pImage;
+    /* We always keep the last array so read() can use it.  Release it now */
+    if (pPvt->pArray) NDArrayBuff->release(pPvt->pArray);
+    pPvt->pArray = pArray;
     
     switch(fileWriteMode) {
         case NDFileModeSingle:
             if (autoSave) {
-                imageCounter++;
+                arrayCounter++;
                 status = NDFileWriteFile(pPvt);
             }
             break;
         case NDFileModeCapture:
             if (capture) {
-                imageCounter++;
+                arrayCounter++;
                 if (numCaptured < numCapture) {
-                    NDArrayBuff->copy(pPvt->pCaptureNext++, pImage);
+                    NDArrayBuff->copy(pPvt->pCaptureNext++, pArray);
                     numCaptured++;
                     ADParam->setInteger(pPvt->params, NDFileNumCaptured, numCaptured);
                 } 
@@ -398,7 +398,7 @@ static int NDProcessFile(drvADPvt *pPvt, NDArray_t *pImage)
             break;
         case NDFileModeStream:
             if (capture) {
-                imageCounter++;
+                arrayCounter++;
                 numCaptured++;
                 ADParam->setInteger(pPvt->params, NDFileNumCaptured, numCaptured);
                 status = NDFileWriteFile(pPvt);
@@ -412,10 +412,7 @@ static int NDProcessFile(drvADPvt *pPvt, NDArray_t *pImage)
     }
 
     /* Update the parameters.  */
-    ADParam->setInteger(pPvt->params, ADImageSizeX, pImage->dims[0].size);
-    ADParam->setInteger(pPvt->params, ADImageSizeY, pImage->dims[1].size);
-    ADParam->setInteger(pPvt->params, ADDataType, pImage->dataType);
-    ADParam->setInteger(pPvt->params, ADImageCounter, imageCounter);    
+    ADParam->setInteger(pPvt->params, NDFileArrayCounter, arrayCounter);    
     ADParam->callCallbacks(pPvt->params);
     return(status);
 }
@@ -423,28 +420,28 @@ static int NDProcessFile(drvADPvt *pPvt, NDArray_t *pImage)
 
 static void NDFileCallback(void *drvPvt, asynUser *pasynUser, void *handle)
 {
-    /* This callback function is called from the detector driver when a new image arrives.
-     * It writes the image in a disk file.
+    /* This callback function is called from the detector driver when a new array arrives.
+     * It writes the array in a disk file.
      * It can either do the callbacks directly (if BlockingCallbacks=1) or by queueing
-     * the images to be processed by a background task (if BlockingCallbacks=0).
-     * In the latter case images can be dropped if the queue is full.
+     * the arrays to be processed by a background task (if BlockingCallbacks=0).
+     * In the latter case arrays can be dropped if the queue is full.
      */
      
     drvADPvt *pPvt = drvPvt;
-    NDArray_t *pImage = handle;
+    NDArray_t *pArray = handle;
     epicsTimeStamp tNow;
     double minFileWriteTime, deltaTime;
     int status;
     int fileWriteMode, autoSave, capture;
     int blockingCallbacks;
-    int imageCounter, droppedImages;
+    int arrayCounter, droppedArrays;
     char *functionName = "NDFileCallback";
 
     epicsMutexLock(pPvt->mutexId);
 
     status |= ADParam->getDouble(pPvt->params, NDFileMinWriteTime, &minFileWriteTime);
-    status |= ADParam->getInteger(pPvt->params, ADImageCounter, &imageCounter);
-    status |= ADParam->getInteger(pPvt->params, NDFileDroppedImages, &droppedImages);
+    status |= ADParam->getInteger(pPvt->params, NDFileArrayCounter, &arrayCounter);
+    status |= ADParam->getInteger(pPvt->params, NDFileDroppedArrays, &droppedArrays);
     status |= ADParam->getInteger(pPvt->params, NDFileBlockingCallbacks, &blockingCallbacks);
     status |= ADParam->getInteger(pPvt->params, ADAutoSave, &autoSave);
     status |= ADParam->getInteger(pPvt->params, NDFileCapture, &capture);    
@@ -462,39 +459,34 @@ static void NDFileCallback(void *drvPvt, asynUser *pasynUser, void *handle)
         /* Time to write the next file */
         
         /* The callbacks can operate in 2 modes: blocking or non-blocking.
-         * If blocking we call ADImageDoCallbacks directly, executing them
+         * If blocking we call NDProcessFile directly, executing them
          * in the detector callback thread.
-         * If non-blocking we put the image on the queue and it executes
+         * If non-blocking we put the array on the queue and it executes
          * in our background thread. */
-        /* We always keep the last image so read() can use it.  Release it now */
-        /* The callbacks can operate in 2 modes: blocking or non-blocking.
-         * If blocking we call ADImageDoCallbacks directly, executing them
-         * in the detector callback thread.
-         * If non-blocking we put the image on the queue and it executes
-         * in our background thread. */
-        NDArrayBuff->reserve(pImage);
-        /* Update the time we last posted an image */
+        /* We always keep the last array so read() can use it. Reserve it. */
+         NDArrayBuff->reserve(pArray);
+        /* Update the time we last posted an array */
         epicsTimeGetCurrent(&tNow);
         memcpy(&pPvt->lastFileWriteTime, &tNow, sizeof(tNow));
         if (blockingCallbacks) {
-            NDProcessFile(pPvt, pImage);
+            NDProcessFile(pPvt, pArray);
         } else {
-            /* Increase the reference count again on this image
+            /* Increase the reference count again on this array
              * It will be released in the background task when processing is done */
-            NDArrayBuff->reserve(pImage);
-            /* Try to put this image on the message queue.  If there is no room then return
+            NDArrayBuff->reserve(pArray);
+            /* Try to put this array on the message queue.  If there is no room then return
              * immediately. */
-            status = epicsMessageQueueTrySend(pPvt->msgQId, &pImage, sizeof(&pImage));
+            status = epicsMessageQueueTrySend(pPvt->msgQId, &pArray, sizeof(&pArray));
             if (status) {
                 asynPrint(pasynUser, ASYN_TRACE_FLOW, 
-                    "%s:%s message queue full, dropped image %d\n",
-                    driverName, functionName, imageCounter);
-                droppedImages++;
-                status |= ADParam->setInteger(pPvt->params, NDFileDroppedImages, droppedImages);
+                    "%s:%s message queue full, dropped array %d\n",
+                    driverName, functionName, arrayCounter);
+                droppedArrays++;
+                status |= ADParam->setInteger(pPvt->params, NDFileDroppedArrays, droppedArrays);
                 /* This buffer needs to be released twice, because it never made it onto the queue where
                  * it would be released later */
-                NDArrayBuff->release(pImage);
-                NDArrayBuff->release(pImage);
+                NDArrayBuff->release(pArray);
+                NDArrayBuff->release(pArray);
             }
         }
     }
@@ -507,37 +499,37 @@ static void NDFileCallback(void *drvPvt, asynUser *pasynUser, void *handle)
 
 static void NDFileTask(drvADPvt *pPvt)
 {
-    /* This thread writes the data when a new image arrives */
+    /* This thread writes the data when a new array arrives */
 
     /* Loop forever */
-    NDArray_t *pImage;
+    NDArray_t *pArray;
     
     while (1) {
-        /* Wait for an image to arrive from the queue */    
-        epicsMessageQueueReceive(pPvt->msgQId, &pImage, sizeof(&pImage));
+        /* Wait for an array to arrive from the queue */    
+        epicsMessageQueueReceive(pPvt->msgQId, &pArray, sizeof(&pArray));
         
         /* Take the lock.  The function we are calling must release the lock
          * during time-consuming operations when it does not need it. */
         epicsMutexLock(pPvt->mutexId);
         /* Call the function that does the callbacks to standard asyn interfaces */
-        NDProcessFile(pPvt, pImage); 
+        NDProcessFile(pPvt, pArray); 
         epicsMutexUnlock(pPvt->mutexId); 
         
-        /* We are done with this image buffer */       
-        NDArrayBuff->release(pImage);
+        /* We are done with this array buffer */       
+        NDArrayBuff->release(pArray);
     }
 }
 
-static int setImageInterrupt(drvADPvt *pPvt, int connect)
+static int setArrayInterrupt(drvADPvt *pPvt, int connect)
 {
     int status = asynSuccess;
-    const char *functionName = "setImageInterrupt";
+    const char *functionName = "setArrayInterrupt";
     
     /* Lock the port.  May not be necessary to do this. */
     status = pasynManager->lockPort(pPvt->pasynUserHandle);
     if (status != asynSuccess) {
         asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,
-            "%s::%s ERROR: Can't lock image port: %s\n",
+            "%s::%s ERROR: Can't lock array port: %s\n",
             driverName, functionName, pPvt->pasynUserHandle->errorMessage);
         return(status);
     }
@@ -565,44 +557,44 @@ static int setImageInterrupt(drvADPvt *pPvt, int connect)
     status = pasynManager->unlockPort(pPvt->pasynUserHandle);
     if (status != asynSuccess) {
         asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,
-            "%s::%s ERROR: Can't unlock image port: %s\n",
+            "%s::%s ERROR: Can't unlock array port: %s\n",
             driverName, functionName, pPvt->pasynUserHandle->errorMessage);
         return(status);
     }
     return(asynSuccess);
 }
 
-static int connectToImagePort(drvADPvt *pPvt)
+static int connectToArrayPort(drvADPvt *pPvt)
 {
     asynStatus status;
     asynInterface *pasynInterface;
-    NDArray_t image;
+    NDArray_t array;
     int isConnected;
-    char imagePort[20];
-    int imageAddr;
-    const char *functionName = "connectToImagePort";
+    char arrayPort[20];
+    int arrayAddr;
+    const char *functionName = "connectToArrayPort";
 
-    ADParam->getString(pPvt->params, NDFileImagePort, sizeof(imagePort), imagePort);
-    ADParam->getInteger(pPvt->params, NDFileImageAddr, &imageAddr);
+    ADParam->getString(pPvt->params, NDFileArrayPort, sizeof(arrayPort), arrayPort);
+    ADParam->getInteger(pPvt->params, NDFileArrayAddr, &arrayAddr);
     status = pasynManager->isConnected(pPvt->pasynUserHandle, &isConnected);
     if (status) isConnected=0;
 
     /* If we are currently connected cancel interrupt request */    
     if (isConnected) {
-        status = setImageInterrupt(pPvt, 0);
+        status = setArrayInterrupt(pPvt, 0);
     }
     
-    /* Disconnect the image port from our asynUser.  Ignore error if there is no device
+    /* Disconnect the array port from our asynUser.  Ignore error if there is no device
      * currently connected. */
     pasynManager->exceptionCallbackRemove(pPvt->pasynUserHandle);
     pasynManager->disconnect(pPvt->pasynUserHandle);
 
-    /* Connect to the image port driver */
-    status = pasynManager->connectDevice(pPvt->pasynUserHandle, imagePort, imageAddr);
+    /* Connect to the array port driver */
+    status = pasynManager->connectDevice(pPvt->pasynUserHandle, arrayPort, arrayAddr);
     if (status != asynSuccess) {
         asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,
-                  "%s::%s ERROR: Can't connect to image port %s address %d: %s\n",
-                  driverName, functionName, imagePort, imageAddr, pPvt->pasynUserHandle->errorMessage);
+                  "%s::%s ERROR: Can't connect to array port %s address %d: %s\n",
+                  driverName, functionName, arrayPort, arrayAddr, pPvt->pasynUserHandle->errorMessage);
         pasynManager->exceptionDisconnect(pPvt->pasynUser);
         return (status);
     }
@@ -611,8 +603,8 @@ static int connectToImagePort(drvADPvt *pPvt)
     pasynInterface = pasynManager->findInterface(pPvt->pasynUserHandle, asynHandleType, 1);
     if (!pasynInterface) {
         asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,
-                  "%s::connectToPort ERROR: Can't find asynHandle interface on image port %s address %d\n",
-                  driverName, imagePort, imageAddr);
+                  "%s::connectToPort ERROR: Can't find asynHandle interface on array port %s address %d\n",
+                  driverName, arrayPort, arrayAddr);
         pasynManager->exceptionDisconnect(pPvt->pasynUser);
         return(asynError);
     }
@@ -620,38 +612,35 @@ static int connectToImagePort(drvADPvt *pPvt)
     pPvt->asynHandlePvt = pasynInterface->drvPvt;
     pasynManager->exceptionConnect(pPvt->pasynUser);
 
-    /* Read the current image parameters from the image driver */
+    /* Read the current array parameters from the array driver */
     /* Lock the port. Defintitely necessary to do this. */
     status = pasynManager->lockPort(pPvt->pasynUserHandle);
     if (status != asynSuccess) {
         asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,
-            "%s::%s ERROR: Can't lock image port: %s\n",
+            "%s::%s ERROR: Can't lock array port: %s\n",
             driverName, functionName, pPvt->pasynUserHandle->errorMessage);
         return(status);
     }
-    /* Read the current image, but only request 0 bytes so no data are actually transferred */
-    image.dataSize = 0;
-    status = pPvt->pasynHandle->read(pPvt->asynHandlePvt,pPvt->pasynUserHandle, &image);
+    /* Read the current array, but only request 0 bytes so no data are actually transferred */
+    array.dataSize = 0;
+    status = pPvt->pasynHandle->read(pPvt->asynHandlePvt,pPvt->pasynUserHandle, &array);
     if (status != asynSuccess) {
         asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,
-            "%s::%s ERROR: reading image data:%s\n",
+            "%s::%s ERROR: reading array data:%s\n",
             driverName, functionName, pPvt->pasynUserHandle->errorMessage);
     } else {
-        ADParam->setInteger(pPvt->params, ADImageSizeX, image.dims[0].size);
-        ADParam->setInteger(pPvt->params, ADImageSizeY, image.dims[1].size);
-        ADParam->setInteger(pPvt->params, ADDataType, image.dataType);
         ADParam->callCallbacks(pPvt->params);
     }
     /* Unlock the port.  Definitely necessary to do this. */
     status = pasynManager->unlockPort(pPvt->pasynUserHandle);
     if (status != asynSuccess) {
         asynPrint(pPvt->pasynUser, ASYN_TRACE_ERROR,
-            "%s::%s ERROR: Can't unlock image port: %s\n",
+            "%s::%s ERROR: Can't unlock array port: %s\n",
             driverName, functionName, pPvt->pasynUserHandle->errorMessage);
     }
     
     /* Enable interrupt callbacks */
-    status = setImageInterrupt(pPvt, 1);
+    status = setArrayInterrupt(pPvt, 1);
 
     return(status);
 }   
@@ -697,15 +686,15 @@ static asynStatus writeInt32(void *drvPvt, asynUser *pasynUser,
     status |= ADParam->setInteger(pPvt->params, function, value);
 
     switch(function) {
-        case NDFileImageAddr:
-            connectToImagePort(pPvt);
+        case NDFileArrayAddr:
+            connectToArrayPort(pPvt);
             break;
         case ADWriteFile:
-            if (pPvt->pImage) {
+            if (pPvt->pArray) {
                 status = NDFileWriteFile(pPvt);
             } else {
                 asynPrint(pasynUser, ASYN_TRACE_ERROR,
-                    "%s:%s: ERROR, no valid image to write",
+                    "%s:%s: ERROR, no valid array to write",
                     driverName, functionName);
                 status = asynError;
             }
@@ -847,8 +836,8 @@ static asynStatus writeOctet(void *drvPvt, asynUser *pasynUser,
     status |= ADParam->setString(pPvt->params, function, (char *)value);
 
     switch(function) {
-        case NDFileImagePort:
-            connectToImagePort(pPvt);
+        case NDFileArrayPort:
+            connectToArrayPort(pPvt);
         default:
             break;
     }
@@ -870,50 +859,50 @@ static asynStatus writeOctet(void *drvPvt, asynUser *pasynUser,
 }
 
 /* asynHandle interface methods */
-static asynStatus readADImage(void *drvPvt, asynUser *pasynUser, void *handle)
+static asynStatus readNDArray(void *drvPvt, asynUser *pasynUser, void *handle)
 {
     drvADPvt *pPvt = (drvADPvt *)drvPvt;
-    NDArray_t *pImage = handle;
+    NDArray_t *pArray = handle;
     NDArrayInfo_t arrayInfo;
     int status = asynSuccess;
-    const char* functionName = "readADImage";
+    const char* functionName = "readNDArray";
     
     epicsMutexLock(pPvt->mutexId);
-    if (!pPvt->pImage) {
+    if (!pPvt->pArray) {
         asynPrint(pasynUser, ASYN_TRACE_ERROR, 
-              "%s:functionName error, no valid image available\n", 
+              "%s:functionName error, no valid array available\n", 
               driverName, functionName);
         status = asynError;
     } else {
-        pImage->ndims = pPvt->pImage->ndims;
-        memcpy(pImage->dims, pPvt->pImage->dims, sizeof(pImage->dims));
-        pImage->dataType = pPvt->pImage->dataType;
-        NDArrayBuff->getInfo(pPvt->pImage, &arrayInfo);
-        if (arrayInfo.totalBytes > pImage->dataSize) arrayInfo.totalBytes = pImage->dataSize;
-        memcpy(pImage->pData, pPvt->pImage->pData, arrayInfo.totalBytes);
+        pArray->ndims = pPvt->pArray->ndims;
+        memcpy(pArray->dims, pPvt->pArray->dims, sizeof(pArray->dims));
+        pArray->dataType = pPvt->pArray->dataType;
+        NDArrayBuff->getInfo(pPvt->pArray, &arrayInfo);
+        if (arrayInfo.totalBytes > pArray->dataSize) arrayInfo.totalBytes = pArray->dataSize;
+        memcpy(pArray->pData, pPvt->pArray->pData, arrayInfo.totalBytes);
     }
     if (status) 
         asynPrint(pasynUser, ASYN_TRACE_ERROR, 
               "%s:%s error, status=%d pData=%p\n", 
-              driverName, functionName, status, pImage->pData);
+              driverName, functionName, status, pArray->pData);
     else        
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
               "%s:%s error, maxBytes=%d, data=%p\n", 
-              driverName, functionName, arrayInfo.totalBytes, pImage->pData);
+              driverName, functionName, arrayInfo.totalBytes, pArray->pData);
     epicsMutexUnlock(pPvt->mutexId);
     return status;
 }
 
-static asynStatus writeADImage(void *drvPvt, asynUser *pasynUser, void *handle)
+static asynStatus writeNDArray(void *drvPvt, asynUser *pasynUser, void *handle)
 {
     drvADPvt *pPvt = (drvADPvt *)drvPvt;
-    NDArray_t *pImage = handle;
+    NDArray_t *pArray = handle;
     int status = asynSuccess;
     
     if (pPvt == NULL) return asynError;
     epicsMutexLock(pPvt->mutexId);
     
-    pPvt->pImage = pImage;
+    pPvt->pArray = pArray;
     ADParam->setInteger(pPvt->params, NDFileWriteMode, NDFileModeSingle);
 
     status = NDFileWriteFile(pPvt);
@@ -1084,8 +1073,8 @@ static asynOctet ifaceOctet = {
 };
 
 static asynHandle ifaceHandle = {
-    writeADImage,
-    readADImage
+    writeNDArray,
+    readNDArray
 };
 
 static asynDrvUser ifaceDrvUser = {
@@ -1098,7 +1087,7 @@ static asynDrvUser ifaceDrvUser = {
 /* Configuration routine.  Called directly, or from the iocsh function in drvNDFileEpics */
 
 int drvNDFileConfigure(const char *portName, int queueSize, int blockingCallbacks, 
-                       const char *imagePort, int imageAddr)
+                       const char *NDArrayPort, int NDArrayAddr)
 {
     drvADPvt *pPvt;
     asynStatus status;
@@ -1153,7 +1142,7 @@ int drvNDFileConfigure(const char *portName, int queueSize, int blockingCallback
         return -1;
     }
 
-    /* Create asynUser for communicating with image port */
+    /* Create asynUser for communicating with NDArray port */
     pasynUser = pasynManager->createAsynUser(0, 0);
     pasynUser->userPvt = pPvt;
     pPvt->pasynUserHandle = pasynUser;
@@ -1172,7 +1161,7 @@ int drvNDFileConfigure(const char *portName, int queueSize, int blockingCallback
         return asynError;
     }
 
-    /* Create the message queue for the input images */
+    /* Create the message queue for the input arrays */
     pPvt->msgQId = epicsMessageQueueCreate(queueSize, sizeof(NDArray_t*));
     if (!pPvt->msgQId) {
         printf("%s: epicsMessageQueueCreate failure\n", functionName);
@@ -1186,7 +1175,7 @@ int drvNDFileConfigure(const char *portName, int queueSize, int blockingCallback
         return asynError;
     }
     
-   /* Create the thread that does the image callbacks */
+   /* Create the thread that handles the NDArray callbacks */
     status = (epicsThreadCreate("NDFileTask",
                                 epicsThreadPriorityMedium,
                                 epicsThreadGetStackSize(epicsThreadStackMedium),
@@ -1198,15 +1187,15 @@ int drvNDFileConfigure(const char *portName, int queueSize, int blockingCallback
     }
 
     /* Set the initial values of some parameters */
-    ADParam->setInteger(pPvt->params, ADImageCounter, 0);
-    ADParam->setInteger(pPvt->params, NDFileDroppedImages, 0);
-    ADParam->setString (pPvt->params, NDFileImagePort, imagePort);
-    ADParam->setInteger(pPvt->params, NDFileImageAddr, imageAddr);
+    ADParam->setInteger(pPvt->params, NDFileArrayCounter, 0);
+    ADParam->setInteger(pPvt->params, NDFileDroppedArrays, 0);
+    ADParam->setString (pPvt->params, NDFileArrayPort, NDArrayPort);
+    ADParam->setInteger(pPvt->params, NDFileArrayAddr, NDArrayAddr);
     ADParam->setInteger(pPvt->params, NDFileBlockingCallbacks, 0);
     ADParam->setInteger(pPvt->params, NDFileCapture, 0);
     
-    /* Try to connect to the image port */
-    status = connectToImagePort(pPvt);
+    /* Try to connect to the NDArray port */
+    status = connectToArrayPort(pPvt);
     
     return asynSuccess;
 }
