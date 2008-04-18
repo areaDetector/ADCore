@@ -10,7 +10,7 @@ include $(TOP)/configure/CONFIG
 LIBRARY_IOC = simDetector
 LIB_SRCS += drvSimDetector.c
 LIB_SRCS += drvSimDetectorEpics.c
-LIB_LIBS += ADBase ADPlugin
+LIB_LIBS += ADBase ADPlugin netCDF
 LIB_LIBS += sscan autosave
 LIB_LIBS += asyn
 LIB_LIBS += $(EPICS_BASE_IOC_LIBS)
