@@ -483,6 +483,27 @@ static int convert(NDArray_t *pIn,
     return ND_SUCCESS;
 }
 
+static int copy(NDArray_t *pOut, NDArray_t *pIn)
+{
+    NDArrayInfo_t arrayInfo;
+    const char *functionName = "copy";
+    
+    getInfo(pIn, &arrayInfo);
+    if (arrayInfo.totalBytes > pOut->dataSize) {
+        printf("%s:%s: output buffer too small, is %d, must be %d\n",
+            driverName, functionName, pOut->dataSize, arrayInfo.totalBytes);
+        return(ND_ERROR);
+    }
+    pOut->uniqueId = pIn->uniqueId;
+    pOut->timeStamp = pIn->timeStamp;
+    pOut->ndims = pIn->ndims;
+    memcpy(pOut->dims, pIn->dims, sizeof(pIn->dims));
+    pOut->dataType = pIn->dataType;
+    memcpy(pOut->pData, pIn->pData, arrayInfo.totalBytes);
+    return(ND_SUCCESS);
+}
+
+
 static int report(int details)
 {
     NDArrayBuffPvt_t *pPvt = &NDArrayBuffPvt;
@@ -510,6 +531,7 @@ static NDArrayBuffSupport support =
     initDimension,
     getInfo,
     convert,
+    copy,
     report,
 };
 

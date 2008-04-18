@@ -73,6 +73,7 @@ typedef struct {
                              NDArray_t **ppOut,
                              int dataTypeOut,
                              NDDimension_t *outDims);
+    int         (*copy)     (NDArray_t *pOut, NDArray_t *pIn);
     int         (*report)   (int details);     
 } NDArrayBuffSupport;
 
