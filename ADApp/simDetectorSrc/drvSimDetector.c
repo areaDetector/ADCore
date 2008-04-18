@@ -275,11 +275,19 @@ static void simTask(drvADPvt *pPvt)
         ADParam->getInteger(pPvt->params, ADImageCounter, &imageCounter);
         imageCounter++;
         ADParam->setInteger(pPvt->params, ADImageCounter, imageCounter);
-
+        
+        /* Put the frame number and time stamp into the buffer */
+        pPvt->pImage->uniqueId = imageCounter;
+        pPvt->pImage->timeStamp = startTime.secPastEpoch + startTime.nsec / 1.e9;
+        
         /* Call the imageData callback */
+        /* Must release the lock here, or we can get into a deadlock, because we can
+         * block on the plugin lock, and the plugin can be calling us */
+        epicsMutexUnlock(pPvt->mutexId);
         asynPrint(pPvt->pasynUser, ASYN_TRACE_FLOW, 
              "%s:simTask: calling imageData callback\n", driverName);
         ADUtils->handleCallback(pPvt->asynStdInterfaces.handleInterruptPvt, pPvt->pImage);
+        epicsMutexLock(pPvt->mutexId);
 
         /* See if acquisition is done */
         if (pPvt->imagesRemaining > 0) pPvt->imagesRemaining--;
