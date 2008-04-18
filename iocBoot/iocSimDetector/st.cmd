@@ -27,8 +27,8 @@ drvNDStdArraysConfigure("SIM2Image", 1, 0, "SIM2", 0)
 dbLoadRecords("$(AD)/ADApp/Db/NDStdArrays.template","P=13SIM1:,A=image2:,PORT=SIM2Image,ADDR=0,TIMEOUT=1,SIZE=8,FTVL=UCHAR,NELEMENTS=1392640")
 
 # Create a file saving plugin
-drvADFileConfigure("SIM1File", 20, 0, "SIM1", 0)
-dbLoadRecords("$(AD)/ADApp/Db/ADFile.template","P=13SIM1:,F=file1:,PORT=SIM1File,ADDR=0,TIMEOUT=1")
+drvNDFileConfigure("SIM1File", 20, 0, "SIM1", 0)
+dbLoadRecords("$(AD)/ADApp/Db/NDFile.template","P=13SIM1:,F=file1:,PORT=SIM1File,ADDR=0,TIMEOUT=1")
 
 #asynSetTraceMask("SIM1",0,255)
 #asynSetTraceMask("SIM2",0,255)
