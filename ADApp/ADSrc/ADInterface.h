@@ -44,7 +44,6 @@ typedef enum
     ADStatusReadout,
     ASStatusCorrect,
     ADStatusSaving,
-    ADStatusBusy,
     ADStatusAborting,
     ADStatusError,
 } ADStatus_t;
