@@ -2,6 +2,7 @@ TOP = ..
 include $(TOP)/configure/CONFIG
 
 DIRS += ADSrc
+DIRS += netCDFSrc
 DIRS += pluginSrc
 DIRS += simDetectorSrc
 DIRS += prosilicaSrc
