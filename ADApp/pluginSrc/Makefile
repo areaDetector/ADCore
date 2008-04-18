@@ -7,13 +7,15 @@ include $(TOP)/configure/CONFIG
 DBD += pluginSupport.dbd
 
 INC += drvNDStdArrays.h
-INC += drvADFile.h
+INC += drvNDFile.h
 
 LIBRARY_IOC = ADPlugin
 LIB_SRCS += drvNDStdArrays.c
 LIB_SRCS += drvNDStdArraysEpics.c
-LIB_SRCS += drvADFile.c
-LIB_SRCS += drvADFileEpics.c
+LIB_SRCS += drvNDFile.c
+LIB_SRCS += drvNDFileEpics.c
+LIB_SRCS += NDFileNetCDF.c
+LIB_LIBS += netCDF
 
 include $(TOP)/configure/RULES
 #----------------------------------------
