@@ -12,13 +12,14 @@
 /* set this only when building a DLL under MinGW */
 /* #undef DLL_NETCDF */
 
-/* Define to 1 if you have `alloca', as a function or macro. */
-#define HAVE_ALLOCA 1
+#ifndef _WIN32
+    /* Define to 1 if you have `alloca', as a function or macro. */
+    #define HAVE_ALLOCA 1
 
-/* Define to 1 if you have <alloca.h> and it should be used (not on Ultrix).
-   */
-#define HAVE_ALLOCA_H 1
-
+    /* Define to 1 if you have <alloca.h> and it should be used (not on Ultrix).
+       */
+    #define HAVE_ALLOCA_H 1
+#endif
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #define HAVE_DLFCN_H 1
 
@@ -31,8 +32,12 @@
 /* Define to 1 if the system has the type `ptrdiff_t'. */
 #define HAVE_PTRDIFF_T 1
 
-/* Define to 1 if the system has the type `ssize_t'. */
-#define HAVE_SSIZE_T 1
+#ifdef _WIN32
+    typedef int ssize_t;
+#else
+    /* Define to 1 if the system has the type `ssize_t'. */
+    #define HAVE_SSIZE_T 1
+#endif
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #define HAVE_STDINT_H 1
@@ -53,11 +58,13 @@
 /* #undef HAVE_STRLCAT */
 
 /* Define to 1 if `st_blksize' is member of `struct stat'. */
-#define HAVE_STRUCT_STAT_ST_BLKSIZE 1
+#ifndef _WIN32
+    #define HAVE_STRUCT_STAT_ST_BLKSIZE 1
 
-/* Define to 1 if your `struct stat' has `st_blksize'. Deprecated, use
-   `HAVE_STRUCT_STAT_ST_BLKSIZE' instead. */
-#define HAVE_ST_BLKSIZE 1
+    /* Define to 1 if your `struct stat' has `st_blksize'. Deprecated, use
+       `HAVE_STRUCT_STAT_ST_BLKSIZE' instead. */
+    #define HAVE_ST_BLKSIZE 1
+#endif
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
 #define HAVE_SYS_STAT_H 1
