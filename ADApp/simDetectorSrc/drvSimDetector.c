@@ -280,7 +280,7 @@ static void simTask(drvADPvt *pPvt)
         pPvt->pImage->uniqueId = imageCounter;
         pPvt->pImage->timeStamp = startTime.secPastEpoch + startTime.nsec / 1.e9;
         
-        /* Call the imageData callback */
+        /* Call the NDArray callback */
         /* Must release the lock here, or we can get into a deadlock, because we can
          * block on the plugin lock, and the plugin can be calling us */
         epicsMutexUnlock(pPvt->mutexId);
