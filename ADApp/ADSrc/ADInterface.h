@@ -79,7 +79,7 @@ typedef enum
 
     /* Parameters that control the detector binning */
     ADBinX,            /* (asynInt32,    r/w) Binning in the X direction */
-    ADBinY,            /* (asynInt32.    r/w) Binning in the Y dieection */
+    ADBinY,            /* (asynInt32.    r/w) Binning in the Y direction */
 
     /* Parameters the control the region of the detector to be read out.
     * ADMinX, ADMinY, ADSizeX, and ADSizeY are in unbinned pixel units */
@@ -88,7 +88,11 @@ typedef enum
     ADSizeX,           /* (asynInt32,    r/w) Size of the region to read in the X direction. */
     ADSizeY,           /* (asynInt32,    r/w) Size of the region to read in the Y direction. */
     ADMaxSizeX,        /* (asynInt32,    r/o) Maximum (sensor) size in the X direction. */
-    ADMaxSizeY,        /* (asynInt32,    r/o) Maximum (sensro) size in the Y direction. */
+    ADMaxSizeY,        /* (asynInt32,    r/o) Maximum (sensot) size in the Y direction. */
+
+    /* Parameters that control the orientation of the image */
+    ADReverseX,        /* (asynInt32,    r/w) Reverse image in the X direction (0=No, 1=Yes) */
+    ADReverseY,        /* (asynInt32.    r/w) Reverse image in the Y direction (0=No, 1=Yes) */
 
     /* Parameters defining the size of the image data from the detector.
      * ADImageSizeX and ADImageSizeY are the actual dimensions of the image data, 
@@ -156,6 +160,8 @@ static ADParamString_t ADStandardParamString[] = {
     {ADSizeY,          "SIZE_Y"      },
     {ADMaxSizeX,       "MAX_SIZE_X"  },
     {ADMaxSizeY,       "MAX_SIZE_Y"  },
+    {ADReverseX,       "REVERSE_X"   },
+    {ADReverseY,       "REVERSE_Y"   },
 
     {ADImageSizeX,     "IMAGE_SIZE_X"},
     {ADImageSizeY,     "IMAGE_SIZE_Y"},
