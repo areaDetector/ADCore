@@ -322,24 +322,22 @@ static int release(NDArray_t *pArray)
 /* This macro computes an output image from an input image, selecting a region of interest
  * with binning and data type conversion. */
 #define CONVERT_DIMENSION(DATA_TYPE_IN, DATA_TYPE_OUT) {   \
-    int xb, yb, inRow=startY, outRow, outCol;             \
-    DATA_TYPE_OUT *pOut, *pOutTemp;                     \
-    DATA_TYPE_IN *pIn;                                  \
-    for (outRow=0; outRow<sizeYOut; outRow++) {         \
-        pOut = (DATA_TYPE_OUT *)imageOut;               \
-        pOut += outRow * sizeXOut;                      \
-        for (yb=0; yb<binY; yb++) {                     \
-            pOutTemp = pOut;                            \
-            pIn = (DATA_TYPE_IN *)imageIn;              \
-            pIn += inRow*sizeXIn + startX;              \
-            for (out=0; out<pOut->dims[cdim]; out++) {  \
-                for (bin=1; bin<binningOut[dim]; bin++) {      \
-                    *pOut[out] += (DATA_TYPE_OUT)*pIn++; \
-                } /* Next xbin */                       \
-            } /* Next outCol */                         \
-            inRow++;                                    \
-        } /* Next ybin */                               \
-    } /* Next outRow */                                 \
+    DATA_TYPE_OUT *pDOut = (DATA_TYPE_OUT *)pDataOut; \
+    DATA_TYPE_IN *pDIn = (DATA_TYPE_IN *)pDataIn; \
+    int inc = inDir * inStep; \
+    int in, out, bin; \
+    pDIn += inOffset*inStep; \
+    for (in=0, out=0; out<pOutDims[dim].size; out++, in++) { \
+        for (bin=0; bin<pOutDims[dim].binning; bin++) { \
+            if (dim > 0) { \
+                convertDimension(pIn, pOut, pDIn, pDOut, dim-1); \
+            } else { \
+                *pDOut += (DATA_TYPE_OUT)*pDIn; \
+            } \
+            pDIn += inc; \
+        } \
+        pDOut += outStep; \
+    } \
 }
 
 #define CONVERT_DIMENSION_SWITCH(DATA_TYPE_OUT) { \
@@ -408,12 +406,34 @@ static int release(NDArray_t *pArray)
 
 static int convertDimension(NDArray_t *pIn, 
                             NDArray_t *pOut,
-                            int dimension)
+                            void *pDataIn,
+                            void *pDataOut,
+                            int dim)
 {
     int status = ND_SUCCESS;
-    
-    /* CONVERT_DIMENSION_ALL(); */
-    
+    /* This routine is passed:
+     * A pointer to the start of the input data
+     * A pointer to the start of the output data 
+     * An array of dimensions
+     * A dimension index */
+    int i;
+    NDDimension_t *pOutDims = pOut->dims;
+    NDDimension_t *pInDims = pIn->dims;
+    int inStep, outStep, inOffset, inDir;
+
+    inStep = 1;
+    outStep = 1;
+    inDir = 1;
+    inOffset = pOutDims[dim].offset;
+    for (i=0; i<dim; i++) {
+        inStep  *= pInDims[i].size;
+        outStep *= pOutDims[i].size;
+    }
+    if (pOutDims[dim].invert) {
+        inOffset += pOutDims[dim].size * pOutDims[dim].binning;
+        inDir = -1;
+    }
+    CONVERT_DIMENSION_ALL();
     return(status);
 }
 
@@ -449,6 +469,8 @@ static int convert(NDArray_t *pIn,
             driverName, functionName);
         return(ND_ERROR);
     }
+    /* Replace the dimensions with those passed to this function */
+    memcpy(pOut->dims, dimsOut, pIn->ndims*sizeof(NDDimension_t));
     *ppOut = pOut;
     
     NDArrayBuff->getInfo(pOut, &arrayInfo);
@@ -468,7 +490,7 @@ static int convert(NDArray_t *pIn,
          * and/or binning */
         /* Clear entire output array */
         memset(pOut->pData, 0, arrayInfo.totalBytes);
-        convertDimension(pIn, pOut, pIn->ndims-1);
+        convertDimension(pIn, pOut, pIn->pData, pOut->pData, pIn->ndims-1);
     }
                     
     /* Set fields in the output array */
