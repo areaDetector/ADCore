@@ -74,7 +74,8 @@ typedef struct drvADPvt {
 
     /* These items are specific to the Simulator driver */
     int imagesRemaining;
-    epicsEventId eventId;
+    epicsEventId startEventId;
+    epicsEventId stopEventId;
     NDArray_t *pRaw;
     NDArray_t *pImage;
 } drvADPvt;
@@ -100,7 +101,8 @@ static int simComputeImage(drvADPvt *pPvt)
 {
     int status = asynSuccess;
     int dataType;
-    int binX, binY, minX, minY, sizeX, sizeY, maxSizeX, maxSizeY, resetImage;
+    int binX, binY, minX, minY, sizeX, sizeY, reverseX, reverseY;
+    int maxSizeX, maxSizeY, resetImage;
     NDDimension_t dimsOut[2];
     NDArrayInfo_t arrayInfo;
     double exposureTime, gain, gainX, gainY, scaleX, scaleY;
@@ -116,6 +118,8 @@ static int simComputeImage(drvADPvt *pPvt)
     status |= ADParam->getInteger(pPvt->params, ADMinY,        &minY);
     status |= ADParam->getInteger(pPvt->params, ADSizeX,       &sizeX);
     status |= ADParam->getInteger(pPvt->params, ADSizeY,       &sizeY);
+    status |= ADParam->getInteger(pPvt->params, ADReverseX,    &reverseX);
+    status |= ADParam->getInteger(pPvt->params, ADReverseY,    &reverseY);
     status |= ADParam->getInteger(pPvt->params, ADMaxSizeX,    &maxSizeX);
     status |= ADParam->getInteger(pPvt->params, ADMaxSizeY,    &maxSizeY);
     status |= ADParam->getInteger(pPvt->params, ADDataType,    &dataType);
@@ -201,9 +205,11 @@ static int simComputeImage(drvADPvt *pPvt)
     NDArrayBuff->initDimension(&dimsOut[0], sizeX);
     dimsOut[0].binning = binX;
     dimsOut[0].offset = minX;
+    dimsOut[0].reverse = reverseX;
     NDArrayBuff->initDimension(&dimsOut[1], sizeY);
     dimsOut[1].binning = binY;
     dimsOut[1].offset = minY;
+    dimsOut[1].reverse = reverseY;
     status |= NDArrayBuff->convert(pPvt->pRaw,
                                    &pPvt->pImage,
                                    dataType,
@@ -230,7 +236,8 @@ static void simTask(drvADPvt *pPvt)
     ADStatus_t acquiring;
     double acquireTime, acquirePeriod, delay;
     epicsTimeStamp startTime, endTime;
-    double computeTime;
+    double elapsedTime;
+    static char *functionName = "simTask";
 
     /* Loop forever */
     while (1) {
@@ -247,8 +254,8 @@ static void simTask(drvADPvt *pPvt)
             /* Release the lock while we wait for an event that says acquire has started, then lock again */
             epicsMutexUnlock(pPvt->mutexId);
             asynPrint(pPvt->pasynUser, ASYN_TRACE_FLOW, 
-                "%s:simTask: waiting for acquire to start\n", driverName);
-            status = epicsEventWait(pPvt->eventId);
+                "%s:%s: waiting for acquire to start\n", driverName, functionName);
+            status = epicsEventWait(pPvt->startEventId);
             epicsMutexLock(pPvt->mutexId);
         }
         
@@ -256,9 +263,24 @@ static void simTask(drvADPvt *pPvt)
         /* Get the current time */
         epicsTimeGetCurrent(&startTime);
         
+        /* Get the exposure parameters */
+        ADParam->getDouble(pPvt->params, ADAcquireTime, &acquireTime);
+        ADParam->getDouble(pPvt->params, ADAcquirePeriod, &acquirePeriod);
+        
         acquiring = ADStatusAcquire;
         ADParam->setInteger(pPvt->params, ADStatus, acquiring);
 
+        /* Call the callbacks to update any changes */
+        ADParam->callCallbacks(pPvt->params);
+
+        /* Simulate being busy during the exposure time.  Use epicsEventWaitWithTimeout so that
+         * manually stopping the acquisition will work */
+        if (acquireTime >= epicsThreadSleepQuantum()) {
+            epicsMutexUnlock(pPvt->mutexId);
+            status = epicsEventWaitWithTimeout(pPvt->stopEventId, acquireTime);
+            epicsMutexLock(pPvt->mutexId);
+        }
+        
         /* We save the most recent image buffer so it can be used in the read() function.
          * Now release it.  simComputeImage will get a new one. */
         if (pPvt->pImage) NDArrayBuff->release(pPvt->pImage);
@@ -266,6 +288,9 @@ static void simTask(drvADPvt *pPvt)
         /* Update the image */
         simComputeImage(pPvt);
         
+        epicsTimeGetCurrent(&endTime);
+        elapsedTime = epicsTimeDiffInSeconds(&endTime, &startTime);
+
         /* Get the current parameters */
         ADParam->getInteger(pPvt->params, ADImageSizeX, &imageSizeX);
         ADParam->getInteger(pPvt->params, ADImageSizeY, &imageSizeY);
@@ -285,7 +310,7 @@ static void simTask(drvADPvt *pPvt)
          * block on the plugin lock, and the plugin can be calling us */
         epicsMutexUnlock(pPvt->mutexId);
         asynPrint(pPvt->pasynUser, ASYN_TRACE_FLOW, 
-             "%s:simTask: calling imageData callback\n", driverName);
+             "%s:%s: calling imageData callback\n", driverName, functionName);
         ADUtils->handleCallback(pPvt->asynStdInterfaces.handleInterruptPvt, pPvt->pImage);
         epicsMutexLock(pPvt->mutexId);
 
@@ -295,30 +320,27 @@ static void simTask(drvADPvt *pPvt)
             acquiring = ADStatusIdle;
             ADParam->setInteger(pPvt->params, ADAcquire, acquiring);
             asynPrint(pPvt->pasynUser, ASYN_TRACE_FLOW, 
-                  "%s:simTask: acquisition completed\n", driverName);
+                  "%s:%s: acquisition completed\n", driverName, functionName);
         }
         
         /* Call the callbacks to update any changes */
         ADParam->callCallbacks(pPvt->params);
         
-        ADParam->getDouble(pPvt->params, ADAcquireTime, &acquireTime);
-        ADParam->getDouble(pPvt->params, ADAcquirePeriod, &acquirePeriod);
-        
         /* We are done accessing data structures, release the lock */
         epicsMutexUnlock(pPvt->mutexId);
         
-        /* If we are acquiring then wait for the larger of the exposure time or the exposure period,
-           minus the time we have already spent computing this image. */
+        /* If we are acquiring then sleep for the acquire period minus elapsed time. */
         if (acquiring) {
-            epicsTimeGetCurrent(&endTime);
-            delay = acquireTime;
-            computeTime = epicsTimeDiffInSeconds(&endTime, &startTime);
-            if (acquirePeriod > delay) delay = acquirePeriod;
-            delay -= computeTime;
+            /* We set the status to readOut to indicate we are in the period delay */
+            ADParam->setInteger(pPvt->params, ADStatus, ADStatusReadout);
+            ADParam->callCallbacks(pPvt->params);
+            delay = acquirePeriod - elapsedTime;
             asynPrint(pPvt->pasynUser, ASYN_TRACE_FLOW, 
-                  "%s:simTask: computeTime=%f, delay=%f\n",
-                  driverName, computeTime, delay);            
-            if (delay > 0) status = epicsEventWaitWithTimeout(pPvt->eventId, delay);
+                     "%s:%s: delay=%f\n",
+                      driverName, functionName, delay);            
+            if (delay >= epicsThreadSleepQuantum())
+                status = epicsEventWaitWithTimeout(pPvt->stopEventId, delay);
+
         }
     }
 }
@@ -387,8 +409,12 @@ static asynStatus writeInt32(void *drvPvt, asynUser *pasynUser,
             }
             /* Send an event to wake up the simulation task.  
              * It won't actually start generating new images until we release the lock below */
-            epicsEventSignal(pPvt->eventId);
-        } 
+            epicsEventSignal(pPvt->startEventId);
+        } else {
+            /* This was a command to stop acquisition */
+            /* Send the stop event */
+            epicsEventSignal(pPvt->stopEventId);
+        }
         break;
     case ADBinX:
     case ADBinY:
@@ -830,10 +856,15 @@ int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int data
         return asynError;
     }
     
-    /* Create the epicsEvent for signaling to the simulate task when acquisition starts */
-    pPvt->eventId = epicsEventCreate(epicsEventEmpty);
-    if (!pPvt->eventId) {
-        printf("%s: epicsEventCreate failure\n", functionName);
+    /* Create the epicsEvents for signaling to the simulate task when acquisition starts and stops */
+    pPvt->startEventId = epicsEventCreate(epicsEventEmpty);
+    if (!pPvt->startEventId) {
+        printf("%s: epicsEventCreate failure for start event\n", functionName);
+        return asynError;
+    }
+    pPvt->stopEventId = epicsEventCreate(epicsEventEmpty);
+    if (!pPvt->stopEventId) {
+        printf("%s: epicsEventCreate failure for stop event\n", functionName);
         return asynError;
     }
     
