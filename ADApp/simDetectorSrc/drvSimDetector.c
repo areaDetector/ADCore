@@ -89,7 +89,7 @@ static int simAllocateBuffer(drvADPvt *pPvt)
     /* Make sure the raw array we have allocated is large enough. 
      * We are allowed to change its size because we have exclusive use of it */
     NDArrayBuff->getInfo(pPvt->pRaw, &arrayInfo);
-    if (arrayInfo.totalBytes < pPvt->pRaw->dataSize) {
+    if (arrayInfo.totalBytes > pPvt->pRaw->dataSize) {
         free(pPvt->pRaw->pData);
         pPvt->pRaw->pData  = malloc(arrayInfo.totalBytes);
         pPvt->pRaw->dataSize = arrayInfo.totalBytes;
