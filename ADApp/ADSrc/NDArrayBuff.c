@@ -84,7 +84,7 @@ static int initDimension(NDDimension_t *pDimension, int size)
     pDimension->size=size;
     pDimension->binning = 1;
     pDimension->offset = 0;
-    pDimension->invert = 0;
+    pDimension->reverse = 0;
     return ND_SUCCESS;
 }
 
@@ -147,7 +147,7 @@ static  NDArray_t* alloc(int ndims, int *dims, int dataType, int dataSize, void 
             pArray->dims[i].size = dims[i];
             pArray->dims[i].offset = 0;
             pArray->dims[i].binning = 1;
-            pArray->dims[i].invert = 0;
+            pArray->dims[i].reverse = 0;
         }
         getInfo(pArray, &arrayInfo); 
         if (dataSize == 0) dataSize = arrayInfo.totalBytes;
@@ -429,7 +429,7 @@ static int convertDimension(NDArray_t *pIn,
         inStep  *= pInDims[i].size;
         outStep *= pOutDims[i].size;
     }
-    if (pOutDims[dim].invert) {
+    if (pOutDims[dim].reverse) {
         inOffset += pOutDims[dim].size * pOutDims[dim].binning;
         inDir = -1;
     }
@@ -458,7 +458,7 @@ static int convert(NDArray_t *pIn,
         if ((pIn->dims[i].size  != dimsOut[i].size) ||
             (dimsOut[i].offset != 0) ||
             (dimsOut[i].binning != 1) ||
-            (dimsOut[i].invert != 0)) dimsUnchanged = 0;
+            (dimsOut[i].reverse != 0)) dimsUnchanged = 0;
     }
     
     /* We now know the datatype and dimensions of the output array.
@@ -490,14 +490,14 @@ static int convert(NDArray_t *pIn,
          * and/or binning */
         /* Clear entire output array */
         memset(pOut->pData, 0, arrayInfo.totalBytes);
-        convertDimension(pIn, pOut, pIn->pData, pOut->pData, pIn->ndims-1);
+        status = convertDimension(pIn, pOut, pIn->pData, pOut->pData, pIn->ndims-1);
     }
                     
     /* Set fields in the output array */
     for (i=0; i<pIn->ndims; i++) {
         pOut->dims[i].offset = pIn->dims[i].offset + dimsOut[i].offset;
         pOut->dims[i].binning = pIn->dims[i].binning * dimsOut[i].binning;
-        if (pIn->dims[i].invert) pOut->dims[i].invert = !pOut->dims[i].invert;
+        if (pIn->dims[i].reverse) pOut->dims[i].reverse = !pOut->dims[i].reverse;
     }
     pOut->timeStamp = pIn->timeStamp;
     pOut->uniqueId = pIn->uniqueId;

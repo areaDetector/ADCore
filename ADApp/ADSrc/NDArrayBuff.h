@@ -39,7 +39,7 @@ typedef struct NDDimension {
     int size;
     int offset;
     int binning;
-    int invert;
+    int reverse;
 } NDDimension_t;
 
 typedef struct NDArrayInfo {
