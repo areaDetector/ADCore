@@ -5,10 +5,10 @@ file {
 }
 display {
 	object {
-		x=573
-		y=104
+		x=225
+		y=94
 		width=700
-		height=900
+		height=930
 	}
 	clr=14
 	bclr=4
@@ -608,7 +608,7 @@ rectangle {
 		x=2
 		y=297
 		width=335
-		height=320
+		height=350
 	}
 	"basic attribute" {
 		clr=14
@@ -960,102 +960,80 @@ composite {
 		}
 	}
 }
-composite {
+"text entry" {
+	object {
+		x=145
+		y=397
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(D)BinX"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=238
+		y=397
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(D)BinY"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=145
+		y=377
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(D)BinX_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=238
+		y=377
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(D)BinY_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
 	object {
 		x=64
-		y=377
-		width=235
-		height=40
+		y=397
+		width=70
+		height=20
 	}
-	"composite name"=""
-	children {
-		composite {
-			object {
-				x=145
-				y=377
-				width=154
-				height=40
-			}
-			"composite name"=""
-			children {
-				"text entry" {
-					object {
-						x=145
-						y=397
-						width=60
-						height=20
-					}
-					control {
-						chan="$(P)$(D)BinX"
-						clr=14
-						bclr=51
-					}
-					limits {
-					}
-				}
-				"text entry" {
-					object {
-						x=238
-						y=397
-						width=60
-						height=20
-					}
-					control {
-						chan="$(P)$(D)BinY"
-						clr=14
-						bclr=51
-					}
-					limits {
-					}
-				}
-				"text update" {
-					object {
-						x=145
-						y=377
-						width=61
-						height=18
-					}
-					monitor {
-						chan="$(P)$(D)BinX_RBV"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
-				"text update" {
-					object {
-						x=238
-						y=377
-						width=61
-						height=18
-					}
-					monitor {
-						chan="$(P)$(D)BinY_RBV"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
-			}
-		}
-		text {
-			object {
-				x=64
-				y=397
-				width=70
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Binning"
-			align="horiz. right"
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="Binning"
+	align="horiz. right"
 }
 composite {
 	object {
@@ -1229,211 +1207,6 @@ composite {
 		}
 	}
 }
-composite {
-	object {
-		x=34
-		y=512
-		width=265
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=34
-				y=512
-				width=100
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Image Size"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=145
-				y=513
-				width=61
-				height=18
-			}
-			monitor {
-				chan="$(P)$(D)ImageSizeX_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=238
-				y=513
-				width=61
-				height=18
-			}
-			monitor {
-				chan="$(P)$(D)ImageSizeY_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-	}
-}
-composite {
-	object {
-		x=31
-		y=537
-		width=268
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=31
-				y=537
-				width=180
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Image Size (bytes)"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=238
-				y=538
-				width=61
-				height=18
-			}
-			monitor {
-				chan="$(P)$(D)ImageSize_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-	}
-}
-composite {
-	object {
-		x=94
-		y=562
-		width=205
-		height=20
-	}
-	"composite name"=""
-	children {
-		"text update" {
-			object {
-				x=238
-				y=563
-				width=61
-				height=18
-			}
-			monitor {
-				chan="$(P)$(D)Gain_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text entry" {
-			object {
-				x=145
-				y=562
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(D)Gain"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=94
-				y=562
-				width=40
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Gain"
-			align="horiz. right"
-		}
-	}
-}
-composite {
-	object {
-		x=44
-		y=587
-		width=273
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=44
-				y=587
-				width=90
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Data type"
-			align="horiz. right"
-		}
-		menu {
-			object {
-				x=140
-				y=587
-				width=80
-				height=20
-			}
-			control {
-				chan="$(P)$(D)DataType"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=238
-				y=588
-				width=79
-				height=18
-			}
-			monitor {
-				chan="$(P)$(D)DataType_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			format="string"
-			limits {
-			}
-		}
-	}
-}
 text {
 	object {
 		x=24
@@ -1478,560 +1251,6 @@ text {
 	align="horiz. centered"
 	limits {
 	}
-}
-composite {
-	object {
-		x=17
-		y=632
-		width=107
-		height=21
-	}
-	"composite name"=""
-	children {
-		composite {
-			object {
-				x=17
-				y=632
-				width=107
-				height=21
-			}
-			"composite name"=""
-			children {
-				rectangle {
-					object {
-						x=17
-						y=632
-						width=107
-						height=21
-					}
-					"basic attribute" {
-						clr=2
-					}
-				}
-			}
-		}
-		text {
-			object {
-				x=50
-				y=632
-				width=40
-				height=20
-			}
-			"basic attribute" {
-				clr=54
-			}
-			textix="File"
-			align="horiz. centered"
-		}
-	}
-}
-text {
-	object {
-		x=419
-		y=856
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Auto save"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=513
-		y=856
-		width=64
-		height=20
-	}
-	control {
-		chan="$(P)$(D)AutoSave"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=582
-		y=857
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)$(D)AutoSave_RBV"
-		clr=54
-		bclr=4
-	}
-	limits {
-	}
-}
-composite {
-	object {
-		x=29
-		y=831
-		width=639
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=29
-				y=831
-				width=130
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Last filename"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=168
-				y=832
-				width=500
-				height=18
-			}
-			monitor {
-				chan="$(P)$(D)FullFileName_RBV"
-				clr=54
-				bclr=4
-			}
-			format="string"
-			limits {
-			}
-		}
-	}
-}
-text {
-	object {
-		x=9
-		y=806
-		width=150
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Filename format"
-	align="horiz. right"
-}
-composite {
-	object {
-		x=168
-		y=783
-		width=160
-		height=43
-	}
-	"composite name"=""
-	children {
-		"text update" {
-			object {
-				x=168
-				y=783
-				width=160
-				height=18
-			}
-			monitor {
-				chan="$(P)$(D)FileTemplate_RBV"
-				clr=54
-				bclr=4
-			}
-			format="string"
-			limits {
-			}
-		}
-		"text entry" {
-			object {
-				x=168
-				y=806
-				width=160
-				height=20
-			}
-			control {
-				chan="$(P)$(D)FileTemplate"
-				clr=14
-				bclr=51
-			}
-			format="string"
-			limits {
-			}
-		}
-	}
-}
-composite {
-	object {
-		x=19
-		y=758
-		width=298
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=19
-				y=758
-				width=140
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Auto increment"
-			align="horiz. right"
-		}
-		menu {
-			object {
-				x=168
-				y=758
-				width=64
-				height=20
-			}
-			control {
-				chan="$(P)$(D)AutoIncrement"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=237
-				y=759
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(D)AutoIncrement_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-	}
-}
-composite {
-	object {
-		x=49
-		y=731
-		width=264
-		height=22
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=49
-				y=732
-				width=110
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Next file #"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=168
-				y=731
-				width=60
-				height=22
-			}
-			control {
-				chan="$(P)$(D)FileNumber"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=233
-				y=733
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(D)FileNumber_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-	}
-}
-composite {
-	object {
-		x=69
-		y=683
-		width=599
-		height=43
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=69
-				y=706
-				width=90
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="File name"
-			align="horiz. right"
-		}
-		composite {
-			object {
-				x=168
-				y=683
-				width=500
-				height=43
-			}
-			"composite name"=""
-			children {
-				"text entry" {
-					object {
-						x=168
-						y=706
-						width=500
-						height=20
-					}
-					control {
-						chan="$(P)$(D)FileName"
-						clr=14
-						bclr=51
-					}
-					format="string"
-					limits {
-					}
-				}
-				"text update" {
-					object {
-						x=168
-						y=683
-						width=500
-						height=18
-					}
-					monitor {
-						chan="$(P)$(D)FileName_RBV"
-						clr=54
-						bclr=4
-					}
-					format="string"
-					limits {
-					}
-				}
-			}
-		}
-	}
-}
-composite {
-	object {
-		x=69
-		y=635
-		width=599
-		height=43
-	}
-	"composite name"=""
-	children {
-		composite {
-			object {
-				x=168
-				y=635
-				width=500
-				height=43
-			}
-			"composite name"=""
-			children {
-				"text entry" {
-					object {
-						x=168
-						y=658
-						width=500
-						height=20
-					}
-					control {
-						chan="$(P)$(D)FilePath"
-						clr=14
-						bclr=51
-					}
-					format="string"
-					limits {
-					}
-				}
-				"text update" {
-					object {
-						x=168
-						y=635
-						width=500
-						height=18
-					}
-					monitor {
-						chan="$(P)$(D)FilePath_RBV"
-						clr=54
-						bclr=4
-					}
-					format="string"
-					limits {
-					}
-				}
-			}
-		}
-		text {
-			object {
-				x=69
-				y=658
-				width=90
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="File path"
-			align="horiz. right"
-		}
-	}
-}
-rectangle {
-	object {
-		x=2
-		y=625
-		width=675
-		height=260
-	}
-	"basic attribute" {
-		clr=14
-		fill="outline"
-	}
-}
-composite {
-	object {
-		x=376
-		y=806
-		width=280
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=376
-				y=806
-				width=110
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="File format"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=576
-				y=807
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(D)FileFormat_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		menu {
-			object {
-				x=491
-				y=806
-				width=80
-				height=20
-			}
-			control {
-				chan="$(P)$(D)FileFormat"
-				clr=14
-				bclr=51
-			}
-		}
-	}
-}
-composite {
-	object {
-		x=69
-		y=856
-		width=159
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=69
-				y=856
-				width=90
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Save file"
-			align="horiz. right"
-		}
-		"message button" {
-			object {
-				x=168
-				y=856
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(D)WriteFile"
-				clr=14
-				bclr=51
-			}
-			label="Save"
-			press_msg="1"
-		}
-	}
-}
-text {
-	object {
-		x=248
-		y=856
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Read file"
-	align="horiz. right"
-}
-"message button" {
-	object {
-		x=343
-		y=856
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(D)ReadFile"
-		clr=14
-		bclr=51
-	}
-	label="Read"
-	press_msg="1"
 }
 composite {
 	object {
@@ -2379,5 +1598,857 @@ text {
 		bclr=4
 	}
 	limits {
+	}
+}
+composite {
+	object {
+		x=2
+		y=655
+		width=675
+		height=260
+	}
+	"composite name"=""
+	children {
+		composite {
+			object {
+				x=17
+				y=662
+				width=107
+				height=21
+			}
+			"composite name"=""
+			children {
+				composite {
+					object {
+						x=17
+						y=662
+						width=107
+						height=21
+					}
+					"composite name"=""
+					children {
+						rectangle {
+							object {
+								x=17
+								y=662
+								width=107
+								height=21
+							}
+							"basic attribute" {
+								clr=2
+							}
+						}
+					}
+				}
+				text {
+					object {
+						x=50
+						y=662
+						width=40
+						height=20
+					}
+					"basic attribute" {
+						clr=54
+					}
+					textix="File"
+					align="horiz. centered"
+				}
+			}
+		}
+		text {
+			object {
+				x=419
+				y=886
+				width=90
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Auto save"
+			align="horiz. right"
+		}
+		menu {
+			object {
+				x=513
+				y=886
+				width=64
+				height=20
+			}
+			control {
+				chan="$(P)$(D)AutoSave"
+				clr=14
+				bclr=51
+			}
+		}
+		"text update" {
+			object {
+				x=582
+				y=887
+				width=80
+				height=18
+			}
+			monitor {
+				chan="$(P)$(D)AutoSave_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+		composite {
+			object {
+				x=29
+				y=861
+				width=639
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=29
+						y=861
+						width=130
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Last filename"
+					align="horiz. right"
+				}
+				"text update" {
+					object {
+						x=168
+						y=862
+						width=500
+						height=18
+					}
+					monitor {
+						chan="$(P)$(D)FullFileName_RBV"
+						clr=54
+						bclr=4
+					}
+					format="string"
+					limits {
+					}
+				}
+			}
+		}
+		text {
+			object {
+				x=9
+				y=836
+				width=150
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Filename format"
+			align="horiz. right"
+		}
+		composite {
+			object {
+				x=168
+				y=813
+				width=160
+				height=43
+			}
+			"composite name"=""
+			children {
+				"text update" {
+					object {
+						x=168
+						y=813
+						width=160
+						height=18
+					}
+					monitor {
+						chan="$(P)$(D)FileTemplate_RBV"
+						clr=54
+						bclr=4
+					}
+					format="string"
+					limits {
+					}
+				}
+				"text entry" {
+					object {
+						x=168
+						y=836
+						width=160
+						height=20
+					}
+					control {
+						chan="$(P)$(D)FileTemplate"
+						clr=14
+						bclr=51
+					}
+					format="string"
+					limits {
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=19
+				y=788
+				width=298
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=19
+						y=788
+						width=140
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Auto increment"
+					align="horiz. right"
+				}
+				menu {
+					object {
+						x=168
+						y=788
+						width=64
+						height=20
+					}
+					control {
+						chan="$(P)$(D)AutoIncrement"
+						clr=14
+						bclr=51
+					}
+				}
+				"text update" {
+					object {
+						x=237
+						y=789
+						width=80
+						height=18
+					}
+					monitor {
+						chan="$(P)$(D)AutoIncrement_RBV"
+						clr=54
+						bclr=4
+					}
+					limits {
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=49
+				y=761
+				width=264
+				height=22
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=49
+						y=762
+						width=110
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Next file #"
+					align="horiz. right"
+				}
+				"text entry" {
+					object {
+						x=168
+						y=761
+						width=60
+						height=22
+					}
+					control {
+						chan="$(P)$(D)FileNumber"
+						clr=14
+						bclr=51
+					}
+					limits {
+					}
+				}
+				"text update" {
+					object {
+						x=233
+						y=763
+						width=80
+						height=18
+					}
+					monitor {
+						chan="$(P)$(D)FileNumber_RBV"
+						clr=54
+						bclr=4
+					}
+					limits {
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=69
+				y=713
+				width=599
+				height=43
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=69
+						y=736
+						width=90
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="File name"
+					align="horiz. right"
+				}
+				composite {
+					object {
+						x=168
+						y=713
+						width=500
+						height=43
+					}
+					"composite name"=""
+					children {
+						"text entry" {
+							object {
+								x=168
+								y=736
+								width=500
+								height=20
+							}
+							control {
+								chan="$(P)$(D)FileName"
+								clr=14
+								bclr=51
+							}
+							format="string"
+							limits {
+							}
+						}
+						"text update" {
+							object {
+								x=168
+								y=713
+								width=500
+								height=18
+							}
+							monitor {
+								chan="$(P)$(D)FileName_RBV"
+								clr=54
+								bclr=4
+							}
+							format="string"
+							limits {
+							}
+						}
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=69
+				y=665
+				width=599
+				height=43
+			}
+			"composite name"=""
+			children {
+				composite {
+					object {
+						x=168
+						y=665
+						width=500
+						height=43
+					}
+					"composite name"=""
+					children {
+						"text entry" {
+							object {
+								x=168
+								y=688
+								width=500
+								height=20
+							}
+							control {
+								chan="$(P)$(D)FilePath"
+								clr=14
+								bclr=51
+							}
+							format="string"
+							limits {
+							}
+						}
+						"text update" {
+							object {
+								x=168
+								y=665
+								width=500
+								height=18
+							}
+							monitor {
+								chan="$(P)$(D)FilePath_RBV"
+								clr=54
+								bclr=4
+							}
+							format="string"
+							limits {
+							}
+						}
+					}
+				}
+				text {
+					object {
+						x=69
+						y=688
+						width=90
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="File path"
+					align="horiz. right"
+				}
+			}
+		}
+		rectangle {
+			object {
+				x=2
+				y=655
+				width=675
+				height=260
+			}
+			"basic attribute" {
+				clr=14
+				fill="outline"
+			}
+		}
+		composite {
+			object {
+				x=376
+				y=836
+				width=280
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=376
+						y=836
+						width=110
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="File format"
+					align="horiz. right"
+				}
+				"text update" {
+					object {
+						x=576
+						y=837
+						width=80
+						height=18
+					}
+					monitor {
+						chan="$(P)$(D)FileFormat_RBV"
+						clr=54
+						bclr=4
+					}
+					limits {
+					}
+				}
+				menu {
+					object {
+						x=491
+						y=836
+						width=80
+						height=20
+					}
+					control {
+						chan="$(P)$(D)FileFormat"
+						clr=14
+						bclr=51
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=69
+				y=886
+				width=159
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=69
+						y=886
+						width=90
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Save file"
+					align="horiz. right"
+				}
+				"message button" {
+					object {
+						x=168
+						y=886
+						width=60
+						height=20
+					}
+					control {
+						chan="$(P)$(D)WriteFile"
+						clr=14
+						bclr=51
+					}
+					label="Save"
+					press_msg="1"
+				}
+			}
+		}
+		text {
+			object {
+				x=248
+				y=886
+				width=90
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Read file"
+			align="horiz. right"
+		}
+		"message button" {
+			object {
+				x=343
+				y=886
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(D)ReadFile"
+				clr=14
+				bclr=51
+			}
+			label="Read"
+			press_msg="1"
+		}
+	}
+}
+composite {
+	object {
+		x=31
+		y=552
+		width=286
+		height=95
+	}
+	"composite name"=""
+	children {
+		composite {
+			object {
+				x=31
+				y=577
+				width=268
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=31
+						y=577
+						width=180
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Image Size (bytes)"
+					align="horiz. right"
+				}
+				"text update" {
+					object {
+						x=238
+						y=578
+						width=61
+						height=18
+					}
+					monitor {
+						chan="$(P)$(D)ImageSize_RBV"
+						clr=54
+						bclr=4
+					}
+					align="horiz. centered"
+					limits {
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=94
+				y=602
+				width=205
+				height=20
+			}
+			"composite name"=""
+			children {
+				"text update" {
+					object {
+						x=238
+						y=603
+						width=61
+						height=18
+					}
+					monitor {
+						chan="$(P)$(D)Gain_RBV"
+						clr=54
+						bclr=4
+					}
+					align="horiz. centered"
+					limits {
+					}
+				}
+				"text entry" {
+					object {
+						x=145
+						y=602
+						width=60
+						height=20
+					}
+					control {
+						chan="$(P)$(D)Gain"
+						clr=14
+						bclr=51
+					}
+					limits {
+					}
+				}
+				text {
+					object {
+						x=94
+						y=602
+						width=40
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Gain"
+					align="horiz. right"
+				}
+			}
+		}
+		composite {
+			object {
+				x=44
+				y=627
+				width=273
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=44
+						y=627
+						width=90
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Data type"
+					align="horiz. right"
+				}
+				menu {
+					object {
+						x=140
+						y=627
+						width=80
+						height=20
+					}
+					control {
+						chan="$(P)$(D)DataType"
+						clr=14
+						bclr=51
+					}
+				}
+				"text update" {
+					object {
+						x=238
+						y=628
+						width=79
+						height=18
+					}
+					monitor {
+						chan="$(P)$(D)DataType_RBV"
+						clr=54
+						bclr=4
+					}
+					align="horiz. centered"
+					format="string"
+					limits {
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=34
+				y=552
+				width=265
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=34
+						y=552
+						width=100
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Image Size"
+					align="horiz. right"
+				}
+				"text update" {
+					object {
+						x=145
+						y=553
+						width=61
+						height=18
+					}
+					monitor {
+						chan="$(P)$(D)ImageSizeX_RBV"
+						clr=54
+						bclr=4
+					}
+					align="horiz. centered"
+					limits {
+					}
+				}
+				"text update" {
+					object {
+						x=238
+						y=553
+						width=61
+						height=18
+					}
+					monitor {
+						chan="$(P)$(D)ImageSizeY_RBV"
+						clr=54
+						bclr=4
+					}
+					align="horiz. centered"
+					limits {
+					}
+				}
+			}
+		}
+	}
+}
+"text update" {
+	object {
+		x=145
+		y=512
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(D)ReverseX_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=238
+		y=512
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(D)ReverseY_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=64
+		y=532
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Reverse"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=145
+		y=532
+		width=60
+		height=18
+	}
+	control {
+		chan="$(P)$(D)ReverseX"
+		clr=14
+		bclr=51
+	}
+}
+menu {
+	object {
+		x=238
+		y=532
+		width=60
+		height=18
+	}
+	control {
+		chan="$(P)$(D)ReverseY"
+		clr=14
+		bclr=51
 	}
 }
