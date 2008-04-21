@@ -25,7 +25,7 @@ int NDFileWriteNetCDF(const char *fileName, NDFileNetCDFState_t *pState,
     int dimIds[ND_ARRAY_MAX_DIMS+1];
     size_t start[ND_ARRAY_MAX_DIMS+1], count[ND_ARRAY_MAX_DIMS+1];
     int size[ND_ARRAY_MAX_DIMS], offset[ND_ARRAY_MAX_DIMS];
-    int binning[ND_ARRAY_MAX_DIMS], invert[ND_ARRAY_MAX_DIMS];
+    int binning[ND_ARRAY_MAX_DIMS], reverse[ND_ARRAY_MAX_DIMS];
     char dimName[25];
     int retval;
     int ncType=NC_NAT;
@@ -77,7 +77,7 @@ int NDFileWriteNetCDF(const char *fileName, NDFileNetCDFState_t *pState,
             size[i]    = pArray->dims[i].size;
             offset[i]  = pArray->dims[i].offset;
             binning[i] = pArray->dims[i].binning;
-            invert[i]  = pArray->dims[i].invert;
+            reverse[i]  = pArray->dims[i].reverse;
         }
 
         /* Create global attribute for information about the dimensions */
@@ -90,8 +90,8 @@ int NDFileWriteNetCDF(const char *fileName, NDFileNetCDFState_t *pState,
         if ((retval = nc_put_att_int(pState->ncId, NC_GLOBAL, "dimBinning", 
                                      NC_INT, pArray->ndims, binning)))
             ERR(retval);
-        if ((retval = nc_put_att_int(pState->ncId, NC_GLOBAL, "dimInvert", 
-                                     NC_INT, pArray->ndims, invert)))
+        if ((retval = nc_put_att_int(pState->ncId, NC_GLOBAL, "dimReverse", 
+                                     NC_INT, pArray->ndims, reverse)))
             ERR(retval);
             
         /* Convert from NDArray data types to netCDF data types */
