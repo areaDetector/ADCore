@@ -376,6 +376,7 @@ static asynStatus writeInt32(void *drvPvt, asynUser *pasynUser,
 {
     drvADPvt *pPvt = (drvADPvt *)drvPvt;
     int function = pasynUser->reason;
+    int adstatus;
     asynStatus status = asynSuccess;
     int reset=0;
 
@@ -388,7 +389,8 @@ static asynStatus writeInt32(void *drvPvt, asynUser *pasynUser,
     /* For a real detector this is where the parameter is sent to the hardware */
     switch (function) {
     case ADAcquire:
-        if (value) {
+        ADParam->getInteger(pPvt->params, ADStatus, &adstatus);
+        if (value && (adstatus == ADStatusIdle)) {
             /* We need to set the number of images we expect to collect, so the image callback function
                can know when acquisition is complete.  We need to find out what mode we are in and how
                many images have been requested.  If we are in continuous mode then set the number of
@@ -410,7 +412,8 @@ static asynStatus writeInt32(void *drvPvt, asynUser *pasynUser,
             /* Send an event to wake up the simulation task.  
              * It won't actually start generating new images until we release the lock below */
             epicsEventSignal(pPvt->startEventId);
-        } else {
+        } 
+        if (!value && (adstatus != ADStatusIdle)) {
             /* This was a command to stop acquisition */
             /* Send the stop event */
             epicsEventSignal(pPvt->stopEventId);
