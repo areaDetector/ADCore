@@ -210,6 +210,9 @@ static int simComputeImage(drvADPvt *pPvt)
     dimsOut[1].binning = binY;
     dimsOut[1].offset = minY;
     dimsOut[1].reverse = reverseY;
+    /* We save the most recent image buffer so it can be used in the read() function.
+     * Now release it before getting a new version. */
+    if (pPvt->pImage) NDArrayBuff->release(pPvt->pImage);
     status |= NDArrayBuff->convert(pPvt->pRaw,
                                    &pPvt->pImage,
                                    dataType,
@@ -281,10 +284,6 @@ static void simTask(drvADPvt *pPvt)
             epicsMutexLock(pPvt->mutexId);
         }
         
-        /* We save the most recent image buffer so it can be used in the read() function.
-         * Now release it.  simComputeImage will get a new one. */
-        if (pPvt->pImage) NDArrayBuff->release(pPvt->pImage);
-
         /* Update the image */
         simComputeImage(pPvt);
         
