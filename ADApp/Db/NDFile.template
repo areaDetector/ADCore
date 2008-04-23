@@ -4,7 +4,7 @@
 
 ###################################################################
 #  These records control the connection of the server to          #
-#  an NDArray port and address                                      #
+#  an NDArray port and address                                    #
 ###################################################################
 # NDArray port name
 record(stringout, "$(P)$(F)NDArrayPort")
@@ -77,7 +77,7 @@ record(mbbo, "$(P)$(F)BlockingCallbacks")
 # Array posting flag
 record(mbbi, "$(P)$(F)BlockingCallbacks_RBV")
 {
-    field(PINI, "1")
+#    field(PINI, "1")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BLOCKING_CALLBACKS")
     field(ZRST, "No")
@@ -159,7 +159,7 @@ record(waveform, "$(P)$(F)FilePath")
 
 record(waveform, "$(P)$(F)FilePath_RBV")
 {
-    field(PINI, "1")
+#    field(PINI, "1")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_PATH")
     field(FTVL, "UCHAR")
@@ -179,7 +179,7 @@ record(waveform, "$(P)$(F)FileName")
 
 record(waveform, "$(P)$(F)FileName_RBV")
 {
-    field(PINI, "1")
+#    field(PINI, "1")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NAME")
     field(FTVL, "UCHAR")
@@ -198,7 +198,7 @@ record(longout, "$(P)$(F)FileNumber")
 
 record(longin, "$(P)$(F)FileNumber_RBV")
 {
-    field(PINI, "1")
+#    field(PINI, "1")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NUMBER")
     field(SCAN, "I/O Intr")
@@ -279,7 +279,7 @@ record(mbbo, "$(P)$(F)AutoSave")
 
 record(mbbi, "$(P)$(F)AutoSave_RBV")
 {
-    field(PINI, "1")
+#    field(PINI, "1")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_SAVE")
     field(ZRST, "No")
@@ -318,7 +318,7 @@ record(mbbo, "$(P)$(F)FileFormat")
 
 record(mbbi, "$(P)$(F)FileFormat_RBV")
 {
-    field(PINI, "1")
+#    field(PINI, "1")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_FORMAT")
     field(ZRST, "netCDF")
@@ -344,7 +344,7 @@ record(mbbo, "$(P)$(F)FileWriteMode")
 
 record(mbbi, "$(P)$(F)FileWriteMode_RBV")
 {
-    field(PINI, "1")
+#    field(PINI, "1")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WRITE_MODE")
     field(ZRST, "Single")
@@ -382,7 +382,7 @@ record(longout, "$(P)$(F)NumCapture")
 
 record(longin, "$(P)$(F)NumCapture_RBV")
 {
-    field(PINI, "1")
+#    field(PINI, "1")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_CAPTURE")
     field(SCAN, "I/O Intr")

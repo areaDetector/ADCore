@@ -54,7 +54,7 @@ record(mbbo, "$(P)$(A)PostArrays")
 # Array posting flag
 record(mbbi, "$(P)$(A)PostArrays_RBV")
 {
-    field(PINI, "1")
+#    field(PINI, "1")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))POST_ARRAYS")
     field(ZRST, "No")
