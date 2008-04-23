@@ -1189,10 +1189,10 @@ int drvNDFileConfigure(const char *portName, int queueSize, int blockingCallback
     /* Set the initial values of some parameters */
     ADParam->setInteger(pPvt->params, NDFileArrayCounter, 0);
     ADParam->setInteger(pPvt->params, NDFileDroppedArrays, 0);
+    ADParam->setInteger(pPvt->params, NDFileNumCaptured, 0);
+    ADParam->setInteger(pPvt->params, NDFileCapture, 0);
     ADParam->setString (pPvt->params, NDFileArrayPort, NDArrayPort);
     ADParam->setInteger(pPvt->params, NDFileArrayAddr, NDArrayAddr);
-    ADParam->setInteger(pPvt->params, NDFileBlockingCallbacks, 0);
-    ADParam->setInteger(pPvt->params, NDFileCapture, 0);
     
     /* Try to connect to the NDArray port */
     status = connectToArrayPort(pPvt);
