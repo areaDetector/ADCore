@@ -142,6 +142,53 @@ typedef struct drvADPvt {
 
 /* Local functions, not in any interface */
 
+/* These macros saves a lot of code when handling different data types */
+#define COMPUTE_STATS(DATA_TYPE) { \
+    DATA_TYPE *pData = (DATA_TYPE *) pROI->pArray->pData; \
+    min = (double) pData[0]; \
+    max = (double) pData[0]; \
+    total = 0.; \
+    for (i=0; i<arrayInfo.nElements; i++) { \
+        value = (double)pData[i]; \
+        if (value < min) min = value; \
+        if (value > max) max = value; \
+        total += value; \
+    } \
+}
+
+#define COMPUTE_STATS_ALL() { \
+    switch(pROI->pArray->dataType) {              \
+        case NDInt8:                              \
+            COMPUTE_STATS(epicsInt8);     \
+            break;                                \
+        case NDUInt8:                             \
+            COMPUTE_STATS(epicsUInt8);    \
+            break;                                \
+        case NDInt16:                             \
+            COMPUTE_STATS(epicsInt16);    \
+            break;                                \
+        case NDUInt16:                            \
+            COMPUTE_STATS(epicsUInt16);   \
+            break;                                \
+        case NDInt32:                             \
+            COMPUTE_STATS(epicsInt32);    \
+            break;                                \
+        case NDUInt32:                            \
+            COMPUTE_STATS(epicsUInt32);   \
+            break;                                \
+        case NDFloat32:                           \
+            COMPUTE_STATS(epicsFloat32);  \
+            break;                                \
+        case NDFloat64:                           \
+            COMPUTE_STATS(epicsFloat64);  \
+            break;                                \
+        default:                                  \
+            status = ND_ERROR;         \
+            break;                                \
+    }                                             \
+}
+
+
 
 static void NDROIProcessROIs(drvADPvt *pPvt, NDArray_t *pArray)
 {
@@ -151,16 +198,17 @@ static void NDROIProcessROIs(drvADPvt *pPvt, NDArray_t *pArray)
      */
      
     NDROI_t *pROI;
-    int use;
+    int use, computeStats;
     int arrayCounter;
     NDArrayInfo_t arrayInfo;
+    double min=0, max=0, mean, total=0, net, value;
     int i;
-    /* const char* functionName = "NDROIDoCallbacks"; */
-
-    NDArrayBuff->getInfo(pArray, &arrayInfo);
+    int status;
+    /* const char* functionName = "NDROIProcessROIs"; */
  
     /* This function is called with the lock taken, and it must be set when we exit.
-     * The following code can be exected without the mutex because we are not accessing pPvt */
+     * The following code can be exected without the mutex because we are not accessing elements of
+     * pPvt that other threads can access. */
     epicsMutexUnlock(pPvt->mutexId);
     
     /* Loop over the ROIs in this driver */
@@ -176,6 +224,17 @@ static void NDROIProcessROIs(drvADPvt *pPvt, NDArray_t *pArray)
         /* Call any clients who have registered for NDArray callbacks */
         ADUtils->handleCallback(pPvt->asynStdInterfaces.handleInterruptPvt, pROI->pArray);
         /* Call any clients who have registered for standard interface callbacks */
+        
+        ADParam->getInteger(pROI->params, NDROIComputeStats, &computeStats);
+        if (!computeStats) continue;
+        NDArrayBuff->getInfo(pROI->pArray, &arrayInfo);
+        COMPUTE_STATS_ALL();
+        mean = total / arrayInfo.nElements;
+        ADParam->setDouble(pROI->params, NDROIMinValue, min);
+        ADParam->setDouble(pROI->params, NDROIMaxValue, max);
+        ADParam->setDouble(pROI->params, NDROITotal, total);
+        net = total;
+        ADParam->setDouble(pROI->params, NDROIMeanValue, mean);
         ADParam->callCallbacks(pROI->params);
     }
 
