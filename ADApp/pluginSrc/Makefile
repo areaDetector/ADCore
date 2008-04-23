@@ -15,6 +15,8 @@ LIB_SRCS += drvNDStdArraysEpics.c
 LIB_SRCS += drvNDFile.c
 LIB_SRCS += drvNDFileEpics.c
 LIB_SRCS += NDFileNetCDF.c
+LIB_SRCS += drvNDROI.c
+LIB_SRCS += drvNDROIEpics.c
 LIB_LIBS += netCDF
 
 include $(TOP)/configure/RULES
