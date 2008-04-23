@@ -114,7 +114,6 @@ static int paramSetFlag( PARAMS params, paramIndex index )
 {
     int status = PARAM_ERROR;
 
-    index -= params->startVal;
     if (index >= 0 && index < params->nvals)
     {
         int i;
