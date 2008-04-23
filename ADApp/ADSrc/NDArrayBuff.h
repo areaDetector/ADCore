@@ -19,6 +19,8 @@ extern "C" {
 #endif
 
 #define ND_ARRAY_MAX_DIMS 10
+#define ND_SUCCESS 0
+#define ND_ERROR -1
 
 /* Enumeration of image data types
  * This list will grow when color image models are supported */

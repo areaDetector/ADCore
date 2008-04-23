@@ -20,10 +20,6 @@
 
 #include "NDArrayBuff.h"
 
-#define ND_SUCCESS 0
-#define ND_ERROR -1
-
-
 typedef struct {
     ELLLIST freeList;
     epicsMutexId listLock;
