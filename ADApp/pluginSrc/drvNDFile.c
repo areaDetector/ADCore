@@ -155,7 +155,7 @@ static int NDFileReadFile(drvADPvt *pPvt)
     ADParam->setInteger(pPvt->params, ADDataType, dataType);
     
     /* Call any registered clients */
-    ADUtils->handleCallback(pPvt->asynStdInterfaces.handleInterruptPvt, pArray);
+    ADUtils->handleCallback(pPvt->asynStdInterfaces.handleInterruptPvt, pArray, NDArrayData, 0);
 
     /* Set the last arrat to be this one */
     NDArrayBuff->release(pPvt->pArray);
@@ -1146,6 +1146,7 @@ int drvNDFileConfigure(const char *portName, int queueSize, int blockingCallback
     pasynUser = pasynManager->createAsynUser(0, 0);
     pasynUser->userPvt = pPvt;
     pPvt->pasynUserHandle = pasynUser;
+    pPvt->pasynUserHandle->reason = NDArrayData;
 
     /* Create the epicsMutex for locking access to data structures from other threads */
     pPvt->mutexId = epicsMutexCreate();
