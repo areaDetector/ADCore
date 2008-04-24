@@ -130,8 +130,8 @@ static int simComputeImage(drvADPvt *pPvt)
     status |= ADParam->getDouble (pPvt->params, SimGainY,      &gainY);
 
     /* Make sure parameters are consistent, fix them if they are not */
-    if (binX < 0) {binX = 0; status |= ADParam->setInteger(pPvt->params, ADBinX, binX);}
-    if (binY < 0) {binY = 0; status |= ADParam->setInteger(pPvt->params, ADBinY, binY);}
+    if (binX < 1) {binX = 1; status |= ADParam->setInteger(pPvt->params, ADBinX, binX);}
+    if (binY < 1) {binY = 1; status |= ADParam->setInteger(pPvt->params, ADBinY, binY);}
     if (minX < 0) {minX = 0; status |= ADParam->setInteger(pPvt->params, ADMinX, minX);}
     if (minY < 0) {minY = 0; status |= ADParam->setInteger(pPvt->params, ADMinY, minY);}
     if (minX > maxSizeX-1) {minX = maxSizeX-1; status |= ADParam->setInteger(pPvt->params, ADMinX, minX);}
@@ -310,7 +310,8 @@ static void simTask(drvADPvt *pPvt)
         epicsMutexUnlock(pPvt->mutexId);
         asynPrint(pPvt->pasynUser, ASYN_TRACE_FLOW, 
              "%s:%s: calling imageData callback\n", driverName, functionName);
-        ADUtils->handleCallback(pPvt->asynStdInterfaces.handleInterruptPvt, pPvt->pImage);
+        ADUtils->handleCallback(pPvt->asynStdInterfaces.handleInterruptPvt, 
+                                pPvt->pImage, NDArrayData, 0);
         epicsMutexLock(pPvt->mutexId);
 
         /* See if acquisition is done */
