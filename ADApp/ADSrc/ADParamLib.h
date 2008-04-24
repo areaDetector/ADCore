@@ -26,6 +26,7 @@ typedef struct
   int  (*getDouble)          ( PARAMS params, paramIndex index, double * value );
   int  (*getString)          ( PARAMS params, paramIndex index, int maxChars, char *value  );
   int  (*callCallbacks)      ( PARAMS params );
+  int  (*callCallbacksAddr)  ( PARAMS params, int addr );
   void (*dump)               ( PARAMS params );
 } paramSupport;
 
