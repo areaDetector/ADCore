@@ -83,18 +83,23 @@ static int createFileName(void *params, int maxChars, char *fullFileName)
 }
 
 
-static void handleCallback(void *handelInterruptPvt, void *handle)
+static void handleCallback(void *handelInterruptPvt, void *handle, int reason, int addr)
 {
     ELLLIST *pclientList;
     interruptNode *pnode;
+    int address;
 
     pasynManager->interruptStart(handelInterruptPvt, &pclientList);
     pnode = (interruptNode *)ellFirst(pclientList);
     while (pnode) {
         asynHandleInterrupt *pInterrupt = pnode->drvPvt;
-        pInterrupt->callback(pInterrupt->userPvt, 
-                             pInterrupt->pasynUser,
-                             handle);
+        pasynManager->getAddr(pInterrupt->pasynUser, &address);
+        if ((reason == pInterrupt->pasynUser->reason) &&
+            (address == addr)) {
+            pInterrupt->callback(pInterrupt->userPvt, 
+                                 pInterrupt->pasynUser,
+                                 handle);
+        }
         pnode = (interruptNode *)ellNext(&pnode->node);
     }
     pasynManager->interruptEnd(handelInterruptPvt);

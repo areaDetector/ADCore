@@ -23,7 +23,7 @@ typedef struct
 {
     int  (*setParamDefaults)    (void *params);
     int  (*createFileName)      (void *params, int maxChars, char *fullFileName);
-    void (*handleCallback)      (void *handleInterruptPvt, void *handle);
+    void (*handleCallback)      (void *handleInterruptPvt, void *handle, int reason, int addr);
     void (*dimensionCallback)   (void *int32ArrayInterruptPvt, int *dimsPrev, 
                                  NDArray_t *pArray, int reason);
     int  (*findParam)           (ADParamString_t *paramTable, int numParams, 
