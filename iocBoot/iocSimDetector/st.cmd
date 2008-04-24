@@ -33,6 +33,10 @@ dbLoadRecords("$(AD)/ADApp/Db/NDFile.template","P=13SIM1:,F=file1:,PORT=SIM1File
 # Create an ROI plugin
 drvNDROIConfigure("SIM1ROI", 20, 0, "SIM1", 0, 4)
 dbLoadRecords("$(AD)/ADApp/Db/NDROI.template","P=13SIM1:,R=ROI1:,PORT=SIM1ROI,ADDR=0,TIMEOUT=1")
+dbLoadRecords("$(AD)/ADApp/Db/NDROIN.template","P=13SIM1:,R=ROI1:0:,PORT=SIM1ROI,ADDR=0,TIMEOUT=1,HIST_SIZE=256")
+dbLoadRecords("$(AD)/ADApp/Db/NDROIN.template","P=13SIM1:,R=ROI1:1:,PORT=SIM1ROI,ADDR=1,TIMEOUT=1,HIST_SIZE=256")
+dbLoadRecords("$(AD)/ADApp/Db/NDROIN.template","P=13SIM1:,R=ROI1:2:,PORT=SIM1ROI,ADDR=2,TIMEOUT=1,HIST_SIZE=256")
+dbLoadRecords("$(AD)/ADApp/Db/NDROIN.template","P=13SIM1:,R=ROI1:3:,PORT=SIM1ROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
 
 #asynSetTraceMask("SIM1",0,255)
 #asynSetTraceMask("SIM2",0,255)
