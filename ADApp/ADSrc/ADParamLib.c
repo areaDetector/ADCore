@@ -296,11 +296,12 @@ static int paramGetString( PARAMS params, paramIndex index, int maxChars, char *
     return status;
 }
 
-static int intCallback( PARAMS params, int command, int value)
+static int intCallback( PARAMS params, int command, int addr, int value)
 {
     ELLLIST *pclientList;
     interruptNode *pnode;
     asynStandardInterfaces *pInterfaces = params->pasynInterfaces;
+    int address;
 
     /* Pass int32 interrupts */
     if (!pInterfaces->int32InterruptPvt) return(PARAM_ERROR);
@@ -308,7 +309,9 @@ static int intCallback( PARAMS params, int command, int value)
     pnode = (interruptNode *)ellFirst(pclientList);
     while (pnode) {
         asynInt32Interrupt *pInterrupt = pnode->drvPvt;
-        if (command == pInterrupt->pasynUser->reason) {
+        pasynManager->getAddr(pInterrupt->pasynUser, &address);
+        if ((command == pInterrupt->pasynUser->reason) &&
+            (address == addr)) {
             pInterrupt->callback(pInterrupt->userPvt, 
                                  pInterrupt->pasynUser,
                                  value);
@@ -319,11 +322,12 @@ static int intCallback( PARAMS params, int command, int value)
     return(PARAM_OK);
 }
 
-static int doubleCallback( PARAMS params, int command, double value)
+static int doubleCallback( PARAMS params, int command, int addr, double value)
 {
     ELLLIST *pclientList;
     interruptNode *pnode;
     asynStandardInterfaces *pInterfaces = params->pasynInterfaces;
+    int address;
 
     /* Pass float64 interrupts */
     if (!pInterfaces->float64InterruptPvt) return(PARAM_ERROR);
@@ -331,7 +335,9 @@ static int doubleCallback( PARAMS params, int command, double value)
     pnode = (interruptNode *)ellFirst(pclientList);
     while (pnode) {
         asynFloat64Interrupt *pInterrupt = pnode->drvPvt;
-        if (command == pInterrupt->pasynUser->reason) {
+        pasynManager->getAddr(pInterrupt->pasynUser, &address);
+        if ((command == pInterrupt->pasynUser->reason) &&
+            (address == addr)) {
             pInterrupt->callback(pInterrupt->userPvt, 
                                  pInterrupt->pasynUser,
                                  value);
@@ -342,11 +348,12 @@ static int doubleCallback( PARAMS params, int command, double value)
     return(PARAM_OK);
 }
 
-static int stringCallback( PARAMS params, int command, char *value)
+static int stringCallback( PARAMS params, int command, int addr, char *value)
 {
     ELLLIST *pclientList;
     interruptNode *pnode;
     asynStandardInterfaces *pInterfaces = params->pasynInterfaces;
+    int address;
 
     /* Pass octet interrupts */
     if (!pInterfaces->octetInterruptPvt) return(PARAM_ERROR);
@@ -354,7 +361,9 @@ static int stringCallback( PARAMS params, int command, char *value)
     pnode = (interruptNode *)ellFirst(pclientList);
     while (pnode) {
         asynOctetInterrupt *pInterrupt = pnode->drvPvt;
-        if (command == pInterrupt->pasynUser->reason) {
+        pasynManager->getAddr(pInterrupt->pasynUser, &address);
+        if ((command == pInterrupt->pasynUser->reason) &&
+            (address == addr)) {
             pInterrupt->callback(pInterrupt->userPvt, 
                                  pInterrupt->pasynUser,
                                  value, strlen(value), ASYN_EOM_END);
@@ -375,7 +384,7 @@ static int stringCallback( PARAMS params, int command, char *value)
 
     returns: void
 */
-static int paramCallCallbacks( PARAMS params )
+static int paramCallCallbacksAddr( PARAMS params, int addr )
 {
     int i, index;
     int command;
@@ -389,18 +398,23 @@ static int paramCallCallbacks( PARAMS params )
         case paramUndef:
             break;
         case paramInt:
-                status |= intCallback( params, command, params->vals[index].data.ival );
+                status |= intCallback( params, command, addr, params->vals[index].data.ival );
             break;
         case paramDouble:
-                status |= doubleCallback( params, command, params->vals[index].data.dval );
+                status |= doubleCallback( params, command, addr, params->vals[index].data.dval );
             break;
         case paramString:
-                status |= stringCallback( params, command, params->vals[index].data.sval );
+                status |= stringCallback( params, command, addr, params->vals[index].data.sval );
             break;
         }
     }
     params->nflags=0;
     return(status);
+}
+
+static int paramCallCallbacks( PARAMS params )
+{
+    return(paramCallCallbacksAddr(params, 0));
 }
 
 /*  Prints the current values in the parameter system to stdout
@@ -449,6 +463,7 @@ static paramSupport ADParamSupport =
   paramGetDouble,
   paramGetString,
   paramCallCallbacks,
+  paramCallCallbacksAddr,
   paramDump
 };
 
