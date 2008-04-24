@@ -651,7 +651,7 @@ static asynStatus FUNCTION_NAME(void *drvPvt, asynUser *pasynUser, \
     NDArrayInfo_t arrayInfo; \
     NDDimension_t outDims[ND_ARRAY_MAX_DIMS]; \
     int i; \
-    int ncopy; \
+    size_t ncopy; \
     int dataType; \
     \
     epicsMutexLock(pPvt->mutexId); \
@@ -980,6 +980,7 @@ int drvNDStdArraysConfigure(const char *portName, int queueSize, int blockingCal
     pasynUser = pasynManager->createAsynUser(0, 0);
     pasynUser->userPvt = pPvt;
     pPvt->pasynUserHandle = pasynUser;
+    pPvt->pasynUserHandle->reason = NDArrayData;
 
     /* Create the epicsMutex for locking access to data structures from other threads */
     pPvt->mutexId = epicsMutexCreate();
