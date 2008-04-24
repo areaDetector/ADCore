@@ -131,6 +131,8 @@ typedef enum
     ADAutoSave,        /* (asynInt32,    r/w) Automatically save files */
     ADWriteFile,       /* (asynInt32,    r/w) Manually save the most recent image to a file when value=1 */
     ADReadFile,        /* (asynInt32,    r/w) Manually read file when value=1 */
+
+    NDArrayData,       /* (asynHandle,   r/w) NDArray data */
     
     ADFirstDriverParam  /* The last parameter, used by the standard driver */
                         /* Drivers that use ADParamLib should begin their parameters with this value. */
@@ -189,6 +191,8 @@ static ADParamString_t ADStandardParamString[] = {
     {ADAutoSave,       "AUTO_SAVE"     },
     {ADWriteFile,      "WRITE_FILE"    },
     {ADReadFile,       "READ_FILE"     },
+
+    {NDArrayData,      "NDARRAY_DATA"  },
 };
 
 #define NUM_AD_STANDARD_PARAMS (sizeof(ADStandardParamString)/sizeof(ADStandardParamString[0]))
