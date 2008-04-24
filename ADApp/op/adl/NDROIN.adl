@@ -1,0 +1,1099 @@
+
+file {
+	name="/home/epics/devel/areaDetector/1-1/ADApp/op/adl/NDROIN.adl"
+	version=030000
+}
+display {
+	object {
+		x=362
+		y=122
+		width=455
+		height=575
+	}
+	clr=14
+	bclr=4
+	cmap=""
+	gridSpacing=5
+	gridOn=0
+	snapToGrid=0
+}
+"color map" {
+	ncolors=65
+	colors {
+		ffffff,
+		ececec,
+		dadada,
+		c8c8c8,
+		bbbbbb,
+		aeaeae,
+		9e9e9e,
+		919191,
+		858585,
+		787878,
+		696969,
+		5a5a5a,
+		464646,
+		2d2d2d,
+		000000,
+		00d800,
+		1ebb00,
+		339900,
+		2d7f00,
+		216c00,
+		fd0000,
+		de1309,
+		be190b,
+		a01207,
+		820400,
+		5893ff,
+		597ee1,
+		4b6ec7,
+		3a5eab,
+		27548d,
+		fbf34a,
+		f9da3c,
+		eeb62b,
+		e19015,
+		cd6100,
+		ffb0ff,
+		d67fe2,
+		ae4ebc,
+		8b1a96,
+		610a75,
+		a4aaff,
+		8793e2,
+		6a73c1,
+		4d52a4,
+		343386,
+		c7bb6d,
+		b79d5c,
+		a47e3c,
+		7d5627,
+		58340f,
+		99ffff,
+		73dfff,
+		4ea5f9,
+		2a63e4,
+		0a00b8,
+		ebf1b5,
+		d4db9d,
+		bbc187,
+		a6a462,
+		8b8239,
+		73ff6b,
+		52da3b,
+		3cb420,
+		289315,
+		1a7309,
+	}
+}
+rectangle {
+	object {
+		x=14
+		y=9
+		width=360
+		height=26
+	}
+	"basic attribute" {
+		clr=2
+	}
+}
+text {
+	object {
+		x=86
+		y=10
+		width=216
+		height=25
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="$(P)$(R)"
+	align="horiz. centered"
+}
+rectangle {
+	object {
+		x=148
+		y=42
+		width=107
+		height=21
+	}
+	"basic attribute" {
+		clr=2
+	}
+}
+text {
+	object {
+		x=122
+		y=43
+		width=159
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="Definition"
+	align="horiz. centered"
+}
+rectangle {
+	object {
+		x=10
+		y=40
+		width=350
+		height=290
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+menu {
+	object {
+		x=168
+		y=72
+		width=60
+		height=18
+	}
+	control {
+		chan="$(P)$(R)Use"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=261
+		y=72
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)Use_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=87
+		y=71
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Use this ROI?"
+	align="horiz. right"
+}
+text {
+	object {
+		x=193
+		y=101
+		width=10
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="X"
+	align="horiz. right"
+}
+text {
+	object {
+		x=286
+		y=101
+		width=10
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Y"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=168
+		y=143
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)BinX"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=261
+		y=143
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)BinY"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=168
+		y=123
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)BinX_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=261
+		y=123
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)BinY_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=87
+		y=143
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Binning"
+	align="horiz. right"
+}
+composite {
+	object {
+		x=168
+		y=168
+		width=154
+		height=40
+	}
+	"composite name"=""
+	children {
+		"text update" {
+			object {
+				x=168
+				y=168
+				width=61
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)MinX_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		"text entry" {
+			object {
+				x=168
+				y=188
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)MinX"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		"text entry" {
+			object {
+				x=261
+				y=188
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)MinY"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=261
+				y=168
+				width=61
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)MinY_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+	}
+}
+text {
+	object {
+		x=107
+		y=188
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="ROI start"
+	align="horiz. right"
+}
+text {
+	object {
+		x=117
+		y=233
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="ROI size"
+	align="horiz. right"
+}
+composite {
+	object {
+		x=168
+		y=213
+		width=154
+		height=40
+	}
+	"composite name"=""
+	children {
+		"text entry" {
+			object {
+				x=168
+				y=233
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)SizeX"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		"text entry" {
+			object {
+				x=261
+				y=233
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)SizeY"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=168
+				y=213
+				width=61
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)SizeX_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=261
+				y=213
+				width=61
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)SizeY_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+	}
+}
+"text update" {
+	object {
+		x=168
+		y=258
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ReverseX_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=261
+		y=258
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ReverseY_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=87
+		y=278
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Reverse"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=168
+		y=278
+		width=60
+		height=18
+	}
+	control {
+		chan="$(P)$(R)ReverseX"
+		clr=14
+		bclr=51
+	}
+}
+menu {
+	object {
+		x=261
+		y=278
+		width=60
+		height=18
+	}
+	control {
+		chan="$(P)$(R)ReverseY"
+		clr=14
+		bclr=51
+	}
+}
+composite {
+	object {
+		x=57
+		y=305
+		width=265
+		height=20
+	}
+	"composite name"=""
+	children {
+		"text update" {
+			object {
+				x=261
+				y=306
+				width=61
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)ImageSizeY_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=168
+				y=306
+				width=61
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)ImageSizeX_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=57
+				y=305
+				width=100
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="ROI Size"
+			align="horiz. right"
+		}
+	}
+}
+rectangle {
+	object {
+		x=10
+		y=337
+		width=210
+		height=230
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+text {
+	object {
+		x=21
+		y=367
+		width=110
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Compute"
+}
+menu {
+	object {
+		x=142
+		y=386
+		width=60
+		height=18
+	}
+	control {
+		chan="$(P)$(R)ComputeStatistics"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=140
+		y=367
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ComputeStatistics_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=31
+		y=439
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Minimum"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=142
+		y=440
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)MinValue_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=31
+		y=464
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Maximum"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=142
+		y=465
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)MaxValue_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=31
+		y=489
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Mean"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=142
+		y=490
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)MeanValue_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=31
+		y=514
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Total"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=142
+		y=515
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)Total_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=31
+		y=539
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Net"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=142
+		y=540
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)Net_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=21
+		y=386
+		width=110
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="statistics?"
+	align="horiz. right"
+}
+composite {
+	object {
+		x=62
+		y=339
+		width=107
+		height=21
+	}
+	"composite name"=""
+	children {
+		rectangle {
+			object {
+				x=62
+				y=339
+				width=107
+				height=21
+			}
+			"basic attribute" {
+				clr=2
+			}
+		}
+		text {
+			object {
+				x=65
+				y=339
+				width=100
+				height=20
+			}
+			"basic attribute" {
+				clr=54
+			}
+			textix="Statistics"
+			align="horiz. centered"
+		}
+	}
+}
+rectangle {
+	object {
+		x=233
+		y=338
+		width=210
+		height=230
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+text {
+	object {
+		x=244
+		y=368
+		width=110
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Compute"
+}
+menu {
+	object {
+		x=365
+		y=387
+		width=60
+		height=18
+	}
+	control {
+		chan="$(P)$(R)ComputeHistogram"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=363
+		y=368
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ComputeHistogram_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=244
+		y=387
+		width=110
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="histogram?"
+	align="horiz. right"
+}
+rectangle {
+	object {
+		x=285
+		y=340
+		width=107
+		height=21
+	}
+	"basic attribute" {
+		clr=2
+	}
+}
+text {
+	object {
+		x=288
+		y=340
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="Histogram"
+	align="horiz. centered"
+}
+"text entry" {
+	object {
+		x=365
+		y=476
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)HistMin"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=365
+		y=456
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)HistMin_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=284
+		y=476
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Minimum"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=365
+		y=431
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)HistSize"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=365
+		y=411
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)HistSize_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=284
+		y=431
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Size"
+	align="horiz. right"
+}
+composite {
+	object {
+		x=254
+		y=546
+		width=172
+		height=20
+	}
+	"composite name"=""
+	children {
+		"text update" {
+			object {
+				x=365
+				y=547
+				width=61
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)HistEntropy_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=254
+				y=546
+				width=100
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Entropy"
+			align="horiz. right"
+		}
+	}
+}
+"text entry" {
+	object {
+		x=365
+		y=521
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)HistMax"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=365
+		y=501
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)HistMax_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=284
+		y=521
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Maximum"
+	align="horiz. right"
+}
