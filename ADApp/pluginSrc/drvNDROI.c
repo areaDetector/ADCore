@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <math.h>
 
 #include <epicsThread.h>
 #include <epicsString.h>
@@ -63,7 +64,12 @@ typedef enum {
     NDROIName = NDROIFirstROIParam,
                              /* (asynOctet,   r/w) Name of this ROI */
     NDROIUse,                /* (asynInt32,   r/w) Use this ROI? */
+    NDROIComputeStatistics,  /* (asynInt32,   r/w) Compute statistics for this ROI? */
+    NDROIComputeHistogram,   /* (asynInt32,   r/w) Compute histogram for this ROI? */
+    NDROIComputeProfiles,    /* (asynInt32,   r/w) Compute profiles for this ROI? */
     NDROIHighlight,          /* (asynInt32,   r/w) Highlight other ROIs in this ROI? */
+    
+    /* ROI definition */
     NDROIDim0Min,            /* (asynInt32,   r/w) Starting element of ROI in each dimension */
     NDROIDim0Size,           /* (asynInt32,   r/w) Size of ROI in each dimension */
     NDROIDim0Bin,            /* (asynInt32,   r/w) Binning of ROI in each dimension */
@@ -74,20 +80,31 @@ typedef enum {
     NDROIDim1Reverse,        /* (asynInt32,   r/w) Reversal of ROI in each dimension */
     
     /* ROI statistics */
-    NDROIComputeStats,       /* (asynInt32,   r/w) Compute statistics for this ROI? */
     NDROIBgdWidth,           /* (asynFloat64, r/w) Width of background region when computing net */
     NDROIMinValue,           /* (asynFloat64, r/o) Minimum counts in any element */
     NDROIMaxValue,           /* (asynFloat64, r/o) Maximum counts in any element */
     NDROIMeanValue,          /* (asynFloat64, r/o) Mean counts of all elements */
     NDROITotal,              /* (asynFloat64, r/o) Sum of all elements */
     NDROINet,                /* (asynFloat64, r/o) Sum of all elements minus background */
+    
+    /* ROI histogram */
+    NDROIHistSize,           /* (asynInt32,   r/w) Number of elements in histogram */
+    NDROIHistMin,            /* (asynFloat64, r/w) Minimum value for histogram */
+    NDROIHistMax,            /* (asynFloat64, r/w) Maximum value for histogram */
+    NDROIHistEntropy,        /* (asynFloat64, r/o) Image entropy calculcated from histogram */
+    NDROIHistArray,          /* (asynFloat64Array, r/o) Histogram array */
+
     NDROILastROINParam
 } NDROINParam_t;
 
 static ADParamString_t NDROINParamString[] = {
     {NDROIName,               "NAME"},
     {NDROIUse,                "USE"},
+    {NDROIComputeStatistics,  "COMPUTE_STATISTICS"},
+    {NDROIComputeHistogram,   "COMPUTE_HISTOGRAM"},
+    {NDROIComputeProfiles,    "COMPUTE_PROFILES"},
     {NDROIHighlight,          "HIGHLIGHT"},
+
     {NDROIDim0Min,            "DIM0_MIN"},
     {NDROIDim0Size,           "DIM0_SIZE"},
     {NDROIDim0Bin,            "DIM0_BIN"},
@@ -96,25 +113,38 @@ static ADParamString_t NDROINParamString[] = {
     {NDROIDim1Size,           "DIM1_SIZE"},
     {NDROIDim1Bin,            "DIM1_BIN"},
     {NDROIDim1Reverse,        "DIM1_REVERSE"},
-    {NDROIComputeStats,       "COMPUTE_STATS"},
+
     {NDROIBgdWidth,           "BGD_WIDTH"},
     {NDROIMinValue,           "MIN_VALUE"},
     {NDROIMaxValue,           "MAX_VALUE"},
     {NDROIMeanValue,          "MEAN_VALUE"},
     {NDROITotal,              "TOTAL"},
-    {NDROINet,                "NET"}
+    {NDROINet,                "NET"},
+
+    {NDROIHistSize,           "HIST_SIZE"},
+    {NDROIHistMin,            "HIST_MIN"},
+    {NDROIHistMax,            "HIST_MAX"},
+    {NDROIHistEntropy,        "HIST_ENTROPY"},
+    {NDROIHistArray,          "HIST_ARRAY"},
 };
 
 #define NUM_ROI_PARAMS (sizeof(NDROIParamString)/sizeof(NDROIParamString[0]))
 #define NUM_ROIN_PARAMS (sizeof(NDROINParamString)/sizeof(NDROINParamString[0]))
 
+#define MAX(A,B) (A)>(B)?(A):(B)
+#define MIN(A,B) (A)<(B)?(A):(B)
+
 typedef struct NDROI {
     PARAMS params;
     NDDimension_t dims[ND_ARRAY_MAX_DIMS];
     NDArray_t *pArray;
+    double *histogram;
+    int histogramSize;
+    double *profiles[ND_ARRAY_MAX_DIMS];
+    int profileSize[ND_ARRAY_MAX_DIMS];
 } NDROI_t;
 
-typedef struct drvADPvt {
+typedef struct drvNDROIPvt {
     /* These fields will be needed by most asyn plug-in drivers */
     char *portName;
     epicsMutexId mutexId;
@@ -137,13 +167,26 @@ typedef struct drvADPvt {
     epicsTimeStamp lastArrayPostTime;
     int maxROIs;
     NDROI_t *pROIs;    /* Array of drvNDROI structures */
-} drvADPvt;
+} drvNDROIPvt;
 
 
 /* Local functions, not in any interface */
 
 /* These macros saves a lot of code when handling different data types */
-#define COMPUTE_STATS(DATA_TYPE) { \
+#define COMPUTE_HISTOGRAM(DATA_TYPE) { \
+    int i; \
+    double scale = histSize / (histMax - histMin); \
+    int bin; \
+    DATA_TYPE *pData = (DATA_TYPE *) pROI->pArray->pData; \
+    for (i=0; i<arrayInfo.nElements; i++) { \
+        value = (double)pData[i]; \
+        bin = (int) (((value - histMin) * scale) + 0.5); \
+        if ((bin >= 0) && (bin < histSize)) pROI->histogram[bin]++; \
+    } \
+}
+
+#define COMPUTE_STATISTICS(DATA_TYPE) { \
+    int i; \
     DATA_TYPE *pData = (DATA_TYPE *) pROI->pArray->pData; \
     min = (double) pData[0]; \
     max = (double) pData[0]; \
@@ -156,31 +199,31 @@ typedef struct drvADPvt {
     } \
 }
 
-#define COMPUTE_STATS_ALL() { \
+#define COMPUTE_FUNCTION(FUNCTION) { \
     switch(pROI->pArray->dataType) {              \
         case NDInt8:                              \
-            COMPUTE_STATS(epicsInt8);     \
+            FUNCTION(epicsInt8);     \
             break;                                \
         case NDUInt8:                             \
-            COMPUTE_STATS(epicsUInt8);    \
+            FUNCTION(epicsUInt8);    \
             break;                                \
         case NDInt16:                             \
-            COMPUTE_STATS(epicsInt16);    \
+            FUNCTION(epicsInt16);    \
             break;                                \
         case NDUInt16:                            \
-            COMPUTE_STATS(epicsUInt16);   \
+            FUNCTION(epicsUInt16);   \
             break;                                \
         case NDInt32:                             \
-            COMPUTE_STATS(epicsInt32);    \
+            FUNCTION(epicsInt32);    \
             break;                                \
         case NDUInt32:                            \
-            COMPUTE_STATS(epicsUInt32);   \
+            FUNCTION(epicsUInt32);   \
             break;                                \
         case NDFloat32:                           \
-            COMPUTE_STATS(epicsFloat32);  \
+            FUNCTION(epicsFloat32);  \
             break;                                \
         case NDFloat64:                           \
-            COMPUTE_STATS(epicsFloat64);  \
+            FUNCTION(epicsFloat64);  \
             break;                                \
         default:                                  \
             status = ND_ERROR;         \
@@ -190,7 +233,7 @@ typedef struct drvADPvt {
 
 
 
-static void NDROIProcessROIs(drvADPvt *pPvt, NDArray_t *pArray)
+static void NDROIProcessROIs(drvNDROIPvt *pPvt, NDArray_t *pArray)
 {
     /* This function calls back any registered clients on the standard asyn array interfaces with 
      * the data in our private buffer.
@@ -198,48 +241,98 @@ static void NDROIProcessROIs(drvADPvt *pPvt, NDArray_t *pArray)
      */
      
     NDROI_t *pROI;
-    int use, computeStats;
+    int use, computeStatistics, computeHistogram, computeProfiles;
+    int i;
+    double histMin, histMax, entropy;
+    int histSize;
     int arrayCounter;
     NDArrayInfo_t arrayInfo;
+    NDDimension_t dims[ND_ARRAY_MAX_DIMS], *pDim;
     double min=0, max=0, mean, total=0, net, value;
-    int i;
+    int roi, dim;
+    double counts;
     int status;
-    /* const char* functionName = "NDROIProcessROIs"; */
+    const char* functionName = "NDROIProcessROIs";
  
-    /* This function is called with the lock taken, and it must be set when we exit.
-     * The following code can be exected without the mutex because we are not accessing elements of
-     * pPvt that other threads can access. */
-    epicsMutexUnlock(pPvt->mutexId);
-    
     /* Loop over the ROIs in this driver */
-    for (i=0; i<pPvt->maxROIs; i++) {
-        pROI = &pPvt->pROIs[i];
+    for (roi=0; roi<pPvt->maxROIs; roi++) {
+        pROI = &pPvt->pROIs[roi];
         ADParam->getInteger(pROI->params, NDROIUse, &use);
         /* Free the previous array */
-        if (pROI->pArray) NDArrayBuff->release(pROI->pArray);
-        pROI->pArray = NULL;
+        if (pROI->pArray) {
+            NDArrayBuff->release(pROI->pArray);
+            pROI->pArray = NULL;
+        }
         if (!use) continue;
-        /* Extract this ROI from the input array */
-        NDArrayBuff->convert(pArray, &pROI->pArray, pArray->dataType, pROI->dims);
-        /* Call any clients who have registered for NDArray callbacks */
-        ADUtils->handleCallback(pPvt->asynStdInterfaces.handleInterruptPvt, pROI->pArray);
-        /* Call any clients who have registered for standard interface callbacks */
+        /* Need to fetch all of these parameters while we still have the mutex */
+        ADParam->getInteger(pROI->params, NDROIComputeStatistics, &computeStatistics);
+        ADParam->getInteger(pROI->params, NDROIComputeHistogram, &computeHistogram);
+        ADParam->getInteger(pROI->params, NDROIComputeProfiles, &computeProfiles);
+        ADParam->getDouble(pROI->params, NDROIHistMin, &histMin);
+        ADParam->getDouble(pROI->params, NDROIHistMax, &histMax);
+        ADParam->getInteger(pROI->params, NDROIHistSize, &histSize);
+        /* Make sure dimensions are valid, fix them if they are not */
+        for (dim=0; dim<pArray->ndims; dim++) {
+            pDim = &pROI->dims[dim];
+            pDim->offset  = MAX(pDim->offset, 0);
+            pDim->offset  = MIN(pDim->offset, pArray->dims[dim].size-1);
+            pDim->size    = MAX(pDim->size, 1);
+            pDim->size    = MIN(pDim->size, pArray->dims[dim].size - pDim->offset);
+            pDim->binning = MAX(pDim->binning, 1);
+            pDim->binning = MIN(pDim->binning, pDim->size);
+        }
+        /* Make a local copy of the fixed dimensions so we can release the mutex */
+        memcpy(dims, pROI->dims, pArray->ndims*sizeof(NDDimension_t));
         
-        ADParam->getInteger(pROI->params, NDROIComputeStats, &computeStats);
-        if (!computeStats) continue;
+        /* This function is called with the lock taken, and it must be set when we exit.
+         * The following code can be exected without the mutex because we are not accessing elements of
+         * pPvt that other threads can access. */
+        epicsMutexUnlock(pPvt->mutexId);
+    
+        /* Extract this ROI from the input array */
+        NDArrayBuff->convert(pArray, &pROI->pArray, pArray->dataType, dims);
+        /* Call any clients who have registered for NDArray callbacks */
+        ADUtils->handleCallback(pPvt->asynStdInterfaces.handleInterruptPvt, 
+                                pROI->pArray, NDArrayData, roi);
         NDArrayBuff->getInfo(pROI->pArray, &arrayInfo);
-        COMPUTE_STATS_ALL();
-        mean = total / arrayInfo.nElements;
-        ADParam->setDouble(pROI->params, NDROIMinValue, min);
-        ADParam->setDouble(pROI->params, NDROIMaxValue, max);
-        ADParam->setDouble(pROI->params, NDROITotal, total);
-        net = total;
-        ADParam->setDouble(pROI->params, NDROIMeanValue, mean);
-        ADParam->callCallbacks(pROI->params);
+ 
+        if (computeStatistics) {
+            COMPUTE_FUNCTION(COMPUTE_STATISTICS);
+            net = total;
+            mean = total / arrayInfo.nElements;
+            ADParam->setDouble(pROI->params, NDROIMinValue, min);
+            ADParam->setDouble(pROI->params, NDROIMaxValue, max);
+            ADParam->setDouble(pROI->params, NDROIMeanValue, mean);
+            ADParam->setDouble(pROI->params, NDROITotal, total);
+            ADParam->setDouble(pROI->params, NDROINet, net);
+            asynPrint(pPvt->pasynUser, ASYN_TRACEIO_DRIVER, 
+                pROI->pArray->pData, arrayInfo.totalBytes,
+                "%s:%s ROI=%d, min=%f, max=%f, mean=%f, total=%f, net=%f",
+                driverName, functionName, roi, min, max, mean, total, net);
+        }
+        if (computeHistogram) {
+            if (histSize > pROI->histogramSize) {
+                free(pROI->histogram);
+                pROI->histogram = (double *)calloc(histSize, sizeof(double));
+                pROI->histogramSize = histSize;
+            }
+            memset(pROI->histogram, 0, histSize*sizeof(double));
+            COMPUTE_FUNCTION(COMPUTE_HISTOGRAM);
+            entropy = 0;
+            for (i=0; i<histSize; i++) {
+                counts = pROI->histogram[i];
+                if (counts <= 0) counts = 1;
+                entropy += counts * log(counts);
+            }
+            entropy = -entropy / arrayInfo.nElements;
+            ADParam->setDouble(pROI->params, NDROIHistEntropy, entropy);
+        }
+
+        /* We must enter the loop and exit with the mutex locked */
+        epicsMutexLock(pPvt->mutexId);
+        ADParam->callCallbacksAddr(pROI->params, roi);
     }
 
-    /* We must exit with the mutex locked */
-    epicsMutexLock(pPvt->mutexId);
     /* Update the parameters.  The counter should be updated after data are posted
      * because clients might use that to detect new data */
     ADParam->getInteger(pPvt->params, NDROIArrayCounter, &arrayCounter);    
@@ -257,7 +350,7 @@ static void NDROICallback(void *drvPvt, asynUser *pasynUser, void *handle)
      * In the latter case arrays can be dropped if the queue is full.
      */
      
-    drvADPvt *pPvt = drvPvt;
+    drvNDROIPvt *pPvt = drvPvt;
     NDArray_t *pArray = handle;
     epicsTimeStamp tNow;
     double minArrayUpdateTime, deltaTime;
@@ -313,7 +406,7 @@ static void NDROICallback(void *drvPvt, asynUser *pasynUser, void *handle)
 }
 
 
-static void NDROITask(drvADPvt *pPvt)
+static void NDROITask(drvNDROIPvt *pPvt)
 {
     /* This thread does the callbacks to the clients when a new array arrives */
 
@@ -336,7 +429,7 @@ static void NDROITask(drvADPvt *pPvt)
     }
 }
 
-static int setArrayInterrupt(drvADPvt *pPvt, int connect)
+static int setArrayInterrupt(drvNDROIPvt *pPvt, int connect)
 {
     int status = asynSuccess;
     const char *functionName = "setArrayInterrupt";
@@ -380,7 +473,7 @@ static int setArrayInterrupt(drvADPvt *pPvt, int connect)
     return(asynSuccess);
 }
 
-static int connectToArrayPort(drvADPvt *pPvt)
+static int connectToArrayPort(drvNDROIPvt *pPvt)
 {
     asynStatus status;
     asynInterface *pasynInterface;
@@ -468,7 +561,7 @@ static int connectToArrayPort(drvADPvt *pPvt)
 static asynStatus readInt32(void *drvPvt, asynUser *pasynUser, 
                             epicsInt32 *value)
 {
-    drvADPvt *pPvt = (drvADPvt *)drvPvt;
+    drvNDROIPvt *pPvt = (drvNDROIPvt *)drvPvt;
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
     int roi;
@@ -510,7 +603,7 @@ static asynStatus readInt32(void *drvPvt, asynUser *pasynUser,
 static asynStatus writeInt32(void *drvPvt, asynUser *pasynUser, 
                              epicsInt32 value)
 {
-    drvADPvt *pPvt = (drvADPvt *)drvPvt;
+    drvNDROIPvt *pPvt = (drvNDROIPvt *)drvPvt;
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
     int isConnected;
@@ -577,7 +670,7 @@ static asynStatus writeInt32(void *drvPvt, asynUser *pasynUser,
                 break;
         }
         /* Do callbacks so higher layers see any changes */
-        status |= ADParam->callCallbacks(pROI->params);
+        status |= ADParam->callCallbacksAddr(pROI->params, roi);
     }
     
     if (status) 
@@ -612,7 +705,7 @@ static asynStatus getBounds(void *drvPvt, asynUser *pasynUser,
 static asynStatus readFloat64(void *drvPvt, asynUser *pasynUser,
                               epicsFloat64 *value)
 {
-    drvADPvt *pPvt = (drvADPvt *)drvPvt;
+    drvNDROIPvt *pPvt = (drvNDROIPvt *)drvPvt;
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
     int roi;
@@ -653,7 +746,7 @@ static asynStatus readFloat64(void *drvPvt, asynUser *pasynUser,
 static asynStatus writeFloat64(void *drvPvt, asynUser *pasynUser, 
                                epicsFloat64 value)
 {
-    drvADPvt *pPvt = (drvADPvt *)drvPvt;
+    drvNDROIPvt *pPvt = (drvNDROIPvt *)drvPvt;
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
     int roi;
@@ -689,7 +782,7 @@ static asynStatus writeFloat64(void *drvPvt, asynUser *pasynUser,
             default:
                 break;
         }
-        status |= ADParam->callCallbacks(pROI->params);
+        status |= ADParam->callCallbacksAddr(pROI->params, roi);
     }
     
     if (status) 
@@ -710,7 +803,7 @@ static asynStatus readOctet(void *drvPvt, asynUser *pasynUser,
                             char *value, size_t maxChars, size_t *nActual,
                             int *eomReason)
 {
-    drvADPvt *pPvt = (drvADPvt *)drvPvt;
+    drvNDROIPvt *pPvt = (drvNDROIPvt *)drvPvt;
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
     int roi;
@@ -753,7 +846,7 @@ static asynStatus readOctet(void *drvPvt, asynUser *pasynUser,
 static asynStatus writeOctet(void *drvPvt, asynUser *pasynUser,
                              const char *value, size_t nChars, size_t *nActual)
 {
-    drvADPvt *pPvt = (drvADPvt *)drvPvt;
+    drvNDROIPvt *pPvt = (drvNDROIPvt *)drvPvt;
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
     int roi;
@@ -787,7 +880,7 @@ static asynStatus writeOctet(void *drvPvt, asynUser *pasynUser,
         pROI = &pPvt->pROIs[roi];
         status |= ADParam->setString(pROI->params, function, (char *)value);
          /* Do callbacks so higher layers see any changes */
-        status |= ADParam->callCallbacks(pPvt->params);
+        status |= ADParam->callCallbacksAddr(pPvt->params, roi);
     }
     
     if (status) 
@@ -803,14 +896,90 @@ static asynStatus writeOctet(void *drvPvt, asynUser *pasynUser,
     return status;
 }
 
-
-/* The following macros save a lot of code, since we have 5 array types to support */
+static asynStatus readFloat64Array(void *drvPvt, asynUser *pasynUser,
+                                   epicsFloat64 *value, size_t nelements, size_t *nIn)
+{
+    drvNDROIPvt *pPvt = (drvNDROIPvt *)drvPvt;
+    int function = pasynUser->reason;
+    asynStatus status = asynSuccess;
+    int roi;
+    NDROI_t *pROI;
+    const char* functionName = "readFloat64Array";
+
+    if (function >= NDROIFirstROIParam) {
+        pasynManager->getAddr(pasynUser, &roi);
+        if (roi >= pPvt->maxROIs) {
+            asynPrint(pasynUser, ASYN_TRACE_ERROR, 
+                  "%s:%s error, invalid ROI=%d, max=%d\n", 
+                  driverName, functionName, roi, pPvt->maxROIs);
+            return(asynError);
+        }
+    }
+
+    epicsMutexLock(pPvt->mutexId);
+    if (function < NDROIFirstROIParam) {
+        /* We don't support reading asynFloat64 arrays except for ROIs */
+        status = asynError;
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                     "%s:%s: invalid request", 
+                     driverName, functionName);
+    } else {
+        size_t ncopy;
+        pROI = &pPvt->pROIs[roi];
+        switch(function) {
+            case NDROIHistArray:
+                ncopy = pROI->histogramSize;       
+                if (ncopy > nelements) ncopy = nelements;
+                memcpy(value, pROI->histogram, ncopy*sizeof(epicsFloat64));
+                *nIn = ncopy;
+                break;
+            default:
+                status = asynError;
+                epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                             "%s:%s: invalid request", 
+                             driverName, functionName);
+                break;
+        }
+    }
+    if (status) 
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, 
+              "%s:%s error, status=%d function=%d, value=%f\n", 
+              driverName, functionName, status, function, *value);
+    else        
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
+              "%s:%s: function=%d, value=%f\n", 
+              driverName, functionName, function, *value);
+    epicsMutexUnlock(pPvt->mutexId);
+    return(status);
+}
+
+
+static asynStatus writeFloat64Array(void *drvPvt, asynUser *pasynUser, 
+                                   epicsFloat64 *value, size_t nelements)
+{
+    drvNDROIPvt *pPvt = (drvNDROIPvt *)drvPvt;
+    int status = asynSuccess;
+    const char* functionName = "writeFloat64Array";
     
+    if (pPvt == NULL) return asynError;
+    epicsMutexLock(pPvt->mutexId);
+
+    /* The ROI plugin does not support writing float64Array data */    
+    asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
+          "%s:%s not currently supported\n", 
+          driverName, functionName);
+    status = asynError;
+    epicsMutexUnlock(pPvt->mutexId);
+    return status;
+}
+
+
+   
 
 /* asynHandle interface methods */
 static asynStatus readNDArray(void *drvPvt, asynUser *pasynUser, void *handle)
 {
-    drvADPvt *pPvt = (drvADPvt *)drvPvt;
+    drvNDROIPvt *pPvt = (drvNDROIPvt *)drvPvt;
     NDArray_t *pArray = handle;
     NDArrayInfo_t arrayInfo;
     int dataSize=0;
@@ -857,7 +1026,7 @@ static asynStatus readNDArray(void *drvPvt, asynUser *pasynUser, void *handle)
 
 static asynStatus writeNDArray(void *drvPvt, asynUser *pasynUser, void *handle)
 {
-    drvADPvt *pPvt = (drvADPvt *)drvPvt;
+    drvNDROIPvt *pPvt = (drvNDROIPvt *)drvPvt;
     NDArray_t *pArray = handle;
     int status = asynSuccess;
     const char* functionName = "writeNDArray";
@@ -942,7 +1111,7 @@ static asynStatus drvUserDestroy(void *drvPvt, asynUser *pasynUser)
 
 static void report(void *drvPvt, FILE *fp, int details)
 {
-    drvADPvt *pPvt = (drvADPvt *)drvPvt;
+    drvNDROIPvt *pPvt = (drvNDROIPvt *)drvPvt;
     interruptNode *pnode;
     ELLLIST *pclientList;
     int i;
@@ -1029,13 +1198,13 @@ static asynInt32Array ifaceInt32Array = {
     writeInt32Array,
     readInt32Array,
 };
-
+*/
 
 static asynFloat64Array ifaceFloat64Array = {
     writeFloat64Array,
     readFloat64Array,
 };
-*/
+
 
 static asynDrvUser ifaceDrvUser = {
     drvUserCreate,
@@ -1054,7 +1223,7 @@ static asynHandle ifaceHandle = {
 int drvNDROIConfigure(const char *portName, int queueSize, int blockingCallbacks, 
                       const char *arrayPort, int arrayAddr, int maxROIs)
 {
-    drvADPvt *pPvt;
+    drvNDROIPvt *pPvt;
     asynStatus status;
     char *functionName = "drvNDROIConfigure";
     asynStandardInterfaces *pInterfaces;
@@ -1089,8 +1258,8 @@ int drvNDROIConfigure(const char *portName, int queueSize, int blockingCallbacks
     pInterfaces->float64.pinterface       = (void *)&ifaceFloat64;
 /*
     pInterfaces->int32Array.pinterface    = (void *)&ifaceInt32Array;
-    pInterfaces->float64Array.pinterface  = (void *)&ifaceFloat64Array;
 */
+    pInterfaces->float64Array.pinterface  = (void *)&ifaceFloat64Array;
     pInterfaces->handle.pinterface        = (void *)&ifaceHandle;
 
     /* Define which interfaces can generate interrupts */
@@ -1099,8 +1268,8 @@ int drvNDROIConfigure(const char *portName, int queueSize, int blockingCallbacks
     pInterfaces->float64CanInterrupt      = 1;
 /*
     pInterfaces->int32ArrayCanInterrupt   = 1;
-    pInterfaces->float64ArrayCanInterrupt = 1;
 */
+    pInterfaces->float64ArrayCanInterrupt = 1;
     pInterfaces->handleCanInterrupt       = 1;
 
     status = pasynStandardInterfacesBase->initialize(portName, pInterfaces,
@@ -1122,6 +1291,7 @@ int drvNDROIConfigure(const char *portName, int queueSize, int blockingCallbacks
     pasynUser = pasynManager->createAsynUser(0, 0);
     pasynUser->userPvt = pPvt;
     pPvt->pasynUserHandle = pasynUser;
+    pPvt->pasynUserHandle->reason = NDArrayData;
 
     /* Create the epicsMutex for locking access to data structures from other threads */
     pPvt->mutexId = epicsMutexCreate();
@@ -1147,7 +1317,7 @@ int drvNDROIConfigure(const char *portName, int queueSize, int blockingCallbacks
     /* Initialize the parameter library for each ROI*/
     for (i=0; i<pPvt->maxROIs; i++) {
         pPvt->pROIs[i].params = ADParam->create(NDROIFirstROIParam, 
-                                                NDROILastROINParam, &pPvt->asynStdInterfaces);
+                                                NUM_ROIN_PARAMS, &pPvt->asynStdInterfaces);
         if (!pPvt->pROIs[i].params) {
             printf("%s: unable to create parameter library for ROI %d\n", functionName, i);
             return asynError;
