@@ -1,0 +1,328 @@
+# Database for ND ROIs
+# Mark Rivers
+# April 22, 2008
+
+###################################################################
+#  These records control whether this ROI is used                 #
+###################################################################
+record(mbbo, "$(P)$(R)Use")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))USE")
+   field(ZRST, "No")
+   field(ZRVL, "0")
+   field(ONST, "Yes")
+   field(ONVL, "1")
+}
+
+record(mbbi, "$(P)$(R)Use_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))USE")
+   field(ZRST, "No")
+   field(ZRVL, "0")
+   field(ONST, "Yes")
+   field(ONVL, "1")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records control the ROI definition                       #
+#  including binning, region start and size                       # 
+###################################################################
+
+record(longout, "$(P)$(R)BinX")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_BIN")
+}
+
+record(longin, "$(P)$(R)BinX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_BIN")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)BinY")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_BIN")
+}
+
+record(longin, "$(P)$(R)BinY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_BIN")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)MinX")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_MIN")
+}
+
+record(longin, "$(P)$(R)MinX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_MIN")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)MinY")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_MIN")
+}
+
+record(longin, "$(P)$(R)MinY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_MIN")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)SizeX")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_SIZE")
+}
+
+record(longin, "$(P)$(R)SizeX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)SizeY")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_SIZE")
+}
+
+record(longin, "$(P)$(R)SizeY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)ReverseX")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_REVERSE")
+   field(ZRST, "No")
+   field(ZRVL, "0")
+   field(ONST, "Yes")
+   field(ONVL, "1")
+}
+
+record(mbbi, "$(P)$(R)ReverseX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_REVERSE")
+   field(ZRST, "No")
+   field(ZRVL, "0")
+   field(ONST, "Yes")
+   field(ONVL, "1")
+   field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)ReverseY")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_REVERSE")
+   field(ZRST, "No")
+   field(ZRVL, "0")
+   field(ONST, "Yes")
+   field(ONVL, "1")
+}
+
+record(mbbi, "$(P)$(R)ReverseY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_REVERSE")
+   field(ZRST, "No")
+   field(ZRVL, "0")
+   field(ONST, "Yes")
+   field(ONVL, "1")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)ImageSizeX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_SIZE_X")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)ImageSizeY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_SIZE_Y")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records control whether statistics are computed          #
+###################################################################
+record(mbbo, "$(P)$(R)ComputeStatistics")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMPUTE_STATISTICS")
+   field(ZRST, "No")
+   field(ZRVL, "0")
+   field(ONST, "Yes")
+   field(ONVL, "1")
+}
+
+record(mbbi, "$(P)$(R)ComputeStatistics_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMPUTE_STATISTICS")
+   field(ZRST, "No")
+   field(ZRVL, "0")
+   field(ONST, "Yes")
+   field(ONVL, "1")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records contain the statistics for the ROI               #
+###################################################################
+record(ai, "$(P)$(R)MinValue_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_VALUE")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)MaxValue_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_VALUE")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)MeanValue_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MEAN_VALUE")
+   field(SCAN, "I/O Intr")
+}
+record(ai, "$(P)$(R)Total_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TOTAL")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)Net_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NET")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records control whether the histogram is computed        #
+###################################################################
+record(mbbo, "$(P)$(R)ComputeHistogram")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMPUTE_HISTOGRAM")
+   field(ZRST, "No")
+   field(ZRVL, "0")
+   field(ONST, "Yes")
+   field(ONVL, "1")
+}
+
+record(mbbi, "$(P)$(R)ComputeHistogram_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMPUTE_HISTOGRAM")
+   field(ZRST, "No")
+   field(ZRVL, "0")
+   field(ONST, "Yes")
+   field(ONVL, "1")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These are used to define the histogram                         #
+###################################################################
+record(longout, "$(P)$(R)HistSize")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(VAL,  "256")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_SIZE")
+}
+
+record(longin, "$(P)$(R)HistSize_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)HistMin")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(VAL,  "0")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_MIN")
+}
+
+record(ai, "$(P)$(R)HistMin_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_MIN")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)HistMax")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(VAL,  "255")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_MAX")
+}
+
+record(ai, "$(P)$(R)HistMax_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_MAX")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)HistEntropy_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_ENTROPY")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)Histogram_RBV")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_ARRAY")
+   field(FTVL, "DOUBLE")
+   field(NELM, "$(HIST_SIZE)")
+   field(SCAN, "I/O Intr")
+}
+
+
