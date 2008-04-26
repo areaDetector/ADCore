@@ -175,6 +175,63 @@ record(longin, "$(P)$(R)ImageSizeY_RBV")
 }
 
 ###################################################################
+#  These records control the data type of the array data          # 
+#  The last entry is "Automatic" meaning preserve the data type   #
+#  of the input array.                                            # 
+###################################################################
+
+record(mbbo, "$(P)$(R)DataType")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DATA_TYPE")
+   field(ZRST, "Int8")
+   field(ZRVL, "0")
+   field(ONST, "UInt8")
+   field(ONVL, "1")
+   field(TWST, "Int16")
+   field(TWVL, "2")
+   field(THST, "UInt16")
+   field(THVL, "3")
+   field(FRST, "Int32")
+   field(FRVL, "4")
+   field(FVST, "UInt32")
+   field(FVVL, "5")
+   field(SXST, "Float32")
+   field(SXVL, "6")
+   field(SVST, "Float64")
+   field(SVVL, "7")
+   field(EIST, "Automatic")
+   field(EIVL, "-1")
+}
+
+record(mbbi, "$(P)$(R)DataType_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DATA_TYPE")
+   field(ZRST, "Int8")
+   field(ZRVL, "0")
+   field(ONST, "UInt8")
+   field(ONVL, "1")
+   field(TWST, "Int16")
+   field(TWVL, "2")
+   field(THST, "UInt16")
+   field(THVL, "3")
+   field(FRST, "Int32")
+   field(FRVL, "4")
+   field(FVST, "UInt32")
+   field(FVVL, "5")
+   field(SXST, "Float32")
+   field(SXVL, "6")
+   field(SVST, "Float64")
+   field(SVVL, "7")
+   field(EIST, "Automatic")
+   field(EIVL, "-1")
+   field(SCAN, "I/O Intr")
+}
+
+
+###################################################################
 #  These records control whether statistics are computed          #
 ###################################################################
 record(mbbo, "$(P)$(R)ComputeStatistics")
@@ -313,6 +370,7 @@ record(ai, "$(P)$(R)HistEntropy_RBV")
 {
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_ENTROPY")
+   field(PREC, "3")
    field(SCAN, "I/O Intr")
 }
 
