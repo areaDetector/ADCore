@@ -100,7 +100,7 @@ text {
 	"dynamic attribute" {
 		vis="if zero"
 		calc="A"
-		chan="$(P)$(D)Acquire"
+		chan="$(P)$(R)Acquire"
 	}
 	textix="Done"
 	align="horiz. centered"
@@ -118,7 +118,7 @@ text {
 	"dynamic attribute" {
 		vis="if not zero"
 		calc="A"
-		chan="$(P)$(D)Acquire"
+		chan="$(P)$(R)Acquire"
 	}
 	textix="Collecting"
 	align="horiz. centered"
@@ -213,7 +213,7 @@ text {
 		height=20
 	}
 	control {
-		chan="$(P)$(D)OpenShutterStr"
+		chan="$(P)$(R)OpenShutterStr"
 		clr=14
 		bclr=51
 	}
@@ -241,7 +241,7 @@ text {
 		height=20
 	}
 	control {
-		chan="$(P)$(D)ShutterStatus.INP"
+		chan="$(P)$(R)ShutterStatus.INP"
 		clr=14
 		bclr=51
 	}
@@ -281,7 +281,7 @@ text {
 		height=20
 	}
 	control {
-		chan="$(P)$(D)CloseShutterStr"
+		chan="$(P)$(R)CloseShutterStr"
 		clr=14
 		bclr=51
 	}
@@ -309,7 +309,7 @@ text {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(D)ShutterStatus"
+		chan="$(P)$(R)ShutterStatus"
 		clr=54
 		bclr=2
 	}
@@ -339,7 +339,7 @@ text {
 		height=20
 	}
 	control {
-		chan="$(P)$(D)OpenShutter"
+		chan="$(P)$(R)OpenShutter"
 		clr=14
 		bclr=51
 	}
@@ -354,7 +354,7 @@ text {
 		height=20
 	}
 	control {
-		chan="$(P)$(D)CloseShutter"
+		chan="$(P)$(R)CloseShutter"
 		clr=14
 		bclr=51
 	}
@@ -391,7 +391,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(D)OpenShutterDly"
+				chan="$(P)$(R)OpenShutterDly"
 				clr=14
 				bclr=51
 			}
@@ -421,7 +421,7 @@ composite {
 		height=20
 	}
 	control {
-		chan="$(P)$(D)CloseShutterDly"
+		chan="$(P)$(R)CloseShutterDly"
 		clr=14
 		bclr=51
 	}
@@ -462,7 +462,7 @@ menu {
 		height=20
 	}
 	control {
-		chan="$(P)$(D)ShutterMode"
+		chan="$(P)$(R)ShutterMode"
 		clr=14
 		bclr=51
 	}
@@ -500,7 +500,7 @@ text {
 		height=20
 	}
 	control {
-		chan="$(P)$(D)Acquire"
+		chan="$(P)$(R)Acquire"
 		clr=14
 		bclr=51
 	}
@@ -541,7 +541,7 @@ text {
 		height=20
 	}
 	monitor {
-		chan="$(P)$(D)DetectorState_RBV"
+		chan="$(P)$(R)DetectorState_RBV"
 		clr=54
 		bclr=4
 	}
@@ -557,7 +557,7 @@ text {
 		height=20
 	}
 	control {
-		chan="$(P)$(D)Acquire"
+		chan="$(P)$(R)Acquire"
 		clr=14
 		bclr=51
 	}
@@ -585,7 +585,7 @@ text {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(D)TimeRemaining"
+		chan="$(P)$(R)TimeRemaining"
 		clr=54
 		bclr=4
 	}
@@ -675,7 +675,7 @@ text {
 		height=20
 	}
 	control {
-		chan="$(P)$(D)AcquireTime"
+		chan="$(P)$(R)AcquireTime"
 		clr=14
 		bclr=51
 	}
@@ -690,7 +690,7 @@ text {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(D)AcquireTime_RBV"
+		chan="$(P)$(R)AcquireTime_RBV"
 		clr=54
 		bclr=4
 	}
@@ -719,7 +719,7 @@ text {
 		height=20
 	}
 	control {
-		chan="$(P)$(D)AcquirePeriod"
+		chan="$(P)$(R)AcquirePeriod"
 		clr=14
 		bclr=51
 	}
@@ -734,7 +734,7 @@ text {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(D)AcquirePeriod_RBV"
+		chan="$(P)$(R)AcquirePeriod_RBV"
 		clr=54
 		bclr=4
 	}
@@ -772,7 +772,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(D)NumImages"
+				chan="$(P)$(R)NumImages"
 				clr=14
 				bclr=51
 			}
@@ -787,7 +787,7 @@ composite {
 				height=18
 			}
 			monitor {
-				chan="$(P)$(D)NumImages_RBV"
+				chan="$(P)$(R)NumImages_RBV"
 				clr=54
 				bclr=4
 			}
@@ -818,7 +818,7 @@ text {
 		height=20
 	}
 	control {
-		chan="$(P)$(D)NumExposures"
+		chan="$(P)$(R)NumExposures"
 		clr=14
 		bclr=51
 	}
@@ -833,7 +833,7 @@ text {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(D)NumExposures_RBV"
+		chan="$(P)$(R)NumExposures_RBV"
 		clr=54
 		bclr=4
 	}
@@ -860,7 +860,7 @@ composite {
 			"basic attribute" {
 				clr=54
 			}
-			textix="$(P)$(D)"
+			textix="$(P)$(R)"
 		}
 		text {
 			object {
@@ -907,7 +907,7 @@ composite {
 				height=18
 			}
 			monitor {
-				chan="$(P)$(D)Manufacturer_RBV"
+				chan="$(P)$(R)Manufacturer_RBV"
 				clr=54
 				bclr=4
 			}
@@ -948,7 +948,7 @@ composite {
 			display[0] {
 				label="asynRecord"
 				name="asynRecord.adl"
-				args="P=$(P),R=$(D)AsynIO"
+				args="P=$(P),R=$(R)AsynIO"
 			}
 			display[1] {
 				label="Save restore status"
@@ -968,7 +968,7 @@ composite {
 		height=20
 	}
 	control {
-		chan="$(P)$(D)BinX"
+		chan="$(P)$(R)BinX"
 		clr=14
 		bclr=51
 	}
@@ -983,7 +983,7 @@ composite {
 		height=20
 	}
 	control {
-		chan="$(P)$(D)BinY"
+		chan="$(P)$(R)BinY"
 		clr=14
 		bclr=51
 	}
@@ -998,7 +998,7 @@ composite {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(D)BinX_RBV"
+		chan="$(P)$(R)BinX_RBV"
 		clr=54
 		bclr=4
 	}
@@ -1014,7 +1014,7 @@ composite {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(D)BinY_RBV"
+		chan="$(P)$(R)BinY_RBV"
 		clr=54
 		bclr=4
 	}
@@ -1052,7 +1052,7 @@ composite {
 				height=18
 			}
 			monitor {
-				chan="$(P)$(D)MinX_RBV"
+				chan="$(P)$(R)MinX_RBV"
 				clr=54
 				bclr=4
 			}
@@ -1068,7 +1068,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(D)MinX"
+				chan="$(P)$(R)MinX"
 				clr=14
 				bclr=51
 			}
@@ -1083,7 +1083,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(D)MinY"
+				chan="$(P)$(R)MinY"
 				clr=14
 				bclr=51
 			}
@@ -1098,7 +1098,7 @@ composite {
 				height=18
 			}
 			monitor {
-				chan="$(P)$(D)MinY_RBV"
+				chan="$(P)$(R)MinY_RBV"
 				clr=54
 				bclr=4
 			}
@@ -1151,7 +1151,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(D)SizeX"
+				chan="$(P)$(R)SizeX"
 				clr=14
 				bclr=51
 			}
@@ -1166,7 +1166,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(D)SizeY"
+				chan="$(P)$(R)SizeY"
 				clr=14
 				bclr=51
 			}
@@ -1181,7 +1181,7 @@ composite {
 				height=18
 			}
 			monitor {
-				chan="$(P)$(D)SizeX_RBV"
+				chan="$(P)$(R)SizeX_RBV"
 				clr=54
 				bclr=4
 			}
@@ -1197,7 +1197,7 @@ composite {
 				height=18
 			}
 			monitor {
-				chan="$(P)$(D)SizeY_RBV"
+				chan="$(P)$(R)SizeY_RBV"
 				clr=54
 				bclr=4
 			}
@@ -1228,7 +1228,7 @@ text {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(D)MaxSizeX_RBV"
+		chan="$(P)$(R)MaxSizeX_RBV"
 		clr=54
 		bclr=4
 	}
@@ -1244,7 +1244,7 @@ text {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(D)MaxSizeY_RBV"
+		chan="$(P)$(R)MaxSizeY_RBV"
 		clr=54
 		bclr=4
 	}
@@ -1282,7 +1282,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(D)ImageMode"
+				chan="$(P)$(R)ImageMode"
 				clr=14
 				bclr=51
 			}
@@ -1295,7 +1295,7 @@ composite {
 				height=18
 			}
 			monitor {
-				chan="$(P)$(D)ImageMode_RBV"
+				chan="$(P)$(R)ImageMode_RBV"
 				clr=54
 				bclr=4
 			}
@@ -1327,7 +1327,7 @@ menu {
 		height=20
 	}
 	control {
-		chan="$(P)$(D)TriggerMode"
+		chan="$(P)$(R)TriggerMode"
 		clr=14
 		bclr=51
 	}
@@ -1340,7 +1340,7 @@ menu {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(D)TriggerMode_RBV"
+		chan="$(P)$(R)TriggerMode_RBV"
 		clr=54
 		bclr=4
 	}
@@ -1370,7 +1370,7 @@ text {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(D)Model_RBV"
+		chan="$(P)$(R)Model_RBV"
 		clr=54
 		bclr=4
 	}
@@ -1398,7 +1398,7 @@ text {
 		height=20
 	}
 	control {
-		chan="$(P)$(D)AsynIO.CNCT"
+		chan="$(P)$(R)AsynIO.CNCT"
 		clr=14
 		bclr=51
 	}
@@ -1413,7 +1413,7 @@ text {
 		height=20
 	}
 	control {
-		chan="$(P)$(D)AsynIO.CNCT"
+		chan="$(P)$(R)AsynIO.CNCT"
 		clr=14
 		bclr=51
 	}
@@ -1450,7 +1450,7 @@ composite {
 				height=18
 			}
 			monitor {
-				chan="$(P)$(D)ImageCounter_RBV"
+				chan="$(P)$(R)ImageCounter_RBV"
 				clr=54
 				bclr=4
 			}
@@ -1465,7 +1465,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(D)ImageCounter"
+				chan="$(P)$(R)ImageCounter"
 				clr=14
 				bclr=51
 			}
@@ -1495,7 +1495,7 @@ text {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(D)ImageRate_RBV"
+		chan="$(P)$(R)ImageRate_RBV"
 		clr=54
 		bclr=4
 	}
@@ -1515,7 +1515,7 @@ text {
 	"dynamic attribute" {
 		vis="if not zero"
 		calc="0"
-		chan="$(P)$(D)AsynIO.CNCT"
+		chan="$(P)$(R)AsynIO.CNCT"
 	}
 	textix="Connected"
 	align="horiz. centered"
@@ -1532,7 +1532,7 @@ text {
 	}
 	"dynamic attribute" {
 		vis="if zero"
-		chan="$(P)$(D)AsynIO.CNCT"
+		chan="$(P)$(R)AsynIO.CNCT"
 	}
 	textix="Disconnected"
 	align="horiz. centered"
@@ -1567,7 +1567,7 @@ composite {
 			"basic attribute" {
 				clr=54
 			}
-			textix="Area Detector Control - $(P)$(D)"
+			textix="Area Detector Control - $(P)$(R)"
 			align="horiz. centered"
 		}
 	}
@@ -1593,7 +1593,7 @@ text {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(D)PortName_RBV"
+		chan="$(P)$(R)PortName_RBV"
 		clr=54
 		bclr=4
 	}
@@ -1676,7 +1676,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(D)AutoSave"
+				chan="$(P)$(R)AutoSave"
 				clr=14
 				bclr=51
 			}
@@ -1689,7 +1689,7 @@ composite {
 				height=18
 			}
 			monitor {
-				chan="$(P)$(D)AutoSave_RBV"
+				chan="$(P)$(R)AutoSave_RBV"
 				clr=54
 				bclr=4
 			}
@@ -1726,7 +1726,7 @@ composite {
 						height=18
 					}
 					monitor {
-						chan="$(P)$(D)FullFileName_RBV"
+						chan="$(P)$(R)FullFileName_RBV"
 						clr=54
 						bclr=4
 					}
@@ -1766,7 +1766,7 @@ composite {
 						height=18
 					}
 					monitor {
-						chan="$(P)$(D)FileTemplate_RBV"
+						chan="$(P)$(R)FileTemplate_RBV"
 						clr=54
 						bclr=4
 					}
@@ -1782,7 +1782,7 @@ composite {
 						height=20
 					}
 					control {
-						chan="$(P)$(D)FileTemplate"
+						chan="$(P)$(R)FileTemplate"
 						clr=14
 						bclr=51
 					}
@@ -1822,7 +1822,7 @@ composite {
 						height=20
 					}
 					control {
-						chan="$(P)$(D)AutoIncrement"
+						chan="$(P)$(R)AutoIncrement"
 						clr=14
 						bclr=51
 					}
@@ -1835,7 +1835,7 @@ composite {
 						height=18
 					}
 					monitor {
-						chan="$(P)$(D)AutoIncrement_RBV"
+						chan="$(P)$(R)AutoIncrement_RBV"
 						clr=54
 						bclr=4
 					}
@@ -1874,7 +1874,7 @@ composite {
 						height=22
 					}
 					control {
-						chan="$(P)$(D)FileNumber"
+						chan="$(P)$(R)FileNumber"
 						clr=14
 						bclr=51
 					}
@@ -1889,7 +1889,7 @@ composite {
 						height=18
 					}
 					monitor {
-						chan="$(P)$(D)FileNumber_RBV"
+						chan="$(P)$(R)FileNumber_RBV"
 						clr=54
 						bclr=4
 					}
@@ -1937,7 +1937,7 @@ composite {
 								height=20
 							}
 							control {
-								chan="$(P)$(D)FileName"
+								chan="$(P)$(R)FileName"
 								clr=14
 								bclr=51
 							}
@@ -1953,7 +1953,7 @@ composite {
 								height=18
 							}
 							monitor {
-								chan="$(P)$(D)FileName_RBV"
+								chan="$(P)$(R)FileName_RBV"
 								clr=54
 								bclr=4
 							}
@@ -1991,7 +1991,7 @@ composite {
 								height=20
 							}
 							control {
-								chan="$(P)$(D)FilePath"
+								chan="$(P)$(R)FilePath"
 								clr=14
 								bclr=51
 							}
@@ -2007,7 +2007,7 @@ composite {
 								height=18
 							}
 							monitor {
-								chan="$(P)$(D)FilePath_RBV"
+								chan="$(P)$(R)FilePath_RBV"
 								clr=54
 								bclr=4
 							}
@@ -2074,7 +2074,7 @@ composite {
 						height=18
 					}
 					monitor {
-						chan="$(P)$(D)FileFormat_RBV"
+						chan="$(P)$(R)FileFormat_RBV"
 						clr=54
 						bclr=4
 					}
@@ -2089,7 +2089,7 @@ composite {
 						height=20
 					}
 					control {
-						chan="$(P)$(D)FileFormat"
+						chan="$(P)$(R)FileFormat"
 						clr=14
 						bclr=51
 					}
@@ -2126,7 +2126,7 @@ composite {
 						height=20
 					}
 					control {
-						chan="$(P)$(D)WriteFile"
+						chan="$(P)$(R)WriteFile"
 						clr=14
 						bclr=51
 					}
@@ -2156,7 +2156,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(D)ReadFile"
+				chan="$(P)$(R)ReadFile"
 				clr=14
 				bclr=51
 			}
@@ -2204,7 +2204,7 @@ composite {
 						height=18
 					}
 					monitor {
-						chan="$(P)$(D)ImageSize_RBV"
+						chan="$(P)$(R)ImageSize_RBV"
 						clr=54
 						bclr=4
 					}
@@ -2231,7 +2231,7 @@ composite {
 						height=18
 					}
 					monitor {
-						chan="$(P)$(D)Gain_RBV"
+						chan="$(P)$(R)Gain_RBV"
 						clr=54
 						bclr=4
 					}
@@ -2247,7 +2247,7 @@ composite {
 						height=20
 					}
 					control {
-						chan="$(P)$(D)Gain"
+						chan="$(P)$(R)Gain"
 						clr=14
 						bclr=51
 					}
@@ -2299,7 +2299,7 @@ composite {
 						height=20
 					}
 					control {
-						chan="$(P)$(D)DataType"
+						chan="$(P)$(R)DataType"
 						clr=14
 						bclr=51
 					}
@@ -2312,7 +2312,7 @@ composite {
 						height=18
 					}
 					monitor {
-						chan="$(P)$(D)DataType_RBV"
+						chan="$(P)$(R)DataType_RBV"
 						clr=54
 						bclr=4
 					}
@@ -2353,7 +2353,7 @@ composite {
 						height=18
 					}
 					monitor {
-						chan="$(P)$(D)ImageSizeX_RBV"
+						chan="$(P)$(R)ImageSizeX_RBV"
 						clr=54
 						bclr=4
 					}
@@ -2369,7 +2369,7 @@ composite {
 						height=18
 					}
 					monitor {
-						chan="$(P)$(D)ImageSizeY_RBV"
+						chan="$(P)$(R)ImageSizeY_RBV"
 						clr=54
 						bclr=4
 					}
@@ -2389,7 +2389,7 @@ composite {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(D)ReverseX_RBV"
+		chan="$(P)$(R)ReverseX_RBV"
 		clr=54
 		bclr=4
 	}
@@ -2405,7 +2405,7 @@ composite {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(D)ReverseY_RBV"
+		chan="$(P)$(R)ReverseY_RBV"
 		clr=54
 		bclr=4
 	}
@@ -2434,7 +2434,7 @@ menu {
 		height=18
 	}
 	control {
-		chan="$(P)$(D)ReverseX"
+		chan="$(P)$(R)ReverseX"
 		clr=14
 		bclr=51
 	}
@@ -2447,7 +2447,7 @@ menu {
 		height=18
 	}
 	control {
-		chan="$(P)$(D)ReverseY"
+		chan="$(P)$(R)ReverseY"
 		clr=14
 		bclr=51
 	}

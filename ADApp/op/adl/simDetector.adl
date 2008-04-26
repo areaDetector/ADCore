@@ -109,7 +109,7 @@ text {
 	display[0] {
 		label="Detector control"
 		name="ADBase.adl"
-		args="P=$(P), D=$(D)"
+		args="P=$(P), R=$(R)"
 	}
 	clr=14
 	bclr=51
@@ -135,7 +135,7 @@ text {
 		height=20
 	}
 	control {
-		chan="$(P)$(D)GainX"
+		chan="$(P)$(R)GainX"
 		clr=14
 		bclr=51
 	}
@@ -150,7 +150,7 @@ text {
 		height=20
 	}
 	control {
-		chan="$(P)$(D)GainY"
+		chan="$(P)$(R)GainY"
 		clr=14
 		bclr=51
 	}
@@ -165,7 +165,7 @@ text {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(D)GainX_RBV"
+		chan="$(P)$(R)GainX_RBV"
 		clr=54
 		bclr=4
 	}
@@ -181,7 +181,7 @@ text {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(D)GainY_RBV"
+		chan="$(P)$(R)GainY_RBV"
 		clr=54
 		bclr=4
 	}
@@ -236,7 +236,7 @@ text {
 		height=20
 	}
 	control {
-		chan="$(P)$(D)Reset"
+		chan="$(P)$(R)Reset"
 		clr=14
 		bclr=51
 	}
@@ -253,6 +253,6 @@ text {
 	"basic attribute" {
 		clr=14
 	}
-	textix="$(P)$(D)"
+	textix="$(P)$(R)"
 	align="horiz. centered"
 }
