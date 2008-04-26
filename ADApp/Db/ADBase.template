@@ -7,7 +7,7 @@
 #  about the detector                                             # 
 ###################################################################
 
-record(stringin, "$(P)$(D)PortName_RBV")
+record(stringin, "$(P)$(R)PortName_RBV")
 {
    field(VAL,  "$(PORT)")
 }
@@ -17,21 +17,21 @@ record(stringin, "$(P)$(D)PortName_RBV")
 #  about the detector                                             # 
 ###################################################################
 
-record(stringin, "$(P)$(D)Manufacturer_RBV")
+record(stringin, "$(P)$(R)Manufacturer_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynOctetRead")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MANUFACTURER")
 }
 
-record(stringin, "$(P)$(D)Model_RBV")
+record(stringin, "$(P)$(R)Model_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynOctetRead")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MODEL")
 }
 
-record(longin, "$(P)$(D)MaxSizeX_RBV")
+record(longin, "$(P)$(R)MaxSizeX_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -39,7 +39,7 @@ record(longin, "$(P)$(D)MaxSizeX_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(D)MaxSizeY_RBV")
+record(longin, "$(P)$(R)MaxSizeY_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -51,7 +51,7 @@ record(longin, "$(P)$(D)MaxSizeY_RBV")
 #  These records control the data type                            # 
 ###################################################################
 
-record(mbbo, "$(P)$(D)DataType")
+record(mbbo, "$(P)$(R)DataType")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -74,7 +74,7 @@ record(mbbo, "$(P)$(D)DataType")
    field(SVVL, "7")
 }
 
-record(mbbi, "$(P)$(D)DataType_RBV")
+record(mbbi, "$(P)$(R)DataType_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -103,14 +103,14 @@ record(mbbi, "$(P)$(D)DataType_RBV")
 #  including binning, region start and size                       # 
 ###################################################################
 
-record(longout, "$(P)$(D)BinX")
+record(longout, "$(P)$(R)BinX")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BIN_X")
 }
 
-record(longin, "$(P)$(D)BinX_RBV")
+record(longin, "$(P)$(R)BinX_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -118,14 +118,14 @@ record(longin, "$(P)$(D)BinX_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(longout, "$(P)$(D)BinY")
+record(longout, "$(P)$(R)BinY")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BIN_Y")
 }
 
-record(longin, "$(P)$(D)BinY_RBV")
+record(longin, "$(P)$(R)BinY_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -133,14 +133,14 @@ record(longin, "$(P)$(D)BinY_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(longout, "$(P)$(D)MinX")
+record(longout, "$(P)$(R)MinX")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_X")
 }
 
-record(longin, "$(P)$(D)MinX_RBV")
+record(longin, "$(P)$(R)MinX_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -148,14 +148,14 @@ record(longin, "$(P)$(D)MinX_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(longout, "$(P)$(D)MinY")
+record(longout, "$(P)$(R)MinY")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_Y")
 }
 
-record(longin, "$(P)$(D)MinY_RBV")
+record(longin, "$(P)$(R)MinY_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -163,14 +163,14 @@ record(longin, "$(P)$(D)MinY_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(longout, "$(P)$(D)SizeX")
+record(longout, "$(P)$(R)SizeX")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIZE_X")
 }
 
-record(longin, "$(P)$(D)SizeX_RBV")
+record(longin, "$(P)$(R)SizeX_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -178,14 +178,14 @@ record(longin, "$(P)$(D)SizeX_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(longout, "$(P)$(D)SizeY")
+record(longout, "$(P)$(R)SizeY")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIZE_Y")
 }
 
-record(longin, "$(P)$(D)SizeY_RBV")
+record(longin, "$(P)$(R)SizeY_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -193,7 +193,7 @@ record(longin, "$(P)$(D)SizeY_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(mbbo, "$(P)$(D)ReverseX")
+record(mbbo, "$(P)$(R)ReverseX")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -204,7 +204,7 @@ record(mbbo, "$(P)$(D)ReverseX")
    field(ONVL, "1")
 }
 
-record(mbbi, "$(P)$(D)ReverseX_RBV")
+record(mbbi, "$(P)$(R)ReverseX_RBV")
 {
 #   field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -216,7 +216,7 @@ record(mbbi, "$(P)$(D)ReverseX_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(mbbo, "$(P)$(D)ReverseY")
+record(mbbo, "$(P)$(R)ReverseY")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -227,7 +227,7 @@ record(mbbo, "$(P)$(D)ReverseY")
    field(ONVL, "1")
 }
 
-record(mbbi, "$(P)$(D)ReverseY_RBV")
+record(mbbi, "$(P)$(R)ReverseY_RBV")
 {
 #   field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -239,7 +239,7 @@ record(mbbi, "$(P)$(D)ReverseY_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(D)ImageSizeX_RBV")
+record(longin, "$(P)$(R)ImageSizeX_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -247,7 +247,7 @@ record(longin, "$(P)$(D)ImageSizeX_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(D)ImageSizeY_RBV")
+record(longin, "$(P)$(R)ImageSizeY_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -255,7 +255,7 @@ record(longin, "$(P)$(D)ImageSizeY_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(D)ImageSize_RBV")
+record(longin, "$(P)$(R)ImageSize_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -267,7 +267,7 @@ record(longin, "$(P)$(D)ImageSize_RBV")
 #  These records control the acquisition time and                 #
 #  period                                                         # 
 ###################################################################
-record(ao, "$(P)$(D)AcquireTime")
+record(ao, "$(P)$(R)AcquireTime")
 {
    field(PINI, "1")
    field(DTYP, "asynFloat64")
@@ -275,7 +275,7 @@ record(ao, "$(P)$(D)AcquireTime")
    field(PREC, "3")
 }
 
-record(ai, "$(P)$(D)AcquireTime_RBV")
+record(ai, "$(P)$(R)AcquireTime_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynFloat64")
@@ -284,7 +284,7 @@ record(ai, "$(P)$(D)AcquireTime_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(ao, "$(P)$(D)AcquirePeriod")
+record(ao, "$(P)$(R)AcquirePeriod")
 {
    field(PINI, "1")
    field(DTYP, "asynFloat64")
@@ -292,7 +292,7 @@ record(ao, "$(P)$(D)AcquirePeriod")
    field(PREC, "3")
 }
 
-record(ai, "$(P)$(D)AcquirePeriod_RBV")
+record(ai, "$(P)$(R)AcquirePeriod_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynFloat64")
@@ -306,7 +306,7 @@ record(ai, "$(P)$(D)AcquirePeriod_RBV")
 ###################################################################
 #  These records control the gain                                 # 
 ###################################################################
-record(ao, "$(P)$(D)Gain")
+record(ao, "$(P)$(R)Gain")
 {
    field(PINI, "1")
    field(DTYP, "asynFloat64")
@@ -314,7 +314,7 @@ record(ao, "$(P)$(D)Gain")
    field(PREC, "3")
 }
 
-record(ai, "$(P)$(D)Gain_RBV")
+record(ai, "$(P)$(R)Gain_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynFloat64")
@@ -326,7 +326,7 @@ record(ai, "$(P)$(D)Gain_RBV")
 ###################################################################
 #  These records control the acquisition mode                     # 
 ###################################################################
-record(mbbo, "$(P)$(D)ImageMode")
+record(mbbo, "$(P)$(R)ImageMode")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -339,7 +339,7 @@ record(mbbo, "$(P)$(D)ImageMode")
    field(TWVL, "2")
 }
 
-record(mbbi, "$(P)$(D)ImageMode_RBV")
+record(mbbi, "$(P)$(R)ImageMode_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -356,7 +356,7 @@ record(mbbi, "$(P)$(D)ImageMode_RBV")
 ###################################################################
 #  These records control the trigger mode                         # 
 ###################################################################
-record(mbbo, "$(P)$(D)TriggerMode")
+record(mbbo, "$(P)$(R)TriggerMode")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -367,7 +367,7 @@ record(mbbo, "$(P)$(D)TriggerMode")
    field(ONVL, "1")
 }
 
-record(mbbi, "$(P)$(D)TriggerMode_RBV")
+record(mbbi, "$(P)$(R)TriggerMode_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -383,14 +383,14 @@ record(mbbi, "$(P)$(D)TriggerMode_RBV")
 #  These records control the number of exposures and              #
 #  number of images                                               # 
 ###################################################################
-record(longout, "$(P)$(D)NumExposures")
+record(longout, "$(P)$(R)NumExposures")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NEXPOSURES")
 }
 
-record(longin, "$(P)$(D)NumExposures_RBV")
+record(longin, "$(P)$(R)NumExposures_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -398,14 +398,14 @@ record(longin, "$(P)$(D)NumExposures_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(longout, "$(P)$(D)NumImages")
+record(longout, "$(P)$(R)NumImages")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NIMAGES")
 }
 
-record(longin, "$(P)$(D)NumImages_RBV")
+record(longin, "$(P)$(R)NumImages_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -418,72 +418,72 @@ record(longin, "$(P)$(D)NumImages_RBV")
 #  and stop                                                       #
 ###################################################################
 
-record(bo, "$(P)$(D)Acquire")
+record(bo, "$(P)$(R)Acquire")
 {
    field(ZNAM, "Done")
    field(ONAM, "Acquire")
-   field(OUT,  "$(P)$(D)AcquireFanout PP MS")
+   field(OUT,  "$(P)$(R)AcquireFanout PP MS")
 }
 
-record(dfanout, "$(P)$(D)AcquireFanout")
+record(dfanout, "$(P)$(R)AcquireFanout")
 {
-   field(OUTA, "$(P)$(D)StartAcquireCalc.PROC PP MS")
-   field(OUTB, "$(P)$(D)DoAcquire PP MS")
+   field(OUTA, "$(P)$(R)StartAcquireCalc.PROC PP MS")
+   field(OUTB, "$(P)$(R)DoAcquire PP MS")
 }
 
-record(calcout, "$(P)$(D)StartAcquireCalc")
+record(calcout, "$(P)$(R)StartAcquireCalc")
 {
-    field(INPA, "$(P)$(D)Acquire")
+    field(INPA, "$(P)$(R)Acquire")
     field(CALC, "A")
-    field(OUT,  "$(P)$(D)AcquireBusy PP MS")
+    field(OUT,  "$(P)$(R)AcquireBusy PP MS")
     field(OOPT, "Transition To Non-zero")
 }
 
-record(busy, "$(P)$(D)AcquireBusy")
+record(busy, "$(P)$(R)AcquireBusy")
 {
 }
 
-record(longout, "$(P)$(D)DoAcquire")
+record(longout, "$(P)$(R)DoAcquire")
 {
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQUIRE")
 }
 
-record(longin, "$(P)$(D)Acquire_RBV")
+record(longin, "$(P)$(R)Acquire_RBV")
 {
     field(PINI, "1")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQUIRE")
     field(SCAN, "I/O Intr")
-    field(FLNK, "$(P)$(D)AcquireDoneCalc")
+    field(FLNK, "$(P)$(R)AcquireDoneCalc")
 }
 
-record(calcout, "$(P)$(D)AcquireDoneCalc")
+record(calcout, "$(P)$(R)AcquireDoneCalc")
 {
-    field(INPA, "$(P)$(D)Acquire_RBV")
+    field(INPA, "$(P)$(R)Acquire_RBV")
     field(CALC, "A")
-    field(OUT,  "$(P)$(D)AcquireDoneFanout PP MS")
+    field(OUT,  "$(P)$(R)AcquireDoneFanout PP MS")
     field(OOPT, "Transition To Zero")
 }
 
-record(dfanout, "$(P)$(D)AcquireDoneFanout")
+record(dfanout, "$(P)$(R)AcquireDoneFanout")
 {
    field(VAL, "0")
-   field(OUTA, "$(P)$(D)Acquire CA MS")
-   field(OUTB, "$(P)$(D)AcquireBusy CA MS")
+   field(OUTA, "$(P)$(R)Acquire CA MS")
+   field(OUTB, "$(P)$(R)AcquireBusy CA MS")
 }
 
 ###################################################################
 #  These records provide statistics on image callbacks and        #
 #  image callback rates                                           # 
 ###################################################################
-record(longout, "$(P)$(D)ImageCounter")
+record(longout, "$(P)$(R)ImageCounter")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_COUNTER")
 }
 
-record(longin, "$(P)$(D)ImageCounter_RBV")
+record(longin, "$(P)$(R)ImageCounter_RBV")
 {
     field(PINI, "1")
     field(DTYP, "asynInt32")
@@ -492,10 +492,10 @@ record(longin, "$(P)$(D)ImageCounter_RBV")
 }
 
 # This record needs work, because .B should reflect the time since last processed
-record(calc, "$(P)$(D)ImageRate_RBV")
+record(calc, "$(P)$(R)ImageRate_RBV")
 {
-    field(INPA, "$(P)$(D)ImageRate_RBV.B NPP NMS")  # Previous counter value
-    field(INPB, "$(P)$(D)ImageCounter_RBV NPP NMS") # Current counter value
+    field(INPA, "$(P)$(R)ImageRate_RBV.B NPP NMS")  # Previous counter value
+    field(INPB, "$(P)$(R)ImageCounter_RBV NPP NMS") # Current counter value
     field(INPC, "1.0")                              # Delta time, needs work
     field(CALC, "(B-A)/C")
     field(PREC, "1")
@@ -506,7 +506,7 @@ record(calc, "$(P)$(D)ImageRate_RBV")
 #  These records are for the detector state                       # 
 ###################################################################
 
-record(mbbi, "$(P)$(D)DetectorState_RBV")
+record(mbbi, "$(P)$(R)DetectorState_RBV")
 {
     field(PINI, "1")
     field(DTYP, "asynInt32")
@@ -541,7 +541,7 @@ record(mbbi, "$(P)$(D)DetectorState_RBV")
 ###################################################################
 
 # File path.
-record(waveform, "$(P)$(D)FilePath")
+record(waveform, "$(P)$(R)FilePath")
 {
     field(PINI, "1")
     field(DTYP, "asynOctetWrite")
@@ -550,7 +550,7 @@ record(waveform, "$(P)$(D)FilePath")
     field(NELM, "256")
 }
 
-record(waveform, "$(P)$(D)FilePath_RBV")
+record(waveform, "$(P)$(R)FilePath_RBV")
 {
     field(PINI, "1")
     field(DTYP, "asynOctetRead")
@@ -561,7 +561,7 @@ record(waveform, "$(P)$(D)FilePath_RBV")
 }
 
 # Filename
-record(waveform, "$(P)$(D)FileName")
+record(waveform, "$(P)$(R)FileName")
 {
     field(PINI, "1")
     field(DTYP, "asynOctetWrite")
@@ -570,7 +570,7 @@ record(waveform, "$(P)$(D)FileName")
     field(NELM, "256")
 }
 
-record(waveform, "$(P)$(D)FileName_RBV")
+record(waveform, "$(P)$(R)FileName_RBV")
 {
     field(PINI, "1")
     field(DTYP, "asynOctetRead")
@@ -581,7 +581,7 @@ record(waveform, "$(P)$(D)FileName_RBV")
 }
 
 # File number
-record(longout, "$(P)$(D)FileNumber")
+record(longout, "$(P)$(R)FileNumber")
 {
     field(PINI, "1")
     field(VAL,  "1")
@@ -589,7 +589,7 @@ record(longout, "$(P)$(D)FileNumber")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NUMBER")
 }
 
-record(longin, "$(P)$(D)FileNumber_RBV")
+record(longin, "$(P)$(R)FileNumber_RBV")
 {
     field(PINI, "1")
     field(DTYP, "asynInt32")
@@ -597,15 +597,15 @@ record(longin, "$(P)$(D)FileNumber_RBV")
     field(SCAN, "I/O Intr")
 }
 
-record(calcout, "$(P)$(D)FileNumber_Sync")
+record(calcout, "$(P)$(R)FileNumber_Sync")
 {
-    field(INPA, "$(P)$(D)FileNumber_RBV CP")
+    field(INPA, "$(P)$(R)FileNumber_RBV CP")
     field(CALC, "A")
-    field(OUT,  "$(P)$(D)FileNumber PP")
+    field(OUT,  "$(P)$(R)FileNumber PP")
 }
 
 # Autoincrement flag
-record(mbbo, "$(P)$(D)AutoIncrement")
+record(mbbo, "$(P)$(R)AutoIncrement")
 {
     field(PINI,  "1")
     field(DTYP, "asynInt32")
@@ -616,7 +616,7 @@ record(mbbo, "$(P)$(D)AutoIncrement")
     field(ONVL, "1")
 }
 
-record(mbbo, "$(P)$(D)AutoIncrement_RBV")
+record(mbbo, "$(P)$(R)AutoIncrement_RBV")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_INCREMENT")
@@ -628,7 +628,7 @@ record(mbbo, "$(P)$(D)AutoIncrement_RBV")
 }
 
 # File template
-record(waveform, "$(P)$(D)FileTemplate")
+record(waveform, "$(P)$(R)FileTemplate")
 {
     field(PINI,  "1")
     field(DTYP, "asynOctetWrite")
@@ -637,7 +637,7 @@ record(waveform, "$(P)$(D)FileTemplate")
     field(NELM, "256")
 }
 
-record(waveform, "$(P)$(D)FileTemplate_RBV")
+record(waveform, "$(P)$(R)FileTemplate_RBV")
 {
     field(PINI,  "1")
     field(DTYP, "asynOctetRead")
@@ -648,7 +648,7 @@ record(waveform, "$(P)$(D)FileTemplate_RBV")
 }
 
 # Full filename, including path
-record(waveform, "$(P)$(D)FullFileName_RBV")
+record(waveform, "$(P)$(R)FullFileName_RBV")
 {
     field(PINI,  "1")
     field(DTYP, "asynOctetRead")
@@ -659,7 +659,7 @@ record(waveform, "$(P)$(D)FullFileName_RBV")
 }
 
 # Autosave flag
-record(mbbo, "$(P)$(D)AutoSave")
+record(mbbo, "$(P)$(R)AutoSave")
 {
     field(PINI,  "1")
     field(DTYP, "asynInt32")
@@ -670,7 +670,7 @@ record(mbbo, "$(P)$(D)AutoSave")
     field(ONVL, "1")
 }
 
-record(mbbi, "$(P)$(D)AutoSave_RBV")
+record(mbbi, "$(P)$(R)AutoSave_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_SAVE")
@@ -683,21 +683,21 @@ record(mbbi, "$(P)$(D)AutoSave_RBV")
 
 # NOTE: These should be busy records, but wait till we get asynBusy record
 # Write file
-record(longout, "$(P)$(D)WriteFile")
+record(longout, "$(P)$(R)WriteFile")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WRITE_FILE")
 }
 
 # Read file
-record(longout, "$(P)$(D)ReadFile")
+record(longout, "$(P)$(R)ReadFile")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))READ_FILE")
 }
 
 # File data format 
-record(mbbo, "$(P)$(D)FileFormat")
+record(mbbo, "$(P)$(R)FileFormat")
 {
     field(PINI, "1")
     field(DTYP, "asynInt32")
@@ -708,7 +708,7 @@ record(mbbo, "$(P)$(D)FileFormat")
     field(ONVL, "1")
 }
 
-record(mbbi, "$(P)$(D)FileFormat_RBV")
+record(mbbi, "$(P)$(R)FileFormat_RBV")
 {
     field(PINI, "1")
     field(DTYP, "asynInt32")
@@ -725,7 +725,7 @@ record(mbbi, "$(P)$(D)FileFormat_RBV")
 ###################################################################
  
 # Set ASYN_TRACEIO_HEX bit by default
-record(asyn,"$(P)$(D)AsynIO")
+record(asyn,"$(P)$(R)AsynIO")
 {
     field(PORT, $(PORT))
     field(TIB2,"1")
@@ -736,7 +736,7 @@ record(asyn,"$(P)$(D)AsynIO")
 ###################################################################
 
 # Needs works past here
-record(mbbo, "$(P)$(D)Compression")
+record(mbbo, "$(P)$(R)Compression")
 {
    field(ZRST,  "None")
    field(ONST,  "LZW")
@@ -744,28 +744,28 @@ record(mbbo, "$(P)$(D)Compression")
    field(THST, "RL Encoding")
 }
 
-record(bi, "$(P)$(D)CorrectBackground")
+record(bi, "$(P)$(R)CorrectBackground")
 {
    field(VAL, "0")
    field(ZNAM, "No")
    field(ONAM, "Yes")
 }
 
-record(bi, "$(P)$(D)CorrectFlatfield")
+record(bi, "$(P)$(R)CorrectFlatfield")
 {
    field(VAL, "0")
    field(ZNAM, "No")
    field(ONAM, "Yes")
 }
 
-record(bi, "$(P)$(D)CorrectSpatial")
+record(bi, "$(P)$(R)CorrectSpatial")
 {
    field(VAL, "0")
    field(ZNAM, "No")
    field(ONAM, "Yes")
 }
 
-record(mbbo, "$(P)$(D)ImageType")
+record(mbbo, "$(P)$(R)ImageType")
 {
    field(VAL, "0")
    field(ZRST, "Normal")
@@ -774,43 +774,43 @@ record(mbbo, "$(P)$(D)ImageType")
    field(THST, "Flatfield")
 }
 
-record(ao, "$(P)$(D)TimeRemaining")
+record(ao, "$(P)$(R)TimeRemaining")
 {
    field(VAL, "0")
    field(PREC, "1")
 }
 
-record(stringout, "$(P)$(D)OpenShutterStr")
+record(stringout, "$(P)$(R)OpenShutterStr")
 {
    field(VAL, "1")
 }
 
-record(bo, "$(P)$(D)OpenShutter")
+record(bo, "$(P)$(R)OpenShutter")
 {
 }
 
-record(stringout, "$(P)$(D)CloseShutterStr")
+record(stringout, "$(P)$(R)CloseShutterStr")
 {
    field(VAL, "0")
 }
 
-record(bo, "$(P)$(D)CloseShutter")
+record(bo, "$(P)$(R)CloseShutter")
 {
 }
 
-record(ao, "$(P)$(D)OpenShutterDly")
-{
-   field(VAL, ".05")
-   field(PREC, "3")
-}
-
-record(ao, "$(P)$(D)CloseShutterDly")
+record(ao, "$(P)$(R)OpenShutterDly")
 {
    field(VAL, ".05")
    field(PREC, "3")
 }
 
-record(mbbo, "$(P)$(D)ShutterMode")
+record(ao, "$(P)$(R)CloseShutterDly")
+{
+   field(VAL, ".05")
+   field(PREC, "3")
+}
+
+record(mbbo, "$(P)$(R)ShutterMode")
 {
    field(VAL, "2")
    field(ZRST, "None")
@@ -818,7 +818,7 @@ record(mbbo, "$(P)$(D)ShutterMode")
    field(TWST, "EPICS PV")
 }
 
-record(bo, "$(P)$(D)Shutter")
+record(bo, "$(P)$(R)Shutter")
 {
    field(PINI, "YES")
    field(VAL, "0")
@@ -828,46 +828,46 @@ record(bo, "$(P)$(D)Shutter")
    field(OSV, "NO_ALARM")
 }
 
-record(stringin, "$(P)$(D)ShutterStatus")
+record(stringin, "$(P)$(R)ShutterStatus")
 {
    field(PINI, "YES")
-   field(INP, "$(P)$(D)Shutter CP MS")
+   field(INP, "$(P)$(R)Shutter CP MS")
 }
 
-record(stringout, "$(P)$(D)DetInStr")
+record(stringout, "$(P)$(R)DetInStr")
 {
 }
 
-record(stringout, "$(P)$(D)DetOutStr")
+record(stringout, "$(P)$(R)DetOutStr")
 {
 }
 
-record(stringin, "$(P)$(D)Comment1")
+record(stringin, "$(P)$(R)Comment1")
 {
    field(DESC, "Comment 1")
 }
 
-record(stringin, "$(P)$(D)Comment2")
+record(stringin, "$(P)$(R)Comment2")
 {
    field(DESC, "Comment 2")
 }
 
-record(stringin, "$(P)$(D)Comment3")
+record(stringin, "$(P)$(R)Comment3")
 {
    field(DESC, "Comment 3")
 }
 
-record(stringin, "$(P)$(D)Comment4")
+record(stringin, "$(P)$(R)Comment4")
 {
    field(DESC, "Comment 4")
 }
 
-record(stringin, "$(P)$(D)Comment5")
+record(stringin, "$(P)$(R)Comment5")
 {
    field(DESC, "Comment 5")
 }
 
-record(stringin, "$(P)$(D)Comment6")
+record(stringin, "$(P)$(R)Comment6")
 {
    field(DESC, "Comment 6")
 }
