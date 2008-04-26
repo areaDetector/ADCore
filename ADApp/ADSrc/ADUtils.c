@@ -125,7 +125,6 @@ static void dimensionCallback(void *int32ArrayInterruptPvt, epicsInt32 *dimsPrev
         while (pnode) {
             asynInt32ArrayInterrupt *pInterrupt = pnode->drvPvt;
             if (pInterrupt->pasynUser->reason == reason) {
-                asynInt32ArrayInterrupt *pInterrupt = pnode->drvPvt;
                 pInterrupt->callback(pInterrupt->userPvt,
                                      pInterrupt->pasynUser,
                                      dimsPrev, pArray->ndims);
