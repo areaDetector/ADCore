@@ -14,8 +14,8 @@ INC += ADInterface.h
 LIBRARY_IOC = ADBase
 LIB_SRCS += ADParamLib.c
 LIB_SRCS += ADUtils.c
-LIB_SRCS += NDArrayBuff.h
-LIB_SRCS += NDArrayBuffEpics.h
+LIB_SRCS += NDArrayBuff.c
+LIB_SRCS += NDArrayBuffEpics.c
 LIB_LIBS += asyn
 LIB_LIBS += $(EPICS_BASE_IOC_LIBS)
 
