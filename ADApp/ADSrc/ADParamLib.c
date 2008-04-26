@@ -110,9 +110,9 @@ static PARAMS paramCreate( paramIndex startVal, paramIndex nvals, asynStandardIn
 
     returns Integer indicating 0 (PARAM_OK) for success or non-zero for index out of range. 
 */
-static int paramSetFlag( PARAMS params, paramIndex index )
+static asynStatus paramSetFlag( PARAMS params, paramIndex index )
 {
-    int status = PARAM_ERROR;
+    asynStatus status = PARAM_ERROR;
 
     if (index >= 0 && index < params->nvals)
     {
@@ -136,9 +136,9 @@ static int paramSetFlag( PARAMS params, paramIndex index )
 
     returns Integer indicating 0 (PARAM_OK) for success or non-zero for index out of range. 
 */
-static int paramSetInteger( PARAMS params, paramIndex index, int value )
+static asynStatus paramSetInteger( PARAMS params, paramIndex index, int value )
 {
-    int status = PARAM_ERROR;
+    asynStatus status = PARAM_ERROR;
 
     index -= params->startVal;
     if (index >= 0 && index < params->nvals)
@@ -165,9 +165,9 @@ static int paramSetInteger( PARAMS params, paramIndex index, int value )
 
     returns: Integer indicating 0 (PARAM_OK) for success or non-zero for index out of range. 
 */
-static int paramSetDouble( PARAMS params, paramIndex index, double value )
+static asynStatus paramSetDouble( PARAMS params, paramIndex index, double value )
 {
-    int status = PARAM_ERROR;
+    asynStatus status = PARAM_ERROR;
 
     index -= params->startVal;
     if (index >=0 && index < params->nvals)
@@ -194,9 +194,9 @@ static int paramSetDouble( PARAMS params, paramIndex index, double value )
 
     returns: Integer indicating 0 (PARAM_OK) for success or non-zero for index out of range. 
 */
-static int paramSetString( PARAMS params, paramIndex index, const char *value )
+static asynStatus paramSetString( PARAMS params, paramIndex index, const char *value )
 {
-    int status = PARAM_ERROR;
+    asynStatus status = PARAM_ERROR;
 
     index -= params->startVal;
     if (index >=0 && index < params->nvals)
@@ -224,9 +224,9 @@ static int paramSetString( PARAMS params, paramIndex index, const char *value )
 
     \return Integer indicating 0 (PARAM_OK) for success or non-zero for index out of range or wrong type.
 */
-static int paramGetInteger( PARAMS params, paramIndex index, int * value )
+static asynStatus paramGetInteger( PARAMS params, paramIndex index, int * value )
 {
-    int status = PARAM_ERROR;
+    asynStatus status = PARAM_ERROR;
 
     index -= params->startVal;
     *value = 0;
@@ -251,9 +251,9 @@ static int paramGetInteger( PARAMS params, paramIndex index, int * value )
 
     returns: Integer indicating 0 (PARAM_OK) for success or non-zero for index out of range or wrong type. 
 */
-static int paramGetDouble( PARAMS params, paramIndex index, double * value )
+static asynStatus paramGetDouble( PARAMS params, paramIndex index, double * value )
 {
-    int status = PARAM_OK;
+    asynStatus status = PARAM_OK;
 
     index -= params->startVal;
     *value = 0.;
@@ -279,9 +279,9 @@ static int paramGetDouble( PARAMS params, paramIndex index, double * value )
 
     returns: Integer indicating 0 (PARAM_OK) for success or non-zero for index out of range or wrong type. 
 */
-static int paramGetString( PARAMS params, paramIndex index, int maxChars, char * value )
+static asynStatus paramGetString( PARAMS params, paramIndex index, int maxChars, char * value )
 {
-    int status = PARAM_OK;
+    asynStatus status = PARAM_OK;
 
     index -= params->startVal;
     value[0]=0;
@@ -296,7 +296,7 @@ static int paramGetString( PARAMS params, paramIndex index, int maxChars, char *
     return status;
 }
 
-static int intCallback( PARAMS params, int command, int addr, int value)
+static asynStatus intCallback( PARAMS params, int command, int addr, int value)
 {
     ELLLIST *pclientList;
     interruptNode *pnode;
@@ -322,7 +322,7 @@ static int intCallback( PARAMS params, int command, int addr, int value)
     return(PARAM_OK);
 }
 
-static int doubleCallback( PARAMS params, int command, int addr, double value)
+static asynStatus doubleCallback( PARAMS params, int command, int addr, double value)
 {
     ELLLIST *pclientList;
     interruptNode *pnode;
@@ -348,7 +348,7 @@ static int doubleCallback( PARAMS params, int command, int addr, double value)
     return(PARAM_OK);
 }
 
-static int stringCallback( PARAMS params, int command, int addr, char *value)
+static asynStatus stringCallback( PARAMS params, int command, int addr, char *value)
 {
     ELLLIST *pclientList;
     interruptNode *pnode;
@@ -384,11 +384,11 @@ static int stringCallback( PARAMS params, int command, int addr, char *value)
 
     returns: void
 */
-static int paramCallCallbacksAddr( PARAMS params, int addr )
+static asynStatus paramCallCallbacksAddr( PARAMS params, int addr )
 {
     int i, index;
     int command;
-    int status = PARAM_OK;
+    asynStatus status = PARAM_OK;
 
     for (i = 0; i < params->nflags; i++)
     {
@@ -412,7 +412,7 @@ static int paramCallCallbacksAddr( PARAMS params, int addr )
     return(status);
 }
 
-static int paramCallCallbacks( PARAMS params )
+static asynStatus paramCallCallbacks( PARAMS params )
 {
     return(paramCallCallbacksAddr(params, 0));
 }

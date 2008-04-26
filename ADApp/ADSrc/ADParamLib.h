@@ -16,21 +16,21 @@ typedef struct paramList * PARAMS;
 
 typedef struct
 {
-  PARAMS (*create)           ( paramIndex startVal, paramIndex nvals, 
-                               asynStandardInterfaces *pasynInterfaces );
-  void (*destroy)            ( PARAMS params );
-  int  (*setInteger)         ( PARAMS params, paramIndex index, int value );
-  int  (*setDouble)          ( PARAMS params, paramIndex index, double value );
-  int  (*setString)          ( PARAMS params, paramIndex index, const char *value );
-  int  (*getInteger)         ( PARAMS params, paramIndex index, int * value );
-  int  (*getDouble)          ( PARAMS params, paramIndex index, double * value );
-  int  (*getString)          ( PARAMS params, paramIndex index, int maxChars, char *value  );
-  int  (*callCallbacks)      ( PARAMS params );
-  int  (*callCallbacksAddr)  ( PARAMS params, int addr );
-  void (*dump)               ( PARAMS params );
+  PARAMS (*create)                  ( paramIndex startVal, paramIndex nvals, 
+                                      asynStandardInterfaces *pasynInterfaces );
+  void (*destroy)                   ( PARAMS params );
+  asynStatus  (*setInteger)         ( PARAMS params, paramIndex index, int value );
+  asynStatus  (*setDouble)          ( PARAMS params, paramIndex index, double value );
+  asynStatus  (*setString)          ( PARAMS params, paramIndex index, const char *value );
+  asynStatus  (*getInteger)         ( PARAMS params, paramIndex index, int * value );
+  asynStatus  (*getDouble)          ( PARAMS params, paramIndex index, double * value );
+  asynStatus  (*getString)          ( PARAMS params, paramIndex index, int maxChars, char *value  );
+  asynStatus  (*callCallbacks)      ( PARAMS params );
+  asynStatus  (*callCallbacksAddr)  ( PARAMS params, int addr );
+  void (*dump)                      ( PARAMS params );
 } paramSupport;
 
-extern paramSupport * ADParam;
+extern paramSupport *ADParam;
 
 #ifdef __cplusplus
 }
