@@ -5,14 +5,14 @@
 ###############################################################################
 #  These records are for network and frame statistics                         #
 ###############################################################################
-record(longout, "$(P)$(D)PSReadStatistics")
+record(longout, "$(P)$(R)PSReadStatistics")
 {
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_READ_STATISTICS")
    field(SCAN, "5 second")
 }
 
-record(stringin, "$(P)$(D)PSDriverType")
+record(stringin, "$(P)$(R)PSDriverType")
 {
    field(PINI, "1")
    field(DTYP, "asynOctetRead")
@@ -20,7 +20,7 @@ record(stringin, "$(P)$(D)PSDriverType")
    field(SCAN, "I/O Intr")
 }
 
-record(stringin, "$(P)$(D)PSFilterVersion")
+record(stringin, "$(P)$(R)PSFilterVersion")
 {
    field(PINI, "1")
    field(DTYP, "asynOctetRead")
@@ -28,7 +28,7 @@ record(stringin, "$(P)$(D)PSFilterVersion")
    field(SCAN, "I/O Intr")
 }
 
-record(ai, "$(P)$(D)PSFrameRate")
+record(ai, "$(P)$(R)PSFrameRate")
 {
    field(PINI, "1")
    field(DTYP, "asynFloat64")
@@ -37,7 +37,7 @@ record(ai, "$(P)$(D)PSFrameRate")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(D)PSFramesCompleted")
+record(longin, "$(P)$(R)PSFramesCompleted")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -45,7 +45,7 @@ record(longin, "$(P)$(D)PSFramesCompleted")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(D)PSFramesDropped")
+record(longin, "$(P)$(R)PSFramesDropped")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -53,7 +53,7 @@ record(longin, "$(P)$(D)PSFramesDropped")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(D)PSPacketsErroneous")
+record(longin, "$(P)$(R)PSPacketsErroneous")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -61,7 +61,7 @@ record(longin, "$(P)$(D)PSPacketsErroneous")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(D)PSPacketsMissed")
+record(longin, "$(P)$(R)PSPacketsMissed")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -69,7 +69,7 @@ record(longin, "$(P)$(D)PSPacketsMissed")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(D)PSPacketsReceived")
+record(longin, "$(P)$(R)PSPacketsReceived")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -77,7 +77,7 @@ record(longin, "$(P)$(D)PSPacketsReceived")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(D)PSPacketsRequested")
+record(longin, "$(P)$(R)PSPacketsRequested")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -85,7 +85,7 @@ record(longin, "$(P)$(D)PSPacketsRequested")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(D)PSPacketsResent")
+record(longin, "$(P)$(R)PSPacketsResent")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -93,7 +93,7 @@ record(longin, "$(P)$(D)PSPacketsResent")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(D)PSBadFrameCounter")
+record(longin, "$(P)$(R)PSBadFrameCounter")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -111,7 +111,7 @@ record(longin, "$(P)$(D)PSBadFrameCounter")
 ###############################################################################
 #  These records control the trigger mode.                                    # 
 ###############################################################################
-record(mbbo, "$(P)$(D)TriggerMode")
+record(mbbo, "$(P)$(R)TriggerMode")
 {
    field(ZRST, "Free Run")
    field(ZRVL, "0")
@@ -129,7 +129,7 @@ record(mbbo, "$(P)$(D)TriggerMode")
    field(SXVL, "6")
  }
 
-record(mbbi, "$(P)$(D)TriggerMode_RBV")
+record(mbbi, "$(P)$(R)TriggerMode_RBV")
 {
    field(ZRST, "Free Run")
    field(ZRVL, "0")
@@ -151,7 +151,7 @@ record(mbbi, "$(P)$(D)TriggerMode_RBV")
 ###############################################################################
 #  These records control the file format.                                     # 
 ###############################################################################
-record(mbbo, "$(P)$(D)FileFormat")
+record(mbbo, "$(P)$(R)FileFormat")
 {
     field(ZRST, "TIFF")
     field(ZRVL, "0")
@@ -159,7 +159,7 @@ record(mbbo, "$(P)$(D)FileFormat")
     field(ONVL, "1")
 }
 
-record(mbbi, "$(P)$(D)FileFormat_RBV")
+record(mbbi, "$(P)$(R)FileFormat_RBV")
 {
     field(ZRST, "TIFF")
     field(ZRVL, "0")
