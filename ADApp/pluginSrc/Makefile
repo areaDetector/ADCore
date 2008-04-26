@@ -6,16 +6,14 @@ include $(TOP)/configure/CONFIG
 
 DBD += pluginSupport.dbd
 
-INC += drvNDStdArrays.h
-INC += drvNDFile.h
-
 LIBRARY_IOC = ADPlugin
-LIB_SRCS += drvNDStdArrays.c
+LIB_SRCS += NDPluginBase.cpp
+LIB_SRCS += NDPluginStdArrays.cpp
 LIB_SRCS += drvNDStdArraysEpics.c
-LIB_SRCS += drvNDFile.c
+LIB_SRCS += NDPluginFile.cpp
 LIB_SRCS += drvNDFileEpics.c
 LIB_SRCS += NDFileNetCDF.c
-LIB_SRCS += drvNDROI.c
+LIB_SRCS += NDPluginROI.cpp
 LIB_SRCS += drvNDROIEpics.c
 LIB_LIBS += netCDF
 
