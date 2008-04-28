@@ -42,6 +42,7 @@ asynStatus NDPluginFile::readFile(void)
 {
     /* Reads a file written by NDFileWriteFile from disk in either binary or ASCII format. */
     asynStatus status = asynSuccess;
+    int addr=0;
     char fullFileName[MAX_FILENAME_LEN];
     int fileFormat, fileNumber;
     int dataType=0;
@@ -50,17 +51,17 @@ asynStatus NDPluginFile::readFile(void)
     const char* functionName = "NDFileReadFile";
 
     /* Get the current parameters */
-    ADParam->getInteger(this->params, ADAutoIncrement, &autoIncrement);
-    ADParam->getInteger(this->params, ADFileNumber,    &fileNumber);
+    ADParam->getInteger(this->params[addr], ADAutoIncrement, &autoIncrement);
+    ADParam->getInteger(this->params[addr], ADFileNumber,    &fileNumber);
 
-    status = (asynStatus)ADUtils->createFileName(this->params, MAX_FILENAME_LEN, fullFileName);
+    status = (asynStatus)ADUtils->createFileName(this->params[addr], MAX_FILENAME_LEN, fullFileName);
     if (status) { 
         asynPrint(this->pasynUser, ASYN_TRACE_ERROR, 
               "%s:%s error creating full file name, fullFileName=%s, status=%d\n", 
               driverName, functionName, fullFileName, status);
         return(status);
     }
-    status = (asynStatus)ADParam->getInteger(this->params, ADFileFormat, &fileFormat);
+    status = (asynStatus)ADParam->getInteger(this->params[addr], ADFileFormat, &fileFormat);
     switch (fileFormat) {
     case NDFileFormatNetCDF:
         break;
@@ -70,23 +71,23 @@ asynStatus NDPluginFile::readFile(void)
     if (status) return(status);
     
     /* Update the full file name */
-    ADParam->setString(this->params, ADFullFileName, fullFileName);
+    ADParam->setString(this->params[addr], ADFullFileName, fullFileName);
 
     /* If autoincrement is set then increment file number */
     if (autoIncrement) {
         fileNumber++;
-        ADParam->setInteger(this->params, ADFileNumber, fileNumber);
+        ADParam->setInteger(this->params[addr], ADFileNumber, fileNumber);
     }
     
     /* Update the new values of dimensions and the array data */
-    ADParam->setInteger(this->params, ADDataType, dataType);
+    ADParam->setInteger(this->params[addr], ADDataType, dataType);
     
     /* Call any registered clients */
     ADUtils->handleCallback(this->asynStdInterfaces.handleInterruptPvt, pArray, NDArrayData, 0);
 
-    /* Set the last arrat to be this one */
-    NDArrayBuff->release(this->pArray);
-    this->pArray = pArray;    
+    /* Set the last array to be this one */
+    NDArrayBuff->release(this->pArrays[addr]);
+    this->pArrays[addr] = pArray;    
     
     return(status);
 }
@@ -94,6 +95,7 @@ asynStatus NDPluginFile::readFile(void)
 asynStatus NDPluginFile::writeFile() 
 {
     asynStatus status = asynSuccess;
+    int addr=0;
     int fileWriteMode, capture;
     int fileNumber, autoIncrement, fileFormat;
     char fullFileName[MAX_FILENAME_LEN];
@@ -103,20 +105,20 @@ asynStatus NDPluginFile::writeFile()
     const char* functionName = "NDFileWriteFile";
 
     /* Make sure there is a valid array */
-    if (!this->pArray) {
+    if (!this->pArrays[addr]) {
         asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
             "%s:%s: ERROR, must collect an array to get dimensions first\n",
             driverName, functionName);
         return(asynError);
     }
     
-    ADParam->getInteger(this->params, NDPluginFileWriteMode, &fileWriteMode);    
-    ADParam->getInteger(this->params, ADFileNumber, &fileNumber);
-    ADParam->getInteger(this->params, ADAutoIncrement, &autoIncrement);
-    ADParam->getInteger(this->params, ADFileFormat, &fileFormat);
-    ADParam->getInteger(this->params, NDPluginFileCapture, &capture);    
-    ADParam->getInteger(this->params, NDPluginFileCapture, &numCapture);    
-    ADParam->getInteger(this->params, NDPluginFileNumCaptured, &numCaptured);
+    ADParam->getInteger(this->params[addr], NDPluginFileWriteMode, &fileWriteMode);    
+    ADParam->getInteger(this->params[addr], ADFileNumber, &fileNumber);
+    ADParam->getInteger(this->params[addr], ADAutoIncrement, &autoIncrement);
+    ADParam->getInteger(this->params[addr], ADFileFormat, &fileFormat);
+    ADParam->getInteger(this->params[addr], NDPluginFileCapture, &capture);    
+    ADParam->getInteger(this->params[addr], NDPluginFileCapture, &numCapture);    
+    ADParam->getInteger(this->params[addr], NDPluginFileNumCaptured, &numCaptured);
 
     /* We unlock the overall mutex here because we want the callbacks to be able to queue new
      * frames without waiting while we write files here.  The only restriction is that the
@@ -128,20 +130,21 @@ asynStatus NDPluginFile::writeFile()
     
     switch(fileWriteMode) {
         case NDPluginFileModeSingle:
-            status = (asynStatus)ADUtils->createFileName(this->params, sizeof(fullFileName), fullFileName);
+            status = (asynStatus)ADUtils->createFileName(this->params[addr], sizeof(fullFileName), fullFileName);
             switch(fileFormat) {
                 case NDFileFormatNetCDF:
                     close = 1;
                     numArrays = 1;
                     append = 0;
-                    status = (asynStatus)NDFileWriteNetCDF(fullFileName, &this->netCDFState, this->pArray, numArrays, append, close);
+                    status = (asynStatus)NDFileWriteNetCDF(fullFileName, &this->netCDFState, 
+                                                           this->pArrays[addr], numArrays, append, close);
                     if (status == asynSuccess) fileOpenComplete = 1;
                     break;
             }
             break;
         case NDPluginFileModeCapture:
             if (numCaptured > 0) {
-            status = (asynStatus)ADUtils->createFileName(this->params, sizeof(fullFileName), fullFileName);
+            status = (asynStatus)ADUtils->createFileName(this->params[addr], sizeof(fullFileName), fullFileName);
                switch(fileFormat) {
                     case NDFileFormatNetCDF:
                         close = 1;
@@ -155,7 +158,7 @@ asynStatus NDPluginFile::writeFile()
                 for (i=0; i<numCapture; i++) free(this->pCapture[i].pData);
                 free(this->pCapture);
                 this->pCapture = NULL;
-                ADParam->setInteger(this->params, NDPluginFileNumCaptured, 0);
+                ADParam->setInteger(this->params[addr], NDPluginFileNumCaptured, 0);
             }
             break;
         case NDPluginFileModeStream:
@@ -164,11 +167,12 @@ asynStatus NDPluginFile::writeFile()
                     switch(fileFormat) {
                         case NDFileFormatNetCDF:
                             /* Streaming was just started, write the header plus the first frame */
-                            status = (asynStatus)ADUtils->createFileName(this->params, sizeof(fullFileName), fullFileName);
+                            status = (asynStatus)ADUtils->createFileName(this->params[addr], sizeof(fullFileName), fullFileName);
                             close = 0;
                             append = 0;
                             numArrays = -1;
-                            status = (asynStatus)NDFileWriteNetCDF(fullFileName, &this->netCDFState, this->pArray, numArrays, append, close);
+                            status = (asynStatus)NDFileWriteNetCDF(fullFileName, &this->netCDFState, 
+                                                                   this->pArrays[addr], numArrays, append, close);
                             if (status == asynSuccess) fileOpenComplete = 1;
                             break;
                     }
@@ -179,7 +183,8 @@ asynStatus NDPluginFile::writeFile()
                             close = 0;
                             append = 1;
                             numArrays = 1;
-                            status = (asynStatus)NDFileWriteNetCDF(NULL, &this->netCDFState, this->pArray, numArrays, append, close);
+                            status = (asynStatus)NDFileWriteNetCDF(NULL, &this->netCDFState, 
+                                                                   this->pArrays[addr], numArrays, append, close);
                             break;
                     }
                 }
@@ -191,7 +196,8 @@ asynStatus NDPluginFile::writeFile()
                             close = 1;
                             append = 1;
                             numArrays = 0;
-                            status = (asynStatus)NDFileWriteNetCDF(NULL, &this->netCDFState, this->pArray, numArrays, append, close);
+                            status = (asynStatus)NDFileWriteNetCDF(NULL, &this->netCDFState, 
+                                                                   this->pArrays[addr], numArrays, append, close);
                             break;
                     }
                 }
@@ -207,11 +213,11 @@ asynStatus NDPluginFile::writeFile()
     epicsMutexLock(this->mutexId);
     
     if (fileOpenComplete) {
-        ADParam->setString(this->params, ADFullFileName, fullFileName);
+        ADParam->setString(this->params[addr], ADFullFileName, fullFileName);
         /* If autoincrement is set then increment file number */
         if (autoIncrement) {
             fileNumber++;
-            ADParam->setInteger(this->params, ADFileNumber, fileNumber);
+            ADParam->setInteger(this->params[addr], ADFileNumber, fileNumber);
         }
     }
     return(status);
@@ -221,6 +227,7 @@ asynStatus NDPluginFile::doCapture()
 {
     /* This function is called from write32 whenever capture is started or stopped */
     asynStatus status = asynSuccess;
+    int addr=0;
     int fileWriteMode, capture;
     NDArray_t array;
     NDArrayInfo_t arrayInfo;
@@ -228,14 +235,14 @@ asynStatus NDPluginFile::doCapture()
     int numCapture;
     const char* functionName = "NDFileDoCapture";
     
-    ADParam->getInteger(this->params, NDPluginFileCapture, &capture);    
-    ADParam->getInteger(this->params, NDPluginFileWriteMode, &fileWriteMode);    
-    ADParam->getInteger(this->params, NDPluginFileNumCapture, &numCapture);
+    ADParam->getInteger(this->params[addr], NDPluginFileCapture, &capture);    
+    ADParam->getInteger(this->params[addr], NDPluginFileWriteMode, &fileWriteMode);    
+    ADParam->getInteger(this->params[addr], NDPluginFileNumCapture, &numCapture);
 
     switch(fileWriteMode) {
         case NDPluginFileModeSingle:
             /* It is an error to set capture=1 in this mode, set to 0 */
-            ADParam->setInteger(this->params, NDPluginFileCapture, 0);
+            ADParam->setInteger(this->params[addr], NDPluginFileCapture, 0);
             break;
         case NDPluginFileModeCapture:
             if (capture) {
@@ -243,7 +250,7 @@ asynStatus NDPluginFile::doCapture()
                 /* We need to read an array from our array source to get its dimensions */
                 array.dataSize = 0;
                 status = this->pasynHandle->read(this->asynHandlePvt,this->pasynUserHandle, &array);
-                ADParam->setInteger(this->params, NDPluginFileNumCaptured, 0);
+                ADParam->setInteger(this->params[addr], NDPluginFileNumCaptured, 0);
                 NDArrayBuff->getInfo(&array, &arrayInfo);
                 this->pCapture = (NDArray_t *)malloc(numCapture * sizeof(NDArray_t));
                 if (!this->pCapture) {
@@ -271,52 +278,55 @@ asynStatus NDPluginFile::doCapture()
         case NDPluginFileModeStream:
             if (capture) {
                 /* Streaming was just started */
-                ADParam->setInteger(this->params, NDPluginFileNumCaptured, 0);
+                ADParam->setInteger(this->params[addr], NDPluginFileNumCaptured, 0);
             } else {
                 /* Streaming was just stopped */
                 status = writeFile();
-                ADParam->setInteger(this->params, NDPluginFileNumCaptured, 0);
+                ADParam->setInteger(this->params[addr], NDPluginFileNumCaptured, 0);
             }
     }
     return(status);
 }
 
+
 void NDPluginFile::processCallbacks(NDArray_t *pArray)
 {
     int fileWriteMode, autoSave, capture;
-    int arrayCounter;
+    int addr=0;
     int status=asynSuccess;
     int numCapture, numCaptured;
 
-    ADParam->getInteger(this->params, ADAutoSave, &autoSave);
-    ADParam->getInteger(this->params, NDPluginFileCapture, &capture);    
-    ADParam->getInteger(this->params, NDPluginFileWriteMode, &fileWriteMode);    
-    ADParam->getInteger(this->params, NDPluginBaseArrayCounter, &arrayCounter);    
-    ADParam->getInteger(this->params, NDPluginFileNumCapture, &numCapture);    
-    ADParam->getInteger(this->params, NDPluginFileNumCaptured, &numCaptured); 
+    /* Call the base class method */
+    NDPluginBase::processCallbacks(pArray);
+    
+    ADParam->getInteger(this->params[addr], ADAutoSave, &autoSave);
+    ADParam->getInteger(this->params[addr], NDPluginFileCapture, &capture);    
+    ADParam->getInteger(this->params[addr], NDPluginFileWriteMode, &fileWriteMode);    
+    ADParam->getInteger(this->params[addr], NDPluginFileNumCapture, &numCapture);    
+    ADParam->getInteger(this->params[addr], NDPluginFileNumCaptured, &numCaptured); 
 
-    /* We always keep the last array so read() can use it.  Release it now */
-    if (this->pArray) NDArrayBuff->release(this->pArray);
-    this->pArray = pArray;
+    /* We always keep the last array so read() can use it.  
+     * Release previous one, reserve new one */
+    if (this->pArrays[addr]) NDArrayBuff->release(this->pArrays[addr]);
+    NDArrayBuff->reserve(pArray);
+    this->pArrays[addr] = pArray;
     
     switch(fileWriteMode) {
         case NDPluginFileModeSingle:
             if (autoSave) {
-                arrayCounter++;
                 status = writeFile();
             }
             break;
         case NDPluginFileModeCapture:
             if (capture) {
-                arrayCounter++;
                 if (numCaptured < numCapture) {
                     NDArrayBuff->copy(this->pCaptureNext++, pArray);
                     numCaptured++;
-                    ADParam->setInteger(this->params, NDPluginFileNumCaptured, numCaptured);
+                    ADParam->setInteger(this->params[addr], NDPluginFileNumCaptured, numCaptured);
                 } 
                 if (numCaptured == numCapture) {
                     capture = 0;
-                    ADParam->setInteger(this->params, NDPluginFileCapture, capture);
+                    ADParam->setInteger(this->params[addr], NDPluginFileCapture, capture);
                     if (autoSave) {
                         status = writeFile();
                     }
@@ -325,13 +335,12 @@ void NDPluginFile::processCallbacks(NDArray_t *pArray)
             break;
         case NDPluginFileModeStream:
             if (capture) {
-                arrayCounter++;
                 numCaptured++;
-                ADParam->setInteger(this->params, NDPluginFileNumCaptured, numCaptured);
+                ADParam->setInteger(this->params[addr], NDPluginFileNumCaptured, numCaptured);
                 status = writeFile();
                 if (numCaptured == numCapture) {
                     capture = 0;
-                    ADParam->setInteger(this->params, NDPluginFileCapture, capture);
+                    ADParam->setInteger(this->params[addr], NDPluginFileCapture, capture);
                     status = writeFile();
                 }
             }
@@ -339,24 +348,25 @@ void NDPluginFile::processCallbacks(NDArray_t *pArray)
     }
 
     /* Update the parameters.  */
-    ADParam->setInteger(this->params, NDPluginBaseArrayCounter, arrayCounter);    
-    ADParam->callCallbacks(this->params);
+    ADParam->callCallbacksAddr(this->params[addr], addr);
 }
 
 asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
     int function = pasynUser->reason;
+    int addr=0;
     asynStatus status = asynSuccess;
     const char* functionName = "writeInt32";
 
+    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
     epicsMutexLock(this->mutexId);
 
     /* Set the parameter in the parameter library. */
-    status = (asynStatus) ADParam->setInteger(this->params, function, value);
+    status = (asynStatus) ADParam->setInteger(this->params[addr], function, value);
 
     switch(function) {
         case ADWriteFile:
-            if (this->pArray) {
+            if (this->pArrays[addr]) {
                 status = writeFile();
             } else {
                 asynPrint(pasynUser, ASYN_TRACE_ERROR,
@@ -380,7 +390,7 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
     }
     
     /* Do callbacks so higher layers see any changes */
-    status = (asynStatus)ADParam->callCallbacks(this->params);
+    status = (asynStatus)ADParam->callCallbacksAddr(this->params[addr], addr);
     
     if (status) 
         asynPrint(pasynUser, ASYN_TRACE_ERROR, 
@@ -394,92 +404,24 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
     return status;
 }
 
-asynStatus NDPluginFile::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
-{
-    int function = pasynUser->reason;
-    asynStatus status = asynSuccess;
-    const char* functionName = "writeFloat64";
-
-    epicsMutexLock(this->mutexId);
-
-    /* Set the parameter in the parameter library. */
-    status = (asynStatus)ADParam->setDouble(this->params, function, value);
-
-    switch(function) {
-        /* We don't currently need to do anything special when these functions are received */
-        default:
-            /* This was not a parameter that this driver understands, try the base class */
-            epicsMutexUnlock(this->mutexId);
-            status = NDPluginBase::writeFloat64(pasynUser, value);
-            epicsMutexLock(this->mutexId);
-            break;
-            break;
-    }
-    
-    /* Do callbacks so higher layers see any changes */
-    status = (asynStatus)ADParam->callCallbacks(this->params);
-    
-    if (status) 
-        asynPrint(pasynUser, ASYN_TRACE_ERROR, 
-              "%s:%s error, status=%d function=%d, value=%f\n", 
-              driverName, functionName, status, function, value);
-    else        
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, value=%f\n", 
-              driverName, functionName, function, value);
-    epicsMutexUnlock(this->mutexId);
-    return status;
-}
-
-asynStatus NDPluginFile::writeOctet(asynUser *pasynUser, const char *value, size_t nChars, size_t *nActual)
-{
-    int function = pasynUser->reason;
-    asynStatus status = asynSuccess;
-
-    epicsMutexLock(this->mutexId);
-    /* Set the parameter in the parameter library. */
-    status = (asynStatus)ADParam->setString(this->params, function, (char *)value);
-
-    switch(function) {
-        default:
-            /* This was not a parameter that this driver understands, try the base class */
-            epicsMutexUnlock(this->mutexId);
-            status = NDPluginBase::writeOctet(pasynUser, value, nChars, nActual);
-            epicsMutexLock(this->mutexId);
-            break;
-            break;
-    }
-    
-     /* Do callbacks so higher layers see any changes */
-    status = (asynStatus)ADParam->callCallbacks(this->params);
-
-    if (status) 
-        asynPrint(pasynUser, ASYN_TRACE_ERROR, 
-              "%s:writeOctet error, status=%d function=%d, value=%s\n", 
-              driverName, status, function, value);
-    else        
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:writeOctet: function=%d, value=%s\n", 
-              driverName, function, value);
-    *nActual = nChars;
-    epicsMutexUnlock(this->mutexId);
-    return status;
-}
 
 asynStatus NDPluginFile::writeNDArray(asynUser *pasynUser, void *handle)
 {
     NDArray_t *pArray = (NDArray_t *)handle;
+    int addr=0;
     asynStatus status = asynSuccess;
+    const char *functionName = "writeNDArray";
     
+    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
     epicsMutexLock(this->mutexId);
     
-    this->pArray = pArray;
-    ADParam->setInteger(this->params, NDPluginFileWriteMode, NDPluginFileModeSingle);
+    this->pArrays[addr] = pArray;
+    ADParam->setInteger(this->params[addr], NDPluginFileWriteMode, NDPluginFileModeSingle);
 
     status = writeFile();
 
     /* Do callbacks so higher layers see any changes */
-    status = (asynStatus)ADParam->callCallbacks(this->params);
+    status = (asynStatus)ADParam->callCallbacksAddr(this->params[addr], addr);
     
     epicsMutexUnlock(this->mutexId);
     return status;
@@ -535,23 +477,23 @@ extern "C" int drvNDFileConfigure(const char *portName, int queueSize, int block
                                   const char *NDArrayPort, int NDArrayAddr)
 {
     new NDPluginFile(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr);
+    return(asynSuccess);
 }
 
-/* The constructure for this class */
+/* The constructor for this class */
 NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCallbacks, 
                            const char *NDArrayPort, int NDArrayAddr)
     /* Invoke the base class constructor */
     : NDPluginBase(portName, queueSize, blockingCallbacks, 
-                   NDArrayPort, NDArrayAddr, NDPluginFileLastParam)
+                   NDArrayPort, NDArrayAddr, 1, NDPluginFileLastParam)
 {
     char *functionName = "NDPluginFile";
     asynStatus status;
+    int addr=0;
     asynStandardInterfaces *pInterfaces;
 
     /* Set addresses of asyn interfaces */
     pInterfaces = &this->asynStdInterfaces;
-    
-    /* Define which interfaces can generate interrupts if more than ones defined in base class */
     
     /* Initialize asynStandardInterfaces.  Base class constructor cannot do this, because we may
      * be modifying the structure after calling base class constructor. */
@@ -578,11 +520,10 @@ NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCall
     }
 
     /* Set the initial values of some parameters */
-    ADParam->setInteger(this->params, NDPluginFileNumCaptured, 0);
-    ADParam->setInteger(this->params, NDPluginFileCapture, 0);
+    ADParam->setInteger(this->params[addr], NDPluginFileNumCaptured, 0);
+    ADParam->setInteger(this->params[addr], NDPluginFileCapture, 0);
     
     /* Try to connect to the NDArray port */
     status = connectToArrayPort();
-printf("%s:%s:, connectToArrayPort status=%d\n", driverName, functionName, status);
 }
 
