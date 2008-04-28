@@ -35,7 +35,7 @@ static const iocshArg * const initArgs[] = {&initArg0,
 static const iocshFuncDef initFuncDef = {"drvNDROIConfigure",6,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
-    drvNDROIConfigure(args[0].sval, args[1].ival, args[1].ival, 
+    drvNDROIConfigure(args[0].sval, args[1].ival, args[2].ival, 
                       args[3].sval, args[4].ival, args[5].ival);
 }
 

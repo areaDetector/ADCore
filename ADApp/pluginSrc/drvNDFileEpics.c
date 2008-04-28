@@ -33,7 +33,7 @@ static const iocshArg * const initArgs[] = {&initArg0,
 static const iocshFuncDef initFuncDef = {"drvNDFileConfigure",5,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
-    drvNDFileConfigure(args[0].sval, args[1].ival, args[1].ival, args[3].sval, args[4].ival);
+    drvNDFileConfigure(args[0].sval, args[1].ival, args[2].ival, args[3].sval, args[4].ival);
 }
 
 void NDFileRegister(void)
