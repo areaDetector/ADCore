@@ -8,9 +8,7 @@
 #include "NDPluginBase.h"
 
 typedef struct NDROI {
-    PARAMS params;
     NDDimension_t dims[ND_ARRAY_MAX_DIMS];
-    NDArray_t *pArray;
     double *histogram;
     int histogramSize;
     double *profiles[ND_ARRAY_MAX_DIMS];
@@ -98,25 +96,13 @@ public:
                  const char *NDArrayPort, int NDArrayAddr, int maxROIs);
     /* These methods override the virtual methods in the base class */
     void processCallbacks(NDArray_t *pArray);
-    asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value);
     asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
-    asynStatus readFloat64(asynUser *pasynUser, epicsFloat64 *value);
-    asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
-    asynStatus readOctet(asynUser *pasynUser, char *value, size_t maxChars,
-                          size_t *nActual, int *eomReason);
-    asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t maxChars,
-                          size_t *nActual);
-    asynStatus readNDArray(asynUser *pasynUser, void *handle);
     asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
                              const char **pptypeName, size_t *psize);
-    void report(FILE *fp, int details);
 
     /* These methods are unique to this class */
     asynStatus readFloat64Array(asynUser *pasynUser, epicsFloat64 *value, 
                                 size_t nelements, size_t *nIn);
-    asynStatus writeFloat64Array(asynUser *pasynUser, 
-                                 epicsFloat64 *value, size_t nelements);
-    void float64ArrayCallback(epicsFloat64 *pData, int len, int reason, int addr);
 
 private:
     int maxROIs;

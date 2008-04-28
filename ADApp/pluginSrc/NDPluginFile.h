@@ -45,14 +45,15 @@ class NDPluginFile : public NDPluginBase {
 public:
     NDPluginFile(const char *portName, int queueSize, int blockingCallbacks, 
                  const char *NDArrayPort, int NDArrayAddr);
+                 
+    /* These methods override those in the base class */
     void processCallbacks(NDArray_t *pArray);
     asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
-    asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
-    asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t maxChars,
-                          size_t *nActual);
     asynStatus writeNDArray(asynUser *pasynUser, void *handle);
     asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
                              const char **pptypeName, size_t *psize);
+
+    /* These methods are new to this class */
     asynStatus readFile(void);
     asynStatus writeFile(void);
     asynStatus doCapture(void);
