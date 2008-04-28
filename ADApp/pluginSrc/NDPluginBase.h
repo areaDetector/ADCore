@@ -2,10 +2,11 @@
 #define NDPluginBase_H
 
 #include <epicsTypes.h>
+#include <epicsMessageQueue.h>
+#include <epicsTime.h>
 #include <asynStandardInterfaces.h>
 
-#include "ADParamLib.h"
-#include "NDArrayBuff.h"
+#include "asynParamBase.h"
 
 typedef enum
 {
@@ -16,7 +17,12 @@ typedef enum
     NDPluginBaseDroppedArrays,      /* (asynInt32,    r/w) Number of dropped arrays */
     NDPluginBaseEnableCallbacks,    /* (asynInt32,    r/w) Enable callbacks from driver (1=Yes, 0=No) */
     NDPluginBaseBlockingCallbacks,  /* (asynInt32,    r/w) Callbacks block (1=Yes, 0=No) */
-    NDPluginBaseMinCallbackTime,     /* (asynFloat64,  r/w) Minimum time between file writes */
+    NDPluginBaseMinCallbackTime,    /* (asynFloat64,  r/w) Minimum time between file writes */
+    NDPluginBaseUniqueId,           /* (asynInt32,    r/o) Unique ID number of array */
+    NDPluginBaseTimeStamp,          /* (asynFloat64,  r/o) Time stamp of array */
+    NDPluginBaseDataType,           /* (asynInt32,    r/o) Data type of array */
+    NDPluginBaseNDimensions,        /* (asynInt32,    r/o) Number of dimensions in array */
+    NDPluginBaseDimensions,         /* (asynInt32Array, r/o) Array dimensions */
     NDPluginBaseLastParam
 } NDPluginBaseParam_t;
 
@@ -30,58 +36,47 @@ static ADParamString_t NDPluginBaseParamString[] = {
     {NDPluginBaseDroppedArrays,     "DROPPED_ARRAYS" },
     {NDPluginBaseEnableCallbacks,   "ENABLE_CALLBACKS" },
     {NDPluginBaseBlockingCallbacks, "BLOCKING_CALLBACKS" },
-    {NDPluginBaseMinCallbackTime,   "MIN_CALLBACK_TIME" }
+    {NDPluginBaseMinCallbackTime,   "MIN_CALLBACK_TIME" },
+    {NDPluginBaseUniqueId,          "UNIQUE_ID" },
+    {NDPluginBaseTimeStamp,         "TIME_STAMP" },
+    {NDPluginBaseDataType,          "DATA_TYPE" },
+    {NDPluginBaseNDimensions,       "ARRAY_NDIMENSIONS"},
+    {NDPluginBaseDimensions,        "ARRAY_DIMENSIONS"}
 };
 
 #define NUM_ND_PLUGIN_BASE_PARAMS (sizeof(NDPluginBaseParamString)/sizeof(NDPluginBaseParamString[0]))
 
-class NDPluginBase {
+class NDPluginBase : public asynParamBase {
 public:
     NDPluginBase(const char *portName, int queueSize, int blockingCallbacks, 
-                 const char *NDArrayPort, int NDArrayAddr, int paramTableSize);
+                 const char *NDArrayPort, int NDArrayAddr, int maxAddr, int paramTableSize);
+                 
+    /* These are the methods that we override from asynParamBase */
+    virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
+    virtual asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t maxChars,
+                          size_t *nActual);
+    virtual asynStatus readInt32Array(asynUser *pasynUser, epicsInt32 *value,
+                                        size_t nElements, size_t *nIn);
+    virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
+                                     const char **pptypeName, size_t *psize);
+                                     
+    /* These are the methods that are new to this class */
     virtual void processCallbacks(NDArray_t *pArray);
     virtual void driverCallback(asynUser *pasynUser, void *handle);
     virtual void processTask(void);
     virtual asynStatus setArrayInterrupt(int connect);
     virtual asynStatus connectToArrayPort(void);
-    virtual asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value);
-    virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
-    virtual asynStatus getBounds(asynUser *pasynUser, epicsInt32 *low, epicsInt32 *high);
-    virtual asynStatus readFloat64(asynUser *pasynUser, epicsFloat64 *value);
-    virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
-    virtual asynStatus readOctet(asynUser *pasynUser, char *value, size_t maxChars,
-                         size_t *nActual, int *eomReason);
-    virtual asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t maxChars,
-                          size_t *nActual);
-    virtual asynStatus readNDArray(asynUser *pasynUser, void *handle);
-    virtual asynStatus writeNDArray(asynUser *pasynUser, void *handle);
-    virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
-                                     const char **pptypeName, size_t *psize);
-    virtual asynStatus drvUserGetType(asynUser *pasynUser,
-                                        const char **pptypeName, size_t *psize);
-    virtual asynStatus drvUserDestroy(asynUser *pasynUser);
-    virtual void report(FILE *fp, int details);
-    virtual asynStatus connect(asynUser *pasynUser);
-    virtual asynStatus disconnect(asynUser *pasynUser);
-   
-    char *portName;
-    epicsMutexId mutexId;
-    epicsMessageQueueId msgQId;
-    PARAMS params;
-    NDArray_t *pArray;
-    epicsTimeStamp lastProcessTime;
 
-    /* The asyn interfaces this driver implements */
-    asynStandardInterfaces asynStdInterfaces;
-    
     /* The asyn interfaces we access as a client */
     asynHandle *pasynHandle;
     void *asynHandlePvt;
     void *asynHandleInterruptPvt;
     asynUser *pasynUserHandle;
-    
-    /* asynUser connected to ourselves for asynTrace */
-    asynUser *pasynUser;
+
+    /* Our data */
+    epicsMessageQueueId msgQId;
+    epicsTimeStamp lastProcessTime;
+    int dimsPrev[ND_ARRAY_MAX_DIMS];
 };
 
     
