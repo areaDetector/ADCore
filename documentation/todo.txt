@@ -1,5 +1,4 @@
     General
-- Write ROI driver
 - Documentation
 - Performance measurements
 - Implement and improve connection management
@@ -8,11 +7,19 @@
     - Soft device support is same as bo record.
     - Flag indicating callback from device support, don't write output.
 
+    asynParamBase
+
+    NDPluginBase
+- Add all 10 dimensions to database
+  
     drvNDFile
+- Disable callbacks when no saving being done
 - Test reading
 
     drvNDStdArrays
-- Add all 10 dimensions to database
+
+    drvNDROI
+- Add cross-sections
 
     drvSimDetector driver
 - Test all image data types with all waveform data types
@@ -22,8 +29,9 @@
     drvProsilica driver
 - Connection management
   - Sense disconnect, autoreconnect
-    See link callback.  When matches uniqueID, call Disconnect or Connect
-
+  - Implement link callback.  When matches uniqueID, call Disconnect or Connect
+  - Support color
+  
     Other drivers
 - Roper using WinView/OLE
 - Pilatus
