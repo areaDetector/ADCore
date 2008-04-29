@@ -5,8 +5,8 @@ file {
 }
 display {
 	object {
-		x=147
-		y=157
+		x=140
+		y=549
 		width=1080
 		height=380
 	}
@@ -87,64 +87,27 @@ display {
 		1a7309,
 	}
 }
-text {
+rectangle {
 	object {
-		x=576
-		y=328
-		width=99
-		height=20
-	}
-	"basic attribute" {
-		clr=30
-	}
-	"dynamic attribute" {
-		vis="if not zero"
-		calc="A"
-		chan="$(P)$(A)Capture_RBV"
-	}
-	textix="Capturing"
-	align="horiz. centered"
-}
-text {
-	object {
-		x=576
-		y=328
-		width=99
-		height=20
-	}
-	"basic attribute" {
-		clr=63
-	}
-	"dynamic attribute" {
-		vis="if zero"
-		calc="A"
-		chan="$(P)$(A)Capture_RBV"
-	}
-	textix="Done"
-	align="horiz. centered"
-}
-text {
-	object {
-		x=59
-		y=61
-		width=100
-		height=20
+		x=8
+		y=40
+		width=380
+		height=335
 	}
 	"basic attribute" {
 		clr=14
+		fill="outline"
 	}
-	textix="Array port"
-	align="horiz. right"
 }
 "text entry" {
 	object {
-		x=169
-		y=61
+		x=175
+		y=71
 		width=100
 		height=20
 	}
 	control {
-		chan="$(P)$(A)NDArrayPort"
+		chan="$(P)$(R)NDArrayAddress"
 		clr=14
 		bclr=51
 	}
@@ -153,80 +116,13 @@ text {
 }
 "text update" {
 	object {
-		x=275
-		y=62
+		x=281
+		y=72
 		width=100
 		height=18
 	}
 	monitor {
-		chan="$(P)$(A)NDArrayPort_RBV"
-		clr=54
-		bclr=4
-	}
-	limits {
-	}
-}
-composite {
-	object {
-		x=133
-		y=245
-		width=129
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=133
-				y=245
-				width=50
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix=" More"
-			align="horiz. right"
-		}
-		"related display" {
-			object {
-				x=192
-				y=245
-				width=70
-				height=20
-			}
-			display[0] {
-				label="asynRecord"
-				name="asynRecord.adl"
-				args="P=$(P),R=$(A)AsynIO"
-			}
-			clr=14
-			bclr=51
-		}
-	}
-}
-menu {
-	object {
-		x=169
-		y=111
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(A)BlockingCallbacks"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=275
-		y=112
-		width=100
-		height=18
-	}
-	monitor {
-		chan="$(P)$(A)BlockingCallbacks_RBV"
+		chan="$(P)$(R)NDArrayAddress_RBV"
 		clr=54
 		bclr=4
 	}
@@ -235,51 +131,8 @@ menu {
 }
 text {
 	object {
-		x=9
-		y=111
-		width=150
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Callbacks block"
-	align="horiz. right"
-}
-"text entry" {
-	object {
-		x=169
-		y=86
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(A)NDArrayAddress"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=275
-		y=87
-		width=100
-		height=18
-	}
-	monitor {
-		chan="$(P)$(A)NDArrayAddress_RBV"
-		clr=54
-		bclr=4
-	}
-	limits {
-	}
-}
-text {
-	object {
-		x=29
-		y=86
+		x=35
+		y=71
 		width=130
 		height=20
 	}
@@ -291,8 +144,546 @@ text {
 }
 text {
 	object {
+		x=65
+		y=46
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Array port"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=175
+		y=46
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)NDArrayPort"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=281
+		y=47
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)NDArrayPort_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=175
+		y=171
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ArrayCounter"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=281
+		y=172
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ArrayCounter_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=35
+		y=171
+		width=130
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Array counter"
+	align="horiz. right"
+}
+text {
+	object {
+		x=65
+		y=196
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Array rate"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=175
+		y=197
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ArrayRate_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=65
+		y=246
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Array Size"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=175
+		y=247
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ArraySize0_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=274
+		y=247
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ArraySize1_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=175
+		y=221
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)DroppedArrays"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=281
+		y=222
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)DroppedArrays_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=25
+		y=221
+		width=140
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Dropped arrays"
+	align="horiz. right"
+}
+text {
+	object {
+		x=55
+		y=96
+		width=110
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Enable"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=175
+		y=96
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)EnableCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=281
+		y=97
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)EnableCallbacks_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=15
+		y=146
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Callbacks block"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=175
+		y=146
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)BlockingCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=281
+		y=147
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)BlockingCallbacks_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=75
+		y=121
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Min. time"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=175
+		y=121
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)MinCallbackTime"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=281
+		y=122
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)MinCallbackTime_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+composite {
+	object {
+		x=139
+		y=351
+		width=129
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=139
+				y=351
+				width=50
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix=" More"
+			align="horiz. right"
+		}
+		"related display" {
+			object {
+				x=198
+				y=351
+				width=70
+				height=20
+			}
+			display[0] {
+				label="asynRecord"
+				name="asynRecord.adl"
+				args="P=$(P),R=$(R)AsynIO"
+			}
+			clr=14
+			bclr=51
+		}
+	}
+}
+composite {
+	object {
+		x=75
+		y=271
+		width=179
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=75
+				y=271
+				width=90
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Data type"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=175
+				y=272
+				width=79
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)DataType_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			format="string"
+			limits {
+			}
+		}
+	}
+}
+text {
+	object {
+		x=75
+		y=296
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Unique ID"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=175
+		y=297
+		width=79
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)UniqueId_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=75
+		y=321
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Time stamp"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=175
+		y=322
+		width=150
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TimeStamp_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+composite {
+	object {
+		x=360
+		y=5
+		width=360
+		height=26
+	}
+	"composite name"=""
+	children {
+		rectangle {
+			object {
+				x=360
+				y=5
+				width=360
+				height=26
+			}
+			"basic attribute" {
+				clr=2
+			}
+		}
+		text {
+			object {
+				x=432
+				y=6
+				width=216
+				height=25
+			}
+			"basic attribute" {
+				clr=54
+			}
+			textix="$(P)$(R)"
+			align="horiz. centered"
+		}
+	}
+}
+text {
+	object {
+		x=576
+		y=317
+		width=99
+		height=20
+	}
+	"basic attribute" {
+		clr=30
+	}
+	"dynamic attribute" {
+		vis="if not zero"
+		calc="A"
+		chan="$(P)$(R)Capture_RBV"
+	}
+	textix="Capturing"
+	align="horiz. centered"
+}
+text {
+	object {
+		x=576
+		y=317
+		width=99
+		height=20
+	}
+	"basic attribute" {
+		clr=63
+	}
+	"dynamic attribute" {
+		vis="if zero"
+		calc="A"
+		chan="$(P)$(R)Capture_RBV"
+	}
+	textix="Done"
+	align="horiz. centered"
+}
+text {
+	object {
 		x=813
-		y=282
+		y=271
 		width=90
 		height=20
 	}
@@ -305,12 +696,12 @@ text {
 menu {
 	object {
 		x=907
-		y=282
+		y=271
 		width=64
 		height=20
 	}
 	control {
-		chan="$(P)$(A)AutoSave"
+		chan="$(P)$(R)AutoSave"
 		clr=14
 		bclr=51
 	}
@@ -318,12 +709,12 @@ menu {
 "text update" {
 	object {
 		x=976
-		y=283
+		y=272
 		width=80
 		height=18
 	}
 	monitor {
-		chan="$(P)$(A)AutoSave_RBV"
+		chan="$(P)$(R)AutoSave_RBV"
 		clr=54
 		bclr=4
 	}
@@ -333,7 +724,7 @@ menu {
 composite {
 	object {
 		x=423
-		y=257
+		y=246
 		width=639
 		height=20
 	}
@@ -342,7 +733,7 @@ composite {
 		text {
 			object {
 				x=423
-				y=257
+				y=246
 				width=130
 				height=20
 			}
@@ -355,12 +746,12 @@ composite {
 		"text update" {
 			object {
 				x=562
-				y=258
+				y=247
 				width=500
 				height=18
 			}
 			monitor {
-				chan="$(P)$(A)FullFileName_RBV"
+				chan="$(P)$(R)FullFileName_RBV"
 				clr=54
 				bclr=4
 			}
@@ -373,7 +764,7 @@ composite {
 text {
 	object {
 		x=403
-		y=232
+		y=221
 		width=150
 		height=20
 	}
@@ -386,7 +777,7 @@ text {
 composite {
 	object {
 		x=562
-		y=209
+		y=198
 		width=160
 		height=43
 	}
@@ -395,12 +786,12 @@ composite {
 		"text update" {
 			object {
 				x=562
-				y=209
+				y=198
 				width=160
 				height=18
 			}
 			monitor {
-				chan="$(P)$(A)FileTemplate_RBV"
+				chan="$(P)$(R)FileTemplate_RBV"
 				clr=54
 				bclr=4
 			}
@@ -411,12 +802,12 @@ composite {
 		"text entry" {
 			object {
 				x=562
-				y=232
+				y=221
 				width=160
 				height=20
 			}
 			control {
-				chan="$(P)$(A)FileTemplate"
+				chan="$(P)$(R)FileTemplate"
 				clr=14
 				bclr=51
 			}
@@ -429,7 +820,7 @@ composite {
 composite {
 	object {
 		x=413
-		y=184
+		y=173
 		width=298
 		height=20
 	}
@@ -438,7 +829,7 @@ composite {
 		text {
 			object {
 				x=413
-				y=184
+				y=173
 				width=140
 				height=20
 			}
@@ -451,12 +842,12 @@ composite {
 		menu {
 			object {
 				x=562
-				y=184
+				y=173
 				width=64
 				height=20
 			}
 			control {
-				chan="$(P)$(A)AutoIncrement"
+				chan="$(P)$(R)AutoIncrement"
 				clr=14
 				bclr=51
 			}
@@ -464,12 +855,12 @@ composite {
 		"text update" {
 			object {
 				x=631
-				y=185
+				y=174
 				width=80
 				height=18
 			}
 			monitor {
-				chan="$(P)$(A)AutoIncrement_RBV"
+				chan="$(P)$(R)AutoIncrement_RBV"
 				clr=54
 				bclr=4
 			}
@@ -481,7 +872,7 @@ composite {
 composite {
 	object {
 		x=443
-		y=157
+		y=146
 		width=264
 		height=22
 	}
@@ -490,7 +881,7 @@ composite {
 		text {
 			object {
 				x=443
-				y=158
+				y=147
 				width=110
 				height=20
 			}
@@ -503,12 +894,12 @@ composite {
 		"text entry" {
 			object {
 				x=562
-				y=157
+				y=146
 				width=60
 				height=22
 			}
 			control {
-				chan="$(P)$(A)FileNumber"
+				chan="$(P)$(R)FileNumber"
 				clr=14
 				bclr=51
 			}
@@ -518,12 +909,12 @@ composite {
 		"text update" {
 			object {
 				x=627
-				y=159
+				y=148
 				width=80
 				height=18
 			}
 			monitor {
-				chan="$(P)$(A)FileNumber_RBV"
+				chan="$(P)$(R)FileNumber_RBV"
 				clr=54
 				bclr=4
 			}
@@ -535,7 +926,7 @@ composite {
 composite {
 	object {
 		x=463
-		y=109
+		y=98
 		width=599
 		height=43
 	}
@@ -544,7 +935,7 @@ composite {
 		text {
 			object {
 				x=463
-				y=132
+				y=121
 				width=90
 				height=20
 			}
@@ -557,7 +948,7 @@ composite {
 		composite {
 			object {
 				x=562
-				y=109
+				y=98
 				width=500
 				height=43
 			}
@@ -566,12 +957,12 @@ composite {
 				"text entry" {
 					object {
 						x=562
-						y=132
+						y=121
 						width=500
 						height=20
 					}
 					control {
-						chan="$(P)$(A)FileName"
+						chan="$(P)$(R)FileName"
 						clr=14
 						bclr=51
 					}
@@ -582,12 +973,12 @@ composite {
 				"text update" {
 					object {
 						x=562
-						y=109
+						y=98
 						width=500
 						height=18
 					}
 					monitor {
-						chan="$(P)$(A)FileName_RBV"
+						chan="$(P)$(R)FileName_RBV"
 						clr=54
 						bclr=4
 					}
@@ -602,7 +993,7 @@ composite {
 composite {
 	object {
 		x=463
-		y=61
+		y=50
 		width=599
 		height=43
 	}
@@ -611,7 +1002,7 @@ composite {
 		composite {
 			object {
 				x=562
-				y=61
+				y=50
 				width=500
 				height=43
 			}
@@ -620,12 +1011,12 @@ composite {
 				"text entry" {
 					object {
 						x=562
-						y=84
+						y=73
 						width=500
 						height=20
 					}
 					control {
-						chan="$(P)$(A)FilePath"
+						chan="$(P)$(R)FilePath"
 						clr=14
 						bclr=51
 					}
@@ -636,12 +1027,12 @@ composite {
 				"text update" {
 					object {
 						x=562
-						y=61
+						y=50
 						width=500
 						height=18
 					}
 					monitor {
-						chan="$(P)$(A)FilePath_RBV"
+						chan="$(P)$(R)FilePath_RBV"
 						clr=54
 						bclr=4
 					}
@@ -654,7 +1045,7 @@ composite {
 		text {
 			object {
 				x=463
-				y=84
+				y=73
 				width=90
 				height=20
 			}
@@ -669,9 +1060,9 @@ composite {
 rectangle {
 	object {
 		x=396
-		y=51
+		y=40
 		width=675
-		height=325
+		height=335
 	}
 	"basic attribute" {
 		clr=14
@@ -681,7 +1072,7 @@ rectangle {
 composite {
 	object {
 		x=770
-		y=232
+		y=221
 		width=280
 		height=20
 	}
@@ -690,7 +1081,7 @@ composite {
 		text {
 			object {
 				x=770
-				y=232
+				y=221
 				width=110
 				height=20
 			}
@@ -703,12 +1094,12 @@ composite {
 		"text update" {
 			object {
 				x=970
-				y=233
+				y=222
 				width=80
 				height=18
 			}
 			monitor {
-				chan="$(P)$(A)FileFormat_RBV"
+				chan="$(P)$(R)FileFormat_RBV"
 				clr=54
 				bclr=4
 			}
@@ -718,12 +1109,12 @@ composite {
 		menu {
 			object {
 				x=885
-				y=232
+				y=221
 				width=80
 				height=20
 			}
 			control {
-				chan="$(P)$(A)FileFormat"
+				chan="$(P)$(R)FileFormat"
 				clr=14
 				bclr=51
 			}
@@ -733,7 +1124,7 @@ composite {
 composite {
 	object {
 		x=463
-		y=282
+		y=271
 		width=159
 		height=20
 	}
@@ -742,7 +1133,7 @@ composite {
 		text {
 			object {
 				x=463
-				y=282
+				y=271
 				width=90
 				height=20
 			}
@@ -755,12 +1146,12 @@ composite {
 		"message button" {
 			object {
 				x=562
-				y=282
+				y=271
 				width=60
 				height=20
 			}
 			control {
-				chan="$(P)$(A)WriteFile"
+				chan="$(P)$(R)WriteFile"
 				clr=14
 				bclr=51
 			}
@@ -772,7 +1163,7 @@ composite {
 text {
 	object {
 		x=642
-		y=282
+		y=271
 		width=90
 		height=20
 	}
@@ -785,63 +1176,27 @@ text {
 "message button" {
 	object {
 		x=737
-		y=282
+		y=271
 		width=60
 		height=20
 	}
 	control {
-		chan="$(P)$(A)ReadFile"
+		chan="$(P)$(R)ReadFile"
 		clr=14
 		bclr=51
 	}
 	label="Read"
 	press_msg="1"
 }
-rectangle {
-	object {
-		x=6
-		y=51
-		width=380
-		height=220
-	}
-	"basic attribute" {
-		clr=14
-		fill="outline"
-	}
-}
-rectangle {
-	object {
-		x=360
-		y=16
-		width=360
-		height=26
-	}
-	"basic attribute" {
-		clr=2
-	}
-}
-text {
-	object {
-		x=432
-		y=17
-		width=216
-		height=25
-	}
-	"basic attribute" {
-		clr=54
-	}
-	textix="$(P)$(A)"
-	align="horiz. centered"
-}
 "message button" {
 	object {
 		x=562
-		y=348
+		y=337
 		width=59
 		height=20
 	}
 	control {
-		chan="$(P)$(A)Capture"
+		chan="$(P)$(R)Capture"
 		clr=14
 		bclr=51
 	}
@@ -851,7 +1206,7 @@ text {
 text {
 	object {
 		x=482
-		y=348
+		y=337
 		width=70
 		height=20
 	}
@@ -864,12 +1219,12 @@ text {
 "message button" {
 	object {
 		x=629
-		y=348
+		y=337
 		width=59
 		height=20
 	}
 	control {
-		chan="$(P)$(A)Capture"
+		chan="$(P)$(R)Capture"
 		clr=14
 		bclr=51
 	}
@@ -879,7 +1234,7 @@ text {
 text {
 	object {
 		x=413
-		y=308
+		y=297
 		width=140
 		height=20
 	}
@@ -892,12 +1247,12 @@ text {
 menu {
 	object {
 		x=562
-		y=308
+		y=297
 		width=80
 		height=20
 	}
 	control {
-		chan="$(P)$(A)FileWriteMode"
+		chan="$(P)$(R)FileWriteMode"
 		clr=14
 		bclr=51
 	}
@@ -905,12 +1260,12 @@ menu {
 "text update" {
 	object {
 		x=650
-		y=309
+		y=298
 		width=70
 		height=18
 	}
 	monitor {
-		chan="$(P)$(A)FileWriteMode_RBV"
+		chan="$(P)$(R)FileWriteMode_RBV"
 		clr=54
 		bclr=4
 	}
@@ -920,7 +1275,7 @@ menu {
 composite {
 	object {
 		x=725
-		y=307
+		y=296
 		width=339
 		height=22
 	}
@@ -929,7 +1284,7 @@ composite {
 		text {
 			object {
 				x=725
-				y=308
+				y=297
 				width=90
 				height=20
 			}
@@ -942,12 +1297,12 @@ composite {
 		"text entry" {
 			object {
 				x=824
-				y=307
+				y=296
 				width=60
 				height=22
 			}
 			control {
-				chan="$(P)$(A)NumCapture"
+				chan="$(P)$(R)NumCapture"
 				clr=14
 				bclr=51
 			}
@@ -957,12 +1312,12 @@ composite {
 		"text update" {
 			object {
 				x=984
-				y=309
+				y=298
 				width=80
 				height=18
 			}
 			monitor {
-				chan="$(P)$(A)NumCaptured_RBV"
+				chan="$(P)$(R)NumCaptured_RBV"
 				clr=54
 				bclr=4
 			}
@@ -972,174 +1327,17 @@ composite {
 		"text update" {
 			object {
 				x=889
-				y=309
+				y=298
 				width=80
 				height=18
 			}
 			monitor {
-				chan="$(P)$(A)NumCapture_RBV"
+				chan="$(P)$(R)NumCapture_RBV"
 				clr=54
 				bclr=4
 			}
 			limits {
 			}
 		}
-	}
-}
-"text entry" {
-	object {
-		x=169
-		y=161
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(A)ArrayCounter"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=275
-		y=162
-		width=100
-		height=18
-	}
-	monitor {
-		chan="$(P)$(A)ArrayCounter_RBV"
-		clr=54
-		bclr=4
-	}
-	limits {
-	}
-}
-text {
-	object {
-		x=29
-		y=161
-		width=130
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="File counter"
-	align="horiz. right"
-}
-text {
-	object {
-		x=59
-		y=186
-		width=100
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="File rate"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=169
-		y=187
-		width=100
-		height=18
-	}
-	monitor {
-		chan="$(P)$(A)ArrayRate_RBV"
-		clr=54
-		bclr=4
-	}
-	limits {
-	}
-}
-"text entry" {
-	object {
-		x=169
-		y=211
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(A)DroppedArrays"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=275
-		y=212
-		width=100
-		height=18
-	}
-	monitor {
-		chan="$(P)$(A)DroppedArrays_RBV"
-		clr=54
-		bclr=4
-	}
-	limits {
-	}
-}
-text {
-	object {
-		x=19
-		y=211
-		width=140
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Dropped arrays"
-	align="horiz. right"
-}
-text {
-	object {
-		x=69
-		y=136
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Min. time"
-	align="horiz. right"
-}
-"text entry" {
-	object {
-		x=169
-		y=136
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(A)MinWriteTime"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=275
-		y=137
-		width=100
-		height=18
-	}
-	monitor {
-		chan="$(P)$(A)MinWriteTime_RBV"
-		clr=54
-		bclr=4
-	}
-	limits {
 	}
 }
