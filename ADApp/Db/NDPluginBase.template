@@ -15,7 +15,6 @@ record(stringout, "$(P)$(R)NDArrayPort")
 
 record(stringin, "$(P)$(R)NDArrayPort_RBV")
 {
-    field(PINI, "1")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_PORT")
     field(SCAN, "I/O Intr")
@@ -29,7 +28,6 @@ record(longout, "$(P)$(R)NDArrayAddress")
 
 record(longin, "$(P)$(R)NDArrayAddress_RBV")
 {
-    field(PINI, "1")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_ADDR")
     field(SCAN, "I/O Intr")
@@ -53,7 +51,6 @@ record(mbbo, "$(P)$(R)EnableCallbacks")
 
 record(mbbi, "$(P)$(R)EnableCallbacks_RBV")
 {
-#    field(PINI, "1")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_CALLBACKS")
     field(ZRST, "No")
@@ -68,14 +65,13 @@ record(ao, "$(P)$(R)MinCallbackTime")
     field(PINI, "1")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_CALLBACK_TIME")
-    field(VAL,  "1.0")
+    field(VAL,  "0.1")
     field(EGU,  "s")
     field(PREC, "3")
 }
 
 record(ai, "$(P)$(R)MinCallbackTime_RBV")
 {
-    field(PINI, "1")
     field(DTYP, "asynFloat64")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_CALLBACK_TIME")
     field(VAL,  "1.0")
@@ -92,6 +88,7 @@ record(mbbo, "$(P)$(R)BlockingCallbacks")
     field(PINI, "1")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BLOCKING_CALLBACKS")
+    field(VAL,  "0")
     field(ZRST, "No")
     field(ZRVL, "0")
     field(ONST, "Yes")
@@ -101,7 +98,6 @@ record(mbbo, "$(P)$(R)BlockingCallbacks")
 # Array posting flag
 record(mbbi, "$(P)$(R)BlockingCallbacks_RBV")
 {
-    field(PINI, "1")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BLOCKING_CALLBACKS")
     field(ZRST, "No")
@@ -120,11 +116,11 @@ record(longout, "$(P)$(R)ArrayCounter")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_COUNTER")
+    field(VAL,  "0")
 }
 
 record(longin, "$(P)$(R)ArrayCounter_RBV")
 {
-    field(PINI, "1")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_COUNTER")
     field(SCAN, "I/O Intr")
@@ -145,15 +141,113 @@ record(longout, "$(P)$(R)DroppedArrays")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DROPPED_ARRAYS")
+    field(VAL,  "0")
 }
 
 record(longin, "$(P)$(R)DroppedArrays_RBV")
 {
-    field(PINI, "1")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DROPPED_ARRAYS")
     field(SCAN, "I/O Intr")
 }
+
+###################################################################
+#  These records are the array size and data type                 #
+###################################################################
+# The number of dimensions
+record(longin, "$(P)$(R)NDimensions_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_NDIMENSIONS")
+    field(SCAN, "I/O Intr")
+}
+
+# The array dimensions waveform record
+record(waveform, "$(P)$(R)Dimensions_RBV")
+{
+    field(DTYP, "asynInt32ArrayIn")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_DIMENSIONS")
+    field(FTVL, "LONG")
+    field(NELM, "10")
+    field(FLNK, "$(P)$(R)Dim0SA")
+    field(SCAN, "I/O Intr")
+}
+
+# Note, we only extrace the first 2 dimensions here, but this
+# can easily be extended up to the maximum of 10 dimensions
+record(subArray, "$(P)$(R)Dim0SA")
+{
+    field(INP,  "$(P)$(R)Dimensions_RBV NPP NMS")
+    field(FTVL, "LONG")
+    field(MALM, "10")
+    field(NELM, "1")
+    field(INDX, "0")
+    field(FLNK, "$(P)$(R)ArraySize0_RBV")
+}
+
+record(longin, "$(P)$(R)ArraySize0_RBV")
+{
+    field(INP,  "$(P)$(R)Dim0SA")
+    field(FLNK, "$(P)$(R)Dim1SA")
+}
+
+record(subArray, "$(P)$(R)Dim1SA")
+{
+    field(INP,  "$(P)$(R)Dimensions_RBV NPP NMS")
+    field(FTVL, "LONG")
+    field(MALM, "10")
+    field(NELM, "1")
+    field(INDX, "1")
+    field(FLNK, "$(P)$(R)ArraySize1_RBV")
+}
+
+record(longin, "$(P)$(R)ArraySize1_RBV")
+{
+    field(INP,  "$(P)$(R)Dim1SA")
+#    field(FLNK, "$(P)$(R)Dim2SA")
+}
+
+record(mbbi, "$(P)$(R)DataType_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DATA_TYPE")
+   field(ZRST, "Int8")
+   field(ZRVL, "0")
+   field(ONST, "UInt8")
+   field(ONVL, "1")
+   field(TWST, "Int16")
+   field(TWVL, "2")
+   field(THST, "UInt16")
+   field(THVL, "3")
+   field(FRST, "Int32")
+   field(FRVL, "4")
+   field(FVST, "UInt32")
+   field(FVVL, "5")
+   field(SXST, "Float32")
+   field(SXVL, "6")
+   field(SVST, "Float64")
+   field(SVVL, "7")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records are the uniqueId and time stamp of the array     #
+###################################################################
+record(longin, "$(P)$(R)UniqueId_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))UNIQUE_ID")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)TimeStamp_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TIME_STAMP")
+    field(PREC, "3")
+    field(SCAN, "I/O Intr")
+}
+
 
 ###################################################################
 #  The asynRecord is used for mainly for trace mask               # 
