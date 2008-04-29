@@ -106,35 +106,6 @@ static void handleCallback(void *handelInterruptPvt, void *handle, int reason, i
 }
 
 
-static void dimensionCallback(void *int32ArrayInterruptPvt, epicsInt32 *dimsPrev, 
-                              NDArray_t *pArray, int reason)
-{
-    int i, dimsChanged;
-    ELLLIST *pclientList;
-    interruptNode *pnode;
-    
-    for (i=0, dimsChanged=0; i<pArray->ndims; i++) {
-        if (pArray->dims[i].size != dimsPrev[i]) {
-            dimsPrev[i] = pArray->dims[i].size;
-            dimsChanged = 1;
-        }
-    }
-    if (dimsChanged) {
-        pasynManager->interruptStart(int32ArrayInterruptPvt, &pclientList);
-        pnode = (interruptNode *)ellFirst(pclientList);
-        while (pnode) {
-            asynInt32ArrayInterrupt *pInterrupt = pnode->drvPvt;
-            if (pInterrupt->pasynUser->reason == reason) {
-                pInterrupt->callback(pInterrupt->userPvt,
-                                     pInterrupt->pasynUser,
-                                     dimsPrev, pArray->ndims);
-                pnode = (interruptNode *)ellNext(&pnode->node);
-            }
-        }
-        pasynManager->interruptEnd(int32ArrayInterruptPvt);
-    }
-}
-
 static int findParam(ADParamString_t *paramTable, int numParams, const char *paramName, int *param)
 {
     int i;
@@ -153,7 +124,6 @@ static ADUtilsSupport utilsSupport =
     setParamDefaults,
     createFileName,
     handleCallback,
-    dimensionCallback,
     findParam
 };
 
