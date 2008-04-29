@@ -87,6 +87,8 @@ void NDPluginROI::processCallbacks(NDArray_t *pArray)
     double histMin, histMax, entropy;
     double min=0, max=0, mean, total=0, net;
     double counts;
+    NDArray_t *pROIArray;
+    PARAMS ROIParams;
     NDArrayInfo_t arrayInfo;
     NDDimension_t dims[ND_ARRAY_MAX_DIMS], *pDim;
     NDROI_t *pROI;
@@ -97,25 +99,25 @@ void NDPluginROI::processCallbacks(NDArray_t *pArray)
     
     /* Loop over the ROIs in this driver */
     for (roi=0; roi<this->maxROIs; roi++) {
-        pROI = &this->pROIs[roi];
-        ADParam->getInteger(this->params[roi], NDPluginROIUse, &use);
+        pROI       = &this->pROIs[roi];
+        ROIParams  = this->params[roi];
         /* We always keep the last array so read() can use it.  
-         * Release previous one, reserve new one */
+         * Release previous one. Reserve new one below. */
         if (this->pArrays[roi]) {
             NDArrayBuff->release(this->pArrays[roi]);
             this->pArrays[roi] = NULL;
         }
+        ADParam->getInteger(ROIParams, NDPluginROIUse, &use);
         if (!use) continue;
-        NDArrayBuff->reserve(this->pArrays[roi]);
-        this->pArrays[roi] = pArray;
+
         /* Need to fetch all of these parameters while we still have the mutex */
-        ADParam->getInteger(this->params[roi], NDPluginROIComputeStatistics, &computeStatistics);
-        ADParam->getInteger(this->params[roi], NDPluginROIComputeHistogram, &computeHistogram);
-        ADParam->getInteger(this->params[roi], NDPluginROIComputeProfiles, &computeProfiles);
-        ADParam->getInteger(this->params[roi], NDPluginROIDataType, &dataType);
-        ADParam->getDouble(this->params[roi], NDPluginROIHistMin, &histMin);
-        ADParam->getDouble(this->params[roi], NDPluginROIHistMax, &histMax);
-        ADParam->getInteger(this->params[roi], NDPluginROIHistSize, &histSize);
+        ADParam->getInteger(ROIParams, NDPluginROIComputeStatistics, &computeStatistics);
+        ADParam->getInteger(ROIParams, NDPluginROIComputeHistogram, &computeHistogram);
+        ADParam->getInteger(ROIParams, NDPluginROIComputeProfiles, &computeProfiles);
+        ADParam->getInteger(ROIParams, NDPluginROIDataType, &dataType);
+        ADParam->getDouble (ROIParams, NDPluginROIHistMin, &histMin);
+        ADParam->getDouble (ROIParams, NDPluginROIHistMax, &histMax);
+        ADParam->getInteger(ROIParams, NDPluginROIHistSize, &histSize);
         /* Make sure dimensions are valid, fix them if they are not */
         for (dim=0; dim<pArray->ndims; dim++) {
             pDim = &pROI->dims[dim];
@@ -134,34 +136,50 @@ void NDPluginROI::processCallbacks(NDArray_t *pArray)
          * pPvt that other threads can access. */
         epicsMutexUnlock(this->mutexId);
     
-        /* Extract this ROI from the input array */
+        /* Extract this ROI from the input array.  The convert() function allocates
+         * a new array and it is reserved (reference count = 1) */
         if (dataType == -1) dataType = pArray->dataType;
         NDArrayBuff->convert(pArray, &this->pArrays[roi], dataType, dims);
+        pROIArray  = this->pArrays[roi];
 
         /* Call any clients who have registered for NDArray callbacks */
-        doCallbacksNDArray(this->pArrays[roi], NDArrayData, roi);
+        doCallbacksNDArray(pROIArray, NDArrayData, roi);
 
-        NDArrayBuff->getInfo(this->pArrays[roi], &arrayInfo);
+        NDArrayBuff->getInfo(pROIArray, &arrayInfo);
 
         if (computeStatistics) {
-            switch(this->pArrays[roi]->dataType) {
+            switch(pROIArray->dataType) {
                 case NDInt8:
-                    doComputeStatistics<epicsInt8>(this->pArrays[roi]->pData, 
+                    doComputeStatistics<epicsInt8>(pROIArray->pData, 
                                         arrayInfo.nElements, &min, &max, &total);       
                     break;
                 case NDUInt8:
+                    doComputeStatistics<epicsUInt8>(pROIArray->pData, 
+                                        arrayInfo.nElements, &min, &max, &total);       
                     break;
                 case NDInt16:
+                    doComputeStatistics<epicsInt16>(pROIArray->pData, 
+                                        arrayInfo.nElements, &min, &max, &total);       
                     break;
                 case NDUInt16:
+                    doComputeStatistics<epicsUInt16>(pROIArray->pData, 
+                                        arrayInfo.nElements, &min, &max, &total);       
                     break;
                 case NDInt32:
+                    doComputeStatistics<epicsInt32>(pROIArray->pData, 
+                                        arrayInfo.nElements, &min, &max, &total);       
                     break;
                 case NDUInt32:
+                    doComputeStatistics<epicsUInt32>(pROIArray->pData, 
+                                        arrayInfo.nElements, &min, &max, &total);       
                     break;
                 case NDFloat32:
+                    doComputeStatistics<epicsFloat32>(pROIArray->pData, 
+                                        arrayInfo.nElements, &min, &max, &total);       
                     break;
                 case NDFloat64:
+                    doComputeStatistics<epicsFloat64>(pROIArray->pData, 
+                                        arrayInfo.nElements, &min, &max, &total);       
                     break;
                 default:
                     status = ND_ERROR;
@@ -169,13 +187,13 @@ void NDPluginROI::processCallbacks(NDArray_t *pArray)
             }
             net = total;
             mean = total / arrayInfo.nElements;
-            ADParam->setDouble(this->params[roi], NDPluginROIMinValue, min);
-            ADParam->setDouble(this->params[roi], NDPluginROIMaxValue, max);
-            ADParam->setDouble(this->params[roi], NDPluginROIMeanValue, mean);
-            ADParam->setDouble(this->params[roi], NDPluginROITotal, total);
-            ADParam->setDouble(this->params[roi], NDPluginROINet, net);
+            ADParam->setDouble(ROIParams, NDPluginROIMinValue, min);
+            ADParam->setDouble(ROIParams, NDPluginROIMaxValue, max);
+            ADParam->setDouble(ROIParams, NDPluginROIMeanValue, mean);
+            ADParam->setDouble(ROIParams, NDPluginROITotal, total);
+            ADParam->setDouble(ROIParams, NDPluginROINet, net);
             asynPrint(this->pasynUser, ASYN_TRACEIO_DRIVER, 
-                (char *)this->pArrays[roi]->pData, arrayInfo.totalBytes,
+                (char *)pROIArray->pData, arrayInfo.totalBytes,
                 "%s:%s ROI=%d, min=%f, max=%f, mean=%f, total=%f, net=%f",
                 driverName, functionName, roi, min, max, mean, total, net);
         }
@@ -186,25 +204,46 @@ void NDPluginROI::processCallbacks(NDArray_t *pArray)
                 pROI->histogramSize = histSize;
             }
             memset(pROI->histogram, 0, histSize*sizeof(double));
-            switch(this->pArrays[roi]->dataType) {
+            switch(pROIArray->dataType) {
                 case NDInt8:
-                    doComputeHistogram<epicsInt8>(this->pArrays[roi]->pData, 
+                    doComputeHistogram<epicsInt8>(pROIArray->pData, 
                                         arrayInfo.nElements, histMin, histMax, histSize, 
                                         pROI->histogram);           
                     break;
                 case NDUInt8:
+                    doComputeHistogram<epicsUInt8>(pROIArray->pData, 
+                                        arrayInfo.nElements, histMin, histMax, histSize, 
+                                        pROI->histogram);           
                     break;
                 case NDInt16:
+                    doComputeHistogram<epicsInt16>(pROIArray->pData, 
+                                        arrayInfo.nElements, histMin, histMax, histSize, 
+                                        pROI->histogram);           
                     break;
                 case NDUInt16:
+                    doComputeHistogram<epicsUInt16>(pROIArray->pData, 
+                                        arrayInfo.nElements, histMin, histMax, histSize, 
+                                        pROI->histogram);           
                     break;
                 case NDInt32:
+                    doComputeHistogram<epicsInt32>(pROIArray->pData, 
+                                        arrayInfo.nElements, histMin, histMax, histSize, 
+                                        pROI->histogram);           
                     break;
                 case NDUInt32:
+                    doComputeHistogram<epicsUInt32>(pROIArray->pData, 
+                                        arrayInfo.nElements, histMin, histMax, histSize, 
+                                        pROI->histogram);           
                     break;
                 case NDFloat32:
+                    doComputeHistogram<epicsFloat32>(pROIArray->pData, 
+                                        arrayInfo.nElements, histMin, histMax, histSize, 
+                                        pROI->histogram);           
                     break;
                 case NDFloat64:
+                    doComputeHistogram<epicsFloat64>(pROIArray->pData, 
+                                        arrayInfo.nElements, histMin, histMax, histSize, 
+                                        pROI->histogram);           
                     break;
                 default:
                     status = ND_ERROR;
@@ -217,13 +256,13 @@ void NDPluginROI::processCallbacks(NDArray_t *pArray)
                 entropy += counts * log(counts);
             }
             entropy = -entropy / arrayInfo.nElements;
-            ADParam->setDouble(this->params[roi], NDPluginROIHistEntropy, entropy);
+            ADParam->setDouble(ROIParams, NDPluginROIHistEntropy, entropy);
             doCallbacksFloat64Array(pROI->histogram, histSize, NDPluginROIHistArray, roi);
         }
 
         /* We must enter the loop and exit with the mutex locked */
         epicsMutexLock(this->mutexId);
-        ADParam->callCallbacksAddr(this->params[roi], roi);
+        ADParam->callCallbacksAddr(ROIParams, roi);
     }
     
     ADParam->callCallbacksAddr(this->params[0], 0);
@@ -284,8 +323,8 @@ asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
                   driverName, functionName, status, function, value);
     else        
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, value=%d\n", 
-              driverName, functionName, function, value);
+              "%s:%s: function=%d, roi=%d, value=%d\n", 
+              driverName, functionName, function, roi, value);
     epicsMutexUnlock(this->mutexId);
     return status;
 }
@@ -386,7 +425,7 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
                          const char *NDArrayPort, int NDArrayAddr, int maxROIs)
     /* Invoke the base class constructor */
     : NDPluginBase(portName, queueSize, blockingCallbacks, 
-                   NDArrayPort, NDArrayAddr, maxROIs, NDPluginBaseLastParam)
+                   NDArrayPort, NDArrayAddr, maxROIs, NDPluginROILastROINParam)
 {
     asynStatus status;
     char *functionName = "NDPluginROI";
