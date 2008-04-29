@@ -6,10 +6,8 @@ include $(TOP)/configure/CONFIG
 
 DBD += pluginSupport.dbd
 
-INC += asynParamBase.h
 
 LIBRARY_IOC = ADPlugin
-LIB_SRCS += asynParamBase.cpp
 LIB_SRCS += NDPluginBase.cpp
 LIB_SRCS += NDPluginFile.cpp
 LIB_SRCS += drvNDFileEpics.c
