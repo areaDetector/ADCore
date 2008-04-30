@@ -4,6 +4,8 @@
 #include <ellLib.h>
 #include <epicsMutex.h>
 
+#include "asynParamBase.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -138,17 +140,12 @@ typedef enum
                         /* Drivers that use ADParamLib should begin their parameters with this value. */
 } ADParam_t;
 
-typedef struct {
-    int param;
-    char *paramString;
-} ADParamString_t;
-
-#ifdef DEFINE_STANDARD_PARAM_STRINGS
+#ifdef DEFINE_AD_STANDARD_PARAMS
 /* The parameter strings are the userParam argument for asyn device support links
  * The asynDrvUser interface in the drivers parses these strings and puts the
  * corresponding enum value in pasynUser->reason */
  
-static ADParamString_t ADStandardParamString[] = {
+static asynParamString_t ADStandardParamString[] = {
     {ADManufacturer,   "MANUFACTURER"},  
     {ADModel,          "MODEL"       },  
     {ADGain,           "GAIN"        },
