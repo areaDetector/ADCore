@@ -591,7 +591,7 @@ asynStatus asynParamBase::doCallbacksNDArray(void *handle, int reason, int addre
         asynHandleInterrupt *pInterrupt = (asynHandleInterrupt *)pnode->drvPvt;
         pasynManager->getAddr(pInterrupt->pasynUser, &addr);
         if ((pInterrupt->pasynUser->reason == reason) &&
-            (address = addr)) {
+            (address == addr)) {
             pInterrupt->callback(pInterrupt->userPvt,
                                  pInterrupt->pasynUser,
                                  handle);
@@ -604,6 +604,19 @@ asynStatus asynParamBase::doCallbacksNDArray(void *handle, int reason, int addre
 
 
 
+asynStatus asynParamBase::findParam(asynParamString_t *paramTable, int numParams, 
+                                    const char *paramName, int *param)
+{
+    int i;
+    for (i=0; i < numParams; i++) {
+        if (epicsStrCaseCmp(paramName, paramTable[i].paramString) == 0) {
+            *param = paramTable[i].param;
+            return(asynSuccess);
+        }
+    }
+    return(asynError);
+}
+
 /* asynDrvUser interface methods */
 static asynStatus drvUserCreate(void *drvPvt, asynUser *pasynUser,
                                  const char *drvInfo, 

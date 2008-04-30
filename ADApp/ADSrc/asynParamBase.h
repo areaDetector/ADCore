@@ -7,10 +7,18 @@
 #include "ADParamLib.h"
 #include "NDArrayBuff.h"
 
+typedef struct {
+    int param;
+    char *paramString;
+} asynParamString_t;
+
+#ifdef __cplusplus
+
 class asynParamBase {
 public:
     asynParamBase(const char *portName, int maxAddr, int paramTableSize);
     virtual asynStatus getAddress(asynUser *pasynUser, const char *functionName, int *address); 
+    virtual asynStatus findParam(asynParamString_t *paramTable, int numParams, const char *paramName, int *param);
     virtual asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value);
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     virtual asynStatus getBounds(asynUser *pasynUser, epicsInt32 *low, epicsInt32 *high);
@@ -75,5 +83,6 @@ public:
     asynUser *pasynUser;
 };
 
+#endif /* cplusplus */
     
 #endif
