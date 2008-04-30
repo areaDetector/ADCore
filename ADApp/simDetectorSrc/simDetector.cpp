@@ -61,7 +61,6 @@ public:
     epicsEventId startEventId;
     epicsEventId stopEventId;
     NDArray_t *pRaw;
-    NDArray_t *pImage;
 };
 
 /* If we have any private driver parameters they begin with ADFirstDriverParam and should end
@@ -74,7 +73,7 @@ typedef enum {
 } SimDetParam_t;
 
 /* The command strings are the input to ADUtils->FindParam, which returns the corresponding parameter enum value */
-static ADParamString_t SimDetParamString[] = {
+static asynParamString_t SimDetParamString[] = {
     {SimGainX,      "SIM_GAINX"},  
     {SimGainY,      "SIM_GAINY"},  
     {SimResetImage, "RESET_IMAGE"}  
@@ -148,6 +147,7 @@ int simDetector::computeImage()
     int maxSizeX, maxSizeY;
     NDDimension_t dimsOut[2];
     NDArrayInfo_t arrayInfo;
+    NDArray_t *pImage;
     const char* functionName = "computeImage";
 
     /* NOTE: The caller of this function must have taken the mutex */
@@ -218,15 +218,16 @@ int simDetector::computeImage()
     dimsOut[1].reverse = reverseY;
     /* We save the most recent image buffer so it can be used in the read() function.
      * Now release it before getting a new version. */
-    if (this->pImage) NDArrayBuff->release(this->pImage);
+    if (this->pArrays[addr]) NDArrayBuff->release(this->pArrays[addr]);
     status |= NDArrayBuff->convert(this->pRaw,
-                                   &this->pImage,
+                                   &this->pArrays[addr],
                                    dataType,
                                    dimsOut);
-    NDArrayBuff->getInfo(this->pImage, &arrayInfo);
+    pImage = this->pArrays[addr];
+    NDArrayBuff->getInfo(pImage, &arrayInfo);
     status |= ADParam->setInteger(this->params[addr], ADImageSize,  arrayInfo.totalBytes);
-    status |= ADParam->setInteger(this->params[addr], ADImageSizeX, this->pImage->dims[0].size);
-    status |= ADParam->setInteger(this->params[addr], ADImageSizeY, this->pImage->dims[1].size);
+    status |= ADParam->setInteger(this->params[addr], ADImageSizeX, pImage->dims[0].size);
+    status |= ADParam->setInteger(this->params[addr], ADImageSizeY, pImage->dims[1].size);
     status |= ADParam->setInteger(this->params[addr], SimResetImage, 0);
     if (status) asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
                     "%s:%s: ERROR, status=%d\n",
@@ -251,6 +252,7 @@ void simDetector::simTask()
     int imageCounter;
     int acquire, autoSave;
     ADStatus_t acquiring;
+    NDArray_t *pImage;
     double acquireTime, acquirePeriod, delay;
     epicsTimeStamp startTime, endTime;
     double elapsedTime;
@@ -300,6 +302,7 @@ void simDetector::simTask()
         
         /* Update the image */
         computeImage();
+        pImage = this->pArrays[addr];
         
         epicsTimeGetCurrent(&endTime);
         elapsedTime = epicsTimeDiffInSeconds(&endTime, &startTime);
@@ -315,8 +318,8 @@ void simDetector::simTask()
         ADParam->setInteger(this->params[addr], ADImageCounter, imageCounter);
         
         /* Put the frame number and time stamp into the buffer */
-        this->pImage->uniqueId = imageCounter;
-        this->pImage->timeStamp = startTime.secPastEpoch + startTime.nsec / 1.e9;
+        pImage->uniqueId = imageCounter;
+        pImage->timeStamp = startTime.secPastEpoch + startTime.nsec / 1.e9;
         
         /* Call the NDArray callback */
         /* Must release the lock here, or we can get into a deadlock, because we can
@@ -324,8 +327,7 @@ void simDetector::simTask()
         epicsMutexUnlock(this->mutexId);
         asynPrint(this->pasynUser, ASYN_TRACE_FLOW, 
              "%s:%s: calling imageData callback\n", driverName, functionName);
-        ADUtils->handleCallback(this->asynStdInterfaces.handleInterruptPvt, 
-                                this->pImage, NDArrayData, 0);
+        doCallbacksNDArray(pImage, NDArrayData, addr);
         epicsMutexLock(this->mutexId);
 
         /* See if acquisition is done */
@@ -506,17 +508,14 @@ asynStatus simDetector::drvUserCreate(asynUser *pasynUser,
                                       const char *drvInfo, 
                                       const char **pptypeName, size_t *psize)
 {
-    int status;
+    asynStatus status;
     int param;
     const char *functionName = "drvUserCreate";
 
     /* See if this is one of our standard parameters */
-    status = ADUtils->findParam(SimDetParamString, NUM_SIM_DET_PARAMS, 
-                                drvInfo, &param);
+    status = findParam(SimDetParamString, NUM_SIM_DET_PARAMS, 
+                       drvInfo, &param);
                                 
-    /* If not, then see if it is a base class parameter */
-    if (status) status = ADDriverBase::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
-    
     if (status == asynSuccess) {
         pasynUser->reason = param;
         if (pptypeName) {
@@ -529,12 +528,11 @@ asynStatus simDetector::drvUserCreate(asynUser *pasynUser,
                   "%s:%s: drvInfo=%s, param=%d\n", 
                   driverName, functionName, drvInfo, param);
         return(asynSuccess);
-    } else {
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                     "%s:%s:, unknown drvInfo=%s", 
-                     driverName, functionName, drvInfo);
-        return(asynError);
     }
+    
+    /* If not, then see if it is a base class parameter */
+    status = ADDriverBase::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
+    return(status);  
 }
     
 void simDetector::report(FILE *fp, int details)
@@ -562,7 +560,7 @@ extern "C" int simDetectorConfig(const char *portName, int maxSizeX, int maxSize
 
 simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, int dataType)
 
-    : ADDriverBase(portName, 1, ADLastDriverParam)
+    : ADDriverBase(portName, 1, ADLastDriverParam), imagesRemaining(0), pRaw(NULL)
 
 {
     int status = asynSuccess;
