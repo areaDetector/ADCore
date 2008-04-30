@@ -15,7 +15,7 @@
 #include <asynStandardInterfaces.h>
 
 /* Defining this will create the static table of standard parameters in ADInterface.h */
-#define DEFINE_STANDARD_PARAM_STRINGS 1
+#define DEFINE_AD_STANDARD_PARAMS 1
 #include "ADInterface.h"
 #include "ADUtils.h"
 #include "ADParamLib.h"
@@ -35,8 +35,8 @@ asynStatus ADDriverBase::drvUserCreate(asynUser *pasynUser,
     const char *functionName = "drvUserCreate";
 
     /* See if this is one of the standard parameters */
-    status = ADUtils->findParam(ADStandardParamString, NUM_AD_STANDARD_PARAMS, 
-                                drvInfo, &param);
+    status = findParam(ADStandardParamString, NUM_AD_STANDARD_PARAMS, 
+                       drvInfo, &param);
                                 
     if (status == asynSuccess) {
         pasynUser->reason = param;
