@@ -14,15 +14,6 @@ typedef enum
     NDPluginStdArraysLastParam
 } NDPluginStdArraysParam_t;
 
-/* The command strings are the userParam argument for asyn device support links
- * The asynDrvUser interface in this driver parses these strings and puts the
- * corresponding enum value in pasynUser->reason */
-static ADParamString_t NDPluginStdArraysParamString[] = {
-    {NDPluginStdArraysData,               "STD_ARRAY_DATA"}
-};
-
-#define NUM_ND_PLUGIN_STD_ARRAYS_PARAMS (sizeof(NDPluginStdArraysParamString)/sizeof(NDPluginStdArraysParamString[0]))
-
 class NDPluginStdArrays : public NDPluginBase {
 public:
     NDPluginStdArrays(const char *portName, int queueSize, int blockingCallbacks, 

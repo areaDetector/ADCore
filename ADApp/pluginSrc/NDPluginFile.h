@@ -29,18 +29,6 @@ typedef enum
     NDPluginFileLastParam
 } NDPluginFileParam_t;
 
-/* The command strings are the userParam argument for asyn device support links
- * The asynDrvUser interface in this driver parses these strings and puts the
- * corresponding enum value in pasynUser->reason */
-static ADParamString_t NDPluginFileParamString[] = {
-    {NDPluginFileWriteMode,         "WRITE_MODE" },
-    {NDPluginFileNumCapture,        "NUM_CAPTURE" },
-    {NDPluginFileNumCaptured,       "NUM_CAPTURED" },
-    {NDPluginFileCapture,           "CAPTURE" },
-};
-
-#define NUM_ND_PLUGIN_FILE_PARAMS (sizeof(NDPluginFileParamString)/sizeof(NDPluginFileParamString[0]))
-
 class NDPluginFile : public NDPluginBase {
 public:
     NDPluginFile(const char *portName, int queueSize, int blockingCallbacks, 

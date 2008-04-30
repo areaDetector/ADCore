@@ -56,37 +56,6 @@ typedef enum {
     NDPluginROILastROINParam
 } NDPluginROINParam_t;
 
-static ADParamString_t NDPluginROINParamString[] = {
-    {NDPluginROIName,               "NAME"},
-    {NDPluginROIUse,                "USE"},
-    {NDPluginROIComputeStatistics,  "COMPUTE_STATISTICS"},
-    {NDPluginROIComputeHistogram,   "COMPUTE_HISTOGRAM"},
-    {NDPluginROIComputeProfiles,    "COMPUTE_PROFILES"},
-    {NDPluginROIHighlight,          "HIGHLIGHT"},
-
-    {NDPluginROIDim0Min,            "DIM0_MIN"},
-    {NDPluginROIDim0Size,           "DIM0_SIZE"},
-    {NDPluginROIDim0Bin,            "DIM0_BIN"},
-    {NDPluginROIDim0Reverse,        "DIM0_REVERSE"},
-    {NDPluginROIDim1Min,            "DIM1_MIN"},
-    {NDPluginROIDim1Size,           "DIM1_SIZE"},
-    {NDPluginROIDim1Bin,            "DIM1_BIN"},
-    {NDPluginROIDim1Reverse,        "DIM1_REVERSE"},
-    {NDPluginROIDataType,           "DATA_TYPE"},
-
-    {NDPluginROIBgdWidth,           "BGD_WIDTH"},
-    {NDPluginROIMinValue,           "MIN_VALUE"},
-    {NDPluginROIMaxValue,           "MAX_VALUE"},
-    {NDPluginROIMeanValue,          "MEAN_VALUE"},
-    {NDPluginROITotal,              "TOTAL"},
-    {NDPluginROINet,                "NET"},
-
-    {NDPluginROIHistSize,           "HIST_SIZE"},
-    {NDPluginROIHistMin,            "HIST_MIN"},
-    {NDPluginROIHistMax,            "HIST_MAX"},
-    {NDPluginROIHistEntropy,        "HIST_ENTROPY"},
-    {NDPluginROIHistArray,          "HIST_ARRAY"},
-};
 
 #define NUM_ROIN_PARAMS (sizeof(NDPluginROINParamString)/sizeof(NDPluginROINParamString[0]))
 

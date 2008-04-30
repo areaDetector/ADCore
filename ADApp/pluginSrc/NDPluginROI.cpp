@@ -27,8 +27,39 @@
 #include "NDPluginROI.h"
 #include "drvNDROI.h"
 
-const char *driverName="NDPluginROI";
+static asynParamString_t NDPluginROINParamString[] = {
+    {NDPluginROIName,               "NAME"},
+    {NDPluginROIUse,                "USE"},
+    {NDPluginROIComputeStatistics,  "COMPUTE_STATISTICS"},
+    {NDPluginROIComputeHistogram,   "COMPUTE_HISTOGRAM"},
+    {NDPluginROIComputeProfiles,    "COMPUTE_PROFILES"},
+    {NDPluginROIHighlight,          "HIGHLIGHT"},
 
+    {NDPluginROIDim0Min,            "DIM0_MIN"},
+    {NDPluginROIDim0Size,           "DIM0_SIZE"},
+    {NDPluginROIDim0Bin,            "DIM0_BIN"},
+    {NDPluginROIDim0Reverse,        "DIM0_REVERSE"},
+    {NDPluginROIDim1Min,            "DIM1_MIN"},
+    {NDPluginROIDim1Size,           "DIM1_SIZE"},
+    {NDPluginROIDim1Bin,            "DIM1_BIN"},
+    {NDPluginROIDim1Reverse,        "DIM1_REVERSE"},
+    {NDPluginROIDataType,           "DATA_TYPE"},
+
+    {NDPluginROIBgdWidth,           "BGD_WIDTH"},
+    {NDPluginROIMinValue,           "MIN_VALUE"},
+    {NDPluginROIMaxValue,           "MAX_VALUE"},
+    {NDPluginROIMeanValue,          "MEAN_VALUE"},
+    {NDPluginROITotal,              "TOTAL"},
+    {NDPluginROINet,                "NET"},
+
+    {NDPluginROIHistSize,           "HIST_SIZE"},
+    {NDPluginROIHistMin,            "HIST_MIN"},
+    {NDPluginROIHistMax,            "HIST_MAX"},
+    {NDPluginROIHistEntropy,        "HIST_ENTROPY"},
+    {NDPluginROIHistArray,          "HIST_ARRAY"},
+};
+
+const char *driverName="NDPluginROI";
 
 #define MAX(A,B) (A)>(B)?(A):(B)
 #define MIN(A,B) (A)<(B)?(A):(B)
@@ -382,16 +413,12 @@ asynStatus NDPluginROI::drvUserCreate(asynUser *pasynUser,
                                       const char *drvInfo, 
                                       const char **pptypeName, size_t *psize)
 {
-    int status;
+    asynStatus status;
     int param;
 
     /* Look in the driver table */
-    status = ADUtils->findParam(NDPluginROINParamString, NUM_ROIN_PARAMS, 
-                                            drvInfo, &param);
-
-    /* If we did not find it in that table try the plugin base */
-    if (status) status = ADUtils->findParam(NDPluginBaseParamString, NUM_ND_PLUGIN_BASE_PARAMS, 
-                                            drvInfo, &param);
+    status = findParam(NDPluginROINParamString, NUM_ROIN_PARAMS, 
+                       drvInfo, &param);
     if (status == asynSuccess) {
         pasynUser->reason = param;
         if (pptypeName) {
@@ -404,12 +431,11 @@ asynStatus NDPluginROI::drvUserCreate(asynUser *pasynUser,
                   "%s::drvUserCreate, drvInfo=%s, param=%d\n", 
                   driverName, drvInfo, param);
         return(asynSuccess);
-    } else {
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                     "%s::drvUserCreate, unknown drvInfo=%s", 
-                     driverName, drvInfo);
-        return(asynError);
     }
+
+    /* If we did not find it in that table try the plugin base */
+    status = NDPluginBase::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
+    return(status);
 }
 
     

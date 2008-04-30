@@ -30,7 +30,16 @@
 #include "NDPluginStdArrays.h"
 #include "drvNDStdArrays.h"
 
-#define driverName "NDPluginStdArrays"
+/* The command strings are the userParam argument for asyn device support links
+ * The asynDrvUser interface in this driver parses these strings and puts the
+ * corresponding enum value in pasynUser->reason */
+static asynParamString_t NDPluginStdArraysParamString[] = {
+    {NDPluginStdArraysData,               "STD_ARRAY_DATA"}
+};
+
+#define NUM_ND_PLUGIN_STD_ARRAYS_PARAMS (sizeof(NDPluginStdArraysParamString)/sizeof(NDPluginStdArraysParamString[0]))
+
+static char *driverName="NDPluginStdArrays";
 
 template <typename epicsType, typename interruptType>
 void arrayInterruptCallback(NDArray_t *pArray, void *interruptPvt, int *initialized, int signedType)
@@ -104,7 +113,7 @@ asynStatus NDPluginStdArrays::readArray(asynUser *pasynUser, epicsType *value, s
             break;
         default:
             asynPrint(pasynUser, ASYN_TRACE_ERROR,
-                      "%s::readArray, unknown command %d\n"
+                      "%s::readArray, unknown command %d\n",
                       driverName, command);
             status = asynError;
     }
@@ -204,19 +213,13 @@ asynStatus NDPluginStdArrays::readFloat64Array(asynUser *pasynUser, epicsFloat64
 asynStatus NDPluginStdArrays::drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
                                        const char **pptypeName, size_t *psize)
 {
-    int status;
+    asynStatus status;
     int param;
     static char *functionName = "drvUserCreate";
 
     /* First see if this is a parameter specific to this plugin */
-        status = ADUtils->findParam(NDPluginStdArraysParamString, NUM_ND_PLUGIN_STD_ARRAYS_PARAMS, 
-                                    drvInfo, &param);
-                                    
-    /* If not, then see if this is a base plugin parameter */
-    if (status != asynSuccess) 
-        status = ADUtils->findParam(NDPluginBaseParamString, NUM_ND_PLUGIN_BASE_PARAMS, 
-                                    drvInfo, &param);
-
+    status = findParam(NDPluginStdArraysParamString, NUM_ND_PLUGIN_STD_ARRAYS_PARAMS, 
+                       drvInfo, &param);
     if (status == asynSuccess) {
         pasynUser->reason = param;
         if (pptypeName) {
@@ -229,12 +232,11 @@ asynStatus NDPluginStdArrays::drvUserCreate(asynUser *pasynUser, const char *drv
                   "%s:%s:, drvInfo=%s, param=%d\n", 
                   driverName, functionName, drvInfo, param);
         return(asynSuccess);
-    } else {
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                     "%s:%s:, unknown drvInfo=%s", 
-                     driverName, functionName, drvInfo);
-        return(asynError);
     }
+
+    /* If not, then call the base class */
+    status = NDPluginBase::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
+    return(status);
 }
 
     

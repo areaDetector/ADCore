@@ -23,9 +23,6 @@
 
 #include <asynStandardInterfaces.h>
 
-/* This will define the parameter strings in ADInterface.h */
-#define DEFINE_STANDARD_PARAM_STRINGS 1
-
 #include "ADInterface.h"
 #include "NDArrayBuff.h"
 #include "ADParamLib.h"
@@ -33,7 +30,20 @@
 #include "NDPluginFile.h"
 #include "drvNDFile.h"
 
-#define driverName "NDPluginFile"
+
+/* The command strings are the userParam argument for asyn device support links
+ * The asynDrvUser interface in this driver parses these strings and puts the
+ * corresponding enum value in pasynUser->reason */
+static asynParamString_t NDPluginFileParamString[] = {
+    {NDPluginFileWriteMode,         "WRITE_MODE" },
+    {NDPluginFileNumCapture,        "NUM_CAPTURE" },
+    {NDPluginFileNumCaptured,       "NUM_CAPTURED" },
+    {NDPluginFileCapture,           "CAPTURE" },
+};
+
+#define NUM_ND_PLUGIN_FILE_PARAMS (sizeof(NDPluginFileParamString)/sizeof(NDPluginFileParamString[0]))
+
+static const char *driverName="NDPluginFile";
 
 
 /* Local functions, not in any interface */
@@ -83,7 +93,7 @@ asynStatus NDPluginFile::readFile(void)
     ADParam->setInteger(this->params[addr], ADDataType, dataType);
     
     /* Call any registered clients */
-    ADUtils->handleCallback(this->asynStdInterfaces.handleInterruptPvt, pArray, NDArrayData, 0);
+    doCallbacksNDArray(pArray, NDArrayData, addr);
 
     /* Set the last array to be this one */
     NDArrayBuff->release(this->pArrays[addr]);
@@ -293,8 +303,14 @@ void NDPluginFile::processCallbacks(NDArray_t *pArray)
 {
     int fileWriteMode, autoSave, capture;
     int addr=0;
+    int arrayCounter;
     int status=asynSuccess;
     int numCapture, numCaptured;
+
+    /* Most plugins want to increment the arrayCounter each time they are called, which NDPluginBase
+     * does.  However, for this plugin we only want to increment it when we actually got a callback we were
+     * supposed to save.  So we save the array counter before calling base method, increment it here */
+    ADParam->getInteger(this->params[addr], NDPluginBaseArrayCounter, &arrayCounter);
 
     /* Call the base class method */
     NDPluginBase::processCallbacks(pArray);
@@ -314,6 +330,7 @@ void NDPluginFile::processCallbacks(NDArray_t *pArray)
     switch(fileWriteMode) {
         case NDPluginFileModeSingle:
             if (autoSave) {
+                arrayCounter++;
                 status = writeFile();
             }
             break;
@@ -322,6 +339,7 @@ void NDPluginFile::processCallbacks(NDArray_t *pArray)
                 if (numCaptured < numCapture) {
                     NDArrayBuff->copy(this->pCaptureNext++, pArray);
                     numCaptured++;
+                    arrayCounter++;
                     ADParam->setInteger(this->params[addr], NDPluginFileNumCaptured, numCaptured);
                 } 
                 if (numCaptured == numCapture) {
@@ -336,6 +354,7 @@ void NDPluginFile::processCallbacks(NDArray_t *pArray)
         case NDPluginFileModeStream:
             if (capture) {
                 numCaptured++;
+                arrayCounter++;
                 ADParam->setInteger(this->params[addr], NDPluginFileNumCaptured, numCaptured);
                 status = writeFile();
                 if (numCaptured == numCapture) {
@@ -348,6 +367,7 @@ void NDPluginFile::processCallbacks(NDArray_t *pArray)
     }
 
     /* Update the parameters.  */
+    ADParam->setInteger(this->params[addr], NDPluginBaseArrayCounter, arrayCounter);
     ADParam->callCallbacksAddr(this->params[addr], addr);
 }
 
@@ -431,23 +451,13 @@ asynStatus NDPluginFile::writeNDArray(asynUser *pasynUser, void *handle)
 asynStatus NDPluginFile::drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
                                        const char **pptypeName, size_t *psize)
 {
-    int status;
+    asynStatus status;
     int param;
     static char *functionName = "drvUserCreate";
 
     /* First see if this is a parameter specific to this plugin */
-        status = ADUtils->findParam(NDPluginFileParamString, NUM_ND_PLUGIN_FILE_PARAMS, 
-                                    drvInfo, &param);
-                                    
-    /* If not, then see if this is a base plugin parameter */
-    if (status != asynSuccess) 
-        status = ADUtils->findParam(NDPluginBaseParamString, NUM_ND_PLUGIN_BASE_PARAMS, 
-                                drvInfo, &param);
-
-    /* If not, then is it a driver parameter defined in ADInterface ? */
-    if (status != asynSuccess) 
-        status = ADUtils->findParam(ADStandardParamString, NUM_AD_STANDARD_PARAMS, 
-                                    drvInfo, &param);
+    status = findParam(NDPluginFileParamString, NUM_ND_PLUGIN_FILE_PARAMS, 
+                       drvInfo, &param);
     if (status == asynSuccess) {
         pasynUser->reason = param;
         if (pptypeName) {
@@ -460,12 +470,11 @@ asynStatus NDPluginFile::drvUserCreate(asynUser *pasynUser, const char *drvInfo,
                   "%s:%s:, drvInfo=%s, param=%d\n", 
                   driverName, functionName, drvInfo, param);
         return(asynSuccess);
-    } else {
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                     "%s:%s:, unknown drvInfo=%s", 
-                     driverName, functionName, drvInfo);
-        return(asynError);
     }
+                                    
+    /* If not, then call the base class method, see if it is known there */
+    status = NDPluginBase::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
+    return(status);
 }
 
 
