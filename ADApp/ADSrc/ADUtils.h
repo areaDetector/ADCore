@@ -23,9 +23,6 @@ typedef struct
 {
     int  (*setParamDefaults)    (void *params);
     int  (*createFileName)      (void *params, int maxChars, char *fullFileName);
-    void (*handleCallback)      (void *handleInterruptPvt, void *handle, int reason, int addr);
-    int  (*findParam)           (ADParamString_t *paramTable, int numParams, 
-                                 const char *paramName, int *param);
 } ADUtilsSupport;
 
 extern ADUtilsSupport *ADUtils;

@@ -16,7 +16,6 @@
 #include "ADUtils.h"
 #include "ADParamLib.h"
 #include "ADInterface.h"
-#include "asynHandle.h"
 
 /* static char *driverName = "ADUtils"; */
 
@@ -83,48 +82,10 @@ static int createFileName(void *params, int maxChars, char *fullFileName)
 }
 
 
-static void handleCallback(void *handelInterruptPvt, void *handle, int reason, int addr)
-{
-    ELLLIST *pclientList;
-    interruptNode *pnode;
-    int address;
-
-    pasynManager->interruptStart(handelInterruptPvt, &pclientList);
-    pnode = (interruptNode *)ellFirst(pclientList);
-    while (pnode) {
-        asynHandleInterrupt *pInterrupt = pnode->drvPvt;
-        pasynManager->getAddr(pInterrupt->pasynUser, &address);
-        if ((reason == pInterrupt->pasynUser->reason) &&
-            (address == addr)) {
-            pInterrupt->callback(pInterrupt->userPvt, 
-                                 pInterrupt->pasynUser,
-                                 handle);
-        }
-        pnode = (interruptNode *)ellNext(&pnode->node);
-    }
-    pasynManager->interruptEnd(handelInterruptPvt);
-}
-
-
-static int findParam(ADParamString_t *paramTable, int numParams, const char *paramName, int *param)
-{
-    int i;
-    for (i=0; i < numParams; i++) {
-        if (epicsStrCaseCmp(paramName, paramTable[i].paramString) == 0) {
-            *param = paramTable[i].param;
-            return(AREA_DETECTOR_OK);
-        }
-    }
-    return(AREA_DETECTOR_ERROR);
-}
-
-
 static ADUtilsSupport utilsSupport =
 {
     setParamDefaults,
     createFileName,
-    handleCallback,
-    findParam
 };
 
 ADUtilsSupport *ADUtils = &utilsSupport;
