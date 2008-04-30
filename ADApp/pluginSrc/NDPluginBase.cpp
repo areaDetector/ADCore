@@ -23,10 +23,31 @@
 
 #include <asynStandardInterfaces.h>
 
+#define DEFINE_AD_STANDARD_PARAMS 1
 #include "ADInterface.h"
 #include "ADUtils.h"
 
 #include "NDPluginBase.h"
+
+/* The command strings are the userParam argument for asyn device support links
+ * The asynDrvUser interface in this driver parses these strings and puts the
+ * corresponding enum value in pasynUser->reason */
+static asynParamString_t NDPluginBaseParamString[] = {
+    {NDPluginBaseArrayPort,         "NDARRAY_PORT" },
+    {NDPluginBaseArrayAddr,         "NDARRAY_ADDR" },
+    {NDPluginBaseArrayCounter,      "ARRAY_COUNTER"},
+    {NDPluginBaseDroppedArrays,     "DROPPED_ARRAYS" },
+    {NDPluginBaseEnableCallbacks,   "ENABLE_CALLBACKS" },
+    {NDPluginBaseBlockingCallbacks, "BLOCKING_CALLBACKS" },
+    {NDPluginBaseMinCallbackTime,   "MIN_CALLBACK_TIME" },
+    {NDPluginBaseUniqueId,          "UNIQUE_ID" },
+    {NDPluginBaseTimeStamp,         "TIME_STAMP" },
+    {NDPluginBaseDataType,          "DATA_TYPE" },
+    {NDPluginBaseNDimensions,       "ARRAY_NDIMENSIONS"},
+    {NDPluginBaseDimensions,        "ARRAY_DIMENSIONS"}
+};
+
+#define NUM_ND_PLUGIN_BASE_PARAMS (sizeof(NDPluginBaseParamString)/sizeof(NDPluginBaseParamString[0]))
 
 static const char *driverName="NDPluginBase";
 
@@ -423,8 +444,12 @@ asynStatus NDPluginBase::drvUserCreate(asynUser *pasynUser,
     int param;
     static char *functionName = "drvUserCreate";
 
-    status = ADUtils->findParam(NDPluginBaseParamString, NUM_ND_PLUGIN_BASE_PARAMS, 
-                                            drvInfo, &param);
+    /* See if this parameter is defined for the NDPluginBase class */
+    status = findParam(NDPluginBaseParamString, NUM_ND_PLUGIN_BASE_PARAMS, drvInfo, &param);
+
+    /* If not then try the ADStandard param strings */
+    if (status) status = findParam(ADStandardParamString, NUM_AD_STANDARD_PARAMS, drvInfo, &param);
+    
     if (status == asynSuccess) {
         pasynUser->reason = param;
         if (pptypeName) {

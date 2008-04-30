@@ -26,26 +26,6 @@ typedef enum
     NDPluginBaseLastParam
 } NDPluginBaseParam_t;
 
-/* The command strings are the userParam argument for asyn device support links
- * The asynDrvUser interface in this driver parses these strings and puts the
- * corresponding enum value in pasynUser->reason */
-static ADParamString_t NDPluginBaseParamString[] = {
-    {NDPluginBaseArrayPort,         "NDARRAY_PORT" },
-    {NDPluginBaseArrayAddr,         "NDARRAY_ADDR" },
-    {NDPluginBaseArrayCounter,      "ARRAY_COUNTER"},
-    {NDPluginBaseDroppedArrays,     "DROPPED_ARRAYS" },
-    {NDPluginBaseEnableCallbacks,   "ENABLE_CALLBACKS" },
-    {NDPluginBaseBlockingCallbacks, "BLOCKING_CALLBACKS" },
-    {NDPluginBaseMinCallbackTime,   "MIN_CALLBACK_TIME" },
-    {NDPluginBaseUniqueId,          "UNIQUE_ID" },
-    {NDPluginBaseTimeStamp,         "TIME_STAMP" },
-    {NDPluginBaseDataType,          "DATA_TYPE" },
-    {NDPluginBaseNDimensions,       "ARRAY_NDIMENSIONS"},
-    {NDPluginBaseDimensions,        "ARRAY_DIMENSIONS"}
-};
-
-#define NUM_ND_PLUGIN_BASE_PARAMS (sizeof(NDPluginBaseParamString)/sizeof(NDPluginBaseParamString[0]))
-
 class NDPluginBase : public asynParamBase {
 public:
     NDPluginBase(const char *portName, int queueSize, int blockingCallbacks, 
