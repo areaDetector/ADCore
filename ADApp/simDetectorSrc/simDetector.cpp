@@ -566,24 +566,7 @@ simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, int d
     int status = asynSuccess;
     char *functionName = "simDetector";
     int addr=0;
-    asynStandardInterfaces *pInterfaces = &this->asynStdInterfaces;
     int dims[2];
-
-    status = pasynStandardInterfacesBase->initialize(portName, pInterfaces,
-                                                     this->pasynUser, this);
-    if (status != asynSuccess) {
-        printf("%s:%s ERROR: Can't register interfaces: %s.\n",
-               driverName, functionName, this->pasynUser->errorMessage);
-        return;
-    }
-    
-    /* Connect to our device for asynTrace */
-    status = pasynManager->connectDevice(this->pasynUser, portName, 0);
-    if (status != asynSuccess) {
-        printf("%s:%s, connectDevice failed\n", 
-            driverName, functionName);
-        return;
-    }
 
     /* Create the epicsEvents for signaling to the simulate task when acquisition starts and stops */
     this->startEventId = epicsEventCreate(epicsEventEmpty);

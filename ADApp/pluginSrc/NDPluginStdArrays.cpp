@@ -258,24 +258,8 @@ NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int bl
 {
     asynStatus status;
     char *functionName = "NDPluginStdArrays";
-    asynStandardInterfaces *pInterfaces = &this->asynStdInterfaces;
 
-    status = pasynStandardInterfacesBase->initialize(portName, pInterfaces,
-                                                     this->pasynUser, this);
-    if (status != asynSuccess) {
-        printf("%s:%s ERROR: Can't register interfaces: %s.\n",
-                driverName, functionName, this->pasynUser->errorMessage);
-        return;
-    }
-
-    /* Connect to our device for asynTrace */
-    status = pasynManager->connectDevice(this->pasynUser, portName, 0);
-    if (status != asynSuccess) {
-        printf("%s:%s:, connectDevice failed\n", driverName, functionName);
-        return;
-    }
-   
-    /* Try to connect to the NDrray port */
+    /* Try to connect to the NDArray port */
     status = connectToArrayPort();
 }
 

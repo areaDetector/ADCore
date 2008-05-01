@@ -455,27 +455,11 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
 {
     asynStatus status;
     char *functionName = "NDPluginROI";
-    asynStandardInterfaces *pInterfaces = &this->asynStdInterfaces;
 
 
     this->maxROIs = maxROIs;
     this->pROIs = (NDROI_t *)callocMustSucceed(maxROIs, sizeof(*this->pROIs), functionName);
-
-    status = pasynStandardInterfacesBase->initialize(portName, pInterfaces,
-                                                     this->pasynUser, this);
-    if (status != asynSuccess) {
-        printf("%s:%s ERROR: Can't register interfaces: %s.\n",
-               driverName, functionName, this->pasynUser->errorMessage);
-        return;
-    }
     
-    /* Connect to our device for asynTrace */
-    status = pasynManager->connectDevice(this->pasynUser, portName, 0);
-    if (status != asynSuccess) {
-        printf("%s, connectDevice failed\n", functionName);
-        return;
-    }
-        
     /* Try to connect to the array port */
     status = connectToArrayPort();
 }
