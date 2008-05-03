@@ -6,9 +6,22 @@
 
 <h1 align="center">areaDetector Release Notes</h1>
 
-<h2 align="center">Release 1-0beta1 (21-Mar-2008)</h2>
+<h2 align="center">Release 1-1 (6-May-2008)</h2>
 <ul>
-  <li>Initial release, not nearly complete or debugged yet.
+  <li>Major rewrite.  Converted device drivers and plugins from C to C++ with
+      C++ base classes that handle many of the details of asyn and of
+      callbacks and threading for plugins.
+  <li>Everything except device drivers and top-level EPICS databases and
+      channel access clients are now fully N-dimensional, not restricted to
+      2-D.
+  <li>NDPluginFile now uses netCDF format, which is a portable self-describing
+      binary file format.
+  <li>Added NDPluginROI which implements region-of-interest.
+</ul>
+
+<h2 align="center">Release 1-0 (11-Apr-2008)</h2>
+<ul>
+  <li>Initial release, still many things remaining to be done.
 </ul>
 
 <address>
