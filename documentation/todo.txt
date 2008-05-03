@@ -8,12 +8,15 @@
     - Flag indicating callback from device support, don't write output.
 
     asynParamBase
+- Move ADParam into this base class?
+- Make it handle array interfaces in ADParam as well with pointers?
 
     NDPluginBase
 - Add all 10 dimensions to database
+- Not getting readback on PORT name
+- Not connecting to NDARRAY_PORT and NDARRAY_ADDR on reboot
   
     drvNDFile
-- Disable callbacks when no saving being done
 - Test reading
 
     drvNDStdArrays
@@ -27,6 +30,7 @@
 - Fix any other parameter errors on startup
 
     drvProsilica driver
+- Get it to run
 - Connection management
   - Sense disconnect, autoreconnect
   - Implement link callback.  When matches uniqueID, call Disconnect or Connect
@@ -40,6 +44,11 @@
 
    IDL
 - Fix image_display
+  - Make TVSCL image 
+	Remember position
+        Make new one correct size and position if deleted
+	Go on top when created or size changed
+	Resizeable;
   - Change table widgets to text widgets or CW_field widgets
   - Use rotate rather than order keyword on tv
   - Check if data is byte and scaling is 0 to 255 don't scale the image
