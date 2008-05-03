@@ -11,6 +11,7 @@ record(stringout, "$(P)$(R)NDArrayPort")
 {
     field(DTYP, "asynOctetWrite")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_PORT")
+    field(VAL,  "$(NDARRAY_PORT)")
 }
 
 record(stringin, "$(P)$(R)NDArrayPort_RBV")
@@ -24,6 +25,7 @@ record(longout, "$(P)$(R)NDArrayAddress")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_ADDR")
+    field(VAL,  "$(NDARRAY_ADDR)")
 }
 
 record(longin, "$(P)$(R)NDArrayAddress_RBV")
