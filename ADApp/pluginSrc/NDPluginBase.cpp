@@ -227,7 +227,6 @@ asynStatus NDPluginBase::connectToArrayPort(void)
 {
     asynStatus status;
     asynInterface *pasynInterface;
-    NDArray_t array;
     int isConnected;
     int enableCallbacks;
     char arrayPort[20];
@@ -273,33 +272,6 @@ asynStatus NDPluginBase::connectToArrayPort(void)
     this->asynHandlePvt = pasynInterface->drvPvt;
     pasynManager->exceptionConnect(this->pasynUser);
 
-    /* Read the current array parameters from the array driver */
-    /* Lock the port. Defintitely necessary to do this. */
-    status = pasynManager->lockPort(this->pasynUserHandle);
-    if (status != asynSuccess) {
-        asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
-            "%s::%s ERROR: Can't lock array port: %s\n",
-            driverName, functionName, this->pasynUserHandle->errorMessage);
-        return(status);
-    }
-    /* Read the current array, but only request 0 bytes so no data are actually transferred */
-    array.dataSize = 0;
-    status = this->pasynHandle->read(this->asynHandlePvt, this->pasynUserHandle, &array);
-    if (status != asynSuccess) {
-        asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
-            "%s::%s ERROR: reading array data:%s\n",
-            driverName, functionName, this->pasynUserHandle->errorMessage);
-    } else {
-        ADParam->callCallbacksAddr(this->params[0], 0);
-    }
-    /* Unlock the port.  Definitely necessary to do this. */
-    status = pasynManager->unlockPort(this->pasynUserHandle);
-    if (status != asynSuccess) {
-        asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
-            "%s::%s ERROR: Can't unlock array port: %s\n",
-            driverName, functionName, this->pasynUserHandle->errorMessage);
-    }
-    
     /* Enable or disable interrupt callbacks */
     status = setArrayInterrupt(enableCallbacks);
 
