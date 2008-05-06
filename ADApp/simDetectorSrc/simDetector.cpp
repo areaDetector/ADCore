@@ -368,7 +368,6 @@ asynStatus simDetector::writeInt32(asynUser *pasynUser, epicsInt32 value)
     int adstatus;
     int addr=0;
     asynStatus status = asynSuccess;
-    int reset=0;
 
     epicsMutexLock(this->mutexId);
 
@@ -416,10 +415,7 @@ asynStatus simDetector::writeInt32(asynUser *pasynUser, epicsInt32 value)
     case ADSizeX:
     case ADSizeY:
     case ADDataType:
-        reset = 1;
-        break;
-    case SimResetImage:
-        if (value) reset = 1;
+        status = ADParam->setInteger(this->params[addr], SimResetImage, 1);
         break;
     case ADImageMode: 
         /* The image mode may have changed while we are acquiring, 
@@ -438,14 +434,6 @@ asynStatus simDetector::writeInt32(asynUser *pasynUser, epicsInt32 value)
             break;
         }
         break;
-    }
-    
-    /* Reset the image if the reset flag was set above */
-    if (reset) {
-        status = ADParam->setInteger(this->params[addr], SimResetImage, 1);
-        /* Compute the image when parameters change.  
-         * This won't post data, but will cause any parameter changes to be computed and readbacks to update. */
-        computeImage();
     }
     
     /* Do callbacks so higher layers see any changes */
@@ -483,8 +471,6 @@ asynStatus simDetector::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
     case SimGainX:
     case SimGainY:
         status = ADParam->setInteger(this->params[addr], SimResetImage, 1);
-        /* Compute the image.  This won't post data, but will cause any readbacks to update */
-        computeImage();
         break;
     }
 
@@ -620,7 +606,4 @@ simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, int d
             driverName, functionName);
         return;
     }
-
-    /* Compute the first image */
-    computeImage();
 }
