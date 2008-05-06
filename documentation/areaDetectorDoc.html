@@ -7,8 +7,8 @@
 <CENTER>
 <H1>areaDetector: EPICS Area Detector Support</H1>
 
-<H2> R1-0beta</H2>
-<H2> March 21, 2008</H2>
+<H2> R1-1</H2>
+<H2> May 6, 2008</H2>
 <H2> Mark Rivers</H2>
 <H2> University of Chicago</H2>
 </CENTER>
@@ -49,8 +49,6 @@
                 MEDM Screens</A> 
   <LI><A href="#IDL Image Display Client">
                 IDL Image Display Client</A> 
-  <LI><A href="#SPEC interface">
-                SPEC interface</A> 
   <LI><A href="#Performance measurements">
                 Performance measurements</A> 
   <LI><A href="#Hardware notes">
@@ -66,7 +64,7 @@
 <P>
 The areaDetector module provides a general-purpose interface for area (2-D) detectors in EPICS.
 It is intended to be used with a wide variety of detectors and cameras, ranging from high frame rate
-video cameras, pixel-array detectors such as the Pilatus, and large format detectors like the
+CCD and CMOS cameras, pixel-array detectors such as the Pilatus, and large format detectors like the
 MAR-345 online imaging plate.</P>
 
 The goals of this module are:
@@ -81,7 +79,7 @@ The goals of this module are:
   <LI> Allow easy extensibility to take advantage of detector-specific features
        beyond the standard parameters.
   <LI> Have high-performance.  Applications can be written to get the detector
-       image data through EPICS, but hooks are also provided to get the detector
+       image data through EPICS, but an interface is also available to receive the detector
        data at a lower-level for very high performance.
   <LI> Provide an optional Region-Of-Interest (ROI) driver that performs computations
        on regions within the image data.  A basic ROI driver is included in the module,
