@@ -30,7 +30,7 @@ dbLoadRecords("$(AD)/ADApp/Db/NDStdArrays.template", "P=13SIM1:,R=image2:,PORT=S
 
 # Create a file saving plugin
 drvNDFileConfigure("SIM1File", 20, 0, "SIM1", 0)
-dbLoadRecords("$(AD)/ADApp/Db/NDPluginBase.template","P=13SIM1:,R=file1:,PORT=SIM1File,ADDR=0,TIMEOUT=1")
+dbLoadRecords("$(AD)/ADApp/Db/NDPluginBase.template","P=13SIM1:,R=file1:,PORT=SIM1File,ADDR=0,TIMEOUT=1,NDARRAY_PORT=SIM1,NDARRAY_ADDR=0")
 dbLoadRecords("$(AD)/ADApp/Db/NDFile.template",      "P=13SIM1:,R=file1:,PORT=SIM1File,ADDR=0,TIMEOUT=1")
 
 # Create an ROI plugin
