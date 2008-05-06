@@ -9,6 +9,7 @@
 # Array port name
 record(stringout, "$(P)$(R)NDArrayPort")
 {
+    field(PINI, "1")
     field(DTYP, "asynOctetWrite")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_PORT")
     field(VAL,  "$(NDARRAY_PORT)")
@@ -23,6 +24,7 @@ record(stringin, "$(P)$(R)NDArrayPort_RBV")
 
 record(longout, "$(P)$(R)NDArrayAddress")
 {
+    field(PINI, "1")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_ADDR")
     field(VAL,  "$(NDARRAY_ADDR)")
@@ -76,7 +78,6 @@ record(ai, "$(P)$(R)MinCallbackTime_RBV")
 {
     field(DTYP, "asynFloat64")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_CALLBACK_TIME")
-    field(VAL,  "1.0")
     field(EGU,  "s")
     field(PREC, "3")
     field(SCAN, "I/O Intr")
