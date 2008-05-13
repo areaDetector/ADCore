@@ -59,9 +59,9 @@ asynStatus ADDriverBase::drvUserCreate(asynUser *pasynUser,
 }
     
 
-ADDriverBase::ADDriverBase(const char *portName, int maxAddr, int paramTableSize)
+ADDriverBase::ADDriverBase(const char *portName, int maxAddr, int paramTableSize, int maxBuffers, size_t maxMemory)
 
-    : asynParamBase(portName, maxAddr, paramTableSize)
+    : asynNDArrayBase(portName, maxAddr, paramTableSize, maxBuffers, maxMemory)
 
 {
     //char *functionName = "ADDriverBase";
