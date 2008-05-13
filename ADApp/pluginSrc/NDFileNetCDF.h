@@ -6,7 +6,7 @@
  * April 17, 2008
  */
 
-#include "NDArrayBuff.h"
+#include "NDArray.h"
 
 #ifndef DRV_NDFileNetCDF_H
 #define DRV_NDFileNetCDF_H
@@ -24,7 +24,7 @@ typedef struct NDFileNetCDFState {
 } NDFileNetCDFState_t;
 
 
-int NDFileWriteNetCDF(const char *fileName, NDFileNetCDFState_t *pState, NDArray_t *pArray, 
+int NDFileWriteNetCDF(const char *fileName, NDFileNetCDFState_t *pState, NDArray *pArray, 
                       int numArrays, int append, int close);
 
 #ifdef __cplusplus

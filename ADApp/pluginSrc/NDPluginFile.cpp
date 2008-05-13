@@ -24,7 +24,7 @@
 #include <asynStandardInterfaces.h>
 
 #include "ADInterface.h"
-#include "NDArrayBuff.h"
+#include "NDArray.h"
 #include "ADParamLib.h"
 #include "ADUtils.h"
 #include "NDPluginFile.h"
@@ -57,7 +57,7 @@ asynStatus NDPluginFile::readFile(void)
     int fileFormat, fileNumber;
     int dataType=0;
     int autoIncrement;
-    NDArray_t *pArray=NULL;
+    NDArray *pArray=NULL;
     const char* functionName = "NDFileReadFile";
 
     /* Get the current parameters */
@@ -93,10 +93,10 @@ asynStatus NDPluginFile::readFile(void)
     ADParam->setInteger(this->params[addr], ADDataType, dataType);
     
     /* Call any registered clients */
-    doCallbacksNDArray(pArray, NDArrayData, addr);
+    doCallbacksHandle(pArray, NDArrayData, addr);
 
     /* Set the last array to be this one */
-    NDArrayBuff->release(this->pArrays[addr]);
+    this->pArrays[addr]->release();
     this->pArrays[addr] = pArray;    
     
     return(status);
@@ -239,7 +239,7 @@ asynStatus NDPluginFile::doCapture()
     asynStatus status = asynSuccess;
     int addr=0;
     int fileWriteMode, capture;
-    NDArray_t array;
+    NDArray array;
     NDArrayInfo_t arrayInfo;
     int i;
     int numCapture;
@@ -261,8 +261,8 @@ asynStatus NDPluginFile::doCapture()
                 array.dataSize = 0;
                 status = this->pasynHandle->read(this->asynHandlePvt,this->pasynUserHandle, &array);
                 ADParam->setInteger(this->params[addr], NDPluginFileNumCaptured, 0);
-                NDArrayBuff->getInfo(&array, &arrayInfo);
-                this->pCapture = (NDArray_t *)malloc(numCapture * sizeof(NDArray_t));
+                array.getInfo(&arrayInfo);
+                this->pCapture = (NDArray *)malloc(numCapture * sizeof(NDArray));
                 if (!this->pCapture) {
                     asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
                         "%s:%s ERROR: cannot allocate capture buffers\n",
@@ -299,7 +299,7 @@ asynStatus NDPluginFile::doCapture()
 }
 
 
-void NDPluginFile::processCallbacks(NDArray_t *pArray)
+void NDPluginFile::processCallbacks(NDArray *pArray)
 {
     int fileWriteMode, autoSave, capture;
     int addr=0;
@@ -323,8 +323,8 @@ void NDPluginFile::processCallbacks(NDArray_t *pArray)
 
     /* We always keep the last array so read() can use it.  
      * Release previous one, reserve new one */
-    if (this->pArrays[addr]) NDArrayBuff->release(this->pArrays[addr]);
-    NDArrayBuff->reserve(pArray);
+    if (this->pArrays[addr]) this->pArrays[addr]->release();
+    pArray->reserve();
     this->pArrays[addr] = pArray;
     
     switch(fileWriteMode) {
@@ -337,7 +337,7 @@ void NDPluginFile::processCallbacks(NDArray_t *pArray)
         case NDPluginFileModeCapture:
             if (capture) {
                 if (numCaptured < numCapture) {
-                    NDArrayBuff->copy(this->pCaptureNext++, pArray);
+                    pArray->copy(this->pCaptureNext++);
                     numCaptured++;
                     arrayCounter++;
                     ADParam->setInteger(this->params[addr], NDPluginFileNumCaptured, numCaptured);
@@ -427,7 +427,7 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
 asynStatus NDPluginFile::writeNDArray(asynUser *pasynUser, void *handle)
 {
-    NDArray_t *pArray = (NDArray_t *)handle;
+    NDArray *pArray = (NDArray *)handle;
     int addr=0;
     asynStatus status = asynSuccess;
     const char *functionName = "writeNDArray";
@@ -494,7 +494,7 @@ NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCall
                            const char *NDArrayPort, int NDArrayAddr)
     /* Invoke the base class constructor */
     : NDPluginBase(portName, queueSize, blockingCallbacks, 
-                   NDArrayPort, NDArrayAddr, 1, NDPluginFileLastParam)
+                   NDArrayPort, NDArrayAddr, 1, NDPluginFileLastParam, 0, 0)
 {
     char *functionName = "NDPluginFile";
     asynStatus status;

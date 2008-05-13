@@ -20,7 +20,7 @@
 #include <asynStandardInterfaces.h>
 
 #include "ADInterface.h"
-#include "NDArrayBuff.h"
+#include "NDArray.h"
 #include "ADParamLib.h"
 #include "ADUtils.h"
 #include "asynHandle.h"
@@ -103,7 +103,7 @@ void doComputeStatistics(void *pROIData, int nElements,double *min, double *max,
 }
 
 
-void NDPluginROI::processCallbacks(NDArray_t *pArray)
+void NDPluginROI::processCallbacks(NDArray *pArray)
 {
     /* This function computes the ROIs.
      * It is called with the mutex already locked.  It unlocks it during long calculations when private
@@ -118,7 +118,7 @@ void NDPluginROI::processCallbacks(NDArray_t *pArray)
     double histMin, histMax, entropy;
     double min=0, max=0, mean, total=0, net;
     double counts;
-    NDArray_t *pROIArray;
+    NDArray *pROIArray;
     PARAMS ROIParams;
     NDArrayInfo_t arrayInfo;
     NDDimension_t dims[ND_ARRAY_MAX_DIMS], *pDim;
@@ -135,7 +135,7 @@ void NDPluginROI::processCallbacks(NDArray_t *pArray)
         /* We always keep the last array so read() can use it.  
          * Release previous one. Reserve new one below. */
         if (this->pArrays[roi]) {
-            NDArrayBuff->release(this->pArrays[roi]);
+            this->pArrays[roi]->release();
             this->pArrays[roi] = NULL;
         }
         ADParam->getInteger(ROIParams, NDPluginROIUse, &use);
@@ -170,13 +170,13 @@ void NDPluginROI::processCallbacks(NDArray_t *pArray)
         /* Extract this ROI from the input array.  The convert() function allocates
          * a new array and it is reserved (reference count = 1) */
         if (dataType == -1) dataType = pArray->dataType;
-        NDArrayBuff->convert(pArray, &this->pArrays[roi], dataType, dims);
+        this->pNDArrayPool->convert(pArray, &this->pArrays[roi], dataType, dims);
         pROIArray  = this->pArrays[roi];
 
         /* Call any clients who have registered for NDArray callbacks */
-        doCallbacksNDArray(pROIArray, NDArrayData, roi);
+        doCallbacksHandle(pROIArray, NDArrayData, roi);
 
-        NDArrayBuff->getInfo(pROIArray, &arrayInfo);
+        pROIArray->getInfo(&arrayInfo);
 
         if (computeStatistics) {
             switch(pROIArray->dataType) {
@@ -441,17 +441,17 @@ asynStatus NDPluginROI::drvUserCreate(asynUser *pasynUser,
     
 
 extern "C" int drvNDROIConfigure(const char *portName, int queueSize, int blockingCallbacks, 
-                                 const char *NDArrayPort, int NDArrayAddr, int maxROIs)
+                                 const char *NDArrayPort, int NDArrayAddr, int maxROIs, size_t maxMemory)
 {
-    new NDPluginROI(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxROIs);
+    new NDPluginROI(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxROIs, maxMemory);
     return(asynSuccess);
 }
 
 NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallbacks, 
-                         const char *NDArrayPort, int NDArrayAddr, int maxROIs)
+                         const char *NDArrayPort, int NDArrayAddr, int maxROIs, size_t maxMemory)
     /* Invoke the base class constructor */
     : NDPluginBase(portName, queueSize, blockingCallbacks, 
-                   NDArrayPort, NDArrayAddr, maxROIs, NDPluginROILastROINParam)
+                   NDArrayPort, NDArrayAddr, maxROIs, NDPluginROILastROINParam, maxROIs, maxMemory)
 {
     asynStatus status;
     char *functionName = "NDPluginROI";

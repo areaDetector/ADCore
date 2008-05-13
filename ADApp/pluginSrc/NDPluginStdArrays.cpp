@@ -24,7 +24,7 @@
 #include <asynStandardInterfaces.h>
 
 #include "ADInterface.h"
-#include "NDArrayBuff.h"
+#include "NDArray.h"
 #include "ADParamLib.h"
 #include "ADUtils.h"
 #include "NDPluginStdArrays.h"
@@ -42,13 +42,14 @@ static asynParamString_t NDPluginStdArraysParamString[] = {
 static char *driverName="NDPluginStdArrays";
 
 template <typename epicsType, typename interruptType>
-void arrayInterruptCallback(NDArray_t *pArray, void *interruptPvt, int *initialized, int signedType)
+void arrayInterruptCallback(NDArray *pArray, NDArrayPool *pNDArrayPool, 
+                            void *interruptPvt, int *initialized, int signedType)
 {
     ELLLIST *pclientList;
     interruptNode *pnode;
     int i;
     epicsType *pData=NULL;
-    NDArray_t *pOutput=NULL;
+    NDArray *pOutput=NULL;
     NDArrayInfo_t arrayInfo;
     NDDimension_t outDims[ND_ARRAY_MAX_DIMS];
 
@@ -59,13 +60,13 @@ void arrayInterruptCallback(NDArray_t *pArray, void *interruptPvt, int *initiali
         if (pInterrupt->pasynUser->reason == NDPluginStdArraysData) {
             if (!*initialized) {
                 *initialized = 1;
-                NDArrayBuff->getInfo(pArray, &arrayInfo);
+                pArray->getInfo(&arrayInfo);
                 for (i=0; i<pArray->ndims; i++)  {
-                    NDArrayBuff->initDimension(&outDims[i], pArray->dims[i].size);
+                    pArray->initDimension(&outDims[i], pArray->dims[i].size);
                 }
-                NDArrayBuff->convert(pArray, &pOutput,
-                                     signedType,
-                                     outDims);
+                pNDArrayPool->convert(pArray, &pOutput,
+                                            signedType,
+                                            outDims);
                 pData = (epicsType *)pOutput->pData;
             }
             pInterrupt->callback(pInterrupt->userPvt,
@@ -75,7 +76,7 @@ void arrayInterruptCallback(NDArray_t *pArray, void *interruptPvt, int *initiali
         pnode = (interruptNode *)ellNext(&pnode->node);
     }
     pasynManager->interruptEnd(interruptPvt);
-    if (pOutput) NDArrayBuff->release(pOutput);
+    if (pOutput) pOutput->release();
 }
 
 template <typename epicsType> 
@@ -83,7 +84,7 @@ asynStatus NDPluginStdArrays::readArray(asynUser *pasynUser, epicsType *value, s
 {
     int command = pasynUser->reason;
     asynStatus status = asynSuccess;
-    NDArray_t *pOutput, *myArray;
+    NDArray *pOutput, *myArray;
     NDArrayInfo_t arrayInfo;
     NDDimension_t outDims[ND_ARRAY_MAX_DIMS];
     int i;
@@ -93,7 +94,7 @@ asynStatus NDPluginStdArrays::readArray(asynUser *pasynUser, epicsType *value, s
     myArray = this->pArrays[addr];
     switch(command) {
         case NDPluginStdArraysData:
-            NDArrayBuff->getInfo(myArray, &arrayInfo);
+            myArray->getInfo(&arrayInfo);
             if (arrayInfo.nElements > (int)nElements) {
                 /* We have been requested fewer pixels than we have.
                  * Just pass the first nElements. */
@@ -104,9 +105,9 @@ asynStatus NDPluginStdArrays::readArray(asynUser *pasynUser, epicsType *value, s
             /* Convert data from its actual data type.  */
             if (!myArray || !myArray->pData) break;
             for (i=0; i<myArray->ndims; i++)  {
-                NDArrayBuff->initDimension(&outDims[i], myArray->dims[i].size);
+                myArray->initDimension(&outDims[i], myArray->dims[i].size);
             }
-            status = (asynStatus)NDArrayBuff->convert(myArray,
+            status = (asynStatus)this->pNDArrayPool->convert(myArray,
                                                       &pOutput,
                                                       outputType,
                                                       outDims);
@@ -123,7 +124,7 @@ asynStatus NDPluginStdArrays::readArray(asynUser *pasynUser, epicsType *value, s
 
 
 
-void NDPluginStdArrays::processCallbacks(NDArray_t *pArray)
+void NDPluginStdArrays::processCallbacks(NDArray *pArray)
 {
     /* This function calls back any registered clients on the standard asyn array interfaces with 
      * the data in our private buffer.
@@ -143,38 +144,43 @@ void NDPluginStdArrays::processCallbacks(NDArray_t *pArray)
     /* Call the base class method */
     NDPluginBase::processCallbacks(pArray);
     
-    NDArrayBuff->getInfo(pArray, &arrayInfo);
+    pArray->getInfo(&arrayInfo);
  
     /* This function is called with the lock taken, and it must be set when we exit.
      * The following code can be exected without the mutex because we are not accessing pPvt */
     epicsMutexUnlock(this->mutexId);
 
     /* Pass interrupts for int8Array data*/
-    arrayInterruptCallback<epicsInt8, asynInt8ArrayInterrupt>(pArray, pInterfaces->int8ArrayInterruptPvt,
+    arrayInterruptCallback<epicsInt8, asynInt8ArrayInterrupt>(pArray, this->pNDArrayPool, 
+                             pInterfaces->int8ArrayInterruptPvt,
                              &int8Initialized, NDInt8);
     
     /* Pass interrupts for int16Array data*/
-    arrayInterruptCallback<epicsInt16,  asynInt16ArrayInterrupt>(pArray, pInterfaces->int16ArrayInterruptPvt,
+    arrayInterruptCallback<epicsInt16,  asynInt16ArrayInterrupt>(pArray, this->pNDArrayPool, 
+                             pInterfaces->int16ArrayInterruptPvt,
                              &int16Initialized, NDInt16);
     
     /* Pass interrupts for int32Array data*/
-    arrayInterruptCallback<epicsInt32, asynInt32ArrayInterrupt>(pArray, pInterfaces->int32ArrayInterruptPvt,
+    arrayInterruptCallback<epicsInt32, asynInt32ArrayInterrupt>(pArray, this->pNDArrayPool, 
+                             pInterfaces->int32ArrayInterruptPvt,
                              &int32Initialized, NDInt32);
     
     /* Pass interrupts for float32Array data*/
-    arrayInterruptCallback<epicsFloat32, asynFloat32ArrayInterrupt>(pArray, pInterfaces->float32ArrayInterruptPvt,
+    arrayInterruptCallback<epicsFloat32, asynFloat32ArrayInterrupt>(pArray, this->pNDArrayPool, 
+                             pInterfaces->float32ArrayInterruptPvt,
                              &float32Initialized, NDFloat32);
     
     /* Pass interrupts for float64Array data*/
-    arrayInterruptCallback<epicsFloat64, asynFloat64ArrayInterrupt>(pArray, pInterfaces->float64ArrayInterruptPvt,
+    arrayInterruptCallback<epicsFloat64, asynFloat64ArrayInterrupt>(pArray, this->pNDArrayPool, 
+                             pInterfaces->float64ArrayInterruptPvt,
                              &float64Initialized, NDFloat64);
 
     /* We must exit with the mutex locked */
     epicsMutexLock(this->mutexId);
     /* We always keep the last array so read() can use it.  
      * Release previous one, reserve new one */
-    if (this->pArrays[addr]) NDArrayBuff->release(this->pArrays[addr]);
-    NDArrayBuff->reserve(pArray);
+    if (this->pArrays[addr]) this->pArrays[addr]->release();
+    pArray->reserve();
     this->pArrays[addr] = pArray;
     /* Update the parameters.  The counter should be updated after data are posted
      * because clients might use that to detect new data */
@@ -244,20 +250,22 @@ asynStatus NDPluginStdArrays::drvUserCreate(asynUser *pasynUser, const char *drv
 /* Configuration routine.  Called directly, or from the iocsh function in drvNDStdArraysEpics */
 
 extern "C" int drvNDStdArraysConfigure(const char *portName, int queueSize, int blockingCallbacks, 
-                                       const char *NDArrayPort, int NDArrayAddr)
+                                       const char *NDArrayPort, int NDArrayAddr,
+                                       size_t maxMemory)
 {
-    new NDPluginStdArrays(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr);
+    new NDPluginStdArrays(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxMemory);
     return(asynSuccess);
 }
 
 NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int blockingCallbacks, 
-                                     const char *NDArrayPort, int NDArrayAddr)
+                                     const char *NDArrayPort, int NDArrayAddr, 
+                                     size_t maxMemory)
     /* Invoke the base class constructor */
     : NDPluginBase(portName, queueSize, blockingCallbacks, 
-                   NDArrayPort, NDArrayAddr, 1, NDPluginStdArraysLastParam)
+                   NDArrayPort, NDArrayAddr, 1, NDPluginStdArraysLastParam, 1, maxMemory)
 {
     asynStatus status;
-    char *functionName = "NDPluginStdArrays";
+    //char *functionName = "NDPluginStdArrays";
 
     /* Try to connect to the NDArray port */
     status = connectToArrayPort();

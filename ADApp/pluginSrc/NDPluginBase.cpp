@@ -51,7 +51,7 @@ static asynParamString_t NDPluginBaseParamString[] = {
 
 static const char *driverName="NDPluginBase";
 
-void NDPluginBase::processCallbacks(NDArray_t *pArray)
+void NDPluginBase::processCallbacks(NDArray *pArray)
 {
     int addr = 0;
     int arrayCounter;
@@ -91,7 +91,7 @@ void NDPluginBase::driverCallback(asynUser *pasynUser, void *handle)
      * In the latter case arrays can be dropped if the queue is full.
      */
      
-    NDArray_t *pArray = (NDArray_t *)handle;
+    NDArray *pArray = (NDArray *)handle;
     epicsTimeStamp tNow;
     double minCallbackTime, deltaTime;
     int status;
@@ -125,7 +125,7 @@ void NDPluginBase::driverCallback(asynUser *pasynUser, void *handle)
         } else {
             /* Increase the reference count again on this array
              * It will be released in the background task when processing is done */
-            NDArrayBuff->reserve(pArray);
+            pArray->reserve();
             /* Try to put this array on the message queue.  If there is no room then return
              * immediately. */
             status = epicsMessageQueueTrySend(this->msgQId, &pArray, sizeof(&pArray));
@@ -136,7 +136,7 @@ void NDPluginBase::driverCallback(asynUser *pasynUser, void *handle)
                 droppedArrays++;
                 status |= ADParam->setInteger(this->params[0], NDPluginBaseDroppedArrays, droppedArrays);
                 /* This buffer needs to be released */
-                NDArrayBuff->release(pArray);
+                pArray->release();
             }
         }
     }
@@ -158,7 +158,7 @@ void NDPluginBase::processTask(void)
     /* This thread prcoess a new array when it arrives */
 
     /* Loop forever */
-    NDArray_t *pArray;
+    NDArray *pArray;
     
     while (1) {
         /* Wait for an array to arrive from the queue */    
@@ -172,7 +172,7 @@ void NDPluginBase::processTask(void)
         epicsMutexUnlock(this->mutexId); 
         
         /* We are done with this array buffer */       
-        NDArrayBuff->release(pArray);
+        pArray->release();
     }
 }
 
@@ -444,9 +444,10 @@ asynStatus NDPluginBase::drvUserCreate(asynUser *pasynUser,
 
 /* Constructor */
 NDPluginBase::NDPluginBase(const char *portName, int queueSize, int blockingCallbacks, 
-                           const char *NDArrayPort, int NDArrayAddr, int maxAddr, int paramTableSize)
+                           const char *NDArrayPort, int NDArrayAddr, int maxAddr, int paramTableSize,
+                           int maxBuffers, size_t maxMemory)
 
-    : asynParamBase(portName, maxAddr, paramTableSize)
+    : asynNDArrayBase(portName, maxAddr, paramTableSize, maxBuffers, maxMemory)
     
 {
     asynStatus status;
@@ -467,7 +468,7 @@ NDPluginBase::NDPluginBase(const char *portName, int queueSize, int blockingCall
     this->pasynUserHandle->reason = NDArrayData;
 
     /* Create the message queue for the input arrays */
-    this->msgQId = epicsMessageQueueCreate(queueSize, sizeof(NDArray_t*));
+    this->msgQId = epicsMessageQueueCreate(queueSize, sizeof(NDArray*));
     if (!this->msgQId) {
         printf("%s:%s: epicsMessageQueueCreate failure\n", driverName, functionName);
         return;
