@@ -62,9 +62,9 @@ typedef enum {
 class NDPluginROI : public NDPluginBase {
 public:
     NDPluginROI(const char *portName, int queueSize, int blockingCallbacks, 
-                 const char *NDArrayPort, int NDArrayAddr, int maxROIs);
+                 const char *NDArrayPort, int NDArrayAddr, int maxROIs, size_t maxMemory);
     /* These methods override the virtual methods in the base class */
-    void processCallbacks(NDArray_t *pArray);
+    void processCallbacks(NDArray *pArray);
     asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
                              const char **pptypeName, size_t *psize);
@@ -72,7 +72,7 @@ public:
     /* These methods are unique to this class */
     asynStatus readFloat64Array(asynUser *pasynUser, epicsFloat64 *value, 
                                 size_t nelements, size_t *nIn);
-
+                                
 private:
     int maxROIs;
     NDROI_t *pROIs;    /* Array of drvNDROI structures */

@@ -17,10 +17,11 @@ typedef enum
 class NDPluginStdArrays : public NDPluginBase {
 public:
     NDPluginStdArrays(const char *portName, int queueSize, int blockingCallbacks, 
-                      const char *NDArrayPort, int NDArrayAddr);
+                      const char *NDArrayPort, int NDArrayAddr,
+                      size_t maxMemory);
 
     /* These methods override the virtual methods in the base class */
-    void processCallbacks(NDArray_t *pArray);
+    void processCallbacks(NDArray *pArray);
     virtual asynStatus readInt8Array(asynUser *pasynUser, epicsInt8 *value,
                                         size_t nElements, size_t *nIn);
     virtual asynStatus readInt16Array(asynUser *pasynUser, epicsInt16 *value,
@@ -36,7 +37,8 @@ public:
 
     /* These methods are just for this class */
     template <typename epicsType> asynStatus readArray(asynUser *pasynUser, epicsType *value, 
-                                        size_t nElements, size_t *nIn, int outputType);                            
+                                        size_t nElements, size_t *nIn, int outputType);
+                                        
 };
 
     
