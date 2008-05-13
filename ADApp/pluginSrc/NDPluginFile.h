@@ -35,7 +35,7 @@ public:
                  const char *NDArrayPort, int NDArrayAddr);
                  
     /* These methods override those in the base class */
-    void processCallbacks(NDArray_t *pArray);
+    void processCallbacks(NDArray *pArray);
     asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     asynStatus writeNDArray(asynUser *pasynUser, void *handle);
     asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
@@ -47,8 +47,8 @@ public:
     asynStatus doCapture(void);
 
 private:
-    NDArray_t *pCaptureNext;
-    NDArray_t *pCapture;
+    NDArray *pCaptureNext;
+    NDArray *pCapture;
     NDFileNetCDFState_t netCDFState;
     epicsMutexId fileMutexId;
 };
