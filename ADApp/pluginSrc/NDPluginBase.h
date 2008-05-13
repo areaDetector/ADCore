@@ -6,7 +6,7 @@
 #include <epicsTime.h>
 #include <asynStandardInterfaces.h>
 
-#include "asynParamBase.h"
+#include "asynNDArrayBase.h"
 
 typedef enum
 {
@@ -26,10 +26,11 @@ typedef enum
     NDPluginBaseLastParam
 } NDPluginBaseParam_t;
 
-class NDPluginBase : public asynParamBase {
+class NDPluginBase : public asynNDArrayBase {
 public:
     NDPluginBase(const char *portName, int queueSize, int blockingCallbacks, 
-                 const char *NDArrayPort, int NDArrayAddr, int maxAddr, int paramTableSize);
+                 const char *NDArrayPort, int NDArrayAddr, int maxAddr, int paramTableSize,
+                 int maxBuffers, size_t maxMemory);
                  
     /* These are the methods that we override from asynParamBase */
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
@@ -41,7 +42,7 @@ public:
                                      const char **pptypeName, size_t *psize);
                                      
     /* These are the methods that are new to this class */
-    virtual void processCallbacks(NDArray_t *pArray);
+    virtual void processCallbacks(NDArray *pArray);
     virtual void driverCallback(asynUser *pasynUser, void *handle);
     virtual void processTask(void);
     virtual asynStatus setArrayInterrupt(int connect);
