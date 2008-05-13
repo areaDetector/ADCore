@@ -13,7 +13,6 @@
 #define AD_UTILS_H
 
 #include "ADInterface.h"
-#include "NDArrayBuff.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -21,8 +20,8 @@ extern "C" {
 
 typedef struct
 {
-    int  (*setParamDefaults)    (void *params);
-    int  (*createFileName)      (void *params, int maxChars, char *fullFileName);
+    int  (*setParamDefaults)    (paramList *params);
+    int  (*createFileName)      (paramList *params, int maxChars, char *fullFileName);
 } ADUtilsSupport;
 
 extern ADUtilsSupport *ADUtils;
