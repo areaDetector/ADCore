@@ -76,9 +76,9 @@ void reportInterrupt(FILE *fp, void *interruptPvt, const char *interruptTypeStri
         pnode = (interruptNode *)ellFirst(pclientList);
         while (pnode) {
             interruptType *pInterrupt = (interruptType *)pnode->drvPvt;
-            fprintf(fp, "    %s callback client address=%p, addr=%d, reason=%d\n",
+            fprintf(fp, "    %s callback client address=%p, addr=%d, reason=%d, userPvt=%p\n",
                     interruptTypeString, pInterrupt->callback, pInterrupt->addr,
-                    pInterrupt->pasynUser->reason);
+                    pInterrupt->pasynUser->reason, pInterrupt->userPvt);
             pnode = (interruptNode *)ellNext(&pnode->node);
         }
         pasynManager->interruptEnd(interruptPvt);
@@ -521,65 +521,36 @@ asynStatus asynParamBase::doCallbacksFloat64Array(epicsFloat64 *value,
 }
 
 /* asynHandle interface methods */
-static asynStatus readNDArray(void *drvPvt, asynUser *pasynUser, void *handle)
+static asynStatus readHandle(void *drvPvt, asynUser *pasynUser, void *handle)
 {
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
     
-    return(pPvt->readNDArray(pasynUser, handle));
+    return(pPvt->readHandle(pasynUser, handle));
 }
 
-asynStatus asynParamBase::readNDArray(asynUser *pasynUser, void *handle)
+asynStatus asynParamBase::readHandle(asynUser *pasynUser, void *handle)
 {
-    NDArray_t *pArray = (NDArray_t *)handle;
-    NDArray_t *myArray;
-    int addr=0;
-    NDArrayInfo_t arrayInfo;
-    asynStatus status = asynSuccess;
-    const char* functionName = "readNDArray";
-    
-    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
-    epicsMutexLock(this->mutexId);
-    myArray = this->pArrays[addr];
-    if (!myArray) {
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                    "%s:%s: error, no valid array available, pData=%p", 
-                    driverName, functionName, pArray->pData);
-        status = asynError;
-    } else {
-        pArray->ndims = myArray->ndims;
-        memcpy(pArray->dims, myArray->dims, sizeof(pArray->dims));
-        pArray->dataType = myArray->dataType;
-        NDArrayBuff->getInfo(myArray, &arrayInfo);
-        if (arrayInfo.totalBytes > pArray->dataSize) arrayInfo.totalBytes = pArray->dataSize;
-        memcpy(pArray->pData, myArray->pData, arrayInfo.totalBytes);
-    }
-    if (!status) 
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: error, maxBytes=%d, data=%p\n", 
-              driverName, functionName, arrayInfo.totalBytes, pArray->pData);
-    epicsMutexUnlock(this->mutexId);
-    return status;
+    epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
+                "%s:readHandle not implemented", driverName);
+    return(asynError);
 }
 
-static asynStatus writeNDArray(void *drvPvt, asynUser *pasynUser, void *handle)
+static asynStatus writeHandle(void *drvPvt, asynUser *pasynUser, void *handle)
 {
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
     
-    return(pPvt->writeNDArray(pasynUser, handle));
+    return(pPvt->writeHandle(pasynUser, handle));
 }
 
-asynStatus asynParamBase::writeNDArray(asynUser *pasynUser, void *handle)
+asynStatus asynParamBase::writeHandle(asynUser *pasynUser, void *handle)
 {
-    asynStatus status = asynSuccess;
-    
-    epicsMutexLock(this->mutexId);
-    
-    epicsMutexUnlock(this->mutexId);
-    return status;
+    epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
+                "%s:writeHandle not implemented", driverName);
+    return(asynError);
 }
 
 
-asynStatus asynParamBase::doCallbacksNDArray(void *handle, int reason, int address)
+asynStatus asynParamBase::doCallbacksHandle(void *handle, int reason, int address)
 {
     ELLLIST *pclientList;
     interruptNode *pnode;
@@ -711,7 +682,6 @@ void asynParamBase::report(FILE *fp, int details)
         reportInterrupt<asynHandleInterrupt>      (fp, pInterfaces->handleInterruptPvt,       "handle");
     }
     if (details > 5) {
-        NDArrayBuff->report(details);
         for (addr=0; addr<this->maxAddr; addr++) {
             ADParam->dump(this->params[addr]);
         }
@@ -806,8 +776,8 @@ static asynFloat64Array ifaceFloat64Array = {
 };
 
 static asynHandle ifaceHandle = {
-    writeNDArray,
-    readNDArray
+    writeHandle,
+    readHandle
 };
 
 static asynDrvUser ifaceDrvUser = {
@@ -890,9 +860,6 @@ asynParamBase::asynParamBase(const char *portName, int maxAddr, int paramTableSi
         printf("%s::%s epicsMutexCreate failure\n", driverName, functionName);
         return;
     }
-    
-    /* Allocate pArray pointer array */
-    this->pArrays = (NDArray_t **)calloc(maxAddr, sizeof(NDArray_t *));
     
     /* Allocate params pointer array */
     this->params = (PARAMS *)calloc(maxAddr, sizeof(PARAMS));

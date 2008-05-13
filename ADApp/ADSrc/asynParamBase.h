@@ -5,7 +5,6 @@
 #include <asynStandardInterfaces.h>
 
 #include "ADParamLib.h"
-#include "NDArrayBuff.h"
 
 typedef struct {
     int param;
@@ -58,9 +57,9 @@ public:
                                         size_t nElements);
     virtual asynStatus doCallbacksFloat64Array(epicsFloat64 *value,
                                         size_t nElements, int reason, int addr);
-    virtual asynStatus readNDArray(asynUser *pasynUser, void *handle);
-    virtual asynStatus writeNDArray(asynUser *pasynUser, void *handle);
-    virtual asynStatus doCallbacksNDArray(void *handle, int reason, int addr);
+    virtual asynStatus readHandle(asynUser *pasynUser, void *handle);
+    virtual asynStatus writeHandle(asynUser *pasynUser, void *handle);
+    virtual asynStatus doCallbacksHandle(void *handle, int reason, int addr);
     virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
                                      const char **pptypeName, size_t *psize);
     virtual asynStatus drvUserGetType(asynUser *pasynUser,
@@ -73,7 +72,6 @@ public:
     char *portName;
     int maxAddr;
     PARAMS *params;
-    NDArray_t **pArrays;
     epicsMutexId mutexId;
 
     /* The asyn interfaces this driver implements */
