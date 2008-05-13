@@ -31,7 +31,7 @@
 #include "ADParamLib.h"
 #include "ADUtils.h"
 #include "ADInterface.h"
-#include "NDArrayBuff.h"
+#include "NDArray.h"
 #include "ADDriverBase.h"
 
 #include "drvSimDetector.h"
@@ -41,7 +41,8 @@ static char *driverName = "drvSimDetector";
 
 class simDetector : public ADDriverBase {
 public:
-    simDetector(const char *portName, int maxSizeX, int maxSizeY, int dataType);
+    simDetector(const char *portName, int maxSizeX, int maxSizeY, int dataType,
+                int maxBuffers, size_t maxMemory);
                  
     /* These are the methods that we override from ADDriverBase */
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
@@ -60,7 +61,7 @@ public:
     int imagesRemaining;
     epicsEventId startEventId;
     epicsEventId stopEventId;
-    NDArray_t *pRaw;
+    NDArray *pRaw;
 };
 
 /* If we have any private driver parameters they begin with ADFirstDriverParam and should end
@@ -129,7 +130,7 @@ int simDetector::allocateBuffer()
     
     /* Make sure the raw array we have allocated is large enough. 
      * We are allowed to change its size because we have exclusive use of it */
-    NDArrayBuff->getInfo(this->pRaw, &arrayInfo);
+    this->pRaw->getInfo(&arrayInfo);
     if (arrayInfo.totalBytes > this->pRaw->dataSize) {
         free(this->pRaw->pData);
         this->pRaw->pData  = malloc(arrayInfo.totalBytes);
@@ -147,7 +148,7 @@ int simDetector::computeImage()
     int maxSizeX, maxSizeY;
     NDDimension_t dimsOut[2];
     NDArrayInfo_t arrayInfo;
-    NDArray_t *pImage;
+    NDArray *pImage;
     const char* functionName = "computeImage";
 
     /* NOTE: The caller of this function must have taken the mutex */
@@ -208,23 +209,23 @@ int simDetector::computeImage()
     /* Extract the region of interest with binning.  
      * If the entire image is being used (no ROI or binning) that's OK because
      * convertImage detects that case and is very efficient */
-    NDArrayBuff->initDimension(&dimsOut[0], sizeX);
+    this->pRaw->initDimension(&dimsOut[0], sizeX);
     dimsOut[0].binning = binX;
     dimsOut[0].offset = minX;
     dimsOut[0].reverse = reverseX;
-    NDArrayBuff->initDimension(&dimsOut[1], sizeY);
+    this->pRaw->initDimension(&dimsOut[1], sizeY);
     dimsOut[1].binning = binY;
     dimsOut[1].offset = minY;
     dimsOut[1].reverse = reverseY;
     /* We save the most recent image buffer so it can be used in the read() function.
      * Now release it before getting a new version. */
-    if (this->pArrays[addr]) NDArrayBuff->release(this->pArrays[addr]);
-    status |= NDArrayBuff->convert(this->pRaw,
-                                   &this->pArrays[addr],
-                                   dataType,
-                                   dimsOut);
+    if (this->pArrays[addr]) this->pArrays[addr]->release();
+    status |= this->pNDArrayPool->convert(this->pRaw,
+                                         &this->pArrays[addr],
+                                         dataType,
+                                         dimsOut);
     pImage = this->pArrays[addr];
-    NDArrayBuff->getInfo(pImage, &arrayInfo);
+    pImage->getInfo(&arrayInfo);
     status |= ADParam->setInteger(this->params[addr], ADImageSize,  arrayInfo.totalBytes);
     status |= ADParam->setInteger(this->params[addr], ADImageSizeX, pImage->dims[0].size);
     status |= ADParam->setInteger(this->params[addr], ADImageSizeY, pImage->dims[1].size);
@@ -252,7 +253,7 @@ void simDetector::simTask()
     int imageCounter;
     int acquire, autoSave;
     ADStatus_t acquiring;
-    NDArray_t *pImage;
+    NDArray *pImage;
     double acquireTime, acquirePeriod, delay;
     epicsTimeStamp startTime, endTime;
     double elapsedTime;
@@ -327,7 +328,7 @@ void simDetector::simTask()
         epicsMutexUnlock(this->mutexId);
         asynPrint(this->pasynUser, ASYN_TRACE_FLOW, 
              "%s:%s: calling imageData callback\n", driverName, functionName);
-        doCallbacksNDArray(pImage, NDArrayData, addr);
+        doCallbacksHandle(pImage, NDArrayData, addr);
         epicsMutexLock(this->mutexId);
 
         /* See if acquisition is done */
@@ -538,15 +539,17 @@ void simDetector::report(FILE *fp, int details)
     ADDriverBase::report(fp, details);
 }
 
-extern "C" int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int dataType)
+extern "C" int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int dataType,
+                                 int maxBuffers, size_t maxMemory)
 {
-    new simDetector(portName, maxSizeX, maxSizeY, dataType);
+    new simDetector(portName, maxSizeX, maxSizeY, dataType, maxBuffers, maxMemory);
     return(asynSuccess);
 }
 
-simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, int dataType)
+simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, int dataType,
+                         int maxBuffers, size_t maxMemory)
 
-    : ADDriverBase(portName, 1, ADLastDriverParam), imagesRemaining(0), pRaw(NULL)
+    : ADDriverBase(portName, 1, ADLastDriverParam, maxBuffers, maxMemory), imagesRemaining(0), pRaw(NULL)
 
 {
     int status = asynSuccess;
@@ -571,7 +574,7 @@ simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, int d
     /* Allocate the raw buffer we use to compute images.  Only do this once */
     dims[0] = maxSizeX;
     dims[1] = maxSizeY;
-    this->pRaw = NDArrayBuff->alloc(2, dims, dataType, 0, NULL);
+    this->pRaw = this->pNDArrayPool->alloc(2, dims, dataType, 0, NULL);
 
     /* Set some default values for parameters */
     status =  ADParam->setString (this->params[addr], ADManufacturer, "Simulated detector");
