@@ -6,11 +6,11 @@
 #include <epicsTime.h>
 #include <asynStandardInterfaces.h>
 
-#include "asynParamBase.h"
+#include "asynNDArrayBase.h"
 
-class ADDriverBase : public asynParamBase {
+class ADDriverBase : public asynNDArrayBase {
 public:
-    ADDriverBase(const char *portName, int maxAddr, int paramTableSize);
+    ADDriverBase(const char *portName, int maxAddr, int paramTableSize, int maxBuffers, size_t maxMemory);
                  
     /* These are the methods that we override from asynParamBase */
     virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
