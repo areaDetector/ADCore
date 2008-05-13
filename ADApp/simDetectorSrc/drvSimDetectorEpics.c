@@ -15,7 +15,6 @@
 #include <drvSup.h>
 #include <epicsExport.h>
 
-#include "ADInterface.h"
 #include "drvSimDetector.h"
 
 
@@ -26,14 +25,19 @@ static const iocshArg simDetectorConfigArg0 = {"Port name", iocshArgString};
 static const iocshArg simDetectorConfigArg1 = {"Max X size", iocshArgInt};
 static const iocshArg simDetectorConfigArg2 = {"Max Y size", iocshArgInt};
 static const iocshArg simDetectorConfigArg3 = {"Data type", iocshArgInt};
-static const iocshArg * const simDetectorConfigArgs[4] = {&simDetectorConfigArg0,
+static const iocshArg simDetectorConfigArg4 = {"maxBuffers", iocshArgInt};
+static const iocshArg simDetectorConfigArg5 = {"maxMemory", iocshArgInt};
+static const iocshArg * const simDetectorConfigArgs[] =  {&simDetectorConfigArg0,
                                                           &simDetectorConfigArg1,
                                                           &simDetectorConfigArg2,
-                                                          &simDetectorConfigArg3};
-static const iocshFuncDef configsimDetector = {"simDetectorConfig", 4, simDetectorConfigArgs};
+                                                          &simDetectorConfigArg3,
+                                                          &simDetectorConfigArg4,
+                                                          &simDetectorConfigArg5};
+static const iocshFuncDef configsimDetector = {"simDetectorConfig", 6, simDetectorConfigArgs};
 static void configsimDetectorCallFunc(const iocshArgBuf *args)
 {
-    simDetectorConfig(args[0].sval, args[1].ival, args[2].ival, args[3].ival);
+    simDetectorConfig(args[0].sval, args[1].ival, args[2].ival, args[3].ival,
+                      args[4].ival, args[5].ival);
 }
 
 
