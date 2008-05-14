@@ -44,7 +44,7 @@ NDArray* NDArrayPool::alloc(int ndims, int *dims, int dataType, int dataSize, vo
     if (!pArray) {
         /* We did not find a free image.  
          * Allocate a new one if we have not exceeded the limit */
-        if (this->numBuffers == this->maxBuffers) {
+        if ((this->maxBuffers > 0) && (this->numBuffers >= this->maxBuffers)) {
             printf("%s: ERROR: reached limit of %d images\n", 
                    functionName, this->maxBuffers);
         } else {
@@ -87,7 +87,7 @@ NDArray* NDArrayPool::alloc(int ndims, int *dims, int dataType, int dataSize, vo
                 /* See if there is enough room */
                 this->memorySize -= pArray->dataSize;
                 free(pArray->pData);
-                if ((this->memorySize + dataSize) > this->maxMemory) {
+                if ((this->maxMemory > 0) && ((this->memorySize + dataSize) > this->maxMemory)) {
                     printf("%s: ERROR: reached limit of %d memory\n", 
                            functionName, this->maxMemory);
                     pArray = NULL;
