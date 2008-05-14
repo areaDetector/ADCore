@@ -19,6 +19,7 @@ record(stringin, "$(P)$(R)PortName_RBV")
 
 record(stringin, "$(P)$(R)Manufacturer_RBV")
 {
+   field(PINI, "1")
    field(DTYP, "asynOctetRead")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MANUFACTURER")
    field(VAL,  "Unknown")
@@ -27,6 +28,7 @@ record(stringin, "$(P)$(R)Manufacturer_RBV")
 
 record(stringin, "$(P)$(R)Model_RBV")
 {
+   field(PINI, "1")
    field(DTYP, "asynOctetRead")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MODEL")
    field(VAL,  "Unknown")
@@ -35,6 +37,7 @@ record(stringin, "$(P)$(R)Model_RBV")
 
 record(longin, "$(P)$(R)MaxSizeX_RBV")
 {
+   field(PINI, "1")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_SIZE_X")
    field(SCAN, "I/O Intr")
@@ -42,6 +45,7 @@ record(longin, "$(P)$(R)MaxSizeX_RBV")
 
 record(longin, "$(P)$(R)MaxSizeY_RBV")
 {
+   field(PINI, "1")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_SIZE_Y")
    field(SCAN, "I/O Intr")
