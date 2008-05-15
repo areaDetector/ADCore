@@ -17,6 +17,7 @@ public:
                                      const char **pptypeName, size_t *psize);
                                      
     /* These are the methods that are new to this class */
+    int createFileName(int maxChars, char *fullFileName);
 
     /* Our data */
 };
