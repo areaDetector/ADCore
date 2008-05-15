@@ -1,5 +1,5 @@
 #ifndef asynNDArrayBase_H
-#define asynNdArrayBase_H
+#define asynNDArrayBase_H
 
 #include "asynParamBase.h"
 #include "NDArray.h"
