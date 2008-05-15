@@ -19,44 +19,61 @@
 
 #include <asynStandardInterfaces.h>
 
-#include "ADInterface.h"
 #include "NDArray.h"
 #include "ADParamLib.h"
-#include "ADUtils.h"
 #include "asynHandle.h"
 #include "NDPluginROI.h"
 #include "drvNDROI.h"
 
 static asynParamString_t NDPluginROINParamString[] = {
-    {NDPluginROIName,               "NAME"},
-    {NDPluginROIUse,                "USE"},
-    {NDPluginROIComputeStatistics,  "COMPUTE_STATISTICS"},
-    {NDPluginROIComputeHistogram,   "COMPUTE_HISTOGRAM"},
-    {NDPluginROIComputeProfiles,    "COMPUTE_PROFILES"},
-    {NDPluginROIHighlight,          "HIGHLIGHT"},
+    {NDPluginROIName,                   "NAME"},
+    {NDPluginROIName_RBV,               "NAME_RBV"},
+    {NDPluginROIUse,                    "USE"},
+    {NDPluginROIUse_RBV,                "USE_RBV"},
+    {NDPluginROIComputeStatistics,      "COMPUTE_STATISTICS"},
+    {NDPluginROIComputeStatistics_RBV,  "COMPUTE_STATISTICS_RBV"},
+    {NDPluginROIComputeHistogram,       "COMPUTE_HISTOGRAM"},
+    {NDPluginROIComputeHistogram_RBV,   "COMPUTE_HISTOGRAM_RBV"},
+    {NDPluginROIComputeProfiles,        "COMPUTE_PROFILES"},
+    {NDPluginROIComputeProfiles_RBV,    "COMPUTE_PROFILES_RBV"},
+    {NDPluginROIHighlight,              "HIGHLIGHT"},
+    {NDPluginROIHighlight_RBV,          "HIGHLIGHT_RBV"},
 
-    {NDPluginROIDim0Min,            "DIM0_MIN"},
-    {NDPluginROIDim0Size,           "DIM0_SIZE"},
-    {NDPluginROIDim0Bin,            "DIM0_BIN"},
-    {NDPluginROIDim0Reverse,        "DIM0_REVERSE"},
-    {NDPluginROIDim1Min,            "DIM1_MIN"},
-    {NDPluginROIDim1Size,           "DIM1_SIZE"},
-    {NDPluginROIDim1Bin,            "DIM1_BIN"},
-    {NDPluginROIDim1Reverse,        "DIM1_REVERSE"},
-    {NDPluginROIDataType,           "DATA_TYPE"},
+    {NDPluginROIDim0Min,                "DIM0_MIN"},
+    {NDPluginROIDim0Min_RBV,            "DIM0_MIN_RBV"},
+    {NDPluginROIDim0Size,               "DIM0_SIZE"},
+    {NDPluginROIDim0Size_RBV,           "DIM0_SIZE_RBV"},
+    {NDPluginROIDim0Bin,                "DIM0_BIN"},
+    {NDPluginROIDim0Bin_RBV,            "DIM0_BIN_RBV"},
+    {NDPluginROIDim0Reverse,            "DIM0_REVERSE"},
+    {NDPluginROIDim0Reverse_RBV,        "DIM0_REVERSE_RBV"},
+    {NDPluginROIDim1Min,                "DIM1_MIN"},
+    {NDPluginROIDim1Min_RBV,            "DIM1_MIN_RBV"},
+    {NDPluginROIDim1Size,               "DIM1_SIZE"},
+    {NDPluginROIDim1Size_RBV,           "DIM1_SIZE_RBV"},
+    {NDPluginROIDim1Bin,                "DIM1_BIN"},
+    {NDPluginROIDim1Bin_RBV,            "DIM1_BIN_RBV"},
+    {NDPluginROIDim1Reverse,            "DIM1_REVERSE"},
+    {NDPluginROIDim1Reverse_RBV,        "DIM1_REVERSE_RBV"},
+    {NDPluginROIDataType,               "DATA_TYPE"},
+    {NDPluginROIDataType_RBV,           "DATA_TYPE_RBV"},
 
-    {NDPluginROIBgdWidth,           "BGD_WIDTH"},
-    {NDPluginROIMinValue,           "MIN_VALUE"},
-    {NDPluginROIMaxValue,           "MAX_VALUE"},
-    {NDPluginROIMeanValue,          "MEAN_VALUE"},
-    {NDPluginROITotal,              "TOTAL"},
-    {NDPluginROINet,                "NET"},
+    {NDPluginROIBgdWidth,               "BGD_WIDTH"},
+    {NDPluginROIBgdWidth_RBV,           "BGD_WIDTH_RBV"},
+    {NDPluginROIMinValue_RBV,           "MIN_VALUE_RBV"},
+    {NDPluginROIMaxValue_RBV,           "MAX_VALUE_RBV"},
+    {NDPluginROIMeanValue_RBV,          "MEAN_VALUE_RBV"},
+    {NDPluginROITotal_RBV,              "TOTAL_RBV"},
+    {NDPluginROINet_RBV,                "NET_RBV"},
 
-    {NDPluginROIHistSize,           "HIST_SIZE"},
-    {NDPluginROIHistMin,            "HIST_MIN"},
-    {NDPluginROIHistMax,            "HIST_MAX"},
-    {NDPluginROIHistEntropy,        "HIST_ENTROPY"},
-    {NDPluginROIHistArray,          "HIST_ARRAY"},
+    {NDPluginROIHistSize,               "HIST_SIZE"},
+    {NDPluginROIHistSize_RBV,           "HIST_SIZE_RBV"},
+    {NDPluginROIHistMin,                "HIST_MIN"},
+    {NDPluginROIHistMin_RBV,            "HIST_MIN_RBV"},
+    {NDPluginROIHistMax,                "HIST_MAX"},
+    {NDPluginROIHistMax_RBV,            "HIST_MAX_RBV"},
+    {NDPluginROIHistEntropy_RBV,        "HIST_ENTROPY_RBV"},
+    {NDPluginROIHistArray,              "HIST_ARRAY"},
 };
 
 const char *driverName="NDPluginROI";
@@ -218,11 +235,11 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
             }
             net = total;
             mean = total / arrayInfo.nElements;
-            ADParam->setDouble(ROIParams, NDPluginROIMinValue, min);
-            ADParam->setDouble(ROIParams, NDPluginROIMaxValue, max);
-            ADParam->setDouble(ROIParams, NDPluginROIMeanValue, mean);
-            ADParam->setDouble(ROIParams, NDPluginROITotal, total);
-            ADParam->setDouble(ROIParams, NDPluginROINet, net);
+            ADParam->setDouble(ROIParams, NDPluginROIMinValue_RBV, min);
+            ADParam->setDouble(ROIParams, NDPluginROIMaxValue_RBV, max);
+            ADParam->setDouble(ROIParams, NDPluginROIMeanValue_RBV, mean);
+            ADParam->setDouble(ROIParams, NDPluginROITotal_RBV, total);
+            ADParam->setDouble(ROIParams, NDPluginROINet_RBV, net);
             asynPrint(this->pasynUser, ASYN_TRACEIO_DRIVER, 
                 (char *)pROIArray->pData, arrayInfo.totalBytes,
                 "%s:%s ROI=%d, min=%f, max=%f, mean=%f, total=%f, net=%f",
@@ -287,7 +304,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
                 entropy += counts * log(counts);
             }
             entropy = -entropy / arrayInfo.nElements;
-            ADParam->setDouble(ROIParams, NDPluginROIHistEntropy, entropy);
+            ADParam->setDouble(ROIParams, NDPluginROIHistEntropy_RBV, entropy);
             doCallbacksFloat64Array(pROI->histogram, histSize, NDPluginROIHistArray, roi);
         }
 
@@ -312,7 +329,9 @@ asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
     epicsMutexLock(this->mutexId);
     pROI = &this->pROIs[roi];
+    /* Set parameter and readback in parameter library */
     status = ADParam->setInteger(this->params[roi], function, value);
+    status = ADParam->setInteger(this->params[roi], function+1, value);
     switch(function) {
         case NDPluginROIDim0Min:
             pROI->dims[0].offset = value;
@@ -454,11 +473,16 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
                    NDArrayPort, NDArrayAddr, maxROIs, NDPluginROILastROINParam, maxROIs, maxMemory)
 {
     asynStatus status;
+    int roi;
     char *functionName = "NDPluginROI";
 
 
     this->maxROIs = maxROIs;
     this->pROIs = (NDROI_t *)callocMustSucceed(maxROIs, sizeof(*this->pROIs), functionName);
+
+    for (roi=0; roi<maxROIs; roi++) {
+        ADParam->setInteger(this->params[roi], NDPluginROIDataType_RBV, 0);
+    }
     
     /* Try to connect to the array port */
     status = connectToArrayPort();
