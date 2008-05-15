@@ -18,8 +18,9 @@ record(waveform, "$(P)$(R)FilePath")
 
 record(waveform, "$(P)$(R)FilePath_RBV")
 {
+    field(PINI, "1")
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_PATH")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_PATH_RBV")
     field(FTVL, "UCHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
@@ -37,8 +38,9 @@ record(waveform, "$(P)$(R)FileName")
 
 record(waveform, "$(P)$(R)FileName_RBV")
 {
+    field(PINI, "1")
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NAME")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NAME_RBV")
     field(FTVL, "UCHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
@@ -55,8 +57,9 @@ record(longout, "$(P)$(R)FileNumber")
 
 record(longin, "$(P)$(R)FileNumber_RBV")
 {
+    field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NUMBER")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NUMBER_RBV")
     field(SCAN, "I/O Intr")
 }
 
@@ -82,8 +85,9 @@ record(mbbo, "$(P)$(R)AutoIncrement")
 
 record(mbbo, "$(P)$(R)AutoIncrement_RBV")
 {
+    field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_INCREMENT")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_INCREMENT_RBV")
     field(ZRST, "No")
     field(ZRVL, "0")
     field(ONST, "Yes")
@@ -103,8 +107,9 @@ record(waveform, "$(P)$(R)FileTemplate")
 
 record(waveform, "$(P)$(R)FileTemplate_RBV")
 {
+    field(PINI, "1")
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_TEMPLATE")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_TEMPLATE_RBV")
     field(FTVL, "UCHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
@@ -113,8 +118,9 @@ record(waveform, "$(P)$(R)FileTemplate_RBV")
 # Full filename, including path
 record(waveform, "$(P)$(R)FullFileName_RBV")
 {
+    field(PINI, "1")
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FULL_FILE_NAME")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FULL_FILE_NAME_RBV")
     field(FTVL, "UCHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
@@ -135,8 +141,9 @@ record(mbbo, "$(P)$(R)AutoSave")
 
 record(mbbi, "$(P)$(R)AutoSave_RBV")
 {
+    field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_SAVE")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_SAVE_RBV")
     field(ZRST, "No")
     field(ZRVL, "0")
     field(ONST, "Yes")
@@ -174,8 +181,9 @@ record(mbbo, "$(P)$(R)FileFormat")
 
 record(mbbi, "$(P)$(R)FileFormat_RBV")
 {
+    field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_FORMAT")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_FORMAT_RBV")
     field(ZRST, "netCDF")
     field(ZRVL, "0")
     field(ONST, "Invalid")
@@ -200,8 +208,9 @@ record(mbbo, "$(P)$(R)FileWriteMode")
 
 record(mbbi, "$(P)$(R)FileWriteMode_RBV")
 {
+    field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WRITE_MODE")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WRITE_MODE_RBV")
     field(ZRST, "Single")
     field(ZRVL, "0")
     field(ONST, "Capture")
@@ -221,8 +230,9 @@ record(longout, "$(P)$(R)Capture")
 
 record(longin, "$(P)$(R)Capture_RBV")
 {
+    field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CAPTURE")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CAPTURE_RBV")
     field(SCAN, "I/O Intr")
 }
 
@@ -236,15 +246,17 @@ record(longout, "$(P)$(R)NumCapture")
 
 record(longin, "$(P)$(R)NumCapture_RBV")
 {
+    field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_CAPTURE")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_CAPTURE_RBV")
     field(SCAN, "I/O Intr")
 }
 
 record(longin, "$(P)$(R)NumCaptured_RBV")
 {
+    field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_CAPTURED")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_CAPTURED_RBV")
     field(SCAN, "I/O Intr")
 }
 

@@ -17,8 +17,9 @@ record(stringout, "$(P)$(R)NDArrayPort")
 
 record(stringin, "$(P)$(R)NDArrayPort_RBV")
 {
+    field(PINI, "1")
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_PORT")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_PORT_RBV")
     field(SCAN, "I/O Intr")
 }
 
@@ -32,8 +33,9 @@ record(longout, "$(P)$(R)NDArrayAddress")
 
 record(longin, "$(P)$(R)NDArrayAddress_RBV")
 {
+    field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_ADDR")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_ADDR_RBV")
     field(SCAN, "I/O Intr")
 }
 
@@ -55,8 +57,9 @@ record(mbbo, "$(P)$(R)EnableCallbacks")
 
 record(mbbi, "$(P)$(R)EnableCallbacks_RBV")
 {
+    field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_CALLBACKS")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_CALLBACKS_RBV")
     field(ZRST, "No")
     field(ZRVL, "0")
     field(ONST, "Yes")
@@ -76,8 +79,9 @@ record(ao, "$(P)$(R)MinCallbackTime")
 
 record(ai, "$(P)$(R)MinCallbackTime_RBV")
 {
+    field(PINI, "1")
     field(DTYP, "asynFloat64")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_CALLBACK_TIME")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_CALLBACK_TIME_RBV")
     field(EGU,  "s")
     field(PREC, "3")
     field(SCAN, "I/O Intr")
@@ -101,8 +105,9 @@ record(mbbo, "$(P)$(R)BlockingCallbacks")
 # Array posting flag
 record(mbbi, "$(P)$(R)BlockingCallbacks_RBV")
 {
+    field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BLOCKING_CALLBACKS")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BLOCKING_CALLBACKS_RBV")
     field(ZRST, "No")
     field(ZRVL, "0")
     field(ONST, "Yes")
@@ -117,6 +122,7 @@ record(mbbi, "$(P)$(R)BlockingCallbacks_RBV")
 ###################################################################
 record(longout, "$(P)$(R)ArrayCounter")
 {
+    field(PINI, "1")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_COUNTER")
     field(VAL,  "0")
@@ -124,8 +130,9 @@ record(longout, "$(P)$(R)ArrayCounter")
 
 record(longin, "$(P)$(R)ArrayCounter_RBV")
 {
+    field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_COUNTER")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_COUNTER_RBV")
     field(SCAN, "I/O Intr")
 }
 
@@ -142,6 +149,7 @@ record(calc, "$(P)$(R)ArrayRate_RBV")
 
 record(longout, "$(P)$(R)DroppedArrays")
 {
+    field(PINI, "1")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DROPPED_ARRAYS")
     field(VAL,  "0")
@@ -149,8 +157,9 @@ record(longout, "$(P)$(R)DroppedArrays")
 
 record(longin, "$(P)$(R)DroppedArrays_RBV")
 {
+    field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DROPPED_ARRAYS")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DROPPED_ARRAYS_RBV")
     field(SCAN, "I/O Intr")
 }
 
@@ -160,14 +169,16 @@ record(longin, "$(P)$(R)DroppedArrays_RBV")
 # The number of dimensions
 record(longin, "$(P)$(R)NDimensions_RBV")
 {
+    field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_NDIMENSIONS")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_NDIMENSIONS_RBV")
     field(SCAN, "I/O Intr")
 }
 
 # The array dimensions waveform record
 record(waveform, "$(P)$(R)Dimensions_RBV")
 {
+    field(PINI, "1")
     field(DTYP, "asynInt32ArrayIn")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_DIMENSIONS")
     field(FTVL, "LONG")
@@ -212,8 +223,9 @@ record(longin, "$(P)$(R)ArraySize1_RBV")
 
 record(mbbi, "$(P)$(R)DataType_RBV")
 {
+   field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DATA_TYPE")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DATA_TYPE_RBV")
    field(ZRST, "Int8")
    field(ZRVL, "0")
    field(ONST, "UInt8")
@@ -238,15 +250,17 @@ record(mbbi, "$(P)$(R)DataType_RBV")
 ###################################################################
 record(longin, "$(P)$(R)UniqueId_RBV")
 {
+    field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))UNIQUE_ID")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))UNIQUE_ID_RBV")
     field(SCAN, "I/O Intr")
 }
 
 record(ai, "$(P)$(R)TimeStamp_RBV")
 {
+    field(PINI, "1")
     field(DTYP, "asynFloat64")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TIME_STAMP")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TIME_STAMP_RBV")
     field(PREC, "3")
     field(SCAN, "I/O Intr")
 }
