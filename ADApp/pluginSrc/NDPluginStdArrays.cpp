@@ -23,10 +23,8 @@
 
 #include <asynStandardInterfaces.h>
 
-#include "ADInterface.h"
 #include "NDArray.h"
 #include "ADParamLib.h"
-#include "ADUtils.h"
 #include "NDPluginStdArrays.h"
 #include "drvNDStdArrays.h"
 
