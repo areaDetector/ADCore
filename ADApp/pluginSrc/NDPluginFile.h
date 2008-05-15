@@ -4,7 +4,6 @@
 #include <epicsTypes.h>
 #include <asynStandardInterfaces.h>
 
-#include "ADInterface.h"
 #include "NDPluginBase.h"
 #include "NDFileNetCDF.h"
 
@@ -21,11 +20,14 @@ typedef enum {
 
 typedef enum
 {
-    NDPluginFileWriteMode           /* (asynInt32,    r/w) File saving mode (NDFileMode_t) */
+    NDPluginFileWriteMode               /* (asynInt32,    r/w) File saving mode (NDFileMode_t) */
         = NDPluginBaseLastParam,
-    NDPluginFileNumCapture,         /* (asynInt32,    r/w) Number of arrays to capture */
-    NDPluginFileNumCaptured,        /* (asynInt32,    r/w) Number of arrays already captured */
-    NDPluginFileCapture,            /* (asynInt32,    r/w) Start or stop capturing arrays */
+    NDPluginFileWriteMode_RBV,          /* (asynInt32,    r/w) File saving mode (NDFileMode_t) */
+    NDPluginFileNumCapture,             /* (asynInt32,    r/w) Number of arrays to capture */
+    NDPluginFileNumCapture_RBV,         /* (asynInt32,    r/w) Number of arrays to capture */
+    NDPluginFileNumCaptured_RBV,        /* (asynInt32,    r/o) Number of arrays already captured */
+    NDPluginFileCapture,                /* (asynInt32,    r/w) Start or stop capturing arrays */
+    NDPluginFileCapture_RBV,            /* (asynInt32,    r/w) Start or stop capturing arrays */
     NDPluginFileLastParam
 } NDPluginFileParam_t;
 
