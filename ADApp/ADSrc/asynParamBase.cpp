@@ -152,6 +152,8 @@ asynStatus asynParamBase::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
     /* Set the parameter in the parameter library. */
     status = (asynStatus) ADParam->setInteger(this->params[addr], function, value);
+    /* Set the readback (N+1) entry in the parameter library too */
+    status = (asynStatus) ADParam->setInteger(this->params[addr], function+1, value);
 
     /* Do callbacks so higher layers see any changes */
     status = (asynStatus) ADParam->callCallbacksAddr(this->params[addr], addr);
@@ -243,6 +245,8 @@ asynStatus asynParamBase::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 
     /* Set the parameter in the parameter library. */
     status = (asynStatus)ADParam->setDouble(this->params[addr], function, value);
+    /* Set the readback (N+1) entry in the parameter library too */
+    status = (asynStatus) ADParam->setDouble(this->params[addr], function+1, value);
 
     /* Do callbacks so higher layers see any changes */
     status = (asynStatus)ADParam->callCallbacksAddr(this->params[addr], addr);
@@ -318,6 +322,8 @@ asynStatus asynParamBase::writeOctet(asynUser *pasynUser, const char *value,
     epicsMutexLock(this->mutexId);
     /* Set the parameter in the parameter library. */
     status = (asynStatus)ADParam->setString(this->params[addr], function, (char *)value);
+    /* Set the readback (N+1) entry in the parameter library too */
+    status = (asynStatus) ADParam->setString(this->params[addr], function+1, (char *)value);
 
     /* Do callbacks so higher layers see any changes */
     status = (asynStatus)ADParam->callCallbacksAddr(this->params[addr], addr);
