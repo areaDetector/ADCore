@@ -4,7 +4,6 @@
 #include <epicsTypes.h>
 #include <asynStandardInterfaces.h>
 
-#include "ADInterface.h"
 #include "NDPluginBase.h"
 
 typedef enum
