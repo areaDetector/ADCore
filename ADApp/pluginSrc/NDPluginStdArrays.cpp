@@ -21,10 +21,7 @@
 #include <epicsMessageQueue.h>
 #include <cantProceed.h>
 
-#include <asynStandardInterfaces.h>
-
 #include "NDArray.h"
-#include "ADParamLib.h"
 #include "NDPluginStdArrays.h"
 #include "drvNDStdArrays.h"
 
@@ -111,13 +108,13 @@ asynStatus NDPluginStdArrays::readArray(asynUser *pasynUser, epicsType *value, s
                                                       outDims);
             break;
         default:
-            asynPrint(pasynUser, ASYN_TRACE_ERROR,
-                      "%s::readArray, unknown command %d\n",
+            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                      "%s::readArray, unknown command %d",
                       driverName, command);
             status = asynError;
     }
     epicsMutexUnlock(this->mutexId);
-    return(asynSuccess);
+    return(status);
 }
 
 
@@ -182,7 +179,7 @@ void NDPluginStdArrays::processCallbacks(NDArray *pArray)
     this->pArrays[addr] = pArray;
     /* Update the parameters.  The counter should be updated after data are posted
      * because clients might use that to detect new data */
-    ADParam->callCallbacksAddr(this->params[addr], addr);
+    callParamCallbacks(addr, addr);
 }
 
 
@@ -199,7 +196,12 @@ asynStatus NDPluginStdArrays::readInt16Array(asynUser *pasynUser, epicsInt16 *va
 
 asynStatus NDPluginStdArrays::readInt32Array(asynUser *pasynUser, epicsInt32 *value, size_t nElements, size_t *nIn)
 {
-    return(readArray<epicsInt32>(pasynUser, value, nElements, nIn, NDInt32));
+    asynStatus status;
+    status = readArray<epicsInt32>(pasynUser, value, nElements, nIn, NDInt32);
+    if (status != asynSuccess) 
+        status = NDPluginBase::readInt32Array(pasynUser, value, nElements, nIn);
+    return(status);
+    
 }
 
 asynStatus NDPluginStdArrays::readFloat32Array(asynUser *pasynUser, epicsFloat32 *value, size_t nElements, size_t *nIn)
@@ -260,7 +262,13 @@ NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int bl
                                      size_t maxMemory)
     /* Invoke the base class constructor */
     : NDPluginBase(portName, queueSize, blockingCallbacks, 
-                   NDArrayPort, NDArrayAddr, 1, NDPluginStdArraysLastParam, 1, maxMemory)
+                   NDArrayPort, NDArrayAddr, 1, NDPluginStdArraysLastParam, 1, maxMemory,
+                   
+                   asynInt8ArrayMask | asynInt16ArrayMask | asynInt32ArrayMask | 
+                   asynFloat32ArrayMask | asynFloat64ArrayMask,
+                   
+                   asynInt8ArrayMask | asynInt16ArrayMask | asynInt32ArrayMask | 
+                   asynFloat32ArrayMask | asynFloat64ArrayMask)
 {
     asynStatus status;
     //char *functionName = "NDPluginStdArrays";
