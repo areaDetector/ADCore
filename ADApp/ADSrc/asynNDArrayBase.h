@@ -6,7 +6,8 @@
 
 class asynNDArrayBase : public asynParamBase {
 public:
-    asynNDArrayBase(const char *portName, int maxAddr, int paramTableSize, int maxBuffers, size_t maxMemory);
+    asynNDArrayBase(const char *portName, int maxAddr, int paramTableSize, int maxBuffers, size_t maxMemory,
+                    int interfaceMask, int interruptMask);
     virtual asynStatus readHandle(asynUser *pasynUser, void *handle);
     virtual asynStatus writeHandle(asynUser *pasynUser, void *handle);
     virtual void report(FILE *fp, int details);

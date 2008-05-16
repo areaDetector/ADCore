@@ -77,13 +77,13 @@ void asynNDArrayBase::report(FILE *fp, int details)
 
 /* Constructor */
 
-asynNDArrayBase::asynNDArrayBase(const char *portName, int maxAddr, int paramTableSize, int maxBuffers, size_t maxMemory)
-    : asynParamBase(portName, maxAddr, paramTableSize), pNDArrayPool(NULL)
-{    
+asynNDArrayBase::asynNDArrayBase(const char *portName, int maxAddr, int paramTableSize, int maxBuffers, size_t maxMemory,
+                                 int interfaceMask, int interruptMask)
+    : asynParamBase(portName, maxAddr, paramTableSize, interfaceMask, interruptMask), pNDArrayPool(NULL)
+{
     if ((maxBuffers > 0) && (maxMemory > 0)) this->pNDArrayPool = new NDArrayPool(maxBuffers, maxMemory);
 
     /* Allocate pArray pointer array */
     this->pArrays = (NDArray **)calloc(maxAddr, sizeof(NDArray *));
-    
 }
 
