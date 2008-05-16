@@ -17,11 +17,7 @@
 #include <epicsString.h>
 #include <epicsMutex.h>
 
-#include <asynStandardInterfaces.h>
-
 #include "NDArray.h"
-#include "ADParamLib.h"
-#include "asynHandle.h"
 #include "NDPluginROI.h"
 #include "drvNDROI.h"
 
@@ -136,7 +132,6 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     double min=0, max=0, mean, total=0, net;
     double counts;
     NDArray *pROIArray;
-    PARAMS ROIParams;
     NDArrayInfo_t arrayInfo;
     NDDimension_t dims[ND_ARRAY_MAX_DIMS], *pDim;
     NDROI_t *pROI;
@@ -148,24 +143,23 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     /* Loop over the ROIs in this driver */
     for (roi=0; roi<this->maxROIs; roi++) {
         pROI       = &this->pROIs[roi];
-        ROIParams  = this->params[roi];
         /* We always keep the last array so read() can use it.  
          * Release previous one. Reserve new one below. */
         if (this->pArrays[roi]) {
             this->pArrays[roi]->release();
             this->pArrays[roi] = NULL;
         }
-        ADParam->getInteger(ROIParams, NDPluginROIUse, &use);
+        getIntegerParam(roi, NDPluginROIUse, &use);
         if (!use) continue;
 
         /* Need to fetch all of these parameters while we still have the mutex */
-        ADParam->getInteger(ROIParams, NDPluginROIComputeStatistics, &computeStatistics);
-        ADParam->getInteger(ROIParams, NDPluginROIComputeHistogram, &computeHistogram);
-        ADParam->getInteger(ROIParams, NDPluginROIComputeProfiles, &computeProfiles);
-        ADParam->getInteger(ROIParams, NDPluginROIDataType, &dataType);
-        ADParam->getDouble (ROIParams, NDPluginROIHistMin, &histMin);
-        ADParam->getDouble (ROIParams, NDPluginROIHistMax, &histMax);
-        ADParam->getInteger(ROIParams, NDPluginROIHistSize, &histSize);
+        getIntegerParam(roi, NDPluginROIComputeStatistics, &computeStatistics);
+        getIntegerParam(roi, NDPluginROIComputeHistogram, &computeHistogram);
+        getIntegerParam(roi, NDPluginROIComputeProfiles, &computeProfiles);
+        getIntegerParam(roi, NDPluginROIDataType, &dataType);
+        getDoubleParam(roi, NDPluginROIHistMin, &histMin);
+        getDoubleParam(roi, NDPluginROIHistMax, &histMax);
+        getIntegerParam(roi, NDPluginROIHistSize, &histSize);
         /* Make sure dimensions are valid, fix them if they are not */
         for (dim=0; dim<pArray->ndims; dim++) {
             pDim = &pROI->dims[dim];
@@ -235,11 +229,11 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
             }
             net = total;
             mean = total / arrayInfo.nElements;
-            ADParam->setDouble(ROIParams, NDPluginROIMinValue_RBV, min);
-            ADParam->setDouble(ROIParams, NDPluginROIMaxValue_RBV, max);
-            ADParam->setDouble(ROIParams, NDPluginROIMeanValue_RBV, mean);
-            ADParam->setDouble(ROIParams, NDPluginROITotal_RBV, total);
-            ADParam->setDouble(ROIParams, NDPluginROINet_RBV, net);
+            setDoubleParam(roi, NDPluginROIMinValue_RBV, min);
+            setDoubleParam(roi, NDPluginROIMaxValue_RBV, max);
+            setDoubleParam(roi, NDPluginROIMeanValue_RBV, mean);
+            setDoubleParam(roi, NDPluginROITotal_RBV, total);
+            setDoubleParam(roi, NDPluginROINet_RBV, net);
             asynPrint(this->pasynUser, ASYN_TRACEIO_DRIVER, 
                 (char *)pROIArray->pData, arrayInfo.totalBytes,
                 "%s:%s ROI=%d, min=%f, max=%f, mean=%f, total=%f, net=%f",
@@ -304,16 +298,16 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
                 entropy += counts * log(counts);
             }
             entropy = -entropy / arrayInfo.nElements;
-            ADParam->setDouble(ROIParams, NDPluginROIHistEntropy_RBV, entropy);
+            setDoubleParam(roi, NDPluginROIHistEntropy_RBV, entropy);
             doCallbacksFloat64Array(pROI->histogram, histSize, NDPluginROIHistArray, roi);
         }
 
         /* We must enter the loop and exit with the mutex locked */
         epicsMutexLock(this->mutexId);
-        ADParam->callCallbacksAddr(ROIParams, roi);
+        callParamCallbacks(roi, roi);
     }
     
-    ADParam->callCallbacksAddr(this->params[0], 0);
+    callParamCallbacks();
 }
 
 
@@ -330,8 +324,8 @@ asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
     epicsMutexLock(this->mutexId);
     pROI = &this->pROIs[roi];
     /* Set parameter and readback in parameter library */
-    status = ADParam->setInteger(this->params[roi], function, value);
-    status = ADParam->setInteger(this->params[roi], function+1, value);
+    status = setIntegerParam(roi , function, value);
+    status = setIntegerParam(roi , function+1, value);
     switch(function) {
         case NDPluginROIDim0Min:
             pROI->dims[0].offset = value;
@@ -365,7 +359,7 @@ asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
             break;
     }
     /* Do callbacks so higher layers see any changes */
-    status = ADParam->callCallbacksAddr(this->params[roi], roi);
+    status = callParamCallbacks(roi, roi);
     
     if (status) 
         epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
@@ -470,7 +464,9 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
                          const char *NDArrayPort, int NDArrayAddr, int maxROIs, size_t maxMemory)
     /* Invoke the base class constructor */
     : NDPluginBase(portName, queueSize, blockingCallbacks, 
-                   NDArrayPort, NDArrayAddr, maxROIs, NDPluginROILastROINParam, maxROIs, maxMemory)
+                   NDArrayPort, NDArrayAddr, maxROIs, NDPluginROILastROINParam, maxROIs, maxMemory,
+                   asynFloat64ArrayMask | asynHandleMask, 
+                   asynFloat64ArrayMask | asynHandleMask)
 {
     asynStatus status;
     int roi;
@@ -481,7 +477,33 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
     this->pROIs = (NDROI_t *)callocMustSucceed(maxROIs, sizeof(*this->pROIs), functionName);
 
     for (roi=0; roi<maxROIs; roi++) {
-        ADParam->setInteger(this->params[roi], NDPluginROIDataType_RBV, 0);
+        setStringParam (roi, NDPluginROIName_RBV, "");
+        setIntegerParam(roi , NDPluginROIUse_RBV, 0);
+        setIntegerParam(roi , NDPluginROIComputeStatistics_RBV, 0);
+        setIntegerParam(roi , NDPluginROIComputeHistogram_RBV, 0);
+        setIntegerParam(roi , NDPluginROIComputeProfiles_RBV, 0);
+        setIntegerParam(roi , NDPluginROIHighlight_RBV, 0);
+        setIntegerParam(roi , NDPluginROIDim0Min_RBV, 0);
+        setIntegerParam(roi , NDPluginROIDim0Size_RBV, 0);
+        setIntegerParam(roi , NDPluginROIDim0Bin_RBV, 0);
+        setIntegerParam(roi , NDPluginROIDim0Reverse_RBV, 0);
+        setIntegerParam(roi , NDPluginROIDim1Min_RBV, 0);
+        setIntegerParam(roi , NDPluginROIDim1Size_RBV, 0);
+        setIntegerParam(roi , NDPluginROIDim1Bin_RBV, 0);
+        setIntegerParam(roi , NDPluginROIDim1Reverse_RBV, 0);
+        setIntegerParam(roi , NDPluginROIDataType_RBV, 0);
+        setDoubleParam (roi , NDPluginROIBgdWidth_RBV, 0.0);
+        setDoubleParam (roi , NDPluginROIMinValue_RBV, 0.0);
+        setDoubleParam (roi , NDPluginROIMaxValue_RBV, 0.0);
+        setDoubleParam (roi , NDPluginROIMeanValue_RBV, 0.0);
+        setDoubleParam (roi , NDPluginROITotal_RBV, 0.0);
+        setDoubleParam (roi , NDPluginROINet_RBV, 0.0);
+        setIntegerParam(roi , NDPluginROIHistSize_RBV, 0);
+        setDoubleParam (roi , NDPluginROIHistMin_RBV, 0.0);
+        setDoubleParam (roi , NDPluginROIHistMax_RBV, 0.0);
+        setDoubleParam (roi , NDPluginROIHistEntropy_RBV, 0.0);
+        setIntegerParam(roi , ADImageSizeX_RBV, 0);
+        setIntegerParam(roi , ADImageSizeY_RBV, 0);
     }
     
     /* Try to connect to the array port */
