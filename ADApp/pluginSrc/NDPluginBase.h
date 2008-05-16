@@ -38,10 +38,11 @@ class NDPluginBase : public asynNDArrayBase {
 public:
     NDPluginBase(const char *portName, int queueSize, int blockingCallbacks, 
                  const char *NDArrayPort, int NDArrayAddr, int maxAddr, int paramTableSize,
-                 int maxBuffers, size_t maxMemory);
+                 int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask);
                  
     /* These are the methods that we override from asynParamBase */
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
+    virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
     virtual asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t maxChars,
                           size_t *nActual);
     virtual asynStatus readInt32Array(asynUser *pasynUser, epicsInt32 *value,
