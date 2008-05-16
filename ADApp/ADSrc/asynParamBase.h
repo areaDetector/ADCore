@@ -4,8 +4,6 @@
 #include <epicsTypes.h>
 #include <asynStandardInterfaces.h>
 
-#include "ADParamLib.h"
-
 typedef struct {
     int param;
     char *paramString;
@@ -13,9 +11,64 @@ typedef struct {
 
 #ifdef __cplusplus
 
+#define asynCommonMask          0x00000001
+#define asynDrvUserMask         0x00000002
+#define asynOptionMask          0x00000004
+#define asynInt32Mask           0x00000008
+#define asyUInt32DigitalMask    0x00000010
+#define asynFloat64Mask         0x00000020
+#define asynOctetMask           0x00000040
+#define asynInt8ArrayMask       0x00000080
+#define asynInt16ArrayMask      0x00000100
+#define asynInt32ArrayMask      0x00000200
+#define asynFloat32ArrayMask    0x00000400
+#define asynFloat64ArrayMask    0x00000800
+#define asynHandleMask          0x00001000
+
+
+typedef enum { paramUndef, paramInt, paramDouble, paramString} paramType;
+
+typedef struct
+{
+    paramType type;
+    union
+    {
+        double dval;
+        int    ival;
+        char  *sval;
+    } data;
+} paramVal;
+
+class paramList {
+public:
+    paramList(int startVal, int nVals, asynStandardInterfaces *pasynInterfaces);
+    ~paramList();
+    asynStatus setInteger(int index, int value);
+    asynStatus setDouble(int index, double value);
+    asynStatus setString(int index, const char *string);
+    asynStatus getInteger(int index, int *value);
+    asynStatus getDouble(int index, double *value);
+    asynStatus getString(int index, int maxChars, char *value);
+    asynStatus callCallbacks(int addr);
+    asynStatus callCallbacks();
+    void report();
+
+private:    
+    asynStatus setFlag(int index);
+    asynStatus intCallback(int command, int addr, int value);
+    asynStatus doubleCallback(int command, int addr, double value);
+    asynStatus stringCallback(int command, int addr, char *value);
+    int startVal;
+    int nVals;
+    int nFlags;
+    asynStandardInterfaces *pasynInterfaces;
+    int *flags;
+    paramVal *vals;
+};
+
 class asynParamBase {
 public:
-    asynParamBase(const char *portName, int maxAddr, int paramTableSize);
+    asynParamBase(const char *portName, int maxAddr, int paramTableSize, int interfaceMask, int interruptMask);
     virtual asynStatus getAddress(asynUser *pasynUser, const char *functionName, int *address); 
     virtual asynStatus findParam(asynParamString_t *paramTable, int numParams, const char *paramName, int *param);
     virtual asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value);
@@ -69,9 +122,25 @@ public:
     virtual asynStatus connect(asynUser *pasynUser);
     virtual asynStatus disconnect(asynUser *pasynUser);
    
+    virtual asynStatus setIntegerParam(int index, int value);
+    virtual asynStatus setIntegerParam(int list, int index, int value);
+    virtual asynStatus setDoubleParam(int index, double value);
+    virtual asynStatus setDoubleParam(int list, int index, double value);
+    virtual asynStatus setStringParam(int index, const char *value);
+    virtual asynStatus setStringParam(int list, int index, const char *value);
+    virtual asynStatus getIntegerParam(int index, int * value);
+    virtual asynStatus getIntegerParam(int list, int index, int * value);
+    virtual asynStatus getDoubleParam(int index, double * value);
+    virtual asynStatus getDoubleParam(int list, int index, double * value);
+    virtual asynStatus getStringParam(int index, int maxChars, char *value);
+    virtual asynStatus getStringParam(int list, int index, int maxChars, char *value);
+    virtual asynStatus callParamCallbacks();
+    virtual asynStatus callParamCallbacks(int list, int addr);
+    virtual void reportParams();
+
     char *portName;
     int maxAddr;
-    PARAMS *params;
+    paramList **params;
     epicsMutexId mutexId;
 
     /* The asyn interfaces this driver implements */

@@ -23,6 +23,355 @@
 
 static char *driverName = "asynParamBase";
 
+paramList::paramList(int startVal, int nVals, asynStandardInterfaces *pasynInterfaces)
+    : startVal(startVal), nVals(nVals), nFlags(0), pasynInterfaces(pasynInterfaces)
+{
+     vals = (paramVal *) calloc(nVals, sizeof(paramVal));
+     flags = (int *) calloc(nVals, sizeof(int));
+}
+
+paramList::~paramList()
+{
+    free(vals);
+    free(flags);
+}
+
+asynStatus paramList::setFlag(int index)
+{
+    asynStatus status = asynError;
+
+    if (index >= 0 && index < this->nVals)
+    {
+        int i;
+        /* See if we have already set the flag for this parameter */
+        for (i=0; i<this->nFlags; i++) if (this->flags[i] == index) break;
+        /* If not found add a flag */
+        if (i == this->nFlags) this->flags[this->nFlags++] = index;
+        status = asynSuccess;
+    }
+    return status;
+}
+
+asynStatus paramList::setInteger(int index, int value)
+{
+    asynStatus status = asynError;
+
+    index -= this->startVal;
+    if (index >= 0 && index < this->nVals)
+    {
+        if ( this->vals[index].type != paramInt ||
+             this->vals[index].data.ival != value )
+        {
+            setFlag(index);
+            this->vals[index].type = paramInt;
+            this->vals[index].data.ival = value;
+        }
+        status = asynSuccess;
+    }
+    return status;
+}
+
+asynStatus paramList::setDouble(int index, double value)
+{
+    asynStatus status = asynError;
+
+    index -= this->startVal;
+    if (index >=0 && index < this->nVals)
+    {
+        if ( this->vals[index].type != paramDouble ||
+             this->vals[index].data.dval != value )
+        {
+            setFlag(index);
+            this->vals[index].type = paramDouble;
+            this->vals[index].data.dval = value;
+        }
+        status = asynSuccess;
+    }
+    return status;
+}
+
+asynStatus paramList::setString(int index, const char *value)
+{
+    asynStatus status = asynError;
+
+    index -= this->startVal;
+    if (index >=0 && index < this->nVals)
+    {
+        if ( this->vals[index].type != paramString ||
+             strcmp(this->vals[index].data.sval, value))
+        {
+            setFlag(index);
+            this->vals[index].type = paramString;
+            free(this->vals[index].data.sval);
+            this->vals[index].data.sval = epicsStrDup(value);
+        }
+        status = asynSuccess;
+    }
+    return status;
+}
+
+asynStatus paramList::getInteger(int index, int *value)
+{
+    asynStatus status = asynError;
+
+    index -= this->startVal;
+    *value = 0;
+    if (index >= 0 && index < this->nVals)
+    {
+        if (this->vals[index].type == paramInt) {
+            *value = this->vals[index].data.ival;
+            status = asynSuccess;
+        }
+    }
+    return status;
+}
+
+asynStatus paramList::getDouble(int index, double *value)
+{
+    asynStatus status = asynError;
+
+    index -= this->startVal;
+    *value = 0.;
+    if (index >= 0 && index < this->nVals)
+    {
+        if (this->vals[index].type == paramDouble) {
+            *value = this->vals[index].data.dval;
+            status = asynSuccess;
+        }
+    }
+    return status;
+}
+
+asynStatus paramList::getString(int index, int maxChars, char *value)
+{
+    asynStatus status = asynError;
+
+    index -= this->startVal;
+    value[0]=0;
+    if (index >= 0 && index < this->nVals)
+    {
+        if (this->vals[index].type == paramString) {
+            strncpy(value, this->vals[index].data.sval, maxChars);
+            status = asynSuccess;
+        }
+    }
+    return status;
+}
+
+asynStatus paramList::intCallback(int command, int addr, int value)
+{
+    ELLLIST *pclientList;
+    interruptNode *pnode;
+    asynStandardInterfaces *pInterfaces = this->pasynInterfaces;
+    int address;
+
+    /* Pass int32 interrupts */
+    if (!pInterfaces->int32InterruptPvt) return(asynError);
+    pasynManager->interruptStart(pInterfaces->int32InterruptPvt, &pclientList);
+    pnode = (interruptNode *)ellFirst(pclientList);
+    while (pnode) {
+        asynInt32Interrupt *pInterrupt = (asynInt32Interrupt *) pnode->drvPvt;
+        pasynManager->getAddr(pInterrupt->pasynUser, &address);
+        if ((command == pInterrupt->pasynUser->reason) &&
+            (address == addr)) {
+            pInterrupt->callback(pInterrupt->userPvt, 
+                                 pInterrupt->pasynUser,
+                                 value);
+        }
+        pnode = (interruptNode *)ellNext(&pnode->node);
+    }
+    pasynManager->interruptEnd(pInterfaces->int32InterruptPvt);
+    return(asynSuccess);
+}
+
+asynStatus paramList::doubleCallback(int command, int addr, double value)
+{
+    ELLLIST *pclientList;
+    interruptNode *pnode;
+    asynStandardInterfaces *pInterfaces = this->pasynInterfaces;
+    int address;
+
+    /* Pass float64 interrupts */
+    if (!pInterfaces->float64InterruptPvt) return(asynError);
+    pasynManager->interruptStart(pInterfaces->float64InterruptPvt, &pclientList);
+    pnode = (interruptNode *)ellFirst(pclientList);
+    while (pnode) {
+        asynFloat64Interrupt *pInterrupt = (asynFloat64Interrupt *) pnode->drvPvt;
+        pasynManager->getAddr(pInterrupt->pasynUser, &address);
+        if ((command == pInterrupt->pasynUser->reason) &&
+            (address == addr)) {
+            pInterrupt->callback(pInterrupt->userPvt, 
+                                 pInterrupt->pasynUser,
+                                 value);
+        }
+        pnode = (interruptNode *)ellNext(&pnode->node);
+    }
+    pasynManager->interruptEnd(pInterfaces->float64InterruptPvt);
+    return(asynSuccess);
+}
+
+asynStatus paramList::stringCallback(int command, int addr, char *value)
+{
+    ELLLIST *pclientList;
+    interruptNode *pnode;
+    asynStandardInterfaces *pInterfaces = this->pasynInterfaces;
+    int address;
+
+    /* Pass octet interrupts */
+    if (!pInterfaces->octetInterruptPvt) return(asynError);
+    pasynManager->interruptStart(pInterfaces->octetInterruptPvt, &pclientList);
+    pnode = (interruptNode *)ellFirst(pclientList);
+    while (pnode) {
+        asynOctetInterrupt *pInterrupt = (asynOctetInterrupt *) pnode->drvPvt;
+        pasynManager->getAddr(pInterrupt->pasynUser, &address);
+        if ((command == pInterrupt->pasynUser->reason) &&
+            (address == addr)) {
+            pInterrupt->callback(pInterrupt->userPvt, 
+                                 pInterrupt->pasynUser,
+                                 value, strlen(value), ASYN_EOM_END);
+        }
+        pnode = (interruptNode *)ellNext(&pnode->node);
+    }
+    pasynManager->interruptEnd(pInterfaces->octetInterruptPvt);
+    return(asynSuccess);
+}
+
+asynStatus paramList::callCallbacks(int addr)
+{
+    int i, index;
+    int command;
+    asynStatus status = asynSuccess;
+
+    for (i = 0; i < this->nFlags; i++)
+    {
+        index = this->flags[i];
+        command = index + this->startVal;
+        switch(this->vals[index].type) {
+            case paramUndef:
+                break;
+            case paramInt:
+                status = intCallback(command, addr, this->vals[index].data.ival);
+                break;
+            case paramDouble:
+                status = doubleCallback(command, addr, this->vals[index].data.dval);
+                break;
+            case paramString:
+                status = stringCallback(command, addr, this->vals[index].data.sval);
+                break;
+        }
+    }
+    this->nFlags=0;
+    return(status);
+}
+
+asynStatus paramList::callCallbacks()
+{
+    return(callCallbacks(0));
+}
+
+void paramList::report()
+{
+    int i;
+
+    printf( "Number of parameters is: %d\n", this->nVals );
+    for (i=0; i<this->nVals; i++)
+    {
+        switch (this->vals[i].type)
+        {
+            case paramDouble:
+                printf( "Parameter %d is a double, value %f\n", i+this->startVal, this->vals[i].data.dval );
+                break;
+            case paramInt:
+                printf( "Parameter %d is an integer, value %d\n", i+this->startVal, this->vals[i].data.ival );
+                break;
+            case paramString:
+                printf( "Parameter %d is a string, value %s\n", i+this->startVal, this->vals[i].data.sval );
+                break;
+            default:
+                printf( "Parameter %d is undefined\n", i+this->startVal );
+                break;
+        }
+    }
+}
+
+asynStatus asynParamBase::setIntegerParam(int index, int value)
+{
+    return this->params[0]->setInteger(index, value);
+}
+
+asynStatus asynParamBase::setIntegerParam(int list, int index, int value)
+{
+    return this->params[list]->setInteger(index, value);
+}
+
+asynStatus asynParamBase::setDoubleParam(int index, double value)
+{
+    return this->params[0]->setDouble(index, value);
+}
+
+asynStatus asynParamBase::setDoubleParam(int list, int index, double value)
+{
+    return this->params[list]->setDouble(index, value);
+}
+
+asynStatus asynParamBase::setStringParam(int index, const char *value)
+{
+    return this->params[0]->setString(index, value);
+}
+
+asynStatus asynParamBase::setStringParam(int list, int index, const char *value)
+{
+    return this->params[list]->setString(index, value);
+}
+
+
+asynStatus asynParamBase::getIntegerParam(int index, int *value)
+{
+    return this->params[0]->getInteger(index, value);
+}
+
+asynStatus asynParamBase::getIntegerParam(int list, int index, int *value)
+{
+    return this->params[list]->getInteger(index, value);
+}
+
+asynStatus asynParamBase::getDoubleParam(int index, double *value)
+{
+    return this->params[0]->getDouble(index, value);
+}
+
+asynStatus asynParamBase::getDoubleParam(int list, int index, double *value)
+{
+    return this->params[list]->getDouble(index, value);
+}
+
+asynStatus asynParamBase::getStringParam(int index, int maxChars, char *value)
+{
+    return this->params[0]->getString(index, maxChars, value);
+}
+
+asynStatus asynParamBase::getStringParam(int list, int index, int maxChars, char *value)
+{
+    return this->params[list]->getString(index, maxChars, value);
+}
+
+asynStatus asynParamBase::callParamCallbacks()
+{
+    return this->params[0]->callCallbacks();
+}
+
+asynStatus asynParamBase::callParamCallbacks(int list, int addr)
+{
+    return this->params[list]->callCallbacks(addr);
+}
+
+void asynParamBase::reportParams()
+{
+    int i;
+    for (i=0; i<this->maxAddr; i++) this->params[i]->report();
+}
+
+
 template <typename epicsType> 
 asynStatus readArray(asynUser *pasynUser, epicsType *value, size_t nElements, size_t *nIn)
 {
@@ -119,7 +468,7 @@ asynStatus asynParamBase::readInt32(asynUser *pasynUser, epicsInt32 *value)
     
     /* We just read the current value of the parameter from the parameter library.
      * Those values are updated whenever anything could cause them to change */
-    status = (asynStatus) ADParam->getInteger(this->params[addr], function, value);
+    status = (asynStatus) getIntegerParam(addr, function, value);
     if (status) 
         epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
                   "%s:%s: status=%d, function=%d, value=%d", 
@@ -142,32 +491,9 @@ static asynStatus writeInt32(void *drvPvt, asynUser *pasynUser,
 
 asynStatus asynParamBase::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
-    int function = pasynUser->reason;
-    int addr=0;
-    asynStatus status = asynSuccess;
-    const char* functionName = "writeInt32";
-
-    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
-    epicsMutexLock(this->mutexId);
-
-    /* Set the parameter in the parameter library. */
-    status = (asynStatus) ADParam->setInteger(this->params[addr], function, value);
-    /* Set the readback (N+1) entry in the parameter library too */
-    status = (asynStatus) ADParam->setInteger(this->params[addr], function+1, value);
-
-    /* Do callbacks so higher layers see any changes */
-    status = (asynStatus) ADParam->callCallbacksAddr(this->params[addr], addr);
-    
-    if (status) 
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                  "%s:%s: status=%d, function=%d, value=%d", 
-                  driverName, functionName, status, function, value);
-    else        
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, value=%d\n", 
-              driverName, functionName, function, value);
-    epicsMutexUnlock(this->mutexId);
-    return status;
+    epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
+                "%s:writeInt32 not implemented", driverName);
+    return(asynError);
 }
 
 static asynStatus getBounds(void *drvPvt, asynUser *pasynUser,
@@ -212,7 +538,7 @@ asynStatus asynParamBase::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
     epicsMutexLock(this->mutexId);
     /* We just read the current value of the parameter from the parameter library.
      * Those values are updated whenever anything could cause them to change */
-    status = (asynStatus) ADParam->getDouble(this->params[addr], function, value);
+    status = (asynStatus) getDoubleParam(addr, function, value);
     if (status) 
         epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
                   "%s:%s: status=%d, function=%d, value=%f", 
@@ -235,32 +561,9 @@ static asynStatus writeFloat64(void *drvPvt, asynUser *pasynUser,
 
 asynStatus asynParamBase::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 {
-    int function = pasynUser->reason;
-    int addr=0;
-    asynStatus status = asynSuccess;
-    const char* functionName = "writeFloat64";
-
-    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
-    epicsMutexLock(this->mutexId);
-
-    /* Set the parameter in the parameter library. */
-    status = (asynStatus)ADParam->setDouble(this->params[addr], function, value);
-    /* Set the readback (N+1) entry in the parameter library too */
-    status = (asynStatus) ADParam->setDouble(this->params[addr], function+1, value);
-
-    /* Do callbacks so higher layers see any changes */
-    status = (asynStatus)ADParam->callCallbacksAddr(this->params[addr], addr);
-    
-    if (status) 
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                  "%s:%s: status=%d, function=%d, value=%f", 
-                  driverName, functionName, status, function, value);
-    else        
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, value=%f\n", 
-              driverName, functionName, function, value);
-    epicsMutexUnlock(this->mutexId);
-    return status;
+    epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
+                "%s:writeFloat64 not implemented", driverName);
+    return(asynError);
 }
 
 
@@ -287,7 +590,7 @@ asynStatus asynParamBase::readOctet(asynUser *pasynUser,
     epicsMutexLock(this->mutexId);
     /* We just read the current value of the parameter from the parameter library.
      * Those values are updated whenever anything could cause them to change */
-    status = (asynStatus)ADParam->getString(this->params[addr], function, maxChars, value);
+    status = (asynStatus)getStringParam(addr, function, maxChars, value);
     if (status) 
         epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
                   "%s:%s: status=%d, function=%d, value=%s", 
@@ -313,32 +616,9 @@ static asynStatus writeOctet(void *drvPvt, asynUser *pasynUser,
 asynStatus asynParamBase::writeOctet(asynUser *pasynUser, const char *value, 
                                     size_t nChars, size_t *nActual)
 {
-    int function = pasynUser->reason;
-    int addr=0;
-    asynStatus status = asynSuccess;
-    const char *functionName = "writeOctet";
-
-    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
-    epicsMutexLock(this->mutexId);
-    /* Set the parameter in the parameter library. */
-    status = (asynStatus)ADParam->setString(this->params[addr], function, (char *)value);
-    /* Set the readback (N+1) entry in the parameter library too */
-    status = (asynStatus) ADParam->setString(this->params[addr], function+1, (char *)value);
-
-    /* Do callbacks so higher layers see any changes */
-    status = (asynStatus)ADParam->callCallbacksAddr(this->params[addr], addr);
-
-    if (status) 
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                  "%s:%s: status=%d, function=%d, value=%s", 
-                  driverName, functionName, status, function, value);
-    else        
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:writeOctet: function=%d, value=%s\n", 
-              driverName, functionName, function, value);
-    *nActual = nChars;
-    epicsMutexUnlock(this->mutexId);
-    return status;
+    epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
+                "%s:writeOctet not implemented", driverName);
+    return(asynError);
 }
 
 
@@ -689,7 +969,7 @@ void asynParamBase::report(FILE *fp, int details)
     }
     if (details > 5) {
         for (addr=0; addr<this->maxAddr; addr++) {
-            ADParam->dump(this->params[addr]);
+            this->params[addr]->report();
         }
     }
 }
@@ -795,7 +1075,7 @@ static asynDrvUser ifaceDrvUser = {
 
 /* Constructor */
 
-asynParamBase::asynParamBase(const char *portName, int maxAddr, int paramTableSize)
+asynParamBase::asynParamBase(const char *portName, int maxAddr, int paramTableSize, int interfaceMask, int interruptMask)
     : maxAddr(maxAddr)
 {
     asynStatus status;
@@ -821,29 +1101,30 @@ asynParamBase::asynParamBase(const char *portName, int maxAddr, int paramTableSi
     /* Create asynUser for debugging and for standardInterfacesBase */
     this->pasynUser = pasynManager->createAsynUser(0, 0);
 
+    interfaceMask |= asynCommonMask;  /* Always need the asynCommon interface */
      /* Set addresses of asyn interfaces */
-    pInterfaces->common.pinterface        = (void *)&ifaceCommon;
-    pInterfaces->drvUser.pinterface       = (void *)&ifaceDrvUser;
-    pInterfaces->int32.pinterface         = (void *)&ifaceInt32;
-    pInterfaces->float64.pinterface       = (void *)&ifaceFloat64;
-    pInterfaces->octet.pinterface         = (void *)&ifaceOctet;
-    pInterfaces->int8Array.pinterface     = (void *)&ifaceInt8Array;
-    pInterfaces->int16Array.pinterface    = (void *)&ifaceInt16Array;
-    pInterfaces->int32Array.pinterface    = (void *)&ifaceInt32Array;
-    pInterfaces->float32Array.pinterface  = (void *)&ifaceFloat32Array;
-    pInterfaces->float64Array.pinterface  = (void *)&ifaceFloat64Array;
-    pInterfaces->handle.pinterface        = (void *)&ifaceHandle;
+    if (interfaceMask & asynCommonMask)       pInterfaces->common.pinterface        = (void *)&ifaceCommon;
+    if (interfaceMask & asynDrvUserMask)      pInterfaces->drvUser.pinterface       = (void *)&ifaceDrvUser;
+    if (interfaceMask & asynInt32Mask)        pInterfaces->int32.pinterface         = (void *)&ifaceInt32;
+    if (interfaceMask & asynFloat64Mask)      pInterfaces->float64.pinterface       = (void *)&ifaceFloat64;
+    if (interfaceMask & asynOctetMask)        pInterfaces->octet.pinterface         = (void *)&ifaceOctet;
+    if (interfaceMask & asynInt8ArrayMask)    pInterfaces->int8Array.pinterface     = (void *)&ifaceInt8Array;
+    if (interfaceMask & asynInt16ArrayMask)   pInterfaces->int16Array.pinterface    = (void *)&ifaceInt16Array;
+    if (interfaceMask & asynInt32ArrayMask)   pInterfaces->int32Array.pinterface    = (void *)&ifaceInt32Array;
+    if (interfaceMask & asynFloat32ArrayMask) pInterfaces->float32Array.pinterface  = (void *)&ifaceFloat32Array;
+    if (interfaceMask & asynFloat64ArrayMask) pInterfaces->float64Array.pinterface  = (void *)&ifaceFloat64Array;
+    if (interfaceMask & asynHandleMask)       pInterfaces->handle.pinterface        = (void *)&ifaceHandle;
 
     /* Define which interfaces can generate interrupts */
-    pInterfaces->int32CanInterrupt        = 1;
-    pInterfaces->float64CanInterrupt      = 1;
-    pInterfaces->octetCanInterrupt        = 1;
-    pInterfaces->int8ArrayCanInterrupt    = 1;
-    pInterfaces->int16ArrayCanInterrupt   = 1;
-    pInterfaces->int32ArrayCanInterrupt   = 1;
-    pInterfaces->float32ArrayCanInterrupt = 1;
-    pInterfaces->float64ArrayCanInterrupt = 1;
-    pInterfaces->handleCanInterrupt       = 1;
+    if (interruptMask & asynInt32Mask)        pInterfaces->int32CanInterrupt        = 1;
+    if (interruptMask & asynFloat64Mask)      pInterfaces->float64CanInterrupt      = 1;
+    if (interruptMask & asynOctetMask)        pInterfaces->octetCanInterrupt        = 1;
+    if (interruptMask & asynInt8ArrayMask)    pInterfaces->int8ArrayCanInterrupt    = 1;
+    if (interruptMask & asynInt16ArrayMask)   pInterfaces->int16ArrayCanInterrupt   = 1;
+    if (interruptMask & asynInt32ArrayMask)   pInterfaces->int32ArrayCanInterrupt   = 1;
+    if (interruptMask & asynFloat32ArrayMask) pInterfaces->float32ArrayCanInterrupt = 1;
+    if (interruptMask & asynFloat64ArrayMask) pInterfaces->float64ArrayCanInterrupt = 1;
+    if (interruptMask & asynHandleMask)       pInterfaces->handleCanInterrupt       = 1;
 
     status = pasynStandardInterfacesBase->initialize(portName, pInterfaces,
                                                      this->pasynUser, this);
@@ -866,18 +1147,12 @@ asynParamBase::asynParamBase(const char *portName, int maxAddr, int paramTableSi
         printf("%s::%s epicsMutexCreate failure\n", driverName, functionName);
         return;
     }
-    
-    /* Allocate params pointer array */
-    this->params = (PARAMS *)calloc(maxAddr, sizeof(PARAMS));
 
+    /* Allocate space for the parameter objects */
+    this->params = (paramList **) calloc(maxAddr, sizeof(paramList *));    
     /* Initialize the parameter library */
     for (addr=0; addr<maxAddr; addr++) {
-        this->params[addr] = ADParam->create(0, paramTableSize, &this->asynStdInterfaces);
-        if (!this->params[addr]) {
-            printf("%s:%s: unable to create parameter library addr=%d\n", 
-                driverName, functionName, addr);
-            return;
-        }
+        this->params[addr] = new paramList(0, paramTableSize, &this->asynStdInterfaces);
     }
 }
 
