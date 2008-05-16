@@ -17,7 +17,6 @@
 /* Defining this will create the static table of standard parameters in ADInterface.h */
 #define DEFINE_AD_STANDARD_PARAMS 1
 #include "ADStdDriverParams.h"
-#include "ADParamLib.h"
 #include "ADDriverBase.h"
 
 
@@ -35,11 +34,11 @@ int ADDriverBase::createFileName(int maxChars, char *fullFileName)
     int len;
     int addr=0;
     
-    status |= ADParam->getString(this->params[addr], ADFilePath, sizeof(filePath), filePath); 
-    status |= ADParam->getString(this->params[addr], ADFileName, sizeof(fileName), fileName); 
-    status |= ADParam->getString(this->params[addr], ADFileTemplate, sizeof(fileTemplate), fileTemplate); 
-    status |= ADParam->getInteger(this->params[addr], ADFileNumber, &fileNumber);
-    status |= ADParam->getInteger(this->params[addr], ADAutoIncrement, &autoIncrement);
+    status |= getStringParam(addr, ADFilePath, sizeof(filePath), filePath); 
+    status |= getStringParam(addr, ADFileName, sizeof(fileName), fileName); 
+    status |= getStringParam(addr, ADFileTemplate, sizeof(fileTemplate), fileTemplate); 
+    status |= getIntegerParam(addr, ADFileNumber, &fileNumber);
+    status |= getIntegerParam(addr, ADAutoIncrement, &autoIncrement);
     if (status) return(status);
     len = epicsSnprintf(fullFileName, maxChars, fileTemplate, 
                         filePath, fileName, fileNumber);
@@ -49,11 +48,103 @@ int ADDriverBase::createFileName(int maxChars, char *fullFileName)
     }
     if (autoIncrement) {
         fileNumber++;
-        status |= ADParam->setInteger(this->params[addr], ADFileNumber, fileNumber);
-        status |= ADParam->setInteger(this->params[addr], ADFileNumber_RBV, fileNumber);
+        status |= setIntegerParam(addr, ADFileNumber, fileNumber);
+        status |= setIntegerParam(addr, ADFileNumber_RBV, fileNumber);
     }
     return(status);   
 }
+asynStatus ADDriverBase::writeInt32(asynUser *pasynUser, epicsInt32 value)
+{
+    int function = pasynUser->reason;
+    int addr=0;
+    asynStatus status = asynSuccess;
+    const char* functionName = "writeInt32";
+
+    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
+    epicsMutexLock(this->mutexId);
+
+    /* Set the parameter in the parameter library. */
+    status = (asynStatus) setIntegerParam(addr, function, value);
+    /* Set the readback (N+1) entry in the parameter library too */
+    status = (asynStatus) setIntegerParam(addr, function+1, value);
+
+    /* Do callbacks so higher layers see any changes */
+    status = (asynStatus) callParamCallbacks(addr, addr);
+    
+    if (status) 
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
+                  "%s:%s: status=%d, function=%d, value=%d", 
+                  driverName, functionName, status, function, value);
+    else        
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
+              "%s:%s: function=%d, value=%d\n", 
+              driverName, functionName, function, value);
+    epicsMutexUnlock(this->mutexId);
+    return status;
+}
+
+asynStatus ADDriverBase::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
+{
+    int function = pasynUser->reason;
+    asynStatus status = asynSuccess;
+    int addr=0;
+    const char *functionName = "writeFloat64";
+
+    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
+    epicsMutexLock(this->mutexId);
+
+    /* Set the parameter and readback in the parameter library.  This may be overwritten when we read back the
+     * status at the end, but that's OK */
+    status = setDoubleParam(addr, function, value);
+    status = setDoubleParam(addr, function+1, value);
+
+    /* Do callbacks so higher layers see any changes */
+    callParamCallbacks(addr, addr);
+    if (status) 
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, 
+              "%s:%s: error, status=%d function=%d, value=%f\n", 
+              driverName, functionName, status, function, value);
+    else        
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
+              "%s:%s: function=%d, value=%f\n", 
+              driverName, functionName, function, value);
+    epicsMutexUnlock(this->mutexId);
+    return status;
+}
+
+
+asynStatus ADDriverBase::writeOctet(asynUser *pasynUser, const char *value, 
+                                    size_t nChars, size_t *nActual)
+{
+    int addr=0;
+    int function = pasynUser->reason;
+    asynStatus status = asynSuccess;
+    const char *functionName = "writeOctet";
+
+    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
+    epicsMutexLock(this->mutexId);
+    /* Set the parameter in the parameter library. */
+    status = (asynStatus)setStringParam(addr, function, (char *)value);
+    /* Set the readback (N+1) entry in the parameter library too */
+    status = (asynStatus) setStringParam(addr, function+1, (char *)value);
+
+     /* Do callbacks so higher layers see any changes */
+    status = (asynStatus)callParamCallbacks(addr, addr);
+
+    if (status) 
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
+                  "%s:%s: status=%d, function=%d, value=%s", 
+                  driverName, functionName, status, function, value);
+    else        
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
+              "%s:writeOctet: function=%d, value=%s\n", 
+              driverName, functionName, function, value);
+    *nActual = nChars;
+    epicsMutexUnlock(this->mutexId);
+    return status;
+}
+
+
 
 /* asynDrvUser routines */
 asynStatus ADDriverBase::drvUserCreate(asynUser *pasynUser,
@@ -89,50 +180,52 @@ asynStatus ADDriverBase::drvUserCreate(asynUser *pasynUser,
 }
     
 
-ADDriverBase::ADDriverBase(const char *portName, int maxAddr, int paramTableSize, int maxBuffers, size_t maxMemory)
+ADDriverBase::ADDriverBase(const char *portName, int maxAddr, int paramTableSize, int maxBuffers, size_t maxMemory,
+                           int interfaceMask, int interruptMask)
 
-    : asynNDArrayBase(portName, maxAddr, paramTableSize, maxBuffers, maxMemory)
+    : asynNDArrayBase(portName, maxAddr, paramTableSize, maxBuffers, maxMemory,
+          interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynHandleMask | asynDrvUserMask,
+          interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynHandleMask)
 
 {
     //char *functionName = "ADDriverBase";
-    paramList *params = this->params[0];
 
     /* Set some default values for parameters */
-    ADParam->setString (params, ADManufacturer_RBV, "Unknown");
-    ADParam->setString (params, ADModel_RBV,        "Unknown");
-    ADParam->setDouble( params, ADGain_RBV,         1.0);
-    ADParam->setInteger(params, ADBinX_RBV,         1);
-    ADParam->setInteger(params, ADBinY_RBV,         1);
-    ADParam->setInteger(params, ADMinX_RBV,         0);
-    ADParam->setInteger(params, ADMinY_RBV,         0);
-    ADParam->setInteger(params, ADSizeX_RBV,        0);
-    ADParam->setInteger(params, ADSizeY_RBV,        0);
-    ADParam->setInteger(params, ADMaxSizeX_RBV,     0);
-    ADParam->setInteger(params, ADMaxSizeY_RBV,     0);
-    ADParam->setInteger(params, ADReverseX_RBV,     0);
-    ADParam->setInteger(params, ADReverseY_RBV,     0);
-    ADParam->setInteger(params, ADImageSizeX_RBV,   0);
-    ADParam->setInteger(params, ADImageSizeY_RBV,   0);
-    ADParam->setInteger(params, ADImageSize_RBV,    0);
-    ADParam->setInteger(params, ADDataType_RBV,     0);
-    ADParam->setInteger(params, ADImageMode_RBV,    ADImageSingle);
-    ADParam->setInteger(params, ADTriggerMode_RBV,  ADTriggerInternal);
-    ADParam->setInteger(params, ADNumExposures_RBV, 1);
-    ADParam->setInteger(params, ADNumImages_RBV,    1);
-    ADParam->setDouble (params, ADAcquireTime_RBV,  1.0);
-    ADParam->setDouble (params, ADAcquirePeriod_RBV,1.0);
-    ADParam->setInteger(params, ADStatus_RBV,       ADStatusIdle);
-    ADParam->setInteger(params, ADShutter_RBV,      0);
-    ADParam->setInteger(params, ADAcquire_RBV,      0);
-    ADParam->setInteger(params, ADImageCounter_RBV, 0);
-    ADParam->setString (params, ADFilePath_RBV,     ".");
-    ADParam->setString (params, ADFileName_RBV,     "test");
-    ADParam->setInteger(params, ADFileNumber_RBV,   1);
-    ADParam->setString (params, ADFileTemplate_RBV, "%s%s_%d.dat");
-    ADParam->setString (params, ADFullFileName_RBV, "");
-    ADParam->setInteger(params, ADAutoIncrement_RBV,1);
-    ADParam->setInteger(params, ADFileFormat_RBV,   0);
-    ADParam->setInteger(params, ADAutoSave_RBV,     0);
-    ADParam->setInteger(params, ADWriteFile_RBV,    0);
-    ADParam->setInteger(params, ADReadFile_RBV,     0);
+    setStringParam (ADManufacturer_RBV, "Unknown");
+    setStringParam (ADModel_RBV,        "Unknown");
+    setDoubleParam (ADGain_RBV,         1.0);
+    setIntegerParam(ADBinX_RBV,         1);
+    setIntegerParam(ADBinY_RBV,         1);
+    setIntegerParam(ADMinX_RBV,         0);
+    setIntegerParam(ADMinY_RBV,         0);
+    setIntegerParam(ADSizeX_RBV,        0);
+    setIntegerParam(ADSizeY_RBV,        0);
+    setIntegerParam(ADMaxSizeX_RBV,     0);
+    setIntegerParam(ADMaxSizeY_RBV,     0);
+    setIntegerParam(ADReverseX_RBV,     0);
+    setIntegerParam(ADReverseY_RBV,     0);
+    setIntegerParam(ADImageSizeX_RBV,   0);
+    setIntegerParam(ADImageSizeY_RBV,   0);
+    setIntegerParam(ADImageSize_RBV,    0);
+    setIntegerParam(ADDataType_RBV,     0);
+    setIntegerParam(ADImageMode_RBV,    ADImageSingle);
+    setIntegerParam(ADTriggerMode_RBV,  ADTriggerInternal);
+    setIntegerParam(ADNumExposures_RBV, 1);
+    setIntegerParam(ADNumImages_RBV,    1);
+    setDoubleParam (ADAcquireTime_RBV,  1.0);
+    setDoubleParam (ADAcquirePeriod_RBV,1.0);
+    setIntegerParam(ADStatus_RBV,       ADStatusIdle);
+    setIntegerParam(ADShutter_RBV,      0);
+    setIntegerParam(ADAcquire_RBV,      0);
+    setIntegerParam(ADImageCounter_RBV, 0);
+    setStringParam (ADFilePath_RBV,     ".");
+    setStringParam (ADFileName_RBV,     "test");
+    setIntegerParam(ADFileNumber_RBV,   1);
+    setStringParam (ADFileTemplate_RBV, "%s%s_%d.dat");
+    setStringParam (ADFullFileName_RBV, "");
+    setIntegerParam(ADAutoIncrement_RBV,1);
+    setIntegerParam(ADFileFormat_RBV,   0);
+    setIntegerParam(ADAutoSave_RBV,     0);
+    setIntegerParam(ADWriteFile_RBV,    0);
+    setIntegerParam(ADReadFile_RBV,     0);
 }
