@@ -21,8 +21,6 @@
 #include <epicsMessageQueue.h>
 #include <cantProceed.h>
 
-#include <asynStandardInterfaces.h>
-
 #define DEFINE_AD_STANDARD_PARAMS 1
 #include "ADStdDriverParams.h"
 
@@ -67,13 +65,12 @@ int NDPluginBase::createFileName(int maxChars, char *fullFileName)
     int fileNumber;
     int autoIncrement;
     int len;
-    int addr=0;
     
-    status |= ADParam->getString(this->params[addr], ADFilePath, sizeof(filePath), filePath); 
-    status |= ADParam->getString(this->params[addr], ADFileName, sizeof(fileName), fileName); 
-    status |= ADParam->getString(this->params[addr], ADFileTemplate, sizeof(fileTemplate), fileTemplate); 
-    status |= ADParam->getInteger(this->params[addr], ADFileNumber, &fileNumber);
-    status |= ADParam->getInteger(this->params[addr], ADAutoIncrement, &autoIncrement);
+    status |= getStringParam(ADFilePath, sizeof(filePath), filePath); 
+    status |= getStringParam(ADFileName, sizeof(fileName), fileName); 
+    status |= getStringParam(ADFileTemplate, sizeof(fileTemplate), fileTemplate); 
+    status |= getIntegerParam(ADFileNumber, &fileNumber);
+    status |= getIntegerParam(ADAutoIncrement, &autoIncrement);
     if (status) return(status);
     len = epicsSnprintf(fullFileName, maxChars, fileTemplate, 
                         filePath, fileName, fileNumber);
@@ -83,27 +80,26 @@ int NDPluginBase::createFileName(int maxChars, char *fullFileName)
     }
     if (autoIncrement) {
         fileNumber++;
-        status |= ADParam->setInteger(this->params[addr], ADFileNumber, fileNumber);
-        status |= ADParam->setInteger(this->params[addr], ADFileNumber_RBV, fileNumber);
+        status |= setIntegerParam(ADFileNumber, fileNumber);
+        status |= setIntegerParam(ADFileNumber_RBV, fileNumber);
     }
     return(status);   
 }
 
 void NDPluginBase::processCallbacks(NDArray *pArray)
 {
-    int addr = 0;
     int arrayCounter;
     int i, dimsChanged;
     
-    ADParam->getInteger(this->params[addr], NDPluginBaseArrayCounter, &arrayCounter);
+    getIntegerParam(NDPluginBaseArrayCounter, &arrayCounter);
     arrayCounter++;
-    ADParam->setInteger(this->params[addr], NDPluginBaseArrayCounter, arrayCounter);
-    ADParam->setInteger(this->params[addr], NDPluginBaseArrayCounter_RBV, arrayCounter);
-    ADParam->setInteger(this->params[addr], NDPluginBaseNDimensions_RBV, pArray->ndims);
-    ADParam->setInteger(this->params[addr], NDPluginBaseNDimensions_RBV, pArray->ndims);
-    ADParam->setInteger(this->params[addr], NDPluginBaseDataType_RBV, pArray->dataType);
-    ADParam->setInteger(this->params[addr], NDPluginBaseUniqueId_RBV, pArray->uniqueId);
-    ADParam->setDouble (this->params[addr], NDPluginBaseTimeStamp_RBV, pArray->timeStamp);
+    setIntegerParam(NDPluginBaseArrayCounter, arrayCounter);
+    setIntegerParam(NDPluginBaseArrayCounter_RBV, arrayCounter);
+    setIntegerParam(NDPluginBaseNDimensions_RBV, pArray->ndims);
+    setIntegerParam(NDPluginBaseNDimensions_RBV, pArray->ndims);
+    setIntegerParam(NDPluginBaseDataType_RBV, pArray->dataType);
+    setIntegerParam(NDPluginBaseUniqueId_RBV, pArray->uniqueId);
+    setDoubleParam(NDPluginBaseTimeStamp_RBV, pArray->timeStamp);
     /* See if the array dimensions have changed.  If so then do callbacks on them. */
     for (i=0, dimsChanged=0; i<pArray->ndims; i++) {
         if (pArray->dims[i].size != this->dimsPrev[i]) {
@@ -141,10 +137,10 @@ void NDPluginBase::driverCallback(asynUser *pasynUser, void *handle)
 
     epicsMutexLock(mutexId);
 
-    status |= ADParam->getDouble(this->params[0], NDPluginBaseMinCallbackTime, &minCallbackTime);
-    status |= ADParam->getInteger(this->params[0], NDPluginBaseArrayCounter, &arrayCounter);
-    status |= ADParam->getInteger(this->params[0], NDPluginBaseDroppedArrays, &droppedArrays);
-    status |= ADParam->getInteger(this->params[0], NDPluginBaseBlockingCallbacks, &blockingCallbacks);
+    status |= getDoubleParam(NDPluginBaseMinCallbackTime, &minCallbackTime);
+    status |= getIntegerParam(NDPluginBaseArrayCounter, &arrayCounter);
+    status |= getIntegerParam(NDPluginBaseDroppedArrays, &droppedArrays);
+    status |= getIntegerParam(NDPluginBaseBlockingCallbacks, &blockingCallbacks);
     
     epicsTimeGetCurrent(&tNow);
     deltaTime = epicsTimeDiffInSeconds(&tNow, &this->lastProcessTime);
@@ -174,13 +170,13 @@ void NDPluginBase::driverCallback(asynUser *pasynUser, void *handle)
                     "%s:%s message queue full, dropped array %d\n",
                     driverName, functionName, arrayCounter);
                 droppedArrays++;
-                status |= ADParam->setInteger(this->params[0], NDPluginBaseDroppedArrays_RBV, droppedArrays);
+                status |= setIntegerParam(NDPluginBaseDroppedArrays_RBV, droppedArrays);
                 /* This buffer needs to be released */
                 pArray->release();
             }
         }
     }
-    ADParam->callCallbacksAddr(this->params[0], 0);
+    callParamCallbacks();
     epicsMutexUnlock(this->mutexId);
 }
 
@@ -273,9 +269,9 @@ asynStatus NDPluginBase::connectToArrayPort(void)
     int arrayAddr;
     const char *functionName = "connectToArrayPort";
 
-    ADParam->getString(this->params[0], NDPluginBaseArrayPort, sizeof(arrayPort), arrayPort);
-    ADParam->getInteger(this->params[0], NDPluginBaseArrayAddr, &arrayAddr);
-    ADParam->getInteger(this->params[0], NDPluginBaseEnableCallbacks, &enableCallbacks);
+    getStringParam(NDPluginBaseArrayPort, sizeof(arrayPort), arrayPort);
+    getIntegerParam(NDPluginBaseArrayAddr, &arrayAddr);
+    getIntegerParam(NDPluginBaseEnableCallbacks, &enableCallbacks);
     status = pasynManager->isConnected(this->pasynUserHandle, &isConnected);
     if (status) isConnected=0;
 
@@ -339,9 +335,9 @@ asynStatus NDPluginBase::writeInt32(asynUser *pasynUser, epicsInt32 value)
     currentlyPosting = (this->asynHandleInterruptPvt != NULL);
 
     /* Set the parameter in the parameter library. */
-    status = (asynStatus) ADParam->setInteger(this->params[addr], function, value);
+    status = (asynStatus) setIntegerParam(addr, function, value);
     /* Set the readback (N+1) entry in the parameter library too */
-    status = (asynStatus) ADParam->setInteger(this->params[addr], function+1, value);
+    status = (asynStatus) setIntegerParam(addr, function+1, value);
 
     switch(function) {
         case NDPluginBaseEnableCallbacks:
@@ -366,7 +362,7 @@ asynStatus NDPluginBase::writeInt32(asynUser *pasynUser, epicsInt32 value)
     }
     
     /* Do callbacks so higher layers see any changes */
-    status = (asynStatus) ADParam->callCallbacksAddr(this->params[addr], addr);
+    status = (asynStatus) callParamCallbacks(addr, addr);
     
     if (status) 
         epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
@@ -380,21 +376,50 @@ asynStatus NDPluginBase::writeInt32(asynUser *pasynUser, epicsInt32 value)
     return status;
 }
 
+asynStatus NDPluginBase::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
+{
+    int function = pasynUser->reason;
+    asynStatus status = asynSuccess;
+    int addr=0;
+    const char *functionName = "writeFloat64";
+
+    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
+    epicsMutexLock(this->mutexId);
+
+    /* Set the parameter and readback in the parameter library.  This may be overwritten when we read back the
+     * status at the end, but that's OK */
+    status = setDoubleParam(addr, function, value);
+    status = setDoubleParam(addr, function+1, value);
+
+    /* Do callbacks so higher layers see any changes */
+    callParamCallbacks(addr, addr);
+    if (status) 
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, 
+              "%s:%s: error, status=%d function=%d, value=%f\n", 
+              driverName, functionName, status, function, value);
+    else        
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
+              "%s:%s: function=%d, value=%f\n", 
+              driverName, functionName, function, value);
+    epicsMutexUnlock(this->mutexId);
+    return status;
+}
+
 
 asynStatus NDPluginBase::writeOctet(asynUser *pasynUser, const char *value, 
                                     size_t nChars, size_t *nActual)
 {
-    int function = pasynUser->reason;
     int addr=0;
+    int function = pasynUser->reason;
     asynStatus status = asynSuccess;
     const char *functionName = "writeOctet";
 
     status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
     epicsMutexLock(this->mutexId);
     /* Set the parameter in the parameter library. */
-    status = (asynStatus)ADParam->setString(this->params[addr], function, (char *)value);
+    status = (asynStatus)setStringParam(addr, function, (char *)value);
     /* Set the readback (N+1) entry in the parameter library too */
-    status = (asynStatus) ADParam->setString(this->params[addr], function+1, (char *)value);
+    status = (asynStatus) setStringParam(addr, function+1, (char *)value);
 
     switch(function) {
         case NDPluginBaseArrayPort:
@@ -404,7 +429,7 @@ asynStatus NDPluginBase::writeOctet(asynUser *pasynUser, const char *value,
     }
     
      /* Do callbacks so higher layers see any changes */
-    status = (asynStatus)ADParam->callCallbacksAddr(this->params[addr], addr);
+    status = (asynStatus)callParamCallbacks(addr, addr);
 
     if (status) 
         epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
@@ -489,10 +514,11 @@ asynStatus NDPluginBase::drvUserCreate(asynUser *pasynUser,
 /* Constructor */
 NDPluginBase::NDPluginBase(const char *portName, int queueSize, int blockingCallbacks, 
                            const char *NDArrayPort, int NDArrayAddr, int maxAddr, int paramTableSize,
-                           int maxBuffers, size_t maxMemory)
+                           int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask)
 
-    : asynNDArrayBase(portName, maxAddr, paramTableSize, maxBuffers, maxMemory)
-    
+    : asynNDArrayBase(portName, maxAddr, paramTableSize, maxBuffers, maxMemory,
+          interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynDrvUserMask,
+          interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask)    
 {
     asynStatus status;
     char *functionName = "NDPluginBase";
@@ -530,23 +556,23 @@ NDPluginBase::NDPluginBase(const char *portName, int queueSize, int blockingCall
     }
 
     /* Set the initial values of some parameters */
-    ADParam->setString (this->params[0], NDPluginBaseArrayPort, NDArrayPort);
-    ADParam->setString (this->params[0], NDPluginBaseArrayPort_RBV, NDArrayPort);
-    ADParam->setInteger(this->params[0], NDPluginBaseArrayAddr, NDArrayAddr);
-    ADParam->setInteger(this->params[0], NDPluginBaseArrayAddr_RBV, NDArrayAddr);
-    ADParam->setInteger(this->params[0], NDPluginBaseArrayCounter, 0);
-    ADParam->setInteger(this->params[0], NDPluginBaseArrayCounter_RBV, 0);
-    ADParam->setInteger(this->params[0], NDPluginBaseDroppedArrays, 0);
-    ADParam->setInteger(this->params[0], NDPluginBaseDroppedArrays_RBV, 0);
-    ADParam->setInteger(this->params[0], NDPluginBaseEnableCallbacks, 0);
-    ADParam->setInteger(this->params[0], NDPluginBaseEnableCallbacks_RBV, 0);
-    ADParam->setInteger(this->params[0], NDPluginBaseBlockingCallbacks, 0);
-    ADParam->setInteger(this->params[0], NDPluginBaseBlockingCallbacks_RBV, 0);
-    ADParam->setDouble (this->params[0], NDPluginBaseMinCallbackTime, 0.);
-    ADParam->setDouble (this->params[0], NDPluginBaseMinCallbackTime_RBV, 0.);
-    ADParam->setInteger(this->params[0], NDPluginBaseUniqueId_RBV, 0);
-    ADParam->setDouble (this->params[0], NDPluginBaseTimeStamp_RBV, 0.);
-    ADParam->setInteger(this->params[0], NDPluginBaseDataType_RBV, 0);
-    ADParam->setInteger(this->params[0], NDPluginBaseNDimensions_RBV, 0);
+    setStringParam (NDPluginBaseArrayPort, NDArrayPort);
+    setStringParam (NDPluginBaseArrayPort_RBV, NDArrayPort);
+    setIntegerParam(NDPluginBaseArrayAddr, NDArrayAddr);
+    setIntegerParam(NDPluginBaseArrayAddr_RBV, NDArrayAddr);
+    setIntegerParam(NDPluginBaseArrayCounter, 0);
+    setIntegerParam(NDPluginBaseArrayCounter_RBV, 0);
+    setIntegerParam(NDPluginBaseDroppedArrays, 0);
+    setIntegerParam(NDPluginBaseDroppedArrays_RBV, 0);
+    setIntegerParam(NDPluginBaseEnableCallbacks, 0);
+    setIntegerParam(NDPluginBaseEnableCallbacks_RBV, 0);
+    setIntegerParam(NDPluginBaseBlockingCallbacks, 0);
+    setIntegerParam(NDPluginBaseBlockingCallbacks_RBV, 0);
+    setDoubleParam (NDPluginBaseMinCallbackTime, 0.);
+    setDoubleParam (NDPluginBaseMinCallbackTime_RBV, 0.);
+    setIntegerParam(NDPluginBaseUniqueId_RBV, 0);
+    setDoubleParam (NDPluginBaseTimeStamp_RBV, 0.);
+    setIntegerParam(NDPluginBaseDataType_RBV, 0);
+    setIntegerParam(NDPluginBaseNDimensions_RBV, 0);
 }
 
