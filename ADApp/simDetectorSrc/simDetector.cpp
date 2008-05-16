@@ -382,14 +382,14 @@ void simDetector::simTask()
         /* Call the callbacks to update any changes */
         ADParam->callCallbacks(this->params[addr]);
         
-        /* We are done accessing data structures, release the lock */
-        epicsMutexUnlock(this->mutexId);
         
         /* If we are acquiring then sleep for the acquire period minus elapsed time. */
         if (acquiring) {
             /* We set the status to readOut to indicate we are in the period delay */
             ADParam->setInteger(this->params[addr], ADStatus_RBV, ADStatusReadout);
             ADParam->callCallbacks(this->params[addr]);
+            /* We are done accessing data structures, release the lock */
+            epicsMutexUnlock(this->mutexId);
             delay = acquirePeriod - elapsedTime;
             asynPrint(this->pasynUser, ASYN_TRACE_FLOW, 
                      "%s:%s: delay=%f\n",
@@ -397,6 +397,9 @@ void simDetector::simTask()
             if (delay >= epicsThreadSleepQuantum())
                 status = epicsEventWaitWithTimeout(this->stopEventId, delay);
 
+        } else {
+            /* We are done accessing data structures, release the lock */
+            epicsMutexUnlock(this->mutexId);
         }
     }
 }
