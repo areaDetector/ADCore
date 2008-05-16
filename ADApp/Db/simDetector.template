@@ -4,6 +4,7 @@
 
 record(ao, "$(P)$(R)GainX")
 {
+   field(PINI, "1")
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAINX")
    field(PREC, "2")
@@ -13,13 +14,14 @@ record(ai, "$(P)$(R)GainX_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAINX")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAINX_RBV")
    field(PREC, "2")
    field(SCAN, "I/O Intr")
 }
 
 record(ao, "$(P)$(R)GainY")
 {
+   field(PINI, "1")
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAINY")
    field(PREC, "2")
@@ -29,7 +31,7 @@ record(ai, "$(P)$(R)GainY_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAINY")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAINY_RBV")
    field(PREC, "2")
    field(SCAN, "I/O Intr")
 }
@@ -44,6 +46,6 @@ record(longin, "$(P)$(R)Reset_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))RESET_IMAGE")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))RESET_IMAGE_RBV")
    field(SCAN, "I/O Intr")
 }

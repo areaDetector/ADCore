@@ -12,92 +12,92 @@ record(longout, "$(P)$(R)PSReadStatistics")
    field(SCAN, "5 second")
 }
 
-record(stringin, "$(P)$(R)PSDriverType")
+record(stringin, "$(P)$(R)PSDriverType_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynOctetRead")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_DRIVER_TYPE")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_DRIVER_TYPE_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(stringin, "$(P)$(R)PSFilterVersion")
+record(stringin, "$(P)$(R)PSFilterVersion_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynOctetRead")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_FILTER_VERSION")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_FILTER_VERSION_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(ai, "$(P)$(R)PSFrameRate")
+record(ai, "$(P)$(R)PSFrameRate_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_FRAME_RATE")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_FRAME_RATE_RBV")
    field(PREC, "3")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(R)PSFramesCompleted")
+record(longin, "$(P)$(R)PSFramesCompleted_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_FRAMES_COMPLETED")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_FRAMES_COMPLETED_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(R)PSFramesDropped")
+record(longin, "$(P)$(R)PSFramesDropped_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_FRAMES_DROPPED")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_FRAMES_DROPPED_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(R)PSPacketsErroneous")
+record(longin, "$(P)$(R)PSPacketsErroneous_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_ERRONEOUS")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_ERRONEOUS_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(R)PSPacketsMissed")
+record(longin, "$(P)$(R)PSPacketsMissed_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_MISSED")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_MISSED_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(R)PSPacketsReceived")
+record(longin, "$(P)$(R)PSPacketsReceived_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_RECEIVED")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_RECEIVED_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(R)PSPacketsRequested")
+record(longin, "$(P)$(R)PSPacketsRequested_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_REQUESTED")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_REQUESTED_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(R)PSPacketsResent")
+record(longin, "$(P)$(R)PSPacketsResent_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_RESENT")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_RESENT_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(R)PSBadFrameCounter")
+record(longin, "$(P)$(R)PSBadFrameCounter_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_BAD_FRAME_COUNTER")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_BAD_FRAME_COUNTER_RBV")
    field(SCAN, "I/O Intr")
 }
 
