@@ -6,7 +6,6 @@ include $(TOP)/configure/CONFIG
 
 DBD += ADSupport.dbd
 
-INC += ADParamLib.h
 INC += NDArray.h
 INC += ADStdDriverParams.h
 INC += asynParamBase.h
@@ -15,10 +14,9 @@ INC += ADDriverBase.h
 
 LIBRARY_IOC = ADBase
 LIB_SRCS += NDArray.cpp
-LIB_SRCS += ADParamLib.c
-LIB_SRCS += ADDriverBase.cpp
 LIB_SRCS += asynParamBase.cpp
 LIB_SRCS += asynNDArrayBase.cpp
+LIB_SRCS += ADDriverBase.cpp
 LIB_LIBS += asyn
 LIB_LIBS += $(EPICS_BASE_IOC_LIBS)
 
