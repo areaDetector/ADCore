@@ -325,7 +325,6 @@ asynStatus NDPluginBase::writeInt32(asynUser *pasynUser, epicsInt32 value)
     const char* functionName = "writeInt32";
 
     status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
-    epicsMutexLock(this->mutexId);
 
     /* See if we are connected */
     status = pasynManager->isConnected(this->pasynUserHandle, &isConnected);
@@ -372,7 +371,6 @@ asynStatus NDPluginBase::writeInt32(asynUser *pasynUser, epicsInt32 value)
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
               "%s:%s: function=%d, value=%d, isConnected=%d, currentlyPosting=%d\n", 
               driverName, functionName, function, value, isConnected, currentlyPosting);
-    epicsMutexUnlock(this->mutexId);
     return status;
 }
 
@@ -384,7 +382,6 @@ asynStatus NDPluginBase::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
     const char *functionName = "writeFloat64";
 
     status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
-    epicsMutexLock(this->mutexId);
 
     /* Set the parameter and readback in the parameter library.  This may be overwritten when we read back the
      * status at the end, but that's OK */
@@ -401,7 +398,6 @@ asynStatus NDPluginBase::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
               "%s:%s: function=%d, value=%f\n", 
               driverName, functionName, function, value);
-    epicsMutexUnlock(this->mutexId);
     return status;
 }
 
@@ -415,7 +411,6 @@ asynStatus NDPluginBase::writeOctet(asynUser *pasynUser, const char *value,
     const char *functionName = "writeOctet";
 
     status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
-    epicsMutexLock(this->mutexId);
     /* Set the parameter in the parameter library. */
     status = (asynStatus)setStringParam(addr, function, (char *)value);
     /* Set the readback (N+1) entry in the parameter library too */
@@ -440,7 +435,6 @@ asynStatus NDPluginBase::writeOctet(asynUser *pasynUser, const char *value,
               "%s:writeOctet: function=%d, value=%s\n", 
               driverName, functionName, function, value);
     *nActual = nChars;
-    epicsMutexUnlock(this->mutexId);
     return status;
 }
 
@@ -454,8 +448,6 @@ asynStatus NDPluginBase::readInt32Array(asynUser *pasynUser, epicsInt32 *value,
     const char *functionName = "readInt32Array";
 
     status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
-    epicsMutexLock(this->mutexId);
-
     switch(function) {
         case NDPluginBaseDimensions:
             ncopy = ND_ARRAY_MAX_DIMS;
@@ -472,7 +464,6 @@ asynStatus NDPluginBase::readInt32Array(asynUser *pasynUser, epicsInt32 *value,
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
               "%s:writeOctet: function=%d\n", 
               driverName, functionName, function);
-    epicsMutexUnlock(this->mutexId);
     return status;
 }
     

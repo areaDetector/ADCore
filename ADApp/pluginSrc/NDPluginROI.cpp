@@ -321,7 +321,6 @@ asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
     status = getAddress(pasynUser, functionName, &roi); if (status != asynSuccess) return(status);
 
-    epicsMutexLock(this->mutexId);
     pROI = &this->pROIs[roi];
     /* Set parameter and readback in parameter library */
     status = setIntegerParam(roi , function, value);
@@ -353,9 +352,7 @@ asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
             break;
         default:
             /* This was not a parameter that this driver understands, try the base class */
-            epicsMutexUnlock(this->mutexId);
             status = NDPluginBase::writeInt32(pasynUser, value);
-            epicsMutexLock(this->mutexId);
             break;
     }
     /* Do callbacks so higher layers see any changes */
@@ -369,7 +366,6 @@ asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
               "%s:%s: function=%d, roi=%d, value=%d\n", 
               driverName, functionName, function, roi, value);
-    epicsMutexUnlock(this->mutexId);
     return status;
 }
 
@@ -383,7 +379,6 @@ asynStatus NDPluginROI::readFloat64Array(asynUser *pasynUser,
     const char* functionName = "readFloat64Array";
 
     status = getAddress(pasynUser, functionName, &roi); if (status != asynSuccess) return(status);
-    epicsMutexLock(this->mutexId);
     if (function < NDPluginROIFirstROINParam) {
         /* We don't support reading asynFloat64 arrays except for ROIs */
         status = asynError;
@@ -416,7 +411,6 @@ asynStatus NDPluginROI::readFloat64Array(asynUser *pasynUser,
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
               "%s:%s: function=%d, value=%f\n", 
               driverName, functionName, function, *value);
-    epicsMutexUnlock(this->mutexId);
     return(status);
 }
 

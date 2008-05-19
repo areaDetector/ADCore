@@ -61,7 +61,6 @@ asynStatus ADDriverBase::writeInt32(asynUser *pasynUser, epicsInt32 value)
     const char* functionName = "writeInt32";
 
     status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
-    epicsMutexLock(this->mutexId);
 
     /* Set the parameter in the parameter library. */
     status = (asynStatus) setIntegerParam(addr, function, value);
@@ -79,7 +78,6 @@ asynStatus ADDriverBase::writeInt32(asynUser *pasynUser, epicsInt32 value)
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
               "%s:%s: function=%d, value=%d\n", 
               driverName, functionName, function, value);
-    epicsMutexUnlock(this->mutexId);
     return status;
 }
 
@@ -91,8 +89,7 @@ asynStatus ADDriverBase::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
     const char *functionName = "writeFloat64";
 
     status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
-    epicsMutexLock(this->mutexId);
-
+ 
     /* Set the parameter and readback in the parameter library.  This may be overwritten when we read back the
      * status at the end, but that's OK */
     status = setDoubleParam(addr, function, value);
@@ -108,7 +105,6 @@ asynStatus ADDriverBase::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
               "%s:%s: function=%d, value=%f\n", 
               driverName, functionName, function, value);
-    epicsMutexUnlock(this->mutexId);
     return status;
 }
 
@@ -122,7 +118,6 @@ asynStatus ADDriverBase::writeOctet(asynUser *pasynUser, const char *value,
     const char *functionName = "writeOctet";
 
     status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
-    epicsMutexLock(this->mutexId);
     /* Set the parameter in the parameter library. */
     status = (asynStatus)setStringParam(addr, function, (char *)value);
     /* Set the readback (N+1) entry in the parameter library too */
@@ -140,7 +135,6 @@ asynStatus ADDriverBase::writeOctet(asynUser *pasynUser, const char *value,
               "%s:writeOctet: function=%d, value=%s\n", 
               driverName, functionName, function, value);
     *nActual = nChars;
-    epicsMutexUnlock(this->mutexId);
     return status;
 }
 

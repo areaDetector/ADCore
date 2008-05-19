@@ -384,7 +384,6 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
     const char* functionName = "writeInt32";
 
     status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
-    epicsMutexLock(this->mutexId);
 
     /* Set the parameter in the parameter library. */
     status = (asynStatus) setIntegerParam(addr, function, value);
@@ -410,9 +409,7 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
             break;
         default:
             /* This was not a parameter that this driver understands, try the base class */
-            epicsMutexUnlock(this->mutexId);
             status = NDPluginBase::writeInt32(pasynUser, value);
-            epicsMutexLock(this->mutexId);
             break;
     }
     
@@ -427,7 +424,6 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
               "%s:%s: function=%d, value=%d\n", 
               driverName, functionName, function, value);
-    epicsMutexUnlock(this->mutexId);
     return status;
 }
 
@@ -440,7 +436,6 @@ asynStatus NDPluginFile::writeNDArray(asynUser *pasynUser, void *handle)
     const char *functionName = "writeNDArray";
     
     status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
-    epicsMutexLock(this->mutexId);
     
     this->pArrays[addr] = pArray;
     setIntegerParam(addr, NDPluginFileWriteMode, NDPluginFileModeSingle);
@@ -451,7 +446,6 @@ asynStatus NDPluginFile::writeNDArray(asynUser *pasynUser, void *handle)
     /* Do callbacks so higher layers see any changes */
     status = callParamCallbacks(addr, addr);
     
-    epicsMutexUnlock(this->mutexId);
     return status;
 }
 

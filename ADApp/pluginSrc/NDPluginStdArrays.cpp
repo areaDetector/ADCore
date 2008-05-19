@@ -85,7 +85,6 @@ asynStatus NDPluginStdArrays::readArray(asynUser *pasynUser, epicsType *value, s
     int i;
     int addr=0;
 
-    epicsMutexLock(this->mutexId);
     myArray = this->pArrays[addr];
     switch(command) {
         case NDPluginStdArraysData:
@@ -113,7 +112,6 @@ asynStatus NDPluginStdArrays::readArray(asynUser *pasynUser, epicsType *value, s
                       driverName, command);
             status = asynError;
     }
-    epicsMutexUnlock(this->mutexId);
     return(status);
 }
 

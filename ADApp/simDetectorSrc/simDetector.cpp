@@ -409,8 +409,6 @@ asynStatus simDetector::writeInt32(asynUser *pasynUser, epicsInt32 value)
     int addr=0;
     asynStatus status = asynSuccess;
 
-    epicsMutexLock(this->mutexId);
-
     /* Set the parameter and readback in the parameter library.  This may be overwritten when we read back the
      * status at the end, but that's OK */
     status = setIntegerParam(addr, function, value);
@@ -488,7 +486,6 @@ asynStatus simDetector::writeInt32(asynUser *pasynUser, epicsInt32 value)
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
               "%s:writeInt32: function=%d, value=%d\n", 
               driverName, function, value);
-    epicsMutexUnlock(this->mutexId);
     return status;
 }
 
@@ -498,8 +495,6 @@ asynStatus simDetector::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
     int addr=0;
-
-    epicsMutexLock(this->mutexId);
 
     /* Set the parameter and readback in the parameter library.  This may be overwritten when we read back the
      * status at the end, but that's OK */
@@ -526,7 +521,6 @@ asynStatus simDetector::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
               "%s:writeFloat64: function=%d, value=%f\n", 
               driverName, function, value);
-    epicsMutexUnlock(this->mutexId);
     return status;
 }
 
