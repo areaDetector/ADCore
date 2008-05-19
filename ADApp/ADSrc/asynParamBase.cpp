@@ -1,5 +1,5 @@
 /*
- * asynParamBase.c
+ * asynParamBase.cpp
  * 
  * Base class that implements methods for asynStandardInterfaces with a parameter library.
  *
@@ -452,8 +452,12 @@ static asynStatus readInt32(void *drvPvt, asynUser *pasynUser,
                             epicsInt32 *value)
 {
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
+    asynStatus status;
     
-    return(pPvt->readInt32(pasynUser, value));
+    epicsMutexLock(pPvt->mutexId);
+    status = pPvt->readInt32(pasynUser, value);
+    epicsMutexUnlock(pPvt->mutexId);
+    return(status);
 }
 
 asynStatus asynParamBase::readInt32(asynUser *pasynUser, epicsInt32 *value)
@@ -464,8 +468,6 @@ asynStatus asynParamBase::readInt32(asynUser *pasynUser, epicsInt32 *value)
     static char *functionName = "readInt32";
     
     status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
-    epicsMutexLock(this->mutexId);
-    
     /* We just read the current value of the parameter from the parameter library.
      * Those values are updated whenever anything could cause them to change */
     status = (asynStatus) getIntegerParam(addr, function, value);
@@ -477,7 +479,6 @@ asynStatus asynParamBase::readInt32(asynUser *pasynUser, epicsInt32 *value)
         asynPrint(this->pasynUser, ASYN_TRACEIO_DRIVER, 
               "%s:%s: function=%d, value=%d\n", 
               driverName, functionName, function, *value);
-    epicsMutexUnlock(this->mutexId);
     return(status);
 }
 
@@ -485,8 +486,12 @@ static asynStatus writeInt32(void *drvPvt, asynUser *pasynUser,
                             epicsInt32 value)
 {
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
+    asynStatus status;
     
-    return(pPvt->writeInt32(pasynUser, value));
+    epicsMutexLock(pPvt->mutexId);
+    status = pPvt->writeInt32(pasynUser, value);
+    epicsMutexUnlock(pPvt->mutexId);
+    return(status);
 }
 
 asynStatus asynParamBase::writeInt32(asynUser *pasynUser, epicsInt32 value)
@@ -500,8 +505,12 @@ static asynStatus getBounds(void *drvPvt, asynUser *pasynUser,
                             epicsInt32 *low, epicsInt32 *high)
 {
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
+    asynStatus status;
     
-    return(pPvt->getBounds(pasynUser, low, high));
+    epicsMutexLock(pPvt->mutexId);
+    status = pPvt->getBounds(pasynUser, low, high);
+    epicsMutexUnlock(pPvt->mutexId);
+    return(status);
 }
 
 asynStatus asynParamBase::getBounds(asynUser *pasynUser,
@@ -523,8 +532,12 @@ static asynStatus readFloat64(void *drvPvt, asynUser *pasynUser,
                               epicsFloat64 *value)
 {
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
+    asynStatus status;
     
-    return(pPvt->readFloat64(pasynUser, value));
+    epicsMutexLock(pPvt->mutexId);
+    status = pPvt->readFloat64(pasynUser, value);
+    epicsMutexUnlock(pPvt->mutexId);
+    return(status);
 }
 
 asynStatus asynParamBase::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
@@ -535,7 +548,6 @@ asynStatus asynParamBase::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
     static char *functionName = "readFloat64";
     
     status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
-    epicsMutexLock(this->mutexId);
     /* We just read the current value of the parameter from the parameter library.
      * Those values are updated whenever anything could cause them to change */
     status = (asynStatus) getDoubleParam(addr, function, value);
@@ -547,7 +559,6 @@ asynStatus asynParamBase::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
               "%s:%s: function=%d, value=%f\n", 
               driverName, functionName, function, *value);
-    epicsMutexUnlock(this->mutexId);
     return(status);
 }
 
@@ -555,8 +566,12 @@ static asynStatus writeFloat64(void *drvPvt, asynUser *pasynUser,
                               epicsFloat64 value)
 {
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
+    asynStatus status;
     
-    return(pPvt->writeFloat64(pasynUser, value));
+    epicsMutexLock(pPvt->mutexId);
+    status = pPvt->writeFloat64(pasynUser, value);
+    epicsMutexUnlock(pPvt->mutexId);
+    return(status);
 }
 
 asynStatus asynParamBase::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
@@ -573,8 +588,12 @@ static asynStatus readOctet(void *drvPvt, asynUser *pasynUser,
                             int *eomReason)
 {
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
+    asynStatus status;
     
-    return(pPvt->readOctet(pasynUser, value, maxChars, nActual, eomReason));
+    epicsMutexLock(pPvt->mutexId);
+    status = pPvt->readOctet(pasynUser, value, maxChars, nActual, eomReason);
+    epicsMutexUnlock(pPvt->mutexId);
+    return(status);
 }
 
 asynStatus asynParamBase::readOctet(asynUser *pasynUser,
@@ -587,7 +606,6 @@ asynStatus asynParamBase::readOctet(asynUser *pasynUser,
     const char *functionName = "readOctet";
    
     status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
-    epicsMutexLock(this->mutexId);
     /* We just read the current value of the parameter from the parameter library.
      * Those values are updated whenever anything could cause them to change */
     status = (asynStatus)getStringParam(addr, function, maxChars, value);
@@ -601,7 +619,6 @@ asynStatus asynParamBase::readOctet(asynUser *pasynUser,
               driverName, functionName, function, value);
     *eomReason = ASYN_EOM_END;
     *nActual = strlen(value);
-    epicsMutexUnlock(this->mutexId);
     return(status);
 }
 
@@ -609,8 +626,12 @@ static asynStatus writeOctet(void *drvPvt, asynUser *pasynUser,
                               const char *value, size_t maxChars, size_t *nActual)
 {
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
+    asynStatus status;
     
-    return(pPvt->writeOctet(pasynUser, value, maxChars, nActual));
+    epicsMutexLock(pPvt->mutexId);
+    status = pPvt->writeOctet(pasynUser, value, maxChars, nActual);
+    epicsMutexUnlock(pPvt->mutexId);
+    return(status);
 }
 
 asynStatus asynParamBase::writeOctet(asynUser *pasynUser, const char *value, 
@@ -627,8 +648,12 @@ static asynStatus readInt8Array(void *drvPvt, asynUser *pasynUser, epicsInt8 *va
                                 size_t nElements, size_t *nIn)
 {
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
+    asynStatus status;
     
-    return(pPvt->readInt8Array(pasynUser, value, nElements, nIn));
+    epicsMutexLock(pPvt->mutexId);
+    status = pPvt->readInt8Array(pasynUser, value, nElements, nIn);
+    epicsMutexUnlock(pPvt->mutexId);
+    return(status);
 }
 
 asynStatus asynParamBase::readInt8Array(asynUser *pasynUser, epicsInt8 *value,
@@ -641,8 +666,12 @@ static asynStatus writeInt8Array(void *drvPvt, asynUser *pasynUser, epicsInt8 *v
                                 size_t nElements)
 {
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
+    asynStatus status;
     
-    return(pPvt->writeInt8Array(pasynUser, value, nElements));
+    epicsMutexLock(pPvt->mutexId);
+    status = pPvt->writeInt8Array(pasynUser, value, nElements);
+    epicsMutexUnlock(pPvt->mutexId);
+    return(status);    
 }
 
 asynStatus asynParamBase::writeInt8Array(asynUser *pasynUser, epicsInt8 *value,
@@ -664,8 +693,12 @@ static asynStatus readInt16Array(void *drvPvt, asynUser *pasynUser, epicsInt16 *
                                 size_t nElements, size_t *nIn)
 {
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
+    asynStatus status;
     
-    return(pPvt->readInt16Array(pasynUser, value, nElements, nIn));
+    epicsMutexLock(pPvt->mutexId);
+    status = pPvt->readInt16Array(pasynUser, value, nElements, nIn);
+    epicsMutexUnlock(pPvt->mutexId);
+    return(status);    
 }
 
 asynStatus asynParamBase::readInt16Array(asynUser *pasynUser, epicsInt16 *value,
@@ -678,8 +711,12 @@ static asynStatus writeInt16Array(void *drvPvt, asynUser *pasynUser, epicsInt16 
                                 size_t nElements)
 {
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
+    asynStatus status;
     
-    return(pPvt->writeInt16Array(pasynUser, value, nElements));
+    epicsMutexLock(pPvt->mutexId);
+    status = pPvt->writeInt16Array(pasynUser, value, nElements);
+    epicsMutexUnlock(pPvt->mutexId);
+    return(status);    
 }
 
 asynStatus asynParamBase::writeInt16Array(asynUser *pasynUser, epicsInt16 *value,
@@ -715,8 +752,12 @@ static asynStatus writeInt32Array(void *drvPvt, asynUser *pasynUser, epicsInt32 
                                 size_t nElements)
 {
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
+    asynStatus status;
     
-    return(pPvt->writeInt32Array(pasynUser, value, nElements));
+    epicsMutexLock(pPvt->mutexId);
+    status = pPvt->writeInt32Array(pasynUser, value, nElements);
+    epicsMutexUnlock(pPvt->mutexId);
+    return(status);    
 }
 
 asynStatus asynParamBase::writeInt32Array(asynUser *pasynUser, epicsInt32 *value,
@@ -738,8 +779,12 @@ static asynStatus readFloat32Array(void *drvPvt, asynUser *pasynUser, epicsFloat
                                 size_t nElements, size_t *nIn)
 {
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
+    asynStatus status;
     
-    return(pPvt->readFloat32Array(pasynUser, value, nElements, nIn));
+    epicsMutexLock(pPvt->mutexId);
+    status = pPvt->readFloat32Array(pasynUser, value, nElements, nIn);
+    epicsMutexUnlock(pPvt->mutexId);
+    return(status);    
 }
 
 asynStatus asynParamBase::readFloat32Array(asynUser *pasynUser, epicsFloat32 *value,
@@ -752,8 +797,12 @@ static asynStatus writeFloat32Array(void *drvPvt, asynUser *pasynUser, epicsFloa
                                 size_t nElements)
 {
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
+    asynStatus status;
     
-    return(pPvt->writeFloat32Array(pasynUser, value, nElements));
+    epicsMutexLock(pPvt->mutexId);
+    status = pPvt->writeFloat32Array(pasynUser, value, nElements);
+    epicsMutexUnlock(pPvt->mutexId);
+    return(status);    
 }
 
 asynStatus asynParamBase::writeFloat32Array(asynUser *pasynUser, epicsFloat32 *value,
@@ -775,8 +824,12 @@ static asynStatus readFloat64Array(void *drvPvt, asynUser *pasynUser, epicsFloat
                                 size_t nElements, size_t *nIn)
 {
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
+    asynStatus status;
     
-    return(pPvt->readFloat64Array(pasynUser, value, nElements, nIn));
+    epicsMutexLock(pPvt->mutexId);
+    status = pPvt->readFloat64Array(pasynUser, value, nElements, nIn);
+    epicsMutexUnlock(pPvt->mutexId);
+    return(status);    
 }
 
 asynStatus asynParamBase::readFloat64Array(asynUser *pasynUser, epicsFloat64 *value,
@@ -789,8 +842,12 @@ static asynStatus writeFloat64Array(void *drvPvt, asynUser *pasynUser, epicsFloa
                                 size_t nElements)
 {
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
+    asynStatus status;
     
-    return(pPvt->writeFloat64Array(pasynUser, value, nElements));
+    epicsMutexLock(pPvt->mutexId);
+    status = pPvt->writeFloat64Array(pasynUser, value, nElements);
+    epicsMutexUnlock(pPvt->mutexId);
+    return(status);    
 }
 
 asynStatus asynParamBase::writeFloat64Array(asynUser *pasynUser, epicsFloat64 *value,
@@ -810,8 +867,12 @@ asynStatus asynParamBase::doCallbacksFloat64Array(epicsFloat64 *value,
 static asynStatus readHandle(void *drvPvt, asynUser *pasynUser, void *handle)
 {
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
+    asynStatus status;
     
-    return(pPvt->readHandle(pasynUser, handle));
+    epicsMutexLock(pPvt->mutexId);
+    status =pPvt->readHandle(pasynUser, handle);
+    epicsMutexUnlock(pPvt->mutexId);
+    return(status);    
 }
 
 asynStatus asynParamBase::readHandle(asynUser *pasynUser, void *handle)
@@ -824,8 +885,12 @@ asynStatus asynParamBase::readHandle(asynUser *pasynUser, void *handle)
 static asynStatus writeHandle(void *drvPvt, asynUser *pasynUser, void *handle)
 {
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
+    asynStatus status;
     
-    return(pPvt->writeHandle(pasynUser, handle));
+    epicsMutexLock(pPvt->mutexId);
+    status = pPvt->writeHandle(pasynUser, handle);
+    epicsMutexUnlock(pPvt->mutexId);
+    return(status);    
 }
 
 asynStatus asynParamBase::writeHandle(asynUser *pasynUser, void *handle)
@@ -880,8 +945,12 @@ static asynStatus drvUserCreate(void *drvPvt, asynUser *pasynUser,
                                  const char **pptypeName, size_t *psize)
 { 
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
+    asynStatus status;
     
-    return(pPvt->drvUserCreate(pasynUser, drvInfo, pptypeName, psize));
+    epicsMutexLock(pPvt->mutexId);
+    status = pPvt->drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
+    epicsMutexUnlock(pPvt->mutexId);
+    return(status);    
 }
 
 asynStatus asynParamBase::drvUserCreate(asynUser *pasynUser,
@@ -902,8 +971,12 @@ static asynStatus drvUserGetType(void *drvPvt, asynUser *pasynUser,
                                  const char **pptypeName, size_t *psize)
 { 
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
+    asynStatus status;
     
-    return(pPvt->drvUserGetType(pasynUser, pptypeName, psize));
+    epicsMutexLock(pPvt->mutexId);
+    status = pPvt->drvUserGetType(pasynUser, pptypeName, psize);
+    epicsMutexUnlock(pPvt->mutexId);
+    return(status);    
 }
 
 asynStatus asynParamBase::drvUserGetType(asynUser *pasynUser,
@@ -923,8 +996,12 @@ asynStatus asynParamBase::drvUserGetType(asynUser *pasynUser,
 static asynStatus drvUserDestroy(void *drvPvt, asynUser *pasynUser)
 { 
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
+    asynStatus status;
     
-    return(pPvt->drvUserDestroy(pasynUser));
+    epicsMutexLock(pPvt->mutexId);
+    status = pPvt->drvUserDestroy(pasynUser);
+    epicsMutexUnlock(pPvt->mutexId);
+    return(status);    
 }
 
 asynStatus asynParamBase::drvUserDestroy(asynUser *pasynUser)
@@ -945,7 +1022,9 @@ static void report(void *drvPvt, FILE *fp, int details)
 {
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
     
-    return(pPvt->report(fp, details));
+    epicsMutexLock(pPvt->mutexId);
+    pPvt->report(fp, details);
+    epicsMutexUnlock(pPvt->mutexId);
 }
 
 
@@ -977,8 +1056,12 @@ void asynParamBase::report(FILE *fp, int details)
 static asynStatus connect(void *drvPvt, asynUser *pasynUser)
 {
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
+    asynStatus status;
     
-    return(pPvt->connect(pasynUser));
+    epicsMutexLock(pPvt->mutexId);
+    status = pPvt->connect(pasynUser);
+    epicsMutexUnlock(pPvt->mutexId);
+    return(status);    
 }
 
 asynStatus asynParamBase::connect(asynUser *pasynUser)
@@ -996,8 +1079,12 @@ asynStatus asynParamBase::connect(asynUser *pasynUser)
 static asynStatus disconnect(void *drvPvt, asynUser *pasynUser)
 {
     asynParamBase *pPvt = (asynParamBase *)drvPvt;
+    asynStatus status;
     
-    return(pPvt->disconnect(pasynUser));
+    epicsMutexLock(pPvt->mutexId);
+    status = pPvt->disconnect(pasynUser);
+    epicsMutexUnlock(pPvt->mutexId);
+    return(status);    
 }
 
 asynStatus asynParamBase::disconnect(asynUser *pasynUser)
