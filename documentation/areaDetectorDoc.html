@@ -7,8 +7,8 @@
 <CENTER>
 <H1>areaDetector: EPICS Area Detector Support</H1>
 
-<H2> R1-1</H2>
-<H2> May 6, 2008</H2>
+<H2> R1-2</H2>
+<H2> May 16, 2008</H2>
 <H2> Mark Rivers</H2>
 <H2> University of Chicago</H2>
 </CENTER>
@@ -21,6 +21,26 @@
                 Overview</A> 
   <LI><A href="#Architecture">
                 Architecture</A> 
+  <LI><A href="#asynParamBase">
+                asynParamBase</A> 
+  <LI><A href="#NDArray">
+                NDArray</A> 
+  <LI><A href="#asynNDArrayBase">
+                asynNDArrayBase</A>
+  <LI><A href="#ADDriverBase">
+                ADDriverBase</A>
+  <LI><A href="#simDetector">
+                simDetector</A>
+  <LI><A href="#Prosilica driver">
+                Prosilica driver</A>
+  <LI><A href="#NDPluginBase">
+                NDPluginBase</A>
+  <LI><A href="#NDPluginStdArrays">
+                NDPluginStdArrays</A>
+  <LI><A href="#NDPluginROI">
+                NDPluginROI</A>
+  <LI><A href="#NDPluginFile">
+                NDPluginFile</A>
   <LI><A href="#EPICS records">
                 EPICS records</A> 
     <UL>
@@ -101,37 +121,335 @@ The architecture of the areaDetector module is shown in Figure 1.
 <CENTER><H3>Figure 1.  Architecture of areaDetector module.</H3>
 <IMG src="areaDetectorArchitecture.png"></CENTER>
 
-The EPICS implementation consists of the following:</P>
+From the bottom to the top this architecture consists of the following:</P>
 <UL>
-  <LI>A State-Notation-Language (SNL) program, <CODE>pilatusROI.st</CODE>.  
-      This program implements all of the logic for acquiring images, reading
-      the TIFF files, computing ROIs, and making the data available to EPICS. 
-  <LI>Database files, <CODE>pilatusROI.template, pilatusROI_N.template</CODE>. 
-      These databases 
-      contain almost no "logic" with no links between records in the database. 
-      Some of the records use "streamDevice" for communication with camserver. Other 
-      records are simply variables which channel access clients and the State 
-      Notation Language (SNL) program use.
-  <LI>A streamDevice protocol file, <CODE>pilatusROI.protocol</CODE>.  
-      This file defines the protocol used for
-      communicating with camserver.
-  <LI>Autosave request files, <CODE>pilatusROI_settings.req, pilatusROI_N_settings.req</CODE>.  
-      These files define the EPICS PVs
-      that will be automatically saved and restored when the EPICS IOC is restarted, so that
-      state information is preserved.
-  <LI>MEDM screens, <CODE>pilatusROI.adl, 
-      pilatus8ROIs.adl, pilatusROI_waveform.adl</CODE>. These screens are 
-      used to control image acquisition, and definition and display of ROI data.
-  <LI>An IDL display program, <CODE>epics_image_display.pro</CODE> for displaying the images 
-      as they are sent to EPICS.  This program is also available as a pre-built IDL ".sav" file 
-      that can be run for free under the IDL Virtual Machine.
-  <LI>SPEC macros that use the ROI counts as spec counters.  These work in both conventional
-      step scanning mode, and also in 
-      <A href="http://cars.uchicago.edu/software/epics/trajectoryScan.html">trajectory scanning</A> mode
-      with the Newport MM4005 and XPS motor controllers.
+  <LI>Layer 1.  This is the layer that allows user written code to 
+      communicate with the hardware.
+      It is usually provided by the detector vendor.  It may consist of a library or DLL,
+      of a socket protocol to a driver, a Microsoft COM interface, etc.
+  <LI>Layer 2.  This is the driver that is written for the area detector application to
+      control a particular detector.  It is normally written in C++ and inherits from the
+      ADDriverBase class.  It uses the standard asyn interfaces for control and status
+      information.  Each time it receives a new data array it passes it as an NDArray object
+      to all Layer 3 clients that have registered for callbacks.  This is the only code that
+      needs to be written to implement a new detector.  Existing drivers range from
+      650 to 950 lines of code.
+  <LI>Layer 3.  Code running at this level is called a "plug-in".  This code registers with a
+      driver for a callback whenever there is a new data array.  The existing plugins implement
+      file saving (NDPluginFile), region-of-interest (ROI) calculations (NDPluginROI), 
+      and conversion of detector data to standard EPICS array types for use by 
+      Channel Access clients (NDPluginStdArrays).  Plugins are normally written in C++ and
+      inherit from NDPluginBase.  Existing plugins range from 280 to 550 lines
+      of code.
+  <LI>Layer 4.  This is standard asyn device support that comes with the EPICS asyn module.
+  <LI>Layer 5.  These are standard EPICS records, and EPICS database (template) files that
+      define records to communicate with drivers at Layer 2 and plugins at Layer 3.
+  <LI>Layer 6.  These are EPICS channel access clients, such as MEDM that communicate with
+      the records at Layer 5.  There is a free IDL client that can display images using
+      EPICS waveform and other records communicating with the NDPluginStdArrays plugin
+      at Layer 3.
 </UL>
 
+The code in Layers 1-3 is essentially independent of EPICS.  There are only 2 EPICS dependencies in this
+code.
+<OL>
+  <LI>libCom.  libCom from EPICS base provides operating-system independent functions for
+      threads, mutexes, etc.
+  <LI>asyn.  asyn is a module that provides interthread messaging services, including queueing
+      and callbacks.
+</OL>
+In particular it is possible to eliminates layers 4-6 in the architecture shown in Figure 1, providing
+there is a programs such as the high-performance GUI shown in Layer 3.  This means that it is not necessary
+to run an EPICS IOC or to use EPICS Channel Access when using the drivers and plugins at Layers 2 and 3.
+<P>
+The plugin architecture is very powerful, because plugins can be reconfigured at run-time.  For example
+the NDPluginStdArrays can switch from getting its array data from a detector driver to an NDPluginROI
+plugin.  That way it will switch from displaying the entire detector to whatever sub-region the ROI
+driver has selected.  Any Channel Access clients connected to the NDPluginStdArrays driver
+will automatically switch to displaying this subregion.
+Similarly, the NDPluginFile plugin can be switched at run-time from saving the entire image to saving
+a selected ROI, just by changing its input source.
+<P>
+The use of plugins is optional, and it is only plugins that require the driver to make the 
+image data available.  If there are no plugins being used then EPICS can be used simply
+to control the detector, without accessing the data itself.  This is most useful when 
+the vendor API has the ability to save the data to a file.
+<P>
+What follows is a detailed description of the software, working from the bottom up.
+Most of the code is object oriented, and written in C++.  The parts of the code that depend
+on anything from EPICS except libCom and asyn have been kept in in separate C files, so that
+it is easy to build applications that do not run as part of an EPICS IOC.
+
 <P>&nbsp;</P>
+<CENTER><H2><A name=asynParamBase>
+                    asynParamBase</A></H2></CENTER>
+                    
+The areaDetector module depends heavily on asyn.  It is the software that is used for interthread communication,
+using the standard asyn interfaces (e.g. asynInt32, asynOctet, etc.), and callbacks.  Detector drivers and plugins
+are asyn port drivers, meaning that they implement one or more of the standard asyn interfaces.  They register
+themselves as interrupt sources, so that they do callbacks to registered asyn clients when values change.
+asynParamBase handles all of the details of registering the port driver, registering the supported interfaces,
+and registering the required interrupt sources.
+<P>
+Drivers and plugins each need to support a number of parameters that control their operation and provide 
+status information.  Most of these can be treated as 32-bit integers, 64-bit floats, or strings.
+When the new value of a parameter is sent to a driver, (e.g. detector binning in the X direction)
+from an asyn client (e.g. an EPICS record),
+then the driver will need to take some action.  It may change some other parameters in response to this
+new value (e.g. image size in the X direction).  The sequence of operations in the driver can be summarized as
+<OL>
+  <LI>New parameter value arrives, or new data arrives from detector.
+  <LI>Change values of one or more parameters.
+  <LI>For each parameter whose value changes set a flag noting that it changed.
+  <LI>When operation is complete, call the registered callbacks for each changed parameter.
+</OL>
+asynParamBase provides methods to simplify the above sequence, which must be 
+implemented for the many parameters that the driver supports.  Each parameter is assigned
+a number, which is the value in the pasynUser-&gt reason field that asyn clients pass to
+the driver when reading or writing that parameter.  asynParamBase maintains a table
+of parameter values, associating each parameter number with a data type (integer, double, or string),
+caching the current value, and maintaining a flag indicating if a value has changed.  
+Drivers use asynParamBase methods to read the current value 
+from the table, and to set new values in the table.  There is a method to call all registered callbacks
+for values that have changed since callbacks were last done.
+
+<P>The following is the definition of the asynParamBase class:
+<PRE>
+class asynParamBase {
+public:
+    asynParamBase(const char *portName, int maxAddr, int paramTableSize, int interfaceMask, int interruptMask);
+    virtual asynStatus getAddress(asynUser *pasynUser, const char *functionName, int *address); 
+    virtual asynStatus findParam(asynParamString_t *paramTable, int numParams, const char *paramName, int *param);
+    virtual asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value);
+    virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
+    virtual asynStatus getBounds(asynUser *pasynUser, epicsInt32 *low, epicsInt32 *high);
+    virtual asynStatus readFloat64(asynUser *pasynUser, epicsFloat64 *value);
+    virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
+    virtual asynStatus readOctet(asynUser *pasynUser, char *value, size_t maxChars,
+                         size_t *nActual, int *eomReason);
+    virtual asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t maxChars,
+                          size_t *nActual);
+    virtual asynStatus readInt8Array(asynUser *pasynUser, epicsInt8 *value, 
+                                        size_t nElements, size_t *nIn);
+    virtual asynStatus writeInt8Array(asynUser *pasynUser, epicsInt8 *value,
+                                        size_t nElements);
+    virtual asynStatus doCallbacksInt8Array(epicsInt8 *value,
+                                        size_t nElements, int reason, int addr);
+    virtual asynStatus readInt16Array(asynUser *pasynUser, epicsInt16 *value,
+                                        size_t nElements, size_t *nIn);
+    virtual asynStatus writeInt16Array(asynUser *pasynUser, epicsInt16 *value,
+                                        size_t nElements);
+    virtual asynStatus doCallbacksInt16Array(epicsInt16 *value,
+                                        size_t nElements, int reason, int addr);
+    virtual asynStatus readInt32Array(asynUser *pasynUser, epicsInt32 *value,
+                                        size_t nElements, size_t *nIn);
+    virtual asynStatus writeInt32Array(asynUser *pasynUser, epicsInt32 *value,
+                                        size_t nElements);
+    virtual asynStatus doCallbacksInt32Array(epicsInt32 *value,
+                                        size_t nElements, int reason, int addr);
+    virtual asynStatus readFloat32Array(asynUser *pasynUser, epicsFloat32 *value,
+                                        size_t nElements, size_t *nIn);
+    virtual asynStatus writeFloat32Array(asynUser *pasynUser, epicsFloat32 *value,
+                                        size_t nElements);
+    virtual asynStatus doCallbacksFloat32Array(epicsFloat32 *value,
+                                        size_t nElements, int reason, int addr);
+    virtual asynStatus readFloat64Array(asynUser *pasynUser, epicsFloat64 *value,
+                                        size_t nElements, size_t *nIn);
+    virtual asynStatus writeFloat64Array(asynUser *pasynUser, epicsFloat64 *value,
+                                        size_t nElements);
+    virtual asynStatus doCallbacksFloat64Array(epicsFloat64 *value,
+                                        size_t nElements, int reason, int addr);
+    virtual asynStatus readHandle(asynUser *pasynUser, void *handle);
+    virtual asynStatus writeHandle(asynUser *pasynUser, void *handle);
+    virtual asynStatus doCallbacksHandle(void *handle, int reason, int addr);
+    virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
+                                     const char **pptypeName, size_t *psize);
+    virtual asynStatus drvUserGetType(asynUser *pasynUser,
+                                        const char **pptypeName, size_t *psize);
+    virtual asynStatus drvUserDestroy(asynUser *pasynUser);
+    virtual void report(FILE *fp, int details);
+    virtual asynStatus connect(asynUser *pasynUser);
+    virtual asynStatus disconnect(asynUser *pasynUser);
+   
+    virtual asynStatus setIntegerParam(int index, int value);
+    virtual asynStatus setIntegerParam(int list, int index, int value);
+    virtual asynStatus setDoubleParam(int index, double value);
+    virtual asynStatus setDoubleParam(int list, int index, double value);
+    virtual asynStatus setStringParam(int index, const char *value);
+    virtual asynStatus setStringParam(int list, int index, const char *value);
+    virtual asynStatus getIntegerParam(int index, int * value);
+    virtual asynStatus getIntegerParam(int list, int index, int * value);
+    virtual asynStatus getDoubleParam(int index, double * value);
+    virtual asynStatus getDoubleParam(int list, int index, double * value);
+    virtual asynStatus getStringParam(int index, int maxChars, char *value);
+    virtual asynStatus getStringParam(int list, int index, int maxChars, char *value);
+    virtual asynStatus callParamCallbacks();
+    virtual asynStatus callParamCallbacks(int list, int addr);
+    virtual void reportParams();
+
+    char *portName;
+    int maxAddr;
+    paramList **params;
+    epicsMutexId mutexId;
+
+    /* The asyn interfaces this driver implements */
+    asynStandardInterfaces asynStdInterfaces;
+    
+    /* asynUser connected to ourselves for asynTrace */
+    asynUser *pasynUser;
+};
+</PRE>
+
+A brief explanation of the methods and data in this class is provided here.  Users should look at the
+example driver (simDetector) and plugins provided with areaDetector for examples of how this
+class is used.
+
+<PRE>
+    asynParamBase(const char *portName, int maxAddr, int paramTableSize, int interfaceMask, int interruptMask);
+</PRE>
+This is the constructor for the class. 
+<UL>
+  <LI><CODE>portName</CODE> is the name of the asyn port for this driver or plugin.
+  <LI><CODE>maxAddr</CODE> is the maximum number of asyn addresses that this driver or plugin supports.
+      This number returned by the <CODE>pasynManager-&gt getAddr()</CODE> function.  Typically it is 1, but some
+      plugins (e.g. NDPluginROI) support values &gt 1.  This controls the number of parameter
+      tables that are created.
+  <LI><CODE>parmTableSize</CODE> is the maximum number of parameters that this driver or plugin supports.
+      This controls the size of the parameter tables.
+  <LI><CODE>interfaceMask</CODE> is a mask with each bit defining which asyn interfaces this driver
+      or plugin supports.  
+      The bit mask values are defined in asynParamBase.h, e.g. <CODE>asynInt32Mask</CODE>.
+  <LI><CODE>interruptMask</CODE> is a mask with each bit defining which of the asyn interfaces this driver
+      or plugin supports can generate interrupts.
+      The bit mask values are defined in asynParamBase.h, e.g. <CODE>asynInt8ArrayMask</CODE>.
+</UL>
+<BR>
+<PRE>
+    virtual asynStatus getAddress(asynUser *pasynUser, const char *functionName, int *address); 
+</PRE>  
+Returns the value from pasynManager-&gt getAddr(pasynUser,...).
+Returns an error if the address is not valid, e.g. &gt= this-&gt maxAddr.
+
+<PRE>
+    virtual asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value);
+    virtual asynStatus readFloat64(asynUser *pasynUser, epicsFloat64 *value);
+    virtual asynStatus readOctet(asynUser *pasynUser, char *value, size_t maxChars,
+                             size_t *nActual, int *eomReason);
+</PRE>
+These methods are called by asyn clients to return the current cached value for the
+parameter indexed by pasynUser-&gt reason in the parameter table defined by <CODE>getAddress()</CODE>.
+Derived classed typically do not need to implement these methods.
+
+<BR>
+<PRE>
+    virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
+    virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
+    virtual asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t maxChars,
+                          size_t *nActual);
+</PRE>
+These methods are called by asynClients to set the new value of a parameter.  These
+methods only have stub methods that return an error in asynParamBase, so they
+must be implemented in the derived classes if the corresponding interface is
+used.  They are not pure virtual functions so that the derived class need not implement 
+the interface if it is not used.
+
+<BR>
+<PRE>     
+    virtual asynStatus readXXXArray(asynUser *pasynUser, epicsInt8 *value, 
+                                        size_t nElements, size_t *nIn);
+    virtual asynStatus writeXXXArray(asynUser *pasynUser, epicsInt8 *value,
+                                        size_t nElements);
+    virtual asynStatus doCallbacksXXXArray(epicsInt8 *value,
+                                        size_t nElements, int reason, int addr);
+    virtual asynStatus readHandle(asynUser *pasynUser, void *handle);
+    virtual asynStatus writeHandle(asynUser *pasynUser, void *handle);
+    virtual asynStatus doCallbacksHandle(void *handle, int reason, int addr);
+</PRE>
+where XXX=(Int8, Int16, Int32, Float32, or Float64).
+The readXXX and writeXXX methods only have stub methods that return an error in asynParamBase, so they
+must be implemented in the derived classes if the corresponding interface is
+used.  They are not pure virtual functions so that the derived class need not implement 
+the interface if it is not used.  The doCallbacksXXX methods in asynParamBase
+call any registered asyn clients on the corresponding interface if the <CODE>reason</CODE>
+and <CODE>addr</CODE> values match.  It typically does not need to be implemented in derived classes.
+
+<BR>
+<PRE>     
+    virtual asynStatus findParam(asynParamString_t *paramTable, int numParams, const char *paramName, int *param);
+    virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
+                                     const char **pptypeName, size_t *psize);
+    virtual asynStatus drvUserGetType(asynUser *pasynUser,
+                                        const char **pptypeName, size_t *psize);
+    virtual asynStatus drvUserDestroy(asynUser *pasynUser);
+</PRE>
+drvUserCreate must be implemented in derived classes that use the parameter facilities of asynParamBase.
+The <CODE>findParam</CODE> method is a convenience function that searches an array of {enum, string} structures
+and returns the enum (parameter number) matching the string.  This is typically used in the 
+implementation of <CODE>drvUserCreate</CODE> in derived classes.  <CODE>drvUserGetType</CODE> and 
+<CODE>drvUserDestroy</CODE> typically do not need to be implemented in derived classes.
+
+<BR>
+<PRE>     
+    virtual void report(FILE *fp, int details);
+    virtual asynStatus connect(asynUser *pasynUser);
+    virtual asynStatus disconnect(asynUser *pasynUser);
+</PRE>
+The <CODE>report</CODE> function prints information on registered interrupt clients if details &gt 0, and prints
+parameter table information if details  &gt 5.  It is typically called by the implementation of
+<CODE>report</CODE> in derived classes before or after
+they print specific information about themselves.  <CODE>connect</CODE> and <CODE>disconnect</CODE> call 
+<CODE>pasynManager-&gt exceptionConnect</CODE> and <CODE>pasynManager-&gt exceptionDisconnect</CODE> respectively.
+Derived classes may or may not need to implement these functions.
+
+<BR>
+<PRE>     
+    virtual asynStatus setIntegerParam(int index, int value);
+    virtual asynStatus setIntegerParam(int list, int index, int value);
+    virtual asynStatus setDoubleParam(int index, double value);
+    virtual asynStatus setDoubleParam(int list, int index, double value);
+    virtual asynStatus setStringParam(int index, const char *value);
+    virtual asynStatus setStringParam(int list, int index, const char *value);
+    virtual asynStatus getIntegerParam(int index, int * value);
+    virtual asynStatus getIntegerParam(int list, int index, int * value);
+    virtual asynStatus getDoubleParam(int index, double * value);
+    virtual asynStatus getDoubleParam(int list, int index, double * value);
+    virtual asynStatus getStringParam(int index, int maxChars, char *value);
+    virtual asynStatus getStringParam(int list, int index, int maxChars, char *value);
+    virtual asynStatus callParamCallbacks();
+    virtual asynStatus callParamCallbacks(int list, int addr);
+</PRE>
+The <CODE>setXXXParam</CODE> methods set the value of a parameter in the parameter table
+in the object.  If the value is different from the previous value of the parameter
+they also set the flag indicating that the value has changed.  The <CODE>getXXXParam</CODE>
+methods return the current value of the parameter.  There are two versions of the
+<CODE>setXXXParam</CODE> and <CODE>getXXXParam</CODE> methods, one with a <CODE>list</CODE>
+argument, and one without.  The one without uses <CODE>list=0</CODE>, since there 
+is often only a single parameter list (i.e. if maxAddr=1).  The <CODE>callParamCallbacks</CODE>
+methods call back any registered clients for parameters that have changed since the last
+time <CODE>callParamCallbacks</CODE> was called.  The version  of <CODE>callParamCallbacks</CODE>
+with no arguments uses the first parameter list and matches asyn address=0.  There is a
+second version of <CODE>callParamCallbacks</CODE> that takes an argument specifying the parameter list
+number, and the asyn address to match.
+
+<CENTER><H2><A name=NDArray>
+                    NDArray</A></H2></CENTER>
+                    
+The NDArray (N-Dimensional array) is the class that is used for passing image
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <CENTER><H2><A name="EPICS records">
                      EPICS records</A></H2></CENTER>
