@@ -36,7 +36,7 @@ public:
 
     /* These methods are just for this class */
     template <typename epicsType> asynStatus readArray(asynUser *pasynUser, epicsType *value, 
-                                        size_t nElements, size_t *nIn, int outputType);
+                                        size_t nElements, size_t *nIn, NDDataType_t outputType);
                                         
 };
 

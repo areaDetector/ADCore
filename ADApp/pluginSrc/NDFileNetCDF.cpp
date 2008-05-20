@@ -45,7 +45,7 @@ int NDFileWriteNetCDF(const char *fileName, NDFileNetCDFState_t *pState,
          * distinguish signed and unsigned.  Readers can use this to know how to treat
          * integer data. */
         if ((retval = nc_put_att_int(pState->ncId, NC_GLOBAL, "dataType", 
-                                     NC_INT, 1, &pArray->dataType)))
+                                     NC_INT, 1, (const int*)&pArray->dataType)))
             ERR(retval);
 
         /* Create global attribute for number of dimensions and dimensions

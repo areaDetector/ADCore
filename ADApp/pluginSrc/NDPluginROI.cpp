@@ -124,7 +124,8 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
      */
      
     int use, computeStatistics, computeHistogram, computeProfiles;
-    int i, dataType;
+    int i;
+    int dataType;
     int histSize;
     int roi, dim;
     int status;
@@ -180,8 +181,8 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     
         /* Extract this ROI from the input array.  The convert() function allocates
          * a new array and it is reserved (reference count = 1) */
-        if (dataType == -1) dataType = pArray->dataType;
-        this->pNDArrayPool->convert(pArray, &this->pArrays[roi], dataType, dims);
+        if (dataType == -1) dataType = (int)pArray->dataType;
+        this->pNDArrayPool->convert(pArray, &this->pArrays[roi], (NDDataType_t)dataType, dims);
         pROIArray  = this->pArrays[roi];
 
         /* Call any clients who have registered for NDArray callbacks */

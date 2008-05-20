@@ -38,7 +38,7 @@ static char *driverName="NDPluginStdArrays";
 
 template <typename epicsType, typename interruptType>
 void arrayInterruptCallback(NDArray *pArray, NDArrayPool *pNDArrayPool, 
-                            void *interruptPvt, int *initialized, int signedType)
+                            void *interruptPvt, int *initialized, NDDataType_t signedType)
 {
     ELLLIST *pclientList;
     interruptNode *pnode;
@@ -60,8 +60,8 @@ void arrayInterruptCallback(NDArray *pArray, NDArrayPool *pNDArrayPool,
                     pArray->initDimension(&outDims[i], pArray->dims[i].size);
                 }
                 pNDArrayPool->convert(pArray, &pOutput,
-                                            signedType,
-                                            outDims);
+                                              signedType,
+                                              outDims);
                 pData = (epicsType *)pOutput->pData;
             }
             pInterrupt->callback(pInterrupt->userPvt,
@@ -75,7 +75,7 @@ void arrayInterruptCallback(NDArray *pArray, NDArrayPool *pNDArrayPool,
 }
 
 template <typename epicsType> 
-asynStatus NDPluginStdArrays::readArray(asynUser *pasynUser, epicsType *value, size_t nElements, size_t *nIn, int outputType)
+asynStatus NDPluginStdArrays::readArray(asynUser *pasynUser, epicsType *value, size_t nElements, size_t *nIn, NDDataType_t outputType)
 {
     int command = pasynUser->reason;
     asynStatus status = asynSuccess;
@@ -102,9 +102,9 @@ asynStatus NDPluginStdArrays::readArray(asynUser *pasynUser, epicsType *value, s
                 myArray->initDimension(&outDims[i], myArray->dims[i].size);
             }
             status = (asynStatus)this->pNDArrayPool->convert(myArray,
-                                                      &pOutput,
-                                                      outputType,
-                                                      outDims);
+                                                             &pOutput,
+                                                             outputType,
+                                                             outDims);
             break;
         default:
             epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,

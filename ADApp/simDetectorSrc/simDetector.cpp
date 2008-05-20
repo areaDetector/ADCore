@@ -37,7 +37,7 @@ static char *driverName = "drvSimDetector";
 
 class simDetector : public ADDriverBase {
 public:
-    simDetector(const char *portName, int maxSizeX, int maxSizeY, int dataType,
+    simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDataType_t dataType,
                 int maxBuffers, size_t maxMemory);
                  
     /* These are the methods that we override from ADDriverBase */
@@ -144,7 +144,7 @@ int simDetector::allocateBuffer()
 int simDetector::computeImage()
 {
     int status = asynSuccess;
-    int dataType;
+    NDDataType_t dataType;
     int addr=0;
     int binX, binY, minX, minY, sizeX, sizeY, reverseX, reverseY;
     int maxSizeX, maxSizeY;
@@ -165,7 +165,7 @@ int simDetector::computeImage()
     status |= getIntegerParam(addr, ADReverseY,     &reverseY);
     status |= getIntegerParam(addr, ADMaxSizeX_RBV, &maxSizeX);
     status |= getIntegerParam(addr, ADMaxSizeY_RBV, &maxSizeY);
-    status |= getIntegerParam(addr, ADDataType,     &dataType);
+    status |= getIntegerParam(addr, ADDataType,     (int *)&dataType);
 
     /* Make sure parameters are consistent, fix them if they are not */
     if (binX < 1) {
@@ -577,11 +577,11 @@ void simDetector::report(FILE *fp, int details)
 extern "C" int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int dataType,
                                  int maxBuffers, size_t maxMemory)
 {
-    new simDetector(portName, maxSizeX, maxSizeY, dataType, maxBuffers, maxMemory);
+    new simDetector(portName, maxSizeX, maxSizeY, (NDDataType_t)dataType, maxBuffers, maxMemory);
     return(asynSuccess);
 }
 
-simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, int dataType,
+simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDataType_t dataType,
                          int maxBuffers, size_t maxMemory)
 
     : ADDriverBase(portName, 1, ADLastDriverParam, maxBuffers, maxMemory, 0, 0), 
