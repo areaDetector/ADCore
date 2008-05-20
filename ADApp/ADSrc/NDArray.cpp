@@ -29,7 +29,7 @@ NDArrayPool::NDArrayPool(int maxBuffers, size_t maxMemory)
     this->listLock = epicsMutexCreate();
 }
     
-NDArray* NDArrayPool::alloc(int ndims, int *dims, int dataType, int dataSize, void *pData)
+NDArray* NDArrayPool::alloc(int ndims, int *dims, NDDataType_t dataType, int dataSize, void *pData)
 {
     NDArray *pArray;
     NDArrayInfo_t arrayInfo;
@@ -323,7 +323,7 @@ static int convertDimension(NDArray *pIn,
 
 int NDArrayPool::convert(NDArray *pIn, 
                          NDArray **ppOut,
-                         int dataTypeOut,
+                         NDDataType_t dataTypeOut,
                          NDDimension_t *dimsOut)
 {
     int dimsUnchanged;
@@ -432,7 +432,7 @@ int NDArrayPool::report(int details)
 
 NDArray::NDArray()
     : referenceCount(0), owner(NULL), 
-      uniqueId(0), timeStamp(0.0), ndims(0), dataType(0), dataSize(0), pData(NULL)
+      uniqueId(0), timeStamp(0.0), ndims(0), dataType(NDInt8), dataSize(0), pData(NULL)
 {
     memset(this->dims, 0, sizeof(this->dims));
     memset(&this->node, 0, sizeof(this->node));
