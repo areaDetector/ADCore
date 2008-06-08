@@ -4,7 +4,7 @@
 #include <ellLib.h>
 #include <epicsMutex.h>
 
-#include "asynParamBase.h"
+#include "asynPortDriver.h"
 
 #ifdef __cplusplus
 extern "C" {

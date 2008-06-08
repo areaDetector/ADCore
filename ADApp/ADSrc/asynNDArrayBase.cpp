@@ -68,7 +68,7 @@ asynStatus asynNDArrayBase::writeHandle(asynUser *pasynUser, void *handle)
 
 void asynNDArrayBase::report(FILE *fp, int details)
 {
-    asynParamBase::report(fp, details);
+    asynPortDriver::report(fp, details);
     if (details > 5) {
         if (this->pNDArrayPool) this->pNDArrayPool->report(details);
     }
@@ -79,7 +79,7 @@ void asynNDArrayBase::report(FILE *fp, int details)
 
 asynNDArrayBase::asynNDArrayBase(const char *portName, int maxAddr, int paramTableSize, int maxBuffers, size_t maxMemory,
                                  int interfaceMask, int interruptMask)
-    : asynParamBase(portName, maxAddr, paramTableSize, interfaceMask, interruptMask), pNDArrayPool(NULL)
+    : asynPortDriver(portName, maxAddr, paramTableSize, interfaceMask, interruptMask), pNDArrayPool(NULL)
 {
     if ((maxBuffers > 0) && (maxMemory > 0)) this->pNDArrayPool = new NDArrayPool(maxBuffers, maxMemory);
 

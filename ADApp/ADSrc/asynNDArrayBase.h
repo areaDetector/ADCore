@@ -1,10 +1,10 @@
 #ifndef asynNDArrayBase_H
 #define asynNDArrayBase_H
 
-#include "asynParamBase.h"
+#include "asynPortDriver.h"
 #include "NDArray.h"
 
-class asynNDArrayBase : public asynParamBase {
+class asynNDArrayBase : public asynPortDriver {
 public:
     asynNDArrayBase(const char *portName, int maxAddr, int paramTableSize, int maxBuffers, size_t maxMemory,
                     int interfaceMask, int interruptMask);
