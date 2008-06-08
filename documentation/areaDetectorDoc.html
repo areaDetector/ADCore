@@ -434,9 +434,124 @@ number, and the asyn address to match.
 <CENTER><H2><A name=NDArray>
                     NDArray</A></H2></CENTER>
                     
-The NDArray (N-Dimensional array) is the class that is used for passing image
+The NDArray (N-Dimensional array) is the class that is used for passing detector data from drivers
+to plugins.  The NDArray class is defined as follows:
 
+<PRE>
+#define ND_ARRAY_MAX_DIMS 10
 
+typedef enum
+{
+    NDInt8,
+    NDUInt8,
+    NDInt16,
+    NDUInt16,
+    NDInt32,
+    NDUInt32,
+    NDFloat32,
+    NDFloat64
+} NDDataType_t;
+
+typedef struct NDDimension {
+    int size;
+    int offset;
+    int binning;
+    int reverse;
+} NDDimension_t;
+
+typedef struct NDArrayInfo {
+    int nElements;
+    int bytesPerElement;
+    int totalBytes;
+} NDArrayInfo_t;
+
+class NDArray {
+public:
+    /* Data: NOTE this must come first because ELLNODE must be first, i.e. same address as object */
+    /* The first 2 fields are used for the freelist */
+    ELLNODE node;
+    int referenceCount;
+    /* The NDArrayPool object that created this array */
+    void *owner;
+
+    int uniqueId;
+    double timeStamp;
+    int ndims;
+    NDDimension_t dims[ND_ARRAY_MAX_DIMS];
+    NDDataType_t dataType;
+    int dataSize;
+    void *pData;
+
+    /* Methods */
+    NDArray();
+    int          initDimension   (NDDimension_t *pDimension, int size);
+    int          getInfo         (NDArrayInfo_t *pInfo);
+    int          convertDimension(NDArray *pOut,
+                                  void *pDataIn,
+                                  void *pDataOut,
+                                  int dim);
+    int          copy            (NDArray *pOut);
+    int          reserve(); 
+    int          release();
+};
+</PRE>
+An NDArray is a general purpose class for handling array data.  An NDArray object is self-describing, 
+meaning it contains enough information to describe the data itself.  It is not intended to
+contain meta-data describing how the data was collected, etc.
+<P>
+An NDArray can have up to ND_ARRAY_MAX_DIMS dimensions, currently 10.  A fixed maximum
+number of dimensions is used to significantly simplify the code compared to
+unlimited number of dimensions.  Each dimension of the array is described
+by an NDDimension_t structure.  The fields in NDDimension_t are as follows:
+
+<UL>
+  <LI><CODE>size</CODE> is the number of elements in this dimension.
+  <LI><CODE>offset</CODE> is the starting element in this dimension
+      relative to the first element of the detector in unbinned units.  If a selected
+      region of the detector is being read, then this value may be
+      &gt 0.  The offset value is cumulative, so if a plugin such as NDPluginROI
+      further selects a subregion, the offset is relative
+      to the first element in the detector and not to the first element of
+      the region passed to NDPluginROI.
+  <LI><CODE>binning</CODE> is the binning (sumation of elements) in this
+      dimension.   The offset value is cumulative, so if a plugin such as 
+      NDPluginROI performs binning,
+      the binning is expressed relative
+      to the pixels in the detector and not to the possibly binned 
+      pixels passed to NDPluginROI.
+  <LI><CODE>reverse</CODE> is 0 if the data are in their normal order
+      as read out from the detector in this dimension, 
+      and 1 if they are in reverse order.  This value is cumulative,
+      so if a plugin such as 
+      NDPluginROI reverses the data, the value must reflect the
+      orientation relative to the original detector, and not to
+      the possibly reversed data passed to NDPluginROI.
+</UL> 
+The first 3 data fields in the NDArray class, <CODE>(node, referenceCount, owner)</CODE> are used
+by the NDArrayPool class discussed below.
+The remaining data fields are as follows:
+<UL>
+  <LI><CODE>uniqueId</CODE> This should be a number that uniquely identifies this array.  Detector
+      drivers should assign this number to the NDArray before calling the plugins.
+  <LI><CODE>timeStamp</CODE> This should be a timestamp value in seconds recording when the frame
+      was collected.  The time=0 reference is driver-dependent because of differences in vendor
+      libraries.  If there is a choice, it is recommended to use timeStamp=0 for Epoch, (00:00:00 UTC,
+      January 1, 1970).
+  <LI><CODE>ndims</CODE> The number of dimensions in this array.
+  <LI><CODE>dims</CODE> Array of NDDimension_t structures.  The array is of length ND_MAX_DIMS, but
+      only the first <CODE>ndims</CODE> values must contain valid information.
+  <LI><CODE>dataType</CODE> The data type of this array, one of the NDDataType_t enum values.
+      The data types supported are signed and unsigned 8, 16, and 32-bit integers, and 32 and 64-bit floats.  
+  <LI><CODE>dataSize</CODE> The size of the memory buffer pointed to by <CODE>pData</CODE> in bytes.  This may be
+      larger than the amount actually required to hold the data for this array.
+  <LI><CODE>pData</CODE> Pointer to the memory for this array.  The data is assumed to be stored
+      in the order of <CODE>dims[0]</CODE> changing fastest, and <CODE>dims[ndims-1]</CODE> changing slowest.
+</UL>
+The methods of the NDArray class are:
+<UL>
+  <LI><CODE>initDimension</CODE> This method ...
+</UL>
+  
 
 
 
