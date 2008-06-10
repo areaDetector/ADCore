@@ -28,19 +28,19 @@
 
 #include "ADStdDriverParams.h"
 #include "NDArray.h"
-#include "ADDriverBase.h"
+#include "ADDriver.h"
 
 #include "drvSimDetector.h"
 
 
 static char *driverName = "drvSimDetector";
 
-class simDetector : public ADDriverBase {
+class simDetector : public ADDriver {
 public:
     simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDataType_t dataType,
                 int maxBuffers, size_t maxMemory);
                  
-    /* These are the methods that we override from ADDriverBase */
+    /* These are the methods that we override from ADDriver */
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
     virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
@@ -65,21 +65,15 @@ public:
 typedef enum {
     SimGainX 
         = ADFirstDriverParam,
-    SimGainX_RBV, 
     SimGainY,
-    SimGainY_RBV,
     SimResetImage,
-    SimResetImage_RBV,
     ADLastDriverParam
 } SimDetParam_t;
 
 static asynParamString_t SimDetParamString[] = {
     {SimGainX,          "SIM_GAINX"},  
-    {SimGainX_RBV,      "SIM_GAINX_RBV"},  
     {SimGainY,          "SIM_GAINY"},  
-    {SimGainY_RBV,      "SIM_GAINY_RBV"},  
     {SimResetImage,     "RESET_IMAGE"},  
-    {SimResetImage_RBV, "RESET_IMAGE_RBV"}  
 };
 
 #define NUM_SIM_DET_PARAMS (sizeof(SimDetParamString)/sizeof(SimDetParamString[0]))
@@ -163,50 +157,42 @@ int simDetector::computeImage()
     status |= getIntegerParam(addr, ADSizeY,        &sizeY);
     status |= getIntegerParam(addr, ADReverseX,     &reverseX);
     status |= getIntegerParam(addr, ADReverseY,     &reverseY);
-    status |= getIntegerParam(addr, ADMaxSizeX_RBV, &maxSizeX);
-    status |= getIntegerParam(addr, ADMaxSizeY_RBV, &maxSizeY);
+    status |= getIntegerParam(addr, ADMaxSizeX,     &maxSizeX);
+    status |= getIntegerParam(addr, ADMaxSizeY,     &maxSizeY);
     status |= getIntegerParam(addr, ADDataType,     (int *)&dataType);
 
     /* Make sure parameters are consistent, fix them if they are not */
     if (binX < 1) {
         binX = 1; 
         status |= setIntegerParam(addr, ADBinX, binX);
-        status |= setIntegerParam(addr, ADBinX_RBV, binX);
     }
     if (binY < 1) {
         binY = 1;
         status |= setIntegerParam(addr, ADBinY, binY);
-        status |= setIntegerParam(addr, ADBinY_RBV, binY);
     }
     if (minX < 0) {
         minX = 0; 
         status |= setIntegerParam(addr, ADMinX, minX);
-        status |= setIntegerParam(addr, ADMinX_RBV, minX);
     }
     if (minY < 0) {
         minY = 0; 
         status |= setIntegerParam(addr, ADMinY, minY);
-        status |= setIntegerParam(addr, ADMinY_RBV, minY);
     }
     if (minX > maxSizeX-1) {
         minX = maxSizeX-1; 
         status |= setIntegerParam(addr, ADMinX, minX);
-        status |= setIntegerParam(addr, ADMinX_RBV, minX);
     }
     if (minY > maxSizeY-1) {
         minY = maxSizeY-1; 
         status |= setIntegerParam(addr, ADMinY, minY);
-        status |= setIntegerParam(addr, ADMinY_RBV, minY);
     }
     if (minX+sizeX > maxSizeX) {
         sizeX = maxSizeX-minX; 
         status |= setIntegerParam(addr, ADSizeX, sizeX);
-        status |= setIntegerParam(addr, ADSizeX_RBV, sizeX);
     }
     if (minY+sizeY > maxSizeY) {
         sizeY = maxSizeY-minY; 
         status |= setIntegerParam(addr, ADSizeY, sizeY);
-        status |= setIntegerParam(addr, ADSizeY_RBV, sizeY);
     }
 
     /* Make sure the buffer we have allocated is large enough. */
@@ -260,9 +246,9 @@ int simDetector::computeImage()
                                          dimsOut);
     pImage = this->pArrays[addr];
     pImage->getInfo(&arrayInfo);
-    status |= setIntegerParam(addr, ADImageSize_RBV,  arrayInfo.totalBytes);
-    status |= setIntegerParam(addr, ADImageSizeX_RBV, pImage->dims[0].size);
-    status |= setIntegerParam(addr, ADImageSizeY_RBV, pImage->dims[1].size);
+    status |= setIntegerParam(addr, ADImageSize,  arrayInfo.totalBytes);
+    status |= setIntegerParam(addr, ADImageSizeX, pImage->dims[0].size);
+    status |= setIntegerParam(addr, ADImageSizeY, pImage->dims[1].size);
     status |= setIntegerParam(addr, SimResetImage, 0);
     if (status) asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
                     "%s:%s: ERROR, status=%d\n",
@@ -303,7 +289,7 @@ void simDetector::simTask()
         
         /* If we are not acquiring then wait for a semaphore that is given when acquisition is started */
         if (!acquire) {
-            setIntegerParam(addr, ADStatus_RBV, ADStatusIdle);
+            setIntegerParam(addr, ADStatus, ADStatusIdle);
             callParamCallbacks(addr, addr);
             /* Release the lock while we wait for an event that says acquire has started, then lock again */
             epicsMutexUnlock(this->mutexId);
@@ -322,7 +308,7 @@ void simDetector::simTask()
         getDoubleParam(addr, ADAcquirePeriod, &acquirePeriod);
         
         acquiring = ADStatusAcquire;
-        setIntegerParam(addr, ADStatus_RBV, acquiring);
+        setIntegerParam(addr, ADStatus, acquiring);
 
         /* Call the callbacks to update any changes */
         callParamCallbacks(addr, addr);
@@ -343,15 +329,14 @@ void simDetector::simTask()
         elapsedTime = epicsTimeDiffInSeconds(&endTime, &startTime);
 
         /* Get the current parameters */
-        getIntegerParam(addr, ADImageSizeX_RBV, &imageSizeX);
-        getIntegerParam(addr, ADImageSizeY_RBV, &imageSizeY);
-        getIntegerParam(addr, ADImageSize_RBV,  &imageSize);
+        getIntegerParam(addr, ADImageSizeX, &imageSizeX);
+        getIntegerParam(addr, ADImageSizeY, &imageSizeY);
+        getIntegerParam(addr, ADImageSize,  &imageSize);
         getIntegerParam(addr, ADDataType,   &dataType);
         getIntegerParam(addr, ADAutoSave,   &autoSave);
         getIntegerParam(addr, ADImageCounter, &imageCounter);
         imageCounter++;
         setIntegerParam(addr, ADImageCounter, imageCounter);
-        setIntegerParam(addr, ADImageCounter_RBV, imageCounter);
         
         /* Put the frame number and time stamp into the buffer */
         pImage->uniqueId = imageCounter;
@@ -363,7 +348,7 @@ void simDetector::simTask()
         epicsMutexUnlock(this->mutexId);
         asynPrint(this->pasynUser, ASYN_TRACE_FLOW, 
              "%s:%s: calling imageData callback\n", driverName, functionName);
-        doCallbacksHandle(pImage, NDArrayData, addr);
+        doCallbacksGenericPointer(pImage, NDArrayData, addr);
         epicsMutexLock(this->mutexId);
 
         /* See if acquisition is done */
@@ -371,7 +356,6 @@ void simDetector::simTask()
         if (this->imagesRemaining == 0) {
             acquiring = ADStatusIdle;
             setIntegerParam(addr, ADAcquire, acquiring);
-            setIntegerParam(addr, ADAcquire_RBV, acquiring);
             asynPrint(this->pasynUser, ASYN_TRACE_FLOW, 
                   "%s:%s: acquisition completed\n", driverName, functionName);
         }
@@ -383,7 +367,7 @@ void simDetector::simTask()
         /* If we are acquiring then sleep for the acquire period minus elapsed time. */
         if (acquiring) {
             /* We set the status to readOut to indicate we are in the period delay */
-            setIntegerParam(addr, ADStatus_RBV, ADStatusReadout);
+            setIntegerParam(addr, ADStatus, ADStatusReadout);
             callParamCallbacks(addr, addr);
             /* We are done accessing data structures, release the lock */
             epicsMutexUnlock(this->mutexId);
@@ -412,12 +396,11 @@ asynStatus simDetector::writeInt32(asynUser *pasynUser, epicsInt32 value)
     /* Set the parameter and readback in the parameter library.  This may be overwritten when we read back the
      * status at the end, but that's OK */
     status = setIntegerParam(addr, function, value);
-    status = setIntegerParam(addr, function+1, value);
 
     /* For a real detector this is where the parameter is sent to the hardware */
     switch (function) {
     case ADAcquire:
-        getIntegerParam(addr, ADStatus_RBV, &adstatus);
+        getIntegerParam(addr, ADStatus, &adstatus);
         if (value && (adstatus == ADStatusIdle)) {
             /* We need to set the number of images we expect to collect, so the image callback function
                can know when acquisition is complete.  We need to find out what mode we are in and how
@@ -499,7 +482,6 @@ asynStatus simDetector::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
     /* Set the parameter and readback in the parameter library.  This may be overwritten when we read back the
      * status at the end, but that's OK */
     status = setDoubleParam(addr, function, value);
-    status = setDoubleParam(addr, function+1, value);
 
     /* Changing any of the following parameters requires recomputing the base image */
     switch (function) {
@@ -553,7 +535,7 @@ asynStatus simDetector::drvUserCreate(asynUser *pasynUser,
     }
     
     /* If not, then see if it is a base class parameter */
-    status = ADDriverBase::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
+    status = ADDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
     return(status);  
 }
     
@@ -571,7 +553,7 @@ void simDetector::report(FILE *fp, int details)
         fprintf(fp, "  Data type:         %d\n", dataType);
     }
     /* Invoke the base class method */
-    ADDriverBase::report(fp, details);
+    ADDriver::report(fp, details);
 }
 
 extern "C" int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int dataType,
@@ -584,7 +566,7 @@ extern "C" int simDetectorConfig(const char *portName, int maxSizeX, int maxSize
 simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDataType_t dataType,
                          int maxBuffers, size_t maxMemory)
 
-    : ADDriverBase(portName, 1, ADLastDriverParam, maxBuffers, maxMemory, 0, 0), 
+    : ADDriver(portName, 1, ADLastDriverParam, maxBuffers, maxMemory, 0, 0), 
       imagesRemaining(0), pRaw(NULL)
 
 {
@@ -613,28 +595,24 @@ simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDat
     this->pRaw = this->pNDArrayPool->alloc(2, dims, dataType, 0, NULL);
 
     /* Set some default values for parameters */
-    status =  setStringParam (addr, ADManufacturer_RBV, "Simulated detector");
-    status |= setStringParam (addr, ADModel_RBV, "Basic simulator");
-    status |= setIntegerParam(addr, ADMaxSizeX_RBV, maxSizeX);
-    status |= setIntegerParam(addr, ADMaxSizeY_RBV, maxSizeY);
+    status =  setStringParam (addr, ADManufacturer, "Simulated detector");
+    status |= setStringParam (addr, ADModel, "Basic simulator");
+    status |= setIntegerParam(addr, ADMaxSizeX, maxSizeX);
+    status |= setIntegerParam(addr, ADMaxSizeY, maxSizeY);
     status |= setIntegerParam(addr, ADSizeX, maxSizeX);
-    status |= setIntegerParam(addr, ADSizeX_RBV, maxSizeX);
     status |= setIntegerParam(addr, ADSizeX, maxSizeX);
     status |= setIntegerParam(addr, ADSizeY, maxSizeY);
-    status |= setIntegerParam(addr, ADSizeY_RBV, maxSizeY);
-    status |= setIntegerParam(addr, ADImageSizeX_RBV, maxSizeX);
-    status |= setIntegerParam(addr, ADImageSizeY_RBV, maxSizeY);
-    status |= setIntegerParam(addr, ADImageSize_RBV, 0);
+    status |= setIntegerParam(addr, ADImageSizeX, maxSizeX);
+    status |= setIntegerParam(addr, ADImageSizeY, maxSizeY);
+    status |= setIntegerParam(addr, ADImageSize, 0);
     status |= setIntegerParam(addr, ADDataType, dataType);
-    status |= setIntegerParam(addr, ADDataType_RBV, dataType);
-    status |= setIntegerParam(addr, ADImageMode_RBV, ADImageContinuous);
-    status |= setDoubleParam (addr, ADAcquireTime_RBV, .001);
-    status |= setDoubleParam (addr, ADAcquirePeriod_RBV, .005);
-    status |= setIntegerParam(addr, ADNumImages_RBV, 100);
+    status |= setIntegerParam(addr, ADImageMode, ADImageContinuous);
+    status |= setDoubleParam (addr, ADAcquireTime, .001);
+    status |= setDoubleParam (addr, ADAcquirePeriod, .005);
+    status |= setIntegerParam(addr, ADNumImages, 100);
     status |= setIntegerParam(addr, SimResetImage, 1);
-    status |= setIntegerParam(addr, SimResetImage_RBV, 1);
-    status |= setDoubleParam (addr, SimGainX_RBV, 1);
-    status |= setDoubleParam (addr, SimGainY_RBV, 1);
+    status |= setDoubleParam (addr, SimGainX, 1);
+    status |= setDoubleParam (addr, SimGainY, 1);
     if (status) {
         printf("%s: unable to set camera parameters\n", functionName);
         return;
