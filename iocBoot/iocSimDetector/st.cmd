@@ -39,6 +39,7 @@ dbLoadRecords("$(AD)/ADApp/Db/NDROIN.template",      "P=13SIM1:,R=ROI1:1:,PORT=S
 dbLoadRecords("$(AD)/ADApp/Db/NDROIN.template",      "P=13SIM1:,R=ROI1:2:,PORT=SIM1ROI,ADDR=2,TIMEOUT=1,HIST_SIZE=256")
 dbLoadRecords("$(AD)/ADApp/Db/NDROIN.template",      "P=13SIM1:,R=ROI1:3:,PORT=SIM1ROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
 
+#asynSetTraceIOMask("SIM1",0,2)
 #asynSetTraceMask("SIM1",0,255)
 #asynSetTraceMask("SIM2",0,255)
 
