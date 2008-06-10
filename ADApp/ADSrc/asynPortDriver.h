@@ -23,7 +23,7 @@ typedef struct {
 #define asynInt32ArrayMask      0x00000200
 #define asynFloat32ArrayMask    0x00000400
 #define asynFloat64ArrayMask    0x00000800
-#define asynHandleMask          0x00001000
+#define asynGenericPointerMask          0x00001000
 
 
 typedef enum { paramUndef, paramInt, paramDouble, paramString} paramType;
@@ -110,9 +110,9 @@ public:
                                         size_t nElements);
     virtual asynStatus doCallbacksFloat64Array(epicsFloat64 *value,
                                         size_t nElements, int reason, int addr);
-    virtual asynStatus readHandle(asynUser *pasynUser, void *handle);
-    virtual asynStatus writeHandle(asynUser *pasynUser, void *handle);
-    virtual asynStatus doCallbacksHandle(void *handle, int reason, int addr);
+    virtual asynStatus readGenericPointer(asynUser *pasynUser, void *pointer);
+    virtual asynStatus writeGenericPointer(asynUser *pasynUser, void *pointer);
+    virtual asynStatus doCallbacksGenericPointer(void *pointer, int reason, int addr);
     virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
                                      const char **pptypeName, size_t *psize);
     virtual asynStatus drvUserGetType(asynUser *pasynUser,

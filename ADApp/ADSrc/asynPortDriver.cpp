@@ -863,64 +863,64 @@ asynStatus asynPortDriver::doCallbacksFloat64Array(epicsFloat64 *value,
                                         this->asynStdInterfaces.float64ArrayInterruptPvt));
 }
 
-/* asynHandle interface methods */
-static asynStatus readHandle(void *drvPvt, asynUser *pasynUser, void *handle)
+/* asynGenericPointer interface methods */
+static asynStatus readGenericPointer(void *drvPvt, asynUser *pasynUser, void *genericPointer)
 {
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
     asynStatus status;
     
     epicsMutexLock(pPvt->mutexId);
-    status =pPvt->readHandle(pasynUser, handle);
+    status =pPvt->readGenericPointer(pasynUser, genericPointer);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);    
 }
 
-asynStatus asynPortDriver::readHandle(asynUser *pasynUser, void *handle)
+asynStatus asynPortDriver::readGenericPointer(asynUser *pasynUser, void *genericPointer)
 {
     epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                "%s:readHandle not implemented", driverName);
+                "%s:readGenericPointer not implemented", driverName);
     return(asynError);
 }
 
-static asynStatus writeHandle(void *drvPvt, asynUser *pasynUser, void *handle)
+static asynStatus writeGenericPointer(void *drvPvt, asynUser *pasynUser, void *genericPointer)
 {
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
     asynStatus status;
     
     epicsMutexLock(pPvt->mutexId);
-    status = pPvt->writeHandle(pasynUser, handle);
+    status = pPvt->writeGenericPointer(pasynUser, genericPointer);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);    
 }
 
-asynStatus asynPortDriver::writeHandle(asynUser *pasynUser, void *handle)
+asynStatus asynPortDriver::writeGenericPointer(asynUser *pasynUser, void *genericPointer)
 {
     epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                "%s:writeHandle not implemented", driverName);
+                "%s:writeGenericPointer not implemented", driverName);
     return(asynError);
 }
 
 
-asynStatus asynPortDriver::doCallbacksHandle(void *handle, int reason, int address)
+asynStatus asynPortDriver::doCallbacksGenericPointer(void *genericPointer, int reason, int address)
 {
     ELLLIST *pclientList;
     interruptNode *pnode;
     int addr;
 
-    pasynManager->interruptStart(this->asynStdInterfaces.handleInterruptPvt, &pclientList);
+    pasynManager->interruptStart(this->asynStdInterfaces.genericPointerInterruptPvt, &pclientList);
     pnode = (interruptNode *)ellFirst(pclientList);
     while (pnode) {
-        asynHandleInterrupt *pInterrupt = (asynHandleInterrupt *)pnode->drvPvt;
+        asynGenericPointerInterrupt *pInterrupt = (asynGenericPointerInterrupt *)pnode->drvPvt;
         pasynManager->getAddr(pInterrupt->pasynUser, &addr);
         if ((pInterrupt->pasynUser->reason == reason) &&
             (address == addr)) {
             pInterrupt->callback(pInterrupt->userPvt,
                                  pInterrupt->pasynUser,
-                                 handle);
+                                 genericPointer);
         }
         pnode = (interruptNode *)ellNext(&pnode->node);
     }
-    pasynManager->interruptEnd(this->asynStdInterfaces.handleInterruptPvt);
+    pasynManager->interruptEnd(this->asynStdInterfaces.genericPointerInterruptPvt);
     return(asynSuccess);
 }
 
@@ -1036,15 +1036,15 @@ void asynPortDriver::report(FILE *fp, int details)
     fprintf(fp, "Port: %s\n", this->portName);
     if (details >= 1) {
         /* Report interrupt clients */
-        reportInterrupt<asynInt32Interrupt>       (fp, pInterfaces->int32InterruptPvt,        "int32");
-        reportInterrupt<asynFloat64Interrupt>     (fp, pInterfaces->float64InterruptPvt,      "float64");
-        reportInterrupt<asynOctetInterrupt>       (fp, pInterfaces->octetInterruptPvt,        "octet");
-        reportInterrupt<asynInt8ArrayInterrupt>   (fp, pInterfaces->int8ArrayInterruptPvt,    "int8Array");
-        reportInterrupt<asynInt16ArrayInterrupt>  (fp, pInterfaces->int16ArrayInterruptPvt,   "int16Array");
-        reportInterrupt<asynInt32ArrayInterrupt>  (fp, pInterfaces->int32ArrayInterruptPvt,   "int32Array");
-        reportInterrupt<asynFloat32ArrayInterrupt>(fp, pInterfaces->float32ArrayInterruptPvt, "float32Array");
-        reportInterrupt<asynFloat64ArrayInterrupt>(fp, pInterfaces->float64ArrayInterruptPvt, "float64Array");
-        reportInterrupt<asynHandleInterrupt>      (fp, pInterfaces->handleInterruptPvt,       "handle");
+        reportInterrupt<asynInt32Interrupt>         (fp, pInterfaces->int32InterruptPvt,        "int32");
+        reportInterrupt<asynFloat64Interrupt>       (fp, pInterfaces->float64InterruptPvt,      "float64");
+        reportInterrupt<asynOctetInterrupt>         (fp, pInterfaces->octetInterruptPvt,        "octet");
+        reportInterrupt<asynInt8ArrayInterrupt>     (fp, pInterfaces->int8ArrayInterruptPvt,    "int8Array");
+        reportInterrupt<asynInt16ArrayInterrupt>    (fp, pInterfaces->int16ArrayInterruptPvt,   "int16Array");
+        reportInterrupt<asynInt32ArrayInterrupt>    (fp, pInterfaces->int32ArrayInterruptPvt,   "int32Array");
+        reportInterrupt<asynFloat32ArrayInterrupt>  (fp, pInterfaces->float32ArrayInterruptPvt, "float32Array");
+        reportInterrupt<asynFloat64ArrayInterrupt>  (fp, pInterfaces->float64ArrayInterruptPvt, "float64Array");
+        reportInterrupt<asynGenericPointerInterrupt>(fp, pInterfaces->genericPointerInterruptPvt, "genericPointer");
     }
     if (details > 5) {
         for (addr=0; addr<this->maxAddr; addr++) {
@@ -1119,7 +1119,6 @@ static asynFloat64 ifaceFloat64 = {
 
 static asynOctet ifaceOctet = {
     writeOctet,
-    NULL,
     readOctet,
 };
 
@@ -1148,9 +1147,9 @@ static asynFloat64Array ifaceFloat64Array = {
     readFloat64Array
 };
 
-static asynHandle ifaceHandle = {
-    writeHandle,
-    readHandle
+static asynGenericPointer ifaceGenericPointer = {
+    writeGenericPointer,
+    readGenericPointer
 };
 
 static asynDrvUser ifaceDrvUser = {
@@ -1190,28 +1189,28 @@ asynPortDriver::asynPortDriver(const char *portName, int maxAddr, int paramTable
 
     interfaceMask |= asynCommonMask;  /* Always need the asynCommon interface */
      /* Set addresses of asyn interfaces */
-    if (interfaceMask & asynCommonMask)       pInterfaces->common.pinterface        = (void *)&ifaceCommon;
-    if (interfaceMask & asynDrvUserMask)      pInterfaces->drvUser.pinterface       = (void *)&ifaceDrvUser;
-    if (interfaceMask & asynInt32Mask)        pInterfaces->int32.pinterface         = (void *)&ifaceInt32;
-    if (interfaceMask & asynFloat64Mask)      pInterfaces->float64.pinterface       = (void *)&ifaceFloat64;
-    if (interfaceMask & asynOctetMask)        pInterfaces->octet.pinterface         = (void *)&ifaceOctet;
-    if (interfaceMask & asynInt8ArrayMask)    pInterfaces->int8Array.pinterface     = (void *)&ifaceInt8Array;
-    if (interfaceMask & asynInt16ArrayMask)   pInterfaces->int16Array.pinterface    = (void *)&ifaceInt16Array;
-    if (interfaceMask & asynInt32ArrayMask)   pInterfaces->int32Array.pinterface    = (void *)&ifaceInt32Array;
-    if (interfaceMask & asynFloat32ArrayMask) pInterfaces->float32Array.pinterface  = (void *)&ifaceFloat32Array;
-    if (interfaceMask & asynFloat64ArrayMask) pInterfaces->float64Array.pinterface  = (void *)&ifaceFloat64Array;
-    if (interfaceMask & asynHandleMask)       pInterfaces->handle.pinterface        = (void *)&ifaceHandle;
+    if (interfaceMask & asynCommonMask)         pInterfaces->common.pinterface        = (void *)&ifaceCommon;
+    if (interfaceMask & asynDrvUserMask)        pInterfaces->drvUser.pinterface       = (void *)&ifaceDrvUser;
+    if (interfaceMask & asynInt32Mask)          pInterfaces->int32.pinterface         = (void *)&ifaceInt32;
+    if (interfaceMask & asynFloat64Mask)        pInterfaces->float64.pinterface       = (void *)&ifaceFloat64;
+    if (interfaceMask & asynOctetMask)          pInterfaces->octet.pinterface         = (void *)&ifaceOctet;
+    if (interfaceMask & asynInt8ArrayMask)      pInterfaces->int8Array.pinterface     = (void *)&ifaceInt8Array;
+    if (interfaceMask & asynInt16ArrayMask)     pInterfaces->int16Array.pinterface    = (void *)&ifaceInt16Array;
+    if (interfaceMask & asynInt32ArrayMask)     pInterfaces->int32Array.pinterface    = (void *)&ifaceInt32Array;
+    if (interfaceMask & asynFloat32ArrayMask)   pInterfaces->float32Array.pinterface  = (void *)&ifaceFloat32Array;
+    if (interfaceMask & asynFloat64ArrayMask)   pInterfaces->float64Array.pinterface  = (void *)&ifaceFloat64Array;
+    if (interfaceMask & asynGenericPointerMask) pInterfaces->genericPointer.pinterface= (void *)&ifaceGenericPointer;
 
     /* Define which interfaces can generate interrupts */
-    if (interruptMask & asynInt32Mask)        pInterfaces->int32CanInterrupt        = 1;
-    if (interruptMask & asynFloat64Mask)      pInterfaces->float64CanInterrupt      = 1;
-    if (interruptMask & asynOctetMask)        pInterfaces->octetCanInterrupt        = 1;
-    if (interruptMask & asynInt8ArrayMask)    pInterfaces->int8ArrayCanInterrupt    = 1;
-    if (interruptMask & asynInt16ArrayMask)   pInterfaces->int16ArrayCanInterrupt   = 1;
-    if (interruptMask & asynInt32ArrayMask)   pInterfaces->int32ArrayCanInterrupt   = 1;
-    if (interruptMask & asynFloat32ArrayMask) pInterfaces->float32ArrayCanInterrupt = 1;
-    if (interruptMask & asynFloat64ArrayMask) pInterfaces->float64ArrayCanInterrupt = 1;
-    if (interruptMask & asynHandleMask)       pInterfaces->handleCanInterrupt       = 1;
+    if (interruptMask & asynInt32Mask)          pInterfaces->int32CanInterrupt        = 1;
+    if (interruptMask & asynFloat64Mask)        pInterfaces->float64CanInterrupt      = 1;
+    if (interruptMask & asynOctetMask)          pInterfaces->octetCanInterrupt        = 1;
+    if (interruptMask & asynInt8ArrayMask)      pInterfaces->int8ArrayCanInterrupt    = 1;
+    if (interruptMask & asynInt16ArrayMask)     pInterfaces->int16ArrayCanInterrupt   = 1;
+    if (interruptMask & asynInt32ArrayMask)     pInterfaces->int32ArrayCanInterrupt   = 1;
+    if (interruptMask & asynFloat32ArrayMask)   pInterfaces->float32ArrayCanInterrupt = 1;
+    if (interruptMask & asynFloat64ArrayMask)   pInterfaces->float64ArrayCanInterrupt = 1;
+    if (interruptMask & asynGenericPointerMask) pInterfaces->genericPointerCanInterrupt       = 1;
 
     status = pasynStandardInterfacesBase->initialize(portName, pInterfaces,
                                                      this->pasynUser, this);
