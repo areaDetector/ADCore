@@ -8,7 +8,7 @@ DBD += pluginSupport.dbd
 
 
 LIBRARY_IOC = ADPlugin
-LIB_SRCS += NDPluginBase.cpp
+LIB_SRCS += NDPluginDriver.cpp
 LIB_SRCS += NDPluginFile.cpp
 LIB_SRCS += drvNDFileEpics.c
 LIB_SRCS += NDFileNetCDF.cpp
