@@ -16,7 +16,7 @@ record(stringin, "$(P)$(R)PSDriverType_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynOctetRead")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_DRIVER_TYPE_RBV")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_DRIVER_TYPE")
    field(SCAN, "I/O Intr")
 }
 
@@ -24,7 +24,7 @@ record(stringin, "$(P)$(R)PSFilterVersion_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynOctetRead")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_FILTER_VERSION_RBV")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_FILTER_VERSION")
    field(SCAN, "I/O Intr")
 }
 
@@ -32,7 +32,7 @@ record(ai, "$(P)$(R)PSFrameRate_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_FRAME_RATE_RBV")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_FRAME_RATE")
    field(PREC, "3")
    field(SCAN, "I/O Intr")
 }
@@ -41,7 +41,7 @@ record(longin, "$(P)$(R)PSFramesCompleted_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_FRAMES_COMPLETED_RBV")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_FRAMES_COMPLETED")
    field(SCAN, "I/O Intr")
 }
 
@@ -49,7 +49,7 @@ record(longin, "$(P)$(R)PSFramesDropped_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_FRAMES_DROPPED_RBV")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_FRAMES_DROPPED")
    field(SCAN, "I/O Intr")
 }
 
@@ -57,7 +57,7 @@ record(longin, "$(P)$(R)PSPacketsErroneous_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_ERRONEOUS_RBV")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_ERRONEOUS")
    field(SCAN, "I/O Intr")
 }
 
@@ -65,7 +65,7 @@ record(longin, "$(P)$(R)PSPacketsMissed_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_MISSED_RBV")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_MISSED")
    field(SCAN, "I/O Intr")
 }
 
@@ -73,7 +73,7 @@ record(longin, "$(P)$(R)PSPacketsReceived_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_RECEIVED_RBV")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_RECEIVED")
    field(SCAN, "I/O Intr")
 }
 
@@ -81,7 +81,7 @@ record(longin, "$(P)$(R)PSPacketsRequested_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_REQUESTED_RBV")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_REQUESTED")
    field(SCAN, "I/O Intr")
 }
 
@@ -89,7 +89,7 @@ record(longin, "$(P)$(R)PSPacketsResent_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_RESENT_RBV")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKETS_RESENT")
    field(SCAN, "I/O Intr")
 }
 
@@ -97,7 +97,7 @@ record(longin, "$(P)$(R)PSBadFrameCounter_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_BAD_FRAME_COUNTER_RBV")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_BAD_FRAME_COUNTER")
    field(SCAN, "I/O Intr")
 }
 

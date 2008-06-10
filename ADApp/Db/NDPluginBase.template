@@ -19,7 +19,7 @@ record(stringin, "$(P)$(R)NDArrayPort_RBV")
 {
     field(PINI, "1")
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_PORT_RBV")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_PORT")
     field(SCAN, "I/O Intr")
 }
 
@@ -35,7 +35,7 @@ record(longin, "$(P)$(R)NDArrayAddress_RBV")
 {
     field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_ADDR_RBV")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_ADDR")
     field(SCAN, "I/O Intr")
 }
 
@@ -43,27 +43,23 @@ record(longin, "$(P)$(R)NDArrayAddress_RBV")
 #  These records control whether callbacks are enabled and        #
 #  minimum time between callbacks                                 #
 ###################################################################
-record(mbbo, "$(P)$(R)EnableCallbacks")
+record(bo, "$(P)$(R)EnableCallbacks")
 {
     field(PINI, "1")
     field(VAL,  "1")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_CALLBACKS")
-    field(ZRST, "No")
-    field(ZRVL, "0")
-    field(ONST, "Yes")
-    field(ONVL, "1")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
 }
 
-record(mbbi, "$(P)$(R)EnableCallbacks_RBV")
+record(bi, "$(P)$(R)EnableCallbacks_RBV")
 {
     field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_CALLBACKS_RBV")
-    field(ZRST, "No")
-    field(ZRVL, "0")
-    field(ONST, "Yes")
-    field(ONVL, "1")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_CALLBACKS")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
     field(SCAN, "I/O Intr")
 }
 
@@ -81,7 +77,7 @@ record(ai, "$(P)$(R)MinCallbackTime_RBV")
 {
     field(PINI, "1")
     field(DTYP, "asynFloat64")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_CALLBACK_TIME_RBV")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_CALLBACK_TIME")
     field(EGU,  "s")
     field(PREC, "3")
     field(SCAN, "I/O Intr")
@@ -90,28 +86,23 @@ record(ai, "$(P)$(R)MinCallbackTime_RBV")
 ###################################################################
 #  These records control whether callbacks block or not           #
 ###################################################################
-record(mbbo, "$(P)$(R)BlockingCallbacks")
+record(bo, "$(P)$(R)BlockingCallbacks")
 {
     field(PINI, "1")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BLOCKING_CALLBACKS")
     field(VAL,  "0")
-    field(ZRST, "No")
-    field(ZRVL, "0")
-    field(ONST, "Yes")
-    field(ONVL, "1")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
 }
 
-# Array posting flag
-record(mbbi, "$(P)$(R)BlockingCallbacks_RBV")
+record(bi, "$(P)$(R)BlockingCallbacks_RBV")
 {
     field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BLOCKING_CALLBACKS_RBV")
-    field(ZRST, "No")
-    field(ZRVL, "0")
-    field(ONST, "Yes")
-    field(ONVL, "1")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BLOCKING_CALLBACKS")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
     field(SCAN, "I/O Intr")
 }
 
@@ -132,7 +123,7 @@ record(longin, "$(P)$(R)ArrayCounter_RBV")
 {
     field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_COUNTER_RBV")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_COUNTER")
     field(SCAN, "I/O Intr")
 }
 
@@ -159,7 +150,7 @@ record(longin, "$(P)$(R)DroppedArrays_RBV")
 {
     field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DROPPED_ARRAYS_RBV")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DROPPED_ARRAYS")
     field(SCAN, "I/O Intr")
 }
 
@@ -171,7 +162,7 @@ record(longin, "$(P)$(R)NDimensions_RBV")
 {
     field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_NDIMENSIONS_RBV")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_NDIMENSIONS")
     field(SCAN, "I/O Intr")
 }
 
@@ -225,7 +216,7 @@ record(mbbi, "$(P)$(R)DataType_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DATA_TYPE_RBV")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DATA_TYPE")
    field(ZRST, "Int8")
    field(ZRVL, "0")
    field(ONST, "UInt8")
@@ -252,7 +243,7 @@ record(longin, "$(P)$(R)UniqueId_RBV")
 {
     field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))UNIQUE_ID_RBV")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))UNIQUE_ID")
     field(SCAN, "I/O Intr")
 }
 
@@ -260,7 +251,7 @@ record(ai, "$(P)$(R)TimeStamp_RBV")
 {
     field(PINI, "1")
     field(DTYP, "asynFloat64")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TIME_STAMP_RBV")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TIME_STAMP")
     field(PREC, "3")
     field(SCAN, "I/O Intr")
 }
