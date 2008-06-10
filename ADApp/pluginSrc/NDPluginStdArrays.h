@@ -4,16 +4,16 @@
 #include <epicsTypes.h>
 #include <asynStandardInterfaces.h>
 
-#include "NDPluginBase.h"
+#include "NDPluginDriver.h"
 
 typedef enum
 {
     NDPluginStdArraysData           /* (asynXXXArray, r/w) Array data waveform */
-        = NDPluginBaseLastParam,
+        = NDPluginDriverLastParam,
     NDPluginStdArraysLastParam
 } NDPluginStdArraysParam_t;
 
-class NDPluginStdArrays : public NDPluginBase {
+class NDPluginStdArrays : public NDPluginDriver {
 public:
     NDPluginStdArrays(const char *portName, int queueSize, int blockingCallbacks, 
                       const char *NDArrayPort, int NDArrayAddr,

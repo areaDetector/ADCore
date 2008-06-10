@@ -23,52 +23,33 @@
 
 static asynParamString_t NDPluginROINParamString[] = {
     {NDPluginROIName,                   "NAME"},
-    {NDPluginROIName_RBV,               "NAME_RBV"},
     {NDPluginROIUse,                    "USE"},
-    {NDPluginROIUse_RBV,                "USE_RBV"},
     {NDPluginROIComputeStatistics,      "COMPUTE_STATISTICS"},
-    {NDPluginROIComputeStatistics_RBV,  "COMPUTE_STATISTICS_RBV"},
     {NDPluginROIComputeHistogram,       "COMPUTE_HISTOGRAM"},
-    {NDPluginROIComputeHistogram_RBV,   "COMPUTE_HISTOGRAM_RBV"},
     {NDPluginROIComputeProfiles,        "COMPUTE_PROFILES"},
-    {NDPluginROIComputeProfiles_RBV,    "COMPUTE_PROFILES_RBV"},
     {NDPluginROIHighlight,              "HIGHLIGHT"},
-    {NDPluginROIHighlight_RBV,          "HIGHLIGHT_RBV"},
 
     {NDPluginROIDim0Min,                "DIM0_MIN"},
-    {NDPluginROIDim0Min_RBV,            "DIM0_MIN_RBV"},
     {NDPluginROIDim0Size,               "DIM0_SIZE"},
-    {NDPluginROIDim0Size_RBV,           "DIM0_SIZE_RBV"},
     {NDPluginROIDim0Bin,                "DIM0_BIN"},
-    {NDPluginROIDim0Bin_RBV,            "DIM0_BIN_RBV"},
     {NDPluginROIDim0Reverse,            "DIM0_REVERSE"},
-    {NDPluginROIDim0Reverse_RBV,        "DIM0_REVERSE_RBV"},
     {NDPluginROIDim1Min,                "DIM1_MIN"},
-    {NDPluginROIDim1Min_RBV,            "DIM1_MIN_RBV"},
     {NDPluginROIDim1Size,               "DIM1_SIZE"},
-    {NDPluginROIDim1Size_RBV,           "DIM1_SIZE_RBV"},
     {NDPluginROIDim1Bin,                "DIM1_BIN"},
-    {NDPluginROIDim1Bin_RBV,            "DIM1_BIN_RBV"},
     {NDPluginROIDim1Reverse,            "DIM1_REVERSE"},
-    {NDPluginROIDim1Reverse_RBV,        "DIM1_REVERSE_RBV"},
     {NDPluginROIDataType,               "DATA_TYPE"},
-    {NDPluginROIDataType_RBV,           "DATA_TYPE_RBV"},
 
     {NDPluginROIBgdWidth,               "BGD_WIDTH"},
-    {NDPluginROIBgdWidth_RBV,           "BGD_WIDTH_RBV"},
-    {NDPluginROIMinValue_RBV,           "MIN_VALUE_RBV"},
-    {NDPluginROIMaxValue_RBV,           "MAX_VALUE_RBV"},
-    {NDPluginROIMeanValue_RBV,          "MEAN_VALUE_RBV"},
-    {NDPluginROITotal_RBV,              "TOTAL_RBV"},
-    {NDPluginROINet_RBV,                "NET_RBV"},
+    {NDPluginROIMinValue,               "MIN_VALUE"},
+    {NDPluginROIMaxValue,               "MAX_VALUE"},
+    {NDPluginROIMeanValue,              "MEAN_VALUE"},
+    {NDPluginROITotal,                  "TOTAL"},
+    {NDPluginROINet,                    "NET"},
 
     {NDPluginROIHistSize,               "HIST_SIZE"},
-    {NDPluginROIHistSize_RBV,           "HIST_SIZE_RBV"},
     {NDPluginROIHistMin,                "HIST_MIN"},
-    {NDPluginROIHistMin_RBV,            "HIST_MIN_RBV"},
     {NDPluginROIHistMax,                "HIST_MAX"},
-    {NDPluginROIHistMax_RBV,            "HIST_MAX_RBV"},
-    {NDPluginROIHistEntropy_RBV,        "HIST_ENTROPY_RBV"},
+    {NDPluginROIHistEntropy,            "HIST_ENTROPY"},
     {NDPluginROIHistArray,              "HIST_ARRAY"},
 };
 
@@ -139,7 +120,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     const char* functionName = "processCallbacks";
      
     /* Call the base class method */
-    NDPluginBase::processCallbacks(pArray);
+    NDPluginDriver::processCallbacks(pArray);
     
     /* Loop over the ROIs in this driver */
     for (roi=0; roi<this->maxROIs; roi++) {
@@ -186,7 +167,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         pROIArray  = this->pArrays[roi];
 
         /* Call any clients who have registered for NDArray callbacks */
-        doCallbacksHandle(pROIArray, NDArrayData, roi);
+        doCallbacksGenericPointer(pROIArray, NDArrayData, roi);
 
         pROIArray->getInfo(&arrayInfo);
 
@@ -230,11 +211,11 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
             }
             net = total;
             mean = total / arrayInfo.nElements;
-            setDoubleParam(roi, NDPluginROIMinValue_RBV, min);
-            setDoubleParam(roi, NDPluginROIMaxValue_RBV, max);
-            setDoubleParam(roi, NDPluginROIMeanValue_RBV, mean);
-            setDoubleParam(roi, NDPluginROITotal_RBV, total);
-            setDoubleParam(roi, NDPluginROINet_RBV, net);
+            setDoubleParam(roi, NDPluginROIMinValue, min);
+            setDoubleParam(roi, NDPluginROIMaxValue, max);
+            setDoubleParam(roi, NDPluginROIMeanValue, mean);
+            setDoubleParam(roi, NDPluginROITotal, total);
+            setDoubleParam(roi, NDPluginROINet, net);
             asynPrint(this->pasynUser, ASYN_TRACEIO_DRIVER, 
                 (char *)pROIArray->pData, arrayInfo.totalBytes,
                 "%s:%s ROI=%d, min=%f, max=%f, mean=%f, total=%f, net=%f",
@@ -299,7 +280,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
                 entropy += counts * log(counts);
             }
             entropy = -entropy / arrayInfo.nElements;
-            setDoubleParam(roi, NDPluginROIHistEntropy_RBV, entropy);
+            setDoubleParam(roi, NDPluginROIHistEntropy, entropy);
             doCallbacksFloat64Array(pROI->histogram, histSize, NDPluginROIHistArray, roi);
         }
 
@@ -325,7 +306,6 @@ asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
     pROI = &this->pROIs[roi];
     /* Set parameter and readback in parameter library */
     status = setIntegerParam(roi , function, value);
-    status = setIntegerParam(roi , function+1, value);
     switch(function) {
         case NDPluginROIDim0Min:
             pROI->dims[0].offset = value;
@@ -353,7 +333,7 @@ asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
             break;
         default:
             /* This was not a parameter that this driver understands, try the base class */
-            status = NDPluginBase::writeInt32(pasynUser, value);
+            status = NDPluginDriver::writeInt32(pasynUser, value);
             break;
     }
     /* Do callbacks so higher layers see any changes */
@@ -442,7 +422,7 @@ asynStatus NDPluginROI::drvUserCreate(asynUser *pasynUser,
     }
 
     /* If we did not find it in that table try the plugin base */
-    status = NDPluginBase::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
+    status = NDPluginDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
     return(status);
 }
 
@@ -458,10 +438,10 @@ extern "C" int drvNDROIConfigure(const char *portName, int queueSize, int blocki
 NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallbacks, 
                          const char *NDArrayPort, int NDArrayAddr, int maxROIs, size_t maxMemory)
     /* Invoke the base class constructor */
-    : NDPluginBase(portName, queueSize, blockingCallbacks, 
+    : NDPluginDriver(portName, queueSize, blockingCallbacks, 
                    NDArrayPort, NDArrayAddr, maxROIs, NDPluginROILastROINParam, maxROIs, maxMemory,
-                   asynFloat64ArrayMask | asynHandleMask, 
-                   asynFloat64ArrayMask | asynHandleMask)
+                   asynFloat64ArrayMask | asynGenericPointerMask, 
+                   asynFloat64ArrayMask | asynGenericPointerMask)
 {
     asynStatus status;
     int roi;
@@ -472,33 +452,37 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
     this->pROIs = (NDROI_t *)callocMustSucceed(maxROIs, sizeof(*this->pROIs), functionName);
 
     for (roi=0; roi<maxROIs; roi++) {
-        setStringParam (roi, NDPluginROIName_RBV, "");
-        setIntegerParam(roi , NDPluginROIUse_RBV, 0);
-        setIntegerParam(roi , NDPluginROIComputeStatistics_RBV, 0);
-        setIntegerParam(roi , NDPluginROIComputeHistogram_RBV, 0);
-        setIntegerParam(roi , NDPluginROIComputeProfiles_RBV, 0);
-        setIntegerParam(roi , NDPluginROIHighlight_RBV, 0);
-        setIntegerParam(roi , NDPluginROIDim0Min_RBV, 0);
-        setIntegerParam(roi , NDPluginROIDim0Size_RBV, 0);
-        setIntegerParam(roi , NDPluginROIDim0Bin_RBV, 0);
-        setIntegerParam(roi , NDPluginROIDim0Reverse_RBV, 0);
-        setIntegerParam(roi , NDPluginROIDim1Min_RBV, 0);
-        setIntegerParam(roi , NDPluginROIDim1Size_RBV, 0);
-        setIntegerParam(roi , NDPluginROIDim1Bin_RBV, 0);
-        setIntegerParam(roi , NDPluginROIDim1Reverse_RBV, 0);
-        setIntegerParam(roi , NDPluginROIDataType_RBV, 0);
-        setDoubleParam (roi , NDPluginROIBgdWidth_RBV, 0.0);
-        setDoubleParam (roi , NDPluginROIMinValue_RBV, 0.0);
-        setDoubleParam (roi , NDPluginROIMaxValue_RBV, 0.0);
-        setDoubleParam (roi , NDPluginROIMeanValue_RBV, 0.0);
-        setDoubleParam (roi , NDPluginROITotal_RBV, 0.0);
-        setDoubleParam (roi , NDPluginROINet_RBV, 0.0);
-        setIntegerParam(roi , NDPluginROIHistSize_RBV, 0);
-        setDoubleParam (roi , NDPluginROIHistMin_RBV, 0.0);
-        setDoubleParam (roi , NDPluginROIHistMax_RBV, 0.0);
-        setDoubleParam (roi , NDPluginROIHistEntropy_RBV, 0.0);
-        setIntegerParam(roi , ADImageSizeX_RBV, 0);
-        setIntegerParam(roi , ADImageSizeY_RBV, 0);
+        setStringParam (roi,  NDPluginROIName,              "");
+        setIntegerParam(roi , NDPluginROIUse,               0);
+        setIntegerParam(roi , NDPluginROIComputeStatistics, 0);
+        setIntegerParam(roi , NDPluginROIComputeHistogram,  0);
+        setIntegerParam(roi , NDPluginROIComputeProfiles,   0);
+        setIntegerParam(roi , NDPluginROIHighlight,         0);
+
+        setIntegerParam(roi , NDPluginROIDim0Min,           0);
+        setIntegerParam(roi , NDPluginROIDim0Size,          0);
+        setIntegerParam(roi , NDPluginROIDim0Bin,           1);
+        setIntegerParam(roi , NDPluginROIDim0Reverse,       0);
+        setIntegerParam(roi , NDPluginROIDim1Min,           0);
+        setIntegerParam(roi , NDPluginROIDim1Size,          0);
+        setIntegerParam(roi , NDPluginROIDim1Bin,           1);
+        setIntegerParam(roi , NDPluginROIDim1Reverse,       0);
+        setIntegerParam(roi , NDPluginROIDataType,          0);
+       
+        setIntegerParam(roi , NDPluginROIBgdWidth,          0);
+        setDoubleParam (roi , NDPluginROIMinValue,          0.0);
+        setDoubleParam (roi , NDPluginROIMaxValue,          0.0);
+        setDoubleParam (roi , NDPluginROIMeanValue,         0.0);
+        setDoubleParam (roi , NDPluginROITotal,             0.0);
+        setDoubleParam (roi , NDPluginROINet,               0.0);
+        
+        setIntegerParam(roi , NDPluginROIHistSize,          0);
+        setDoubleParam (roi , NDPluginROIHistMin,           0);
+        setDoubleParam (roi , NDPluginROIHistMax,           0);
+        
+        setDoubleParam (roi , NDPluginROIHistEntropy,       0.0);
+        setIntegerParam(roi , ADImageSizeX,                 0);
+        setIntegerParam(roi , ADImageSizeY,                 0);
     }
     
     /* Try to connect to the array port */

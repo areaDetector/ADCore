@@ -135,7 +135,7 @@ void NDPluginStdArrays::processCallbacks(NDArray *pArray)
     /* const char* functionName = "NDStdArraysDoCallbacks"; */
 
     /* Call the base class method */
-    NDPluginBase::processCallbacks(pArray);
+    NDPluginDriver::processCallbacks(pArray);
     
     pArray->getInfo(&arrayInfo);
  
@@ -197,7 +197,7 @@ asynStatus NDPluginStdArrays::readInt32Array(asynUser *pasynUser, epicsInt32 *va
     asynStatus status;
     status = readArray<epicsInt32>(pasynUser, value, nElements, nIn, NDInt32);
     if (status != asynSuccess) 
-        status = NDPluginBase::readInt32Array(pasynUser, value, nElements, nIn);
+        status = NDPluginDriver::readInt32Array(pasynUser, value, nElements, nIn);
     return(status);
     
 }
@@ -239,7 +239,7 @@ asynStatus NDPluginStdArrays::drvUserCreate(asynUser *pasynUser, const char *drv
     }
 
     /* If not, then call the base class */
-    status = NDPluginBase::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
+    status = NDPluginDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
     return(status);
 }
 
@@ -259,7 +259,7 @@ NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int bl
                                      const char *NDArrayPort, int NDArrayAddr, 
                                      size_t maxMemory)
     /* Invoke the base class constructor */
-    : NDPluginBase(portName, queueSize, blockingCallbacks, 
+    : NDPluginDriver(portName, queueSize, blockingCallbacks, 
                    NDArrayPort, NDArrayAddr, 1, NDPluginStdArraysLastParam, 1, maxMemory,
                    
                    asynInt8ArrayMask | asynInt16ArrayMask | asynInt32ArrayMask | 
