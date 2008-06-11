@@ -365,32 +365,6 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
     return status;
 }
 
-asynStatus NDPluginDriver::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
-{
-    int function = pasynUser->reason;
-    asynStatus status = asynSuccess;
-    int addr=0;
-    const char *functionName = "writeFloat64";
-
-    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
-
-    /* Set the parameter and readback in the parameter library.  This may be overwritten when we read back the
-     * status at the end, but that's OK */
-    status = setDoubleParam(addr, function, value);
-
-    /* Do callbacks so higher layers see any changes */
-    callParamCallbacks(addr, addr);
-    if (status) 
-        asynPrint(pasynUser, ASYN_TRACE_ERROR, 
-              "%s:%s: error, status=%d function=%d, value=%f\n", 
-              driverName, functionName, status, function, value);
-    else        
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, value=%f\n", 
-              driverName, functionName, function, value);
-    return status;
-}
-
 
 asynStatus NDPluginDriver::writeOctet(asynUser *pasynUser, const char *value, 
                                     size_t nChars, size_t *nActual)
@@ -525,10 +499,10 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     
     /* Create the thread that handles the NDArray callbacks */
     status = (asynStatus)(epicsThreadCreate("NDPluginTask",
-                                epicsThreadPriorityMedium,
-                                epicsThreadGetStackSize(epicsThreadStackMedium),
-                                (EPICSTHREADFUNC)::processTask,
-                                this) == NULL);
+                          epicsThreadPriorityMedium,
+                          epicsThreadGetStackSize(epicsThreadStackMedium),
+                          (EPICSTHREADFUNC)::processTask,
+                          this) == NULL);
     if (status) {
         printf("%s:%s: epicsThreadCreate failure\n", driverName, functionName);
         return;
