@@ -496,9 +496,28 @@ static asynStatus writeInt32(void *drvPvt, asynUser *pasynUser,
 
 asynStatus asynPortDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
-    epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                "%s:writeInt32 not implemented", driverName);
-    return(asynError);
+    int function = pasynUser->reason;
+    int addr=0;
+    asynStatus status = asynSuccess;
+    const char* functionName = "writeInt32";
+
+    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
+
+    /* Set the parameter in the parameter library. */
+    status = (asynStatus) setIntegerParam(addr, function, value);
+
+    /* Do callbacks so higher layers see any changes */
+    status = (asynStatus) callParamCallbacks(addr, addr);
+    
+    if (status) 
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
+                  "%s:%s: status=%d, function=%d, value=%d", 
+                  driverName, functionName, status, function, value);
+    else        
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
+              "%s:%s: function=%d, value=%d\n", 
+              driverName, functionName, function, value);
+    return status;
 }
 
 static asynStatus getBounds(void *drvPvt, asynUser *pasynUser,
@@ -576,10 +595,29 @@ static asynStatus writeFloat64(void *drvPvt, asynUser *pasynUser,
 
 asynStatus asynPortDriver::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 {
-    epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                "%s:writeFloat64 not implemented", driverName);
-    return(asynError);
+    int function = pasynUser->reason;
+    asynStatus status = asynSuccess;
+    int addr=0;
+    const char *functionName = "writeFloat64";
+
+    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
+ 
+    /* Set the parameter and readback in the parameter library. */
+    status = setDoubleParam(addr, function, value);
+
+    /* Do callbacks so higher layers see any changes */
+    callParamCallbacks(addr, addr);
+    if (status) 
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, 
+              "%s:%s: error, status=%d function=%d, value=%f\n", 
+              driverName, functionName, status, function, value);
+    else        
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
+              "%s:%s: function=%d, value=%f\n", 
+              driverName, functionName, function, value);
+    return status;
 }
+
 
 
 /* asynOctet interface methods */
@@ -637,10 +675,32 @@ static asynStatus writeOctet(void *drvPvt, asynUser *pasynUser,
 asynStatus asynPortDriver::writeOctet(asynUser *pasynUser, const char *value, 
                                     size_t nChars, size_t *nActual)
 {
-    epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                "%s:writeOctet not implemented", driverName);
-    return(asynError);
+    int addr=0;
+    int function = pasynUser->reason;
+    asynStatus status = asynSuccess;
+    const char *functionName = "writeOctet";
+
+    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
+
+    /* Set the parameter in the parameter library. */
+    status = (asynStatus)setStringParam(addr, function, (char *)value);
+
+     /* Do callbacks so higher layers see any changes */
+    status = (asynStatus)callParamCallbacks(addr, addr);
+
+    if (status) 
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
+                  "%s:%s: status=%d, function=%d, value=%s", 
+                  driverName, functionName, status, function, value);
+    else        
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
+              "%s:%s: function=%d, value=%s\n", 
+              driverName, functionName, function, value);
+    *nActual = nChars;
+    return status;
 }
+
+
 
 
 /* asynInt8Array interface methods */
