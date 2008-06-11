@@ -52,88 +52,6 @@ int ADDriver::createFileName(int maxChars, char *fullFileName)
     }
     return(status);   
 }
-asynStatus ADDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
-{
-    int function = pasynUser->reason;
-    int addr=0;
-    asynStatus status = asynSuccess;
-    const char* functionName = "writeInt32";
-
-    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
-
-    /* Set the parameter in the parameter library. */
-    status = (asynStatus) setIntegerParam(addr, function, value);
-
-    /* Do callbacks so higher layers see any changes */
-    status = (asynStatus) callParamCallbacks(addr, addr);
-    
-    if (status) 
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                  "%s:%s: status=%d, function=%d, value=%d", 
-                  driverName, functionName, status, function, value);
-    else        
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, value=%d\n", 
-              driverName, functionName, function, value);
-    return status;
-}
-
-asynStatus ADDriver::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
-{
-    int function = pasynUser->reason;
-    asynStatus status = asynSuccess;
-    int addr=0;
-    const char *functionName = "writeFloat64";
-
-    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
- 
-    /* Set the parameter and readback in the parameter library.  This may be overwritten when we read back the
-     * status at the end, but that's OK */
-    status = setDoubleParam(addr, function, value);
-    status = setDoubleParam(addr, function+1, value);
-
-    /* Do callbacks so higher layers see any changes */
-    callParamCallbacks(addr, addr);
-    if (status) 
-        asynPrint(pasynUser, ASYN_TRACE_ERROR, 
-              "%s:%s: error, status=%d function=%d, value=%f\n", 
-              driverName, functionName, status, function, value);
-    else        
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, value=%f\n", 
-              driverName, functionName, function, value);
-    return status;
-}
-
-
-asynStatus ADDriver::writeOctet(asynUser *pasynUser, const char *value, 
-                                    size_t nChars, size_t *nActual)
-{
-    int addr=0;
-    int function = pasynUser->reason;
-    asynStatus status = asynSuccess;
-    const char *functionName = "writeOctet";
-
-    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
-    /* Set the parameter in the parameter library. */
-    status = (asynStatus)setStringParam(addr, function, (char *)value);
-
-     /* Do callbacks so higher layers see any changes */
-    status = (asynStatus)callParamCallbacks(addr, addr);
-
-    if (status) 
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                  "%s:%s: status=%d, function=%d, value=%s", 
-                  driverName, functionName, status, function, value);
-    else        
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, value=%s\n", 
-              driverName, functionName, function, value);
-    *nActual = nChars;
-    return status;
-}
-
-
 
 /* asynDrvUser routines */
 asynStatus ADDriver::drvUserCreate(asynUser *pasynUser,
@@ -170,7 +88,7 @@ asynStatus ADDriver::drvUserCreate(asynUser *pasynUser,
     
 
 ADDriver::ADDriver(const char *portName, int maxAddr, int paramTableSize, int maxBuffers, size_t maxMemory,
-                           int interfaceMask, int interruptMask)
+                   int interfaceMask, int interruptMask)
 
     : asynNDArrayDriver(portName, maxAddr, paramTableSize, maxBuffers, maxMemory,
           interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynGenericPointerMask | asynDrvUserMask,
@@ -180,7 +98,7 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int paramTableSize, int ma
     //char *functionName = "ADDriver";
 
     /* Set some default values for parameters */
-    setDoubleParam (ADGain,          1.0);
+    setDoubleParam (ADGain,         1.0);
     setIntegerParam(ADBinX,         1);
     setIntegerParam(ADBinY,         1);
     setIntegerParam(ADMinX,         0);
