@@ -5,6 +5,26 @@
 </head>
 
 <h1 align="center">areaDetector Release Notes</h1>
+<h2 align="center">Release 1-2 (xxx-June-2008)</h2>
+<ul>
+  <li>Renamed asynParamBase to asynPortDriver.
+  <li>Renamed NDArrayBase to NDArrayDriver
+  <li>Renamed NDPluginBase to NDPluginDriver
+  <li>Renamed NDArrayBuff to NDArrayPool, now in NDArray.cpp.
+  <li>Renamed ADDriverBase to ADDriver
+  <li>Removed ADUtils
+  <li>The asynHandle interface in asyn was renamed to asynGenericPointer, 
+      many changes to incorporate this.
+  <li>Removed separate readback parameters in drivers and template files
+  <li>Changed from mbbi/mbbo records to bi/bo records where possible now
+      that the asynInt32 interface supports bi/bo records.
+  <li>Base class constructor no longer initializes all asyn interfaces,
+      only the selected ones.
+  <li>NDArray pool is no longer global, each server creates its own pool if needed.
+  <li>Implemented real routines for writeInt32, writeFloat64, and writeOctet in asynPortDriver.cpp,
+      removed them from ADDriver.cpp where they were not needed.
+</ul>
+  
 
 <h2 align="center">Release 1-1 (10-May-2008)</h2>
 <ul>
