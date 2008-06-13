@@ -20,7 +20,7 @@
 
 #include "NDArray.h"
 
-static char *driverName = "NDArray";
+static const char *driverName = "NDArray";
 
 NDArrayPool::NDArrayPool(int maxBuffers, size_t maxMemory)
     : maxBuffers(maxBuffers),numBuffers(0),  maxMemory(maxMemory), memorySize(0), numFree(0)
@@ -332,7 +332,7 @@ int NDArrayPool::convert(NDArray *pIn,
     int status = ND_SUCCESS;
     NDArray *pOut;
     NDArrayInfo_t arrayInfo;
-    static char *functionName = "convert";
+    const char *functionName = "convert";
     
     /* Compute the dimensions of the output array */
     dimsUnchanged = 1;

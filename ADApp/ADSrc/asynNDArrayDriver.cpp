@@ -19,7 +19,7 @@
 
 #include "asynNDArrayDriver.h"
 
-static char *driverName = "asynNDArrayDriver";
+static const char *driverName = "asynNDArrayDriver";
 
 /* asynGenericPointer interface methods */
 asynStatus asynNDArrayDriver::readGenericPointer(asynUser *pasynUser, void *genericPointer)

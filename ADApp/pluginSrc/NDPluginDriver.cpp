@@ -123,10 +123,10 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
     NDArray *pArray = (NDArray *)genericPointer;
     epicsTimeStamp tNow;
     double minCallbackTime, deltaTime;
-    int status;
+    int status=0;
     int blockingCallbacks;
     int arrayCounter, droppedArrays;
-    char *functionName = "driverCallback";
+    const char *functionName = "driverCallback";
 
     epicsMutexLock(mutexId);
 
@@ -436,7 +436,7 @@ asynStatus NDPluginDriver::drvUserCreate(asynUser *pasynUser,
 {
     int status;
     int param;
-    static char *functionName = "drvUserCreate";
+    const char *functionName = "drvUserCreate";
 
     /* See if this parameter is defined for the NDPluginDriver class */
     status = findParam(NDPluginDriverParamString, NUM_ND_PLUGIN_BASE_PARAMS, drvInfo, &param);
@@ -474,7 +474,7 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
           interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask)    
 {
     asynStatus status;
-    char *functionName = "NDPluginDriver";
+    const char *functionName = "NDPluginDriver";
     asynUser *pasynUser;
 
     /* Initialize some members to 0 */

@@ -6,7 +6,7 @@
 
 typedef struct {
     int param;
-    char *paramString;
+    const char *paramString;
 } asynParamString_t;
 
 #ifdef __cplusplus

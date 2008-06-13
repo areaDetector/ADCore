@@ -21,7 +21,7 @@
 
 #include "asynPortDriver.h"
 
-static char *driverName = "asynPortDriver";
+static const char *driverName = "asynPortDriver";
 
 paramList::paramList(int startVal, int nVals, asynStandardInterfaces *pasynInterfaces)
     : startVal(startVal), nVals(nVals), nFlags(0), pasynInterfaces(pasynInterfaces)
@@ -465,7 +465,7 @@ asynStatus asynPortDriver::readInt32(asynUser *pasynUser, epicsInt32 *value)
     int function = pasynUser->reason;
     int addr=0;
     asynStatus status = asynSuccess;
-    static char *functionName = "readInt32";
+    const char *functionName = "readInt32";
     
     status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
     /* We just read the current value of the parameter from the parameter library.
@@ -564,7 +564,7 @@ asynStatus asynPortDriver::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
     int function = pasynUser->reason;
     int addr=0;
     asynStatus status = asynSuccess;
-    static char *functionName = "readFloat64";
+    const char *functionName = "readFloat64";
     
     status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
     /* We just read the current value of the parameter from the parameter library.
@@ -1017,7 +1017,7 @@ asynStatus asynPortDriver::drvUserCreate(asynUser *pasynUser,
                                        const char *drvInfo, 
                                        const char **pptypeName, size_t *psize)
 {
-    static char *functionName = "drvUserCreate";
+    const char *functionName = "drvUserCreate";
     
     asynPrint(pasynUser, ASYN_TRACE_FLOW,
               "%s:%s: entered", driverName, functionName);
@@ -1043,7 +1043,7 @@ asynStatus asynPortDriver::drvUserGetType(asynUser *pasynUser,
                                         const char **pptypeName, size_t *psize)
 {
     /* This is not currently supported, because we can't get the strings for driver-specific commands */
-    static char *functionName = "drvUserGetType";
+    const char *functionName = "drvUserGetType";
 
     asynPrint(pasynUser, ASYN_TRACE_FLOW,
               "%s:%s: entered", driverName, functionName);
@@ -1066,7 +1066,7 @@ static asynStatus drvUserDestroy(void *drvPvt, asynUser *pasynUser)
 
 asynStatus asynPortDriver::drvUserDestroy(asynUser *pasynUser)
 {
-    static char *functionName = "drvUserDestroy";
+    const char *functionName = "drvUserDestroy";
 
     asynPrint(pasynUser, ASYN_TRACE_FLOW,
               "%s:%s: this=%p, pasynUser=%p\n",
@@ -1126,7 +1126,7 @@ static asynStatus connect(void *drvPvt, asynUser *pasynUser)
 
 asynStatus asynPortDriver::connect(asynUser *pasynUser)
 {
-    static char *functionName = "connect";
+    const char *functionName = "connect";
     
     pasynManager->exceptionConnect(pasynUser);
     asynPrint(pasynUser, ASYN_TRACE_FLOW,
@@ -1149,7 +1149,7 @@ static asynStatus disconnect(void *drvPvt, asynUser *pasynUser)
 
 asynStatus asynPortDriver::disconnect(asynUser *pasynUser)
 {
-    static char *functionName = "disconnect";
+    const char *functionName = "disconnect";
     
     pasynManager->exceptionDisconnect(pasynUser);
     asynPrint(pasynUser, ASYN_TRACE_FLOW,
@@ -1225,7 +1225,7 @@ asynPortDriver::asynPortDriver(const char *portName, int maxAddr, int paramTable
     : maxAddr(maxAddr)
 {
     asynStatus status;
-    char *functionName = "asynPortDriver";
+    const char *functionName = "asynPortDriver";
     asynStandardInterfaces *pInterfaces;
     int addr;
 

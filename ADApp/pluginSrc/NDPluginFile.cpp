@@ -443,7 +443,7 @@ asynStatus NDPluginFile::drvUserCreate(asynUser *pasynUser, const char *drvInfo,
 {
     asynStatus status;
     int param;
-    static char *functionName = "drvUserCreate";
+    const char *functionName = "drvUserCreate";
 
     /* First see if this is a parameter specific to this plugin */
     status = findParam(NDPluginFileParamString, NUM_ND_PLUGIN_FILE_PARAMS, 
@@ -487,7 +487,7 @@ NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCall
                    NDArrayPort, NDArrayAddr, 1, NDPluginFileLastParam, 0, 0, 
                    asynGenericPointerMask, asynGenericPointerMask)
 {
-    char *functionName = "NDPluginFile";
+    const char *functionName = "NDPluginFile";
     asynStatus status;
     int addr=0;
 

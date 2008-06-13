@@ -34,7 +34,7 @@ static asynParamString_t NDPluginStdArraysParamString[] = {
 
 #define NUM_ND_PLUGIN_STD_ARRAYS_PARAMS (sizeof(NDPluginStdArraysParamString)/sizeof(NDPluginStdArraysParamString[0]))
 
-static char *driverName="NDPluginStdArrays";
+static const char *driverName="NDPluginStdArrays";
 
 template <typename epicsType, typename interruptType>
 void arrayInterruptCallback(NDArray *pArray, NDArrayPool *pNDArrayPool, 
@@ -219,7 +219,7 @@ asynStatus NDPluginStdArrays::drvUserCreate(asynUser *pasynUser, const char *drv
 {
     asynStatus status;
     int param;
-    static char *functionName = "drvUserCreate";
+    const char *functionName = "drvUserCreate";
 
     /* First see if this is a parameter specific to this plugin */
     status = findParam(NDPluginStdArraysParamString, NUM_ND_PLUGIN_STD_ARRAYS_PARAMS, 

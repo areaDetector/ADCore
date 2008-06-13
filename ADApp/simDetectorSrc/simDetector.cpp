@@ -33,7 +33,7 @@
 #include "drvSimDetector.h"
 
 
-static char *driverName = "drvSimDetector";
+static const char *driverName = "drvSimDetector";
 
 class simDetector : public ADDriver {
 public:
@@ -277,7 +277,7 @@ void simDetector::simTask()
     double acquireTime, acquirePeriod, delay;
     epicsTimeStamp startTime, endTime;
     double elapsedTime;
-    static char *functionName = "simTask";
+    const char *functionName = "simTask";
 
     /* Loop forever */
     while (1) {
@@ -571,7 +571,7 @@ simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDat
 
 {
     int status = asynSuccess;
-    char *functionName = "simDetector";
+    const char *functionName = "simDetector";
     int addr=0;
     int dims[2];
 

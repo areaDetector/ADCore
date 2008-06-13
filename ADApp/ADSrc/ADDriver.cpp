@@ -20,7 +20,7 @@
 #include "ADDriver.h"
 
 
-static char *driverName = "ADDriver";
+static const char *driverName = "ADDriver";
 
 int ADDriver::createFileName(int maxChars, char *fullFileName)
 {
