@@ -21,20 +21,22 @@
                 Overview</A> 
   <LI><A href="#Architecture">
                 Architecture</A> 
-  <LI><A href="#asynParamBase">
-                asynParamBase</A> 
+  <LI><A href="#asynPortDriver">
+                asynPortDriver</A> 
   <LI><A href="#NDArray">
                 NDArray</A> 
-  <LI><A href="#asynNDArrayBase">
-                asynNDArrayBase</A>
-  <LI><A href="#ADDriverBase">
-                ADDriverBase</A>
+  <LI><A href="#NDArrayPool">
+                NDArrayPool</A> 
+  <LI><A href="#asynNDArrayDriver">
+                asynNDArrayDriver</A>
+  <LI><A href="#ADDriver">
+                ADDriver</A>
   <LI><A href="#simDetector">
                 simDetector</A>
   <LI><A href="#Prosilica driver">
                 Prosilica driver</A>
-  <LI><A href="#NDPluginBase">
-                NDPluginBase</A>
+  <LI><A href="#NDPluginDriver">
+                NDPluginDriver</A>
   <LI><A href="#NDPluginStdArrays">
                 NDPluginStdArrays</A>
   <LI><A href="#NDPluginROI">
@@ -129,7 +131,7 @@ From the bottom to the top this architecture consists of the following:</P>
       of a socket protocol to a driver, a Microsoft COM interface, etc.
   <LI>Layer 2.  This is the driver that is written for the area detector application to
       control a particular detector.  It is normally written in C++ and inherits from the
-      ADDriverBase class.  It uses the standard asyn interfaces for control and status
+      ADDriver class.  It uses the standard asyn interfaces for control and status
       information.  Each time it receives a new data array it passes it as an NDArray object
       to all Layer 3 clients that have registered for callbacks.  This is the only code that
       needs to be written to implement a new detector.  Existing drivers range from
@@ -139,7 +141,7 @@ From the bottom to the top this architecture consists of the following:</P>
       file saving (NDPluginFile), region-of-interest (ROI) calculations (NDPluginROI), 
       and conversion of detector data to standard EPICS array types for use by 
       Channel Access clients (NDPluginStdArrays).  Plugins are normally written in C++ and
-      inherit from NDPluginBase.  Existing plugins range from 280 to 550 lines
+      inherit from NDPluginDriver.  Existing plugins range from 280 to 550 lines
       of code.
   <LI>Layer 4.  This is standard asyn device support that comes with the EPICS asyn module.
   <LI>Layer 5.  These are standard EPICS records, and EPICS database (template) files that
@@ -158,7 +160,7 @@ code.
   <LI>asyn.  asyn is a module that provides interthread messaging services, including queueing
       and callbacks.
 </OL>
-In particular it is possible to eliminates layers 4-6 in the architecture shown in Figure 1, providing
+In particular it is possible to eliminate layers 4-6 in the architecture shown in Figure 1, providing
 there is a programs such as the high-performance GUI shown in Layer 3.  This means that it is not necessary
 to run an EPICS IOC or to use EPICS Channel Access when using the drivers and plugins at Layers 2 and 3.
 <P>
@@ -178,17 +180,17 @@ the vendor API has the ability to save the data to a file.
 What follows is a detailed description of the software, working from the bottom up.
 Most of the code is object oriented, and written in C++.  The parts of the code that depend
 on anything from EPICS except libCom and asyn have been kept in in separate C files, so that
-it is easy to build applications that do not run as part of an EPICS IOC.
+it should be easy to build applications that do not run as part of an EPICS IOC.
 
 <P>&nbsp;</P>
-<CENTER><H2><A name=asynParamBase>
-                    asynParamBase</A></H2></CENTER>
+<CENTER><H2><A name=asynPortDriver>
+                    asynPortDriver</A></H2></CENTER>
                     
 The areaDetector module depends heavily on asyn.  It is the software that is used for interthread communication,
 using the standard asyn interfaces (e.g. asynInt32, asynOctet, etc.), and callbacks.  Detector drivers and plugins
 are asyn port drivers, meaning that they implement one or more of the standard asyn interfaces.  They register
 themselves as interrupt sources, so that they do callbacks to registered asyn clients when values change.
-asynParamBase handles all of the details of registering the port driver, registering the supported interfaces,
+asynPortDriver handles all of the details of registering the port driver, registering the supported interfaces,
 and registering the required interrupt sources.
 <P>
 Drivers and plugins each need to support a number of parameters that control their operation and provide 
@@ -203,21 +205,35 @@ new value (e.g. image size in the X direction).  The sequence of operations in t
   <LI>For each parameter whose value changes set a flag noting that it changed.
   <LI>When operation is complete, call the registered callbacks for each changed parameter.
 </OL>
-asynParamBase provides methods to simplify the above sequence, which must be 
-implemented for the many parameters that the driver supports.  Each parameter is assigned
+asynPortDriver provides methods to simplify the above sequence, which must be 
+implemented for each of the many parameters that the driver supports.  Each parameter is assigned
 a number, which is the value in the pasynUser-&gt reason field that asyn clients pass to
-the driver when reading or writing that parameter.  asynParamBase maintains a table
+the driver when reading or writing that parameter.  asynPortDriver maintains a table
 of parameter values, associating each parameter number with a data type (integer, double, or string),
 caching the current value, and maintaining a flag indicating if a value has changed.  
-Drivers use asynParamBase methods to read the current value 
+Drivers use asynPortDriver methods to read the current value 
 from the table, and to set new values in the table.  There is a method to call all registered callbacks
 for values that have changed since callbacks were last done.
 
-<P>The following is the definition of the asynParamBase class:
+<P>The following are the public definitions in the asynPortDriver class:
 <PRE>
-class asynParamBase {
+#define asynCommonMask          0x00000001
+#define asynDrvUserMask         0x00000002
+#define asynOptionMask          0x00000004
+#define asynInt32Mask           0x00000008
+#define asyUInt32DigitalMask    0x00000010
+#define asynFloat64Mask         0x00000020
+#define asynOctetMask           0x00000040
+#define asynInt8ArrayMask       0x00000080
+#define asynInt16ArrayMask      0x00000100
+#define asynInt32ArrayMask      0x00000200
+#define asynFloat32ArrayMask    0x00000400
+#define asynFloat64ArrayMask    0x00000800
+#define asynGenericPointerMask  0x00001000
+
+class asynPortDriver {
 public:
-    asynParamBase(const char *portName, int maxAddr, int paramTableSize, int interfaceMask, int interruptMask);
+    asynPortDriver(const char *portName, int maxAddr, int paramTableSize, int interfaceMask, int interruptMask);
     virtual asynStatus getAddress(asynUser *pasynUser, const char *functionName, int *address); 
     virtual asynStatus findParam(asynParamString_t *paramTable, int numParams, const char *paramName, int *param);
     virtual asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value);
@@ -259,9 +275,9 @@ public:
                                         size_t nElements);
     virtual asynStatus doCallbacksFloat64Array(epicsFloat64 *value,
                                         size_t nElements, int reason, int addr);
-    virtual asynStatus readHandle(asynUser *pasynUser, void *handle);
-    virtual asynStatus writeHandle(asynUser *pasynUser, void *handle);
-    virtual asynStatus doCallbacksHandle(void *handle, int reason, int addr);
+    virtual asynStatus readGenericPointer(asynUser *pasynUser, void *pointer);
+    virtual asynStatus writeGenericPointer(asynUser *pasynUser, void *pointer);
+    virtual asynStatus doCallbacksGenericPointer(void *pointer, int reason, int addr);
     virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
                                      const char **pptypeName, size_t *psize);
     virtual asynStatus drvUserGetType(asynUser *pasynUser,
@@ -287,14 +303,6 @@ public:
     virtual asynStatus callParamCallbacks(int list, int addr);
     virtual void reportParams();
 
-    char *portName;
-    int maxAddr;
-    paramList **params;
-    epicsMutexId mutexId;
-
-    /* The asyn interfaces this driver implements */
-    asynStandardInterfaces asynStdInterfaces;
-    
     /* asynUser connected to ourselves for asynTrace */
     asynUser *pasynUser;
 };
@@ -305,12 +313,12 @@ example driver (simDetector) and plugins provided with areaDetector for examples
 class is used.
 
 <PRE>
-    asynParamBase(const char *portName, int maxAddr, int paramTableSize, int interfaceMask, int interruptMask);
+    asynPortDriver(const char *portName, int maxAddr, int paramTableSize, int interfaceMask, int interruptMask);
 </PRE>
 This is the constructor for the class. 
 <UL>
   <LI><CODE>portName</CODE> is the name of the asyn port for this driver or plugin.
-  <LI><CODE>maxAddr</CODE> is the maximum number of asyn addresses that this driver or plugin supports.
+  <LI><CODE>maxAddr</CODE> is the maximum number of asyn addresses that this driver supports.
       This number returned by the <CODE>pasynManager-&gt getAddr()</CODE> function.  Typically it is 1, but some
       plugins (e.g. NDPluginROI) support values &gt 1.  This controls the number of parameter
       tables that are created.
@@ -318,10 +326,10 @@ This is the constructor for the class.
       This controls the size of the parameter tables.
   <LI><CODE>interfaceMask</CODE> is a mask with each bit defining which asyn interfaces this driver
       or plugin supports.  
-      The bit mask values are defined in asynParamBase.h, e.g. <CODE>asynInt32Mask</CODE>.
+      The bit mask values are defined in asynPortDriver.h, e.g. <CODE>asynInt32Mask</CODE>.
   <LI><CODE>interruptMask</CODE> is a mask with each bit defining which of the asyn interfaces this driver
       or plugin supports can generate interrupts.
-      The bit mask values are defined in asynParamBase.h, e.g. <CODE>asynInt8ArrayMask</CODE>.
+      The bit mask values are defined in asynPortDriver.h, e.g. <CODE>asynInt8ArrayMask</CODE>.
 </UL>
 <BR>
 <PRE>
@@ -347,11 +355,11 @@ Derived classed typically do not need to implement these methods.
     virtual asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t maxChars,
                           size_t *nActual);
 </PRE>
-These methods are called by asynClients to set the new value of a parameter.  These
-methods only have stub methods that return an error in asynParamBase, so they
-must be implemented in the derived classes if the corresponding interface is
-used.  They are not pure virtual functions so that the derived class need not implement 
-the interface if it is not used.
+These methods are called by asynClients to set the new value of a parameter.  The
+implementation of these methods in asynPortDriver copies the parameter into a cached
+location for use by the asynRead(Int32, Float64, and Octet) methods. Most drivers
+will provide their own implementations of these methods to do driver-dependent operations
+when there is a new value of the parameter.
 
 <BR>
 <PRE>     
@@ -361,15 +369,15 @@ the interface if it is not used.
                                         size_t nElements);
     virtual asynStatus doCallbacksXXXArray(epicsInt8 *value,
                                         size_t nElements, int reason, int addr);
-    virtual asynStatus readHandle(asynUser *pasynUser, void *handle);
-    virtual asynStatus writeHandle(asynUser *pasynUser, void *handle);
-    virtual asynStatus doCallbacksHandle(void *handle, int reason, int addr);
+    virtual asynStatus readGenericPointer(asynUser *pasynUser, void *handle);
+    virtual asynStatus writeGenericPointer(asynUser *pasynUser, void *handle);
+    virtual asynStatus doCallbacksGenericPointer(void *handle, int reason, int addr);
 </PRE>
 where XXX=(Int8, Int16, Int32, Float32, or Float64).
-The readXXX and writeXXX methods only have stub methods that return an error in asynParamBase, so they
+The readXXX and writeXXX methods only have stub methods that return an error in asynPortDriver, so they
 must be implemented in the derived classes if the corresponding interface is
 used.  They are not pure virtual functions so that the derived class need not implement 
-the interface if it is not used.  The doCallbacksXXX methods in asynParamBase
+the interface if it is not used.  The doCallbacksXXX methods in asynPortDriver
 call any registered asyn clients on the corresponding interface if the <CODE>reason</CODE>
 and <CODE>addr</CODE> values match.  It typically does not need to be implemented in derived classes.
 
@@ -382,7 +390,7 @@ and <CODE>addr</CODE> values match.  It typically does not need to be implemente
                                         const char **pptypeName, size_t *psize);
     virtual asynStatus drvUserDestroy(asynUser *pasynUser);
 </PRE>
-drvUserCreate must be implemented in derived classes that use the parameter facilities of asynParamBase.
+drvUserCreate must be implemented in derived classes that use the parameter facilities of asynPortDriver.
 The <CODE>findParam</CODE> method is a convenience function that searches an array of {enum, string} structures
 and returns the enum (parameter number) matching the string.  This is typically used in the 
 implementation of <CODE>drvUserCreate</CODE> in derived classes.  <CODE>drvUserGetType</CODE> and 
@@ -440,6 +448,7 @@ to plugins.  The NDArray class is defined as follows:
 <PRE>
 #define ND_ARRAY_MAX_DIMS 10
 
+/* Enumeration of array data types */
 typedef enum
 {
     NDInt8,
@@ -451,6 +460,7 @@ typedef enum
     NDFloat32,
     NDFloat64
 } NDDataType_t;
+
 
 typedef struct NDDimension {
     int size;
@@ -486,14 +496,12 @@ public:
     NDArray();
     int          initDimension   (NDDimension_t *pDimension, int size);
     int          getInfo         (NDArrayInfo_t *pInfo);
-    int          convertDimension(NDArray *pOut,
-                                  void *pDataIn,
-                                  void *pDataOut,
-                                  int dim);
     int          copy            (NDArray *pOut);
     int          reserve(); 
     int          release();
 };
+
+
 </PRE>
 An NDArray is a general purpose class for handling array data.  An NDArray object is self-describing, 
 meaning it contains enough information to describe the data itself.  It is not intended to
@@ -549,21 +557,255 @@ The remaining data fields are as follows:
 </UL>
 The methods of the NDArray class are:
 <UL>
-  <LI><CODE>initDimension</CODE> This method ...
+  <LI><CODE>initDimension</CODE> This method simply initializes the dimension structure to size=size,
+      binning=1, reverse=0, offset=0.
+  <LI><CODE>getInfo</CODE>.  This convenience method returns information about an NDArray, including the total number
+      of elements, the number of byte per element, and the total number of bytes in the array.
+  <LI><CODE>copy</CODE>.  This method makes a copy of an NDArray object.  The output array object must already exist
+      and must have sufficient memory allocated to it to hold the data.
+  <LI><CODE>reserve</CODE>.  This method calls NDArrayPool->reserve() for this object.  It increases the reference
+      count for this array.
+  <LI><CODE>release</CODE>.  This method calls NDArrayPool->release() for this object.  It decreases the reference
+      count for this array.
 </UL>
   
 
 
+<CENTER><H2><A name=NDArrayPool>
+                    NDArrayPool</A></H2></CENTER>
+                    
+The NDArrayPool class manages a free list (pool) of NDArray objects (described above). Drivers allocate NDArray objects
+from the pool, and pass these objects to plugins.  Plugins increase the reference count on the object when they
+place the object on their queue, and decrease the reference count when they are done processing the array.  When
+the reference count reaches 0 again the NDArray object is placed back on the free list. This mechanism minimizes the
+copying of array data in plugins. 
+The public interface of the NDArrayPool class is defined as follows:
+
+<PRE>
+class NDArrayPool {
+public:
+                 NDArrayPool   (int maxBuffers, size_t maxMemory);
+    NDArray*     alloc         (int ndims, int *dims, NDDataType_t dataType, int dataSize, void *pData);
+    int          reserve       (NDArray *pArray); 
+    int          release       (NDArray *pArray);
+    int          convert       (NDArray *pIn, 
+                                NDArray **ppOut,
+                                NDDataType_t dataTypeOut,
+                                NDDimension_t *outDims);
+    int          report        (int details);     
+</PRE>
+
+The methods of the NDArrayPool class are:
+<UL>
+  <LI><CODE>NDArrayPool</CODE> This is the constructor for the class.  The maxBuffers argument is the maximum
+      number of NDArray objects that the pool is allowed to contain.  The maxmMemory argument is the maxiumum
+      number of bytes of memory the the pool is allowed to use, summed over all of the NDArray objects.
+  <LI><CODE>alloc</CODE> This method allocates a new NDArray object.  The first 3 arguments are required.  ndims
+      is the number of dimensions in the NDArray. dims is an array of dimensions, whose size must be at least ndims.
+      dataType is the data type of the NDArray data. dataSize is the number of bytes to allocate for the array data.
+      If it is 0 then alloc() will compute the size required from ndims, dims, and dataType.  pData is a pointer
+      to a data buffer.  If it is NULL then alloc will allocate a new array buffer.  If pData is not NULL then
+      it is assumed to point to a valid buffer.  In this case
+      dataSize must contain the actual number of bytes in the existing array, and this array must be large enough
+      to hold the array data.  alloc() searches its free list to find a free NDArray buffer.  If is cannot find one
+      then it will allocate a new one and add it to the free list.  If doing so would exceed maxBuffers then alloc() 
+      will return an error.  Similarly if allocating the memory required for this NDArray would cause the
+      cumulative memory allocated for the pool to exceed maxMemory then an error will be returned.  alloc() sets
+      the reference count for the returned NDArray to 1.
+  <LI><CODE>reserve</CODE>.  This method increases the reference count for the NDArray object. Plugins must call 
+      reserve() when an NDArray is placed on a queue for later processing.
+  <LI><CODE>release</CODE>.  This method decreases the reference count for the NDArray object. Plugins must call 
+      release() when an NDArray is removed from the queue and processing on it is complete.  Drivers must call
+      release() after calling all plugins.
+  <LI><CODE>convert</CODE>  This method creates a new output NDArray from an input NDArray, performing conversion
+      operations.  The conversion can change the data type if dataTypeOut is different from
+      pIn->dataType.  It can also change the dimensions.  outDims may have different values of size, binning, offset and
+      reverse for each of its dimensions from input array dimensions (pIn->dims).
+  <LI><CODE>report</CODE> This method reports on the free list size and other properties of the NDArrayPool object.
+</UL>
 
 
+<CENTER><H2><A name=asynNDArrayDriver>
+                    asynNDArrayDriver</A></H2></CENTER>
+                    
+asynNDArrayDriver inherits from asynPortDriver. It implements the asynGenericPointer functions, assuming that
+these reference NDArray objects.  This is the class from which both plugins and area detector drivers are 
+indirectly derived.
+Its public interface is defined as follows:
 
+<PRE>
+class asynNDArrayDriver : public asynPortDriver {
+public:
+    asynNDArrayDriver(const char *portName, int maxAddr, int paramTableSize, int maxBuffers, size_t maxMemory,
+                      int interfaceMask, int interruptMask);
+    virtual asynStatus readGenericPointer(asynUser *pasynUser, void *genericPointer);
+    virtual asynStatus writeGenericPointer(asynUser *pasynUser, void *genericPointer);
+    virtual void report(FILE *fp, int details);
 
+};
+</PRE>
+The methods of the asynNDArrayDriver class are:
+<UL>
+  <LI><CODE>asynNDArrayDriver</CODE> This is the constructor for the class.  portName, maxAddr, paramTableSize,
+    interfaceMask and interruptMask are simply passed to the asynPortDriver base class constructor.
+    asynNDArray creates an NDArrayPool object to allocate NDArray objects. 
+    maxBuffers and maxMemory are passed to the constructor for the NDArrayPool object.
+  <LI><CODE>readGenericPointer</CODE> This method copies an NDArray object from the asynNDArrayDriver to an NDArray
+    whose address is passed by the caller in the genericPointer argument.  
+    The caller must allocate the memory for the array, and pass the size in NDArray->dataSize.  The method will
+    limit the amount of data copied to the actual array size or the input dataSize, whichever is smaller.
+  <LI><CODE>writeGenericPointer</CODE> This method currently does nothing.  Derived classes must implement this method
+    as required.
+  <LI><CODE>report</CODE> This method calls the report function in the asynPortDriver base class.  It then
+    calls the NDArrayPool->report() method if details &gt 5.</UL>
 
+<CENTER><H2><A name=ADDriver>
+                    ADDriver</A></H2></CENTER>
+                    
+ADDriver inherits from asynNDArrayDriver. This is the class from which area detector drivers are directly derived.
+Its public interface is defined as follows:
+<PRE>
+class ADDriver : public asynNDArrayDriver {
+public:
+    ADDriver(const char *portName, int maxAddr, int paramTableSize, int maxBuffers, size_t maxMemory,
+             int interfaceMask, int interruptMask);
+                 
+    /* These are the methods that we override from asynPortDriver */
+     virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
+                                     const char **pptypeName, size_t *psize);
+                                     
+    /* These are the methods that are new to this class */
+    int createFileName(int maxChars, char *fullFileName);
+</PRE>
 
+The methods of the ADDriver class are:
+<UL>
+  <LI><CODE>ADDriver</CODE> This is the constructor for the class.  All of the arguments are simply passed to the
+      constructor for the asynNDArrayDriver base class.  After calling the base class constructor this method sets
+      reasonable default values for all of the parameters defined in ADStdDriverParams.h.
+  <LI><CODE>drvUserCreate</CODE> This method returns one of the enum values for the parameters defined in 
+      ADStdDriverParams.h if the driverInfo field matches one the strings defined in that file.  Derived classes will
+      typically provide an implementation of drvUserCreate() that searches for parameters that are unique to that
+      detector driver.  If a parameter is not matched, then ADDriver->drvUserCreate() will be called to see if it
+      is a standard driver parameter (defined in ADStdDriverParams.h).
+  <LI><CODE>createFileName</CODE>  This is a convenience function that constructs a complete file name in
+      the ADFullFileName parameter from the
+      ADFilePath, ADFileName, ADFileNumber, and ADFileTemplate parameters.
+</UL>
 
+<CENTER><H2><A name=simDetector>
+                    simDetector</A></H2></CENTER>
+                    
+simDetector is a driver for a simulated area detector.  It inherits from ADDriver. The simulation detector implements
+nearly all of the parameters defined in ADStdDriverParams.h.  It also implements a few parameters that are specific
+to the simulation detector.  The simulation detector is useful as a model for writing real detector drivers.  It is
+also very useful for testing plugins and channel access clients.
+This is part of the definition of the simDetector class:
+<PRE>
+class simDetector : public ADDriver {
+public:
+    simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDataType_t dataType,
+                int maxBuffers, size_t maxMemory);
+                 
+    /* These are the methods that we override from ADDriver */
+    virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
+    virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
+    virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
+                                     const char **pptypeName, size_t *psize);
+    void report(FILE *fp, int details);
+</PRE>
+The portName, maxBuffers, and maxMemory arguments are passed to the base class constructors.  The maxSizeX, maxSizeY, and
+dataType arguments are specific to the simulation driver, controlling the maximum image size and initial data type of the
+computed images.  The writeInt32 and writeFloat64 methods override those in the base class.  The driver takes action
+when new parameters are passed via those interfaces.  For example, the ADAcquire parameter (on the asynInt32 interface) is
+used to turn acquisition (i.e. computing new images) on and off.
+<P>
+The simulation driver initially sets the image[i, j] = i*gainX + j*gainY * gain * exposureTime * 1000.  Thus the
+image is a linear ramp in the X and Y directions, with the gains in each direction being detector-specific parameters.
+Each subsquent acquisition increments each pixel value by gain*exposureTime*1000.  Thus if gain=1 and exposureTime=.001
+second then the pixels are incremented by 1.  If the array is an unsigned 8 or 16 bit integer then the pixels 
+will overflow and wrap around to 0 after some period of time.  This gives the appearance of bands that appear to move
+with time.  The slope of the bands and their periodicity can be adjusted by changing the gains and exposure times.
+<P>
+The driver creates a thread that waits for a signal to start acquisition.  When acquisition is started that thread
+computes new images and then calls back any registered plugins as follows:
+<PRE>
+        /* Put the frame number and time stamp into the buffer */
+        pImage->uniqueId = imageCounter;
+        pImage->timeStamp = startTime.secPastEpoch + startTime.nsec / 1.e9;
+        
+        /* Call the NDArray callback */
+        /* Must release the lock here, or we can get into a deadlock, because we can
+         * block on the plugin lock, and the plugin can be calling us */
+        epicsMutexUnlock(this->mutexId);
+        asynPrint(this->pasynUser, ASYN_TRACE_FLOW, 
+             "%s:%s: calling imageData callback\n", driverName, functionName);
+        doCallbacksGenericPointer(pImage, NDArrayData, addr);
+        epicsMutexLock(this->mutexId);
+</PRE>
+The 3 driver-specific parameters are defined in the driver as follows:
+<PRE>
+/* If we have any private driver parameters they begin with ADFirstDriverParam and should end
+   with ADLastDriverParam, which is used for setting the size of the parameter library table */
+typedef enum {
+    SimGainX 
+        = ADFirstDriverParam,
+    SimGainY,
+    SimResetImage,
+    ADLastDriverParam
+} SimDetParam_t;
 
+static asynParamString_t SimDetParamString[] = {
+    {SimGainX,          "SIM_GAINX"},  
+    {SimGainY,          "SIM_GAINY"},  
+    {SimResetImage,     "RESET_IMAGE"},  
+};
 
+#define NUM_SIM_DET_PARAMS (sizeof(SimDetParamString)/sizeof(SimDetParamString[0]))
+</PRE>
+The drvUserCreate function first checks to see if the parameter is one of these
+3 parameters that are unique to the simulation driver.  If not it checks to
+see if it is a standard parameter by calling the ADDriver base class method.
+<PRE>
+asynStatus simDetector::drvUserCreate(asynUser *pasynUser,
+                                      const char *drvInfo, 
+                                      const char **pptypeName, size_t *psize)
+{
+    asynStatus status;
+    int param;
+    const char *functionName = "drvUserCreate";
 
+    /* See if this is one of our standard parameters */
+    status = findParam(SimDetParamString, NUM_SIM_DET_PARAMS, 
+                       drvInfo, &param);
+                                
+    if (status == asynSuccess) {
+        pasynUser->reason = param;
+        if (pptypeName) {
+            *pptypeName = epicsStrDup(drvInfo);
+        }
+        if (psize) {
+            *psize = sizeof(param);
+        }
+        asynPrint(pasynUser, ASYN_TRACE_FLOW,
+                  "%s:%s: drvInfo=%s, param=%d\n", 
+                  driverName, functionName, drvInfo, param);
+        return(asynSuccess);
+    }
+    
+    /* If not, then see if it is a base class parameter */
+    status = ADDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
+    return(status);  
+}
+</PRE>
+
+<CENTER><H2><A name="Prosilica Driver">
+                     Prosilica Driver</A></H2></CENTER>
+                    
+This is a driver for Gigabit Ethernet and Firewire cameras from Prosilica.  It inherits from ADDriver. 
+It also implements a number of parameters that are specific
+to the Prosilica cameras.  The vendor library provided by Prosilica does callbacks to a user-supplied
+function each time there is a new frame.  Thus, it is not necessary to create a thread for callbacks in this driver.
 
 
 <CENTER><H2><A name="EPICS records">
