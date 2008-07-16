@@ -67,10 +67,6 @@ public:
     NDArray();
     int          initDimension   (NDDimension_t *pDimension, int size);
     int          getInfo         (NDArrayInfo_t *pInfo);
-    int          convertDimension(NDArray *pOut,
-                                  void *pDataIn,
-                                  void *pDataOut,
-                                  int dim);
     int          copy            (NDArray *pOut);
     int          reserve(); 
     int          release();
