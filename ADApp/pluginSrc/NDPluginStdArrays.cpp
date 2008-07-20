@@ -43,6 +43,7 @@ void arrayInterruptCallback(NDArray *pArray, NDArrayPool *pNDArrayPool,
     ELLLIST *pclientList;
     interruptNode *pnode;
     int i;
+    int status;
     epicsType *pData=NULL;
     NDArray *pOutput=NULL;
     NDArrayInfo_t arrayInfo;
@@ -59,9 +60,10 @@ void arrayInterruptCallback(NDArray *pArray, NDArrayPool *pNDArrayPool,
                 for (i=0; i<pArray->ndims; i++)  {
                     pArray->initDimension(&outDims[i], pArray->dims[i].size);
                 }
-                pNDArrayPool->convert(pArray, &pOutput,
-                                              signedType,
-                                              outDims);
+                status = pNDArrayPool->convert(pArray, &pOutput,
+                                               signedType,
+                                               outDims);
+                if (status) continue;
                 pData = (epicsType *)pOutput->pData;
             }
             pInterrupt->callback(pInterrupt->userPvt,
