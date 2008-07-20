@@ -348,6 +348,7 @@ int NDArrayPool::convert(NDArray *pIn,
     /* We now know the datatype and dimensions of the output array.
      * Allocate it */
     pOut = alloc(pIn->ndims, dimSizeOut, dataTypeOut, 0, NULL);
+    *ppOut = pOut;
     if (!pOut) {
         printf("%s:%s: ERROR, cannot allocate output array\n",
             driverName, functionName);
@@ -355,7 +356,6 @@ int NDArrayPool::convert(NDArray *pIn,
     }
     /* Replace the dimensions with those passed to this function */
     memcpy(pOut->dims, dimsOut, pIn->ndims*sizeof(NDDimension_t));
-        *ppOut = pOut;
     
     pOut->getInfo(&arrayInfo);
 
