@@ -87,8 +87,6 @@ void NDPluginDriver::processCallbacks(NDArray *pArray)
     getIntegerParam(NDPluginDriverArrayCounter, &arrayCounter);
     arrayCounter++;
     setIntegerParam(NDPluginDriverArrayCounter, arrayCounter);
-    setIntegerParam(NDPluginDriverArrayCounter, arrayCounter);
-    setIntegerParam(NDPluginDriverNDimensions, pArray->ndims);
     setIntegerParam(NDPluginDriverNDimensions, pArray->ndims);
     setIntegerParam(NDPluginDriverDataType, pArray->dataType);
     setIntegerParam(NDPluginDriverUniqueId, pArray->uniqueId);
@@ -394,7 +392,7 @@ asynStatus NDPluginDriver::writeOctet(asynUser *pasynUser, const char *value,
                   driverName, functionName, status, function, value);
     else        
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:writeOctet: function=%d, value=%s\n", 
+              "%s:%s: function=%d, value=%s\n", 
               driverName, functionName, function, value);
     *nActual = nChars;
     return status;
@@ -424,7 +422,7 @@ asynStatus NDPluginDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *value
                   driverName, functionName, status, function);
     else        
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:writeOctet: function=%d\n", 
+              "%s:%s: function=%d\n", 
               driverName, functionName, function);
     return status;
 }
