@@ -131,6 +131,7 @@ int simDetector::allocateBuffer()
         free(this->pRaw->pData);
         this->pRaw->pData  = malloc(arrayInfo.totalBytes);
         this->pRaw->dataSize = arrayInfo.totalBytes;
+        if (!this->pRaw->pData) status = asynError;
     }
     return(status);
 }
@@ -160,6 +161,9 @@ int simDetector::computeImage()
     status |= getIntegerParam(addr, ADMaxSizeX,     &maxSizeX);
     status |= getIntegerParam(addr, ADMaxSizeY,     &maxSizeY);
     status |= getIntegerParam(addr, ADDataType,     (int *)&dataType);
+    if (status) asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
+                    "%s:%s: error getting parameters\n",
+                    driverName, functionName);
 
     /* Make sure parameters are consistent, fix them if they are not */
     if (binX < 1) {
@@ -197,8 +201,13 @@ int simDetector::computeImage()
 
     /* Make sure the buffer we have allocated is large enough. */
     this->pRaw->dataType = dataType;
-    status |= allocateBuffer();
-    
+    status = allocateBuffer();
+    if (status) {
+        asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
+                  "%s:%s: error allocating raw buffer\n",
+                  driverName, functionName);
+        return(status);
+    }
     switch (dataType) {
         case NDInt8: 
             status |= computeArray<epicsInt8>(maxSizeX, maxSizeY);
@@ -240,19 +249,26 @@ int simDetector::computeImage()
     /* We save the most recent image buffer so it can be used in the read() function.
      * Now release it before getting a new version. */
     if (this->pArrays[addr]) this->pArrays[addr]->release();
-    status |= this->pNDArrayPool->convert(this->pRaw,
+    status = this->pNDArrayPool->convert(this->pRaw,
                                          &this->pArrays[addr],
                                          dataType,
                                          dimsOut);
+    if (status) {
+        asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
+                    "%s:%s: error allocating buffer in convert()\n",
+                    driverName, functionName);
+        return(status);
+    }
     pImage = this->pArrays[addr];
     pImage->getInfo(&arrayInfo);
+    status = asynSuccess;
     status |= setIntegerParam(addr, ADImageSize,  arrayInfo.totalBytes);
     status |= setIntegerParam(addr, ADImageSizeX, pImage->dims[0].size);
     status |= setIntegerParam(addr, ADImageSizeY, pImage->dims[1].size);
     status |= setIntegerParam(addr, SimResetImage, 0);
     if (status) asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
-                    "%s:%s: ERROR, status=%d\n",
-                    driverName, functionName, status);
+                    "%s:%s: error setting parameters\n",
+                    driverName, functionName);
     return(status);
 }
 
@@ -322,7 +338,12 @@ void simDetector::simTask()
         }
         
         /* Update the image */
-        computeImage();
+        status = computeImage();
+        if (status) {
+            epicsMutexUnlock(this->mutexId);
+            continue;
+        }
+            
         pImage = this->pArrays[addr];
         
         epicsTimeGetCurrent(&endTime);
