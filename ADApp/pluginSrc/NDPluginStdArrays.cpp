@@ -1,5 +1,5 @@
 /*
- * NDPluginStdArrays.c
+ * NDPluginStdArrays.cpp
  * 
  * Asyn driver for callbacks to standard asyn array interfaces for NDArray drivers.
  * This is commonly used for EPICS waveform records.
@@ -63,7 +63,12 @@ void arrayInterruptCallback(NDArray *pArray, NDArrayPool *pNDArrayPool,
                 status = pNDArrayPool->convert(pArray, &pOutput,
                                                signedType,
                                                outDims);
-                if (status) continue;
+                if (status) {
+                    asynPrint(pInterrupt->pasynUser, ASYN_TRACE_ERROR,
+                              "%s::arrayInterruptCallback: error allocating array in convert()\n",
+                               driverName);
+                    break;
+                }
                 pData = (epicsType *)pOutput->pData;
             }
             pInterrupt->callback(pInterrupt->userPvt,
@@ -90,16 +95,19 @@ asynStatus NDPluginStdArrays::readArray(asynUser *pasynUser, epicsType *value, s
     myArray = this->pArrays[addr];
     switch(command) {
         case NDPluginStdArraysData:
+            /* If there is valid data available we already have a copy of it.
+             * No need to call driver just copy the data from our buffer */
+            if (!myArray || !myArray->pData) {
+                status = asynError;
+                break;
+            }
             myArray->getInfo(&arrayInfo);
             if (arrayInfo.nElements > (int)nElements) {
                 /* We have been requested fewer pixels than we have.
                  * Just pass the first nElements. */
                  arrayInfo.nElements = nElements;
             }
-            /* We are guaranteed to have the most recent data in our buffer.  No need to call the driver,
-             * just copy the data from our buffer */
             /* Convert data from its actual data type.  */
-            if (!myArray || !myArray->pData) break;
             for (i=0; i<myArray->ndims; i++)  {
                 myArray->initDimension(&outDims[i], myArray->dims[i].size);
             }
@@ -107,6 +115,16 @@ asynStatus NDPluginStdArrays::readArray(asynUser *pasynUser, epicsType *value, s
                                                              &pOutput,
                                                              outputType,
                                                              outDims);
+            if (status) {
+                asynPrint(pasynUser, ASYN_TRACE_ERROR,
+                          "%s::readArray: error allocating array in convert()\n",
+                           driverName);
+                break;
+            }
+            /* Copy the data */
+            *nIn = arrayInfo.nElements;
+            memcpy(value, pOutput->pData, *nIn*sizeof(epicsType));
+            pOutput->release();
             break;
         default:
             epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
@@ -262,7 +280,7 @@ NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int bl
                                      size_t maxMemory)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
-                   NDArrayPort, NDArrayAddr, 1, NDPluginStdArraysLastParam, 1, maxMemory,
+                   NDArrayPort, NDArrayAddr, 1, NDPluginStdArraysLastParam, 2, maxMemory,
                    
                    asynInt8ArrayMask | asynInt16ArrayMask | asynInt32ArrayMask | 
                    asynFloat32ArrayMask | asynFloat64ArrayMask,
