@@ -12,4 +12,8 @@ include $(TOP)/configure/CONFIG_APP
 # before this takes effect.
 #IOCS_APPL_TOP = <the top of the application as seen by the IOC>
 
-STATIC_BUILD=YES
+ifeq (Darwin, $(OS_CLASS))
+  STATIC_BUILD=NO
+else
+  STATIC_BUILD=YES
+endif
