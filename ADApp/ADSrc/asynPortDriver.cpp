@@ -151,7 +151,10 @@ asynStatus paramList::getString(int index, int maxChars, char *value)
     if (index >= 0 && index < this->nVals)
     {
         if (this->vals[index].type == paramString) {
-            strncpy(value, this->vals[index].data.sval, maxChars);
+            if (maxChars > 0) {
+                strncpy(value, this->vals[index].data.sval, maxChars-1);
+                values[maxChars-1] = '\0';
+            }
             status = asynSuccess;
         }
     }
