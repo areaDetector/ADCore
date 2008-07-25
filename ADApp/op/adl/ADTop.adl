@@ -1,14 +1,14 @@
 
 file {
-	name="/home/epics/devel/areaDetector/1-1/ADApp/op/adl/ADTop.adl"
-	version=030000
+	name="/srv/vxwfs/app/areaDetector-head/ADApp/op/adl/ADTop.adl"
+	version=030102
 }
 display {
 	object {
 		x=37
 		y=199
 		width=300
-		height=170
+		height=195
 	}
 	clr=14
 	bclr=4
@@ -186,7 +186,7 @@ text {
 "related display" {
 	object {
 		x=220
-		y=105
+		y=131
 		width=64
 		height=21
 	}
@@ -211,7 +211,7 @@ text {
 text {
 	object {
 		x=32
-		y=105
+		y=131
 		width=80
 		height=20
 	}
@@ -223,7 +223,7 @@ text {
 "related display" {
 	object {
 		x=220
-		y=131
+		y=157
 		width=64
 		height=21
 	}
@@ -248,7 +248,7 @@ text {
 text {
 	object {
 		x=32
-		y=131
+		y=157
 		width=80
 		height=20
 	}
@@ -256,4 +256,36 @@ text {
 		clr=14
 	}
 	textix="Prosilica Plug-ins"
+}
+text {
+	object {
+		x=42
+		y=105
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="ADSC Drivers"
+}
+"related display" {
+	object {
+		x=220
+		y=105
+		width=64
+		height=21
+	}
+	display[0] {
+		label="ADSC general"
+		name="ADBase.adl"
+		args="P=13ADSC1:, R=det1:"
+	}
+	display[1] {
+		label="ADSC specific"
+		name="adsc.adl"
+		args="P=13ADSC1:, R=det1:"
+	}
+	clr=14
+	bclr=51
 }
