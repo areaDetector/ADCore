@@ -3,6 +3,17 @@
 # April 22, 2008
 
 ###################################################################
+#  These records control the label for the ROI                    #
+###################################################################
+record(stringout, "$(P)$(R)Name")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
+}
+
+
+###################################################################
 #  These records control whether this ROI is used                 #
 ###################################################################
 record(bo, "$(P)$(R)Use")
@@ -163,6 +174,22 @@ record(bi, "$(P)$(R)ReverseY_RBV")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_REVERSE")
    field(ZNAM, "No")
    field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)BgdWidth")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BGD_WIDTH")
+   field(VAL,  "1")
+}
+
+record(longin, "$(P)$(R)BgdWidth_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BGD_WIDTH")
    field(SCAN, "I/O Intr")
 }
 
