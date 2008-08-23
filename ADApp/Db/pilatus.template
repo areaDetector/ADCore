@@ -1,0 +1,155 @@
+# Database for the records specific to the Pilatus driver
+# Mark Rivers
+# July 25, 2008
+
+# We redefine the states for the ImageMode records defined in ADBase.template
+record(mbbo,"$(P)$(R)ImageMode") {
+    field(DESC,"Acquire mode")
+    field(ZRVL,"0")
+    field(ZRST,"Internal")
+    field(ONVL,"1")
+    field(ONST,"Ext. Enable")
+    field(TWVL,"2")
+    field(TWST,"Ext. Trigger")
+    field(THVL,"3")
+    field(THST,"Mult. Trigger")
+    field(FRVL,"4")
+    field(FRST,"Alignment")
+}
+record(mbbi,"$(P)$(R)ImageMode_RBV") {
+    field(DESC,"Acquire mode")
+    field(ZRVL,"0")
+    field(ZRST,"Internal")
+    field(ONVL,"1")
+    field(ONST,"Ext. Enable")
+    field(TWVL,"2")
+    field(TWST,"Ext. Trigger")
+    field(THVL,"3")
+    field(THST,"Mult. Trigger")
+    field(FRVL,"4")
+    field(FRST,"Alignment")
+}
+
+
+# Armed flag, which indicates Pilatus is ready for external triggers
+record(bi, "$(P)$(R)Armed")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARMED")
+    field(ZNAM, "Unarmed")
+    field(ONAM, "Armed")
+    field(SCAN, "I/O Intr")
+}
+
+# Delay time in External Trigger mode.
+record(ao, "$(P)$(R)DelayTime")
+{
+    field(PINI, "1")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DELAY_TIME")
+    field(EGU,  "s")
+    field(PREC, "6")
+}
+
+# Threshhold and gain related fields
+# Threshold energy
+record(ao, "$(P)$(R)ThresholdEnergy")
+{
+    field(PINI, "1")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))THRESHOLD")
+    field(DESC, "Energy threshold")
+    field(EGU,  "keV")
+    field(PREC, "3")
+    field(VAL, "10.000")
+}
+
+# Gain menu.  This writes to the Gain PV in the base database.
+record(mbbo, "$(P)$(R)GainMenu")
+{
+    field(DESC, "Shaping time and gain")
+    field(OUT,  "$(P)$(R)Gain.VAL PP MS")
+    field(ZRST, "Fast/Low")
+    field(ZRVL, "0")
+    field(ONST, "Medium/Medium")
+    field(ONVL, "1")
+    field(TWST, "Slow/High")
+    field(TWVL, "2")
+    field(THST, "Slow/Ultrahigh")
+    field(THVL, "3")
+    field(VAL,  "1")
+}
+
+# Timeout waiting for TIFF file.
+record(ao, "$(P)$(R)ReadTiffTimeout")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TIFF_TIMEOUT")
+    field(DESC, "Timeout for TIFF file")
+    field(VAL,  "30")
+    field(EGU,  "s")
+    field(PREC, "3")
+}
+
+# Bad pixel file
+record(waveform, "$(P)$(R)BadPixelFile")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BAD_PIXEL_FILE")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
+
+# Number of bad pixels
+record(longin, "$(P)$(R)NumBadPixels")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_BAD_PIXELS")
+    field(DESC, "Number of bad pixels")
+    field(SCAN, "I/O Intr")
+}
+
+# Flat field file
+record(waveform, "$(P)$(R)FlatFieldFile")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FLAT_FIELD_FILE")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
+
+# Minimum flat field value
+record(ao, "$(P)$(R)MinFlatField")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_FLAT_FIELD")
+    field(DESC, "Minimum flat field value")
+    field(VAL,  "100")
+    field(EGU,  "Counts")
+    field(PREC, "0")
+}
+
+# Flat field valid flag.
+record(bi, "$(P)$(R)FlatFieldValid")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FLAT_FIELD_VALID")
+    field(DESC, "Flat field valid")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(SCAN, "I/O Intr")
+}
+
+
+# asyn record for interactive communication with camserver
+record(asyn, "$(P)$(R)CamserverAsyn")
+{
+    field(PORT,  "$(CAMSERVER_PORT)")
+    field(IMAX, "64")
+    field(OMAX, "64")
+}
