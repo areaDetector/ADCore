@@ -711,6 +711,38 @@ record(mbbi, "$(P)$(R)FileFormat_RBV")
 }
 
 ###################################################################
+#  These records provide status information                       # 
+###################################################################
+
+# Status message.
+record(waveform, "$(P)$(R)StatusMessage_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))STATUS_MESSAGE")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)StringToServer_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))STRING_TO_SERVER")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)StringFromServer_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))STRING_FROM_SERVER")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
+###################################################################
 #  The asynRecord is used for mainly for trace mask               # 
 ###################################################################
  
