@@ -61,39 +61,170 @@ const char *driverName="NDPluginROI";
 
 
 template <typename epicsType> 
-void doComputeHistogram(void *pROIData, int nElements, 
-                      double histMin, double histMax, int histSize, 
-                      double *histogram)
+void doComputeHistogramT(NDArray *pArray, NDROI_t *pROI)
 {
+    epicsType *pData = (epicsType *)pArray->pData;
     int i;
-    double scale = histSize / (histMax - histMin);
+    double scale = (double)pROI->histSize / (double)(pROI->histMax - pROI->histMin);
     int bin;
-    epicsType *pData = (epicsType *)pROIData;
     double value;
+    NDArrayInfo arrayInfo;
 
-    for (i=0; i<nElements; i++) {
+    pArray->getInfo(&arrayInfo);
+    pROI->nElements = arrayInfo.nElements;
+
+    for (i=0; i<pROI->nElements; i++) {
         value = (double)pData[i];
-        bin = (int) (((value - histMin) * scale) + 0.5);
-        if ((bin >= 0) && (bin < histSize))histogram[bin]++;
+        bin = (int) (((value - pROI->histMin) * scale) + 0.5);
+        if ((bin >= 0) && (bin < pROI->histSize))pROI->histogram[bin]++;
     }
 }
 
+int doComputeHistogram(NDArray *pArray, NDROI_t *pROI)
+{
+    switch(pArray->dataType) {
+        case NDInt8:
+            doComputeHistogramT<epicsInt8>(pArray, pROI);           
+            break;
+        case NDUInt8:
+            doComputeHistogramT<epicsUInt8>(pArray, pROI);           
+            break;
+        case NDInt16:
+            doComputeHistogramT<epicsInt16>(pArray, pROI);           
+            break;
+        case NDUInt16:
+            doComputeHistogramT<epicsUInt16>(pArray, pROI);           
+            break;
+        case NDInt32:
+            doComputeHistogramT<epicsInt32>(pArray, pROI);           
+            break;
+        case NDUInt32:
+            doComputeHistogramT<epicsUInt32>(pArray, pROI);           
+            break;
+        case NDFloat32:
+            doComputeHistogramT<epicsFloat32>(pArray, pROI);           
+            break;
+        case NDFloat64:
+            doComputeHistogramT<epicsFloat64>(pArray, pROI);           
+            break;
+        default:
+            return(ND_ERROR);
+        break;
+    }
+    return(ND_SUCCESS);
+}
+
 template <typename epicsType> 
-void doComputeStatistics(void *pROIData, int nElements,double *min, double *max, double *total)
+void doComputeStatisticsT(NDArray *pArray, NDROI_t *pROI)
 {
     int i;
-    epicsType *pData = (epicsType *)pROIData;
+    epicsType *pData = (epicsType *)pArray->pData;
+    NDArrayInfo arrayInfo;
     double value;
 
-    *min = (double) pData[0];
-    *max = (double) pData[0];
-    *total = 0.; \
-    for (i=0; i<nElements; i++) {
+    pArray->getInfo(&arrayInfo);
+    pROI->nElements = arrayInfo.nElements;
+    pROI->min = (double) pData[0];
+    pROI->max = (double) pData[0];
+    pROI->total = 0.;
+    for (i=0; i<pROI->nElements; i++) {
         value = (double)pData[i];
-        if (value < *min) *min = value;
-        if (value > *max) *max = value;
-        *total += value;
+        if (value < pROI->min) pROI->min = value;
+        if (value > pROI->max) pROI->max = value;
+        pROI->total += value;
     }
+    pROI->net = pROI->total;
+    pROI->mean = pROI->total / pROI->nElements;
+}
+
+int doComputeStatistics(NDArray *pArray, NDROI_t *pROI)
+{
+
+    switch(pArray->dataType) {
+        case NDInt8:
+            doComputeStatisticsT<epicsInt8>(pArray, pROI);       
+            break;
+        case NDUInt8:
+            doComputeStatisticsT<epicsUInt8>(pArray, pROI);       
+            break;
+        case NDInt16:
+            doComputeStatisticsT<epicsInt16>(pArray, pROI);       
+            break;
+        case NDUInt16:
+            doComputeStatisticsT<epicsUInt16>(pArray, pROI);       
+            break;
+        case NDInt32:
+            doComputeStatisticsT<epicsInt32>(pArray, pROI);       
+            break;
+        case NDUInt32:
+            doComputeStatisticsT<epicsUInt32>(pArray, pROI);       
+            break;
+        case NDFloat32:
+            doComputeStatisticsT<epicsFloat32>(pArray, pROI);       
+            break;
+        case NDFloat64:
+            doComputeStatisticsT<epicsFloat64>(pArray, pROI);       
+            break;
+        default:
+            return(ND_ERROR);
+        break;
+    }
+    return(ND_SUCCESS);
+}
+
+template <typename epicsType> 
+void highlightROIT(NDArray *pArray, NDROI_t *pROI, double dvalue)
+{
+    int xmin, xmax, ymin, ymax, ix, iy;
+    epicsType *pRow, value=(epicsType)dvalue;
+    
+    xmin = pROI->dims[0].offset;
+    xmax = xmin + pROI->dims[0].size;
+    ymin = pROI->dims[1].offset;
+    ymax = ymin + pROI->dims[1].size;
+    for (iy=ymin; iy<ymax; iy++) {
+        pRow = (epicsType *)pArray->pData + iy*pArray->dims[0].size;
+        if ((iy == ymin) || (iy == ymax-1)) {
+            for (ix=xmin; ix<xmax; ix++) pRow[ix] = value;
+        } else {
+            pRow[xmin] = value; 
+            pRow[xmax-1] = value; 
+        }
+    }
+}
+
+int highlightROI(NDArray *pArray, NDROI_t *pROI, double dvalue)
+{
+    switch(pArray->dataType) {
+        case NDInt8:
+            highlightROIT<epicsInt8>(pArray, pROI, dvalue);       
+            break;
+        case NDUInt8:
+            highlightROIT<epicsUInt8>(pArray, pROI, dvalue);       
+            break;
+        case NDInt16:
+            highlightROIT<epicsInt16>(pArray, pROI, dvalue);       
+            break;
+        case NDUInt16:
+            highlightROIT<epicsUInt16>(pArray, pROI, dvalue);       
+            break;
+        case NDInt32:
+            highlightROIT<epicsInt32>(pArray, pROI, dvalue);       
+            break;
+        case NDUInt32:
+            highlightROIT<epicsUInt32>(pArray, pROI, dvalue);       
+            break;
+        case NDFloat32:
+            highlightROIT<epicsFloat32>(pArray, pROI, dvalue);       
+            break;
+        case NDFloat64:
+            highlightROIT<epicsFloat64>(pArray, pROI, dvalue);       
+            break;
+        default:
+            return(ND_ERROR);
+        break;
+    }
+    return(ND_SUCCESS);
 }
 
 
@@ -110,18 +241,37 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     int histSize;
     int roi, dim;
     int status;
-    double histMin, histMax, entropy;
-    double min=0, max=0, mean, total=0, net;
-    double counts;
+    double counts, entropy;
     NDArray *pROIArray;
+    NDArray *pHighlights=NULL, *pBgdArray=NULL;
     NDArrayInfo_t arrayInfo;
-    NDDimension_t dims[ND_ARRAY_MAX_DIMS], *pDim;
-    NDROI_t *pROI;
+    NDDimension_t dims[ND_ARRAY_MAX_DIMS], bgdDims[ND_ARRAY_MAX_DIMS], *pDim;
+    NDROI_t *pROI, ROITemp, *pROITemp=&ROITemp;
+    int highlight;
+    int bgdPixels;
+    double bgdCounts, avgBgd;
     const char* functionName = "processCallbacks";
      
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
-    
+        
+    getIntegerParam(NDPluginROIHighlight, &highlight);
+    if (highlight && (pArray->ndims == 2)) {
+        /* We need to highlight the ROIs.
+         * We do this by searching for the maximum element in the data and setting the
+         * outline of each ROI to this value.  However, we are not allowed to modify the data
+         * since other callbacks could be using it, so we need to make a copy */
+        pHighlights = pArray->copy(NULL);
+        status = doComputeStatistics(pHighlights, &ROITemp);
+        if (ROITemp.max == 0) ROITemp.max=1.;
+        for (roi=0; roi<this->maxROIs; roi++) {
+            pROI = &this->pROIs[roi];
+            getIntegerParam(roi, NDPluginROIUse, &use);
+            if (!use) continue;
+            highlightROI(pHighlights, pROI, ROITemp.max);
+        }
+    }
+
     /* Loop over the ROIs in this driver */
     for (roi=0; roi<this->maxROIs; roi++) {
         pROI       = &this->pROIs[roi];
@@ -139,8 +289,9 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         getIntegerParam(roi, NDPluginROIComputeHistogram, &computeHistogram);
         getIntegerParam(roi, NDPluginROIComputeProfiles, &computeProfiles);
         getIntegerParam(roi, NDPluginROIDataType, &dataType);
-        getDoubleParam(roi, NDPluginROIHistMin, &histMin);
-        getDoubleParam(roi, NDPluginROIHistMax, &histMax);
+        getDoubleParam(roi, NDPluginROIHistMin, &pROI->histMin);
+        getDoubleParam(roi, NDPluginROIHistMax, &pROI->histMax);
+        getIntegerParam(roi, NDPluginROIBgdWidth, &pROI->bgdWidth);
         getIntegerParam(roi, NDPluginROIHistSize, &histSize);
         /* Make sure dimensions are valid, fix them if they are not */
         for (dim=0; dim<pArray->ndims; dim++) {
@@ -166,128 +317,85 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         this->pNDArrayPool->convert(pArray, &this->pArrays[roi], (NDDataType_t)dataType, dims);
         pROIArray  = this->pArrays[roi];
 
-        /* Call any clients who have registered for NDArray callbacks */
-        doCallbacksGenericPointer(pROIArray, NDArrayData, roi);
-
         pROIArray->getInfo(&arrayInfo);
 
         if (computeStatistics) {
-            switch(pROIArray->dataType) {
-                case NDInt8:
-                    doComputeStatistics<epicsInt8>(pROIArray->pData, 
-                                        arrayInfo.nElements, &min, &max, &total);       
-                    break;
-                case NDUInt8:
-                    doComputeStatistics<epicsUInt8>(pROIArray->pData, 
-                                        arrayInfo.nElements, &min, &max, &total);       
-                    break;
-                case NDInt16:
-                    doComputeStatistics<epicsInt16>(pROIArray->pData, 
-                                        arrayInfo.nElements, &min, &max, &total);       
-                    break;
-                case NDUInt16:
-                    doComputeStatistics<epicsUInt16>(pROIArray->pData, 
-                                        arrayInfo.nElements, &min, &max, &total);       
-                    break;
-                case NDInt32:
-                    doComputeStatistics<epicsInt32>(pROIArray->pData, 
-                                        arrayInfo.nElements, &min, &max, &total);       
-                    break;
-                case NDUInt32:
-                    doComputeStatistics<epicsUInt32>(pROIArray->pData, 
-                                        arrayInfo.nElements, &min, &max, &total);       
-                    break;
-                case NDFloat32:
-                    doComputeStatistics<epicsFloat32>(pROIArray->pData, 
-                                        arrayInfo.nElements, &min, &max, &total);       
-                    break;
-                case NDFloat64:
-                    doComputeStatistics<epicsFloat64>(pROIArray->pData, 
-                                        arrayInfo.nElements, &min, &max, &total);       
-                    break;
-                default:
-                    status = ND_ERROR;
-                break;
-            }
-            net = total;
-            mean = total / arrayInfo.nElements;
-            setDoubleParam(roi, NDPluginROIMinValue, min);
-            setDoubleParam(roi, NDPluginROIMaxValue, max);
-            setDoubleParam(roi, NDPluginROIMeanValue, mean);
-            setDoubleParam(roi, NDPluginROITotal, total);
-            setDoubleParam(roi, NDPluginROINet, net);
+            /* Compute the total counts */
+            status = doComputeStatistics(pROIArray, pROI);
+            /* If there is a non-zero background width then compute the background counts */
+            if (pROI->bgdWidth > 0) {
+                bgdPixels = 0;
+                bgdCounts = 0.;
+                for (dim=0; dim<pArray->ndims; dim++) {
+                    memcpy(bgdDims, dims, ND_ARRAY_MAX_DIMS*sizeof(NDDimension_t));
+                    pDim = &bgdDims[dim];
+                    /* The background width must be as large as the binning or we will get an error */
+                    pROI->bgdWidth = MAX(pROI->bgdWidth, pDim->binning);
+                    pDim->offset = MAX(pDim->offset - pROI->bgdWidth, 0);
+                    pDim->size    = MIN(pROI->bgdWidth, pArray->dims[dim].size - pDim->offset);
+                    this->pNDArrayPool->convert(pArray, &pBgdArray, (NDDataType_t)dataType, bgdDims);
+                    status = doComputeStatistics(pBgdArray, pROITemp);
+                    pBgdArray->release();
+                    bgdPixels += pROITemp->nElements;
+                    bgdCounts += pROITemp->total;
+                    memcpy(bgdDims, dims, ND_ARRAY_MAX_DIMS*sizeof(NDDimension_t));
+                    pDim->offset = MIN(pDim->offset + pDim->size, pArray->dims[dim].size - 1 - pROI->bgdWidth);
+                    pDim->size    = MIN(pROI->bgdWidth, pArray->dims[dim].size - pDim->offset);
+                    this->pNDArrayPool->convert(pArray, &pBgdArray, (NDDataType_t)dataType, bgdDims);
+                    status = doComputeStatistics(pBgdArray, pROITemp);
+                    pBgdArray->release();
+                    bgdPixels += pROITemp->nElements;
+                    bgdCounts += pROITemp->total;
+                }
+                if (bgdPixels < 1) bgdPixels = 1; 
+                avgBgd = bgdCounts / bgdPixels;
+                pROI->net = pROI->total - avgBgd*pROI->nElements;
+            }                
+            setDoubleParam(roi, NDPluginROIMinValue, pROI->min);
+            setDoubleParam(roi, NDPluginROIMaxValue, pROI->max);
+            setDoubleParam(roi, NDPluginROIMeanValue, pROI->mean);
+            setDoubleParam(roi, NDPluginROITotal, pROI->total);
+            setDoubleParam(roi, NDPluginROINet, pROI->net);
             asynPrint(this->pasynUser, ASYN_TRACEIO_DRIVER, 
                 (char *)pROIArray->pData, arrayInfo.totalBytes,
                 "%s:%s ROI=%d, min=%f, max=%f, mean=%f, total=%f, net=%f",
-                driverName, functionName, roi, min, max, mean, total, net);
+                driverName, functionName, roi, pROI->min, pROI->max, pROI->mean, pROI->total, pROI->net);
         }
         if (computeHistogram) {
-            if (histSize > pROI->histogramSize) {
+            if (histSize != pROI->histSize) {
                 free(pROI->histogram);
-                pROI->histogram = (double *)calloc(histSize, sizeof(double));
-                pROI->histogramSize = histSize;
+                pROI->histSize = histSize;
+                pROI->histogram = (double *)calloc(pROI->histSize, sizeof(double));
             }
-            memset(pROI->histogram, 0, histSize*sizeof(double));
-            switch(pROIArray->dataType) {
-                case NDInt8:
-                    doComputeHistogram<epicsInt8>(pROIArray->pData, 
-                                        arrayInfo.nElements, histMin, histMax, histSize, 
-                                        pROI->histogram);           
-                    break;
-                case NDUInt8:
-                    doComputeHistogram<epicsUInt8>(pROIArray->pData, 
-                                        arrayInfo.nElements, histMin, histMax, histSize, 
-                                        pROI->histogram);           
-                    break;
-                case NDInt16:
-                    doComputeHistogram<epicsInt16>(pROIArray->pData, 
-                                        arrayInfo.nElements, histMin, histMax, histSize, 
-                                        pROI->histogram);           
-                    break;
-                case NDUInt16:
-                    doComputeHistogram<epicsUInt16>(pROIArray->pData, 
-                                        arrayInfo.nElements, histMin, histMax, histSize, 
-                                        pROI->histogram);           
-                    break;
-                case NDInt32:
-                    doComputeHistogram<epicsInt32>(pROIArray->pData, 
-                                        arrayInfo.nElements, histMin, histMax, histSize, 
-                                        pROI->histogram);           
-                    break;
-                case NDUInt32:
-                    doComputeHistogram<epicsUInt32>(pROIArray->pData, 
-                                        arrayInfo.nElements, histMin, histMax, histSize, 
-                                        pROI->histogram);           
-                    break;
-                case NDFloat32:
-                    doComputeHistogram<epicsFloat32>(pROIArray->pData, 
-                                        arrayInfo.nElements, histMin, histMax, histSize, 
-                                        pROI->histogram);           
-                    break;
-                case NDFloat64:
-                    doComputeHistogram<epicsFloat64>(pROIArray->pData, 
-                                        arrayInfo.nElements, histMin, histMax, histSize, 
-                                        pROI->histogram);           
-                    break;
-                default:
-                    status = ND_ERROR;
-                break;
-            }
+            memset(pROI->histogram, 0, pROI->histSize*sizeof(double));
+            doComputeHistogram(pROIArray, pROI);
             entropy = 0;
             for (i=0; i<histSize; i++) {
                 counts = pROI->histogram[i];
                 if (counts <= 0) counts = 1;
                 entropy += counts * log(counts);
             }
-            entropy = -entropy / arrayInfo.nElements;
+            entropy = -entropy / pROI->nElements;
             setDoubleParam(roi, NDPluginROIHistEntropy, entropy);
-            doCallbacksFloat64Array(pROI->histogram, histSize, NDPluginROIHistArray, roi);
+            doCallbacksFloat64Array(pROI->histogram, pROI->histSize, NDPluginROIHistArray, roi);
         }
+        /* We have now computed the statistics on the original array without highlighting.  
+          * If the highlight flag is set extract the ROI from the copy of the array with ROIs highlighted */
+        if (highlight && (pArray->ndims == 2)) {
+            this->pArrays[roi]->release();
+            this->pNDArrayPool->convert(pHighlights, &this->pArrays[roi], (NDDataType_t)dataType, dims);
+        }
+
+        /* Call any clients who have registered for NDArray callbacks */
+        doCallbacksGenericPointer(this->pArrays[roi], NDArrayData, roi);
 
         /* We must enter the loop and exit with the mutex locked */
         epicsMutexLock(this->mutexId);
         callParamCallbacks(roi, roi);
     }
+    
+    /* If we made a copy of the array for highlighting then free it */
+    if (pHighlights) pHighlights->release();
     
     callParamCallbacks();
 }
@@ -371,7 +479,7 @@ asynStatus NDPluginROI::readFloat64Array(asynUser *pasynUser,
         pROI = &this->pROIs[roi];
         switch(function) {
             case NDPluginROIHistArray:
-                ncopy = pROI->histogramSize;       
+                ncopy = pROI->histSize;       
                 if (ncopy > nElements) ncopy = nElements;
                 memcpy(value, pROI->histogram, ncopy*sizeof(epicsFloat64));
                 *nIn = ncopy;
@@ -450,6 +558,7 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
 
     this->maxROIs = maxROIs;
     this->pROIs = (NDROI_t *)callocMustSucceed(maxROIs, sizeof(*this->pROIs), functionName);
+    setIntegerParam(0, NDPluginROIHighlight,         0);
 
     for (roi=0; roi<maxROIs; roi++) {
         setStringParam (roi,  NDPluginROIName,              "");
@@ -457,7 +566,6 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
         setIntegerParam(roi , NDPluginROIComputeStatistics, 0);
         setIntegerParam(roi , NDPluginROIComputeHistogram,  0);
         setIntegerParam(roi , NDPluginROIComputeProfiles,   0);
-        setIntegerParam(roi , NDPluginROIHighlight,         0);
 
         setIntegerParam(roi , NDPluginROIDim0Min,           0);
         setIntegerParam(roi , NDPluginROIDim0Size,          0);
