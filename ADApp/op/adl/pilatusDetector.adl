@@ -528,7 +528,7 @@ menu {
 		height=20
 	}
 	control {
-		chan="$(P)$(R)HighlightROIs"
+		chan="$(P)$(ROI)Highlight"
 		clr=14
 		bclr=51
 	}
@@ -610,8 +610,7 @@ text {
 	display[0] {
 		label="ROIS 1-8"
 		name="NDROI8.adl"
-	
-args="P=$(P),ROI1=$(ROI)0:,ROI2=$(ROI)1:,ROI3=$(ROI)2:,ROI4=$(ROI)3:,ROI5=$(ROI)4:,ROI6=$(ROI)5:,ROI7=$(ROI)6:,ROI8=$(ROI)7:,"
+		args="P=$(P),ROI1=$(ROI)0:,ROI2=$(ROI)1:,ROI3=$(ROI)2:,ROI4=$(ROI)3:,ROI5=$(ROI)4:,ROI6=$(ROI)5:,ROI7=$(ROI)6:,ROI8=$(ROI)7:,"
 	}
 	display[1] {
 		label="ROIS 9-16"
