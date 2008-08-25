@@ -8,10 +8,19 @@
 
 typedef struct NDROI {
     NDDimension_t dims[ND_ARRAY_MAX_DIMS];
-    double *histogram;
-    int histogramSize;
     double *profiles[ND_ARRAY_MAX_DIMS];
     int profileSize[ND_ARRAY_MAX_DIMS];
+    int nElements;
+    int bgdWidth;
+    double total;
+    double net;
+    double mean;
+    double min;
+    double max;
+    double histMin;
+    double histMax;
+    int histSize;
+    double *histogram;
 } NDROI_t;
 
 /* The following enum is for each of the ROIs */
@@ -24,7 +33,7 @@ typedef enum {
     NDPluginROIComputeStatistics,      /* (asynInt32,   r/w) Compute statistics for this ROI? */
     NDPluginROIComputeHistogram,       /* (asynInt32,   r/w) Compute histogram for this ROI? */
     NDPluginROIComputeProfiles,        /* (asynInt32,   r/w) Compute profiles for this ROI? */
-    NDPluginROIHighlight,              /* (asynInt32,   r/w) Highlight other ROIs in this ROI? */
+    NDPluginROIHighlight,              /* (asynInt32,   r/w) Highlight ROIs? */
     
     /* ROI definition */
     NDPluginROIDim0Min,                /* (asynInt32,   r/w) Starting element of ROI in each dimension */
@@ -74,7 +83,7 @@ public:
                                 
 private:
     int maxROIs;
-    NDROI_t *pROIs;    /* Array of drvNDROI structures */
+    NDROI_t *pROIs;    /* Array of NDROI structures */
 };
     
 #endif
