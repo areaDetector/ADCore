@@ -2,6 +2,25 @@
 # Mark Rivers
 # April 22, 2008
 
-record(ai, "$(P)$(R)junk")
+###################################################################
+#  These records control whether ROIs are highlighted             #
+###################################################################
+record(bo, "$(P)$(R)Highlight")
 {
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIGHLIGHT")
+   field(VAL,  "1")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)Highlight_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIGHLIGHT")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
 }

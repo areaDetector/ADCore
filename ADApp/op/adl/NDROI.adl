@@ -1,14 +1,14 @@
 
 file {
-	name="/home/epics/devel/areaDetector/1-1/ADApp/op/adl/NDROI.adl"
+	name="/home/epics/devel/areaDetector/1-2/ADApp/op/adl/NDROI.adl"
 	version=030000
 }
 display {
 	object {
-		x=131
-		y=418
+		x=359
+		y=169
 		width=390
-		height=400
+		height=425
 	}
 	clr=14
 	bclr=4
@@ -87,69 +87,6 @@ display {
 		1a7309,
 	}
 }
-"related display" {
-	object {
-		x=195
-		y=366
-		width=70
-		height=20
-	}
-	display[0] {
-		label="ROI 0"
-		name="NDROIN.adl"
-		args="P=$(P), R=$(R)0:"
-	}
-	display[1] {
-		label="ROI 1"
-		name="NDROIN.adl"
-		args="P=$(P), R=$(R)1:"
-	}
-	display[2] {
-		label="ROI 2"
-		name="NDROIN.adl"
-		args="P=$(P), R=$(R)2:"
-	}
-	display[3] {
-		label="ROI 3"
-		name="NDROIN.adl"
-		args="P=$(P), R=$(R)3:"
-	}
-	display[4] {
-		label="ROI 4"
-		name="NDROIN.adl"
-		args="P=$(P), R=$(R)4:"
-	}
-	display[5] {
-		label="ROI 5"
-		name="NDROIN.adl"
-		args="P=$(P), R=$(R)5:"
-	}
-	display[6] {
-		label="ROI 6"
-		name="NDROIN.adl"
-		args="P=$(P), R=$(R)6:"
-	}
-	display[7] {
-		label="ROI 7"
-		name="NDROIN.adl"
-		args="P=$(P), R=$(R)7:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=136
-		y=366
-		width=50
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="ROIs 0-7"
-	align="horiz. right"
-}
 rectangle {
 	object {
 		x=0
@@ -173,18 +110,6 @@ text {
 	}
 	textix="$(P)$(R)"
 	align="horiz. centered"
-}
-rectangle {
-	object {
-		x=5
-		y=35
-		width=380
-		height=360
-	}
-	"basic attribute" {
-		clr=14
-		fill="outline"
-	}
 }
 "text entry" {
 	object {
@@ -474,47 +399,6 @@ menu {
 }
 text {
 	object {
-		x=12
-		y=140
-		width=150
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Callbacks block"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=172
-		y=140
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(R)BlockingCallbacks"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=278
-		y=141
-		width=100
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)BlockingCallbacks_RBV"
-		clr=54
-		bclr=4
-	}
-	limits {
-	}
-}
-text {
-	object {
 		x=72
 		y=115
 		width=90
@@ -555,34 +439,6 @@ text {
 	}
 	limits {
 	}
-}
-text {
-	object {
-		x=136
-		y=341
-		width=50
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix=" More"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=195
-		y=341
-		width=70
-		height=20
-	}
-	display[0] {
-		label="asynRecord"
-		name="asynRecord.adl"
-		args="P=$(P),R=$(R)AsynIO"
-	}
-	clr=14
-	bclr=51
 }
 composite {
 	object {
@@ -682,6 +538,277 @@ text {
 	}
 	align="horiz. centered"
 	format="string"
+	limits {
+	}
+}
+composite {
+	object {
+		x=136
+		y=366
+		width=129
+		height=45
+	}
+	"composite name"=""
+	children {
+		"related display" {
+			object {
+				x=195
+				y=391
+				width=70
+				height=20
+			}
+			display[0] {
+				label="ROI 0"
+				name="NDROIN.adl"
+				args="P=$(P), R=$(R)0:"
+			}
+			display[1] {
+				label="ROI 1"
+				name="NDROIN.adl"
+				args="P=$(P), R=$(R)1:"
+			}
+			display[2] {
+				label="ROI 2"
+				name="NDROIN.adl"
+				args="P=$(P), R=$(R)2:"
+			}
+			display[3] {
+				label="ROI 3"
+				name="NDROIN.adl"
+				args="P=$(P), R=$(R)3:"
+			}
+			display[4] {
+				label="ROI 4"
+				name="NDROIN.adl"
+				args="P=$(P), R=$(R)4:"
+			}
+			display[5] {
+				label="ROI 5"
+				name="NDROIN.adl"
+				args="P=$(P), R=$(R)5:"
+			}
+			display[6] {
+				label="ROI 6"
+				name="NDROIN.adl"
+				args="P=$(P), R=$(R)6:"
+			}
+			display[7] {
+				label="ROI 7"
+				name="NDROIN.adl"
+				args="P=$(P), R=$(R)7:"
+			}
+			clr=14
+			bclr=51
+		}
+		text {
+			object {
+				x=136
+				y=391
+				width=50
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="ROIs 0-7"
+			align="horiz. right"
+		}
+		text {
+			object {
+				x=136
+				y=366
+				width=50
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix=" More"
+			align="horiz. right"
+		}
+		"related display" {
+			object {
+				x=195
+				y=366
+				width=70
+				height=20
+			}
+			display[0] {
+				label="asynRecord"
+				name="asynRecord.adl"
+				args="P=$(P),R=$(R)AsynIO"
+			}
+			clr=14
+			bclr=51
+		}
+	}
+}
+composite {
+	object {
+		x=5
+		y=35
+		width=380
+		height=385
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=12
+				y=140
+				width=150
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Callbacks block"
+			align="horiz. right"
+		}
+		menu {
+			object {
+				x=172
+				y=140
+				width=100
+				height=20
+			}
+			control {
+				chan="$(P)$(R)BlockingCallbacks"
+				clr=14
+				bclr=51
+			}
+		}
+		rectangle {
+			object {
+				x=5
+				y=35
+				width=380
+				height=385
+			}
+			"basic attribute" {
+				clr=14
+				fill="outline"
+			}
+		}
+		"text update" {
+			object {
+				x=278
+				y=141
+				width=100
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)BlockingCallbacks_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+	}
+}
+rectangle {
+	object {
+		x=5
+		y=35
+		width=380
+		height=385
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+composite {
+	object {
+		x=12
+		y=140
+		width=366
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=12
+				y=140
+				width=150
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Callbacks block"
+			align="horiz. right"
+		}
+		menu {
+			object {
+				x=172
+				y=140
+				width=100
+				height=20
+			}
+			control {
+				chan="$(P)$(R)BlockingCallbacks"
+				clr=14
+				bclr=51
+			}
+		}
+		"text update" {
+			object {
+				x=278
+				y=141
+				width=100
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)BlockingCallbacks_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+	}
+}
+text {
+	object {
+		x=12
+		y=340
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Highlight ROIs"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=172
+		y=340
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)Highlight"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=278
+		y=341
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)Highlight_RBV"
+		clr=54
+		bclr=4
+	}
 	limits {
 	}
 }
