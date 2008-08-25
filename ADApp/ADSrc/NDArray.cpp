@@ -331,21 +331,33 @@ int NDArrayPool::convert(NDArray *pIn,
 {
     int dimsUnchanged;
     int dimSizeOut[ND_ARRAY_MAX_DIMS];
+    NDDimension_t dimsOutCopy[ND_ARRAY_MAX_DIMS];
     int i;
     int status = ND_SUCCESS;
     NDArray *pOut;
     NDArrayInfo_t arrayInfo;
     const char *functionName = "convert";
     
+    /* Initialize failure */
+    *ppOut = NULL;
+    
+    /* Copy the input dimension array because we need to modify it
+     * but don't want to affect caller */
+    memcpy(dimsOutCopy, dimsOut, pIn->ndims*sizeof(NDDimension_t));
     /* Compute the dimensions of the output array */
     dimsUnchanged = 1;
     for (i=0; i<pIn->ndims; i++) {
-        dimsOut[i].size = dimsOut[i].size/dimsOut[i].binning;
-        dimSizeOut[i] = dimsOut[i].size;
-        if ((pIn->dims[i].size  != dimsOut[i].size) ||
-            (dimsOut[i].offset != 0) ||
-            (dimsOut[i].binning != 1) ||
-            (dimsOut[i].reverse != 0)) dimsUnchanged = 0;
+        dimsOutCopy[i].size = dimsOutCopy[i].size/dimsOutCopy[i].binning;
+        if (dimsOutCopy[i].size <= 0) {
+            printf("%s:%s: ERROR, invalid output dimension, size=%d, binning=%d\n",
+                driverName, functionName, dimsOut[i].size, dimsOut[i].binning);
+            return(ND_ERROR);
+        }
+        dimSizeOut[i] = dimsOutCopy[i].size;
+        if ((pIn->dims[i].size  != dimsOutCopy[i].size) ||
+            (dimsOutCopy[i].offset != 0) ||
+            (dimsOutCopy[i].binning != 1) ||
+            (dimsOutCopy[i].reverse != 0)) dimsUnchanged = 0;
     }
     
     /* We now know the datatype and dimensions of the output array.
@@ -358,7 +370,7 @@ int NDArrayPool::convert(NDArray *pIn,
         return(ND_ERROR);
     }
     /* Replace the dimensions with those passed to this function */
-    memcpy(pOut->dims, dimsOut, pIn->ndims*sizeof(NDDimension_t));
+    memcpy(pOut->dims, dimsOutCopy, pIn->ndims*sizeof(NDDimension_t));
     
     pOut->getInfo(&arrayInfo);
 
@@ -410,8 +422,8 @@ int NDArrayPool::convert(NDArray *pIn,
                     
     /* Set fields in the output array */
     for (i=0; i<pIn->ndims; i++) {
-        pOut->dims[i].offset = pIn->dims[i].offset + dimsOut[i].offset;
-        pOut->dims[i].binning = pIn->dims[i].binning * dimsOut[i].binning;
+        pOut->dims[i].offset = pIn->dims[i].offset + dimsOutCopy[i].offset;
+        pOut->dims[i].binning = pIn->dims[i].binning * dimsOutCopy[i].binning;
         if (pIn->dims[i].reverse) pOut->dims[i].reverse = !pOut->dims[i].reverse;
     }
     pOut->timeStamp = pIn->timeStamp;
@@ -490,16 +502,29 @@ int NDArray::initDimension(NDDimension_t *pDimension, int size)
 }
 
 
-int NDArray::copy(NDArray *pOut)
+NDArray* NDArray::copy(NDArray *pOut)
 {
     NDArrayInfo_t arrayInfo;
     const char *functionName = "copy";
+    NDArrayPool *pNDArrayPool = (NDArrayPool *)this->owner;
+    int dimSizeOut[ND_ARRAY_MAX_DIMS];
+    int i;
+    
+    if (!pNDArrayPool) {
+        printf("%s: ERROR, no owner\n", functionName);
+        return(NULL);
+    }
     
     this->getInfo(&arrayInfo);
+    /* If the output array does not exist then create it */
+    if (!pOut) {
+        for (i=0; i<this->ndims; i++) dimSizeOut[i] = this->dims[i].size;
+        pOut = pNDArrayPool->alloc(this->ndims, dimSizeOut, this->dataType, 0, NULL);
+    }
     if (arrayInfo.totalBytes > pOut->dataSize) {
         printf("%s:%s: output buffer too small, is %d, must be %d\n",
             driverName, functionName, pOut->dataSize, arrayInfo.totalBytes);
-        return(ND_ERROR);
+        return(NULL);
     }
     pOut->uniqueId = this->uniqueId;
     pOut->timeStamp = this->timeStamp;
@@ -507,7 +532,7 @@ int NDArray::copy(NDArray *pOut)
     memcpy(pOut->dims, this->dims, sizeof(this->dims));
     pOut->dataType = this->dataType;
     memcpy(pOut->pData, this->pData, arrayInfo.totalBytes);
-    return(ND_SUCCESS);
+    return(pOut);
 }
 
 int NDArray::reserve()
