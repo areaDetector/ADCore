@@ -45,6 +45,8 @@ static asynParamString_t NDPluginROINParamString[] = {
     {NDPluginROIMeanValue,              "MEAN_VALUE"},
     {NDPluginROITotal,                  "TOTAL"},
     {NDPluginROINet,                    "NET"},
+    {NDPluginROITotalArray,             "TOTAL_ARRAY"},
+    {NDPluginROINetArray,               "NET_ARRAY"},
 
     {NDPluginROIHistSize,               "HIST_SIZE"},
     {NDPluginROIHistMin,                "HIST_MIN"},
@@ -275,6 +277,11 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     /* Loop over the ROIs in this driver */
     for (roi=0; roi<this->maxROIs; roi++) {
         pROI       = &this->pROIs[roi];
+        pROI->min = 0; setDoubleParam(roi, NDPluginROIMinValue, pROI->min);
+        pROI->max = 0; setDoubleParam(roi, NDPluginROIMaxValue, pROI->max);
+        pROI->mean = 0; setDoubleParam(roi, NDPluginROIMeanValue, pROI->mean);
+        pROI->total = 0; setDoubleParam(roi, NDPluginROITotal, pROI->total);
+        pROI->net = 0; setDoubleParam(roi, NDPluginROINet, pROI->net);
         /* We always keep the last array so read() can use it.  
          * Release previous one. Reserve new one below. */
         if (this->pArrays[roi]) {
@@ -282,8 +289,11 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
             this->pArrays[roi] = NULL;
         }
         getIntegerParam(roi, NDPluginROIUse, &use);
-        if (!use) continue;
-
+        if (!use) {
+            callParamCallbacks(roi, roi);
+            continue;
+        }
+        
         /* Need to fetch all of these parameters while we still have the mutex */
         getIntegerParam(roi, NDPluginROIComputeStatistics, &computeStatistics);
         getIntegerParam(roi, NDPluginROIComputeHistogram, &computeHistogram);
@@ -388,11 +398,19 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
 
         /* Call any clients who have registered for NDArray callbacks */
         doCallbacksGenericPointer(this->pArrays[roi], NDArrayData, roi);
-
+        
         /* We must enter the loop and exit with the mutex locked */
         epicsMutexLock(this->mutexId);
         callParamCallbacks(roi, roi);
     }
+
+    /* Build the arrays of total and net counts for fast scanning, do callbacks */
+    for (roi=0; roi<this->maxROIs; roi++) {
+        this->totalArray[roi] = (epicsInt32)this->pROIs[roi].total;
+        this->netArray[roi] = (epicsInt32)this->pROIs[roi].net;
+    }
+    doCallbacksInt32Array(this->totalArray, this->maxROIs, NDPluginROITotalArray, 0); 
+    doCallbacksInt32Array(this->netArray, this->maxROIs, NDPluginROINetArray, 0); 
     
     /* If we made a copy of the array for highlighting then free it */
     if (pHighlights) pHighlights->release();
@@ -548,8 +566,8 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
                    NDArrayPort, NDArrayAddr, maxROIs, NDPluginROILastROINParam, maxROIs, maxMemory,
-                   asynFloat64ArrayMask | asynGenericPointerMask, 
-                   asynFloat64ArrayMask | asynGenericPointerMask)
+                   asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask, 
+                   asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask)
 {
     asynStatus status;
     int roi;
@@ -558,6 +576,8 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
 
     this->maxROIs = maxROIs;
     this->pROIs = (NDROI_t *)callocMustSucceed(maxROIs, sizeof(*this->pROIs), functionName);
+    this->totalArray = (epicsInt32 *)callocMustSucceed(maxROIs, sizeof(epicsInt32), functionName);
+    this->netArray = (epicsInt32 *)callocMustSucceed(maxROIs, sizeof(epicsInt32), functionName);
     setIntegerParam(0, NDPluginROIHighlight,         0);
 
     for (roi=0; roi<maxROIs; roi++) {
