@@ -396,6 +396,10 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
             this->pNDArrayPool->convert(pHighlights, &this->pArrays[roi], (NDDataType_t)dataType, dims);
         }
 
+        /* Set the image size of the ROI image data */
+        setIntegerParam(roi, ADImageSizeX, this->pArrays[roi]->dims[0].size);
+        setIntegerParam(roi, ADImageSizeY, this->pArrays[roi]->dims[1].size);
+        
         /* Call any clients who have registered for NDArray callbacks */
         doCallbacksGenericPointer(this->pArrays[roi], NDArrayData, roi);
         
