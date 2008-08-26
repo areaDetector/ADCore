@@ -5,8 +5,8 @@ file {
 }
 display {
 	object {
-		x=398
-		y=66
+		x=311
+		y=73
 		width=585
 		height=875
 	}
@@ -509,58 +509,6 @@ text {
 }
 text {
 	object {
-		x=292
-		y=625
-		width=180
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Highlight ROIs:"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=475
-		y=625
-		width=90
-		height=20
-	}
-	control {
-		chan="$(P)$(ROI)Highlight"
-		clr=14
-		bclr=51
-	}
-}
-menu {
-	object {
-		x=178
-		y=650
-		width=90
-		height=20
-	}
-	control {
-		chan="$(P)image1:EnableCallbacks"
-		clr=14
-		bclr=51
-	}
-}
-text {
-	object {
-		x=5
-		y=650
-		width=170
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Post images:"
-	align="horiz. right"
-}
-text {
-	object {
 		x=293
 		y=650
 		width=180
@@ -630,73 +578,6 @@ text {
 	clr=14
 	bclr=51
 	label="ROIs"
-}
-text {
-	object {
-		x=5
-		y=625
-		width=170
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Clear ROIs:"
-	align="horiz. right"
-}
-"message button" {
-	object {
-		x=178
-		y=625
-		width=90
-		height=20
-	}
-	control {
-		chan="$(P)$(R)ClearROIs"
-		clr=14
-		bclr=51
-	}
-	label="Clear ROIs"
-	press_msg="1"
-}
-composite {
-	object {
-		x=292
-		y=600
-		width=283
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=292
-				y=600
-				width=180
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Min. array update:"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=475
-				y=600
-				width=100
-				height=20
-			}
-			control {
-				chan="$(P)$(R)MinWFUpdateTime"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-	}
 }
 text {
 	object {
@@ -1330,4 +1211,93 @@ text {
 	clr=14
 	bclr=51
 	label="Scan"
+}
+composite {
+	object {
+		x=292
+		y=625
+		width=273
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=292
+				y=625
+				width=180
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Highlight ROIs:"
+			align="horiz. right"
+		}
+		menu {
+			object {
+				x=475
+				y=625
+				width=90
+				height=20
+			}
+			control {
+				chan="$(P)$(ROI)Highlight"
+				clr=14
+				bclr=51
+			}
+		}
+	}
+}
+text {
+	object {
+		x=25
+		y=625
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Enable ROIs:"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=178
+		y=625
+		width=90
+		height=20
+	}
+	control {
+		chan="$(P)$(ROI)EnableCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+text {
+	object {
+		x=5
+		y=650
+		width=170
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Post images:"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=178
+		y=650
+		width=90
+		height=20
+	}
+	control {
+		chan="$(P)image1:EnableCallbacks"
+		clr=14
+		bclr=51
+	}
 }
