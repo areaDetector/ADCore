@@ -61,6 +61,9 @@ typedef enum {
     NDPluginROIHistEntropy,            /* (asynFloat64, r/o) Image entropy calculcated from histogram */
     NDPluginROIHistArray,              /* (asynFloat64Array, r/o) Histogram array */
 
+    NDPluginROITotalArray,             /* (asynInt32Array, r/o) Total counts array */
+    NDPluginROINetArray,               /* (asynInt32Array, r/o) Net counts array */
+
     NDPluginROILastROINParam
 } NDPluginROINParam_t;
 
@@ -84,6 +87,8 @@ public:
 private:
     int maxROIs;
     NDROI_t *pROIs;    /* Array of NDROI structures */
+    epicsInt32 *totalArray;
+    epicsInt32 *netArray;
 };
     
 #endif
