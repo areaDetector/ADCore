@@ -5,8 +5,8 @@ file {
 }
 display {
 	object {
-		x=516
-		y=57
+		x=328
+		y=55
 		width=1000
 		height=290
 	}
@@ -97,7 +97,7 @@ text {
 	"basic attribute" {
 		clr=14
 	}
-	textix="Pilatus $(P) $(ROI1)-$(ROI8)"
+	textix="$(P) $(ROI1)-$(ROI8)"
 	align="horiz. centered"
 }
 composite {
@@ -366,7 +366,7 @@ text {
 	"basic attribute" {
 		clr=14
 	}
-	textix="Plots"
+	textix="More"
 }
 composite {
 	object {
@@ -1687,147 +1687,136 @@ composite {
 		}
 	}
 }
-composite {
+text {
+	object {
+		x=225
+		y=60
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Name"
+}
+"text entry" {
 	object {
 		x=210
-		y=60
+		y=84
 		width=75
-		height=219
+		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=225
-				y=60
-				width=50
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Name"
-		}
-		"text entry" {
-			object {
-				x=210
-				y=84
-				width=75
-				height=20
-			}
-			control {
-				chan="$(P)$(ROI1)Name"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text entry" {
-			object {
-				x=210
-				y=109
-				width=75
-				height=20
-			}
-			control {
-				chan="$(P)$(ROI2)Name"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text entry" {
-			object {
-				x=210
-				y=134
-				width=75
-				height=20
-			}
-			control {
-				chan="$(P)$(ROI3)Name"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text entry" {
-			object {
-				x=210
-				y=159
-				width=75
-				height=20
-			}
-			control {
-				chan="$(P)$(ROI4)Name"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text entry" {
-			object {
-				x=210
-				y=184
-				width=75
-				height=20
-			}
-			control {
-				chan="$(P)$(ROI5)Name"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text entry" {
-			object {
-				x=210
-				y=209
-				width=75
-				height=20
-			}
-			control {
-				chan="$(P)$(ROI6)Name"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text entry" {
-			object {
-				x=210
-				y=234
-				width=75
-				height=20
-			}
-			control {
-				chan="$(P)$(ROI7)Name"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text entry" {
-			object {
-				x=210
-				y=259
-				width=75
-				height=20
-			}
-			control {
-				chan="$(P)$(ROI8)Name"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
+	control {
+		chan="$(P)$(ROI1)Name"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=210
+		y=109
+		width=75
+		height=20
+	}
+	control {
+		chan="$(P)$(ROI2)Name"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=210
+		y=134
+		width=75
+		height=20
+	}
+	control {
+		chan="$(P)$(ROI3)Name"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=210
+		y=159
+		width=75
+		height=20
+	}
+	control {
+		chan="$(P)$(ROI4)Name"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=210
+		y=184
+		width=75
+		height=20
+	}
+	control {
+		chan="$(P)$(ROI5)Name"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=210
+		y=209
+		width=75
+		height=20
+	}
+	control {
+		chan="$(P)$(ROI6)Name"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=210
+		y=234
+		width=75
+		height=20
+	}
+	control {
+		chan="$(P)$(ROI7)Name"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=210
+		y=259
+		width=75
+		height=20
+	}
+	control {
+		chan="$(P)$(ROI8)Name"
+		clr=14
+		bclr=51
+	}
+	limits {
 	}
 }
 text {
@@ -1975,14 +1964,19 @@ composite {
 				height=20
 			}
 			display[0] {
-				label="Total counts"
+				label="Total counts plot"
 				name="mca.adl"
 				args="P=$(P),M=$(ROI1)TotalArray"
 			}
 			display[1] {
-				label="Net counts"
+				label="Net counts plot"
 				name="mca.adl"
 				args="P=$(P),M=$(ROI1)NetArray"
+			}
+			display[2] {
+				label="ROI full"
+				name="NDROIN.adl"
+				args="P=$(P),R=$(ROI1)"
 			}
 			clr=53
 			bclr=4
@@ -1995,14 +1989,19 @@ composite {
 				height=20
 			}
 			display[0] {
-				label="Total counts"
+				label="Total counts plot"
 				name="mca.adl"
 				args="P=$(P),M=$(ROI2)TotalArray"
 			}
 			display[1] {
-				label="Net counts"
+				label="Net counts plot"
 				name="mca.adl"
 				args="P=$(P),M=$(ROI2)NetArray"
+			}
+			display[2] {
+				label="ROI full"
+				name="NDROIN.adl"
+				args="P=$(P),R=$(ROI2)"
 			}
 			clr=53
 			bclr=4
@@ -2015,14 +2014,19 @@ composite {
 				height=20
 			}
 			display[0] {
-				label="Total counts"
+				label="Total counts plot"
 				name="mca.adl"
 				args="P=$(P),M=$(ROI3)TotalArray"
 			}
 			display[1] {
-				label="Net counts"
+				label="Net counts plot"
 				name="mca.adl"
 				args="P=$(P),M=$(ROI3)NetArray"
+			}
+			display[2] {
+				label="ROI full"
+				name="NDROIN.adl"
+				args="P=$(P),R=$(ROI3)"
 			}
 			clr=53
 			bclr=4
@@ -2035,14 +2039,19 @@ composite {
 				height=20
 			}
 			display[0] {
-				label="Total counts"
+				label="Total counts plot"
 				name="mca.adl"
 				args="P=$(P),M=$(ROI4)TotalArray"
 			}
 			display[1] {
-				label="Net counts"
+				label="Net counts plot"
 				name="mca.adl"
 				args="P=$(P),M=$(ROI4)NetArray"
+			}
+			display[2] {
+				label="ROI full"
+				name="NDROIN.adl"
+				args="P=$(P),R=$(ROI4)"
 			}
 			clr=53
 			bclr=4
@@ -2055,14 +2064,19 @@ composite {
 				height=20
 			}
 			display[0] {
-				label="Total counts"
+				label="Total counts plot"
 				name="mca.adl"
 				args="P=$(P),M=$(ROI5)TotalArray"
 			}
 			display[1] {
-				label="Net counts"
+				label="Net counts plot"
 				name="mca.adl"
 				args="P=$(P),M=$(ROI5)NetArray"
+			}
+			display[2] {
+				label="ROI full"
+				name="NDROIN.adl"
+				args="P=$(P),R=$(ROI4)"
 			}
 			clr=53
 			bclr=4
@@ -2075,14 +2089,19 @@ composite {
 				height=20
 			}
 			display[0] {
-				label="Total counts"
+				label="Total counts plot"
 				name="mca.adl"
 				args="P=$(P),M=$(ROI6)TotalArray"
 			}
 			display[1] {
-				label="Net counts"
+				label="Net counts plot"
 				name="mca.adl"
 				args="P=$(P),M=$(ROI6)NetArray"
+			}
+			display[2] {
+				label="ROI full"
+				name="NDROIN.adl"
+				args="P=$(P),R=$(ROI6)"
 			}
 			clr=53
 			bclr=4
@@ -2095,14 +2114,19 @@ composite {
 				height=20
 			}
 			display[0] {
-				label="Total counts"
+				label="Total counts plot"
 				name="mca.adl"
 				args="P=$(P),M=$(ROI7)TotalArray"
 			}
 			display[1] {
-				label="Net counts"
+				label="Net counts plot"
 				name="mca.adl"
 				args="P=$(P),M=$(ROI7)NetArray"
+			}
+			display[2] {
+				label="ROI full"
+				name="NDROIN.adl"
+				args="P=$(P),R=$(ROI7)"
 			}
 			clr=53
 			bclr=4
@@ -2115,14 +2139,19 @@ composite {
 				height=20
 			}
 			display[0] {
-				label="Total counts"
+				label="Total counts plot"
 				name="mca.adl"
 				args="P=$(P),M=$(ROI8)TotalArray"
 			}
 			display[1] {
-				label="Net counts"
+				label="Net counts plot"
 				name="mca.adl"
 				args="P=$(P),M=$(ROI8)NetArray"
+			}
+			display[2] {
+				label="ROI full"
+				name="NDROIN.adl"
+				args="P=$(P),R=$(ROI8)"
 			}
 			clr=53
 			bclr=4
