@@ -344,6 +344,12 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
                     pDim->offset = MAX(pDim->offset - pROI->bgdWidth, 0);
                     pDim->size    = MIN(pROI->bgdWidth, pArray->dims[dim].size - pDim->offset);
                     this->pNDArrayPool->convert(pArray, &pBgdArray, (NDDataType_t)dataType, bgdDims);
+                    if (!pBgdArray) {
+                        asynPrint(pasynUser, ASYN_TRACE_ERROR, 
+                            "%s::%s, error allocating array buffer in convert\n",
+                            driverName, functionName);
+                        continue;
+                    }
                     status = doComputeStatistics(pBgdArray, pROITemp);
                     pBgdArray->release();
                     bgdPixels += pROITemp->nElements;
@@ -352,6 +358,12 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
                     pDim->offset = MIN(pDim->offset + pDim->size, pArray->dims[dim].size - 1 - pROI->bgdWidth);
                     pDim->size    = MIN(pROI->bgdWidth, pArray->dims[dim].size - pDim->offset);
                     this->pNDArrayPool->convert(pArray, &pBgdArray, (NDDataType_t)dataType, bgdDims);
+                    if (!pBgdArray) {
+                        asynPrint(pasynUser, ASYN_TRACE_ERROR, 
+                            "%s::%s, error allocating array buffer in convert\n",
+                            driverName, functionName);
+                        continue;
+                    }
                     status = doComputeStatistics(pBgdArray, pROITemp);
                     pBgdArray->release();
                     bgdPixels += pROITemp->nElements;
