@@ -5,8 +5,8 @@ file {
 }
 display {
 	object {
-		x=31
-		y=131
+		x=24
+		y=46
 		width=301
 		height=255
 	}
@@ -102,59 +102,6 @@ text {
 composite {
 	object {
 		x=47
-		y=54
-		width=242
-		height=21
-	}
-	"composite name"=""
-	children {
-		"related display" {
-			object {
-				x=225
-				y=54
-				width=64
-				height=21
-			}
-			display[0] {
-				label="Simulator #1 General"
-				name="ADBase.adl"
-				args="P=13SIM1:, R=cam1:"
-			}
-			display[1] {
-				label="Simulator #1 Specific"
-				name="simDetector.adl"
-				args="P=13SIM1:, R=cam1:"
-			}
-			display[2] {
-				label="Simulator #2 General"
-				name="ADBase.adl"
-				args="P=13SIM1:, R=cam2:"
-			}
-			display[3] {
-				label="Simulator #2 Specific"
-				name="simDetector.adl"
-				args="P=13SIM1:, R=cam2:"
-			}
-			clr=14
-			bclr=51
-		}
-		text {
-			object {
-				x=47
-				y=54
-				width=70
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Simulator Drivers"
-		}
-	}
-}
-composite {
-	object {
-		x=47
 		y=107
 		width=242
 		height=21
@@ -245,54 +192,6 @@ composite {
 			}
 			clr=14
 			bclr=51
-		}
-	}
-}
-composite {
-	object {
-		x=37
-		y=81
-		width=252
-		height=21
-	}
-	"composite name"=""
-	children {
-		"related display" {
-			object {
-				x=225
-				y=81
-				width=64
-				height=21
-			}
-			display[0] {
-				label="Image #1"
-				name="NDStdArrays.adl"
-				args="P=13SIM1:, R=image1:"
-			}
-			display[1] {
-				label="File #1"
-				name="NDFile.adl"
-				args="P=13SIM1:, R=file1:"
-			}
-			display[2] {
-				label="ROI #1"
-				name="NDROI.adl"
-				args="P=13SIM1:, R=ROI1:"
-			}
-			clr=14
-			bclr=51
-		}
-		text {
-			object {
-				x=37
-				y=81
-				width=80
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Simulator Plug-ins"
 		}
 	}
 }
@@ -407,4 +306,105 @@ text {
 		clr=14
 	}
 	textix="Pilatus Plug-ins"
+}
+composite {
+	object {
+		x=47
+		y=54
+		width=242
+		height=21
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=47
+				y=54
+				width=70
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Simulator Drivers"
+		}
+		"related display" {
+			object {
+				x=225
+				y=54
+				width=64
+				height=21
+			}
+			display[0] {
+				label="Simulator #1 General"
+				name="ADBase.adl"
+				args="P=13SIM1:, R=cam1:"
+			}
+			display[1] {
+				label="Simulator #1 Specific"
+				name="simDetector.adl"
+				args="P=13SIM1:, R=cam1:"
+			}
+			display[2] {
+				label="Simulator #2 General"
+				name="ADBase.adl"
+				args="P=13SIM1:, R=cam2:"
+			}
+			display[3] {
+				label="Simulator #2 Specific"
+				name="simDetector.adl"
+				args="P=13SIM1:, R=cam2:"
+			}
+			clr=14
+			bclr=51
+		}
+	}
+}
+composite {
+	object {
+		x=37
+		y=81
+		width=252
+		height=21
+	}
+	"composite name"=""
+	children {
+		"related display" {
+			object {
+				x=225
+				y=81
+				width=64
+				height=21
+			}
+			display[0] {
+				label="Image #1"
+				name="NDStdArrays.adl"
+				args="P=13SIM1:, R=image1:"
+			}
+			display[1] {
+				label="File #1"
+				name="NDFile.adl"
+				args="P=13SIM1:, R=file1:"
+			}
+			display[2] {
+				label="ROI #1"
+				name="NDROI.adl"
+				args="P=13SIM1:, R=ROI1:"
+			}
+			clr=14
+			bclr=51
+		}
+		text {
+			object {
+				x=37
+				y=81
+				width=80
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Simulator Plug-ins"
+		}
+	}
 }
