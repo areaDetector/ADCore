@@ -548,37 +548,6 @@ text {
 	textix="ROI definitions:"
 	align="horiz. right"
 }
-"related display" {
-	object {
-		x=178
-		y=600
-		width=90
-		height=20
-	}
-	display[0] {
-		label="ROIS 1-8"
-		name="NDROI8.adl"
-		args="P=$(P),ROI1=$(ROI)0:,ROI2=$(ROI)1:,ROI3=$(ROI)2:,ROI4=$(ROI)3:,ROI5=$(ROI)4:,ROI6=$(ROI)5:,ROI7=$(ROI)6:,ROI8=$(ROI)7:,"
-	}
-	display[1] {
-		label="ROIS 9-16"
-		name="NDROI8.adl"
-		args="DET=$(P)$(R),R1=9,R2=10,R3=11,R4=12,R5=13,R6=14,R7=15,R8=16"
-	}
-	display[2] {
-		label="ROIS 17-24"
-		name="NDROI8.adl"
-		args="DET=$(P)$(R),R1=17,R2=18,R3=19,R4=20,R5=21,R6=22,R7=23,R8=24"
-	}
-	display[3] {
-		label="ROIS 25-32"
-		name="NDROI8.adl"
-		args="DET=$(P)$(R),R1=25,R2=26,R3=27,R4=28,R5=29,R6=30,R7=31,R8=32"
-	}
-	clr=14
-	bclr=51
-	label="ROIs"
-}
 text {
 	object {
 		x=240
@@ -1300,4 +1269,35 @@ menu {
 		clr=14
 		bclr=51
 	}
+}
+"related display" {
+	object {
+		x=178
+		y=599
+		width=90
+		height=20
+	}
+	display[0] {
+		label="ROIS 1-8"
+		name="NDROI8.adl"
+		args="P=$(P),ROI1=$(ROI)0:,ROI2=$(ROI)1:,ROI3=$(ROI)2:,ROI4=$(ROI)3:,ROI5=$(ROI)4:,ROI6=$(ROI)5:,ROI7=$(ROI)6:,ROI8=$(ROI)7:,"
+	}
+	display[1] {
+		label="ROIS 9-16"
+		name="NDROI8.adl"
+		args="P=$(P),ROI1=$(ROI)8:,ROI2=$(ROI)9:,ROI3=$(ROI)10:,ROI4=$(ROI)11:,ROI5=$(ROI)12:,ROI6=$(ROI)13:,ROI7=$(ROI)14:,ROI8=$(ROI)15:,"
+	}
+	display[2] {
+		label="ROIS 17-24"
+		name="NDROI8.adl"
+		args="P=$(P),ROI1=$(ROI)16:,ROI2=$(ROI)17:,ROI3=$(ROI)18:,ROI4=$(ROI)19:,ROI5=$(ROI)20:,ROI6=$(ROI)21:,ROI7=$(ROI)22:,ROI8=$(ROI)23:,"
+	}
+	display[3] {
+		label="ROIS 25-32"
+		name="NDROI8.adl"
+		args="P=$(P),ROI1=$(ROI)24:,ROI2=$(ROI)25:,ROI3=$(ROI)26:,ROI4=$(ROI)27:,ROI5=$(ROI)28:,ROI6=$(ROI)29:,ROI7=$(ROI)30:,ROI8=$(ROI)31:,"
+	}
+	clr=14
+	bclr=51
+	label="ROIs"
 }
