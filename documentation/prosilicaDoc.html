@@ -1,0 +1,205 @@
+<HTML>
+<HEAD>
+<TITLE>areaDetector Prosilica driver</TITLE>
+</HEAD>
+<BODY>
+
+<CENTER>
+<H1>areaDetector Prosilica driver</H1>
+
+<H2> September 5, 2008</H2>
+<H2> Mark Rivers</H2>
+<H2> University of Chicago</H2>
+</CENTER>
+
+<P>&nbsp;</P>
+
+<CENTER><H2>Contents</H2></CENTER>
+<UL>
+  <LI><A href="#Overview">
+                Overview</A> 
+  <LI><A href="#Performance measurements">
+                Performance measurements</A> 
+  <LI><A href="#Hardware notes">
+                Hardware notes</A> 
+  <LI><A href="#Restrictions">
+                Restrictions</A> 
+</UL>
+
+<CENTER><H2><A name="Prosilica Driver">
+                     Prosilica Driver</A></H2></CENTER>
+                    
+This is a driver for Gigabit Ethernet and Firewire cameras from 
+<A HREF="http://www.prosilica.com">Prosilica</A>.
+It inherits from ADDriver and implements nearly all of the parameters in ADStdDriverParams.h.
+It also implements a number of parameters that are specific
+to the Prosilica cameras.  The driver is currently only supported under Windows (EPICS win32-x86 architecture)
+because the vendor library is provided as a Windows DLL.
+The vendor library provided by Prosilica does callbacks to a user-supplied
+function each time there is a new frame.  Thus, it is not necessary to create a thread for callbacks in this driver.
+<P>
+The vendor library supports saving individual frames as TIFF files, and this is implemented in the driver.  The NDPluginFile
+plugin can be used to capture or stream images much more rapidly in the netCDF file format.
+<P>
+The driver redefines the choices for 2 of the parameters defined in ADStdDriverParams.h.  The ADTriggerMode choices for the
+Prosilica are:
+<UL>
+  <LI>Free Run (collects images as fast as allowed by the camera readout and the exposure time)
+  <LI>Sync In 1 (external trigger on line 1)
+  <LI>Sync In 2 (external trigger on line 2)
+  <LI>Sync In 3 (external trigger on line 3)
+  <LI>Sync In 4 (external trigger on line 4)
+  <LI>Fixed Rate (collects images at a fixed rate)
+  <LI>Software (single software trigger)
+</UL>
+<P>The Prosilica supports additional hardware timing signals that may be supported in a future release.
+<P>
+The ADFileFormat choices for the Prosilica are:
+<UL>
+  <LI>TIFF (this is the only format supported)
+  <LI>Invalid
+</UL>
+  
+The Prosilica driver implements the following parameters in addition to those in ADStdDriverParams.h:
+<P>
+<TABLE style="TEXT-ALIGN: left" cellSpacing=2 cellPadding=2 border=1>
+  <TBODY>
+  <TR>
+    <TD COLSPAN=7, ALIGN=CENTER><B>Parameter Definitions in prosilica.cpp and EPICS Record Definitions in prosilica.template</B></TD>
+  </TR>
+  <TR>
+    <TH>Enum name</TH>
+    <TH>asyn interface</TH>
+    <TH>Access</TH>
+    <TH>Description</TH>
+    <TH>drvUser string</TH>
+    <TH>EPICS record name</TH>
+    <TH>EPICS record type</TH>
+  </TR>
+  <TR>
+    <TD>PSReadStatistics</TD>
+    <TD>asynInt32</TD>
+    <TD>r/w</TD>
+    <TD>Read the Gigabit Ethernet statistics when 1</TD>
+    <TD>PS_READ_STATISTICS</TD>
+    <TD>$(P)$(R)PSReadStatistics</TD>
+    <TD>longout</TD>
+  </TR>
+  <TR>
+    <TD>PSStatDriverType</TD>
+    <TD>asynOctet</TD>
+    <TD>r/o</TD>
+    <TD>Driver type</TD>
+    <TD>PS_DRIVER_TYPE</TD>
+    <TD>$(P)$(R)PSDriverType_RBV</TD>
+    <TD>stringin</TD>
+  </TR>
+  <TR>
+    <TD>PSStatFilterVersion</TD>
+    <TD>asynOctet</TD>
+    <TD>r/o</TD>
+    <TD>Packet filter version</TD>
+    <TD>PS_FILTER_VERSION</TD>
+    <TD>$(P)$(R)PSFilterVersion_RBV</TD>
+    <TD>stringin</TD>
+  </TR>
+  <TR>
+    <TD>PSStatFrameRate</TD>
+    <TD>asynFloat64</TD>
+    <TD>r/o</TD>
+    <TD>Frame rate (Hz)</TD>
+    <TD>PS_FRAME_RATE</TD>
+    <TD>$(P)$(R)PSFrameRate_RBV</TD>
+    <TD>ai</TD>
+  </TR>
+  <TR>
+    <TD>PSStatFramesCompleted</TD>
+    <TD>asynInt32</TD>
+    <TD>r/o</TD>
+    <TD>Number of frames completed</TD>
+    <TD>PS_FRAMES_COMPLETED</TD>
+    <TD>$(P)$(R)PSFramesCompleted_RBV</TD>
+    <TD>longin</TD>
+  </TR>
+  <TR>
+    <TD>PSStatFramesDropped</TD>
+    <TD>asynInt32</TD>
+    <TD>r/o</TD>
+    <TD>Number of frames dropped</TD>
+    <TD>PS_FRAMES_DROPPED</TD>
+    <TD>$(P)$(R)PSFramesDropped_RBV</TD>
+    <TD>longin</TD>
+  </TR>
+  <TR>
+    <TD>PSStatPacketsErroneous</TD>
+    <TD>asynInt32</TD>
+    <TD>r/o</TD>
+    <TD>Number of erroneous packets</TD>
+    <TD>PS_PACKETS_ERRONEOUS</TD>
+    <TD>$(P)$(R)PSPacketsErroneous_RBV</TD>
+    <TD>longin</TD>
+  </TR>
+  <TR>
+    <TD>PSStatPacketsMissed</TD>
+    <TD>asynInt32</TD>
+    <TD>r/o</TD>
+    <TD>Number of missed packets</TD>
+    <TD>PS_PACKETS_MISSED</TD>
+    <TD>$(P)$(R)PSPacketsMissed_RBV</TD>
+    <TD>longin</TD>
+  </TR>
+  <TR>
+    <TD>PSStatPacketsReceived</TD>
+    <TD>asynInt32</TD>
+    <TD>r/o</TD>
+    <TD>Number of received packets</TD>
+    <TD>PS_PACKETS_RECEIVED</TD>
+    <TD>$(P)$(R)PSPacketsReceived_RBV</TD>
+    <TD>longin</TD>
+  </TR>
+  <TR>
+    <TD>PSStatPacketsRequested</TD>
+    <TD>asynInt32</TD>
+    <TD>r/o</TD>
+    <TD>Number of packets requested</TD>
+    <TD>PS_PACKETS_RESENT</TD>
+    <TD>$(P)$(R)PSPacketsRequested_RBV</TD>
+    <TD>longin</TD>
+  </TR>
+  <TR>
+    <TD>PSStatPacketsResent</TD>
+    <TD>asynInt32</TD>
+    <TD>r/o</TD>
+    <TD>Number of packets resent</TD>
+    <TD>PS_PACKETS_RESENT</TD>
+    <TD>$(P)$(R)PSPacketsResent_RBV</TD>
+    <TD>longin</TD>
+  </TR>
+  <TR>
+    <TD>PSBadFrameCounter</TD>
+    <TD>asynInt32</TD>
+    <TD>r/o</TD>
+    <TD>Number of bad frames</TD>
+    <TD>PS_BAD_FRAME_COUNTER</TD>
+    <TD>$(P)$(R)PSBadFrameCounter_RBV</TD>
+    <TD>longin</TD>
+  </TR>
+</TBODY>
+</TABLE>
+
+<P>
+The following is the MEDM screen ADBase.adl connected to a Prosilica camera.
+<P>
+<CENTER><IMG src="ADBase_prosilica.png"></CENTER>
+<P>
+The following is the MEDM screen that provides access to the specific parameters for the Prosilica detector.
+<P>
+<CENTER><IMG src="prosilica.png"></CENTER>
+<P>
+The following is an IDL epics_ad_display screen (discussed below) illustrating the Prosilica detector images.
+<P>
+<CENTER><IMG src="prosilica_tvscl.png"></CENTER>
+<P>
+
+</BODY>
+</HTML>
