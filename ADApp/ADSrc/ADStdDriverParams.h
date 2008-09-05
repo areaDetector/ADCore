@@ -86,7 +86,7 @@ typedef enum
     ADImageSizeX,       /* (asynInt32,    r/o) Size of the image data in the X direction */
     ADImageSizeY,       /* (asynInt32,    r/o) Size of the image data in the Y direction */
     ADImageSize,        /* (asynInt32,    r/o) Total size of image data in bytes */
-    ADDataType,         /* (asynInt32,    r/w) Data type (ADDataType_t) */
+    ADDataType,         /* (asynInt32,    r/w) Data type (NDDataType_t) */
     ADImageMode,        /* (asynInt32,    r/w) Image mode (ADImageMode_t) */
     ADTriggerMode,      /* (asynInt32,    r/w) Trigger mode (ADTriggerMode_t) */
     ADNumExposures,     /* (asynInt32,    r/w) Number of exposures per image to acquire */
