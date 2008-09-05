@@ -47,7 +47,7 @@ typedef enum {
     NDPluginROIDataType,               /* (asynInt32,   r/w) Data type for ROI.  -1 means automatic. */
     
     /* ROI statistics */
-    NDPluginROIBgdWidth,               /* (asynFloat64, r/w) Width of background region when computing net */
+    NDPluginROIBgdWidth,               /* (asynInt32,   r/w) Width of background region when computing net */
     NDPluginROIMinValue,               /* (asynFloat64, r/o) Minimum counts in any element */
     NDPluginROIMaxValue,               /* (asynFloat64, r/o) Maximum counts in any element */
     NDPluginROIMeanValue,              /* (asynFloat64, r/o) Mean counts of all elements */
