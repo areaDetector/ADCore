@@ -2,8 +2,8 @@
 # Mark Rivers
 # July 25, 2008
 
-# We redefine the states for the ImageMode records defined in ADBase.template
-record(mbbo,"$(P)$(R)ImageMode") {
+# We redefine the states for the TriggerMode records defined in ADBase.template
+record(mbbo,"$(P)$(R)TriggerMode") {
     field(DESC,"Acquire mode")
     field(ZRVL,"0")
     field(ZRST,"Internal")
@@ -16,7 +16,7 @@ record(mbbo,"$(P)$(R)ImageMode") {
     field(FRVL,"4")
     field(FRST,"Alignment")
 }
-record(mbbi,"$(P)$(R)ImageMode_RBV") {
+record(mbbi,"$(P)$(R)TriggerMode_RBV") {
     field(DESC,"Acquire mode")
     field(ZRVL,"0")
     field(ZRST,"Internal")
@@ -123,7 +123,7 @@ record(waveform, "$(P)$(R)FlatFieldFile")
 }
 
 # Minimum flat field value
-record(ao, "$(P)$(R)MinFlatField")
+record(longout, "$(P)$(R)MinFlatField")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_FLAT_FIELD")
