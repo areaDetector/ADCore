@@ -12,6 +12,14 @@ record(stringout, "$(P)$(R)Name")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
 }
 
+record(stringin, "$(P)$(R)Name_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
+   field(SCAN, "I/O Intr")
+}
+
 
 ###################################################################
 #  These records control whether this ROI is used                 #
