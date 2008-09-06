@@ -4,33 +4,29 @@
 </HEAD>
 <BODY>
 
-<CENTER>
-<H1>areaDetector Simulation driver</H1>
+<H1 style="text-align: center">areaDetector Simulation driver</H1>
 
 <H2> September 5, 2008</H2>
 <H2> Mark Rivers</H2>
 <H2> University of Chicago</H2>
-</CENTER>
 
 <P>&nbsp;</P>
 
-<CENTER><H2>Contents</H2></CENTER>
-<UL>
-  <LI><A href="#Overview">
-                Overview</A> 
-  <LI><A href="#Performance measurements">
-                Performance measurements</A> 
-  <LI><A href="#Hardware notes">
-                Hardware notes</A> 
-  <LI><A href="#Restrictions">
-                Restrictions</A> 
-</UL>
+<h2>Table of Contents</h2>
+  <ul>
+    <li><a href="#Introduction">Introduction</a></li>
+    <li><a href="#Driver_parameters">Simulation driver specific parameters</a></li>
+    <li><a href="#Unsupported">Unsupported standard driver parameters</q>
+      Features</a></li>
+    <li><a href="#Screenshots">Screenshots</a></li>
+    <li><a href="#Configuring">Configuring</a></li>
+  </ul>
 
-<CENTER><H2><A name=Simulation_detector_driver>
-                    Simulation detector driver</A></H2></CENTER>
+<H2 id="Introduction">Introduction</H2>
                     
 simDetector is a driver for a simulated area detector.  It inherits from ADDriver. The simulation detector implements
-nearly all of the parameters defined in ADStdDriverParams.h, with the exception of the file saving parameters, which is does not
+nearly all of the parameters defined in ADStdDriverParams.h, with the exception of the file saving parameters, 
+which it does not
 implement. It also implements a few parameters that are specific
 to the simulation detector.  The simulation detector is useful as a model for writing real detector drivers.  It is
 also very useful for testing plugins and channel access clients.
@@ -77,6 +73,7 @@ computes new images and then calls back any registered plugins as follows:
         doCallbacksGenericPointer(pImage, NDArrayData, addr);
         epicsMutexLock(this->mutexId);
 </PRE>
+<H2 id="Driver_parameters">Simulation driver specific parameters</H2>
 The simulation driver-specific parameters are the following:
 <P>
 <TABLE style="TEXT-ALIGN: left" cellSpacing=2 cellPadding=2 border=1>
@@ -123,19 +120,80 @@ The simulation driver-specific parameters are the following:
 </TBODY>
 </TABLE>
 <P>
+<h2 id="Unsupported">Unsupported standard driver parameters</h2>
+
+<ul>
+<li>Shutter control: No shutter control is supported</li>
+<li>Collect: Number of exposures per image (ADNumExposures)</li>
+<li>Collect: Trigger mode (ADTriggerMode)</li>
+<li>File control: No file I/O is supported</li>
+</ul>
+
+
+<H2 id="Screenshots">Screenshots</H2>
 The following is the MEDM screen ADBase.adl connected to a simulation detector.
 <P>
-<CENTER><IMG src="ADBase_sim.png"></CENTER>
+<IMG src="ADBase_sim.png">
 <P>
 The following is the MEDM screen that provides access to the specific parameters for the simulation detector.
 <P>
-<CENTER><IMG src="simDetector.png"></CENTER>
+<IMG src="simDetector.png">
 <P>
 <P>
 The following is an IDL epics_ad_display screen using image_display (discussed below) illustrating the simulation detector images.
 
 <P>
-<CENTER><IMG src="simDetector_image_display.png"></CENTER>
+<IMG src="simDetector_image_display.png">
 
+<h2 id="Configuring">Configuring</h2>
+
+<p>
+This driver is configured via the <tt>simDetectorConfig()</tt> function.  If this is
+to be used in an IOC, it must be called before <tt>iocInit()</tt>.  It has the
+following syntax:
+</p>
+
+<dl>
+  <dt><tt>int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int dataType,
+                        int maxBuffers, size_t maxMemory)</tt></dt>
+  <dd>
+    <dl>
+      <dt><tt>portName</tt></dt>
+      <dd>ASYN port name for the driver instance</dd>
+      <dt><tt>maxSizeX</tt></dt>
+      <dd>Maximum number of pixels in the X direction for the simulated detector</dd>
+      <dt><tt>maxSizeY</tt></dt>
+      <dd>Maximum number of pixels in the Y direction for the simulated detector</dd>
+      <dt><tt>dataType</tt></dt>
+      <dd>Initial data type of the detector data. These are the enum values for NDDataType_t, i.e.
+        <ul>
+        <li>0=NDInt8
+        <li>1=NDUInt8
+        <li>2=NDInt16
+        <li>3=NDUInt16
+        <li>4=NDInt32
+        <li>5=NDUInt32
+        <li>6=NDFloat32
+        <li>7=NDFloat64
+        </ul></dd>
+      <dt><tt>maxBuffers</tt></dt>
+      <dd>Maxiumum number of NDArray objects (image buffers) this driver is allowed to allocate.  
+          The driver itself requires 2 buffers, and each queue element in a plugin can require one buffer.
+          So, for example, if 3 plugins are connected
+          to this driver, and each has a queue size of 10, then maxBuffers should be at least 32.</dd>
+      <dt><tt>maxMemory</tt></dt>
+      <dd>Maxiumum number of bytes of memory for all NDArray objects (image buffers) allocated by this driver.
+          If maxSizeX=maxSizeY=1024, and maxBuffers=32, then maxMemory should be at least 33554432 (~33MB).</dd>
+    </dl>
+  </dd>
+</dl>
+
+<p>
+If being used in an IOC, and an EPICS PV interface with the driver is desired,
+the <tt>ADBase.template</tt> and <tt>simDetector.template</tt> databases should also
+be loaded for the driver instance.
+<P>
+The areaDetector software comes with an example IOC for the simulation driver, <tt>iocBoot/iocSimDetector</tt>.
+</p>
 </BODY>
 </HTML>

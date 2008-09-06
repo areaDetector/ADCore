@@ -21,7 +21,8 @@
                 Overview</A> 
   <LI><A href="#Architecture">
                 Architecture</A> 
-  <LI>Implementation details
+  <LI><A href="#Implementation_details">
+                Implementation details</A>
     <UL>
       <LI><A href="#asynPortDriver">
                     asynPortDriver</A> 
@@ -36,27 +37,28 @@
       <LI><A href="#ADStdDriverParams">
                     ADStdDriverParams</A>
     </UL>
-  <LI><A href="pluginDoc.html" target="_blank">
+  <LI><A href="pluginDoc.html">
                Plugins</A>
     <UL>
-      <LI><A href="pluginDoc.html#NDPluginDriver" target="_blank">
+      <LI><A href="pluginDoc.html#NDPluginDriver">
                              NDPluginDriver</A>
-      <LI><A href="pluginDoc.html#NDPluginStdArrays" target="_blank">
+      <LI><A href="pluginDoc.html#NDPluginStdArrays">
                              NDPluginStdArrays</A>
-      <LI><A href="pluginDoc.html#NDPluginFile" target="_blank">
+      <LI><A href="pluginDoc.html#NDPluginFile">
                              NDPluginFile</A>
-      <LI><A href="pluginDoc.html#NDPluginROI" target="_blank">
+      <LI><A href="pluginDoc.html#NDPluginROI">
                              NDPluginROI</A>
     </UL>
-  <LI>Detector drivers
+  <LI><A href="#Detector_drivers">
+                Detector drivers</A>
     <UL>
-      <LI><A href="simDetectorDoc.html" target="_blank">
+      <LI><A href="simDetectorDoc.html">
                    Simulation detector driver</A>
-      <LI><A href="prosilicaDoc.html" target="_blank">
+      <LI><A href="prosilicaDoc.html">
                    Prosilica driver</A>
-      <LI><A href="pilatusDoc.html" target="_blank">
+      <LI><A href="pilatusDoc.html">
                    Pilatus driver</A>
-      <LI><A href="adscDoc.html" target="_blank">
+      <LI><A href="adscDoc.html">
                    ADSC driver</A>
     </UL>
 </UL>
@@ -168,14 +170,23 @@ Most of the code is object oriented, and written in C++.  The parts of the code 
 on anything from EPICS except libCom and asyn have been kept in in separate C files, so that
 it should be easy to build applications that do not run as part of an EPICS IOC.
 
+
+<P>
+<CENTER><H2><A name=Implementation_details>
+                    Implementation details</A></H2></CENTER>
+The areaDetector module depends heavily on 
+<A HREF="http://www.aps.anl.gov/epics/modules/soft/asyn">asyn</A>.
+It is the software that is used for interthread communication,
+using the standard asyn interfaces (e.g. asynInt32, asynOctet, etc.), and callbacks.
+In order to minimize the amount of redundant code in drivers, areaDetector has been 
+implemented using C++ classes.  The base classes, from which drivers and plugins are derived,
+take care of many of the details of asyn and other common code.
+
 <P>&nbsp;</P>
 <CENTER><H2><A name=asynPortDriver>
                     asynPortDriver</A></H2></CENTER>
                     
-The areaDetector module depends heavily on 
-<A HREF="http://www.aps.anl.gov/epics/modules/soft/asyn">asyn</A>.
-It is the software that is used for interthread communication,
-using the standard asyn interfaces (e.g. asynInt32, asynOctet, etc.), and callbacks.  Detector drivers and plugins
+Detector drivers and plugins
 are asyn port drivers, meaning that they implement one or more of the standard asyn interfaces.  They register
 themselves as interrupt sources, so that they do callbacks to registered asyn clients when values change.
 asynPortDriver is a base C++ class that handles all of the details of registering the port driver, 
@@ -1211,6 +1222,12 @@ for the features implemented for that detector.  Note that the section of the sc
 implemented for any areaDetector driver, and is subject to change in the near future.
 <P>
 <CENTER><IMG src="ADBase.png"></CENTER>
+<P>
+<CENTER><H2><A name=Detector_drivers>
+                    Detector drivers</A></H2></CENTER>
 
+areaDetector has been designed to minimize the amount of work required to write a new detector driver.  These
+drivers are described in separate documents, linked to by the table of contents at the top of this page.
+<P>
 </BODY>
 </HTML>
