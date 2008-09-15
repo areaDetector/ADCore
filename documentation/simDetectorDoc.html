@@ -1,29 +1,30 @@
-<HTML>
-<HEAD>
-<TITLE>areaDetector Simulation driver</TITLE>
-</HEAD>
-<BODY>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>areaDetector Simulation driver</title>
+</head>
+<body>
 
-<H1 style="text-align: center">areaDetector Simulation driver</H1>
+<center>
+<h1 style="text-align: center">areaDetector Simulation driver</h1>
 
-<H2> September 5, 2008</H2>
-<H2> Mark Rivers</H2>
-<H2> University of Chicago</H2>
-
-<P>&nbsp;</P>
+<h2> September 5, 2008</h2>
+<h2> Mark Rivers</h2>
+<h2> University of Chicago</h2>
+</center>
+<p>&nbsp;</p>
 
 <h2>Table of Contents</h2>
   <ul>
     <li><a href="#Introduction">Introduction</a></li>
     <li><a href="#Driver_parameters">Simulation driver specific parameters</a></li>
-    <li><a href="#Unsupported">Unsupported standard driver parameters</q>
-      Features</a></li>
+    <li><a href="#Unsupported">Unsupported standard driver parameters</a></li>
     <li><a href="#Screenshots">Screenshots</a></li>
     <li><a href="#Configuring">Configuring</a></li>
   </ul>
 
-<H2 id="Introduction">Introduction</H2>
+<h2 id="Introduction">Introduction</h2>
                     
+<p>
 simDetector is a driver for a simulated area detector.  It inherits from ADDriver. The simulation detector implements
 nearly all of the parameters defined in ADStdDriverParams.h, with the exception of the file saving parameters, 
 which it does not
@@ -31,7 +32,8 @@ implement. It also implements a few parameters that are specific
 to the simulation detector.  The simulation detector is useful as a model for writing real detector drivers.  It is
 also very useful for testing plugins and channel access clients.
 This is part of the definition of the simDetector class:
-<PRE>
+</p>
+<pre>
 class simDetector : public ADDriver {
 public:
     simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDataType_t dataType,
@@ -43,23 +45,26 @@ public:
     virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
                                      const char **pptypeName, size_t *psize);
     void report(FILE *fp, int details);
-</PRE>
-The portName, maxBuffers, and maxMemory arguments are passed to the ADDriver base class constructor.  The maxSizeX, maxSizeY, and
+</pre>
+<p>The portName, maxBuffers, and maxMemory arguments are passed to the ADDriver base class constructor.  The maxSizeX, maxSizeY, and
 dataType arguments are specific to the simulation driver, controlling the maximum image size and initial data type of the
 computed images.  The writeInt32 and writeFloat64 methods override those in the base class.  The driver takes action
 when new parameters are passed via those interfaces.  For example, the ADAcquire parameter (on the asynInt32 interface) is
 used to turn acquisition (i.e. computing new images) on and off.
-<P>
+</p>
+<p>
 The simulation driver initially sets the image[i, j] = i*gainX + j*gainY * gain * exposureTime * 1000.  Thus the
 image is a linear ramp in the X and Y directions, with the gains in each direction being detector-specific parameters.
 Each subsquent acquisition increments each pixel value by gain*exposureTime*1000.  Thus if gain=1 and exposureTime=.001
 second then the pixels are incremented by 1.  If the array is an unsigned 8 or 16 bit integer then the pixels 
 will overflow and wrap around to 0 after some period of time.  This gives the appearance of bands that appear to move
 with time.  The slope of the bands and their periodicity can be adjusted by changing the gains and exposure times.
-<P>
+</p>
+<p>
 The driver creates a thread that waits for a signal to start acquisition.  When acquisition is started that thread
 computes new images and then calls back any registered plugins as follows:
-<PRE>
+</p>
+<pre>
         /* Put the frame number and time stamp into the buffer */
         pImage->uniqueId = imageCounter;
         pImage->timeStamp = startTime.secPastEpoch + startTime.nsec / 1.e9;
@@ -72,54 +77,57 @@ computes new images and then calls back any registered plugins as follows:
              "%s:%s: calling imageData callback\n", driverName, functionName);
         doCallbacksGenericPointer(pImage, NDArrayData, addr);
         epicsMutexLock(this->mutexId);
-</PRE>
-<H2 id="Driver_parameters">Simulation driver specific parameters</H2>
+</pre>
+<h2 id="Driver_parameters">Simulation driver specific parameters</h2>
+<p>
 The simulation driver-specific parameters are the following:
-<P>
-<TABLE style="TEXT-ALIGN: left" cellSpacing=2 cellPadding=2 border=1>
-  <TBODY>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>Parameter Definitions in simDetector.cpp and EPICS Record Definitions in simDetector.template</B></TD>
-  </TR>
-  <TR>
-    <TH>Enum name</TH>
-    <TH>asyn interface</TH>
-    <TH>Access</TH>
-    <TH>Description</TH>
-    <TH>drvUser string</TH>
-    <TH>EPICS record name</TH>
-    <TH>EPICS record type</TH>
-  </TR>
-  <TR>
-    <TD>SimGainX</TD>
-    <TD>asynFloat64</TD>
-    <TD>r/w</TD>
-    <TD>Gain in the X direction</TD>
-    <TD>SIM_GAINX</TD>
-    <TD>$(P)$(R)GainX<BR>$(P)$(R)GainX_RBV</TD>
-    <TD>ao<BR>ai</TD>
-  </TR>
-  <TR>
-    <TD>SimGainY</TD>
-    <TD>asynFloat64</TD>
-    <TD>r/w</TD>
-    <TD>Gain in the Y direction</TD>
-    <TD>SIM_GAINY</TD>
-    <TD>$(P)$(R)GainY<BR>$(P)$(R)GainY_RBV</TD>
-    <TD>ao<BR>ai</TD>
-  </TR>
-  <TR>
-    <TD>SimResetImage</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Reset image back to initial conditions when 1.</TD>
-    <TD>RESET_IMAGE</TD>
-    <TD>$(P)$(R)Reset<BR>$(P)$(R)Reset_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-</TBODY>
-</TABLE>
-<P>
+</p>
+
+<table style="text-align: left" "cellSpacing=2 cellPadding=2 border=1">
+  <tbody>
+  <tr>
+    <td "colspan=7, align=center"><b>Parameter Definitions in simDetector.cpp and EPICS Record Definitions in simDetector.template</b></td>
+  </tr>
+  <tr>
+    <th>Enum name</th>
+    <th>asyn interface</th>
+    <th>Access</th>
+    <th>Description</th>
+    <th>drvUser string</th>
+    <th>EPICS record name</th>
+    <th>EPICS record type</th>
+  </tr>
+  <tr>
+    <td>SimGainX</td>
+    <td>asynFloat64</td>
+    <td>r/w</td>
+    <td>Gain in the X direction</td>
+    <td>SIM_GAINX</td>
+    <td>$(P)$(R)GainX<br/>$(P)$(R)GainX_RBV</td>
+    <td>ao<br/>ai</td>
+  </tr>
+  <tr>
+    <td>SimGainY</td>
+    <td>asynFloat64</td>
+    <td>r/w</td>
+    <td>Gain in the Y direction</td>
+    <td>SIM_GAINY</td>
+    <td>$(P)$(R)GainY<br/>$(P)$(R)GainY_RBV</td>
+    <td>ao<br/>ai</td>
+  </tr>
+  <tr>
+    <td>SimResetImage</td>
+    <td>asynInt32</td>
+    <td>r/w</td>
+    <td>Reset image back to initial conditions when 1.</td>
+    <td>RESET_IMAGE</td>
+    <td>$(P)$(R)Reset<br/>$(P)$(R)Reset_RBV</td>
+    <td>longout<br/>longin</td>
+  </tr>
+</tbody>
+</table>
+
+
 <h2 id="Unsupported">Unsupported standard driver parameters</h2>
 
 <ul>
@@ -130,21 +138,26 @@ The simulation driver-specific parameters are the following:
 </ul>
 
 
-<H2 id="Screenshots">Screenshots</H2>
+<h2 id="Screenshots">Screenshots</h2>
+<p>
 The following is the MEDM screen ADBase.adl connected to a simulation detector.
-<P>
-<IMG src="ADBase_sim.png">
-<P>
+</p>
+<p>
+<img src="ADBase_sim.png" alt="ADBase_sim.png"/>
+</p>
+<p>
 The following is the MEDM screen that provides access to the specific parameters for the simulation detector.
-<P>
-<IMG src="simDetector.png">
-<P>
-<P>
+</p>
+<p>
+<img src="simDetector.png" alt="simDetector.png"/>
+</p>
+<p>
 The following is an IDL epics_ad_display screen using image_display (discussed below) illustrating the simulation detector images.
 
-<P>
-<IMG src="simDetector_image_display.png">
-
+</p>
+<p>
+<img src="simDetector_image_display.png" alt="simDetector_image_display.png"/>
+</p>
 <h2 id="Configuring">Configuring</h2>
 
 <p>
@@ -167,14 +180,14 @@ following syntax:
       <dt><tt>dataType</tt></dt>
       <dd>Initial data type of the detector data. These are the enum values for NDDataType_t, i.e.
         <ul>
-        <li>0=NDInt8
-        <li>1=NDUInt8
-        <li>2=NDInt16
-        <li>3=NDUInt16
-        <li>4=NDInt32
-        <li>5=NDUInt32
-        <li>6=NDFloat32
-        <li>7=NDFloat64
+        <li>0=NDInt8</li>
+        <li>1=NDUInt8</li>
+        <li>2=NDInt16</li>
+        <li>3=NDUInt16</li>
+        <li>4=NDInt32</li>
+        <li>5=NDUInt32</li>
+        <li>6=NDFloat32</li>
+        <li>7=NDFloat64</li>
         </ul></dd>
       <dt><tt>maxBuffers</tt></dt>
       <dd>Maxiumum number of NDArray objects (image buffers) this driver is allowed to allocate.  
@@ -192,8 +205,9 @@ following syntax:
 If being used in an IOC, and an EPICS PV interface with the driver is desired,
 the <tt>ADBase.template</tt> and <tt>simDetector.template</tt> databases should also
 be loaded for the driver instance.
-<P>
+</p>
+<p>
 The areaDetector software comes with an example IOC for the simulation driver, <tt>iocBoot/iocSimDetector</tt>.
 </p>
-</BODY>
-</HTML>
+</body>
+</html>

@@ -1,154 +1,161 @@
-<HTML>
-<HEAD>
-<TITLE>areaDetector: EPICS Area Detector Support</TITLE>
-</HEAD>
-<BODY>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>areaDetector: EPICS Area Detector Support</title>
+</head>
+<body>
 
-<CENTER>
-<H1>areaDetector: EPICS Area Detector Support</H1>
+<center>
+<h1>areaDetector: EPICS Area Detector Support</h1>
 
-<H2> R1-2</H2>
-<H2> May 16, 2008</H2>
-<H2> Mark Rivers</H2>
-<H2> University of Chicago</H2>
-</CENTER>
+<h2> R1-2</h2>
+<h2> May 16, 2008</h2>
+<h2> Mark Rivers</h2>
+<h2> University of Chicago</h2>
+</center>
 
-<P>&nbsp;</P>
+<p>&nbsp;</p>
 
-<CENTER><H2>Contents</H2></CENTER>
-<UL>
-  <LI><A href="#Overview">
-                Overview</A> 
-  <LI><A href="#Architecture">
-                Architecture</A> 
-  <LI><A href="#Implementation_details">
-                Implementation details</A>
-    <UL>
-      <LI><A href="#asynPortDriver">
-                    asynPortDriver</A> 
-      <LI><A href="#NDArray">
-                    NDArray</A> 
-      <LI><A href="#NDArrayPool">
-                    NDArrayPool</A> 
-      <LI><A href="#asynNDArrayDriver">
-                    asynNDArrayDriver</A>
-      <LI><A href="#ADDriver">
-                    ADDriver</A>
-      <LI><A href="#ADStdDriverParams">
-                    ADStdDriverParams</A>
-    </UL>
-  <LI><A href="pluginDoc.html">
-               Plugins</A>
-    <UL>
-      <LI><A href="pluginDoc.html#NDPluginDriver">
-                             NDPluginDriver</A>
-      <LI><A href="pluginDoc.html#NDPluginStdArrays">
-                             NDPluginStdArrays</A>
-      <LI><A href="pluginDoc.html#NDPluginFile">
-                             NDPluginFile</A>
-      <LI><A href="pluginDoc.html#NDPluginROI">
-                             NDPluginROI</A>
-    </UL>
-  <LI><A href="#Detector_drivers">
-                Detector drivers</A>
-    <UL>
-      <LI><A href="simDetectorDoc.html">
-                   Simulation detector driver</A>
-      <LI><A href="prosilicaDoc.html">
-                   Prosilica driver</A>
-      <LI><A href="pilatusDoc.html">
-                   Pilatus driver</A>
-      <LI><A href="adscDoc.html">
-                   ADSC driver</A>
-    </UL>
-</UL>
+<center><h2>Contents</h2></center>
+<ul>
+  <li><a href="#Overview">
+                Overview</a></li>
+  <li><a href="#Architecture">
+                Architecture</a></li>
+  <li><a href="#Implementation_details">
+                Implementation details</a>
+    <ul>
+      <li><a href="#asynPortDriver">
+                    asynPortDriver</a></li>
+      <li><a href="#NDArray">
+                    NDArray</a></li>
+      <li><a href="#NDArrayPool">
+                    NDArrayPool</a></li>
+      <li><a href="#asynNDArrayDriver">
+                    asynNDArrayDriver</a></li>
+      <li><a href="#ADDriver">
+                    ADDriver</a></li>
+      <li><a href="#ADStdDriverParams">
+                    ADStdDriverParams</a></li>
+    </ul>
+  </li>
+  <li><a href="pluginDoc.html">
+               Plugins</a>
+    <ul>
+      <li><a href="pluginDoc.html#NDPluginDriver">
+                             NDPluginDriver</a></li>
+      <li><a href="pluginDoc.html#NDPluginStdArrays">
+                             NDPluginStdArrays</a></li>
+      <li><a href="pluginDoc.html#NDPluginFile">
+                             NDPluginFile</a></li>
+      <li><a href="pluginDoc.html#NDPluginROI">
+                             NDPluginROI</a></li>
+    </ul>
+  </li>
+  <li><a href="#Detector_drivers">
+                Detector drivers</a>
+    <ul>
+      <li><a href="simDetectorDoc.html">
+                   Simulation detector driver</a></li>
+      <li><a href="prosilicaDoc.html">
+                   Prosilica driver</a></li>
+      <li><a href="pilatusDoc.html">
+                   Pilatus driver</a></li>
+      <li><a href="adscDoc.html">
+                   ADSC driver</a></li>
+    </ul>
+  </li>
+</ul>
 
-<P>&nbsp;</P>
+<p>&nbsp;</p>
 
-<CENTER><H2><A name=Overview>
-                    Overview</A></H2></CENTER>
-<P>
+<center><h2 id="Overview">
+                Overview</h2></center>
+<p>
 The areaDetector module provides a general-purpose interface for area (2-D) detectors in EPICS.
 It is intended to be used with a wide variety of detectors and cameras, ranging from high frame rate
 CCD and CMOS cameras, pixel-array detectors such as the Pilatus, and large format detectors like the
-MAR-345 online imaging plate.</P>
-
+MAR-345 online imaging plate.</p>
+<p>
 The goals of this module are:
-<UL>
-  <LI> Minimize the amount of code that needs to be written to implement a
-       new detector.
-  <LI> Provide a standard interface defining the functions and parameters that
-       a detector driver must support.
-  <LI> Provide a set of base EPICS records that will be present for every detector
+</p>
+<ul>
+  <li> Minimize the amount of code that needs to be written to implement a
+       new detector.</li>
+  <li> Provide a standard interface defining the functions and parameters that
+       a detector driver must support.</li>
+  <li> Provide a set of base EPICS records that will be present for every detector
        using this module.  This allows the use of generic EPICS clients for
-       displaying images and controlling cameras and detectors.
-  <LI> Allow easy extensibility to take advantage of detector-specific features
-       beyond the standard parameters.
-  <LI> Have high-performance.  Applications can be written to get the detector
+       displaying images and controlling cameras and detectors.</li>
+  <li> Allow easy extensibility to take advantage of detector-specific features
+       beyond the standard parameters.</li>
+  <li> Have high-performance.  Applications can be written to get the detector
        image data through EPICS, but an interface is also available to receive the detector
-       data at a lower-level for very high performance.
-  <LI> Provide an optional Region-Of-Interest (ROI) driver that performs computations
+       data at a lower-level for very high performance.</li>
+  <li> Provide an optional Region-Of-Interest (ROI) driver that performs computations
        on regions within the image data.  A basic ROI driver is included in the module,
-       and it is easy to add addtional ROI drivers for specific applications.
-  <LI> Provide detector drivers for commonly used detectors in synchrotron applications.
+       and it is easy to add addtional ROI drivers for specific applications.</li>
+  <li> Provide detector drivers for commonly used detectors in synchrotron applications.
        These include Prosilica GigE video cameras, MAR-CCD x-ray detectors, MAR-345 online
        imaging plate detectors, the Pilatus pixel-array detector, and the Roper Scientific CCD
-       cameras.
-</UL>
+       cameras.</li>
+</ul>
 
 
-<P>&nbsp;</P>
+<p>&nbsp;</p>
 
-<CENTER><H2><A name=Architecture>
-                    Architecture</A></H2></CENTER>
-<P>
+<center><h2 id="Architecture">
+                Architecture</h2></center>
+<p>
 The architecture of the areaDetector module is shown below.
   
-<CENTER><IMG src="areaDetectorArchitecture.png"></CENTER>
+<img src="areaDetectorArchitecture.png" alt="areaDetectorArchitecture.png"/>
 
-From the bottom to the top this architecture consists of the following:</P>
-<UL>
-  <LI>Layer 1.  This is the layer that allows user written code to 
+From the bottom to the top this architecture consists of the following:</p>
+<ul>
+  <li>Layer 1.  This is the layer that allows user written code to 
       communicate with the hardware.
       It is usually provided by the detector vendor.  It may consist of a library or DLL,
-      of a socket protocol to a driver, a Microsoft COM interface, etc.
-  <LI>Layer 2.  This is the driver that is written for the areaDetector application to
+      of a socket protocol to a driver, a Microsoft COM interface, etc.</li>
+  <li>Layer 2.  This is the driver that is written for the areaDetector application to
       control a particular detector.  It is normally written in C++ and inherits from the
       ADDriver class.  It uses the standard asyn interfaces for control and status
       information.  Each time it receives a new data array it passes it as an NDArray object
       to all Layer 3 clients that have registered for callbacks.  This is the only code that
       needs to be written to implement a new detector.  Existing drivers range from
-      650 to 1050 lines of code.
-  <LI>Layer 3.  Code running at this level is called a "plug-in".  This code registers with a
+      650 to 1050 lines of code.</li>
+  <li>Layer 3.  Code running at this level is called a "plug-in".  This code registers with a
       driver for a callback whenever there is a new data array.  The existing plugins implement
       file saving (NDPluginFile), region-of-interest (ROI) calculations (NDPluginROI), 
       and conversion of detector data to standard EPICS array types for use by 
       Channel Access clients (NDPluginStdArrays).  Plugins are normally written in C++ and
       inherit from NDPluginDriver.  Existing plugins range from 280 to 650 lines
-      of code.
-  <LI>Layer 4.  This is standard asyn device support that comes with the EPICS asyn module.
-  <LI>Layer 5.  These are standard EPICS records, and EPICS database (template) files that
-      define records to communicate with drivers at Layer 2 and plugins at Layer 3.
-  <LI>Layer 6.  These are EPICS channel access clients, such as MEDM that communicate with
+      of code.</li>
+  <li>Layer 4.  This is standard asyn device support that comes with the EPICS asyn module.</li>
+  <li>Layer 5.  These are standard EPICS records, and EPICS database (template) files that
+      define records to communicate with drivers at Layer 2 and plugins at Layer 3.</li>
+  <li>Layer 6.  These are EPICS channel access clients, such as MEDM that communicate with
       the records at Layer 5.  There is a free IDL client that can display images using
       EPICS waveform and other records communicating with the NDPluginStdArrays plugin
-      at Layer 3.
-</UL>
-
+      at Layer 3.</li>
+</ul>
+<p>
 The code in Layers 1-3 is essentially independent of EPICS.  There are only 2 EPICS dependencies in this
 code.
-<OL>
-  <LI><A HREF="http://www.aps.anl.gov/epics/base/R3-14/9-docs/AppDevGuide.pdf">libCom</A>.
+</p>
+<ol>
+  <li><a href="http://www.aps.anl.gov/epics/base/R3-14/9-docs/AppDevGuide.pdf">libCom</a>.
       libCom from EPICS base provides operating-system independent functions for
-      threads, mutexes, etc.
-  <LI><A HREF="http://www.aps.anl.gov/epics/modules/soft/asyn">asyn</A>.
+      threads, mutexes, etc.</li>
+  <li><a href="http://www.aps.anl.gov/epics/modules/soft/asyn">asyn</a>.
       asyn is a module that provides interthread messaging services, including queueing
-      and callbacks.
-</OL>
+      and callbacks.</li>
+</ol>
+<p>
 In particular it is possible to eliminate layers 4-6 in the architecture shown in Figure 1, providing
 there is a programs such as the high-performance GUI shown in Layer 3.  This means that it is not necessary
 to run an EPICS IOC or to use EPICS Channel Access when using the drivers and plugins at Layers 2 and 3.
-<P>
+</p>
+<p>
 The plugin architecture is very powerful, because new plugins can be written for application-specific
 purposes.  For example, a plugin could be written to analyze images and find the center of the beam,
 and such a plugin would then work with any detector driver.
@@ -159,52 +166,57 @@ driver has selected.  Any Channel Access clients connected to the NDPluginStdArr
 will automatically switch to displaying this subregion.
 Similarly, the NDPluginFile plugin can be switched at run-time from saving the entire image to saving
 a selected ROI, just by changing its input source.
-<P>
+</p>
+<p>
 The use of plugins is optional, and it is only plugins that require the driver to make callbacks with
 image data.  If there are no plugins being used then EPICS can be used simply
 to control the detector, without accessing the data itself.  This is most useful when 
 the vendor API has the ability to save the data to a file.
-<P>
+</p>
+<p>
 What follows is a detailed description of the software, working from the bottom up.
 Most of the code is object oriented, and written in C++.  The parts of the code that depend
 on anything from EPICS except libCom and asyn have been kept in in separate C files, so that
 it should be easy to build applications that do not run as part of an EPICS IOC.
+</p>
 
-
-<P>
-<CENTER><H2><A name=Implementation_details>
-                    Implementation details</A></H2></CENTER>
+<center><h2 id="Implementation_details">
+                Implementation details</h2></center>
+<p>
 The areaDetector module depends heavily on 
-<A HREF="http://www.aps.anl.gov/epics/modules/soft/asyn">asyn</A>.
+<a href="http://www.aps.anl.gov/epics/modules/soft/asyn">asyn</a>.
 It is the software that is used for interthread communication,
 using the standard asyn interfaces (e.g. asynInt32, asynOctet, etc.), and callbacks.
 In order to minimize the amount of redundant code in drivers, areaDetector has been 
 implemented using C++ classes.  The base classes, from which drivers and plugins are derived,
 take care of many of the details of asyn and other common code.
+</p>
 
-<P>&nbsp;</P>
-<CENTER><H2><A name=asynPortDriver>
-                    asynPortDriver</A></H2></CENTER>
-                    
+<center><h2 id="asynPortDriver">
+                asynPortDriver</h2></center>
+<p>
 Detector drivers and plugins
 are asyn port drivers, meaning that they implement one or more of the standard asyn interfaces.  They register
 themselves as interrupt sources, so that they do callbacks to registered asyn clients when values change.
 asynPortDriver is a base C++ class that handles all of the details of registering the port driver, 
 registering the supported interfaces,
 and registering the required interrupt sources.
-<P>
+</p>
+<p>
 Drivers and plugins each need to support a number of parameters that control their operation and provide 
 status information.  Most of these can be treated as 32-bit integers, 64-bit floats, or strings.
 When the new value of a parameter is sent to a driver, (e.g. detector binning in the X direction)
 from an asyn client (e.g. an EPICS record),
 then the driver will need to take some action.  It may change some other parameters in response to this
 new value (e.g. image size in the X direction).  The sequence of operations in the driver can be summarized as
-<OL>
-  <LI>New parameter value arrives, or new data arrives from detector.
-  <LI>Change values of one or more parameters.
-  <LI>For each parameter whose value changes set a flag noting that it changed.
-  <LI>When operation is complete, call the registered callbacks for each changed parameter.
-</OL>
+</p>
+<ol>
+  <li>New parameter value arrives, or new data arrives from detector.</li>
+  <li>Change values of one or more parameters.</li>
+  <li>For each parameter whose value changes set a flag noting that it changed.</li>
+  <li>When operation is complete, call the registered callbacks for each changed parameter.</li>
+</ol>
+<p>
 asynPortDriver provides methods to simplify the above sequence, which must be 
 implemented for each of the many parameters that the driver supports.  Each parameter is assigned
 a number, which is the value in the pasynUser-&gt reason field that asyn clients pass to
@@ -214,10 +226,11 @@ caching the current value, and maintaining a flag indicating if a value has chan
 Drivers use asynPortDriver methods to read the current value 
 from the table, and to set new values in the table.  There is a method to call all registered callbacks
 for values that have changed since callbacks were last done.
-
-<P>The following are the public definitions in the asynPortDriver class:
-<PRE>
-#define asynCommonMask          0x00000001
+</p>
+<p>
+The following are the public definitions in the asynPortDriver class:
+</p>
+<pre>#define asynCommonMask          0x00000001
 #define asynDrvUserMask         0x00000002
 #define asynOptionMask          0x00000004
 #define asynInt32Mask           0x00000008
@@ -306,63 +319,69 @@ public:
     /* asynUser connected to ourselves for asynTrace */
     asynUser *pasynUser;
 };
-</PRE>
+</pre>
 
+<p>
 A brief explanation of the methods and data in this class is provided here.  Users should look at the
 example driver (simDetector) and plugins provided with areaDetector for examples of how this
 class is used.
+</p>
 
-<PRE>
-    asynPortDriver(const char *portName, int maxAddr, int paramTableSize, int interfaceMask, int interruptMask);
-</PRE>
+<pre>    asynPortDriver(const char *portName, int maxAddr, int paramTableSize, int interfaceMask, int interruptMask);
+</pre>
+<p>
 This is the constructor for the class. 
-<UL>
-  <LI><CODE>portName</CODE> is the name of the asyn port for this driver or plugin.
-  <LI><CODE>maxAddr</CODE> is the maximum number of asyn addresses that this driver supports.
-      This number returned by the <CODE>pasynManager-&gt getAddr()</CODE> function.  Typically it is 1, but some
+</p>
+<ul>
+  <li><code>portName</code> is the name of the asyn port for this driver or plugin.</li>
+  <li><code>maxAddr</code> is the maximum number of asyn addresses that this driver supports.
+      This number returned by the <code>pasynManager-&gt getAddr()</code> function.  Typically it is 1, but some
       plugins (e.g. NDPluginROI) support values &gt 1.  This controls the number of parameter
-      tables that are created.
-  <LI><CODE>parmTableSize</CODE> is the maximum number of parameters that this driver or plugin supports.
-      This controls the size of the parameter tables.
-  <LI><CODE>interfaceMask</CODE> is a mask with each bit defining which asyn interfaces this driver
-      or plugin supports.  
-      The bit mask values are defined in asynPortDriver.h, e.g. <CODE>asynInt32Mask</CODE>.
-  <LI><CODE>interruptMask</CODE> is a mask with each bit defining which of the asyn interfaces this driver
+      tables that are created.</li>
+  <li><code>parmTableSize</code> is the maximum number of parameters that this driver or plugin supports.
+      This controls the size of the parameter tables.</li>
+  <li><code>interfaceMask</code> is a mask with each bit defining which asyn interfaces this driver
+      or plugin supports.
+      The bit mask values are defined in asynPortDriver.h, e.g. <code>asynInt32Mask</code>.</li>
+  <li><code>interruptMask</code> is a mask with each bit defining which of the asyn interfaces this driver
       or plugin supports can generate interrupts.
-      The bit mask values are defined in asynPortDriver.h, e.g. <CODE>asynInt8ArrayMask</CODE>.
-</UL>
-<BR>
-<PRE>
-    virtual asynStatus getAddress(asynUser *pasynUser, const char *functionName, int *address); 
-</PRE>  
+      The bit mask values are defined in asynPortDriver.h, e.g. <code>asynInt8ArrayMask</code>.</li>
+</ul>
+<br/>
+<pre>    virtual asynStatus getAddress(asynUser *pasynUser, const char *functionName, int *address); 
+</pre>  
+<p>
 Returns the value from pasynManager-&gt getAddr(pasynUser,...).
 Returns an error if the address is not valid, e.g. &gt= this-&gt maxAddr.
+</p>
 
-<PRE>
-    virtual asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value);
+<pre>    virtual asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value);
     virtual asynStatus readFloat64(asynUser *pasynUser, epicsFloat64 *value);
     virtual asynStatus readOctet(asynUser *pasynUser, char *value, size_t maxChars,
                              size_t *nActual, int *eomReason);
-</PRE>
+</pre>
+<p>
 These methods are called by asyn clients to return the current cached value for the
-parameter indexed by pasynUser-&gt reason in the parameter table defined by <CODE>getAddress()</CODE>.
+parameter indexed by pasynUser-&gt reason in the parameter table defined by <code>getAddress()</code>.
 Derived classed typically do not need to implement these methods.
+</p>
 
-<BR>
-<PRE>
-    virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
+<br/>
+<pre>    virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
     virtual asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t maxChars,
                           size_t *nActual);
-</PRE>
+</pre>
+<p>
 These methods are called by asynClients to set the new value of a parameter.  The
 implementation of these methods in asynPortDriver copies the parameter into a cached
 location for use by the asynRead(Int32, Float64, and Octet) methods. Most drivers
 will provide their own implementations of these methods to do driver-dependent operations
 when there is a new value of the parameter.
+</p>
 
-<BR>
-<PRE>     
+<br/>
+<pre>     
     virtual asynStatus readXXXArray(asynUser *pasynUser, epicsInt8 *value, 
                                         size_t nElements, size_t *nIn);
     virtual asynStatus writeXXXArray(asynUser *pasynUser, epicsInt8 *value,
@@ -372,45 +391,51 @@ when there is a new value of the parameter.
     virtual asynStatus readGenericPointer(asynUser *pasynUser, void *handle);
     virtual asynStatus writeGenericPointer(asynUser *pasynUser, void *handle);
     virtual asynStatus doCallbacksGenericPointer(void *handle, int reason, int addr);
-</PRE>
+</pre>
+<p>
 where XXX=(Int8, Int16, Int32, Float32, or Float64).
 The readXXX and writeXXX methods only have stub methods that return an error in asynPortDriver, so they
 must be implemented in the derived classes if the corresponding interface is
 used.  They are not pure virtual functions so that the derived class need not implement 
 the interface if it is not used.  The doCallbacksXXX methods in asynPortDriver
-call any registered asyn clients on the corresponding interface if the <CODE>reason</CODE>
-and <CODE>addr</CODE> values match.  It typically does not need to be implemented in derived classes.
+call any registered asyn clients on the corresponding interface if the <code>reason</code>
+and <code>addr</code> values match.  It typically does not need to be implemented in derived classes.
+</p>
 
-<BR>
-<PRE>     
+<br/>
+<pre>     
     virtual asynStatus findParam(asynParamString_t *paramTable, int numParams, const char *paramName, int *param);
     virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
                                      const char **pptypeName, size_t *psize);
     virtual asynStatus drvUserGetType(asynUser *pasynUser,
                                         const char **pptypeName, size_t *psize);
     virtual asynStatus drvUserDestroy(asynUser *pasynUser);
-</PRE>
+</pre>
+<p>
 drvUserCreate must be implemented in derived classes that use the parameter facilities of asynPortDriver.
-The <CODE>findParam</CODE> method is a convenience function that searches an array of {enum, string} structures
+The <code>findParam</code> method is a convenience function that searches an array of {enum, string} structures
 and returns the enum (parameter number) matching the string.  This is typically used in the 
-implementation of <CODE>drvUserCreate</CODE> in derived classes.  <CODE>drvUserGetType</CODE> and 
-<CODE>drvUserDestroy</CODE> typically do not need to be implemented in derived classes.
+implementation of <code>drvUserCreate</code> in derived classes.  <code>drvUserGetType</code> and 
+<code>drvUserDestroy</code> typically do not need to be implemented in derived classes.
+</p>
 
-<BR>
-<PRE>     
+<br/>
+<pre>     
     virtual void report(FILE *fp, int details);
     virtual asynStatus connect(asynUser *pasynUser);
     virtual asynStatus disconnect(asynUser *pasynUser);
-</PRE>
-The <CODE>report</CODE> function prints information on registered interrupt clients if details &gt 0, and prints
+</pre>
+<p>
+The <code>report</code> function prints information on registered interrupt clients if details &gt 0, and prints
 parameter table information if details  &gt 5.  It is typically called by the implementation of
-<CODE>report</CODE> in derived classes before or after
-they print specific information about themselves.  <CODE>connect</CODE> and <CODE>disconnect</CODE> call 
-<CODE>pasynManager-&gt exceptionConnect</CODE> and <CODE>pasynManager-&gt exceptionDisconnect</CODE> respectively.
+<code>report</code> in derived classes before or after
+they print specific information about themselves.  <code>connect</code> and <code>disconnect</code> call 
+<code>pasynManager-&gt exceptionConnect</code> and <code>pasynManager-&gt exceptionDisconnect</code> respectively.
 Derived classes may or may not need to implement these functions.
+</p>
 
-<BR>
-<PRE>     
+<br/>
+<pre>     
     virtual asynStatus setIntegerParam(int index, int value);
     virtual asynStatus setIntegerParam(int list, int index, int value);
     virtual asynStatus setDoubleParam(int index, double value);
@@ -425,28 +450,31 @@ Derived classes may or may not need to implement these functions.
     virtual asynStatus getStringParam(int list, int index, int maxChars, char *value);
     virtual asynStatus callParamCallbacks();
     virtual asynStatus callParamCallbacks(int list, int addr);
-</PRE>
-The <CODE>setXXXParam</CODE> methods set the value of a parameter in the parameter table
+</pre>
+<p>
+The <code>setXXXParam</code> methods set the value of a parameter in the parameter table
 in the object.  If the value is different from the previous value of the parameter
-they also set the flag indicating that the value has changed.  The <CODE>getXXXParam</CODE>
+they also set the flag indicating that the value has changed.  The <code>getXXXParam</code>
 methods return the current value of the parameter.  There are two versions of the
-<CODE>setXXXParam</CODE> and <CODE>getXXXParam</CODE> methods, one with a <CODE>list</CODE>
-argument, and one without.  The one without uses <CODE>list=0</CODE>, since there 
-is often only a single parameter list (i.e. if maxAddr=1).  The <CODE>callParamCallbacks</CODE>
+<code>setXXXParam</code> and <code>getXXXParam</code> methods, one with a <code>list</code>
+argument, and one without.  The one without uses <code>list=0</code>, since there 
+is often only a single parameter list (i.e. if maxAddr=1).  The <code>callParamCallbacks</code>
 methods call back any registered clients for parameters that have changed since the last
-time <CODE>callParamCallbacks</CODE> was called.  The version  of <CODE>callParamCallbacks</CODE>
+time <code>callParamCallbacks</code> was called.  The version  of <code>callParamCallbacks</code>
 with no arguments uses the first parameter list and matches asyn address=0.  There is a
-second version of <CODE>callParamCallbacks</CODE> that takes an argument specifying the parameter list
+second version of <code>callParamCallbacks</code> that takes an argument specifying the parameter list
 number, and the asyn address to match.
+</p>
 
-<CENTER><H2><A name=NDArray>
-                    NDArray</A></H2></CENTER>
+<center><h2 id="NDArray">
+                NDArray</h2></center>
                     
+<p>
 The NDArray (N-Dimensional array) is the class that is used for passing detector data from drivers
 to plugins.  The NDArray class is defined as follows:
+</p>
 
-<PRE>
-#define ND_ARRAY_MAX_DIMS 10
+<pre>#define ND_ARRAY_MAX_DIMS 10
 
 /* Enumeration of array data types */
 typedef enum
@@ -502,88 +530,94 @@ public:
 };
 
 
-</PRE>
+</pre>
+<p>
 An NDArray is a general purpose class for handling array data.  An NDArray object is self-describing, 
 meaning it contains enough information to describe the data itself.  It is not intended to
 contain meta-data describing how the data was collected, etc.
-<P>
+</p>
+<p>
 An NDArray can have up to ND_ARRAY_MAX_DIMS dimensions, currently 10.  A fixed maximum
 number of dimensions is used to significantly simplify the code compared to
 unlimited number of dimensions.  Each dimension of the array is described
 by an NDDimension_t structure.  The fields in NDDimension_t are as follows:
-
-<UL>
-  <LI><CODE>size</CODE> is the number of elements in this dimension.
-  <LI><CODE>offset</CODE> is the starting element in this dimension
+</p>
+<ul>
+  <li><code>size</code> is the number of elements in this dimension.</li>
+  <li><code>offset</code> is the starting element in this dimension
       relative to the first element of the detector in unbinned units.  If a selected
       region of the detector is being read, then this value may be
       &gt 0.  The offset value is cumulative, so if a plugin such as NDPluginROI
       further selects a subregion, the offset is relative
       to the first element in the detector and not to the first element of
-      the region passed to NDPluginROI.
-  <LI><CODE>binning</CODE> is the binning (sumation of elements) in this
+      the region passed to NDPluginROI.</li>
+  <li><code>binning</code> is the binning (sumation of elements) in this
       dimension.   The offset value is cumulative, so if a plugin such as 
       NDPluginROI performs binning,
       the binning is expressed relative
       to the pixels in the detector and not to the possibly binned 
-      pixels passed to NDPluginROI.
-  <LI><CODE>reverse</CODE> is 0 if the data are in their normal order
+      pixels passed to NDPluginROI.</li>
+  <li><code>reverse</code> is 0 if the data are in their normal order
       as read out from the detector in this dimension, 
       and 1 if they are in reverse order.  This value is cumulative,
       so if a plugin such as 
       NDPluginROI reverses the data, the value must reflect the
       orientation relative to the original detector, and not to
-      the possibly reversed data passed to NDPluginROI.
-</UL> 
-The first 3 data fields in the NDArray class, <CODE>(node, referenceCount, owner)</CODE> are used
+      the possibly reversed data passed to NDPluginROI.</li>
+</ul> 
+<p>
+The first 3 data fields in the NDArray class, <code>(node, referenceCount, owner)</code> are used
 by the NDArrayPool class discussed below.
 The remaining data fields are as follows:
-<UL>
-  <LI><CODE>uniqueId</CODE> This should be a number that uniquely identifies this array.  Detector
-      drivers should assign this number to the NDArray before calling the plugins.
-  <LI><CODE>timeStamp</CODE> This should be a timestamp value in seconds recording when the frame
+</p>
+<ul>
+  <li><code>uniqueId</code> This should be a number that uniquely identifies this array.  Detector
+      drivers should assign this number to the NDArray before calling the plugins.</li>
+  <li><code>timeStamp</code> This should be a timestamp value in seconds recording when the frame
       was collected.  The time=0 reference is driver-dependent because of differences in vendor
       libraries.  If there is a choice, it is recommended to use timeStamp=0 for Epoch, (00:00:00 UTC,
-      January 1, 1970).
-  <LI><CODE>ndims</CODE> The number of dimensions in this array.
-  <LI><CODE>dims</CODE> Array of NDDimension_t structures.  The array is of length ND_MAX_DIMS, but
-      only the first <CODE>ndims</CODE> values must contain valid information.
-  <LI><CODE>dataType</CODE> The data type of this array, one of the NDDataType_t enum values.
-      The data types supported are signed and unsigned 8, 16, and 32-bit integers, and 32 and 64-bit floats.  
-  <LI><CODE>dataSize</CODE> The size of the memory buffer pointed to by <CODE>pData</CODE> in bytes.  This may be
-      larger than the amount actually required to hold the data for this array.
-  <LI><CODE>pData</CODE> Pointer to the memory for this array.  The data is assumed to be stored
-      in the order of <CODE>dims[0]</CODE> changing fastest, and <CODE>dims[ndims-1]</CODE> changing slowest.
-</UL>
+      January 1, 1970).</li>
+  <li><code>ndims</code> The number of dimensions in this array.</li>
+  <li><code>dims</code> Array of NDDimension_t structures.  The array is of length ND_MAX_DIMS, but
+      only the first <code>ndims</code> values must contain valid information.</li>
+  <li><code>dataType</code> The data type of this array, one of the NDDataType_t enum values.
+      The data types supported are signed and unsigned 8, 16, and 32-bit integers, and 32 and 64-bit floats. </li> 
+  <li><code>dataSize</code> The size of the memory buffer pointed to by <code>pData</code> in bytes.  This may be
+      larger than the amount actually required to hold the data for this array.</li>
+  <li><code>pData</code> Pointer to the memory for this array.  The data is assumed to be stored
+      in the order of <code>dims[0]</code> changing fastest, and <code>dims[ndims-1]</code> changing slowest.</li>
+</ul>
+<p>
 The methods of the NDArray class are:
-<UL>
-  <LI><CODE>initDimension</CODE> This method simply initializes the dimension structure to size=size,
-      binning=1, reverse=0, offset=0.
-  <LI><CODE>getInfo</CODE>.  This convenience method returns information about an NDArray, including the total number
-      of elements, the number of byte per element, and the total number of bytes in the array.
-  <LI><CODE>copy</CODE>.  This method makes a copy of an NDArray object.  If the output array pointer is NULL
+</p>
+<ul>
+  <li><code>initDimension</code> This method simply initializes the dimension structure to size=size,
+      binning=1, reverse=0, offset=0.</li>
+  <li><code>getInfo</code>.  This convenience method returns information about an NDArray, including the total number
+      of elements, the number of byte per element, and the total number of bytes in the array.</li>
+  <li><code>copy</code>.  This method makes a copy of an NDArray object.  If the output array pointer is NULL
       then it is first allocated.  If the output array object already exists (pOut!=NULL) then it 
-      must have sufficient memory allocated to it to hold the data.
-  <LI><CODE>reserve</CODE>.  This method calls NDArrayPool->reserve() for this object.  It increases the reference
-      count for this array.
-  <LI><CODE>release</CODE>.  This method calls NDArrayPool->release() for this object.  It decreases the reference
-      count for this array.
-</UL>
+      must have sufficient memory allocated to it to hold the data.</li>
+  <li><code>reserve</code>.  This method calls NDArrayPool->reserve() for this object.  It increases the reference
+      count for this array.</li>
+  <li><code>release</code>.  This method calls NDArrayPool->release() for this object.  It decreases the reference
+      count for this array.</li>
+</ul>
   
 
-
-<CENTER><H2><A name=NDArrayPool>
-                    NDArrayPool</A></H2></CENTER>
+<center><h2 id="NDArrayPool">
+                NDArrayPool</h2></center>
                     
+<p>
 The NDArrayPool class manages a free list (pool) of NDArray objects (described above). Drivers allocate NDArray objects
 from the pool, and pass these objects to plugins.  Plugins increase the reference count on the object when they
 place the object on their queue, and decrease the reference count when they are done processing the array.  When
 the reference count reaches 0 again the NDArray object is placed back on the free list. This mechanism minimizes the
 copying of array data in plugins. 
 The public interface of the NDArrayPool class is defined as follows:
+</p>
 
-<PRE>
-class NDArrayPool {
+<pre>class NDArrayPool {
 public:
                  NDArrayPool   (int maxBuffers, size_t maxMemory);
     NDArray*     alloc         (int ndims, int *dims, NDDataType_t dataType, int dataSize, void *pData);
@@ -594,14 +628,16 @@ public:
                                 NDDataType_t dataTypeOut,
                                 NDDimension_t *outDims);
     int          report        (int details);     
-</PRE>
+</pre>
 
+<p>
 The methods of the NDArrayPool class are:
-<UL>
-  <LI><CODE>NDArrayPool</CODE> This is the constructor for the class.  The maxBuffers argument is the maximum
+</p>
+<ul>
+  <li><code>NDArrayPool</code> This is the constructor for the class.  The maxBuffers argument is the maximum
       number of NDArray objects that the pool is allowed to contain.  The maxMemory argument is the maxiumum
-      number of bytes of memory the the pool is allowed to use, summed over all of the NDArray objects.
-  <LI><CODE>alloc</CODE> This method allocates a new NDArray object.  The first 3 arguments are required.  ndims
+      number of bytes of memory the the pool is allowed to use, summed over all of the NDArray objects.</li>
+  <li><code>alloc</code> This method allocates a new NDArray object.  The first 3 arguments are required.  ndims
       is the number of dimensions in the NDArray. dims is an array of dimensions, whose size must be at least ndims.
       dataType is the data type of the NDArray data. dataSize is the number of bytes to allocate for the array data.
       If it is 0 then alloc() will compute the size required from ndims, dims, and dataType.  pData is a pointer
@@ -612,30 +648,31 @@ The methods of the NDArrayPool class are:
       then it will allocate a new one and add it to the free list.  If doing so would exceed maxBuffers then alloc() 
       will return an error.  Similarly if allocating the memory required for this NDArray would cause the
       cumulative memory allocated for the pool to exceed maxMemory then an error will be returned.  alloc() sets
-      the reference count for the returned NDArray to 1.
-  <LI><CODE>reserve</CODE>.  This method increases the reference count for the NDArray object. Plugins must call 
-      reserve() when an NDArray is placed on a queue for later processing.
-  <LI><CODE>release</CODE>.  This method decreases the reference count for the NDArray object. Plugins must call 
+      the reference count for the returned NDArray to 1.</li>
+  <li><code>reserve</code>.  This method increases the reference count for the NDArray object. Plugins must call 
+      reserve() when an NDArray is placed on a queue for later processing.</li>
+  <li><code>release</code>.  This method decreases the reference count for the NDArray object. Plugins must call 
       release() when an NDArray is removed from the queue and processing on it is complete.  Drivers must call
-      release() after calling all plugins.
-  <LI><CODE>convert</CODE>  This method creates a new output NDArray from an input NDArray, performing conversion
+      release() after calling all plugins.</li>
+  <li><code>convert</code>  This method creates a new output NDArray from an input NDArray, performing conversion
       operations.  The conversion can change the data type if dataTypeOut is different from
       pIn->dataType.  It can also change the dimensions.  outDims may have different values of size, binning, offset and
-      reverse for each of its dimensions from input array dimensions (pIn->dims).
-  <LI><CODE>report</CODE> This method reports on the free list size and other properties of the NDArrayPool object.
-</UL>
+      reverse for each of its dimensions from input array dimensions (pIn->dims).</li>
+  <li><code>report</code> This method reports on the free list size and other properties of the NDArrayPool object.</li>
+</ul>
 
 
-<CENTER><H2><A name=asynNDArrayDriver>
-                    asynNDArrayDriver</A></H2></CENTER>
+<center><h2 id="asynNDArrayDriver">
+                asynNDArrayDriver</h2></center>
                     
+<p>
 asynNDArrayDriver inherits from asynPortDriver. It implements the asynGenericPointer functions, assuming that
 these reference NDArray objects.  This is the class from which both plugins and area detector drivers are 
 indirectly derived.
 Its public interface is defined as follows:
+</p>
 
-<PRE>
-class asynNDArrayDriver : public asynPortDriver {
+<pre>class asynNDArrayDriver : public asynPortDriver {
 public:
     asynNDArrayDriver(const char *portName, int maxAddr, int paramTableSize, int maxBuffers, size_t maxMemory,
                       int interfaceMask, int interruptMask);
@@ -644,29 +681,33 @@ public:
     virtual void report(FILE *fp, int details);
 
 };
-</PRE>
+</pre>
+<p>
 The methods of the asynNDArrayDriver class are:
-<UL>
-  <LI><CODE>asynNDArrayDriver</CODE> This is the constructor for the class.  portName, maxAddr, paramTableSize,
+</p>
+<ul>
+  <li><code>asynNDArrayDriver</code> This is the constructor for the class.  portName, maxAddr, paramTableSize,
     interfaceMask and interruptMask are simply passed to the asynPortDriver base class constructor.
-    asynNDArray creates an NDArrayPool object to allocate NDArray objects. 
-    maxBuffers and maxMemory are passed to the constructor for the NDArrayPool object.
-  <LI><CODE>readGenericPointer</CODE> This method copies an NDArray object from the asynNDArrayDriver to an NDArray
-    whose address is passed by the caller in the genericPointer argument.  
+    asynNDArray creates an NDArrayPool object to allocate NDArray objects.
+    maxBuffers and maxMemory are passed to the constructor for the NDArrayPool object.</li>
+  <li><code>readGenericPointer</code> This method copies an NDArray object from the asynNDArrayDriver to an NDArray
+    whose address is passed by the caller in the genericPointer argument.
     The caller must allocate the memory for the array, and pass the size in NDArray->dataSize.  The method will
-    limit the amount of data copied to the actual array size or the input dataSize, whichever is smaller.
-  <LI><CODE>writeGenericPointer</CODE> This method currently does nothing.  Derived classes must implement this method
-    as required.
-  <LI><CODE>report</CODE> This method calls the report function in the asynPortDriver base class.  It then
-    calls the NDArrayPool->report() method if details &gt 5.</UL>
+    limit the amount of data copied to the actual array size or the input dataSize, whichever is smaller.</li>
+  <li><code>writeGenericPointer</code> This method currently does nothing.  Derived classes must implement this method
+    as required.</li>
+  <li><code>report</code> This method calls the report function in the asynPortDriver base class.  It then
+    calls the NDArrayPool->report() method if details &gt 5.</li>
+</ul>
 
-<CENTER><H2><A name=ADDriver>
-                    ADDriver</A></H2></CENTER>
+<center><h2 id="ADDriver">
+                ADDriver</h2></center>
                     
+<p>
 ADDriver inherits from asynNDArrayDriver. This is the class from which area detector drivers are directly derived.
 Its public interface is defined as follows:
-<PRE>
-class ADDriver : public asynNDArrayDriver {
+</p>
+<pre>class ADDriver : public asynNDArrayDriver {
 public:
     ADDriver(const char *portName, int maxAddr, int paramTableSize, int maxBuffers, size_t maxMemory,
              int interfaceMask, int interruptMask);
@@ -677,30 +718,32 @@ public:
                                      
     /* These are the methods that are new to this class */
     int createFileName(int maxChars, char *fullFileName);
-</PRE>
-
+</pre>
+<p>
 The methods of the ADDriver class are:
-<UL>
-  <LI><CODE>ADDriver</CODE> This is the constructor for the class.  All of the arguments are simply passed to the
+</p>
+<ul>
+  <li><code>ADDriver</code> This is the constructor for the class.  All of the arguments are simply passed to the
       constructor for the asynNDArrayDriver base class.  After calling the base class constructor this method sets
-      reasonable default values for all of the parameters defined in ADStdDriverParams.h.
-  <LI><CODE>drvUserCreate</CODE> This method returns one of the enum values for the parameters defined in 
+      reasonable default values for all of the parameters defined in ADStdDriverParams.h.</li>
+  <li><code>drvUserCreate</code> This method returns one of the enum values for the parameters defined in 
       ADStdDriverParams.h if the driverInfo field matches one the strings defined in that file.  Derived classes will
       typically provide an implementation of drvUserCreate() that searches for parameters that are unique to that
       detector driver.  If a parameter is not matched, then ADDriver->drvUserCreate() will be called to see if it
-      is a standard driver parameter (defined in ADStdDriverParams.h).
-  <LI><CODE>createFileName</CODE>  This is a convenience function that constructs a complete file name in
+      is a standard driver parameter (defined in ADStdDriverParams.h).</li>
+  <li><code>createFileName</code>  This is a convenience function that constructs a complete file name in
       the ADFullFileName parameter from the
-      ADFilePath, ADFileName, ADFileNumber, and ADFileTemplate parameters.
-</UL>
+      ADFilePath, ADFileName, ADFileNumber, and ADFileTemplate parameters.</li>
+</ul>
 
-<CENTER><H2><A name=ADStdDriverParams>
-                    ADStdDriverParams</A></H2></CENTER>
+<center><h2 id="ADStdDriverParams">
+                ADStdDriverParams</h2></center>
 
-The file <CODE>ADStdDriverParams.h</CODE> defines the following:
+<p>
+The file <code>ADStdDriverParams.h</code> defines the following:
+</p>
 
-<PRE>
-/* Enumeration of shutter status */
+<pre>/* Enumeration of shutter status */
 typedef enum
 {
     ADShutterClosed, 
@@ -732,502 +775,527 @@ typedef enum
     ADTriggerExternal
 } ADTriggerMode_t;
 
-</PRE>
+</pre>
+<p>
 It also defines parameters that all area detector drivers should implement if possible.  These parameters are defined
 by enum values with an associated asyn interface, and access (read-only or read-write).  The EPICS database
 ADBase.template provides access to these standard driver parameters.  The following table lists the
 standard driver parameters.  The columns are defined as follows:
-<UL>
-  <LI><B>Enum name:</B> The name of the enum value for this parameter in ADStdDriverParams.h.  There are several EPICS
+</p>
+<ul>
+  <li><b>Enum name:</b> The name of the enum value for this parameter in ADStdDriverParams.h.  There are several EPICS
       records in ADBase.template that do not have corresponding enum fields, 
-      and these are indicated as Not Applicable (N/A).
-  <LI><B>asyn interface:</B> The asyn interface used to pass this parameter to the driver.
-  <LI><B>Access:</B> Read-write (r/w) or read-only (r/o).
-  <LI><B>drvUser string:</B> The string used to look up the parameter in the driver through the drvUser interface.
+      and these are indicated as Not Applicable (N/A).</li>
+  <li><b>asyn interface:</b> The asyn interface used to pass this parameter to the driver.</li>
+  <li><b>Access:</b> Read-write (r/w) or read-only (r/o).</li>
+  <li><b>drvUser string:</b> The string used to look up the parameter in the driver through the drvUser interface.
       This string is used in the EPICS database file for generic asyn device support to associate a record with
-      a particular parameter.
-  <LI><B>EPICS record name:</B> The name of the record in ADBase.template.  Each record name begins with the two macro
+      a particular parameter.</li>
+  <li><b>EPICS record name:</b> The name of the record in ADBase.template.  Each record name begins with the two macro
       parameters $(P) and $(R).  In the case of read/write parameters there are normally two records, one for writing
-      the value, and a second, ending in _RBV, that contains the actual value (Read Back Value) of the parameter.
-  <LI><B>EPICS record type:</B>  The record type of the record.  Waveform records are used to hold long strings,
-      with length (NELM) = 256 bytes and EPICS data type (FTVL) = UCHAR.
-</UL>
+      the value, and a second, ending in _RBV, that contains the actual value (Read Back Value) of the parameter.</li>
+  <li><b>EPICS record type:</b>  The record type of the record.  Waveform records are used to hold long strings,
+      with length (NELM) = 256 bytes and EPICS data type (FTVL) = UCHAR. This removes the 40 character
+      restriction on path name lengths that arise if an EPICS "string" PV is used.  medm allows one to
+      edit and display such records correctly.  EPICS clients will typically need to convert the path
+      name from a string to an integer or byte array before sending the path name to EPICS.  This is easy
+      to do in clients like SPEC, Matlab, and IDL.</li>
+</ul>
+<p>
 Note that for parameters whose values are defined by enum values (e.g ADImageMode, ADTriggerMode, ADFileFormat, ADStatus),
 drivers can use a different set of enum values for
 these parameters.  They can override the enum menu in ADBase.template with detector-specific choices by loading a
 detector-specific template file after loading ADBase.template.
-<P>
-<TABLE style="TEXT-ALIGN: left" cellSpacing=2 cellPadding=2 border=1>
-  <TBODY>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>Parameter Definitions in ADStdDriverParams.h and EPICS Record Definitions in ADBase.template</B></TD>
-  </TR>
-  <TR>
-    <TH>Enum name</TH>
-    <TH>asyn interface</TH>
-    <TH>Access</TH>
-    <TH>Description</TH>
-    <TH>drvUser string</TH>
-    <TH>EPICS record name</TH>
-    <TH>EPICS record type</TH>
-  </TR>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>Information about the detector</B></TD>
-  </TR>
-  <TR>
-    <TD>ADManufacturer</TD>
-    <TD>asynOctet</TD>
-    <TD>r/o</TD>
-    <TD>Detector manufacturer name</TD>
-    <TD>MANUFACTURER</TD>
-    <TD>$(P)$(R)Manufacturer_RBV</TD>
-    <TD>stringin</TD>
-  </TR>
-  <TR>
-    <TD>ADModel</TD>
-    <TD>asynOctet</TD>
-    <TD>r/o</TD>
-    <TD>Detector model name</TD>
-    <TD>MODEL</TD>
-    <TD>$(P)$(R)Model_RBV</TD>
-    <TD>stringin</TD>
-  </TR>
-  <TR>
-    <TD>ADMaxSizeX</TD>
-    <TD>asynInt32</TD>
-    <TD>r/o</TD>
-    <TD>Maximum (sensor) size in the X direction</TD>
-    <TD>MAX_SIZE_X</TD>
-    <TD>$(P)$(R)MaxSizeX_RBV</TD>
-    <TD>longin</TD>
-  </TR>
-  <TR>
-    <TD>ADMaxSizeY</TD>
-    <TD>asynInt32</TD>
-    <TD>r/o</TD>
-    <TD>Maximum (sensor) size in the Y direction</TD>
-    <TD>MAX_SIZE_Y</TD>
-    <TD>$(P)$(R)MaxSizeY_RBV</TD>
-    <TD>longin</TD>
-  </TR>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>Detector readout control including gain, binning, region start and size, reversal</B></TD>
-  </TR>
-  <TR>
-    <TD>ADGain</TD>
-    <TD>asynFloat64</TD>
-    <TD>r/w</TD>
-    <TD>Detector gain</TD>
-    <TD>GAIN</TD>
-    <TD>$(P)$(R)Gain<BR>$(P)$(R)Gain_RBV</TD>
-    <TD>ao<BR>ai</TD>
-  </TR>
-  <TR>
-    <TD>ADBinX</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Binning in the X direction</TD>
-    <TD>BIN_X</TD>
-    <TD>$(P)$(R)BinX<BR>$(P)$(R)BinX_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD>ADBinY</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Binning in the Y direction</TD>
-    <TD>BIN_Y</TD>
-    <TD>$(P)$(R)BinY<BR>$(P)$(R)BinY_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD>ADMinX</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>First pixel to read in the X direction. <BR>0 is the first pixel on the detector.</TD>
-    <TD>MIN_X</TD>
-    <TD>$(P)$(R)MinX<BR>$(P)$(R)MinX_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD>ADMinY</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>First pixel to read in the Y direction.<BR>0 is the first pixel on the detector.</TD>
-    <TD>MIN_Y</TD>
-    <TD>$(P)$(R)MinY<BR>$(P)$(R)MinY_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD>ADSizeX</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Size of the region to read in the X direction</TD>
-    <TD>SIZE_X</TD>
-    <TD>$(P)$(R)SizeX<BR>$(P)$(R)SizeX_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD>ADSizeY</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Size of the region to read in the Y direction</TD>
-    <TD>SIZE_Y</TD>
-    <TD>$(P)$(R)SizeY<BR>$(P)$(R)SizeY_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD>ADReverseX</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Reverse image in the X direction<BR>(0=No, 1=Yes)</TD>
-    <TD>REVERSE_X</TD>
-    <TD>$(P)$(R)ReverseX<BR>$(P)$(R)ReverseX_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD>ADReverseY</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Reverse image in the Y direction<BR>(0=No, 1=Yes)</TD>
-    <TD>REVERSE_Y</TD>
-    <TD>$(P)$(R)ReverseY<BR>$(P)$(R)ReverseY_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>Image and trigger modes</B></TD>
-  </TR>
-  <TR>
-    <TD>ADImageMode</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Image mode (ADImageMode_t).</TD>
-    <TD>IMAGE_MODE</TD>
-    <TD>$(P)$(R)ImageMode<BR>$(P)$(R)ImageMode_RBV</TD>
-    <TD>mbbo<BR>mbbi</TD>
-  </TR>
-  <TR>
-    <TD>ADTriggerMode</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Trigger mode (ADTriggerMode_t).</TD>
-    <TD>TRIGGER_MODE</TD>
-    <TD>$(P)$(R)TriggerMode<BR>$(P)$(R)TriggerMode_RBV</TD>
-    <TD>mbbo<BR>mbbi</TD>
-  </TR>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>Data type</B></TD>
-  </TR>
-  <TR>
-    <TD>ADDataType</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Data type (NDDataType_t).</TD>
-    <TD>DATA_TYPE</TD>
-    <TD>$(P)$(R)DataType<BR>$(P)$(R)DataType_RBV</TD>
-    <TD>mbbo<BR>mbbi</TD>
-  </TR>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>Actual dimensions of image data</B></TD>
-  </TR>
-  <TR>
-    <TD>ADImageSizeX</TD>
-    <TD>asynInt32</TD>
-    <TD>r/o</TD>
-    <TD>Size of the image data in the X direction</TD>
-    <TD>IMAGE_SIZE_X</TD>
-    <TD>$(P)$(R)ImageSizeX_RBV</TD>
-    <TD>longin</TD>
-  </TR>
-  <TR>
-    <TD>ADImageSizeY</TD>
-    <TD>asynInt32</TD>
-    <TD>r/o</TD>
-    <TD>Size of the image data in the Y direction</TD>
-    <TD>IMAGE_SIZE_Y</TD>
-    <TD>$(P)$(R)ImageSizeY_RBV</TD>
-    <TD>longin</TD>
-  </TR>
-  <TR>
-    <TD>ADImageSize</TD>
-    <TD>asynInt32</TD>
-    <TD>r/o</TD>
-    <TD>Total size of image data in bytes</TD>
-    <TD>IMAGE_SIZE</TD>
-    <TD>$(P)$(R)ImageSize_RBV</TD>
-    <TD>longin</TD>
-  </TR>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>Acquisition time and period</B></TD>
-  </TR>
-  <TR>
-    <TD>ADAcquireTime</TD>
-    <TD>asynFloat64</TD>
-    <TD>r/w</TD>
-    <TD>Acquisition time per image</TD>
-    <TD>ACQ_TIME</TD>
-    <TD>$(P)$(R)AcquireTime<BR>$(P)$(R)AcquireTime_RBV</TD>
-    <TD>ao<BR>ai</TD>
-  </TR>
-  <TR>
-    <TD>ADAcquirePeriod</TD>
-    <TD>asynFloat64</TD>
-    <TD>r/w</TD>
-    <TD>Acquisition period between images</TD>
-    <TD>ACQ_PERIOD</TD>
-    <TD>$(P)$(R)AcquirePeriod<BR>$(P)$(R)AcquirePeriod_RBV</TD>
-    <TD>ao<BR>ai</TD>
-  </TR>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>Number of exposures and number of images</B></TD>
-  </TR>
-  <TR>
-    <TD>ADNumExposures</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Number of exposures per image to acquire</TD>
-    <TD>NEXPOSURES</TD>
-    <TD>$(P)$(R)NumExposures<BR>$(P)$(R)NumExposures_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD>ADNumImages</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Number of images to acquire in one acquisition sequence</TD>
-    <TD>NIMAGES</TD>
-    <TD>$(P)$(R)NumImages<BR>$(P)$(R)NumImages_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>Acquisition control</B></TD>
-  </TR>
-  <TR>
-    <TD>ADAcquire</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Start (1) or stop (0) image acquisition.  This record is linked to an EPICS busy record
+</p>
+<table style="text-align: left" cellspacing="2" cellpadding="2" border="1">
+  <tbody>
+  <tr>
+    <td colspan="7", align="center"><b>Parameter Definitions in ADStdDriverParams.h and EPICS Record Definitions in ADBase.template</b></td>
+  </tr>
+  <tr>
+    <th>Enum name</th>
+    <th>asyn interface</th>
+    <th>Access</th>
+    <th>Description</th>
+    <th>drvUser string</th>
+    <th>EPICS record name</th>
+    <th>EPICS record type</th>
+  </tr>
+  <tr>
+    <td colspan="7", align="center"><b>Information about the detector</b></td>
+  </tr>
+  <tr>
+    <td>ADManufacturer</td>
+    <td>asynOctet</td>
+    <td>r/o</td>
+    <td>Detector manufacturer name</td>
+    <td>MANUFACTURER</td>
+    <td>$(P)$(R)Manufacturer_RBV</td>
+    <td>stringin</td>
+  </tr>
+  <tr>
+    <td>ADModel</td>
+    <td>asynOctet</td>
+    <td>r/o</td>
+    <td>Detector model name</td>
+    <td>MODEL</td>
+    <td>$(P)$(R)Model_RBV</td>
+    <td>stringin</td>
+  </tr>
+  <tr>
+    <td>ADMaxSizeX</td>
+    <td>asynInt32</td>
+    <td>r/o</td>
+    <td>Maximum (sensor) size in the X direction</td>
+    <td>MAX_SIZE_X</td>
+    <td>$(P)$(R)MaxSizeX_RBV</td>
+    <td>longin</td>
+  </tr>
+  <tr>
+    <td>ADMaxSizeY</td>
+    <td>asynInt32</td>
+    <td>r/o</td>
+    <td>Maximum (sensor) size in the Y direction</td>
+    <td>MAX_SIZE_Y</td>
+    <td>$(P)$(R)MaxSizeY_RBV</td>
+    <td>longin</td>
+  </tr>
+  <tr>
+    <td colspan="7", align="center"><b>Detector readout control including gain, binning, region start and size, reversal</b></td>
+  </tr>
+  <tr>
+    <td>ADGain</td>
+    <td>asynFloat64</td>
+    <td>r/w</td>
+    <td>Detector gain</td>
+    <td>GAIN</td>
+    <td>$(P)$(R)Gain<br/>$(P)$(R)Gain_RBV</td>
+    <td>ao<br/>ai</td>
+  </tr>
+  <tr>
+    <td>ADBinX</td>
+    <td>asynInt32</td>
+    <td>r/w</td>
+    <td>Binning in the X direction</td>
+    <td>BIN_X</td>
+    <td>$(P)$(R)BinX<br/>$(P)$(R)BinX_RBV</td>
+    <td>longout<br/>longin</td>
+  </tr>
+  <tr>
+    <td>ADBinY</td>
+    <td>asynInt32</td>
+    <td>r/w</td>
+    <td>Binning in the Y direction</td>
+    <td>BIN_Y</td>
+    <td>$(P)$(R)BinY<br/>$(P)$(R)BinY_RBV</td>
+    <td>longout<br/>longin</td>
+  </tr>
+  <tr>
+    <td>ADMinX</td>
+    <td>asynInt32</td>
+    <td>r/w</td>
+    <td>First pixel to read in the X direction. <br/>0 is the first pixel on the detector.</td>
+    <td>MIN_X</td>
+    <td>$(P)$(R)MinX<br/>$(P)$(R)MinX_RBV</td>
+    <td>longout<br/>longin</td>
+  </tr>
+  <tr>
+    <td>ADMinY</td>
+    <td>asynInt32</td>
+    <td>r/w</td>
+    <td>First pixel to read in the Y direction.<br/>0 is the first pixel on the detector.</td>
+    <td>MIN_Y</td>
+    <td>$(P)$(R)MinY<br/>$(P)$(R)MinY_RBV</td>
+    <td>longout<br/>longin</td>
+  </tr>
+  <tr>
+    <td>ADSizeX</td>
+    <td>asynInt32</td>
+    <td>r/w</td>
+    <td>Size of the region to read in the X direction</td>
+    <td>SIZE_X</td>
+    <td>$(P)$(R)SizeX<br/>$(P)$(R)SizeX_RBV</td>
+    <td>longout<br/>longin</td>
+  </tr>
+  <tr>
+    <td>ADSizeY</td>
+    <td>asynInt32</td>
+    <td>r/w</td>
+    <td>Size of the region to read in the Y direction</td>
+    <td>SIZE_Y</td>
+    <td>$(P)$(R)SizeY<br/>$(P)$(R)SizeY_RBV</td>
+    <td>longout<br/>longin</td>
+  </tr>
+  <tr>
+    <td>ADReverseX</td>
+    <td>asynInt32</td>
+    <td>r/w</td>
+    <td>Reverse image in the X direction<br/>(0=No, 1=Yes)</td>
+    <td>REVERSE_X</td>
+    <td>$(P)$(R)ReverseX<br/>$(P)$(R)ReverseX_RBV</td>
+    <td>longout<br/>longin</td>
+  </tr>
+  <tr>
+    <td>ADReverseY</td>
+    <td>asynInt32</td>
+    <td>r/w</td>
+    <td>Reverse image in the Y direction<br/>(0=No, 1=Yes)</td>
+    <td>REVERSE_Y</td>
+    <td>$(P)$(R)ReverseY<br/>$(P)$(R)ReverseY_RBV</td>
+    <td>longout<br/>longin</td>
+  </tr>
+  <tr>
+    <td colspan="7", align="center"><b>Image and trigger modes</b></td>
+  </tr>
+  <tr>
+    <td>ADImageMode</td>
+    <td>asynInt32</td>
+    <td>r/w</td>
+    <td>Image mode (ADImageMode_t).</td>
+    <td>IMAGE_MODE</td>
+    <td>$(P)$(R)ImageMode<br/>$(P)$(R)ImageMode_RBV</td>
+    <td>mbbo<br/>mbbi</td>
+  </tr>
+  <tr>
+    <td>ADTriggerMode</td>
+    <td>asynInt32</td>
+    <td>r/w</td>
+    <td>Trigger mode (ADTriggerMode_t).</td>
+    <td>TRIGGER_MODE</td>
+    <td>$(P)$(R)TriggerMode<br/>$(P)$(R)TriggerMode_RBV</td>
+    <td>mbbo<br/>mbbi</td>
+  </tr>
+  <tr>
+    <td colspan="7", align="center"><b>Data type</b></td>
+  </tr>
+  <tr>
+    <td>ADDataType</td>
+    <td>asynInt32</td>
+    <td>r/w</td>
+    <td>Data type (NDDataType_t).</td>
+    <td>DATA_TYPE</td>
+    <td>$(P)$(R)DataType<br/>$(P)$(R)DataType_RBV</td>
+    <td>mbbo<br/>mbbi</td>
+  </tr>
+  <tr>
+    <td colspan="7", align="center"><b>Actual dimensions of image data</b></td>
+  </tr>
+  <tr>
+    <td>ADImageSizeX</td>
+    <td>asynInt32</td>
+    <td>r/o</td>
+    <td>Size of the image data in the X direction</td>
+    <td>IMAGE_SIZE_X</td>
+    <td>$(P)$(R)ImageSizeX_RBV</td>
+    <td>longin</td>
+  </tr>
+  <tr>
+    <td>ADImageSizeY</td>
+    <td>asynInt32</td>
+    <td>r/o</td>
+    <td>Size of the image data in the Y direction</td>
+    <td>IMAGE_SIZE_Y</td>
+    <td>$(P)$(R)ImageSizeY_RBV</td>
+    <td>longin</td>
+  </tr>
+  <tr>
+    <td>ADImageSize</td>
+    <td>asynInt32</td>
+    <td>r/o</td>
+    <td>Total size of image data in bytes</td>
+    <td>IMAGE_SIZE</td>
+    <td>$(P)$(R)ImageSize_RBV</td>
+    <td>longin</td>
+  </tr>
+  <tr>
+    <td colspan="7", align="center"><b>Acquisition time and period</b></td>
+  </tr>
+  <tr>
+    <td>ADAcquireTime</td>
+    <td>asynFloat64</td>
+    <td>r/w</td>
+    <td>Acquisition time per image</td>
+    <td>ACQ_TIME</td>
+    <td>$(P)$(R)AcquireTime<br/>$(P)$(R)AcquireTime_RBV</td>
+    <td>ao<br/>ai</td>
+  </tr>
+  <tr>
+    <td>ADAcquirePeriod</td>
+    <td>asynFloat64</td>
+    <td>r/w</td>
+    <td>Acquisition period between images</td>
+    <td>ACQ_PERIOD</td>
+    <td>$(P)$(R)AcquirePeriod<br/>$(P)$(R)AcquirePeriod_RBV</td>
+    <td>ao<br/>ai</td>
+  </tr>
+  <tr>
+    <td colspan="7", align="center"><b>Number of exposures and number of images</b></td>
+  </tr>
+  <tr>
+    <td>ADNumExposures</td>
+    <td>asynInt32</td>
+    <td>r/w</td>
+    <td>Number of exposures per image to acquire</td>
+    <td>NEXPOSURES</td>
+    <td>$(P)$(R)NumExposures<br/>$(P)$(R)NumExposures_RBV</td>
+    <td>longout<br/>longin</td>
+  </tr>
+  <tr>
+    <td>ADNumImages</td>
+    <td>asynInt32</td>
+    <td>r/w</td>
+    <td>Number of images to acquire in one acquisition sequence</td>
+    <td>NIMAGES</td>
+    <td>$(P)$(R)NumImages<br/>$(P)$(R)NumImages_RBV</td>
+    <td>longout<br/>longin</td>
+  </tr>
+  <tr>
+    <td colspan="7", align="center"><b>Acquisition control</b></td>
+  </tr>
+  <tr>
+    <td>ADAcquire</td>
+    <td>asynInt32</td>
+    <td>r/w</td>
+    <td>Start (1) or stop (0) image acquisition.  This record is linked to an EPICS busy record
         that does not process its forward link until acquisition is complete.  Clients should write
         1 to the Acquire record to start acquisition, and wait for Acquire to go to 0 to know that
-        acquisition is complete.</TD>
-    <TD>ACQUIRE</TD>
-    <TD>$(P)$(R)Acquire</TD>
-    <TD>bo</TD>
-  </TR>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>File saving parameters</B></TD>
-  </TR>
-  <TR>
-    <TD>ADFilePath</TD>
-    <TD>asynOctet</TD>
-    <TD>r/w</TD>
-    <TD>File path</TD>
-    <TD>FILE_PATH</TD>
-    <TD>$(P)$(R)FilePath<BR>$(P)$(R)FilePath_RBV</TD>
-    <TD>waveform<BR>waveform</TD>
-  </TR>
-  <TR>
-    <TD>ADFileName</TD>
-    <TD>asynOctet</TD>
-    <TD>r/w</TD>
-    <TD>File name</TD>
-    <TD>FILE_NAME</TD>
-    <TD>$(P)$(R)FileName<BR>$(P)$(R)FileName_RBV</TD>
-    <TD>waveform<BR>waveform</TD>
-  </TR>
-  <TR>
-    <TD>ADFileNumber</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>File number</TD>
-    <TD>FILE_NUMBER</TD>
-    <TD>$(P)$(R)FileNumber<BR>$(P)$(R)FileNumber_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD>ADFileTemplate</TD>
-    <TD>asynOctet</TD>
-    <TD>r/w</TD>
-    <TD>Format string for constructing ADFullFileName from ADFilePath, ADFileName, and ADFileNumber</TD>
-    <TD>FILE_TEMPLATE</TD>
-    <TD>$(P)$(R)FileTemplate<BR>$(P)$(R)FileTemplate_RBV</TD>
-    <TD>waveform<BR>waveform</TD>
-  </TR>
-  <TR>
-    <TD>ADFullFileName</TD>
-    <TD>asynOctet</TD>
-    <TD>r/o</TD>
-    <TD>Full file name</TD>
-    <TD>FULL_FILE_NAME</TD>
-    <TD>$(P)$(R)FullFileName_RBV</TD>
-    <TD>waveform<BR>waveform</TD>
-  </TR>
-  <TR>
-    <TD>ADAutoIncrement</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Auto-increment flag (0=No, 1=Yes)</TD>
-    <TD>AUTO_INCREMENT</TD>
-    <TD>$(P)$(R)AutoIncrement<BR>$(P)$(R)AutoIncrement_RBV</TD>
-    <TD>bo<BR>bi</TD>
-  </TR>
-  <TR>
-    <TD>ADAutoSave</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Auto-save flag (0=No, 1=Yes)</TD>
-    <TD>AUTO_SAVE</TD>
-    <TD>$(P)$(R)AutoSave<BR>$(P)$(R)AutoSave_RBV</TD>
-    <TD>bo<BR>bi</TD>
-  </TR>
-  <TR>
-    <TD>ADFileFormat</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>File format. The format to write/read data in (e.g. TIFF, netCDF, etc.)</TD>
-    <TD>FILE_FORMAT</TD>
-    <TD>$(P)$(R)FileFormat<BR>$(P)$(R)FileFormat_RBV</TD>
-    <TD>mbbo<BR>mbbi</TD>
-  </TR>
-  <TR>
-    <TD>ADWriteFile</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Manually save the most recent image to a file when value=1</TD>
-    <TD>WRITE_FILE</TD>
-    <TD>$(P)$(R)WriteFile</TD>
-    <TD>longout</TD>
-  </TR>
-  <TR>
-    <TD>ADReadFile</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Manually read a file when value=1</TD>
-    <TD>READ_FILE</TD>
-    <TD>$(P)$(R)ReadFile</TD>
-    <TD>longout</TD>
-  </TR>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>Status information</B></TD>
-  </TR>
-  <TR>
-    <TD>ADStatus</TD>
-    <TD>asynInt32</TD>
-    <TD>r/o</TD>
-    <TD>Acquisition status (ADStatus_t)</TD>
-    <TD>STATUS</TD>
-    <TD>$(P)$(R)DetectorState_RBV</TD>
-    <TD>mbbi</TD>
-  </TR>
-  <TR>
-    <TD>ADStatusMessage</TD>
-    <TD>asynOctet</TD>
-    <TD>r/o</TD>
-    <TD>Status message string</TD>
-    <TD>STATUS_MESSAGE</TD>
-    <TD>$(P)$(R)StatusMessage_RBV</TD>
-    <TD>waveform</TD>
-  </TR>
-  <TR>
-    <TD>ADStringToServer</TD>
-    <TD>asynOctet</TD>
-    <TD>r/o</TD>
-    <TD>String from driver to string-based vendor server</TD>
-    <TD>STRING_TO_SERVER</TD>
-    <TD>$(P)$(R)StringToServer_RBV</TD>
-    <TD>waveform</TD>
-  </TR>
-  <TR>
-    <TD>ADStringFromServer</TD>
-    <TD>asynOctet</TD>
-    <TD>r/o</TD>
-    <TD>String from string-based vendor server to driver</TD>
-    <TD>STRING_FROM_SERVER</TD>
-    <TD>$(P)$(R)StringFromServer_RBV</TD>
-    <TD>waveform</TD>
-  </TR>
-  <TR>
-    <TD>ADImageCounter</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Counter that increments by 1 each time an image is acquired</TD>
-    <TD>IMAGE_COUNTER</TD>
-    <TD>$(P)$(R)ImageCounter<BR>$(P)$(R)ImageCounter_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD>N/A</TD>
-    <TD>N/A</TD>
-    <TD>r/o</TD>
-    <TD>Rate (Hz) at which ImageCounter is incrementing.  Computed in database.</TD>
-    <TD>N/A</TD>
-    <TD>$(P)$(R)ImageRate_RBV</TD>
-    <TD>calc</TD>
-  </TR>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>Shutter control.  Note: no areaDetector drivers yet implement shutter control, 
-       and these parameters may change in the near future.</B></TD>
-  </TR>
-  <TR>
-    <TD>ADShutter</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Shutter control (ADShutterStatus_t)</TD>
-    <TD>SHUTTER</TD>
-    <TD>$(P)$(R)ShutterMode<BR>$(P)$(R)ShutterMode_RBV</TD>
-    <TD>mbbo<BR>mbbi</TD>
-  </TR>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>Image data</B></TD>
-  </TR>
-  <TR>
-    <TD>NDArrayData</TD>
-    <TD>asynGenericPointer</TD>
-    <TD>r/w</TD>
-    <TD>The image data as an NDArray object</TD>
-    <TD>NDARRAY_DATA</TD>
-    <TD>N/A.  EPICS access to image data is through NDStdArrays plugin.</TD>
-    <TD>N/A</TD>
-  </TR>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>asyn port information</B></TD>
-  </TR>
-  <TR>
-    <TD>N/A</TD>
-    <TD>N/A</TD>
-    <TD>N/A</TD>
-    <TD>The name of the asyn port for this driver</TD>
-    <TD>N/A</TD>
-    <TD>$(P)$(R)PortName_RBV</TD>
-    <TD>stringin</TD>
-  </TR>
-  <TR>
-    <TD>N/A</TD>
-    <TD>N/A</TD>
-    <TD>N/A</TD>
-    <TD>asyn record to control debugging (asynTrace)</TD>
-    <TD>N/A</TD>
-    <TD>$(P)$(R)AsynIO</TD>
-    <TD>asyn</TD>
-  </TR>
-</TBODY>
-</TABLE>
+        acquisition is complete.</td>
+    <td>ACQUIRE</td>
+    <td>$(P)$(R)Acquire</td>
+    <td>bo</td>
+  </tr>
+  <tr>
+    <td colspan="7", align="center"><b>File saving parameters</b></td>
+  </tr>
+  <tr>
+    <td>ADFilePath</td>
+    <td>asynOctet</td>
+    <td>r/w</td>
+    <td>File path</td>
+    <td>FILE_PATH</td>
+    <td>$(P)$(R)FilePath<br/>$(P)$(R)FilePath_RBV</td>
+    <td>waveform<br/>waveform</td>
+  </tr>
+  <tr>
+    <td>ADFileName</td>
+    <td>asynOctet</td>
+    <td>r/w</td>
+    <td>File name</td>
+    <td>FILE_NAME</td>
+    <td>$(P)$(R)FileName<br/>$(P)$(R)FileName_RBV</td>
+    <td>waveform<br/>waveform</td>
+  </tr>
+  <tr>
+    <td>ADFileNumber</td>
+    <td>asynInt32</td>
+    <td>r/w</td>
+    <td>File number</td>
+    <td>FILE_NUMBER</td>
+    <td>$(P)$(R)FileNumber<br/>$(P)$(R)FileNumber_RBV</td>
+    <td>longout<br/>longin</td>
+  </tr>
+  <tr>
+    <td>ADFileTemplate</td>
+    <td>asynOctet</td>
+    <td>r/w</td>
+    <td>Format string for constructing ADFullFileName from ADFilePath, ADFileName, and ADFileNumber.
+        The final file name (which is placed in ADFullFileName) is created with the following code:
+        <pre>        epicsSnprintf(FullFilename, sizeof(FullFilename), FileFormat, 
+                      FilePath, Filename, FileNumber);
+        </pre>
+        FilePath, Filename, FileNumber are converted in that order with FileFormat.  
+        An example file format is <code>"%s%s%4.4d.tif"</code>.  The first %s converts the FilePath,
+        followed immediately by another %s for Filename.  
+        FileNumber is formatted with %4.4d, which results in a
+        fixed field with of 4 digits, with leading zeros as required.  Finally, the .tif extension 
+        is added to the file name.
+        This mechanism for creating file names is very flexible.  Other characters, such as _ can be put
+        in Filename or FileFormat as desired.  If one does not want to have FileNumber in the file name 
+        at all, then just omit the %d format specifier from FileFormat.  If the client wishes to construct
+        the complete file name itself, then it can just put that file name into ADFileFormat with no
+        format specifiers at all, in which case ADFilePath, ADFileName, and ADFileNumber will be ignored.</td>
+    <td>FILE_TEMPLATE</td>
+    <td>$(P)$(R)FileTemplate<br/>$(P)$(R)FileTemplate_RBV</td>
+    <td>waveform<br/>waveform</td>
+  </tr>
+  <tr>
+    <td>ADFullFileName</td>
+    <td>asynOctet</td>
+    <td>r/o</td>
+    <td>Full file name</td>
+    <td>FULL_FILE_NAME</td>
+    <td>$(P)$(R)FullFileName_RBV</td>
+    <td>waveform<br/>waveform</td>
+  </tr>
+  <tr>
+    <td>ADAutoIncrement</td>
+    <td>asynInt32</td>
+    <td>r/w</td>
+    <td>Auto-increment flag. Controls whether FileNumber is automatically incremented by
+        1 each time an acquisition completes (0=No, 1=Yes)</td>
+    <td>AUTO_INCREMENT</td>
+    <td>$(P)$(R)AutoIncrement<br/>$(P)$(R)AutoIncrement_RBV</td>
+    <td>bo<br/>bi</td>
+  </tr>
+  <tr>
+    <td>ADAutoSave</td>
+    <td>asynInt32</td>
+    <td>r/w</td>
+    <td>Auto-save flag (0=No, 1=Yes)</td>
+    <td>AUTO_SAVE</td>
+    <td>$(P)$(R)AutoSave<br/>$(P)$(R)AutoSave_RBV</td>
+    <td>bo<br/>bi</td>
+  </tr>
+  <tr>
+    <td>ADFileFormat</td>
+    <td>asynInt32</td>
+    <td>r/w</td>
+    <td>File format. The format to write/read data in (e.g. TIFF, netCDF, etc.)</td>
+    <td>FILE_FORMAT</td>
+    <td>$(P)$(R)FileFormat<br/>$(P)$(R)FileFormat_RBV</td>
+    <td>mbbo<br/>mbbi</td>
+  </tr>
+  <tr>
+    <td>ADWriteFile</td>
+    <td>asynInt32</td>
+    <td>r/w</td>
+    <td>Manually save the most recent image to a file when value=1</td>
+    <td>WRITE_FILE</td>
+    <td>$(P)$(R)WriteFile</td>
+    <td>longout</td>
+  </tr>
+  <tr>
+    <td>ADReadFile</td>
+    <td>asynInt32</td>
+    <td>r/w</td>
+    <td>Manually read a file when value=1</td>
+    <td>READ_FILE</td>
+    <td>$(P)$(R)ReadFile</td>
+    <td>longout</td>
+  </tr>
+  <tr>
+    <td colspan="7", align="center"><b>Status information</b></td>
+  </tr>
+  <tr>
+    <td>ADStatus</td>
+    <td>asynInt32</td>
+    <td>r/o</td>
+    <td>Acquisition status (ADStatus_t)</td>
+    <td>STATUS</td>
+    <td>$(P)$(R)DetectorState_RBV</td>
+    <td>mbbi</td>
+  </tr>
+  <tr>
+    <td>ADStatusMessage</td>
+    <td>asynOctet</td>
+    <td>r/o</td>
+    <td>Status message string</td>
+    <td>STATUS_MESSAGE</td>
+    <td>$(P)$(R)StatusMessage_RBV</td>
+    <td>waveform</td>
+  </tr>
+  <tr>
+    <td>ADStringToServer</td>
+    <td>asynOctet</td>
+    <td>r/o</td>
+    <td>String from driver to string-based vendor server</td>
+    <td>STRING_TO_SERVER</td>
+    <td>$(P)$(R)StringToServer_RBV</td>
+    <td>waveform</td>
+  </tr>
+  <tr>
+    <td>ADStringFromServer</td>
+    <td>asynOctet</td>
+    <td>r/o</td>
+    <td>String from string-based vendor server to driver</td>
+    <td>STRING_FROM_SERVER</td>
+    <td>$(P)$(R)StringFromServer_RBV</td>
+    <td>waveform</td>
+  </tr>
+  <tr>
+    <td>ADImageCounter</td>
+    <td>asynInt32</td>
+    <td>r/w</td>
+    <td>Counter that increments by 1 each time an image is acquired</td>
+    <td>IMAGE_COUNTER</td>
+    <td>$(P)$(R)ImageCounter<br/>$(P)$(R)ImageCounter_RBV</td>
+    <td>longout<br/>longin</td>
+  </tr>
+  <tr>
+    <td>N/A</td>
+    <td>N/A</td>
+    <td>r/o</td>
+    <td>Rate (Hz) at which ImageCounter is incrementing.  Computed in database.</td>
+    <td>N/A</td>
+    <td>$(P)$(R)ImageRate_RBV</td>
+    <td>calc</td>
+  </tr>
+  <tr>
+    <td colspan="7", align="center"><b>Shutter control.  Note: no areaDetector drivers yet implement shutter control, 
+       and these parameters may change in the near future.</b></td>
+  </tr>
+  <tr>
+    <td>ADShutter</td>
+    <td>asynInt32</td>
+    <td>r/w</td>
+    <td>Shutter control (ADShutterStatus_t)</td>
+    <td>SHUTTER</td>
+    <td>$(P)$(R)ShutterMode<br/>$(P)$(R)ShutterMode_RBV</td>
+    <td>mbbo<br/>mbbi</td>
+  </tr>
+  <tr>
+    <td colspan="7", align="center"><b>Image data</b></td>
+  </tr>
+  <tr>
+    <td>NDArrayData</td>
+    <td>asynGenericPointer</td>
+    <td>r/w</td>
+    <td>The image data as an NDArray object</td>
+    <td>NDARRAY_DATA</td>
+    <td>N/A.  EPICS access to image data is through NDStdArrays plugin.</td>
+    <td>N/A</td>
+  </tr>
+  <tr>
+    <td colspan="7", align="center"><b>asyn port information</b></td>
+  </tr>
+  <tr>
+    <td>N/A</td>
+    <td>N/A</td>
+    <td>N/A</td>
+    <td>The name of the asyn port for this driver</td>
+    <td>N/A</td>
+    <td>$(P)$(R)PortName_RBV</td>
+    <td>stringin</td>
+  </tr>
+  <tr>
+    <td>N/A</td>
+    <td>N/A</td>
+    <td>N/A</td>
+    <td>asyn record to control debugging (asynTrace)</td>
+    <td>N/A</td>
+    <td>$(P)$(R)AsynIO</td>
+    <td>asyn</td>
+  </tr>
+</tbody>
+</table>
 
-<P>
+<p>
 The following is the MEDM screen that provides access to the parameters in ADStdDriverParams through 
 records in ADBase.template.  This is a
 top-level MEDM screen that will work with any areaDetector driver.  Note however that many drivers will not implement all
 of these parameters, so detector-specific MEDM screens should generally be created that only display the EPICS PVs
 for the features implemented for that detector.  Note that the section of the screen labeled "Shutter" is not currently
 implemented for any areaDetector driver, and is subject to change in the near future.
-<P>
-<CENTER><IMG src="ADBase.png"></CENTER>
-<P>
-<CENTER><H2><A name=Detector_drivers>
-                    Detector drivers</A></H2></CENTER>
+</p>
+<br/>
+<center><img src="ADBase.png" alt="ADBase.png"/></center>
+<br/>
+<center><h2 id="Detector_drivers">
+                Detector drivers</h2></center>
 
+<p>
 areaDetector has been designed to minimize the amount of work required to write a new detector driver.  These
 drivers are described in separate documents, linked to by the table of contents at the top of this page.
-<P>
-</BODY>
-</HTML>
+</p>
+</body>
+</html>

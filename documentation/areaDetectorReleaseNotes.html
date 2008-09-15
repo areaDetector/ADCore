@@ -1,57 +1,58 @@
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
 <title>areaDetectorReleaseNotes.html</title>
 </head>
+<body>
 
-<h1 align="center">areaDetector Release Notes</h1>
-<h2 align="center">Release 1-2 (xxx-June-2008)</h2>
+<h1 style="text-align: center">areaDetector Release Notes</h1>
+<h2 style="text-align: center">Release 1-2 (xxx-June-2008)</h2>
 <ul>
-  <li>Major update to documentation
-  <li>Significant enhancement to ROI plugin.  Added net counts, ROI highlighting.
-  <li>Added driver for Pilatus detectors
-  <li>Added driver for ADSC detectors (done by Lewis Muir, IMCA-CAT)
-  <li>Renamed asynParamBase to asynPortDriver.
-  <li>Renamed NDArrayBase to NDArrayDriver
-  <li>Renamed NDPluginBase to NDPluginDriver
-  <li>Renamed NDArrayBuff to NDArrayPool, now in NDArray.cpp.
-  <li>Renamed ADDriverBase to ADDriver
-  <li>Removed ADUtils
+  <li>Major update to documentation></li>
+  <li>Significant enhancement to ROI plugin.  Added net counts, ROI highlighting.</li>
+  <li>Added driver for Pilatus detectors</li>
+  <li>Added driver for ADSC detectors (done by Lewis Muir, IMCA-CAT)</li>
+  <li>Renamed asynParamBase to asynPortDriver.</li>
+  <li>Renamed NDArrayBase to NDArrayDriver</li>
+  <li>Renamed NDPluginBase to NDPluginDriver</li>
+  <li>Renamed NDArrayBuff to NDArrayPool, now in NDArray.cpp.</li>
+  <li>Renamed ADDriverBase to ADDriver</li>
+  <li>Removed ADUtils</li>
   <li>The asynHandle interface in asyn was renamed to asynGenericPointer, 
-      many changes to incorporate this.
-  <li>Removed separate readback parameters in drivers and template files
+      many changes to incorporate this.</li>
+  <li>Removed separate readback parameters in drivers and template files</li>
   <li>Changed from mbbi/mbbo records to bi/bo records where possible now
-      that the asynInt32 interface supports bi/bo records.
+      that the asynInt32 interface supports bi/bo records.</li>
   <li>Base class constructor no longer initializes all asyn interfaces,
-      only the selected ones.
-  <li>NDArray pool is no longer global, each server creates its own pool if needed.
+      only the selected ones.</li>
+  <li>NDArray pool is no longer global, each server creates its own pool if needed.</li>
   <li>Implemented real routines for writeInt32, writeFloat64, and writeOctet in asynPortDriver.cpp,
-      removed them from ADDriver.cpp where they were not needed.
+      removed them from ADDriver.cpp where they were not needed.</li>
 </ul>
   
 
-<h2 align="center">Release 1-1 (10-May-2008)</h2>
+<h2 style="text-align: center">Release 1-1 (10-May-2008)</h2>
 <ul>
   <li>Major rewrite.  Converted device drivers and plugins from C to C++ with
       C++ base classes that handle many of the details of asyn and of
-      callbacks and threading for plugins.
+      callbacks and threading for plugins.</li>
   <li>Everything except device drivers and top-level EPICS databases and
       channel access clients are now fully N-dimensional, not restricted to
-      2-D.
+      2-D.</li>
   <li>NDPluginFile now uses netCDF format, which is a portable self-describing
-      binary file format.
-  <li>Added NDPluginROI which implements region-of-interest.
+      binary file format.</li>
+  <li>Added NDPluginROI which implements region-of-interest.</li>
 </ul>
 
-<h2 align="center">Release 1-0 (11-Apr-2008)</h2>
+<h2 style="text-align: center">Release 1-0 (11-Apr-2008)</h2>
 <ul>
-  <li>Initial release, still many things remaining to be done.
+  <li>Initial release, still many things remaining to be done.</li>
 </ul>
 
 <address>
-    Suggestions and Comments to: <br>
+    Suggestions and Comments to: <br/>
     <a href="mailto:rivers@cars.uchicago.edu">Mark Rivers </a>:
-    (rivers@cars.uchicago.edu) <br>
+    (rivers@cars.uchicago.edu) <br/>
 </address>
 </body>
 </html>
