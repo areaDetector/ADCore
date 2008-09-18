@@ -1,205 +1,310 @@
-<HTML>
-<HEAD>
-<TITLE>areaDetector Prosilica driver</TITLE>
-</HEAD>
-<BODY>
-
-<CENTER>
-<H1>areaDetector Prosilica driver</H1>
-
-<H2> September 5, 2008</H2>
-<H2> Mark Rivers</H2>
-<H2> University of Chicago</H2>
-</CENTER>
-
-<P>&nbsp;</P>
-
-<CENTER><H2>Contents</H2></CENTER>
-<UL>
-  <LI><A href="#Overview">
-                Overview</A> 
-  <LI><A href="#Performance measurements">
-                Performance measurements</A> 
-  <LI><A href="#Hardware notes">
-                Hardware notes</A> 
-  <LI><A href="#Restrictions">
-                Restrictions</A> 
-</UL>
-
-<CENTER><H2><A name="Prosilica Driver">
-                     Prosilica Driver</A></H2></CENTER>
-                    
-This is a driver for Gigabit Ethernet and Firewire cameras from 
-<A HREF="http://www.prosilica.com">Prosilica</A>.
-It inherits from ADDriver and implements nearly all of the parameters in ADStdDriverParams.h.
-It also implements a number of parameters that are specific
-to the Prosilica cameras.  The driver is currently only supported under Windows (EPICS win32-x86 architecture)
-because the vendor library is provided as a Windows DLL.
-The vendor library provided by Prosilica does callbacks to a user-supplied
-function each time there is a new frame.  Thus, it is not necessary to create a thread for callbacks in this driver.
-<P>
-The vendor library supports saving individual frames as TIFF files, and this is implemented in the driver.  The NDPluginFile
-plugin can be used to capture or stream images much more rapidly in the netCDF file format.
-<P>
-The driver redefines the choices for 2 of the parameters defined in ADStdDriverParams.h.  The ADTriggerMode choices for the
-Prosilica are:
-<UL>
-  <LI>Free Run (collects images as fast as allowed by the camera readout and the exposure time)
-  <LI>Sync In 1 (external trigger on line 1)
-  <LI>Sync In 2 (external trigger on line 2)
-  <LI>Sync In 3 (external trigger on line 3)
-  <LI>Sync In 4 (external trigger on line 4)
-  <LI>Fixed Rate (collects images at a fixed rate)
-  <LI>Software (single software trigger)
-</UL>
-<P>The Prosilica supports additional hardware timing signals that may be supported in a future release.
-<P>
-The ADFileFormat choices for the Prosilica are:
-<UL>
-  <LI>TIFF (this is the only format supported)
-  <LI>Invalid
-</UL>
-  
-The Prosilica driver implements the following parameters in addition to those in ADStdDriverParams.h:
-<P>
-<TABLE style="TEXT-ALIGN: left" cellSpacing=2 cellPadding=2 border=1>
-  <TBODY>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>Parameter Definitions in prosilica.cpp and EPICS Record Definitions in prosilica.template</B></TD>
-  </TR>
-  <TR>
-    <TH>Enum name</TH>
-    <TH>asyn interface</TH>
-    <TH>Access</TH>
-    <TH>Description</TH>
-    <TH>drvUser string</TH>
-    <TH>EPICS record name</TH>
-    <TH>EPICS record type</TH>
-  </TR>
-  <TR>
-    <TD>PSReadStatistics</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Read the Gigabit Ethernet statistics when 1</TD>
-    <TD>PS_READ_STATISTICS</TD>
-    <TD>$(P)$(R)PSReadStatistics</TD>
-    <TD>longout</TD>
-  </TR>
-  <TR>
-    <TD>PSStatDriverType</TD>
-    <TD>asynOctet</TD>
-    <TD>r/o</TD>
-    <TD>Driver type</TD>
-    <TD>PS_DRIVER_TYPE</TD>
-    <TD>$(P)$(R)PSDriverType_RBV</TD>
-    <TD>stringin</TD>
-  </TR>
-  <TR>
-    <TD>PSStatFilterVersion</TD>
-    <TD>asynOctet</TD>
-    <TD>r/o</TD>
-    <TD>Packet filter version</TD>
-    <TD>PS_FILTER_VERSION</TD>
-    <TD>$(P)$(R)PSFilterVersion_RBV</TD>
-    <TD>stringin</TD>
-  </TR>
-  <TR>
-    <TD>PSStatFrameRate</TD>
-    <TD>asynFloat64</TD>
-    <TD>r/o</TD>
-    <TD>Frame rate (Hz)</TD>
-    <TD>PS_FRAME_RATE</TD>
-    <TD>$(P)$(R)PSFrameRate_RBV</TD>
-    <TD>ai</TD>
-  </TR>
-  <TR>
-    <TD>PSStatFramesCompleted</TD>
-    <TD>asynInt32</TD>
-    <TD>r/o</TD>
-    <TD>Number of frames completed</TD>
-    <TD>PS_FRAMES_COMPLETED</TD>
-    <TD>$(P)$(R)PSFramesCompleted_RBV</TD>
-    <TD>longin</TD>
-  </TR>
-  <TR>
-    <TD>PSStatFramesDropped</TD>
-    <TD>asynInt32</TD>
-    <TD>r/o</TD>
-    <TD>Number of frames dropped</TD>
-    <TD>PS_FRAMES_DROPPED</TD>
-    <TD>$(P)$(R)PSFramesDropped_RBV</TD>
-    <TD>longin</TD>
-  </TR>
-  <TR>
-    <TD>PSStatPacketsErroneous</TD>
-    <TD>asynInt32</TD>
-    <TD>r/o</TD>
-    <TD>Number of erroneous packets</TD>
-    <TD>PS_PACKETS_ERRONEOUS</TD>
-    <TD>$(P)$(R)PSPacketsErroneous_RBV</TD>
-    <TD>longin</TD>
-  </TR>
-  <TR>
-    <TD>PSStatPacketsMissed</TD>
-    <TD>asynInt32</TD>
-    <TD>r/o</TD>
-    <TD>Number of missed packets</TD>
-    <TD>PS_PACKETS_MISSED</TD>
-    <TD>$(P)$(R)PSPacketsMissed_RBV</TD>
-    <TD>longin</TD>
-  </TR>
-  <TR>
-    <TD>PSStatPacketsReceived</TD>
-    <TD>asynInt32</TD>
-    <TD>r/o</TD>
-    <TD>Number of received packets</TD>
-    <TD>PS_PACKETS_RECEIVED</TD>
-    <TD>$(P)$(R)PSPacketsReceived_RBV</TD>
-    <TD>longin</TD>
-  </TR>
-  <TR>
-    <TD>PSStatPacketsRequested</TD>
-    <TD>asynInt32</TD>
-    <TD>r/o</TD>
-    <TD>Number of packets requested</TD>
-    <TD>PS_PACKETS_RESENT</TD>
-    <TD>$(P)$(R)PSPacketsRequested_RBV</TD>
-    <TD>longin</TD>
-  </TR>
-  <TR>
-    <TD>PSStatPacketsResent</TD>
-    <TD>asynInt32</TD>
-    <TD>r/o</TD>
-    <TD>Number of packets resent</TD>
-    <TD>PS_PACKETS_RESENT</TD>
-    <TD>$(P)$(R)PSPacketsResent_RBV</TD>
-    <TD>longin</TD>
-  </TR>
-  <TR>
-    <TD>PSBadFrameCounter</TD>
-    <TD>asynInt32</TD>
-    <TD>r/o</TD>
-    <TD>Number of bad frames</TD>
-    <TD>PS_BAD_FRAME_COUNTER</TD>
-    <TD>$(P)$(R)PSBadFrameCounter_RBV</TD>
-    <TD>longin</TD>
-  </TR>
-</TBODY>
-</TABLE>
-
-<P>
-The following is the MEDM screen ADBase.adl connected to a Prosilica camera.
-<P>
-<CENTER><IMG src="ADBase_prosilica.png"></CENTER>
-<P>
-The following is the MEDM screen that provides access to the specific parameters for the Prosilica detector.
-<P>
-<CENTER><IMG src="prosilica.png"></CENTER>
-<P>
-The following is an IDL epics_ad_display screen (discussed below) illustrating the Prosilica detector images.
-<P>
-<CENTER><IMG src="prosilica_tvscl.png"></CENTER>
-<P>
-
-</BODY>
-</HTML>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>areaDetector Prosilica driver</title>
+</head>
+<body>
+  <center>
+    <h1>
+      areaDetector Prosilica driver</h1>
+    <h2>
+      September 17, 2008</h2>
+    <h2>
+      Mark Rivers</h2>
+    <h2>
+      University of Chicago</h2>
+  </center>
+  <p>
+    &nbsp;</p>
+  <center>
+    <h2>
+      Contents</h2>
+  </center>
+  <ul>
+    <li><a href="#Overview">Overview</a></li>
+    <li><a href="#Performance measurements">Performance measurements</a></li>
+    <li><a href="#Hardware notes">Hardware notes</a></li>
+    <li><a href="#Restrictions">Restrictions</a></li>
+  </ul>
+  <center>
+    <h2 id="Prosilica Driver">
+      Prosilica Driver</h2>
+  </center>
+  <p>
+    This is a driver for Gigabit Ethernet and Firewire cameras from <a href="http://www.prosilica.com">
+      Prosilica</a>. It inherits from ADDriver and implements nearly all of the parameters
+    in ADStdDriverParams.h. It also implements a number of parameters that are specific
+    to the Prosilica cameras. The driver is currently only supported under Windows (EPICS
+    win32-x86 architecture) because the vendor library is provided as a Windows DLL.
+    The vendor library provided by Prosilica does callbacks to a user-supplied function
+    each time there is a new frame. Thus, it is not necessary to create a thread for
+    callbacks in this driver.
+  </p>
+  <p>
+    The vendor library supports saving individual frames as TIFF files, and this is
+    implemented in the driver. The NDPluginFile plugin can be used to capture or stream
+    images much more rapidly in the netCDF file format.
+  </p>
+  <p>
+    The driver redefines the choices for 2 of the parameters defined in ADStdDriverParams.h.
+    The ADTriggerMode choices for the Prosilica are:
+  </p>
+  <ul>
+    <li>Free Run (collects images as fast as allowed by the camera readout and the exposure
+      time)</li>
+    <li>Sync In 1 (external trigger on line 1)</li>
+    <li>Sync In 2 (external trigger on line 2)</li>
+    <li>Sync In 3 (external trigger on line 3)</li>
+    <li>Sync In 4 (external trigger on line 4)</li>
+    <li>Fixed Rate (collects images at a fixed rate)</li>
+    <li>Software (single software trigger)</li>
+  </ul>
+  <p>
+    The Prosilica supports additional hardware timing signals that may be supported
+    in a future release.
+  </p>
+  <p>
+    The ADFileFormat choices for the Prosilica are:
+  </p>
+  <ul>
+    <li>TIFF (this is the only format supported)</li>
+    <li>Invalid (this menu item is defined only because MEDM will not display a menu widget
+      with only 1 choice)</li></ul>
+  <p>
+    The Prosilica driver implements the following parameters in addition to those in
+    ADStdDriverParams.h:
+  </p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="CENTER" colspan="7,">
+          <b>Parameter Definitions in prosilica.cpp and EPICS Record Definitions in prosilica.template</b></td>
+      </tr>
+      <tr>
+        <th>
+          Enum name</th>
+        <th>
+          asyn interface</th>
+        <th>
+          Access</th>
+        <th>
+          Description</th>
+        <th>
+          drvUser string</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          EPICS record type</th>
+      </tr>
+      <tr>
+        <td>
+          PSReadStatistics</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Read the Gigabit Ethernet statistics when 1</td>
+        <td>
+          PS_READ_STATISTICS</td>
+        <td>
+          $(P)$(R)PSReadStatistics</td>
+        <td>
+          longout</td>
+      </tr>
+      <tr>
+        <td>
+          PSStatDriverType</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/o</td>
+        <td>
+          Driver type</td>
+        <td>
+          PS_DRIVER_TYPE</td>
+        <td>
+          $(P)$(R)PSDriverType_RBV</td>
+        <td>
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          PSStatFilterVersion</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/o</td>
+        <td>
+          Packet filter version</td>
+        <td>
+          PS_FILTER_VERSION</td>
+        <td>
+          $(P)$(R)PSFilterVersion_RBV</td>
+        <td>
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          PSStatFrameRate</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Frame rate (Hz)</td>
+        <td>
+          PS_FRAME_RATE</td>
+        <td>
+          $(P)$(R)PSFrameRate_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          PSStatFramesCompleted</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Number of frames completed</td>
+        <td>
+          PS_FRAMES_COMPLETED</td>
+        <td>
+          $(P)$(R)PSFramesCompleted_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          PSStatFramesDropped</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Number of frames dropped</td>
+        <td>
+          PS_FRAMES_DROPPED</td>
+        <td>
+          $(P)$(R)PSFramesDropped_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          PSStatPacketsErroneous</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Number of erroneous packets</td>
+        <td>
+          PS_PACKETS_ERRONEOUS</td>
+        <td>
+          $(P)$(R)PSPacketsErroneous_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          PSStatPacketsMissed</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Number of missed packets</td>
+        <td>
+          PS_PACKETS_MISSED</td>
+        <td>
+          $(P)$(R)PSPacketsMissed_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          PSStatPacketsReceived</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Number of received packets</td>
+        <td>
+          PS_PACKETS_RECEIVED</td>
+        <td>
+          $(P)$(R)PSPacketsReceived_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          PSStatPacketsRequested</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Number of packets requested</td>
+        <td>
+          PS_PACKETS_RESENT</td>
+        <td>
+          $(P)$(R)PSPacketsRequested_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          PSStatPacketsResent</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Number of packets resent</td>
+        <td>
+          PS_PACKETS_RESENT</td>
+        <td>
+          $(P)$(R)PSPacketsResent_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          PSBadFrameCounter</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Number of bad frames</td>
+        <td>
+          PS_BAD_FRAME_COUNTER</td>
+        <td>
+          $(P)$(R)PSBadFrameCounter_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    The following is the MEDM screen ADBase.adl connected to a Prosilica camera.
+  </p>
+  <center>
+    <img alt="ADBase_prosilica.png" src="ADBase_prosilica.png" /></center>
+  <p>
+    The following is the MEDM screen that provides access to the specific parameters
+    for the Prosilica detector.
+  </p>
+  <center>
+    <img alt="prosilica.png" src="prosilica.png" /></center>
+  <p>
+    The following is an IDL epics_ad_display screen (discussed below) illustrating the
+    Prosilica detector images.
+  </p>
+  <center>
+    <img alt="prosilica_tvscl.png" src="prosilica_tvscl.png" /></center>
+</body>
+</html>

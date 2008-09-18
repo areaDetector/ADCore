@@ -1,80 +1,95 @@
-<HTML>
-<HEAD>
-<TITLE>areaDetector Plugins</TITLE>
-</HEAD>
-<BODY>
-
-<CENTER>
-<H1>areaDetector Plugins</H1>
-
-<H2> September 5, 2008</H2>
-<H2> Mark Rivers</H2>
-<H2> University of Chicago</H2>
-</CENTER>
-
-<P>&nbsp;</P>
-
-<CENTER><H2>Contents</H2></CENTER>
-<UL>
-  <LI><A href="#Overview">
-                Overview</A> 
-  <LI><A href="#NDPluginDriver">
-                NDPluginDriver</A>
-  <LI><A href="#NDPluginStdArrays">
-                NDPluginStdArrays</A>
-  <LI><A href="#NDPluginFile">
-                NDPluginFile</A>
-  <LI><A href="#NDPluginROI">
-                NDPluginROI</A>
-</UL>
-
-<P>
-<CENTER><H2><A name=Overview>
-                    Overview</A></H2></CENTER>
-                    
-A powerful feature of the 
-<A href="areaDetectorDoc.html">
-         areaDetector</A>
-module is the concept of plugins.  A plugin is code that is called by
-a driver that passes NDArray data in a callback.  Plugins can be used to process array data in real time.
-Existing plugins convert data to standard asyn arrays (NDPluginStdArrays)
-save data to disk (NDPluginFile), and select regions-of-interest (NDPluginROI).  New plugins could be written to perform
-functions like finding the centroid of a beam, etc.  Once a plugin is written it will work with any areaDetector driver.
-Plugins have the the following properties:
-<UL>
-  <LI>They can execute either in a blocking mode or a non-blocking mode.  In the blocking mode the callback is executed
-      by the driver callback thread.  In this mode the callback is guaranteed to execute for each NDArray callback.  However, it
-      can slow down the driver, and does not utilize the multi-core capability of modern CPUs.  In the non-blocking mode the driver
-      callback simply places the NDArray data in a queue that is part of the plugin.  The plugin then executes the callback code
-      in it own thread, removes NDArray data from the queue, processes it, and releases the data back to the NDArrayPool when it is done.
-      In the non-blocking mode some additional memory is required for the NDArray objects that are in the queue.  It is also
-      possible to drop NDArray data if the queue is full, i.e. some callback data will not be processed.  The non-blocking mode
-      can utilize the multi-core capabilities of modern CPUs because each plugin is executing in its own thread.  The operation of
-      the queue and the NDArrayPool class means that data never needs to be copied, each plugin has a pointer to the data which
-      will continue to be valid until the last plugin is done with it.
-  <LI>They can be enabled or disabled at run time.
-  <LI>They can be throttled to only execute at a limited rate.  This means, for example, that a detector can be saving data to disk
-      at full speed, but images can be posted to EPICS at a reduced rate.
-  <LI>They can be unplugged from one driver, and plugged into another driver at run time.  In particular the NDPluginROI driver
-      is itself a source of NDArray data callbacks, so a file saving plugin could be unplugged from a detector driver
-      (where it would be saving the entire detector), and plugged into a particular ROI, where it would just save a portion
-      of the detector.
-</UL>
-<P>
-<CENTER><H2><A name=NDPluginDriver>
-                    NDPluginDriver</A></H2></CENTER>
-                    
-NDPluginDriver inherits from 
-<A href=areaDetectorDoc.html#asynNDArrayDriver>
-                             asynNDArrayDriver</A>. 
-NDPluginDriver is the class from which actual plugins are directly derived.  
-The NDPluginDriver class handles most of the details of processing NDArray callbacks from the driver.  Plugins
-derived from this class typically need to implement the processCallbacks method, some of the write(Int32, Float64, Octet)
-methods.
- 
-The NDPluginDriver public interface is defined in NDPluginDriver.h as follows:
-<PRE>
-class NDPluginDriver : public asynNDArrayDriver {
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>areaDetector Plugins</title>
+</head>
+<body>
+  <center>
+    <h1>
+      areaDetector Plugins</h1>
+    <h2>
+      September 5, 2008</h2>
+    <h2>
+      Mark Rivers</h2>
+    <h2>
+      University of Chicago</h2>
+  </center>
+  <br />
+  <center>
+    <h2>
+      Contents</h2>
+  </center>
+  <ul>
+    <li><a href="#Overview">Overview</a></li>
+    <li><a href="#NDPluginDriver">NDPluginDriver</a></li>
+    <li><a href="#NDPluginStdArrays">NDPluginStdArrays</a>
+      <ul>
+        <li><a href="#NDPluginStdArraysConfiguration">Configuration</a></li>
+        <li><a href="#IDLClient">IDL Display Client</a></li>
+      </ul>
+    </li>
+    <li><a href="#NDPluginFile">NDPluginFile</a>
+      <ul>
+        <li><a href="#NDPluginFileConfiguration">Configuration</a></li>
+      </ul>
+    </li>
+    <li><a href="#NDPluginROI">NDPluginROI</a>
+      <ul>
+        <li><a href="#NDPluginROIConfiguration">Configuration</a></li>
+      </ul>
+    </li>
+  </ul>
+  <center>
+    <h2 id="Overview">
+      Overview</h2>
+  </center>
+  <p>
+    A powerful feature of the <a href="areaDetectorDoc.html">areaDetector</a> module
+    is the concept of plugins. A plugin is code that is called by a driver that passes
+    NDArray data in a callback. Plugins can be used to process array data in real time.
+    Existing plugins convert data to standard asyn arrays (NDPluginStdArrays) save data
+    to disk (NDPluginFile), and select regions-of-interest (NDPluginROI). New plugins
+    could be written to perform functions like finding the centroid of a beam, etc.
+    Once a plugin is written it will work with any areaDetector driver. Plugins have
+    the the following properties:
+  </p>
+  <ul>
+    <li>They can execute either in a blocking mode or a non-blocking mode. In the blocking
+      mode the callback is executed by the driver callback thread. In this mode the callback
+      is guaranteed to execute for each NDArray callback. However, it can slow down the
+      driver, and does not utilize the multi-core capability of modern CPUs. In the non-blocking
+      mode the driver callback simply places the NDArray data in a queue that is part
+      of the plugin. The plugin then executes the callback code in it own thread, removes
+      NDArray data from the queue, processes it, and releases the data back to the NDArrayPool
+      when it is done. In the non-blocking mode some additional memory is required for
+      the NDArray objects that are in the queue. It is also possible to drop NDArray data
+      if the queue is full, i.e. some callback data will not be processed. The non-blocking
+      mode can utilize the multi-core capabilities of modern CPUs because each plugin
+      is executing in its own thread. The operation of the queue and the NDArrayPool class
+      means that data never needs to be copied, each plugin has a pointer to the data
+      which will continue to be valid until the last plugin is done with it.</li>
+    <li>They can be enabled or disabled at run time.</li>
+    <li>They can be throttled to only execute at a limited rate. This means, for example,
+      that a detector can be saving data to disk at full speed, but images can be posted
+      to EPICS at a reduced rate.</li>
+    <li>They can be unplugged from one driver, and plugged into another driver at run
+      time. In particular the NDPluginROI driver is itself a source of NDArray data callbacks,
+      so a file saving plugin could be unplugged from a detector driver (where it would
+      be saving the entire detector), and plugged into a particular ROI, where it would
+      just save a portion of the detector.</li>
+  </ul>
+  <center>
+    <h2 id="NDPluginDriver">
+      NDPluginDriver</h2>
+  </center>
+  <p>
+    NDPluginDriver inherits from <a href="areaDetectorDoc.html#asynNDArrayDriver">asynNDArrayDriver</a>.
+    NDPluginDriver is the class from which actual plugins are directly derived. The
+    NDPluginDriver class handles most of the details of processing NDArray callbacks
+    from the driver. Plugins derived from this class typically need to implement the
+    processCallbacks method, the drvUser method, and one or more of the write(Int32, Float64, Octet) methods. The NDPluginDriver
+    public interface is defined in NDPluginDriver.h as follows:
+  </p>
+  <pre>class NDPluginDriver : public asynNDArrayDriver {
 public:
     NDPluginDriver(const char *portName, int queueSize, int blockingCallbacks, 
                  const char *NDArrayPort, int NDArrayAddr, int maxAddr, int paramTableSize,
@@ -98,218 +113,353 @@ public:
     int createFileName(int maxChars, char *fullFileName);
 ...
 }
-</PRE>
-The methods of the NDPluginDriver class are:
-<UL>
-  <LI><CODE>NDPluginDriver</CODE> This is the constructor for the class.  All parameters except queueSize, 
-      blockingCallbacks, NDArrayPort, and NDArrayAddr 
-      are just passed to the constructor for asynNDArrayDriver.  NDArrayPort and NDArrayAddr, and blockingCallbacks
-      are the initial values
-      for the NDPluginDriverArrayPort, NDPluginDriverArrayAddr and NDPluginDriverBlockingCallbacks 
-      parameters described in the table below.  
-  <LI><CODE>drvUserCreate</CODE> This method returns one of the enum values for the parameters defined in 
-      NDPluginDriver.h if the driverInfo field matches one the strings defined in that file.  Derived classes will
-      typically provide an implementation of drvUserCreate() that searches for parameters that are unique to that
-      plugin.  If a parameter is not matched, then NDPluginDriver->drvUserCreate() will be called to see if it
-      is a standard plugin parameter (defined in NDPluginDriver.h).
-  <LI><CODE>processCallbacks</CODE> This method is called each time a driver calls the plugin with a new NDArray object.
-      Derived classes typically call this base class method, which handles some bookkeeping chores, and then they perform
-      whatever operations are specific to that plugin. 
-  <LI><CODE>createFileName</CODE>  This is a convenience function that constructs a complete file name in
-      the ADFullFileName parameter from the
-      ADFilePath, ADFileName, ADFileNumber, and ADFileTemplate parameters.
-</UL>
-
-NDPluginDriver defines parameters that all plugin drivers should implement if possible.  These parameters are defined
-by enum values with an associated asyn interface, and access (read-only or read-write).  The EPICS database
-NDPluginBase.template provides access to these standard plugin parameters, listed in the following table.
-<P>
-<TABLE style="TEXT-ALIGN: left" cellSpacing=2 cellPadding=2 border=1>
-  <TBODY>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>Parameter Definitions in NDPluginDriver.h and EPICS Record Definitions in NDPluginBase.template</B></TD>
-  </TR>
-  <TR>
-    <TH>Enum name</TH>
-    <TH>asyn interface</TH>
-    <TH>Access</TH>
-    <TH>Description</TH>
-    <TH>drvUser string</TH>
-    <TH>EPICS record name</TH>
-    <TH>EPICS record type</TH>
-  </TR>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>asyn NDArray driver doing callbacks</B></TD>
-  </TR>
-  <TR>
-    <TD>NDPluginDriverArrayPort</TD>
-    <TD>asynOctet</TD>
-    <TD>r/w</TD>
-    <TD>asyn port name for NDArray driver that will make callbacks to this plugin.  
-        This port can be changed at run time, connecting the plugin to a different NDArray driver.</TD>
-    <TD>NDARRAY_PORT</TD>
-    <TD>$(P)$(R)NDArrayPort<BR>(P)$(R)NDArrayPort_RBV</TD>
-    <TD>stringout<BR>stringin</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginDriverArrayAddr</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>asyn port address for NDArray driver that will make callbacks to this plugin.  
-        This address can be changed at run time, connecting the plugin to a different address in the NDArray driver.</TD>
-    <TD>NDARRAY_ADDR</TD>
-    <TD>$(P)$(R)NDArrayAddress<BR>(P)$(R)NDArrayAddress_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>Callback enable, minimum time, and statistics</B></TD>
-  </TR>
-  <TR>
-    <TD>NDPluginDriverEnableCallbacks</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Enable (1) or disable (0) callbacks from the driver to this plugin.  If callbacks are disabled then the plugin
-        will normally be idle and consume no CPU resources.</TD>
-    <TD>ENABLE_CALLBACKS</TD>
-    <TD>$(P)$(R)EnableCallbacks<BR>(P)$(R)EnableCallbacks_RBV</TD>
-    <TD>bo<BR>bi</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginDriverMinCallbackTime</TD>
-    <TD>asynFloat64</TD>
-    <TD>r/w</TD>
-    <TD>The minimum time in seconds between calls to processCallbacks.  Any callbacks occuring before this minimum
-        time has elapsed will be ignored.  0 means no minimum time, i.e. process all callbacks.</TD>
-    <TD>MIN_CALLBACK_TIME</TD>
-    <TD>$(P)$(R)MinCallbackTime<BR>(P)$(R)MinCallbackTime_RBV</TD>
-    <TD>ao<BR>ai</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginDriverArrayCounter</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Counter that increments by 1 each time an NDArray callback is processed</TD>
-    <TD>ARRAY_COUNTER</TD>
-    <TD>$(P)$(R)ArrayCounter<BR>(P)$(R)ArrayCounter_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD>N/A</TD>
-    <TD>N/A</TD>
-    <TD>r/o</TD>
-    <TD>Rate (Hz) at which ArrayCounter is incrementing.  Computed in database.</TD>
-    <TD>N/A</TD>
-    <TD>$(P)$(R)ArrayRate_RBV</TD>
-    <TD>calc</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginDriverDroppedArrays</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Counter that increments by 1 each time an NDArray callback occurs when NDPluginDriverBlockingCallbacks=0 
-        and the plugin driver queue is full, so the callback cannot be processed.</TD>
-    <TD>DROPPED_ARRAYS</TD>
-    <TD>$(P)$(R)DroppedArrays<BR>(P)$(R)DroppedArrays_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>Information about last NDArray callback data</B></TD>
-  </TR>
-  <TR>
-    <TD>NDPluginDriverNDimensions</TD>
-    <TD>asynInt32</TD>
-    <TD>r/o</TD>
-    <TD>Number of dimensions in last NDArray callback data</TD>
-    <TD>ARRAY_NDIMENSIONS</TD>
-    <TD>$(P)$(R)NDimensions_RBV</TD>
-    <TD>longin</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginDriverDimensions</TD>
-    <TD>asynInt32Array</TD>
-    <TD>r/o</TD>
-    <TD>Dimensions in last NDArray callback data</TD>
-    <TD>ARRAY_DIMENSIONS</TD>
-    <TD>$(P)$(R)Dimensions_RBV</TD>
-    <TD>waveform</TD>
-  </TR>
-  <TR>
-    <TD>N/A</TD>
-    <TD>N/A</TD>
-    <TD>r/o</TD>
-    <TD>First dimension of NDArray callback data</TD>
-    <TD>N/A</TD>
-    <TD>$(P)$(R)ArraySize0_RBV</TD>
-    <TD>longin</TD>
-  </TR>
-  <TR>
-    <TD>N/A</TD>
-    <TD>N/A</TD>
-    <TD>r/o</TD>
-    <TD>Second dimension of NDArray callback data</TD>
-    <TD>N/A</TD>
-    <TD>$(P)$(R)ArraySize1_RBV</TD>
-    <TD>longin</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginDriverDataType</TD>
-    <TD>asynInt32</TD>
-    <TD>r/o</TD>
-    <TD>Data type of last NDArray callback data (NDDataType_t).</TD>
-    <TD>DATA_TYPE</TD>
-    <TD>$(P)$(R)DataType_RBV</TD>
-    <TD>mbbi</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginDriverUniqueId</TD>
-    <TD>asynInt32</TD>
-    <TD>r/o</TD>
-    <TD>Unique ID number of last NDArray callback data</TD>
-    <TD>UNIQUE_ID</TD>
-    <TD>$(P)$(R)UniqueId_RBV</TD>
-    <TD>longin</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginDriverTimeStamp</TD>
-    <TD>asynFloat64</TD>
-    <TD>r/o</TD>
-    <TD>Time stamp number of last NDArray callback data</TD>
-    <TD>TIME_STAMP</TD>
-    <TD>$(P)$(R)TimeStamp_RBV</TD>
-    <TD>ai</TD>
-  </TR>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>Debugging control</B></TD>
-  </TR>
-  <TR>
-    <TD>N/A</TD>
-    <TD>N/A</TD>
-    <TD>N/A</TD>
-    <TD>asyn record to control debugging (asynTrace)</TD>
-    <TD>N/A</TD>
-    <TD>$(P)$(R)AsynIO</TD>
-    <TD>asyn</TD>
-  </TR>
-</TBODY>
-</TABLE>
-
-<P>
-<CENTER><H2><A name=NDPluginStdArrays>
-                    NDPluginStdArrays</A></H2></CENTER>
-
-NDPluginStdArrays inherits from 
-NDPluginDriver. NDPluginStdArrays converts the NDArray data from a callback into the 1-dimensional
-arrays supported by the standard asyn array interfaces, i.e. asyn[Int8, Int16, Int32, Float32, Float64]Array. These interfaces are
-supported by the EPICS waveform record using standard asyn device support.  This plugin is thus the tool for converting the NDArray
-data produced by asynNDArrayDriver drivers into a form that can be accessed by EPICS.  Because this plugin inherits from NDPluginDriver
-it also provides additional information
-on the array data (e.g. number of dimensions and dimension data described above) 
-that are made available as EPICS PVs so that clients can correctly
-interpret the array data.
- 
-The NDPluginStdArrays public interface is defined in NDPluginStdArrays.h as follows:
-<PRE>
-class NDPluginStdArrays : public NDPluginDriver {
+</pre>
+  <p>
+    The methods of the NDPluginDriver class are:
+  </p>
+  <ul>
+    <li><code>NDPluginDriver</code> This is the constructor for the class. All parameters
+      except queueSize, blockingCallbacks, NDArrayPort, and NDArrayAddr are just passed
+      to the constructor for asynNDArrayDriver. NDArrayPort and NDArrayAddr, and blockingCallbacks
+      are the initial values for the NDPluginDriverArrayPort, NDPluginDriverArrayAddr
+      and NDPluginDriverBlockingCallbacks parameters described in the table below.</li>
+    <li><code>drvUserCreate</code> This method returns one of the enum values for the
+      parameters defined in NDPluginDriver.h if the driverInfo field matches one the strings
+      defined in that file. Derived classes will typically provide an implementation of
+      drvUserCreate() that searches for parameters that are unique to that plugin. If
+      a parameter is not matched, then NDPluginDriver->drvUserCreate() will be called
+      to see if it is a standard plugin parameter (defined in NDPluginDriver.h).</li>
+    <li><code>processCallbacks</code> This method is called each time a driver calls the
+      plugin with a new NDArray object. Derived classes typically call this base class
+      method, which handles some bookkeeping chores, and then they perform whatever operations
+      are specific to that plugin.</li>
+    <li><code>createFileName</code> This is a convenience function that constructs a complete
+      file name in the ADFullFileName parameter from the ADFilePath, ADFileName, ADFileNumber,
+      and ADFileTemplate parameters.</li>
+  </ul>
+  <p>
+    NDPluginDriver defines parameters that all plugin drivers should implement if possible.
+    These parameters are defined by enum values with an associated asyn interface, and
+    access (read-only or read-write). The EPICS database NDPluginBase.template provides
+    access to these standard plugin parameters, listed in the following table.
+  </p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="CENTER" colspan="7,">
+          <b>Parameter Definitions in NDPluginDriver.h and EPICS Record Definitions in NDPluginBase.template</b></td>
+      </tr>
+      <tr>
+        <th>
+          Enum name</th>
+        <th>
+          asyn interface</th>
+        <th>
+          Access</th>
+        <th>
+          Description</th>
+        <th>
+          drvUser string</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          EPICS record type</th>
+      </tr>
+      <tr>
+        <td align="CENTER" colspan="7,">
+          <b>asyn NDArray driver doing callbacks</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriverArrayPort</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          asyn port name for NDArray driver that will make callbacks to this plugin. This
+          port can be changed at run time, connecting the plugin to a different NDArray driver.</td>
+        <td>
+          NDARRAY_PORT</td>
+        <td>
+          $(P)$(R)NDArrayPort<br />
+          (P)$(R)NDArrayPort_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriverArrayAddr</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          asyn port address for NDArray driver that will make callbacks to this plugin. This
+          address can be changed at run time, connecting the plugin to a different address
+          in the NDArray driver.</td>
+        <td>
+          NDARRAY_ADDR</td>
+        <td>
+          $(P)$(R)NDArrayAddress<br />
+          (P)$(R)NDArrayAddress_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td align="CENTER" colspan="7,">
+          <b>Callback enable, minimum time, and statistics</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriverEnableCallbacks</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Enable (1) or disable (0) callbacks from the driver to this plugin. If callbacks
+          are disabled then the plugin will normally be idle and consume no CPU resources.</td>
+        <td>
+          ENABLE_CALLBACKS</td>
+        <td>
+          $(P)$(R)EnableCallbacks<br />
+          (P)$(R)EnableCallbacks_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriverMinCallbackTime</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          The minimum time in seconds between calls to processCallbacks. Any callbacks occuring
+          before this minimum time has elapsed will be ignored. 0 means no minimum time, i.e.
+          process all callbacks.</td>
+        <td>
+          MIN_CALLBACK_TIME</td>
+        <td>
+          $(P)$(R)MinCallbackTime<br />
+          (P)$(R)MinCallbackTime_RBV</td>
+        <td>
+          ao<br />
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriverArrayCounter</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Counter that increments by 1 each time an NDArray callback is processed</td>
+        <td>
+          ARRAY_COUNTER</td>
+        <td>
+          $(P)$(R)ArrayCounter<br />
+          (P)$(R)ArrayCounter_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          N/A</td>
+        <td>
+          N/A</td>
+        <td>
+          r/o</td>
+        <td>
+          Rate (Hz) at which ArrayCounter is incrementing. Computed in database.</td>
+        <td>
+          N/A</td>
+        <td>
+          $(P)$(R)ArrayRate_RBV</td>
+        <td>
+          calc</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriverDroppedArrays</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Counter that increments by 1 each time an NDArray callback occurs when NDPluginDriverBlockingCallbacks=0
+          and the plugin driver queue is full, so the callback cannot be processed.</td>
+        <td>
+          DROPPED_ARRAYS</td>
+        <td>
+          $(P)$(R)DroppedArrays<br />
+          (P)$(R)DroppedArrays_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td align="CENTER" colspan="7,">
+          <b>Information about last NDArray callback data</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriverNDimensions</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Number of dimensions in last NDArray callback data</td>
+        <td>
+          ARRAY_NDIMENSIONS</td>
+        <td>
+          $(P)$(R)NDimensions_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriverDimensions</td>
+        <td>
+          asynInt32Array</td>
+        <td>
+          r/o</td>
+        <td>
+          Dimensions in last NDArray callback data</td>
+        <td>
+          ARRAY_DIMENSIONS</td>
+        <td>
+          $(P)$(R)Dimensions_RBV</td>
+        <td>
+          waveform</td>
+      </tr>
+      <tr>
+        <td>
+          N/A</td>
+        <td>
+          N/A</td>
+        <td>
+          r/o</td>
+        <td>
+          First dimension of NDArray callback data</td>
+        <td>
+          N/A</td>
+        <td>
+          $(P)$(R)ArraySize0_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          N/A</td>
+        <td>
+          N/A</td>
+        <td>
+          r/o</td>
+        <td>
+          Second dimension of NDArray callback data</td>
+        <td>
+          N/A</td>
+        <td>
+          $(P)$(R)ArraySize1_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriverDataType</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Data type of last NDArray callback data (NDDataType_t).</td>
+        <td>
+          DATA_TYPE</td>
+        <td>
+          $(P)$(R)DataType_RBV</td>
+        <td>
+          mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriverUniqueId</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Unique ID number of last NDArray callback data</td>
+        <td>
+          UNIQUE_ID</td>
+        <td>
+          $(P)$(R)UniqueId_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriverTimeStamp</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Time stamp number of last NDArray callback data</td>
+        <td>
+          TIME_STAMP</td>
+        <td>
+          $(P)$(R)TimeStamp_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td align="CENTER" colspan="7,">
+          <b>Debugging control</b></td>
+      </tr>
+      <tr>
+        <td>
+          N/A</td>
+        <td>
+          N/A</td>
+        <td>
+          N/A</td>
+        <td>
+          asyn record to control debugging (asynTrace)</td>
+        <td>
+          N/A</td>
+        <td>
+          $(P)$(R)AsynIO</td>
+        <td>
+          asyn</td>
+      </tr>
+    </tbody>
+  </table>
+  <center>
+    <h2>
+      &nbsp;</h2>
+    <h2>
+      NDPluginStdArrays</h2>
+  </center>
+  <p>
+    NDPluginStdArrays inherits from NDPluginDriver. NDPluginStdArrays converts the NDArray
+    data from a callback into the 1-dimensional arrays supported by the standard asyn
+    array interfaces, i.e. asyn[Int8, Int16, Int32, Float32, Float64]Array. These interfaces
+    are supported by the EPICS waveform record using standard asyn device support. This
+    plugin is thus the tool for converting the NDArray data produced by asynNDArrayDriver
+    drivers into a form that can be accessed by EPICS. Because this plugin inherits
+    from NDPluginDriver it also provides additional information on the array data (e.g.
+    number of dimensions and dimension data described above) that are made available
+    as EPICS PVs so that clients can correctly interpret the array data. The NDPluginStdArrays
+    public interface is defined in NDPluginStdArrays.h as follows:</p>
+  <pre>class NDPluginStdArrays : public NDPluginDriver {
 public:
     NDPluginStdArrays(const char *portName, int queueSize, int blockingCallbacks, 
                       const char *NDArrayPort, int NDArrayAddr,
@@ -331,73 +481,200 @@ public:
                                         const char **pptypeName, size_t *psize);
 ...
 }
-</PRE>
-NDPluginStdArrays defines the following parameters.  It also implements all of the standard plugin parameters from NDPlugDriver
-listed above.  The EPICS database
-NDStdArrays.template provides access to these parameters, listed in the following table.
-<P>
-<TABLE style="TEXT-ALIGN: left" cellSpacing=2 cellPadding=2 border=1>
-  <TBODY>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>Parameter Definitions in NDPluginStdArrays.h and EPICS Record Definitions in NDStdArrays.template</B></TD>
-  </TR>
-  <TR>
-    <TH>Enum name</TH>
-    <TH>asyn interface</TH>
-    <TH>Access</TH>
-    <TH>Description</TH>
-    <TH>drvUser string</TH>
-    <TH>EPICS record name</TH>
-    <TH>EPICS record type</TH>
-  </TR>
-  <TR>
-    <TD>NDPluginStdArraysData</TD>
-    <TD>asyn[Int8, Int16, Int32, Float32, Float64]Array</TD>
-    <TD>r/o</TD>
-    <TD>Array data as a 1-D array, possibly converted in data type from that in the NDArray object to the specific asyn interface.</TD>
-    <TD>STD_ARRAY_DATA</TD>
-    <TD>$(P)$(R)ArrayData</TD>
-    <TD>waveform</TD>
-  </TR>
-</TBODY>
-</TABLE>
-<P>
-The following is the MEDM screen that provides access to the parameters in NDPluginDriver.h and NDPluginStdArrays.h through 
-records in NDPluginBase.template and NDStdArrays.template.  This is the MEDM screen that is normally used to control the
-display of images via EPICS channel access.
-<P>
-<CENTER><IMG src="NDStdArrays.png"></CENTER>
-
-<P>
-<CENTER><H2><A name=NDPluginFile>
-                    NDPluginFile</A></H2></CENTER>
-
-NDPluginFile inherits from NDPluginDriver. NDPluginFile saves the NDArray data from a callback to a disk file.  This plugin currently
-saves data in the 
-<A HREF="http://www.unidata.ucar.edu/software/netcdf">netCDF</A>
-file format, which is a portable self-describing binary file format supported by 
-<A HREF="http://www.unidata.ucar.edu/">UniData</A>
-at
-<A HREF="http://www.ucar.edu/">UCAR (University Corporation for Atmospheric Research).</A>
-Additional file formats, such as TIFF and HDF
-may be supported in the future.  
-<P>
-The NDArray callback data can be written to disk in 1 of 3 modes:
-<OL>
-  <LI>Single mode.  In this mode each NDArray callback results in a separate disk file.
-  <LI>Capture mode.  In this mode a memory buffer is allocated before saving begins.  Callback arrays are placed into this
-      buffer, and when capture stops the file is written to disk.  This mode limits the number of frames that can be
-      saved, because they all must fit in a memory buffer.  It is the fastest mode, with the least probability of dropping
-      arrays, because no disk I/O is required while capture is in progress.
-  <LI>Stream mode.  In this mode the data are written to a single disk file, with each frame being appended to the file
-      without closing it.  It is intermediate in speed between single mode and capture mode, but unlike capture mode
-      it is not limited by available memory in the number of arrays that can be saved.
-</OL>
- 
-The NDPluginFile public interface is defined in NDPluginFile.h as follows:
-<PRE>
-
-/* Note that the file format enum must agree with the mbbo/mbbi records in the NDFile.template file */
+</pre>
+  <p>
+    NDPluginStdArrays defines the following parameters. It also implements all of the
+    standard plugin parameters from NDPlugDriver listed above. The EPICS database NDStdArrays.template
+    provides access to these parameters, listed in the following table.
+  </p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="CENTER" colspan="7,">
+          <b>Parameter Definitions in NDPluginStdArrays.h and EPICS Record Definitions in NDStdArrays.template</b></td>
+      </tr>
+      <tr>
+        <th>
+          Enum name</th>
+        <th>
+          asyn interface</th>
+        <th>
+          Access</th>
+        <th>
+          Description</th>
+        <th>
+          drvUser string</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          EPICS record type</th>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStdArraysData</td>
+        <td>
+          asyn[Int8, Int16, Int32, Float32, Float64]Array</td>
+        <td>
+          r/o</td>
+        <td>
+          Array data as a 1-D array, possibly converted in data type from that in the NDArray
+          object to the specific asyn interface.</td>
+        <td>
+          STD_ARRAY_DATA</td>
+        <td>
+          $(P)$(R)ArrayData</td>
+        <td>
+          waveform</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    If the array data contains more than 16,000 bytes then in order for EPICS clients
+    to receive this data they must be built with EPICS R3.14 (not R3.13), and the environment
+    variable EPICS_CA_MAX_ARRAY_BYTES on both the EPICS IOC computer and EPICS client
+    computer must be set to a value at least as large as the array size in bytes.</p>
+  <p>
+    The following is the MEDM screen that provides access to the parameters in NDPluginDriver.h
+    and NDPluginStdArrays.h through records in NDPluginBase.template and NDStdArrays.template.
+    This is the MEDM screen that is normally used to control the display of images via
+    EPICS channel access.
+  </p>
+  <center>
+    <img alt="NDStdArrays.png" src="NDStdArrays.png" />
+  </center>
+  <h3 id="NDPluginStdArraysConfiguration">
+    Configuration</h3>
+  <p>
+    The NDPluginStdArrays plugin is created with the following command, either from
+    C/C++ or from the EPICS IOC shell.
+  </p>
+  <pre>drvNDStdArraysConfigure(const char *portName, int queueSize, int blockingCallbacks, 
+                        const char *NDArrayPort, int NDArrayAddr, size_t maxMemory)
+  </pre>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tr>
+      <th>
+        Argument</th>
+      <th>
+        Description</th>
+    </tr>
+    <tr>
+      <td>
+        <code>portName</code></td>
+      <td>
+        The name of the asyn port for this plugin.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>queueSize</code></td>
+      <td>
+        The maximum number of NDArray objects that can be queued for processing. Passed
+        to the NDPluginDriver base class constructor.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>blockingCallbacks</code></td>
+      <td>
+        Flag controlling whether callbacks block. Passed to the NDPluginDriver base class
+        constructor.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>NDArrayPort</code></td>
+      <td>
+        The name of the asyn port of the driver that will provide the NDArray data. Passed
+        to the NDPluginDriver base class constructor.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>NDArrayAddr</code></td>
+      <td>
+        The asyn addr of the asyn port of the driver that will provide the NDArray data.
+        Passed to the NDPluginDriver base class constructor.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>maxMemory</code></td>
+      <td>
+        Maximum number of bytes of memory to be allocated from the NDArrayPool. Passed to
+        the constructor for the NDPluginDriver base class. The NDStdArrays plugin allocates
+        2 NDArray objects, so this should be at least twice the size of the largest NDArray
+        to be used.</td>
+    </tr>
+  </table>
+  <br />
+  <h3 id="IDLClient">
+    IDL Image Display Client</h3>
+  <p>
+    There is an IDL program called <code>epics_ad_display</code> that can be used to
+    display 2-dimensional ArrayData that the NDStdArrays plugin sends to EPICS. This
+    IDL client is available as source code (which requires an IDL license), and also
+    as a pre-built IDL .sav file that can be run for free under the IDL Virtual Machine.
+    This IDL program can run on any machine that IDL runs on, and that has the ezcaIDL
+    shareable library built for it. This includes Windows, Linux, Solaris, and Mac.
+    <code>epics_ad_display</code> is included in the <a href="http://cars.uchicago.edu/software/IDL/imaging.html">
+      CARS IDL imaging software.</a>
+  </p>
+  <p>
+    The control window for <code>epics_ad_display</code> is shown below. It has fields
+    to input the base name of the EPICS PVs with the image data. The client uses the
+  </p>
+  <center>
+    <h3>
+      Main window for IDL epics_ad_display</h3>
+    <img alt="pilatusROI_EPICS_ImageDisplay.png" src="pilatusROI_EPICS_ImageDisplay.png" /></center>
+  <p>
+    <code>epics_ad_display</code> uses the routine <a href="http://cars.uchicago.edu/software/IDL/imaging_routines.html#IMAGE_DISPLAY">
+      image_display.pro</a> to display the images. This routine displays row and column
+    profiles as the cursor is moved. It allows changing the color lookup tables, and
+    zooming in and out with the left and right mouse buttons. The following is an example
+    of <code>image_display</code> displaying a Pilatus image with an Fe55 source in
+    front of the detector.</p>
+  <center>
+    <h3>
+      IDL image_display with Fe55 radioactive source</h3>
+    <img alt="pilatusROI_IDL_ImageDisplay.png" src="pilatus_IDL_ImageDisplay.png" /></center>
+  <br />
+  <center>
+    <h2 id="NDPluginFile">
+      &nbsp;</h2>
+    <h2>
+      &nbsp;</h2>
+    <h2>
+      NDPluginFile</h2>
+  </center>
+  <p>
+    NDPluginFile inherits from NDPluginDriver. NDPluginFile saves the NDArray data from
+    a callback to a disk file. This plugin currently saves data in the <a href="http://www.unidata.ucar.edu/software/netcdf">
+      netCDF</a> file format, which is a portable self-describing binary file format
+    supported by <a href="http://www.unidata.ucar.edu/">UniData</a> at <a href="http://www.ucar.edu/">
+      UCAR (University Corporation for Atmospheric Research).</a> Additional file formats,
+    such as TIFF and HDF may be supported in the future.
+  </p>
+  <p>
+    The NDArray callback data can be written to disk in 1 of 3 modes:
+  </p>
+  <ol>
+    <li>Single mode. In this mode each NDArray callback results in a separate disk file.</li>
+    <li>Capture mode. In this mode a memory buffer is allocated before saving begins.
+      Callback arrays are placed into this buffer, and when capture stops the file is
+      written to disk. This mode limits the number of frames that can be saved, because
+      they all must fit in a memory buffer. It is the fastest mode, with the least probability
+      of dropping arrays, because no disk I/O is required while capture is in progress.</li>
+    <li>Stream mode. In this mode the data are written to a single disk file, with each
+      frame being appended to the file without closing it. It is intermediate in speed
+      between single mode and capture mode, but unlike capture mode it is not limited
+      by available memory in the number of arrays that can be saved.</li>
+  </ol>
+  <p>
+    The NDPluginFile public interface is defined in NDPluginFile.h as follows:
+  </p>
+  <pre>/* Note that the file format enum must agree with the mbbo/mbbi records in the NDFile.template file */
 typedef enum {
     NDFileFormatNetCDF,
 } NDPluginFileFormat_t;
@@ -423,41 +700,116 @@ public:
 
 ...
 }
-</PRE>
-<P>NDPluginFile also supports all of the file saving parameters defined in ADStdDriverParams.h described above, e.g.ADFilePath, ADFileName, etc.
-Thus, the same interface that is used for saving files directly in a driver are used for this plugin.
-<P>
-The following is the MEDM screen that provides access to the parameters in NDPluginDriver.h and NDPluginFile.h through 
-records in NDPluginBase.template and NDFile.template.  This is the MEDM screen that is used to control the
-saving of images to disk for drivers that do not support saving files to disk themselves.
-<P>
-<CENTER><IMG src="NDFile.png"></CENTER>
-
-<CENTER><H2><A name=NDPluginROI>
-                    NDPluginROI</A></H2></CENTER>
-
-NDPluginROI inherits from NDPluginDriver. NDPluginROI selects one or more "Regions-Of-Interest" (ROIs) from the NDArray 
-callback data.  It does 3 things with these ROIs:
-<OL>
-  <LI>Computes statistics, e.g. mean, maximum, minimum, total value, net (background subtracted) value
-  <LI>Computes a histogram of the values (e.g. number of pixels versus intensity per pixel)
-  <LI>Exports the ROI as a new NDArray object.  In this regard NDPluginROI is different from the NDPluginStdArrays and 
-      NDPluginFile plugins because it is both a <B>recipient</B> of callbacks (as they are) and a <B>source</B> of NDArray callbacks,
-      as a driver is.  This means that the NDPluginStdArrays and NDPluginFile plugins can be connected to an NDPluginROI plugin, 
-      in which case they will save or display the selected ROI rather than the full detector driver data.
-</OL>
-<P>
-Each NDPluginROI can handle any number of ROIs.  The maximum number of ROIs that the plugin can support is defined when
-the plugin is created.  Several ROI plugins could be created for a single detector driver to 
-increase the number of threads running in parallel, maximizing the
-use of multiple CPU cores.  Individual ROIs are addressed through the asyn interfaces by the asyn "addr" field in the asynUser structure.
-Note that while the NDPluginROI should be N-dimensional, the definition of the ROI is currently limited to 2-D.  This limitation will
-be removed in a future release.
-<P>
-The NDPluginROI public interface is defined in NDPluginROI.h as follows:
-<PRE>
-
-class NDPluginROI : public NDPluginDriver {
+</pre>
+  <p>
+    NDPluginFile also supports all of the file saving parameters defined in ADStdDriverParams.h
+    described above, e.g.ADFilePath, ADFileName, etc. Thus, the same interface that
+    is used for saving files directly in a driver are used for this plugin.
+  </p>
+  <p>
+    The following is the MEDM screen that provides access to the parameters in NDPluginDriver.h
+    and NDPluginFile.h through records in NDPluginBase.template and NDFile.template.
+    This is the MEDM screen that is used to control the saving of images to disk for
+    drivers that do not support saving files to disk themselves.
+  </p>
+  <center>
+    <img alt="NDStdArrays.png" src="NDStdArrays.png" />
+  </center>
+  <h3 id="NDPluginFileConfiguration">
+    Configuration</h3>
+  <p>
+    The NDPluginFile plugin is created with the following command, either from C/C++
+    or from the EPICS IOC shell.
+  </p>
+  <pre>drvNDFileConfigure(const char *portName, int queueSize, int blockingCallbacks, 
+                   const char *NDArrayPort, int NDArrayAddr)
+  </pre>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tr>
+      <th>
+        Argument</th>
+      <th>
+        Description</th>
+    </tr>
+    <tr>
+      <td>
+        <code>portName</code></td>
+      <td>
+        The name of the asyn port for this plugin.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>queueSize</code></td>
+      <td>
+        The maximum number of NDArray objects that can be queued for processing. Passed
+        to the NDPluginDriver base class constructor.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>blockingCallbacks</code></td>
+      <td>
+        Flag controlling whether callbacks block. Passed to the NDPluginDriver base class
+        constructor.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>NDArrayPort</code></td>
+      <td>
+        The name of the asyn port of the driver that will provide the NDArray data. Passed
+        to the NDPluginDriver base class constructor.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>NDArrayAddr</code></td>
+      <td>
+        The asyn addr of the asyn port of the driver that will provide the NDArray data.
+        Passed to the NDPluginDriver base class constructor.
+      </td>
+    </tr>
+  </table>
+  <br />
+  <center>
+    <img alt="NDFile.png" src="NDFile.png" />
+  </center>
+  <center>
+    <h2 id="NDPluginROI">
+      NDPluginRI</h2>
+  </center>
+  <p>
+    NDPluginROI inherits from NDPluginDriver. NDPluginROI selects one or more rectangular
+    "Regions-Of-Interest" (ROIs) from the NDArray callback data. The maximum number
+    of ROIs is defined when the plugin is created. Each ROI can be any size, from a
+    single array element to the entire array. NDPluginROI does 3 things with these ROIs:
+  </p>
+  <ol>
+    <li>Computes statistics, e.g. mean, maximum, minimum, total value, net (background
+      subtracted) value</li>
+    <li>Computes a histogram of the values (e.g. number of pixels versus intensity per
+      pixel)</li>
+    <li>Exports the ROI as a new NDArray object. In this regard NDPluginROI is different
+      from the NDPluginStdArrays and NDPluginFile plugins because it is both a <b>recipient</b>
+      of callbacks (as they are) and a <b>source</b> of NDArray callbacks, as a driver
+      is. This means that the NDPluginStdArrays and NDPluginFile plugins can be connected
+      to an NDPluginROI plugin, in which case they will save or display the selected ROI
+      rather than the full detector driver data.</li>
+  </ol>
+  <p>
+    Each NDPluginROI can handle any number of ROIs. The maximum number of ROIs that
+    the plugin can support is defined when the plugin is created. Several ROI plugins
+    could be created for a single detector driver to increase the number of threads
+    running in parallel, maximizing the use of multiple CPU cores. Individual ROIs are
+    addressed through the asyn interfaces by the asyn "addr" field in the asynUser structure.
+    Note that while the NDPluginROI should be N-dimensional, the definition of the ROI
+    is currently limited to 2-D. This limitation will be removed in a future release.
+  </p>
+  <p>
+    The NDPluginROI public interface is defined in NDPluginROI.h as follows:
+  </p>
+  <pre>class NDPluginROI : public NDPluginDriver {
 public:
     NDPluginROI(const char *portName, int queueSize, int blockingCallbacks, 
                  const char *NDArrayPort, int NDArrayAddr, int maxROIs, size_t maxMemory);
@@ -471,338 +823,681 @@ public:
     asynStatus readFloat64Array(asynUser *pasynUser, epicsFloat64 *value, 
                                 size_t nelements, size_t *nIn);
                                 
-</PRE>
-<P>
-The readFloat64Array method is used to read the histogram data for the ROI.
-<P>
-NDPluginROI.h defines the following parameters that are global to all ROIs for a plugin.  
-It also implements all of the standard plugin parameters from NDPlugDriver
-listed above.  The EPICS database
-NDROI.template provide access to these parameters, listed in the following table.
-<P>
-<TABLE style="TEXT-ALIGN: left" cellSpacing=2 cellPadding=2 border=1>
-  <TBODY>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>Parameter Definitions in NDPluginROI.h and EPICS Record Definitions in NDROI.template</B></TD>
-  </TR>
-  <TR>
-    <TH>Enum name</TH>
-    <TH>asyn interface</TH>
-    <TH>Access</TH>
-    <TH>Description</TH>
-    <TH>drvUser string</TH>
-    <TH>EPICS record name</TH>
-    <TH>EPICS record type</TH>
-  </TR>
-  <TR>
-    <TD>NDPluginROIHighlight</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Flag to indicate if the borders of ROIs should be highlighted (0=No, 1=Yes).  If set then all ROIs will be highlighted
-        in all other ROIs where they overlap.  One common use of this is to set the first ROI to be the entire detector,
-        and then the location of all other ROIs will be visible when the first ROI is displayed.  The highlighting is done by
-        replacing the border pixels with the maximum value of the data in that ROI.  Statistics are computed before the highlighting
-        is done.</TD>
-    <TD>HIGHLIGHT</TD>
-    <TD>$(P)$(R)Highlight<BR>$(P)$(R)Highlight_RBV</TD>
-    <TD>bo<BR>bi</TD>
-  </TR>
-</TBODY>
-</TABLE>
-<P>
-NDPluginROI.h defines the following parameters that are specific to each individual ROI in the plugin.  
-The EPICS database
-NDROIN.template provide access to these parameters, listed in the following table.  The pasynUser-&gtaddr is used to control
-which ROI is being addressed.
-<P>
-<TABLE style="TEXT-ALIGN: left" cellSpacing=2 cellPadding=2 border=1>
-  <TBODY>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>Parameter Definitions in NDPluginROI.h and EPICS Record Definitions in NDROIN.template</B></TD>
-  </TR>
-  <TR>
-    <TH>Enum name</TH>
-    <TH>asyn interface</TH>
-    <TH>Access</TH>
-    <TH>Description</TH>
-    <TH>drvUser string</TH>
-    <TH>EPICS record name</TH>
-    <TH>EPICS record type</TH>
-  </TR>
-  <TR>
-    <TD>NDPluginROIName</TD>
-    <TD>asynOctet</TD>
-    <TD>r/w</TD>
-    <TD>Name of this ROI</TD>
-    <TD>NAME</TD>
-    <TD>$(P)$(R)Name<BR>$(P)$(R)Name_RBV</TD>
-    <TD>stringout<BR>stringin</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginROIUse</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Flag to control whether this ROI is used (0=No, 1=Yes).  Not using an ROI reduces CPU load.</TD>
-    <TD>USE</TD>
-    <TD>$(P)$(R)Use<BR>$(P)$(R)Use_RBV</TD>
-    <TD>bo<BR>bi</TD>
-  </TR>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>ROI definition</B></TD>
-  </TR>
-   <TR>
-    <TD>NDPluginROIDim0Bin</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Binning in the X direction</TD>
-    <TD>DIM0_BIN</TD>
-    <TD>$(P)$(R)BinX<BR>$(P)$(R)BinX_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginROIDim1Bin</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Binning in the Y direction</TD>
-    <TD>DIM1_BIN</TD>
-    <TD>$(P)$(R)BinY<BR>$(P)$(R)BinY_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginROIDim0Min</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>First pixel in the ROI in the X direction. <BR>0 is the first pixel in the array.</TD>
-    <TD>DIM0_MIN</TD>
-    <TD>$(P)$(R)MinX<BR>$(P)$(R)MinX_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginROIDim1Min</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>First pixel in the ROI in the Y direction.<BR>0 is the first pixel in the array.</TD>
-    <TD>DIM1_MIN</TD>
-    <TD>$(P)$(R)MinY<BR>$(P)$(R)MinY_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginROIDim0Size</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Size of the ROI in the X direction</TD>
-    <TD>DIM0_SIZE</TD>
-    <TD>$(P)$(R)SizeX<BR>$(P)$(R)SizeX_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginROIDim0Size</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Size of ROI in the Y direction</TD>
-    <TD>DIM1_SIZE</TD>
-    <TD>$(P)$(R)SizeY<BR>$(P)$(R)SizeY_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginROIDim0Reverse</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Reverse ROI in the X direction<BR>(0=No, 1=Yes)</TD>
-    <TD>DIM0_REVERSE</TD>
-    <TD>$(P)$(R)ReverseX<BR>$(P)$(R)ReverseX_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginROIDim0Reverse</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Reverse ROI in the Y direction<BR>(0=No, 1=Yes)</TD>
-    <TD>DIM1_REVERSE</TD>
-    <TD>$(P)$(R)ReverseY<BR>$(P)$(R)ReverseY_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginROIDataType</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Data type of the ROI (NDDataType_t).  This can be different from the data type of the NDArray callback data.</TD>
-    <TD>DATA_TYPE</TD>
-    <TD>$(P)$(R)DataType<BR>$(P)$(R)DataType_RBV</TD>
-    <TD>mbbo<BR>mbbi</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginROIBgdWidth</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Width of the background in pixels to use when computing net counts. 0=no background subtraction.</TD>
-    <TD>BGD_WIDTH</TD>
-    <TD>$(P)$(R)BgdWidth<BR>$(P)$(R)BgdWidth_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD>ADImageSizeX</TD>
-    <TD>asynInt32</TD>
-    <TD>r/o</TD>
-    <TD>Size of the ROI data in the X direction</TD>
-    <TD>IMAGE_SIZE_X</TD>
-    <TD>$(P)$(R)ImageSizeX_RBV</TD>
-    <TD>longin</TD>
-  </TR>
-  <TR>
-    <TD>ADImageSizeY</TD>
-    <TD>asynInt32</TD>
-    <TD>r/o</TD>
-    <TD>Size of the ROI data in the Y direction</TD>
-    <TD>IMAGE_SIZE_Y</TD>
-    <TD>$(P)$(R)ImageSizeY_RBV</TD>
-    <TD>longin</TD>
-  </TR>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>ROI statistics</B></TD>
-  </TR>
-  <TR>
-    <TD>NDPluginROIComputeStatistics</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Flag to control whether to compute statistics for this ROI (0=No, 1=Yes).  Not computing statistics reduces CPU load.</TD>
-    <TD>COMPUTE_STATISTICS</TD>
-    <TD>$(P)$(R)ComputeStatistics<BR>$(P)$(R)ComputeStatistics_RBV</TD>
-    <TD>bo<BR>bi</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginROIMinValue</TD>
-    <TD>asynFloat64</TD>
-    <TD>r/o</TD>
-    <TD>Minimum value in any element in the ROI</TD>
-    <TD>MIN_VALUE</TD>
-    <TD>$(P)$(R)MinValue_RBV</TD>
-    <TD>ai</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginROIMaxValue</TD>
-    <TD>asynFloat64</TD>
-    <TD>r/o</TD>
-    <TD>Maximum value in any element in the ROI</TD>
-    <TD>MAX_VALUE</TD>
-    <TD>$(P)$(R)MaxValue_RBV</TD>
-    <TD>ai</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginROIMeanValue</TD>
-    <TD>asynFloat64</TD>
-    <TD>r/o</TD>
-    <TD>Mean value in the ROI</TD>
-    <TD>MEAN_VALUE</TD>
-    <TD>$(P)$(R)MeanValue_RBV</TD>
-    <TD>ai</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginROITotal</TD>
-    <TD>asynFloat64</TD>
-    <TD>r/o</TD>
-    <TD>Sum (total) of all elements in the ROI</TD>
-    <TD>TOTAL</TD>
-    <TD>$(P)$(R)Total_RBV</TD>
-    <TD>ai</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginROINet</TD>
-    <TD>asynFloat64</TD>
-    <TD>r/o</TD>
-    <TD>Net (background subtracted) total of all elements in the ROI.  The background is calculated by determining the average
-        counts per array element in a border around the ROI border of width NDPluginROIBgdWidth.  This average background counts per element
-        is then subtracted from all elements inside the ROI.</TD>
-    <TD>NET</TD>
-    <TD>$(P)$(R)Net_RBV</TD>
-    <TD>ai</TD>
-  </TR>
-  <TR>
-    <TD COLSPAN=7, ALIGN=CENTER><B>ROI histogram</B></TD>
-  </TR>
-  <TR>
-    <TD>NDPluginROIComputeHistogram</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Flag to control whether to compute the histogram for this ROI (0=No, 1=Yes).  Not computing the histogram reduces CPU load.</TD>
-    <TD>COMPUTE_HISTOGRAM</TD>
-    <TD>$(P)$(R)ComputeHistogram<BR>$(P)$(R)ComputeHistogram_RBV</TD>
-    <TD>bo<BR>bi</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginROIHistSize</TD>
-    <TD>asynInt32</TD>
-    <TD>r/w</TD>
-    <TD>Number of elements (bins) in the histogram</TD>
-    <TD>HIST_SIZE</TD>
-    <TD>$(P)$(R)HistSize<BR>$(P)$(R)HistSize_RBV</TD>
-    <TD>longout<BR>longin</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginROIHistMin</TD>
-    <TD>asynFloat64</TD>
-    <TD>r/w</TD>
-    <TD>Minimum value for the histogram.  All values less than or equal to this will be in the first bin of the histogram.</TD>
-    <TD>HIST_MIN</TD>
-    <TD>$(P)$(R)HistMin<BR>$(P)$(R)HistMin_RBV</TD>
-    <TD>ao<BR>ai</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginROIHistMax</TD>
-    <TD>asynFloat64</TD>
-    <TD>r/w</TD>
-    <TD>Maximum value for the histogram.  All values greater than or equal to this will be in the last bin of the histogram.</TD>
-    <TD>HIST_MAX</TD>
-    <TD>$(P)$(R)HistMax<BR>$(P)$(R)HistMax_RBV</TD>
-    <TD>ao<BR>ai</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginROIHistEntropy</TD>
-    <TD>asynFloat64</TD>
-    <TD>r/o</TD>
-    <TD>Entropy of the image.  This is a measure of the sharpness of the histogram, and is often a useful figure of merit
-        for determining sharpness of focus, etc.  It is defined as -SUM(BIN[i]*log(BIN[i]), where the sum is over the number
-        of bins in the histogram and BIN[i] is the number of elements in bin i.</TD>
-    <TD>HIST_ENTROPY</TD>
-    <TD>$(P)$(R)HistEntropy_RBV</TD>
-    <TD>ai</TD>
-  </TR>
-  <TR>
-    <TD>NDPluginROIHistArray</TD>
-    <TD>asynFloat64Array</TD>
-    <TD>r/o</TD>
-    <TD>Histogram array, i.e. counts in each histogram bin.</TD>
-    <TD>HIST_ARRAY</TD>
-    <TD>$(P)$(R)Histogram_RBV</TD>
-    <TD>waveform</TD>
-  </TR>
-</TBODY>
-</TABLE>
-<P>
-The following is the MEDM screen that provides access to the parameters in NDPluginDriver.h and NDPluginROI.h through 
-records in NDPluginBase.template and NDROI.template.  This is the MEDM screen that is used to control the behavior
-of the ROI plugin, but not the individual ROIs.
-<P>
-<CENTER><IMG src="NDROI.png"></CENTER>
-<P>
-The following is the MEDM screen that provides access to the parameters for in NDPluginROI.h through 
-records in NDROIN.template. This is the MEDM screen that is used to control the behavior of a specific ROI.
-<P>
-<CENTER><IMG src="NDROIN.png"></CENTER>
-<P>
-The following is another MEDM screen that provides access to the parameters for in NDPluginROI.h through 
-records in NDROIN.template. This is the MEDM screen that is used to control the most commonly used properties
-of 8 ROIs.
-<P>
-<CENTER><IMG src="NDROI8.png"></CENTER>
-<P>
-The following is an IDL epics_ad_display screen illustrating the highlighting of ROIs.  In this example
-the ROIs defined are those in the 8 ROI display above. 
-The NDPluginStdArrays driver has been configured to be receiving its NDArray callbacks from the first ROI (which is defined to
-be the entire detector array), and
-the NDPluginROIHighlight flag is set to Yes.
-<P>
-<CENTER><IMG src="ROI_outlines.png"></CENTER>
+</pre>
+  <p>
+    The readFloat64Array method is used to read the histogram data for the ROI.
+  </p>
+  <p>
+    NDPluginROI.h defines the following parameters that are global to all ROIs for a
+    plugin. It also implements all of the standard plugin parameters from NDPlugDriver
+    listed above. The EPICS database NDROI.template provide access to these parameters,
+    listed in the following table.
+  </p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="CENTER" colspan="7,">
+          <b>Parameter Definitions in NDPluginROI.h and EPICS Record Definitions in NDROI.template</b></td>
+      </tr>
+      <tr>
+        <th>
+          Enum name</th>
+        <th>
+          asyn interface</th>
+        <th>
+          Access</th>
+        <th>
+          Description</th>
+        <th>
+          drvUser string</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          EPICS record type</th>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIHighlight</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flag to indicate if the borders of ROIs should be highlighted (0=No, 1=Yes). If
+          set then all ROIs will be highlighted in all other ROIs where they overlap. One
+          common use of this is to set the first ROI to be the entire detector, and then the
+          location of all other ROIs will be visible when the first ROI is displayed. The
+          highlighting is done by replacing the border pixels with the maximum value of the
+          data in that ROI. Statistics are computed before the highlighting is done.</td>
+        <td>
+          HIGHLIGHT</td>
+        <td>
+          $(P)$(R)Highlight<br />
+          $(P)$(R)Highlight_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    NDPluginROI.h defines the following parameters that are specific to each individual
+    ROI in the plugin. The EPICS database NDROIN.template provide access to these parameters,
+    listed in the following table. The pasynUser-&gtaddr is used to control which ROI
+    is being addressed.
+  </p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="CENTER" colspan="7,">
+          <b>Parameter Definitions in NDPluginROI.h and EPICS Record Definitions in NDROIN.template</b></td>
+      </tr>
+      <tr>
+        <th>
+          Enum name</th>
+        <th>
+          asyn interface</th>
+        <th>
+          Access</th>
+        <th>
+          Description</th>
+        <th>
+          drvUser string</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          EPICS record type</th>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIName</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Name of this ROI</td>
+        <td>
+          NAME</td>
+        <td>
+          $(P)$(R)Name<br />
+          $(P)$(R)Name_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIUse</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flag to control whether this ROI is used (0=No, 1=Yes). Not using an ROI reduces
+          CPU load.</td>
+        <td>
+          USE</td>
+        <td>
+          $(P)$(R)Use<br />
+          $(P)$(R)Use_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td align="CENTER" colspan="7,">
+          <b>ROI definition</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIDim0Bin</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Binning in the X direction</td>
+        <td>
+          DIM0_BIN</td>
+        <td>
+          $(P)$(R)BinX<br />
+          $(P)$(R)BinX_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIDim1Bin</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Binning in the Y direction</td>
+        <td>
+          DIM1_BIN</td>
+        <td>
+          $(P)$(R)BinY<br />
+          $(P)$(R)BinY_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIDim0Min</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          First pixel in the ROI in the X direction.
+          <br />
+          0 is the first pixel in the array.</td>
+        <td>
+          DIM0_MIN</td>
+        <td>
+          $(P)$(R)MinX<br />
+          $(P)$(R)MinX_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIDim1Min</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          First pixel in the ROI in the Y direction.<br />
+          0 is the first pixel in the array.</td>
+        <td>
+          DIM1_MIN</td>
+        <td>
+          $(P)$(R)MinY<br />
+          $(P)$(R)MinY_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIDim0Size</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Size of the ROI in the X direction</td>
+        <td>
+          DIM0_SIZE</td>
+        <td>
+          $(P)$(R)SizeX<br />
+          $(P)$(R)SizeX_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIDim0Size</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Size of ROI in the Y direction</td>
+        <td>
+          DIM1_SIZE</td>
+        <td>
+          $(P)$(R)SizeY<br />
+          $(P)$(R)SizeY_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIDim0Reverse</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Reverse ROI in the X direction<br />
+          (0=No, 1=Yes)</td>
+        <td>
+          DIM0_REVERSE</td>
+        <td>
+          $(P)$(R)ReverseX<br />
+          $(P)$(R)ReverseX_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIDim0Reverse</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Reverse ROI in the Y direction<br />
+          (0=No, 1=Yes)</td>
+        <td>
+          DIM1_REVERSE</td>
+        <td>
+          $(P)$(R)ReverseY<br />
+          $(P)$(R)ReverseY_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIDataType</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Data type of the ROI (NDDataType_t). This can be different from the data type of
+          the NDArray callback data.</td>
+        <td>
+          DATA_TYPE</td>
+        <td>
+          $(P)$(R)DataType<br />
+          $(P)$(R)DataType_RBV</td>
+        <td>
+          mbbo<br />
+          mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIBgdWidth</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Width of the background in pixels to use when computing net counts. 0=no background
+          subtraction, so the net counts is the same as the total counts.</td>
+        <td>
+          BGD_WIDTH</td>
+        <td>
+          $(P)$(R)BgdWidth<br />
+          $(P)$(R)BgdWidth_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          ADImageSizeX</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Size of the ROI data in the X direction</td>
+        <td>
+          IMAGE_SIZE_X</td>
+        <td>
+          $(P)$(R)ImageSizeX_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          ADImageSizeY</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Size of the ROI data in the Y direction</td>
+        <td>
+          IMAGE_SIZE_Y</td>
+        <td>
+          $(P)$(R)ImageSizeY_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td align="CENTER" colspan="7,">
+          <b>ROI statistics</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIComputeStatistics</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flag to control whether to compute statistics for this ROI (0=No, 1=Yes). Not computing
+          statistics reduces CPU load.</td>
+        <td>
+          COMPUTE_STATISTICS</td>
+        <td>
+          $(P)$(R)ComputeStatistics<br />
+          $(P)$(R)ComputeStatistics_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIMinValue</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Minimum value in any element in the ROI</td>
+        <td>
+          MIN_VALUE</td>
+        <td>
+          $(P)$(R)MinValue_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIMaxValue</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Maximum value in any element in the ROI</td>
+        <td>
+          MAX_VALUE</td>
+        <td>
+          $(P)$(R)MaxValue_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIMeanValue</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Mean value in the ROI</td>
+        <td>
+          MEAN_VALUE</td>
+        <td>
+          $(P)$(R)MeanValue_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROITotal</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Sum (total) of all elements in the ROI</td>
+        <td>
+          TOTAL</td>
+        <td>
+          $(P)$(R)Total_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROINet</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Net (background subtracted) total of all elements in the ROI. The background is
+          calculated by determining the average counts per array element in a border around
+          the ROI border of width NDPluginROIBgdWidth. This average background counts per
+          element is then subtracted from all elements inside the ROI.</td>
+        <td>
+          NET</td>
+        <td>
+          $(P)$(R)Net_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td align="CENTER" colspan="7,">
+          <b>ROI histogram</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIComputeHistogram</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flag to control whether to compute the histogram for this ROI (0=No, 1=Yes). Not
+          computing the histogram reduces CPU load.</td>
+        <td>
+          COMPUTE_HISTOGRAM</td>
+        <td>
+          $(P)$(R)ComputeHistogram<br />
+          $(P)$(R)ComputeHistogram_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIHistSize</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Number of elements (bins) in the histogram</td>
+        <td>
+          HIST_SIZE</td>
+        <td>
+          $(P)$(R)HistSize<br />
+          $(P)$(R)HistSize_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIHistMin</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          Minimum value for the histogram. All values less than or equal to this will be in
+          the first bin of the histogram.</td>
+        <td>
+          HIST_MIN</td>
+        <td>
+          $(P)$(R)HistMin<br />
+          $(P)$(R)HistMin_RBV</td>
+        <td>
+          ao<br />
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIHistMax</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          Maximum value for the histogram. All values greater than or equal to this will be
+          in the last bin of the histogram.</td>
+        <td>
+          HIST_MAX</td>
+        <td>
+          $(P)$(R)HistMax<br />
+          $(P)$(R)HistMax_RBV</td>
+        <td>
+          ao<br />
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIHistEntropy</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Entropy of the image. This is a measure of the sharpness of the histogram, and is
+          often a useful figure of merit for determining sharpness of focus, etc. It is defined
+          as -SUM(BIN[i]*log(BIN[i]), where the sum is over the number of bins in the histogram
+          and BIN[i] is the number of elements in bin i.</td>
+        <td>
+          HIST_ENTROPY</td>
+        <td>
+          $(P)$(R)HistEntropy_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIHistArray</td>
+        <td>
+          asynFloat64Array</td>
+        <td>
+          r/o</td>
+        <td>
+          Histogram array, i.e. counts in each histogram bin.</td>
+        <td>
+          HIST_ARRAY</td>
+        <td>
+          $(P)$(R)Histogram_RBV</td>
+        <td>
+          waveform</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="H3_1">
+    Configuration</h3>
+  <p>
+    The NDPluginROI plugin is created with the following command, either from C/C++
+    or from the EPICS IOC shell.
+  </p>
+  <pre>drvNDROIConfigure(const char *portName, int queueSize, int blockingCallbacks, 
+                  const char *NDArrayPort, int NDArrayAddr, int maxROIs,
+                  size_t maxMemory)
 
-</BODY>
-</HTML>
+  </pre>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tr>
+      <th>
+        Argument</th>
+      <th>
+        Description</th>
+    </tr>
+    <tr>
+      <td>
+        <code>portName</code></td>
+      <td>
+        The name of the asyn port for this plugin.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>queueSize</code></td>
+      <td>
+        The maximum number of NDArray objects that can be queued for processing. Passed
+        to the NDPluginDriver base class constructor.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>blockingCallbacks</code></td>
+      <td>
+        Flag controlling whether callbacks block. Passed to the NDPluginDriver base class
+        constructor.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>NDArrayPort</code></td>
+      <td>
+        The name of the asyn port of the driver that will provide the NDArray data. Passed
+        to the NDPluginDriver base class constructor.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>NDArrayAddr</code></td>
+      <td>
+        The asyn addr of the asyn port of the driver that will provide the NDArray data.
+        Passed to the NDPluginDriver base class constructor.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>maxROIs</code></td>
+      <td>
+        Maximum number of ROIs that this plugin will support.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>maxMemory</code></td>
+      <td>
+        Maximum number of bytes of memory to be allocated from the NDArrayPool. Passed to
+        the constructor for the NDPluginDriver base class. The NDPluginROI plugin allocates
+        one NDArray object for each ROI, so this should be at least maxROIs times the size
+        of the largest NDArray to be used.</td>
+    </tr>
+  </table>
+  <p>
+    The following is the MEDM screen that provides access to the parameters in NDPluginDriver.h
+    and NDPluginROI.h through records in NDPluginBase.template and NDROI.template. This
+    is the MEDM screen that is used to control the behavior of the ROI plugin, but not
+    the individual ROIs.
+  </p>
+  <center>
+    <img alt="NDROI.png" src="NDROI.png" />
+  </center>
+  <p>
+    The following is the MEDM screen that provides access to the parameters for in NDPluginROI.h
+    through records in NDROIN.template. This is the MEDM screen that is used to control
+    the behavior of a specific ROI.
+    <br />
+  </p>
+  <center>
+    <img alt="NDROIN.png" src="NDROIN.png" />
+  </center>
+  <p>
+    The following is another MEDM screen that provides access to the parameters for
+    in NDPluginROI.h through records in NDROIN.template. This is the MEDM screen that
+    is used to control the most commonly used properties of 8 ROIs.
+  </p>
+  <center>
+    <img alt="NDROI8.png" src="NDROI8.png" />
+  </center>
+  <p>
+    The following is an IDL epics_ad_display screen illustrating the highlighting of
+    ROIs. In this example the ROIs defined are those in the 8 ROI display above. The
+    NDPluginStdArrays driver has been configured to be receiving its NDArray callbacks
+    from the first ROI (which is defined to be the entire detector array), and the NDPluginROIHighlight
+    flag is set to Yes.
+  </p>
+  <center>
+    <img alt="ROI_outlines.png" src="ROI_outlines.png" /></center>
+</body>
+</html>
