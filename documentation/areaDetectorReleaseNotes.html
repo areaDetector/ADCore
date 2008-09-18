@@ -8,26 +8,30 @@
   <h2 style="text-align: center">
     Release 1-2 (19-Sept-2008)</h2>
   <ul>
-    <li>Major update to documentation></li>
+    <li>Major update to documentation</li>
     <li>Significant enhancement to ROI plugin. Added net counts, ROI highlighting.</li>
     <li>Added driver for Pilatus detectors</li>
     <li>Added driver for ADSC detectors (done by Lewis Muir, IMCA-CAT)</li>
-    <li>Renamed asynParamBase to asynPortDriver.</li>
-    <li>Renamed NDArrayBase to NDArrayDriver</li>
-    <li>Renamed NDPluginBase to NDPluginDriver</li>
-    <li>Renamed NDArrayBuff to NDArrayPool, now in NDArray.cpp.</li>
-    <li>Renamed ADDriverBase to ADDriver</li>
-    <li>Removed ADUtils</li>
-    <li>The asynHandle interface in asyn was renamed to asynGenericPointer, many changes
-      to incorporate this.</li>
     <li>Removed separate readback parameters in drivers and template files</li>
     <li>Changed from mbbi/mbbo records to bi/bo records where possible now that the asynInt32
       interface supports bi/bo records.</li>
-    <li>Base class constructor no longer initializes all asyn interfaces, only the selected
-      ones.</li>
-    <li>NDArray pool is no longer global, each server creates its own pool if needed.</li>
-    <li>Implemented real routines for writeInt32, writeFloat64, and writeOctet in asynPortDriver.cpp,
-      removed them from ADDriver.cpp where they were not needed.</li>
+    <li>Internals
+      <ul>
+        <li>Renamed asynParamBase to asynPortDriver.</li>
+        <li>Renamed NDArrayBase to NDArrayDriver</li>
+        <li>Renamed NDPluginBase to NDPluginDriver</li>
+        <li>Renamed NDArrayBuff to NDArrayPool, now in NDArray.cpp.</li>
+        <li>Renamed ADDriverBase to ADDriver</li>
+        <li>Removed ADUtils</li>
+        <li>The asynHandle interface in asyn was renamed to asynGenericPointer, many changes
+          to incorporate this.</li>
+        <li>Base class constructor no longer initializes all asyn interfaces, only the selected
+          ones.</li>
+        <li>NDArray pool is no longer global, each server creates its own pool if needed.</li>
+        <li>Implemented real routines for writeInt32, writeFloat64, and writeOctet in asynPortDriver.cpp,
+          removed them from ADDriver.cpp where they were not needed.</li>
+      </ul>
+    </li>
   </ul>
   <h2 style="text-align: center">
     Release 1-1 (10-May-2008)</h2>
