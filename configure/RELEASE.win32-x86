@@ -12,10 +12,16 @@ TEMPLATE_TOP=$(EPICS_BASE)/templates/makeBaseApp/top
 SNCSEQ=J:/epics/devel/seq/2-0-11
 
 # ASYN is needed for sockets and for smartControl
-ASYN=J:/epics/devel/asyn/4-10beta
+ASYN=J:/epics/devel/asyn/4-10
 
-# SSCAN is needed for busy record
+# CALC is needed for scalcout record that SSCAN uses
+CALC=J:/epics/devel/calc/2-6-5beta
+
+# SSCAN is needed for busy record and for scanning threshold on Pilatus
 SSCAN=J:/epics/devel/sscan/2-5-7beta
+
+# MCA is needed for fast accumulation of ROI counts
+MCA=J:/epics/devel/mca/6-10
 
 #AUTOSAVE is needed for save_restore
 AUTOSAVE=J:/epics/devel/autosave/4-4beta
