@@ -3,7 +3,7 @@
   <title>areaDetector Prosilica driver</title>
 </head>
 <body>
-  <center>
+  <div style="text-align: center">
     <h1>
       areaDetector Prosilica driver</h1>
     <h2>
@@ -12,23 +12,19 @@
       Mark Rivers</h2>
     <h2>
       University of Chicago</h2>
-  </center>
+  </div>
   <p>
     &nbsp;</p>
-  <center>
-    <h2>
-      Contents</h2>
-  </center>
+  <h2>
+    Contents</h2>
   <ul>
     <li><a href="#Overview">Overview</a></li>
     <li><a href="#Performance measurements">Performance measurements</a></li>
     <li><a href="#Hardware notes">Hardware notes</a></li>
     <li><a href="#Restrictions">Restrictions</a></li>
   </ul>
-  <center>
-    <h2 id="Prosilica Driver">
-      Prosilica Driver</h2>
-  </center>
+  <h2 id="Prosilica Driver">
+    Prosilica Driver</h2>
   <p>
     This is a driver for Gigabit Ethernet and Firewire cameras from <a href="http://www.prosilica.com">
       Prosilica</a>. It inherits from ADDriver and implements nearly all of the parameters
@@ -68,7 +64,8 @@
   <ul>
     <li>TIFF (this is the only format supported)</li>
     <li>Invalid (this menu item is defined only because MEDM will not display a menu widget
-      with only 1 choice)</li></ul>
+      with only 1 choice)</li>
+  </ul>
   <p>
     The Prosilica driver implements the following parameters in addition to those in
     ADStdDriverParams.h:
@@ -292,19 +289,23 @@
   <p>
     The following is the MEDM screen ADBase.adl connected to a Prosilica camera.
   </p>
-  <center>
-    <img alt="ADBase_prosilica.png" src="ADBase_prosilica.png" /></center>
+  <div style="text-align: center">
+    <h3>
+      ADBase.adl</h3>
+    <img alt="ADBase_prosilica.png" src="ADBase_prosilica.png" /></div>
   <p>
     The following is the MEDM screen that provides access to the specific parameters
     for the Prosilica detector.
   </p>
-  <center>
-    <img alt="prosilica.png" src="prosilica.png" /></center>
+  <div style="text-align: center">
+    <h3>
+      prosilica.adl</h3>
+    <img alt="prosilica.png" src="prosilica.png" /></div>
   <p>
     The following is an IDL epics_ad_display screen (discussed below) illustrating the
     Prosilica detector images.
   </p>
-  <center>
-    <img alt="prosilica_tvscl.png" src="prosilica_tvscl.png" /></center>
+  <div style="text-align: center">
+    <img alt="prosilica_tvscl.jpg" src="prosilica_tvscl.jpg" /></div>
 </body>
 </html>
