@@ -3,16 +3,16 @@
   <title>areaDetector: EPICS Area Detector Support</title>
 </head>
 <body>
-  <center>
+  <div style="text-align: center">
     <h1>
       areaDetector: EPICS Area Detector Support</h1>
     <h2>
-      September 17, 2008</h2>
+      September 19, 2008</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
       University of Chicago</h2>
-  </center>
+  </div>
   <p>
     &nbsp;</p>
   <h2>
@@ -33,9 +33,9 @@
     <li><a href="pluginDoc.html">Plugins</a>
       <ul>
         <li><a href="pluginDoc.html#NDPluginDriver">NDPluginDriver</a></li>
-        <li><a href="pluginDoc.html#NDPluginStdArrays">NDPluginStdArrays</a></li>
-        <li><a href="pluginDoc.html#NDPluginFile">NDPluginFile</a></li>
-        <li><a href="pluginDoc.html#NDPluginROI">NDPluginROI</a></li>
+        <li><a href="NDPluginStdArrays.html">NDPluginStdArrays</a></li>
+        <li><a href="NDPluginFile.html">NDPluginFile</a></li>
+        <li><a href="NDPluginROI.html">NDPluginROI</a></li>
       </ul>
     </li>
     <li><a href="#Detector_drivers">Detector drivers</a>
@@ -49,10 +49,8 @@
   </ul>
   <p>
     &nbsp;</p>
-  <center>
-    <h2 id="Overview">
-      Overview</h2>
-  </center>
+  <h2 id="Overview">
+    Overview</h2>
   <p>
     The areaDetector module provides a general-purpose interface for area (2-D) detectors
     in EPICS. It is intended to be used with a wide variety of detectors and cameras,
@@ -83,13 +81,13 @@
   </ul>
   <p>
     &nbsp;</p>
-  <center>
-    <h2 id="Architecture">
-      Architecture</h2>
-  </center>
+  <h2 id="Architecture">
+    Architecture</h2>
   <p>
-    The architecture of the areaDetector module is shown below.
-    <img alt="areaDetectorArchitecture.png" src="areaDetectorArchitecture.png" />
+    The architecture of the areaDetector module is shown below.</p>
+  <p style="text-align: center">
+    <img alt="areaDetectorArchitecture.png" src="areaDetectorArchitecture.png" /></p>
+  <p>
     From the bottom to the top this architecture consists of the following:</p>
   <ul>
     <li>Layer 1. This is the layer that allows user written code to communicate with the
@@ -160,10 +158,8 @@
     C files, so that it should be easy to build applications that do not run as part
     of an EPICS IOC.
   </p>
-  <center>
-    <h2 id="Implementation_details">
-      Implementation details</h2>
-  </center>
+  <h2 id="Implementation_details">
+    Implementation details</h2>
   <p>
     The areaDetector module depends heavily on <a href="http://www.aps.anl.gov/epics/modules/soft/asyn">
       asyn</a>. It is the software that is used for interthread communication, using
@@ -172,10 +168,8 @@
     implemented using C++ classes. The base classes, from which drivers and plugins
     are derived, take care of many of the details of asyn and other common code.
   </p>
-  <center>
-    <h2 id="asynPortDriver">
-      asynPortDriver</h2>
-  </center>
+  <h2 id="asynPortDriver">
+    asynPortDriver</h2>
   <p>
     Detector drivers and plugins are asyn port drivers, meaning that they implement
     one or more of the standard asyn interfaces. They register themselves as interrupt
@@ -329,7 +323,6 @@ public:
       interfaces this driver or plugin supports can generate interrupts. The bit mask
       values are defined in asynPortDriver.h, e.g. <code>asynInt8ArrayMask</code>.</li>
   </ul>
-  <br />
   <pre>    virtual asynStatus getAddress(asynUser *pasynUser, const char *functionName, int *address); 
 </pre>
   <p>
@@ -347,7 +340,6 @@ public:
     <code>getAddress()</code>. Derived classed typically do not need to implement these
     methods.
   </p>
-  <br />
   <pre>    virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
     virtual asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t maxChars,
@@ -360,7 +352,6 @@ public:
     will provide their own implementations of these methods to do driver-dependent operations
     when there is a new value of the parameter.
   </p>
-  <br />
   <pre>     
     virtual asynStatus readXXXArray(asynUser *pasynUser, epicsInt8 *value, 
                                         size_t nElements, size_t *nIn);
@@ -381,7 +372,6 @@ public:
     asyn clients on the corresponding interface if the <code>reason</code> and <code>addr</code>
     values match. It typically does not need to be implemented in derived classes.
   </p>
-  <br />
   <pre>     
     virtual asynStatus findParam(asynParamString_t *paramTable, int numParams, const char *paramName, int *param);
     virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
@@ -398,7 +388,6 @@ public:
     in derived classes. <code>drvUserGetType</code> and <code>drvUserDestroy</code>
     typically do not need to be implemented in derived classes.
   </p>
-  <br />
   <pre>     
     virtual void report(FILE *fp, int details);
     virtual asynStatus connect(asynUser *pasynUser);
@@ -413,7 +402,6 @@ public:
     and <code>pasynManager-&gt exceptionDisconnect</code> respectively. Derived classes
     may or may not need to implement these functions.
   </p>
-  <br />
   <pre>     
     virtual asynStatus setIntegerParam(int index, int value);
     virtual asynStatus setIntegerParam(int list, int index, int value);
@@ -444,10 +432,8 @@ public:
     is a second version of <code>callParamCallbacks</code> that takes an argument specifying
     the parameter list number, and the asyn address to match.
   </p>
-  <center>
-    <h2 id="NDArray">
-      NDArray</h2>
-  </center>
+  <h2 id="NDArray">
+    NDArray</h2>
   <p>
     The NDArray (N-Dimensional array) is the class that is used for passing detector
     data from drivers to plugins. The NDArray class is defined as follows:
@@ -582,10 +568,8 @@ public:
     <li><code>release</code>. This method calls NDArrayPool->release() for this object.
       It decreases the reference count for this array.</li>
   </ul>
-  <center>
-    <h2 id="NDArrayPool">
-      NDArrayPool</h2>
-  </center>
+  <h2 id="NDArrayPool">
+    NDArrayPool</h2>
   <p>
     The NDArrayPool class manages a free list (pool) of NDArray objects (described above).
     Drivers allocate NDArray objects from the pool, and pass these objects to plugins.
@@ -644,10 +628,8 @@ public:
     <li><code>report</code> This method reports on the free list size and other properties
       of the NDArrayPool object.</li>
   </ul>
-  <center>
-    <h2 id="asynNDArrayDriver">
-      asynNDArrayDriver</h2>
-  </center>
+  <h2 id="asynNDArrayDriver">
+    asynNDArrayDriver</h2>
   <p>
     asynNDArrayDriver inherits from asynPortDriver. It implements the asynGenericPointer
     functions, assuming that these reference NDArray objects. This is the class from
@@ -683,10 +665,8 @@ public:
     <li><code>report</code> This method calls the report function in the asynPortDriver
       base class. It then calls the NDArrayPool->report() method if details &gt 5.</li>
   </ul>
-  <center>
-    <h2 id="ADDriver">
-      ADDriver</h2>
-  </center>
+  <h2 id="ADDriver">
+    ADDriver</h2>
   <p>
     ADDriver inherits from asynNDArrayDriver. This is the class from which area detector
     drivers are directly derived. Its public interface is defined as follows:
@@ -721,10 +701,8 @@ public:
       file name in the ADFullFileName parameter from the ADFilePath, ADFileName, ADFileNumber,
       and ADFileTemplate parameters.</li>
   </ul>
-  <center>
-    <h2 id="ADStdDriverParams">
-      ADStdDriverParams</h2>
-  </center>
+  <h2 id="ADStdDriverParams">
+    ADStdDriverParams</h2>
   <p>
     The file <code>ADStdDriverParams.h</code> defines the following:
   </p>
@@ -1662,18 +1640,21 @@ typedef enum
     Note that the section of the screen labeled "Shutter" is not currently implemented
     for any areaDetector driver, and is subject to change in the near future.
   </p>
-  <br />
-  <center>
-    <img alt="ADBase.png" src="ADBase.png" /></center>
-  <br />
-  <center>
-    <h2 id="Detector_drivers">
-      Detector drivers</h2>
-  </center>
+  <div style="text-align: center">
+    <p>
+      <b>ADBase.adl</b></p>
+    <img alt="ADBase.png" src="ADBase.png" /></div>
+  <h2 id="Detector_drivers">
+    Detector drivers</h2>
   <p>
     areaDetector has been designed to minimize the amount of work required to write
-    a new detector driver. These drivers are described in separate documents, linked
-    to by the table of contents at the top of this page.
-  </p>
+    a new detector driver. The drivers currently available for the areaDetector module
+    are:</p>
+  <ul>
+    <li><a href="simDetectorDoc.html">Simulation detector driver</a></li>
+    <li><a href="prosilicaDoc.html">Prosilica driver</a></li>
+    <li><a href="pilatusDoc.html">Pilatus driver</a></li>
+    <li><a href="adscDoc.html">ADSC driver</a></li>
+  </ul>
 </body>
 </html>
