@@ -1,0 +1,158 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>areaDetector Plugin NDPluginFile</title>
+</head>
+<body>
+  <div style="text-align: center">
+    <h1>
+      areaDetector Plugin NDPluginFile</h1>
+    <h2>
+      September 19, 2008</h2>
+    <h2>
+      Mark Rivers</h2>
+    <h2>
+      University of Chicago</h2>
+  </div>
+  <h2>
+    Contents</h2>
+  <ul>
+    <li><a href="#Overview">Overview</a></li>
+    <li><a href="#Configuration">Configuration</a></li>
+    <li><a href="#Screens">Screen shots</a></li>
+  </ul>
+  <h2 id="Overview">
+    Overview
+  </h2>
+  <p>
+    NDPluginFile saves the NDArray data from a callback to a disk file.
+  </p>
+  <p>
+    NDPluginFile inherits from NDPluginDriver. This plugin currently saves data in the
+    <a href="http://www.unidata.ucar.edu/software/netcdf">netCDF</a> file format, which
+    is a portable self-describing binary file format supported by <a href="http://www.unidata.ucar.edu/">
+      UniData</a> at <a href="http://www.ucar.edu/">UCAR (University Corporation for Atmospheric
+        Research).</a> Additional file formats, such as TIFF and HDF may be supported
+    in the future.
+  </p>
+  <p>
+    The NDArray callback data can be written to disk in 1 of 3 modes:
+  </p>
+  <ol>
+    <li>Single mode. In this mode each NDArray callback results in a separate disk file.</li>
+    <li>Capture mode. In this mode a memory buffer is allocated before saving begins.
+      Callback arrays are placed into this buffer, and when capture stops the file is
+      written to disk. This mode limits the number of frames that can be saved, because
+      they all must fit in a memory buffer. It is the fastest mode, with the least probability
+      of dropping arrays, because no disk I/O is required while capture is in progress.</li>
+    <li>Stream mode. In this mode the data are written to a single disk file, with each
+      frame being appended to the file without closing it. It is intermediate in speed
+      between single mode and capture mode, but unlike capture mode it is not limited
+      by available memory in the number of arrays that can be saved.</li>
+  </ol>
+  <p>
+    The NDPluginFile public interface is defined in NDPluginFile.h as follows:
+  </p>
+  <pre>/* Note that the file format enum must agree with the mbbo/mbbi records in the NDFile.template file */
+typedef enum {
+    NDFileFormatNetCDF,
+} NDPluginFileFormat_t;
+
+typedef enum {
+    NDPluginFileModeSingle,
+    NDPluginFileModeCapture,
+    NDPluginFileModeStream
+} NDPluginFileMode_t;
+
+...
+class NDPluginFile : public NDPluginDriver {
+public:
+    NDPluginFile(const char *portName, int queueSize, int blockingCallbacks, 
+                 const char *NDArrayPort, int NDArrayAddr);
+                 
+    /* These methods override those in the base class */
+    void processCallbacks(NDArray *pArray);
+    asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
+    asynStatus writeNDArray(asynUser *pasynUser, void *genericPointer);
+    asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
+                             const char **pptypeName, size_t *psize);
+
+...
+}
+</pre>
+  <p>
+    NDPluginFile also supports all of the file saving parameters defined in ADStdDriverParams.h
+    described above, e.g.ADFilePath, ADFileName, etc. Thus, the same interface that
+    is used for saving files directly in a driver are used for this plugin.
+  </p>
+  <h2 id="Configuration">
+    Configuration</h2>
+  <p>
+    The NDPluginFile plugin is created with the following command, either from C/C++
+    or from the EPICS IOC shell.
+  </p>
+  <pre>drvNDFileConfigure(const char *portName, int queueSize, int blockingCallbacks, 
+                   const char *NDArrayPort, int NDArrayAddr)
+  </pre>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tr>
+      <th>
+        Argument</th>
+      <th>
+        Description</th>
+    </tr>
+    <tr>
+      <td>
+        <code>portName</code></td>
+      <td>
+        The name of the asyn port for this plugin.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>queueSize</code></td>
+      <td>
+        The maximum number of NDArray objects that can be queued for processing. Passed
+        to the NDPluginDriver base class constructor.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>blockingCallbacks</code></td>
+      <td>
+        Flag controlling whether callbacks block. Passed to the NDPluginDriver base class
+        constructor.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>NDArrayPort</code></td>
+      <td>
+        The name of the asyn port of the driver that will provide the NDArray data. Passed
+        to the NDPluginDriver base class constructor.
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <code>NDArrayAddr</code></td>
+      <td>
+        The asyn addr of the asyn port of the driver that will provide the NDArray data.
+        Passed to the NDPluginDriver base class constructor.
+      </td>
+    </tr>
+  </table>
+  <h2 id="Screens">
+    Screen shots</h2>
+  <p>
+    The following is the MEDM screen that provides access to the parameters in NDPluginDriver.h
+    and NDPluginFile.h through records in NDPluginBase.template and NDFile.template.
+    This is the MEDM screen that is used to control the saving of images to disk for
+    drivers that do not support saving files to disk themselves.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDFile.adl</h3>
+    <p>
+      <img alt="NDFile.png" src="NDFile.png" /></p>
+  </div>
+</body>
+</html>
