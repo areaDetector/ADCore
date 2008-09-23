@@ -1,4 +1,4 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
+a<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>areaDetector Plugin NDPluginFile</title>
 </head>
@@ -19,6 +19,9 @@
     <li><a href="#Overview">Overview</a></li>
     <li><a href="#Configuration">Configuration</a></li>
     <li><a href="#Screens">Screen shots</a></li>
+    <li><a href="#netCDF">netCDF file contents</a></li>
+    <li><a href="#IDL">IDL file reading function</a></li>
+    <li><a href="#Future">Future plans</a></li>
   </ul>
   <h2 id="Overview">
     Overview
@@ -31,8 +34,7 @@
     <a href="http://www.unidata.ucar.edu/software/netcdf">netCDF</a> file format, which
     is a portable self-describing binary file format supported by <a href="http://www.unidata.ucar.edu/">
       UniData</a> at <a href="http://www.ucar.edu/">UCAR (University Corporation for Atmospheric
-        Research).</a> Additional file formats, such as TIFF and HDF may be supported
-    in the future.
+        Research).</a>
   </p>
   <p>
     The NDArray callback data can be written to disk in 1 of 3 modes:
@@ -80,9 +82,9 @@ public:
 }
 </pre>
   <p>
-    NDPluginFile also supports all of the file saving parameters defined in ADStdDriverParams.h
-    described above, e.g.ADFilePath, ADFileName, etc. Thus, the same interface that
-    is used for saving files directly in a driver are used for this plugin.
+    NDPluginFile supports all of the file saving parameters defined in <a href="areaDetectorDoc.html#ADStdDriverParams">
+      ADStdDriverParams.h</a>, e.g. ADFilePath, ADFileName, etc. Thus, the same interface
+    that is used for saving files directly in a driver is used for this plugin.
   </p>
   <h2 id="Configuration">
     Configuration</h2>
@@ -154,5 +156,73 @@ public:
     <p>
       <img alt="NDFile.png" src="NDFile.png" /></p>
   </div>
+  <h2 id="netCDF">
+    netCDF file contents</h2>
+  <p>
+    The following is the header contents of a netCDF file produced by this plugin. This
+    information was produced with the following command:</p>
+  <pre>
+ncdump -h test_A_2.nc
+
+netcdf test_A_2 {
+dimensions:
+	numArrays = 200 ;
+	dim0 = 480 ;
+	dim1 = 640 ;
+variables:
+	int uniqueId(numArrays) ;
+	double timeStamp(numArrays) ;
+	byte array_data(numArrays, dim0, dim1) ;
+
+// global attributes:
+		:dataType = 0 ;
+		:numArrayDims = 2 ;
+		:dimSize = 640, 480 ;
+		:dimOffset = 0, 0 ;
+		:dimBinning = 1, 1 ;
+		:dimReverse = 0, 0 ;
+}
+  </pre>
+  <p>
+    This is an explanation of this output:
+  </p>
+  <ul>
+    <li>dimensions: numArrays is the number of arrays in the file. It will be 1 for files
+      collected in Single mode, and is normally &gt 1 for files collected in Capture or
+      Stream mode. For each array dim0 is the slowest varying dimension, dim1 the next
+      slowest, etc.</li>
+    <li>variables: There are 3 variables in the netCDF file. uniqueId is the unique ID
+      number of each array. timeStamp is the timestamp in seconds for each array. array_data
+      is the array data. Its data type depends on the data type of the NDArray data passed
+      in the callbacks. It dimensions are [numArrays, dim0, dim1, ...dimN]. This notation
+      is in the Fortran syntax where the slowest varying dimension comes first in the
+      list.</li>
+    <li>global attributes. dataType is the NDDataType_t enum value for the array data
+      type. numArrayDims is the number of dimensions in each array. array_data has 1 more
+      dimension than this, numArrays, because it contains all of the array callback data.
+      dimSize is an array[numArrayDims] containing the size of each dimension, with the
+      fastest varying dimension first. dimOffset, dimBinning, and dimReverse are the values
+      of the offset, binning and reverse fields in the NDDimension_t structure for each
+      dimension.</li>
+  </ul>
+  <h2 id="IDL">
+    IDL file reading function</h2>
+  <p>
+    There is an IDL function, <a href="http://cars.uchicago.edu/software/idl/detector_routines.html#read_nd_netcdf">
+      read_nd_netcdf</a> that can be used to read the netCDF files created by this plugin.
+    This routine is contained in the <a href="http://cars.uchicago.edu/software/idl/detectors.html#read_nd_netcdf">
+      CARS IDL detector package</a>. This function is currently limited to reading the
+    entire file at once, so it may fail for very large files on machines with insufficient
+    virtual memory. This will be fixed in a future release.
+  </p>
+  <h2 id="Future">
+    Future plans</h2>
+  <p>
+    Additional file formats, such as TIFF and HDF may be supported in the future.
+  </p>
+  <p>
+    The IDL function described above will be enhanced to allow reading only a subset
+    of the file at a time.
+  </p>
 </body>
 </html>
