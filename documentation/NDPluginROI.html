@@ -24,10 +24,10 @@
     Overview
   </h2>
   <p>
-    NDPluginROI inherits from NDPluginDriver. NDPluginROI selects one or more rectangular
-    "Regions-Of-Interest" (ROIs) from the NDArray callback data. The maximum number
-    of ROIs is defined when the plugin is created. Each ROI can be any size, from a
-    single array element to the entire array. NDPluginROI does 3 things with these ROIs:
+    NDPluginROI selects one or more rectangular "Regions-Of-Interest" (ROIs) from the
+    NDArray callback data. The maximum number of ROIs is defined when the plugin is
+    created. Each ROI can be any size, from a single array element to the entire array.
+    NDPluginROI does 3 things with these ROIs:
   </p>
   <ol>
     <li>Computes statistics, e.g. mean, maximum, minimum, total value, net (background
@@ -47,11 +47,13 @@
     could be created for a single detector driver to increase the number of threads
     running in parallel, maximizing the use of multiple CPU cores. Individual ROIs are
     addressed through the asyn interfaces by the asyn "addr" field in the asynUser structure.
-    Note that while the NDPluginROI should be N-dimensional, the definition of the ROI
-    is currently limited to 2-D. This limitation will be removed in a future release.
+    Note that while the NDPluginROI should be N-dimensional, the EPICS interface to
+    the definition of the ROI is currently limited to 2-D. This limitation will be removed
+    in a future release.
   </p>
   <p>
-    The NDPluginROI public interface is defined in NDPluginROI.h as follows:
+    NDPluginROI inherits from NDPluginDriver. The NDPluginROI public interface is defined
+    in NDPluginROI.h as follows:
   </p>
   <pre>class NDPluginROI : public NDPluginDriver {
 public:
@@ -73,9 +75,9 @@ public:
   </p>
   <p>
     NDPluginROI.h defines the following parameters that are global to all ROIs for a
-    plugin. It also implements all of the standard plugin parameters from NDPlugDriver
-    listed above. The EPICS database NDROI.template provide access to these parameters,
-    listed in the following table.
+    plugin. It also implements all of the standard plugin parameters from NDPlugDriver.
+    The EPICS database NDROI.template provide access to these parameters, listed in
+    the following table.
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
@@ -108,11 +110,11 @@ public:
           r/w</td>
         <td>
           Flag to indicate if the borders of ROIs should be highlighted (0=No, 1=Yes). If
-          set then all ROIs will be highlighted in all other ROIs where they overlap. One
-          common use of this is to set the first ROI to be the entire detector, and then the
-          location of all other ROIs will be visible when the first ROI is displayed. The
-          highlighting is done by replacing the border pixels with the maximum value of the
-          data in that ROI. Statistics are computed before the highlighting is done.</td>
+          set then the borders of all ROIs will be highlighted in all other ROIs where they
+          overlap. One common use of this is to set the first ROI to be the entire detector,
+          and then the location of all other ROIs will be visible when the first ROI is displayed.
+          The highlighting is done by replacing the border pixels with the maximum value of
+          the data in that ROI. Statistics are computed before the highlighting is done.</td>
         <td>
           HIGHLIGHT</td>
         <td>
@@ -509,8 +511,8 @@ public:
         <td>
           Net (background subtracted) total of all elements in the ROI. The background is
           calculated by determining the average counts per array element in a border around
-          the ROI border of width NDPluginROIBgdWidth. This average background counts per
-          element is then subtracted from all elements inside the ROI.</td>
+          the ROI of width NDPluginROIBgdWidth. This average background counts per element
+          is then subtracted from all elements inside the ROI.</td>
         <td>
           NET</td>
         <td>
@@ -722,9 +724,9 @@ public:
     <img alt="NDROI.png" src="NDROI.png" />
   </div>
   <p>
-    The following is the MEDM screen that provides access to the parameters for in NDPluginROI.h
-    through records in NDROIN.template. This is the MEDM screen that is used to control
-    the behavior of a specific ROI.
+    The following is the MEDM screen that provides access to the parameters in NDPluginROI.h
+    for an individual ROI through records in NDROIN.template. This is the MEDM screen
+    that is used to control the behavior of a specific ROI.
     <br />
   </p>
   <div style="text-align: center">
@@ -733,9 +735,9 @@ public:
     <img alt="NDROIN.png" src="NDROIN.png" />
   </div>
   <p>
-    The following is another MEDM screen that provides access to the parameters for
-    in NDPluginROI.h through records in NDROIN.template. This is the MEDM screen that
-    is used to control the most commonly used properties of 8 ROIs.
+    The following is another MEDM screen that provides access to the parameters in NDPluginROI.h
+    through records in NDROIN.template. This is the MEDM screen that is used to control
+    the most commonly used properties of 8 ROIs.
   </p>
   <div style="text-align: center">
     <h3>
@@ -743,11 +745,12 @@ public:
     <img alt="NDROI8.png" src="NDROI8.png" />
   </div>
   <p>
-    The following is an IDL epics_ad_display screen illustrating the highlighting of
-    ROIs. In this example the ROIs defined are those in the 8 ROI display above. The
-    NDPluginStdArrays driver has been configured to be receiving its NDArray callbacks
-    from the first ROI (which is defined to be the entire detector array), and the NDPluginROIHighlight
-    flag is set to Yes.
+    The following is an IDL <a href="http://cars.uchicago.edu/software/idl/imaging_routines.html#epics_ad_display">
+      epics_ad_display</a> screen illustrating the highlighting of ROIs. In this example
+    the ROIs defined are those in the 8 ROI display above. The NDPluginStdArrays driver
+    has been configured to be receiving its NDArray callbacks from the first ROI (which
+    is defined to be the entire detector array), and the NDPluginROIHighlight flag is
+    set to Yes.
   </p>
   <div style="text-align: center">
     <h3>

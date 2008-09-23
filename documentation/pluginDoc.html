@@ -7,7 +7,7 @@
     <h1>
       areaDetector Plugins</h1>
     <h2>
-      September 5, 2008</h2>
+      September 20, 2008</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -28,8 +28,8 @@
     A powerful feature of the <a href="areaDetectorDoc.html">areaDetector</a> module
     is the concept of plugins. A plugin is code that is called by a driver that passes
     NDArray data in a callback. Plugins can be used to process array data in real time.
-    Existing plugins convert data to standard asyn arrays (NDPluginStdArrays) save data
-    to disk (NDPluginFile), and select regions-of-interest (NDPluginROI). New plugins
+    Existing plugins convert data to standard asyn arrays (NDPluginStdArrays), save
+    data to disk (NDPluginFile), and select regions-of-interest (NDPluginROI). New plugins
     could be written to perform functions like finding the centroid of a beam, etc.
     Once a plugin is written it will work with any areaDetector driver. Plugins have
     the the following properties:
@@ -40,15 +40,16 @@
       is guaranteed to execute for each NDArray callback. However, it can slow down the
       driver, and does not utilize the multi-core capability of modern CPUs. In the non-blocking
       mode the driver callback simply places the NDArray data in a queue that is part
-      of the plugin. The plugin then executes the callback code in it own thread, removes
+      of the plugin. The plugin then executes the callback code in it own thread. It removes
       NDArray data from the queue, processes it, and releases the data back to the NDArrayPool
       when it is done. In the non-blocking mode some additional memory is required for
       the NDArray objects that are in the queue. It is also possible to drop NDArray data
-      if the queue is full, i.e. some callback data will not be processed. The non-blocking
-      mode can utilize the multi-core capabilities of modern CPUs because each plugin
-      is executing in its own thread. The operation of the queue and the NDArrayPool class
-      means that data never needs to be copied, each plugin has a pointer to the data
-      which will continue to be valid until the last plugin is done with it.</li>
+      if the queue is full when a callback occurs, i.e. some callback data will not be
+      processed. The non-blocking mode can utilize the multi-core capabilities of modern
+      CPUs because each plugin is executing in its own thread. The operation of the queue
+      and the NDArrayPool class means that data never needs to be copied, each plugin
+      has a pointer to the data which will continue to be valid until the last plugin
+      is done with it.</li>
     <li>They can be enabled or disabled at run time.</li>
     <li>They can be throttled to only execute at a limited rate. This means, for example,
       that a detector can be saving data to disk at full speed, but images can be posted
@@ -87,10 +88,6 @@ public:
                                      
     /* These are the methods that are new to this class */
     virtual void processCallbacks(NDArray *pArray);
-    virtual void driverCallback(asynUser *pasynUser, void *genericPointer);
-    virtual void processTask(void);
-    virtual asynStatus setArrayInterrupt(int connect);
-    virtual asynStatus connectToArrayPort(void);    
     int createFileName(int maxChars, char *fullFileName);
 ...
 }
@@ -111,9 +108,9 @@ public:
       a parameter is not matched, then NDPluginDriver->drvUserCreate() will be called
       to see if it is a standard plugin parameter (defined in NDPluginDriver.h).</li>
     <li><code>processCallbacks</code> This method is called each time a driver calls the
-      plugin with a new NDArray object. Derived classes typically call this base class
-      method, which handles some bookkeeping chores, and then they perform whatever operations
-      are specific to that plugin.</li>
+      plugin with a new NDArray object. Derived classes typically provide an implementation
+      of this method that calls this base class method to perform some bookkeeping chores,
+      and then they perform whatever operations are specific to that plugin.</li>
     <li><code>createFileName</code> This is a convenience function that constructs a complete
       file name in the ADFullFileName parameter from the ADFilePath, ADFileName, ADFileNumber,
       and ADFileTemplate parameters.</li>
@@ -184,7 +181,7 @@ public:
           NDARRAY_ADDR</td>
         <td>
           $(P)$(R)NDArrayAddress<br />
-          (P)$(R)NDArrayAddress_RBV</td>
+          $(P)$(R)NDArrayAddress_RBV</td>
         <td>
           longout<br />
           longin</td>
@@ -207,7 +204,29 @@ public:
           ENABLE_CALLBACKS</td>
         <td>
           $(P)$(R)EnableCallbacks<br />
-          (P)$(R)EnableCallbacks_RBV</td>
+          $(P)$(R)EnableCallbacks_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriverBlockingCallbacks</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          0 = callbacks from the driver do not block; the NDArray data is put on a queue and
+          the callback processes in its own thread.
+          <br />
+          1 = callbacks from the driver block; the callback processes in the driver callback
+          thread.</td>
+        <td>
+          BLOCKING_CALLBACKS</td>
+        <td>
+          $(P)$(R)CallbacksBlock<br />
+          $(P)$(R)CallbacksBlock_RBV</td>
         <td>
           bo<br />
           bi</td>
@@ -227,7 +246,7 @@ public:
           MIN_CALLBACK_TIME</td>
         <td>
           $(P)$(R)MinCallbackTime<br />
-          (P)$(R)MinCallbackTime_RBV</td>
+          $(P)$(R)MinCallbackTime_RBV</td>
         <td>
           ao<br />
           ai</td>
@@ -245,7 +264,7 @@ public:
           ARRAY_COUNTER</td>
         <td>
           $(P)$(R)ArrayCounter<br />
-          (P)$(R)ArrayCounter_RBV</td>
+          $(P)$(R)ArrayCounter_RBV</td>
         <td>
           longout<br />
           longin</td>
@@ -280,7 +299,7 @@ public:
           DROPPED_ARRAYS</td>
         <td>
           $(P)$(R)DroppedArrays<br />
-          (P)$(R)DroppedArrays_RBV</td>
+          $(P)$(R)DroppedArrays_RBV</td>
         <td>
           longout<br />
           longin</td>
