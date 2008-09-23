@@ -7,7 +7,7 @@
     <h1 style="text-align: center">
       areaDetector Simulation driver</h1>
     <h2>
-      September 5, 2008</h2>
+      September 20, 2008</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -22,7 +22,7 @@
     <li><a href="#Driver_parameters">Simulation driver specific parameters</a></li>
     <li><a href="#Unsupported">Unsupported standard driver parameters</a></li>
     <li><a href="#Screenshots">Screenshots</a></li>
-    <li><a href="#Configuring">Configuring</a></li>
+    <li><a href="#Configuration">Configuration</a></li>
   </ul>
   <h2 id="Introduction">
     Introduction</h2>
@@ -49,13 +49,13 @@ public:
     void report(FILE *fp, int details);
 </pre>
   <p>
-    The portName, maxBuffers, and maxMemory arguments are passed to the ADDriver base
-    class constructor. The maxSizeX, maxSizeY, and dataType arguments are specific to
-    the simulation driver, controlling the maximum image size and initial data type
-    of the computed images. The writeInt32 and writeFloat64 methods override those in
-    the base class. The driver takes action when new parameters are passed via those
-    interfaces. For example, the ADAcquire parameter (on the asynInt32 interface) is
-    used to turn acquisition (i.e. computing new images) on and off.
+    In the constructor <code>simDetector</code> the portName, maxBuffers, and maxMemory
+    arguments are passed to the ADDriver base class constructor. The maxSizeX, maxSizeY,
+    and dataType arguments are specific to the simulation driver, controlling the maximum
+    image size and initial data type of the computed images. The writeInt32 and writeFloat64
+    methods override those in the base class. The driver takes action when new parameters
+    are passed via those interfaces. For example, the ADAcquire parameter (on the asynInt32
+    interface) is used to turn acquisition (i.e. computing new images) on and off.
   </p>
   <p>
     The simulation driver initially sets the image[i, j] = i*gainX + j*gainY * gain
@@ -95,7 +95,7 @@ public:
   <table style="text-align: left" "cellSpacing=2 cellPadding=2 border=1">
     <tbody>
       <tr>
-        <td>
+        <td align="center" colspan="7">
           <b>Parameter Definitions in simDetector.cpp and EPICS Record Definitions in simDetector.template</b></td>
       </tr>
       <tr>
@@ -183,46 +183,74 @@ public:
   <p>
     The following is the MEDM screen ADBase.adl connected to a simulation detector.
   </p>
-  <p>
+  <div style="text-align: center">
+    <h3>
+      ADBase.adl</h3>
     <img alt="ADBase_sim.png" src="ADBase_sim.png" />
-  </p>
+  </div>
   <p>
     The following is the MEDM screen that provides access to the specific parameters
     for the simulation detector.
   </p>
-  <p>
+  <div style="text-align: center">
+    <h3>
+      simDetector.adl</h3>
     <img alt="simDetector.png" src="simDetector.png" />
-  </p>
+  </div>
   <p>
-    The following is an IDL epics_ad_display screen using image_display (discussed below)
-    illustrating the simulation detector images.
+    The following is an IDL <a href="http://cars.uchicago.edu/software/idl/imaging_routines.html#epics_ad_display">
+      epics_ad_display</a> screen using <a href="http://cars.uchicago.edu/software/idl/imaging_routines.html#image_display">
+        image_display</a> to display the simulation detector images.
   </p>
-  <p>
+  <div style="text-align: center">
+    <h3>
+      epics_ad_display.pro</h3>
     <img alt="simDetector_image_display.png" src="simDetector_image_display.png" />
-  </p>
-  <h2 id="Configuring">
-    Configuring</h2>
+  </div>
+  <h2 id="Configuration">
+    Configuration</h2>
   <p>
     This driver is configured via the <tt>simDetectorConfig()</tt> function. If this
     is to be used in an IOC, it must be called before <tt>iocInit()</tt>. It has the
     following syntax:
   </p>
-  <dl>
-    <dt><tt>int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int
-      dataType, int maxBuffers, size_t maxMemory)</tt></dt>
-    <dd>
-      <dl>
-        <dt><tt>portName</tt></dt>
-        <dd>
-          ASYN port name for the driver instance</dd>
-        <dt><tt>maxSizeX</tt></dt>
-        <dd>
-          Maximum number of pixels in the X direction for the simulated detector</dd>
-        <dt><tt>maxSizeY</tt></dt>
-        <dd>
-          Maximum number of pixels in the Y direction for the simulated detector</dd>
-        <dt><tt>dataType</tt></dt>
-        <dd>
+  <pre>
+simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, 
+                  int dataType, int maxBuffers, size_t maxMemory)
+  </pre>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <th>
+          Argument</th>
+        <th>
+          Description</th>
+      </tr>
+      <tr>
+        <td>
+          <code>portName</code></td>
+        <td>
+          The name of the asyn port for this detector.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <code>maxSizeX</code></td>
+        <td>
+          Maximum number of pixels in the X direction for the simulated detector.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <code>maxSizeY</code></td>
+        <td>
+          Maximum number of pixels in the Y direction for the simulated detector.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <code>dataType</code></td>
+        <td>
           Initial data type of the detector data. These are the enum values for NDDataType_t,
           i.e.
           <ul>
@@ -235,21 +263,29 @@ public:
             <li>6=NDFloat32</li>
             <li>7=NDFloat64</li>
           </ul>
-        </dd>
-        <dt><tt>maxBuffers</tt></dt>
-        <dd>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <code>maxBuffers</code></td>
+        <td>
           Maxiumum number of NDArray objects (image buffers) this driver is allowed to allocate.
           The driver itself requires 2 buffers, and each queue element in a plugin can require
           one buffer. So, for example, if 3 plugins are connected to this driver, and each
-          has a queue size of 10, then maxBuffers should be at least 32.</dd>
-        <dt><tt>maxMemory</tt></dt>
-        <dd>
+          has a queue size of 10, then maxBuffers should be at least 32.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <code>maxMemory</code></td>
+        <td>
           Maxiumum number of bytes of memory for all NDArray objects (image buffers) allocated
           by this driver. If maxSizeX=maxSizeY=1024, and maxBuffers=32, then maxMemory should
-          be at least 33554432 (~33MB).</dd>
-      </dl>
-    </dd>
-  </dl>
+          be at least 33554432 (32MB).
+        </td>
+      </tr>
+    </tbody>
+  </table>
   <p>
     If being used in an IOC, and an EPICS PV interface with the driver is desired, the
     <tt>ADBase.template</tt> and <tt>simDetector.template</tt> databases should also

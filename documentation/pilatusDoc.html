@@ -7,7 +7,7 @@
     <h1>
       areaDetector Pilatus driver</h1>
     <h2>
-      September 17, 2008</h2>
+      September 21, 2008</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -115,8 +115,8 @@
         <td>
           $(P$(R)ExposurePeriod</td>
         <td>
-          Controls the exposure period in seconds. It is only in Internal or External Trigger
-          modes when NumImages &gt 1.</td>
+          Controls the exposure period in seconds. It applies only in Internal or External
+          Trigger modes when NumImages &gt 1.</td>
       </tr>
       <tr>
         <td>
@@ -159,17 +159,18 @@
           The areaDetector Pilatus driver only supports TIFF files, so the extension should
           be .tif. When saving multiple images (NImages>1) camserver has its own rules for
           creating the names of the individual files. The rules are as follows. The name constructed
-          using the algorithm described for ADFileTemplate in <a href="areaDetectorDoc.html">
-            areaDetectorDoc.html</a> is used as a basename. The following examples show the
-          interpretation of the basename.
-          <pre>      Basename            Files produced
+          using the algorithm described for ADFileTemplate under <a href="areaDetectorDoc.html#ADStdDriverParams">
+            File Saving Parameters in ADStdDriverParams</a> is used as a basename. The following
+          examples show the interpretation of the basename.
+          <pre>
+Basename            Files produced
      
-      test6.tif           test6_00000.tif,  test6_00001.tif, ...
-      test6_.tif          test6_00000.tif,  test6_00001.tif, ...
-      test6_000.tif       test6_000.tif,    test6_001.tif, ...
-      test6_014.tif       test6_014.tif,    test6_015.tif, ...
-      test6_0008.tif      test6_0008.tif,   test6_0009.tif, ...
-      test6_2_0035.tif    test6_2_0035.tif, test6_2_0036.tif, ...
+test6.tif           test6_00000.tif,  test6_00001.tif, ...
+test6_.tif          test6_00000.tif,  test6_00001.tif, ...
+test6_000.tif       test6_000.tif,    test6_001.tif, ...
+test6_014.tif       test6_014.tif,    test6_015.tif, ...
+test6_0008.tif      test6_0008.tif,   test6_0009.tif, ...
+test6_2_0035.tif    test6_2_0035.tif, test6_2_0036.tif, ...
       </pre>
           The numbers following the last '_' are taken as a format template, and as a start
           value. The minimum format is 3; there is no maximum; the default is 5. The format
@@ -179,8 +180,8 @@
   </table>
   <p>
     It is useful to use NDPluginROI to define an ROI containing the entire Pilatus detector.
-    This ROI can be monitored to make sure that the 20-bit limit of 1,048,575 is not
-    being approached in any pixel.
+    The MaxValue_RBV PV in this ROI can be monitored to make sure that the 20-bit limit
+    of 1,048,575 is not being approached in any pixel.
   </p>
   <h2 id="Driver_parameters" style="text-align: left">
     Pilatus specific parameters</h2>
@@ -317,24 +318,26 @@
           a valid bad pixel file then no bad pixel mapping is performed. The bad pixel map
           is used before making the NDArray callbacks. It does not modify the data in the
           files that camserver writes. This is a simple ASCII file with the following format:
-          <pre>      badX1,badY1 replacementX1,replacementY1 
-      badX2,badY2 replacementX2,replacementY2
-      ...
-      </pre>
+          <pre>
+badX1,badY1 replacementX1,replacementY1 
+badX2,badY2 replacementX2,replacementY2
+...
+          </pre>
           The X and Y coordinates range from 0 to NXPixels-1 and NYPixels-1. Up to 100 bad
           pixels can be defined. The bad pixel mapping simply replaces the bad pixels with
           another pixel's value. It does not do any averaging. It is felt that this is sufficient
-          for the purpose for which pilatusROI was written, namely fast on-line viewing of
-          ROIs and ImageData. More sophisticated algorithms can be used for offline analysis
+          for the purpose for which this driver was written, namely fast on-line viewing of
+          ROIs and image data. More sophisticated algorithms can be used for offline analysis
           of the image files themselves. The following is an example bad pixel file for a
           GSECARS detector:
-          <pre>          263,3   262,3
-          264,3   266,3
-          263,3   266,3
-          300,85  299,85
-          300,86  299,86
-          471,129 472,129
-      </pre>
+          <pre>          
+263,3   262,3
+264,3   266,3
+263,3   266,3
+300,85  299,85
+300,86  299,86
+471,129 472,129
+          </pre>
         </td>
         <td>
           BAD_PIXEL_FILE</td>
@@ -378,8 +381,9 @@
           All pixels with intensity < PilatusMinFlatField in the flat field are replaced with
           averageFlatField. When images are collected before the NDArray callbacks are performed
           the following per-pixel correction is applied:
-          <pre>            ImageData[i] = (averageFlatField * ImageData[i])/flatField[i];
-        </pre>
+          <pre>
+ImageData[i] = (averageFlatField * ImageData[i])/flatField[i];
+          </pre>
         </td>
         <td>
           FLAT_FIELD_FILE</td>
@@ -453,8 +457,9 @@
     The Pilatus driver is created with the following command, either from C/C++ or from
     the EPICS IOC shell.
   </p>
-  <pre>   pilatusDetectorConfig(const char *portName, const char *camserverPort, 
-                         int maxSizeX, int maxSizeY, int maxBuffers, size_t maxMemory);
+  <pre>   
+pilatusDetectorConfig(const char *portName, const char *camserverPort, 
+                      int maxSizeX, int maxSizeY, int maxBuffers, size_t maxMemory);
   </pre>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
@@ -600,8 +605,8 @@ create_monitor_set("auto_settings.req", 30,"P=13PIL1:,D=cam1:")
     Note that the general purpose screen ADBase.adl can be used, but it exposes many
     controls that are not applicable to the Pilatus.</p>
   <p>
-    <code>pilatusDetector.adl</code> is the main screen used to control the pilatusROI
-    SNL program. All records except those for ROIs are accessed through this screen.
+    <code>pilatusDetector.adl</code> is the main screen used to control the Pilatus
+    driver. All records except those for ROIs are accessed through this screen.
   </p>
   <div style="text-align: center">
     <h3 style="text-align: center">
@@ -610,8 +615,8 @@ create_monitor_set("auto_settings.req", 30,"P=13PIL1:,D=cam1:")
   <p>
     <code>NDROI8.adl</code> is used to define the ROIs, and to display the statistics
     for each ROI. In this example there are 3 valid ROIs defined. ROI 0 is the entire
-    detector.&nbsp; ROI 1 is a 100x50 rectangle starting at [300,60], and ROI 2 is a
-    50x30 rectangle starting at [320,70]..</p>
+    detector, ROI 1 is a 100x50 rectangle starting at [300,60], and ROI 2 is a 50x30
+    rectangle starting at [320,70].</p>
   <div style="text-align: center">
     <h3 style="text-align: center">
       NDROI8.adl</h3>
@@ -745,21 +750,21 @@ def user_getcounts '{
     Performance measurements</h2>
   <p>
     The following measurements were done to demonstrate the performance that can be
-    obtained with pilatusROI.</p>
+    obtained with the areaDetector Pilatus driver.</p>
   <ol>
-    <li>AcquireMode=Internal, NImages=1000, ExposureTime=.005, ExposurePeriod=.01, NExposures=1.
+    <li>AcquireMode=Internal, NumImages=1000, AcquireTime=.005, AcquirePeriod=.01, NumExposures=1.
       The time to collect this series should be exactly 10.0 seconds. The actual time
       was measured using the EPICS camonitor program. It printed the time when acquisition
-      was started (Acquire changed to Busy) and when acquisition was complete (Acquire
-      changed to Done). The time was 10.274 seconds. This includes the time for camserver
+      was started (Acquire changed to Acquire=1) and when acquisition was complete (Acquire
+      changed to Done=0). The time was 10.022 seconds. This includes the time for camserver
       to save all 1000 images to disk (366 MB), and for pilatusROI to read each file,
       correct the bad pixels and flat field, compute the ROIs, and post the ROIs to EPICS.
-      It also posted the images to EPICS at 1Hz (10 images total). The total additional
-      time was less than 0.3 seconds for all 1000 images.</li>
+      It also posted all of the images to EPICS. The total additional time was less than
+      0.03 seconds for all 1000 images.</li>
     <li>AcquireMode=Internal, NImages=1, ExposureTime=.01, NExposures=1. An EPICS sscan
       record was used to collect 1000 points. There were no positioner PVs (to eliminate
-      motor overhead). The only detector trigger was the pilatusROI Acquire PV. The only
-      detector PV was ROI1TotalCounts. In this mode camserver is being told to individually
+      motor overhead). The only detector trigger was the Pilatus Acquire PV. The only
+      detector PV was ROI1:0:Total_RBV. In this mode camserver is being told to individually
       collect each file. If there were no overhead then time to collect this series should
       be exactly 10.0 seconds. The actual time measured using the EPICS camonitor program
       was 49.161 seconds. The overhead is thus 39.161 seconds, or 39 ms per point. In

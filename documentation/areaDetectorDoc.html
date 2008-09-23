@@ -13,8 +13,6 @@
     <h2>
       University of Chicago</h2>
   </div>
-  <p>
-    &nbsp;</p>
   <h2>
     Contents</h2>
   <ul>
@@ -71,9 +69,8 @@
     <li>Have high-performance. Applications can be written to get the detector image data
       through EPICS, but an interface is also available to receive the detector data at
       a lower-level for very high performance.</li>
-    <li>Provide an optional Region-Of-Interest (ROI) driver that performs computations
-      on regions within the image data. A basic ROI driver is included in the module,
-      and it is easy to add addtional ROI drivers for specific applications.</li>
+    <li>Provide a mechanism for device-independent real-time data analysis such as regions-of-interest
+      and statistics.</li>
     <li>Provide detector drivers for commonly used detectors in synchrotron applications.
       These include Prosilica GigE video cameras, MAR-CCD x-ray detectors, MAR-345 online
       imaging plate detectors, the Pilatus pixel-array detector, and the Roper Scientific
@@ -149,7 +146,8 @@
     The use of plugins is optional, and it is only plugins that require the driver to
     make callbacks with image data. If there are no plugins being used then EPICS can
     be used simply to control the detector, without accessing the data itself. This
-    is most useful when the vendor API has the ability to save the data to a file.
+    is most useful when the vendor provides an API has the ability to save the data
+    to a file and an application to display the images.
   </p>
   <p>
     What follows is a detailed description of the software, working from the bottom
@@ -168,8 +166,8 @@
     implemented using C++ classes. The base classes, from which drivers and plugins
     are derived, take care of many of the details of asyn and other common code.
   </p>
-  <h2 id="asynPortDriver">
-    asynPortDriver</h2>
+  <h3 id="asynPortDriver">
+    asynPortDriver</h3>
   <p>
     Detector drivers and plugins are asyn port drivers, meaning that they implement
     one or more of the standard asyn interfaces. They register themselves as interrupt
@@ -432,8 +430,8 @@ public:
     is a second version of <code>callParamCallbacks</code> that takes an argument specifying
     the parameter list number, and the asyn address to match.
   </p>
-  <h2 id="NDArray">
-    NDArray</h2>
+  <h3 id="NDArray">
+    NDArray</h3>
   <p>
     The NDArray (N-Dimensional array) is the class that is used for passing detector
     data from drivers to plugins. The NDArray class is defined as follows:
@@ -513,7 +511,7 @@ public:
       first element of the detector in unbinned units. If a selected region of the detector
       is being read, then this value may be &gt 0. The offset value is cumulative, so
       if a plugin such as NDPluginROI further selects a subregion, the offset is relative
-      to the first element in the detector and not to the first element of the region
+      to the first element in the detector, and not to the first element of the region
       passed to NDPluginROI.</li>
     <li><code>binning</code> is the binning (sumation of elements) in this dimension.
       The offset value is cumulative, so if a plugin such as NDPluginROI performs binning,
@@ -531,8 +529,9 @@ public:
     as follows:
   </p>
   <ul>
-    <li><code>uniqueId</code> This should be a number that uniquely identifies this array.
-      Detector drivers should assign this number to the NDArray before calling the plugins.</li>
+    <li><code>uniqueId</code> This should be a number that uniquely identifies this array,
+      e.g. frame number. Detector drivers should assign this number to the NDArray before
+      calling the plugins.</li>
     <li><code>timeStamp</code> This should be a timestamp value in seconds recording when
       the frame was collected. The time=0 reference is driver-dependent because of differences
       in vendor libraries. If there is a choice, it is recommended to use timeStamp=0
@@ -568,8 +567,8 @@ public:
     <li><code>release</code>. This method calls NDArrayPool->release() for this object.
       It decreases the reference count for this array.</li>
   </ul>
-  <h2 id="NDArrayPool">
-    NDArrayPool</h2>
+  <h3 id="NDArrayPool">
+    NDArrayPool</h3>
   <p>
     The NDArrayPool class manages a free list (pool) of NDArray objects (described above).
     Drivers allocate NDArray objects from the pool, and pass these objects to plugins.
@@ -628,8 +627,8 @@ public:
     <li><code>report</code> This method reports on the free list size and other properties
       of the NDArrayPool object.</li>
   </ul>
-  <h2 id="asynNDArrayDriver">
-    asynNDArrayDriver</h2>
+  <h3 id="asynNDArrayDriver">
+    asynNDArrayDriver</h3>
   <p>
     asynNDArrayDriver inherits from asynPortDriver. It implements the asynGenericPointer
     functions, assuming that these reference NDArray objects. This is the class from
@@ -665,8 +664,8 @@ public:
     <li><code>report</code> This method calls the report function in the asynPortDriver
       base class. It then calls the NDArrayPool->report() method if details &gt 5.</li>
   </ul>
-  <h2 id="ADDriver">
-    ADDriver</h2>
+  <h3 id="ADDriver">
+    ADDriver</h3>
   <p>
     ADDriver inherits from asynNDArrayDriver. This is the class from which area detector
     drivers are directly derived. Its public interface is defined as follows:
@@ -701,8 +700,8 @@ public:
       file name in the ADFullFileName parameter from the ADFilePath, ADFileName, ADFileNumber,
       and ADFileTemplate parameters.</li>
   </ul>
-  <h2 id="ADStdDriverParams">
-    ADStdDriverParams</h2>
+  <h3 id="ADStdDriverParams">
+    ADStdDriverParams</h3>
   <p>
     The file <code>ADStdDriverParams.h</code> defines the following:
   </p>
@@ -761,18 +760,18 @@ typedef enum
       ending in _RBV, that contains the actual value (Read Back Value) of the parameter.</li>
     <li><b>EPICS record type:</b> The record type of the record. Waveform records are
       used to hold long strings, with length (NELM) = 256 bytes and EPICS data type (FTVL)
-      = UCHAR. This removes the 40 character restriction on path name lengths that arise
-      if an EPICS "string" PV is used. medm allows one to edit and display such records
-      correctly. EPICS clients will typically need to convert the path name from a string
-      to an integer or byte array before sending the path name to EPICS. This is easy
-      to do in clients like SPEC, Matlab, and IDL.</li>
+      = UCHAR. This removes the 40 character restriction string lengths that arise if
+      an EPICS "string" PV is used. MEDM allows one to edit and display such records correctly.
+      EPICS clients will typically need to convert the path name from a string to an integer
+      or byte array before sending the path name to EPICS. This is easy to do in clients
+      like SPEC, Matlab, and IDL.</li>
   </ul>
   <p>
     Note that for parameters whose values are defined by enum values (e.g ADImageMode,
     ADTriggerMode, ADFileFormat, ADStatus), drivers can use a different set of enum
     values for these parameters. They can override the enum menu in ADBase.template
-    with detector-specific choices by loading a detector-specific template file after
-    loading ADBase.template.
+    with detector-specific choices by loading a detector-specific template file that
+    redefines that record field after loading ADBase.template.
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
@@ -1352,7 +1351,7 @@ typedef enum
         <td>
           r/o</td>
         <td>
-          Full file name</td>
+          Full file name constructed using the algorithm described in ADFileTemplate</td>
         <td>
           FULL_FILE_NAME</td>
         <td>
@@ -1370,7 +1369,7 @@ typedef enum
           r/w</td>
         <td>
           Auto-increment flag. Controls whether FileNumber is automatically incremented by
-          1 each time an acquisition completes (0=No, 1=Yes)</td>
+          1 each time a file is saved (0=No, 1=Yes)</td>
         <td>
           AUTO_INCREMENT</td>
         <td>
@@ -1388,7 +1387,8 @@ typedef enum
         <td>
           r/w</td>
         <td>
-          Auto-save flag (0=No, 1=Yes)</td>
+          Auto-save flag (0=No, 1=Yes) controlling whether a file is automatically saved each
+          time acquisition completes.</td>
         <td>
           AUTO_SAVE</td>
         <td>
@@ -1656,5 +1656,9 @@ typedef enum
     <li><a href="pilatusDoc.html">Pilatus driver</a></li>
     <li><a href="adscDoc.html">ADSC driver</a></li>
   </ul>
+  <p>
+    In addition to these drivers, Brian Tieman is writing a driver for the Perkin-Elmer
+    flat-panel amorphous silicon detector. Drivers for the MAR-CCD, MAR-345 online image
+    plate, and the Roper Scientific CCD cameras will be written in the near future.</p>
 </body>
 </html>

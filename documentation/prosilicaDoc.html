@@ -7,14 +7,12 @@
     <h1>
       areaDetector Prosilica driver</h1>
     <h2>
-      September 17, 2008</h2>
+      September 20, 2008</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
       University of Chicago</h2>
   </div>
-  <p>
-    &nbsp;</p>
   <h2>
     Contents</h2>
   <ul>
@@ -22,6 +20,7 @@
     <li><a href="#Performance measurements">Performance measurements</a></li>
     <li><a href="#Hardware notes">Hardware notes</a></li>
     <li><a href="#Restrictions">Restrictions</a></li>
+    <li><a href="#Future">Future enhancements</a></li>
   </ul>
   <h2 id="Prosilica Driver">
     Prosilica Driver</h2>
@@ -32,8 +31,8 @@
     to the Prosilica cameras. The driver is currently only supported under Windows (EPICS
     win32-x86 architecture) because the vendor library is provided as a Windows DLL.
     The vendor library provided by Prosilica does callbacks to a user-supplied function
-    each time there is a new frame. Thus, it is not necessary to create a thread for
-    callbacks in this driver.
+    each time there is a new frame. Thus, the driver does not need to create a thread
+    itself for callbacks.
   </p>
   <p>
     The vendor library supports saving individual frames as TIFF files, and this is
@@ -246,7 +245,7 @@
         <td>
           Number of packets requested</td>
         <td>
-          PS_PACKETS_RESENT</td>
+          PS_PACKETS_REQUESTED</td>
         <td>
           $(P)$(R)PSPacketsRequested_RBV</td>
         <td>
@@ -302,10 +301,21 @@
       prosilica.adl</h3>
     <img alt="prosilica.png" src="prosilica.png" /></div>
   <p>
-    The following is an IDL epics_ad_display screen (discussed below) illustrating the
-    Prosilica detector images.
+    The following is an IDL <a href="http://cars.uchicago.edu/software/idl/imaging_routines.html#epics_ad_display">
+      epics_ad_display</a> screen displaying the Prosilica detector images.
   </p>
   <div style="text-align: center">
+    <h3>
+      epics_ad_display.pro</h3>
     <img alt="prosilica_tvscl.jpg" src="prosilica_tvscl.jpg" /></div>
+  <h2 id="Future">
+    Future enhancements</h2>
+  <p>
+    The driver does not currently support color. This will be added in the near future.
+  </p>
+  <p>
+    Work is needed on connection management. If the camera is unplugged or powered off
+    which the areaDetector driver is running it does not gracefully recover.
+  </p>
 </body>
 </html>
