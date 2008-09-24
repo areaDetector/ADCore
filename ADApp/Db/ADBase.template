@@ -414,59 +414,39 @@ record(longin, "$(P)$(R)NumImages_RBV")
 #  and stop                                                       #
 ###################################################################
 
-record(bo, "$(P)$(R)Acquire")
-{
+record(bo, "$(P)$(R)Acquire") {
    field(ZNAM, "Done")
    field(ONAM, "Acquire")
-   field(OUT,  "$(P)$(R)AcquireFanout PP MS")
+   field(OUT, "$(P)$(R)DoAcquire PP")
 }
 
-record(dfanout, "$(P)$(R)AcquireFanout")
-{
-   field(OUTA, "$(P)$(R)StartAcquireCalc.PROC PP MS")
-   field(OUTB, "$(P)$(R)DoAcquire PP MS")
+record(calcout, "$(P)$(R)StartAcquireCalc") {
+   field(INPA, "$(P)$(R)Acquire")
+   field(CALC, "A")
+   field(OUT, "$(P)$(R)AcquireBusy PP MS")
+   field(OOPT, "Every Time")
 }
 
-record(calcout, "$(P)$(R)StartAcquireCalc")
-{
-    field(INPA, "$(P)$(R)Acquire")
-    field(CALC, "A")
-    field(OUT,  "$(P)$(R)AcquireBusy PP MS")
-    field(OOPT, "Transition To Non-zero")
+record(busy, "$(P)$(R)AcquireBusy") {
 }
 
-record(busy, "$(P)$(R)AcquireBusy")
-{
-}
-
-record(longout, "$(P)$(R)DoAcquire")
-{
+record(longout, "$(P)$(R)DoAcquire") {
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQUIRE")
-}
+   field(OUT, "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQUIRE")
+   field(FLNK, "$(P)$(R)StartAcquireCalc") }
 
-record(longin, "$(P)$(R)Acquire_RBV")
-{
+record(longin, "$(P)$(R)Acquire_RBV") {
    field(PINI, "1")
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQUIRE")
-    field(SCAN, "I/O Intr")
-    field(FLNK, "$(P)$(R)AcquireDoneCalc")
-}
+   field(DTYP, "asynInt32")
+   field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQUIRE")
+   field(SCAN, "I/O Intr")
+   field(FLNK, "$(P)$(R)AcquireDoneCalc") }
 
-record(calcout, "$(P)$(R)AcquireDoneCalc")
-{
-    field(INPA, "$(P)$(R)Acquire_RBV")
-    field(CALC, "A")
-    field(OUT,  "$(P)$(R)AcquireDoneFanout PP MS")
-    field(OOPT, "Transition To Zero")
-}
-
-record(dfanout, "$(P)$(R)AcquireDoneFanout")
-{
-   field(VAL, "0")
-   field(OUTA, "$(P)$(R)Acquire CA MS")
-   field(OUTB, "$(P)$(R)AcquireBusy CA MS")
+record(calcout, "$(P)$(R)AcquireDoneCalc") {
+   field(INPA, "$(P)$(R)Acquire_RBV")
+   field(CALC, "A")
+   field(OUT, "$(P)$(R)Acquire CA")
+   field(OOPT, "Transition To Zero")
 }
 
 ###################################################################
