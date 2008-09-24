@@ -39,11 +39,15 @@ dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13SIM1:,R=ROI
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13SIM1:,R=ROI1:2:,PORT=SIM1ROI,ADDR=2,TIMEOUT=1,HIST_SIZE=256")
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13SIM1:,R=ROI1:3:,PORT=SIM1ROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
 
+# Load scan records
+dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=13SIM1:,MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
+
 #asynSetTraceIOMask("SIM1",0,2)
 #asynSetTraceMask("SIM1",0,255)
 #asynSetTraceMask("SIM2",0,255)
 
 set_requestfile_path("./")
+set_requestfile_path("$(SSCAN)/sscanApp/Db")
 set_savefile_path("./autosave")
 set_requestfile_path("$(AREA_DETECTOR)/ADApp/Db")
 set_pass0_restoreFile("auto_settings.sav")
