@@ -1,7 +1,7 @@
 
 file {
 	name="/home/epics/devel/areaDetector/1-2/ADApp/op/adl/ADTop.adl"
-	version=030000
+	version=030102
 }
 display {
 	object {
@@ -360,51 +360,45 @@ composite {
 		}
 	}
 }
-composite {
+"related display" {
+	object {
+		x=225
+		y=81
+		width=64
+		height=21
+	}
+	display[0] {
+		label="Image #1"
+		name="NDStdArrays.adl"
+		args="P=13SIM1:, R=image1:"
+	}
+	display[1] {
+		label="File #1"
+		name="NDFile.adl"
+		args="P=13SIM1:, R=file1:"
+	}
+	display[2] {
+		label="ROI #1"
+		name="NDROI.adl"
+		args="P=13SIM1:, R=ROI1:"
+	}
+	display[3] {
+		label="Scan #1"
+		name="scan_more.adl"
+		args="P=13SIM1:, S=scan1, N=1"
+	}
+	clr=14
+	bclr=51
+}
+text {
 	object {
 		x=37
 		y=81
-		width=252
-		height=21
+		width=80
+		height=20
 	}
-	"composite name"=""
-	children {
-		"related display" {
-			object {
-				x=225
-				y=81
-				width=64
-				height=21
-			}
-			display[0] {
-				label="Image #1"
-				name="NDStdArrays.adl"
-				args="P=13SIM1:, R=image1:"
-			}
-			display[1] {
-				label="File #1"
-				name="NDFile.adl"
-				args="P=13SIM1:, R=file1:"
-			}
-			display[2] {
-				label="ROI #1"
-				name="NDROI.adl"
-				args="P=13SIM1:, R=ROI1:"
-			}
-			clr=14
-			bclr=51
-		}
-		text {
-			object {
-				x=37
-				y=81
-				width=80
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Simulator Plug-ins"
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="Simulator Plug-ins"
 }
