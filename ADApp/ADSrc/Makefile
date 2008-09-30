@@ -19,7 +19,8 @@ LIB_SRCS += asynPortDriver.cpp
 LIB_SRCS += asynNDArrayDriver.cpp
 LIB_SRCS += ADDriver.cpp
 LIB_SRCS += abusyRecord.c
-LIB_SRCS += devAsynAbusy.c
+LIB_SRCS += devAbusyAsyn.c
+LIB_SRCS += devAbusySoft.c
 LIB_LIBS += asyn
 LIB_LIBS += $(EPICS_BASE_IOC_LIBS)
 
