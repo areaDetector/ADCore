@@ -414,39 +414,18 @@ record(longin, "$(P)$(R)NumImages_RBV")
 #  and stop                                                       #
 ###################################################################
 
-record(bo, "$(P)$(R)Acquire") {
-   field(ZNAM, "Done")
-   field(ONAM, "Acquire")
-   field(OUT, "$(P)$(R)DoAcquire PP")
-}
-
-record(calcout, "$(P)$(R)StartAcquireCalc") {
-   field(INPA, "$(P)$(R)Acquire")
-   field(CALC, "A")
-   field(OUT, "$(P)$(R)AcquireBusy PP MS")
-   field(OOPT, "Every Time")
-}
-
-record(busy, "$(P)$(R)AcquireBusy") {
-}
-
-record(longout, "$(P)$(R)DoAcquire") {
+record(abusy, "$(P)$(R)Acquire") {
    field(DTYP, "asynInt32")
    field(OUT, "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQUIRE")
-   field(FLNK, "$(P)$(R)StartAcquireCalc") }
+   field(ZNAM, "Done")
+   field(ONAM, "Acquire")
+}
 
 record(longin, "$(P)$(R)Acquire_RBV") {
    field(PINI, "1")
    field(DTYP, "asynInt32")
    field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQUIRE")
    field(SCAN, "I/O Intr")
-   field(FLNK, "$(P)$(R)AcquireDoneCalc") }
-
-record(calcout, "$(P)$(R)AcquireDoneCalc") {
-   field(INPA, "$(P)$(R)Acquire_RBV")
-   field(CALC, "A")
-   field(OUT, "$(P)$(R)Acquire CA")
-   field(OOPT, "Transition To Zero")
 }
 
 ###################################################################
