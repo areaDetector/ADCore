@@ -331,7 +331,8 @@ void simDetector::simTask()
 
         /* Simulate being busy during the exposure time.  Use epicsEventWaitWithTimeout so that
          * manually stopping the acquisition will work */
-        if (acquireTime >= epicsThreadSleepQuantum()) {
+
+        if (acquireTime > 0.0) {
             epicsMutexUnlock(this->mutexId);
             status = epicsEventWaitWithTimeout(this->stopEventId, acquireTime);
             epicsMutexLock(this->mutexId);
@@ -396,7 +397,7 @@ void simDetector::simTask()
             asynPrint(this->pasynUser, ASYN_TRACE_FLOW, 
                      "%s:%s: delay=%f\n",
                       driverName, functionName, delay);            
-            if (delay >= epicsThreadSleepQuantum())
+            if (delay >= 0.0)
                 status = epicsEventWaitWithTimeout(this->stopEventId, delay);
 
         } else {
