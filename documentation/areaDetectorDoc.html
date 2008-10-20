@@ -1320,8 +1320,12 @@ typedef enum
           Format string for constructing ADFullFileName from ADFilePath, ADFileName, and ADFileNumber.
           The final file name (which is placed in ADFullFileName) is created with the following
           code:
-          <pre>        epicsSnprintf(FullFilename, sizeof(FullFilename), FileFormat, 
-                      FilePath, Filename, FileNumber);
+          <pre>
+epicsSnprintf(
+    FullFilename, 
+    sizeof(FullFilename), 
+    FileFormat, FilePath, 
+    Filename, FileNumber);
         </pre>
           FilePath, Filename, FileNumber are converted in that order with FileFormat. An example
           file format is <code>"%s%s%4.4d.tif"</code>. The first %s converts the FilePath,

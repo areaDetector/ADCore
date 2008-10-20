@@ -77,7 +77,7 @@ public:
     NDPluginROI.h defines the following parameters that are global to all ROIs for a
     plugin. It also implements all of the standard plugin parameters from NDPlugDriver.
     The EPICS database NDROI.template provide access to these parameters, listed in
-    the following table.
+    the following table. 
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
@@ -130,7 +130,9 @@ public:
     NDPluginROI.h defines the following parameters that are specific to each individual
     ROI in the plugin. The EPICS database NDROIN.template provide access to these parameters,
     listed in the following table. The pasynUser-&gtaddr is used to control which ROI
-    is being addressed.
+    is being addressed. Note that to reduce the width of this table the enum names have
+    been split into 2 lines, but these are just a single name, for example 
+    <code>NDPluginROIName</code>.
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
@@ -156,7 +158,7 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROIName</td>
+          NDPluginROI<br/>Name</td>
         <td>
           asynOctet</td>
         <td>
@@ -174,7 +176,7 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROIUse</td>
+          NDPluginROI<br/>Use</td>
         <td>
           asynInt32</td>
         <td>
@@ -197,7 +199,7 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROIDim0Bin</td>
+          NDPluginROI<br/>Dim0Bin</td>
         <td>
           asynInt32</td>
         <td>
@@ -215,7 +217,7 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROIDim1Bin</td>
+          NDPluginROI<br/>Dim1Bin</td>
         <td>
           asynInt32</td>
         <td>
@@ -233,7 +235,7 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROIDim0Min</td>
+          NDPluginROI<br/>Dim0Min</td>
         <td>
           asynInt32</td>
         <td>
@@ -253,7 +255,7 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROIDim1Min</td>
+          NDPluginROI<br/>Dim1Min</td>
         <td>
           asynInt32</td>
         <td>
@@ -272,7 +274,7 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROIDim0Size</td>
+          NDPluginROI<br/>Dim0Size</td>
         <td>
           asynInt32</td>
         <td>
@@ -290,7 +292,7 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROIDim0Size</td>
+          NDPluginROI<br/>Dim0Size</td>
         <td>
           asynInt32</td>
         <td>
@@ -308,7 +310,7 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROIDim0Reverse</td>
+          NDPluginROI<br/>Dim0Reverse</td>
         <td>
           asynInt32</td>
         <td>
@@ -327,7 +329,7 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROIDim0Reverse</td>
+          NDPluginROI<br/>Dim0Reverse</td>
         <td>
           asynInt32</td>
         <td>
@@ -346,7 +348,7 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROIDataType</td>
+          NDPluginROI<br/>DataType</td>
         <td>
           asynInt32</td>
         <td>
@@ -365,7 +367,7 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROIBgdWidth</td>
+          NDPluginROI<br/>BgdWidth</td>
         <td>
           asynInt32</td>
         <td>
@@ -420,7 +422,7 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROIComputeStatistics</td>
+          NDPluginROI<br />ComputeStatistics</td>
         <td>
           asynInt32</td>
         <td>
@@ -439,7 +441,7 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROIMinValue</td>
+          NDPluginROI<br/>MinValue</td>
         <td>
           asynFloat64</td>
         <td>
@@ -455,7 +457,7 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROIMaxValue</td>
+          NDPluginROI<br/>MaxValue</td>
         <td>
           asynFloat64</td>
         <td>
@@ -471,7 +473,7 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROIMeanValue</td>
+          NDPluginROI<br/>MeanValue</td>
         <td>
           asynFloat64</td>
         <td>
@@ -487,7 +489,7 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROITotal</td>
+          NDPluginROI<br/>Total</td>
         <td>
           asynFloat64</td>
         <td>
@@ -503,7 +505,7 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROINet</td>
+          NDPluginROI<br/>Net</td>
         <td>
           asynFloat64</td>
         <td>
@@ -526,7 +528,7 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROIComputeHistogram</td>
+          NDPluginROI<br />ComputeHistogram</td>
         <td>
           asynInt32</td>
         <td>
@@ -545,7 +547,7 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROIHistSize</td>
+          NDPluginROI<br/>HistSize</td>
         <td>
           asynInt32</td>
         <td>
@@ -563,7 +565,7 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROIHistMin</td>
+          NDPluginROI<br/>HistMin</td>
         <td>
           asynFloat64</td>
         <td>
@@ -582,7 +584,7 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROIHistMax</td>
+          NDPluginROI<br/>HistMax</td>
         <td>
           asynFloat64</td>
         <td>
@@ -601,7 +603,7 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROIHistEntropy</td>
+          NDPluginROI<br/>HistEntropy</td>
         <td>
           asynFloat64</td>
         <td>
@@ -620,7 +622,7 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROIHistArray</td>
+          NDPluginROI<br/>HistArray</td>
         <td>
           asynFloat64Array</td>
         <td>
