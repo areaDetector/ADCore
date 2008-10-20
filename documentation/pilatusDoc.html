@@ -186,7 +186,9 @@ test6_2_0035.tif    test6_2_0035.tif, test6_2_0036.tif, ...
   <h2 id="Driver_parameters" style="text-align: left">
     Pilatus specific parameters</h2>
   <p>
-    The Pilatus driver implements the following parameters in addition to those in ADStdDriverParams.h:
+    The Pilatus driver implements the following parameters in addition to those in ADStdDriverParams.h:. 
+    Note that to reduce the width of this table the enum names have been split into
+    2 lines, but these are just a single name, for example <code>PilatusDelayTime</code>.
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
@@ -212,7 +214,7 @@ test6_2_0035.tif    test6_2_0035.tif, test6_2_0036.tif, ...
       </tr>
       <tr>
         <td>
-          PilatusDelayTime</td>
+          Pilatus<br/>DelayTime</td>
         <td>
           asynFloat64</td>
         <td>
@@ -229,7 +231,7 @@ test6_2_0035.tif    test6_2_0035.tif, test6_2_0036.tif, ...
       </tr>
       <tr>
         <td>
-          PilatusThreshold</td>
+          Pilatus<br/>Threshold</td>
         <td>
           asynFloat64</td>
         <td>
@@ -269,7 +271,7 @@ test6_2_0035.tif    test6_2_0035.tif, test6_2_0036.tif, ...
       </tr>
       <tr>
         <td>
-          PilatusArmed</td>
+          Pilatus<br/>Armed</td>
         <td>
           asynInt32</td>
         <td>
@@ -288,7 +290,7 @@ test6_2_0035.tif    test6_2_0035.tif, test6_2_0036.tif, ...
       </tr>
       <tr>
         <td>
-          PilatusTiffTimeout</td>
+          Pilatus<br/>TiffTimeout</td>
         <td>
           asynFloat64</td>
         <td>
@@ -308,7 +310,7 @@ test6_2_0035.tif    test6_2_0035.tif, test6_2_0036.tif, ...
       </tr>
       <tr>
         <td>
-          PilatusBadPixelFile</td>
+          Pilatus<br/>BadPixelFile</td>
         <td>
           asynOctet</td>
         <td>
@@ -348,7 +350,7 @@ badX2,badY2 replacementX2,replacementY2
       </tr>
       <tr>
         <td>
-          PilatusNumBadPixels</td>
+          Pilatus<br/>NumBadPixels</td>
         <td>
           asynInt32</td>
         <td>
@@ -365,7 +367,7 @@ badX2,badY2 replacementX2,replacementY2
       </tr>
       <tr>
         <td>
-          PilatusFlatFieldFile</td>
+          Pilatus<br/>FlatFieldFile</td>
         <td>
           asynOctet</td>
         <td>
@@ -382,7 +384,9 @@ badX2,badY2 replacementX2,replacementY2
           averageFlatField. When images are collected before the NDArray callbacks are performed
           the following per-pixel correction is applied:
           <pre>
-ImageData[i] = (averageFlatField * ImageData[i])/flatField[i];
+ImageData[i] = 
+    (averageFlatField * 
+    ImageData[i])/flatField[i];
           </pre>
         </td>
         <td>
@@ -394,7 +398,7 @@ ImageData[i] = (averageFlatField * ImageData[i])/flatField[i];
       </tr>
       <tr>
         <td>
-          PilatusMinFlatField</td>
+          Pilatus<br/>MinFlatField</td>
         <td>
           asynInt32</td>
         <td>
@@ -413,7 +417,7 @@ ImageData[i] = (averageFlatField * ImageData[i])/flatField[i];
       </tr>
       <tr>
         <td>
-          PilatusFlatFieldValid</td>
+          Pilatus<br/>FlatFieldValid</td>
         <td>
           asynInt32</td>
         <td>
