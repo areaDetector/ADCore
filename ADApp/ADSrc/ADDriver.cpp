@@ -1,6 +1,6 @@
 /* ADDriver.c
  *
- * This is a driver for a simulated area detector.
+ * This is the base class from which actual area detectors are derived.
  *
  * Author: Mark Rivers
  *         University of Chicago
