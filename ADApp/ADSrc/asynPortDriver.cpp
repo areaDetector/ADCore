@@ -1305,3 +1305,14 @@ asynPortDriver::asynPortDriver(const char *portName, int maxAddr, int paramTable
     }
 }
 
+asynPortDriver::~asynPortDriver()
+{
+    int addr;
+
+    /* This is the destructor */
+    epicsMutexDestroy(this->mutexId);
+    for (addr=0; addr<this->maxAddr; addr++) {
+        delete this->params[addr];
+    }
+    free(this->params);
+}
