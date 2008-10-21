@@ -69,6 +69,7 @@ private:
 class asynPortDriver {
 public:
     asynPortDriver(const char *portName, int maxAddr, int paramTableSize, int interfaceMask, int interruptMask);
+    virtual ~asynPortDriver();
     virtual asynStatus getAddress(asynUser *pasynUser, const char *functionName, int *address); 
     virtual asynStatus findParam(asynParamString_t *paramTable, int numParams, const char *paramName, int *param);
     virtual asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value);
