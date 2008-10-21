@@ -587,7 +587,7 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
 {
     asynStatus status;
     int roi;
-    char *functionName = "NDPluginROI";
+    const char *functionName = "NDPluginROI";
 
 
     this->maxROIs = maxROIs;
