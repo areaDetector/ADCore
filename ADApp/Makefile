@@ -7,6 +7,7 @@ DIRS += pluginSrc
 DIRS += simDetectorSrc
 DIRS += prosilicaSrc
 DIRS += pilatusSrc
+DIRS += marCCDSrc
 #DIRS += adscSrc
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *db*))
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *Db*))
