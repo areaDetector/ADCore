@@ -32,7 +32,7 @@ simDetectorApp_LIBS += calc sscan autosave
 simDetectorApp_LIBS += asyn
 simDetectorApp_LIBS += $(EPICS_BASE_IOC_LIBS)
 
-simDetectorCCDApp_SYS_LIBS_cygwin32 += rpc
+simDetectorApp_SYS_LIBS_cygwin32 += rpc
 
 #=============================
 
