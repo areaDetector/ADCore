@@ -297,6 +297,14 @@ record(ai, "$(P)$(R)AcquirePeriod_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(ai, "$(P)$(R)TimeRemaining_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TIME_REMAINING")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
 
 
 ###################################################################
@@ -316,6 +324,40 @@ record(ai, "$(P)$(R)Gain_RBV")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GAIN")
    field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records control the frame type                           # 
+###################################################################
+record(mbbo, "$(P)$(R)FrameType")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FRAME_TYPE")
+   field(ZRST, "Normal")
+   field(ZRVL, "0")
+   field(ONST, "Background")
+   field(ONVL, "1")
+   field(TWST, "FlatField")
+   field(TWVL, "2")
+   field(THST, "DblCorrelation")
+   field(THVL, "2")
+}
+
+record(mbbi, "$(P)$(R)FrameType_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FRAME_TYPE")
+   field(ZRST, "Normal")
+   field(ZRVL, "0")
+   field(ONST, "Background")
+   field(ONVL, "1")
+   field(TWST, "FlatField")
+   field(TWVL, "2")
+   field(THST, "DblCorrelation")
+   field(THVL, "2")
    field(SCAN, "I/O Intr")
 }
 
@@ -744,21 +786,6 @@ record(bi, "$(P)$(R)CorrectSpatial")
    field(VAL, "0")
    field(ZNAM, "No")
    field(ONAM, "Yes")
-}
-
-record(mbbo, "$(P)$(R)ImageType")
-{
-   field(VAL, "0")
-   field(ZRST, "Normal")
-   field(ONST, "Dbl correlation")
-   field(TWST, "Background")
-   field(THST, "Flatfield")
-}
-
-record(ao, "$(P)$(R)TimeRemaining")
-{
-   field(VAL, "0")
-   field(PREC, "1")
 }
 
 record(stringout, "$(P)$(R)OpenShutterStr")
