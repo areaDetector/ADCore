@@ -21,13 +21,21 @@ typedef enum
     ADShutterOpen
 } ADShutterStatus_t;
 
+/* Enumeration of shutter modes */
+typedef enum
+{
+    ADShutterModeNone,
+    ADShutterModeEPICS, 
+    ADShutterModeDetector
+} ADShutterMode_t;
+
 /* Enumeration of detector status */
 typedef enum
 {
     ADStatusIdle,
     ADStatusAcquire,
     ADStatusReadout,
-    ASStatusCorrect,
+    ADStatusCorrect,
     ADStatusSaving,
     ADStatusAborting,
     ADStatusError,
@@ -39,6 +47,14 @@ typedef enum
     ADImageMultiple,
     ADImageContinuous
 } ADImageMode_t;
+
+typedef enum
+{
+    ADFrameNormal,
+    ADFrameBackground,
+    ADFrameFlatField,
+    ADFrameDoubleCorrelation
+} ADFrameType_t;
 
 typedef enum
 {
@@ -87,15 +103,22 @@ typedef enum
     ADImageSizeY,       /* (asynInt32,    r/o) Size of the image data in the Y direction */
     ADImageSize,        /* (asynInt32,    r/o) Total size of image data in bytes */
     ADDataType,         /* (asynInt32,    r/w) Data type (NDDataType_t) */
+    ADFrameType,        /* (asynInt32,    r/w) Frame type (ADFrameType_t) */
     ADImageMode,        /* (asynInt32,    r/w) Image mode (ADImageMode_t) */
     ADTriggerMode,      /* (asynInt32,    r/w) Trigger mode (ADTriggerMode_t) */
     ADNumExposures,     /* (asynInt32,    r/w) Number of exposures per image to acquire */
     ADNumImages,        /* (asynInt32,    r/w) Number of images to acquire in one acquisition sequence */
     ADAcquireTime,      /* (asynFloat64,  r/w) Acquisition time per image. */
     ADAcquirePeriod,    /* (asynFloat64,  r/w) Acquisition period between images */
+    ADTimeRemaining,    /* (asynFloat64,  r/w) Acquisition time remaining */
     ADStatus,           /* (asynInt32,    r/o) Acquisition status (ADStatus_t) */
-    ADShutter,          /* (asynInt32,    r/w) Shutter control (ADShutterStatus_t) */
     ADAcquire,          /* (asynInt32,    r/w) Start(1) or Stop(0) acquisition */
+    
+    /* Shutter parameters */
+    ADShutter,           /* (asynInt32,    r/w) (ADShutterStatus_t) Open (1) or Close(0) shutter */
+    ADShutterMode,       /* (asynInt32,    r/w) (ADShutterMode_t) */
+    ADShutterOpenDelay,  /* (asynFloat64,  r/w) Time for shutter to open */
+    ADShutterCloseDelay, /* (asynFloat64,  r/w) Time for shutter to close */
 
     /* Statistics on number of images collected and the image rate. */
     ADImageCounter,        /* (asynInt32,    r/w) Number of images acquired since last reset */
@@ -156,15 +179,22 @@ static asynParamString_t ADStdDriverParamString[] = {
     {ADImageSizeY,     "IMAGE_SIZE_Y"},
     {ADImageSize,      "IMAGE_SIZE"  },
     {ADDataType,       "DATA_TYPE"   },
+    {ADFrameType,      "FRAME_TYPE"  },
     {ADImageMode,      "IMAGE_MODE"  },
     {ADNumExposures,   "NEXPOSURES"  },
     {ADNumImages,      "NIMAGES"     },
     {ADAcquireTime,    "ACQ_TIME"    },
     {ADAcquirePeriod,  "ACQ_PERIOD"  },
+    {ADTimeRemaining,  "TIME_REMAINING"},
     {ADStatus,         "STATUS"      },
     {ADTriggerMode,    "TRIGGER_MODE"},
     {ADShutter,        "SHUTTER"     },
     {ADAcquire,        "ACQUIRE"     },
+
+    {ADShutter,          "SHUTTER"             },
+    {ADShutterMode,      "SHUTTER_MODE"        },
+    {ADShutterOpenDelay, "SHUTTER_OPEN_DELAY"  },
+    {ADShutterCloseDelay,"SHUTTER_CLOSE_DELAY" },
 
     {ADImageCounter,   "IMAGE_COUNTER" }, 
 
