@@ -108,6 +108,7 @@ typedef enum
     ADTriggerMode,      /* (asynInt32,    r/w) Trigger mode (ADTriggerMode_t) */
     ADNumExposures,     /* (asynInt32,    r/w) Number of exposures per image to acquire */
     ADNumImages,        /* (asynInt32,    r/w) Number of images to acquire in one acquisition sequence */
+    ADNumImagesCounter, /* (asynInt32,    r/w) Number of images collected in current acquisition sequence */
     ADAcquireTime,      /* (asynFloat64,  r/w) Acquisition time per image. */
     ADAcquirePeriod,    /* (asynFloat64,  r/w) Acquisition period between images */
     ADTimeRemaining,    /* (asynFloat64,  r/w) Acquisition time remaining */
@@ -183,6 +184,7 @@ static asynParamString_t ADStdDriverParamString[] = {
     {ADImageMode,      "IMAGE_MODE"  },
     {ADNumExposures,   "NEXPOSURES"  },
     {ADNumImages,      "NIMAGES"     },
+    {ADNumImagesCounter, "NIMAGES_COUNTER"},
     {ADAcquireTime,    "ACQ_TIME"    },
     {ADAcquirePeriod,  "ACQ_PERIOD"  },
     {ADTimeRemaining,  "TIME_REMAINING"},
