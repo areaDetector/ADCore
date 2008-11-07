@@ -113,6 +113,7 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int paramTableSize, int ma
     setIntegerParam(ADStatus,       ADStatusIdle);
     setIntegerParam(ADAcquire,      0);
     setIntegerParam(ADImageCounter, 0);
+    setIntegerParam(ADNumImagesCounter, 0);
     setDoubleParam(ADTimeRemaining, 0.0);
     
     setStringParam (ADFilePath,     "");
