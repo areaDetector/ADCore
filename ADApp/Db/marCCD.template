@@ -2,6 +2,51 @@
 # Mark Rivers
 # October 31, 2008
 
+# State word
+record(longin,"$(P)$(R)MarState_RBV") {
+    field(DTYP,"asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_STATE")
+    field(SCAN, "I/O Intr")
+    field(PINI, "1")
+    field(DESC,"Task state")
+}
+
+# Status field for low order 4 bits (should only be IDLE, ERROR or BUSY)
+record(mbbi,"$(P)$(R)MarStatus_RBV") {
+    field(DTYP,"asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_STATUS")
+    field(SCAN, "I/O Intr")
+    field(PINI, "1")
+    field(DESC,"Task status")
+    field(ZRVL,"0")
+    field(ZRST,"Idle")
+    field(ZRSV,"NO_ALARM")
+    field(ONVL,"1")
+    field(ONST,"Unknown 1")
+    field(ONSV, "INVALID")
+    field(TWVL,"2")
+    field(TWST,"Unknown 2")
+    field(TWSV, "INVALID")
+    field(THVL,"3")
+    field(THST,"Undefined 3")
+    field(THSV, "INVALID")
+    field(FRVL,"4")
+    field(FRST,"Error")
+    field(FRSV, "MAJOR")
+    field(FVVL,"5")
+    field(FVST,"Undefined 5")
+    field(FVSV, "INVALID")
+    field(SXVL,"6")
+    field(SXST,"Undefined 6")
+    field(SXSV, "INVALID")
+    field(SVVL,"7")
+    field(SVST,"Undefined 7")
+    field(SVSV, "INVALID")
+    field(EIVL,"8")
+    field(EIST,"Busy")
+    field(EISV, "MINOR")
+}
+
 # Individual status fields for the Acquire, Readout, Correct, Writing, and Dezinger tasks
 record(mbbi,"$(P)$(R)MarAcquireStatus_RBV") {
     field(DTYP,"asynInt32")
@@ -33,7 +78,7 @@ record(mbbi,"$(P)$(R)MarAcquireStatus_RBV") {
     field(SVVL,"7")
     field(SVST,"Undefined 7")
     field(SVSV, "INVALID")
-    field(EIVL,"5")
+    field(EIVL,"8")
     field(EIST,"Reserved")
     field(EISV, "MINOR")
 }
@@ -68,7 +113,7 @@ record(mbbi,"$(P)$(R)MarReadoutStatus_RBV") {
     field(SVVL,"7")
     field(SVST,"Undefined 7")
     field(SVSV, "INVALID")
-    field(EIVL,"5")
+    field(EIVL,"8")
     field(EIST,"Reserved")
     field(EISV, "MINOR")
 }
@@ -103,7 +148,7 @@ record(mbbi,"$(P)$(R)MarCorrectStatus_RBV") {
     field(SVVL,"7")
     field(SVST,"Undefined 7")
     field(SVSV, "INVALID")
-    field(EIVL,"5")
+    field(EIVL,"8")
     field(EIST,"Reserved")
     field(EISV, "MINOR")
 }
@@ -138,7 +183,7 @@ record(mbbi,"$(P)$(R)MarWritingStatus_RBV") {
     field(SVVL,"7")
     field(SVST,"Undefined 7")
     field(SVSV, "INVALID")
-    field(EIVL,"5")
+    field(EIVL,"8")
     field(EIST,"Reserved")
     field(EISV, "MINOR")
 }
@@ -173,7 +218,7 @@ record(mbbi,"$(P)$(R)MarDezingerStatus_RBV") {
     field(SVVL,"7")
     field(SVST,"Undefined 7")
     field(SVSV, "INVALID")
-    field(EIVL,"5")
+    field(EIVL,"8")
     field(EIST,"Reserved")
     field(EISV, "MINOR")
 }
@@ -182,7 +227,7 @@ record(mbbi,"$(P)$(R)MarDezingerStatus_RBV") {
 record(ao, "$(P)$(R)ReadTiffTimeout")
 {
     field(DTYP, "asynFloat64")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TIFF_TIMEOUT")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_TIFF_TIMEOUT")
     field(DESC, "Timeout for TIFF file")
     field(VAL,  "30")
     field(EGU,  "s")
@@ -193,7 +238,7 @@ record(ao, "$(P)$(R)ReadTiffTimeout")
 record(bo, "$(P)$(R)OverlapMode")
 {
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))Overlap")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_OVERLAP")
     field(PINI, "1")
     field(DESC, "Overlap or sequential")
     field(ZNAM, "Sequential")
@@ -203,7 +248,7 @@ record(bo, "$(P)$(R)OverlapMode")
 record(bi, "$(P)$(R)OverlapMode_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))Overlap")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_OVERLAP")
     field(SCAN, "I/O Intr")
     field(PINI, "1")
     field(DESC, "Overlap or sequential")
@@ -211,6 +256,71 @@ record(bi, "$(P)$(R)OverlapMode_RBV")
     field(ONAM, "Overlap")
 }
 
+# Read data files?
+record(bo, "$(P)$(R)ReadFiles")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_READ_FILES")
+    field(PINI, "1")
+    field(DESC, "Read data files?")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)ReadFiles_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_READ_FILES")
+    field(SCAN, "I/O Intr")
+    field(PINI, "1")
+    field(DESC, "Read data files")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+}
+
+# We replace the choice fields for FrameType from ADBase.template
+record(mbbo, "$(P)$(R)FrameType")
+{
+   field(ZRST, "Normal")
+   field(ZRVL, "0")
+   field(ONST, "Background")
+   field(ONVL, "1")
+   field(TWST, "Raw")
+   field(TWVL, "2")
+   field(THST, "DblCorrelation")
+   field(THVL, "3")
+}
+
+record(mbbi, "$(P)$(R)FrameType_RBV")
+{
+   field(ZRST, "Normal")
+   field(ZRVL, "0")
+   field(ONST, "Background")
+   field(ONVL, "1")
+   field(TWST, "Raw")
+   field(TWVL, "2")
+   field(THST, "DblCorrelation")
+   field(THVL, "3")
+   field(SCAN, "I/O Intr")
+}
+
+# We replace the file format choices from ADBase.template
+record(mbbo, "$(P)$(R)FileFormat")
+{
+    field(ZRST, "TIFF")
+    field(ZRVL, "0")
+    field(ONST, "Invalid")
+    field(ONVL, "1")
+}
+
+record(mbbi, "$(P)$(R)FileFormat_RBV")
+{
+    field(ZRST, "TIFF")
+    field(ZRVL, "0")
+    field(ONST, "Invalid")
+    field(ONVL, "1")
+    field(SCAN, "I/O Intr")
+}
 
 # asyn record for interactive communication with marServer
 record(asyn, "$(P)$(R)marServerAsyn")
