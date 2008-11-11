@@ -1,6 +1,6 @@
 
 file {
-	name="ADEpicsShutter.adl"
+	name="/home/epics/devel/areaDetector/1-3beta/ADApp/op/adl/ADEpicsShutter.adl"
 	version=030102
 }
 display {
@@ -8,7 +8,7 @@ display {
 		x=112
 		y=138
 		width=350
-		height=200
+		height=265
 	}
 	clr=14
 	bclr=4
@@ -90,6 +90,17 @@ display {
 rectangle {
 	object {
 		x=0
+		y=34
+		width=350
+		height=25
+	}
+	"basic attribute" {
+		clr=2
+	}
+}
+rectangle {
+	object {
+		x=0
 		y=9
 		width=350
 		height=25
@@ -100,8 +111,34 @@ rectangle {
 }
 text {
 	object {
-		x=24
-		y=90
+		x=25
+		y=36
+		width=300
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="$(P)$(R)"
+	align="horiz. centered"
+}
+text {
+	object {
+		x=25
+		y=11
+		width=300
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="EPICS Shutter Control"
+	align="horiz. centered"
+}
+text {
+	object {
+		x=19
+		y=81
 		width=130
 		height=20
 	}
@@ -111,25 +148,10 @@ text {
 	textix="Open drive PV"
 	align="horiz. right"
 }
-"text entry" {
-	object {
-		x=161
-		y=90
-		width=160
-		height=20
-	}
-	control {
-		chan="$(P)$(R)ShutterStatus.INP"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
 text {
 	object {
-		x=14
-		y=115
+		x=9
+		y=106
 		width=140
 		height=20
 	}
@@ -139,25 +161,10 @@ text {
 	textix="Close drive PV"
 	align="horiz. right"
 }
-"text entry" {
-	object {
-		x=161
-		y=115
-		width=160
-		height=20
-	}
-	control {
-		chan="$(P)$(R)ShutterStatus.INP"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
 text {
 	object {
-		x=34
-		y=140
+		x=29
+		y=131
 		width=120
 		height=20
 	}
@@ -167,25 +174,10 @@ text {
 	textix="Open command"
 	align="horiz. right"
 }
-"text entry" {
-	object {
-		x=161
-		y=140
-		width=160
-		height=20
-	}
-	control {
-		chan="$(P)$(R)OpenShutterStr"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
 text {
 	object {
-		x=24
-		y=165
+		x=19
+		y=156
 		width=130
 		height=20
 	}
@@ -195,31 +187,158 @@ text {
 	textix="Close command"
 	align="horiz. right"
 }
-"text entry" {
-	object {
-		x=161
-		y=165
-		width=160
-		height=20
-	}
-	control {
-		chan="$(P)$(R)CloseShutterStr"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
 text {
 	object {
-		x=25
-		y=10
-		width=300
+		x=19
+		y=181
+		width=130
 		height=20
 	}
 	"basic attribute" {
-		clr=54
+		clr=14
 	}
-	textix="EPICS Shutter Control $(P)$(R)"
-	align="horiz. centered"
+	textix="Status PV"
+	align="horiz. right"
+}
+text {
+	object {
+		x=29
+		y=206
+		width=120
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Open status"
+	align="horiz. right"
+}
+text {
+	object {
+		x=19
+		y=231
+		width=130
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Close status"
+	align="horiz. right"
+}
+composite {
+	object {
+		x=156
+		y=81
+		width=185
+		height=170
+	}
+	"composite name"=""
+	children {
+		"text entry" {
+			object {
+				x=156
+				y=81
+				width=185
+				height=20
+			}
+			control {
+				chan="$(P)$(R)ShutterOpenEPICS.OUT"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		"text entry" {
+			object {
+				x=156
+				y=106
+				width=185
+				height=20
+			}
+			control {
+				chan="$(P)$(R)ShutterCloseEPICS.OUT"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		"text entry" {
+			object {
+				x=156
+				y=131
+				width=185
+				height=20
+			}
+			control {
+				chan="$(P)$(R)ShutterOpenEPICS.OCAL"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		"text entry" {
+			object {
+				x=156
+				y=156
+				width=185
+				height=20
+			}
+			control {
+				chan="$(P)$(R)ShutterCloseEPICS.OCAL"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		"text entry" {
+			object {
+				x=156
+				y=181
+				width=185
+				height=20
+			}
+			control {
+				chan="$(P)$(R)ShutterStatusEPICS_RBV.INP"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		"text entry" {
+			object {
+				x=156
+				y=206
+				width=185
+				height=20
+			}
+			control {
+				chan="$(P)$(R)ShutterStatusEPICS_RBV.ONVL"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		"text entry" {
+			object {
+				x=156
+				y=231
+				width=185
+				height=20
+			}
+			control {
+				chan="$(P)$(R)ShutterStatusEPICS_RBV.ZRVL"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+	}
 }
