@@ -537,6 +537,9 @@ record(mbbi, "$(P)$(R)DetectorState_RBV")
     field(SXST, "Error")
     field(SXVL, "6")
     field(SXSV, "MAJOR")
+    field(SVST, "Waiting")
+    field(SVVL, "7")
+    field(SVSV, "MINOR")
     field(SCAN, "I/O Intr")
 }
 
@@ -720,6 +723,28 @@ record(mbbi, "$(P)$(R)FileFormat_RBV")
 }
 
 ###################################################################
+#  These records control NDArray callacks                         # 
+###################################################################
+record(bo, "$(P)$(R)ArrayCallbacks")
+{
+    field(PINI,  "1")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_CALLBACKS")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+}
+
+record(bi, "$(P)$(R)ArrayCallbacks_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_CALLBACKS")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+    field(SCAN, "I/O Intr")
+}
+
+###################################################################
 #  These records provide status information                       # 
 ###################################################################
 
@@ -752,6 +777,155 @@ record(waveform, "$(P)$(R)StringFromServer_RBV")
 }
 
 ###################################################################
+#  These records control the shutter                              # 
+###################################################################
+
+record(mbbo, "$(P)$(R)ShutterMode")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SHUTTER_MODE")
+    field(ZRST, "None")
+    field(ZRVL, "0")
+    field(ONST, "EPICS PV")
+    field(ONVL, "1")
+    field(TWST, "Detector output")
+    field(TWVL, "2")
+}
+
+record(mbbi, "$(P)$(R)ShutterMode_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SHUTTER_MODE")
+    field(ZRST, "None")
+    field(ZRVL, "0")
+    field(ONST, "EPICS PV")
+    field(ONVL, "1")
+    field(TWST, "Camera output")
+    field(TWVL, "2")
+    field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)ShutterControl")
+{
+    field(PINI,  "1")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SHUTTER_CONTROL")
+    field(ZNAM, "Close")
+    field(ONAM, "Open")
+}
+
+record(bi, "$(P)$(R)ShutterControl_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SHUTTER_CONTROL")
+    field(ZNAM, "Close")
+    field(ONAM, "Open")
+    field(SCAN, "I/O Intr")
+}
+
+record(bi, "$(P)$(R)ShutterStatus_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SHUTTER_STATUS")
+    field(ZNAM, "Closed")
+    field(ZSV,  "NO_ALARM")
+    field(ONAM, "Open")
+    field(OSV,  "MINOR")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)ShutterOpenDelay")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SHUTTER_OPEN_DELAY")
+   field(PREC, "3")
+}
+
+record(ai, "$(P)$(R)ShutterOpenDelay_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SHUTTER_OPEN_DELAY")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)ShutterCloseDelay")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SHUTTER_CLOSE_DELAY")
+   field(PREC, "3")
+}
+
+record(ai, "$(P)$(R)ShutterCloseDelay_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SHUTTER_CLOSE_DELAY")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+# This record changes state when the driver opens/closes an EPICS shutter
+record(bi, "$(P)$(R)ShutterControlEPICS")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SHUTTER_CONTROL_EPICS")
+    field(ZNAM, "Closed")
+    field(ZSV,  "NO_ALARM")
+    field(ONAM, "Open")
+    field(OSV,  "MINOR")
+    field(SCAN, "I/O Intr")
+    field(FLNK, "$(P)$(R)ShutterFanout.PROC")
+}
+
+record(fanout, "$(P)$(R)ShutterFanout")
+{
+    field(LNK1, "$(P)$(R)ShutterOpenEPICS.PROC PP MS")
+    field(LNK2, "$(P)$(R)ShutterCloseEPICS.PROC PP MS")
+}
+
+record(calcout, "$(P)$(R)ShutterOpenEPICS")
+{
+    field(INPA, "$(P)$(R)ShutterControlEPICS.VAL NPP NMS")
+    field(CALC, "A")
+    field(OOPT, "Transition To Non-zero")
+    field(DOPT, "Use OCAL")
+    field(OCAL, "1")
+    field(OUT,  "")
+}
+
+record(calcout, "$(P)$(R)ShutterCloseEPICS")
+{
+    field(INPA, "$(P)$(R)ShutterControlEPICS.VAL NPP NMS")
+    field(CALC, "A")
+    field(OOPT, "Transition To Zero")
+    field(DOPT, "Use OCAL")
+    field(OCAL, "0")
+    field(OUT,  "")
+}
+
+record(mbbi, "$(P)$(R)ShutterStatusEPICS_RBV")
+{
+    field(DTYP, "Raw Soft Channel")
+    field(INP,  "test CP MS")
+    field(ZRVL, "0")
+    field(ZRST, "Closed")
+    field(ZRSV, "NO_ALARM")
+    field(ONVL, "1")
+    field(ONST, "Open")
+    field(ONSV, "MINOR")
+}
+
+
+
+###################################################################
 #  The asynRecord is used for mainly for trace mask               # 
 ###################################################################
  
@@ -760,131 +934,5 @@ record(asyn,"$(P)$(R)AsynIO")
 {
     field(PORT, $(PORT))
     field(TIB2,"1")
-}
-
-###################################################################
-#  Records past here need work!!!!                                # 
-###################################################################
-
-# Needs works past here
-record(mbbo, "$(P)$(R)Compression")
-{
-   field(ZRST,  "None")
-   field(ONST,  "LZW")
-   field(TWST, "Skip-Huff")
-   field(THST, "RL Encoding")
-}
-
-record(bi, "$(P)$(R)CorrectBackground")
-{
-   field(VAL, "0")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
-}
-
-record(bi, "$(P)$(R)CorrectFlatfield")
-{
-   field(VAL, "0")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
-}
-
-record(bi, "$(P)$(R)CorrectSpatial")
-{
-   field(VAL, "0")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
-}
-
-record(stringout, "$(P)$(R)OpenShutterStr")
-{
-   field(VAL, "1")
-}
-
-record(bo, "$(P)$(R)OpenShutter")
-{
-}
-
-record(stringout, "$(P)$(R)CloseShutterStr")
-{
-   field(VAL, "0")
-}
-
-record(bo, "$(P)$(R)CloseShutter")
-{
-}
-
-record(ao, "$(P)$(R)OpenShutterDly")
-{
-   field(VAL, ".05")
-   field(PREC, "3")
-}
-
-record(ao, "$(P)$(R)CloseShutterDly")
-{
-   field(VAL, ".05")
-   field(PREC, "3")
-}
-
-record(mbbo, "$(P)$(R)ShutterMode")
-{
-   field(VAL, "2")
-   field(ZRST, "None")
-   field(ONST, "Camera output")
-   field(TWST, "EPICS PV")
-}
-
-record(bo, "$(P)$(R)Shutter")
-{
-   field(PINI, "YES")
-   field(VAL, "0")
-   field(ZNAM, "Closed")
-   field(ZSV, "MAJOR")
-   field(ONAM, "Open")
-   field(OSV, "NO_ALARM")
-}
-
-record(stringin, "$(P)$(R)ShutterStatus")
-{
-   field(PINI, "YES")
-   field(INP, "$(P)$(R)Shutter CP MS")
-}
-
-record(stringout, "$(P)$(R)DetInStr")
-{
-}
-
-record(stringout, "$(P)$(R)DetOutStr")
-{
-}
-
-record(stringin, "$(P)$(R)Comment1")
-{
-   field(DESC, "Comment 1")
-}
-
-record(stringin, "$(P)$(R)Comment2")
-{
-   field(DESC, "Comment 2")
-}
-
-record(stringin, "$(P)$(R)Comment3")
-{
-   field(DESC, "Comment 3")
-}
-
-record(stringin, "$(P)$(R)Comment4")
-{
-   field(DESC, "Comment 4")
-}
-
-record(stringin, "$(P)$(R)Comment5")
-{
-   field(DESC, "Comment 5")
-}
-
-record(stringin, "$(P)$(R)Comment6")
-{
-   field(DESC, "Comment 6")
 }
 
