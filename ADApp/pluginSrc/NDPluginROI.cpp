@@ -315,7 +315,17 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         }
         /* Make a local copy of the fixed dimensions so we can release the mutex */
         memcpy(dims, pROI->dims, pArray->ndims*sizeof(NDDimension_t));
-        
+
+        /* Update the parameters that may have changed */
+        pDim = &pROI->dims[0];
+        setIntegerParam(NDPluginROIDim0Min, pDim->offset);
+        setIntegerParam(NDPluginROIDim0Size, pDim->size);
+        setIntegerParam(NDPluginROIDim0Bin, pDim->binning);
+        pDim = &pROI->dims[1];
+        setIntegerParam(NDPluginROIDim1Min, pDim->offset);
+        setIntegerParam(NDPluginROIDim1Size, pDim->size);
+        setIntegerParam(NDPluginROIDim1Bin, pDim->binning);
+
         /* This function is called with the lock taken, and it must be set when we exit.
          * The following code can be exected without the mutex because we are not accessing elements of
          * pPvt that other threads can access. */
