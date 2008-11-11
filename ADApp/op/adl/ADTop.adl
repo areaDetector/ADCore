@@ -6,7 +6,7 @@ file {
 display {
 	object {
 		x=92
-		y=30
+		y=34
 		width=301
 		height=300
 	}
@@ -99,202 +99,158 @@ text {
 	}
 	textix="Area Detector"
 }
-composite {
+"related display" {
+	object {
+		x=225
+		y=107
+		width=64
+		height=21
+	}
+	display[0] {
+		label="Prosilica #1 general"
+		name="ADBase.adl"
+		args="P=13PS1:, R=cam1:"
+	}
+	display[1] {
+		label="Prosilica #1 specific"
+		name="prosilica.adl"
+		args="P=13PS1:, R=cam1:"
+	}
+	display[2] {
+		label="Prosilica #2 general"
+		name="ADBase.adl"
+		args="P=13PS1:, R=cam2:"
+	}
+	display[3] {
+		label="Prosilica #2 specific"
+		name="prosilica.adl"
+		args="P=13PS1:, R=cam2:"
+	}
+	clr=14
+	bclr=51
+}
+text {
 	object {
 		x=47
 		y=107
-		width=242
-		height=21
+		width=170
+		height=20
 	}
-	"composite name"=""
-	children {
-		"related display" {
-			object {
-				x=225
-				y=107
-				width=64
-				height=21
-			}
-			display[0] {
-				label="Prosilica #1 general"
-				name="ADBase.adl"
-				args="P=13PS1:, R=cam1:"
-			}
-			display[1] {
-				label="Prosilica #1 specific"
-				name="prosilica.adl"
-				args="P=13PS1:, R=cam1:"
-			}
-			display[2] {
-				label="Prosilica #2 general"
-				name="ADBase.adl"
-				args="P=13PS1:, R=cam2:"
-			}
-			display[3] {
-				label="Prosilica #2 specific"
-				name="prosilica.adl"
-				args="P=13PS1:, R=cam2:"
-			}
-			clr=14
-			bclr=51
-		}
-		text {
-			object {
-				x=47
-				y=107
-				width=70
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Prosilica Drivers"
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="Prosilica Drivers"
 }
-composite {
+text {
 	object {
-		x=47
+		x=97
 		y=160
-		width=242
+		width=120
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="ADSC Drivers"
+}
+"related display" {
+	object {
+		x=225
+		y=160
+		width=64
 		height=21
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=47
-				y=160
-				width=70
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="ADSC Drivers"
-		}
-		"related display" {
-			object {
-				x=225
-				y=160
-				width=64
-				height=21
-			}
-			display[0] {
-				label="ADSC general"
-				name="ADBase.adl"
-				args="P=13ADSC1:, R=det1:"
-			}
-			display[1] {
-				label="ADSC specific"
-				name="adsc.adl"
-				args="P=13ADSC1:, R=det1:"
-			}
-			clr=14
-			bclr=51
-		}
+	display[0] {
+		label="ADSC general"
+		name="ADBase.adl"
+		args="P=13ADSC1:, R=det1:"
 	}
+	display[1] {
+		label="ADSC specific"
+		name="adsc.adl"
+		args="P=13ADSC1:, R=det1:"
+	}
+	clr=14
+	bclr=51
 }
-composite {
+"related display" {
+	object {
+		x=225
+		y=134
+		width=64
+		height=21
+	}
+	display[0] {
+		label="Image #1"
+		name="NDStdArrays.adl"
+		args="P=13PS1:, R=image1:"
+	}
+	display[1] {
+		label="File #1"
+		name="NDFile.adl"
+		args="P=13PS1:, R=file1:"
+	}
+	display[2] {
+		label="ROI #1"
+		name="NDROI.adl"
+		args="P=13PS1:, R=ROI1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
 	object {
 		x=37
 		y=134
-		width=252
-		height=21
+		width=180
+		height=20
 	}
-	"composite name"=""
-	children {
-		"related display" {
-			object {
-				x=225
-				y=134
-				width=64
-				height=21
-			}
-			display[0] {
-				label="Image #1"
-				name="NDStdArrays.adl"
-				args="P=13PS1:, R=image1:"
-			}
-			display[1] {
-				label="File #1"
-				name="NDFile.adl"
-				args="P=13PS1:, R=file1:"
-			}
-			display[2] {
-				label="ROI #1"
-				name="NDROI.adl"
-				args="P=13PS1:, R=ROI1:"
-			}
-			clr=14
-			bclr=51
-		}
-		text {
-			object {
-				x=37
-				y=134
-				width=80
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Prosilica Plug-ins"
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="Prosilica Plug-ins"
 }
-composite {
+text {
 	object {
 		x=47
 		y=54
-		width=242
+		width=170
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Simulator Drivers"
+}
+"related display" {
+	object {
+		x=225
+		y=54
+		width=64
 		height=21
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=47
-				y=54
-				width=70
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Simulator Drivers"
-		}
-		"related display" {
-			object {
-				x=225
-				y=54
-				width=64
-				height=21
-			}
-			display[0] {
-				label="Simulator #1 General"
-				name="ADBase.adl"
-				args="P=13SIM1:, R=cam1:"
-			}
-			display[1] {
-				label="Simulator #1 Specific"
-				name="simDetector.adl"
-				args="P=13SIM1:, R=cam1:"
-			}
-			display[2] {
-				label="Simulator #2 General"
-				name="ADBase.adl"
-				args="P=13SIM1:, R=cam2:"
-			}
-			display[3] {
-				label="Simulator #2 Specific"
-				name="simDetector.adl"
-				args="P=13SIM1:, R=cam2:"
-			}
-			clr=14
-			bclr=51
-		}
+	display[0] {
+		label="Simulator #1 General"
+		name="ADBase.adl"
+		args="P=13SIM1:, R=cam1:"
 	}
+	display[1] {
+		label="Simulator #1 Specific"
+		name="simDetector.adl"
+		args="P=13SIM1:, R=cam1:"
+	}
+	display[2] {
+		label="Simulator #2 General"
+		name="ADBase.adl"
+		args="P=13SIM1:, R=cam2:"
+	}
+	display[3] {
+		label="Simulator #2 Specific"
+		name="simDetector.adl"
+		args="P=13SIM1:, R=cam2:"
+	}
+	clr=14
+	bclr=51
 }
 "related display" {
 	object {
@@ -330,7 +286,7 @@ text {
 	object {
 		x=37
 		y=81
-		width=80
+		width=180
 		height=20
 	}
 	"basic attribute" {
@@ -338,80 +294,69 @@ text {
 	}
 	textix="Simulator Plug-ins"
 }
-composite {
+"related display" {
 	object {
-		x=37
+		x=225
 		y=187
-		width=252
-		height=47
+		width=64
+		height=21
 	}
-	"composite name"=""
-	children {
-		"related display" {
-			object {
-				x=225
-				y=187
-				width=64
-				height=21
-			}
-			display[0] {
-				label="Pilatus #1 general"
-				name="ADBase.adl"
-				args="P=13PIL1:, R=cam1: "
-			}
-			display[1] {
-				label="Pilatus #1 specific"
-				name="pilatusDetector.adl"
-				args="P=13PIL1:, R=cam1:, ROI=ROI1:, I=image1:"
-			}
-			clr=14
-			bclr=51
-		}
-		text {
-			object {
-				x=47
-				y=187
-				width=70
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Pilatus Drivers"
-		}
-		"related display" {
-			object {
-				x=225
-				y=213
-				width=64
-				height=21
-			}
-			display[0] {
-				label="Image #1"
-				name="NDStdArrays.adl"
-				args="P=13PIL1:, R=image1:"
-			}
-			display[1] {
-				label="ROI #1"
-				name="NDROI.adl"
-				args="P=13PIL1:, R=ROI1:"
-			}
-			clr=14
-			bclr=51
-		}
-		text {
-			object {
-				x=37
-				y=213
-				width=80
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Pilatus Plug-ins"
-		}
+	display[0] {
+		label="Pilatus #1 general"
+		name="ADBase.adl"
+		args="P=13PIL1:, R=cam1: "
 	}
+	display[1] {
+		label="Pilatus #1 specific"
+		name="pilatusDetector.adl"
+		args="P=13PIL1:, R=cam1:, ROI=ROI1:, I=image1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=67
+		y=187
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Pilatus Drivers"
+}
+"related display" {
+	object {
+		x=225
+		y=213
+		width=64
+		height=21
+	}
+	display[0] {
+		label="Image #1"
+		name="NDStdArrays.adl"
+		args="P=13PIL1:, R=image1:"
+	}
+	display[1] {
+		label="ROI #1"
+		name="NDROI.adl"
+		args="P=13PIL1:, R=ROI1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=57
+		y=213
+		width=160
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Pilatus Plug-ins"
 }
 "related display" {
 	object {
@@ -435,9 +380,9 @@ composite {
 }
 text {
 	object {
-		x=45
+		x=77
 		y=239
-		width=70
+		width=140
 		height=20
 	}
 	"basic attribute" {
@@ -467,9 +412,9 @@ text {
 }
 text {
 	object {
-		x=35
+		x=67
 		y=265
-		width=80
+		width=150
 		height=20
 	}
 	"basic attribute" {
