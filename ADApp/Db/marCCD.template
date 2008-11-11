@@ -256,26 +256,22 @@ record(bi, "$(P)$(R)OverlapMode_RBV")
     field(ONAM, "Overlap")
 }
 
-# Read data files?
-record(bo, "$(P)$(R)ReadFiles")
+# Frame shift
+record(longout, "$(P)$(R)FrameShift")
 {
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_READ_FILES")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_FRAME_SHIFT")
     field(PINI, "1")
-    field(DESC, "Read data files?")
-    field(ZNAM, "No")
-    field(ONAM, "Yes")
+    field(DESC, "Frame shift lines")
 }
 
-record(bi, "$(P)$(R)ReadFiles_RBV")
+record(longin, "$(P)$(R)FrameShift_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_READ_FILES")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_FRAME_SHIFT")
     field(SCAN, "I/O Intr")
     field(PINI, "1")
-    field(DESC, "Read data files")
-    field(ZNAM, "No")
-    field(ONAM, "Yes")
+    field(DESC, "Frame shift lines")
 }
 
 # We replace the choice fields for FrameType from ADBase.template
@@ -329,3 +325,86 @@ record(asyn, "$(P)$(R)marServerAsyn")
     field(IMAX, "64")
     field(OMAX, "64")
 }
+
+# Records with auxiliary information
+record(ao, "$(P)$(R)DetectorDistance")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_DETECTOR_DISTANCE")
+    field(PINI, "1")
+    field(PREC, "3")
+    field(EGU,  "mm")
+}
+
+record(ao, "$(P)$(R)BeamX")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_BEAM_X")
+    field(PINI, "1")
+    field(PREC, "3")
+    field(EGU,  "mm")
+}
+
+record(ao, "$(P)$(R)BeamY")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_BEAM_Y")
+    field(PINI, "1")
+    field(PREC, "3")
+    field(EGU,  "mm")
+}
+
+record(ao, "$(P)$(R)StartPhi")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_START_PHI")
+    field(PINI, "1")
+    field(PREC, "3")
+    field(EGU,  "deg")
+}
+
+record(stringout, "$(P)$(R)RotationAxis")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetWrite")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_ROTATION_AXIS")
+}
+
+record(ao, "$(P)$(R)RotationRange")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_ROTATION_RANGE")
+    field(PINI, "1")
+    field(PREC, "3")
+    field(EGU,  "deg")
+}
+
+record(ao, "$(P)$(R)Wavelength")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_WAVELENGTH")
+    field(PINI, "1")
+    field(PREC, "4")
+    field(EGU,  "Angstrom")
+}
+
+record(waveform, "$(P)$(R)FileComments")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_FILE_COMMENTS")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(R)DatasetComments")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_DATASET_COMMENTS")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
+
+
+
