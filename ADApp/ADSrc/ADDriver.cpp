@@ -12,6 +12,7 @@
 #include <stdio.h>
 
 #include <epicsString.h>
+#include <epicsThread.h>
 #include <asynStandardInterfaces.h>
 
 /* Defining this will create the static table of standard parameters in ADInterface.h */
@@ -21,6 +22,30 @@
 
 
 static const char *driverName = "ADDriver";
+
+void ADDriver::setShutter(int open)
+{
+    ADShutterMode_t shutterMode;
+    double delay;
+    double shutterOpenDelay, shutterCloseDelay;
+    
+    getIntegerParam(ADShutterMode, (int *)&shutterMode);
+    getDoubleParam(ADShutterOpenDelay, &shutterOpenDelay);
+    getDoubleParam(ADShutterCloseDelay, &shutterCloseDelay);
+    
+    switch (shutterMode) {
+        case ADShutterModeNone:
+            break;
+        case ADShutterModeEPICS:
+            setIntegerParam(ADShutterControlEPICS, open);
+            callParamCallbacks();
+            delay = shutterOpenDelay - shutterCloseDelay;
+            epicsThreadSleep(delay);
+            break;
+        case ADShutterModeDetector:
+            break;
+    }
+}
 
 int ADDriver::createFileName(int maxChars, char *fullFileName)
 {
@@ -52,6 +77,37 @@ int ADDriver::createFileName(int maxChars, char *fullFileName)
     }
     return(status);   
 }
+
+asynStatus ADDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
+{
+    int function = pasynUser->reason;
+    asynStatus status = asynSuccess;
+    const char *functionName = "writeInt32";
+
+    status = setIntegerParam(function, value);
+
+    switch (function) {
+    case ADShutterControl:
+        setShutter(value);
+        break;
+    default:
+        break;
+    }
+        
+    /* Do callbacks so higher layers see any changes */
+    callParamCallbacks();
+    
+    if (status) 
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, 
+              "%s:%s: error, status=%d function=%d, value=%d\n", 
+              driverName, functionName, status, function, value);
+    else        
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
+              "%s:%s: function=%d, value=%d\n", 
+              driverName, functionName, function, value);
+    return status;
+}
+
 
 /* asynDrvUser routines */
 asynStatus ADDriver::drvUserCreate(asynUser *pasynUser,
@@ -114,7 +170,13 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int paramTableSize, int ma
     setIntegerParam(ADAcquire,      0);
     setIntegerParam(ADImageCounter, 0);
     setIntegerParam(ADNumImagesCounter, 0);
-    setDoubleParam(ADTimeRemaining, 0.0);
+    setDoubleParam( ADTimeRemaining, 0.0);
+    setIntegerParam(ADArrayCallbacks, 1);
+    setIntegerParam(ADShutterControl, 0);
+    setIntegerParam(ADShutterStatus, 0);
+    setIntegerParam(ADShutterMode,   0);
+    setDoubleParam (ADShutterOpenDelay, 0.0);
+    setDoubleParam (ADShutterCloseDelay, 0.0);
     
     setStringParam (ADFilePath,     "");
     setStringParam (ADFileName,     "");
