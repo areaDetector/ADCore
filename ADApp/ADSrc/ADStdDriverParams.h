@@ -39,6 +39,7 @@ typedef enum
     ADStatusSaving,
     ADStatusAborting,
     ADStatusError,
+    ADStatusWaiting,
 } ADStatus_t;
 
 typedef enum
@@ -116,7 +117,9 @@ typedef enum
     ADAcquire,          /* (asynInt32,    r/w) Start(1) or Stop(0) acquisition */
     
     /* Shutter parameters */
-    ADShutter,           /* (asynInt32,    r/w) (ADShutterStatus_t) Open (1) or Close(0) shutter */
+    ADShutterControl,    /* (asynInt32,    r/w) (ADShutterStatus_t) Open (1) or Close(0) shutter */
+    ADShutterControlEPICS, /* (asynInt32,  r/w) (ADShutterStatus_t) Open (1) or Close(0) shutter */
+    ADShutterStatus,     /* (asynInt32,    r/w) (ADShutterStatus_t) Shutter Open (1) or Closed(0) */
     ADShutterMode,       /* (asynInt32,    r/w) (ADShutterMode_t) */
     ADShutterOpenDelay,  /* (asynFloat64,  r/w) Time for shutter to open */
     ADShutterCloseDelay, /* (asynFloat64,  r/w) Time for shutter to close */
@@ -148,6 +151,7 @@ typedef enum
     
     /* The detector array data */
     NDArrayData,        /* (asynGenericPointer,   r/w) NDArray data */
+    ADArrayCallbacks,   /* (asynInt32.    r/w) Do callbacks with array data (0=No, 1=Yes) */
     
     ADFirstDriverParam  /* The last parameter, used by the standard driver */
                         /* Drivers that use ADParamLib should begin their parameters with this value. */
@@ -190,10 +194,11 @@ static asynParamString_t ADStdDriverParamString[] = {
     {ADTimeRemaining,  "TIME_REMAINING"},
     {ADStatus,         "STATUS"      },
     {ADTriggerMode,    "TRIGGER_MODE"},
-    {ADShutter,        "SHUTTER"     },
     {ADAcquire,        "ACQUIRE"     },
 
-    {ADShutter,          "SHUTTER"             },
+    {ADShutterControl,   "SHUTTER_CONTROL"},
+    {ADShutterControlEPICS, "SHUTTER_CONTROL_EPICS"},
+    {ADShutterStatus,    "SHUTTER_STATUS"},
     {ADShutterMode,      "SHUTTER_MODE"        },
     {ADShutterOpenDelay, "SHUTTER_OPEN_DELAY"  },
     {ADShutterCloseDelay,"SHUTTER_CLOSE_DELAY" },
@@ -216,6 +221,7 @@ static asynParamString_t ADStdDriverParamString[] = {
     {ADStringFromServer,"STRING_FROM_SERVER"},
 
     {NDArrayData,      "NDARRAY_DATA"  },
+    {ADArrayCallbacks, "ARRAY_CALLBACKS"  },
 };
 
 #define NUM_AD_STANDARD_PARAMS (sizeof(ADStdDriverParamString)/sizeof(ADStdDriverParamString[0]))
