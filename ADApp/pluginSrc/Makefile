@@ -18,6 +18,8 @@ LIB_SRCS += NDPluginROI.cpp
 LIB_SRCS += drvNDROIEpics.c
 LIB_LIBS += ADBase
 LIB_LIBS += netCDF
+LIB_LIBS += asyn
+LIB_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 include $(TOP)/configure/RULES
 #----------------------------------------
