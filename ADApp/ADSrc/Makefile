@@ -4,6 +4,9 @@ include $(TOP)/configure/CONFIG
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 #=============================
 
+# The following flag is need to compile/link NDArray.cpp on Solaris
+NDArray_CXXFLAGS_solaris += -features=tmplrefstatic
+
 DBD += ADSupport.dbd
 DBDINC += abusyRecord
 
