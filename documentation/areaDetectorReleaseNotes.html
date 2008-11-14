@@ -6,11 +6,51 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
+    Release 1-3 (15-November-2008)</h2>
+  <ul>
+    <li>Added a driver for MarCCD detectors. Compared to the previous support in the "ccd"
+      module, this driver uses the faster Version 1 protocol for the Mar server. It also
+      makes the detector data available via callbacks (by reading the TIFF files as soon
+      as they are written). This allows detector data to be displayed with EPICS clients,
+      and for ROI calculations.</li>
+    <li>Added support for shutter control. Supports shutters that are driven directly
+      from the detector hardware, as well as shutters controlled by EPICS records. Shutter
+      support is implemented for the MarCCD, Pilatus, and simulation detectors.</li>
+    <li>Added new methods for shutter support to the detector base class ADDriver.cpp
+      <ul>
+        <li>ADDriver::setShutter()</li>
+        <li>ADDriver::writeInt32</li>
+      </ul>
+    </li>
+    <li>Added new enums in ADStdDriverParams.h
+      <ul>
+        <li>ADFrameType_t</li>
+        <li>ADShutterMode_t</li>
+      </ul>
+    </li>
+    <li>Added new parameters in ADStdDriverParams.h
+      <ul>
+        <li>ADShutterControl (replaces ADShutter)</li>
+        <li>ADShutterControlEPICS</li>
+        <li>ADShutterStatus</li>
+        <li>ADShutterMode</li>
+        <li>ADShutterOpenDelay</li>
+        <li>ADShutterCloseDelay</li>
+        <li>ADTimeRemaining</li>
+        <li>ADNumImagesCounter</li>
+        <li>ADArrayCallbacks</li>
+      </ul>
+      ADArrayCallbacks can be set to 0 to disable callbacks with detector data. For the
+      MarCCD and Pilatus detectors setting this to 0 will disable reading the disk files
+      after collection. This can be used to reduce overhead when EPICS is being used just
+      for control, rather than to access the data. </li>
+  </ul>
+  <h2 style="text-align: center">
     Release 1-2 (24-October-2008)</h2>
   <ul>
     <li>Major update to documentation</li>
     <li>Significant enhancement to ROI plugin. Added net counts, ROI highlighting.</li>
-    <li>Added driver for Pilatus detectors.  This has undergone limited testing.</li>
+    <li>Added driver for Pilatus detectors. This has undergone limited testing.</li>
     <li>Added driver for ADSC detectors (done by Lewis Muir, IMCA-CAT)</li>
     <li>Removed separate readback parameters in drivers and template files</li>
     <li>Changed from mbbi/mbbo records to bi/bo records where possible now that the asynInt32

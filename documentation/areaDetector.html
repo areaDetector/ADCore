@@ -31,16 +31,17 @@
     <li>High-speed, high-resolution CCD cameras. These use GigE and Firewire interfaces.</li>
   </ul>
   <p>
-    From <a href="http://www.adsc-xray.com/">ADSC</a> </p>
+    From <a href="http://www.adsc-xray.com/">ADSC</a>
+  </p>
   <ul>
-    <li>Large CCD detectors for x-ray diffraction.  This support is from Lewis Muir of IMCA-CAT
-      at the APS. </li>
+    <li>Large CCD detectors for x-ray diffraction. This support is from Lewis Muir of
+      IMCA-CAT at the APS. </li>
   </ul>
   <p>
-    From <a href="http://www.mar-usa.com/">MAR</a> (coming soon)</p>
+    From <a href="http://www.mar-usa.com/">MAR</a></p>
   <ul>
-    <li>MAR-165 CCD camera.</li>
-    <li>MAR-345 online image plate reader</li>
+    <li>MarCCD detectors</li>
+    <li>MAR-345 online image plate reader (coming soon)</li>
   </ul>
   <p>
     From <a href="http://www.roperscientific.com/">Roper</a> (coming soon)</p>
@@ -56,7 +57,7 @@
       WinView, not the SMART software.</li>
   </ul>
   <p>
-    Please email any comments and bug reports to <a href="mailto:%20rivers@cars.uchicago.edu">
+    Please email any comments and bug reports to <a href="mailto:rivers@cars.uchicago.edu">
       Mark Rivers</a> who is responsible for coordinating development and releases.</p>
   <h2>
     Where to find it</h2>
@@ -82,6 +83,20 @@
           Release Notes</th>
         <th>
           Known Problems</th>
+      </tr>
+      <tr>
+        <td>
+          1-3</td>
+        <td>
+          15-Nov-2008</td>
+        <td>
+          <a href="http://cars.uchicago.edu/software/pub/areaDetectorR1-3.tgz">areaDetectorR1-3.tgz</a></td>
+        <td>
+          <a href="areaDetectorDoc.html">areaDetectorDoc</a></td>
+        <td>
+          <a href="areaDetectorReleaseNotes.html">Release notes</a></td>
+        <td>
+          See release notes</td>
       </tr>
       <tr>
         <td>
@@ -143,14 +158,65 @@
       </tr>
       <tr>
         <td rowspan="6">
+          1-3</td>
+        <td>
+          EPICS base</td>
+        <td>
+          3.14.10</td>
+        <td>
+          Base support. 3.14.8.2 also works, but the bug in epicsRingPointer can be a problem
+          on multi-processor Linux systems.</td>
+      </tr>
+      <tr>
+        <td>
+          asyn</td>
+        <td>
+          4-10</td>
+        <td>
+          Socket and interface support</td>
+      </tr>
+      <tr>
+        <td>
+          calc</td>
+        <td>
+          2-6-7</td>
+        <td>
+          scalcout record, needed by sscan database and useful for other databases</td>
+      </tr>
+      <tr>
+        <td>
+          sscan</td>
+        <td>
+          2-6-2</td>
+        <td>
+          sscan and busy records</td>
+      </tr>
+      <tr>
+        <td>
+          mca</td>
+        <td>
+          6-10</td>
+        <td>
+          mca record for getting time sequence of ROI counts</td>
+      </tr>
+      <tr>
+        <td>
+          autosave</td>
+        <td>
+          4-4</td>
+        <td>
+          Save/restore</td>
+      </tr>
+      <tr>
+        <td rowspan="6">
           1-2</td>
         <td>
           EPICS base</td>
         <td>
           3.14.10</td>
         <td>
-          Base support.  3.14.8.2 also works, but the bug in epicsRingPointer can be a problem on multi-processor
-          Linux systems.</td>
+          Base support. 3.14.8.2 also works, but the bug in epicsRingPointer can be a problem
+          on multi-processor Linux systems.</td>
       </tr>
       <tr>
         <td>
