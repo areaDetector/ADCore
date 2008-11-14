@@ -109,23 +109,23 @@ typedef enum
     ADTriggerMode,      /* (asynInt32,    r/w) Trigger mode (ADTriggerMode_t) */
     ADNumExposures,     /* (asynInt32,    r/w) Number of exposures per image to acquire */
     ADNumImages,        /* (asynInt32,    r/w) Number of images to acquire in one acquisition sequence */
-    ADNumImagesCounter, /* (asynInt32,    r/w) Number of images collected in current acquisition sequence */
     ADAcquireTime,      /* (asynFloat64,  r/w) Acquisition time per image. */
     ADAcquirePeriod,    /* (asynFloat64,  r/w) Acquisition period between images */
-    ADTimeRemaining,    /* (asynFloat64,  r/w) Acquisition time remaining */
     ADStatus,           /* (asynInt32,    r/o) Acquisition status (ADStatus_t) */
     ADAcquire,          /* (asynInt32,    r/w) Start(1) or Stop(0) acquisition */
     
     /* Shutter parameters */
-    ADShutterControl,    /* (asynInt32,    r/w) (ADShutterStatus_t) Open (1) or Close(0) shutter */
+    ADShutterControl,   /* (asynInt32,    r/w) (ADShutterStatus_t) Open (1) or Close(0) shutter */
     ADShutterControlEPICS, /* (asynInt32,  r/w) (ADShutterStatus_t) Open (1) or Close(0) shutter */
-    ADShutterStatus,     /* (asynInt32,    r/w) (ADShutterStatus_t) Shutter Open (1) or Closed(0) */
-    ADShutterMode,       /* (asynInt32,    r/w) (ADShutterMode_t) */
-    ADShutterOpenDelay,  /* (asynFloat64,  r/w) Time for shutter to open */
-    ADShutterCloseDelay, /* (asynFloat64,  r/w) Time for shutter to close */
+    ADShutterStatus,    /* (asynInt32,    r/w) (ADShutterStatus_t) Shutter Open (1) or Closed(0) */
+    ADShutterMode,      /* (asynInt32,    r/w) (ADShutterMode_t) */
+    ADShutterOpenDelay, /* (asynFloat64,  r/w) Time for shutter to open */
+    ADShutterCloseDelay,/* (asynFloat64,  r/w) Time for shutter to close */
 
     /* Statistics on number of images collected and the image rate. */
-    ADImageCounter,        /* (asynInt32,    r/w) Number of images acquired since last reset */
+    ADImageCounter,     /* (asynInt32,    r/w) Number of images acquired since last reset */
+    ADNumImagesCounter, /* (asynInt32,    r/w) Number of images collected in current acquisition sequence */
+    ADTimeRemaining,    /* (asynFloat64,  r/w) Acquisition time remaining */
  
     /* File name related parameters for saving data.
      * Drivers are not required to implement file saving, but if they do these parameters
