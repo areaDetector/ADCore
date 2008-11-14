@@ -7,7 +7,7 @@
     <h1>
       areaDetector: EPICS Area Detector Support</h1>
     <h2>
-      September 19, 2008</h2>
+      November 12, 2008</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -42,6 +42,7 @@
         <li><a href="prosilicaDoc.html">Prosilica driver</a></li>
         <li><a href="pilatusDoc.html">Pilatus driver</a></li>
         <li><a href="adscDoc.html">ADSC driver</a></li>
+        <li><a href="MarCCDDoc.html">MarCCD driver</a></li>
       </ul>
     </li>
   </ul>
@@ -705,12 +706,21 @@ public:
   <p>
     The file <code>ADStdDriverParams.h</code> defines the following:
   </p>
-  <pre>/* Enumeration of shutter status */
+  <pre>
+/* Enumeration of shutter status */
 typedef enum
 {
-    ADShutterClosed, 
+    ADShutterClosed,
     ADShutterOpen
 } ADShutterStatus_t;
+
+/* Enumeration of shutter modes */
+typedef enum
+{
+    ADShutterModeNone,
+    ADShutterModeEPICS,
+    ADShutterModeDetector
+} ADShutterMode_t;
 
 /* Enumeration of detector status */
 typedef enum
@@ -718,10 +728,11 @@ typedef enum
     ADStatusIdle,
     ADStatusAcquire,
     ADStatusReadout,
-    ASStatusCorrect,
+    ADStatusCorrect,
     ADStatusSaving,
     ADStatusAborting,
     ADStatusError,
+    ADStatusWaiting,
 } ADStatus_t;
 
 typedef enum
@@ -733,10 +744,17 @@ typedef enum
 
 typedef enum
 {
+    ADFrameNormal,
+    ADFrameBackground,
+    ADFrameFlatField,
+    ADFrameDoubleCorrelation
+} ADFrameType_t;
+
+typedef enum
+{
     ADTriggerInternal,
     ADTriggerExternal
 } ADTriggerMode_t;
-
 </pre>
   <p>
     It also defines parameters that all area detector drivers should implement if possible.
@@ -1092,6 +1110,28 @@ typedef enum
         <td>
           $(P)$(R)DataType<br />
           $(P)$(R)DataType_RBV</td>
+        <td>
+          mbbo<br />
+          mbbi</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Frame type</b></td>
+      </tr>
+      <tr>
+        <td>
+          ADFrameType</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Frame type (ADFrameType_t).</td>
+        <td>
+          FRAME_TYPE</td>
+        <td>
+          $(P)$(R)FrameType<br />
+          $(P)$(R)FrameType_RBV</td>
         <td>
           mbbo<br />
           mbbi</td>
@@ -1528,7 +1568,8 @@ epicsSnprintf(
         <td>
           r/w</td>
         <td>
-          Counter that increments by 1 each time an image is acquired</td>
+          Counter that increments by 1 each time an image is acquired. Can be reset by writing
+          a value to it.</td>
         <td>
           IMAGE_COUNTER</td>
         <td>
@@ -1536,6 +1577,24 @@ epicsSnprintf(
           $(P)$(R)ImageCounter_RBV</td>
         <td>
           longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          ADNumImagesCounter</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Counter that increments by 1 each time an image is acquired in the current acquisition
+          sequence. Driver resets to 0 when acquisition is started. Drivers should use this
+          as the loop counter when ADImageMode=ADImageMultiple.</td>
+        <td>
+          NUM_IMAGES_COUNTER</td>
+        <td>
+          $(P)$(R)ImageCounter_RBV</td>
+        <td>
           longin</td>
       </tr>
       <tr>
@@ -1555,21 +1614,37 @@ epicsSnprintf(
           calc</td>
       </tr>
       <tr>
+        <td>
+          ADTimeRemaining</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Time remaining for current image. Drivers should update this value if they are doing
+          the exposure timing internally, rather than in the detector hardware.</td>
+        <td>
+          TIME_REMAINING</td>
+        <td>
+          $(P)$(R)TimeRemaining_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
         <td align="center" colspan="7">
-          <b>Shutter control. Note: no areaDetector drivers yet implement shutter control, and
-            these parameters may change in the near future.</b></td>
+          <b>Shutter control</b></td>
       </tr>
       <tr>
         <td>
-          ADShutter</td>
+          ADShutterMode</td>
         <td>
           asynInt32</td>
         <td>
           r/w</td>
         <td>
-          Shutter control (ADShutterStatus_t)</td>
+          Shutter mode (None, detector-controlled or EPICSS-controlled) (ADShutterMode_t)</td>
         <td>
-          SHUTTER</td>
+          SHUTTER_MODE</td>
         <td>
           $(P)$(R)ShutterMode<br />
           $(P)$(R)ShutterMode_RBV</td>
@@ -1578,8 +1653,174 @@ epicsSnprintf(
           mbbi</td>
       </tr>
       <tr>
+        <td>
+          ADShutterControl</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Shutter control for the selected (detector or EPICS) shutter (ADShutterStatus_t)</td>
+        <td>
+          SHUTTER_CONTROL</td>
+        <td>
+          $(P)$(R)ShutterControl<br />
+          $(P)$(R)ShutterControl_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          ADShutterControlEPICS</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          This record processes when it receives a callback from the driver to open or close
+          the EPICS shutter. It triggers the records below to actually open or close the EPICS
+          shutter.</td>
+        <td>
+          SHUTTER_CONTROL_EPICS</td>
+        <td>
+          $(P)$(R)ShutterControlEPICS</td>
+        <td>
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          N/A</td>
+        <td>
+          N/A</td>
+        <td>
+          r/w</td>
+        <td>
+          This record writes its OVAL field to its OUT field when the EPICS shutter is told
+          to open. The OCAL (and hence OVAL) and OUT fields are user-configurable, so any
+          EPICS-controllable shutter can be used.</td>
+        <td>
+          N/A</td>
+        <td>
+          $(P)$(R)ShutterOpenEPICS</td>
+        <td>
+          calcout</td>
+      </tr>
+      <tr>
+        <td>
+          N/A</td>
+        <td>
+          N/A</td>
+        <td>
+          r/w</td>
+        <td>
+          This record writes its OVAL field to its OUT field when the EPICS shutter is told
+          to close. The OCAL (and hence OVAL) and OUT fields are user-configurable, so any
+          EPICS-controllable shutter can be used.</td>
+        <td>
+          N/A</td>
+        <td>
+          $(P)$(R)ShutterCloseEPICS</td>
+        <td>
+          calcout</td>
+      </tr>
+      <tr>
+        <td>
+          ADShutterStatus</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Status of the detector-controlled shutter (ADShutterStatus_t)</td>
+        <td>
+          SHUTTER_STATUS</td>
+        <td>
+          $(P)$(R)ShutterStatus_RBV</td>
+        <td>
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          N/A</td>
+        <td>
+          N/A</td>
+        <td>
+          r/o</td>
+        <td>
+          Status of the EPICS-controlled shutter. This record should have its input link (INP)
+          set to a record that contains the open/close status information for the shutter.
+          The link should have the "CP" attribute, so this record processes when the input
+          changes. The ZRVL field should be set to the value of the input link when the shutter
+          is closed, and the ONVL field should be set to the value of the input link when
+          the shutter is open.</td>
+        <td>
+          N/A</td>
+        <td>
+          $(P)$(R)ShutterStatusEPICS_RBV</td>
+        <td>
+          mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          ADShutterOpenDelay</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          Time required for the shutter to actually open (ADShutterStatus_t)</td>
+        <td>
+          SHUTTER_OPEN_DELAY</td>
+        <td>
+          $(P)$(R)ShutterOpenDelay<br />
+          $(P)$(R)ShutterOpenDelay_RBV</td>
+        <td>
+          ao<br />
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          ADShutterCloseDelay</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          Time required for the shutter to actually close (ADShutterStatus_t)</td>
+        <td>
+          SHUTTER_CLOSE_DELAY</td>
+        <td>
+          $(P)$(R)ShutterCloseDelay<br />
+          $(P)$(R)ShutterCloseDelay_RBV</td>
+        <td>
+          ao<br />
+          ai</td>
+      </tr>
+      <tr>
         <td align="center" colspan="7">
           <b>Image data</b></td>
+      </tr>
+      <tr>
+        <td>
+          ADArrayCallbacks</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Controls whether the driver does callbacks with the image data to registered plugins.
+          0=No, 1=Yes. Setting this to 0 can reduce overhead in the case that the driver is
+          being used only to control the detector, and not to make the data available to plugins
+          or to EPICS clients.</td>
+        <td>
+          ARRAY_CALLBACKS</td>
+        <td>
+          $(P)$(R)ArrayCallbacks<br />
+          $(P)$(R)ArrayCallbacks_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
       </tr>
       <tr>
         <td>
@@ -1641,8 +1882,6 @@ epicsSnprintf(
     with any areaDetector driver. Note however that many drivers will not implement
     all of these parameters, so detector-specific MEDM screens should generally be created
     that only display the EPICS PVs for the features implemented for that detector.
-    Note that the section of the screen labeled "Shutter" is not currently implemented
-    for any areaDetector driver, and is subject to change in the near future.
   </p>
   <div style="text-align: center">
     <p>
@@ -1650,14 +1889,15 @@ epicsSnprintf(
     <img alt="ADBase.png" src="ADBase.png" /></div>
   <h2 id="Plugins">
     Plugins</h2>
-    areaDetector supports <a href="pluginDoc.html">plugins</a>, which receive the array data from the drivers
-    and perform operations on the data.  These are documented separately:
-    <ul>
-      <li><a href="pluginDoc.html#NDPluginDriver">NDPluginDriver</a></li>
-      <li><a href="NDPluginStdArrays.html">NDPluginStdArrays</a></li>
-      <li><a href="NDPluginFile.html">NDPluginFile</a></li>
-      <li><a href="NDPluginROI.html">NDPluginROI</a></li>
-    </ul>
+  <p>
+    areaDetector supports <a href="pluginDoc.html">plugins</a>, which receive the array
+    data from the drivers and perform operations on the data. These are documented separately:</p>
+  <ul>
+    <li><a href="pluginDoc.html#NDPluginDriver">NDPluginDriver</a></li>
+    <li><a href="NDPluginStdArrays.html">NDPluginStdArrays</a></li>
+    <li><a href="NDPluginFile.html">NDPluginFile</a></li>
+    <li><a href="NDPluginROI.html">NDPluginROI</a></li>
+  </ul>
   <h2 id="Detector_drivers">
     Detector drivers</h2>
   <p>
@@ -1669,10 +1909,12 @@ epicsSnprintf(
     <li><a href="prosilicaDoc.html">Prosilica driver</a></li>
     <li><a href="pilatusDoc.html">Pilatus driver</a></li>
     <li><a href="adscDoc.html">ADSC driver</a></li>
+    <li><a href="MarCCDDoc.html">MarCCD driver</a></li>
   </ul>
   <p>
     In addition to these drivers, Brian Tieman is writing a driver for the Perkin-Elmer
-    flat-panel amorphous silicon detector. Drivers for the MAR-CCD, MAR-345 online image
-    plate, and the Roper Scientific CCD cameras will be written in the near future.</p>
+    flat-panel amorphous silicon detector. Drivers for the MAR-345 online image plate,
+    the Roper Scientific CCD cameras, and Flea Firewire cameras will be written in the
+    near future.</p>
 </body>
 </html>
