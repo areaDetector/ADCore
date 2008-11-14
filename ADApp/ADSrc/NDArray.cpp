@@ -1,4 +1,4 @@
-/* NDArray.c
+/* NDArray.cpp
  *
  * NDArray classes
  * 
