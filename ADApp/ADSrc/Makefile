@@ -5,7 +5,9 @@ include $(TOP)/configure/CONFIG
 #=============================
 
 # The following flag is need to compile/link NDArray.cpp on Solaris
-NDArray_CXXFLAGS_solaris += -features=tmplrefstatic
+ifndef GNU
+  NDArray_CXXFLAGS_solaris += -features=tmplrefstatic
+endif
 
 DBD += ADSupport.dbd
 DBDINC += abusyRecord
