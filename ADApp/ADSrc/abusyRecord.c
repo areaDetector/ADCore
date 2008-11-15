@@ -1,17 +1,16 @@
+/* abusyRecord.c */
 /*************************************************************************\
-* Copyright (c) 2002 The University of Chicago, as Operator of Argonne
+* Copyright (c) 2008 UChicago Argonne LLC, as Operator of Argonne
 *     National Laboratory.
 * Copyright (c) 2002 The Regents of the University of California, as
 *     Operator of Los Alamos National Laboratory.
-* EPICS BASE Versions 3.13.7
-* and higher are distributed subject to a Software License Agreement found
+* EPICS BASE is distributed subject to a Software License Agreement found
 * in file LICENSE that is included with this distribution. 
 \*************************************************************************/
-/* recBo.c */
-/* base/src/rec  abusyRecord.c,v 1.17 2003/04/01 21:01:44 mrk Exp */
  
-/* recBo.c - Record Support Routines for Binary Output records */
-/*
+/* abusyRecord.c - Record Support Routines for abusy records
+ * Copied from boRecord.c by Mark Rivers
+ *
  *      Original Author: Bob Dalesio
  *      Current Author:  Marty Kraimer
  *      Date:            7-14-89
@@ -45,18 +44,18 @@
 /* Create RSET - Record Support Entry Table*/
 #define report NULL
 #define initialize NULL
-static long init_record();
-static long process();
+static long init_record(abusyRecord *, int);
+static long process(abusyRecord *);
 #define special NULL
 #define get_value NULL
 #define cvt_dbaddr NULL
 #define get_array_info NULL
 #define put_array_info NULL
 #define get_units NULL
-static long get_precision();
-static long get_enum_str();
-static long get_enum_strs();
-static long put_enum_str();
+static long get_precision(DBADDR *, long *);
+static long get_enum_str(DBADDR *, char *);
+static long get_enum_strs(DBADDR *, struct dbr_enumStrs *);
+static long put_enum_str(DBADDR *, char *);
 #define get_graphic_double NULL
 #define get_control_double NULL
 #define get_alarm_double NULL
@@ -99,17 +98,17 @@ typedef struct myCallback {
         struct dbCommon *precord;
 }myCallback;
 
-static void checkAlarms();
-static void monitor();
-static long writeValue();
+static void checkAlarms(abusyRecord *);
+static void monitor(abusyRecord *);
+static long writeValue(abusyRecord *);
 
 static void myCallbackFunc(CALLBACK *arg)
 {
     myCallback *pcallback;
-    struct abusyRecord *pbo;
+    abusyRecord *pbo;
 
     callbackGetUser(pcallback,arg);
-    pbo=(struct abusyRecord *)pcallback->precord;
+    pbo=(abusyRecord *)pcallback->precord;
     dbScanLock((struct dbCommon *)pbo);
     if(pbo->pact) {
 	if((pbo->val==1) && (pbo->high>0)){
@@ -125,9 +124,7 @@ static void myCallbackFunc(CALLBACK *arg)
     dbScanUnlock((struct dbCommon *)pbo);
 }
 
-static long init_record(pbo,pass)
-    struct abusyRecord	*pbo;
-    int pass;
+static long init_record(abusyRecord *pbo,int pass)
 {
     struct bodset *pdset;
     long status=0;
@@ -178,12 +175,11 @@ static long init_record(pbo,pass)
     if ( pbo->mask != 0 ) {
 	if(pbo->val==0) pbo->rval = 0;
 	else pbo->rval = pbo->mask;
-    } else pbo->rval = (unsigned long)pbo->val;
+    } else pbo->rval = (epicsUInt32)pbo->val;
     return(status);
 }
 
-static long process(pbo)
-	struct abusyRecord     *pbo;
+static long process(abusyRecord *pbo)
 {
 	struct bodset	*pdset = (struct bodset *)(pbo->dset);
 	long		 status=0;
@@ -213,7 +209,7 @@ static long process(pbo)
 		if ( pbo->mask != 0 ) {
 			if(pbo->val==0) pbo->rval = 0;
 			else pbo->rval = pbo->mask;
-		} else pbo->rval = (unsigned long)pbo->val;
+		} else pbo->rval = (epicsUInt32)pbo->val;
 	}
 
 	/* check for alarms */
@@ -235,7 +231,7 @@ static long process(pbo)
 				if ( pbo->mask != 0 ) {
 					if(pbo->val==0) pbo->rval = 0;
 					else pbo->rval = pbo->mask;
-				} else pbo->rval = (unsigned long)pbo->val;
+				} else pbo->rval = (epicsUInt32)pbo->val;
 			}
                         status=writeValue(pbo); /* write the new value */
                         break;
@@ -266,22 +262,18 @@ static long process(pbo)
 	return(status);
 }
 
-static long get_precision(paddr,precision)
-    struct dbAddr *paddr;
-    long	  *precision;
+static long get_precision(DBADDR *paddr, long *precision)
 {
-    struct abusyRecord	*pbo=(struct abusyRecord *)paddr->precord;
+    abusyRecord	*pbo=(abusyRecord *)paddr->precord;
 
     if(paddr->pfield == (void *)&pbo->high) *precision=2;
     else recGblGetPrec(paddr,precision);
     return(0);
 }
 
-static long get_enum_str(paddr,pstring)
-    struct dbAddr *paddr;
-    char	  *pstring;
+static long get_enum_str(DBADDR *paddr, char *pstring)
 {
-    struct abusyRecord	*pbo=(struct abusyRecord *)paddr->precord;
+    abusyRecord	*pbo=(abusyRecord *)paddr->precord;
     int                 index;
     unsigned short      *pfield = (unsigned short *)paddr->pfield;
 
@@ -301,11 +293,9 @@ static long get_enum_str(paddr,pstring)
     return(0);
 }
 
-static long get_enum_strs(paddr,pes)
-    struct dbAddr *paddr;
-    struct dbr_enumStrs *pes;
+static long get_enum_strs(DBADDR *paddr,struct dbr_enumStrs *pes)
 {
-    struct abusyRecord	*pbo=(struct abusyRecord *)paddr->precord;
+    abusyRecord *pbo=(abusyRecord *)paddr->precord;
 
     /*SETTING no_str=0 breaks channel access clients*/
     pes->no_str = 2;
@@ -316,11 +306,9 @@ static long get_enum_strs(paddr,pes)
     if(*pbo->onam!=0) pes->no_str=2;
     return(0);
 }
-static long put_enum_str(paddr,pstring)
-    struct dbAddr *paddr;
-    char          *pstring;
+static long put_enum_str(DBADDR *paddr, char *pstring)
 {
-    struct abusyRecord     *pbo=(struct abusyRecord *)paddr->precord;
+    abusyRecord *pbo=(abusyRecord *)paddr->precord;
 
     if(strncmp(pstring,pbo->znam,sizeof(pbo->znam))==0) pbo->val = 0;
     else  if(strncmp(pstring,pbo->onam,sizeof(pbo->onam))==0) pbo->val = 1;
@@ -329,8 +317,7 @@ static long put_enum_str(paddr,pstring)
 }
 
 
-static void checkAlarms(pbo)
-    struct abusyRecord	*pbo;
+static void checkAlarms(abusyRecord *pbo)
 {
 	unsigned short val = pbo->val;
 
@@ -353,8 +340,7 @@ static void checkAlarms(pbo)
         return;
 }
 
-static void monitor(pbo)
-    struct abusyRecord	*pbo;
+static void monitor(abusyRecord *pbo)
 {
 	unsigned short	monitor_mask;
 
@@ -384,8 +370,7 @@ static void monitor(pbo)
         return;
 }
 
-static long writeValue(pbo)
-	struct abusyRecord	*pbo;
+static long writeValue(abusyRecord *pbo)
 {
 	long		status;
         struct bodset 	*pdset = (struct bodset *) (pbo->dset);
