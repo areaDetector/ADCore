@@ -188,4 +188,8 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int paramTableSize, int ma
     setIntegerParam(ADAutoSave,     0);
     setIntegerParam(ADWriteFile,    0);
     setIntegerParam(ADReadFile,     0);
+    setIntegerParam(ADFileWriteMode,   0);
+    setIntegerParam(ADFileNumCapture,  0);
+    setIntegerParam(ADFileNumCaptured, 0);
+    setIntegerParam(ADFileCapture,     0);
 }
