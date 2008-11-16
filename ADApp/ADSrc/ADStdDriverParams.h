@@ -63,6 +63,12 @@ typedef enum
     ADTriggerExternal
 } ADTriggerMode_t;
 
+typedef enum {
+    ADFileModeSingle,
+    ADFileModeCapture,
+    ADFileModeStream
+} ADFileMode_t;
+
     
 /**
 
@@ -143,6 +149,10 @@ typedef enum
     ADAutoSave,         /* (asynInt32,    r/w) Automatically save files */
     ADWriteFile,        /* (asynInt32,    r/w) Manually save the most recent image to a file when value=1 */
     ADReadFile,         /* (asynInt32,    r/w) Manually read file when value=1 */
+    ADFileWriteMode,    /* (asynInt32,    r/w) File saving mode (ADFileMode_t) */
+    ADFileNumCapture,   /* (asynInt32,    r/w) Number of arrays to capture */
+    ADFileNumCaptured,  /* (asynInt32,    r/o) Number of arrays already captured */
+    ADFileCapture,      /* (asynInt32,    r/w) Start or stop capturing arrays */
 
     /* Status message strings */
     ADStatusMessage,    /* (asynOctet,    r/o) Status message */
@@ -215,6 +225,10 @@ static asynParamString_t ADStdDriverParamString[] = {
     {ADAutoSave,       "AUTO_SAVE"     },
     {ADWriteFile,      "WRITE_FILE"    },
     {ADReadFile,       "READ_FILE"     },
+    {ADFileWriteMode,  "WRITE_MODE"    },
+    {ADFileNumCapture, "NUM_CAPTURE"   },
+    {ADFileNumCaptured,"NUM_CAPTURED"  },
+    {ADFileCapture,    "CAPTURE"       },
 
     {ADStatusMessage,  "STATUS_MESSAGE"     },
     {ADStringToServer, "STRING_TO_SERVER"   },
