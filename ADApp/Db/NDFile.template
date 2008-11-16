@@ -143,19 +143,47 @@ record(bi, "$(P)$(R)AutoSave_RBV")
     field(SCAN, "I/O Intr")
 }
 
-# NOTE: These should be busy records, but wait till we get asynBusy record
 # Write file
-record(longout, "$(P)$(R)WriteFile")
+record(abusy, "$(P)$(R)WriteFile")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WRITE_FILE")
+    field(ZNAM, "Done")
+    field(ONAM, "Write")
 }
 
+record(bi, "$(P)$(R)WriteFile_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WRITE_FILE")
+    field(ZNAM, "Done")
+    field(ZSV,  "NO_ALARM")
+    field(ONAM, "Writing")
+    field(OSV,  "MINOR")
+    field(SCAN, "I/O Intr")
+}
+
+
 # Read file
-record(longout, "$(P)$(R)ReadFile")
+record(abusy, "$(P)$(R)ReadFile")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))READ_FILE")
+    field(ZNAM, "Done")
+    field(ONAM, "Read")
+}
+
+record(bi, "$(P)$(R)ReadFile_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))READ_FILE")
+    field(ZNAM, "Done")
+    field(ZSV,  "NO_ALARM")
+    field(ONAM, "Reading")
+    field(OSV,  "MINOR")
+    field(SCAN, "I/O Intr")
 }
 
 # File data format 
@@ -212,19 +240,24 @@ record(mbbi, "$(P)$(R)FileWriteMode_RBV")
     field(SCAN, "I/O Intr")
 }
 
-# NOTE: These should be busy records, and no RBV, but wait till we get asynBusy record
 # Capture data
-record(longout, "$(P)$(R)Capture")
+record(abusy, "$(P)$(R)Capture")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CAPTURE")
+    field(ZNAM, "Done")
+    field(ONAM, "Capture")
 }
 
-record(longin, "$(P)$(R)Capture_RBV")
+record(bi, "$(P)$(R)Capture_RBV")
 {
     field(PINI, "1")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CAPTURE")
+    field(ZNAM, "Done")
+    field(ZSV,  "NO_ALARM")
+    field(ONAM, "Capturing")
+    field(OSV,  "MINOR")
     field(SCAN, "I/O Intr")
 }
 
