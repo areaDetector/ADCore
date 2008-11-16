@@ -22,10 +22,31 @@
         <li>ADDriver::writeInt32</li>
       </ul>
     </li>
+    <li>Reorganized the file I/O parameters, template files and medm screens
+      <ul>
+        <li>Moved the file capture parameters from NDPluginFile.h and NDPluginFile.cpp
+            to ADStdDriverParams.h.  This allows a detector driver to use these capture
+            parameters if desired.</li>
+        <li>Removed all of the file I/O records from ADBase.template and ADBase_settings.req.
+            These previously duplicated the records in NDFile.template and NDFile_settings.req,
+            which was hard to maintain.
+            IOCs for detector drivers that can do file I/O now need to load NDFile.template,
+            while those that cannot no longer need to load these records.
+            They also need to have NDFile_settings.req added to auto_settings.req.
+            This does not effect the file plugin support, only drivers that directly
+            do file I/O.</li>
+        <li>Removed the file I/O PVs from ADBase.adl. Added a related display link
+            to NDFile.adl.</li>
+        <li>NDFile.adl now contains only the file related PVs, not the plugin related PVs.
+            The new file NDPluginFile.adl replaces the previous version of NDFile.adl,
+            and contains both the file PVs and the plugin PVs.
+      </ul>
+    </li>
     <li>Added new enums in ADStdDriverParams.h
       <ul>
         <li>ADFrameType_t</li>
         <li>ADShutterMode_t</li>
+        <li>ADFileMode_t</li>
       </ul>
     </li>
     <li>Added new parameters in ADStdDriverParams.h
@@ -38,7 +59,12 @@
         <li>ADShutterCloseDelay</li>
         <li>ADTimeRemaining</li>
         <li>ADNumImagesCounter</li>
+        <li>ADFrameType</li>
         <li>ADArrayCallbacks</li>
+        <li>ADFileWriteMode</li>
+        <li>ADFileNumCapture</li>
+        <li>ADFileNumCaptured</li>
+        <li>ADFileCapture</li>
       </ul>
       ADArrayCallbacks can be set to 0 to disable callbacks with detector data. For the
       MarCCD and Pilatus detectors setting this to 0 will disable reading the disk files
