@@ -12,20 +12,11 @@ typedef enum {
     NDFileFormatNetCDF,
 } NDPluginFileFormat_t;
 
+/* There are currently no specific parameters for this driver yet.
+ * It uses the ADStdDriverParams and NDPluginDriver params */
 typedef enum {
-    NDPluginFileModeSingle,
-    NDPluginFileModeCapture,
-    NDPluginFileModeStream
-} NDPluginFileMode_t;
-
-typedef enum
-{
-    NDPluginFileWriteMode           /* (asynInt32,    r/w) File saving mode (NDFileMode_t) */
-        = NDPluginDriverLastParam,
-    NDPluginFileNumCapture,         /* (asynInt32,    r/w) Number of arrays to capture */
-    NDPluginFileNumCaptured,        /* (asynInt32,    r/o) Number of arrays already captured */
-    NDPluginFileCapture,            /* (asynInt32,    r/w) Start or stop capturing arrays */
-    NDPluginFileLastParam
+    NDPluginFileLastParam =
+        NDPluginDriverLastParam
 } NDPluginFileParam_t;
 
 class NDPluginFile : public NDPluginDriver {
