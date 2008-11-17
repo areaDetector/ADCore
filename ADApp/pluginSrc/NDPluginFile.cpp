@@ -31,6 +31,7 @@
  * The asynDrvUser interface in this driver parses these strings and puts the
  * corresponding enum value in pasynUser->reason */
 static asynParamString_t NDPluginFileParamString[] = {
+    {0, "unused"} /* We don't have currently any parameters ourselves but compiler does not like empty array */
 };
 
 #define NUM_ND_PLUGIN_FILE_PARAMS (sizeof(NDPluginFileParamString)/sizeof(NDPluginFileParamString[0]))
