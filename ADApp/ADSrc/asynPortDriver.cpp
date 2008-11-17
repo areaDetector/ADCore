@@ -1283,13 +1283,6 @@ asynPortDriver::asynPortDriver(const char *portName, int maxAddr, int paramTable
         return;
     }
 
-    /* Connect to our device for asynTrace */
-    status = pasynManager->connectDevice(this->pasynUser, portName, 0);
-    if (status != asynSuccess) {
-        printf("%s:%s:, connectDevice failed\n", driverName, functionName);
-        return;
-    }
-
     /* Create the epicsMutex for locking access to data structures from other threads */
     this->mutexId = epicsMutexCreate();
     if (!this->mutexId) {
@@ -1303,6 +1296,14 @@ asynPortDriver::asynPortDriver(const char *portName, int maxAddr, int paramTable
     for (addr=0; addr<maxAddr; addr++) {
         this->params[addr] = new paramList(0, paramTableSize, &this->asynStdInterfaces);
     }
+
+    /* Connect to our device for asynTrace */
+    status = pasynManager->connectDevice(this->pasynUser, portName, 0);
+    if (status != asynSuccess) {
+        printf("%s:%s:, connectDevice failed\n", driverName, functionName);
+        return;
+    }
+
 }
 
 asynPortDriver::~asynPortDriver()
