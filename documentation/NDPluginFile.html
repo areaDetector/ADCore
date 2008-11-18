@@ -59,12 +59,6 @@ typedef enum {
     NDFileFormatNetCDF,
 } NDPluginFileFormat_t;
 
-typedef enum {
-    NDPluginFileModeSingle,
-    NDPluginFileModeCapture,
-    NDPluginFileModeStream
-} NDPluginFileMode_t;
-
 ...
 class NDPluginFile : public NDPluginDriver {
 public:
@@ -147,14 +141,13 @@ public:
   <p>
     The following is the MEDM screen that provides access to the parameters in NDPluginDriver.h
     and NDPluginFile.h through records in NDPluginBase.template and NDFile.template.
-    This is the MEDM screen that is used to control the saving of images to disk for
-    drivers that do not support saving files to disk themselves.
+    This is the MEDM screen that is used to control the saving of images to disk.
   </p>
   <div style="text-align: center">
     <h3>
-      NDFile.adl</h3>
+      NDPluginFile.adl</h3>
     <p>
-      <img alt="NDFile.png" src="NDFile.png" /></p>
+      <img alt="NDPluginFile.png" src="NDPluginFile.png" /></p>
   </div>
   <h2 id="netCDF">
     netCDF file contents</h2>
