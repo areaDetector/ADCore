@@ -26,6 +26,7 @@
         <li><a href="#asynNDArrayDriver">asynNDArrayDriver</a></li>
         <li><a href="#ADDriver">ADDriver</a></li>
         <li><a href="#ADStdDriverParams">ADStdDriverParams</a></li>
+        <li><a href="#MEDM_screens">MEDM screens</a></li>
       </ul>
     </li>
     <li><a href="pluginDoc.html">Plugins</a>
@@ -755,6 +756,13 @@ typedef enum
     ADTriggerInternal,
     ADTriggerExternal
 } ADTriggerMode_t;
+
+typedef enum {
+    ADFileModeSingle,
+    ADFileModeCapture,
+    ADFileModeStream
+} ADFileMode_t;
+
 </pre>
   <p>
     It also defines parameters that all area detector drivers should implement if possible.
@@ -795,7 +803,8 @@ typedef enum
     <tbody>
       <tr>
         <td align="center" colspan="7">
-          <b>Parameter Definitions in ADStdDriverParams.h and EPICS Record Definitions in ADBase.template</b></td>
+          <b>Parameter Definitions in ADStdDriverParams.h and EPICS Record Definitions in ADBase.template 
+             (file-related records are in NDFile.template)</b></td>
       </tr>
       <tr>
         <th>
@@ -1293,7 +1302,7 @@ typedef enum
       </tr>
       <tr>
         <td align="center" colspan="7">
-          <b>File saving parameters</b></td>
+          <b>File saving parameters (records are defined in NDFile.template)</b></td>
       </tr>
       <tr>
         <td>
@@ -1472,9 +1481,11 @@ epicsSnprintf(
         <td>
           WRITE_FILE</td>
         <td>
-          $(P)$(R)WriteFile</td>
+          $(P)$(R)WriteFile<br />
+          $(P)$(R)WriteFile_RBV
         <td>
-          longout</td>
+          abusy<br />
+          bi</td>
       </tr>
       <tr>
         <td>
@@ -1488,9 +1499,81 @@ epicsSnprintf(
         <td>
           READ_FILE</td>
         <td>
-          $(P)$(R)ReadFile</td>
+          $(P)$(R)ReadFile<br />
+          $(P)$(R)ReadFile_RBV</td>
         <td>
-          longout</td>
+          abusy<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          ADFileWriteMode</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          File saving mode (Single, Capture, Stream)(ADFileMode_t)</td>
+        <td>
+          WRITE_MODE</td>
+        <td>
+          $(P)$(R)FileWriteMode<br />
+          $(P)$(R)FileWriteMode_RBV</td>
+        <td>
+          mbbo<br />
+          mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          ADFileCapture</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Start (1) or stop (0) file capture or streaming</td>
+        <td>
+          CAPTURE</td>
+        <td>
+          $(P)$(R)FileCapture<br />
+          $(P)$(R)FileCapture_RBV</td>
+        <td>
+          abusy<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          ADNumCapture</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Number of frames to acquire in capture or streaming mode</td>
+        <td>
+          NUM_CAPTURE</td>
+        <td>
+          $(P)$(R)FileNumCapture<br />
+          $(P)$(R)FileNumCapture_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          ADNumCaptured</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Number of frames currently acquired capture or streaming mode</td>
+        <td>
+          NUM_CAPTURED</td>
+        <td>
+          $(P)$(R)FileNumCaptured_RBV</td>
+        <td>
+          longin</td>
       </tr>
       <tr>
         <td align="center" colspan="7">
@@ -1642,7 +1725,7 @@ epicsSnprintf(
         <td>
           r/w</td>
         <td>
-          Shutter mode (None, detector-controlled or EPICSS-controlled) (ADShutterMode_t)</td>
+          Shutter mode (None, detector-controlled or EPICS-controlled) (ADShutterMode_t)</td>
         <td>
           SHUTTER_MODE</td>
         <td>
@@ -1876,17 +1959,42 @@ epicsSnprintf(
       </tr>
     </tbody>
   </table>
+  <h2 id="MEDM_screens">
+    MEDM screens</h2>
   <p>
     The following is the MEDM screen that provides access to the parameters in ADStdDriverParams
     through records in ADBase.template. This is a top-level MEDM screen that will work
     with any areaDetector driver. Note however that many drivers will not implement
-    all of these parameters, so detector-specific MEDM screens should generally be created
-    that only display the EPICS PVs for the features implemented for that detector.
+    all of these parameters, and there will usually be detector-specific parameters not shown
+    in this screen, so detector-specific MEDM screens should generally be created
+    that display the EPICS PVs for the features implemented for that detector.
   </p>
   <div style="text-align: center">
     <p>
       <b>ADBase.adl</b></p>
     <img alt="ADBase.png" src="ADBase.png" /></div>
+  <p>
+    The following is the MEDM screen that provides access to the file-related
+    parameters in ADStdDriverParams through records in NDFile.template. 
+    This screen is for use with detector drivers that directly implement file I/O.
+  </p>
+  <div style="text-align: center">
+    <p>
+      <b>NDFile.adl</b></p>
+    <img alt="NDFile.png" src="NDFile.png" /></div>
+  <p>
+    The following is the MEDM screen that provides access to the EPICS shutter
+    parameters in ADStdDriverParams through records in ADBase.template. 
+    This screen allows one to define the EPICS PVs to open the shutter, close the shutter,
+    and determine the shutter status.  The values of these PVs for open and close drive
+    and status can also be
+    defined. Note that in many cases the same PV will be used for open and close drive,
+    but in some cases (e.g. APS safety shutters) different PVs are used for open and close.
+  </p>
+  <div style="text-align: center">
+    <p>
+      <b>ADEpicsShutter.adl</b></p>
+    <img alt="ADEpicsShutter.png" src="ADEpicsShutter.png" /></div>
   <h2 id="Plugins">
     Plugins</h2>
   <p>
