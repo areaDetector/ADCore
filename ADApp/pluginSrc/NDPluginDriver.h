@@ -48,7 +48,8 @@ public:
     virtual void processTask(void);
     virtual asynStatus setArrayInterrupt(int connect);
     virtual asynStatus connectToArrayPort(void);    
-    int createFileName(int maxChars, char *fullFileName);
+    virtual int createFileName(int maxChars, char *fullFileName);
+    virtual int createFileName(int maxChars, char *filePath, char *fileName);
     
     /* The asyn interfaces we access as a client */
     asynGenericPointer *pasynGenericPointer;

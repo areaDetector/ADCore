@@ -79,6 +79,36 @@ int NDPluginDriver::createFileName(int maxChars, char *fullFileName)
     return(status);   
 }
 
+int NDPluginDriver::createFileName(int maxChars, char *filePath, char *fileName)
+{
+    /* Formats a complete file name from the components defined in ADStdDriverParams.h */
+    int status = asynSuccess;
+    char fileTemplate[MAX_FILENAME_LEN];
+    char name[MAX_FILENAME_LEN];
+    int fileNumber;
+    int autoIncrement;
+    int len;
+    
+    status |= getStringParam(ADFilePath, maxChars, filePath); 
+    status |= getStringParam(ADFileName, sizeof(name), name); 
+    status |= getStringParam(ADFileTemplate, sizeof(fileTemplate), fileTemplate); 
+    status |= getIntegerParam(ADFileNumber, &fileNumber);
+    status |= getIntegerParam(ADAutoIncrement, &autoIncrement);
+    if (status) return(status);
+    len = epicsSnprintf(fileName, maxChars, fileTemplate, 
+                        name, fileNumber);
+    if (len < 0) {
+        status |= asynError;
+        return(status);
+    }
+    if (autoIncrement) {
+        fileNumber++;
+        status |= setIntegerParam(ADFileNumber, fileNumber);
+        status |= setIntegerParam(ADFileNumber, fileNumber);
+    }
+    return(status);   
+}
+
 void NDPluginDriver::processCallbacks(NDArray *pArray)
 {
     int arrayCounter;
