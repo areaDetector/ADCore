@@ -1,7 +1,7 @@
 
 file {
-	name="j:\epics\devel\areaDetector\1-3\ADApp\op\adl\pilatusDetector.adl"
-	version=020306
+	name="/home/epics/devel/areaDetector/1-3/ADApp/op/adl/pilatusDetector.adl"
+	version=030102
 }
 display {
 	object {
@@ -1475,7 +1475,7 @@ text {
 		height=20
 	}
 	control {
-		chan="$(P)image1:MinCallbackTime"
+		chan="$(P)$(I):MinCallbackTime"
 		clr=14
 		bclr=51
 	}
