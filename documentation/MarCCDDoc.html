@@ -7,7 +7,7 @@
     <h1>
       areaDetector MarCCD driver</h1>
     <h2>
-      November 12, 2008</h2>
+      November 18, 2008</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -20,10 +20,9 @@
     <li><a href="#StandardNotes">Implementation of standard driver parameters</a></li>
     <li><a href="#Driver_parameters">MarCCD specific parameters</a></li>
     <li><a href="#Unsupported">Unsupported standard driver parameters</a></li>
-    <li><a href="#Screenshots">Screenshots</a></li>
-    <li><a href="#Configuring">Configuring</a></li>
-    <li><a href="#Performance measurements">Performance measurements</a> </li>
-    <li><a href="#Hardware notes">Hardware notes</a> </li>
+    <li><a href="#Configuration">Configuration</a></li>
+    <li><a href="#MEDM_screens">MEDM screens</a></li>
+    <li><a href="#Performance_measurements">Performance measurements</a> </li>
     <li><a href="#Restrictions">Restrictions</a> </li>
   </ul>
   <h2 id="Introduction" style="text-align: left">
@@ -37,6 +36,31 @@
     server that MarUSA provides. The marccd_server_socket program must be started before
     the areaDetector software is started, by running the marccd program and executing
     Acquire/Remote Control/Start.
+  </p>
+  <p>
+    marccd must be using Version 1 of the remote protocol. This is normally done done
+    by editing the file marccd/configuration/marccd.conf and replacing the line</p>
+  <pre>
+include marccd_server_v0.conf
+    </pre>
+  <p>
+    with</p>
+  <pre>
+include marccd_server_v1.conf
+    </pre>
+  <p>
+    The file marccd_server_v1.conf should contain the lines:</p>
+  <pre>
+remote_mode_server_command /home/marccd/contrib/marccd_server/marccd_server_socket
+remote_mode_server_arguments 2222
+    </pre>
+  <p>
+    The first line points to the location of the marccd_server_socket program that is
+    used to implement remote control. In order to work with the areaDetector driver
+    this must be a version of this program created after November 11, 2008 when support
+    for the <code>get_frameshift</code> command was added. A recent version of this program can
+    be downloaded from the <a href="ftp://ftp.rayonix.com/pub/marccd/example_marccd_server.tgz">
+      Rayonix FTP site</a>.
   </p>
   <p>
     The marccd program saves the data to disk as TIFF files. The areaDetector software
@@ -53,7 +77,8 @@
     <tbody>
       <tr>
         <td align="center" colspan="3">
-          <b>Parameter Definitions in marccd.cpp and EPICS Record Definitions in marccd.template</b></td>
+          <b>Implementation of Parameters in ADStdDriverParams.h and EPICS Record Definitions in
+          ADBase.template and NDFile.template</b></td>
       </tr>
       <tr>
         <th>
@@ -72,12 +97,10 @@
           The driver redefines the choices for the ADFrameType parameter (record $(P)$(R)FrameType)
           from ADStdDriverParams.h. The choices for the MarCCD are:
           <ul>
-            <li>Normal (corrected data frame without double correlatino)</li>
-            <li>Background (background frame with 0 exposure time, double correlation to remove
+            <li>Normal (corrected data frame without double correlation)</li>
+            <li>Background (background frame with 0 exposure time, done with double correlation to remove
               zingers)</li>
             <li>Raw (data frame without correction for background or spatial distortion)</li>
-            <li>Multiple External Trigger (high to low transition on external signal triggers
-              a single acquisition for the programmed exposure time)</li>
             <li>DblCorrelation (two images each collected for half the nominal acquisition time,
               zingers removed by double correlation)</li>
           </ul>
@@ -131,9 +154,9 @@
   <h2 id="Driver_parameters" style="text-align: left">
     MarCCD specific parameters</h2>
   <p>
-    The MarCCD driver implements the following parameters in addition to those in ADStdDriverParams.h:.
+    The MarCCD driver implements the following parameters in addition to those in ADStdDriverParams.h.
     Note that to reduce the width of this table the enum names have been split into
-    2 lines, but these are just a single name, for example <code>PilatusDelayTime</code>.
+    2 lines, but these are just a single name, for example <code>marCCDState</code>.
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
@@ -325,11 +348,11 @@
           performance in some circumstances. If this parameter is set to 1 (Overlap) then
           the ADAcquire parameter will go to 0 (Done) when the Readout task is done executing,
           but before the Correct and Write tasks have finished correcting and saving the file
-          to disk. This improves performance because the next image can begin as soon as Acquire
+          to disk. This improves performance because the next image can begin as soon as ADAcquire
           goes to done, and hence before the previous image is written to disk. Note, however
           that this parameter must be set to 0 (Sequential) if callbacks are being used to
           compute ROIs that are being used in data collection, e.g. in a scan. If this is
-          not done then the ROI information will be read before it is updated and incorrect
+          not done then the ROI information will be grabbed before it is updated and incorrect
           scan data will result.</td>
         <td>
           MAR_OVERLAP</td>
@@ -355,12 +378,13 @@
         <td>
           r/w</td>
         <td>
-          marccd can be used for time-resolved studies by collecting multiple data sets
-          before reading out the detector.  This is done by placing a mask in front of the detector
-          that restricts the x-rays to horizontal stripe.  An exposure is made, and then an external
-          signal causes the detector to shift the image by the number of lines given by this 
-          parameter.  A number of images separated by times of a few milliseconds can be collected,
-          and then the detector is read out.</td>
+          marccd can be used for time-resolved studies by collecting multiple data sets before
+          reading out the detector. This is done by placing a mask in front of the detector
+          that restricts the x-rays to horizontal stripe. An exposure is made, and then an
+          external signal causes the detector to shift the image by the number of lines given
+          by this parameter. A number of images separated by times of a few milliseconds can
+          be collected, and then the detector is read out.  Set this parameter to 0 to 
+          disable frameshift mode.</td>
         <td>
           MAR_FRAME_SHIFT</td>
         <td>
@@ -396,7 +420,8 @@
       </tr>
       <tr>
         <td align="center" colspan="7">
-          <b>Ancillary parameters.  These parameters are written to the header of the marccd TIFF file.</b></td>
+          <b>Ancillary parameters. These parameters are written to the header of the marccd
+            TIFF file.</b></td>
       </tr>
       <tr>
         <td>
@@ -501,6 +526,10 @@
           ao</td>
       </tr>
       <tr>
+        <td align="center" colspan="7">
+          <b>Debugging</b></td>
+      </tr>
+      <tr>
         <td>
           N/A</td>
         <td>
@@ -508,31 +537,39 @@
         <td>
           N/A</td>
         <td>
-          asyn record to control debugging communication with camserver. Setting the CNCT
-          field in this record to <code>Disconnect</code> causes the drvAsynIPPort server
-          to disconnect from camserver. This can be used to allow another program, such as
-          TVX, to temporarily take control of camserver, without restarting the EPICS IOC.
-          Set CNCT to <code>Connect</code> to reconnect the IOC to camserver, or simply process
-          any record which communicates with camserver, because the driver will automatically
-          reconnect.</td>
+          asyn record to control debugging communication with marccd_server_socket program</td>
         <td>
           N/A</td>
         <td>
-          $(P)$(R)CamserverAsyn</td>
+          $(P)$(R)marSserverAsyn</td>
         <td>
           asyn</td>
       </tr>
     </tbody>
   </table>
+  <h2 id="Unsupported">
+    Unsupported standard driver parameters</h2>
+  <p>The MarCCD driver does not support the following standard driver parameters because
+     they are not supported in the marccd program:
+  <ul>
+    <li>Number of exposures per image (ADNumExposures)</li>
+    <li>Trigger mode (ADTriggerMode)</li>
+    <li>Gain (ADGain)</li>
+    <li>Region to read out (ADMinX, ADMinY, ADSizeX, ADSizeY, ADReverseX, ADReverseY)</li>
+    <li>Data type (ADDataType)</li>
+    <li>Reading previous files (ADReadFile)</li>
+    <li>Capture or stream file saving (ADFileWriteMode, ADFileCapture, 
+        ADNumCapture, ADNumCaptured)</li>
+  </ul>
   <h2 id="Configuration" style="text-align: left">
     Configuration</h2>
   <p>
-    The Pilatus driver is created with the following command, either from C/C++ or from
+    The MarCCD driver is created with the following command, either from C/C++ or from
     the EPICS IOC shell.
   </p>
   <pre>   
-pilatusDetectorConfig(const char *portName, const char *camserverPort, 
-                      int maxSizeX, int maxSizeY, int maxBuffers, size_t maxMemory);
+marCCDConfig(const char *portName, const char *marCCDPort, 
+             int maxBuffers, size_t maxMemory);
   </pre>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
@@ -551,25 +588,11 @@ pilatusDetectorConfig(const char *portName, const char *camserverPort,
       </tr>
       <tr>
         <td>
-          <code>camserverPort</code></td>
+          <code>marCCDPort</code></td>
         <td>
-          The name of the asyn TCP/IP port to communicate with camserver. This must have been
+          The name of the asyn TCP/IP port to communicate with marccd_server_socket. This must have been
           previously created with <code>drvAsynIPPortConfig()</code>,
         </td>
-      </tr>
-      <tr>
-        <td>
-          <code>maxSizeX</code></td>
-        <td>
-          The number of pixels in the X direction on the detector. This is 487 for the Pilatus
-          100K.</td>
-      </tr>
-      <tr>
-        <td>
-          <code>maxSizeY</code></td>
-        <td>
-          The number of pixels in the Y direction on the detector. This is 195 for the Pilatus
-          100K.</td>
       </tr>
       <tr>
         <td>
@@ -590,71 +613,74 @@ pilatusDetectorConfig(const char *portName, const char *camserverPort,
   <p>
     The following is an example st.cmd startup script:
   </p>
-  <pre>< envPaths
+  <pre>
+< envPaths
 errlogInit(20000)
 
-dbLoadDatabase("$(AREA_DETECTOR)/dbd/pilatusDetectorApp.dbd")
-pilatusDetectorApp_registerRecordDeviceDriver(pdbbase) 
+dbLoadDatabase("$(AREA_DETECTOR)/dbd/marCCDApp.dbd")
+marCCDApp_registerRecordDeviceDriver(pdbbase) 
 
 ###
-# Create the asyn port to talk to the Pilatus on port 41234.
-drvAsynIPPortConfigure("camserver","gse-pilatus2:41234")
+# Create the asyn port to talk to the MAR on port 2222
+drvAsynIPPortConfigure("marServer","gse-marccd2.cars.aps.anl.gov:2222")
 # Set the input and output terminators.
-asynOctetSetInputEos("camserver", 0, "\030")
-asynOctetSetOutputEos("camserver", 0, "\n")
+asynOctetSetInputEos("marServer", 0, "\n")
+asynOctetSetOutputEos("marServer", 0, "\n")
+#asynSetTraceMask("marServer",0,9)
+asynSetTraceIOMask("marServer",0,2)
 
-pilatusDetectorConfig("Pil", "camserver", 487, 195, 50, 200000000)
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/ADBase.template",   "P=13PIL1:,R=cam1:,PORT=Pil,ADDR=0,TIMEOUT=1")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/pilatus.template","P=13PIL1:,R=cam1:,PORT=Pil,ADDR=0,TIMEOUT=1,CAMSERVER_PORT=camserver")
+marCCDConfig("MAR", "marServer", 20, 200000000)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/ADBase.template",  "P=13MARCCD1:,R=cam1:,PORT=MAR,ADDR=0,TIMEOUT=1")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/marCCD.template","P=13MARCCD1:,R=cam1:,PORT=MAR,ADDR=0,TIMEOUT=1,MARSERVER_PORT=marServer")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFile.template","P=13MARCCD1:,R=cam1:,PORT=MAR,ADDR=0,TIMEOUT=1")
 
 # Create a standard arrays plugin
-drvNDStdArraysConfigure("PilImage", 5, 0, "Pil", 0, -1)
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13PIL1:,R=image1:,PORT=PilImage,ADDR=0,TIMEOUT=1,NDARRAY_PORT=Pil,NDARRAY_ADDR=0")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStdArrays.template", "P=13PIL1:,R=image1:,PORT=PilImage,ADDR=0,TIMEOUT=1,SIZE=32,FTVL=LONG,NELEMENTS=94965")
+drvNDStdArraysConfigure("MARImage", 5, 0, "MAR", 0, -1)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13MARCCD1:,R=image1:,PORT=MARImage,ADDR=0,TIMEOUT=1,NDARRAY_PORT=MAR,NDARRAY_ADDR=0")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStdArrays.template", "P=13MARCCD1:,R=image1:,PORT=MARImage,ADDR=0,TIMEOUT=1,SIZE=16,FTVL=SHORT,NELEMENTS=1200000")
 
-# Create an ROI plugin with 8 ROIs
-drvNDROIConfigure("PilROI", 5, 0, "Pil", 0, 8, -1)
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13PIL1:,R=ROI1:,  PORT=PilROI,ADDR=0,TIMEOUT=1,NDARRAY_PORT=Pil,NDARRAY_ADDR=0")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROI.template",       "P=13PIL1:,R=ROI1:,  PORT=PilROI,ADDR=0,TIMEOUT=1")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13PIL1:,R=ROI1:0:,PORT=PilROI,ADDR=0,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13PIL1:,R=ROI1:1:,PORT=PilROI,ADDR=1,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13PIL1:,R=ROI1:2:,PORT=PilROI,ADDR=2,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13PIL1:,R=ROI1:3:,PORT=PilROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13PIL1:,R=ROI1:4:,PORT=PilROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13PIL1:,R=ROI1:5:,PORT=PilROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13PIL1:,R=ROI1:6:,PORT=PilROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13PIL1:,R=ROI1:7:,PORT=PilROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
+# Create an ROI plugin
+drvNDROIConfigure("MARROI", 5, 0, "MAR", 0, 10, -1)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13MARCCD1:,R=ROI1:,  PORT=MARROI,ADDR=0,TIMEOUT=1,NDARRAY_PORT=MAR,NDARRAY_ADDR=0")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROI.template",       "P=13MARCCD1:,R=ROI1:,  PORT=MARROI,ADDR=0,TIMEOUT=1")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MARCCD1:,R=ROI1:0:,PORT=MARROI,ADDR=0,TIMEOUT=1,HIST_SIZE=256")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MARCCD1:,R=ROI1:1:,PORT=MARROI,ADDR=1,TIMEOUT=1,HIST_SIZE=256")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MARCCD1:,R=ROI1:2:,PORT=MARROI,ADDR=2,TIMEOUT=1,HIST_SIZE=256")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MARCCD1:,R=ROI1:3:,PORT=MARROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MARCCD1:,R=ROI1:4:,PORT=MARROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MARCCD1:,R=ROI1:5:,PORT=MARROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MARCCD1:,R=ROI1:6:,PORT=MARROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MARCCD1:,R=ROI1:7:,PORT=MARROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
 
 # Create "fastSweep" drivers for the MCA record to do on-the-fly scanning of ROI data
-initFastSweep("PilSweepTotal", "PilROI", 8, 2048, "TOTAL_ARRAY", "CALLBACK_PERIOD")
-initFastSweep("PilSweepNet", "PilROI", 8, 2048, "NET_ARRAY", "CALLBACK_PERIOD")
+initFastSweep("MARSweepTotal", "MARROI", 8, 2048, "TOTAL_ARRAY", "CALLBACK_PERIOD")
+initFastSweep("MARSweepNet", "MARROI", 8, 2048, "NET_ARRAY", "CALLBACK_PERIOD")
 
 # Load MCA records for the fast sweep drivers
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:0:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepTotal 0)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:1:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepTotal 1)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:2:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepTotal 2)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:3:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepTotal 3)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:4:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepTotal 4)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:5:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepTotal 5)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:6:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepTotal 6)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:7:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepTotal 7)")
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:0:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepTotal 0)")
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:1:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepTotal 1)")
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:2:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepTotal 2)")
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:3:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepTotal 3)")
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:4:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepTotal 4)")
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:5:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepTotal 5)")
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:6:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepTotal 6)")
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:7:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepTotal 7)")
 
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:0:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepNet 0)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:1:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepNet 1)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:2:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepNet 2)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:3:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepNet 3)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:4:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepNet 4)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:5:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepNet 5)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:6:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepNet 6)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:7:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepNet 7)")
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:0:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepNet 0)")
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:1:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepNet 1)")
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:2:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepNet 2)")
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:3:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepNet 3)")
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:4:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepNet 4)")
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:5:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepNet 5)")
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:6:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepNet 6)")
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:7:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepNet 7)")
 
 
-#asynSetTraceMask("Pil",0,255)
-#asynSetTraceMask("PilROI",0,3)
-#asynSetTraceIOMask("PilROI",0,4)
+#asynSetTraceMask("MARROI",0,3)
+#asynSetTraceIOMask("MARROI",0,4)
 
-# Load scan records for scanning energy threshold
-dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=13PIL1:cam1:,MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
+# Load scan records
+dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=13MARCCD1:cam1:,MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
 
 set_requestfile_path("./")
 set_savefile_path("./autosave")
@@ -662,19 +688,18 @@ set_requestfile_path("$(AREA_DETECTOR)/ADApp/Db")
 set_requestfile_path("$(SSCAN)/sscanApp/Db")
 set_pass0_restoreFile("auto_settings.sav")
 set_pass1_restoreFile("auto_settings.sav")
-save_restoreSet_status_prefix("13PIL1:")
-dbLoadRecords("$(AUTOSAVE)/asApp/Db/save_restoreStatus.db", "P=13PIL1:")
+save_restoreSet_status_prefix("13MARCCD1:")
+dbLoadRecords("$(AUTOSAVE)/asApp/Db/save_restoreStatus.db", "P=13MARCCD1:")
 
 iocInit()
 
 # save things every thirty seconds
-create_monitor_set("auto_settings.req", 30,"P=13PIL1:,D=cam1:")
-
+create_monitor_set("auto_settings.req", 30,"P=13MARCCD1:,D=cam1:")
 </pre>
-  <h2 id="MEDM screens" style="text-align: left">
+  <h2 id="MEDM_screens" style="text-align: left">
     MEDM screens</h2>
   <p>
-    The following show the MEDM screens that are used to control the MarCCD debtector.
+    The following show the MEDM screens that are used to control the MarCCD detector.
     Note that the general purpose screen ADBase.adl can be used, but it exposes many
     controls that are not applicable to the MarCCD, and lacks some fields that are important
     for the MarCCD.</p>
@@ -684,329 +709,209 @@ create_monitor_set("auto_settings.req", 30,"P=13PIL1:,D=cam1:")
   <div style="text-align: center">
     <h3 style="text-align: center">
       marccd.adl</h3>
-    <img alt="marccd.png" src="marccd.png" /></div>
+    <img alt="marCCD.png" src="marCCD.png" /></div>
   <p>
-    <code>NDROI8.adl</code> is used to define the ROIs, and to display the statistics
-    for each ROI. In this example there are 3 valid ROIs defined. ROI 0 is the entire
-    detector, ROI 1 is a 100x50 rectangle starting at [300,60], and ROI 2 is a 50x30
-    rectangle starting at [320,70].</p>
-  <div style="text-align: center">
-    <h3 style="text-align: center">
-      NDROI8.adl</h3>
-    <img alt="NDROI8.png" src="NDROI8.png" /></div>
   <p>
-    <code>mca.adl</code> can be used to plot the net or total counts in an ROI when
-    NImages>1. In this example the plot is the net counts in ROI 1 as the diffractometer
-    chi was scanned +- 1 degree with 1000 points at .02 seconds/point. This was done
-    with the SPEC command
+    <code>marccdAncillary.adl</code> is the screen used to input ancillary information
+    that is written to the MarCCD TIFF files.
   </p>
-  <pre>lup chi -1 1 1000 .02
-</pre>
-  <p>
-    using trajectory scanning on a Newport kappa diffractometer. This was a compound
-    motor scan with the Newport XPS putting out pulses every .02 seconds. These pulses
-    triggered the Pilatus in External Enable mode. The Pilatus driver read each TIFF
-    file as it was created and updated this plot every 0.2 seconds. The total time to
-    collect this scan with 1000 images was 20 seconds.</p>
   <div style="text-align: center">
     <h3 style="text-align: center">
-      mca.adl</h3>
-    <img alt="pilatusMCA.png" src="pilatusMCA.png" style="text-align: left" /></div>
-  <p>
-    <code>scan_more.adl</code> is used to define a scan. In this example the sscan record
-    is set up to scan the ThresholdEnergy PV and to collect the total counts in ROI2,
-    which was defined to include the entire detector.</p>
-  <div style="text-align: center">
-    <h3>
-      scan_more.adl</h3>
-    <img alt="pilatusROI_scan_more.png" src="pilatus_scan_more.png" /></div>
-  <p>
-    <code>scanDetPlot.adl</code> is used to plot the results of a scan after it is complete.
-    In this example the total counts in ROI 2 are plotted as a function of the ThresholdEnergy
-    as it was scanned from 3000 to 10000 eV in 250 eV steps. The source was Fe55, and
-    the cut-off is at 6 keV, as expected for the Mn Ka and Mn Kb x-rays that this source
-    produces.</p>
-  <div style="text-align: center">
-    <h3>
-      scanDetPlot.adl</h3>
-    <img alt="pilatus_scan_plot.png" src="pilatus_scan_plot.png" /></div>
+      marccdAncillary.adl</h3>
+    <img alt="marCCDAncillary.png" src="marCCDAncillary.png" /></div>
   <p>
     <code>asynRecord.adl</code> is used to control the debugging information printed
-    by the asyn TCP/IP driver (asynTraceIODriver) and the SNL program (asynTraceIODevice).</p>
+    by the asyn TCP/IP driver (asynTraceIODriver) and the EPICS device support (asynTraceIODevice).</p>
   <div style="text-align: center">
     <h3>
       asynRecord.adl</h3>
-    <img alt="pilatusAsynRecord.png" src="pilatusAsynRecord.png" /></div>
+    <img alt="MarCCDAsynRecord.png" src="MarCCDAsynRecord.png" /></div>
   <p>
-    <code>asynOctet.adl</code> can be used to send any command to camserver and display
+    <code>asynOctet.adl</code> can be used to send any command to the marccd remote server and display
     the response. It can be loaded from the More menu in asynRecord.adl above.</p>
   <div style="text-align: center">
     <h3>
       asynOctet.adl</h3>
-    <img alt="pilatusAsynOctet.png" src="pilatusAsynOctet.png" /></div>
-  <h2 id="SPEC interface" style="text-align: left">
-    SPEC interface</h2>
-  <p>
-    At the GSECARS beamlines (13-ID-C and 13-BM-C) at the APS we use SPEC to control
-    our Newport diffractometers. We have added and modified SPEC macros to use the pilatusDetector
-    areaDetector driver to treat the Pilatus detector as a SPEC counter. This works
-    in both traditional step-scanning mode, as well as in <a href="http://cars.uchicago.edu/software/epics/trajectoryScan.html">
-      trajectory scanning</a> mode. Here are some snippets from the SPEC macros for
-    the Pilatus. We can supply the source files on request.</p>
-  <pre># need some more globals (kludge)
-global    PILATUS_ROI_PV    
-global    PILATUS_imgPATH_PV
-global    PILATUS_FNAME_PV
-global    PILATUS_FILENUMBER_PV
-global    PILATUS_FILEFORMAT_PV
-global    PILATUS_EXPSRTM_PV
-global    PILATUS_NFRAME_PV
-global    PILATUS_EXPPRD_PV
-global    PILATUS_NEXPFRM_PV
-global    PILATUS_ACQ_PV
-global    PILATUS_ACQMODE_PV
-
-###############################################################
-def _setup_img '{
-     local j, str
-		
-     # PILATUS_PREFIX should be detector aquisition pv (GSE-PILATUS1:)
-     if ( PILATUS_PREFIX == "") PILATUS_PREFIX = "GSE-PILATUS1:"
-     PILATUS_PREFIX = getval("Enter PILATUS pv prefix",PILATUS_PREFIX)
-
-     # rois pvs
-     PILATUS_ROI_PV    = PILATUS_PREFIX "ROI1NetCounts"
-     PILATUS_imgPATH_PV = PILATUS_PREFIX "FilePath"
-     PILATUS_FNAME_PV   = PILATUS_PREFIX "Filename"
-     PILATUS_FILENUMBER_PV   = PILATUS_PREFIX "FileNumber"
-     PILATUS_FILEFORMAT_PV = PILATUS_PREFIX "FileFormat"
-     PILATUS_EXPSRTM_PV = PILATUS_PREFIX "ExposureTime"
-     PILATUS_NFRAME_PV  = PILATUS_PREFIX "NImages"
-     PILATUS_EXPPRD_PV  = PILATUS_PREFIX "ExposurePeriod"
-     PILATUS_NEXPFRM_PV = PILATUS_PREFIX "NExposures"
-     PILATUS_ACQ_PV     = PILATUS_PREFIX "Acquire"
-     PILATUS_ACQMODE_PV = PILATUS_PREFIX "AcquireMode"
-...
-
-def epics_pilatus_count '{
-...
-     # write to data base fields
-     # Need to convert path from string to byte array
-     # Note: we use the "wait" parameter in epics_put here (new to spec5.7.02) so that
-     # it uses ca_put_callback, to know that all PVs have been processed
-     # before we start counting.  Use 1 second timeout, will actually be
-     # much faster than this unless something is wrong.
-     array _temp[256]
-     _temp = PILATUS_IMAGE_DIR
-     # Do not change path for now
-     #epics_put(PILATUS_imgPATH_PV,_temp, 1)
-     epics_put(PILATUS_FNAME_PV,img_fname, 1)
-     epics_put(PILATUS_FILENUMBER_PV,NPTS, 1)
-     epics_put(PILATUS_FILEFORMAT_PV,_fileformat, 1)
-     epics_put(sc_prtm_pv,cnt_time_val, 1)
-     epics_put(PILATUS_EXPSRTM_PV,cnt_time_val, 1)
-     epics_put(PILATUS_ACQMODE_PV,0, 1)  # Internal trigger 
-     epics_put(PILATUS_NFRAME_PV, 1, 1)
-     epics_put(PILATUS_NEXPFRM_PV, 1, 1)
-
-
-def user_getcounts '{
-    local pv_roi, j, pv
-
-...
-   # using image_count routine  
-    } else if ( EPICS_COUNT == 4 ) {
-        S[iroi] = 0
-        S[iroi] = epics_get(PILATUS_ROI_PV)
-</pre>
-  <h2 id="Performance measurements">
+    <img alt="MarCCDAsynOctet.png" src="MarCCDAsynOctet.png" /></div>
+  <h2 id="Performance_measurements">
     Performance measurements</h2>
   <p>
     The following measurements were done to demonstrate the performance that can be
-    obtained with the areaDetector Pilatus driver.</p>
-  <ol>
-    <li>AcquireMode=Internal, NumImages=1000, AcquireTime=.005, AcquirePeriod=.01, NumExposures=1.
-      The time to collect this series should be exactly 10.0 seconds. The actual time
-      was measured using the EPICS camonitor program. It printed the time when acquisition
-      was started (Acquire changed to Acquire=1) and when acquisition was complete (Acquire
-      changed to Done=0). The time was 10.022 seconds. This includes the time for camserver
-      to save all 1000 images to disk (366 MB), and for pilatusROI to read each file,
-      correct the bad pixels and flat field, compute the ROIs, and post the ROIs to EPICS.
-      It also posted all of the images to EPICS. The total additional time was less than
-      0.03 seconds for all 1000 images.</li>
-    <li>AcquireMode=Internal, NImages=1, ExposureTime=.01, NExposures=1. An EPICS sscan
-      record was used to collect 1000 points. There were no positioner PVs (to eliminate
-      motor overhead). The only detector trigger was the Pilatus Acquire PV. The only
-      detector PV was ROI1:0:Total_RBV. In this mode camserver is being told to individually
-      collect each file. If there were no overhead then time to collect this series should
-      be exactly 10.0 seconds. The actual time measured using the EPICS camonitor program
-      was 45.514 seconds. The overhead is thus 35.514 seconds, or 35 ms per point. In
-      this single-frame mode pilatusROI is thus able to collect >20 images/second. For
-      comparison, another measurement was done using the same EPICS sscan record, but
-      using a Joerger VSC16 scaler as the detector trigger and detector. The preset time
-      was also .01 seconds. The elapsed time for a 1000 point scan was 16.068 seconds,
-      so the overhead was 6.068 seconds, or 6 ms per point.</li>
-    <li>AcquireMode=Ext. Enable, NImages=1000, NExposures=1. SPEC was used to collect
-      1000 points using <a href="http://cars.uchicago.edu/software/epics/trajectoryScan.html">
-        trajectory scanning</a> mode with the Newport XPS motor controller. The following
-      SPEC command was used:
-      <pre>      lup chi -2 2 1000 .015
-      </pre>
-      This tells SPEC to do a relative scan of the chi axis from -2 degrees to +2 degrees
-      with 1000 points at .015 seconds/point. On our kappa diffractometer this entails
-      a coordinated motion of the phi, kappa and omega axes. The EPICS trajectory scanning
-      software downloads the non-linear trajectory that SPEC computes into the XPS controller,
-      which executes it. As the motors are moving the XPS outputs synchronization pulses
-      at the period of the collection time, .015 seconds in this case. These pulses are
-      stretched (see <a href="#Hardware notes">Hardware notes</a> below) and used as the
-      external input to the Pilatus. The time to execute this scan should be 15.0 seconds.
-      The actual time was 16.3 seconds, measured using camonitor on the Acquire PV. Again,
-      this includes the time for camserver to save all 1000 images to disk (366 MB), and
-      for pilatusROI to read each file, correct the bad pixels and flat field, compute
-      the ROIs, and post the ROIs to EPICS. It also posted the images to EPICS at 1Hz
-      (15 images total). The total additional time was less than 1.3 seconds for all 1000
-      images. As soon as the acquisition was complete SPEC plotted the net counts in the
-      first ROI (containing the Bragg peak) as follows:
-      <div style="text-align: center">
-        <h3>
-          1000 point SPEC scan with 15 ms per point collected in 16.3 seconds</h3>
-        <img alt="pilatusROI_spec.png" src="pilatus_spec.png" /></div>
-      <p>
-      </p>
-      For comparison this identical scan was executed in traditional step-scanning mode,
-      where the motors stopped at each point in the scan. The Pilatus was run in Internal
-      mode with NImages=1. The total time for the scan was 870 seconds (more than 14 minutes),
-      compared to 16.3 seconds in trajectory mode. Most of this overhead is the settling
-      time for the motors, with only a small fraction due to the Pilatus single-exposure
-      mode. The trajectory scanning mode is thus more than 50 times faster to execute
-      the identical SPEC scan.</li>
-  </ol>
-  <h2 id="Hardware notes" style="text-align: left">
-    &nbsp;</h2>
-  <h2 style="text-align: left">
-    Hardware notes</h2>
-  <h3>
-    Trigger pulses</h3>
-  <p>
-    The Pilatus supports 3 types of external triggering. In External Trigger mode (the
-    camserver ExtTrigger command) the Pilatus uses the programmed values of ExposureTime,
-    ExposurePeriod, NImages and NExposures. It waits for a single external trigger,
-    then waits for Delay seconds and then collects the entire sequence. It is very similar
-    to Internal mode with NImages>1, except that it waits for a trigger to begin collecting
-    the sequence.</p>
-  <p>
-    In External Enable mode (the camserver ExtEnable command) the Pilatus uses the external
-    signal to control acquisition. Only NImages and NExposures are used, ExposureTime
-    and ExposurePeriod are not used. When the signal is high the detector counts, and
-    on the transition to low it begins its readout.</p>
-  <p>
-    In External MultiTrigger Mode (the camserver ExtMTrigger command) the Pilatus uses
-    the programmed ExposureTime, in addition to NImages and NExposures. Each external
-    trigger pulse causes the Pilatus to collect one image at the programmed exposure
-    time. This mode works well with a trigger source like the Newport motor controllers
-    or the SIS380x multichannel scaler, that put out a short trigger pulse for each
-    image. One only needs to take care that the time between external trigger pulses
-    is at least 4msec longer than the programmed exposure time, to allow time for the
-    detector to read out before the next trigger pulse arrives.</p>
-  <p>
-    When using the External Enable mode, we use an inexpensive analog pulse generator
-    to convert the trigger pulses from the MM4005 and XPS to a form suitable for External
-    Enable mode with the Pilatus. This is the solution we have developed that seems
-    to be reliable:</p>
-  <ul>
-    <li>The synchonization pulses from the Newport MM4005 or XPS controller are input
-      into the external next pulse (channel advance, control signal 1) input of the SIS3801
-      multiscaler. This is the normal configuration used for MCS counting without the
-      Pilatus in trajectory scanning mode.</li>
-    <li>The Copy In Progress (CIP) output of the SIS3801 (control signal 5) is connected
-      to the Trigger Input of a Tenma TGP110 10 MHz Pulse Generator. CIP will output a
-      pulse whenever the SIS3801 does a channel advance, either in external mode with
-      the motor controller pulse input, or in internal timed channel advance mode. The
-      TGP100 Pulse Generator is configured as follows:
-      <ul>
-        <li>Trigger Input connected to CIP output of SIS3801.</li>
-        <li>Triggered mode.</li>
-        <li>Complement output.</li>
-        <li>Pulse duration set with knobs to 3msec.</li>
-        <li>TTL Output connected to the External Input of the Pilatus.</li>
-      </ul>
-    </li>
-    <li>With this configuration the SIS3801 CIP output is normally at 5V, and outputs
-      a 0V pulse 1 microsecond long. The trailing (rising) edge of that pulse triggers
-      the TGP110. The TGP110 TTL output is also normally at 5V, and outputs a 0V pulse
-      3 milliseconds long each time the SIS3801 pulses. That output is connected to the
-      Pilatus External Input. In External Enable mode when Pilatus External Input is high
-      the Pilatus is counting. When the External Input is low the Pilatus reads out. The
-      readout time is set via the knobs on the pulse generator to be 3 ms, which is close
-      to the minimum time allowed on the Pilatus.</li>
-  </ul>
-  <p>
-    The Tenma TGP110 seems to be currently called a Tenma 72-6860, and lists for about
-    $350 new at <a href="http://www.newark.com">Newark</a>.
-  </p>
-  <h3>
-    Detector Voltage</h3>
-  <p>
-    When we were initially testing the Pilatus in the lab, we had many errors in External
-    Enable mode, where it did not seem to be seeing the external pulses. camserver would
-    get DMA timeouts, and need to be restarted. Dectris said these were happening because
-    the cables on our detector are longer than normal, and the voltage drop from the
-    power supply to the detector was leading to marginal voltage values. They suggested
-    shortening the cables or increasing the supply voltage slightly. When moving the
-    detector to the hutch these problems initially went away. However, they then recurred,
-    and we fixed the problem by increasing the power supply voltage from 4.4 to 4.7
-    volts at the detector.</p>
-  <p>
-    Dectris has since informed me that they have increased the power supply voltage
-    on all new Pilatus systems, so this should no longer be an issue.</p>
+    obtained with the areaDetector MarCCD driver.  These measurements were made with a
+    MAR-165 CCD, with the EPICS IOC running on the same Linux machine as the marccd
+    program.  The acquisition time was 1 second.</p>
+    
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <th>
+          Binning</th>
+        <th>
+          Image size</th>
+        <th>
+          marCCDOverlap</th>
+        <th>
+          Time for 10 images</th>
+        <th>
+          Overhead per image</th>
+        <th>
+          Time per task</th>
+      </tr>
+      <tr>
+        <td>
+          2x2
+        </td>
+        <td>
+          2048x2048
+        </td>
+        <td>
+          Sequential
+        </td>
+        <td>
+          50.0
+        </td>
+        <td>
+          4.00
+        </td>
+        <td>
+          Readout: 3.02 <br />
+          Correct: 0.56 <br />
+          Save:    0.20
+        </td>
+      </tr>
+      <tr>
+        <td>
+          2x2
+        </td>
+        <td>
+          2048x2048
+        </td>
+        <td>
+          Overlap
+        </td>
+        <td>
+          46.2
+        </td>
+        <td>
+          3.62
+        </td>
+        <td>
+          Same
+        </td>
+      </tr>
+      <tr>
+        <td>
+          4x4
+        </td>
+        <td>
+          1024x1024
+        </td>
+        <td>
+          Sequential
+        </td>
+        <td>
+          29.0
+        </td>
+        <td>
+          1.90
+        </td>
+        <td>
+          Readout: 1.30 <br />
+          Correct: 0.28 <br />
+          Save:    0.06
+        </td>
+      </tr>
+      <tr>
+        <td>
+          4x4
+        </td>
+        <td>
+          1024x1024
+        </td>
+        <td>
+          Overlap
+        </td>
+        <td>
+          28.7
+        </td>
+        <td>
+          1.87
+        </td>
+        <td>
+          Same
+        </td>
+      </tr>
+      <tr>
+        <td>
+          8x8
+        </td>
+        <td>
+          512x512
+        </td>
+        <td>
+          Sequential
+        </td>
+        <td>
+          24.0
+        </td>
+        <td>
+          1.40
+        </td>
+        <td>
+          Readout: 0.78 <br />
+          Correct: 0.29 <br />
+          Save:    0.06
+        </td>
+      </tr>
+      <tr>
+        <td>
+          8x8
+        </td>
+        <td>
+          512x512
+        </td>
+        <td>
+          Overlap
+        </td>
+        <td>
+          23.6
+        </td>
+        <td>
+          1.36
+        </td>
+        <td>
+          Same
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
   <h2 id="Restrictions">
     Restrictions</h2>
   <p>
-    The following are some current restrictions of the pilatusROI SNL program:</p>
+    The following are some current restrictions of the MarCCD driver:</p>
   <ul>
-    <li>Limited to TIFF file format. camserver can save files in other formats, but pilatusROI
-      can currently only read TIFF files. Furthermore, it has a very simple TIFF reader.
-      It does not read the TIFF tags at all, but simply assumes that there is a 4096 byte
-      header, followed by the 32-bit image data. The size of the image data is controlled
-      by the NXPixels and NYPixels PVs, which thus must be correctly set.</li>
-    <li>The EPICS IOC should be run on the same computer as camserver. This is not strictly
-      necessary, and places a small additional load on the CPU and network on that computer.
-      However, we have found that TIFF files are available to be read within 10ms after
-      camserver says they have been written if the IOC is running on the same machine
-      as camserver. This is true even if the files are being saved on a remote NFS or
-      SMB file system. On the other hand, if the IOC and camserver are running on separate
-      machines, then the filesystem can wait up to 1 second after camserver says the TIFF
-      file has been written before the IOC can read it. This is true even if the files
-      are being written to the computer that the IOC is running on! This 1 second delay
-      is often unacceptable for fast single-exposure scans, i.e. with NImages=1.</li>
-    <li>pilatusROI keeps retrying to read each TIFF file until the modification date of
+    <li>The MarCCD driver keeps retrying to read each TIFF file until the modification date of
       the TIFF file is <i>after</i> the time that the exposure command was issued. If
       it did not do this check then it could be reading and displaying old files that
       happen to have the same name as the current files being collected. This check requires
       that the computer that is running the soft IOC must have its clock well synchronized
       with the clock on the computer on which the files are being written (i.e. the computer
       generating the file modification time). If the clocks are not synchronized then
-      the files may appear to be stale when they are not, and pilatusROI will time out.
-      pilatusROI actually tolerates up to 10 second clock skew betweeen the computers
+      the files may appear to be stale when they are not, and the driver will time out.
+      The driver actually tolerates up to 10 second clock skew betweeen the computers
       but any more than this may lead to problems.</li>
-    <li>The Abort PV does not always work because camserver does not reliably implement
-      the "K" command to stop an exposure sequence. In particular with NImages>1 camserver
-      seems to often ignore the K command completely, even with exposure times/periods
-      as long as 10 seconds. With NImages=1 it does kill the exposure after a few seconds.</li>
-    <li>The following items are hardcoded in the SNL program. They can be changed before
-      compiling if necessary. Some could be changed to be EPICS PVs, so they could be
-      controlled at run-time, but others must be defined at compile time because of limitations
-      in the SNL semantics.
+    <li>The following items are hardcoded in the driver. They can be changed by recompiling
+      compiling if necessary.
       <ul>
-        <li>MAX_MESSAGE_SIZE=256 The maximum size of message to/from camserver.</li>
+        <li>MAX_MESSAGE_SIZE=256 The maximum size of message to/from marccd_socket_server.</li>
         <li>MAX_FILENAME_LEN=256 The maximum size of a complete file name including path and
           extension.</li>
+        <li>MARCCD_SERVER_TIMEOUT=1.0  Timeout when communicating with marccd_socket_server.</li>
         <li>FILE_READ_DELAY=.01 seconds. The time between polling to see if the TIFF file
           exists or if it is the expected size.</li>
-        <li>MAX_BAD_PIXELS=100 The maximum number of bad pixels.</li>
-        <li>MAX_ROIS=32 The maximum number of ROIs</li>
-        <li>MAX_READ_ERRORS=3 The maximum number of TIFF file read errors before the SNL gives
-          up and aborts acquisition.</li>
+        <li>MARCCD_POLL_DELAY=.01 seconds. The time between polling the marccd_socket_server status
+          to see when a task has completed.</li>
       </ul>
     </li>
   </ul>
