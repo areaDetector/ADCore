@@ -7,7 +7,7 @@
     <h1>
       areaDetector MarCCD driver</h1>
     <h2>
-      November 18, 2008</h2>
+      November 24, 2008</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -40,26 +40,23 @@
   <p>
     marccd must be using Version 1 of the remote protocol. This is normally done done
     by editing the file marccd/configuration/marccd.conf and replacing the line</p>
-  <pre>
-include marccd_server_v0.conf
+  <pre>include marccd_server_v0.conf
     </pre>
   <p>
     with</p>
-  <pre>
-include marccd_server_v1.conf
+  <pre>include marccd_server_v1.conf
     </pre>
   <p>
     The file marccd_server_v1.conf should contain the lines:</p>
-  <pre>
-remote_mode_server_command /home/marccd/contrib/marccd_server/marccd_server_socket
+  <pre>remote_mode_server_command /home/marccd/contrib/marccd_server/marccd_server_socket
 remote_mode_server_arguments 2222
     </pre>
   <p>
     The first line points to the location of the marccd_server_socket program that is
     used to implement remote control. In order to work with the areaDetector driver
     this must be a version of this program created after November 11, 2008 when support
-    for the <code>get_frameshift</code> command was added. A recent version of this program can
-    be downloaded from the <a href="ftp://ftp.rayonix.com/pub/marccd/example_marccd_server.tgz">
+    for the <code>get_frameshift</code> command was added. A recent version of this
+    program can be downloaded from the <a href="ftp://ftp.rayonix.com/pub/marccd/example_marccd_server.tgz">
       Rayonix FTP site</a>.
   </p>
   <p>
@@ -77,8 +74,8 @@ remote_mode_server_arguments 2222
     <tbody>
       <tr>
         <td align="center" colspan="3">
-          <b>Implementation of Parameters in ADStdDriverParams.h and EPICS Record Definitions in
-          ADBase.template and NDFile.template</b></td>
+          <b>Implementation of Parameters in ADStdDriverParams.h and EPICS Record Definitions
+            in ADBase.template and NDFile.template</b></td>
       </tr>
       <tr>
         <th>
@@ -98,8 +95,8 @@ remote_mode_server_arguments 2222
           from ADStdDriverParams.h. The choices for the MarCCD are:
           <ul>
             <li>Normal (corrected data frame without double correlation)</li>
-            <li>Background (background frame with 0 exposure time, done with double correlation to remove
-              zingers)</li>
+            <li>Background (background frame with 0 exposure time, done with double correlation
+              to remove zingers)</li>
             <li>Raw (data frame without correction for background or spatial distortion)</li>
             <li>DblCorrelation (two images each collected for half the nominal acquisition time,
               zingers removed by double correlation)</li>
@@ -136,14 +133,14 @@ remote_mode_server_arguments 2222
           be used to make the paths look identical.</td>
       </tr>
       <tr>
+        <td>
+          ADFileFormat</td>
+        <td>
+          $(P)$(R)FileFormat</td>
+        <td>
+          marccd only supports TIFF files.
+        </td>
       </tr>
-      <td>
-        ADFileFormat</td>
-      <td>
-        $(P)$(R)FileFormat</td>
-      <td>
-        marccd only supports TIFF files.
-      </td>
     </tbody>
   </table>
   <p>
@@ -383,8 +380,8 @@ remote_mode_server_arguments 2222
           that restricts the x-rays to horizontal stripe. An exposure is made, and then an
           external signal causes the detector to shift the image by the number of lines given
           by this parameter. A number of images separated by times of a few milliseconds can
-          be collected, and then the detector is read out.  Set this parameter to 0 to 
-          disable frameshift mode.</td>
+          be collected, and then the detector is read out. Set this parameter to 0 to disable
+          frameshift mode.</td>
         <td>
           MAR_FRAME_SHIFT</td>
         <td>
@@ -549,8 +546,9 @@ remote_mode_server_arguments 2222
   </table>
   <h2 id="Unsupported">
     Unsupported standard driver parameters</h2>
-  <p>The MarCCD driver does not support the following standard driver parameters because
-     they are not supported in the marccd program:
+  <p>
+    The MarCCD driver does not support the following standard driver parameters because
+    they are not supported in the marccd program:</p>
   <ul>
     <li>Number of exposures per image (ADNumExposures)</li>
     <li>Trigger mode (ADTriggerMode)</li>
@@ -558,8 +556,7 @@ remote_mode_server_arguments 2222
     <li>Region to read out (ADMinX, ADMinY, ADSizeX, ADSizeY, ADReverseX, ADReverseY)</li>
     <li>Data type (ADDataType)</li>
     <li>Reading previous files (ADReadFile)</li>
-    <li>Capture or stream file saving (ADFileWriteMode, ADFileCapture, 
-        ADNumCapture, ADNumCaptured)</li>
+    <li>Capture or stream file saving (ADFileWriteMode, ADFileCapture, ADNumCapture, ADNumCaptured)</li>
   </ul>
   <h2 id="Configuration" style="text-align: left">
     Configuration</h2>
@@ -590,8 +587,8 @@ marCCDConfig(const char *portName, const char *marCCDPort,
         <td>
           <code>marCCDPort</code></td>
         <td>
-          The name of the asyn TCP/IP port to communicate with marccd_server_socket. This must have been
-          previously created with <code>drvAsynIPPortConfig()</code>,
+          The name of the asyn TCP/IP port to communicate with marccd_server_socket. This
+          must have been previously created with <code>drvAsynIPPortConfig()</code>,
         </td>
       </tr>
       <tr>
@@ -613,8 +610,7 @@ marCCDConfig(const char *portName, const char *marCCDPort,
   <p>
     The following is an example st.cmd startup script:
   </p>
-  <pre>
-< envPaths
+  <pre>< envPaths
 errlogInit(20000)
 
 dbLoadDatabase("$(AREA_DETECTOR)/dbd/marCCDApp.dbd")
@@ -711,7 +707,6 @@ create_monitor_set("auto_settings.req", 30,"P=13MARCCD1:,D=cam1:")
       marccd.adl</h3>
     <img alt="marCCD.png" src="marCCD.png" /></div>
   <p>
-  <p>
     <code>marccdAncillary.adl</code> is the screen used to input ancillary information
     that is written to the MarCCD TIFF files.
   </p>
@@ -727,8 +722,9 @@ create_monitor_set("auto_settings.req", 30,"P=13MARCCD1:,D=cam1:")
       asynRecord.adl</h3>
     <img alt="MarCCDAsynRecord.png" src="MarCCDAsynRecord.png" /></div>
   <p>
-    <code>asynOctet.adl</code> can be used to send any command to the marccd remote server and display
-    the response. It can be loaded from the More menu in asynRecord.adl above.</p>
+    <code>asynOctet.adl</code> can be used to send any command to the marccd remote
+    server and display the response. It can be loaded from the More menu in asynRecord.adl
+    above.</p>
   <div style="text-align: center">
     <h3>
       asynOctet.adl</h3>
@@ -737,10 +733,9 @@ create_monitor_set("auto_settings.req", 30,"P=13MARCCD1:,D=cam1:")
     Performance measurements</h2>
   <p>
     The following measurements were done to demonstrate the performance that can be
-    obtained with the areaDetector MarCCD driver.  These measurements were made with a
-    MAR-165 CCD, with the EPICS IOC running on the same Linux machine as the marccd
-    program.  The acquisition time was 1 second.</p>
-    
+    obtained with the areaDetector MarCCD driver. These measurements were made with
+    a MAR-165 CCD. The EPICS IOC was running on the same Linux machine as the marccd
+    program. The acquisition time was 1 second.</p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
       <tr>
@@ -774,9 +769,11 @@ create_monitor_set("auto_settings.req", 30,"P=13MARCCD1:,D=cam1:")
           4.00
         </td>
         <td>
-          Readout: 3.02 <br />
-          Correct: 0.56 <br />
-          Save:    0.20
+          Readout: 3.02
+          <br />
+          Correct: 0.56
+          <br />
+          Save: 0.20
         </td>
       </tr>
       <tr>
@@ -816,9 +813,11 @@ create_monitor_set("auto_settings.req", 30,"P=13MARCCD1:,D=cam1:")
           1.90
         </td>
         <td>
-          Readout: 1.30 <br />
-          Correct: 0.28 <br />
-          Save:    0.06
+          Readout: 1.30
+          <br />
+          Correct: 0.28
+          <br />
+          Save: 0.06
         </td>
       </tr>
       <tr>
@@ -858,9 +857,11 @@ create_monitor_set("auto_settings.req", 30,"P=13MARCCD1:,D=cam1:")
           1.40
         </td>
         <td>
-          Readout: 0.78 <br />
-          Correct: 0.29 <br />
-          Save:    0.06
+          Readout: 0.78
+          <br />
+          Correct: 0.29
+          <br />
+          Save: 0.06
         </td>
       </tr>
       <tr>
@@ -885,15 +886,20 @@ create_monitor_set("auto_settings.req", 30,"P=13MARCCD1:,D=cam1:")
       </tr>
     </tbody>
   </table>
-
   <h2 id="Restrictions">
     Restrictions</h2>
   <p>
     The following are some current restrictions of the MarCCD driver:</p>
   <ul>
-    <li>The MarCCD driver keeps retrying to read each TIFF file until the modification date of
-      the TIFF file is <i>after</i> the time that the exposure command was issued. If
-      it did not do this check then it could be reading and displaying old files that
+    <li>The marccd program can save files in many different formats, with TIFF being the
+      default. The areaDetector driver can only read TIFF files, not other formats. </li>
+    <li>The areaDetector driver can in principle be run on machines other than the Linux
+      machine running marccd, since the connection is via a socket. It has only been tested
+      on Linux, because it requires libtiff and this is not normally installed, for example,
+      on Windows.</li>
+    <li>The MarCCD driver keeps retrying to read each TIFF file until the modification
+      date of the TIFF file is <i>after</i> the time that the exposure command was issued.
+      If it did not do this check then it could be reading and displaying old files that
       happen to have the same name as the current files being collected. This check requires
       that the computer that is running the soft IOC must have its clock well synchronized
       with the clock on the computer on which the files are being written (i.e. the computer
@@ -907,11 +913,11 @@ create_monitor_set("auto_settings.req", 30,"P=13MARCCD1:,D=cam1:")
         <li>MAX_MESSAGE_SIZE=256 The maximum size of message to/from marccd_socket_server.</li>
         <li>MAX_FILENAME_LEN=256 The maximum size of a complete file name including path and
           extension.</li>
-        <li>MARCCD_SERVER_TIMEOUT=1.0  Timeout when communicating with marccd_socket_server.</li>
+        <li>MARCCD_SERVER_TIMEOUT=1.0 Timeout when communicating with marccd_socket_server.</li>
         <li>FILE_READ_DELAY=.01 seconds. The time between polling to see if the TIFF file
           exists or if it is the expected size.</li>
-        <li>MARCCD_POLL_DELAY=.01 seconds. The time between polling the marccd_socket_server status
-          to see when a task has completed.</li>
+        <li>MARCCD_POLL_DELAY=.01 seconds. The time between polling the marccd_socket_server
+          status to see when a task has completed.</li>
       </ul>
     </li>
   </ul>
