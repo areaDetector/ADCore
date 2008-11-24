@@ -6,7 +6,7 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
-    Release 1-3 (15-November-2008)</h2>
+    Release 1-3 (24-November-2008)</h2>
   <ul>
     <li>Added a driver for MarCCD detectors. Compared to the previous support in the "ccd"
       module, this driver uses the faster Version 1 protocol for the Mar server. It also
@@ -24,22 +24,19 @@
     </li>
     <li>Reorganized the file I/O parameters, template files and medm screens
       <ul>
-        <li>Moved the file capture parameters from NDPluginFile.h and NDPluginFile.cpp
-            to ADStdDriverParams.h.  This allows a detector driver to use these capture
-            parameters if desired.</li>
+        <li>Moved the file capture parameters from NDPluginFile.h and NDPluginFile.cpp to
+          ADStdDriverParams.h. This allows a detector driver to use these capture parameters
+          if desired.</li>
         <li>Removed all of the file I/O records from ADBase.template and ADBase_settings.req.
-            These previously duplicated the records in NDFile.template and NDFile_settings.req,
-            which was hard to maintain.
-            IOCs for detector drivers that can do file I/O now need to load NDFile.template,
-            while those that cannot no longer need to load these records.
-            They also need to have NDFile_settings.req added to auto_settings.req.
-            This does not effect the file plugin support, only drivers that directly
-            do file I/O.</li>
-        <li>Removed the file I/O PVs from ADBase.adl. Added a related display link
-            to NDFile.adl.</li>
+          These previously duplicated the records in NDFile.template and NDFile_settings.req,
+          which was hard to maintain. IOCs for detector drivers that can do file I/O now need
+          to load NDFile.template, while those that cannot no longer need to load these records.
+          They also need to have NDFile_settings.req added to auto_settings.req. This does
+          not effect the file plugin support, only drivers that directly do file I/O.</li>
+        <li>Removed the file I/O PVs from ADBase.adl. Added a related display link to NDFile.adl.</li>
         <li>NDFile.adl now contains only the file related PVs, not the plugin related PVs.
-            The new file NDPluginFile.adl replaces the previous version of NDFile.adl,
-            and contains both the file PVs and the plugin PVs.
+          The new file NDPluginFile.adl replaces the previous version of NDFile.adl, and contains
+          both the file PVs and the plugin PVs.</li>
       </ul>
     </li>
     <li>Added new enums in ADStdDriverParams.h
@@ -70,6 +67,8 @@
       MarCCD and Pilatus detectors setting this to 0 will disable reading the disk files
       after collection. This can be used to reduce overhead when EPICS is being used just
       for control, rather than to access the data. </li>
+    <li>Added variant of NDPluginDriver::createFileName that returns the filePath and
+      fileName separately, rather than a complete file name including the path.</li>
   </ul>
   <h2 style="text-align: center">
     Release 1-2 (24-October-2008)</h2>

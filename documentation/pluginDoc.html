@@ -88,7 +88,9 @@ public:
                                      
     /* These are the methods that are new to this class */
     virtual void processCallbacks(NDArray *pArray);
-    int createFileName(int maxChars, char *fullFileName);
+    virtual int createFileName(int maxChars, char *fullFileName);
+    virtual int createFileName(int maxChars, char *filePath, char *fileName);
+
 ...
 }
 </pre>
@@ -113,15 +115,16 @@ public:
       and then they perform whatever operations are specific to that plugin.</li>
     <li><code>createFileName</code> This is a convenience function that constructs a complete
       file name in the ADFullFileName parameter from the ADFilePath, ADFileName, ADFileNumber,
-      and ADFileTemplate parameters.</li>
+      and ADFileTemplate parameters. There are two variants: the first returns a complete
+      file name, including the path. The second returns the path and file name separately.</li>
   </ul>
   <p>
     NDPluginDriver defines parameters that all plugin drivers should implement if possible.
     These parameters are defined by enum values with an associated asyn interface, and
     access (read-only or read-write). The EPICS database NDPluginBase.template provides
-    access to these standard plugin parameters, listed in the following table.  Note that to 
-    reduce the width of this table the enum names have been split into 2 lines, but these are
-    just a single name, for example <code>NDPluginDriverArrayPort</code>.
+    access to these standard plugin parameters, listed in the following table. Note
+    that to reduce the width of this table the enum names have been split into 2 lines,
+    but these are just a single name, for example <code>NDPluginDriverArrayPort</code>.
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
@@ -151,7 +154,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginDriver<br/>ArrayPort</td>
+          NDPluginDriver<br />
+          ArrayPort</td>
         <td>
           asynOctet</td>
         <td>
@@ -170,7 +174,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginDriver<br/>ArrayAddr</td>
+          NDPluginDriver<br />
+          ArrayAddr</td>
         <td>
           asynInt32</td>
         <td>
@@ -194,7 +199,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginDriver<br/>EnableCallbacks</td>
+          NDPluginDriver<br />
+          EnableCallbacks</td>
         <td>
           asynInt32</td>
         <td>
@@ -213,7 +219,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginDriver<br/>BlockingCallbacks</td>
+          NDPluginDriver<br />
+          BlockingCallbacks</td>
         <td>
           asynInt32</td>
         <td>
@@ -235,7 +242,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginDriver<br/>MinCallbackTime</td>
+          NDPluginDriver<br />
+          MinCallbackTime</td>
         <td>
           asynFloat64</td>
         <td>
@@ -255,7 +263,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginDriver<br/>ArrayCounter</td>
+          NDPluginDriver<br />
+          ArrayCounter</td>
         <td>
           asynInt32</td>
         <td>
@@ -289,7 +298,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginDriver<br/>DroppedArrays</td>
+          NDPluginDriver<br />
+          DroppedArrays</td>
         <td>
           asynInt32</td>
         <td>
@@ -312,7 +322,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginDriver<br/>NDimensions</td>
+          NDPluginDriver<br />
+          NDimensions</td>
         <td>
           asynInt32</td>
         <td>
@@ -328,7 +339,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginDriver<br/>Dimensions</td>
+          NDPluginDriver<br />
+          Dimensions</td>
         <td>
           asynInt32Array</td>
         <td>
@@ -376,7 +388,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginDriver<br/>DataType</td>
+          NDPluginDriver<br />
+          DataType</td>
         <td>
           asynInt32</td>
         <td>
@@ -392,7 +405,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginDriver<br/>UniqueId</td>
+          NDPluginDriver<br />
+          UniqueId</td>
         <td>
           asynInt32</td>
         <td>
@@ -408,7 +422,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginDriver<br/>TimeStamp</td>
+          NDPluginDriver<br />
+          TimeStamp</td>
         <td>
           asynFloat64</td>
         <td>
