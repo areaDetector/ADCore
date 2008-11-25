@@ -591,7 +591,7 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
                          const char *NDArrayPort, int NDArrayAddr, int maxROIsIn, size_t maxMemory)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
-                   NDArrayPort, NDArrayAddr, maxROIs, NDPluginROILastROINParam, maxROIsIn, maxMemory,
+                   NDArrayPort, NDArrayAddr, maxROIsIn, NDPluginROILastROINParam, maxROIsIn, maxMemory,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask, 
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask)
 {
