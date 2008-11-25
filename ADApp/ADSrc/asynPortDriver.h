@@ -148,7 +148,7 @@ public:
     asynStandardInterfaces asynStdInterfaces;
     
     /* asynUser connected to ourselves for asynTrace */
-    asynUser *pasynUser;
+    asynUser *pasynUserSelf;
 };
 
 #endif /* cplusplus */
