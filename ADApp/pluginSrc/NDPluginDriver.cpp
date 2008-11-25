@@ -133,11 +133,11 @@ void NDPluginDriver::processCallbacks(NDArray *pArray)
     }
 }
 
-static void driverCallback(void *drvPvt, asynUser *pasynUser, void *genericPointer)
+extern "C" {static void driverCallback(void *drvPvt, asynUser *pasynUser, void *genericPointer)
 {
     NDPluginDriver *pNDPluginDriver = (NDPluginDriver *)drvPvt;
     pNDPluginDriver->driverCallback(pasynUser, genericPointer);
-}
+}}
 
 void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
 {
@@ -187,7 +187,7 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
              * immediately. */
             status = epicsMessageQueueTrySend(this->msgQId, &pArray, sizeof(&pArray));
             if (status) {
-                asynPrint(this->pasynUser, ASYN_TRACE_FLOW, 
+                asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
                     "%s:%s message queue full, dropped array %d\n",
                     driverName, functionName, arrayCounter);
                 droppedArrays++;
@@ -241,7 +241,7 @@ asynStatus NDPluginDriver::setArrayInterrupt(int enableCallbacks)
     /* Lock the port.  May not be necessary to do this. */
     status = pasynManager->lockPort(this->pasynUserGenericPointer);
     if (status != asynSuccess) {
-        asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
             "%s::%s ERROR: Can't lock array port: %s\n",
             driverName, functionName, this->pasynUserGenericPointer->errorMessage);
         return(status);
@@ -251,7 +251,7 @@ asynStatus NDPluginDriver::setArrayInterrupt(int enableCallbacks)
                     this->asynGenericPointerPvt, this->pasynUserGenericPointer,
                     ::driverCallback, this, &this->asynGenericPointerInterruptPvt);
         if (status != asynSuccess) {
-            asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                 "%s::%s ERROR: Can't register for interrupt callbacks on detector port: %s\n",
                 driverName, functionName, this->pasynUserGenericPointer->errorMessage);
             return(status);
@@ -262,7 +262,7 @@ asynStatus NDPluginDriver::setArrayInterrupt(int enableCallbacks)
                             this->pasynUserGenericPointer, this->asynGenericPointerInterruptPvt);
             this->asynGenericPointerInterruptPvt = NULL;
             if (status != asynSuccess) {
-                asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
+                asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                     "%s::%s ERROR: Can't unregister for interrupt callbacks on detector port: %s\n",
                     driverName, functionName, this->pasynUserGenericPointer->errorMessage);
                 return(status);
@@ -272,7 +272,7 @@ asynStatus NDPluginDriver::setArrayInterrupt(int enableCallbacks)
     /* Unlock the port.  May not be necessary to do this. */
     status = pasynManager->unlockPort(this->pasynUserGenericPointer);
     if (status != asynSuccess) {
-        asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
             "%s::%s ERROR: Can't unlock array port: %s\n",
             driverName, functionName, this->pasynUserGenericPointer->errorMessage);
         return(status);
@@ -309,25 +309,25 @@ asynStatus NDPluginDriver::connectToArrayPort(void)
     /* Connect to the array port driver */
     status = pasynManager->connectDevice(this->pasynUserGenericPointer, arrayPort, arrayAddr);
     if (status != asynSuccess) {
-        asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                   "%s::%s ERROR: Can't connect to array port %s address %d: %s\n",
                   driverName, functionName, arrayPort, arrayAddr, this->pasynUserGenericPointer->errorMessage);
-        pasynManager->exceptionDisconnect(this->pasynUser);
+        pasynManager->exceptionDisconnect(this->pasynUserSelf);
         return (status);
     }
 
     /* Find the asynGenericPointer interface in that driver */
     pasynInterface = pasynManager->findInterface(this->pasynUserGenericPointer, asynGenericPointerType, 1);
     if (!pasynInterface) {
-        asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                   "%s::connectToPort ERROR: Can't find asynGenericPointer interface on array port %s address %d\n",
                   driverName, arrayPort, arrayAddr);
-        pasynManager->exceptionDisconnect(this->pasynUser);
+        pasynManager->exceptionDisconnect(this->pasynUserSelf);
         return(asynError);
     }
     this->pasynGenericPointer = (asynGenericPointer *)pasynInterface->pinterface;
     this->asynGenericPointerPvt = pasynInterface->drvPvt;
-    pasynManager->exceptionConnect(this->pasynUser);
+    pasynManager->exceptionConnect(this->pasynUserSelf);
 
     /* Enable or disable interrupt callbacks */
     status = setArrayInterrupt(enableCallbacks);
