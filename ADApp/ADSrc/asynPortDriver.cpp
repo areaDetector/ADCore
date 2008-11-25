@@ -23,8 +23,8 @@
 
 static const char *driverName = "asynPortDriver";
 
-paramList::paramList(int startVal, int nVals, asynStandardInterfaces *pasynInterfaces)
-    : startVal(startVal), nVals(nVals), nFlags(0), pasynInterfaces(pasynInterfaces)
+paramList::paramList(int startVal, int nValsIn, asynStandardInterfaces *pasynInterfaces)
+    : startVal(startVal), nVals(nValsIn), nFlags(0), pasynInterfaces(pasynInterfaces)
 {
      vals = (paramVal *) calloc(nVals, sizeof(paramVal));
      flags = (int *) calloc(nVals, sizeof(int));
@@ -451,7 +451,7 @@ asynStatus asynPortDriver::getAddress(asynUser *pasynUser, const char *functionN
 
 
 /* asynInt32 interface methods */
-static asynStatus readInt32(void *drvPvt, asynUser *pasynUser, 
+extern "C" {static asynStatus readInt32(void *drvPvt, asynUser *pasynUser, 
                             epicsInt32 *value)
 {
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
@@ -461,7 +461,7 @@ static asynStatus readInt32(void *drvPvt, asynUser *pasynUser,
     status = pPvt->readInt32(pasynUser, value);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);
-}
+}}
 
 asynStatus asynPortDriver::readInt32(asynUser *pasynUser, epicsInt32 *value)
 {
@@ -479,13 +479,13 @@ asynStatus asynPortDriver::readInt32(asynUser *pasynUser, epicsInt32 *value)
                   "%s:%s: status=%d, function=%d, value=%d", 
                   driverName, functionName, status, function, *value);
     else        
-        asynPrint(this->pasynUser, ASYN_TRACEIO_DRIVER, 
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
               "%s:%s: function=%d, value=%d\n", 
               driverName, functionName, function, *value);
     return(status);
 }
 
-static asynStatus writeInt32(void *drvPvt, asynUser *pasynUser, 
+extern "C" {static asynStatus writeInt32(void *drvPvt, asynUser *pasynUser, 
                             epicsInt32 value)
 {
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
@@ -495,7 +495,7 @@ static asynStatus writeInt32(void *drvPvt, asynUser *pasynUser,
     status = pPvt->writeInt32(pasynUser, value);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);
-}
+}}
 
 asynStatus asynPortDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
@@ -523,7 +523,7 @@ asynStatus asynPortDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
     return status;
 }
 
-static asynStatus getBounds(void *drvPvt, asynUser *pasynUser,
+extern "C" {static asynStatus getBounds(void *drvPvt, asynUser *pasynUser,
                             epicsInt32 *low, epicsInt32 *high)
 {
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
@@ -533,7 +533,7 @@ static asynStatus getBounds(void *drvPvt, asynUser *pasynUser,
     status = pPvt->getBounds(pasynUser, low, high);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);
-}
+}}
 
 asynStatus asynPortDriver::getBounds(asynUser *pasynUser,
                                    epicsInt32 *low, epicsInt32 *high)
@@ -550,7 +550,7 @@ asynStatus asynPortDriver::getBounds(asynUser *pasynUser,
 
 
 /* asynFloat64 interface methods */
-static asynStatus readFloat64(void *drvPvt, asynUser *pasynUser,
+extern "C" {static asynStatus readFloat64(void *drvPvt, asynUser *pasynUser,
                               epicsFloat64 *value)
 {
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
@@ -560,7 +560,7 @@ static asynStatus readFloat64(void *drvPvt, asynUser *pasynUser,
     status = pPvt->readFloat64(pasynUser, value);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);
-}
+}}
 
 asynStatus asynPortDriver::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
 {
@@ -584,7 +584,7 @@ asynStatus asynPortDriver::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
     return(status);
 }
 
-static asynStatus writeFloat64(void *drvPvt, asynUser *pasynUser,
+extern "C" {static asynStatus writeFloat64(void *drvPvt, asynUser *pasynUser,
                               epicsFloat64 value)
 {
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
@@ -594,7 +594,7 @@ static asynStatus writeFloat64(void *drvPvt, asynUser *pasynUser,
     status = pPvt->writeFloat64(pasynUser, value);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);
-}
+}}
 
 asynStatus asynPortDriver::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 {
@@ -624,7 +624,7 @@ asynStatus asynPortDriver::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 
 
 /* asynOctet interface methods */
-static asynStatus readOctet(void *drvPvt, asynUser *pasynUser,
+extern "C" {static asynStatus readOctet(void *drvPvt, asynUser *pasynUser,
                             char *value, size_t maxChars, size_t *nActual,
                             int *eomReason)
 {
@@ -635,7 +635,7 @@ static asynStatus readOctet(void *drvPvt, asynUser *pasynUser,
     status = pPvt->readOctet(pasynUser, value, maxChars, nActual, eomReason);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);
-}
+}}
 
 asynStatus asynPortDriver::readOctet(asynUser *pasynUser,
                             char *value, size_t maxChars, size_t *nActual,
@@ -663,7 +663,7 @@ asynStatus asynPortDriver::readOctet(asynUser *pasynUser,
     return(status);
 }
 
-static asynStatus writeOctet(void *drvPvt, asynUser *pasynUser,
+extern "C" {static asynStatus writeOctet(void *drvPvt, asynUser *pasynUser,
                               const char *value, size_t maxChars, size_t *nActual)
 {
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
@@ -673,7 +673,7 @@ static asynStatus writeOctet(void *drvPvt, asynUser *pasynUser,
     status = pPvt->writeOctet(pasynUser, value, maxChars, nActual);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);
-}
+}}
 
 asynStatus asynPortDriver::writeOctet(asynUser *pasynUser, const char *value, 
                                     size_t nChars, size_t *nActual)
@@ -707,7 +707,7 @@ asynStatus asynPortDriver::writeOctet(asynUser *pasynUser, const char *value,
 
 
 /* asynInt8Array interface methods */
-static asynStatus readInt8Array(void *drvPvt, asynUser *pasynUser, epicsInt8 *value,
+extern "C" {static asynStatus readInt8Array(void *drvPvt, asynUser *pasynUser, epicsInt8 *value,
                                 size_t nElements, size_t *nIn)
 {
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
@@ -717,7 +717,7 @@ static asynStatus readInt8Array(void *drvPvt, asynUser *pasynUser, epicsInt8 *va
     status = pPvt->readInt8Array(pasynUser, value, nElements, nIn);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);
-}
+}}
 
 asynStatus asynPortDriver::readInt8Array(asynUser *pasynUser, epicsInt8 *value,
                                 size_t nElements, size_t *nIn)
@@ -725,7 +725,7 @@ asynStatus asynPortDriver::readInt8Array(asynUser *pasynUser, epicsInt8 *value,
     return(readArray<epicsInt8>(pasynUser, value, nElements, nIn));
 }
 
-static asynStatus writeInt8Array(void *drvPvt, asynUser *pasynUser, epicsInt8 *value,
+extern "C" {static asynStatus writeInt8Array(void *drvPvt, asynUser *pasynUser, epicsInt8 *value,
                                 size_t nElements)
 {
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
@@ -735,7 +735,7 @@ static asynStatus writeInt8Array(void *drvPvt, asynUser *pasynUser, epicsInt8 *v
     status = pPvt->writeInt8Array(pasynUser, value, nElements);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);    
-}
+}}
 
 asynStatus asynPortDriver::writeInt8Array(asynUser *pasynUser, epicsInt8 *value,
                                 size_t nElements)
@@ -752,7 +752,7 @@ asynStatus asynPortDriver::doCallbacksInt8Array(epicsInt8 *value,
 
 
 /* asynInt16Array interface methods */
-static asynStatus readInt16Array(void *drvPvt, asynUser *pasynUser, epicsInt16 *value,
+extern "C" {static asynStatus readInt16Array(void *drvPvt, asynUser *pasynUser, epicsInt16 *value,
                                 size_t nElements, size_t *nIn)
 {
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
@@ -762,7 +762,7 @@ static asynStatus readInt16Array(void *drvPvt, asynUser *pasynUser, epicsInt16 *
     status = pPvt->readInt16Array(pasynUser, value, nElements, nIn);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);    
-}
+}}
 
 asynStatus asynPortDriver::readInt16Array(asynUser *pasynUser, epicsInt16 *value,
                                 size_t nElements, size_t *nIn)
@@ -770,7 +770,7 @@ asynStatus asynPortDriver::readInt16Array(asynUser *pasynUser, epicsInt16 *value
     return(readArray<epicsInt16>(pasynUser, value, nElements, nIn));
 }
 
-static asynStatus writeInt16Array(void *drvPvt, asynUser *pasynUser, epicsInt16 *value,
+extern "C" {static asynStatus writeInt16Array(void *drvPvt, asynUser *pasynUser, epicsInt16 *value,
                                 size_t nElements)
 {
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
@@ -780,7 +780,7 @@ static asynStatus writeInt16Array(void *drvPvt, asynUser *pasynUser, epicsInt16 
     status = pPvt->writeInt16Array(pasynUser, value, nElements);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);    
-}
+}}
 
 asynStatus asynPortDriver::writeInt16Array(asynUser *pasynUser, epicsInt16 *value,
                                 size_t nElements)
@@ -797,13 +797,13 @@ asynStatus asynPortDriver::doCallbacksInt16Array(epicsInt16 *value,
 
 
 /* asynInt32Array interface methods */
-static asynStatus readInt32Array(void *drvPvt, asynUser *pasynUser, epicsInt32 *value,
+extern "C" {static asynStatus readInt32Array(void *drvPvt, asynUser *pasynUser, epicsInt32 *value,
                                 size_t nElements, size_t *nIn)
 {
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
     
     return(pPvt->readInt32Array(pasynUser, value, nElements, nIn));
-}
+}}
 
 asynStatus asynPortDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *value,
                                 size_t nElements, size_t *nIn)
@@ -811,7 +811,7 @@ asynStatus asynPortDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *value
     return(readArray<epicsInt32>(pasynUser, value, nElements, nIn));
 }
 
-static asynStatus writeInt32Array(void *drvPvt, asynUser *pasynUser, epicsInt32 *value,
+extern "C" {static asynStatus writeInt32Array(void *drvPvt, asynUser *pasynUser, epicsInt32 *value,
                                 size_t nElements)
 {
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
@@ -821,7 +821,7 @@ static asynStatus writeInt32Array(void *drvPvt, asynUser *pasynUser, epicsInt32 
     status = pPvt->writeInt32Array(pasynUser, value, nElements);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);    
-}
+}}
 
 asynStatus asynPortDriver::writeInt32Array(asynUser *pasynUser, epicsInt32 *value,
                                 size_t nElements)
@@ -838,7 +838,7 @@ asynStatus asynPortDriver::doCallbacksInt32Array(epicsInt32 *value,
 
 
 /* asynFloat32Array interface methods */
-static asynStatus readFloat32Array(void *drvPvt, asynUser *pasynUser, epicsFloat32 *value,
+extern "C" {static asynStatus readFloat32Array(void *drvPvt, asynUser *pasynUser, epicsFloat32 *value,
                                 size_t nElements, size_t *nIn)
 {
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
@@ -848,7 +848,7 @@ static asynStatus readFloat32Array(void *drvPvt, asynUser *pasynUser, epicsFloat
     status = pPvt->readFloat32Array(pasynUser, value, nElements, nIn);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);    
-}
+}}
 
 asynStatus asynPortDriver::readFloat32Array(asynUser *pasynUser, epicsFloat32 *value,
                                 size_t nElements, size_t *nIn)
@@ -856,7 +856,7 @@ asynStatus asynPortDriver::readFloat32Array(asynUser *pasynUser, epicsFloat32 *v
     return(readArray<epicsFloat32>(pasynUser, value, nElements, nIn));
 }
 
-static asynStatus writeFloat32Array(void *drvPvt, asynUser *pasynUser, epicsFloat32 *value,
+extern "C" {static asynStatus writeFloat32Array(void *drvPvt, asynUser *pasynUser, epicsFloat32 *value,
                                 size_t nElements)
 {
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
@@ -866,7 +866,7 @@ static asynStatus writeFloat32Array(void *drvPvt, asynUser *pasynUser, epicsFloa
     status = pPvt->writeFloat32Array(pasynUser, value, nElements);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);    
-}
+}}
 
 asynStatus asynPortDriver::writeFloat32Array(asynUser *pasynUser, epicsFloat32 *value,
                                 size_t nElements)
@@ -883,7 +883,7 @@ asynStatus asynPortDriver::doCallbacksFloat32Array(epicsFloat32 *value,
 
 
 /* asynFloat64Array interface methods */
-static asynStatus readFloat64Array(void *drvPvt, asynUser *pasynUser, epicsFloat64 *value,
+extern "C" {static asynStatus readFloat64Array(void *drvPvt, asynUser *pasynUser, epicsFloat64 *value,
                                 size_t nElements, size_t *nIn)
 {
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
@@ -893,7 +893,7 @@ static asynStatus readFloat64Array(void *drvPvt, asynUser *pasynUser, epicsFloat
     status = pPvt->readFloat64Array(pasynUser, value, nElements, nIn);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);    
-}
+}}
 
 asynStatus asynPortDriver::readFloat64Array(asynUser *pasynUser, epicsFloat64 *value,
                                 size_t nElements, size_t *nIn)
@@ -901,7 +901,7 @@ asynStatus asynPortDriver::readFloat64Array(asynUser *pasynUser, epicsFloat64 *v
     return(readArray<epicsFloat64>(pasynUser, value, nElements, nIn));
 }
 
-static asynStatus writeFloat64Array(void *drvPvt, asynUser *pasynUser, epicsFloat64 *value,
+extern "C" {static asynStatus writeFloat64Array(void *drvPvt, asynUser *pasynUser, epicsFloat64 *value,
                                 size_t nElements)
 {
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
@@ -911,7 +911,7 @@ static asynStatus writeFloat64Array(void *drvPvt, asynUser *pasynUser, epicsFloa
     status = pPvt->writeFloat64Array(pasynUser, value, nElements);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);    
-}
+}}
 
 asynStatus asynPortDriver::writeFloat64Array(asynUser *pasynUser, epicsFloat64 *value,
                                 size_t nElements)
@@ -927,7 +927,7 @@ asynStatus asynPortDriver::doCallbacksFloat64Array(epicsFloat64 *value,
 }
 
 /* asynGenericPointer interface methods */
-static asynStatus readGenericPointer(void *drvPvt, asynUser *pasynUser, void *genericPointer)
+extern "C" {static asynStatus readGenericPointer(void *drvPvt, asynUser *pasynUser, void *genericPointer)
 {
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
     asynStatus status;
@@ -936,7 +936,7 @@ static asynStatus readGenericPointer(void *drvPvt, asynUser *pasynUser, void *ge
     status =pPvt->readGenericPointer(pasynUser, genericPointer);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);    
-}
+}}
 
 asynStatus asynPortDriver::readGenericPointer(asynUser *pasynUser, void *genericPointer)
 {
@@ -945,7 +945,7 @@ asynStatus asynPortDriver::readGenericPointer(asynUser *pasynUser, void *generic
     return(asynError);
 }
 
-static asynStatus writeGenericPointer(void *drvPvt, asynUser *pasynUser, void *genericPointer)
+extern "C" {static asynStatus writeGenericPointer(void *drvPvt, asynUser *pasynUser, void *genericPointer)
 {
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
     asynStatus status;
@@ -954,7 +954,7 @@ static asynStatus writeGenericPointer(void *drvPvt, asynUser *pasynUser, void *g
     status = pPvt->writeGenericPointer(pasynUser, genericPointer);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);    
-}
+}}
 
 asynStatus asynPortDriver::writeGenericPointer(asynUser *pasynUser, void *genericPointer)
 {
@@ -1003,7 +1003,7 @@ asynStatus asynPortDriver::findParam(asynParamString_t *paramTable, int numParam
 }
 
 /* asynDrvUser interface methods */
-static asynStatus drvUserCreate(void *drvPvt, asynUser *pasynUser,
+extern "C" {static asynStatus drvUserCreate(void *drvPvt, asynUser *pasynUser,
                                  const char *drvInfo, 
                                  const char **pptypeName, size_t *psize)
 { 
@@ -1014,7 +1014,7 @@ static asynStatus drvUserCreate(void *drvPvt, asynUser *pasynUser,
     status = pPvt->drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);    
-}
+}}
 
 asynStatus asynPortDriver::drvUserCreate(asynUser *pasynUser,
                                        const char *drvInfo, 
@@ -1030,7 +1030,7 @@ asynStatus asynPortDriver::drvUserCreate(asynUser *pasynUser,
 }
 
     
-static asynStatus drvUserGetType(void *drvPvt, asynUser *pasynUser,
+extern "C" {static asynStatus drvUserGetType(void *drvPvt, asynUser *pasynUser,
                                  const char **pptypeName, size_t *psize)
 { 
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
@@ -1040,7 +1040,7 @@ static asynStatus drvUserGetType(void *drvPvt, asynUser *pasynUser,
     status = pPvt->drvUserGetType(pasynUser, pptypeName, psize);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);    
-}
+}}
 
 asynStatus asynPortDriver::drvUserGetType(asynUser *pasynUser,
                                         const char **pptypeName, size_t *psize)
@@ -1056,7 +1056,7 @@ asynStatus asynPortDriver::drvUserGetType(asynUser *pasynUser,
     return(asynError);
 }
 
-static asynStatus drvUserDestroy(void *drvPvt, asynUser *pasynUser)
+extern "C" {static asynStatus drvUserDestroy(void *drvPvt, asynUser *pasynUser)
 { 
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
     asynStatus status;
@@ -1065,7 +1065,7 @@ static asynStatus drvUserDestroy(void *drvPvt, asynUser *pasynUser)
     status = pPvt->drvUserDestroy(pasynUser);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);    
-}
+}}
 
 asynStatus asynPortDriver::drvUserDestroy(asynUser *pasynUser)
 {
@@ -1081,14 +1081,14 @@ asynStatus asynPortDriver::drvUserDestroy(asynUser *pasynUser)
 
 /* asynCommon interface methods */
 
-static void report(void *drvPvt, FILE *fp, int details)
+extern "C" {static void report(void *drvPvt, FILE *fp, int details)
 {
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
     
     epicsMutexLock(pPvt->mutexId);
     pPvt->report(fp, details);
     epicsMutexUnlock(pPvt->mutexId);
-}
+}}
 
 
 void asynPortDriver::report(FILE *fp, int details)
@@ -1116,7 +1116,7 @@ void asynPortDriver::report(FILE *fp, int details)
     }
 }
 
-static asynStatus connect(void *drvPvt, asynUser *pasynUser)
+extern "C" {static asynStatus connect(void *drvPvt, asynUser *pasynUser)
 {
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
     asynStatus status;
@@ -1125,7 +1125,7 @@ static asynStatus connect(void *drvPvt, asynUser *pasynUser)
     status = pPvt->connect(pasynUser);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);    
-}
+}}
 
 asynStatus asynPortDriver::connect(asynUser *pasynUser)
 {
@@ -1139,7 +1139,7 @@ asynStatus asynPortDriver::connect(asynUser *pasynUser)
 }
 
 
-static asynStatus disconnect(void *drvPvt, asynUser *pasynUser)
+extern "C" {static asynStatus disconnect(void *drvPvt, asynUser *pasynUser)
 {
     asynPortDriver *pPvt = (asynPortDriver *)drvPvt;
     asynStatus status;
@@ -1148,7 +1148,7 @@ static asynStatus disconnect(void *drvPvt, asynUser *pasynUser)
     status = pPvt->disconnect(pasynUser);
     epicsMutexUnlock(pPvt->mutexId);
     return(status);    
-}
+}}
 
 asynStatus asynPortDriver::disconnect(asynUser *pasynUser)
 {
@@ -1224,7 +1224,7 @@ static asynDrvUser ifaceDrvUser = {
 
 /* Constructor */
 
-asynPortDriver::asynPortDriver(const char *portName, int maxAddr, int paramTableSize, int interfaceMask, int interruptMask)
+asynPortDriver::asynPortDriver(const char *portNameIn, int maxAddrIn, int paramTableSize, int interfaceMask, int interruptMask)
     : maxAddr(maxAddr)
 {
     asynStatus status;
@@ -1236,7 +1236,8 @@ asynPortDriver::asynPortDriver(const char *portName, int maxAddr, int paramTable
     pInterfaces = &this->asynStdInterfaces;
     memset(pInterfaces, 0, sizeof(asynStdInterfaces));
        
-    this->portName = epicsStrDup(portName);
+    this->portName = epicsStrDup(portNameIn);
+    this->maxAddr = maxAddrIn;
 
     status = pasynManager->registerPort(portName,
                                         ASYN_MULTIDEVICE | ASYN_CANBLOCK,
@@ -1248,7 +1249,7 @@ asynPortDriver::asynPortDriver(const char *portName, int maxAddr, int paramTable
     }
 
     /* Create asynUser for debugging and for standardInterfacesBase */
-    this->pasynUser = pasynManager->createAsynUser(0, 0);
+    this->pasynUserSelf = pasynManager->createAsynUser(0, 0);
 
     interfaceMask |= asynCommonMask;  /* Always need the asynCommon interface */
      /* Set addresses of asyn interfaces */
@@ -1276,10 +1277,10 @@ asynPortDriver::asynPortDriver(const char *portName, int maxAddr, int paramTable
     if (interruptMask & asynGenericPointerMask) pInterfaces->genericPointerCanInterrupt       = 1;
 
     status = pasynStandardInterfacesBase->initialize(portName, pInterfaces,
-                                                     this->pasynUser, this);
+                                                     this->pasynUserSelf, this);
     if (status != asynSuccess) {
         printf("%s:%s ERROR: Can't register interfaces: %s.\n",
-               driverName, functionName, this->pasynUser->errorMessage);
+               driverName, functionName, this->pasynUserSelf->errorMessage);
         return;
     }
 
@@ -1298,7 +1299,7 @@ asynPortDriver::asynPortDriver(const char *portName, int maxAddr, int paramTable
     }
 
     /* Connect to our device for asynTrace */
-    status = pasynManager->connectDevice(this->pasynUser, portName, 0);
+    status = pasynManager->connectDevice(this->pasynUserSelf, portName, 0);
     if (status != asynSuccess) {
         printf("%s:%s:, connectDevice failed\n", driverName, functionName);
         return;
