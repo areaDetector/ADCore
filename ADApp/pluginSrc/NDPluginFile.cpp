@@ -59,7 +59,7 @@ asynStatus NDPluginFile::readFile(void)
 
     status = (asynStatus)createFileName(MAX_FILENAME_LEN, fullFileName);
     if (status) { 
-        asynPrint(this->pasynUser, ASYN_TRACE_ERROR, 
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
               "%s:%s error creating full file name, fullFileName=%s, status=%d\n", 
               driverName, functionName, fullFileName, status);
         return(status);
@@ -109,7 +109,7 @@ asynStatus NDPluginFile::writeFile()
 
     /* Make sure there is a valid array */
     if (!this->pArrays[addr]) {
-        asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s: ERROR, must collect an array to get dimensions first\n",
             driverName, functionName);
         return(asynError);
@@ -207,7 +207,7 @@ asynStatus NDPluginFile::writeFile()
             }
             break;
         default:
-            asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                 "%s:%s: ERROR, unknown fileWriteMode %d\n", 
                 driverName, functionName, fileWriteMode);
             break;
@@ -257,7 +257,7 @@ asynStatus NDPluginFile::doCapture()
                 array.getInfo(&arrayInfo);
                 this->pCapture = (NDArray *)malloc(numCapture * sizeof(NDArray));
                 if (!this->pCapture) {
-                    asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
+                    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                         "%s:%s ERROR: cannot allocate capture buffers\n",
                         driverName, functionName);
                     status = asynError;
@@ -267,7 +267,7 @@ asynStatus NDPluginFile::doCapture()
                     this->pCapture[i].dataSize = arrayInfo.totalBytes;
                     this->pCapture[i].pData = malloc(arrayInfo.totalBytes);
                     if (!this->pCapture[i].pData) {
-                        asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
+                        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                             "%s:%s ERROR: cannot allocate capture array for buffer %s\n",
                             driverName, functionName, i);
                         status = asynError;
