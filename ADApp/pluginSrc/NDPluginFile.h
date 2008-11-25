@@ -9,7 +9,7 @@
 
 /* Note that the file format enum must agree with the mbbo/mbbi records in the NDFile.template file */
 typedef enum {
-    NDFileFormatNetCDF,
+    NDFileFormatNetCDF
 } NDPluginFileFormat_t;
 
 /* There are currently no specific parameters for this driver yet.
