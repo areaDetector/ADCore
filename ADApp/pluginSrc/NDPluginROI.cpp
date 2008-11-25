@@ -355,7 +355,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
                     pDim->size    = MIN(pROI->bgdWidth, pArray->dims[dim].size - pDim->offset);
                     this->pNDArrayPool->convert(pArray, &pBgdArray, (NDDataType_t)dataType, bgdDims);
                     if (!pBgdArray) {
-                        asynPrint(pasynUser, ASYN_TRACE_ERROR, 
+                        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
                             "%s::%s, error allocating array buffer in convert\n",
                             driverName, functionName);
                         continue;
@@ -369,7 +369,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
                     pDim->size    = MIN(pROI->bgdWidth, pArray->dims[dim].size - pDim->offset);
                     this->pNDArrayPool->convert(pArray, &pBgdArray, (NDDataType_t)dataType, bgdDims);
                     if (!pBgdArray) {
-                        asynPrint(pasynUser, ASYN_TRACE_ERROR, 
+                        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
                             "%s::%s, error allocating array buffer in convert\n",
                             driverName, functionName);
                         continue;
@@ -388,7 +388,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
             setDoubleParam(roi, NDPluginROIMeanValue, pROI->mean);
             setDoubleParam(roi, NDPluginROITotal, pROI->total);
             setDoubleParam(roi, NDPluginROINet, pROI->net);
-            asynPrint(this->pasynUser, ASYN_TRACEIO_DRIVER, 
+            asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER, 
                 (char *)pROIArray->pData, arrayInfo.totalBytes,
                 "%s:%s ROI=%d, min=%f, max=%f, mean=%f, total=%f, net=%f",
                 driverName, functionName, roi, pROI->min, pROI->max, pROI->mean, pROI->total, pROI->net);
@@ -588,10 +588,10 @@ extern "C" int drvNDROIConfigure(const char *portName, int queueSize, int blocki
 }
 
 NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallbacks, 
-                         const char *NDArrayPort, int NDArrayAddr, int maxROIs, size_t maxMemory)
+                         const char *NDArrayPort, int NDArrayAddr, int maxROIsIn, size_t maxMemory)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
-                   NDArrayPort, NDArrayAddr, maxROIs, NDPluginROILastROINParam, maxROIs, maxMemory,
+                   NDArrayPort, NDArrayAddr, maxROIs, NDPluginROILastROINParam, maxROIsIn, maxMemory,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask, 
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask)
 {
@@ -600,13 +600,13 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
     const char *functionName = "NDPluginROI";
 
 
-    this->maxROIs = maxROIs;
+    this->maxROIs = maxROIsIn;
     this->pROIs = (NDROI_t *)callocMustSucceed(maxROIs, sizeof(*this->pROIs), functionName);
     this->totalArray = (epicsInt32 *)callocMustSucceed(maxROIs, sizeof(epicsInt32), functionName);
     this->netArray = (epicsInt32 *)callocMustSucceed(maxROIs, sizeof(epicsInt32), functionName);
     setIntegerParam(0, NDPluginROIHighlight,         0);
 
-    for (roi=0; roi<maxROIs; roi++) {
+    for (roi=0; roi<this->maxROIs; roi++) {
         setStringParam (roi,  NDPluginROIName,              "");
         setIntegerParam(roi , NDPluginROIUse,               0);
         setIntegerParam(roi , NDPluginROIComputeStatistics, 0);
