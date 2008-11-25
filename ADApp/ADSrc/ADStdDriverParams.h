@@ -39,7 +39,7 @@ typedef enum
     ADStatusSaving,
     ADStatusAborting,
     ADStatusError,
-    ADStatusWaiting,
+    ADStatusWaiting
 } ADStatus_t;
 
 typedef enum
