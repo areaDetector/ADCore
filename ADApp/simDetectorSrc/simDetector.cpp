@@ -173,7 +173,7 @@ int simDetector::computeImage()
     status |= getIntegerParam(ADMaxSizeX,     &maxSizeX);
     status |= getIntegerParam(ADMaxSizeY,     &maxSizeY);
     status |= getIntegerParam(ADDataType,     (int *)&dataType);
-    if (status) asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
+    if (status) asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                     "%s:%s: error getting parameters\n",
                     driverName, functionName);
 
@@ -215,7 +215,7 @@ int simDetector::computeImage()
     this->pRaw->dataType = dataType;
     status = allocateBuffer();
     if (status) {
-        asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                   "%s:%s: error allocating raw buffer\n",
                   driverName, functionName);
         return(status);
@@ -266,7 +266,7 @@ int simDetector::computeImage()
                                          dataType,
                                          dimsOut);
     if (status) {
-        asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                     "%s:%s: error allocating buffer in convert()\n",
                     driverName, functionName);
         return(status);
@@ -278,7 +278,7 @@ int simDetector::computeImage()
     status |= setIntegerParam(ADImageSizeX, pImage->dims[0].size);
     status |= setIntegerParam(ADImageSizeY, pImage->dims[1].size);
     status |= setIntegerParam(SimResetImage, 0);
-    if (status) asynPrint(this->pasynUser, ASYN_TRACE_ERROR,
+    if (status) asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                     "%s:%s: error setting parameters\n",
                     driverName, functionName);
     return(status);
@@ -319,7 +319,7 @@ void simDetector::simTask()
             setIntegerParam(ADStatus, ADStatusIdle);
             callParamCallbacks();
             /* Release the lock while we wait for an event that says acquire has started, then lock again */
-            asynPrint(this->pasynUser, ASYN_TRACE_FLOW, 
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
                 "%s:%s: waiting for acquire to start\n", driverName, functionName);
             epicsMutexUnlock(this->mutexId);
             status = epicsEventWait(this->startEventId);
@@ -389,7 +389,7 @@ void simDetector::simTask()
             /* Must release the lock here, or we can get into a deadlock, because we can
              * block on the plugin lock, and the plugin can be calling us */
             epicsMutexUnlock(this->mutexId);
-            asynPrint(this->pasynUser, ASYN_TRACE_FLOW, 
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
                  "%s:%s: calling imageData callback\n", driverName, functionName);
             doCallbacksGenericPointer(pImage, NDArrayData, 0);
             epicsMutexLock(this->mutexId);
@@ -400,7 +400,7 @@ void simDetector::simTask()
             ((imageMode == ADImageMultiple) && 
              (numImagesCounter >= numImages))) {
             setIntegerParam(ADAcquire, 0);
-            asynPrint(this->pasynUser, ASYN_TRACE_FLOW, 
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
                   "%s:%s: acquisition completed\n", driverName, functionName);
         }
         
@@ -413,7 +413,7 @@ void simDetector::simTask()
             epicsTimeGetCurrent(&endTime);
             elapsedTime = epicsTimeDiffInSeconds(&endTime, &startTime);
             delay = acquirePeriod - elapsedTime;
-            asynPrint(this->pasynUser, ASYN_TRACE_FLOW, 
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
                      "%s:%s: delay=%f\n",
                       driverName, functionName, delay);            
             if (delay >= 0.0) {
