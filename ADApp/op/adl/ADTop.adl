@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector/1-3beta/ADApp/op/adl/ADTop.adl"
+	name="/home/epics/devel/areaDetector/1-4beta/ADApp/op/adl/ADTop.adl"
 	version=030102
 }
 display {
@@ -8,7 +8,7 @@ display {
 		x=92
 		y=34
 		width=301
-		height=300
+		height=350
 	}
 	clr=14
 	bclr=4
@@ -388,7 +388,7 @@ text {
 	"basic attribute" {
 		clr=14
 	}
-	textix="marCCD Drivers"
+	textix="MarCCD Drivers"
 }
 "related display" {
 	object {
@@ -425,5 +425,76 @@ text {
 	"basic attribute" {
 		clr=14
 	}
-	textix="marCCD Plug-ins"
+	textix="MarCCD Plug-ins"
+}
+"related display" {
+	object {
+		x=223
+		y=292
+		width=64
+		height=21
+	}
+	display[0] {
+		label="Roper #1 general"
+		name="ADBase.adl"
+		args="P=13ROPER1:, R=cam1: "
+	}
+	display[1] {
+		label="Roper #1 specific"
+		name="Roper.adl"
+		args="P=13ROPER1:, R=cam1:, ROI=ROI1:, I=image1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=77
+		y=292
+		width=140
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Roper Drivers"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=223
+		y=318
+		width=64
+		height=21
+	}
+	display[0] {
+		label="Image #1"
+		name="NDStdArrays.adl"
+		args="P=13ROPER1:, R=image1:"
+	}
+	display[1] {
+		label="ROI #1"
+		name="NDROI.adl"
+		args="P=13ROPER1:, R=ROI1:"
+	}
+	display[2] {
+		label="Scan 1"
+		name="scan_more.adl"
+		args="P=13ROPER1:, S=scan1, N=1"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=67
+		y=318
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Roper Plug-ins"
+	align="horiz. right"
 }
