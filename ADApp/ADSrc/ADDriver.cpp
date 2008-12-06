@@ -177,6 +177,7 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int paramTableSize, int ma
     setIntegerParam(ADShutterMode,   0);
     setDoubleParam (ADShutterOpenDelay, 0.0);
     setDoubleParam (ADShutterCloseDelay, 0.0);
+    setDoubleParam (ADTemperature, 0.0);
     
     setStringParam (ADFilePath,     "");
     setStringParam (ADFileName,     "");
