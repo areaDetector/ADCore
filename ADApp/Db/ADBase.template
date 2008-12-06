@@ -435,6 +435,13 @@ record(longin, "$(P)$(R)NumExposures_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(longin, "$(P)$(R)NumExposuresCounter_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NEXPOSURES_COUNTER")
+   field(SCAN, "I/O Intr")
+}
 record(longout, "$(P)$(R)NumImages")
 {
    field(PINI, "1")
@@ -596,6 +603,16 @@ record(waveform, "$(P)$(R)StringFromServer_RBV")
     field(SCAN, "I/O Intr")
 }
 
+################################################################@###
+#  This record can be used to force a read of the detector status  # 
+####################################################################
+record(bo,"$(P)$(R)ReadStatus") {
+    field(DTYP,"asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR),$(TIMEOUT))READ_STATUS")
+    field(VAL, "1")
+    field(SCAN,"Passive")
+}
+
 ###################################################################
 #  These records control the shutter                              # 
 ###################################################################
@@ -741,6 +758,27 @@ record(mbbi, "$(P)$(R)ShutterStatusEPICS_RBV")
     field(ONVL, "1")
     field(ONST, "Open")
     field(ONSV, "MINOR")
+}
+
+###################################################################
+#  These records control the detector temperature                 # 
+###################################################################
+ 
+record(ao, "$(P)$(R)Temperature")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMPERATURE")
+   field(PREC, "3")
+}
+
+record(ai, "$(P)$(R)Temperature_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMPERATURE")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
 }
 
 ###################################################################
