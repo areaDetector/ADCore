@@ -1,0 +1,183 @@
+# Database for the records specific to the Roper driver
+# Mark Rivers
+# December 2, 2008
+
+# These are the records from ADBase.template that we modify some fields for
+
+# We replace the choice fields for ImageMode from ADBase.template
+record(mbbo, "$(P)$(R)ImageMode")
+{
+    field(ZRST, "Normal")
+    field(ZRVL, "0")
+    field(ONST, "Continuous")
+    field(ONVL, "1")
+    field(TWST, "Focus")
+    field(TWVL, "2")
+}
+
+record(mbbi, "$(P)$(R)ImageMode_RBV")
+{
+    field(ZRST, "Normal")
+    field(ZRVL, "0")
+    field(ONST, "Continuous")
+    field(ONVL, "1")
+    field(TWST, "Focus")
+    field(TWVL, "2")
+}
+
+# We replace the file format choices from ADBase.template
+record(mbbo, "$(P)$(R)FileFormat")
+{
+    field(ZRST, "SPE")
+    field(ZRVL, "1")
+    field(ONST, "TIFF")
+    field(ONVL, "2")
+    field(TWST, "8-bit TIFF")
+    field(TWVL, "3")
+}
+
+record(mbbi, "$(P)$(R)FileFormat_RBV")
+{
+    field(ZRST, "SPE")
+    field(ZRVL, "1")
+    field(ONST, "TIFF")
+    field(ONVL, "2")
+    field(TWST, "8-bit TIFF")
+    field(TWVL, "3")
+}
+
+# We replace the trigger mode choices from ADBase.template
+# Note 1=Free run and 3=External Sync is documented.  27 and 28 may be camera-specific
+record(mbbo, "$(P)$(R)TriggerMode")
+{
+    field(ZRST, "Free run")
+    field(ZRVL, "1")
+    field(ONST, "Ext. sync")
+    field(ONVL, "3")
+    field(TWST, "Bulb trig.")
+    field(TWVL, "28")
+    field(THST, "Single trig.")
+    field(THVL, "27")
+}
+
+record(mbbi, "$(P)$(R)TriggerMode_RBV")
+{
+    field(ZRST, "Free run")
+    field(ZRVL, "1")
+    field(ONST, "Ext. sync")
+    field(ONVL, "3")
+    field(TWST, "Bulb trig.")
+    field(TWVL, "28")
+    field(THST, "Single trig.")
+    field(THVL, "27")
+}
+
+# We change the precision on the Gain record to 0, because it is an integer on the Roper
+record(ao, "$(P)$(R)Gain")
+{
+   field(PREC, "0")
+}
+
+record(ai, "$(P)$(R)Gain_RBV")
+{
+   field(PREC, "0")
+}
+
+
+# These are new records for the Roper detector
+
+record(longout, "$(P)$(R)NumAcquisitions")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROPER_NACQUISITIONS")
+}
+
+record(longin, "$(P)$(R)NumAcquisitions_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROPER_NACQUISITIONS")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)NumAcquisitionsCounter_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROPER_NACQUISITIONS_COUNTER")
+   field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)RoperShutterMode")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROPER_SHUTTER_MODE")
+    field(ZRST, "Normal")
+    field(ZRVL, "1")
+    field(ONST, "Diabled closed")
+    field(ONVL, "2")
+    field(TWST, "Disabled opened")
+    field(TWVL, "3")
+}
+
+record(mbbi, "$(P)$(R)RoperShutterMode_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROPER_SHUTTER_MODE")
+    field(ZRST, "Normal")
+    field(ZRVL, "1")
+    field(ONST, "Diabled open")
+    field(ONVL, "2")
+    field(TWST, "Disabled closed")
+    field(TWVL, "3")
+    field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)Comment1")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMMENT1")
+    field(FTVL, "UCHAR")
+    field(NELM, "80")
+}
+
+record(waveform, "$(P)$(R)Comment2")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMMENT2")
+    field(FTVL, "UCHAR")
+    field(NELM, "80")
+}
+
+record(waveform, "$(P)$(R)Comment3")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMMENT3")
+    field(FTVL, "UCHAR")
+    field(NELM, "80")
+}
+
+record(waveform, "$(P)$(R)Comment4")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMMENT4")
+    field(FTVL, "UCHAR")
+    field(NELM, "80")
+}
+
+record(waveform, "$(P)$(R)Comment5")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMMENT5")
+    field(FTVL, "UCHAR")
+    field(NELM, "80")
+}
+
