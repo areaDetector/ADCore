@@ -128,9 +128,13 @@ typedef enum
     ADShutterOpenDelay, /* (asynFloat64,  r/w) Time for shutter to open */
     ADShutterCloseDelay,/* (asynFloat64,  r/w) Time for shutter to close */
 
+    /* Temperature parameters */
+    ADTemperature,      /* (asynFloat64,  r/w) Detector temperature */
+
     /* Statistics on number of images collected and the image rate. */
     ADImageCounter,     /* (asynInt32,    r/w) Number of images acquired since last reset */
     ADNumImagesCounter, /* (asynInt32,    r/w) Number of images collected in current acquisition sequence */
+    ADNumExposuresCounter, /* (asynInt32, r/w) Number of exposures collected for current image */
     ADTimeRemaining,    /* (asynFloat64,  r/w) Acquisition time remaining */
  
     /* File name related parameters for saving data.
@@ -154,6 +158,9 @@ typedef enum
     ADFileNumCaptured,  /* (asynInt32,    r/o) Number of arrays already captured */
     ADFileCapture,      /* (asynInt32,    r/w) Start or stop capturing arrays */
 
+    /* Status reading */
+    ADReadStatus,      /* (asynInt32,     r/w) Write 1 to force a read of detector status */
+    
     /* Status message strings */
     ADStatusMessage,    /* (asynOctet,    r/o) Status message */
     ADStringToServer,   /* (asynOctet,    r/o) String to server for message-based drivers */
@@ -197,6 +204,7 @@ static asynParamString_t ADStdDriverParamString[] = {
     {ADFrameType,      "FRAME_TYPE"  },
     {ADImageMode,      "IMAGE_MODE"  },
     {ADNumExposures,   "NEXPOSURES"  },
+    {ADNumExposuresCounter, "NEXPOSURES_COUNTER"  },
     {ADNumImages,      "NIMAGES"     },
     {ADNumImagesCounter, "NIMAGES_COUNTER"},
     {ADAcquireTime,    "ACQ_TIME"    },
@@ -212,6 +220,8 @@ static asynParamString_t ADStdDriverParamString[] = {
     {ADShutterMode,      "SHUTTER_MODE"        },
     {ADShutterOpenDelay, "SHUTTER_OPEN_DELAY"  },
     {ADShutterCloseDelay,"SHUTTER_CLOSE_DELAY" },
+
+    {ADTemperature,    "TEMPERATURE" },
 
     {ADImageCounter,   "IMAGE_COUNTER" }, 
 
@@ -229,6 +239,8 @@ static asynParamString_t ADStdDriverParamString[] = {
     {ADFileNumCapture, "NUM_CAPTURE"   },
     {ADFileNumCaptured,"NUM_CAPTURED"  },
     {ADFileCapture,    "CAPTURE"       },
+
+    {ADReadStatus,     "READ_STATUS"     },
 
     {ADStatusMessage,  "STATUS_MESSAGE"     },
     {ADStringToServer, "STRING_TO_SERVER"   },
