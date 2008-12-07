@@ -86,6 +86,25 @@ record(ai, "$(P)$(R)Gain_RBV")
 
 # These are new records for the Roper detector
 
+record(bo, "$(P)$(R)AutoDataType")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_DATA_TYPE")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)AutoDataType_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_DATA_TYPE")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
 record(longout, "$(P)$(R)NumAcquisitions")
 {
    field(PINI, "1")
@@ -145,10 +164,28 @@ record(waveform, "$(P)$(R)Comment1")
     field(NELM, "80")
 }
 
+record(waveform, "$(P)$(R)Comment1_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMMENT1")
+    field(FTVL, "UCHAR")
+    field(NELM, "80")
+}
+
 record(waveform, "$(P)$(R)Comment2")
 {
     field(PINI, "1")
     field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMMENT2")
+    field(FTVL, "UCHAR")
+    field(NELM, "80")
+}
+
+record(waveform, "$(P)$(R)Comment2_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMMENT2")
     field(FTVL, "UCHAR")
     field(NELM, "80")
@@ -163,10 +200,28 @@ record(waveform, "$(P)$(R)Comment3")
     field(NELM, "80")
 }
 
+record(waveform, "$(P)$(R)Comment3_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMMENT3")
+    field(FTVL, "UCHAR")
+    field(NELM, "80")
+}
+
 record(waveform, "$(P)$(R)Comment4")
 {
     field(PINI, "1")
     field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMMENT4")
+    field(FTVL, "UCHAR")
+    field(NELM, "80")
+}
+
+record(waveform, "$(P)$(R)Comment4_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMMENT4")
     field(FTVL, "UCHAR")
     field(NELM, "80")
@@ -180,4 +235,14 @@ record(waveform, "$(P)$(R)Comment5")
     field(FTVL, "UCHAR")
     field(NELM, "80")
 }
+
+record(waveform, "$(P)$(R)Comment5_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMMENT5")
+    field(FTVL, "UCHAR")
+    field(NELM, "80")
+}
+
 
