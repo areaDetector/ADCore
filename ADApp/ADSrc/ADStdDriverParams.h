@@ -42,6 +42,7 @@ typedef enum
     ADStatusWaiting
 } ADStatus_t;
 
+/* Enumeration of image collection modes */
 typedef enum
 {
     ADImageSingle,
@@ -49,6 +50,7 @@ typedef enum
     ADImageContinuous
 } ADImageMode_t;
 
+/* Enumeration of frame types */
 typedef enum
 {
     ADFrameNormal,
@@ -57,12 +59,14 @@ typedef enum
     ADFrameDoubleCorrelation
 } ADFrameType_t;
 
+/* Enumeration of trigger modes */
 typedef enum
 {
     ADTriggerInternal,
     ADTriggerExternal
 } ADTriggerMode_t;
 
+/* Enumeration of file saving modes */
 typedef enum {
     ADFileModeSingle,
     ADFileModeCapture,
