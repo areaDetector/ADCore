@@ -1,0 +1,553 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>areaDetector Roper driver</title>
+</head>
+<body>
+  <div style="text-align: center">
+    <h1>
+      areaDetector Roper driver</h1>
+    <h2>
+      December 6, 2008</h2>
+    <h2>
+      Mark Rivers</h2>
+    <h2>
+      University of Chicago</h2>
+  </div>
+  <h2>
+    Table of Contents</h2>
+  <ul>
+    <li><a href="#Introduction">Introduction</a></li>
+    <li><a href="#StandardNotes">Implementation of standard driver parameters</a></li>
+    <li><a href="#Driver_parameters">Roper specific parameters</a></li>
+    <li><a href="#Unsupported">Unsupported standard driver parameters</a></li>
+    <li><a href="#Configuration">Configuration</a></li>
+    <li><a href="#MEDM_screens">MEDM screens</a></li>
+    <li><a href="#Performance_measurements">Performance measurements</a> </li>
+    <li><a href="#Restrictions">Restrictions</a> </li>
+  </ul>
+  <h2 id="Introduction" style="text-align: left">
+    Introduction</h2>
+  <p>
+    This is a driver for the <a href="http://www.roperscientific.com/">Roper Scientific</a>
+    detectors, which includes those from <a href="http://www.princetoninstruments.com/">
+      Princeton Instruments</a> and <a href="http://www.photomet.com/">Photometrics</a>.
+    It inherits from ADDriver and implements most of the parameters in ADStdDriverParams.h.
+    It also implements a number of parameters that are specific to the Roper detectors.</p>
+  <p>
+    The interface to the detector is via a the MicroSoft COM interface to the <b>WinView</b>
+    or <b>WinSpec</b> programs that Roper provides. The term WinView will be used in
+    this document to refer to either WinView or WinSpec, as they are equivalent in terms
+    of the areaDetector driver. The areaDetector driver effectively "drives" WinView
+    through the COM interface, performing many of the same operations that can be performed
+    using the WinView GUI. The advantage of this communication mechanism is that the
+    user can continue to use WinView for viewing images and for configuration operations.
+    WinView is normally started before the areaDetector software is started. However,
+    if the areaDetector software is started without WinView running, then WinView will
+    be started in the background, and will not be visible. This may be desirable in
+    some applications.
+  </p>
+  <p>
+    Because EPICS and the WinView GUI can control many of the same parameters the user
+    must be aware of the interactions between the two control systems. The basic rule
+    is that the value of a parameter will be determined by whichever control system
+    last wrote to that parameter. Both EPICS and WinView will correctly display the
+    current value of a parameter no matter how it was last changed. However, in WinView
+    this requires closing and re-opening the window that controls that parameter, such
+    as the Experiment Setup tabbed windows, to see any changes made by EPICS since the
+    window was opened.
+  </p>
+  <h2 id="StandardNotes" style="text-align: left">
+    Implementation of standard driver parameters</h2>
+  <p>
+    The following table describes how the Roper driver implements some of the standard
+    driver parameters. Note that there are 3 possible levels of nested acquisition looping
+    when using the Roper driver. From the innermost to outermost loop these are as follows:</p>
+  <ol>
+    <li>ADNumExposures ($(P)$(R)NumExposures). This controls the number of exposures per
+      image. This is called "accumulations" in Roper's terminology.</li>
+    <li>ADNumImages ($(P)$(R)NumImages). This controls the number of images per acquisition.
+      This is also called "number of images" in Roper's terminology. These images will
+      all be acquired into a single 3-D array, and saved to a single SPE file in WinView.</li>
+    <li>RoperNumAcquisitions ($(P)$(R)NumNumAcquisitions). This controls the number of
+      times that the driver will repeat an acquisition sequence. This is has no equivalent
+      in WinView, it is handled entirely by the areaDetector driver. It can be used to
+      acquire multiple data sets, where each is controlled by the above parameters.</li>
+  </ol>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="center" colspan="3">
+          <b>Implementation of Parameters in ADStdDriverParams.h and EPICS Record Definitions
+            in ADBase.template and NDFile.template</b></td>
+      </tr>
+      <tr>
+        <th>
+          Enum name</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          Description</th>
+      </tr>
+      <tr>
+        <td>
+          ADImageMode</td>
+        <td>
+          $(P$(R)ImageMode</td>
+        <td>
+          The driver redefines the choices for the ADImageMode parameter (record $(P)$(R)ImageMode)
+          from ADStdDriverParams.h. The choices for the Roper are:
+          <ul>
+            <li>Normal: This is the same as pressing the Acquire button in WinView. It may collect
+              more than 1 exposure per image if NumExposures>1, more than 1 image per acquisition
+              if NumImages>1, and more than 1 aquisition if NumAcquisitions>1.</li>
+            <li>Continuous: This will cause the driver to perform acquisitions indefinitely, i.e.
+              it acts as if NumAcquisitions is infinite.</li>
+            <li>Focus: This is the same as pressing the Focus button in WinView. It causes acquisition
+              to proceed as quickly as possible. It does not save the data. It currently does
+              not call the callbacks for each frame, so the images can only be seen in WinView
+              and not in EPICS. This may be fixed in a future release. </li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          ADAcquirePeriod</td>
+        <td>
+          $(P$(R)AcquirePeriod</td>
+        <td>
+          Controls the period between images when ADImageMode is Continuous. If this is greater
+          than the acquisition time plus readout overhead then the driver will wait until
+          the period has elapsed before starting the next acquisition.</td>
+      </tr>
+      <tr>
+        <td>
+          ADNumExposures</td>
+        <td>
+          $(P$(R)NumExposures</td>
+        <td>
+          Controls the number of exposures (accumulations) to acquire into a single image.</td>
+      </tr>
+      <tr>
+        <td>
+          ADNumImages</td>
+        <td>
+          $(P$(R)NumImages</td>
+        <td>
+          Controls the number of images to acquire into a single 3-D data set.</td>
+      </tr>
+      <tr>
+        <td>
+          ADTriggerMode</td>
+        <td>
+          $(P$(R)TriggerMode</td>
+        <td>
+          The driver redefines the choices for the ADTriggerMode parameter (record $(P)$(R)TriggerMode)
+          from ADStdDriverParams.h. The choices for the Roper are:
+          <ul>
+            <li>Free run: This acquires images as quickly as possible given the exposure and readout
+              times.</li>
+            <li>Ext. sync: This acquires one image for each external trigger pulse.</li>
+            <li>Bulb trig.: The exposure time is determined by the external trigger pulse width.
+            </li>
+            <li>Single trig.: A single external trigger pulse will acquire an entire sequence
+              of images. </li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          ADFileFormat</td>
+        <td>
+          $(P)$(R)FileFormat</td>
+        <td>
+          The driver redefines the choices for the ADFileFormat parameter (record $(P)$(R)FileFormat)
+          from ADStdDriverParams.h. The choices for the Roper are:
+          <ul>
+            <li>SPE: This is the default file format for WinView. It is a binary format with a
+              header containing all of the acquisition and setup information.</li>
+            <li>TIFF: TIFF files that contain the full resolution of the image data. The TIFF
+              files do not contain any acquisition or setup information.</li>
+            <li>8-bit TIFF: 8-bit TIFF files that contain limited resolution image data. The TIFF
+              files do not contain any acquisition or setup information. </li>
+          </ul>
+          The driver does not automatically change the file extension (.SPE, .TIFF, etc.)
+          when the FileFormat is changed, the user should do this using the FileTemplate record.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          ADGain</td>
+        <td>
+          $(P)$(R)Gain</td>
+        <td>
+          The precision of the $(P)$(R)Gain record is changed to 0 because the gain in WinView
+          is an integer. Allowed values are detector dependent, but 1 and 2 are typically
+          supported.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h2 id="Driver_parameters" style="text-align: left">
+    Roper specific parameters</h2>
+  <p>
+    The Roper driver implements the following parameters in addition to those in ADStdDriverParams.h.
+    Note that to reduce the width of this table the enum names have been split into
+    2 lines, but these are just a single name, for example <code>marCCDState</code>.
+  </p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Parameter Definitions in roper.cpp and EPICS Record Definitions in roper.template</b></td>
+      </tr>
+      <tr>
+        <th>
+          Enum name</th>
+        <th>
+          asyn interface</th>
+        <th>
+          Access</th>
+        <th>
+          Description</th>
+        <th>
+          drvUser string</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          EPICS record type</th>
+      </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Status parameters</b></td>
+      </tr>
+      <tr>
+        <td>
+          Roper<br />
+          NumAcquisitions</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          The number of acquisitions to perform when acquisition is started. This controls
+          the number of iterations in the outermost acquisition loop explained above.
+        </td>
+        <td>
+          ROPER_NACQUISITIONS</td>
+        <td>
+          $(P)$(R)NumAcquisitions<br />
+          $(P)$(R)NumAcquisitions_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          Roper<br />
+          NumAcquisitionsCounter</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The number of acquisitions performed so far.
+        </td>
+        <td>
+          ROPER_NACQUISITIONS_COUNTER</td>
+        <td>
+          $(P)$(R)NumAcquisitionsCounter_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          Roper<br />
+          AutoDataType</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          A flag controlling whether WinView will automatically chose the optimal data type
+          for the image data. 0=No, 1=Yes. If this flag is 1 then the NDDataType parameter
+          ($(P)$(R)DataType record) is ignored. If this flag is 0 then the NDDataType parameter
+          controls the data type of the images.
+        </td>
+        <td>
+          AUTO_DATA_TYPE</td>
+        <td>
+          $(P)$(R)AutoDataType<br />
+          $(P)$(R)AutoDataType_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          Roper<br />
+          ShutterMode</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          The shutter operating mode for shutters controlled by WinView. Allowed values are:
+          <ul>
+            <li>Normal: The detector shutter will be opened and closed normally for each exposure.</li>
+            <li>Disabled closed: The shutter will be forced closed. Useful for taking a dark current
+              image.</li>
+            <li>Disabled open: The shutter will be forced open.</li>
+          </ul>
+        </td>
+        <td>
+          ROPER_SHUTTER_MODE</td>
+        <td>
+          $(P)$(R)RoperShutterMode<br />
+          $(P)$(R)RoperShutterMode_RBV</td>
+        <td>
+          mbbo<br />
+          mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          Roper<br />
+          Comment(1-5)</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          User comments for the data file. 5 comment fields of 80 characters each are available
+          in the header of WinView SPE files. These are waveform records with FTVL=UCHAR and
+          NELM=80 so that they can be longer than the 40 character string limit in EPICS.
+        </td>
+        <td>
+          COMMENT(1-5)</td>
+        <td>
+          $(P)$(R)Comment(1-5)<br />
+          $(P)$(R)Comment(1-5)_RBV</td>
+        <td>
+          waveform<br />
+          waveform</td>
+      </tr>
+    </tbody>
+  </table>
+  <h2 id="Unsupported">
+    Unsupported standard driver parameters</h2>
+  <p>
+    The Roper driver does not support the following standard driver parameters:</p>
+  <ul>
+    <li>Frame type (ADFrameType). This may be supported in a future release to control
+      acquisition of flat field and dark current frames.</li>
+    <li>Reading previous files (ADReadFile). This may be supported in a future release.</li>
+    <li>Capture or stream file saving (ADFileWriteMode, ADFileCapture, ADNumCapture, ADNumCaptured)</li>
+  </ul>
+  <h2 id="Configuration" style="text-align: left">
+    Configuration</h2>
+  <p>
+    The Roper driver is created with the following command, either from C/C++ or from
+    the EPICS IOC shell.
+  </p>
+  <pre>   
+roperConfig(const char *portName, int maxBuffers, size_t maxMemory);
+  </pre>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <th>
+          Argument</th>
+        <th>
+          Description</th>
+      </tr>
+      <tr>
+        <td>
+          <code>portName</code></td>
+        <td>
+          The name of the asyn port for this detector.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <code>maxBuffers</code></td>
+        <td>
+          Maximum number of buffers to be created for plugin callbacks. Passed to the constructor
+          for the ADDriver base class.</td>
+      </tr>
+      <tr>
+        <td>
+          <code>maxMemory</code></td>
+        <td>
+          Maximum number of bytes of memory to be allocated for plugin callbacks. Passed to
+          the constructor for the ADDriver base class.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    The following is an example st.cmd startup script:
+  </p>
+  <pre>
+< envPaths
+errlogInit(20000)
+
+dbLoadDatabase("$(AREA_DETECTOR)/dbd/roperApp.dbd")
+
+roperApp_registerRecordDeviceDriver(pdbbase) 
+
+roperConfig("ROPER1", 50, 200000000)
+asynSetTraceIOMask("ROPER1",0,2)
+#asynSetTraceMask("ROPER1",0,9)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/ADBase.template",   "P=13ROPER1:,R=cam1:,PORT=ROPER1,ADDR=0,TIMEOUT=1")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFile.template",   "P=13ROPER1:,R=cam1:,PORT=ROPER1,ADDR=0,TIMEOUT=1")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/roper.template",    "P=13ROPER1:,R=cam1:,PORT=ROPER1,ADDR=0,TIMEOUT=1")
+
+# Create a standard arrays plugin, set it to get data from the Roper driver.
+drvNDStdArraysConfigure("ROPER1Image", 5, 0, "ROPER1", 0, -1)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13ROPER1:,R=image1:,PORT=ROPER1Image,ADDR=0,TIMEOUT=1,NDARRAY_PORT=ROPER1,NDARRAY_ADDR=0")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStdArrays.template", "P=13ROPER1:,R=image1:,PORT=ROPER1Image,ADDR=0,TIMEOUT=1,SIZE=16,FTVL=SHORT,NELEMENTS=1500000")
+# Load the database to use with Stephen Mudie's IDL code
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/EPICS_AD_Viewer.template", "P=13ROPER1:, R=image1:")
+
+# Create a file saving plugin
+drvNDFileConfigure("ROPER1File", 5, 0, "ROPER1", 0)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13ROPER1:,R=file1:,PORT=ROPER1File,ADDR=0,TIMEOUT=1,NDARRAY_PORT=ROPER1,NDARRAY_ADDR=0")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFile.template",      "P=13ROPER1:,R=file1:,PORT=ROPER1File,ADDR=0,TIMEOUT=1")
+
+# Create an ROI plugin
+drvNDROIConfigure("ROPER1ROI", 5, 0, "ROPER1", 0, 10, -1)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13ROPER1:,R=ROI1:,  PORT=ROPER1ROI,ADDR=0,TIMEOUT=1,NDARRAY_PORT=ROPER1,NDARRAY_ADDR=0")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROI.template",       "P=13ROPER1:,R=ROI1:,  PORT=ROPER1ROI,ADDR=0,TIMEOUT=1")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13ROPER1:,R=ROI1:0:,PORT=ROPER1ROI,ADDR=0,TIMEOUT=1,HIST_SIZE=256")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13ROPER1:,R=ROI1:1:,PORT=ROPER1ROI,ADDR=1,TIMEOUT=1,HIST_SIZE=256")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13ROPER1:,R=ROI1:2:,PORT=ROPER1ROI,ADDR=2,TIMEOUT=1,HIST_SIZE=256")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13ROPER1:,R=ROI1:3:,PORT=ROPER1ROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
+
+# Load scan records
+dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=13ROPER1:,MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
+
+set_requestfile_path("./")
+set_savefile_path("./autosave")
+set_requestfile_path("$(SSCAN)/sscanApp/Db")
+set_requestfile_path("$(AREA_DETECTOR)/ADApp/Db")
+set_pass0_restoreFile("auto_settings.sav")
+set_pass1_restoreFile("auto_settings.sav")
+save_restoreSet_status_prefix("13ROPER1:")
+dbLoadRecords("$(AUTOSAVE)/asApp/Db/save_restoreStatus.db", "P=13ROPER1:")
+
+iocInit()
+
+# save things every thirty seconds
+create_monitor_set("auto_settings.req", 30,"P=13ROPER1:,D=cam1:")
+
+</pre>
+  <h2 id="MEDM_screens" style="text-align: left">
+    MEDM screens</h2>
+  <p>
+    The following show the MEDM screens that are used to control the Roper detector.
+    Note that the general purpose screen ADBase.adl can be used, but it exposes a few
+    controls that are not applicable to the Roper, and lacks some fields that are important
+    for the Roper.</p>
+  <p>
+    <code>Roper.adl</code> is the main screen used to control the Roper driver.
+  </p>
+  <div style="text-align: center">
+    <h3 style="text-align: center">
+      roper.adl</h3>
+    <img alt="Roper.png" src="Roper.png" /></div>
+  <p>
+    <code>RoperFile.adl</code> is the screen used to control WinView file I/O.
+  </p>
+  <div style="text-align: center">
+    <h3 style="text-align: center">
+      RoperFile.adl</h3>
+    <img alt="RoperFile.png" src="RoperFile.png" /></div>
+  <h2 id="Performance_measurements">
+    Performance measurements</h2>
+  <p>
+    The following measurements were done to demonstrate the performance that can be
+    obtained with the areaDetector Roper driver. These measurements were made with a
+    CoolSnap-EZ detector which has 1392x1040 pixels. The EPICS IOC was running on the
+    same Windows PC as WinView. The acquisition time was 0.1 second.</p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <th>
+          Binning</th>
+        <th>
+          Image size</th>
+        <th>
+          Time for 10 images (ADNumImages=10)</th>
+        <th>
+          Overhead per image</th>
+      </tr>
+      <tr>
+        <td>
+          1x1
+        </td>
+        <td>
+          1392x1040
+        </td>
+        <td>
+          50.0
+        </td>
+        <td>
+          4.00
+        </td>
+      </tr>
+      <tr>
+        <td>
+          2x2
+        </td>
+        <td>
+          696x520
+        </td>
+        <td>
+          46.2
+        </td>
+        <td>
+          3.62
+        </td>
+      </tr>
+      <tr>
+        <td>
+          3x3
+        </td>
+        <td>
+          1024x1024
+        </td>
+        <td>
+          Sequential
+        </td>
+        <td>
+          29.0
+        </td>
+        <td>
+          1.90
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h2 id="Restrictions">
+    Restrictions</h2>
+  <p>
+    The following are some current restrictions of the Roper driver:</p>
+  <ul>
+    <li>The are hundreds of parameters that can be controlled in WinView via the COM interface
+      for acquiring, processing and displaying images. This driver does not attempt to
+      support all of them, just the ones that are most commonly needed for EPICS data
+      acquisition and control software. Additional features of WinView are very easy to
+      add to the EPICS interface if needed in the future. Settings that EPICS does not
+      control and which do not need to be frequently changed can simply be set via the
+      WinView GUI.</li>
+    <li>Reading data files back into WinView is not currently supported.</li>
+    <li>The following items are hardcoded in the driver. They can be changed by recompiling
+      if necessary.
+      <ul>
+        <li>ERROR_MESSAGE_SIZE=256 The maximum size of error messages that can be retrieved
+          from WinView.</li>
+        <li>ROPER_POLL_TIME=0.01 seconds. The time between polling WinView status to see when
+          acquisition is complete.</li>
+      </ul>
+    </li>
+  </ul>
+</body>
+</html>
