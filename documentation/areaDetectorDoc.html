@@ -7,7 +7,7 @@
     <h1>
       areaDetector: EPICS Area Detector Support</h1>
     <h2>
-      November 24, 2008</h2>
+      December 7, 2008</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -44,6 +44,7 @@
         <li><a href="pilatusDoc.html">Pilatus driver</a></li>
         <li><a href="adscDoc.html">ADSC driver</a></li>
         <li><a href="MarCCDDoc.html">MarCCD driver</a></li>
+        <li><a href="RoperDoc.html">Roper driver</a></li>
       </ul>
     </li>
   </ul>
@@ -225,6 +226,7 @@
 class asynPortDriver {
 public:
     asynPortDriver(const char *portName, int maxAddr, int paramTableSize, int interfaceMask, int interruptMask);
+    virtual ~asynPortDriver();
     virtual asynStatus getAddress(asynUser *pasynUser, const char *functionName, int *address); 
     virtual asynStatus findParam(asynParamString_t *paramTable, int numParams, const char *paramName, int *param);
     virtual asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value);
@@ -294,8 +296,16 @@ public:
     virtual asynStatus callParamCallbacks(int list, int addr);
     virtual void reportParams();
 
+    char *portName;
+    int maxAddr;
+    paramList **params;
+    epicsMutexId mutexId;
+
+    /* The asyn interfaces this driver implements */
+    asynStandardInterfaces asynStdInterfaces;
+    
     /* asynUser connected to ourselves for asynTrace */
-    asynUser *pasynUser;
+    asynUser *pasynUserSelf;
 };
 </pre>
   <p>
@@ -711,7 +721,7 @@ public:
 /* Enumeration of shutter status */
 typedef enum
 {
-    ADShutterClosed,
+    ADShutterClosed, 
     ADShutterOpen
 } ADShutterStatus_t;
 
@@ -719,7 +729,7 @@ typedef enum
 typedef enum
 {
     ADShutterModeNone,
-    ADShutterModeEPICS,
+    ADShutterModeEPICS, 
     ADShutterModeDetector
 } ADShutterMode_t;
 
@@ -733,9 +743,10 @@ typedef enum
     ADStatusSaving,
     ADStatusAborting,
     ADStatusError,
-    ADStatusWaiting,
+    ADStatusWaiting
 } ADStatus_t;
 
+/* Enumeration of image collection modes */
 typedef enum
 {
     ADImageSingle,
@@ -743,6 +754,7 @@ typedef enum
     ADImageContinuous
 } ADImageMode_t;
 
+/* Enumeration of frame types */
 typedef enum
 {
     ADFrameNormal,
@@ -751,12 +763,14 @@ typedef enum
     ADFrameDoubleCorrelation
 } ADFrameType_t;
 
+/* Enumeration of trigger modes */
 typedef enum
 {
     ADTriggerInternal,
     ADTriggerExternal
 } ADTriggerMode_t;
 
+/* Enumeration of file saving modes */
 typedef enum {
     ADFileModeSingle,
     ADFileModeCapture,
@@ -803,8 +817,8 @@ typedef enum {
     <tbody>
       <tr>
         <td align="center" colspan="7">
-          <b>Parameter Definitions in ADStdDriverParams.h and EPICS Record Definitions in ADBase.template 
-             (file-related records are in NDFile.template)</b></td>
+          <b>Parameter Definitions in ADStdDriverParams.h and EPICS Record Definitions in ADBase.template
+            (file-related records are in NDFile.template)</b></td>
       </tr>
       <tr>
         <th>
@@ -889,6 +903,25 @@ typedef enum {
           $(P)$(R)MaxSizeY_RBV</td>
         <td>
           longin</td>
+      </tr>
+      <tr>
+        <td>
+          ADTemperature</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          Detector temperature</td>
+        <td>
+          TEMPERATURE</td>
+        <td>
+          $(P)$(R)Temperature<br />
+          $(P)$(R)Temperature_RBV<br />
+        </td>
+        <td>
+          ao<br />
+          ai</td>
       </tr>
       <tr>
         <td align="center" colspan="7">
@@ -1482,7 +1515,7 @@ epicsSnprintf(
           WRITE_FILE</td>
         <td>
           $(P)$(R)WriteFile<br />
-          $(P)$(R)WriteFile_RBV
+          $(P)$(R)WriteFile_RBV</td>
         <td>
           abusy<br />
           bi</td>
@@ -1664,6 +1697,23 @@ epicsSnprintf(
       </tr>
       <tr>
         <td>
+          ADNumExposuresCounter</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Counter that increments by 1 each time an exposure is acquired for the current image.
+          Driver resets to 0 when acquisition is started.</td>
+        <td>
+          NUM_EXPOSURES_COUNTER</td>
+        <td>
+          $(P)$(R)NumExposuresCounter_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
           ADNumImagesCounter</td>
         <td>
           asynInt32</td>
@@ -1671,12 +1721,12 @@ epicsSnprintf(
           r/o</td>
         <td>
           Counter that increments by 1 each time an image is acquired in the current acquisition
-          sequence. Driver resets to 0 when acquisition is started. Drivers should use this
-          as the loop counter when ADImageMode=ADImageMultiple.</td>
+          sequence. Driver resets to 0 when acquisition is started. Drivers can use this as
+          the loop counter when ADImageMode=ADImageMultiple.</td>
         <td>
           NUM_IMAGES_COUNTER</td>
         <td>
-          $(P)$(R)ImageCounter_RBV</td>
+          $(P)$(R)NumImagesCounter_RBV</td>
         <td>
           longin</td>
       </tr>
@@ -1712,6 +1762,24 @@ epicsSnprintf(
           $(P)$(R)TimeRemaining_RBV</td>
         <td>
           ai</td>
+      </tr>
+      <tr>
+        <td>
+          ADReadStatus</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Write a 1 to this parameter to force a read of the detector status. Detector drivers
+          normally read the status as required, so this is usually not necessary, but there
+          may be some circumstances under which forcing a status read may be needed.</td>
+        <td>
+          READ_STATUS</td>
+        <td>
+          $(P)$(R)ReadStatus</td>
+        <td>
+          bo</td>
       </tr>
       <tr>
         <td align="center" colspan="7">
@@ -1959,37 +2027,41 @@ epicsSnprintf(
       </tr>
     </tbody>
   </table>
+  <p>
+    There is currently no support for color cameras in areaDetector. This will be added
+    in the near future, and parameters to control the color mode will be added.
+  </p>
   <h2 id="MEDM_screens">
     MEDM screens</h2>
   <p>
     The following is the MEDM screen that provides access to the parameters in ADStdDriverParams
     through records in ADBase.template. This is a top-level MEDM screen that will work
     with any areaDetector driver. Note however that many drivers will not implement
-    all of these parameters, and there will usually be detector-specific parameters not shown
-    in this screen, so detector-specific MEDM screens should generally be created
-    that display the EPICS PVs for the features implemented for that detector.
+    all of these parameters, and there will usually be detector-specific parameters
+    not shown in this screen, so detector-specific MEDM screens should generally be
+    created that display the EPICS PVs for the features implemented for that detector.
   </p>
   <div style="text-align: center">
     <p>
       <b>ADBase.adl</b></p>
     <img alt="ADBase.png" src="ADBase.png" /></div>
   <p>
-    The following is the MEDM screen that provides access to the file-related
-    parameters in ADStdDriverParams through records in NDFile.template. 
-    This screen is for use with detector drivers that directly implement file I/O.
+    The following is the MEDM screen that provides access to the file-related parameters
+    in ADStdDriverParams through records in NDFile.template. This screen is for use
+    with detector drivers that directly implement file I/O.
   </p>
   <div style="text-align: center">
     <p>
       <b>NDFile.adl</b></p>
     <img alt="NDFile.png" src="NDFile.png" /></div>
   <p>
-    The following is the MEDM screen that provides access to the EPICS shutter
-    parameters in ADStdDriverParams through records in ADBase.template. 
-    This screen allows one to define the EPICS PVs to open the shutter, close the shutter,
-    and determine the shutter status.  The values of these PVs for open and close drive
-    and status can also be
-    defined. Note that in many cases the same PV will be used for open and close drive,
-    but in some cases (e.g. APS safety shutters) different PVs are used for open and close.
+    The following is the MEDM screen that provides access to the EPICS shutter parameters
+    in ADStdDriverParams through records in ADBase.template. This screen allows one
+    to define the EPICS PVs to open the shutter, close the shutter, and determine the
+    shutter status. The values of these PVs for open and close drive and status can
+    also be defined. Note that in many cases the same PV will be used for open and close
+    drive, but in some cases (e.g. APS safety shutters) different PVs are used for open
+    and close.
   </p>
   <div style="text-align: center">
     <p>
@@ -2018,11 +2090,12 @@ epicsSnprintf(
     <li><a href="pilatusDoc.html">Pilatus driver</a></li>
     <li><a href="adscDoc.html">ADSC driver</a></li>
     <li><a href="MarCCDDoc.html">MarCCD driver</a></li>
+    <li><a href="RoperDoc.html">Roper driver</a></li>
   </ul>
   <p>
-    In addition to these drivers, Brian Tieman is writing a driver for the Perkin-Elmer
-    flat-panel amorphous silicon detector. Drivers for the MAR-345 online image plate,
-    the Roper Scientific CCD cameras, and Flea Firewire cameras will be written in the
-    near future.</p>
+    In addition to these drivers, Brian Tieman from the APS is writing a driver for
+    the Perkin-Elmer flat-panel amorphous silicon detector. Ulrik Pedersen from Diamond
+    is writing a driver for the Flea Firewire cameras. I plan to write a driver for
+    the MAR-345 online image plate.</p>
 </body>
 </html>

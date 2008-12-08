@@ -6,6 +6,44 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
+    Release 1-4 (XXX-December-2008)</h2>
+  <ul>
+    <li>Added a driver for Roper Scientific (i.e. Princeton Instruments and Photometrics)
+      detectors. It uses the Microsoft COM interface to control the WinView or WinSpec
+      programs. The previous support in the "ccd" module used a Visual Basic socket server
+      and an SNL program to accomplish this. It was hard to maintain, because Visual Basic
+      changed incompatibly from one release of Visual Studio to the next, and because
+      it could not be built with the EPICS build system. The new driver is written in
+      C++, and is built entirely with the EPICS build system. It also supports more WinView
+      features than the ccd version, and makes the detector data available via callbacks.
+      This allows detector data to be displayed with EPICS clients, permits ROI or other
+      plugin calculations, and allows saving in other file formats if desired. </li>
+    <li>Added new parameters in ADStdDriverParams.h
+      <ul>
+        <li>ADTemperature</li>
+        <li>ADReadStatus</li>
+        <li>ADNumExposuresCounter</li>
+      </ul>
+    </li>
+    <li>Pilatus driver
+      <ul>
+        <li>Send the imgpath command to camserver when the ADFilePath parameter is changed.
+          camserver will then create directories if they do not exist, whereas specifying
+          a path with non-existant directories in the "exposure" or acquire commands will
+          not create directories. </li>
+      </ul>
+    </li>
+    <li>Fixes to C++ code to avoid compiler warnings on Solaris. All but one of these
+      changes should be transparent to user-written code. There is one change that may
+      require changes to user-written plugins and drivers. The ADAsynPortDriver::pasynUser
+      member was renamed to ADAsynPortDriver::pasynUserSelf to avoid name conflicts with
+      a local variable called pasynUser. </li>
+    <li>Added $(P)$(R)AutoSave to the save/restore settings in NDFile_settings.req so
+      it will be restored on reboot. This requires care when using drivers such as the
+      Prosilica which can rapidly save very large data files, since file saving may be
+      resumed on reboot. </li>
+  </ul>
+  <h2 style="text-align: center">
     Release 1-3 (24-November-2008)</h2>
   <ul>
     <li>Added a driver for MarCCD detectors. Compared to the previous support in the "ccd"

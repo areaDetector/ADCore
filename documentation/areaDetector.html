@@ -12,9 +12,10 @@
     (2-D) detectors, including CCDs, pixel array detectors, and online imaging plates.
   </p>
   <p>
-    <b>NOTE:</b> This module will replace the <a href="http://cars.uchicago.edu/software/epics/ccd.html">
+    <b>NOTE:</b> This module replaces the <a href="http://cars.uchicago.edu/software/epics/ccd.html">
       ccd</a> and <a href="http://cars.uchicago.edu/software/epics/epilatusROI.html">pilatusROI</a>
-    modules. &nbsp;</p>
+    modules. These older modules will no longer be supported, and users are encouraged
+    to convert to this new areaDetector software.</p>
   <p>
     Devices supported in <b>areaDetector</b> include:</p>
   <p>
@@ -44,13 +45,14 @@
     <li>MAR-345 online image plate reader (coming soon)</li>
   </ul>
   <p>
-    From <a href="http://www.roperscientific.com/">Roper</a> (coming soon)</p>
+    From <a href="http://www.roperscientific.com/">Roper</a></p>
   <ul>
-    <li>All CCD cameras supported by the WinView program.&nbsp; This includes the entire
-      Princeton Instruments line, as well as most of the Photometrics line. </li>
+    <li>All CCD detectors supported by the WinView and WinSpec programs. This includes
+      all <a href="http://www.princetoninstruments.com/">Princeton Instruments</a> detectors,
+      as well as most <a href="http://www.photomet.com/">Photometrics</a> detectors. </li>
   </ul>
   <p>
-    From <a href="http://www.bruker-axs.de/">Bruker</a> (coming soon)</p>
+    From <a href="http://www.bruker-axs.de/">Bruker</a></p>
   <ul>
     <li>The SMART CCD camera line with Photometrics cameras. This requires the PCI interface
       card, replacing the old ISA bus card, and requires controlling the detector with
@@ -67,7 +69,9 @@
     Rivers to get write access to this application there.
   </p>
   <p>
-    You can download the software from the links in the table below:</p>
+    You can download the software from the links in the table below. The software is
+    available both in source code form, and in pre-built form so that it can be used
+    without an EPICS build system.</p>
   <table border="1" summary="Where to find the software">
     <tbody>
       <tr align="center">
@@ -76,7 +80,9 @@
         <th>
           Release Date</th>
         <th>
-          Filename</th>
+          Source Code Filename</th>
+        <th>
+          Pre-built Filename</th>
         <th>
           Documentation</th>
         <th>
@@ -86,11 +92,29 @@
       </tr>
       <tr>
         <td>
+          1-4</td>
+        <td>
+          XXX-Dec-2008</td>
+        <td>
+          <a href="http://cars.uchicago.edu/software/pub/areaDetectorR1-4.tgz">areaDetectorR1-4.tgz</a></td>
+        <td>
+          <a href="http://cars.uchicago.edu/software/pub/areaDetectorPrebuilt_R1-4.tgz">areaDetectorPrebuilt_R1-4.tgz</a></td>
+        <td>
+          <a href="areaDetectorDoc.html">areaDetectorDoc</a></td>
+        <td>
+          <a href="areaDetectorReleaseNotes.html">Release notes</a></td>
+        <td>
+          See release notes</td>
+      </tr>
+      <tr>
+        <td>
           1-3</td>
         <td>
           24-Nov-2008</td>
         <td>
           <a href="http://cars.uchicago.edu/software/pub/areaDetectorR1-3.tgz">areaDetectorR1-3.tgz</a></td>
+        <td>
+          <a href="http://cars.uchicago.edu/software/pub/areaDetectorPrebuilt_R1-3.tgz">areaDetectorPrebuilt_R1-3.tgz</a></td>
         <td>
           <a href="areaDetectorDoc.html">areaDetectorDoc</a></td>
         <td>
@@ -106,6 +130,8 @@
         <td>
           <a href="http://cars.uchicago.edu/software/pub/areaDetectorR1-2.tgz">areaDetectorR1-2.tgz</a></td>
         <td>
+          N.A.</td>
+        <td>
           <a href="areaDetectorDoc.html">areaDetectorDoc</a></td>
         <td>
           <a href="areaDetectorReleaseNotes.html">Release notes</a></td>
@@ -119,6 +145,8 @@
           10-May-2008</td>
         <td>
           <a href="http://cars.uchicago.edu/software/pub/areaDetectorR1-1.tgz">areaDetectorR1-1.tgz</a></td>
+        <td>
+          N.A.</td>
         <td>
           <a href="areaDetectorDoc.html">areaDetectorDoc</a></td>
         <td>
@@ -134,6 +162,8 @@
         <td>
           <a href="http://cars.uchicago.edu/software/pub/areaDetectorR1-0.tgz">areaDetectorR1-0.tgz</a></td>
         <td>
+          N.A.</td>
+        <td>
           <a href="areaDetectorDoc.html">areaDetectorDoc</a></td>
         <td>
           <a href="areaDetectorReleaseNotes.html">Release notes</a></td>
@@ -144,7 +174,7 @@
   </table>
   <h2>
     Required Modules</h2>
-  <table border="1" summary="Required Modules">
+  <table border="1" summary="Required Modules for Source Code Version">
     <tbody>
       <tr align="center">
         <th>
@@ -155,6 +185,57 @@
           Release needed</th>
         <th>
           Required for</th>
+      </tr>
+      <tr>
+        <td rowspan="6">
+          1-4</td>
+        <td>
+          EPICS base</td>
+        <td>
+          3.14.10</td>
+        <td>
+          Base support. 3.14.8.2 also works, but the bug in epicsRingPointer can be a problem
+          on multi-processor Linux systems.</td>
+      </tr>
+      <tr>
+        <td>
+          asyn</td>
+        <td>
+          4-10</td>
+        <td>
+          Socket and interface support</td>
+      </tr>
+      <tr>
+        <td>
+          calc</td>
+        <td>
+          2-6-7</td>
+        <td>
+          scalcout record, needed by sscan database and useful for other databases</td>
+      </tr>
+      <tr>
+        <td>
+          sscan</td>
+        <td>
+          2-6-2</td>
+        <td>
+          sscan and busy records</td>
+      </tr>
+      <tr>
+        <td>
+          mca</td>
+        <td>
+          6-10</td>
+        <td>
+          mca record for getting time sequence of ROI counts</td>
+      </tr>
+      <tr>
+        <td>
+          autosave</td>
+        <td>
+          4-4</td>
+        <td>
+          Save/restore</td>
       </tr>
       <tr>
         <td rowspan="6">
@@ -350,7 +431,7 @@
       <pre>.../support/areaDetectorRX-Y
 </pre>
     </li>
-    <li>Edit the <tt>config[ure]/RELEASE</tt> file and set the paths to your installation
+    <li>Edit the <tt>configure/RELEASE</tt> file and set the paths to your installation
       of EPICS base and to your versions of supporting modules.</li>
     <li>Run <tt>gnumake</tt> in the top level directory and check for any compilation
       errors.</li>
@@ -363,6 +444,7 @@
     This software was originally developed by Mark Rivers.</p>
   <ul>
     <li>ANL/APS : In use at CARS beamlines.</li>
+    <li>NSLS: In use on X17B2 and other beamlines.</li>
     <li>Australian Synchrotron : In use at microspectroscopy beamline, ID5.</li>
   </ul>
 </body>
