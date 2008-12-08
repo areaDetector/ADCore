@@ -23,7 +23,7 @@ typedef struct {
 #define asynInt32ArrayMask      0x00000200
 #define asynFloat32ArrayMask    0x00000400
 #define asynFloat64ArrayMask    0x00000800
-#define asynGenericPointerMask          0x00001000
+#define asynGenericPointerMask  0x00001000
 
 
 typedef enum { paramUndef, paramInt, paramDouble, paramString} paramType;
