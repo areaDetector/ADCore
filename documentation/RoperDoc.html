@@ -385,8 +385,7 @@ roperConfig(const char *portName, int maxBuffers, size_t maxMemory);
   <p>
     The following is an example st.cmd startup script:
   </p>
-  <pre>
-< envPaths
+  <pre>< envPaths
 errlogInit(20000)
 
 dbLoadDatabase("$(AREA_DETECTOR)/dbd/roperApp.dbd")
@@ -460,24 +459,63 @@ create_monitor_set("auto_settings.req", 30,"P=13ROPER1:,D=cam1:")
     <h3 style="text-align: center">
       RoperFile.adl</h3>
     <img alt="RoperFile.png" src="RoperFile.png" /></div>
+  <p>
+    <code>WinView</code> is program that the Roper driver is controlling via Microsoft
+    COM.
+  </p>
+  <div style="text-align: center">
+    <h3 style="text-align: center">
+      WinView program from Roper Scientific</h3>
+    <img alt="WinView.png" src="WinView.png" /></div>
   <h2 id="Performance_measurements">
     Performance measurements</h2>
   <p>
     The following measurements were done to demonstrate the performance that can be
     obtained with the areaDetector Roper driver. These measurements were made with a
-    CoolSnap-EZ detector which has 1392x1040 pixels. The EPICS IOC was running on the
-    same Windows PC as WinView. The acquisition time was 0.1 second.</p>
+    CoolSnap-HQ2 detector which has 1392x1040 pixels. The acquisition time was 0.01
+    second. The overhead per image in the table below is the total time to acquire the
+    data set minus 1.00 seconds (the acquisition time) divided by 100. Acquisitions
+    were done in 2 modes:</p>
+  <ol>
+    <li>In the first mode NumImages=100 and NumAcquisitions=1, i.e. the data were all
+      collected into a single SPE file. In this mode the time per image is really controlled
+      by the acquisition time and readout time. At the end of the acquisition there is
+      then a delay, perhaps in copying the data from one buffer to another. The acquisition
+      time in this mode is the time from when acquire was started until WinView reported
+      acquisition was complete and the write to disk began. The additional time to write
+      the file to disk is also listed.</li>
+    <li>In the second mode NumImages=1 and NumAcquisitions=100, i.e. the data were collected
+      into 100 SPE files. This is equivalent to pressing the Acquire button in WinView
+      100 times. There is additional overhead per image that arises from downloading parameters
+      to the camera and in creating a new display window in WinView. In this mode the
+      test was done both with the EPICS AutoSave PV set to 1 (which effectively does a
+      WinView "Save As" operation for each file), and with AutoSave set to 0, which does
+      not write disk files at all. The acquisition time listed is with AutoSave on, i.e.
+      saving 100 disk files. Interestingly it was generally <i>faster</i> to collect the
+      data with AutoSave on than with it off! The time to save the 100 disk files is thus
+      actually negative, i.e. it took that much longer to collect the data sets <i>without</i>
+      saving the disk files. The reason for this is unclear, but it seems to be something
+      internal to WinView.</li>
+  </ol>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
       <tr>
         <th>
           Binning</th>
         <th>
+          Image dimensions</th>
+        <th>
           Image size</th>
         <th>
-          Time for 10 images (ADNumImages=10)</th>
+          Mode</th>
+        <th>
+          Acquisition time for 100 images</th>
         <th>
           Overhead per image</th>
+        <th>
+          File size</th>
+        <th>
+          File saving time</th>
       </tr>
       <tr>
         <td>
@@ -487,42 +525,128 @@ create_monitor_set("auto_settings.req", 30,"P=13ROPER1:,D=cam1:")
           1392x1040
         </td>
         <td>
-          50.0
+          2827 KB
         </td>
         <td>
-          4.00
+          1 SPE file
         </td>
+        <td>
+          29.49</td>
+        <td>
+          0.28
+        </td>
+        <td>
+          276 MB
+        </td>
+        <td>
+          20.04</td>
       </tr>
       <tr>
         <td>
-          2x2
+          1x1
         </td>
         <td>
-          696x520
+          1392x1040
         </td>
         <td>
-          46.2
+          2827 KB
         </td>
         <td>
-          3.62
+          100 SPE files
         </td>
+        <td>
+          80.67</td>
+        <td>
+          0.79</td>
+        <td>
+          2.76 MB
+        </td>
+        <td>
+          -3.62</td>
       </tr>
       <tr>
         <td>
-          3x3
+          2x2</td>
+        <td>
+          696x520</td>
+        <td>
+          707 KB
         </td>
         <td>
-          1024x1024
+          1 SPE file
         </td>
         <td>
-          Sequential
+          10.27</td>
+        <td>
+          0.09</td>
+        <td>
+          69 MB
         </td>
         <td>
-          29.0
+          4.86</td>
+      </tr>
+      <tr>
+        <td>
+          2x2</td>
+        <td>
+          696x520</td>
+        <td>
+          707 KB
         </td>
         <td>
-          1.90
+          100 SPE files
         </td>
+        <td>
+          46.14</td>
+        <td>
+          0.45</td>
+        <td>
+          0.71 MB
+        </td>
+        <td>
+          -.72</td>
+      </tr>
+      <tr>
+        <td>
+          4x4</td>
+        <td>
+          348x260</td>
+        <td>
+          177 KB
+        </td>
+        <td>
+          1 SPE file
+        </td>
+        <td>
+          4.48</td>
+        <td>
+          0.03</td>
+        <td>
+          17 MB
+        </td>
+        <td>
+          1.40</td>
+      </tr>
+      <tr>
+        <td>
+          4x4</td>
+        <td>
+          348x260</td>
+        <td>
+          177 KB
+        </td>
+        <td>
+          100 SPE files
+        </td>
+        <td>
+          36.59</td>
+        <td>
+          0.35</td>
+        <td>
+          0.18 MB
+        </td>
+        <td>
+          0.69</td>
       </tr>
     </tbody>
   </table>
@@ -538,7 +662,13 @@ create_monitor_set("auto_settings.req", 30,"P=13ROPER1:,D=cam1:")
       add to the EPICS interface if needed in the future. Settings that EPICS does not
       control and which do not need to be frequently changed can simply be set via the
       WinView GUI.</li>
-    <li>Reading data files back into WinView is not currently supported.</li>
+    <li>Reading data files back into WinView is not currently supported. This may be added
+      in a future release.</li>
+    <li>The values of ADNumImagesCounter ($(P)$(R)NumImagesCounter_RBV) and ADNumExposuresCounter
+      ($(P)$(R)NumExposuresCounter_RBV) are not updated during acquisition. This is because
+      WinView does not appear to be correctly returning the values of the EXP_CSEQUENTS
+      and EXP_CACCUMS parameters. The reason for this is under investigation and hopefully
+      will be fixed in a future release.</li>
     <li>The following items are hardcoded in the driver. They can be changed by recompiling
       if necessary.
       <ul>
@@ -548,6 +678,12 @@ create_monitor_set("auto_settings.req", 30,"P=13ROPER1:,D=cam1:")
           acquisition is complete.</li>
       </ul>
     </li>
+    <li>There is a bug in Windows XP SP2 that causes WinView to hang after about 1600
+      acquisitions have been performed in a single WinView session. Acquisition means
+      the equivalent of pressing the Acquire button, regardless of how many images were
+      collected in a single acquisition. This would typically mean that 1600 SPE files
+      had been saved. After 1600 acquisitions it is necessary to exit WinView and restart
+      it. This problem is fixed in SP3 for Windows XP, and in Microsoft Vista.</li>
   </ul>
 </body>
 </html>
