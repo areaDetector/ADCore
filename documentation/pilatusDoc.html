@@ -7,7 +7,7 @@
     <h1>
       areaDetector Pilatus driver</h1>
     <h2>
-      September 21, 2008</h2>
+      December 11, 2008</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -97,7 +97,7 @@
         <td>
           In External Enable mode this value is not used by camserver. However, it should
           be set larger than the maximum time exposure time from the external source, so that
-          pilatusROI.st can estimate how long to wait for the data files to be created before
+          the driver can estimate how long to wait for the data files to be created before
           timing out.</td>
       </tr>
       <tr>
@@ -162,8 +162,7 @@
           using the algorithm described for ADFileTemplate under <a href="areaDetectorDoc.html#ADStdDriverParams">
             File Saving Parameters in ADStdDriverParams</a> is used as a basename. The following
           examples show the interpretation of the basename.
-          <pre>
-Basename            Files produced
+          <pre>Basename            Files produced
      
 test6.tif           test6_00000.tif,  test6_00001.tif, ...
 test6_.tif          test6_00000.tif,  test6_00001.tif, ...
@@ -186,7 +185,7 @@ test6_2_0035.tif    test6_2_0035.tif, test6_2_0036.tif, ...
   <h2 id="Driver_parameters" style="text-align: left">
     Pilatus specific parameters</h2>
   <p>
-    The Pilatus driver implements the following parameters in addition to those in ADStdDriverParams.h:. 
+    The Pilatus driver implements the following parameters in addition to those in ADStdDriverParams.h:.
     Note that to reduce the width of this table the enum names have been split into
     2 lines, but these are just a single name, for example <code>PilatusDelayTime</code>.
   </p>
@@ -214,7 +213,8 @@ test6_2_0035.tif    test6_2_0035.tif, test6_2_0036.tif, ...
       </tr>
       <tr>
         <td>
-          Pilatus<br/>DelayTime</td>
+          Pilatus<br />
+          DelayTime</td>
         <td>
           asynFloat64</td>
         <td>
@@ -231,7 +231,8 @@ test6_2_0035.tif    test6_2_0035.tif, test6_2_0036.tif, ...
       </tr>
       <tr>
         <td>
-          Pilatus<br/>Threshold</td>
+          Pilatus<br />
+          Threshold</td>
         <td>
           asynFloat64</td>
         <td>
@@ -271,7 +272,8 @@ test6_2_0035.tif    test6_2_0035.tif, test6_2_0036.tif, ...
       </tr>
       <tr>
         <td>
-          Pilatus<br/>Armed</td>
+          Pilatus<br />
+          Armed</td>
         <td>
           asynInt32</td>
         <td>
@@ -290,7 +292,8 @@ test6_2_0035.tif    test6_2_0035.tif, test6_2_0036.tif, ...
       </tr>
       <tr>
         <td>
-          Pilatus<br/>TiffTimeout</td>
+          Pilatus<br />
+          TiffTimeout</td>
         <td>
           asynFloat64</td>
         <td>
@@ -310,7 +313,8 @@ test6_2_0035.tif    test6_2_0035.tif, test6_2_0036.tif, ...
       </tr>
       <tr>
         <td>
-          Pilatus<br/>BadPixelFile</td>
+          Pilatus<br />
+          BadPixelFile</td>
         <td>
           asynOctet</td>
         <td>
@@ -320,8 +324,7 @@ test6_2_0035.tif    test6_2_0035.tif, test6_2_0036.tif, ...
           a valid bad pixel file then no bad pixel mapping is performed. The bad pixel map
           is used before making the NDArray callbacks. It does not modify the data in the
           files that camserver writes. This is a simple ASCII file with the following format:
-          <pre>
-badX1,badY1 replacementX1,replacementY1 
+          <pre>badX1,badY1 replacementX1,replacementY1 
 badX2,badY2 replacementX2,replacementY2
 ...
           </pre>
@@ -350,7 +353,8 @@ badX2,badY2 replacementX2,replacementY2
       </tr>
       <tr>
         <td>
-          Pilatus<br/>NumBadPixels</td>
+          Pilatus<br />
+          NumBadPixels</td>
         <td>
           asynInt32</td>
         <td>
@@ -367,7 +371,8 @@ badX2,badY2 replacementX2,replacementY2
       </tr>
       <tr>
         <td>
-          Pilatus<br/>FlatFieldFile</td>
+          Pilatus<br />
+          FlatFieldFile</td>
         <td>
           asynOctet</td>
         <td>
@@ -379,12 +384,11 @@ badX2,badY2 replacementX2,replacementY2
           for spatial non-uniformity in the response of the detector. It should be collected
           with a spatially uniform intensity on the detector at roughly the same energy as
           the measurements being corrected. When the flat field file is read, the average
-          pixel value (averageFlatField) is computed using all pixels with intensities > PilatusMinFlatField.
-          All pixels with intensity < PilatusMinFlatField in the flat field are replaced with
-          averageFlatField. When images are collected before the NDArray callbacks are performed
-          the following per-pixel correction is applied:
-          <pre>
-ImageData[i] = 
+          pixel value (averageFlatField) is computed using all pixels with intensities &gt
+          PilatusMinFlatField. All pixels with intensity &lt PilatusMinFlatField in the flat
+          field are replaced with averageFlatField. When images are collected before the NDArray
+          callbacks are performed the following per-pixel correction is applied:
+          <pre>ImageData[i] = 
     (averageFlatField * 
     ImageData[i])/flatField[i];
           </pre>
@@ -398,7 +402,8 @@ ImageData[i] =
       </tr>
       <tr>
         <td>
-          Pilatus<br/>MinFlatField</td>
+          Pilatus<br />
+          MinFlatField</td>
         <td>
           asynInt32</td>
         <td>
@@ -417,7 +422,8 @@ ImageData[i] =
       </tr>
       <tr>
         <td>
-          Pilatus<br/>FlatFieldValid</td>
+          Pilatus<br />
+          FlatFieldValid</td>
         <td>
           asynInt32</td>
         <td>
@@ -626,10 +632,10 @@ create_monitor_set("auto_settings.req", 30,"P=13PIL1:,D=cam1:")
       NDROI8.adl</h3>
     <img alt="NDROI8.png" src="NDROI8.png" /></div>
   <p>
-    <code>mca.adl</code> can be used to plot the net or total counts in an ROI when
-    NImages>1. In this example the plot is the net counts in ROI 1 as the diffractometer
-    chi was scanned +- 1 degree with 1000 points at .02 seconds/point. This was done
-    with the SPEC command
+    <code>mca.adl or mca_small.adl</code> can be used to plot the net or total counts
+    in an ROI when NImages>1. In this example the plot is the net counts in ROI 1 as
+    the diffractometer chi was scanned +- 1 degree with 1000 points at .02 seconds/point.
+    This was done with the SPEC command
   </p>
   <pre>lup chi -1 1 1000 .02
 </pre>
@@ -638,10 +644,10 @@ create_monitor_set("auto_settings.req", 30,"P=13PIL1:,D=cam1:")
     motor scan with the Newport XPS putting out pulses every .02 seconds. These pulses
     triggered the Pilatus in External Enable mode. The Pilatus driver read each TIFF
     file as it was created and updated this plot every 0.2 seconds. The total time to
-    collect this scan with 1000 images was 20 seconds.</p>
+    collect this scan with 1000 images was 20.8 seconds.</p>
   <div style="text-align: center">
     <h3 style="text-align: center">
-      mca.adl</h3>
+      mca_small.adl</h3>
     <img alt="pilatusMCA.png" src="pilatusMCA.png" style="text-align: left" /></div>
   <p>
     <code>scan_more.adl</code> is used to define a scan. In this example the sscan record
@@ -650,24 +656,24 @@ create_monitor_set("auto_settings.req", 30,"P=13PIL1:,D=cam1:")
   <div style="text-align: center">
     <h3>
       scan_more.adl</h3>
-    <img alt="pilatusROI_scan_more.png" src="pilatus_scan_more.png" /></div>
+    <img alt="pilatusThresholdScanSetup.png" src="pilatusThresholdScanSetup.png" /></div>
   <p>
     <code>scanDetPlot.adl</code> is used to plot the results of a scan after it is complete.
-    In this example the total counts in ROI 2 are plotted as a function of the ThresholdEnergy
+    In this example the total counts in ROI 1 are plotted as a function of the ThresholdEnergy
     as it was scanned from 3000 to 10000 eV in 250 eV steps. The source was Fe55, and
     the cut-off is at 6 keV, as expected for the Mn Ka and Mn Kb x-rays that this source
     produces.</p>
   <div style="text-align: center">
     <h3>
       scanDetPlot.adl</h3>
-    <img alt="pilatus_scan_plot.png" src="pilatus_scan_plot.png" /></div>
+    <img alt="pilatusThresholdScanPlot.png" src="pilatusThresholdScanPlot.png" /></div>
   <p>
     <code>asynRecord.adl</code> is used to control the debugging information printed
-    by the asyn TCP/IP driver (asynTraceIODriver) and the SNL program (asynTraceIODevice).</p>
+    by the asyn TCP/IP driver for camserver (asynTraceIODriver).</p>
   <div style="text-align: center">
     <h3>
       asynRecord.adl</h3>
-    <img alt="pilatusAsynRecord.png" src="pilatusAsynRecord.png" /></div>
+    <img alt="pilatusAsyn.png" src="pilatusAsyn.png" /></div>
   <p>
     <code>asynOctet.adl</code> can be used to send any command to camserver and display
     the response. It can be loaded from the More menu in asynRecord.adl above.</p>
@@ -684,9 +690,13 @@ create_monitor_set("auto_settings.req", 30,"P=13PIL1:,D=cam1:")
     in both traditional step-scanning mode, as well as in <a href="http://cars.uchicago.edu/software/epics/trajectoryScan.html">
       trajectory scanning</a> mode. Here are some snippets from the SPEC macros for
     the Pilatus. We can supply the source files on request.</p>
-  <pre># need some more globals (kludge)
-global    PILATUS_ROI_PV    
-global    PILATUS_imgPATH_PV
+  <pre>  # need some more globals (kludge)
+global    PILATUS_ROI_PV   
+global    PILATUS_ROI_ARRAY_PV 
+global    PILATUS_ROI_ARRAY_START_PV
+global    PILATUS_ROI_ARRAY_NUSE_PV
+global    PILATUS_ROI_ARRAY_ACQ_PV
+global    PILATUS_IMGPATH_PV
 global    PILATUS_FNAME_PV
 global    PILATUS_FILENUMBER_PV
 global    PILATUS_FILEFORMAT_PV
@@ -695,60 +705,119 @@ global    PILATUS_NFRAME_PV
 global    PILATUS_EXPPRD_PV
 global    PILATUS_NEXPFRM_PV
 global    PILATUS_ACQ_PV
+global    PILATUS_ARMED_PV
+global    PILATUS_ABORT_PV
 global    PILATUS_ACQMODE_PV
+global    PILATUS_READOUT_TIME
+
+global    PILATUS_ROI_0_MinX_PV
+global    PILATUS_ROI_0_SizeX_PV
+global    PILATUS_ROI_0_MinY_PV
+global    PILATUS_ROI_0_SizeY_PV
+
 
 ###############################################################
 def _setup_img '{
-     local j, str
-		
-     # PILATUS_PREFIX should be detector aquisition pv (GSE-PILATUS1:)
+...          
+     # PILATUS_PREFIX detector name i.e. (GSE-PILATUS1:)
      if ( PILATUS_PREFIX == "") PILATUS_PREFIX = "GSE-PILATUS1:"
-     PILATUS_PREFIX = getval("Enter PILATUS pv prefix",PILATUS_PREFIX)
+     PILATUS_PREFIX = getsval("Enter PILATUS detector name i.e. GSE-PILATUS1:",PILATUS_PREFIX)
 
-     # rois pvs
-     PILATUS_ROI_PV    = PILATUS_PREFIX "ROI1NetCounts"
-     PILATUS_imgPATH_PV = PILATUS_PREFIX "FilePath"
-     PILATUS_FNAME_PV   = PILATUS_PREFIX "Filename"
-     PILATUS_FILENUMBER_PV   = PILATUS_PREFIX "FileNumber"
-     PILATUS_FILEFORMAT_PV = PILATUS_PREFIX "FileFormat"
-     PILATUS_EXPSRTM_PV = PILATUS_PREFIX "ExposureTime"
-     PILATUS_NFRAME_PV  = PILATUS_PREFIX "NImages"
-     PILATUS_EXPPRD_PV  = PILATUS_PREFIX "ExposurePeriod"
-     PILATUS_NEXPFRM_PV = PILATUS_PREFIX "NExposures"
-     PILATUS_ACQ_PV     = PILATUS_PREFIX "Acquire"
-     PILATUS_ACQMODE_PV = PILATUS_PREFIX "AcquireMode"
+     # PILATUS_DET_PREFIX is the pv used by areaDetector to identify a specific detector.
+     # When only one detector is used it is usally (cam1:)
+     if ( PILATUS_DET_PREFIX == "") PILATUS_DET_PREFIX = "cam1:"
+     PILATUS_DET_PREFIX = getsval("Enter PILATUS specific detector name i.e. cam1:",PILATUS_DET_PREFIX)
+
+     # PILATUS_ROI_PREFIX is the pv used by areaDetector to identify a specific a ROI plugin.
+     # When only one ROI plugin is used it is usally (ROI1:)
+     if ( PILATUS_ROI_PREFIX == "") PILATUS_DET_PREFIX = "ROI1:"
+     PILATUS_ROI_PREFIX = getsval("Enter PILATUS ROI plugin name i.e. ROI1:",PILATUS_ROI_PREFIX)
+     
+     if (PILATUS_MOUNT == "") PILATUS_MOUNT = "cars5/Data"
+     PILATUS_MOUNT = getsval("Enter mount point relative to camserver home directory",PILATUS_MOUNT)
+     if (PILATUS_SPEC_MOUNT == "") PILATUS_SPEC_MOUNT = "cars5/Data"
+     PILATUS_SPEC_MOUNT = getsval("Enter mount point relative to spec home directory",PILATUS_SPEC_MOUNT) 
+...
+     PILATUS_ROI_PV             = PILATUS_PREFIX PILATUS_ROI_PREFIX "0:Net_RBV"
+     PILATUS_ROI_ARRAY_PV       = PILATUS_PREFIX PILATUS_ROI_PREFIX "0:NetArray"
+     PILATUS_ROI_ARRAY_START_PV = PILATUS_PREFIX PILATUS_ROI_PREFIX "0:NetArrayEraseStart"
+     PILATUS_ROI_ARRAY_NUSE_PV  = PILATUS_PREFIX PILATUS_ROI_PREFIX "0:NetArray.NUSE"
+     PILATUS_ROI_ARRAY_ACQ_PV   = PILATUS_PREFIX PILATUS_ROI_PREFIX "0:NetArray.ACQG"
+     PILATUS_IMGPATH_PV         = PILATUS_PREFIX PILATUS_DET_PREFIX "FilePath"
+     PILATUS_FNAME_PV           = PILATUS_PREFIX PILATUS_DET_PREFIX "FileName"
+     PILATUS_FILENUMBER_PV      = PILATUS_PREFIX PILATUS_DET_PREFIX "FileNumber"
+     PILATUS_FILEFORMAT_PV      = PILATUS_PREFIX PILATUS_DET_PREFIX "FileTemplate"
+     PILATUS_EXPSRTM_PV         = PILATUS_PREFIX PILATUS_DET_PREFIX "AcquireTime"
+     PILATUS_NFRAME_PV          = PILATUS_PREFIX PILATUS_DET_PREFIX "NumImages"
+     PILATUS_EXPPRD_PV          = PILATUS_PREFIX PILATUS_DET_PREFIX "AcquirePeriod"
+     PILATUS_NEXPFRM_PV         = PILATUS_PREFIX PILATUS_DET_PREFIX "NumExposures"
+     PILATUS_ACQ_PV             = PILATUS_PREFIX PILATUS_DET_PREFIX "Acquire"
+     PILATUS_ARMED_PV           = PILATUS_PREFIX PILATUS_DET_PREFIX "Armed"
+     PILATUS_ABORT_PV           = PILATUS_PREFIX PILATUS_DET_PREFIX "Acquire"
+     PILATUS_ACQMODE_PV         = PILATUS_PREFIX PILATUS_DET_PREFIX "TriggerMode"
+     PILATUS_THRESHOLD_PV       = PILATUS_PREFIX PILATUS_DET_PREFIX "ThresholdEnergy"
+     PILATUS_ROI_0_MinX_PV      = PILATUS_PREFIX PILATUS_ROI_PREFIX "0:MinX"
+     PILATUS_ROI_0_SizeX_PV     = PILATUS_PREFIX PILATUS_ROI_PREFIX "0:SizeX"
+     PILATUS_ROI_0_MinY_PV      = PILATUS_PREFIX PILATUS_ROI_PREFIX "0:MinY"
+     PILATUS_ROI_0_SizeY_PV     = PILATUS_PREFIX PILATUS_ROI_PREFIX "0:SizeY"
+     PILATUS_ROI_0_BgdWidth_PV  = PILATUS_PREFIX PILATUS_ROI_PREFIX "0:BgdWidth"
 ...
 
 def epics_pilatus_count '{
 ...
-     # write to data base fields
-     # Need to convert path from string to byte array
-     # Note: we use the "wait" parameter in epics_put here (new to spec5.7.02) so that
-     # it uses ca_put_callback, to know that all PVs have been processed
-     # before we start counting.  Use 1 second timeout, will actually be
-     # much faster than this unless something is wrong.
-     array _temp[256]
-     _temp = PILATUS_IMAGE_DIR
-     # Do not change path for now
-     #epics_put(PILATUS_imgPATH_PV,_temp, 1)
-     epics_put(PILATUS_FNAME_PV,img_fname, 1)
+     # Call macro that creates and set the Pilatus path and filename
+     img_full_filename
+
+     # Setup exposure time, collection mode and number of frames
      epics_put(PILATUS_FILENUMBER_PV,NPTS, 1)
-     epics_put(PILATUS_FILEFORMAT_PV,_fileformat, 1)
-     epics_put(sc_prtm_pv,cnt_time_val, 1)
-     epics_put(PILATUS_EXPSRTM_PV,cnt_time_val, 1)
-     epics_put(PILATUS_ACQMODE_PV,0, 1)  # Internal trigger 
      epics_put(PILATUS_NFRAME_PV, 1, 1)
+     epics_put(PILATUS_ACQMODE_PV,0, 1)  # Internal trigger
+     epics_put(PILATUS_EXPSRTM_PV,cnt_time_val, 1)
      epics_put(PILATUS_NEXPFRM_PV, 1, 1)
+
+...
+     # hit the triggers
+     epics_put(PILATUS_ACQ_PV,1)
+
+     epics_put(sc_cnt_pv,1)
+
+     # wait for scaler and Pilatus AQG to finish
+     status     = 1
+     sc_done    = FALSE
+     img_done   = FALSE
+     data_done  = FALSE
+     while(status){
+         # is the scalar done
+        if (epics_get(sc_cnt_pv)=="Done"){
+             sc_done = TRUE;
+             #p "scaler done"
+        }
+
+        # is the pilatus done
+        if (epics_get(PILATUS_ACQ_PV) == "Done"){
+            img_done = TRUE;
+            #p "image collection done"
+        }
+
+        if( (sc_done==TRUE) && (img_done==TRUE)) break;
+        sleep(0.01)
+     }
+
+    
+     # use the get_counts routine to read the scalers
+     # note get_counts also calls user_getcounts
+     # thats where the rois get read.
+     get_counts  
+}'
 
 
 def user_getcounts '{
-    local pv_roi, j, pv
-
 ...
-   # using image_count routine  
+    # using image_count routine
     } else if ( EPICS_COUNT == 4 ) {
         S[iroi] = 0
         S[iroi] = epics_get(PILATUS_ROI_PV)
+
 </pre>
   <h2 id="Performance measurements">
     Performance measurements</h2>
@@ -761,7 +830,7 @@ def user_getcounts '{
       was measured using the EPICS camonitor program. It printed the time when acquisition
       was started (Acquire changed to Acquire=1) and when acquisition was complete (Acquire
       changed to Done=0). The time was 10.022 seconds. This includes the time for camserver
-      to save all 1000 images to disk (366 MB), and for pilatusROI to read each file,
+      to save all 1000 images to disk (366 MB), and for the driver to read each file,
       correct the bad pixels and flat field, compute the ROIs, and post the ROIs to EPICS.
       It also posted all of the images to EPICS. The total additional time was less than
       0.03 seconds for all 1000 images.</li>
@@ -772,7 +841,7 @@ def user_getcounts '{
       collect each file. If there were no overhead then time to collect this series should
       be exactly 10.0 seconds. The actual time measured using the EPICS camonitor program
       was 45.514 seconds. The overhead is thus 35.514 seconds, or 35 ms per point. In
-      this single-frame mode pilatusROI is thus able to collect >20 images/second. For
+      this single-frame mode the driver is thus able to collect >20 images/second. For
       comparison, another measurement was done using the same EPICS sscan record, but
       using a Joerger VSC16 scaler as the detector trigger and detector. The preset time
       was also .01 seconds. The elapsed time for a 1000 point scan was 16.068 seconds,
@@ -781,41 +850,38 @@ def user_getcounts '{
       1000 points using <a href="http://cars.uchicago.edu/software/epics/trajectoryScan.html">
         trajectory scanning</a> mode with the Newport XPS motor controller. The following
       SPEC command was used:
-      <pre>      lup chi -2 2 1000 .015
+      <pre>      lup chi -1 1 1000 .02
       </pre>
       This tells SPEC to do a relative scan of the chi axis from -2 degrees to +2 degrees
       with 1000 points at .015 seconds/point. On our kappa diffractometer this entails
       a coordinated motion of the phi, kappa and omega axes. The EPICS trajectory scanning
       software downloads the non-linear trajectory that SPEC computes into the XPS controller,
       which executes it. As the motors are moving the XPS outputs synchronization pulses
-      at the period of the collection time, .015 seconds in this case. These pulses are
-      stretched (see <a href="#Hardware notes">Hardware notes</a> below) and used as the
-      external input to the Pilatus. The time to execute this scan should be 15.0 seconds.
-      The actual time was 16.3 seconds, measured using camonitor on the Acquire PV. Again,
-      this includes the time for camserver to save all 1000 images to disk (366 MB), and
-      for pilatusROI to read each file, correct the bad pixels and flat field, compute
-      the ROIs, and post the ROIs to EPICS. It also posted the images to EPICS at 1Hz
-      (15 images total). The total additional time was less than 1.3 seconds for all 1000
-      images. As soon as the acquisition was complete SPEC plotted the net counts in the
-      first ROI (containing the Bragg peak) as follows:
+      at the period of the collection time, .020 seconds in this case. These pulses are
+      used as the external trigger to the Pilatus. The time to execute this scan should
+      be 20.0 seconds. The actual time was 20.8 seconds, measured using camonitor on the
+      Acquire PV. Again, this includes the time for camserver to save all 1000 images
+      to disk (366 MB), and for the Pilatus driver to read each file, correct the bad
+      pixels and flat field, compute the ROIs, and post the ROIs to EPICS. It also posted
+      all of the images to EPICS. The total additional time was less than 0.8 seconds
+      for all 1000 images. As soon as the acquisition was complete SPEC plotted the net
+      counts in the first ROI (containing the Bragg peak) as follows:
       <div style="text-align: center">
         <h3>
-          1000 point SPEC scan with 15 ms per point collected in 16.3 seconds</h3>
-        <img alt="pilatusROI_spec.png" src="pilatus_spec.png" /></div>
+          1000 point SPEC scan with 20 ms per point collected in 20.8 seconds</h3>
+        <img alt="pilatusSPEC.png" src="pilatusSPEC.png" /></div>
       <p>
       </p>
       For comparison this identical scan was executed in traditional step-scanning mode,
       where the motors stopped at each point in the scan. The Pilatus was run in Internal
-      mode with NImages=1. The total time for the scan was 870 seconds (more than 14 minutes),
-      compared to 16.3 seconds in trajectory mode. Most of this overhead is the settling
-      time for the motors, with only a small fraction due to the Pilatus single-exposure
-      mode. The trajectory scanning mode is thus more than 50 times faster to execute
-      the identical SPEC scan.</li>
+      mode with NumImages=1. The total time for the scan was 870 seconds (more than 14
+      minutes), compared to 20.8 seconds in trajectory mode. Most of this overhead is
+      the settling time for the motors, with only a small fraction due to the Pilatus
+      single-exposure mode. The trajectory scanning mode is thus more than 50 times faster
+      to execute the identical SPEC scan.</li>
   </ol>
   <h2 id="Hardware notes" style="text-align: left">
-    &nbsp;</h2>
-  <h2 style="text-align: left">
-    Hardware notes</h2>
+  </h2>
   <h3>
     Trigger pulses</h3>
   <p>
@@ -893,13 +959,13 @@ def user_getcounts '{
   <h2 id="Restrictions">
     Restrictions</h2>
   <p>
-    The following are some current restrictions of the pilatusROI SNL program:</p>
+    The following are some current restrictions of the areaDetector Pilatus driver:</p>
   <ul>
-    <li>Limited to TIFF file format. camserver can save files in other formats, but pilatusROI
-      can currently only read TIFF files. Furthermore, it has a very simple TIFF reader.
-      It does not read the TIFF tags at all, but simply assumes that there is a 4096 byte
-      header, followed by the 32-bit image data. The size of the image data is controlled
-      by the NXPixels and NYPixels PVs, which thus must be correctly set.</li>
+    <li>Limited to TIFF file format. camserver can save files in other formats, but the
+      driver can currently only read TIFF files. It uses the standard libtiff library
+      to read the files, so it should work on big or little endian machines, and should
+      work with uncompressed or compressed files. It has only been tested with uncompressed
+      files on a little-endian machine.</li>
     <li>The EPICS IOC should be run on the same computer as camserver. This is not strictly
       necessary, and places a small additional load on the CPU and network on that computer.
       However, we have found that TIFF files are available to be read within 10ms after
@@ -910,24 +976,23 @@ def user_getcounts '{
       file has been written before the IOC can read it. This is true even if the files
       are being written to the computer that the IOC is running on! This 1 second delay
       is often unacceptable for fast single-exposure scans, i.e. with NImages=1.</li>
-    <li>pilatusROI keeps retrying to read each TIFF file until the modification date of
-      the TIFF file is <i>after</i> the time that the exposure command was issued. If
-      it did not do this check then it could be reading and displaying old files that
+    <li>The Pilatus driver keeps retrying to read each TIFF file until the modification
+      date of the TIFF file is <i>after</i> the time that the acquisition was started.
+      If it did not do this check then it could be reading and displaying old files that
       happen to have the same name as the current files being collected. This check requires
       that the computer that is running the soft IOC must have its clock well synchronized
       with the clock on the computer on which the files are being written (i.e. the computer
       generating the file modification time). If the clocks are not synchronized then
-      the files may appear to be stale when they are not, and pilatusROI will time out.
-      pilatusROI actually tolerates up to 10 second clock skew betweeen the computers
+      the files may appear to be stale when they are not, and the driver will time out.
+      The driver actually tolerates up to 10 second clock skew betweeen the computers
       but any more than this may lead to problems.</li>
-    <li>The Abort PV does not always work because camserver does not reliably implement
-      the "K" command to stop an exposure sequence. In particular with NImages>1 camserver
-      seems to often ignore the K command completely, even with exposure times/periods
-      as long as 10 seconds. With NImages=1 it does kill the exposure after a few seconds.</li>
-    <li>The following items are hardcoded in the SNL program. They can be changed before
-      compiling if necessary. Some could be changed to be EPICS PVs, so they could be
-      controlled at run-time, but others must be defined at compile time because of limitations
-      in the SNL semantics.
+    <li>Setting Acquire to 0 does not always stop acquisition immediately because camserver
+      does not reliably implement the "K" command to stop an exposure sequence. In particular
+      with NumImages>1 camserver seems to often ignore the K command completely, even
+      with exposure times/periods as long as 10 seconds. With NumImages=1 it does kill
+      the exposure after a few seconds.</li>
+    <li>The following items are hardcoded in the driver. They can be changed by compiling
+      if necessary.
       <ul>
         <li>MAX_MESSAGE_SIZE=256 The maximum size of message to/from camserver.</li>
         <li>MAX_FILENAME_LEN=256 The maximum size of a complete file name including path and
@@ -935,9 +1000,6 @@ def user_getcounts '{
         <li>FILE_READ_DELAY=.01 seconds. The time between polling to see if the TIFF file
           exists or if it is the expected size.</li>
         <li>MAX_BAD_PIXELS=100 The maximum number of bad pixels.</li>
-        <li>MAX_ROIS=32 The maximum number of ROIs</li>
-        <li>MAX_READ_ERRORS=3 The maximum number of TIFF file read errors before the SNL gives
-          up and aborts acquisition.</li>
       </ul>
     </li>
   </ul>
