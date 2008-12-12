@@ -123,6 +123,20 @@ remote_mode_server_arguments 2222
       </tr>
       <tr>
         <td>
+          ADReadStatus</td>
+        <td>
+        <td>
+          $(P)$(R)ReadStatus</td>
+        <td>
+          Writing 1 to this parameter causes the status to be read from the marccd server.
+          By processing or periodically scanning this record the status information can be
+          refreshed. This is normally not necessary, but if ADArrayCallbacks is 0 and marCCDOverlap
+          is 1 then the status will not indicate that the system is idle when acquisition
+          is complete, because the driver polling stops before the file is written. This record
+          can be used to eliminate the confusion that might cause.</td>
+      </tr>
+      <tr>
+        <td>
           ADFilePath</td>
         <td>
           $(P$(R)FilePath</td>
@@ -304,28 +318,6 @@ remote_mode_server_arguments 2222
           $(P)$(R)MarDezingerStatus_RBV</td>
         <td>
           mbbi</td>
-      </tr>
-      <tr>
-        <td>
-          marCCD<br />
-          ReadStatus</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Writing 1 to this parameter causes the status to be read from the marccd server.
-          By processing or periodically scanning this record the status information can be
-          refreshed. This is normally not necessary, but if ADArrayCallbacks is 0 and marCCDOverlap
-          is 1 then the status will not indicate that the system is idle when acquisition
-          is complete, because the driver polling stops before the file is written. This record
-          can be used to eliminate the confusion that might cause.</td>
-        <td>
-          MAR_READ_STATUS</td>
-        <td>
-          $(P)$(R)MarReadStatus</td>
-        <td>
-          bo</td>
       </tr>
       <tr>
         <td align="center" colspan="7">
@@ -519,6 +511,57 @@ remote_mode_server_arguments 2222
           MAR_ROTATION_RANGE</td>
         <td>
           $(P)$(R)RotationRange</td>
+        <td>
+          ao</td>
+      </tr>
+      <tr>
+        <td>
+          marCCD<br />
+          Wavelength</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          Wavelength in Angstroms.</td>
+        <td>
+          MAR_WAVELENGHT</td>
+        <td>
+          $(P)$(R)Wavelength</td>
+        <td>
+          ao</td>
+      </tr>
+      <tr>
+        <td>
+          marCCD<br />
+          FileComments</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Comments for this file.</td>
+        <td>
+          MAR_FILE_COMMENTS</td>
+        <td>
+          $(P)$(R)FileComments</td>
+        <td>
+          waveform</td>
+      </tr>
+      <tr>
+        <td>
+          marCCD<br />
+          DatasetComments</td>
+        <td>
+          waveform</td>
+        <td>
+          r/w</td>
+        <td>
+          Comments for this dataset.</td>
+        <td>
+          MAR_DATASET_COMMENTS</td>
+        <td>
+          $(P)$(R)DatasetComments</td>
         <td>
           ao</td>
       </tr>
