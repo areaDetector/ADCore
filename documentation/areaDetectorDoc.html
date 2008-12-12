@@ -688,11 +688,13 @@ public:
              int interfaceMask, int interruptMask);
                  
     /* These are the methods that we override from asynPortDriver */
-     virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
+    virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
                                      const char **pptypeName, size_t *psize);
                                      
     /* These are the methods that are new to this class */
+    virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     int createFileName(int maxChars, char *fullFileName);
+    void setShutter(int open)
 </pre>
   <p>
     The methods of the ADDriver class are:
@@ -711,6 +713,10 @@ public:
     <li><code>createFileName</code> This is a convenience function that constructs a complete
       file name in the ADFullFileName parameter from the ADFilePath, ADFileName, ADFileNumber,
       and ADFileTemplate parameters.</li>
+    <li><code>setShutter</code> This method will open (1) or close (0) the shutter if
+      ADShutterMode==ADShutterModeEPICS.  Drivers will implement setShutter if they support
+      ADShutterModeDetector.  If ADShutterMode=ADShutterModeDetector they will control
+      the shutter directly, else they will call this method.</li>
   </ul>
   <h3 id="ADStdDriverParams">
     ADStdDriverParams</h3>
