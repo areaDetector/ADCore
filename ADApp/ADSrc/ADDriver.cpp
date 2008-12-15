@@ -166,6 +166,7 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int paramTableSize, int ma
     setIntegerParam(ADTriggerMode,  0);
     setIntegerParam(ADFrameType,    0);
     setIntegerParam(ADNumExposures, 1);
+    setIntegerParam(ADNumExposuresCounter, 0);
     setIntegerParam(ADStatus,       ADStatusIdle);
     setIntegerParam(ADAcquire,      0);
     setIntegerParam(ADImageCounter, 0);
