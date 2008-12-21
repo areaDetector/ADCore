@@ -114,6 +114,7 @@ typedef enum
     ADImageSizeY,       /* (asynInt32,    r/o) Size of the image data in the Y direction */
     ADImageSize,        /* (asynInt32,    r/o) Total size of image data in bytes */
     ADDataType,         /* (asynInt32,    r/w) Data type (NDDataType_t) */
+    ADColorMode,        /* (asynInt32,    r/w) Color mode (NDColorMode_t) */
     ADFrameType,        /* (asynInt32,    r/w) Frame type (ADFrameType_t) */
     ADImageMode,        /* (asynInt32,    r/w) Image mode (ADImageMode_t) */
     ADTriggerMode,      /* (asynInt32,    r/w) Trigger mode (ADTriggerMode_t) */
@@ -205,6 +206,7 @@ static asynParamString_t ADStdDriverParamString[] = {
     {ADImageSizeY,     "IMAGE_SIZE_Y"},
     {ADImageSize,      "IMAGE_SIZE"  },
     {ADDataType,       "DATA_TYPE"   },
+    {ADColorMode,      "COLOR_MODE"  },
     {ADFrameType,      "FRAME_TYPE"  },
     {ADImageMode,      "IMAGE_MODE"  },
     {ADNumExposures,   "NEXPOSURES"  },
