@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector/1-3beta/ADApp/op/adl/ADBase.adl"
+	name="/home/epics/devel/areaDetector/1-4/ADApp/op/adl/ADBase.adl"
 	version=030102
 }
 display {
@@ -8,7 +8,7 @@ display {
 		x=502
 		y=41
 		width=700
-		height=665
+		height=690
 	}
 	clr=14
 	bclr=4
@@ -214,7 +214,7 @@ text {
 	"basic attribute" {
 		clr=14
 	}
-	textix="Shutter Mode"
+	textix="Shutter mode"
 	align="horiz. right"
 }
 menu {
@@ -732,7 +732,7 @@ rectangle {
 		x=5
 		y=290
 		width=335
-		height=365
+		height=390
 	}
 	"basic attribute" {
 		clr=14
@@ -1035,7 +1035,7 @@ text {
 	"basic attribute" {
 		clr=14
 	}
-	textix="Sensor Size"
+	textix="Sensor size"
 	align="horiz. right"
 }
 "text update" {
@@ -1070,218 +1070,140 @@ text {
 	limits {
 	}
 }
-composite {
+text {
 	object {
 		x=34
-		y=545
-		width=286
-		height=95
+		y=570
+		width=180
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Image size (bytes)"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=241
+		y=571
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ImageSize_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+composite {
+	object {
+		x=97
+		y=595
+		width=205
+		height=20
 	}
 	"composite name"=""
 	children {
-		composite {
+		"text update" {
 			object {
-				x=34
-				y=570
-				width=268
-				height=20
+				x=241
+				y=596
+				width=61
+				height=18
 			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=34
-						y=570
-						width=180
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Image Size (bytes)"
-					align="horiz. right"
-				}
-				"text update" {
-					object {
-						x=241
-						y=571
-						width=61
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)ImageSize_RBV"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
+			monitor {
+				chan="$(P)$(R)Gain_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
 			}
 		}
-		composite {
+		"text entry" {
+			object {
+				x=148
+				y=595
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)Gain"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		text {
 			object {
 				x=97
 				y=595
-				width=205
+				width=40
 				height=20
 			}
-			"composite name"=""
-			children {
-				"text update" {
-					object {
-						x=241
-						y=596
-						width=61
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)Gain_RBV"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
-				"text entry" {
-					object {
-						x=148
-						y=595
-						width=60
-						height=20
-					}
-					control {
-						chan="$(P)$(R)Gain"
-						clr=14
-						bclr=51
-					}
-					limits {
-					}
-				}
-				text {
-					object {
-						x=97
-						y=595
-						width=40
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Gain"
-					align="horiz. right"
-				}
+			"basic attribute" {
+				clr=14
 			}
+			textix="Gain"
+			align="horiz. right"
 		}
-		composite {
+	}
+}
+composite {
+	object {
+		x=47
+		y=620
+		width=273
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
 			object {
 				x=47
 				y=620
-				width=273
+				width=90
 				height=20
 			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=47
-						y=620
-						width=90
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Data type"
-					align="horiz. right"
-				}
-				menu {
-					object {
-						x=143
-						y=620
-						width=80
-						height=20
-					}
-					control {
-						chan="$(P)$(R)DataType"
-						clr=14
-						bclr=51
-					}
-				}
-				"text update" {
-					object {
-						x=241
-						y=621
-						width=79
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)DataType_RBV"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					format="string"
-					limits {
-					}
-				}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Data type"
+			align="horiz. right"
+		}
+		menu {
+			object {
+				x=143
+				y=620
+				width=80
+				height=20
+			}
+			control {
+				chan="$(P)$(R)DataType"
+				clr=14
+				bclr=51
 			}
 		}
-		composite {
+		"text update" {
 			object {
-				x=37
-				y=545
-				width=265
-				height=20
+				x=241
+				y=621
+				width=79
+				height=18
 			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=37
-						y=545
-						width=100
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Image Size"
-					align="horiz. right"
-				}
-				"text update" {
-					object {
-						x=148
-						y=546
-						width=61
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)ImageSizeX_RBV"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
-				"text update" {
-					object {
-						x=241
-						y=546
-						width=61
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)ImageSizeY_RBV"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
+			monitor {
+				chan="$(P)$(R)DataType_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			format="string"
+			limits {
 			}
 		}
 	}
@@ -2053,4 +1975,92 @@ text {
 	}
 	clr=14
 	bclr=51
+}
+text {
+	object {
+		x=47
+		y=645
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Color mode"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=143
+		y=645
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ColorMode"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=241
+		y=646
+		width=79
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ColorMode_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=37
+		y=545
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Image size"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=148
+		y=546
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ImageSizeX_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=241
+		y=546
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ImageSizeY_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
 }
