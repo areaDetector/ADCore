@@ -32,6 +32,18 @@ typedef enum
     NDFloat64
 } NDDataType_t;
 
+/* Enumeration of color modes */
+typedef enum
+{
+    NDColorModeMono,
+    NDColorModeBayer,
+    NDColorModeRGB1,
+    NDColorModeRGB3,
+    NDColorModeYUV444,
+    NDColorModeYUV422,
+    NDColorModeYUV421
+} NDColorMode_t;
+
 
 typedef struct NDDimension {
     int size;
@@ -60,6 +72,7 @@ public:
     int ndims;
     NDDimension_t dims[ND_ARRAY_MAX_DIMS];
     NDDataType_t dataType;
+    NDColorMode_t colorMode;
     int dataSize;
     void *pData;
 
