@@ -60,6 +60,7 @@ NDArray* NDArrayPool::alloc(int ndims, int *dims, NDDataType_t dataType, int dat
         /* Initialize fields */
         pArray->owner = this;
         pArray->dataType = dataType;
+        pArray->colorMode = NDColorModeMono;
         pArray->ndims = ndims;
         for (i=0; i<ndims && i<ND_ARRAY_MAX_DIMS; i++) {
             pArray->dims[i].size = dims[i];
@@ -426,6 +427,7 @@ int NDArrayPool::convert(NDArray *pIn,
         pOut->dims[i].binning = pIn->dims[i].binning * dimsOutCopy[i].binning;
         if (pIn->dims[i].reverse) pOut->dims[i].reverse = !pOut->dims[i].reverse;
     }
+    pOut->colorMode = pIn->colorMode;
     pOut->timeStamp = pIn->timeStamp;
     pOut->uniqueId = pIn->uniqueId;
     
@@ -447,7 +449,7 @@ int NDArrayPool::report(int details)
 
 NDArray::NDArray()
     : referenceCount(0), owner(NULL), 
-      uniqueId(0), timeStamp(0.0), ndims(0), dataType(NDInt8), dataSize(0), pData(NULL)
+      uniqueId(0), timeStamp(0.0), ndims(0), dataType(NDInt8), colorMode(NDColorModeMono), dataSize(0), pData(NULL)
 {
     memset(this->dims, 0, sizeof(this->dims));
     memset(&this->node, 0, sizeof(this->node));
@@ -504,7 +506,6 @@ int NDArray::initDimension(NDDimension_t *pDimension, int size)
 
 NDArray* NDArray::copy(NDArray *pOut)
 {
-    NDArrayInfo_t arrayInfo;
     const char *functionName = "copy";
     NDArrayPool *pNDArrayPool = (NDArrayPool *)this->owner;
     int dimSizeOut[ND_ARRAY_MAX_DIMS];
@@ -515,23 +516,18 @@ NDArray* NDArray::copy(NDArray *pOut)
         return(NULL);
     }
     
-    this->getInfo(&arrayInfo);
     /* If the output array does not exist then create it */
     if (!pOut) {
         for (i=0; i<this->ndims; i++) dimSizeOut[i] = this->dims[i].size;
-        pOut = pNDArrayPool->alloc(this->ndims, dimSizeOut, this->dataType, 0, NULL);
+        pOut = pNDArrayPool->alloc(this->ndims, dimSizeOut, this->dataType, this->dataSize, NULL);
     }
-    if (arrayInfo.totalBytes > pOut->dataSize) {
-        printf("%s:%s: output buffer too small, is %d, must be %d\n",
-            driverName, functionName, pOut->dataSize, arrayInfo.totalBytes);
-        return(NULL);
-    }
+    pOut->colorMode = this->colorMode;
     pOut->uniqueId = this->uniqueId;
     pOut->timeStamp = this->timeStamp;
     pOut->ndims = this->ndims;
     memcpy(pOut->dims, this->dims, sizeof(this->dims));
     pOut->dataType = this->dataType;
-    memcpy(pOut->pData, this->pData, arrayInfo.totalBytes);
+    memcpy(pOut->pData, this->pData, this->dataSize);
     return(pOut);
 }
 
