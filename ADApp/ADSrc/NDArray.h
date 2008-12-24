@@ -38,6 +38,7 @@ typedef enum
     NDColorModeMono,
     NDColorModeBayer,
     NDColorModeRGB1,
+    NDColorModeRGB2,
     NDColorModeRGB3,
     NDColorModeYUV444,
     NDColorModeYUV422,
@@ -80,6 +81,7 @@ public:
     NDArray();
     int          initDimension   (NDDimension_t *pDimension, int size);
     int          getInfo         (NDArrayInfo_t *pInfo);
+    NDArray*     copy            (NDArray *pOut, int copyData);
     NDArray*     copy            (NDArray *pOut);
     int          reserve(); 
     int          release();
