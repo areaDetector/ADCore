@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector/1-4beta/ADApp/op/adl/ADTop.adl"
+	name="/home/epics/devel/areaDetector/1-4/ADApp/op/adl/ADTop.adl"
 	version=030102
 }
 display {
@@ -194,6 +194,16 @@ text {
 		label="ROI #1"
 		name="NDROI.adl"
 		args="P=13PS1:, R=ROI1:"
+	}
+	display[3] {
+		label="Color convert #1"
+		name="NDColorConvert.adl"
+		args="P=13PS1:, R=CC1:"
+	}
+	display[4] {
+		label="Color convert #2"
+		name="NDColorConvert.adl"
+		args="P=13PS1:, R=CC2:"
 	}
 	clr=14
 	bclr=51
