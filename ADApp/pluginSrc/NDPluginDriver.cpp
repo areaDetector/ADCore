@@ -40,6 +40,7 @@ static asynParamString_t NDPluginDriverParamString[] = {
     {NDPluginDriverUniqueId,              "UNIQUE_ID" },
     {NDPluginDriverTimeStamp,             "TIME_STAMP" },
     {NDPluginDriverDataType,              "DATA_TYPE" },
+    {NDPluginDriverColorMode,             "COLOR_MODE" },
     {NDPluginDriverNDimensions,           "ARRAY_NDIMENSIONS"},
     {NDPluginDriverDimensions,            "ARRAY_DIMENSIONS"}
 };
@@ -119,17 +120,18 @@ void NDPluginDriver::processCallbacks(NDArray *pArray)
     setIntegerParam(NDPluginDriverArrayCounter, arrayCounter);
     setIntegerParam(NDPluginDriverNDimensions, pArray->ndims);
     setIntegerParam(NDPluginDriverDataType, pArray->dataType);
+    setIntegerParam(NDPluginDriverColorMode, pArray->colorMode);
     setIntegerParam(NDPluginDriverUniqueId, pArray->uniqueId);
     setDoubleParam(NDPluginDriverTimeStamp, pArray->timeStamp);
     /* See if the array dimensions have changed.  If so then do callbacks on them. */
-    for (i=0, dimsChanged=0; i<pArray->ndims; i++) {
+    for (i=0, dimsChanged=0; i<ND_ARRAY_MAX_DIMS; i++) {
         if (pArray->dims[i].size != this->dimsPrev[i]) {
             this->dimsPrev[i] = pArray->dims[i].size;
             dimsChanged = 1;
         }
     }
     if (dimsChanged) {
-        doCallbacksInt32Array(this->dimsPrev, pArray->ndims, NDPluginDriverDimensions, 0);
+        doCallbacksInt32Array(this->dimsPrev, ND_ARRAY_MAX_DIMS, NDPluginDriverDimensions, 0);
     }
 }
 
@@ -547,6 +549,7 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     setIntegerParam(NDPluginDriverUniqueId, 0);
     setDoubleParam (NDPluginDriverTimeStamp, 0.);
     setIntegerParam(NDPluginDriverDataType, 0);
+    setIntegerParam(NDPluginDriverColorMode, 0);
     setIntegerParam(NDPluginDriverNDimensions, 0);
 }
 
