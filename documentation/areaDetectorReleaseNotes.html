@@ -18,11 +18,30 @@
       features than the ccd version, and makes the detector data available via callbacks.
       This allows detector data to be displayed with EPICS clients, permits ROI or other
       plugin calculations, and allows saving in other file formats if desired. </li>
+    <li>Added support for color
+      <ul>
+        <li>Added NDColorMode_t to NDArray.h.  NDArray has a new field indicating the color
+        mode.</li>
+        <li>Added new parameter ADColorMode to ADStdDriverParams.h and new record ColorMode to ADBase.template
+          and NDPluginBase.template.</li>
+        <li>Added a new plugin NDPluginColorConvert to convert colors.  It currently converts Bayer to RGB1, RGB2 or RGB3, RGB1 to
+          RGB2 or RGB3 and RGB3 to RGB1 or RGB2.</li>
+        <li>The Prosilica driver now supports color.  It supports RGB1 and Bayer directly, and RGB2 and RGB3 
+          through the NDPluginColorConvert plugin.</li>
+      </ul>
+    </li>
+    <li>Added a Viewers directory.  This contains an IDL viewer for displaying images.  
+      The viewer supports color and several different viewing
+      modes.  It can be run for free under the IDL Virtual Machine, and should work on any platform with a
+      version of ezcaIDL.so or ezcaIDL.dll built with EPICS 3.14. 
+      This directory also contains IDL class libraries for accessing areaDetector.  These classes are
+      used by the viewers, but can also be used for other IDL applications.</li>
     <li>Added new parameters in ADStdDriverParams.h
       <ul>
         <li>ADTemperature</li>
         <li>ADReadStatus</li>
         <li>ADNumExposuresCounter</li>
+        <li>ADColorMode</li>
       </ul>
     </li>
     <li>Pilatus driver
@@ -31,6 +50,16 @@
           camserver will then create directories if they do not exist, whereas specifying
           a path with non-existant directories in the "exposure" or acquire commands will
           not create directories. </li>
+      </ul>
+    </li>
+    <li>Prosilica driver
+      <ul>
+        <li>Added support for color. </li>
+        <li>Made minor changes to the code and to the build system to add support for running the driver
+          under Linux.  However, there appears to be a conflict between the Prosilica driver's use of
+          Linux signals and the use of signals in EPICS base.  The driver sometimes initializes successfully
+          and works, but most often it will crash with a SIGSEGV right after iocInit. Hopefully this will
+          be fixed in a future release.</li>
       </ul>
     </li>
     <li>Fixes to C++ code to avoid compiler warnings on Solaris. All but one of these
