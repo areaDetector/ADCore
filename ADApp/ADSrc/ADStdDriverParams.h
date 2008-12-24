@@ -112,6 +112,7 @@ typedef enum
      * including effects of the region definition and binning */
     ADImageSizeX,       /* (asynInt32,    r/o) Size of the image data in the X direction */
     ADImageSizeY,       /* (asynInt32,    r/o) Size of the image data in the Y direction */
+    ADImageSizeZ,       /* (asynInt32,    r/o) Size of the image data in the Z direction */
     ADImageSize,        /* (asynInt32,    r/o) Total size of image data in bytes */
     ADDataType,         /* (asynInt32,    r/w) Data type (NDDataType_t) */
     ADColorMode,        /* (asynInt32,    r/w) Color mode (NDColorMode_t) */
@@ -204,6 +205,7 @@ static asynParamString_t ADStdDriverParamString[] = {
 
     {ADImageSizeX,     "IMAGE_SIZE_X"},
     {ADImageSizeY,     "IMAGE_SIZE_Y"},
+    {ADImageSizeZ,     "IMAGE_SIZE_Z"},
     {ADImageSize,      "IMAGE_SIZE"  },
     {ADDataType,       "DATA_TYPE"   },
     {ADColorMode,      "COLOR_MODE"  },
