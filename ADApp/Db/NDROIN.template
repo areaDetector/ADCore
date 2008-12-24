@@ -81,6 +81,22 @@ record(longin, "$(P)$(R)BinY_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(longout, "$(P)$(R)BinZ")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_BIN")
+   field(VAL,  "1")
+}
+
+record(longin, "$(P)$(R)BinZ_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_BIN")
+   field(SCAN, "I/O Intr")
+}
+
 record(longout, "$(P)$(R)MinX")
 {
    field(PINI, "1")
@@ -113,6 +129,22 @@ record(longin, "$(P)$(R)MinY_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(longout, "$(P)$(R)MinZ")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_MIN")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)MinZ_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_MIN")
+   field(SCAN, "I/O Intr")
+}
+
 record(longout, "$(P)$(R)SizeX")
 {
    field(PINI, "1")
@@ -142,6 +174,46 @@ record(longin, "$(P)$(R)SizeY_RBV")
    field(PINI, "1")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)SizeZ")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_SIZE")
+   field(VAL,  "1")
+}
+
+record(longin, "$(P)$(R)SizeZ_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)MaxSizeX_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_MAX_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)MaxSizeY_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_MAX_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)MaxSizeZ_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_MAX_SIZE")
    field(SCAN, "I/O Intr")
 }
 
@@ -185,6 +257,26 @@ record(bi, "$(P)$(R)ReverseY_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(bo, "$(P)$(R)ReverseZ")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_REVERSE")
+   field(VAL,  "0")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)ReverseZ_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_REVERSE")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
 record(longout, "$(P)$(R)BgdWidth")
 {
    field(PINI, "1")
@@ -214,6 +306,14 @@ record(longin, "$(P)$(R)ImageSizeY_RBV")
    field(PINI, "1")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_SIZE_Y")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)ImageSizeZ_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_SIZE_Z")
    field(SCAN, "I/O Intr")
 }
 
