@@ -669,6 +669,10 @@ create_monitor_set("auto_settings.req", 30,"P=13ROPER1:,D=cam1:")
       WinView does not appear to be correctly returning the values of the EXP_CSEQUENTS
       and EXP_CACCUMS parameters. The reason for this is under investigation and hopefully
       will be fixed in a future release.</li>
+    <li>The driver does not pass callbacks for images in WinView focus mode.  I don't currently
+      have the required information on how to know when new data is available in focus mode and how
+      to read it.  Hopefully this will be added in a future release.</li>
+    <li>WinView/WinSpec must be version 2.5.22 or later, because the class names changed in that release.</li>
     <li>The following items are hardcoded in the driver. They can be changed by recompiling
       if necessary.
       <ul>
