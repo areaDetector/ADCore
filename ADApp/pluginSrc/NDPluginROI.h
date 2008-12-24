@@ -38,12 +38,19 @@ typedef enum {
     /* ROI definition */
     NDPluginROIDim0Min,                /* (asynInt32,   r/w) Starting element of ROI in each dimension */
     NDPluginROIDim0Size,               /* (asynInt32,   r/w) Size of ROI in each dimension */
+    NDPluginROIDim0MaxSize,            /* (asynInt32,   r/o) Maximum size of ROI in each dimension */
     NDPluginROIDim0Bin,                /* (asynInt32,   r/w) Binning of ROI in each dimension */
     NDPluginROIDim0Reverse,            /* (asynInt32,   r/w) Reversal of ROI in each dimension */
     NDPluginROIDim1Min,                /* (asynInt32,   r/w) Starting element of ROI in each dimension */
     NDPluginROIDim1Size,               /* (asynInt32,   r/w) Size of ROI in each dimension */
+    NDPluginROIDim1MaxSize,            /* (asynInt32,   r/o) Maximum size of ROI in each dimension */
     NDPluginROIDim1Bin,                /* (asynInt32,   r/w) Binning of ROI in each dimension */
     NDPluginROIDim1Reverse,            /* (asynInt32,   r/w) Reversal of ROI in each dimension */
+    NDPluginROIDim2Min,                /* (asynInt32,   r/w) Starting element of ROI in each dimension */
+    NDPluginROIDim2Size,               /* (asynInt32,   r/w) Size of ROI in each dimension */
+    NDPluginROIDim2MaxSize,            /* (asynInt32,   r/o) Maximum size of ROI in each dimension */
+    NDPluginROIDim2Bin,                /* (asynInt32,   r/w) Binning of ROI in each dimension */
+    NDPluginROIDim2Reverse,            /* (asynInt32,   r/w) Reversal of ROI in each dimension */
     NDPluginROIDataType,               /* (asynInt32,   r/w) Data type for ROI.  -1 means automatic. */
     
     /* ROI statistics */
