@@ -209,7 +209,23 @@ record(subArray, "$(P)$(R)Dim1SA")
 record(longin, "$(P)$(R)ArraySize1_RBV")
 {
     field(INP,  "$(P)$(R)Dim1SA")
-#    field(FLNK, "$(P)$(R)Dim2SA")
+    field(FLNK, "$(P)$(R)Dim2SA")
+}
+
+record(subArray, "$(P)$(R)Dim2SA")
+{
+    field(INP,  "$(P)$(R)Dimensions_RBV NPP NMS")
+    field(FTVL, "LONG")
+    field(MALM, "10")
+    field(NELM, "1")
+    field(INDX, "2")
+    field(FLNK, "$(P)$(R)ArraySize2_RBV")
+}
+
+record(longin, "$(P)$(R)ArraySize2_RBV")
+{
+    field(INP,  "$(P)$(R)Dim2SA")
+#    field(FLNK, "$(P)$(R)Dim3SA")
 }
 
 record(mbbi, "$(P)$(R)DataType_RBV")
@@ -232,6 +248,30 @@ record(mbbi, "$(P)$(R)DataType_RBV")
    field(SXST, "Float32")
    field(SXVL, "6")
    field(SVST, "Float64")
+   field(SVVL, "7")
+   field(SCAN, "I/O Intr")
+}
+
+record(mbbi, "$(P)$(R)ColorMode_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COLOR_MODE")
+   field(ZRST, "Mono")
+   field(ZRVL, "0")
+   field(ONST, "Bayer")
+   field(ONVL, "1")
+   field(TWST, "RGB1")
+   field(TWVL, "2")
+   field(THST, "RGB2")
+   field(THVL, "3")
+   field(FRST, "RGB3")
+   field(FRVL, "4")
+   field(FVST, "YUV444")
+   field(FVVL, "5")
+   field(SXST, "YUV422")
+   field(SXVL, "6")
+   field(SVST, "YUV421")
    field(SVVL, "7")
    field(SCAN, "I/O Intr")
 }
