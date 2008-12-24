@@ -1,9 +1,7 @@
 /*
- * drvNDROI.c
+ * NDPluginROI.cpp
  * 
- * Asyn driver for callbacks to standard asyn array interfaces for NDArray drivers.
- * This is commonly used for EPICS waveform records.
- *
+ * Region-of-Interest (ROI) plugin
  * Author: Mark Rivers
  *
  * Created April 23, 2008
@@ -31,12 +29,19 @@ static asynParamString_t NDPluginROINParamString[] = {
 
     {NDPluginROIDim0Min,                "DIM0_MIN"},
     {NDPluginROIDim0Size,               "DIM0_SIZE"},
+    {NDPluginROIDim0MaxSize,            "DIM0_MAX_SIZE"},
     {NDPluginROIDim0Bin,                "DIM0_BIN"},
     {NDPluginROIDim0Reverse,            "DIM0_REVERSE"},
     {NDPluginROIDim1Min,                "DIM1_MIN"},
     {NDPluginROIDim1Size,               "DIM1_SIZE"},
+    {NDPluginROIDim1MaxSize,            "DIM1_MAX_SIZE"},
     {NDPluginROIDim1Bin,                "DIM1_BIN"},
     {NDPluginROIDim1Reverse,            "DIM1_REVERSE"},
+    {NDPluginROIDim2Min,                "DIM2_MIN"},
+    {NDPluginROIDim2Size,               "DIM2_SIZE"},
+    {NDPluginROIDim2MaxSize,            "DIM2_MAX_SIZE"},
+    {NDPluginROIDim2Bin,                "DIM2_BIN"},
+    {NDPluginROIDim2Reverse,            "DIM2_REVERSE"},
     {NDPluginROIDataType,               "DATA_TYPE"},
 
     {NDPluginROIBgdWidth,               "BGD_WIDTH"},
@@ -55,7 +60,7 @@ static asynParamString_t NDPluginROINParamString[] = {
     {NDPluginROIHistArray,              "HIST_ARRAY"},
 };
 
-const char *driverName="NDPluginROI";
+static const char *driverName="NDPluginROI";
 
 #define MAX(A,B) (A)>(B)?(A):(B)
 #define MIN(A,B) (A)<(B)?(A):(B)
@@ -247,7 +252,8 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     NDArray *pROIArray;
     NDArray *pHighlights=NULL, *pBgdArray=NULL;
     NDArrayInfo_t arrayInfo;
-    NDDimension_t dims[ND_ARRAY_MAX_DIMS], bgdDims[ND_ARRAY_MAX_DIMS], *pDim;
+    NDDimension_t dims[ND_ARRAY_MAX_DIMS], bgdDims[ND_ARRAY_MAX_DIMS], tempDim, *pDim;
+    int userDims[ND_ARRAY_MAX_DIMS];
     NDROI_t *pROI, ROITemp, *pROITemp=&ROITemp;
     int highlight;
     int bgdPixels;
@@ -276,12 +282,12 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
 
     /* Loop over the ROIs in this driver */
     for (roi=0; roi<this->maxROIs; roi++) {
-        pROI       = &this->pROIs[roi];
-        pROI->min = 0; setDoubleParam(roi, NDPluginROIMinValue, pROI->min);
-        pROI->max = 0; setDoubleParam(roi, NDPluginROIMaxValue, pROI->max);
-        pROI->mean = 0; setDoubleParam(roi, NDPluginROIMeanValue, pROI->mean);
-        pROI->total = 0; setDoubleParam(roi, NDPluginROITotal, pROI->total);
-        pROI->net = 0; setDoubleParam(roi, NDPluginROINet, pROI->net);
+        pROI        = &this->pROIs[roi];
+        pROI->min   = 0; setDoubleParam(roi, NDPluginROIMinValue,  pROI->min);
+        pROI->max   = 0; setDoubleParam(roi, NDPluginROIMaxValue,  pROI->max);
+        pROI->mean  = 0; setDoubleParam(roi, NDPluginROIMeanValue, pROI->mean);
+        pROI->total = 0; setDoubleParam(roi, NDPluginROITotal,     pROI->total);
+        pROI->net   = 0; setDoubleParam(roi, NDPluginROINet,       pROI->net);
         /* We always keep the last array so read() can use it.  
          * Release previous one. Reserve new one below. */
         if (this->pArrays[roi]) {
@@ -299,17 +305,28 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         getIntegerParam(roi, NDPluginROIComputeHistogram, &computeHistogram);
         getIntegerParam(roi, NDPluginROIComputeProfiles, &computeProfiles);
         getIntegerParam(roi, NDPluginROIDataType, &dataType);
-        getDoubleParam(roi, NDPluginROIHistMin, &pROI->histMin);
-        getDoubleParam(roi, NDPluginROIHistMax, &pROI->histMax);
+        getDoubleParam (roi, NDPluginROIHistMin,  &pROI->histMin);
+        getDoubleParam (roi, NDPluginROIHistMax,  &pROI->histMax);
         getIntegerParam(roi, NDPluginROIBgdWidth, &pROI->bgdWidth);
         getIntegerParam(roi, NDPluginROIHistSize, &histSize);
+
         /* Make sure dimensions are valid, fix them if they are not */
+        /* We treat the case of RGB1 data specially, so that NX and NY are the X and Y dimensions of the
+         * image, not the first 2 dimensions.  This makes it much easier to switch back and forth between
+         * RGB1 and mono mode when using an ROI. */
+        if (pArray->colorMode == NDColorModeRGB1) {
+            userDims[0] = 1;
+            userDims[1] = 2;
+            userDims[2] = 0;
+        } else {
+            for (dim=0; dim<ND_ARRAY_MAX_DIMS; dim++) userDims[dim] = dim;
+        }
         for (dim=0; dim<pArray->ndims; dim++) {
             pDim = &pROI->dims[dim];
             pDim->offset  = MAX(pDim->offset, 0);
-            pDim->offset  = MIN(pDim->offset, pArray->dims[dim].size-1);
+            pDim->offset  = MIN(pDim->offset, pArray->dims[userDims[dim]].size-1);
             pDim->size    = MAX(pDim->size, 1);
-            pDim->size    = MIN(pDim->size, pArray->dims[dim].size - pDim->offset);
+            pDim->size    = MIN(pDim->size, pArray->dims[userDims[dim]].size - pDim->offset);
             pDim->binning = MAX(pDim->binning, 1);
             pDim->binning = MIN(pDim->binning, pDim->size);
         }
@@ -318,13 +335,20 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
 
         /* Update the parameters that may have changed */
         pDim = &pROI->dims[0];
-        setIntegerParam(NDPluginROIDim0Min, pDim->offset);
+        setIntegerParam(NDPluginROIDim0Min,  pDim->offset);
         setIntegerParam(NDPluginROIDim0Size, pDim->size);
-        setIntegerParam(NDPluginROIDim0Bin, pDim->binning);
+        setIntegerParam(NDPluginROIDim0MaxSize, pArray->dims[userDims[0]].size);
+        setIntegerParam(NDPluginROIDim0Bin,  pDim->binning);
         pDim = &pROI->dims[1];
-        setIntegerParam(NDPluginROIDim1Min, pDim->offset);
+        setIntegerParam(NDPluginROIDim1Min,  pDim->offset);
         setIntegerParam(NDPluginROIDim1Size, pDim->size);
-        setIntegerParam(NDPluginROIDim1Bin, pDim->binning);
+        setIntegerParam(NDPluginROIDim1MaxSize, pArray->dims[userDims[1]].size);
+        setIntegerParam(NDPluginROIDim1Bin,  pDim->binning);
+        pDim = &pROI->dims[2];
+        setIntegerParam(NDPluginROIDim2Min,  pDim->offset);
+        setIntegerParam(NDPluginROIDim2Size, pDim->size);
+        setIntegerParam(NDPluginROIDim2MaxSize, pArray->dims[userDims[2]].size);
+        setIntegerParam(NDPluginROIDim2Bin,  pDim->binning);
 
         /* This function is called with the lock taken, and it must be set when we exit.
          * The following code can be exected without the mutex because we are not accessing elements of
@@ -334,6 +358,15 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         /* Extract this ROI from the input array.  The convert() function allocates
          * a new array and it is reserved (reference count = 1) */
         if (dataType == -1) dataType = (int)pArray->dataType;
+        /* We treat the case of RGB1 data specially, so that NX and NY are the X and Y dimensions of the
+         * image, not the first 2 dimensions.  This makes it much easier to switch back and forth between
+         * RGB1 and mono mode when using an ROI. */
+        if (pArray->colorMode == NDColorModeRGB1) {
+            tempDim = dims[0];
+            dims[0] = dims[2];
+            dims[2] = dims[1];
+            dims[1] = tempDim;
+        }
         this->pNDArrayPool->convert(pArray, &this->pArrays[roi], (NDDataType_t)dataType, dims);
         pROIArray  = this->pArrays[roi];
 
@@ -419,8 +452,9 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         }
 
         /* Set the image size of the ROI image data */
-        setIntegerParam(roi, ADImageSizeX, this->pArrays[roi]->dims[0].size);
-        setIntegerParam(roi, ADImageSizeY, this->pArrays[roi]->dims[1].size);
+        setIntegerParam(roi, ADImageSizeX, this->pArrays[roi]->dims[userDims[0]].size);
+        setIntegerParam(roi, ADImageSizeY, this->pArrays[roi]->dims[userDims[1]].size);
+        setIntegerParam(roi, ADImageSizeZ, this->pArrays[roi]->dims[userDims[2]].size);
         
         /* Call any clients who have registered for NDArray callbacks */
         doCallbacksGenericPointer(this->pArrays[roi], NDArrayData, roi);
@@ -482,6 +516,18 @@ asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
             break;
         case NDPluginROIDim1Reverse:
             pROI->dims[1].reverse = value;
+            break;
+        case NDPluginROIDim2Min:
+            pROI->dims[2].offset = value;
+            break;
+        case NDPluginROIDim2Size:
+            pROI->dims[2].size = value;
+            break;
+        case NDPluginROIDim2Bin:
+            pROI->dims[2].binning = value;
+            break;
+        case NDPluginROIDim2Reverse:
+            pROI->dims[2].reverse = value;
             break;
         default:
             /* This was not a parameter that this driver understands, try the base class */
@@ -555,6 +601,7 @@ asynStatus NDPluginROI::drvUserCreate(asynUser *pasynUser,
 {
     asynStatus status;
     int param;
+    static const char *functionName = "drvUserCreate";
 
     /* Look in the driver table */
     status = findParam(NDPluginROINParamString, NUM_ROIN_PARAMS, 
@@ -568,8 +615,8 @@ asynStatus NDPluginROI::drvUserCreate(asynUser *pasynUser,
             *psize = sizeof(param);
         }
         asynPrint(pasynUser, ASYN_TRACE_FLOW,
-                  "%s::drvUserCreate, drvInfo=%s, param=%d\n", 
-                  driverName, drvInfo, param);
+                  "%s::%s, drvInfo=%s, param=%d\n", 
+                  driverName, functionName, drvInfo, param);
         return(asynSuccess);
     }
 
@@ -615,12 +662,19 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
 
         setIntegerParam(roi , NDPluginROIDim0Min,           0);
         setIntegerParam(roi , NDPluginROIDim0Size,          0);
+        setIntegerParam(roi , NDPluginROIDim0MaxSize,       0);
         setIntegerParam(roi , NDPluginROIDim0Bin,           1);
         setIntegerParam(roi , NDPluginROIDim0Reverse,       0);
         setIntegerParam(roi , NDPluginROIDim1Min,           0);
         setIntegerParam(roi , NDPluginROIDim1Size,          0);
+        setIntegerParam(roi , NDPluginROIDim1MaxSize,       0);
         setIntegerParam(roi , NDPluginROIDim1Bin,           1);
         setIntegerParam(roi , NDPluginROIDim1Reverse,       0);
+        setIntegerParam(roi , NDPluginROIDim2Min,           0);
+        setIntegerParam(roi , NDPluginROIDim2Size,          0);
+        setIntegerParam(roi , NDPluginROIDim2MaxSize,       0);
+        setIntegerParam(roi , NDPluginROIDim2Bin,           1);
+        setIntegerParam(roi , NDPluginROIDim2Reverse,       0);
         setIntegerParam(roi , NDPluginROIDataType,          0);
        
         setIntegerParam(roi , NDPluginROIBgdWidth,          0);
@@ -637,6 +691,7 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
         setDoubleParam (roi , NDPluginROIHistEntropy,       0.0);
         setIntegerParam(roi , ADImageSizeX,                 0);
         setIntegerParam(roi , ADImageSizeY,                 0);
+        setIntegerParam(roi , ADImageSizeZ,                 0);
     }
     
     /* Try to connect to the array port */
