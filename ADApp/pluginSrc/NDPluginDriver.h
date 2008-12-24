@@ -22,6 +22,7 @@ typedef enum
     NDPluginDriverUniqueId,               /* (asynInt32,    r/o) Unique ID number of array */
     NDPluginDriverTimeStamp,              /* (asynFloat64,  r/o) Time stamp of array */
     NDPluginDriverDataType,               /* (asynInt32,    r/o) Data type of array */
+    NDPluginDriverColorMode,              /* (asynInt32,    r/o) Color mode of array */
     NDPluginDriverNDimensions,            /* (asynInt32,    r/o) Number of dimensions in array */
     NDPluginDriverDimensions,             /* (asynInt32Array, r/o) Array dimensions */
     NDPluginDriverLastParam
