@@ -2,6 +2,49 @@
 # Mark Rivers
 # March 27, 2008
 
+# These are the records from ADBase.template that we modify some fields for
+
+# Only 2 data types are supported, unsigned 8 and 16 bit integers
+record(mbbo, "$(P)$(R)DataType")
+{
+   field(ZRST, "UInt8")
+   field(ZRVL, "1")
+   field(ONST, "UInt16")
+   field(ONVL, "3")
+   field(TWST, "")
+   field(TWVL, "")
+   field(THST, "")
+   field(THVL, "")
+   field(FRST, "")
+   field(FRVL, "")
+   field(FVST, "")
+   field(FVVL, "")
+   field(SXST, "")
+   field(SXVL, "")
+   field(SVST, "")
+   field(SVVL, "")
+}
+
+record(mbbi, "$(P)$(R)DataType_RBV")
+{
+   field(ZRST, "UInt8")
+   field(ZRVL, "1")
+   field(ONST, "UInt16")
+   field(ONVL, "3")
+   field(TWST, "")
+   field(TWVL, "")
+   field(THST, "")
+   field(THVL, "")
+   field(FRST, "")
+   field(FRVL, "")
+   field(FVST, "")
+   field(FVVL, "")
+   field(SXST, "")
+   field(SXVL, "")
+   field(SVST, "")
+   field(SVVL, "")
+}
+
 ###############################################################################
 #  These records are for network and frame statistics                         #
 ###############################################################################
