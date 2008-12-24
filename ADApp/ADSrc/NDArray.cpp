@@ -62,6 +62,7 @@ NDArray* NDArrayPool::alloc(int ndims, int *dims, NDDataType_t dataType, int dat
         pArray->dataType = dataType;
         pArray->colorMode = NDColorModeMono;
         pArray->ndims = ndims;
+        memset(pArray->dims, 0, sizeof(pArray->dims));
         for (i=0; i<ndims && i<ND_ARRAY_MAX_DIMS; i++) {
             pArray->dims[i].size = dims[i];
             pArray->dims[i].offset = 0;
@@ -370,6 +371,10 @@ int NDArrayPool::convert(NDArray *pIn,
             driverName, functionName);
         return(ND_ERROR);
     }
+    /* Copy fields from input to output */
+    pOut->colorMode = pIn->colorMode;
+    pOut->timeStamp = pIn->timeStamp;
+    pOut->uniqueId = pIn->uniqueId;
     /* Replace the dimensions with those passed to this function */
     memcpy(pOut->dims, dimsOutCopy, pIn->ndims*sizeof(NDDimension_t));
     
@@ -427,10 +432,11 @@ int NDArrayPool::convert(NDArray *pIn,
         pOut->dims[i].binning = pIn->dims[i].binning * dimsOutCopy[i].binning;
         if (pIn->dims[i].reverse) pOut->dims[i].reverse = !pOut->dims[i].reverse;
     }
-    pOut->colorMode = pIn->colorMode;
-    pOut->timeStamp = pIn->timeStamp;
-    pOut->uniqueId = pIn->uniqueId;
     
+    /* If the frame is an RGBx frame and we have collapsed that dimension then change the colorMode */
+    if      ((pOut->colorMode == NDColorModeRGB1) && (pOut->dims[0].size != 3)) pOut->colorMode= NDColorModeMono;
+    else if ((pOut->colorMode == NDColorModeRGB2) && (pOut->dims[1].size != 3)) pOut->colorMode= NDColorModeMono;
+    else if ((pOut->colorMode == NDColorModeRGB3) && (pOut->dims[2].size != 3)) pOut->colorMode= NDColorModeMono;
     return ND_SUCCESS;
 }
 
@@ -503,8 +509,12 @@ int NDArray::initDimension(NDDimension_t *pDimension, int size)
     return ND_SUCCESS;
 }
 
-
 NDArray* NDArray::copy(NDArray *pOut)
+{
+    return(this->copy(pOut, 1));
+}
+
+NDArray* NDArray::copy(NDArray *pOut, int copyData)
 {
     const char *functionName = "copy";
     NDArrayPool *pNDArrayPool = (NDArrayPool *)this->owner;
@@ -527,7 +537,7 @@ NDArray* NDArray::copy(NDArray *pOut)
     pOut->ndims = this->ndims;
     memcpy(pOut->dims, this->dims, sizeof(this->dims));
     pOut->dataType = this->dataType;
-    memcpy(pOut->pData, this->pData, this->dataSize);
+    if (copyData) memcpy(pOut->pData, this->pData, this->dataSize);
     return(pOut);
 }
 
