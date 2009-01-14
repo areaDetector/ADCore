@@ -522,7 +522,7 @@ record(longin, "$(P)$(R)NumImagesCounter_RBV")
 #  and stop                                                       #
 ###################################################################
 
-record(abusy, "$(P)$(R)Acquire") {
+record(busy, "$(P)$(R)Acquire") {
    field(DTYP, "asynInt32")
    field(OUT, "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQUIRE")
    field(ZNAM, "Done")

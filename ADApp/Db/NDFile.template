@@ -144,7 +144,7 @@ record(bi, "$(P)$(R)AutoSave_RBV")
 }
 
 # Write file
-record(abusy, "$(P)$(R)WriteFile")
+record(busy, "$(P)$(R)WriteFile")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WRITE_FILE")
@@ -166,7 +166,7 @@ record(bi, "$(P)$(R)WriteFile_RBV")
 
 
 # Read file
-record(abusy, "$(P)$(R)ReadFile")
+record(busy, "$(P)$(R)ReadFile")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))READ_FILE")
@@ -241,7 +241,7 @@ record(mbbi, "$(P)$(R)FileWriteMode_RBV")
 }
 
 # Capture data
-record(abusy, "$(P)$(R)Capture")
+record(busy, "$(P)$(R)Capture")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CAPTURE")
