@@ -10,7 +10,6 @@ ifeq ($(GNU),NO)
 endif
 
 DBD += ADSupport.dbd
-DBDINC += abusyRecord
 
 INC += NDArray.h
 INC += ADStdDriverParams.h
@@ -23,7 +22,6 @@ LIB_SRCS += NDArray.cpp
 LIB_SRCS += asynPortDriver.cpp
 LIB_SRCS += asynNDArrayDriver.cpp
 LIB_SRCS += ADDriver.cpp
-LIB_SRCS += abusyRecord.c
 LIB_SRCS += devAbusyAsyn.c
 LIB_SRCS += devAbusySoft.c
 LIB_LIBS += asyn
