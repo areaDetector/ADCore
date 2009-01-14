@@ -10,7 +10,7 @@ include $(TOP)/configure/CONFIG
 LIBRARY_IOC = simDetector
 LIB_SRCS += simDetector.cpp
 LIB_SRCS += drvSimDetectorEpics.c
-LIB_LIBS += ADBase ADPlugin netCDF
+LIB_LIBS += NDPlugin ADBase netCDF
 LIB_LIBS += calc sscan autosave
 LIB_LIBS += asyn
 LIB_LIBS += $(EPICS_BASE_IOC_LIBS)
@@ -27,15 +27,10 @@ simDetectorApp_SRCS_vxWorks += simDetectorApp_registerRecordDeviceDriver.cpp
 
 # Add locally compiled object code
 simDetectorApp_LIBS += simDetector
-simDetectorApp_LIBS += ADPlugin ADBase netCDF
+simDetectorApp_LIBS += NDPlugin ADBase netCDF
 simDetectorApp_LIBS += calc sscan autosave 
 simDetectorApp_LIBS += asyn
 simDetectorApp_LIBS += $(EPICS_BASE_IOC_LIBS)
-
-# The following are needed for color interpolation using the Prosilica library
-simDetectorApp_LIBS_Linux    += PvAPI
-simDetectorApp_LIBS_WIN32    += PvAPI
-simDetectorApp_LIBS_cygwin32 += PvAPI
 
 simDetectorApp_SYS_LIBS_cygwin32 += rpc
 
