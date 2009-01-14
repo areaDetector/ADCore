@@ -32,6 +32,11 @@ simDetectorApp_LIBS += calc sscan autosave
 simDetectorApp_LIBS += asyn
 simDetectorApp_LIBS += $(EPICS_BASE_IOC_LIBS)
 
+# The following are needed for color interpolation using the Prosilica library
+simDetectorApp_LIBS_Linux    += PvAPI
+simDetectorApp_LIBS_WIN32    += PvAPI
+simDetectorApp_LIBS_cygwin32 += PvAPI
+
 simDetectorApp_SYS_LIBS_cygwin32 += rpc
 
 #=============================
