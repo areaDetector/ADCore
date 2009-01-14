@@ -3,11 +3,12 @@ include $(TOP)/configure/CONFIG
 
 DIRS += ADSrc
 DIRS += netCDFSrc
-# Note that prosilicaSrc must be built before pluginSrc because it 
-# installs include and library files needed by NDPluginColorConvert
-DIRS += prosilicaSrc
+# prosilicaSupport must be built before pluginSrc or prosilicaSrc because it installs
+# header and library files needed by both
+DIRS += prosilicaSupport
 DIRS += pluginSrc
 DIRS += simDetectorSrc
+DIRS += prosilicaSrc
 DIRS += pilatusSrc
 DIRS += marCCDSrc
 # Uncomment this line if you have the header files for ADSC on Linux
