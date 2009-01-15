@@ -11,7 +11,7 @@ LIBRARY_IOC = simDetector
 LIB_SRCS += simDetector.cpp
 LIB_SRCS += drvSimDetectorEpics.c
 LIB_LIBS += NDPlugin ADBase netCDF
-LIB_LIBS += calc sscan autosave
+LIB_LIBS += calc busy sscan autosave
 LIB_LIBS += asyn
 LIB_LIBS += $(EPICS_BASE_IOC_LIBS)
 
@@ -28,7 +28,7 @@ simDetectorApp_SRCS_vxWorks += simDetectorApp_registerRecordDeviceDriver.cpp
 # Add locally compiled object code
 simDetectorApp_LIBS += simDetector
 simDetectorApp_LIBS += NDPlugin ADBase netCDF
-simDetectorApp_LIBS += calc sscan autosave 
+simDetectorApp_LIBS += calc busy sscan autosave 
 simDetectorApp_LIBS += asyn
 simDetectorApp_LIBS += $(EPICS_BASE_IOC_LIBS)
 
