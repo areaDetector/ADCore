@@ -2,7 +2,70 @@
 # Mark Rivers
 # March 27, 2008
 
-# These are the records from ADBase.template that we modify some fields for
+###############################################################################
+#  Note: The following are records defined in ADBase.template.                #
+#        We are changing some of the fields here to reflect valid values for  #
+#        Prosilica                                                            #
+###############################################################################
+
+###############################################################################
+#  These records control the trigger mode.                                    # 
+###############################################################################
+record(mbbo, "$(P)$(R)TriggerMode")
+{
+   field(ZRST, "Free Run")
+   field(ZRVL, "0")
+   field(ONST, "Sync In 1")
+   field(ONVL, "1")
+   field(TWST, "Sync In 2")
+   field(TWVL, "2")
+   field(THST, "Sync In 3")
+   field(THVL, "3")
+   field(FRST, "Sync In 4")
+   field(FRVL, "4")
+   field(FVST, "Fixed Rate")
+   field(FVVL, "5")
+   field(SXST, "Software")
+   field(SXVL, "6")
+ }
+
+record(mbbi, "$(P)$(R)TriggerMode_RBV")
+{
+   field(ZRST, "Free Run")
+   field(ZRVL, "0")
+   field(ONST, "Sync In 1")
+   field(ONVL, "1")
+   field(TWST, "Sync In 2")
+   field(TWVL, "2")
+   field(THST, "Sync In 3")
+   field(THVL, "3")
+   field(FRST, "Sync In 4")
+   field(FRVL, "4")
+   field(FVST, "Fixed Rate")
+   field(FVVL, "5")
+   field(SXST, "Software")
+   field(SXVL, "6")
+   field(SCAN, "I/O Intr")
+}
+
+###############################################################################
+#  These records control the file format.                                     # 
+###############################################################################
+record(mbbo, "$(P)$(R)FileFormat")
+{
+    field(ZRST, "TIFF")
+    field(ZRVL, "0")
+    field(ONST, "Invalid")
+    field(ONVL, "1")
+}
+
+record(mbbi, "$(P)$(R)FileFormat_RBV")
+{
+    field(ZRST, "TIFF")
+    field(ZRVL, "0")
+    field(ONST, "Invalid")
+    field(ONVL, "1")
+}
 
 # Only 2 data types are supported, unsigned 8 and 16 bit integers
 record(mbbo, "$(P)$(R)DataType")
@@ -44,6 +107,53 @@ record(mbbi, "$(P)$(R)DataType_RBV")
    field(SVST, "")
    field(SVVL, "")
 }
+
+# Only Mono, Bayer and RGB1 color modes are supported at this time
+record(mbbo, "$(P)$(R)ColorMode")
+{
+   field(ZRST, "Mono")
+   field(ZRVL, "0")
+   field(ONST, "Bayer")
+   field(ONVL, "1")
+   field(TWST, "RGB1")
+   field(TWVL, "2")
+   field(TWST, "")
+   field(TWVL, "")
+   field(THST, "")
+   field(THVL, "")
+   field(FRST, "")
+   field(FRVL, "")
+   field(FVST, "")
+   field(FVVL, "")
+   field(SXST, "")
+   field(SXVL, "")
+   field(SVST, "")
+   field(SVVL, "")
+}
+
+record(mbbi, "$(P)$(R)ColorMode_RBV")
+{
+   field(ZRST, "Mono")
+   field(ZRVL, "0")
+   field(ONST, "Bayer")
+   field(ONVL, "1")
+   field(TWST, "RGB1")
+   field(TWVL, "2")
+   field(TWST, "")
+   field(TWVL, "")
+   field(THST, "")
+   field(THVL, "")
+   field(FRST, "")
+   field(FRVL, "")
+   field(FVST, "")
+   field(FVVL, "")
+   field(SXST, "")
+   field(SXVL, "")
+   field(SVST, "")
+   field(SVVL, "")
+}
+
+# The following records are specific to the Prosilica
 
 ###############################################################################
 #  These records are for network and frame statistics                         #
@@ -144,68 +254,486 @@ record(longin, "$(P)$(R)PSBadFrameCounter_RBV")
    field(SCAN, "I/O Intr")
 }
 
-
 ###############################################################################
-#  Note: The following are records defined in ADAsyn.template.                #
-#        We are changing some of the fields here to reflect valid values for  #
-#        Prosilica                                                            #
+#  These records are for hardware synchronization and digital I/O             #
 ###############################################################################
 
-###############################################################################
-#  These records control the trigger mode.                                    # 
-###############################################################################
-record(mbbo, "$(P)$(R)TriggerMode")
+record(bi, "$(P)$(R)SyncIn1Level_RBV")
 {
-   field(ZRST, "Free Run")
-   field(ZRVL, "0")
-   field(ONST, "Sync In 1")
-   field(ONVL, "1")
-   field(TWST, "Sync In 2")
-   field(TWVL, "2")
-   field(THST, "Sync In 3")
-   field(THVL, "3")
-   field(FRST, "Sync In 4")
-   field(FRVL, "4")
-   field(FVST, "Fixed Rate")
-   field(FVVL, "5")
-   field(SXST, "Software")
-   field(SXVL, "6")
- }
-
-record(mbbi, "$(P)$(R)TriggerMode_RBV")
-{
-   field(ZRST, "Free Run")
-   field(ZRVL, "0")
-   field(ONST, "Sync In 1")
-   field(ONVL, "1")
-   field(TWST, "Sync In 2")
-   field(TWVL, "2")
-   field(THST, "Sync In 3")
-   field(THVL, "3")
-   field(FRST, "Sync In 4")
-   field(FRVL, "4")
-   field(FVST, "Fixed Rate")
-   field(FVVL, "5")
-   field(SXST, "Software")
-   field(SXVL, "6")
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_SYNC_IN_1_LEVEL")
+   field(ZNAM, "Low")
+   field(ONAM, "High")
    field(SCAN, "I/O Intr")
 }
 
-###############################################################################
-#  These records control the file format.                                     # 
-###############################################################################
-record(mbbo, "$(P)$(R)FileFormat")
+record(bi, "$(P)$(R)SyncIn2Level_RBV")
 {
-    field(ZRST, "TIFF")
-    field(ZRVL, "0")
-    field(ONST, "Invalid")
-    field(ONVL, "1")
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_SYNC_IN_2_LEVEL")
+   field(ZNAM, "Low")
+   field(ONAM, "High")
+   field(SCAN, "I/O Intr")
 }
 
-record(mbbi, "$(P)$(R)FileFormat_RBV")
+record(mbbo, "$(P)$(R)SyncOut1Mode")
 {
-    field(ZRST, "TIFF")
-    field(ZRVL, "0")
-    field(ONST, "Invalid")
-    field(ONVL, "1")
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_SYNC_OUT_1_MODE")
+   field(ZRST, "GPO")
+   field(ZRVL, "0")
+   field(ONST, "AcqTrigReady")
+   field(ONVL, "1")
+   field(TWST, "FrameTrigReady")
+   field(TWVL, "2")
+   field(THST, "FrameTrigger")
+   field(THVL, "3")
+   field(FRST, "Exposing")
+   field(FRVL, "4")
+   field(FVST, "FrameReadout")
+   field(FVVL, "5")
+   field(SXST, "Imaging")
+   field(SXVL, "6")
+   field(SVST, "Acquiring")
+   field(SVVL, "7")
+   field(EIST, "SyncIn1")
+   field(EIVL, "8")
+   field(NIST, "SyncIn2")
+   field(NIVL, "9")
+   field(TEST, "SyncIn3")
+   field(TEVL, "10")
+   field(ELST, "SyncIn4")
+   field(ELVL, "11")
+   field(TVST, "Strobe1")
+   field(TVVL, "12")
+   field(TTST, "Strobe2")
+   field(TTVL, "13")
+   field(FTST, "Strobe3")
+   field(FTVL, "14")
+   field(FFST, "Strobe4")
+   field(FFVL, "15")
 }
+
+record(mbbi, "$(P)$(R)SyncOut1Mode_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_SYNC_OUT_1_MODE")
+   field(ZRST, "GPO")
+   field(ZRVL, "0")
+   field(ONST, "AcqTrigReady")
+   field(ONVL, "1")
+   field(TWST, "FrameTrigReady")
+   field(TWVL, "2")
+   field(THST, "FrameTrigger")
+   field(THVL, "3")
+   field(FRST, "Exposing")
+   field(FRVL, "4")
+   field(FVST, "FrameReadout")
+   field(FVVL, "5")
+   field(SXST, "Imaging")
+   field(SXVL, "6")
+   field(SVST, "Acquiring")
+   field(SVVL, "7")
+   field(EIST, "SyncIn1")
+   field(EIVL, "8")
+   field(NIST, "SyncIn2")
+   field(NIVL, "9")
+   field(TEST, "SyncIn3")
+   field(TEVL, "10")
+   field(ELST, "SyncIn4")
+   field(ELVL, "11")
+   field(TVST, "Strobe1")
+   field(TVVL, "12")
+   field(TTST, "Strobe2")
+   field(TTVL, "13")
+   field(FTST, "Strobe3")
+   field(FTVL, "14")
+   field(FFST, "Strobe4")
+   field(FFVL, "15")
+   field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)SyncOut1Level")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_SYNC_OUT_1_LEVEL")
+   field(ZNAM, "False")
+   field(ONAM, "True")
+}
+
+record(bi, "$(P)$(R)SyncOut1Level_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_SYNC_OUT_1_LEVEL")
+   field(ZNAM, "False")
+   field(ONAM, "True")
+   field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)SyncOut1Invert")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_SYNC_OUT_1_INVERT")
+   field(ZNAM, "Off")
+   field(ONAM, "On")
+}
+
+record(bi, "$(P)$(R)SyncOut1Invert_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_SYNC_OUT_1_INVERT")
+   field(ZNAM, "Off")
+   field(ONAM, "On")
+   field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)SyncOut2Mode")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_SYNC_OUT_2_MODE")
+   field(ZRST, "GPO")
+   field(ZRVL, "0")
+   field(ONST, "AcqTrigReady")
+   field(ONVL, "1")
+   field(TWST, "FrameTrigReady")
+   field(TWVL, "2")
+   field(THST, "FrameTrigger")
+   field(THVL, "3")
+   field(FRST, "Exposing")
+   field(FRVL, "4")
+   field(FVST, "FrameReadout")
+   field(FVVL, "5")
+   field(SXST, "Imaging")
+   field(SXVL, "6")
+   field(SVST, "Acquiring")
+   field(SVVL, "7")
+   field(EIST, "SyncIn1")
+   field(EIVL, "8")
+   field(NIST, "SyncIn2")
+   field(NIVL, "9")
+   field(TEST, "SyncIn3")
+   field(TEVL, "10")
+   field(ELST, "SyncIn4")
+   field(ELVL, "11")
+   field(TVST, "Strobe1")
+   field(TVVL, "12")
+   field(TTST, "Strobe2")
+   field(TTVL, "13")
+   field(FTST, "Strobe3")
+   field(FTVL, "14")
+   field(FFST, "Strobe4")
+   field(FFVL, "15")
+}
+
+record(mbbi, "$(P)$(R)SyncOut2Mode_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_SYNC_OUT_2_MODE")
+   field(ZRST, "GPO")
+   field(ZRVL, "0")
+   field(ONST, "AcqTrigReady")
+   field(ONVL, "1")
+   field(TWST, "FrameTrigReady")
+   field(TWVL, "2")
+   field(THST, "FrameTrigger")
+   field(THVL, "3")
+   field(FRST, "Exposing")
+   field(FRVL, "4")
+   field(FVST, "FrameReadout")
+   field(FVVL, "5")
+   field(SXST, "Imaging")
+   field(SXVL, "6")
+   field(SVST, "Acquiring")
+   field(SVVL, "7")
+   field(EIST, "SyncIn1")
+   field(EIVL, "8")
+   field(NIST, "SyncIn2")
+   field(NIVL, "9")
+   field(TEST, "SyncIn3")
+   field(TEVL, "10")
+   field(ELST, "SyncIn4")
+   field(ELVL, "11")
+   field(TVST, "Strobe1")
+   field(TVVL, "12")
+   field(TTST, "Strobe2")
+   field(TTVL, "13")
+   field(FTST, "Strobe3")
+   field(FTVL, "14")
+   field(FFST, "Strobe4")
+   field(FFVL, "15")
+   field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)SyncOut2Level")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_SYNC_OUT_2_LEVEL")
+   field(ZNAM, "False")
+   field(ONAM, "True")
+}
+
+record(bi, "$(P)$(R)SyncOut2Level_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_SYNC_OUT_2_LEVEL")
+   field(ZNAM, "False")
+   field(ONAM, "True")
+   field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)SyncOut2Invert")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_SYNC_OUT_2_INVERT")
+   field(ZNAM, "Off")
+   field(ONAM, "On")
+}
+
+record(bi, "$(P)$(R)SyncOut2Invert_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_SYNC_OUT_2_INVERT")
+   field(ZNAM, "Off")
+   field(ONAM, "On")
+   field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)SyncOut3Mode")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_SYNC_OUT_3_MODE")
+   field(ZRST, "GPO")
+   field(ZRVL, "0")
+   field(ONST, "AcqTrigReady")
+   field(ONVL, "1")
+   field(TWST, "FrameTrigReady")
+   field(TWVL, "2")
+   field(THST, "FrameTrigger")
+   field(THVL, "3")
+   field(FRST, "Exposing")
+   field(FRVL, "4")
+   field(FVST, "FrameReadout")
+   field(FVVL, "5")
+   field(SXST, "Imaging")
+   field(SXVL, "6")
+   field(SVST, "Acquiring")
+   field(SVVL, "7")
+   field(EIST, "SyncIn1")
+   field(EIVL, "8")
+   field(NIST, "SyncIn2")
+   field(NIVL, "9")
+   field(TEST, "SyncIn3")
+   field(TEVL, "10")
+   field(ELST, "SyncIn4")
+   field(ELVL, "11")
+   field(TVST, "Strobe1")
+   field(TVVL, "12")
+   field(TTST, "Strobe2")
+   field(TTVL, "13")
+   field(FTST, "Strobe3")
+   field(FTVL, "14")
+   field(FFST, "Strobe4")
+   field(FFVL, "15")
+}
+
+record(mbbi, "$(P)$(R)SyncOut3Mode_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_SYNC_OUT_3_MODE")
+   field(ZRST, "GPO")
+   field(ZRVL, "0")
+   field(ONST, "AcqTrigReady")
+   field(ONVL, "1")
+   field(TWST, "FrameTrigReady")
+   field(TWVL, "2")
+   field(THST, "FrameTrigger")
+   field(THVL, "3")
+   field(FRST, "Exposing")
+   field(FRVL, "4")
+   field(FVST, "FrameReadout")
+   field(FVVL, "5")
+   field(SXST, "Imaging")
+   field(SXVL, "6")
+   field(SVST, "Acquiring")
+   field(SVVL, "7")
+   field(EIST, "SyncIn1")
+   field(EIVL, "8")
+   field(NIST, "SyncIn2")
+   field(NIVL, "9")
+   field(TEST, "SyncIn3")
+   field(TEVL, "10")
+   field(ELST, "SyncIn4")
+   field(ELVL, "11")
+   field(TVST, "Strobe1")
+   field(TVVL, "12")
+   field(TTST, "Strobe2")
+   field(TTVL, "13")
+   field(FTST, "Strobe3")
+   field(FTVL, "14")
+   field(FFST, "Strobe4")
+   field(FFVL, "15")
+   field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)SyncOut3Level")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_SYNC_OUT_3_LEVEL")
+   field(ZNAM, "False")
+   field(ONAM, "True")
+}
+
+record(bi, "$(P)$(R)SyncOut3Level_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_SYNC_OUT_3_LEVEL")
+   field(ZNAM, "False")
+   field(ONAM, "True")
+   field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)SyncOut3Invert")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_SYNC_OUT_3_INVERT")
+   field(ZNAM, "Off")
+   field(ONAM, "On")
+}
+
+record(bi, "$(P)$(R)SyncOut3Invert_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_SYNC_OUT_3_INVERT")
+   field(ZNAM, "Off")
+   field(ONAM, "On")
+   field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)Strobe1Mode")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_STROBE_1_MODE")
+   field(ZRST, "AcqTrigReady")
+   field(ZRVL, "0")
+   field(ONST, "FrameTrigReady")
+   field(ONVL, "1")
+   field(TWST, "FrameTrigger")
+   field(TWVL, "2")
+   field(THST, "FrameReadout")
+   field(THVL, "3")
+   field(FRST, "Exposing")
+   field(FRVL, "4")
+   field(FVST, "Acquiring")
+   field(FVVL, "5")
+   field(SXST, "SyncIn1")
+   field(SXVL, "6")
+   field(SVST, "SyncIn2")
+   field(SVVL, "7")
+   field(EIST, "SyncIn3")
+   field(EIVL, "8")
+   field(NIST, "SyncIn4")
+   field(NIVL, "9")
+}
+
+record(mbbi, "$(P)$(R)Strobe1Mode_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_STROBE_1_MODE")
+   field(ZRST, "AcqTrigReady")
+   field(ZRVL, "0")
+   field(ONST, "FrameTrigReady")
+   field(ONVL, "1")
+   field(TWST, "FrameTrigger")
+   field(TWVL, "2")
+   field(THST, "FrameReadout")
+   field(THVL, "3")
+   field(FRST, "Exposing")
+   field(FRVL, "4")
+   field(FVST, "Acquiring")
+   field(FVVL, "5")
+   field(SXST, "SyncIn1")
+   field(SXVL, "6")
+   field(SVST, "SyncIn2")
+   field(SVVL, "7")
+   field(EIST, "SyncIn3")
+   field(EIVL, "8")
+   field(NIST, "SyncIn4")
+   field(NIVL, "9")
+}
+
+record(bo, "$(P)$(R)Strobe1CtlDuration")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_STROBE_1_CTL_DURATION")
+   field(ZNAM, "Off")
+   field(ONAM, "On")
+}
+
+record(bi, "$(P)$(R)Strobe1CtlDuration_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_STROBE_1_CTL_DURATION")
+   field(ZNAM, "Off")
+   field(ONAM, "On")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)Strobe1Delay")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_STROBE_1_DELAY")
+   field(PREC, "6")
+}
+
+record(ai, "$(P)$(R)Strobe1Delay_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_STROBE_1_DELAY")
+   field(PREC, "6")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)Strobe1Duration")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_STROBE_1_DURATION")
+   field(PREC, "6")
+}
+
+record(ai, "$(P)$(R)Strobe1Duration_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_STROBE_1_DURATION")
+   field(PREC, "6")
+   field(SCAN, "I/O Intr")
+}
+
+
