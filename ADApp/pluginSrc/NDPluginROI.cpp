@@ -341,20 +341,20 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
 
         /* Update the parameters that may have changed */
         pDim = &pROI->dims[0];
-        setIntegerParam(NDPluginROIDim0Min,  pDim->offset);
-        setIntegerParam(NDPluginROIDim0Size, pDim->size);
-        setIntegerParam(NDPluginROIDim0MaxSize, pArray->dims[userDims[0]].size);
-        setIntegerParam(NDPluginROIDim0Bin,  pDim->binning);
+        setIntegerParam(roi, NDPluginROIDim0Min,  pDim->offset);
+        setIntegerParam(roi, NDPluginROIDim0Size, pDim->size);
+        setIntegerParam(roi, NDPluginROIDim0MaxSize, pArray->dims[userDims[0]].size);
+        setIntegerParam(roi, NDPluginROIDim0Bin,  pDim->binning);
         pDim = &pROI->dims[1];
-        setIntegerParam(NDPluginROIDim1Min,  pDim->offset);
-        setIntegerParam(NDPluginROIDim1Size, pDim->size);
-        setIntegerParam(NDPluginROIDim1MaxSize, pArray->dims[userDims[1]].size);
-        setIntegerParam(NDPluginROIDim1Bin,  pDim->binning);
+        setIntegerParam(roi, NDPluginROIDim1Min,  pDim->offset);
+        setIntegerParam(roi, NDPluginROIDim1Size, pDim->size);
+        setIntegerParam(roi, NDPluginROIDim1MaxSize, pArray->dims[userDims[1]].size);
+        setIntegerParam(roi, NDPluginROIDim1Bin,  pDim->binning);
         pDim = &pROI->dims[2];
-        setIntegerParam(NDPluginROIDim2Min,  pDim->offset);
-        setIntegerParam(NDPluginROIDim2Size, pDim->size);
-        setIntegerParam(NDPluginROIDim2MaxSize, pArray->dims[userDims[2]].size);
-        setIntegerParam(NDPluginROIDim2Bin,  pDim->binning);
+        setIntegerParam(roi, NDPluginROIDim2Min,  pDim->offset);
+        setIntegerParam(roi, NDPluginROIDim2Size, pDim->size);
+        setIntegerParam(roi, NDPluginROIDim2MaxSize, pArray->dims[userDims[2]].size);
+        setIntegerParam(roi, NDPluginROIDim2Bin,  pDim->binning);
 
         /* This function is called with the lock taken, and it must be set when we exit.
          * The following code can be exected without the mutex because we are not accessing elements of
@@ -639,17 +639,20 @@ asynStatus NDPluginROI::drvUserCreate(asynUser *pasynUser,
     
 
 extern "C" int drvNDROIConfigure(const char *portName, int queueSize, int blockingCallbacks, 
-                                 const char *NDArrayPort, int NDArrayAddr, int maxROIs, size_t maxMemory)
+                                 const char *NDArrayPort, int NDArrayAddr, int maxROIs, 
+                                 int maxBuffers, size_t maxMemory)
 {
-    new NDPluginROI(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxROIs, maxMemory);
+    new NDPluginROI(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxROIs, 
+                    maxBuffers, maxMemory);
     return(asynSuccess);
 }
 
 NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallbacks, 
-                         const char *NDArrayPort, int NDArrayAddr, int maxROIsIn, size_t maxMemory)
+                         const char *NDArrayPort, int NDArrayAddr, int maxROIsIn, 
+                         int maxBuffersIn, size_t maxMemory)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
-                   NDArrayPort, NDArrayAddr, maxROIsIn, NDPluginROILastROINParam, maxROIsIn, maxMemory,
+                   NDArrayPort, NDArrayAddr, maxROIsIn, NDPluginROILastROINParam, maxBuffersIn, maxMemory,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask, 
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask)
 {
