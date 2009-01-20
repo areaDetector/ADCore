@@ -7,13 +7,20 @@ DIRS += netCDFSrc
 # header and library files needed by both
 DIRS += prosilicaSupport
 DIRS += pluginSrc
+pluginSrc_DEPEND_DIRS = ADSrc netCDFSrc
 DIRS += simDetectorSrc
+simDetectorSrc_DEPEND_DIRS = pluginSrc
 DIRS += prosilicaSrc
+prosilicaSrc_DEPEND_DIRS = pluginSrc
 DIRS += pilatusSrc
+pilatusSrc_DEPEND_DIRS   = pluginSrc
 DIRS += marCCDSrc
+marCCDSrc_DEPEND_DIRS = pluginSrc
 # Uncomment this line if you have the header files for ADSC on Linux
 #DIRS += adscSrc
+adscSrc_DEPEND_DIRS = pluginSrc
 DIRS += roperSrc
+roperSrc_DEPEND_DIRS = pluginSrc
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *db*))
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *Db*))
 include $(TOP)/configure/RULES_DIRS
