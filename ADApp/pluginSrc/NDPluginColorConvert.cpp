@@ -64,6 +64,8 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     dims[2] = numRows;
                     /* There is a problem: the uniqueId and timeStamp are not preserved! */
                     pArrayOut = this->pNDArrayPool->alloc(ndims, dims, pArray->dataType, 0, NULL);
+                    pArrayOut->uniqueId = pArray->uniqueId;
+                    pArrayOut->timeStamp = pArray->timeStamp;
                     pDataOut = (epicsType *)pArrayOut->pData;
                     /* For now we use the Prosilica library functions to convert Bayer to RGB */
                     /* This requires creating their tPvFrame data structure */
@@ -378,7 +380,7 @@ NDPluginColorConvert::NDPluginColorConvert(const char *portName, int queueSize, 
                                            const char *NDArrayPort, int NDArrayAddr, size_t maxMemory)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
-                   NDArrayPort, NDArrayAddr, 1, NDPluginColorConvertLastParam, 10, maxMemory,  //SHOULD ONLY NEED 1 BUFFER, NOT 10 !!
+                   NDArrayPort, NDArrayAddr, 1, NDPluginColorConvertLastParam, 10, maxMemory,
                    asynGenericPointerMask, 
                    asynGenericPointerMask)
 {
