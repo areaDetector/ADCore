@@ -20,7 +20,7 @@ class NDPluginColorConvert : public NDPluginDriver {
 public:
     NDPluginColorConvert(const char *portName, int queueSize, int blockingCallbacks, 
                          const char *NDArrayPort, int NDArrayAddr,
-                         size_t maxMemory);
+                         int maxBuffers, size_t maxMemory);
 
     /* These methods override the virtual methods in the base class */
     void processCallbacks(NDArray *pArray);
