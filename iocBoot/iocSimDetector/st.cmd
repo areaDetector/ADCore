@@ -24,6 +24,8 @@ dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStdArrays.template", "P=13SIM1:,R=ima
 drvNDStdArraysConfigure("SIM2Image", 1, 0, "SIM2", 0, 2000000)
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13SIM1:,R=image2:,PORT=SIM2Image,ADDR=0,TIMEOUT=1,NDARRAY_PORT=SIM1,NDARRAY_ADDR=0")
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStdArrays.template", "P=13SIM1:,R=image2:,PORT=SIM2Image,ADDR=0,TIMEOUT=1,SIZE=8,FTVL=UCHAR,NELEMENTS=1392640")
+# Load the database to use with Stephen Mudie's IDL code
+#dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/EPICS_AD_Viewer.template", "P=13SIM1:, R=image1:")
 
 # Create a file saving plugin
 drvNDFileConfigure("SIM1File", 20, 0, "SIM1", 0)
@@ -31,7 +33,7 @@ dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13SIM1:,R=fil
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFile.template",      "P=13SIM1:,R=file1:,PORT=SIM1File,ADDR=0,TIMEOUT=1")
 
 # Create an ROI plugin
-drvNDROIConfigure("SIM1ROI", 20, 0, "SIM1", 0, 20, 20000000)
+drvNDROIConfigure("SIM1ROI", 20, 0, "SIM1", 0, 8, 20, 20000000)
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13SIM1:,R=ROI1:,  PORT=SIM1ROI,ADDR=0,TIMEOUT=1,NDARRAY_PORT=SIM1,NDARRAY_ADDR=0")
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROI.template",       "P=13SIM1:,R=ROI1:,  PORT=SIM1ROI,ADDR=0,TIMEOUT=1")
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13SIM1:,R=ROI1:0:,PORT=SIM1ROI,ADDR=0,TIMEOUT=1,HIST_SIZE=256")
