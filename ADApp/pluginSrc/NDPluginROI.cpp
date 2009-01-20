@@ -318,7 +318,13 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
             userDims[0] = 1;
             userDims[1] = 2;
             userDims[2] = 0;
-        } else {
+        }
+        else if (pArray->colorMode == NDColorModeRGB2) {
+            userDims[0] = 0;
+            userDims[1] = 2;
+            userDims[2] = 1;
+        } 
+        else {
             for (dim=0; dim<ND_ARRAY_MAX_DIMS; dim++) userDims[dim] = dim;
         }
         for (dim=0; dim<pArray->ndims; dim++) {
@@ -366,6 +372,11 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
             dims[0] = dims[2];
             dims[2] = dims[1];
             dims[1] = tempDim;
+        }
+        else if (pArray->colorMode == NDColorModeRGB2) {
+            tempDim = dims[1];
+            dims[1] = dims[2];
+            dims[2] = tempDim;
         }
         this->pNDArrayPool->convert(pArray, &this->pArrays[roi], (NDDataType_t)dataType, dims);
         pROIArray  = this->pArrays[roi];
