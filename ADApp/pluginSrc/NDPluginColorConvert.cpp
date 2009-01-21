@@ -316,6 +316,12 @@ void NDPluginColorConvert::processCallbacks(NDArray *pArray)
         case NDUInt16:
             this->convertColor<epicsUInt16>(pArray);
             break;
+       case NDInt32:
+            this->convertColor<epicsInt32>(pArray);
+            break;
+        case NDUInt32:
+            this->convertColor<epicsUInt32>(pArray);
+            break;
         case NDFloat32:
             this->convertColor<epicsFloat32>(pArray);
             break;
