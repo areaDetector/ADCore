@@ -283,11 +283,6 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     /* Loop over the ROIs in this driver */
     for (roi=0; roi<this->maxROIs; roi++) {
         pROI        = &this->pROIs[roi];
-        pROI->min   = 0; setDoubleParam(roi, NDPluginROIMinValue,  pROI->min);
-        pROI->max   = 0; setDoubleParam(roi, NDPluginROIMaxValue,  pROI->max);
-        pROI->mean  = 0; setDoubleParam(roi, NDPluginROIMeanValue, pROI->mean);
-        pROI->total = 0; setDoubleParam(roi, NDPluginROITotal,     pROI->total);
-        pROI->net   = 0; setDoubleParam(roi, NDPluginROINet,       pROI->net);
         /* We always keep the last array so read() can use it.  
          * Release previous one. Reserve new one below. */
         if (this->pArrays[roi]) {
@@ -296,7 +291,6 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         }
         getIntegerParam(roi, NDPluginROIUse, &use);
         if (!use) {
-            callParamCallbacks(roi, roi);
             continue;
         }
         
