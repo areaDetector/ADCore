@@ -115,6 +115,34 @@ NDArray* NDArrayPool::alloc(int ndims, int *dims, NDDataType_t dataType, int dat
     return (pArray);
 }
 
+NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, int copyData)
+{
+    //const char *functionName = "copy";
+    int dimSizeOut[ND_ARRAY_MAX_DIMS];
+    int i;
+    int numCopy;
+    NDArrayInfo arrayInfo;
+    
+    /* If the output array does not exist then create it */
+    if (!pOut) {
+        for (i=0; i<pIn->ndims; i++) dimSizeOut[i] = pIn->dims[i].size;
+        pOut = this->alloc(pIn->ndims, dimSizeOut, pIn->dataType, 0, NULL);
+    }
+    pOut->colorMode = pIn->colorMode;
+    pOut->uniqueId = pIn->uniqueId;
+    pOut->timeStamp = pIn->timeStamp;
+    pOut->ndims = pIn->ndims;
+    memcpy(pOut->dims, pIn->dims, sizeof(pIn->dims));
+    pOut->dataType = pIn->dataType;
+    if (copyData) {
+        pIn->getInfo(&arrayInfo);
+        numCopy = arrayInfo.totalBytes;
+        if (pOut->dataSize < numCopy) numCopy = pOut->dataSize;
+        memcpy(pOut->pData, pIn->pData, numCopy);
+    }
+    return(pOut);
+}
+
 int NDArrayPool::reserve(NDArray *pArray)
 {
     const char *functionName = "reserve";
@@ -206,8 +234,6 @@ template <typename dataTypeOut> int convertTypeSwitch (NDArray *pIn, NDArray *pO
 }
 
 
-/* This macro computes an output image from an input image, selecting a region of interest
- * with binning and data type conversion. */
 template <typename dataTypeIn, typename dataTypeOut> void convertDim(NDArray *pIn, NDArray *pOut, 
                                                                 void *pDataIn, void *pDataOut, int dim)
 {
@@ -227,7 +253,7 @@ template <typename dataTypeIn, typename dataTypeOut> void convertDim(NDArray *pI
         outStep *= pOutDims[i].size;
     }
     if (pOutDims[dim].reverse) {
-        inOffset += pOutDims[dim].size * pOutDims[dim].binning;
+        inOffset += (pOutDims[dim].size-1) * pOutDims[dim].binning;
         inDir = -1;
     }
     inc = inDir * inStep;
@@ -507,38 +533,6 @@ int NDArray::initDimension(NDDimension_t *pDimension, int size)
     pDimension->offset = 0;
     pDimension->reverse = 0;
     return ND_SUCCESS;
-}
-
-NDArray* NDArray::copy(NDArray *pOut)
-{
-    return(this->copy(pOut, 1));
-}
-
-NDArray* NDArray::copy(NDArray *pOut, int copyData)
-{
-    const char *functionName = "copy";
-    NDArrayPool *pNDArrayPool = (NDArrayPool *)this->owner;
-    int dimSizeOut[ND_ARRAY_MAX_DIMS];
-    int i;
-    
-    if (!pNDArrayPool) {
-        printf("%s: ERROR, no owner\n", functionName);
-        return(NULL);
-    }
-    
-    /* If the output array does not exist then create it */
-    if (!pOut) {
-        for (i=0; i<this->ndims; i++) dimSizeOut[i] = this->dims[i].size;
-        pOut = pNDArrayPool->alloc(this->ndims, dimSizeOut, this->dataType, this->dataSize, NULL);
-    }
-    pOut->colorMode = this->colorMode;
-    pOut->uniqueId = this->uniqueId;
-    pOut->timeStamp = this->timeStamp;
-    pOut->ndims = this->ndims;
-    memcpy(pOut->dims, this->dims, sizeof(this->dims));
-    pOut->dataType = this->dataType;
-    if (copyData) memcpy(pOut->pData, this->pData, this->dataSize);
-    return(pOut);
 }
 
 int NDArray::reserve()
