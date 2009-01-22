@@ -81,8 +81,6 @@ public:
     NDArray();
     int          initDimension   (NDDimension_t *pDimension, int size);
     int          getInfo         (NDArrayInfo_t *pInfo);
-    NDArray*     copy            (NDArray *pOut, int copyData);
-    NDArray*     copy            (NDArray *pOut);
     int          reserve(); 
     int          release();
 };
@@ -92,6 +90,7 @@ class NDArrayPool {
 public:
                  NDArrayPool   (int maxBuffers, size_t maxMemory);
     NDArray*     alloc         (int ndims, int *dims, NDDataType_t dataType, int dataSize, void *pData);
+    NDArray*     copy          (NDArray *pIn, NDArray *pOut, int copyData);
     int          reserve       (NDArray *pArray); 
     int          release       (NDArray *pArray);
     int          convert       (NDArray *pIn, 
