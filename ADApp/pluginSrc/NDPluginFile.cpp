@@ -330,7 +330,7 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
         case ADFileModeCapture:
             if (capture) {
                 if (numCaptured < numCapture) {
-                    pArray->copy(this->pCaptureNext++);
+                    this->pNDArrayPool->copy(pArray, this->pCaptureNext++, 1);
                     numCaptured++;
                     arrayCounter++;
                     setIntegerParam(addr, ADFileNumCaptured, numCaptured);

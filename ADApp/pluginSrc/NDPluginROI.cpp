@@ -269,7 +269,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
          * We do this by searching for the maximum element in the data and setting the
          * outline of each ROI to this value.  However, we are not allowed to modify the data
          * since other callbacks could be using it, so we need to make a copy */
-        pHighlights = pArray->copy(NULL);
+        pHighlights = this->pNDArrayPool->copy(pArray, NULL, 1);
         status = doComputeStatistics(pHighlights, &ROITemp);
         if (ROITemp.max == 0) ROITemp.max=1.;
         for (roi=0; roi<this->maxROIs; roi++) {

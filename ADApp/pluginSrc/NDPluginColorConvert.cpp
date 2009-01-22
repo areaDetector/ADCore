@@ -132,7 +132,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
             imageSize = rowSize * numRows;
             switch (colorModeOut) {
                 case NDColorModeRGB3:
-                    pArrayOut = pArray->copy(NULL, 0);
+                    pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0);
                     pDataOut = (epicsType *)pArrayOut->pData;
                     pIn = pDataIn;
                     pRedOut   = pDataOut;
@@ -149,7 +149,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     pArrayOut->colorMode = NDColorModeRGB3;
                     break;
                 case NDColorModeRGB2:
-                    pArrayOut = pArray->copy(NULL, 0);
+                    pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0);
                     pDataOut = (epicsType *)pArrayOut->pData;
                     pIn = pDataIn;
                     for (i=0; i<numRows; i++) {
@@ -177,7 +177,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
             imageSize = rowSize * numRows;
             switch (colorModeOut) {
                 case NDColorModeRGB1:
-                    pArrayOut = pArray->copy(NULL, 0);
+                    pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0);
                     pDataOut = (epicsType *)pArrayOut->pData;
                     pOut = pDataOut;
                     for (i=0; i<numRows; i++) {
@@ -196,7 +196,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     pArrayOut->colorMode = NDColorModeRGB1;
                     break;
                 case NDColorModeRGB3:
-                    pArrayOut = pArray->copy(NULL, 0);
+                    pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0);
                     pDataOut = (epicsType *)pArrayOut->pData;
                     pRedOut   = pDataOut;
                     pGreenOut = pDataOut + imageSize;
@@ -226,7 +226,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
             imageSize = rowSize * numRows;
             switch (colorModeOut) {
                 case NDColorModeRGB1:
-                    pArrayOut = pArray->copy(NULL, 0);
+                    pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0);
                     pDataOut = (epicsType *)pArrayOut->pData;
                     pRedIn   = pDataIn;
                     pGreenIn = pDataIn + imageSize;
@@ -243,7 +243,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     pArrayOut->colorMode = NDColorModeRGB1;                
                     break;
                 case NDColorModeRGB2:
-                    pArrayOut = pArray->copy(NULL, 0);
+                    pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0);
                     pDataOut = (epicsType *)pArrayOut->pData;
                     pRedIn   = pDataIn;
                     pGreenIn = pDataIn + imageSize;
@@ -271,7 +271,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
             break;
     }
     /* If the output array pointer is null then no conversion was done, copy the input to the output */
-    if (!pArrayOut) pArrayOut = pArray->copy(NULL);
+    if (!pArrayOut) pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 1);
     this->pArrays[0] = pArrayOut;
     epicsMutexLock(this->mutexId);
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
