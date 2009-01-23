@@ -253,7 +253,7 @@ template <typename dataTypeIn, typename dataTypeOut> void convertDim(NDArray *pI
         outStep *= pOutDims[i].size;
     }
     if (pOutDims[dim].reverse) {
-        inOffset += (pOutDims[dim].size-1) * pOutDims[dim].binning;
+        inOffset += pOutDims[dim].size * pOutDims[dim].binning - 1;
         inDir = -1;
     }
     inc = inDir * inStep;
