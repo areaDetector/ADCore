@@ -276,6 +276,22 @@ record(mbbi, "$(P)$(R)ColorMode_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(mbbi, "$(P)$(R)BayerPattern_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BAYER_PATTERN")
+   field(ZRST, "RGGB")
+   field(ZRVL, "0")
+   field(ONST, "GBRG")
+   field(ONVL, "1")
+   field(TWST, "GRBG")
+   field(TWVL, "2")
+   field(THST, "BGGR")
+   field(THVL, "3")
+   field(SCAN, "I/O Intr")
+}
+
 ###################################################################
 #  These records are the uniqueId and time stamp of the array     #
 ###################################################################
