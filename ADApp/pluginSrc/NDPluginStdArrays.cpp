@@ -90,9 +90,8 @@ asynStatus NDPluginStdArrays::readArray(asynUser *pasynUser, epicsType *value, s
     NDArrayInfo_t arrayInfo;
     NDDimension_t outDims[ND_ARRAY_MAX_DIMS];
     int i;
-    int addr=0;
 
-    myArray = this->pArrays[addr];
+    myArray = this->pArrays[0];
     switch(command) {
         case NDPluginStdArraysData:
             /* If there is valid data available we already have a copy of it.
@@ -144,7 +143,6 @@ void NDPluginStdArrays::processCallbacks(NDArray *pArray)
      * It is called with the mutex already locked.
      */
      
-    int addr=0;
     int int8Initialized=0;
     int int16Initialized=0;
     int int32Initialized=0;
@@ -192,12 +190,12 @@ void NDPluginStdArrays::processCallbacks(NDArray *pArray)
     epicsMutexLock(this->mutexId);
     /* We always keep the last array so read() can use it.  
      * Release previous one, reserve new one */
-    if (this->pArrays[addr]) this->pArrays[addr]->release();
+    if (this->pArrays[0]) this->pArrays[0]->release();
     pArray->reserve();
-    this->pArrays[addr] = pArray;
+    this->pArrays[0] = pArray;
     /* Update the parameters.  The counter should be updated after data are posted
      * because clients might use that to detect new data */
-    callParamCallbacks(addr, addr);
+    callParamCallbacks();
 }
 
 
