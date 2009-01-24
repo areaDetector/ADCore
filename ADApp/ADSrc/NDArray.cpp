@@ -61,6 +61,7 @@ NDArray* NDArrayPool::alloc(int ndims, int *dims, NDDataType_t dataType, int dat
         pArray->owner = this;
         pArray->dataType = dataType;
         pArray->colorMode = NDColorModeMono;
+        pArray->bayerPattern = NDBayerRGGB;
         pArray->ndims = ndims;
         memset(pArray->dims, 0, sizeof(pArray->dims));
         for (i=0; i<ndims && i<ND_ARRAY_MAX_DIMS; i++) {
@@ -129,6 +130,7 @@ NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, int copyData)
         pOut = this->alloc(pIn->ndims, dimSizeOut, pIn->dataType, 0, NULL);
     }
     pOut->colorMode = pIn->colorMode;
+    pOut->bayerPattern = pIn->bayerPattern;
     pOut->uniqueId = pIn->uniqueId;
     pOut->timeStamp = pIn->timeStamp;
     pOut->ndims = pIn->ndims;
@@ -261,7 +263,7 @@ template <typename dataTypeIn, typename dataTypeOut> void convertDim(NDArray *pI
     for (in=0, out=0; out<pOutDims[dim].size; out++, in++) {
         for (bin=0; bin<pOutDims[dim].binning; bin++) {
             if (dim > 0) {
-                convertDimension(pIn, pOut, pDIn, pDOut, dim-1);
+                convertDim <dataTypeIn, dataTypeOut> (pIn, pOut, pDIn, pDOut, dim-1);
             } else {
                 *pDOut += (dataTypeOut)*pDIn;
             }
@@ -399,6 +401,7 @@ int NDArrayPool::convert(NDArray *pIn,
     }
     /* Copy fields from input to output */
     pOut->colorMode = pIn->colorMode;
+    pOut->bayerPattern = pIn->bayerPattern;
     pOut->timeStamp = pIn->timeStamp;
     pOut->uniqueId = pIn->uniqueId;
     /* Replace the dimensions with those passed to this function */
@@ -481,7 +484,8 @@ int NDArrayPool::report(int details)
 
 NDArray::NDArray()
     : referenceCount(0), owner(NULL), 
-      uniqueId(0), timeStamp(0.0), ndims(0), dataType(NDInt8), colorMode(NDColorModeMono), dataSize(0), pData(NULL)
+      uniqueId(0), timeStamp(0.0), ndims(0), dataType(NDInt8), colorMode(NDColorModeMono), 
+      bayerPattern(NDBayerRGGB), dataSize(0), pData(NULL)
 {
     memset(this->dims, 0, sizeof(this->dims));
     memset(&this->node, 0, sizeof(this->node));
