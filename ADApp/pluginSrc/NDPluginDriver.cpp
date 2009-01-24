@@ -41,6 +41,7 @@ static asynParamString_t NDPluginDriverParamString[] = {
     {NDPluginDriverTimeStamp,             "TIME_STAMP" },
     {NDPluginDriverDataType,              "DATA_TYPE" },
     {NDPluginDriverColorMode,             "COLOR_MODE" },
+    {NDPluginDriverBayerPattern,          "BAYER_PATTERN" },
     {NDPluginDriverNDimensions,           "ARRAY_NDIMENSIONS"},
     {NDPluginDriverDimensions,            "ARRAY_DIMENSIONS"}
 };
@@ -121,6 +122,7 @@ void NDPluginDriver::processCallbacks(NDArray *pArray)
     setIntegerParam(NDPluginDriverNDimensions, pArray->ndims);
     setIntegerParam(NDPluginDriverDataType, pArray->dataType);
     setIntegerParam(NDPluginDriverColorMode, pArray->colorMode);
+    setIntegerParam(NDPluginDriverBayerPattern, pArray->bayerPattern);
     setIntegerParam(NDPluginDriverUniqueId, pArray->uniqueId);
     setDoubleParam(NDPluginDriverTimeStamp, pArray->timeStamp);
     /* See if the array dimensions have changed.  If so then do callbacks on them. */
@@ -550,6 +552,7 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     setDoubleParam (NDPluginDriverTimeStamp, 0.);
     setIntegerParam(NDPluginDriverDataType, 0);
     setIntegerParam(NDPluginDriverColorMode, 0);
+    setIntegerParam(NDPluginDriverBayerPattern, 0);
     setIntegerParam(NDPluginDriverNDimensions, 0);
 }
 
