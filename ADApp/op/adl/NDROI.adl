@@ -8,7 +8,7 @@ display {
 		x=154
 		y=55
 		width=390
-		height=525
+		height=550
 	}
 	clr=14
 	bclr=4
@@ -116,7 +116,7 @@ rectangle {
 		x=5
 		y=35
 		width=380
-		height=485
+		height=510
 	}
 	"basic attribute" {
 		clr=14
@@ -126,7 +126,7 @@ rectangle {
 "related display" {
 	object {
 		x=172
-		y=465
+		y=490
 		width=130
 		height=20
 	}
@@ -177,7 +177,7 @@ rectangle {
 text {
 	object {
 		x=22
-		y=465
+		y=490
 		width=140
 		height=20
 	}
@@ -190,7 +190,7 @@ text {
 text {
 	object {
 		x=52
-		y=415
+		y=440
 		width=110
 		height=20
 	}
@@ -203,7 +203,7 @@ text {
 "related display" {
 	object {
 		x=172
-		y=415
+		y=440
 		width=100
 		height=20
 	}
@@ -218,7 +218,7 @@ text {
 text {
 	object {
 		x=12
-		y=390
+		y=415
 		width=150
 		height=20
 	}
@@ -231,7 +231,7 @@ text {
 menu {
 	object {
 		x=172
-		y=390
+		y=415
 		width=100
 		height=20
 	}
@@ -244,7 +244,7 @@ menu {
 "text update" {
 	object {
 		x=278
-		y=391
+		y=416
 		width=100
 		height=18
 	}
@@ -259,7 +259,7 @@ menu {
 "related display" {
 	object {
 		x=172
-		y=492
+		y=517
 		width=130
 		height=20
 	}
@@ -290,7 +290,7 @@ menu {
 text {
 	object {
 		x=138
-		y=440
+		y=465
 		width=150
 		height=20
 	}
@@ -303,7 +303,7 @@ text {
 text {
 	object {
 		x=82
-		y=493
+		y=518
 		width=80
 		height=20
 	}
@@ -315,7 +315,7 @@ text {
 }
 "text entry" {
 	object {
-		x=172
+		x=175
 		y=65
 		width=100
 		height=20
@@ -330,7 +330,7 @@ text {
 }
 "text update" {
 	object {
-		x=278
+		x=281
 		y=66
 		width=100
 		height=18
@@ -345,7 +345,7 @@ text {
 }
 text {
 	object {
-		x=32
+		x=35
 		y=65
 		width=130
 		height=20
@@ -358,7 +358,7 @@ text {
 }
 text {
 	object {
-		x=62
+		x=65
 		y=40
 		width=100
 		height=20
@@ -371,7 +371,7 @@ text {
 }
 "text entry" {
 	object {
-		x=172
+		x=175
 		y=40
 		width=100
 		height=20
@@ -386,7 +386,7 @@ text {
 }
 "text update" {
 	object {
-		x=278
+		x=281
 		y=41
 		width=100
 		height=18
@@ -401,7 +401,7 @@ text {
 }
 "text entry" {
 	object {
-		x=172
+		x=175
 		y=165
 		width=100
 		height=20
@@ -416,7 +416,7 @@ text {
 }
 "text update" {
 	object {
-		x=278
+		x=281
 		y=166
 		width=100
 		height=18
@@ -431,7 +431,7 @@ text {
 }
 text {
 	object {
-		x=32
+		x=35
 		y=165
 		width=130
 		height=20
@@ -444,7 +444,7 @@ text {
 }
 text {
 	object {
-		x=62
+		x=65
 		y=190
 		width=100
 		height=20
@@ -457,7 +457,7 @@ text {
 }
 "text update" {
 	object {
-		x=172
+		x=175
 		y=191
 		width=100
 		height=18
@@ -472,7 +472,7 @@ text {
 }
 "text entry" {
 	object {
-		x=172
+		x=175
 		y=215
 		width=100
 		height=20
@@ -487,7 +487,7 @@ text {
 }
 "text update" {
 	object {
-		x=278
+		x=281
 		y=216
 		width=100
 		height=18
@@ -502,7 +502,7 @@ text {
 }
 text {
 	object {
-		x=22
+		x=25
 		y=215
 		width=140
 		height=20
@@ -515,7 +515,7 @@ text {
 }
 text {
 	object {
-		x=52
+		x=55
 		y=90
 		width=110
 		height=20
@@ -528,7 +528,7 @@ text {
 }
 menu {
 	object {
-		x=172
+		x=175
 		y=90
 		width=100
 		height=20
@@ -541,7 +541,7 @@ menu {
 }
 "text update" {
 	object {
-		x=278
+		x=281
 		y=91
 		width=100
 		height=18
@@ -556,48 +556,7 @@ menu {
 }
 text {
 	object {
-		x=12
-		y=140
-		width=150
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Callbacks block"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=172
-		y=140
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(R)BlockingCallbacks"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=278
-		y=141
-		width=100
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)BlockingCallbacks_RBV"
-		clr=54
-		bclr=4
-	}
-	limits {
-	}
-}
-text {
-	object {
-		x=72
+		x=75
 		y=115
 		width=90
 		height=20
@@ -610,7 +569,7 @@ text {
 }
 "text entry" {
 	object {
-		x=172
+		x=175
 		y=115
 		width=100
 		height=20
@@ -625,7 +584,7 @@ text {
 }
 "text update" {
 	object {
-		x=278
+		x=281
 		y=116
 		width=100
 		height=18
@@ -640,7 +599,7 @@ text {
 }
 text {
 	object {
-		x=62
+		x=65
 		y=265
 		width=100
 		height=20
@@ -653,7 +612,7 @@ text {
 }
 "text update" {
 	object {
-		x=172
+		x=175
 		y=266
 		width=65
 		height=18
@@ -669,7 +628,7 @@ text {
 }
 "text update" {
 	object {
-		x=242
+		x=245
 		y=266
 		width=65
 		height=18
@@ -685,7 +644,7 @@ text {
 }
 composite {
 	object {
-		x=72
+		x=75
 		y=290
 		width=179
 		height=20
@@ -694,7 +653,7 @@ composite {
 	children {
 		text {
 			object {
-				x=72
+				x=75
 				y=290
 				width=90
 				height=20
@@ -707,7 +666,7 @@ composite {
 		}
 		"text update" {
 			object {
-				x=172
+				x=175
 				y=291
 				width=79
 				height=18
@@ -726,97 +685,7 @@ composite {
 }
 text {
 	object {
-		x=72
-		y=340
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Unique ID"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=172
-		y=341
-		width=79
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)UniqueId_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
-		x=72
-		y=365
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Time stamp"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=172
-		y=366
-		width=150
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)TimeStamp_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
-		x=72
-		y=315
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Color mode"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=172
-		y=316
-		width=79
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)ColorMode_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
-		x=72
+		x=75
 		y=240
 		width=90
 		height=20
@@ -829,7 +698,7 @@ text {
 }
 "text update" {
 	object {
-		x=172
+		x=175
 		y=241
 		width=79
 		height=18
@@ -846,7 +715,7 @@ text {
 }
 "text update" {
 	object {
-		x=312
+		x=315
 		y=266
 		width=65
 		height=18
@@ -857,6 +726,189 @@ text {
 		bclr=4
 	}
 	align="horiz. centered"
+	limits {
+	}
+}
+composite {
+	object {
+		x=15
+		y=140
+		width=366
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=15
+				y=140
+				width=150
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Callbacks block"
+			align="horiz. right"
+		}
+		menu {
+			object {
+				x=175
+				y=140
+				width=100
+				height=20
+			}
+			control {
+				chan="$(P)$(R)BlockingCallbacks"
+				clr=14
+				bclr=51
+			}
+		}
+		"text update" {
+			object {
+				x=281
+				y=141
+				width=100
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)BlockingCallbacks_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+	}
+}
+text {
+	object {
+		x=75
+		y=365
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Unique ID"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=175
+		y=366
+		width=79
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)UniqueId_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=75
+		y=390
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Time stamp"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=175
+		y=391
+		width=150
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TimeStamp_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+composite {
+	object {
+		x=75
+		y=315
+		width=179
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=75
+				y=315
+				width=90
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Color mode"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=175
+				y=316
+				width=79
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)ColorMode_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			format="string"
+			limits {
+			}
+		}
+	}
+}
+text {
+	object {
+		x=75
+		y=340
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Bayer pattern"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=175
+		y=341
+		width=79
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)BayerPattern_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
 	limits {
 	}
 }
