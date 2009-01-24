@@ -77,6 +77,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     pFrame->ImageBuffer = pArray->pData;
                     pFrame->ImageBufferSize = pArray->dataSize;
                     pFrame->ImageSize = pFrame->ImageBufferSize;
+                    pFrame->BayerPattern = (tPvBayerPattern)pArray->bayerPattern;
                     switch(pArray->dataType) {
                         case NDInt8:
                         case NDUInt8:
@@ -335,6 +336,7 @@ void NDPluginColorConvert::processCallbacks(NDArray *pArray)
             break;
     }
     
+    callParamCallbacks();
     /* Call any clients who have registered for NDArray callbacks */
     doCallbacksGenericPointer(this->pArrays[0], NDArrayData, 0);
 }
