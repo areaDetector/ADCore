@@ -7,6 +7,7 @@
  
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <netcdf.h>
 
 #include "NDArray.h"
@@ -29,6 +30,8 @@ int NDFileWriteNetCDF(const char *fileName, NDFileNetCDFState_t *pState,
     char dimName[25];
     int retval;
     nc_type ncType=NC_NAT;
+    static const char *colorModes[] = {"Mono", "Bayer", "RGB1", "RGB2", "RGB3", "YUV444", "YUV422", "YUV421"};
+    static const char *bayerPatterns[] = {"RGGB", "GBRG", "GRBG", "BGGR"};
     int i, j;
     int dim0;
 
@@ -92,6 +95,16 @@ int NDFileWriteNetCDF(const char *fileName, NDFileNetCDFState_t *pState,
             ERR(retval);
         if ((retval = nc_put_att_int(pState->ncId, NC_GLOBAL, "dimReverse", 
                                      NC_INT, pArray->ndims, reverse)))
+            ERR(retval);
+            
+        if ((retval = nc_put_att_text(pState->ncId, NC_GLOBAL, "colorMode", 
+                                     strlen(colorModes[pArray->colorMode]),
+                                     colorModes[pArray->colorMode])))
+            ERR(retval);
+
+        if ((retval = nc_put_att_text(pState->ncId, NC_GLOBAL, "bayerPattern", 
+                                     strlen(bayerPatterns[pArray->bayerPattern]),
+                                     bayerPatterns[pArray->bayerPattern])))
             ERR(retval);
             
         /* Convert from NDArray data types to netCDF data types */
