@@ -16,8 +16,7 @@ DIRS += pilatusSrc
 pilatusSrc_DEPEND_DIRS   = pluginSrc
 DIRS += marCCDSrc
 marCCDSrc_DEPEND_DIRS = pluginSrc
-# Uncomment this line if you have the header files for ADSC on Linux
-#DIRS += adscSrc
+DIRS += adscSrc
 adscSrc_DEPEND_DIRS = pluginSrc
 DIRS += roperSrc
 roperSrc_DEPEND_DIRS = pluginSrc
