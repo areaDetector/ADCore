@@ -1,0 +1,47 @@
+                Quick overview of IDL Viewers directory
+                                Mark Rivers 
+                              January 25, 2009
+
+This directory contains IDL source code for controlling EPICS areaDetector
+detectors, and for reading the netCDF files written by the NDPluginFile plugin.
+
+It also contains a standalone IDL file, epics_ad_display.sav, to run the 
+epics_ad_display GUI to display images from areaDetector detectors.
+This file can be run for free on any Linux or Windows system under
+the IDL Virtual Machine, which can be downloaded free of charge
+from http://www.ittvis.com/idl
+
+This directory also contains the shareable libraries used to
+call EPICS Channel Access from IDL (ezcaIDL.dll for Windows
+and libezcaIDL.so for Linux).
+
+Before using the IDL source code or .sav file it is necessary
+to define the environment variable EZCA_IDL_SHARE to point to the complete
+path to ezcaIDL.dll or libezcaIDL.so.  For example on Linux:
+
+setenv EZCA_IDL_SHARE /home/epics/support/areaDetector/1-4/Viewers/IDL/libezcaIDL.so
+
+On Windows use My Computer/Properties/Advanced/Environment Variables/ to add a new
+environment variable EZCA_IDL_SHARE to point to the location of ezcaIDL.dll on your
+system.
+
+To run the standalone IDL epics_ad_display.sav file without an IDL license exectute the
+following on Linux:
+
+idl -32 -vm=epics_ad_display.sav
+
+When the GUI comes up type the base PV name for the NDStdArrays plugin for your
+detector in the "Base PV" widget.  For example with the simulation detector supplied 
+with the areaDetector application this is "13SIM1:image1:" (without the quotes).  
+Once the detector begins acquiring images they should be displayed in the IDL window.
+
+On Windows you can just double click on the epics_ad_display.sav file and
+it will start the GUI.  Again type the base PV name for the NDStdArrays plugin
+in the "Base PV" widget.
+
+To run the GUI from the IDL command line on a system with an IDL license
+type the epics_ad_display command followed by the base PV name of the
+NDStdArrays plugin.  For example:
+
+IDL> epics_ad_display, '13SIM1:image1:'
+
