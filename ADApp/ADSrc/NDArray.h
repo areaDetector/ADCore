@@ -50,7 +50,7 @@ typedef enum
     NDBayerRGGB        = 0,    /* First line RGRG, second line GBGB... */
     NDBayerGBRG        = 1,    /* First line GBGB, second line RGRG... */
     NDBayerGRBG        = 2,    /* First line GRGR, second line BGBG... */
-    NDBayerBGGR        = 3,    /* First line BGBG, second line GRGR... */
+    NDBayerBGGR        = 3     /* First line BGBG, second line GRGR... */
 } NDBayerPattern_t;
 
 typedef struct NDDimension {
