@@ -7,7 +7,7 @@ a<html xmlns="http://www.w3.org/1999/xhtml">
     <h1>
       areaDetector Plugin NDPluginFile</h1>
     <h2>
-      November 24, 2008</h2>
+      January 26, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -52,11 +52,15 @@ a<html xmlns="http://www.w3.org/1999/xhtml">
       by available memory in the number of arrays that can be saved.</li>
   </ol>
   <p>
+    Note that the colorMode and bayerFormat must not be changed while file capture or
+    file streaming are in progress because that would change the structure of the data
+    array.</p>
+  <p>
     The NDPluginFile public interface is defined in NDPluginFile.h as follows:
   </p>
   <pre>/* Note that the file format enum must agree with the mbbo/mbbi records in the NDFile.template file */
 typedef enum {
-    NDFileFormatNetCDF,
+    NDFileFormatNetCDF
 } NDPluginFileFormat_t;
 
 ...
@@ -155,25 +159,28 @@ public:
     The following is the header contents of a netCDF file produced by this plugin. This
     information was produced with the following command:</p>
   <pre>
-ncdump -h test_A_2.nc
+ncdump -h testB_3.nc
 
-netcdf test_A_2 {
+netcdf testB_3 {
 dimensions:
-	numArrays = 200 ;
-	dim0 = 480 ;
-	dim1 = 640 ;
+        numArrays = UNLIMITED ; // (10 currently)
+        dim0 = 1024 ;
+        dim1 = 1360 ;
+        dim2 = 3 ;
 variables:
-	int uniqueId(numArrays) ;
-	double timeStamp(numArrays) ;
-	byte array_data(numArrays, dim0, dim1) ;
+        int uniqueId(numArrays) ;
+        double timeStamp(numArrays) ;
+        byte array_data(numArrays, dim0, dim1, dim2) ;
 
 // global attributes:
-		:dataType = 0 ;
-		:numArrayDims = 2 ;
-		:dimSize = 640, 480 ;
-		:dimOffset = 0, 0 ;
-		:dimBinning = 1, 1 ;
-		:dimReverse = 0, 0 ;
+                :dataType = 1 ;
+                :numArrayDims = 3 ;
+                :dimSize = 3, 1360, 1024 ;
+                :dimOffset = 0, 0, 0 ;
+                :dimBinning = 1, 1, 1 ;
+                :dimReverse = 0, 0, 0 ;
+                :colorMode = "RGB1" ;
+                :bayerPattern = "RGGB" ;
 }
   </pre>
   <p>
@@ -196,7 +203,10 @@ variables:
       dimSize is an array[numArrayDims] containing the size of each dimension, with the
       fastest varying dimension first. dimOffset, dimBinning, and dimReverse are the values
       of the offset, binning and reverse fields in the NDDimension_t structure for each
-      dimension.</li>
+      dimension. colorMode is the color mode of the data. It is a string rather than the
+      NDColorMode_T value, so that it is easy to understand and independent of changes
+      to the enum definition. bayerPattern is the Bayer pattern of the data, also as a
+      string rather than an enum. </li>
   </ul>
   <h2 id="IDL">
     IDL file reading function</h2>
@@ -204,18 +214,13 @@ variables:
     There is an IDL function, <a href="http://cars.uchicago.edu/software/idl/detector_routines.html#read_nd_netcdf">
       read_nd_netcdf</a> that can be used to read the netCDF files created by this plugin.
     This routine is contained in the <a href="http://cars.uchicago.edu/software/idl/detectors.html#read_nd_netcdf">
-      CARS IDL detector package</a>. This function is currently limited to reading the
-    entire file at once, so it may fail for very large files on machines with insufficient
-    virtual memory. This will be fixed in a future release.
+      CARS IDL detector package</a>. This function is also contained in the areaDetector
+    distribution in the Viewers/IDL directory.
   </p>
   <h2 id="Future">
     Future plans</h2>
   <p>
     Additional file formats, such as TIFF and HDF may be supported in the future.
-  </p>
-  <p>
-    The IDL function described above will be enhanced to allow reading only a subset
-    of the file at a time.
   </p>
 </body>
 </html>
