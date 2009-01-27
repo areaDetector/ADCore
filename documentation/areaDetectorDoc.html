@@ -7,7 +7,7 @@
     <h1>
       areaDetector: EPICS Area Detector Support</h1>
     <h2>
-      December 7, 2008</h2>
+      January 20, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -35,6 +35,7 @@
         <li><a href="NDPluginStdArrays.html">NDPluginStdArrays</a></li>
         <li><a href="NDPluginFile.html">NDPluginFile</a></li>
         <li><a href="NDPluginROI.html">NDPluginROI</a></li>
+        <li><a href="NDPluginColorConvert.html">NDPluginColorConvert</a></li>
       </ul>
     </li>
     <li><a href="#Detector_drivers">Detector drivers</a>
@@ -45,6 +46,8 @@
         <li><a href="adscDoc.html">ADSC driver</a></li>
         <li><a href="MarCCDDoc.html">MarCCD driver</a></li>
         <li><a href="RoperDoc.html">Roper driver</a></li>
+        <li><a href="http://controls.diamond.ac.uk/downloads/support/firewireDCAM/index.html">
+          Firewire driver</a></li>
       </ul>
     </li>
   </ul>
@@ -103,9 +106,10 @@
     <li>Layer 3. Code running at this level is called a "plug-in". This code registers
       with a driver for a callback whenever there is a new data array. The existing plugins
       implement file saving (NDPluginFile), region-of-interest (ROI) calculations (NDPluginROI),
-      and conversion of detector data to standard EPICS array types for use by Channel
-      Access clients (NDPluginStdArrays). Plugins are normally written in C++ and inherit
-      from NDPluginDriver. Existing plugins range from 280 to 650 lines of code.</li>
+      color mode conversion (NDPluginColorConvert), and conversion of detector data to
+      standard EPICS array types for use by Channel Access clients (NDPluginStdArrays).
+      Plugins are normally written in C++ and inherit from NDPluginDriver. Existing plugins
+      range from 300 to 700 lines of code.</li>
     <li>Layer 4. This is standard asyn device support that comes with the EPICS asyn module.</li>
     <li>Layer 5. These are standard EPICS records, and EPICS database (template) files
       that define records to communicate with drivers at Layer 2 and plugins at Layer
@@ -120,7 +124,7 @@
     dependencies in this code.
   </p>
   <ol>
-    <li><a href="http://www.aps.anl.gov/epics/base/R3-14/9-docs/AppDevGuide.pdf">libCom</a>.
+    <li><a href="http://www.aps.anl.gov/epics/base/R3-14/10-docs/AppDevGuide.pdf">libCom</a>.
       libCom from EPICS base provides operating-system independent functions for threads,
       mutexes, etc.</li>
     <li><a href="http://www.aps.anl.gov/epics/modules/soft/asyn">asyn</a>. asyn is a module
@@ -143,7 +147,10 @@
     Access clients connected to the NDPluginStdArrays driver will automatically switch
     to displaying this subregion. Similarly, the NDPluginFile plugin can be switched
     at run-time from saving the entire image to saving a selected ROI, just by changing
-    its input source.
+    its input source. Plugins can be used to form an image processing pipeline, for
+    example with a detector providing data to a color convert plugin, which feed an
+    ROI plugin, which feeds a file saving plugin. Each plugin can run in its own thread,
+    and hence in its own core on a modern multi-core CPU.
   </p>
   <p>
     The use of plugins is optional, and it is only plugins that require the driver to
@@ -449,6 +456,8 @@ public:
     data from drivers to plugins. The NDArray class is defined as follows:
   </p>
   <pre>#define ND_ARRAY_MAX_DIMS 10
+#define ND_SUCCESS 0
+#define ND_ERROR -1
 
 /* Enumeration of array data types */
 typedef enum
@@ -463,6 +472,26 @@ typedef enum
     NDFloat64
 } NDDataType_t;
 
+/* Enumeration of color modes */
+typedef enum
+{
+    NDColorModeMono,
+    NDColorModeBayer,
+    NDColorModeRGB1,
+    NDColorModeRGB2,
+    NDColorModeRGB3,
+    NDColorModeYUV444,
+    NDColorModeYUV422,
+    NDColorModeYUV421
+} NDColorMode_t;
+
+typedef enum
+{
+    NDBayerRGGB        = 0,    /* First line RGRG, second line GBGB... */
+    NDBayerGBRG        = 1,    /* First line GBGB, second line RGRG... */
+    NDBayerGRBG        = 2,    /* First line GRGR, second line BGBG... */
+    NDBayerBGGR        = 3     /* First line BGBG, second line GRGR... */
+} NDBayerPattern_t;
 
 typedef struct NDDimension {
     int size;
@@ -491,6 +520,8 @@ public:
     int ndims;
     NDDimension_t dims[ND_ARRAY_MAX_DIMS];
     NDDataType_t dataType;
+    NDColorMode_t colorMode;
+    NDBayerPattern_t bayerPattern;
     int dataSize;
     void *pData;
 
@@ -498,12 +529,9 @@ public:
     NDArray();
     int          initDimension   (NDDimension_t *pDimension, int size);
     int          getInfo         (NDArrayInfo_t *pInfo);
-    int          copy            (NDArray *pOut);
     int          reserve(); 
     int          release();
 };
-
-
 </pre>
   <p>
     An NDArray is a general purpose class for handling array data. An NDArray object
@@ -554,6 +582,41 @@ public:
     <li><code>dataType</code> The data type of this array, one of the NDDataType_t enum
       values. The data types supported are signed and unsigned 8, 16, and 32-bit integers,
       and 32 and 64-bit floats. </li>
+    <li><code>colorMode</code> The color mode this array, one of the NDColorMode_t enum
+      values. The following are the supported color modes:
+      <ul>
+        <li><code>NDColorModeMono</code>: Monochromatic data, i.e. a single value at each
+          pixel.</li>
+        <li><code>NDColorModeBayer</code>: Bayer color. There is a single value at each pixel,
+          but the pixels have a color filter array in front of them. The supported Bayer filter
+          is the most common one, a repeating 2x2 array of
+          <pre>
+           Blue  Green
+           Green Red
+           </pre>
+          Transmitting data from the camera using the Bayer format consumes 3 times less bandwidth
+          than transmitting one of the RGB formats. However, it requires more computation
+          on the host to convert the data to an RGB format that most clients can display.</li>
+        <li><code>NDColorModeRGB1</code>: Red, green, blue data with pixel interlace, i.e.
+          the data array is [3, NX, NY], with the color being the fastest varying array index.</li>
+        <li><code>NDColorModeRGB2</code>: Red, green, blue data with row interlace, i.e. the
+          data array is [NX, 3, NY], with the color being the second fastest varying array
+          index.</li>
+        <li><code>NDColorModeRGB3</code>: Red, green, blue data with planar interlace, i.e.
+          the data array is [NX, NY, 3], with the color being the slowest varying array index.</li>
+        <li><code>NDColorModeYUV444</code>: YUV data with 96 bits for 4 pixels, or 24 bits
+          per pixel. This is the same number of bits as 8-bit RGB.</li>
+        <li><code>NDColorModeYUV422</code>: YUV data with 64 bits for 4 pixels, or 16 bits
+          per pixel. This is 2/3 of the number of bits required for 8-bit RGB.</li>
+        <li><code>NDColorModeYUV421</code>: YUV data with 48 bits for 4 pixels, or 12 bits
+          per pixel. This is 1/2 of the number of bits required for 8-bit RGB.</li>
+      </ul>
+    </li>
+    <li><code>bayerPattern</code> The Bayer pattern for this array, one of the NDBayerPattern_t
+      enum values. This value is only meaningful if colorMode is NDColorModeBayer. The
+      Bayer pattern values are explained in the comments above. This value is needed because
+      the Bayer pattern will change when reading out a subset of the chip, for example
+      if the X or Y offset values are not even numbers.</li>
     <li><code>dataSize</code> The size of the memory buffer pointed to by <code>pData</code>
       in bytes. This may be larger than the amount actually required to hold the data
       for this array.</li>
@@ -570,10 +633,6 @@ public:
     <li><code>getInfo</code>. This convenience method returns information about an NDArray,
       including the total number of elements, the number of byte per element, and the
       total number of bytes in the array.</li>
-    <li><code>copy</code>. This method makes a copy of an NDArray object. If the output
-      array pointer is NULL then it is first allocated. If the output array object already
-      exists (pOut!=NULL) then it must have sufficient memory allocated to it to hold
-      the data.</li>
     <li><code>reserve</code>. This method calls NDArrayPool->reserve() for this object.
       It increases the reference count for this array.</li>
     <li><code>release</code>. This method calls NDArrayPool->release() for this object.
@@ -594,13 +653,14 @@ public:
 public:
                  NDArrayPool   (int maxBuffers, size_t maxMemory);
     NDArray*     alloc         (int ndims, int *dims, NDDataType_t dataType, int dataSize, void *pData);
+    NDArray*     copy          (NDArray *pIn, NDArray *pOut, int copyData);
     int          reserve       (NDArray *pArray); 
     int          release       (NDArray *pArray);
     int          convert       (NDArray *pIn, 
                                 NDArray **ppOut,
                                 NDDataType_t dataTypeOut,
                                 NDDimension_t *outDims);
-    int          report        (int details);     
+    int          report        (int details);   
 </pre>
   <p>
     The methods of the NDArrayPool class are:
@@ -608,8 +668,10 @@ public:
   <ul>
     <li><code>NDArrayPool</code> This is the constructor for the class. The maxBuffers
       argument is the maximum number of NDArray objects that the pool is allowed to contain.
+      If this value is negative then there is no limit on the number of NDArray objects.
       The maxMemory argument is the maxiumum number of bytes of memory the the pool is
-      allowed to use, summed over all of the NDArray objects.</li>
+      allowed to use, summed over all of the NDArray objects. If this value is negative
+      then there is no limit on the amount of memory in the pool.</li>
     <li><code>alloc</code> This method allocates a new NDArray object. The first 3 arguments
       are required. ndims is the number of dimensions in the NDArray. dims is an array
       of dimensions, whose size must be at least ndims. dataType is the data type of the
@@ -625,6 +687,12 @@ public:
       NDArray would cause the cumulative memory allocated for the pool to exceed maxMemory
       then an error will be returned. alloc() sets the reference count for the returned
       NDArray to 1.</li>
+    <li><code>copy</code>. This method makes a copy of an NDArray object. If the output
+      array pointer is NULL then it is first allocated. If the output array object already
+      exists (pOut!=NULL) then it must have sufficient memory allocated to it to hold
+      the data. If the copyData flag is 1 then the array data is copied. If the copyData
+      flag is 0 then all array fields except the data itself are copied, and the data
+      will be initialized to 0.</li>
     <li><code>reserve</code>. This method increases the reference count for the NDArray
       object. Plugins must call reserve() when an NDArray is placed on a queue for later
       processing.</li>
@@ -714,8 +782,8 @@ public:
       file name in the ADFullFileName parameter from the ADFilePath, ADFileName, ADFileNumber,
       and ADFileTemplate parameters.</li>
     <li><code>setShutter</code> This method will open (1) or close (0) the shutter if
-      ADShutterMode==ADShutterModeEPICS.  Drivers will implement setShutter if they support
-      ADShutterModeDetector.  If ADShutterMode=ADShutterModeDetector they will control
+      ADShutterMode==ADShutterModeEPICS. Drivers will implement setShutter if they support
+      ADShutterModeDetector. If ADShutterMode=ADShutterModeDetector they will control
       the shutter directly, else they will call this method.</li>
   </ul>
   <h3 id="ADStdDriverParams">
@@ -1164,6 +1232,28 @@ typedef enum {
       </tr>
       <tr>
         <td align="center" colspan="7">
+          <b>Color mode</b></td>
+      </tr>
+      <tr>
+        <td>
+          ADColorMode</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Color mode (NDColorMode_t).</td>
+        <td>
+          COLOR_MODE</td>
+        <td>
+          $(P)$(R)ColorMode<br />
+          $(P)$(R)ColorMode_RBV</td>
+        <td>
+          mbbo<br />
+          mbbi</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7">
           <b>Frame type</b></td>
       </tr>
       <tr>
@@ -1217,6 +1307,22 @@ typedef enum {
           IMAGE_SIZE_Y</td>
         <td>
           $(P)$(R)ImageSizeY_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          ADImageSizeZ</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Size of the image data in the Z direction</td>
+        <td>
+          IMAGE_SIZE_Z</td>
+        <td>
+          $(P)$(R)ImageSizeZ_RBV</td>
         <td>
           longin</td>
       </tr>
@@ -2083,6 +2189,7 @@ epicsSnprintf(
     <li><a href="NDPluginStdArrays.html">NDPluginStdArrays</a></li>
     <li><a href="NDPluginFile.html">NDPluginFile</a></li>
     <li><a href="NDPluginROI.html">NDPluginROI</a></li>
+    <li><a href="NDPluginColorConvert.html">NDPluginColorConvert</a></li>
   </ul>
   <h2 id="Detector_drivers">
     Detector drivers</h2>
@@ -2097,11 +2204,12 @@ epicsSnprintf(
     <li><a href="adscDoc.html">ADSC driver</a></li>
     <li><a href="MarCCDDoc.html">MarCCD driver</a></li>
     <li><a href="RoperDoc.html">Roper driver</a></li>
+    <li><a href="http://controls.diamond.ac.uk/downloads/support/firewireDCAM/index.html">
+      Firewire driver</a></li>
   </ul>
   <p>
     In addition to these drivers, Brian Tieman from the APS is writing a driver for
-    the Perkin-Elmer flat-panel amorphous silicon detector. Ulrik Pedersen from Diamond
-    is writing a driver for the Flea Firewire cameras. I plan to write a driver for
-    the MAR-345 online image plate.</p>
+    the Perkin-Elmer flat-panel amorphous silicon detector. I plan to write a driver
+    for the MAR-345 online image plate.</p>
 </body>
 </html>
