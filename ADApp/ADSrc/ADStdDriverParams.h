@@ -85,6 +85,8 @@ typedef enum
 {
     /*    Name          asyn interface  access   Description  */
     
+    ADPortNameSelf,     /* (asynOctet,    r/o) Asyn port name of this driver instance */ 
+
     ADManufacturer,     /* (asynOctet,    r/o) Detector manufacturer name */ 
     ADModel,            /* (asynOctet,    r/o) Detector model name */
 
@@ -186,6 +188,8 @@ typedef enum
  * corresponding enum value in pasynUser->reason */
  
 static asynParamString_t ADStdDriverParamString[] = {
+    {ADPortNameSelf,   "PORT_NAME_SELF"},  
+    
     {ADManufacturer,   "MANUFACTURER"},  
     {ADModel,          "MODEL"       },  
 
