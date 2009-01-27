@@ -154,6 +154,7 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int paramTableSize, int ma
     //char *functionName = "ADDriver";
 
     /* Set some default values for parameters */
+    setStringParam(ADPortNameSelf, portName);
     setDoubleParam (ADGain,         1.0);
     setIntegerParam(ADBinX,         1);
     setIntegerParam(ADBinY,         1);
