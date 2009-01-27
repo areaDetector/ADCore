@@ -541,6 +541,7 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     }
 
     /* Set the initial values of some parameters */
+    setStringParam (ADPortNameSelf, portName);
     setStringParam (NDPluginDriverArrayPort, NDArrayPort);
     setIntegerParam(NDPluginDriverArrayAddr, NDArrayAddr);
     setIntegerParam(NDPluginDriverArrayCounter, 0);
