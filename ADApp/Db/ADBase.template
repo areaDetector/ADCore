@@ -3,13 +3,16 @@
 # March 9, 2008
 
 ###################################################################
-#  This record contains the asyn port name                        #
-#  about the detector                                             # 
+#  This record contains the asyn port name of this detector       #
 ###################################################################
 
 record(stringin, "$(P)$(R)PortName_RBV")
 {
-   field(VAL,  "$(PORT)")
+   field(PINI, "1")
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PORT_NAME_SELF")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
 }
 
 ###################################################################
