@@ -3,6 +3,19 @@
 # April 25, 2008
 
 ###################################################################
+#  This record contains the asyn port name of this plugin         #
+###################################################################
+
+record(stringin, "$(P)$(R)PortName_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PORT_NAME_SELF")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
 #  These records control the connection of the server to          #
 #  an NDArray driver port and address                             #
 ###################################################################
