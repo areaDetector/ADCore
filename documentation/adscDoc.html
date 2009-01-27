@@ -10,7 +10,7 @@
     <h1>
       areaDetector ADSC driver</h1>
     <h2>
-      September 17, 2008</h2>
+      January 26, 2009</h2>
     <h2>
       Lewis Muir</h2>
     <h2>
@@ -35,9 +35,9 @@
     Introduction</h2>
   <p>
     This is a driver for <a href="http://www.adsc-xray.com/">ADSC</a> detectors. Supported
-    models are: Q4 (with the upgrade to four computers), Q4r, Q210, Q210r, Q270, Q315, and
-    Q315r. This driver has been tested with the Q210 and Q210r. If you use this driver,
-    please report your success, noting your detector model, to the author.
+    models are: Q4 (with the upgrade to four computers), Q4r, Q210, Q210r, Q270, Q315,
+    and Q315r. This driver has been tested with the Q210 and Q210r. If you use this
+    driver, please report your success, noting your detector model, to the author.
   </p>
   <h2 id="Dependencies">
     Dependencies</h2>
@@ -48,12 +48,18 @@
   </p>
   <h2 id="Building">
     Building</h2>
+  <p>
+    By default, this driver is built against a simulated control library. To build against
+    the ADSC <tt>detcon_lib_th</tt> control library to control a real detector, follow
+    these steps:
+  </p>
   <ol>
-    <li>Build the ADSC control library</li>
+    <li>Build the ADSC <tt>auxlib</tt> library provided by ADSC</li>
+    <li>Build the ADSC <tt>detcon_lib_th</tt> library provided by ADSC</li>
     <li>Copy and rename, or create a symlink to, the ADSC <tt>auxlib.a</tt> library so
       that it has the name <tt>libauxlib.a</tt> to satisfy the EPICS build facility's
       requirement that a library file name start with <q><tt>lib</tt></q></li>
-    <li>Add <q><tt>DIRS += adscSrc</tt></q> to <tt>ADApp/Makefile</tt></li>
+    <li>Set <tt>USE_SIMADSC</tt> to <tt>NO</tt> in <tt>ADApp/adscSrc/Makefile</tt></li>
     <li>Set <tt>ADSC_HOME</tt> in <tt>ADApp/adscSrc/Makefile</tt></li>
     <li>Rebuild the <tt>areaDetector</tt> module</li>
   </ol>
@@ -85,8 +91,8 @@
   </p>
   <p>
     If being used in an IOC, and an EPICS PV interface with the driver is desired, the
-    <tt>ADBase.template</tt> and <tt>adsc.template</tt> databases should also be loaded
-    for the driver instance.
+    <tt>ADBase.template</tt>, <tt>NDFile.template</tt>, and <tt>adsc.template</tt> databases
+    should also be loaded for the driver instance.
   </p>
   <p>
     An example IOC configuration for this driver is at <tt>iocBoot/iocAdsc/st.cmd</tt>.
