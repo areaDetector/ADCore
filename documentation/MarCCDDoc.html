@@ -7,7 +7,7 @@
     <h1>
       areaDetector MarCCD driver</h1>
     <h2>
-      November 24, 2008</h2>
+      January 26, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -660,7 +660,7 @@ marCCDApp_registerRecordDeviceDriver(pdbbase)
 
 ###
 # Create the asyn port to talk to the MAR on port 2222
-drvAsynIPPortConfigure("marServer","gse-marccd2.cars.aps.anl.gov:2222")
+drvAsynIPPortConfigure("marServer","gse-marccd1.cars.aps.anl.gov:2222")
 # Set the input and output terminators.
 asynOctetSetInputEos("marServer", 0, "\n")
 asynOctetSetOutputEos("marServer", 0, "\n")
@@ -678,7 +678,7 @@ dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13MARCCD1:,R=
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStdArrays.template", "P=13MARCCD1:,R=image1:,PORT=MARImage,ADDR=0,TIMEOUT=1,SIZE=16,FTVL=SHORT,NELEMENTS=1200000")
 
 # Create an ROI plugin
-drvNDROIConfigure("MARROI", 5, 0, "MAR", 0, 10, -1)
+drvNDROIConfigure("MARROI", 5, 0, "MAR", 0, 10, 20, -1)
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13MARCCD1:,R=ROI1:,  PORT=MARROI,ADDR=0,TIMEOUT=1,NDARRAY_PORT=MAR,NDARRAY_ADDR=0")
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROI.template",       "P=13MARCCD1:,R=ROI1:,  PORT=MARROI,ADDR=0,TIMEOUT=1")
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MARCCD1:,R=ROI1:0:,PORT=MARROI,ADDR=0,TIMEOUT=1,HIST_SIZE=256")
@@ -718,7 +718,7 @@ dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:7:NetArray,DTYP=as
 #asynSetTraceIOMask("MARROI",0,4)
 
 # Load scan records
-dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=13MARCCD1:cam1:,MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
+dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=13MARCCD1:,MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
 
 set_requestfile_path("./")
 set_savefile_path("./autosave")
@@ -733,6 +733,7 @@ iocInit()
 
 # save things every thirty seconds
 create_monitor_set("auto_settings.req", 30,"P=13MARCCD1:,D=cam1:")
+
 </pre>
   <h2 id="MEDM_screens" style="text-align: left">
     MEDM screens</h2>
