@@ -7,7 +7,7 @@
     <h1>
       areaDetector Plugin NDPluginColorConvert</h1>
     <h2>
-      January 19, 2009</h2>
+      January 26, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -19,7 +19,7 @@
     <li><a href="#Overview">Overview</a></li>
     <li><a href="#Configuration">Configuration</a></li>
     <li><a href="#Screens">Screen shots</a></li>
-    <li><a href="#Future">Future plans</a></li>
+    <li><a href="#Restrictions">Restrictions</a></li>
   </ul>
   <h2 id="Overview">
     Overview
@@ -30,7 +30,7 @@
   <p>
     NDPluginColorConvert inherits from NDPluginDriver. NDPluginColorConvert receives
     an input NDArray with one color mode and outputs another NDArray with a (potentially)
-    different color mode. All other attributes of the array are preserved. The NDPluginStdArrays
+    different color mode. All other attributes of the array are preserved. The NDPluginColorConvert
     public interface is defined in NDPluginColorConvert.h as follows:</p>
   <pre>
 class NDPluginColorConvert : public NDPluginDriver {
@@ -51,8 +51,8 @@ public:
 }
 </pre>
   <p>
-    NDPluginStdArrays defines the following parameters. It also implements all of the
-    standard plugin parameters from <a href="pluginDoc.html#NDPluginDriver">NDPluginDriver</a>
+    NDPluginColorConvert defines the following parameters. It also implements all of
+    the standard plugin parameters from <a href="pluginDoc.html#NDPluginDriver">NDPluginDriver</a>
     . The EPICS database NDColorConvert.template provides access to these parameters,
     listed in the following table.
   </p>
@@ -87,7 +87,7 @@ public:
         <td>
           r/w</td>
         <td>
-          The output color mode.</td>
+          The output color mode (NDColorMode_t).</td>
         <td>
           COLOR_MODE_OUT</td>
         <td>
@@ -111,17 +111,19 @@ public:
     <li>RGB3 to RGB1 or RGB2</li>
   </ul>
   <p>
-    If the input color mode and output color mode are not one of these supported conversion
-    combinations then the output array is simply a copy of the input array and no conversion
-    is performed.</p>
+    The Bayer color conversion supports the 4 Bayer formats (NDBayerRGGB, NDBayerGBRG,
+    NDBayerGRBG, NDBayerBGGR) defined in NDArray.h. If the input color mode and output
+    color mode are not one of these supported conversion combinations then the output
+    array is simply a copy of the input array and no conversion is performed.</p>
   <h2 id="Configuration">
     Configuration</h2>
   <p>
     The NDPluginColorConvert plugin is created with the following command, either from
     C/C++ or from the EPICS IOC shell.
   </p>
-  <pre>drvNDColorConvertConfigure(const char *portName, int queueSize, int blockingCallbacks, 
-                        const char *NDArrayPort, int NDArrayAddr, size_t maxMemory)
+  <pre>int drvNDColorConvertConfigure(const char *portName, int queueSize, int blockingCallbacks, 
+                               const char *NDArrayPort, int NDArrayAddr, 
+                               int maxBuffers, size_t maxMemory);
   </pre>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tr>
@@ -171,85 +173,39 @@ public:
     </tr>
     <tr>
       <td>
+        <code>maxBuffers</code></td>
+      <td>
+        Maximum number of NDArray buffers to be created for plugin callbacks, i.e. for plugins
+        that will be getting called from this plugin. Passed to the constructor for the
+        NDPluginDriver base class.</td>
+    </tr>
+    <tr>
+      <td>
         <code>maxMemory</code></td>
       <td>
         Maximum number of bytes of memory to be allocated from the NDArrayPool. Passed to
-        the constructor for the NDPluginDriver base class. The NDStdArrays plugin allocates
-        2 NDArray objects, so this should be at least twice the size of the largest NDArray
-        to be used.</td>
+        the constructor for the NDPluginDriver base class.</td>
     </tr>
   </table>
   <h2 id="Screens">
     Screen shots</h2>
   <p>
     The following is the MEDM screen that provides access to the parameters in NDPluginDriver.h
-    and NDPluginStdArrays.h through records in NDPluginBase.template and NDStdArrays.template.
-    This is the MEDM screen that is normally used to control the display of images via
-    EPICS channel access.
+    and NDPluginColorConvert.h through records in NDPluginBase.template and NDColorConvert.template.
   </p>
   <div style="text-align: center">
     <h3>
-      NDStdArrays.adl</h3>
+      NDColorConvert.adl</h3>
     <p>
-      <img alt="NDStdArrays.png" src="NDStdArrays.png" /></p>
+      <img alt="NDColorConvert.png" src="NDColorConvert.png" /></p>
   </div>
-  <h2 id="IDLClient">
-    IDL Image Display Client</h2>
-  <p>
-    There is an IDL procedure called <a href="http://cars.uchicago.edu/software/idl/imaging_routines.html#epics_ad_display">
-      epics_ad_display</a> that can be used to display 2-dimensional array data that
-    the NDStdArrays plugin sends to EPICS. This IDL client is available as source code
-    (which requires an IDL license), and also as a pre-built IDL .sav file that can
-    be run for free under the IDL Virtual Machine. This IDL program can run on any machine
-    that IDL runs on, and that has the ezcaIDL shareable library built for it. This
-    includes Windows, Linux, Solaris, and Mac. <code>epics_ad_display</code> is included
-    in the <a href="http://cars.uchicago.edu/software/IDL/imaging.html">CARS IDL imaging
-      software.</a>
-  </p>
-  <p>
-    The control window for <code>epics_ad_display</code> is shown below. It has a field
-    to input the base name of the EPICS PVs with the image data. It also has fields
-    to enable/display the IDL display update, to change the display mode, to autoscale
-    the intensity, and to invert the image in the Y direction. If autoscale is set to
-    No then manual scaling can be entered in the Min and Max fields. The number of frames
-    per second actually being displayed by IDL is shown. There is a status window that
-    shows whether the EPICS PVs are connected and the time the last was array received,
-    updated once per second.
-  </p>
-  <div style="text-align: center">
-    <h3>
-      Main window for IDL epics_ad_display</h3>
-    <p>
-      <img alt="IDL_epics_ad_display.png" src="IDL_epics_ad_display.png" /></p>
-  </div>
-  <p>
-    <code>epics_ad_display</code> can use the simple IDL routine <code>tv</code> to
-    display the images. This is the fastest mode, and results in a non-scalable unadorned
-    window.</p>
-  <div style="text-align: center">
-    <h3>
-      IDL epics_ad_display using the IDL <code>tv</code> routine.</h3>
-    <p>
-      <img alt="IDL_epics_ad_display_tv.jpg" src="IDL_epics_ad_display_tv.jpg" /></p>
-  </div>
-  <p>
-    <code>epics_ad_display</code> can also use the routine <a href="http://cars.uchicago.edu/software/IDL/imaging_routines.html#IMAGE_DISPLAY">
-      image_display.pro</a> to display the images. This routine displays row and column
-    profiles as the cursor is moved. It allows changing the color lookup tables, and
-    zooming in (right mouse click) and out (left mouse click). The following is an example
-    of <code>image_display</code> displaying an image from the simulation detector.</p>
-  <div style="text-align: center">
-    <h3>
-      epics_ad_display using the image_display routine</h3>
-    <p>
-      <img alt="simDetector_image_display.png" src="simDetector_image_display.png" /></p>
-  </div>
-  <h2 id="Future">
-    Future plans</h2>
-  <p>
-    Stephen Mudie at the Australian Synchrotron has written a very nice IDL client to
-    display the EPICS images from the Flea Firewire cameras. This client should be converted
-    to display the data from this areaDetector plugin.
-  </p>
+  <h2 id="Restrictions">
+    Restrictions</h2>
+  <ul>
+    <li>The Bayer color conversion is done using a library function provided in the Prosilica
+      library. The source code for this function is not provided, and the binaries are
+      only available on Linux and Windows.</li>
+    <li>YUV color conversion is not supported. This may be added in a future release.</li>
+  </ul>
 </body>
 </html>
