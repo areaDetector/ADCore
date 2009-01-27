@@ -6,7 +6,7 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
-    Release 1-4 (XXX-December-2008)</h2>
+    Release 1-4 (26-January-2009)</h2>
   <ul>
     <li>Added a driver for Roper Scientific (i.e. Princeton Instruments and Photometrics)
       detectors. It uses the Microsoft COM interface to control the WinView or WinSpec
@@ -18,28 +18,34 @@
       features than the ccd version, and makes the detector data available via callbacks.
       This allows detector data to be displayed with EPICS clients, permits ROI or other
       plugin calculations, and allows saving in other file formats if desired. </li>
-    <li>Added support for color
+    <li>Added support for color:
       <ul>
-        <li>Added NDColorMode_t to NDArray.h.  NDArray has a new field indicating the color
-        mode.</li>
-        <li>Added new parameter ADColorMode to ADStdDriverParams.h and new record ColorMode to ADBase.template
-          and NDPluginBase.template.</li>
-        <li>Added a new plugin NDPluginColorConvert to convert colors.  It currently converts Bayer to RGB1, RGB2 or RGB3, RGB1 to
-          RGB2 or RGB3 and RGB3 to RGB1 or RGB2.</li>
-        <li>The Prosilica driver now supports color.  It supports RGB1 and Bayer directly, and RGB2 and RGB3 
-          through the NDPluginColorConvert plugin.</li>
+        <li>Added NDColorMode_t and NDBayerPattern_t to NDArray.h. Added new fields colorMode
+          and bayerPattern to NDArray structure to indicate the color mode.</li>
+        <li>Added new parameter ADColorMode to ADStdDriverParams.h and new record ColorMode
+          to ADBase.template.</li>
+        <li>Added new parameter NDColorMode and NDBayerPattern to NDPluginBase.h and new records
+          ColorMode and BayerPattern to NDPluginBase.template. Added these records to all
+          plugin medm screens.</li>
+        <li>Added a new plugin NDPluginColorConvert to convert colors. It currently converts
+          Bayer to RGB1, RGB2 or RGB3, RGB1 to RGB2 or RGB3 and RGB3 to RGB1 or RGB2.</li>
+        <li>The Prosilica driver now supports color. It supports RGB1 and Bayer directly,
+          and RGB2 and RGB3 through the NDPluginColorConvert plugin.</li>
+        <li>The NDPluginFile driver now saves the ColorMode and BayerPattern to the netCDF
+          files.</li>
       </ul>
     </li>
-    <li>Added a Viewers directory.  This contains an IDL viewer for displaying images.  
-      The viewer supports color and several different viewing
-      modes.  It can be run for free under the IDL Virtual Machine, and should work on any platform with a
-      version of ezcaIDL.so or ezcaIDL.dll built with EPICS 3.14. 
-      This directory also contains IDL class libraries for accessing areaDetector.  These classes are
-      used by the viewers, but can also be used for other IDL applications.</li>
+    <li>Added a Viewers directory. This contains an IDL viewer for displaying images.
+      The viewer supports color and several different viewing modes. It can be run for
+      free under the IDL Virtual Machine, and should work on any platform with a version
+      of ezcaIDL.so or ezcaIDL.dll built with EPICS 3.14. This directory also contains
+      IDL class libraries for accessing areaDetector. These classes are used by the viewers,
+      but can also be used for other IDL applications.</li>
     <li>Added new parameters in ADStdDriverParams.h
       <ul>
         <li>ADTemperature</li>
         <li>ADReadStatus</li>
+        <li>ADImageSizeZ</li>
         <li>ADNumExposuresCounter</li>
         <li>ADColorMode</li>
       </ul>
@@ -55,22 +61,47 @@
     <li>Prosilica driver
       <ul>
         <li>Added support for color. </li>
-        <li>Made minor changes to the code and to the build system to add support for running the driver
-          under Linux.  However, there appears to be a conflict between the Prosilica driver's use of
-          Linux signals and the use of signals in EPICS base.  The driver sometimes initializes successfully
-          and works, but most often it will crash with a SIGSEGV right after iocInit. Hopefully this will
-          be fixed in a future release.</li>
+        <li>Added support for the external sync in, sync out and strobe signals. The sync
+          signals can also be used for general-purpose digital I/O.</li>
+        <li>Made minor changes to the code and to the build system to add support for running
+          the driver under Linux. However, there appears to be a conflict between the Prosilica
+          driver's use of Linux signals and the use of signals in EPICS base. The driver sometimes
+          initializes successfully and works, but most often it will crash with a SIGSEGV
+          right after iocInit. Hopefully this will be fixed in a future release.</li>
       </ul>
     </li>
-    <li>Fixes to C++ code to avoid compiler warnings on Solaris. All but one of these
-      changes should be transparent to user-written code. There is one change that may
-      require changes to user-written plugins and drivers. The ADAsynPortDriver::pasynUser
-      member was renamed to ADAsynPortDriver::pasynUserSelf to avoid name conflicts with
-      a local variable called pasynUser. </li>
+    <li>NDPluginROI
+      <ul>
+        <li>Fixed bug with missing roi argument to setIntegerParam call, some parameters not
+          updating correctly.</li>
+        <li>Added maxBuffers argument to constructor and to iocsh configuration command. This
+          was a serious oversight in the previous versions. maxROIs was being used where the
+          missing maxBuffers parameter should have been used. Unfortunately it requires a
+          new argument to the iocsh drvNDROIConfigure command, which is not backwards compatible
+          with previous startup scripts.</li>
+      </ul>
+    </li>
+    <li>NDArray
+      <ul>
+        <li>Changed the NDArray::copy() methods to NDArrayPool::copy(). Previously the copy
+          was being allocated from the NDArrayPool of the copy source, rather than from the
+          caller's array pool.</li>
+        <li>Added colorMode and bayerPattern fields to NDArray class.</li>
+        <li>Fixed a bug in the NDArray::convertDim function that could cause an array bounds
+          error if a dimension was reversed.</li>
+      </ul>
+    </li>
+    <li>Added simulation code to ADSC driver. This allows it to be built and tested on
+      systems that do not have the ADSC hardware or software installed.</li>
     <li>Added $(P)$(R)AutoSave to the save/restore settings in NDFile_settings.req so
       it will be restored on reboot. This requires care when using drivers such as the
       Prosilica which can rapidly save very large data files, since file saving may be
       resumed on reboot. </li>
+    <li>Removed abusy record, replaced with new version of busy record from new busy module.</li>
+    <li>Renamed ADPlugin library to NDPlugin, because it is really N-dimensional.</li>
+    <li>Renamed marCCD library to marCCD_AD, because marCCD is already used in the ccd
+      module, and it conflicts. Changed marCCDSupport.dbd to marCCD_ADSupport.dbd, name
+      of register command, etc.</li>
   </ul>
   <h2 style="text-align: center">
     Release 1-3 (24-November-2008)</h2>

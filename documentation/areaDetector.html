@@ -59,6 +59,14 @@
       WinView, not the SMART software.</li>
   </ul>
   <p>
+    From <a href="http://www.ptgrey.com/products/flea2/index.asp">Point Grey Research</a></p>
+  <ul>
+    <li>The Flea2 line of Firewire cameras. It also supports other brands of Firewire
+      cameras. It currently works under Linux only. This support was written by Ulrik
+      Pedersen from Diamond Light Source and is distributed separately from the areaDetector
+      module.</li>
+  </ul>
+  <p>
     Please email any comments and bug reports to <a href="mailto:rivers@cars.uchicago.edu">
       Mark Rivers</a> who is responsible for coordinating development and releases.</p>
   <h2>
@@ -71,7 +79,8 @@
   <p>
     You can download the software from the links in the table below. The software is
     available both in source code form, and in pre-built form so that it can be used
-    without an EPICS build system.</p>
+    without an EPICS build system. The pre-built form includes binaries for linux-x86,
+    win32-x86, solaris-sparc and some vxWorks archtectures.</p>
   <table border="1" summary="Where to find the software">
     <tbody>
       <tr align="center">
@@ -94,7 +103,7 @@
         <td>
           1-4</td>
         <td>
-          XXX-Dec-2008</td>
+          26-Jan-2009</td>
         <td>
           <a href="http://cars.uchicago.edu/software/pub/areaDetectorR1-4.tgz">areaDetectorR1-4.tgz</a></td>
         <td>
@@ -187,15 +196,14 @@
           Required for</th>
       </tr>
       <tr>
-        <td rowspan="6">
+        <td rowspan="7">
           1-4</td>
         <td>
           EPICS base</td>
         <td>
           3.14.10</td>
         <td>
-          Base support. 3.14.8.2 also works, but the bug in epicsRingPointer can be a problem
-          on multi-processor Linux systems.</td>
+          Base support</td>
       </tr>
       <tr>
         <td>
@@ -207,9 +215,17 @@
       </tr>
       <tr>
         <td>
+          busy</td>
+        <td>
+          1-1</td>
+        <td>
+          busy record. This was formerly included in sscan, but now has its own support module.</td>
+      </tr>
+      <tr>
+        <td>
           calc</td>
         <td>
-          2-6-7</td>
+          2-7</td>
         <td>
           scalcout record, needed by sscan database and useful for other databases</td>
       </tr>
@@ -217,9 +233,9 @@
         <td>
           sscan</td>
         <td>
-          2-6-2</td>
+          2-6-3</td>
         <td>
-          sscan and busy records</td>
+          sscan record</td>
       </tr>
       <tr>
         <td>
@@ -233,7 +249,7 @@
         <td>
           autosave</td>
         <td>
-          4-4</td>
+          4-5</td>
         <td>
           Save/restore</td>
       </tr>
