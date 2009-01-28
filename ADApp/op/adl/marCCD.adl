@@ -1,12 +1,12 @@
 
 file {
-	name="/home/epics/devel/areaDetector/1-3beta/ADApp/op/adl/marCCD.adl"
+	name="/home/epics/devel/areaDetector/1-4/ADApp/op/adl/marCCD.adl"
 	version=030102
 }
 display {
 	object {
-		x=434
-		y=53
+		x=654
+		y=34
 		width=700
 		height=1020
 	}
@@ -452,6 +452,21 @@ text {
 		label="Save restore status"
 		name="save_restoreStatus_more.adl"
 		args="P=$(P)"
+	}
+	display[3] {
+		label="Image plugin"
+		name="NDStdArrays.adl"
+		args="P=$(P), R=$(I)"
+	}
+	display[4] {
+		label="ROI plugin"
+		name="NDROI.adl"
+		args="P=$(P), R=$(ROI)"
+	}
+	display[5] {
+		label="File plugin"
+		name="NDPluginFile.adl"
+		args="P=$(P), R=$(F)"
 	}
 	clr=14
 	bclr=51
