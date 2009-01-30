@@ -103,7 +103,7 @@
         <td>
           1-4</td>
         <td>
-          26-Jan-2009</td>
+          30-Jan-2009</td>
         <td>
           <a href="http://cars.uchicago.edu/software/pub/areaDetectorR1-4.tgz">areaDetectorR1-4.tgz</a></td>
         <td>
@@ -427,6 +427,8 @@
   </table>
   <h2>
     Installation and Building</h2>
+  <h3>
+    Source code version</h3>
   <p>
     After obtaining a copy of the distribution, it must be installed and built for use
     at your site. These steps only need to be performed once for the site (unless versions
@@ -451,9 +453,30 @@
       of EPICS base and to your versions of supporting modules.</li>
     <li>Run <tt>gnumake</tt> in the top level directory and check for any compilation
       errors.</li>
-    <li>Please email&nbsp; <a href="mailto:rivers@cars.uchicago.edu">Mark Rivers</a>&nbsp;
-      so that a record can be kept of which sites are using this software.</li>
   </ol>
+  <h3>
+    Prebuilt version</h3>
+  <ol>
+    <li>Create an installation directory for the module.</li>
+    <li>Place the distribution file in this directory. Then issue the commands (Unix style)
+      <pre>tar xvzf areaDetectorPrebuiltRX-Y.tgz</pre>
+    </li>
+    <li>In the iocBoot directory make a copy of the example ioxXXX directory for the detector
+      you are using and give it a new local name. By doing this you will be able to update
+      to later versions of areaDetector without overwriting modifications you make in
+      the iocXXX directory.</li>
+    <li>In the new iocXXX directory you just created edit st.cmd to change the PV prefix
+      $(P) to one that is unique to your site. PV prefixes must be unique on the subnet,
+      and if you use the default prefix there could be a conflict with other detectors
+      of the same type. </li>
+    <li>In the same iocXXX directory edit the file envPaths to point to the locations
+      of all of the support modules on your system. Normally this is handled by the EPICS
+      build system, but when using the prebuilt version this must be manually edited.
+      Do not worry about the path to EPICS_BASE, it is not required.</li>
+  </ol>
+  <p>
+    Please email&nbsp; <a href="mailto:rivers@cars.uchicago.edu">Mark Rivers</a>&nbsp;
+    so that a record can be kept of which sites are using this software.</p>
   <h2>
     In Use</h2>
   <p>
