@@ -7,7 +7,7 @@
     <h1>
       areaDetector Plugin NDPluginROI</h1>
     <h2>
-      September 19, 2008</h2>
+      January 30, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -48,8 +48,8 @@
     running in parallel, maximizing the use of multiple CPU cores. Individual ROIs are
     addressed through the asyn interfaces by the asyn "addr" field in the asynUser structure.
     Note that while the NDPluginROI should be N-dimensional, the EPICS interface to
-    the definition of the ROI is currently limited to 2-D. This limitation will be removed
-    in a future release.
+    the definition of the ROI is currently limited to a maximum of 3-D. This limitation
+    will be removed in a future release.
   </p>
   <p>
     NDPluginROI inherits from NDPluginDriver. The NDPluginROI public interface is defined
@@ -77,7 +77,7 @@ public:
     NDPluginROI.h defines the following parameters that are global to all ROIs for a
     plugin. It also implements all of the standard plugin parameters from NDPlugDriver.
     The EPICS database NDROI.template provide access to these parameters, listed in
-    the following table. 
+    the following table.
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
@@ -131,8 +131,7 @@ public:
     ROI in the plugin. The EPICS database NDROIN.template provide access to these parameters,
     listed in the following table. The pasynUser-&gtaddr is used to control which ROI
     is being addressed. Note that to reduce the width of this table the enum names have
-    been split into 2 lines, but these are just a single name, for example 
-    <code>NDPluginROIName</code>.
+    been split into 2 lines, but these are just a single name, for example <code>NDPluginROIName</code>.
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
@@ -158,7 +157,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROI<br/>Name</td>
+          NDPluginROI<br />
+          Name</td>
         <td>
           asynOctet</td>
         <td>
@@ -176,7 +176,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROI<br/>Use</td>
+          NDPluginROI<br />
+          Use</td>
         <td>
           asynInt32</td>
         <td>
@@ -199,7 +200,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROI<br/>Dim0Bin</td>
+          NDPluginROI<br />
+          Dim0Bin</td>
         <td>
           asynInt32</td>
         <td>
@@ -217,7 +219,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROI<br/>Dim1Bin</td>
+          NDPluginROI<br />
+          Dim1Bin</td>
         <td>
           asynInt32</td>
         <td>
@@ -235,7 +238,27 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROI<br/>Dim0Min</td>
+          NDPluginROI<br />
+          Dim2Bin</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Binning in the Z direction</td>
+        <td>
+          DIM2_BIN</td>
+        <td>
+          $(P)$(R)BinZ<br />
+          $(P)$(R)BinZ_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Dim0Min</td>
         <td>
           asynInt32</td>
         <td>
@@ -255,7 +278,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROI<br/>Dim1Min</td>
+          NDPluginROI<br />
+          Dim1Min</td>
         <td>
           asynInt32</td>
         <td>
@@ -274,7 +298,28 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROI<br/>Dim0Size</td>
+          NDPluginROI<br />
+          Dim2Min</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          First pixel in the ROI in the Z direction.<br />
+          0 is the first pixel in the array.</td>
+        <td>
+          DIM2_MIN</td>
+        <td>
+          $(P)$(R)MinZ<br />
+          $(P)$(R)MinZ_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Dim0Size</td>
         <td>
           asynInt32</td>
         <td>
@@ -292,13 +337,14 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROI<br/>Dim0Size</td>
+          NDPluginROI<br />
+          Dim1Size</td>
         <td>
           asynInt32</td>
         <td>
           r/w</td>
         <td>
-          Size of ROI in the Y direction</td>
+          Size of the ROI in the Y direction</td>
         <td>
           DIM1_SIZE</td>
         <td>
@@ -310,7 +356,78 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROI<br/>Dim0Reverse</td>
+          NDPluginROI<br />
+          Dim2Size</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Size of the ROI in the Z direction</td>
+        <td>
+          DIM2_SIZE</td>
+        <td>
+          $(P)$(R)SizeZ<br />
+          $(P)$(R)SizeZ_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Dim0MaxSize</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Maximum size of the ROI in the X direction</td>
+        <td>
+          DIM0_MAX_SIZE</td>
+        <td>
+          $(P)$(R)MaxSizeX_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Dim1MaxSize</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Maximum size of the ROI in the Y direction</td>
+        <td>
+          DIM1_MAX_SIZE</td>
+        <td>
+          $(P)$(R)MaxSizeY_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Dim2MaxSize</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Maximum size of the ROI in the Z direction</td>
+        <td>
+          DIM2_MAX_SIZE</td>
+        <td>
+          $(P)$(R)MaxSizeZ_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Dim0Reverse</td>
         <td>
           asynInt32</td>
         <td>
@@ -329,7 +446,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROI<br/>Dim0Reverse</td>
+          NDPluginROI<br />
+          Dim1Reverse</td>
         <td>
           asynInt32</td>
         <td>
@@ -348,7 +466,28 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROI<br/>DataType</td>
+          NDPluginROI<br />
+          Dim2Reverse</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Reverse ROI in the Z direction<br />
+          (0=No, 1=Yes)</td>
+        <td>
+          DIM2_REVERSE</td>
+        <td>
+          $(P)$(R)ReverseZ<br />
+          $(P)$(R)ReverseZ_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          DataType</td>
         <td>
           asynInt32</td>
         <td>
@@ -367,7 +506,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROI<br/>BgdWidth</td>
+          NDPluginROI<br />
+          BgdWidth</td>
         <td>
           asynInt32</td>
         <td>
@@ -417,12 +557,29 @@ public:
           longin</td>
       </tr>
       <tr>
+        <td>
+          ADImageSizeZ</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Size of the ROI data in the Z direction</td>
+        <td>
+          IMAGE_SIZE_Z</td>
+        <td>
+          $(P)$(R)ImageSizeZ_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
         <td align="CENTER" colspan="7,">
           <b>ROI statistics</b></td>
       </tr>
       <tr>
         <td>
-          NDPluginROI<br />ComputeStatistics</td>
+          NDPluginROI<br />
+          ComputeStatistics</td>
         <td>
           asynInt32</td>
         <td>
@@ -441,7 +598,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROI<br/>MinValue</td>
+          NDPluginROI<br />
+          MinValue</td>
         <td>
           asynFloat64</td>
         <td>
@@ -457,7 +615,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROI<br/>MaxValue</td>
+          NDPluginROI<br />
+          MaxValue</td>
         <td>
           asynFloat64</td>
         <td>
@@ -473,7 +632,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROI<br/>MeanValue</td>
+          NDPluginROI<br />
+          MeanValue</td>
         <td>
           asynFloat64</td>
         <td>
@@ -489,7 +649,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROI<br/>Total</td>
+          NDPluginROI<br />
+          Total</td>
         <td>
           asynFloat64</td>
         <td>
@@ -505,7 +666,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROI<br/>Net</td>
+          NDPluginROI<br />
+          Net</td>
         <td>
           asynFloat64</td>
         <td>
@@ -528,7 +690,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROI<br />ComputeHistogram</td>
+          NDPluginROI<br />
+          ComputeHistogram</td>
         <td>
           asynInt32</td>
         <td>
@@ -547,7 +710,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROI<br/>HistSize</td>
+          NDPluginROI<br />
+          HistSize</td>
         <td>
           asynInt32</td>
         <td>
@@ -565,7 +729,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROI<br/>HistMin</td>
+          NDPluginROI<br />
+          HistMin</td>
         <td>
           asynFloat64</td>
         <td>
@@ -584,7 +749,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROI<br/>HistMax</td>
+          NDPluginROI<br />
+          HistMax</td>
         <td>
           asynFloat64</td>
         <td>
@@ -603,7 +769,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROI<br/>HistEntropy</td>
+          NDPluginROI<br />
+          HistEntropy</td>
         <td>
           asynFloat64</td>
         <td>
@@ -622,7 +789,8 @@ public:
       </tr>
       <tr>
         <td>
-          NDPluginROI<br/>HistArray</td>
+          NDPluginROI<br />
+          HistArray</td>
         <td>
           asynFloat64Array</td>
         <td>
@@ -638,15 +806,24 @@ public:
       </tr>
     </tbody>
   </table>
+  <p>
+    A special case is made when the NDArray data has colorMode=NDColorModeRGB1 or NDColorModeRGB2.
+    In these cases the user interface to the array dimensions is changed so that the
+    Z PVs always refer to the color dimension (as for NDColorModeRGB3), the X dimension
+    refers to the horizontal direction, and the Y direction refers to the vertical direction.
+    This is very convenient, because it means that the ROI does not need to redefined
+    if, for example, the color mode is changed from Mono to RGB1, which would be required
+    if the X, Y and Z directions were not automatically switched.</p>
   <h2 id="Configuration">
     Configuration</h2>
   <p>
     The NDPluginROI plugin is created with the following command, either from C/C++
     or from the EPICS IOC shell.
   </p>
-  <pre>drvNDROIConfigure(const char *portName, int queueSize, int blockingCallbacks, 
-                  const char *NDArrayPort, int NDArrayAddr, int maxROIs,
-                  size_t maxMemory)
+  <pre>int drvNDROIConfigure(const char *portName, int queueSize, int blockingCallbacks, 
+                      const char *NDArrayPort, int NDArrayAddr, int maxROIs,
+                      int maxBuffers, size_t maxMemory);
+
 
   </pre>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
@@ -701,6 +878,14 @@ public:
       <td>
         Maximum number of ROIs that this plugin will support.
       </td>
+    </tr>
+    <tr>
+      <td>
+        <code>maxBuffers</code></td>
+      <td>
+        Maximum number of NDArray buffers to be created for plugin callbacks, i.e. for plugins
+        that will be getting called from this plugin. Passed to the constructor for the
+        NDPluginDriver base class.</td>
     </tr>
     <tr>
       <td>
