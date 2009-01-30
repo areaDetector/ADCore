@@ -7,7 +7,7 @@
     <h1>
       areaDetector Plugins</h1>
     <h2>
-      September 20, 2008</h2>
+      January 30, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -21,6 +21,7 @@
     <li><a href="NDPluginStdArrays.html">NDPluginStdArrays</a></li>
     <li><a href="NDPluginFile.html">NDPluginFile</a></li>
     <li><a href="NDPluginROI.html">NDPluginROI</a></li>
+    <li><a href="NDPluginColorConvert.html">NDPluginColorConvert</a></li>
   </ul>
   <h2 id="Overview">
     Overview</h2>
@@ -29,10 +30,10 @@
     is the concept of plugins. A plugin is code that is called by a driver that passes
     NDArray data in a callback. Plugins can be used to process array data in real time.
     Existing plugins convert data to standard asyn arrays (NDPluginStdArrays), save
-    data to disk (NDPluginFile), and select regions-of-interest (NDPluginROI). New plugins
-    could be written to perform functions like finding the centroid of a beam, etc.
-    Once a plugin is written it will work with any areaDetector driver. Plugins have
-    the the following properties:
+    data to disk (NDPluginFile), select regions-of-interest (NDPluginROI), and convert
+    color modes (NDPluginColorConvert). New plugins could be written to perform functions
+    like finding the centroid of a beam, etc. Once a plugin is written it will work
+    with any areaDetector driver. Plugins have the the following properties:
   </p>
   <ul>
     <li>They can execute either in a blocking mode or a non-blocking mode. In the blocking
@@ -55,10 +56,14 @@
       that a detector can be saving data to disk at full speed, but images can be posted
       to EPICS at a reduced rate.</li>
     <li>They can be unplugged from one driver, and plugged into another driver at run
-      time. In particular the NDPluginROI driver is itself a source of NDArray data callbacks,
+      time. For example, the NDPluginROI driver is itself a source of NDArray data callbacks,
       so a file saving plugin could be unplugged from a detector driver (where it would
       be saving the entire detector), and plugged into a particular ROI, where it would
-      just save a portion of the detector.</li>
+      just save a portion of the detector. Similarly the NDPluginColorConvert plugin is
+      also a source of NDArray data callbacks. A pipeline of plugins can be constructed,
+      for example NDPluginColorConvert -&gt NDPluginROI -&gt NDPluginStdArrays. Each stage
+      of this pipeline can be executing in its own thread, and on modern multi-core processors
+      each can be executing on its own core.</li>
   </ul>
   <h2 id="NDPluginDriver">
     NDPluginDriver</h2>
@@ -400,6 +405,40 @@ public:
           DATA_TYPE</td>
         <td>
           $(P)$(R)DataType_RBV</td>
+        <td>
+          mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriver<br />
+          ColorMode</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Color mode of last NDArray callback data (NDColorMode_t).</td>
+        <td>
+          COLOR_MODE</td>
+        <td>
+          $(P)$(R)ColorMode_RBV</td>
+        <td>
+          mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriver<br />
+          BayerPattern</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          BayerPattern of last NDArray callback data (NDBayerPattern_t).</td>
+        <td>
+          BAYER_PATTERN</td>
+        <td>
+          $(P)$(R)BayerPattern_RBV</td>
         <td>
           mbbi</td>
       </tr>
