@@ -7,7 +7,7 @@
     <h1>
       areaDetector: EPICS Area Detector Support</h1>
     <h2>
-      January 20, 2009</h2>
+      January 30, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -590,8 +590,7 @@ public:
         <li><code>NDColorModeBayer</code>: Bayer color. There is a single value at each pixel,
           but the pixels have a color filter array in front of them. The supported Bayer filter
           is the most common one, a repeating 2x2 array of
-          <pre>
-           Blue  Green
+          <pre>           Blue  Green
            Green Red
            </pre>
           Transmitting data from the camera using the Bayer format consumes 3 times less bandwidth
@@ -791,8 +790,7 @@ public:
   <p>
     The file <code>ADStdDriverParams.h</code> defines the following:
   </p>
-  <pre>
-/* Enumeration of shutter status */
+  <pre>/* Enumeration of shutter status */
 typedef enum
 {
     ADShutterClosed, 
@@ -909,6 +907,26 @@ typedef enum {
           EPICS record name</th>
         <th>
           EPICS record type</th>
+      </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Information about the asyn port</b></td>
+      </tr>
+      <tr>
+        <td>
+          ADPortNameSelf</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/o</td>
+        <td>
+          asyn port name</td>
+        <td>
+          PORT_NAME_SELF</td>
+        <td>
+          $(P)$(R)PortName_RBV</td>
+        <td>
+          stringin</td>
       </tr>
       <tr>
         <td align="center" colspan="7">
@@ -1514,8 +1532,7 @@ typedef enum {
           Format string for constructing ADFullFileName from ADFilePath, ADFileName, and ADFileNumber.
           The final file name (which is placed in ADFullFileName) is created with the following
           code:
-          <pre>
-epicsSnprintf(
+          <pre>epicsSnprintf(
     FullFilename, 
     sizeof(FullFilename), 
     FileFormat, FilePath, 
