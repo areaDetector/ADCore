@@ -7,7 +7,7 @@ a<html xmlns="http://www.w3.org/1999/xhtml">
     <h1>
       areaDetector Plugin NDPluginFile</h1>
     <h2>
-      January 26, 2009</h2>
+      January 30, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -34,7 +34,9 @@ a<html xmlns="http://www.w3.org/1999/xhtml">
     <a href="http://www.unidata.ucar.edu/software/netcdf">netCDF</a> file format, which
     is a portable self-describing binary file format supported by <a href="http://www.unidata.ucar.edu/">
       UniData</a> at <a href="http://www.ucar.edu/">UCAR (University Corporation for Atmospheric
-        Research).</a>
+        Research).</a> There are netCDF libraries for C, C++, Fortran, and Java. Other
+    languages, including Matlab and IDL have built-in support for netCDF. There are
+    also add-on interfaces available for Python, Ruby and other languages.
   </p>
   <p>
     The NDArray callback data can be written to disk in 1 of 3 modes:
@@ -158,8 +160,7 @@ public:
   <p>
     The following is the header contents of a netCDF file produced by this plugin. This
     information was produced with the following command:</p>
-  <pre>
-ncdump -h testB_3.nc
+  <pre>ncdump -h testB_3.nc
 
 netcdf testB_3 {
 dimensions:

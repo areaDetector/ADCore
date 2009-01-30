@@ -7,7 +7,7 @@
     <h1>
       areaDetector Plugin NDPluginStdArrays</h1>
     <h2>
-      September 19, 2008</h2>
+      January 30, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -39,8 +39,7 @@
     and dimension data) that are made available as EPICS PVs so that clients can correctly
     interpret the array data. The NDPluginStdArrays public interface is defined in NDPluginStdArrays.h
     as follows:</p>
-  <pre>
-class NDPluginStdArrays : public NDPluginDriver {
+  <pre>class NDPluginStdArrays : public NDPluginDriver {
 public:
     NDPluginStdArrays(const char *portName, int queueSize, int blockingCallbacks, 
                       const char *NDArrayPort, int NDArrayAddr,
@@ -205,7 +204,8 @@ public:
     that IDL runs on, and that has the ezcaIDL shareable library built for it. This
     includes Windows, Linux, Solaris, and Mac. <code>epics_ad_display</code> is included
     in the <a href="http://cars.uchicago.edu/software/IDL/imaging.html">CARS IDL imaging
-      software.</a>
+      software.</a> It is also available in the Viewers directory in the areaDetector
+    application, where there is a README file describing how to use it.
   </p>
   <p>
     The control window for <code>epics_ad_display</code> is shown below. It has a field
@@ -249,7 +249,7 @@ public:
     Future plans</h2>
   <p>
     Stephen Mudie at the Australian Synchrotron has written a very nice IDL client to
-    display the EPICS images from the Flea Firewire cameras. This client should be converted
+    display the EPICS images from the Flea Firewire cameras. This client is being converted
     to display the data from this areaDetector plugin.
   </p>
 </body>

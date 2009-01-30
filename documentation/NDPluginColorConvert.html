@@ -7,7 +7,7 @@
     <h1>
       areaDetector Plugin NDPluginColorConvert</h1>
     <h2>
-      January 26, 2009</h2>
+      January 30, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -32,8 +32,7 @@
     an input NDArray with one color mode and outputs another NDArray with a (potentially)
     different color mode. All other attributes of the array are preserved. The NDPluginColorConvert
     public interface is defined in NDPluginColorConvert.h as follows:</p>
-  <pre>
-class NDPluginColorConvert : public NDPluginDriver {
+  <pre>class NDPluginColorConvert : public NDPluginDriver {
 public:
     NDPluginColorConvert(const char *portName, int queueSize, int blockingCallbacks,
                          const char *NDArrayPort, int NDArrayAddr,
