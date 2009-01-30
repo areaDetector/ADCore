@@ -3,16 +3,16 @@
   <title>areaDetector Simulation driver</title>
 </head>
 <body>
-  <center>
+  <div style="text-align: center">
     <h1 style="text-align: center">
       areaDetector Simulation driver</h1>
     <h2>
-      September 20, 2008</h2>
+      January 30, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
       University of Chicago</h2>
-  </center>
+  </div>
   <p>
     &nbsp;</p>
   <h2>
@@ -35,8 +35,7 @@
     also very useful for testing plugins and channel access clients. This is part of
     the definition of the simDetector class:
   </p>
-  <pre>
-class simDetector : public ADDriver {
+  <pre>class simDetector : public ADDriver {
 public:
     simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDataType_t dataType,
                 int maxBuffers, size_t maxMemory);
@@ -73,8 +72,7 @@ public:
     is started that thread computes new images and then calls back any registered plugins
     as follows:
   </p>
-  <pre>
-        /* Put the frame number and time stamp into the buffer */
+  <pre>        /* Put the frame number and time stamp into the buffer */
         pImage->uniqueId = imageCounter;
         pImage->timeStamp = startTime.secPastEpoch + startTime.nsec / 1.e9;
         
@@ -92,7 +90,7 @@ public:
   <p>
     The simulation driver-specific parameters are the following:
   </p>
-  <table style="text-align: left" "cellSpacing=2 cellPadding=2 border=1">
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
       <tr>
         <td align="center" colspan="7">
@@ -213,8 +211,7 @@ public:
     is to be used in an IOC, it must be called before <tt>iocInit()</tt>. It has the
     following syntax:
   </p>
-  <pre>
-simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, 
+  <pre>simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, 
                   int dataType, int maxBuffers, size_t maxMemory)
   </pre>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
