@@ -7,7 +7,7 @@
     <h1>
       areaDetector Prosilica driver</h1>
     <h2>
-      September 20, 2008</h2>
+      January 30, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -28,11 +28,11 @@
     This is a driver for Gigabit Ethernet and Firewire cameras from <a href="http://www.prosilica.com">
       Prosilica</a>. It inherits from ADDriver and implements nearly all of the parameters
     in ADStdDriverParams.h. It also implements a number of parameters that are specific
-    to the Prosilica cameras. The driver is currently only supported under Windows (EPICS
-    win32-x86 architecture) because the vendor library is provided as a Windows DLL.
-    The vendor library provided by Prosilica does callbacks to a user-supplied function
-    each time there is a new frame. Thus, the driver does not need to create a thread
-    itself for callbacks.
+    to the Prosilica cameras. The driver is only supported under Windows (EPICS win32-x86
+    architecture) and Linux because the vendor library is only provided as a pre-built
+    binary for those operating systems. The vendor library provided by Prosilica does
+    callbacks to a user-supplied function each time there is a new frame. Thus, the
+    driver does not need to create a thread itself for callbacks.
   </p>
   <p>
     The vendor library supports saving individual frames as TIFF files, and this is
@@ -54,8 +54,8 @@
     <li>Software (single software trigger)</li>
   </ul>
   <p>
-    The Prosilica supports additional hardware timing signals that may be supported
-    in a future release.
+    The Prosilica supports hardware timing input and output signals that are supported
+    in the driver.
   </p>
   <p>
     The ADFileFormat choices for the Prosilica are:
@@ -65,6 +65,25 @@
     <li>Invalid (this menu item is defined only because MEDM will not display a menu widget
       with only 1 choice)</li>
   </ul>
+  <p>
+    The ADDataType choices for the Prosilica are:
+  </p>
+  <ul>
+    <li>NDUInt8 (8-bit data)</li>
+    <li>NDUInt16 (12 or 16 bit data)</li>
+  </ul>
+  <p>
+    The ADColorMode choices for the Prosilica are:
+  </p>
+  <ul>
+    <li>NDColorModeMono (monochromatic data)</li>
+    <li>NDColorModeBayer (raw Bayer data)</li>
+    <li>NDColorModeRGB1 (RGB1 data)</li>
+  </ul>
+  <p>
+    The color Prosilica cameras are also capable of various YUV color formats but these
+    are not supported in the driver. They may be added in a future release.
+  </p>
   <p>
     The Prosilica driver implements the following parameters in addition to those in
     ADStdDriverParams.h:
@@ -90,6 +109,357 @@
           EPICS record name</th>
         <th>
           EPICS record type</th>
+      </tr>
+      <tr>
+        <td align="CENTER" colspan="7,">
+          <b>Trigger and I/O Control</b></td>
+      </tr>
+      <tr>
+        <td>
+          PSSyncIn1Level</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The level of the Sync In 1 signal</td>
+        <td>
+          PS_SYNC_IN_1_LEVEL</td>
+        <td>
+          $(P)$(R)SyncIn1Level_RBV</td>
+        <td>
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          PSSyncIn2Level</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The level of the Sync In 2 signal</td>
+        <td>
+          PS_SYNC_IN_2_LEVEL</td>
+        <td>
+          $(P)$(R)SyncIn2Level_RBV</td>
+        <td>
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          PSSyncOut1Mode</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          The mode of the Sync Out 1 signal. Allowed values are:
+          <br />
+          GPO (general purpose output)
+          <br />
+          AcqTrigReady
+          <br />
+          FrameTrigReady
+          <br />
+          FrameTrigger
+          <br />
+          Exposing
+          <br />
+          FrameReadout
+          <br />
+          Imaging
+          <br />
+          Acquiring
+          <br />
+          SyncIn1
+          <br />
+          SyncIn2
+          <br />
+          SyncIn3
+          <br />
+          SyncIn4
+          <br />
+          Strobe1
+          <br />
+          Strobe2
+          <br />
+          Strobe3
+          <br />
+          Strobe4
+          <br />
+        </td>
+        <td>
+          PS_SYNC_OUT_1_MODE</td>
+        <td>
+          $(P)$(R)SyncOut1Mode
+          <br />
+          $(P)$(R)SyncOut1Mode_RBV
+        </td>
+        <td>
+          mbbo
+          <br />
+          mbbi
+        </td>
+      </tr>
+      <tr>
+        <td>
+          PSSyncOut1Level</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          The level of the Sync Out 1 signal. This is only programmable when SyncOut1Mode=GPO.</td>
+        <td>
+          PS_SYNC_OUT_1_LEVEL</td>
+        <td>
+          $(P)$(R)SyncOut1Level<br />
+          $(P)$(R)SyncOut1Level_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          PSSyncOut1Invert</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flag to invert the Sync Out 1 signal.</td>
+        <td>
+          PS_SYNC_OUT_1_INVERT</td>
+        <td>
+          $(P)$(R)SyncOut1Invert<br />
+          $(P)$(R)SyncOut1Invert_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          PSSyncOut2Mode</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          The mode of the Sync Out 2 signal. Allowed values are the same as for PSSyncOut1Mode.
+        </td>
+        <td>
+          PS_SYNC_OUT_2_MODE</td>
+        <td>
+          $(P)$(R)SyncOut2Mode
+          <br />
+          $(P)$(R)SyncOut2Mode_RBV
+        </td>
+        <td>
+          mbbo
+          <br />
+          mbbi
+        </td>
+      </tr>
+      <tr>
+        <td>
+          PSSyncOut2Level</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          The level of the Sync Out 2 signal. This is only programmable when SyncOut2Mode=GPO.</td>
+        <td>
+          PS_SYNC_OUT_2_LEVEL</td>
+        <td>
+          $(P)$(R)SyncOut2Level<br />
+          $(P)$(R)SyncOut1Level_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          PSSyncOut2Invert</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flag to invert the Sync Out 2 signal.</td>
+        <td>
+          PS_SYNC_OUT_2_INVERT</td>
+        <td>
+          $(P)$(R)SyncOut2Invert<br />
+          $(P)$(R)SyncOut2Invert_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          PSSyncOut3Mode</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          The mode of the Sync Out 3 signal. Allowed values are the same as for PSSyncOut1Mode.
+        </td>
+        <td>
+          PS_SYNC_OUT_3_MODE</td>
+        <td>
+          $(P)$(R)SyncOut3Mode
+          <br />
+          $(P)$(R)SyncOut3Mode_RBV
+        </td>
+        <td>
+          mbbo
+          <br />
+          mbbi
+        </td>
+      </tr>
+      <tr>
+        <td>
+          PSSyncOut3Level</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          The level of the Sync Out 3 signal. This is only programmable when SyncOut3Mode=GPO.</td>
+        <td>
+          PS_SYNC_OUT_3_LEVEL</td>
+        <td>
+          $(P)$(R)SyncOut3Level<br />
+          $(P)$(R)SyncOut3Level_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          PSSyncOut3Invert</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flag to invert the Sync Out 3 signal.</td>
+        <td>
+          PS_SYNC_OUT_3_INVERT</td>
+        <td>
+          $(P)$(R)SyncOut3Invert<br />
+          $(P)$(R)SyncOut3Invert_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          PSStrobe1Mode</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          The mode of the Strobe 1 signal. The Strobe signals are based on the following values,
+          but allow for changing the delay and width relative to the underlying value. Any
+          of the outputs can be set to the Stobe1 value, rather than the raw values of these
+          signals. Allowed values are:
+          <br />
+          AcqTrigReady
+          <br />
+          FrameTrigReady
+          <br />
+          FrameTrigger
+          <br />
+          Exposing
+          <br />
+          FrameReadout
+          <br />
+          Acquiring
+          <br />
+          SyncIn1
+          <br />
+          SyncIn2
+          <br />
+          SyncIn3
+          <br />
+          SyncIn4
+          <br />
+        </td>
+        <td>
+          PS_STROBE_1_MODE</td>
+        <td>
+          $(P)$(R)Strobe1Mode
+          <br />
+          $(P)$(R)Strobe1Mode_RBV
+        </td>
+        <td>
+          mbbo
+          <br />
+          mbbi
+        </td>
+      </tr>
+      <tr>
+        <td>
+          PSStrobe1CtlDuration</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flag to allow controlling the strobe duration.</td>
+        <td>
+          PS_STROBE_1_CTL_DURATION</td>
+        <td>
+          $(P)$(R)Strobe1CtlDuration<br />
+          $(P)$(R)Strobe1CtlDuration_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          PSStrobe1Duration</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          The strobe duration if PSStrobe1CtlDuration is On.</td>
+        <td>
+          PS_STROBE_1_DURATION</td>
+        <td>
+          $(P)$(R)Strobe1Duration<br />
+          $(P)$(R)Strobe1Duration_RBV</td>
+        <td>
+          ao<br />
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          PSStrobe1Delay</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          The strobe delay relative to the underlying signal that the strobe is based on.</td>
+        <td>
+          PS_STROBE_1_DELAY</td>
+        <td>
+          $(P)$(R)Strobe1Delay<br />
+          $(P)$(R)Strobe1Delay_RBV</td>
+        <td>
+          ao<br />
+          ai</td>
+      </tr>
+      <tr>
+        <td align="CENTER" colspan="7,">
+          <b>Statistics Information</b></td>
       </tr>
       <tr>
         <td>
@@ -311,11 +681,12 @@
   <h2 id="Future">
     Future enhancements</h2>
   <p>
-    The driver does not currently support color. This will be added in the near future.
+    Work is needed on connection management. If the camera is unplugged or powered off
+    when the areaDetector driver is running it does not gracefully recover.
   </p>
   <p>
-    Work is needed on connection management. If the camera is unplugged or powered off
-    which the areaDetector driver is running it does not gracefully recover.
+    The Linux driver currently requires some modifications to EPICS base. This should
+    be resolved either by modifying base or with changes from Prosilica for their driver.
   </p>
 </body>
 </html>
