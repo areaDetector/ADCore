@@ -8,31 +8,33 @@ TEMPLATE_TOP=$(EPICS_BASE)/templates/makeBaseApp/top
 # define INSTALL_LOCATION_APP here
 #INSTALL_LOCATION_APP=<fullpathname>
 
+SUPPORT=/home/mooney/epics/synApps/support
+
 #If using the sequencer, point SNCSEQ at its top directory:
 #SNCSEQ=/corvette/home/epics/devel/seq/2-0-11
 
 # ASYN is needed for sockets and for smartControl
-ASYN=/corvette/home/epics/devel/asyn/4-10
+ASYN=/home/mooney/epics/synApps/support/asyn/4-10
 
 # CALC is needed for scalcout record that SSCAN uses
-CALC=/corvette/home/epics/devel/calc/2-7
+CALC=/home/mooney/epics/synApps/support/calc
 
 # BUSY is needed for busy record
-BUSY=/corvette/home/epics/devel/busy/1-1
+BUSY=/home/mooney/epics/synApps/support/busy
 
 # SSCAN is needed for scanning threshold on Pilatus
-SSCAN=/corvette/home/epics/devel/sscan/2-6-3
+SSCAN=/home/mooney/epics/synApps/support/sscan
 
 # MCA is needed for fast accumulation of ROI counts
-MCA=/corvette/home/epics/devel/mca/6-10
+MCA=/home/mooney/epics/synApps/support/mca
 
 #AUTOSAVE is needed for save_restore
-AUTOSAVE=/corvette/home/epics/devel/autosave/4-5
+AUTOSAVE=/home/mooney/epics/synApps/support/autosave
 
-AREA_DETECTOR=/corvette/home/epics/devel/areaDetector/1-4
+AREA_DETECTOR=/home/mooney/epics/synApps/support/areaDetector
 
 # EPICS_BASE usually appears last so other apps can override stuff:
-EPICS_BASE=/corvette/usr/local/epics/base-3.14.10
+EPICS_BASE=/home/mooney/epics/base-3.14.10
 
 #Capfast users may need the following definitions
 #CAPFAST_TEMPLATES=
