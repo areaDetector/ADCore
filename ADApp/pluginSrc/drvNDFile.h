@@ -16,7 +16,8 @@ extern "C" {
 #endif
 
 int drvNDFileConfigure(const char *portName, int queueSize, int blockingCallbacks, 
-                       const char *NDArrayPort, int NDArrayAddr);
+                       const char *NDArrayPort, int NDArrayAddr,
+                       int priority, int stackSize);
 
 #ifdef __cplusplus
 }

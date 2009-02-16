@@ -17,7 +17,8 @@ extern "C" {
 
 int drvNDROIConfigure(const char *portName, int queueSize, int blockingCallbacks, 
                       const char *NDArrayPort, int NDArrayAddr, int maxROIs,
-                      int maxBuffers, size_t maxMemory);
+                      int maxBuffers, size_t maxMemory,
+                      int priority, int stackSize);
 
 #ifdef __cplusplus
 }

@@ -27,19 +27,23 @@ static const iocshArg initArg3 = { "NDArrayPort",iocshArgString};
 static const iocshArg initArg4 = { "NDArrayAddr",iocshArgInt};
 static const iocshArg initArg5 = { "maxBuffers",iocshArgInt};
 static const iocshArg initArg6 = { "maxMemory",iocshArgInt};
+static const iocshArg initArg7 = { "priority",iocshArgInt};
+static const iocshArg initArg8 = { "stackSize",iocshArgInt};
 static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg1,
                                             &initArg2,
                                             &initArg3,
                                             &initArg4,
                                             &initArg5,
-                                            &initArg6};
-static const iocshFuncDef initFuncDef = {"drvNDColorConvertConfigure",7,initArgs};
+                                            &initArg6,
+                                            &initArg7,
+                                            &initArg8};
+static const iocshFuncDef initFuncDef = {"drvNDColorConvertConfigure",9,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
     drvNDColorConvertConfigure(args[0].sval, args[1].ival, args[2].ival, 
                                args[3].sval, args[4].ival, args[5].ival, 
-                               args[6].ival);
+                               args[6].ival, args[7].ival, args[8].ival);
 }
 
 void NDColorConvertRegister(void)

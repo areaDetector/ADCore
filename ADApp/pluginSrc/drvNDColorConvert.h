@@ -16,7 +16,8 @@ extern "C" {
 
 int drvNDColorConvertConfigure(const char *portName, int queueSize, int blockingCallbacks, 
                                const char *NDArrayPort, int NDArrayAddr, 
-                               int maxBuffers, size_t maxMemory);
+                               int maxBuffers, size_t maxMemory,
+                               int priority, int stackSize);
 
 #ifdef __cplusplus
 }
