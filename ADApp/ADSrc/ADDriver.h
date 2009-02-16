@@ -11,7 +11,8 @@
 class ADDriver : public asynNDArrayDriver {
 public:
     ADDriver(const char *portName, int maxAddr, int paramTableSize, int maxBuffers, size_t maxMemory,
-             int interfaceMask, int interruptMask);
+             int interfaceMask, int interruptMask,
+             int asynFlags, int autoConnect, int priority, int stackSize);
                  
     /* These are the methods that we override from asynPortDriver */
     virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 

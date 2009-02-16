@@ -1,4 +1,4 @@
-/* ADDriver.c
+/* ADDriver.cpp
  *
  * This is the base class from which actual area detectors are derived.
  *
@@ -144,11 +144,13 @@ asynStatus ADDriver::drvUserCreate(asynUser *pasynUser,
     
 
 ADDriver::ADDriver(const char *portName, int maxAddr, int paramTableSize, int maxBuffers, size_t maxMemory,
-                   int interfaceMask, int interruptMask)
+                   int interfaceMask, int interruptMask,
+                   int asynFlags, int autoConnect, int priority, int stackSize)
 
     : asynNDArrayDriver(portName, maxAddr, paramTableSize, maxBuffers, maxMemory,
           interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynGenericPointerMask | asynDrvUserMask,
-          interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynGenericPointerMask)
+          interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynGenericPointerMask,
+          asynFlags, autoConnect, priority, stackSize)
 
 {
     //char *functionName = "ADDriver";

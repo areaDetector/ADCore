@@ -78,8 +78,11 @@ void asynNDArrayDriver::report(FILE *fp, int details)
 /* Constructor */
 
 asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddrIn, int paramTableSize, int maxBuffers, 
-                                     size_t maxMemory, int interfaceMask, int interruptMask)
-    : asynPortDriver(portName, maxAddrIn, paramTableSize, interfaceMask, interruptMask), pNDArrayPool(NULL)
+                                     size_t maxMemory, int interfaceMask, int interruptMask,
+                                     int asynFlags, int autoConnect, int priority, int stackSize)
+    : asynPortDriver(portName, maxAddrIn, paramTableSize, interfaceMask, interruptMask, 
+                     asynFlags, autoConnect, priority, stackSize), 
+      pNDArrayPool(NULL)
 {
     if ((maxBuffers > 0) && (maxMemory > 0)) this->pNDArrayPool = new NDArrayPool(maxBuffers, maxMemory);
 

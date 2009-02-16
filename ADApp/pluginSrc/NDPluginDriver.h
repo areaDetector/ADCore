@@ -32,8 +32,9 @@ typedef enum
 class NDPluginDriver : public asynNDArrayDriver {
 public:
     NDPluginDriver(const char *portName, int queueSize, int blockingCallbacks, 
-                 const char *NDArrayPort, int NDArrayAddr, int maxAddr, int paramTableSize,
-                 int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask);
+                   const char *NDArrayPort, int NDArrayAddr, int maxAddr, int paramTableSize,
+                   int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
+                   int asynFlags, int autoConnect, int priority, int stackSize);
                  
     /* These are the methods that we override from asynNDArrayDriver */
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);

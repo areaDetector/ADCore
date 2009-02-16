@@ -498,12 +498,14 @@ asynStatus NDPluginDriver::drvUserCreate(asynUser *pasynUser,
 
 /* Constructor */
 NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blockingCallbacks, 
-                           const char *NDArrayPort, int NDArrayAddr, int maxAddr, int paramTableSize,
-                           int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask)
+                               const char *NDArrayPort, int NDArrayAddr, int maxAddr, int paramTableSize,
+                               int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
+                               int asynFlags, int autoConnect, int priority, int stackSize)
 
     : asynNDArrayDriver(portName, maxAddr, paramTableSize, maxBuffers, maxMemory,
           interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynDrvUserMask,
-          interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask)    
+          interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask,
+          asynFlags, autoConnect, priority, stackSize)    
 {
     asynStatus status;
     const char *functionName = "NDPluginDriver";

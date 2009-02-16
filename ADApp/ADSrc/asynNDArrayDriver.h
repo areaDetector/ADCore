@@ -7,7 +7,8 @@
 class asynNDArrayDriver : public asynPortDriver {
 public:
     asynNDArrayDriver(const char *portName, int maxAddr, int paramTableSize, int maxBuffers, size_t maxMemory,
-                      int interfaceMask, int interruptMask);
+                      int interfaceMask, int interruptMask,
+                      int asynFlags, int autoConnect, int priority, int stackSize);
     virtual asynStatus readGenericPointer(asynUser *pasynUser, void *genericPointer);
     virtual asynStatus writeGenericPointer(asynUser *pasynUser, void *genericPointer);
     virtual void report(FILE *fp, int details);
