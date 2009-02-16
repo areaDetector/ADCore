@@ -38,7 +38,8 @@ static const char *driverName = "drvSimDetector";
 class simDetector : public ADDriver {
 public:
     simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDataType_t dataType,
-                int maxBuffers, size_t maxMemory);
+                int maxBuffers, size_t maxMemory, 
+                int priority, int stackSize);
                  
     /* These are the methods that we override from ADDriver */
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
@@ -565,16 +566,20 @@ void simDetector::report(FILE *fp, int details)
 }
 
 extern "C" int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int dataType,
-                                 int maxBuffers, size_t maxMemory)
+                                 int maxBuffers, size_t maxMemory, int priority, int stackSize)
 {
-    new simDetector(portName, maxSizeX, maxSizeY, (NDDataType_t)dataType, maxBuffers, maxMemory);
+    new simDetector(portName, maxSizeX, maxSizeY, (NDDataType_t)dataType, 
+                    maxBuffers, maxMemory, priority, stackSize);
     return(asynSuccess);
 }
 
 simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDataType_t dataType,
-                         int maxBuffers, size_t maxMemory)
+                         int maxBuffers, size_t maxMemory, int priority, int stackSize)
 
-    : ADDriver(portName, 1, ADLastDriverParam, maxBuffers, maxMemory, 0, 0), 
+    : ADDriver(portName, 1, ADLastDriverParam, maxBuffers, maxMemory,
+               0, 0, /* No interfaces beyond those set in ADDriver.cpp */
+               0, 1, /* ASYN_CANBLOCK=0, ASYN_MULTIDEVICE=0, autoConnect=1 */
+               priority, stackSize),
       pRaw(NULL)
 
 {

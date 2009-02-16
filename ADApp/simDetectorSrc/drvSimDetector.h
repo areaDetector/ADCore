@@ -17,7 +17,8 @@ extern "C" {
 #endif
 
 int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int dataType,
-                      int maxBuffers, size_t maxMemory);
+                      int maxBuffers, size_t maxMemory,
+                      int priority, int stackSize);
 
 #ifdef __cplusplus
 }
