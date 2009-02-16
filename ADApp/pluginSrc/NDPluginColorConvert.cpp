@@ -379,21 +379,24 @@ asynStatus NDPluginColorConvert::drvUserCreate(asynUser *pasynUser,
 
 extern "C" int drvNDColorConvertConfigure(const char *portName, int queueSize, int blockingCallbacks, 
                                           const char *NDArrayPort, int NDArrayAddr, 
-                                          int maxBuffers, size_t maxMemory)
+                                          int maxBuffers, size_t maxMemory,
+                                          int priority, int stackSize)
 {  
     new NDPluginColorConvert(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, 
-                             maxBuffers, maxMemory);
+                             maxBuffers, maxMemory, priority, stackSize);
     return(asynSuccess);
 }
 
 NDPluginColorConvert::NDPluginColorConvert(const char *portName, int queueSize, int blockingCallbacks, 
                                            const char *NDArrayPort, int NDArrayAddr, 
-                                           int maxBuffersIn, size_t maxMemory)
+                                           int maxBuffersIn, size_t maxMemory,
+                                           int priority, int stackSize)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
                    NDArrayPort, NDArrayAddr, 1, NDPluginColorConvertLastParam, maxBuffersIn, maxMemory,
                    asynGenericPointerMask, 
-                   asynGenericPointerMask)
+                   asynGenericPointerMask,
+                   0, 1, priority, stackSize)  /* Not ASYN_CANBLOCK or ASYN_MULTIDEVICE, do autoConnect */
 {
     asynStatus status;
     const char *functionName = "NDPluginColorConvert";

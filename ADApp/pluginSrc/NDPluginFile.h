@@ -22,7 +22,8 @@ typedef enum {
 class NDPluginFile : public NDPluginDriver {
 public:
     NDPluginFile(const char *portName, int queueSize, int blockingCallbacks, 
-                 const char *NDArrayPort, int NDArrayAddr);
+                 const char *NDArrayPort, int NDArrayAddr,
+                 int priority, int stackSize);
                  
     /* These methods override those in the base class */
     void processCallbacks(NDArray *pArray);

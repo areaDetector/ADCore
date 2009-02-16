@@ -634,21 +634,24 @@ asynStatus NDPluginROI::drvUserCreate(asynUser *pasynUser,
 
 extern "C" int drvNDROIConfigure(const char *portName, int queueSize, int blockingCallbacks, 
                                  const char *NDArrayPort, int NDArrayAddr, int maxROIs, 
-                                 int maxBuffers, size_t maxMemory)
+                                 int maxBuffers, size_t maxMemory,
+                                 int priority, int stackSize)
 {
     new NDPluginROI(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxROIs, 
-                    maxBuffers, maxMemory);
+                    maxBuffers, maxMemory, priority, stackSize);
     return(asynSuccess);
 }
 
 NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallbacks, 
                          const char *NDArrayPort, int NDArrayAddr, int maxROIsIn, 
-                         int maxBuffersIn, size_t maxMemory)
+                         int maxBuffersIn, size_t maxMemory,
+                         int priority, int stackSize)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
                    NDArrayPort, NDArrayAddr, maxROIsIn, NDPluginROILastROINParam, maxBuffersIn, maxMemory,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask, 
-                   asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask)
+                   asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
+                   ASYN_MULTIDEVICE, 1, priority, stackSize)
 {
     asynStatus status;
     int roi;

@@ -266,16 +266,17 @@ asynStatus NDPluginStdArrays::drvUserCreate(asynUser *pasynUser, const char *drv
 /* Configuration routine.  Called directly, or from the iocsh function in drvNDStdArraysEpics */
 
 extern "C" int drvNDStdArraysConfigure(const char *portName, int queueSize, int blockingCallbacks, 
-                                       const char *NDArrayPort, int NDArrayAddr,
-                                       size_t maxMemory)
+                                       const char *NDArrayPort, int NDArrayAddr, size_t maxMemory,
+                                       int priority, int stackSize)
 {
-    new NDPluginStdArrays(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxMemory);
+    new NDPluginStdArrays(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxMemory,
+                          priority, stackSize);
     return(asynSuccess);
 }
 
 NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int blockingCallbacks, 
-                                     const char *NDArrayPort, int NDArrayAddr, 
-                                     size_t maxMemory)
+                                     const char *NDArrayPort, int NDArrayAddr, size_t maxMemory,
+                                     int priority, int stackSize)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
                    NDArrayPort, NDArrayAddr, 1, NDPluginStdArraysLastParam, 2, maxMemory,
@@ -284,7 +285,11 @@ NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int bl
                    asynFloat32ArrayMask | asynFloat64ArrayMask,
                    
                    asynInt8ArrayMask | asynInt16ArrayMask | asynInt32ArrayMask | 
-                   asynFloat32ArrayMask | asynFloat64ArrayMask)
+                   asynFloat32ArrayMask | asynFloat64ArrayMask,
+                   
+                   /* asynFlags is set to 0, because this plugin cannot block and is not multi-device.
+                    * It does autoconnect */
+                   0, 1, priority, stackSize)
 {
     asynStatus status;
     //char *functionName = "NDPluginStdArrays";

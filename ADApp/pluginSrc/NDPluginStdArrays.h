@@ -16,8 +16,8 @@ typedef enum
 class NDPluginStdArrays : public NDPluginDriver {
 public:
     NDPluginStdArrays(const char *portName, int queueSize, int blockingCallbacks, 
-                      const char *NDArrayPort, int NDArrayAddr,
-                      size_t maxMemory);
+                      const char *NDArrayPort, int NDArrayAddr, size_t maxMemory,
+                      int priority, int stackSize);
 
     /* These methods override the virtual methods in the base class */
     void processCallbacks(NDArray *pArray);

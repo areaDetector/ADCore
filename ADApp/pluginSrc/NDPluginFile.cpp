@@ -425,7 +425,7 @@ asynStatus NDPluginFile::writeNDArray(asynUser *pasynUser, void *genericPointer)
 {
     NDArray *pArray = (NDArray *)genericPointer;
     asynStatus status = asynSuccess;
-    const char *functionName = "writeNDArray";
+    //const char *functionName = "writeNDArray";
         
     this->pArrays[0] = pArray;
     setIntegerParam(ADFileWriteMode, ADFileModeSingle);
@@ -474,19 +474,24 @@ asynStatus NDPluginFile::drvUserCreate(asynUser *pasynUser, const char *drvInfo,
 /* Configuration routine.  Called directly, or from the iocsh function in drvNDFileEpics */
 
 extern "C" int drvNDFileConfigure(const char *portName, int queueSize, int blockingCallbacks, 
-                                  const char *NDArrayPort, int NDArrayAddr)
+                                  const char *NDArrayPort, int NDArrayAddr,
+                                  int priority, int stackSize)
 {
-    new NDPluginFile(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr);
+    new NDPluginFile(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                     priority, stackSize);
     return(asynSuccess);
 }
 
 /* The constructor for this class */
 NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCallbacks, 
-                           const char *NDArrayPort, int NDArrayAddr)
-    /* Invoke the base class constructor */
+                           const char *NDArrayPort, int NDArrayAddr,
+                           int priority, int stackSize)
+    /* Invoke the base class constructor.  This driver can block (because writing a file can be slow)
+     * and it is not multi-device.  Set autoconnect to 1.  priority and stacksize can be 0, which uses defaults. */
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
                    NDArrayPort, NDArrayAddr, 1, NDPluginFileLastParam, 0, 0, 
-                   asynGenericPointerMask, asynGenericPointerMask)
+                   asynGenericPointerMask, asynGenericPointerMask,
+                   ASYN_CANBLOCK, 1, priority, stackSize)
 {
     const char *functionName = "NDPluginFile";
     asynStatus status;
