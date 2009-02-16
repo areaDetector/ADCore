@@ -1,6 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>areaDetector Plugin NDPluginROI</title>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 </head>
 <body>
   <div style="text-align: center">
@@ -17,7 +20,6 @@
     Contents</h2>
   <ul>
     <li><a href="#Overview">Overview</a></li>
-    <li><a href="#Configuration">Configuration</a></li>
     <li><a href="#Screens">Screen shots</a></li>
   </ul>
   <h2 id="Overview">
@@ -82,7 +84,7 @@ public:
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
       <tr>
-        <td align="CENTER" colspan="7,">
+        <td align="center" colspan="7,">
           <b>Parameter Definitions in NDPluginROI.h and EPICS Record Definitions in NDROI.template</b></td>
       </tr>
       <tr>
@@ -129,14 +131,14 @@ public:
   <p>
     NDPluginROI.h defines the following parameters that are specific to each individual
     ROI in the plugin. The EPICS database NDROIN.template provide access to these parameters,
-    listed in the following table. The pasynUser-&gtaddr is used to control which ROI
+    listed in the following table. The pasynUser-&gt;addr is used to control which ROI
     is being addressed. Note that to reduce the width of this table the enum names have
     been split into 2 lines, but these are just a single name, for example <code>NDPluginROIName</code>.
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
       <tr>
-        <td align="CENTER" colspan="7,">
+        <td align="center" colspan="7,">
           <b>Parameter Definitions in NDPluginROI.h and EPICS Record Definitions in NDROIN.template</b></td>
       </tr>
       <tr>
@@ -195,7 +197,7 @@ public:
           bi</td>
       </tr>
       <tr>
-        <td align="CENTER" colspan="7,">
+        <td align="center" colspan="7,">
           <b>ROI definition</b></td>
       </tr>
       <tr>
@@ -573,7 +575,7 @@ public:
           longin</td>
       </tr>
       <tr>
-        <td align="CENTER" colspan="7,">
+        <td align="center" colspan="7,">
           <b>ROI statistics</b></td>
       </tr>
       <tr>
@@ -685,7 +687,7 @@ public:
           ai</td>
       </tr>
       <tr>
-        <td align="CENTER" colspan="7,">
+        <td align="center" colspan="7,">
           <b>ROI histogram</b></td>
       </tr>
       <tr>

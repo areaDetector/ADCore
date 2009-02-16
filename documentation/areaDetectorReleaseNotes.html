@@ -1,6 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>areaDetectorReleaseNotes.html</title>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 </head>
 <body>
   <h1 style="text-align: center">
@@ -98,7 +101,7 @@
       <ul>
         <li>Renamed the pasynUser member to pasynUserSelf. This avoids a name conflict with
           the local variable pasynUser used in many derived classes. Unfortunately this requires
-          changes to derived class code where this-&gtpasynUser was used.</li>
+          changes to derived class code where this-&gt;pasynUser was used.</li>
       </ul>
     </li>
     <li>Added simulation code to ADSC driver. This allows it to be built and tested on

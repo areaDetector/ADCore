@@ -1,6 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>areaDetector Plugins</title>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 </head>
 <body>
   <div style="text-align: center">
@@ -61,7 +64,7 @@
       be saving the entire detector), and plugged into a particular ROI, where it would
       just save a portion of the detector. Similarly the NDPluginColorConvert plugin is
       also a source of NDArray data callbacks. A pipeline of plugins can be constructed,
-      for example NDPluginColorConvert -&gt NDPluginROI -&gt NDPluginStdArrays. Each stage
+      for example NDPluginColorConvert-&gt;NDPluginROI-&gt;NDPluginStdArrays. Each stage
       of this pipeline can be executing in its own thread, and on modern multi-core processors
       each can be executing on its own core.</li>
   </ul>
@@ -134,7 +137,7 @@ public:
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
       <tr>
-        <td align="CENTER" colspan="7,">
+        <td align="center" colspan="7,">
           <b>Parameter Definitions in NDPluginDriver.h and EPICS Record Definitions in NDPluginBase.template</b></td>
       </tr>
       <tr>
@@ -154,7 +157,7 @@ public:
           EPICS record type</th>
       </tr>
       <tr>
-        <td align="CENTER" colspan="7,">
+        <td align="center" colspan="7,">
           <b>asyn NDArray driver doing callbacks</b></td>
       </tr>
       <tr>
@@ -199,7 +202,7 @@ public:
           longin</td>
       </tr>
       <tr>
-        <td align="CENTER" colspan="7,">
+        <td align="center" colspan="7,">
           <b>Callback enable, minimum time, and statistics</b></td>
       </tr>
       <tr>
@@ -322,7 +325,7 @@ public:
           longin</td>
       </tr>
       <tr>
-        <td align="CENTER" colspan="7,">
+        <td align="center" colspan="7,">
           <b>Information about last NDArray callback data</b></td>
       </tr>
       <tr>
@@ -477,7 +480,7 @@ public:
           ai</td>
       </tr>
       <tr>
-        <td align="CENTER" colspan="7,">
+        <td align="center" colspan="7,">
           <b>Debugging control</b></td>
       </tr>
       <tr>

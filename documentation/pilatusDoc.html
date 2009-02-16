@@ -1,6 +1,9 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>areaDetector Pilatus driver</title>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 </head>
 <body>
   <div style="text-align: center">
@@ -19,11 +22,10 @@
     <li><a href="#Introduction">Introduction</a></li>
     <li><a href="#StandardNotes">Implementation of standard driver parameters</a></li>
     <li><a href="#Driver_parameters">Pilatus specific parameters</a></li>
-    <li><a href="#Unsupported">Unsupported standard driver parameters</a></li>
-    <li><a href="#Screenshots">Screenshots</a></li>
-    <li><a href="#Configuring">Configuring</a></li>
-    <li><a href="#Performance measurements">Performance measurements</a> </li>
-    <li><a href="#Hardware notes">Hardware notes</a> </li>
+    <li><a href="#MEDM_screens">MEDM screens</a></li>
+    <li><a href="#Configuration">Configuration</a></li>
+    <li><a href="#Performance_measurements">Performance measurements</a> </li>
+    <li><a href="#Hardware_notes">Hardware notes</a> </li>
     <li><a href="#Restrictions">Restrictions</a> </li>
   </ul>
   <h2 id="Introduction" style="text-align: left">
@@ -116,7 +118,7 @@
           $(P$(R)ExposurePeriod</td>
         <td>
           Controls the exposure period in seconds. It applies only in Internal or External
-          Trigger modes when NumImages &gt 1.</td>
+          Trigger modes when NumImages &gt;1.</td>
       </tr>
       <tr>
         <td>
@@ -134,7 +136,7 @@
         <td>
           Controls the acquisition. Setting this to 1 starts image acquisition. The driver
           sets the record to 0 when acquisition is complete. This means an entire acquisition
-          series if NImages &gt 1. Setting this to 0 aborts an acquisition. If the driver
+          series if NImages &gt;1. Setting this to 0 aborts an acquisition. If the driver
           was currently acquiring imges then this record will cause the "Stop" and "K" (Kill)
           commands to be sent to camserver.</td>
       </tr>
@@ -384,10 +386,10 @@ badX2,badY2 replacementX2,replacementY2
           for spatial non-uniformity in the response of the detector. It should be collected
           with a spatially uniform intensity on the detector at roughly the same energy as
           the measurements being corrected. When the flat field file is read, the average
-          pixel value (averageFlatField) is computed using all pixels with intensities &gt
-          PilatusMinFlatField. All pixels with intensity &lt PilatusMinFlatField in the flat
-          field are replaced with averageFlatField. When images are collected before the NDArray
-          callbacks are performed the following per-pixel correction is applied:
+          pixel value (averageFlatField) is computed using all pixels with intensities &gt;PilatusMinFlatField.
+          All pixels with intensity &lt;PilatusMinFlatField in the flat field are replaced
+          with averageFlatField. When images are collected before the NDArray callbacks are
+          performed the following per-pixel correction is applied:
           <pre>ImageData[i] = 
     (averageFlatField * 
     ImageData[i])/flatField[i];
@@ -527,7 +529,7 @@ pilatusDetectorConfig(const char *portName, const char *camserverPort,
   <p>
     The following is an example st.cmd startup script:
   </p>
-  <pre>< envPaths
+  <pre>&lt; envPaths
 errlogInit(20000)
 
 dbLoadDatabase("$(AREA_DETECTOR)/dbd/pilatusDetectorApp.dbd")
@@ -608,7 +610,7 @@ iocInit()
 create_monitor_set("auto_settings.req", 30,"P=13PIL1:,D=cam1:")
 
 </pre>
-  <h2 id="MEDM screens" style="text-align: left">
+  <h2 id="MEDM_screens" style="text-align: left">
     MEDM screens</h2>
   <p>
     The following show the MEDM screens that are used to control the Pilatus debtector.
@@ -681,7 +683,7 @@ create_monitor_set("auto_settings.req", 30,"P=13PIL1:,D=cam1:")
     <h3>
       asynOctet.adl</h3>
     <img alt="pilatusAsynOctet.png" src="pilatusAsynOctet.png" /></div>
-  <h2 id="SPEC interface" style="text-align: left">
+  <h2 id="SPEC_interface" style="text-align: left">
     SPEC interface</h2>
   <p>
     At the GSECARS beamlines (13-ID-C and 13-BM-C) at the APS we use SPEC to control
@@ -799,7 +801,7 @@ def epics_pilatus_count '{
             #p "image collection done"
         }
 
-        if( (sc_done==TRUE) && (img_done==TRUE)) break;
+        if( (sc_done==TRUE) &amp;&amp; (img_done==TRUE)) break;
         sleep(0.01)
      }
 
@@ -819,7 +821,7 @@ def user_getcounts '{
         S[iroi] = epics_get(PILATUS_ROI_PV)
 
 </pre>
-  <h2 id="Performance measurements">
+  <h2 id="Performance_measurements">
     Performance measurements</h2>
   <p>
     The following measurements were done to demonstrate the performance that can be
@@ -880,8 +882,8 @@ def user_getcounts '{
       single-exposure mode. The trajectory scanning mode is thus more than 50 times faster
       to execute the identical SPEC scan.</li>
   </ol>
-  <h2 id="Hardware notes" style="text-align: left">
-  </h2>
+  <h2 id="Hardware_notes">
+    Hardware notes</h2>
   <h3>
     Trigger pulses</h3>
   <p>
