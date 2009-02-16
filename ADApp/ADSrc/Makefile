@@ -13,13 +13,11 @@ DBD += ADSupport.dbd
 
 INC += NDArray.h
 INC += ADStdDriverParams.h
-INC += asynPortDriver.h
 INC += asynNDArrayDriver.h
 INC += ADDriver.h
 
 LIBRARY_IOC = ADBase
 LIB_SRCS += NDArray.cpp
-LIB_SRCS += asynPortDriver.cpp
 LIB_SRCS += asynNDArrayDriver.cpp
 LIB_SRCS += ADDriver.cpp
 LIB_LIBS += asyn
