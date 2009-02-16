@@ -9,10 +9,10 @@ TEMPLATE_TOP=$(EPICS_BASE)/templates/makeBaseApp/top
 #INSTALL_LOCATION_APP=<fullpathname>
 
 #If using the sequencer, point SNCSEQ at its top directory:
-#SNCSEQ=/corvette/home/epics/devel/seq/2-0-11
+#SNCSEQ=J:/epics/devel/seq/2-0-12
 
 # ASYN is needed for sockets and for smartControl
-ASYN=J:/epics/devel/asyn/4-10
+ASYN=J:/epics/devel/asyn/4-11beta
 
 # CALC is needed for scalcout record that SSCAN uses
 CALC=J:/epics/devel/calc/2-7
@@ -29,7 +29,7 @@ MCA=J:/epics/devel/mca/6-11
 #AUTOSAVE is needed for save_restore
 AUTOSAVE=J:/epics/devel/autosave/4-5
 
-AREA_DETECTOR=J:/epics/devel/areaDetector/1-4
+AREA_DETECTOR=J:/epics/devel/areaDetector/1-5beta
 
 # EPICS_BASE usually appears last so other apps can override stuff:
 EPICS_BASE=H:/epics/base-3.14.10
