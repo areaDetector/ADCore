@@ -1,0 +1,163 @@
+## firewireFeature.db
+
+# Set the value (int32)
+record(ao, "$(P)$(R)$(FEATURE)") {
+  field(DTYP, "asynInt32")
+  field(DESC, "$(DESC)")
+  field(OUT, "@asyn($(PORT) $(N))FDC_FEAT_VAL")
+}
+
+# Read the value (int32)
+record(ai, "$(P)$(R)$(FEATURE)_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) $(N))FDC_FEAT_VAL")
+  field(PINI, "YES")
+}
+
+## Set the control mode (manual = user configured /auto = camera sets values)
+record(bo, "$(P)$(R)$(FEATURE)_CTRL") {
+  field(DTYP, "asynInt32")
+  field(OUT, "@asyn($(PORT) $(N))FDC_FEAT_MODE")
+  field(ZNAM, "Manual")
+  field(ONAM, "Auto")
+}
+
+## Read back the control mode 
+record(bi, "$(P)$(R)$(FEATURE)_CTRL_RBV") {
+  field(SCAN, "I/O Intr")
+  field(PINI, "YES")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) $(N))FDC_FEAT_MODE")
+  field(ZNAM, "Manual")
+  field(ONAM, "Auto")
+}
+
+## Read whether the camera supports this feature
+record(bi, "$(P)$(R)$(FEATURE)_AVL") {
+  field(SCAN, "I/O Intr")
+  field(PINI, "YES")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) $(N))FDC_FEAT_AVAILABLE")
+  field(ZNAM, "not available")
+  field(ONAM, "available")
+}
+
+# Read value boundaries
+record(ai, "$(P)$(R)$(FEATURE)_MIN") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) $(N))FDC_FEAT_VAL_MIN")
+  field(PINI, "YES")
+  field(FLNK, "$(P)$(R)$(FEATURE)_DRVL")
+}
+
+# Set DRLV field of the value PV
+record(ao, "$(P)$(R)$(FEATURE)_DRVL") {
+  field(DOL, "$(P)$(R)$(FEATURE)_MIN NPP NMS")
+  field(OMSL, "closed_loop")
+  field(OUT, "$(P)$(R)$(FEATURE).DRVL NPP NMS")
+  field(FLNK, "$(P)$(R)$(FEATURE)_LOPR")
+}
+# Set LOPR field of the value PV
+record(ao, "$(P)$(R)$(FEATURE)_LOPR") {
+  field(DOL, "$(P)$(R)$(FEATURE)_MIN NPP NMS")
+  field(OMSL, "closed_loop")
+  field(OUT, "$(P)$(R)$(FEATURE).LOPR NPP NMS")
+}
+record(ai, "$(P)$(R)$(FEATURE)_MAX") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) $(N))FDC_FEAT_VAL_MAX")
+  field(PINI, "YES")
+  field(FLNK, "$(P)$(R)$(FEATURE)_DRVH")
+}
+# Set DRLH field of the value PV
+record(ao, "$(P)$(R)$(FEATURE)_DRVH") {
+  field(DOL, "$(P)$(R)$(FEATURE)_MAX NPP NMS")
+  field(OMSL, "closed_loop")
+  field(OUT, "$(P)$(R)$(FEATURE).DRVH NPP NMS")
+  field(FLNK, "$(P)$(R)$(FEATURE)_HOPR")
+}
+# Set HOPR field of the value PV
+record(ao, "$(P)$(R)$(FEATURE)_HOPR") {
+  field(DOL, "$(P)$(R)$(FEATURE)_MAX NPP NMS")
+  field(OMSL, "closed_loop")
+  field(OUT, "$(P)$(R)$(FEATURE).HOPR NPP NMS")
+}
+
+## Read whether the camera supports absolute (floating point) control of this feature 
+record(bi, "$(P)$(R)$(FEATURE)_ABS_AVL") {
+  field(SCAN, "I/O Intr")
+  field(PINI, "YES")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) $(N))FDC_FEAT_ABSOLUTE")
+  field(ZNAM, "not available")
+  field(ONAM, "available")
+}
+
+# Set the feature absolute value (floating point)
+record(ao, "$(P)$(R)$(FEATURE)_ABS") {
+  field(DTYP, "asynFloat64")
+  field(OUT, "@asyn($(PORT) $(N))FDC_FEAT_VAL_ABS")
+  field(PREC, "3")
+}
+
+# Read the feature absolute value
+record(ai, "$(P)$(R)$(FEATURE)_ABS_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynFloat64")
+  field(INP, "@asyn($(PORT) $(N))FDC_FEAT_VAL_ABS")
+  field(PINI, "YES")
+  field(PREC, "3")
+}
+
+
+# Read the feature absolute value max boundary
+record(ai, "$(P)$(R)$(FEATURE)_ABS_MAX") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynFloat64")
+  field(INP, "@asyn($(PORT) $(N))FDC_FEAT_VAL_ABS_MAX")
+  field(PINI, "YES")
+  field(PREC, "3")
+  field(FLNK, "$(P)$(R)$(FEATURE)_ABS_DRVH")
+}
+# Set DRLH field of the value PV
+record(ao, "$(P)$(R)$(FEATURE)_ABS_DRVH") {
+  field(DOL, "$(P)$(R)$(FEATURE)_ABS_MAX NPP NMS")
+  field(OMSL, "closed_loop")
+  field(OUT, "$(P)$(R)$(FEATURE)_ABS.DRVH NPP NMS")
+  field(FLNK, "$(P)$(R)$(FEATURE)_ABS_HOPR")
+}
+# Set HOPR field of the value PV
+record(ao, "$(P)$(R)$(FEATURE)_ABS_HOPR") {
+  field(DOL, "$(P)$(R)$(FEATURE)_ABS_MAX NPP NMS")
+  field(OMSL, "closed_loop")
+  field(OUT, "$(P)$(R)$(FEATURE)_ABS.HOPR NPP NMS")
+}
+
+# Read the feature absolute value min boundary
+record(ai, "$(P)$(R)$(FEATURE)_ABS_MIN") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynFloat64")
+  field(INP, "@asyn($(PORT) $(N))FDC_FEAT_VAL_ABS_MIN")
+  field(PINI, "YES")
+  field(PREC, "3")
+  field(FLNK, "$(P)$(R)$(FEATURE)_ABS_DRVL")
+}
+
+# Set DRLV field of the value PV
+record(ao, "$(P)$(R)$(FEATURE)_ABS_DRVL") {
+  field(DOL, "$(P)$(R)$(FEATURE)_ABS_MIN NPP NMS")
+  field(OMSL, "closed_loop")
+  field(OUT, "$(P)$(R)$(FEATURE)_ABS.DRVL NPP NMS")
+  field(FLNK, "$(P)$(R)$(FEATURE)_ABS_LOPR")
+}
+# Set LOPR field of the value PV
+record(ao, "$(P)$(R)$(FEATURE)_ABS_LOPR") {
+  field(DOL, "$(P)$(R)$(FEATURE)_ABS_MIN NPP NMS")
+  field(OMSL, "closed_loop")
+  field(OUT, "$(P)$(R)$(FEATURE)_ABS.LOPR NPP NMS")
+}
+
+
