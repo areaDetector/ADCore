@@ -157,6 +157,8 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int paramTableSize, int ma
 
     /* Set some default values for parameters */
     setStringParam(ADPortNameSelf, portName);
+    setStringParam(ADManufacturer, "Unknown");
+    setStringParam(ADModel,        "Unknown");
     setDoubleParam (ADGain,         1.0);
     setIntegerParam(ADBinX,         1);
     setIntegerParam(ADBinY,         1);
@@ -164,19 +166,29 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int paramTableSize, int ma
     setIntegerParam(ADMinY,         0);
     setIntegerParam(ADSizeX,        1);
     setIntegerParam(ADSizeY,        1);
+    setIntegerParam(ADMaxSizeX,     1);
+    setIntegerParam(ADMaxSizeY,     1);
     setIntegerParam(ADReverseX,     0);
     setIntegerParam(ADReverseY,     0);
+    setIntegerParam(ADImageSizeX,   0);
+    setIntegerParam(ADImageSizeY,   0);
+    setIntegerParam(ADImageSizeZ,   0);
+    setIntegerParam(ADImageSize,    0);
+    setIntegerParam(ADDataType,     NDUInt8);
+    setIntegerParam(ADColorMode,    NDColorModeMono);
+    setIntegerParam(ADFrameType,    ADFrameNormal);
+    setIntegerParam(ADImageMode,    ADImageContinuous);
     setIntegerParam(ADTriggerMode,  0);
-    setIntegerParam(ADColorMode,    0);
-    setIntegerParam(ADFrameType,    0);
     setIntegerParam(ADNumExposures, 1);
-    setIntegerParam(ADNumExposuresCounter, 0);
+    setIntegerParam(ADNumImages,    1);
+    setDoubleParam (ADAcquireTime,  1.0);
+    setDoubleParam (ADAcquirePeriod,0.0);
     setIntegerParam(ADStatus,       ADStatusIdle);
     setIntegerParam(ADAcquire,      0);
     setIntegerParam(ADImageCounter, 0);
     setIntegerParam(ADNumImagesCounter, 0);
+    setIntegerParam(ADNumExposuresCounter, 0);
     setDoubleParam( ADTimeRemaining, 0.0);
-    setIntegerParam(ADArrayCallbacks, 1);
     setIntegerParam(ADShutterControl, 0);
     setIntegerParam(ADShutterStatus, 0);
     setIntegerParam(ADShutterMode,   0);
@@ -198,4 +210,10 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int paramTableSize, int ma
     setIntegerParam(ADFileNumCapture,  0);
     setIntegerParam(ADFileNumCaptured, 0);
     setIntegerParam(ADFileCapture,     0);
+
+    setIntegerParam(ADReadStatus,     0);
+    setStringParam (ADStatusMessage,  "");
+    setStringParam (ADStringToServer, "");
+    setStringParam (ADStringFromServer,  "");
+    setIntegerParam(ADArrayCallbacks, 1);
 }
