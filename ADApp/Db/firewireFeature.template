@@ -2,6 +2,7 @@
 
 # Set the value (int32)
 record(ao, "$(P)$(R)$(FEATURE)") {
+  field(PINI, "$(PINI)")
   field(DTYP, "asynInt32")
   field(DESC, "$(DESC)")
   field(OUT, "@asyn($(PORT) $(N))FDC_FEAT_VAL")
@@ -9,14 +10,15 @@ record(ao, "$(P)$(R)$(FEATURE)") {
 
 # Read the value (int32)
 record(ai, "$(P)$(R)$(FEATURE)_RBV") {
-  field(SCAN, "I/O Intr")
+  field(PINI, "YES")
   field(DTYP, "asynInt32")
   field(INP, "@asyn($(PORT) $(N))FDC_FEAT_VAL")
-  field(PINI, "YES")
+  field(SCAN, "I/O Intr")
 }
 
 ## Set the control mode (manual = user configured /auto = camera sets values)
 record(bo, "$(P)$(R)$(FEATURE)_CTRL") {
+  field(PINI, "$(PINI)")
   field(DTYP, "asynInt32")
   field(OUT, "@asyn($(PORT) $(N))FDC_FEAT_MODE")
   field(ZNAM, "Manual")
@@ -25,30 +27,30 @@ record(bo, "$(P)$(R)$(FEATURE)_CTRL") {
 
 ## Read back the control mode 
 record(bi, "$(P)$(R)$(FEATURE)_CTRL_RBV") {
-  field(SCAN, "I/O Intr")
   field(PINI, "YES")
   field(DTYP, "asynInt32")
   field(INP, "@asyn($(PORT) $(N))FDC_FEAT_MODE")
   field(ZNAM, "Manual")
   field(ONAM, "Auto")
+  field(SCAN, "I/O Intr")
 }
 
 ## Read whether the camera supports this feature
 record(bi, "$(P)$(R)$(FEATURE)_AVL") {
-  field(SCAN, "I/O Intr")
   field(PINI, "YES")
   field(DTYP, "asynInt32")
   field(INP, "@asyn($(PORT) $(N))FDC_FEAT_AVAILABLE")
   field(ZNAM, "not available")
   field(ONAM, "available")
+  field(SCAN, "I/O Intr")
 }
 
 # Read value boundaries
 record(ai, "$(P)$(R)$(FEATURE)_MIN") {
-  field(SCAN, "I/O Intr")
+  field(PINI, "YES")
   field(DTYP, "asynInt32")
   field(INP, "@asyn($(PORT) $(N))FDC_FEAT_VAL_MIN")
-  field(PINI, "YES")
+  field(SCAN, "I/O Intr")
   field(FLNK, "$(P)$(R)$(FEATURE)_DRVL")
 }
 
@@ -66,10 +68,10 @@ record(ao, "$(P)$(R)$(FEATURE)_LOPR") {
   field(OUT, "$(P)$(R)$(FEATURE).LOPR NPP NMS")
 }
 record(ai, "$(P)$(R)$(FEATURE)_MAX") {
-  field(SCAN, "I/O Intr")
+  field(PINI, "YES")
   field(DTYP, "asynInt32")
   field(INP, "@asyn($(PORT) $(N))FDC_FEAT_VAL_MAX")
-  field(PINI, "YES")
+  field(SCAN, "I/O Intr")
   field(FLNK, "$(P)$(R)$(FEATURE)_DRVH")
 }
 # Set DRLH field of the value PV
@@ -88,16 +90,17 @@ record(ao, "$(P)$(R)$(FEATURE)_HOPR") {
 
 ## Read whether the camera supports absolute (floating point) control of this feature 
 record(bi, "$(P)$(R)$(FEATURE)_ABS_AVL") {
-  field(SCAN, "I/O Intr")
   field(PINI, "YES")
   field(DTYP, "asynInt32")
   field(INP, "@asyn($(PORT) $(N))FDC_FEAT_ABSOLUTE")
   field(ZNAM, "not available")
   field(ONAM, "available")
+  field(SCAN, "I/O Intr")
 }
 
 # Set the feature absolute value (floating point)
 record(ao, "$(P)$(R)$(FEATURE)_ABS") {
+  field(PINI, "$(PINI_ABS)")
   field(DTYP, "asynFloat64")
   field(OUT, "@asyn($(PORT) $(N))FDC_FEAT_VAL_ABS")
   field(PREC, "3")
@@ -105,21 +108,21 @@ record(ao, "$(P)$(R)$(FEATURE)_ABS") {
 
 # Read the feature absolute value
 record(ai, "$(P)$(R)$(FEATURE)_ABS_RBV") {
-  field(SCAN, "I/O Intr")
+  field(PINI, "YES")
   field(DTYP, "asynFloat64")
   field(INP, "@asyn($(PORT) $(N))FDC_FEAT_VAL_ABS")
-  field(PINI, "YES")
   field(PREC, "3")
+  field(SCAN, "I/O Intr")
 }
 
 
 # Read the feature absolute value max boundary
 record(ai, "$(P)$(R)$(FEATURE)_ABS_MAX") {
-  field(SCAN, "I/O Intr")
+  field(PINI, "YES")
   field(DTYP, "asynFloat64")
   field(INP, "@asyn($(PORT) $(N))FDC_FEAT_VAL_ABS_MAX")
-  field(PINI, "YES")
   field(PREC, "3")
+  field(SCAN, "I/O Intr")
   field(FLNK, "$(P)$(R)$(FEATURE)_ABS_DRVH")
 }
 # Set DRLH field of the value PV
@@ -138,11 +141,11 @@ record(ao, "$(P)$(R)$(FEATURE)_ABS_HOPR") {
 
 # Read the feature absolute value min boundary
 record(ai, "$(P)$(R)$(FEATURE)_ABS_MIN") {
-  field(SCAN, "I/O Intr")
+  field(PINI, "YES")
   field(DTYP, "asynFloat64")
   field(INP, "@asyn($(PORT) $(N))FDC_FEAT_VAL_ABS_MIN")
-  field(PINI, "YES")
   field(PREC, "3")
+  field(SCAN, "I/O Intr")
   field(FLNK, "$(P)$(R)$(FEATURE)_ABS_DRVL")
 }
 
