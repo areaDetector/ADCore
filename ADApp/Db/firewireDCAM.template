@@ -136,6 +136,67 @@ record(mbbi, "$(P)$(R)FR_RBV") {
   field(SVVL, "0x7")
 }
 
+## Format 7 color code
+record(mbbo, "$(P)$(R)COLORCODE") {
+  field(SCAN, "Passive")
+  field(PINI, "NO")
+  field(DTYP, "asynInt32")
+  field(OUT, "@asyn($(PORT) 0)FDC_COLORCODE")
+  field(ZRST, "0")
+  field(ONST, "1")
+  field(TWST, "2")
+  field(THST, "3")
+  field(FRST, "4")
+  field(FVST, "5")
+  field(SXST, "6")
+  field(SVST, "7")
+  field(EIST, "8")
+  field(NIST, "9")
+  field(TEST, "10")
+  field(ZRVL, "0x0")
+  field(ONVL, "0x1")
+  field(TWVL, "0x2")
+  field(THVL, "0x3")
+  field(FRVL, "0x4")
+  field(FVVL, "0x5")
+  field(SXVL, "0x6")
+  field(SVVL, "0x7")
+  field(EIVL, "0x8")
+  field(NIVL, "0x9")
+  field(TEVL, "0xA")
+}
+
+## Read back the framerate setting when not in ROI/format7 mode.
+record(mbbi, "$(P)$(R)COLORCODE_RBV") {
+  field(SCAN, "I/O Intr")
+  field(PINI, "YES")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) 0)FDC_COLORCODE")
+  field(ZRST, "0")
+  field(ONST, "1")
+  field(TWST, "2")
+  field(THST, "3")
+  field(FRST, "4")
+  field(FVST, "5")
+  field(SXST, "6")
+  field(SVST, "7")
+  field(EIST, "8")
+  field(NIST, "9")
+  field(TEST, "10")
+  field(ZRVL, "0x0")
+  field(ONVL, "0x1")
+  field(TWVL, "0x2")
+  field(THVL, "0x3")
+  field(FRVL, "0x4")
+  field(FVVL, "0x5")
+  field(SXVL, "0x6")
+  field(SVVL, "0x7")
+  field(EIVL, "0x8")
+  field(NIVL, "0x9")
+  field(TEVL, "0xA")
+}
+
+
 # Current format string
 record(stringin, "$(P)$(R)CURRENT_FORMAT") {
   field(PINI, "YES")
@@ -157,5 +218,13 @@ record(stringin, "$(P)$(R)CURRENT_RATE") {
   field(PINI, "YES")
   field(DTYP, "asynOctetRead")
   field(INP, "@asyn($(PORT) 0)FDC_CURRENT_FRAMERATE")
+  field(SCAN, "I/O Intr")
+}
+
+# Current color mode string
+record(stringin, "$(P)$(R)CURRENT_COLORCODE") {
+  field(PINI, "YES")
+  field(DTYP, "asynOctetRead")
+  field(INP, "@asyn($(PORT) 0)FDC_CURRENT_COLORCODE")
   field(SCAN, "I/O Intr")
 }
