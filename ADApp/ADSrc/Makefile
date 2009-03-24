@@ -4,6 +4,13 @@ include $(TOP)/configure/CONFIG
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 #=============================
 
+# The following gets rid of the -fno-implicit-templates flag on vxWorks, 
+# so we get automatic template instantiation.
+# This is what we want for miscellaneous/asynPortDriver.cpp
+ifeq (vxWorks,$(findstring vxWorks, $(T_A)))
+CODE_CXXFLAGS=
+endif
+
 # The following flag is need to compile/link NDArray.cpp on Solaris
 ifeq ($(GNU),NO)
   NDArray_CXXFLAGS_solaris += -features=tmplrefstatic

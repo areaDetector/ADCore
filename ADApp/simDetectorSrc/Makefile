@@ -4,8 +4,13 @@ include $(TOP)/configure/CONFIG
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 #=============================
 
-#USR_CFLAGS += 
-#USR_CXXFLAGS +=
+# The following gets rid of the -fno-implicit-templates flag on vxWorks, 
+# so we get automatic template instantiation.
+# This is what we want for miscellaneous/asynPortDriver.cpp
+ifeq (vxWorks,$(findstring vxWorks, $(T_A)))
+CODE_CXXFLAGS=
+endif
+
 
 LIBRARY_IOC = simDetector
 LIB_SRCS += simDetector.cpp
