@@ -1,0 +1,174 @@
+# White balance.  The low and high parts of the white balance register are independent.
+# Have 2 separate records and combine them into one.
+# Set the value (int32)
+# Set the value (int32)
+record(ao, "$(P)$(R)$(FEATURE)") {
+  field(PINI, "$(PINI)")
+  field(DTYP, "asynInt32")
+  field(DESC, "$(DESC)")
+  field(OUT, "@asyn($(PORT) $(N))FDC_FEAT_VAL")
+}
+
+## Set the control mode (manual = user configured /auto = camera sets values)
+record(bo, "$(P)$(R)$(FEATURE)_CTRL") {
+  field(PINI, "$(PINI)")
+  field(DTYP, "asynInt32")
+  field(OUT, "@asyn($(PORT) $(N))FDC_FEAT_MODE")
+  field(ZNAM, "Manual")
+  field(ONAM, "Auto")
+}
+
+## Read back the control mode 
+record(bi, "$(P)$(R)$(FEATURE)_CTRL_RBV") {
+  field(PINI, "YES")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) $(N))FDC_FEAT_MODE")
+  field(ZNAM, "Manual")
+  field(ONAM, "Auto")
+  field(SCAN, "I/O Intr")
+}
+
+## Read whether the camera supports this feature
+record(bi, "$(P)$(R)$(FEATURE)_AVL") {
+  field(PINI, "YES")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) $(N))FDC_FEAT_AVAILABLE")
+  field(ZNAM, "not available")
+  field(ONAM, "available")
+  field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)$(FEATURE)_LO") {
+  field(PINI, "YES")
+  field(DESC, "White balance (low)")
+  field(OUT, "$(P)$(R)$(FEATURE)_CALC.A PP MS")
+}
+
+
+record(longout, "$(P)$(R)$(FEATURE)_HI") {
+  field(PINI, "YES")
+  field(DESC, "White balance (high)")
+  field(OUT, "$(P)$(R)$(FEATURE)_CALC.B PP MS")
+}
+
+record(calcout, "$(P)$(R)$(FEATURE)_CALC") {
+  field(DESC, "White balance calc")
+  field(CALC, "(B<<12) | A")
+  field(OUT,  "$(P)$(R)$(FEATURE).VAL PP MS")
+}
+
+# Read the value (int32)
+record(ai, "$(P)$(R)$(FEATURE)_RBV") {
+  field(PINI, "YES")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) $(N))FDC_FEAT_VAL")
+  field(SCAN, "I/O Intr")
+  field(FLNK, "$(P)$(R)$(FEATURE)_LO_RBV_CALC")
+}
+
+record(calcout, "$(P)$(R)$(FEATURE)_LO_RBV_CALC") {
+  field(DESC, "White balance calc")
+  field(CALC, "A & 4095")
+  field(INPA,  "$(P)$(R)$(FEATURE)_RBV.VAL NPP NMS")
+  field(FLNK, "$(P)$(R)$(FEATURE)_LO_RBV")
+}
+
+record(longin, "$(P)$(R)$(FEATURE)_LO_RBV") {
+  field(PINI, "YES")
+  field(DESC, "White balance (low)")
+  field(INP, "$(P)$(R)$(FEATURE)_LO_RBV_CALC NPP NMS")
+  field(FLNK, "$(P)$(R)$(FEATURE)_HI_RBV_CALC")
+}
+
+record(calcout, "$(P)$(R)$(FEATURE)_HI_RBV_CALC") {
+  field(DESC, "White balance calc")
+  field(CALC, "(A>>12) & 4095")
+  field(INPA,  "$(P)$(R)$(FEATURE)_RBV.VAL PP MS")
+  field(FLNK, "$(P)$(R)$(FEATURE)_HI_RBV")
+}
+
+record(longin, "$(P)$(R)$(FEATURE)_HI_RBV") {
+  field(PINI, "YES")
+  field(DESC, "White balance (low)")
+  field(INP, "$(P)$(R)$(FEATURE)_HI_RBV_CALC NPP NMS")
+}
+
+
+# Read value boundaries
+record(ai, "$(P)$(R)$(FEATURE)_MIN") {
+  field(PINI, "YES")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) $(N))FDC_FEAT_VAL_MIN")
+  field(SCAN, "I/O Intr")
+  field(FLNK, "$(P)$(R)$(FEATURE)_LO_DRVL")
+}
+
+# Set DRLV field of the value PV
+record(ao, "$(P)$(R)$(FEATURE)_LO_DRVL") {
+  field(DOL, "$(P)$(R)$(FEATURE)_MIN NPP NMS")
+  field(OMSL, "closed_loop")
+  field(OUT, "$(P)$(R)$(FEATURE)_LO.DRVL NPP NMS")
+  field(FLNK, "$(P)$(R)$(FEATURE)_HI_DRVL")
+}
+
+# Set DRLV field of the value PV
+record(ao, "$(P)$(R)$(FEATURE)_HI_DRVL") {
+  field(DOL, "$(P)$(R)$(FEATURE)_MIN NPP NMS")
+  field(OMSL, "closed_loop")
+  field(OUT, "$(P)$(R)$(FEATURE)_HI.DRVL NPP NMS")
+  field(FLNK, "$(P)$(R)$(FEATURE)_LO_LOPR")
+}
+
+# Set LOPR field of the value PV
+record(ao, "$(P)$(R)$(FEATURE)_LO_LOPR") {
+  field(DOL, "$(P)$(R)$(FEATURE)_MIN NPP NMS")
+  field(OMSL, "closed_loop")
+  field(OUT, "$(P)$(R)$(FEATURE)_LO.LOPR NPP NMS")
+  field(FLNK, "$(P)$(R)$(FEATURE)_HI_LOPR")
+}
+# Set LOPR field of the value PV
+record(ao, "$(P)$(R)$(FEATURE)_HI_LOPR") {
+  field(DOL, "$(P)$(R)$(FEATURE)_MIN NPP NMS")
+  field(OMSL, "closed_loop")
+  field(OUT, "$(P)$(R)$(FEATURE)_HI.LOPR NPP NMS")
+}
+
+record(ai, "$(P)$(R)$(FEATURE)_MAX") {
+  field(PINI, "YES")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) $(N))FDC_FEAT_VAL_MAX")
+  field(SCAN, "I/O Intr")
+  field(FLNK, "$(P)$(R)$(FEATURE)_LO_DRVH")
+}
+
+# Set DRLH field of the value PV
+record(ao, "$(P)$(R)$(FEATURE)_LO_DRVH") {
+  field(DOL, "$(P)$(R)$(FEATURE)_MAX NPP NMS")
+  field(OMSL, "closed_loop")
+  field(OUT, "$(P)$(R)$(FEATURE)_LO.DRVH NPP NMS")
+  field(FLNK, "$(P)$(R)$(FEATURE)_HI_DRVH")
+}
+
+# Set DRLH field of the value PV
+record(ao, "$(P)$(R)$(FEATURE)_HI_DRVH") {
+  field(DOL, "$(P)$(R)$(FEATURE)_MAX NPP NMS")
+  field(OMSL, "closed_loop")
+  field(OUT, "$(P)$(R)$(FEATURE)_HI.DRVH NPP NMS")
+  field(FLNK, "$(P)$(R)$(FEATURE)_LO_HOPR")
+}
+# Set HOPR field of the value PV
+record(ao, "$(P)$(R)$(FEATURE)_LO_HOPR") {
+  field(DOL, "$(P)$(R)$(FEATURE)_MAX NPP NMS")
+  field(OMSL, "closed_loop")
+  field(OUT, "$(P)$(R)$(FEATURE)_LO.HOPR NPP NMS")
+  field(FLNK, "$(P)$(R)$(FEATURE)_HI_HOPR")
+}
+
+# Set HOPR field of the value PV
+record(ao, "$(P)$(R)$(FEATURE)_HI_HOPR") {
+  field(DOL, "$(P)$(R)$(FEATURE)_MAX NPP NMS")
+  field(OMSL, "closed_loop")
+  field(OUT, "$(P)$(R)$(FEATURE)_HI.HOPR NPP NMS")
+}
+
+
