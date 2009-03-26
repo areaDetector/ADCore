@@ -211,7 +211,6 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int paramTableSize, int ma
     setIntegerParam(ADFileNumCaptured, 0);
     setIntegerParam(ADFileCapture,     0);
 
-    setIntegerParam(ADReadStatus,     0);
     setStringParam (ADStatusMessage,  "");
     setStringParam (ADStringToServer, "");
     setStringParam (ADStringFromServer,  "");
