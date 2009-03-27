@@ -532,10 +532,14 @@ record(busy, "$(P)$(R)Acquire") {
    field(ONAM, "Acquire")
 }
 
-record(longin, "$(P)$(R)Acquire_RBV") {
+record(bi, "$(P)$(R)Acquire_RBV") {
    field(PINI, "1")
    field(DTYP, "asynInt32")
    field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQUIRE")
+   field(ZNAM, "Done")
+   field(ZSV,  "NO_ALARM")
+   field(ONAM, "Acquiring")
+   field(OSV,  "MINOR")
    field(SCAN, "I/O Intr")
 }
 
