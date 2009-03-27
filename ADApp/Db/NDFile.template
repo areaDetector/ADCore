@@ -57,7 +57,9 @@ record(longout, "$(P)$(R)FileNumber")
 
 record(longin, "$(P)$(R)FileNumber_RBV")
 {
-    field(PINI, "1")
+    # This record cannot be PINI=YES because then it will cause the _Sync record below to process,
+    # outputting the initial value of the _RBV record. 
+    #field(PINI, "1")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NUMBER")
     field(SCAN, "I/O Intr")
@@ -65,6 +67,10 @@ record(longin, "$(P)$(R)FileNumber_RBV")
 
 record(calcout, "$(P)$(R)FileNumber_Sync")
 {
+    # This record must not process until the _RBV is no longer in SEVR=UDF, i.e.
+    # after the first time that record processes due to a callback from the driver.
+    field(SDIS, "$(P)$(R)FileNumber_RBV.SEVR")
+    field(DISV, "3")
     field(INPA, "$(P)$(R)FileNumber_RBV CP")
     field(CALC, "A")
     field(OUT,  "$(P)$(R)FileNumber PP")
