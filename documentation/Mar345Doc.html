@@ -1,0 +1,702 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>areaDetector mar345 driver</title>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+</head>
+<body>
+  <div style="text-align: center">
+    <h1>
+      areaDetector mar345 driver</h1>
+    <h2>
+      March 26, 2009</h2>
+    <h2>
+      Mark Rivers</h2>
+    <h2>
+      University of Chicago</h2>
+  </div>
+  <h2>
+    Table of Contents</h2>
+  <ul>
+    <li><a href="#Introduction">Introduction</a></li>
+    <li><a href="#StandardNotes">Implementation of standard driver parameters</a></li>
+    <li><a href="#Driver_parameters">mar345 specific parameters</a></li>
+    <li><a href="#Unsupported">Unsupported standard driver parameters</a></li>
+    <li><a href="#Configuration">Configuration</a></li>
+    <li><a href="#MEDM_screens">MEDM screens</a></li>
+    <li><a href="#Performance_measurements">Performance measurements</a> </li>
+    <li><a href="#Restrictions">Restrictions</a> </li>
+  </ul>
+  <h2 id="Introduction" style="text-align: left">
+    Introduction</h2>
+  <p>
+    This is a driver for the mar345 detector from <a href="http://www.marresearch.com/">Marresearch GmbH</a>.
+    It inherits from ADDriver and implements many of the parameters in ADStdDriverParams.h.
+    It also implements a number of parameters that are specific to the mar345 detector.</p>
+  <p>
+    The interface to the detector is via a TCP/IP socket interface to the <b>mar345dtb</b>
+    program that Marresearch provides. The mar345dtb program must be started before
+    the areaDetector software is started.
+  </p>
+  <p>
+    mar345dtb must be configured to accepts commands on a TCP/IP socket port. This is done
+    by editing the file /home/mar345/tables/config.xxx (where xxx is the serial number of that detector)
+    and editing the COMMAND line to the following format:</p>
+  <pre>COMMAND PORT 5001
+    </pre>
+  <p>
+  where 5001 is the TCP/IP port to use.  Any high port number can be used, but it must agree with the
+  one specified in the areaDetector mar345Config command described below.</p>
+  <p>
+    The mar345dtb program saves the data to disk as compressed binary files. The areaDetector software
+    reads these disk files in order to read the data, because mar345dtb does not provide
+    another mechanism to access the data.
+  </p>
+  <h2 id="StandardNotes" style="text-align: left">
+    Implementation of standard driver parameters</h2>
+  <p>
+    The following table describes how the mar345 driver implements some of the standard
+    driver parameters.
+  </p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="center" colspan="3">
+          <b>Implementation of Parameters in ADStdDriverParams.h and EPICS Record Definitions
+            in ADBase.template and NDFile.template</b></td>
+      </tr>
+      <tr>
+        <th>
+          Enum name</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          Description</th>
+      </tr>
+      <tr>
+        <td>
+          ADAcquire</td>
+        <td>
+          $(P$(R)Acquire</td>
+        <td>
+          Setting this to 1 starts an acquisition sequence.  If ADNumImages is greater than 1 then it acquires multiple
+          frames.  For each frame it does the following:
+          <ol>
+            <li>Erases the detector if mar345EraseMode is "Before expose".</li>
+            <li>Opens the shutter if either the mar345 shutter or EPICS shutter controls are enabled.</li>
+            <li>Waits for the desired exposure time.</li>
+            <li>Closes the shutter if either the mar345 shutter or EPICS shutter controls are enabled.</li>
+            <li>Scans the detector and saves the file.</li>
+            <li>Erases the detector if mar345EraseMode is "After scan".</li>
+          </ol>
+          If ADAcquire is set to 0 during exposure (step 3 above) then it proceeds immediately to step 4, finishes
+          collecting the current frame and stops the acquisition sequence if ADNumImages is greater than 1.  If mar345Abort
+          is set to 0 then the acquisition is terminated as soon as possible without saving the data.  Note however that
+          commands to the mar345 server to erase, change mode, or scan cannot be aborted, so the driver must wait for
+          these commands to complete.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          ADNumImages</td>
+        <td>
+          $(P$(R)NumImages</td>
+        <td>
+          Controls the number of images to acquire when ADImageMode is ADImageMultiple.</td>
+      </tr>
+      <tr>
+        <td>
+          ADAcquirePeriod</td>
+        <td>
+          $(P$(R)AcquirePeriod</td>
+        <td>
+          Controls the period between images when ADImageMode is ADImageMultiple or ADImageContinuous.
+          If this is greater than the acquisition time plus readout overhead then the driver
+          will wait until the period has elapsed before starting the next acquisition.</td>
+      </tr>
+      <tr>
+        <td>
+          ADFilePath</td>
+        <td>
+          $(P$(R)FilePath</td>
+        <td>
+          Controls the path for saving images. It must be a valid path for mar345dtb <i>and</i>
+          for the areaDetector driver, which is normally running in an EPICS IOC. If mar345dtb
+          and the EPICS IOC are not running on the same machine then soft links will typically
+          be used to make the paths look identical.</td>
+      </tr>
+      <tr>
+        <td>
+          ADFileFormat</td>
+        <td>
+          $(P)$(R)FileFormat</td>
+        <td>
+          mar345 only supports mar345 format binary files.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          ADStatus</td>
+        <td>
+          $(P)$(R)DetectorState_RBV</td>
+        <td>
+          mar345 replaces the state strings with the following: Exposing, Scanning, Erasing, Changing Mode,
+          Aborting, Error, and Waiting.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    It is useful to use NDPluginROI to define an ROI containing the entire mar345 detector.
+    The MaxValue_RBV PV in this ROI can be monitored to make sure that the 16-bit limit
+    of 65,535 is not being approached in any pixel.
+  </p>
+  <h2 id="Driver_parameters" style="text-align: left">
+    mar345 specific parameters</h2>
+  <p>
+    The mar345 driver implements the following parameters in addition to those in ADStdDriverParams.h.
+    Note that to reduce the width of this table the enum names have been split into
+    2 lines, but these are just a single name, for example <code>mar345ScanSize</code>.
+  </p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Parameter Definitions in mar345.cpp and EPICS Record Definitions in mar345.template</b></td>
+      </tr>
+      <tr>
+        <th>
+          Enum name</th>
+        <th>
+          asyn interface</th>
+        <th>
+          Access</th>
+        <th>
+          Description</th>
+        <th>
+          drvUser string</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          EPICS record type</th>
+      </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Readout parameters</b></td>
+      </tr>
+      <tr>
+        <td>
+          mar345<br />
+          ScanSize</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          The detector diameter to read out.  Choices are 180mm, 240mm, 300mm, and 345mm.</td>
+        <td>
+          MAR_SIZE</td>
+        <td>
+          $(P)$(R)ScanSize<br />
+          $(P)$(R)ScanSize_RBV</td>
+        <td>
+          mbbo <br/>
+          mbbi </td>
+      </tr>
+      <tr>
+        <td>
+          mar345<br />
+          ScanResolution</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          The pixel size to use when reading the detector out.  Choices are 0.10 and 0.15mm.</td>
+        <td>
+          MAR_RESOLUTION</td>
+        <td>
+          $(P)$(R)ScanResolution<br />
+          $(P)$(R)ScanResolution_RBV</td>
+        <td>
+          mbbo <br/>
+          mbbi </td>
+      </tr>
+      <tr>
+        <td>
+          mar345<br />
+          ChangeMode</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Writing 1 to this parameter causes the ScanSize and ScanResolution values to be sent to
+          the server, changing the scan mode.  This is not strictly necessary, because the size and resolution
+          is also encoded in the file extension used in the scan command.  However, changing the mode before
+          doing a scan reduces the time for the scan, because the detector is already configured for 
+          the correct mode.</td>
+        <td>
+          MAR_CHANGE_MODE</td>
+        <td>
+          $(P)$(R)ChangeMode<br />
+          $(P)$(R)ChangedMode_RBV</td>
+        <td>
+          busy <br/>
+          bi </td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Erase parameters</b></td>
+      </tr>
+      <tr>
+        <td>
+          mar345<br />
+          EraseMode</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Controls whether an erase cycle should be automatically performed during acquisition.  Choices are
+          None, Before expose, and After scan.</td>
+        <td>
+          MAR_ERASE_MODE</td>
+        <td>
+          $(P)$(R)EraseMode<br />
+          $(P)$(R)EraseMode_RBV</td>
+        <td>
+          mbbo <br/>
+          mbbi </td>
+      </tr>
+      <tr>
+        <td>
+          mar345<br />
+          NumErase</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          The number of erase cycles to perform each time the detector is erased, either because the mar345Erase
+          parameter is set to 1, or because of an automatic erase as part of an acquisition.</td>
+        <td>
+          MAR_NUM_ERASE</td>
+        <td>
+          $(P)$(R)NumErase<br />
+          $(P)$(R)NumErase_RBV</td>
+        <td>
+          longout <br/>
+          longin </td>
+      </tr>
+      <tr>
+        <td>
+          mar345<br />
+          Erase</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Write 1 to this parameter to initiate erasing the detector.  The detector will be erased
+          multiple times if mar345NumErase is greater than 1.</td>
+        <td>
+          MAR_ERASE</td>
+        <td>
+          $(P)$(R)Erase<br />
+          $(P)$(R)Erase_RBV</td>
+        <td>
+          busy <br/>
+          bi </td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Abort parameters</b></td>
+      </tr>
+      <tr>
+        <td>
+          mar345<br />
+          Abort</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Writing 1 to this parameter aborts the current operation as soon as possible and returns the driver
+          to the idle state. Note however that
+          commands to the mar345 server cannot be aborted, so the driver must wait for
+          the current command to complete.</td>
+        <td>
+          MAR_ABORT</td>
+        <td>
+          $(P)$(R)Abort<br />
+          $(P)$(R)Abort_RBV</td>
+        <td>
+          bo <br/>
+          bi </td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Debugging</b></td>
+      </tr>
+      <tr>
+        <td>
+          N/A</td>
+        <td>
+          N/A</td>
+        <td>
+          N/A</td>
+        <td>
+          asyn record to control debugging communication with mar345dtb program</td>
+        <td>
+          N/A</td>
+        <td>
+          $(P)$(R)marSserverAsyn</td>
+        <td>
+          asyn</td>
+      </tr>
+    </tbody>
+  </table>
+  <h2 id="Unsupported">
+    Unsupported standard driver parameters</h2>
+  <p>
+    The mar345 driver does not support the following standard driver parameters because
+    they are not supported in the mar345dtb program:</p>
+  <ul>
+    <li>Number of exposures per image (ADNumExposures)</li>
+    <li>Trigger mode (ADTriggerMode)</li>
+    <li>Gain (ADGain)</li>
+    <li>Region to read out (ADMinX, ADMinY, ADSizeX, ADSizeY, ADReverseX, ADReverseY)</li>
+    <li>Binning (ADBinX, ADBinY)</li>
+    <li>Frame type (ADFrameType)</li>
+    <li>Data type (ADDataType)</li>
+    <li>Reading previous files (ADReadFile)</li>
+    <li>Capture or stream file saving (ADFileWriteMode, ADFileCapture, ADNumCapture, ADNumCaptured)</li>
+  </ul>
+  <h2 id="Configuration" style="text-align: left">
+    Configuration</h2>
+  <p>
+    The mar345 driver is created with the following command, either from C/C++ or from
+    the EPICS IOC shell.
+  </p>
+  <pre>   
+mar345Config(const char *portName, const char *mar345Port, 
+             int maxBuffers, size_t maxMemory);
+  </pre>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <th>
+          Argument</th>
+        <th>
+          Description</th>
+      </tr>
+      <tr>
+        <td>
+          <code>portName</code></td>
+        <td>
+          The name of the asyn port for this detector.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <code>mar345Port</code></td>
+        <td>
+          The name of the asyn TCP/IP port to communicate with mar345dtb. This
+          must have been previously created with <code>drvAsynIPPortConfig()</code>,
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <code>maxBuffers</code></td>
+        <td>
+          Maximum number of buffers to be created for plugin callbacks. Passed to the constructor
+          for the ADDriver base class.</td>
+      </tr>
+      <tr>
+        <td>
+          <code>maxMemory</code></td>
+        <td>
+          Maximum number of bytes of memory to be allocated for plugin callbacks. Passed to
+          the constructor for the ADDriver base class.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    The following is an example st.cmd startup script:
+  </p>
+  <pre>&lt; < envPaths
+errlogInit(20000)
+
+dbLoadDatabase("$(AREA_DETECTOR)/dbd/mar345App.dbd")
+mar345App_registerRecordDeviceDriver(pdbbase) 
+
+###
+# Create the asyn port to talk to the MAR on port 5001
+drvAsynIPPortConfigure("marServer","gse-marip2.cars.aps.anl.gov:5001")
+# Set the input and output terminators.
+asynOctetSetInputEos("marServer", 0, "\n")
+asynOctetSetOutputEos("marServer", 0, "\n")
+asynSetTraceIOMask("marServer",0,2)
+#asynSetTraceMask("marServer",0,255)
+
+mar345Config("MAR", "marServer", 20, 200000000)
+asynSetTraceIOMask("MAR",0,2)
+#asynSetTraceMask("MAR",0,255)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/ADBase.template",  "P=13MAR345_1:,R=cam1:,PORT=MAR,ADDR=0,TIMEOUT=1")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFile.template","P=13MAR345_1:,R=cam1:,PORT=MAR,ADDR=0,TIMEOUT=1")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/mar345.template","P=13MAR345_1:,R=cam1:,PORT=MAR,ADDR=0,TIMEOUT=1,MARSERVER_PORT=marServer")
+
+# Create a standard arrays plugin
+drvNDStdArraysConfigure("MARImage", 5, 0, "MAR", 0, -1)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13MAR345_1:,R=image1:,PORT=MARImage,ADDR=0,TIMEOUT=1,NDARRAY_PORT=MAR,NDARRAY_ADDR=0")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStdArrays.template", "P=13MAR345_1:,R=image1:,PORT=MARImage,ADDR=0,TIMEOUT=1,SIZE=16,FTVL=SHORT,NELEMENTS=12000000")
+
+# Create an ROI plugin
+drvNDROIConfigure("MARROI", 5, 0, "MAR", 0, 4, 20, -1)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13MAR345_1:,R=ROI1:,  PORT=MARROI,ADDR=0,TIMEOUT=1,NDARRAY_PORT=MAR,NDARRAY_ADDR=0")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROI.template",       "P=13MAR345_1:,R=ROI1:,  PORT=MARROI,ADDR=0,TIMEOUT=1")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MAR345_1:,R=ROI1:0:,PORT=MARROI,ADDR=0,TIMEOUT=1,HIST_SIZE=256")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MAR345_1:,R=ROI1:1:,PORT=MARROI,ADDR=1,TIMEOUT=1,HIST_SIZE=256")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MAR345_1:,R=ROI1:2:,PORT=MARROI,ADDR=2,TIMEOUT=1,HIST_SIZE=256")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MAR345_1:,R=ROI1:3:,PORT=MARROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
+
+#asynSetTraceMask("MARROI",0,3)
+#asynSetTraceIOMask("MARROI",0,4)
+
+# Load scan records
+dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=13MAR345_1:,MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
+
+set_requestfile_path("./")
+set_savefile_path("./autosave")
+set_requestfile_path("$(AREA_DETECTOR)/ADApp/Db")
+set_requestfile_path("$(SSCAN)/sscanApp/Db")
+set_pass0_restoreFile("auto_settings.sav")
+set_pass1_restoreFile("auto_settings.sav")
+save_restoreSet_status_prefix("13MAR345_1:")
+dbLoadRecords("$(AUTOSAVE)/asApp/Db/save_restoreStatus.db", "P=13MAR345_1:")
+
+iocInit()
+
+# save things every thirty seconds
+create_monitor_set("auto_settings.req", 30,"P=13MAR345_1:,D=cam1:")
+
+</pre>
+  <h2 id="MEDM_screens" style="text-align: left">
+    MEDM screens</h2>
+  <p>
+    The following show the MEDM screens that are used to control the mar345 detector.
+    Note that the general purpose screen ADBase.adl can be used, but it exposes many
+    controls that are not applicable to the mar345, and lacks some fields that are important
+    for the Mmar345.</p>
+  <p>
+    <code>mar345.adl</code> is the main screen used to control the mar345 driver.
+  </p>
+  <div style="text-align: center">
+    <h3 style="text-align: center">
+      mar345.adl</h3>
+    <img alt="mar345.png" src="mar345.png" /></div>
+  <h2 id="Performance_measurements">
+    Performance measurements</h2>
+  <p>
+    The mar345 is definitely not a fast detector! 
+    The following measurements show the time to perform various erase and scan operations. Note that because the
+    mar345 file format is compressed the file sizes are typically much less than the image sizes listed.</p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <th>
+          Scan diameter</th>
+        <th>
+          Pixel size</th>
+        <th>
+          Image dimensions</th>
+        <th>
+          Image size (MB)</th>
+        <th>
+          Time to scan</th>
+        <th>
+          Time to erase</th>
+      </tr>
+      <tr>
+        <td>
+          180 mm
+        </td>
+        <td>
+          0.15 mm
+        </td>
+        <td>
+          1200x1200
+        </td>
+        <td>
+          2.7
+        </td>
+        <td>
+          38.6
+        </td>
+        <td>
+          37.8
+        </td>
+      </tr>
+      <tr>
+        <td>
+          240 mm
+        </td>
+        <td>
+          0.15 mm
+        </td>
+        <td>
+          1600x1600
+        </td>
+        <td>
+          4.9
+        </td>
+        <td>
+          50.4
+        </td>
+        <td>
+          50.8
+        </td>
+      </tr>
+      <tr>
+        <td>
+          300 mm
+        </td>
+        <td>
+          0.15 mm
+        </td>
+        <td>
+          2000x2000
+        </td>
+        <td>
+          7.6
+        </td>
+        <td>
+          74.7
+        </td>
+        <td>
+          66.9
+        </td>
+      </tr>
+      <tr>
+        <td>
+          345 mm
+        </td>
+        <td>
+          0.15 mm
+        </td>
+        <td>
+          2300x2300
+        </td>
+        <td>
+          10.1
+        </td>
+        <td>
+          88.6
+        </td>
+        <td>
+          82.7
+        </td>
+      <tr>
+        <td>
+          180 mm
+        </td>
+        <td>
+          0.10 mm
+        </td>
+        <td>
+          1800x1800
+        </td>
+        <td>
+          6.2
+        </td>
+        <td>
+          46.4
+        </td>
+        <td>
+          45.9
+        </td>
+      </tr>
+      <tr>
+        <td>
+          240 mm
+        </td>
+        <td>
+          0.10 mm
+        </td>
+        <td>
+          2400x2400
+        </td>
+        <td>
+          11.0
+        </td>
+        <td>
+          71.9
+        </td>
+        <td>
+          63.8
+        </td>
+      </tr>
+      <tr>
+        <td>
+          300 mm
+        </td>
+        <td>
+          0.10 mm
+        </td>
+        <td>
+          3000x3000
+        </td>
+        <td>
+          17.2
+        </td>
+        <td>
+          89.1
+        </td>
+        <td>
+          87.0
+        </td>
+      </tr>
+      <tr>
+        <td>
+          345 mm
+        </td>
+        <td>
+          0.10 mm
+        </td>
+        <td>
+          3450x3450
+        </td>
+        <td>
+          22.7
+        </td>
+        <td>
+          107.5
+        </td>
+        <td>
+          107.1
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h2 id="Restrictions">
+    Restrictions</h2>
+  <p>
+    The following are some current restrictions of the mar345 driver:</p>
+  <ul>
+    <li>The areaDetector driver can in principle be run on machines other than the Linux
+      machine running mar345dtb, since the connection is via a socket. It has only been tested
+      on Linux.</li>
+    <li>The following items are hardcoded in the driver. They can be changed by recompiling
+      compiling if necessary.
+      <ul>
+        <li>MAX_MESSAGE_SIZE=256 The maximum size of message to/from mar345dtb server.</li>
+        <li>MAX_FILENAME_LEN=256 The maximum size of a complete file name including path and
+          extension.</li>
+        <li>MAR345_COMMAND_TIMEOUT=180.0 Timeout for a complete erase or scan command to complete.</li>
+      </ul>
+    </li>
+  </ul>
+</body>
+</html>
