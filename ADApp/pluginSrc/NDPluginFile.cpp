@@ -396,9 +396,8 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
             }
             break;
         case ADFileCapture:
-            if (value) {
-                status = doCapture();
-            }
+            /* Must call doCapture if capturing was just started or stopped */
+            status = doCapture();
             break;
         default:
             /* This was not a parameter that this driver understands, try the base class */
