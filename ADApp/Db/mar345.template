@@ -6,6 +6,14 @@
 # In that case the state will appear to be busy when it is idle, and this polling should be
 # turned on to avoid confusion
 
+record(bo,"$(P)$(R)Abort") {
+    field(DTYP,"asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_ABORT")
+    field(ZNAM,"Done")
+    field(ONAM,"Abort")
+    field(VAL, "1")
+}
+
 record(busy,"$(P)$(R)Erase") {
     field(DTYP,"asynInt32")
     field(OUT, "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_ERASE")
@@ -40,6 +48,13 @@ record(longin, "$(P)$(R)NumErase_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(longin, "$(P)$(R)NumErased_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_NUM_ERASED")
+   field(SCAN, "I/O Intr")
+}
 
 # Erase mode - none, before, after
 record(mbbo,"$(P)$(R)EraseMode") {
