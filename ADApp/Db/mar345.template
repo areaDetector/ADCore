@@ -14,6 +14,17 @@ record(bo,"$(P)$(R)Abort") {
     field(VAL, "1")
 }
 
+record(bi,"$(P)$(R)Abort_RBV") {
+    field(DTYP,"asynInt32")
+    field(PINI, "YES")
+    field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_ABORT")
+    field(ZNAM,"Done")
+    field(ZSV, "NO_ALARM")
+    field(ONAM,"Aborting")
+    field(OSV, "MINOR")
+    field(SCAN, "I/O Intr")
+}
+
 record(busy,"$(P)$(R)Erase") {
     field(DTYP,"asynInt32")
     field(OUT, "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_ERASE")
