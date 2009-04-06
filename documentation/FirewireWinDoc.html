@@ -8,7 +8,7 @@
 <body>
   <div style="text-align: center">
     <h1>
-     Firewire IIDC (CDAM) Windows driver</h1>
+      Firewire IIDC (CDAM) Windows driver</h1>
     <h2>
       March 28, 2009</h2>
     <h2>
@@ -31,31 +31,34 @@
   <h2 id="Introduction" style="text-align: left">
     Introduction</h2>
   <p>
-    This is a driver for Firewire (IEEE 1394) cameras that follow the 
-    <a href="http://damien.douxchamps.net/ieee1394/libdc1394/iidc/IIDC_1.31.pdf">IIDC/DCAM</a> specification.
-    This industry standard allows a single driver to control cameras from any manufacturer, using any of
-    the supported video formats and features. 
-    It inherits from ADDriver and implements many of the parameters in ADStdDriverParams.h.
-    It also implements a number of parameters that are specific to the Firewire cameras.</p>
+    This is a driver for Firewire (IEEE 1394) cameras that follow the <a href="http://damien.douxchamps.net/ieee1394/libdc1394/iidc/IIDC_1.31.pdf">
+      IIDC/DCAM</a> specification. This industry standard allows a single driver to
+    control cameras from any manufacturer, using any of the supported video formats
+    and features. It inherits from ADDriver and implements many of the parameters in
+    ADStdDriverParams.h. It also implements a number of parameters that are specific
+    to the Firewire cameras.</p>
   <p>
-    This driver runs only on Windows.  It uses the 
-    <a href="http://www.cs.cmu.edu/~iwan/1394">Carnegie Mellon 1394</a> camera driver and library.  There is also an
-    areaDetector Firewire driver for Linux available from the 
-    <a href="http://controls.diamond.ac.uk/downloads/support/firewireDCAM/index.html">
-    Diamond Light Source</a>.
+    This driver runs only on Windows. It uses the <a href="http://www.cs.cmu.edu/~iwan/1394">
+      Carnegie Mellon 1394</a> camera driver and library. There is also an areaDetector
+    Firewire driver for Linux available from the <a href="http://controls.diamond.ac.uk/downloads/support/firewireDCAM/index.html">
+      Diamond Light Source</a>.
   </p>
-  <p>The IIDC/DCAM specification defines standard ways that manufacturers must implement features like shutter time,
-    white balance, frame sizes, frame rates, etc.  There is a standard way to determine whether or not a particular
-    camera supports a particular feature. If it does then there is a standard way of querying the allowed
-    range of values for that feature. This makes it quite easy to write a driver that can support
+  <p>
+    The IIDC/DCAM specification defines standard ways that manufacturers must implement
+    features like shutter time, white balance, frame sizes, frame rates, etc. There
+    is a standard way to determine whether or not a particular camera supports a particular
+    feature. If it does then there is a standard way of querying the allowed range of
+    values for that feature. This makes it quite easy to write a driver that can support
     cameras with any capabilities from any manufacturer.</p>
   <h2 id="VideoFormats" style="text-align: left">
     Video formats, modes, and frame rates</h2>
-  <p>The DCAM specification defines standard video frame sizes, color modes and frames rates.  The following tables lists
-    these standard formats and mode.  Video format 7 is special.  It allows defining an ROI on the camera to read out.
-    The pixel resolution with which the size and position of this ROI can be defined can be queried, and is not 
-    necessarily a single pixel. In Format 7 the frame rate settings do not apply, and the frame rate is determined
-    by the size of the Fireware data packets.</p>
+  <p>
+    The DCAM specification defines standard video frame sizes, color modes and frames
+    rates. The following tables lists these standard formats and mode. Video format
+    7 is special. It allows defining an ROI on the camera to read out. The pixel resolution
+    with which the size and position of this ROI can be defined can be queried, and
+    is not necessarily a single pixel. In Format 7 the frame rate settings do not apply,
+    and the frame rate is determined by the size of the Fireware data packets.</p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
       <tr>
@@ -276,16 +279,17 @@
         <td>
           Vendor-defined</td>
       </tr>
-  </tbody>
-</table>
-
-<p>The following tables lists the standard frame rates for formats 0, 1 and 2. Note that not all frame rates are supported
-   by the IIDC standard for every format and mode, and even when a frame rate is supported by the standard it may not
-   be implemented for a particular camera.
-   In Format 7 the frame rate settings do not apply, and the frame rate is determined by the size of 
-   the Fireware data packets. The areaDetector driver currently sets the Format 7 packet size to the vendor recommended
-   size, which typically results in the maximum possible frame rate.</p>
-<table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    </tbody>
+  </table>
+  <p>
+    The following tables lists the standard frame rates for formats 0, 1 and 2. Note
+    that not all frame rates are supported by the IIDC standard for every format and
+    mode, and even when a frame rate is supported by the standard it may not be implemented
+    for a particular camera. In Format 7 the frame rate settings do not apply, and the
+    frame rate is determined by the size of the Fireware data packets. The areaDetector
+    driver currently sets the Format 7 packet size to the vendor recommended size, which
+    typically results in the maximum possible frame rate.</p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
       <tr>
         <td align="center" colspan="2">
@@ -345,16 +349,18 @@
         <td>
           240</td>
       </tr>
-  </tbody>
-</table>
-  <p>The DCAM specification defines 22 standard features, which control things such as the brightness, white balance,
-     shutter time, etc..  For each feature the standard defines
-     control in both device units (12-bit integers) and absolute units (floating point).  For example shutter time
-     may support absolute seconds, as well as device units. A feature may or may not
-     be supported on a particular camera.  If it is supported it may or may not permit control in absolute units.  
-     Each feature may support both manual control and automatic control (e.g. automatic gain control).
-     The following tables lists these standard features.</p>
-<table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    </tbody>
+  </table>
+  <p>
+    The DCAM specification defines 22 standard features, which control things such as
+    the brightness, white balance, shutter time, etc.. For each feature the standard
+    defines control in both device units (12-bit integers) and absolute units (floating
+    point). For example shutter time may support absolute seconds, as well as device
+    units. A feature may or may not be supported on a particular camera. If it is supported
+    it may or may not permit control in absolute units. Each feature may support both
+    manual control and automatic control (e.g. automatic gain control). The following
+    tables lists these standard features.</p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
       <tr>
         <td align="center" colspan="3">
@@ -544,13 +550,13 @@
         <td>
           QUALITY</td>
       </tr>
-  </tbody>
-</table>
-
+    </tbody>
+  </table>
   <p>
-    The firewireWinDCAM driver implements the following parameters in addition to those in ADStdDriverParams.h.
-    Note that to reduce the width of this table the enum names have been split into
-    2 lines, but these are just a single name, for example <code>mar345ScanSize</code>.
+    The firewireWinDCAM driver implements the following parameters in addition to those
+    in ADStdDriverParams.h. Note that to reduce the width of this table the enum names
+    have been split into 2 lines, but these are just a single name, for example <code>
+      mar345ScanSize</code>.
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
@@ -576,7 +582,7 @@
       </tr>
       <tr>
         <td align="center" colspan="7">
-          <b>Video format parameters.  In firewireDCAM.template and firewireVideoModes.template.</b></td>
+          <b>Video format parameters. In firewireDCAM.template and firewireVideoModes.template.</b></td>
       </tr>
       <tr>
         <td>
@@ -587,17 +593,20 @@
         <td>
           r/w</td>
         <td>
-          The video format. The allowed choices are 0="VGA", 1="Super VGA 1", 2="Super VGA 2", 6="Still image", 7="User-defined".
-          The FDC_has_format and FDC_valid_format parameters described below indicate whether a particular format is actually supported
-          by the camera.</td>
+          The video format. The allowed choices are 0="VGA", 1="Super VGA 1", 2="Super VGA
+          2", 6="Still image", 7="User-defined". The FDC_has_format and FDC_valid_format parameters
+          described below indicate whether a particular format is actually supported by the
+          camera.</td>
         <td>
           FDC_FORMAT</td>
         <td>
           $(P)$(R)FORMAT<br />
           $(P)$(R)FORMAT_RBV</td>
         <td>
-          mbbo <br/>
-          mbbi </td>
+          mbbo
+          <br />
+          mbbi
+        </td>
       </tr>
       <tr>
         <td>
@@ -612,9 +621,10 @@
         <td>
           FDC_HAS_FORMAT</td>
         <td>
-          $(P)$(R)HAS_FORMAT_$(N)  (N=0-7)</td>
+          $(P)$(R)HAS_FORMAT_$(N) (N=0-7)</td>
         <td>
-          bi </td>
+          bi
+        </td>
       </tr>
       <tr>
         <td>
@@ -625,13 +635,15 @@
         <td>
           r/o</td>
         <td>
-          A string describing each of the formats (0-7) supported by the camera. The string is "N.A." if the format is not supported.</td>
+          A string describing each of the formats (0-7) supported by the camera. The string
+          is "N.A." if the format is not supported.</td>
         <td>
           FDC_VALID_FORMAT</td>
         <td>
-          $(P)$(R)VALID_FORMAT_$(N)  (N=0-7)</td>
+          $(P)$(R)VALID_FORMAT_$(N) (N=0-7)</td>
         <td>
-          stringin </td>
+          stringin
+        </td>
       </tr>
       <tr>
         <td>
@@ -648,11 +660,12 @@
         <td>
           $(P)$(R)CURRENT_FORMAT</td>
         <td>
-          stringin </td>
+          stringin
+        </td>
       </tr>
       <tr>
         <td align="center" colspan="7">
-          <b>Video mode parameters.   In firewireDCAM.template and firewireVideoModes.template.</b></td>
+          <b>Video mode parameters. In firewireDCAM.template and firewireVideoModes.template.</b></td>
       </tr>
       <tr>
         <td>
@@ -663,8 +676,8 @@
         <td>
           r/w</td>
         <td>
-          The video mode.  The allowed choices are 0-7.
-          The FDC_has_mode and FDC_valid_mode parameters described below indicate whether a particular mode is actually supported
+          The video mode. The allowed choices are 0-7. The FDC_has_mode and FDC_valid_mode
+          parameters described below indicate whether a particular mode is actually supported
           by the camera in the currently selected video format.</td>
         <td>
           FDC_MODE</td>
@@ -672,8 +685,10 @@
           $(P)$(R)MODE<br />
           $(P)$(R)MODE_RBV</td>
         <td>
-          mbbo <br/>
-          mbbi </td>
+          mbbo
+          <br />
+          mbbi
+        </td>
       </tr>
       <tr>
         <td>
@@ -684,13 +699,15 @@
         <td>
           r/o</td>
         <td>
-          A flag indicating whether a particular mode (0-7) is supported by the camera in the currently selected format.</td>
+          A flag indicating whether a particular mode (0-7) is supported by the camera in
+          the currently selected format.</td>
         <td>
           FDC_HAS_MODE</td>
         <td>
-          $(P)$(R)HAS_MODE_$(N)  (N=0-7)</td>
+          $(P)$(R)HAS_MODE_$(N) (N=0-7)</td>
         <td>
-          bi </td>
+          bi
+        </td>
       </tr>
       <tr>
         <td>
@@ -701,14 +718,16 @@
         <td>
           r/o</td>
         <td>
-          A string describing each of the modes (0-7) supported by the camera in the currently selected video format. 
-          The string is "N.A." if the mode is not supported in this format.</td>
+          A string describing each of the modes (0-7) supported by the camera in the currently
+          selected video format. The string is "N.A." if the mode is not supported in this
+          format.</td>
         <td>
           FDC_VALID_MODE</td>
         <td>
-          $(P)$(R)VALID_MODE_$(N)  (N=0-7)</td>
+          $(P)$(R)VALID_MODE_$(N) (N=0-7)</td>
         <td>
-          stringin </td>
+          stringin
+        </td>
       </tr>
       <tr>
         <td>
@@ -725,12 +744,13 @@
         <td>
           $(P)$(R)CURRENT_MODE</td>
         <td>
-          stringin </td>
+          stringin
+        </td>
       </tr>
       <tr>
         <td align="center" colspan="7">
-          <b>Video frame rate parameters. These parameters do not apply when the video format=7.   
-          In firewireDCAM.template and firewireVideoModes.template.</b></td>
+          <b>Video frame rate parameters. These parameters do not apply when the video format=7.
+            In firewireDCAM.template and firewireVideoModes.template.</b></td>
       </tr>
       <tr>
         <td>
@@ -741,17 +761,20 @@
         <td>
           r/w</td>
         <td>
-          The frame rate in frames/second.  The allowed choices are 0="1.875", 1="3.75", 2="7.5", 3="15", 4="30", 5="60", 6="120", 7="240".
-          FDC_has_framerate and FDC_valid_framerate parameters described below indicate whether a particular frame rate is actually supported
-          by the camera in the currently selected video format and mode.</td>
+          The frame rate in frames/second. The allowed choices are 0="1.875", 1="3.75", 2="7.5",
+          3="15", 4="30", 5="60", 6="120", 7="240". FDC_has_framerate and FDC_valid_framerate
+          parameters described below indicate whether a particular frame rate is actually
+          supported by the camera in the currently selected video format and mode.</td>
         <td>
           FDC_FRAMERATE</td>
         <td>
           $(P)$(R)FR<br />
           $(P)$(R)FR_RBV</td>
         <td>
-          mbbo <br/>
-          mbbi </td>
+          mbbo
+          <br />
+          mbbi
+        </td>
       </tr>
       <tr>
         <td>
@@ -762,13 +785,15 @@
         <td>
           r/o</td>
         <td>
-          A flag indicating whether a particular frame rate (0-7) is supported by the camera in the currently selected video format and mode.</td>
+          A flag indicating whether a particular frame rate (0-7) is supported by the camera
+          in the currently selected video format and mode.</td>
         <td>
           FDC_HAS_FRAMERATE</td>
         <td>
-          $(P)$(R)HAS_RATE_$(N)  (N=0-7)</td>
+          $(P)$(R)HAS_RATE_$(N) (N=0-7)</td>
         <td>
-          bi </td>
+          bi
+        </td>
       </tr>
       <tr>
         <td>
@@ -779,14 +804,16 @@
         <td>
           r/o</td>
         <td>
-          A string describing each of the frame rates (0-7) supported by the camera in the currently selected video format and mode. 
-          The string is "N.A." if the frame rate is not supported in this format and mode.</td>
+          A string describing each of the frame rates (0-7) supported by the camera in the
+          currently selected video format and mode. The string is "N.A." if the frame rate
+          is not supported in this format and mode.</td>
         <td>
           FDC_VALID_FRAMERATE</td>
         <td>
-          $(P)$(R)VALID_RATE_$(N)  (N=0-7)</td>
+          $(P)$(R)VALID_RATE_$(N) (N=0-7)</td>
         <td>
-          stringin </td>
+          stringin
+        </td>
       </tr>
       <tr>
         <td>
@@ -803,12 +830,13 @@
         <td>
           $(P)$(R)CURRENT_RATE</td>
         <td>
-          stringin </td>
+          stringin
+        </td>
       </tr>
       <tr>
         <td align="center" colspan="7">
-          <b>Video color code parameters.  These parameters only apply when the video format=7. 
-          In firewireDCAM.template and firewireColorCodes.template.</b></td>
+          <b>Video color code parameters. These parameters only apply when the video format=7.
+            In firewireDCAM.template and firewireColorCodes.template.</b></td>
       </tr>
       <tr>
         <td>
@@ -819,17 +847,19 @@
         <td>
           r/w</td>
         <td>
-          The color code.  The allowed choices are 0-10.
-          FDC_has_colorcode and FDC_valid_colorcode parameters described below indicate whether a particular color code is actually supported
-          by the camera in the currently selected video format (7) and mode.</td>
+          The color code. The allowed choices are 0-10. FDC_has_colorcode and FDC_valid_colorcode
+          parameters described below indicate whether a particular color code is actually
+          supported by the camera in the currently selected video format (7) and mode.</td>
         <td>
           FDC_COLORCODE</td>
         <td>
           $(P)$(R)COLORCODE<br />
           $(P)$(R)COLORCODE_RBV</td>
         <td>
-          mbbo <br/>
-          mbbi </td>
+          mbbo
+          <br />
+          mbbi
+        </td>
       </tr>
       <tr>
         <td>
@@ -840,13 +870,15 @@
         <td>
           r/o</td>
         <td>
-          A flag indicating whether a particular color code (0-10) is supported by the camera in the currently selected video format (7) and mode.</td>
+          A flag indicating whether a particular color code (0-10) is supported by the camera
+          in the currently selected video format (7) and mode.</td>
         <td>
           FDC_HAS_COLORCODE</td>
         <td>
-          $(P)$(R)HAS_COLORCODE_$(N)  (N=0-10)</td>
+          $(P)$(R)HAS_COLORCODE_$(N) (N=0-10)</td>
         <td>
-          bi </td>
+          bi
+        </td>
       </tr>
       <tr>
         <td>
@@ -857,14 +889,16 @@
         <td>
           r/o</td>
         <td>
-          A string describing each of the color codes (0-10) supported by the camera in the currently selected video format (7) and mode. 
-          The string is "N.A." if the color code is not supported in this format and mode.</td>
+          A string describing each of the color codes (0-10) supported by the camera in the
+          currently selected video format (7) and mode. The string is "N.A." if the color
+          code is not supported in this format and mode.</td>
         <td>
           FDC_VALID_COLORCODE</td>
         <td>
-          $(P)$(R)VALID_COLORCODE_$(N)  (N=0-10)</td>
+          $(P)$(R)VALID_COLORCODE_$(N) (N=0-10)</td>
         <td>
-          stringin </td>
+          stringin
+        </td>
       </tr>
       <tr>
         <td>
@@ -881,11 +915,13 @@
         <td>
           $(P)$(R)CURRENT_COLORCODE</td>
         <td>
-          stringin </td>
+          stringin
+        </td>
       </tr>
       <tr>
         <td align="center" colspan="7">
-          <b>Video feature parameters. These parameters apply to each of the 22 DCAM features listed above. In firewireFeature.template.</b></td>
+          <b>Video feature parameters. These parameters apply to each of the 22 DCAM features
+            listed above. In firewireFeature.template.</b></td>
       </tr>
       <tr>
         <td>
@@ -903,8 +939,10 @@
           $(P)$(R)$(FEATURE)<br />
           $(P)$(R)$(FEATURE)_RBV</td>
         <td>
-          ao <br/>
-          ai </td>
+          ao
+          <br />
+          ai
+        </td>
       </tr>
       <tr>
         <td>
@@ -922,8 +960,10 @@
           $(P)$(R)$(FEATURE)_ABS<br />
           $(P)$(R)$(FEATURE)_ABS_RBV</td>
         <td>
-          ao <br/>
-          ai </td>
+          ao
+          <br />
+          ai
+        </td>
       </tr>
       <tr>
         <td>
@@ -940,7 +980,8 @@
         <td>
           $(P)$(R)$(FEATURE)_AVL</td>
         <td>
-          bi </td>
+          bi
+        </td>
       </tr>
       <tr>
         <td>
@@ -957,7 +998,8 @@
         <td>
           $(P)$(R)$(FEATURE)_ABS_AVL</td>
         <td>
-          bi </td>
+          bi
+        </td>
       </tr>
       <tr>
         <td>
@@ -975,8 +1017,10 @@
           $(P)$(R)$(FEATURE)_CTRL<br />
           $(P)$(R)$(FEATURE)_CTRL_RBV</td>
         <td>
-          bo <br/>
-          bi </td>
+          bo
+          <br />
+          bi
+        </td>
       </tr>
       <tr>
         <td>
@@ -987,14 +1031,15 @@
         <td>
           r/o</td>
         <td>
-          The minimum allowed value of the feature in device units.  The database copies this value to the LOPR and DRVL fields
-          of the $(P)$(R)$(FEATURE) record.</td>
+          The minimum allowed value of the feature in device units. The database copies this
+          value to the LOPR and DRVL fields of the $(P)$(R)$(FEATURE) record.</td>
         <td>
           FDC_FEAT_VAL_MIN</td>
         <td>
           $(P)$(R)$(FEATURE)_MIN</td>
         <td>
-          ai </td>
+          ai
+        </td>
       </tr>
       <tr>
         <td>
@@ -1005,14 +1050,15 @@
         <td>
           r/o</td>
         <td>
-          The maximum allowed value of the feature in device units.  The database copies this value to the HOPR and DRVH fields
-          of the $(P)$(R)$(FEATURE) record.</td>
+          The maximum allowed value of the feature in device units. The database copies this
+          value to the HOPR and DRVH fields of the $(P)$(R)$(FEATURE) record.</td>
         <td>
           FDC_FEAT_VAL_MAX</td>
         <td>
           $(P)$(R)$(FEATURE)_MAX</td>
         <td>
-          ai </td>
+          ai
+        </td>
       </tr>
       <tr>
         <td>
@@ -1023,14 +1069,15 @@
         <td>
           r/o</td>
         <td>
-          The minimum allowed value of the feature in absolute units.  The database copies this value to the LOPR and DRVL fields
-          of the $(P)$(R)$(FEATURE)_ABS record.</td>
+          The minimum allowed value of the feature in absolute units. The database copies
+          this value to the LOPR and DRVL fields of the $(P)$(R)$(FEATURE)_ABS record.</td>
         <td>
           FDC_FEAT_VAL_ABS_MIN</td>
         <td>
           $(P)$(R)$(FEATURE)_ABS_MIN</td>
         <td>
-          ai </td>
+          ai
+        </td>
       </tr>
       <tr>
         <td>
@@ -1041,14 +1088,15 @@
         <td>
           r/o</td>
         <td>
-          The maximum allowed value of the feature in absolute units.  The database copies this value to the HOPR and DRVH fields
-          of the $(P)$(R)$(FEATURE)_ABS record.</td>
+          The maximum allowed value of the feature in absolute units. The database copies
+          this value to the HOPR and DRVH fields of the $(P)$(R)$(FEATURE)_ABS record.</td>
         <td>
           FDC_FEAT_VAL_ABS_MAX</td>
         <td>
           $(P)$(R)$(FEATURE)_ABS_MAX</td>
         <td>
-          ai </td>
+          ai
+        </td>
       </tr>
     </tbody>
   </table>
@@ -1102,7 +1150,7 @@
         <td>
           $(P)$(R)Gain</td>
         <td>
-          Maps onto the gain features.  If camera supports absolute ...
+          Maps onto the gain features. If camera supports absolute ...
         </td>
       </tr>
     </tbody>
@@ -1152,8 +1200,8 @@ mar345Config(const char *portName, const char *mar345Port,
         <td>
           <code>mar345Port</code></td>
         <td>
-          The name of the asyn TCP/IP port to communicate with mar345dtb. This
-          must have been previously created with <code>drvAsynIPPortConfig()</code>,
+          The name of the asyn TCP/IP port to communicate with mar345dtb. This must have been
+          previously created with <code>drvAsynIPPortConfig()</code>,
         </td>
       </tr>
       <tr>
@@ -1237,43 +1285,41 @@ create_monitor_set("auto_settings.req", 30,"P=13MAR345_1:,D=cam1:")
   <p>
     The following show the MEDM screens that are used to control the Firewire detectors.
     Note that the general purpose screen ADBase.adl can be used, but it exposes some
-    controls that are not applicable to Firewire cameras, and lacks many fields that are important
-    for such cameras.</p>
+    controls that are not applicable to Firewire cameras, and lacks many fields that
+    are important for such cameras.</p>
   <p>
-    <code>FirewireFeatures.adl</code> is the screen used to control the features of Firewire cameras.
+    <code>FirewireFeatures.adl</code> is the screen used to control the features of
+    Firewire cameras.
   </p>
   <div style="text-align: center">
     <h3 style="text-align: center">
       FirewireFeatures.adl</h3>
     <img alt="firewireFeatures.png" src="firewireFeatures.png" /></div>
-
   <p>
-    <code>FirewireVideoFormats.adl</code> is the screen used to control the video formats and modes of Firewire cameras.  
-    This is a screen shot when the camera is not in Format 7.
+    <code>FirewireVideoFormats.adl</code> is the screen used to control the video formats
+    and modes of Firewire cameras. This is a screen shot when the camera is not in Format
+    7.
   </p>
   <div style="text-align: center">
     <h3 style="text-align: center">
       FirewireFeatures.adl</h3>
     <img alt="firewireVideoFormats.png" src="firewireVideoFormats.png" /></div>
-
-
   <p>
-    <code>FirewireVideoFormats.adl</code> is the screen used to control the video formats and modes of Firewire cameras.  
-    This is a screen shot when the camera is in Format 7, in which case the video rate menu is not displayed.
+    <code>FirewireVideoFormats.adl</code> is the screen used to control the video formats
+    and modes of Firewire cameras. This is a screen shot when the camera is in Format
+    7, in which case the video rate menu is not displayed.
   </p>
   <div style="text-align: center">
     <h3 style="text-align: center">
       FirewireFeatures.adl</h3>
     <img alt="firewireVideoFormatsFormat7.png" src="FirewireVideoFormatsFormat7.png" /></div>
-
-
-
   <h2 id="Performance_measurements">
     Performance measurements</h2>
   <p>
-    The mar345 is definitely not a fast detector! 
-    The following measurements show the time to perform various erase and scan operations. Note that because the
-    mar345 file format is compressed the file sizes are typically much less than the image sizes listed.</p>
+    The mar345 is definitely not a fast detector! The following measurements show the
+    time to perform various erase and scan operations. Note that because the mar345
+    file format is compressed the file sizes are typically much less than the image
+    sizes listed.</p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
       <tr>
@@ -1369,6 +1415,7 @@ create_monitor_set("auto_settings.req", 30,"P=13MAR345_1:,D=cam1:")
         <td>
           82.7
         </td>
+      </tr>
       <tr>
         <td>
           180 mm
@@ -1457,8 +1504,8 @@ create_monitor_set("auto_settings.req", 30,"P=13MAR345_1:,D=cam1:")
     The following are some current restrictions of the mar345 driver:</p>
   <ul>
     <li>The areaDetector driver can in principle be run on machines other than the Linux
-      machine running mar345dtb, since the connection is via a socket. It has only been tested
-      on Linux.</li>
+      machine running mar345dtb, since the connection is via a socket. It has only been
+      tested on Linux.</li>
     <li>The following items are hardcoded in the driver. They can be changed by recompiling
       compiling if necessary.
       <ul>
