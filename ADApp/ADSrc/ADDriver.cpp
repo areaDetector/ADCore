@@ -1,14 +1,14 @@
-/* ADDriver.cpp
+/** ADDriver.cpp
  *
  * This is the base class from which actual area detectors are derived.
  *
- * Author: Mark Rivers
+ * /author Author: Mark Rivers
  *         University of Chicago
  *
  * Created:  March 20, 2008
  *
  */
- 
+
 #include <stdio.h>
 
 #include <epicsString.h>
@@ -23,16 +23,23 @@
 
 static const char *driverName = "ADDriver";
 
+/** Set the shutter postition. */
+/** This method will open (1) or close (0) the shutter if
+  * ADShutterMode==ADShutterModeEPICS. Drivers will implement setShutter if they
+  * support ADShutterModeDetector. If ADShutterMode=ADShutterModeDetector they will
+  * control the shutter directly, else they will call this method.
+  * \param[in] open 1(open) or 0(closed)
+  */
 void ADDriver::setShutter(int open)
 {
     ADShutterMode_t shutterMode;
     double delay;
     double shutterOpenDelay, shutterCloseDelay;
-    
+
     getIntegerParam(ADShutterMode, (int *)&shutterMode);
     getDoubleParam(ADShutterOpenDelay, &shutterOpenDelay);
     getDoubleParam(ADShutterCloseDelay, &shutterCloseDelay);
-    
+
     switch (shutterMode) {
         case ADShutterModeNone:
             break;
@@ -47,6 +54,13 @@ void ADDriver::setShutter(int open)
     }
 }
 
+/** Build a file name from component parts */
+/** This is a convenience function that constructs a complete file name in the
+  * ADFullFileName parameter from the ADFilePath, ADFileName, ADFileNumber, and
+  * ADFileTemplate parameters.
+  * \param maxChars
+  * \param fullFileName The constructed file name.
+  */
 int ADDriver::createFileName(int maxChars, char *fullFileName)
 {
     /* Formats a complete file name from the components defined in ADStdDriverParams.h */
@@ -58,14 +72,14 @@ int ADDriver::createFileName(int maxChars, char *fullFileName)
     int autoIncrement;
     int len;
     int addr=0;
-    
-    status |= getStringParam(addr, ADFilePath, sizeof(filePath), filePath); 
-    status |= getStringParam(addr, ADFileName, sizeof(fileName), fileName); 
-    status |= getStringParam(addr, ADFileTemplate, sizeof(fileTemplate), fileTemplate); 
+
+    status |= getStringParam(addr, ADFilePath, sizeof(filePath), filePath);
+    status |= getStringParam(addr, ADFileName, sizeof(fileName), fileName);
+    status |= getStringParam(addr, ADFileTemplate, sizeof(fileTemplate), fileTemplate);
     status |= getIntegerParam(addr, ADFileNumber, &fileNumber);
     status |= getIntegerParam(addr, ADAutoIncrement, &autoIncrement);
     if (status) return(status);
-    len = epicsSnprintf(fullFileName, maxChars, fileTemplate, 
+    len = epicsSnprintf(fullFileName, maxChars, fileTemplate,
                         filePath, fileName, fileNumber);
     if (len < 0) {
         status |= asynError;
@@ -75,9 +89,10 @@ int ADDriver::createFileName(int maxChars, char *fullFileName)
         fileNumber++;
         status |= setIntegerParam(addr, ADFileNumber, fileNumber);
     }
-    return(status);   
+    return(status);
 }
 
+/** I need some documentation.*/
 asynStatus ADDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
     int function = pasynUser->reason;
@@ -93,25 +108,34 @@ asynStatus ADDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
     default:
         break;
     }
-        
+
     /* Do callbacks so higher layers see any changes */
     callParamCallbacks();
-    
-    if (status) 
-        asynPrint(pasynUser, ASYN_TRACE_ERROR, 
-              "%s:%s: error, status=%d function=%d, value=%d\n", 
+
+    if (status)
+        asynPrint(pasynUser, ASYN_TRACE_ERROR,
+              "%s:%s: error, status=%d function=%d, value=%d\n",
               driverName, functionName, status, function, value);
-    else        
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, value=%d\n", 
+    else
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+              "%s:%s: function=%d, value=%d\n",
               driverName, functionName, function, value);
     return status;
 }
 
 
 /* asynDrvUser routines */
+/** This method returns one of the enum values for the parameters defined in ADStdDriverParams.h
+  * if the driverInfo field matches one the strings defined in
+  * that file.*/
+/** Derived classes will typically provide an implementation of
+  * drvUserCreate() that searches for parameters that are unique to that detector
+  * driver. If a parameter is not matched, then ADDriver->drvUserCreate() will be
+  * called to see if it is a standard driver parameter (defined in
+  * ADStdDriverParams.h).
+  */
 asynStatus ADDriver::drvUserCreate(asynUser *pasynUser,
-                                       const char *drvInfo, 
+                                       const char *drvInfo,
                                        const char **pptypeName, size_t *psize)
 {
     int status;
@@ -119,9 +143,9 @@ asynStatus ADDriver::drvUserCreate(asynUser *pasynUser,
     const char *functionName = "drvUserCreate";
 
     /* See if this is one of the standard parameters */
-    status = findParam(ADStdDriverParamString, NUM_AD_STANDARD_PARAMS, 
+    status = findParam(ADStdDriverParamString, NUM_AD_STANDARD_PARAMS,
                        drvInfo, &param);
-                                
+
     if (status == asynSuccess) {
         pasynUser->reason = param;
         if (pptypeName) {
@@ -131,18 +155,23 @@ asynStatus ADDriver::drvUserCreate(asynUser *pasynUser,
             *psize = sizeof(param);
         }
         asynPrint(pasynUser, ASYN_TRACE_FLOW,
-                  "%s:%s:, drvInfo=%s, param=%d\n", 
+                  "%s:%s:, drvInfo=%s, param=%d\n",
                   driverName, functionName, drvInfo, param);
         return(asynSuccess);
     } else {
         epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                     "%s:%s:, unknown drvInfo=%s", 
+                     "%s:%s:, unknown drvInfo=%s",
                      driverName, functionName, drvInfo);
         return(asynError);
     }
 }
-    
+
 
+/** All of the arguments are simply passed to
+  * the constructor for the asynNDArrayDriver base class. After calling the base class
+  * constructor this method sets reasonable default values for all of the parameters
+  * defined in ADStdDriverParams.h.
+  */
 ADDriver::ADDriver(const char *portName, int maxAddr, int paramTableSize, int maxBuffers, size_t maxMemory,
                    int interfaceMask, int interruptMask,
                    int asynFlags, int autoConnect, int priority, int stackSize)
@@ -195,7 +224,7 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int paramTableSize, int ma
     setDoubleParam (ADShutterOpenDelay, 0.0);
     setDoubleParam (ADShutterCloseDelay, 0.0);
     setDoubleParam (ADTemperature, 0.0);
-    
+
     setStringParam (ADFilePath,     "");
     setStringParam (ADFileName,     "");
     setIntegerParam(ADFileNumber,   0);
