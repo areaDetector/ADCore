@@ -1,14 +1,14 @@
-/* NDArray.h
+/** NDArray.h
  *
  * N-dimensional array definition
- * 
+ *
  *
  * Mark Rivers
  * University of Chicago
  * May 10, 2008
  *
  */
- 
+
 #ifndef ND_ARRAY_H
 #define ND_ARRAY_H
 
@@ -19,7 +19,7 @@
 #define ND_SUCCESS 0
 #define ND_ERROR -1
 
-/* Enumeration of array data types */
+/** Enumeration of array data types */
 typedef enum
 {
     NDInt8,
@@ -32,7 +32,7 @@ typedef enum
     NDFloat64
 } NDDataType_t;
 
-/* Enumeration of color modes */
+/** Enumeration of color modes */
 typedef enum
 {
     NDColorModeMono,
@@ -47,10 +47,10 @@ typedef enum
 
 typedef enum
 {
-    NDBayerRGGB        = 0,    /* First line RGRG, second line GBGB... */
-    NDBayerGBRG        = 1,    /* First line GBGB, second line RGRG... */
-    NDBayerGRBG        = 2,    /* First line GRGR, second line BGBG... */
-    NDBayerBGGR        = 3     /* First line BGBG, second line GRGR... */
+    NDBayerRGGB        = 0,    /**< First line RGRG, second line GBGB... */
+    NDBayerGBRG        = 1,    /**< First line GBGB, second line RGRG... */
+    NDBayerGRBG        = 2,    /**< First line GRGR, second line BGBG... */
+    NDBayerBGGR        = 3     /**< First line BGBG, second line GRGR... */
 } NDBayerPattern_t;
 
 typedef struct NDDimension {
@@ -89,23 +89,31 @@ public:
     NDArray();
     int          initDimension   (NDDimension_t *pDimension, int size);
     int          getInfo         (NDArrayInfo_t *pInfo);
-    int          reserve(); 
+    int          reserve();
     int          release();
 };
 
 
+/** The NDArrayPool class manages a free list (pool) of NDArray objects (described above).
+  * Drivers allocate NDArray objects from the pool, and pass these objects to plugins.
+  * Plugins increase the reference count on the object when they place the object on
+  * their queue, and decrease the reference count when they are done processing the
+  * array. When the reference count reaches 0 again the NDArray object is placed back
+  * on the free list. This mechanism minimizes the copying of array data in plugins.
+  */
 class NDArrayPool {
 public:
                  NDArrayPool   (int maxBuffers, size_t maxMemory);
     NDArray*     alloc         (int ndims, int *dims, NDDataType_t dataType, int dataSize, void *pData);
     NDArray*     copy          (NDArray *pIn, NDArray *pOut, int copyData);
-    int          reserve       (NDArray *pArray); 
+
+    int          reserve       (NDArray *pArray);
     int          release       (NDArray *pArray);
-    int          convert       (NDArray *pIn, 
+    int          convert       (NDArray *pIn,
                                 NDArray **ppOut,
                                 NDDataType_t dataTypeOut,
                                 NDDimension_t *outDims);
-    int          report        (int details);     
+    int          report        (int details);
 private:
     ELLLIST      freeList;
     epicsMutexId listLock;

@@ -1,7 +1,7 @@
 /* NDArray.cpp
  *
  * NDArray classes
- * 
+ *
  *
  * Mark Rivers
  * University of Chicago
@@ -22,30 +22,55 @@
 
 static const char *driverName = "NDArray";
 
+/** Class constructor
+  * The maxBuffers argument is the maximum number of NDArray objects that the pool is
+  * allowed to contain. If this value is negative then there is no limit on the number
+  * of NDArray objects. The maxMemory argument is the maxiumum number of bytes of
+  * memory the the pool is allowed to use, summed over all of the NDArray objects. If
+  * this value is negative then there is no limit on the amount of memory in the pool.
+  */
 NDArrayPool::NDArrayPool(int maxBuffers, size_t maxMemory)
     : maxBuffers(maxBuffers),numBuffers(0),  maxMemory(maxMemory), memorySize(0), numFree(0)
 {
     ellInit(&this->freeList);
     this->listLock = epicsMutexCreate();
 }
-    
+
+/** This method allocates a new NDArray object.
+  * The first 3 arguments are required.
+  * ndims is the number of dimensions in the
+  * NDArray. dims is an array of dimensions, whose size must be at least ndims.
+  * dataType is the data type of the NDArray data.
+  * dataSize is the number of bytes to allocate for the array data. If it is 0 then
+  * alloc() will compute the size required from ndims, dims, and dataType.
+  * pData is a pointer to a data buffer. If it is NULL then alloc will allocate a new
+  * array buffer. If pData is not NULL then it is assumed to point to a valid buffer.
+  * In this case dataSize must contain the actual number of bytes in the existing
+  * array, and this array must be large enough to hold the array data. alloc() searches
+  * its free list to find a free NDArray buffer. If is cannot find one then it will
+  * allocate a new one and add it to the free list. If doing so would exceed maxBuffers
+  * then alloc() will return an error. Similarly if allocating the memory required for
+  * this NDArray would cause the cumulative memory allocated for the pool to exceed
+  * maxMemory then an error will be returned. alloc() sets the reference count for the
+  * returned NDArray to 1.
+  */
 NDArray* NDArrayPool::alloc(int ndims, int *dims, NDDataType_t dataType, int dataSize, void *pData)
 {
     NDArray *pArray;
     NDArrayInfo_t arrayInfo;
     int i;
     const char* functionName = "NDArrayPool::alloc:";
-    
+
     epicsMutexLock(this->listLock);
-    
+
     /* Find a free image */
     pArray = (NDArray *)ellFirst(&this->freeList);
-    
+
     if (!pArray) {
-        /* We did not find a free image.  
+        /* We did not find a free image.
          * Allocate a new one if we have not exceeded the limit */
         if ((this->maxBuffers > 0) && (this->numBuffers >= this->maxBuffers)) {
-            printf("%s: error: reached limit of %d buffers (memory use=%d/%d bytes)\n", 
+            printf("%s: error: reached limit of %d buffers (memory use=%d/%d bytes)\n",
                    functionName, this->maxBuffers, this->memorySize, this->maxMemory);
         } else {
             this->numBuffers++;
@@ -54,7 +79,7 @@ NDArray* NDArrayPool::alloc(int ndims, int *dims, NDDataType_t dataType, int dat
             this->numFree++;
         }
     }
-    
+
     if (pArray) {
         /* We have a frame */
         /* Initialize fields */
@@ -70,15 +95,15 @@ NDArray* NDArrayPool::alloc(int ndims, int *dims, NDDataType_t dataType, int dat
             pArray->dims[i].binning = 1;
             pArray->dims[i].reverse = 0;
         }
-        pArray->getInfo(&arrayInfo); 
+        pArray->getInfo(&arrayInfo);
         if (dataSize == 0) dataSize = arrayInfo.totalBytes;
         if (arrayInfo.totalBytes > dataSize) {
-            printf("%s: ERROR: required size=%d passed size=%d is too small\n", 
+            printf("%s: ERROR: required size=%d passed size=%d is too small\n",
             functionName, arrayInfo.totalBytes, dataSize);
             pArray=NULL;
         }
     }
- 
+
     if (pArray) {
         /* If the caller passed a valid buffer use that, trust that its size is correct */
         if (pData) {
@@ -94,7 +119,7 @@ NDArray* NDArrayPool::alloc(int ndims, int *dims, NDDataType_t dataType, int dat
                     pArray->pData = NULL;
                 }
                 if ((this->maxMemory > 0) && ((this->memorySize + dataSize) > this->maxMemory)) {
-                    printf("%s: error: reached limit of %d memory (%d/%d buffers)\n", 
+                    printf("%s: error: reached limit of %d memory (%d/%d buffers)\n",
                            functionName, this->maxMemory, this->numBuffers, this->maxBuffers);
                     pArray = NULL;
                 } else {
@@ -116,6 +141,14 @@ NDArray* NDArrayPool::alloc(int ndims, int *dims, NDDataType_t dataType, int dat
     return (pArray);
 }
 
+/** This method makes a copy of an NDArray object.
+  * If the output array pointer is NULL then it is first allocated. If the output array
+  * object already exists (pOut!=NULL) then it must have sufficient memory allocated to
+  * it to hold the data. If the copyData flag is 1 then the array data is copied. If
+  * the copyData flag is 0 then all array fields except the data itself are copied, and
+  * the data will be initialized to 0.
+  */
+
 NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, int copyData)
 {
     //const char *functionName = "copy";
@@ -123,7 +156,7 @@ NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, int copyData)
     int i;
     int numCopy;
     NDArrayInfo arrayInfo;
-    
+
     /* If the output array does not exist then create it */
     if (!pOut) {
         for (i=0; i<pIn->ndims; i++) dimSizeOut[i] = pIn->dims[i].size;
@@ -145,10 +178,14 @@ NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, int copyData)
     return(pOut);
 }
 
+/** This method increases the reference count for the NDArray object.
+  * Plugins must call reserve() when an NDArray is placed on a queue for later
+  * processing.
+  */
 int NDArrayPool::reserve(NDArray *pArray)
 {
     const char *functionName = "reserve";
-    
+
     /* Make sure we own this array */
     if (pArray->owner != this) {
         printf("%s:%s: ERROR, not owner!  owner=%p, should be this=%p\n",
@@ -161,10 +198,15 @@ int NDArrayPool::reserve(NDArray *pArray)
     return ND_SUCCESS;
 }
 
+/** This method decreases the reference count for the NDArray object.
+  * Plugins must call release() when an NDArray is removed from the queue and
+  * processing on it is complete. Drivers must call release() after calling all
+  * plugins.
+  */
 int NDArrayPool::release(NDArray *pArray)
-{   
+{
     const char *functionName = "release";
-    
+
     /* Make sure we own this array */
     if (pArray->owner != this) {
         printf("%s:%s: ERROR, not owner!  owner=%p, should be this=%p\n",
@@ -186,13 +228,13 @@ int NDArrayPool::release(NDArray *pArray)
     return ND_SUCCESS;
 }
 
-template <typename dataTypeIn, typename dataTypeOut> void convertType(NDArray *pIn, NDArray *pOut) 
-{   
+template <typename dataTypeIn, typename dataTypeOut> void convertType(NDArray *pIn, NDArray *pOut)
+{
     int i;
     dataTypeIn *pDataIn = (dataTypeIn *)pIn->pData;
     dataTypeOut *pDataOut = (dataTypeOut *)pOut->pData;
     NDArrayInfo_t arrayInfo;
-    
+
     pOut->getInfo(&arrayInfo);
     for (i=0; i<arrayInfo.nElements; i++) {
         *pDataOut++ = (dataTypeOut)(*pDataIn++);
@@ -202,7 +244,7 @@ template <typename dataTypeIn, typename dataTypeOut> void convertType(NDArray *p
 template <typename dataTypeOut> int convertTypeSwitch (NDArray *pIn, NDArray *pOut)
 {
     int status = ND_SUCCESS;
-    
+
     switch(pIn->dataType) {
         case NDInt8:
             convertType<epicsInt8, dataTypeOut> (pIn, pOut);
@@ -236,7 +278,7 @@ template <typename dataTypeOut> int convertTypeSwitch (NDArray *pIn, NDArray *pO
 }
 
 
-template <typename dataTypeIn, typename dataTypeOut> void convertDim(NDArray *pIn, NDArray *pOut, 
+template <typename dataTypeIn, typename dataTypeOut> void convertDim(NDArray *pIn, NDArray *pOut,
                                                                 void *pDataIn, void *pDataOut, int dim)
 {
     dataTypeOut *pDOut = (dataTypeOut *)pDataOut;
@@ -273,11 +315,11 @@ template <typename dataTypeIn, typename dataTypeOut> void convertDim(NDArray *pI
     }
 }
 
-template <typename dataTypeOut> int convertDimensionSwitch(NDArray *pIn, NDArray *pOut, 
+template <typename dataTypeOut> int convertDimensionSwitch(NDArray *pIn, NDArray *pOut,
                                                             void *pDataIn, void *pDataOut, int dim)
 {
     int status = ND_SUCCESS;
-    
+
     switch(pIn->dataType) {
         case NDInt8:
             convertDim <epicsInt8, dataTypeOut> (pIn, pOut, pDataIn, pDataOut, dim);
@@ -310,7 +352,7 @@ template <typename dataTypeOut> int convertDimensionSwitch(NDArray *pIn, NDArray
     return(status);
 }
 
-static int convertDimension(NDArray *pIn, 
+static int convertDimension(NDArray *pIn,
                                   NDArray *pOut,
                                   void *pDataIn,
                                   void *pDataOut,
@@ -319,7 +361,7 @@ static int convertDimension(NDArray *pIn,
     int status = ND_SUCCESS;
     /* This routine is passed:
      * A pointer to the start of the input data
-     * A pointer to the start of the output data 
+     * A pointer to the start of the output data
      * An array of dimensions
      * A dimension index */
     switch(pOut->dataType) {
@@ -354,7 +396,14 @@ static int convertDimension(NDArray *pIn,
     return(status);
 }
 
-int NDArrayPool::convert(NDArray *pIn, 
+/** This method creates a new output NDArray from an input NDArray, performing
+  * conversion operations.
+  * The conversion can change the data type if dataTypeOut is different from
+  * pIn->dataType. It can also change the dimensions. outDims may have different
+  * values of size, binning, offset and reverse for each of its dimensions from input
+  * array dimensions (pIn->dims).
+  */
+int NDArrayPool::convert(NDArray *pIn,
                          NDArray **ppOut,
                          NDDataType_t dataTypeOut,
                          NDDimension_t *dimsOut)
@@ -367,10 +416,10 @@ int NDArrayPool::convert(NDArray *pIn,
     NDArray *pOut;
     NDArrayInfo_t arrayInfo;
     const char *functionName = "convert";
-    
+
     /* Initialize failure */
     *ppOut = NULL;
-    
+
     /* Copy the input dimension array because we need to modify it
      * but don't want to affect caller */
     memcpy(dimsOutCopy, dimsOut, pIn->ndims*sizeof(NDDimension_t));
@@ -389,7 +438,7 @@ int NDArrayPool::convert(NDArray *pIn,
             (dimsOutCopy[i].binning != 1) ||
             (dimsOutCopy[i].reverse != 0)) dimsUnchanged = 0;
     }
-    
+
     /* We now know the datatype and dimensions of the output array.
      * Allocate it */
     pOut = alloc(pIn->ndims, dimSizeOut, dataTypeOut, 0, NULL);
@@ -406,12 +455,12 @@ int NDArrayPool::convert(NDArray *pIn,
     pOut->uniqueId = pIn->uniqueId;
     /* Replace the dimensions with those passed to this function */
     memcpy(pOut->dims, dimsOutCopy, pIn->ndims*sizeof(NDDimension_t));
-    
+
     pOut->getInfo(&arrayInfo);
 
     if (dimsUnchanged) {
         if (pIn->dataType == pOut->dataType) {
-            /* The dimensions are the same and the data type is the same, 
+            /* The dimensions are the same and the data type is the same,
              * then just copy the input image to the output image */
             memcpy(pOut->pData, pIn->pData, arrayInfo.totalBytes);
             return ND_SUCCESS;
@@ -454,14 +503,14 @@ int NDArrayPool::convert(NDArray *pIn,
         memset(pOut->pData, 0, arrayInfo.totalBytes);
         status = convertDimension(pIn, pOut, pIn->pData, pOut->pData, pIn->ndims-1);
     }
-                    
+
     /* Set fields in the output array */
     for (i=0; i<pIn->ndims; i++) {
         pOut->dims[i].offset = pIn->dims[i].offset + dimsOutCopy[i].offset;
         pOut->dims[i].binning = pIn->dims[i].binning * dimsOutCopy[i].binning;
         if (pIn->dims[i].reverse) pOut->dims[i].reverse = !pOut->dims[i].reverse;
     }
-    
+
     /* If the frame is an RGBx frame and we have collapsed that dimension then change the colorMode */
     if      ((pOut->colorMode == NDColorModeRGB1) && (pOut->dims[0].size != 3)) pOut->colorMode= NDColorModeMono;
     else if ((pOut->colorMode == NDColorModeRGB2) && (pOut->dims[1].size != 3)) pOut->colorMode= NDColorModeMono;
@@ -470,31 +519,36 @@ int NDArrayPool::convert(NDArray *pIn,
 }
 
 
+/** This method reports on the free list size and other properties of the NDArrayPool
+  * object.
+  */
 int NDArrayPool::report(int details)
 {
     printf("NDArrayPool:\n");
-    printf("  numBuffers=%d, maxBuffers=%d\n", 
+    printf("  numBuffers=%d, maxBuffers=%d\n",
         this->numBuffers, this->maxBuffers);
-    printf("  memorySize=%d, maxMemory=%d\n", 
+    printf("  memorySize=%d, maxMemory=%d\n",
         this->memorySize, this->maxMemory);
-    printf("  numFree=%d\n", 
+    printf("  numFree=%d\n",
         this->numFree);
     return ND_SUCCESS;
 }
 
+/** Class Constructor */
 NDArray::NDArray()
-    : referenceCount(0), owner(NULL), 
-      uniqueId(0), timeStamp(0.0), ndims(0), dataType(NDInt8), colorMode(NDColorModeMono), 
+    : referenceCount(0), owner(NULL),
+      uniqueId(0), timeStamp(0.0), ndims(0), dataType(NDInt8), colorMode(NDColorModeMono),
       bayerPattern(NDBayerRGGB), dataSize(0), pData(NULL)
 {
     memset(this->dims, 0, sizeof(this->dims));
     memset(&this->node, 0, sizeof(this->node));
 }
-   
+
+/** This convenience method returns information about an NDArray, including the total number of elements, the number of byte per element, and the total number of bytes in the array.*/
 int NDArray::getInfo(NDArrayInfo_t *pInfo)
 {
     int i;
-    
+
     switch(this->dataType) {
         case NDInt8:
             pInfo->bytesPerElement = sizeof(epicsInt8);
@@ -530,6 +584,7 @@ int NDArray::getInfo(NDArrayInfo_t *pInfo)
     return(ND_SUCCESS);
 }
 
+/** This method simply initializes the dimension structure to size=size, binning=1, reverse=0, offset=0.*/
 int NDArray::initDimension(NDDimension_t *pDimension, int size)
 {
     pDimension->size=size;
@@ -539,12 +594,13 @@ int NDArray::initDimension(NDDimension_t *pDimension, int size)
     return ND_SUCCESS;
 }
 
+/** This method calls NDArrayPool->reserve() for this object. It increases the reference count for this array. */
 int NDArray::reserve()
 {
     const char *functionName = "NDArray::reserve";
-    
+
     NDArrayPool *pNDArrayPool = (NDArrayPool *)this->owner;
-    
+
     if (!pNDArrayPool) {
         printf("%s: ERROR, no owner\n", functionName);
         return(ND_ERROR);
@@ -552,12 +608,14 @@ int NDArray::reserve()
     return(pNDArrayPool->reserve(this));
 }
 
+/** This method calls NDArrayPool->release() for this object. It decreases the reference count for
+  * this array. */
 int NDArray::release()
 {
     const char *functionName = "NDArray::release";
-    
+
     NDArrayPool *pNDArrayPool = (NDArrayPool *)this->owner;
-    
+
     if (!pNDArrayPool) {
         printf("%s: ERROR, no owner\n", functionName);
         return(ND_ERROR);
