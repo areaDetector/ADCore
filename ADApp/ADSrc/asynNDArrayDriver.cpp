@@ -1,5 +1,5 @@
 /**
- * asynNDArrayDriver.c
+ * asynNDArrayDriver.cpp
  *
  * Base class that implements methods for asynStandardInterfaces with a parameter library.
  *
