@@ -71,13 +71,12 @@ int ADDriver::createFileName(int maxChars, char *fullFileName)
     int fileNumber;
     int autoIncrement;
     int len;
-    int addr=0;
 
-    status |= getStringParam(addr, ADFilePath, sizeof(filePath), filePath);
-    status |= getStringParam(addr, ADFileName, sizeof(fileName), fileName);
-    status |= getStringParam(addr, ADFileTemplate, sizeof(fileTemplate), fileTemplate);
-    status |= getIntegerParam(addr, ADFileNumber, &fileNumber);
-    status |= getIntegerParam(addr, ADAutoIncrement, &autoIncrement);
+    status |= getStringParam(ADFilePath, sizeof(filePath), filePath);
+    status |= getStringParam(ADFileName, sizeof(fileName), fileName);
+    status |= getStringParam(ADFileTemplate, sizeof(fileTemplate), fileTemplate);
+    status |= getIntegerParam(ADFileNumber, &fileNumber);
+    status |= getIntegerParam(ADAutoIncrement, &autoIncrement);
     if (status) return(status);
     len = epicsSnprintf(fullFileName, maxChars, fileTemplate,
                         filePath, fileName, fileNumber);
@@ -87,7 +86,7 @@ int ADDriver::createFileName(int maxChars, char *fullFileName)
     }
     if (autoIncrement) {
         fileNumber++;
-        status |= setIntegerParam(addr, ADFileNumber, fileNumber);
+        status |= setIntegerParam(ADFileNumber, fileNumber);
     }
     return(status);
 }
