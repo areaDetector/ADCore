@@ -6,7 +6,7 @@ record(ao, "$(P)$(R)GainX")
 {
    field(PINI, "1")
    field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAINX")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAIN_X")
    field(PREC, "2")
 }
 
@@ -14,7 +14,7 @@ record(ai, "$(P)$(R)GainX_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAINX")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAIN_X")
    field(PREC, "2")
    field(SCAN, "I/O Intr")
 }
@@ -23,7 +23,7 @@ record(ao, "$(P)$(R)GainY")
 {
    field(PINI, "1")
    field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAINY")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAIN_Y")
    field(PREC, "2")
 }
 
@@ -31,7 +31,58 @@ record(ai, "$(P)$(R)GainY_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAINY")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAIN_Y")
+   field(PREC, "2")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)GainRed")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAIN_RED")
+   field(PREC, "2")
+}
+
+record(ai, "$(P)$(R)GainRed_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAIN_RED")
+   field(PREC, "2")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)GainGreen")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAIN_GREEN")
+   field(PREC, "2")
+}
+
+record(ai, "$(P)$(R)GainGreen_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAIN_GREEN")
+   field(PREC, "2")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)GainBlue")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAIN_BLUE")
+   field(PREC, "2")
+}
+
+record(ai, "$(P)$(R)GainBlue_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAIN_BLUE")
    field(PREC, "2")
    field(SCAN, "I/O Intr")
 }
@@ -49,3 +100,49 @@ record(longin, "$(P)$(R)Reset_RBV")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))RESET_IMAGE")
    field(SCAN, "I/O Intr")
 }
+
+# Redefine the color mode choices from ADBase.template to only have those that the simDetector
+# driver supports.  Keep the same values (xxVL), but change the menu numbers.
+
+record(mbbo, "$(P)$(R)ColorMode")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COLOR_MODE")
+   field(ZRST, "Mono")
+   field(ZRVL, "0")
+   field(ONST, "RGB1")
+   field(ONVL, "2")
+   field(TWST, "RGB2")
+   field(TWVL, "3")
+   field(THST, "RGB3")
+   field(THVL, "4")
+   field(FRST, "")
+   field(FVST, "")
+   field(SXST, "")
+   field(SVST, "")
+   field(EIST, "")
+}
+
+record(mbbi, "$(P)$(R)ColorMode_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COLOR_MODE")
+   field(ZRST, "Mono")
+   field(ZRVL, "0")
+   field(ONST, "RGB1")
+   field(ONVL, "2")
+   field(TWST, "RGB2")
+   field(TWVL, "3")
+   field(THST, "RGB3")
+   field(THVL, "4")
+   field(FRST, "")
+   field(FVST, "")
+   field(SXST, "")
+   field(SVST, "")
+   field(EIST, "")
+   field(SCAN, "I/O Intr")
+}
+
+
