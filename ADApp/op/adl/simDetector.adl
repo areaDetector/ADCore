@@ -1,14 +1,14 @@
 
 file {
-	name="/home/epics/devel/areaDetector/1-1/ADApp/op/adl/simDetector.adl"
-	version=030000
+	name="/home/epics/devel/areaDetector/1-5beta/ADApp/op/adl/simDetector.adl"
+	version=030102
 }
 display {
 	object {
 		x=389
 		y=191
 		width=245
-		height=220
+		height=340
 	}
 	clr=14
 	bclr=4
@@ -99,10 +99,36 @@ text {
 	}
 	textix="Simulation Detector"
 }
+text {
+	object {
+		x=97
+		y=74
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Gains"
+	align="horiz. right"
+}
+text {
+	object {
+		x=84
+		y=32
+		width=84
+		height=25
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="$(P)$(R)"
+	align="horiz. centered"
+}
 "related display" {
 	object {
 		x=92
-		y=191
+		y=308
 		width=60
 		height=20
 	}
@@ -114,38 +140,10 @@ text {
 	clr=14
 	bclr=51
 }
-text {
-	object {
-		x=18
-		y=124
-		width=40
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Gain"
-	align="horiz. right"
-}
 "text entry" {
 	object {
-		x=67
-		y=124
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)GainX"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-"text entry" {
-	object {
-		x=165
-		y=124
+		x=90
+		y=132
 		width=60
 		height=20
 	}
@@ -159,24 +157,8 @@ text {
 }
 "text update" {
 	object {
-		x=67
-		y=103
-		width=61
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)GainX_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=165
-		y=103
+		x=152
+		y=133
 		width=61
 		height=18
 	}
@@ -191,21 +173,8 @@ text {
 }
 text {
 	object {
-		x=101
-		y=80
-		width=10
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="X"
-	align="horiz. right"
-}
-text {
-	object {
-		x=193
-		y=80
+		x=72
+		y=132
 		width=10
 		height=20
 	}
@@ -217,42 +186,272 @@ text {
 }
 text {
 	object {
-		x=71
-		y=155
+		x=72
+		y=107
+		width=10
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="X"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=90
+		y=107
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)GainX"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=152
+		y=108
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)GainX_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=42
+		y=157
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Overall"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=90
+		y=157
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)Gain"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=152
+		y=158
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)Gain_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=52
+		y=182
+		width=30
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Red"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=90
+		y=182
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)GainRed"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=152
+		y=183
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)GainRed_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=32
+		y=207
 		width=50
 		height=20
 	}
 	"basic attribute" {
 		clr=14
 	}
-	textix="Reset"
+	textix="Green"
 	align="horiz. right"
 }
-"message button" {
+"text entry" {
 	object {
-		x=132
-		y=155
-		width=100
+		x=90
+		y=207
+		width=60
 		height=20
 	}
 	control {
-		chan="$(P)$(R)Reset"
+		chan="$(P)$(R)GainGreen"
 		clr=14
 		bclr=51
 	}
-	label="Reset image"
-	press_msg="1"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=152
+		y=208
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)GainGreen_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
 }
 text {
 	object {
-		x=84
-		y=32
-		width=84
-		height=25
+		x=42
+		y=232
+		width=40
+		height=20
 	}
 	"basic attribute" {
 		clr=14
 	}
-	textix="$(P)$(R)"
+	textix="Blue"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=90
+		y=232
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)GainBlue"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=152
+		y=233
+		width=61
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)GainBlue_RBV"
+		clr=54
+		bclr=4
+	}
 	align="horiz. centered"
+	limits {
+	}
+}
+rectangle {
+	object {
+		x=5
+		y=69
+		width=235
+		height=195
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+composite {
+	object {
+		x=42
+		y=276
+		width=161
+		height=20
+	}
+	"composite name"=""
+	children {
+		"message button" {
+			object {
+				x=103
+				y=276
+				width=100
+				height=20
+			}
+			control {
+				chan="$(P)$(R)Reset"
+				clr=14
+				bclr=51
+			}
+			label="Reset image"
+			press_msg="1"
+		}
+		text {
+			object {
+				x=42
+				y=276
+				width=50
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Reset"
+			align="horiz. right"
+		}
+	}
 }
