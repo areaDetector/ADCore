@@ -50,8 +50,7 @@ public:
     void report(FILE *fp, int details);
                                         
     /* These are the methods that are new to this class */
-    template <typename epicsType> int computeArray(int maxSizeX, int maxSizeY);
-    int allocateBuffer();
+    template <typename epicsType> int computeArray(int sizeX, int sizeY);
     int computeImage();
     void simTask();
 
@@ -67,71 +66,132 @@ typedef enum {
     SimGainX 
         = ADFirstDriverParam,
     SimGainY,
+    SimGainRed,
+    SimGainGreen,
+    SimGainBlue,
     SimResetImage,
     ADLastDriverParam
 } SimDetParam_t;
 
 static asynParamString_t SimDetParamString[] = {
-    {SimGainX,          "SIM_GAINX"},  
-    {SimGainY,          "SIM_GAINY"},  
+    {SimGainX,          "SIM_GAIN_X"},  
+    {SimGainY,          "SIM_GAIN_Y"},  
+    {SimGainRed,        "SIM_GAIN_RED"},  
+    {SimGainGreen,      "SIM_GAIN_GREEN"},  
+    {SimGainBlue,       "SIM_GAIN_BLUE"},  
     {SimResetImage,     "RESET_IMAGE"},  
 };
 
 #define NUM_SIM_DET_PARAMS (sizeof(SimDetParamString)/sizeof(SimDetParamString[0]))
 
-template <typename epicsType> int simDetector::computeArray(int maxSizeX, int maxSizeY)
+template <typename epicsType> int simDetector::computeArray(int sizeX, int sizeY)
 {
-    epicsType *pData = (epicsType *)this->pRaw->pData;
-    epicsType inc;
+    epicsType *pMono=NULL, *pRed=NULL, *pGreen=NULL, *pBlue=NULL;
+    int columnStep=0, rowStep=0, colorMode;
+    epicsType incMono, incRed, incGreen, incBlue;
     int status = asynSuccess;
-    double scaleX=0., scaleY=0.;
-    double exposureTime, gain, gainX, gainY;
+    double exposureTime, gain, gainX, gainY, gainRed, gainGreen, gainBlue;
     int resetImage;
     int i, j;
 
     status = getDoubleParam (ADGain,        &gain);
     status = getDoubleParam (SimGainX,      &gainX);
     status = getDoubleParam (SimGainY,      &gainY);
+    status = getDoubleParam (SimGainRed,    &gainRed);
+    status = getDoubleParam (SimGainGreen,  &gainGreen);
+    status = getDoubleParam (SimGainBlue,   &gainBlue);
     status = getIntegerParam(SimResetImage, &resetImage);
+    status = getIntegerParam(ADColorMode,   &colorMode);
     status = getDoubleParam (ADAcquireTime, &exposureTime);
 
     /* The intensity at each pixel[i,j] is:
      * (i * gainX + j* gainY) + imageCounter * gain * exposureTime * 1000. */
-    inc = (epicsType) (gain * exposureTime * 1000.);
+    incMono  = (epicsType) (gain      * exposureTime * 1000.);
+    incRed   = (epicsType) gainRed   * incMono;
+    incGreen = (epicsType) gainGreen * incMono;
+    incBlue  = (epicsType) gainBlue  * incMono;
+    
+    switch (colorMode) {
+        case NDColorModeMono:
+            pMono = (epicsType *)this->pRaw->pData;
+            this->pRaw->colorMode = NDColorModeMono;
+            break;
+        case NDColorModeRGB1:
+            columnStep = 3;
+            rowStep = 0;
+            pRed   = (epicsType *)this->pRaw->pData;
+            pGreen = (epicsType *)this->pRaw->pData+1;
+            pBlue  = (epicsType *)this->pRaw->pData+2;
+            this->pRaw->colorMode = NDColorModeRGB1;
+            break;
+        case NDColorModeRGB2:
+            columnStep = 1;
+            rowStep = 2 * sizeX;
+            pRed   = (epicsType *)this->pRaw->pData;
+            pGreen = (epicsType *)this->pRaw->pData + sizeX;
+            pBlue  = (epicsType *)this->pRaw->pData + 2*sizeX;
+            this->pRaw->colorMode = NDColorModeRGB2;
+            break;
+        case NDColorModeRGB3:
+            columnStep = 1;
+            rowStep = 0;
+            pRed   = (epicsType *)this->pRaw->pData;
+            pGreen = (epicsType *)this->pRaw->pData + sizeX*sizeY;
+            pBlue  = (epicsType *)this->pRaw->pData + 2*sizeX*sizeY;
+            this->pRaw->colorMode = NDColorModeRGB3;
+            break;
+    }
 
     if (resetImage) {
-        for (i=0; i<maxSizeY; i++) {
-            scaleX = 0.;
-            for (j=0; j<maxSizeX; j++) {
-                (*pData++) = (epicsType)(scaleX + scaleY + inc);
-                scaleX += gainX;
+        for (i=0; i<sizeY; i++) {
+            switch (colorMode) {
+                case NDColorModeMono:
+                    for (j=0; j<sizeX; j++) {
+                        (*pMono++) = (epicsType) (incMono * (gainX*j + gainY*i));
+                    }
+                    break;
+                case NDColorModeRGB1:
+                case NDColorModeRGB2:
+                case NDColorModeRGB3:
+                    for (j=0; j<sizeX; j++) {
+                        *pRed   = (epicsType) (incRed   * (gainX*j + gainY*i));
+                        *pGreen = (epicsType) (incGreen * (gainX*j + gainY*i));
+                        *pBlue  = (epicsType) (incBlue  * (gainX*j + gainY*i));
+                        pRed   += columnStep;
+                        pGreen += columnStep;
+                        pBlue  += columnStep;
+                    }
+                    pRed   += rowStep;
+                    pGreen += rowStep;
+                    pBlue  += rowStep;
+                    break;
             }
-            scaleY += gainY;
         }
     } else {
-        for (i=0; i<maxSizeY; i++) {
-            for (j=0; j<maxSizeX; j++) {
-                 *pData++ += inc;
+        for (i=0; i<sizeY; i++) {
+            switch (colorMode) {
+                case NDColorModeMono:
+                    for (j=0; j<sizeX; j++) {
+                            *pMono++ += incMono;
+                    }
+                    break;
+                case NDColorModeRGB1:
+                case NDColorModeRGB2:
+                case NDColorModeRGB3:
+                    for (j=0; j<sizeX; j++) {
+                        *pRed   += incRed;
+                        *pGreen += incGreen;
+                        *pBlue  += incBlue;
+                        pRed   += columnStep;
+                        pGreen += columnStep;
+                        pBlue  += columnStep;
+                    }
+                    pRed   += rowStep;
+                    pGreen += rowStep;
+                    pBlue  += rowStep;
+                    break;
             }
         }
-    }
-    return(status);
-}
-
-
-int simDetector::allocateBuffer()
-{
-    int status = asynSuccess;
-    NDArrayInfo_t arrayInfo;
-    
-    /* Make sure the raw array we have allocated is large enough. 
-     * We are allowed to change its size because we have exclusive use of it */
-    this->pRaw->getInfo(&arrayInfo);
-    if (arrayInfo.totalBytes > this->pRaw->dataSize) {
-        free(this->pRaw->pData);
-        this->pRaw->pData  = malloc(arrayInfo.totalBytes);
-        this->pRaw->dataSize = arrayInfo.totalBytes;
-        if (!this->pRaw->pData) status = asynError;
     }
     return(status);
 }
@@ -155,8 +215,13 @@ int simDetector::computeImage()
     int status = asynSuccess;
     NDDataType_t dataType;
     int binX, binY, minX, minY, sizeX, sizeY, reverseX, reverseY;
+    int xDim=0, yDim=1, colorDim=-1;
+    int resetImage;
     int maxSizeX, maxSizeY;
-    NDDimension_t dimsOut[2];
+    int colorMode;
+    int ndims=0;
+    NDDimension_t dimsOut[3];
+    int dims[3];
     NDArrayInfo_t arrayInfo;
     NDArray *pImage;
     const char* functionName = "computeImage";
@@ -173,7 +238,9 @@ int simDetector::computeImage()
     status |= getIntegerParam(ADReverseY,     &reverseY);
     status |= getIntegerParam(ADMaxSizeX,     &maxSizeX);
     status |= getIntegerParam(ADMaxSizeY,     &maxSizeY);
+    status |= getIntegerParam(ADColorMode,    &colorMode);
     status |= getIntegerParam(ADDataType,     (int *)&dataType);
+    status |= getIntegerParam(SimResetImage,  &resetImage);
     if (status) asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                     "%s:%s: error getting parameters\n",
                     driverName, functionName);
@@ -212,15 +279,49 @@ int simDetector::computeImage()
         status |= setIntegerParam(ADSizeY, sizeY);
     }
 
-    /* Make sure the buffer we have allocated is large enough. */
-    this->pRaw->dataType = dataType;
-    status = allocateBuffer();
-    if (status) {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                  "%s:%s: error allocating raw buffer\n",
-                  driverName, functionName);
-        return(status);
+    switch (colorMode) {
+        case NDColorModeMono:
+            ndims = 2;
+            xDim = 0;
+            yDim = 1;
+            break;
+        case NDColorModeRGB1:
+            ndims = 3;
+            colorDim = 0;
+            xDim     = 1;
+            yDim     = 2;
+            break;
+        case NDColorModeRGB2:
+            ndims = 3;
+            colorDim = 1;
+            xDim     = 0;
+            yDim     = 2;
+            break;
+        case NDColorModeRGB3:
+            ndims = 3;
+            colorDim = 2;
+            xDim     = 0;
+            yDim     = 1;
+            break;
     }
+
+    if (resetImage) {
+    /* Free the previous raw buffer */
+        if (this->pRaw) this->pRaw->release();
+        /* Allocate the raw buffer we use to compute images. */
+        dims[xDim] = maxSizeX;
+        dims[yDim] = maxSizeY;
+        if (ndims > 2) dims[colorDim] = 3;
+        this->pRaw = this->pNDArrayPool->alloc(ndims, dims, dataType, 0, NULL);
+
+        if (!this->pRaw) {
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                      "%s:%s: error allocating raw buffer\n",
+                      driverName, functionName);
+            return(status);
+        }
+    }
+    
     switch (dataType) {
         case NDInt8: 
             status |= computeArray<epicsInt8>(maxSizeX, maxSizeY);
@@ -251,14 +352,15 @@ int simDetector::computeImage()
     /* Extract the region of interest with binning.  
      * If the entire image is being used (no ROI or binning) that's OK because
      * convertImage detects that case and is very efficient */
-    this->pRaw->initDimension(&dimsOut[0], sizeX);
-    dimsOut[0].binning = binX;
-    dimsOut[0].offset = minX;
-    dimsOut[0].reverse = reverseX;
-    this->pRaw->initDimension(&dimsOut[1], sizeY);
-    dimsOut[1].binning = binY;
-    dimsOut[1].offset = minY;
-    dimsOut[1].reverse = reverseY;
+    this->pRaw->initDimension(&dimsOut[xDim], sizeX);
+    this->pRaw->initDimension(&dimsOut[yDim], sizeY);
+    if (ndims > 2) this->pRaw->initDimension(&dimsOut[colorDim], 3);
+    dimsOut[xDim].binning = binX;
+    dimsOut[xDim].offset  = minX;
+    dimsOut[xDim].reverse = reverseX;
+    dimsOut[yDim].binning = binY;
+    dimsOut[yDim].offset  = minY;
+    dimsOut[yDim].reverse = reverseY;
     /* We save the most recent image buffer so it can be used in the read() function.
      * Now release it before getting a new version. */
     if (this->pArrays[0]) this->pArrays[0]->release();
@@ -276,8 +378,8 @@ int simDetector::computeImage()
     pImage->getInfo(&arrayInfo);
     status = asynSuccess;
     status |= setIntegerParam(ADImageSize,  arrayInfo.totalBytes);
-    status |= setIntegerParam(ADImageSizeX, pImage->dims[0].size);
-    status |= setIntegerParam(ADImageSizeY, pImage->dims[1].size);
+    status |= setIntegerParam(ADImageSizeX, pImage->dims[xDim].size);
+    status |= setIntegerParam(ADImageSizeY, pImage->dims[yDim].size);
     status |= setIntegerParam(SimResetImage, 0);
     if (status) asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                     "%s:%s: error setting parameters\n",
@@ -296,13 +398,11 @@ void simDetector::simTask()
 {
     /* This thread computes new image data and does the callbacks to send it to higher layers */
     int status = asynSuccess;
-    int dataType;
-    int imageSizeX, imageSizeY, imageSize;
     int imageCounter;
     int numImages, numImagesCounter;
     int imageMode;
     int arrayCallbacks;
-    int acquire, autoSave;
+    int acquire;
     NDArray *pImage;
     double acquireTime, acquirePeriod, delay;
     epicsTimeStamp startTime, endTime;
@@ -366,11 +466,6 @@ void simDetector::simTask()
         pImage = this->pArrays[0];
         
         /* Get the current parameters */
-        getIntegerParam(ADImageSizeX, &imageSizeX);
-        getIntegerParam(ADImageSizeY, &imageSizeY);
-        getIntegerParam(ADImageSize,  &imageSize);
-        getIntegerParam(ADDataType,   &dataType);
-        getIntegerParam(ADAutoSave,   &autoSave);
         getIntegerParam(ADImageCounter, &imageCounter);
         getIntegerParam(ADNumImages, &numImages);
         getIntegerParam(ADNumImagesCounter, &numImagesCounter);
@@ -455,13 +550,8 @@ asynStatus simDetector::writeInt32(asynUser *pasynUser, epicsInt32 value)
             epicsEventSignal(this->stopEventId);
         }
         break;
-    case ADBinX:
-    case ADBinY:
-    case ADMinX:
-    case ADMinY:
-    case ADSizeX:
-    case ADSizeY:
     case ADDataType:
+    case ADColorMode:
         status = setIntegerParam(SimResetImage, 1);
         break;
     case ADShutterControl:
@@ -499,6 +589,9 @@ asynStatus simDetector::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
     case ADGain:
     case SimGainX:
     case SimGainY:
+    case SimGainRed:
+    case SimGainGreen:
+    case SimGainBlue:
         status = setIntegerParam(SimResetImage, 1);
         break;
     }
@@ -585,7 +678,6 @@ simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDat
 {
     int status = asynSuccess;
     const char *functionName = "simDetector";
-    int dims[2];
 
     /* Create the epicsEvents for signaling to the simulate task when acquisition starts and stops */
     this->startEventId = epicsEventCreate(epicsEventEmpty);
@@ -601,11 +693,6 @@ simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDat
         return;
     }
     
-    /* Allocate the raw buffer we use to compute images.  Only do this once */
-    dims[0] = maxSizeX;
-    dims[1] = maxSizeY;
-    this->pRaw = this->pNDArrayPool->alloc(2, dims, dataType, 0, NULL);
-
     /* Set some default values for parameters */
     status =  setStringParam (ADManufacturer, "Simulated detector");
     status |= setStringParam (ADModel, "Basic simulator");
@@ -625,6 +712,9 @@ simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDat
     status |= setIntegerParam(SimResetImage, 1);
     status |= setDoubleParam (SimGainX, 1);
     status |= setDoubleParam (SimGainY, 1);
+    status |= setDoubleParam (SimGainRed, 1);
+    status |= setDoubleParam (SimGainGreen, 1);
+    status |= setDoubleParam (SimGainBlue, 1);
     if (status) {
         printf("%s: unable to set camera parameters\n", functionName);
         return;
