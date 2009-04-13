@@ -9,6 +9,33 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
+    Release 1-5 (xxx-April-2009)</h2>
+  <ul>
+    <li>Added a driver for mar345 online image plate detector. This driver communicates
+      via a TCP/IP socket with the mar345dtb program, which must be used to control the
+      detector.</li>
+    <li>Added a driver for Firewire IIDC/DCAM cameras under Windows. This driver uses
+      the Windows 1394 camera driver from Carnegie Mellon University.</li>
+    <li>Added support for color to the simulation detector driver. It now supports color
+      modes Mono, RGB1, RGB2 and RGB3.</li>
+    <li>Fixed 2 serious bugs in the Roper driver. It was not selecting ROI mode correctly.
+      When NumAcquisitions was &gt 1 it was only collecting the first frame correctly,
+      subsequent frames were the same as a first one. This has been isolated to a bug
+      in the WinView COM interface, and a workaround for the problem has been implemented.</li>
+    <li>Began to document the source code with comments that doxygen can processes. Thanks
+      to John Hammonds from APS for doing this.</li>
+    <li>Moved the asynPortDriver base C++ class from the areaDetector module to the asyn
+      module. The asynPortDriver base class was modified slightly to make it more general.
+      In particular the constructor no longer hardcodes ASYN_CANBLOCK, ASYN_MULTIDEVICE,
+      epicsThreadPriorityMedium, and epicsThreadStackMedium. This requires that asyn R4-11
+      or later be used, and requires 2 additional arguments to the constructor (priority
+      and stackSize) for all areaDetector drivers and plugins.</li>
+    <li>Fixed bug in NDPluginFile: was not closing file properly when stream mode was
+      stopped before the requested number of frames.</li>
+    <li>Fixed Makefiles to instantiate templates on vxWorks.</li>
+    <li>Minor bug fixes for Prosilica driver (function names in debug statements).</li>
+  </ul>
+  <h2 style="text-align: center">
     Release 1-4 (30-January-2009)</h2>
   <ul>
     <li>Added a driver for Roper Scientific (i.e. Princeton Instruments and Photometrics)
