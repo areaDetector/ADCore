@@ -15,6 +15,7 @@
 
 #include <epicsMutex.h>
 #include <epicsTypes.h>
+#include <epicsString.h>
 #include <ellLib.h>
 #include <cantProceed.h>
 
@@ -85,8 +86,6 @@ NDArray* NDArrayPool::alloc(int ndims, int *dims, NDDataType_t dataType, int dat
         /* Initialize fields */
         pArray->owner = this;
         pArray->dataType = dataType;
-        pArray->colorMode = NDColorModeMono;
-        pArray->bayerPattern = NDBayerRGGB;
         pArray->ndims = ndims;
         memset(pArray->dims, 0, sizeof(pArray->dims));
         for (i=0; i<ndims && i<ND_ARRAY_MAX_DIMS; i++) {
@@ -162,8 +161,6 @@ NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, int copyData)
         for (i=0; i<pIn->ndims; i++) dimSizeOut[i] = pIn->dims[i].size;
         pOut = this->alloc(pIn->ndims, dimSizeOut, pIn->dataType, 0, NULL);
     }
-    pOut->colorMode = pIn->colorMode;
-    pOut->bayerPattern = pIn->bayerPattern;
     pOut->uniqueId = pIn->uniqueId;
     pOut->timeStamp = pIn->timeStamp;
     pOut->ndims = pIn->ndims;
@@ -175,6 +172,7 @@ NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, int copyData)
         if (pOut->dataSize < numCopy) numCopy = pOut->dataSize;
         memcpy(pOut->pData, pIn->pData, numCopy);
     }
+    pIn->copyAttributes(pOut);
     return(pOut);
 }
 
@@ -415,6 +413,8 @@ int NDArrayPool::convert(NDArray *pIn,
     int status = ND_SUCCESS;
     NDArray *pOut;
     NDArrayInfo_t arrayInfo;
+    NDAttribute *pAttribute;
+    int colorMode, colorModeMono = NDColorModeMono;
     const char *functionName = "convert";
 
     /* Initialize failure */
@@ -449,12 +449,11 @@ int NDArrayPool::convert(NDArray *pIn,
         return(ND_ERROR);
     }
     /* Copy fields from input to output */
-    pOut->colorMode = pIn->colorMode;
-    pOut->bayerPattern = pIn->bayerPattern;
     pOut->timeStamp = pIn->timeStamp;
     pOut->uniqueId = pIn->uniqueId;
     /* Replace the dimensions with those passed to this function */
     memcpy(pOut->dims, dimsOutCopy, pIn->ndims*sizeof(NDDimension_t));
+    pIn->copyAttributes(pOut);
 
     pOut->getInfo(&arrayInfo);
 
@@ -512,9 +511,15 @@ int NDArrayPool::convert(NDArray *pIn,
     }
 
     /* If the frame is an RGBx frame and we have collapsed that dimension then change the colorMode */
-    if      ((pOut->colorMode == NDColorModeRGB1) && (pOut->dims[0].size != 3)) pOut->colorMode= NDColorModeMono;
-    else if ((pOut->colorMode == NDColorModeRGB2) && (pOut->dims[1].size != 3)) pOut->colorMode= NDColorModeMono;
-    else if ((pOut->colorMode == NDColorModeRGB3) && (pOut->dims[2].size != 3)) pOut->colorMode= NDColorModeMono;
+    pAttribute = pOut->findAttribute("ColorMode");
+    if (pAttribute && pAttribute->getValue(NDAttrInt32, &colorMode)) {
+        if      ((colorMode == NDColorModeRGB1) && (pOut->dims[0].size != 3)) 
+                pAttribute->setValue(NDAttrInt32, (void *)&colorModeMono);
+        else if ((colorMode == NDColorModeRGB2) && (pOut->dims[1].size != 3)) 
+                pAttribute->setValue(NDAttrInt32, (void *)&colorModeMono);
+        else if ((colorMode == NDColorModeRGB3) && (pOut->dims[2].size != 3))
+                pAttribute->setValue(NDAttrInt32, (void *)&colorModeMono);
+    }
     return ND_SUCCESS;
 }
 
@@ -537,11 +542,13 @@ int NDArrayPool::report(int details)
 /** Class Constructor */
 NDArray::NDArray()
     : referenceCount(0), owner(NULL),
-      uniqueId(0), timeStamp(0.0), ndims(0), dataType(NDInt8), colorMode(NDColorModeMono),
-      bayerPattern(NDBayerRGGB), dataSize(0), pData(NULL)
+      uniqueId(0), timeStamp(0.0), ndims(0), dataType(NDInt8),
+      dataSize(0),  pData(NULL)
 {
     memset(this->dims, 0, sizeof(this->dims));
     memset(&this->node, 0, sizeof(this->node));
+    ellInit(&this->attributeList);
+    this->listLock = epicsMutexCreate();
 }
 
 /** This convenience method returns information about an NDArray, including the total number of elements, the number of byte per element, and the total number of bytes in the array.*/
@@ -621,5 +628,243 @@ int NDArray::release()
         return(ND_ERROR);
     }
     return(pNDArrayPool->release(this));
+}
+
+/** This method adds an attribute to the array. */
+NDAttribute* NDArray::addAttribute(const char *name)
+{
+    NDAttribute *pAttribute;
+    //const char *functionName = "NDArray::addAttribute";
+
+    pAttribute = this->findAttribute(name);
+    if (!pAttribute) {
+        pAttribute = new NDAttribute(name);
+        ellAdd(&this->attributeList, &pAttribute->node);
+    }
+    return(pAttribute);
+}
+
+NDAttribute* NDArray::addAttribute(const char *name, NDAttrDataType_t dataType, void *value)
+{
+    NDAttribute *pAttribute;
+    //const char *functionName = "NDArray::addAttribute";
+
+    pAttribute = this->addAttribute(name);
+    pAttribute->setValue(dataType, value);
+    return(pAttribute);
+}
+
+NDAttribute* NDArray::findAttribute(const char *name)
+{
+    NDAttribute *pAttribute;
+    //const char *functionName = "NDArray::addAttribute";
+
+    pAttribute = (NDAttribute *)ellFirst(&this->attributeList);
+    while (pAttribute) {
+        if (epicsStrCaseCmp(pAttribute->name, name) == 0) return(pAttribute);
+        pAttribute = (NDAttribute *)ellNext(&pAttribute->node);
+    }
+    return(NULL);
+}
+
+NDAttribute* NDArray::nextAttribute(NDAttribute *pAttributeIn)
+{
+    NDAttribute *pAttribute;
+    //const char *functionName = "NDArray::addAttribute";
+
+    if (!pAttributeIn) pAttribute = (NDAttribute *)ellFirst(&this->attributeList);
+    else pAttribute = (NDAttribute *)ellNext(&pAttributeIn->node);
+    return(pAttribute);
+}
+
+int NDArray::numAttributes()
+{
+    //const char *functionName = "NDArray::addAttribute";
+
+    return ellCount(&this->attributeList);
+}
+
+int NDArray::deleteAttribute(const char *name)
+{
+    NDAttribute *pAttribute;
+    //const char *functionName = "NDArray::addAttribute";
+
+    pAttribute = this->findAttribute(name);
+    if (!pAttribute) return(ND_ERROR);
+    ellDelete(&this->attributeList, &pAttribute->node);
+    return(ND_SUCCESS);
+}
+
+int NDArray::clearAttributes()
+{
+    NDAttribute *pAttribute;
+    //const char *functionName = "NDArray::addAttribute";
+
+    pAttribute = (NDAttribute *)ellFirst(&this->attributeList);
+    while (pAttribute) {
+        ellDelete(&this->attributeList, &pAttribute->node);
+        pAttribute = (NDAttribute *)ellFirst(&this->attributeList);
+    }
+    return(ND_SUCCESS);
+}
+
+int NDArray::copyAttributes(NDArray *pOut)
+{
+    NDAttribute *pAttribute;
+    //const char *functionName = "NDArray::copyAttributes";
+
+    pAttribute = (NDAttribute *)ellFirst(&this->attributeList);
+    while (pAttribute) {
+        pOut->addAttribute(pAttribute->name, pAttribute->dataType, &pAttribute->value);
+        pAttribute = (NDAttribute *)ellNext(&pAttribute->node);
+    }
+    return(ND_SUCCESS);
+}
+
+/** Class constructor */
+NDAttribute::NDAttribute(const char *name)
+{
+    epicsInt32 value=0;
+    
+    strncpy(this->name, name,  sizeof(this->name));
+    this->setValue(NDAttrUndefined, &value);
+}
+
+int NDAttribute::getNameInfo(size_t *nameSize) {
+
+    return(ND_MAX_ATTR_NAME_SIZE);
+}
+
+int NDAttribute::getName(char *name, size_t nameSize) {
+
+    if (nameSize == 0) nameSize = ND_MAX_ATTR_NAME_SIZE;
+    strncpy(name, this->name, nameSize);
+    return(ND_SUCCESS);
+}
+
+int NDAttribute::setValue(NDAttrDataType_t dataType, void *pValue)
+{
+    this->dataType = dataType;
+    switch (dataType) {
+        case NDAttrInt8:
+            this->value.i8 = *(epicsInt8 *)pValue;
+            break;
+        case NDAttrUInt8:
+            this->value.ui8 = *(epicsUInt8 *)pValue;
+            break;
+        case NDAttrInt16:
+            this->value.i16 = *(epicsInt16 *)pValue;
+            break;
+        case NDAttrUInt16:
+            this->value.ui16 = *(epicsUInt16 *)pValue;
+            break;
+        case NDAttrInt32:
+            this->value.i32 = *(epicsInt32*)pValue;
+            break;
+        case NDAttrUInt32:
+            this->value.ui32 = *(epicsUInt32 *)pValue;
+            break;
+        case NDAttrFloat32:
+            this->value.f32 = *(epicsFloat32 *)pValue;
+            break;
+        case NDAttrFloat64:
+            this->value.f64 = *(epicsFloat64 *)pValue;
+            break;
+        case NDAttrString:
+            strncpy(this->value.string, (char *)pValue, sizeof(this->value.string));
+            break;
+        case NDAttrUndefined:
+        default:
+            return(ND_ERROR);
+            break;
+    }
+    return(ND_SUCCESS);
+}
+
+int NDAttribute::getValueInfo(NDAttrDataType_t *pDataType, size_t *pSize)
+{
+    *pDataType = this->dataType;
+    switch (this->dataType) {
+        case NDAttrInt8:
+            *pSize = sizeof(this->value.i8);
+            break;
+        case NDAttrUInt8:
+            *pSize = sizeof(this->value.ui8);
+            break;
+        case NDAttrInt16:
+            *pSize = sizeof(this->value.i16);
+            break;
+        case NDAttrUInt16:
+            *pSize = sizeof(this->value.ui16);
+            break;
+        case NDAttrInt32:
+            *pSize = sizeof(this->value.i32);
+            break;
+        case NDAttrUInt32:
+            *pSize = sizeof(this->value.ui32);
+            break;
+        case NDAttrFloat32:
+            *pSize = sizeof(this->value.f32);
+            break;
+        case NDAttrFloat64:
+            *pSize = sizeof(this->value.f64);
+            break;
+        case NDAttrString:
+            *pSize = sizeof(this->value.string);
+            break;
+        case NDAttrUndefined:
+            *pSize = 0;
+            break;
+        default:
+            return(ND_ERROR);
+            break;
+    }
+    return(ND_SUCCESS);
+}
+
+int NDAttribute::getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSize)
+{
+    if (dataType != this->dataType) return(ND_ERROR);
+    switch (this->dataType) {
+        case NDAttrInt8:
+            *(epicsInt8 *)pValue = this->value.i8;
+            break;
+        case NDAttrUInt8:
+             *(epicsUInt8 *)pValue = this->value.ui8;
+            break;
+        case NDAttrInt16:
+            *(epicsInt16 *)pValue = this->value.i16;
+            break;
+        case NDAttrUInt16:
+            *(epicsUInt16 *)pValue = this->value.ui16;
+            break;
+        case NDAttrInt32:
+            *(epicsInt32*)pValue = this->value.i32;
+            break;
+        case NDAttrUInt32:
+            *(epicsUInt32 *)pValue = this->value.ui32;
+            break;
+        case NDAttrFloat32:
+            *(epicsFloat32 *)pValue = this->value.f32;
+            break;
+        case NDAttrFloat64:
+            *(epicsFloat64 *)pValue = this->value.f64;
+            break;
+        case NDAttrString:
+            if (dataSize == 0) dataSize = sizeof(this->value.string);
+            strncpy((char *)pValue, this->value.string, dataSize);
+            break;
+        case NDAttrUndefined:
+        default:
+            return(ND_ERROR);
+            break;
+    }
+    return(ND_SUCCESS);
+}
+
+
+/** Class destructor */
+NDAttribute::~NDAttribute()
+{
 }
 
