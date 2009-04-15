@@ -42,14 +42,20 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
     tPvFrame PvFrame, *pFrame=&PvFrame;
     int dims[ND_ARRAY_MAX_DIMS];
     int ndims;
+    int colorMode, bayerPattern;
+    NDAttribute *pAttribute;
      
     getIntegerParam(NDPluginColorConvertColorModeOut, (int *)&colorModeOut);
+    pAttribute = pArray->findAttribute("colorMode");
+    if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
+    pAttribute = pArray->findAttribute("bayerPattern");
+    if (pAttribute) pAttribute->getValue(NDAttrInt32, &bayerPattern);
        
     /* This function is called with the lock taken, and it must be set when we exit.
      * The following code can be exected without the mutex because we are not accessing elements of
      * pPvt that other threads can access. */
     epicsMutexUnlock(this->mutexId);
-    switch (pArray->colorMode) {
+    switch (colorMode) {
         case NDColorModeBayer:
             switch (colorModeOut) {
                 case NDColorModeRGB1:
@@ -77,7 +83,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     pFrame->ImageBuffer = pArray->pData;
                     pFrame->ImageBufferSize = pArray->dataSize;
                     pFrame->ImageSize = pFrame->ImageBufferSize;
-                    pFrame->BayerPattern = (tPvBayerPattern)pArray->bayerPattern;
+                    pFrame->BayerPattern = (tPvBayerPattern)bayerPattern;
                     switch(pArray->dataType) {
                         case NDInt8:
                         case NDUInt8:
@@ -105,7 +111,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     pArrayOut->dims[0].size = 3;
                     memcpy(&pArrayOut->dims[1], &pArray->dims[0], sizeof(NDDimension_t));
                     memcpy(&pArrayOut->dims[2], &pArray->dims[1], sizeof(NDDimension_t));
-                    pArrayOut->colorMode = NDColorModeRGB1;
+                    pArrayOut->addAttribute("colorMode", NDAttrInt32, &colorModeOut);
                     break;
                 
                 case NDColorModeRGB2:
@@ -113,7 +119,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     memcpy(&pArrayOut->dims[0], &pArray->dims[0], sizeof(NDDimension_t));
                     pArrayOut->dims[1].size = 3;
                     memcpy(&pArrayOut->dims[2], &pArray->dims[1], sizeof(NDDimension_t));
-                    pArrayOut->colorMode = NDColorModeRGB2;
+                    pArrayOut->addAttribute("colorMode", NDAttrInt32, &colorModeOut);
                     break;
 
                 case NDColorModeRGB3:
@@ -121,7 +127,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     memcpy(&pArrayOut->dims[0], &pArray->dims[0], sizeof(NDDimension_t));
                     memcpy(&pArrayOut->dims[1], &pArray->dims[1], sizeof(NDDimension_t));
                     pArrayOut->dims[2].size = 3;
-                    pArrayOut->colorMode = NDColorModeRGB3;
+                    pArrayOut->addAttribute("colorMode", NDAttrInt32, &colorModeOut);
                     break;
                 default:
                     break;
@@ -147,7 +153,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     memcpy(&pArrayOut->dims[0], &pArray->dims[1], sizeof(NDDimension_t));
                     memcpy(&pArrayOut->dims[1], &pArray->dims[2], sizeof(NDDimension_t));
                     memcpy(&pArrayOut->dims[2], &pArray->dims[0], sizeof(NDDimension_t));
-                    pArrayOut->colorMode = NDColorModeRGB3;
+                    pArrayOut->addAttribute("colorMode", NDAttrInt32, &colorModeOut);
                     break;
                 case NDColorModeRGB2:
                     pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0);
@@ -166,7 +172,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     memcpy(&pArrayOut->dims[0], &pArray->dims[1], sizeof(NDDimension_t));
                     memcpy(&pArrayOut->dims[1], &pArray->dims[0], sizeof(NDDimension_t));
                     memcpy(&pArrayOut->dims[2], &pArray->dims[2], sizeof(NDDimension_t));
-                    pArrayOut->colorMode = NDColorModeRGB2;
+                    pArrayOut->addAttribute("colorMode", NDAttrInt32, &colorModeOut);
                     break;
                 default:
                     break;
@@ -194,7 +200,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     memcpy(&pArrayOut->dims[0], &pArray->dims[1], sizeof(NDDimension_t));
                     memcpy(&pArrayOut->dims[1], &pArray->dims[0], sizeof(NDDimension_t));
                     memcpy(&pArrayOut->dims[2], &pArray->dims[2], sizeof(NDDimension_t));
-                    pArrayOut->colorMode = NDColorModeRGB1;
+                    pArrayOut->addAttribute("colorMode", NDAttrInt32, &colorModeOut);
                     break;
                 case NDColorModeRGB3:
                     pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0);
@@ -215,7 +221,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     memcpy(&pArrayOut->dims[0], &pArray->dims[0], sizeof(NDDimension_t));
                     memcpy(&pArrayOut->dims[1], &pArray->dims[2], sizeof(NDDimension_t));
                     memcpy(&pArrayOut->dims[2], &pArray->dims[1], sizeof(NDDimension_t));
-                    pArrayOut->colorMode = NDColorModeRGB3;
+                    pArrayOut->addAttribute("colorMode", NDAttrInt32, &colorModeOut);
                     break;
                 default:
                     break;
@@ -241,7 +247,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     memcpy(&pArrayOut->dims[0], &pArray->dims[2], sizeof(NDDimension_t));
                     memcpy(&pArrayOut->dims[1], &pArray->dims[0], sizeof(NDDimension_t));
                     memcpy(&pArrayOut->dims[2], &pArray->dims[1], sizeof(NDDimension_t));
-                    pArrayOut->colorMode = NDColorModeRGB1;                
+                    pArrayOut->addAttribute("colorMode", NDAttrInt32, &colorModeOut);
                     break;
                 case NDColorModeRGB2:
                     pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0);
@@ -262,7 +268,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     memcpy(&pArrayOut->dims[0], &pArray->dims[0], sizeof(NDDimension_t));
                     memcpy(&pArrayOut->dims[1], &pArray->dims[2], sizeof(NDDimension_t));
                     memcpy(&pArrayOut->dims[2], &pArray->dims[1], sizeof(NDDimension_t));
-                    pArrayOut->colorMode = NDColorModeRGB2;                
+                    pArrayOut->addAttribute("colorMode", NDAttrInt32, &colorModeOut);
                     break;
                 default:
                     break;
@@ -277,7 +283,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
     epicsMutexLock(this->mutexId);
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
               "%s:%s: pArray->colorMode=%d, colorModeOut=%d, pArrayOut=%p\n",
-              driverName, functionName, pArray->colorMode, colorModeOut, pArrayOut);
+              driverName, functionName, colorMode, colorModeOut, pArrayOut);
 }
 
 void NDPluginColorConvert::processCallbacks(NDArray *pArray)

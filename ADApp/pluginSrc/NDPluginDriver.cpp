@@ -115,14 +115,21 @@ void NDPluginDriver::processCallbacks(NDArray *pArray)
 {
     int arrayCounter;
     int i, dimsChanged;
+    NDAttribute *pAttribute;
+    int colorMode=0, bayerPattern=0;
+    
+    pAttribute = pArray->findAttribute("colorMode");
+    if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
+    pAttribute = pArray->findAttribute("bayerPattern");
+    if (pAttribute) pAttribute->getValue(NDAttrInt32, &bayerPattern);
     
     getIntegerParam(NDPluginDriverArrayCounter, &arrayCounter);
     arrayCounter++;
     setIntegerParam(NDPluginDriverArrayCounter, arrayCounter);
     setIntegerParam(NDPluginDriverNDimensions, pArray->ndims);
     setIntegerParam(NDPluginDriverDataType, pArray->dataType);
-    setIntegerParam(NDPluginDriverColorMode, pArray->colorMode);
-    setIntegerParam(NDPluginDriverBayerPattern, pArray->bayerPattern);
+    setIntegerParam(NDPluginDriverColorMode, colorMode);
+    setIntegerParam(NDPluginDriverBayerPattern, bayerPattern);
     setIntegerParam(NDPluginDriverUniqueId, pArray->uniqueId);
     setDoubleParam(NDPluginDriverTimeStamp, pArray->timeStamp);
     /* See if the array dimensions have changed.  If so then do callbacks on them. */
