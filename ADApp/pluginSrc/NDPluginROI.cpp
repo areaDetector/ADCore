@@ -258,11 +258,17 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     int highlight;
     int bgdPixels;
     double bgdCounts, avgBgd;
+    int colorMode;
+    NDAttribute *pAttribute;
     const char* functionName = "processCallbacks";
      
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
         
+    /* We do some special treatment based on colorMode */
+    pAttribute = pArray->findAttribute("colorMode");
+    if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
+
     getIntegerParam(NDPluginROIHighlight, &highlight);
     if (highlight && (pArray->ndims == 2)) {
         /* We need to highlight the ROIs.
@@ -308,12 +314,12 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         /* We treat the case of RGB1 data specially, so that NX and NY are the X and Y dimensions of the
          * image, not the first 2 dimensions.  This makes it much easier to switch back and forth between
          * RGB1 and mono mode when using an ROI. */
-        if (pArray->colorMode == NDColorModeRGB1) {
+        if (colorMode == NDColorModeRGB1) {
             userDims[0] = 1;
             userDims[1] = 2;
             userDims[2] = 0;
         }
-        else if (pArray->colorMode == NDColorModeRGB2) {
+        else if (colorMode == NDColorModeRGB2) {
             userDims[0] = 0;
             userDims[1] = 2;
             userDims[2] = 1;
@@ -361,13 +367,13 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         /* We treat the case of RGB1 data specially, so that NX and NY are the X and Y dimensions of the
          * image, not the first 2 dimensions.  This makes it much easier to switch back and forth between
          * RGB1 and mono mode when using an ROI. */
-        if (pArray->colorMode == NDColorModeRGB1) {
+        if (colorMode == NDColorModeRGB1) {
             tempDim = dims[0];
             dims[0] = dims[2];
             dims[2] = dims[1];
             dims[1] = tempDim;
         }
-        else if (pArray->colorMode == NDColorModeRGB2) {
+        else if (colorMode == NDColorModeRGB2) {
             tempDim = dims[1];
             dims[1] = dims[2];
             dims[2] = tempDim;
