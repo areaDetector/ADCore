@@ -14,10 +14,13 @@
 
 #include <ellLib.h>
 #include <epicsMutex.h>
+#include <epicsTypes.h>
 
 #define ND_ARRAY_MAX_DIMS 10
 #define ND_SUCCESS 0
 #define ND_ERROR -1
+#define ND_MAX_ATTR_NAME_SIZE 40
+#define ND_MAX_ATTR_STRING_SIZE 40
 
 /** Enumeration of array data types */
 typedef enum
@@ -31,6 +34,21 @@ typedef enum
     NDFloat32,
     NDFloat64
 } NDDataType_t;
+
+/** Enumeration of attribute data types */
+typedef enum
+{
+    NDAttrInt8    = NDInt8,
+    NDAttrUInt8   = NDUInt8,
+    NDAttrInt16   = NDInt16,
+    NDAttrUInt16  = NDUInt16,
+    NDAttrInt32   = NDInt32,
+    NDAttrUInt32  = NDUInt32,
+    NDAttrFloat32 = NDFloat32,
+    NDAttrFloat64 = NDFloat64,
+    NDAttrString,
+    NDAttrUndefined    
+} NDAttrDataType_t;
 
 /** Enumeration of color modes */
 typedef enum
@@ -66,32 +84,77 @@ typedef struct NDArrayInfo {
     int totalBytes;
 } NDArrayInfo_t;
 
-class NDArray {
+typedef union {
+    epicsInt8    i8;
+    epicsUInt8   ui8;
+    epicsInt16   i16;
+    epicsUInt16  ui16;
+    epicsInt32   i32;
+    epicsUInt32  ui32;
+    epicsFloat32 f32;
+    epicsFloat64 f64;
+    char         string[ND_MAX_ATTR_STRING_SIZE];
+} NDAttrValue;
+
+class NDAttribute {
 public:
+    /* Methods */
+    int getNameInfo(size_t *nameSize);
+    int getName(char *name, size_t nameSize=0);
+    int getValueInfo(NDAttrDataType_t *dataType, size_t *dataSize);
+    int setValue(NDAttrDataType_t dataType, void *value);
+    int getValue(NDAttrDataType_t dataType, void *value, size_t dataSize=0);
+    friend class NDArray;
+
+private:
     /* Data: NOTE this must come first because ELLNODE must be first, i.e. same address as object */
     /* The first 2 fields are used for the freelist */
+    NDAttribute(const char *name);
+    ~NDAttribute();
     ELLNODE node;
-    int referenceCount;
-    /* The NDArrayPool object that created this array */
-    void *owner;
+    char name[ND_MAX_ATTR_NAME_SIZE];
+    NDAttrDataType_t dataType;
+    NDAttrValue value;
+};
 
-    int uniqueId;
-    double timeStamp;
-    int ndims;
-    NDDimension_t dims[ND_ARRAY_MAX_DIMS];
-    NDDataType_t dataType;
-    NDColorMode_t colorMode;
-    NDBayerPattern_t bayerPattern;
-    int dataSize;
-    void *pData;
-
+class NDArray {
+public:
     /* Methods */
     NDArray();
     int          initDimension   (NDDimension_t *pDimension, int size);
     int          getInfo         (NDArrayInfo_t *pInfo);
     int          reserve();
     int          release();
+    NDAttribute* addAttribute(const char *name);
+    NDAttribute* addAttribute(const char *name, NDAttrDataType_t dataType, void *value);
+    NDAttribute* findAttribute(const char *name);
+    NDAttribute* nextAttribute(NDAttribute* pAttribute);
+    int          numAttributes();
+    int          deleteAttribute(const char *name);
+    int          clearAttributes();
+    int          copyAttributes(NDArray *pOut);
+    friend class NDArrayPool;
+    
+private:
+    /* Data: NOTE this must come first because ELLNODE must be first, i.e. same address as object */
+    /* The first 2 fields are used for the freelist */
+    ELLNODE node;
+    int          referenceCount;
+    void         *owner;  /* The NDArrayPool object that created this array */
+    ELLLIST      attributeList;
+    epicsMutexId listLock;
+
+public:
+    /* Public data */
+    int           uniqueId;
+    double        timeStamp;
+    int           ndims;
+    NDDimension_t dims[ND_ARRAY_MAX_DIMS];
+    NDDataType_t  dataType;
+    int           dataSize;
+    void          *pData;
 };
+
 
 
 /** The NDArrayPool class manages a free list (pool) of NDArray objects (described above).
