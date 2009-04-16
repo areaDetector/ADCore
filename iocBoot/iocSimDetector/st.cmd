@@ -28,7 +28,7 @@ dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStdArrays.template", "P=13SIM1:,R=ima
 #dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/EPICS_AD_Viewer.template", "P=13SIM1:, R=image1:")
 
 # Create a file saving plugin
-drvNDFileConfigure("SIM1File", 20, 0, "SIM1", 0)
+drvNDFileNetCDFConfigure("SIM1File", 20, 0, "SIM1", 0)
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13SIM1:,R=file1:,PORT=SIM1File,ADDR=0,TIMEOUT=1,NDARRAY_PORT=SIM1,NDARRAY_ADDR=0")
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFile.template",      "P=13SIM1:,R=file1:,PORT=SIM1File,ADDR=0,TIMEOUT=1")
 
