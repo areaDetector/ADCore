@@ -19,8 +19,6 @@
 #define ND_ARRAY_MAX_DIMS 10
 #define ND_SUCCESS 0
 #define ND_ERROR -1
-#define ND_MAX_ATTR_NAME_SIZE 40
-#define ND_MAX_ATTR_STRING_SIZE 40
 
 /** Enumeration of array data types */
 typedef enum
@@ -93,26 +91,30 @@ typedef union {
     epicsUInt32  ui32;
     epicsFloat32 f32;
     epicsFloat64 f64;
-    char         string[ND_MAX_ATTR_STRING_SIZE];
+    char *pString;
 } NDAttrValue;
 
 class NDAttribute {
 public:
     /* Methods */
-    int getNameInfo(size_t *nameSize);
-    int getName(char *name, size_t nameSize=0);
-    int getValueInfo(NDAttrDataType_t *dataType, size_t *dataSize);
-    int setValue(NDAttrDataType_t dataType, void *value);
-    int getValue(NDAttrDataType_t dataType, void *value, size_t dataSize=0);
+    int getNameInfo(size_t *pNameSize);
+    int getName(char *pName, size_t nameSize=0);
+    int getDescriptionInfo(size_t *pDescSize);
+    int getDescription(char *pDescription, size_t descSize=0);
+    int setDescription(const char *pDescription);
+    int getValueInfo(NDAttrDataType_t *pDataType, size_t *pDataSize);
+    int getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSize=0);
+    int setValue(NDAttrDataType_t dataType, void *pValue);
     friend class NDArray;
 
 private:
     /* Data: NOTE this must come first because ELLNODE must be first, i.e. same address as object */
     /* The first 2 fields are used for the freelist */
-    NDAttribute(const char *name);
+    NDAttribute(const char *pName);
     ~NDAttribute();
     ELLNODE node;
-    char name[ND_MAX_ATTR_NAME_SIZE];
+    char *pName;
+    char *pDescription;
     NDAttrDataType_t dataType;
     NDAttrValue value;
 };
@@ -121,16 +123,19 @@ class NDArray {
 public:
     /* Methods */
     NDArray();
+    ~NDArray();
     int          initDimension   (NDDimension_t *pDimension, int size);
     int          getInfo         (NDArrayInfo_t *pInfo);
     int          reserve();
     int          release();
-    NDAttribute* addAttribute(const char *name);
-    NDAttribute* addAttribute(const char *name, NDAttrDataType_t dataType, void *value);
-    NDAttribute* findAttribute(const char *name);
-    NDAttribute* nextAttribute(NDAttribute* pAttribute);
+    NDAttribute* addAttribute(const char *pName);
+    NDAttribute* addAttribute(const char *pName, NDAttrDataType_t dataType, void *pValue);
+    NDAttribute* addAttribute(const char *pName, const char *pDescription, 
+                              NDAttrDataType_t dataType, void *pValue);
+    NDAttribute* findAttribute(const char *pName);
+    NDAttribute* nextAttribute(NDAttribute *pAttribute);
     int          numAttributes();
-    int          deleteAttribute(const char *name);
+    int          deleteAttribute(const char *pName);
     int          clearAttributes();
     int          copyAttributes(NDArray *pOut);
     friend class NDArrayPool;
