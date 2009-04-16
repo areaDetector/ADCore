@@ -31,7 +31,7 @@ static const char *driverName = "NDArray";
   * this value is negative then there is no limit on the amount of memory in the pool.
   */
 NDArrayPool::NDArrayPool(int maxBuffers, size_t maxMemory)
-    : maxBuffers(maxBuffers),numBuffers(0),  maxMemory(maxMemory), memorySize(0), numFree(0)
+    : maxBuffers(maxBuffers), numBuffers(0), maxMemory(maxMemory), memorySize(0), numFree(0)
 {
     ellInit(&this->freeList);
     this->listLock = epicsMutexCreate();
@@ -172,6 +172,7 @@ NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, int copyData)
         if (pOut->dataSize < numCopy) numCopy = pOut->dataSize;
         memcpy(pOut->pData, pIn->pData, numCopy);
     }
+    pOut->clearAttributes();
     pIn->copyAttributes(pOut);
     return(pOut);
 }
@@ -539,7 +540,7 @@ int NDArrayPool::report(int details)
     return ND_SUCCESS;
 }
 
-/** Class Constructor */
+/** Class constructor */
 NDArray::NDArray()
     : referenceCount(0), owner(NULL),
       uniqueId(0), timeStamp(0.0), ndims(0), dataType(NDInt8),
@@ -549,6 +550,15 @@ NDArray::NDArray()
     memset(&this->node, 0, sizeof(this->node));
     ellInit(&this->attributeList);
     this->listLock = epicsMutexCreate();
+}
+
+/** Class destructor */
+NDArray::~NDArray()
+{
+    if (this->pData) free(this->pData);
+    this->clearAttributes();
+    ellFree(&this->attributeList);
+    epicsMutexDestroy(this->listLock);
 }
 
 /** This convenience method returns information about an NDArray, including the total number of elements, the number of byte per element, and the total number of bytes in the array.*/
@@ -631,37 +641,48 @@ int NDArray::release()
 }
 
 /** This method adds an attribute to the array. */
-NDAttribute* NDArray::addAttribute(const char *name)
+NDAttribute* NDArray::addAttribute(const char *pName)
 {
     NDAttribute *pAttribute;
     //const char *functionName = "NDArray::addAttribute";
 
-    pAttribute = this->findAttribute(name);
+    pAttribute = this->findAttribute(pName);
     if (!pAttribute) {
-        pAttribute = new NDAttribute(name);
+        pAttribute = new NDAttribute(pName);
         ellAdd(&this->attributeList, &pAttribute->node);
     }
     return(pAttribute);
 }
 
-NDAttribute* NDArray::addAttribute(const char *name, NDAttrDataType_t dataType, void *value)
+NDAttribute* NDArray::addAttribute(const char *pName, NDAttrDataType_t dataType, void *pValue)
 {
     NDAttribute *pAttribute;
     //const char *functionName = "NDArray::addAttribute";
 
-    pAttribute = this->addAttribute(name);
-    pAttribute->setValue(dataType, value);
+    pAttribute = this->addAttribute(pName);
+    pAttribute->setValue(dataType, pValue);
     return(pAttribute);
 }
 
-NDAttribute* NDArray::findAttribute(const char *name)
+NDAttribute* NDArray::addAttribute(const char *pName, const char *pDescription, NDAttrDataType_t dataType, void *pValue)
+{
+    NDAttribute *pAttribute;
+    //const char *functionName = "NDArray::addAttribute";
+
+    pAttribute = this->addAttribute(pName);
+    pAttribute->setDescription(pDescription);
+    pAttribute->setValue(dataType, pValue);
+    return(pAttribute);
+}
+
+NDAttribute* NDArray::findAttribute(const char *pName)
 {
     NDAttribute *pAttribute;
     //const char *functionName = "NDArray::addAttribute";
 
     pAttribute = (NDAttribute *)ellFirst(&this->attributeList);
     while (pAttribute) {
-        if (epicsStrCaseCmp(pAttribute->name, name) == 0) return(pAttribute);
+        if (epicsStrCaseCmp(pAttribute->pName, pName) == 0) return(pAttribute);
         pAttribute = (NDAttribute *)ellNext(&pAttribute->node);
     }
     return(NULL);
@@ -684,14 +705,15 @@ int NDArray::numAttributes()
     return ellCount(&this->attributeList);
 }
 
-int NDArray::deleteAttribute(const char *name)
+int NDArray::deleteAttribute(const char *pName)
 {
     NDAttribute *pAttribute;
     //const char *functionName = "NDArray::addAttribute";
 
-    pAttribute = this->findAttribute(name);
+    pAttribute = this->findAttribute(pName);
     if (!pAttribute) return(ND_ERROR);
     ellDelete(&this->attributeList, &pAttribute->node);
+    delete pAttribute;
     return(ND_SUCCESS);
 }
 
@@ -703,6 +725,7 @@ int NDArray::clearAttributes()
     pAttribute = (NDAttribute *)ellFirst(&this->attributeList);
     while (pAttribute) {
         ellDelete(&this->attributeList, &pAttribute->node);
+        delete pAttribute;
         pAttribute = (NDAttribute *)ellFirst(&this->attributeList);
     }
     return(ND_SUCCESS);
@@ -715,7 +738,7 @@ int NDArray::copyAttributes(NDArray *pOut)
 
     pAttribute = (NDAttribute *)ellFirst(&this->attributeList);
     while (pAttribute) {
-        pOut->addAttribute(pAttribute->name, pAttribute->dataType, &pAttribute->value);
+        pOut->addAttribute(pAttribute->pName, pAttribute->pDescription, pAttribute->dataType, &pAttribute->value);
         pAttribute = (NDAttribute *)ellNext(&pAttribute->node);
     }
     return(ND_SUCCESS);
@@ -724,26 +747,68 @@ int NDArray::copyAttributes(NDArray *pOut)
 /** Class constructor */
 NDAttribute::NDAttribute(const char *name)
 {
-    epicsInt32 value=0;
-    
-    strncpy(this->name, name,  sizeof(this->name));
-    this->setValue(NDAttrUndefined, &value);
+    this->pName = epicsStrDup(name);
+    this->pDescription = NULL;
+    this->value.pString = NULL;
+    this->dataType = NDAttrUndefined;
 }
 
-int NDAttribute::getNameInfo(size_t *nameSize) {
-
-    return(ND_MAX_ATTR_NAME_SIZE);
+/** Class destructor */
+NDAttribute::~NDAttribute()
+{
+    if (this->pName) free(this->pName);
+    if (this->pDescription) free(this->pDescription);
+    if ((this->dataType == NDAttrString) && this->value.pString) free(this->value.pString);
 }
 
-int NDAttribute::getName(char *name, size_t nameSize) {
+int NDAttribute::getNameInfo(size_t *pNameSize) {
 
-    if (nameSize == 0) nameSize = ND_MAX_ATTR_NAME_SIZE;
-    strncpy(name, this->name, nameSize);
+    *pNameSize = strlen(this->pName);
+    return(ND_SUCCESS);
+}
+
+int NDAttribute::getName(char *pName, size_t nameSize) {
+
+    if (nameSize == 0) nameSize = strlen(this->pName)+1;
+    strncpy(pName, this->pName, nameSize);
+    return(ND_SUCCESS);
+}
+
+int NDAttribute::getDescriptionInfo(size_t *pDescSize) {
+
+    if (this->pDescription)
+        *pDescSize = strlen(this->pDescription);
+    else
+        *pDescSize = 0;
+    return(ND_SUCCESS);
+}
+
+int NDAttribute::getDescription(char *pDescription, size_t descSize) {
+
+    if (this->pDescription) {
+        if (descSize == 0) descSize = strlen(this->pDescription)+1;
+        strncpy(pDescription, this->pDescription, descSize);
+    } else
+        *pDescription = NULL;
+    return(ND_SUCCESS);
+}
+
+int NDAttribute::setDescription(const char *pDescription) {
+
+    if (this->pDescription) {
+        /* If the new description is the same as the old one return, 
+         * saves freeing and allocating memory */
+        if (strcmp(this->pDescription, pDescription) == 0) return(ND_SUCCESS);
+        free(this->pDescription);
+    }
+    this->pDescription = epicsStrDup(pDescription);
     return(ND_SUCCESS);
 }
 
 int NDAttribute::setValue(NDAttrDataType_t dataType, void *pValue)
 {
+    NDAttrDataType_t prevDataType = this->dataType;
+    
     this->dataType = dataType;
     switch (dataType) {
         case NDAttrInt8:
@@ -771,7 +836,13 @@ int NDAttribute::setValue(NDAttrDataType_t dataType, void *pValue)
             this->value.f64 = *(epicsFloat64 *)pValue;
             break;
         case NDAttrString:
-            strncpy(this->value.string, (char *)pValue, sizeof(this->value.string));
+            /* If the previous value was the same string don't do anything, 
+             * saves freeing and allocating memory.  If not the same free the old string. */
+            if ((prevDataType == NDAttrString) && this->value.pString) {
+                if (strcmp(this->value.pString, (char *)pValue) == 0) return(ND_SUCCESS);
+                free(this->value.pString);
+            }
+            this->value.pString = epicsStrDup((char *)pValue);
             break;
         case NDAttrUndefined:
         default:
@@ -810,7 +881,7 @@ int NDAttribute::getValueInfo(NDAttrDataType_t *pDataType, size_t *pSize)
             *pSize = sizeof(this->value.f64);
             break;
         case NDAttrString:
-            *pSize = sizeof(this->value.string);
+            *pSize = strlen(this->value.pString)+1;
             break;
         case NDAttrUndefined:
             *pSize = 0;
@@ -851,8 +922,8 @@ int NDAttribute::getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSi
             *(epicsFloat64 *)pValue = this->value.f64;
             break;
         case NDAttrString:
-            if (dataSize == 0) dataSize = sizeof(this->value.string);
-            strncpy((char *)pValue, this->value.string, dataSize);
+            if (dataSize == 0) dataSize = strlen(this->value.pString)+1;
+            strncpy((char *)pValue, this->value.pString, dataSize);
             break;
         case NDAttrUndefined:
         default:
@@ -863,8 +934,4 @@ int NDAttribute::getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSi
 }
 
 
-/** Class destructor */
-NDAttribute::~NDAttribute()
-{
-}
 
