@@ -76,7 +76,6 @@ int NDPluginDriver::createFileName(int maxChars, char *fullFileName)
     if (autoIncrement) {
         fileNumber++;
         status |= setIntegerParam(ADFileNumber, fileNumber);
-        status |= setIntegerParam(ADFileNumber, fileNumber);
     }
     return(status);   
 }
@@ -105,7 +104,6 @@ int NDPluginDriver::createFileName(int maxChars, char *filePath, char *fileName)
     }
     if (autoIncrement) {
         fileNumber++;
-        status |= setIntegerParam(ADFileNumber, fileNumber);
         status |= setIntegerParam(ADFileNumber, fileNumber);
     }
     return(status);   
@@ -167,7 +165,7 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
     int arrayCounter, droppedArrays;
     const char *functionName = "driverCallback";
 
-    epicsMutexLock(mutexId);
+    this->lock();
 
     status |= getDoubleParam(NDPluginDriverMinCallbackTime, &minCallbackTime);
     status |= getIntegerParam(NDPluginDriverArrayCounter, &arrayCounter);
@@ -209,7 +207,7 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
         }
     }
     callParamCallbacks();
-    epicsMutexUnlock(this->mutexId);
+    this->unlock();
 }
 
 
@@ -234,10 +232,10 @@ void NDPluginDriver::processTask(void)
         
         /* Take the lock.  The function we are calling must release the lock
          * during time-consuming operations when it does not need it. */
-        epicsMutexLock(this->mutexId);
+        this->lock();
         /* Call the function that does the callbacks to standard asyn interfaces */
         processCallbacks(pArray); 
-        epicsMutexUnlock(this->mutexId); 
+        this->unlock(); 
         
         /* We are done with this array buffer */       
         pArray->release();

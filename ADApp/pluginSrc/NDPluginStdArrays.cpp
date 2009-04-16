@@ -159,7 +159,7 @@ void NDPluginStdArrays::processCallbacks(NDArray *pArray)
  
     /* This function is called with the lock taken, and it must be set when we exit.
      * The following code can be exected without the mutex because we are not accessing pPvt */
-    epicsMutexUnlock(this->mutexId);
+    this->unlock();
 
     /* Pass interrupts for int8Array data*/
     arrayInterruptCallback<epicsInt8, asynInt8ArrayInterrupt>(pArray, this->pNDArrayPool, 
@@ -187,7 +187,7 @@ void NDPluginStdArrays::processCallbacks(NDArray *pArray)
                              &float64Initialized, NDFloat64);
 
     /* We must exit with the mutex locked */
-    epicsMutexLock(this->mutexId);
+    this->lock();
     /* We always keep the last array so read() can use it.  
      * Release previous one, reserve new one */
     if (this->pArrays[0]) this->pArrays[0]->release();

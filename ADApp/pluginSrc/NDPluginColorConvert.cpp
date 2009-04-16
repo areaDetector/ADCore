@@ -54,7 +54,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
     /* This function is called with the lock taken, and it must be set when we exit.
      * The following code can be exected without the mutex because we are not accessing elements of
      * pPvt that other threads can access. */
-    epicsMutexUnlock(this->mutexId);
+    this->unlock();
     switch (colorMode) {
         case NDColorModeBayer:
             switch (colorModeOut) {
@@ -280,7 +280,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
     /* If the output array pointer is null then no conversion was done, copy the input to the output */
     if (!pArrayOut) pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 1);
     this->pArrays[0] = pArrayOut;
-    epicsMutexLock(this->mutexId);
+    this->lock();
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
               "%s:%s: pArray->colorMode=%d, colorModeOut=%d, pArrayOut=%p\n",
               driverName, functionName, colorMode, colorModeOut, pArrayOut);

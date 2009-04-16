@@ -359,7 +359,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         /* This function is called with the lock taken, and it must be set when we exit.
          * The following code can be exected without the mutex because we are not accessing elements of
          * pPvt that other threads can access. */
-        epicsMutexUnlock(this->mutexId);
+        this->unlock();
     
         /* Extract this ROI from the input array.  The convert() function allocates
          * a new array and it is reserved (reference count = 1) */
@@ -471,7 +471,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         doCallbacksGenericPointer(this->pArrays[roi], NDArrayData, roi);
         
         /* We must enter the loop and exit with the mutex locked */
-        epicsMutexLock(this->mutexId);
+        this->lock();
         callParamCallbacks(roi, roi);
     }
 
