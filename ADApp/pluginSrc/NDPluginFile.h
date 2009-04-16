@@ -2,15 +2,14 @@
 #define NDPluginFile_H
 
 #include <epicsTypes.h>
-#include <asynStandardInterfaces.h>
 
 #include "NDPluginDriver.h"
-#include "NDFileNetCDF.h"
 
-/* Note that the file format enum must agree with the mbbo/mbbi records in the NDFile.template file */
-typedef enum {
-    NDFileFormatNetCDF
-} NDPluginFileFormat_t;
+#define NDFileModeRead     0x01
+#define NDFileModeWrite    0x02
+#define NDFileModeAppend   0x04
+#define NDFileModeMultiple 0x08
+typedef int NDFileOpenMode_t;
 
 /* There are currently no specific parameters for this driver yet.
  * It uses the ADStdDriverParams and NDPluginDriver params */
@@ -32,16 +31,22 @@ public:
     asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
                              const char **pptypeName, size_t *psize);
 
-    /* These methods are new to this class */
-    asynStatus readFile(void);
-    asynStatus writeFile(void);
-    asynStatus doCapture(void);
+    /* These methods are new to this class and must be implemented by derived classes because
+     * they are pure virtual functions */
+    virtual asynStatus openFile(const char *fileName, NDFileOpenMode_t openMode, NDArray *pArray) = 0;
+    virtual asynStatus readFile(NDArray **pArray) = 0;
+    virtual asynStatus writeFile(NDArray *pArray) = 0;
+    virtual asynStatus closeFile() = 0;
+    
+    int supportsMultipleArrays;
 
 private:
-    NDArray *pCaptureNext;
-    NDArray *pCapture;
-    NDFileNetCDFState_t netCDFState;
-    epicsMutexId fileMutexId;
+    asynStatus openFileBase(NDFileOpenMode_t openMode, NDArray *pArray);
+    asynStatus readFileBase();
+    asynStatus writeFileBase();
+    asynStatus closeFileBase();
+    asynStatus doCapture();
+    NDArray **pCapture;
 };
 
     
