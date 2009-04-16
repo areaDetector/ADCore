@@ -114,7 +114,6 @@ template <typename epicsType> int simDetector::computeArray(int sizeX, int sizeY
     switch (colorMode) {
         case NDColorModeMono:
             pMono = (epicsType *)this->pRaw->pData;
-            this->pRaw->colorMode = NDColorModeMono;
             break;
         case NDColorModeRGB1:
             columnStep = 3;
@@ -122,7 +121,6 @@ template <typename epicsType> int simDetector::computeArray(int sizeX, int sizeY
             pRed   = (epicsType *)this->pRaw->pData;
             pGreen = (epicsType *)this->pRaw->pData+1;
             pBlue  = (epicsType *)this->pRaw->pData+2;
-            this->pRaw->colorMode = NDColorModeRGB1;
             break;
         case NDColorModeRGB2:
             columnStep = 1;
@@ -130,7 +128,6 @@ template <typename epicsType> int simDetector::computeArray(int sizeX, int sizeY
             pRed   = (epicsType *)this->pRaw->pData;
             pGreen = (epicsType *)this->pRaw->pData + sizeX;
             pBlue  = (epicsType *)this->pRaw->pData + 2*sizeX;
-            this->pRaw->colorMode = NDColorModeRGB2;
             break;
         case NDColorModeRGB3:
             columnStep = 1;
@@ -138,9 +135,9 @@ template <typename epicsType> int simDetector::computeArray(int sizeX, int sizeY
             pRed   = (epicsType *)this->pRaw->pData;
             pGreen = (epicsType *)this->pRaw->pData + sizeX*sizeY;
             pBlue  = (epicsType *)this->pRaw->pData + 2*sizeX*sizeY;
-            this->pRaw->colorMode = NDColorModeRGB3;
             break;
     }
+    this->pRaw->addAttribute("colorMode", "Color mode", NDAttrInt32, &colorMode);
 
     if (resetImage) {
         for (i=0; i<sizeY; i++) {
@@ -408,8 +405,10 @@ void simDetector::simTask()
     epicsTimeStamp startTime, endTime;
     double elapsedTime;
     const char *functionName = "simTask";
+    NDAttrValue attrValue;
+    char attrString[30];
 
-    epicsMutexLock(this->mutexId);
+    this->lock();
     /* Loop forever */
     while (1) {
         /* Is acquisition active? */
@@ -422,9 +421,9 @@ void simDetector::simTask()
             /* Release the lock while we wait for an event that says acquire has started, then lock again */
             asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
                 "%s:%s: waiting for acquire to start\n", driverName, functionName);
-            epicsMutexUnlock(this->mutexId);
+            this->unlock();
             status = epicsEventWait(this->startEventId);
-            epicsMutexLock(this->mutexId);
+            this->lock();
             setIntegerParam(ADNumImagesCounter, 0);
         }
         
@@ -448,9 +447,9 @@ void simDetector::simTask()
          * manually stopping the acquisition will work */
 
         if (acquireTime > 0.0) {
-            epicsMutexUnlock(this->mutexId);
+            this->unlock();
             status = epicsEventWaitWithTimeout(this->stopEventId, acquireTime);
-            epicsMutexLock(this->mutexId);
+            this->lock();
         }
         
         /* Update the image */
@@ -479,16 +478,36 @@ void simDetector::simTask()
         /* Put the frame number and time stamp into the buffer */
         pImage->uniqueId = imageCounter;
         pImage->timeStamp = startTime.secPastEpoch + startTime.nsec / 1.e9;
+        
+        /* Add a bunch of attributes for testing purposes */
+        attrValue.i8 = (epicsInt8)pImage->timeStamp;
+        pImage->addAttribute("I8Value",   "Signed 8-bit time",    NDAttrInt8,    &attrValue.i8);
+        attrValue.ui8 = (epicsUInt8)pImage->timeStamp;
+        pImage->addAttribute("UI8Value",  "Unsigned 8-bit time",  NDAttrUInt8,   &attrValue.ui8);
+        attrValue.i16 = (epicsInt16)pImage->timeStamp;
+        pImage->addAttribute("I16Value",  "Signed 16-bit time",   NDAttrInt16,   &attrValue.i16);
+        attrValue.ui16 = (epicsUInt16)pImage->timeStamp;
+        pImage->addAttribute("UI16Value", "Unsigned 16-bit time", NDAttrUInt16,  &attrValue.ui16);
+        attrValue.i32 = (epicsInt32)pImage->timeStamp;
+        pImage->addAttribute("I32Value",  "Signed 32-bit time",   NDAttrInt32,   &attrValue.i32);
+        attrValue.ui32 = (epicsUInt32)pImage->timeStamp;
+        pImage->addAttribute("UI32Value", "Unsigned 32-bit time", NDAttrUInt32,  &attrValue.ui32);
+        attrValue.f32 = (epicsFloat32)pImage->timeStamp;
+        pImage->addAttribute("F32Value",  "32-bit float time",    NDAttrFloat32, &attrValue.f32);
+        attrValue.f64 = (epicsFloat64)pImage->timeStamp;
+        pImage->addAttribute("F64Value",  "64-bit float time",    NDAttrFloat64, &attrValue.f64);
+        epicsSnprintf(attrString, sizeof(attrString), "Time: %f", pImage->timeStamp);
+        pImage->addAttribute("StrValue",  "String time",          NDAttrString,  attrString);
 
         if (arrayCallbacks) {        
             /* Call the NDArray callback */
             /* Must release the lock here, or we can get into a deadlock, because we can
              * block on the plugin lock, and the plugin can be calling us */
-            epicsMutexUnlock(this->mutexId);
+            this->unlock();
             asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
                  "%s:%s: calling imageData callback\n", driverName, functionName);
             doCallbacksGenericPointer(pImage, NDArrayData, 0);
-            epicsMutexLock(this->mutexId);
+            this->lock();
         }
 
         /* See if acquisition is done */
@@ -516,9 +535,9 @@ void simDetector::simTask()
                 /* We set the status to readOut to indicate we are in the period delay */
                 setIntegerParam(ADStatus, ADStatusWaiting);
                 callParamCallbacks();
-                epicsMutexUnlock(this->mutexId);
+                this->unlock();
                 status = epicsEventWaitWithTimeout(this->stopEventId, delay);
-                epicsMutexLock(this->mutexId);
+                this->lock();
             }
         }
     }
