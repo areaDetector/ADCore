@@ -34,13 +34,13 @@ asynStatus asynNDArrayDriver::readGenericPointer(asynUser *pasynUser, void *gene
 {
     NDArray *pArray = (NDArray *)genericPointer;
     NDArray *myArray;
-    int addr=0;
     NDArrayInfo_t arrayInfo;
+    int addr;
     asynStatus status = asynSuccess;
     const char* functionName = "readNDArray";
 
     status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
-    epicsMutexLock(this->mutexId);
+    this->lock();
     myArray = this->pArrays[addr];
     if (!myArray) {
         epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
@@ -48,9 +48,7 @@ asynStatus asynNDArrayDriver::readGenericPointer(asynUser *pasynUser, void *gene
                     driverName, functionName, pArray->pData);
         status = asynError;
     } else {
-        pArray->ndims = myArray->ndims;
-        memcpy(pArray->dims, myArray->dims, sizeof(pArray->dims));
-        pArray->dataType = myArray->dataType;
+        this->pNDArrayPool->copy(myArray, pArray, 0);
         myArray->getInfo(&arrayInfo);
         if (arrayInfo.totalBytes > pArray->dataSize) arrayInfo.totalBytes = pArray->dataSize;
         memcpy(pArray->pData, myArray->pData, arrayInfo.totalBytes);
@@ -59,7 +57,7 @@ asynStatus asynNDArrayDriver::readGenericPointer(asynUser *pasynUser, void *gene
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
               "%s:%s: error, maxBytes=%d, data=%p\n",
               driverName, functionName, arrayInfo.totalBytes, pArray->pData);
-    epicsMutexUnlock(this->mutexId);
+    this->unlock();
     return status;
 }
 
@@ -72,9 +70,9 @@ asynStatus asynNDArrayDriver::writeGenericPointer(asynUser *pasynUser, void *gen
 {
     asynStatus status = asynSuccess;
 
-    epicsMutexLock(this->mutexId);
+    this->lock();
 
-    epicsMutexUnlock(this->mutexId);
+    this->unlock();
     return status;
 }
 
@@ -118,7 +116,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddrIn, int pa
                      asynFlags, autoConnect, priority, stackSize),
       pNDArrayPool(NULL)
 {
-    if ((maxBuffers > 0) && (maxMemory > 0)) this->pNDArrayPool = new NDArrayPool(maxBuffers, maxMemory);
+    if ((maxBuffers != 0) || (maxMemory != 0)) this->pNDArrayPool = new NDArrayPool(maxBuffers, maxMemory);
 
     /* Allocate pArray pointer array */
     this->pArrays = (NDArray **)calloc(maxAddr, sizeof(NDArray *));
