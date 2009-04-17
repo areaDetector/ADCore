@@ -16,51 +16,55 @@
 #include <epicsMutex.h>
 #include <epicsTypes.h>
 
+/** The maximum number of dimensions in an NDArray */
 #define ND_ARRAY_MAX_DIMS 10
+/** Success return code  */
 #define ND_SUCCESS 0
+/** Failure return code  */
 #define ND_ERROR -1
 
-/** Enumeration of array data types */
+/** Enumeration of NDArray data types */
 typedef enum
 {
-    NDInt8,
-    NDUInt8,
-    NDInt16,
-    NDUInt16,
-    NDInt32,
-    NDUInt32,
-    NDFloat32,
-    NDFloat64
+    NDInt8,     /**< Signed 8-bit integer */
+    NDUInt8,    /**< Unsigned 8-bit integer */
+    NDInt16,    /**< Signed 16-bit integer */
+    NDUInt16,   /**< Unsigned 16-bit integer */
+    NDInt32,    /**< Signed 32-bit integer */
+    NDUInt32,   /**< Unsigned 32-bit integer */
+    NDFloat32,  /**< 32-bit float */
+    NDFloat64   /**< 64-bit float */
 } NDDataType_t;
 
-/** Enumeration of attribute data types */
+/** Enumeration of NDAttribute attribute data types */
 typedef enum
 {
-    NDAttrInt8    = NDInt8,
-    NDAttrUInt8   = NDUInt8,
-    NDAttrInt16   = NDInt16,
-    NDAttrUInt16  = NDUInt16,
-    NDAttrInt32   = NDInt32,
-    NDAttrUInt32  = NDUInt32,
-    NDAttrFloat32 = NDFloat32,
-    NDAttrFloat64 = NDFloat64,
-    NDAttrString,
-    NDAttrUndefined    
+    NDAttrInt8    = NDInt8,     /**< Signed 8-bit integer */
+    NDAttrUInt8   = NDUInt8,    /**< Unsigned 8-bit integer */
+    NDAttrInt16   = NDInt16,    /**< Signed 16-bit integer */
+    NDAttrUInt16  = NDUInt16,   /**< Unsigned 16-bit integer */
+    NDAttrInt32   = NDInt32,    /**< Signed 32-bit integer */
+    NDAttrUInt32  = NDUInt32,   /**< Unsigned 32-bit integer */
+    NDAttrFloat32 = NDFloat32,  /**< 32-bit float */
+    NDAttrFloat64 = NDFloat64,  /**< 64-bit float */
+    NDAttrString,               /**< Dynamic length string */
+    NDAttrUndefined             /**< Undefined data type */
 } NDAttrDataType_t;
 
-/** Enumeration of color modes */
+/** Enumeration of color modes for NDArray attribute "colorMode" */
 typedef enum
 {
-    NDColorModeMono,
-    NDColorModeBayer,
-    NDColorModeRGB1,
-    NDColorModeRGB2,
-    NDColorModeRGB3,
-    NDColorModeYUV444,
-    NDColorModeYUV422,
-    NDColorModeYUV421
+    NDColorModeMono,    /**< Monochromatic image */
+    NDColorModeBayer,   /**< Bayer pattern image */
+    NDColorModeRGB1,    /**< RGB image with pixel color interleave */
+    NDColorModeRGB2,    /**< RGB image with row color interleave */
+    NDColorModeRGB3,    /**< RGB image with plane color interleave */
+    NDColorModeYUV444,  /**< YUV image, 3 bytes encodes 1 RGB pixel */
+    NDColorModeYUV422,  /**< YUV image, 4 bytes encodes 2 RGB pixel */
+    NDColorModeYUV411   /**< YUV image, 6 bytes encodes 4 RGB pixels */
 } NDColorMode_t;
 
+/** Enumeration of Bayer patterns for NDArray attribute "bayerPattern" */
 typedef enum
 {
     NDBayerRGGB        = 0,    /**< First line RGRG, second line GBGB... */
@@ -69,31 +73,39 @@ typedef enum
     NDBayerBGGR        = 3     /**< First line BGBG, second line GRGR... */
 } NDBayerPattern_t;
 
+/** Structure defining a dimension of an NDArray */
 typedef struct NDDimension {
-    int size;
-    int offset;
-    int binning;
-    int reverse;
+    int size;       /**< The number of elements in this dimension of the array */
+    int offset;     /**< The offset relative to the origin of the original data source (e.g. detector) */
+    int binning;    /**< The binning (pixel summation, 1=no binning) relative to original data source (e.g. detector) */
+    int reverse;    /**< The orientation (0=normal, 1=reversed) relative to the original data source (e.g. detector) */
 } NDDimension_t;
 
+/** Structure returned by NDArray::getInfo */
 typedef struct NDArrayInfo {
-    int nElements;
-    int bytesPerElement;
-    int totalBytes;
+    int nElements;          /**< The total number of elements in the array */
+    int bytesPerElement;    /**< The number of bytes per element in the array */
+    int totalBytes;         /**< The total number of bytes required to hold the array;
+                              *  this may be less than NDArray::dataSize. */
 } NDArrayInfo_t;
 
+/** Union defining the values in an NDAttribute object */
 typedef union {
-    epicsInt8    i8;
-    epicsUInt8   ui8;
-    epicsInt16   i16;
-    epicsUInt16  ui16;
-    epicsInt32   i32;
-    epicsUInt32  ui32;
-    epicsFloat32 f32;
-    epicsFloat64 f64;
-    char *pString;
+    epicsInt8    i8;    /**< Signed 8-bit integer */
+    epicsUInt8   ui8;   /**< Unsigned 8-bit integer */
+    epicsInt16   i16;   /**< Signed 16-bit integer */
+    epicsUInt16  ui16;  /**< Unsigned 16-bit integer */
+    epicsInt32   i32;   /**< Signed 32-bit integer */
+    epicsUInt32  ui32;  /**< Unsigned 32-bit integer */
+    epicsFloat32 f32;   /**< 32-bit float */
+    epicsFloat64 f64;   /**< 64-bit float */
+    char *pString;      /**< Dynamic length string */ 
 } NDAttrValue;
 
+/** NDArray attribute class; an attribute has a name, description, data type, and value.
+  * NDArray attributes are implemented as a linked list, but this is a private implementation 
+  * detail.  There are methods to set and get the information for an attribute, and NDArray
+  * provides methods to add and delete attributes to the NDArray object. */
 class NDAttribute {
 public:
     /* Methods */
@@ -108,17 +120,18 @@ public:
     friend class NDArray;
 
 private:
-    /* Data: NOTE this must come first because ELLNODE must be first, i.e. same address as object */
-    /* The first 2 fields are used for the freelist */
-    NDAttribute(const char *pName);
-    ~NDAttribute();
-    ELLNODE node;
+    ELLNODE node;   /**< This must come first because ELLNODE must have the same address as NDAttribute object */
     char *pName;
     char *pDescription;
     NDAttrDataType_t dataType;
     NDAttrValue value;
+    NDAttribute(const char *pName);
+    ~NDAttribute();
 };
 
+/** N-dimensional array class; each array has a set of dimensions, a data type, pointer to data, and optional attributes. 
+  * An NDArray also has a uniqueId and timeStamp that to identify it. NDArray objects can be allocated
+  * by an NDArrayPool object, which maintains a free list of NDArrays for efficient memory management. */
 class NDArray {
 public:
     /* Methods */
@@ -141,28 +154,27 @@ public:
     friend class NDArrayPool;
     
 private:
-    /* Data: NOTE this must come first because ELLNODE must be first, i.e. same address as object */
-    /* The first 2 fields are used for the freelist */
-    ELLNODE node;
-    int          referenceCount;
-    void         *owner;  /* The NDArrayPool object that created this array */
-    ELLLIST      attributeList;
-    epicsMutexId listLock;
+    ELLNODE      node;              /**< This must come first because ELLNODE must have the same address as NDArray object */
+    int          referenceCount;    /**< Reference count for this NDArray=number of clients who are using it */
+    void         *owner;            /**< The NDArrayPool object that created this array */
+    ELLLIST      attributeList;     /**< Linked list of NDAttributes */
+    epicsMutexId listLock;          /**< Mutex to protect the attributeList */
 
 public:
-    /* Public data */
-    int           uniqueId;
-    double        timeStamp;
-    int           ndims;
-    NDDimension_t dims[ND_ARRAY_MAX_DIMS];
-    NDDataType_t  dataType;
-    int           dataSize;
-    void          *pData;
+    int           uniqueId;     /**< A number that must be unique for all NDArrays produced by a driver after is has started */
+    double        timeStamp;    /**< The time stamp in seconds for this array; seconds since epoch is recommended, but some drivers 
+                                  * may use a different start time.*/
+    int           ndims;        /**< The number of dimensions in this array; minimum=1. */
+    NDDimension_t dims[ND_ARRAY_MAX_DIMS]; /**< Array of dimension sizes for this array; first ndims values are meaningful. */
+    NDDataType_t  dataType;     /**< Data type for this array. */
+    int           dataSize;     /**< Data size for this array; actual amount of memory allocated for *pData, may be more than
+                                  * required to hold the array*/
+    void          *pData;       /**< Pointer to the array data */
 };
 
 
 
-/** The NDArrayPool class manages a free list (pool) of NDArray objects (described above).
+/** The NDArrayPool class manages a free list (pool) of NDArray objects.
   * Drivers allocate NDArray objects from the pool, and pass these objects to plugins.
   * Plugins increase the reference count on the object when they place the object on
   * their queue, and decrease the reference count when they are done processing the
@@ -183,13 +195,13 @@ public:
                                 NDDimension_t *outDims);
     int          report        (int details);
 private:
-    ELLLIST      freeList;
-    epicsMutexId listLock;
-    int          maxBuffers;
-    int          numBuffers;
-    size_t       maxMemory;
-    size_t       memorySize;
-    int          numFree;
+    ELLLIST      freeList;      /**< Linked list of free NDArray objects that form the pool */
+    epicsMutexId listLock;      /**< Mutex to protect the free list */
+    int          maxBuffers;    /**< Maximum number of buffers this object is allowed to allocate; -1=unlimited */
+    int          numBuffers;    /**< Number of buffers this object has currently allocated */
+    size_t       maxMemory;     /**< Maximum bytes of memory this object is allowed to allocate; -1=unlimited */
+    size_t       memorySize;    /**< Number of bytes of memory this object has currently allocated */
+    int          numFree;       /**< Number of NDArray objects in the free list */
 };
 
 

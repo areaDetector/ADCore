@@ -3,10 +3,10 @@
 
 #include "asynPortDriver.h"
 #include "NDArray.h"
-/**
-  *  This is the class from which both plugins and area detector drivers are indirectly derived.
-  * asynNDArrayDriver inherits from asynPortDriver. It implements the asynGenericPointer functions, assuming
-  * that these reference NDArray objects.
+/** This is the class from which NDArray drivers are derived; implements the asynGenericPointer functions, assuming
+  * that these reference NDArray objects. 
+  * For areaDetector, both plugins and detector drivers are indirectly derived from this class.
+  * asynNDArrayDriver inherits from asynPortDriver.
   */
 class asynNDArrayDriver : public asynPortDriver {
 public:
@@ -17,8 +17,9 @@ public:
     virtual asynStatus writeGenericPointer(asynUser *pasynUser, void *genericPointer);
     virtual void report(FILE *fp, int details);
 
-    NDArray **pArrays;             /**< Describe me */
-    NDArrayPool *pNDArrayPool;     /**< Describe me too!!!! */
+protected:
+    NDArray **pArrays;             /**< An array of NDArray pointers used to store data in the driver */
+    NDArrayPool *pNDArrayPool;     /**< An NDArrayPool object used to allocate and manipulate NDArray objects */
 };
 
 #endif

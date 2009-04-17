@@ -3,9 +3,11 @@
  * NDArray classes
  *
  *
- * Mark Rivers
- * University of Chicago
- * May 11 2008
+ * \author Mark Rivers
+ *
+ * \author University of Chicago
+ *
+ * \date May 11 2008
  *
  */
 
@@ -23,12 +25,10 @@
 
 static const char *driverName = "NDArray";
 
-/** Class constructor
-  * The maxBuffers argument is the maximum number of NDArray objects that the pool is
-  * allowed to contain. If this value is negative then there is no limit on the number
-  * of NDArray objects. The maxMemory argument is the maxiumum number of bytes of
-  * memory the the pool is allowed to use, summed over all of the NDArray objects. If
-  * this value is negative then there is no limit on the amount of memory in the pool.
+/** NDArrayPool constructor
+  * \param[in] maxBuffers Maximum number of NDArray objects that the pool is allowed to contain; -1=unlimited.
+  * \param[in] maxMemory Maxiumum number of bytes of memory the the pool is allowed to use, summed over
+  * all of the NDArray objects; -1=unlimited.
   */
 NDArrayPool::NDArrayPool(int maxBuffers, size_t maxMemory)
     : maxBuffers(maxBuffers), numBuffers(0), maxMemory(maxMemory), memorySize(0), numFree(0)
@@ -37,17 +37,18 @@ NDArrayPool::NDArrayPool(int maxBuffers, size_t maxMemory)
     this->listLock = epicsMutexCreate();
 }
 
-/** This method allocates a new NDArray object.
-  * The first 3 arguments are required.
-  * ndims is the number of dimensions in the
-  * NDArray. dims is an array of dimensions, whose size must be at least ndims.
-  * dataType is the data type of the NDArray data.
-  * dataSize is the number of bytes to allocate for the array data. If it is 0 then
+/** Allocates a new NDArray object; the first 3 arguments are required.
+  * \param[in] ndims The number of dimensions in the NDArray. 
+  * \param[in] dims Array of dimensions, whose size must be at least ndims.
+  * \param[in] dataType Data type of the NDArray data.
+  * \param[in] dataSize Number of bytes to allocate for the array data; if 0 then
   * alloc() will compute the size required from ndims, dims, and dataType.
-  * pData is a pointer to a data buffer. If it is NULL then alloc will allocate a new
-  * array buffer. If pData is not NULL then it is assumed to point to a valid buffer.
-  * In this case dataSize must contain the actual number of bytes in the existing
-  * array, and this array must be large enough to hold the array data. alloc() searches
+  * \param[in] pData Pointer to a data buffer; if NULL then alloc will allocate a new
+  * array buffer; if not NULL then it is assumed to point to a valid buffer.
+  * 
+  * If pData is not NULL then dataSize must contain the actual number of bytes in the existing
+  * array, and this array must be large enough to hold the array data. 
+  * alloc() searches
   * its free list to find a free NDArray buffer. If is cannot find one then it will
   * allocate a new one and add it to the free list. If doing so would exceed maxBuffers
   * then alloc() will return an error. Similarly if allocating the memory required for
@@ -141,13 +142,16 @@ NDArray* NDArrayPool::alloc(int ndims, int *dims, NDDataType_t dataType, int dat
 }
 
 /** This method makes a copy of an NDArray object.
-  * If the output array pointer is NULL then it is first allocated. If the output array
+  * \param[in] pIn The input array to be copied.
+  * \param[in] pOut The output array that will be copied to.
+  * \param[in] copyData If this flag is 1 then everything including the array data is copied;
+  * if 0 then everything except the data (including attributes) is copied.
+  * \return Returns a pointer to the output array.
+  *
+  * If pOut is NULL then it is first allocated. If the output array
   * object already exists (pOut!=NULL) then it must have sufficient memory allocated to
-  * it to hold the data. If the copyData flag is 1 then the array data is copied. If
-  * the copyData flag is 0 then all array fields except the data itself are copied, and
-  * the data will be initialized to 0.
+  * it to hold the data.
   */
-
 NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, int copyData)
 {
     //const char *functionName = "copy";
@@ -178,6 +182,8 @@ NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, int copyData)
 }
 
 /** This method increases the reference count for the NDArray object.
+  * \param[in] NDArray The array on which to increase the reference count.
+  *
   * Plugins must call reserve() when an NDArray is placed on a queue for later
   * processing.
   */
@@ -198,6 +204,9 @@ int NDArrayPool::reserve(NDArray *pArray)
 }
 
 /** This method decreases the reference count for the NDArray object.
+  * \param[in] NDArray The array on which to decrease the reference count.
+  *
+  * When the reference count reaches 0 the NDArray is placed back in the free list.
   * Plugins must call release() when an NDArray is removed from the queue and
   * processing on it is complete. Drivers must call release() after calling all
   * plugins.
@@ -395,7 +404,7 @@ static int convertDimension(NDArray *pIn,
     return(status);
 }
 
-/** This method creates a new output NDArray from an input NDArray, performing
+/** Creates a new output NDArray from an input NDArray, performing
   * conversion operations.
   * The conversion can change the data type if dataTypeOut is different from
   * pIn->dataType. It can also change the dimensions. outDims may have different
@@ -525,7 +534,7 @@ int NDArrayPool::convert(NDArray *pIn,
 }
 
 
-/** This method reports on the free list size and other properties of the NDArrayPool
+/** Reports on the free list size and other properties of the NDArrayPool
   * object.
   */
 int NDArrayPool::report(int details)
@@ -540,7 +549,8 @@ int NDArrayPool::report(int details)
     return ND_SUCCESS;
 }
 
-/** Class constructor */
+/** NDArray constructor, no parameters.
+  * Initializes all fields to 0.  Creates the attribute linked list and linked list mutex. */
 NDArray::NDArray()
     : referenceCount(0), owner(NULL),
       uniqueId(0), timeStamp(0.0), ndims(0), dataType(NDInt8),
@@ -552,7 +562,8 @@ NDArray::NDArray()
     this->listLock = epicsMutexCreate();
 }
 
-/** Class destructor */
+/** NDArray destructor 
+  * Frees the data array, deletes all attributes, frees the attribute list and destroys the mutex. */
 NDArray::~NDArray()
 {
     if (this->pData) free(this->pData);
@@ -561,7 +572,9 @@ NDArray::~NDArray()
     epicsMutexDestroy(this->listLock);
 }
 
-/** This convenience method returns information about an NDArray, including the total number of elements, the number of byte per element, and the total number of bytes in the array.*/
+/** Convenience method returns information about an NDArray, including the total number of elements, 
+  * the number of bytes per element, and the total number of bytes in the array.
+  \param[out] pInfo Pointer to an NDArrayInfo_t structure, must have been allocated by caller. */
 int NDArray::getInfo(NDArrayInfo_t *pInfo)
 {
     int i;
@@ -601,7 +614,9 @@ int NDArray::getInfo(NDArrayInfo_t *pInfo)
     return(ND_SUCCESS);
 }
 
-/** This method simply initializes the dimension structure to size=size, binning=1, reverse=0, offset=0.*/
+/** Initializes the dimension structure to size=size, binning=1, reverse=0, offset=0.
+  * \param[in] pDimension Pointer to an NDDimension_t structure, must have been allocated by caller.
+  * \param[in] size The size of this dimension. */
 int NDArray::initDimension(NDDimension_t *pDimension, int size)
 {
     pDimension->size=size;
@@ -611,7 +626,7 @@ int NDArray::initDimension(NDDimension_t *pDimension, int size)
     return ND_SUCCESS;
 }
 
-/** This method calls NDArrayPool->reserve() for this object. It increases the reference count for this array. */
+/** Calls NDArrayPool->reserve() for this NDArray object; increases the reference count for this array. */
 int NDArray::reserve()
 {
     const char *functionName = "NDArray::reserve";
@@ -625,8 +640,7 @@ int NDArray::reserve()
     return(pNDArrayPool->reserve(this));
 }
 
-/** This method calls NDArrayPool->release() for this object. It decreases the reference count for
-  * this array. */
+/** Calls NDArrayPool->release() for this object; decreases the reference count for this array. */
 int NDArray::release()
 {
     const char *functionName = "NDArray::release";
@@ -640,7 +654,13 @@ int NDArray::release()
     return(pNDArrayPool->release(this));
 }
 
-/** This method adds an attribute to the array. */
+/** Adds an attribute to the array.
+  * \param[in] pName The name of the attribute to be added.
+  * \return Returns a pointer to the attribute.
+  *
+  * Searches for an existing attribute of this name.  If found it just returns the pointer.
+  * If not found it creates a new attribute with this name and adds it to the attribute
+  * list for this array. */
 NDAttribute* NDArray::addAttribute(const char *pName)
 {
     NDAttribute *pAttribute;
@@ -654,6 +674,16 @@ NDAttribute* NDArray::addAttribute(const char *pName)
     return(pAttribute);
 }
 
+/** Adds an attribute to the array.
+  * \param[in] pName The name of the attribute to be added.
+  * \param[in] dataType The data type of the attribute to be added.
+  * \param[in] pValue A pointer to the value for this attribute.
+  * \return Returns a pointer to the attribute.
+  *
+  * Searches for an existing attribute of this name.  If found it sets the data type and
+  * value to those passed to this method.
+  * If not found it creates a new attribute with this name, adds it to the attribute
+  * list for this array and sets the data type and value. */
 NDAttribute* NDArray::addAttribute(const char *pName, NDAttrDataType_t dataType, void *pValue)
 {
     NDAttribute *pAttribute;
@@ -664,6 +694,17 @@ NDAttribute* NDArray::addAttribute(const char *pName, NDAttrDataType_t dataType,
     return(pAttribute);
 }
 
+/** Adds an attribute to the array.
+  * \param[in] pName The name of the attribute to be added.
+  * \param[in] pDescription The description of the attribute to be added.
+  * \param[in] dataType The data type of the attribute to be added.
+  * \param[in] pValue A pointer to the value for this attribute.
+  * \return Returns a pointer to the attribute.
+  *
+  * Searches for an existing attribute of this name.  If found it sets the description, data type and
+  * value to those passed to this method.
+  * If not found it creates a new attribute with this name, adds it to the attribute
+  * list for this array and sets the description, data type and value. */
 NDAttribute* NDArray::addAttribute(const char *pName, const char *pDescription, NDAttrDataType_t dataType, void *pValue)
 {
     NDAttribute *pAttribute;
@@ -675,6 +716,11 @@ NDAttribute* NDArray::addAttribute(const char *pName, const char *pDescription, 
     return(pAttribute);
 }
 
+/** Finds an attribute by name.
+  * \param[in] pName The name of the attribute to be found.
+  * \return Returns a pointer to the attribute if found, NULL if not found. 
+  *
+  * The search is case-insensitive.*/
 NDAttribute* NDArray::findAttribute(const char *pName)
 {
     NDAttribute *pAttribute;
@@ -688,6 +734,11 @@ NDAttribute* NDArray::findAttribute(const char *pName)
     return(NULL);
 }
 
+/** Finds the next attribute in the NDArray linked list of attributes.
+  * \param[in]pAttributeIn A pointer to the previous attribute in the list; 
+    if NULL the first attribute in the list is returned.
+  * \return Returns a pointer to the next attribute if there is one, 
+   * NULL if there are no more attributes in the list. */
 NDAttribute* NDArray::nextAttribute(NDAttribute *pAttributeIn)
 {
     NDAttribute *pAttribute;
@@ -698,6 +749,8 @@ NDAttribute* NDArray::nextAttribute(NDAttribute *pAttributeIn)
     return(pAttribute);
 }
 
+/** Returns the total number of attributes in the NDArray linked list of attributes.
+  * \return Returns the number of attributes. */
 int NDArray::numAttributes()
 {
     //const char *functionName = "NDArray::addAttribute";
@@ -705,6 +758,10 @@ int NDArray::numAttributes()
     return ellCount(&this->attributeList);
 }
 
+/** Deletes an attribute from the array.
+  * \param[in] pName The name of the attribute to be deleted.
+  * \return Returns ND_SUCCESS if the attribute was found and deleted, ND_ERROR if the
+  * attribute was not found. */
 int NDArray::deleteAttribute(const char *pName)
 {
     NDAttribute *pAttribute;
@@ -717,6 +774,7 @@ int NDArray::deleteAttribute(const char *pName)
     return(ND_SUCCESS);
 }
 
+/** Deletes all attributes from the array. */
 int NDArray::clearAttributes()
 {
     NDAttribute *pAttribute;
@@ -731,6 +789,10 @@ int NDArray::clearAttributes()
     return(ND_SUCCESS);
 }
 
+/** Copies all attributes from the array to an output NDArray.
+  * \param[out] pOut A pointer to the output array to copy the attributes to.
+  *
+  * The attributes are added to any existing attributes already present in the output array. */
 int NDArray::copyAttributes(NDArray *pOut)
 {
     NDAttribute *pAttribute;
@@ -744,16 +806,20 @@ int NDArray::copyAttributes(NDArray *pOut)
     return(ND_SUCCESS);
 }
 
-/** Class constructor */
-NDAttribute::NDAttribute(const char *name)
+/** NDAttribute constructor 
+  * \param[in] pName The name of the attribute to be created. 
+  *
+  * Sets the attribute name to pName, the description and value.pString to NULL, and the data type to NDAttrUndefined. */
+NDAttribute::NDAttribute(const char *pName)
 {
-    this->pName = epicsStrDup(name);
+    this->pName = epicsStrDup(pName);
     this->pDescription = NULL;
     this->value.pString = NULL;
     this->dataType = NDAttrUndefined;
 }
 
-/** Class destructor */
+/** NDAttribute destructor 
+  * Frees the strings for the name, and if they exist, the description and value.pString. */
 NDAttribute::~NDAttribute()
 {
     if (this->pName) free(this->pName);
@@ -761,12 +827,17 @@ NDAttribute::~NDAttribute()
     if ((this->dataType == NDAttrString) && this->value.pString) free(this->value.pString);
 }
 
+/** Returns the length of the name string including 0 terminator for this attribute. */
 int NDAttribute::getNameInfo(size_t *pNameSize) {
 
-    *pNameSize = strlen(this->pName);
+    *pNameSize = strlen(this->pName)+1;
     return(ND_SUCCESS);
 }
 
+/** Returns the name string for this attribute. 
+  * \param[out] pName String to hold the name. 
+  * \param[in] nameSize Maximum size for the name string; 
+    if 0 then pName is assumed to be big enough to hold the name string plus 0 terminator. */
 int NDAttribute::getName(char *pName, size_t nameSize) {
 
     if (nameSize == 0) nameSize = strlen(this->pName)+1;
@@ -774,15 +845,20 @@ int NDAttribute::getName(char *pName, size_t nameSize) {
     return(ND_SUCCESS);
 }
 
+/** Returns the length of the description string including 0 terminator for this attribute. */
 int NDAttribute::getDescriptionInfo(size_t *pDescSize) {
 
     if (this->pDescription)
-        *pDescSize = strlen(this->pDescription);
+        *pDescSize = strlen(this->pDescription)+1;
     else
         *pDescSize = 0;
     return(ND_SUCCESS);
 }
 
+/** Returns the description string for this attribute. 
+  * \param[out] pDescription String to hold the desciption. 
+  * \param[in] descSize Maximum size for the description string; 
+    if 0 then pDescription is assumed to be big enough to hold the description string plus 0 terminator. */
 int NDAttribute::getDescription(char *pDescription, size_t descSize) {
 
     if (this->pDescription) {
@@ -793,6 +869,8 @@ int NDAttribute::getDescription(char *pDescription, size_t descSize) {
     return(ND_SUCCESS);
 }
 
+/** Sets the description string for this attribute. 
+  * \param[in] pDescription String with the desciption. */
 int NDAttribute::setDescription(const char *pDescription) {
 
     if (this->pDescription) {
@@ -805,6 +883,9 @@ int NDAttribute::setDescription(const char *pDescription) {
     return(ND_SUCCESS);
 }
 
+/** Sets the value for this attribute. 
+  * \param[in] dataType Data type of the value.
+  * \param[in] pValue Pointer to the value. */
 int NDAttribute::setValue(NDAttrDataType_t dataType, void *pValue)
 {
     NDAttrDataType_t prevDataType = this->dataType;
@@ -852,6 +933,11 @@ int NDAttribute::setValue(NDAttrDataType_t dataType, void *pValue)
     return(ND_SUCCESS);
 }
 
+/** Returns the data type and size of this attribute.
+  * \param[out] pDataType Pointer to location to return the data type.
+  * \param[out] pSize Pointer to location to return the data size; this is the
+  *  data type size for all data types except NDAttrString, in which case it is the length of the
+  * string including 0 terminator. */
 int NDAttribute::getValueInfo(NDAttrDataType_t *pDataType, size_t *pSize)
 {
     *pDataType = this->dataType;
@@ -893,6 +979,13 @@ int NDAttribute::getValueInfo(NDAttrDataType_t *pDataType, size_t *pSize)
     return(ND_SUCCESS);
 }
 
+/** Returns the value of this attribute.
+  * \param[in] pDataType Data type for the value.
+  * \param[out] pValue Pointer to location to return the value.
+  * \param[in] dataSize Size of the input data location; only used when dataType is NDAttrString.
+  *
+  * Currently the dataType parameter is only used to check that it matches the actual data type,
+  * and ND_ERROR is returned if it does not.  In the future data type conversion may be added. */
 int NDAttribute::getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSize)
 {
     if (dataType != this->dataType) return(ND_ERROR);

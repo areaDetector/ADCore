@@ -22,13 +22,14 @@
 static const char *driverName = "asynNDArrayDriver";
 
 /* asynGenericPointer interface methods */
-/** This method copies an NDArray object from the asynNDArrayDriver to an NDArray.
+/** This method copies an NDArray object from the asynNDArrayDriver to an NDArray pointer passed in by the caller.
   * The destination NDArray address is passed by the caller in the genericPointer argument. The caller
   * must allocate the memory for the array, and pass the size in NDArray->dataSize.
   * The method will limit the amount of data copied to the actual array size or the
   * input dataSize, whichever is smaller.
-  * \param pasynUser Source NDArray is contained in this asynUser Object.
-  * \param genericPointer Destination Address where NDArray is copied.  The user is responsible for creating space.
+  * \param[in] pasynUser Used to obtain the addr for the NDArray to be copied from, and for asynTrace output.
+  * \param[out] genericPointer Pointer to an NDArray. The NDArray must have been previously allocated by the caller.
+  * The NDArray from the asynNDArrayDriver will be copied into the NDArray pointed to by genericPointer.
   */
 asynStatus asynNDArrayDriver::readGenericPointer(asynUser *pasynUser, void *genericPointer)
 {
@@ -61,10 +62,11 @@ asynStatus asynNDArrayDriver::readGenericPointer(asynUser *pasynUser, void *gene
     return status;
 }
 
-/** This method currently does nothing.
-  * Derived classes must implement this method as required.
-  * \param pasynUser describe me
-  * \param genericPointer describe me
+/** This method currently does nothing, but it should be implemented in this base class.
+  * Derived classes can implement this method as required.
+  * \param[in] pasynUser Used to obtain the addr for the NDArray to be copied to, and for asynTrace output.
+  * \param[in] genericPointer Pointer to an NDArray. 
+  * The NDArray pointed to by genericPointer will be copied into the NDArray in asynNDArrayDriver .
   */
 asynStatus asynNDArrayDriver::writeGenericPointer(asynUser *pasynUser, void *genericPointer)
 {
@@ -77,10 +79,10 @@ asynStatus asynNDArrayDriver::writeGenericPointer(asynUser *pasynUser, void *gen
 }
 
 /** Report status of the driver.
-  *This method calls the report function in the asynPortDriver base class. It then
+  * This method calls the report function in the asynPortDriver base class. It then
   * calls the NDArrayPool->report() method if details >5.
-  * \param fp describe me
-  * \param details describe me
+  * \param[in] fp File pointed passed by caller where the output is written to.
+  * \param[in] details If >5 then NDArrayPool::report is called.
   */
 void asynNDArrayDriver::report(FILE *fp, int details)
 {
@@ -91,22 +93,24 @@ void asynNDArrayDriver::report(FILE *fp, int details)
 }
 
 
-/* Constructor */
-/** This is the constructor for the class.
-  * portName, maxAddr, paramTableSize, interfaceMask and interruptMask are simply passed to the
-  * asynPortDriver base class constructor. asynNDArray creates an NDArrayPool object to allocate NDArray
+/** This is the constructor for the asynNDArrayDriver class.
+  * portName, maxAddr, paramTableSize, interfaceMask, interruptMask, asynFlags, autoConnect, priority and stackSize
+  * are simply passed to the asynPortDriver base class constructor. 
+  * asynNDArray creates an NDArrayPool object to allocate NDArray
   * objects. maxBuffers and maxMemory are passed to the constructor for the NDArrayPool object.
-  * \param portName describe me
-  * \param maxAddr describe me
-  * \param paramTableSize describe me
-  * \param maxBuffers describe me
-  * \param maxMemory describe me
-  * \param interfaceMask describe me
-  * \param interruptMask describe me
-  * \param asynFlags describe me
-  * \param autoConnect describe me
-  * \param priority describe me
-  * \param stackSize describe me
+  * \param[in] portName The name of the asyn port driver to be created.
+  * \param[in] maxAddrIn The maximum  number of asyn addr addresses this driver supports. 1 is minimum.
+  * \param[in] paramTableSize The number of parameters that this driver supports.
+  * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is allowed to allocate.
+  *            Set this to -1 to allow an unlimited number of buffers.
+  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is allowed to allocate.
+  *            Set this to -1 to allow an unlimited amount of memory.
+  * \param[in] interfaceMask The asyn interfaces that this driver supports.
+  * \param[in] interruptMask The asyn interfaces that can generate interrupts (callbacks)
+  * \param[in] asynFlags Flags when creating the asyn port driver.  Includes ASYN_CANBLOCK and ASYN_MULTIDEVICE.
+  * \param[in] autoConnect The autoConnect flag for the asyn port driver.
+  * \param[in] priority The thread priority for the asynPort driver thread if ASYN_CANBLOCK is set.
+  * \param[in] stackSize The stack size for the asynPort driver thread if ASYN_CANBLOCK is set.
   */
 
 asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddrIn, int paramTableSize, int maxBuffers,
