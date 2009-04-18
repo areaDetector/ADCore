@@ -182,7 +182,7 @@ NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, int copyData)
 }
 
 /** This method increases the reference count for the NDArray object.
-  * \param[in] NDArray The array on which to increase the reference count.
+  * \param[in] pArray The array on which to increase the reference count.
   *
   * Plugins must call reserve() when an NDArray is placed on a queue for later
   * processing.
@@ -204,7 +204,7 @@ int NDArrayPool::reserve(NDArray *pArray)
 }
 
 /** This method decreases the reference count for the NDArray object.
-  * \param[in] NDArray The array on which to decrease the reference count.
+  * \param[in] pArray The array on which to decrease the reference count.
   *
   * When the reference count reaches 0 the NDArray is placed back in the free list.
   * Plugins must call release() when an NDArray is removed from the queue and
@@ -735,10 +735,10 @@ NDAttribute* NDArray::findAttribute(const char *pName)
 }
 
 /** Finds the next attribute in the NDArray linked list of attributes.
-  * \param[in]pAttributeIn A pointer to the previous attribute in the list; 
-    if NULL the first attribute in the list is returned.
+  * \param[in] pAttributeIn A pointer to the previous attribute in the list; 
+  * if NULL the first attribute in the list is returned.
   * \return Returns a pointer to the next attribute if there is one, 
-   * NULL if there are no more attributes in the list. */
+  * NULL if there are no more attributes in the list. */
 NDAttribute* NDArray::nextAttribute(NDAttribute *pAttributeIn)
 {
     NDAttribute *pAttribute;
@@ -980,7 +980,7 @@ int NDAttribute::getValueInfo(NDAttrDataType_t *pDataType, size_t *pSize)
 }
 
 /** Returns the value of this attribute.
-  * \param[in] pDataType Data type for the value.
+  * \param[in] dataType Data type for the value.
   * \param[out] pValue Pointer to location to return the value.
   * \param[in] dataSize Size of the input data location; only used when dataType is NDAttrString.
   *

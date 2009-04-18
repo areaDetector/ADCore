@@ -15,7 +15,8 @@
 #include <epicsThread.h>
 #include <asynStandardInterfaces.h>
 
-/* Defining this will create the static table of standard parameters in ADInterface.h */
+/** Defining this will create the static table of standard parameters in ADInterface.h
+  * Must be defined before including ADStdDriverParams.h */
 #define DEFINE_AD_STANDARD_PARAMS 1
 #include "ADStdDriverParams.h"
 #include "ADDriver.h"
@@ -23,12 +24,12 @@
 
 static const char *driverName = "ADDriver";
 
-/** Set the shutter postition. */
-/** This method will open (1) or close (0) the shutter if
+/** Set the shutter position.
+  * This method will open (1) or close (0) the shutter if
   * ADShutterMode==ADShutterModeEPICS. Drivers will implement setShutter if they
   * support ADShutterModeDetector. If ADShutterMode=ADShutterModeDetector they will
   * control the shutter directly, else they will call this method.
-  * \param[in] open 1(open) or 0(closed)
+  * \param[in] open 1 (open) or 0 (closed)
   */
 void ADDriver::setShutter(int open)
 {
@@ -54,12 +55,14 @@ void ADDriver::setShutter(int open)
     }
 }
 
-/** Build a file name from component parts */
-/** This is a convenience function that constructs a complete file name in the
-  * ADFullFileName parameter from the ADFilePath, ADFileName, ADFileNumber, and
-  * ADFileTemplate parameters.
-  * \param maxChars
+/** Build a file name from component parts.
+  * \param[in] maxChars  The size of the fullFileName string.
   * \param fullFileName The constructed file name.
+  * 
+  * This is a convenience function that constructs a complete file name in the
+  * ADFullFileName parameter from the ADFilePath, ADFileName, ADFileNumber, and
+  * ADFileTemplate parameters. If ADAutoIncrement is true then it increments the
+  * ADFileNumber after creating the file name.
   */
 int ADDriver::createFileName(int maxChars, char *fullFileName)
 {
@@ -91,7 +94,13 @@ int ADDriver::createFileName(int maxChars, char *fullFileName)
     return(status);
 }
 
-/** I need some documentation.*/
+/** Sets an int32 parameter.
+  * \param[in] pasynUser asynUser structure that contains the function code in pasynUser->reason. 
+  * \param[in] value The value for this parameter 
+  *
+  * Takes action if the function code requires it.  Currently only ADShutterControl requires
+  * action here.  This method is normally called from the writeInt32 method in derived classes, which
+  * should set the value of the parameter in the parameter library. */
 asynStatus ADDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
     int function = pasynUser->reason;
@@ -123,11 +132,10 @@ asynStatus ADDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 }
 
 
-/* asynDrvUser routines */
 /** This method returns one of the enum values for the parameters defined in ADStdDriverParams.h
   * if the driverInfo field matches one the strings defined in
-  * that file.*/
-/** Derived classes will typically provide an implementation of
+  * that file.
+  * Derived classes will typically provide an implementation of
   * drvUserCreate() that searches for parameters that are unique to that detector
   * driver. If a parameter is not matched, then ADDriver->drvUserCreate() will be
   * called to see if it is a standard driver parameter (defined in
