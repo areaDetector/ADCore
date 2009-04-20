@@ -95,28 +95,28 @@ void asynNDArrayDriver::report(FILE *fp, int details)
 
 /** This is the constructor for the asynNDArrayDriver class.
   * portName, maxAddr, paramTableSize, interfaceMask, interruptMask, asynFlags, autoConnect, priority and stackSize
-  * are simply passed to the asynPortDriver base class constructor. 
+  * are simply passed to asynPortDriver::asynPortDriver. 
   * asynNDArray creates an NDArrayPool object to allocate NDArray
-  * objects. maxBuffers and maxMemory are passed to the constructor for the NDArrayPool object.
+  * objects. maxBuffers and maxMemory are passed to NDArrayPool::NDArrayPool.
   * \param[in] portName The name of the asyn port driver to be created.
-  * \param[in] maxAddrIn The maximum  number of asyn addr addresses this driver supports. 1 is minimum.
+  * \param[in] maxAddr The maximum  number of asyn addr addresses this driver supports. 1 is minimum.
   * \param[in] paramTableSize The number of parameters that this driver supports.
-  * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is allowed to allocate.
-  *            Set this to -1 to allow an unlimited number of buffers.
-  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is allowed to allocate.
-  *            Set this to -1 to allow an unlimited amount of memory.
-  * \param[in] interfaceMask The asyn interfaces that this driver supports.
-  * \param[in] interruptMask The asyn interfaces that can generate interrupts (callbacks)
-  * \param[in] asynFlags Flags when creating the asyn port driver.  Includes ASYN_CANBLOCK and ASYN_MULTIDEVICE.
+  * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is 
+  *            allowed to allocate. Set this to -1 to allow an unlimited number of buffers.
+  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
+  *            allowed to allocate. Set this to -1 to allow an unlimited amount of memory.
+  * \param[in] interfaceMask Bit mask defining the asyn interfaces that this driver supports.
+  * \param[in] interruptMask Bit mask definining the asyn interfaces that can generate interrupts (callbacks)
+  * \param[in] asynFlags Flags when creating the asyn port driver; includes ASYN_CANBLOCK and ASYN_MULTIDEVICE.
   * \param[in] autoConnect The autoConnect flag for the asyn port driver.
-  * \param[in] priority The thread priority for the asynPort driver thread if ASYN_CANBLOCK is set.
-  * \param[in] stackSize The stack size for the asynPort driver thread if ASYN_CANBLOCK is set.
+  * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   */
 
-asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddrIn, int paramTableSize, int maxBuffers,
+asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int paramTableSize, int maxBuffers,
                                      size_t maxMemory, int interfaceMask, int interruptMask,
                                      int asynFlags, int autoConnect, int priority, int stackSize)
-    : asynPortDriver(portName, maxAddrIn, paramTableSize, interfaceMask, interruptMask,
+    : asynPortDriver(portName, maxAddr, paramTableSize, interfaceMask, interruptMask,
                      asynFlags, autoConnect, priority, stackSize),
       pNDArrayPool(NULL)
 {
