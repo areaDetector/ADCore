@@ -59,8 +59,8 @@ void ADDriver::setShutter(int open)
   * \param[in] maxChars  The size of the fullFileName string.
   * \param fullFileName The constructed file name.
   * 
-  * This is a convenience function that constructs a complete file name in the
-  * ADFullFileName parameter from the ADFilePath, ADFileName, ADFileNumber, and
+  * This is a convenience function that constructs a complete file name
+  * from the ADFilePath, ADFileName, ADFileNumber, and
   * ADFileTemplate parameters. If ADAutoIncrement is true then it increments the
   * ADFileNumber after creating the file name.
   */
