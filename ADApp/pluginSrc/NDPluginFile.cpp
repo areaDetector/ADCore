@@ -38,6 +38,9 @@ static asynParamString_t NDPluginFileParamString[] = {
 static const char *driverName="NDPluginFile";
 
 
+/** Base method for opening a file
+  * Creates the file name with NDPluginBase::createFileName, then calls the pure virtual function openFile
+  * in the derived class. */
 asynStatus NDPluginFile::openFileBase(NDFileOpenMode_t openMode, NDArray *pArray)
 {
     /* Opens a file for reading or writing */
@@ -60,6 +63,8 @@ asynStatus NDPluginFile::openFileBase(NDFileOpenMode_t openMode, NDArray *pArray
     return(status);
 }
 
+/** Base method for closing a file
+  * Calls the pure virtual function closeFile in the derived class. */
 asynStatus NDPluginFile::closeFileBase()
 {
     /* Closes a file */
@@ -72,9 +77,11 @@ asynStatus NDPluginFile::closeFileBase()
     return(status);
 }
 
+/** Base method for reading a file
+  * Creates the file name with NDPluginBase::createFileName, then calls the pure virtual functions openFile,
+  * readFile and closeFile in the derived class.  Does callbacks with the NDArray that was read in. */
 asynStatus NDPluginFile::readFileBase(void)
 {
-    /* Reads a file written by NDFileWriteFile from disk in either binary or ASCII format. */
     asynStatus status = asynSuccess;
     char fullFileName[MAX_FILENAME_LEN];
     int dataType=0;
@@ -110,6 +117,9 @@ asynStatus NDPluginFile::readFileBase(void)
     return(status);
 }
 
+/** Base method for writing a file
+  * Handles logic for ADFileModeSingle, ADFileModeCapture and ADFileModeStream when the derived class does or
+  * does not support NDPulginFileMultiple. Calls writeFile in the derived class. */
 asynStatus NDPluginFile::writeFileBase() 
 {
     asynStatus status = asynSuccess;
@@ -176,6 +186,8 @@ asynStatus NDPluginFile::writeFileBase()
     return(status);
 }
 
+/** Handles the logic for when ADFileCapture changes state, starting or stopping capturing or streaming NDArrays
+  * to a file. */
 asynStatus NDPluginFile::doCapture() 
 {
     /* This function is called from write32 whenever capture is started or stopped */
@@ -251,7 +263,15 @@ asynStatus NDPluginFile::doCapture()
     return(status);
 }
 
-
+/** Callback function that is called by the NDArray driver with new NDArray data.
+  * Saves a single file if ADFileWriteMode=ADFileModeSingle and ADAutoSave=1.
+  * Stores array in a capture buffer if ADFileWriteMode=ADFileModeCapture and ADFileCapture=1.
+  * Appends data to an open file if ADFileWriteMode=ADFileModeStream and ADFileCapture=1.
+  * In capture or stream mode if the desired number of arrays has been saved (ADFileNumCaptured=ADFileNumCapture)
+  * then it stops capture or streaming.
+  * \param[in] pArray  The NDArray from the callback.
+  * 
+  */ 
 void NDPluginFile::processCallbacks(NDArray *pArray)
 {
     int fileWriteMode, autoSave, capture;
@@ -325,6 +345,12 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
     callParamCallbacks();
 }
 
+/** Called when asyn clients call pasynInt32->write().
+  * This function performs actions for some parameters, including ADReadFile, ADWriteFile and ADFileCapture.
+  * For other parameters it calls NDPluginDriver::writeInt32 to see if that method understands the parameter. 
+  * For all parameters it sets the value in the parameter library and calls any registered callbacks..
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Value to write. */
 asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
     int function = pasynUser->reason;
@@ -402,7 +428,15 @@ asynStatus NDPluginFile::writeNDArray(asynUser *pasynUser, void *genericPointer)
     return status;
 }
 
-/* asynDrvUser interface methods */
+/** Called by asynManager to pass a pasynUser structure and drvInfo string to the driver; 
+  * assigns pasynUser->reason to one of the plugin enum values based
+  * on the value of the drvInfo string.
+  * If this is not a drvInfo string that this plugin recognizes it calls NDPluginDriver::drvUserCreate
+  * to see if it is a parameter that the base class recognizes.
+  * \param[in] pasynUser pasynUser structure that driver modifies
+  * \param[in] drvInfo String containing information about what driver function is being referenced
+  * \param[out] pptypeName Location in which driver puts a copy of drvInfo.
+  * \param[out] psize Location where driver puts size of param */
 asynStatus NDPluginFile::drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
                                        const char **pptypeName, size_t *psize)
 {
@@ -433,14 +467,28 @@ asynStatus NDPluginFile::drvUserCreate(asynUser *pasynUser, const char *drvInfo,
 }
 
 
-/* The constructor for this class */
+/** Constructor for NDPluginFile; all parameters are simply passed to NDPluginDriver::NDPluginDriver.
+  * After calling the base class constructor this method sets reasonable default values for many file-related 
+  *  parameters defined in ADStdDriverParams.h.
+  * \param[in] portName The name of the asyn port driver to be created.
+  * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when 
+  *            NDPluginDriverBlockingCallbacks=0.  Larger queues can decrease the number of dropped arrays,
+  *            at the expense of more NDArray buffers being allocated from the underlying driver's NDArrayPool.
+  * \param[in] blockingCallbacks Initial setting for the NDPluginDriverBlockingCallbacks flag.
+  *            0=callbacks are queued and executed by the callback thread; 1 callbacks execute in the thread
+  *            of the driver doing the callbacks.
+  * \param[in] NDArrayPort Name of asyn port driver for initial source of NDArray callbacks.
+  * \param[in] NDArrayAddr asyn port driver address for initial source of NDArray callbacks.
+  * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  */
 NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCallbacks, 
                            const char *NDArrayPort, int NDArrayAddr,
                            int priority, int stackSize)
     /* Invoke the base class constructor.
      * We allocate 1 NDArray of unlimited size in the NDArray pool.
-     * This driver can block (because writing a file can be slow)and it is not multi-device.  
-     * Set autoconnect to 1.  priority and stacksize can be 0, which uses defaults. */
+     * This driver can block (because writing a file can be slow), and it is not multi-device.  
+     * Set autoconnect to 1.  priority and stacksize can be 0, which will use defaults. */
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
                    NDArrayPort, NDArrayAddr, 1, NDPluginFileLastParam, 1, -1, 
                    asynGenericPointerMask, asynGenericPointerMask,

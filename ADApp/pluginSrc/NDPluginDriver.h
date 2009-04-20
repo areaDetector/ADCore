@@ -56,10 +56,10 @@ public:
 
 protected:
     virtual void processCallbacks(NDArray *pArray);
-    void *asynGenericPointerPvt;
-    asynGenericPointer *pasynGenericPointer;
     virtual asynStatus connectToArrayPort(void);    
-    asynUser *pasynUserGenericPointer;
+    asynUser *pasynUserGenericPointer;          /**< asynUser for connecting to NDArray driver */
+    void *asynGenericPointerPvt;                /**< Handle for connecting to NDArray driver */
+    asynGenericPointer *pasynGenericPointer;    /**< asyn interface for connecting to NDArray driver */
 
 private:
     virtual asynStatus setArrayInterrupt(int connect);

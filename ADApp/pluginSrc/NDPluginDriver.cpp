@@ -276,6 +276,8 @@ void NDPluginDriver::processTask(void)
     }
 }
 
+/** Register or unregister to receive asynGenericPointer (NDArray) callbacks from the driver.
+  * \param[in] enableCallbacks 1 to enable callbacks, 0 to disable callbacks */ 
 asynStatus NDPluginDriver::setArrayInterrupt(int enableCallbacks)
 {
     asynStatus status = asynSuccess;
@@ -323,6 +325,8 @@ asynStatus NDPluginDriver::setArrayInterrupt(int enableCallbacks)
     return(asynSuccess);
 }
 
+/** Connect this plugin to an NDArray port driver; disconnect from any existing driver first, register
+  * for callbacks if enabled. */
 asynStatus NDPluginDriver::connectToArrayPort(void)
 {
     asynStatus status;
@@ -379,6 +383,12 @@ asynStatus NDPluginDriver::connectToArrayPort(void)
 }   
 
 
+/** Called when asyn clients call pasynInt32->write().
+  * This function performs actions for some parameters, including NDPluginDriverEnableCallbacks and
+  * NDPluginDriverArrayAddr.
+  * For all parameters it sets the value in the parameter library and calls any registered callbacks..
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Value to write. */
 asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
     int function = pasynUser->reason;
@@ -437,6 +447,13 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 }
 
 
+/** Called when asyn clients call pasynOctet->write().
+  * This function performs actions for some parameters, including NDPluginDriverArrayPort.
+  * For all parameters it sets the value in the parameter library and calls any registered callbacks..
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Address of the string to write.
+  * \param[in] nChars Number of characters to write.
+  * \param[out] nActual Number of characters actually written. */
 asynStatus NDPluginDriver::writeOctet(asynUser *pasynUser, const char *value, 
                                     size_t nChars, size_t *nActual)
 {
@@ -471,6 +488,12 @@ asynStatus NDPluginDriver::writeOctet(asynUser *pasynUser, const char *value,
     return status;
 }
 
+/** Called when asyn clients call pasynInt32Array->read().
+  * Returns the value of the array dimensions for the last NDArray.  
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Pointer to the array to read.
+  * \param[in] nElements Number of elements to read.
+  * \param[out] nIn Number of elements actually read. */
 asynStatus NDPluginDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *value, 
                                          size_t nElements, size_t *nIn)
 {
@@ -501,6 +524,13 @@ asynStatus NDPluginDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *value
 }
     
 
+/** Called by asynManager to pass a pasynUser structure and drvInfo string to the driver; 
+  * assigns pasynUser->reason to one of the NDPluginDriverParam_t enum values based 
+  * on the value of the drvInfo string.
+  * \param[in] pasynUser pasynUser structure that driver modifies
+  * \param[in] drvInfo String containing information about what driver function is being referenced
+  * \param[out] pptypeName Location in which driver puts a copy of drvInfo.
+  * \param[out] psize Location where driver puts size of param */
 asynStatus NDPluginDriver::drvUserCreate(asynUser *pasynUser,
                                        const char *drvInfo, 
                                        const char **pptypeName, size_t *psize)
@@ -535,11 +565,30 @@ asynStatus NDPluginDriver::drvUserCreate(asynUser *pasynUser,
     }
 }
 
-/** Constructor for NDPluginDriver; all of the arguments except queueSize and blockingCallbacks are simply passed to
-  * the constructor for the asynNDArrayDriver base class. 
-  * After calling the base class
-  * constructor this method sets reasonable default values for all of the parameters
-  * defined in NDPluginDriver.h.
+/** Constructor for NDPluginDriver; most parameters are simply passed to asynNDArrayDriver::asynNDArrayDriver.
+  * After calling the base class constructor this method creates a thread to execute the NDArray callbacks, 
+  * and sets reasonable default values for all of the parameters defined in NDPluginDriver.h.
+  * \param[in] portName The name of the asyn port driver to be created.
+  * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when 
+  *            NDPluginDriverBlockingCallbacks=0.  Larger queues can decrease the number of dropped arrays,
+  *            at the expense of more NDArray buffers being allocated from the underlying driver's NDArrayPool.
+  * \param[in] blockingCallbacks Initial setting for the NDPluginDriverBlockingCallbacks flag.
+  *            0=callbacks are queued and executed by the callback thread; 1 callbacks execute in the thread
+  *            of the driver doing the callbacks.
+  * \param[in] NDArrayPort Name of asyn port driver for initial source of NDArray callbacks.
+  * \param[in] NDArrayAddr asyn port driver address for initial source of NDArray callbacks.
+  * \param[in] maxAddr The maximum  number of asyn addr addresses this driver supports. 1 is minimum.
+  * \param[in] paramTableSize The number of parameters that this driver supports.
+  * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is 
+  *            allowed to allocate. Set this to -1 to allow an unlimited number of buffers.
+  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
+  *            allowed to allocate. Set this to -1 to allow an unlimited amount of memory.
+  * \param[in] interfaceMask Bit mask defining the asyn interfaces that this driver supports.
+  * \param[in] interruptMask Bit mask definining the asyn interfaces that can generate interrupts (callbacks)
+  * \param[in] asynFlags Flags when creating the asyn port driver; includes ASYN_CANBLOCK and ASYN_MULTIDEVICE.
+  * \param[in] autoConnect The autoConnect flag for the asyn port driver.
+  * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   */
 NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blockingCallbacks, 
                                const char *NDArrayPort, int NDArrayAddr, int maxAddr, int paramTableSize,
