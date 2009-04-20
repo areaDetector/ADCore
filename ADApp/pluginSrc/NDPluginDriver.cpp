@@ -26,9 +26,9 @@
 
 #include "NDPluginDriver.h"
 
-/* The command strings are the userParam argument for asyn device support links
- * The asynDrvUser interface in this driver parses these strings and puts the
- * corresponding enum value in pasynUser->reason */
+/** The command strings are the userParam argument for asyn device support links
+  * The asynDrvUser interface in this driver parses these strings and puts the
+  * corresponding enum value in pasynUser->reason */
 static asynParamString_t NDPluginDriverParamString[] = {
     {NDPluginDriverArrayPort,             "NDARRAY_PORT" },
     {NDPluginDriverArrayAddr,             "NDARRAY_ADDR" },
@@ -50,6 +50,15 @@ static asynParamString_t NDPluginDriverParamString[] = {
 
 static const char *driverName="NDPluginDriver";
 
+/** Build a file name from component parts.
+  * \param[in] maxChars  The size of the fullFileName string.
+  * \param[out] fullFileName The constructed file name including the file path.
+  * 
+  * This is a convenience function that constructs a complete file name
+  * from the ADFilePath, ADFileName, ADFileNumber, and
+  * ADFileTemplate parameters. If ADAutoIncrement is true then it increments the
+  * ADFileNumber after creating the file name.
+  */
 int NDPluginDriver::createFileName(int maxChars, char *fullFileName)
 {
     /* Formats a complete file name from the components defined in ADStdDriverParams.h */
@@ -80,6 +89,16 @@ int NDPluginDriver::createFileName(int maxChars, char *fullFileName)
     return(status);   
 }
 
+/** Build a file name from component parts.
+  * \param[in] maxChars  The size of the fullFileName string.
+  * \param[out] filePath The file path.
+  * \param[out] fileName The constructed file name without file file path.
+  * 
+  * This is a convenience function that constructs a file path and file name
+  * from the ADFilePath, ADFileName, ADFileNumber, and
+  * ADFileTemplate parameters. If ADAutoIncrement is true then it increments the
+  * ADFileNumber after creating the file name.
+  */
 int NDPluginDriver::createFileName(int maxChars, char *filePath, char *fileName)
 {
     /* Formats a complete file name from the components defined in ADStdDriverParams.h */
@@ -109,7 +128,14 @@ int NDPluginDriver::createFileName(int maxChars, char *filePath, char *fileName)
     return(status);   
 }
 
-void NDPluginDriver::processCallbacks(NDArray *pArray)
+/** Method that is normally called at the beginning of the processCallbacks
+  * method in derived classes.
+  * \param[in] pArray  The NDArray from the callback.
+  *
+  * This method takes care of some bookkeeping for callbacks, updating parameters
+  * from data in the class and in the NDArray.  It does asynInt32Array callbacks
+  * for the dimensions array if the dimensions of the NDArray data have changed. */ 
+    void NDPluginDriver::processCallbacks(NDArray *pArray)
 {
     int arrayCounter;
     int i, dimsChanged;
@@ -148,14 +174,17 @@ extern "C" {static void driverCallback(void *drvPvt, asynUser *pasynUser, void *
     pNDPluginDriver->driverCallback(pasynUser, genericPointer);
 }}
 
+/** Method that is called from the driver with a new NDArray.
+  * It calls the processCallbacks function, which typically is implemented in the
+  * derived class.
+  * It can either do the callbacks directly (if NDPluginDriverBlockingCallbacks=1) or by queueing
+  * the arrays to be processed by a background task (if NDPluginDriverBlockingCallbacks=0).
+  * In the latter case arrays can be dropped if the queue is full.  This method should really
+  * be private, but it must be called from a C-linkage callback function, so it must be public.
+  * \param[in] pasynUser  The pasynUser from the asyn client.
+  * \param[in] genericPointer The pointer to the NDArray */ 
 void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
 {
-    /* This callback function is called from the detector driver when a new array arrives.
-     * It calls the processCallbacks function.
-     * It can either do the callbacks directly (if BlockingCallbacks=1) or by queueing
-     * the arrays to be processed by a background task (if BlockingCallbacks=0).
-     * In the latter case arrays can be dropped if the queue is full.
-     */
      
     NDArray *pArray = (NDArray *)genericPointer;
     epicsTimeStamp tNow;
@@ -196,7 +225,7 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
              * immediately. */
             status = epicsMessageQueueTrySend(this->msgQId, &pArray, sizeof(&pArray));
             if (status) {
-                asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
+                asynPrint(pasynUser, ASYN_TRACE_FLOW, 
                     "%s:%s message queue full, dropped array %d\n",
                     driverName, functionName, arrayCounter);
                 droppedArrays++;
@@ -219,9 +248,14 @@ void processTask(void *drvPvt)
     pPvt->processTask();
 }
 
+/** Method runs as a separate thread, waiting for NDArrays to arrive in a message queue
+  * and processing them.
+  * This thread is used when NDPluginDriverBlockingCallbacks=0.
+  * This method should really be private, but it must be called from a 
+  * C-linkage callback function, so it must be public. */ 
 void NDPluginDriver::processTask(void)
 {
-    /* This thread prcoess a new array when it arrives */
+    /* This thread processes a new array when it arrives */
 
     /* Loop forever */
     NDArray *pArray;
@@ -501,7 +535,12 @@ asynStatus NDPluginDriver::drvUserCreate(asynUser *pasynUser,
     }
 }
 
-/* Constructor */
+/** Constructor for NDPluginDriver; all of the arguments except queueSize and blockingCallbacks are simply passed to
+  * the constructor for the asynNDArrayDriver base class. 
+  * After calling the base class
+  * constructor this method sets reasonable default values for all of the parameters
+  * defined in NDPluginDriver.h.
+  */
 NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blockingCallbacks, 
                                const char *NDArrayPort, int NDArrayAddr, int maxAddr, int paramTableSize,
                                int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
