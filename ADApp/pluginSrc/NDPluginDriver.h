@@ -9,26 +9,29 @@
 #include "asynNDArrayDriver.h"
 #include "ADStdDriverParams.h"
 
+/** Parameters that are common to all NDArray plugins */
 typedef enum
 {
-    NDPluginDriverArrayPort               /* (asynOctet,    r/w) The port for the NDArray interface */
+    NDPluginDriverArrayPort               /**< (asynOctet,    r/w) The port for the NDArray interface */
         = ADFirstDriverParam,
-    NDPluginDriverArrayAddr,              /* (asynInt32,    r/w) The address on the port */
-    NDPluginDriverArrayCounter,           /* (asynInt32,    r/w) Number of arrays processed */
-    NDPluginDriverDroppedArrays,          /* (asynInt32,    r/w) Number of dropped arrays */
-    NDPluginDriverEnableCallbacks,        /* (asynInt32,    r/w) Enable callbacks from driver (1=Yes, 0=No) */
-    NDPluginDriverBlockingCallbacks,      /* (asynInt32,    r/w) Callbacks block (1=Yes, 0=No) */
-    NDPluginDriverMinCallbackTime,        /* (asynFloat64,  r/w) Minimum time between file writes */
-    NDPluginDriverUniqueId,               /* (asynInt32,    r/o) Unique ID number of array */
-    NDPluginDriverTimeStamp,              /* (asynFloat64,  r/o) Time stamp of array */
-    NDPluginDriverDataType,               /* (asynInt32,    r/o) Data type of array */
-    NDPluginDriverColorMode,              /* (asynInt32,    r/o) Color mode of array */
-    NDPluginDriverBayerPattern,           /* (asynInt32,    r/o) Bayer pattern of array */
-    NDPluginDriverNDimensions,            /* (asynInt32,    r/o) Number of dimensions in array */
-    NDPluginDriverDimensions,             /* (asynInt32Array, r/o) Array dimensions */
+    NDPluginDriverArrayAddr,              /**< (asynInt32,    r/w) The address on the port */
+    NDPluginDriverArrayCounter,           /**< (asynInt32,    r/w) Number of arrays processed */
+    NDPluginDriverDroppedArrays,          /**< (asynInt32,    r/w) Number of dropped arrays */
+    NDPluginDriverEnableCallbacks,        /**< (asynInt32,    r/w) Enable callbacks from driver (1=Yes, 0=No) */
+    NDPluginDriverBlockingCallbacks,      /**< (asynInt32,    r/w) Callbacks block (1=Yes, 0=No) */
+    NDPluginDriverMinCallbackTime,        /**< (asynFloat64,  r/w) Minimum time between calling processCallbacks 
+                                            *  to execute plugin code */
+    NDPluginDriverUniqueId,               /**< (asynInt32,    r/o) Unique ID number of array */
+    NDPluginDriverTimeStamp,              /**< (asynFloat64,  r/o) Time stamp of array */
+    NDPluginDriverDataType,               /**< (asynInt32,    r/o) Data type of array */
+    NDPluginDriverColorMode,              /**< (asynInt32,    r/o) Color mode of array (from colorMode array attribute if present) */
+    NDPluginDriverBayerPattern,           /**< (asynInt32,    r/o) Bayer pattern of array  (from bayerPattern array attribute if present) */
+    NDPluginDriverNDimensions,            /**< (asynInt32,    r/o) Number of dimensions in array */
+    NDPluginDriverDimensions,             /**< (asynInt32Array, r/o) Array dimensions */
     NDPluginDriverLastParam
 } NDPluginDriverParam_t;
 
+/** Class from which actual plugin drivers are derived; derived from asynNDArrayDriver */
 class NDPluginDriver : public asynNDArrayDriver {
 public:
     NDPluginDriver(const char *portName, int queueSize, int blockingCallbacks, 
@@ -46,19 +49,23 @@ public:
                                      const char **pptypeName, size_t *psize);
                                      
     /* These are the methods that are new to this class */
-    virtual void processCallbacks(NDArray *pArray);
-    virtual void driverCallback(asynUser *pasynUser, void *genericPointer);
-    virtual void processTask(void);
-    virtual asynStatus setArrayInterrupt(int connect);
-    virtual asynStatus connectToArrayPort(void);    
     virtual int createFileName(int maxChars, char *fullFileName);
     virtual int createFileName(int maxChars, char *filePath, char *fileName);
+    virtual void driverCallback(asynUser *pasynUser, void *genericPointer);
+    virtual void processTask(void);
+
+protected:
+    virtual void processCallbacks(NDArray *pArray);
+    void *asynGenericPointerPvt;
+    asynGenericPointer *pasynGenericPointer;
+    virtual asynStatus connectToArrayPort(void);    
+    asynUser *pasynUserGenericPointer;
+
+private:
+    virtual asynStatus setArrayInterrupt(int connect);
     
     /* The asyn interfaces we access as a client */
-    asynGenericPointer *pasynGenericPointer;
-    void *asynGenericPointerPvt;
     void *asynGenericPointerInterruptPvt;
-    asynUser *pasynUserGenericPointer;
 
     /* Our data */
     epicsMessageQueueId msgQId;
