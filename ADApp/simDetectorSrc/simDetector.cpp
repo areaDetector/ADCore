@@ -35,6 +35,7 @@
 
 static const char *driverName = "drvSimDetector";
 
+/** Simulation detector driver; demonstrates most of the features that areaDetector drivers can support. */
 class simDetector : public ADDriver {
 public:
     simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDataType_t dataType,
@@ -48,11 +49,11 @@ public:
     virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
                                      const char **pptypeName, size_t *psize);
     void report(FILE *fp, int details);
-                                        
+    void simTask(); /**< Should be private, but gets called from C, so must be public */
+private:                                        
     /* These are the methods that are new to this class */
     template <typename epicsType> int computeArray(int sizeX, int sizeY);
     int computeImage();
-    void simTask();
 
     /* Our data */
     epicsEventId startEventId;
@@ -60,8 +61,7 @@ public:
     NDArray *pRaw;
 };
 
-/* If we have any private driver parameters they begin with ADFirstDriverParam and should end
-   with ADLastDriverParam, which is used for setting the size of the parameter library table */
+/** Driver-specific parameters for the simulation driver */
 typedef enum {
     SimGainX 
         = ADFirstDriverParam,
@@ -84,6 +84,7 @@ static asynParamString_t SimDetParamString[] = {
 
 #define NUM_SIM_DET_PARAMS (sizeof(SimDetParamString)/sizeof(SimDetParamString[0]))
 
+/** Template function to compute the simulated detector data for any data type */
 template <typename epicsType> int simDetector::computeArray(int sizeX, int sizeY)
 {
     epicsType *pMono=NULL, *pRed=NULL, *pGreen=NULL, *pBlue=NULL;
@@ -193,6 +194,7 @@ template <typename epicsType> int simDetector::computeArray(int sizeX, int sizeY
     return(status);
 }
 
+/** Controls the shutter */
 void simDetector::setShutter(int open)
 {
     int shutterMode;
@@ -207,6 +209,7 @@ void simDetector::setShutter(int open)
     }
 }
 
+/** Computes the new image data */
 int simDetector::computeImage()
 {
     int status = asynSuccess;
@@ -391,9 +394,10 @@ static void simTaskC(void *drvPvt)
     pPvt->simTask();
 }
 
+/** This thread calls computeImage to compute new image data and does the callbacks to send it to higher layers.
+  * It implements the logic for single, multiple or continuous acquisition. */
 void simDetector::simTask()
 {
-    /* This thread computes new image data and does the callbacks to send it to higher layers */
     int status = asynSuccess;
     int imageCounter;
     int numImages, numImagesCounter;
@@ -544,6 +548,11 @@ void simDetector::simTask()
 }
 
 
+/** Called when asyn clients call pasynInt32->write().
+  * This function performs actions for some parameters, including ADAcquire, ADColorMode, etc.
+  * For all parameters it sets the value in the parameter library and calls any registered callbacks..
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Value to write. */
 asynStatus simDetector::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
     int function = pasynUser->reason;
@@ -593,6 +602,11 @@ asynStatus simDetector::writeInt32(asynUser *pasynUser, epicsInt32 value)
 }
 
 
+/** Called when asyn clients call pasynFloat64->write().
+  * This function performs actions for some parameters, including ADAcquireTime, ADGain, etc.
+  * For all parameters it sets the value in the parameter library and calls any registered callbacks..
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Value to write. */
 asynStatus simDetector::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 {
     int function = pasynUser->reason;
@@ -629,38 +643,37 @@ asynStatus simDetector::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 }
 
 
-/* asynDrvUser routines */
+/* asynDrvUser interface methods */
+/** Sets pasynUser->reason to one of the enum values for the parameters defined for
+  * this class if the drvInfo field matches one the strings defined for it.
+  * If the parameter is not recognized by this class then calls ADDriver::drvUserCreate.
+  * Uses asynPortDriver::drvUserCreateParam.
+  * \param[in] pasynUser pasynUser structure that driver modifies
+  * \param[in] drvInfo String containing information about what driver function is being referenced
+  * \param[out] pptypeName Location in which driver puts a copy of drvInfo.
+  * \param[out] psize Location where driver puts size of param 
+  * \return Returns asynSuccess if a matching string was found, asynError if not found. */
 asynStatus simDetector::drvUserCreate(asynUser *pasynUser,
-                                      const char *drvInfo, 
-                                      const char **pptypeName, size_t *psize)
+                                       const char *drvInfo, 
+                                       const char **pptypeName, size_t *psize)
 {
     asynStatus status;
-    int param;
-    const char *functionName = "drvUserCreate";
+    //const char *functionName = "drvUserCreate";
+    
+    status = this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize, 
+                                      SimDetParamString, NUM_SIM_DET_PARAMS);
 
-    /* See if this is one of our standard parameters */
-    status = findParam(SimDetParamString, NUM_SIM_DET_PARAMS, 
-                       drvInfo, &param);
-                                
-    if (status == asynSuccess) {
-        pasynUser->reason = param;
-        if (pptypeName) {
-            *pptypeName = epicsStrDup(drvInfo);
-        }
-        if (psize) {
-            *psize = sizeof(param);
-        }
-        asynPrint(pasynUser, ASYN_TRACE_FLOW,
-                  "%s:%s: drvInfo=%s, param=%d\n", 
-                  driverName, functionName, drvInfo, param);
-        return(asynSuccess);
-    }
-    
-    /* If not, then see if it is a base class parameter */
-    status = ADDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
-    return(status);  
+    /* If not, then call the base class method, see if it is known there */
+    if (status) status = ADDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
+    return(status);
 }
-    
+
+/** Report status of the driver.
+  * Prints details about the driver if details>0
+  * It then calls the ADDriver::report() method.
+  * \param[in] fp File pointed passed by caller where the output is written to.
+  * \param[in] details If >0 then driver details are printed.
+  */
 void simDetector::report(FILE *fp, int details)
 {
 
@@ -685,6 +698,20 @@ extern "C" int simDetectorConfig(const char *portName, int maxSizeX, int maxSize
     return(asynSuccess);
 }
 
+/** Constructor for simDetector; most parameters are simply passed to ADDriver::ADDriver.
+  * After calling the base class constructor this method creates a thread to compute the simulated detector data, 
+  * and sets reasonable default values for all of the parameters defined in this class and ADStdDriverParams.h.
+  * \param[in] portName The name of the asyn port driver to be created.
+  * \param[in] maxSizeX The maximum X dimension of the images that this driver can create.
+  * \param[in] maxSizeY The maximum Y dimension of the images that this driver can create.
+  * \param[in] dataType The initial data type (NDDataType_t) of the images that this driver will create.
+  * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is 
+  *            allowed to allocate. Set this to -1 to allow an unlimited number of buffers.
+  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
+  *            allowed to allocate. Set this to -1 to allow an unlimited amount of memory.
+  * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  */
 simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDataType_t dataType,
                          int maxBuffers, size_t maxMemory, int priority, int stackSize)
 
