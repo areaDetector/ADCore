@@ -80,7 +80,7 @@ asynStatus asynNDArrayDriver::writeGenericPointer(asynUser *pasynUser, void *gen
 
 /** Report status of the driver.
   * This method calls the report function in the asynPortDriver base class. It then
-  * calls the NDArrayPool->report() method if details >5.
+  * calls the NDArrayPool::report() method if details >5.
   * \param[in] fp File pointed passed by caller where the output is written to.
   * \param[in] details If >5 then NDArrayPool::report is called.
   */
