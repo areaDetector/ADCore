@@ -235,6 +235,12 @@ int highlightROI(NDArray *pArray, NDROI_t *pROI, double dvalue)
 }
 
 
+/** Callback function that is called by the NDArray driver with new NDArray data.
+  * Extracts the NDArray data into each of the ROIs that are being used. 
+  * Computes statistics on the ROI if NDPluginROIComputeStatistics is 1.
+  * Computes the histogram of ROI values if NDPluginROIComputeHistogram is 1.
+  * \param[in] pArray  The NDArray from the callback.
+  */ 
 void NDPluginROI::processCallbacks(NDArray *pArray)
 {
     /* This function computes the ROIs.
@@ -490,6 +496,12 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
 }
 
 
+/** Called when asyn clients call pasynInt32->write().
+  * This function performs actions for some parameters, including minimum, size, binning, etc. for each ROI.
+  * For other parameters it calls NDPluginDriver::writeInt32 to see if that method understands the parameter. 
+  * For all parameters it sets the value in the parameter library and calls any registered callbacks..
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Value to write. */
 asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
     int function = pasynUser->reason;
@@ -559,6 +571,12 @@ asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
     return status;
 }
 
+/** Called when asyn clients call pasynFloat64Array->read().
+  * Returns the histogram array when pasynUser->reason=NDPluginROIHistArray.  
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Pointer to the array to read.
+  * \param[in] nElements Number of elements to read.
+  * \param[out] nIn Number of elements actually read. */
 asynStatus NDPluginROI::readFloat64Array(asynUser *pasynUser,
                                    epicsFloat64 *value, size_t nElements, size_t *nIn)
 {
@@ -606,36 +624,29 @@ asynStatus NDPluginROI::readFloat64Array(asynUser *pasynUser,
 
 
 /* asynDrvUser interface methods */
+/** Sets pasynUser->reason to one of the enum values for the parameters defined for
+  * this class if the drvInfo field matches one the strings defined for it.
+  * If the parameter is not recognized by this class then calls NDPluginDriver::drvUserCreate.
+  * Uses asynPortDriver::drvUserCreateParam.
+  * \param[in] pasynUser pasynUser structure that driver modifies
+  * \param[in] drvInfo String containing information about what driver function is being referenced
+  * \param[out] pptypeName Location in which driver puts a copy of drvInfo.
+  * \param[out] psize Location where driver puts size of param 
+  * \return Returns asynSuccess if a matching string was found, asynError if not found. */
 asynStatus NDPluginROI::drvUserCreate(asynUser *pasynUser,
-                                      const char *drvInfo, 
-                                      const char **pptypeName, size_t *psize)
+                                       const char *drvInfo, 
+                                       const char **pptypeName, size_t *psize)
 {
     asynStatus status;
-    int param;
-    static const char *functionName = "drvUserCreate";
+    //const char *functionName = "drvUserCreate";
+    
+    status = this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize, 
+                                      NDPluginROINParamString, NUM_ROIN_PARAMS);
 
-    /* Look in the driver table */
-    status = findParam(NDPluginROINParamString, NUM_ROIN_PARAMS, 
-                       drvInfo, &param);
-    if (status == asynSuccess) {
-        pasynUser->reason = param;
-        if (pptypeName) {
-            *pptypeName = epicsStrDup(drvInfo);
-        }
-        if (psize) {
-            *psize = sizeof(param);
-        }
-        asynPrint(pasynUser, ASYN_TRACE_FLOW,
-                  "%s::%s, drvInfo=%s, param=%d\n", 
-                  driverName, functionName, drvInfo, param);
-        return(asynSuccess);
-    }
-
-    /* If we did not find it in that table try the plugin base */
-    status = NDPluginDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
+    /* If not, then call the base class method, see if it is known there */
+    if (status) status = NDPluginDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
     return(status);
 }
-
     
 
 extern "C" int drvNDROIConfigure(const char *portName, int queueSize, int blockingCallbacks, 
@@ -648,13 +659,33 @@ extern "C" int drvNDROIConfigure(const char *portName, int queueSize, int blocki
     return(asynSuccess);
 }
 
+/** Constructor for NDPluginROI; most parameters are simply passed to NDPluginDriver::NDPluginDriver.
+  * After calling the base class constructor this method sets reasonable default values for all of the 
+  * ROI parameters.
+  * \param[in] portName The name of the asyn port driver to be created.
+  * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when 
+  *            NDPluginDriverBlockingCallbacks=0.  Larger queues can decrease the number of dropped arrays,
+  *            at the expense of more NDArray buffers being allocated from the underlying driver's NDArrayPool.
+  * \param[in] blockingCallbacks Initial setting for the NDPluginDriverBlockingCallbacks flag.
+  *            0=callbacks are queued and executed by the callback thread; 1 callbacks execute in the thread
+  *            of the driver doing the callbacks.
+  * \param[in] NDArrayPort Name of asyn port driver for initial source of NDArray callbacks.
+  * \param[in] NDArrayAddr asyn port driver address for initial source of NDArray callbacks.
+  * \param[in] maxROIs The maximum number of ROIs this plugin supports. 1 is minimum.
+  * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is 
+  *            allowed to allocate. Set this to -1 to allow an unlimited number of buffers.
+  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
+  *            allowed to allocate. Set this to -1 to allow an unlimited amount of memory.
+  * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  */
 NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallbacks, 
-                         const char *NDArrayPort, int NDArrayAddr, int maxROIsIn, 
-                         int maxBuffersIn, size_t maxMemory,
+                         const char *NDArrayPort, int NDArrayAddr, int maxROIs, 
+                         int maxBuffers, size_t maxMemory,
                          int priority, int stackSize)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
-                   NDArrayPort, NDArrayAddr, maxROIsIn, NDPluginROILastROINParam, maxBuffersIn, maxMemory,
+                   NDArrayPort, NDArrayAddr, maxROIs, NDPluginROILastROINParam, maxBuffers, maxMemory,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask, 
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    ASYN_MULTIDEVICE, 1, priority, stackSize)
@@ -664,7 +695,7 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
     const char *functionName = "NDPluginROI";
 
 
-    this->maxROIs = maxROIsIn;
+    this->maxROIs = maxROIs;
     this->pROIs = (NDROI_t *)callocMustSucceed(maxROIs, sizeof(*this->pROIs), functionName);
     this->totalArray = (epicsInt32 *)callocMustSucceed(maxROIs, sizeof(epicsInt32), functionName);
     this->netArray = (epicsInt32 *)callocMustSucceed(maxROIs, sizeof(epicsInt32), functionName);

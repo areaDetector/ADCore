@@ -132,46 +132,24 @@ asynStatus ADDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 }
 
 
-/** This method returns one of the enum values for the parameters defined in ADStdDriverParams.h
-  * if the driverInfo field matches one the strings defined in
-  * that file.
-  * Derived classes will typically provide an implementation of
-  * drvUserCreate() that searches for parameters that are unique to that detector
-  * driver. If a parameter is not matched, then ADDriver->drvUserCreate() will be
-  * called to see if it is a standard driver parameter (defined in
-  * ADStdDriverParams.h).
-  */
+/** Sets pasynUser->reason to one of the enum values for the parameters defined in ADStdDriverParams.h
+  * if the drvInfo field matches one the strings defined in that file.
+  * Simply calls asynPortDriver::drvUserCreateParam with the parameter table for this driver.
+  * \param[in] pasynUser pasynUser structure that driver modifies
+  * \param[in] drvInfo String containing information about what driver function is being referenced
+  * \param[out] pptypeName Location in which driver puts a copy of drvInfo.
+  * \param[out] psize Location where driver puts size of param 
+  * \return Returns asynSuccess if a matching string was found, asynError if not found. */
 asynStatus ADDriver::drvUserCreate(asynUser *pasynUser,
-                                       const char *drvInfo,
+                                       const char *drvInfo, 
                                        const char **pptypeName, size_t *psize)
 {
-    int status;
-    int param;
-    const char *functionName = "drvUserCreate";
-
-    /* See if this is one of the standard parameters */
-    status = findParam(ADStdDriverParamString, NUM_AD_STANDARD_PARAMS,
-                       drvInfo, &param);
-
-    if (status == asynSuccess) {
-        pasynUser->reason = param;
-        if (pptypeName) {
-            *pptypeName = epicsStrDup(drvInfo);
-        }
-        if (psize) {
-            *psize = sizeof(param);
-        }
-        asynPrint(pasynUser, ASYN_TRACE_FLOW,
-                  "%s:%s:, drvInfo=%s, param=%d\n",
-                  driverName, functionName, drvInfo, param);
-        return(asynSuccess);
-    } else {
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                     "%s:%s:, unknown drvInfo=%s",
-                     driverName, functionName, drvInfo);
-        return(asynError);
-    }
+    //const char *functionName = "drvUserCreate";
+    
+    return this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize, 
+                                    ADStdDriverParamString, NUM_AD_STANDARD_PARAMS);
 }
+
 
 
 /** All of the arguments are simply passed to

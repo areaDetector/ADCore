@@ -524,45 +524,30 @@ asynStatus NDPluginDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *value
 }
     
 
-/** Called by asynManager to pass a pasynUser structure and drvInfo string to the driver; 
-  * assigns pasynUser->reason to one of the NDPluginDriverParam_t enum values based 
-  * on the value of the drvInfo string.
+/** Sets pasynUser->reason to one of the enum values for the parameters defined in either for
+  * the NDPluginDriver class or one of the parameters in ADStdDriverParams.h
+  * if the drvInfo field matches one the strings defined for either.
+  * Simply calls asynPortDriver::drvUserCreateParam with the parameter table for this driver, and
+  * then with the parameter table for ADStdDriverParams if that fails.
   * \param[in] pasynUser pasynUser structure that driver modifies
   * \param[in] drvInfo String containing information about what driver function is being referenced
   * \param[out] pptypeName Location in which driver puts a copy of drvInfo.
-  * \param[out] psize Location where driver puts size of param */
+  * \param[out] psize Location where driver puts size of param 
+  * \return Returns asynSuccess if a matching string was found, asynError if not found. */
 asynStatus NDPluginDriver::drvUserCreate(asynUser *pasynUser,
                                        const char *drvInfo, 
                                        const char **pptypeName, size_t *psize)
 {
-    int status;
-    int param;
-    const char *functionName = "drvUserCreate";
-
-    /* See if this parameter is defined for the NDPluginDriver class */
-    status = findParam(NDPluginDriverParamString, NUM_ND_PLUGIN_BASE_PARAMS, drvInfo, &param);
+    asynStatus status;
+    //const char *functionName = "drvUserCreate";
+    
+    status = this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize, 
+                                    NDPluginDriverParamString, NUM_ND_PLUGIN_BASE_PARAMS);
 
     /* If not then try the ADStandard param strings */
-    if (status) status = findParam(ADStdDriverParamString, NUM_AD_STANDARD_PARAMS, drvInfo, &param);
-    
-    if (status == asynSuccess) {
-        pasynUser->reason = param;
-        if (pptypeName) {
-            *pptypeName = epicsStrDup(drvInfo);
-        }
-        if (psize) {
-            *psize = sizeof(param);
-        }
-        asynPrint(pasynUser, ASYN_TRACE_FLOW,
-                  "%s:%s:, drvInfo=%s, param=%d\n", 
-                  driverName, functionName, drvInfo, param);
-        return(asynSuccess);
-    } else {
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                     "%s:%s:, unknown drvInfo=%s", 
-                     driverName, functionName, drvInfo);
-        return(asynError);
-    }
+    if (status) status = this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize, 
+                                    ADStdDriverParamString, NUM_AD_STANDARD_PARAMS);
+    return(status);
 }
 
 /** Constructor for NDPluginDriver; most parameters are simply passed to asynNDArrayDriver::asynNDArrayDriver.

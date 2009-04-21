@@ -136,6 +136,12 @@ asynStatus NDPluginStdArrays::readArray(asynUser *pasynUser, epicsType *value, s
 
 
 
+/** Callback function that is called by the NDArray driver with new NDArray data.
+  * It does callbacks with the array data to any registered asyn clients on any
+  * of the asynXXXArray interfaces.  It converts the array data to the type required for that
+  * interface.
+  * \param[in] pArray  The NDArray from the callback.
+  */ 
 void NDPluginStdArrays::processCallbacks(NDArray *pArray)
 {
     /* This function calls back any registered clients on the standard asyn array interfaces with 
@@ -199,17 +205,34 @@ void NDPluginStdArrays::processCallbacks(NDArray *pArray)
 }
 
 
-/* asynXXXArray interface methods */
+/** Called when asyn clients call pasynInt8Array->read().
+  * Converts the last NDArray callback data to epicsInt8 (if necessary) and returns it.  
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Pointer to the array to read.
+  * \param[in] nElements Number of elements to read.
+  * \param[out] nIn Number of elements actually read. */
 asynStatus NDPluginStdArrays::readInt8Array(asynUser *pasynUser, epicsInt8 *value, size_t nElements, size_t *nIn)
 {
     return(readArray<epicsInt8>(pasynUser, value, nElements, nIn, NDInt8));
 }
 
+/** Called when asyn clients call pasynInt16Array->read().
+  * Converts the last NDArray callback data to epicsInt16 (if necessary) and returns it.  
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Pointer to the array to read.
+  * \param[in] nElements Number of elements to read.
+  * \param[out] nIn Number of elements actually read. */
 asynStatus NDPluginStdArrays::readInt16Array(asynUser *pasynUser, epicsInt16 *value, size_t nElements, size_t *nIn)
 {
     return(readArray<epicsInt16>(pasynUser, value, nElements, nIn, NDInt16));
 }
 
+/** Called when asyn clients call pasynInt32Array->read().
+  * Converts the last NDArray callback data to epicsInt32 (if necessary) and returns it.  
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Pointer to the array to read.
+  * \param[in] nElements Number of elements to read.
+  * \param[out] nIn Number of elements actually read. */
 asynStatus NDPluginStdArrays::readInt32Array(asynUser *pasynUser, epicsInt32 *value, size_t nElements, size_t *nIn)
 {
     asynStatus status;
@@ -220,11 +243,23 @@ asynStatus NDPluginStdArrays::readInt32Array(asynUser *pasynUser, epicsInt32 *va
     
 }
 
+/** Called when asyn clients call pasynFloat32Array->read().
+  * Converts the last NDArray callback data to epicsFloat32 (if necessary) and returns it.  
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Pointer to the array to read.
+  * \param[in] nElements Number of elements to read.
+  * \param[out] nIn Number of elements actually read. */
 asynStatus NDPluginStdArrays::readFloat32Array(asynUser *pasynUser, epicsFloat32 *value, size_t nElements, size_t *nIn)
 {
     return(readArray<epicsFloat32>(pasynUser, value, nElements, nIn, NDFloat32));
 }
 
+/** Called when asyn clients call pasynFloat64Array->read().
+  * Converts the last NDArray callback data to epicsFloat64 (if necessary) and returns it.  
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Pointer to the array to read.
+  * \param[in] nElements Number of elements to read.
+  * \param[out] nIn Number of elements actually read. */
 asynStatus NDPluginStdArrays::readFloat64Array(asynUser *pasynUser, epicsFloat64 *value, size_t nElements, size_t *nIn)
 {
     return(readArray<epicsFloat64>(pasynUser, value, nElements, nIn, NDFloat64));
@@ -232,36 +267,30 @@ asynStatus NDPluginStdArrays::readFloat64Array(asynUser *pasynUser, epicsFloat64
 
 
 /* asynDrvUser interface methods */
-asynStatus NDPluginStdArrays::drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
+/** Sets pasynUser->reason to one of the enum values for the parameters defined for
+  * this class if the drvInfo field matches one the strings defined for it.
+  * If the parameter is not recognized by this class then calls NDPluginDriver::drvUserCreate.
+  * Uses asynPortDriver::drvUserCreateParam.
+  * \param[in] pasynUser pasynUser structure that driver modifies
+  * \param[in] drvInfo String containing information about what driver function is being referenced
+  * \param[out] pptypeName Location in which driver puts a copy of drvInfo.
+  * \param[out] psize Location where driver puts size of param 
+  * \return Returns asynSuccess if a matching string was found, asynError if not found. */
+asynStatus NDPluginStdArrays::drvUserCreate(asynUser *pasynUser,
+                                       const char *drvInfo, 
                                        const char **pptypeName, size_t *psize)
 {
     asynStatus status;
-    int param;
-    const char *functionName = "drvUserCreate";
+    //const char *functionName = "drvUserCreate";
+    
+    status = this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize, 
+                                      NDPluginStdArraysParamString, NUM_ND_PLUGIN_STD_ARRAYS_PARAMS);
 
-    /* First see if this is a parameter specific to this plugin */
-    status = findParam(NDPluginStdArraysParamString, NUM_ND_PLUGIN_STD_ARRAYS_PARAMS, 
-                       drvInfo, &param);
-    if (status == asynSuccess) {
-        pasynUser->reason = param;
-        if (pptypeName) {
-            *pptypeName = epicsStrDup(drvInfo);
-        }
-        if (psize) {
-            *psize = sizeof(param);
-        }
-        asynPrint(pasynUser, ASYN_TRACE_FLOW,
-                  "%s:%s:, drvInfo=%s, param=%d\n", 
-                  driverName, functionName, drvInfo, param);
-        return(asynSuccess);
-    }
-
-    /* If not, then call the base class */
-    status = NDPluginDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
+    /* If not, then call the base class method, see if it is known there */
+    if (status) status = NDPluginDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
     return(status);
 }
 
-    
 
 /* Configuration routine.  Called directly, or from the iocsh function in drvNDStdArraysEpics */
 
@@ -274,6 +303,24 @@ extern "C" int drvNDStdArraysConfigure(const char *portName, int queueSize, int 
     return(asynSuccess);
 }
 
+/** Constructor for NDPluginStdArrays; all parameters are simply passed to NDPluginDriver::NDPluginDriver.
+  * This plugin cannot block (ASYN_CANBLOCK=0) and is not multi-device (ASYN_MULTIDEVICE=0).
+  * It allocates a maximum of 2 NDArray buffers for internal use.
+  *  parameters defined in ADStdDriverParams.h.
+  * \param[in] portName The name of the asyn port driver to be created.
+  * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when 
+  *            NDPluginDriverBlockingCallbacks=0.  Larger queues can decrease the number of dropped arrays,
+  *            at the expense of more NDArray buffers being allocated from the underlying driver's NDArrayPool.
+  * \param[in] blockingCallbacks Initial setting for the NDPluginDriverBlockingCallbacks flag.
+  *            0=callbacks are queued and executed by the callback thread; 1 callbacks execute in the thread
+  *            of the driver doing the callbacks.
+  * \param[in] NDArrayPort Name of asyn port driver for initial source of NDArray callbacks.
+  * \param[in] NDArrayAddr asyn port driver address for initial source of NDArray callbacks.
+  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
+  *            allowed to allocate. Set this to -1 to allow an unlimited amount of memory.
+  * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  */
 NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int blockingCallbacks, 
                                      const char *NDArrayPort, int NDArrayAddr, size_t maxMemory,
                                      int priority, int stackSize)

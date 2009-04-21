@@ -286,6 +286,15 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
               driverName, functionName, colorMode, colorModeOut, pArrayOut);
 }
 
+/** Callback function that is called by the NDArray driver with new NDArray data.
+  * Looks for the NDArray attribute called "colorMode" to determine the color
+  * mode of the input array.  Uses the parameter NDPluginColorConvertColorModeOut
+  * to determine the desired color mode of the output array.  The NDArray is converted
+  * between these color modes if possible.  If not the input array is passed on without
+  * being changed.  Does callbacks to all registered clients on the asynGenericPointer
+  * interface with the output array.
+  * \param[in] pArray  The NDArray from the callback.
+  */ 
 void NDPluginColorConvert::processCallbacks(NDArray *pArray)
 {
     /* This function converts the color mode.
@@ -351,37 +360,30 @@ void NDPluginColorConvert::processCallbacks(NDArray *pArray)
 
 
 /* asynDrvUser interface methods */
+/** Sets pasynUser->reason to one of the enum values for the parameters defined for
+  * this class if the drvInfo field matches one the strings defined for it.
+  * If the parameter is not recognized by this class then calls NDPluginDriver::drvUserCreate.
+  * Uses asynPortDriver::drvUserCreateParam.
+  * \param[in] pasynUser pasynUser structure that driver modifies
+  * \param[in] drvInfo String containing information about what driver function is being referenced
+  * \param[out] pptypeName Location in which driver puts a copy of drvInfo.
+  * \param[out] psize Location where driver puts size of param 
+  * \return Returns asynSuccess if a matching string was found, asynError if not found. */
 asynStatus NDPluginColorConvert::drvUserCreate(asynUser *pasynUser,
-                                               const char *drvInfo, 
-                                               const char **pptypeName, size_t *psize)
+                                       const char *drvInfo, 
+                                       const char **pptypeName, size_t *psize)
 {
     asynStatus status;
-    int param;
-    static const char *functionName = "drvUserCreate";
+    //const char *functionName = "drvUserCreate";
+    
+    status = this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize, 
+                                      NDPluginColorConvertParamString, NUM_COLOR_CONVERT_PARAMS);
 
-    /* Look in the driver table */
-    status = findParam(NDPluginColorConvertParamString, NUM_COLOR_CONVERT_PARAMS, 
-                       drvInfo, &param);
-    if (status == asynSuccess) {
-        pasynUser->reason = param;
-        if (pptypeName) {
-            *pptypeName = epicsStrDup(drvInfo);
-        }
-        if (psize) {
-            *psize = sizeof(param);
-        }
-        asynPrint(pasynUser, ASYN_TRACE_FLOW,
-                  "%s:%s:, drvInfo=%s, param=%d\n", 
-                  driverName, functionName, drvInfo, param);
-        return(asynSuccess);
-    }
-
-    /* If we did not find it in that table try the plugin base */
-    status = NDPluginDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
+    /* If not, then call the base class method, see if it is known there */
+    if (status) status = NDPluginDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
     return(status);
 }
 
-    
 
 extern "C" int drvNDColorConvertConfigure(const char *portName, int queueSize, int blockingCallbacks, 
                                           const char *NDArrayPort, int NDArrayAddr, 
@@ -393,13 +395,32 @@ extern "C" int drvNDColorConvertConfigure(const char *portName, int queueSize, i
     return(asynSuccess);
 }
 
+/** Constructor for NDPluginColorConvert; most parameters are simply passed to NDPluginDriver::NDPluginDriver.
+  * After calling the base class constructor this method sets reasonable default values for all of the 
+  * ROI parameters.
+  * \param[in] portName The name of the asyn port driver to be created.
+  * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when 
+  *            NDPluginDriverBlockingCallbacks=0.  Larger queues can decrease the number of dropped arrays,
+  *            at the expense of more NDArray buffers being allocated from the underlying driver's NDArrayPool.
+  * \param[in] blockingCallbacks Initial setting for the NDPluginDriverBlockingCallbacks flag.
+  *            0=callbacks are queued and executed by the callback thread; 1 callbacks execute in the thread
+  *            of the driver doing the callbacks.
+  * \param[in] NDArrayPort Name of asyn port driver for initial source of NDArray callbacks.
+  * \param[in] NDArrayAddr asyn port driver address for initial source of NDArray callbacks.
+  * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is 
+  *            allowed to allocate. Set this to -1 to allow an unlimited number of buffers.
+  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
+  *            allowed to allocate. Set this to -1 to allow an unlimited amount of memory.
+  * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  */
 NDPluginColorConvert::NDPluginColorConvert(const char *portName, int queueSize, int blockingCallbacks, 
                                            const char *NDArrayPort, int NDArrayAddr, 
-                                           int maxBuffersIn, size_t maxMemory,
+                                           int maxBuffers, size_t maxMemory,
                                            int priority, int stackSize)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
-                   NDArrayPort, NDArrayAddr, 1, NDPluginColorConvertLastParam, maxBuffersIn, maxMemory,
+                   NDArrayPort, NDArrayAddr, 1, NDPluginColorConvertLastParam, maxBuffers, maxMemory,
                    asynGenericPointerMask, 
                    asynGenericPointerMask,
                    0, 1, priority, stackSize)  /* Not ASYN_CANBLOCK or ASYN_MULTIDEVICE, do autoConnect */

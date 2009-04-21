@@ -270,7 +270,6 @@ asynStatus NDPluginFile::doCapture()
   * In capture or stream mode if the desired number of arrays has been saved (ADFileNumCaptured=ADFileNumCapture)
   * then it stops capture or streaming.
   * \param[in] pArray  The NDArray from the callback.
-  * 
   */ 
 void NDPluginFile::processCallbacks(NDArray *pArray)
 {
@@ -428,41 +427,27 @@ asynStatus NDPluginFile::writeNDArray(asynUser *pasynUser, void *genericPointer)
     return status;
 }
 
-/** Called by asynManager to pass a pasynUser structure and drvInfo string to the driver; 
-  * assigns pasynUser->reason to one of the plugin enum values based
-  * on the value of the drvInfo string.
-  * If this is not a drvInfo string that this plugin recognizes it calls NDPluginDriver::drvUserCreate
-  * to see if it is a parameter that the base class recognizes.
+/** Sets pasynUser->reason to one of the enum values for the parameters defined for
+  * the NDPluginFile class if the drvInfo field matches one the strings defined for it.
+  * If the parameter is not recognized by this class then calls NDPluginDriver::drvUserCreate.
+  * Uses asynPortDriver::drvUserCreateParam.
   * \param[in] pasynUser pasynUser structure that driver modifies
   * \param[in] drvInfo String containing information about what driver function is being referenced
   * \param[out] pptypeName Location in which driver puts a copy of drvInfo.
-  * \param[out] psize Location where driver puts size of param */
-asynStatus NDPluginFile::drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
+  * \param[out] psize Location where driver puts size of param 
+  * \return Returns asynSuccess if a matching string was found, asynError if not found. */
+asynStatus NDPluginFile::drvUserCreate(asynUser *pasynUser,
+                                       const char *drvInfo, 
                                        const char **pptypeName, size_t *psize)
 {
     asynStatus status;
-    int param;
-    const char *functionName = "drvUserCreate";
+    //const char *functionName = "drvUserCreate";
+    
+    status = this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize, 
+                                      NDPluginFileParamString, NUM_ND_PLUGIN_FILE_PARAMS);
 
-    /* First see if this is a parameter specific to this plugin */
-    status = findParam(NDPluginFileParamString, NUM_ND_PLUGIN_FILE_PARAMS, 
-                       drvInfo, &param);
-    if (status == asynSuccess) {
-        pasynUser->reason = param;
-        if (pptypeName) {
-            *pptypeName = epicsStrDup(drvInfo);
-        }
-        if (psize) {
-            *psize = sizeof(param);
-        }
-        asynPrint(pasynUser, ASYN_TRACE_FLOW,
-                  "%s:%s:, drvInfo=%s, param=%d\n", 
-                  driverName, functionName, drvInfo, param);
-        return(asynSuccess);
-    }
-                                    
     /* If not, then call the base class method, see if it is known there */
-    status = NDPluginDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
+    if (status) status = NDPluginDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
     return(status);
 }
 
