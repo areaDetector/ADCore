@@ -1,0 +1,333 @@
+# Database for the records specific to the PerkinElmer driver
+# Brian Tieman
+# July 23, 2008
+
+record(longin, "$(P)$(R)PESystemID")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_SYSTEMID")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)PEInitialize")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_INITIALIZE")
+}
+
+record(mbbi, "$(P)$(R)PEStatus_RBV")
+{
+   field(PINI, "1")
+   field(SCAN, "I/O Intr")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_STATUS_RBV")
+   field(ZRST, "OK")
+   field(ZRVL, "0")
+   field(ZRSV, "NO_ALARM")
+   field(ONST, "Initializing")
+   field(ONVL, "1")
+   field(ONSV, "MINOR")
+   field(TWST, "Error")
+   field(TWVL, "2")
+   field(TWSV, "MAJOR")
+}
+
+record(longout, "$(P)$(R)PEAcquireOffset")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_ACQUIRE_OFFSET")
+}
+
+record(longout, "$(P)$(R)PENumOffsetFrames")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_NUM_OFFSET_FRAMES")
+   field(LOPR, "1")
+   field(HOPR, "500")
+}
+
+record(mbbi, "$(P)$(R)PEOffsetAvailable")
+{
+   field(PINI, "1")
+   field(SCAN, "I/O Intr")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_OFFSET_AVAILABLE")
+   field(ZRST, "Not Available")
+   field(ZRVL, "0")
+   field(ZRSV, "MINOR")
+   field(ONST, "Available")
+   field(ONVL, "1")
+   field(ONSV, "NO_ALARM")
+}
+
+record(mbbo, "$(P)$(R)PEUseOffset")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_USE_OFFSET")
+   field(ZRST, "Off")
+   field(ZRVL, "0")
+   field(ONST, "On")
+   field(ONVL, "1")
+}
+
+record(longout, "$(P)$(R)PEAcquireGain")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_ACQUIRE_GAIN")
+}
+
+record(mbbi, "$(P)$(R)PEGainAvailable")
+{
+   field(PINI, "1")
+   field(SCAN, "I/O Intr")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_GAIN_AVAILABLE")
+   field(ZRST, "Not Available")
+   field(ZRVL, "0")
+   field(ZRSV, "MINOR")
+   field(ONST, "Available")
+   field(ONVL, "1")
+   field(ONSV, "NO_ALARM")
+}
+
+record(mbbi, "$(P)$(R)PEPixelCorrectionAvailable")
+{
+   field(PINI, "1")
+   field(SCAN, "I/O Intr")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_PIXEL_CORRECTION_AVAILABLE")
+   field(ZRST, "Not Available")
+   field(ZRVL, "0")
+   field(ZRSV, "MINOR")
+   field(ONST, "Available")
+   field(ONVL, "1")
+   field(ONSV, "NO_ALARM")
+}
+
+record(longout, "$(P)$(R)PENumGainFrames")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_NUM_GAIN_FRAMES")
+   field(LOPR, "1")
+   field(HOPR, "500")
+}
+
+record(mbbo, "$(P)$(R)PEUseGain")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_USE_GAIN")
+   field(ZRST, "Off")
+   field(ZRVL, "0")
+   field(ONST, "On")
+   field(ONVL, "1")
+}
+
+
+record(mbbo, "$(P)$(R)PEGain")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_GAIN")
+   field(ZRST, "0.25pF")
+   field(ZRVL, "0")
+   field(ONST, "0.5pF")
+   field(ONVL, "1")
+   field(TWST, "1pF")
+   field(TWVL, "2")
+   field(THST, "2pF")
+   field(THVL, "3")
+   field(FRST, "4pF")
+   field(FRVL, "4")
+   field(FVST, "8pF")
+   field(FVVL, "5")
+}
+
+record(mbbi, "$(P)$(R)PEGain_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_GAIN_RBV")
+   field(SCAN, "I/O Intr")
+   field(ZRST, "0.25pF")
+   field(ZRVL, "0")
+   field(ONST, "0.5pF")
+   field(ONVL, "1")
+   field(TWST, "1pF")
+   field(TWVL, "2")
+   field(THST, "2pF")
+   field(THVL, "3")
+   field(FRST, "4pF")
+   field(FRVL, "4")
+   field(FVST, "8pF")
+   field(FVVL, "5")
+   field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)PEDwellTime")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_DWELL_TIME")
+   field(ZRST, "66.5ms")
+   field(ZRVL, "0")
+   field(ONST, "79.9ms")
+   field(ONVL, "1")
+   field(TWST, "99.8ms")
+   field(TWVL, "2")
+   field(THST, "133.2ms")
+   field(THVL, "3")
+   field(FRST, "199.9ms")
+   field(FRVL, "4")
+   field(FVST, "400.0ms")
+   field(FVVL, "5")
+   field(SXST, "999.8ms")
+   field(SXVL, "6")
+   field(SVST, "1999.8ms")
+   field(SVVL, "7")
+ }
+
+record(mbbi, "$(P)$(R)PEDwellTime_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_DWELL_TIME_RBV")
+   field(SCAN, "I/O Intr")
+   field(ZRST, "66.5ms")
+   field(ZRVL, "0")
+   field(ONST, "79.9ms")
+   field(ONVL, "1")
+   field(TWST, "99.8ms")
+   field(TWVL, "2")
+   field(THST, "133.2ms")
+   field(THVL, "3")
+   field(FRST, "199.9ms")
+   field(FRVL, "4")
+   field(FVST, "400.0ms")
+   field(FVVL, "5")
+   field(SXST, "999.8ms")
+   field(SXVL, "6")
+   field(SVST, "1999.8ms")
+   field(SVVL, "7")
+}
+
+record(longout, "$(P)$(R)PENumFrameBuffers")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_NUM_FRAME_BUFFERS")
+   field(LOPR, "0")
+   field(HOPR, "500")
+}
+
+record(longin, "$(P)$(R)PENumFrameBuffers_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_NUM_FRAME_BUFFERS_RBV")
+   field(SCAN, "I/O Intr")
+   field(LOPR, "0")
+   field(HOPR, "500")
+}
+
+record(mbbo, "$(P)$(R)PESyncMode")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_SYNC_MODE")
+   field(ZRST, "Internal Timer")
+   field(ZRVL, "0")
+   field(ONST, "External Trig")
+   field(ONVL, "1")
+   field(TWST, "Free Running")
+   field(TWVL, "2")
+   field(THST, "Soft Trigger")
+   field(THVL, "3")
+ }
+
+record(mbbi, "$(P)$(R)PESyncMode_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_SYNC_MODE_RBV")
+   field(SCAN, "I/O Intr")
+   field(ZRST, "Internal Timer")
+   field(ZRVL, "0")
+   field(ONST, "External Trig")
+   field(ONVL, "1")
+   field(TWST, "Free Running")
+   field(TWVL, "2")
+   field(THST, "Soft Trigger")
+   field(THVL, "3")
+}
+
+record(longout, "$(P)$(R)PETrigger")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_TRIGGER")
+}
+
+record(longout, "$(P)$(R)PESyncTime")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_SYNC_TIME")
+}
+
+record(longout, "$(P)$(R)PESyncTime_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_SYNC_TIME_RBV")
+}
+
+record(longout, "$(P)$(R)PELoadCorrections")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_LOAD_CORRECTION_FILES")
+}
+
+record(longout, "$(P)$(R)PESaveCorrections")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_SAVE_CORRECTION_FILES")
+}
+
+record(waveform, "$(P)$(R)PECorrectionsDir")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_CORRECTIONS_DIRECTORY")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
+
+record(mbbo, "$(P)$(R)PEUsePixelCorrection")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_USE_PIXEL_CORRECTION")
+   field(ZRST, "Off")
+   field(ZRVL, "0")
+   field(ONST, "On")
+   field(ONVL, "1")
+}
+
+record(waveform, "$(P)$(R)PEBadPixelFile")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_PIXEL_CORRECTION_FILE")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(R)PEBadPixelFile_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_PIXEL_CORRECTION_FILE_RBV")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
