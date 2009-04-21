@@ -6,6 +6,7 @@
 
 #include "NDPluginDriver.h"
 
+/** Structure defining a Region-Of-Interest (ROI) */
 typedef struct NDROI {
     NDDimension_t dims[ND_ARRAY_MAX_DIMS];
     double *profiles[ND_ARRAY_MAX_DIMS];
@@ -26,6 +27,7 @@ typedef struct NDROI {
 /* The following enum is for each of the ROIs */
 #define NDPluginROIFirstROINParam NDPluginDriverLastParam
 
+/** Enums for plugin-specific parameters. */
 typedef enum {
     NDPluginROIName                    /* (asynOctet,   r/w) Name of this ROI */
         = NDPluginROIFirstROINParam,
@@ -77,6 +79,9 @@ typedef enum {
 
 #define NUM_ROIN_PARAMS (sizeof(NDPluginROINParamString)/sizeof(NDPluginROINParamString[0]))
 
+/** Extract Regions-Of-Interest (ROI) from NDArray data; the plugin can be a source of NDArray callbacks for
+  * other plugins, passing these sub-arrays. 
+  * The plugin also optionally computes a statistics on the ROI. */
 class NDPluginROI : public NDPluginDriver {
 public:
     NDPluginROI(const char *portName, int queueSize, int blockingCallbacks, 

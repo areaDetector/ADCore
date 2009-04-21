@@ -6,6 +6,7 @@
 
 #include "NDPluginDriver.h"
 
+/** Enums for plugin-specific parameters. */
 typedef enum
 {
     NDPluginStdArraysData           /* (asynXXXArray, r/w) Array data waveform */
@@ -13,6 +14,10 @@ typedef enum
     NDPluginStdArraysLastParam
 } NDPluginStdArraysParam_t;
 
+/** Converts NDArray callback data into standard asyn arrays (asynInt8Array, asynInt16Array, asynInt32Array,
+  * asynFloat32Array or asynFloat64Array); normally used for putting NDArray data in EPICS waveform records.
+  * It handles the data type conversion if the NDArray data type differs from the data type of the asyn interface.
+  * It flattens the NDArrays to a single dimension because asyn and EPICS do not support multi-dimensional arrays. */
 class NDPluginStdArrays : public NDPluginDriver {
 public:
     NDPluginStdArrays(const char *portName, int queueSize, int blockingCallbacks, 
@@ -33,7 +38,7 @@ public:
                                         size_t nElements, size_t *nIn);
     asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
                                         const char **pptypeName, size_t *psize);
-
+private:
     /* These methods are just for this class */
     template <typename epicsType> asynStatus readArray(asynUser *pasynUser, epicsType *value, 
                                         size_t nElements, size_t *nIn, NDDataType_t outputType);

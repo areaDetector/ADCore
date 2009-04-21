@@ -66,8 +66,8 @@ public:
       * pure virtual function that must be implemented by derived classes. */ 
     virtual asynStatus closeFile() = 0;
     
-    int supportsMultipleArrays; /**< This flag should be set to 1 if this plugin can write multiple NDArrays
-                                  * to a single file. Used in capture and stream modes. */
+    int supportsMultipleArrays; /**< Derived classes must set this flag to 0/1 if they cannot/can write 
+                                  * multiple NDArrays to a single file. Used in capture and stream modes. */
 
 private:
     asynStatus openFileBase(NDFileOpenMode_t openMode, NDArray *pArray);

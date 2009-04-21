@@ -29,9 +29,16 @@ static const char *driverName = "NDFileNetCDF";
  * which we define here. */
 #define MAX_ATTRIBUTE_STRING_SIZE 256
 
-/** This is called to open a netCDF file.  
- *  In write mode it sets the first dimension to NC_UNLIMITED to allow multiple arrays to be
- *  written to the same file. */
+/** Opens a netCDF file.  
+  * In write mode if NDFileModeMultiple is set then the first dimension is set to NC_UNLIMITED to allow 
+  * multiple arrays to be written to the same file.
+  * NOTE: Does not currently support NDFileModeRead or NDFileModeAppend.
+  * \param[in] fileName  Absolute path name of the file to open.
+  * \param[in] openMode Bit mask with one of the access mode bits NDFileModeRead, NDFileModeWrite, NDFileModeAppend.
+  *           May also have the bit NDFileModeMultiple set if the file is to be opened to write or read multiple 
+  *           NDArrays into a single file.
+  * \param[in] pArray Pointer to an NDArray; this array is used to determine the header information and data 
+  *           structure for the file. */
 asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMode, NDArray *pArray)
 {
     /* When we create netCDF variables and dimensions, we get back an
@@ -233,8 +240,11 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
     return(asynSuccess);
 }
 
-/** This is called to write data a single NDArray to the file.  It can be called multiple times
- *  to add arrays to a single file in stream or capture mode */
+
+/** Writes NDArray data to a netCDF file.
+  * \param[in] pArray Pointer to an NDArray to write to the file. This function can be called multiple
+  *           times between the call to openFile and closeFile if
+  *           NDFileModeMultiple was set in openMode in the call to NDFileNetCDF::openFile. */ 
 asynStatus NDFileNetCDF::writeFile(NDArray *pArray)
 {       
     int retval;
@@ -341,6 +351,8 @@ asynStatus NDFileNetCDF::writeFile(NDArray *pArray)
     return(asynSuccess);
 }
 
+/** Read NDArray data from a netCDF file; NOTE: not implemented yet.
+  * \param[in] pArray Pointer to the address of an NDArray to read the data into.  */ 
 asynStatus NDFileNetCDF::readFile(NDArray **pArray)
 {
     //static const char *functionName = "readFile";
@@ -349,6 +361,7 @@ asynStatus NDFileNetCDF::readFile(NDArray **pArray)
 }
 
 
+/** Closes the netCDF file opened with NDFileNetCDF::openFile */ 
 asynStatus NDFileNetCDF::closeFile()
 {
     int retval;
@@ -371,7 +384,10 @@ extern "C" int NDFileNetCDFConfigure(const char *portName, int queueSize, int bl
     return(asynSuccess);
 }
 
-/* The constructor for this class */
+/** Constructor for NDFileNetCDF; parameters are identical to those for NDPluginFile::NDPluginFile,
+    and are passed directly to that base class constructor.
+  * After calling the base class constructor this method sets NDPluginFile::supportsMultipleArrays=1.
+  */
 NDFileNetCDF::NDFileNetCDF(const char *portName, int queueSize, int blockingCallbacks, 
                            const char *NDArrayPort, int NDArrayAddr,
                            int priority, int stackSize)

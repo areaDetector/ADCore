@@ -10,10 +10,18 @@
 
 #include "NDPluginFile.h"
 
-/* This version number is an attribute in the netCDF file to allow readers
+/** This version number is an attribute in the netCDF file to allow readers
  * to handle changes in the file contents */
 #define NDNetCDFFileVersion 2.0
 
+/** Writes NDArrays to files in the netCDF file format.
+  * netCDF is an open-source, portable, self-describing binary format supported by Unidata at UCAR
+  * (http://www.unidata.ucar.edu/software/netcdf).
+  * The netCDF format supports arrays of any dimension and all of the data types supported by NDArray.
+  * It can store multiple NDArrays in a single file, so it sets NDPluginFile::supportsMultipleArrays to 1.
+  * If also can store all of the attributes associated with an NDArray.
+  * This classes implements the 4 pure virtual functions from 
+  * NDPluginFile: openFile, readFile, writeFile and closeFile. */
 class NDFileNetCDF : public NDPluginFile {
 public:
     NDFileNetCDF(const char *portName, int queueSize, int blockingCallbacks, 
