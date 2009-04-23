@@ -796,11 +796,16 @@ int NDArray::clearAttributes()
 int NDArray::copyAttributes(NDArray *pOut)
 {
     NDAttribute *pAttribute;
+    void *pValue;
     //const char *functionName = "NDArray::copyAttributes";
 
     pAttribute = (NDAttribute *)ellFirst(&this->attributeList);
     while (pAttribute) {
-        pOut->addAttribute(pAttribute->pName, pAttribute->pDescription, pAttribute->dataType, &pAttribute->value);
+        if (pAttribute->dataType == NDAttrString) 
+            pValue = pAttribute->value.pString; 
+        else 
+            pValue = &pAttribute->value;
+        pOut->addAttribute(pAttribute->pName, pAttribute->pDescription, pAttribute->dataType, pValue);
         pAttribute = (NDAttribute *)ellNext(&pAttribute->node);
     }
     return(ND_SUCCESS);
