@@ -2,6 +2,7 @@
 #define NDPluginFile_H
 
 #include <epicsTypes.h>
+#include <epicsMutex.h>
 
 #include "NDPluginDriver.h"
 
@@ -76,6 +77,7 @@ private:
     asynStatus closeFileBase();
     asynStatus doCapture();
     NDArray **pCapture;
+    epicsMutexId fileMutexId;
 };
 
     
