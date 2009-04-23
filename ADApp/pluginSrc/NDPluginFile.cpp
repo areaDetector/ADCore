@@ -58,7 +58,9 @@ asynStatus NDPluginFile::openFileBase(NDFileOpenMode_t openMode, NDArray *pArray
     setStringParam(ADFullFileName, fullFileName);
     
     /* Call the openFile method in the derived class */
+    epicsMutexLock(this->fileMutexId);
     status = this->openFile(fullFileName, openMode, pArray);
+    epicsMutexUnlock(this->fileMutexId);
     
     return(status);
 }
@@ -72,7 +74,9 @@ asynStatus NDPluginFile::closeFileBase()
     //const char* functionName = "closeFileBase";
 
      /* Call the closeFile method in the derived class */
+    epicsMutexLock(this->fileMutexId);
     status = this->closeFile();
+    epicsMutexUnlock(this->fileMutexId);
     
     return(status);
 }
@@ -97,9 +101,11 @@ asynStatus NDPluginFile::readFileBase(void)
     }
     
     /* Call the readFile method in the derived class */
+    epicsMutexLock(this->fileMutexId);
     status = this->openFile(fullFileName, NDFileModeRead, pArray);
     status = this->readFile(&pArray);
     status = this->closeFile();
+    epicsMutexUnlock(this->fileMutexId);
     
     /* If we got an error then return */
     if (status) return(status);
@@ -149,7 +155,9 @@ asynStatus NDPluginFile::writeFileBase()
     switch(fileWriteMode) {
         case ADFileModeSingle:
             this->unlock();
+            epicsMutexLock(this->fileMutexId);
             status = this->writeFile(this->pArrays[0]);
+            epicsMutexUnlock(this->fileMutexId);
             this->lock();
             break;
         case ADFileModeCapture:
@@ -158,7 +166,9 @@ asynStatus NDPluginFile::writeFileBase()
             for (i=0; i<numCaptured; i++) {
                 pArray = this->pCapture[i];
                 if (!this->supportsMultipleArrays) this->openFileBase(NDFileModeWrite, pArray);
+                epicsMutexLock(this->fileMutexId);
                 this->writeFile(pArray);
+                epicsMutexUnlock(this->fileMutexId);
                 if (!this->supportsMultipleArrays) this->closeFileBase();
             }
             /* Free the capture buffer */
@@ -173,7 +183,9 @@ asynStatus NDPluginFile::writeFileBase()
             break;
         case ADFileModeStream:
             this->unlock();
+            epicsMutexLock(this->fileMutexId);
             status = this->writeFile(this->pArrays[0]);
+            epicsMutexUnlock(this->fileMutexId);
             this->lock();
             break;
         default:
@@ -334,6 +346,7 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
                     status = closeFileBase();
                     capture = 0;
                     setIntegerParam(ADFileCapture, capture);
+                    setIntegerParam(ADWriteFile, 0);
                 }
             }
             break;
@@ -497,6 +510,8 @@ NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCall
     setIntegerParam(ADFileNumCapture,        0);
     setIntegerParam(ADFileNumCaptured,       0);
     setIntegerParam(ADFileCapture,           0);
+    
+    this->fileMutexId = epicsMutexCreate();
     
     /* Try to connect to the NDArray port */
     status = connectToArrayPort();
