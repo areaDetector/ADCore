@@ -484,24 +484,24 @@ void simDetector::simTask()
         pImage->timeStamp = startTime.secPastEpoch + startTime.nsec / 1.e9;
         
         /* Add a bunch of attributes for testing purposes */
-        attrValue.i8 = (epicsInt8)pImage->timeStamp;
-        pImage->addAttribute("I8Value",   "Signed 8-bit time",    NDAttrInt8,    &attrValue.i8);
-        attrValue.ui8 = (epicsUInt8)pImage->timeStamp;
-        pImage->addAttribute("UI8Value",  "Unsigned 8-bit time",  NDAttrUInt8,   &attrValue.ui8);
-        attrValue.i16 = (epicsInt16)pImage->timeStamp;
-        pImage->addAttribute("I16Value",  "Signed 16-bit time",   NDAttrInt16,   &attrValue.i16);
-        attrValue.ui16 = (epicsUInt16)pImage->timeStamp;
-        pImage->addAttribute("UI16Value", "Unsigned 16-bit time", NDAttrUInt16,  &attrValue.ui16);
-        attrValue.i32 = (epicsInt32)pImage->timeStamp;
-        pImage->addAttribute("I32Value",  "Signed 32-bit time",   NDAttrInt32,   &attrValue.i32);
-        attrValue.ui32 = (epicsUInt32)pImage->timeStamp;
-        pImage->addAttribute("UI32Value", "Unsigned 32-bit time", NDAttrUInt32,  &attrValue.ui32);
+        attrValue.i8 = (epicsInt8)pImage->uniqueId;
+        pImage->addAttribute("I8Value",   "Signed 8-bit unique ID",    NDAttrInt8,    &attrValue.i8);
+        attrValue.ui8 = (epicsUInt8)pImage->uniqueId;
+        pImage->addAttribute("UI8Value",  "Unsigned 8-bit unique ID",  NDAttrUInt8,   &attrValue.ui8);
+        attrValue.i16 = (epicsInt16)pImage->uniqueId;
+        pImage->addAttribute("I16Value",  "Signed 16-bit unique ID",   NDAttrInt16,   &attrValue.i16);
+        attrValue.ui16 = (epicsUInt16)pImage->uniqueId;
+        pImage->addAttribute("UI16Value", "Unsigned 16-bit unique ID", NDAttrUInt16,  &attrValue.ui16);
+        attrValue.i32 = (epicsInt32)pImage->uniqueId;
+        pImage->addAttribute("I32Value",  "Signed 32-bit unique ID",   NDAttrInt32,   &attrValue.i32);
+        attrValue.ui32 = (epicsUInt32)pImage->uniqueId;
+        pImage->addAttribute("UI32Value", "Unsigned 32-bit unique ID", NDAttrUInt32,  &attrValue.ui32);
         attrValue.f32 = (epicsFloat32)pImage->timeStamp;
-        pImage->addAttribute("F32Value",  "32-bit float time",    NDAttrFloat32, &attrValue.f32);
+        pImage->addAttribute("F32Value",  "32-bit float time stamp",   NDAttrFloat32, &attrValue.f32);
         attrValue.f64 = (epicsFloat64)pImage->timeStamp;
-        pImage->addAttribute("F64Value",  "64-bit float time",    NDAttrFloat64, &attrValue.f64);
+        pImage->addAttribute("F64Value",  "64-bit float time stamp",   NDAttrFloat64, &attrValue.f64);
         epicsSnprintf(attrString, sizeof(attrString), "Time: %f", pImage->timeStamp);
-        pImage->addAttribute("StrValue",  "String time",          NDAttrString,  attrString);
+        pImage->addAttribute("StrValue",  "String time",               NDAttrString,  attrString);
 
         if (arrayCallbacks) {        
             /* Call the NDArray callback */
@@ -643,7 +643,6 @@ asynStatus simDetector::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 }
 
 
-/* asynDrvUser interface methods */
 /** Sets pasynUser->reason to one of the enum values for the parameters defined for
   * this class if the drvInfo field matches one the strings defined for it.
   * If the parameter is not recognized by this class then calls ADDriver::drvUserCreate.
@@ -669,7 +668,7 @@ asynStatus simDetector::drvUserCreate(asynUser *pasynUser,
 }
 
 /** Report status of the driver.
-  * Prints details about the driver if details>0
+  * Prints details about the driver if details>0.
   * It then calls the ADDriver::report() method.
   * \param[in] fp File pointed passed by caller where the output is written to.
   * \param[in] details If >0 then driver details are printed.
