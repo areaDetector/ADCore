@@ -884,7 +884,8 @@ int NDAttribute::setDescription(const char *pDescription) {
         if (strcmp(this->pDescription, pDescription) == 0) return(ND_SUCCESS);
         free(this->pDescription);
     }
-    this->pDescription = epicsStrDup(pDescription);
+    if (pDescription) this->pDescription = epicsStrDup(pDescription);
+    else this->pDescription = NULL;
     return(ND_SUCCESS);
 }
 
@@ -894,6 +895,8 @@ int NDAttribute::setDescription(const char *pDescription) {
 int NDAttribute::setValue(NDAttrDataType_t dataType, void *pValue)
 {
     NDAttrDataType_t prevDataType = this->dataType;
+    
+    if (!pValue) return(ND_ERROR);
     
     this->dataType = dataType;
     switch (dataType) {
@@ -972,7 +975,8 @@ int NDAttribute::getValueInfo(NDAttrDataType_t *pDataType, size_t *pSize)
             *pSize = sizeof(this->value.f64);
             break;
         case NDAttrString:
-            *pSize = strlen(this->value.pString)+1;
+            if (this->value.pString) *pSize = strlen(this->value.pString)+1;
+            else *pSize = 0;
             break;
         case NDAttrUndefined:
             *pSize = 0;
@@ -1020,6 +1024,7 @@ int NDAttribute::getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSi
             *(epicsFloat64 *)pValue = this->value.f64;
             break;
         case NDAttrString:
+            if (!this->value.pString) return (ND_ERROR);
             if (dataSize == 0) dataSize = strlen(this->value.pString)+1;
             strncpy((char *)pValue, this->value.pString, dataSize);
             break;
