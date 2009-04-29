@@ -154,14 +154,22 @@ asynStatus NDPluginFile::writeFileBase()
     
     switch(fileWriteMode) {
         case ADFileModeSingle:
+            setIntegerParam(ADWriteFile, 1);
+            callParamCallbacks();
+            this->openFileBase(NDFileModeWrite, this->pArrays[0]);
             this->unlock();
             epicsMutexLock(this->fileMutexId);
             status = this->writeFile(this->pArrays[0]);
             epicsMutexUnlock(this->fileMutexId);
             this->lock();
+            this->closeFileBase();
+            setIntegerParam(ADWriteFile, 0);
+            callParamCallbacks();
             break;
         case ADFileModeCapture:
             /* Write the file */
+            setIntegerParam(ADWriteFile, 1);
+            callParamCallbacks();
             if (this->supportsMultipleArrays) this->openFileBase(NDFileModeWrite | NDFileModeMultiple, this->pArrays[0]);
             for (i=0; i<numCaptured; i++) {
                 pArray = this->pCapture[i];
@@ -180,6 +188,8 @@ asynStatus NDPluginFile::writeFileBase()
             free(this->pCapture);
             this->pCapture = NULL;
             setIntegerParam(ADFileNumCaptured, 0);
+            setIntegerParam(ADWriteFile, 0);
+            callParamCallbacks();
             break;
         case ADFileModeStream:
             this->unlock();
@@ -315,9 +325,7 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
         case ADFileModeSingle:
             if (autoSave) {
                 arrayCounter++;
-                status = openFileBase(NDFileModeWrite, this->pArrays[0]);
                 status = writeFileBase();
-                status = closeFileBase();
             }
             break;
         case ADFileModeCapture:
