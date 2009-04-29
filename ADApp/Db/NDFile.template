@@ -46,33 +46,33 @@ record(waveform, "$(P)$(R)FileName_RBV")
     field(SCAN, "I/O Intr")
 }
 
-# File number
 record(longout, "$(P)$(R)FileNumber")
 {
     field(PINI, "1")
+    field(OUT, "$(P)$(R)FileNumber_write PP")
+    field(VAL, "1")
+}
+
+record(longout, "$(P)$(R)FileNumber_write")
+{
+    field(SDIS, "$(P)$(R)FileNumber_Sync.PACT")
+    field(DISV, "1")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NUMBER")
-    field(VAL,  "1")
+    field(OUT, "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NUMBER")
 }
 
 record(longin, "$(P)$(R)FileNumber_RBV")
 {
-    # This record cannot be PINI=YES because then it will cause the _Sync record below to process,
-    # outputting the initial value of the _RBV record. 
-    #field(PINI, "1")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NUMBER")
     field(SCAN, "I/O Intr")
+    field(FLNK, "$(P)$(R)FileNumber_Sync")
 }
 
-record(calcout, "$(P)$(R)FileNumber_Sync")
+record(longout, "$(P)$(R)FileNumber_Sync")
 {
-    # This record must not process until the _RBV is no longer in SEVR=UDF, i.e.
-    # after the first time that record processes due to a callback from the driver.
-    field(SDIS, "$(P)$(R)FileNumber_RBV.SEVR")
-    field(DISV, "3")
-    field(INPA, "$(P)$(R)FileNumber_RBV CP")
-    field(CALC, "A")
+    field(DOL,  "$(P)$(R)FileNumber_RBV NPP")
+    field(OMSL, "closed_loop")
     field(OUT,  "$(P)$(R)FileNumber PP")
 }
 
