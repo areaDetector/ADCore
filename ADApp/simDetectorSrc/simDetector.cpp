@@ -64,7 +64,7 @@ private:
 /** Driver-specific parameters for the simulation driver */
 typedef enum {
     SimGainX 
-        = ADFirstDriverParam,
+        = ADLastStdParam,
     SimGainY,
     SimGainRed,
     SimGainGreen,
@@ -102,7 +102,7 @@ template <typename epicsType> int simDetector::computeArray(int sizeX, int sizeY
     status = getDoubleParam (SimGainGreen,  &gainGreen);
     status = getDoubleParam (SimGainBlue,   &gainBlue);
     status = getIntegerParam(SimResetImage, &resetImage);
-    status = getIntegerParam(ADColorMode,   &colorMode);
+    status = getIntegerParam(NDColorMode,   &colorMode);
     status = getDoubleParam (ADAcquireTime, &exposureTime);
 
     /* The intensity at each pixel[i,j] is:
@@ -238,8 +238,8 @@ int simDetector::computeImage()
     status |= getIntegerParam(ADReverseY,     &reverseY);
     status |= getIntegerParam(ADMaxSizeX,     &maxSizeX);
     status |= getIntegerParam(ADMaxSizeY,     &maxSizeY);
-    status |= getIntegerParam(ADColorMode,    &colorMode);
-    status |= getIntegerParam(ADDataType,     (int *)&dataType);
+    status |= getIntegerParam(NDColorMode,    &colorMode);
+    status |= getIntegerParam(NDDataType,     (int *)&dataType);
     status |= getIntegerParam(SimResetImage,  &resetImage);
     if (status) asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                     "%s:%s: error getting parameters\n",
@@ -377,9 +377,9 @@ int simDetector::computeImage()
     pImage = this->pArrays[0];
     pImage->getInfo(&arrayInfo);
     status = asynSuccess;
-    status |= setIntegerParam(ADImageSize,  arrayInfo.totalBytes);
-    status |= setIntegerParam(ADImageSizeX, pImage->dims[xDim].size);
-    status |= setIntegerParam(ADImageSizeY, pImage->dims[yDim].size);
+    status |= setIntegerParam(NDArraySize,  arrayInfo.totalBytes);
+    status |= setIntegerParam(NDArraySizeX, pImage->dims[xDim].size);
+    status |= setIntegerParam(NDArraySizeY, pImage->dims[yDim].size);
     status |= setIntegerParam(SimResetImage, 0);
     if (status) asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                     "%s:%s: error setting parameters\n",
@@ -469,14 +469,14 @@ void simDetector::simTask()
         pImage = this->pArrays[0];
         
         /* Get the current parameters */
-        getIntegerParam(ADImageCounter, &imageCounter);
+        getIntegerParam(NDArrayCounter, &imageCounter);
         getIntegerParam(ADNumImages, &numImages);
         getIntegerParam(ADNumImagesCounter, &numImagesCounter);
         getIntegerParam(ADImageMode, &imageMode);
-        getIntegerParam(ADArrayCallbacks, &arrayCallbacks);
+        getIntegerParam(NDArrayCallbacks, &arrayCallbacks);
         imageCounter++;
         numImagesCounter++;
-        setIntegerParam(ADImageCounter, imageCounter);
+        setIntegerParam(NDArrayCounter, imageCounter);
         setIntegerParam(ADNumImagesCounter, numImagesCounter);
         
         /* Put the frame number and time stamp into the buffer */
@@ -578,8 +578,8 @@ asynStatus simDetector::writeInt32(asynUser *pasynUser, epicsInt32 value)
             epicsEventSignal(this->stopEventId);
         }
         break;
-    case ADDataType:
-    case ADColorMode:
+    case NDDataType:
+    case NDColorMode:
         status = setIntegerParam(SimResetImage, 1);
         break;
     case ADShutterControl:
@@ -681,7 +681,7 @@ void simDetector::report(FILE *fp, int details)
         int nx, ny, dataType;
         getIntegerParam(ADSizeX, &nx);
         getIntegerParam(ADSizeY, &ny);
-        getIntegerParam(ADDataType, &dataType);
+        getIntegerParam(NDDataType, &dataType);
         fprintf(fp, "  NX, NY:            %d  %d\n", nx, ny);
         fprintf(fp, "  Data type:         %d\n", dataType);
     }
@@ -746,10 +746,10 @@ simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDat
     status |= setIntegerParam(ADSizeX, maxSizeX);
     status |= setIntegerParam(ADSizeX, maxSizeX);
     status |= setIntegerParam(ADSizeY, maxSizeY);
-    status |= setIntegerParam(ADImageSizeX, maxSizeX);
-    status |= setIntegerParam(ADImageSizeY, maxSizeY);
-    status |= setIntegerParam(ADImageSize, 0);
-    status |= setIntegerParam(ADDataType, dataType);
+    status |= setIntegerParam(NDArraySizeX, maxSizeX);
+    status |= setIntegerParam(NDArraySizeY, maxSizeY);
+    status |= setIntegerParam(NDArraySize, 0);
+    status |= setIntegerParam(NDDataType, dataType);
     status |= setIntegerParam(ADImageMode, ADImageContinuous);
     status |= setDoubleParam (ADAcquireTime, .001);
     status |= setDoubleParam (ADAcquirePeriod, .005);
