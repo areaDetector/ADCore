@@ -19,6 +19,7 @@ endif
 DBD += ADSupport.dbd
 
 INC += NDArray.h
+INC += PVAttributes.h
 INC += ADStdDriverParams.h
 INC += asynNDArrayDriver.h
 INC += ADDriver.h
@@ -27,8 +28,15 @@ LIBRARY_IOC = ADBase
 LIB_SRCS += NDArray.cpp
 LIB_SRCS += asynNDArrayDriver.cpp
 LIB_SRCS += ADDriver.cpp
+LIB_SRCS += PVAttributes.cpp
 LIB_LIBS += asyn
 LIB_LIBS += $(EPICS_BASE_IOC_LIBS)
+
+PROD += testPVAttributes
+PROD_SRCS += testPVAttributes.cpp
+PROD_LIBS += ADBase
+PROD_LIBS += asyn
+PROD_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 include $(TOP)/configure/RULES
 #----------------------------------------
