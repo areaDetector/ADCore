@@ -7,13 +7,13 @@
 #include <asynStandardInterfaces.h>
 
 #include "asynNDArrayDriver.h"
-#include "ADStdDriverParams.h"
+#include "NDStdDriverParams.h"
 
 /** Parameters that are common to all NDArray plugins */
 typedef enum
 {
     NDPluginDriverArrayPort               /**< (asynOctet,    r/w) The port for the NDArray interface */
-        = ADFirstDriverParam,
+        = NDLastStdParam,
     NDPluginDriverArrayAddr,              /**< (asynInt32,    r/w) The address on the port */
     NDPluginDriverArrayCounter,           /**< (asynInt32,    r/w) Number of arrays processed */
     NDPluginDriverDroppedArrays,          /**< (asynInt32,    r/w) Number of dropped arrays */
@@ -49,8 +49,6 @@ public:
                                      const char **pptypeName, size_t *psize);
                                      
     /* These are the methods that are new to this class */
-    virtual int createFileName(int maxChars, char *fullFileName);
-    virtual int createFileName(int maxChars, char *filePath, char *fileName);
     virtual void driverCallback(asynUser *pasynUser, void *genericPointer);
     virtual void processTask(void);
 

@@ -21,9 +21,6 @@
 #include <epicsMessageQueue.h>
 #include <cantProceed.h>
 
-#define DEFINE_AD_STANDARD_PARAMS 1
-#include "ADStdDriverParams.h"
-
 #include "NDPluginDriver.h"
 
 /** The command strings are the userParam argument for asyn device support links
@@ -49,84 +46,6 @@ static asynParamString_t NDPluginDriverParamString[] = {
 #define NUM_ND_PLUGIN_BASE_PARAMS (sizeof(NDPluginDriverParamString)/sizeof(NDPluginDriverParamString[0]))
 
 static const char *driverName="NDPluginDriver";
-
-/** Build a file name from component parts.
-  * \param[in] maxChars  The size of the fullFileName string.
-  * \param[out] fullFileName The constructed file name including the file path.
-  * 
-  * This is a convenience function that constructs a complete file name
-  * from the ADFilePath, ADFileName, ADFileNumber, and
-  * ADFileTemplate parameters. If ADAutoIncrement is true then it increments the
-  * ADFileNumber after creating the file name.
-  */
-int NDPluginDriver::createFileName(int maxChars, char *fullFileName)
-{
-    /* Formats a complete file name from the components defined in ADStdDriverParams.h */
-    int status = asynSuccess;
-    char filePath[MAX_FILENAME_LEN];
-    char fileName[MAX_FILENAME_LEN];
-    char fileTemplate[MAX_FILENAME_LEN];
-    int fileNumber;
-    int autoIncrement;
-    int len;
-    
-    status |= getStringParam(ADFilePath, sizeof(filePath), filePath); 
-    status |= getStringParam(ADFileName, sizeof(fileName), fileName); 
-    status |= getStringParam(ADFileTemplate, sizeof(fileTemplate), fileTemplate); 
-    status |= getIntegerParam(ADFileNumber, &fileNumber);
-    status |= getIntegerParam(ADAutoIncrement, &autoIncrement);
-    if (status) return(status);
-    len = epicsSnprintf(fullFileName, maxChars, fileTemplate, 
-                        filePath, fileName, fileNumber);
-    if (len < 0) {
-        status |= asynError;
-        return(status);
-    }
-    if (autoIncrement) {
-        fileNumber++;
-        status |= setIntegerParam(ADFileNumber, fileNumber);
-    }
-    return(status);   
-}
-
-/** Build a file name from component parts.
-  * \param[in] maxChars  The size of the fullFileName string.
-  * \param[out] filePath The file path.
-  * \param[out] fileName The constructed file name without file file path.
-  * 
-  * This is a convenience function that constructs a file path and file name
-  * from the ADFilePath, ADFileName, ADFileNumber, and
-  * ADFileTemplate parameters. If ADAutoIncrement is true then it increments the
-  * ADFileNumber after creating the file name.
-  */
-int NDPluginDriver::createFileName(int maxChars, char *filePath, char *fileName)
-{
-    /* Formats a complete file name from the components defined in ADStdDriverParams.h */
-    int status = asynSuccess;
-    char fileTemplate[MAX_FILENAME_LEN];
-    char name[MAX_FILENAME_LEN];
-    int fileNumber;
-    int autoIncrement;
-    int len;
-    
-    status |= getStringParam(ADFilePath, maxChars, filePath); 
-    status |= getStringParam(ADFileName, sizeof(name), name); 
-    status |= getStringParam(ADFileTemplate, sizeof(fileTemplate), fileTemplate); 
-    status |= getIntegerParam(ADFileNumber, &fileNumber);
-    status |= getIntegerParam(ADAutoIncrement, &autoIncrement);
-    if (status) return(status);
-    len = epicsSnprintf(fileName, maxChars, fileTemplate, 
-                        name, fileNumber);
-    if (len < 0) {
-        status |= asynError;
-        return(status);
-    }
-    if (autoIncrement) {
-        fileNumber++;
-        status |= setIntegerParam(ADFileNumber, fileNumber);
-    }
-    return(status);   
-}
 
 /** Method that is normally called at the beginning of the processCallbacks
   * method in derived classes.
@@ -525,10 +444,10 @@ asynStatus NDPluginDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *value
     
 
 /** Sets pasynUser->reason to one of the enum values for the parameters defined in either for
-  * the NDPluginDriver class or one of the parameters in ADStdDriverParams.h
+  * the NDPluginDriver class or one of the parameters in NDStdDriverParams.h
   * if the drvInfo field matches one the strings defined for either.
   * Simply calls asynPortDriver::drvUserCreateParam with the parameter table for this driver, and
-  * then with the parameter table for ADStdDriverParams if that fails.
+  * then with the parameter table for NDStdDriverParams if that fails.
   * \param[in] pasynUser pasynUser structure that driver modifies
   * \param[in] drvInfo String containing information about what driver function is being referenced
   * \param[out] pptypeName Location in which driver puts a copy of drvInfo.
@@ -541,12 +460,13 @@ asynStatus NDPluginDriver::drvUserCreate(asynUser *pasynUser,
     asynStatus status;
     //const char *functionName = "drvUserCreate";
     
+    /* See if this is one of our parameters */
     status = this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize, 
                                     NDPluginDriverParamString, NUM_ND_PLUGIN_BASE_PARAMS);
 
-    /* If not then try the ADStandard param strings */
-    if (status) status = this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize, 
-                                    ADStdDriverParamString, NUM_AD_STANDARD_PARAMS);
+    /* If not then see if it is a base class parameter */
+    if (status) status = asynNDArrayDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
+
     return(status);
 }
 
@@ -621,7 +541,7 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     }
 
     /* Set the initial values of some parameters */
-    setStringParam (ADPortNameSelf, portName);
+    setStringParam (NDPortNameSelf, portName);
     setStringParam (NDPluginDriverArrayPort, NDArrayPort);
     setIntegerParam(NDPluginDriverArrayAddr, NDArrayAddr);
     setIntegerParam(NDPluginDriverArrayCounter, 0);

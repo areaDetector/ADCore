@@ -469,9 +469,9 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         }
 
         /* Set the image size of the ROI image data */
-        setIntegerParam(roi, ADImageSizeX, this->pArrays[roi]->dims[userDims[0]].size);
-        setIntegerParam(roi, ADImageSizeY, this->pArrays[roi]->dims[userDims[1]].size);
-        setIntegerParam(roi, ADImageSizeZ, this->pArrays[roi]->dims[userDims[2]].size);
+        setIntegerParam(roi, NDArraySizeX, this->pArrays[roi]->dims[userDims[0]].size);
+        setIntegerParam(roi, NDArraySizeY, this->pArrays[roi]->dims[userDims[1]].size);
+        setIntegerParam(roi, NDArraySizeZ, this->pArrays[roi]->dims[userDims[2]].size);
         
         /* Call any clients who have registered for NDArray callbacks */
         doCallbacksGenericPointer(this->pArrays[roi], NDArrayData, roi);
@@ -737,9 +737,9 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
         setDoubleParam (roi , NDPluginROIHistMax,           0);
         
         setDoubleParam (roi , NDPluginROIHistEntropy,       0.0);
-        setIntegerParam(roi , ADImageSizeX,                 0);
-        setIntegerParam(roi , ADImageSizeY,                 0);
-        setIntegerParam(roi , ADImageSizeZ,                 0);
+        setIntegerParam(roi , NDArraySizeX,                 0);
+        setIntegerParam(roi , NDArraySizeY,                 0);
+        setIntegerParam(roi , NDArraySizeZ,                 0);
     }
     
     /* Try to connect to the array port */
