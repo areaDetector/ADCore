@@ -294,7 +294,7 @@ record(longin, "$(P)$(R)ImageSizeX_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_SIZE_X")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_X")
    field(SCAN, "I/O Intr")
 }
 
@@ -302,7 +302,7 @@ record(longin, "$(P)$(R)ImageSizeY_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_SIZE_Y")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_Y")
    field(SCAN, "I/O Intr")
 }
 
@@ -310,7 +310,7 @@ record(longin, "$(P)$(R)ImageSize_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_SIZE")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE")
    field(SCAN, "I/O Intr")
 }
 
@@ -550,14 +550,14 @@ record(bi, "$(P)$(R)Acquire_RBV") {
 record(longout, "$(P)$(R)ImageCounter")
 {
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_COUNTER")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_COUNTER")
 }
 
 record(longin, "$(P)$(R)ImageCounter_RBV")
 {
    field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_COUNTER")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_COUNTER")
     field(SCAN, "I/O Intr")
 }
 
