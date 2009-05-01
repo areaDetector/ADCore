@@ -22,7 +22,6 @@ public:
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
 
     /* These are the methods that are new to this class */
-    int createFileName(int maxChars, char *fullFileName);
     void setShutter(int open);
 };
 
