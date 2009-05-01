@@ -21,6 +21,7 @@ DBD += ADSupport.dbd
 INC += NDArray.h
 INC += PVAttributes.h
 INC += ADStdDriverParams.h
+INC += NDStdDriverParams.h
 INC += asynNDArrayDriver.h
 INC += ADDriver.h
 
