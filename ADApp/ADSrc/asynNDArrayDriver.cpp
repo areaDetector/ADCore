@@ -18,8 +18,93 @@
 #include <cantProceed.h>
 
 #include "asynNDArrayDriver.h"
+#define DEFINE_ND_STANDARD_PARAMS 1
+#include "NDStdDriverParams.h"
 
 static const char *driverName = "asynNDArrayDriver";
+
+/** Build a file name from component parts.
+  * \param[in] maxChars  The size of the fullFileName string.
+  * \param[out] fullFileName The constructed file name including the file path.
+  * 
+  * This is a convenience function that constructs a complete file name
+  * from the NDFilePath, NDFileName, NDFileNumber, and
+  * NDFileTemplate parameters. If NDAutoIncrement is true then it increments the
+  * NDFileNumber after creating the file name.
+  */
+int asynNDArrayDriver::createFileName(int maxChars, char *fullFileName)
+{
+    /* Formats a complete file name from the components defined in NDStdDriverParams.h */
+    int status = asynSuccess;
+    char filePath[MAX_FILENAME_LEN];
+    char fileName[MAX_FILENAME_LEN];
+    char fileTemplate[MAX_FILENAME_LEN];
+    int fileNumber;
+    int autoIncrement;
+    int len;
+    
+    status |= getStringParam(NDFilePath, sizeof(filePath), filePath); 
+    status |= getStringParam(NDFileName, sizeof(fileName), fileName); 
+    status |= getStringParam(NDFileTemplate, sizeof(fileTemplate), fileTemplate); 
+    status |= getIntegerParam(NDFileNumber, &fileNumber);
+    status |= getIntegerParam(NDAutoIncrement, &autoIncrement);
+    if (status) return(status);
+    len = epicsSnprintf(fullFileName, maxChars, fileTemplate, 
+                        filePath, fileName, fileNumber);
+    if (len < 0) {
+        status |= asynError;
+        return(status);
+    }
+    if (autoIncrement) {
+        fileNumber++;
+        status |= setIntegerParam(NDFileNumber, fileNumber);
+    }
+    return(status);   
+}
+
+/** Build a file name from component parts.
+  * \param[in] maxChars  The size of the fullFileName string.
+  * \param[out] filePath The file path.
+  * \param[out] fileName The constructed file name without file file path.
+  * 
+  * This is a convenience function that constructs a file path and file name
+  * from the NDFilePath, NDFileName, NDFileNumber, and
+  * NDFileTemplate parameters. If NDAutoIncrement is true then it increments the
+  * NDFileNumber after creating the file name.
+  */
+int asynNDArrayDriver::createFileName(int maxChars, char *filePath, char *fileName)
+{
+    /* Formats a complete file name from the components defined in NDStdDriverParams.h */
+    int status = asynSuccess;
+    char fileTemplate[MAX_FILENAME_LEN];
+    char name[MAX_FILENAME_LEN];
+    int fileNumber;
+    int autoIncrement;
+    int len;
+    
+    status |= getStringParam(NDFilePath, maxChars, filePath); 
+    status |= getStringParam(NDFileName, sizeof(name), name); 
+    status |= getStringParam(NDFileTemplate, sizeof(fileTemplate), fileTemplate); 
+    status |= getIntegerParam(NDFileNumber, &fileNumber);
+    status |= getIntegerParam(NDAutoIncrement, &autoIncrement);
+    if (status) return(status);
+    len = epicsSnprintf(fileName, maxChars, fileTemplate, 
+                        name, fileNumber);
+    if (len < 0) {
+        status |= asynError;
+        return(status);
+    }
+    if (autoIncrement) {
+        fileNumber++;
+        status |= setIntegerParam(NDFileNumber, fileNumber);
+    }
+    return(status);   
+}
+
+int asynNDArrayDriver::readPVAttributesFile(const char *fileName)
+{
+    return(asynSuccess);
+}
 
 /* asynGenericPointer interface methods */
 /** This method copies an NDArray object from the asynNDArrayDriver to an NDArray pointer passed in by the caller.
@@ -78,6 +163,27 @@ asynStatus asynNDArrayDriver::writeGenericPointer(asynUser *pasynUser, void *gen
     return status;
 }
 
+/** Sets pasynUser->reason to one of the enum values for the parameters defined in ADStdDriverParams.h
+  * if the drvInfo field matches one the strings defined in that file.
+  * Simply calls asynPortDriver::drvUserCreateParam with the parameter table for this driver.
+  * \param[in] pasynUser pasynUser structure that driver modifies
+  * \param[in] drvInfo String containing information about what driver function is being referenced
+  * \param[out] pptypeName Location in which driver puts a copy of drvInfo.
+  * \param[out] psize Location where driver puts size of param 
+  * \return Returns asynSuccess if a matching string was found, asynError if not found. */
+asynStatus asynNDArrayDriver::drvUserCreate(asynUser *pasynUser,
+                                            const char *drvInfo, 
+                                            const char **pptypeName, size_t *psize)
+{
+    asynStatus status;
+    //const char *functionName = "drvUserCreate";
+    status = this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize, 
+                                      NDStdDriverParamString, NUM_ND_STANDARD_PARAMS);
+    return(status);    
+}
+
+
+
 /** Report status of the driver.
   * This method calls the report function in the asynPortDriver base class. It then
   * calls the NDArrayPool::report() method if details >5.
@@ -124,5 +230,30 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int para
 
     /* Allocate pArray pointer array */
     this->pArrays = (NDArray **)calloc(maxAddr, sizeof(NDArray *));
+
+    setStringParam (NDPortNameSelf, portName);
+    setIntegerParam(NDArraySizeX,   0);
+    setIntegerParam(NDArraySizeY,   0);
+    setIntegerParam(NDArraySizeZ,   0);
+    setIntegerParam(NDArraySize,    0);
+    setIntegerParam(NDDataType,     NDUInt8);
+    setIntegerParam(NDColorMode,    NDColorModeMono);
+    setIntegerParam(NDArrayCounter, 0);
+    setStringParam (NDFilePath,     "");
+    setStringParam (NDFileName,     "");
+    setIntegerParam(NDFileNumber,   0);
+    setStringParam (NDFileTemplate, "");
+    setIntegerParam(NDAutoIncrement, 0);
+    setStringParam (NDFullFileName, "");
+    setIntegerParam(NDFileFormat,   0);
+    setIntegerParam(NDAutoSave,     0);
+    setIntegerParam(NDWriteFile,    0);
+    setIntegerParam(NDReadFile,     0);
+    setIntegerParam(NDFileWriteMode,   0);
+    setIntegerParam(NDFileNumCapture,  0);
+    setIntegerParam(NDFileNumCaptured, 0);
+    setIntegerParam(NDFileCapture,     0);
+    setIntegerParam(NDArrayCallbacks, 1);
+
 }
 
