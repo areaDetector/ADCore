@@ -546,6 +546,7 @@ int NDArrayPool::report(int details)
         this->memorySize, this->maxMemory);
     printf("  numFree=%d\n",
         this->numFree);
+        
     return ND_SUCCESS;
 }
 
@@ -716,6 +717,27 @@ NDAttribute* NDArray::addAttribute(const char *pName, const char *pDescription, 
     return(pAttribute);
 }
 
+/** Adds an attribute to the array.
+  * \param[in] pIn A pointer to an existing attribute from which values will be copied.
+  * \return Returns a pointer to the attribute.
+  *
+  * Searches for an existing attribute of this name.  If found it sets the description, data type and
+  * value to those passed to this method.
+  * If not found it creates a new attribute with this name, adds it to the attribute
+  * list for this array and sets the description, data type and value. */
+NDAttribute* NDArray::addAttribute(NDAttribute *pIn)
+{
+    NDAttribute *pAttribute;
+    void *pValue = &pIn->value;
+    //const char *functionName = "NDArray::addAttribute";
+
+    pAttribute = this->addAttribute(pIn->pName);
+    pAttribute->setDescription(pIn->pDescription);
+    if (pIn->dataType == NDAttrString) pValue = pIn->pString;
+    pAttribute->setValue(pIn->dataType, pValue);
+    return(pAttribute);
+}
+
 /** Finds an attribute by name.
   * \param[in] pName The name of the attribute to be found.
   * \return Returns a pointer to the attribute if found, NULL if not found. 
@@ -802,7 +824,7 @@ int NDArray::copyAttributes(NDArray *pOut)
     pAttribute = (NDAttribute *)ellFirst(&this->attributeList);
     while (pAttribute) {
         if (pAttribute->dataType == NDAttrString) 
-            pValue = pAttribute->value.pString; 
+            pValue = pAttribute->pString; 
         else 
             pValue = &pAttribute->value;
         pOut->addAttribute(pAttribute->pName, pAttribute->pDescription, pAttribute->dataType, pValue);
@@ -811,25 +833,54 @@ int NDArray::copyAttributes(NDArray *pOut)
     return(ND_SUCCESS);
 }
 
+/** Reports on the properties of the array.
+  */
+int NDArray::report(int details)
+{
+    NDAttribute *pAttr;
+    int dim;
+    
+    printf("\n");
+    printf("NDArrayArray address=%p:\n", this);
+    printf("  ndims=%d dims=[",
+        this->ndims);
+    for (dim=0; dim<this->ndims; dim++) printf("%d ", this->dims[dim].size);
+    printf("]\n");
+    printf("  dataType=%d, dataSize=%d, pData=%p\n",
+        this->dataType, this->dataSize, this->pData);
+    printf("  uniqueId=%d, timeStamp=%f\n",
+        this->uniqueId, this->timeStamp);
+    printf("  number of attributes=%d\n", ellCount(&this->attributeList));
+    if (details > 5) {
+        pAttr = (NDAttribute *) ellFirst(&this->attributeList);
+        while (pAttr) {
+            pAttr->report(details);
+            pAttr = (NDAttribute *) ellNext(&pAttr->node);
+        }
+    }
+    return ND_SUCCESS;
+}
+
+
 /** NDAttribute constructor 
   * \param[in] pName The name of the attribute to be created. 
   *
-  * Sets the attribute name to pName, the description and value.pString to NULL, and the data type to NDAttrUndefined. */
+  * Sets the attribute name to pName, the description and pString to NULL, and the data type to NDAttrUndefined. */
 NDAttribute::NDAttribute(const char *pName)
 {
     this->pName = epicsStrDup(pName);
     this->pDescription = NULL;
-    this->value.pString = NULL;
+    this->pString = NULL;
     this->dataType = NDAttrUndefined;
 }
 
 /** NDAttribute destructor 
-  * Frees the strings for the name, and if they exist, the description and value.pString. */
+  * Frees the strings for the name, and if they exist, the description and pString. */
 NDAttribute::~NDAttribute()
 {
     if (this->pName) free(this->pName);
     if (this->pDescription) free(this->pDescription);
-    if ((this->dataType == NDAttrString) && this->value.pString) free(this->value.pString);
+    if (this->pString) free(this->pString);
 }
 
 /** Returns the length of the name string including 0 terminator for this attribute. */
@@ -895,10 +946,28 @@ int NDAttribute::setDescription(const char *pDescription) {
 int NDAttribute::setValue(NDAttrDataType_t dataType, void *pValue)
 {
     NDAttrDataType_t prevDataType = this->dataType;
-    
-    if (!pValue) return(ND_ERROR);
-    
+        
     this->dataType = dataType;
+
+    /* If any data type but undefined then pointer must be valid */
+    if ((dataType != NDAttrUndefined) && !pValue) return(ND_ERROR);
+
+    /* Treat strings specially */
+    if (dataType == NDAttrString) {
+        /* If the previous value was the same string don't do anything, 
+         * saves freeing and allocating memory.  
+         * If not the same free the old string and copy new one. */
+        if ((prevDataType == NDAttrString) && this->pString) {
+            if (strcmp(this->pString, (char *)pValue) == 0) return(ND_SUCCESS);
+            free(this->pString);
+        }
+        this->pString = epicsStrDup((char *)pValue);
+        return(ND_SUCCESS);
+    }
+    if (this->pString) {
+        free(this->pString);
+        this->pString = NULL;
+    }
     switch (dataType) {
         case NDAttrInt8:
             this->value.i8 = *(epicsInt8 *)pValue;
@@ -924,16 +993,8 @@ int NDAttribute::setValue(NDAttrDataType_t dataType, void *pValue)
         case NDAttrFloat64:
             this->value.f64 = *(epicsFloat64 *)pValue;
             break;
-        case NDAttrString:
-            /* If the previous value was the same string don't do anything, 
-             * saves freeing and allocating memory.  If not the same free the old string. */
-            if ((prevDataType == NDAttrString) && this->value.pString) {
-                if (strcmp(this->value.pString, (char *)pValue) == 0) return(ND_SUCCESS);
-                free(this->value.pString);
-            }
-            this->value.pString = epicsStrDup((char *)pValue);
-            break;
         case NDAttrUndefined:
+            break;
         default:
             return(ND_ERROR);
             break;
@@ -975,7 +1036,7 @@ int NDAttribute::getValueInfo(NDAttrDataType_t *pDataType, size_t *pSize)
             *pSize = sizeof(this->value.f64);
             break;
         case NDAttrString:
-            if (this->value.pString) *pSize = strlen(this->value.pString)+1;
+            if (this->pString) *pSize = strlen(this->pString)+1;
             else *pSize = 0;
             break;
         case NDAttrUndefined:
@@ -1024,9 +1085,9 @@ int NDAttribute::getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSi
             *(epicsFloat64 *)pValue = this->value.f64;
             break;
         case NDAttrString:
-            if (!this->value.pString) return (ND_ERROR);
-            if (dataSize == 0) dataSize = strlen(this->value.pString)+1;
-            strncpy((char *)pValue, this->value.pString, dataSize);
+            if (!this->pString) return (ND_ERROR);
+            if (dataSize == 0) dataSize = strlen(this->pString)+1;
+            strncpy((char *)pValue, this->pString, dataSize);
             break;
         case NDAttrUndefined:
         default:
@@ -1036,5 +1097,51 @@ int NDAttribute::getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSi
     return(ND_SUCCESS);
 }
 
+/** Reports on the properties of the attribute.
+  */
+int NDAttribute::report(int details)
+{
+    
+    printf("NDAttribute, address=%p:\n", this);
+    printf("  name=%s\n", this->pName);
+    printf("  description=%s\n", this->pDescription);
+    switch (this->dataType) {
+        case NDAttrInt8:
+            printf("  dataType=NDAttrInt8, value=%d\n", this->value.i8);
+            break;
+        case NDAttrUInt8:
+            printf("  dataType=NDAttrUInt8, value=%u\n", this->value.ui8);
+            break;
+        case NDAttrInt16:
+            printf("  dataType=NDAttrInt16, value=%d\n", this->value.i16);
+            break;
+        case NDAttrUInt16:
+            printf("  dataType=NDAttrUInt16, value=%d\n", this->value.ui16);
+            break;
+        case NDAttrInt32:
+            printf("  dataType=NDAttrInt32, value=%d\n", this->value.i32);
+            break;
+        case NDAttrUInt32:
+            printf("  dataType=NDAttrUInt32, value=%d\n", this->value.ui32);
+            break;
+        case NDAttrFloat32:
+            printf("  dataType=NDAttrFloat32, value=%f\n", this->value.f32);
+            break;
+        case NDAttrFloat64:
+            printf("  dataType=NDAttrFloat64, value=%f\n", this->value.f64);
+            break;
+        case NDAttrString:
+            printf("  dataType=NDAttrString, value=%s\n", this->pString);
+            break;
+        case NDAttrUndefined:
+            printf("  dataType=NDAttrUndefined\n");
+            break;
+        default:
+            printf("  dataType=UNKNOWN\n");
+            return(ND_ERROR);
+            break;
+    }
+    return ND_SUCCESS;
+}
 
 

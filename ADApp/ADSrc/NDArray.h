@@ -99,7 +99,6 @@ typedef union {
     epicsUInt32  ui32;  /**< Unsigned 32-bit integer */
     epicsFloat32 f32;   /**< 32-bit float */
     epicsFloat64 f64;   /**< 64-bit float */
-    char *pString;      /**< Dynamic length string */ 
 } NDAttrValue;
 
 /** NDArray attribute class; an attribute has a name, description, data type, and value.
@@ -109,6 +108,8 @@ typedef union {
 class NDAttribute {
 public:
     /* Methods */
+    NDAttribute(const char *pName);
+    ~NDAttribute();
     int getNameInfo(size_t *pNameSize);
     int getName(char *pName, size_t nameSize=0);
     int getDescriptionInfo(size_t *pDescSize);
@@ -117,6 +118,7 @@ public:
     int getValueInfo(NDAttrDataType_t *pDataType, size_t *pDataSize);
     int getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSize=0);
     int setValue(NDAttrDataType_t dataType, void *pValue);
+    int report(int details);
     friend class NDArray;
 
 private:
@@ -125,8 +127,7 @@ private:
     char *pDescription;
     NDAttrDataType_t dataType;
     NDAttrValue value;
-    NDAttribute(const char *pName);
-    ~NDAttribute();
+    char *pString;      /**< Dynamic length string */ 
 };
 
 /** N-dimensional array class; each array has a set of dimensions, a data type, pointer to data, and optional attributes. 
@@ -145,12 +146,14 @@ public:
     NDAttribute* addAttribute(const char *pName, NDAttrDataType_t dataType, void *pValue);
     NDAttribute* addAttribute(const char *pName, const char *pDescription, 
                               NDAttrDataType_t dataType, void *pValue);
+    NDAttribute* addAttribute(NDAttribute *pAttribute);
     NDAttribute* findAttribute(const char *pName);
     NDAttribute* nextAttribute(NDAttribute *pAttribute);
     int          numAttributes();
     int          deleteAttribute(const char *pName);
     int          clearAttributes();
     int          copyAttributes(NDArray *pOut);
+    int          report(int details);
     friend class NDArrayPool;
     
 private:
