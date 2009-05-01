@@ -1,17 +1,13 @@
 #ifndef AD_STD_DRIVER_PARAMS_H
 #define AD_STD_DRIVER_PARAMS_H
 
-#include <ellLib.h>
-#include <epicsMutex.h>
-
 #include "asynPortDriver.h"
+#include "NDStdDriverParams.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/** Maximum length of a filename or any of its components */
-#define MAX_FILENAME_LEN 256
 /** Success code; generally asyn status codes are used instead where possible */
 #define AREA_DETECTOR_OK 0
 /** Failure code; generally asyn status codes are used instead where possible */
@@ -69,24 +65,14 @@ typedef enum
     ADTriggerExternal       /**< External trigger input */
 } ADTriggerMode_t;
 
-/* Enumeration of file saving modes */
-typedef enum {
-    ADFileModeSingle,       /**< Write 1 image per file */
-    ADFileModeCapture,      /**< Capture ADNumCapture images into memory, write them out when capture is complete.
-                              *  Write all captured images to a single file if the file format supports this */
-    ADFileModeStream        /**< Stream images continuously to a single file if the file format supports this */
-} ADFileMode_t;
-
-
 /** Enumeration of parameters that affect the behaviour of the detector. 
   * These are the values that asyn will place in pasynUser->reason when the
   * standard asyn interface methods are called. */
 typedef enum
 {
     /*    Name          asyn interface  access   Description  */
-    ADPortNameSelf,     /**< (asynOctet,    r/o) Asyn port name of this driver instance */
-
-    ADManufacturer,     /**< (asynOctet,    r/o) Detector manufacturer name */
+    ADManufacturer      /**< (asynOctet,    r/o) Detector manufacturer name */
+      = NDLastStdParam, 
     ADModel,            /**< (asynOctet,    r/o) Detector model name */
 
     ADGain,             /**< (asynFloat64,  r/w) Gain */
@@ -108,15 +94,7 @@ typedef enum
     ADReverseX,         /**< (asynInt32,    r/w) Reverse image in the X direction (0=No, 1=Yes) */
     ADReverseY,         /**< (asynInt32,    r/w) Reverse image in the Y direction (0=No, 1=Yes) */
 
-    /* Parameters defining the size of the image data from the detector.
-     * ADImageSizeX and ADImageSizeY are the actual dimensions of the image data,
-     * including effects of the region definition and binning */
-    ADImageSizeX,       /**< (asynInt32,    r/o) Size of the image data in the X direction */
-    ADImageSizeY,       /**< (asynInt32,    r/o) Size of the image data in the Y direction */
-    ADImageSizeZ,       /**< (asynInt32,    r/o) Size of the image data in the Z direction */
-    ADImageSize,        /**< (asynInt32,    r/o) Total size of image data in bytes */
-    ADDataType,         /**< (asynInt32,    r/w) Data type (NDDataType_t) */
-    ADColorMode,        /**< (asynInt32,    r/w) Color mode (NDColorMode_t) */
+    /* Parameters defining the acquisition parameters. */
     ADFrameType,        /**< (asynInt32,    r/w) Frame type (ADFrameType_t) */
     ADImageMode,        /**< (asynInt32,    r/w) Image mode (ADImageMode_t) */
     ADTriggerMode,      /**< (asynInt32,    r/w) Trigger mode (ADTriggerMode_t) */
@@ -139,31 +117,9 @@ typedef enum
     ADTemperature,      /**< (asynFloat64,  r/w) Detector temperature */
 
     /* Statistics on number of images collected and the image rate */
-    ADImageCounter,     /**< (asynInt32,    r/w) Number of images acquired since last reset */
     ADNumImagesCounter, /**< (asynInt32,    r/w) Number of images collected in current acquisition sequence */
     ADNumExposuresCounter, /**< (asynInt32, r/w) Number of exposures collected for current image */
     ADTimeRemaining,    /**< (asynFloat64,  r/w) Acquisition time remaining */
-
-    /* File name related parameters for saving data.
-     * Drivers are not required to implement file saving, but if they do these parameters
-     * should be used.
-     * The driver will normally combine ADFilePath, ADFileName, and ADFileNumber into
-     * a file name that order using the format specification in ADFileTemplate.
-     * For example ADFileTemplate might be "%s%s_%d.tif" */
-    ADFilePath,         /**< (asynOctet,    r/w) The file path */
-    ADFileName,         /**< (asynOctet,    r/w) The file name */
-    ADFileNumber,       /**< (asynInt32,    r/w) The next file number */
-    ADFileTemplate,     /**< (asynOctet,    r/w) The file format template; C-style format string */
-    ADAutoIncrement,    /**< (asynInt32,    r/w) Autoincrement file number; 0=No, 1=Yes */
-    ADFullFileName,     /**< (asynOctet,    r/o) The actual complete file name for the last file saved */
-    ADFileFormat,       /**< (asynInt32,    r/w) The data format to use for saving the file.  */
-    ADAutoSave,         /**< (asynInt32,    r/w) Automatically save files */
-    ADWriteFile,        /**< (asynInt32,    r/w) Manually save the most recent image to a file when value=1 */
-    ADReadFile,         /**< (asynInt32,    r/w) Manually read file when value=1 */
-    ADFileWriteMode,    /**< (asynInt32,    r/w) File saving mode (ADFileMode_t) */
-    ADFileNumCapture,   /**< (asynInt32,    r/w) Number of images to capture */
-    ADFileNumCaptured,  /**< (asynInt32,    r/o) Number of images already captured */
-    ADFileCapture,      /**< (asynInt32,    r/w) Start or stop capturing images */
 
     /* Status reading */
     ADReadStatus,      /**< (asynInt32,     r/w) Write 1 to force a read of detector status */
@@ -173,12 +129,8 @@ typedef enum
     ADStringToServer,   /**< (asynOctet,    r/o) String sent to server for message-based drivers */
     ADStringFromServer, /**< (asynOctet,    r/o) String received from server for message-based drivers */
 
-    /* The detector array data */
-    NDArrayData,        /**< (asynGenericPointer,   r/w) NDArray data */
-    ADArrayCallbacks,   /**< (asynInt32,    r/w) Do callbacks with array data (0=No, 1=Yes) */
-
-    ADFirstDriverParam  /**< The last standard driver parameter; 
-                          * drivers must begin their detector-specific parameter enums with this value */
+    ADLastStdParam      /**< The last standard driver parameter; 
+                          * Drivers must begin their detector-specific parameter enums with this value */
 } ADStdDriverParam_t;
 
 /** If DEFINE_AD_STANDARD_PARAMS is true then these parameter strings are defined
@@ -187,8 +139,6 @@ typedef enum
   * corresponding enum value in pasynUser->reason */
 #ifdef DEFINE_AD_STANDARD_PARAMS
 static asynParamString_t ADStdDriverParamString[] = {
-    {ADPortNameSelf,   "PORT_NAME_SELF"},
-
     {ADManufacturer,   "MANUFACTURER"},
     {ADModel,          "MODEL"       },
 
@@ -206,12 +156,6 @@ static asynParamString_t ADStdDriverParamString[] = {
     {ADReverseX,       "REVERSE_X"   },
     {ADReverseY,       "REVERSE_Y"   },
 
-    {ADImageSizeX,     "IMAGE_SIZE_X"},
-    {ADImageSizeY,     "IMAGE_SIZE_Y"},
-    {ADImageSizeZ,     "IMAGE_SIZE_Z"},
-    {ADImageSize,      "IMAGE_SIZE"  },
-    {ADDataType,       "DATA_TYPE"   },
-    {ADColorMode,      "COLOR_MODE"  },
     {ADFrameType,      "FRAME_TYPE"  },
     {ADImageMode,      "IMAGE_MODE"  },
     {ADNumExposures,   "NEXPOSURES"  },
@@ -234,31 +178,11 @@ static asynParamString_t ADStdDriverParamString[] = {
 
     {ADTemperature,    "TEMPERATURE" },
 
-    {ADImageCounter,   "IMAGE_COUNTER" },
-
-    {ADFilePath,       "FILE_PATH"     },
-    {ADFileName,       "FILE_NAME"     },
-    {ADFileNumber,     "FILE_NUMBER"   },
-    {ADFileTemplate,   "FILE_TEMPLATE" },
-    {ADAutoIncrement,  "AUTO_INCREMENT"},
-    {ADFullFileName,   "FULL_FILE_NAME"},
-    {ADFileFormat,     "FILE_FORMAT"   },
-    {ADAutoSave,       "AUTO_SAVE"     },
-    {ADWriteFile,      "WRITE_FILE"    },
-    {ADReadFile,       "READ_FILE"     },
-    {ADFileWriteMode,  "WRITE_MODE"    },
-    {ADFileNumCapture, "NUM_CAPTURE"   },
-    {ADFileNumCaptured,"NUM_CAPTURED"  },
-    {ADFileCapture,    "CAPTURE"       },
-
     {ADReadStatus,     "READ_STATUS"     },
 
     {ADStatusMessage,  "STATUS_MESSAGE"     },
     {ADStringToServer, "STRING_TO_SERVER"   },
     {ADStringFromServer,"STRING_FROM_SERVER"},
-
-    {NDArrayData,      "NDARRAY_DATA"  },
-    {ADArrayCallbacks, "ARRAY_CALLBACKS"  },
 };
 
 #define NUM_AD_STANDARD_PARAMS (sizeof(ADStdDriverParamString)/sizeof(ADStdDriverParamString[0]))
