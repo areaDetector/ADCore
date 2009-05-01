@@ -55,45 +55,6 @@ void ADDriver::setShutter(int open)
     }
 }
 
-/** Build a file name from component parts.
-  * \param[in] maxChars  The size of the fullFileName string.
-  * \param fullFileName The constructed file name.
-  * 
-  * This is a convenience function that constructs a complete file name
-  * from the ADFilePath, ADFileName, ADFileNumber, and
-  * ADFileTemplate parameters. If ADAutoIncrement is true then it increments the
-  * ADFileNumber after creating the file name.
-  */
-int ADDriver::createFileName(int maxChars, char *fullFileName)
-{
-    /* Formats a complete file name from the components defined in ADStdDriverParams.h */
-    int status = asynSuccess;
-    char filePath[MAX_FILENAME_LEN];
-    char fileName[MAX_FILENAME_LEN];
-    char fileTemplate[MAX_FILENAME_LEN];
-    int fileNumber;
-    int autoIncrement;
-    int len;
-
-    status |= getStringParam(ADFilePath, sizeof(filePath), filePath);
-    status |= getStringParam(ADFileName, sizeof(fileName), fileName);
-    status |= getStringParam(ADFileTemplate, sizeof(fileTemplate), fileTemplate);
-    status |= getIntegerParam(ADFileNumber, &fileNumber);
-    status |= getIntegerParam(ADAutoIncrement, &autoIncrement);
-    if (status) return(status);
-    len = epicsSnprintf(fullFileName, maxChars, fileTemplate,
-                        filePath, fileName, fileNumber);
-    if (len < 0) {
-        status |= asynError;
-        return(status);
-    }
-    if (autoIncrement) {
-        fileNumber++;
-        status |= setIntegerParam(ADFileNumber, fileNumber);
-    }
-    return(status);
-}
-
 /** Sets an int32 parameter.
   * \param[in] pasynUser asynUser structure that contains the function code in pasynUser->reason. 
   * \param[in] value The value for this parameter 
@@ -144,10 +105,16 @@ asynStatus ADDriver::drvUserCreate(asynUser *pasynUser,
                                        const char *drvInfo, 
                                        const char **pptypeName, size_t *psize)
 {
+    asynStatus status;
     //const char *functionName = "drvUserCreate";
     
-    return this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize, 
-                                    ADStdDriverParamString, NUM_AD_STANDARD_PARAMS);
+    /* See if this is one of our standard parameters */
+    status = this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize, 
+                                      ADStdDriverParamString, NUM_AD_STANDARD_PARAMS);
+                                      
+    /* If not then see if it is a base class parameter */
+    if (status) status = asynNDArrayDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
+    return(status);
 }
 
 
@@ -170,7 +137,6 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int paramTableSize, int ma
     //char *functionName = "ADDriver";
 
     /* Set some default values for parameters */
-    setStringParam(ADPortNameSelf, portName);
     setStringParam(ADManufacturer, "Unknown");
     setStringParam(ADModel,        "Unknown");
     setDoubleParam (ADGain,         1.0);
@@ -184,12 +150,6 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int paramTableSize, int ma
     setIntegerParam(ADMaxSizeY,     1);
     setIntegerParam(ADReverseX,     0);
     setIntegerParam(ADReverseY,     0);
-    setIntegerParam(ADImageSizeX,   0);
-    setIntegerParam(ADImageSizeY,   0);
-    setIntegerParam(ADImageSizeZ,   0);
-    setIntegerParam(ADImageSize,    0);
-    setIntegerParam(ADDataType,     NDUInt8);
-    setIntegerParam(ADColorMode,    NDColorModeMono);
     setIntegerParam(ADFrameType,    ADFrameNormal);
     setIntegerParam(ADImageMode,    ADImageContinuous);
     setIntegerParam(ADTriggerMode,  0);
@@ -199,7 +159,6 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int paramTableSize, int ma
     setDoubleParam (ADAcquirePeriod,0.0);
     setIntegerParam(ADStatus,       ADStatusIdle);
     setIntegerParam(ADAcquire,      0);
-    setIntegerParam(ADImageCounter, 0);
     setIntegerParam(ADNumImagesCounter, 0);
     setIntegerParam(ADNumExposuresCounter, 0);
     setDoubleParam( ADTimeRemaining, 0.0);
@@ -210,23 +169,7 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int paramTableSize, int ma
     setDoubleParam (ADShutterCloseDelay, 0.0);
     setDoubleParam (ADTemperature, 0.0);
 
-    setStringParam (ADFilePath,     "");
-    setStringParam (ADFileName,     "");
-    setIntegerParam(ADFileNumber,   0);
-    setStringParam (ADFileTemplate, "");
-    setIntegerParam(ADAutoIncrement, 0);
-    setStringParam (ADFullFileName, "");
-    setIntegerParam(ADFileFormat,   0);
-    setIntegerParam(ADAutoSave,     0);
-    setIntegerParam(ADWriteFile,    0);
-    setIntegerParam(ADReadFile,     0);
-    setIntegerParam(ADFileWriteMode,   0);
-    setIntegerParam(ADFileNumCapture,  0);
-    setIntegerParam(ADFileNumCaptured, 0);
-    setIntegerParam(ADFileCapture,     0);
-
     setStringParam (ADStatusMessage,  "");
     setStringParam (ADStringToServer, "");
     setStringParam (ADStringFromServer,  "");
-    setIntegerParam(ADArrayCallbacks, 1);
 }
