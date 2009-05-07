@@ -15,7 +15,6 @@
 #include <epicsThread.h>
 #include <asynStandardInterfaces.h>
 
-#include "ADStdDriverParams.h"
 #include "ADDriver.h"
 
 static const char *driverName = "ADDriver";
