@@ -14,10 +14,11 @@
 
 #include <epicsString.h>
 #include <epicsMutex.h>
+#include <iocsh.h>
+#include <epicsExport.h>
 
 #include "NDArray.h"
 #include "NDPluginROI.h"
-#include "drvNDROI.h"
 
 static asynParamString_t NDPluginROINParamString[] = {
     {NDPluginROIName,                   "NAME"},
@@ -649,16 +650,6 @@ asynStatus NDPluginROI::drvUserCreate(asynUser *pasynUser,
 }
     
 
-extern "C" int drvNDROIConfigure(const char *portName, int queueSize, int blockingCallbacks, 
-                                 const char *NDArrayPort, int NDArrayAddr, int maxROIs, 
-                                 int maxBuffers, size_t maxMemory,
-                                 int priority, int stackSize)
-{
-    new NDPluginROI(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxROIs, 
-                    maxBuffers, maxMemory, priority, stackSize);
-    return(asynSuccess);
-}
-
 /** Constructor for NDPluginROI; most parameters are simply passed to NDPluginDriver::NDPluginDriver.
   * After calling the base class constructor this method sets reasonable default values for all of the 
   * ROI parameters.
@@ -746,3 +737,50 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
     status = connectToArrayPort();
 }
 
+/** Configuration command */
+extern "C" int NDROIConfigure(const char *portName, int queueSize, int blockingCallbacks, 
+                                 const char *NDArrayPort, int NDArrayAddr, int maxROIs, 
+                                 int maxBuffers, size_t maxMemory,
+                                 int priority, int stackSize)
+{
+    new NDPluginROI(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxROIs, 
+                    maxBuffers, maxMemory, priority, stackSize);
+    return(asynSuccess);
+}
+
+/* EPICS iocsh shell commands */
+static const iocshArg initArg0 = { "portName",iocshArgString};
+static const iocshArg initArg1 = { "frame queue size",iocshArgInt};
+static const iocshArg initArg2 = { "blocking callbacks",iocshArgInt};
+static const iocshArg initArg3 = { "NDArrayPort",iocshArgString};
+static const iocshArg initArg4 = { "NDArrayAddr",iocshArgInt};
+static const iocshArg initArg5 = { "maxROIs",iocshArgInt};
+static const iocshArg initArg6 = { "maxBuffers",iocshArgInt};
+static const iocshArg initArg7 = { "maxMemory",iocshArgInt};
+static const iocshArg initArg8 = { "priority",iocshArgInt};
+static const iocshArg initArg9 = { "stackSize",iocshArgInt};
+static const iocshArg * const initArgs[] = {&initArg0,
+                                            &initArg1,
+                                            &initArg2,
+                                            &initArg3,
+                                            &initArg4,
+                                            &initArg5,
+                                            &initArg6,
+                                            &initArg7,
+                                            &initArg8,
+                                            &initArg9};
+static const iocshFuncDef initFuncDef = {"NDROIConfigure",10,initArgs};
+static void initCallFunc(const iocshArgBuf *args)
+{
+    NDROIConfigure(args[0].sval, args[1].ival, args[2].ival, 
+                   args[3].sval, args[4].ival, args[5].ival, 
+                   args[6].ival, args[7].ival, args[8].ival, 
+                   args[9].ival);
+}
+
+extern "C" void NDROIRegister(void)
+{
+    iocshRegister(&initFuncDef,initCallFunc);
+}
+
+epicsExportRegistrar(NDROIRegister);
