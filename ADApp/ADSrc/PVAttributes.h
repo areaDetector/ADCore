@@ -35,6 +35,7 @@ public:
     int addPV(const char *pName, const char *pDescription, chtype dbrType);
     int removePV(const char *pName);
     int clearPVs();
+    int readPVAttributesFile(const char *fileName);
     int getValues(NDArray *pArray);
     int report(int details);
 
@@ -61,9 +62,9 @@ public:
 private:
     
     ELLNODE node;   /**< This must come first because ELLNODE must have the same address as PVAttr object */
-	NDAttribute *pNDAttribute;
-    chid		chanId;
-    evid		eventId;
+    NDAttribute *pNDAttribute;
+    chid        chanId;
+    evid        eventId;
     char        *PVName;
     chtype      dbrType;
     NDAttrDataType_t dataType;
