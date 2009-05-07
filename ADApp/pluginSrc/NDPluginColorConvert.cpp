@@ -15,9 +15,10 @@
 
 #include <epicsMutex.h>
 #include <epicsString.h>
+#include <iocsh.h>
+#include <epicsExport.h>
 
 #include "NDPluginColorConvert.h"
-#include "drvNDColorConvert.h"
 #include "PvApi.h"
 
 static asynParamString_t NDPluginColorConvertParamString[] = {
@@ -385,16 +386,6 @@ asynStatus NDPluginColorConvert::drvUserCreate(asynUser *pasynUser,
 }
 
 
-extern "C" int drvNDColorConvertConfigure(const char *portName, int queueSize, int blockingCallbacks, 
-                                          const char *NDArrayPort, int NDArrayAddr, 
-                                          int maxBuffers, size_t maxMemory,
-                                          int priority, int stackSize)
-{  
-    new NDPluginColorConvert(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, 
-                             maxBuffers, maxMemory, priority, stackSize);
-    return(asynSuccess);
-}
-
 /** Constructor for NDPluginColorConvert; most parameters are simply passed to NDPluginDriver::NDPluginDriver.
   * After calling the base class constructor this method sets reasonable default values for all of the 
   * ROI parameters.
@@ -437,3 +428,46 @@ NDPluginColorConvert::NDPluginColorConvert(const char *portName, int queueSize, 
     status = connectToArrayPort();
 }
 
+extern "C" int NDColorConvertConfigure(const char *portName, int queueSize, int blockingCallbacks, 
+                                          const char *NDArrayPort, int NDArrayAddr, 
+                                          int maxBuffers, size_t maxMemory,
+                                          int priority, int stackSize)
+{  
+    new NDPluginColorConvert(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, 
+                             maxBuffers, maxMemory, priority, stackSize);
+    return(asynSuccess);
+}
+
+/** EPICS iocsh shell commands */
+static const iocshArg initArg0 = { "portName",iocshArgString};
+static const iocshArg initArg1 = { "frame queue size",iocshArgInt};
+static const iocshArg initArg2 = { "blocking callbacks",iocshArgInt};
+static const iocshArg initArg3 = { "NDArrayPort",iocshArgString};
+static const iocshArg initArg4 = { "NDArrayAddr",iocshArgInt};
+static const iocshArg initArg5 = { "maxBuffers",iocshArgInt};
+static const iocshArg initArg6 = { "maxMemory",iocshArgInt};
+static const iocshArg initArg7 = { "priority",iocshArgInt};
+static const iocshArg initArg8 = { "stackSize",iocshArgInt};
+static const iocshArg * const initArgs[] = {&initArg0,
+                                            &initArg1,
+                                            &initArg2,
+                                            &initArg3,
+                                            &initArg4,
+                                            &initArg5,
+                                            &initArg6,
+                                            &initArg7,
+                                            &initArg8};
+static const iocshFuncDef initFuncDef = {"NDColorConvertConfigure",9,initArgs};
+static void initCallFunc(const iocshArgBuf *args)
+{
+    NDColorConvertConfigure(args[0].sval, args[1].ival, args[2].ival, 
+                               args[3].sval, args[4].ival, args[5].ival, 
+                               args[6].ival, args[7].ival, args[8].ival);
+}
+
+extern "C" void NDColorConvertRegister(void)
+{
+    iocshRegister(&initFuncDef,initCallFunc);
+}
+
+epicsExportRegistrar(NDColorConvertRegister);
