@@ -20,10 +20,11 @@
 #include <epicsEvent.h>
 #include <epicsMessageQueue.h>
 #include <cantProceed.h>
+#include <iocsh.h>
+#include <epicsExport.h>
 
 #include "NDArray.h"
 #include "NDPluginStdArrays.h"
-#include "drvNDStdArrays.h"
 
 /* The command strings are the userParam argument for asyn device support links
  * The asynDrvUser interface in this driver parses these strings and puts the
@@ -292,17 +293,6 @@ asynStatus NDPluginStdArrays::drvUserCreate(asynUser *pasynUser,
 }
 
 
-/* Configuration routine.  Called directly, or from the iocsh function in drvNDStdArraysEpics */
-
-extern "C" int drvNDStdArraysConfigure(const char *portName, int queueSize, int blockingCallbacks, 
-                                       const char *NDArrayPort, int NDArrayAddr, size_t maxMemory,
-                                       int priority, int stackSize)
-{
-    new NDPluginStdArrays(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxMemory,
-                          priority, stackSize);
-    return(asynSuccess);
-}
-
 /** Constructor for NDPluginStdArrays; all parameters are simply passed to NDPluginDriver::NDPluginDriver.
   * This plugin cannot block (ASYN_CANBLOCK=0) and is not multi-device (ASYN_MULTIDEVICE=0).
   * It allocates a maximum of 2 NDArray buffers for internal use.
@@ -345,3 +335,45 @@ NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int bl
     status = connectToArrayPort();
 }
 
+/* Configuration routine.  Called directly, or from the iocsh function */
+extern "C" int NDStdArraysConfigure(const char *portName, int queueSize, int blockingCallbacks, 
+                                       const char *NDArrayPort, int NDArrayAddr, size_t maxMemory,
+                                       int priority, int stackSize)
+{
+    new NDPluginStdArrays(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxMemory,
+                          priority, stackSize);
+    return(asynSuccess);
+}
+
+
+/* EPICS iocsh shell commands */
+static const iocshArg initArg0 = { "portName",iocshArgString};
+static const iocshArg initArg1 = { "frame queue size",iocshArgInt};
+static const iocshArg initArg2 = { "blocking callbacks",iocshArgInt};
+static const iocshArg initArg3 = { "NDArrayPort",iocshArgString};
+static const iocshArg initArg4 = { "NDArrayAddr",iocshArgInt};
+static const iocshArg initArg5 = { "maxMemory",iocshArgInt};
+static const iocshArg initArg6 = { "priority",iocshArgInt};
+static const iocshArg initArg7 = { "stack size",iocshArgInt};
+static const iocshArg * const initArgs[] = {&initArg0,
+                                            &initArg1,
+                                            &initArg2,
+                                            &initArg3,
+                                            &initArg4,
+                                            &initArg5,
+                                            &initArg6,
+                                            &initArg7};
+static const iocshFuncDef initFuncDef = {"NDStdArraysConfigure",8,initArgs};
+static void initCallFunc(const iocshArgBuf *args)
+{
+    NDStdArraysConfigure(args[0].sval, args[1].ival, args[2].ival, 
+                            args[3].sval, args[4].ival, args[5].ival,
+                            args[6].ival, args[7].ival);
+}
+
+extern "C" void NDStdArraysRegister(void)
+{
+    iocshRegister(&initFuncDef,initCallFunc);
+}
+
+epicsExportRegistrar(NDStdArraysRegister);
