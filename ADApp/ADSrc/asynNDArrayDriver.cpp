@@ -23,6 +23,38 @@
 
 static const char *driverName = "asynNDArrayDriver";
 
+/** drvInfo strings for NDStdDriverParams */
+static asynParamString_t NDStdDriverParamString[] = {
+    {NDPortNameSelf,   "PORT_NAME_SELF"},
+    {NDArraySizeX,     "ARRAY_SIZE_X"},
+    {NDArraySizeY,     "ARRAY_SIZE_Y"},
+    {NDArraySizeZ,     "ARRAY_SIZE_Z"},
+    {NDArraySize,      "ARRAY_SIZE"  },
+    {NDDataType,       "DATA_TYPE"   },
+    {NDColorMode,      "COLOR_MODE"  },
+
+    {NDArrayCounter,   "ARRAY_COUNTER" },
+
+    {NDFilePath,       "FILE_PATH"     },
+    {NDFileName,       "FILE_NAME"     },
+    {NDFileNumber,     "FILE_NUMBER"   },
+    {NDFileTemplate,   "FILE_TEMPLATE" },
+    {NDAutoIncrement,  "AUTO_INCREMENT"},
+    {NDFullFileName,   "FULL_FILE_NAME"},
+    {NDFileFormat,     "FILE_FORMAT"   },
+    {NDAutoSave,       "AUTO_SAVE"     },
+    {NDWriteFile,      "WRITE_FILE"    },
+    {NDReadFile,       "READ_FILE"     },
+    {NDFileWriteMode,  "WRITE_MODE"    },
+    {NDFileNumCapture, "NUM_CAPTURE"   },
+    {NDFileNumCaptured,"NUM_CAPTURED"  },
+    {NDFileCapture,    "CAPTURE"       },
+
+    {NDArrayData,      "NDARRAY_DATA"  },
+    {NDArrayCallbacks, "ARRAY_CALLBACKS"  }
+};
+
+
 /** Build a file name from component parts.
   * \param[in] maxChars  The size of the fullFileName string.
   * \param[out] fullFileName The constructed file name including the file path.
@@ -103,7 +135,54 @@ int asynNDArrayDriver::createFileName(int maxChars, char *filePath, char *fileNa
 
 int asynNDArrayDriver::readPVAttributesFile(const char *fileName)
 {
-    return(asynSuccess);
+    //const char *functionName = "readAttributesFile";
+    
+    /* If the PVAttributes object does not yet exist then create it */
+    if (!this->pPVAttributes) this->pPVAttributes = new PVAttributes;
+    /* Clear any existing PVs */
+    return this->pPVAttributes->readPVAttributesFile(fileName);
+}
+
+/** Called when asyn clients call pasynOctet->write().
+  * This function performs actions for some parameters, including NDAttributesFile.
+  * For all parameters it sets the value in the parameter library and calls any registered callbacks..
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Address of the string to write.
+  * \param[in] nChars Number of characters to write.
+  * \param[out] nActual Number of characters actually written. */
+asynStatus asynNDArrayDriver::writeOctet(asynUser *pasynUser, const char *value, 
+                                    size_t nChars, size_t *nActual)
+{
+    int addr=0;
+    int function = pasynUser->reason;
+    asynStatus status = asynSuccess;
+    const char *functionName = "writeOctet";
+
+    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
+    /* Set the parameter in the parameter library. */
+    status = (asynStatus)setStringParam(addr, function, (char *)value);
+
+    switch(function) {
+        case NDAttributesFile:
+            this->readPVAttributesFile(value);
+            break;
+        default:
+            break;
+    }
+    
+     /* Do callbacks so higher layers see any changes */
+    status = (asynStatus)callParamCallbacks(addr, addr);
+
+    if (status) 
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
+                  "%s:%s: status=%d, function=%d, value=%s", 
+                  driverName, functionName, status, function, value);
+    else        
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
+              "%s:%s: function=%d, value=%s\n", 
+              driverName, functionName, function, value);
+    *nActual = nChars;
+    return status;
 }
 
 /* asynGenericPointer interface methods */
