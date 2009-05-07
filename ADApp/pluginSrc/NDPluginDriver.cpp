@@ -1,5 +1,5 @@
 /*
- * drvNDPlugin.c
+ * NDPluginDriver.cpp
  * 
  * Asyn driver for callbacks to save area detector data to files.
  *
