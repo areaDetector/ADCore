@@ -21,8 +21,6 @@
 #include <epicsMessageQueue.h>
 #include <cantProceed.h>
 
-#include "NDStdDriverParams.h"
-#include "NDArray.h"
 #include "NDPluginFile.h"
 
 
@@ -128,7 +126,7 @@ asynStatus NDPluginFile::readFileBase(void)
   * does not support NDPulginFileMultiple. Calls writeFile in the derived class. */
 asynStatus NDPluginFile::writeFileBase() 
 {
-    asynStatus status = asynSuccess;
+    int status = asynSuccess;
     int fileWriteMode;
     int numCapture, numCaptured;
     int i;
@@ -156,35 +154,45 @@ asynStatus NDPluginFile::writeFileBase()
         case NDFileModeSingle:
             setIntegerParam(NDWriteFile, 1);
             callParamCallbacks();
-            this->openFileBase(NDFileModeWrite, this->pArrays[0]);
-            this->unlock();
-            epicsMutexLock(this->fileMutexId);
-            status = this->writeFile(this->pArrays[0]);
-            epicsMutexUnlock(this->fileMutexId);
-            this->lock();
-            this->closeFileBase();
-            setIntegerParam(NDWriteFile, 0);
-            callParamCallbacks();
+            status = this->openFileBase(NDFileModeWrite, this->pArrays[0]);
+            if (status == asynSuccess) {
+                this->unlock();
+                epicsMutexLock(this->fileMutexId);
+                status = this->writeFile(this->pArrays[0]);
+                epicsMutexUnlock(this->fileMutexId);
+                this->lock();
+                status += this->closeFileBase();
+                setIntegerParam(NDWriteFile, 0);
+                callParamCallbacks();
+            }
             break;
         case NDFileModeCapture:
             /* Write the file */
             setIntegerParam(NDWriteFile, 1);
             callParamCallbacks();
-            if (this->supportsMultipleArrays) this->openFileBase(NDFileModeWrite | NDFileModeMultiple, this->pArrays[0]);
-            for (i=0; i<numCaptured; i++) {
-                pArray = this->pCapture[i];
-                if (!this->supportsMultipleArrays) this->openFileBase(NDFileModeWrite, pArray);
-                epicsMutexLock(this->fileMutexId);
-                this->writeFile(pArray);
-                epicsMutexUnlock(this->fileMutexId);
-                if (!this->supportsMultipleArrays) this->closeFileBase();
+            if (this->supportsMultipleArrays)
+                status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, this->pArrays[0]);
+            if (status == asynSuccess) {
+                for (i=0; i<numCaptured; i++) {
+                    pArray = this->pCapture[i];
+                    if (!this->supportsMultipleArrays)
+                        status = this->openFileBase(NDFileModeWrite, pArray);
+                    if (status == asynSuccess) {
+                        epicsMutexLock(this->fileMutexId);
+                        status = this->writeFile(pArray);
+                        epicsMutexUnlock(this->fileMutexId);
+                        if (!this->supportsMultipleArrays)
+                            status += this->closeFileBase();
+                    }
+                }
             }
             /* Free the capture buffer */
             for (i=0; i<numCapture; i++) {
                 pArray = this->pCapture[i];
                 delete pArray;
             }
-            if (this->supportsMultipleArrays) this->closeFileBase();
+            if (this->supportsMultipleArrays) 
+                status = this->closeFileBase();
             free(this->pCapture);
             this->pCapture = NULL;
             setIntegerParam(NDFileNumCaptured, 0);
@@ -205,7 +213,7 @@ asynStatus NDPluginFile::writeFileBase()
             break;
     }
     
-    return(status);
+    return((asynStatus)status);
 }
 
 /** Handles the logic for when NDFileCapture changes state, starting or stopping capturing or streaming NDArrays
