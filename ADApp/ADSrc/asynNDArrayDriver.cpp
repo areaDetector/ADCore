@@ -18,8 +18,6 @@
 #include <cantProceed.h>
 
 #include "asynNDArrayDriver.h"
-#define DEFINE_ND_STANDARD_PARAMS 1
-#include "NDStdDriverParams.h"
 
 static const char *driverName = "asynNDArrayDriver";
 
@@ -66,7 +64,7 @@ static asynParamString_t NDStdDriverParamString[] = {
   */
 int asynNDArrayDriver::createFileName(int maxChars, char *fullFileName)
 {
-    /* Formats a complete file name from the components defined in NDStdDriverParams.h */
+    /* Formats a complete file name from the components defined in NDStdDriverParams */
     int status = asynSuccess;
     char filePath[MAX_FILENAME_LEN];
     char fileName[MAX_FILENAME_LEN];
@@ -106,7 +104,7 @@ int asynNDArrayDriver::createFileName(int maxChars, char *fullFileName)
   */
 int asynNDArrayDriver::createFileName(int maxChars, char *filePath, char *fileName)
 {
-    /* Formats a complete file name from the components defined in NDStdDriverParams.h */
+    /* Formats a complete file name from the components defined in NDStdDriverParams */
     int status = asynSuccess;
     char fileTemplate[MAX_FILENAME_LEN];
     char name[MAX_FILENAME_LEN];
