@@ -7,7 +7,6 @@
 #include <asynStandardInterfaces.h>
 
 #include "asynNDArrayDriver.h"
-#include "NDStdDriverParams.h"
 
 /** Parameters that are common to all NDArray plugins */
 typedef enum
