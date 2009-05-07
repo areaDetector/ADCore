@@ -133,61 +133,6 @@ typedef enum
                           * Drivers must begin their detector-specific parameter enums with this value */
 } ADStdDriverParam_t;
 
-/** If DEFINE_AD_STANDARD_PARAMS is true then these parameter strings are defined
-  * for the userParam argument for asyn device support links
-  * The asynDrvUser interface in the drivers parses these strings and puts the
-  * corresponding enum value in pasynUser->reason */
-#ifdef DEFINE_AD_STANDARD_PARAMS
-static asynParamString_t ADStdDriverParamString[] = {
-    {ADManufacturer,   "MANUFACTURER"},
-    {ADModel,          "MODEL"       },
-
-    {ADGain,           "GAIN"        },
-
-    {ADBinX,           "BIN_X"       },
-    {ADBinY,           "BIN_Y"       },
-
-    {ADMinX,           "MIN_X"       },
-    {ADMinY,           "MIN_Y"       },
-    {ADSizeX,          "SIZE_X"      },
-    {ADSizeY,          "SIZE_Y"      },
-    {ADMaxSizeX,       "MAX_SIZE_X"  },
-    {ADMaxSizeY,       "MAX_SIZE_Y"  },
-    {ADReverseX,       "REVERSE_X"   },
-    {ADReverseY,       "REVERSE_Y"   },
-
-    {ADFrameType,      "FRAME_TYPE"  },
-    {ADImageMode,      "IMAGE_MODE"  },
-    {ADNumExposures,   "NEXPOSURES"  },
-    {ADNumExposuresCounter, "NEXPOSURES_COUNTER"  },
-    {ADNumImages,      "NIMAGES"     },
-    {ADNumImagesCounter, "NIMAGES_COUNTER"},
-    {ADAcquireTime,    "ACQ_TIME"    },
-    {ADAcquirePeriod,  "ACQ_PERIOD"  },
-    {ADTimeRemaining,  "TIME_REMAINING"},
-    {ADStatus,         "STATUS"      },
-    {ADTriggerMode,    "TRIGGER_MODE"},
-    {ADAcquire,        "ACQUIRE"     },
-
-    {ADShutterControl,   "SHUTTER_CONTROL"},
-    {ADShutterControlEPICS, "SHUTTER_CONTROL_EPICS"},
-    {ADShutterStatus,    "SHUTTER_STATUS"},
-    {ADShutterMode,      "SHUTTER_MODE"        },
-    {ADShutterOpenDelay, "SHUTTER_OPEN_DELAY"  },
-    {ADShutterCloseDelay,"SHUTTER_CLOSE_DELAY" },
-
-    {ADTemperature,    "TEMPERATURE" },
-
-    {ADReadStatus,     "READ_STATUS"     },
-
-    {ADStatusMessage,  "STATUS_MESSAGE"     },
-    {ADStringToServer, "STRING_TO_SERVER"   },
-    {ADStringFromServer,"STRING_FROM_SERVER"},
-};
-
-#define NUM_AD_STANDARD_PARAMS (sizeof(ADStdDriverParamString)/sizeof(ADStdDriverParamString[0]))
-#endif
-
 #ifdef __cplusplus
 }
 #endif

@@ -15,14 +15,59 @@
 #include <epicsThread.h>
 #include <asynStandardInterfaces.h>
 
-/** Defining this will create the static table of standard parameters in ADInterface.h
-  * Must be defined before including ADStdDriverParams.h */
-#define DEFINE_AD_STANDARD_PARAMS 1
 #include "ADStdDriverParams.h"
 #include "ADDriver.h"
 
-
 static const char *driverName = "ADDriver";
+
+static asynParamString_t ADStdDriverParamString[] = {
+    {ADManufacturer,   "MANUFACTURER"},
+    {ADModel,          "MODEL"       },
+
+    {ADGain,           "GAIN"        },
+
+    {ADBinX,           "BIN_X"       },
+    {ADBinY,           "BIN_Y"       },
+
+    {ADMinX,           "MIN_X"       },
+    {ADMinY,           "MIN_Y"       },
+    {ADSizeX,          "SIZE_X"      },
+    {ADSizeY,          "SIZE_Y"      },
+    {ADMaxSizeX,       "MAX_SIZE_X"  },
+    {ADMaxSizeY,       "MAX_SIZE_Y"  },
+    {ADReverseX,       "REVERSE_X"   },
+    {ADReverseY,       "REVERSE_Y"   },
+
+    {ADFrameType,      "FRAME_TYPE"  },
+    {ADImageMode,      "IMAGE_MODE"  },
+    {ADNumExposures,   "NEXPOSURES"  },
+    {ADNumExposuresCounter, "NEXPOSURES_COUNTER"  },
+    {ADNumImages,      "NIMAGES"     },
+    {ADNumImagesCounter, "NIMAGES_COUNTER"},
+    {ADAcquireTime,    "ACQ_TIME"    },
+    {ADAcquirePeriod,  "ACQ_PERIOD"  },
+    {ADTimeRemaining,  "TIME_REMAINING"},
+    {ADStatus,         "STATUS"      },
+    {ADTriggerMode,    "TRIGGER_MODE"},
+    {ADAcquire,        "ACQUIRE"     },
+
+    {ADShutterControl,   "SHUTTER_CONTROL"},
+    {ADShutterControlEPICS, "SHUTTER_CONTROL_EPICS"},
+    {ADShutterStatus,    "SHUTTER_STATUS"},
+    {ADShutterMode,      "SHUTTER_MODE"        },
+    {ADShutterOpenDelay, "SHUTTER_OPEN_DELAY"  },
+    {ADShutterCloseDelay,"SHUTTER_CLOSE_DELAY" },
+
+    {ADTemperature,    "TEMPERATURE" },
+
+    {ADReadStatus,     "READ_STATUS"     },
+
+    {ADStatusMessage,  "STATUS_MESSAGE"     },
+    {ADStringToServer, "STRING_TO_SERVER"   },
+    {ADStringFromServer,"STRING_FROM_SERVER"},
+};
+
+#define NUM_AD_STANDARD_PARAMS (sizeof(ADStdDriverParamString)/sizeof(ADStdDriverParamString[0]))
 
 /** Set the shutter position.
   * This method will open (1) or close (0) the shutter if
