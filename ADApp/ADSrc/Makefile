@@ -20,8 +20,6 @@ DBD += ADSupport.dbd
 
 INC += NDArray.h
 INC += PVAttributes.h
-INC += ADStdDriverParams.h
-INC += NDStdDriverParams.h
 INC += asynNDArrayDriver.h
 INC += ADDriver.h
 
@@ -30,14 +28,22 @@ LIB_SRCS += NDArray.cpp
 LIB_SRCS += asynNDArrayDriver.cpp
 LIB_SRCS += ADDriver.cpp
 LIB_SRCS += PVAttributes.cpp
+LIB_SRCS += tinyxml.cpp tinystr.cpp tinyxmlparser.cpp tinyxmlerror.cpp
+
 LIB_LIBS += asyn
 LIB_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 PROD += testPVAttributes
-PROD_SRCS += testPVAttributes.cpp
-PROD_LIBS += ADBase
-PROD_LIBS += asyn
-PROD_LIBS += $(EPICS_BASE_IOC_LIBS)
+testPVAttributes_SRCS += testPVAttributes.cpp
+testPVAttributes_LIBS += ADBase
+testPVAttributes_LIBS += asyn
+testPVAttributes_LIBS += $(EPICS_BASE_IOC_LIBS)
+
+PROD += testPVAttributes1
+testPVAttributes1_SRCS += testPVAttributes1.cpp
+testPVAttributes1_LIBS += ADBase
+testPVAttributes1_LIBS += asyn
+testPVAttributes1_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 include $(TOP)/configure/RULES
 #----------------------------------------
