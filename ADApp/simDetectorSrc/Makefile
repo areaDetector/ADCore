@@ -11,10 +11,8 @@ ifeq (vxWorks,$(findstring vxWorks, $(T_A)))
 CODE_CXXFLAGS=
 endif
 
-
 LIBRARY_IOC = simDetector
 LIB_SRCS += simDetector.cpp
-LIB_SRCS += drvSimDetectorEpics.c
 LIB_LIBS += NDPlugin ADBase netCDF
 LIB_LIBS += calc busy sscan autosave
 LIB_LIBS += asyn
@@ -38,6 +36,9 @@ simDetectorApp_LIBS += asyn
 simDetectorApp_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 simDetectorApp_SYS_LIBS_cygwin32 += rpc
+simDetectorApp_LIBS_WIN32        += libtiff
+simDetectorApp_LIBS_cygwin32     += libtiff
+simDetectorApp_SYS_LIBS_Linux    += tiff jpeg z
 
 #=============================
 
