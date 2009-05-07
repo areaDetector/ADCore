@@ -61,6 +61,8 @@ typedef enum
     NDFileNumCaptured,  /**< (asynInt32,    r/o) Number of arrays already captured */
     NDFileCapture,      /**< (asynInt32,    r/w) Start or stop capturing arrays */
 
+    NDAttributesFile,   /**< (asynOctet,    r/w) Attributes file name */
+
     /* The detector array data */
     NDArrayData,        /**< (asynGenericPointer,   r/w) NDArray data */
     NDArrayCallbacks,   /**< (asynInt32,    r/w) Do callbacks with array data (0=No, 1=Yes) */
@@ -69,44 +71,7 @@ typedef enum
                           *  Derived classes must begin their specific parameter enums with this value */
 } NDStdDriverParam_t;
 
-/** If DEFINE_ND_STANDARD_PARAMS is true then these parameter strings are defined
-  * for the userParam argument for asyn device support links
-  * The asynDrvUser interface in the drivers parses these strings and puts the
-  * corresponding enum value in pasynUser->reason */
-#ifdef DEFINE_ND_STANDARD_PARAMS
-static asynParamString_t NDStdDriverParamString[] = {
-    {NDPortNameSelf,   "PORT_NAME_SELF"},
-    {NDArraySizeX,     "ARRAY_SIZE_X"},
-    {NDArraySizeY,     "ARRAY_SIZE_Y"},
-    {NDArraySizeZ,     "ARRAY_SIZE_Z"},
-    {NDArraySize,      "ARRAY_SIZE"  },
-    {NDDataType,       "DATA_TYPE"   },
-    {NDColorMode,      "COLOR_MODE"  },
-
-    {NDArrayCounter,   "ARRAY_COUNTER" },
-
-    {NDFilePath,       "FILE_PATH"     },
-    {NDFileName,       "FILE_NAME"     },
-    {NDFileNumber,     "FILE_NUMBER"   },
-    {NDFileTemplate,   "FILE_TEMPLATE" },
-    {NDAutoIncrement,  "AUTO_INCREMENT"},
-    {NDFullFileName,   "FULL_FILE_NAME"},
-    {NDFileFormat,     "FILE_FORMAT"   },
-    {NDAutoSave,       "AUTO_SAVE"     },
-    {NDWriteFile,      "WRITE_FILE"    },
-    {NDReadFile,       "READ_FILE"     },
-    {NDFileWriteMode,  "WRITE_MODE"    },
-    {NDFileNumCapture, "NUM_CAPTURE"   },
-    {NDFileNumCaptured,"NUM_CAPTURED"  },
-    {NDFileCapture,    "CAPTURE"       },
-
-    {NDArrayData,      "NDARRAY_DATA"  },
-    {NDArrayCallbacks, "ARRAY_CALLBACKS"  }
-};
-
 #define NUM_ND_STANDARD_PARAMS (sizeof(NDStdDriverParamString)/sizeof(NDStdDriverParamString[0]))
-#endif
-
 #ifdef __cplusplus
 }
 #endif
