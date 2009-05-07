@@ -15,8 +15,6 @@
  * to handle changes in the file contents */
 #define NDTIFFFileVersion 1.0
 
-/* Max String Param Length */
-
 /** Writes NDArrays in the TIFF file format.
     Tagged Image File Format is a file format for storing images.  The format was originally created by Aldus corporation and is
     currently developed by Adobe Systems Incorporated.  This plugin was developed using the libtiff library to write the file.
@@ -36,12 +34,7 @@ public:
     virtual asynStatus closeFile();
 
 private:
-    int arrayDataId;
-    int uniqueIdId;
-    int timeStampId;
-    int nextRecord;
-    int *pAttributeId;
-	TIFF *output;
+    TIFF *output;
 };
 
 #endif
