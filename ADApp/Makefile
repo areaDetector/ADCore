@@ -6,6 +6,7 @@ DIRS += netCDFSrc
 # prosilicaSupport must be built before pluginSrc or prosilicaSrc because it installs
 # header and library files needed by both
 DIRS += prosilicaSupport
+DIRS += tiffSupport
 DIRS += pluginSrc
 pluginSrc_DEPEND_DIRS = ADSrc netCDFSrc prosilicaSupport
 DIRS += simDetectorSrc
