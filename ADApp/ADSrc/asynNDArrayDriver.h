@@ -17,6 +17,8 @@ public:
                       int asynFlags, int autoConnect, int priority, int stackSize);
 
     /* These are the methods that we override from asynPortDriver */
+    virtual asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t maxChars,
+                          size_t *nActual);
     virtual asynStatus readGenericPointer(asynUser *pasynUser, void *genericPointer);
     virtual asynStatus writeGenericPointer(asynUser *pasynUser, void *genericPointer);
     virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo,
