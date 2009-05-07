@@ -11,10 +11,11 @@
 #include <netcdf.h>
 
 #include <epicsStdio.h>
+#include <iocsh.h>
+#include <epicsExport.h>
 
 #include "NDPluginFile.h"
 #include "NDFileNetCDF.h"
-#include "drvNDFileNetCDF.h"
 
 static const char *driverName = "NDFileNetCDF";
 
@@ -164,17 +165,17 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
 
     /* Define the unique data variable. */
     if ((retval = nc_def_var(this->ncId, "uniqueId", NC_INT, 1, 
-			     &dimIds[0], &this->uniqueIdId)))
+                 &dimIds[0], &this->uniqueIdId)))
         ERR(retval);
 
     /* Define the timestamp data variable. */
     if ((retval = nc_def_var(this->ncId, "timeStamp", NC_DOUBLE, 1, 
-			     &dimIds[0], &this->timeStampId)))
+                 &dimIds[0], &this->timeStampId)))
         ERR(retval);
 
     /* Define the array data variable. */
     if ((retval = nc_def_var(this->ncId, "array_data", ncType, pArray->ndims+1,
-			     dimIds, &this->arrayDataId)))
+                 dimIds, &this->arrayDataId)))
         ERR(retval);
 
     /* Create a variable for each attribute in the array */
@@ -223,11 +224,11 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
         }
         if (attrDataType == NDAttrString) {
             if ((retval = nc_def_var(this->ncId, name, ncType, 2,
-			        stringDimIds, &this->pAttributeId[attrCount++])))
+                    stringDimIds, &this->pAttributeId[attrCount++])))
                     ERR(retval);
         } else {
             if ((retval = nc_def_var(this->ncId, name, ncType, 1,
-			         &dimIds[0], &this->pAttributeId[attrCount++])))
+                    &dimIds[0], &this->pAttributeId[attrCount++])))
                     ERR(retval);
         }
         pAttribute = pArray->nextAttribute(pAttribute);
@@ -373,17 +374,6 @@ asynStatus NDFileNetCDF::closeFile()
 }
 
 
-/* Configuration routine.  Called directly, or from the iocsh function in drvNDFileEpics */
-
-extern "C" int NDFileNetCDFConfigure(const char *portName, int queueSize, int blockingCallbacks, 
-                                     const char *NDArrayPort, int NDArrayAddr,
-                                     int priority, int stackSize)
-{
-    new NDFileNetCDF(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                     priority, stackSize);
-    return(asynSuccess);
-}
-
 /** Constructor for NDFileNetCDF; parameters are identical to those for NDPluginFile::NDPluginFile,
     and are passed directly to that base class constructor.
   * After calling the base class constructor this method sets NDPluginFile::supportsMultipleArrays=1.
@@ -400,3 +390,42 @@ NDFileNetCDF::NDFileNetCDF(const char *portName, int queueSize, int blockingCall
     this->pAttributeId = NULL;
 }
 
+/** Configuration routine.  Called directly, or from the iocsh function in NDFileEpics */
+extern "C" int NDFileNetCDFConfigure(const char *portName, int queueSize, int blockingCallbacks, 
+                                     const char *NDArrayPort, int NDArrayAddr,
+                                     int priority, int stackSize)
+{
+    new NDFileNetCDF(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                     priority, stackSize);
+    return(asynSuccess);
+}
+
+
+/** EPICS iocsh shell commands */
+static const iocshArg initArg0 = { "portName",iocshArgString};
+static const iocshArg initArg1 = { "frame queue size",iocshArgInt};
+static const iocshArg initArg2 = { "blocking callbacks",iocshArgInt};
+static const iocshArg initArg3 = { "NDArray Port",iocshArgString};
+static const iocshArg initArg4 = { "NDArray Addr",iocshArgInt};
+static const iocshArg initArg5 = { "priority",iocshArgInt};
+static const iocshArg initArg6 = { "stack size",iocshArgInt};
+static const iocshArg * const initArgs[] = {&initArg0,
+                                            &initArg1,
+                                            &initArg2,
+                                            &initArg3,
+                                            &initArg4,
+                                            &initArg5,
+                                            &initArg6};
+static const iocshFuncDef initFuncDef = {"NDFileNetCDFConfigure",7,initArgs};
+static void initCallFunc(const iocshArgBuf *args)
+{
+    NDFileNetCDFConfigure(args[0].sval, args[1].ival, args[2].ival, args[3].sval, 
+                             args[4].ival, args[5].ival, args[6].ival);
+}
+
+extern "C" void NDFileNetCDFRegister(void)
+{
+    iocshRegister(&initFuncDef,initCallFunc);
+}
+
+epicsExportRegistrar(NDFileNetCDFRegister);
