@@ -6,7 +6,7 @@ include $(TOP)/configure/CONFIG
 
 # The following gets rid of the -fno-implicit-templates flag on vxWorks, 
 # so we get automatic template instantiation.
-# This is what we want for miscellaneous/asynPortDriver.cpp
+# This is what we want for the source files that define template functions.
 ifeq (vxWorks,$(findstring vxWorks, $(T_A)))
 CODE_CXXFLAGS=
 endif
@@ -26,12 +26,11 @@ INC += NDPluginDriver.h
 LIBRARY_IOC = NDPlugin
 NDPlugin_SRCS += NDPluginDriver.cpp
 NDPlugin_SRCS += NDPluginFile.cpp
-NDPlugin_SRCS += drvNDFileNetCDFEpics.c
 NDPlugin_SRCS += NDFileNetCDF.cpp
 NDPlugin_SRCS += NDPluginStdArrays.cpp
-NDPlugin_SRCS += drvNDStdArraysEpics.c
 NDPlugin_SRCS += NDPluginROI.cpp
-NDPlugin_SRCS += drvNDROIEpics.c
+NDPlugin_SRCS_DEFAULT += NDFileTIFF.cpp
+NDPlugin_SRCS_vxWorks += -nil-
 NDPlugin_LIBS += ADBase
 NDPlugin_LIBS += netCDF
 NDPlugin_LIBS += asyn
@@ -40,7 +39,6 @@ NDPlugin_LIBS += $(EPICS_BASE_IOC_LIBS)
 LIBRARY_IOC_Linux = NDPluginColorConvert
 LIBRARY_IOC_WIN32 = NDPluginColorConvert
 NDPluginColorConvert_SRCS += NDPluginColorConvert.cpp
-NDPluginColorConvert_SRCS += drvNDColorConvertEpics.c
 NDPluginColorConvert_LIBS += ADBase
 NDPluginColorConvert_LIBS += asyn
 NDPluginColorConvert_LIBS += $(EPICS_BASE_IOC_LIBS)
