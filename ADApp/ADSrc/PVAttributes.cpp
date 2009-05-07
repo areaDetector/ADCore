@@ -20,6 +20,9 @@
 
 #include "NDArray.h"
 #include "PVAttributes.h"
+#include "tinyxml.h"
+
+#define BUFFER_SIZE 256
 
 static const char *driverName = "PVAttributes";
 /* This asynUser is not attached to any device.  
@@ -29,8 +32,8 @@ static asynUser *pasynUserSelf = pasynManager->createAsynUser(0,0);
 
 static void monitorCallbackC(struct event_handler_args cha)
 {
-	PVAttr	*pAttr = (PVAttr *)ca_puser(cha.chid);
-	if (!pAttr) return;
+    PVAttr    *pAttr = (PVAttr *)ca_puser(cha.chid);
+    if (!pAttr) return;
     pAttr->monitorCallback(cha);
 }
 
@@ -39,7 +42,7 @@ static void monitorCallbackC(struct event_handler_args cha)
   */
 void PVAttr::monitorCallback(struct event_handler_args eha)
 {
-	//chid  chanId = eha.chid;
+    //chid  chanId = eha.chid;
     const char *functionName = "monitorCallback";
 
     epicsMutexLock(this->lock);
@@ -48,11 +51,11 @@ void PVAttr::monitorCallback(struct event_handler_args eha)
         driverName, functionName, this->PVName);
 
     if (eha.status != ECA_NORMAL) {
-		asynPrint(pasynUserSelf,  ASYN_TRACE_ERROR,
+        asynPrint(pasynUserSelf,  ASYN_TRACE_ERROR,
         "%s:%s: CA returns eha.status=%d\n",
         driverName, functionName, eha.status);
-		goto done;
-	}
+        goto done;
+    }
     this->pNDAttribute->setValue(this->dataType, (void *)eha.dbr);
     done:
     epicsMutexUnlock(this->lock);
@@ -61,8 +64,8 @@ void PVAttr::monitorCallback(struct event_handler_args eha)
 
 static void connectCallbackC(struct connection_handler_args cha)
 {
-	PVAttr	*pAttr = (PVAttr *)ca_puser(cha.chid);
-	if (!pAttr) return;
+    PVAttr    *pAttr = (PVAttr *)ca_puser(cha.chid);
+    if (!pAttr) return;
     pAttr->connectCallback(cha);
 }
 
@@ -72,7 +75,7 @@ static void connectCallbackC(struct connection_handler_args cha)
   */
 void PVAttr::connectCallback(struct connection_handler_args cha)
 {
-	chid  chanId = cha.chid;
+    chid  chanId = cha.chid;
     const char *functionName = "connectCallback";
     enum channel_state state = cs_never_conn;
     chtype dbfType, dbrType=this->dbrType;
@@ -82,7 +85,7 @@ void PVAttr::connectCallback(struct connection_handler_args cha)
     epicsMutexLock(this->lock);
     if (chanId) state = ca_state(chanId);
 
-	if (chanId && (ca_state(chanId) == cs_conn)) {
+    if (chanId && (ca_state(chanId) == cs_conn)) {
         dbfType = ca_field_type(chanId);
         elementCount = ca_element_count(chanId);
         switch(dbfType) {
@@ -114,10 +117,10 @@ void PVAttr::connectCallback(struct connection_handler_args cha)
                 if (this->dbrType == DBR_NATIVE) dbrType = DBR_DOUBLE;
                 break;
             default:
-		        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
                 "%s:%s: unknown DBF type = %d\n",
                 driverName, functionName, dbfType);
-		        goto done;
+                goto done;
         }
         switch(dbrType) {
             case DBR_STRING:
@@ -145,31 +148,31 @@ void PVAttr::connectCallback(struct connection_handler_args cha)
                 this->dataType = NDAttrFloat64;
                 break;
             default:
-		        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
                 "%s:%s: unknown DBR type = %d\n",
                 driverName, functionName, dbrType);
-		        goto done;
+                goto done;
         }
         asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
             "%s:%s: Connect event, PV=%s, chanId=%d, type=%d\n", 
             driverName, functionName, this->PVName, chanId, this->dataType);
             
         /* Set value change callback on this PV */
-	    SEVCHK(ca_add_masked_array_event(
-		    dbrType,
-		    nRequest,
-		    this->chanId,
+        SEVCHK(ca_add_masked_array_event(
+            dbrType,
+            nRequest,
+            this->chanId,
             monitorCallbackC,
             this,
-		    0.0,0.0,0.0,
-		    &this->eventId, DBE_VALUE),"ca_add_masked_array_event");
+            0.0,0.0,0.0,
+            &this->eventId, DBE_VALUE),"ca_add_masked_array_event");
     } else {
         /* This is a disconnection event, set the data type to undefined */
-		this->pNDAttribute->setValue(NDAttrUndefined, 0);
+        this->pNDAttribute->setValue(NDAttrUndefined, 0);
         asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
             "%s:%s: Disconnect event, PV=%s, chanId=%d\n", 
             driverName, functionName, this->PVName, chanId);
-	}
+    }
     done:
     epicsMutexUnlock(this->lock);
 }
@@ -196,13 +199,13 @@ PVAttr::PVAttr(const char *pName, const char *pDescription)
     this->pNDAttribute = new NDAttribute(pName);
     if (pDescription) this->pNDAttribute->setDescription(pDescription);  
     /* Set connection callback on this PV */
-	SEVCHK(ca_create_channel(pName, connectCallbackC, this, 10 ,&this->chanId),
-	       "ca_create_channel");
+    SEVCHK(ca_create_channel(pName, connectCallbackC, this, 10 ,&this->chanId),
+           "ca_create_channel");
     
 }
 PVAttr::~PVAttr()
 {
-	if (this->chanId) SEVCHK(ca_clear_channel(this->chanId),"ca_clear_channel");
+    if (this->chanId) SEVCHK(ca_clear_channel(this->chanId),"ca_clear_channel");
     if (this->pNDAttribute) delete this->pNDAttribute;
     if (this->PVName) free(this->PVName);
 }
@@ -214,12 +217,12 @@ PVAttributes::PVAttributes()
     ellInit(&this->PVAttrList);
     this->lock = epicsMutexCreate();
     
-	SEVCHK(ca_context_create(ca_enable_preemptive_callback),"ca_context_create");
-	this->pCaInputContext = ca_current_context();
-	while (this->pCaInputContext == NULL) {
-		epicsThreadSleep(epicsThreadSleepQuantum());
-		this->pCaInputContext = ca_current_context();
-	}
+    SEVCHK(ca_context_create(ca_enable_preemptive_callback),"ca_context_create");
+    this->pCaInputContext = ca_current_context();
+    while (this->pCaInputContext == NULL) {
+        epicsThreadSleep(epicsThreadSleepQuantum());
+        this->pCaInputContext = ca_current_context();
+    }
 }
 
 /** PVAttributes destructor
@@ -289,6 +292,74 @@ int PVAttributes::clearPVs()
     epicsMutexUnlock(this->lock);
     return(ND_SUCCESS);
 }
+
+int PVAttributes::readPVAttributesFile(const char *fileName)
+{
+    const char *functionName = "readAttributesFile";
+    const char *pPVName, *pDBRType, *pDescription=NULL;
+    int dbrType;
+    TiXmlDocument doc(fileName);
+    TiXmlElement *Attr, *PVs, *PV;
+    
+    /* Clear any existing PVs */
+    this->clearPVs();
+    
+    if (!doc.LoadFile()) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s:%s: cannot open file %s error=%s\n", 
+            driverName, functionName, fileName, doc.ErrorDesc());
+        return(asynError);
+    }
+    Attr = doc.FirstChildElement( "Attributes" );
+    if (!Attr) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s:%s: cannot find Attributes element\n", 
+            driverName, functionName);
+        return(asynError);
+    }
+    PVs = Attr->FirstChildElement("EPICSPVs");
+    if (!PVs) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s:%s: cannot find EPICSPVs element\n", 
+            driverName, functionName);
+        return(asynError);
+    }
+    for(PV = PVs->FirstChildElement(); PV; PV = PV->NextSiblingElement()) {
+        pPVName = PV->Attribute("name");
+        if (!pPVName) {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s:%s: name attribute not found\n", 
+                driverName, functionName);
+            return(asynError);
+        }
+        pDBRType = PV->Attribute("dbrtype");
+        pDescription = PV->Attribute("description");
+        dbrType = DBR_NATIVE;
+        if (pDBRType) {
+            if      (!strcmp(pDBRType, "DBR_CHAR"))   dbrType = DBR_CHAR;
+            else if (!strcmp(pDBRType, "DBR_SHORT"))  dbrType = DBR_SHORT;
+            else if (!strcmp(pDBRType, "DBR_ENUM"))   dbrType = DBR_ENUM;
+            else if (!strcmp(pDBRType, "DBR_INT"))    dbrType = DBR_INT;
+            else if (!strcmp(pDBRType, "DBR_LONG"))   dbrType = DBR_LONG;
+            else if (!strcmp(pDBRType, "DBR_FLOAT"))  dbrType = DBR_FLOAT;
+            else if (!strcmp(pDBRType, "DBR_DOUBLE")) dbrType = DBR_DOUBLE;
+            else if (!strcmp(pDBRType, "DBR_STRING")) dbrType = DBR_STRING;
+            else if (!strcmp(pDBRType, "DBR_NATIVE")) dbrType = DBR_NATIVE;
+            else {
+                asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                    "%s:%s: unknown dbrType = %s\n", 
+                    driverName, functionName, pDBRType);
+                return(asynError);
+            }
+        }
+        asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
+            "%s:%s: PVName=%s, pDBRType=%s, dbrType=%d, pDescription=%s\n",
+            driverName, functionName, pPVName, pDBRType, dbrType, pDescription);
+        this->addPV(pPVName, pDescription, dbrType);
+    }
+    return(asynSuccess);
+}
+
 
 /** Returns the current values for all of the EPICS PVs by copying them as attributes
   * to an NDArray object.
