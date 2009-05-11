@@ -1,8 +1,8 @@
 /* NDFileTIFF.cpp
  * Writes NDArrays to TIFF files.
  *
- * John Hammonds
- * April 17, 2008
+ * John Hammonds and Mark Rivers
+ * May 11, 2009
  */
 
 #include <stdlib.h>
@@ -14,14 +14,11 @@
 #include <epicsExport.h>
 #include <iocsh.h>
 
-#include "NDPluginFile.h"
 #include "NDFileTIFF.h"
 #include "tiffio.h"
 
 static const char *driverName = "NDFileTIFF";
 
-/* NDArray string attributes can be of any length, but netCDF requires a fixed maximum length
- * which we define here. */
 #define MAX_ATTRIBUTE_STRING_SIZE 256
 
 /** This is called to open a TIFF file.
@@ -31,7 +28,11 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
     /* When we create TIFF variables and dimensions, we get back an
      * ID for each one. */
     static const char *functionName = "openFile";
-    short bitsPerSample=0, samplesPerPixel;
+    int sizeX, sizeY, rowsPerStrip, samplesPerPixel, photoMetric, planarConfig;
+    int colorMode;
+    NDAttribute *pAttribute;
+    char ManufacturerString[MAX_ATTRIBUTE_STRING_SIZE] = "Unknown";
+    char ModelString[MAX_ATTRIBUTE_STRING_SIZE] = "Unknown";
 
     /* We don't support reading yet */
     if (openMode & NDFileModeRead) return(asynError);
@@ -46,33 +47,79 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
         driverName, functionName, fileName);
         return(asynError);
     }
+    /* We do some special treatment based on colorMode */
+    pAttribute = pArray->findAttribute("colorMode");
+    if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
 
     switch (pArray->dataType) {
         case NDInt8:
         case NDUInt8:
-            bitsPerSample = 8;
+            this->bitsPerSample = 8;
             break;
         case NDInt16:
         case NDUInt16:
-            bitsPerSample = 16;
+            this->bitsPerSample = 16;
             break;
         case NDInt32:
         case NDUInt32:
-            bitsPerSample = 32;
+            this->bitsPerSample = 32;
             break;
         case NDFloat32:
-            bitsPerSample = 8;
+            this->bitsPerSample = 8;
             break;
         case NDFloat64:
-            bitsPerSample = 8;
+            this->bitsPerSample = 8;
             break;
     }
-    samplesPerPixel = 1;
+    if (pArray->ndims == 2) {
+        sizeX = pArray->dims[0].size;
+        sizeY = pArray->dims[1].size;
+        rowsPerStrip = sizeY;
+        samplesPerPixel = 1;
+        photoMetric = PHOTOMETRIC_MINISBLACK;
+        planarConfig = PLANARCONFIG_CONTIG;
+        this->colorMode = NDColorModeMono;
+    } else if ((pArray->ndims == 3) && (pArray->dims[0].size == 3) && (colorMode == NDColorModeRGB1)) {
+        sizeX = pArray->dims[1].size;
+        sizeY = pArray->dims[2].size;
+        rowsPerStrip = sizeY;
+        samplesPerPixel = 3;
+        photoMetric = PHOTOMETRIC_RGB;
+        planarConfig = PLANARCONFIG_CONTIG;
+        this->colorMode = NDColorModeRGB1;
+    } else if ((pArray->ndims == 3) && (pArray->dims[1].size == 3) && (colorMode == NDColorModeRGB2)) {
+        sizeX = pArray->dims[0].size;
+        sizeY = pArray->dims[2].size;
+        rowsPerStrip = 1;
+        samplesPerPixel = 3;
+        photoMetric = PHOTOMETRIC_RGB;
+        planarConfig = PLANARCONFIG_SEPARATE;
+        this->colorMode = NDColorModeRGB2;
+    } else if ((pArray->ndims == 3) && (pArray->dims[2].size == 3) && (colorMode == NDColorModeRGB3)) {
+        sizeX = pArray->dims[0].size;
+        sizeY = pArray->dims[1].size;
+        rowsPerStrip = sizeY;
+        samplesPerPixel = 3;
+        photoMetric = PHOTOMETRIC_RGB;
+        planarConfig = PLANARCONFIG_SEPARATE;
+        this->colorMode = NDColorModeRGB3;
+    } else {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+            "%s:%s: unsupported array structure\n",
+            driverName, functionName);
+        return(asynError);
+    }
+
     TIFFSetField(this->output, TIFFTAG_BITSPERSAMPLE, bitsPerSample);
     TIFFSetField(this->output, TIFFTAG_SAMPLESPERPIXEL, samplesPerPixel);
-    TIFFSetField (this->output, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK);
-    TIFFSetField (this->output, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
-
+    TIFFSetField(this->output, TIFFTAG_PHOTOMETRIC, photoMetric);
+    TIFFSetField(this->output, TIFFTAG_PLANARCONFIG, planarConfig);
+    TIFFSetField(this->output, TIFFTAG_IMAGEWIDTH, sizeX);
+    TIFFSetField(this->output, TIFFTAG_IMAGELENGTH, sizeY);
+    TIFFSetField(this->output, TIFFTAG_ROWSPERSTRIP, rowsPerStrip);
+    TIFFSetField(this->output, TIFFTAG_MAKE, ManufacturerString);
+    TIFFSetField(this->output, TIFFTAG_MODEL, ModelString);
+    
     return(asynSuccess);
 }
 
@@ -80,52 +127,49 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
  *  to add arrays to a single file in stream or capture mode */
 asynStatus NDFileTIFF::writeFile(NDArray *pArray)
 {
-    unsigned long int stripsize;
+    unsigned long int stripSize;
     tsize_t nwrite=0;
+    int strip, sizeY;
+    unsigned char *pRed, *pGreen, *pBlue;
     static const char *functionName = "writeFile";
-    int sizex, sizey;
-    char ManufacturerString[MAX_ATTRIBUTE_STRING_SIZE] = "Unknown";
-    char ModelString[MAX_ATTRIBUTE_STRING_SIZE] = "Unknown";
 
-    getIntegerParam(NDArraySizeX, &sizex);
-    getIntegerParam(NDArraySizeY, &sizey);
     /* We cannot get the manufacturer and model directly, we don't have access to the parameter
      * library of the driver.  We would have to get this from attributes */
     //getStringParam(ADManufacturer, MAX_ATTRIBUTE_STRING_SIZE, ManufacturerString);
     //getStringParam(ADModel, MAX_ATTRIBUTE_STRING_SIZE, ModelString);
 
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
-              "%s:s: %d, %d, %d, %d\n", 
-              driverName, functionName, sizex, sizey, pArray->dims[0].size, pArray->dims[1].size);
-    sizex = pArray->dims[0].size;
-    sizey = pArray->dims[1].size;
+              "%s:s: %d, %d\n", 
+              driverName, functionName, pArray->dims[0].size, pArray->dims[1].size);
 
-    TIFFSetField(this->output, TIFFTAG_IMAGEWIDTH, sizex);
-    TIFFSetField(this->output, TIFFTAG_IMAGELENGTH, sizey);
-    TIFFSetField (this->output, TIFFTAG_ROWSPERSTRIP, sizey);  //save entire image in one strip.
-    TIFFSetField(this->output, TIFFTAG_MAKE, ManufacturerString);
-    TIFFSetField(this->output, TIFFTAG_MODEL, ModelString);
+    stripSize = TIFFStripSize(this->output);
+    TIFFGetField(this->output, TIFFTAG_IMAGELENGTH, &sizeY);
 
-    stripsize = TIFFStripSize(this->output);
-
-    switch (pArray->dataType) {
-        case NDInt8:
-        case NDUInt8:
-            nwrite = TIFFWriteEncodedStrip( this->output, 0, (signed char *)pArray->pData, stripsize); 
+    switch (this->colorMode) {
+        case NDColorModeMono:
+        case NDColorModeRGB1:
+            nwrite = TIFFWriteEncodedStrip(this->output, 0, pArray->pData, stripSize); 
             break;
-        case NDInt16:
-        case NDUInt16:
-            nwrite = TIFFWriteEncodedStrip( this->output, 0, (short *)pArray->pData, stripsize);
+        case NDColorModeRGB2:
+            /* TIFF readers don't support row interleave, put all the red strips first, then all the blue, then green. */
+            for (strip=0; strip<sizeY; strip++) {
+                pRed   = (unsigned char *)pArray->pData + 3*strip*stripSize;
+                pGreen = pRed + stripSize;
+                pBlue  = pRed + 2*stripSize;
+                nwrite = TIFFWriteEncodedStrip(this->output, strip, pRed, stripSize);
+                nwrite = TIFFWriteEncodedStrip(this->output, sizeY+strip, pBlue, stripSize);
+                nwrite = TIFFWriteEncodedStrip(this->output, 2*sizeY+strip, pGreen, stripSize);
+            }
             break;
-        case NDInt32:
-        case NDUInt32:
-            nwrite = TIFFWriteEncodedStrip( this->output, 0, (long int *)pArray->pData, stripsize);
+        case NDColorModeRGB3:
+            for (strip=0; strip<3; strip++) {
+                nwrite = TIFFWriteEncodedStrip(this->output, strip, (unsigned char *)pArray->pData+stripSize*strip, stripSize);
+            }
             break;
-        case NDFloat32:
-        case NDFloat64:
+        default:
             asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-                "%s:%s: floating point data not yet supported\n",
-                driverName, functionName);
+                "%s:%s: unknown color mode %d\n",
+                driverName, functionName, this->colorMode);
             return(asynError);
             break;
     }
@@ -157,12 +201,30 @@ asynStatus NDFileTIFF::closeFile()
 }
 
 
-/* The constructor for this class */
+/** Constructor for NDFileTIFF; all parameters are simply passed to NDPluginFile::NDPluginFile.
+  * \param[in] portName The name of the asyn port driver to be created.
+  * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when 
+  *            NDPluginDriverBlockingCallbacks=0.  Larger queues can decrease the number of dropped arrays,
+  *            at the expense of more NDArray buffers being allocated from the underlying driver's NDArrayPool.
+  * \param[in] blockingCallbacks Initial setting for the NDPluginDriverBlockingCallbacks flag.
+  *            0=callbacks are queued and executed by the callback thread; 1 callbacks execute in the thread
+  *            of the driver doing the callbacks.
+  * \param[in] NDArrayPort Name of asyn port driver for initial source of NDArray callbacks.
+  * \param[in] NDArrayAddr asyn port driver address for initial source of NDArray callbacks.
+  * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  */
 NDFileTIFF::NDFileTIFF(const char *portName, int queueSize, int blockingCallbacks,
-                           const char *NDArrayPort, int NDArrayAddr,
-                           int priority, int stackSize)
+                       const char *NDArrayPort, int NDArrayAddr,
+                       int priority, int stackSize)
+    /* Invoke the base class constructor.
+     * We allocate 1 NDArray of unlimited size in the NDArray pool.
+     * This driver can block (because writing a file can be slow), and it is not multi-device.  
+     * Set autoconnect to 1.  priority and stacksize can be 0, which will use defaults. */
     : NDPluginFile(portName, queueSize, blockingCallbacks,
-                  NDArrayPort, NDArrayAddr, priority, stackSize)
+                   NDArrayPort, NDArrayAddr, 1, NDPluginFileLastParam,
+                   1, -1, asynGenericPointerMask, asynGenericPointerMask, 
+                   ASYN_CANBLOCK, 1, priority, stackSize)
 {
     //const char *functionName = "NDFileTIFF";
 
