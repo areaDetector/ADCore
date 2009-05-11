@@ -31,14 +31,15 @@ typedef enum {
 class NDPluginFile : public NDPluginDriver {
 public:
     NDPluginFile(const char *portName, int queueSize, int blockingCallbacks, 
-                 const char *NDArrayPort, int NDArrayAddr,
-                 int priority, int stackSize);
+                 const char *NDArrayPort, int NDArrayAddr, int maxAddr, int paramTableSize,
+                 int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
+                 int asynFlags, int autoConnect, int priority, int stackSize);
                  
     /* These methods override those in the base class */
-    void processCallbacks(NDArray *pArray);
-    asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
-    asynStatus writeNDArray(asynUser *pasynUser, void *genericPointer);
-    asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
+    virtual void processCallbacks(NDArray *pArray);
+    virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
+    virtual asynStatus writeNDArray(asynUser *pasynUser, void *genericPointer);
+    virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
                              const char **pptypeName, size_t *psize);
 
 
