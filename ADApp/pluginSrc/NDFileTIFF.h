@@ -35,6 +35,8 @@ public:
 
 private:
     TIFF *output;
+    int bitsPerSample;
+    NDColorMode_t colorMode;
 };
 
 #endif
