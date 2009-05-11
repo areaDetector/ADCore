@@ -14,7 +14,6 @@
 #include <iocsh.h>
 #include <epicsExport.h>
 
-#include "NDPluginFile.h"
 #include "NDFileNetCDF.h"
 
 static const char *driverName = "NDFileNetCDF";
@@ -381,8 +380,14 @@ asynStatus NDFileNetCDF::closeFile()
 NDFileNetCDF::NDFileNetCDF(const char *portName, int queueSize, int blockingCallbacks, 
                            const char *NDArrayPort, int NDArrayAddr,
                            int priority, int stackSize)
-    : NDPluginFile(portName, queueSize, blockingCallbacks, 
-                  NDArrayPort, NDArrayAddr, priority, stackSize)
+    /* Invoke the base class constructor.
+     * We allocate 1 NDArray of unlimited size in the NDArray pool.
+     * This driver can block (because writing a file can be slow), and it is not multi-device.  
+     * Set autoconnect to 1.  priority and stacksize can be 0, which will use defaults. */
+    : NDPluginFile(portName, queueSize, blockingCallbacks,
+                   NDArrayPort, NDArrayAddr, 1, NDPluginFileLastParam,
+                   1, -1, asynGenericPointerMask, asynGenericPointerMask, 
+                   ASYN_CANBLOCK, 1, priority, stackSize)
 {
     //const char *functionName = "NDFileNetCDF";
     
