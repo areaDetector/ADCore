@@ -482,8 +482,6 @@ asynStatus NDPluginFile::drvUserCreate(asynUser *pasynUser,
 
 
 /** Constructor for NDPluginFile; all parameters are simply passed to NDPluginDriver::NDPluginDriver.
-  * After calling the base class constructor this method sets reasonable default values for many file-related 
-  *  parameters defined in NDStdDriverParams.h.
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when 
   *            NDPluginDriverBlockingCallbacks=0.  Larger queues can decrease the number of dropped arrays,
@@ -493,20 +491,32 @@ asynStatus NDPluginFile::drvUserCreate(asynUser *pasynUser,
   *            of the driver doing the callbacks.
   * \param[in] NDArrayPort Name of asyn port driver for initial source of NDArray callbacks.
   * \param[in] NDArrayAddr asyn port driver address for initial source of NDArray callbacks.
+  * \param[in] maxAddr The maximum  number of asyn addr addresses this driver supports. 1 is minimum.
+  * \param[in] paramTableSize The number of parameters that this driver supports.
+  * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is 
+  *            allowed to allocate. Set this to -1 to allow an unlimited number of buffers.
+  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
+  *            allowed to allocate. Set this to -1 to allow an unlimited amount of memory.
+  * \param[in] interfaceMask Bit mask defining the asyn interfaces that this driver supports.
+  * \param[in] interruptMask Bit mask definining the asyn interfaces that can generate interrupts (callbacks)
+  * \param[in] asynFlags Flags when creating the asyn port driver; includes ASYN_CANBLOCK and ASYN_MULTIDEVICE.
+  * \param[in] autoConnect The autoConnect flag for the asyn port driver.
   * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   */
 NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCallbacks, 
-                           const char *NDArrayPort, int NDArrayAddr,
-                           int priority, int stackSize)
+                           const char *NDArrayPort, int NDArrayAddr, int maxAddr, int paramTableSize,
+                           int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
+                           int asynFlags, int autoConnect, int priority, int stackSize)
+
     /* Invoke the base class constructor.
      * We allocate 1 NDArray of unlimited size in the NDArray pool.
      * This driver can block (because writing a file can be slow), and it is not multi-device.  
      * Set autoconnect to 1.  priority and stacksize can be 0, which will use defaults. */
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
-                   NDArrayPort, NDArrayAddr, 1, NDPluginFileLastParam, 1, -1, 
-                   asynGenericPointerMask, asynGenericPointerMask,
-                   ASYN_CANBLOCK, 1, priority, stackSize)
+                     NDArrayPort, NDArrayAddr, maxAddr, paramTableSize, maxBuffers, maxMemory, 
+                     asynGenericPointerMask, asynGenericPointerMask,
+                     asynFlags, autoConnect, priority, stackSize)
 {
     //const char *functionName = "NDPluginFile";
     asynStatus status;
