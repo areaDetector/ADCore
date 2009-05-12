@@ -1,0 +1,23 @@
+# Database for NDFileNetCDF driver, which saves NDArray data 
+# in the netCDF file format
+# Mark Rivers
+# May 10, 2009
+
+# We replace some fields in records defined in NDFile.template
+# File data format 
+record(mbbo, "$(P)$(R)FileFormat")
+{
+    field(ZRST, "netCDF")
+    field(ZRVL, "0")
+    field(ONST, "Invalid")
+    field(ONVL, "1")
+}
+
+record(mbbi, "$(P)$(R)FileFormat_RBV")
+{
+    field(ZRST, "netCDF")
+    field(ZRVL, "0")
+    field(ONST, "Undefined")
+    field(ONVL, "1")
+}
+
