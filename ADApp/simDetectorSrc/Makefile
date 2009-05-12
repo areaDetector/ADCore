@@ -36,8 +36,8 @@ simDetectorApp_LIBS += asyn
 simDetectorApp_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 simDetectorApp_SYS_LIBS_cygwin32 += rpc
-simDetectorApp_LIBS_WIN32        += libtiff
-simDetectorApp_LIBS_cygwin32     += libtiff
+simDetectorApp_LIBS_WIN32        += libtiff jpeg
+simDetectorApp_LIBS_cygwin32     += libtiff jpeg
 simDetectorApp_SYS_LIBS_Linux    += tiff jpeg z
 
 #=============================
