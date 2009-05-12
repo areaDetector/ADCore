@@ -921,7 +921,7 @@ int NDAttribute::getDescription(char *pDescription, size_t descSize) {
         if (descSize == 0) descSize = strlen(this->pDescription)+1;
         strncpy(pDescription, this->pDescription, descSize);
     } else
-        *pDescription = NULL;
+        *pDescription = '\0';
     return(ND_SUCCESS);
 }
 
