@@ -17,6 +17,7 @@
 #include "NDPluginFile.h"
 #include "NDFileJPEG.h"
 
+
 static const char *driverName = "NDFileJPEG";
 #define MAX_ATTRIBUTE_STRING_SIZE 256
 
@@ -98,10 +99,9 @@ asynStatus NDFileJPEG::openFile(const char *fileName, NDFileOpenMode_t openMode,
         driverName, functionName, fileName);
         return(asynError);
     }
-    jpeg_stdio_dest(&this->jpegInfo, this->outFile);
     
     jpeg_set_defaults(&this->jpegInfo);
-    
+
     /* Set the file quality */
     getIntegerParam(NDFileJPEGQuality, &quality);
     jpeg_set_quality(&this->jpegInfo, quality, TRUE);
@@ -235,6 +235,70 @@ asynStatus NDFileJPEG::drvUserCreate(asynUser *pasynUser,
     return(status);
 }
 
+static void init_destination(j_compress_ptr cinfo)
+{
+    jpegDestMgr *pdest = (jpegDestMgr*) cinfo->dest;
+    pdest->pNDFileJPEG->initDestination();
+}
+
+void NDFileJPEG::initDestination()
+{
+    jpegDestMgr *pdest = (jpegDestMgr*) this->jpegInfo.dest;
+
+    pdest->pub.next_output_byte = this->jpegBuffer;
+    pdest->pub.free_in_buffer = JPEG_BUF_SIZE;
+}
+
+static boolean empty_output_buffer(j_compress_ptr cinfo)
+{
+    jpegDestMgr *pdest = (jpegDestMgr*) cinfo->dest;
+    return pdest->pNDFileJPEG->emptyOutputBuffer();
+}
+
+boolean NDFileJPEG::emptyOutputBuffer()
+{
+    jpegDestMgr *pdest = (jpegDestMgr*) this->jpegInfo.dest;
+    static const char *functionName = "emptyOutputBuffer";
+
+    if (fwrite(this->jpegBuffer, 1, JPEG_BUF_SIZE, this->outFile) !=
+      (size_t) JPEG_BUF_SIZE) {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s:%s error writing JPEG file\n",
+            driverName, functionName);
+        return FALSE;
+    }
+    pdest->pub.next_output_byte = this->jpegBuffer;
+    pdest->pub.free_in_buffer = JPEG_BUF_SIZE;
+    return TRUE;
+}
+
+static void term_destination (j_compress_ptr cinfo)
+{
+    jpegDestMgr *pdest = (jpegDestMgr*) cinfo->dest;
+    pdest->pNDFileJPEG->termDestination();
+}
+
+void NDFileJPEG::termDestination()
+{
+    jpegDestMgr *pdest = (jpegDestMgr*) this->jpegInfo.dest;
+    size_t datacount = JPEG_BUF_SIZE - pdest->pub.free_in_buffer;
+    static const char *functionName = "termDestination";
+
+    /* Write any data remaining in the buffer */
+    if (datacount > 0) {
+        if (fwrite(this->jpegBuffer, 1, datacount, this->outFile) != datacount)
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s:%s error writing JPEG file\n",
+                driverName, functionName);
+    }
+    fflush(this->outFile);
+    /* Make sure we wrote the output file OK */
+    if (ferror(this->outFile))
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s:%s error flushing JPEG file\n",
+            driverName, functionName);
+}
+
 
 /** Constructor for NDFileJPEG; all parameters are simply passed to NDPluginFile::NDPluginFile.
   * \param[in] portName The name of the asyn port driver to be created.
@@ -263,8 +327,20 @@ NDFileJPEG::NDFileJPEG(const char *portName, int queueSize, int blockingCallback
 {
     //const char *functionName = "NDFileJPEG";
 
-    this->jpegInfo.err = jpeg_std_error(&this->jpegErr);
     jpeg_create_compress(&this->jpegInfo);
+    this->jpegInfo.err = jpeg_std_error(&this->jpegErr);
+
+    /* Note: we don't use the built-in stdio routines, because this does not work when using
+     * the prebuilt library and either VC++ or g++ on Windows.  The FILE pointers are wrong
+     * when doing that.  Rather we implement our own jpeg_destination_mgr structure and handle
+     * the I/O ourselves.  The code we use is almost a direct copy from jdatadst.c in the standard
+     * package. */
+    this->destMgr.pub.init_destination = init_destination;
+    this->destMgr.pub.empty_output_buffer = empty_output_buffer;
+    this->destMgr.pub.term_destination = term_destination;
+    this->destMgr.pNDFileJPEG = this;
+    this->jpegInfo.dest = (jpeg_destination_mgr *) &this->destMgr;
+
     this->supportsMultipleArrays = 0;
     setIntegerParam(NDFileJPEGQuality, 50);
 }
