@@ -346,21 +346,31 @@ text {
 		args="P=13PS1:, R=image1:"
 	}
 	display[1] {
-		label="File #1"
+		label="File netCDF #1"
 		name="NDPluginFile.adl"
-		args="P=13PS1:, R=file1:"
+		args="P=13PS1:, R=netCDF1:"
 	}
 	display[2] {
+		label="File TIFF #1"
+		name="NDPluginFile.adl"
+		args="P=13PS1:, R=TIFF1:"
+	}
+	display[3] {
+		label="File JPEG #1"
+		name="NDPluginFile.adl"
+		args="P=13PS1:, R=JPEG1:"
+	}
+	display[4] {
 		label="ROI #1"
 		name="NDROI.adl"
 		args="P=13PS1:, R=ROI1:"
 	}
-	display[3] {
+	display[5] {
 		label="Color convert #1"
 		name="NDColorConvert.adl"
 		args="P=13PS1:, R=CC1:"
 	}
-	display[4] {
+	display[6] {
 		label="Color convert #2"
 		name="NDColorConvert.adl"
 		args="P=13PS1:, R=CC2:"
@@ -411,16 +421,26 @@ text {
 		args="P=13SIM1:, R=image1:"
 	}
 	display[1] {
-		label="File #1"
+		label="netCDF file #1"
 		name="NDPluginFile.adl"
-		args="P=13SIM1:, R=file1:"
+		args="P=13SIM1:, R=netCDF1:"
 	}
 	display[2] {
+		label="TIFF file #1"
+		name="NDPluginFile.adl"
+		args="P=13SIM1:, R=TIFF1:"
+	}
+	display[3] {
+		label="JPEG file #1"
+		name="NDPluginFile.adl"
+		args="P=13SIM1:, R=JPEG1:"
+	}
+	display[4] {
 		label="ROI #1"
 		name="NDROI.adl"
 		args="P=13SIM1:, R=ROI1:"
 	}
-	display[3] {
+	display[5] {
 		label="Scan #1"
 		name="scan_more.adl"
 		args="P=13SIM1:, S=scan1, N=1"
