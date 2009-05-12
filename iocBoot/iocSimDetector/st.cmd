@@ -31,11 +31,19 @@ dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStdArrays.template", "P=13SIM1:,R=ima
 NDFileNetCDFConfigure("SIM1FileNetCDF", 20, 0, "SIM1", 0)
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13SIM1:,R=netCDF1:,PORT=SIM1FileNetCDF,ADDR=0,TIMEOUT=1,NDARRAY_PORT=SIM1,NDARRAY_ADDR=0")
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFile.template",      "P=13SIM1:,R=netCDF1:,PORT=SIM1FileNetCDF,ADDR=0,TIMEOUT=1")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFileNetCDF.template","P=13SIM1:,R=netCDF1:,PORT=SIM1FileNetCDF,ADDR=0,TIMEOUT=1")
 
 # Create a TIFF file saving plugin
 NDFileTIFFConfigure("SIM1FileTIFF", 20, 0, "SIM1", 0)
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13SIM1:,R=TIFF1:,PORT=SIM1FileTIFF,ADDR=0,TIMEOUT=1,NDARRAY_PORT=SIM1,NDARRAY_ADDR=0")
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFile.template",      "P=13SIM1:,R=TIFF1:,PORT=SIM1FileTIFF,ADDR=0,TIMEOUT=1")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFileTIFF.template",  "P=13SIM1:,R=TIFF1:,PORT=SIM1FileTIFF,ADDR=0,TIMEOUT=1")
+
+# Create a JPEG file saving plugin
+NDFileJPEGConfigure("SIM1FileJPEG", 20, 0, "SIM1", 0)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13SIM1:,R=JPEG1:,PORT=SIM1FileJPEG,ADDR=0,TIMEOUT=1,NDARRAY_PORT=SIM1,NDARRAY_ADDR=0")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFile.template",      "P=13SIM1:,R=JPEG1:,PORT=SIM1FileJPEG,ADDR=0,TIMEOUT=1")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFileJPEG.template",  "P=13SIM1:,R=JPEG1:,PORT=SIM1FileJPEG,ADDR=0,TIMEOUT=1")
 
 # Create an ROI plugin
 NDROIConfigure("SIM1ROI", 20, 0, "SIM1", 0, 8, 20, 20000000)
