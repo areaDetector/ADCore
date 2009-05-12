@@ -783,4 +783,6 @@ extern "C" void NDROIRegister(void)
     iocshRegister(&initFuncDef,initCallFunc);
 }
 
+extern "C" {
 epicsExportRegistrar(NDROIRegister);
+}

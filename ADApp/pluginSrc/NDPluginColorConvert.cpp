@@ -470,4 +470,6 @@ extern "C" void NDColorConvertRegister(void)
     iocshRegister(&initFuncDef,initCallFunc);
 }
 
+extern "C" {
 epicsExportRegistrar(NDColorConvertRegister);
+}

@@ -376,4 +376,6 @@ extern "C" void NDStdArraysRegister(void)
     iocshRegister(&initFuncDef,initCallFunc);
 }
 
+extern "C" {
 epicsExportRegistrar(NDStdArraysRegister);
+}

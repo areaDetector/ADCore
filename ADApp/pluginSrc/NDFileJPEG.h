@@ -40,7 +40,7 @@ public:
     virtual asynStatus closeFile();
 
 private:
-    struct jpeg_compress_struct jpegInfo;
+    struct jpeg_compress_struct jpegInfo __attribute__ ((aligned (4)));
     struct jpeg_error_mgr jpegErr;
     NDColorMode_t colorMode;
     FILE *outFile;

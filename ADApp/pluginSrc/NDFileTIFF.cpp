@@ -269,4 +269,7 @@ extern "C" void NDFileTIFFRegister(void)
 {
     iocshRegister(&initFuncDef,initCallFunc);
 }
+
+extern "C" {
 epicsExportRegistrar(NDFileTIFFRegister);
+}

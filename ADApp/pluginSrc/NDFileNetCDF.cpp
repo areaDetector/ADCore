@@ -433,4 +433,6 @@ extern "C" void NDFileNetCDFRegister(void)
     iocshRegister(&initFuncDef,initCallFunc);
 }
 
+extern "C" {
 epicsExportRegistrar(NDFileNetCDFRegister);
+}

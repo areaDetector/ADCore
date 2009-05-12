@@ -115,10 +115,10 @@ asynStatus NDFileJPEG::writeFile(NDArray *pArray)
 {
     JSAMPROW row_pointer[1];
     int nwrite=0;
-    unsigned char *pRed, *pGreen, *pBlue, *pData, *pOut, *buffer=NULL;
+    unsigned char *pRed=NULL, *pGreen=NULL, *pBlue=NULL, *pData=NULL, *pOut, *buffer=NULL;
     int sizeX = (int)this->jpegInfo.image_width;
     int sizeY = (int)this->jpegInfo.image_height;
-    int stepSize, i;
+    int stepSize=0, i;
     static const char *functionName = "writeFile";
 
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
@@ -307,4 +307,7 @@ extern "C" void NDFileJPEGRegister(void)
 {
     iocshRegister(&initFuncDef,initCallFunc);
 }
+
+extern "C" {
 epicsExportRegistrar(NDFileJPEGRegister);
+}
