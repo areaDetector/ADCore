@@ -1,0 +1,7 @@
+NOTE: I made a minor change to jpeglib.h on Cygwin to
+force definition of boolean as unsigned char and set HAVE_BOOLEAN 
+to prevent jmorecfg.h from redefining it.
+
+There may be a cleaner way to do this, but the code in jconfig.h that should
+do it is not being reached because _WIN32 is not defined.
+
