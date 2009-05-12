@@ -24,6 +24,11 @@ extern "C" {
  * manual configuration options that most people need not worry about.
  */
 
+/* Force definition of boolean as unsigned char and set HAVE_BOOLEAN 
+ * to prevent jmorecfg.h from redefining it */
+typedef unsigned char boolean;
+#define HAVE_BOOLEAN
+
 #ifndef JCONFIG_INCLUDED	/* in case jinclude.h already did */
 #include "jconfig.h"		/* widely used configuration options */
 #endif
