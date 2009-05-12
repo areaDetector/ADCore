@@ -807,5 +807,6 @@ static void simDetectorRegister(void)
     iocshRegister(&configsimDetector, configsimDetectorCallFunc);
 }
 
+extern "C" {
 epicsExportRegistrar(simDetectorRegister);
-
+}
