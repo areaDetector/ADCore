@@ -11,6 +11,61 @@ pro epics_ad_display::connect_detector
     endelse
 end
 
+pro epics_ad_display::get_data, size_changed
+    data = self.detector->getArray()
+    ; Get the new image sizes
+    size_changed = 0
+    colorMode = self.detector->getProperty('ColorMode_RBV')
+    dims = size(data, /dimensions)
+    ; If any of the dimensions is 1 then reform the array
+    t = where(dims eq 1, count)
+    if (count ne 0) then data = reform(data)
+    dims = size(data, /dimensions)
+    nx = dims[0]
+    ny = dims[1]
+    ndims = n_elements(dims)
+    if (n_elements(dims) gt 2) then nz = dims[2] else nz=1
+    ; These are correct for all except RGB1 and RGB2
+    self.hSize = nx
+    self.vSize = ny
+    ptr_free, self.pData
+    self.pData = ptr_new(data, /no_copy)
+    self.true_color = 0
+    ; The colorMode PV can be out of sync with data, be careful
+    if (ndims eq 3) then begin
+        case colorMode of
+            'RGB1': begin
+                self.hSize = ny
+                self.vSize = nz
+                self.true_color = 1
+            end
+            'RGB2': begin
+                self.hSize = nx
+                self.vSize = nz
+                self.true_color = 2
+            end
+            'RGB3': begin
+                self.true_color = 3
+            end
+        endcase
+    endif
+    if (nx ne self.nx) then begin
+        self.nx = nx
+        size_changed = 1
+        widget_control, self.widgets.nx, set_value=nx
+    endif
+    if (ny ne self.ny) then begin
+        self.ny = ny
+        size_changed = 1
+        widget_control, self.widgets.ny, set_value=ny
+    endif
+    if (nz ne self.nz) then begin
+        self.nz = nz
+        size_changed = 1
+        widget_control, self.widgets.nz, set_value=nz
+    endif
+    if (self.nx eq 0) or (self.ny eq 0) then return
+end
 
 pro epics_ad_display_event, event
     widget_control, event.top, get_uvalue=epics_ad_display
@@ -43,6 +98,7 @@ pro epics_ad_display::event, event
 
         self.widgets.display_mode: begin
             self.display_mode = event.index
+            self->display_image, *self.pData, true=self.true_color, retain=1
         end
 
         self.widgets.display_enable: begin
@@ -51,18 +107,22 @@ pro epics_ad_display::event, event
 
         self.widgets.autoscale: begin
             self.autoscale = event.index
+            self->display_image, *self.pData, true=self.true_color, retain=1
         end
 
         self.widgets.flip_y: begin
             self.flip_y = event.index
+            self->display_image, *self.pData, true=self.true_color, retain=1
         end
 
         self.widgets.display_min: begin
             self.display_min = event.value
+            self->display_image, *self.pData, true=self.true_color, retain=1
         end
 
         self.widgets.display_max: begin
             self.display_max = event.value
+            self->display_image, *self.pData, true=self.true_color, retain=1
         end
 
         self.widgets.timer: begin
@@ -92,56 +152,10 @@ pro epics_ad_display::event, event
             for i=0, self.frames_per_loop do begin
                 new_data = self.detector->newArray()
                 if (new_data eq 0) then break
-                ; There is new data, display it
-                data = self.detector->getArray()
-                ; Get the new image sizes
-                size_changed = 0
-                colorMode = self.detector->getProperty('ColorMode_RBV')
-                dims = size(data, /dimensions)
-                ; If any of the dimensions is 1 then reform the array
-                t = where(dims eq 1, count)
-                if (count ne 0) then data = reform(data)
-                dims = size(data, /dimensions)
-                case colorMode of
-                    'Mono': begin
-                        nx = dims[0]
-                        ny = dims[1]
-                        true = 0
-                    end
-                    'Bayer': begin
-                        nx = dims[0]
-                        ny = dims[1]
-                        true = 0
-                    end
-                    'RGB1': begin
-                        nx = dims[1]
-                        ny = dims[2]
-                        true = 1
-                    end
-                    'RGB2': begin
-                        nx = dims[0]
-                        ny = dims[2]
-                        true = 2
-                    end
-                    'RGB3': begin
-                        nx = dims[0]
-                        ny = dims[1]
-                        true = 3
-                    end
-                endcase
-                 if (nx ne self.nx) then begin
-                    self.nx = nx
-                    size_changed = 1
-                    widget_control, self.widgets.nx, set_value=nx
-                endif
-                if (ny ne self.ny) then begin
-                    self.ny = ny
-                    size_changed = 1
-                    widget_control, self.widgets.ny, set_value=ny
-                endif
-                if (self.nx eq 0) or (self.ny eq 0) then return
+                ; There is new data, get it
+                self->get_data, size_changed
                 retain = size_changed eq 0
-                self->display_image, data, true=true, retain=retain
+                self->display_image, *self.pData, true=self.true_color, retain=retain
                 self.image_counter = self.image_counter + 1
             endfor
             time = systime(1)
@@ -165,11 +179,11 @@ pro epics_ad_display::event, event
     return
 end
 
-pro epics_ad_display::display_image, data, true=true, retain=retain
+pro epics_ad_display::display_image, dataIn, true=true, retain=retain
     ; If we are using iTools or tv then make data byte type
     if (self.display_mode ne 1) then begin
         if (self.autoscale) then begin
-            black=min(data, max=white)
+            black=min(dataIn, max=white)
             self.display_min = black
             self.display_max = white
             widget_control, self.widgets.display_min, set_value=float(black)
@@ -180,10 +194,12 @@ pro epics_ad_display::display_image, data, true=true, retain=retain
         endelse
         ; We can optimize by not doing any scaling if this is already a byte image
         ; and the display range is 0 to 255
-        if (size(data, /type) ne 1) or (self.display_min ne 0) or (self.display_max ne 255) then begin
-            data = bytscl(data, min=black, max=white)
+        if (size(dataIn, /type) ne 1) or (self.display_min ne 0) or (self.display_max ne 255) then begin
+            data = bytscl(dataIn, min=black, max=white)
         endif
     endif
+    ; Make a copy of data if not done just above
+    if (n_elements(data) eq 0) then data = dataIn
     ; Flip the data vertically if desired.  Use rotate for mono data (it's faster) and
     ; order for color because rotate does not work
     order = 0
@@ -191,7 +207,6 @@ pro epics_ad_display::display_image, data, true=true, retain=retain
         ndims = size(data, /n_dimensions)
         if (ndims eq 2) then data = rotate(data, 7) else order=1
     endif
-
     case self.display_mode of
     0: begin
            catch, err
@@ -205,7 +220,7 @@ pro epics_ad_display::display_image, data, true=true, retain=retain
                    position=[500,0]
                endelse
                window, self.tv_window, xpos=position[0], ypos=position[1], $
-                       xsize=self.nx, ysize=self.ny, title=self.base_pv
+                       xsize=self.hSize, ysize=self.vSize, title=self.base_pv
                wshow, self.tv_window
            endif
            wset, self.tv_window
@@ -213,6 +228,12 @@ pro epics_ad_display::display_image, data, true=true, retain=retain
            catch, /cancel
        end
     1: begin
+           ; image_display cannot display color yet
+           if (true ne 0) then begin
+                t = dialog_message('Cannot use color with image_display')
+                self.display_mode = 0
+                return
+           endif
            if ((not obj_valid(self.image_display)) or (retain eq 0)) then begin
                self.image_display = obj_new('image_display', data, order=1)
            endif else begin
@@ -332,6 +353,7 @@ function epics_ad_display::init, base_pv
 
     self.widgets.nx = cw_field(row, /column, /integer, title='NX', xsize=8, /noedit)
     self.widgets.ny = cw_field(row, /column, /integer, title='NY', xsize=8, /noedit)
+    self.widgets.nz = cw_field(row, /column, /integer, title='NZ', xsize=8, /noedit)
 
     col = widget_base(row, /column)
     t = widget_label(col, value='Flip Y')
@@ -387,6 +409,7 @@ pro epics_ad_display__define
         base_pv:       0L, $
         nx:            0L, $
         ny:            0L, $
+        nz:            0L, $
         display_mode:  0L, $
         display_enable: 0L, $
         display_min:   0L, $
@@ -411,11 +434,16 @@ pro epics_ad_display__define
         image_display:  obj_new(), $
         iimage_obj:     obj_new(), $
         detector:       obj_new(), $
+        pData:          ptr_new(), $
+        true_color:     0L, $
         base_pv:        "", $
         tv_window:      0L, $
         connected:      0L, $
         nx:             0L, $
         ny:             0L, $
+        nz:             0L, $
+        hSize:          0L, $
+        vSize:          0L, $
         display_mode:   0L, $
         display_enable: 0L, $
         autoscale:      0L, $
