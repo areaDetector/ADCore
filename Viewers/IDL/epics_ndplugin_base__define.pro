@@ -7,7 +7,7 @@ function epics_ndplugin_base::init, prefix
 ; PURPOSE:
 ;       This is the initialization code which is invoked when a new object of
 ;       type EPICS_NDPLUGIN_BASE is created.  It cannot be called directly, but only
-;       indirectly by the IDL OBJ_NEW() function. 
+;       indirectly by the IDL OBJ_NEW() function.
 ;
 ; CATEGORY:
 ;       IDL device class library.
@@ -28,7 +28,7 @@ function epics_ndplugin_base::init, prefix
 ;       software installed.  This requires the shareable object ezcaIDL.dll or
 ;       ezcaIDL.so.  The EZCA_IDL_SHARE environment variable must point to this
 ;       shareable object file.  It must be a version of this library built with
-;       EPICS 3.14 to transfer arrays larger than 16,000 bytes. 
+;       EPICS 3.14 to transfer arrays larger than 16,000 bytes.
 ;       The EPICS_CA_MAX_ARRAY_BYTES environment variable must be set to a value
 ;       at least as large as the biggest array that will be used.
 ;
@@ -43,7 +43,7 @@ function epics_ndplugin_base::init, prefix
     status = self->epics_ad_control::init()
     if (status ne 1) then return, status
     self.prefix = prefix
-    
+
     catch, err
     if (err ne 0) then begin
        print, !ERROR_STATE.MSG
