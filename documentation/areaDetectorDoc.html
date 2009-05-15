@@ -10,7 +10,7 @@
     <h1>
       areaDetector: EPICS Area Detector Support</h1>
     <h2>
-      January 30, 2009</h2>
+      May 15, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -83,10 +83,9 @@
     <li>Provide a mechanism for device-independent real-time data analysis such as regions-of-interest
       and statistics.</li>
     <li>Provide detector drivers for commonly used detectors in synchrotron applications.
-      These include Prosilica GigE video cameras, IEEE 1394 (Firewire) cameras,
-      MAR-CCD x-ray detectors, MAR-345 online
-      imaging plate detectors, the Pilatus pixel-array detector, Roper Scientific
-      CCD cameras, and the Perkin-Elmer amorphous silicon detector.</li>
+      These include Prosilica GigE video cameras, IEEE 1394 (Firewire) cameras, MAR-CCD
+      x-ray detectors, MAR-345 online imaging plate detectors, the Pilatus pixel-array
+      detector, Roper Scientific CCD cameras, and the Perkin-Elmer amorphous silicon detector.</li>
   </ul>
   <p>
     &nbsp;</p>
@@ -103,11 +102,10 @@
       hardware. It is usually provided by the detector vendor. It may consist of a library
       or DLL, of a socket protocol to a driver, a Microsoft COM interface, etc.</li>
     <li>Layer 2. This is the driver that is written for the areaDetector application to
-      control a particular detector. It is written in C++ and inherits from the
-      ADDriver class. It uses the standard asyn interfaces for control and status information.
+      control a particular detector. It is written in C++ and inherits from the ADDriver
+      class. It uses the standard asyn interfaces for control and status information.
       Each time it receives a new data array it can pass it as an NDArray object to all
-      Layer 3 clients that have registered for callbacks. 
-      This is the only code that needs
+      Layer 3 clients that have registered for callbacks. This is the only code that needs
       to be written to implement a new detector. Existing drivers range from 800 to 1800
       lines of code.</li>
     <li>Layer 3. Code running at this level is called a "plug-in". This code registers
@@ -186,134 +184,68 @@
     Detector drivers and plugins are asyn port drivers, meaning that they implement
     one or more of the standard asyn interfaces. They register themselves as interrupt
     sources, so that they do callbacks to registered asyn clients when values change.
-    They inherit from the <a href="asynPortDriver.html">asynPortDriver
-      base C++ class</a> that is provided in the asyn module. (The previous link is temporary
-      until asyn R4-11 is release).  That base class handles
-    all of the details of registering the port driver, registering the supported interfaces,
-    and registering the required interrupt sources. There is also
-    <a href="asynDoxygenHTML/index.html">detailed source documentation</a> for asynPortDriver. 
+    They inherit from the <a href="asynPortDriver.html">asynPortDriver base C++ class</a>
+    that is provided in the asyn module. (The previous link is temporary until asyn
+    R4-11 is release). That base class handles all of the details of registering the
+    port driver, registering the supported interfaces, and registering the required
+    interrupt sources. The <a href="asynDoxygenHTML/class_asyn_port_driver.html">asynPortDriver
+      class documentation</a> describes this class in detail.
   </p>
   <h3 id="NDArray">
     NDArray</h3>
   <p>
     The NDArray (N-Dimensional array) is the class that is used for passing detector
-    data from drivers to plugins. 
-    An NDArray is a general purpose class for handling array data. An NDArray object
-    is self-describing, meaning it contains enough information to describe the data
-    itself. It can optionally contain "attributes" (class NDAttribute) which 
-    contain meta-data describing how the data was collected, etc.
+    data from drivers to plugins. An NDArray is a general purpose class for handling
+    array data. An NDArray object is self-describing, meaning it contains enough information
+    to describe the data itself. It can optionally contain "attributes" (class NDAttribute)
+    which contain meta-data describing how the data was collected, etc.
   </p>
   <p>
     An NDArray can have up to ND_ARRAY_MAX_DIMS dimensions, currently 10. A fixed maximum
     number of dimensions is used to significantly simplify the code compared to unlimited
-    number of dimensions. Each dimension of the array is described by an 
-    <a href="areaDetectorDoxygenHTML/struct_n_d_dimension.html">NDDimension structure<a>. 
-    The <a href="areaDetectorDoxygenHTML/class_n_d_array.html">
-    NDArray class documentation </a> describes this class in detail.  
+    number of dimensions. Each dimension of the array is described by an <a href="areaDetectorDoxygenHTML/struct_n_d_dimension.html">
+      NDDimension structure</a>. The <a href="areaDetectorDoxygenHTML/class_n_d_array.html">
+        NDArray class documentation </a>describes this class in detail.
+  </p>
+  <h3 id="H3_2">
+    NDAttribute</h3>
   <p>
+    The NDAttribute is a class for linking metadata to an NDArray. An NDattribute has
+    a name, description, data type, and value. There are methods to set and get the
+    information for an attribute, and NDArray provides methods to add and delete attributes
+    from an NDArray object. The <a href="areaDetectorDoxygenHTML/class_n_d_attribute.html">
+      NDAttribute class documentation</a> describes this class in detail.
+  </p>
   <h3 id="NDArrayPool">
     NDArrayPool</h3>
   <p>
-    The NDArrayPool class manages a free list (pool) of NDArray objects.
-    Drivers allocate NDArray objects from the pool, and pass these objects to plugins.
-    Plugins increase the reference count on the object when they place the object on
-    their queue, and decrease the reference count when they are done processing the
-    array. When the reference count reaches 0 again the NDArray object is placed back
-    on the free list. This mechanism minimizes the copying of array data in plugins.
-    The <a href="areaDetectorDoxygenHTML/class_n_d_array_pool.html">
-    NDArrayPool class documentation </a> describes this class in detail.
-    
+    The NDArrayPool class manages a free list (pool) of NDArray objects. Drivers allocate
+    NDArray objects from the pool, and pass these objects to plugins. Plugins increase
+    the reference count on the object when they place the object on their queue, and
+    decrease the reference count when they are done processing the array. When the reference
+    count reaches 0 again the NDArray object is placed back on the free list. This mechanism
+    minimizes the copying of array data in plugins. The <a href="areaDetectorDoxygenHTML/class_n_d_array_pool.html">
+      NDArrayPool class documentation </a>describes this class in detail.
+  </p>
   <h3 id="asynNDArrayDriver">
     asynNDArrayDriver</h3>
   <p>
     asynNDArrayDriver inherits from asynPortDriver. It implements the asynGenericPointer
-    functions, for NDArray objects. This is the class from
-    which both plugins and area detector drivers are indirectly derived.
-    The <a href="areaDetectorDoxygenHTML/class_asyn_n_d_array_driver.html">
-    asynNDArrayDriver class documentation </a> describes this class in detail.
+    functions, for NDArray objects. This is the class from which both plugins and area
+    detector drivers are indirectly derived. The <a href="areaDetectorDoxygenHTML/classasyn_n_d_array_driver.html">
+      asynNDArrayDriver class documentation </a>describes this class in detail.
   </p>
-  <h3 id="ADDriver">
-    ADDriver</h3>
   <p>
-    ADDriver inherits from asynNDArrayDriver. This is the class from which area detector
-    drivers are directly derived. 
-    The <a href="areaDetectorDoxygenHTML/class_a_d_driver.html">
-    ADDriver class documentation </a> describes this class in detail.
- 
-  <h3 id="ADStdDriverParams">
-    ADStdDriverParams</h3>
-  <p>
-    The file <code>ADStdDriverParams.h</code> defines the following:
-  </p>
-  <pre>/* Enumeration of shutter status */
-typedef enum
-{
-    ADShutterClosed, 
-    ADShutterOpen
-} ADShutterStatus_t;
-
-/* Enumeration of shutter modes */
-typedef enum
-{
-    ADShutterModeNone,
-    ADShutterModeEPICS, 
-    ADShutterModeDetector
-} ADShutterMode_t;
-
-/* Enumeration of detector status */
-typedef enum
-{
-    ADStatusIdle,
-    ADStatusAcquire,
-    ADStatusReadout,
-    ADStatusCorrect,
-    ADStatusSaving,
-    ADStatusAborting,
-    ADStatusError,
-    ADStatusWaiting
-} ADStatus_t;
-
-/* Enumeration of image collection modes */
-typedef enum
-{
-    ADImageSingle,
-    ADImageMultiple,
-    ADImageContinuous
-} ADImageMode_t;
-
-/* Enumeration of frame types */
-typedef enum
-{
-    ADFrameNormal,
-    ADFrameBackground,
-    ADFrameFlatField,
-    ADFrameDoubleCorrelation
-} ADFrameType_t;
-
-/* Enumeration of trigger modes */
-typedef enum
-{
-    ADTriggerInternal,
-    ADTriggerExternal
-} ADTriggerMode_t;
-
-/* Enumeration of file saving modes */
-typedef enum {
-    ADFileModeSingle,
-    ADFileModeCapture,
-    ADFileModeStream
-} ADFileMode_t;
-
-</pre>
-  <p>
-    It also defines parameters that all area detector drivers should implement if possible.
-    These parameters are defined by enum values with an associated asyn interface, and
-    access (read-only or read-write). The EPICS database ADBase.template provides access
-    to these standard driver parameters. The following table lists the standard driver
-    parameters. The columns are defined as follows:
+    The file <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">asynNDArrayDriver.h</a>
+    defines a number of enumerations, including NDStdDriverParams_t, which are the parameters
+    that all NDArray drivers and plugins should implement if possible. These parameters
+    are defined by enum values with an associated asyn interface, and access (read-only
+    or read-write). The EPICS database ADBase.template provides access to these standard
+    driver parameters. The following table lists the standard driver parameters. The
+    columns are defined as follows:
   </p>
   <ul>
-    <li><b>Enum name:</b> The name of the enum value for this parameter in ADStdDriverParams.h.
+    <li><b>Enum name:</b> The name of the enum value for this parameter in asynNDArrayDriver.h.
       There are several EPICS records in ADBase.template that do not have corresponding
       enum fields, and these are indicated as Not Applicable (N/A).</li>
     <li><b>asyn interface:</b> The asyn interface used to pass this parameter to the driver.</li>
@@ -329,22 +261,22 @@ typedef enum {
       used to hold long strings, with length (NELM) = 256 bytes and EPICS data type (FTVL)
       = UCHAR. This removes the 40 character restriction string lengths that arise if
       an EPICS "string" PV is used. MEDM allows one to edit and display such records correctly.
-      EPICS clients will typically need to convert the path name from a string to an integer
-      or byte array before sending the path name to EPICS. This is easy to do in clients
-      like SPEC, Matlab, and IDL.</li>
+      EPICS clients will typically need to convert such long strings from a string to
+      an integer or byte array before sending the path name to EPICS. This is easy to
+      do in clients like SPEC, Matlab, and IDL.</li>
   </ul>
   <p>
-    Note that for parameters whose values are defined by enum values (e.g ADImageMode,
-    ADTriggerMode, ADFileFormat, ADStatus), drivers can use a different set of enum
-    values for these parameters. They can override the enum menu in ADBase.template
-    with detector-specific choices by loading a detector-specific template file that
-    redefines that record field after loading ADBase.template.
+    Note that for parameters whose values are defined by enum values (e.g NDDataType,
+    NDColorMode, etc.), drivers can use a different set of enum values for these parameters.
+    They can override the enum menu in ADBase.template with driver-specific choices
+    by loading a driver-specific template file that redefines that record field after
+    loading ADBase.template.
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
       <tr>
         <td align="center" colspan="7">
-          <b>Parameter Definitions in ADStdDriverParams.h and EPICS Record Definitions in ADBase.template
+          <b>Parameter Definitions in asynNDArrayDriver.h and EPICS Record Definitions in ADBase.template
             (file-related records are in NDFile.template)</b></td>
       </tr>
       <tr>
@@ -369,7 +301,7 @@ typedef enum {
       </tr>
       <tr>
         <td>
-          ADPortNameSelf</td>
+          NDPortNameSelf</td>
         <td>
           asynOctet</td>
         <td>
@@ -385,6 +317,492 @@ typedef enum {
       </tr>
       <tr>
         <td align="center" colspan="7">
+          <b>Data type</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDDataType</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Data type (NDDataType_t).</td>
+        <td>
+          DATA_TYPE</td>
+        <td>
+          $(P)$(R)DataType<br />
+          $(P)$(R)DataType_RBV</td>
+        <td>
+          mbbo<br />
+          mbbi</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Color mode</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDColorMode</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Color mode (NDColorMode_t).</td>
+        <td>
+          COLOR_MODE</td>
+        <td>
+          $(P)$(R)ColorMode<br />
+          $(P)$(R)ColorMode_RBV</td>
+        <td>
+          mbbo<br />
+          mbbi</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Actual dimensions of array data</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDArraySizeX</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Size of the array data in the X direction</td>
+        <td>
+          ARRAY_SIZE_X</td>
+        <td>
+          $(P)$(R)ArraySizeX_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDArraySizeY</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Size of the array data in the Y direction</td>
+        <td>
+          ARRAY_SIZE_Y</td>
+        <td>
+          $(P)$(R)ArraySizeY_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDArraySizeZ</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Size of the aray data in the Z direction</td>
+        <td>
+          ARRAY_SIZE_Z</td>
+        <td>
+          $(P)$(R)ArraySizeZ_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>File saving parameters (records are defined in NDFile.template)</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDFilePath</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          File path</td>
+        <td>
+          FILE_PATH</td>
+        <td>
+          $(P)$(R)FilePath<br />
+          $(P)$(R)FilePath_RBV</td>
+        <td>
+          waveform<br />
+          waveform</td>
+      </tr>
+      <tr>
+        <td>
+          NDFileName</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          File name</td>
+        <td>
+          FILE_NAME</td>
+        <td>
+          $(P)$(R)FileName<br />
+          $(P)$(R)FileName_RBV</td>
+        <td>
+          waveform<br />
+          waveform</td>
+      </tr>
+      <tr>
+        <td>
+          NDFileNumber</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          File number</td>
+        <td>
+          FILE_NUMBER</td>
+        <td>
+          $(P)$(R)FileNumber<br />
+          $(P)$(R)FileNumber_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDFileTemplate</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Format string for constructing NDFullFileName from NDFilePath, NDFileName, and NDFileNumber.
+          The final file name (which is placed in NDFullFileName) is created with the following
+          code:
+          <pre>epicsSnprintf(
+    FullFilename, 
+    sizeof(FullFilename), 
+    FileFormat, FilePath, 
+    Filename, FileNumber);
+        </pre>
+          FilePath, Filename, FileNumber are converted in that order with FileFormat. An example
+          file format is <code>"%s%s%4.4d.tif"</code>. The first %s converts the FilePath,
+          followed immediately by another %s for Filename. FileNumber is formatted with %4.4d,
+          which results in a fixed field with of 4 digits, with leading zeros as required.
+          Finally, the .tif extension is added to the file name. This mechanism for creating
+          file names is very flexible. Other characters, such as _ can be put in Filename
+          or FileFormat as desired. If one does not want to have FileNumber in the file name
+          at all, then just omit the %d format specifier from FileFormat. If the client wishes
+          to construct the complete file name itself, then it can just put that file name
+          into NDFileFormat with no format specifiers at all, in which case NDFilePath, NDFileName,
+          and NDFileNumber will be ignored.</td>
+        <td>
+          FILE_TEMPLATE</td>
+        <td>
+          $(P)$(R)FileTemplate<br />
+          $(P)$(R)FileTemplate_RBV</td>
+        <td>
+          waveform<br />
+          waveform</td>
+      </tr>
+      <tr>
+        <td>
+          NDFullFileName</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/o</td>
+        <td>
+          Full file name constructed using the algorithm described in NDFileTemplate</td>
+        <td>
+          FULL_FILE_NAME</td>
+        <td>
+          $(P)$(R)FullFileName_RBV</td>
+        <td>
+          waveform<br />
+          waveform</td>
+      </tr>
+      <tr>
+        <td>
+          NDAutoIncrement</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Auto-increment flag. Controls whether FileNumber is automatically incremented by
+          1 each time a file is saved (0=No, 1=Yes)</td>
+        <td>
+          AUTO_INCREMENT</td>
+        <td>
+          $(P)$(R)AutoIncrement<br />
+          $(P)$(R)AutoIncrement_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDAutoSave</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Auto-save flag (0=No, 1=Yes) controlling whether a file is automatically saved each
+          time acquisition completes.</td>
+        <td>
+          AUTO_SAVE</td>
+        <td>
+          $(P)$(R)AutoSave<br />
+          $(P)$(R)AutoSave_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDFileFormat</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          File format. The format to write/read data in (e.g. TIFF, netCDF, etc.)</td>
+        <td>
+          FILE_FORMAT</td>
+        <td>
+          $(P)$(R)FileFormat<br />
+          $(P)$(R)FileFormat_RBV</td>
+        <td>
+          mbbo<br />
+          mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          NDWriteFile</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Manually save the most recent image to a file when value=1</td>
+        <td>
+          WRITE_FILE</td>
+        <td>
+          $(P)$(R)WriteFile<br />
+          $(P)$(R)WriteFile_RBV</td>
+        <td>
+          busy<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDReadFile</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Manually read a file when value=1</td>
+        <td>
+          READ_FILE</td>
+        <td>
+          $(P)$(R)ReadFile<br />
+          $(P)$(R)ReadFile_RBV</td>
+        <td>
+          busy<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDFileWriteMode</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          File saving mode (Single, Capture, Stream)(NDFileMode_t)</td>
+        <td>
+          WRITE_MODE</td>
+        <td>
+          $(P)$(R)FileWriteMode<br />
+          $(P)$(R)FileWriteMode_RBV</td>
+        <td>
+          mbbo<br />
+          mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          NDFileCapture</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Start (1) or stop (0) file capture or streaming</td>
+        <td>
+          CAPTURE</td>
+        <td>
+          $(P)$(R)FileCapture<br />
+          $(P)$(R)FileCapture_RBV</td>
+        <td>
+          busy<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDNumCapture</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Number of frames to acquire in capture or streaming mode</td>
+        <td>
+          NUM_CAPTURE</td>
+        <td>
+          $(P)$(R)FileNumCapture<br />
+          $(P)$(R)FileNumCapture_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDNumCaptured</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Number of arrays currently acquired capture or streaming mode</td>
+        <td>
+          NUM_CAPTURED</td>
+        <td>
+          $(P)$(R)FileNumCaptured_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDArrayCounter</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Counter that increments by 1 each time an array is acquired. Can be reset by writing
+          a value to it.</td>
+        <td>
+          ARRAY_COUNTER</td>
+        <td>
+          $(P)$(R)ArrayCounter<br />
+          $(P)$(R)ArrayCounter_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Array data</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDArrayCallbacks</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Controls whether the driver does callbacks with the array data to registered plugins.
+          0=No, 1=Yes. Setting this to 0 can reduce overhead in the case that the driver is
+          being used only to control the device, and not to make the data available to plugins
+          or to EPICS clients.</td>
+        <td>
+          ARRAY_CALLBACKS</td>
+        <td>
+          $(P)$(R)ArrayCallbacks<br />
+          $(P)$(R)ArrayCallbacks_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDArrayData</td>
+        <td>
+          asynGenericPointer</td>
+        <td>
+          r/w</td>
+        <td>
+          The image data as an NDArray object</td>
+        <td>
+          NDARRAY_DATA</td>
+        <td>
+          N/A. EPICS access to image data is through NDStdArrays plugin.</td>
+        <td>
+          N/A</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Debugging control</b></td>
+      </tr>
+      <tr>
+        <td>
+          N/A</td>
+        <td>
+          N/A</td>
+        <td>
+          N/A</td>
+        <td>
+          asyn record to control debugging (asynTrace)</td>
+        <td>
+          N/A</td>
+        <td>
+          $(P)$(R)AsynIO</td>
+        <td>
+          asyn</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="H3_1">
+    ADDriver</h3>
+  <p>
+    ADDriver inherits from asynNDArrayDriver. This is the class from which area detector
+    drivers are directly derived. The <a href="areaDetectorDoxygenHTML/class_a_d_driver.html">
+      ADDriver class documentation </a>describes this class in detail.
+  </p>
+  <p>
+    The file <a href="areaDetectorDoxygenHTML/_a_d_driver_8h.html">ADDriver.h</a> defines
+    a number of enumerations, including ADStdDriverParams_t, which are the parameters
+    that all areaDetector drivers should implement if possible.
+  </p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Parameter Definitions in ADDriver.h and EPICS Record Definitions in ADBase.template</b></td>
+      </tr>
+      <tr>
+        <th>
+          Enum name</th>
+        <th>
+          asyn interface</th>
+        <th>
+          Access</th>
+        <th>
+          Description</th>
+        <th>
+          drvUser string</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          EPICS record type</th>
+      </tr>
+      <tr>
+        <td align="center" colspan="7" style="height: 25px">
           <b>Information about the detector</b></td>
       </tr>
       <tr>
@@ -683,50 +1101,6 @@ typedef enum {
       </tr>
       <tr>
         <td align="center" colspan="7">
-          <b>Data type</b></td>
-      </tr>
-      <tr>
-        <td>
-          ADDataType</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Data type (NDDataType_t).</td>
-        <td>
-          DATA_TYPE</td>
-        <td>
-          $(P)$(R)DataType<br />
-          $(P)$(R)DataType_RBV</td>
-        <td>
-          mbbo<br />
-          mbbi</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7">
-          <b>Color mode</b></td>
-      </tr>
-      <tr>
-        <td>
-          ADColorMode</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Color mode (NDColorMode_t).</td>
-        <td>
-          COLOR_MODE</td>
-        <td>
-          $(P)$(R)ColorMode<br />
-          $(P)$(R)ColorMode_RBV</td>
-        <td>
-          mbbo<br />
-          mbbi</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7">
           <b>Frame type</b></td>
       </tr>
       <tr>
@@ -746,74 +1120,6 @@ typedef enum {
         <td>
           mbbo<br />
           mbbi</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7">
-          <b>Actual dimensions of image data</b></td>
-      </tr>
-      <tr>
-        <td>
-          ADImageSizeX</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Size of the image data in the X direction</td>
-        <td>
-          IMAGE_SIZE_X</td>
-        <td>
-          $(P)$(R)ImageSizeX_RBV</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          ADImageSizeY</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Size of the image data in the Y direction</td>
-        <td>
-          IMAGE_SIZE_Y</td>
-        <td>
-          $(P)$(R)ImageSizeY_RBV</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          ADImageSizeZ</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Size of the image data in the Z direction</td>
-        <td>
-          IMAGE_SIZE_Z</td>
-        <td>
-          $(P)$(R)ImageSizeZ_RBV</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          ADImageSize</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Total size of image data in bytes</td>
-        <td>
-          IMAGE_SIZE</td>
-        <td>
-          $(P)$(R)ImageSize_RBV</td>
-        <td>
-          longin</td>
       </tr>
       <tr>
         <td align="center" colspan="7">
@@ -920,280 +1226,6 @@ typedef enum {
       </tr>
       <tr>
         <td align="center" colspan="7">
-          <b>File saving parameters (records are defined in NDFile.template)</b></td>
-      </tr>
-      <tr>
-        <td>
-          ADFilePath</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          File path</td>
-        <td>
-          FILE_PATH</td>
-        <td>
-          $(P)$(R)FilePath<br />
-          $(P)$(R)FilePath_RBV</td>
-        <td>
-          waveform<br />
-          waveform</td>
-      </tr>
-      <tr>
-        <td>
-          ADFileName</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          File name</td>
-        <td>
-          FILE_NAME</td>
-        <td>
-          $(P)$(R)FileName<br />
-          $(P)$(R)FileName_RBV</td>
-        <td>
-          waveform<br />
-          waveform</td>
-      </tr>
-      <tr>
-        <td>
-          ADFileNumber</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          File number</td>
-        <td>
-          FILE_NUMBER</td>
-        <td>
-          $(P)$(R)FileNumber<br />
-          $(P)$(R)FileNumber_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          ADFileTemplate</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          Format string for constructing ADFullFileName from ADFilePath, ADFileName, and ADFileNumber.
-          The final file name (which is placed in ADFullFileName) is created with the following
-          code:
-          <pre>epicsSnprintf(
-    FullFilename, 
-    sizeof(FullFilename), 
-    FileFormat, FilePath, 
-    Filename, FileNumber);
-        </pre>
-          FilePath, Filename, FileNumber are converted in that order with FileFormat. An example
-          file format is <code>"%s%s%4.4d.tif"</code>. The first %s converts the FilePath,
-          followed immediately by another %s for Filename. FileNumber is formatted with %4.4d,
-          which results in a fixed field with of 4 digits, with leading zeros as required.
-          Finally, the .tif extension is added to the file name. This mechanism for creating
-          file names is very flexible. Other characters, such as _ can be put in Filename
-          or FileFormat as desired. If one does not want to have FileNumber in the file name
-          at all, then just omit the %d format specifier from FileFormat. If the client wishes
-          to construct the complete file name itself, then it can just put that file name
-          into ADFileFormat with no format specifiers at all, in which case ADFilePath, ADFileName,
-          and ADFileNumber will be ignored.</td>
-        <td>
-          FILE_TEMPLATE</td>
-        <td>
-          $(P)$(R)FileTemplate<br />
-          $(P)$(R)FileTemplate_RBV</td>
-        <td>
-          waveform<br />
-          waveform</td>
-      </tr>
-      <tr>
-        <td>
-          ADFullFileName</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/o</td>
-        <td>
-          Full file name constructed using the algorithm described in ADFileTemplate</td>
-        <td>
-          FULL_FILE_NAME</td>
-        <td>
-          $(P)$(R)FullFileName_RBV</td>
-        <td>
-          waveform<br />
-          waveform</td>
-      </tr>
-      <tr>
-        <td>
-          ADAutoIncrement</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Auto-increment flag. Controls whether FileNumber is automatically incremented by
-          1 each time a file is saved (0=No, 1=Yes)</td>
-        <td>
-          AUTO_INCREMENT</td>
-        <td>
-          $(P)$(R)AutoIncrement<br />
-          $(P)$(R)AutoIncrement_RBV</td>
-        <td>
-          bo<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          ADAutoSave</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Auto-save flag (0=No, 1=Yes) controlling whether a file is automatically saved each
-          time acquisition completes.</td>
-        <td>
-          AUTO_SAVE</td>
-        <td>
-          $(P)$(R)AutoSave<br />
-          $(P)$(R)AutoSave_RBV</td>
-        <td>
-          bo<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          ADFileFormat</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          File format. The format to write/read data in (e.g. TIFF, netCDF, etc.)</td>
-        <td>
-          FILE_FORMAT</td>
-        <td>
-          $(P)$(R)FileFormat<br />
-          $(P)$(R)FileFormat_RBV</td>
-        <td>
-          mbbo<br />
-          mbbi</td>
-      </tr>
-      <tr>
-        <td>
-          ADWriteFile</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Manually save the most recent image to a file when value=1</td>
-        <td>
-          WRITE_FILE</td>
-        <td>
-          $(P)$(R)WriteFile<br />
-          $(P)$(R)WriteFile_RBV</td>
-        <td>
-          abusy<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          ADReadFile</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Manually read a file when value=1</td>
-        <td>
-          READ_FILE</td>
-        <td>
-          $(P)$(R)ReadFile<br />
-          $(P)$(R)ReadFile_RBV</td>
-        <td>
-          abusy<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          ADFileWriteMode</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          File saving mode (Single, Capture, Stream)(ADFileMode_t)</td>
-        <td>
-          WRITE_MODE</td>
-        <td>
-          $(P)$(R)FileWriteMode<br />
-          $(P)$(R)FileWriteMode_RBV</td>
-        <td>
-          mbbo<br />
-          mbbi</td>
-      </tr>
-      <tr>
-        <td>
-          ADFileCapture</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Start (1) or stop (0) file capture or streaming</td>
-        <td>
-          CAPTURE</td>
-        <td>
-          $(P)$(R)FileCapture<br />
-          $(P)$(R)FileCapture_RBV</td>
-        <td>
-          abusy<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          ADNumCapture</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Number of frames to acquire in capture or streaming mode</td>
-        <td>
-          NUM_CAPTURE</td>
-        <td>
-          $(P)$(R)FileNumCapture<br />
-          $(P)$(R)FileNumCapture_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          ADNumCaptured</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Number of frames currently acquired capture or streaming mode</td>
-        <td>
-          NUM_CAPTURED</td>
-        <td>
-          $(P)$(R)FileNumCaptured_RBV</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7">
           <b>Status information</b></td>
       </tr>
       <tr>
@@ -1259,25 +1291,6 @@ typedef enum {
           $(P)$(R)StringFromServer_RBV</td>
         <td>
           waveform</td>
-      </tr>
-      <tr>
-        <td>
-          ADImageCounter</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Counter that increments by 1 each time an image is acquired. Can be reset by writing
-          a value to it.</td>
-        <td>
-          IMAGE_COUNTER</td>
-        <td>
-          $(P)$(R)ImageCounter<br />
-          $(P)$(R)ImageCounter_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
       </tr>
       <tr>
         <td>
@@ -1532,98 +1545,17 @@ typedef enum {
           ao<br />
           ai</td>
       </tr>
-      <tr>
-        <td align="center" colspan="7">
-          <b>Image data</b></td>
-      </tr>
-      <tr>
-        <td>
-          ADArrayCallbacks</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Controls whether the driver does callbacks with the image data to registered plugins.
-          0=No, 1=Yes. Setting this to 0 can reduce overhead in the case that the driver is
-          being used only to control the detector, and not to make the data available to plugins
-          or to EPICS clients.</td>
-        <td>
-          ARRAY_CALLBACKS</td>
-        <td>
-          $(P)$(R)ArrayCallbacks<br />
-          $(P)$(R)ArrayCallbacks_RBV</td>
-        <td>
-          bo<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          NDArrayData</td>
-        <td>
-          asynGenericPointer</td>
-        <td>
-          r/w</td>
-        <td>
-          The image data as an NDArray object</td>
-        <td>
-          NDARRAY_DATA</td>
-        <td>
-          N/A. EPICS access to image data is through NDStdArrays plugin.</td>
-        <td>
-          N/A</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7">
-          <b>asyn port information</b></td>
-      </tr>
-      <tr>
-        <td>
-          N/A</td>
-        <td>
-          N/A</td>
-        <td>
-          N/A</td>
-        <td>
-          The name of the asyn port for this driver</td>
-        <td>
-          N/A</td>
-        <td>
-          $(P)$(R)PortName_RBV</td>
-        <td>
-          stringin</td>
-      </tr>
-      <tr>
-        <td>
-          N/A</td>
-        <td>
-          N/A</td>
-        <td>
-          N/A</td>
-        <td>
-          asyn record to control debugging (asynTrace)</td>
-        <td>
-          N/A</td>
-        <td>
-          $(P)$(R)AsynIO</td>
-        <td>
-          asyn</td>
-      </tr>
     </tbody>
   </table>
-  <p>
-    There is currently no support for color cameras in areaDetector. This will be added
-    in the near future, and parameters to control the color mode will be added.
-  </p>
   <h2 id="MEDM_screens">
     MEDM screens</h2>
   <p>
-    The following is the MEDM screen that provides access to the parameters in ADStdDriverParams
-    through records in ADBase.template. This is a top-level MEDM screen that will work
-    with any areaDetector driver. Note however that many drivers will not implement
-    all of these parameters, and there will usually be detector-specific parameters
-    not shown in this screen, so detector-specific MEDM screens should generally be
-    created that display the EPICS PVs for the features implemented for that detector.
+    The following is the MEDM screen that provides access to the parameters in asynNDArrayDriver.h
+    and ADDriver.h through records in ADBase.template. This is a top-level MEDM screen
+    that will work with any areaDetector driver. Note however that many drivers will
+    not implement all of these parameters, and there will usually be detector-specific
+    parameters not shown in this screen, so detector-specific MEDM screens should generally
+    be created that display the EPICS PVs for the features implemented for that detector.
   </p>
   <div style="text-align: center">
     <p>
@@ -1678,11 +1610,9 @@ typedef enum {
     <li><a href="MarCCDDoc.html">MarCCD driver</a></li>
     <li><a href="Mar345Doc.html">mar345 driver</a></li>
     <li><a href="FirewireWinDoc.html">Firewire Windows driver</a></li>
+    <li><a href="PerkinElmerDoc.html">Perkin-Elmer flat panel driver</a></li>
     <li><a href="http://controls.diamond.ac.uk/downloads/support/firewireDCAM/index.html">
       Firewire Linux driver</a></li>
   </ul>
-  <p>
-    In addition to these drivers, Brian Tieman from the APS is writing a driver for
-    the Perkin-Elmer flat-panel amorphous silicon detector.</p>
 </body>
 </html>
