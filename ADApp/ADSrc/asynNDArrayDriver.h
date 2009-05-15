@@ -9,7 +9,7 @@
 /** Maximum length of a filename or any of its components */
 #define MAX_FILENAME_LEN 256
 
-/* Enumeration of file saving modes */
+/** Enumeration of file saving modes */
 typedef enum {
     NDFileModeSingle,       /**< Write 1 array per file */
     NDFileModeCapture,      /**< Capture NDNumCapture arrays into memory, write them out when capture is complete.
@@ -73,8 +73,8 @@ typedef enum
 #define NUM_ND_STANDARD_PARAMS (sizeof(NDStdDriverParamString)/sizeof(NDStdDriverParamString[0]))
 
 
-/** This is the class from which NDArray drivers are derived; implements the asynGenericPointer functions, assuming
-  * that these reference NDArray objects. 
+/** This is the class from which NDArray drivers are derived; implements the asynGenericPointer functions 
+  * for NDArray objects. 
   * For areaDetector, both plugins and detector drivers are indirectly derived from this class.
   * asynNDArrayDriver inherits from asynPortDriver.
   */

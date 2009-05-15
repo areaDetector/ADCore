@@ -1,48 +1,46 @@
+For R1-5
+
+- Update documentation to link to doxygen files and remove details of code
+  from HTML files.
+
+- Include TIFF and JPEG libraries in all applications so the plugins will work.
+
+- Load the TIFF and JPEG drivers, databases and adl screens for all drivers.
+
+- Make all writeXXX methods invoke the base class in the case where the
+parameter is not recognized and the number is less than the first parameter
+for this class.
+
+- Implement portNameSelf in asynPortDriver (but leave it in ADBase.template).
+
+- Test all drivers.
+
+
+Longer term:
+
     General
-- Look at Marty's comments, respond
-- Documentation
 - Performance measurements
 - Implement and improve connection management
-- Make any asynBusy record, same as bo, except:
-    - Does not call recGblFwdLink until VAL=0.
-    - Soft device support is same as bo record.
-    - Flag indicating callback from device support, don't write output.
 
-    asynParamBase
+    asynPortDriver
 - Make it handle array interfaces with pointers?
 
     NDPluginBase
-- Add all 10 dimensions to database
+- Add all 10 dimensions to database?
   
-    drvNDFile
-- Test reading
-
-    drvNDStdArrays
+   File plugins
+-  Implement reading
 
     drvNDROI
-- Add cross-sections
+- Add cross-sections?
+- Add scaling and offset, useful when converting data types?
 
-    drvSimDetector driver
-- Test all image data types with all waveform data types
-- Add connection state
 
     drvProsilica driver
 - Connection management
   - Sense disconnect, autoreconnect
   - Implement link callback.  When matches uniqueID, call Disconnect or Connect
-- Support color
   
-    Other drivers
-- Roper using WinView/OLE
-- Pilatus
-- MAR-CCD
-- MAR-345
-
    IDL
-- Fix image_display
-  - Make TVSCL image 
-	Resizeable;
-  - Change table widgets to text widgets or CW_field widgets
-  - Use rotate rather than order keyword on tv
-  - Check if data is byte and scaling is 0 to 255 don't scale the image
-- Data saving?
+- Get Stephen Mudie's code included and fixed
+- Change image_display table widgets to text widgets or CW_field widgets

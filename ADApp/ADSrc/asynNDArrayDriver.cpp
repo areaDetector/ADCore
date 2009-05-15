@@ -279,7 +279,7 @@ void asynNDArrayDriver::report(FILE *fp, int details)
 /** This is the constructor for the asynNDArrayDriver class.
   * portName, maxAddr, paramTableSize, interfaceMask, interruptMask, asynFlags, autoConnect, priority and stackSize
   * are simply passed to asynPortDriver::asynPortDriver. 
-  * asynNDArray creates an NDArrayPool object to allocate NDArray
+  * asynNDArrayDriver creates an NDArrayPool object to allocate NDArray
   * objects. maxBuffers and maxMemory are passed to NDArrayPool::NDArrayPool.
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] maxAddr The maximum  number of asyn addr addresses this driver supports. 1 is minimum.

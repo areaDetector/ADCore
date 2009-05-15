@@ -55,16 +55,19 @@ typedef enum
 typedef enum
 {
     NDColorModeMono,    /**< Monochromatic image */
-    NDColorModeBayer,   /**< Bayer pattern image */
-    NDColorModeRGB1,    /**< RGB image with pixel color interleave */
-    NDColorModeRGB2,    /**< RGB image with row color interleave */
-    NDColorModeRGB3,    /**< RGB image with plane color interleave */
+    NDColorModeBayer,   /**< Bayer pattern image, 1 value per pixel but with color filter on detector */
+    NDColorModeRGB1,    /**< RGB image with pixel color interleave, data array is [3, NX, NY] */
+    NDColorModeRGB2,    /**< RGB image with row color interleave, data array is [NX, 3, NY]  */
+    NDColorModeRGB3,    /**< RGB image with plane color interleave, data array is [NX, NY, 3]  */
     NDColorModeYUV444,  /**< YUV image, 3 bytes encodes 1 RGB pixel */
     NDColorModeYUV422,  /**< YUV image, 4 bytes encodes 2 RGB pixel */
     NDColorModeYUV411   /**< YUV image, 6 bytes encodes 4 RGB pixels */
 } NDColorMode_t;
 
-/** Enumeration of Bayer patterns for NDArray attribute "bayerPattern" */
+/** Enumeration of Bayer patterns for NDArray attribute "bayerPattern".
+  * This value is only meaningful if colorMode is NDColorModeBayer. 
+  * This value is needed because the Bayer pattern will change when reading out a 
+  * subset of the chip, for example if the X or Y offset values are not even numbers */
 typedef enum
 {
     NDBayerRGGB        = 0,    /**< First line RGRG, second line GBGB... */
@@ -76,9 +79,19 @@ typedef enum
 /** Structure defining a dimension of an NDArray */
 typedef struct NDDimension {
     int size;       /**< The number of elements in this dimension of the array */
-    int offset;     /**< The offset relative to the origin of the original data source (e.g. detector) */
-    int binning;    /**< The binning (pixel summation, 1=no binning) relative to original data source (e.g. detector) */
-    int reverse;    /**< The orientation (0=normal, 1=reversed) relative to the original data source (e.g. detector) */
+    int offset;     /**< The offset relative to the origin of the original data source (detector, for example).
+                      * If a selected region of the detector is being read, then this value may be > 0. 
+                      * The offset value is cumulative, so if a plugin such as NDPluginROI further selects
+                      * a subregion, the offset is relative to the first element in the detector, and not 
+                      * to the first element of the region passed to NDPluginROI. */
+    int binning;    /**< The binning (pixel summation, 1=no binning) relative to original data source (detector, for example)
+                      * The offset value is cumulative, so if a plugin such as NDPluginROI performs binning,
+                      * the binning is expressed relative to the pixels in the detector and not to the possibly
+                      * binned pixels passed to NDPluginROI.*/
+    int reverse;    /**< The orientation (0=normal, 1=reversed) relative to the original data source (detector, for example)
+                      * This value is cumulative, so if a plugin such as NDPluginROI reverses the data, the value must
+                      * reflect the orientation relative to the original detector, and not to the possibly
+                      * reversed data passed to NDPluginROI. */
 } NDDimension_t;
 
 /** Structure returned by NDArray::getInfo */
@@ -165,14 +178,16 @@ private:
 
 public:
     int           uniqueId;     /**< A number that must be unique for all NDArrays produced by a driver after is has started */
-    double        timeStamp;    /**< The time stamp in seconds for this array; seconds since epoch is recommended, but some drivers 
-                                  * may use a different start time.*/
+    double        timeStamp;    /**< The time stamp in seconds for this array; seconds since Epoch (00:00:00 UTC, January 1, 1970)
+                                  * is recommended, but some drivers may use a different start time.*/
     int           ndims;        /**< The number of dimensions in this array; minimum=1. */
     NDDimension_t dims[ND_ARRAY_MAX_DIMS]; /**< Array of dimension sizes for this array; first ndims values are meaningful. */
     NDDataType_t  dataType;     /**< Data type for this array. */
     int           dataSize;     /**< Data size for this array; actual amount of memory allocated for *pData, may be more than
                                   * required to hold the array*/
-    void          *pData;       /**< Pointer to the array data */
+    void          *pData;       /**< Pointer to the array data.
+                                  * The data is assumed to be stored in the order of dims[0] changing fastest, and 
+                                  * dims[ndims-1] changing slowest. */
 };
 
 

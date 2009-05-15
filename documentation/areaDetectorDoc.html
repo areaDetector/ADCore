@@ -83,9 +83,10 @@
     <li>Provide a mechanism for device-independent real-time data analysis such as regions-of-interest
       and statistics.</li>
     <li>Provide detector drivers for commonly used detectors in synchrotron applications.
-      These include Prosilica GigE video cameras, MAR-CCD x-ray detectors, MAR-345 online
-      imaging plate detectors, the Pilatus pixel-array detector, and the Roper Scientific
-      CCD cameras.</li>
+      These include Prosilica GigE video cameras, IEEE 1394 (Firewire) cameras,
+      MAR-CCD x-ray detectors, MAR-345 online
+      imaging plate detectors, the Pilatus pixel-array detector, Roper Scientific
+      CCD cameras, and the Perkin-Elmer amorphous silicon detector.</li>
   </ul>
   <p>
     &nbsp;</p>
@@ -102,11 +103,12 @@
       hardware. It is usually provided by the detector vendor. It may consist of a library
       or DLL, of a socket protocol to a driver, a Microsoft COM interface, etc.</li>
     <li>Layer 2. This is the driver that is written for the areaDetector application to
-      control a particular detector. It is normally written in C++ and inherits from the
+      control a particular detector. It is written in C++ and inherits from the
       ADDriver class. It uses the standard asyn interfaces for control and status information.
-      Each time it receives a new data array it passes it as an NDArray object to all
-      Layer 3 clients that have registered for callbacks. This is the only code that needs
-      to be written to implement a new detector. Existing drivers range from 650 to 1050
+      Each time it receives a new data array it can pass it as an NDArray object to all
+      Layer 3 clients that have registered for callbacks. 
+      This is the only code that needs
+      to be written to implement a new detector. Existing drivers range from 800 to 1800
       lines of code.</li>
     <li>Layer 3. Code running at this level is called a "plug-in". This code registers
       with a driver for a callback whenever there is a new data array. The existing plugins
@@ -114,7 +116,7 @@
       color mode conversion (NDPluginColorConvert), and conversion of detector data to
       standard EPICS array types for use by Channel Access clients (NDPluginStdArrays).
       Plugins are normally written in C++ and inherit from NDPluginDriver. Existing plugins
-      range from 300 to 700 lines of code.</li>
+      range from 300 to 800 lines of code.</li>
     <li>Layer 4. This is standard asyn device support that comes with the EPICS asyn module.</li>
     <li>Layer 5. These are standard EPICS records, and EPICS database (template) files
       that define records to communicate with drivers at Layer 2 and plugins at Layer
@@ -122,7 +124,7 @@
     <li>Layer 6. These are EPICS channel access clients, such as MEDM that communicate
       with the records at Layer 5. There is a free IDL client that can display images
       using EPICS waveform and other records communicating with the NDPluginStdArrays
-      plugin at Layer 3.</li>
+      plugin at Layer 3. Other clients are being developed, including an ImageJ plugin.</li>
   </ul>
   <p>
     The code in Layers 1-3 is essentially independent of EPICS. There are only 2 EPICS
@@ -153,7 +155,7 @@
     to displaying this subregion. Similarly, the NDPluginFile plugin can be switched
     at run-time from saving the entire image to saving a selected ROI, just by changing
     its input source. Plugins can be used to form an image processing pipeline, for
-    example with a detector providing data to a color convert plugin, which feed an
+    example with a detector providing data to a color convert plugin, which feeds an
     ROI plugin, which feeds a file saving plugin. Each plugin can run in its own thread,
     and hence in its own core on a modern multi-core CPU.
   </p>
@@ -166,10 +168,7 @@
   </p>
   <p>
     What follows is a detailed description of the software, working from the bottom
-    up. Most of the code is object oriented, and written in C++. The parts of the code
-    that depend on anything from EPICS except libCom and asyn have been kept in in separate
-    C files, so that it should be easy to build applications that do not run as part
-    of an EPICS IOC.
+    up. Most of the code is object oriented, and written in C++.
   </p>
   <h2 id="Implementation_details">
     Implementation details</h2>
@@ -187,347 +186,60 @@
     Detector drivers and plugins are asyn port drivers, meaning that they implement
     one or more of the standard asyn interfaces. They register themselves as interrupt
     sources, so that they do callbacks to registered asyn clients when values change.
-    They inherit from the <a href="http://www.aps.anl.gov/epics/modules/soft/asyn">asynPortDriver
-      base C++ class</a> that is provided in the asyn module. That base class handles
+    They inherit from the <a href="asynPortDriver.html">asynPortDriver
+      base C++ class</a> that is provided in the asyn module. (The previous link is temporary
+      until asyn R4-11 is release).  That base class handles
     all of the details of registering the port driver, registering the supported interfaces,
-    and registering the required interrupt sources.
+    and registering the required interrupt sources. There is also
+    <a href="asynDoxygenHTML/index.html">detailed source documentation</a> for asynPortDriver. 
   </p>
   <h3 id="NDArray">
     NDArray</h3>
   <p>
     The NDArray (N-Dimensional array) is the class that is used for passing detector
-    data from drivers to plugins. The NDArray class is defined as follows:
-  </p>
-  <pre>#define ND_ARRAY_MAX_DIMS 10
-#define ND_SUCCESS 0
-#define ND_ERROR -1
-
-/* Enumeration of array data types */
-typedef enum
-{
-    NDInt8,
-    NDUInt8,
-    NDInt16,
-    NDUInt16,
-    NDInt32,
-    NDUInt32,
-    NDFloat32,
-    NDFloat64
-} NDDataType_t;
-
-/* Enumeration of color modes */
-typedef enum
-{
-    NDColorModeMono,
-    NDColorModeBayer,
-    NDColorModeRGB1,
-    NDColorModeRGB2,
-    NDColorModeRGB3,
-    NDColorModeYUV444,
-    NDColorModeYUV422,
-    NDColorModeYUV421
-} NDColorMode_t;
-
-typedef enum
-{
-    NDBayerRGGB        = 0,    /* First line RGRG, second line GBGB... */
-    NDBayerGBRG        = 1,    /* First line GBGB, second line RGRG... */
-    NDBayerGRBG        = 2,    /* First line GRGR, second line BGBG... */
-    NDBayerBGGR        = 3     /* First line BGBG, second line GRGR... */
-} NDBayerPattern_t;
-
-typedef struct NDDimension {
-    int size;
-    int offset;
-    int binning;
-    int reverse;
-} NDDimension_t;
-
-typedef struct NDArrayInfo {
-    int nElements;
-    int bytesPerElement;
-    int totalBytes;
-} NDArrayInfo_t;
-
-class NDArray {
-public:
-    /* Data: NOTE this must come first because ELLNODE must be first, i.e. same address as object */
-    /* The first 2 fields are used for the freelist */
-    ELLNODE node;
-    int referenceCount;
-    /* The NDArrayPool object that created this array */
-    void *owner;
-
-    int uniqueId;
-    double timeStamp;
-    int ndims;
-    NDDimension_t dims[ND_ARRAY_MAX_DIMS];
-    NDDataType_t dataType;
-    NDColorMode_t colorMode;
-    NDBayerPattern_t bayerPattern;
-    int dataSize;
-    void *pData;
-
-    /* Methods */
-    NDArray();
-    int          initDimension   (NDDimension_t *pDimension, int size);
-    int          getInfo         (NDArrayInfo_t *pInfo);
-    int          reserve(); 
-    int          release();
-};
-</pre>
-  <p>
+    data from drivers to plugins. 
     An NDArray is a general purpose class for handling array data. An NDArray object
     is self-describing, meaning it contains enough information to describe the data
-    itself. It is not intended to contain meta-data describing how the data was collected,
-    etc.
+    itself. It can optionally contain "attributes" (class NDAttribute) which 
+    contain meta-data describing how the data was collected, etc.
   </p>
   <p>
     An NDArray can have up to ND_ARRAY_MAX_DIMS dimensions, currently 10. A fixed maximum
     number of dimensions is used to significantly simplify the code compared to unlimited
-    number of dimensions. Each dimension of the array is described by an NDDimension_t
-    structure. The fields in NDDimension_t are as follows:
-  </p>
-  <ul>
-    <li><code>size</code> is the number of elements in this dimension.</li>
-    <li><code>offset</code> is the starting element in this dimension relative to the
-      first element of the detector in unbinned units. If a selected region of the detector
-      is being read, then this value may be &gt;0. The offset value is cumulative, so
-      if a plugin such as NDPluginROI further selects a subregion, the offset is relative
-      to the first element in the detector, and not to the first element of the region
-      passed to NDPluginROI.</li>
-    <li><code>binning</code> is the binning (sumation of elements) in this dimension.
-      The offset value is cumulative, so if a plugin such as NDPluginROI performs binning,
-      the binning is expressed relative to the pixels in the detector and not to the possibly
-      binned pixels passed to NDPluginROI.</li>
-    <li><code>reverse</code> is 0 if the data are in their normal order as read out from
-      the detector in this dimension, and 1 if they are in reverse order. This value is
-      cumulative, so if a plugin such as NDPluginROI reverses the data, the value must
-      reflect the orientation relative to the original detector, and not to the possibly
-      reversed data passed to NDPluginROI.</li>
-  </ul>
+    number of dimensions. Each dimension of the array is described by an 
+    <a href="areaDetectorDoxygenHTML/struct_n_d_dimension.html">NDDimension structure<a>. 
+    The <a href="areaDetectorDoxygenHTML/class_n_d_array.html">
+    NDArray class documentation </a> describes this class in detail.  
   <p>
-    The first 3 data fields in the NDArray class, <code>(node, referenceCount, owner)</code>
-    are used by the NDArrayPool class discussed below. The remaining data fields are
-    as follows:
-  </p>
-  <ul>
-    <li><code>uniqueId</code> This should be a number that uniquely identifies this array,
-      e.g. frame number. Detector drivers should assign this number to the NDArray before
-      calling the plugins.</li>
-    <li><code>timeStamp</code> This should be a timestamp value in seconds recording when
-      the frame was collected. The time=0 reference is driver-dependent because of differences
-      in vendor libraries. If there is a choice, it is recommended to use timeStamp=0
-      for Epoch, (00:00:00 UTC, January 1, 1970).</li>
-    <li><code>ndims</code> The number of dimensions in this array.</li>
-    <li><code>dims</code> Array of NDDimension_t structures. The array is of length ND_MAX_DIMS,
-      but only the first <code>ndims</code> values must contain valid information.</li>
-    <li><code>dataType</code> The data type of this array, one of the NDDataType_t enum
-      values. The data types supported are signed and unsigned 8, 16, and 32-bit integers,
-      and 32 and 64-bit floats. </li>
-    <li><code>colorMode</code> The color mode this array, one of the NDColorMode_t enum
-      values. The following are the supported color modes:
-      <ul>
-        <li><code>NDColorModeMono</code>: Monochromatic data, i.e. a single value at each
-          pixel.</li>
-        <li><code>NDColorModeBayer</code>: Bayer color. There is a single value at each pixel,
-          but the pixels have a color filter array in front of them. The supported Bayer filter
-          is the most common one, a repeating 2x2 array of
-          <pre>           Blue  Green
-           Green Red
-           </pre>
-          Transmitting data from the camera using the Bayer format consumes 3 times less bandwidth
-          than transmitting one of the RGB formats. However, it requires more computation
-          on the host to convert the data to an RGB format that most clients can display.</li>
-        <li><code>NDColorModeRGB1</code>: Red, green, blue data with pixel interlace, i.e.
-          the data array is [3, NX, NY], with the color being the fastest varying array index.</li>
-        <li><code>NDColorModeRGB2</code>: Red, green, blue data with row interlace, i.e. the
-          data array is [NX, 3, NY], with the color being the second fastest varying array
-          index.</li>
-        <li><code>NDColorModeRGB3</code>: Red, green, blue data with planar interlace, i.e.
-          the data array is [NX, NY, 3], with the color being the slowest varying array index.</li>
-        <li><code>NDColorModeYUV444</code>: YUV data with 96 bits for 4 pixels, or 24 bits
-          per pixel. This is the same number of bits as 8-bit RGB.</li>
-        <li><code>NDColorModeYUV422</code>: YUV data with 64 bits for 4 pixels, or 16 bits
-          per pixel. This is 2/3 of the number of bits required for 8-bit RGB.</li>
-        <li><code>NDColorModeYUV421</code>: YUV data with 48 bits for 4 pixels, or 12 bits
-          per pixel. This is 1/2 of the number of bits required for 8-bit RGB.</li>
-      </ul>
-    </li>
-    <li><code>bayerPattern</code> The Bayer pattern for this array, one of the NDBayerPattern_t
-      enum values. This value is only meaningful if colorMode is NDColorModeBayer. The
-      Bayer pattern values are explained in the comments above. This value is needed because
-      the Bayer pattern will change when reading out a subset of the chip, for example
-      if the X or Y offset values are not even numbers.</li>
-    <li><code>dataSize</code> The size of the memory buffer pointed to by <code>pData</code>
-      in bytes. This may be larger than the amount actually required to hold the data
-      for this array.</li>
-    <li><code>pData</code> Pointer to the memory for this array. The data is assumed to
-      be stored in the order of <code>dims[0]</code> changing fastest, and <code>dims[ndims-1]</code>
-      changing slowest.</li>
-  </ul>
-  <p>
-    The methods of the NDArray class are:
-  </p>
-  <ul>
-    <li><code>initDimension</code> This method simply initializes the dimension structure
-      to size=size, binning=1, reverse=0, offset=0.</li>
-    <li><code>getInfo</code>. This convenience method returns information about an NDArray,
-      including the total number of elements, the number of byte per element, and the
-      total number of bytes in the array.</li>
-    <li><code>reserve</code>. This method calls NDArrayPool->reserve() for this object.
-      It increases the reference count for this array.</li>
-    <li><code>release</code>. This method calls NDArrayPool->release() for this object.
-      It decreases the reference count for this array.</li>
-  </ul>
   <h3 id="NDArrayPool">
     NDArrayPool</h3>
   <p>
-    The NDArrayPool class manages a free list (pool) of NDArray objects (described above).
+    The NDArrayPool class manages a free list (pool) of NDArray objects.
     Drivers allocate NDArray objects from the pool, and pass these objects to plugins.
     Plugins increase the reference count on the object when they place the object on
     their queue, and decrease the reference count when they are done processing the
     array. When the reference count reaches 0 again the NDArray object is placed back
     on the free list. This mechanism minimizes the copying of array data in plugins.
-    The public interface of the NDArrayPool class is defined as follows:
-  </p>
-  <pre>class NDArrayPool {
-public:
-                 NDArrayPool   (int maxBuffers, size_t maxMemory);
-    NDArray*     alloc         (int ndims, int *dims, NDDataType_t dataType, int dataSize, void *pData);
-    NDArray*     copy          (NDArray *pIn, NDArray *pOut, int copyData);
-    int          reserve       (NDArray *pArray); 
-    int          release       (NDArray *pArray);
-    int          convert       (NDArray *pIn, 
-                                NDArray **ppOut,
-                                NDDataType_t dataTypeOut,
-                                NDDimension_t *outDims);
-    int          report        (int details);   
-</pre>
-  <p>
-    The methods of the NDArrayPool class are:
-  </p>
-  <ul>
-    <li><code>NDArrayPool</code> This is the constructor for the class. The maxBuffers
-      argument is the maximum number of NDArray objects that the pool is allowed to contain.
-      If this value is negative then there is no limit on the number of NDArray objects.
-      The maxMemory argument is the maxiumum number of bytes of memory the the pool is
-      allowed to use, summed over all of the NDArray objects. If this value is negative
-      then there is no limit on the amount of memory in the pool.</li>
-    <li><code>alloc</code> This method allocates a new NDArray object. The first 3 arguments
-      are required. ndims is the number of dimensions in the NDArray. dims is an array
-      of dimensions, whose size must be at least ndims. dataType is the data type of the
-      NDArray data. dataSize is the number of bytes to allocate for the array data. If
-      it is 0 then alloc() will compute the size required from ndims, dims, and dataType.
-      pData is a pointer to a data buffer. If it is NULL then alloc will allocate a new
-      array buffer. If pData is not NULL then it is assumed to point to a valid buffer.
-      In this case dataSize must contain the actual number of bytes in the existing array,
-      and this array must be large enough to hold the array data. alloc() searches its
-      free list to find a free NDArray buffer. If is cannot find one then it will allocate
-      a new one and add it to the free list. If doing so would exceed maxBuffers then
-      alloc() will return an error. Similarly if allocating the memory required for this
-      NDArray would cause the cumulative memory allocated for the pool to exceed maxMemory
-      then an error will be returned. alloc() sets the reference count for the returned
-      NDArray to 1.</li>
-    <li><code>copy</code>. This method makes a copy of an NDArray object. If the output
-      array pointer is NULL then it is first allocated. If the output array object already
-      exists (pOut!=NULL) then it must have sufficient memory allocated to it to hold
-      the data. If the copyData flag is 1 then the array data is copied. If the copyData
-      flag is 0 then all array fields except the data itself are copied, and the data
-      will be initialized to 0.</li>
-    <li><code>reserve</code>. This method increases the reference count for the NDArray
-      object. Plugins must call reserve() when an NDArray is placed on a queue for later
-      processing.</li>
-    <li><code>release</code>. This method decreases the reference count for the NDArray
-      object. Plugins must call release() when an NDArray is removed from the queue and
-      processing on it is complete. Drivers must call release() after calling all plugins.</li>
-    <li><code>convert</code> This method creates a new output NDArray from an input NDArray,
-      performing conversion operations. The conversion can change the data type if dataTypeOut
-      is different from pIn->dataType. It can also change the dimensions. outDims may
-      have different values of size, binning, offset and reverse for each of its dimensions
-      from input array dimensions (pIn->dims).</li>
-    <li><code>report</code> This method reports on the free list size and other properties
-      of the NDArrayPool object.</li>
-  </ul>
+    The <a href="areaDetectorDoxygenHTML/class_n_d_array_pool.html">
+    NDArrayPool class documentation </a> describes this class in detail.
+    
   <h3 id="asynNDArrayDriver">
     asynNDArrayDriver</h3>
   <p>
     asynNDArrayDriver inherits from asynPortDriver. It implements the asynGenericPointer
-    functions, assuming that these reference NDArray objects. This is the class from
-    which both plugins and area detector drivers are indirectly derived. Its public
-    interface is defined as follows:
+    functions, for NDArray objects. This is the class from
+    which both plugins and area detector drivers are indirectly derived.
+    The <a href="areaDetectorDoxygenHTML/class_asyn_n_d_array_driver.html">
+    asynNDArrayDriver class documentation </a> describes this class in detail.
   </p>
-  <pre>class asynNDArrayDriver : public asynPortDriver {
-public:
-    asynNDArrayDriver(const char *portName, int maxAddr, int paramTableSize, int maxBuffers, size_t maxMemory,
-                      int interfaceMask, int interruptMask);
-    virtual asynStatus readGenericPointer(asynUser *pasynUser, void *genericPointer);
-    virtual asynStatus writeGenericPointer(asynUser *pasynUser, void *genericPointer);
-    virtual void report(FILE *fp, int details);
-
-};
-</pre>
-  <p>
-    The methods of the asynNDArrayDriver class are:
-  </p>
-  <ul>
-    <li><code>asynNDArrayDriver</code> This is the constructor for the class. portName,
-      maxAddr, paramTableSize, interfaceMask and interruptMask are simply passed to the
-      asynPortDriver base class constructor. asynNDArray creates an NDArrayPool object
-      to allocate NDArray objects. maxBuffers and maxMemory are passed to the constructor
-      for the NDArrayPool object.</li>
-    <li><code>readGenericPointer</code> This method copies an NDArray object from the
-      asynNDArrayDriver to an NDArray whose address is passed by the caller in the genericPointer
-      argument. The caller must allocate the memory for the array, and pass the size in
-      NDArray->dataSize. The method will limit the amount of data copied to the actual
-      array size or the input dataSize, whichever is smaller.</li>
-    <li><code>writeGenericPointer</code> This method currently does nothing. Derived classes
-      must implement this method as required.</li>
-    <li><code>report</code> This method calls the report function in the asynPortDriver
-      base class. It then calls the NDArrayPool->report() method if details &gt;5.</li>
-  </ul>
   <h3 id="ADDriver">
     ADDriver</h3>
   <p>
     ADDriver inherits from asynNDArrayDriver. This is the class from which area detector
-    drivers are directly derived. Its public interface is defined as follows:
-  </p>
-  <pre>class ADDriver : public asynNDArrayDriver {
-public:
-    ADDriver(const char *portName, int maxAddr, int paramTableSize, int maxBuffers, size_t maxMemory,
-             int interfaceMask, int interruptMask);
-                 
-    /* These are the methods that we override from asynPortDriver */
-    virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
-                                     const char **pptypeName, size_t *psize);
-                                     
-    /* These are the methods that are new to this class */
-    virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
-    int createFileName(int maxChars, char *fullFileName);
-    void setShutter(int open)
-</pre>
-  <p>
-    The methods of the ADDriver class are:
-  </p>
-  <ul>
-    <li><code>ADDriver</code> This is the constructor for the class. All of the arguments
-      are simply passed to the constructor for the asynNDArrayDriver base class. After
-      calling the base class constructor this method sets reasonable default values for
-      all of the parameters defined in ADStdDriverParams.h.</li>
-    <li><code>drvUserCreate</code> This method returns one of the enum values for the
-      parameters defined in ADStdDriverParams.h if the driverInfo field matches one the
-      strings defined in that file. Derived classes will typically provide an implementation
-      of drvUserCreate() that searches for parameters that are unique to that detector
-      driver. If a parameter is not matched, then ADDriver->drvUserCreate() will be called
-      to see if it is a standard driver parameter (defined in ADStdDriverParams.h).</li>
-    <li><code>createFileName</code> This is a convenience function that constructs a complete
-      file name in the ADFullFileName parameter from the ADFilePath, ADFileName, ADFileNumber,
-      and ADFileTemplate parameters.</li>
-    <li><code>setShutter</code> This method will open (1) or close (0) the shutter if
-      ADShutterMode==ADShutterModeEPICS. Drivers will implement setShutter if they support
-      ADShutterModeDetector. If ADShutterMode=ADShutterModeDetector they will control
-      the shutter directly, else they will call this method.</li>
-  </ul>
+    drivers are directly derived. 
+    The <a href="areaDetectorDoxygenHTML/class_a_d_driver.html">
+    ADDriver class documentation </a> describes this class in detail.
+ 
   <h3 id="ADStdDriverParams">
     ADStdDriverParams</h3>
   <p>

@@ -9,31 +9,118 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
-    Release 1-5 (xxx-April-2009)</h2>
+    Release 1-5 (xxx-May-2009)</h2>
   <ul>
-    <li>Added a driver for mar345 online image plate detector. This driver communicates
-      via a TCP/IP socket with the mar345dtb program, which must be used to control the
-      detector.</li>
-    <li>Added a driver for Firewire IIDC/DCAM cameras under Windows. This driver uses
-      the Windows 1394 camera driver from Carnegie Mellon University.</li>
-    <li>Added support for color to the simulation detector driver. It now supports color
-      modes Mono, RGB1, RGB2 and RGB3.</li>
-    <li>Fixed 2 serious bugs in the Roper driver. It was not selecting ROI mode correctly.
-      When NumAcquisitions was &gt 1 it was only collecting the first frame correctly,
-      subsequent frames were the same as a first one. This has been isolated to a bug
-      in the WinView COM interface, and a workaround for the problem has been implemented.</li>
-    <li>Began to document the source code with comments that doxygen can processes. Thanks
-      to John Hammonds from APS for doing this.</li>
-    <li>Moved the asynPortDriver base C++ class from the areaDetector module to the asyn
-      module. The asynPortDriver base class was modified slightly to make it more general.
-      In particular the constructor no longer hardcodes ASYN_CANBLOCK, ASYN_MULTIDEVICE,
-      epicsThreadPriorityMedium, and epicsThreadStackMedium. This requires that asyn R4-11
-      or later be used, and requires 2 additional arguments to the constructor (priority
-      and stackSize) for all areaDetector drivers and plugins.</li>
-    <li>Fixed bug in NDPluginFile: was not closing file properly when stream mode was
-      stopped before the requested number of frames.</li>
-    <li>Fixed Makefiles to instantiate templates on vxWorks.</li>
-    <li>Minor bug fixes for Prosilica driver (function names in debug statements).</li>
+    <li>General
+      <ul>
+        <li>Added "attributes" to NDArray.  Attributes are used to contain metadata about
+          the array.  Each attribute has a name, description, datatype and value.  Attributes
+          can be added by drivers or plugins, and travel with the array through the plugin chain,
+          and can ultimately be written with the array data to a file.  Attributes can come
+          from driver or plugin parameters, or from EPICS PVs anywhere on the network.</li>
+        <li>Separated parameters and functions which are general to NDArray data 
+        (asynNDArrayDriver base class) from those which are specific to areaDetector data (ADDriver
+        base class).  This makes it easy and clean to use asynNDArray driver for future applications
+        beyond areaDetector, such as drivers for the XIA xMAP digital spectroscopy system.</li>
+      </ul>
+    </li>
+    <li>Drivers
+      <ul>
+        <li>New driver for mar345 online image plate detector. This driver communicates
+          via a TCP/IP socket with the mar345dtb program, which must be used to control the
+          detector.</li>
+        <li>New driver for Firewire IIDC/DCAM cameras under Windows. This driver uses
+          the Windows 1394 camera driver from Carnegie Mellon University.</li>
+        <li>New driver for the Perkin-Elmer amorphous silicon flat panel detectors.  Thanks to
+          Brian Tieman and John Hammonds for this driver.</li>
+        <li>Added support for color to the simulation detector driver. It now supports color
+          modes Mono, RGB1, RGB2 and RGB3.</li>
+        <li>Fixed 2 serious bugs in the Roper driver. It was not selecting ROI mode correctly.
+          When NumAcquisitions was &gt; 1 it was only collecting the first frame correctly,
+          subsequent frames were the same as a first one. This has been isolated to a bug
+          in the WinView COM interface, and a workaround for the problem has been implemented.</li>
+        <li>Solved problem of Prosilica driver crashing on Linux.  The problem was with the 
+        SIGALARM signal handlers in EPICS base (R3.14.10 and earlier).  There is a patch for
+        base to fix this problem, and this fix will be included in EPICS base 3.14.11.</li>
+      </ul>
+    </li>
+    <li>Plugins
+      <ul>
+        <li>Changed NDPluginFile from directly supporting netCDF to be a base class from which
+          actual file plugins derive.</li>
+        <li>Changed netCDF file support to be derived class inheriting from NDPluginFile.
+         Added support for writing NDArray attributes to the netCDF file.</li>
+        <li>New file plugin for TIFF files.  The TIFF support includes 8, 16 and 32-bit integers.
+          It supports monochrome and color images, including all 3 color interleave modes (RGB1, RGB2
+          and RGB3. areaDetector contains all required support files to build and run the TIFF
+          file plugin on win32-x86 and cygwin-x86.  To build on Linux it is necessary to install
+          the libtiff and libtiffstatic packages. 
+          Thanks to John Hammonds for the initial work on this plugin.</li>
+        <li>New file plugin for JPEG files.  The JPEG support is limited to 8-bit integers, but
+          it supports monochrome and color images, including all 3 color interleave modes (RGB1, RGB2
+          and RGB3.  Control is provided for the JPEG quality (compression) on a scaler of 0 (worst)
+          to 100 (best). areaDetector contains all required support files to build and run the JPEG
+          file plugin on win32-x86 and cygwin-x86.  To build on Linux it is necessary to install
+          the libjpeg and libjpegstatic packages. </li>
+        <li>Fixed bug in NDPluginFile: was not closing file properly when stream mode was
+          stopped before the requested number of frames.</li>
+        <li>Fixed logic problem with FileNumber record in NDFile.template database.  The previous
+        logic that kept the ao record in sync with the ai record was causing the ao record to
+        process when it should not have been, causing an extra call to the driver.</li>
+      </ul>
+    </li>
+    <li>Viewers
+      <ul>
+        <li>Improved IDL epics_ad_display viewer. The last image is now stored in the program, and
+        it is now redisplayed if the view mode is changed (TVSCL to iimage, etc.) or if the display
+        parameters are changed (autoscale, flip Y, minimum, maximum, etc.).</li>
+      </ul>
+    </li>
+    <li>Documentation
+      <ul>  
+        <li>Documented the source code with comments that doxygen can processes to produce HTML
+          documentation directly from the source. This provides documentation for each class, as
+          well as the class inheritence tree. 
+          Thanks to John Hammonds for starting this.</li>
+      </ul>
+    </li>
+    <li>Internals
+      <ul>
+        <li>Moved the asynPortDriver base C++ class from the areaDetector module to the asyn
+          module. The asynPortDriver base class was modified slightly to make it more general.
+          In particular the constructor no longer hardcodes ASYN_CANBLOCK, ASYN_MULTIDEVICE,
+          epicsThreadPriorityMedium, and epicsThreadStackMedium. This requires that asyn R4-11
+          or later be used, and requires 2 additional arguments to the constructor (priority
+          and stackSize) for all areaDetector drivers and plugins.</li>
+        <li>Removed mutexId from asynPortDriver base class, and added lock() and unlock()
+          methods.  This hides the implementation of the locking, since we might want to
+          implement these with asynManager->lockPort in the future.</li>
+        <li>Removed the file ADStdParams.h.  Moved the definition of parameters that are
+          general to NDArray drivers into asynNDArrayDriver.h, and those that are specific
+          to areaDetector drivers into ADDriver.h.</li>
+        <li>Added an XML parser which is used for attribute definition files.</li>
+        <li>Fixed Makefiles to instantiate templates on vxWorks.</li>
+        <li>Moved createFileName() from ADDriver and NDPluginDriver to their base class,
+          asynNDArrayDriver.</li>
+        <li>Changed colorMode and bayerPattern from being properties of NDArray to being attributes, 
+          since they are not general to NDArray but are specific to areaDetector.</li>
+        <li>Added new method asynPortDriver::drvUserCreateParam, which simplifies drvUserCreate code in all
+          drivers and plugins.</li>
+        <li>Reduced number of files for all plugins and drivers.  Previously there was an XXX.cpp, drvXXX.h,
+          and drvXXXEpics.c.  The .h and .c files were used to keep the drivers and plugins independent of
+          EPICS IOC code.  It was decided that that extra 2 files per driver and plugin were not
+          worth the added complexity.  If it is desired to run drivers and plugins outside of an IOC
+          it could be done with conditional compilation of the IOC dependent code, which is all at the
+          end of the .cpp file.</li>
+        <li>Renamed a few parameters and the drvInfo strings to logically separate things that
+        are general to NDArrays and things that are specific to area detectors.  For example,
+        the drvInfo fields IMAGE_SIZE_xxx were renamed to ARRAY_SIZE_xxx, and IMAGE_COUNTER was
+        renamed to ARRAY_COUNTER.</li>
+        <li>Added call to epicsExit() to all driver IOC main programs.  This is important for allowing
+        EPICS to exit cleanly.  Without this on Linux it was often necessary to kill the IOC with ^C,
+        rather than just typing "exit".</li>
+    </ul>
+    </li>
   </ul>
   <h2 style="text-align: center">
     Release 1-4 (30-January-2009)</h2>

@@ -79,7 +79,7 @@
     From <a href="http://optoelectronics.perkinelmer.com/">Perkin Elmer</a></p>
   <ul>
     <li>Amorphous silicon flat panel detectors. This support was written by Brian Tieman
-      from the APS and will be part of areaDetector soon.</li>
+      and John Hammonds from the APS.</li>
   </ul>
   <p>
     Please email any comments and bug reports to <a href="mailto:rivers@cars.uchicago.edu">
@@ -95,7 +95,7 @@
     You can download the software from the links in the table below. The software is
     available both in source code form, and in pre-built form so that it can be used
     without an EPICS build system. The pre-built form includes binaries for linux-x86,
-    win32-x86, solaris-sparc and some vxWorks archtectures.</p>
+    win32-x86, cygwin-x86, solaris-sparc, and some vxWorks archtectures.</p>
   <table border="1" summary="Where to find the software">
     <tbody>
       <tr align="center">
@@ -113,6 +113,22 @@
           Release Notes</th>
         <th>
           Known Problems</th>
+      </tr>
+      <tr>
+        <td>
+          1-5</td>
+        <td>
+          xxx-May-2009</td>
+        <td>
+          <a href="http://cars.uchicago.edu/software/pub/areaDetectorR1-5.tgz">areaDetectorR1-5.tgz</a></td>
+        <td>
+          <a href="http://cars.uchicago.edu/software/pub/areaDetectorPrebuilt_R1-5.tgz">areaDetectorPrebuilt_R1-5.tgz</a></td>
+        <td>
+          <a href="areaDetectorDoc.html">areaDetectorDoc</a></td>
+        <td>
+          <a href="areaDetectorReleaseNotes.html">Release notes</a></td>
+        <td>
+          See release notes</td>
       </tr>
       <tr>
         <td>
@@ -209,6 +225,64 @@
           Release needed</th>
         <th>
           Required for</th>
+      </tr>
+      <tr>
+        <td rowspan="7">
+          1-5</td>
+        <td>
+          EPICS base</td>
+        <td>
+          3.14.10</td>
+        <td>
+          Base support</td>
+      </tr>
+      <tr>
+        <td>
+          asyn</td>
+        <td>
+          4-11</td>
+        <td>
+          Socket and interface support</td>
+      </tr>
+      <tr>
+        <td>
+          busy</td>
+        <td>
+          1-2</td>
+        <td>
+          busy record. This was formerly included in sscan, but now has its own support module.</td>
+      </tr>
+      <tr>
+        <td>
+          calc</td>
+        <td>
+          2-7</td>
+        <td>
+          scalcout record, needed by sscan database and useful for other databases</td>
+      </tr>
+      <tr>
+        <td>
+          sscan</td>
+        <td>
+          2-6-3</td>
+        <td>
+          sscan record</td>
+      </tr>
+      <tr>
+        <td>
+          mca</td>
+        <td>
+          6-11</td>
+        <td>
+          mca record for getting time sequence of ROI counts</td>
+      </tr>
+      <tr>
+        <td>
+          autosave</td>
+        <td>
+          4-5</td>
+        <td>
+          Save/restore</td>
       </tr>
       <tr>
         <td rowspan="7">
@@ -497,9 +571,8 @@
   <p>
     This software was originally developed by Mark Rivers.</p>
   <ul>
-    <li>ANL/APS : In use at CARS beamlines.</li>
-    <li>NSLS: In use on X17B2 and other beamlines.</li>
-    <li>Australian Synchrotron : In use at microspectroscopy beamline, ID5.</li>
+    <li>In use at APS, NSLS, DLS, SLS, BESSY, NSRRC and others.</li>
+    
   </ul>
 </body>
 </html>
