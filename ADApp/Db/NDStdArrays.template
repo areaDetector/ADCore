@@ -7,7 +7,7 @@
 ###################################################################
 record(waveform, "$(P)$(R)ArrayData")
 {
-    field(DTYP, "asynInt$(SIZE)ArrayIn")
+    field(DTYP, "asyn$(TYPE)ArrayIn")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))STD_ARRAY_DATA")
     field(FTVL, "$(FTVL)")
     field(NELM, "$(NELEMENTS)")
