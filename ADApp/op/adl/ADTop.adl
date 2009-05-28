@@ -1,12 +1,12 @@
 
 file {
-	name="/home/epics/devel/areaDetector/1-5beta/ADApp/op/adl/ADTop.adl"
+	name="C:\epics\devel\areaDetectorHEAD\ADApp\op\adl\ADTop.adl"
 	version=030102
 }
 display {
 	object {
-		x=78
-		y=150
+		x=21
+		y=40
 		width=301
 		height=450
 	}
@@ -444,6 +444,11 @@ text {
 		label="Scan #1"
 		name="scan_more.adl"
 		args="P=13SIM1:, S=scan1, N=1"
+	}
+	display[6] {
+		label="Image #2"
+		name="NDStdArrays.adl"
+		args="P=13SIM1:, R=image2:"
 	}
 	clr=14
 	bclr=51
