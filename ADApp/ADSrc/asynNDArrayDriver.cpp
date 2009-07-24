@@ -47,6 +47,8 @@ static asynParamString_t NDStdDriverParamString[] = {
     {NDFileNumCapture, "NUM_CAPTURE"   },
     {NDFileNumCaptured,"NUM_CAPTURED"  },
     {NDFileCapture,    "CAPTURE"       },
+    
+    {PVAttributesFile, "PV_ATTRIBUTES_FILE"},
 
     {NDArrayData,      "NDARRAY_DATA"  },
     {NDArrayCallbacks, "ARRAY_CALLBACKS"  }
@@ -131,15 +133,63 @@ int asynNDArrayDriver::createFileName(int maxChars, char *filePath, char *fileNa
     return(status);   
 }
 
+/** Read a list of attributes from a file.
+  * \param[in] fileName  The name of the file to read.
+  * 
+  * This reads a list of attributes from an XML file.  These attributes
+  * can then be associated with an NDArray by calling getAttributes();
+  */
 int asynNDArrayDriver::readPVAttributesFile(const char *fileName)
 {
     //const char *functionName = "readAttributesFile";
+    int status=asynSuccess;
     
-    /* If the PVAttributes object does not yet exist then create it */
-    if (!this->pPVAttributes) this->pPVAttributes = new PVAttributes;
-    /* Clear any existing PVs */
-    return this->pPVAttributes->readPVAttributesFile(fileName);
+    /* Clear any existing attributes */
+    this->pPVAttributeList->clearAttributes();
+    if (fileName && (strlen(fileName) > 0)) {
+        status = this->pPVAttributeList->readFile(fileName);
+    }
+    return(status);
 }
+
+/** Get the current values of attributes and attach them to the NDArray.
+  * \param[in] pArray  The NDArray to attach the attributes to.
+  */
+int asynNDArrayDriver::getAttributes(NDArray *pArray)
+{
+    //const char *functionName = "readAttributesFile";
+    int status = asynSuccess;
+    
+    status = this->pPVAttributeList->getValues(pArray);
+    return(status);
+}
+
+/** Get the current values of attributes and attach them to the NDArray.
+  * If there are attributes defined for this driver it makes a copy
+  * of the input array and adds the attributes
+  * to the copy.  It then releases the input array and returns
+  * a pointer to the new array.
+  * This is needed by plugins which are not allowed to
+  * modify the NDArray.  
+  * If there are no attributes currently defined
+  * for this driver this method just returns the original array.
+  * \param[in] pIn  The input array.
+  * \param[in] release  A boolean flag indicating whether the input array 
+  *                     should be released after the copy.
+  */
+NDArray* asynNDArrayDriver::getAttributesCopy(NDArray *pIn, bool release)
+{
+    //const char *functionName = "readAttributesFile";
+    NDArray *pOut = pIn;
+    
+    if (this->pPVAttributeList->numAttributes() > 0) {
+        pOut = this->pNDArrayPool->copy(pIn, NULL, 1);
+        if (release) pIn->release();
+        this->pPVAttributeList->getValues(pOut);
+    }
+    return(pOut);
+}
+
 
 /** Called when asyn clients call pasynOctet->write().
   * This function performs actions for some parameters, including NDAttributesFile.
@@ -161,7 +211,7 @@ asynStatus asynNDArrayDriver::writeOctet(asynUser *pasynUser, const char *value,
     status = (asynStatus)setStringParam(addr, function, (char *)value);
 
     switch(function) {
-        case NDAttributesFile:
+        case PVAttributesFile:
             this->readPVAttributesFile(value);
             break;
         default:
@@ -307,7 +357,8 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int para
 
     /* Allocate pArray pointer array */
     this->pArrays = (NDArray **)calloc(maxAddr, sizeof(NDArray *));
-
+    this->pPVAttributeList = new PVAttributeList;
+    
     setStringParam (NDPortNameSelf, portName);
     setIntegerParam(NDArraySizeX,   0);
     setIntegerParam(NDArraySizeY,   0);
