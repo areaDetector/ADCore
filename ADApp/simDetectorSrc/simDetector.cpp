@@ -406,8 +406,6 @@ void simDetector::simTask()
     epicsTimeStamp startTime, endTime;
     double elapsedTime;
     const char *functionName = "simTask";
-    NDAttrValue attrValue;
-    char attrString[30];
 
     this->lock();
     /* Loop forever */
@@ -479,26 +477,9 @@ void simDetector::simTask()
         /* Put the frame number and time stamp into the buffer */
         pImage->uniqueId = imageCounter;
         pImage->timeStamp = startTime.secPastEpoch + startTime.nsec / 1.e9;
-        
-        /* Add a bunch of attributes for testing purposes */
-        attrValue.i8 = (epicsInt8)pImage->uniqueId;
-        pImage->addAttribute("I8Value",   "Signed 8-bit unique ID",    NDAttrInt8,    &attrValue.i8);
-        attrValue.ui8 = (epicsUInt8)pImage->uniqueId;
-        pImage->addAttribute("UI8Value",  "Unsigned 8-bit unique ID",  NDAttrUInt8,   &attrValue.ui8);
-        attrValue.i16 = (epicsInt16)pImage->uniqueId;
-        pImage->addAttribute("I16Value",  "Signed 16-bit unique ID",   NDAttrInt16,   &attrValue.i16);
-        attrValue.ui16 = (epicsUInt16)pImage->uniqueId;
-        pImage->addAttribute("UI16Value", "Unsigned 16-bit unique ID", NDAttrUInt16,  &attrValue.ui16);
-        attrValue.i32 = (epicsInt32)pImage->uniqueId;
-        pImage->addAttribute("I32Value",  "Signed 32-bit unique ID",   NDAttrInt32,   &attrValue.i32);
-        attrValue.ui32 = (epicsUInt32)pImage->uniqueId;
-        pImage->addAttribute("UI32Value", "Unsigned 32-bit unique ID", NDAttrUInt32,  &attrValue.ui32);
-        attrValue.f32 = (epicsFloat32)pImage->timeStamp;
-        pImage->addAttribute("F32Value",  "32-bit float time stamp",   NDAttrFloat32, &attrValue.f32);
-        attrValue.f64 = (epicsFloat64)pImage->timeStamp;
-        pImage->addAttribute("F64Value",  "64-bit float time stamp",   NDAttrFloat64, &attrValue.f64);
-        epicsSnprintf(attrString, sizeof(attrString), "Time: %f", pImage->timeStamp);
-        pImage->addAttribute("StrValue",  "String time",               NDAttrString,  attrString);
+
+        /* Get any attributes that have been defined for this driver */        
+        this->getAttributes(pImage);
 
         if (arrayCallbacks) {        
             /* Call the NDArray callback */
@@ -582,6 +563,10 @@ asynStatus simDetector::writeInt32(asynUser *pasynUser, epicsInt32 value)
     case ADShutterControl:
         setShutter(value);
         break;
+    default:
+        /* If this parameter belongs to a base class call its method */
+        if (function < ADLastStdParam) status = ADDriver::writeInt32(pasynUser, value);
+        break;
     }
     
     /* Do callbacks so higher layers see any changes */
@@ -624,7 +609,11 @@ asynStatus simDetector::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
     case SimGainBlue:
         status = setIntegerParam(SimResetImage, 1);
         break;
-    }
+    default:
+        /* If this parameter belongs to a base class call its method */
+        if (function < ADLastStdParam) status = ADDriver::writeFloat64(pasynUser, value);
+        break;
+     }
 
     /* Do callbacks so higher layers see any changes */
     callParamCallbacks();
