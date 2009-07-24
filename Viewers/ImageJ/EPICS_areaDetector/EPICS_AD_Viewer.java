@@ -5,22 +5,15 @@
 //      Mark Rivers, University of Chicago
 import ij.*;
 import ij.process.*;
-import ij.gui.*;
-import ij.io.*;
 import java.awt.*;
 import ij.plugin.*;
 import java.io.*;
-import java.net.*;
-import java.lang.*;
 import java.text.*;
-import java.text.SimpleDateFormat.*;
-import ij.gui.*;
 import java.awt.event.*;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.border.*;
 
-import com.cosylab.epics.caj.*;
 import gov.aps.jca.*;
 import gov.aps.jca.dbr.*;
 import gov.aps.jca.configuration.*;
@@ -88,7 +81,6 @@ public class EPICS_AD_Viewer implements PlugIn
 		IJ.showStatus("epics running");
 		try
 		{
-			int val;
 			isDebugFile = true;
 			isDebugMessages = false;
 			isDisplayImages = false;
@@ -745,7 +737,6 @@ public class EPICS_AD_Viewer implements PlugIn
 
 	public void logMessage(String message, boolean logDisplay, boolean logFile)
 	{
-		String temp;
 		Date date = new Date();
 		SimpleDateFormat simpleDate = new SimpleDateFormat("d/M/y k:m:s.S");
 		String completeMessage;
