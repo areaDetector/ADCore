@@ -162,7 +162,7 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
             break;
     }
 
-    /* Define the unique data variable. */
+    /* Define the uniqueId data variable. */
     if ((retval = nc_def_var(this->ncId, "uniqueId", NC_INT, 1, 
                  &dimIds[0], &this->uniqueIdId)))
         ERR(retval);
@@ -381,12 +381,12 @@ NDFileNetCDF::NDFileNetCDF(const char *portName, int queueSize, int blockingCall
                            const char *NDArrayPort, int NDArrayAddr,
                            int priority, int stackSize)
     /* Invoke the base class constructor.
-     * We allocate 1 NDArray of unlimited size in the NDArray pool.
+     * We allocate 2 NDArrays of unlimited size in the NDArray pool.
      * This driver can block (because writing a file can be slow), and it is not multi-device.  
      * Set autoconnect to 1.  priority and stacksize can be 0, which will use defaults. */
     : NDPluginFile(portName, queueSize, blockingCallbacks,
                    NDArrayPort, NDArrayAddr, 1, NDPluginFileLastParam,
-                   1, -1, asynGenericPointerMask, asynGenericPointerMask, 
+                   2, -1, asynGenericPointerMask, asynGenericPointerMask, 
                    ASYN_CANBLOCK, 1, priority, stackSize)
 {
     //const char *functionName = "NDFileNetCDF";

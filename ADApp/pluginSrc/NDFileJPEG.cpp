@@ -317,12 +317,12 @@ NDFileJPEG::NDFileJPEG(const char *portName, int queueSize, int blockingCallback
                        const char *NDArrayPort, int NDArrayAddr,
                        int priority, int stackSize)
     /* Invoke the base class constructor.
-     * We allocate 1 NDArray of unlimited size in the NDArray pool.
+     * We allocate 2 NDArrays of unlimited size in the NDArray pool.
      * This driver can block (because writing a file can be slow), and it is not multi-device.  
      * Set autoconnect to 1.  priority and stacksize can be 0, which will use defaults. */
     : NDPluginFile(portName, queueSize, blockingCallbacks,
                    NDArrayPort, NDArrayAddr, 1, NDFileJPEGLastParam,
-                   1, -1, asynGenericPointerMask, asynGenericPointerMask, 
+                   2, -1, asynGenericPointerMask, asynGenericPointerMask, 
                    ASYN_CANBLOCK, 1, priority, stackSize)
 {
     //const char *functionName = "NDFileJPEG";
