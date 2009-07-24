@@ -3,7 +3,7 @@
 
 #include "asynPortDriver.h"
 #include "NDArray.h"
-#include "PVAttributes.h"
+#include "PVAttribute.h"
 
 
 /** Maximum length of a filename or any of its components */
@@ -60,7 +60,7 @@ typedef enum
     NDFileNumCaptured,  /**< (asynInt32,    r/o) Number of arrays already captured */
     NDFileCapture,      /**< (asynInt32,    r/w) Start or stop capturing arrays */
 
-    NDAttributesFile,   /**< (asynOctet,    r/w) Attributes file name */
+    PVAttributesFile,   /**< (asynOctet,    r/w) Attributes file name */
 
     /* The detector array data */
     NDArrayData,        /**< (asynGenericPointer,   r/w) NDArray data */
@@ -97,12 +97,14 @@ public:
     virtual int createFileName(int maxChars, char *fullFileName);
     virtual int createFileName(int maxChars, char *filePath, char *fileName);
     virtual int readPVAttributesFile(const char *fileName);
+    virtual int getAttributes(NDArray *pArray);
+    virtual NDArray* getAttributesCopy(NDArray *pArray, bool release);
 
 protected:
     NDArray **pArrays;             /**< An array of NDArray pointers used to store data in the driver */
     NDArrayPool *pNDArrayPool;     /**< An NDArrayPool object used to allocate and manipulate NDArray objects */
-    PVAttributes *pPVAttributes;   /**< A PVAttributes object used to obtain the current values of a set of
-                                     *  EPICS PVs */
+    PVAttributeList *pPVAttributeList;  /**< A PVAttributeList object used to obtain the current values of a set of
+                                          *  EPICS PVs */
 };
 
 #endif
