@@ -203,6 +203,8 @@ void NDPluginStdArrays::processCallbacks(NDArray *pArray)
     /* Update the parameters.  The counter should be updated after data are posted
      * because clients might use that to detect new data */
     callParamCallbacks();
+    /* Release this array */
+    pArray->release();
 }
 
 
