@@ -6,7 +6,7 @@ dbLoadDatabase("$(AREA_DETECTOR)/dbd/simDetectorApp.dbd")
 simDetectorApp_registerRecordDeviceDriver(pdbbase) 
 
 # Create a simDetector driver
-simDetectorConfig("SIM1", 640, 480, 1, 50, 50000000)
+simDetectorConfig("SIM1", 640, 480, 1, 500, -1)
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/ADBase.template",     "P=13SIM1:,R=cam1:,PORT=SIM1,ADDR=0,TIMEOUT=1")
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/simDetector.template","P=13SIM1:,R=cam1:,PORT=SIM1,ADDR=0,TIMEOUT=1")
 
@@ -28,7 +28,7 @@ dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStdArrays.template", "P=13SIM1:,R=ima
 #dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/EPICS_AD_Viewer.template", "P=13SIM1:, R=image1:")
 
 # Create a netCDF file saving plugin
-NDFileNetCDFConfigure("SIM1FileNetCDF", 20, 0, "SIM1", 0)
+NDFileNetCDFConfigure("SIM1FileNetCDF", 450, 0, "SIM1", 0)
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13SIM1:,R=netCDF1:,PORT=SIM1FileNetCDF,ADDR=0,TIMEOUT=1,NDARRAY_PORT=SIM1,NDARRAY_ADDR=0")
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFile.template",      "P=13SIM1:,R=netCDF1:,PORT=SIM1FileNetCDF,ADDR=0,TIMEOUT=1")
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFileNetCDF.template","P=13SIM1:,R=netCDF1:,PORT=SIM1FileNetCDF,ADDR=0,TIMEOUT=1")
@@ -59,6 +59,8 @@ dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=13SIM1:,MAXPTS1=2000,MAXPTS2=20
 
 #asynSetTraceIOMask("SIM1",0,2)
 #asynSetTraceMask("SIM1",0,255)
+#asynSetTraceIOMask("SIM1FileNetCDF",0,2)
+#asynSetTraceMask("SIM1FileNetCDF",0,255)
 #asynSetTraceMask("SIM2",0,255)
 
 set_requestfile_path("./")
