@@ -1,4 +1,4 @@
-pro image_display::write_output_file, format=format
+pro image_display::write_output_file, format=format,out=out,noprompt=noprompt
 
     oform = 'jpeg'
     if (keyword_set(format) ne 0 ) then oform = format
@@ -62,22 +62,33 @@ pro image_display::write_output_file, format=format
     if (oform eq 'tiff') then oform='tif'
     ffilter =     '*.' + oform
     def_out = df + '.' + oform
-    outfile = dialog_pickfile(filter=ffilter, file=def_out, /write, $
-                              title='Select Output Image File')
+
+    do_prompt = 1
+    if (keyword_set(out)) then begin
+        do_prompt = 0
+        def_out = out
+     endif
+    if (keyword_set(noprompt)) then do_prompt = 0
+    if do_prompt ne 0 then begin
+       outfile = dialog_pickfile(filter=ffilter, file=def_outt, /write, $
+                                 title='Select Output Image File')
+    endif else begin
+       outfile = def_out
+    endelse
+
     if (outfile ne '') then begin
-        case oform of
-            'jpg':  write_jpeg, outfile, ta, true=3, order=self.image_window.order
-            'gif':  write_png,  outfile, buff, r, g, b, order=self.image_window.order
-            'png':  write_png,  outfile, buff, r, g, b, order=self.image_window.order
-            'bmp':  write_bmp,  outfile, ta
-            'tif':  write_tiff, outfile, buff, red=r, green=g, blue=b, orientation=self.image_window.order
-            else:   outfile=''
-        endcase
-    endif
-    case outfile of
-        '':    print, 'no output written'
-        else:  print, 'wrote ', outfile
-    endcase
+       case oform of
+          'jpg':  write_jpeg, outfile, ta, true=3, order=self.image_window.order
+          'gif':  write_png,  outfile, buff, r, g, b, order=self.image_window.order
+          'png':  write_png,  outfile, buff, r, g, b, order=self.image_window.order
+          'bmp':  write_bmp,  outfile, ta
+          'tif':  write_tiff, outfile, buff, red=r, green=g, blue=b, orientation=self.image_window.order
+          else:   outfile=''
+       endcase
+       print, 'wrote ', outfile
+    endif  else begin
+       print, 'no output written'
+    endelse
 
     return
 end
