@@ -1,27 +1,27 @@
 #include <asynDriver.h>
 #include <epicsThread.h>
 
-#include "PVAttributes.h"
+#include "PVAttribute.h"
 
 int main(int argc, char *argv[]) 
 {
-    PVAttributes *pAttr;
+    PVAttributeList *pAttr;
     NDArray *pArray;
     int i;
 
     pasynTrace->setTraceMask(NULL, 255);
     
-    pAttr = new PVAttributes();
+    pAttr = new PVAttributeList();
     pArray = new NDArray();
     
-    pAttr->addPV("13SIM1:cam1:Acquire",          "Camera acquiring", DBR_NATIVE);
-    pAttr->addPV("13SIM1:cam1:AcquireTime",      "Camera acquire time", DBR_NATIVE);
-    pAttr->addPV("13SIM1:cam1:ArrayCallbacks",   "Array callbacks", DBR_NATIVE);
-    pAttr->addPV("13SIM1:cam1:ColorMode",        "Color mode", DBR_STRING);
-    pAttr->addPV("13SIM1:cam1:ImageCounter_RBV", "Image counter", DBR_FLOAT);
-    pAttr->addPV("13SIM1:image1:ArrayData",      "First pixel of image data", DBR_NATIVE);
-    pAttr->addPV("13SIM1:file1:PortName_RBV",    "Port name", DBR_NATIVE);
-    pAttr->addPV("13SIM1:file1:FilePath_RBV",    "File path", DBR_STRING);
+    pAttr->addPV("Acquire",        "Camera acquiring",          "13SIM1:cam1:Acquire",          DBR_NATIVE);
+    pAttr->addPV("AcquireTime",    "Camera acquire time",       "13SIM1:cam1:AcquireTime",      DBR_NATIVE);
+    pAttr->addPV("ArrayCallbacks", "Array callbacks",           "13SIM1:cam1:ArrayCallbacks",   DBR_NATIVE);
+    pAttr->addPV("ColorMode",      "Color mode",                "13SIM1:cam1:ColorMode",        DBR_STRING);
+    pAttr->addPV("ImageCounter",   "Image counter",             "13SIM1:image1:ArrayData",      DBR_FLOAT);
+    pAttr->addPV("ArrayData",      "First pixel of image data", "13SIM1:image1:ArrayData",      DBR_NATIVE);
+    pAttr->addPV("PortName",       "Port name",                 "13SIM1:netCDF1:PortName_RBV",  DBR_NATIVE);
+    pAttr->addPV("FilePath",       "File path",                 "13SIM1:netCDF1:FilePath_RBV",  DBR_STRING);
     
     /* Sleep for 1 second to let the connection and value allbacks run */
     epicsThreadSleep(1.0);
@@ -32,19 +32,19 @@ int main(int argc, char *argv[])
         pArray->report(20);
         epicsThreadSleep(5.0);
     }
-    printf("\nRemoving FilePath and ImageCounter_RBV\n");
-    pAttr->removePV("13SIM1:file1:FilePath_RBV");
-    pAttr->removePV("13SIM1:cam1:ImageCounter_RBV");
+    printf("\nRemoving FilePath and ImageCounter\n");
+    pAttr->removeAttribute("FilePath");
+    pAttr->removeAttribute("ImageCounter");
     pAttr->getValues(pArray);
     pAttr->report(20);
 
     printf("\nClearing all PVs\n");
-    pAttr->clearPVs();
+    pAttr->clearAttributes();
     pAttr->getValues(pArray);
     pAttr->report(20);
 
     printf("\nAdding Acquire\n");
-    pAttr->addPV("13SIM1:cam1:Acquire",    "File path", DBR_STRING);
+    pAttr->addPV("Acquire",         "Camera acquiring",         "13SIM1:cam1:Acquire",          DBR_STRING);
     /* Sleep for 1 second to let the connection and value allbacks run */
     epicsThreadSleep(1.0);
     pAttr->getValues(pArray);
