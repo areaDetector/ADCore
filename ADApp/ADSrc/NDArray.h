@@ -51,6 +51,14 @@ typedef enum
     NDAttrUndefined             /**< Undefined data type */
 } NDAttrDataType_t;
 
+/** Enumeration of NDAttibute source types */
+typedef enum
+{
+    NDAttrSourceDriver,  /**< Attribute is obtained directly from driver */
+    NDAttrSourceParam,   /**< Attribute is obtained from parameter library */
+    NDAttrSourceEPICSPV  /**< Attribute is obtained from an EPICS PV */
+} NDAttrSource_t;
+
 /** Enumeration of color modes for NDArray attribute "colorMode" */
 typedef enum
 {
@@ -102,6 +110,11 @@ typedef struct NDArrayInfo {
                               *  this may be less than NDArray::dataSize. */
 } NDArrayInfo_t;
 
+typedef struct NDAttributeListNode {
+    ELLNODE node;
+    class NDAttribute *pNDAttribute;
+} NDAttributeListNode;
+
 /** Union defining the values in an NDAttribute object */
 typedef union {
     epicsInt8    i8;    /**< Signed 8-bit integer */
@@ -122,25 +135,30 @@ class NDAttribute {
 public:
     /* Methods */
     NDAttribute(const char *pName);
-    ~NDAttribute();
+    virtual ~NDAttribute();
     int getNameInfo(size_t *pNameSize);
     int getName(char *pName, size_t nameSize=0);
     int getDescriptionInfo(size_t *pDescSize);
     int getDescription(char *pDescription, size_t descSize=0);
     int setDescription(const char *pDescription);
+    int getSource(char *pSource, size_t sourceSize=0);
+    int setSource(const char *pSource);
     int getValueInfo(NDAttrDataType_t *pDataType, size_t *pDataSize);
     int getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSize=0);
     int setValue(NDAttrDataType_t dataType, void *pValue);
-    int report(int details);
+    virtual int report(int details);
     friend class NDArray;
+    friend class PVAttributeList;
 
-private:
-    ELLNODE node;   /**< This must come first because ELLNODE must have the same address as NDAttribute object */
+protected:
     char *pName;
     char *pDescription;
+    char *pSource;  /**< Source string - EPICS PV name or DRV_INFO string */
+    NDAttrSource_t sourceType;
     NDAttrDataType_t dataType;
     NDAttrValue value;
-    char *pString;      /**< Dynamic length string */ 
+    char *pString;      /**< Dynamic length string */
+    NDAttributeListNode listNode;
 };
 
 /** N-dimensional array class; each array has a set of dimensions, a data type, pointer to data, and optional attributes. 

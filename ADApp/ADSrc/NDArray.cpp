@@ -20,10 +20,23 @@
 #include <epicsString.h>
 #include <ellLib.h>
 #include <cantProceed.h>
+#include <epicsExport.h>
 
 #include "NDArray.h"
 
 static const char *driverName = "NDArray";
+
+/** eraseNDAttributes is a global flag the controls whether NDArray::clearAttributes() is called
+  * each time a new array is allocated with NDArrayPool->alloc().
+  * The default value is 0, meaning that clearAttributes() is not called.  This mode is efficient
+  * because it saves lots of allocation/deallocation, and it is fine when the attributes for a driver
+  * are set once and not changed.  If driver attributes are deleted however, the allocated arrays
+  * will still have the old attributes if this flag is 0.  Set this flag to force attributes to be
+  * removed each time an NDArray is allocated.
+  */
+
+volatile int eraseNDAttributes=0;
+epicsExportAddress(int, eraseNDAttributes);
 
 /** NDArrayPool constructor
   * \param[in] maxBuffers Maximum number of NDArray objects that the pool is allowed to contain; -1=unlimited.
@@ -95,6 +108,8 @@ NDArray* NDArrayPool::alloc(int ndims, int *dims, NDDataType_t dataType, int dat
             pArray->dims[i].binning = 1;
             pArray->dims[i].reverse = 0;
         }
+        /* Erase the attributes if that global flag is set */
+        if (eraseNDAttributes) pArray->clearAttributes();
         pArray->getInfo(&arrayInfo);
         if (dataSize == 0) dataSize = arrayInfo.totalBytes;
         if (arrayInfo.totalBytes > dataSize) {
@@ -670,7 +685,7 @@ NDAttribute* NDArray::addAttribute(const char *pName)
     pAttribute = this->findAttribute(pName);
     if (!pAttribute) {
         pAttribute = new NDAttribute(pName);
-        ellAdd(&this->attributeList, &pAttribute->node);
+        ellAdd(&this->attributeList, &pAttribute->listNode.node);
     }
     return(pAttribute);
 }
@@ -746,12 +761,14 @@ NDAttribute* NDArray::addAttribute(NDAttribute *pIn)
 NDAttribute* NDArray::findAttribute(const char *pName)
 {
     NDAttribute *pAttribute;
+    NDAttributeListNode *pListNode;
     //const char *functionName = "NDArray::addAttribute";
 
-    pAttribute = (NDAttribute *)ellFirst(&this->attributeList);
-    while (pAttribute) {
+    pListNode = (NDAttributeListNode *)ellFirst(&this->attributeList);
+    while (pListNode) {
+        pAttribute = pListNode->pNDAttribute;
         if (epicsStrCaseCmp(pAttribute->pName, pName) == 0) return(pAttribute);
-        pAttribute = (NDAttribute *)ellNext(&pAttribute->node);
+        pListNode = (NDAttributeListNode *)ellNext(&pListNode->node);
     }
     return(NULL);
 }
@@ -763,11 +780,17 @@ NDAttribute* NDArray::findAttribute(const char *pName)
   * NULL if there are no more attributes in the list. */
 NDAttribute* NDArray::nextAttribute(NDAttribute *pAttributeIn)
 {
-    NDAttribute *pAttribute;
+    NDAttribute *pAttribute=NULL;
+    NDAttributeListNode *pListNode;
     //const char *functionName = "NDArray::addAttribute";
 
-    if (!pAttributeIn) pAttribute = (NDAttribute *)ellFirst(&this->attributeList);
-    else pAttribute = (NDAttribute *)ellNext(&pAttributeIn->node);
+    if (!pAttributeIn) {
+        pListNode = (NDAttributeListNode *)ellFirst(&this->attributeList);
+   }
+    else {
+        pListNode = (NDAttributeListNode *)ellNext(&pAttributeIn->listNode.node);
+    }
+    if (pListNode) pAttribute = pListNode->pNDAttribute;
     return(pAttribute);
 }
 
@@ -791,7 +814,7 @@ int NDArray::deleteAttribute(const char *pName)
 
     pAttribute = this->findAttribute(pName);
     if (!pAttribute) return(ND_ERROR);
-    ellDelete(&this->attributeList, &pAttribute->node);
+    ellDelete(&this->attributeList, &pAttribute->listNode.node);
     delete pAttribute;
     return(ND_SUCCESS);
 }
@@ -800,13 +823,15 @@ int NDArray::deleteAttribute(const char *pName)
 int NDArray::clearAttributes()
 {
     NDAttribute *pAttribute;
+    NDAttributeListNode *pListNode;
     //const char *functionName = "NDArray::addAttribute";
 
-    pAttribute = (NDAttribute *)ellFirst(&this->attributeList);
-    while (pAttribute) {
-        ellDelete(&this->attributeList, &pAttribute->node);
+    pListNode = (NDAttributeListNode *)ellFirst(&this->attributeList);
+    while (pListNode) {
+        pAttribute = pListNode->pNDAttribute;
+        ellDelete(&this->attributeList, &pListNode->node);
         delete pAttribute;
-        pAttribute = (NDAttribute *)ellFirst(&this->attributeList);
+        pListNode = (NDAttributeListNode *)ellFirst(&this->attributeList);
     }
     return(ND_SUCCESS);
 }
@@ -818,17 +843,19 @@ int NDArray::clearAttributes()
 int NDArray::copyAttributes(NDArray *pOut)
 {
     NDAttribute *pAttribute;
+    NDAttributeListNode *pListNode;
     void *pValue;
     //const char *functionName = "NDArray::copyAttributes";
 
-    pAttribute = (NDAttribute *)ellFirst(&this->attributeList);
-    while (pAttribute) {
+    pListNode = (NDAttributeListNode *)ellFirst(&this->attributeList);
+    while (pListNode) {
+        pAttribute = pListNode->pNDAttribute;
         if (pAttribute->dataType == NDAttrString) 
             pValue = pAttribute->pString; 
         else 
             pValue = &pAttribute->value;
         pOut->addAttribute(pAttribute->pName, pAttribute->pDescription, pAttribute->dataType, pValue);
-        pAttribute = (NDAttribute *)ellNext(&pAttribute->node);
+        pListNode = (NDAttributeListNode *)ellNext(&pListNode->node);
     }
     return(ND_SUCCESS);
 }
@@ -838,10 +865,11 @@ int NDArray::copyAttributes(NDArray *pOut)
 int NDArray::report(int details)
 {
     NDAttribute *pAttr;
+    NDAttributeListNode *pListNode;
     int dim;
     
     printf("\n");
-    printf("NDArrayArray address=%p:\n", this);
+    printf("NDArray  Array address=%p:\n", this);
     printf("  ndims=%d dims=[",
         this->ndims);
     for (dim=0; dim<this->ndims; dim++) printf("%d ", this->dims[dim].size);
@@ -852,10 +880,11 @@ int NDArray::report(int details)
         this->uniqueId, this->timeStamp);
     printf("  number of attributes=%d\n", ellCount(&this->attributeList));
     if (details > 5) {
-        pAttr = (NDAttribute *) ellFirst(&this->attributeList);
-        while (pAttr) {
+        pListNode = (NDAttributeListNode *)ellFirst(&this->attributeList);
+        while (pListNode) {
+            pAttr = pListNode->pNDAttribute;
             pAttr->report(details);
-            pAttr = (NDAttribute *) ellNext(&pAttr->node);
+            pListNode = (NDAttributeListNode *) ellNext(&pAttr->listNode.node);
         }
     }
     return ND_SUCCESS;
@@ -871,7 +900,9 @@ NDAttribute::NDAttribute(const char *pName)
     this->pName = epicsStrDup(pName);
     this->pDescription = NULL;
     this->pString = NULL;
+    this->pSource = NULL;
     this->dataType = NDAttrUndefined;
+    this->listNode.pNDAttribute = this;
 }
 
 /** NDAttribute destructor 
@@ -880,6 +911,7 @@ NDAttribute::~NDAttribute()
 {
     if (this->pName) free(this->pName);
     if (this->pDescription) free(this->pDescription);
+    if (this->pSource) free(this->pSource);
     if (this->pString) free(this->pString);
 }
 
@@ -937,6 +969,35 @@ int NDAttribute::setDescription(const char *pDescription) {
     }
     if (pDescription) this->pDescription = epicsStrDup(pDescription);
     else this->pDescription = NULL;
+    return(ND_SUCCESS);
+}
+
+/** Returns the source string for this attribute. 
+  * \param[out] pSource String to hold the source. 
+  * \param[in] sourceSize Maximum size for the source string; 
+    if 0 then pSource is assumed to be big enough to hold the source string plus 0 terminator. */
+int NDAttribute::getSource(char *pSource, size_t sourceSize) {
+
+    if (this->pSource) {
+        if (sourceSize == 0) sourceSize = strlen(this->pSource)+1;
+        strncpy(pSource, this->pSource, sourceSize);
+    } else
+        *pSource = '\0';
+    return(ND_SUCCESS);
+}
+
+/** Sets the source string for this attribute. 
+  * \param[in] pSource String with the source. */
+int NDAttribute::setSource(const char *pSource) {
+
+    if (this->pSource) {
+        /* If the new srouce is the same as the old one return, 
+         * saves freeing and allocating memory */
+        if (strcmp(this->pSource, pSource) == 0) return(ND_SUCCESS);
+        free(this->pSource);
+    }
+    if (pSource) this->pSource = epicsStrDup(pSource);
+    else this->pSource = NULL;
     return(ND_SUCCESS);
 }
 
