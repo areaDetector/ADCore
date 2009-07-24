@@ -189,9 +189,6 @@ void NDPluginDriver::processTask(void)
         /* Call the function that does the callbacks to standard asyn interfaces */
         processCallbacks(pArray); 
         this->unlock(); 
-        
-        /* We are done with this array buffer */       
-        pArray->release();
     }
 }
 
@@ -344,10 +341,13 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
                 }
             }
             break;
-       case NDPluginDriverArrayAddr:
+        case NDPluginDriverArrayAddr:
             connectToArrayPort();
             break;
         default:
+            /* If this parameter belongs to a base class call its method */
+            if (function < NDLastStdParam) 
+                status = asynNDArrayDriver::writeInt32(pasynUser, value);
             break;
     }
     
@@ -389,6 +389,9 @@ asynStatus NDPluginDriver::writeOctet(asynUser *pasynUser, const char *value,
         case NDPluginDriverArrayPort:
             connectToArrayPort();
         default:
+            /* If this parameter belongs to a base class call its method */
+            if (function < NDLastStdParam) 
+                status = asynNDArrayDriver::writeOctet(pasynUser, value, nChars, nActual);
             break;
     }
     
@@ -429,6 +432,11 @@ asynStatus NDPluginDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *value
             if (nElements < ncopy) ncopy = nElements;
             memcpy(value, this->dimsPrev, ncopy*sizeof(*this->dimsPrev));
             *nIn = ncopy;
+            break;
+        default:
+            /* If this parameter belongs to a base class call its method */
+            if (function < NDLastStdParam) 
+                status = asynNDArrayDriver::readInt32Array(pasynUser, value, nElements, nIn);
             break;
     }
     if (status) 
