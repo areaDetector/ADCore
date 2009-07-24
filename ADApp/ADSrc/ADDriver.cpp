@@ -119,6 +119,8 @@ asynStatus ADDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
         setShutter(value);
         break;
     default:
+        /* If this parameter belongs to a base class call its method */
+        if (function < NDLastStdParam) status = asynNDArrayDriver::writeInt32(pasynUser, value);
         break;
     }
 
