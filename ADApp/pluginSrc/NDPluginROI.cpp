@@ -268,6 +268,9 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     int colorMode;
     NDAttribute *pAttribute;
     const char* functionName = "processCallbacks";
+    
+    /* Get the attributes for this driver */
+    pArray = this->getAttributesCopy(pArray, true);
      
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
@@ -494,6 +497,8 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     if (pHighlights) pHighlights->release();
     
     callParamCallbacks();
+    /* Decrease the reference count on this array */
+    pArray->release();
 }
 
 
