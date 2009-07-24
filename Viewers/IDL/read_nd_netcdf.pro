@@ -162,8 +162,12 @@ function read_nd_netcdf, file, range=range, attributes=attributes, dimInfo=dimIn
     ; Get the number of arrays in the file
     ncdf_diminq, file_id, data_info.dim[0], name, numArrays
     ; Get the maximum attribute string size
-    dim_id = ncdf_dimid(file_id, 'attrStringSize')
-    ncdf_diminq, file_id, dim_id, name, attrStringSize
+    if (fileVersion ge 2.0) then begin
+        dim_id = ncdf_dimid(file_id, 'attrStringSize')
+        ncdf_diminq, file_id, dim_id, name, attrStringSize
+    endif else begin
+        attrStringSize = 256
+    endelse
 
     ; There can be many other variables present in the file. 
     ; These include uniqueId, timeStamp, and all of the NDArray attributes.
