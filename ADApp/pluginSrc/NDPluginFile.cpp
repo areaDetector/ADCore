@@ -168,6 +168,12 @@ asynStatus NDPluginFile::writeFileBase()
             break;
         case NDFileModeCapture:
             /* Write the file */
+            if (!this->pCapture) {
+                asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                    "%s:%s: ERROR, no capture buffer present\n", 
+                    driverName, functionName);
+                break;
+            }
             setIntegerParam(NDWriteFile, 1);
             callParamCallbacks();
             if (this->supportsMultipleArrays)
@@ -223,11 +229,19 @@ asynStatus NDPluginFile::doCapture()
     /* This function is called from write32 whenever capture is started or stopped */
     asynStatus status = asynSuccess;
     int fileWriteMode, capture;
-    NDArray array;
+    NDArray *pArray = this->pArrays[0];
     NDArrayInfo_t arrayInfo;
     int i;
     int numCapture;
     const char* functionName = "doCapture";
+
+    /* Make sure there is a valid array */
+    if (!pArray) {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s:%s: ERROR, must collect an array to get dimensions first\n",
+            driverName, functionName);
+        return(asynError);
+    }
     
     getIntegerParam(NDFileCapture, &capture);    
     getIntegerParam(NDFileWriteMode, &fileWriteMode);    
@@ -241,11 +255,8 @@ asynStatus NDPluginFile::doCapture()
         case NDFileModeCapture:
             if (capture) {
                 /* Capturing was just started */
-                /* We need to read an array from our array source to get its dimensions */
-                array.dataSize = 0;
-                status = this->pasynGenericPointer->read(this->asynGenericPointerPvt,this->pasynUserGenericPointer, &array);
                 setIntegerParam(NDFileNumCaptured, 0);
-                array.getInfo(&arrayInfo);
+                pArray->getInfo(&arrayInfo);
                 this->pCapture = (NDArray **)malloc(numCapture * sizeof(NDArray *));
                 if (!this->pCapture) {
                     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
@@ -277,10 +288,7 @@ asynStatus NDPluginFile::doCapture()
         case NDFileModeStream:
             if (capture) {
                 /* Streaming was just started */
-                /* We need to read an array from our array source to get its dimensions */
-                array.dataSize = 0;
-                status = this->pasynGenericPointer->read(this->asynGenericPointerPvt,this->pasynUserGenericPointer, &array);
-                status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, &array);
+                status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, pArray);
                 setIntegerParam(NDFileNumCaptured, 0);
                 setIntegerParam(NDWriteFile, 1);
             } else {
@@ -314,6 +322,9 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
      * supposed to save.  So we save the array counter before calling base method, increment it here */
     getIntegerParam(NDPluginDriverArrayCounter, &arrayCounter);
 
+    /* Get the attributes for this plugin */
+    pArray = this->getAttributesCopy(pArray, true);
+    
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
     
@@ -321,7 +332,7 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
     getIntegerParam(NDFileCapture, &capture);    
     getIntegerParam(NDFileWriteMode, &fileWriteMode);    
     getIntegerParam(NDFileNumCapture, &numCapture);    
-    getIntegerParam(NDFileNumCaptured, &numCaptured); 
+    getIntegerParam(NDFileNumCaptured, &numCaptured);
 
     /* We always keep the last array so read() can use it.  
      * Release previous one, reserve new one */
@@ -371,6 +382,9 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
     /* Update the parameters.  */
     setIntegerParam(NDPluginDriverArrayCounter, arrayCounter);
     callParamCallbacks();
+        
+    /* We are done with this array buffer */       
+    pArray->release();
 }
 
 /** Called when asyn clients call pasynInt32->write().
@@ -420,7 +434,7 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
             break;
         default:
             /* This was not a parameter that this driver understands, try the base class */
-            status = NDPluginDriver::writeInt32(pasynUser, value);
+            if (function < NDPluginDriverLastParam) status = NDPluginDriver::writeInt32(pasynUser, value);
             break;
     }
     
