@@ -305,6 +305,9 @@ void NDPluginColorConvert::processCallbacks(NDArray *pArray)
      */
      
     const char* functionName = "processCallbacks";
+    
+    /* Get the attributes for this plugin */
+    pArray = this->getAttributesCopy(pArray, true);
      
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
@@ -355,6 +358,9 @@ void NDPluginColorConvert::processCallbacks(NDArray *pArray)
     callParamCallbacks();
     /* Call any clients who have registered for NDArray callbacks */
     doCallbacksGenericPointer(this->pArrays[0], NDArrayData, 0);
+    
+    /* Release the array */
+    pArray->release();
 }
 
 
