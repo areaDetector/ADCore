@@ -1,6 +1,6 @@
 
 file {
-	name="j:\epics\devel\areaDetector\1-4\ADApp\op\adl\NDPluginFile.adl"
+	name="/home/epics/devel/areaDetector/1-5beta/ADApp/op/adl/NDPluginFile.adl"
 	version=030102
 }
 display {
@@ -8,7 +8,7 @@ display {
 		x=202
 		y=85
 		width=1080
-		height=455
+		height=480
 	}
 	clr=14
 	bclr=4
@@ -92,7 +92,7 @@ rectangle {
 		x=8
 		y=40
 		width=380
-		height=410
+		height=435
 	}
 	"basic attribute" {
 		clr=14
@@ -867,8 +867,8 @@ composite {
 	object {
 		x=15
 		y=44
-		width=366
-		height=395
+		width=370
+		height=420
 	}
 	"composite name"=""
 	children {
@@ -1461,5 +1461,92 @@ composite {
 			limits {
 			}
 		}
+		text {
+			object {
+				x=15
+				y=444
+				width=150
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Attributes file"
+			align="horiz. right"
+		}
+		"text entry" {
+			object {
+				x=175
+				y=444
+				width=210
+				height=20
+			}
+			control {
+				chan="$(P)$(R)PVAttributesFile"
+				clr=14
+				bclr=51
+			}
+			format="string"
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=770
+		y=191
+		width=274
+		height=22
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=770
+				y=192
+				width=120
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="JPEG Quality"
+			align="horiz. right"
+		}
+		"text entry" {
+			object {
+				x=899
+				y=191
+				width=60
+				height=22
+			}
+			control {
+				chan="$(P)$(R)JPEGQuality"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=964
+				y=193
+				width=80
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)JPEGQuality_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+	}
+	"dynamic attribute" {
+		calc="A=JPEG"
+		chan="$(P)$(R)FileFormat"
 	}
 }
