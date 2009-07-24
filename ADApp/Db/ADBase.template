@@ -631,6 +631,19 @@ record(bi, "$(P)$(R)ArrayCallbacks_RBV")
 }
 
 ###################################################################
+#  This record is the name of a file defining attributes        # 
+###################################################################
+
+record(waveform, "$(P)$(R)PVAttributesFile")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PV_ATTRIBUTES_FILE")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
+
+###################################################################
 #  These records provide status information                       # 
 ###################################################################
 

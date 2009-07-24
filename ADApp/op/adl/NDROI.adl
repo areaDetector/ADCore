@@ -1,6 +1,6 @@
 
 file {
-	name="j:\epics\devel\areaDetector\1-4\ADApp\op\adl\NDROI.adl"
+	name="/home/epics/devel/areaDetector/1-5beta/ADApp/op/adl/NDROI.adl"
 	version=030102
 }
 display {
@@ -8,7 +8,7 @@ display {
 		x=154
 		y=55
 		width=390
-		height=575
+		height=600
 	}
 	clr=14
 	bclr=4
@@ -116,7 +116,7 @@ rectangle {
 		x=5
 		y=35
 		width=380
-		height=535
+		height=560
 	}
 	"basic attribute" {
 		clr=14
@@ -126,7 +126,7 @@ rectangle {
 composite {
 	object {
 		x=12
-		y=440
+		y=465
 		width=366
 		height=123
 	}
@@ -135,7 +135,7 @@ composite {
 		"related display" {
 			object {
 				x=172
-				y=515
+				y=540
 				width=130
 				height=20
 			}
@@ -186,7 +186,7 @@ composite {
 		text {
 			object {
 				x=22
-				y=515
+				y=540
 				width=140
 				height=20
 			}
@@ -199,7 +199,7 @@ composite {
 		text {
 			object {
 				x=52
-				y=465
+				y=490
 				width=110
 				height=20
 			}
@@ -212,7 +212,7 @@ composite {
 		"related display" {
 			object {
 				x=172
-				y=465
+				y=490
 				width=100
 				height=20
 			}
@@ -227,7 +227,7 @@ composite {
 		text {
 			object {
 				x=12
-				y=440
+				y=465
 				width=150
 				height=20
 			}
@@ -240,7 +240,7 @@ composite {
 		menu {
 			object {
 				x=172
-				y=440
+				y=465
 				width=100
 				height=20
 			}
@@ -253,7 +253,7 @@ composite {
 		"text update" {
 			object {
 				x=278
-				y=441
+				y=466
 				width=100
 				height=18
 			}
@@ -268,7 +268,7 @@ composite {
 		"related display" {
 			object {
 				x=172
-				y=542
+				y=567
 				width=130
 				height=20
 			}
@@ -299,7 +299,7 @@ composite {
 		text {
 			object {
 				x=138
-				y=490
+				y=515
 				width=150
 				height=20
 			}
@@ -312,7 +312,7 @@ composite {
 		text {
 			object {
 				x=82
-				y=543
+				y=568
 				width=80
 				height=20
 			}
@@ -328,8 +328,8 @@ composite {
 	object {
 		x=12
 		y=40
-		width=366
-		height=395
+		width=368
+		height=420
 	}
 	"composite name"=""
 	children {
@@ -917,6 +917,35 @@ composite {
 				chan="$(P)$(R)PortName_RBV"
 				clr=54
 				bclr=4
+			}
+			format="string"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=12
+				y=440
+				width=150
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Attributes file"
+			align="horiz. right"
+		}
+		"text entry" {
+			object {
+				x=170
+				y=440
+				width=210
+				height=20
+			}
+			control {
+				chan="$(P)$(R)PVAttributesFile"
+				clr=14
+				bclr=51
 			}
 			format="string"
 			limits {

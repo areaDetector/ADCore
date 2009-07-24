@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector/1-4/ADApp/op/adl/ADBase.adl"
+	name="/home/epics/devel/areaDetector/1-5beta/ADApp/op/adl/ADBase.adl"
 	version=030102
 }
 display {
@@ -8,7 +8,7 @@ display {
 		x=502
 		y=41
 		width=700
-		height=690
+		height=730
 	}
 	clr=14
 	bclr=4
@@ -118,52 +118,6 @@ composite {
 				clr=54
 			}
 			textix="Area Detector Control - $(P)$(R)"
-			align="horiz. centered"
-		}
-	}
-}
-composite {
-	object {
-		x=472
-		y=597
-		width=107
-		height=21
-	}
-	"composite name"=""
-	children {
-		composite {
-			object {
-				x=472
-				y=597
-				width=107
-				height=21
-			}
-			"composite name"=""
-			children {
-				rectangle {
-					object {
-						x=472
-						y=597
-						width=107
-						height=21
-					}
-					"basic attribute" {
-						clr=2
-					}
-				}
-			}
-		}
-		text {
-			object {
-				x=505
-				y=597
-				width=40
-				height=20
-			}
-			"basic attribute" {
-				clr=54
-			}
-			textix="File"
 			align="horiz. centered"
 		}
 	}
@@ -1935,45 +1889,6 @@ menu {
 	limits {
 	}
 }
-rectangle {
-	object {
-		x=345
-		y=595
-		width=350
-		height=60
-	}
-	"basic attribute" {
-		clr=14
-		fill="outline"
-	}
-}
-text {
-	object {
-		x=358
-		y=624
-		width=150
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Driver file I/O"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=515
-		y=624
-		width=70
-		height=20
-	}
-	display[0] {
-		name="NDFile.adl"
-		args="P=$(P),R=$(R)"
-	}
-	clr=14
-	bclr=51
-}
 text {
 	object {
 		x=47
@@ -2060,5 +1975,188 @@ text {
 	}
 	align="horiz. centered"
 	limits {
+	}
+}
+composite {
+	object {
+		x=345
+		y=660
+		width=350
+		height=60
+	}
+	"composite name"=""
+	children {
+		composite {
+			object {
+				x=472
+				y=662
+				width=107
+				height=21
+			}
+			"composite name"=""
+			children {
+				composite {
+					object {
+						x=472
+						y=662
+						width=107
+						height=21
+					}
+					"composite name"=""
+					children {
+						rectangle {
+							object {
+								x=472
+								y=662
+								width=107
+								height=21
+							}
+							"basic attribute" {
+								clr=2
+							}
+						}
+					}
+				}
+				text {
+					object {
+						x=505
+						y=662
+						width=40
+						height=20
+					}
+					"basic attribute" {
+						clr=54
+					}
+					textix="File"
+					align="horiz. centered"
+				}
+			}
+		}
+		rectangle {
+			object {
+				x=345
+				y=660
+				width=350
+				height=60
+			}
+			"basic attribute" {
+				clr=14
+				fill="outline"
+			}
+		}
+		text {
+			object {
+				x=358
+				y=689
+				width=150
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Driver file I/O"
+			align="horiz. right"
+		}
+		"related display" {
+			object {
+				x=515
+				y=689
+				width=70
+				height=20
+			}
+			display[0] {
+				name="NDFile.adl"
+				args="P=$(P),R=$(R)"
+			}
+			clr=14
+			bclr=51
+		}
+	}
+}
+composite {
+	object {
+		x=345
+		y=595
+		width=350
+		height=60
+	}
+	"composite name"=""
+	children {
+		composite {
+			object {
+				x=472
+				y=597
+				width=107
+				height=21
+			}
+			"composite name"=""
+			children {
+				rectangle {
+					object {
+						x=472
+						y=597
+						width=107
+						height=21
+					}
+					"basic attribute" {
+						clr=2
+					}
+				}
+			}
+		}
+		text {
+			object {
+				x=505
+				y=597
+				width=40
+				height=20
+			}
+			"basic attribute" {
+				clr=54
+			}
+			textix="Attributes"
+			align="horiz. centered"
+		}
+		rectangle {
+			object {
+				x=345
+				y=595
+				width=350
+				height=60
+			}
+			"basic attribute" {
+				clr=14
+				fill="outline"
+			}
+		}
+		text {
+			object {
+				x=358
+				y=624
+				width=40
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="File"
+			align="horiz. right"
+		}
+		"text entry" {
+			object {
+				x=403
+				y=625
+				width=280
+				height=20
+			}
+			control {
+				chan="$(P)$(R)PVAttributesFile"
+				clr=14
+				bclr=51
+			}
+			format="string"
+			limits {
+			}
+		}
 	}
 }

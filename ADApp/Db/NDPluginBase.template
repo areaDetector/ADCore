@@ -325,6 +325,18 @@ record(ai, "$(P)$(R)TimeStamp_RBV")
     field(SCAN, "I/O Intr")
 }
 
+###################################################################
+#  This record is the name of a file defining attributes        # 
+###################################################################
+
+record(waveform, "$(P)$(R)PVAttributesFile")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PV_ATTRIBUTES_FILE")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
 
 ###################################################################
 #  The asynRecord is used for mainly for trace mask               # 
