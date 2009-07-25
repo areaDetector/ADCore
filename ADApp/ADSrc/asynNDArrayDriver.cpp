@@ -357,7 +357,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int para
 
     /* Allocate pArray pointer array */
     this->pArrays = (NDArray **)calloc(maxAddr, sizeof(NDArray *));
-    this->pPVAttributeList = new PVAttributeList;
+    this->pPVAttributeList = new PVAttributeList(this);
     
     setStringParam (NDPortNameSelf, portName);
     setIntegerParam(NDArraySizeX,   0);

@@ -22,7 +22,7 @@
 #include "PVAttribute.h"
 #include "tinyxml.h"
 
-#define BUFFER_SIZE 256
+#define MAX_ATTRIBUTE_STRING_SIZE 256
 
 static const char *driverName = "PVAttribute";
 
@@ -197,40 +197,92 @@ int PVAttribute::report(int details)
     return(ND_SUCCESS);
 }
     
-/** PVAttribute constructor
+/** PVAttribute constructor for an EPICS PV attribute
   */
 PVAttribute::PVAttribute(const char *pName, const char *pDescription,
                          const char *pSource, chtype dbrType)
     : NDAttribute(pName)
 {
+    static const char *functionName = "PVAttribute";
+    
     /* Create the static pasynUser if not already done */
     if (!pasynUserSelf) pasynUserSelf = pasynManager->createAsynUser(0,0);
     this->lock = epicsMutexCreate();
     if (pDescription) this->setDescription(pDescription);
-    if (pSource) this->setSource(pSource);
+    if (!pSource) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+            "PVAttribute: ERROR, must specify source string\n",
+            driverName, functionName);
+        return;
+    }
+    this->setSource(pSource);
     this->dbrType = dbrType;
     this->sourceType = NDAttrSourceEPICSPV;
     /* Set connection callback on this PV */
     SEVCHK(ca_create_channel(pSource, connectCallbackC, this, 10 ,&this->chanId),
            "ca_create_channel");
+}
+
+/** PVAttribute constructor for a Param attribute
+  */
+PVAttribute::PVAttribute(const char *pName, const char *pDescription, const char *pSource, int addr, 
+                            class asynNDArrayDriver *pDriver, const char *dataType)
+    : NDAttribute(pName)
+{
+    static const char *functionName = "PVAttribute";
+    asynUser *pasynUser;
+    int status;
     
+    /* Create the static pasynUser if not already done */
+    if (!pasynUserSelf) pasynUserSelf = pasynManager->createAsynUser(0,0);
+    this->lock = epicsMutexCreate();
+    if (pDescription) this->setDescription(pDescription);
+    if (!pSource) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+            "PVAttribute: ERROR, must specify source string\n",
+            driverName, functionName);
+        return;
+    }
+    this->setSource(pSource);
+    this->paramType = PVAttrParamUnknown;
+    this->sourceType = NDAttrSourceParam;
+    this->chanId = 0;
+    this->paramAddr = addr;
+    this->pDriver = pDriver;
+    pasynUser = pasynManager->createAsynUser(0,0);
+    status = this->pDriver->drvUserCreate(pasynUser, pSource, NULL, 0);
+    if (status) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s:%s: ERROR, cannot find parameter %s\n",
+            driverName, functionName, pSource);
+        return;
+    }
+    this->paramId = pasynUser->reason;
+    if (epicsStrCaseCmp(dataType, "int") == 0)    this->paramType=PVAttrParamInt;
+    if (epicsStrCaseCmp(dataType, "double") == 0) this->paramType=PVAttrParamDouble;
+    if (epicsStrCaseCmp(dataType, "string") == 0) this->paramType=PVAttrParamString;
+printf("PVAttribute:PVAttribute, pSource=%s, paramId=%d, paramType=%d\n",
+pSource, this->paramId, this->paramType);
 }
 
 PVAttribute::~PVAttribute()
 {
-    if (this->chanId) SEVCHK(ca_clear_channel(this->chanId),"ca_clear_channel");
+    if (this->sourceType == NDAttrSourceEPICSPV) {
+        if (this->chanId) SEVCHK(ca_clear_channel(this->chanId),"ca_clear_channel");
+    }
     epicsMutexDestroy(this->lock);
 }
 
 
 /** PVAttributeList constructor
   */
-PVAttributeList::PVAttributeList()
+PVAttributeList::PVAttributeList(asynNDArrayDriver *pDriver)
 {
     /* Create the static pasynUser if not already done */
     if (!pasynUserSelf) pasynUserSelf = pasynManager->createAsynUser(0,0);
     ellInit(&this->PVAttrList);
     this->lock = epicsMutexCreate();
+    this->pDriver = pDriver;
     SEVCHK(ca_context_create(ca_enable_preemptive_callback),"ca_context_create");
     this->pCaInputContext = NULL;
     while (this->pCaInputContext == NULL) {
@@ -248,9 +300,11 @@ PVAttributeList::~PVAttributeList()
     epicsMutexDestroy(this->lock);
 }
 
-/** Adds a new PVAttribute to the attribute list, puts connect and monitor callbacks on the PV.
-  * \param[in] pName The PV name of the PV. 
+/** Adds a new PVAttribute of type NDAttrSourceEPICSPV to the attribute list.
+  * Puts connect and monitor callbacks on the PV.
+  * \param[in] pName The attribute name. 
   * \param[in] pDescription Description of the PV.
+  * \param[in] pSource The EPICS PV name.
   * \param[in] dbrType DBR_XXX type or DBR_NATIVE.
  */
 int PVAttributeList::addPV(const char *pName, const char *pDescription, const char *pSource, chtype dbrType)
@@ -263,6 +317,26 @@ int PVAttributeList::addPV(const char *pName, const char *pDescription, const ch
      * that which called the constructor */
     ca_attach_context(this->pCaInputContext);
     pAttribute = new PVAttribute(pName, pDescription, pSource, dbrType);
+    ellAdd(&this->PVAttrList, &pAttribute->listNode.node);
+    epicsMutexUnlock(this->lock);
+    return (ND_SUCCESS);
+}
+
+/** Adds a new PVAttribute of type NDAttrSourceParam to the attribute list.
+  * \param[in] pName The attribute name. 
+  * \param[in] pDescription Description of the PV.
+  * \param[in] pSource The drvInfo field to look up this parameter in the database.
+  * \param[in] pDriver Pointer to driver that holds this parameter.
+  * \param[in] dataType Data type string = "int", "double" or "string". Case insensitive.
+ */
+int PVAttributeList::addParam(const char *pName, const char *pDescription, const char *pSource,
+                            int addr, asynNDArrayDriver *pDriver, const char *dataType)
+{
+    PVAttribute *pAttribute;
+    //const char *functionName = "addPV";
+
+    epicsMutexLock(this->lock);
+    pAttribute = new PVAttribute(pName, pDescription, pSource, addr, pDriver, dataType);
     ellAdd(&this->PVAttrList, &pAttribute->listNode.node);
     epicsMutexUnlock(this->lock);
     return (ND_SUCCESS);
@@ -293,7 +367,7 @@ int PVAttributeList::removeAttribute(const char *pName)
     return(status);
 }
 
-/** Removes allattributes from the attribute list, deletes the PVAttribute objects.
+/** Removes all attributes from the attribute list, deletes the PVAttribute objects.
  */
 int PVAttributeList::clearAttributes()
 {
@@ -315,8 +389,9 @@ int PVAttributeList::clearAttributes()
 int PVAttributeList::readFile(const char *fileName)
 {
     const char *functionName = "readAttributesFile";
-    const char *pName, *pDBRType, *pSource, *pType, *pDescription=NULL;
+    const char *pName, *pDBRType, *pSource, *pType, *pDataType, *pAddr, *pDescription=NULL;
     int dbrType;
+    int addr=0;
     TiXmlDocument doc(fileName);
     TiXmlElement *Attr, *Attrs;
     
@@ -345,7 +420,7 @@ int PVAttributeList::readFile(const char *fileName)
         pSource = Attr->Attribute("source");
         pType = Attr->Attribute("type");
         if (!pType) pType = "EPICS_PV";
-        if (strcmp(pType, "EPICS_PV") == 0) {
+        if (epicsStrCaseCmp(pType, "EPICS_PV") == 0) {
             pDBRType = Attr->Attribute("dbrtype");
             dbrType = DBR_NATIVE;
             if (pDBRType) {
@@ -369,6 +444,14 @@ int PVAttributeList::readFile(const char *fileName)
                 "%s:%s: Name=%s, PVName=%s, pDBRType=%s, dbrType=%d, pDescription=%s\n",
                 driverName, functionName, pName, pSource, pDBRType, dbrType, pDescription);
             this->addPV(pName, pDescription, pSource, dbrType);
+        } else if (epicsStrCaseCmp(pType, "PARAM") == 0) {
+            pDataType = Attr->Attribute("datatype");
+            pAddr = Attr->Attribute("addr");
+            if (pAddr) addr = strtol(pAddr, NULL, 0);
+            asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
+                "%s:%s: Name=%s, drvInfo=%s, dataType=%s,pDescription=%s\n",
+                driverName, functionName, pName, pSource, pDataType, pDescription);
+            this->addParam(pName, pDescription, pSource, addr, this->pDriver, pDataType);
         }
     }
     return(asynSuccess);
@@ -383,11 +466,44 @@ int PVAttributeList::getValues(NDArray *pArray)
 {
     PVAttribute *pAttribute;
     NDAttributeListNode *pListNode;
+    char stringValue[MAX_ATTRIBUTE_STRING_SIZE] = "";
+    epicsInt32 i32Value=0;
+    epicsFloat64 f64Value=0.;
+    int status=0;
+    static const char *functionName = "getValues";
     
     epicsMutexLock(this->lock);
     pListNode = (NDAttributeListNode *)ellFirst(&this->PVAttrList);
     while (pListNode) {
         pAttribute = (PVAttribute *)pListNode->pNDAttribute;
+        /* If this is an EPICS PV then it already has its value from a callback.
+         * But if it is a parameter we need to read the value from the parameter library */
+        if (pAttribute->sourceType == NDAttrSourceParam) {
+            switch (pAttribute->paramType) {
+                case PVAttrParamInt:
+                    status = pAttribute->pDriver->getIntegerParam(pAttribute->paramAddr, pAttribute->paramId, 
+                                                         &i32Value);
+                    pAttribute->setValue(NDAttrInt32, &i32Value);
+                    break;
+                case PVAttrParamDouble:
+                    status = pAttribute->pDriver->getDoubleParam(pAttribute->paramAddr, pAttribute->paramId,
+                                                        &f64Value);
+                    pAttribute->setValue(NDAttrFloat64, &f64Value);
+                    break;
+                case PVAttrParamString:
+                    status = pAttribute->pDriver->getStringParam(pAttribute->paramAddr, pAttribute->paramId,
+                                                        MAX_ATTRIBUTE_STRING_SIZE, stringValue);
+                    pAttribute->setValue(NDAttrString, stringValue);
+                    break;
+                default:
+                    break;
+            }
+            if (status) {
+                asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                    "%s:%s: ERROR reading parameter attribute value, name=%s, source=%s, type=%d\n",
+                    driverName, functionName, pAttribute->pName, pAttribute->pSource, pAttribute->paramType);
+            }
+        }
         pArray->addAttribute(pAttribute);
         pListNode = (NDAttributeListNode *)ellNext(&pListNode->node);
     }

@@ -103,7 +103,7 @@ public:
 protected:
     NDArray **pArrays;             /**< An array of NDArray pointers used to store data in the driver */
     NDArrayPool *pNDArrayPool;     /**< An NDArrayPool object used to allocate and manipulate NDArray objects */
-    PVAttributeList *pPVAttributeList;  /**< A PVAttributeList object used to obtain the current values of a set of
+    class PVAttributeList *pPVAttributeList;  /**< A PVAttributeList object used to obtain the current values of a set of
                                           *  EPICS PVs */
 };
 
