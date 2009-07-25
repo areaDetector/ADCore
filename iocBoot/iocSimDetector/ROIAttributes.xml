@@ -1,8 +1,11 @@
 <?xml version="1.0" standalone="no" ?>
 <!-- Attributes -->
 <Attributes>
-    <Attribute name="BinX"        type="EPICS_PV" source="13SIM1:ROI1:0:BinX_RBV"  dbrtype="DBR_NATIVE"  description="X binning"/>
-    <Attribute name="BinY"        type="EPICS_PV" source="13SIM1:ROI1:0:BinY_RBV"  dbrtype="DBR_NATIVE"  description="Y binning"/>
+    <Attribute name="BinX"          type="EPICS_PV" source="13SIM1:ROI1:0:BinX_RBV"  dbrtype="DBR_NATIVE"  description="X binning"/>
+    <Attribute name="BinY"          type="EPICS_PV" source="13SIM1:ROI1:0:BinY_RBV"  dbrtype="DBR_NATIVE"  description="Y binning"/>
+    <Attribute name="AttrTimeStamp" type="PARAM"    source="TIME_STAMP"              datatype="double"     description="Time stamp"/>
+    <Attribute name="ROI0Mean"      type="PARAM"    source="MEAN_VALUE"              datatype="double"     description="Mean value ROI 0"/>
+    <Attribute name="ROI1Mean"      type="PARAM"    source="MEAN_VALUE" addr="1"     datatype="double"     description="Mean value ROI 0"/>
 </Attributes>
     
     
