@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 
     pasynTrace->setTraceMask(NULL, 255);
     
-    pAttr = new PVAttributeList();
+    pAttr = new PVAttributeList(NULL);
     pArray = new NDArray();
     
     pAttr->addPV("Acquire",        "Camera acquiring",          "13SIM1:cam1:Acquire",          DBR_NATIVE);
