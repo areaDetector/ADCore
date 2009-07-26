@@ -536,6 +536,8 @@ NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCall
     asynStatus status;
     
     this->fileMutexId = epicsMutexCreate();
+    /* Set the plugin type string */    
+    setStringParam(NDPluginDriverPluginType, "NDPluginFile");
     
     /* Try to connect to the NDArray port */
     status = connectToArrayPort();

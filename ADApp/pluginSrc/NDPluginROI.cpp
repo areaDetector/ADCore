@@ -696,6 +696,8 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
     this->totalArray = (epicsInt32 *)callocMustSucceed(maxROIs, sizeof(epicsInt32), functionName);
     this->netArray = (epicsInt32 *)callocMustSucceed(maxROIs, sizeof(epicsInt32), functionName);
     setIntegerParam(0, NDPluginROIHighlight,         0);
+    /* Set the plugin type string */    
+    setStringParam(NDPluginDriverPluginType, "NDPluginROI");
 
     for (roi=0; roi<this->maxROIs; roi++) {
         setStringParam (roi,  NDPluginROIName,              "");

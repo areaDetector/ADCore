@@ -426,6 +426,9 @@ NDPluginColorConvert::NDPluginColorConvert(const char *portName, int queueSize, 
     const char *functionName = "NDPluginColorConvert";
 
 
+    /* Set the plugin type string */    
+    setStringParam(NDPluginDriverPluginType, "NDPluginSColorConvert");
+    
     status = setIntegerParam(0, NDPluginColorConvertColorModeOut,       NDColorModeMono);
     if (!status)  printf("%s:%s: failed to set integer param for color mode\n",
                          driverName, functionName);

@@ -391,6 +391,8 @@ NDFileNetCDF::NDFileNetCDF(const char *portName, int queueSize, int blockingCall
 {
     //const char *functionName = "NDFileNetCDF";
     
+    /* Set the plugin type string */    
+    setStringParam(NDPluginDriverPluginType, "NDFileNetCDF");
     this->supportsMultipleArrays = 1;
     this->pAttributeId = NULL;
 }

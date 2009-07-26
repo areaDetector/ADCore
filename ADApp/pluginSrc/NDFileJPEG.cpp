@@ -341,6 +341,8 @@ NDFileJPEG::NDFileJPEG(const char *portName, int queueSize, int blockingCallback
     this->destMgr.pNDFileJPEG = this;
     this->jpegInfo.dest = (jpeg_destination_mgr *) &this->destMgr;
 
+    /* Set the plugin type string */    
+    setStringParam(NDPluginDriverPluginType, "NDFileJPEG");
     this->supportsMultipleArrays = 0;
     setIntegerParam(NDFileJPEGQuality, 50);
 }

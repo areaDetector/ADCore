@@ -29,6 +29,7 @@
 static asynParamString_t NDPluginDriverParamString[] = {
     {NDPluginDriverArrayPort,             "NDARRAY_PORT" },
     {NDPluginDriverArrayAddr,             "NDARRAY_ADDR" },
+    {NDPluginDriverPluginType,            "PLUGIN_TYPE" },
     {NDPluginDriverArrayCounter,          "ARRAY_COUNTER"},
     {NDPluginDriverDroppedArrays,         "DROPPED_ARRAYS" },
     {NDPluginDriverEnableCallbacks,       "ENABLE_CALLBACKS" },

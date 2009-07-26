@@ -228,6 +228,8 @@ NDFileTIFF::NDFileTIFF(const char *portName, int queueSize, int blockingCallback
 {
     //const char *functionName = "NDFileTIFF";
 
+    /* Set the plugin type string */    
+    setStringParam(NDPluginDriverPluginType, "NDFileTIFF");
     this->supportsMultipleArrays = 0;
 }
 

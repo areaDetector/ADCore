@@ -333,6 +333,9 @@ NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int bl
     asynStatus status;
     //char *functionName = "NDPluginStdArrays";
 
+    /* Set the plugin type string */    
+    setStringParam(NDPluginDriverPluginType, "NDPluginStdArrays");
+
     /* Try to connect to the NDArray port */
     status = connectToArrayPort();
 }
