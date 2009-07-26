@@ -261,8 +261,6 @@ PVAttribute::PVAttribute(const char *pName, const char *pDescription, const char
     if (epicsStrCaseCmp(dataType, "int") == 0)    this->paramType=PVAttrParamInt;
     if (epicsStrCaseCmp(dataType, "double") == 0) this->paramType=PVAttrParamDouble;
     if (epicsStrCaseCmp(dataType, "string") == 0) this->paramType=PVAttrParamString;
-printf("PVAttribute:PVAttribute, pSource=%s, paramId=%d, paramType=%d\n",
-pSource, this->paramId, this->paramType);
 }
 
 PVAttribute::~PVAttribute()
