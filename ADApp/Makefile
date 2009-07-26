@@ -24,7 +24,9 @@ adscSrc_DEPEND_DIRS = pluginSrc
 DIRS += roperSrc
 roperSrc_DEPEND_DIRS = pluginSrc
 DIRS += firewireWinSrc
-firewireWinSrcSrc_DEPEND_DIRS = pluginSrc
+firewireWinSrc_DEPEND_DIRS = pluginSrc
+DIRS += perkinElmerSrc
+perkinElmerSrc_DEPEND_DIRS = pluginSrc
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *db*))
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *Db*))
 include $(TOP)/configure/RULES_DIRS
