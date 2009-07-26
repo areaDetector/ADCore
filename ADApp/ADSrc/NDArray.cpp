@@ -36,7 +36,7 @@ static const char *driverName = "NDArray";
   */
 
 volatile int eraseNDAttributes=0;
-epicsExportAddress(int, eraseNDAttributes);
+extern "C" {epicsExportAddress(int, eraseNDAttributes);}
 
 /** NDArrayPool constructor
   * \param[in] maxBuffers Maximum number of NDArray objects that the pool is allowed to contain; -1=unlimited.
