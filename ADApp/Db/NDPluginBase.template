@@ -16,6 +16,19 @@ record(stringin, "$(P)$(R)PortName_RBV")
 }
 
 ###################################################################
+#  This record contains the type of plugin                        #
+###################################################################
+
+record(stringin, "$(P)$(R)PluginType_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PLUGIN_TYPE")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
 #  These records control the connection of the server to          #
 #  an NDArray driver port and address                             #
 ###################################################################
