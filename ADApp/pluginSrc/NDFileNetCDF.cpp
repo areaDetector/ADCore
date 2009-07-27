@@ -55,10 +55,13 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
     NDAttribute *pAttribute;
     char name[MAX_ATTRIBUTE_STRING_SIZE];
     char description[MAX_ATTRIBUTE_STRING_SIZE];
+    char source[MAX_ATTRIBUTE_STRING_SIZE];
     char tempString[MAX_ATTRIBUTE_STRING_SIZE];
+    const char *dataTypeString=NULL, *sourceTypeString=NULL;
     NDAttrDataType_t attrDataType;
     size_t attrSize;
     int numAttributes, attrCount;
+    NDAttrSource_t sourceType;
     double fileVersion;
     static const char *functionName = "openFile";
 
@@ -186,14 +189,66 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
     while (pAttribute) {
         pAttribute->getValueInfo(&attrDataType, &attrSize);
         pAttribute->getName(name, sizeof(name));
-        epicsSnprintf(tempString, sizeof(tempString), "%s_DataType", name);
-        if ((retval = nc_put_att_int(this->ncId, NC_GLOBAL, tempString, 
-                                     NC_INT, 1, (const int*)&attrDataType)))
+        switch (attrDataType) {
+            case NDAttrInt8:
+                dataTypeString = "Int8";
+                break;
+            case NDAttrUInt8:
+                dataTypeString = "UInt8";
+                break;
+            case NDAttrInt16:
+                dataTypeString = "Int16";
+                break;
+            case NDAttrUInt16:
+                dataTypeString = "UInt16";
+                break;
+            case NDAttrInt32:
+                dataTypeString = "Int32";
+                break;
+            case NDAttrUInt32:
+                dataTypeString = "UInt32";
+                break;
+            case NDAttrFloat32:
+                dataTypeString = "Float32";
+                break;
+            case NDAttrFloat64:
+                dataTypeString = "Float64";
+                break;
+            case NDAttrString:
+                dataTypeString = "String";
+                break;
+            case NDAttrUndefined:
+                dataTypeString = "Undefined";
+                break;
+        }
+        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_DataType", name);
+        if ((retval = nc_put_att_text(this->ncId, NC_GLOBAL, tempString, 
+                                     strlen(dataTypeString), dataTypeString)))
             ERR(retval);
         pAttribute->getDescription(description, sizeof(description));
-        epicsSnprintf(tempString, sizeof(tempString), "%s_Description", name);
+        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_Description", name);
         if ((retval = nc_put_att_text(this->ncId, NC_GLOBAL, tempString, 
                                      strlen(description), description)))
+            ERR(retval);
+        pAttribute->getSource(&sourceType, source, sizeof(source));
+        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_Source", name);
+        if ((retval = nc_put_att_text(this->ncId, NC_GLOBAL, tempString, 
+                                     strlen(source), source)))
+            ERR(retval);
+        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_SourceType", name);
+        switch (sourceType) {
+            case NDAttrSourceDriver:
+                sourceTypeString = "Driver";
+                break;
+            case NDAttrSourceParam:
+                sourceTypeString = "Param";
+                break;
+            case NDAttrSourceEPICSPV:
+                sourceTypeString = "EPICS_PV";
+                break;
+        }
+        if ((retval = nc_put_att_text(this->ncId, NC_GLOBAL, tempString, 
+                                     strlen(sourceTypeString), sourceTypeString)))
             ERR(retval);
         switch (attrDataType) {
             case NDAttrInt8:
@@ -218,15 +273,16 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
                 ncType = NC_CHAR;
                 break;
             case NDAttrUndefined:
-                return(asynError);
+                ncType = NC_BYTE;
                 break;
         }
+        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s", name);
         if (attrDataType == NDAttrString) {
-            if ((retval = nc_def_var(this->ncId, name, ncType, 2,
+            if ((retval = nc_def_var(this->ncId, tempString, ncType, 2,
                     stringDimIds, &this->pAttributeId[attrCount++])))
                     ERR(retval);
         } else {
-            if ((retval = nc_def_var(this->ncId, name, ncType, 1,
+            if ((retval = nc_def_var(this->ncId, tempString, ncType, 1,
                     &dimIds[0], &this->pAttributeId[attrCount++])))
                     ERR(retval);
         }
@@ -342,7 +398,11 @@ asynStatus NDFileNetCDF::writeFile(NDArray *pArray)
                     ERR(retval);
                 break;
             case NDAttrUndefined:
-                return(asynError);
+                /* netCDF does not have a way of storing NaN, etc. We just use 0 byte */
+                attrVal.i8 = 0;
+                if ((retval = nc_put_vara_schar(this->ncId, attrId, start, count, (signed char*)&attrVal.i8)))
+                    ERR(retval);
+                break;
                 break;
         }
         pAttribute = pArray->nextAttribute(pAttribute);
