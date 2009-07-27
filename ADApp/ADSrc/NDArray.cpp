@@ -736,10 +736,10 @@ NDAttribute* NDArray::addAttribute(const char *pName, const char *pDescription, 
   * \param[in] pIn A pointer to an existing attribute from which values will be copied.
   * \return Returns a pointer to the attribute.
   *
-  * Searches for an existing attribute of this name.  If found it sets the description, data type and
-  * value to those passed to this method.
+  * Searches for an existing attribute of this name.  If found it copies the attribute
+  * properties from the attribute passed to this method.
   * If not found it creates a new attribute with this name, adds it to the attribute
-  * list for this array and sets the description, data type and value. */
+  * list for this array and sets the attribute properties. */
 NDAttribute* NDArray::addAttribute(NDAttribute *pIn)
 {
     NDAttribute *pAttribute;
@@ -748,6 +748,8 @@ NDAttribute* NDArray::addAttribute(NDAttribute *pIn)
 
     pAttribute = this->addAttribute(pIn->pName);
     pAttribute->setDescription(pIn->pDescription);
+    pAttribute->setSource(pIn->pSource);
+    pAttribute->sourceType = pIn->sourceType;
     if (pIn->dataType == NDAttrString) pValue = pIn->pString;
     pAttribute->setValue(pIn->dataType, pValue);
     return(pAttribute);
@@ -844,17 +846,12 @@ int NDArray::copyAttributes(NDArray *pOut)
 {
     NDAttribute *pAttribute;
     NDAttributeListNode *pListNode;
-    void *pValue;
     //const char *functionName = "NDArray::copyAttributes";
 
     pListNode = (NDAttributeListNode *)ellFirst(&this->attributeList);
     while (pListNode) {
         pAttribute = pListNode->pNDAttribute;
-        if (pAttribute->dataType == NDAttrString) 
-            pValue = pAttribute->pString; 
-        else 
-            pValue = &pAttribute->value;
-        pOut->addAttribute(pAttribute->pName, pAttribute->pDescription, pAttribute->dataType, pValue);
+        pOut->addAttribute(pAttribute);
         pListNode = (NDAttributeListNode *)ellNext(&pListNode->node);
     }
     return(ND_SUCCESS);
@@ -976,8 +973,9 @@ int NDAttribute::setDescription(const char *pDescription) {
   * \param[out] pSource String to hold the source. 
   * \param[in] sourceSize Maximum size for the source string; 
     if 0 then pSource is assumed to be big enough to hold the source string plus 0 terminator. */
-int NDAttribute::getSource(char *pSource, size_t sourceSize) {
+int NDAttribute::getSource(NDAttrSource_t *pSourceType, char *pSource, size_t sourceSize) {
 
+    if (pSourceType) *pSourceType = this->sourceType;
     if (this->pSource) {
         if (sourceSize == 0) sourceSize = strlen(this->pSource)+1;
         strncpy(pSource, this->pSource, sourceSize);
