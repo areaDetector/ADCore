@@ -12,7 +12,7 @@
 
 /** This version number is an attribute in the netCDF file to allow readers
  * to handle changes in the file contents */
-#define NDNetCDFFileVersion 2.0
+#define NDNetCDFFileVersion 3.0
 
 /** Writes NDArrays to files in the netCDF file format.
   * netCDF is an open-source, portable, self-describing binary format supported by Unidata at UCAR
