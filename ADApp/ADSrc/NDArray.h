@@ -144,7 +144,7 @@ public:
     int getDescriptionInfo(size_t *pDescSize);
     int getDescription(char *pDescription, size_t descSize=0);
     int setDescription(const char *pDescription);
-    int getSource(char *pSource, size_t sourceSize=0);
+    int getSource(NDAttrSource_t *pSourceType, char *pSource, size_t sourceSize=0);
     int setSource(const char *pSource);
     int getValueInfo(NDAttrDataType_t *pDataType, size_t *pDataSize);
     int getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSize=0);
