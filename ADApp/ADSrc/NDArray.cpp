@@ -898,6 +898,7 @@ NDAttribute::NDAttribute(const char *pName)
     this->pDescription = NULL;
     this->pString = NULL;
     this->pSource = NULL;
+    this->sourceType = NDAttrSourceDriver;
     this->dataType = NDAttrUndefined;
     this->listNode.pNDAttribute = this;
 }
