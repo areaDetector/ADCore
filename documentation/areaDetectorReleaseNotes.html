@@ -41,6 +41,9 @@
         <li>Solved problem of Prosilica driver crashing on Linux. The problem was with the
           SIGALARM signal handlers in EPICS base (R3.14.10 and earlier). There is a patch
           for base to fix this problem, and this fix will be included in EPICS base 3.14.11.</li>
+        <li>Added an additional state, "Initializing" to DetectorState_RBV record.</li>
+        <li>Fixed minor problem with marCCD driver.  If Acquire was set to Stop when it was not
+          acquiring then the next time acquisition was started it would stop immediately.</li>
       </ul>
     </li>
     <li>Plugins
@@ -66,6 +69,8 @@
         <li>Fixed logic problem with FileNumber record in NDFile.template database. The previous
           logic that kept the ao record in sync with the ai record was causing the ao record
           to process when it should not have been, causing an extra call to the driver.</li>
+        <li>Added an additional record to NDPluginBase.template, PluginType_RBV.  All plugins
+          set this to a unique string to identify the plugin type.</li>
       </ul>
     </li>
     <li>Viewers
@@ -131,6 +136,10 @@
           to asyn$(TYPE)ArrayIn. This was needed to allow it to be used with asynFloat32 and
           asynFloat64 data types. This requires a change to all iocBoot st.cmd files that
           load this template file.</li>
+        <li>Plugins can now add attributes to an NDArray, which means they can modify the array
+          and hence need to make a copy of it.  This requires that NDArray->release() must be
+          called in the plugin itself, rather than in the NDPluginDriver base class as was
+          done previously.</li>
       </ul>
     </li>
   </ul>
