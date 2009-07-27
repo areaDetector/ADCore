@@ -576,11 +576,13 @@ WARN_LOGFILE           =
 INPUT                  = ../../../asyn/4-11beta/asyn/miscellaneous/asynPortDriver.cpp \
                          ../../../asyn/4-11beta/asyn/miscellaneous/asynPortDriver.h \
                          ../ADApp/ADSrc \
-                         ../ADApp/pluginSrc \
                          ../ADApp/adscSrc  \
+                         ../ADApp/firewireWinSrc  \
                          ../ADApp/mar345Src \
                          ../ADApp/marCCDSrc \
+                         ../ADApp/perkinElmerSrc \
                          ../ADApp/pilatusSrc \
+                         ../ADApp/pluginSrc \
                          ../ADApp/prosilicaSrc \
                          ../ADApp/roperSrc \
                          ../ADApp/simDetectorSrc \
@@ -657,8 +659,8 @@ EXCLUDE_SYMLINKS       = NO
 # for example use the pattern */test/*
 
 EXCLUDE_PATTERNS       = */CDocFile40.h */CExpSetup20.h */CROIRect0.h */CWinx32App20.h \
-                         */tiny*
-
+                         */tiny* */1394*.h */stdafx.h
+                         
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names 
 # (namespaces, classes, functions, etc.) that should be excluded from the 
 # output. The symbol name can be a fully qualified name, a word, or if the 
