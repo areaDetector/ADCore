@@ -325,10 +325,11 @@ int PVAttributeList::addPV(const char *pName, const char *pDescription, const ch
   * \param[in] pDescription Description of the PV.
   * \param[in] pSource The drvInfo field to look up this parameter in the database.
   * \param[in] pDriver Pointer to driver that holds this parameter.
+  * \param[in] addr The asyn address for this parameter in the driver
   * \param[in] dataType Data type string = "int", "double" or "string". Case insensitive.
  */
 int PVAttributeList::addParam(const char *pName, const char *pDescription, const char *pSource,
-                            int addr, asynNDArrayDriver *pDriver, const char *dataType)
+                            asynNDArrayDriver *pDriver, int addr, const char *dataType)
 {
     PVAttribute *pAttribute;
     //const char *functionName = "addPV";
@@ -449,7 +450,7 @@ int PVAttributeList::readFile(const char *fileName)
             asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
                 "%s:%s: Name=%s, drvInfo=%s, dataType=%s,pDescription=%s\n",
                 driverName, functionName, pName, pSource, pDataType, pDescription);
-            this->addParam(pName, pDescription, pSource, addr, this->pDriver, pDataType);
+            this->addParam(pName, pDescription, pSource, this->pDriver, addr, pDataType);
         }
     }
     return(asynSuccess);

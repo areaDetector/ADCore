@@ -68,8 +68,8 @@ public:
     PVAttributeList(class asynNDArrayDriver *pDriver);
     ~PVAttributeList();
     int addPV(const char *pName, const char *pDescription, const char *pSource, chtype dbrType);
-    int addParam(const char *pName, const char *pDescription, const char *pSource, int addr,
-                class asynNDArrayDriver *pDriver, const char *dataType);
+    int addParam(const char *pName, const char *pDescription, const char *pSource, 
+                class asynNDArrayDriver *pDriver, int addr, const char *dataType);
     int removeAttribute(const char *pName);
     int clearAttributes();
     int readFile(const char *fileName);
