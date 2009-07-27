@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector/1-4/ADApp/op/adl/Roper.adl"
+	name="/home/epics/devel/areaDetector/1-5beta/ADApp/op/adl/Roper.adl"
 	version=030102
 }
 display {
@@ -149,7 +149,7 @@ rectangle {
 		x=345
 		y=230
 		width=350
-		height=450
+		height=475
 	}
 	"basic attribute" {
 		clr=14
@@ -2289,4 +2289,44 @@ composite {
 	}
 	clr=14
 	bclr=51
+}
+composite {
+	object {
+		x=358
+		y=675
+		width=330
+		height=20
+	}
+	"composite name"=""
+	children {
+		"text entry" {
+			object {
+				x=518
+				y=675
+				width=170
+				height=20
+			}
+			control {
+				chan="$(P)$(R)PVAttributesFile"
+				clr=14
+				bclr=51
+			}
+			format="string"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=358
+				y=675
+				width=150
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Attributes file"
+			align="horiz. right"
+		}
+	}
 }
