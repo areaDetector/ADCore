@@ -13,7 +13,7 @@
 
 #define JPEG_BUF_SIZE 4096 /* choose an efficiently fwrite'able size */
 
-/* Expanded data destination object for output */
+/** Expanded data destination object for JPEG output */
 typedef struct {
   struct jpeg_destination_mgr pub; /* public fields */
   class NDFileJPEG *pNDFileJPEG;   /* Pointer to ourselves */
@@ -29,7 +29,7 @@ typedef enum
 
 
 /** Writes NDArrays in the JPEG file format, which is a lossy compression format.
-    This plugin was developed using the libjpeg library to write the file.
+  * This plugin was developed using the libjpeg library to write the file.
   */
 class NDFileJPEG : public NDPluginFile {
 public:

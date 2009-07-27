@@ -110,6 +110,9 @@ typedef struct NDArrayInfo {
                               *  this may be less than NDArray::dataSize. */
 } NDArrayInfo_t;
 
+/** Structure used by the EPICS ellLib library for linked lists of C++ objects.
+  * This is needed for ellLists of C++ objects, for which making the first data element the ELLNODE 
+  * does not work if the class has virtual functions or derived classes. */
 typedef struct NDAttributeListNode {
     ELLNODE node;
     class NDAttribute *pNDAttribute;
