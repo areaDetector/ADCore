@@ -120,9 +120,10 @@
       that define records to communicate with drivers at Layer 2 and plugins at Layer
       3.</li>
     <li>Layer 6. These are EPICS channel access clients, such as MEDM that communicate
-      with the records at Layer 5. There is a free IDL client that can display images
+      with the records at Layer 5. areaDetector includes two client applications that can display images
       using EPICS waveform and other records communicating with the NDPluginStdArrays
-      plugin at Layer 3. Other clients are being developed, including an ImageJ plugin.</li>
+      plugin at Layer 3. One of these clients is an ImageJ plugin, and the other is a 
+      freely runnable IDL application.</li>
   </ul>
   <p>
     The code in Layers 1-3 is essentially independent of EPICS. There are only 2 EPICS
@@ -184,12 +185,14 @@
     Detector drivers and plugins are asyn port drivers, meaning that they implement
     one or more of the standard asyn interfaces. They register themselves as interrupt
     sources, so that they do callbacks to registered asyn clients when values change.
-    They inherit from the <a href="asynPortDriver.html">asynPortDriver base C++ class</a>
-    that is provided in the asyn module. (The previous link is temporary until asyn
-    R4-11 is release). That base class handles all of the details of registering the
+    They inherit from the <a
+    href="http://www.aps.anl.gov/epics/modules/soft/asyn/asynPortDriver.html">
+    asynPortDriver base C++ class</a>
+    that is provided in the asyn module. That base class handles all of the details of registering the
     port driver, registering the supported interfaces, and registering the required
-    interrupt sources. The <a href="asynDoxygenHTML/class_asyn_port_driver.html">asynPortDriver
-      class documentation</a> describes this class in detail.
+    interrupt sources. The <a
+      href="http://www.aps.anl.gov/epics/modules/soft/asyn/asynDoxygenHTML/class_asyn_port_driver.html">
+      asynPortDriver class documentation</a> describes this class in detail.
   </p>
   <h3 id="NDArray">
     NDArray</h3>
@@ -211,7 +214,8 @@
     NDAttribute</h3>
   <p>
     The NDAttribute is a class for linking metadata to an NDArray. An NDattribute has
-    a name, description, data type, and value. There are methods to set and get the
+    a name, description, data type, value, source type and source information. 
+    There are methods to set and get the
     information for an attribute, and NDArray provides methods to add and delete attributes
     from an NDArray object. The <a href="areaDetectorDoxygenHTML/class_n_d_attribute.html">
       NDAttribute class documentation</a> describes this class in detail.
