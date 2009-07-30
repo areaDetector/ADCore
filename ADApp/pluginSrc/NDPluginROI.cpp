@@ -1,6 +1,6 @@
 /*
  * NDPluginROI.cpp
- * 
+ *
  * Region-of-Interest (ROI) plugin
  * Author: Mark Rivers
  *
@@ -68,7 +68,7 @@ static const char *driverName="NDPluginROI";
 
 
 
-template <typename epicsType> 
+template <typename epicsType>
 void doComputeHistogramT(NDArray *pArray, NDROI_t *pROI)
 {
     epicsType *pData = (epicsType *)pArray->pData;
@@ -92,28 +92,28 @@ int doComputeHistogram(NDArray *pArray, NDROI_t *pROI)
 {
     switch(pArray->dataType) {
         case NDInt8:
-            doComputeHistogramT<epicsInt8>(pArray, pROI);           
+            doComputeHistogramT<epicsInt8>(pArray, pROI);
             break;
         case NDUInt8:
-            doComputeHistogramT<epicsUInt8>(pArray, pROI);           
+            doComputeHistogramT<epicsUInt8>(pArray, pROI);
             break;
         case NDInt16:
-            doComputeHistogramT<epicsInt16>(pArray, pROI);           
+            doComputeHistogramT<epicsInt16>(pArray, pROI);
             break;
         case NDUInt16:
-            doComputeHistogramT<epicsUInt16>(pArray, pROI);           
+            doComputeHistogramT<epicsUInt16>(pArray, pROI);
             break;
         case NDInt32:
-            doComputeHistogramT<epicsInt32>(pArray, pROI);           
+            doComputeHistogramT<epicsInt32>(pArray, pROI);
             break;
         case NDUInt32:
-            doComputeHistogramT<epicsUInt32>(pArray, pROI);           
+            doComputeHistogramT<epicsUInt32>(pArray, pROI);
             break;
         case NDFloat32:
-            doComputeHistogramT<epicsFloat32>(pArray, pROI);           
+            doComputeHistogramT<epicsFloat32>(pArray, pROI);
             break;
         case NDFloat64:
-            doComputeHistogramT<epicsFloat64>(pArray, pROI);           
+            doComputeHistogramT<epicsFloat64>(pArray, pROI);
             break;
         default:
             return(ND_ERROR);
@@ -122,7 +122,7 @@ int doComputeHistogram(NDArray *pArray, NDROI_t *pROI)
     return(ND_SUCCESS);
 }
 
-template <typename epicsType> 
+template <typename epicsType>
 void doComputeStatisticsT(NDArray *pArray, NDROI_t *pROI)
 {
     int i;
@@ -150,28 +150,28 @@ int doComputeStatistics(NDArray *pArray, NDROI_t *pROI)
 
     switch(pArray->dataType) {
         case NDInt8:
-            doComputeStatisticsT<epicsInt8>(pArray, pROI);       
+            doComputeStatisticsT<epicsInt8>(pArray, pROI);
             break;
         case NDUInt8:
-            doComputeStatisticsT<epicsUInt8>(pArray, pROI);       
+            doComputeStatisticsT<epicsUInt8>(pArray, pROI);
             break;
         case NDInt16:
-            doComputeStatisticsT<epicsInt16>(pArray, pROI);       
+            doComputeStatisticsT<epicsInt16>(pArray, pROI);
             break;
         case NDUInt16:
-            doComputeStatisticsT<epicsUInt16>(pArray, pROI);       
+            doComputeStatisticsT<epicsUInt16>(pArray, pROI);
             break;
         case NDInt32:
-            doComputeStatisticsT<epicsInt32>(pArray, pROI);       
+            doComputeStatisticsT<epicsInt32>(pArray, pROI);
             break;
         case NDUInt32:
-            doComputeStatisticsT<epicsUInt32>(pArray, pROI);       
+            doComputeStatisticsT<epicsUInt32>(pArray, pROI);
             break;
         case NDFloat32:
-            doComputeStatisticsT<epicsFloat32>(pArray, pROI);       
+            doComputeStatisticsT<epicsFloat32>(pArray, pROI);
             break;
         case NDFloat64:
-            doComputeStatisticsT<epicsFloat64>(pArray, pROI);       
+            doComputeStatisticsT<epicsFloat64>(pArray, pROI);
             break;
         default:
             return(ND_ERROR);
@@ -180,12 +180,12 @@ int doComputeStatistics(NDArray *pArray, NDROI_t *pROI)
     return(ND_SUCCESS);
 }
 
-template <typename epicsType> 
+template <typename epicsType>
 void highlightROIT(NDArray *pArray, NDROI_t *pROI, double dvalue)
 {
     int xmin, xmax, ymin, ymax, ix, iy;
     epicsType *pRow, value=(epicsType)dvalue;
-    
+
     xmin = pROI->dims[0].offset;
     xmax = xmin + pROI->dims[0].size;
     ymin = pROI->dims[1].offset;
@@ -195,8 +195,8 @@ void highlightROIT(NDArray *pArray, NDROI_t *pROI, double dvalue)
         if ((iy == ymin) || (iy == ymax-1)) {
             for (ix=xmin; ix<xmax; ix++) pRow[ix] = value;
         } else {
-            pRow[xmin] = value; 
-            pRow[xmax-1] = value; 
+            pRow[xmin] = value;
+            pRow[xmax-1] = value;
         }
     }
 }
@@ -205,28 +205,28 @@ int highlightROI(NDArray *pArray, NDROI_t *pROI, double dvalue)
 {
     switch(pArray->dataType) {
         case NDInt8:
-            highlightROIT<epicsInt8>(pArray, pROI, dvalue);       
+            highlightROIT<epicsInt8>(pArray, pROI, dvalue);
             break;
         case NDUInt8:
-            highlightROIT<epicsUInt8>(pArray, pROI, dvalue);       
+            highlightROIT<epicsUInt8>(pArray, pROI, dvalue);
             break;
         case NDInt16:
-            highlightROIT<epicsInt16>(pArray, pROI, dvalue);       
+            highlightROIT<epicsInt16>(pArray, pROI, dvalue);
             break;
         case NDUInt16:
-            highlightROIT<epicsUInt16>(pArray, pROI, dvalue);       
+            highlightROIT<epicsUInt16>(pArray, pROI, dvalue);
             break;
         case NDInt32:
-            highlightROIT<epicsInt32>(pArray, pROI, dvalue);       
+            highlightROIT<epicsInt32>(pArray, pROI, dvalue);
             break;
         case NDUInt32:
-            highlightROIT<epicsUInt32>(pArray, pROI, dvalue);       
+            highlightROIT<epicsUInt32>(pArray, pROI, dvalue);
             break;
         case NDFloat32:
-            highlightROIT<epicsFloat32>(pArray, pROI, dvalue);       
+            highlightROIT<epicsFloat32>(pArray, pROI, dvalue);
             break;
         case NDFloat64:
-            highlightROIT<epicsFloat64>(pArray, pROI, dvalue);       
+            highlightROIT<epicsFloat64>(pArray, pROI, dvalue);
             break;
         default:
             return(ND_ERROR);
@@ -237,18 +237,18 @@ int highlightROI(NDArray *pArray, NDROI_t *pROI, double dvalue)
 
 
 /** Callback function that is called by the NDArray driver with new NDArray data.
-  * Extracts the NDArray data into each of the ROIs that are being used. 
+  * Extracts the NDArray data into each of the ROIs that are being used.
   * Computes statistics on the ROI if NDPluginROIComputeStatistics is 1.
   * Computes the histogram of ROI values if NDPluginROIComputeHistogram is 1.
   * \param[in] pArray  The NDArray from the callback.
-  */ 
+  */
 void NDPluginROI::processCallbacks(NDArray *pArray)
 {
     /* This function computes the ROIs.
      * It is called with the mutex already locked.  It unlocks it during long calculations when private
      * structures don't need to be protected.
      */
-     
+
     int use, computeStatistics, computeHistogram, computeProfiles;
     int i;
     int dataType;
@@ -265,19 +265,19 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     int highlight;
     int bgdPixels;
     double bgdCounts, avgBgd;
-    int colorMode;
+    int colorMode = NDColorModeMono;
     NDAttribute *pAttribute;
     const char* functionName = "processCallbacks";
-    
+
     /* Get the attributes for this driver */
     pArray = this->getAttributesCopy(pArray, true);
-     
+
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
-        
+
     /* We do some special treatment based on colorMode */
     pAttribute = pArray->findAttribute("colorMode");
-    if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
+	if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
 
     getIntegerParam(NDPluginROIHighlight, &highlight);
     if (highlight && (pArray->ndims == 2)) {
@@ -299,7 +299,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     /* Loop over the ROIs in this driver */
     for (roi=0; roi<this->maxROIs; roi++) {
         pROI        = &this->pROIs[roi];
-        /* We always keep the last array so read() can use it.  
+        /* We always keep the last array so read() can use it.
          * Release previous one. Reserve new one below. */
         if (this->pArrays[roi]) {
             this->pArrays[roi]->release();
@@ -309,7 +309,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         if (!use) {
             continue;
         }
-        
+
         /* Need to fetch all of these parameters while we still have the mutex */
         getIntegerParam(roi, NDPluginROIComputeStatistics, &computeStatistics);
         getIntegerParam(roi, NDPluginROIComputeHistogram, &computeHistogram);
@@ -333,7 +333,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
             userDims[0] = 0;
             userDims[1] = 2;
             userDims[2] = 1;
-        } 
+        }
         else {
             for (dim=0; dim<ND_ARRAY_MAX_DIMS; dim++) userDims[dim] = dim;
         }
@@ -370,7 +370,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
          * The following code can be exected without the mutex because we are not accessing elements of
          * pPvt that other threads can access. */
         this->unlock();
-    
+
         /* Extract this ROI from the input array.  The convert() function allocates
          * a new array and it is reserved (reference count = 1) */
         if (dataType == -1) dataType = (int)pArray->dataType;
@@ -409,7 +409,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
                     pDim->size    = MIN(pROI->bgdWidth, pArray->dims[dim].size - pDim->offset);
                     this->pNDArrayPool->convert(pArray, &pBgdArray, (NDDataType_t)dataType, bgdDims);
                     if (!pBgdArray) {
-                        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+                        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                             "%s::%s, error allocating array buffer in convert\n",
                             driverName, functionName);
                         continue;
@@ -423,7 +423,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
                     pDim->size    = MIN(pROI->bgdWidth, pArray->dims[dim].size - pDim->offset);
                     this->pNDArrayPool->convert(pArray, &pBgdArray, (NDDataType_t)dataType, bgdDims);
                     if (!pBgdArray) {
-                        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+                        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                             "%s::%s, error allocating array buffer in convert\n",
                             driverName, functionName);
                         continue;
@@ -433,16 +433,16 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
                     bgdPixels += pROITemp->nElements;
                     bgdCounts += pROITemp->total;
                 }
-                if (bgdPixels < 1) bgdPixels = 1; 
+                if (bgdPixels < 1) bgdPixels = 1;
                 avgBgd = bgdCounts / bgdPixels;
                 pROI->net = pROI->total - avgBgd*pROI->nElements;
-            }                
+            }
             setDoubleParam(roi, NDPluginROIMinValue, pROI->min);
             setDoubleParam(roi, NDPluginROIMaxValue, pROI->max);
             setDoubleParam(roi, NDPluginROIMeanValue, pROI->mean);
             setDoubleParam(roi, NDPluginROITotal, pROI->total);
             setDoubleParam(roi, NDPluginROINet, pROI->net);
-            asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER, 
+            asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
                 (char *)pROIArray->pData, arrayInfo.totalBytes,
                 "%s:%s ROI=%d, min=%f, max=%f, mean=%f, total=%f, net=%f",
                 driverName, functionName, roi, pROI->min, pROI->max, pROI->mean, pROI->total, pROI->net);
@@ -465,7 +465,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
             setDoubleParam(roi, NDPluginROIHistEntropy, entropy);
             doCallbacksFloat64Array(pROI->histogram, pROI->histSize, NDPluginROIHistArray, roi);
         }
-        /* We have now computed the statistics on the original array without highlighting.  
+        /* We have now computed the statistics on the original array without highlighting.
           * If the highlight flag is set extract the ROI from the copy of the array with ROIs highlighted */
         if (highlight && (pArray->ndims == 2)) {
             this->pArrays[roi]->release();
@@ -476,10 +476,10 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         setIntegerParam(roi, NDArraySizeX, this->pArrays[roi]->dims[userDims[0]].size);
         setIntegerParam(roi, NDArraySizeY, this->pArrays[roi]->dims[userDims[1]].size);
         setIntegerParam(roi, NDArraySizeZ, this->pArrays[roi]->dims[userDims[2]].size);
-        
+
         /* Call any clients who have registered for NDArray callbacks */
         doCallbacksGenericPointer(this->pArrays[roi], NDArrayData, roi);
-        
+
         /* We must enter the loop and exit with the mutex locked */
         this->lock();
         callParamCallbacks(roi, roi);
@@ -490,12 +490,12 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         this->totalArray[roi] = (epicsInt32)this->pROIs[roi].total;
         this->netArray[roi] = (epicsInt32)this->pROIs[roi].net;
     }
-    doCallbacksInt32Array(this->totalArray, this->maxROIs, NDPluginROITotalArray, 0); 
-    doCallbacksInt32Array(this->netArray, this->maxROIs, NDPluginROINetArray, 0); 
-    
+    doCallbacksInt32Array(this->totalArray, this->maxROIs, NDPluginROITotalArray, 0);
+    doCallbacksInt32Array(this->netArray, this->maxROIs, NDPluginROINetArray, 0);
+
     /* If we made a copy of the array for highlighting then free it */
     if (pHighlights) pHighlights->release();
-    
+
     callParamCallbacks();
     /* Decrease the reference count on this array */
     pArray->release();
@@ -504,7 +504,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
 
 /** Called when asyn clients call pasynInt32->write().
   * This function performs actions for some parameters, including minimum, size, binning, etc. for each ROI.
-  * For other parameters it calls NDPluginDriver::writeInt32 to see if that method understands the parameter. 
+  * For other parameters it calls NDPluginDriver::writeInt32 to see if that method understands the parameter.
   * For all parameters it sets the value in the parameter library and calls any registered callbacks..
   * \param[in] pasynUser pasynUser structure that encodes the reason and address.
   * \param[in] value Value to write. */
@@ -565,20 +565,20 @@ asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
     }
     /* Do callbacks so higher layers see any changes */
     status = callParamCallbacks(roi, roi);
-    
-    if (status) 
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                  "%s:%s: status=%d, function=%d, value=%d", 
+
+    if (status)
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                  "%s:%s: status=%d, function=%d, value=%d",
                   driverName, functionName, status, function, value);
-    else        
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, roi=%d, value=%d\n", 
+    else
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+              "%s:%s: function=%d, roi=%d, value=%d\n",
               driverName, functionName, function, roi, value);
     return status;
 }
 
 /** Called when asyn clients call pasynFloat64Array->read().
-  * Returns the histogram array when pasynUser->reason=NDPluginROIHistArray.  
+  * Returns the histogram array when pasynUser->reason=NDPluginROIHistArray.
   * \param[in] pasynUser pasynUser structure that encodes the reason and address.
   * \param[in] value Pointer to the array to read.
   * \param[in] nElements Number of elements to read.
@@ -597,14 +597,14 @@ asynStatus NDPluginROI::readFloat64Array(asynUser *pasynUser,
         /* We don't support reading asynFloat64 arrays except for ROIs */
         status = asynError;
         epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                     "%s:%s: invalid request", 
+                     "%s:%s: invalid request",
                      driverName, functionName);
     } else {
         size_t ncopy;
         pROI = &this->pROIs[roi];
         switch(function) {
             case NDPluginROIHistArray:
-                ncopy = pROI->histSize;       
+                ncopy = pROI->histSize;
                 if (ncopy > nElements) ncopy = nElements;
                 memcpy(value, pROI->histogram, ncopy*sizeof(epicsFloat64));
                 *nIn = ncopy;
@@ -612,18 +612,18 @@ asynStatus NDPluginROI::readFloat64Array(asynUser *pasynUser,
             default:
                 status = asynError;
                 epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                             "%s:%s: invalid request", 
+                             "%s:%s: invalid request",
                              driverName, functionName);
                 break;
         }
     }
-    if (status) 
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                  "%s:%s: status=%d, function=%d, value=%f", 
+    if (status)
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                  "%s:%s: status=%d, function=%d, value=%f",
                   driverName, functionName, status, function, *value);
-    else        
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, value=%f\n", 
+    else
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+              "%s:%s: function=%d, value=%f\n",
               driverName, functionName, function, *value);
     return(status);
 }
@@ -637,29 +637,29 @@ asynStatus NDPluginROI::readFloat64Array(asynUser *pasynUser,
   * \param[in] pasynUser pasynUser structure that driver modifies
   * \param[in] drvInfo String containing information about what driver function is being referenced
   * \param[out] pptypeName Location in which driver puts a copy of drvInfo.
-  * \param[out] psize Location where driver puts size of param 
+  * \param[out] psize Location where driver puts size of param
   * \return Returns asynSuccess if a matching string was found, asynError if not found. */
 asynStatus NDPluginROI::drvUserCreate(asynUser *pasynUser,
-                                       const char *drvInfo, 
+                                       const char *drvInfo,
                                        const char **pptypeName, size_t *psize)
 {
     asynStatus status;
     //const char *functionName = "drvUserCreate";
-    
-    status = this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize, 
+
+    status = this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize,
                                       NDPluginROINParamString, NUM_ROIN_PARAMS);
 
     /* If not, then call the base class method, see if it is known there */
     if (status) status = NDPluginDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
     return(status);
 }
-    
+
 
 /** Constructor for NDPluginROI; most parameters are simply passed to NDPluginDriver::NDPluginDriver.
-  * After calling the base class constructor this method sets reasonable default values for all of the 
+  * After calling the base class constructor this method sets reasonable default values for all of the
   * ROI parameters.
   * \param[in] portName The name of the asyn port driver to be created.
-  * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when 
+  * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when
   *            NDPluginDriverBlockingCallbacks=0.  Larger queues can decrease the number of dropped arrays,
   *            at the expense of more NDArray buffers being allocated from the underlying driver's NDArrayPool.
   * \param[in] blockingCallbacks Initial setting for the NDPluginDriverBlockingCallbacks flag.
@@ -668,21 +668,21 @@ asynStatus NDPluginROI::drvUserCreate(asynUser *pasynUser,
   * \param[in] NDArrayPort Name of asyn port driver for initial source of NDArray callbacks.
   * \param[in] NDArrayAddr asyn port driver address for initial source of NDArray callbacks.
   * \param[in] maxROIs The maximum number of ROIs this plugin supports. 1 is minimum.
-  * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is 
+  * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is
   *            allowed to allocate. Set this to -1 to allow an unlimited number of buffers.
-  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
+  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is
   *            allowed to allocate. Set this to -1 to allow an unlimited amount of memory.
   * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   */
-NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallbacks, 
-                         const char *NDArrayPort, int NDArrayAddr, int maxROIs, 
+NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallbacks,
+                         const char *NDArrayPort, int NDArrayAddr, int maxROIs,
                          int maxBuffers, size_t maxMemory,
                          int priority, int stackSize)
     /* Invoke the base class constructor */
-    : NDPluginDriver(portName, queueSize, blockingCallbacks, 
+    : NDPluginDriver(portName, queueSize, blockingCallbacks,
                    NDArrayPort, NDArrayAddr, maxROIs, NDPluginROILastROINParam, maxBuffers, maxMemory,
-                   asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask, 
+                   asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    ASYN_MULTIDEVICE, 1, priority, stackSize)
 {
@@ -696,7 +696,7 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
     this->totalArray = (epicsInt32 *)callocMustSucceed(maxROIs, sizeof(epicsInt32), functionName);
     this->netArray = (epicsInt32 *)callocMustSucceed(maxROIs, sizeof(epicsInt32), functionName);
     setIntegerParam(0, NDPluginROIHighlight,         0);
-    /* Set the plugin type string */    
+    /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginROI");
 
     for (roi=0; roi<this->maxROIs; roi++) {
@@ -722,35 +722,35 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
         setIntegerParam(roi , NDPluginROIDim2Bin,           1);
         setIntegerParam(roi , NDPluginROIDim2Reverse,       0);
         setIntegerParam(roi , NDPluginROIDataType,          0);
-       
+
         setIntegerParam(roi , NDPluginROIBgdWidth,          0);
         setDoubleParam (roi , NDPluginROIMinValue,          0.0);
         setDoubleParam (roi , NDPluginROIMaxValue,          0.0);
         setDoubleParam (roi , NDPluginROIMeanValue,         0.0);
         setDoubleParam (roi , NDPluginROITotal,             0.0);
         setDoubleParam (roi , NDPluginROINet,               0.0);
-        
+
         setIntegerParam(roi , NDPluginROIHistSize,          0);
         setDoubleParam (roi , NDPluginROIHistMin,           0);
         setDoubleParam (roi , NDPluginROIHistMax,           0);
-        
+
         setDoubleParam (roi , NDPluginROIHistEntropy,       0.0);
         setIntegerParam(roi , NDArraySizeX,                 0);
         setIntegerParam(roi , NDArraySizeY,                 0);
         setIntegerParam(roi , NDArraySizeZ,                 0);
     }
-    
+
     /* Try to connect to the array port */
     status = connectToArrayPort();
 }
 
 /** Configuration command */
-extern "C" int NDROIConfigure(const char *portName, int queueSize, int blockingCallbacks, 
-                                 const char *NDArrayPort, int NDArrayAddr, int maxROIs, 
+extern "C" int NDROIConfigure(const char *portName, int queueSize, int blockingCallbacks,
+                                 const char *NDArrayPort, int NDArrayAddr, int maxROIs,
                                  int maxBuffers, size_t maxMemory,
                                  int priority, int stackSize)
 {
-    new NDPluginROI(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxROIs, 
+    new NDPluginROI(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxROIs,
                     maxBuffers, maxMemory, priority, stackSize);
     return(asynSuccess);
 }
@@ -779,9 +779,9 @@ static const iocshArg * const initArgs[] = {&initArg0,
 static const iocshFuncDef initFuncDef = {"NDROIConfigure",10,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
-    NDROIConfigure(args[0].sval, args[1].ival, args[2].ival, 
-                   args[3].sval, args[4].ival, args[5].ival, 
-                   args[6].ival, args[7].ival, args[8].ival, 
+    NDROIConfigure(args[0].sval, args[1].ival, args[2].ival,
+                   args[3].sval, args[4].ival, args[5].ival,
+                   args[6].ival, args[7].ival, args[8].ival,
                    args[9].ival);
 }
 
