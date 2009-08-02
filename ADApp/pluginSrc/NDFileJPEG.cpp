@@ -33,11 +33,9 @@ static asynParamString_t NDFileJPEGParamString[] = {
 asynStatus NDFileJPEG::openFile(const char *fileName, NDFileOpenMode_t openMode, NDArray *pArray)
 {
     static const char *functionName = "openFile";
-    int colorMode;
+    int colorMode = NDColorModeMono;
     NDAttribute *pAttribute;
     int quality;
-    //char ManufacturerString[MAX_ATTRIBUTE_STRING_SIZE] = "Unknown";
-    //char ModelString[MAX_ATTRIBUTE_STRING_SIZE] = "Unknown";
 
     /* We don't support reading yet */
     if (openMode & NDFileModeRead) return(asynError);

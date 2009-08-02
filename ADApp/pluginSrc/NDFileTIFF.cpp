@@ -29,7 +29,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
      * ID for each one. */
     static const char *functionName = "openFile";
     int sizeX, sizeY, rowsPerStrip, samplesPerPixel, photoMetric, planarConfig;
-    int colorMode;
+    int colorMode=NDColorModeMono;
     NDAttribute *pAttribute;
     char ManufacturerString[MAX_ATTRIBUTE_STRING_SIZE] = "Unknown";
     char ModelString[MAX_ATTRIBUTE_STRING_SIZE] = "Unknown";
@@ -132,11 +132,6 @@ asynStatus NDFileTIFF::writeFile(NDArray *pArray)
     int strip, sizeY;
     unsigned char *pRed, *pGreen, *pBlue;
     static const char *functionName = "writeFile";
-
-    /* We cannot get the manufacturer and model directly, we don't have access to the parameter
-     * library of the driver.  We would have to get this from attributes */
-    //getStringParam(ADManufacturer, MAX_ATTRIBUTE_STRING_SIZE, ManufacturerString);
-    //getStringParam(ADModel, MAX_ATTRIBUTE_STRING_SIZE, ModelString);
 
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
               "%s:s: %d, %d\n", 
