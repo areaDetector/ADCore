@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>areaDetector Viewers</title>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+</head>
+<body>
+  <div style="text-align: center">
+    <h1>
+      areaDetector Viewers</h1>
+    <h2>
+      August 3, 2009</h2>
+    <h2>
+      Mark Rivers</h2>
+    <h2>
+      University of Chicago</h2>
+  </div>
+  <h2>
+    Contents</h2>
+  <ul>
+    <li><a href="#Overview">Overview</a></li>
+    <li><a href="#ImageJViewer">ImageJ Viewer</a></li>
+    <li><a href="#IDLViewer">IDL Viewer</a></li>
+  </ul>
+  <h2 id="Overview">
+    Overview
+  </h2>
+  <p>
+    One of the advantages of areaDetector is that it enables the use of generic image
+    display clients that obtain their data via EPICS Channel Access and work with any
+    detector. There are currently two such generic clients provided with the areaDetector
+    distribution. The first is a plugin for the popular ImageJ Java-based image processing
+    program. The second is an IDL-based viewer which can be run without an IDL license
+    under the IDL Virtual Machine. Because ImageJ is free and more widely available
+    and used than IDL, future enhancements are more likely to be done on the ImageJ
+    plugin rather than the IDL viewer.
+  </p>
+  <h2 id="ImageJ">
+    ImageJ Viewer</h2>
+  <p>
+    This is a plugin for the popular <a href="http://rsbweb.nih.gov/ij/">ImageJ</a>
+    program that can be used to display 2-dimensional array data that the <a href="NDPluginStdArrays.html">
+      NDStdArrays plugin</a> sends to EPICS. This plugin is contained in the areaDetector
+    distribution in the Viewers/ImageJ/EPICS_areaDetector directory. This plugin was
+    begun by Tim Madden from APS, and now includes support for all NDArray data types
+    and color modes, i.e. Mono, RGB1 (pixel interleave), RGB2 (row interleave) and RGB3
+    (plane interleave). The plugin directory includes a plugin written elsewhere for
+    reading and writing netCDF files, so ImageJ can be used to display images and image
+    sequences (movies) saved with the NDFileNetCDF plugin. It also includes a dynamic
+    profile plugin written elsewhere for line profiles that update in real time as new
+    images are displayed or as the profile line segment is moved.</p>
+  <p>
+    To use this ImageJ plugin do the following:</p>
+  <ul>
+    <li>Install ImageJ from <a href="http://rsbweb.nih.gov/ij/download.html">ImageJ download
+      site</a>. If installing on Windows I recommend installing the version bundled with
+      Java.</li>
+    <li>Copy the the entire directory Viewers/ImageJ/EPICS_areaDetector to the plugins/
+      directory in the ImageJ installation location. </li>
+    <li>If you installed areaDetector from the prebuilt binary distribution you will already
+      have the necessary .class files in that directory, and do not need to compile the
+      Java source code. If you installed areaDetector from source code you will need to
+      compile the Java code. On Windows this can be done in the ImageJ Plugins/Compile
+      and Run menu. Browse for EPICS_AD_Viewer.java to compile and run it. The compilation
+      step only needs to be done once, creating the required .class files.</li>
+    <li>EPICS_AD_Viewer uses the pure-Java libraries for EPICS Channel Access. This means
+      that unlike the IDL Viewer, no C-based shareable-libraries or DLLs are needed. If
+      the default EPICS Channel Access settings are appropriate then it is not necessary
+      to configure the Java Channel Access library. If configuration is needed then it
+      is important to realize that the pure Java Channel Access code does <i>not</i> use
+      the environment variables for configuring EPICS that are used by the standard C
+      Channel Access code. Java Channel Access configuration is explained in the <a href="http://jca.cosylab.com/apidocs/gov/aps/jca/JCALibrary.html#CHANNEL_ACCESS_JAVA">
+        CosyLab CAJ documentation</a>. The simplest way to do this is to create the file
+      &lt;jre home&gt;/lib/JCALibrary.properties, containing lines like the following
+      <pre>    gov.aps.jca.Context.addr_list=localhost 164.54.160.255 
+    gov.aps.jca.Context.auto_addr_list=false 
+    gov.aps.jca.Context.max_array_bytes=100000000 
+  </pre>
+      With the Windows installation of ImageJ &lt;jre home&gt; will typically be C:\Program
+      Files\ImageJ\jre\lib. On Linux it will be wherever the jre/lib directory for Java
+      is located. Note that it should be necessary to create such a configuration file
+      on almost all areaDetector clients because the CAJ default value of max_array_bytes
+      is 16384, which will be too small for almost any detector. However, it appears that
+      the CAJ library actually ignores the value of max_array_bytes, so it is not actually
+      necessary to set its value for the EPICS_AD_Viewer plugin. </li>
+    <li>Start ImageJ and go to the Plugins/EPICS_areaDetector/EPICS_AD_Viewer to run the
+      plugin</li>
+    <li>Type in the prefix for the NDStdArrays plugin for the detector to be viewed (e.g.
+      13SIM1:image1:). You should get a message saying that the PVs have connected. If
+      you don't the most likely problem is a firewall.</li>
+    <li>Press the Start button to begin displaying images.</li>
+  </ul>
+  <p>
+    The control window for <code>EPICS_AD_Viewer</code> is shown below. The PVPrefix
+    field is used to input the base name of the EPICS PVs with the image data. The array
+    dimensions and the number of frames
+    per second actually being displayed by ImageJ is shown. There is a status window that
+    shows whether the EPICS PVs are connected and the number of arrays received since the last
+    update, which is every 2 seconds.
+    <p>To capture a sequence of images into an ImageJ "stack" select "Capture To Stack".
+      The image sequence will be stored in the ImageJ buffer and a scroll bar will appear
+      to allow you to scroll through the images. The stack can be saved to disk in a large
+      number of formats, including AVI.<p>
+  </p>
+  <div style="text-align: center">
+    <h3>
+      ImageJ EPICS_AD_Viewer plugin control window</h3>
+    <p>
+      <img alt="EPICS_AD_Viewer.png" src="EPICS_AD_Viewer.png" /></p>
+  </div>
+  <p>
+    This is the.</p>
+  <div style="text-align: center">
+    <h3>
+      ImageJ EPICS_AD_Viewer plugin display window</h3>
+    <p>
+      <img alt="EPICS_AD_Viewer_display.jpg" src="EPICS_AD_Viewer_display.jpg" /></p>
+  </div>
+  <h2 id="IDLViewer">
+    IDL Viewer</h2>
+  <p>
+    There is an IDL procedure called <a href="http://cars.uchicago.edu/software/idl/imaging_routines.html#epics_ad_display">
+      epics_ad_display</a> that can be used to display 2-dimensional array data that
+    the <a href="NDPluginStdArrays.html">NDStdArrays plugin</a> sends to EPICS. This
+    IDL client is available as source code (which requires an IDL license), and also
+    as a pre-built IDL .sav file that can be run for free under the IDL Virtual Machine.
+    This IDL program can run on any machine that IDL runs on, and that has the ezcaIDL
+    shareable library built for it. This includes Windows, Linux, Solaris, and Mac.
+    <code>epics_ad_display</code> is included in the <a href="http://cars.uchicago.edu/software/IDL/imaging.html">
+      CARS IDL imaging software.</a> It is also available in the Viewers/IDL directory
+    in the areaDetector application.
+  </p>
+  <p>
+    The Viewers/IDL directory contains both the IDL source code and a standalone IDL
+    file, epics_ad_display.sav, for the epics_ad_display GUI to display images from
+    areaDetector detectors. This file can be run for free on any Linux or Windows system
+    under the IDL Virtual Machine, which can be downloaded free of charge from <a href="http://www.ittvis.com/idl">
+      ITT VIS</a>. That directory also contains the shareable libraries used to call
+    EPICS Channel Access from IDL (ezcaIDL.dll for Windows and libezcaIDL.so for Linux).
+    Before using the IDL source code or .sav file it is necessary to define the environment
+    variable EZCA_IDL_SHARE to point to the complete path to ezcaIDL.dll or libezcaIDL.so.
+    For example on Linux:</p>
+  <pre>setenv EZCA_IDL_SHARE /home/epics/support/areaDetector/1-5/Viewers/IDL/libezcaIDL.so
+  </pre>
+  <p>
+    On Windows use
+  </p>
+  <pre>My Computer/Properties/Advanced/Environment Variables/ 
+  </pre>
+  <p>
+    to add a new environment variable EZCA_IDL_SHARE to point to the location of ezcaIDL.dll
+    on your system. To run the standalone IDL epics_ad_display.sav file without an IDL
+    license exectute the following on Linux:</p>
+  <pre>idl -32 -vm=epics_ad_display.sav 
+  </pre>
+  <p>
+    On Windows simply double-click on the icon for the epics_ad_display.sav file.</p>
+  <p>
+    When the GUI comes up type the base PV name for the NDStdArrays plugin for your
+    detector in the "Base PV" widget. For example with the simulation detector supplied
+    with the areaDetector application this is "13SIM1:image1:" (without the quotes).
+    Once the detector begins acquiring images they should be displayed in the IDL window.
+  </p>
+  <p>
+    To run the GUI from the IDL command line on a system with an IDL license type the
+    epics_ad_display command followed by the base PV name of the NDStdArrays plugin.
+    For example:
+  </p>
+  <pre>  IDL> epics_ad_display, '13SIM1:image1:'
+  </pre>
+  <p>
+    The control window for <code>epics_ad_display</code> is shown below. It has a field
+    to input the base name of the EPICS PVs with the image data. It also has fields
+    to enable/display the IDL display update, to change the display mode, to autoscale
+    the intensity, and to invert the image in the Y direction. If autoscale is set to
+    No then manual scaling can be entered in the Min and Max fields. The number of frames
+    per second actually being displayed by IDL is shown. There is a status window that
+    shows whether the EPICS PVs are connected and the time the last was array received,
+    updated once per second.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      Main window for IDL epics_ad_display</h3>
+    <p>
+      <img alt="IDL_epics_ad_display.png" src="IDL_epics_ad_display.png" /></p>
+  </div>
+  <p>
+    <code>epics_ad_display</code> can use the simple IDL routine <code>tv</code> to
+    display the images. This is the fastest mode, and results in a non-scalable unadorned
+    window.</p>
+  <div style="text-align: center">
+    <h3>
+      IDL epics_ad_display using the IDL <code>tv</code> routine.</h3>
+    <p>
+      <img alt="IDL_epics_ad_display_tv.jpg" src="IDL_epics_ad_display_tv.jpg" /></p>
+  </div>
+  <p>
+    <code>epics_ad_display</code> can also use the routine <a href="http://cars.uchicago.edu/software/IDL/imaging_routines.html#IMAGE_DISPLAY">
+      image_display.pro</a> to display the images. This routine displays row and column
+    profiles as the cursor is moved. It allows changing the color lookup tables, and
+    zooming in (right mouse click) and out (left mouse click). Note that image_display
+    is not currently capable of displaying color data i.e., RGB1, RGB2, or RGB3 NDArrays).
+    It can however, display Mono data in false color. The following is an example of
+    <code>image_display</code> displaying an image from the simulation detector.</p>
+  <div style="text-align: center">
+    <h3>
+      epics_ad_display using the image_display routine</h3>
+    <p>
+      <img alt="simDetector_image_display.png" src="simDetector_image_display.png" /></p>
+  </div>
+  <p>
+    The Viewers/IDL directory also contains an IDL function to read the areaDetector
+    netCDF files. This is described in the <a href="NDPluginFile.html#netCDF">NDPluginFile
+      netCDF</a> documentation.</p>
+  <p>
+    Stephen Mudie at the Australian Synchrotron has written a very nice IDL client to
+    display the EPICS images from the Flea Firewire cameras. This client is being converted
+    to display the data from this areaDetector plugin, and will be provided in a future
+    release of areaDetector.
+  </p>
+</body>
+</html>
