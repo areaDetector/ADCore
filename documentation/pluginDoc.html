@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugins</h1>
     <h2>
-      January 30, 2009</h2>
+      July 30, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -76,56 +76,9 @@
     NDPluginDriver class handles most of the details of processing NDArray callbacks
     from the driver. Plugins derived from this class typically need to implement the
     processCallbacks method, the drvUser method, and one or more of the write(Int32,
-    Float64, Octet) methods. The NDPluginDriver public interface is defined in NDPluginDriver.h
-    as follows:
+    Float64, Octet) methods. The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_driver.html">
+        NDPluginDriver class documentation </a>describes this class in detail.
   </p>
-  <pre>class NDPluginDriver : public asynNDArrayDriver {
-public:
-    NDPluginDriver(const char *portName, int queueSize, int blockingCallbacks, 
-                 const char *NDArrayPort, int NDArrayAddr, int maxAddr, int paramTableSize,
-                 int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask);
-                 
-    /* These are the methods that we override from asynNDArrayDriver */
-    virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
-    virtual asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t maxChars,
-                          size_t *nActual);
-    virtual asynStatus readInt32Array(asynUser *pasynUser, epicsInt32 *value,
-                                        size_t nElements, size_t *nIn);
-    virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
-                                     const char **pptypeName, size_t *psize);
-                                     
-    /* These are the methods that are new to this class */
-    virtual void processCallbacks(NDArray *pArray);
-    virtual int createFileName(int maxChars, char *fullFileName);
-    virtual int createFileName(int maxChars, char *filePath, char *fileName);
-
-...
-}
-</pre>
-  <p>
-    The methods of the NDPluginDriver class are:
-  </p>
-  <ul>
-    <li><code>NDPluginDriver</code> This is the constructor for the class. All parameters
-      except queueSize, blockingCallbacks, NDArrayPort, and NDArrayAddr are just passed
-      to the constructor for asynNDArrayDriver. NDArrayPort and NDArrayAddr, and blockingCallbacks
-      are the initial values for the NDPluginDriverArrayPort, NDPluginDriverArrayAddr
-      and NDPluginDriverBlockingCallbacks parameters described in the table below.</li>
-    <li><code>drvUserCreate</code> This method returns one of the enum values for the
-      parameters defined in NDPluginDriver.h if the driverInfo field matches one the strings
-      defined in that file. Derived classes will typically provide an implementation of
-      drvUserCreate() that searches for parameters that are unique to that plugin. If
-      a parameter is not matched, then NDPluginDriver->drvUserCreate() will be called
-      to see if it is a standard plugin parameter (defined in NDPluginDriver.h).</li>
-    <li><code>processCallbacks</code> This method is called each time a driver calls the
-      plugin with a new NDArray object. Derived classes typically provide an implementation
-      of this method that calls this base class method to perform some bookkeeping chores,
-      and then they perform whatever operations are specific to that plugin.</li>
-    <li><code>createFileName</code> This is a convenience function that constructs a complete
-      file name in the ADFullFileName parameter from the ADFilePath, ADFileName, ADFileNumber,
-      and ADFileTemplate parameters. There are two variants: the first returns a complete
-      file name, including the path. The second returns the path and file name separately.</li>
-  </ul>
   <p>
     NDPluginDriver defines parameters that all plugin drivers should implement if possible.
     These parameters are defined by enum values with an associated asyn interface, and
@@ -200,6 +153,23 @@ public:
         <td>
           longout<br />
           longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriver<br />
+          PluginType</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/o</td>
+        <td>
+          A string describing the plugin type.</td>
+        <td>
+          PLUGIN_TYPE</td>
+        <td>
+          $(P)$(R)PluginType_RBV</td>
+        <td>
+          stringin</td>
       </tr>
       <tr>
         <td align="center" colspan="7,">
