@@ -5,10 +5,10 @@ file {
 }
 display {
 	object {
-		x=489
-		y=91
+		x=154
+		y=74
 		width=480
-		height=745
+		height=705
 	}
 	clr=14
 	bclr=4
@@ -99,21 +99,6 @@ text {
 	}
 	textix="ADSC Detector"
 	align="horiz. centered"
-}
-"related display" {
-	object {
-		x=210
-		y=710
-		width=60
-		height=18
-	}
-	display[0] {
-		label="Detector control"
-		name="ADBase.adl"
-		args="P=$(P), R=$(R)"
-	}
-	clr=14
-	bclr=51
 }
 text {
 	object {
@@ -845,7 +830,7 @@ text {
 		height=18
 	}
 	control {
-		chan="$(P)$(R)ADSCExTrCtl"
+		chan="$(P)$(R)ExSwTrCtl"
 		clr=14
 		bclr=51
 	}
@@ -860,7 +845,7 @@ text {
 		height=18
 	}
 	control {
-		chan="$(P)$(R)ADSCExTrCtl"
+		chan="$(P)$(R)ExSwTrCtl"
 		clr=14
 		bclr=51
 	}
@@ -888,7 +873,7 @@ text {
 		height=15
 	}
 	monitor {
-		chan="$(P)$(R)ADSCOkToExpose"
+		chan="$(P)$(R)ExSwTrOkToExp"
 		clr=54
 		bclr=4
 	}
@@ -1058,7 +1043,7 @@ text {
 		height=15
 	}
 	monitor {
-		chan="$(P)$(R)ADSCExTrCtl_RBV"
+		chan="$(P)$(R)ExSwTrCtlRsp"
 		clr=54
 		bclr=4
 	}
