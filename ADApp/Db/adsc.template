@@ -81,36 +81,28 @@ record(longout, "$(P)$(R)ADSCLastImage")
 #  Detector external trigger parameters                                      #
 ##############################################################################
 
-record(mbbi, "$(P)$(R)ADSCOkToExpose")
+record(bi, "$(P)$(R)ExSwTrOkToExp")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_OK_TO_EXPOSE")
    field(SCAN, "I/O Intr")
-   field(ZRST, "No")
-   field(ZRVL, "0")
-   field(ONST, "Yes")
-   field(ONVL, "1")
-   field(TWST, "Error")
-   field(TWVL, "2")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
 }
 
-record(mbbo, "$(P)$(R)ADSCExTrCtl")
+record(mbbo, "$(P)$(R)ExSwTrCtl")
 {
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_EXTERNAL_TRIGGER_CTRL")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_EXTERN_SW_TRIGGER_CTRL")
    field(ZRST, "Stop")
    field(ZRVL, "0")
    field(ONST, "Start")
    field(ONVL, "1")
-   field(TWST, "OK")
-   field(TWVL, "2")
-   field(THST, "Again")
-   field(THVL, "3")
 }
-record(mbbi, "$(P)$(R)ADSCExTrCtl_RBV")
+record(mbbi, "$(P)$(R)ExSwTrCtlRsp")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_EXTERNAL_TRIGGER_CTRL")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_EXTERN_SW_TRIGGER_CTRL")
    field(SCAN, "I/O Intr")
    field(ZRST, "Stop")
    field(ZRVL, "0")
@@ -443,10 +435,26 @@ record(longout, "$(P)$(R)ADSCStpExRtryCt")
 }
 
 ##############################################################################
-#  Note: The following are records defined in ADAsyn.template.               #
+#  Note: The following are records defined in ADBase.template.               #
 #        We are changing some of the fields here to reflect valid values and #
 #        desired behavior for the ADSC driver.                               #
 ##############################################################################
+
+record(mbbo, "$(P)$(R)TriggerMode")
+{
+   field(ZRST, "Internal")
+   field(ZRVL, "0")
+   field(ONST, "Ext. Software")
+   field(ONVL, "1")
+}
+
+record(mbbi, "$(P)$(R)TriggerMode_RBV")
+{
+   field(ZRST, "Internal")
+   field(ZRVL, "0")
+   field(ONST, "Ext. Software")
+   field(ONVL, "1")
+}
 
 record(longout, "$(P)$(R)BinX")
 {
