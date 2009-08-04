@@ -93,8 +93,21 @@
     (longin).
   </p>
   <p>
-    The <a href="areaDetectorDoxygenHTML/class_n_d_file_j_p_e_g.html">NDFileNetJPEG class
+    The <a href="areaDetectorDoxygenHTML/class_n_d_file_j_p_e_g.html">NDFileJPEG class
       documentation </a>describes this class in detail.
+  </p>
+  <p>
+    The NDFileJPEG plugin is created with the NDFileJPEGConfigure command, either from
+    C/C++ or from the EPICS IOC shell.</p>
+  <pre>NDFileJPEGConfigure (const char *portName, int queueSize, int blockingCallbacks, 
+                     const char *NDArrayPort, int NDArrayAddr, size_t maxMemory, 
+                     int priority, int stackSize)
+  </pre>
+  <p>
+    For details on the meaning of the parameters to this function refer to the detailed
+    documentation on the NDFileJPEGConfigure function in the <a href="areaDetectorDoxygenHTML/_n_d_file_j_p_e_g_8cpp.html">
+      NDFileJPEG.cpp documentation</a> and in the documentation for the constructor
+    for the <a href="areaDetectorDoxygenHTML/class_n_d_file_j_p_e_g.html">NDFileJPEG class</a>.
   </p>
   <h2 id="TIFF">
     TIFF file plugin
@@ -114,6 +127,19 @@
   <p>
     The <a href="areaDetectorDoxygenHTML/class_n_d_file_t_i_f_f.html">NDFileNetTIFF class
       documentation </a>describes this class in detail.
+  </p>
+  <p>
+    The NDFileTIFF plugin is created with the NDFileTIFFConfigure command, either from
+    C/C++ or from the EPICS IOC shell.</p>
+  <pre>NDFileTIFFConfigure (const char *portName, int queueSize, int blockingCallbacks, 
+                     const char *NDArrayPort, int NDArrayAddr, size_t maxMemory, 
+                     int priority, int stackSize)
+  </pre>
+  <p>
+    For details on the meaning of the parameters to this function refer to the detailed
+    documentation on the NDFileTIFFConfigure function in the <a href="areaDetectorDoxygenHTML/_n_d_file_t_i_f_f_8cpp.html">
+      NDFileTIFF.cpp documentation</a> and in the documentation for the constructor
+    for the <a href="areaDetectorDoxygenHTML/class_n_d_file_t_i_f_f.html">NDFileTIFF class</a>.
   </p>
   <h2 id="netCDF">
     netCDF file plugin
@@ -140,6 +166,20 @@
   <p>
     The <a href="areaDetectorDoxygenHTML/class_n_d_file_net_c_d_f.html">NDFileNetCDF class
       documentation </a>describes this class in detail.
+  </p>
+  <p>
+    The NDFileNetCDF plugin is created with the NDFileNetCDFConfigure command, either
+    from C/C++ or from the EPICS IOC shell.</p>
+  <pre>NDFileNetCDFConfigure (const char *portName, int queueSize, int blockingCallbacks, 
+                       const char *NDArrayPort, int NDArrayAddr, size_t maxMemory, 
+                       int priority, int stackSize)
+  </pre>
+  <p>
+    For details on the meaning of the parameters to this function refer to the detailed
+    documentation on the NDFileNetCDFConfigure function in the <a href="areaDetectorDoxygenHTML/_n_d_file_net_c_d_f_8cpp.html">
+      NDFileNetCDF.cpp documentation</a> and in the documentation for the constructor
+    for the <a href="areaDetectorDoxygenHTML/class_n_d_file_net_c_d_f.html">NDFileNetCDF
+      class</a>.
   </p>
   <p>
     The following is the header contents of a netCDF file produced by this plugin. This
