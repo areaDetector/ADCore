@@ -39,9 +39,9 @@ dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStdArrays.template", cmd)
 
 # Create a file saving plugin
 NDFileNetCDFConfigure("SIM1File", 20, 0, "SIM1", 0)
-cmd = "P=13SIM1:,R=file1:,PORT=SIM1File,ADDR=0,TIMEOUT=1,NDARRAY_PORT=SIM1,NDARRAY_ADDR=0"
+cmd = "P=13SIM1:,R=netCDF1:,PORT=SIM1File,ADDR=0,TIMEOUT=1,NDARRAY_PORT=SIM1,NDARRAY_ADDR=0"
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template",cmd)
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFile.template",      "P=13SIM1:,R=file1:,PORT=SIM1File,ADDR=0,TIMEOUT=1")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFile.template",      "P=13SIM1:,R=netCDF1:,PORT=SIM1File,ADDR=0,TIMEOUT=1")
 
 # Create an ROI plugin
 NDROIConfigure("SIM1ROI", 20, 0, "SIM1", 0, 8, 20, 20000000)
