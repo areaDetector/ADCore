@@ -10,7 +10,7 @@
     <h1>
       areaDetector: EPICS Area Detector Support</h1>
     <h2>
-      May 15, 2009</h2>
+      July 30, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -28,7 +28,6 @@
         <li><a href="#NDArrayPool">NDArrayPool</a></li>
         <li><a href="#asynNDArrayDriver">asynNDArrayDriver</a></li>
         <li><a href="#ADDriver">ADDriver</a></li>
-        <li><a href="#ADStdDriverParams">ADStdDriverParams</a></li>
         <li><a href="#MEDM_screens">MEDM screens</a></li>
       </ul>
     </li>
@@ -53,6 +52,13 @@
         <li><a href="FirewireWinDoc.html">Firewire Windows driver</a></li>
         <li><a href="http://controls.diamond.ac.uk/downloads/support/firewireDCAM/index.html">
           Firewire Linux driver</a></li>
+        <li><a href="PerkinElmerDoc.html">Perkin-Elmer flat panel driver</a></li>
+      </ul>
+    </li>
+    <li><a href="areaDetectorViewers.html">Viewers</a>
+      <ul>
+        <li><a href="areaDetectorViewers.html#ImageJViewer">ImageJ Viewer</a></li>
+        <li><a href="areaDetectorViewers.html#IDLViewer">IDL Viewer</a></li>
       </ul>
     </li>
   </ul>
@@ -62,9 +68,10 @@
     Overview</h2>
   <p>
     The areaDetector module provides a general-purpose interface for area (2-D) detectors
-    in EPICS. It is intended to be used with a wide variety of detectors and cameras,
-    ranging from high frame rate CCD and CMOS cameras, pixel-array detectors such as
-    the Pilatus, and large format detectors like the MAR-345 online imaging plate.</p>
+    in <a href="http://www.aps.anl.gov/epics">EPICS</a>. It is intended to be used with
+    a wide variety of detectors and cameras, ranging from high frame rate CCD and CMOS
+    cameras, pixel-array detectors such as the Pilatus, and large format detectors like
+    the MAR-345 online imaging plate.</p>
   <p>
     The goals of this module are:
   </p>
@@ -120,10 +127,10 @@
       that define records to communicate with drivers at Layer 2 and plugins at Layer
       3.</li>
     <li>Layer 6. These are EPICS channel access clients, such as MEDM that communicate
-      with the records at Layer 5. areaDetector includes two client applications that can display images
-      using EPICS waveform and other records communicating with the NDPluginStdArrays
-      plugin at Layer 3. One of these clients is an ImageJ plugin, and the other is a 
-      freely runnable IDL application.</li>
+      with the records at Layer 5. areaDetector includes two client applications that
+      can display images using EPICS waveform and other records communicating with the
+      NDPluginStdArrays plugin at Layer 3. One of these clients is an ImageJ plugin, and
+      the other is a freely runnable IDL application.</li>
   </ul>
   <p>
     The code in Layers 1-3 is essentially independent of EPICS. There are only 2 EPICS
@@ -185,13 +192,10 @@
     Detector drivers and plugins are asyn port drivers, meaning that they implement
     one or more of the standard asyn interfaces. They register themselves as interrupt
     sources, so that they do callbacks to registered asyn clients when values change.
-    They inherit from the <a
-    href="http://www.aps.anl.gov/epics/modules/soft/asyn/asynPortDriver.html">
-    asynPortDriver base C++ class</a>
-    that is provided in the asyn module. That base class handles all of the details of registering the
-    port driver, registering the supported interfaces, and registering the required
-    interrupt sources. The <a
-      href="http://www.aps.anl.gov/epics/modules/soft/asyn/asynDoxygenHTML/class_asyn_port_driver.html">
+    They inherit from the <a href="http://www.aps.anl.gov/epics/modules/soft/asyn/asynPortDriver.html">
+      asynPortDriver base C++ class</a> that is provided in the asyn module. That base
+    class handles all of the details of registering the port driver, registering the
+    supported interfaces, and registering the required interrupt sources. The <a href="http://www.aps.anl.gov/epics/modules/soft/asyn/asynDoxygenHTML/class_asyn_port_driver.html">
       asynPortDriver class documentation</a> describes this class in detail.
   </p>
   <h3 id="NDArray">
@@ -214,10 +218,9 @@
     NDAttribute</h3>
   <p>
     The NDAttribute is a class for linking metadata to an NDArray. An NDattribute has
-    a name, description, data type, value, source type and source information. 
-    There are methods to set and get the
-    information for an attribute, and NDArray provides methods to add and delete attributes
-    from an NDArray object. The <a href="areaDetectorDoxygenHTML/class_n_d_attribute.html">
+    a name, description, data type, value, source type and source information. There
+    are methods to set and get the information for an attribute, and NDArray provides
+    methods to add and delete attributes from an NDArray object. The <a href="areaDetectorDoxygenHTML/class_n_d_attribute.html">
       NDAttribute class documentation</a> describes this class in detail.
   </p>
   <h3 id="NDArrayPool">
@@ -771,7 +774,7 @@
       </tr>
     </tbody>
   </table>
-  <h3 id="H3_1">
+  <h3 id="ADDriver">
     ADDriver</h3>
   <p>
     ADDriver inherits from asynNDArrayDriver. This is the class from which area detector
@@ -1587,36 +1590,5 @@
     <p>
       <b>ADEpicsShutter.adl</b></p>
     <img alt="ADEpicsShutter.png" src="ADEpicsShutter.png" /></div>
-  <h2 id="Plugins">
-    Plugins</h2>
-  <p>
-    areaDetector supports <a href="pluginDoc.html">plugins</a>, which receive the array
-    data from the drivers and perform operations on the data. These are documented separately:</p>
-  <ul>
-    <li><a href="pluginDoc.html#NDPluginDriver">NDPluginDriver</a></li>
-    <li><a href="NDPluginStdArrays.html">NDPluginStdArrays</a></li>
-    <li><a href="NDPluginFile.html">NDPluginFile</a></li>
-    <li><a href="NDPluginROI.html">NDPluginROI</a></li>
-    <li><a href="NDPluginColorConvert.html">NDPluginColorConvert</a></li>
-  </ul>
-  <h2 id="Detector_drivers">
-    Detector drivers</h2>
-  <p>
-    areaDetector has been designed to minimize the amount of work required to write
-    a new detector driver. The drivers currently available for the areaDetector module
-    are:</p>
-  <ul>
-    <li><a href="simDetectorDoc.html">Simulation detector driver</a></li>
-    <li><a href="prosilicaDoc.html">Prosilica driver</a></li>
-    <li><a href="pilatusDoc.html">Pilatus driver</a></li>
-    <li><a href="adscDoc.html">ADSC driver</a></li>
-    <li><a href="RoperDoc.html">Roper driver</a></li>
-    <li><a href="MarCCDDoc.html">MarCCD driver</a></li>
-    <li><a href="Mar345Doc.html">mar345 driver</a></li>
-    <li><a href="FirewireWinDoc.html">Firewire Windows driver</a></li>
-    <li><a href="PerkinElmerDoc.html">Perkin-Elmer flat panel driver</a></li>
-    <li><a href="http://controls.diamond.ac.uk/downloads/support/firewireDCAM/index.html">
-      Firewire Linux driver</a></li>
-  </ul>
 </body>
 </html>
