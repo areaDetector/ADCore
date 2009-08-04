@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugin NDPluginStdArrays</h1>
     <h2>
-      January 30, 2009</h2>
+      August 3, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -22,8 +22,6 @@
     <li><a href="#Overview">Overview</a></li>
     <li><a href="#Configuration">Configuration</a></li>
     <li><a href="#Screens">Screen shots</a></li>
-    <li><a href="#IDLClient">IDL image display client</a></li>
-    <li><a href="#Future">Future plans</a></li>
   </ul>
   <h2 id="Overview">
     Overview
@@ -40,31 +38,8 @@
     this plugin inherits from <a href="pluginDoc.html#NDPluginDriver">NDPluginDriver</a>
     it also provides additional information on the array data (e.g. number of dimensions
     and dimension data) that are made available as EPICS PVs so that clients can correctly
-    interpret the array data. The NDPluginStdArrays public interface is defined in NDPluginStdArrays.h
-    as follows:</p>
-  <pre>class NDPluginStdArrays : public NDPluginDriver {
-public:
-    NDPluginStdArrays(const char *portName, int queueSize, int blockingCallbacks, 
-                      const char *NDArrayPort, int NDArrayAddr,
-                      size_t maxMemory);
-
-    /* These methods override the virtual methods in the base class */
-    void processCallbacks(NDArray *pArray);
-    virtual asynStatus readInt8Array(asynUser *pasynUser, epicsInt8 *value,
-                                        size_t nElements, size_t *nIn);
-    virtual asynStatus readInt16Array(asynUser *pasynUser, epicsInt16 *value,
-                                        size_t nElements, size_t *nIn);
-    virtual asynStatus readInt32Array(asynUser *pasynUser, epicsInt32 *value,
-                                        size_t nElements, size_t *nIn);
-    virtual asynStatus readFloat32Array(asynUser *pasynUser, epicsFloat32 *value,
-                                        size_t nElements, size_t *nIn);
-    virtual asynStatus readFloat64Array(asynUser *pasynUser, epicsFloat64 *value,
-                                        size_t nElements, size_t *nIn);
-    asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
-                                        const char **pptypeName, size_t *psize);
-...
-}
-</pre>
+    interpret the array data. The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_std_arrays.html">
+      NDPluginStdArrays class documentation</a> describes this class in detail.</p>
   <p>
     NDPluginStdArrays defines the following parameters. It also implements all of the
     standard plugin parameters from <a href="pluginDoc.html#NDPluginDriver">NDPluginDriver</a>
@@ -120,68 +95,19 @@ public:
   <h2 id="Configuration">
     Configuration</h2>
   <p>
-    The NDPluginStdArrays plugin is created with the following command, either from
-    C/C++ or from the EPICS IOC shell.
-  </p>
-  <pre>drvNDStdArraysConfigure(const char *portName, int queueSize, int blockingCallbacks, 
-                        const char *NDArrayPort, int NDArrayAddr, size_t maxMemory)
+    The NDPluginStdArrays plugin is created with the NDStdArraysConfigure command, either
+    from C/C++ or from the EPICS IOC shell.</p>
+    <pre>NDStdArraysConfigure (const char *portName, int queueSize, int blockingCallbacks, 
+                      const char *NDArrayPort, int NDArrayAddr, size_t maxMemory, 
+                      int priority, int stackSize)
   </pre>
-  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
-    <tr>
-      <th>
-        Argument</th>
-      <th>
-        Description</th>
-    </tr>
-    <tr>
-      <td>
-        <code>portName</code></td>
-      <td>
-        The name of the asyn port for this plugin.
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <code>queueSize</code></td>
-      <td>
-        The maximum number of NDArray objects that can be queued for processing. Passed
-        to the NDPluginDriver base class constructor.
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <code>blockingCallbacks</code></td>
-      <td>
-        Flag controlling whether callbacks block. Passed to the NDPluginDriver base class
-        constructor.
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <code>NDArrayPort</code></td>
-      <td>
-        The name of the asyn port of the driver that will provide the NDArray data. Passed
-        to the NDPluginDriver base class constructor.
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <code>NDArrayAddr</code></td>
-      <td>
-        The asyn addr of the asyn port of the driver that will provide the NDArray data.
-        Passed to the NDPluginDriver base class constructor.
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <code>maxMemory</code></td>
-      <td>
-        Maximum number of bytes of memory to be allocated from the NDArrayPool. Passed to
-        the constructor for the NDPluginDriver base class. The NDStdArrays plugin allocates
-        2 NDArray objects, so this should be at least twice the size of the largest NDArray
-        to be used.</td>
-    </tr>
-  </table>
+  <p>
+    For details on the meaning of the parameters to this function refer to the detailed
+    documentation on the NDStdArraysConfigure function in the <a href="areaDetectorDoxygenHTML/_n_d_plugin_std_arrays_8cpp.html">
+      NDPluginStdArrays.cpp documentation</a> and in the documentation for the constructor
+    for the <a href="areaDetectorDoxygenHTML/class_n_d_plugin_std_arrays.html">NDPluginStdArrays
+      class</a>.
+  </p>
   <h2 id="Screens">
     Screen shots</h2>
   <p>
@@ -196,64 +122,5 @@ public:
     <p>
       <img alt="NDStdArrays.png" src="NDStdArrays.png" /></p>
   </div>
-  <h2 id="IDLClient">
-    IDL Image Display Client</h2>
-  <p>
-    There is an IDL procedure called <a href="http://cars.uchicago.edu/software/idl/imaging_routines.html#epics_ad_display">
-      epics_ad_display</a> that can be used to display 2-dimensional array data that
-    the NDStdArrays plugin sends to EPICS. This IDL client is available as source code
-    (which requires an IDL license), and also as a pre-built IDL .sav file that can
-    be run for free under the IDL Virtual Machine. This IDL program can run on any machine
-    that IDL runs on, and that has the ezcaIDL shareable library built for it. This
-    includes Windows, Linux, Solaris, and Mac. <code>epics_ad_display</code> is included
-    in the <a href="http://cars.uchicago.edu/software/IDL/imaging.html">CARS IDL imaging
-      software.</a> It is also available in the Viewers directory in the areaDetector
-    application, where there is a README file describing how to use it.
-  </p>
-  <p>
-    The control window for <code>epics_ad_display</code> is shown below. It has a field
-    to input the base name of the EPICS PVs with the image data. It also has fields
-    to enable/display the IDL display update, to change the display mode, to autoscale
-    the intensity, and to invert the image in the Y direction. If autoscale is set to
-    No then manual scaling can be entered in the Min and Max fields. The number of frames
-    per second actually being displayed by IDL is shown. There is a status window that
-    shows whether the EPICS PVs are connected and the time the last was array received,
-    updated once per second.
-  </p>
-  <div style="text-align: center">
-    <h3>
-      Main window for IDL epics_ad_display</h3>
-    <p>
-      <img alt="IDL_epics_ad_display.png" src="IDL_epics_ad_display.png" /></p>
-  </div>
-  <p>
-    <code>epics_ad_display</code> can use the simple IDL routine <code>tv</code> to
-    display the images. This is the fastest mode, and results in a non-scalable unadorned
-    window.</p>
-  <div style="text-align: center">
-    <h3>
-      IDL epics_ad_display using the IDL <code>tv</code> routine.</h3>
-    <p>
-      <img alt="IDL_epics_ad_display_tv.jpg" src="IDL_epics_ad_display_tv.jpg" /></p>
-  </div>
-  <p>
-    <code>epics_ad_display</code> can also use the routine <a href="http://cars.uchicago.edu/software/IDL/imaging_routines.html#IMAGE_DISPLAY">
-      image_display.pro</a> to display the images. This routine displays row and column
-    profiles as the cursor is moved. It allows changing the color lookup tables, and
-    zooming in (right mouse click) and out (left mouse click). The following is an example
-    of <code>image_display</code> displaying an image from the simulation detector.</p>
-  <div style="text-align: center">
-    <h3>
-      epics_ad_display using the image_display routine</h3>
-    <p>
-      <img alt="simDetector_image_display.png" src="simDetector_image_display.png" /></p>
-  </div>
-  <h2 id="Future">
-    Future plans</h2>
-  <p>
-    Stephen Mudie at the Australian Synchrotron has written a very nice IDL client to
-    display the EPICS images from the Flea Firewire cameras. This client is being converted
-    to display the data from this areaDetector plugin.
-  </p>
 </body>
 </html>
