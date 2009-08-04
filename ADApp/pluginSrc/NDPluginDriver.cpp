@@ -60,7 +60,7 @@ static const char *driverName="NDPluginDriver";
     int arrayCounter;
     int i, dimsChanged;
     NDAttribute *pAttribute;
-    int colorMode=0, bayerPattern=0;
+    int colorMode=NDColorModeMono, bayerPattern=NDBayerRGGB;
     
     pAttribute = pArray->findAttribute("colorMode");
     if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
