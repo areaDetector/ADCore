@@ -497,7 +497,7 @@ remote_mode_server_arguments 2222
         <td>
           $(P)$(R)RotationAxis</td>
         <td>
-          ao</td>
+          stringout</td>
       </tr>
       <tr>
         <td>
@@ -515,6 +515,25 @@ remote_mode_server_arguments 2222
           $(P)$(R)RotationRange</td>
         <td>
           ao</td>
+      </tr>
+      <tr>
+        <td>
+          marCCD<br />
+          TwoTheta</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Detector two-theta angle (deg); ignored if empty string; requires theta axis
+          definition with display name "TwoTheta" in marccd configuration file (e.g.
+          "<tt>theta_display_name TwoTheta</tt>")</td>
+        <td>
+          MAR_TWO_THETA</td>
+        <td>
+          $(P)$(R)TwoTheta</td>
+        <td>
+          stringout</td>
       </tr>
       <tr>
         <td>
@@ -555,7 +574,7 @@ remote_mode_server_arguments 2222
           marCCD<br />
           DatasetComments</td>
         <td>
-          waveform</td>
+          asynOctet</td>
         <td>
           r/w</td>
         <td>
