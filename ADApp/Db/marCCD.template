@@ -2,17 +2,6 @@
 # Mark Rivers
 # October 31, 2008
 
-# Status poll.  This can normally be Passive, except when ArrayCallbacks is 0 and Overlap is 1.
-# In that case the state will appear to be busy when it is idle, and this polling should be
-# turned on to avoid confusion
-
-record(bo,"$(P)$(R)MarReadStatus") {
-    field(DTYP,"asynInt32")
-    field(OUT, "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_READ_STATUS")
-    field(VAL, "1")
-    field(SCAN,"Passive")
-}
-
 record(longin,"$(P)$(R)MarState_RBV") {
     field(DTYP,"asynInt32")
     field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_STATE")
@@ -396,6 +385,13 @@ record(ao, "$(P)$(R)RotationRange")
     field(PINI, "1")
     field(PREC, "3")
     field(EGU,  "deg")
+}
+
+record(stringout, "$(P)$(R)TwoTheta")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetWrite")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_TWO_THETA")
 }
 
 record(ao, "$(P)$(R)Wavelength")
