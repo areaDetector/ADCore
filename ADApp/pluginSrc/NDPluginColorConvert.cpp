@@ -43,7 +43,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
     tPvFrame PvFrame, *pFrame=&PvFrame;
     int dims[ND_ARRAY_MAX_DIMS];
     int ndims;
-    int colorMode, bayerPattern;
+    int colorMode=NDColorModeMono, bayerPattern=NDBayerRGGB;
     NDAttribute *pAttribute;
      
     getIntegerParam(NDPluginColorConvertColorModeOut, (int *)&colorModeOut);
@@ -429,7 +429,7 @@ NDPluginColorConvert::NDPluginColorConvert(const char *portName, int queueSize, 
     /* Set the plugin type string */    
     setStringParam(NDPluginDriverPluginType, "NDPluginSColorConvert");
     
-    status = setIntegerParam(0, NDPluginColorConvertColorModeOut,       NDColorModeMono);
+    status = setIntegerParam(0, NDPluginColorConvertColorModeOut, NDColorModeMono);
     if (!status)  printf("%s:%s: failed to set integer param for color mode\n",
                          driverName, functionName);
 
