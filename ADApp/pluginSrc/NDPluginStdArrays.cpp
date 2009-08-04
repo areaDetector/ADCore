@@ -26,7 +26,7 @@
 #include "NDArray.h"
 #include "NDPluginStdArrays.h"
 
-/* The command strings are the userParam argument for asyn device support links
+/** The command strings are the userParam argument for asyn device support links
  * The asynDrvUser interface in this driver parses these strings and puts the
  * corresponding enum value in pasynUser->reason */
 static asynParamString_t NDPluginStdArraysParamString[] = {
@@ -298,7 +298,6 @@ asynStatus NDPluginStdArrays::drvUserCreate(asynUser *pasynUser,
 /** Constructor for NDPluginStdArrays; all parameters are simply passed to NDPluginDriver::NDPluginDriver.
   * This plugin cannot block (ASYN_CANBLOCK=0) and is not multi-device (ASYN_MULTIDEVICE=0).
   * It allocates a maximum of 2 NDArray buffers for internal use.
-  *  parameters defined in ADStdDriverParams.h.
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when 
   *            NDPluginDriverBlockingCallbacks=0.  Larger queues can decrease the number of dropped arrays,
