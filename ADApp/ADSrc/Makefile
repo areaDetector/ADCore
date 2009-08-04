@@ -22,6 +22,8 @@ INC += NDArray.h
 INC += PVAttribute.h
 INC += asynNDArrayDriver.h
 INC += ADDriver.h
+INC += tinyxml.h
+INC += tinystr.h
 
 LIBRARY_IOC = ADBase
 LIB_SRCS += NDArray.cpp
