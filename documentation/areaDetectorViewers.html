@@ -36,7 +36,7 @@
     and used than IDL, future enhancements are more likely to be done on the ImageJ
     plugin rather than the IDL viewer.
   </p>
-  <h2 id="ImageJ">
+  <h2 id="ImageJViewer">
     ImageJ Viewer</h2>
   <p>
     This is a plugin for the popular <a href="http://rsbweb.nih.gov/ij/">ImageJ</a>
@@ -47,9 +47,7 @@
     and color modes, i.e. Mono, RGB1 (pixel interleave), RGB2 (row interleave) and RGB3
     (plane interleave). The plugin directory includes a plugin written elsewhere for
     reading and writing netCDF files, so ImageJ can be used to display images and image
-    sequences (movies) saved with the NDFileNetCDF plugin. It also includes a dynamic
-    profile plugin written elsewhere for line profiles that update in real time as new
-    images are displayed or as the profile line segment is moved.</p>
+    sequences (movies) saved with the NDFileNetCDF plugin.</p>
   <p>
     To use this ImageJ plugin do the following:</p>
   <ul>
@@ -94,28 +92,60 @@
   <p>
     The control window for <code>EPICS_AD_Viewer</code> is shown below. The PVPrefix
     field is used to input the base name of the EPICS PVs with the image data. The array
-    dimensions and the number of frames
-    per second actually being displayed by ImageJ is shown. There is a status window that
-    shows whether the EPICS PVs are connected and the number of arrays received since the last
-    update, which is every 2 seconds.
-    <p>To capture a sequence of images into an ImageJ "stack" select "Capture To Stack".
-      The image sequence will be stored in the ImageJ buffer and a scroll bar will appear
-      to allow you to scroll through the images. The stack can be saved to disk in a large
-      number of formats, including AVI.<p>
+    dimensions and the number of frames per second actually being displayed by ImageJ
+    is shown. There is a status window that shows whether the EPICS PVs are connected
+    and the number of arrays received since the last update, which is every 2 seconds.</p>
+  <p>
+    Press the Snap button to make a copy of the current frame in a new window. ImageJ
+    can then be used to process, annotate, etc. that image.</p>
+  <p>
+    To capture a sequence of images into an ImageJ "stack" select "Capture To Stack".
+    The image sequence will be stored in the ImageJ buffer and a scroll bar will appear
+    to allow you to scroll through the images. The stack can be saved to disk in a large
+    number of formats, including AVI.</p>
+  <p>
+    The following is the main ImageJ window.
   </p>
+  <div style="text-align: center">
+    <h3>
+      ImageJ main window.</h3>
+    <p>
+      <img alt="ImageJ_Main_Screen.png" src="ImageJ_Main_Screen.png" /></p>
+  </div>
+  <p>
+    The following is the EPICS_AD_Viewer plugin control, located in the ImageJ "Plugins/EPICS_areaDetector/EPICS
+    AD Viewer" menu.</p>
   <div style="text-align: center">
     <h3>
       ImageJ EPICS_AD_Viewer plugin control window</h3>
     <p>
-      <img alt="EPICS_AD_Viewer.png" src="EPICS_AD_Viewer.png" /></p>
+      <img alt="ImageJ_EPICS_AD_Viewer.png" src="ImageJ_EPICS_AD_Viewer.png" /></p>
   </div>
   <p>
-    This is the.</p>
+    The following is the EPICS_AD_Viewer image display window, which will appear when
+    the Start button is pressed in the EPICS_AD_Viewer control window.</p>
   <div style="text-align: center">
     <h3>
-      ImageJ EPICS_AD_Viewer plugin display window</h3>
+      ImageJ EPICS_AD_Viewer plugin display window with line selection</h3>
     <p>
-      <img alt="EPICS_AD_Viewer_display.jpg" src="EPICS_AD_Viewer_display.jpg" /></p>
+      <img alt=")mageJ_EPICS_AD_Viewer_display.jpg" src="ImageJ_EPICS_AD_Viewer_display.jpg" /></p>
+  </div>
+  <p>
+    Recent versions of ImageJ come with a Dynamic Line Profile tool in the Graphics
+    plugin menu. This tool can be used to plot a live line profile through an image
+    which updates as new images are displayed. It also updates when the line position
+    is changed. The version of this plugin that is supplied with the version of ImageJ
+    current as of this writing (1.42q) does not obey the "Fixed Y-axis scale" property
+    on the Edit/Options/Profile Plot Options menu in ImageJ. There is a newer version
+    of this plugin available on the Web and also in the EPICS_areaDetector plugin folder
+    that does obey the "Fixed Y-axis scale" property. Compile this version and replace
+    the Dynamic_Profiler.class file in the ImageJ Graphics/ plugin folder to use the
+    newer version.</p>
+  <div style="text-align: center">
+    <h3>
+      ImageJ EPICS_AD_Viewer dynamic line profile of the above image</h3>
+    <p>
+      <img alt="ImageJ_EPICS_AD_Viewer_DynamicProfile.png" src="ImageJ_EPICS_AD_Viewer_DynamicProfile.png" /></p>
   </div>
   <h2 id="IDLViewer">
     IDL Viewer</h2>
