@@ -192,7 +192,7 @@
     Detector drivers and plugins are asyn port drivers, meaning that they implement
     one or more of the standard asyn interfaces. They register themselves as interrupt
     sources, so that they do callbacks to registered asyn clients when values change.
-    They inherit from the <a href="http://www.aps.anl.gov/epics/modules/soft/asyn/asynPortDriver.html">
+    They inherit from the <a href="http://www.aps.anl.gov/epics/modules/soft/asyn/R4-11a/asynPortDriver.html">
       asynPortDriver base C++ class</a> that is provided in the asyn module. That base
     class handles all of the details of registering the port driver, registering the
     supported interfaces, and registering the required interrupt sources. The <a href="http://www.aps.anl.gov/epics/modules/soft/asyn/asynDoxygenHTML/class_asyn_port_driver.html">
