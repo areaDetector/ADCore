@@ -126,9 +126,9 @@
     acquisition is started.
   </p>
   <h3>
-    <tt>External</tt></h3>
+    <tt>Ext. Software</tt></h3>
   <p>
-    The <tt>External</tt> mode will make the driver expose images only when told to
+    The <tt>Ext. Software</tt> mode will make the driver expose images only when told to
     once the acquisition is started. A special protocol must be followed to trigger
     each image exposure. This would normally be very simple, but because the ADSC control
     library can report that an exposure did not work and should be retried after any
@@ -140,24 +140,24 @@
     follows:
   </p>
   <ol>
-    <li>Wait for <tt>$(P)$(R)ADSCOkToExpose</tt> to be <tt>Yes</tt></li>
-    <li>Set <tt>$(P)$(R)ADSCExTrCtl</tt> to <tt>Start</tt> to start the exposure</li>
-    <li>Set <tt>$(P)$(R)ADSCExTrCtl</tt> to <tt>Stop</tt> to stop the exposure</li>
-    <li>Wait for <tt>$(P)$(R)ADSCExTrCtl_RBV</tt> to be <tt>OK</tt> or <tt>Again</tt></li>
-    <li>If <tt>$(P)$(R)ADSCExTrCtl_RBV</tt> is <tt>Again</tt>, the exposure did not work
+    <li>Wait for <tt>$(P)$(R)ExSwTrOkToExp</tt> to be <tt>Yes</tt></li>
+    <li>Set <tt>$(P)$(R)ExSwTrCtl</tt> to <tt>Start</tt> to start the exposure</li>
+    <li>Set <tt>$(P)$(R)ExSwTrCtl</tt> to <tt>Stop</tt> to stop the exposure</li>
+    <li>Wait for <tt>$(P)$(R)ExSwTrCtlRsp</tt> to be <tt>OK</tt> or <tt>Again</tt></li>
+    <li>If <tt>$(P)$(R)ExSwTrCtlRsp</tt> is <tt>Again</tt>, the exposure did not work
       and should be tried again</li>
   </ol>
   <p>
-    Note that care must be taken when waiting for <tt>$(P)$(R)ADSCExTrCtl_RBV</tt> to
+    Note that care must be taken when waiting for <tt>$(P)$(R)ExSwTrCtlRsp</tt> to
     be <tt>OK</tt> or <tt>Again</tt> to ensure the PV value is not stale (i.e. from
     the previous exposure). There are at least two methods to ensure this:
   </p>
   <ul>
-    <li>Use a CA monitor on <tt>$(P)$(R)ADSCExTrCtl_RBV</tt>; before waiting for the <tt>
+    <li>Use a CA monitor on <tt>$(P)$(R)ExSwTrCtlRsp</tt>; before waiting for the <tt>
       OK</tt> or <tt>Again</tt> values, wait for the <tt>Stop</tt> value; a CA monitor
       is used to receive the value changes since the PV will have the <tt>Stop</tt> value
       for just a short time</li>
-    <li>After starting the exposure, wait for <tt>$(P)$(R)ADSCExTrCtl_RBV</tt> to be <tt>
+    <li>After starting the exposure, wait for <tt>$(P)$(R)ExSwTrCtlRsp</tt> to be <tt>
       Start</tt></li>
   </ul>
   <h2 id="DarkImages">
@@ -216,20 +216,20 @@
       mode.</dd>
   </dl>
   <h3>
-    Detector External Trigger</h3>
+    Detector External Software Trigger</h3>
   <dl>
-    <dt>OK to expose, <tt>$(P)$(R)ADSCOkToExpose</tt></dt>
+    <dt>OK to expose, <tt>$(P)$(R)ExSwTrOkToExp</tt></dt>
     <dd>
-      When in <tt>External</tt> trigger mode, indicates whether it is OK to start an image
+      When in <tt>Ext. Software</tt> trigger mode, indicates whether it is OK to start an image
       exposure.</dd>
-    <dt>Start, Stop, <tt>$(P)$(R)ADSCExTrCtl</tt></dt>
+    <dt>Start, Stop, <tt>$(P)$(R)ExSwTrCtl</tt></dt>
     <dd>
-      When in <tt>External</tt> trigger mode, set to <tt>1</tt> to start an exposure and
-      <tt>0</tt> to stop it.</dd>
-    <dt><tt>$(P)$(R)ADSCExTrCtl_RBV</tt></dt>
+      When in <tt>Ext. Software</tt> trigger mode, set to <tt>1</tt> to start an exposure, and
+      set to <tt>0</tt> to stop it.</dd>
+    <dt><tt>$(P)$(R)ExSwTrCtlRsp</tt></dt>
     <dd>
-      When in <tt>External</tt> trigger mode, will be <tt>Start</tt>, <tt>Stop</tt>, <tt>
-        OK</tt>, or <tt>Again</tt>. See <a href="#TriggerModes">Trigger Modes</a> section
+      When in <tt>Ext. Software</tt> trigger mode, will be <tt>Start</tt>, <tt>Stop</tt>,
+      <tt>OK</tt>, or <tt>Again</tt>. See <a href="#TriggerModes">Trigger Modes</a> section
       for more about how this property will behave.</dd>
   </dl>
   <h3>
