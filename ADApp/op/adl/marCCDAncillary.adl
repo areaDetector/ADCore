@@ -8,7 +8,7 @@ display {
 		x=112
 		y=138
 		width=450
-		height=315
+		height=340
 	}
 	clr=14
 	bclr=4
@@ -203,7 +203,7 @@ text {
 text {
 	object {
 		x=45
-		y=231
+		y=256
 		width=130
 		height=20
 	}
@@ -216,7 +216,7 @@ text {
 text {
 	object {
 		x=45
-		y=254
+		y=279
 		width=130
 		height=20
 	}
@@ -229,7 +229,7 @@ text {
 text {
 	object {
 		x=45
-		y=279
+		y=304
 		width=130
 		height=20
 	}
@@ -333,7 +333,7 @@ text {
 "text entry" {
 	object {
 		x=180
-		y=231
+		y=256
 		width=80
 		height=20
 	}
@@ -348,7 +348,7 @@ text {
 "text entry" {
 	object {
 		x=180
-		y=254
+		y=279
 		width=260
 		height=20
 	}
@@ -364,7 +364,7 @@ text {
 "text entry" {
 	object {
 		x=180
-		y=279
+		y=304
 		width=260
 		height=20
 	}
@@ -389,4 +389,33 @@ text {
 	}
 	textix="MARCCD Ancillary Information"
 	align="horiz. centered"
+}
+text {
+	object {
+		x=85
+		y=231
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Two Theta"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=180
+		y=231
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TwoTheta"
+		clr=14
+		bclr=51
+	}
+	format="string"
+	limits {
+	}
 }
