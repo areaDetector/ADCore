@@ -3,7 +3,17 @@ For R1-5
 - Update documentation to link to doxygen files and remove details of code
   from HTML files.
 
-- Implement Lewis' change for marCCD.
+- In ioc* directories, make sure (file1 is changed to netCDF1, TIFF1 and JPEG1
+  where needed
+
+- iocMARCCD/st.cmd, change NELEMENTS to 2048*2048=4200000
+
+- Roper detector still setting full-chip, not ROI
+
+- Implement Lewis' changes for marCCD.
+
+- Bug in plugins.  Don't assume that colorMode attribute (or any other
+  attribute) exists.
 
 - Test all drivers.
 
