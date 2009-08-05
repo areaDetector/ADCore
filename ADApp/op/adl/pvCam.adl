@@ -1,0 +1,1411 @@
+
+file {
+	name="D:\epics\synApps_5_4_1\support\areaDetector\1-5tieman\ADApp\op\adl\pvCam.adl"
+	version=030102
+}
+display {
+	object {
+		x=61
+		y=375
+		width=790
+		height=526
+	}
+	clr=14
+	bclr=4
+	cmap=""
+	gridSpacing=5
+	gridOn=0
+	snapToGrid=0
+}
+"color map" {
+	ncolors=65
+	colors {
+		ffffff,
+		ececec,
+		dadada,
+		c8c8c8,
+		bbbbbb,
+		aeaeae,
+		9e9e9e,
+		919191,
+		858585,
+		787878,
+		696969,
+		5a5a5a,
+		464646,
+		2d2d2d,
+		000000,
+		00d800,
+		1ebb00,
+		339900,
+		2d7f00,
+		216c00,
+		fd0000,
+		de1309,
+		be190b,
+		a01207,
+		820400,
+		5893ff,
+		597ee1,
+		4b6ec7,
+		3a5eab,
+		27548d,
+		fbf34a,
+		f9da3c,
+		eeb62b,
+		e19015,
+		cd6100,
+		ffb0ff,
+		d67fe2,
+		ae4ebc,
+		8b1a96,
+		610a75,
+		a4aaff,
+		8793e2,
+		6a73c1,
+		4d52a4,
+		343386,
+		c7bb6d,
+		b79d5c,
+		a47e3c,
+		7d5627,
+		58340f,
+		99ffff,
+		73dfff,
+		4ea5f9,
+		2a63e4,
+		0a00b8,
+		ebf1b5,
+		d4db9d,
+		bbc187,
+		a6a462,
+		8b8239,
+		73ff6b,
+		52da3b,
+		3cb420,
+		289315,
+		1a7309,
+	}
+}
+text {
+	object {
+		x=9
+		y=8
+		width=300
+		height=25
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="PVCam Driver"
+}
+text {
+	object {
+		x=85
+		y=34
+		width=84
+		height=25
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="$(P)$(R)"
+	align="horiz. centered"
+}
+"message button" {
+	object {
+		x=14
+		y=493
+		width=150
+		height=20
+	}
+	control {
+		chan="$(P)$(R)Initialize"
+		clr=14
+		bclr=51
+	}
+	label="Initialize Detector"
+	press_msg="1"
+}
+text {
+	object {
+		x=14
+		y=73
+		width=130
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Exposure Time"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=153
+		y=73
+		width=59
+		height=20
+	}
+	control {
+		chan="$(P)$(R)AcquireTime"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=219
+		y=74
+		width=79
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)AcquireTime_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=10
+		y=120
+		width=75
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Slot 1:"
+}
+rectangle {
+	object {
+		x=82
+		y=117
+		width=170
+		height=25
+	}
+	"basic attribute" {
+		clr=15
+		fill="outline"
+	}
+	"dynamic attribute" {
+		vis="calc"
+		calc="A = 1"
+		chan="$(P)$(R)DetectorSelected_RBV"
+	}
+}
+"text update" {
+	object {
+		x=85
+		y=120
+		width=163
+		height=20
+	}
+	monitor {
+		chan="$(P)$(R)Slot1Cam_RBV"
+		clr=14
+		bclr=51
+	}
+	align="horiz. right"
+	limits {
+	}
+}
+"message button" {
+	object {
+		x=255
+		y=120
+		width=120
+		height=20
+	}
+	control {
+		chan="$(P)$(R)DetectorSelected"
+		clr=14
+		bclr=51
+	}
+	label="Use Detector 1"
+	press_msg="1"
+}
+text {
+	object {
+		x=9
+		y=148
+		width=75
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Slot 2:"
+}
+rectangle {
+	object {
+		x=81
+		y=145
+		width=170
+		height=25
+	}
+	"basic attribute" {
+		clr=15
+		fill="outline"
+	}
+	"dynamic attribute" {
+		vis="calc"
+		calc="A = 2"
+		chan="$(P)$(R)DetectorSelected_RBV"
+	}
+}
+"text update" {
+	object {
+		x=84
+		y=148
+		width=163
+		height=20
+	}
+	monitor {
+		chan="$(P)$(R)Slot2Cam_RBV"
+		clr=14
+		bclr=51
+	}
+	align="horiz. right"
+	limits {
+	}
+}
+"message button" {
+	object {
+		x=254
+		y=148
+		width=120
+		height=20
+	}
+	control {
+		chan="$(P)$(R)DetectorSelected"
+		clr=14
+		bclr=51
+	}
+	label="Use Detector 2"
+	press_msg="2"
+}
+text {
+	object {
+		x=10
+		y=178
+		width=75
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Slot 3:"
+}
+rectangle {
+	object {
+		x=82
+		y=175
+		width=170
+		height=25
+	}
+	"basic attribute" {
+		clr=15
+		fill="outline"
+	}
+	"dynamic attribute" {
+		vis="calc"
+		calc="A = 3"
+		chan="$(P)$(R)DetectorSelected_RBV"
+	}
+}
+"text update" {
+	object {
+		x=85
+		y=178
+		width=163
+		height=20
+	}
+	monitor {
+		chan="$(P)$(R)Slot3Cam_RBV"
+		clr=14
+		bclr=51
+	}
+	align="horiz. right"
+	limits {
+	}
+}
+"message button" {
+	object {
+		x=255
+		y=178
+		width=120
+		height=20
+	}
+	control {
+		chan="$(P)$(R)DetectorSelected"
+		clr=14
+		bclr=51
+	}
+	label="Use Detector 3"
+	press_msg="3"
+}
+text {
+	object {
+		x=450
+		y=20
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Chip Type:"
+}
+"text update" {
+	object {
+		x=670
+		y=21
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)ChipName_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=449
+		y=36
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Height (pixels):"
+}
+"text update" {
+	object {
+		x=669
+		y=37
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)NumParallelPixels_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=451
+		y=51
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Width (pixels):"
+}
+"text update" {
+	object {
+		x=671
+		y=52
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)NumSerialPixels_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=450
+		y=65
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Pixel Height:"
+}
+"text update" {
+	object {
+		x=670
+		y=66
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)PixelParallelSize_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=452
+		y=80
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Pixel Width:"
+}
+"text update" {
+	object {
+		x=672
+		y=81
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)PixelSerialSize_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=446
+		y=122
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Vertical Dist (center-to-center):"
+}
+"text update" {
+	object {
+		x=665
+		y=124
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)PixelParallelDist_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=447
+		y=138
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Horizontal Dist (center-to-center):"
+}
+"text update" {
+	object {
+		x=667
+		y=139
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)PixelSerialDist_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=445
+		y=151
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Pre Mask Lines:"
+}
+text {
+	object {
+		x=446
+		y=167
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Post Mask Lines:"
+}
+"text update" {
+	object {
+		x=664
+		y=153
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)PreMask_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=666
+		y=168
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)PostMask_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=446
+		y=178
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Pre Scan Lines:"
+}
+text {
+	object {
+		x=447
+		y=194
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Post Scan Lines:"
+}
+"text update" {
+	object {
+		x=665
+		y=180
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)PreScan_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=667
+		y=195
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)PostScan_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=446
+		y=206
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Number of Readout Ports:"
+}
+text {
+	object {
+		x=447
+		y=222
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Full Well Capacity:"
+}
+"text update" {
+	object {
+		x=665
+		y=208
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)NumPorts_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=667
+		y=223
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)FullWellCapacity_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=448
+		y=93
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Height (mm):"
+}
+"text update" {
+	object {
+		x=668
+		y=94
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)ChipHeight_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=450
+		y=108
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Width (mm):"
+}
+"text update" {
+	object {
+		x=670
+		y=109
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)ChipWidth_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=448
+		y=234
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Frame Transfer Capable:"
+}
+"text update" {
+	object {
+		x=668
+		y=235
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)FrameTransferCapable_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=448
+		y=248
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Number of Speed Table Entries:"
+}
+"text update" {
+	object {
+		x=668
+		y=249
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)NumSpeedTableEntries_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=448
+		y=261
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Current Speed Table Index:"
+}
+"text update" {
+	object {
+		x=668
+		y=262
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)SpeedTableIndex_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=449
+		y=274
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Bit Depth:"
+}
+"text update" {
+	object {
+		x=669
+		y=275
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)BitDepth_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=450
+		y=286
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="PixelTime:"
+}
+"text update" {
+	object {
+		x=670
+		y=287
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)PixelTime_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=448
+		y=299
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Max Gain Index:"
+}
+"text update" {
+	object {
+		x=668
+		y=300
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)MaxGainIndex_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=448
+		y=312
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Current Gain Index:"
+}
+"text update" {
+	object {
+		x=668
+		y=313
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)GainIndex_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=7
+		y=228
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Current Gain Index:"
+}
+"text entry" {
+	object {
+		x=126
+		y=223
+		width=59
+		height=15
+	}
+	control {
+		chan="$(P)$(R)GainIndex"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=192
+		y=224
+		width=79
+		height=15
+	}
+	monitor {
+		chan="$(P)$(R)GainIndex_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=448
+		y=324
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Min Shutter Open Delay:"
+}
+"text update" {
+	object {
+		x=668
+		y=325
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)MinShutterOpenDelay_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=669
+		y=336
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)MaxShutterOpenDelay_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=449
+		y=335
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Max Shutter Open Delay:"
+}
+text {
+	object {
+		x=448
+		y=346
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Min Shutter Close Delay:"
+}
+text {
+	object {
+		x=449
+		y=357
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Max Shutter Close Delay:"
+}
+"text update" {
+	object {
+		x=668
+		y=347
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)MinShutterCloseDelay_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=669
+		y=358
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)MaxShutterCloseDelay_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=6
+		y=260
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Shutter Open Delay:"
+}
+"text update" {
+	object {
+		x=191
+		y=256
+		width=79
+		height=15
+	}
+	monitor {
+		chan="$(P)$(R)OpenDelay_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=125
+		y=255
+		width=59
+		height=15
+	}
+	control {
+		chan="$(P)$(R)OpenDelay"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=6
+		y=278
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Shutter Close Delay:"
+}
+"text update" {
+	object {
+		x=191
+		y=274
+		width=79
+		height=15
+	}
+	monitor {
+		chan="$(P)$(R)CloseDelay_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=125
+		y=273
+		width=59
+		height=15
+	}
+	control {
+		chan="$(P)$(R)CloseDelay"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=450
+		y=369
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Measured Temperature:"
+}
+"text update" {
+	object {
+		x=670
+		y=370
+		width=100
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)MeasuredTemperature_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=9
+		y=310
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Set Temperature:"
+}
+"text entry" {
+	object {
+		x=128
+		y=305
+		width=59
+		height=15
+	}
+	control {
+		chan="$(P)$(R)SetTemperature"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=194
+		y=306
+		width=79
+		height=15
+	}
+	monitor {
+		chan="$(P)$(R)SetTemperature_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=8
+		y=344
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Detector Mode:"
+}
+"text update" {
+	object {
+		x=267
+		y=340
+		width=150
+		height=15
+	}
+	monitor {
+		chan="$(P)$(R)DetectorMode_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=112
+		y=340
+		width=150
+		height=15
+	}
+	control {
+		chan="$(P)$(R)DetectorMode"
+		clr=54
+		bclr=4
+	}
+}
+text {
+	object {
+		x=9
+		y=380
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Speed Table Index:"
+}
+"text entry" {
+	object {
+		x=128
+		y=375
+		width=59
+		height=15
+	}
+	control {
+		chan="$(P)$(R)SpeedTableIndex"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=194
+		y=376
+		width=79
+		height=15
+	}
+	monitor {
+		chan="$(P)$(R)SpeedTableIndex_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=8
+		y=407
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Trigger Mode:"
+}
+menu {
+	object {
+		x=112
+		y=403
+		width=150
+		height=15
+	}
+	control {
+		chan="$(P)$(R)TriggerMode"
+		clr=54
+		bclr=4
+	}
+}
+"text update" {
+	object {
+		x=267
+		y=403
+		width=150
+		height=15
+	}
+	monitor {
+		chan="$(P)$(R)TriggerMode_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=7
+		y=424
+		width=100
+		height=10
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Trigger Edge:"
+}
+menu {
+	object {
+		x=111
+		y=420
+		width=150
+		height=15
+	}
+	control {
+		chan="$(P)$(R)TriggerEdge"
+		clr=54
+		bclr=4
+	}
+}
+"text update" {
+	object {
+		x=266
+		y=420
+		width=150
+		height=15
+	}
+	monitor {
+		chan="$(P)$(R)TriggerEdge_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
