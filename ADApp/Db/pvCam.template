@@ -1,0 +1,520 @@
+# Database for the records specific to the PVCam (PI/Acton) driver
+# Brian Tieman
+# 06/14/2009
+
+record(longout, "$(P)$(R)Initialize")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_INITIALIZE_DETECTOR")
+}
+
+record(longin, "$(P)$(R)Initialize_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_INITIALIZE_DETECTOR")
+   field(SCAN, "I/O Intr")
+}
+
+
+record(stringin, "$(P)$(R)Slot1Cam_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_SLOT1")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+
+record(stringin, "$(P)$(R)Slot2Cam_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_SLOT2")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)Slot3Cam_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_SLOT3")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)DetectorSelected")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_DETECTORSELECTED")
+   field(LOPR, "0")
+   field(HOPR, "500")
+}
+
+record(longin, "$(P)$(R)DetectorSelected_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_DETECTORSELECTED")
+   field(SCAN, "I/O Intr")
+   field(LOPR, "0")
+   field(HOPR, "3")
+}
+
+
+record(stringin, "$(P)$(R)ChipName_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_CHIPNAME")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+
+record(longin, "$(P)$(R)NumParallelPixels_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_NUMPARALLELPIXELS")
+   field(SCAN, "I/O Intr")
+   field(LOPR, "0")
+   field(HOPR, "50000")
+}
+
+record(longin, "$(P)$(R)NumSerialPixels_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_NUMSERIALPIXELS")
+   field(SCAN, "I/O Intr")
+   field(LOPR, "0")
+   field(HOPR, "50000")
+}
+
+
+record(longin, "$(P)$(R)PixelParallelSize_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_PIXELPARALLELSIZE")
+   field(SCAN, "I/O Intr")
+   field(LOPR, "0")
+   field(HOPR, "50000")
+}
+
+record(longin, "$(P)$(R)PixelSerialSize_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_PIXELSERIALSIZE")
+   field(SCAN, "I/O Intr")
+   field(LOPR, "0")
+   field(HOPR, "50000")
+}
+
+record(ai, "$(P)$(R)ChipWidth_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_CHIPWIDTH")
+   field(SCAN, "I/O Intr")
+   field(PREC, "3")
+   field(LOPR, "0.0")
+   field(HOPR, "500.0")
+}
+
+record(ai, "$(P)$(R)ChipHeight_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_CHIPHEIGHT")
+   field(SCAN, "I/O Intr")
+   field(PREC, "3")
+   field(LOPR, "0.0")
+   field(HOPR, "500.0")
+}
+
+record(longin, "$(P)$(R)PixelParallelDist_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_PIXELPARALLELDIST")
+   field(SCAN, "I/O Intr")
+   field(LOPR, "0")
+   field(HOPR, "50000")
+}
+
+record(longin, "$(P)$(R)PixelSerialDist_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_PIXELSERIALDIST")
+   field(SCAN, "I/O Intr")
+   field(LOPR, "0")
+   field(HOPR, "50000")
+}
+
+
+record(longin, "$(P)$(R)PostMask_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_POSTMASK")
+   field(SCAN, "I/O Intr")
+   field(LOPR, "0")
+   field(HOPR, "50000")
+}
+
+record(longin, "$(P)$(R)PreMask_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_PREMASK")
+   field(SCAN, "I/O Intr")
+   field(LOPR, "0")
+   field(HOPR, "50000")
+}
+
+
+record(longin, "$(P)$(R)PostScan_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_POSTSCAN")
+   field(SCAN, "I/O Intr")
+   field(LOPR, "0")
+   field(HOPR, "50000")
+}
+
+record(longin, "$(P)$(R)PreScan_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_PRESCAN")
+   field(SCAN, "I/O Intr")
+   field(LOPR, "0")
+   field(HOPR, "50000")
+}
+
+
+record(longin, "$(P)$(R)NumPorts_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_NUMPORTS")
+   field(SCAN, "I/O Intr")
+   field(LOPR, "0")
+   field(HOPR, "50000")
+}
+
+record(longin, "$(P)$(R)FullWellCapacity_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_FULLWELLCAPACITY")
+   field(SCAN, "I/O Intr")
+   field(LOPR, "0")
+   field(HOPR, "50000")
+}
+
+
+record(longin, "$(P)$(R)FrameTransferCapable_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_FRAMETRANSFERCAPABLE")
+   field(SCAN, "I/O Intr")
+   field(LOPR, "0")
+   field(HOPR, "50000")
+}
+
+
+record(longin, "$(P)$(R)NumSpeedTableEntries_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_NUMSPEEDTABLEENTRIES")
+   field(SCAN, "I/O Intr")
+   field(LOPR, "0")
+   field(HOPR, "50000")
+}
+
+
+record(longout, "$(P)$(R)SpeedTableIndex")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_SPEEDTABLEINDEX")
+}
+
+
+record(longin, "$(P)$(R)SpeedTableIndex_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_SPEEDTABLEINDEX_RBV")
+   field(SCAN, "I/O Intr")
+}
+
+
+record(longin, "$(P)$(R)BitDepth_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_BITDEPTH")
+   field(SCAN, "I/O Intr")
+   field(LOPR, "0")
+   field(HOPR, "50000")
+}
+
+
+record(longin, "$(P)$(R)PixelTime_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_PIXELTIME")
+   field(SCAN, "I/O Intr")
+   field(LOPR, "0")
+   field(HOPR, "50000")
+}
+
+
+record(longin, "$(P)$(R)MaxGainIndex_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_MAXGAININDEX")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)GainIndex")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_GAININDEX")
+}
+
+record(longin, "$(P)$(R)GainIndex_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_GAININDEX_RBV")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)MinShutterOpenDelay_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_MINSHUTTEROPENDELAY")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)MaxShutterOpenDelay_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_MAXSHUTTEROPENDELAY")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)MinShutterCloseDelay_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_MINSHUTTERCLOSEDELAY")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)MaxShutterCloseDelay_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_MAXSHUTTERCLOSEDELAY")
+   field(SCAN, "I/O Intr")
+}
+
+
+record(longout, "$(P)$(R)OpenDelay")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_SHUTTEROPENDELAY")
+}
+
+record(longin, "$(P)$(R)OpenDelay_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_SHUTTEROPENDELAY_RBV")
+   field(SCAN, "I/O Intr")
+}
+
+
+record(longout, "$(P)$(R)CloseDelay")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_SHUTTERCLOSEDELAY")
+}
+
+record(longin, "$(P)$(R)CloseDelay_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_SHUTTERCLOSEDELAY_RBV")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)MeasuredTemperature_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_MEASUREDTEMPERATURE")
+   field(SCAN, "I/O Intr")
+   field(PREC, "1")
+}
+
+record(ao, "$(P)$(R)SetTemperature")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_SETTEMPERATURE")
+   field(PREC, "1")
+}
+
+record(ai, "$(P)$(R)SetTemperature_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_SETTEMPERATURE_RBV")
+   field(SCAN, "I/O Intr")
+   field(PREC, "1")
+}
+
+record(ao, "$(P)$(R)MinSetTemperature")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_MINTEMPERATURE")
+   field(PREC, "1")
+}
+
+record(ao, "$(P)$(R)MaxSetTemperature")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_MAXTEMPERATURE")
+   field(PREC, "1")
+}
+
+
+record(mbbo, "$(P)$(R)DetectorMode")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_DETECTORMODE")
+   field(ZRST, "NORMAL")
+   field(ZRVL, "0")
+   field(ONST, "FT")
+   field(ONVL, "1")
+   field(TWST, "MPP")
+   field(TWVL, "2")
+   field(THST, "FT_MPP")
+   field(THVL, "3")
+   field(FRST, "ALT_NORMAL")
+   field(FRVL, "4")
+   field(FVST, "ALT_FT")
+   field(FVVL, "5")
+   field(SXST, "ALT_MPP")
+   field(SXVL, "6")
+   field(SVST, "ALT_FT_MPP")
+   field(SVVL, "7")
+   field(SVST, "INTERLINE")
+   field(SVVL, "8")
+}
+
+record(mbbi, "$(P)$(R)DetectorMode_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_DETECTORMODE_RBV")
+   field(ZRST, "NORMAL")
+   field(ZRVL, "0")
+   field(ONST, "FT")
+   field(ONVL, "1")
+   field(TWST, "MPP")
+   field(TWVL, "2")
+   field(THST, "FT_MPP")
+   field(THVL, "3")
+   field(FRST, "ALT_NORMAL")
+   field(FRVL, "4")
+   field(FVST, "ALT_FT")
+   field(FVVL, "5")
+   field(SXST, "ALT_MPP")
+   field(SXVL, "6")
+   field(SVST, "ALT_FT_MPP")
+   field(SVVL, "7")
+   field(SVST, "INTERLINE")
+   field(SVVL, "8")
+   field(SCAN, "I/O Intr")
+}
+
+
+record(mbbo, "$(P)$(R)TriggerMode")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_TRIGGERMODE")
+   field(ZRST, "Free Run")
+   field(ZRVL, "0")
+   field(ONST, "Ext Trigger")
+   field(ONVL, "1")
+   field(TWST, "Bulb Mode")
+   field(TWVL, "2")
+}
+
+record(mbbi, "$(P)$(R)TriggerMode_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_TRIGGERMODE_RBV")
+   field(ZRST, "Free Run")
+   field(ZRVL, "0")
+   field(ONST, "Ext Trigger")
+   field(ONVL, "1")
+   field(TWST, "Bulb Mode")
+   field(TWVL, "2")
+   field(SCAN, "I/O Intr")
+}
+
+
+record(mbbo, "$(P)$(R)TriggerEdge")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_TRIGGEREDGE")
+   field(ZRST, "None")
+   field(ZRVL, "0")
+   field(ONST, "Positive")
+   field(ONVL, "1")
+   field(TWST, "Negative")
+   field(TWVL, "2")
+}
+
+record(mbbi, "$(P)$(R)TriggerEdge_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_TRIGGEREDGE_RBV")
+   field(ZRST, "None")
+   field(ZRVL, "0")
+   field(ONST, "Positive")
+   field(ONVL, "1")
+   field(TWST, "Negative")
+   field(TWVL, "2")
+   field(SCAN, "I/O Intr")
+}
