@@ -25,8 +25,13 @@ DIRS += roperSrc
 roperSrc_DEPEND_DIRS = pluginSrc
 DIRS += firewireWinSrc
 firewireWinSrc_DEPEND_DIRS = pluginSrc
+# Uncomment this line if you have the Perkin Elmer SDK installed
 #DIRS += perkinElmerSrc
 perkinElmerSrc_DEPEND_DIRS = pluginSrc
+# Uncomment these lines if you have PVCAM drivers and SDK installed
+#DIRS += pvcamSupport
+#DIRS += pvcamSrc
+pvcamSrc_DEPEND_DIRS = pluginSrc pvcamSupport
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *db*))
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *Db*))
 include $(TOP)/configure/RULES_DIRS
