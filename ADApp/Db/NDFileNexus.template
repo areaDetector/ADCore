@@ -1,0 +1,321 @@
+# Database for NDFile driver, which saves files for NDArray data.
+# Mark Rivers
+# April 7, 2008
+
+###################################################################
+#  These records control file I/O                                 # 
+###################################################################
+
+# Template File path.
+record(waveform, "$(P)$(R)TemplateFilePath")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMPLATE_FILE_PATH")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(R)TemplateFilePath_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMPLATE_FILE_PATH")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
+# Template Filename
+record(waveform, "$(P)$(R)TemplateFileName")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMPLATE_FILE_NAME")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(R)TemplateFileName_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMPLATE_FILE_NAME")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
+# Num frames per file
+record(longout, "$(P)$(R)FramesPerFile")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FRAMES_PER_FILE")
+    field(VAL,  "1")
+}
+
+record(longin, "$(P)$(R)FramesPerFile_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FRAMES_PER_FILE")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)FramesLeft")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FRAMES_LEFT")
+    field(SCAN, "I/O Intr")
+}
+
+
+# File path.
+record(waveform, "$(P)$(R)FilePath")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_PATH")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(R)FilePath_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_PATH")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
+# Filename
+record(waveform, "$(P)$(R)FileName")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NAME")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(R)FileName_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NAME")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
+# File number
+record(longout, "$(P)$(R)FileNumber")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NUMBER")
+    field(VAL,  "1")
+}
+
+record(longin, "$(P)$(R)FileNumber_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NUMBER")
+    field(SCAN, "I/O Intr")
+}
+
+record(calcout, "$(P)$(R)FileNumber_Sync")
+{
+    field(INPA, "$(P)$(R)FileNumber_RBV CP")
+    field(CALC, "A")
+    field(OUT,  "$(P)$(R)FileNumber PP")
+}
+
+# Autoincrement flag
+record(bo, "$(P)$(R)AutoIncrement")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_INCREMENT")
+    field(VAL,  "1")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)AutoIncrement_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_INCREMENT")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(SCAN, "I/O Intr")
+}
+
+# File template
+record(waveform, "$(P)$(R)FileTemplate")
+{
+    field(PINI,  "1")
+    field(DTYP,  "asynOctetWrite")
+    field(INP,   "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_TEMPLATE")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(R)FileTemplate_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_TEMPLATE")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
+# Full filename, including path
+record(waveform, "$(P)$(R)FullFileName_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FULL_FILE_NAME")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
+# Autosave flag
+record(bo, "$(P)$(R)AutoSave")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_SAVE")
+    field(VAL,  "1")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)AutoSave_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_SAVE")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(SCAN, "I/O Intr")
+}
+
+# NOTE: These should be busy records, but wait till we get asynBusy record
+# Write file
+record(longout, "$(P)$(R)WriteFile")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WRITE_FILE")
+}
+
+# Read file
+record(longout, "$(P)$(R)ReadFile")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))READ_FILE")
+}
+
+# File data format 
+record(mbbo, "$(P)$(R)FileFormat")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_FORMAT")
+    field(VAL,  "0")
+    field(ZRST, "netCDF")
+    field(ZRVL, "0")
+    field(ONST, "Invalid")
+    field(ONVL, "1")
+}
+
+record(mbbi, "$(P)$(R)FileFormat_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_FORMAT")
+    field(ZRST, "netCDF")
+    field(ZRVL, "0")
+    field(ONST, "Invalid")
+    field(ONVL, "1")
+    field(SCAN, "I/O Intr")
+}
+
+# File save mode 
+record(mbbo, "$(P)$(R)FileWriteMode")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WRITE_MODE")
+    field(VAL,  "0")
+    field(ZRST, "Single")
+    field(ZRVL, "0")
+    field(ONST, "Capture")
+    field(ONVL, "1")
+    field(TWST, "Stream")
+    field(TWVL, "2")
+}
+
+record(mbbi, "$(P)$(R)FileWriteMode_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WRITE_MODE")
+    field(ZRST, "Single")
+    field(ZRVL, "0")
+    field(ONST, "Capture")
+    field(ONVL, "1")
+    field(TWST, "Stream")
+    field(TWVL, "2")
+    field(SCAN, "I/O Intr")
+}
+
+# NOTE: These should be busy records, and no RBV, but wait till we get asynBusy record
+# Capture data
+record(longout, "$(P)$(R)Capture")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CAPTURE")
+}
+
+record(longin, "$(P)$(R)Capture_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CAPTURE")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)NumCapture")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_CAPTURE")
+    field(VAL,  "1")
+}
+
+record(longin, "$(P)$(R)NumCapture_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_CAPTURE")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)NumCaptured_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_CAPTURED")
+    field(SCAN, "I/O Intr")
+}
+
+
