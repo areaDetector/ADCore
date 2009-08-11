@@ -62,9 +62,9 @@ static const char *driverName="NDPluginDriver";
     NDAttribute *pAttribute;
     int colorMode=NDColorModeMono, bayerPattern=NDBayerRGGB;
     
-    pAttribute = pArray->findAttribute("colorMode");
+    pAttribute = pArray->pAttributeList->find("colorMode");
     if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
-    pAttribute = pArray->findAttribute("bayerPattern");
+    pAttribute = pArray->pAttributeList->find("bayerPattern");
     if (pAttribute) pAttribute->getValue(NDAttrInt32, &bayerPattern);
     
     getIntegerParam(NDPluginDriverArrayCounter, &arrayCounter);

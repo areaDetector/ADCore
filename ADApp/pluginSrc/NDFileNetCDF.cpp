@@ -53,15 +53,11 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
     nc_type ncType=NC_NAT;
     int i, j;
     NDAttribute *pAttribute;
-    char name[MAX_ATTRIBUTE_STRING_SIZE];
-    char description[MAX_ATTRIBUTE_STRING_SIZE];
-    char source[MAX_ATTRIBUTE_STRING_SIZE];
     char tempString[MAX_ATTRIBUTE_STRING_SIZE];
     const char *dataTypeString=NULL, *sourceTypeString=NULL;
     NDAttrDataType_t attrDataType;
     size_t attrSize;
     int numAttributes, attrCount;
-    NDAttrSource_t sourceType;
     double fileVersion;
     static const char *functionName = "openFile";
 
@@ -182,13 +178,12 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
 
     /* Create a variable for each attribute in the array */
     free(this->pAttributeId);
-    numAttributes = pArray->numAttributes();
+    numAttributes = pArray->pAttributeList->count();
     attrCount = 0;
     this->pAttributeId = (int *)calloc(numAttributes, sizeof(int));
-    pAttribute = pArray->nextAttribute(NULL);
+    pAttribute = pArray->pAttributeList->next(NULL);
     while (pAttribute) {
         pAttribute->getValueInfo(&attrDataType, &attrSize);
-        pAttribute->getName(name, sizeof(name));
         switch (attrDataType) {
             case NDAttrInt8:
                 dataTypeString = "Int8";
@@ -221,22 +216,20 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
                 dataTypeString = "Undefined";
                 break;
         }
-        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_DataType", name);
+        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_DataType", pAttribute->pName);
         if ((retval = nc_put_att_text(this->ncId, NC_GLOBAL, tempString, 
                                      strlen(dataTypeString), dataTypeString)))
             ERR(retval);
-        pAttribute->getDescription(description, sizeof(description));
-        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_Description", name);
+        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_Description", pAttribute->pName);
         if ((retval = nc_put_att_text(this->ncId, NC_GLOBAL, tempString, 
-                                     strlen(description), description)))
+                                     strlen(pAttribute->pDescription), pAttribute->pDescription)))
             ERR(retval);
-        pAttribute->getSource(&sourceType, source, sizeof(source));
-        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_Source", name);
+        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_Source", pAttribute->pName);
         if ((retval = nc_put_att_text(this->ncId, NC_GLOBAL, tempString, 
-                                     strlen(source), source)))
+                                     strlen(pAttribute->pSource), pAttribute->pSource)))
             ERR(retval);
-        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_SourceType", name);
-        switch (sourceType) {
+        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_SourceType", pAttribute->pName);
+        switch (pAttribute->sourceType) {
             case NDAttrSourceDriver:
                 sourceTypeString = "Driver";
                 break;
@@ -276,7 +269,7 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
                 ncType = NC_BYTE;
                 break;
         }
-        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s", name);
+        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s", pAttribute->pName);
         if (attrDataType == NDAttrString) {
             if ((retval = nc_def_var(this->ncId, tempString, ncType, 2,
                     stringDimIds, &this->pAttributeId[attrCount++])))
@@ -286,7 +279,7 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
                     &dimIds[0], &this->pAttributeId[attrCount++])))
                     ERR(retval);
         }
-        pAttribute = pArray->nextAttribute(pAttribute);
+        pAttribute = pArray->pAttributeList->next(pAttribute);
     }
 
     /* End define mode. This tells netCDF we are done defining
@@ -356,7 +349,7 @@ asynStatus NDFileNetCDF::writeFile(NDArray *pArray)
             break;
     }
     /* Write the attributes.  Loop through the list of attributes.  These must not have changed since define time! */
-    pAttribute = pArray->nextAttribute(NULL);
+    pAttribute = pArray->pAttributeList->next(NULL);
     attrCount = 0;
     while (pAttribute) {
         pAttribute->getValueInfo(&attrDataType, &attrSize);
@@ -405,7 +398,7 @@ asynStatus NDFileNetCDF::writeFile(NDArray *pArray)
                 break;
                 break;
         }
-        pAttribute = pArray->nextAttribute(pAttribute);
+        pAttribute = pArray->pAttributeList->next(pAttribute);
     }
     this->nextRecord++;
     return(asynSuccess);

@@ -48,7 +48,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
         return(asynError);
     }
     /* We do some special treatment based on colorMode */
-    pAttribute = pArray->findAttribute("colorMode");
+    pAttribute = pArray->pAttributeList->find("colorMode");
     if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
 
     switch (pArray->dataType) {
