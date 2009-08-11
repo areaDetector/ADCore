@@ -135,7 +135,7 @@ template <typename epicsType> int simDetector::computeArray(int sizeX, int sizeY
             pBlue  = (epicsType *)this->pRaw->pData + 2*sizeX*sizeY;
             break;
     }
-    this->pRaw->addAttribute("colorMode", "Color mode", NDAttrInt32, &colorMode);
+    this->pRaw->pAttributeList->add("colorMode", "Color mode", NDAttrInt32, &colorMode);
 
     if (resetImage) {
         for (i=0; i<sizeY; i++) {
@@ -479,7 +479,7 @@ void simDetector::simTask()
         pImage->timeStamp = startTime.secPastEpoch + startTime.nsec / 1.e9;
 
         /* Get any attributes that have been defined for this driver */        
-        this->getAttributes(pImage);
+        this->getAttributes(pImage->pAttributeList);
 
         if (arrayCallbacks) {        
             /* Call the NDArray callback */
