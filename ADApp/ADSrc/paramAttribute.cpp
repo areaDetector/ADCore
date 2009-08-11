@@ -49,7 +49,7 @@ paramAttribute::paramAttribute(const char *pName, const char *pDescription, cons
         return;
     }
     this->setSource(pSource);
-    this->paramType = PVAttrParamUnknown;
+    this->paramType = paramAttrTypeUnknown;
     this->sourceType = NDAttrSourceParam;
     this->paramAddr = addr;
     this->pDriver = pDriver;
@@ -62,9 +62,9 @@ paramAttribute::paramAttribute(const char *pName, const char *pDescription, cons
         return;
     }
     this->paramId = pasynUser->reason;
-    if (epicsStrCaseCmp(dataType, "int") == 0)    this->paramType=PVAttrParamInt;
-    if (epicsStrCaseCmp(dataType, "double") == 0) this->paramType=PVAttrParamDouble;
-    if (epicsStrCaseCmp(dataType, "string") == 0) this->paramType=PVAttrParamString;
+    if (epicsStrCaseCmp(dataType, "int") == 0)    this->paramType=paramAttrTypeInt;
+    if (epicsStrCaseCmp(dataType, "double") == 0) this->paramType=paramAttrTypeDouble;
+    if (epicsStrCaseCmp(dataType, "string") == 0) this->paramType=paramAttrTypeString;
 }
 
 /** Constructor for a Param attribute
@@ -82,17 +82,17 @@ int paramAttribute::updateValue()
     static const char *functionName = "updateValue";
     
     switch (this->paramType) {
-        case PVAttrParamInt:
+        case paramAttrTypeInt:
             status = this->pDriver->getIntegerParam(this->paramAddr, this->paramId, 
                                                  &i32Value);
             this->setValue(NDAttrInt32, &i32Value);
             break;
-        case PVAttrParamDouble:
+        case paramAttrTypeDouble:
             status = this->pDriver->getDoubleParam(this->paramAddr, this->paramId,
                                                 &f64Value);
             this->setValue(NDAttrFloat64, &f64Value);
             break;
-        case PVAttrParamString:
+        case paramAttrTypeString:
             status = this->pDriver->getStringParam(this->paramAddr, this->paramId,
                                                 MAX_ATTRIBUTE_STRING_SIZE, stringValue);
             this->setValue(NDAttrString, stringValue);
@@ -113,13 +113,11 @@ int paramAttribute::updateValue()
   */
 int paramAttribute::report(int details)
 {
-    printf("paramAttribute, address=%p:\n", this);
-    printf("  Source type=%d\n", this->sourceType);
-    printf("  Source=%s\n", this->pSource);
-    printf("  Addr=%d\n", this->paramAddr);
-    printf("  Param type=%d\n", this->paramType);
-    printf("  Param ID=%d\n", this->paramId);
     NDAttribute::report(details);
+    printf("  paramAttribute\n");
+    printf("    Addr=%d\n", this->paramAddr);
+    printf("    Param type=%d\n", this->paramType);
+    printf("    Param ID=%d\n", this->paramId);
     return(ND_SUCCESS);
 }
     
