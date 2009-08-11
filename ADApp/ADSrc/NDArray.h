@@ -23,6 +23,8 @@
 /** Failure return code  */
 #define ND_ERROR -1
 
+#define MAX_ATTRIBUTE_STRING_SIZE 256
+
 /** Enumeration of NDArray data types */
 typedef enum
 {
@@ -130,38 +132,58 @@ typedef union {
     epicsFloat64 f64;   /**< 64-bit float */
 } NDAttrValue;
 
-/** NDArray attribute class; an attribute has a name, description, data type, and value.
-  * NDArray attributes are implemented as a linked list, but this is a private implementation 
-  * detail.  There are methods to set and get the information for an attribute, and NDArray
-  * provides methods to add and delete attributes to the NDArray object. */
+/** NDAttribute class; an attribute has a name, description, source type, source string,
+  * data type, and value.
+  */
 class NDAttribute {
 public:
     /* Methods */
-    NDAttribute(const char *pName);
+    NDAttribute(const char *pName, const char *pDescription="", 
+                NDAttrDataType_t dataType=NDAttrUndefined, void *pValue=NULL);
     virtual ~NDAttribute();
-    int getNameInfo(size_t *pNameSize);
-    int getName(char *pName, size_t nameSize=0);
-    int getDescriptionInfo(size_t *pDescSize);
-    int getDescription(char *pDescription, size_t descSize=0);
-    int setDescription(const char *pDescription);
-    int getSource(NDAttrSource_t *pSourceType, char *pSource, size_t sourceSize=0);
-    int setSource(const char *pSource);
-    int getValueInfo(NDAttrDataType_t *pDataType, size_t *pDataSize);
-    int getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSize=0);
-    int setValue(NDAttrDataType_t dataType, void *pValue);
+    virtual NDAttribute* copy(NDAttribute *pAttribute);
+    virtual int setDescription(const char *pDescription);
+    virtual int setSource(const char *pSource);
+    virtual int getValueInfo(NDAttrDataType_t *pDataType, size_t *pDataSize);
+    virtual int getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSize=0);
+    virtual int setValue(NDAttrDataType_t dataType, void *pValue);
+    virtual int updateValue();
     virtual int report(int details);
-    friend class NDArray;
-    friend class PVAttributeList;
-
-protected:
     char *pName;
     char *pDescription;
     char *pSource;  /**< Source string - EPICS PV name or DRV_INFO string */
     NDAttrSource_t sourceType;
     NDAttrDataType_t dataType;
+    friend class NDArray;
+    friend class NDAttributeList;
+
+protected:
     NDAttrValue value;
     char *pString;      /**< Dynamic length string */
     NDAttributeListNode listNode;
+};
+
+/** NDAttributeList class; this is a linked list of attributes.
+  */
+class NDAttributeList {
+public:
+    NDAttributeList();
+    ~NDAttributeList();
+    int add(NDAttribute *pAttribute);
+    NDAttribute* add(const char *pName, const char *pDescription="", 
+                     NDAttrDataType_t dataType=NDAttrUndefined, void *pValue=NULL);
+    NDAttribute* find(const char *pName);
+    NDAttribute* next(NDAttribute *pAttribute);
+    int          count();
+    int          remove(const char *pName);
+    int          clear();
+    int          copy(NDAttributeList *pOut);
+    int          updateValues();
+    int          report(int details);
+    
+private:
+    ELLLIST      list;
+    epicsMutexId lock;  /**< Mutex to protect the ELLLIST */
 };
 
 /** N-dimensional array class; each array has a set of dimensions, a data type, pointer to data, and optional attributes. 
@@ -176,17 +198,6 @@ public:
     int          getInfo         (NDArrayInfo_t *pInfo);
     int          reserve();
     int          release();
-    NDAttribute* addAttribute(const char *pName);
-    NDAttribute* addAttribute(const char *pName, NDAttrDataType_t dataType, void *pValue);
-    NDAttribute* addAttribute(const char *pName, const char *pDescription, 
-                              NDAttrDataType_t dataType, void *pValue);
-    NDAttribute* addAttribute(NDAttribute *pAttribute);
-    NDAttribute* findAttribute(const char *pName);
-    NDAttribute* nextAttribute(NDAttribute *pAttribute);
-    int          numAttributes();
-    int          deleteAttribute(const char *pName);
-    int          clearAttributes();
-    int          copyAttributes(NDArray *pOut);
     int          report(int details);
     friend class NDArrayPool;
     
@@ -194,8 +205,6 @@ private:
     ELLNODE      node;              /**< This must come first because ELLNODE must have the same address as NDArray object */
     int          referenceCount;    /**< Reference count for this NDArray=number of clients who are using it */
     void         *owner;            /**< The NDArrayPool object that created this array */
-    ELLLIST      attributeList;     /**< Linked list of NDAttributes */
-    epicsMutexId listLock;          /**< Mutex to protect the attributeList */
 
 public:
     int           uniqueId;     /**< A number that must be unique for all NDArrays produced by a driver after is has started */
@@ -209,6 +218,7 @@ public:
     void          *pData;       /**< Pointer to the array data.
                                   * The data is assumed to be stored in the order of dims[0] changing fastest, and 
                                   * dims[ndims-1] changing slowest. */
+    NDAttributeList *pAttributeList;  /**< Linked list of attributes */
 };
 
 

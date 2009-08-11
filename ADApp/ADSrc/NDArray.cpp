@@ -109,7 +109,7 @@ NDArray* NDArrayPool::alloc(int ndims, int *dims, NDDataType_t dataType, int dat
             pArray->dims[i].reverse = 0;
         }
         /* Erase the attributes if that global flag is set */
-        if (eraseNDAttributes) pArray->clearAttributes();
+        if (eraseNDAttributes) pArray->pAttributeList->clear();
         pArray->getInfo(&arrayInfo);
         if (dataSize == 0) dataSize = arrayInfo.totalBytes;
         if (arrayInfo.totalBytes > dataSize) {
@@ -191,8 +191,8 @@ NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, int copyData)
         if (pOut->dataSize < numCopy) numCopy = pOut->dataSize;
         memcpy(pOut->pData, pIn->pData, numCopy);
     }
-    pOut->clearAttributes();
-    pIn->copyAttributes(pOut);
+    pOut->pAttributeList->clear();
+    pIn->pAttributeList->copy(pOut->pAttributeList);
     return(pOut);
 }
 
@@ -478,7 +478,7 @@ int NDArrayPool::convert(NDArray *pIn,
     pOut->uniqueId = pIn->uniqueId;
     /* Replace the dimensions with those passed to this function */
     memcpy(pOut->dims, dimsOutCopy, pIn->ndims*sizeof(NDDimension_t));
-    pIn->copyAttributes(pOut);
+    pIn->pAttributeList->copy(pOut->pAttributeList);
 
     pOut->getInfo(&arrayInfo);
 
@@ -536,7 +536,7 @@ int NDArrayPool::convert(NDArray *pIn,
     }
 
     /* If the frame is an RGBx frame and we have collapsed that dimension then change the colorMode */
-    pAttribute = pOut->findAttribute("ColorMode");
+    pAttribute = pOut->pAttributeList->find("ColorMode");
     if (pAttribute && pAttribute->getValue(NDAttrInt32, &colorMode)) {
         if      ((colorMode == NDColorModeRGB1) && (pOut->dims[0].size != 3)) 
                 pAttribute->setValue(NDAttrInt32, (void *)&colorModeMono);
@@ -574,8 +574,7 @@ NDArray::NDArray()
 {
     memset(this->dims, 0, sizeof(this->dims));
     memset(&this->node, 0, sizeof(this->node));
-    ellInit(&this->attributeList);
-    this->listLock = epicsMutexCreate();
+    this->pAttributeList = new NDAttributeList();
 }
 
 /** NDArray destructor 
@@ -583,9 +582,7 @@ NDArray::NDArray()
 NDArray::~NDArray()
 {
     if (this->pData) free(this->pData);
-    this->clearAttributes();
-    ellFree(&this->attributeList);
-    epicsMutexDestroy(this->listLock);
+    delete this->pAttributeList;
 }
 
 /** Convenience method returns information about an NDArray, including the total number of elements, 
@@ -670,199 +667,10 @@ int NDArray::release()
     return(pNDArrayPool->release(this));
 }
 
-/** Adds an attribute to the array.
-  * \param[in] pName The name of the attribute to be added.
-  * \return Returns a pointer to the attribute.
-  *
-  * Searches for an existing attribute of this name.  If found it just returns the pointer.
-  * If not found it creates a new attribute with this name and adds it to the attribute
-  * list for this array. */
-NDAttribute* NDArray::addAttribute(const char *pName)
-{
-    NDAttribute *pAttribute;
-    //const char *functionName = "NDArray::addAttribute";
-
-    pAttribute = this->findAttribute(pName);
-    if (!pAttribute) {
-        pAttribute = new NDAttribute(pName);
-        ellAdd(&this->attributeList, &pAttribute->listNode.node);
-    }
-    return(pAttribute);
-}
-
-/** Adds an attribute to the array.
-  * \param[in] pName The name of the attribute to be added.
-  * \param[in] dataType The data type of the attribute to be added.
-  * \param[in] pValue A pointer to the value for this attribute.
-  * \return Returns a pointer to the attribute.
-  *
-  * Searches for an existing attribute of this name.  If found it sets the data type and
-  * value to those passed to this method.
-  * If not found it creates a new attribute with this name, adds it to the attribute
-  * list for this array and sets the data type and value. */
-NDAttribute* NDArray::addAttribute(const char *pName, NDAttrDataType_t dataType, void *pValue)
-{
-    NDAttribute *pAttribute;
-    //const char *functionName = "NDArray::addAttribute";
-
-    pAttribute = this->addAttribute(pName);
-    pAttribute->setValue(dataType, pValue);
-    return(pAttribute);
-}
-
-/** Adds an attribute to the array.
-  * \param[in] pName The name of the attribute to be added.
-  * \param[in] pDescription The description of the attribute to be added.
-  * \param[in] dataType The data type of the attribute to be added.
-  * \param[in] pValue A pointer to the value for this attribute.
-  * \return Returns a pointer to the attribute.
-  *
-  * Searches for an existing attribute of this name.  If found it sets the description, data type and
-  * value to those passed to this method.
-  * If not found it creates a new attribute with this name, adds it to the attribute
-  * list for this array and sets the description, data type and value. */
-NDAttribute* NDArray::addAttribute(const char *pName, const char *pDescription, NDAttrDataType_t dataType, void *pValue)
-{
-    NDAttribute *pAttribute;
-    //const char *functionName = "NDArray::addAttribute";
-
-    pAttribute = this->addAttribute(pName);
-    pAttribute->setDescription(pDescription);
-    pAttribute->setValue(dataType, pValue);
-    return(pAttribute);
-}
-
-/** Adds an attribute to the array.
-  * \param[in] pIn A pointer to an existing attribute from which values will be copied.
-  * \return Returns a pointer to the attribute.
-  *
-  * Searches for an existing attribute of this name.  If found it copies the attribute
-  * properties from the attribute passed to this method.
-  * If not found it creates a new attribute with this name, adds it to the attribute
-  * list for this array and sets the attribute properties. */
-NDAttribute* NDArray::addAttribute(NDAttribute *pIn)
-{
-    NDAttribute *pAttribute;
-    void *pValue = &pIn->value;
-    //const char *functionName = "NDArray::addAttribute";
-
-    pAttribute = this->addAttribute(pIn->pName);
-    pAttribute->setDescription(pIn->pDescription);
-    pAttribute->setSource(pIn->pSource);
-    pAttribute->sourceType = pIn->sourceType;
-    if (pIn->dataType == NDAttrString) pValue = pIn->pString;
-    pAttribute->setValue(pIn->dataType, pValue);
-    return(pAttribute);
-}
-
-/** Finds an attribute by name.
-  * \param[in] pName The name of the attribute to be found.
-  * \return Returns a pointer to the attribute if found, NULL if not found. 
-  *
-  * The search is case-insensitive.*/
-NDAttribute* NDArray::findAttribute(const char *pName)
-{
-    NDAttribute *pAttribute;
-    NDAttributeListNode *pListNode;
-    //const char *functionName = "NDArray::addAttribute";
-
-    pListNode = (NDAttributeListNode *)ellFirst(&this->attributeList);
-    while (pListNode) {
-        pAttribute = pListNode->pNDAttribute;
-        if (epicsStrCaseCmp(pAttribute->pName, pName) == 0) return(pAttribute);
-        pListNode = (NDAttributeListNode *)ellNext(&pListNode->node);
-    }
-    return(NULL);
-}
-
-/** Finds the next attribute in the NDArray linked list of attributes.
-  * \param[in] pAttributeIn A pointer to the previous attribute in the list; 
-  * if NULL the first attribute in the list is returned.
-  * \return Returns a pointer to the next attribute if there is one, 
-  * NULL if there are no more attributes in the list. */
-NDAttribute* NDArray::nextAttribute(NDAttribute *pAttributeIn)
-{
-    NDAttribute *pAttribute=NULL;
-    NDAttributeListNode *pListNode;
-    //const char *functionName = "NDArray::addAttribute";
-
-    if (!pAttributeIn) {
-        pListNode = (NDAttributeListNode *)ellFirst(&this->attributeList);
-   }
-    else {
-        pListNode = (NDAttributeListNode *)ellNext(&pAttributeIn->listNode.node);
-    }
-    if (pListNode) pAttribute = pListNode->pNDAttribute;
-    return(pAttribute);
-}
-
-/** Returns the total number of attributes in the NDArray linked list of attributes.
-  * \return Returns the number of attributes. */
-int NDArray::numAttributes()
-{
-    //const char *functionName = "NDArray::addAttribute";
-
-    return ellCount(&this->attributeList);
-}
-
-/** Deletes an attribute from the array.
-  * \param[in] pName The name of the attribute to be deleted.
-  * \return Returns ND_SUCCESS if the attribute was found and deleted, ND_ERROR if the
-  * attribute was not found. */
-int NDArray::deleteAttribute(const char *pName)
-{
-    NDAttribute *pAttribute;
-    //const char *functionName = "NDArray::addAttribute";
-
-    pAttribute = this->findAttribute(pName);
-    if (!pAttribute) return(ND_ERROR);
-    ellDelete(&this->attributeList, &pAttribute->listNode.node);
-    delete pAttribute;
-    return(ND_SUCCESS);
-}
-
-/** Deletes all attributes from the array. */
-int NDArray::clearAttributes()
-{
-    NDAttribute *pAttribute;
-    NDAttributeListNode *pListNode;
-    //const char *functionName = "NDArray::addAttribute";
-
-    pListNode = (NDAttributeListNode *)ellFirst(&this->attributeList);
-    while (pListNode) {
-        pAttribute = pListNode->pNDAttribute;
-        ellDelete(&this->attributeList, &pListNode->node);
-        delete pAttribute;
-        pListNode = (NDAttributeListNode *)ellFirst(&this->attributeList);
-    }
-    return(ND_SUCCESS);
-}
-
-/** Copies all attributes from the array to an output NDArray.
-  * \param[out] pOut A pointer to the output array to copy the attributes to.
-  *
-  * The attributes are added to any existing attributes already present in the output array. */
-int NDArray::copyAttributes(NDArray *pOut)
-{
-    NDAttribute *pAttribute;
-    NDAttributeListNode *pListNode;
-    //const char *functionName = "NDArray::copyAttributes";
-
-    pListNode = (NDAttributeListNode *)ellFirst(&this->attributeList);
-    while (pListNode) {
-        pAttribute = pListNode->pNDAttribute;
-        pOut->addAttribute(pAttribute);
-        pListNode = (NDAttributeListNode *)ellNext(&pListNode->node);
-    }
-    return(ND_SUCCESS);
-}
-
 /** Reports on the properties of the array.
   */
 int NDArray::report(int details)
 {
-    NDAttribute *pAttr;
-    NDAttributeListNode *pListNode;
     int dim;
     
     printf("\n");
@@ -875,33 +683,268 @@ int NDArray::report(int details)
         this->dataType, this->dataSize, this->pData);
     printf("  uniqueId=%d, timeStamp=%f\n",
         this->uniqueId, this->timeStamp);
-    printf("  number of attributes=%d\n", ellCount(&this->attributeList));
+    printf("  number of attributes=%d\n", this->pAttributeList->count());
     if (details > 5) {
-        pListNode = (NDAttributeListNode *)ellFirst(&this->attributeList);
-        while (pListNode) {
-            pAttr = pListNode->pNDAttribute;
-            pAttr->report(details);
-            pListNode = (NDAttributeListNode *) ellNext(&pAttr->listNode.node);
-        }
+        this->pAttributeList->report(details);
     }
     return ND_SUCCESS;
 }
 
-
-/** NDAttribute constructor 
-  * \param[in] pName The name of the attribute to be created. 
-  *
-  * Sets the attribute name to pName, the description and pString to NULL, and the data type to NDAttrUndefined. */
-NDAttribute::NDAttribute(const char *pName)
+/** NDAttributeList constructor
+  */
+NDAttributeList::NDAttributeList()
 {
+    ellInit(&this->list);
+    this->lock = epicsMutexCreate();
+}
+
+/** NDAttributeList destructor
+  */
+NDAttributeList::~NDAttributeList()
+{
+    this->clear();
+    ellFree(&this->list);
+    epicsMutexDestroy(this->lock);
+}
+
+/** Adds an attribute to the list.
+  * If an attribute of the same name already exists then
+  * the existing attribute is deleted and replaced with the new one.
+  * \param[in] pAttribute A pointer to the attribute to add.
+  */
+int NDAttributeList::add(NDAttribute *pAttribute)
+{
+    //const char *functionName = "NDAttributeList::add";
+
+    epicsMutexLock(this->lock);
+    /* Remove any existing attribute with this name */
+    this->remove(pAttribute->pName);
+    ellAdd(&this->list, &pAttribute->listNode.node);
+    epicsMutexUnlock(this->lock);
+    return(ND_SUCCESS);
+}
+
+/** Adds an attribute to the list.
+  * This is a convenience function for adding attributes to a list.  
+  * It first searches the list to see if there is an existing attribute
+  * with the same name.  If there is it just changes the properties of the
+  * existing attribute.  If not, it creates a new attribute with the
+  * specified properties. 
+  * IMPORTANT: This method is only capable of creating attributes
+  * of the NDAttribute base class type, not derived class attributes.
+  * To add attributes of a derived class to a list the other NDAttributeList::add()
+  * method must be used.
+  * \param[in] pName The name of the attribute to be added. 
+  * \param[in] pDescription The description of the attribute.
+  * \param[in] dataType The data type of the attribute.
+  * \param[in] pValue A pointer to the value for this attribute.
+  *
+  */
+NDAttribute* NDAttributeList::add(const char *pName, const char *pDescription, NDAttrDataType_t dataType, void *pValue)
+{
+    //const char *functionName = "NDAttributeList::add";
+    NDAttribute *pAttribute;
+
+    epicsMutexLock(this->lock);
+    pAttribute = this->find(pName);
+    if (pAttribute) {
+        pAttribute->setDescription(pDescription);
+        pAttribute->setValue(dataType, pValue);
+    } else {
+        pAttribute = new NDAttribute(pName, pDescription, dataType, pValue);
+        ellAdd(&this->list, &pAttribute->listNode.node);
+    }
+    epicsMutexUnlock(this->lock);
+    return(pAttribute);
+}
+
+
+
+/** Finds an attribute by name.
+  * \param[in] pName The name of the attribute to be found.
+  * \return Returns a pointer to the attribute if found, NULL if not found. 
+  *
+  * The search is case-insensitive.*/
+NDAttribute* NDAttributeList::find(const char *pName)
+{
+    NDAttribute *pAttribute;
+    NDAttributeListNode *pListNode;
+    //const char *functionName = "NDAttributeList::find";
+
+    epicsMutexLock(this->lock);
+    pListNode = (NDAttributeListNode *)ellFirst(&this->list);
+    while (pListNode) {
+        pAttribute = pListNode->pNDAttribute;
+        if (epicsStrCaseCmp(pAttribute->pName, pName) == 0) goto done;
+        pListNode = (NDAttributeListNode *)ellNext(&pListNode->node);
+    }
+    pAttribute = NULL;
+
+    done:
+    epicsMutexUnlock(this->lock);
+    return(pAttribute);
+}
+
+/** Finds the next attribute in the linked list of attributes.
+  * \param[in] pAttributeIn A pointer to the previous attribute in the list; 
+  * if NULL the first attribute in the list is returned.
+  * \return Returns a pointer to the next attribute if there is one, 
+  * NULL if there are no more attributes in the list. */
+NDAttribute* NDAttributeList::next(NDAttribute *pAttributeIn)
+{
+    NDAttribute *pAttribute=NULL;
+    NDAttributeListNode *pListNode;
+    //const char *functionName = "NDAttributeList::next";
+
+    epicsMutexLock(this->lock);
+    if (!pAttributeIn) {
+        pListNode = (NDAttributeListNode *)ellFirst(&this->list);
+   }
+    else {
+        pListNode = (NDAttributeListNode *)ellNext(&pAttributeIn->listNode.node);
+    }
+    if (pListNode) pAttribute = pListNode->pNDAttribute;
+    epicsMutexUnlock(this->lock);
+    return(pAttribute);
+}
+
+/** Returns the total number of attributes in the NDArray linked list of attributes.
+  * \return Returns the number of attributes. */
+int NDAttributeList::count()
+{
+    //const char *functionName = "NDAttributeList::count";
+
+    return ellCount(&this->list);
+}
+
+/** Removes an attribute from the list.
+  * \param[in] pName The name of the attribute to be deleted.
+  * \return Returns ND_SUCCESS if the attribute was found and deleted, ND_ERROR if the
+  * attribute was not found. */
+int NDAttributeList::remove(const char *pName)
+{
+    NDAttribute *pAttribute;
+    int status = ND_ERROR;
+    //const char *functionName = "NDAttributeList::remove";
+
+    epicsMutexLock(this->lock);
+    pAttribute = this->find(pName);
+    if (!pAttribute) goto done;
+    ellDelete(&this->list, &pAttribute->listNode.node);
+    delete pAttribute;
+    status = ND_SUCCESS;
+
+    done:
+    epicsMutexUnlock(this->lock);
+    return(status);
+}
+
+/** Deletes all attributes from the list. */
+int NDAttributeList::clear()
+{
+    NDAttribute *pAttribute;
+    NDAttributeListNode *pListNode;
+    //const char *functionName = "NDAttributeList::clear";
+
+    epicsMutexLock(this->lock);
+    pListNode = (NDAttributeListNode *)ellFirst(&this->list);
+    while (pListNode) {
+        pAttribute = pListNode->pNDAttribute;
+        ellDelete(&this->list, &pListNode->node);
+        delete pAttribute;
+        pListNode = (NDAttributeListNode *)ellFirst(&this->list);
+    }
+    epicsMutexUnlock(this->lock);
+    return(ND_SUCCESS);
+}
+
+/** Copies all attributes from one attribute list to another.
+  * It is efficient so that if the attribute already exists in the output
+  * list it just copies the properties, and memory allocation is minimized.
+  * \param[out] pOut A pointer to the output attribute list to copy to.
+  *
+  * The attributes are added to any existing attributes already present in the output list. */
+int NDAttributeList::copy(NDAttributeList *pListOut)
+{
+    NDAttribute *pAttrIn, *pAttrOut, *pFound;
+    NDAttributeListNode *pListNode;
+    //const char *functionName = "NDAttributeList::copy";
+
+    epicsMutexLock(this->lock);
+    pListNode = (NDAttributeListNode *)ellFirst(&this->list);
+    while (pListNode) {
+        pAttrIn = pListNode->pNDAttribute;
+        /* See if there is already an attribute of this name in the output list */
+        pFound = pListOut->find(pAttrIn->pName);
+        /* The copy function will copy the properties, and will create the attribute if pFound is NULL */
+        pAttrOut = pAttrIn->copy(pFound);
+        /* If pFound is NULL, then a copy created a new attribute, need to add it to the list */
+        if (!pFound) pListOut->add(pAttrOut);
+        pListNode = (NDAttributeListNode *)ellNext(&pListNode->node);
+    }
+    epicsMutexUnlock(this->lock);
+    return(ND_SUCCESS);
+}
+
+/** Updates all attribute values in the list.
+  */
+int NDAttributeList::updateValues()
+{
+    NDAttribute *pAttribute;
+    NDAttributeListNode *pListNode;
+    //const char *functionName = "NDAttributeList::updateValues";
+
+    epicsMutexLock(this->lock);
+    pListNode = (NDAttributeListNode *)ellFirst(&this->list);
+    while (pListNode) {
+        pAttribute = pListNode->pNDAttribute;
+        pAttribute->updateValue();
+        pListNode = (NDAttributeListNode *)ellNext(&pListNode->node);
+    }
+    epicsMutexUnlock(this->lock);
+    return(ND_SUCCESS);
+}
+
+int NDAttributeList::report(int details)
+{
+    NDAttribute *pAttribute;
+    NDAttributeListNode *pListNode;
+    
+    epicsMutexLock(this->lock);
+    printf("\n");
+    printf("NDAttributeList: address=%p:\n", this);
+    printf("  number of attributes=%d\n", this->count());
+    if (details > 10) {
+        pListNode = (NDAttributeListNode *) ellFirst(&this->list);
+        while (pListNode) {
+            pAttribute = (NDAttribute *)pListNode->pNDAttribute;
+            pAttribute->report(details);
+            pListNode = (NDAttributeListNode *) ellNext(&pListNode->node);
+        }
+    }
+    epicsMutexUnlock(this->lock);
+    return ND_SUCCESS;
+}
+
+
+/** NDAttribute constructor
+  * \param[in] pName The name of the attribute to be created. 
+  * \param[in] pDescription The description of the attribute.
+  * \param[in] dataType The data type of the attribute.
+  * \param[in] pValue A pointer to the value for this attribute.
+  */
+NDAttribute::NDAttribute(const char *pName, const char *pDescription, NDAttrDataType_t dataType, void *pValue)
+{
+
     this->pName = epicsStrDup(pName);
-    this->pDescription = NULL;
-    this->pString = NULL;
-    this->pSource = NULL;
+    this->pDescription = epicsStrDup(pDescription);
+    this->pSource = epicsStrDup("");
     this->sourceType = NDAttrSourceDriver;
-    this->dataType = NDAttrUndefined;
+    this->pString = NULL;
+    if (pValue) this->setValue(dataType, pValue);
     this->listNode.pNDAttribute = this;
 }
+
 
 /** NDAttribute destructor 
   * Frees the strings for the name, and if they exist, the description and pString. */
@@ -913,46 +956,24 @@ NDAttribute::~NDAttribute()
     if (this->pString) free(this->pString);
 }
 
-/** Returns the length of the name string including 0 terminator for this attribute. */
-int NDAttribute::getNameInfo(size_t *pNameSize) {
-
-    *pNameSize = strlen(this->pName)+1;
-    return(ND_SUCCESS);
-}
-
-/** Returns the name string for this attribute. 
-  * \param[out] pName String to hold the name. 
-  * \param[in] nameSize Maximum size for the name string; 
-    if 0 then pName is assumed to be big enough to hold the name string plus 0 terminator. */
-int NDAttribute::getName(char *pName, size_t nameSize) {
-
-    if (nameSize == 0) nameSize = strlen(this->pName)+1;
-    strncpy(pName, this->pName, nameSize);
-    return(ND_SUCCESS);
-}
-
-/** Returns the length of the description string including 0 terminator for this attribute. */
-int NDAttribute::getDescriptionInfo(size_t *pDescSize) {
-
-    if (this->pDescription)
-        *pDescSize = strlen(this->pDescription)+1;
-    else
-        *pDescSize = 0;
-    return(ND_SUCCESS);
-}
-
-/** Returns the description string for this attribute. 
-  * \param[out] pDescription String to hold the desciption. 
-  * \param[in] descSize Maximum size for the description string; 
-    if 0 then pDescription is assumed to be big enough to hold the description string plus 0 terminator. */
-int NDAttribute::getDescription(char *pDescription, size_t descSize) {
-
-    if (this->pDescription) {
-        if (descSize == 0) descSize = strlen(this->pDescription)+1;
-        strncpy(pDescription, this->pDescription, descSize);
-    } else
-        *pDescription = '\0';
-    return(ND_SUCCESS);
+/** Copies properties from <b>this</b> to pOut.
+  * \param[in] pOut A pointer to the output attribute
+  *                 If NULL the output attribute will be created.
+  * \return  Returns a pointer to the copy
+  */
+NDAttribute* NDAttribute::copy(NDAttribute *pOut)
+{
+    void *pValue;
+    
+    if (!pOut) pOut = new NDAttribute(this->pName);
+    pOut->setDescription(this->pDescription);
+    pOut->setSource(this->pSource);
+    pOut->sourceType = this->sourceType;
+    pOut->dataType = this->dataType;
+    if (this->dataType == NDAttrString) pValue = this->pString;
+    else pValue = &this->value;
+    pOut->setValue(this->dataType, pValue);
+    return(pOut);
 }
 
 /** Sets the description string for this attribute. 
@@ -967,21 +988,6 @@ int NDAttribute::setDescription(const char *pDescription) {
     }
     if (pDescription) this->pDescription = epicsStrDup(pDescription);
     else this->pDescription = NULL;
-    return(ND_SUCCESS);
-}
-
-/** Returns the source string for this attribute. 
-  * \param[out] pSource String to hold the source. 
-  * \param[in] sourceSize Maximum size for the source string; 
-    if 0 then pSource is assumed to be big enough to hold the source string plus 0 terminator. */
-int NDAttribute::getSource(NDAttrSource_t *pSourceType, char *pSource, size_t sourceSize) {
-
-    if (pSourceType) *pSourceType = this->sourceType;
-    if (this->pSource) {
-        if (sourceSize == 0) sourceSize = strlen(this->pSource)+1;
-        strncpy(pSource, this->pSource, sourceSize);
-    } else
-        *pSource = '\0';
     return(ND_SUCCESS);
 }
 
@@ -1157,6 +1163,14 @@ int NDAttribute::getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSi
     return(ND_SUCCESS);
 }
 
+/** Updates the current value of this attribute.
+  * The base class does nothing, but derived classes may need to do something here
+ */
+int NDAttribute::updateValue()
+{
+    return(ND_SUCCESS);
+}
+
 /** Reports on the properties of the attribute.
   */
 int NDAttribute::report(int details)
@@ -1165,6 +1179,8 @@ int NDAttribute::report(int details)
     printf("NDAttribute, address=%p:\n", this);
     printf("  name=%s\n", this->pName);
     printf("  description=%s\n", this->pDescription);
+    printf("  source type=%d\n", this->sourceType);
+    printf("  source=%s\n", this->pSource);
     switch (this->dataType) {
         case NDAttrInt8:
             printf("  dataType=NDAttrInt8, value=%d\n", this->value.i8);
