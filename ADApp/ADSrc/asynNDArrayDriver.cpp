@@ -17,6 +17,10 @@
 #include <epicsMutex.h>
 #include <cantProceed.h>
 
+#include "tinyxml.h"
+#include "PVAttribute.h"
+#include "paramAttribute.h"
+
 #include "asynNDArrayDriver.h"
 
 static const char *driverName = "asynNDArrayDriver";
@@ -48,7 +52,7 @@ static asynParamString_t NDStdDriverParamString[] = {
     {NDFileNumCaptured,"NUM_CAPTURED"  },
     {NDFileCapture,    "CAPTURE"       },
     
-    {PVAttributesFile, "PV_ATTRIBUTES_FILE"},
+    {NDAttributesFile, "ND_ATTRIBUTES_FILE"},
 
     {NDArrayData,      "NDARRAY_DATA"  },
     {NDArrayCallbacks, "ARRAY_CALLBACKS"  }
@@ -133,34 +137,105 @@ int asynNDArrayDriver::createFileName(int maxChars, char *filePath, char *fileNa
     return(status);   
 }
 
-/** Read a list of attributes from a file.
-  * \param[in] fileName  The name of the file to read.
+/** Read a list of attributes from an XML file.
+  * \param[in] fileName  The name of the XML file to read.
   * 
   * This reads a list of attributes from an XML file.  These attributes
   * can then be associated with an NDArray by calling getAttributes();
   */
-int asynNDArrayDriver::readPVAttributesFile(const char *fileName)
+int asynNDArrayDriver::readNDAttributesFile(const char *fileName)
 {
-    //const char *functionName = "readAttributesFile";
-    int status=asynSuccess;
+    static const char *functionName = "readNDAttributesFile";
+    
+    const char *pName, *pDBRType, *pSource, *pType, *pDataType, *pAddr, *pDescription=NULL;
+    int dbrType;
+    int addr=0;
+    PVAttribute *pPVAttribute=NULL;
+    paramAttribute *pParamAttribute=NULL;
+    TiXmlDocument doc(fileName);
+    TiXmlElement *Attr, *Attrs;
     
     /* Clear any existing attributes */
-    this->pPVAttributeList->clearAttributes();
-    if (fileName && (strlen(fileName) > 0)) {
-        status = this->pPVAttributeList->readFile(fileName);
+    this->pAttributeList->clear();
+    if (!fileName || (strlen(fileName) == 0)) return(asynSuccess);
+
+    if (!doc.LoadFile()) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s:%s: cannot open file %s error=%s\n", 
+            driverName, functionName, fileName, doc.ErrorDesc());
+        return(asynError);
     }
-    return(status);
+    Attrs = doc.FirstChildElement( "Attributes" );
+    if (!Attrs) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s:%s: cannot find Attributes element\n", 
+            driverName, functionName);
+        return(asynError);
+    }
+    for (Attr = Attrs->FirstChildElement(); Attr; Attr = Attr->NextSiblingElement()) {
+        pName = Attr->Attribute("name");
+        if (!pName) {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s:%s: name attribute not found\n", 
+                driverName, functionName);
+            return(asynError);
+        }
+        pDescription = Attr->Attribute("description");
+        pSource = Attr->Attribute("source");
+        pType = Attr->Attribute("type");
+        if (!pType) pType = "EPICS_PV";
+        if (epicsStrCaseCmp(pType, "EPICS_PV") == 0) {
+            pDBRType = Attr->Attribute("dbrtype");
+            dbrType = DBR_NATIVE;
+            if (pDBRType) {
+                if      (!strcmp(pDBRType, "DBR_CHAR"))   dbrType = DBR_CHAR;
+                else if (!strcmp(pDBRType, "DBR_SHORT"))  dbrType = DBR_SHORT;
+                else if (!strcmp(pDBRType, "DBR_ENUM"))   dbrType = DBR_ENUM;
+                else if (!strcmp(pDBRType, "DBR_INT"))    dbrType = DBR_INT;
+                else if (!strcmp(pDBRType, "DBR_LONG"))   dbrType = DBR_LONG;
+                else if (!strcmp(pDBRType, "DBR_FLOAT"))  dbrType = DBR_FLOAT;
+                else if (!strcmp(pDBRType, "DBR_DOUBLE")) dbrType = DBR_DOUBLE;
+                else if (!strcmp(pDBRType, "DBR_STRING")) dbrType = DBR_STRING;
+                else if (!strcmp(pDBRType, "DBR_NATIVE")) dbrType = DBR_NATIVE;
+                else {
+                    asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                        "%s:%s: unknown dbrType = %s\n", 
+                        driverName, functionName, pDBRType);
+                    return(asynError);
+                }
+            }
+            asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
+                "%s:%s: Name=%s, PVName=%s, pDBRType=%s, dbrType=%d, pDescription=%s\n",
+                driverName, functionName, pName, pSource, pDBRType, dbrType, pDescription);
+            pPVAttribute = new PVAttribute(pName, pDescription, pSource, dbrType);
+            this->pAttributeList->add(pPVAttribute);
+        } else if (epicsStrCaseCmp(pType, "PARAM") == 0) {
+            pDataType = Attr->Attribute("datatype");
+            if (!pDataType) pDataType = "int";
+            pAddr = Attr->Attribute("addr");
+            if (pAddr) addr = strtol(pAddr, NULL, 0);
+            else addr = 0;
+            asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
+                "%s:%s: Name=%s, drvInfo=%s, dataType=%s,pDescription=%s\n",
+                driverName, functionName, pName, pSource, pDataType, pDescription); 
+            pParamAttribute = new paramAttribute(pName, pDescription, pSource, addr, this, pDataType);
+            this->pAttributeList->add(pParamAttribute);
+        }
+    }
+    return(asynSuccess);
 }
 
-/** Get the current values of attributes and attach them to the NDArray.
-  * \param[in] pArray  The NDArray to attach the attributes to.
+
+/** Get the current values of attributes from this driver and copy them to another list.
+  * \param[in] pList  The NDAttributeList to copy the attributes to.
   */
-int asynNDArrayDriver::getAttributes(NDArray *pArray)
+int asynNDArrayDriver::getAttributes(NDAttributeList *pList)
 {
-    //const char *functionName = "readAttributesFile";
+    //const char *functionName = "getAttributes";
     int status = asynSuccess;
     
-    status = this->pPVAttributeList->getValues(pArray);
+    status = this->pAttributeList->updateValues();
+    status = this->pAttributeList->copy(pList);
     return(status);
 }
 
@@ -182,10 +257,10 @@ NDArray* asynNDArrayDriver::getAttributesCopy(NDArray *pIn, bool release)
     //const char *functionName = "readAttributesFile";
     NDArray *pOut = pIn;
     
-    if (this->pPVAttributeList->numAttributes() > 0) {
+    if (this->pAttributeList->count() > 0) {
         pOut = this->pNDArrayPool->copy(pIn, NULL, 1);
         if (release) pIn->release();
-        this->pPVAttributeList->getValues(pOut);
+        this->getAttributes(pOut->pAttributeList);
     }
     return(pOut);
 }
@@ -211,8 +286,8 @@ asynStatus asynNDArrayDriver::writeOctet(asynUser *pasynUser, const char *value,
     status = (asynStatus)setStringParam(addr, function, (char *)value);
 
     switch(function) {
-        case PVAttributesFile:
-            this->readPVAttributesFile(value);
+        case NDAttributesFile:
+            this->readNDAttributesFile(value);
             break;
         default:
             break;
@@ -322,6 +397,7 @@ void asynNDArrayDriver::report(FILE *fp, int details)
     asynPortDriver::report(fp, details);
     if (details > 5) {
         if (this->pNDArrayPool) this->pNDArrayPool->report(details);
+        this->pAttributeList->report(details);
     }
 }
 
@@ -357,7 +433,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int para
 
     /* Allocate pArray pointer array */
     this->pArrays = (NDArray **)calloc(maxAddr, sizeof(NDArray *));
-    this->pPVAttributeList = new PVAttributeList(this);
+    this->pAttributeList = new NDAttributeList();
     
     setStringParam (NDPortNameSelf, portName);
     setIntegerParam(NDArraySizeX,   0);
