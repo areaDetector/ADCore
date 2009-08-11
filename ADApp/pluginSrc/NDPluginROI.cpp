@@ -269,14 +269,11 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     NDAttribute *pAttribute;
     const char* functionName = "processCallbacks";
 
-    /* Get the attributes for this driver */
-    pArray = this->getAttributesCopy(pArray, true);
-
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
 
     /* We do some special treatment based on colorMode */
-    pAttribute = pArray->findAttribute("colorMode");
+    pAttribute = pArray->pAttributeList->find("colorMode");
 	if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
 
     getIntegerParam(NDPluginROIHighlight, &highlight);
@@ -306,9 +303,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
             this->pArrays[roi] = NULL;
         }
         getIntegerParam(roi, NDPluginROIUse, &use);
-        if (!use) {
-            continue;
-        }
+        if (!use) continue;
 
         /* Need to fetch all of these parameters while we still have the mutex */
         getIntegerParam(roi, NDPluginROIComputeStatistics, &computeStatistics);
@@ -477,9 +472,6 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         setIntegerParam(roi, NDArraySizeY, this->pArrays[roi]->dims[userDims[1]].size);
         setIntegerParam(roi, NDArraySizeZ, this->pArrays[roi]->dims[userDims[2]].size);
 
-        /* Call any clients who have registered for NDArray callbacks */
-        doCallbacksGenericPointer(this->pArrays[roi], NDArrayData, roi);
-
         /* We must enter the loop and exit with the mutex locked */
         this->lock();
         callParamCallbacks(roi, roi);
@@ -487,6 +479,14 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
 
     /* Build the arrays of total and net counts for fast scanning, do callbacks */
     for (roi=0; roi<this->maxROIs; roi++) {
+        getIntegerParam(roi, NDPluginROIUse, &use);
+        if (!use) continue;
+        /* Get the attributes for this driver */
+        this->getAttributes(this->pArrays[roi]->pAttributeList);
+        /* Call any clients who have registered for NDArray callbacks */
+        this->unlock();
+        doCallbacksGenericPointer(this->pArrays[roi], NDArrayData, roi);
+        this->lock();
         this->totalArray[roi] = (epicsInt32)this->pROIs[roi].total;
         this->netArray[roi] = (epicsInt32)this->pROIs[roi].net;
     }
