@@ -21,11 +21,11 @@
 #define DBR_NATIVE -1
 
 typedef enum {
-    PVAttrParamInt,
-    PVAttrParamDouble,
-    PVAttrParamString,
-    PVAttrParamUnknown
-} PVAttrParamType;
+    paramAttrTypeInt,
+    paramAttrTypeDouble,
+    paramAttrTypeString,
+    paramAttrTypeUnknown
+} paramAttrType_t;
 
 /** Attribute that gets its value from an asynNDArrayDriver driver parameter.
   */
@@ -40,7 +40,7 @@ public:
 private:
     int         paramId;
     int         paramAddr;
-    PVAttrParamType paramType;
+    paramAttrType_t paramType;
     class asynNDArrayDriver *pDriver;
 };
 
