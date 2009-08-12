@@ -8,6 +8,7 @@ DIRS += netCDFSrc
 DIRS += prosilicaSupport
 DIRS += tiffSupport
 DIRS += nexusSupport
+DIRS += pvcamSupport
 DIRS += pluginSrc
 pluginSrc_DEPEND_DIRS = ADSrc netCDFSrc prosilicaSupport
 DIRS += simDetectorSrc
@@ -29,9 +30,7 @@ firewireWinSrc_DEPEND_DIRS = pluginSrc
 # Uncomment this line if you have the Perkin Elmer SDK installed
 #DIRS += perkinElmerSrc
 perkinElmerSrc_DEPEND_DIRS = pluginSrc
-# Uncomment these lines if you have PVCAM drivers and SDK installed
-#DIRS += pvcamSupport
-#DIRS += pvcamSrc
+DIRS += pvcamSrc
 pvcamSrc_DEPEND_DIRS = pluginSrc pvcamSupport
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *db*))
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *Db*))
