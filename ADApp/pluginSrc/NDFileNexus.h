@@ -63,7 +63,7 @@ private:
 
 };
 
-static const char *driverName="NDFileNexus";
+/* static const char *driverName="NDFileNexus"; */
 
 #endif
 
