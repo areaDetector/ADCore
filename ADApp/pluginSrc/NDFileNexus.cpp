@@ -49,8 +49,8 @@ asynStatus NDFileNexus::openFile( const char *fileName, NDFileOpenMode_t openMod
 	this->rootNode = this->configDoc.RootElement();
 	//printf("RootNode %s\n", this->rootNode->Value());
 	//pArray->report(5);
-	printf("Num attributes in NDArray %d\n", pArray->numAttributes());
-	currAttr = pArray->nextAttribute(NULL);
+	printf("Num attributes in NDArray %d\n", pArray->pAttributeList->count());
+	currAttr = pArray->pAttributeList->next(NULL);
 	ii = 0;
 
 
@@ -58,7 +58,7 @@ asynStatus NDFileNexus::openFile( const char *fileName, NDFileOpenMode_t openMod
 	printf ("Opening File %s\n", fileName);
 	NXopen(fileName, NXACC_CREATE5, &nxFileHandle);
 	NXputattr( this->nxFileHandle, "creator", programName, strlen(programName), NX_CHAR);
-	this->pPVAttributeList->getValues(pArray);
+	pArray = this->getAttributesCopy(pArray, true);
 	//this->pPVAttributeList->report(5);
 	return (asynSuccess);
 	}
@@ -135,10 +135,10 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 		}
 		stat = NXmakegroup(this->nxFileHandle, (const char *)nodeName, (const char *)nodeValue);
 		stat |= NXopengroup(this->nxFileHandle, (const char *)nodeName, (const char *)nodeValue);
-		if (stat != NX_OK ) printf("Error creating group %s\n", nodeName, nodeValue);
+		if (stat != NX_OK ) printf("Error creating group %s %s\n", nodeName, nodeValue);
 		this->iterateNodes(curNode, pArray);
 		stat = NXclosegroup(this->nxFileHandle);
-		if (stat != NX_OK ) printf("Error closing group %s\n", nodeName, nodeValue);
+		if (stat != NX_OK ) printf("Error closing group %s %s\n", nodeName, nodeValue);
 
 
 	}
@@ -146,7 +146,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 		sprintf(nodeName, "%s",  curNode->ToElement()->Attribute("name"));
 		sprintf(nodeSource, "%s", curNode->ToElement()->Attribute("source"));
 		if ( strcmp(nodeType, "ND_ATTR") == 0 ) {
-			pAttr = pArray->findAttribute(nodeSource);
+			pAttr = pArray->pAttributeList->find(nodeSource);
 			pAttr->getValueInfo(&attrDataType, &attrDataSize);
 			this->getAttrTypeNSize(pAttr, &dataOutType, &wordSize);
 
@@ -183,7 +183,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 	else {
 		sprintf(nodeSource, "%s", curNode->ToElement()->Attribute("source"));
 		if ( strcmp(nodeType, "ND_ATTR") == 0 ) {
-			pAttr = pArray->findAttribute(nodeSource);
+			pAttr = pArray->pAttributeList->find(nodeSource);
 			pAttr->getValueInfo(&attrDataType, &attrDataSize);
 			this->getAttrTypeNSize(pAttr, &dataOutType, &wordSize);
 
@@ -300,7 +300,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 void NDFileNexus::iterateNodes(TiXmlNode *curNode, NDArray *pArray) {
 	TiXmlNode *childNode;
 	childNode=0;
-	while (childNode = curNode->IterateChildren(childNode)) {
+	while ((childNode = curNode->IterateChildren(childNode))) {
 			if (childNode->Type() <2 ){
 			this->processNode(childNode, pArray);
 			}
@@ -369,7 +369,7 @@ void NDFileNexus::findConstText(TiXmlNode *curNode, char *outtext) {
 			childNode = 0;
 			childNode = curNode->IterateChildren(childNode);
 			if (childNode == NULL) {
-				sprintf(outtext, "");
+				sprintf(outtext, "%s", "");
 				return;
 			}
 			while (childNode->Type() != 4) {
@@ -411,62 +411,51 @@ void * NDFileNexus::allocConstValue(int dataType, int length ) {
 			break;
 		case NDAttrUndefined:
 		default:
+            pValue = NULL;
 			break;
 	}
 	return pValue;
 }
 
 void NDFileNexus::constTextToDataType(char *inText, int dataType, void *pValue) {
-	union DATATYPE {
-		char ch;
-		unsigned char uch;
-		short s;
-		unsigned short us;
-		int i;
-		unsigned int ui;
-		long l;
-		unsigned long ul;
-		float f;
-		double d;
-	} temp;
+    double dval;
+    int ival;
 	int ii;
-	double myDoub = 0.0;
-	temp.d = 0.0;
 
 	switch (dataType) {
 		case  NX_INT8:
-			sscanf((const char *)inText, "%d", &(temp.ch));
-			*(char *)pValue = temp.ch;
+			sscanf((const char *)inText, "%d", &ival);
+			*(char *)pValue = (char)ival;
 			break;
 		case NX_UINT8:
-			sscanf((const char *)inText, "%d", &(temp.uch));
-			*(unsigned char *)pValue = temp.uch;
+			sscanf((const char *)inText, "%d ", &ival);
+			*(unsigned char *)pValue = (unsigned char)ival;
 			break;
 		case NX_INT16:
-			sscanf((const char *)inText, "%d", &(temp.s));
-			*(short *)pValue = temp.s;
+			sscanf((const char *)inText, "%d", &ival);
+			*(short *)pValue = (short)ival;
 			break;
 		case NX_UINT16:
-			sscanf((const char *)inText, "%d", &(temp.us));
-			*(unsigned short *)pValue = temp.us;
+			sscanf((const char *)inText, "%d", &ival);
+			*(unsigned short *)pValue = (unsigned short)ival;
 			break;
 		case NX_INT32:
-			sscanf((const char *)inText, "%d", &(temp.i));
-			*(int *)pValue = temp.i;
+			sscanf((const char *)inText, "%d", &ival);
+			*(int *)pValue = ival;
 			break;
 		case NX_UINT32:
-			sscanf((const char *)inText, "%d", &(temp.ui));
-			*(unsigned int *)pValue = temp.ui;
+			sscanf((const char *)inText, "%d", &ival);
+			*(unsigned int *)pValue = (unsigned int)ival;
 			break;
 		case NX_FLOAT32:
-			sscanf((const char *)inText, "%f", &(temp.f));
-			*(float *)pValue = temp.f;
+			sscanf((const char *)inText, "%lf", &dval);
+			*(float *)pValue = (float)dval;
 		   break;
 		case NX_FLOAT64:
 			// Note here that the format code %lf may not work on all systems
 			//it does seem to be the most common though.
-			sscanf((const char *)inText, "%lf", &(temp.d));
-			*(double *)pValue = temp.d;
+			sscanf((const char *)inText, "%lf", &dval);
+			*(double *)pValue = dval;
 			break;
 		case NX_CHAR:
 			for (ii = 0; ii < (int)strlen(inText); ii++) {
@@ -557,7 +546,6 @@ NDFileNexus::NDFileNexus(const char *portName, int queueSize, int blockingCallba
                    ASYN_CANBLOCK, 1, priority, stackSize)
 {
     //const char *functionName = "NDFileNexus";
-	int addr = 0;
 
 	this->supportsMultipleArrays = 1;
 	connectToArrayPort();
