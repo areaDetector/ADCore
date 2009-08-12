@@ -36,9 +36,18 @@ simDetectorApp_LIBS += asyn
 simDetectorApp_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 simDetectorApp_SYS_LIBS_cygwin32 += rpc
-simDetectorApp_LIBS_WIN32        += libtiff jpeg
-simDetectorApp_LIBS_cygwin32     += libtiff jpeg
-simDetectorApp_SYS_LIBS_Linux    += tiff jpeg z
+simDetectorApp_LIBS_WIN32        += libtiff jpeg libNeXus.dll
+simDetectorApp_LIBS_cygwin32     += libtiff jpeg libNeXus.dll
+
+# To use versions of these libraries supplied with areaDetector use this line
+simDetectorApp_LIBS_Linux        += NeXus mfhdf df hdf5 mxml
+# To use system versions of these libraries use this line
+#simDetectorApp_SYS_LIBS_Linux    += NeXus mfhdf df hdf5 mxml
+
+# To use versions of these libraries supplied with areaDetector use this line
+simDetectorApp_LIBS_Linux        += tiff jpeg z
+# To use system versions of these libraries use this line
+#simDetectorApp_SYS_LIBS_Linux    += tiff jpeg z
 
 #=============================
 
