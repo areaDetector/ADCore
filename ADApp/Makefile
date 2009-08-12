@@ -7,6 +7,7 @@ DIRS += netCDFSrc
 # header and library files needed by both
 DIRS += prosilicaSupport
 DIRS += tiffSupport
+DIRS += nexusSupport
 DIRS += pluginSrc
 pluginSrc_DEPEND_DIRS = ADSrc netCDFSrc prosilicaSupport
 DIRS += simDetectorSrc
