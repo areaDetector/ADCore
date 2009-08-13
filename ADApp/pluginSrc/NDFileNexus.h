@@ -59,7 +59,7 @@ private:
 	void findConstText(TiXmlNode *curNode, char *outtext);
 	void * allocConstValue(int dataType, int length);
 	void constTextToDataType(char *inText, int dataType, void *pValue);
-	int typeStringToVal( char * typeStr );
+	int typeStringToVal( const char * typeStr );
 
 };
 

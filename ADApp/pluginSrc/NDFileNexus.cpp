@@ -58,7 +58,6 @@ asynStatus NDFileNexus::openFile( const char *fileName, NDFileOpenMode_t openMod
 	printf ("Opening File %s\n", fileName);
 	NXopen(fileName, NXACC_CREATE5, &nxFileHandle);
 	NXputattr( this->nxFileHandle, "creator", programName, strlen(programName), NX_CHAR);
-	pArray = this->getAttributesCopy(pArray, true);
 	//this->pPVAttributeList->report(5);
 	return (asynSuccess);
 	}
@@ -90,11 +89,11 @@ asynStatus NDFileNexus::closeFile() {
 
 int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 	int status = 0;
-	char nodeName[256];
-	char nodeValue[256];
-	char nodeOuttype[40];
-	char nodeSource[128];
-	char nodeType[40];
+	const char *nodeName;
+	const char *nodeValue;
+	const char *nodeOuttype;
+	const char *nodeSource;
+	const char *nodeType;
 	//float data;
 	int numpts;
 	int rank;
@@ -113,9 +112,9 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 	char nodeText[256];
 	TiXmlNode *childNode;
 	numpts = 1;
-	sprintf(nodeValue, "%s", curNode->Value());
-	sprintf(nodeType, "%s", curNode->ToElement()->Attribute("type"));
-//	printf("%s %d\n", nodeValue, curNode->Type());
+	nodeValue = curNode->Value();
+ 	printf("NDFileNexus::processNode Value=%s Type=%d\n", curNode->Value(), curNode->Type());
+	nodeType = curNode->ToElement()->Attribute("type");
 	childNode = 0;
 	NXstatus stat;
 	if (strcmp (nodeValue, "NXroot") == 0) {
@@ -128,10 +127,10 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 	         (strcmp (nodeValue, "NXsource") ==0) ||
 	         (strcmp (nodeValue, "NXuser") ==0) ||
 	         (strcmp (nodeValue, "NXdata") ==0) ||
-	         (strcmp (nodeType, "UserGroup") ==0) ) {
-		sprintf(nodeName, "%s",  curNode->ToElement()->Attribute("name"));
-		if (strcmp(nodeName, "(null)") == 0 ) {
-			sprintf(nodeName, "%s", nodeValue);
+	         (nodeType && strcmp (nodeType, "UserGroup") == 0) ) {
+		nodeName = curNode->ToElement()->Attribute("name");
+		if (nodeName == NULL) {
+			nodeName = nodeValue;
 		}
 		stat = NXmakegroup(this->nxFileHandle, (const char *)nodeName, (const char *)nodeValue);
 		stat |= NXopengroup(this->nxFileHandle, (const char *)nodeName, (const char *)nodeValue);
@@ -143,9 +142,9 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 
 	}
 	else if (strcmp (nodeValue, "Attr") ==0) {
-		sprintf(nodeName, "%s",  curNode->ToElement()->Attribute("name"));
-		sprintf(nodeSource, "%s", curNode->ToElement()->Attribute("source"));
-		if ( strcmp(nodeType, "ND_ATTR") == 0 ) {
+		nodeName = curNode->ToElement()->Attribute("name");
+		nodeSource = curNode->ToElement()->Attribute("source");
+		if (nodeType && strcmp(nodeType, "ND_ATTR") == 0 ) {
 			pAttr = pArray->pAttributeList->find(nodeSource);
 			pAttr->getValueInfo(&attrDataType, &attrDataSize);
 			this->getAttrTypeNSize(pAttr, &dataOutType, &wordSize);
@@ -159,13 +158,13 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 				free(pValue);
 			}
 		}
-		if ( strcmp(nodeType, "CONST") == 0 ) {
+		if (nodeType && strcmp(nodeType, "CONST") == 0 ) {
 			this->findConstText( curNode, nodeText);
-			sprintf(nodeOuttype, "%s", curNode->ToElement()->Attribute("outtype"));
-			if ( strcmp(nodeOuttype	, "(null)") == 0){
-				sprintf(nodeOuttype, "NX_CHAR");
+			nodeOuttype = curNode->ToElement()->Attribute("outtype");
+			if (nodeOuttype == NULL){
+				nodeOuttype = "NX_CHAR";
 			}
-			dataOutType = this->typeStringToVal(nodeOuttype);
+			dataOutType = this->typeStringToVal((const char *)nodeOuttype);
 			if ( dataOutType == NX_CHAR ) {
 				nodeTextLen = strlen(nodeText);
 			}
@@ -181,8 +180,8 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 	}
 
 	else {
-		sprintf(nodeSource, "%s", curNode->ToElement()->Attribute("source"));
-		if ( strcmp(nodeType, "ND_ATTR") == 0 ) {
+		nodeSource = curNode->ToElement()->Attribute("source");
+		if (nodeType && strcmp(nodeType, "ND_ATTR") == 0 ) {
 			pAttr = pArray->pAttributeList->find(nodeSource);
 			pAttr->getValueInfo(&attrDataType, &attrDataSize);
 			this->getAttrTypeNSize(pAttr, &dataOutType, &wordSize);
@@ -201,7 +200,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 				NXclosedata(this->nxFileHandle);
 			}
 		}
-		else if ( strcmp(nodeType, "pArray") == 0 ){
+		else if (nodeType && strcmp(nodeType, "pArray") == 0 ){
 
 			rank = pArray->ndims;
 			type = pArray->dataType;
@@ -251,12 +250,12 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 			this->iterateNodes(curNode, pArray);
 			NXclosedata(this->nxFileHandle);
 		}
-		else if ( strcmp(nodeType, "CONST") == 0 ){
+		else if (nodeType && strcmp(nodeType, "CONST") == 0 ){
 			this->findConstText( curNode, nodeText);
 
-			sprintf(nodeOuttype, "%s", curNode->ToElement()->Attribute("outtype"));
-			if ( strcmp(nodeOuttype	, "(null)") == 0){
-				sprintf(nodeOuttype, "NX_CHAR");
+			nodeOuttype = curNode->ToElement()->Attribute("outtype");
+			if (nodeOuttype == NULL){
+				nodeOuttype = "NX_CHAR";
 			}
 			dataOutType = this->typeStringToVal(nodeOuttype);
 			if ( dataOutType == NX_CHAR ) {
@@ -268,7 +267,6 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 			pValue = allocConstValue( dataOutType, nodeTextLen);
 			constTextToDataType(nodeText, dataOutType, pValue);
 
-//			nodeTextLen = strlen(nodeText);
 			NXmakedata( this->nxFileHandle, nodeValue, dataOutType, 1, (int *)&nodeTextLen);
 			NXopendata(this->nxFileHandle, nodeValue);
 			NXputdata(this->nxFileHandle, pValue);
@@ -279,7 +277,6 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 		else {
 			this->findConstText( curNode, nodeText);
 
-//			sprintf(nodeOuttype, "NX_CHAR");
 			dataOutType = NX_CHAR;
 			nodeTextLen = strlen(nodeText);
 
@@ -471,7 +468,7 @@ void NDFileNexus::constTextToDataType(char *inText, int dataType, void *pValue) 
 	return;
 }
 
-int NDFileNexus::typeStringToVal( char * typeStr ) {
+int NDFileNexus::typeStringToVal( const char * typeStr ) {
 	if (strcmp (typeStr, "NX_CHAR") == 0 ) {
 		return NX_CHAR;
 	}
