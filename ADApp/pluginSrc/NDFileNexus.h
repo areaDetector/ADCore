@@ -46,13 +46,12 @@ public:
                              const char **pptypeName, size_t *psize);
 
 private:
-/*    TIFF *output;
-*/
 	NXhandle nxFileHandle;
 	int bitsPerSample;
     NDColorMode_t colorMode;
 	TiXmlDocument configDoc;
 	TiXmlElement *rootNode;
+    NDAttributeList *pFileAttributes;
 	int processNode(TiXmlNode *curNode, NDArray *);
 	void getAttrTypeNSize(NDAttribute *pAttr, int *retType, int *retSize);
 	void iterateNodes(TiXmlNode *curNode, NDArray *pArray);
@@ -62,8 +61,6 @@ private:
 	int typeStringToVal( const char * typeStr );
 
 };
-
-/* static const char *driverName="NDFileNexus"; */
 
 #endif
 
