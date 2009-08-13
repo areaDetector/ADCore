@@ -280,6 +280,12 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 			dataOutType = NX_CHAR;
 			nodeTextLen = strlen(nodeText);
 
+			if (nodeTextLen == 0) {
+				sprintf(nodeText, "LEFT BLANK");
+				nodeTextLen = strlen(nodeText);
+			}
+
+
 			pValue = allocConstValue( dataOutType, nodeTextLen);
 			constTextToDataType(nodeText, dataOutType, pValue);
 
