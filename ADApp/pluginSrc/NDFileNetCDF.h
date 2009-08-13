@@ -41,6 +41,7 @@ private:
     int timeStampId;
     int nextRecord;
     int *pAttributeId;
+    NDAttributeList *pFileAttributes;
 };
 
 #endif

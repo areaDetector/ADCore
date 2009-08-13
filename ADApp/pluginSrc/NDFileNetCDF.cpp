@@ -67,6 +67,16 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
     /* We don't support opening an existing file for appending yet */    
     if (openMode & NDFileModeAppend) return(asynError);
 
+    /* Construct an attribute list. We use a separate attribute list
+     * from the one in pArray to avoid the need to copy the array. */
+    /* First clear the list*/
+    this->pFileAttributes->clear();
+    /* Now get the current values of the attributes for this plugin */
+    this->getAttributes(this->pFileAttributes);
+    /* Now append the attributes from the array which are already up to date from
+     * the driver and prior plugins */
+    pArray->pAttributeList->copy(this->pFileAttributes);
+    
     /* Set the next record in the file to 0 */
     this->nextRecord = 0;
 
@@ -178,10 +188,10 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
 
     /* Create a variable for each attribute in the array */
     free(this->pAttributeId);
-    numAttributes = pArray->pAttributeList->count();
+    numAttributes = this->pFileAttributes->count();
     attrCount = 0;
     this->pAttributeId = (int *)calloc(numAttributes, sizeof(int));
-    pAttribute = pArray->pAttributeList->next(NULL);
+    pAttribute = this->pFileAttributes->next(NULL);
     while (pAttribute) {
         pAttribute->getValueInfo(&attrDataType, &attrSize);
         switch (attrDataType) {
@@ -279,7 +289,7 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
                     &dimIds[0], &this->pAttributeId[attrCount++])))
                     ERR(retval);
         }
-        pAttribute = pArray->pAttributeList->next(pAttribute);
+        pAttribute = this->pFileAttributes->next(pAttribute);
     }
 
     /* End define mode. This tells netCDF we are done defining
@@ -308,6 +318,15 @@ asynStatus NDFileNetCDF::writeFile(NDArray *pArray)
     int attrCount;
     char attrString[MAX_ATTRIBUTE_STRING_SIZE];
     static const char *functionName = "writeFile";
+
+    
+    /* Update attribute list. We use a separate attribute list
+     * from the one in pArray to avoid the need to copy the array. */
+    /* Get the current values of the attributes for this plugin */
+    this->getAttributes(this->pFileAttributes);
+    /* Now append the attributes from the array which are already up to date from
+     * the driver and prior plugins */
+    pArray->pAttributeList->copy(this->pFileAttributes);
 
     count[0] = 1;
     start[0] = this->nextRecord;
@@ -349,7 +368,7 @@ asynStatus NDFileNetCDF::writeFile(NDArray *pArray)
             break;
     }
     /* Write the attributes.  Loop through the list of attributes.  These must not have changed since define time! */
-    pAttribute = pArray->pAttributeList->next(NULL);
+    pAttribute = this->pFileAttributes->next(NULL);
     attrCount = 0;
     while (pAttribute) {
         pAttribute->getValueInfo(&attrDataType, &attrSize);
@@ -398,7 +417,7 @@ asynStatus NDFileNetCDF::writeFile(NDArray *pArray)
                 break;
                 break;
         }
-        pAttribute = pArray->pAttributeList->next(pAttribute);
+        pAttribute = this->pFileAttributes->next(pAttribute);
     }
     this->nextRecord++;
     return(asynSuccess);
@@ -448,6 +467,7 @@ NDFileNetCDF::NDFileNetCDF(const char *portName, int queueSize, int blockingCall
     setStringParam(NDPluginDriverPluginType, "NDFileNetCDF");
     this->supportsMultipleArrays = 1;
     this->pAttributeId = NULL;
+    this->pFileAttributes = new NDAttributeList;
 }
 
 /** Configuration routine.  Called directly, or from the iocsh function in NDFileEpics */
