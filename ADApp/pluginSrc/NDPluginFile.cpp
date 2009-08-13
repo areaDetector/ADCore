@@ -322,9 +322,6 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
      * supposed to save.  So we save the array counter before calling base method, increment it here */
     getIntegerParam(NDPluginDriverArrayCounter, &arrayCounter);
 
-    /* Get the attributes for this plugin */
-    pArray = this->getAttributesCopy(pArray, true);
-    
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
     
