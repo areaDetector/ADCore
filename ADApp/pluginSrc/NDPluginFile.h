@@ -76,7 +76,7 @@ private:
     asynStatus readFileBase();
     asynStatus writeFileBase();
     asynStatus closeFileBase();
-    asynStatus doCapture();
+    asynStatus doCapture(int capture);
     NDArray **pCapture;
     epicsMutexId fileMutexId;
 };
