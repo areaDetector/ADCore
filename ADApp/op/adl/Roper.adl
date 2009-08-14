@@ -2258,7 +2258,7 @@ composite {
 		height=20
 	}
 	display[0] {
-		label="asynRecord"
+		label="asyn record"
 		name="asynRecord.adl"
 		args="P=$(P),R=$(R)AsynIO"
 	}
@@ -2278,14 +2278,24 @@ composite {
 		args="P=$(P), R=$(ROI)"
 	}
 	display[4] {
-		label="File plugin #1"
-		name="NDPluginFile.adl"
-		args="P=$(P), R=$(F)"
+		label="netCDF plugin #1"
+		name="NDFileNetCDF.adl"
+		args="P=$(P), R=$(NETCDF)"
 	}
 	display[5] {
-		label="Color convert plugin #1"
-		name="NDColorConvert.adl"
-		args="P=$(P), R=$(CC)"
+		label="TIFF plugin #1"
+		name="NDFileTIFF.adl"
+		args="P=$(P), R=$(TIFF)"
+	}
+	display[6] {
+		label="JPEG plugin #1"
+		name="NDFileJPEG.adl"
+		args="P=$(P), R=$(JPEG)"
+	}
+	display[7] {
+		label="Nexus plugin #1"
+		name="NDFileNexus.adl"
+		args="P=$(P), R=$(NEXUS)"
 	}
 	clr=14
 	bclr=51
