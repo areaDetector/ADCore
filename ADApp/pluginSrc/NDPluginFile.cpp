@@ -206,11 +206,15 @@ asynStatus NDPluginFile::writeFileBase()
             callParamCallbacks();
             break;
         case NDFileModeStream:
+            if (!this->supportsMultipleArrays)
+                status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, this->pArrays[0]);
             this->unlock();
             epicsMutexLock(this->fileMutexId);
             status = this->writeFile(this->pArrays[0]);
             epicsMutexUnlock(this->fileMutexId);
             this->lock();
+            if (!this->supportsMultipleArrays) 
+                status = this->closeFileBase();
             break;
         default:
             asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
@@ -223,12 +227,13 @@ asynStatus NDPluginFile::writeFileBase()
 }
 
 /** Handles the logic for when NDFileCapture changes state, starting or stopping capturing or streaming NDArrays
-  * to a file. */
-asynStatus NDPluginFile::doCapture() 
+  * to a file.
+  * \param[in] capture Flag to start or stop capture; 1=start capture, 0=stop capture. */
+asynStatus NDPluginFile::doCapture(int capture) 
 {
     /* This function is called from write32 whenever capture is started or stopped */
     asynStatus status = asynSuccess;
-    int fileWriteMode, capture;
+    int fileWriteMode;
     NDArray *pArray = this->pArrays[0];
     NDArrayInfo_t arrayInfo;
     int i;
@@ -243,7 +248,6 @@ asynStatus NDPluginFile::doCapture()
         return(asynError);
     }
     
-    getIntegerParam(NDFileCapture, &capture);    
     getIntegerParam(NDFileWriteMode, &fileWriteMode);    
     getIntegerParam(NDFileNumCapture, &numCapture);
 
@@ -288,14 +292,16 @@ asynStatus NDPluginFile::doCapture()
         case NDFileModeStream:
             if (capture) {
                 /* Streaming was just started */
-                status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, pArray);
+                if (this->supportsMultipleArrays)
+                    status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, pArray);
                 setIntegerParam(NDFileNumCaptured, 0);
                 setIntegerParam(NDWriteFile, 1);
             } else {
                 /* Streaming was just stopped */
-                status = this->closeFileBase();
+                if (this->supportsMultipleArrays)
+                    status = this->closeFileBase();
+                setIntegerParam(NDFileCapture, 0);
                 setIntegerParam(NDWriteFile, 0);
-                setIntegerParam(NDFileNumCaptured, 0);
             }
     }
     return(status);
@@ -367,10 +373,7 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
                 setIntegerParam(NDFileNumCaptured, numCaptured);
                 status = writeFileBase();
                 if (numCaptured == numCapture) {
-                    status = closeFileBase();
-                    capture = 0;
-                    setIntegerParam(NDFileCapture, capture);
-                    setIntegerParam(NDWriteFile, 0);
+                    doCapture(0);
                 }
             }
             break;
@@ -427,7 +430,7 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
             break;
         case NDFileCapture:
             /* Must call doCapture if capturing was just started or stopped */
-            status = doCapture();
+            status = doCapture(value);
             break;
         default:
             /* This was not a parameter that this driver understands, try the base class */
