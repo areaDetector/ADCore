@@ -293,7 +293,7 @@ text {
 	display[0] {
 		label="Prosilica #1 general"
 		name="ADBase.adl"
-		args="P=13PS1:, R=cam1:, I=image1:, ROI=ROI1:, F=file1:, CC=CC1:"
+		args="P=13PS1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, JPEG=JPEG1:, TIFF=TIFF1:, NEXUS=Nexus1:, CC=CC1:"
 	}
 	display[1] {
 		label="Prosilica #1 specific"
@@ -303,7 +303,7 @@ text {
 	display[2] {
 		label="Prosilica #2 general"
 		name="ADBase.adl"
-		args="P=13PS1:, R=cam2:, I=image1:, ROI=ROI1:, F=file1:, CC=CC1:"
+		args="P=13PS1:, R=cam2:, I=image2:, ROI=ROI2:, NETCDF=netCDF2:, JPEG=JPEG2:, TIFF=TIFF2:, NEXUS=Nexus2:, CC=CC2:"
 	}
 	display[3] {
 		label="Prosilica #2 specific"
@@ -346,31 +346,36 @@ text {
 		args="P=13PS1:, R=image1:"
 	}
 	display[1] {
-		label="File netCDF #1"
-		name="NDPluginFile.adl"
+		label="netCDF file #1"
+		name="NDFileNetCDF.adl"
 		args="P=13PS1:, R=netCDF1:"
 	}
 	display[2] {
-		label="File TIFF #1"
-		name="NDPluginFile.adl"
+		label="TIFF file #1"
+		name="NDFileTIFF.adl"
 		args="P=13PS1:, R=TIFF1:"
 	}
 	display[3] {
-		label="File JPEG #1"
-		name="NDPluginFile.adl"
+		label="JPEG file #1"
+		name="NDFileJPEG.adl"
 		args="P=13PS1:, R=JPEG1:"
 	}
 	display[4] {
+		label="NeXus file #1"
+		name="NDFileNexus.adl"
+		args="P=13PS1:, R=Nexus1:"
+	}
+	display[5] {
 		label="ROI #1"
 		name="NDROI.adl"
 		args="P=13PS1:, R=ROI1:"
 	}
-	display[5] {
+	display[6] {
 		label="Color convert #1"
 		name="NDColorConvert.adl"
 		args="P=13PS1:, R=CC1:"
 	}
-	display[6] {
+	display[7] {
 		label="Color convert #2"
 		name="NDColorConvert.adl"
 		args="P=13PS1:, R=CC2:"
@@ -388,7 +393,7 @@ text {
 	display[0] {
 		label="Simulator #1 General"
 		name="ADBase.adl"
-		args="P=13SIM1:, R=cam1:, I=image1:, ROI=ROI1:, F=file1:, CC=CC1:"
+		args="P=13SIM1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, JPEG=JPEG1:, TIFF=TIFF1:, NEXUS=Nexus1:, CC=CC1:"
 	}
 	display[1] {
 		label="Simulator #1 Specific"
@@ -398,7 +403,7 @@ text {
 	display[2] {
 		label="Simulator #2 General"
 		name="ADBase.adl"
-		args="P=13SIM1:, R=cam2:, I=image1:, ROI=ROI1:, F=file1:, CC=CC1:"
+		args="P=13SIM1:, R=cam2:, I=image2:, ROI=ROI2:, NETCDF=netCDF2:, JPEG=JPEG2:, TIFF=TIFF2:, NEXUS=Nexus2:, CC=CC2:"
 	}
 	display[3] {
 		label="Simulator #2 Specific"
@@ -422,17 +427,17 @@ text {
 	}
 	display[1] {
 		label="netCDF file #1"
-		name="NDPluginFile.adl"
+		name="NDFileNetCDF.adl"
 		args="P=13SIM1:, R=netCDF1:"
 	}
 	display[2] {
 		label="TIFF file #1"
-		name="NDPluginFile.adl"
+		name="NDFileTIFF.adl"
 		args="P=13SIM1:, R=TIFF1:"
 	}
 	display[3] {
 		label="JPEG file #1"
-		name="NDPluginFile.adl"
+		name="NDFileJPEG.adl"
 		args="P=13SIM1:, R=JPEG1:"
 	}
 	display[4] {
@@ -473,7 +478,7 @@ text {
 	display[1] {
 		label="Pilatus #1 specific"
 		name="pilatusDetector.adl"
-		args="P=13PIL1:, R=cam1:, I=image1:, ROI=ROI1:, F=file1:"
+		args="P=13PIL1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, JPEG=JPEG1:, TIFF=TIFF1:, NEXUS=Nexus1:"
 	}
 	clr=14
 	bclr=51
@@ -491,21 +496,26 @@ text {
 		args="P=13PIL1:, R=image1:"
 	}
 	display[1] {
-		label="File netCDF #1"
-		name="NDPluginFile.adl"
+		label="netCDF file #1"
+		name="NDFileNetCDF.adl"
 		args="P=13PIL1:, R=netCDF1:"
 	}
 	display[2] {
-		label="File TIFF #1"
-		name="NDPluginFile.adl"
+		label="TIFF file #1"
+		name="NDFileTIFF.adl"
 		args="P=13PIL1:, R=TIFF1:"
 	}
 	display[3] {
-		label="File JPEG #1"
-		name="NDPluginFile.adl"
+		label="JPEG file #1"
+		name="NDFileJPEG.adl"
 		args="P=13PIL1:, R=JPEG1:"
 	}
 	display[4] {
+		label="NeXus file #1"
+		name="NDFileNexus.adl"
+		args="P=13PIL1:, R=Nexus1:"
+	}
+	display[5] {
 		label="ROI #1"
 		name="NDROI.adl"
 		args="P=13PIL1:, R=ROI1:"
@@ -528,7 +538,7 @@ text {
 	display[1] {
 		label="Roper #1 specific"
 		name="Roper.adl"
-		args="P=13ROPER1:, R=cam1:, I=image1:, ROI=ROI1:, F=file1:"
+		args="P=13ROPER1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, JPEG=JPEG1:, TIFF=TIFF1:, NEXUS=Nexus1:"
 	}
 	clr=14
 	bclr=51
@@ -546,26 +556,31 @@ text {
 		args="P=13ROPER1:, R=image1:"
 	}
 	display[1] {
-		label="File netCDF #1"
-		name="NDPluginFile.adl"
+		label="netCDF file #1"
+		name="NDFileNetCDF.adl"
 		args="P=13ROPER1:, R=netCDF1:"
 	}
 	display[2] {
-		label="File TIFF #1"
-		name="NDPluginFile.adl"
+		label="TIFF file #1"
+		name="NDFileTIFF.adl"
 		args="P=13ROPER1:, R=TIFF1:"
 	}
 	display[3] {
-		label="File JPEG #1"
-		name="NDPluginFile.adl"
+		label="JPEG file #1"
+		name="NDFileJPEG.adl"
 		args="P=13ROPER1:, R=JPEG1:"
 	}
 	display[4] {
+		label="NeXus file #1"
+		name="NDFileNexus.adl"
+		args="P=13PROPER1:, R=Nexus1:"
+	}
+	display[5] {
 		label="ROI #1"
 		name="NDROI.adl"
 		args="P=13PS1:, R=ROI1:"
 	}
-	display[5] {
+	display[6] {
 		label="Scan 1"
 		name="scan_more.adl"
 		args="P=13ROPER1:, S=scan1, N=1"
@@ -588,7 +603,7 @@ text {
 	display[1] {
 		label="Firewire #1 specific"
 		name="Firewire.adl"
-		args="P=13FW1:, R=cam1:, I=image1:, ROI=ROI1:, F=file1:"
+		args="P=13FW1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, JPEG=JPEG1:, TIFF=TIFF1:, NEXUS=Nexus1:, CC=CC1:"
 	}
 	display[2] {
 		label="Firewire #1 features"
@@ -616,36 +631,41 @@ text {
 		args="P=13FW1:, R=image1:"
 	}
 	display[1] {
-		label="File netCDF #1"
-		name="NDPluginFile.adl"
+		label="netCDF file #1"
+		name="NDFileNetCDF.adl"
 		args="P=13FW1:, R=netCDF1:"
 	}
 	display[2] {
-		label="File TIFF #1"
-		name="NDPluginFile.adl"
+		label="TIFF file #1"
+		name="NDFileTIFF.adl"
 		args="P=13FW1:, R=TIFF1:"
 	}
 	display[3] {
-		label="File JPEG #1"
-		name="NDPluginFile.adl"
+		label="JPEG file #1"
+		name="NDFileJPEG.adl"
 		args="P=13FW1:, R=JPEG1:"
 	}
 	display[4] {
+		label="NeXus file #1"
+		name="NDFileNexus.adl"
+		args="P=13FW1:, R=Nexus1:"
+	}
+	display[5] {
 		label="ROI #1"
 		name="NDROI.adl"
 		args="P=13FW1:, R=ROI1:"
 	}
-	display[5] {
+	display[6] {
 		label="Color Convert #1"
 		name="NDColorConvert.adl"
 		args="P=13FW1:,R=CC1:"
 	}
-	display[6] {
+	display[7] {
 		label="Scan 1"
 		name="scan_more.adl"
 		args="P=13FW1:, S=scan1, N=1"
 	}
-	display[7] {
+	display[8] {
 		label="Image #1"
 		name="NDStdArrays.adl"
 		args="P=13FW1:, R=image2:"
@@ -668,7 +688,7 @@ text {
 	display[1] {
 		label="marCCD #1 specific"
 		name="marCCD.adl"
-		args="P=13MARCCD1:, R=cam1:, ROI=ROI1:, I=image1:, F=file1:"
+		args="P=13MARCCD1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, JPEG=JPEG1:, TIFF=TIFF1:, NEXUS=Nexus1:"
 	}
 	clr=14
 	bclr=51
@@ -686,26 +706,31 @@ text {
 		args="P=13MARCCD1:, R=image1:"
 	}
 	display[1] {
-		label="File netCDF #1"
-		name="NDPluginFile.adl"
+		label="netCDF file #1"
+		name="NDFileNetCDF.adl"
 		args="P=13MARCCD1:, R=netCDF1:"
 	}
 	display[2] {
-		label="File TIFF #1"
-		name="NDPluginFile.adl"
+		label="TIFF file #1"
+		name="NDFileTIFF.adl"
 		args="P=13MARCCD1:, R=TIFF1:"
 	}
 	display[3] {
-		label="File JPEG #1"
-		name="NDPluginFile.adl"
+		label="JPEG file #1"
+		name="NDFileJPEG.adl"
 		args="P=13MARCCD1:, R=JPEG1:"
 	}
 	display[4] {
+		label="NeXus file #1"
+		name="NDFileNexus.adl"
+		args="P=13MARCCD1:, R=Nexus1:"
+	}
+	display[5] {
 		label="ROI #1"
 		name="NDROI.adl"
 		args="P=13MARCCD1:, R=ROI1:"
 	}
-	display[5] {
+	display[6] {
 		label="Scan 1"
 		name="scan_more.adl"
 		args="P=13MARCCD1:, S=scan1, N=1"
@@ -728,7 +753,7 @@ text {
 	display[1] {
 		label="mar345 #1 specific"
 		name="mar345.adl"
-		args="P=13MAR345_1:, R=cam1:, ROI=ROI1:, I=image1:, F=file1:"
+		args="P=13MAR345_1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, JPEG=JPEG1:, TIFF=TIFF1:, NEXUS=Nexus1:"
 	}
 	clr=14
 	bclr=51
@@ -746,26 +771,31 @@ text {
 		args="P=13MAR345_1:, R=image1:"
 	}
 	display[1] {
-		label="File netCDF #1"
-		name="NDPluginFile.adl"
+		label="netCDF file #1"
+		name="NDFileNetCDF.adl"
 		args="P=13MAR345_1:, R=netCDF1:"
 	}
 	display[2] {
-		label="File TIFF #1"
-		name="NDPluginFile.adl"
+		label="TIFF file #1"
+		name="NDFileTIFF.adl"
 		args="P=13MAR345_1:, R=TIFF1:"
 	}
 	display[3] {
-		label="File JPEG #1"
-		name="NDPluginFile.adl"
+		label="JPEG file #1"
+		name="NDFileJPEG.adl"
 		args="P=13MAR345_1:, R=JPEG1:"
 	}
 	display[4] {
+		label="NeXus file #1"
+		name="NDFileNexus.adl"
+		args="P=13MAR345_1:, R=Nexus1:"
+	}
+	display[5] {
 		label="ROI #1"
 		name="NDROI.adl"
 		args="P=13MAR345_1:, R=ROI1:"
 	}
-	display[5] {
+	display[6] {
 		label="Scan 1"
 		name="scan_more.adl"
 		args="P=13MAR345_1:, S=scan1, N=1"
