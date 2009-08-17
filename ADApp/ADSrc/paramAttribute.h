@@ -28,6 +28,7 @@ typedef enum {
 } paramAttrType_t;
 
 /** Attribute that gets its value from an asynNDArrayDriver driver parameter.
+  * The updateValue() method for this class retrieves the current value of the driver parameter.
   */
 class paramAttribute : public NDAttribute {
 public:

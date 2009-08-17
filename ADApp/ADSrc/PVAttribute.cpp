@@ -31,7 +31,13 @@ static void connectCallbackC(struct connection_handler_args cha);
 
 static asynUser *pasynUserSelf = NULL;
 
-/** PVAttribute constructor for an EPICS PV attribute
+/** Constructor for an EPICS PV attribute
+  * \param[in] pName The name of the attribute to be created; case-insensitive. 
+  * \param[in] pDescription The description of the attribute.
+  * \param[in] pSource The name of the EPICS PV to be used to obtain the attribute value.
+  * \param[in] dbrType The EPICS DBR_XXX type to be used (DBR_STRING, DBR_DOUBLE, etc).
+  *                    In addition to the normal DBR types a special type, DBR_NATIVE, may be used,
+  *                    which means to use the native data type returned by Channel Access for this PV.
   */
 PVAttribute::PVAttribute(const char *pName, const char *pDescription,
                          const char *pSource, chtype dbrType)
@@ -86,6 +92,7 @@ static void monitorCallbackC(struct event_handler_args cha)
 
 /** Monitor callback called whenever an EPICS PV changes value.
   * Calls NDAttribute::setValue to store the new value.
+  * \param[in] eha Event handler argument structure passed by channel access. 
   */
 void PVAttribute::monitorCallback(struct event_handler_args eha)
 {
@@ -118,7 +125,8 @@ static void connectCallbackC(struct connection_handler_args cha)
 
 /** Connection callback called whenever an EPICS PV connects or disconnects.
   * If it is a connection event it calls ca_add_masked_array_event to request
-  *  callbacks whenever the value changes.
+  * callbacks whenever the value changes.
+  * \param[in] cha Connection handler argument structure passed by channel access. 
   */
 void PVAttribute::connectCallback(struct connection_handler_args cha)
 {
@@ -228,7 +236,8 @@ void PVAttribute::connectCallback(struct connection_handler_args cha)
 }
 
 /** Reports on the properties of the PVAttribute object; 
-  * calls NDAttribute::report to report on the EPICS PV value.
+  * calls base class NDAttribute::report() to report on the parameter value.
+  * \param[in] details Level of report details desired; currently does nothing in this derived class.
   */
 int PVAttribute::report(int details)
 {
