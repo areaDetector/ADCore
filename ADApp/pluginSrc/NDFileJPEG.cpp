@@ -29,7 +29,12 @@ static asynParamString_t NDFileJPEGParamString[] = {
 };
 #define NUM_ND_FILE_JPEG_PARAMS (sizeof(NDFileJPEGParamString)/sizeof(NDFileJPEGParamString[0]))
 
-/** This is called to open a JPEG file. */
+/** Opens a JPEG file.
+  * \param[in] fileName The name of the file to open.
+  * \param[in] openMode Mask defining how the file should be opened; bits are 
+  *            NDFileModeRead, NDFileModeWrite, NDFileModeAppend, NDFileModeMultiple
+  * \param[in] pArray A pointer to an NDArray; this is used to determine the array and attribute properties.
+  */
 asynStatus NDFileJPEG::openFile(const char *fileName, NDFileOpenMode_t openMode, NDArray *pArray)
 {
     static const char *functionName = "openFile";
@@ -108,7 +113,9 @@ asynStatus NDFileJPEG::openFile(const char *fileName, NDFileOpenMode_t openMode,
     return(asynSuccess);
 }
 
-/** This is called to write data a single NDArray to the JPEG file. */
+/** Writes single NDArray to the JPEG file.
+  * \param[in] pArray Pointer to the NDArray to be written
+  */
 asynStatus NDFileJPEG::writeFile(NDArray *pArray)
 {
     JSAMPROW row_pointer[1];
@@ -190,6 +197,9 @@ asynStatus NDFileJPEG::writeFile(NDArray *pArray)
     return(asynSuccess);
 }
 
+/** Reads single NDArray from a JPEG file; NOT CURRENTLY IMPLEMENTED.
+  * \param[in] pArray Pointer to the NDArray to be read
+  */
 asynStatus NDFileJPEG::readFile(NDArray **pArray)
 {
     //static const char *functionName = "readFile";
@@ -198,6 +208,7 @@ asynStatus NDFileJPEG::readFile(NDArray **pArray)
 }
 
 
+/** Closes the JPEG file. */
 asynStatus NDFileJPEG::closeFile()
 {
     //static const char *functionName = "closeFile";
@@ -239,6 +250,7 @@ static void init_destination(j_compress_ptr cinfo)
     pdest->pNDFileJPEG->initDestination();
 }
 
+/** Initializes the destination file; should be private but called from C so must be public */
 void NDFileJPEG::initDestination()
 {
     jpegDestMgr *pdest = (jpegDestMgr*) this->jpegInfo.dest;
@@ -253,6 +265,7 @@ static boolean empty_output_buffer(j_compress_ptr cinfo)
     return pdest->pNDFileJPEG->emptyOutputBuffer();
 }
 
+/** Empties the output buffer; should be private but called from C so must be public */
 boolean NDFileJPEG::emptyOutputBuffer()
 {
     jpegDestMgr *pdest = (jpegDestMgr*) this->jpegInfo.dest;
@@ -276,6 +289,7 @@ static void term_destination (j_compress_ptr cinfo)
     pdest->pNDFileJPEG->termDestination();
 }
 
+/** Terminates the destination file; should be private but called from C so must be public */
 void NDFileJPEG::termDestination()
 {
     jpegDestMgr *pdest = (jpegDestMgr*) this->jpegInfo.dest;

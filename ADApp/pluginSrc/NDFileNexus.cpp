@@ -24,7 +24,16 @@
 
 static const char *driverName="NDFileNexus";
 
-/** Call to open the file */
+/** Opens NeXus file.
+  * \param[in] fileName  Absolute path name of the file to open.
+  * \param[in] openMode Bit mask with one of the access mode bits NDFileModeRead, NDFileModeWrite. NDFileModeAppend.
+  *            May also have the bit NDFileModeMultiple set if the file is to be opened to write or read multiple 
+  *            NDArrays into a single file.
+  * \param[in] pArray Pointer to an NDArray; this array does not contain data to be written or read.  
+  *            Rather it can be used to determine the header information and data structure for the file.
+  *            It is guaranteed that NDArrays pass to NDPluginFile::writeFile or NDPluginFile::readFile 
+  *            will have the same data type, data dimensions and attributes as this array. 
+  */
 asynStatus NDFileNexus::openFile( const char *fileName, NDFileOpenMode_t openMode, NDArray *pArray) {
 	int status = asynSuccess;
 	int addr = 0;
@@ -59,7 +68,12 @@ asynStatus NDFileNexus::openFile( const char *fileName, NDFileOpenMode_t openMod
 	return (asynSuccess);
 }
 
-/** Call to write NDArrays to file */
+/** Writes a single NDArray to a NeXus file.
+  * \param[in] pArray Pointer to an NDArray to write to the file. This function can be called multiple
+  *            times between the call to openFile and closeFile once this class supports MultipleArrays=1 and
+  *            if NDFileModeMultiple was set in openMode in the call to NDPluginFile::openFile 
+  *            (e.g. capture or stream mode).
+  */ 
 asynStatus NDFileNexus::writeFile(NDArray *pArray) {
     /* Update attribute list. We use a separate attribute list
      * from the one in pArray to avoid the need to copy the array. */
@@ -74,7 +88,9 @@ asynStatus NDFileNexus::writeFile(NDArray *pArray) {
 	return (asynSuccess);
 }
 
-/** call to read the file.  Not implementes.  This is just a dummy routine. */
+/** Read NDArray data from a NeXus file; NOT YET IMPLEMENTED.
+  * \param[in] pArray Pointer to the address of an NDArray to read the data into.
+  */ 
 asynStatus NDFileNexus::readFile(NDArray **pArray) {
     static const char *functionName = "readFile";
     
@@ -84,7 +100,7 @@ asynStatus NDFileNexus::readFile(NDArray **pArray) {
 	return asynError;
 }
 
-/** call to close the file after we are done */
+/** Closes the NeXus file opened with NDFileNexus::openFile */
 asynStatus NDFileNexus::closeFile() {
     asynStatus status;
     

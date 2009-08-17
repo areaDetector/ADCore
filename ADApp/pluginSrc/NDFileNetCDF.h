@@ -20,7 +20,7 @@
   * The netCDF format supports arrays of any dimension and all of the data types supported by NDArray.
   * It can store multiple NDArrays in a single file, so it sets NDPluginFile::supportsMultipleArrays to 1.
   * If also can store all of the attributes associated with an NDArray.
-  * This classes implements the 4 pure virtual functions from 
+  * This class implements the 4 pure virtual functions from 
   * NDPluginFile: openFile, readFile, writeFile and closeFile. */
 class NDFileNetCDF : public NDPluginFile {
 public:

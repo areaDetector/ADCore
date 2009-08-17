@@ -21,8 +21,12 @@ static const char *driverName = "NDFileTIFF";
 
 #define MAX_ATTRIBUTE_STRING_SIZE 256
 
-/** This is called to open a TIFF file.
-*/
+/** Opens a TIFF file.
+  * \param[in] fileName The name of the file to open.
+  * \param[in] openMode Mask defining how the file should be opened; bits are 
+  *            NDFileModeRead, NDFileModeWrite, NDFileModeAppend, NDFileModeMultiple
+  * \param[in] pArray A pointer to an NDArray; this is used to determine the array and attribute properties.
+  */
 asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode, NDArray *pArray)
 {
     /* When we create TIFF variables and dimensions, we get back an
@@ -123,8 +127,9 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
     return(asynSuccess);
 }
 
-/** This is called to write data a single NDArray to the file.  It can be called multiple times
- *  to add arrays to a single file in stream or capture mode */
+/** Writes single NDArray to the TIFF file.
+  * \param[in] pArray Pointer to the NDArray to be written
+  */
 asynStatus NDFileTIFF::writeFile(NDArray *pArray)
 {
     unsigned long int stripSize;
@@ -178,6 +183,9 @@ asynStatus NDFileTIFF::writeFile(NDArray *pArray)
     return(asynSuccess);
 }
 
+/** Reads single NDArray from a TIFF file; NOT CURRENTLY IMPLEMENTED.
+  * \param[in] pArray Pointer to the NDArray to be read
+  */
 asynStatus NDFileTIFF::readFile(NDArray **pArray)
 {
     //static const char *functionName = "readFile";
@@ -186,6 +194,7 @@ asynStatus NDFileTIFF::readFile(NDArray **pArray)
 }
 
 
+/** Closes the TIFF file. */
 asynStatus NDFileTIFF::closeFile()
 {
     //static const char *functionName = "closeFile";
