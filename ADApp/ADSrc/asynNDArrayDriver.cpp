@@ -137,11 +137,48 @@ int asynNDArrayDriver::createFileName(int maxChars, char *filePath, char *fileNa
     return(status);   
 }
 
-/** Read a list of attributes from an XML file.
+/** Create this driver's NDAttributeList (pAttributeList) by reading an XML file
   * \param[in] fileName  The name of the XML file to read.
   * 
-  * This reads a list of attributes from an XML file.  These attributes
-  * can then be associated with an NDArray by calling getAttributes();
+  * This clears any existing attributes from this drivers' NDAttributeList and then creates a new list
+  * based on the XML file.  These attributes can then be associated with an NDArray by calling asynNDArrayDriver::getAttributes()
+  * passing it pNDArray->pAttributeList.
+  * 
+  * The following simple example XML file illustrates the way that both PVAttribute and paramAttribute attributes are defined.
+  * <pre>
+  * <?xml version="1.0" standalone="no" ?>
+  * \<Attributes>
+  * \<Attribute name="AcquireTime"         type="EPICS_PV" source="13SIM1:cam1:AcquireTime"      dbrtype="DBR_NATIVE"  description="Camera acquire time"/>
+  * \<Attribute name="CameraManufacturer"  type="PARAM"    source="MANUFACTURER"                 datatype="string"     description="Camera manufacturer"/>
+  * \</Attributes>
+  * </pre>
+  * Each NDAttribute (currently either an PVAttribute or paramAttribute, but other types may be added in the future) 
+  * is defined with an XML <b>Attribute</b> tag.  For each attribute there are a number of XML attributes
+  * (unfortunately there are 2 meanings of attribute here: the NDAttribute and the XML attribute).  
+  * XML attributes have the syntax name=value.  The XML attribute names are case-sensitive and must be lower case, i.e. name="xxx", not NAME="xxx".  
+  * The XML attribute values however, are case-insensitive, i.e. type="epics_pv" is equivalent to type="EPICS_PV".
+  * The XML attribute names are listed here:
+  *
+  * <b>name</b> determines the name of the NDAttribute.  It is required, must be unique, and is case-insensitive.
+  *
+  * <b>type</b> determines the type of the NDAttribute.  "EPICS_PV" creates a PVAttribute, while "PARAM" creates a paramAttribute.
+  * The default is EPICS_PV if this XML attribute is absent.
+  *
+  * <b>source</b> determines the source of the NDAttribute.  It is required. If type="EPICS_PV" then this is the name of the EPICS PV, which is
+  * case-sensitive. If type="PARAM" then this is the drvInfo string that is used in EPICS database files (e.g. ADBase.template) to identify
+  * this parameter.
+  *
+  * <b>dbrtype</b> determines the data type that will be used to read an EPICS_PV value with channel access.  It can be one of the standard EPICS
+  * DBR types (e.g. "DBR_DOUBLE", "DBR_STRING", ...) or it can be the special type "DBR_NATIVE" which means to use the native channel access
+  * data type for this PV.  The default is DBR_NATIVE if this XML attribute is absent.
+  *
+  * <b>datatype</b> determines the parameter data type for type="PARAM".  It must match the actual data type in the driver or plugin
+  * parameter library, and must be "INT", "DOUBLE", or "STRING".  The default is "INT" if this XML attribute is absent.
+  * 
+  * <b>addr</b> determines the asyn addr (address) for type="PARAM".  The default is 0 if the XML attribute is absent.
+  * 
+  * <b>description</b> determines the description for this attribute.  It is not required, and the default is a NULL string.
+  *
   */
 int asynNDArrayDriver::readNDAttributesFile(const char *fileName)
 {
@@ -188,15 +225,15 @@ int asynNDArrayDriver::readNDAttributesFile(const char *fileName)
             pDBRType = Attr->Attribute("dbrtype");
             dbrType = DBR_NATIVE;
             if (pDBRType) {
-                if      (!strcmp(pDBRType, "DBR_CHAR"))   dbrType = DBR_CHAR;
-                else if (!strcmp(pDBRType, "DBR_SHORT"))  dbrType = DBR_SHORT;
-                else if (!strcmp(pDBRType, "DBR_ENUM"))   dbrType = DBR_ENUM;
-                else if (!strcmp(pDBRType, "DBR_INT"))    dbrType = DBR_INT;
-                else if (!strcmp(pDBRType, "DBR_LONG"))   dbrType = DBR_LONG;
-                else if (!strcmp(pDBRType, "DBR_FLOAT"))  dbrType = DBR_FLOAT;
-                else if (!strcmp(pDBRType, "DBR_DOUBLE")) dbrType = DBR_DOUBLE;
-                else if (!strcmp(pDBRType, "DBR_STRING")) dbrType = DBR_STRING;
-                else if (!strcmp(pDBRType, "DBR_NATIVE")) dbrType = DBR_NATIVE;
+                if      (!epicsStrCaseCmp(pDBRType, "DBR_CHAR"))   dbrType = DBR_CHAR;
+                else if (!epicsStrCaseCmp(pDBRType, "DBR_SHORT"))  dbrType = DBR_SHORT;
+                else if (!epicsStrCaseCmp(pDBRType, "DBR_ENUM"))   dbrType = DBR_ENUM;
+                else if (!epicsStrCaseCmp(pDBRType, "DBR_INT"))    dbrType = DBR_INT;
+                else if (!epicsStrCaseCmp(pDBRType, "DBR_LONG"))   dbrType = DBR_LONG;
+                else if (!epicsStrCaseCmp(pDBRType, "DBR_FLOAT"))  dbrType = DBR_FLOAT;
+                else if (!epicsStrCaseCmp(pDBRType, "DBR_DOUBLE")) dbrType = DBR_DOUBLE;
+                else if (!epicsStrCaseCmp(pDBRType, "DBR_STRING")) dbrType = DBR_STRING;
+                else if (!epicsStrCaseCmp(pDBRType, "DBR_NATIVE")) dbrType = DBR_NATIVE;
                 else {
                     asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
                         "%s:%s: unknown dbrType = %s\n", 
@@ -226,8 +263,15 @@ int asynNDArrayDriver::readNDAttributesFile(const char *fileName)
 }
 
 
-/** Get the current values of attributes from this driver and copy them to another list.
-  * \param[in] pList  The NDAttributeList to copy the attributes to.
+/** Get the current values of attributes from this driver and appends them to an output attribute list.
+  * Calls NDAttributeList::updateValues for this driver's attribute list, 
+  * and then NDAttributeList::copy, to copy this driver's attribute 
+  * list to pList, appending the values to that output attribute list.
+  * \param[out] pList  The NDAttributeList to copy the attributes to.
+  *
+  * NOTE: Plugins must never call this function with a pointer to the attribute
+  * list from the NDArray they were passed in NDPluginDriver::processCallbacks, because
+  * that modifies the original NDArray which is forbidden.
   */
 int asynNDArrayDriver::getAttributes(NDAttributeList *pList)
 {
@@ -238,33 +282,6 @@ int asynNDArrayDriver::getAttributes(NDAttributeList *pList)
     status = this->pAttributeList->copy(pList);
     return(status);
 }
-
-/** Get the current values of attributes and attach them to the NDArray.
-  * If there are attributes defined for this driver it makes a copy
-  * of the input array and adds the attributes
-  * to the copy.  It then releases the input array and returns
-  * a pointer to the new array.
-  * This is needed by plugins which are not allowed to
-  * modify the NDArray.  
-  * If there are no attributes currently defined
-  * for this driver this method just returns the original array.
-  * \param[in] pIn  The input array.
-  * \param[in] release  A boolean flag indicating whether the input array 
-  *                     should be released after the copy.
-  */
-NDArray* asynNDArrayDriver::getAttributesCopy(NDArray *pIn, bool release)
-{
-    //const char *functionName = "readAttributesFile";
-    NDArray *pOut = pIn;
-    
-    if (this->pAttributeList->count() > 0) {
-        pOut = this->pNDArrayPool->copy(pIn, NULL, 1);
-        if (release) pIn->release();
-        this->getAttributes(pOut->pAttributeList);
-    }
-    return(pOut);
-}
-
 
 /** Called when asyn clients call pasynOctet->write().
   * This function performs actions for some parameters, including NDAttributesFile.
@@ -365,7 +382,7 @@ asynStatus asynNDArrayDriver::writeGenericPointer(asynUser *pasynUser, void *gen
     return status;
 }
 
-/** Sets pasynUser->reason to one of the enum values for the parameters defined in ADStdDriverParams.h
+/** Sets pasynUser->reason to one of the enum values for the NDStdDriverParam_t values defined in asynNDArrayDriver.h
   * if the drvInfo field matches one the strings defined in that file.
   * Simply calls asynPortDriver::drvUserCreateParam with the parameter table for this driver.
   * \param[in] pasynUser pasynUser structure that driver modifies
@@ -390,7 +407,7 @@ asynStatus asynNDArrayDriver::drvUserCreate(asynUser *pasynUser,
   * This method calls the report function in the asynPortDriver base class. It then
   * calls the NDArrayPool::report() method if details >5.
   * \param[in] fp File pointed passed by caller where the output is written to.
-  * \param[in] details If >5 then NDArrayPool::report is called.
+  * \param[in] details If >5 then NDArrayPool::report and NDAttributeList::report are both called.
   */
 void asynNDArrayDriver::report(FILE *fp, int details)
 {
