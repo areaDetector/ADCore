@@ -43,7 +43,7 @@ static asynParamString_t NDPluginROINParamString[] = {
     {NDPluginROIDim2MaxSize,            "DIM2_MAX_SIZE"},
     {NDPluginROIDim2Bin,                "DIM2_BIN"},
     {NDPluginROIDim2Reverse,            "DIM2_REVERSE"},
-    {NDPluginROIDataType,               "DATA_TYPE"},
+    {NDPluginROIDataType,               "ROI_DATA_TYPE"},
 
     {NDPluginROIBgdWidth,               "BGD_WIDTH"},
     {NDPluginROIMinValue,               "MIN_VALUE"},
