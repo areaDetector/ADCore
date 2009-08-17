@@ -14,7 +14,7 @@ typedef enum
     NDPluginDriverArrayPort               /**< (asynOctet,    r/w) The port for the NDArray interface */
         = NDLastStdParam,
     NDPluginDriverArrayAddr,              /**< (asynInt32,    r/w) The address on the port */
-    NDPluginDriverPluginType,             /**< (asynOctet,    r/w) The type of plugin */
+    NDPluginDriverPluginType,             /**< (asynOctet,    r/o) The type of plugin */
     NDPluginDriverArrayCounter,           /**< (asynInt32,    r/w) Number of arrays processed */
     NDPluginDriverDroppedArrays,          /**< (asynInt32,    r/w) Number of dropped arrays */
     NDPluginDriverEnableCallbacks,        /**< (asynInt32,    r/w) Enable callbacks from driver (1=Yes, 0=No) */
