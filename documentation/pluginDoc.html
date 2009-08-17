@@ -78,7 +78,7 @@
     from the driver. Plugins derived from this class typically need to implement the
     processCallbacks method, the drvUser method, and one or more of the write(Int32,
     Float64, Octet) methods. The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_driver.html">
-        NDPluginDriver class documentation </a>describes this class in detail.
+      NDPluginDriver class documentation </a>describes this class in detail.
   </p>
   <p>
     NDPluginDriver defines parameters that all plugin drivers should implement if possible.
@@ -498,10 +498,9 @@
         <td>
           r/w</td>
         <td>
-          The name of an XML file defining the PVAttributes and paramAttributes to be
-          added to each NDArray by this plugin.  The format of the XML file is described 
-          in the documentation for <a href="areaDetectorDoxygenHTML/class_asyn_n_d_array_driver.html">
-          asynNDArrayDriver::readNDAttributesFile().</a></td>
+          The name of an XML file defining the PVAttributes and paramAttributes to be added
+          to each NDArray by this plugin. The format of the XML file is described in the documentation
+          for <a href="areaDetectorDoxygenHTML/classasyn_n_d_array_driver.html">asynNDArrayDriver::readNDAttributesFile().</a></td>
         <td>
           ND_ATTRIBUTES_FILE</td>
         <td>
@@ -533,43 +532,44 @@
   </table>
   <h2 id="Guidelines">
     Guidelines and rules for plugins</h2>
-  <p>The following are guidelines and rules for writing plugins</p>
+  <p>
+    The following are guidelines and rules for writing plugins</p>
   <ul>
-    <li>
-      Plugins will almost always implement the processCallbacks() function.  This function will be
-      called with an NDArray pointer each time an NDArray callback occurs.  This function will normally call
-      the NDPluginDriver::processCallbacks() base class function, which handles tasks common to all plugins, 
-      including callbacks with information about the array, etc.</li>
-    <li>
-      Plugins will generally implement one or more of the writeInt32(), writeFloat64() or writeOctet() functions
-      if they need to act immediately on a new value of a parameter.  For many parameters it is normally 
-      sufficient to simply have them written to the parameter library, and not to handle them in the 
-      writeXXX() functions.  The parameters are then retrieved from the parameter library with the getIntParam(),
-      getDoubleParam(), or getStringParam() function calls when they are needed.</li>
-    <li>
-      If the writeInt32(), writeFloat64() or writeOctet() functions are implemented they <b>must</b> call
-      the base class function for parameters that they do not handle and whose enum value is less than
-      the value of NDPluginDriverLastParam, i.e. parameters that belong to a base class.</li>
-    <li>
-      Plugins will need to implement the drvUserCreate() function if they have additional parameters beyond
-      those in the asynPortDriver or NDPluginDriver base classes.</li>
-    <li>
-      Plugins may <b>never</b> modify the NDArray that they receive in the processCallbacks() function.  The reason
-      is that other plugins may be concurrently operating on the same NDArray, since each is passed the same
-      pointer.  This means also that when getting the attributes for this plugin that 
-      asynNDArrayDriver::getAttributes(pArray->pAttributeList) must not be called with the NDArray passed to 
-      processCallbacks(), because that will modify the NDArray attribute list, and hence the NDArray that other
-      plugins are operating on. Plugins such as NDPluginROI and NDPluginColorConvert create new NDArrays via
-      NDArrayPool::copy() or NDArrayPool::convert() (which copy the attributes to the new array)
-      and then call getAttributes(pArray->pAttributeList) with the new array.  The NDPluginFile
-      makes a copy of the attribute list from the original NDArray before calling getAttributes(), but does not
-      need to make a copy of the NDArray because it does not modify it.</li>
-    <li>Plugins must release their mutex by calling this->unlock() when they do time-consuming operations.
-      If they do not then they will not be able to queue new NDArrays callbacks or obtain new parameter values.
-      Obviously they must mot access memory locations that other threads could modify during this time, so they should
-      only access local variables, not class variables (which includes the parameter library).</li>
-    <li>
-      If plugins generate new or modified NDArrays then they must call doCallbacksGenericPointer() 
+    <li>Plugins will almost always implement the processCallbacks() function. This function
+      will be called with an NDArray pointer each time an NDArray callback occurs. This
+      function will normally call the NDPluginDriver::processCallbacks() base class function,
+      which handles tasks common to all plugins, including callbacks with information
+      about the array, etc.</li>
+    <li>Plugins will generally implement one or more of the writeInt32(), writeFloat64()
+      or writeOctet() functions if they need to act immediately on a new value of a parameter.
+      For many parameters it is normally sufficient to simply have them written to the
+      parameter library, and not to handle them in the writeXXX() functions. The parameters
+      are then retrieved from the parameter library with the getIntParam(), getDoubleParam(),
+      or getStringParam() function calls when they are needed.</li>
+    <li>If the writeInt32(), writeFloat64() or writeOctet() functions are implemented
+      they <b>must</b> call the base class function for parameters that they do not handle
+      and whose enum value is less than the value of NDPluginDriverLastParam, i.e. parameters
+      that belong to a base class.</li>
+    <li>Plugins will need to implement the drvUserCreate() function if they have additional
+      parameters beyond those in the asynPortDriver or NDPluginDriver base classes.</li>
+    <li>Plugins may <b>never</b> modify the NDArray that they receive in the processCallbacks()
+      function. The reason is that other plugins may be concurrently operating on the
+      same NDArray, since each is passed the same pointer. This means also that when getting
+      the attributes for this plugin that asynNDArrayDriver::getAttributes(pArray->pAttributeList)
+      must not be called with the NDArray passed to processCallbacks(), because that will
+      modify the NDArray attribute list, and hence the NDArray that other plugins are
+      operating on. Plugins such as NDPluginROI and NDPluginColorConvert create new NDArrays
+      via NDArrayPool::copy() or NDArrayPool::convert() (which copy the attributes to
+      the new array) and then call getAttributes(pArray->pAttributeList) with the new
+      array. The NDPluginFile makes a copy of the attribute list from the original NDArray
+      before calling getAttributes(), but does not need to make a copy of the NDArray
+      because it does not modify it.</li>
+    <li>Plugins must release their mutex by calling this->unlock() when they do time-consuming
+      operations. If they do not then they will not be able to queue new NDArrays callbacks
+      or obtain new parameter values. Obviously they must mot access memory locations
+      that other threads could modify during this time, so they should only access local
+      variables, not class variables (which includes the parameter library).</li>
+    <li>If plugins generate new or modified NDArrays then they must call doCallbacksGenericPointer()
       so that registered clients can get the values of the new arrays.</li>
   </ul>
 </body>
