@@ -95,7 +95,8 @@
     should also be loaded for the driver instance.
   </p>
   <p>
-    An example IOC configuration for this driver is at <tt>iocBoot/iocAdsc/st.cmd</tt>.
+    There an example IOC boot directory and startup script (<a href="adsc_st_cmd.html">iocBoot/iocAdsc/st.cmd)</a>
+    provided with areaDetector.
   </p>
   <h2 id="ImageModes">
     Image Modes</h2>
@@ -128,8 +129,8 @@
   <h3>
     <tt>Ext. Software</tt></h3>
   <p>
-    The <tt>Ext. Software</tt> mode will make the driver expose images only when told to
-    once the acquisition is started. A special protocol must be followed to trigger
+    The <tt>Ext. Software</tt> mode will make the driver expose images only when told
+    to once the acquisition is started. A special protocol must be followed to trigger
     each image exposure. This would normally be very simple, but because the ADSC control
     library can report that an exposure did not work and should be retried after any
     exposure, a more complex protocol is required.
@@ -148,9 +149,9 @@
       and should be tried again</li>
   </ol>
   <p>
-    Note that care must be taken when waiting for <tt>$(P)$(R)ExSwTrCtlRsp</tt> to
-    be <tt>OK</tt> or <tt>Again</tt> to ensure the PV value is not stale (i.e. from
-    the previous exposure). There are at least two methods to ensure this:
+    Note that care must be taken when waiting for <tt>$(P)$(R)ExSwTrCtlRsp</tt> to be
+    <tt>OK</tt> or <tt>Again</tt> to ensure the PV value is not stale (i.e. from the
+    previous exposure). There are at least two methods to ensure this:
   </p>
   <ul>
     <li>Use a CA monitor on <tt>$(P)$(R)ExSwTrCtlRsp</tt>; before waiting for the <tt>
@@ -220,12 +221,12 @@
   <dl>
     <dt>OK to expose, <tt>$(P)$(R)ExSwTrOkToExp</tt></dt>
     <dd>
-      When in <tt>Ext. Software</tt> trigger mode, indicates whether it is OK to start an image
-      exposure.</dd>
+      When in <tt>Ext. Software</tt> trigger mode, indicates whether it is OK to start
+      an image exposure.</dd>
     <dt>Start, Stop, <tt>$(P)$(R)ExSwTrCtl</tt></dt>
     <dd>
-      When in <tt>Ext. Software</tt> trigger mode, set to <tt>1</tt> to start an exposure, and
-      set to <tt>0</tt> to stop it.</dd>
+      When in <tt>Ext. Software</tt> trigger mode, set to <tt>1</tt> to start an exposure,
+      and set to <tt>0</tt> to stop it.</dd>
     <dt><tt>$(P)$(R)ExSwTrCtlRsp</tt></dt>
     <dd>
       When in <tt>Ext. Software</tt> trigger mode, will be <tt>Start</tt>, <tt>Stop</tt>,
