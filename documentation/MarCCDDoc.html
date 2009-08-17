@@ -10,7 +10,7 @@
     <h1>
       areaDetector MarCCD driver</h1>
     <h2>
-      January 26, 2009</h2>
+      August 17, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -32,8 +32,8 @@
     Introduction</h2>
   <p>
     This is a driver for the MarCCD detectors from <a href="http://www.mar-usa.com/">Rayonix/MarUSA</a>.
-    It inherits from ADDriver and implements many of the parameters in ADStdDriverParams.h.
-    It also implements a number of parameters that are specific to the MarCCD detectors.</p>
+    It implements many of the parameters in asynNDArrayDriver.h and ADDriver.h. It also
+    implements a number of parameters that are specific to the MarCCD detectors.</p>
   <p>
     The interface to the detector is via a TCP/IP socket interface to the <b>marccd_server_socket</b>
     server that MarUSA provides. The marccd_server_socket program must be started before
@@ -67,6 +67,9 @@ remote_mode_server_arguments 2222
     reads these disk files in order to read the data, because marccd does not provide
     another mechanism to access the data.
   </p>
+  <p>
+    This driver inherits from ADDriver. The <a href="areaDetectorDoxygenHTML/classmar_c_c_d.html">
+      marCCD class documentation</a> describes this class in detail.</p>
   <h2 id="StandardNotes" style="text-align: left">
     Implementation of standard driver parameters</h2>
   <p>
@@ -77,8 +80,8 @@ remote_mode_server_arguments 2222
     <tbody>
       <tr>
         <td align="center" colspan="3">
-          <b>Implementation of Parameters in ADStdDriverParams.h and EPICS Record Definitions
-            in ADBase.template and NDFile.template</b></td>
+          <b>Implementation of Parameters in asynNDArrayDriver.h and ADDriver.h, and EPICS Record
+            Definitions in ADBase.template and NDFile.template</b></td>
       </tr>
       <tr>
         <th>
@@ -139,7 +142,7 @@ remote_mode_server_arguments 2222
       </tr>
       <tr>
         <td>
-          ADFilePath</td>
+          NDFilePath</td>
         <td>
           $(P$(R)FilePath</td>
         <td>
@@ -150,7 +153,7 @@ remote_mode_server_arguments 2222
       </tr>
       <tr>
         <td>
-          ADFileFormat</td>
+          NDFileFormat</td>
         <td>
           $(P)$(R)FileFormat</td>
         <td>
@@ -167,9 +170,9 @@ remote_mode_server_arguments 2222
   <h2 id="Driver_parameters" style="text-align: left">
     MarCCD specific parameters</h2>
   <p>
-    The MarCCD driver implements the following parameters in addition to those in ADStdDriverParams.h.
-    Note that to reduce the width of this table the enum names have been split into
-    2 lines, but these are just a single name, for example <code>marCCDState</code>.
+    The MarCCD driver implements the following parameters in addition to those in asynNDArrayDriver.h
+    and ADDriver.h. Note that to reduce the width of this table the enum names have
+    been split into 2 lines, but these are just a single name, for example <code>marCCDState</code>.
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
@@ -525,9 +528,9 @@ remote_mode_server_arguments 2222
         <td>
           r/w</td>
         <td>
-          Detector two-theta angle (deg); ignored if empty string; requires theta axis
-          definition with display name "TwoTheta" in marccd configuration file (e.g.
-          "<tt>theta_display_name TwoTheta</tt>")</td>
+          Detector two-theta angle (deg); ignored if empty string; requires theta axis definition
+          with display name "TwoTheta" in marccd configuration file (e.g. "<tt>theta_display_name
+            TwoTheta</tt>")</td>
         <td>
           MAR_TWO_THETA</td>
         <td>
@@ -618,145 +621,29 @@ remote_mode_server_arguments 2222
     <li>Trigger mode (ADTriggerMode)</li>
     <li>Gain (ADGain)</li>
     <li>Region to read out (ADMinX, ADMinY, ADSizeX, ADSizeY, ADReverseX, ADReverseY)</li>
-    <li>Data type (ADDataType)</li>
-    <li>Reading previous files (ADReadFile)</li>
-    <li>Capture or stream file saving (ADFileWriteMode, ADFileCapture, ADNumCapture, ADNumCaptured)</li>
+    <li>Data type (NDDataType)</li>
+    <li>Reading previous files (NDReadFile)</li>
+    <li>Capture or stream file saving (NDFileWriteMode, NDFileCapture, NDNumCapture, NDNumCaptured)</li>
   </ul>
-  <h2 id="Configuration" style="text-align: left">
+  <h2 id="Configuration">
     Configuration</h2>
   <p>
-    The MarCCD driver is created with the following command, either from C/C++ or from
-    the EPICS IOC shell.
-  </p>
-  <pre>   
-marCCDConfig(const char *portName, const char *marCCDPort, 
-             int maxBuffers, size_t maxMemory);
+    The marCCD driver is created with the marCCDConfig command, either from C/C++ or
+    from the EPICS IOC shell.</p>
+  <pre>int marCCDConfig(const char *portName, const char *serverPort,
+                 int maxBuffers, size_t maxMemory,
+                 int priority, int stackSize)
   </pre>
-  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
-    <tbody>
-      <tr>
-        <th>
-          Argument</th>
-        <th>
-          Description</th>
-      </tr>
-      <tr>
-        <td>
-          <code>portName</code></td>
-        <td>
-          The name of the asyn port for this detector.
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <code>marCCDPort</code></td>
-        <td>
-          The name of the asyn TCP/IP port to communicate with marccd_server_socket. This
-          must have been previously created with <code>drvAsynIPPortConfig()</code>,
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <code>maxBuffers</code></td>
-        <td>
-          Maximum number of buffers to be created for plugin callbacks. Passed to the constructor
-          for the ADDriver base class.</td>
-      </tr>
-      <tr>
-        <td>
-          <code>maxMemory</code></td>
-        <td>
-          Maximum number of bytes of memory to be allocated for plugin callbacks. Passed to
-          the constructor for the ADDriver base class.</td>
-      </tr>
-    </tbody>
-  </table>
   <p>
-    The following is an example st.cmd startup script:
+    For details on the meaning of the parameters to this function refer to the detailed
+    documentation on the mar345Config function in the <a href="areaDetectorDoxygenHTML/mar_c_c_d_8cpp.html">
+      marCCD.cpp documentation</a> and in the documentation for the constructor for
+    the <a href="areaDetectorDoxygenHTML/classmar_c_c_d.html">marCCD class</a>.
   </p>
-  <pre>&lt; envPaths
-errlogInit(20000)
-
-dbLoadDatabase("$(AREA_DETECTOR)/dbd/marCCDApp.dbd")
-marCCDApp_registerRecordDeviceDriver(pdbbase) 
-
-###
-# Create the asyn port to talk to the MAR on port 2222
-drvAsynIPPortConfigure("marServer","gse-marccd1.cars.aps.anl.gov:2222")
-# Set the input and output terminators.
-asynOctetSetInputEos("marServer", 0, "\n")
-asynOctetSetOutputEos("marServer", 0, "\n")
-#asynSetTraceMask("marServer",0,9)
-asynSetTraceIOMask("marServer",0,2)
-
-marCCDConfig("MAR", "marServer", 20, 200000000)
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/ADBase.template",  "P=13MARCCD1:,R=cam1:,PORT=MAR,ADDR=0,TIMEOUT=1")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/marCCD.template","P=13MARCCD1:,R=cam1:,PORT=MAR,ADDR=0,TIMEOUT=1,MARSERVER_PORT=marServer")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFile.template","P=13MARCCD1:,R=cam1:,PORT=MAR,ADDR=0,TIMEOUT=1")
-
-# Create a standard arrays plugin
-drvNDStdArraysConfigure("MARImage", 5, 0, "MAR", 0, -1)
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13MARCCD1:,R=image1:,PORT=MARImage,ADDR=0,TIMEOUT=1,NDARRAY_PORT=MAR,NDARRAY_ADDR=0")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStdArrays.template", "P=13MARCCD1:,R=image1:,PORT=MARImage,ADDR=0,TIMEOUT=1,SIZE=16,FTVL=SHORT,NELEMENTS=1200000")
-
-# Create an ROI plugin
-drvNDROIConfigure("MARROI", 5, 0, "MAR", 0, 10, 20, -1)
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13MARCCD1:,R=ROI1:,  PORT=MARROI,ADDR=0,TIMEOUT=1,NDARRAY_PORT=MAR,NDARRAY_ADDR=0")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROI.template",       "P=13MARCCD1:,R=ROI1:,  PORT=MARROI,ADDR=0,TIMEOUT=1")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MARCCD1:,R=ROI1:0:,PORT=MARROI,ADDR=0,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MARCCD1:,R=ROI1:1:,PORT=MARROI,ADDR=1,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MARCCD1:,R=ROI1:2:,PORT=MARROI,ADDR=2,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MARCCD1:,R=ROI1:3:,PORT=MARROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MARCCD1:,R=ROI1:4:,PORT=MARROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MARCCD1:,R=ROI1:5:,PORT=MARROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MARCCD1:,R=ROI1:6:,PORT=MARROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MARCCD1:,R=ROI1:7:,PORT=MARROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
-
-# Create "fastSweep" drivers for the MCA record to do on-the-fly scanning of ROI data
-initFastSweep("MARSweepTotal", "MARROI", 8, 2048, "TOTAL_ARRAY", "CALLBACK_PERIOD")
-initFastSweep("MARSweepNet", "MARROI", 8, 2048, "NET_ARRAY", "CALLBACK_PERIOD")
-
-# Load MCA records for the fast sweep drivers
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:0:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepTotal 0)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:1:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepTotal 1)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:2:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepTotal 2)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:3:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepTotal 3)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:4:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepTotal 4)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:5:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepTotal 5)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:6:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepTotal 6)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:7:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepTotal 7)")
-
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:0:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepNet 0)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:1:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepNet 1)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:2:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepNet 2)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:3:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepNet 3)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:4:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepNet 4)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:5:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepNet 5)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:6:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepNet 6)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13MARCCD1:,M=ROI1:7:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(MARSweepNet 7)")
-
-
-#asynSetTraceMask("MARROI",0,3)
-#asynSetTraceIOMask("MARROI",0,4)
-
-# Load scan records
-dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=13MARCCD1:,MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
-
-set_requestfile_path("./")
-set_savefile_path("./autosave")
-set_requestfile_path("$(AREA_DETECTOR)/ADApp/Db")
-set_requestfile_path("$(SSCAN)/sscanApp/Db")
-set_pass0_restoreFile("auto_settings.sav")
-set_pass1_restoreFile("auto_settings.sav")
-save_restoreSet_status_prefix("13MARCCD1:")
-dbLoadRecords("$(AUTOSAVE)/asApp/Db/save_restoreStatus.db", "P=13MARCCD1:")
-
-iocInit()
-
-# save things every thirty seconds
-create_monitor_set("auto_settings.req", 30,"P=13MARCCD1:,D=cam1:")
-
-</pre>
+  <p>
+    There an example IOC boot directory and startup script (<a href="marccd_st_cmd.html">iocBoot/iocMARCCD/st.cmd)</a>
+    provided with areaDetector.
+  </p>
   <h2 id="MEDM_screens" style="text-align: left">
     MEDM screens</h2>
   <p>
@@ -960,8 +847,7 @@ create_monitor_set("auto_settings.req", 30,"P=13MARCCD1:,D=cam1:")
       default. The areaDetector driver can only read TIFF files, not other formats. </li>
     <li>The areaDetector driver can in principle be run on machines other than the Linux
       machine running marccd, since the connection is via a socket. It has only been tested
-      on Linux, because it requires libtiff and this is not normally installed, for example,
-      on Windows.</li>
+      on Linux.</li>
     <li>The MarCCD driver keeps retrying to read each TIFF file until the modification
       date of the TIFF file is <i>after</i> the time that the exposure command was issued.
       If it did not do this check then it could be reading and displaying old files that
