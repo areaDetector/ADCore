@@ -108,7 +108,7 @@ typedef enum
 
     /* Shutter parameters */
     ADShutterControl,   /**< (asynInt32,    r/w) (ADShutterStatus_t) Open (1) or Close(0) shutter */
-    ADShutterControlEPICS, /**< (asynInt32,  r/w) (ADShutterStatus_t) Open (1) or Close(0) EPICS shutter */
+    ADShutterControlEPICS, /**< (asynInt32, r/o) (ADShutterStatus_t) Open (1) or Close(0) EPICS shutter */
     ADShutterStatus,    /**< (asynInt32,    r/o) (ADShutterStatus_t) Shutter Open (1) or Closed(0) */
     ADShutterMode,      /**< (asynInt32,    r/w) (ADShutterMode_t) Use EPICS or detector shutter */
     ADShutterOpenDelay, /**< (asynFloat64,  r/w) Time for shutter to open */
@@ -118,9 +118,9 @@ typedef enum
     ADTemperature,      /**< (asynFloat64,  r/w) Detector temperature */
 
     /* Statistics on number of images collected and the image rate */
-    ADNumImagesCounter, /**< (asynInt32,    r/w) Number of images collected in current acquisition sequence */
-    ADNumExposuresCounter, /**< (asynInt32, r/w) Number of exposures collected for current image */
-    ADTimeRemaining,    /**< (asynFloat64,  r/w) Acquisition time remaining */
+    ADNumImagesCounter, /**< (asynInt32,    r/o) Number of images collected in current acquisition sequence */
+    ADNumExposuresCounter, /**< (asynInt32, r/o) Number of exposures collected for current image */
+    ADTimeRemaining,    /**< (asynFloat64,  r/o) Acquisition time remaining */
 
     /* Status reading */
     ADReadStatus,      /**< (asynInt32,     r/w) Write 1 to force a read of detector status */

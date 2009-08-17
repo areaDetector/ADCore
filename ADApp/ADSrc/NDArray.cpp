@@ -425,6 +425,10 @@ static int convertDimension(NDArray *pIn,
   * pIn->dataType. It can also change the dimensions. outDims may have different
   * values of size, binning, offset and reverse for each of its dimensions from input
   * array dimensions (pIn->dims).
+  * \param[in] pIn The input array, source of the conversion.
+  * \param[out] ppOut The output array, result of the conversion.
+  * \param[in] dataTypeOut The data type of the output array.
+  * \param[in] dimsOut The dimensions of the output array.
   */
 int NDArrayPool::convert(NDArray *pIn,
                          NDArray **ppOut,
@@ -551,6 +555,7 @@ int NDArrayPool::convert(NDArray *pIn,
 
 /** Reports on the free list size and other properties of the NDArrayPool
   * object.
+  * \param[in] details Level of report details desired; does nothing at present.
   */
 int NDArrayPool::report(int details)
 {
@@ -639,7 +644,7 @@ int NDArray::initDimension(NDDimension_t *pDimension, int size)
     return ND_SUCCESS;
 }
 
-/** Calls NDArrayPool->reserve() for this NDArray object; increases the reference count for this array. */
+/** Calls NDArrayPool::reserve() for this NDArray object; increases the reference count for this array. */
 int NDArray::reserve()
 {
     const char *functionName = "NDArray::reserve";
@@ -653,7 +658,7 @@ int NDArray::reserve()
     return(pNDArrayPool->reserve(this));
 }
 
-/** Calls NDArrayPool->release() for this object; decreases the reference count for this array. */
+/** Calls NDArrayPool::release() for this object; decreases the reference count for this array. */
 int NDArray::release()
 {
     const char *functionName = "NDArray::release";
@@ -668,6 +673,7 @@ int NDArray::release()
 }
 
 /** Reports on the properties of the array.
+  * \param[in] details Level of report details desired; if >5 calls NDAttributeList::report().
   */
 int NDArray::report(int details)
 {
@@ -732,7 +738,7 @@ int NDAttributeList::add(NDAttribute *pAttribute)
   * specified properties. 
   * IMPORTANT: This method is only capable of creating attributes
   * of the NDAttribute base class type, not derived class attributes.
-  * To add attributes of a derived class to a list the other NDAttributeList::add()
+  * To add attributes of a derived class to a list the NDAttributeList::add(NDAttribute*)
   * method must be used.
   * \param[in] pName The name of the attribute to be added. 
   * \param[in] pDescription The description of the attribute.
@@ -760,11 +766,10 @@ NDAttribute* NDAttributeList::add(const char *pName, const char *pDescription, N
 
 
 
-/** Finds an attribute by name.
+/** Finds an attribute by name; the search is case-insensitive.
   * \param[in] pName The name of the attribute to be found.
   * \return Returns a pointer to the attribute if found, NULL if not found. 
-  *
-  * The search is case-insensitive.*/
+  */
 NDAttribute* NDAttributeList::find(const char *pName)
 {
     NDAttribute *pAttribute;
@@ -808,7 +813,7 @@ NDAttribute* NDAttributeList::next(NDAttribute *pAttributeIn)
     return(pAttribute);
 }
 
-/** Returns the total number of attributes in the NDArray linked list of attributes.
+/** Returns the total number of attributes in the list of attributes.
   * \return Returns the number of attributes. */
 int NDAttributeList::count()
 {
@@ -861,9 +866,9 @@ int NDAttributeList::clear()
 /** Copies all attributes from one attribute list to another.
   * It is efficient so that if the attribute already exists in the output
   * list it just copies the properties, and memory allocation is minimized.
-  * \param[out] pOut A pointer to the output attribute list to copy to.
-  *
-  * The attributes are added to any existing attributes already present in the output list. */
+  * The attributes are added to any existing attributes already present in the output list.
+  * \param[out] pListOut A pointer to the output attribute list to copy to.
+  */
 int NDAttributeList::copy(NDAttributeList *pListOut)
 {
     NDAttribute *pAttrIn, *pAttrOut, *pFound;
@@ -886,7 +891,7 @@ int NDAttributeList::copy(NDAttributeList *pListOut)
     return(ND_SUCCESS);
 }
 
-/** Updates all attribute values in the list.
+/** Updates all attribute values in the list; calls NDAttribute::updateValue() for each attribute in the list.
   */
 int NDAttributeList::updateValues()
 {
@@ -905,6 +910,9 @@ int NDAttributeList::updateValues()
     return(ND_SUCCESS);
 }
 
+/** Reports on the properties of the attribute list.
+  * \param[in] details Level of report details desired; if >10 calls NDAttribute::report() for each attribute.
+  */
 int NDAttributeList::report(int details)
 {
     NDAttribute *pAttribute;
@@ -976,7 +984,8 @@ NDAttribute* NDAttribute::copy(NDAttribute *pOut)
     return(pOut);
 }
 
-/** Sets the description string for this attribute. 
+/** Sets the description string for this attribute.
+  * This method must be used to set the description string; pDescription must not be directly modified. 
   * \param[in] pDescription String with the desciption. */
 int NDAttribute::setDescription(const char *pDescription) {
 
@@ -992,6 +1001,7 @@ int NDAttribute::setDescription(const char *pDescription) {
 }
 
 /** Sets the source string for this attribute. 
+  * This method must be used to set the source string; pSource must not be directly modified. 
   * \param[in] pSource String with the source. */
 int NDAttribute::setSource(const char *pSource) {
 
@@ -1164,7 +1174,8 @@ int NDAttribute::getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSi
 }
 
 /** Updates the current value of this attribute.
-  * The base class does nothing, but derived classes may need to do something here
+  * The base class does nothing, but derived classes may fetch the current value of the attribute,
+  * for example from an EPICS PV or driver parameter library.
  */
 int NDAttribute::updateValue()
 {
@@ -1172,6 +1183,7 @@ int NDAttribute::updateValue()
 }
 
 /** Reports on the properties of the attribute.
+ * \param[in] details Level of report details desired; currently does nothing
   */
 int NDAttribute::report(int details)
 {

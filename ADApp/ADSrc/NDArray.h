@@ -149,18 +149,18 @@ public:
     virtual int setValue(NDAttrDataType_t dataType, void *pValue);
     virtual int updateValue();
     virtual int report(int details);
-    char *pName;
-    char *pDescription;
-    char *pSource;  /**< Source string - EPICS PV name or DRV_INFO string */
-    NDAttrSource_t sourceType;
-    NDAttrDataType_t dataType;
+    char *pName;                /**< Name string */
+    char *pDescription;         /**< Description string */
+    char *pSource;              /**< Source string - EPICS PV name or DRV_INFO string */
+    NDAttrSource_t sourceType;  /**< Source type; driver hardcoded, EPICS PV or driver/plugin parameter */
+    NDAttrDataType_t dataType;  /**< Data type of attribute */
     friend class NDArray;
     friend class NDAttributeList;
 
 protected:
-    NDAttrValue value;
-    char *pString;      /**< Dynamic length string */
-    NDAttributeListNode listNode;
+    NDAttrValue value;             /**< Value of attribute unless it is a string */
+    char *pString;                 /**< Value when attribute type is NDAttrString; dynamic length string */
+    NDAttributeListNode listNode;  /**< Used for NDAttributeList */
 };
 
 /** NDAttributeList class; this is a linked list of attributes.
@@ -169,7 +169,7 @@ class NDAttributeList {
 public:
     NDAttributeList();
     ~NDAttributeList();
-    int add(NDAttribute *pAttribute);
+    int          add(NDAttribute *pAttribute);
     NDAttribute* add(const char *pName, const char *pDescription="", 
                      NDAttrDataType_t dataType=NDAttrUndefined, void *pValue=NULL);
     NDAttribute* find(const char *pName);
@@ -182,7 +182,7 @@ public:
     int          report(int details);
     
 private:
-    ELLLIST      list;
+    ELLLIST      list;   /**< The EPICS ELLLIST  */
     epicsMutexId lock;  /**< Mutex to protect the ELLLIST */
 };
 
