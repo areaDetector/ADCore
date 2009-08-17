@@ -98,7 +98,6 @@ public:
     virtual int createFileName(int maxChars, char *filePath, char *fileName);
     virtual int readNDAttributesFile(const char *fileName);
     virtual int getAttributes(NDAttributeList *pAttributeList);
-    virtual NDArray* getAttributesCopy(NDArray *pArray, bool release);
 
 protected:
     NDArray **pArrays;             /**< An array of NDArray pointers used to store data in the driver */
