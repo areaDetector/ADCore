@@ -29,7 +29,7 @@ static asynParamString_t NDFileNexusParamString[] = {
 
 #define NUM_ND_FILE_NEXUS_PARAMS (sizeof(NDFileNexusParamString)/sizeof(NDFileNexusParamString[0]))
 
-/** Writes NDArrays in the NeCXus file format.
+/** Writes NDArrays in the NeXus file format.
   * Uses an XML template file to configure the contents of the NeXus file.
   * 
   * This version is currently limited to writing a single NDArray to each NeXus file.  
