@@ -9,7 +9,7 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
-    Release 1-5 (xxx-July-2009)</h2>
+    Release 1-5 (xxx-August-2009)</h2>
   <ul>
     <li>General
       <ul>
@@ -32,6 +32,8 @@
           Windows 1394 camera driver from Carnegie Mellon University.</li>
         <li>New driver for the Perkin-Elmer amorphous silicon flat panel detectors. Thanks
           to Brian Tieman and John Hammonds for this driver.</li>
+        <li>New driver for the Roper Scientific detectors using the PVCAM library. Thanks
+          to Brian Tieman for this driver.</li>
         <li>Added support for color to the simulation detector driver. It now supports color
           modes Mono, RGB1, RGB2 and RGB3.</li>
         <li>Fixed 2 serious bugs in the Roper driver. It was not selecting ROI mode correctly.
@@ -42,8 +44,13 @@
           SIGALARM signal handlers in EPICS base (R3.14.10 and earlier). There is a patch
           for base to fix this problem, and this fix will be included in EPICS base 3.14.11.</li>
         <li>Added an additional state, "Initializing" to DetectorState_RBV record.</li>
-        <li>Fixed minor problem with marCCD driver.  If Acquire was set to Stop when it was not
-          acquiring then the next time acquisition was started it would stop immediately.</li>
+        <li>Added support for ADTriggerMode=External in marCCD driver. In this mode the AcquireTime
+          is not used to stop acquisition; acquisition must be stopped by external software
+          settings Acquire=0. The AcquireTime PV is written to the marCCD TIFF file header
+          as usual. This allows an external timing control of the shutter but with the actual
+          exposure time written to the header. Fixed minor problem with marCCD driver. If
+          Acquire was set to Stop when it was not acquiring then the next time acquisition
+          was started it would stop immediately.</li>
       </ul>
     </li>
     <li>Plugins
@@ -55,21 +62,31 @@
         <li>New file plugin for TIFF files. The TIFF support includes 8, 16 and 32-bit integers.
           It supports monochrome and color images, including all 3 color interleave modes
           (RGB1, RGB2 and RGB3. areaDetector contains all required support files to build
-          and run the TIFF file plugin on win32-x86 and cygwin-x86. To build on Linux it is
+          and run the TIFF file plugin on win32-x86, cygwin-x86 and Linux. To build on 
+          other operating systems it is
           necessary to install the libtiff and libtiffstatic packages. Thanks to John Hammonds
           for the initial work on this plugin.</li>
         <li>New file plugin for JPEG files. The JPEG support is limited to 8-bit integers,
           but it supports monochrome and color images, including all 3 color interleave modes
           (RGB1, RGB2 and RGB3). Control is provided for the JPEG quality (compression) on
-          a scale of 0 (worst) to 100 (best). areaDetector contains all required support
-          files to build and run the JPEG file plugin on win32-x86 and cygwin-x86. To build
-          on Linux it is necessary to install the libjpeg and libjpegstatic packages. </li>
+          a scale of 0 (worst) to 100 (best). areaDetector contains all required support files
+          to build and run the JPEG file plugin on win32-x86, cygwin-x86, and Linux. 
+          To build on other operating systems
+          it is necessary to install the libjpeg and libjpegstatic packages. </li>
+        <li>New file plugin for NeXus HDF files written by John Hammonds. 
+          The NeXus support has not been extensively
+          tested, and is currently limited to writing a single array per file.  Support for
+          multiple arrays per file will be added in a future release.  
+          areaDetector contains all required support files
+          to build and run the NeXus file plugin on win32-x86, cygwin-x86 and Linux.
+          To build on other operating systems
+          it is necessary to install the Nexus, HDF4, HDF5, and MXML packages. </li>
         <li>Fixed bug in NDPluginFile: was not closing file properly when stream mode was
           stopped before the requested number of frames.</li>
         <li>Fixed logic problem with FileNumber record in NDFile.template database. The previous
           logic that kept the ao record in sync with the ai record was causing the ao record
           to process when it should not have been, causing an extra call to the driver.</li>
-        <li>Added an additional record to NDPluginBase.template, PluginType_RBV.  All plugins
+        <li>Added an additional record to NDPluginBase.template, PluginType_RBV. All plugins
           set this to a unique string to identify the plugin type.</li>
       </ul>
     </li>
@@ -89,10 +106,9 @@
     </li>
     <li>Documentation
       <ul>
-        <li>Documented the source code with comments that doxygen can process to produce
-          HTML documentation directly from the source. This provides documentation for each
-          class, as well as the class inheritance tree. Thanks to John Hammonds for starting
-          this.</li>
+        <li>Documented the source code with comments that doxygen can process to produce HTML
+          documentation directly from the source. This provides documentation for each class,
+          as well as the class inheritance tree. Thanks to John Hammonds for starting this.</li>
       </ul>
     </li>
     <li>Internals
@@ -136,10 +152,10 @@
           to asyn$(TYPE)ArrayIn. This was needed to allow it to be used with asynFloat32 and
           asynFloat64 data types. This requires a change to all iocBoot st.cmd files that
           load this template file.</li>
-        <li>Plugins can now add attributes to an NDArray, which means they can modify the array
-          and hence need to make a copy of it.  This requires that NDArray->release() must be
-          called in the plugin itself, rather than in the NDPluginDriver base class as was
-          done previously.</li>
+        <li>Plugins can now add attributes to an NDArray, which means they can modify the
+          array and hence need to make a copy of it. This requires that NDArray->release()
+          must be called in the plugin itself, rather than in the NDPluginDriver base class
+          as was done previously.</li>
       </ul>
     </li>
   </ul>
