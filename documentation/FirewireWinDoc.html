@@ -10,7 +10,7 @@
     <h1>
       Firewire IIDC (CDAM) Windows driver</h1>
     <h2>
-      March 28, 2009</h2>
+      August 17, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -20,13 +20,10 @@
     Table of Contents</h2>
   <ul>
     <li><a href="#Introduction">Introduction</a></li>
+    <li><a href="#VideoFormats">Video formats, modes, and frame rates</a></li>
     <li><a href="#Driver_parameters">Firewire specific parameters</a></li>
-    <li><a href="#StandardNotes">Implementation of standard driver parameters</a></li>
-    <li><a href="#Unsupported">Unsupported standard driver parameters</a></li>
     <li><a href="#Configuration">Configuration</a></li>
     <li><a href="#MEDM_screens">MEDM screens</a></li>
-    <li><a href="#Performance_measurements">Performance measurements</a> </li>
-    <li><a href="#Restrictions">Restrictions</a> </li>
   </ul>
   <h2 id="Introduction" style="text-align: left">
     Introduction</h2>
@@ -35,14 +32,17 @@
       IIDC/DCAM</a> specification. This industry standard allows a single driver to
     control cameras from any manufacturer, using any of the supported video formats
     and features. It inherits from ADDriver and implements many of the parameters in
-    ADStdDriverParams.h. It also implements a number of parameters that are specific
-    to the Firewire cameras.</p>
+    asynNDArrayDriver.h and ADDriver.h. It also implements a number of parameters that
+    are specific to the Firewire cameras.</p>
   <p>
-    This driver runs only on Windows. It uses the <a href="http://www.cs.cmu.edu/~iwan/1394">
+    This driver runs only on Windows. It uses the <a href="http://www.cs.cmu.edu/~iwan/1394/">
       Carnegie Mellon 1394</a> camera driver and library. There is also an areaDetector
     Firewire driver for Linux available from the <a href="http://controls.diamond.ac.uk/downloads/support/firewireDCAM/index.html">
       Diamond Light Source</a>.
   </p>
+  <p>
+    This driver inherits from ADDriver. The <a href="areaDetectorDoxygenHTML/class_firewire_win_d_c_a_m.html">
+      firewireWinDCAM class documentation</a> describes this class in detail.</p>
   <p>
     The IIDC/DCAM specification defines standard ways that manufacturers must implement
     features like shutter time, white balance, frame sizes, frame rates, etc. There
@@ -552,6 +552,8 @@
       </tr>
     </tbody>
   </table>
+  <h2 id="Driver_parameters">
+    Firewire specific parameters</h2>
   <p>
     The firewireWinDCAM driver implements the following parameters in addition to those
     in ADStdDriverParams.h. Note that to reduce the width of this table the enum names
@@ -1100,421 +1102,59 @@
       </tr>
     </tbody>
   </table>
-  <p>
-    The following table describes how the Firewire driver implements some of the standard
-    driver parameters.
-  </p>
-  <p>
-    It is useful to use NDPluginROI to define an ROI containing the entire mar345 detector.
-    The MaxValue_RBV PV in this ROI can be monitored to make sure that the 16-bit limit
-    of 65,535 is not being approached in any pixel.
-  </p>
-  <h2 id="StandardNotes" style="text-align: left">
-    Implementation of standard driver parameters</h2>
-  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
-    <tbody>
-      <tr>
-        <td align="center" colspan="3">
-          <b>Implementation of Parameters in ADStdDriverParams.h and EPICS Record Definitions
-            in ADBase.template and NDFile.template</b></td>
-      </tr>
-      <tr>
-        <th>
-          Enum name</th>
-        <th>
-          EPICS record name</th>
-        <th>
-          Description</th>
-      </tr>
-      <tr>
-        <td>
-          ADNumImages</td>
-        <td>
-          $(P$(R)NumImages</td>
-        <td>
-          Controls the number of images to acquire when ADImageMode is ADImageMultiple.</td>
-      </tr>
-      <tr>
-        <td>
-          ADAcquirePeriod</td>
-        <td>
-          $(P$(R)AcquirePeriod</td>
-        <td>
-          Controls the period between images when ADImageMode is ADImageMultiple or ADImageContinuous.
-          If this is greater than the acquisition time plus readout overhead then the driver
-          will wait until the period has elapsed before starting the next acquisition.</td>
-      </tr>
-      <tr>
-        <td>
-          ADGain</td>
-        <td>
-          $(P)$(R)Gain</td>
-        <td>
-          Maps onto the gain features. If camera supports absolute ...
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <h2 id="Unsupported">
-    Unsupported standard driver parameters</h2>
-  <p>
-    The mar345 driver does not support the following standard driver parameters because
-    they are not supported in the mar345dtb program:</p>
-  <ul>
-    <li>Number of exposures per image (ADNumExposures)</li>
-    <li>Trigger mode (ADTriggerMode)</li>
-    <li>Gain (ADGain)</li>
-    <li>Region to read out (ADMinX, ADMinY, ADSizeX, ADSizeY, ADReverseX, ADReverseY)</li>
-    <li>Binning (ADBinX, ADBinY)</li>
-    <li>Frame type (ADFrameType)</li>
-    <li>Data type (ADDataType)</li>
-    <li>Reading previous files (ADReadFile)</li>
-    <li>Capture or stream file saving (ADFileWriteMode, ADFileCapture, ADNumCapture, ADNumCaptured)</li>
-  </ul>
-  <h2 id="Configuration" style="text-align: left">
+  <h2 id="Configuration">
     Configuration</h2>
   <p>
-    The mar345 driver is created with the following command, either from C/C++ or from
-    the EPICS IOC shell.
-  </p>
-  <pre>   
-mar345Config(const char *portName, const char *mar345Port, 
-             int maxBuffers, size_t maxMemory);
+    The firewireWinDCAM driver is created with the WinFDC_Config command, either from
+    C/C++ or from the EPICS IOC shell.</p>
+  <pre>WinFDC_Config(const char *portName, const char* camid, 
+              int maxBuffers, size_t maxMemory, 
+              int priority, int stackSize)
   </pre>
-  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
-    <tbody>
-      <tr>
-        <th>
-          Argument</th>
-        <th>
-          Description</th>
-      </tr>
-      <tr>
-        <td>
-          <code>portName</code></td>
-        <td>
-          The name of the asyn port for this detector.
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <code>mar345Port</code></td>
-        <td>
-          The name of the asyn TCP/IP port to communicate with mar345dtb. This must have been
-          previously created with <code>drvAsynIPPortConfig()</code>,
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <code>maxBuffers</code></td>
-        <td>
-          Maximum number of buffers to be created for plugin callbacks. Passed to the constructor
-          for the ADDriver base class.</td>
-      </tr>
-      <tr>
-        <td>
-          <code>maxMemory</code></td>
-        <td>
-          Maximum number of bytes of memory to be allocated for plugin callbacks. Passed to
-          the constructor for the ADDriver base class.</td>
-      </tr>
-    </tbody>
-  </table>
   <p>
-    The following is an example st.cmd startup script:
+    For details on the meaning of the parameters to this function refer to the detailed
+    documentation on the WinFDC_Config function in the <a href="areaDetectorDoxygenHTML/firewire_win_d_c_a_m_8cpp.html">
+      firewireWinDCAM.cpp documentation</a> and in the documentation for the constructor
+    for the <a href="areaDetectorDoxygenHTML/class_firewire_win_d_c_a_m.html">FirewireWinDCAM
+      class</a>.
   </p>
-  <pre>&lt; < envPaths
-errlogInit(20000)
-
-dbLoadDatabase("$(AREA_DETECTOR)/dbd/mar345App.dbd")
-mar345App_registerRecordDeviceDriver(pdbbase) 
-
-###
-# Create the asyn port to talk to the MAR on port 5001
-drvAsynIPPortConfigure("marServer","gse-marip2.cars.aps.anl.gov:5001")
-# Set the input and output terminators.
-asynOctetSetInputEos("marServer", 0, "\n")
-asynOctetSetOutputEos("marServer", 0, "\n")
-asynSetTraceIOMask("marServer",0,2)
-#asynSetTraceMask("marServer",0,255)
-
-mar345Config("MAR", "marServer", 20, 200000000)
-asynSetTraceIOMask("MAR",0,2)
-#asynSetTraceMask("MAR",0,255)
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/ADBase.template",  "P=13MAR345_1:,R=cam1:,PORT=MAR,ADDR=0,TIMEOUT=1")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFile.template","P=13MAR345_1:,R=cam1:,PORT=MAR,ADDR=0,TIMEOUT=1")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/mar345.template","P=13MAR345_1:,R=cam1:,PORT=MAR,ADDR=0,TIMEOUT=1,MARSERVER_PORT=marServer")
-
-# Create a standard arrays plugin
-drvNDStdArraysConfigure("MARImage", 5, 0, "MAR", 0, -1)
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13MAR345_1:,R=image1:,PORT=MARImage,ADDR=0,TIMEOUT=1,NDARRAY_PORT=MAR,NDARRAY_ADDR=0")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStdArrays.template", "P=13MAR345_1:,R=image1:,PORT=MARImage,ADDR=0,TIMEOUT=1,SIZE=16,FTVL=SHORT,NELEMENTS=12000000")
-
-# Create an ROI plugin
-drvNDROIConfigure("MARROI", 5, 0, "MAR", 0, 4, 20, -1)
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13MAR345_1:,R=ROI1:,  PORT=MARROI,ADDR=0,TIMEOUT=1,NDARRAY_PORT=MAR,NDARRAY_ADDR=0")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROI.template",       "P=13MAR345_1:,R=ROI1:,  PORT=MARROI,ADDR=0,TIMEOUT=1")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MAR345_1:,R=ROI1:0:,PORT=MARROI,ADDR=0,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MAR345_1:,R=ROI1:1:,PORT=MARROI,ADDR=1,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MAR345_1:,R=ROI1:2:,PORT=MARROI,ADDR=2,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13MAR345_1:,R=ROI1:3:,PORT=MARROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
-
-#asynSetTraceMask("MARROI",0,3)
-#asynSetTraceIOMask("MARROI",0,4)
-
-# Load scan records
-dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=13MAR345_1:,MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
-
-set_requestfile_path("./")
-set_savefile_path("./autosave")
-set_requestfile_path("$(AREA_DETECTOR)/ADApp/Db")
-set_requestfile_path("$(SSCAN)/sscanApp/Db")
-set_pass0_restoreFile("auto_settings.sav")
-set_pass1_restoreFile("auto_settings.sav")
-save_restoreSet_status_prefix("13MAR345_1:")
-dbLoadRecords("$(AUTOSAVE)/asApp/Db/save_restoreStatus.db", "P=13MAR345_1:")
-
-iocInit()
-
-# save things every thirty seconds
-create_monitor_set("auto_settings.req", 30,"P=13MAR345_1:,D=cam1:")
-
-</pre>
+  <p>
+    There an example IOC boot directory and startup script (<a href="firewire_st_cmd.html">iocBoot/iocFirewire/st.cmd)</a>
+    provided with areaDetector.
+  </p>
   <h2 id="MEDM_screens" style="text-align: left">
     MEDM screens</h2>
   <p>
     The following show the MEDM screens that are used to control the Firewire detectors.
-    Note that the general purpose screen ADBase.adl can be used, but it exposes some
-    controls that are not applicable to Firewire cameras, and lacks many fields that
-    are important for such cameras.</p>
+    Note that the general purpose screen ADBase.adl must be used to control many features,
+    but it exposes some controls that are not applicable to Firewire cameras, and lacks
+    many fields that are important for such cameras. A new Firewire-specific top-level
+    control screen will be added in a future release.</p>
   <p>
-    <code>FirewireFeatures.adl</code> is the screen used to control the features of
+    <code>firewireFeatures.adl</code> is the screen used to control the features of
     Firewire cameras.
   </p>
   <div style="text-align: center">
     <h3 style="text-align: center">
-      FirewireFeatures.adl</h3>
+      firewireFeatures.adl</h3>
     <img alt="firewireFeatures.png" src="firewireFeatures.png" /></div>
   <p>
-    <code>FirewireVideoFormats.adl</code> is the screen used to control the video formats
+    <code>firewireVideoFormats.adl</code> is the screen used to control the video formats
     and modes of Firewire cameras. This is a screen shot when the camera is not in Format
     7.
   </p>
   <div style="text-align: center">
     <h3 style="text-align: center">
-      FirewireFeatures.adl</h3>
+      firewireVideoFormats.adl</h3>
     <img alt="firewireVideoFormats.png" src="firewireVideoFormats.png" /></div>
   <p>
-    <code>FirewireVideoFormats.adl</code> is the screen used to control the video formats
+    <code>firewireVideoFormats.adl</code> is the screen used to control the video formats
     and modes of Firewire cameras. This is a screen shot when the camera is in Format
     7, in which case the video rate menu is not displayed.
   </p>
   <div style="text-align: center">
     <h3 style="text-align: center">
-      FirewireFeatures.adl</h3>
-    <img alt="firewireVideoFormatsFormat7.png" src="FirewireVideoFormatsFormat7.png" /></div>
-  <h2 id="Performance_measurements">
-    Performance measurements</h2>
-  <p>
-    The mar345 is definitely not a fast detector! The following measurements show the
-    time to perform various erase and scan operations. Note that because the mar345
-    file format is compressed the file sizes are typically much less than the image
-    sizes listed.</p>
-  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
-    <tbody>
-      <tr>
-        <th>
-          Scan diameter</th>
-        <th>
-          Pixel size</th>
-        <th>
-          Image dimensions</th>
-        <th>
-          Image size (MB)</th>
-        <th>
-          Time to scan</th>
-        <th>
-          Time to erase</th>
-      </tr>
-      <tr>
-        <td>
-          180 mm
-        </td>
-        <td>
-          0.15 mm
-        </td>
-        <td>
-          1200x1200
-        </td>
-        <td>
-          2.7
-        </td>
-        <td>
-          38.6
-        </td>
-        <td>
-          37.8
-        </td>
-      </tr>
-      <tr>
-        <td>
-          240 mm
-        </td>
-        <td>
-          0.15 mm
-        </td>
-        <td>
-          1600x1600
-        </td>
-        <td>
-          4.9
-        </td>
-        <td>
-          50.4
-        </td>
-        <td>
-          50.8
-        </td>
-      </tr>
-      <tr>
-        <td>
-          300 mm
-        </td>
-        <td>
-          0.15 mm
-        </td>
-        <td>
-          2000x2000
-        </td>
-        <td>
-          7.6
-        </td>
-        <td>
-          74.7
-        </td>
-        <td>
-          66.9
-        </td>
-      </tr>
-      <tr>
-        <td>
-          345 mm
-        </td>
-        <td>
-          0.15 mm
-        </td>
-        <td>
-          2300x2300
-        </td>
-        <td>
-          10.1
-        </td>
-        <td>
-          88.6
-        </td>
-        <td>
-          82.7
-        </td>
-      </tr>
-      <tr>
-        <td>
-          180 mm
-        </td>
-        <td>
-          0.10 mm
-        </td>
-        <td>
-          1800x1800
-        </td>
-        <td>
-          6.2
-        </td>
-        <td>
-          46.4
-        </td>
-        <td>
-          45.9
-        </td>
-      </tr>
-      <tr>
-        <td>
-          240 mm
-        </td>
-        <td>
-          0.10 mm
-        </td>
-        <td>
-          2400x2400
-        </td>
-        <td>
-          11.0
-        </td>
-        <td>
-          71.9
-        </td>
-        <td>
-          63.8
-        </td>
-      </tr>
-      <tr>
-        <td>
-          300 mm
-        </td>
-        <td>
-          0.10 mm
-        </td>
-        <td>
-          3000x3000
-        </td>
-        <td>
-          17.2
-        </td>
-        <td>
-          89.1
-        </td>
-        <td>
-          87.0
-        </td>
-      </tr>
-      <tr>
-        <td>
-          345 mm
-        </td>
-        <td>
-          0.10 mm
-        </td>
-        <td>
-          3450x3450
-        </td>
-        <td>
-          22.7
-        </td>
-        <td>
-          107.5
-        </td>
-        <td>
-          107.1
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <h2 id="Restrictions">
-    Restrictions</h2>
-  <p>
-    The following are some current restrictions of the mar345 driver:</p>
-  <ul>
-    <li>The areaDetector driver can in principle be run on machines other than the Linux
-      machine running mar345dtb, since the connection is via a socket. It has only been
-      tested on Linux.</li>
-    <li>The following items are hardcoded in the driver. They can be changed by recompiling
-      compiling if necessary.
-      <ul>
-        <li>MAX_MESSAGE_SIZE=256 The maximum size of message to/from mar345dtb server.</li>
-        <li>MAX_FILENAME_LEN=256 The maximum size of a complete file name including path and
-          extension.</li>
-        <li>MAR345_COMMAND_TIMEOUT=180.0 Timeout for a complete erase or scan command to complete.</li>
-      </ul>
-    </li>
-  </ul>
+      firewireVideoFormats.adl</h3>
+    <img alt="firewireVideoFormatsFormat7.png" src="firewireVideoFormatsFormat7.png" /></div>
 </body>
 </html>
