@@ -497,8 +497,6 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     if (pHighlights) pHighlights->release();
 
     callParamCallbacks();
-    /* Decrease the reference count on this array */
-    pArray->release();
 }
 
 

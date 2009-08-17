@@ -382,9 +382,6 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
     /* Update the parameters.  */
     setIntegerParam(NDPluginDriverArrayCounter, arrayCounter);
     callParamCallbacks();
-        
-    /* We are done with this array buffer */       
-    pArray->release();
 }
 
 /** Called when asyn clients call pasynInt32->write().

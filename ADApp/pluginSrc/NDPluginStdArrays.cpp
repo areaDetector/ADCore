@@ -203,8 +203,6 @@ void NDPluginStdArrays::processCallbacks(NDArray *pArray)
     /* Update the parameters.  The counter should be updated after data are posted
      * because clients might use that to detect new data */
     callParamCallbacks();
-    /* Release this array */
-    pArray->release();
 }
 
 
@@ -341,8 +339,8 @@ NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int bl
 
 /* Configuration routine.  Called directly, or from the iocsh function */
 extern "C" int NDStdArraysConfigure(const char *portName, int queueSize, int blockingCallbacks, 
-                                       const char *NDArrayPort, int NDArrayAddr, size_t maxMemory,
-                                       int priority, int stackSize)
+                                    const char *NDArrayPort, int NDArrayAddr, size_t maxMemory,
+                                    int priority, int stackSize)
 {
     new NDPluginStdArrays(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxMemory,
                           priority, stackSize);

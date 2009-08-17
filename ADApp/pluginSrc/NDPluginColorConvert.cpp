@@ -360,9 +360,6 @@ void NDPluginColorConvert::processCallbacks(NDArray *pArray)
     callParamCallbacks();
     /* Call any clients who have registered for NDArray callbacks */
     doCallbacksGenericPointer(this->pArrays[0], NDArrayData, 0);
-    
-    /* Release the array */
-    pArray->release();
 }
 
 
