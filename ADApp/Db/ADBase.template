@@ -290,7 +290,7 @@ record(bi, "$(P)$(R)ReverseY_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(R)ImageSizeX_RBV")
+record(longin, "$(P)$(R)ArraySizeX_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -298,7 +298,7 @@ record(longin, "$(P)$(R)ImageSizeX_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(R)ImageSizeY_RBV")
+record(longin, "$(P)$(R)ArraySizeY_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -306,7 +306,15 @@ record(longin, "$(P)$(R)ImageSizeY_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(longin, "$(P)$(R)ImageSize_RBV")
+record(longin, "$(P)$(R)ArraySizeZ_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_Z")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)ArraySize_RBV")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
@@ -544,16 +552,16 @@ record(bi, "$(P)$(R)Acquire_RBV") {
 }
 
 ###################################################################
-#  These records provide statistics on image callbacks and        #
-#  image callback rates                                           # 
+#  These records provide statistics on array callbacks and        #
+#  array callback rates                                           # 
 ###################################################################
-record(longout, "$(P)$(R)ImageCounter")
+record(longout, "$(P)$(R)ArrayCounter")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_COUNTER")
 }
 
-record(longin, "$(P)$(R)ImageCounter_RBV")
+record(longin, "$(P)$(R)ArrayCounter_RBV")
 {
    field(PINI, "1")
     field(DTYP, "asynInt32")
@@ -562,10 +570,10 @@ record(longin, "$(P)$(R)ImageCounter_RBV")
 }
 
 # This record needs work, because .B should reflect the time since last processed
-record(calc, "$(P)$(R)ImageRate_RBV")
+record(calc, "$(P)$(R)ArrayRate_RBV")
 {
-    field(INPA, "$(P)$(R)ImageRate_RBV.B NPP NMS")  # Previous counter value
-    field(INPB, "$(P)$(R)ImageCounter_RBV NPP NMS") # Current counter value
+    field(INPA, "$(P)$(R)ArrayRate_RBV.B NPP NMS")  # Previous counter value
+    field(INPB, "$(P)$(R)ArrayCounter_RBV NPP NMS") # Current counter value
     field(INPC, "1.0")                              # Delta time, needs work
     field(CALC, "(B-A)/C")
     field(PREC, "1")
@@ -637,7 +645,7 @@ record(bi, "$(P)$(R)ArrayCallbacks_RBV")
 #  This record is the name of a file defining attributes        # 
 ###################################################################
 
-record(waveform, "$(P)$(R)PVAttributesFile")
+record(waveform, "$(P)$(R)NDAttributesFile")
 {
     field(PINI, "1")
     field(DTYP, "asynOctetWrite")
