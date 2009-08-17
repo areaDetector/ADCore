@@ -189,7 +189,10 @@ void NDPluginDriver::processTask(void)
         this->lock();
         /* Call the function that does the callbacks to standard asyn interfaces */
         processCallbacks(pArray); 
-        this->unlock(); 
+        this->unlock();
+        
+        /* We are done with this array buffer */
+        pArray->release();
     }
 }
 
@@ -452,11 +455,10 @@ asynStatus NDPluginDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *value
 }
     
 
-/** Sets pasynUser->reason to one of the enum values for the parameters defined in either for
-  * the NDPluginDriver class or one of the parameters in NDStdDriverParams.h
-  * if the drvInfo field matches one the strings defined for either.
+/** Sets pasynUser->reason to one of the enum values for the parameters defined in for
+  * the NDPluginDriver class if the drvInfo field matches one the strings defined for it.
   * Simply calls asynPortDriver::drvUserCreateParam with the parameter table for this driver, and
-  * then with the parameter table for NDStdDriverParams if that fails.
+  * then base class asynNDArrayDriver::drvUserCreate if that fails.
   * \param[in] pasynUser pasynUser structure that driver modifies
   * \param[in] drvInfo String containing information about what driver function is being referenced
   * \param[out] pptypeName Location in which driver puts a copy of drvInfo.
