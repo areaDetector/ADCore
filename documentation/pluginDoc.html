@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugins</h1>
     <h2>
-      July 30, 2009</h2>
+      August 16, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -21,6 +21,7 @@
   <ul>
     <li><a href="#Overview">Overview</a></li>
     <li><a href="#NDPluginDriver">NDPluginDriver</a></li>
+    <li><a href="#Guidelines">Guidelines and rules for plugins</a></li>
     <li><a href="NDPluginStdArrays.html">NDPluginStdArrays</a></li>
     <li><a href="NDPluginFile.html">NDPluginFile</a></li>
     <li><a href="NDPluginROI.html">NDPluginROI</a></li>
@@ -111,6 +112,43 @@
       </tr>
       <tr>
         <td align="center" colspan="7,">
+          <b>Information about this plugin</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDPortNameSelf</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/o</td>
+        <td>
+          asyn port name</td>
+        <td>
+          PORT_NAME_SELF</td>
+        <td>
+          $(P)$(R)PortName_RBV</td>
+        <td>
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriver<br />
+          PluginType</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/o</td>
+        <td>
+          A string describing the plugin type.</td>
+        <td>
+          PLUGIN_TYPE</td>
+        <td>
+          $(P)$(R)PluginType_RBV</td>
+        <td>
+          stringin</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
           <b>asyn NDArray driver doing callbacks</b></td>
       </tr>
       <tr>
@@ -155,23 +193,6 @@
           longin</td>
       </tr>
       <tr>
-        <td>
-          NDPluginDriver<br />
-          PluginType</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/o</td>
-        <td>
-          A string describing the plugin type.</td>
-        <td>
-          PLUGIN_TYPE</td>
-        <td>
-          $(P)$(R)PluginType_RBV</td>
-        <td>
-          stringin</td>
-      </tr>
-      <tr>
         <td align="center" colspan="7,">
           <b>Callback enable, minimum time, and statistics</b></td>
       </tr>
@@ -212,8 +233,8 @@
         <td>
           BLOCKING_CALLBACKS</td>
         <td>
-          $(P)$(R)CallbacksBlock<br />
-          $(P)$(R)CallbacksBlock_RBV</td>
+          $(P)$(R)BlockingCallbacks<br />
+          $(P)$(R)BlockingCallbacks_RBV</td>
         <td>
           bo<br />
           bi</td>
@@ -366,6 +387,22 @@
       </tr>
       <tr>
         <td>
+          N/A</td>
+        <td>
+          N/A</td>
+        <td>
+          r/o</td>
+        <td>
+          Third dimension of NDArray callback data</td>
+        <td>
+          N/A</td>
+        <td>
+          $(P)$(R)ArraySize2_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
           NDPluginDriver<br />
           DataType</td>
         <td>
@@ -450,6 +487,29 @@
           ai</td>
       </tr>
       <tr>
+        <td align="center" colspan="7">
+          <b>Array attributes</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDAttributesFile</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          The name of an XML file defining the PVAttributes and paramAttributes to be
+          added to each NDArray by this plugin.  The format of the XML file is described 
+          in the documentation for <a href="areaDetectorDoxygenHTML/class_asyn_n_d_array_driver.html">
+          asynNDArrayDriver::readNDAttributesFile().</a></td>
+        <td>
+          ND_ATTRIBUTES_FILE</td>
+        <td>
+          $(P)$(R)NDAttributesFile</td>
+        <td>
+          waveform</td>
+      </tr>
+      <tr>
         <td align="center" colspan="7,">
           <b>Debugging control</b></td>
       </tr>
@@ -471,5 +531,46 @@
       </tr>
     </tbody>
   </table>
+  <h2 id="Guidelines">
+    Guidelines and rules for plugins</h2>
+  <p>The following are guidelines and rules for writing plugins</p>
+  <ul>
+    <li>
+      Plugins will almost always implement the processCallbacks() function.  This function will be
+      called with an NDArray pointer each time an NDArray callback occurs.  This function will normally call
+      the NDPluginDriver::processCallbacks() base class function, which handles tasks common to all plugins, 
+      including callbacks with information about the array, etc.</li>
+    <li>
+      Plugins will generally implement one or more of the writeInt32(), writeFloat64() or writeOctet() functions
+      if they need to act immediately on a new value of a parameter.  For many parameters it is normally 
+      sufficient to simply have them written to the parameter library, and not to handle them in the 
+      writeXXX() functions.  The parameters are then retrieved from the parameter library with the getIntParam(),
+      getDoubleParam(), or getStringParam() function calls when they are needed.</li>
+    <li>
+      If the writeInt32(), writeFloat64() or writeOctet() functions are implemented they <b>must</b> call
+      the base class function for parameters that they do not handle and whose enum value is less than
+      the value of NDPluginDriverLastParam, i.e. parameters that belong to a base class.</li>
+    <li>
+      Plugins will need to implement the drvUserCreate() function if they have additional parameters beyond
+      those in the asynPortDriver or NDPluginDriver base classes.</li>
+    <li>
+      Plugins may <b>never</b> modify the NDArray that they receive in the processCallbacks() function.  The reason
+      is that other plugins may be concurrently operating on the same NDArray, since each is passed the same
+      pointer.  This means also that when getting the attributes for this plugin that 
+      asynNDArrayDriver::getAttributes(pArray->pAttributeList) must not be called with the NDArray passed to 
+      processCallbacks(), because that will modify the NDArray attribute list, and hence the NDArray that other
+      plugins are operating on. Plugins such as NDPluginROI and NDPluginColorConvert create new NDArrays via
+      NDArrayPool::copy() or NDArrayPool::convert() (which copy the attributes to the new array)
+      and then call getAttributes(pArray->pAttributeList) with the new array.  The NDPluginFile
+      makes a copy of the attribute list from the original NDArray before calling getAttributes(), but does not
+      need to make a copy of the NDArray because it does not modify it.</li>
+    <li>Plugins must release their mutex by calling this->unlock() when they do time-consuming operations.
+      If they do not then they will not be able to queue new NDArrays callbacks or obtain new parameter values.
+      Obviously they must mot access memory locations that other threads could modify during this time, so they should
+      only access local variables, not class variables (which includes the parameter library).</li>
+    <li>
+      If plugins generate new or modified NDArrays then they must call doCallbacksGenericPointer() 
+      so that registered clients can get the values of the new arrays.</li>
+  </ul>
 </body>
 </html>
