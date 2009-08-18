@@ -1,0 +1,234 @@
+
+file {
+	name="C:\epics\synApps_5_4_1\support\areaDetector\1-5beta\ADApp\op\adl\PerkinElmerInit.adl"
+	version=030102
+}
+display {
+	object {
+		x=432
+		y=625
+		width=350
+		height=150
+	}
+	clr=14
+	bclr=4
+	cmap=""
+	gridSpacing=5
+	gridOn=0
+	snapToGrid=0
+}
+"color map" {
+	ncolors=65
+	colors {
+		ffffff,
+		ececec,
+		dadada,
+		c8c8c8,
+		bbbbbb,
+		aeaeae,
+		9e9e9e,
+		919191,
+		858585,
+		787878,
+		696969,
+		5a5a5a,
+		464646,
+		2d2d2d,
+		000000,
+		00d800,
+		1ebb00,
+		339900,
+		2d7f00,
+		216c00,
+		fd0000,
+		de1309,
+		be190b,
+		a01207,
+		820400,
+		5893ff,
+		597ee1,
+		4b6ec7,
+		3a5eab,
+		27548d,
+		fbf34a,
+		f9da3c,
+		eeb62b,
+		e19015,
+		cd6100,
+		ffb0ff,
+		d67fe2,
+		ae4ebc,
+		8b1a96,
+		610a75,
+		a4aaff,
+		8793e2,
+		6a73c1,
+		4d52a4,
+		343386,
+		c7bb6d,
+		b79d5c,
+		a47e3c,
+		7d5627,
+		58340f,
+		99ffff,
+		73dfff,
+		4ea5f9,
+		2a63e4,
+		0a00b8,
+		ebf1b5,
+		d4db9d,
+		bbc187,
+		a6a462,
+		8b8239,
+		73ff6b,
+		52da3b,
+		3cb420,
+		289315,
+		1a7309,
+	}
+}
+composite {
+	object {
+		x=113
+		y=0
+		width=105
+		height=21
+	}
+	"composite name"=""
+	children {
+		rectangle {
+			object {
+				x=113
+				y=0
+				width=105
+				height=21
+			}
+			"basic attribute" {
+				clr=2
+			}
+		}
+	}
+}
+text {
+	object {
+		x=93
+		y=1
+		width=157
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="Init"
+	align="horiz. centered"
+}
+text {
+	object {
+		x=11
+		y=24
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Num Frame Buffers (Max 500):"
+}
+composite {
+	object {
+		x=200
+		y=43
+		width=128
+		height=20
+	}
+	"composite name"=""
+	children {
+		"text entry" {
+			object {
+				x=200
+				y=43
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)PENumFrameBuffers"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=267
+				y=44
+				width=61
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)PENumFrameBuffers_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+	}
+}
+"message button" {
+	object {
+		x=4
+		y=79
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)PEInitialize"
+		clr=14
+		bclr=51
+	}
+	label="Initialize"
+	press_msg="1"
+}
+text {
+	object {
+		x=11
+		y=106
+		width=40
+		height=25
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Status:"
+}
+"text update" {
+	object {
+		x=95
+		y=111
+		width=120
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)PEStatus_RBV"
+		clr=54
+		bclr=4
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+rectangle {
+	object {
+		x=0
+		y=0
+		width=350
+		height=150
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}

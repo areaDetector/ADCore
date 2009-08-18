@@ -5,10 +5,10 @@ file {
 }
 display {
 	object {
-		x=103
-		y=209
-		width=566
-		height=628
+		x=75
+		y=24
+		width=700
+		height=820
 	}
 	clr=14
 	bclr=4
@@ -87,495 +87,98 @@ display {
 		1a7309,
 	}
 }
-text {
+composite {
 	object {
-		x=9
-		y=8
-		width=300
-		height=25
+		x=100
+		y=3
+		width=500
+		height=26
 	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Perkin Elmer"
-}
-"message button" {
-	object {
-		x=9
-		y=596
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(R)PEInitialize"
-		clr=14
-		bclr=51
-	}
-	label="Initialize"
-	press_msg="1"
-}
-text {
-	object {
-		x=19
-		y=71
-		width=40
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Num Frame Buffers (Max 500):"
-}
-"text entry" {
-	object {
-		x=300
-		y=70
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)PENumFrameBuffers"
-		clr=14
-		bclr=51
-	}
-	limits {
+	"composite name"=""
+	children {
+		rectangle {
+			object {
+				x=100
+				y=3
+				width=500
+				height=25
+			}
+			"basic attribute" {
+				clr=2
+			}
+		}
+		text {
+			object {
+				x=158
+				y=4
+				width=384
+				height=25
+			}
+			"basic attribute" {
+				clr=54
+			}
+			textix="Area Detector Control - $(P)$(R)"
+			align="horiz. centered"
+		}
 	}
 }
-"text update" {
+composite {
 	object {
-		x=367
-		y=71
-		width=61
-		height=18
+		x=5
+		y=38
+		width=335
+		height=250
 	}
-	monitor {
-		chan="$(P)$(R)PENumFrameBuffers_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
+	"composite name"=""
+	"composite file"="ADSetup.adl;P=$(P),R=$(R)"
 }
-text {
+composite {
 	object {
-		x=19
-		y=120
-		width=40
-		height=20
+		x=345
+		y=37
+		width=350
+		height=165
 	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Gain:"
+	"composite name"=""
+	"composite file"="ADShutter.adl;P=$(P),R=$(R)"
 }
-"text update" {
+composite {
 	object {
-		x=388
-		y=120
-		width=120
-		height=18
+		x=345
+		y=208
+		width=350
+		height=385
 	}
-	monitor {
-		chan="$(P)$(R)PEGain_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
+	"composite name"=""
+	"composite file"="PerkinElmerCollect.adl;P=$(P),R=$(R)"
 }
-menu {
+composite {
 	object {
-		x=258
-		y=118
-		width=120
-		height=19
+		x=345
+		y=598
+		width=350
+		height=150
 	}
-	control {
-		chan="$(P)$(R)PEGain"
-		clr=54
-		bclr=4
-	}
+	"composite name"=""
+	"composite file"="PerkinElmerInit.adl; P=$(P),R=$(R)"
 }
-"message button" {
+composite {
 	object {
-		x=260
-		y=223
-		width=200
-		height=20
+		x=4
+		y=297
+		width=335
+		height=440
 	}
-	control {
-		chan="$(P)$(R)PEAcquireOffset"
-		clr=14
-		bclr=51
-	}
-	label="Acquire Offset Correction"
-	press_msg="1"
+	"composite name"=""
+	"composite file"="PerkinElmerCorrections.adl; P=$(P),R=$(R)"
 }
-text {
+composite {
 	object {
-		x=16
-		y=222
-		width=40
-		height=20
+		x=345
+		y=755
+		width=350
+		height=60
 	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Num Offset Frames:"
-}
-"text entry" {
-	object {
-		x=197
-		y=225
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)PENumOffsetFrames"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-menu {
-	object {
-		x=196
-		y=349
-		width=100
-		height=19
-	}
-	control {
-		chan="$(P)$(R)PEUseOffset"
-		clr=54
-		bclr=4
-	}
-}
-text {
-	object {
-		x=15
-		y=350
-		width=40
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Offset Correction:"
-}
-text {
-	object {
-		x=16
-		y=245
-		width=40
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Num Gain Frames:"
-}
-"text entry" {
-	object {
-		x=197
-		y=245
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)PENumGainFrames"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-"message button" {
-	object {
-		x=260
-		y=244
-		width=200
-		height=20
-	}
-	control {
-		chan="$(P)$(R)PEAcquireGain"
-		clr=14
-		bclr=51
-	}
-	label="Acquire Gain Correction"
-	press_msg="1"
-}
-text {
-	object {
-		x=15
-		y=372
-		width=40
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Gain Correction:"
-}
-menu {
-	object {
-		x=196
-		y=371
-		width=100
-		height=19
-	}
-	control {
-		chan="$(P)$(R)PEUseGain"
-		clr=54
-		bclr=4
-	}
-}
-"text update" {
-	object {
-		x=309
-		y=370
-		width=50
-		height=20
-	}
-	monitor {
-		chan="$(P)$(R)PEGainAvailable"
-		clr=14
-		bclr=4
-	}
-	clrmod="alarm"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=161
-		y=8
-		width=179
-		height=22
-	}
-	monitor {
-		chan="$(P)$(R)PESystemID"
-		clr=14
-		bclr=4
-	}
-	limits {
-	}
-}
-text {
-	object {
-		x=15
-		y=265
-		width=40
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Bad Pixel File:"
-}
-"text update" {
-	object {
-		x=228
-		y=290
-		width=300
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)PEBadPixelFile_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	format="string"
-	limits {
-	}
-}
-"text entry" {
-	object {
-		x=170
-		y=265
-		width=380
-		height=20
-	}
-	control {
-		chan="$(P)$(R)PEBadPixelFile"
-		clr=14
-		bclr=51
-	}
-	format="string"
-	limits {
-	}
-}
-"message button" {
-	object {
-		x=16
-		y=289
-		width=200
-		height=20
-	}
-	control {
-		chan="$(P)$(R)PELoadCorrections"
-		clr=14
-		bclr=51
-	}
-	label="Load Correction Files"
-	press_msg="1"
-}
-text {
-	object {
-		x=14
-		y=395
-		width=40
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Pixel Correction:"
-}
-menu {
-	object {
-		x=196
-		y=394
-		width=100
-		height=19
-	}
-	control {
-		chan="$(P)$(R)PEUsePixelCorrection"
-		clr=54
-		bclr=4
-	}
-}
-text {
-	object {
-		x=12
-		y=450
-		width=40
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Corrections Directory:"
-}
-"text entry" {
-	object {
-		x=248
-		y=452
-		width=292
-		height=20
-	}
-	control {
-		chan="$(P)$(R)PECorrectionsDir"
-		clr=14
-		bclr=51
-	}
-	format="string"
-	limits {
-	}
-}
-"message button" {
-	object {
-		x=12
-		y=471
-		width=150
-		height=20
-	}
-	control {
-		chan="$(P)$(R)PESaveCorrections"
-		clr=14
-		bclr=51
-	}
-	label="Save Corrections"
-	press_msg="1"
-}
-"text update" {
-	object {
-		x=311
-		y=350
-		width=50
-		height=20
-	}
-	monitor {
-		chan="$(P)$(R)PEOffsetAvailable"
-		clr=14
-		bclr=4
-	}
-	clrmod="alarm"
-	limits {
-	}
-}
-text {
-	object {
-		x=329
-		y=595
-		width=40
-		height=25
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Status:"
-}
-"text update" {
-	object {
-		x=413
-		y=600
-		width=120
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)PEStatus_RBV"
-		clr=54
-		bclr=4
-	}
-	clrmod="alarm"
-	align="horiz. centered"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=309
-		y=392
-		width=50
-		height=20
-	}
-	monitor {
-		chan="$(P)$(R)PEPixelCorrectionAvailable"
-		clr=14
-		bclr=4
-	}
-	clrmod="alarm"
-	limits {
-	}
-}
-text {
-	object {
-		x=19
-		y=158
-		width=40
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Soft Trigger:"
-}
-"message button" {
-	object {
-		x=263
-		y=156
-		width=119
-		height=23
-	}
-	control {
-		chan="$(P)$(R)PETrigger"
-		clr=14
-		bclr=4
-	}
-	label="Soft Trigger"
-	press_msg="1"
+	"composite name"=""
+	"composite file"="ADAttrFile.adl"
 }
