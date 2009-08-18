@@ -331,3 +331,22 @@ record(waveform, "$(P)$(R)PEBadPixelFile_RBV")
     field(SCAN, "I/O Intr")
 }
 
+######################
+# Override ADBase to extend Trigger Mode
+######################
+record(mbbo, "$(P)$(R)TriggerMode")
+{
+   field(TWST, "Free Running")
+   field(TWVL, "2")
+   field(THST, "Soft Trigger")
+   field(THVL, "3")
+ }
+
+record(mbbi, "$(P)$(R)TriggerMode_RBV")
+{
+   field(TWST, "Free Running")
+   field(TWVL, "2")
+   field(THST, "Soft Trigger")
+   field(THVL, "3")
+}
+
