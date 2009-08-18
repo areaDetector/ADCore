@@ -12,7 +12,7 @@ typedef enum
                /* (NDColorMode_t r/w) Output color mode */
         = NDPluginDriverLastParam,
     NDPluginColorConvertLastParam
-} NDPluginStdArraysParam_t;
+} NDPluginColorConvertParam_t;
 
 #define NUM_COLOR_CONVERT_PARAMS (sizeof(NDPluginColorConvertParamString)/sizeof(NDPluginColorConvertParamString[0]))
 
