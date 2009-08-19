@@ -34,9 +34,16 @@
     This is a driver for the flat-panel amorphous silicon detectors from <a href="http://optoelectronics.perkinelmer.com/catalog/Category.aspx?CategoryName=X-Ray+Cameras">
       PerkinElmer</a>.</p>
   <p>
-    The driver is based upon the library provided by PerkinElmer. It only runs on Microsoft
+    The driver is based upon the XISL library provided by PerkinElmer. It only runs on Microsoft
     Windows computers.
   </p>
+  <p>
+    This driver has been tested with the following detectors
+       <ul>
+		<li>XRD0820 w/ XRD-FG PCI frame grabber</li>
+		<li>XRD1621 w/ XRD-FGX PCI frame grabber</li>
+       </ul></p>
+  <p>
   <p>
     ADD ADDTIONAL INTRODUCTORY TEXT HERE.</p>
   <p>
@@ -76,6 +83,30 @@
           $(P$(R)NumImages</td>
         <td>
           Controls the number of images to acquire when ADImageMode is ADImageMultiple.</td>
+      </tr>
+      <tr>
+        <td>
+          ADAcquireTime</td>
+        <td>
+          $(P)$(R)AcquireTime<P>$(P)$(R)AcquireTime_RBV</td>
+        <td>
+          When using Internal Triggers, this parameter controls the period between trigger pulses
+          which will also be equal to the exposure time.  This parameter is only updated when the
+          detector is initialized</td>
+      </tr>
+      <tr>
+        <td>
+          ADTriggerMode</td>
+        <td>
+          $(P)$(R)TriggerMode<P>$(P)$(R)TriggerMode_RBV</td>
+        <td>
+          Sets the trigger mode for the detector.  Options are:
+          <UL>
+          <LI>Internal</LI>
+          <LI>External</LI>
+          <LI>Free Run</LI>
+          <LI>Soft Trigger</LI>
+          </td>
       </tr>
     </tbody>
   </table>
@@ -126,11 +157,307 @@
         <td>
           PE_NUM_FRAME_BUFFERS</td>
         <td>
-          $(P)$(R)PENumFrameBuffers<br />
+          $(P)$(R)PENumFrameBuffers<br/>
           $(P)$(R)PENumFrameBuffers_RBV</td>
         <td>
-          longout<br />
+          longout<br/>
           longin</td>
+      </tr>
+      <tr>
+        <td>
+          PE_Initialize</td>
+        <td>
+          asynInt32</td>
+        <td>
+          w</td>
+        <td>
+          Initialize the detector</td>
+        <td>
+          PE_INITIALIZE</td>
+        <td>
+          $(P)$(R)PEInitialize</td>
+        <td>
+          longout</td>
+      </tr>
+      <tr>
+        <td>
+          PE_StatusRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Status of PerkinElmer driver.  Need to integrate this into DetectorState</td>
+        <td>
+          PE_STATUS</td>
+        <td>
+          $(P)$(R)PE_STATUS_RBV</td>
+        <td>
+          mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          PE_SystemID</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          PROM ID # used in communication with Perkin Elmer</td>
+        <td>
+          PE_SYSTEMID</td>
+        <td>
+          $(P)$(R)PESystemID</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          PE_Trigger</td>
+        <td>
+          asynInt32</td>
+        <td>
+          w</td>
+        <td>
+          Trigger record for soft trigger mode</td>
+        <td>
+          PE_TRIGGER</td>
+        <td>
+          $(P)$(R)PETrigger</td>
+        <td>
+          longout</td>
+      </tr>
+	  <tr><td align="center" colspan="7"><B>Offset corrections</B></td></tr>
+      <tr>
+        <td>
+          PE_NumOffsetFrames</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Number of frames to collect and average when collecting offset image</td>
+        <td>
+          PE_NUM_OFFSET_FRAMES</td>
+        <td>
+          $(P)$(R)PENumOffsetFrames</td>
+        <td>
+          longout</td>
+      </tr>
+      <tr>
+        <td>
+          PE_AcquireOffset</td>
+        <td>
+          asynInt32</td>
+        <td>
+          w</td>
+        <td>
+          Acquire Offset Image</td>
+        <td>
+          PE_ACQUIRE_OFFSET</td>
+        <td>
+          $(P)$(R)PEAcquireOffset</td>
+        <td>
+          longout</td>
+      </tr>
+      <tr>
+        <td>
+          PE_UseOffset</td>
+        <td>
+          asynInt32</td>
+        <td>
+          w</td>
+        <td>
+          Set wether offset image is to be used</td>
+        <td>
+          PE_USE_OFFSET</td>
+        <td>
+          $(P)$(R)PEUseOffset</td>
+        <td>
+          mbbo</td>
+      </tr>
+      <tr>
+        <td>
+          PE_OffsetAvailable</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+          Report whether offset image has been collected</td>
+        <td>
+          PE_OFFSET_AVAILABLE</td>
+        <td>
+          $(P)$(R)PEOffsetAvailable</td>
+        <td>
+          mbbi</td>
+      </tr>
+	  <tr><td align="center" colspan="7"><B>Gain corrections</B></td></tr>
+      <tr>
+        <td>
+          PE_NumGainFrames</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Number of frames to collect and average when collecting gain image</td>
+        <td>
+          PE_NUM_GAIN_FRAMES</td>
+        <td>
+          $(P)$(R)PENumGainFrames</td>
+        <td>
+          longout</td>
+      </tr>
+      <tr>
+        <td>
+          PE_AcquireGain</td>
+        <td>
+          asynInt32</td>
+        <td>
+          w</td>
+        <td>
+          Acquire Gain Image</td>
+        <td>
+          PE_ACQUIRE_GAIN</td>
+        <td>
+          $(P)$(R)PEAcquireGain</td>
+        <td>
+          longout</td>
+      </tr>
+      <tr>
+        <td>
+          PE_UseGain</td>
+        <td>
+          asynInt32</td>
+        <td>
+          w</td>
+        <td>
+          Set wether gain image is to be used</td>
+        <td>
+          PE_USE_GAIN</td>
+        <td>
+          $(P)$(R)PEUseGain</td>
+        <td>
+          mbbo</td>
+      </tr>
+      <tr>
+        <td>
+          PE_GainAvailable</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+          Report whether gain image has been collected</td>
+        <td>
+          PE_GAIN_AVAILABLE</td>
+        <td>
+          $(P)$(R)PEGainAvailable</td>
+        <td>
+          mbbi</td>
+      </tr>
+	  <tr><td align="center" colspan="7"><B>Bad pixel corrections</B></td></tr>
+      <tr>
+        <td>
+          PE_UsePixelCorrections</td>
+        <td>
+          asynInt32</td>
+        <td>
+          w</td>
+        <td>
+          Set wether pixel correction is to be used</td>
+        <td>
+          PE_USE_PIXEL_CORRECTION</td>
+        <td>
+          $(P)$(R)PEUsePixelCorrection</td>
+        <td>
+          mbbo</td>
+      </tr>
+      <tr>
+        <td>
+          PE_PixelCorrectionAvailable</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+          Report whether pixel correction file has been set</td>
+        <td>
+          PE_PIXEL_CORRECTION_AVAILABLE</td>
+        <td>
+          $(P)$(R)PEPixelCorrectionAvailable</td>
+        <td>
+          mbbi</td>
+      </tr>
+
+      <tr>
+        <td>
+          PE_BadPixelFile
+          PE_BadPixelFile_RBV</td>
+        <td>
+          asynOctetWrite<br/>
+          aynnOctetRead</td>
+        <td>
+          w</td>
+        <td>
+          File name for bad pixel file</td>
+        <td>
+          PE_BAD_PIXEL_FILE</td>
+        <td>
+          $(P)$(R)PEBadPixelFile<br/>
+          $(P)$(R)PEBadPixelFile_RBV</td>
+        <td>
+          waveform</td>
+      </tr>
+	  <tr><td align="center" colspan="7"><B>Load/Save offset/gain corrections</B></td></tr>
+      <tr>
+        <td>
+          PE_CorrectionsDirectory</td>
+        <td>
+          asynOctetWrite</td>
+        <td>
+          r/w</td>
+        <td>
+          Directory where corrections files should be stored</td>
+        <td>
+          PE_CORRECTIONS_DIRECTORY</td>
+        <td>
+          $(P)$(R)PECorrectionsDir</td>
+        <td>
+          waveform</td>
+      </tr>
+      <tr>
+        <td>
+          PE_LoadCorrectionsFile</td>
+        <td>
+          asynInt32</td>
+        <td>
+          w</td>
+        <td>
+          Load offset and gain corrections from a file for use</td>
+        <td>
+          PE_LOAD_CORRECTION_FILES</td>
+        <td>
+          $(P)$(R)PELoadCorrections</td>
+        <td>
+          longout</td>
+      </tr>
+      <tr>
+        <td>
+          PE_SaveCorrectionsFile</td>
+        <td>
+          asynInt32</td>
+        <td>
+          w</td>
+        <td>
+          Save offset and gain corrections to a file</td>
+        <td>
+          PE_SAVE_CORRECTION_FILES</td>
+        <td>
+          $(P)$(R)PESaveCorrections</td>
+        <td>
+          longout</td>
       </tr>
     </tbody>
   </table>
@@ -140,6 +467,12 @@
     The PerkinElmer driver does not support the following standard driver parameters
     because they are not supported in the PerkinElmer library:</p>
   <ul>
+	<li> Size (ADBinX, ADBinY, ADMinX, ADMinY, ADSizeX, ADSizeY)</li>
+	<li> Type/Color (NDDataType, NDColorMode)</li>
+	<li> File ( None of the file parameters in NDFile )</li>
+	<li> Binning (Not supported in software yet ) </li>
+	<li> No Hardware shutter control </li>
+
     <li>List any unsupported parameters here (WORK NEEDED)</li>
   </ul>
   <h2 id="Configuration">
@@ -147,7 +480,7 @@
   <p>
     The PerkinElmer driver is created with the perkinElmerConfig command, either from
     C/C++ or from the EPICS IOC shell.</p>
-  <pre>int PerkinElmerConfig(const char *portName, int maxSizeX, int maxSizeY, int dataType, 
+  <pre>int PerkinElmerConfig(const char *portName, int maxSizeX, int maxSizeY, int dataType,
                       int maxBuffers, size_t maxMemory,
                       int priority, int stackSize )
   </pre>
@@ -167,7 +500,7 @@
     The following show the MEDM screens that are used to control the PerkinElmer detector.
     Note that the general purpose screen ADBase.adl can be used, but it exposes many
     controls that are not applicable to the PerkinElmer, and lacks some fields that
-    are important for the PerkinElmer.</p>
+    are important for the PerkinElmer driver.</p>
   <p>
     <code>PerkinElmer.adl</code> is the main screen used to control the PerkinElmer
     driver.
