@@ -139,8 +139,8 @@ asynStatus ADDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 }
 
 
-/** Sets pasynUser->reason to one of the enum values for the parameters defined in ADStdDriverParams.h
-  * if the drvInfo field matches one the strings defined in that file.
+/** Sets pasynUser->reason to one of the enum values for the parameters defined in ADDriver.h
+  * if the drvInfo field matches one the strings defined.
   * Simply calls asynPortDriver::drvUserCreateParam with the parameter table for this driver.
   * \param[in] pasynUser pasynUser structure that driver modifies
   * \param[in] drvInfo String containing information about what driver function is being referenced
@@ -168,7 +168,7 @@ asynStatus ADDriver::drvUserCreate(asynUser *pasynUser,
 /** All of the arguments are simply passed to
   * the constructor for the asynNDArrayDriver base class. After calling the base class
   * constructor this method sets reasonable default values for all of the parameters
-  * defined in ADStdDriverParams.h.
+  * defined in ADDriver.h.
   */
 ADDriver::ADDriver(const char *portName, int maxAddr, int paramTableSize, int maxBuffers, size_t maxMemory,
                    int interfaceMask, int interruptMask,
