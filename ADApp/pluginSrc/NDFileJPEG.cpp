@@ -61,7 +61,7 @@ asynStatus NDFileJPEG::openFile(const char *fileName, NDFileOpenMode_t openMode,
     }
 
     /* We do some special treatment based on colorMode */
-    pAttribute = pArray->pAttributeList->find("colorMode");
+    pAttribute = pArray->pAttributeList->find("ColorMode");
     if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
 
     if (pArray->ndims == 2) {

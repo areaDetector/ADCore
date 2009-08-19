@@ -48,9 +48,9 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
     NDAttribute *pAttribute;
      
     getIntegerParam(NDPluginColorConvertColorModeOut, (int *)&colorModeOut);
-    pAttribute = pArray->pAttributeList->find("colorMode");
+    pAttribute = pArray->pAttributeList->find("ColorMode");
     if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
-    pAttribute = pArray->pAttributeList->find("bayerPattern");
+    pAttribute = pArray->pAttributeList->find("BayerPattern");
     if (pAttribute) pAttribute->getValue(NDAttrInt32, &bayerPattern);
        
     /* This function is called with the lock taken, and it must be set when we exit.
@@ -284,7 +284,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
     /* Get the attributes for this plugin */
     this->getAttributes(pArrayOut->pAttributeList);
     /* If we changed the color mode then set the attribute */
-    if (changedColorMode) pArrayOut->pAttributeList->add("colorMode", "Color Mode", NDAttrInt32, &colorModeOut);
+    if (changedColorMode) pArrayOut->pAttributeList->add("ColorMode", "Color Mode", NDAttrInt32, &colorModeOut);
     this->pArrays[0] = pArrayOut;
     this->lock();
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
@@ -293,7 +293,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
 }
 
 /** Callback function that is called by the NDArray driver with new NDArray data.
-  * Looks for the NDArray attribute called "colorMode" to determine the color
+  * Looks for the NDArray attribute called "ColorMode" to determine the color
   * mode of the input array.  Uses the parameter NDPluginColorConvertColorModeOut
   * to determine the desired color mode of the output array.  The NDArray is converted
   * between these color modes if possible.  If not the input array is passed on without

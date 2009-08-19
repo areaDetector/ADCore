@@ -273,7 +273,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     NDPluginDriver::processCallbacks(pArray);
 
     /* We do some special treatment based on colorMode */
-    pAttribute = pArray->pAttributeList->find("colorMode");
+    pAttribute = pArray->pAttributeList->find("ColorMode");
 	if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
 
     getIntegerParam(NDPluginROIHighlight, &highlight);
