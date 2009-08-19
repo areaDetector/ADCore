@@ -1,0 +1,562 @@
+
+file {
+	name="C:\epics\synApps_5_4_1\support\areaDetector\1-5beta\ADApp\op\adl\PerkinElmerCorrections.adl"
+	version=030102
+}
+display {
+	object {
+		x=562
+		y=47
+		width=335
+		height=440
+	}
+	clr=14
+	bclr=4
+	cmap=""
+	gridSpacing=5
+	gridOn=0
+	snapToGrid=0
+}
+"color map" {
+	ncolors=65
+	colors {
+		ffffff,
+		ececec,
+		dadada,
+		c8c8c8,
+		bbbbbb,
+		aeaeae,
+		9e9e9e,
+		919191,
+		858585,
+		787878,
+		696969,
+		5a5a5a,
+		464646,
+		2d2d2d,
+		000000,
+		00d800,
+		1ebb00,
+		339900,
+		2d7f00,
+		216c00,
+		fd0000,
+		de1309,
+		be190b,
+		a01207,
+		820400,
+		5893ff,
+		597ee1,
+		4b6ec7,
+		3a5eab,
+		27548d,
+		fbf34a,
+		f9da3c,
+		eeb62b,
+		e19015,
+		cd6100,
+		ffb0ff,
+		d67fe2,
+		ae4ebc,
+		8b1a96,
+		610a75,
+		a4aaff,
+		8793e2,
+		6a73c1,
+		4d52a4,
+		343386,
+		c7bb6d,
+		b79d5c,
+		a47e3c,
+		7d5627,
+		58340f,
+		99ffff,
+		73dfff,
+		4ea5f9,
+		2a63e4,
+		0a00b8,
+		ebf1b5,
+		d4db9d,
+		bbc187,
+		a6a462,
+		8b8239,
+		73ff6b,
+		52da3b,
+		3cb420,
+		289315,
+		1a7309,
+	}
+}
+composite {
+	object {
+		x=109
+		y=0
+		width=120
+		height=21
+	}
+	"composite name"=""
+	children {
+		rectangle {
+			object {
+				x=109
+				y=0
+				width=120
+				height=21
+			}
+			"basic attribute" {
+				clr=2
+			}
+		}
+	}
+}
+"message button" {
+	object {
+		x=3
+		y=98
+		width=200
+		height=20
+	}
+	control {
+		chan="$(P)$(R)PEAcquireOffset"
+		clr=14
+		bclr=51
+	}
+	label="Acquire Offset Correction"
+	press_msg="1"
+}
+composite {
+	object {
+		x=3
+		y=72
+		width=241
+		height=23
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=3
+				y=72
+				width=40
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Num Offset Frames:"
+		}
+		"text entry" {
+			object {
+				x=184
+				y=75
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)PENumOffsetFrames"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=3
+		y=175
+		width=241
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=3
+				y=175
+				width=40
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Num Gain Frames:"
+		}
+		"text entry" {
+			object {
+				x=184
+				y=175
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)PENumGainFrames"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+	}
+}
+"message button" {
+	object {
+		x=3
+		y=199
+		width=200
+		height=20
+	}
+	control {
+		chan="$(P)$(R)PEAcquireGain"
+		clr=14
+		bclr=51
+	}
+	label="Acquire Gain Correction"
+	press_msg="1"
+}
+"text update" {
+	object {
+		x=208
+		y=98
+		width=50
+		height=20
+	}
+	monitor {
+		chan="$(P)$(R)PEOffsetAvailable"
+		clr=14
+		bclr=4
+	}
+	clrmod="alarm"
+	limits {
+	}
+}
+composite {
+	object {
+		x=2
+		y=123
+		width=281
+		height=21
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=2
+				y=124
+				width=40
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Offset Correction:"
+		}
+		menu {
+			object {
+				x=183
+				y=123
+				width=100
+				height=19
+			}
+			control {
+				chan="$(P)$(R)PEUseOffset"
+				clr=54
+				bclr=4
+			}
+		}
+	}
+}
+text {
+	object {
+		x=4
+		y=223
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Gain Correction:"
+}
+menu {
+	object {
+		x=185
+		y=222
+		width=100
+		height=19
+	}
+	control {
+		chan="$(P)$(R)PEUseGain"
+		clr=54
+		bclr=4
+	}
+}
+"text update" {
+	object {
+		x=208
+		y=199
+		width=50
+		height=20
+	}
+	monitor {
+		chan="$(P)$(R)PEGainAvailable"
+		clr=14
+		bclr=4
+	}
+	clrmod="alarm"
+	limits {
+	}
+}
+text {
+	object {
+		x=3
+		y=44
+		width=169
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Offset"
+}
+text {
+	object {
+		x=3
+		y=152
+		width=169
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Gain"
+}
+polyline {
+	object {
+		x=1
+		y=146
+		width=287
+		height=2
+	}
+	"basic attribute" {
+		clr=14
+		width=2
+	}
+	points {
+		(2,147)
+		(287,147)
+	}
+}
+polyline {
+	object {
+		x=1
+		y=251
+		width=287
+		height=2
+	}
+	"basic attribute" {
+		clr=14
+		width=2
+	}
+	points {
+		(2,252)
+		(287,252)
+	}
+}
+polyline {
+	object {
+		x=1
+		y=64
+		width=100
+		height=0
+	}
+	"basic attribute" {
+		clr=14
+	}
+	points {
+		(1,64)
+		(101,64)
+	}
+}
+polyline {
+	object {
+		x=2
+		y=172
+		width=100
+		height=0
+	}
+	"basic attribute" {
+		clr=14
+	}
+	points {
+		(2,172)
+		(102,172)
+	}
+}
+composite {
+	object {
+		x=2
+		y=340
+		width=326
+		height=88
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=2
+				y=340
+				width=40
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Corrections Directory:"
+		}
+		"text entry" {
+			object {
+				x=36
+				y=361
+				width=292
+				height=20
+			}
+			control {
+				chan="$(P)$(R)PECorrectionsDir"
+				clr=14
+				bclr=51
+			}
+			format="string"
+			limits {
+			}
+		}
+		"message button" {
+			object {
+				x=5
+				y=385
+				width=200
+				height=20
+			}
+			control {
+				chan="$(P)$(R)PELoadCorrections"
+				clr=14
+				bclr=51
+			}
+			label="Load Correction Files"
+			press_msg="1"
+		}
+		"message button" {
+			object {
+				x=6
+				y=408
+				width=200
+				height=20
+			}
+			control {
+				chan="$(P)$(R)PESaveCorrections"
+				clr=14
+				bclr=51
+			}
+			label="Save Correction Files"
+			press_msg="1"
+		}
+	}
+}
+polyline {
+	object {
+		x=1
+		y=330
+		width=287
+		height=2
+	}
+	"basic attribute" {
+		clr=14
+		width=2
+	}
+	points {
+		(2,331)
+		(287,331)
+	}
+}
+composite {
+	object {
+		x=2
+		y=260
+		width=331
+		height=61
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=4
+				y=260
+				width=40
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Bad Pixel File:"
+		}
+		"text entry" {
+			object {
+				x=2
+				y=278
+				width=331
+				height=20
+			}
+			control {
+				chan="$(P)$(R)PEBadPixelFile"
+				clr=14
+				bclr=51
+			}
+			format="string"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=2
+				y=303
+				width=300
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)PEBadPixelFile_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			format="string"
+			limits {
+			}
+		}
+	}
+}
+text {
+	object {
+		x=89
+		y=1
+		width=157
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="Corrections"
+	align="horiz. centered"
+}
+rectangle {
+	object {
+		x=0
+		y=0
+		width=335
+		height=440
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
