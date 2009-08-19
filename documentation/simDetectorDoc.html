@@ -10,7 +10,7 @@
     <h1 style="text-align: center">
       areaDetector Simulation driver</h1>
     <h2>
-      January 30, 2009</h2>
+      August 18, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -24,70 +24,31 @@
     <li><a href="#Introduction">Introduction</a></li>
     <li><a href="#Driver_parameters">Simulation driver specific parameters</a></li>
     <li><a href="#Unsupported">Unsupported standard driver parameters</a></li>
-    <li><a href="#Screenshots">Screenshots</a></li>
     <li><a href="#Configuration">Configuration</a></li>
+    <li><a href="#MEDM_screens">MEDM screens</a></li>
+    <li><a href="#Viewers">Image viewers</a></li>
   </ul>
   <h2 id="Introduction">
     Introduction</h2>
   <p>
-    simDetector is a driver for a simulated area detector. It inherits from ADDriver.
-    The simulation detector implements nearly all of the parameters defined in ADStdDriverParams.h,
-    with the exception of the file saving parameters, which it does not implement. It
-    also implements a few parameters that are specific to the simulation detector. The
-    simulation detector is useful as a model for writing real detector drivers. It is
-    also very useful for testing plugins and channel access clients. This is part of
-    the definition of the simDetector class:
-  </p>
-  <pre>class simDetector : public ADDriver {
-public:
-    simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDataType_t dataType,
-                int maxBuffers, size_t maxMemory);
-                 
-    /* These are the methods that we override from ADDriver */
-    virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
-    virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
-    virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
-                                     const char **pptypeName, size_t *psize);
-    void report(FILE *fp, int details);
-</pre>
-  <p>
-    In the constructor <code>simDetector</code> the portName, maxBuffers, and maxMemory
-    arguments are passed to the ADDriver base class constructor. The maxSizeX, maxSizeY,
-    and dataType arguments are specific to the simulation driver, controlling the maximum
-    image size and initial data type of the computed images. The writeInt32 and writeFloat64
-    methods override those in the base class. The driver takes action when new parameters
-    are passed via those interfaces. For example, the ADAcquire parameter (on the asynInt32
-    interface) is used to turn acquisition (i.e. computing new images) on and off.
+    simDetector is a driver for a simulated area detector. The simulation detector is
+    useful as a model for writing real detector drivers. It is also very useful for
+    testing plugins and channel access clients.
   </p>
   <p>
-    The simulation driver initially sets the image[i, j] = i*gainX + j*gainY * gain
-    * exposureTime * 1000. Thus the image is a linear ramp in the X and Y directions,
-    with the gains in each direction being detector-specific parameters. Each subsquent
-    acquisition increments each pixel value by gain*exposureTime*1000. Thus if gain=1
-    and exposureTime=.001 second then the pixels are incremented by 1. If the array
-    is an unsigned 8 or 16 bit integer then the pixels will overflow and wrap around
-    to 0 after some period of time. This gives the appearance of bands that appear to
-    move with time. The slope of the bands and their periodicity can be adjusted by
-    changing the gains and exposure times.
-  </p>
+    This driver inherits from <a href="areaDetectorDoc.html#ADDriver">ADDriver</a>.
+    It implements nearly all of the parameters in NDStdDriverParam_t (see <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">
+      asynNDArryDriver.h</a>) and in ADStdDriverParam_t (see <a href="areaDetectorDoxygenHTML/_a_d_driver_8h.html">
+        ADArrayDriver.h</a>), with the exception of the file saving parameters, which
+    it does not implement. It also implements a few parameters that are specific to
+    the simulation detector. The <a href="areaDetectorDoxygenHTML/classsim_detector.html">
+      simDetector class documentation</a> describes this class in detail.</p>
   <p>
-    The driver creates a thread that waits for a signal to start acquisition. When acquisition
-    is started that thread computes new images and then calls back any registered plugins
-    as follows:
+    The writeInt32 and writeFloat64 methods override those in the base class. The driver
+    takes action when new parameters are passed via those interfaces. For example, the
+    ADAcquire parameter (on the asynInt32 interface) is used to turn acquisition (i.e.
+    computing new images) on and off.
   </p>
-  <pre>        /* Put the frame number and time stamp into the buffer */
-        pImage->uniqueId = imageCounter;
-        pImage->timeStamp = startTime.secPastEpoch + startTime.nsec / 1.e9;
-        
-        /* Call the NDArray callback */
-        /* Must release the lock here, or we can get into a deadlock, because we can
-         * block on the plugin lock, and the plugin can be calling us */
-        epicsMutexUnlock(this->mutexId);
-        asynPrint(this->pasynUser, ASYN_TRACE_FLOW, 
-             "%s:%s: calling imageData callback\n", driverName, functionName);
-        doCallbacksGenericPointer(pImage, NDArrayData, addr);
-        epicsMutexLock(this->mutexId);
-</pre>
   <h2 id="Driver_parameters">
     Simulation driver specific parameters</h2>
   <p>
@@ -153,13 +114,67 @@ public:
       </tr>
       <tr>
         <td>
+          SimGainRed</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          Gain of the red channel</td>
+        <td>
+          SIM_GAIN_RED</td>
+        <td>
+          $(P)$(R)GainRed<br />
+          $(P)$(R)GainRed_RBV</td>
+        <td>
+          ao<br />
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          SimGainGreen</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          Gain of the green channel</td>
+        <td>
+          SIM_GAIN_GREEN</td>
+        <td>
+          $(P)$(R)GainGreen<br />
+          $(P)$(R)GainGreen_RBV</td>
+        <td>
+          ao<br />
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          SimGainBlue</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          Gain of the blue channel</td>
+        <td>
+          SIM_GAIN_BLUE</td>
+        <td>
+          $(P)$(R)GainBlue<br />
+          $(P)$(R)GainBlue_RBV</td>
+        <td>
+          ao<br />
+          ai</td>
+      </tr>
+      <tr>
+        <td>
           SimResetImage</td>
         <td>
           asynInt32</td>
         <td>
           r/w</td>
         <td>
-          Reset image back to initial conditions when 1.</td>
+          Set to 1 to reset image back to initial conditions</td>
         <td>
           RESET_IMAGE</td>
         <td>
@@ -171,6 +186,26 @@ public:
       </tr>
     </tbody>
   </table>
+  <p>
+    For monochrome images (NDColorMode=NDColorModeMono) the simulation driver initially
+    sets the image[i, j] = i*SimGainX + j*SimGainY * ADGain * ADAcquireTime * 1000.
+    Thus the image is a linear ramp in the X and Y directions, with the gains in each
+    direction being detector-specific parameters. Each subsquent acquisition increments
+    each pixel value by ADgain*ADAcquireTime*1000. Thus if ADGain=1 and ADAcquireTime=.001
+    second then the pixels are incremented by 1. If the array is an unsigned 8 or 16
+    bit integer then the pixels will overflow and wrap around to 0 after some period
+    of time. This gives the appearance of bands that appear to move with time. The slope
+    of the bands and their periodicity can be adjusted by changing the gains and acquire
+    times.
+  </p>
+  <p>
+    For color images (NDColorMode=NDColorModeRGB1, RGB2 or RGB3) there are 3 images
+    computed, one each for the red, green and blue channels. Each image is computed
+    with the same algorithm as for the monochrome case, except each is multiplied by
+    its appropriate gain factor (SimGainRed, SimGainGreen, SimGainBlue). Thus if each
+    of these color gains is 1.0 the color image will be identical to the monochrome
+    image, but if the color gains are different from each other then image will have
+    color bands.</p>
   <h2 id="Unsupported">
     Unsupported standard driver parameters</h2>
   <ul>
@@ -178,8 +213,49 @@ public:
     <li>Collect: Trigger mode (ADTriggerMode)</li>
     <li>File control: No file I/O is supported</li>
   </ul>
-  <h2 id="Screenshots">
-    Screenshots</h2>
+  <h2 id="Configuration">
+    Configuration</h2>
+  <p>
+    The simDetector driver is created with the simDetectorConfig command, either from
+    C/C++ or from the EPICS IOC shell.</p>
+  <pre>int simDetectorConfig(const char *portName, 
+                      int maxSizeX, int maxSizeY, int dataType,
+                      int maxBuffers, size_t maxMemory, 
+                      int priority, int stackSize)
+  </pre>
+  <p>
+    The simDetector-specific fields in this command are:</p>
+  <ul>
+    <li><code>maxSizeX</code> Maximum number of pixels in the X direction for the simulated
+      detector.</li>
+    <li><code>maxSizeY</code> Maximum number of pixels in the Y direction for the simulated
+      detector. </li>
+    <li><code>dataType</code> Initial data type of the detector data. These are the enum
+      values for NDDataType_t, i.e.
+      <ul>
+        <li>0=NDInt8</li>
+        <li>1=NDUInt8</li>
+        <li>2=NDInt16</li>
+        <li>3=NDUInt16</li>
+        <li>4=NDInt32</li>
+        <li>5=NDUInt32</li>
+        <li>6=NDFloat32</li>
+        <li>7=NDFloat64</li>
+      </ul>
+    </li>
+  </ul>
+  <p>
+    For details on the meaning of the other parameters to this function refer to the
+    detailed documentation on the simDetectorConfig function in the <a href="areaDetectorDoxygenHTML/sim_detector_8cpp.html">
+      simDetector.cpp documentation</a> and in the documentation for the constructor
+    for the <a href="areaDetectorDoxygenHTML/classsim_detector.html">simDetector class</a>.
+  </p>
+  <p>
+    There an example IOC boot directory and startup script (<a href="simdetector_st_cmd.html">iocBoot/iocSimDetector/st.cmd)</a>
+    provided with areaDetector.
+  </p>
+  <h2 id="MEDM_screens">
+    MEDM screens</h2>
   <p>
     The following is the MEDM screen ADBase.adl connected to a simulation detector.
   </p>
@@ -197,102 +273,26 @@ public:
       simDetector.adl</h3>
     <img alt="simDetector.png" src="simDetector.png" />
   </div>
+  <h2 id="Viewers">
+    Image viewers</h2>
   <p>
-    The following is an IDL <a href="http://cars.uchicago.edu/software/idl/imaging_routines.html#epics_ad_display">
-      epics_ad_display</a> screen using <a href="http://cars.uchicago.edu/software/idl/imaging_routines.html#image_display">
-        image_display</a> to display the simulation detector images.
+    The following is an IDL <a href="areaDetectorViewers.html#IDLViewer">epics_ad_display</a>
+    screen using <a href="http://cars.uchicago.edu/software/idl/imaging_routines.html#image_display">
+      image_display</a> to display the simulation detector images.
   </p>
   <div style="text-align: center">
     <h3>
       epics_ad_display.pro</h3>
     <img alt="simDetector_image_display.png" src="simDetector_image_display.png" />
   </div>
-  <h2 id="Configuration">
-    Configuration</h2>
   <p>
-    This driver is configured via the <tt>simDetectorConfig()</tt> function. If this
-    is to be used in an IOC, it must be called before <tt>iocInit()</tt>. It has the
-    following syntax:
+    The following is an ImageJ plugin <a href="areaDetectorViewers.html#ImageJViewer">
+      EPICS_AD_Viewer</a> screen displaying color simulation detector images.
   </p>
-  <pre>simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, 
-                  int dataType, int maxBuffers, size_t maxMemory)
-  </pre>
-  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
-    <tbody>
-      <tr>
-        <th>
-          Argument</th>
-        <th>
-          Description</th>
-      </tr>
-      <tr>
-        <td>
-          <code>portName</code></td>
-        <td>
-          The name of the asyn port for this detector.
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <code>maxSizeX</code></td>
-        <td>
-          Maximum number of pixels in the X direction for the simulated detector.
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <code>maxSizeY</code></td>
-        <td>
-          Maximum number of pixels in the Y direction for the simulated detector.
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <code>dataType</code></td>
-        <td>
-          Initial data type of the detector data. These are the enum values for NDDataType_t,
-          i.e.
-          <ul>
-            <li>0=NDInt8</li>
-            <li>1=NDUInt8</li>
-            <li>2=NDInt16</li>
-            <li>3=NDUInt16</li>
-            <li>4=NDInt32</li>
-            <li>5=NDUInt32</li>
-            <li>6=NDFloat32</li>
-            <li>7=NDFloat64</li>
-          </ul>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <code>maxBuffers</code></td>
-        <td>
-          Maxiumum number of NDArray objects (image buffers) this driver is allowed to allocate.
-          The driver itself requires 2 buffers, and each queue element in a plugin can require
-          one buffer. So, for example, if 3 plugins are connected to this driver, and each
-          has a queue size of 10, then maxBuffers should be at least 32.
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <code>maxMemory</code></td>
-        <td>
-          Maxiumum number of bytes of memory for all NDArray objects (image buffers) allocated
-          by this driver. If maxSizeX=maxSizeY=1024, and maxBuffers=32, then maxMemory should
-          be at least 33554432 (32MB).
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <p>
-    If being used in an IOC, and an EPICS PV interface with the driver is desired, the
-    <tt>ADBase.template</tt> and <tt>simDetector.template</tt> databases should also
-    be loaded for the driver instance.
-  </p>
-  <p>
-    The areaDetector software comes with an example IOC for the simulation driver, <tt>
-      iocBoot/iocSimDetector</tt>.
-  </p>
+  <div style="text-align: center">
+    <h3>
+      ImageJ plugin EPICS_AD_Viewer</h3>
+    <img alt="simDetector_ImageJ_display.png" src="simDetector_ImageJ_display.png" />
+  </div>
 </body>
 </html>

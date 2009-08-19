@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugin NDPluginColorConvert</h1>
     <h2>
-      January 30, 2009</h2>
+      August 17, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -28,30 +28,13 @@
     Overview
   </h2>
   <p>
-    This plugin is a tool for converting the color mode of NDArray data.
-  </p>
+    NDPluginColorConvert is a tool for converting the color mode of NDArray data. It
+    receives an input NDArray with one color mode and outputs another NDArray with a
+    (potentially) different color mode. All other attributes of the array are preserved.</p>
   <p>
-    NDPluginColorConvert inherits from NDPluginDriver. NDPluginColorConvert receives
-    an input NDArray with one color mode and outputs another NDArray with a (potentially)
-    different color mode. All other attributes of the array are preserved. The NDPluginColorConvert
-    public interface is defined in NDPluginColorConvert.h as follows:</p>
-  <pre>class NDPluginColorConvert : public NDPluginDriver {
-public:
-    NDPluginColorConvert(const char *portName, int queueSize, int blockingCallbacks,
-                         const char *NDArrayPort, int NDArrayAddr,
-                         size_t maxMemory);
-
-    /* These methods override the virtual methods in the base class */
-    void processCallbacks(NDArray *pArray);
-    asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo,
-                             const char **pptypeName, size_t *psize);
-
-    /* These methods are just for this class */
-    template &lt;typename epicstype&gt; void convertColor(NDArray *pArray);
-};
-...
-}
-</pre>
+    NDPluginColorConvert inherits from NDPluginDriver. The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_color_convert.html">
+      NDPluginColorConvert class documentation</a> describes this class in detail.
+  </p>
   <p>
     NDPluginColorConvert defines the following parameters. It also implements all of
     the standard plugin parameters from <a href="pluginDoc.html#NDPluginDriver">NDPluginDriver</a>
@@ -123,72 +106,18 @@ public:
     The NDPluginColorConvert plugin is created with the following command, either from
     C/C++ or from the EPICS IOC shell.
   </p>
-  <pre>int drvNDColorConvertConfigure(const char *portName, int queueSize, int blockingCallbacks, 
-                               const char *NDArrayPort, int NDArrayAddr, 
-                               int maxBuffers, size_t maxMemory);
+  <pre> int NDColorConvertConfigure(const char *portName, int queueSize, int blockingCallbacks, 
+                             const char *NDArrayPort, int NDArrayAddr, 
+                             int maxBuffers, size_t maxMemory,
+                             int priority, int stackSize)
   </pre>
-  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
-    <tr>
-      <th>
-        Argument</th>
-      <th>
-        Description</th>
-    </tr>
-    <tr>
-      <td>
-        <code>portName</code></td>
-      <td>
-        The name of the asyn port for this plugin.
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <code>queueSize</code></td>
-      <td>
-        The maximum number of NDArray objects that can be queued for processing. Passed
-        to the NDPluginDriver base class constructor.
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <code>blockingCallbacks</code></td>
-      <td>
-        Flag controlling whether callbacks block. Passed to the NDPluginDriver base class
-        constructor.
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <code>NDArrayPort</code></td>
-      <td>
-        The name of the asyn port of the driver that will provide the NDArray data. Passed
-        to the NDPluginDriver base class constructor.
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <code>NDArrayAddr</code></td>
-      <td>
-        The asyn addr of the asyn port of the driver that will provide the NDArray data.
-        Passed to the NDPluginDriver base class constructor.
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <code>maxBuffers</code></td>
-      <td>
-        Maximum number of NDArray buffers to be created for plugin callbacks, i.e. for plugins
-        that will be getting called from this plugin. Passed to the constructor for the
-        NDPluginDriver base class.</td>
-    </tr>
-    <tr>
-      <td>
-        <code>maxMemory</code></td>
-      <td>
-        Maximum number of bytes of memory to be allocated from the NDArrayPool. Passed to
-        the constructor for the NDPluginDriver base class.</td>
-    </tr>
-  </table>
+  <p>
+    For details on the meaning of the parameters to this function refer to the detailed
+    documentation on the NDColorConvertConfigure function in the <a href="areaDetectorDoxygenHTML/_n_d_plugin_color_convert_8cpp.html">
+      NDPluginColorConvert.cpp documentation</a> and in the documentation for the constructor
+    for the <a href="areaDetectorDoxygenHTML/class_n_d_plugin_color_convert.html">NDPluginColorConvert
+      class</a>.
+  </p>
   <h2 id="Screens">
     Screen shots</h2>
   <p>

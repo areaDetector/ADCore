@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugin NDPluginROI</h1>
     <h2>
-      January 30, 2009</h2>
+      August 17, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -20,6 +20,7 @@
     Contents</h2>
   <ul>
     <li><a href="#Overview">Overview</a></li>
+    <li><a href="#Configuration">Configuration</a></li>
     <li><a href="#Screens">Screen shots</a></li>
   </ul>
   <h2 id="Overview">
@@ -44,42 +45,26 @@
       rather than the full detector driver data.</li>
   </ol>
   <p>
-    Each NDPluginROI can handle any number of ROIs. The maximum number of ROIs that
-    the plugin can support is defined when the plugin is created. Several ROI plugins
-    could be created for a single detector driver to increase the number of threads
-    running in parallel, maximizing the use of multiple CPU cores. Individual ROIs are
-    addressed through the asyn interfaces by the asyn "addr" field in the asynUser structure.
-    Note that while the NDPluginROI should be N-dimensional, the EPICS interface to
-    the definition of the ROI is currently limited to a maximum of 3-D. This limitation
-    will be removed in a future release.
+    Each of these operations can be enabled or disabled independently.
   </p>
   <p>
-    NDPluginROI inherits from NDPluginDriver. The NDPluginROI public interface is defined
-    in NDPluginROI.h as follows:
+    Each NDPluginROI can handle any number of ROIs. Several ROI plugins could be created
+    for a single detector driver to increase the number of threads running in parallel,
+    maximizing the use of multiple CPU cores. Individual ROIs are addressed through
+    the asyn interfaces by the asyn "addr" field in the asynUser structure. Note that
+    while the NDPluginROI should be N-dimensional, the EPICS interface to the definition
+    of the ROI is currently limited to a maximum of 3-D. This limitation will be removed
+    in a future release.
   </p>
-  <pre>class NDPluginROI : public NDPluginDriver {
-public:
-    NDPluginROI(const char *portName, int queueSize, int blockingCallbacks, 
-                 const char *NDArrayPort, int NDArrayAddr, int maxROIs, size_t maxMemory);
-    /* These methods override the virtual methods in the base class */
-    void processCallbacks(NDArray *pArray);
-    asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
-    asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
-                             const char **pptypeName, size_t *psize);
-
-    /* These methods are unique to this class */
-    asynStatus readFloat64Array(asynUser *pasynUser, epicsFloat64 *value, 
-                                size_t nelements, size_t *nIn);
-                                
-</pre>
   <p>
-    The readFloat64Array method is used to read the histogram data for the ROI.
+    NDPluginROI inherits from NDPluginDriver. The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_r_o_i.html">
+      NDPluginROI class documentation</a> describes this class in detail.
   </p>
   <p>
     NDPluginROI.h defines the following parameters that are global to all ROIs for a
-    plugin. It also implements all of the standard plugin parameters from NDPlugDriver.
-    The EPICS database NDROI.template provide access to these parameters, listed in
-    the following table.
+    plugin. It also implements all of the standard plugin parameters from <a href="pluginDoc.html#NDPluginDriver">
+      NDPluginDriver</a>. The EPICS database NDROI.template provide access to these
+    parameters, listed in the following table.
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
@@ -498,7 +483,7 @@ public:
           Data type of the ROI (NDDataType_t). This can be different from the data type of
           the NDArray callback data.</td>
         <td>
-          DATA_TYPE</td>
+          ROI_DATA_TYPE</td>
         <td>
           $(P)$(R)DataType<br />
           $(P)$(R)DataType_RBV</td>
@@ -528,7 +513,7 @@ public:
       </tr>
       <tr>
         <td>
-          ADImageSizeX</td>
+          NDArraySizeX</td>
         <td>
           asynInt32</td>
         <td>
@@ -536,15 +521,15 @@ public:
         <td>
           Size of the ROI data in the X direction</td>
         <td>
-          IMAGE_SIZE_X</td>
+          ARRAY_SIZE_X</td>
         <td>
-          $(P)$(R)ImageSizeX_RBV</td>
+          $(P)$(R)ArraySizeX_RBV</td>
         <td>
           longin</td>
       </tr>
       <tr>
         <td>
-          ADImageSizeY</td>
+          NDArraySizeY</td>
         <td>
           asynInt32</td>
         <td>
@@ -552,15 +537,15 @@ public:
         <td>
           Size of the ROI data in the Y direction</td>
         <td>
-          IMAGE_SIZE_Y</td>
+          ARRAY_SIZE_Y</td>
         <td>
-          $(P)$(R)ImageSizeY_RBV</td>
+          $(P)$(R)ArraySizeY_RBV</td>
         <td>
           longin</td>
       </tr>
       <tr>
         <td>
-          ADImageSizeZ</td>
+          NDArraySizeZ</td>
         <td>
           asynInt32</td>
         <td>
@@ -568,9 +553,9 @@ public:
         <td>
           Size of the ROI data in the Z direction</td>
         <td>
-          IMAGE_SIZE_Z</td>
+          ARRAY_SIZE_Z</td>
         <td>
-          $(P)$(R)ImageSizeZ_RBV</td>
+          $(P)$(R)ArraySizeZ_RBV</td>
         <td>
           longin</td>
       </tr>
@@ -819,86 +804,21 @@ public:
   <h2 id="Configuration">
     Configuration</h2>
   <p>
-    The NDPluginROI plugin is created with the following command, either from C/C++
-    or from the EPICS IOC shell.
-  </p>
-  <pre>int drvNDROIConfigure(const char *portName, int queueSize, int blockingCallbacks, 
-                      const char *NDArrayPort, int NDArrayAddr, int maxROIs,
-                      int maxBuffers, size_t maxMemory);
-
-
+    The NDPluginROI plugin is created with the NDROIConfigure command, either from C/C++
+    or from the EPICS IOC shell.</p>
+  <pre>
+NDROIConfigure(const char *portName, int queueSize, int blockingCallbacks,
+               const char *NDArrayPort, int NDArrayAddr, int maxROIs,
+               int maxBuffers, size_t maxMemory,
+               int priority, int stackSize)
   </pre>
-  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
-    <tr>
-      <th>
-        Argument</th>
-      <th>
-        Description</th>
-    </tr>
-    <tr>
-      <td>
-        <code>portName</code></td>
-      <td>
-        The name of the asyn port for this plugin.
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <code>queueSize</code></td>
-      <td>
-        The maximum number of NDArray objects that can be queued for processing. Passed
-        to the NDPluginDriver base class constructor.
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <code>blockingCallbacks</code></td>
-      <td>
-        Flag controlling whether callbacks block. Passed to the NDPluginDriver base class
-        constructor.
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <code>NDArrayPort</code></td>
-      <td>
-        The name of the asyn port of the driver that will provide the NDArray data. Passed
-        to the NDPluginDriver base class constructor.
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <code>NDArrayAddr</code></td>
-      <td>
-        The asyn addr of the asyn port of the driver that will provide the NDArray data.
-        Passed to the NDPluginDriver base class constructor.
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <code>maxROIs</code></td>
-      <td>
-        Maximum number of ROIs that this plugin will support.
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <code>maxBuffers</code></td>
-      <td>
-        Maximum number of NDArray buffers to be created for plugin callbacks, i.e. for plugins
-        that will be getting called from this plugin. Passed to the constructor for the
-        NDPluginDriver base class.</td>
-    </tr>
-    <tr>
-      <td>
-        <code>maxMemory</code></td>
-      <td>
-        Maximum number of bytes of memory to be allocated from the NDArrayPool. Passed to
-        the constructor for the NDPluginDriver base class. The NDPluginROI plugin allocates
-        one NDArray object for each ROI, so this should be at least maxROIs times the size
-        of the largest NDArray to be used.</td>
-    </tr>
-  </table>
+  <p>
+    For details on the meaning of the parameters to this function refer to the detailed
+    documentation on the NDROIConfigure function in the <a href="areaDetectorDoxygenHTML/_n_d_plugin_r_o_i_8cpp.html">
+      NDPluginROI.cpp documentation</a> and in the documentation for the constructor
+    for the <a href="areaDetectorDoxygenHTML/class_n_d_plugin_r_o_i.html">NDPluginROI
+      class</a>.
+  </p>
   <h2 id="Screens">
     Screen shots</h2>
   <p>

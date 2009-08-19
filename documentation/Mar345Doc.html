@@ -32,9 +32,7 @@
     Introduction</h2>
   <p>
     This is a driver for the mar345 detector from <a href="http://www.marresearch.com/">
-      Marresearch GmbH</a>. It implements many of the parameters in asynNDArrayDriver.h
-    and ADDriver.h. It also implements a number of parameters that are specific to the
-    mar345 detector.</p>
+      Marresearch GmbH</a>.</p>
   <p>
     The interface to the detector is via a TCP/IP socket interface to the <b>mar345dtb</b>
     program that Marresearch provides. The mar345dtb program must be started before
@@ -56,8 +54,12 @@
     not provide another mechanism to access the data.
   </p>
   <p>
-    This driver inherits from ADDriver. The <a href="areaDetectorDoxygenHTML/classmar345.html">
-      mar345 class documentation</a> describes this class in detail.</p>
+    This driver inherits from <a href="areaDetectorDoc.html#ADDriver">ADDriver</a>.
+    It implements many of the parameters in NDStdDriverParam_t (see <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">
+      asynNDArryDriver.h</a>) and in ADStdDriverParam_t (see <a href="areaDetectorDoxygenHTML/_a_d_driver_8h.html">
+        ADArrayDriver.h</a>). It also implements a number of parameters that are specific
+    to the mar345 detector. The <a href="areaDetectorDoxygenHTML/classmar345.html">mar345
+      class documentation</a> describes this class in detail.</p>
   <h2 id="StandardNotes" style="text-align: left">
     Implementation of standard driver parameters</h2>
   <p>
@@ -391,9 +393,9 @@
     <li>Region to read out (ADMinX, ADMinY, ADSizeX, ADSizeY, ADReverseX, ADReverseY)</li>
     <li>Binning (ADBinX, ADBinY)</li>
     <li>Frame type (ADFrameType)</li>
-    <li>Data type (ADDataType)</li>
-    <li>Reading previous files (ADReadFile)</li>
-    <li>Capture or stream file saving (ADFileWriteMode, ADFileCapture, ADNumCapture, ADNumCaptured)</li>
+    <li>Data type (NDDataType)</li>
+    <li>Reading previous files (NDReadFile)</li>
+    <li>Capture or stream file saving (NDFileWriteMode, NDFileCapture, NDNumCapture, NDNumCaptured)</li>
   </ul>
   <h2 id="Configuration">
     Configuration</h2>

@@ -32,9 +32,7 @@
     Introduction</h2>
   <p>
     This is a driver for the flat-panel amorphous silicon detectors from <a href="http://optoelectronics.perkinelmer.com/catalog/Category.aspx?CategoryName=X-Ray+Cameras">
-      PerkinElmer</a>. It implements many of the parameters in asynNDArrayDriver.h and
-    ADDriver.h. It also implements a number of parameters that are specific to the PerkinElmer
-    detectors.</p>
+      PerkinElmer</a>.</p>
   <p>
     The driver is based upon the library provided by PerkinElmer. It only runs on Microsoft
     Windows computers.
@@ -42,7 +40,11 @@
   <p>
     ADD ADDTIONAL INTRODUCTORY TEXT HERE.</p>
   <p>
-    This driver inherits from ADDriver. The <a href="areaDetectorDoxygenHTML/class_perkin_elmer.html">
+    This driver inherits from <a href="areaDetectorDoc.html#ADDriver">ADDriver</a>.
+    It implements many of the parameters in NDStdDriverParam_t (see <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">
+      asynNDArryDriver.h</a>) and in ADStdDriverParam_t (see <a href="areaDetectorDoxygenHTML/_a_d_driver_8h.html">
+        ADArrayDriver.h</a>). It also implements a number of parameters that are specific
+    to the PerkinElmer detectors. The <a href="areaDetectorDoxygenHTML/class_perkin_elmer.html">
       PerkinElmer class documentation</a> describes this class in detail.</p>
   <h2 id="StandardNotes" style="text-align: left">
     Implementation of standard driver parameters</h2>
@@ -78,9 +80,9 @@
     </tbody>
   </table>
   <p>
-    It is useful to use NDPluginROI to define an ROI containing the entire PerkinElmer detector.
-    The MaxValue_RBV PV in this ROI can be monitored to make sure that the 16-bit limit
-    of 65,535 is not being approached in any pixel.
+    It is useful to use NDPluginROI to define an ROI containing the entire PerkinElmer
+    detector. The MaxValue_RBV PV in this ROI can be monitored to make sure that the
+    16-bit limit of 65,535 is not being approached in any pixel.
   </p>
   <h2 id="Driver_parameters" style="text-align: left">
     PerkinElmer specific parameters</h2>
@@ -124,10 +126,10 @@
         <td>
           PE_NUM_FRAME_BUFFERS</td>
         <td>
-          $(P)$(R)PENumFrameBuffers<br/>
+          $(P)$(R)PENumFrameBuffers<br />
           $(P)$(R)PENumFrameBuffers_RBV</td>
         <td>
-          longout<br/>
+          longout<br />
           longin</td>
       </tr>
     </tbody>
@@ -151,7 +153,7 @@
   </pre>
   <p>
     For details on the meaning of the parameters to this function refer to the detailed
-    documentation on the mar345Config function in the <a href="areaDetectorDoxygenHTML/_perkin_elmer_8cpp.html">
+    documentation on the PerkinElmerConfig function in the <a href="areaDetectorDoxygenHTML/_perkin_elmer_8cpp.html">
       PerkinElmer.cpp documentation</a> and in the documentation for the constructor
     for the <a href="areaDetectorDoxygenHTML/class_perkin_elmer.html">PerkinElmer class</a>.
   </p>

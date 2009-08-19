@@ -8,7 +8,7 @@
 <body>
   <div style="text-align: center">
     <h1>
-      Firewire IIDC (CDAM) Windows driver</h1>
+      Firewire IIDC (DCAM) Windows driver</h1>
     <h2>
       August 17, 2009</h2>
     <h2>
@@ -31,9 +31,7 @@
     This is a driver for Firewire (IEEE 1394) cameras that follow the <a href="http://damien.douxchamps.net/ieee1394/libdc1394/iidc/IIDC_1.31.pdf">
       IIDC/DCAM</a> specification. This industry standard allows a single driver to
     control cameras from any manufacturer, using any of the supported video formats
-    and features. It inherits from ADDriver and implements many of the parameters in
-    asynNDArrayDriver.h and ADDriver.h. It also implements a number of parameters that
-    are specific to the Firewire cameras.</p>
+    and features.</p>
   <p>
     This driver runs only on Windows. It uses the <a href="http://www.cs.cmu.edu/~iwan/1394/">
       Carnegie Mellon 1394</a> camera driver and library. There is also an areaDetector
@@ -41,7 +39,11 @@
       Diamond Light Source</a>.
   </p>
   <p>
-    This driver inherits from ADDriver. The <a href="areaDetectorDoxygenHTML/class_firewire_win_d_c_a_m.html">
+    This driver inherits from <a href="areaDetectorDoc.html#ADDriver">ADDriver</a>.
+    It implements many of the parameters in NDStdDriverParam_t (see <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">
+      asynNDArryDriver.h</a>) and in ADStdDriverParam_t (see <a href="areaDetectorDoxygenHTML/_a_d_driver_8h.html">
+        ADArrayDriver.h</a>). It also implements a number of parameters that are specific
+    to the Firewire cameras. The <a href="areaDetectorDoxygenHTML/class_firewire_win_d_c_a_m.html">
       firewireWinDCAM class documentation</a> describes this class in detail.</p>
   <p>
     The IIDC/DCAM specification defines standard ways that manufacturers must implement

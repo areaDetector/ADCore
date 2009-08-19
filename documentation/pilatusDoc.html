@@ -10,7 +10,7 @@
     <h1>
       areaDetector Pilatus driver</h1>
     <h2>
-      December 11, 2008</h2>
+      August 18, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -22,8 +22,8 @@
     <li><a href="#Introduction">Introduction</a></li>
     <li><a href="#StandardNotes">Implementation of standard driver parameters</a></li>
     <li><a href="#Driver_parameters">Pilatus specific parameters</a></li>
-    <li><a href="#MEDM_screens">MEDM screens</a></li>
     <li><a href="#Configuration">Configuration</a></li>
+    <li><a href="#MEDM_screens">MEDM screens</a></li>
     <li><a href="#Performance_measurements">Performance measurements</a> </li>
     <li><a href="#Hardware_notes">Hardware notes</a> </li>
     <li><a href="#Restrictions">Restrictions</a> </li>
@@ -32,9 +32,8 @@
     Introduction</h2>
   <p>
     This is a driver for the Pilatus pixel array detectors <a href="http://www.dectris.com">
-      Dectris</a>. It inherits from ADDriver and implements many of the parameters in
-    ADStdDriverParams.h. It also implements a number of parameters that are specific
-    to the Pilatus detectors.</p>
+      Dectris</a>.
+  </p>
   <p>
     The interface to the detector is via a TCP/IP socket interface to the <b>camserver</b>
     server that Dectris provides. The camserver program must be started before the areaDetector
@@ -46,6 +45,13 @@
     reads these disk files in order to read the data, because camserver does not provide
     another mechanism to access the data.
   </p>
+  <p>
+    This driver inherits from <a href="areaDetectorDoc.html#ADDriver">ADDriver</a>.
+    It implements many of the parameters in NDStdDriverParam_t (see <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">
+      asynNDArryDriver.h</a>) and in ADStdDriverParam_t (see <a href="areaDetectorDoxygenHTML/_a_d_driver_8h.html">
+        ADArrayDriver.h</a>). It also implements a number of parameters that are specific
+    to the Pilatus detectors.The <a href="areaDetectorDoxygenHTML/classpilatus_detector.html">
+      pilatusDetector class documentation</a> describes this class in detail.</p>
   <h2 id="StandardNotes" style="text-align: left">
     Implementation of standard driver parameters</h2>
   <p>
@@ -73,7 +79,7 @@
           $(P$(R)TriggerMode</td>
         <td>
           The driver redefines the choices for the ADTriggerMode parameter (record $(P)$(R)TriggerMode)
-          from ADStdDriverParams.h. The choices for the Pilatus are:
+          from ADDriver.h. The choices for the Pilatus are:
           <ul>
             <li>Internal (external signal not used)</li>
             <li>External Enable (count while external trigger line is high, readout on high to
@@ -142,7 +148,7 @@
       </tr>
       <tr>
         <td>
-          ADFilePath</td>
+          NDFilePath</td>
         <td>
           $(P$(R)FilePath</td>
         <td>
@@ -153,7 +159,7 @@
       </tr>
       <tr>
         <td>
-          ADFileFormat</td>
+          NDFileFormat</td>
         <td>
           $(P)$(R)FileFormat</td>
         <td>
@@ -161,9 +167,9 @@
           The areaDetector Pilatus driver only supports TIFF files, so the extension should
           be .tif. When saving multiple images (NImages>1) camserver has its own rules for
           creating the names of the individual files. The rules are as follows. The name constructed
-          using the algorithm described for ADFileTemplate under <a href="areaDetectorDoc.html#ADStdDriverParams">
-            File Saving Parameters in ADStdDriverParams</a> is used as a basename. The following
-          examples show the interpretation of the basename.
+          using the algorithm described for NDFileTemplate under <a href="areaDetectorDoc.html#asynNDArrayDriver">
+            File Saving Parameters</a> is used as a basename. The following examples show
+          the interpretation of the basename.
           <pre>Basename            Files produced
      
 test6.tif           test6_00000.tif,  test6_00001.tif, ...
@@ -187,9 +193,9 @@ test6_2_0035.tif    test6_2_0035.tif, test6_2_0036.tif, ...
   <h2 id="Driver_parameters" style="text-align: left">
     Pilatus specific parameters</h2>
   <p>
-    The Pilatus driver implements the following parameters in addition to those in ADStdDriverParams.h:.
-    Note that to reduce the width of this table the enum names have been split into
-    2 lines, but these are just a single name, for example <code>PilatusDelayTime</code>.
+    The Pilatus driver implements the following parameters in addition to those in asynNDArrayDriver.h
+    and ADDriver.h:. Note that to reduce the width of this table the enum names have
+    been split into 2 lines, but these are just a single name, for example <code>PilatusDelayTime</code>.
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
@@ -463,153 +469,27 @@ badX2,badY2 replacementX2,replacementY2
       </tr>
     </tbody>
   </table>
-  <h2 id="Configuration" style="text-align: left">
+  <h2 id="Configuration">
     Configuration</h2>
   <p>
-    The Pilatus driver is created with the following command, either from C/C++ or from
-    the EPICS IOC shell.
-  </p>
-  <pre>   
-pilatusDetectorConfig(const char *portName, const char *camserverPort, 
-                      int maxSizeX, int maxSizeY, int maxBuffers, size_t maxMemory);
+    The pilatusDetector driver is created with the pilatusDetectorConfig command, either
+    from C/C++ or from the EPICS IOC shell.</p>
+  <pre>int pilatusDetectorConfig(const char *portName, const char *camserverPort, 
+                          int maxSizeX, int maxSizeY,
+                          int maxBuffers, size_t maxMemory,
+                          int priority, int stackSize)
   </pre>
-  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
-    <tbody>
-      <tr>
-        <th>
-          Argument</th>
-        <th>
-          Description</th>
-      </tr>
-      <tr>
-        <td>
-          <code>portName</code></td>
-        <td>
-          The name of the asyn port for this detector.
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <code>camserverPort</code></td>
-        <td>
-          The name of the asyn TCP/IP port to communicate with camserver. This must have been
-          previously created with <code>drvAsynIPPortConfig()</code>,
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <code>maxSizeX</code></td>
-        <td>
-          The number of pixels in the X direction on the detector. This is 487 for the Pilatus
-          100K.</td>
-      </tr>
-      <tr>
-        <td>
-          <code>maxSizeY</code></td>
-        <td>
-          The number of pixels in the Y direction on the detector. This is 195 for the Pilatus
-          100K.</td>
-      </tr>
-      <tr>
-        <td>
-          <code>maxBuffers</code></td>
-        <td>
-          Maximum number of buffers to be created for plugin callbacks. Passed to the constructor
-          for the ADDriver base class.</td>
-      </tr>
-      <tr>
-        <td>
-          <code>maxMemory</code></td>
-        <td>
-          Maximum number of bytes of memory to be allocated for plugin callbacks. Passed to
-          the constructor for the ADDriver base class.</td>
-      </tr>
-    </tbody>
-  </table>
   <p>
-    The following is an example st.cmd startup script:
+    For details on the meaning of the parameters to this function refer to the detailed
+    documentation on the pilatusDetectorConfig function in the <a href="areaDetectorDoxygenHTML/pilatus_detector_8cpp.html">
+      pilatusDetector.cpp documentation</a> and in the documentation for the constructor
+    for the <a href="areaDetectorDoxygenHTML/classpilatus_detector.html">pilatusDetector
+      class</a>.
   </p>
-  <pre>&lt; envPaths
-errlogInit(20000)
-
-dbLoadDatabase("$(AREA_DETECTOR)/dbd/pilatusDetectorApp.dbd")
-pilatusDetectorApp_registerRecordDeviceDriver(pdbbase) 
-
-###
-# Create the asyn port to talk to the Pilatus on port 41234.
-drvAsynIPPortConfigure("camserver","gse-pilatus2:41234")
-# Set the input and output terminators.
-asynOctetSetInputEos("camserver", 0, "\030")
-asynOctetSetOutputEos("camserver", 0, "\n")
-
-pilatusDetectorConfig("Pil", "camserver", 487, 195, 50, 200000000)
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/ADBase.template",   "P=13PIL1:,R=cam1:,PORT=Pil,ADDR=0,TIMEOUT=1")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/pilatus.template","P=13PIL1:,R=cam1:,PORT=Pil,ADDR=0,TIMEOUT=1,CAMSERVER_PORT=camserver")
-
-# Create a standard arrays plugin
-drvNDStdArraysConfigure("PilImage", 5, 0, "Pil", 0, -1)
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13PIL1:,R=image1:,PORT=PilImage,ADDR=0,TIMEOUT=1,NDARRAY_PORT=Pil,NDARRAY_ADDR=0")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStdArrays.template", "P=13PIL1:,R=image1:,PORT=PilImage,ADDR=0,TIMEOUT=1,SIZE=32,FTVL=LONG,NELEMENTS=94965")
-
-# Create an ROI plugin with 8 ROIs
-drvNDROIConfigure("PilROI", 5, 0, "Pil", 0, 8, -1)
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13PIL1:,R=ROI1:,  PORT=PilROI,ADDR=0,TIMEOUT=1,NDARRAY_PORT=Pil,NDARRAY_ADDR=0")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROI.template",       "P=13PIL1:,R=ROI1:,  PORT=PilROI,ADDR=0,TIMEOUT=1")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13PIL1:,R=ROI1:0:,PORT=PilROI,ADDR=0,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13PIL1:,R=ROI1:1:,PORT=PilROI,ADDR=1,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13PIL1:,R=ROI1:2:,PORT=PilROI,ADDR=2,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13PIL1:,R=ROI1:3:,PORT=PilROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13PIL1:,R=ROI1:4:,PORT=PilROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13PIL1:,R=ROI1:5:,PORT=PilROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13PIL1:,R=ROI1:6:,PORT=PilROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13PIL1:,R=ROI1:7:,PORT=PilROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
-
-# Create "fastSweep" drivers for the MCA record to do on-the-fly scanning of ROI data
-initFastSweep("PilSweepTotal", "PilROI", 8, 2048, "TOTAL_ARRAY", "CALLBACK_PERIOD")
-initFastSweep("PilSweepNet", "PilROI", 8, 2048, "NET_ARRAY", "CALLBACK_PERIOD")
-
-# Load MCA records for the fast sweep drivers
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:0:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepTotal 0)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:1:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepTotal 1)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:2:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepTotal 2)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:3:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepTotal 3)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:4:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepTotal 4)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:5:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepTotal 5)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:6:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepTotal 6)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:7:TotalArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepTotal 7)")
-
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:0:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepNet 0)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:1:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepNet 1)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:2:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepNet 2)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:3:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepNet 3)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:4:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepNet 4)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:5:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepNet 5)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:6:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepNet 6)")
-dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=13PIL1:,M=ROI1:7:NetArray,DTYP=asynMCA,NCHAN=2048,INP=@asyn(PilSweepNet 7)")
-
-
-#asynSetTraceMask("Pil",0,255)
-#asynSetTraceMask("PilROI",0,3)
-#asynSetTraceIOMask("PilROI",0,4)
-
-# Load scan records for scanning energy threshold
-dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=13PIL1:cam1:,MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
-
-set_requestfile_path("./")
-set_savefile_path("./autosave")
-set_requestfile_path("$(AREA_DETECTOR)/ADApp/Db")
-set_requestfile_path("$(SSCAN)/sscanApp/Db")
-set_pass0_restoreFile("auto_settings.sav")
-set_pass1_restoreFile("auto_settings.sav")
-save_restoreSet_status_prefix("13PIL1:")
-dbLoadRecords("$(AUTOSAVE)/asApp/Db/save_restoreStatus.db", "P=13PIL1:")
-
-iocInit()
-
-# save things every thirty seconds
-create_monitor_set("auto_settings.req", 30,"P=13PIL1:,D=cam1:")
-
-</pre>
+  <p>
+    There an example IOC boot directory and startup script (<a href="pilatus_st_cmd.html">iocBoot/iocPilatus/st.cmd)</a>
+    provided with areaDetector.
+  </p>
   <h2 id="MEDM_screens" style="text-align: left">
     MEDM screens</h2>
   <p>

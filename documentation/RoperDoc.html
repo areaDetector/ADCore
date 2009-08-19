@@ -10,7 +10,7 @@
     <h1>
       areaDetector Roper driver</h1>
     <h2>
-      December 6, 2008</h2>
+      August 18, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -34,8 +34,7 @@
     This is a driver for the <a href="http://www.roperscientific.com/">Roper Scientific</a>
     detectors, which includes those from <a href="http://www.princetoninstruments.com/">
       Princeton Instruments</a> and <a href="http://www.photomet.com/">Photometrics</a>.
-    It inherits from ADDriver and implements most of the parameters in ADStdDriverParams.h.
-    It also implements a number of parameters that are specific to the Roper detectors.</p>
+  </p>
   <p>
     The interface to the detector is via a the MicroSoft COM interface to the <b>WinView</b>
     or <b>WinSpec</b> programs that Roper provides. The term WinView will be used in
@@ -59,6 +58,13 @@
     as the Experiment Setup tabbed windows, to see any changes made by EPICS since the
     window was opened.
   </p>
+  <p>
+    This driver inherits from <a href="areaDetectorDoc.html#ADDriver">ADDriver</a>.
+    It implements many of the parameters in NDStdDriverParam_t (see <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">
+      asynNDArryDriver.h</a>) and in ADStdDriverParam_t (see <a href="areaDetectorDoxygenHTML/_a_d_driver_8h.html">
+        ADArrayDriver.h</a>). It also implements a number of parameters that are specific
+    to the Roper detectors.The <a href="areaDetectorDoxygenHTML/classroper.html">roper
+      class documentation</a> describes this class in detail.</p>
   <h2 id="StandardNotes" style="text-align: left">
     Implementation of standard driver parameters</h2>
   <p>
@@ -80,8 +86,8 @@
     <tbody>
       <tr>
         <td align="center" colspan="3">
-          <b>Implementation of Parameters in ADStdDriverParams.h and EPICS Record Definitions
-            in ADBase.template and NDFile.template</b></td>
+          <b>Implementation of Parameters in asynNDArrayDriver.h and ADDriver.h, and EPICS Record
+            Definitions in ADBase.template and NDFile.template</b></td>
       </tr>
       <tr>
         <th>
@@ -98,7 +104,7 @@
           $(P$(R)ImageMode</td>
         <td>
           The driver redefines the choices for the ADImageMode parameter (record $(P)$(R)ImageMode)
-          from ADStdDriverParams.h. The choices for the Roper are:
+          from ADDriver.h. The choices for the Roper are:
           <ul>
             <li>Normal: This is the same as pressing the Acquire button in WinView. It may collect
               more than 1 exposure per image if NumExposures>1, more than 1 image per acquisition
@@ -145,7 +151,7 @@
           $(P$(R)TriggerMode</td>
         <td>
           The driver redefines the choices for the ADTriggerMode parameter (record $(P)$(R)TriggerMode)
-          from ADStdDriverParams.h. The choices for the Roper are:
+          from ADDriver.h. The choices for the Roper are:
           <ul>
             <li>Free run: This acquires images as quickly as possible given the exposure and readout
               times.</li>
@@ -159,12 +165,12 @@
       </tr>
       <tr>
         <td>
-          ADFileFormat</td>
+          NDFileFormat</td>
         <td>
           $(P)$(R)FileFormat</td>
         <td>
-          The driver redefines the choices for the ADFileFormat parameter (record $(P)$(R)FileFormat)
-          from ADStdDriverParams.h. The choices for the Roper are:
+          The driver redefines the choices for the NDFileFormat parameter (record $(P)$(R)FileFormat)
+          from asynNDArrayDriver.h. The choices for the Roper are:
           <ul>
             <li>SPE: This is the default file format for WinView. It is a binary format with a
               header containing all of the acquisition and setup information.</li>
@@ -193,9 +199,9 @@
   <h2 id="Driver_parameters" style="text-align: left">
     Roper specific parameters</h2>
   <p>
-    The Roper driver implements the following parameters in addition to those in ADStdDriverParams.h.
-    Note that to reduce the width of this table the enum names have been split into
-    2 lines, but these are just a single name, for example <code>marCCDState</code>.
+    The Roper driver implements the following parameters in addition to those in asynNDArrayDriver.h
+    and ADDriver.h. Note that to reduce the width of this table the enum names have
+    been split into 2 lines, but these are just a single name, for example <code>marCCDState</code>.
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
@@ -342,105 +348,28 @@
   <ul>
     <li>Frame type (ADFrameType). This may be supported in a future release to control
       acquisition of flat field and dark current frames.</li>
-    <li>Reading previous files (ADReadFile). This may be supported in a future release.</li>
-    <li>Capture or stream file saving (ADFileWriteMode, ADFileCapture, ADNumCapture, ADNumCaptured)</li>
+    <li>Reading previous files (NDReadFile). This may be supported in a future release.</li>
+    <li>Capture or stream file saving (NDFileWriteMode, NDFileCapture, NDNumCapture, NDNumCaptured)</li>
   </ul>
-  <h2 id="Configuration" style="text-align: left">
+  <h2 id="Configuration">
     Configuration</h2>
   <p>
-    The Roper driver is created with the following command, either from C/C++ or from
-    the EPICS IOC shell.
-  </p>
-  <pre>   
-roperConfig(const char *portName, int maxBuffers, size_t maxMemory);
+    The Roper driver is created with the prosilicaConfig command, either from C/C++
+    or from the EPICS IOC shell.</p>
+  <pre>int roperConfig(const char *portName,
+                int maxBuffers, size_t maxMemory,
+                int priority, int stackSize)
   </pre>
-  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
-    <tbody>
-      <tr>
-        <th>
-          Argument</th>
-        <th>
-          Description</th>
-      </tr>
-      <tr>
-        <td>
-          <code>portName</code></td>
-        <td>
-          The name of the asyn port for this detector.
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <code>maxBuffers</code></td>
-        <td>
-          Maximum number of buffers to be created for plugin callbacks. Passed to the constructor
-          for the ADDriver base class.</td>
-      </tr>
-      <tr>
-        <td>
-          <code>maxMemory</code></td>
-        <td>
-          Maximum number of bytes of memory to be allocated for plugin callbacks. Passed to
-          the constructor for the ADDriver base class.</td>
-      </tr>
-    </tbody>
-  </table>
   <p>
-    The following is an example st.cmd startup script:
+    For details on the meaning of the parameters to this function refer to the detailed
+    documentation on the roperConfig function in the <a href="areaDetectorDoxygenHTML/roper_8cpp.html">
+      roper.cpp documentation</a> and in the documentation for the constructor for the
+    <a href="areaDetectorDoxygenHTML/classroper.html">roper class</a>.
   </p>
-  <pre>&lt; envPaths
-errlogInit(20000)
-
-dbLoadDatabase("$(AREA_DETECTOR)/dbd/roperApp.dbd")
-
-roperApp_registerRecordDeviceDriver(pdbbase) 
-
-roperConfig("ROPER1", 50, 200000000)
-asynSetTraceIOMask("ROPER1",0,2)
-#asynSetTraceMask("ROPER1",0,9)
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/ADBase.template",   "P=13ROPER1:,R=cam1:,PORT=ROPER1,ADDR=0,TIMEOUT=1")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFile.template",   "P=13ROPER1:,R=cam1:,PORT=ROPER1,ADDR=0,TIMEOUT=1")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/roper.template",    "P=13ROPER1:,R=cam1:,PORT=ROPER1,ADDR=0,TIMEOUT=1")
-
-# Create a standard arrays plugin, set it to get data from the Roper driver.
-drvNDStdArraysConfigure("ROPER1Image", 5, 0, "ROPER1", 0, -1)
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13ROPER1:,R=image1:,PORT=ROPER1Image,ADDR=0,TIMEOUT=1,NDARRAY_PORT=ROPER1,NDARRAY_ADDR=0")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStdArrays.template", "P=13ROPER1:,R=image1:,PORT=ROPER1Image,ADDR=0,TIMEOUT=1,SIZE=16,FTVL=SHORT,NELEMENTS=1500000")
-# Load the database to use with Stephen Mudie's IDL code
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/EPICS_AD_Viewer.template", "P=13ROPER1:, R=image1:")
-
-# Create a file saving plugin
-drvNDFileConfigure("ROPER1File", 5, 0, "ROPER1", 0)
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13ROPER1:,R=file1:,PORT=ROPER1File,ADDR=0,TIMEOUT=1,NDARRAY_PORT=ROPER1,NDARRAY_ADDR=0")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFile.template",      "P=13ROPER1:,R=file1:,PORT=ROPER1File,ADDR=0,TIMEOUT=1")
-
-# Create an ROI plugin
-drvNDROIConfigure("ROPER1ROI", 5, 0, "ROPER1", 0, 10, -1)
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13ROPER1:,R=ROI1:,  PORT=ROPER1ROI,ADDR=0,TIMEOUT=1,NDARRAY_PORT=ROPER1,NDARRAY_ADDR=0")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROI.template",       "P=13ROPER1:,R=ROI1:,  PORT=ROPER1ROI,ADDR=0,TIMEOUT=1")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13ROPER1:,R=ROI1:0:,PORT=ROPER1ROI,ADDR=0,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13ROPER1:,R=ROI1:1:,PORT=ROPER1ROI,ADDR=1,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13ROPER1:,R=ROI1:2:,PORT=ROPER1ROI,ADDR=2,TIMEOUT=1,HIST_SIZE=256")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDROIN.template",      "P=13ROPER1:,R=ROI1:3:,PORT=ROPER1ROI,ADDR=3,TIMEOUT=1,HIST_SIZE=256")
-
-# Load scan records
-dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=13ROPER1:,MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
-
-set_requestfile_path("./")
-set_savefile_path("./autosave")
-set_requestfile_path("$(SSCAN)/sscanApp/Db")
-set_requestfile_path("$(AREA_DETECTOR)/ADApp/Db")
-set_pass0_restoreFile("auto_settings.sav")
-set_pass1_restoreFile("auto_settings.sav")
-save_restoreSet_status_prefix("13ROPER1:")
-dbLoadRecords("$(AUTOSAVE)/asApp/Db/save_restoreStatus.db", "P=13ROPER1:")
-
-iocInit()
-
-# save things every thirty seconds
-create_monitor_set("auto_settings.req", 30,"P=13ROPER1:,D=cam1:")
-
-</pre>
+  <p>
+    There an example IOC boot directory and startup script (<a href="roper_st_cmd.html">iocBoot/iocRoper/st.cmd)</a>
+    provided with areaDetector.
+  </p>
   <h2 id="MEDM_screens" style="text-align: left">
     MEDM screens</h2>
   <p>
@@ -672,10 +601,11 @@ create_monitor_set("auto_settings.req", 30,"P=13ROPER1:,D=cam1:")
       WinView does not appear to be correctly returning the values of the EXP_CSEQUENTS
       and EXP_CACCUMS parameters. The reason for this is under investigation and hopefully
       will be fixed in a future release.</li>
-    <li>The driver does not pass callbacks for images in WinView focus mode.  I don't currently
-      have the required information on how to know when new data is available in focus mode and how
-      to read it.  Hopefully this will be added in a future release.</li>
-    <li>WinView/WinSpec must be version 2.5.22 or later, because the class names changed in that release.</li>
+    <li>The driver does not pass callbacks for images in WinView focus mode. I don't currently
+      have the required information on how to know when new data is available in focus
+      mode and how to read it. Hopefully this will be added in a future release.</li>
+    <li>WinView/WinSpec must be version 2.5.22 or later, because the class names changed
+      in that release.</li>
     <li>The following items are hardcoded in the driver. They can be changed by recompiling
       if necessary.
       <ul>

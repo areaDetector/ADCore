@@ -32,8 +32,7 @@
     Introduction</h2>
   <p>
     This is a driver for the MarCCD detectors from <a href="http://www.mar-usa.com/">Rayonix/MarUSA</a>.
-    It implements many of the parameters in asynNDArrayDriver.h and ADDriver.h. It also
-    implements a number of parameters that are specific to the MarCCD detectors.</p>
+  </p>
   <p>
     The interface to the detector is via a TCP/IP socket interface to the <b>marccd_server_socket</b>
     server that MarUSA provides. The marccd_server_socket program must be started before
@@ -68,7 +67,11 @@ remote_mode_server_arguments 2222
     another mechanism to access the data.
   </p>
   <p>
-    This driver inherits from ADDriver. The <a href="areaDetectorDoxygenHTML/classmar_c_c_d.html">
+    This driver inherits from <a href="areaDetectorDoc.html#ADDriver">ADDriver</a>.
+    It implements many of the parameters in NDStdDriverParam_t (see <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">
+      asynNDArryDriver.h</a>) and in ADStdDriverParam_t (see <a href="areaDetectorDoxygenHTML/_a_d_driver_8h.html">
+        ADArrayDriver.h</a>). It also implements a number of parameters that are specific
+    to the MarCCD detectors. The <a href="areaDetectorDoxygenHTML/classmar_c_c_d.html">
       marCCD class documentation</a> describes this class in detail.</p>
   <h2 id="StandardNotes" style="text-align: left">
     Implementation of standard driver parameters</h2>

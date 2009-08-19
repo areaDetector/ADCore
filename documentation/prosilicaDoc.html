@@ -10,7 +10,7 @@
     <h1>
       areaDetector Prosilica driver</h1>
     <h2>
-      January 30, 2009</h2>
+      August 18, 2009</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -20,27 +20,39 @@
     Contents</h2>
   <ul>
     <li><a href="#Overview">Overview</a></li>
+    <li><a href="#StandardNotes">Implementation of standard driver parameters</a></li>
+    <li><a href="#Driver_parameters">Prosilica specific parameters</a></li>
+    <li><a href="#Configuration">Configuration</a></li>
+    <li><a href="#MEDM_screens">MEDM screens</a></li>
     <li><a href="#Future">Future enhancements</a></li>
   </ul>
   <h2 id="Overview">
     Overview</h2>
   <p>
     This is a driver for Gigabit Ethernet and Firewire cameras from <a href="http://www.prosilica.com">
-      Prosilica</a>. It inherits from ADDriver and implements nearly all of the parameters
-    in ADStdDriverParams.h. It also implements a number of parameters that are specific
-    to the Prosilica cameras. The driver is only supported under Windows (EPICS win32-x86
-    architecture) and Linux because the vendor library is only provided as a pre-built
-    binary for those operating systems. The vendor library provided by Prosilica does
-    callbacks to a user-supplied function each time there is a new frame. Thus, the
-    driver does not need to create a thread itself for callbacks.
+      Prosilica</a>. The driver is only supported under Windows (EPICS win32-x86 architecture)
+    and Linux because the vendor library is only provided as a pre-built binary for
+    those operating systems. The vendor library provided by Prosilica does callbacks
+    to a user-supplied function each time there is a new frame. Thus, the driver does
+    not need to create a thread itself for callbacks."
   </p>
   <p>
     The vendor library supports saving individual frames as TIFF files, and this is
-    implemented in the driver. The NDPluginFile plugin can be used to capture or stream
-    images much more rapidly in the netCDF file format.
+    implemented in the driver. The <a href="NDPluginFile.html#netCDF">NDFileNetCDF</a>
+    plugin can be used to capture or stream images much more rapidly in the netCDF file
+    format.
   </p>
   <p>
-    The driver redefines the choices for 2 of the parameters defined in ADStdDriverParams.h.
+    This driver inherits from <a href="areaDetectorDoc.html#ADDriver">ADDriver</a>.
+    It implements nearly all of the parameters in NDStdDriverParam_t (see <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">
+      asynNDArryDriver.h</a>) and in ADStdDriverParam_t (see <a href="areaDetectorDoxygenHTML/_a_d_driver_8h.html">
+        ADArrayDriver.h</a>). It also implements a number of parameters that are specific
+    to the Prosilica cameras. The <a href="areaDetectorDoxygenHTML/classprosilica.html">
+      prosilica class documentation</a> describes this class in detail.</p>
+  <h2 id="StandardNotes" style="text-align: left">
+    Implementation of standard driver parameters</h2>
+  <p>
+    The driver redefines the choices for several of the parameters defined in ADDriver.h.
     The ADTriggerMode choices for the Prosilica are:
   </p>
   <ul>
@@ -58,7 +70,7 @@
     in the driver.
   </p>
   <p>
-    The ADFileFormat choices for the Prosilica are:
+    The NDFileFormat choices for the Prosilica are:
   </p>
   <ul>
     <li>TIFF (this is the only format supported)</li>
@@ -66,14 +78,14 @@
       with only 1 choice)</li>
   </ul>
   <p>
-    The ADDataType choices for the Prosilica are:
+    The NDDataType choices for the Prosilica are:
   </p>
   <ul>
     <li>NDUInt8 (8-bit data)</li>
     <li>NDUInt16 (12 or 16 bit data)</li>
   </ul>
   <p>
-    The ADColorMode choices for the Prosilica are:
+    The NDColorMode choices for the Prosilica are:
   </p>
   <ul>
     <li>NDColorModeMono (monochromatic data)</li>
@@ -84,9 +96,11 @@
     The color Prosilica cameras are also capable of various YUV color formats but these
     are not supported in the driver. They may be added in a future release.
   </p>
+  <h2 id="Driver_parameters" style="text-align: left">
+    Pilatus specific parameters</h2>
   <p>
     The Prosilica driver implements the following parameters in addition to those in
-    ADStdDriverParams.h:
+    asynNDArrayDriver.h and ADDriver.h:
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
@@ -655,6 +669,37 @@
       </tr>
     </tbody>
   </table>
+  <h2 id="Configuration">
+    Configuration</h2>
+  <p>
+    The Prosilica driver is created with the prosilicaConfig command, either from C/C++
+    or from the EPICS IOC shell.</p>
+  <pre>int prosilicaConfig(char *portName,
+                    int uniqueId,
+                    int maxBuffers, size_t maxMemory,
+                    int priority, int stackSize)
+  </pre>
+  <p>
+    The <b>uniqueId</b> parameter is a unique number assigned to each Prosilica camera.
+    areaDetector uses this number, rather than the TCP/IP address, to find the camera
+    and connect to it. This is done so that the cameras can be configured to use DHCP,
+    and hence have non-predictable TCP/IP addresses. This does mean that areaDetector
+    IOC must be on the same subnet as the camera, since cameras cannot be found by UniqueID
+    through routers. The simplest way to determine the uniqueId of a camera is to run
+    the Prosilica GigEViewer application, select the camera, and press the "i" icon
+    on the bottom of the main window to show the camera information for this camera.
+    The Unique ID will be displayed on the first line in the information window. For
+    details on the meaning of the other parameters to this function refer to the detailed
+    documentation on the prosilicaConfig function in the <a href="areaDetectorDoxygenHTML/prosilica_8cpp.html">
+      prosilica.cpp documentation</a> and in the documentation for the constructor for
+    the <a href="areaDetectorDoxygenHTML/classprosilica.html">prosilica class</a>.
+  </p>
+  <p>
+    There an example IOC boot directory and startup script (<a href="prosilica_st_cmd.html">iocBoot/iocProsilica/st.cmd)</a>
+    provided with areaDetector.
+  </p>
+  <h2 id="MEDM_screens" style="text-align: left">
+    MEDM screens</h2>
   <p>
     The following is the MEDM screen ADBase.adl connected to a Prosilica camera.
   </p>
@@ -685,8 +730,8 @@
     when the areaDetector driver is running it does not gracefully recover.
   </p>
   <p>
-    The Linux driver currently requires some modifications to EPICS base. This should
-    be resolved either by modifying base or with changes from Prosilica for their driver.
+    The Linux driver requires a patch for EPICS base R3.14.10 because EPICS does not
+    correctly pass on SIGALARM signals. This will be fixed in R3.14.11.
   </p>
 </body>
 </html>
