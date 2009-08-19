@@ -135,7 +135,7 @@ template <typename epicsType> int simDetector::computeArray(int sizeX, int sizeY
             pBlue  = (epicsType *)this->pRaw->pData + 2*sizeX*sizeY;
             break;
     }
-    this->pRaw->pAttributeList->add("colorMode", "Color mode", NDAttrInt32, &colorMode);
+    this->pRaw->pAttributeList->add("ColorMode", "Color mode", NDAttrInt32, &colorMode);
 
     if (resetImage) {
         for (i=0; i<sizeY; i++) {
@@ -677,7 +677,7 @@ void simDetector::report(FILE *fp, int details)
 
 /** Constructor for simDetector; most parameters are simply passed to ADDriver::ADDriver.
   * After calling the base class constructor this method creates a thread to compute the simulated detector data, 
-  * and sets reasonable default values for all of the parameters defined in this class and ADStdDriverParams.h.
+  * and sets reasonable default values for parameters defined in this class, asynNDArrayDriver and ADDriver.
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] maxSizeX The maximum X dimension of the images that this driver can create.
   * \param[in] maxSizeY The maximum Y dimension of the images that this driver can create.
