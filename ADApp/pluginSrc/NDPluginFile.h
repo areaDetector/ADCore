@@ -17,7 +17,7 @@
 typedef int NDFileOpenMode_t;
 
 /** Enums for plugin-specific parameters. There are currently no specific parameters for this driver yet.
-  * It uses the ADStdDriverParams and NDPluginDriver params. */
+  * It uses the NDStdDriverParam_t params. */
 typedef enum {
     NDPluginFileLastParam =
         NDPluginDriverLastParam
