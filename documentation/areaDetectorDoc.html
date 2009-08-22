@@ -2,7 +2,7 @@
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <title>areaDetector: EPICS Area Detector Support</title>
+  <title>areaDetector: EPICS software for area detectors</title>
   <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
 </head>
 <body>
@@ -32,23 +32,24 @@
         <li><a href="#paramAttribute">paramAttribute</a></li>
         <li><a href="#asynNDArrayDriver">asynNDArrayDriver</a></li>
       </ul>
-    <li><a href="DetectorDrivers.html">Detector drivers</a>
+    </li>
+    <li>Detector drivers
       <ul>
         <li><a href="#ADDriver">ADDriver</a></li>
         <li><a href="#Guidelines">Guidelines and rules for drivers</a></li>
-        <li><a href="simDetectorDoc.html">Simulation detector driver</a></li>
-        <li><a href="prosilicaDoc.html">Prosilica driver</a></li>
-        <li><a href="pilatusDoc.html">Pilatus driver</a></li>
         <li><a href="adscDoc.html">ADSC driver</a></li>
-        <li><a href="RoperDoc.html">Roper driver</a></li>
-        <li><a href="MarCCDDoc.html">MarCCD driver</a></li>
-        <li><a href="Mar345Doc.html">mar345 driver</a></li>
-        <li><a href="FirewireWinDoc.html">Firewire Windows driver</a></li>
         <li><a href="http://controls.diamond.ac.uk/downloads/support/firewireDCAM/index.html">
           Firewire Linux driver</a></li>
+        <li><a href="FirewireWinDoc.html">Firewire Windows driver</a></li>
+        <li><a href="Mar345Doc.html">mar345 driver</a></li>
+        <li><a href="MarCCDDoc.html">MarCCD driver</a></li>
         <li><a href="PerkinElmerDoc.html">Perkin-Elmer flat panel driver</a></li>
+        <li><a href="pilatusDoc.html">Pilatus driver</a></li>
+        <li><a href="prosilicaDoc.html">Prosilica driver</a></li>
+        <li><a href="pvcamDoc.html">PVCAM driver</a></li>
+        <li><a href="RoperDoc.html">Roper driver</a></li>
+        <li><a href="simDetectorDoc.html">Simulation detector driver</a></li>
       </ul>
-    </li>
     </li>
     <li><a href="pluginDoc.html">Plugins</a>
       <ul>
@@ -74,10 +75,10 @@
     Overview</h2>
   <p>
     The areaDetector module provides a general-purpose interface for area (2-D) detectors
-    in <a href="http://www.aps.anl.gov/epics/">EPICS</a>. It is intended to be used with
-    a wide variety of detectors and cameras, ranging from high frame rate CCD and CMOS
-    cameras, pixel-array detectors such as the Pilatus, and large format detectors like
-    the MAR-345 online imaging plate.</p>
+    in <a href="http://www.aps.anl.gov/epics/">EPICS</a>. It is intended to be used
+    with a wide variety of detectors and cameras, ranging from high frame rate CCD and
+    CMOS cameras, pixel-array detectors such as the Pilatus, and large format detectors
+    like the MAR-345 online imaging plate.</p>
   <p>
     The goals of this module are:
   </p>
@@ -96,8 +97,8 @@
     <li>Provide a mechanism for device-independent real-time data analysis such as regions-of-interest
       and statistics.</li>
     <li>Provide detector drivers for commonly used detectors in synchrotron applications.
-      These include Prosilica GigE video cameras, IEEE 1394 (Firewire) cameras, ADSC and MAR CCD
-      x-ray detectors, MAR-345 online imaging plate detectors, the Pilatus pixel-array
+      These include Prosilica GigE video cameras, IEEE 1394 (Firewire) cameras, ADSC and
+      MAR CCD x-ray detectors, MAR-345 online imaging plate detectors, the Pilatus pixel-array
       detector, Roper Scientific CCD cameras, and the Perkin-Elmer amorphous silicon detector.</li>
   </ul>
   <p>
@@ -146,8 +147,8 @@
     <li><a href="http://www.aps.anl.gov/epics/base/R3-14/10-docs/AppDevGuide.pdf">libCom</a>.
       libCom from EPICS base provides operating-system independent functions for threads,
       mutexes, etc.</li>
-    <li><a href="http://www.aps.anl.gov/epics/modules/soft/asyn/">asyn</a>. asyn is a module
-      that provides interthread messaging services, including queueing and callbacks.</li>
+    <li><a href="http://www.aps.anl.gov/epics/modules/soft/asyn/">asyn</a>. asyn is a
+      module that provides interthread messaging services, including queueing and callbacks.</li>
   </ol>
   <p>
     In particular it is possible to eliminate layers 4-6 in the architecture shown in
@@ -201,7 +202,11 @@
     They inherit from the <a href="http://www.aps.anl.gov/epics/modules/soft/asyn/R4-11a/asynPortDriver.html">
       asynPortDriver base C++ class</a> that is provided in the asyn module. That base
     class handles all of the details of registering the port driver, registering the
-    supported interfaces, and registering the required interrupt sources. The <a href="http://www.aps.anl.gov/epics/modules/soft/asyn/R4-11a/asynDoxygenHTML/classasyn_port_driver.html">
+    supported interfaces, and registering the required interrupt sources. It also provides
+    a parameter library for int, double, and string parameters indexed by the enum values
+    defined in the driver. The parameter library provides methods to write and read
+    the parameter values, and to perform callbacks to registered clients when a parameter
+    value has changed. The <a href="http://www.aps.anl.gov/epics/modules/soft/asyn/R4-11a/asynDoxygenHTML/classasyn_port_driver.html">
       asynPortDriver class documentation</a> describes this class in detail.
   </p>
   <h3 id="NDArray">
@@ -235,45 +240,114 @@
     NDAttribute</h3>
   <p>
     The NDAttribute is a class for linking metadata to an NDArray. An NDattribute has
-    a name, description, data type, value, source type and source information. Attributes are
-    identified by their names, which are case-insensitive.  There
-    are methods to set and get the information for an attribute. 
-    The <a href="areaDetectorDoxygenHTML/class_n_d_attribute.html">
-    NDAttribute class documentation</a> describes this class in detail.
+    a name, description, data type, value, source type and source information. Attributes
+    are identified by their names, which are case-insensitive. There are methods to
+    set and get the information for an attribute.</p>
+  <p>
+    It is useful to define some conventions for attribute names, so that plugins or
+    data analysis programs can look for a specific attribute. The following are the
+    attribute conventions used in current plugins:</p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Conventions for standard attribute names</b></td>
+      </tr>
+      <tr>
+        <th>
+          Attribute name</th>
+        <th>
+          Description</th>
+        <th>
+          Data type</th>
+      </tr>
+      <tr>
+        <td>
+          ColorMode</td>
+        <td>
+          "Color mode"</td>
+        <td>
+          int (NDColorMode_t)</td>
+      </tr>
+      <tr>
+        <td>
+          BayerPattern</td>
+        <td>
+          "Bayer pattern"</td>
+        <td>
+          int (NDBayerPattern_t)</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    Attribute names are case-insensitive in the areaDetector software, but external
+    software may not be case-insensitive so the attribute names should generally be
+    used exactly as they appear above. For attributes not in this table a good convention
+    would be to use the corresponding driver parameter without the leading ND or AD,
+    and with the first character of every "word" of the name starting with upper case.
+    For example, the standard attribute name for ADManufacturer should be "Manufacturer",
+    ADNumExposures should be "NumExposures", etc.</p>
+  <p>
+    The <a href="areaDetectorDoxygenHTML/class_n_d_attribute.html">NDAttribute class documentation</a>
+    describes this class in detail.
   </p>
   <h3 id="NDAttributeList">
     NDAttributeList</h3>
   <p>
-    The NDAttributeList implements a linked list of NDAttribute objects.
-    NDArray objects contain an NDAttributeList which is how attributes are associated with 
-    an NDArray.  There are methods to add, delete and search for NDAttribute objects in an 
-    NDAttributeList. Each attribute in the list must have a unique name, which is case-insensitive.
-    The <a href="areaDetectorDoxygenHTML/class_n_d_attribute_list.html">
-    NDAttributeList class documentation</a> describes this class in detail.
+    The NDAttributeList implements a linked list of NDAttribute objects. NDArray objects
+    contain an NDAttributeList which is how attributes are associated with an NDArray.
+    There are methods to add, delete and search for NDAttribute objects in an NDAttributeList.
+    Each attribute in the list must have a unique name, which is case-insensitive.
+  </p>
+  <p>
+    When NDArrays are copied with the NDArrayPool methods the attribute list is also
+    copied.
+  </p>
+  <p>
+    IMPORTANT NOTE: When a new NDArray is allocated using NDArrayPool::alloc() the behavior
+    of any existing attribute list on the NDArray taken from the pool is determined
+    by the value of the global variable <code>eraseNDAttributes</code>. By default the
+    value of this variable is 0. This means that when a new NDArray is allocated from
+    the pool its attribute list is <strong>not</strong> cleared. This greatly improves
+    efficiency in the normal case where attributes for a given driver are defined once
+    at initialization and never deleted. (The attribute <strong>values</strong> may
+    of course be changing.) It eliminates allocating and deallocating attribute memory
+    each time an array is obtained from the pool. It is still possible to add new attributes
+    to the array, but any existing attributes will continue to exist even if they are
+    ostensibly cleared e.g. asynNDArrayDriver::readNDAttributesFile() is called again.
+    If it is desired to eliminate all existing attributes from NDArrays each time a
+    new one is allocated then the global variable <code>eraseNDAttributes</code> should
+    be set to 1. This can be done at the iocsh prompt with the command:</p>
+  <pre>
+    var eraseNDAttributes 1
+    </pre>
+  <p>
+    The <a href="areaDetectorDoxygenHTML/class_n_d_attribute_list.html">NDAttributeList
+      class documentation</a> describes this class in detail.
   </p>
   <h3 id="PVAttribute">
     PVAttribute</h3>
   <p>
-    The PVAttribute class is derived from NDAttribute. It obtains its value by monitor callbacks from an EPICS PV, 
-    and is thus used to associate current the value of any EPICS PV with an NDArray.
-    The <a href="areaDetectorDoxygenHTML/class_p_v_attribute.html">
-    PVAttribute class documentation</a> describes this class in detail.
+    The PVAttribute class is derived from NDAttribute. It obtains its value by monitor
+    callbacks from an EPICS PV, and is thus used to associate current the value of any
+    EPICS PV with an NDArray. The <a href="areaDetectorDoxygenHTML/class_p_v_attribute.html">
+      PVAttribute class documentation</a> describes this class in detail.
   </p>
   <h3 id="paramAttribute">
     paramAttribute</h3>
   <p>
-    The paramAttribute class is derived from NDAttribute. It obtains its value from the current value
-    of a driver or plugin parameter.  The paramAttribute class is typically used when it is important to have
-    the current value of the parameter and the value of a corresponding PVAttribute might not be current because the 
-    EPICS PV has not yet updated. 
-    The <a href="areaDetectorDoxygenHTML/class_param_attribute.html">
-    paramAttribute class documentation</a> describes this class in detail.
+    The paramAttribute class is derived from NDAttribute. It obtains its value from
+    the current value of a driver or plugin parameter. The paramAttribute class is typically
+    used when it is important to have the current value of the parameter and the value
+    of a corresponding PVAttribute might not be current because the EPICS PV has not
+    yet updated. The <a href="areaDetectorDoxygenHTML/classparam_attribute.html">paramAttribute
+      class documentation</a> describes this class in detail.
   </p>
   <h3 id="asynNDArrayDriver">
     asynNDArrayDriver</h3>
   <p>
     asynNDArrayDriver inherits from asynPortDriver. It implements the asynGenericPointer
-    functions, for NDArray objects. This is the class from which both plugins and area
+    functions for NDArray objects. This is the class from which both plugins and area
     detector drivers are indirectly derived. The <a href="areaDetectorDoxygenHTML/classasyn_n_d_array_driver.html">
       asynNDArrayDriver class documentation </a>describes this class in detail.
   </p>
@@ -294,10 +368,9 @@
     <li><b>Access:</b> Read-write (r/w) or read-only (r/o).</li>
     <li><b>drvUser string:</b> The string used to look up the parameter in the driver
       through the drvUser interface. This string is used in the EPICS database file for
-      generic asyn device support to associate a record with a particular parameter.  It is
-      also used to associate a <a href="areaDetectorDoxygenHTML/classparam_attribute.html">paramAttribute</a> 
-      with a driver parameter in the XML file
-      that is read by asynNDArrayDriver::readNDAttributesFile</li>
+      generic asyn device support to associate a record with a particular parameter. It
+      is also used to associate a <a href="areaDetectorDoxygenHTML/classparam_attribute.html">
+        paramAttribute</a> with a driver parameter in the XML file that is read by asynNDArrayDriver::readNDAttributesFile</li>
     <li><b>EPICS record name:</b> The name of the record in ADBase.template. Each record
       name begins with the two macro parameters $(P) and $(R). In the case of read/write
       parameters there are normally two records, one for writing the value, and a second,
@@ -814,7 +887,7 @@
         <td>
           r/o</td>
         <td>
-          Rate at which arrays are being acquired.  Computed in the ADBase.template database.</td>
+          Rate at which arrays are being acquired. Computed in the ADBase.template database.</td>
         <td>
           N/A</td>
         <td>
@@ -834,10 +907,10 @@
         <td>
           r/w</td>
         <td>
-          The name of an XML file defining the PVAttributes and paramAttributes to be
-          added to each NDArray by this driver or plugin.  The format of the XML file is described 
-          in the documentation for <a href="areaDetectorDoxygenHTML/class_asyn_n_d_array_driver.html">
-          asynNDArrayDriver::readNDAttributesFile().</a></td>
+          The name of an XML file defining the PVAttributes and paramAttributes to be added
+          to each NDArray by this driver or plugin. The format of the XML file is described
+          in the documentation for <a href="areaDetectorDoxygenHTML/classasyn_n_d_array_driver.html">
+            asynNDArrayDriver::readNDAttributesFile().</a></td>
         <td>
           ND_ATTRIBUTES_FILE</td>
         <td>
@@ -871,7 +944,8 @@
     ADDriver</h3>
   <p>
     ADDriver inherits from asynNDArrayDriver. This is the class from which area detector
-    drivers are directly derived. The <a href="areaDetectorDoxygenHTML/class_a_d_driver.html">
+    drivers are directly derived. It provides parameters and methods that are specific
+    to area detectors, while asynNDArrayDriver is a general NDArray driver. The <a href="areaDetectorDoxygenHTML/class_a_d_driver.html">
       ADDriver class documentation </a>describes this class in detail.
   </p>
   <p>
@@ -1313,17 +1387,17 @@
         <td>
           r/w</td>
         <td>
-          Start (1) or stop (0) image acquisition. This is an EPICS busy
-          record that does not process its forward link until acquisition is complete. Clients
-          should write 1 to the Acquire record to start acquisition, and wait for Acquire
-          to go to 0 to know that acquisition is complete.</td>
+          Start (1) or stop (0) image acquisition. This is an EPICS busy record that does
+          not process its forward link until acquisition is complete. Clients should write
+          1 to the Acquire record to start acquisition, and wait for Acquire to go to 0 to
+          know that acquisition is complete.</td>
         <td>
           ACQUIRE</td>
         <td>
-          $(P)$(R)Acquire<br/>
+          $(P)$(R)Acquire<br />
           $(P)$(R)Acquire_RBV</td>
         <td>
-          busy<br/>
+          busy<br />
           bi</td>
       </tr>
       <tr>
@@ -1635,44 +1709,56 @@
   </table>
   <h2 id="Guidelines">
     Guidelines and rules for drivers</h2>
-  <p>The following are guidelines and rules for writing areaDetector drivers</p>
+  <p>
+    The following are guidelines and rules for writing areaDetector drivers</p>
   <ul>
-    <li>
-      Drivers will generally implement one or more of the writeInt32(), writeFloat64() or writeOctet() functions
-      if they need to act immediately on a new value of a parameter.  For many parameters it is normally 
-      sufficient to simply have them written to the parameter library, and not to handle them in the 
-      writeXXX() functions.  The parameters are then retrieved from the parameter library with the getIntParam(),
-      getDoubleParam(), or getStringParam() function calls when they are needed.</li>
-    <li>
-      If the writeInt32(), writeFloat64() or writeOctet() functions are implemented they <b>must</b> call
-      the base class function for parameters that they do not handle and whose enum value is less than
-      the value of ADLastStdParam, i.e. parameters that belong to a base class.</li>
-    <li>
-      Drivers will need to implement the drvUserCreate() function if they have additional parameters beyond
-      those in the asynPortDriver or ADDriver base classes.</li>
-    <li> 
-      Drivers will generally need to create a new thread in which they run the acquisition task.  Some vendor
-      libraries create such a thread themselves, and then the driver must just implement a callback function
-      that runs in that thread (the Prosilica is an example of such a driver).</li>
-    <li> The acquisition thread will typically monitor the acquisition process and perform periodic status update
-      callbacks.  The details of how to implement this will vary depending on the specifics of the vendor API.
-      There are many existing detector drivers that can be used as examples of how to write a new driver.</li>
-    <li> If the detector hardware does not support fixed-period acquisition or muliple-image acquisition sequence
-      (ADNumImages parameter) then these should be emulated in the driver.  The simDetector, marCCD and other
-      drivers can be used as examples of how to do this.</li>
-    <li>
-      If NDArrayCallbacks is non-zero then drivers should do the following:
+    <li>Drivers will generally implement one or more of the writeInt32(), writeFloat64()
+      or writeOctet() functions if they need to act immediately on a new value of a parameter.
+      For many parameters it is normally sufficient to simply have them written to the
+      parameter library, and not to handle them in the writeXXX() functions. The parameters
+      are then retrieved from the parameter library with the getIntParam(), getDoubleParam(),
+      or getStringParam() function calls when they are needed.</li>
+    <li>If the writeInt32(), writeFloat64() or writeOctet() functions are implemented
+      they <b>must</b> call the base class function for parameters that they do not handle
+      and whose enum value is less than the value of ADLastStdParam, i.e. parameters that
+      belong to a base class.</li>
+    <li>Drivers will need to implement the drvUserCreate() function if they have additional
+      parameters beyond those in the asynPortDriver or ADDriver base classes.</li>
+    <li>Drivers will generally need to create a new thread in which they run the acquisition
+      task. Some vendor libraries create such a thread themselves, and then the driver
+      must just implement a callback function that runs in that thread (the Prosilica
+      is an example of such a driver).</li>
+    <li>The acquisition thread will typically monitor the acquisition process and perform
+      periodic status update callbacks. The details of how to implement this will vary
+      depending on the specifics of the vendor API. There are many existing detector drivers
+      that can be used as examples of how to write a new driver.</li>
+    <li>If the detector hardware does not support fixed-period acquisition or muliple-image
+      acquisition sequence (ADNumImages parameter) then these should be emulated in the
+      driver. The simDetector, marCCD and other drivers can be used as examples of how
+      to do this.</li>
+    <li>If NDArrayCallbacks is non-zero then drivers should do the following:
       <ul>
-        <li> Call asynNDArrayDriver::getAttributes to attach any attributes defined for this driver to the
-          current array.</li>
-        <li> Call doCallbacksGenericPointer() so that registered clients can get the values of the new arrays.  
-          Drivers must release their mutex by calling this->unlock() before they call doCallbacksGenericPointer(),
-          or a deadlock can occur if the plugin makes a call to one of the driver functions.</li>
+        <li>Call asynNDArrayDriver::getAttributes to attach any attributes defined for this
+          driver to the current array.</li>
+        <li>Call doCallbacksGenericPointer() so that registered clients can get the values
+          of the new arrays. Drivers must release their mutex by calling this->unlock() before
+          they call doCallbacksGenericPointer(), or a deadlock can occur if the plugin makes
+          a call to one of the driver functions.</li>
       </ul>
     </li>
   </ul>
   <h2 id="MEDM_screens">
     MEDM screens</h2>
+  <p>
+    The following is the top-level MEDM screen that provides links to the screens for
+    most of the detectors and plugins that areaDetector supports. This screen is useful
+    for testing, and as a source for copying related-display menus to be placed in application-specific
+    MEDM screens.
+  </p>
+  <div style="text-align: center">
+    <p>
+      <b>ADTop.adl</b></p>
+    <img alt="ADTop.png" src="ADTop.png" /></div>
   <p>
     The following is the MEDM screen that provides access to the parameters in asynNDArrayDriver.h
     and ADDriver.h through records in ADBase.template. This is a top-level MEDM screen
@@ -1687,7 +1773,7 @@
     <img alt="ADBase.png" src="ADBase.png" /></div>
   <p>
     The following is the MEDM screen that provides access to the file-related parameters
-    in ADStdDriverParams through records in NDFile.template. This screen is for use
+    in asynNDArrayDriver.h through records in NDFile.template. This screen is for use
     with detector drivers that directly implement file I/O.
   </p>
   <div style="text-align: center">
@@ -1696,12 +1782,12 @@
     <img alt="NDFile.png" src="NDFile.png" /></div>
   <p>
     The following is the MEDM screen that provides access to the EPICS shutter parameters
-    in ADStdDriverParams through records in ADBase.template. This screen allows one
-    to define the EPICS PVs to open the shutter, close the shutter, and determine the
-    shutter status. The values of these PVs for open and close drive and status can
-    also be defined. Note that in many cases the same PV will be used for open and close
-    drive, but in some cases (e.g. APS safety shutters) different PVs are used for open
-    and close.
+    in ADDriver.h through records in ADBase.template. This screen allows one to define
+    the EPICS PVs to open the shutter, close the shutter, and determine the shutter
+    status. The values of these PVs for open and close drive and status can also be
+    defined. Note that in many cases the same PV will be used for open and close drive,
+    but in some cases (e.g. APS safety shutters) different PVs are used for open and
+    close.
   </p>
   <div style="text-align: center">
     <p>
