@@ -22,6 +22,7 @@
     <li><a href="#Overview">Overview</a></li>
     <li><a href="#ImageJViewer">ImageJ Viewer</a></li>
     <li><a href="#IDLViewer">IDL Viewer</a></li>
+    <li><a href="#Troubleshooting">Troubleshooting</a></li>
   </ul>
   <h2 id="Overview">
     Overview
@@ -79,8 +80,9 @@
       Files\ImageJ\jre\lib. On Linux it will be wherever the jre/lib directory for Java
       is located. Note that it should be necessary to create such a configuration file
       on almost all areaDetector clients because the CAJ default value of max_array_bytes
-      is 16384, which will be too small for almost any detector. However, it appears that
-      the CAJ library actually ignores the value of max_array_bytes, so it is not actually
+      is 16384, which will be too small for almost any detector. However, the
+      the CAJ library dynamically changes the maximum array size if the server array
+      is larger than max_array_bytes, so it is not actually
       necessary to set its value for the EPICS_AD_Viewer plugin. </li>
     <li>Start ImageJ and go to the Plugins/EPICS_areaDetector/EPICS_AD_Viewer to run the
       plugin</li>
@@ -249,5 +251,32 @@
     to display the data from this areaDetector plugin, and will be provided in a future
     release of areaDetector.
   </p>
+  <h2 id="Troubleshooting">
+    Troubleshooting</h2>
+  <p>If the ImageJ or IDL viewer is not displaying new images as the detector collects them check the following:
+  <ul>
+    <li>If other EPICS channel access clients (e.g. medm, caget) running on the same machine as the viewer
+      <b>cannot</b> connect to the IOC then check the following:
+      <ul>
+        <li>There may be a firewall blocking EPICS channel access either on the server (IOC) machine or the client
+          (viewer) machine.</li>
+        <li>The environment variable EPICS_CA_ADDR_LIST may need to be set to allow the client to find the IOC
+        if the IOC is not on the same subnet as the viewer or if other EPICS channel access settings do not
+        have their default values.</li>
+      </ul>
+    </li>
+    <li>If other EPICS channel access clients (e.g. medm, caget) running on the same machine as the viewer
+      <b>can</b> connect to the IOC then check the following:
+      <ul>
+        <li>The detector is actually collecting images, and the ArrayCallbacks PV is set to Enable.</li>
+        <li>The image plugin (NDStdArrays) has the EnableCallbacks PV set to Yes, and that the 
+          MinCallbackTime PV is not set too large.</li>
+        <li>The environment variable EPICS_CA_MAX_ARRAY_BYTES is set to a value at least as large as the
+          size of the arrays to be sent to the viewer.  This environment variable must be set on the machine
+          that the IOC is running on before the IOC is started.  It must also be set on the machine that the IDL
+          client is running on before IDL is started.  It is not used by the ImageJ client, as discussed above.</li>
+      </ul>
+    </li>
+  </ul>       
 </body>
 </html>
