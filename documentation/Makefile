@@ -1,4 +1,9 @@
-all: doxygen iocBootDocs install
+HTMLFLAGS = --book --duplex --no-numbered --format pdf14 --title --size letter
+
+%.pdf: %.html
+	-htmldoc $(HTMLFLAGS) --outfile $@ $<
+
+all: areaDetectorDoc.pdf doxygen iocBootDocs install
 
 doxygen:
 	doxygen
