@@ -62,25 +62,22 @@
         <li>New file plugin for TIFF files. The TIFF support includes 8, 16 and 32-bit integers.
           It supports monochrome and color images, including all 3 color interleave modes
           (RGB1, RGB2 and RGB3. areaDetector contains all required support files to build
-          and run the TIFF file plugin on win32-x86, cygwin-x86 and Linux. To build on 
-          other operating systems it is
-          necessary to install the libtiff and libtiffstatic packages. Thanks to John Hammonds
-          for the initial work on this plugin.</li>
+          and run the TIFF file plugin on win32-x86, cygwin-x86 and Linux. To build on other
+          operating systems it is necessary to install the libtiff and libtiffstatic packages.
+          Thanks to John Hammonds for the initial work on this plugin.</li>
         <li>New file plugin for JPEG files. The JPEG support is limited to 8-bit integers,
           but it supports monochrome and color images, including all 3 color interleave modes
           (RGB1, RGB2 and RGB3). Control is provided for the JPEG quality (compression) on
           a scale of 0 (worst) to 100 (best). areaDetector contains all required support files
-          to build and run the JPEG file plugin on win32-x86, cygwin-x86, and Linux. 
-          To build on other operating systems
-          it is necessary to install the libjpeg and libjpegstatic packages. </li>
-        <li>New file plugin for NeXus HDF files written by John Hammonds. 
-          The NeXus support has not been extensively
-          tested, and is currently limited to writing a single array per file.  Support for
-          multiple arrays per file will be added in a future release.  
-          areaDetector contains all required support files
-          to build and run the NeXus file plugin on win32-x86, cygwin-x86 and Linux.
-          To build on other operating systems
-          it is necessary to install the Nexus, HDF4, HDF5, and MXML packages. </li>
+          to build and run the JPEG file plugin on win32-x86, cygwin-x86, and Linux. To build
+          on other operating systems it is necessary to install the libjpeg and libjpegstatic
+          packages. </li>
+        <li>New file plugin for NeXus HDF files written by John Hammonds. The NeXus support
+          has not been extensively tested, and is currently limited to writing a single array
+          per file. Support for multiple arrays per file will be added in a future release.
+          areaDetector contains all required support files to build and run the NeXus file
+          plugin on win32-x86, cygwin-x86 and Linux. To build on other operating systems it
+          is necessary to install the Nexus, HDF4, HDF5, and MXML packages. </li>
         <li>Fixed bug in NDPluginFile: was not closing file properly when stream mode was
           stopped before the requested number of frames.</li>
         <li>Fixed logic problem with FileNumber record in NDFile.template database. The previous
