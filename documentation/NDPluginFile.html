@@ -406,6 +406,11 @@ variables:
     There is currently no documentation on the contents of the XML template file. However,
     there are example XML template files in the iocSimDetector and iocPerkinElmer directories.
     Documentation on the XML file contents will be written ASAP.</p>
+    <p>The prebuilt Linux libraries libhdf5. and libNeXus.a are built with HDF5 1.6.9.  When they are
+    built with the latest version, 1.8.2, they require GLIBC version 2.7 or higher, i.e. /lib/libc-2.7.so or
+    higher. Since users may want to install areaDetector on older Linux systems (which predate Fedora Core 8 for
+    example), it was decided to use this older version of HDF5.  Future releases of areaDetector may use HDF5 1.8.2
+    or later, and hence not work with older Linux systems.</p>
   <h2 id="Screens">
     Screen shots</h2>
   <p>
