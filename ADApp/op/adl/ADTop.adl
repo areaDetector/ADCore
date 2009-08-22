@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector/1-5beta/ADApp/op/adl/ADTop.adl"
+	name="/home/epics/devel/areaDetector/1-5/ADApp/op/adl/ADTop.adl"
 	version=030102
 }
 display {
@@ -298,16 +298,26 @@ text {
 	display[1] {
 		label="Prosilica #1 specific"
 		name="prosilica.adl"
-		args="P=13PS1:, R=cam1:"
+		args="P=13PS1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, JPEG=JPEG1:, TIFF=TIFF1:, NEXUS=Nexus1:, CC=CC1:"
 	}
 	display[2] {
+		label="Prosilica #1 I/O and stats"
+		name="prosilicaMore.adl"
+		args="P=13PS1:, R=cam2:"
+	}
+	display[3] {
 		label="Prosilica #2 general"
 		name="ADBase.adl"
 		args="P=13PS1:, R=cam2:, I=image2:, ROI=ROI2:, NETCDF=netCDF2:, JPEG=JPEG2:, TIFF=TIFF2:, NEXUS=Nexus2:, CC=CC2:"
 	}
-	display[3] {
+	display[4] {
 		label="Prosilica #2 specific"
 		name="prosilica.adl"
+		args="P=13PS1:, R=cam2:, I=image2:, ROI=ROI2:, NETCDF=netCDF2:, JPEG=JPEG2:, TIFF=TIFF2:, NEXUS=Nexus2:, CC=CC2:"
+	}
+	display[5] {
+		label="Prosilica #2 I/O and stats"
+		name="prosilicaMore.adl"
 		args="P=13PS1:, R=cam2:"
 	}
 	clr=14
