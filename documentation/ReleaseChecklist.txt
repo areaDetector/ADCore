@@ -7,7 +7,10 @@ up-to-date
 areaDetectorReleaseNotes.html have everything for this release, including the
 date.
 - Check in everything to BCDA CVS and SourceForge SVN repositories
+- Tag the CVS repository with "cvs tag RX-Y"
+- Tag the SVN repository with
+   svn copy -m "Tagged RX-Y" https://epics.svn.sourceforge.net/svnroot/epics/applications/trunk/areaDetector/ https://epics.svn.sourceforge.net/svnroot/epics/applications/tags/areaDetector/X-Y
 - Do "make clean uninstall", "make" on Linux/vxWorks, Windows and Cygwin
 - Run "make clean", "make" in the documentation directory
 - Run "makeADStandaloneTar from the top-level areaDetector directory
-- Run "make_tar_file areaDetector RX-YY" from the devel directory
+- Run "make_tar_file areaDetector RX-Y" from the devel directory
