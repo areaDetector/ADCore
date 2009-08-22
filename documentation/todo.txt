@@ -1,25 +1,19 @@
 For R1-5
 
-- Update documentation to link to doxygen files and remove details of code
-  from HTML files.
+- Test NeXus file plugin on Windows and Linux
 
-- In ioc* directories, make sure (file1 is changed to netCDF1, TIFF1 and JPEG1
-  where needed
-
-- iocMARCCD/st.cmd, change NELEMENTS to 2048*2048=4200000
-
-- Roper detector still setting full-chip, not ROI
-
-- Implement Lewis' changes for marCCD.
-
-- Bug in plugins.  Don't assume that colorMode attribute (or any other
-  attribute) exists.
+- Check batch files and scripts in iocBoot directories
 
 - Test all drivers.
 
 Longer term:
 
     General
+
+- Supports 64-bits
+
+- Document NeXus file plugin - add XML file documentation
+
 - Performance measurements
 - Implement and improve connection management
 
@@ -37,6 +31,9 @@ Longer term:
 - Add cross-sections?
 - Add scaling and offset, useful when converting data types?
 
+    MEDM
+- Top-level detector-specific control screens for simDetector, Prosilica,
+  Firewire.
 
     drvProsilica driver
 - Connection management
