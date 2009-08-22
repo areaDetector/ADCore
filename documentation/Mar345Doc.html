@@ -137,6 +137,22 @@
       </tr>
       <tr>
         <td>
+          NDFileTemplate</td>
+        <td>
+          $(P$(R)FileTemplate</td>
+        <td>
+          The mar345dtb program uses a file extension which describes the scan size and resolution, e.g. 3450, etc.
+          Thus the FileTemplate should not include an extension.  Furthermore mar345dtb always uses exactly 3 digits for
+          the FileNumber (with leading zeros if required), just before the extension.  
+          Thus the final 3 characters of the FileTemplate must be "%3.3d".  If they are not then mar345dtb will 
+          successfully save the file, but with a different name than the areaDetector driver was expecting it to use, 
+          and the driver will generate an error when it tries to open the file to read the data.  A good value for 
+          FileTemplate is thus "%s%s_3.3d", which will concatentate the FilePath and FileName, followed by an underscore
+          and then a 3 digit number with leading zeros if required. The underscore is optional, and other characters
+          can be placed between the FileName and the FileNumber if desired.</td>
+      </tr>
+      <tr>
+        <td>
           NDFileFormat</td>
         <td>
           $(P)$(R)FileFormat</td>
