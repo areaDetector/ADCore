@@ -176,10 +176,22 @@ composite {
 		}
 	}
 }
+rectangle {
+	object {
+		x=0
+		y=0
+		width=350
+		height=150
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
 "message button" {
 	object {
 		x=4
-		y=79
+		y=100
 		width=100
 		height=20
 	}
@@ -194,7 +206,7 @@ composite {
 text {
 	object {
 		x=11
-		y=106
+		y=122
 		width=40
 		height=25
 	}
@@ -206,7 +218,7 @@ text {
 "text update" {
 	object {
 		x=95
-		y=111
+		y=127
 		width=120
 		height=18
 	}
@@ -220,15 +232,82 @@ text {
 	limits {
 	}
 }
-rectangle {
+"text update" {
 	object {
-		x=0
-		y=0
-		width=350
-		height=150
+		x=10
+		y=70
+		width=2
+		height=2
+	}
+	monitor {
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+composite {
+	object {
+		x=7
+		y=70
+		width=141
+		height=23
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=9
+				y=70
+				width=139
+				height=10
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Frame Buffer Index"
+		}
+		"text update" {
+			object {
+				x=7
+				y=83
+				width=130
+				height=10
+			}
+			monitor {
+				chan="$(P)$(R)PEFrameBuffIndex"
+				clr=14
+				bclr=4
+			}
+			limits {
+			}
+		}
+	}
+}
+text {
+	object {
+		x=196
+		y=70
+		width=139
+		height=10
 	}
 	"basic attribute" {
 		clr=14
-		fill="outline"
+	}
+	textix="Image Number"
+}
+"text update" {
+	object {
+		x=194
+		y=83
+		width=130
+		height=10
+	}
+	monitor {
+		chan="$(P)$(R)PEImageNumber"
+		clr=14
+		bclr=4
+	}
+	limits {
 	}
 }
