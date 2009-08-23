@@ -18,12 +18,16 @@ dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/simDetector.template","P=13SIM1:,R=cam2
 # Create a standard arrays plugin, set it to get data from first simDetector driver.
 NDStdArraysConfigure("SIM1Image", 3, 0, "SIM1", 0, -1)
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13SIM1:,R=image1:,PORT=SIM1Image,ADDR=0,TIMEOUT=1,NDARRAY_PORT=SIM1,NDARRAY_ADDR=0")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStdArrays.template", "P=13SIM1:,R=image1:,PORT=SIM1Image,ADDR=0,TIMEOUT=1,TYPE=Int8,FTVL=UCHAR,NELEMENTS=1392640")
+# This creates a waveform large enough for 640x480x3 (e.g. RGB color) arrays.
+# This waveform only allows transporting 8-bit images
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStdArrays.template", "P=13SIM1:,R=image1:,PORT=SIM1Image,ADDR=0,TIMEOUT=1,TYPE=Int8,FTVL=UCHAR,NELEMENTS=921600")
 
 # Create a standard arrays plugin, set it to get data from second simDetector driver.
 NDStdArraysConfigure("SIM2Image", 1, 0, "SIM2", 0, -1)
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13SIM1:,R=image2:,PORT=SIM2Image,ADDR=0,TIMEOUT=1,NDARRAY_PORT=SIM2,NDARRAY_ADDR=0")
-dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStdArrays.template", "P=13SIM1:,R=image2:,PORT=SIM2Image,ADDR=0,TIMEOUT=1,TYPE=Float64,FTVL=DOUBLE,NELEMENTS=1392640")
+# This creates a waveform large enough for 640x480x3 (e.g. RGB color) arrays.
+# This waveform allows transporting 64-bit images, so it can handle any detector data type at the expense of more memory and bandwidth
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStdArrays.template", "P=13SIM1:,R=image2:,PORT=SIM2Image,ADDR=0,TIMEOUT=1,TYPE=Float64,FTVL=DOUBLE,NELEMENTS=921600")
 # Load the database to use with Stephen Mudie's IDL code
 #dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/EPICS_AD_Viewer.template", "P=13SIM1:, R=image1:")
 
