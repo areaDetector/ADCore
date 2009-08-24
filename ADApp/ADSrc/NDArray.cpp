@@ -709,7 +709,7 @@ NDAttributeList::NDAttributeList()
 NDAttributeList::~NDAttributeList()
 {
     this->clear();
-    ellFree(&this->list);
+    ellFree(&this->list, free);
     epicsMutexDestroy(this->lock);
 }
 
