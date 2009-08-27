@@ -139,7 +139,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 	numpts = 1;
 	nodeValue = curNode->Value();
     asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
-        "%s:%s  Value=%s Type=%d\n",
+        "%s:%s  Value=%s Type=%d\n", driverName, functionName,
         curNode->Value(), curNode->Type());
 	nodeType = curNode->ToElement()->Attribute("type");
 	childNode = 0;
