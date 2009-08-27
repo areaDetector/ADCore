@@ -210,16 +210,22 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 		nodeSource = curNode->ToElement()->Attribute("source");
 		if (nodeType && strcmp(nodeType, "ND_ATTR") == 0 ) {
 			pAttr = pArray->pAttributeList->find(nodeSource);
-			pAttr->getValueInfo(&attrDataType, &attrDataSize);
-			this->getAttrTypeNSize(pAttr, &dataOutType, &wordSize);
+			if (pAttr != NULL ){
+				pAttr->getValueInfo(&attrDataType, &attrDataSize);
+				this->getAttrTypeNSize(pAttr, &dataOutType, &wordSize);
 
-			if (dataOutType > 0) {
-				pValue = calloc( attrDataSize, wordSize );
-				pString = (char *)pValue;
-				pAttr->getValue(attrDataType, (char *)pValue, attrDataSize*wordSize);
+				if (dataOutType > 0) {
+					pValue = calloc( attrDataSize, wordSize );
+					pString = (char *)pValue;
+					pAttr->getValue(attrDataType, (char *)pValue, attrDataSize*wordSize);
 
-				NXputattr(this->nxFileHandle, nodeName, pValue, attrDataSize*wordSize, dataOutType);
-				free(pValue);
+					NXputattr(this->nxFileHandle, nodeName, pValue, attrDataSize/wordSize, dataOutType);
+
+					free(pValue);
+				}
+			}
+			else {
+				printf("Could not find attribute named %s\n", nodeSource);
 			}
 		}
 		if (nodeType && strcmp(nodeType, "CONST") == 0 ) {
@@ -247,21 +253,26 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 		nodeSource = curNode->ToElement()->Attribute("source");
 		if (nodeType && strcmp(nodeType, "ND_ATTR") == 0 ) {
 			pAttr = pArray->pAttributeList->find(nodeSource);
-			pAttr->getValueInfo(&attrDataType, &attrDataSize);
-			this->getAttrTypeNSize(pAttr, &dataOutType, &wordSize);
+			if ( pAttr != NULL) {
+				pAttr->getValueInfo(&attrDataType, &attrDataSize);
+				this->getAttrTypeNSize(pAttr, &dataOutType, &wordSize);
 
-			if (dataOutType > 0) {
-				pValue = calloc( attrDataSize, wordSize );
-				pString = (char *)pValue;
-				pAttr->getValue(attrDataType, (char *)pValue, attrDataSize);
+				if (dataOutType > 0) {
+					pValue = calloc( attrDataSize, wordSize );
+					pString = (char *)pValue;
+					pAttr->getValue(attrDataType, (char *)pValue, attrDataSize);
 
-				numWords = attrDataSize/wordSize;
-				NXmakedata( this->nxFileHandle, nodeValue, dataOutType, 1, (int *)&(numWords));
-				NXopendata(this->nxFileHandle, nodeValue);
-				NXputdata(this->nxFileHandle, (char *)pValue);
-				free(pValue);
-				this->iterateNodes(curNode, pArray);
-				NXclosedata(this->nxFileHandle);
+					numWords = attrDataSize/wordSize;
+					NXmakedata( this->nxFileHandle, nodeValue, dataOutType, 1, (int *)&(numWords));
+					NXopendata(this->nxFileHandle, nodeValue);
+					NXputdata(this->nxFileHandle, (char *)pValue);
+					free(pValue);
+					this->iterateNodes(curNode, pArray);
+					NXclosedata(this->nxFileHandle);
+				}
+			}
+			else {
+				printf("Could not add node %s could not find an attribute by that name\n", nodeSource );
 			}
 		}
 		else if (nodeType && strcmp(nodeType, "pArray") == 0 ){
