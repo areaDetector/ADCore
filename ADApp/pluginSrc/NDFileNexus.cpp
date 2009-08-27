@@ -27,12 +27,12 @@ static const char *driverName="NDFileNexus";
 /** Opens NeXus file.
   * \param[in] fileName  Absolute path name of the file to open.
   * \param[in] openMode Bit mask with one of the access mode bits NDFileModeRead, NDFileModeWrite. NDFileModeAppend.
-  *            May also have the bit NDFileModeMultiple set if the file is to be opened to write or read multiple 
+  *            May also have the bit NDFileModeMultiple set if the file is to be opened to write or read multiple
   *            NDArrays into a single file.
-  * \param[in] pArray Pointer to an NDArray; this array does not contain data to be written or read.  
+  * \param[in] pArray Pointer to an NDArray; this array does not contain data to be written or read.
   *            Rather it can be used to determine the header information and data structure for the file.
-  *            It is guaranteed that NDArrays pass to NDPluginFile::writeFile or NDPluginFile::readFile 
-  *            will have the same data type, data dimensions and attributes as this array. 
+  *            It is guaranteed that NDArrays pass to NDPluginFile::writeFile or NDPluginFile::readFile
+  *            will have the same data type, data dimensions and attributes as this array.
   */
 asynStatus NDFileNexus::openFile( const char *fileName, NDFileOpenMode_t openMode, NDArray *pArray) {
 	int status = asynSuccess;
@@ -52,7 +52,7 @@ asynStatus NDFileNexus::openFile( const char *fileName, NDFileOpenMode_t openMod
     /* Now append the attributes from the array which are already up to date from
      * the driver and prior plugins */
     pArray->pAttributeList->copy(this->pFileAttributes);
-    
+
 	/* get the filename to be used for nexus template */
 	status = getStringParam(addr, NDFileNexusTemplatePath, sizeof(template_path), template_path);
 	status = getStringParam(addr, NDFileNexusTemplateFile, sizeof(template_file), template_file);
@@ -71,9 +71,9 @@ asynStatus NDFileNexus::openFile( const char *fileName, NDFileOpenMode_t openMod
 /** Writes a single NDArray to a NeXus file.
   * \param[in] pArray Pointer to an NDArray to write to the file. This function can be called multiple
   *            times between the call to openFile and closeFile once this class supports MultipleArrays=1 and
-  *            if NDFileModeMultiple was set in openMode in the call to NDPluginFile::openFile 
+  *            if NDFileModeMultiple was set in openMode in the call to NDPluginFile::openFile
   *            (e.g. capture or stream mode).
-  */ 
+  */
 asynStatus NDFileNexus::writeFile(NDArray *pArray) {
     /* Update attribute list. We use a separate attribute list
      * from the one in pArray to avoid the need to copy the array. */
@@ -90,10 +90,10 @@ asynStatus NDFileNexus::writeFile(NDArray *pArray) {
 
 /** Read NDArray data from a NeXus file; NOT YET IMPLEMENTED.
   * \param[in] pArray Pointer to the address of an NDArray to read the data into.
-  */ 
+  */
 asynStatus NDFileNexus::readFile(NDArray **pArray) {
     static const char *functionName = "readFile";
-    
+
 	asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
         "%s:%s Reading image not implemented",
         driverName, functionName);
@@ -103,7 +103,7 @@ asynStatus NDFileNexus::readFile(NDArray **pArray) {
 /** Closes the NeXus file opened with NDFileNexus::openFile */
 asynStatus NDFileNexus::closeFile() {
     asynStatus status;
-    
+
 	/* close the nexus file */
 	status = (asynStatus)NXclose(&nxFileHandle);
 
@@ -135,7 +135,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 	char nodeText[256];
 	TiXmlNode *childNode;
     static const char *functionName = "processNode";
-    
+
 	numpts = 1;
 	nodeValue = curNode->Value();
     asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
@@ -154,6 +154,37 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 	         (strcmp (nodeValue, "NXsource") ==0) ||
 	         (strcmp (nodeValue, "NXuser") ==0) ||
 	         (strcmp (nodeValue, "NXdata") ==0) ||
+	         (strcmp (nodeValue, "NXdetector") ==0) ||
+	         (strcmp (nodeValue, "NXaperature") ==0) ||
+	         (strcmp (nodeValue, "NXattenuator") ==0) ||
+	         (strcmp (nodeValue, "NXbeam_stop") ==0) ||
+	         (strcmp (nodeValue, "NXbending_magnet") ==0) ||
+	         (strcmp (nodeValue, "NXcollimator") ==0) ||
+	         (strcmp (nodeValue, "NXcrystal") ==0) ||
+	         (strcmp (nodeValue, "NXdisk_chopper") ==0) ||
+	         (strcmp (nodeValue, "NXfermi_chopper") ==0) ||
+	         (strcmp (nodeValue, "NXfilter") ==0) ||
+	         (strcmp (nodeValue, "NXflipper") ==0) ||
+	         (strcmp (nodeValue, "NXguide") ==0) ||
+	         (strcmp (nodeValue, "NXinsertion_device") ==0) ||
+	         (strcmp (nodeValue, "NXmirror") ==0) ||
+	         (strcmp (nodeValue, "NXmoderator") ==0) ||
+	         (strcmp (nodeValue, "NXmonochromator") ==0) ||
+	         (strcmp (nodeValue, "NXpolarizer") ==0) ||
+	         (strcmp (nodeValue, "NXpositioner") ==0) ||
+	         (strcmp (nodeValue, "NXvelocity_selector") ==0) ||
+	         (strcmp (nodeValue, "NXevent_data") ==0) ||
+	         (strcmp (nodeValue, "NXprocess") ==0) ||
+	         (strcmp (nodeValue, "NXcharacterization") ==0) ||
+	         (strcmp (nodeValue, "NXlog") ==0) ||
+	         (strcmp (nodeValue, "NXnote") ==0) ||
+	         (strcmp (nodeValue, "NXbeam") ==0) ||
+	         (strcmp (nodeValue, "NXgeometry") ==0) ||
+	         (strcmp (nodeValue, "NXtranslation") ==0) ||
+	         (strcmp (nodeValue, "NXshape") ==0) ||
+	         (strcmp (nodeValue, "NXorientation") ==0) ||
+	         (strcmp (nodeValue, "NXenvironment") ==0) ||
+	         (strcmp (nodeValue, "NXsensor") ==0) ||
 	         (nodeType && strcmp (nodeType, "UserGroup") == 0) ) {
 		nodeName = curNode->ToElement()->Attribute("name");
 		if (nodeName == NULL) {
@@ -163,14 +194,14 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 		stat |= NXopengroup(this->nxFileHandle, (const char *)nodeName, (const char *)nodeValue);
 		if (stat != NX_OK ) {
             asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-            "%s:%s Error creating group %s %s", 
+            "%s:%s Error creating group %s %s",
             driverName, functionName, nodeName, nodeValue);
         }
 		this->iterateNodes(curNode, pArray);
 		stat = NXclosegroup(this->nxFileHandle);
 		if (stat != NX_OK ) {
             asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-            "%s:%s Error closing group %s %s", 
+            "%s:%s Error closing group %s %s",
             driverName, functionName, nodeName, nodeValue);
         }
 	}
