@@ -3,7 +3,7 @@
  *	Copyright 1996, University Corporation for Atmospheric Research
  *      See netcdf/COPYRIGHT file for copying and redistribution conditions.
  */
-/* $Id: attr.c,v 1.1 2008-04-18 19:34:27 rivers Exp $ */
+/* $Id: attr.c,v 1.2 2009-08-31 14:03:52 rivers Exp $ */
 
 #include "nc.h"
 #include <stdlib.h>
@@ -49,10 +49,11 @@ ncx_len_NC_attrV(nc_type type, size_t nelems)
 		return ncx_len_float(nelems);
 	case NC_DOUBLE:
 		return ncx_len_double(nelems);
+	default:
+		/* default */
+		assert("ncx_len_NC_attr bad type" == 0);
+		return 0;
 	}
-	/* default */
-	assert("ncx_len_NC_attr bad type" == 0);
-	return 0;
 }
 
 
@@ -717,9 +718,10 @@ ncx_pad_putn_Iuchar(void **xpp, size_t nelems, const uchar *tp, nc_type type)
 		return ncx_putn_float_uchar(xpp, nelems, tp);
 	case NC_DOUBLE:
 		return ncx_putn_double_uchar(xpp, nelems, tp);
+	default:
+		assert("ncx_pad_putn_Iuchar invalid type" == 0);
+		return NC_EBADTYPE;
 	}
-	assert("ncx_pad_putn_Iuchar invalid type" == 0);
-	return NC_EBADTYPE;
 }
 
 static int
@@ -738,9 +740,10 @@ ncx_pad_getn_Iuchar(const void **xpp, size_t nelems, uchar *tp, nc_type type)
 		return ncx_getn_float_uchar(xpp, nelems, tp);
 	case NC_DOUBLE:
 		return ncx_getn_double_uchar(xpp, nelems, tp);
+	default:
+		assert("ncx_pad_getn_Iuchar invalid type" == 0);
+		return NC_EBADTYPE;
 	}
-	assert("ncx_pad_getn_Iuchar invalid type" == 0);
-	return NC_EBADTYPE;
 }
 
 
@@ -760,9 +763,10 @@ ncx_pad_putn_Ischar(void **xpp, size_t nelems, const schar *tp, nc_type type)
 		return ncx_putn_float_schar(xpp, nelems, tp);
 	case NC_DOUBLE:
 		return ncx_putn_double_schar(xpp, nelems, tp);
+	default:
+		assert("ncx_pad_putn_Ischar invalid type" == 0);
+		return NC_EBADTYPE;
 	}
-	assert("ncx_pad_putn_Ischar invalid type" == 0);
-	return NC_EBADTYPE;
 }
 
 static int
@@ -781,9 +785,10 @@ ncx_pad_getn_Ischar(const void **xpp, size_t nelems, schar *tp, nc_type type)
 		return ncx_getn_float_schar(xpp, nelems, tp);
 	case NC_DOUBLE:
 		return ncx_getn_double_schar(xpp, nelems, tp);
+	default:
+		assert("ncx_pad_getn_Ischar invalid type" == 0);
+		return NC_EBADTYPE;
 	}
-	assert("ncx_pad_getn_Ischar invalid type" == 0);
-	return NC_EBADTYPE;
 }
 
 
@@ -803,9 +808,10 @@ ncx_pad_putn_Ishort(void **xpp, size_t nelems, const short *tp, nc_type type)
 		return ncx_putn_float_short(xpp, nelems, tp);
 	case NC_DOUBLE:
 		return ncx_putn_double_short(xpp, nelems, tp);
+	default:
+		assert("ncx_pad_putn_Ishort invalid type" == 0);
+		return NC_EBADTYPE;
 	}
-	assert("ncx_pad_putn_Ishort invalid type" == 0);
-	return NC_EBADTYPE;
 }
 
 static int
@@ -824,9 +830,10 @@ ncx_pad_getn_Ishort(const void **xpp, size_t nelems, short *tp, nc_type type)
 		return ncx_getn_float_short(xpp, nelems, tp);
 	case NC_DOUBLE:
 		return ncx_getn_double_short(xpp, nelems, tp);
+	default:
+		assert("ncx_pad_getn_Ishort invalid type" == 0);
+		return NC_EBADTYPE;
 	}
-	assert("ncx_pad_getn_Ishort invalid type" == 0);
-	return NC_EBADTYPE;
 }
 
 
@@ -846,9 +853,10 @@ ncx_pad_putn_Iint(void **xpp, size_t nelems, const int *tp, nc_type type)
 		return ncx_putn_float_int(xpp, nelems, tp);
 	case NC_DOUBLE:
 		return ncx_putn_double_int(xpp, nelems, tp);
+	default:
+		assert("ncx_pad_putn_Iint invalid type" == 0);
+		return NC_EBADTYPE;
 	}
-	assert("ncx_pad_putn_Iint invalid type" == 0);
-	return NC_EBADTYPE;
 }
 
 static int
@@ -867,9 +875,10 @@ ncx_pad_getn_Iint(const void **xpp, size_t nelems, int *tp, nc_type type)
 		return ncx_getn_float_int(xpp, nelems, tp);
 	case NC_DOUBLE:
 		return ncx_getn_double_int(xpp, nelems, tp);
+	default:
+		assert("ncx_pad_getn_Iint invalid type" == 0);
+		return NC_EBADTYPE;
 	}
-	assert("ncx_pad_getn_Iint invalid type" == 0);
-	return NC_EBADTYPE;
 }
 
 
@@ -889,9 +898,10 @@ ncx_pad_putn_Ilong(void **xpp, size_t nelems, const long *tp, nc_type type)
 		return ncx_putn_float_long(xpp, nelems, tp);
 	case NC_DOUBLE:
 		return ncx_putn_double_long(xpp, nelems, tp);
+	default:
+		assert("ncx_pad_putn_Ilong invalid type" == 0);
+		return NC_EBADTYPE;
 	}
-	assert("ncx_pad_putn_Ilong invalid type" == 0);
-	return NC_EBADTYPE;
 }
 
 static int
@@ -910,9 +920,10 @@ ncx_pad_getn_Ilong(const void **xpp, size_t nelems, long *tp, nc_type type)
 		return ncx_getn_float_long(xpp, nelems, tp);
 	case NC_DOUBLE:
 		return ncx_getn_double_long(xpp, nelems, tp);
+	default:
+		assert("ncx_pad_getn_Ilong invalid type" == 0);
+		return NC_EBADTYPE;
 	}
-	assert("ncx_pad_getn_Ilong invalid type" == 0);
-	return NC_EBADTYPE;
 }
 
 
@@ -932,9 +943,10 @@ ncx_pad_putn_Ifloat(void **xpp, size_t nelems, const float *tp, nc_type type)
 		return ncx_putn_float_float(xpp, nelems, tp);
 	case NC_DOUBLE:
 		return ncx_putn_double_float(xpp, nelems, tp);
+	default:
+		assert("ncx_pad_putn_Ifloat invalid type" == 0);
+		return NC_EBADTYPE;
 	}
-	assert("ncx_pad_putn_Ifloat invalid type" == 0);
-	return NC_EBADTYPE;
 }
 
 static int
@@ -953,9 +965,10 @@ ncx_pad_getn_Ifloat(const void **xpp, size_t nelems, float *tp, nc_type type)
 		return ncx_getn_float_float(xpp, nelems, tp);
 	case NC_DOUBLE:
 		return ncx_getn_double_float(xpp, nelems, tp);
+	default:
+		assert("ncx_pad_getn_Ifloat invalid type" == 0);
+		return NC_EBADTYPE;
 	}
-	assert("ncx_pad_getn_Ifloat invalid type" == 0);
-	return NC_EBADTYPE;
 }
 
 
@@ -975,9 +988,10 @@ ncx_pad_putn_Idouble(void **xpp, size_t nelems, const double *tp, nc_type type)
 		return ncx_putn_float_double(xpp, nelems, tp);
 	case NC_DOUBLE:
 		return ncx_putn_double_double(xpp, nelems, tp);
+	default:
+		assert("ncx_pad_putn_Idouble invalid type" == 0);
+		return NC_EBADTYPE;
 	}
-	assert("ncx_pad_putn_Idouble invalid type" == 0);
-	return NC_EBADTYPE;
 }
 
 static int
@@ -996,9 +1010,10 @@ ncx_pad_getn_Idouble(const void **xpp, size_t nelems, double *tp, nc_type type)
 		return ncx_getn_float_double(xpp, nelems, tp);
 	case NC_DOUBLE:
 		return ncx_getn_double_double(xpp, nelems, tp);
+	default:
+		assert("ncx_pad_getn_Idouble invalid type" == 0);
+		return NC_EBADTYPE;
 	}
-	assert("ncx_pad_getn_Idouble invalid type" == 0);
-	return NC_EBADTYPE;
 }
 
 
