@@ -2,7 +2,7 @@
  *	Copyright 1996, University Corporation for Atmospheric Research
  *      See netcdf/COPYRIGHT file for copying and redistribution conditions.
  */
-/* $Id: v1hpg.c,v 1.1 2008-04-18 19:34:31 rivers Exp $ */
+/* $Id: v1hpg.c,v 1.2 2009-08-31 20:51:56 rivers Exp $ */
 
 #include "nc.h"
 #include <stdlib.h>
@@ -1166,6 +1166,7 @@ NC_computeshapes(NC *ncp)
  * variable, this is the length in bytes of one record's worth of that
  * variable's data.
  */
+/*
 static off_t
 NC_var_unpadded_len(const NC_var *varp, const NC_dimarray *dims)
 {
@@ -1181,6 +1182,7 @@ NC_var_unpadded_len(const NC_var *varp, const NC_dimarray *dims)
     product = product * varp->xsz;
     return product;
 }
+*/
 
 /* How much space in the header is required for the NC data structure? */
 size_t
