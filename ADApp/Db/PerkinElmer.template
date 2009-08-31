@@ -4,7 +4,7 @@
 
 record(longin, "$(P)$(R)PESystemID")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_SYSTEMID")
    field(SCAN, "I/O Intr")
@@ -12,7 +12,7 @@ record(longin, "$(P)$(R)PESystemID")
 
 record(longin, "$(P)$(R)PEFrameBuffIndex")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_FRAME_BUFFER_INDEX")
    field(SCAN, "I/O Intr")
@@ -20,7 +20,7 @@ record(longin, "$(P)$(R)PEFrameBuffIndex")
 
 record(longin, "$(P)$(R)PEImageNumber")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_IMAGE_NUMBER")
    field(SCAN, "I/O Intr")
@@ -34,7 +34,7 @@ record(longout, "$(P)$(R)PEInitialize")
 
 record(mbbi, "$(P)$(R)PEStatus_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(SCAN, "I/O Intr")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_STATUS_RBV")
@@ -65,7 +65,7 @@ record(longout, "$(P)$(R)PENumOffsetFrames")
 
 record(mbbi, "$(P)$(R)PEOffsetAvailable")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(SCAN, "I/O Intr")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_OFFSET_AVAILABLE")
@@ -79,7 +79,7 @@ record(mbbi, "$(P)$(R)PEOffsetAvailable")
 
 record(mbbo, "$(P)$(R)PEUseOffset")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_USE_OFFSET")
    field(ZRST, "Off")
@@ -96,7 +96,7 @@ record(longout, "$(P)$(R)PEAcquireGain")
 
 record(mbbi, "$(P)$(R)PEGainAvailable")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(SCAN, "I/O Intr")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_GAIN_AVAILABLE")
@@ -110,7 +110,7 @@ record(mbbi, "$(P)$(R)PEGainAvailable")
 
 record(mbbi, "$(P)$(R)PEPixelCorrectionAvailable")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(SCAN, "I/O Intr")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_PIXEL_CORRECTION_AVAILABLE")
@@ -132,7 +132,7 @@ record(longout, "$(P)$(R)PENumGainFrames")
 
 record(mbbo, "$(P)$(R)PEUseGain")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_USE_GAIN")
    field(ZRST, "Off")
@@ -144,7 +144,7 @@ record(mbbo, "$(P)$(R)PEUseGain")
 
 record(mbbo, "$(P)$(R)PEGain")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_GAIN")
    field(ZRST, "0.25pF")
@@ -163,7 +163,7 @@ record(mbbo, "$(P)$(R)PEGain")
 
 record(mbbi, "$(P)$(R)PEGain_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_GAIN_RBV")
    field(SCAN, "I/O Intr")
@@ -184,7 +184,7 @@ record(mbbi, "$(P)$(R)PEGain_RBV")
 
 record(mbbo, "$(P)$(R)PEDwellTime")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_DWELL_TIME")
    field(ZRST, "66.5ms")
@@ -207,7 +207,7 @@ record(mbbo, "$(P)$(R)PEDwellTime")
 
 record(mbbi, "$(P)$(R)PEDwellTime_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_DWELL_TIME_RBV")
    field(SCAN, "I/O Intr")
@@ -239,7 +239,7 @@ record(longout, "$(P)$(R)PENumFrameBuffers")
 
 record(longin, "$(P)$(R)PENumFrameBuffers_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_NUM_FRAME_BUFFERS_RBV")
    field(SCAN, "I/O Intr")
@@ -249,7 +249,7 @@ record(longin, "$(P)$(R)PENumFrameBuffers_RBV")
 
 record(mbbo, "$(P)$(R)PESyncMode")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_SYNC_MODE")
    field(ZRST, "Internal Timer")
@@ -264,7 +264,7 @@ record(mbbo, "$(P)$(R)PESyncMode")
 
 record(mbbi, "$(P)$(R)PESyncMode_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_SYNC_MODE_RBV")
    field(SCAN, "I/O Intr")
@@ -310,7 +310,7 @@ record(longout, "$(P)$(R)PESaveCorrections")
 
 record(waveform, "$(P)$(R)PECorrectionsDir")
 {
-    field(PINI, "1")
+    field(PINI, "YES")
     field(DTYP, "asynOctetWrite")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_CORRECTIONS_DIRECTORY")
     field(FTVL, "UCHAR")
@@ -319,7 +319,7 @@ record(waveform, "$(P)$(R)PECorrectionsDir")
 
 record(mbbo, "$(P)$(R)PEUsePixelCorrection")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_USE_PIXEL_CORRECTION")
    field(ZRST, "Off")
@@ -330,7 +330,7 @@ record(mbbo, "$(P)$(R)PEUsePixelCorrection")
 
 record(waveform, "$(P)$(R)PEBadPixelFile")
 {
-    field(PINI, "1")
+    field(PINI, "YES")
     field(DTYP, "asynOctetWrite")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_PIXEL_CORRECTION_FILE")
     field(FTVL, "UCHAR")
@@ -339,7 +339,7 @@ record(waveform, "$(P)$(R)PEBadPixelFile")
 
 record(waveform, "$(P)$(R)PEBadPixelFile_RBV")
 {
-    field(PINI, "1")
+    field(PINI, "RUNNING")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_PIXEL_CORRECTION_FILE_RBV")
     field(FTVL, "UCHAR")

@@ -34,7 +34,7 @@ record(mbbi,"$(P)$(R)TriggerMode_RBV") {
 # Armed flag, which indicates Pilatus is ready for external triggers
 record(bi, "$(P)$(R)Armed")
 {
-    field(PINI, "1")
+    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARMED")
     field(ZNAM, "Unarmed")
@@ -45,7 +45,7 @@ record(bi, "$(P)$(R)Armed")
 # Delay time in External Trigger mode.
 record(ao, "$(P)$(R)DelayTime")
 {
-    field(PINI, "1")
+    field(PINI, "YES")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DELAY_TIME")
     field(EGU,  "s")
@@ -56,7 +56,7 @@ record(ao, "$(P)$(R)DelayTime")
 # Threshold energy
 record(ao, "$(P)$(R)ThresholdEnergy")
 {
-    field(PINI, "1")
+    field(PINI, "YES")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))THRESHOLD")
     field(DESC, "Energy threshold")
@@ -95,7 +95,7 @@ record(ao, "$(P)$(R)ReadTiffTimeout")
 # Bad pixel file
 record(waveform, "$(P)$(R)BadPixelFile")
 {
-    field(PINI, "1")
+    field(PINI, "YES")
     field(DTYP, "asynOctetWrite")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BAD_PIXEL_FILE")
     field(FTVL, "UCHAR")
@@ -105,7 +105,7 @@ record(waveform, "$(P)$(R)BadPixelFile")
 # Number of bad pixels
 record(longin, "$(P)$(R)NumBadPixels")
 {
-    field(PINI, "1")
+    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_BAD_PIXELS")
     field(DESC, "Number of bad pixels")
@@ -115,7 +115,7 @@ record(longin, "$(P)$(R)NumBadPixels")
 # Flat field file
 record(waveform, "$(P)$(R)FlatFieldFile")
 {
-    field(PINI, "1")
+    field(PINI, "YES")
     field(DTYP, "asynOctetWrite")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FLAT_FIELD_FILE")
     field(FTVL, "UCHAR")
@@ -135,7 +135,7 @@ record(longout, "$(P)$(R)MinFlatField")
 # Flat field valid flag.
 record(bi, "$(P)$(R)FlatFieldValid")
 {
-    field(PINI, "1")
+    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FLAT_FIELD_VALID")
     field(DESC, "Flat field valid")

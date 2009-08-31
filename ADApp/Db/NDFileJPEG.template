@@ -24,7 +24,7 @@ record(mbbi, "$(P)$(R)FileFormat_RBV")
 # File quality 
 record(longout, "$(P)$(R)JPEGQuality")
 {
-    field(PINI, "1")
+    field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))JPEG_QUALITY")
     field(VAL,  "50")
@@ -36,7 +36,7 @@ record(longout, "$(P)$(R)JPEGQuality")
 
 record(longin, "$(P)$(R)JPEGQuality_RBV")
 {
-    field(PINI, "1")
+    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))JPEG_QUALITY")
     field(LOPR, "0")

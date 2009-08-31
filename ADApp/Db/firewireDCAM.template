@@ -9,7 +9,7 @@ record(mbbo, "$(P)$(R)FORMAT") {
   field(SCAN, "Passive")
   field(PINI, "NO")
   field(DTYP, "asynInt32")
-  field(OUT, "@asyn($(PORT) 0)FDC_FORMAT")
+  field(OUT,  "@asyn($(PORT) 0)FDC_FORMAT")
   field(ZRST, "VGA")
   field(ONST, "Super VGA 1")
   field(TWST, "Super VGA 2")
@@ -25,9 +25,9 @@ record(mbbo, "$(P)$(R)FORMAT") {
 ## Read back the framerate setting when not in ROI/format7 mode.
 record(mbbi, "$(P)$(R)FORMAT_RBV") {
   field(SCAN, "I/O Intr")
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynInt32")
-  field(INP, "@asyn($(PORT) 0)FDC_FORMAT")
+  field(INP,  "@asyn($(PORT) 0)FDC_FORMAT")
   field(ZRST, "VGA")
   field(ONST, "Super VGA 1")
   field(TWST, "Super VGA 2")
@@ -45,7 +45,7 @@ record(mbbo, "$(P)$(R)MODE") {
   field(SCAN, "Passive")
   field(PINI, "NO")
   field(DTYP, "asynInt32")
-  field(OUT, "@asyn($(PORT) 0)FDC_MODE")
+  field(OUT,  "@asyn($(PORT) 0)FDC_MODE")
   field(ZRST, "0")
   field(ONST, "1")
   field(TWST, "2")
@@ -67,9 +67,9 @@ record(mbbo, "$(P)$(R)MODE") {
 ## Read back the framerate setting when not in ROI/format7 mode.
 record(mbbi, "$(P)$(R)MODE_RBV") {
   field(SCAN, "I/O Intr")
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynInt32")
-  field(INP, "@asyn($(PORT) 0)FDC_MODE")
+  field(INP,  "@asyn($(PORT) 0)FDC_MODE")
   field(ZRST, "0")
   field(ONST, "1")
   field(TWST, "2")
@@ -93,7 +93,7 @@ record(mbbo, "$(P)$(R)FR") {
   field(SCAN, "Passive")
   field(PINI, "NO")
   field(DTYP, "asynInt32")
-  field(OUT, "@asyn($(PORT) 0)FDC_FRAMERATE")
+  field(OUT,  "@asyn($(PORT) 0)FDC_FRAMERATE")
   field(ZRST, "1.875")
   field(ONST, "3.75")
   field(TWST, "7.5")
@@ -115,9 +115,9 @@ record(mbbo, "$(P)$(R)FR") {
 ## Read back the framerate setting when not in ROI/format7 mode.
 record(mbbi, "$(P)$(R)FR_RBV") {
   field(SCAN, "I/O Intr")
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynInt32")
-  field(INP, "@asyn($(PORT) 0)FDC_FRAMERATE")
+  field(INP,  "@asyn($(PORT) 0)FDC_FRAMERATE")
   field(ZRST, "1.875")
   field(ONST, "3.75")
   field(TWST, "7.5")
@@ -141,7 +141,7 @@ record(mbbo, "$(P)$(R)COLORCODE") {
   field(SCAN, "Passive")
   field(PINI, "NO")
   field(DTYP, "asynInt32")
-  field(OUT, "@asyn($(PORT) 0)FDC_COLORCODE")
+  field(OUT,  "@asyn($(PORT) 0)FDC_COLORCODE")
   field(ZRST, "0")
   field(ONST, "1")
   field(TWST, "2")
@@ -169,9 +169,9 @@ record(mbbo, "$(P)$(R)COLORCODE") {
 ## Read back the framerate setting when not in ROI/format7 mode.
 record(mbbi, "$(P)$(R)COLORCODE_RBV") {
   field(SCAN, "I/O Intr")
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynInt32")
-  field(INP, "@asyn($(PORT) 0)FDC_COLORCODE")
+  field(INP,  "@asyn($(PORT) 0)FDC_COLORCODE")
   field(ZRST, "0")
   field(ONST, "1")
   field(TWST, "2")
@@ -199,32 +199,32 @@ record(mbbi, "$(P)$(R)COLORCODE_RBV") {
 
 # Current format string
 record(stringin, "$(P)$(R)CURRENT_FORMAT") {
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynOctetRead")
-  field(INP, "@asyn($(PORT) 0)FDC_CURRENT_FORMAT")
+  field(INP,  "@asyn($(PORT) 0)FDC_CURRENT_FORMAT")
   field(SCAN, "I/O Intr")
 }
 
 # Current mode string
 record(stringin, "$(P)$(R)CURRENT_MODE") {
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynOctetRead")
-  field(INP, "@asyn($(PORT) 0)FDC_CURRENT_MODE")
+  field(INP,  "@asyn($(PORT) 0)FDC_CURRENT_MODE")
   field(SCAN, "I/O Intr")
 }
 
 # Current frame rate string
 record(stringin, "$(P)$(R)CURRENT_RATE") {
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynOctetRead")
-  field(INP, "@asyn($(PORT) 0)FDC_CURRENT_FRAMERATE")
+  field(INP,  "@asyn($(PORT) 0)FDC_CURRENT_FRAMERATE")
   field(SCAN, "I/O Intr")
 }
 
 # Current color mode string
 record(stringin, "$(P)$(R)CURRENT_COLORCODE") {
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynOctetRead")
-  field(INP, "@asyn($(PORT) 0)FDC_CURRENT_COLORCODE")
+  field(INP,  "@asyn($(PORT) 0)FDC_CURRENT_COLORCODE")
   field(SCAN, "I/O Intr")
 }

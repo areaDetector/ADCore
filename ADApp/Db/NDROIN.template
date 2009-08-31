@@ -7,14 +7,14 @@
 ###################################################################
 record(stringout, "$(P)$(R)Name")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynOctetWrite")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
 }
 
 record(stringin, "$(P)$(R)Name_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynOctetRead")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
    field(SCAN, "I/O Intr")
@@ -26,7 +26,7 @@ record(stringin, "$(P)$(R)Name_RBV")
 ###################################################################
 record(bo, "$(P)$(R)Use")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))USE")
    field(VAL,  "1")
@@ -36,7 +36,7 @@ record(bo, "$(P)$(R)Use")
 
 record(bi, "$(P)$(R)Use_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))USE")
    field(ZNAM, "No")
@@ -51,7 +51,7 @@ record(bi, "$(P)$(R)Use_RBV")
 
 record(longout, "$(P)$(R)BinX")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_BIN")
    field(VAL,  "1")
@@ -59,7 +59,7 @@ record(longout, "$(P)$(R)BinX")
 
 record(longin, "$(P)$(R)BinX_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_BIN")
    field(SCAN, "I/O Intr")
@@ -67,7 +67,7 @@ record(longin, "$(P)$(R)BinX_RBV")
 
 record(longout, "$(P)$(R)BinY")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_BIN")
    field(VAL,  "1")
@@ -75,7 +75,7 @@ record(longout, "$(P)$(R)BinY")
 
 record(longin, "$(P)$(R)BinY_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_BIN")
    field(SCAN, "I/O Intr")
@@ -83,7 +83,7 @@ record(longin, "$(P)$(R)BinY_RBV")
 
 record(longout, "$(P)$(R)BinZ")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_BIN")
    field(VAL,  "1")
@@ -91,7 +91,7 @@ record(longout, "$(P)$(R)BinZ")
 
 record(longin, "$(P)$(R)BinZ_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_BIN")
    field(SCAN, "I/O Intr")
@@ -99,7 +99,7 @@ record(longin, "$(P)$(R)BinZ_RBV")
 
 record(longout, "$(P)$(R)MinX")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_MIN")
    field(VAL,  "0")
@@ -107,7 +107,7 @@ record(longout, "$(P)$(R)MinX")
 
 record(longin, "$(P)$(R)MinX_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_MIN")
    field(SCAN, "I/O Intr")
@@ -115,7 +115,7 @@ record(longin, "$(P)$(R)MinX_RBV")
 
 record(longout, "$(P)$(R)MinY")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_MIN")
    field(VAL,  "0")
@@ -123,7 +123,7 @@ record(longout, "$(P)$(R)MinY")
 
 record(longin, "$(P)$(R)MinY_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_MIN")
    field(SCAN, "I/O Intr")
@@ -131,7 +131,7 @@ record(longin, "$(P)$(R)MinY_RBV")
 
 record(longout, "$(P)$(R)MinZ")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_MIN")
    field(VAL,  "0")
@@ -139,7 +139,7 @@ record(longout, "$(P)$(R)MinZ")
 
 record(longin, "$(P)$(R)MinZ_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_MIN")
    field(SCAN, "I/O Intr")
@@ -147,7 +147,7 @@ record(longin, "$(P)$(R)MinZ_RBV")
 
 record(longout, "$(P)$(R)SizeX")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_SIZE")
    field(VAL,  "1")
@@ -155,7 +155,7 @@ record(longout, "$(P)$(R)SizeX")
 
 record(longin, "$(P)$(R)SizeX_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_SIZE")
    field(SCAN, "I/O Intr")
@@ -163,7 +163,7 @@ record(longin, "$(P)$(R)SizeX_RBV")
 
 record(longout, "$(P)$(R)SizeY")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_SIZE")
    field(VAL,  "1")
@@ -171,7 +171,7 @@ record(longout, "$(P)$(R)SizeY")
 
 record(longin, "$(P)$(R)SizeY_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_SIZE")
    field(SCAN, "I/O Intr")
@@ -179,7 +179,7 @@ record(longin, "$(P)$(R)SizeY_RBV")
 
 record(longout, "$(P)$(R)SizeZ")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_SIZE")
    field(VAL,  "1")
@@ -187,7 +187,7 @@ record(longout, "$(P)$(R)SizeZ")
 
 record(longin, "$(P)$(R)SizeZ_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_SIZE")
    field(SCAN, "I/O Intr")
@@ -195,7 +195,7 @@ record(longin, "$(P)$(R)SizeZ_RBV")
 
 record(longin, "$(P)$(R)MaxSizeX_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_MAX_SIZE")
    field(SCAN, "I/O Intr")
@@ -203,7 +203,7 @@ record(longin, "$(P)$(R)MaxSizeX_RBV")
 
 record(longin, "$(P)$(R)MaxSizeY_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_MAX_SIZE")
    field(SCAN, "I/O Intr")
@@ -211,7 +211,7 @@ record(longin, "$(P)$(R)MaxSizeY_RBV")
 
 record(longin, "$(P)$(R)MaxSizeZ_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_MAX_SIZE")
    field(SCAN, "I/O Intr")
@@ -219,7 +219,7 @@ record(longin, "$(P)$(R)MaxSizeZ_RBV")
 
 record(bo, "$(P)$(R)ReverseX")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_REVERSE")
    field(VAL,  "0")
@@ -229,7 +229,7 @@ record(bo, "$(P)$(R)ReverseX")
 
 record(bi, "$(P)$(R)ReverseX_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_REVERSE")
    field(ZNAM, "No")
@@ -239,7 +239,7 @@ record(bi, "$(P)$(R)ReverseX_RBV")
 
 record(bo, "$(P)$(R)ReverseY")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_REVERSE")
    field(VAL,  "0")
@@ -249,7 +249,7 @@ record(bo, "$(P)$(R)ReverseY")
 
 record(bi, "$(P)$(R)ReverseY_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_REVERSE")
    field(ZNAM, "No")
@@ -259,7 +259,7 @@ record(bi, "$(P)$(R)ReverseY_RBV")
 
 record(bo, "$(P)$(R)ReverseZ")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_REVERSE")
    field(VAL,  "0")
@@ -269,7 +269,7 @@ record(bo, "$(P)$(R)ReverseZ")
 
 record(bi, "$(P)$(R)ReverseZ_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_REVERSE")
    field(ZNAM, "No")
@@ -279,7 +279,7 @@ record(bi, "$(P)$(R)ReverseZ_RBV")
 
 record(longout, "$(P)$(R)BgdWidth")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BGD_WIDTH")
    field(VAL,  "1")
@@ -287,7 +287,7 @@ record(longout, "$(P)$(R)BgdWidth")
 
 record(longin, "$(P)$(R)BgdWidth_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BGD_WIDTH")
    field(SCAN, "I/O Intr")
@@ -295,7 +295,7 @@ record(longin, "$(P)$(R)BgdWidth_RBV")
 
 record(longin, "$(P)$(R)ArraySizeX_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_X")
    field(SCAN, "I/O Intr")
@@ -303,7 +303,7 @@ record(longin, "$(P)$(R)ArraySizeX_RBV")
 
 record(longin, "$(P)$(R)ArraySizeY_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_Y")
    field(SCAN, "I/O Intr")
@@ -311,7 +311,7 @@ record(longin, "$(P)$(R)ArraySizeY_RBV")
 
 record(longin, "$(P)$(R)ArraySizeZ_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_Z")
    field(SCAN, "I/O Intr")
@@ -325,7 +325,7 @@ record(longin, "$(P)$(R)ArraySizeZ_RBV")
 
 record(mbbo, "$(P)$(R)DataType")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROI_DATA_TYPE")
    field(ZRST, "Int8")
@@ -350,7 +350,7 @@ record(mbbo, "$(P)$(R)DataType")
 
 record(mbbi, "$(P)$(R)DataType_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROI_DATA_TYPE")
    field(ZRST, "Int8")
@@ -380,7 +380,7 @@ record(mbbi, "$(P)$(R)DataType_RBV")
 ###################################################################
 record(bo, "$(P)$(R)ComputeStatistics")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMPUTE_STATISTICS")
    field(VAL,  "1")
@@ -390,7 +390,7 @@ record(bo, "$(P)$(R)ComputeStatistics")
 
 record(bi, "$(P)$(R)ComputeStatistics_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMPUTE_STATISTICS")
    field(ZNAM, "No")
@@ -403,7 +403,7 @@ record(bi, "$(P)$(R)ComputeStatistics_RBV")
 ###################################################################
 record(ai, "$(P)$(R)MinValue_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_VALUE")
    field(SCAN, "I/O Intr")
@@ -411,7 +411,7 @@ record(ai, "$(P)$(R)MinValue_RBV")
 
 record(ai, "$(P)$(R)MaxValue_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_VALUE")
    field(SCAN, "I/O Intr")
@@ -419,14 +419,14 @@ record(ai, "$(P)$(R)MaxValue_RBV")
 
 record(ai, "$(P)$(R)MeanValue_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MEAN_VALUE")
    field(SCAN, "I/O Intr")
 }
 record(ai, "$(P)$(R)Total_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TOTAL")
    field(SCAN, "I/O Intr")
@@ -434,7 +434,7 @@ record(ai, "$(P)$(R)Total_RBV")
 
 record(ai, "$(P)$(R)Net_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NET")
    field(SCAN, "I/O Intr")
@@ -445,7 +445,7 @@ record(ai, "$(P)$(R)Net_RBV")
 ###################################################################
 record(bo, "$(P)$(R)ComputeHistogram")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMPUTE_HISTOGRAM")
    field(VAL,  "1")
@@ -455,7 +455,7 @@ record(bo, "$(P)$(R)ComputeHistogram")
 
 record(bi, "$(P)$(R)ComputeHistogram_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMPUTE_HISTOGRAM")
    field(ZNAM, "No")
@@ -468,7 +468,7 @@ record(bi, "$(P)$(R)ComputeHistogram_RBV")
 ###################################################################
 record(longout, "$(P)$(R)HistSize")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_SIZE")
    field(VAL,  "256")
@@ -476,7 +476,7 @@ record(longout, "$(P)$(R)HistSize")
 
 record(longin, "$(P)$(R)HistSize_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_SIZE")
    field(SCAN, "I/O Intr")
@@ -484,7 +484,7 @@ record(longin, "$(P)$(R)HistSize_RBV")
 
 record(ao, "$(P)$(R)HistMin")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_MIN")
    field(VAL,  "0")
@@ -492,7 +492,7 @@ record(ao, "$(P)$(R)HistMin")
 
 record(ai, "$(P)$(R)HistMin_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_MIN")
    field(SCAN, "I/O Intr")
@@ -500,7 +500,7 @@ record(ai, "$(P)$(R)HistMin_RBV")
 
 record(ao, "$(P)$(R)HistMax")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_MAX")
    field(VAL,  "255")
@@ -508,7 +508,7 @@ record(ao, "$(P)$(R)HistMax")
 
 record(ai, "$(P)$(R)HistMax_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_MAX")
    field(SCAN, "I/O Intr")
@@ -516,7 +516,7 @@ record(ai, "$(P)$(R)HistMax_RBV")
 
 record(ai, "$(P)$(R)HistEntropy_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_ENTROPY")
    field(PREC, "3")

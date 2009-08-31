@@ -2,7 +2,7 @@
 
 # Valid format strings
 record(stringin, "$(P)$(R)VALID_FORMAT_$(N)") {
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynOctetRead")
   field(INP, "@asyn($(PORT) $(N))FDC_VALID_FORMAT")
   field(SCAN, "I/O Intr")
@@ -10,7 +10,7 @@ record(stringin, "$(P)$(R)VALID_FORMAT_$(N)") {
 
 # Has format bi
 record(bi, "$(P)$(R)HAS_FORMAT_$(N)") {
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynInt32")
   field(INP, "@asyn($(PORT) $(N))FDC_HAS_FORMAT")
   field(ZNAM, "No")
@@ -20,7 +20,7 @@ record(bi, "$(P)$(R)HAS_FORMAT_$(N)") {
 
 # Valid mode strings
 record(stringin, "$(P)$(R)VALID_MODE_$(N)") {
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynOctetRead")
   field(INP, "@asyn($(PORT) $(N))FDC_VALID_MODE")
   field(SCAN, "I/O Intr")
@@ -29,7 +29,7 @@ record(stringin, "$(P)$(R)VALID_MODE_$(N)") {
 
 # Has mode bi
 record(bi, "$(P)$(R)HAS_MODE_$(N)") {
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynInt32")
   field(INP, "@asyn($(PORT) $(N))FDC_HAS_MODE")
   field(ZNAM, "No")
@@ -40,7 +40,7 @@ record(bi, "$(P)$(R)HAS_MODE_$(N)") {
 
 # Valid frame rate strings
 record(stringin, "$(P)$(R)VALID_RATE_$(N)") {
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynOctetRead")
   field(INP, "@asyn($(PORT) $(N))FDC_VALID_FRAMERATE")
   field(SCAN, "I/O Intr")
@@ -48,7 +48,7 @@ record(stringin, "$(P)$(R)VALID_RATE_$(N)") {
 
 # Has rate bi
 record(bi, "$(P)$(R)HAS_RATE_$(N)") {
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynInt32")
   field(INP, "@asyn($(PORT) $(N))FDC_HAS_FRAMERATE")
   field(ZNAM, "No")

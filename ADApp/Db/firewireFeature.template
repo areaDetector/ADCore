@@ -10,7 +10,7 @@ record(ao, "$(P)$(R)$(FEATURE)") {
 
 # Read the value (int32)
 record(ai, "$(P)$(R)$(FEATURE)_RBV") {
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynInt32")
   field(INP, "@asyn($(PORT) $(N))FDC_FEAT_VAL")
   field(SCAN, "I/O Intr")
@@ -27,7 +27,7 @@ record(bo, "$(P)$(R)$(FEATURE)_CTRL") {
 
 ## Read back the control mode 
 record(bi, "$(P)$(R)$(FEATURE)_CTRL_RBV") {
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynInt32")
   field(INP, "@asyn($(PORT) $(N))FDC_FEAT_MODE")
   field(ZNAM, "Manual")
@@ -37,7 +37,7 @@ record(bi, "$(P)$(R)$(FEATURE)_CTRL_RBV") {
 
 ## Read whether the camera supports this feature
 record(bi, "$(P)$(R)$(FEATURE)_AVL") {
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynInt32")
   field(INP, "@asyn($(PORT) $(N))FDC_FEAT_AVAILABLE")
   field(ZNAM, "not available")
@@ -47,7 +47,7 @@ record(bi, "$(P)$(R)$(FEATURE)_AVL") {
 
 # Read value boundaries
 record(ai, "$(P)$(R)$(FEATURE)_MIN") {
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynInt32")
   field(INP, "@asyn($(PORT) $(N))FDC_FEAT_VAL_MIN")
   field(SCAN, "I/O Intr")
@@ -68,7 +68,7 @@ record(ao, "$(P)$(R)$(FEATURE)_LOPR") {
   field(OUT, "$(P)$(R)$(FEATURE).LOPR NPP NMS")
 }
 record(ai, "$(P)$(R)$(FEATURE)_MAX") {
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynInt32")
   field(INP, "@asyn($(PORT) $(N))FDC_FEAT_VAL_MAX")
   field(SCAN, "I/O Intr")
@@ -90,7 +90,7 @@ record(ao, "$(P)$(R)$(FEATURE)_HOPR") {
 
 ## Read whether the camera supports absolute (floating point) control of this feature 
 record(bi, "$(P)$(R)$(FEATURE)_ABS_AVL") {
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynInt32")
   field(INP, "@asyn($(PORT) $(N))FDC_FEAT_ABSOLUTE")
   field(ZNAM, "not available")
@@ -108,7 +108,7 @@ record(ao, "$(P)$(R)$(FEATURE)_ABS") {
 
 # Read the feature absolute value
 record(ai, "$(P)$(R)$(FEATURE)_ABS_RBV") {
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynFloat64")
   field(INP, "@asyn($(PORT) $(N))FDC_FEAT_VAL_ABS")
   field(PREC, "3")
@@ -118,7 +118,7 @@ record(ai, "$(P)$(R)$(FEATURE)_ABS_RBV") {
 
 # Read the feature absolute value max boundary
 record(ai, "$(P)$(R)$(FEATURE)_ABS_MAX") {
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynFloat64")
   field(INP, "@asyn($(PORT) $(N))FDC_FEAT_VAL_ABS_MAX")
   field(PREC, "3")
@@ -141,7 +141,7 @@ record(ao, "$(P)$(R)$(FEATURE)_ABS_HOPR") {
 
 # Read the feature absolute value min boundary
 record(ai, "$(P)$(R)$(FEATURE)_ABS_MIN") {
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynFloat64")
   field(INP, "@asyn($(PORT) $(N))FDC_FEAT_VAL_ABS_MIN")
   field(PREC, "3")

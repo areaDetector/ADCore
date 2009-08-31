@@ -8,7 +8,7 @@
 
 record(stringin, "$(P)$(R)PortName_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynOctetRead")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PORT_NAME_SELF")
    field(VAL,  "Unknown")
@@ -22,7 +22,7 @@ record(stringin, "$(P)$(R)PortName_RBV")
 
 record(stringin, "$(P)$(R)Manufacturer_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynOctetRead")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MANUFACTURER")
    field(VAL,  "Unknown")
@@ -31,7 +31,7 @@ record(stringin, "$(P)$(R)Manufacturer_RBV")
 
 record(stringin, "$(P)$(R)Model_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynOctetRead")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MODEL")
    field(VAL,  "Unknown")
@@ -40,7 +40,7 @@ record(stringin, "$(P)$(R)Model_RBV")
 
 record(longin, "$(P)$(R)MaxSizeX_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_SIZE_X")
    field(SCAN, "I/O Intr")
@@ -48,7 +48,7 @@ record(longin, "$(P)$(R)MaxSizeX_RBV")
 
 record(longin, "$(P)$(R)MaxSizeY_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_SIZE_Y")
    field(SCAN, "I/O Intr")
@@ -60,7 +60,7 @@ record(longin, "$(P)$(R)MaxSizeY_RBV")
 
 record(mbbo, "$(P)$(R)DataType")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DATA_TYPE")
    field(ZRST, "Int8")
@@ -83,7 +83,7 @@ record(mbbo, "$(P)$(R)DataType")
 
 record(mbbi, "$(P)$(R)DataType_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DATA_TYPE")
    field(ZRST, "Int8")
@@ -112,7 +112,7 @@ record(mbbi, "$(P)$(R)DataType_RBV")
 
 record(mbbo, "$(P)$(R)ColorMode")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COLOR_MODE")
    field(ZRST, "Mono")
@@ -135,7 +135,7 @@ record(mbbo, "$(P)$(R)ColorMode")
 
 record(mbbi, "$(P)$(R)ColorMode_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COLOR_MODE")
    field(ZRST, "Mono")
@@ -164,14 +164,14 @@ record(mbbi, "$(P)$(R)ColorMode_RBV")
 
 record(longout, "$(P)$(R)BinX")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BIN_X")
 }
 
 record(longin, "$(P)$(R)BinX_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BIN_X")
    field(SCAN, "I/O Intr")
@@ -179,14 +179,14 @@ record(longin, "$(P)$(R)BinX_RBV")
 
 record(longout, "$(P)$(R)BinY")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BIN_Y")
 }
 
 record(longin, "$(P)$(R)BinY_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BIN_Y")
    field(SCAN, "I/O Intr")
@@ -194,14 +194,14 @@ record(longin, "$(P)$(R)BinY_RBV")
 
 record(longout, "$(P)$(R)MinX")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_X")
 }
 
 record(longin, "$(P)$(R)MinX_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_X")
    field(SCAN, "I/O Intr")
@@ -209,14 +209,14 @@ record(longin, "$(P)$(R)MinX_RBV")
 
 record(longout, "$(P)$(R)MinY")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_Y")
 }
 
 record(longin, "$(P)$(R)MinY_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_Y")
    field(SCAN, "I/O Intr")
@@ -224,14 +224,14 @@ record(longin, "$(P)$(R)MinY_RBV")
 
 record(longout, "$(P)$(R)SizeX")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIZE_X")
 }
 
 record(longin, "$(P)$(R)SizeX_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIZE_X")
    field(SCAN, "I/O Intr")
@@ -239,14 +239,14 @@ record(longin, "$(P)$(R)SizeX_RBV")
 
 record(longout, "$(P)$(R)SizeY")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIZE_Y")
 }
 
 record(longin, "$(P)$(R)SizeY_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIZE_Y")
    field(SCAN, "I/O Intr")
@@ -254,16 +254,16 @@ record(longin, "$(P)$(R)SizeY_RBV")
 
 record(bo, "$(P)$(R)ReverseX")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))REVERSE_X")
    field(ZNAM, "No")
-   field(ONAM, "Yes")
+   field(ONAM, "RUNNING")
 }
 
 record(bi, "$(P)$(R)ReverseX_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))REVERSE_X")
    field(ZNAM, "No")
@@ -273,7 +273,7 @@ record(bi, "$(P)$(R)ReverseX_RBV")
 
 record(bo, "$(P)$(R)ReverseY")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))REVERSE_Y")
    field(ZNAM, "No")
@@ -282,7 +282,7 @@ record(bo, "$(P)$(R)ReverseY")
 
 record(bi, "$(P)$(R)ReverseY_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))REVERSE_Y")
    field(ZNAM, "No")
@@ -292,7 +292,7 @@ record(bi, "$(P)$(R)ReverseY_RBV")
 
 record(longin, "$(P)$(R)ArraySizeX_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_X")
    field(SCAN, "I/O Intr")
@@ -300,7 +300,7 @@ record(longin, "$(P)$(R)ArraySizeX_RBV")
 
 record(longin, "$(P)$(R)ArraySizeY_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_Y")
    field(SCAN, "I/O Intr")
@@ -308,7 +308,7 @@ record(longin, "$(P)$(R)ArraySizeY_RBV")
 
 record(longin, "$(P)$(R)ArraySizeZ_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_Z")
    field(SCAN, "I/O Intr")
@@ -316,7 +316,7 @@ record(longin, "$(P)$(R)ArraySizeZ_RBV")
 
 record(longin, "$(P)$(R)ArraySize_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE")
    field(SCAN, "I/O Intr")
@@ -328,7 +328,7 @@ record(longin, "$(P)$(R)ArraySize_RBV")
 ###################################################################
 record(ao, "$(P)$(R)AcquireTime")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQ_TIME")
    field(PREC, "3")
@@ -336,7 +336,7 @@ record(ao, "$(P)$(R)AcquireTime")
 
 record(ai, "$(P)$(R)AcquireTime_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQ_TIME")
    field(PREC, "3")
@@ -345,7 +345,7 @@ record(ai, "$(P)$(R)AcquireTime_RBV")
 
 record(ao, "$(P)$(R)AcquirePeriod")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQ_PERIOD")
    field(PREC, "3")
@@ -353,7 +353,7 @@ record(ao, "$(P)$(R)AcquirePeriod")
 
 record(ai, "$(P)$(R)AcquirePeriod_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQ_PERIOD")
    field(PREC, "3")
@@ -362,7 +362,7 @@ record(ai, "$(P)$(R)AcquirePeriod_RBV")
 
 record(ai, "$(P)$(R)TimeRemaining_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TIME_REMAINING")
    field(PREC, "3")
@@ -374,7 +374,7 @@ record(ai, "$(P)$(R)TimeRemaining_RBV")
 ###################################################################
 record(ao, "$(P)$(R)Gain")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GAIN")
    field(PREC, "3")
@@ -382,7 +382,7 @@ record(ao, "$(P)$(R)Gain")
 
 record(ai, "$(P)$(R)Gain_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GAIN")
    field(PREC, "3")
@@ -394,7 +394,7 @@ record(ai, "$(P)$(R)Gain_RBV")
 ###################################################################
 record(mbbo, "$(P)$(R)FrameType")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FRAME_TYPE")
    field(ZRST, "Normal")
@@ -409,7 +409,7 @@ record(mbbo, "$(P)$(R)FrameType")
 
 record(mbbi, "$(P)$(R)FrameType_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FRAME_TYPE")
    field(ZRST, "Normal")
@@ -428,7 +428,7 @@ record(mbbi, "$(P)$(R)FrameType_RBV")
 ###################################################################
 record(mbbo, "$(P)$(R)ImageMode")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_MODE")
    field(ZRST, "Single")
@@ -441,7 +441,7 @@ record(mbbo, "$(P)$(R)ImageMode")
 
 record(mbbi, "$(P)$(R)ImageMode_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_MODE")
    field(ZRST, "Single")
@@ -458,7 +458,7 @@ record(mbbi, "$(P)$(R)ImageMode_RBV")
 ###################################################################
 record(mbbo, "$(P)$(R)TriggerMode")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TRIGGER_MODE")
    field(ZRST, "Internal")
@@ -469,7 +469,7 @@ record(mbbo, "$(P)$(R)TriggerMode")
 
 record(mbbi, "$(P)$(R)TriggerMode_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TRIGGER_MODE")
    field(ZRST, "Internal")
@@ -485,14 +485,14 @@ record(mbbi, "$(P)$(R)TriggerMode_RBV")
 ###################################################################
 record(longout, "$(P)$(R)NumExposures")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NEXPOSURES")
 }
 
 record(longin, "$(P)$(R)NumExposures_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NEXPOSURES")
    field(SCAN, "I/O Intr")
@@ -500,21 +500,21 @@ record(longin, "$(P)$(R)NumExposures_RBV")
 
 record(longin, "$(P)$(R)NumExposuresCounter_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NEXPOSURES_COUNTER")
    field(SCAN, "I/O Intr")
 }
 record(longout, "$(P)$(R)NumImages")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NIMAGES")
 }
 
 record(longin, "$(P)$(R)NumImages_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NIMAGES")
    field(SCAN, "I/O Intr")
@@ -522,7 +522,7 @@ record(longin, "$(P)$(R)NumImages_RBV")
 
 record(longin, "$(P)$(R)NumImagesCounter_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NIMAGES_COUNTER")
    field(SCAN, "I/O Intr")
@@ -541,7 +541,7 @@ record(busy, "$(P)$(R)Acquire") {
 }
 
 record(bi, "$(P)$(R)Acquire_RBV") {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQUIRE")
    field(ZNAM, "Done")
@@ -563,7 +563,7 @@ record(longout, "$(P)$(R)ArrayCounter")
 
 record(longin, "$(P)$(R)ArrayCounter_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_COUNTER")
     field(SCAN, "I/O Intr")
@@ -586,7 +586,7 @@ record(calc, "$(P)$(R)ArrayRate_RBV")
 
 record(mbbi, "$(P)$(R)DetectorState_RBV")
 {
-    field(PINI, "1")
+    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))STATUS")
     field(ZRST, "Idle")
@@ -624,7 +624,7 @@ record(mbbi, "$(P)$(R)DetectorState_RBV")
 ###################################################################
 record(bo, "$(P)$(R)ArrayCallbacks")
 {
-    field(PINI,  "1")
+    field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_CALLBACKS")
     field(ZNAM, "Disable")
@@ -633,7 +633,7 @@ record(bo, "$(P)$(R)ArrayCallbacks")
 
 record(bi, "$(P)$(R)ArrayCallbacks_RBV")
 {
-    field(PINI, "1")
+    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_CALLBACKS")
     field(ZNAM, "Disable")
@@ -647,7 +647,7 @@ record(bi, "$(P)$(R)ArrayCallbacks_RBV")
 
 record(waveform, "$(P)$(R)NDAttributesFile")
 {
-    field(PINI, "1")
+    field(PINI, "YES")
     field(DTYP, "asynOctetWrite")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ND_ATTRIBUTES_FILE")
     field(FTVL, "UCHAR")
@@ -702,7 +702,7 @@ record(bo,"$(P)$(R)ReadStatus") {
 
 record(mbbo, "$(P)$(R)ShutterMode")
 {
-    field(PINI, "1")
+    field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SHUTTER_MODE")
     field(ZRST, "None")
@@ -715,7 +715,7 @@ record(mbbo, "$(P)$(R)ShutterMode")
 
 record(mbbi, "$(P)$(R)ShutterMode_RBV")
 {
-    field(PINI, "1")
+    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SHUTTER_MODE")
     field(ZRST, "None")
@@ -729,7 +729,7 @@ record(mbbi, "$(P)$(R)ShutterMode_RBV")
 
 record(bo, "$(P)$(R)ShutterControl")
 {
-    field(PINI,  "1")
+    field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SHUTTER_CONTROL")
     field(ZNAM, "Close")
@@ -738,7 +738,7 @@ record(bo, "$(P)$(R)ShutterControl")
 
 record(bi, "$(P)$(R)ShutterControl_RBV")
 {
-    field(PINI, "1")
+    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SHUTTER_CONTROL")
     field(ZNAM, "Close")
@@ -748,7 +748,7 @@ record(bi, "$(P)$(R)ShutterControl_RBV")
 
 record(bi, "$(P)$(R)ShutterStatus_RBV")
 {
-    field(PINI, "1")
+    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SHUTTER_STATUS")
     field(ZNAM, "Closed")
@@ -760,7 +760,7 @@ record(bi, "$(P)$(R)ShutterStatus_RBV")
 
 record(ao, "$(P)$(R)ShutterOpenDelay")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SHUTTER_OPEN_DELAY")
    field(PREC, "3")
@@ -768,7 +768,7 @@ record(ao, "$(P)$(R)ShutterOpenDelay")
 
 record(ai, "$(P)$(R)ShutterOpenDelay_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SHUTTER_OPEN_DELAY")
    field(PREC, "3")
@@ -777,7 +777,7 @@ record(ai, "$(P)$(R)ShutterOpenDelay_RBV")
 
 record(ao, "$(P)$(R)ShutterCloseDelay")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SHUTTER_CLOSE_DELAY")
    field(PREC, "3")
@@ -785,7 +785,7 @@ record(ao, "$(P)$(R)ShutterCloseDelay")
 
 record(ai, "$(P)$(R)ShutterCloseDelay_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SHUTTER_CLOSE_DELAY")
    field(PREC, "3")
@@ -849,7 +849,7 @@ record(mbbi, "$(P)$(R)ShutterStatusEPICS_RBV")
  
 record(ao, "$(P)$(R)Temperature")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMPERATURE")
    field(PREC, "3")
@@ -857,7 +857,7 @@ record(ao, "$(P)$(R)Temperature")
 
 record(ai, "$(P)$(R)Temperature_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMPERATURE")
    field(PREC, "3")

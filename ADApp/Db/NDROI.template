@@ -7,7 +7,7 @@
 ###################################################################
 record(bo, "$(P)$(R)Highlight")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIGHLIGHT")
    field(VAL,  "1")
@@ -17,7 +17,7 @@ record(bo, "$(P)$(R)Highlight")
 
 record(bi, "$(P)$(R)Highlight_RBV")
 {
-   field(PINI, "1")
+   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIGHLIGHT")
    field(ZNAM, "No")

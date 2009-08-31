@@ -23,7 +23,7 @@ record(mbbi, "$(P)$(R)FileFormat_RBV")
 # Template File path.
 record(waveform, "$(P)$(R)TemplateFilePath")
 {
-    field(PINI, "1")
+    field(PINI, "YES")
     field(DTYP, "asynOctetWrite")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMPLATE_FILE_PATH")
     field(FTVL, "UCHAR")
@@ -32,7 +32,7 @@ record(waveform, "$(P)$(R)TemplateFilePath")
 
 record(waveform, "$(P)$(R)TemplateFilePath_RBV")
 {
-    field(PINI, "1")
+    field(PINI, "RUNNING")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMPLATE_FILE_PATH")
     field(FTVL, "UCHAR")
@@ -43,7 +43,7 @@ record(waveform, "$(P)$(R)TemplateFilePath_RBV")
 # Template Filename
 record(waveform, "$(P)$(R)TemplateFileName")
 {
-    field(PINI, "1")
+    field(PINI, "YES")
     field(DTYP, "asynOctetWrite")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMPLATE_FILE_NAME")
     field(FTVL, "UCHAR")
@@ -52,7 +52,7 @@ record(waveform, "$(P)$(R)TemplateFileName")
 
 record(waveform, "$(P)$(R)TemplateFileName_RBV")
 {
-    field(PINI, "1")
+    field(PINI, "RUNNING")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMPLATE_FILE_NAME")
     field(FTVL, "UCHAR")

@@ -2,7 +2,7 @@
 
 # Valid color code strings
 record(stringin, "$(P)$(R)VALID_COLORCODE_$(N)") {
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynOctetRead")
   field(INP, "@asyn($(PORT) $(N))FDC_VALID_COLORCODE")
   field(SCAN, "I/O Intr")
@@ -10,7 +10,7 @@ record(stringin, "$(P)$(R)VALID_COLORCODE_$(N)") {
 
 # Has color code bi
 record(bi, "$(P)$(R)HAS_COLORCODE_$(N)") {
-  field(PINI, "YES")
+  field(PINI, "RUNNING")
   field(DTYP, "asynInt32")
   field(INP, "@asyn($(PORT) $(N))FDC_HAS_COLORCODE")
   field(ZNAM, "No")
