@@ -2,7 +2,7 @@
  *	Copyright 1996, University Corporation for Atmospheric Research
  *      See netcdf/COPYRIGHT file for copying and redistribution conditions.
  */
-/* $Id: var.c,v 1.1 2008-04-18 19:34:32 rivers Exp $ */
+/* $Id: var.c,v 1.2 2009-08-31 20:51:23 rivers Exp $ */
 
 #include "nc.h"
 #include <stdlib.h>
@@ -344,10 +344,11 @@ ncx_szof(nc_type type)
 		return X_SIZEOF_FLOAT;
 	case NC_DOUBLE : 
 		return X_SIZEOF_DOUBLE;
+	default:
+		/* default */
+		assert("ncx_szof invalid type" == 0);
+		return 0;
 	}
-	/* default */
-	assert("ncx_szof invalid type" == 0);
-	return 0;
 }
 
 
