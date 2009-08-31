@@ -142,6 +142,11 @@
 /* Define to the version of this package. */
 #define PACKAGE_VERSION "3.6.2"
 
+/* This is not pretty. netCDF is really set up to use a single config.h file which is generate
+ * by configure.  But that does not work when multiple architectures share a source tree or for cross-compiling
+ * We need to put specific architecture tests here */
+
+/* All supported platforms have 8 byte doubles, 4 byte floats, 4 byte ints, 2 byte shorts */
 /* The size of `double', as computed by sizeof. */
 #define SIZEOF_DOUBLE 8
 
@@ -151,17 +156,29 @@
 /* The size of `int', as computed by sizeof. */
 #define SIZEOF_INT 4
 
-/* The size of `long', as computed by sizeof. */
-#define SIZEOF_LONG 4
-
-/* The size of `off_t', as computed by sizeof. */
-#define SIZEOF_OFF_T 8
-
 /* The size of `short', as computed by sizeof. */
 #define SIZEOF_SHORT 2
 
+#if defined(_X86_64_)
+/* The size of `size_t', as computed by sizeof. */
+#define SIZEOF_SIZE_T 8
+/* The size of `long', as computed by sizeof. */
+#define SIZEOF_LONG 8
+#else
 /* The size of `size_t', as computed by sizeof. */
 #define SIZEOF_SIZE_T 4
+/* The size of `long', as computed by sizeof. */
+#define SIZEOF_LONG 4
+#endif
+
+/* The size of `off_t', as computed by sizeof. */
+/* All archs except vxWorks have 8 byte off_t ?*/
+#if defined(vxWorks)
+#define SIZEOF_OFF_T 4
+#else
+#define SIZEOF_OFF_T 8
+#endif
+
 
 /* If using the C implementation of alloca, define if you know the
    direction of stack growth for your system; otherwise it will be
@@ -185,7 +202,9 @@
 
 /* Define to 1 if your processor stores words with the most significant byte
    first (like Motorola and SPARC, unlike Intel and VAX). */
-/* #undef WORDS_BIGENDIAN */
+#if defined(vxWorks)
+#undef WORDS_BIGENDIAN
+#endif
 
 /* Number of bits in a file offset, on hosts where this is settable. */
 #define _FILE_OFFSET_BITS 64
