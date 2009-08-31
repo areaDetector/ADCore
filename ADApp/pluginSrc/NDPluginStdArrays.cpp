@@ -342,8 +342,10 @@ extern "C" int NDStdArraysConfigure(const char *portName, int queueSize, int blo
                                     const char *NDArrayPort, int NDArrayAddr, size_t maxMemory,
                                     int priority, int stackSize)
 {
-    new NDPluginStdArrays(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxMemory,
-                          priority, stackSize);
+    NDPluginStdArrays *pPlugin =
+        new NDPluginStdArrays(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxMemory,
+                              priority, stackSize);
+    pPlugin = NULL;  /* This is just to eliminate compiler warning about unused variables/objects */
     return(asynSuccess);
 }
 

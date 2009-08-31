@@ -475,8 +475,10 @@ extern "C" int NDFileNetCDFConfigure(const char *portName, int queueSize, int bl
                                      const char *NDArrayPort, int NDArrayAddr,
                                      int priority, int stackSize)
 {
-    new NDFileNetCDF(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                     priority, stackSize);
+    NDFileNetCDF *pPlugin =
+        new NDFileNetCDF(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                         priority, stackSize);
+    pPlugin = NULL;  /* This is just to eliminate compiler warning about unused variables/objects */
     return(asynSuccess);
 }
 

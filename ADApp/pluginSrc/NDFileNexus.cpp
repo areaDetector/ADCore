@@ -634,8 +634,10 @@ extern "C" int NDFileNexusConfigure(const char *portName, int queueSize, int blo
                                    const char *NDArrayPort, int NDArrayAddr,
                                    int priority, int stackSize)
 {
-    new NDFileNexus(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                     priority, stackSize);
+    NDFileNexus *pPlugin = 
+        new NDFileNexus(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                        priority, stackSize);
+    pPlugin = NULL;  /* This is just to eliminate compiler warning about unused variables/objects */
     return(asynSuccess);
 }
 

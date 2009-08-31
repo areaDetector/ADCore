@@ -440,9 +440,11 @@ extern "C" int NDColorConvertConfigure(const char *portName, int queueSize, int 
                                           const char *NDArrayPort, int NDArrayAddr, 
                                           int maxBuffers, size_t maxMemory,
                                           int priority, int stackSize)
-{  
-    new NDPluginColorConvert(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, 
-                             maxBuffers, maxMemory, priority, stackSize);
+{
+    NDPluginColorConvert *pPlugin =  
+        new NDPluginColorConvert(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, 
+                                 maxBuffers, maxMemory, priority, stackSize);
+    pPlugin = NULL;  /* This is just to eliminate compiler warning about unused variables/objects */
     return(asynSuccess);
 }
 

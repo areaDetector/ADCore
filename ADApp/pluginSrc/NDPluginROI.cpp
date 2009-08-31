@@ -748,8 +748,10 @@ extern "C" int NDROIConfigure(const char *portName, int queueSize, int blockingC
                                  int maxBuffers, size_t maxMemory,
                                  int priority, int stackSize)
 {
-    new NDPluginROI(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxROIs,
-                    maxBuffers, maxMemory, priority, stackSize);
+    NDPluginROI *pPlugin =
+        new NDPluginROI(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxROIs,
+                        maxBuffers, maxMemory, priority, stackSize);
+    pPlugin = NULL;  /* This is just to eliminate compiler warning about unused variables/objects */
     return(asynSuccess);
 }
 

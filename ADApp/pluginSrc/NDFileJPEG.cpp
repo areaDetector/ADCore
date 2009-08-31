@@ -365,8 +365,10 @@ extern "C" int NDFileJPEGConfigure(const char *portName, int queueSize, int bloc
                                    const char *NDArrayPort, int NDArrayAddr,
                                    int priority, int stackSize)
 {
-    new NDFileJPEG(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                   priority, stackSize);
+    NDFileJPEG *pPlugin =
+        new NDFileJPEG(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                       priority, stackSize);
+    pPlugin = NULL;  /* This is just to eliminate compiler warning about unused variables/objects */
     return(asynSuccess);
 }
 
