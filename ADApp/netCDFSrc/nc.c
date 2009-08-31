@@ -2,7 +2,7 @@
  *	Copyright 1996, University Corporation for Atmospheric Research
  *      See netcdf/COPYRIGHT file for copying and redistribution conditions.
  */
-/* $Id: nc.c,v 1.1 2008-04-18 19:34:28 rivers Exp $ */
+/* $Id: nc.c,v 1.2 2009-08-31 20:50:31 rivers Exp $ */
 
 #include "nc.h"
 #include "rnd.h"
@@ -198,9 +198,10 @@ ncx_howmany(nc_type type, size_t xbufsize)
 		return xbufsize/X_SIZEOF_FLOAT;
 	case NC_DOUBLE:
 		return xbufsize/X_SIZEOF_DOUBLE;
+	default:
+		assert("ncx_howmany: Bad type" == 0);
+		return(0);
 	}
-	assert("ncx_howmany: Bad type" == 0);
-	return(0);
 }
 
 #define	D_RNDUP(x, align) _RNDUP(x, (off_t)(align))
@@ -498,7 +499,7 @@ static int
 fill_added_recs(NC *gnu, NC *old)
 {
 	NC_var ** const gnu_varpp = (NC_var **)gnu->vars.value;
-	NC_var *const *const gnu_end = &gnu_varpp[gnu->vars.nelems];
+	/*NC_var *const *const gnu_end = &gnu_varpp[gnu->vars.nelems];*/
 
 	const int old_nrecs = (int) NC_get_numrecs(old);
 	int recno = 0;
