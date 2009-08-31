@@ -760,8 +760,10 @@ simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDat
 extern "C" int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int dataType,
                                  int maxBuffers, size_t maxMemory, int priority, int stackSize)
 {
-    new simDetector(portName, maxSizeX, maxSizeY, (NDDataType_t)dataType, 
-                    maxBuffers, maxMemory, priority, stackSize);
+    simDetector *pSimDetector 
+        = new simDetector(portName, maxSizeX, maxSizeY, (NDDataType_t)dataType, 
+                          maxBuffers, maxMemory, priority, stackSize);
+    pSimDetector = NULL;
     return(asynSuccess);
 }
 
