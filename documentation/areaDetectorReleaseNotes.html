@@ -9,6 +9,31 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
+    Release 1-6 (xxx-October-2009???)</h2>
+  <ul>
+    <li>General
+      <ul>
+        <li>Converted to be compatible with EPICS base 3.14.11.</li>
+        <li>Converted all databases so that input records are PINI=RUNNING (new) and output
+          records are PINI=YES (as before) . This change is needed to work with asyn R4-13,
+          which removes a non-elegant hack in asynPortDriver in asyn 4-11 and 4-12. That hack
+          worked around the problem in EPICS 3.14.10 and ealier that there was no way to control
+          the order in which records with PINI=YES processed at iocInit().</li>
+        <li>Changes to support 64-bit architectures, including linux-x86_64. This also required
+          changes to the synApps modules on which areaDetector applications depend (autosave,
+          busy, etc.)</li>
+        <li>Changes in Makefiles to support the win32-x86-debug architecture.</li>
+      </ul>
+    </li>
+    <li>Drivers
+      <ul>
+        <li>Fixed a bug in the Roper driver. There was a buffer overflow problem in the function
+          that converts C strings to Windows BSTR strings. This would cause the IOC to crash
+          when saving SPE files with Comment PVs longer than 40 characters.</li>
+      </ul>
+    </li>
+  </ul>
+  <h2 style="text-align: center">
     Release 1-5 (23-August-2009)</h2>
   <ul>
     <li>General
@@ -89,9 +114,9 @@
     </li>
     <li>medm displays
       <ul>
-        <li>Added new top-level detector-specific displays for Prosilica (prosilica.adl), 
-          Firewire (firewire.adl), and simDetector (simDetector.adl). 
-          ADBase.adl should no longer be used for these cameras.</li>
+        <li>Added new top-level detector-specific displays for Prosilica (prosilica.adl),
+          Firewire (firewire.adl), and simDetector (simDetector.adl). ADBase.adl should no
+          longer be used for these cameras.</li>
       </ul>
     </li>
     <li>Viewers
