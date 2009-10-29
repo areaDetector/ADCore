@@ -1,0 +1,211 @@
+record(stringout, "$(P)$(R)Name")
+{
+   field(PINI, "1")
+   field(DTYP, "asynOctetWrite")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
+}
+
+record(mbbo, "$(P)$(R)Type1")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TYPE1")
+   field(ZRST, "None")
+   field(ZRVL, "0")
+   field(ONST, "RotateCW90")
+   field(ONVL, "1")
+   field(TWST, "RotateCCW90")
+   field(TWVL, "2")
+   field(THST, "Rotate180")
+   field(THVL, "3")
+   field(FRST, "Flip0011")
+   field(FRVL, "4")
+   field(FVST, "Flip0110")
+   field(FVVL, "5")
+   field(SXST, "FlipX")
+   field(SXVL, "6")
+   field(SVST, "FlipY")
+   field(SVVL, "7")
+}
+
+record(mbbo, "$(P)$(R)Type2")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TYPE2")
+   field(ZRST, "None")
+   field(ZRVL, "0")
+   field(ONST, "RotateCW90")
+   field(ONVL, "1")
+   field(TWST, "RotateCCW90")
+   field(TWVL, "2")
+   field(THST, "Rotate180")
+   field(THVL, "3")
+   field(FRST, "Flip0011")
+   field(FRVL, "4")
+   field(FVST, "Flip0110")
+   field(FVVL, "5")
+   field(SXST, "FlipX")
+   field(SXVL, "6")
+   field(SVST, "FlipY")
+   field(SVVL, "7")
+}
+
+record(mbbo, "$(P)$(R)Type3")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TYPE3")
+   field(ZRST, "None")
+   field(ZRVL, "0")
+   field(ONST, "RotateCW90")
+   field(ONVL, "1")
+   field(TWST, "RotateCCW90")
+   field(TWVL, "2")
+   field(THST, "Rotate180")
+   field(THVL, "3")
+   field(FRST, "Flip0011")
+   field(FRVL, "4")
+   field(FVST, "Flip0110")
+   field(FVVL, "5")
+   field(SXST, "FlipX")
+   field(SXVL, "6")
+   field(SVST, "FlipY")
+   field(SVVL, "7")
+}
+
+record(mbbo, "$(P)$(R)Type4")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TYPE4")
+   field(ZRST, "None")
+   field(ZRVL, "0")
+   field(ONST, "RotateCW90")
+   field(ONVL, "1")
+   field(TWST, "RotateCCW90")
+   field(TWVL, "2")
+   field(THST, "Rotate180")
+   field(THVL, "3")
+   field(FRST, "Flip0011")
+   field(FRVL, "4")
+   field(FVST, "Flip0110")
+   field(FVVL, "5")
+   field(SXST, "FlipX")
+   field(SXVL, "6")
+   field(SVST, "FlipY")
+   field(SVVL, "7")
+}
+
+
+record(mbbo, "$(P)$(R)OriginLocation")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ORIGIN")
+   field(ZRST, "LowerLeft")
+   field(ZRVL, "0")
+   field(ONST, "UpperLeft")
+   field(ONVL, "1")
+   field(TWST, "LowerRight")
+   field(TWVL, "2")
+   field(THST, "UpperRight")
+   field(THVL, "3")
+}
+
+record(mbbi, "$(P)$(R)OriginLocation_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ORIGIN")
+   field(ZRST, "LowerLeft")
+   field(ZRVL, "0")
+   field(ONST, "UpperLeft")
+   field(ONVL, "1")
+   field(TWST, "LowerRight")
+   field(TWVL, "2")
+   field(THST, "UpperRight")
+   field(THVL, "3")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)T1MaxSize0")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))T1_DIM0_MAX_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)T1MaxSize1")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))T1_DIM1_MAX_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)T2MaxSize0")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))T2_DIM0_MAX_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)T2MaxSize1")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))T2_DIM1_MAX_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)T3MaxSize0")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))T3_DIM0_MAX_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)T3MaxSize1")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))T3_DIM1_MAX_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)T4MaxSize0")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))T4_DIM0_MAX_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)T4MaxSize1")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))T1_DIM1_MAX_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+
+record(longin, "$(P)$(R)ArraySize0")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_0")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)ArraySize1")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_1")
+   field(SCAN, "I/O Intr")
+}
