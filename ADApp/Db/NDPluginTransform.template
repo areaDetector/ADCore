@@ -145,6 +145,14 @@ record(longin, "$(P)$(R)T1MaxSize1")
    field(SCAN, "I/O Intr")
 }
 
+record(longin, "$(P)$(R)T1MaxSize2")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))T1_DIM2_MAX_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
 record(longin, "$(P)$(R)T2MaxSize0")
 {
    field(PINI, "1")
@@ -158,6 +166,14 @@ record(longin, "$(P)$(R)T2MaxSize1")
    field(PINI, "1")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))T2_DIM1_MAX_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)T2MaxSize2")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))T2_DIM2_MAX_SIZE")
    field(SCAN, "I/O Intr")
 }
 
@@ -177,6 +193,14 @@ record(longin, "$(P)$(R)T3MaxSize1")
    field(SCAN, "I/O Intr")
 }
 
+record(longin, "$(P)$(R)T3MaxSize2")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))T3_DIM2_MAX_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
 record(longin, "$(P)$(R)T4MaxSize0")
 {
    field(PINI, "1")
@@ -189,7 +213,15 @@ record(longin, "$(P)$(R)T4MaxSize1")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))T1_DIM1_MAX_SIZE")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))T4_DIM1_MAX_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)T4MaxSize2")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))T4_DIM2_MAX_SIZE")
    field(SCAN, "I/O Intr")
 }
 
@@ -207,5 +239,13 @@ record(longin, "$(P)$(R)ArraySize1")
    field(PINI, "1")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_1")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)ArraySize2")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_2")
    field(SCAN, "I/O Intr")
 }
