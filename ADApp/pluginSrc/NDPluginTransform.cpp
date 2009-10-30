@@ -31,14 +31,19 @@ static asynParamString_t NDPluginTransformParamString[] = {
 	{NDPluginTransformOrigin, "ORIGIN"},
 	{NDPluginTransform1Dim0MaxSize, "T1_DIM0_MAX_SIZE"},
 	{NDPluginTransform1Dim1MaxSize, "T1_DIM1_MAX_SIZE"},
+	{NDPluginTransform1Dim2MaxSize, "T1_DIM2_MAX_SIZE"},
 	{NDPluginTransform2Dim0MaxSize, "T2_DIM0_MAX_SIZE"},
 	{NDPluginTransform2Dim1MaxSize, "T2_DIM1_MAX_SIZE"},
+	{NDPluginTransform2Dim2MaxSize, "T2_DIM2_MAX_SIZE"},
 	{NDPluginTransform3Dim0MaxSize, "T3_DIM0_MAX_SIZE"},
 	{NDPluginTransform3Dim1MaxSize, "T3_DIM1_MAX_SIZE"},
+	{NDPluginTransform3Dim2MaxSize, "T3_DIM2_MAX_SIZE"},
 	{NDPluginTransform4Dim0MaxSize, "T4_DIM0_MAX_SIZE"},
 	{NDPluginTransform4Dim1MaxSize, "T4_DIM1_MAX_SIZE"},
+	{NDPluginTransform4Dim2MaxSize, "T4_DIM2_MAX_SIZE"},
 	{NDPluginTransformArraySize0, "ARRAY_SIZE_0"},
 	{NDPluginTransformArraySize1, "ARRAY_SIZE_1"},
+	{NDPluginTransformArraySize2, "ARRAY_SIZE_2"},
 
 };
 
@@ -50,14 +55,54 @@ static asynParamString_t NDPluginTransformParamString[] = {
 	* \param[in] A structure to hold the indices of the transformed data (where to place the input pixel's data)
 	*/
 	template <typename epicsType>
-	void movePixel(NDArray *inArray, NDTransformIndex_t pixelIndexIn,
+	void movePixelStd(NDArray *inArray, NDTransformIndex_t pixelIndexIn,
 									  NDArray *outArray, NDTransformIndex_t pixelIndexOut){
 		epicsType *inData = (epicsType *)inArray->pData;
 		epicsType *outData = (epicsType *)outArray->pData;
 
 
-		outData[pixelIndexOut.index1 * outArray->dims[0].size + pixelIndexOut.index0 ] =
-			inData[pixelIndexIn.index1 * inArray->dims[0].size + pixelIndexIn.index0];
+		outData[outArray->dims[0].size*outArray->dims[1].size * pixelIndexOut.index2 +
+				pixelIndexOut.index1 * outArray->dims[0].size + pixelIndexOut.index0] =
+			inData[inArray->dims[0].size*inArray->dims[1].size * pixelIndexIn.index2 +
+			        pixelIndexIn.index1 * inArray->dims[0].size + pixelIndexIn.index0];
+	}
+
+	/** Actually perform the move of the pixel from the input NDArray to it's transformed location in the output NDArray.
+	* \param[in] The NDArray to be transformed
+	* \param[in] A structure holding the indices of the pixel to be moved
+	* \param[in] The NDArray that will hold the transformed data
+	* \param[in] A structure to hold the indices of the transformed data (where to place the input pixel's data)
+	*/
+	template <typename epicsType>
+	void movePixelRGB1(NDArray *inArray, NDTransformIndex_t pixelIndexIn,
+									  NDArray *outArray, NDTransformIndex_t pixelIndexOut){
+		epicsType *inData = (epicsType *)inArray->pData;
+		epicsType *outData = (epicsType *)outArray->pData;
+
+		outData[outArray->dims[1].size*outArray->dims[0].size * pixelIndexOut.index1 +
+				pixelIndexOut.index0 * outArray->dims[0].size + pixelIndexOut.index2] =
+			inData[inArray->dims[1].size*inArray->dims[0].size * pixelIndexIn.index1 +
+			        pixelIndexIn.index0 * inArray->dims[0].size + pixelIndexIn.index2];
+
+	}
+
+	/** Actually perform the move of the pixel from the input NDArray to it's transformed location in the output NDArray.
+	* \param[in] The NDArray to be transformed
+	* \param[in] A structure holding the indices of the pixel to be moved
+	* \param[in] The NDArray that will hold the transformed data
+	* \param[in] A structure to hold the indices of the transformed data (where to place the input pixel's data)
+	*/
+	template <typename epicsType>
+	void movePixelRGB2(NDArray *inArray, NDTransformIndex_t pixelIndexIn,
+									  NDArray *outArray, NDTransformIndex_t pixelIndexOut){
+		epicsType *inData = (epicsType *)inArray->pData;
+		epicsType *outData = (epicsType *)outArray->pData;
+
+
+		outData[outArray->dims[1].size*outArray->dims[0].size * pixelIndexOut.index1 +
+				pixelIndexOut.index2 * outArray->dims[0].size + pixelIndexOut.index0] =
+			inData[inArray->dims[1].size*inArray->dims[0].size * pixelIndexIn.index1 +
+			        pixelIndexIn.index2 * inArray->dims[0].size + pixelIndexIn.index0];
 	}
 
 	/** Callback function that is called by the NDArray driver with new NDArray data.
@@ -68,15 +113,46 @@ static asynParamString_t NDPluginTransformParamString[] = {
     	NDDimension_t dimsIn[ND_ARRAY_MAX_DIMS];
     	NDArray *transformedArray;
 		int ii;
+		int colorMode;
 	    const char* functionName = "processCallbacks";
 
 		/* Call the base class method */
 		NDPluginDriver::processCallbacks(pArray);
 
+		colorMode = NDColorModeMono;
+
+		/** Need to treat RGB modes diferently */
+		getIntegerParam(NDPluginDriverColorMode, &colorMode);
+
+		if ( colorMode == NDColorModeRGB1) {
+			this->userDims[0] = 1;
+			this->userDims[1] = 2;
+			this->userDims[2] = 0;
+			this->realDims[0] = 2;
+			this->realDims[1] = 0;
+			this->realDims[2] = 1;
+		}
+		else if (colorMode == NDColorModeRGB2) {
+			this->userDims[0] = 0;
+			this->userDims[1] = 2;
+			this->userDims[2] = 1;
+			this->realDims[0] = 0;
+			this->realDims[1] = 2;
+			this->realDims[2] = 1;
+		}
+		else {
+			this->userDims[0] = 0;
+			this->userDims[1] = 1;
+			this->userDims[2] = 2;
+			this->realDims[0] = 0;
+			this->realDims[1] = 1;
+			this->realDims[2] = 2;
+		}
+
 		for (ii = 0; ii < ND_ARRAY_MAX_DIMS; ii++) {
-			dimsIn[ii].size = pArray->dims[ii].size;
-			if ( ii < 2 ) {
-				setIntegerParam(NDPluginTransformArraySize0 + ii, dimsIn[ii].size);
+			dimsIn[userDims[ii]].size = pArray->dims[ii].size;
+			if ( ii < 3 ) {
+				setIntegerParam(NDPluginTransformArraySize0 + ii, dimsIn[userDims[ii]].size);
 			}
 		}
 		/* set max size params based on what the transform does to the image */
@@ -94,10 +170,14 @@ static asynParamString_t NDPluginTransformParamString[] = {
 		this->pArrays[0] = this->pNDArrayPool->copy(pArray, NULL, 1);
 		transformedArray = this->pArrays[0];
 		if ( pArray->ndims == 2 ) {
-			this->transformArray(pArray, transformedArray);
+			this->transform2DArray(pArray, transformedArray);
 		}
-		else if (pArray->ndims > 2) {
-
+		else if (pArray->ndims == 3) {
+			this->transform3DArray(pArray, transformedArray);
+		}
+		else if (pArray->ndims > 3) {
+			asynPrint( this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s, this method is meant to transform 2Dimages when the number of dimensions is <= 3\n",
+						pluginName, functionName);
 		}
 		else {
 			asynPrint( this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s, this method is meant to transform 2d images.  Need ndims >=2\n",
@@ -183,35 +263,43 @@ static asynParamString_t NDPluginTransformParamString[] = {
 	  */
 	void NDPluginTransform::setMaxSizes(int startingPoint) {
 		int ii;
-		int dim0MaxSize, dim1MaxSize;
+		int dimMaxSize[3];
 		for (ii=startingPoint; ii< this->maxTransforms; ii++) {
 			if ( ii == 0 ) {
-				getIntegerParam( NDPluginTransformArraySize0, &dim0MaxSize);
-				getIntegerParam( NDPluginTransformArraySize1, &dim1MaxSize);
+				getIntegerParam( NDPluginTransformArraySize0, &dimMaxSize[0]);
+				getIntegerParam( NDPluginTransformArraySize1, &dimMaxSize[1]);
+				getIntegerParam( NDPluginTransformArraySize2, &dimMaxSize[2]);
 				if ( transformFlipsAxes(this->pTransforms[ii].type )) {
-					this->pTransforms[ii].dims[0].size = dim1MaxSize;
-					this->pTransforms[ii].dims[1].size = dim0MaxSize;
+					this->pTransforms[ii].dims[0].size = dimMaxSize[this->userDims[1]];
+					this->pTransforms[ii].dims[1].size = dimMaxSize[this->userDims[0]];
+					this->pTransforms[ii].dims[2].size = dimMaxSize[this->userDims[2]];
 				}
 				else {
-					this->pTransforms[ii].dims[0].size = dim0MaxSize;
-					this->pTransforms[ii].dims[1].size = dim1MaxSize;
+					this->pTransforms[ii].dims[0].size = dimMaxSize[this->userDims[0]];
+					this->pTransforms[ii].dims[1].size = dimMaxSize[this->userDims[1]];
+					this->pTransforms[ii].dims[2].size = dimMaxSize[this->userDims[2]];
 				}
 
 			}
 			else {
-				getIntegerParam( (NDPluginTransform1Dim0MaxSize + 2*(ii-1)), &dim0MaxSize);
-				getIntegerParam( (NDPluginTransform1Dim1MaxSize + 2*(ii-1)), &dim1MaxSize);
+				getIntegerParam( (NDPluginTransform1Dim0MaxSize + 3*(ii-1)), &dimMaxSize[this->userDims[0]]);
+				getIntegerParam( (NDPluginTransform1Dim1MaxSize + 3*(ii-1)), &dimMaxSize[this->userDims[1]]);
+				getIntegerParam( (NDPluginTransform1Dim2MaxSize + 3*(ii-1)), &dimMaxSize[this->userDims[2]]);
 				if ( transformFlipsAxes(this->pTransforms[ii].type) ) {
-					this->pTransforms[ii].dims[0].size = dim1MaxSize;
-					this->pTransforms[ii].dims[1].size = dim0MaxSize;
+					this->pTransforms[ii].dims[0].size = dimMaxSize[this->userDims[1]];
+					this->pTransforms[ii].dims[1].size = dimMaxSize[this->userDims[0]];
+					this->pTransforms[ii].dims[2].size = dimMaxSize[this->userDims[2]];
+
 				}
 				else {
-					this->pTransforms[ii].dims[0].size = dim0MaxSize;
-					this->pTransforms[ii].dims[1].size = dim1MaxSize;
+					this->pTransforms[ii].dims[0].size = dimMaxSize[this->userDims[0]];
+					this->pTransforms[ii].dims[1].size = dimMaxSize[this->userDims[1]];
+					this->pTransforms[ii].dims[2].size = dimMaxSize[this->userDims[2]];
 				}
 			}
-			setIntegerParam( (NDPluginTransform1Dim0MaxSize + 2*(ii)), this->pTransforms[ii].dims[0].size);
-			setIntegerParam( (NDPluginTransform1Dim1MaxSize + 2*(ii)), this->pTransforms[ii].dims[1].size);
+			setIntegerParam( (NDPluginTransform1Dim0MaxSize + 3*(ii)), this->pTransforms[ii].dims[0].size);
+			setIntegerParam( (NDPluginTransform1Dim1MaxSize + 3*(ii)), this->pTransforms[ii].dims[1].size);
+			setIntegerParam( (NDPluginTransform1Dim2MaxSize + 3*(ii)), this->pTransforms[ii].dims[2].size);
 
 		}
 		callParamCallbacks();
@@ -228,6 +316,7 @@ static asynParamString_t NDPluginTransformParamString[] = {
 		NDTransformIndex_t indexOut;
 		indexOut.index0 = indexIn.index0;
 		indexOut.index1 = indexIn.index1;
+		indexOut.index2 = indexIn.index2;
 		return indexOut;
 	}
 
@@ -242,10 +331,12 @@ static asynParamString_t NDPluginTransformParamString[] = {
 		if ( (originLocation == 0 ) || (this->originLocation == 3)){
 			indexOut.index0 = indexIn.index1;
 			indexOut.index1 = (this->pTransforms[transformNumber].dims[1].size - 1) - indexIn.index0;
+			indexOut.index2 = indexIn.index2;
 		}
 		else if ( (originLocation == 1 ) || (this->originLocation == 2)){
 			indexOut.index0 = (this->pTransforms[transformNumber].dims[0].size -1) - indexIn.index1;
 			indexOut.index1 = indexIn.index0;
+			indexOut.index2 = indexIn.index2;
 		}
 		return indexOut;
 	}
@@ -261,10 +352,12 @@ static asynParamString_t NDPluginTransformParamString[] = {
 		if ( (originLocation == 0 ) || (this->originLocation == 3)){
 			indexOut.index0 = (this->pTransforms[transformNumber].dims[0].size - 1) - indexIn.index1;
 			indexOut.index1 = indexIn.index0;
+			indexOut.index2 = indexIn.index2;
 		}
 		else if ( (originLocation == 1 ) || (this->originLocation == 2)){
 			indexOut.index0 = indexIn.index1;
 			indexOut.index1 = (this->pTransforms[transformNumber].dims[1].size - 1) - indexIn.index0;
+			indexOut.index2 = indexIn.index2;
 		}
 
 		return indexOut;
@@ -280,6 +373,7 @@ static asynParamString_t NDPluginTransformParamString[] = {
 		NDTransformIndex_t indexOut;
 		indexOut.index0 = (this->pTransforms[transformNumber].dims[0].size - 1) - indexIn.index0;
 		indexOut.index1 = (this->pTransforms[transformNumber].dims[1].size - 1) - indexIn.index1;
+		indexOut.index2 = indexIn.index2;
 
 		return indexOut;
 	}
@@ -294,6 +388,7 @@ static asynParamString_t NDPluginTransformParamString[] = {
 		NDTransformIndex_t indexOut;
 		indexOut.index0 = indexIn.index1;
 		indexOut.index1 = indexIn.index0;
+		indexOut.index2 = indexIn.index2;
 
 		return indexOut;
 	}
@@ -308,6 +403,7 @@ static asynParamString_t NDPluginTransformParamString[] = {
 		NDTransformIndex_t indexOut;
 		indexOut.index0 = (this->pTransforms[transformNumber].dims[0].size - 1) - indexIn.index1;
 		indexOut.index1 = (this->pTransforms[transformNumber].dims[1].size - 1) - indexIn.index0;
+		indexOut.index2 = indexIn.index2;
 
 		return indexOut;
 	}
@@ -322,6 +418,7 @@ static asynParamString_t NDPluginTransformParamString[] = {
 		NDTransformIndex_t indexOut;
 		indexOut.index0 = (this->pTransforms[transformNumber].dims[0].size - 1) - indexIn.index0;
 		indexOut.index1 = indexIn.index1;
+		indexOut.index2 = indexIn.index2;
 
 		return indexOut;
 	}
@@ -336,19 +433,201 @@ static asynParamString_t NDPluginTransformParamString[] = {
 		NDTransformIndex_t indexOut;
 		indexOut.index0 = indexIn.index0;
 		indexOut.index1 = (this->pTransforms[transformNumber].dims[1].size - 1) - indexIn.index1;
+		indexOut.index2 = indexIn.index2;
 
 		return indexOut;
 	}
 
+
+	/** Loop over available transforms to transform the pixel
+	  * \param[in] indexIn A structure to hold the pixel location to be transformed.
+	  * \param[in] originLocation Indicates the physical location of 0,0.
+	  * \return the transformed pixel location
+	*/
+	NDTransformIndex_t NDPluginTransform::transformPixel(NDTransformIndex_t indexIn, int originLocation){
+		int transformIndex;
+		NDTransformIndex_t pixelIndexIn, pixelIndexOut;
+		pixelIndexIn.index0 = indexIn.index0;
+		pixelIndexIn.index1 = indexIn.index1;
+		pixelIndexIn.index2 = indexIn.index2;
+
+	for ( transformIndex = 0; transformIndex < this->maxTransforms; transformIndex++) {
+			switch (this->pTransforms[transformIndex].type){
+				case TransformNone:
+					pixelIndexOut = transformNone(pixelIndexIn, this->originLocation, transformIndex);
+					break;
+				case TransformRotateCW90:
+					pixelIndexOut = transformRotateCW90(pixelIndexIn, this->originLocation, transformIndex);
+					break;
+				case TransformRotateCCW90:
+					pixelIndexOut = transformRotateCCW90(pixelIndexIn, this->originLocation, transformIndex);
+					break;
+				case TransformRotate180:
+					pixelIndexOut = transformRotate180(pixelIndexIn, this->originLocation, transformIndex);
+					break;
+				case TransformFlip0011:
+					pixelIndexOut = transformFlip0011(pixelIndexIn, this->originLocation, transformIndex);
+					break;
+				case TransformFlip0110:
+					pixelIndexOut = transformFlip0110(pixelIndexIn, this->originLocation, transformIndex);
+					break;
+				case TransformFlipX:
+					pixelIndexOut = transformFlipX(pixelIndexIn, this->originLocation, transformIndex);
+					break;
+				case TransformFlipY:
+					pixelIndexOut = transformFlipY(pixelIndexIn, this->originLocation, transformIndex);
+					break;
+			}
+			pixelIndexIn.index0 = pixelIndexOut.index0;
+			pixelIndexIn.index1 = pixelIndexOut.index1;
+			pixelIndexIn.index2 = pixelIndexOut.index2;
+		}
+		return pixelIndexOut;
+	}
+
+
+/** Find move the pixels */
+	void NDPluginTransform::moveRGB1Pixel(NDArray *inArray, NDTransformIndex_t pixelIndexIn,
+									  NDArray *outArray, NDTransformIndex_t pixelIndexOut){
+		switch (inArray->dataType) {
+			case NDInt8:
+				movePixelRGB1<epicsInt8>(inArray, pixelIndexIn, outArray, pixelIndexOut);
+				break;
+			case NDUInt8:
+				movePixelRGB1<epicsUInt8>(inArray, pixelIndexIn, outArray, pixelIndexOut);
+				break;
+			case NDInt16:
+				movePixelRGB1<epicsInt16>(inArray, pixelIndexIn, outArray, pixelIndexOut);
+				break;
+			case NDUInt16:
+				movePixelRGB1<epicsUInt16>(inArray, pixelIndexIn, outArray, pixelIndexOut);
+				break;
+			case NDInt32:
+				movePixelRGB1<epicsInt32>(inArray, pixelIndexIn, outArray, pixelIndexOut);
+				break;
+			case NDUInt32:
+				movePixelRGB1<epicsUInt32>(inArray, pixelIndexIn, outArray, pixelIndexOut);
+				break;
+			case NDFloat32:
+				movePixelRGB1<epicsFloat32>(inArray, pixelIndexIn, outArray, pixelIndexOut);
+				break;
+			case NDFloat64:
+				movePixelRGB1<epicsFloat64>(inArray, pixelIndexIn, outArray, pixelIndexOut);
+				break;
+		}
+}
+/** Find move the pixels */
+	void NDPluginTransform::moveRGB2Pixel(NDArray *inArray, NDTransformIndex_t pixelIndexIn,
+									  NDArray *outArray , NDTransformIndex_t pixelIndexOut){
+		switch (inArray->dataType) {
+			case NDInt8:
+				movePixelRGB2<epicsInt8>(inArray, pixelIndexIn, outArray, pixelIndexOut);
+				break;
+			case NDUInt8:
+				movePixelRGB2<epicsUInt8>(inArray, pixelIndexIn, outArray, pixelIndexOut);
+				break;
+			case NDInt16:
+				movePixelRGB2<epicsInt16>(inArray, pixelIndexIn, outArray, pixelIndexOut);
+				break;
+			case NDUInt16:
+				movePixelRGB2<epicsUInt16>(inArray, pixelIndexIn, outArray, pixelIndexOut);
+				break;
+			case NDInt32:
+				movePixelRGB2<epicsInt32>(inArray, pixelIndexIn, outArray, pixelIndexOut);
+				break;
+			case NDUInt32:
+				movePixelRGB2<epicsUInt32>(inArray, pixelIndexIn, outArray, pixelIndexOut);
+				break;
+			case NDFloat32:
+				movePixelRGB2<epicsFloat32>(inArray, pixelIndexIn, outArray, pixelIndexOut);
+				break;
+			case NDFloat64:
+				movePixelRGB2<epicsFloat64>(inArray, pixelIndexIn, outArray, pixelIndexOut);
+				break;
+		}
+}
+/** Find move the pixels */
+	void NDPluginTransform::moveStdPixel(NDArray *inArray, NDTransformIndex_t pixelIndexIn,
+									  NDArray *outArray, NDTransformIndex_t pixelIndexOut){
+		switch (inArray->dataType) {
+			case NDInt8:
+				movePixelStd<epicsInt8>(inArray, pixelIndexIn, outArray, pixelIndexOut);
+				break;
+			case NDUInt8:
+				movePixelStd<epicsUInt8>(inArray, pixelIndexIn, outArray, pixelIndexOut);
+				break;
+			case NDInt16:
+				movePixelStd<epicsInt16>(inArray, pixelIndexIn, outArray, pixelIndexOut);
+				break;
+			case NDUInt16:
+				movePixelStd<epicsUInt16>(inArray, pixelIndexIn, outArray, pixelIndexOut);
+				break;
+			case NDInt32:
+				movePixelStd<epicsInt32>(inArray, pixelIndexIn, outArray, pixelIndexOut);
+				break;
+			case NDUInt32:
+				movePixelStd<epicsUInt32>(inArray, pixelIndexIn, outArray, pixelIndexOut);
+				break;
+			case NDFloat32:
+				movePixelStd<epicsFloat32>(inArray, pixelIndexIn, outArray, pixelIndexOut);
+				break;
+			case NDFloat64:
+				movePixelStd<epicsFloat64>(inArray, pixelIndexIn, outArray, pixelIndexOut);
+				break;
+		}
+	}
+/** loop over the axes of the image to transform the axes
+  * \param[in] inArray the input NDArray
+  * \param[in] outArray the transformed Array
+  */
+void NDPluginTransform::transform3DArray(NDArray *inArray, NDArray *outArray) {
+	int ii, jj, kk;
+	int maxInSize[3], maxOutSize[3];
+	NDTransformIndex_t pixelIndexIn, pixelIndexOut, pixelIndexInit;
+	int colorMode;
+
+	maxInSize[0] = inArray->dims[userDims[0]].size;
+	maxInSize[1] = inArray->dims[userDims[1]].size;
+	maxInSize[2] = inArray->dims[userDims[2]].size;
+	maxOutSize[0] = this->pTransforms[this->maxTransforms-1].dims[0].size;
+	maxOutSize[1] = this->pTransforms[this->maxTransforms-1].dims[1].size;
+	maxOutSize[2] = this->pTransforms[this->maxTransforms-1].dims[2].size;
+	outArray->dims[0].size = maxOutSize[this->realDims[0]];
+	outArray->dims[1].size = maxOutSize[this->realDims[1]];
+	outArray->dims[2].size = maxOutSize[this->realDims[2]];
+	getIntegerParam(NDPluginDriverColorMode, &colorMode);
+
+	for (kk = 0; kk<maxInSize[2]; kk++) {
+		for (ii = 0; ii<maxInSize[1]; ii++){
+			for (jj = 0; jj<maxInSize[0]; jj++){
+				pixelIndexIn.index0 = jj;
+				pixelIndexIn.index1 = ii;
+				pixelIndexIn.index2 = kk;
+				pixelIndexInit.index0 = jj;
+				pixelIndexInit.index1 = ii;
+				pixelIndexInit.index2 = kk;
+				pixelIndexOut = this->transformPixel(pixelIndexIn, this->originLocation);
+				if (colorMode == NDColorModeRGB1 ) {
+					this->moveRGB1Pixel(inArray, pixelIndexInit, outArray, pixelIndexOut);
+				}
+				else if (colorMode == NDColorModeRGB2) {
+					this->moveRGB2Pixel(inArray, pixelIndexInit, outArray, pixelIndexOut);
+				}
+				else {
+					this->moveStdPixel(inArray, pixelIndexInit, outArray, pixelIndexOut);
+				}
+			}
+		}
+	}
+}
 
 /** loop over the axes of the image to transform the axes
   * \param[in] inArray the input NDArray
   * \param[in] outArray the transformed Array
   */
 
-void NDPluginTransform::transformArray(NDArray *inArray, NDArray *outArray) {
+void NDPluginTransform::transform2DArray(NDArray *inArray, NDArray *outArray) {
 	int ii, jj;
-	int transformIndex;
 	int maxInSize0, maxInSize1, maxOutSize0, maxOutSize1;
 	NDTransformIndex_t pixelIndexIn, pixelIndexOut, pixelIndexInit;
 
@@ -365,64 +644,12 @@ void NDPluginTransform::transformArray(NDArray *inArray, NDArray *outArray) {
 		for (jj = 0; jj<maxInSize0; jj++){
 			pixelIndexIn.index0 = jj;
 			pixelIndexIn.index1 = ii;
+			pixelIndexIn.index2 = 0;
 			pixelIndexInit.index0 = jj;
 			pixelIndexInit.index1 = ii;
-			for ( transformIndex = 0; transformIndex < this->maxTransforms; transformIndex++) {
-				switch (this->pTransforms[transformIndex].type){
-					case TransformNone:
-						pixelIndexOut = transformNone(pixelIndexIn, this->originLocation, transformIndex);
-						break;
-					case TransformRotateCW90:
-						pixelIndexOut = transformRotateCW90(pixelIndexIn, this->originLocation, transformIndex);
-						break;
-					case TransformRotateCCW90:
-						pixelIndexOut = transformRotateCCW90(pixelIndexIn, this->originLocation, transformIndex);
-						break;
-					case TransformRotate180:
-						pixelIndexOut = transformRotate180(pixelIndexIn, this->originLocation, transformIndex);
-						break;
-					case TransformFlip0011:
-						pixelIndexOut = transformFlip0011(pixelIndexIn, this->originLocation, transformIndex);
-						break;
-					case TransformFlip0110:
-						pixelIndexOut = transformFlip0110(pixelIndexIn, this->originLocation, transformIndex);
-						break;
-					case TransformFlipX:
-						pixelIndexOut = transformFlipX(pixelIndexIn, this->originLocation, transformIndex);
-						break;
-					case TransformFlipY:
-						pixelIndexOut = transformFlipY(pixelIndexIn, this->originLocation, transformIndex);
-						break;
-				}
-				pixelIndexIn.index0 = pixelIndexOut.index0;
-				pixelIndexIn.index1 = pixelIndexOut.index1;
-			}
-			switch (inArray->dataType) {
-				case NDInt8:
-					movePixel<epicsInt8>(inArray, pixelIndexInit, outArray, pixelIndexOut);
-					break;
-				case NDUInt8:
-					movePixel<epicsUInt8>(inArray, pixelIndexInit, outArray, pixelIndexOut);
-					break;
-				case NDInt16:
-					movePixel<epicsInt16>(inArray, pixelIndexInit, outArray, pixelIndexOut);
-					break;
-				case NDUInt16:
-					movePixel<epicsUInt16>(inArray, pixelIndexInit, outArray, pixelIndexOut);
-					break;
-				case NDInt32:
-					movePixel<epicsInt32>(inArray, pixelIndexInit, outArray, pixelIndexOut);
-					break;
-				case NDUInt32:
-					movePixel<epicsUInt32>(inArray, pixelIndexInit, outArray, pixelIndexOut);
-					break;
-				case NDFloat32:
-					movePixel<epicsFloat32>(inArray, pixelIndexInit, outArray, pixelIndexOut);
-					break;
-				case NDFloat64:
-					movePixel<epicsFloat64>(inArray, pixelIndexInit, outArray, pixelIndexOut);
-					break;
-			}
+			pixelIndexInit.index2 = 0;
+			pixelIndexOut = this->transformPixel(pixelIndexIn, this->originLocation);
+			this->moveStdPixel(inArray, pixelIndexInit, outArray, pixelIndexOut);
 		}
 	}
 }
@@ -470,8 +697,9 @@ NDPluginTransform::NDPluginTransform(const char *portName, int queueSize, int bl
 			this->pTransforms[ii].dims[jj].size=0;
 		}
 	}
-	for (ii = 0; ii<ND_ARRAY_MAX_DIMS; jj++) {
+	for (ii = 0; ii<ND_ARRAY_MAX_DIMS; ii++) {
 		this->userDims[ii] = ii;
+		this->realDims[ii] = ii;
 	}
     this->totalArray = (epicsInt32 *)callocMustSucceed(maxTransforms, sizeof(epicsInt32), functionName);
     this->netArray = (epicsInt32 *)callocMustSucceed(maxTransforms, sizeof(epicsInt32), functionName);
@@ -485,14 +713,19 @@ NDPluginTransform::NDPluginTransform(const char *portName, int queueSize, int bl
 	setIntegerParam(NDPluginTransformOrigin, 0);
 	setIntegerParam(NDPluginTransform1Dim0MaxSize, 0);
 	setIntegerParam(NDPluginTransform1Dim1MaxSize, 0);
+	setIntegerParam(NDPluginTransform1Dim2MaxSize, 0);
 	setIntegerParam(NDPluginTransform2Dim0MaxSize, 0);
 	setIntegerParam(NDPluginTransform2Dim1MaxSize, 0);
+	setIntegerParam(NDPluginTransform2Dim2MaxSize, 0);
 	setIntegerParam(NDPluginTransform3Dim0MaxSize, 0);
 	setIntegerParam(NDPluginTransform3Dim1MaxSize, 0);
+	setIntegerParam(NDPluginTransform3Dim2MaxSize, 0);
 	setIntegerParam(NDPluginTransform4Dim0MaxSize, 0);
 	setIntegerParam(NDPluginTransform4Dim1MaxSize, 0);
+	setIntegerParam(NDPluginTransform4Dim2MaxSize, 0);
 	setIntegerParam(NDPluginTransformArraySize0, 0);
 	setIntegerParam(NDPluginTransformArraySize1, 0);
+	setIntegerParam(NDPluginTransformArraySize2, 0);
 
 
 

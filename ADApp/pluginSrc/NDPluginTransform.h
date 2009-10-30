@@ -20,6 +20,7 @@ typedef struct NDTransform {
 typedef struct {
 	int index0;
 	int index1;
+	int index2;
 } NDTransformIndex_t;
 
 /* Enums to describe the types of transformations */
@@ -53,15 +54,20 @@ typedef enum {
 	NDPluginTransformOrigin,
 	NDPluginTransform1Dim0MaxSize,
 	NDPluginTransform1Dim1MaxSize,
+	NDPluginTransform1Dim2MaxSize,
 	NDPluginTransform2Dim0MaxSize,
 	NDPluginTransform2Dim1MaxSize,
+	NDPluginTransform2Dim2MaxSize,
 	NDPluginTransform3Dim0MaxSize,
 	NDPluginTransform3Dim1MaxSize,
+	NDPluginTransform3Dim2MaxSize,
 	NDPluginTransform4Dim0MaxSize,
 	NDPluginTransform4Dim1MaxSize,
+	NDPluginTransform4Dim2MaxSize,
 
 	NDPluginTransformArraySize0,
 	NDPluginTransformArraySize1,
+	NDPluginTransformArraySize2,
 
     NDPluginTransformLastTransformParam
 } NDPluginTransformParam_t;
@@ -91,6 +97,7 @@ public:
 private:
 
     int userDims[ND_ARRAY_MAX_DIMS];
+    int realDims[ND_ARRAY_MAX_DIMS];
     int transformFlipsAxes(int);
     void setMaxSizes(int);
     int maxTransforms;
@@ -107,7 +114,12 @@ private:
 	NDTransformIndex_t transformFlip0110(NDTransformIndex_t indexIn, int originLocation, int transformNumber);
 	NDTransformIndex_t transformFlipX(NDTransformIndex_t indexIn, int originLocation, int transformNumber);
 	NDTransformIndex_t transformFlipY(NDTransformIndex_t indexIn, int originLocation, int transformNumber);
-	void transformArray(NDArray *inArray, NDArray *outArray);
+	NDTransformIndex_t transformPixel(NDTransformIndex_t indexIn, int originLocation);
+	void transform2DArray(NDArray *inArray, NDArray *outArray);
+	void transform3DArray(NDArray *inArray, NDArray *outArray);
+	void moveStdPixel(NDArray *inArray, NDTransformIndex_t pixelIndexIn, NDArray *outArray, NDTransformIndex_t pixelIndexOut);
+	void moveRGB1Pixel(NDArray *inArray, NDTransformIndex_t pixelIndexIn, NDArray *outArray, NDTransformIndex_t pixelIndexOut);
+	void moveRGB2Pixel(NDArray *inArray, NDTransformIndex_t pixelIndexIn, NDArray *outArray, NDTransformIndex_t pixelIndexOut);
 
 };
 
