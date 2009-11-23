@@ -226,7 +226,7 @@ NDFileTIFF::NDFileTIFF(const char *portName, int queueSize, int blockingCallback
      * This driver can block (because writing a file can be slow), and it is not multi-device.  
      * Set autoconnect to 1.  priority and stacksize can be 0, which will use defaults. */
     : NDPluginFile(portName, queueSize, blockingCallbacks,
-                   NDArrayPort, NDArrayAddr, 1, NDPluginFileLastParam,
+                   NDArrayPort, NDArrayAddr, 1, NUM_NDFILE_TIFF_PARAMS,
                    2, -1, asynGenericPointerMask, asynGenericPointerMask, 
                    ASYN_CANBLOCK, 1, priority, stackSize)
 {

@@ -1,6 +1,6 @@
 /*
  * NDFileTIFF.h
- * Writes NDArrays to TIFF files.
+ * Writes NDArrays to NeXus (HDF) files.
  * John Hammonds
  * April 17, 2009
  */
@@ -16,16 +16,9 @@
  * to handle changes in the file contents */
 #define NDNexusFileVersion 1.0
 
-typedef enum {
-	NDFileNexusTemplatePath = NDPluginFileLastParam,
-	NDFileNexusTemplateFile,
-	NDFileNexusLastParam
-} NDFileNexusParam_t;
 
-static asynParamString_t NDFileNexusParamString[] = {
-	{NDFileNexusTemplatePath, "TEMPLATE_FILE_PATH"},
-	{NDFileNexusTemplateFile, "TEMPLATE_FILE_NAME"},
-};
+#define NDFileNexusTemplatePathString "TEMPLATE_FILE_PATH"
+#define NDFileNexusTemplateFileString "TEMPLATE_FILE_NAME"
 
 #define NUM_ND_FILE_NEXUS_PARAMS (sizeof(NDFileNexusParamString)/sizeof(NDFileNexusParamString[0]))
 
@@ -46,8 +39,11 @@ public:
     virtual asynStatus readFile(NDArray **pArray);
     virtual asynStatus writeFile(NDArray *pArray);
     virtual asynStatus closeFile();
-    asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo,
-                             const char **pptypeName, size_t *psize);
+protected:
+	int NDFileNexusTemplatePath;
+    #define FIRST_NDFILE_NEXUS_PARAM NDFileNexusTemplatePath
+	int NDFileNexusTemplateFile;
+    #define LAST_NDFILE_NEXUS_PARAM NDFileNexusTemplateFile
 
 private:
 	NXhandle nxFileHandle;
@@ -65,6 +61,7 @@ private:
 	int typeStringToVal( const char * typeStr );
 
 };
+#define NUM_NDFILE_NEXUS_PARAMS (&LAST_NDFILE_NEXUS_PARAM - &FIRST_NDFILE_NEXUS_PARAM + 1)
 
 #endif
 

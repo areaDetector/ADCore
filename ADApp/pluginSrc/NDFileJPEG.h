@@ -19,14 +19,7 @@ typedef struct {
   class NDFileJPEG *pNDFileJPEG;   /* Pointer to ourselves */
 } jpegDestMgr;
 
-/** Enums for plugin-specific parameters. */
-typedef enum
-{
-    NDFileJPEGQuality           /* (asynInt32, r/w) File quality */
-        = NDPluginFileLastParam,
-    NDFileJPEGLastParam
-} NDFileJPEGParam_t;
-
+#define NDFileJPEGQualityString  "JPEG_QUALITY"  /* (asynInt32, r/w) File quality */
 
 /** Writes NDArrays in the JPEG file format, which is a lossy compression format.
   * This plugin was developed using the libjpeg library to write the file.
@@ -36,9 +29,6 @@ public:
     NDFileJPEG(const char *portName, int queueSize, int blockingCallbacks,
                const char *NDArrayPort, int NDArrayAddr,
                int priority, int stackSize);
-
-    virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
-                                        const char **pptypeName, size_t *psize);
 
     /* The methods that this class implements */
     virtual asynStatus openFile(const char *fileName, NDFileOpenMode_t openMode, NDArray *pArray);
@@ -50,6 +40,11 @@ public:
     boolean emptyOutputBuffer();
     void termDestination();
 
+protected:
+    int NDFileJPEGQuality;
+    #define FIRST_NDFILE_JPEG_PARAM NDFileJPEGQuality
+    #define LAST_NDFILE_JPEG_PARAM NDFileJPEGQuality
+
 private:
     struct jpeg_compress_struct jpegInfo;
     struct jpeg_error_mgr jpegErr;
@@ -58,5 +53,6 @@ private:
     JOCTET jpegBuffer[JPEG_BUF_SIZE];
     jpegDestMgr destMgr;
 };
+#define NUM_NDFILE_JPEG_PARAMS (&LAST_NDFILE_JPEG_PARAM - &FIRST_NDFILE_JPEG_PARAM + 1)
 
 #endif

@@ -21,7 +21,6 @@
 #include "asynNDArrayDriver.h"
 #include "NDFileNexus.h"
 
-
 static const char *driverName="NDFileNexus";
 
 /** Opens NeXus file.
@@ -578,24 +577,6 @@ int NDFileNexus::typeStringToVal( const char * typeStr ) {
 	else return -1;
 }
 
-/* asynDrvUser interface methods */
-asynStatus NDFileNexus::drvUserCreate(asynUser *pasynUser, const char *drvInfo,
-                                       const char **pptypeName, size_t *psize)
-{
-    asynStatus status;
-    //const char *functionName = "drvUserCreate";
-
-    status = this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize,
-                                      NDFileNexusParamString, NUM_ND_FILE_NEXUS_PARAMS);
-
-
-    /* If not, then call the base class method, see if it is known there */
-	if (status != asynSuccess){
-       status = NDPluginDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
-	}
-    return(status);
-}
-
 /** Constructor for NDFileNexus; all parameters are simply passed to NDPluginFile::NDPluginFile.
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when
@@ -617,11 +598,13 @@ NDFileNexus::NDFileNexus(const char *portName, int queueSize, int blockingCallba
      * This driver can block (because writing a file can be slow), and it is not multi-device.
      * Set autoconnect to 1.  priority and stacksize can be 0, which will use defaults. */
     : NDPluginFile(portName, queueSize, blockingCallbacks,
-                   NDArrayPort, NDArrayAddr, 1, NDFileNexusLastParam,
+                   NDArrayPort, NDArrayAddr, 1, NUM_NDFILE_NEXUS_PARAMS,
                    2, -1, asynGenericPointerMask, asynGenericPointerMask,
                    ASYN_CANBLOCK, 1, priority, stackSize)
 {
     //const char *functionName = "NDFileNexus";
+    addParam(NDFileNexusTemplatePathString, &NDFileNexusTemplatePath);
+    addParam(NDFileNexusTemplateFileString, &NDFileNexusTemplateFile);
 
     this->pFileAttributes = new NDAttributeList;
     /* We want to support multiple arrays per file, but we don't yet so set flag to 0 for now */

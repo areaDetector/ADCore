@@ -38,5 +38,5 @@ private:
     int bitsPerSample;
     NDColorMode_t colorMode;
 };
-
+#define NUM_NDFILE_TIFF_PARAMS 0
 #endif

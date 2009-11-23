@@ -21,14 +21,6 @@
 static const char *driverName = "NDFileJPEG";
 #define MAX_ATTRIBUTE_STRING_SIZE 256
 
-/** The command strings are the userParam argument for asyn device support links
- * The asynDrvUser interface in this driver parses these strings and puts the
- * corresponding enum value in pasynUser->reason */
-static asynParamString_t NDFileJPEGParamString[] = {
-    {NDFileJPEGQuality,     "JPEG_QUALITY"}
-};
-#define NUM_ND_FILE_JPEG_PARAMS (sizeof(NDFileJPEGParamString)/sizeof(NDFileJPEGParamString[0]))
-
 /** Opens a JPEG file.
   * \param[in] fileName The name of the file to open.
   * \param[in] openMode Mask defining how the file should be opened; bits are 
@@ -219,31 +211,6 @@ asynStatus NDFileJPEG::closeFile()
     return asynSuccess;
 }
 
-/* asynDrvUser interface methods */
-/** Sets pasynUser->reason to one of the enum values for the parameters defined for
-  * this class if the drvInfo field matches one the strings defined for it.
-  * If the parameter is not recognized by this class then calls NDPluginDriver::drvUserCreate.
-  * Uses asynPortDriver::drvUserCreateParam.
-  * \param[in] pasynUser pasynUser structure that driver modifies
-  * \param[in] drvInfo String containing information about what driver function is being referenced
-  * \param[out] pptypeName Location in which driver puts a copy of drvInfo.
-  * \param[out] psize Location where driver puts size of param 
-  * \return Returns asynSuccess if a matching string was found, asynError if not found. */
-asynStatus NDFileJPEG::drvUserCreate(asynUser *pasynUser,
-                                       const char *drvInfo, 
-                                       const char **pptypeName, size_t *psize)
-{
-    asynStatus status;
-    //const char *functionName = "drvUserCreate";
-    
-    status = this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize, 
-                                      NDFileJPEGParamString,  NUM_ND_FILE_JPEG_PARAMS);
-
-    /* If not, then call the base class method, see if it is known there */
-    if (status) status = NDPluginFile::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
-    return(status);
-}
-
 static void init_destination(j_compress_ptr cinfo)
 {
     jpegDestMgr *pdest = (jpegDestMgr*) cinfo->dest;
@@ -333,12 +300,14 @@ NDFileJPEG::NDFileJPEG(const char *portName, int queueSize, int blockingCallback
      * This driver can block (because writing a file can be slow), and it is not multi-device.  
      * Set autoconnect to 1.  priority and stacksize can be 0, which will use defaults. */
     : NDPluginFile(portName, queueSize, blockingCallbacks,
-                   NDArrayPort, NDArrayAddr, 1, NDFileJPEGLastParam,
+                   NDArrayPort, NDArrayAddr, 1, NUM_NDFILE_JPEG_PARAMS,
                    2, -1, asynGenericPointerMask, asynGenericPointerMask, 
                    ASYN_CANBLOCK, 1, priority, stackSize)
 {
     //const char *functionName = "NDFileJPEG";
 
+    addParam(NDFileJPEGQualityString, &NDFileJPEGQuality);
+    
     jpeg_create_compress(&this->jpegInfo);
     this->jpegInfo.err = jpeg_std_error(&this->jpegErr);
 

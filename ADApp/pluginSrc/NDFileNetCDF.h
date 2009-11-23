@@ -44,4 +44,5 @@ private:
     NDAttributeList *pFileAttributes;
 };
 
+#define NUM_NDFILE_NETCDF_PARAMS 0
 #endif
