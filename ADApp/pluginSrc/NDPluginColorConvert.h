@@ -5,17 +5,7 @@
 
 #include "NDPluginDriver.h"
 
-/** Enums for plugin-specific parameters. */
-typedef enum
-{
-    NDPluginColorConvertColorModeOut
-               /* (NDColorMode_t r/w) Output color mode */
-        = NDPluginDriverLastParam,
-    NDPluginColorConvertLastParam
-} NDPluginColorConvertParam_t;
-
-#define NUM_COLOR_CONVERT_PARAMS (sizeof(NDPluginColorConvertParamString)/sizeof(NDPluginColorConvertParamString[0]))
-
+#define NDPluginColorConvertColorModeOutString   "COLOR_MODE_OUT" /* (NDColorMode_t r/w) Output color mode */
 
 /** Convert NDArrays from one NDColorMode to another.
   * This plugin is as source of NDArray callbacks, passing the (possibly converted) NDArray
@@ -38,12 +28,15 @@ public:
 
     /* These methods override the virtual methods in the base class */
     void processCallbacks(NDArray *pArray);
-    asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
-                             const char **pptypeName, size_t *psize);
+protected:
+    int NDPluginColorConvertColorModeOut;
+    #define FIRST_NDPLUGIN_COLOR_CONVERT_PARAM NDPluginColorConvertColorModeOut
+    #define LAST_NDPLUGIN_COLOR_CONVERT_PARAM NDPluginColorConvertColorModeOut
 private:
     /* These methods are just for this class */
     template <typename epicsType> void convertColor(NDArray *pArray);
 };
+#define NUM_NDPLUGIN_COLOR_CONVERT_PARAMS (&LAST_NDPLUGIN_COLOR_CONVERT_PARAM - &FIRST_NDPLUGIN_COLOR_CONVERT_PARAM + 1)
 
     
 #endif

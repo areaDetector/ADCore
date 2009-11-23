@@ -21,10 +21,6 @@
 #include "NDPluginColorConvert.h"
 #include "PvApi.h"
 
-static asynParamString_t NDPluginColorConvertParamString[] = {
-    {NDPluginColorConvertColorModeOut,   "COLOR_MODE_OUT"},
-};
-
 static const char *driverName="NDPluginColorConvert";
 
 /* This function returns 1 if it did a conversion, 0 if it did not */
@@ -362,34 +358,6 @@ void NDPluginColorConvert::processCallbacks(NDArray *pArray)
     doCallbacksGenericPointer(this->pArrays[0], NDArrayData, 0);
 }
 
-
-
-
-/* asynDrvUser interface methods */
-/** Sets pasynUser->reason to one of the enum values for the parameters defined for
-  * this class if the drvInfo field matches one the strings defined for it.
-  * If the parameter is not recognized by this class then calls NDPluginDriver::drvUserCreate.
-  * Uses asynPortDriver::drvUserCreateParam.
-  * \param[in] pasynUser pasynUser structure that driver modifies
-  * \param[in] drvInfo String containing information about what driver function is being referenced
-  * \param[out] pptypeName Location in which driver puts a copy of drvInfo.
-  * \param[out] psize Location where driver puts size of param 
-  * \return Returns asynSuccess if a matching string was found, asynError if not found. */
-asynStatus NDPluginColorConvert::drvUserCreate(asynUser *pasynUser,
-                                       const char *drvInfo, 
-                                       const char **pptypeName, size_t *psize)
-{
-    asynStatus status;
-    //const char *functionName = "drvUserCreate";
-    
-    status = this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize, 
-                                      NDPluginColorConvertParamString, NUM_COLOR_CONVERT_PARAMS);
-
-    /* If not, then call the base class method, see if it is known there */
-    if (status) status = NDPluginDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
-    return(status);
-}
-
 
 /** Constructor for NDPluginColorConvert; most parameters are simply passed to NDPluginDriver::NDPluginDriver.
   * After calling the base class constructor this method sets reasonable default values for all of the 
@@ -416,7 +384,7 @@ NDPluginColorConvert::NDPluginColorConvert(const char *portName, int queueSize, 
                                            int priority, int stackSize)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
-                   NDArrayPort, NDArrayAddr, 1, NDPluginColorConvertLastParam, maxBuffers, maxMemory,
+                   NDArrayPort, NDArrayAddr, 1, NUM_NDPLUGIN_COLOR_CONVERT_PARAMS, maxBuffers, maxMemory,
                    asynGenericPointerMask, 
                    asynGenericPointerMask,
                    0, 1, priority, stackSize)  /* Not ASYN_CANBLOCK or ASYN_MULTIDEVICE, do autoConnect */
@@ -424,6 +392,7 @@ NDPluginColorConvert::NDPluginColorConvert(const char *portName, int queueSize, 
     asynStatus status;
     const char *functionName = "NDPluginColorConvert";
 
+    addParam(NDPluginColorConvertColorModeOutString, &NDPluginColorConvertColorModeOut);
 
     /* Set the plugin type string */    
     setStringParam(NDPluginDriverPluginType, "NDPluginColorConvert");
