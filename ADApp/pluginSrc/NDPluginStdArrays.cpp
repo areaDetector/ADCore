@@ -26,19 +26,10 @@
 #include "NDArray.h"
 #include "NDPluginStdArrays.h"
 
-/** The command strings are the userParam argument for asyn device support links
- * The asynDrvUser interface in this driver parses these strings and puts the
- * corresponding enum value in pasynUser->reason */
-static asynParamString_t NDPluginStdArraysParamString[] = {
-    {NDPluginStdArraysData,               "STD_ARRAY_DATA"}
-};
-
-#define NUM_ND_PLUGIN_STD_ARRAYS_PARAMS (sizeof(NDPluginStdArraysParamString)/sizeof(NDPluginStdArraysParamString[0]))
-
 static const char *driverName="NDPluginStdArrays";
 
 template <typename epicsType, typename interruptType>
-void arrayInterruptCallback(NDArray *pArray, NDArrayPool *pNDArrayPool, 
+void NDPluginStdArrays::arrayInterruptCallback(NDArray *pArray, NDArrayPool *pNDArrayPool, 
                             void *interruptPvt, int *initialized, NDDataType_t signedType)
 {
     ELLLIST *pclientList;
@@ -93,45 +84,44 @@ asynStatus NDPluginStdArrays::readArray(asynUser *pasynUser, epicsType *value, s
     int i;
 
     myArray = this->pArrays[0];
-    switch(command) {
-        case NDPluginStdArraysData:
-            /* If there is valid data available we already have a copy of it.
-             * No need to call driver just copy the data from our buffer */
-            if (!myArray || !myArray->pData) {
-                status = asynError;
-                break;
-            }
-            myArray->getInfo(&arrayInfo);
-            if (arrayInfo.nElements > (int)nElements) {
-                /* We have been requested fewer pixels than we have.
-                 * Just pass the first nElements. */
-                 arrayInfo.nElements = nElements;
-            }
-            /* Convert data from its actual data type.  */
-            for (i=0; i<myArray->ndims; i++)  {
-                myArray->initDimension(&outDims[i], myArray->dims[i].size);
-            }
-            status = (asynStatus)this->pNDArrayPool->convert(myArray,
-                                                             &pOutput,
-                                                             outputType,
-                                                             outDims);
-            if (status) {
-                asynPrint(pasynUser, ASYN_TRACE_ERROR,
-                          "%s::readArray: error allocating array in convert()\n",
-                           driverName);
-                break;
-            }
-            /* Copy the data */
-            *nIn = arrayInfo.nElements;
-            memcpy(value, pOutput->pData, *nIn*sizeof(epicsType));
-            pOutput->release();
-            break;
-        default:
-            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                      "%s::readArray, unknown command %d",
-                      driverName, command);
+    if (command == NDPluginStdArraysData) {
+        /* If there is valid data available we already have a copy of it.
+         * No need to call driver just copy the data from our buffer */
+        if (!myArray || !myArray->pData) {
             status = asynError;
+            goto done;
+        }
+        myArray->getInfo(&arrayInfo);
+        if (arrayInfo.nElements > (int)nElements) {
+            /* We have been requested fewer pixels than we have.
+             * Just pass the first nElements. */
+             arrayInfo.nElements = nElements;
+        }
+        /* Convert data from its actual data type.  */
+        for (i=0; i<myArray->ndims; i++)  {
+            myArray->initDimension(&outDims[i], myArray->dims[i].size);
+        }
+        status = (asynStatus)this->pNDArrayPool->convert(myArray,
+                                                         &pOutput,
+                                                         outputType,
+                                                         outDims);
+        if (status) {
+            asynPrint(pasynUser, ASYN_TRACE_ERROR,
+                      "%s::readArray: error allocating array in convert()\n",
+                       driverName);
+           goto done;
+        }
+        /* Copy the data */
+        *nIn = arrayInfo.nElements;
+        memcpy(value, pOutput->pData, *nIn*sizeof(epicsType));
+        pOutput->release();
+    } else {
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                  "%s::readArray, unknown command %d",
+                  driverName, command);
+        status = asynError;
     }
+    done:
     return(status);
 }
 
@@ -267,32 +257,6 @@ asynStatus NDPluginStdArrays::readFloat64Array(asynUser *pasynUser, epicsFloat64
 }
 
 
-/* asynDrvUser interface methods */
-/** Sets pasynUser->reason to one of the enum values for the parameters defined for
-  * this class if the drvInfo field matches one the strings defined for it.
-  * If the parameter is not recognized by this class then calls NDPluginDriver::drvUserCreate.
-  * Uses asynPortDriver::drvUserCreateParam.
-  * \param[in] pasynUser pasynUser structure that driver modifies
-  * \param[in] drvInfo String containing information about what driver function is being referenced
-  * \param[out] pptypeName Location in which driver puts a copy of drvInfo.
-  * \param[out] psize Location where driver puts size of param 
-  * \return Returns asynSuccess if a matching string was found, asynError if not found. */
-asynStatus NDPluginStdArrays::drvUserCreate(asynUser *pasynUser,
-                                       const char *drvInfo, 
-                                       const char **pptypeName, size_t *psize)
-{
-    asynStatus status;
-    //const char *functionName = "drvUserCreate";
-    
-    status = this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize, 
-                                      NDPluginStdArraysParamString, NUM_ND_PLUGIN_STD_ARRAYS_PARAMS);
-
-    /* If not, then call the base class method, see if it is known there */
-    if (status) status = NDPluginDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
-    return(status);
-}
-
-
 /** Constructor for NDPluginStdArrays; all parameters are simply passed to NDPluginDriver::NDPluginDriver.
   * This plugin cannot block (ASYN_CANBLOCK=0) and is not multi-device (ASYN_MULTIDEVICE=0).
   * It allocates a maximum of 2 NDArray buffers for internal use.
@@ -315,7 +279,7 @@ NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int bl
                                      int priority, int stackSize)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
-                   NDArrayPort, NDArrayAddr, 1, NDPluginStdArraysLastParam, 2, maxMemory,
+                   NDArrayPort, NDArrayAddr, 1, NUM_NDPLUGIN_STDARRAYS_PARAMS, 2, maxMemory,
                    
                    asynInt8ArrayMask | asynInt16ArrayMask | asynInt32ArrayMask | 
                    asynFloat32ArrayMask | asynFloat64ArrayMask,
@@ -329,6 +293,8 @@ NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int bl
 {
     asynStatus status;
     //char *functionName = "NDPluginStdArrays";
+    
+    addParam(NDPluginStdArraysDataString, &NDPluginStdArraysData);
 
     /* Set the plugin type string */    
     setStringParam(NDPluginDriverPluginType, "NDPluginStdArrays");

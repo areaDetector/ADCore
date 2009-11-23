@@ -6,13 +6,7 @@
 
 #include "NDPluginDriver.h"
 
-/** Enums for plugin-specific parameters. */
-typedef enum
-{
-    NDPluginStdArraysData           /* (asynXXXArray, r/w) Array data waveform */
-        = NDPluginDriverLastParam,
-    NDPluginStdArraysLastParam
-} NDPluginStdArraysParam_t;
+#define NDPluginStdArraysDataString "STD_ARRAY_DATA"           /* (asynXXXArray, r/w) Array data waveform */
 
 /** Converts NDArray callback data into standard asyn arrays (asynInt8Array, asynInt16Array, asynInt32Array,
   * asynFloat32Array or asynFloat64Array); normally used for putting NDArray data in EPICS waveform records.
@@ -36,14 +30,20 @@ public:
                                         size_t nElements, size_t *nIn);
     virtual asynStatus readFloat64Array(asynUser *pasynUser, epicsFloat64 *value,
                                         size_t nElements, size_t *nIn);
-    asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
-                                        const char **pptypeName, size_t *psize);
+protected:
+    int NDPluginStdArraysData;
+    #define FIRST_NDPLUGIN_STDARRAYS_PARAM NDPluginStdArraysData
+    #define LAST_NDPLUGIN_STDARRAYS_PARAM NDPluginStdArraysData
 private:
     /* These methods are just for this class */
     template <typename epicsType> asynStatus readArray(asynUser *pasynUser, epicsType *value, 
                                         size_t nElements, size_t *nIn, NDDataType_t outputType);
+    template <typename epicsType, typename interruptType> void arrayInterruptCallback(NDArray *pArray, 
+                            NDArrayPool *pNDArrayPool, 
+                            void *interruptPvt, int *initialized, NDDataType_t signedType);
                                         
 };
 
+#define NUM_NDPLUGIN_STDARRAYS_PARAMS (&LAST_NDPLUGIN_STDARRAYS_PARAM - &FIRST_NDPLUGIN_STDARRAYS_PARAM + 1)
     
 #endif
