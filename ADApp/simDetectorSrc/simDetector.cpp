@@ -43,10 +43,19 @@ public:
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
     virtual void setShutter(int open);
-    virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
-                                     const char **pptypeName, size_t *psize);
     void report(FILE *fp, int details);
     void simTask(); /**< Should be private, but gets called from C, so must be public */
+    
+protected:
+    int SimGainX;
+    #define FIRST_SIM_DETECTOR_PARAM SimGainX
+    int SimGainY;
+    int SimGainRed;
+    int SimGainGreen;
+    int SimGainBlue;
+    int SimResetImage;
+    #define LAST_SIM_DETECTOR_PARAM SimResetImage
+
 private:                                        
     /* These are the methods that are new to this class */
     template <typename epicsType> int computeArray(int sizeX, int sizeY);
@@ -58,28 +67,15 @@ private:
     NDArray *pRaw;
 };
 
-/** Driver-specific parameters for the simulation driver */
-typedef enum {
-    SimGainX 
-        = ADLastStdParam,
-    SimGainY,
-    SimGainRed,
-    SimGainGreen,
-    SimGainBlue,
-    SimResetImage,
-    ADLastDriverParam
-} SimDetParam_t;
+#define SimGainXString          "SIM_GAIN_X"
+#define SimGainYString          "SIM_GAIN_Y" 
+#define SimGainRedString        "SIM_GAIN_RED" 
+#define SimGainGreenString      "SIM_GAIN_GREEN"  
+#define SimGainBlueString       "SIM_GAIN_BLUE"  
+#define SimResetImageString     "RESET_IMAGE"
 
-static asynParamString_t SimDetParamString[] = {
-    {SimGainX,          "SIM_GAIN_X"},  
-    {SimGainY,          "SIM_GAIN_Y"},  
-    {SimGainRed,        "SIM_GAIN_RED"},  
-    {SimGainGreen,      "SIM_GAIN_GREEN"},  
-    {SimGainBlue,       "SIM_GAIN_BLUE"},  
-    {SimResetImage,     "RESET_IMAGE"},  
-};
 
-#define NUM_SIM_DET_PARAMS (sizeof(SimDetParamString)/sizeof(SimDetParamString[0]))
+#define NUM_SIM_DETECTOR_PARAMS (&LAST_SIM_DETECTOR_PARAM - &FIRST_SIM_DETECTOR_PARAM + 1)
 
 /** Template function to compute the simulated detector data for any data type */
 template <typename epicsType> int simDetector::computeArray(int sizeX, int sizeY)
@@ -542,8 +538,7 @@ asynStatus simDetector::writeInt32(asynUser *pasynUser, epicsInt32 value)
     status = setIntegerParam(function, value);
 
     /* For a real detector this is where the parameter is sent to the hardware */
-    switch (function) {
-    case ADAcquire:
+    if (function == ADAcquire) {
         getIntegerParam(ADStatus, &adstatus);
         if (value && (adstatus == ADStatusIdle)) {
             /* Send an event to wake up the simulation task.  
@@ -555,18 +550,13 @@ asynStatus simDetector::writeInt32(asynUser *pasynUser, epicsInt32 value)
             /* Send the stop event */
             epicsEventSignal(this->stopEventId);
         }
-        break;
-    case NDDataType:
-    case NDColorMode:
+    } else if ((function == NDDataType) || (function == NDColorMode)) {
         status = setIntegerParam(SimResetImage, 1);
-        break;
-    case ADShutterControl:
+    } else if (function == ADShutterControl) {
         setShutter(value);
-        break;
-    default:
+    } else {
         /* If this parameter belongs to a base class call its method */
-        if (function < ADLastStdParam) status = ADDriver::writeInt32(pasynUser, value);
-        break;
+        if (function < FIRST_SIM_DETECTOR_PARAM) status = ADDriver::writeInt32(pasynUser, value);
     }
     
     /* Do callbacks so higher layers see any changes */
@@ -599,21 +589,18 @@ asynStatus simDetector::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
     status = setDoubleParam(function, value);
 
     /* Changing any of the following parameters requires recomputing the base image */
-    switch (function) {
-    case ADAcquireTime:
-    case ADGain:
-    case SimGainX:
-    case SimGainY:
-    case SimGainRed:
-    case SimGainGreen:
-    case SimGainBlue:
-        status = setIntegerParam(SimResetImage, 1);
-        break;
-    default:
+    if ((function == ADAcquireTime) ||
+        (function == ADGain) ||
+        (function == SimGainX) ||
+        (function == SimGainY) ||
+        (function == SimGainRed) ||
+        (function == SimGainGreen) ||
+        (function == SimGainBlue)) {
+            status = setIntegerParam(SimResetImage, 1);
+    } else {
         /* If this parameter belongs to a base class call its method */
-        if (function < ADLastStdParam) status = ADDriver::writeFloat64(pasynUser, value);
-        break;
-     }
+        if (function < FIRST_SIM_DETECTOR_PARAM) status = ADDriver::writeFloat64(pasynUser, value);
+    }
 
     /* Do callbacks so higher layers see any changes */
     callParamCallbacks();
@@ -629,30 +616,6 @@ asynStatus simDetector::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 }
 
 
-/** Sets pasynUser->reason to one of the enum values for the parameters defined for
-  * this class if the drvInfo field matches one the strings defined for it.
-  * If the parameter is not recognized by this class then calls ADDriver::drvUserCreate.
-  * Uses asynPortDriver::drvUserCreateParam.
-  * \param[in] pasynUser pasynUser structure that driver modifies
-  * \param[in] drvInfo String containing information about what driver function is being referenced
-  * \param[out] pptypeName Location in which driver puts a copy of drvInfo.
-  * \param[out] psize Location where driver puts size of param 
-  * \return Returns asynSuccess if a matching string was found, asynError if not found. */
-asynStatus simDetector::drvUserCreate(asynUser *pasynUser,
-                                       const char *drvInfo, 
-                                       const char **pptypeName, size_t *psize)
-{
-    asynStatus status;
-    //const char *functionName = "drvUserCreate";
-    
-    status = this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize, 
-                                      SimDetParamString, NUM_SIM_DET_PARAMS);
-
-    /* If not, then call the base class method, see if it is known there */
-    if (status) status = ADDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
-    return(status);
-}
-
 /** Report status of the driver.
   * Prints details about the driver if details>0.
   * It then calls the ADDriver::report() method.
@@ -692,7 +655,7 @@ void simDetector::report(FILE *fp, int details)
 simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDataType_t dataType,
                          int maxBuffers, size_t maxMemory, int priority, int stackSize)
 
-    : ADDriver(portName, 1, ADLastDriverParam, maxBuffers, maxMemory,
+    : ADDriver(portName, 1, NUM_SIM_DETECTOR_PARAMS, maxBuffers, maxMemory,
                0, 0, /* No interfaces beyond those set in ADDriver.cpp */
                0, 1, /* ASYN_CANBLOCK=0, ASYN_MULTIDEVICE=0, autoConnect=1 */
                priority, stackSize),
@@ -716,6 +679,13 @@ simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDat
         return;
     }
     
+    addParam(SimGainXString,      &SimGainX);
+    addParam(SimGainYString,      &SimGainY);
+    addParam(SimGainRedString,    &SimGainRed);
+    addParam(SimGainGreenString,  &SimGainGreen);
+    addParam(SimGainBlueString,   &SimGainBlue);
+    addParam(SimResetImageString, &SimResetImage);
+
     /* Set some default values for parameters */
     status =  setStringParam (ADManufacturer, "Simulated detector");
     status |= setStringParam (ADModel, "Basic simulator");
