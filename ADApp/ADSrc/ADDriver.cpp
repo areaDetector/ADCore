@@ -19,55 +19,6 @@
 
 static const char *driverName = "ADDriver";
 
-static asynParamString_t ADStdDriverParamString[] = {
-    {ADManufacturer,   "MANUFACTURER"},
-    {ADModel,          "MODEL"       },
-
-    {ADGain,           "GAIN"        },
-
-    {ADBinX,           "BIN_X"       },
-    {ADBinY,           "BIN_Y"       },
-
-    {ADMinX,           "MIN_X"       },
-    {ADMinY,           "MIN_Y"       },
-    {ADSizeX,          "SIZE_X"      },
-    {ADSizeY,          "SIZE_Y"      },
-    {ADMaxSizeX,       "MAX_SIZE_X"  },
-    {ADMaxSizeY,       "MAX_SIZE_Y"  },
-    {ADReverseX,       "REVERSE_X"   },
-    {ADReverseY,       "REVERSE_Y"   },
-
-    {ADFrameType,      "FRAME_TYPE"  },
-    {ADImageMode,      "IMAGE_MODE"  },
-    {ADNumExposures,   "NEXPOSURES"  },
-    {ADNumExposuresCounter, "NEXPOSURES_COUNTER"  },
-    {ADNumImages,      "NIMAGES"     },
-    {ADNumImagesCounter, "NIMAGES_COUNTER"},
-    {ADAcquireTime,    "ACQ_TIME"    },
-    {ADAcquirePeriod,  "ACQ_PERIOD"  },
-    {ADTimeRemaining,  "TIME_REMAINING"},
-    {ADStatus,         "STATUS"      },
-    {ADTriggerMode,    "TRIGGER_MODE"},
-    {ADAcquire,        "ACQUIRE"     },
-
-    {ADShutterControl,   "SHUTTER_CONTROL"},
-    {ADShutterControlEPICS, "SHUTTER_CONTROL_EPICS"},
-    {ADShutterStatus,    "SHUTTER_STATUS"},
-    {ADShutterMode,      "SHUTTER_MODE"        },
-    {ADShutterOpenDelay, "SHUTTER_OPEN_DELAY"  },
-    {ADShutterCloseDelay,"SHUTTER_CLOSE_DELAY" },
-
-    {ADTemperature,    "TEMPERATURE" },
-
-    {ADReadStatus,     "READ_STATUS"     },
-
-    {ADStatusMessage,  "STATUS_MESSAGE"     },
-    {ADStringToServer, "STRING_TO_SERVER"   },
-    {ADStringFromServer,"STRING_FROM_SERVER"},
-};
-
-#define NUM_AD_STANDARD_PARAMS (sizeof(ADStdDriverParamString)/sizeof(ADStdDriverParamString[0]))
-
 /** Set the shutter position.
   * This method will open (1) or close (0) the shutter if
   * ADShutterMode==ADShutterModeEPICS. Drivers will implement setShutter if they
@@ -114,14 +65,11 @@ asynStatus ADDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
     status = setIntegerParam(function, value);
 
-    switch (function) {
-    case ADShutterControl:
+    if (function == ADShutterControl) {
         setShutter(value);
-        break;
-    default:
+    } else {
         /* If this parameter belongs to a base class call its method */
-        if (function < NDLastStdParam) status = asynNDArrayDriver::writeInt32(pasynUser, value);
-        break;
+        if (function < FIRST_AD_PARAM) status = asynNDArrayDriver::writeInt32(pasynUser, value);
     }
 
     /* Do callbacks so higher layers see any changes */
@@ -139,48 +87,59 @@ asynStatus ADDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 }
 
 
-/** Sets pasynUser->reason to one of the enum values for the parameters defined in ADDriver.h
-  * if the drvInfo field matches one the strings defined.
-  * Simply calls asynPortDriver::drvUserCreateParam with the parameter table for this driver.
-  * \param[in] pasynUser pasynUser structure that driver modifies
-  * \param[in] drvInfo String containing information about what driver function is being referenced
-  * \param[out] pptypeName Location in which driver puts a copy of drvInfo.
-  * \param[out] psize Location where driver puts size of param 
-  * \return Returns asynSuccess if a matching string was found, asynError if not found. */
-asynStatus ADDriver::drvUserCreate(asynUser *pasynUser,
-                                       const char *drvInfo, 
-                                       const char **pptypeName, size_t *psize)
-{
-    asynStatus status;
-    //const char *functionName = "drvUserCreate";
-    
-    /* See if this is one of our standard parameters */
-    status = this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize, 
-                                      ADStdDriverParamString, NUM_AD_STANDARD_PARAMS);
-                                      
-    /* If not then see if it is a base class parameter */
-    if (status) status = asynNDArrayDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
-    return(status);
-}
-
-
-
 /** All of the arguments are simply passed to
   * the constructor for the asynNDArrayDriver base class. After calling the base class
   * constructor this method sets reasonable default values for all of the parameters
   * defined in ADDriver.h.
   */
-ADDriver::ADDriver(const char *portName, int maxAddr, int paramTableSize, int maxBuffers, size_t maxMemory,
+ADDriver::ADDriver(const char *portName, int maxAddr, int numParams, int maxBuffers, size_t maxMemory,
                    int interfaceMask, int interruptMask,
                    int asynFlags, int autoConnect, int priority, int stackSize)
 
-    : asynNDArrayDriver(portName, maxAddr, paramTableSize, maxBuffers, maxMemory,
+    : asynNDArrayDriver(portName, maxAddr, numParams+NUM_AD_PARAMS, maxBuffers, maxMemory,
           interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynGenericPointerMask | asynDrvUserMask,
           interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynGenericPointerMask,
           asynFlags, autoConnect, priority, stackSize)
 
 {
     //char *functionName = "ADDriver";
+
+    addParam(ADManufacturerString,        &ADManufacturer);
+    addParam(ADModelString,               &ADModel);
+    addParam(ADGainString,                &ADGain);
+    addParam(ADBinXString,                &ADBinX);
+    addParam(ADBinYString,                &ADBinY);
+    addParam(ADMinXString,                &ADMinX);
+    addParam(ADMinYString,                &ADMinY);
+    addParam(ADSizeXString,               &ADSizeX);
+    addParam(ADSizeYString,               &ADSizeY);
+    addParam(ADMaxSizeXString,            &ADMaxSizeX);
+    addParam(ADMaxSizeYString,            &ADMaxSizeY);
+    addParam(ADReverseXString,            &ADReverseX);
+    addParam(ADReverseYString,            &ADReverseY);
+    addParam(ADFrameTypeString,           &ADFrameType);
+    addParam(ADImageModeString,           &ADImageMode);
+    addParam(ADNumExposuresString,        &ADNumExposures);
+    addParam(ADNumExposuresCounterString, &ADNumExposuresCounter);
+    addParam(ADNumImagesString,           &ADNumImages);
+    addParam(ADNumImagesCounterString,    &ADNumImagesCounter);
+    addParam(ADAcquireTimeString,         &ADAcquireTime);
+    addParam(ADAcquirePeriodString,       &ADAcquirePeriod);
+    addParam(ADTimeRemainingString,       &ADTimeRemaining);
+    addParam(ADStatusString,              &ADStatus);
+    addParam(ADTriggerModeString,         &ADTriggerMode);
+    addParam(ADAcquireString,             &ADAcquire);
+    addParam(ADShutterControlString,      &ADShutterControl);
+    addParam(ADShutterControlEPICSString, &ADShutterControlEPICS);
+    addParam(ADShutterStatusString,       &ADShutterStatus);
+    addParam(ADShutterModeString,         &ADShutterMode);
+    addParam(ADShutterOpenDelayString,    &ADShutterOpenDelay);
+    addParam(ADShutterCloseDelayString,   &ADShutterCloseDelay);
+    addParam(ADTemperatureString,         &ADTemperature);
+    addParam(ADReadStatusString,          &ADReadStatus);
+    addParam(ADStatusMessageString,       &ADStatusMessage);
+    addParam(ADStringToServerString,      &ADStringToServer);
+    addParam(ADStringFromServerString,    &ADStringFromServer);    
 
     /* Set some default values for parameters */
     setStringParam(ADManufacturer, "Unknown");
