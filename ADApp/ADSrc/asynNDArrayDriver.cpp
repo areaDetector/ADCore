@@ -25,40 +25,6 @@
 
 static const char *driverName = "asynNDArrayDriver";
 
-/** drvInfo strings for NDStdDriverParams */
-static asynParamString_t NDStdDriverParamString[] = {
-    {NDPortNameSelf,   "PORT_NAME_SELF"},
-    {NDArraySizeX,     "ARRAY_SIZE_X"},
-    {NDArraySizeY,     "ARRAY_SIZE_Y"},
-    {NDArraySizeZ,     "ARRAY_SIZE_Z"},
-    {NDArraySize,      "ARRAY_SIZE"  },
-    {NDDataType,       "DATA_TYPE"   },
-    {NDColorMode,      "COLOR_MODE"  },
-
-    {NDArrayCounter,   "ARRAY_COUNTER" },
-
-    {NDFilePath,       "FILE_PATH"     },
-    {NDFileName,       "FILE_NAME"     },
-    {NDFileNumber,     "FILE_NUMBER"   },
-    {NDFileTemplate,   "FILE_TEMPLATE" },
-    {NDAutoIncrement,  "AUTO_INCREMENT"},
-    {NDFullFileName,   "FULL_FILE_NAME"},
-    {NDFileFormat,     "FILE_FORMAT"   },
-    {NDAutoSave,       "AUTO_SAVE"     },
-    {NDWriteFile,      "WRITE_FILE"    },
-    {NDReadFile,       "READ_FILE"     },
-    {NDFileWriteMode,  "WRITE_MODE"    },
-    {NDFileNumCapture, "NUM_CAPTURE"   },
-    {NDFileNumCaptured,"NUM_CAPTURED"  },
-    {NDFileCapture,    "CAPTURE"       },
-    
-    {NDAttributesFile, "ND_ATTRIBUTES_FILE"},
-
-    {NDArrayData,      "NDARRAY_DATA"  },
-    {NDArrayCallbacks, "ARRAY_CALLBACKS"  }
-};
-
-
 /** Build a file name from component parts.
   * \param[in] maxChars  The size of the fullFileName string.
   * \param[out] fullFileName The constructed file name including the file path.
@@ -302,12 +268,8 @@ asynStatus asynNDArrayDriver::writeOctet(asynUser *pasynUser, const char *value,
     /* Set the parameter in the parameter library. */
     status = (asynStatus)setStringParam(addr, function, (char *)value);
 
-    switch(function) {
-        case NDAttributesFile:
-            this->readNDAttributesFile(value);
-            break;
-        default:
-            break;
+    if (function == NDAttributesFile) {
+        this->readNDAttributesFile(value);
     }
     
      /* Do callbacks so higher layers see any changes */
@@ -382,27 +344,6 @@ asynStatus asynNDArrayDriver::writeGenericPointer(asynUser *pasynUser, void *gen
     return status;
 }
 
-/** Sets pasynUser->reason to one of the enum values for the NDStdDriverParam_t values defined in asynNDArrayDriver.h
-  * if the drvInfo field matches one the strings defined in that file.
-  * Simply calls asynPortDriver::drvUserCreateParam with the parameter table for this driver.
-  * \param[in] pasynUser pasynUser structure that driver modifies
-  * \param[in] drvInfo String containing information about what driver function is being referenced
-  * \param[out] pptypeName Location in which driver puts a copy of drvInfo.
-  * \param[out] psize Location where driver puts size of param 
-  * \return Returns asynSuccess if a matching string was found, asynError if not found. */
-asynStatus asynNDArrayDriver::drvUserCreate(asynUser *pasynUser,
-                                            const char *drvInfo, 
-                                            const char **pptypeName, size_t *psize)
-{
-    asynStatus status;
-    //const char *functionName = "drvUserCreate";
-    status = this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize, 
-                                      NDStdDriverParamString, NUM_ND_STANDARD_PARAMS);
-    return(status);    
-}
-
-
-
 /** Report status of the driver.
   * This method calls the report function in the asynPortDriver base class. It then
   * calls the NDArrayPool::report() method if details >5.
@@ -426,7 +367,7 @@ void asynNDArrayDriver::report(FILE *fp, int details)
   * objects. maxBuffers and maxMemory are passed to NDArrayPool::NDArrayPool.
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] maxAddr The maximum  number of asyn addr addresses this driver supports. 1 is minimum.
-  * \param[in] paramTableSize The number of parameters that this driver supports.
+  * \param[in] numParams The number of parameters in the derived class.
   * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is 
   *            allowed to allocate. Set this to -1 to allow an unlimited number of buffers.
   * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
@@ -439,10 +380,10 @@ void asynNDArrayDriver::report(FILE *fp, int details)
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   */
 
-asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int paramTableSize, int maxBuffers,
+asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numParams, int maxBuffers,
                                      size_t maxMemory, int interfaceMask, int interruptMask,
                                      int asynFlags, int autoConnect, int priority, int stackSize)
-    : asynPortDriver(portName, maxAddr, paramTableSize, interfaceMask, interruptMask,
+    : asynPortDriver(portName, maxAddr, numParams+NUM_NDARRAY_PARAMS, interfaceMask, interruptMask,
                      asynFlags, autoConnect, priority, stackSize),
       pNDArrayPool(NULL)
 {
@@ -452,6 +393,32 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int para
     this->pArrays = (NDArray **)calloc(maxAddr, sizeof(NDArray *));
     this->pAttributeList = new NDAttributeList();
     
+    addParam(NDPortNameSelfString,  &NDPortNameSelf);
+    addParam(NDArraySizeXString,    &NDArraySizeX);
+    addParam(NDArraySizeYString,    &NDArraySizeY);
+    addParam(NDArraySizeZString,    &NDArraySizeZ);
+    addParam(NDArraySizeString,     &NDArraySize);
+    addParam(NDDataTypeString,      &NDDataType);
+    addParam(NDColorModeString,     &NDColorMode);
+    addParam(NDArrayCounterString,  &NDArrayCounter);
+    addParam(NDFilePathString,      &NDFilePath);
+    addParam(NDFileNameString,      &NDFileName);
+    addParam(NDFileNumberString,    &NDFileNumber);
+    addParam(NDFileTemplateString,  &NDFileTemplate);
+    addParam(NDAutoIncrementString, &NDAutoIncrement);
+    addParam(NDFullFileNameString,  &NDFullFileName);
+    addParam(NDFileFormatString,    &NDFileFormat);
+    addParam(NDAutoSaveString,      &NDAutoSave);
+    addParam(NDWriteFileString,     &NDWriteFile);
+    addParam(NDReadFileString,      &NDReadFile);
+    addParam(NDFileWriteModeString, &NDFileWriteMode);
+    addParam(NDFileNumCaptureString,&NDFileNumCapture);
+    addParam(NDFileNumCapturedString, &NDFileNumCaptured);
+    addParam(NDFileCaptureString,   &NDFileCapture);   
+    addParam(NDAttributesFileString,&NDAttributesFile);
+    addParam(NDArrayDataString,     &NDArrayData);
+    addParam(NDArrayCallbacksString,&NDArrayCallbacks);
+
     setStringParam (NDPortNameSelf, portName);
     setIntegerParam(NDArraySizeX,   0);
     setIntegerParam(NDArraySizeY,   0);
