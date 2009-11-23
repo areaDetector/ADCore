@@ -23,28 +23,6 @@
 
 #include "NDPluginDriver.h"
 
-/** The command strings are the userParam argument for asyn device support links
-  * The asynDrvUser interface in this driver parses these strings and puts the
-  * corresponding enum value in pasynUser->reason */
-static asynParamString_t NDPluginDriverParamString[] = {
-    {NDPluginDriverArrayPort,             "NDARRAY_PORT" },
-    {NDPluginDriverArrayAddr,             "NDARRAY_ADDR" },
-    {NDPluginDriverPluginType,            "PLUGIN_TYPE" },
-    {NDPluginDriverArrayCounter,          "ARRAY_COUNTER"},
-    {NDPluginDriverDroppedArrays,         "DROPPED_ARRAYS" },
-    {NDPluginDriverEnableCallbacks,       "ENABLE_CALLBACKS" },
-    {NDPluginDriverBlockingCallbacks,     "BLOCKING_CALLBACKS" },
-    {NDPluginDriverMinCallbackTime,       "MIN_CALLBACK_TIME" },
-    {NDPluginDriverUniqueId,              "UNIQUE_ID" },
-    {NDPluginDriverTimeStamp,             "TIME_STAMP" },
-    {NDPluginDriverDataType,              "DATA_TYPE" },
-    {NDPluginDriverColorMode,             "COLOR_MODE" },
-    {NDPluginDriverBayerPattern,          "BAYER_PATTERN" },
-    {NDPluginDriverNDimensions,           "ARRAY_NDIMENSIONS"},
-    {NDPluginDriverDimensions,            "ARRAY_DIMENSIONS"}
-};
-
-#define NUM_ND_PLUGIN_BASE_PARAMS (sizeof(NDPluginDriverParamString)/sizeof(NDPluginDriverParamString[0]))
 
 static const char *driverName="NDPluginDriver";
 
@@ -330,29 +308,25 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
     /* Set the parameter in the parameter library. */
     status = (asynStatus) setIntegerParam(addr, function, value);
 
-    switch(function) {
-        case NDPluginDriverEnableCallbacks:
-            if (value) {  
-                if (isConnected && !currentlyPosting) {
-                    /* We need to register to be called with interrupts from the detector driver on 
-                     * the asynGenericPointer interface. */
-                    status = setArrayInterrupt(1);
-                }
-            } else {
-                /* If we are currently connected and there is a callback registered, cancel it */    
-                if (isConnected && currentlyPosting) {
-                    status = setArrayInterrupt(0);
-                }
+    if (function == NDPluginDriverEnableCallbacks) {
+        if (value) {  
+            if (isConnected && !currentlyPosting) {
+                /* We need to register to be called with interrupts from the detector driver on 
+                 * the asynGenericPointer interface. */
+                status = setArrayInterrupt(1);
             }
-            break;
-        case NDPluginDriverArrayAddr:
-            connectToArrayPort();
-            break;
-        default:
-            /* If this parameter belongs to a base class call its method */
-            if (function < NDLastStdParam) 
-                status = asynNDArrayDriver::writeInt32(pasynUser, value);
-            break;
+        } else {
+            /* If we are currently connected and there is a callback registered, cancel it */    
+            if (isConnected && currentlyPosting) {
+                status = setArrayInterrupt(0);
+            }
+        }
+    } else if (function == NDPluginDriverArrayAddr) {
+        connectToArrayPort();
+    } else {
+        /* If this parameter belongs to a base class call its method */
+        if (function < FIRST_NDPLUGIN_PARAM) 
+            status = asynNDArrayDriver::writeInt32(pasynUser, value);
     }
     
     /* Do callbacks so higher layers see any changes */
@@ -389,14 +363,12 @@ asynStatus NDPluginDriver::writeOctet(asynUser *pasynUser, const char *value,
     /* Set the parameter in the parameter library. */
     status = (asynStatus)setStringParam(addr, function, (char *)value);
 
-    switch(function) {
-        case NDPluginDriverArrayPort:
-            connectToArrayPort();
-        default:
-            /* If this parameter belongs to a base class call its method */
-            if (function < NDLastStdParam) 
-                status = asynNDArrayDriver::writeOctet(pasynUser, value, nChars, nActual);
-            break;
+    if (function == NDPluginDriverArrayPort) {
+        connectToArrayPort();
+    } else {
+        /* If this parameter belongs to a base class call its method */
+        if (function < FIRST_NDPLUGIN_PARAM) 
+            status = asynNDArrayDriver::writeOctet(pasynUser, value, nChars, nActual);
     }
     
      /* Do callbacks so higher layers see any changes */
@@ -430,18 +402,15 @@ asynStatus NDPluginDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *value
     const char *functionName = "readInt32Array";
 
     status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
-    switch(function) {
-        case NDPluginDriverDimensions:
+    if (function == NDPluginDriverDimensions) {
             ncopy = ND_ARRAY_MAX_DIMS;
             if (nElements < ncopy) ncopy = nElements;
             memcpy(value, this->dimsPrev, ncopy*sizeof(*this->dimsPrev));
             *nIn = ncopy;
-            break;
-        default:
-            /* If this parameter belongs to a base class call its method */
-            if (function < NDLastStdParam) 
-                status = asynNDArrayDriver::readInt32Array(pasynUser, value, nElements, nIn);
-            break;
+    } else {
+        /* If this parameter belongs to a base class call its method */
+        if (function < FIRST_NDPLUGIN_PARAM) 
+            status = asynNDArrayDriver::readInt32Array(pasynUser, value, nElements, nIn);
     }
     if (status) 
         epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
@@ -455,31 +424,6 @@ asynStatus NDPluginDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *value
 }
     
 
-/** Sets pasynUser->reason to one of the enum values for the parameters defined in for
-  * the NDPluginDriver class if the drvInfo field matches one the strings defined for it.
-  * Simply calls asynPortDriver::drvUserCreateParam with the parameter table for this driver, and
-  * then base class asynNDArrayDriver::drvUserCreate if that fails.
-  * \param[in] pasynUser pasynUser structure that driver modifies
-  * \param[in] drvInfo String containing information about what driver function is being referenced
-  * \param[out] pptypeName Location in which driver puts a copy of drvInfo.
-  * \param[out] psize Location where driver puts size of param 
-  * \return Returns asynSuccess if a matching string was found, asynError if not found. */
-asynStatus NDPluginDriver::drvUserCreate(asynUser *pasynUser,
-                                       const char *drvInfo, 
-                                       const char **pptypeName, size_t *psize)
-{
-    asynStatus status;
-    //const char *functionName = "drvUserCreate";
-    
-    /* See if this is one of our parameters */
-    status = this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize, 
-                                    NDPluginDriverParamString, NUM_ND_PLUGIN_BASE_PARAMS);
-
-    /* If not then see if it is a base class parameter */
-    if (status) status = asynNDArrayDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
-
-    return(status);
-}
 
 /** Constructor for NDPluginDriver; most parameters are simply passed to asynNDArrayDriver::asynNDArrayDriver.
   * After calling the base class constructor this method creates a thread to execute the NDArray callbacks, 
@@ -494,7 +438,7 @@ asynStatus NDPluginDriver::drvUserCreate(asynUser *pasynUser,
   * \param[in] NDArrayPort Name of asyn port driver for initial source of NDArray callbacks.
   * \param[in] NDArrayAddr asyn port driver address for initial source of NDArray callbacks.
   * \param[in] maxAddr The maximum  number of asyn addr addresses this driver supports. 1 is minimum.
-  * \param[in] paramTableSize The number of parameters that this driver supports.
+  * \param[in] numParams The number of parameters that the derived class supports.
   * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is 
   *            allowed to allocate. Set this to -1 to allow an unlimited number of buffers.
   * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
@@ -507,11 +451,11 @@ asynStatus NDPluginDriver::drvUserCreate(asynUser *pasynUser,
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   */
 NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blockingCallbacks, 
-                               const char *NDArrayPort, int NDArrayAddr, int maxAddr, int paramTableSize,
+                               const char *NDArrayPort, int NDArrayAddr, int maxAddr, int numParams,
                                int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
                                int asynFlags, int autoConnect, int priority, int stackSize)
 
-    : asynNDArrayDriver(portName, maxAddr, paramTableSize, maxBuffers, maxMemory,
+    : asynNDArrayDriver(portName, maxAddr, numParams+NUM_NDPLUGIN_PARAMS, maxBuffers, maxMemory,
           interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynDrvUserMask,
           interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask,
           asynFlags, autoConnect, priority, stackSize)    
@@ -550,6 +494,21 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
         printf("%s:%s: epicsThreadCreate failure\n", driverName, functionName);
         return;
     }
+    addParam(NDPluginDriverArrayPortString,         &NDPluginDriverArrayPort);
+    addParam(NDPluginDriverArrayAddrString,         &NDPluginDriverArrayAddr);
+    addParam(NDPluginDriverPluginTypeString,        &NDPluginDriverPluginType);
+    addParam(NDPluginDriverArrayCounterString,      &NDPluginDriverArrayCounter);
+    addParam(NDPluginDriverDroppedArraysString,     &NDPluginDriverDroppedArrays);
+    addParam(NDPluginDriverEnableCallbacksString,   &NDPluginDriverEnableCallbacks);
+    addParam(NDPluginDriverBlockingCallbacksString, &NDPluginDriverBlockingCallbacks);
+    addParam(NDPluginDriverMinCallbackTimeString,   &NDPluginDriverMinCallbackTime);
+    addParam(NDPluginDriverUniqueIdString,          &NDPluginDriverUniqueId);
+    addParam(NDPluginDriverTimeStampString,         &NDPluginDriverTimeStamp);
+    addParam(NDPluginDriverDataTypeString,          &NDPluginDriverDataType);
+    addParam(NDPluginDriverColorModeString,         &NDPluginDriverColorMode);
+    addParam(NDPluginDriverBayerPatternString,      &NDPluginDriverBayerPattern);
+    addParam(NDPluginDriverNDimensionsString,       &NDPluginDriverNDimensions);
+    addParam(NDPluginDriverDimensionsString,        &NDPluginDriverDimensions);
 
     /* Set the initial values of some parameters */
     setStringParam (NDPortNameSelf, portName);
