@@ -20,47 +20,6 @@
 #include "NDArray.h"
 #include "NDPluginROI.h"
 
-static asynParamString_t NDPluginROINParamString[] = {
-    {NDPluginROIName,                   "NAME"},
-    {NDPluginROIUse,                    "USE"},
-    {NDPluginROIComputeStatistics,      "COMPUTE_STATISTICS"},
-    {NDPluginROIComputeHistogram,       "COMPUTE_HISTOGRAM"},
-    {NDPluginROIComputeProfiles,        "COMPUTE_PROFILES"},
-    {NDPluginROIHighlight,              "HIGHLIGHT"},
-
-    {NDPluginROIDim0Min,                "DIM0_MIN"},
-    {NDPluginROIDim0Size,               "DIM0_SIZE"},
-    {NDPluginROIDim0MaxSize,            "DIM0_MAX_SIZE"},
-    {NDPluginROIDim0Bin,                "DIM0_BIN"},
-    {NDPluginROIDim0Reverse,            "DIM0_REVERSE"},
-    {NDPluginROIDim1Min,                "DIM1_MIN"},
-    {NDPluginROIDim1Size,               "DIM1_SIZE"},
-    {NDPluginROIDim1MaxSize,            "DIM1_MAX_SIZE"},
-    {NDPluginROIDim1Bin,                "DIM1_BIN"},
-    {NDPluginROIDim1Reverse,            "DIM1_REVERSE"},
-    {NDPluginROIDim2Min,                "DIM2_MIN"},
-    {NDPluginROIDim2Size,               "DIM2_SIZE"},
-    {NDPluginROIDim2MaxSize,            "DIM2_MAX_SIZE"},
-    {NDPluginROIDim2Bin,                "DIM2_BIN"},
-    {NDPluginROIDim2Reverse,            "DIM2_REVERSE"},
-    {NDPluginROIDataType,               "ROI_DATA_TYPE"},
-
-    {NDPluginROIBgdWidth,               "BGD_WIDTH"},
-    {NDPluginROIMinValue,               "MIN_VALUE"},
-    {NDPluginROIMaxValue,               "MAX_VALUE"},
-    {NDPluginROIMeanValue,              "MEAN_VALUE"},
-    {NDPluginROITotal,                  "TOTAL"},
-    {NDPluginROINet,                    "NET"},
-    {NDPluginROITotalArray,             "TOTAL_ARRAY"},
-    {NDPluginROINetArray,               "NET_ARRAY"},
-
-    {NDPluginROIHistSize,               "HIST_SIZE"},
-    {NDPluginROIHistMin,                "HIST_MIN"},
-    {NDPluginROIHistMax,                "HIST_MAX"},
-    {NDPluginROIHistEntropy,            "HIST_ENTROPY"},
-    {NDPluginROIHistArray,              "HIST_ARRAY"},
-};
-
 static const char *driverName="NDPluginROI";
 
 #define MAX(A,B) (A)>(B)?(A):(B)
@@ -519,47 +478,33 @@ asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
     pROI = &this->pROIs[roi];
     /* Set parameter and readback in parameter library */
     status = setIntegerParam(roi , function, value);
-    switch(function) {
-        case NDPluginROIDim0Min:
+    if (function == NDPluginROIDim0Min)
             pROI->dims[0].offset = value;
-            break;
-        case NDPluginROIDim0Size:
+    else if (function == NDPluginROIDim0Size)
             pROI->dims[0].size = value;
-            break;
-        case NDPluginROIDim0Bin:
+    else if (function == NDPluginROIDim0Bin)
             pROI->dims[0].binning = value;
-            break;
-        case NDPluginROIDim0Reverse:
+    else if (function == NDPluginROIDim0Reverse)
             pROI->dims[0].reverse = value;
-            break;
-        case NDPluginROIDim1Min:
+    else if (function == NDPluginROIDim1Min)
             pROI->dims[1].offset = value;
-            break;
-        case NDPluginROIDim1Size:
+    else if (function == NDPluginROIDim1Size)
             pROI->dims[1].size = value;
-            break;
-        case NDPluginROIDim1Bin:
+    else if (function == NDPluginROIDim1Bin)
             pROI->dims[1].binning = value;
-            break;
-        case NDPluginROIDim1Reverse:
+    else if (function == NDPluginROIDim1Reverse)
             pROI->dims[1].reverse = value;
-            break;
-        case NDPluginROIDim2Min:
+    else if (function == NDPluginROIDim2Min)
             pROI->dims[2].offset = value;
-            break;
-        case NDPluginROIDim2Size:
+    else if (function == NDPluginROIDim2Size)
             pROI->dims[2].size = value;
-            break;
-        case NDPluginROIDim2Bin:
+    else if (function == NDPluginROIDim2Bin)
             pROI->dims[2].binning = value;
-            break;
-        case NDPluginROIDim2Reverse:
+    else if (function == NDPluginROIDim2Reverse)
             pROI->dims[2].reverse = value;
-            break;
-        default:
-            /* This was not a parameter that this driver understands, try the base class */
-            status = NDPluginDriver::writeInt32(pasynUser, value);
-            break;
+    else {
+        /* This was not a parameter that this driver understands, try the base class */
+        status = NDPluginDriver::writeInt32(pasynUser, value);
     }
     /* Do callbacks so higher layers see any changes */
     status = callParamCallbacks(roi, roi);
@@ -591,7 +536,7 @@ asynStatus NDPluginROI::readFloat64Array(asynUser *pasynUser,
     const char* functionName = "readFloat64Array";
 
     status = getAddress(pasynUser, functionName, &roi); if (status != asynSuccess) return(status);
-    if (function < NDPluginROIFirstROINParam) {
+    if (function < FIRST_NDPLUGIN_ROI_PARAM) {
         /* We don't support reading asynFloat64 arrays except for ROIs */
         status = asynError;
         epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
@@ -600,19 +545,16 @@ asynStatus NDPluginROI::readFloat64Array(asynUser *pasynUser,
     } else {
         size_t ncopy;
         pROI = &this->pROIs[roi];
-        switch(function) {
-            case NDPluginROIHistArray:
-                ncopy = pROI->histSize;
-                if (ncopy > nElements) ncopy = nElements;
-                memcpy(value, pROI->histogram, ncopy*sizeof(epicsFloat64));
-                *nIn = ncopy;
-                break;
-            default:
-                status = asynError;
-                epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                             "%s:%s: invalid request",
-                             driverName, functionName);
-                break;
+        if (function == NDPluginROIHistArray) {
+            ncopy = pROI->histSize;
+            if (ncopy > nElements) ncopy = nElements;
+            memcpy(value, pROI->histogram, ncopy*sizeof(epicsFloat64));
+            *nIn = ncopy;
+        } else {
+            status = asynError;
+            epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                         "%s:%s: invalid request",
+                         driverName, functionName);
         }
     }
     if (status)
@@ -623,32 +565,6 @@ asynStatus NDPluginROI::readFloat64Array(asynUser *pasynUser,
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
               "%s:%s: function=%d, value=%f\n",
               driverName, functionName, function, *value);
-    return(status);
-}
-
-
-/* asynDrvUser interface methods */
-/** Sets pasynUser->reason to one of the enum values for the parameters defined for
-  * this class if the drvInfo field matches one the strings defined for it.
-  * If the parameter is not recognized by this class then calls NDPluginDriver::drvUserCreate.
-  * Uses asynPortDriver::drvUserCreateParam.
-  * \param[in] pasynUser pasynUser structure that driver modifies
-  * \param[in] drvInfo String containing information about what driver function is being referenced
-  * \param[out] pptypeName Location in which driver puts a copy of drvInfo.
-  * \param[out] psize Location where driver puts size of param
-  * \return Returns asynSuccess if a matching string was found, asynError if not found. */
-asynStatus NDPluginROI::drvUserCreate(asynUser *pasynUser,
-                                       const char *drvInfo,
-                                       const char **pptypeName, size_t *psize)
-{
-    asynStatus status;
-    //const char *functionName = "drvUserCreate";
-
-    status = this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize,
-                                      NDPluginROINParamString, NUM_ROIN_PARAMS);
-
-    /* If not, then call the base class method, see if it is known there */
-    if (status) status = NDPluginDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
     return(status);
 }
 
@@ -679,7 +595,7 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
                          int priority, int stackSize)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
-                   NDArrayPort, NDArrayAddr, maxROIs, NDPluginROILastROINParam, maxBuffers, maxMemory,
+                   NDArrayPort, NDArrayAddr, maxROIs, NUM_NDPLUGIN_ROI_PARAMS, maxBuffers, maxMemory,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    ASYN_MULTIDEVICE, 1, priority, stackSize)
@@ -693,6 +609,43 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
     this->pROIs = (NDROI_t *)callocMustSucceed(maxROIs, sizeof(*this->pROIs), functionName);
     this->totalArray = (epicsInt32 *)callocMustSucceed(maxROIs, sizeof(epicsInt32), functionName);
     this->netArray = (epicsInt32 *)callocMustSucceed(maxROIs, sizeof(epicsInt32), functionName);
+
+    addParam(NDPluginROINameString,           &NDPluginROIName);
+    addParam(NDPluginROIUseString,            &NDPluginROIUse);
+    addParam(NDPluginROIComputeStatisticsString,    &NDPluginROIComputeStatistics);
+    addParam(NDPluginROIComputeHistogramString,     &NDPluginROIComputeHistogram);
+    addParam(NDPluginROIComputeProfilesString,      &NDPluginROIComputeProfiles);
+    addParam(NDPluginROIHighlightString,      &NDPluginROIHighlight);
+    addParam(NDPluginROIDim0MinString,        &NDPluginROIDim0Min);
+    addParam(NDPluginROIDim0SizeString,       &NDPluginROIDim0Size);
+    addParam(NDPluginROIDim0MaxSizeString,    &NDPluginROIDim0MaxSize);
+    addParam(NDPluginROIDim0BinString,        &NDPluginROIDim0Bin);
+    addParam(NDPluginROIDim0ReverseString,    &NDPluginROIDim0Reverse);
+    addParam(NDPluginROIDim1MinString,        &NDPluginROIDim1Min);
+    addParam(NDPluginROIDim1SizeString,       &NDPluginROIDim1Size);
+    addParam(NDPluginROIDim1MaxSizeString,    &NDPluginROIDim1MaxSize);
+    addParam(NDPluginROIDim1BinString,        &NDPluginROIDim1Bin);
+    addParam(NDPluginROIDim1ReverseString,    &NDPluginROIDim1Reverse);
+    addParam(NDPluginROIDim2MinString,        &NDPluginROIDim2Min);
+    addParam(NDPluginROIDim2SizeString,       &NDPluginROIDim2Size);
+    addParam(NDPluginROIDim2MaxSizeString,    &NDPluginROIDim2MaxSize);
+    addParam(NDPluginROIDim2BinString,        &NDPluginROIDim2Bin);
+    addParam(NDPluginROIDim2ReverseString,    &NDPluginROIDim2Reverse);
+    addParam(NDPluginROIDataTypeString,       &NDPluginROIDataType);
+    addParam(NDPluginROIBgdWidthString,       &NDPluginROIBgdWidth);
+    addParam(NDPluginROIMinValueString,       &NDPluginROIMinValue);
+    addParam(NDPluginROIMaxValueString,       &NDPluginROIMaxValue);
+    addParam(NDPluginROIMeanValueString,      &NDPluginROIMeanValue);
+    addParam(NDPluginROITotalString,          &NDPluginROITotal);
+    addParam(NDPluginROINetString,            &NDPluginROINet);
+    addParam(NDPluginROITotalArrayString,     &NDPluginROITotalArray);
+    addParam(NDPluginROINetArrayString,       &NDPluginROINetArray);
+    addParam(NDPluginROIHistSizeString,       &NDPluginROIHistSize);
+    addParam(NDPluginROIHistMinString,        &NDPluginROIHistMin);
+    addParam(NDPluginROIHistMaxString,        &NDPluginROIHistMax);
+    addParam(NDPluginROIHistEntropyString,    &NDPluginROIHistEntropy);
+    addParam(NDPluginROIHistArrayString,      &NDPluginROIHistArray);
+
     setIntegerParam(0, NDPluginROIHighlight,         0);
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginROI");
