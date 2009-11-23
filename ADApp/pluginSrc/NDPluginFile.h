@@ -16,14 +16,6 @@
 #define NDFileModeMultiple 0x08
 typedef int NDFileOpenMode_t;
 
-/** Enums for plugin-specific parameters. There are currently no specific parameters for this driver yet.
-  * It uses the NDStdDriverParam_t params. */
-typedef enum {
-    NDPluginFileLastParam =
-        NDPluginDriverLastParam
-} NDPluginFileParam_t;
-
-
 /** Base class for NDArray file writing plugins; actual file writing plugins inherit from this class.
   * This class handles the logic of single file per image, capture into buffer or streaming multiple images
   * to a single file.  
@@ -31,7 +23,7 @@ typedef enum {
 class NDPluginFile : public NDPluginDriver {
 public:
     NDPluginFile(const char *portName, int queueSize, int blockingCallbacks, 
-                 const char *NDArrayPort, int NDArrayAddr, int maxAddr, int paramTableSize,
+                 const char *NDArrayPort, int NDArrayAddr, int maxAddr, int numParams,
                  int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
                  int asynFlags, int autoConnect, int priority, int stackSize);
                  
@@ -39,9 +31,6 @@ public:
     virtual void processCallbacks(NDArray *pArray);
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     virtual asynStatus writeNDArray(asynUser *pasynUser, void *genericPointer);
-    virtual asynStatus drvUserCreate(asynUser *pasynUser, const char *drvInfo, 
-                             const char **pptypeName, size_t *psize);
-
 
     /** Open a file; pure virtual function that must be implemented by derived classes.
       * \param[in] fileName  Absolute path name of the file to open.
@@ -81,5 +70,6 @@ private:
     epicsMutexId fileMutexId;
 };
 
+#define NUM_NDPLUGIN_FILE_PARAMS 0
     
 #endif

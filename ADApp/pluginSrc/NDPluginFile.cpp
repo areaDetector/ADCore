@@ -24,15 +24,6 @@
 #include "NDPluginFile.h"
 
 
-/* The command strings are the userParam argument for asyn device support links
- * The asynDrvUser interface in this driver parses these strings and puts the
- * corresponding enum value in pasynUser->reason */
-static asynParamString_t NDPluginFileParamString[] = {
-    {0, "unused"} /* We don't have currently any parameters ourselves but compiler does not like empty array */
-};
-
-#define NUM_ND_PLUGIN_FILE_PARAMS (sizeof(NDPluginFileParamString)/sizeof(NDPluginFileParamString[0]))
-
 static const char *driverName="NDPluginFile";
 
 
@@ -399,40 +390,35 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
     /* Set the parameter in the parameter library. */
     status = (asynStatus) setIntegerParam(function, value);
 
-    switch(function) {
-        case NDWriteFile:
-            if (value) {
-                /* Call the callbacks so the status changes */
-                callParamCallbacks();
-                if (this->pArrays[0]) {
-                    status = writeFileBase();
-                } else {
-                    asynPrint(pasynUser, ASYN_TRACE_ERROR,
-                        "%s:%s: ERROR, no valid array to write",
-                        driverName, functionName);
-                    status = asynError;
-                }
-                /* Set the flag back to 0, since this could be a busy record */
-                setIntegerParam(NDWriteFile, 0);
+    if (function == NDWriteFile) {
+        if (value) {
+            /* Call the callbacks so the status changes */
+            callParamCallbacks();
+            if (this->pArrays[0]) {
+                status = writeFileBase();
+            } else {
+                asynPrint(pasynUser, ASYN_TRACE_ERROR,
+                    "%s:%s: ERROR, no valid array to write",
+                    driverName, functionName);
+                status = asynError;
             }
-            break;
-        case NDReadFile:
-            if (value) {
-                /* Call the callbacks so the status changes */
-                callParamCallbacks();
-                status = readFileBase();
-                /* Set the flag back to 0, since this could be a busy record */
-                setIntegerParam(NDReadFile, 0);
-            }
-            break;
-        case NDFileCapture:
-            /* Must call doCapture if capturing was just started or stopped */
-            status = doCapture(value);
-            break;
-        default:
-            /* This was not a parameter that this driver understands, try the base class */
-            if (function < NDPluginDriverLastParam) status = NDPluginDriver::writeInt32(pasynUser, value);
-            break;
+            /* Set the flag back to 0, since this could be a busy record */
+            setIntegerParam(NDWriteFile, 0);
+        }
+    } else if (function == NDReadFile) {
+        if (value) {
+            /* Call the callbacks so the status changes */
+            callParamCallbacks();
+            status = readFileBase();
+            /* Set the flag back to 0, since this could be a busy record */
+            setIntegerParam(NDReadFile, 0);
+        }
+    } else if (function == NDFileCapture) {
+        /* Must call doCapture if capturing was just started or stopped */
+        status = doCapture(value);
+    } else {
+        /* This was not a parameter that this driver understands, try the base class */
+        if (function <= LAST_NDPLUGIN_PARAM) status = NDPluginDriver::writeInt32(pasynUser, value);
     }
     
     /* Do callbacks so higher layers see any changes */
@@ -467,31 +453,6 @@ asynStatus NDPluginFile::writeNDArray(asynUser *pasynUser, void *genericPointer)
     return status;
 }
 
-/** Sets pasynUser->reason to one of the enum values for the parameters defined for
-  * the NDPluginFile class if the drvInfo field matches one the strings defined for it.
-  * If the parameter is not recognized by this class then calls NDPluginDriver::drvUserCreate.
-  * Uses asynPortDriver::drvUserCreateParam.
-  * \param[in] pasynUser pasynUser structure that driver modifies
-  * \param[in] drvInfo String containing information about what driver function is being referenced
-  * \param[out] pptypeName Location in which driver puts a copy of drvInfo.
-  * \param[out] psize Location where driver puts size of param 
-  * \return Returns asynSuccess if a matching string was found, asynError if not found. */
-asynStatus NDPluginFile::drvUserCreate(asynUser *pasynUser,
-                                       const char *drvInfo, 
-                                       const char **pptypeName, size_t *psize)
-{
-    asynStatus status;
-    //const char *functionName = "drvUserCreate";
-    
-    status = this->drvUserCreateParam(pasynUser, drvInfo, pptypeName, psize, 
-                                      NDPluginFileParamString, NUM_ND_PLUGIN_FILE_PARAMS);
-
-    /* If not, then call the base class method, see if it is known there */
-    if (status) status = NDPluginDriver::drvUserCreate(pasynUser, drvInfo, pptypeName, psize);
-    return(status);
-}
-
-
 /** Constructor for NDPluginFile; all parameters are simply passed to NDPluginDriver::NDPluginDriver.
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when 
@@ -516,7 +477,7 @@ asynStatus NDPluginFile::drvUserCreate(asynUser *pasynUser,
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   */
 NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCallbacks, 
-                           const char *NDArrayPort, int NDArrayAddr, int maxAddr, int paramTableSize,
+                           const char *NDArrayPort, int NDArrayAddr, int maxAddr, int numParams,
                            int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
                            int asynFlags, int autoConnect, int priority, int stackSize)
 
@@ -525,7 +486,7 @@ NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCall
      * This driver can block (because writing a file can be slow), and it is not multi-device.  
      * Set autoconnect to 1.  priority and stacksize can be 0, which will use defaults. */
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
-                     NDArrayPort, NDArrayAddr, maxAddr, paramTableSize, maxBuffers, maxMemory, 
+                     NDArrayPort, NDArrayAddr, maxAddr, numParams+NUM_NDPLUGIN_FILE_PARAMS, maxBuffers, maxMemory, 
                      asynGenericPointerMask, asynGenericPointerMask,
                      asynFlags, autoConnect, priority, stackSize)
 {
