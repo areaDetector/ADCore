@@ -4,7 +4,6 @@
 
 record(longin, "$(P)$(R)PESystemID")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_SYSTEMID")
    field(SCAN, "I/O Intr")
@@ -12,7 +11,6 @@ record(longin, "$(P)$(R)PESystemID")
 
 record(longin, "$(P)$(R)PEFrameBuffIndex")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_FRAME_BUFFER_INDEX")
    field(SCAN, "I/O Intr")
@@ -20,7 +18,6 @@ record(longin, "$(P)$(R)PEFrameBuffIndex")
 
 record(longin, "$(P)$(R)PEImageNumber")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_IMAGE_NUMBER")
    field(SCAN, "I/O Intr")
@@ -34,7 +31,6 @@ record(longout, "$(P)$(R)PEInitialize")
 
 record(mbbi, "$(P)$(R)PEStatus_RBV")
 {
-   field(PINI, "RUNNING")
    field(SCAN, "I/O Intr")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_STATUS_RBV")
@@ -57,6 +53,7 @@ record(longout, "$(P)$(R)PEAcquireOffset")
 
 record(longout, "$(P)$(R)PENumOffsetFrames")
 {
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_NUM_OFFSET_FRAMES")
    field(LOPR, "1")
@@ -65,7 +62,6 @@ record(longout, "$(P)$(R)PENumOffsetFrames")
 
 record(mbbi, "$(P)$(R)PEOffsetAvailable")
 {
-   field(PINI, "RUNNING")
    field(SCAN, "I/O Intr")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_OFFSET_AVAILABLE")
@@ -96,7 +92,6 @@ record(longout, "$(P)$(R)PEAcquireGain")
 
 record(mbbi, "$(P)$(R)PEGainAvailable")
 {
-   field(PINI, "RUNNING")
    field(SCAN, "I/O Intr")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_GAIN_AVAILABLE")
@@ -110,7 +105,6 @@ record(mbbi, "$(P)$(R)PEGainAvailable")
 
 record(mbbi, "$(P)$(R)PEPixelCorrectionAvailable")
 {
-   field(PINI, "RUNNING")
    field(SCAN, "I/O Intr")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_PIXEL_CORRECTION_AVAILABLE")
@@ -124,6 +118,7 @@ record(mbbi, "$(P)$(R)PEPixelCorrectionAvailable")
 
 record(longout, "$(P)$(R)PENumGainFrames")
 {
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_NUM_GAIN_FRAMES")
    field(LOPR, "1")
@@ -163,7 +158,6 @@ record(mbbo, "$(P)$(R)PEGain")
 
 record(mbbi, "$(P)$(R)PEGain_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_GAIN_RBV")
    field(SCAN, "I/O Intr")
@@ -207,7 +201,6 @@ record(mbbo, "$(P)$(R)PEDwellTime")
 
 record(mbbi, "$(P)$(R)PEDwellTime_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_DWELL_TIME_RBV")
    field(SCAN, "I/O Intr")
@@ -231,6 +224,7 @@ record(mbbi, "$(P)$(R)PEDwellTime_RBV")
 
 record(longout, "$(P)$(R)PENumFrameBuffers")
 {
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_NUM_FRAME_BUFFERS")
    field(LOPR, "0")
@@ -239,7 +233,6 @@ record(longout, "$(P)$(R)PENumFrameBuffers")
 
 record(longin, "$(P)$(R)PENumFrameBuffers_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_NUM_FRAME_BUFFERS_RBV")
    field(SCAN, "I/O Intr")
@@ -264,7 +257,6 @@ record(mbbo, "$(P)$(R)PESyncMode")
 
 record(mbbi, "$(P)$(R)PESyncMode_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_SYNC_MODE_RBV")
    field(SCAN, "I/O Intr")
@@ -286,6 +278,7 @@ record(longout, "$(P)$(R)PETrigger")
 
 record(longout, "$(P)$(R)PESyncTime")
 {
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_SYNC_TIME")
 }
@@ -339,13 +332,45 @@ record(waveform, "$(P)$(R)PEBadPixelFile")
 
 record(waveform, "$(P)$(R)PEBadPixelFile_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_PIXEL_CORRECTION_FILE_RBV")
     field(FTVL, "UCHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
 }
+
+record(bo, "$(P)$(R)PESkipLeadingPulses")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_SKIP_LEADING_PULSES")
+   field(ZNAM, "NO")
+   field(ONAM, "YES")
+}
+
+record(bi, "$(P)$(R)PESkipLeadingPulses_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_SKIP_LEADING_PULSES")
+   field(SCAN, "I/O Intr")
+   field(ZNAM, "NO")
+   field(ONAM, "YES")
+}
+
+record(longout, "$(P)$(R)PENumPulsesToSkip")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_NUM_PULSES_TO_SKIP")
+}
+
+record(longin, "$(P)$(R)PENumPulsesToSkip_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_NUM_PULSES_TO_SKIP")
+   field(SCAN, "I/O Intr")
+}
+
 
 ######################
 # Override ADBase to extend Trigger Mode
