@@ -25,15 +25,20 @@ typedef enum {
  /*                               String                 asyn interface  access   Description  */
 #define NDPortNameSelfString    "PORT_NAME_SELF"    /**< (asynOctet,    r/o) Asyn port name of this driver instance */
 
-    /* Parameters defining the size of the array data from the detector.
+    /* Parameters defining characteristics of the array data from the detector.
      * NDArraySizeX and NDArraySizeY are the actual dimensions of the array data,
      * including effects of the region definition and binning */
 #define NDArraySizeXString      "ARRAY_SIZE_X"      /**< (asynInt32,    r/o) Size of the array data in the X direction */
 #define NDArraySizeYString      "ARRAY_SIZE_Y"      /**< (asynInt32,    r/o) Size of the array data in the Y direction */
 #define NDArraySizeZString      "ARRAY_SIZE_Z"      /**< (asynInt32,    r/o) Size of the array data in the Z direction */
 #define NDArraySizeString       "ARRAY_SIZE"        /**< (asynInt32,    r/o) Total size of array data in bytes */
+#define NDNDimensionsString     "ARRAY_NDIMENSIONS" /**< (asynInt32,    r/o) Number of dimensions in array */
+#define NDDimensionsString      "ARRAY_DIMENSIONS"  /**< (asynInt32Array, r/o) Array dimensions */
 #define NDDataTypeString        "DATA_TYPE"         /**< (asynInt32,    r/w) Data type (NDDataType_t) */
 #define NDColorModeString       "COLOR_MODE"        /**< (asynInt32,    r/w) Color mode (NDColorMode_t) */
+#define NDUniqueIdString        "UNIQUE_ID"         /**< (asynInt32,    r/o) Unique ID number of array */
+#define NDTimeStampString       "TIME_STAMP"        /**< (asynFloat64,  r/o) Time stamp of array */
+#define NDBayerPatternString    "BAYER_PATTERN"     /**< (asynInt32,    r/o) Bayer pattern of array  (from bayerPattern array attribute if present) */
 
     /* Statistics on number of arrays collected */
 #define NDArrayCounterString    "ARRAY_COUNTER"     /**< (asynInt32,    r/w) Number of arrays since last reset */
@@ -96,8 +101,13 @@ protected:
     int NDArraySizeY;
     int NDArraySizeZ;
     int NDArraySize;
+    int NDNDimensions;
+    int NDDimensions;
     int NDDataType;
     int NDColorMode;
+    int NDUniqueId;
+    int NDTimeStamp;
+    int NDBayerPattern;
     int NDArrayCounter;
     int NDFilePath;
     int NDFileName;
