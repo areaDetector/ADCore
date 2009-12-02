@@ -45,15 +45,15 @@ static const char *driverName="NDPluginDriver";
     pAttribute = pArray->pAttributeList->find("BayerPattern");
     if (pAttribute) pAttribute->getValue(NDAttrInt32, &bayerPattern);
     
-    getIntegerParam(NDPluginDriverArrayCounter, &arrayCounter);
+    getIntegerParam(NDArrayCounter, &arrayCounter);
     arrayCounter++;
-    setIntegerParam(NDPluginDriverArrayCounter, arrayCounter);
-    setIntegerParam(NDPluginDriverNDimensions, pArray->ndims);
-    setIntegerParam(NDPluginDriverDataType, pArray->dataType);
-    setIntegerParam(NDPluginDriverColorMode, colorMode);
-    setIntegerParam(NDPluginDriverBayerPattern, bayerPattern);
-    setIntegerParam(NDPluginDriverUniqueId, pArray->uniqueId);
-    setDoubleParam(NDPluginDriverTimeStamp, pArray->timeStamp);
+    setIntegerParam(NDArrayCounter, arrayCounter);
+    setIntegerParam(NDNDimensions, pArray->ndims);
+    setIntegerParam(NDDataType, pArray->dataType);
+    setIntegerParam(NDColorMode, colorMode);
+    setIntegerParam(NDBayerPattern, bayerPattern);
+    setIntegerParam(NDUniqueId, pArray->uniqueId);
+    setDoubleParam(NDTimeStamp, pArray->timeStamp);
     /* See if the array dimensions have changed.  If so then do callbacks on them. */
     for (i=0, dimsChanged=0; i<ND_ARRAY_MAX_DIMS; i++) {
         if (pArray->dims[i].size != this->dimsPrev[i]) {
@@ -62,7 +62,7 @@ static const char *driverName="NDPluginDriver";
         }
     }
     if (dimsChanged) {
-        doCallbacksInt32Array(this->dimsPrev, ND_ARRAY_MAX_DIMS, NDPluginDriverDimensions, 0);
+        doCallbacksInt32Array(this->dimsPrev, ND_ARRAY_MAX_DIMS, NDDimensions, 0);
     }
 }
 
@@ -95,7 +95,7 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
     this->lock();
 
     status |= getDoubleParam(NDPluginDriverMinCallbackTime, &minCallbackTime);
-    status |= getIntegerParam(NDPluginDriverArrayCounter, &arrayCounter);
+    status |= getIntegerParam(NDArrayCounter, &arrayCounter);
     status |= getIntegerParam(NDPluginDriverDroppedArrays, &droppedArrays);
     status |= getIntegerParam(NDPluginDriverBlockingCallbacks, &blockingCallbacks);
     
@@ -402,7 +402,7 @@ asynStatus NDPluginDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *value
     const char *functionName = "readInt32Array";
 
     status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
-    if (function == NDPluginDriverDimensions) {
+    if (function == NDDimensions) {
             ncopy = ND_ARRAY_MAX_DIMS;
             if (nElements < ncopy) ncopy = nElements;
             memcpy(value, this->dimsPrev, ncopy*sizeof(*this->dimsPrev));
@@ -497,33 +497,18 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     addParam(NDPluginDriverArrayPortString,         &NDPluginDriverArrayPort);
     addParam(NDPluginDriverArrayAddrString,         &NDPluginDriverArrayAddr);
     addParam(NDPluginDriverPluginTypeString,        &NDPluginDriverPluginType);
-    addParam(NDPluginDriverArrayCounterString,      &NDPluginDriverArrayCounter);
     addParam(NDPluginDriverDroppedArraysString,     &NDPluginDriverDroppedArrays);
     addParam(NDPluginDriverEnableCallbacksString,   &NDPluginDriverEnableCallbacks);
     addParam(NDPluginDriverBlockingCallbacksString, &NDPluginDriverBlockingCallbacks);
     addParam(NDPluginDriverMinCallbackTimeString,   &NDPluginDriverMinCallbackTime);
-    addParam(NDPluginDriverUniqueIdString,          &NDPluginDriverUniqueId);
-    addParam(NDPluginDriverTimeStampString,         &NDPluginDriverTimeStamp);
-    addParam(NDPluginDriverDataTypeString,          &NDPluginDriverDataType);
-    addParam(NDPluginDriverColorModeString,         &NDPluginDriverColorMode);
-    addParam(NDPluginDriverBayerPatternString,      &NDPluginDriverBayerPattern);
-    addParam(NDPluginDriverNDimensionsString,       &NDPluginDriverNDimensions);
-    addParam(NDPluginDriverDimensionsString,        &NDPluginDriverDimensions);
 
     /* Set the initial values of some parameters */
     setStringParam (NDPortNameSelf, portName);
     setStringParam (NDPluginDriverArrayPort, NDArrayPort);
     setIntegerParam(NDPluginDriverArrayAddr, NDArrayAddr);
-    setIntegerParam(NDPluginDriverArrayCounter, 0);
     setIntegerParam(NDPluginDriverDroppedArrays, 0);
     setIntegerParam(NDPluginDriverEnableCallbacks, 0);
     setIntegerParam(NDPluginDriverBlockingCallbacks, 0);
     setDoubleParam (NDPluginDriverMinCallbackTime, 0.);
-    setIntegerParam(NDPluginDriverUniqueId, 0);
-    setDoubleParam (NDPluginDriverTimeStamp, 0.);
-    setIntegerParam(NDPluginDriverDataType, 0);
-    setIntegerParam(NDPluginDriverColorMode, 0);
-    setIntegerParam(NDPluginDriverBayerPattern, 0);
-    setIntegerParam(NDPluginDriverNDimensions, 0);
 }
 
