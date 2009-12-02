@@ -317,7 +317,7 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
     /* Most plugins want to increment the arrayCounter each time they are called, which NDPluginDriver
      * does.  However, for this plugin we only want to increment it when we actually got a callback we were
      * supposed to save.  So we save the array counter before calling base method, increment it here */
-    getIntegerParam(NDPluginDriverArrayCounter, &arrayCounter);
+    getIntegerParam(NDArrayCounter, &arrayCounter);
 
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
@@ -371,7 +371,7 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
     }
 
     /* Update the parameters.  */
-    setIntegerParam(NDPluginDriverArrayCounter, arrayCounter);
+    setIntegerParam(NDArrayCounter, arrayCounter);
     callParamCallbacks();
 }
 

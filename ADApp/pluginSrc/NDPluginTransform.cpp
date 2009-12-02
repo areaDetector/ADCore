@@ -95,7 +95,7 @@
         colorMode = NDColorModeMono;
 
         /** Need to treat RGB modes diferently */
-        getIntegerParam(NDPluginDriverColorMode, &colorMode);
+        getIntegerParam(NDColorMode, &colorMode);
 
         if ( colorMode == NDColorModeRGB1) {
             this->userDims[0] = 1;
@@ -550,7 +550,7 @@ void NDPluginTransform::transform3DArray(NDArray *inArray, NDArray *outArray) {
     outArray->dims[0].size = maxOutSize[this->realDims[0]];
     outArray->dims[1].size = maxOutSize[this->realDims[1]];
     outArray->dims[2].size = maxOutSize[this->realDims[2]];
-    getIntegerParam(NDPluginDriverColorMode, &colorMode);
+    getIntegerParam(NDColorMode, &colorMode);
 
     for (kk = 0; kk<maxInSize[2]; kk++) {
         for (ii = 0; ii<maxInSize[1]; ii++){
