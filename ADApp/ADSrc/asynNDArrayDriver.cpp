@@ -398,8 +398,13 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     addParam(NDArraySizeYString,    &NDArraySizeY);
     addParam(NDArraySizeZString,    &NDArraySizeZ);
     addParam(NDArraySizeString,     &NDArraySize);
+    addParam(NDNDimensionsString,   &NDNDimensions);
+    addParam(NDDimensionsString,    &NDDimensions);
     addParam(NDDataTypeString,      &NDDataType);
     addParam(NDColorModeString,     &NDColorMode);
+    addParam(NDUniqueIdString,      &NDUniqueId);
+    addParam(NDTimeStampString,     &NDTimeStamp);
+    addParam(NDBayerPatternString,  &NDBayerPattern);
     addParam(NDArrayCounterString,  &NDArrayCounter);
     addParam(NDFilePathString,      &NDFilePath);
     addParam(NDFileNameString,      &NDFileName);
@@ -424,8 +429,12 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     setIntegerParam(NDArraySizeY,   0);
     setIntegerParam(NDArraySizeZ,   0);
     setIntegerParam(NDArraySize,    0);
+    setIntegerParam(NDNDimensions,  0);
     setIntegerParam(NDDataType,     NDUInt8);
     setIntegerParam(NDColorMode,    NDColorModeMono);
+    setIntegerParam(NDUniqueId,     0);
+    setDoubleParam (NDTimeStamp,    0.);
+    setIntegerParam(NDBayerPattern, 0);
     setIntegerParam(NDArrayCounter, 0);
     setStringParam (NDFilePath,     "");
     setStringParam (NDFileName,     "");
