@@ -19,13 +19,13 @@
 
 #define NDFileNexusTemplatePathString "TEMPLATE_FILE_PATH"
 #define NDFileNexusTemplateFileString "TEMPLATE_FILE_NAME"
-
+#define NDFileNexusTemplateValidString "TEMPLATE_FILE_VALID"
 #define NUM_ND_FILE_NEXUS_PARAMS (sizeof(NDFileNexusParamString)/sizeof(NDFileNexusParamString[0]))
 
 /** Writes NDArrays in the NeXus file format.
   * Uses an XML template file to configure the contents of the NeXus file.
-  * 
-  * This version is currently limited to writing a single NDArray to each NeXus file.  
+  *
+  * This version is currently limited to writing a single NDArray to each NeXus file.
   * Future releases will be capable of storing multiple NDArrays in each NeXus file.
   */
 class NDFileNexus : public NDPluginFile {
@@ -39,11 +39,14 @@ public:
     virtual asynStatus readFile(NDArray **pArray);
     virtual asynStatus writeFile(NDArray *pArray);
     virtual asynStatus closeFile();
+	asynStatus writeOctet(asynUser *pasynUser, const char *value,
+                                    size_t nChars, size_t *nActual);
 protected:
 	int NDFileNexusTemplatePath;
     #define FIRST_NDFILE_NEXUS_PARAM NDFileNexusTemplatePath
 	int NDFileNexusTemplateFile;
-    #define LAST_NDFILE_NEXUS_PARAM NDFileNexusTemplateFile
+	int NDFileNexusTemplateValid;
+    #define LAST_NDFILE_NEXUS_PARAM NDFileNexusTemplateValid
 
 private:
 	NXhandle nxFileHandle;
@@ -52,13 +55,19 @@ private:
 	TiXmlDocument configDoc;
 	TiXmlElement *rootNode;
     NDAttributeList *pFileAttributes;
+	NXname dataPath;
+	NXname dataName;
+	int imageNumber;
+
 	int processNode(TiXmlNode *curNode, NDArray *);
+	int processStreamData(NDArray *);
 	void getAttrTypeNSize(NDAttribute *pAttr, int *retType, int *retSize);
 	void iterateNodes(TiXmlNode *curNode, NDArray *pArray);
 	void findConstText(TiXmlNode *curNode, char *outtext);
 	void * allocConstValue(int dataType, int length);
 	void constTextToDataType(char *inText, int dataType, void *pValue);
 	int typeStringToVal( const char * typeStr );
+	void loadTemplateFile();
 
 };
 #define NUM_NDFILE_NEXUS_PARAMS (&LAST_NDFILE_NEXUS_PARAM - &FIRST_NDFILE_NEXUS_PARAM + 1)

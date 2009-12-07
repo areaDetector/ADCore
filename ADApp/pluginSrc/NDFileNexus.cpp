@@ -36,34 +36,42 @@ static const char *driverName="NDFileNexus";
 asynStatus NDFileNexus::openFile( const char *fileName, NDFileOpenMode_t openMode, NDArray *pArray) {
 	int status = asynSuccess;
 	int addr = 0;
-	NDAttribute *currAttr;
-	char fullFilename[2*MAX_FILENAME_LEN];
-	char template_path[MAX_FILENAME_LEN],
-	     template_file[MAX_FILENAME_LEN];
-	char programName[] = "areaDetector NDFileNexus plugin v0.1";
+	char programName[] = "areaDetector NDFileNexus plugin v0.2";
+    static const char *functionName = "openFile";
+
+
+	/*Print trace information if level is set correctly */
+	asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+		"Entering %s:%s\n", driverName, functionName );
+
+    /* We don't support reading yet */
+    if (openMode & NDFileModeRead) return(asynError);
+
+    /* We don't support opening an existing file for appending yet */
+    if (openMode & NDFileModeAppend) return(asynError);
 
     /* Construct an attribute list. We use a separate attribute list
      * from the one in pArray to avoid the need to copy the array. */
     /* First clear the list*/
     this->pFileAttributes->clear();
+
     /* Now get the current values of the attributes for this plugin */
     this->getAttributes(this->pFileAttributes);
+
     /* Now append the attributes from the array which are already up to date from
      * the driver and prior plugins */
     pArray->pAttributeList->copy(this->pFileAttributes);
 
-	/* get the filename to be used for nexus template */
-	status = getStringParam(addr, NDFileNexusTemplatePath, sizeof(template_path), template_path);
-	status = getStringParam(addr, NDFileNexusTemplateFile, sizeof(template_file), template_file);
-	sprintf(fullFilename, "%s%s", template_path, template_file);
-	/* Load the Nexus template file */
-	this->configDoc.LoadFile(fullFilename);
-	this->rootNode = this->configDoc.RootElement();
-	currAttr = pArray->pAttributeList->next(NULL);
 
 	/* Open the NeXus file */
 	NXopen(fileName, NXACC_CREATE5, &nxFileHandle);
 	NXputattr( this->nxFileHandle, "creator", programName, strlen(programName), NX_CHAR);
+	processNode(this->rootNode, pArray);
+
+	/*Print trace information if level is set correctly */
+	asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+		"Leaving %s:%s\n", driverName, functionName );
+
 	return (asynSuccess);
 }
 
@@ -74,15 +82,29 @@ asynStatus NDFileNexus::openFile( const char *fileName, NDFileOpenMode_t openMod
   *            (e.g. capture or stream mode).
   */
 asynStatus NDFileNexus::writeFile(NDArray *pArray) {
+	int numCapture, numCaptured;
+    static const char *functionName = "writeFile";
+
+	/*Print trace information if level is set correctly */
+	asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+		"Entering %s:%s\n", driverName, functionName );
+
+
     /* Update attribute list. We use a separate attribute list
      * from the one in pArray to avoid the need to copy the array. */
     /* Get the current values of the attributes for this plugin */
     this->getAttributes(this->pFileAttributes);
+
     /* Now append the attributes from the array which are already up to date from
      * the driver and prior plugins */
     pArray->pAttributeList->copy(this->pFileAttributes);
 
-	processNode(this->rootNode, pArray);
+
+	processStreamData(pArray);
+
+	/*Print trace information if level is set correctly */
+	asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+		"Leaving %s:%s\n", driverName, functionName );
 
 	return (asynSuccess);
 }
@@ -93,18 +115,43 @@ asynStatus NDFileNexus::writeFile(NDArray *pArray) {
 asynStatus NDFileNexus::readFile(NDArray **pArray) {
     static const char *functionName = "readFile";
 
+	/*Print trace information if level is set correctly */
+	asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+		"Entering %s:%s\n", driverName, functionName );
+
 	asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
         "%s:%s Reading image not implemented",
         driverName, functionName);
+
+	/*Print trace information if level is set correctly */
+	asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+		"Leaving %s:%s\n", driverName, functionName );
 	return asynError;
 }
 
 /** Closes the NeXus file opened with NDFileNexus::openFile */
 asynStatus NDFileNexus::closeFile() {
     asynStatus status;
+	int numCapture, numCaptured;
+	int fileWriteMode;
+	int addr =0;
+    static const char *functionName = "closeFile";
+
+	/*Print trace information if level is set correctly */
+	asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+		"Entering %s:%s\n", driverName, functionName );
+
+	status = getIntegerParam(addr, NDFileWriteMode, &fileWriteMode);
+	status = getIntegerParam(addr, NDFileNumCapture, &numCapture);
+	status = getIntegerParam(addr, NDFileNumCaptured, &numCaptured);
 
 	/* close the nexus file */
 	status = (asynStatus)NXclose(&nxFileHandle);
+	this->imageNumber = 0;
+
+	/*Print trace information if level is set correctly */
+	asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+		"Leaving %s:%s\n", driverName, functionName );
 
 	return status;
 }
@@ -122,6 +169,9 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 	NDDataType_t type;
 	int ii;
 	int dims[ND_ARRAY_MAX_DIMS];
+	int pathNameLength, pathType;
+	int numCapture, numCaptured;
+	int fileWriteMode;
 	NDAttrDataType_t attrDataType;
 	NDAttribute *pAttr;
 	size_t attrDataSize;
@@ -129,11 +179,22 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 	int wordSize;
 	int dataOutType;
 	int numWords;
+	int numItems = 0;
+	int addr =0;
 	char *pString;
 	void *pValue;
 	char nodeText[256];
+	char dataclass[64];
+	NXname dPath;
 	TiXmlNode *childNode;
     static const char *functionName = "processNode";
+
+	asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+		"Entering %s:%s\n", driverName, functionName );
+
+	getIntegerParam(addr, NDFileWriteMode, &fileWriteMode);
+	getIntegerParam(addr, NDFileNumCapture, &numCapture);
+	getIntegerParam(addr, NDFileNumCaptured, &numCaptured);
 
 	numpts = 1;
 	nodeValue = curNode->Value();
@@ -227,7 +288,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 				printf("Could not find attribute named %s\n", nodeSource);
 			}
 		}
-		if (nodeType && strcmp(nodeType, "CONST") == 0 ) {
+		else if (nodeType && strcmp(nodeType, "CONST") == 0 ) {
 			this->findConstText( curNode, nodeText);
 			nodeOuttype = curNode->ToElement()->Attribute("outtype");
 			if (nodeOuttype == NULL){
@@ -245,6 +306,11 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 			NXputattr(this->nxFileHandle, nodeName, pValue, nodeTextLen, dataOutType);
 			free(pValue);
 
+		}
+		else if (nodeType) {
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s:%s Node type %s for node %s is invalid",
+            driverName, functionName, nodeType, nodeValue);
 		}
 	}
 
@@ -318,9 +384,30 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 				}
 
 
-			NXmakedata( this->nxFileHandle, nodeValue, dataOutType, rank, dims);
+
+		    asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
+		        "%s:%s Starting to write data making group\n", driverName, functionName );
+
+			if ( fileWriteMode == NDFileModeSingle ) {
+					NXmakedata( this->nxFileHandle, nodeValue, dataOutType, rank, dims);
+			}
+			else if ( (fileWriteMode == NDFileModeCapture ) ||
+				(fileWriteMode == NDFileModeStream ) ) {
+					for (ii = 0; ii < rank; ii++) {
+						dims[(rank) - ii] = dims[(rank-1) - ii];
+					}
+					rank = rank +1;
+					dims[0] = numCapture;
+					NXmakedata( this->nxFileHandle, nodeValue, dataOutType, rank, dims);
+			}
+			//dPath[0] = '\0';
+			//dataclass[0] = '\0';
+
 			NXopendata(this->nxFileHandle, nodeValue);
-			NXputdata(this->nxFileHandle, pArray->pData);
+			NXgetgroupinfo(this->nxFileHandle, &numItems, dPath, dataclass);
+			sprintf(this->dataName, "%s", nodeValue);
+			sprintf(this->dataPath, "%c%s", '/', dPath);
+			printf("dataPath %s\ndataName %s\n", this->dataPath, this->dataName );
 			this->iterateNodes(curNode, pArray);
 			NXclosedata(this->nxFileHandle);
 		}
@@ -348,6 +435,11 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 			this->iterateNodes(curNode, pArray);
 			NXclosedata(this->nxFileHandle);
 		}
+		else if (nodeType) {
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s:%s Node type %s for node %s is invalid",
+            driverName, functionName, nodeType, nodeValue);
+		}
 		else {
 			this->findConstText( curNode, nodeText);
 
@@ -370,12 +462,74 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 			NXclosedata(this->nxFileHandle);
 		}
 	}
+	asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+		"Leaving %s:%s\n", driverName, functionName );
 	return (status);
+}
+
+int NDFileNexus::processStreamData(NDArray *pArray) {
+	int fileWriteMode;
+	int numCapture;
+	int dims[ND_ARRAY_MAX_DIMS];
+	int slabOffset[ND_ARRAY_MAX_DIMS];
+	int slabSize[ND_ARRAY_MAX_DIMS];
+	int rank;
+	int ii;
+	int addr = 0;
+    static const char *functionName = "processNode";
+
+	getIntegerParam(addr, NDFileWriteMode, &fileWriteMode);
+	getIntegerParam(addr, NDFileNumCapture, &numCapture);
+
+	rank = pArray->ndims;
+	for (ii=0; ii<rank; ii++) {
+		switch(fileWriteMode) {
+		case NDFileModeSingle:
+			dims[(rank-1) - ii] = pArray->dims[ii].size;
+			slabOffset[(rank-1) - ii] = 0;
+			slabSize[(rank-1) -ii] = pArray->dims[ii].size;
+			break;
+		case NDFileModeCapture:
+		case NDFileModeStream:
+			dims[(rank) - ii] = pArray->dims[ii].size;
+			slabOffset[(rank) - ii] = 0;
+			slabSize[(rank) -ii] = pArray->dims[ii].size;
+			break;
+		}
+	}
+
+	printf ("%s: dataPath %s\ndataName %s\nimageNumber %d\n", functionName, this->dataPath, this->dataName, this->imageNumber);
+	if (this->imageNumber == 0) {
+		NXopenpath( this->nxFileHandle, this->dataPath);
+		NXopendata( this->nxFileHandle, this->dataName);
+	}
+	switch (fileWriteMode) {
+		case NDFileModeSingle:
+			NXputdata(this->nxFileHandle, pArray->pData);
+			break;
+		case NDFileModeCapture:
+		case NDFileModeStream:
+			rank = rank+1;
+			slabOffset[0] = this->imageNumber;
+			slabSize[0] = 1;
+
+			NXputslab(this->nxFileHandle, pArray->pData, slabOffset, slabSize);
+			break;
+	}
+	if (this-> imageNumber == (numCapture-1) ) {
+		NXclosedata(this->nxFileHandle);
+		NXclosegroup(this->nxFileHandle );
+	}
+
+	this->imageNumber++;
+	return 0;
+
 }
 
 void NDFileNexus::iterateNodes(TiXmlNode *curNode, NDArray *pArray) {
 	TiXmlNode *childNode;
 	childNode=0;
+
 	while ((childNode = curNode->IterateChildren(childNode))) {
 			if (childNode->Type() <2 ){
 			this->processNode(childNode, pArray);
@@ -577,6 +731,85 @@ int NDFileNexus::typeStringToVal( const char * typeStr ) {
 	else return -1;
 }
 
+/** Called when asyn clients call pasynOctet->write().
+  * Catch parameter changes.  If the user changes the path or name of the template file
+  * load the new template file.
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Address of the string to write.
+  * \param[in] nChars Number of characters to write.
+  * \param[out] nActual Number of characters actually written. */
+asynStatus NDFileNexus::writeOctet(asynUser *pasynUser, const char *value,
+                                    size_t nChars, size_t *nActual)
+{
+    int addr=0;
+    int function = pasynUser->reason;
+    asynStatus status = asynSuccess;
+    const char *functionName = "writeOctet";
+
+    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
+    /* Set the parameter in the parameter library. */
+    status = (asynStatus)setStringParam(addr, function, (char *)value);
+
+    if (function == NDFileNexusTemplatePath) {
+        loadTemplateFile();
+	}
+    if (function == NDFileNexusTemplateFile) {
+		loadTemplateFile();
+	}
+    else {
+		/* If this parameter belongs to a base class call its method */
+		if (function < FIRST_NDFILE_NEXUS_PARAM)
+			status = asynNDArrayDriver::writeOctet(pasynUser, value, nChars, nActual);
+    }
+
+     /* Do callbacks so higher layers see any changes */
+    status = (asynStatus)callParamCallbacks(addr, addr);
+
+    if (status)
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+                  "%s:%s: status=%d, function=%d, value=%s",
+                  driverName, functionName, status, function, value);
+    else
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+              "%s:%s: function=%d, value=%s\n",
+              driverName, functionName, function, value);
+    *nActual = nChars;
+    return status;
+}
+
+void NDFileNexus::loadTemplateFile() {
+	bool loadStatus;
+	int status = asynSuccess;
+	int addr = 0;
+	char fullFilename[2*MAX_FILENAME_LEN];
+	char template_path[MAX_FILENAME_LEN],
+	     template_file[MAX_FILENAME_LEN];
+	char programName[] = "areaDetector NDFileNexus plugin v0.2";
+
+	/* get the filename to be used for nexus template */
+	status = getStringParam(addr, NDFileNexusTemplatePath, sizeof(template_path), template_path);
+	status = getStringParam(addr, NDFileNexusTemplateFile, sizeof(template_file), template_file);
+	sprintf(fullFilename, "%s%s", template_path, template_file);
+	/* Load the Nexus template file */
+
+	loadStatus = this->configDoc.LoadFile(fullFilename);
+
+	if (loadStatus != true ){
+		printf("Paramter file %s is invalid\n", fullFilename);
+		setIntegerParam(addr, NDFileNexusTemplateValid, 0);
+	    callParamCallbacks(addr, addr);
+		return;
+	}
+	else {
+		printf("Paramter file %s was successfully loaded\n", fullFilename);
+		setIntegerParam(addr, NDFileNexusTemplateValid, 1);
+		callParamCallbacks(addr, addr);
+	}
+
+	this->rootNode = this->configDoc.RootElement();
+
+}
+
 /** Constructor for NDFileNexus; all parameters are simply passed to NDPluginFile::NDPluginFile.
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when
@@ -605,10 +838,13 @@ NDFileNexus::NDFileNexus(const char *portName, int queueSize, int blockingCallba
     //const char *functionName = "NDFileNexus";
     addParam(NDFileNexusTemplatePathString, &NDFileNexusTemplatePath);
     addParam(NDFileNexusTemplateFileString, &NDFileNexusTemplateFile);
+    addParam(NDFileNexusTemplateValidString, &NDFileNexusTemplateValid);
 
     this->pFileAttributes = new NDAttributeList;
-    /* We want to support multiple arrays per file, but we don't yet so set flag to 0 for now */
-	this->supportsMultipleArrays = 0;
+	this->imageNumber = 0;
+    setIntegerParam(NDFileNexusTemplateValid, 0);
+
+	this->supportsMultipleArrays = 1;
 }
 
 /* Configuration routine.  Called directly, or from the iocsh  */
@@ -617,7 +853,7 @@ extern "C" int NDFileNexusConfigure(const char *portName, int queueSize, int blo
                                    const char *NDArrayPort, int NDArrayAddr,
                                    int priority, int stackSize)
 {
-    NDFileNexus *pPlugin = 
+    NDFileNexus *pPlugin =
         new NDFileNexus(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
                         priority, stackSize);
     pPlugin = NULL;  /* This is just to eliminate compiler warning about unused variables/objects */
