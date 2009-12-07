@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector/1-5beta/ADApp/op/adl/NDFileNexus.adl"
+	name="C:\epics\synApps_5_4_1\support\areaDetector\1-5\ADApp\op\adl\NDFileNexus.adl"
 	version=030102
 }
 display {
@@ -85,6 +85,22 @@ display {
 		3cb420,
 		289315,
 		1a7309,
+	}
+}
+rectangle {
+	object {
+		x=595
+		y=429
+		width=470
+		height=100
+	}
+	"basic attribute" {
+		clr=20
+	}
+	"dynamic attribute" {
+		vis="if zero"
+		calc="A"
+		chan="$(P)$(R)FileTemplateValid"
 	}
 }
 composite {
@@ -1521,12 +1537,24 @@ composite {
 		}
 	}
 }
-composite {
+rectangle {
 	object {
 		x=396
 		y=425
 		width=673
 		height=107
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+composite {
+	object {
+		x=412
+		y=433
+		width=635
+		height=91
 	}
 	"composite name"=""
 	children {
@@ -1562,32 +1590,6 @@ composite {
 			limits {
 			}
 		}
-		text {
-			object {
-				x=412
-				y=456
-				width=176
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Template file path"
-			align="horiz. right"
-		}
-		text {
-			object {
-				x=412
-				y=504
-				width=176
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Template file name"
-			align="horiz. right"
-		}
 		"text entry" {
 			object {
 				x=597
@@ -1620,17 +1622,31 @@ composite {
 			limits {
 			}
 		}
-		rectangle {
+		text {
 			object {
-				x=396
-				y=425
-				width=673
-				height=107
+				x=412
+				y=456
+				width=176
+				height=20
 			}
 			"basic attribute" {
 				clr=14
-				fill="outline"
 			}
+			textix="Template file path"
+			align="horiz. right"
+		}
+		text {
+			object {
+				x=412
+				y=504
+				width=176
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Template file name"
+			align="horiz. right"
 		}
 	}
 }
