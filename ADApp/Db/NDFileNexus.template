@@ -59,3 +59,14 @@ record(waveform, "$(P)$(R)TemplateFileName_RBV")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
 }
+
+record(bi, "$(P)$(R)FileTemplateValid")
+{
+    field(PINI, "RUNNING")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMPLATE_FILE_VALID")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(SCAN, "I/O Intr")
+}
+
