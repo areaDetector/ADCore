@@ -38,7 +38,7 @@ static asynUser *pasynUserSelf = NULL;
   * \param[in] dataType The data type for this parameter.  Must be "INT", "DOUBLE", or "STRING" (case-insensitive).
   */
 paramAttribute::paramAttribute(const char *pName, const char *pDescription, const char *pSource, int addr, 
-                            class asynNDArrayDriver *pDriver, const char *dataType)
+                               class asynNDArrayDriver *pDriver, const char *dataType)
     : NDAttribute(pName)
 {
     static const char *functionName = "paramAttribute";
@@ -60,6 +60,13 @@ paramAttribute::paramAttribute(const char *pName, const char *pDescription, cons
     this->paramAddr = addr;
     this->pDriver = pDriver;
     pasynUser = pasynManager->createAsynUser(0,0);
+    status = pasynManager->connectDevice(pasynUser, pDriver->portName, this->paramAddr);
+    if (status) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s:%s: ERROR, cannot connect to driver for parameter %s\n",
+            driverName, functionName, pSource);
+        return;
+    }
     status = this->pDriver->drvUserCreate(pasynUser, pSource, NULL, 0);
     if (status) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
@@ -68,6 +75,13 @@ paramAttribute::paramAttribute(const char *pName, const char *pDescription, cons
         return;
     }
     this->paramId = pasynUser->reason;
+    status = pasynManager->disconnect(pasynUser);
+    if (status) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s:%s: ERROR, cannot connect to driver for parameter %s\n",
+            driverName, functionName, pSource);
+        return;
+    }
     if (epicsStrCaseCmp(dataType, "int") == 0)    this->paramType=paramAttrTypeInt;
     if (epicsStrCaseCmp(dataType, "double") == 0) this->paramType=paramAttrTypeDouble;
     if (epicsStrCaseCmp(dataType, "string") == 0) this->paramType=paramAttrTypeString;
