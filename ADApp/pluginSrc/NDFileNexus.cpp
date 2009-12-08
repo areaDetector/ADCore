@@ -38,7 +38,7 @@ asynStatus NDFileNexus::openFile( const char *fileName, NDFileOpenMode_t openMod
 	int addr = 0;
 	char programName[] = "areaDetector NDFileNexus plugin v0.2";
     static const char *functionName = "openFile";
-
+	NXstatus nxstat;
 
 	/*Print trace information if level is set correctly */
 	asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
@@ -64,8 +64,14 @@ asynStatus NDFileNexus::openFile( const char *fileName, NDFileOpenMode_t openMod
 
 
 	/* Open the NeXus file */
-	NXopen(fileName, NXACC_CREATE5, &nxFileHandle);
-	NXputattr( this->nxFileHandle, "creator", programName, strlen(programName), NX_CHAR);
+	nxstat = NXopen(fileName, NXACC_CREATE5, &nxFileHandle);
+	if (nxstat == NX_ERROR) {
+		asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+			"Error %s:%s cannot open file %s\n", driverName, functionName, fileName );
+		return (asynError);
+	}
+	nxstat = NXputattr( this->nxFileHandle, "creator", programName, strlen(programName), NX_CHAR);
+
 	processNode(this->rootNode, pArray);
 
 	/*Print trace information if level is set correctly */
