@@ -643,27 +643,27 @@ NDPluginTransform::NDPluginTransform(const char *portName, int queueSize, int bl
     const char *functionName = "NDPluginTransform";
     int ii, jj;
 
-    addParam(NDPluginTransformNameString,         &NDPluginTransformName);
-    addParam(NDPluginTransform1TypeString,        &NDPluginTransform1Type);
-    addParam(NDPluginTransform2TypeString,        &NDPluginTransform2Type);
-    addParam(NDPluginTransform3TypeString,        &NDPluginTransform3Type);
-    addParam(NDPluginTransform4TypeString,        &NDPluginTransform4Type);
-    addParam(NDPluginTransformOriginString,       &NDPluginTransformOrigin);
-    addParam(NDPluginTransform1Dim0MaxSizeString, &NDPluginTransform1Dim0MaxSize);
-    addParam(NDPluginTransform1Dim1MaxSizeString, &NDPluginTransform1Dim1MaxSize);
-    addParam(NDPluginTransform1Dim2MaxSizeString, &NDPluginTransform1Dim2MaxSize);
-    addParam(NDPluginTransform2Dim0MaxSizeString, &NDPluginTransform2Dim0MaxSize);
-    addParam(NDPluginTransform2Dim1MaxSizeString, &NDPluginTransform2Dim1MaxSize);
-    addParam(NDPluginTransform2Dim2MaxSizeString, &NDPluginTransform2Dim2MaxSize);
-    addParam(NDPluginTransform3Dim0MaxSizeString, &NDPluginTransform3Dim0MaxSize);
-    addParam(NDPluginTransform3Dim1MaxSizeString, &NDPluginTransform3Dim1MaxSize);
-    addParam(NDPluginTransform3Dim2MaxSizeString, &NDPluginTransform3Dim2MaxSize);
-    addParam(NDPluginTransform4Dim0MaxSizeString, &NDPluginTransform4Dim0MaxSize);
-    addParam(NDPluginTransform4Dim1MaxSizeString, &NDPluginTransform4Dim1MaxSize);
-    addParam(NDPluginTransform4Dim2MaxSizeString, &NDPluginTransform4Dim2MaxSize);
-    addParam(NDPluginTransformArraySize0String,   &NDPluginTransformArraySize0);
-    addParam(NDPluginTransformArraySize1String,   &NDPluginTransformArraySize1);
-    addParam(NDPluginTransformArraySize2String,   &NDPluginTransformArraySize2);
+    createParam(NDPluginTransformNameString,         asynParamOctet, &NDPluginTransformName);
+    createParam(NDPluginTransform1TypeString,        asynParamInt32, &NDPluginTransform1Type);
+    createParam(NDPluginTransform2TypeString,        asynParamInt32, &NDPluginTransform2Type);
+    createParam(NDPluginTransform3TypeString,        asynParamInt32, &NDPluginTransform3Type);
+    createParam(NDPluginTransform4TypeString,        asynParamInt32, &NDPluginTransform4Type);
+    createParam(NDPluginTransformOriginString,       asynParamInt32, &NDPluginTransformOrigin);
+    createParam(NDPluginTransform1Dim0MaxSizeString, asynParamInt32, &NDPluginTransform1Dim0MaxSize);
+    createParam(NDPluginTransform1Dim1MaxSizeString, asynParamInt32, &NDPluginTransform1Dim1MaxSize);
+    createParam(NDPluginTransform1Dim2MaxSizeString, asynParamInt32, &NDPluginTransform1Dim2MaxSize);
+    createParam(NDPluginTransform2Dim0MaxSizeString, asynParamInt32, &NDPluginTransform2Dim0MaxSize);
+    createParam(NDPluginTransform2Dim1MaxSizeString, asynParamInt32, &NDPluginTransform2Dim1MaxSize);
+    createParam(NDPluginTransform2Dim2MaxSizeString, asynParamInt32, &NDPluginTransform2Dim2MaxSize);
+    createParam(NDPluginTransform3Dim0MaxSizeString, asynParamInt32, &NDPluginTransform3Dim0MaxSize);
+    createParam(NDPluginTransform3Dim1MaxSizeString, asynParamInt32, &NDPluginTransform3Dim1MaxSize);
+    createParam(NDPluginTransform3Dim2MaxSizeString, asynParamInt32, &NDPluginTransform3Dim2MaxSize);
+    createParam(NDPluginTransform4Dim0MaxSizeString, asynParamInt32, &NDPluginTransform4Dim0MaxSize);
+    createParam(NDPluginTransform4Dim1MaxSizeString, asynParamInt32, &NDPluginTransform4Dim1MaxSize);
+    createParam(NDPluginTransform4Dim2MaxSizeString, asynParamInt32, &NDPluginTransform4Dim2MaxSize);
+    createParam(NDPluginTransformArraySize0String,   asynParamInt32, &NDPluginTransformArraySize0);
+    createParam(NDPluginTransformArraySize1String,   asynParamInt32, &NDPluginTransformArraySize1);
+    createParam(NDPluginTransformArraySize2String,   asynParamInt32, &NDPluginTransformArraySize2);
 
     this->maxTransforms = 4;
     this->pTransforms = (NDTransform_t *)callocMustSucceed(this->maxTransforms, sizeof(*this->pTransforms), functionName);
@@ -717,8 +717,10 @@ extern "C" int NDTransformConfigure(const char *portName, int queueSize, int blo
                                  int maxBuffers, size_t maxMemory,
                                  int priority, int stackSize)
 {
+    NDPluginTransform *pPlugin =
     new NDPluginTransform(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
                     maxBuffers, maxMemory, priority, stackSize);
+    pPlugin = NULL;  /* This is just to eliminate compiler warning about unused variables/objects */
     return(asynSuccess);
 }
 

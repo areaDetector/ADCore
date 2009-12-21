@@ -294,7 +294,7 @@ NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int bl
     asynStatus status;
     //char *functionName = "NDPluginStdArrays";
     
-    addParam(NDPluginStdArraysDataString, &NDPluginStdArraysData);
+    createParam(NDPluginStdArraysDataString, asynParamGenericPointer, &NDPluginStdArraysData);
 
     /* Set the plugin type string */    
     setStringParam(NDPluginDriverPluginType, "NDPluginStdArrays");

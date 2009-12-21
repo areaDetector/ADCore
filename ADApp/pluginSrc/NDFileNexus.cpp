@@ -34,13 +34,11 @@ static const char *driverName="NDFileNexus";
   *            will have the same data type, data dimensions and attributes as this array.
   */
 asynStatus NDFileNexus::openFile( const char *fileName, NDFileOpenMode_t openMode, NDArray *pArray) {
-	int status = asynSuccess;
-	int addr = 0;
 	char programName[] = "areaDetector NDFileNexus plugin v0.2";
     static const char *functionName = "openFile";
 	NXstatus nxstat;
 
-	/*Print trace information if level is set correctly */
+	/* Print trace information if level is set correctly */
 	asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
 		"Entering %s:%s\n", driverName, functionName );
 
@@ -88,10 +86,9 @@ asynStatus NDFileNexus::openFile( const char *fileName, NDFileOpenMode_t openMod
   *            (e.g. capture or stream mode).
   */
 asynStatus NDFileNexus::writeFile(NDArray *pArray) {
-	int numCapture, numCaptured;
     static const char *functionName = "writeFile";
 
-	/*Print trace information if level is set correctly */
+	/* Print trace information if level is set correctly */
 	asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
 		"Entering %s:%s\n", driverName, functionName );
 
@@ -175,7 +172,6 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 	NDDataType_t type;
 	int ii;
 	int dims[ND_ARRAY_MAX_DIMS];
-	int pathNameLength, pathType;
 	int numCapture, numCaptured;
 	int fileWriteMode;
 	NDAttrDataType_t attrDataType;
@@ -752,7 +748,7 @@ asynStatus NDFileNexus::writeOctet(asynUser *pasynUser, const char *value,
     asynStatus status = asynSuccess;
     const char *functionName = "writeOctet";
 
-    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
+    status = getAddress(pasynUser, &addr); if (status != asynSuccess) return(status);
     /* Set the parameter in the parameter library. */
     status = (asynStatus)setStringParam(addr, function, (char *)value);
 
@@ -842,9 +838,9 @@ NDFileNexus::NDFileNexus(const char *portName, int queueSize, int blockingCallba
                    ASYN_CANBLOCK, 1, priority, stackSize)
 {
     //const char *functionName = "NDFileNexus";
-    addParam(NDFileNexusTemplatePathString, &NDFileNexusTemplatePath);
-    addParam(NDFileNexusTemplateFileString, &NDFileNexusTemplateFile);
-    addParam(NDFileNexusTemplateValidString, &NDFileNexusTemplateValid);
+    createParam(NDFileNexusTemplatePathString,  asynParamOctet, &NDFileNexusTemplatePath);
+    createParam(NDFileNexusTemplateFileString,  asynParamOctet, &NDFileNexusTemplateFile);
+    createParam(NDFileNexusTemplateValidString, asynParamInt32, &NDFileNexusTemplateValid);
 
     this->pFileAttributes = new NDAttributeList;
 	this->imageNumber = 0;

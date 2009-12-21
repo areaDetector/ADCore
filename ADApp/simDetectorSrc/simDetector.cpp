@@ -679,12 +679,12 @@ simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDat
         return;
     }
     
-    addParam(SimGainXString,      &SimGainX);
-    addParam(SimGainYString,      &SimGainY);
-    addParam(SimGainRedString,    &SimGainRed);
-    addParam(SimGainGreenString,  &SimGainGreen);
-    addParam(SimGainBlueString,   &SimGainBlue);
-    addParam(SimResetImageString, &SimResetImage);
+    createParam(SimGainXString,      asynParamFloat64, &SimGainX);
+    createParam(SimGainYString,      asynParamFloat64, &SimGainY);
+    createParam(SimGainRedString,    asynParamFloat64, &SimGainRed);
+    createParam(SimGainGreenString,  asynParamFloat64, &SimGainGreen);
+    createParam(SimGainBlueString,   asynParamFloat64, &SimGainBlue);
+    createParam(SimResetImageString, asynParamInt32,   &SimResetImage);
 
     /* Set some default values for parameters */
     status =  setStringParam (ADManufacturer, "Simulated detector");

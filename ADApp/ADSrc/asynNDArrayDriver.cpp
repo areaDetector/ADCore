@@ -264,7 +264,7 @@ asynStatus asynNDArrayDriver::writeOctet(asynUser *pasynUser, const char *value,
     asynStatus status = asynSuccess;
     const char *functionName = "writeOctet";
 
-    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
+    status = getAddress(pasynUser, &addr); if (status != asynSuccess) return(status);
     /* Set the parameter in the parameter library. */
     status = (asynStatus)setStringParam(addr, function, (char *)value);
 
@@ -306,7 +306,7 @@ asynStatus asynNDArrayDriver::readGenericPointer(asynUser *pasynUser, void *gene
     asynStatus status = asynSuccess;
     const char* functionName = "readNDArray";
 
-    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
+    status = getAddress(pasynUser, &addr); if (status != asynSuccess) return(status);
     this->lock();
     myArray = this->pArrays[addr];
     if (!myArray) {
@@ -393,36 +393,36 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     this->pArrays = (NDArray **)calloc(maxAddr, sizeof(NDArray *));
     this->pAttributeList = new NDAttributeList();
     
-    addParam(NDPortNameSelfString,  &NDPortNameSelf);
-    addParam(NDArraySizeXString,    &NDArraySizeX);
-    addParam(NDArraySizeYString,    &NDArraySizeY);
-    addParam(NDArraySizeZString,    &NDArraySizeZ);
-    addParam(NDArraySizeString,     &NDArraySize);
-    addParam(NDNDimensionsString,   &NDNDimensions);
-    addParam(NDDimensionsString,    &NDDimensions);
-    addParam(NDDataTypeString,      &NDDataType);
-    addParam(NDColorModeString,     &NDColorMode);
-    addParam(NDUniqueIdString,      &NDUniqueId);
-    addParam(NDTimeStampString,     &NDTimeStamp);
-    addParam(NDBayerPatternString,  &NDBayerPattern);
-    addParam(NDArrayCounterString,  &NDArrayCounter);
-    addParam(NDFilePathString,      &NDFilePath);
-    addParam(NDFileNameString,      &NDFileName);
-    addParam(NDFileNumberString,    &NDFileNumber);
-    addParam(NDFileTemplateString,  &NDFileTemplate);
-    addParam(NDAutoIncrementString, &NDAutoIncrement);
-    addParam(NDFullFileNameString,  &NDFullFileName);
-    addParam(NDFileFormatString,    &NDFileFormat);
-    addParam(NDAutoSaveString,      &NDAutoSave);
-    addParam(NDWriteFileString,     &NDWriteFile);
-    addParam(NDReadFileString,      &NDReadFile);
-    addParam(NDFileWriteModeString, &NDFileWriteMode);
-    addParam(NDFileNumCaptureString,&NDFileNumCapture);
-    addParam(NDFileNumCapturedString, &NDFileNumCaptured);
-    addParam(NDFileCaptureString,   &NDFileCapture);   
-    addParam(NDAttributesFileString,&NDAttributesFile);
-    addParam(NDArrayDataString,     &NDArrayData);
-    addParam(NDArrayCallbacksString,&NDArrayCallbacks);
+    createParam(NDPortNameSelfString,   asynParamOctet, &NDPortNameSelf);
+    createParam(NDArraySizeXString,     asynParamInt32, &NDArraySizeX);
+    createParam(NDArraySizeYString,     asynParamInt32, &NDArraySizeY);
+    createParam(NDArraySizeZString,     asynParamInt32, &NDArraySizeZ);
+    createParam(NDArraySizeString,      asynParamInt32, &NDArraySize);
+    createParam(NDNDimensionsString,    asynParamInt32, &NDNDimensions);
+    createParam(NDDimensionsString,     asynParamInt32, &NDDimensions);
+    createParam(NDDataTypeString,       asynParamInt32, &NDDataType);
+    createParam(NDColorModeString,      asynParamInt32, &NDColorMode);
+    createParam(NDUniqueIdString,       asynParamInt32, &NDUniqueId);
+    createParam(NDTimeStampString,      asynParamFloat64, &NDTimeStamp);
+    createParam(NDBayerPatternString,   asynParamInt32, &NDBayerPattern);
+    createParam(NDArrayCounterString,   asynParamInt32, &NDArrayCounter);
+    createParam(NDFilePathString,       asynParamOctet, &NDFilePath);
+    createParam(NDFileNameString,       asynParamOctet, &NDFileName);
+    createParam(NDFileNumberString,     asynParamInt32, &NDFileNumber);
+    createParam(NDFileTemplateString,   asynParamOctet, &NDFileTemplate);
+    createParam(NDAutoIncrementString,  asynParamInt32, &NDAutoIncrement);
+    createParam(NDFullFileNameString,   asynParamOctet, &NDFullFileName);
+    createParam(NDFileFormatString,     asynParamInt32, &NDFileFormat);
+    createParam(NDAutoSaveString,       asynParamInt32, &NDAutoSave);
+    createParam(NDWriteFileString,      asynParamInt32, &NDWriteFile);
+    createParam(NDReadFileString,       asynParamInt32, &NDReadFile);
+    createParam(NDFileWriteModeString,  asynParamInt32, &NDFileWriteMode);
+    createParam(NDFileNumCaptureString, asynParamInt32, &NDFileNumCapture);
+    createParam(NDFileNumCapturedString,asynParamInt32, &NDFileNumCaptured);
+    createParam(NDFileCaptureString,    asynParamInt32, &NDFileCapture);   
+    createParam(NDAttributesFileString, asynParamOctet, &NDAttributesFile);
+    createParam(NDArrayDataString,      asynParamGenericPointer, &NDArrayData);
+    createParam(NDArrayCallbacksString, asynParamInt32, &NDArrayCallbacks);
 
     setStringParam (NDPortNameSelf, portName);
     setIntegerParam(NDArraySizeX,   0);

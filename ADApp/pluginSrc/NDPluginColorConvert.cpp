@@ -392,7 +392,7 @@ NDPluginColorConvert::NDPluginColorConvert(const char *portName, int queueSize, 
     asynStatus status;
     const char *functionName = "NDPluginColorConvert";
 
-    addParam(NDPluginColorConvertColorModeOutString, &NDPluginColorConvertColorModeOut);
+    createParam(NDPluginColorConvertColorModeOutString, asynParamInt32, &NDPluginColorConvertColorModeOut);
 
     /* Set the plugin type string */    
     setStringParam(NDPluginDriverPluginType, "NDPluginColorConvert");

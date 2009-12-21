@@ -296,7 +296,7 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
     int currentlyPosting;
     const char* functionName = "writeInt32";
 
-    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
+    status = getAddress(pasynUser, &addr); if (status != asynSuccess) return(status);
 
     /* See if we are connected */
     status = pasynManager->isConnected(this->pasynUserGenericPointer, &isConnected);
@@ -359,7 +359,7 @@ asynStatus NDPluginDriver::writeOctet(asynUser *pasynUser, const char *value,
     asynStatus status = asynSuccess;
     const char *functionName = "writeOctet";
 
-    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
+    status = getAddress(pasynUser, &addr); if (status != asynSuccess) return(status);
     /* Set the parameter in the parameter library. */
     status = (asynStatus)setStringParam(addr, function, (char *)value);
 
@@ -401,7 +401,7 @@ asynStatus NDPluginDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *value
     asynStatus status = asynSuccess;
     const char *functionName = "readInt32Array";
 
-    status = getAddress(pasynUser, functionName, &addr); if (status != asynSuccess) return(status);
+    status = getAddress(pasynUser, &addr); if (status != asynSuccess) return(status);
     if (function == NDDimensions) {
             ncopy = ND_ARRAY_MAX_DIMS;
             if (nElements < ncopy) ncopy = nElements;
@@ -494,13 +494,13 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
         printf("%s:%s: epicsThreadCreate failure\n", driverName, functionName);
         return;
     }
-    addParam(NDPluginDriverArrayPortString,         &NDPluginDriverArrayPort);
-    addParam(NDPluginDriverArrayAddrString,         &NDPluginDriverArrayAddr);
-    addParam(NDPluginDriverPluginTypeString,        &NDPluginDriverPluginType);
-    addParam(NDPluginDriverDroppedArraysString,     &NDPluginDriverDroppedArrays);
-    addParam(NDPluginDriverEnableCallbacksString,   &NDPluginDriverEnableCallbacks);
-    addParam(NDPluginDriverBlockingCallbacksString, &NDPluginDriverBlockingCallbacks);
-    addParam(NDPluginDriverMinCallbackTimeString,   &NDPluginDriverMinCallbackTime);
+    createParam(NDPluginDriverArrayPortString,         asynParamOctet, &NDPluginDriverArrayPort);
+    createParam(NDPluginDriverArrayAddrString,         asynParamInt32, &NDPluginDriverArrayAddr);
+    createParam(NDPluginDriverPluginTypeString,        asynParamOctet, &NDPluginDriverPluginType);
+    createParam(NDPluginDriverDroppedArraysString,     asynParamInt32, &NDPluginDriverDroppedArrays);
+    createParam(NDPluginDriverEnableCallbacksString,   asynParamInt32, &NDPluginDriverEnableCallbacks);
+    createParam(NDPluginDriverBlockingCallbacksString, asynParamInt32, &NDPluginDriverBlockingCallbacks);
+    createParam(NDPluginDriverMinCallbackTimeString,   asynParamFloat64, &NDPluginDriverMinCallbackTime);
 
     /* Set the initial values of some parameters */
     setStringParam (NDPortNameSelf, portName);

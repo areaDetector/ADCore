@@ -473,7 +473,7 @@ asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
     NDROI_t *pROI;
     const char* functionName = "writeInt32";
 
-    status = getAddress(pasynUser, functionName, &roi); if (status != asynSuccess) return(status);
+    status = getAddress(pasynUser, &roi); if (status != asynSuccess) return(status);
 
     pROI = &this->pROIs[roi];
     /* Set parameter and readback in parameter library */
@@ -535,7 +535,7 @@ asynStatus NDPluginROI::readFloat64Array(asynUser *pasynUser,
     NDROI_t *pROI;
     const char* functionName = "readFloat64Array";
 
-    status = getAddress(pasynUser, functionName, &roi); if (status != asynSuccess) return(status);
+    status = getAddress(pasynUser, &roi); if (status != asynSuccess) return(status);
     if (function < FIRST_NDPLUGIN_ROI_PARAM) {
         /* We don't support reading asynFloat64 arrays except for ROIs */
         status = asynError;
@@ -610,41 +610,41 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
     this->totalArray = (epicsInt32 *)callocMustSucceed(maxROIs, sizeof(epicsInt32), functionName);
     this->netArray = (epicsInt32 *)callocMustSucceed(maxROIs, sizeof(epicsInt32), functionName);
 
-    addParam(NDPluginROINameString,           &NDPluginROIName);
-    addParam(NDPluginROIUseString,            &NDPluginROIUse);
-    addParam(NDPluginROIComputeStatisticsString,    &NDPluginROIComputeStatistics);
-    addParam(NDPluginROIComputeHistogramString,     &NDPluginROIComputeHistogram);
-    addParam(NDPluginROIComputeProfilesString,      &NDPluginROIComputeProfiles);
-    addParam(NDPluginROIHighlightString,      &NDPluginROIHighlight);
-    addParam(NDPluginROIDim0MinString,        &NDPluginROIDim0Min);
-    addParam(NDPluginROIDim0SizeString,       &NDPluginROIDim0Size);
-    addParam(NDPluginROIDim0MaxSizeString,    &NDPluginROIDim0MaxSize);
-    addParam(NDPluginROIDim0BinString,        &NDPluginROIDim0Bin);
-    addParam(NDPluginROIDim0ReverseString,    &NDPluginROIDim0Reverse);
-    addParam(NDPluginROIDim1MinString,        &NDPluginROIDim1Min);
-    addParam(NDPluginROIDim1SizeString,       &NDPluginROIDim1Size);
-    addParam(NDPluginROIDim1MaxSizeString,    &NDPluginROIDim1MaxSize);
-    addParam(NDPluginROIDim1BinString,        &NDPluginROIDim1Bin);
-    addParam(NDPluginROIDim1ReverseString,    &NDPluginROIDim1Reverse);
-    addParam(NDPluginROIDim2MinString,        &NDPluginROIDim2Min);
-    addParam(NDPluginROIDim2SizeString,       &NDPluginROIDim2Size);
-    addParam(NDPluginROIDim2MaxSizeString,    &NDPluginROIDim2MaxSize);
-    addParam(NDPluginROIDim2BinString,        &NDPluginROIDim2Bin);
-    addParam(NDPluginROIDim2ReverseString,    &NDPluginROIDim2Reverse);
-    addParam(NDPluginROIDataTypeString,       &NDPluginROIDataType);
-    addParam(NDPluginROIBgdWidthString,       &NDPluginROIBgdWidth);
-    addParam(NDPluginROIMinValueString,       &NDPluginROIMinValue);
-    addParam(NDPluginROIMaxValueString,       &NDPluginROIMaxValue);
-    addParam(NDPluginROIMeanValueString,      &NDPluginROIMeanValue);
-    addParam(NDPluginROITotalString,          &NDPluginROITotal);
-    addParam(NDPluginROINetString,            &NDPluginROINet);
-    addParam(NDPluginROITotalArrayString,     &NDPluginROITotalArray);
-    addParam(NDPluginROINetArrayString,       &NDPluginROINetArray);
-    addParam(NDPluginROIHistSizeString,       &NDPluginROIHistSize);
-    addParam(NDPluginROIHistMinString,        &NDPluginROIHistMin);
-    addParam(NDPluginROIHistMaxString,        &NDPluginROIHistMax);
-    addParam(NDPluginROIHistEntropyString,    &NDPluginROIHistEntropy);
-    addParam(NDPluginROIHistArrayString,      &NDPluginROIHistArray);
+    createParam(NDPluginROINameString,              asynParamOctet, &NDPluginROIName);
+    createParam(NDPluginROIUseString,               asynParamInt32, &NDPluginROIUse);
+    createParam(NDPluginROIComputeStatisticsString, asynParamInt32, &NDPluginROIComputeStatistics);
+    createParam(NDPluginROIComputeHistogramString,  asynParamInt32, &NDPluginROIComputeHistogram);
+    createParam(NDPluginROIComputeProfilesString,   asynParamInt32, &NDPluginROIComputeProfiles);
+    createParam(NDPluginROIHighlightString,         asynParamInt32, &NDPluginROIHighlight);
+    createParam(NDPluginROIDim0MinString,           asynParamInt32, &NDPluginROIDim0Min);
+    createParam(NDPluginROIDim0SizeString,          asynParamInt32, &NDPluginROIDim0Size);
+    createParam(NDPluginROIDim0MaxSizeString,       asynParamInt32, &NDPluginROIDim0MaxSize);
+    createParam(NDPluginROIDim0BinString,           asynParamInt32, &NDPluginROIDim0Bin);
+    createParam(NDPluginROIDim0ReverseString,       asynParamInt32, &NDPluginROIDim0Reverse);
+    createParam(NDPluginROIDim1MinString,           asynParamInt32, &NDPluginROIDim1Min);
+    createParam(NDPluginROIDim1SizeString,          asynParamInt32, &NDPluginROIDim1Size);
+    createParam(NDPluginROIDim1MaxSizeString,       asynParamInt32, &NDPluginROIDim1MaxSize);
+    createParam(NDPluginROIDim1BinString,           asynParamInt32, &NDPluginROIDim1Bin);
+    createParam(NDPluginROIDim1ReverseString,       asynParamInt32, &NDPluginROIDim1Reverse);
+    createParam(NDPluginROIDim2MinString,           asynParamInt32, &NDPluginROIDim2Min);
+    createParam(NDPluginROIDim2SizeString,          asynParamInt32, &NDPluginROIDim2Size);
+    createParam(NDPluginROIDim2MaxSizeString,       asynParamInt32, &NDPluginROIDim2MaxSize);
+    createParam(NDPluginROIDim2BinString,           asynParamInt32, &NDPluginROIDim2Bin);
+    createParam(NDPluginROIDim2ReverseString,       asynParamInt32, &NDPluginROIDim2Reverse);
+    createParam(NDPluginROIDataTypeString,          asynParamInt32, &NDPluginROIDataType);
+    createParam(NDPluginROIBgdWidthString,          asynParamInt32, &NDPluginROIBgdWidth);
+    createParam(NDPluginROIMinValueString,          asynParamFloat64, &NDPluginROIMinValue);
+    createParam(NDPluginROIMaxValueString,          asynParamFloat64, &NDPluginROIMaxValue);
+    createParam(NDPluginROIMeanValueString,         asynParamFloat64, &NDPluginROIMeanValue);
+    createParam(NDPluginROITotalString,             asynParamFloat64, &NDPluginROITotal);
+    createParam(NDPluginROINetString,               asynParamFloat64, &NDPluginROINet);
+    createParam(NDPluginROITotalArrayString,        asynParamInt32Array, &NDPluginROITotalArray);
+    createParam(NDPluginROINetArrayString,          asynParamInt32Array, &NDPluginROINetArray);
+    createParam(NDPluginROIHistSizeString,          asynParamInt32, &NDPluginROIHistSize);
+    createParam(NDPluginROIHistMinString,           asynParamFloat64, &NDPluginROIHistMin);
+    createParam(NDPluginROIHistMaxString,           asynParamFloat64, &NDPluginROIHistMax);
+    createParam(NDPluginROIHistEntropyString,       asynParamFloat64, &NDPluginROIHistEntropy);
+    createParam(NDPluginROIHistArrayString,         asynParamFloat64Array, &NDPluginROIHistArray);
 
     setIntegerParam(0, NDPluginROIHighlight,         0);
     /* Set the plugin type string */
