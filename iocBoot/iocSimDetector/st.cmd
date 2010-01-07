@@ -71,6 +71,7 @@ dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=13SIM1:,MAXPTS1=2000,MAXPTS2=20
 #asynSetTraceMask("SIM1",0,255)
 #asynSetTraceIOMask("SIM1FileNetCDF",0,2)
 #asynSetTraceMask("SIM1FileNetCDF",0,255)
+#asynSetTraceMask("SIM1FileNexus",0,255)
 #asynSetTraceMask("SIM2",0,255)
 
 set_requestfile_path("./")
