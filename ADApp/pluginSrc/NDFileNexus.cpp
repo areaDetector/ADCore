@@ -186,7 +186,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 	char *pString;
 	void *pValue;
 	char nodeText[256];
-	char dataclass[64];
+	NXname dataclass;
 	NXname dPath;
 	TiXmlNode *childNode;
     static const char *functionName = "processNode";
@@ -263,8 +263,8 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 		stat = NXclosegroup(this->nxFileHandle);
 		if (stat != NX_OK ) {
             asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-            "%s:%s Error closing group %s %s",
-            driverName, functionName, nodeName, nodeValue);
+                "%s:%s Error closing group %s %s",
+                driverName, functionName, nodeName, nodeValue);
         }
 	}
 	else if (strcmp (nodeValue, "Attr") ==0) {
@@ -287,7 +287,9 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 				}
 			}
 			else {
-				printf("Could not find attribute named %s\n", nodeSource);
+                asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                    "%s:%s Could not find attribute named %s",
+                    driverName, functionName, nodeSource);
 			}
 		}
 		else if (nodeType && strcmp(nodeType, "CONST") == 0 ) {
@@ -339,7 +341,9 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 				}
 			}
 			else {
-				printf("Could not add node %s could not find an attribute by that name\n", nodeSource );
+                asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                    "%s:%s Could not add node %s could not find an attribute by that name %s",
+                    driverName, functionName, nodeSource);
 			}
 		}
 		else if (nodeType && strcmp(nodeType, "pArray") == 0 ){
@@ -406,9 +410,9 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 			dataclass[0] = '\0';
 
 			NXopendata(this->nxFileHandle, nodeValue);
-printf("%s:%s: calling NXgetgroupinfo!\n", driverName, functionName);
+//printf("%s:%s: calling NXgetgroupinfo!\n", driverName, functionName);
 			NXgetgroupinfo(this->nxFileHandle, &numItems, dPath, dataclass);
-printf("dPath=%s, nodeValue=%s\n", dPath, nodeValue );
+//printf("dPath=%s, nodeValue=%s\n", dPath, nodeValue );
 			sprintf(this->dataName, "%s", nodeValue);
 			sprintf(this->dataPath, "%c%s", '/', dPath);
 			this->iterateNodes(curNode, pArray);
@@ -787,6 +791,7 @@ void NDFileNexus::loadTemplateFile() {
 	char fullFilename[2*MAX_FILENAME_LEN] = "";
 	char template_path[MAX_FILENAME_LEN] = "";
 	char template_file[MAX_FILENAME_LEN] = "";
+    static const char *functionName = "loadTemplateFile";
 
 	/* get the filename to be used for nexus template */
 	status = getStringParam(addr, NDFileNexusTemplatePath, sizeof(template_path), template_path);
@@ -798,13 +803,17 @@ void NDFileNexus::loadTemplateFile() {
 	loadStatus = this->configDoc.LoadFile(fullFilename);
 
 	if (loadStatus != true ){
-		printf("Parameter file %s is invalid\n", fullFilename);
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+              "%s:%s: Parameter file %s is invalid\n",
+              driverName, functionName, fullFilename);
 		setIntegerParam(addr, NDFileNexusTemplateValid, 0);
 	    callParamCallbacks(addr, addr);
 		return;
 	}
 	else {
-		printf("Parameter file %s was successfully loaded\n", fullFilename);
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+              "%s:%s: Parameter file %s was successfully loaded\n",
+              driverName, functionName, fullFilename);
 		setIntegerParam(addr, NDFileNexusTemplateValid, 1);
 		callParamCallbacks(addr, addr);
 	}
