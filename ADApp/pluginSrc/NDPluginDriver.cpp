@@ -484,10 +484,13 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
         return;
     }
     
+    /* We use the same stack size for our callback thread as for the port thread */
+    if (stackSize <= 0) stackSize = epicsThreadGetStackSize(epicsThreadStackMedium);
+
     /* Create the thread that handles the NDArray callbacks */
     status = (asynStatus)(epicsThreadCreate("NDPluginTask",
                           epicsThreadPriorityMedium,
-                          epicsThreadGetStackSize(epicsThreadStackMedium),
+                          stackSize,
                           (EPICSTHREADFUNC)::processTask,
                           this) == NULL);
     if (status) {
