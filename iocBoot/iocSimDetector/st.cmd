@@ -50,7 +50,7 @@ dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFile.template",      "P=13SIM1:,R=JPE
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFileJPEG.template",  "P=13SIM1:,R=JPEG1:,PORT=SIM1FileJPEG,ADDR=0,TIMEOUT=1")
 
 # Create a NeXus file saving plugin
-NDFileNexusConfigure("SIM1FileNexus", 20, 0, "SIM1", 0)
+NDFileNexusConfigure("SIM1FileNexus", 20, 0, "SIM1", 0, 0, 80000)
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13SIM1:,R=Nexus1:,PORT=SIM1FileNexus,ADDR=0,TIMEOUT=1,NDARRAY_PORT=SIM1,NDARRAY_ADDR=0")
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFile.template",      "P=13SIM1:,R=Nexus1:,PORT=SIM1FileNexus,ADDR=0,TIMEOUT=1")
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDFileNexus.template", "P=13SIM1:,R=Nexus1:,PORT=SIM1FileNexus,ADDR=0,TIMEOUT=1")
