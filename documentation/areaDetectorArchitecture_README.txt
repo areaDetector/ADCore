@@ -1,5 +1,5 @@
 In current version of office on my laptop
-Use File/Save As/ to save as a PNG file.
+Convert to PDF, then save PDF as PNG in Acrobat.  Leads to better resolution
 
 In older version of office:
 
