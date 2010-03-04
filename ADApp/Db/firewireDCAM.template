@@ -25,7 +25,6 @@ record(mbbo, "$(P)$(R)FORMAT") {
 ## Read back the framerate setting when not in ROI/format7 mode.
 record(mbbi, "$(P)$(R)FORMAT_RBV") {
   field(SCAN, "I/O Intr")
-  field(PINI, "RUNNING")
   field(DTYP, "asynInt32")
   field(INP,  "@asyn($(PORT) 0)FDC_FORMAT")
   field(ZRST, "VGA")
@@ -67,7 +66,6 @@ record(mbbo, "$(P)$(R)MODE") {
 ## Read back the framerate setting when not in ROI/format7 mode.
 record(mbbi, "$(P)$(R)MODE_RBV") {
   field(SCAN, "I/O Intr")
-  field(PINI, "RUNNING")
   field(DTYP, "asynInt32")
   field(INP,  "@asyn($(PORT) 0)FDC_MODE")
   field(ZRST, "0")
@@ -115,7 +113,6 @@ record(mbbo, "$(P)$(R)FR") {
 ## Read back the framerate setting when not in ROI/format7 mode.
 record(mbbi, "$(P)$(R)FR_RBV") {
   field(SCAN, "I/O Intr")
-  field(PINI, "RUNNING")
   field(DTYP, "asynInt32")
   field(INP,  "@asyn($(PORT) 0)FDC_FRAMERATE")
   field(ZRST, "1.875")
@@ -169,7 +166,6 @@ record(mbbo, "$(P)$(R)COLORCODE") {
 ## Read back the framerate setting when not in ROI/format7 mode.
 record(mbbi, "$(P)$(R)COLORCODE_RBV") {
   field(SCAN, "I/O Intr")
-  field(PINI, "RUNNING")
   field(DTYP, "asynInt32")
   field(INP,  "@asyn($(PORT) 0)FDC_COLORCODE")
   field(ZRST, "0")
@@ -199,7 +195,6 @@ record(mbbi, "$(P)$(R)COLORCODE_RBV") {
 
 # Current format string
 record(stringin, "$(P)$(R)CURRENT_FORMAT") {
-  field(PINI, "RUNNING")
   field(DTYP, "asynOctetRead")
   field(INP,  "@asyn($(PORT) 0)FDC_CURRENT_FORMAT")
   field(SCAN, "I/O Intr")
@@ -207,7 +202,6 @@ record(stringin, "$(P)$(R)CURRENT_FORMAT") {
 
 # Current mode string
 record(stringin, "$(P)$(R)CURRENT_MODE") {
-  field(PINI, "RUNNING")
   field(DTYP, "asynOctetRead")
   field(INP,  "@asyn($(PORT) 0)FDC_CURRENT_MODE")
   field(SCAN, "I/O Intr")
@@ -215,7 +209,6 @@ record(stringin, "$(P)$(R)CURRENT_MODE") {
 
 # Current frame rate string
 record(stringin, "$(P)$(R)CURRENT_RATE") {
-  field(PINI, "RUNNING")
   field(DTYP, "asynOctetRead")
   field(INP,  "@asyn($(PORT) 0)FDC_CURRENT_FRAMERATE")
   field(SCAN, "I/O Intr")
@@ -223,8 +216,21 @@ record(stringin, "$(P)$(R)CURRENT_RATE") {
 
 # Current color mode string
 record(stringin, "$(P)$(R)CURRENT_COLORCODE") {
-  field(PINI, "RUNNING")
   field(DTYP, "asynOctetRead")
   field(INP,  "@asyn($(PORT) 0)FDC_CURRENT_COLORCODE")
+  field(SCAN, "I/O Intr")
+}
+
+# Dropped frames
+record(longout, "$(P)$(R)DROPPED_FRAMES") {
+  field(PINI, "YES")
+  field(DTYP, "asynInt32")
+  field(OUT,  "@asyn($(PORT) 0)FDC_DROPPED_FRAMES")
+}
+
+# Dropped frames
+record(longin, "$(P)$(R)DROPPED_FRAMES_RBV") {
+  field(DTYP, "asynInt32")
+  field(INP,  "@asyn($(PORT) 0)FDC_DROPPED_FRAMES")
   field(SCAN, "I/O Intr")
 }
