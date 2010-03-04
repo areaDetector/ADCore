@@ -16,7 +16,6 @@ record(bo,"$(P)$(R)Abort") {
 
 record(bi,"$(P)$(R)Abort_RBV") {
     field(DTYP,"asynInt32")
-    field(PINI, "RUNNING")
     field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_ABORT")
     field(ZNAM,"Done")
     field(ZSV, "NO_ALARM")
@@ -34,7 +33,6 @@ record(busy,"$(P)$(R)Erase") {
 
 record(bi,"$(P)$(R)Erase_RBV") {
     field(DTYP,"asynInt32")
-    field(PINI, "RUNNING")
     field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_ERASE")
     field(ZNAM,"Done")
     field(ZSV, "NO_ALARM")
@@ -53,7 +51,6 @@ record(longout, "$(P)$(R)NumErase")
 
 record(longin, "$(P)$(R)NumErase_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_NUM_ERASE")
    field(SCAN, "I/O Intr")
@@ -61,7 +58,6 @@ record(longin, "$(P)$(R)NumErase_RBV")
 
 record(longin, "$(P)$(R)NumErased_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_NUM_ERASED")
    field(SCAN, "I/O Intr")
@@ -84,7 +80,6 @@ record(mbbi,"$(P)$(R)EraseMode_RBV") {
     field(DTYP,"asynInt32")
     field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_ERASE_MODE")
     field(SCAN, "I/O Intr")
-    field(PINI, "RUNNING")
     field(ZRVL,"0")
     field(ZRST,"None")
     field(ONVL,"1")
@@ -103,7 +98,6 @@ record(busy,"$(P)$(R)ChangeMode") {
 }
 
 record(bi,"$(P)$(R)ChangeMode_RBV") {
-    field(PINI, "RUNNING")
 	field(DTYP,"asynInt32")
     field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_CHANGE_MODE")
     field(ZNAM,"Done")
@@ -132,7 +126,6 @@ record(mbbi,"$(P)$(R)ScanSize_RBV") {
     field(DTYP,"asynInt32")
     field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_SIZE")
     field(SCAN, "I/O Intr")
-    field(PINI, "RUNNING")
     field(ZRVL,"0")
     field(ZRST,"180 mm")
     field(ONVL,"1")
@@ -158,7 +151,6 @@ record(mbbi,"$(P)$(R)ScanResolution_RBV") {
     field(DTYP,"asynInt32")
     field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_RESOLUTION")
     field(SCAN, "I/O Intr")
-    field(PINI, "RUNNING")
     field(ZRVL,"0")
     field(ZRST,"0.10 mm")
     field(ONVL,"1")
@@ -195,7 +187,6 @@ record(asyn, "$(P)$(R)marServerAsyn")
 # We replace the states for DetectorState_RBV
 record(mbbi, "$(P)$(R)DetectorState_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))STATUS")
     field(ZRST, "Idle")

@@ -12,7 +12,6 @@ record(ao, "$(P)$(R)GainX")
 
 record(ai, "$(P)$(R)GainX_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAIN_X")
    field(PREC, "2")
@@ -29,7 +28,6 @@ record(ao, "$(P)$(R)GainY")
 
 record(ai, "$(P)$(R)GainY_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAIN_Y")
    field(PREC, "2")
@@ -46,7 +44,6 @@ record(ao, "$(P)$(R)GainRed")
 
 record(ai, "$(P)$(R)GainRed_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAIN_RED")
    field(PREC, "2")
@@ -63,7 +60,6 @@ record(ao, "$(P)$(R)GainGreen")
 
 record(ai, "$(P)$(R)GainGreen_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAIN_GREEN")
    field(PREC, "2")
@@ -80,7 +76,6 @@ record(ao, "$(P)$(R)GainBlue")
 
 record(ai, "$(P)$(R)GainBlue_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAIN_BLUE")
    field(PREC, "2")
@@ -95,7 +90,6 @@ record(longout, "$(P)$(R)Reset")
 
 record(longin, "$(P)$(R)Reset_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))RESET_IMAGE")
    field(SCAN, "I/O Intr")
@@ -126,7 +120,6 @@ record(mbbo, "$(P)$(R)ColorMode")
 
 record(mbbi, "$(P)$(R)ColorMode_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COLOR_MODE")
    field(ZRST, "Mono")

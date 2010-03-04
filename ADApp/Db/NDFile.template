@@ -18,7 +18,6 @@ record(waveform, "$(P)$(R)FilePath")
 
 record(waveform, "$(P)$(R)FilePath_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_PATH")
     field(FTVL, "UCHAR")
@@ -38,7 +37,6 @@ record(waveform, "$(P)$(R)FileName")
 
 record(waveform, "$(P)$(R)FileName_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NAME")
     field(FTVL, "UCHAR")
@@ -89,7 +87,6 @@ record(bo, "$(P)$(R)AutoIncrement")
 
 record(bi, "$(P)$(R)AutoIncrement_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_INCREMENT")
     field(ZNAM, "No")
@@ -109,7 +106,6 @@ record(waveform, "$(P)$(R)FileTemplate")
 
 record(waveform, "$(P)$(R)FileTemplate_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_TEMPLATE")
     field(FTVL, "UCHAR")
@@ -120,7 +116,6 @@ record(waveform, "$(P)$(R)FileTemplate_RBV")
 # Full filename, including path
 record(waveform, "$(P)$(R)FullFileName_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FULL_FILE_NAME")
     field(FTVL, "UCHAR")
@@ -141,7 +136,6 @@ record(bo, "$(P)$(R)AutoSave")
 
 record(bi, "$(P)$(R)AutoSave_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_SAVE")
     field(ZNAM, "No")
@@ -160,7 +154,6 @@ record(busy, "$(P)$(R)WriteFile")
 
 record(bi, "$(P)$(R)WriteFile_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WRITE_FILE")
     field(ZNAM, "Done")
@@ -182,7 +175,6 @@ record(busy, "$(P)$(R)ReadFile")
 
 record(bi, "$(P)$(R)ReadFile_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))READ_FILE")
     field(ZNAM, "Done")
@@ -207,7 +199,6 @@ record(mbbo, "$(P)$(R)FileFormat")
 
 record(mbbi, "$(P)$(R)FileFormat_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_FORMAT")
     field(ZRST, "netCDF")
@@ -234,7 +225,6 @@ record(mbbo, "$(P)$(R)FileWriteMode")
 
 record(mbbi, "$(P)$(R)FileWriteMode_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WRITE_MODE")
     field(ZRST, "Single")
@@ -257,7 +247,6 @@ record(busy, "$(P)$(R)Capture")
 
 record(bi, "$(P)$(R)Capture_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CAPTURE")
     field(ZNAM, "Done")
@@ -277,7 +266,6 @@ record(longout, "$(P)$(R)NumCapture")
 
 record(longin, "$(P)$(R)NumCapture_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_CAPTURE")
     field(SCAN, "I/O Intr")
@@ -285,7 +273,6 @@ record(longin, "$(P)$(R)NumCapture_RBV")
 
 record(longin, "$(P)$(R)NumCaptured_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_CAPTURED")
     field(SCAN, "I/O Intr")

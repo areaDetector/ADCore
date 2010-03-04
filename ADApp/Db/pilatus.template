@@ -34,7 +34,6 @@ record(mbbi,"$(P)$(R)TriggerMode_RBV") {
 # Armed flag, which indicates Pilatus is ready for external triggers
 record(bi, "$(P)$(R)Armed")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARMED")
     field(ZNAM, "Unarmed")
@@ -105,7 +104,6 @@ record(waveform, "$(P)$(R)BadPixelFile")
 # Number of bad pixels
 record(longin, "$(P)$(R)NumBadPixels")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_BAD_PIXELS")
     field(DESC, "Number of bad pixels")
@@ -135,7 +133,6 @@ record(longout, "$(P)$(R)MinFlatField")
 # Flat field valid flag.
 record(bi, "$(P)$(R)FlatFieldValid")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FLAT_FIELD_VALID")
     field(DESC, "Flat field valid")

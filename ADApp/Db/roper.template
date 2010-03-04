@@ -97,7 +97,6 @@ record(bo, "$(P)$(R)AutoDataType")
 
 record(bi, "$(P)$(R)AutoDataType_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_DATA_TYPE")
    field(ZNAM, "No")
@@ -114,7 +113,6 @@ record(longout, "$(P)$(R)NumAcquisitions")
 
 record(longin, "$(P)$(R)NumAcquisitions_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROPER_NACQUISITIONS")
    field(SCAN, "I/O Intr")
@@ -122,7 +120,6 @@ record(longin, "$(P)$(R)NumAcquisitions_RBV")
 
 record(longin, "$(P)$(R)NumAcquisitionsCounter_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROPER_NACQUISITIONS_COUNTER")
    field(SCAN, "I/O Intr")
@@ -143,7 +140,6 @@ record(mbbo, "$(P)$(R)RoperShutterMode")
 
 record(mbbi, "$(P)$(R)RoperShutterMode_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROPER_SHUTTER_MODE")
     field(ZRST, "Normal")
@@ -166,7 +162,6 @@ record(waveform, "$(P)$(R)Comment1")
 
 record(waveform, "$(P)$(R)Comment1_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMMENT1")
     field(FTVL, "UCHAR")
@@ -185,7 +180,6 @@ record(waveform, "$(P)$(R)Comment2")
 
 record(waveform, "$(P)$(R)Comment2_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMMENT2")
     field(FTVL, "UCHAR")
@@ -204,7 +198,6 @@ record(waveform, "$(P)$(R)Comment3")
 
 record(waveform, "$(P)$(R)Comment3_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMMENT3")
     field(FTVL, "UCHAR")
@@ -223,7 +216,6 @@ record(waveform, "$(P)$(R)Comment4")
 
 record(waveform, "$(P)$(R)Comment4_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMMENT4")
     field(FTVL, "UCHAR")
@@ -242,7 +234,6 @@ record(waveform, "$(P)$(R)Comment5")
 
 record(waveform, "$(P)$(R)Comment5_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMMENT5")
     field(FTVL, "UCHAR")

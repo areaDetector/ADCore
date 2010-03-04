@@ -19,7 +19,6 @@ record(longout, "$(P)$(R)ADSCReadConditn")
 
 record(mbbi, "$(P)$(R)ADSCState")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_STATE")
    # These labels should match incl/detcon_state.h in ADSC control library
@@ -42,7 +41,6 @@ record(mbbi, "$(P)$(R)ADSCState")
 
 record(waveform, "$(P)$(R)ADSCStatus")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynOctetRead")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_STATUS")
    field(FTVL, "UCHAR")
@@ -52,7 +50,6 @@ record(waveform, "$(P)$(R)ADSCStatus")
 
 record(waveform, "$(P)$(R)ADSCLastError")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynOctetRead")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_LAST_ERROR")
    field(FTVL, "UCHAR")
@@ -86,7 +83,6 @@ record(longout, "$(P)$(R)ADSCLastImage")
 
 record(bi, "$(P)$(R)ExSwTrOkToExp")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_OK_TO_EXPOSE")
    field(SCAN, "I/O Intr")
@@ -105,7 +101,6 @@ record(mbbo, "$(P)$(R)ExSwTrCtl")
 }
 record(mbbi, "$(P)$(R)ExSwTrCtlRsp")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_EXTERN_SW_TRIGGER_CTRL")
    field(SCAN, "I/O Intr")
@@ -136,7 +131,6 @@ record(mbbo, "$(P)$(R)ADSCReusDrk")
 
 record(mbbi, "$(P)$(R)ADSCReusDrk_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_REUSE_DARKS")
    field(SCAN, "I/O Intr")
@@ -159,7 +153,6 @@ record(mbbo, "$(P)$(R)ADSCDezingr")
 
 record(mbbi, "$(P)$(R)ADSCDezingr_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_DEZINGER")
    field(SCAN, "I/O Intr")
@@ -186,7 +179,6 @@ record(mbbo, "$(P)$(R)ADSCAdc")
 
 record(mbbi, "$(P)$(R)ADSCAdc_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_ADC")
    field(SCAN, "I/O Intr")
@@ -209,7 +201,6 @@ record(mbbo, "$(P)$(R)ADSCRaw")
 
 record(mbbi, "$(P)$(R)ADSCRaw_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_RAW")
    field(SCAN, "I/O Intr")
@@ -232,7 +223,6 @@ record(mbbo, "$(P)$(R)ADSCImXform")
 
 record(mbbi, "$(P)$(R)ADSCImXform_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_IMAGE_TRANSFORM")
    field(SCAN, "I/O Intr")
@@ -255,7 +245,6 @@ record(mbbo, "$(P)$(R)ADSCStrDrks")
 
 record(mbbi, "$(P)$(R)ADSCStrDrks_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_STORED_DARKS")
    field(SCAN, "I/O Intr")
@@ -279,7 +268,6 @@ record(ao, "$(P)$(R)ADSCBeamX")
 
 record(ai, "$(P)$(R)ADSCBeamX_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_BEAM_CENTER_X")
    field(PREC, "3")
@@ -296,7 +284,6 @@ record(ao, "$(P)$(R)ADSCBeamY")
 
 record(ai, "$(P)$(R)ADSCBeamY_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_BEAM_CENTER_Y")
    field(PREC, "3")
@@ -313,7 +300,6 @@ record(ao, "$(P)$(R)ADSCDistnce")
 
 record(ai, "$(P)$(R)ADSCDistnce_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_DISTANCE")
    field(PREC, "3")
@@ -330,7 +316,6 @@ record(ao, "$(P)$(R)ADSC2Theta")
 
 record(ai, "$(P)$(R)ADSC2Theta_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_TWO_THETA")
    field(PREC, "3")
@@ -350,7 +335,6 @@ record(mbbo, "$(P)$(R)ADSCAxis")
 
 record(mbbi, "$(P)$(R)ADSCAxis_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_AXIS")
    field(SCAN, "I/O Intr")
@@ -370,7 +354,6 @@ record(ao, "$(P)$(R)ADSCWavelen")
 
 record(ai, "$(P)$(R)ADSCWavelen_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_WAVELENGTH")
    field(PREC, "7")
@@ -387,7 +370,6 @@ record(ao, "$(P)$(R)ADSCImWidth")
 
 record(ai, "$(P)$(R)ADSCImWidth_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_IMAGE_WIDTH")
    field(PREC, "3")
@@ -404,7 +386,6 @@ record(ao, "$(P)$(R)ADSCPhi")
 
 record(ai, "$(P)$(R)ADSCPhi_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_PHI")
    field(PREC, "3")
@@ -421,7 +402,6 @@ record(ao, "$(P)$(R)ADSCOmega")
 
 record(ai, "$(P)$(R)ADSCOmega_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_OMEGA")
    field(PREC, "3")
@@ -438,7 +418,6 @@ record(ao, "$(P)$(R)ADSCKappa")
 
 record(ai, "$(P)$(R)ADSCKappa_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADSC_KAPPA")
    field(PREC, "3")

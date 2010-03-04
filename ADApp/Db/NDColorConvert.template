@@ -32,7 +32,6 @@ record(mbbo, "$(P)$(R)ColorModeOut")
 
 record(mbbi, "$(P)$(R)ColorModeOut_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COLOR_MODE_OUT")
    field(ZRST, "Mono")

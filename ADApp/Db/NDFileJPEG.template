@@ -36,7 +36,6 @@ record(longout, "$(P)$(R)JPEGQuality")
 
 record(longin, "$(P)$(R)JPEGQuality_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))JPEG_QUALITY")
     field(LOPR, "0")

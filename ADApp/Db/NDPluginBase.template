@@ -8,7 +8,6 @@
 
 record(stringin, "$(P)$(R)PortName_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynOctetRead")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PORT_NAME_SELF")
    field(VAL,  "Unknown")
@@ -21,7 +20,6 @@ record(stringin, "$(P)$(R)PortName_RBV")
 
 record(stringin, "$(P)$(R)PluginType_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynOctetRead")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PLUGIN_TYPE")
    field(VAL,  "Unknown")
@@ -43,7 +41,6 @@ record(stringout, "$(P)$(R)NDArrayPort")
 
 record(stringin, "$(P)$(R)NDArrayPort_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_PORT")
     field(SCAN, "I/O Intr")
@@ -59,7 +56,6 @@ record(longout, "$(P)$(R)NDArrayAddress")
 
 record(longin, "$(P)$(R)NDArrayAddress_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_ADDR")
     field(SCAN, "I/O Intr")
@@ -81,7 +77,6 @@ record(bo, "$(P)$(R)EnableCallbacks")
 
 record(bi, "$(P)$(R)EnableCallbacks_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_CALLBACKS")
     field(ZNAM, "No")
@@ -101,7 +96,6 @@ record(ao, "$(P)$(R)MinCallbackTime")
 
 record(ai, "$(P)$(R)MinCallbackTime_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynFloat64")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_CALLBACK_TIME")
     field(EGU,  "s")
@@ -124,7 +118,6 @@ record(bo, "$(P)$(R)BlockingCallbacks")
 
 record(bi, "$(P)$(R)BlockingCallbacks_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BLOCKING_CALLBACKS")
     field(ZNAM, "No")
@@ -147,7 +140,6 @@ record(longout, "$(P)$(R)ArrayCounter")
 
 record(longin, "$(P)$(R)ArrayCounter_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_COUNTER")
     field(SCAN, "I/O Intr")
@@ -174,7 +166,6 @@ record(longout, "$(P)$(R)DroppedArrays")
 
 record(longin, "$(P)$(R)DroppedArrays_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DROPPED_ARRAYS")
     field(SCAN, "I/O Intr")
@@ -186,7 +177,6 @@ record(longin, "$(P)$(R)DroppedArrays_RBV")
 # The number of dimensions
 record(longin, "$(P)$(R)NDimensions_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_NDIMENSIONS")
     field(SCAN, "I/O Intr")
@@ -195,7 +185,6 @@ record(longin, "$(P)$(R)NDimensions_RBV")
 # The array dimensions waveform record
 record(waveform, "$(P)$(R)Dimensions_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynInt32ArrayIn")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_DIMENSIONS")
     field(FTVL, "LONG")
@@ -256,7 +245,6 @@ record(longin, "$(P)$(R)ArraySize2_RBV")
 
 record(mbbi, "$(P)$(R)DataType_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DATA_TYPE")
    field(ZRST, "Int8")
@@ -280,7 +268,6 @@ record(mbbi, "$(P)$(R)DataType_RBV")
 
 record(mbbi, "$(P)$(R)ColorMode_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COLOR_MODE")
    field(ZRST, "Mono")
@@ -304,7 +291,6 @@ record(mbbi, "$(P)$(R)ColorMode_RBV")
 
 record(mbbi, "$(P)$(R)BayerPattern_RBV")
 {
-   field(PINI, "RUNNING")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BAYER_PATTERN")
    field(ZRST, "RGGB")
@@ -323,7 +309,6 @@ record(mbbi, "$(P)$(R)BayerPattern_RBV")
 ###################################################################
 record(longin, "$(P)$(R)UniqueId_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))UNIQUE_ID")
     field(SCAN, "I/O Intr")
@@ -331,7 +316,6 @@ record(longin, "$(P)$(R)UniqueId_RBV")
 
 record(ai, "$(P)$(R)TimeStamp_RBV")
 {
-    field(PINI, "RUNNING")
     field(DTYP, "asynFloat64")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TIME_STAMP")
     field(PREC, "3")
