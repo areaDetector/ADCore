@@ -352,6 +352,142 @@ record(mbbi, "$(P)$(R)DataType_RBV")
    field(SCAN, "I/O Intr")
 }
 
+###################################################################
+# These records control the background array processing           #
+###################################################################
+record(bo, "$(P)$(R)GrabBackground")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GRAB_BACKGROUND")
+   field(VAL,  "1")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)GrabBackground_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GRAB_BACKGROUND")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)DoBackground")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DO_BACKGROUND")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)DoBackground_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DO_BACKGROUND")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
+record(bi, "$(P)$(R)ValidBackground_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))VALID_BACKGROUND")
+   field(ZNAM, "Invalid")
+   field(ONAM, "Valid")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+# These records control the high and low clipping                 #
+###################################################################
+record(bo, "$(P)$(R)DoLowClip")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DO_LOW_CLIP")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)DoLowClip_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DO_LOW_CLIP")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)LowClip")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LOW_CLIP")
+   field(VAL,  "0.0")
+}
+
+record(ai, "$(P)$(R)LowClip_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LOW_CLIP")
+   field(VAL, "0.0")
+   field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)DoHighClip")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DO_HIGH_CLIP")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)DoHighClip_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DO_HIGH_CLIP")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)HighClip")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIGH_CLIP")
+   field(VAL,  "0.0")
+}
+
+record(ai, "$(P)$(R)HighClip_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIGH_CLIP")
+   field(VAL, "0.0")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+# These records set the number of frames averaged for centroids   #
+###################################################################
+record(ao, "$(P)$(R)CentroidFrames")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CENTROID_FRAMES")
+    field(VAL,  "1")
+}
+record(ai, "$(P)$(R)CentroidFrames_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CENTROID_FRAMES")
+    field(VAL,  "1")
+    field(SCAN, "I/O Intr")
+}
 
 ###################################################################
 #  These records control whether statistics are computed          #
@@ -398,6 +534,23 @@ record(ai, "$(P)$(R)MeanValue_RBV")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MEAN_VALUE")
    field(SCAN, "I/O Intr")
 }
+
+record(ai, "$(P)$(R)CentroidX_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CENTROIDX_VALUE")
+   field(PREC, "1")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)CentroidY_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CENTROIDY_VALUE")
+   field(PREC, "1")
+   field(SCAN, "I/O Intr")
+}
+
 record(ai, "$(P)$(R)Total_RBV")
 {
    field(DTYP, "asynFloat64")
