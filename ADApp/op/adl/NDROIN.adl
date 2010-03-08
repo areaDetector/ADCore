@@ -8,7 +8,7 @@ display {
 		x=350
 		y=60
 		width=675
-		height=680
+		height=670
 	}
 	clr=14
 	bclr=4
@@ -152,7 +152,7 @@ rectangle {
 		x=5
 		y=420
 		width=360
-		height=250
+		height=240
 	}
 	"basic attribute" {
 		clr=14
@@ -1661,177 +1661,47 @@ rectangle {
 		x=375
 		y=460
 		width=290
-		height=210
+		height=200
 	}
 	"basic attribute" {
 		clr=14
 		fill="outline"
 	}
 }
-composite {
-	object {
-		x=423
-		y=493
-		width=165
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=423
-				y=493
-				width=100
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Grab bkgd."
-			align="horiz. right"
-		}
-		"message button" {
-			object {
-				x=528
-				y=493
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)GrabBackground"
-				clr=14
-				bclr=51
-			}
-			label="Grab"
-			press_msg="1"
-		}
-	}
-}
-composite {
-	object {
-		x=383
-		y=518
-		width=272
-		height=20
-	}
-	"composite name"=""
-	children {
-		menu {
-			object {
-				x=528
-				y=519
-				width=60
-				height=18
-			}
-			control {
-				chan="$(P)$(R)DoBackground"
-				clr=14
-				bclr=51
-			}
-		}
-		text {
-			object {
-				x=383
-				y=518
-				width=140
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Subtract bkgd."
-		}
-		"text update" {
-			object {
-				x=595
-				y=519
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)DoBackground_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-	}
-}
-composite {
-	object {
-		x=413
-		y=543
-		width=175
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=413
-				y=543
-				width=110
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Valid bkgd."
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=528
-				y=544
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ValidBackground_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-	}
-}
-menu {
-	object {
-		x=528
-		y=569
-		width=60
-		height=18
-	}
-	control {
-		chan="$(P)$(R)DoLowClip"
-		clr=14
-		bclr=51
-	}
-}
 text {
 	object {
-		x=413
-		y=568
-		width=110
+		x=420
+		y=493
+		width=100
 		height=20
 	}
 	"basic attribute" {
 		clr=14
 	}
-	textix="Do low clip"
+	textix="Grab bkgd."
+	align="horiz. right"
+}
+text {
+	object {
+		x=380
+		y=518
+		width=140
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Subtract bkgd."
 }
 "text update" {
 	object {
-		x=595
-		y=569
+		x=603
+		y=519
 		width=60
 		height=18
 	}
 	monitor {
-		chan="$(P)$(R)DoLowClip_RBV"
+		chan="$(P)$(R)EnableBackground_RBV"
 		clr=54
 		bclr=4
 	}
@@ -1841,8 +1711,37 @@ text {
 }
 text {
 	object {
-		x=443
-		y=593
+		x=410
+		y=543
+		width=110
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Valid bkgd."
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=603
+		y=568
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)LowClip_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=440
+		y=586
 		width=80
 		height=20
 	}
@@ -1854,8 +1753,8 @@ text {
 }
 "text entry" {
 	object {
-		x=528
-		y=593
+		x=603
+		y=586
 		width=60
 		height=20
 	}
@@ -1869,53 +1768,13 @@ text {
 }
 "text update" {
 	object {
-		x=595
-		y=594
+		x=603
+		y=611
 		width=60
 		height=18
 	}
 	monitor {
-		chan="$(P)$(R)LowClip_RBV"
-		clr=54
-		bclr=4
-	}
-	limits {
-	}
-}
-menu {
-	object {
-		x=528
-		y=619
-		width=60
-		height=18
-	}
-	control {
-		chan="$(P)$(R)DoHighClip"
-		clr=14
-		bclr=51
-	}
-}
-text {
-	object {
-		x=403
-		y=618
-		width=120
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Do high clip"
-}
-"text update" {
-	object {
-		x=595
-		y=619
-		width=60
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)DoHighClip_RBV"
+		chan="$(P)$(R)HighClip_RBV"
 		clr=54
 		bclr=4
 	}
@@ -1925,9 +1784,9 @@ text {
 }
 text {
 	object {
-		x=443
-		y=643
-		width=80
+		x=430
+		y=629
+		width=90
 		height=20
 	}
 	"basic attribute" {
@@ -1938,8 +1797,8 @@ text {
 }
 "text entry" {
 	object {
-		x=528
-		y=643
+		x=603
+		y=629
 		width=60
 		height=20
 	}
@@ -1951,18 +1810,115 @@ text {
 	limits {
 	}
 }
-"text update" {
+composite {
 	object {
-		x=595
-		y=644
-		width=60
-		height=18
+		x=528
+		y=493
+		width=70
+		height=155
 	}
-	monitor {
-		chan="$(P)$(R)HighClip_RBV"
-		clr=54
-		bclr=4
-	}
-	limits {
+	"composite name"=""
+	children {
+		"message button" {
+			object {
+				x=528
+				y=493
+				width=70
+				height=20
+			}
+			control {
+				chan="$(P)$(R)GrabBackground"
+				clr=14
+				bclr=51
+			}
+			label="Grab"
+			press_msg="1"
+		}
+		menu {
+			object {
+				x=528
+				y=519
+				width=70
+				height=18
+			}
+			control {
+				chan="$(P)$(R)EnableBackground"
+				clr=14
+				bclr=51
+			}
+		}
+		"text update" {
+			object {
+				x=528
+				y=544
+				width=70
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)ValidBackground_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=528
+				y=568
+				width=70
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)EnableLowClip_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		menu {
+			object {
+				x=528
+				y=587
+				width=70
+				height=18
+			}
+			control {
+				chan="$(P)$(R)EnableLowClip"
+				clr=14
+				bclr=51
+			}
+		}
+		"text update" {
+			object {
+				x=528
+				y=611
+				width=70
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)EnableHighClip_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		menu {
+			object {
+				x=528
+				y=630
+				width=70
+				height=18
+			}
+			control {
+				chan="$(P)$(R)EnableHighClip"
+				clr=14
+				bclr=51
+			}
+		}
 	}
 }
