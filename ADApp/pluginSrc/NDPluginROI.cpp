@@ -93,13 +93,13 @@ void doCorrectionsT(NDArray *pArray, NDROI *pROI)
     pArray->getInfo(&arrayInfo);
     pROI->nElements = arrayInfo.nElements;
 
-    if (pROI->pBackground && pROI->validBackground && pROI->doBackground)
+    if (pROI->validBackground && pROI->enableBackground)
         background = (double *)pROI->pBackground->pData;
     for (i=0; i<pROI->nElements; i++) {
         value = (double)pData[i];
         if (background) value -= background[i];
-        if (pROI->doHighClip && (value > pROI->highClip)) value = pROI->highClip;
-        if (pROI->doLowClip  && (value < pROI->lowClip))  value = pROI->lowClip;
+        if (pROI->enableHighClip && (value > pROI->highClip)) value = pROI->highClip;
+        if (pROI->enableLowClip  && (value < pROI->lowClip))  value = pROI->lowClip;
         pData[i] = (epicsType)value;
     }
 }
@@ -357,10 +357,10 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         /* Need to fetch all of these parameters while we still have the mutex */
         getIntegerParam(roi, NDPluginROIDataType,           &dataType);
 
-        getIntegerParam(roi, NDPluginROIDoBackground,       &pROI->doBackground);
-        getIntegerParam(roi, NDPluginROIDoLowClip,          &pROI->doLowClip);
+        getIntegerParam(roi, NDPluginROIEnableBackground,   &pROI->enableBackground);
+        getIntegerParam(roi, NDPluginROIEnableLowClip,      &pROI->enableLowClip);
         getDoubleParam (roi, NDPluginROILowClip,            &pROI->lowClip);
-        getIntegerParam(roi, NDPluginROIDoHighClip,         &pROI->doHighClip);
+        getIntegerParam(roi, NDPluginROIEnableHighClip,     &pROI->enableHighClip);
         getDoubleParam (roi, NDPluginROIHighClip,           &pROI->highClip);
 
         getIntegerParam(roi, NDPluginROIComputeStatistics,  &computeStatistics);
@@ -447,12 +447,13 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         pROIArray  = this->pArrays[roi];
 
         pROIArray->getInfo(&arrayInfo);
-        pROI->validBackground = (arrayInfo.nElements == pROI->nBackgroundElements) ? 1:0;
+        pROI->validBackground = 0;
+        if (pROI->pBackground && (arrayInfo.nElements == pROI->nBackgroundElements)) pROI->validBackground = 1;
         setIntegerParam(roi, NDPluginROIValidBackground, pROI->validBackground);
 
         /* If background subtraction or clipping is to be done then call doCorrections */
-        if ((pROI->doBackground && pROI->pBackground && pROI->validBackground) || 
-                pROI->doLowClip || pROI->doHighClip) 
+        if ((pROI->enableBackground && pROI->validBackground) || 
+                pROI->enableLowClip || pROI->enableHighClip) 
             doCorrections(pROIArray, pROI);
             
         if (computeStatistics) {
@@ -761,34 +762,34 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
 
     /* ROI high and low clipping */
     createParam(NDPluginROILowClipString,           asynParamFloat64, &NDPluginROILowClip);
-    createParam(NDPluginROIDoLowClipString,         asynParamInt32,   &NDPluginROIDoLowClip);
+    createParam(NDPluginROIEnableLowClipString,     asynParamInt32,   &NDPluginROIEnableLowClip);
     createParam(NDPluginROIHighClipString,          asynParamFloat64, &NDPluginROIHighClip);
-    createParam(NDPluginROIDoHighClipString,        asynParamInt32,   &NDPluginROIDoHighClip);
+    createParam(NDPluginROIEnableHighClipString,    asynParamInt32,   &NDPluginROIEnableHighClip);
 
     /* ROI background array subtraction */
     createParam(NDPluginROIGrabBackgroundString,    asynParamInt32, &NDPluginROIGrabBackground);
-    createParam(NDPluginROIDoBackgroundString,      asynParamInt32, &NDPluginROIDoBackground);
+    createParam(NDPluginROIEnableBackgroundString,  asynParamInt32, &NDPluginROIEnableBackground);
     createParam(NDPluginROIValidBackgroundString,   asynParamInt32, &NDPluginROIValidBackground);
 
     /* ROI statistics */
-    createParam(NDPluginROIComputeStatisticsString, asynParamInt32, &NDPluginROIComputeStatistics);
-    createParam(NDPluginROIBgdWidthString,          asynParamInt32, &NDPluginROIBgdWidth);
-    createParam(NDPluginROIMinValueString,          asynParamFloat64, &NDPluginROIMinValue);
-    createParam(NDPluginROIMaxValueString,          asynParamFloat64, &NDPluginROIMaxValue);
-    createParam(NDPluginROIMeanValueString,         asynParamFloat64, &NDPluginROIMeanValue);
+    createParam(NDPluginROIComputeStatisticsString, asynParamInt32,      &NDPluginROIComputeStatistics);
+    createParam(NDPluginROIBgdWidthString,          asynParamInt32,      &NDPluginROIBgdWidth);
+    createParam(NDPluginROIMinValueString,          asynParamFloat64,    &NDPluginROIMinValue);
+    createParam(NDPluginROIMaxValueString,          asynParamFloat64,    &NDPluginROIMaxValue);
+    createParam(NDPluginROIMeanValueString,         asynParamFloat64,    &NDPluginROIMeanValue);
     createParam(NDPluginROITotalArrayString,        asynParamInt32Array, &NDPluginROITotalArray);
     createParam(NDPluginROINetArrayString,          asynParamInt32Array, &NDPluginROINetArray);
-    createParam(NDPluginROICentroidFramesString,    asynParamInt32,   &NDPluginROICentroidFrames);
-    createParam(NDPluginROICentroidXString,         asynParamFloat64, &NDPluginROICentroidX);
-    createParam(NDPluginROICentroidYString,         asynParamFloat64, &NDPluginROICentroidY);
+    createParam(NDPluginROICentroidFramesString,    asynParamInt32,      &NDPluginROICentroidFrames);
+    createParam(NDPluginROICentroidXString,         asynParamFloat64,    &NDPluginROICentroidX);
+    createParam(NDPluginROICentroidYString,         asynParamFloat64,    &NDPluginROICentroidY);
 
     /* ROI histogram */
-    createParam(NDPluginROIComputeHistogramString,  asynParamInt32, &NDPluginROIComputeHistogram);
-    createParam(NDPluginROIHistSizeString,          asynParamInt32, &NDPluginROIHistSize);
-    createParam(NDPluginROIHistMinString,           asynParamFloat64, &NDPluginROIHistMin);
-    createParam(NDPluginROIHistMaxString,           asynParamFloat64, &NDPluginROIHistMax);
-    createParam(NDPluginROIHistEntropyString,       asynParamFloat64, &NDPluginROIHistEntropy);
-    createParam(NDPluginROIHistArrayString,         asynParamFloat64Array, &NDPluginROIHistArray);
+    createParam(NDPluginROIComputeHistogramString,  asynParamInt32,         &NDPluginROIComputeHistogram);
+    createParam(NDPluginROIHistSizeString,          asynParamInt32,         &NDPluginROIHistSize);
+    createParam(NDPluginROIHistMinString,           asynParamFloat64,       &NDPluginROIHistMin);
+    createParam(NDPluginROIHistMaxString,           asynParamFloat64,       &NDPluginROIHistMax);
+    createParam(NDPluginROIHistEntropyString,       asynParamFloat64,       &NDPluginROIHistEntropy);
+    createParam(NDPluginROIHistArrayString,         asynParamFloat64Array,  &NDPluginROIHistArray);
 
     /* ROI profiles - not yet implemented */
     createParam(NDPluginROIComputeProfilesString,   asynParamInt32, &NDPluginROIComputeProfiles);
@@ -809,7 +810,7 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
         setIntegerParam(roi , NDPluginROIComputeProfiles,   0);
         
         setIntegerParam(roi , NDPluginROIGrabBackground,    0);
-        setIntegerParam(roi , NDPluginROIDoBackground,      0);
+        setIntegerParam(roi , NDPluginROIEnableBackground,  0);
         setIntegerParam(roi , NDPluginROIValidBackground,   0);
 
         setIntegerParam(roi , NDPluginROIDim0Min,           0);
@@ -845,7 +846,6 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
         setIntegerParam(roi , NDArraySizeY,                 0);
         setIntegerParam(roi , NDArraySizeZ,                 0);
         
-        setDoubleParam (roi , NDPluginROIThreshold,         0);
         setIntegerParam(roi , NDPluginROICentroidFrames,    0);
         setDoubleParam (roi , NDPluginROICentroidX,         0.);
         setDoubleParam (roi , NDPluginROICentroidY,         0.);

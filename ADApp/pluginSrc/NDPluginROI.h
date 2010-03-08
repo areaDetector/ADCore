@@ -21,9 +21,9 @@ struct NDROI {
     double min;
     double max;
     double lowClip;
-    int doLowClip;
+    int enableLowClip;
     double highClip;
-    int doHighClip;
+    int enableHighClip;
     double centroidX;
     double centroidY;
     int nCentroidFrames;
@@ -33,7 +33,7 @@ struct NDROI {
     NDArray *pBackground;
     int nBackgroundElements;
     int validBackground;
-    int doBackground;
+    int enableBackground;
     double histMin;
     double histMax;
     int histSize;
@@ -78,13 +78,13 @@ NDROI::~NDROI() {
 
 /* ROI high and low clipping */
 #define NDPluginROILowClipString            "LOW_CLIP"          /* (asynFloat64, r/w) Low clip value */
-#define NDPluginROIDoLowClipString          "DO_LOW_CLIP"       /* (asynInt32,   r/w) Do low clipping? */
+#define NDPluginROIEnableLowClipString      "ENABLE_LOW_CLIP"   /* (asynInt32,   r/w) Enable low clipping? */
 #define NDPluginROIHighClipString           "HIGH_CLIP"         /* (asynFloat64, r/w) High clip value */
-#define NDPluginROIDoHighClipString         "DO_HIGH_CLIP"      /* (asynInt32,   r/w) Do high clipping? */
+#define NDPluginROIEnableHighClipString     "ENABLE_HIGH_CLIP"  /* (asynInt32,   r/w) Enable high clipping? */
     
 /* ROI background array subtraction */
 #define NDPluginROIGrabBackgroundString     "GRAB_BACKGROUND"     /* (asynInt32,   r/w) Use current frame as background */
-#define NDPluginROIDoBackgroundString       "DO_BACKGROUND"       /* (asynInt32,   r/w) Do background subtraction? */
+#define NDPluginROIEnableBackgroundString    "ENABLE_BACKGROUND"   /* (asynInt32,   r/w) Enable background subtraction? */
 #define NDPluginROIValidBackgroundString    "VALID_BACKGROUND"    /* (asynInt32,   r/o) Is there a valid background */
     
 /* ROI statistics */
@@ -158,13 +158,13 @@ protected:
 
     /* ROI high and low clipping */
     int NDPluginROILowClip;
-    int NDPluginROIDoLowClip;
+    int NDPluginROIEnableLowClip;
     int NDPluginROIHighClip;
-    int NDPluginROIDoHighClip;
+    int NDPluginROIEnableHighClip;
 
     /* ROI background array subtraction */
     int NDPluginROIGrabBackground;
-    int NDPluginROIDoBackground;
+    int NDPluginROIEnableBackground;
     int NDPluginROIValidBackground;
 
     /* ROI statistics */
@@ -186,7 +186,6 @@ protected:
     int NDPluginROIHistMax;
     int NDPluginROIHistEntropy;
     int NDPluginROIHistArray;
-    int NDPluginROIThreshold;
 
     /* ROI profiles - not yet implemented */
     int NDPluginROIComputeProfiles;
