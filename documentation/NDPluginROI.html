@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugin NDPluginROI</h1>
     <h2>
-      August 17, 2009</h2>
+      March 7, 2010</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -30,11 +30,21 @@
     NDPluginROI selects one or more rectangular "Regions-Of-Interest" (ROIs) from the
     NDArray callback data. The maximum number of ROIs is defined when the plugin is
     created. Each ROI can be any size, from a single array element to the entire array.
-    NDPluginROI does 3 things with these ROIs:
+    NDPluginROI optinally does the following operations with these ROIs, in this order:
   </p>
   <ol>
-    <li>Computes statistics, e.g. mean, maximum, minimum, total value, net (background
-      subtracted) value</li>
+    <li>Extracts of the selected region. When the ROI is extracted the following operations
+      can be performed:
+      <ul>
+        <li>Binning in any dimension.</li>
+        <li>Orientation reversal (mirroring) in any dimension.</li>
+        <li>Conversion to a new data type.</li>
+      </ul>
+    </li>
+    <li>Subtracts a background array which has been previously acquired.</li>
+    <li>Clips to minimum and maximum specified values.</li>
+    <li>Computes statistics, e.g. mean, maximum, minimum, total, net (background subtracted),
+      and centroid values.</li>
     <li>Computes a histogram of the values (e.g. number of pixels versus intensity per
       pixel)</li>
     <li>Exports the ROI as a new NDArray object. In this regard NDPluginROI is different
@@ -53,7 +63,7 @@
     maximizing the use of multiple CPU cores. Individual ROIs are addressed through
     the asyn interfaces by the asyn "addr" field in the asynUser structure. Note that
     while the NDPluginROI should be N-dimensional, the EPICS interface to the definition
-    of the ROI is currently limited to a maximum of 3-D. This limitation will be removed
+    of the ROI is currently limited to a maximum of 3-D. This limitation may be removed
     in a future release.
   </p>
   <p>
@@ -561,6 +571,166 @@
       </tr>
       <tr>
         <td align="center" colspan="7,">
+          <b>ROI clipping and background subtraction</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          GrabBackground</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Command to use the most recently acquired ROI array as a background. Note that this
+          recently acquired ROI should have been acquired with EnableBackground=0, or else
+          that array will already have had the background subtracted, which is probably not
+          what was intended!</td>
+        <td>
+          GRAB_BACKGROUND</td>
+        <td>
+          $(P)$(R)GrabBackground<br />
+          $(P)$(R)GrabBackground_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          ValidBackground</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Flag indicating whether there is a valid background array that has been acquired
+          for this ROI using GrabBackground. This flag will be Invalid (0) if no background
+          has been acquired, or of the size of the ROI has changed since the background was
+          last acquired.</td>
+        <td>
+          VALID_BACKGROUND</td>
+        <td>
+          $(P)$(R)ValidBackground_RBV</td>
+        <td>
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          EnableBackground</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flag indicating whether the background array acquired with GrabBackground should
+          be subtracted when computing this ROI. This background subtraction is done before
+          the clipping operations, and before the statistics are computed. If ValidBackground=0
+          then no background subtraction is done. This background subtraction modifies the
+          ROI data, so other plugins that use this ROI will receive the background subtracted
+          data.</td>
+        <td>
+          ENABLE_BACKGROUND</td>
+        <td>
+          $(P)$(R)EnableBackground<br />
+          $(P)$(R)EnableBackground_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          DoLowClip</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flag to control whether to clip values to the LowClip value for this ROI (0=No,
+          1=Yes).
+        </td>
+        <td>
+          ENABLE_LOW_CLIP</td>
+        <td>
+          $(P)$(R)EnableLowClip<br />
+          $(P)$(R)EnableLowClip_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          LowClip</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          The minimum allowed value for this ROI. If EnableLowClip=1, then all values in the
+          array less than LowClip will be replaced by LowClip. This clipping operation is
+          performed after the background is subtracted (if EnableBackground=1). This clipping
+          modifies the ROI data, so other plugins that use this ROI will receive the clipped
+          data.
+        </td>
+        <td>
+          LOW_CLIP</td>
+        <td>
+          $(P)$(R)LowClip<br />
+          $(P)$(R)LowClip_RBV</td>
+        <td>
+          ao<br />
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          EnableHighClip</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flag to control whether to clip values to the HighClip value for this ROI (0=No,
+          1=Yes).
+        </td>
+        <td>
+          ENABLE_HIGH_CLIP</td>
+        <td>
+          $(P)$(R)EnableHighClip<br />
+          $(P)$(R)EnableHighClip_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          HighClip</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          The maximum allowed value for this ROI. If EnableHighClip=1, then all values in
+          the array greater than HighClip will be replaced by HighClip. This clipping operation
+          is performed after the background is subtracted (if EnableBackground=1). This clipping
+          modifies the ROI data, so other plugins that use this ROI will receive the clipped
+          data.
+        </td>
+        <td>
+          HIGH_CLIP</td>
+        <td>
+          $(P)$(R)HighClip<br />
+          $(P)$(R)HighClip_RBV</td>
+        <td>
+          ao<br />
+          ai</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
           <b>ROI statistics</b></td>
       </tr>
       <tr>
@@ -663,11 +833,48 @@
           Net (background subtracted) total of all elements in the ROI. The background is
           calculated by determining the average counts per array element in a border around
           the ROI of width NDPluginROIBgdWidth. This average background counts per element
-          is then subtracted from all elements inside the ROI.</td>
+          is then subtracted from all elements inside the ROI. If NDPluginROIBgdWidth is &le;
+          0 then no background is computed. Note that this background subtraction is done
+          after the "array" background is subtracted if EnableBackground=1, as described above.
+        </td>
         <td>
           NET</td>
         <td>
           $(P)$(R)Net_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          CentroidX</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          X centroid of the ROI.</td>
+        <td>
+          CENTROIDX_VALUE</td>
+        <td>
+          $(P)$(R)CentroidX_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          CentroidY</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Y centroid of the ROI.</td>
+        <td>
+          CENTROIDY_VALUE</td>
+        <td>
+          $(P)$(R)CentroidY_RBV</td>
         <td>
           ai</td>
       </tr>
