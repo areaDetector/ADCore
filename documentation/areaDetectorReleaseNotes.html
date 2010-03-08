@@ -9,16 +9,11 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
-    Release 1-6 (xxx-October-2009???)</h2>
+    Release 1-6 (xxx-March-2010???)</h2>
   <ul>
     <li>General
       <ul>
-        <li>Converted to be compatible with EPICS base 3.14.11.</li>
-        <li>Converted all databases so that input records are PINI=RUNNING (new) and output
-          records are PINI=YES (as before) . This change is needed to work with asyn R4-13,
-          which removes a non-elegant hack in asynPortDriver in asyn 4-11 and 4-12. That hack
-          worked around the problem in EPICS 3.14.10 and ealier that there was no way to control
-          the order in which records with PINI=YES processed at iocInit().</li>
+        <li>Converted to be compatible with asynPortDriver in asyn R4-13, which changes parameter handling.</li>
         <li>Changes to support 64-bit architectures, including linux-x86_64. This also required
           changes to the synApps modules on which areaDetector applications depend (autosave,
           busy, etc.)</li>
@@ -30,6 +25,34 @@
         <li>Fixed a bug in the Roper driver. There was a buffer overflow problem in the function
           that converts C strings to Windows BSTR strings. This would cause the IOC to crash
           when saving SPE files with Comment PVs longer than 40 characters.</li>
+        <li>Many fixes to Windows Firewire driver:
+          <ul>
+            <li>Added dropped frame counter.</li>
+            <li>Fixed timeout problem with acquire times &gt; 1 second.</li>
+            <li>Fixed logic when acquisition was turned off</li>
+            <li>Fixed problem with constructor when it encountered a minor error; was
+              causing capture thread not to be started for some cameras.</li>
+            <li>Implemented AcquireTime parameter, previously the time could only
+              be changed via a Firewire feature.</li>
+            <li>Fixed bug when setting a feature value in non-absolute mode after it was set in 
+              absolute mode.</li>
+            <li>Removed the ability to change video modes, formats or rates when acquiring
+              because it is too complex to stop and wait for it to be done.</li>
+            <li>Report details for all supported Firewire "features" in report() function, called by asynReport() and dbior().</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li>Plugins
+      <ul>
+        <li>NDPluginROI.  Several enhancements.  Thanks to Stephen Mudie from the Australian Synchrotron and
+           John Dobbins from Cornell for the initial versions of these.
+          <ul>
+            <li>Added LowClip and HighClip PVs to allow optional clipping to minimum and maximum values.</li>
+            <li>Added ability to grab a background array and optionally subtract this background from all arrays.</li>
+            <li>Added centroid calculation in X and Y.</li>
+          </ul>
+        </li>
       </ul>
     </li>
   </ul>
