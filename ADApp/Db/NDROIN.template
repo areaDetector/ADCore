@@ -373,21 +373,21 @@ record(bi, "$(P)$(R)GrabBackground_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(bo, "$(P)$(R)DoBackground")
+record(bo, "$(P)$(R)EnableBackground")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DO_BACKGROUND")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_BACKGROUND")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
 }
 
-record(bi, "$(P)$(R)DoBackground_RBV")
+record(bi, "$(P)$(R)EnableBackground_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DO_BACKGROUND")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_BACKGROUND")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
    field(SCAN, "I/O Intr")
 }
 
@@ -403,21 +403,21 @@ record(bi, "$(P)$(R)ValidBackground_RBV")
 ###################################################################
 # These records control the high and low clipping                 #
 ###################################################################
-record(bo, "$(P)$(R)DoLowClip")
+record(bo, "$(P)$(R)EnableLowClip")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DO_LOW_CLIP")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_LOW_CLIP")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
 }
 
-record(bi, "$(P)$(R)DoLowClip_RBV")
+record(bi, "$(P)$(R)EnableLowClip_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DO_LOW_CLIP")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_LOW_CLIP")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
    field(SCAN, "I/O Intr")
 }
 
@@ -437,21 +437,21 @@ record(ai, "$(P)$(R)LowClip_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(bo, "$(P)$(R)DoHighClip")
+record(bo, "$(P)$(R)EnableHighClip")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DO_HIGH_CLIP")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_HIGH_CLIP")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
 }
 
-record(bi, "$(P)$(R)DoHighClip_RBV")
+record(bi, "$(P)$(R)EnableHighClip_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DO_HIGH_CLIP")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_HIGH_CLIP")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
    field(SCAN, "I/O Intr")
 }
 
