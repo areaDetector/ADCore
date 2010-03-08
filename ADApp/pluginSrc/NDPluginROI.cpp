@@ -583,8 +583,10 @@ asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
     int roi=0;
+    int i;
     NDROI *pROI;
     NDArray *pArray;
+    NDDimension_t dims[ND_ARRAY_MAX_DIMS];
     NDArrayInfo arrayInfo;
     const char* functionName = "writeInt32";
 
@@ -623,7 +625,15 @@ asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
         pArray = this->pArrays[roi];
         if (pArray) {
             /* Make a copy of the current ROI array, converted to double type */
-            this->pNDArrayPool->convert(pArray, &pROI->pBackground, NDFloat64, pArray->dims);
+            /* For for converted array set reverse, offset and binning to not change anything */
+            for (i=0; i<pArray->ndims; i++) {
+                dims[i].size    = pArray->dims[i].size;
+                dims[i].reverse = 0;
+                dims[i].offset  = 0;
+                dims[i].binning = 1;
+            }
+            /* Make a copy of the current ROI array, converted to double type */
+            this->pNDArrayPool->convert(pArray, &pROI->pBackground, NDFloat64, dims);
             pROI->pBackground->getInfo(&arrayInfo);
             pROI->nBackgroundElements = arrayInfo.nElements;
         }
