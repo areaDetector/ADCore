@@ -8,7 +8,7 @@ display {
 		x=350
 		y=60
 		width=675
-		height=670
+		height=645
 	}
 	clr=14
 	bclr=4
@@ -152,7 +152,7 @@ rectangle {
 		x=5
 		y=420
 		width=360
-		height=240
+		height=215
 	}
 	"basic attribute" {
 		clr=14
@@ -1048,211 +1048,187 @@ composite {
 		}
 	}
 }
-composite {
+text {
+	object {
+		x=209
+		y=526
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Total"
+	align="horiz. right"
+}
+text {
+	object {
+		x=39
+		y=526
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Minimum"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=265
+		y=527
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)Total_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=113
+		y=527
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)MinValue_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=229
+		y=551
+		width=30
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Net"
+	align="horiz. right"
+}
+text {
+	object {
+		x=39
+		y=551
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Maximum"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=265
+		y=552
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)Net_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=113
+		y=552
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)MaxValue_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=69
+		y=576
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Mean"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=113
+		y=577
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)MeanValue_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
 	object {
 		x=9
-		y=526
-		width=346
-		height=120
+		y=601
+		width=100
+		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=209
-				y=526
-				width=50
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Total"
-			align="horiz. right"
-		}
-		text {
-			object {
-				x=39
-				y=526
-				width=70
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Minimum"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=265
-				y=527
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)Total_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=113
-				y=527
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)MinValue_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=229
-				y=551
-				width=30
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Net"
-			align="horiz. right"
-		}
-		text {
-			object {
-				x=39
-				y=551
-				width=70
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Maximum"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=265
-				y=552
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)Net_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=113
-				y=552
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)MaxValue_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=69
-				y=576
-				width=40
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Mean"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=113
-				y=577
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)MeanValue_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=9
-				y=601
-				width=100
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="X Centroid"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=113
-				y=602
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)CentroidX_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=9
-				y=626
-				width=100
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Y Centroid"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=113
-				y=627
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)CentroidY_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Centroid X"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=113
+		y=602
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)CentroidX_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=265
+		y=602
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)CentroidY_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
 	}
 }
 composite {
@@ -1661,164 +1637,35 @@ rectangle {
 		x=375
 		y=460
 		width=290
-		height=200
+		height=175
 	}
 	"basic attribute" {
 		clr=14
 		fill="outline"
 	}
 }
-text {
-	object {
-		x=420
-		y=493
-		width=100
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Grab bkgd."
-	align="horiz. right"
-}
-text {
-	object {
-		x=380
-		y=518
-		width=140
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Subtract bkgd."
-}
-"text update" {
-	object {
-		x=603
-		y=519
-		width=60
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)EnableBackground_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-text {
-	object {
-		x=410
-		y=543
-		width=110
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Valid bkgd."
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=603
-		y=568
-		width=60
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)LowClip_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-text {
-	object {
-		x=440
-		y=586
-		width=80
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Low clip"
-	align="horiz. right"
-}
-"text entry" {
-	object {
-		x=603
-		y=586
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)LowClip"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=603
-		y=611
-		width=60
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)HighClip_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-text {
-	object {
-		x=430
-		y=629
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="High clip"
-	align="horiz. right"
-}
-"text entry" {
-	object {
-		x=603
-		y=629
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)HighClip"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
 composite {
 	object {
-		x=528
+		x=390
 		y=493
-		width=70
-		height=155
+		width=273
+		height=20
 	}
 	"composite name"=""
 	children {
+		text {
+			object {
+				x=390
+				y=493
+				width=130
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Acquire bkgd."
+			align="horiz. right"
+		}
 		"message button" {
 			object {
 				x=528
@@ -1831,8 +1678,62 @@ composite {
 				clr=14
 				bclr=51
 			}
-			label="Grab"
+			label="Acquire"
 			press_msg="1"
+		}
+		"text update" {
+			object {
+				x=603
+				y=494
+				width=60
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)ValidBackground_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=380
+		y=518
+		width=283
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=380
+				y=518
+				width=140
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Subtract bkgd."
+		}
+		"text update" {
+			object {
+				x=603
+				y=519
+				width=60
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)EnableBackground_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
 		}
 		menu {
 			object {
@@ -1847,17 +1748,101 @@ composite {
 				bclr=51
 			}
 		}
+	}
+}
+composite {
+	object {
+		x=430
+		y=543
+		width=233
+		height=81
+	}
+	"composite name"=""
+	children {
 		"text update" {
 			object {
-				x=528
-				y=544
-				width=70
+				x=603
+				y=543
+				width=60
 				height=18
 			}
 			monitor {
-				chan="$(P)$(R)ValidBackground_RBV"
+				chan="$(P)$(R)LowClip_RBV"
 				clr=54
 				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=440
+				y=561
+				width=80
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Low clip"
+			align="horiz. right"
+		}
+		"text entry" {
+			object {
+				x=603
+				y=561
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)LowClip"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=603
+				y=586
+				width=60
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)HighClip_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=430
+				y=604
+				width=90
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="High clip"
+			align="horiz. right"
+		}
+		"text entry" {
+			object {
+				x=603
+				y=604
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)HighClip"
+				clr=14
+				bclr=51
 			}
 			limits {
 			}
@@ -1865,7 +1850,7 @@ composite {
 		"text update" {
 			object {
 				x=528
-				y=568
+				y=543
 				width=70
 				height=18
 			}
@@ -1881,7 +1866,7 @@ composite {
 		menu {
 			object {
 				x=528
-				y=587
+				y=562
 				width=70
 				height=18
 			}
@@ -1894,7 +1879,7 @@ composite {
 		"text update" {
 			object {
 				x=528
-				y=611
+				y=586
 				width=70
 				height=18
 			}
@@ -1910,7 +1895,7 @@ composite {
 		menu {
 			object {
 				x=528
-				y=630
+				y=605
 				width=70
 				height=18
 			}
@@ -1921,4 +1906,17 @@ composite {
 			}
 		}
 	}
+}
+text {
+	object {
+		x=229
+		y=601
+		width=30
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Y"
+	align="horiz. right"
 }
