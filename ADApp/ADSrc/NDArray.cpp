@@ -98,7 +98,7 @@ NDArray* NDArrayPool::alloc(int ndims, int *dims, NDDataType_t dataType, int dat
     if (pArray) {
         /* We have a frame */
         /* Initialize fields */
-        pArray->owner = this;
+        pArray->pNDArrayPool = this;
         pArray->dataType = dataType;
         pArray->ndims = ndims;
         memset(pArray->dims, 0, sizeof(pArray->dims));
@@ -207,9 +207,9 @@ int NDArrayPool::reserve(NDArray *pArray)
     const char *functionName = "reserve";
 
     /* Make sure we own this array */
-    if (pArray->owner != this) {
+    if (pArray->pNDArrayPool != this) {
         printf("%s:%s: ERROR, not owner!  owner=%p, should be this=%p\n",
-               driverName, functionName, pArray->owner, this);
+               driverName, functionName, pArray->pNDArrayPool, this);
         return(ND_ERROR);
     }
     epicsMutexLock(this->listLock);
@@ -231,9 +231,9 @@ int NDArrayPool::release(NDArray *pArray)
     const char *functionName = "release";
 
     /* Make sure we own this array */
-    if (pArray->owner != this) {
+    if (pArray->pNDArrayPool != this) {
         printf("%s:%s: ERROR, not owner!  owner=%p, should be this=%p\n",
-               driverName, functionName, pArray->owner, this);
+               driverName, functionName, pArray->pNDArrayPool, this);
         return(ND_ERROR);
     }
     epicsMutexLock(this->listLock);
@@ -573,7 +573,7 @@ int NDArrayPool::report(int details)
 /** NDArray constructor, no parameters.
   * Initializes all fields to 0.  Creates the attribute linked list and linked list mutex. */
 NDArray::NDArray()
-    : referenceCount(0), owner(NULL),
+    : referenceCount(0), pNDArrayPool(NULL),  
       uniqueId(0), timeStamp(0.0), ndims(0), dataType(NDInt8),
       dataSize(0),  pData(NULL)
 {
@@ -649,8 +649,6 @@ int NDArray::reserve()
 {
     const char *functionName = "NDArray::reserve";
 
-    NDArrayPool *pNDArrayPool = (NDArrayPool *)this->owner;
-
     if (!pNDArrayPool) {
         printf("%s: ERROR, no owner\n", functionName);
         return(ND_ERROR);
@@ -662,8 +660,6 @@ int NDArray::reserve()
 int NDArray::release()
 {
     const char *functionName = "NDArray::release";
-
-    NDArrayPool *pNDArrayPool = (NDArrayPool *)this->owner;
 
     if (!pNDArrayPool) {
         printf("%s: ERROR, no owner\n", functionName);

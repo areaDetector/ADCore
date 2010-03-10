@@ -204,9 +204,9 @@ public:
 private:
     ELLNODE      node;              /**< This must come first because ELLNODE must have the same address as NDArray object */
     int          referenceCount;    /**< Reference count for this NDArray=number of clients who are using it */
-    void         *owner;            /**< The NDArrayPool object that created this array */
 
 public:
+    class NDArrayPool *pNDArrayPool; /**< The NDArrayPool object that created this array */
     int           uniqueId;     /**< A number that must be unique for all NDArrays produced by a driver after is has started */
     double        timeStamp;    /**< The time stamp in seconds for this array; seconds since Epoch (00:00:00 UTC, January 1, 1970)
                                   * is recommended, but some drivers may use a different start time.*/
