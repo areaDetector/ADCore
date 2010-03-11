@@ -34,12 +34,10 @@ void NDPluginStdArrays::arrayInterruptCallback(NDArray *pArray, NDArrayPool *pND
 {
     ELLLIST *pclientList;
     interruptNode *pnode;
-    int i;
     int status;
     epicsType *pData=NULL;
     NDArray *pOutput=NULL;
     NDArrayInfo_t arrayInfo;
-    NDDimension_t outDims[ND_ARRAY_MAX_DIMS];
 
     pasynManager->interruptStart(interruptPvt, &pclientList);
     pnode = (interruptNode *)ellFirst(pclientList);
@@ -49,12 +47,7 @@ void NDPluginStdArrays::arrayInterruptCallback(NDArray *pArray, NDArrayPool *pND
             if (!*initialized) {
                 *initialized = 1;
                 pArray->getInfo(&arrayInfo);
-                for (i=0; i<pArray->ndims; i++)  {
-                    pArray->initDimension(&outDims[i], pArray->dims[i].size);
-                }
-                status = pNDArrayPool->convert(pArray, &pOutput,
-                                               signedType,
-                                               outDims);
+                status = pNDArrayPool->convert(pArray, &pOutput, signedType);
                 if (status) {
                     asynPrint(pInterrupt->pasynUser, ASYN_TRACE_ERROR,
                               "%s::arrayInterruptCallback: error allocating array in convert()\n",
@@ -80,8 +73,6 @@ asynStatus NDPluginStdArrays::readArray(asynUser *pasynUser, epicsType *value, s
     asynStatus status = asynSuccess;
     NDArray *pOutput, *myArray;
     NDArrayInfo_t arrayInfo;
-    NDDimension_t outDims[ND_ARRAY_MAX_DIMS];
-    int i;
 
     myArray = this->pArrays[0];
     if (command == NDPluginStdArraysData) {
@@ -97,14 +88,7 @@ asynStatus NDPluginStdArrays::readArray(asynUser *pasynUser, epicsType *value, s
              * Just pass the first nElements. */
              arrayInfo.nElements = nElements;
         }
-        /* Convert data from its actual data type.  */
-        for (i=0; i<myArray->ndims; i++)  {
-            myArray->initDimension(&outDims[i], myArray->dims[i].size);
-        }
-        status = (asynStatus)this->pNDArrayPool->convert(myArray,
-                                                         &pOutput,
-                                                         outputType,
-                                                         outDims);
+        status = (asynStatus)this->pNDArrayPool->convert(myArray, &pOutput, outputType);
         if (status) {
             asynPrint(pasynUser, ASYN_TRACE_ERROR,
                       "%s::readArray: error allocating array in convert()\n",
