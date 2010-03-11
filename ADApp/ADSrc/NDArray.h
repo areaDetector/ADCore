@@ -242,6 +242,9 @@ public:
                                 NDArray **ppOut,
                                 NDDataType_t dataTypeOut,
                                 NDDimension_t *outDims);
+    int          convert       (NDArray *pIn,
+                                NDArray **ppOut,
+                                NDDataType_t dataTypeOut);
     int          report        (int details);
 private:
     ELLLIST      freeList;      /**< Linked list of free NDArray objects that form the pool */
