@@ -421,6 +421,31 @@ static int convertDimension(NDArray *pIn,
 
 /** Creates a new output NDArray from an input NDArray, performing
   * conversion operations.
+  * This form of the function is for changing the data type only, not the dimensions,
+  * which are preserved. 
+  * \param[in] pIn The input array, source of the conversion.
+  * \param[out] ppOut The output array, result of the conversion.
+  * \param[in] dataTypeOut The data type of the output array.
+  */
+int NDArrayPool::convert(NDArray *pIn,
+                         NDArray **ppOut,
+                         NDDataType_t dataTypeOut)
+                         
+{
+    NDDimension_t dims[ND_ARRAY_MAX_DIMS];
+    int i;
+    
+    for (i=0; i<pIn->ndims; i++) {
+        dims[i].size    = pIn->dims[i].size;
+        dims[i].offset  = 0;
+        dims[i].binning = 1;
+        dims[i].reverse = 0;
+    }
+    return this->convert(pIn, ppOut, dataTypeOut, dims);
+}                         
+
+/** Creates a new output NDArray from an input NDArray, performing
+  * conversion operations.
   * The conversion can change the data type if dataTypeOut is different from
   * pIn->dataType. It can also change the dimensions. outDims may have different
   * values of size, binning, offset and reverse for each of its dimensions from input
