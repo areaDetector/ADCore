@@ -1,0 +1,291 @@
+# Database for ND PluginProcess
+# Mark Rivers
+# March 14, 2010
+
+###################################################################
+#  These records control the data type of the array data          # 
+#  The last entry is "Automatic" meaning preserve the data type   #
+#  of the input array.                                            # 
+###################################################################
+
+record(mbbo, "$(P)$(R)DataType")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROI_DATA_TYPE")
+   field(ZRST, "Int8")
+   field(ZRVL, "0")
+   field(ONST, "UInt8")
+   field(ONVL, "1")
+   field(TWST, "Int16")
+   field(TWVL, "2")
+   field(THST, "UInt16")
+   field(THVL, "3")
+   field(FRST, "Int32")
+   field(FRVL, "4")
+   field(FVST, "UInt32")
+   field(FVVL, "5")
+   field(SXST, "Float32")
+   field(SXVL, "6")
+   field(SVST, "Float64")
+   field(SVVL, "7")
+   field(EIST, "Automatic")
+   field(EIVL, "-1")
+}
+
+record(mbbi, "$(P)$(R)DataType_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROI_DATA_TYPE")
+   field(ZRST, "Int8")
+   field(ZRVL, "0")
+   field(ONST, "UInt8")
+   field(ONVL, "1")
+   field(TWST, "Int16")
+   field(TWVL, "2")
+   field(THST, "UInt16")
+   field(THVL, "3")
+   field(FRST, "Int32")
+   field(FRVL, "4")
+   field(FVST, "UInt32")
+   field(FVVL, "5")
+   field(SXST, "Float32")
+   field(SXVL, "6")
+   field(SVST, "Float64")
+   field(SVVL, "7")
+   field(EIST, "Automatic")
+   field(EIVL, "-1")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+# These records control the background array processing           #
+###################################################################
+record(bo, "$(P)$(R)SaveBackground")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SAVE_BACKGROUND")
+   field(VAL,  "1")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)SaveBackground_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SAVE_BACKGROUND")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)EnableBackground")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_BACKGROUND")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
+}
+
+record(bi, "$(P)$(R)EnableBackground_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_BACKGROUND")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
+   field(SCAN, "I/O Intr")
+}
+
+record(bi, "$(P)$(R)ValidBackground_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))VALID_BACKGROUND")
+   field(ZNAM, "Invalid")
+   field(ONAM, "Valid")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+# These records control the flat field array processing           #
+###################################################################
+record(bo, "$(P)$(R)SaveFlatField")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SAVE_FLAT_FIELD")
+   field(VAL,  "1")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)SaveFlatField_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SAVE_FLAT_FIELD")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)EnableFlatField")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_FLAT_FIELD")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
+}
+
+record(bi, "$(P)$(R)EnableFlatField_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_FLAT_FIELD")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
+   field(SCAN, "I/O Intr")
+}
+
+record(bi, "$(P)$(R)ValidFlatField_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))VALID_FLAT_FIELD")
+   field(ZNAM, "Invalid")
+   field(ONAM, "Valid")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)ScaleFlatField")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SCALE_FLAT_FIELD")
+   field(VAL,  "255.")
+}
+
+record(ai, "$(P)$(R)ScaleFlatField_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SCALE_FLAT_FIELD")
+   field(SCAN, "I/O Intr")
+}
+
+
+###################################################################
+# These records control the high and low clipping                 #
+###################################################################
+record(bo, "$(P)$(R)EnableLowClip")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_LOW_CLIP")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
+}
+
+record(bi, "$(P)$(R)EnableLowClip_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_LOW_CLIP")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)LowClip")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LOW_CLIP")
+   field(VAL,  "0.0")
+}
+
+record(ai, "$(P)$(R)LowClip_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LOW_CLIP")
+   field(VAL, "0.0")
+   field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)EnableHighClip")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_HIGH_CLIP")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
+}
+
+record(bi, "$(P)$(R)EnableHighClip_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_HIGH_CLIP")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)HighClip")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIGH_CLIP")
+   field(VAL,  "0.0")
+}
+
+record(ai, "$(P)$(R)HighClip_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIGH_CLIP")
+   field(VAL, "0.0")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+# These records control frame averaging                           #
+###################################################################
+record(ao, "$(P)$(R)NumAverage")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_AVERAGE")
+    field(DRVL, "2")
+    field(LOPR, "2")
+    field(DRVH, "1e10")
+    field(HOPR, "1e10")
+    field(VAL,  "1")
+}
+record(ai, "$(P)$(R)NumAverage_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_AVERAGE")
+    field(VAL,  "1")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)NumAveraged_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_AVERAGED")
+    field(VAL,  "1")
+    field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)EnableAverage")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_AVERAGE")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
+}
+
+record(bi, "$(P)$(R)EnableAverage_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_AVERAGE")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
+   field(SCAN, "I/O Intr")
+}
+
