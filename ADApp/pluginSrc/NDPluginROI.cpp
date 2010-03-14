@@ -82,94 +82,6 @@ int doComputeHistogram(NDArray *pArray, NDROI *pROI)
 }
 
 template <typename epicsType>
-void doCorrectionsT(NDArray *pArray, NDROI *pROI)
-{
-    int i;
-    epicsType *pData = (epicsType *)pArray->pData;
-    NDArrayInfo arrayInfo;
-    double *background=NULL, *flatField=NULL, *average, frac;
-    double value;
-
-    if (pROI->validBackground && pROI->enableBackground)
-        background = (double *)pROI->pBackground->pData;
-    if (pROI->validFlatField && pROI->enableFlatField)
-        flatField = (double *)pROI->pFlatField->pData;
-    for (i=0; i<pROI->nElements; i++) {
-        value = (double)pData[i];
-        if (background) value -= background[i];
-        if (flatField) {
-            if (flatField[i] != 0.) 
-                value *= pROI->scaleFlatField / flatField[i];
-            else
-                value = pROI->scaleFlatField;
-        }
-        if (pROI->enableHighClip && (value > pROI->highClip)) value = pROI->highClip;
-        if (pROI->enableLowClip  && (value < pROI->lowClip))  value = pROI->lowClip;
-        pData[i] = (epicsType)value;
-    }
-    
-    if (pROI->enableAverage) {
-        if (pROI->pAverage) {
-            pROI->pAverage->getInfo(&arrayInfo);
-            if (pROI->nElements != arrayInfo.nElements) {
-                pROI->pAverage->release();
-                pROI->pAverage = NULL;
-            }
-        }
-        if (!pROI->pAverage) {
-            /* There is not a current average array */
-            /* Make a copy of the current ROI array, converted to double type */
-            pArray->pNDArrayPool->convert(pArray, &pROI->pAverage, NDFloat64);
-            pROI->numAveraged = 1;
-        } else {
-            /* Merge the current array into the average, replace with average */
-            if (pROI->numAveraged < pROI->numAverage) pROI->numAveraged++;
-            average = (double *)pROI->pAverage->pData;
-            frac =  1./pROI->numAveraged;
-            for (i=0; i<pROI->nElements; i++) {
-                average[i] = frac*pData[i] + (1.-frac)*average[i];
-                pData[i] = (epicsType)average[i];
-            }
-        }
-    }
-}
-
-int doCorrections(NDArray *pArray, NDROI *pROI)
-{
-
-    switch(pArray->dataType) {
-        case NDInt8:
-            doCorrectionsT<epicsInt8>(pArray, pROI);
-            break;
-        case NDUInt8:
-            doCorrectionsT<epicsUInt8>(pArray, pROI);
-            break;
-        case NDInt16:
-            doCorrectionsT<epicsInt16>(pArray, pROI);
-            break;
-        case NDUInt16:
-            doCorrectionsT<epicsUInt16>(pArray, pROI);
-            break;
-        case NDInt32:
-            doCorrectionsT<epicsInt32>(pArray, pROI);
-            break;
-        case NDUInt32:
-            doCorrectionsT<epicsUInt32>(pArray, pROI);
-            break;
-        case NDFloat32:
-            doCorrectionsT<epicsFloat32>(pArray, pROI);
-            break;
-        case NDFloat64:
-            doCorrectionsT<epicsFloat64>(pArray, pROI);
-            break;
-        default:
-            return(ND_ERROR);
-        break;
-    }
-    return(ND_SUCCESS);
-}
-
-template <typename epicsType>
 void doComputeStatisticsT(NDArray *pArray, NDROI *pROI)
 {
     int i;
@@ -385,19 +297,6 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         /* Need to fetch all of these parameters while we still have the mutex */
         getIntegerParam(roi, NDPluginROIDataType,           &dataType);
 
-        getIntegerParam(roi, NDPluginROIEnableBackground,   &pROI->enableBackground);
-
-        getIntegerParam(roi, NDPluginROIEnableFlatField,    &pROI->enableFlatField);
-        getDoubleParam (roi, NDPluginROIScaleFlatField,     &pROI->scaleFlatField);
- 
-        getIntegerParam(roi, NDPluginROIEnableLowClip,      &pROI->enableLowClip);
-        getDoubleParam (roi, NDPluginROILowClip,            &pROI->lowClip);
-        getIntegerParam(roi, NDPluginROIEnableHighClip,     &pROI->enableHighClip);
-        getDoubleParam (roi, NDPluginROIHighClip,           &pROI->highClip);
-
-        getIntegerParam(roi, NDPluginROIEnableAverage,      &pROI->enableAverage);
-        getIntegerParam(roi, NDPluginROINumAverage,         &pROI->numAverage);
-        
         getIntegerParam(roi, NDPluginROIComputeStatistics,  &computeStatistics);
         getIntegerParam(roi, NDPluginROIComputeCentroid,    &pROI->computeCentroid);
         getDoubleParam (roi, NDPluginROICentroidThreshold,  &pROI->centroidThreshold);
@@ -484,26 +383,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
 
         pROIArray->getInfo(&arrayInfo);
         pROI->nElements = arrayInfo.nElements;
-        pROI->validBackground = 0;
-        if (pROI->pBackground && (pROI->nElements == pROI->nBackgroundElements)) pROI->validBackground = 1;
-        setIntegerParam(roi, NDPluginROIValidBackground, pROI->validBackground);
-        pROI->validFlatField = 0;
-        if (pROI->pFlatField && (pROI->nElements == pROI->nFlatFieldElements)) pROI->validFlatField = 1;
-        setIntegerParam(roi, NDPluginROIValidFlatField, pROI->validFlatField);
 
-        /* If any image processing is to be done then call doCorrections */
-        if ((pROI->enableBackground && pROI->validBackground) || 
-            (pROI->enableFlatField && pROI->validFlatField)   ||
-             pROI->enableLowClip                              || 
-             pROI->enableHighClip                             ||
-             pROI->enableAverage) {
-            /* Unfortunately we must lock while doing the corrections because the background and average arrays
-             * can be changed from another thread if we don't */
-            this->lock();
-            doCorrections(pROIArray, pROI);
-            this->unlock();
-        }
-            
         if (computeStatistics) {
            status = doComputeStatistics(pROIArray, pROI);
             /* If there is a non-zero background width then compute the background counts */
@@ -547,7 +427,6 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
                 avgBgd = bgdCounts / bgdPixels;
                 pROI->net = pROI->total - avgBgd*pROI->nElements;
             }
-            setIntegerParam(roi,NDPluginROINumAveraged, pROI->numAveraged);
             setDoubleParam(roi, NDPluginROIMinValue,    pROI->min);
             setDoubleParam(roi, NDPluginROIMaxValue,    pROI->max);
             setDoubleParam(roi, NDPluginROIMeanValue,   pROI->mean);
@@ -636,8 +515,6 @@ asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
     asynStatus status = asynSuccess;
     int roi=0;
     NDROI *pROI;
-    NDArray *pArray;
-    NDArrayInfo arrayInfo;
     const char* functionName = "writeInt32";
 
     status = getAddress(pasynUser, &roi); if (status != asynSuccess) return(status);
@@ -669,37 +546,6 @@ asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
             pROI->dims[2].binning = value;
     else if (function == NDPluginROIDim2Reverse)
             pROI->dims[2].reverse = value;
-    else if (function == NDPluginROISaveBackground && value) {
-        if (pROI->pBackground) pROI->pBackground->release();
-        pROI->pBackground = NULL;
-        pArray = this->pArrays[roi];
-        if (pArray) {
-            /* Make a copy of the current ROI array, converted to double type */
-            this->pNDArrayPool->convert(pArray, &pROI->pBackground, NDFloat64);
-            pROI->pBackground->getInfo(&arrayInfo);
-            pROI->nBackgroundElements = arrayInfo.nElements;
-        }
-        setIntegerParam(roi, NDPluginROISaveBackground, 0);
-    }
-    else if (function == NDPluginROISaveFlatField && value) {
-        if (pROI->pFlatField) pROI->pFlatField->release();
-        pROI->pFlatField = NULL;
-        pArray = this->pArrays[roi];
-        if (pArray) {
-            /* Make a copy of the current ROI array, converted to double type */
-            this->pNDArrayPool->convert(pArray, &pROI->pFlatField, NDFloat64);
-            pROI->pFlatField->getInfo(&arrayInfo);
-            pROI->nFlatFieldElements = arrayInfo.nElements;
-        }
-        setIntegerParam(roi, NDPluginROISaveFlatField, 0);
-    }
-    else if ((function == NDPluginROIEnableAverage) ||
-             (function == NDPluginROINumAverage)) {
-        /* If averaging is turned off or on, or the number to average changes, delete the average array
-         * forcing averaging to restart */
-        if (pROI->pAverage) pROI->pAverage->release();
-        pROI->pAverage = NULL;
-    }
     else {
         /* This was not a parameter that this driver understands, try the base class */
         status = NDPluginDriver::writeInt32(pasynUser, value);
@@ -831,28 +677,6 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
     createParam(NDPluginROIDim2ReverseString,       asynParamInt32, &NDPluginROIDim2Reverse);
     createParam(NDPluginROIDataTypeString,          asynParamInt32, &NDPluginROIDataType);
 
-    /* ROI background array subtraction */
-    createParam(NDPluginROISaveBackgroundString,    asynParamInt32, &NDPluginROISaveBackground);
-    createParam(NDPluginROIEnableBackgroundString,  asynParamInt32, &NDPluginROIEnableBackground);
-    createParam(NDPluginROIValidBackgroundString,   asynParamInt32, &NDPluginROIValidBackground);
-
-    /* ROI flat field normalization */
-    createParam(NDPluginROISaveFlatFieldString,     asynParamInt32,   &NDPluginROISaveFlatField);
-    createParam(NDPluginROIEnableFlatFieldString,   asynParamInt32,   &NDPluginROIEnableFlatField);
-    createParam(NDPluginROIValidFlatFieldString,    asynParamInt32,   &NDPluginROIValidFlatField);
-    createParam(NDPluginROIScaleFlatFieldString,    asynParamFloat64, &NDPluginROIScaleFlatField);
-
-    /* ROI high and low clipping */
-    createParam(NDPluginROILowClipString,           asynParamFloat64, &NDPluginROILowClip);
-    createParam(NDPluginROIEnableLowClipString,     asynParamInt32,   &NDPluginROIEnableLowClip);
-    createParam(NDPluginROIHighClipString,          asynParamFloat64, &NDPluginROIHighClip);
-    createParam(NDPluginROIEnableHighClipString,    asynParamInt32,   &NDPluginROIEnableHighClip);
-
-    /* ROI frame averaging */
-    createParam(NDPluginROIEnableAverageString,     asynParamInt32, &NDPluginROIEnableAverage);
-    createParam(NDPluginROINumAverageString,        asynParamInt32, &NDPluginROINumAverage);
-    createParam(NDPluginROINumAveragedString,       asynParamInt32, &NDPluginROINumAveraged);   
-
     /* ROI statistics */
     createParam(NDPluginROIComputeStatisticsString, asynParamInt32,      &NDPluginROIComputeStatistics);
     createParam(NDPluginROIBgdWidthString,          asynParamInt32,      &NDPluginROIBgdWidth);
@@ -897,10 +721,6 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
         setIntegerParam(roi , NDPluginROIComputeHistogram,  0);
         setIntegerParam(roi , NDPluginROIComputeProfiles,   0);
         
-        setIntegerParam(roi , NDPluginROISaveBackground,    0);
-        setIntegerParam(roi , NDPluginROIEnableBackground,  0);
-        setIntegerParam(roi , NDPluginROIValidBackground,   0);
-
         setIntegerParam(roi , NDPluginROIDim0Min,           0);
         setIntegerParam(roi , NDPluginROIDim0Size,          0);
         setIntegerParam(roi , NDPluginROIDim0MaxSize,       0);

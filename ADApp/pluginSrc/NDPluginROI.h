@@ -21,31 +21,12 @@ struct NDROI {
     double  sigma;
     double  min;
     double  max;
-    double  lowClip;
-    int     enableLowClip;
-    double  highClip;
-    int     enableHighClip;
     int     computeCentroid;
     double  centroidThreshold;
     double  centroidX;
     double  centroidY;
     double  sigmaX;
     double  sigmaY;
-    NDArray *pBackground;
-    int     nBackgroundElements;
-    int     validBackground;
-    int     enableBackground;
-    NDArray *pFlatField;
-    int     nFlatFieldElements;
-    int     validFlatField;
-    int     enableFlatField;
-    double  scaleFlatField;
-    NDArray *pAverage;
-    int     nAverageElements;
-    int     validAverage;
-    int     enableAverage;
-    int     numAverage;
-    int     numAveraged;
     double  histMin;
     double  histMax;
     int     histSize;
@@ -56,12 +37,9 @@ struct NDROI {
 };
 
 NDROI::NDROI() {
-    this->pBackground      = NULL;
-    this->pAverage         = NULL;
 }
 
 NDROI::~NDROI() {
-    if (pBackground) pBackground->release();
 }    
 
 /* ROI general parameters */
@@ -87,28 +65,6 @@ NDROI::~NDROI() {
 #define NDPluginROIDim2ReverseString        "DIM2_REVERSE"      /* (asynInt32,   r/w) Reversal of ROI in each dimension */
 #define NDPluginROIDataTypeString           "ROI_DATA_TYPE"     /* (asynInt32,   r/w) Data type for ROI.  -1 means automatic. */
 
-/* ROI background array subtraction */
-#define NDPluginROISaveBackgroundString     "SAVE_BACKGROUND"     /* (asynInt32,   r/w) Save the current frame as background */
-#define NDPluginROIEnableBackgroundString   "ENABLE_BACKGROUND"   /* (asynInt32,   r/w) Enable background subtraction? */
-#define NDPluginROIValidBackgroundString    "VALID_BACKGROUND"    /* (asynInt32,   r/o) Is there a valid background */
-
-/* ROI flat field normalization */
-#define NDPluginROISaveFlatFieldString      "SAVE_FLAT_FIELD"     /* (asynInt32,   r/w) Save the current frame as flat field */
-#define NDPluginROIEnableFlatFieldString    "ENABLE_FLAT_FIELD"   /* (asynInt32,   r/w) Enable flat field normalization? */
-#define NDPluginROIValidFlatFieldString     "VALID_FLAT_FIELD"    /* (asynInt32,   r/o) Is there a valid flat field */
-#define NDPluginROIScaleFlatFieldString     "SCALE_FLAT_FIELD"    /* (asynInt32,   r/o) Scale factor after dividing by flat field */
-
-/* ROI high and low clipping */
-#define NDPluginROILowClipString            "LOW_CLIP"          /* (asynFloat64, r/w) Low clip value */
-#define NDPluginROIEnableLowClipString      "ENABLE_LOW_CLIP"   /* (asynInt32,   r/w) Enable low clipping? */
-#define NDPluginROIHighClipString           "HIGH_CLIP"         /* (asynFloat64, r/w) High clip value */
-#define NDPluginROIEnableHighClipString     "ENABLE_HIGH_CLIP"  /* (asynInt32,   r/w) Enable high clipping? */
-    
-/* ROI frame averaging */
-#define NDPluginROIEnableAverageString      "ENABLE_AVERAGE"      /* (asynInt32,   r/w) Enable frame averaging? */
-#define NDPluginROINumAverageString         "NUM_AVERAGE"         /* (asynInt32,   r/o) Number of frames to average */
-#define NDPluginROINumAveragedString        "NUM_AVERAGED"        /* (asynInt32,   r/o) Number of frames in current average */
-   
 /* ROI statistics */
 #define NDPluginROIComputeStatisticsString  "COMPUTE_STATISTICS"  /* (asynInt32,   r/w) Compute statistics for this ROI? */
 #define NDPluginROIBgdWidthString           "BGD_WIDTH"           /* (asynInt32,   r/w) Width of background region when computing net */
@@ -183,28 +139,6 @@ protected:
     int NDPluginROIDim2Bin;
     int NDPluginROIDim2Reverse;
     int NDPluginROIDataType;
-
-    /* ROI background array subtraction */
-    int NDPluginROISaveBackground;
-    int NDPluginROIEnableBackground;
-    int NDPluginROIValidBackground;
-
-    /* ROI flat field normalization */
-    int NDPluginROISaveFlatField;
-    int NDPluginROIEnableFlatField;
-    int NDPluginROIValidFlatField;
-    int NDPluginROIScaleFlatField;
-
-    /* ROI high and low clipping */
-    int NDPluginROILowClip;
-    int NDPluginROIEnableLowClip;
-    int NDPluginROIHighClip;
-    int NDPluginROIEnableHighClip;
-
-    /* ROI frame averaging */
-    int NDPluginROIEnableAverage;
-    int NDPluginROINumAverage;
-    int NDPluginROINumAveraged;   
 
     /* ROI statistics */
     int NDPluginROIComputeStatistics;
