@@ -3,23 +3,352 @@
 # April 22, 2008
 
 ###################################################################
-#  These records control whether ROIs are highlighted             #
+#  These records control the label for the ROI                    #
 ###################################################################
-record(bo, "$(P)$(R)Highlight")
+record(stringout, "$(P)$(R)Name")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynOctetWrite")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
+}
+
+record(stringin, "$(P)$(R)Name_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
+   field(SCAN, "I/O Intr")
+}
+
+
+###################################################################
+#  These records control whether this ROI is used                 #
+###################################################################
+record(bo, "$(P)$(R)Use")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIGHLIGHT")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))USE")
    field(VAL,  "1")
    field(ZNAM, "No")
    field(ONAM, "Yes")
 }
 
-record(bi, "$(P)$(R)Highlight_RBV")
+record(bi, "$(P)$(R)Use_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIGHLIGHT")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))USE")
    field(ZNAM, "No")
    field(ONAM, "Yes")
    field(SCAN, "I/O Intr")
 }
+
+###################################################################
+#  These records control the ROI definition                       #
+#  including binning, region start and size                       # 
+###################################################################
+
+record(longout, "$(P)$(R)BinX")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_BIN")
+   field(VAL,  "1")
+}
+
+record(longin, "$(P)$(R)BinX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_BIN")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)BinY")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_BIN")
+   field(VAL,  "1")
+}
+
+record(longin, "$(P)$(R)BinY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_BIN")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)BinZ")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_BIN")
+   field(VAL,  "1")
+}
+
+record(longin, "$(P)$(R)BinZ_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_BIN")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)MinX")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_MIN")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)MinX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_MIN")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)MinY")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_MIN")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)MinY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_MIN")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)MinZ")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_MIN")
+   field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)MinZ_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_MIN")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)SizeX")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_SIZE")
+   field(VAL,  "1")
+}
+
+record(longin, "$(P)$(R)SizeX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)SizeY")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_SIZE")
+   field(VAL,  "1")
+}
+
+record(longin, "$(P)$(R)SizeY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)SizeZ")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_SIZE")
+   field(VAL,  "1")
+}
+
+record(longin, "$(P)$(R)SizeZ_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)MaxSizeX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_MAX_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)MaxSizeY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_MAX_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)MaxSizeZ_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_MAX_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)ReverseX")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_REVERSE")
+   field(VAL,  "0")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)ReverseX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_REVERSE")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)ReverseY")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_REVERSE")
+   field(VAL,  "0")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)ReverseY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_REVERSE")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)ReverseZ")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_REVERSE")
+   field(VAL,  "0")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)ReverseZ_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_REVERSE")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)BgdWidth")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BGD_WIDTH")
+   field(VAL,  "1")
+}
+
+record(longin, "$(P)$(R)BgdWidth_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BGD_WIDTH")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)ArraySizeX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_X")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)ArraySizeY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_Y")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)ArraySizeZ_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_Z")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records control the data type of the array data          # 
+#  The last entry is "Automatic" meaning preserve the data type   #
+#  of the input array.                                            # 
+###################################################################
+
+record(mbbo, "$(P)$(R)DataType")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROI_DATA_TYPE")
+   field(ZRST, "Int8")
+   field(ZRVL, "0")
+   field(ONST, "UInt8")
+   field(ONVL, "1")
+   field(TWST, "Int16")
+   field(TWVL, "2")
+   field(THST, "UInt16")
+   field(THVL, "3")
+   field(FRST, "Int32")
+   field(FRVL, "4")
+   field(FVST, "UInt32")
+   field(FVVL, "5")
+   field(SXST, "Float32")
+   field(SXVL, "6")
+   field(SVST, "Float64")
+   field(SVVL, "7")
+   field(EIST, "Automatic")
+   field(EIVL, "-1")
+}
+
+record(mbbi, "$(P)$(R)DataType_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROI_DATA_TYPE")
+   field(ZRST, "Int8")
+   field(ZRVL, "0")
+   field(ONST, "UInt8")
+   field(ONVL, "1")
+   field(TWST, "Int16")
+   field(TWVL, "2")
+   field(THST, "UInt16")
+   field(THVL, "3")
+   field(FRST, "Int32")
+   field(FRVL, "4")
+   field(FVST, "UInt32")
+   field(FVVL, "5")
+   field(SXST, "Float32")
+   field(SXVL, "6")
+   field(SVST, "Float64")
+   field(SVVL, "7")
+   field(EIST, "Automatic")
+   field(EIVL, "-1")
+   field(SCAN, "I/O Intr")
+}
+
