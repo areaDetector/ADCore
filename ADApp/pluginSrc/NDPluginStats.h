@@ -53,7 +53,6 @@ public:
                  int priority, int stackSize);
     /* These methods override the virtual methods in the base class */
     void processCallbacks(NDArray *pArray);
-    asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     asynStatus readFloat64Array(asynUser *pasynUser, epicsFloat64 *value, size_t nElements, size_t *nIn);
     
     template <typename epicsType> void doComputeHistogramT(NDArray *pArray);
