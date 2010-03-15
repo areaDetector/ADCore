@@ -1,0 +1,235 @@
+###################################################################
+# These records control the centroid threshold                    #
+###################################################################
+record(ao, "$(P)$(R)CentroidThreshold")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CENTROID_THRESHOLD")
+    field(VAL,  "1")
+}
+record(ai, "$(P)$(R)CentroidThreshold_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CENTROID_THRESHOLD")
+    field(VAL,  "0")
+    field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records control whether statistics are computed          #
+###################################################################
+record(bo, "$(P)$(R)ComputeStatistics")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMPUTE_STATISTICS")
+   field(VAL,  "1")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)ComputeStatistics_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMPUTE_STATISTICS")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records control whether centroid statistics are computed #
+###################################################################
+record(bo, "$(P)$(R)ComputeCentroid")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMPUTE_CENTROID")
+   field(VAL,  "1")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)ComputeCentroid_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMPUTE_CENTROID")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records contain the statistics for the ROI               #
+###################################################################
+record(ai, "$(P)$(R)MinValue_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_VALUE")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)MaxValue_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_VALUE")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)MeanValue_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MEAN_VALUE")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)MeanValue_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MEAN_VALUE")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)Sigma_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIGMA_VALUE")
+   field(PREC, "1")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)CentroidX_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CENTROIDX_VALUE")
+   field(PREC, "1")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)CentroidY_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CENTROIDY_VALUE")
+   field(PREC, "1")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)SigmaX_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIGMAX_VALUE")
+   field(PREC, "1")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)SigmaY_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIGMAY_VALUE")
+   field(PREC, "1")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)Total_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TOTAL")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)Net_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NET")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records control whether the histogram is computed        #
+###################################################################
+record(bo, "$(P)$(R)ComputeHistogram")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMPUTE_HISTOGRAM")
+   field(VAL,  "1")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)ComputeHistogram_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMPUTE_HISTOGRAM")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These are used to define the histogram                         #
+###################################################################
+record(longout, "$(P)$(R)HistSize")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_SIZE")
+   field(VAL,  "256")
+}
+
+record(longin, "$(P)$(R)HistSize_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)HistMin")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_MIN")
+   field(VAL,  "0")
+}
+
+record(ai, "$(P)$(R)HistMin_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_MIN")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)HistMax")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_MAX")
+   field(VAL,  "255")
+}
+
+record(ai, "$(P)$(R)HistMax_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_MAX")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)HistEntropy_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_ENTROPY")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)Histogram_RBV")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_ARRAY")
+   field(FTVL, "DOUBLE")
+   field(NELM, "$(HIST_SIZE)")
+   field(SCAN, "I/O Intr")
+}
+
+
