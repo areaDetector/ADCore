@@ -101,8 +101,10 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
                   enableAverage);
     /* If no processing is to be done just convert the input array and do callbacks */
     if (!anyProcess) {
-        pScratch = pArray;
-        goto convert;
+        /* Convert the array to the desired output data type */
+        if (this->pArrays[0]) this->pArrays[0]->release();
+        this->pNDArrayPool->convert(pArray, &this->pArrays[0], (NDDataType_t)dataType);
+        goto done;
     }
     
     /* Make a copy of the array converted to double, because we cannot modify the input array */
@@ -134,7 +136,7 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
         if (!this->pAverage) {
             /* There is not a current average array */
             /* Make a copy of the current array, converted to double type */
-            this->pNDArrayPool->convert(pArray, &this->pAverage, NDFloat64);
+            this->pNDArrayPool->convert(pScratch, &this->pAverage, NDFloat64);
             this->numAveraged = 1;
         } else {
             /* Merge the current array into the average, replace with average */
@@ -149,12 +151,12 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     }
     setIntegerParam(NDPluginProcessNumAveraged, this->numAveraged);
     
-    convert:
     /* Convert the array to the desired output data type */
     if (this->pArrays[0]) this->pArrays[0]->release();
     this->pNDArrayPool->convert(pScratch, &this->pArrays[0], (NDDataType_t)dataType);
     pScratch->release();
 
+    done:
     /* Call any clients who have registered for NDArray callbacks */
     this->unlock();
     doCallbacksGenericPointer(this->pArrays[0], NDArrayData, 0);
@@ -288,7 +290,10 @@ NDPluginProcess::NDPluginProcess(const char *portName, int queueSize, int blocki
     
     /* Output data type */
     createParam(NDPluginProcessDataTypeString,          asynParamInt32,     &NDPluginProcessDataType);   
-    
+
+    this->pBackground = NULL;
+    this->pFlatField  = NULL;
+    this->pAverage    = NULL;    
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginProcess");
@@ -329,12 +334,12 @@ static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg6,
                                             &initArg7,
                                             &initArg8};
-static const iocshFuncDef initFuncDef = {"NDProcessConfigure",10,initArgs};
+static const iocshFuncDef initFuncDef = {"NDProcessConfigure",9,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
     NDProcessConfigure(args[0].sval, args[1].ival, args[2].ival,
-                   args[3].sval, args[4].ival, args[5].ival,
-                   args[6].ival, args[7].ival, args[8].ival);
+                       args[3].sval, args[4].ival, args[5].ival,
+                       args[6].ival, args[7].ival, args[8].ival);
 }
 
 extern "C" void NDProcessRegister(void)
