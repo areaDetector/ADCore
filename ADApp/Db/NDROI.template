@@ -19,29 +19,6 @@ record(stringin, "$(P)$(R)Name_RBV")
    field(SCAN, "I/O Intr")
 }
 
-
-###################################################################
-#  These records control whether this ROI is used                 #
-###################################################################
-record(bo, "$(P)$(R)Use")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))USE")
-   field(VAL,  "1")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
-}
-
-record(bi, "$(P)$(R)Use_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))USE")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
-   field(SCAN, "I/O Intr")
-}
-
 ###################################################################
 #  These records control the ROI definition                       #
 #  including binning, region start and size                       # 
@@ -260,21 +237,6 @@ record(bi, "$(P)$(R)ReverseZ_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(longout, "$(P)$(R)BgdWidth")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BGD_WIDTH")
-   field(VAL,  "1")
-}
-
-record(longin, "$(P)$(R)BgdWidth_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BGD_WIDTH")
-   field(SCAN, "I/O Intr")
-}
-
 record(longin, "$(P)$(R)ArraySizeX_RBV")
 {
    field(DTYP, "asynInt32")
@@ -297,12 +259,55 @@ record(longin, "$(P)$(R)ArraySizeZ_RBV")
 }
 
 ###################################################################
+#  These records control the scaling of the data.  Useful when    #
+#  binning or converting data types                               # 
+###################################################################
+
+record(bo, "$(P)$(R)EnableScale")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_SCALE")
+   field(VAL,  "1")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
+}
+
+record(bi, "$(P)$(R)EnableScale_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_SCALE")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
+   field(ZSV,  "NO_ALARM")
+   field(OSV,  "MINOR")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)Scale")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynFloat64")
+   field(VAL,  "1")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SCALE_VALUE")
+   field(VAL,  "0")
+}
+
+record(ai, "$(P)$(R)Scale_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SCALE_VALUE")
+   field(SCAN, "I/O Intr")
+}
+
+
+###################################################################
 #  These records control the data type of the array data          # 
 #  The last entry is "Automatic" meaning preserve the data type   #
 #  of the input array.                                            # 
 ###################################################################
 
-record(mbbo, "$(P)$(R)DataType")
+record(mbbo, "$(P)$(R)DataTypeOut")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
@@ -327,7 +332,7 @@ record(mbbo, "$(P)$(R)DataType")
    field(EIVL, "-1")
 }
 
-record(mbbi, "$(P)$(R)DataType_RBV")
+record(mbbi, "$(P)$(R)DataTypeOut_RBV")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROI_DATA_TYPE")
