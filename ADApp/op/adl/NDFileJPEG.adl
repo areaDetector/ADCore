@@ -1,13 +1,13 @@
 
 file {
-	name="/home/epics/devel/areaDetector/1-5beta/ADApp/op/adl/NDPluginFile.adl"
+	name="/home/epics/devel/areaDetector/ADApp/op/adl/NDFileJPEG.adl"
 	version=030102
 }
 display {
 	object {
 		x=496
 		y=86
-		width=1080
+		width=1070
 		height=500
 	}
 	clr=14
@@ -460,7 +460,7 @@ composite {
 }
 rectangle {
 	object {
-		x=396
+		x=390
 		y=40
 		width=675
 		height=410
@@ -911,7 +911,7 @@ composite {
 }
 composite {
 	object {
-		x=8
+		x=5
 		y=40
 		width=380
 		height=455
@@ -920,7 +920,7 @@ composite {
 	children {
 		rectangle {
 			object {
-				x=8
+				x=5
 				y=40
 				width=380
 				height=455
@@ -932,7 +932,7 @@ composite {
 		}
 		"text entry" {
 			object {
-				x=175
+				x=172
 				y=119
 				width=100
 				height=20
@@ -947,7 +947,7 @@ composite {
 		}
 		"text update" {
 			object {
-				x=281
+				x=278
 				y=120
 				width=100
 				height=18
@@ -962,7 +962,7 @@ composite {
 		}
 		text {
 			object {
-				x=35
+				x=32
 				y=119
 				width=130
 				height=20
@@ -975,7 +975,7 @@ composite {
 		}
 		text {
 			object {
-				x=65
+				x=62
 				y=94
 				width=100
 				height=20
@@ -988,7 +988,7 @@ composite {
 		}
 		"text entry" {
 			object {
-				x=175
+				x=172
 				y=94
 				width=100
 				height=20
@@ -1003,7 +1003,7 @@ composite {
 		}
 		"text update" {
 			object {
-				x=281
+				x=278
 				y=95
 				width=100
 				height=18
@@ -1018,7 +1018,7 @@ composite {
 		}
 		"text entry" {
 			object {
-				x=175
+				x=172
 				y=219
 				width=100
 				height=20
@@ -1033,7 +1033,7 @@ composite {
 		}
 		"text update" {
 			object {
-				x=281
+				x=278
 				y=220
 				width=100
 				height=18
@@ -1048,7 +1048,7 @@ composite {
 		}
 		text {
 			object {
-				x=35
+				x=32
 				y=219
 				width=130
 				height=20
@@ -1061,7 +1061,7 @@ composite {
 		}
 		text {
 			object {
-				x=65
+				x=62
 				y=244
 				width=100
 				height=20
@@ -1074,7 +1074,7 @@ composite {
 		}
 		"text update" {
 			object {
-				x=175
+				x=172
 				y=245
 				width=100
 				height=18
@@ -1089,7 +1089,7 @@ composite {
 		}
 		"text entry" {
 			object {
-				x=175
+				x=172
 				y=269
 				width=100
 				height=20
@@ -1104,7 +1104,7 @@ composite {
 		}
 		"text update" {
 			object {
-				x=281
+				x=278
 				y=270
 				width=100
 				height=18
@@ -1119,7 +1119,7 @@ composite {
 		}
 		text {
 			object {
-				x=25
+				x=22
 				y=269
 				width=140
 				height=20
@@ -1132,7 +1132,7 @@ composite {
 		}
 		text {
 			object {
-				x=105
+				x=102
 				y=144
 				width=60
 				height=20
@@ -1145,7 +1145,7 @@ composite {
 		}
 		menu {
 			object {
-				x=175
+				x=172
 				y=144
 				width=100
 				height=20
@@ -1158,7 +1158,7 @@ composite {
 		}
 		"text update" {
 			object {
-				x=281
+				x=278
 				y=145
 				width=100
 				height=18
@@ -1166,14 +1166,15 @@ composite {
 			monitor {
 				chan="$(P)$(R)EnableCallbacks_RBV"
 				clr=54
-				bclr=4
+				bclr=12
 			}
+			clrmod="alarm"
 			limits {
 			}
 		}
 		text {
 			object {
-				x=75
+				x=72
 				y=169
 				width=90
 				height=20
@@ -1186,7 +1187,7 @@ composite {
 		}
 		"text entry" {
 			object {
-				x=175
+				x=172
 				y=169
 				width=100
 				height=20
@@ -1201,7 +1202,7 @@ composite {
 		}
 		"text update" {
 			object {
-				x=281
+				x=278
 				y=170
 				width=100
 				height=18
@@ -1216,7 +1217,7 @@ composite {
 		}
 		text {
 			object {
-				x=65
+				x=62
 				y=319
 				width=100
 				height=20
@@ -1229,7 +1230,7 @@ composite {
 		}
 		"text update" {
 			object {
-				x=175
+				x=172
 				y=320
 				width=65
 				height=18
@@ -1245,7 +1246,7 @@ composite {
 		}
 		"text update" {
 			object {
-				x=245
+				x=242
 				y=320
 				width=65
 				height=18
@@ -1261,7 +1262,7 @@ composite {
 		}
 		text {
 			object {
-				x=75
+				x=72
 				y=344
 				width=90
 				height=20
@@ -1274,7 +1275,7 @@ composite {
 		}
 		"text update" {
 			object {
-				x=175
+				x=172
 				y=345
 				width=79
 				height=18
@@ -1290,7 +1291,7 @@ composite {
 		}
 		text {
 			object {
-				x=45
+				x=42
 				y=294
 				width=120
 				height=20
@@ -1303,7 +1304,7 @@ composite {
 		}
 		"text update" {
 			object {
-				x=175
+				x=172
 				y=295
 				width=79
 				height=18
@@ -1319,7 +1320,7 @@ composite {
 		}
 		"text update" {
 			object {
-				x=315
+				x=312
 				y=320
 				width=65
 				height=18
@@ -1335,7 +1336,7 @@ composite {
 		}
 		text {
 			object {
-				x=15
+				x=12
 				y=194
 				width=150
 				height=20
@@ -1348,7 +1349,7 @@ composite {
 		}
 		menu {
 			object {
-				x=175
+				x=172
 				y=194
 				width=100
 				height=20
@@ -1361,7 +1362,7 @@ composite {
 		}
 		"text update" {
 			object {
-				x=281
+				x=278
 				y=195
 				width=100
 				height=18
@@ -1376,7 +1377,7 @@ composite {
 		}
 		text {
 			object {
-				x=75
+				x=72
 				y=419
 				width=90
 				height=20
@@ -1389,7 +1390,7 @@ composite {
 		}
 		"text update" {
 			object {
-				x=175
+				x=172
 				y=420
 				width=79
 				height=18
@@ -1405,7 +1406,7 @@ composite {
 		}
 		text {
 			object {
-				x=65
+				x=62
 				y=444
 				width=100
 				height=20
@@ -1418,7 +1419,7 @@ composite {
 		}
 		"text update" {
 			object {
-				x=175
+				x=172
 				y=445
 				width=150
 				height=18
@@ -1434,7 +1435,7 @@ composite {
 		}
 		text {
 			object {
-				x=65
+				x=62
 				y=369
 				width=100
 				height=20
@@ -1447,7 +1448,7 @@ composite {
 		}
 		"text update" {
 			object {
-				x=175
+				x=172
 				y=370
 				width=79
 				height=18
@@ -1463,7 +1464,7 @@ composite {
 		}
 		text {
 			object {
-				x=35
+				x=32
 				y=394
 				width=130
 				height=20
@@ -1476,7 +1477,7 @@ composite {
 		}
 		"text update" {
 			object {
-				x=175
+				x=172
 				y=395
 				width=79
 				height=18
@@ -1492,7 +1493,7 @@ composite {
 		}
 		text {
 			object {
-				x=15
+				x=12
 				y=469
 				width=150
 				height=20
@@ -1505,7 +1506,7 @@ composite {
 		}
 		"text entry" {
 			object {
-				x=175
+				x=172
 				y=469
 				width=210
 				height=20
@@ -1521,7 +1522,7 @@ composite {
 		}
 		"text update" {
 			object {
-				x=175
+				x=172
 				y=45
 				width=160
 				height=18
@@ -1537,7 +1538,7 @@ composite {
 		}
 		text {
 			object {
-				x=75
+				x=72
 				y=44
 				width=90
 				height=20
@@ -1550,7 +1551,7 @@ composite {
 		}
 		"text update" {
 			object {
-				x=175
+				x=172
 				y=70
 				width=160
 				height=18
@@ -1566,7 +1567,7 @@ composite {
 		}
 		text {
 			object {
-				x=55
+				x=52
 				y=69
 				width=110
 				height=20
