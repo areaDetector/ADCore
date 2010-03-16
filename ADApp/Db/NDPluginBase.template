@@ -71,16 +71,18 @@ record(bo, "$(P)$(R)EnableCallbacks")
     field(VAL,  "1")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_CALLBACKS")
-    field(ZNAM, "No")
-    field(ONAM, "Yes")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
 }
 
 record(bi, "$(P)$(R)EnableCallbacks_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_CALLBACKS")
-    field(ZNAM, "No")
-    field(ONAM, "Yes")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+    field(ZSV,  "NO_ALARM")
+    field(OSV,  "MINOR")
     field(SCAN, "I/O Intr")
 }
 
