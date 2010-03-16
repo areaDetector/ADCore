@@ -8,11 +8,11 @@
 #  of the input array.                                            # 
 ###################################################################
 
-record(mbbo, "$(P)$(R)DataType")
+record(mbbo, "$(P)$(R)DataTypeOut")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROI_DATA_TYPE")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PROCESS_DATA_TYPE")
    field(ZRST, "Int8")
    field(ZRVL, "0")
    field(ONST, "UInt8")
@@ -33,10 +33,10 @@ record(mbbo, "$(P)$(R)DataType")
    field(EIVL, "-1")
 }
 
-record(mbbi, "$(P)$(R)DataType_RBV")
+record(mbbi, "$(P)$(R)DataTypeOut_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROI_DATA_TYPE")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PROCESS_DATA_TYPE")
    field(ZRST, "Int8")
    field(ZRVL, "0")
    field(ONST, "UInt8")
@@ -94,6 +94,8 @@ record(bi, "$(P)$(R)EnableBackground_RBV")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_BACKGROUND")
    field(ZNAM, "Disable")
    field(ONAM, "Enable")
+   field(ZSV,  "NO_ALARM")
+   field(OSV,  "MINOR")
    field(SCAN, "I/O Intr")
 }
 
@@ -142,6 +144,8 @@ record(bi, "$(P)$(R)EnableFlatField_RBV")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_FLAT_FIELD")
    field(ZNAM, "Disable")
    field(ONAM, "Enable")
+   field(ZSV,  "NO_ALARM")
+   field(OSV,  "MINOR")
    field(SCAN, "I/O Intr")
 }
 
@@ -188,6 +192,8 @@ record(bi, "$(P)$(R)EnableLowClip_RBV")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_LOW_CLIP")
    field(ZNAM, "Disable")
    field(ONAM, "Enable")
+   field(ZSV,  "NO_ALARM")
+   field(OSV,  "MINOR")
    field(SCAN, "I/O Intr")
 }
 
@@ -222,6 +228,8 @@ record(bi, "$(P)$(R)EnableHighClip_RBV")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_HIGH_CLIP")
    field(ZNAM, "Disable")
    field(ONAM, "Enable")
+   field(ZSV,  "NO_ALARM")
+   field(OSV,  "MINOR")
    field(SCAN, "I/O Intr")
 }
 
@@ -286,6 +294,8 @@ record(bi, "$(P)$(R)EnableAverage_RBV")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_AVERAGE")
    field(ZNAM, "Disable")
    field(ONAM, "Enable")
+   field(ZSV,  "NO_ALARM")
+   field(OSV,  "MINOR")
    field(SCAN, "I/O Intr")
 }
 
