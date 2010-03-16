@@ -39,14 +39,23 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
      * structures don't need to be protected.
      */
 
-    int use;
     int dataType;
     int dim;
     NDDimension_t dims[ND_ARRAY_MAX_DIMS], tempDim, *pDim;
     int userDims[ND_ARRAY_MAX_DIMS];
+    NDArrayInfo arrayInfo;
     int colorMode = NDColorModeMono;
     NDAttribute *pAttribute;
+    NDArray *pScratch;
+    double *pData;
+    int enableScale;
+    int i;
+    double scale;
+    
     //const char* functionName = "processCallbacks";
+    
+    getIntegerParam(NDPluginROIEnableScale, &enableScale);
+    getDoubleParam(NDPluginROIScale, &scale);
 
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
@@ -61,8 +70,6 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         this->pArrays[0]->release();
         this->pArrays[0] = NULL;
     }
-    getIntegerParam(NDPluginROIUse, &use);
-    if (!use) return;
 
     /* Need to fetch all of these parameters while we still have the mutex */
     getIntegerParam(NDPluginROIDataType,           &dataType);
@@ -136,7 +143,23 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         dims[1] = dims[2];
         dims[2] = tempDim;
     }
-    this->pNDArrayPool->convert(pArray, &this->pArrays[0], (NDDataType_t)dataType, dims);
+    
+    if (enableScale && (scale != 0) && (scale != 1)) {
+        /* This is tricky.  We want to do the operation to avoid errors due to integer truncation.
+         * For example, if an image with all pixels=1 is binned 3x3 with scale=9 (divide by 9), then
+         * the output should also have all pixels=1. 
+         * We do this by extracting the ROI and converting to double, do the scaling, then convert
+         * to the desired data type. */
+        this->pNDArrayPool->convert(pArray, &pScratch, NDFloat64, dims);
+        pScratch->getInfo(&arrayInfo);
+        pData = (double *)pScratch->pData;
+        for (i=0; i<arrayInfo.nElements; i++) pData[i] = pData[i]/scale;
+        this->pNDArrayPool->convert(pScratch, &this->pArrays[0], (NDDataType_t)dataType);
+        pScratch->release();
+    } 
+    else {        
+        this->pNDArrayPool->convert(pArray, &this->pArrays[0], (NDDataType_t)dataType, dims);
+    }
 
     /* Set the image size of the ROI image data */
     setIntegerParam(NDArraySizeX, this->pArrays[0]->dims[userDims[0]].size);
@@ -251,7 +274,6 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
 
     /* ROI general parameters */
     createParam(NDPluginROINameString,              asynParamOctet, &NDPluginROIName);
-    createParam(NDPluginROIUseString,               asynParamInt32, &NDPluginROIUse);
 
      /* ROI definition */
     createParam(NDPluginROIDim0MinString,           asynParamInt32, &NDPluginROIDim0Min);
@@ -270,6 +292,8 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
     createParam(NDPluginROIDim2BinString,           asynParamInt32, &NDPluginROIDim2Bin);
     createParam(NDPluginROIDim2ReverseString,       asynParamInt32, &NDPluginROIDim2Reverse);
     createParam(NDPluginROIDataTypeString,          asynParamInt32, &NDPluginROIDataType);
+    createParam(NDPluginROIEnableScaleString,       asynParamInt32, &NDPluginROIEnableScale);
+    createParam(NDPluginROIScaleString,             asynParamFloat64, &NDPluginROIScale);
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginROI");
