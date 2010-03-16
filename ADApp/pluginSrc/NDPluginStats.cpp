@@ -144,8 +144,8 @@ void doComputeStatisticsT(NDArray *pArray, NDStats_t *pStats)
         if (value < pStats->min) pStats->min = value;
         if (value > pStats->max) pStats->max = value;
         pStats->total += value;
+        pStats->sigma += value * value;
         if (pStats->computeCentroid) {
-            pStats->sigma += value * value;
             ix = i % pArray->dims[0].size;
             iy = i / pArray->dims[0].size;
             if (value < pStats->centroidThreshold) value = 0;
@@ -159,9 +159,9 @@ void doComputeStatisticsT(NDArray *pArray, NDStats_t *pStats)
 
     pStats->net = pStats->total;
     pStats->mean = pStats->total / pStats->nElements;
+    pStats->sigma = sqrt((pStats->sigma / pStats->nElements) - (pStats->mean * pStats->mean));
 
     if (pStats->computeCentroid) {
-        pStats->sigma = sqrt((pStats->sigma / pStats->nElements) - (pStats->mean * pStats->mean));
         pStats->centroidX /= centroidTotal;
         pStats->centroidY /= centroidTotal;
         pStats->sigmaX = sqrt((pStats->sigmaX / centroidTotal) - (pStats->centroidX * pStats->centroidX));
@@ -304,7 +304,7 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
         doComputeHistogram(pArray);
 
     /* We must enter the loop and exit with the mutex locked */
-    this->lock();
+    //this->lock();
     callParamCallbacks();
 }
 
@@ -448,12 +448,12 @@ static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg6,
                                             &initArg7,
                                             &initArg8};
-static const iocshFuncDef initFuncDef = {"NDStatsConfigure",10,initArgs};
+static const iocshFuncDef initFuncDef = {"NDStatsConfigure",9,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
     NDStatsConfigure(args[0].sval, args[1].ival, args[2].ival,
-                   args[3].sval, args[4].ival, args[5].ival,
-                   args[6].ival, args[7].ival, args[8].ival);
+                     args[3].sval, args[4].ival, args[5].ival,
+                     args[6].ival, args[7].ival, args[8].ival);
 }
 
 extern "C" void NDStatsRegister(void)
