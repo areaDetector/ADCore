@@ -8,7 +8,6 @@
 
 /* ROI general parameters */
 #define NDPluginROINameString               "NAME"                /* (asynOctet,   r/w) Name of this ROI */
-#define NDPluginROIUseString                "USE"                 /* (asynInt32,   r/w) Use this ROI? */
 
 /* ROI definition */
 #define NDPluginROIDim0MinString            "DIM0_MIN"          /* (asynInt32,   r/w) Starting element of ROI in each dimension */
@@ -27,6 +26,8 @@
 #define NDPluginROIDim2BinString            "DIM2_BIN"          /* (asynInt32,   r/w) Binning of ROI in each dimension */
 #define NDPluginROIDim2ReverseString        "DIM2_REVERSE"      /* (asynInt32,   r/w) Reversal of ROI in each dimension */
 #define NDPluginROIDataTypeString           "ROI_DATA_TYPE"     /* (asynInt32,   r/w) Data type for ROI.  -1 means automatic. */
+#define NDPluginROIEnableScaleString        "ENABLE_SCALE"      /* (asynInt32,   r/w) Disable/Enable scaling */
+#define NDPluginROIScaleString              "SCALE_VALUE"       /* (asynFloat64, r/w) Scaling value, used as divisor */
 
 /** Extract Regions-Of-Interest (ROI) from NDArray data; the plugin can be a source of NDArray callbacks for
   * other plugins, passing these sub-arrays. 
@@ -45,7 +46,6 @@ protected:
     /* ROI general parameters */
     int NDPluginROIName;
     #define FIRST_NDPLUGIN_ROI_PARAM NDPluginROIName
-    int NDPluginROIUse;
 
     /* ROI definition */
     int NDPluginROIDim0Min;
@@ -64,8 +64,10 @@ protected:
     int NDPluginROIDim2Bin;
     int NDPluginROIDim2Reverse;
     int NDPluginROIDataType;
+    int NDPluginROIEnableScale;
+    int NDPluginROIScale;
 
-    #define LAST_NDPLUGIN_ROI_PARAM NDPluginROIDataType
+    #define LAST_NDPLUGIN_ROI_PARAM NDPluginROIScale
                                 
 private:
     NDDimension_t dims[ND_ARRAY_MAX_DIMS];
