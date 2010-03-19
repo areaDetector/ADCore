@@ -95,8 +95,6 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
     this->lock();
 
     status |= getDoubleParam(NDPluginDriverMinCallbackTime, &minCallbackTime);
-    status |= getIntegerParam(NDArrayCounter, &arrayCounter);
-    status |= getIntegerParam(NDPluginDriverDroppedArrays, &droppedArrays);
     status |= getIntegerParam(NDPluginDriverBlockingCallbacks, &blockingCallbacks);
     
     epicsTimeGetCurrent(&tNow);
@@ -123,6 +121,8 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
              * immediately. */
             status = epicsMessageQueueTrySend(this->msgQId, &pArray, sizeof(&pArray));
             if (status) {
+                status |= getIntegerParam(NDArrayCounter, &arrayCounter);
+                status |= getIntegerParam(NDPluginDriverDroppedArrays, &droppedArrays);
                 asynPrint(pasynUser, ASYN_TRACE_FLOW, 
                     "%s:%s message queue full, dropped array %d\n",
                     driverName, functionName, arrayCounter);
@@ -175,20 +175,14 @@ void NDPluginDriver::processTask(void)
 }
 
 /** Register or unregister to receive asynGenericPointer (NDArray) callbacks from the driver.
+  * Note: this function must be called with the lock released, otherwise a deadlock can occur
+  * in the call to cancelInterruptUser.
   * \param[in] enableCallbacks 1 to enable callbacks, 0 to disable callbacks */ 
 asynStatus NDPluginDriver::setArrayInterrupt(int enableCallbacks)
 {
     asynStatus status = asynSuccess;
     const char *functionName = "setArrayInterrupt";
     
-    /* Lock the port.  May not be necessary to do this. */
-    status = pasynManager->lockPort(this->pasynUserGenericPointer);
-    if (status != asynSuccess) {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-            "%s::%s ERROR: Can't lock array port: %s\n",
-            driverName, functionName, this->pasynUserGenericPointer->errorMessage);
-        return(status);
-    }
     if (enableCallbacks) {
         status = this->pasynGenericPointer->registerInterruptUser(
                     this->asynGenericPointerPvt, this->pasynUserGenericPointer,
@@ -211,14 +205,6 @@ asynStatus NDPluginDriver::setArrayInterrupt(int enableCallbacks)
                 return(status);
             }
         }
-    }
-    /* Unlock the port.  May not be necessary to do this. */
-    status = pasynManager->unlockPort(this->pasynUserGenericPointer);
-    if (status != asynSuccess) {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-            "%s::%s ERROR: Can't unlock array port: %s\n",
-            driverName, functionName, this->pasynUserGenericPointer->errorMessage);
-        return(status);
     }
     return(asynSuccess);
 }
@@ -312,17 +298,23 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
         if (value) {  
             if (isConnected && !currentlyPosting) {
                 /* We need to register to be called with interrupts from the detector driver on 
-                 * the asynGenericPointer interface. */
+                 * the asynGenericPointer interface. Must do this with the lock released. */
+                this->unlock();
                 status = setArrayInterrupt(1);
+                this->lock();
             }
         } else {
             /* If we are currently connected and there is a callback registered, cancel it */    
             if (isConnected && currentlyPosting) {
+                this->unlock();
                 status = setArrayInterrupt(0);
+                this->lock();
             }
         }
     } else if (function == NDPluginDriverArrayAddr) {
+        this->unlock();
         connectToArrayPort();
+        this->lock();
     } else {
         /* If this parameter belongs to a base class call its method */
         if (function < FIRST_NDPLUGIN_PARAM) 
@@ -364,7 +356,9 @@ asynStatus NDPluginDriver::writeOctet(asynUser *pasynUser, const char *value,
     status = (asynStatus)setStringParam(addr, function, (char *)value);
 
     if (function == NDPluginDriverArrayPort) {
+        this->unlock();
         connectToArrayPort();
+        this->lock();
     } else {
         /* If this parameter belongs to a base class call its method */
         if (function < FIRST_NDPLUGIN_PARAM) 
