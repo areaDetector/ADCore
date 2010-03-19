@@ -35,9 +35,9 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
      */
     int i;
     NDArray *pScratch;
-    double  *pData;
+    double  *data, newData, newFilter;
     NDArrayInfo arrayInfo;
-    double  *background=NULL, *flatField=NULL, *average, frac;
+    double  *background=NULL, *flatField=NULL, *filter=NULL;
     double  value;
     int     nElements;
     int     validBackground;
@@ -45,38 +45,86 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     int     validFlatField;
     int     enableFlatField;
     double  scaleFlatField;
-    double  lowClip;
+    double  lowClip=0;
     int     enableLowClip;
-    double  highClip;
+    double  highClip=0;
     int     enableHighClip;
-    int     enableAverage;
-    int     numAverage;
+    int     enableFilter;
+    int     numFilter;
     int     dataType;
     int     anyProcess;
+    double  oc0, oc1, oc2, oc3, oc4;
+    double  fc0, fc1, fc2, fc3, fc4;
+    double  rc0, rc1;
+    double  F1, F2, O1, O2;
 
     //const char* functionName = "processCallbacks";
 
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
-    
-    /* This function is called with the lock taken, and it must be set when we exit.
-     * We'd like to do the processing with the lock released, but the background and flatfield
-     * arrays can be changed int writeInt32.  Fix this. */
-    //this->unlock();
 
+    if (this->newBackground) {
+        this->newBackground = 0;
+        if (this->pBackground) this->pBackground->release();
+        this->pBackground = NULL;
+        if (this->pArrays[0]) {
+            /* Make a copy of the current array, converted to double type */
+            this->pNDArrayPool->convert(this->pArrays[0], &this->pBackground, NDFloat64);
+            this->pBackground->getInfo(&arrayInfo);
+            this->nBackgroundElements = arrayInfo.nElements;
+        }
+    }
+
+    if (this->newFlatField) {
+        this->newFlatField = 0;
+        if (this->pFlatField) this->pFlatField->release();
+        this->pFlatField = NULL;
+        if (this->pArrays[0]) {
+            /* Make a copy of the current array, converted to double type */
+            this->pNDArrayPool->convert(this->pArrays[0], &this->pFlatField, NDFloat64);
+            this->pFlatField->getInfo(&arrayInfo);
+            this->nFlatFieldElements = arrayInfo.nElements;
+        }
+    }
     /* Need to fetch all of these parameters while we still have the mutex */
-    getIntegerParam(NDPluginProcessDataType,           &dataType);
-    getIntegerParam(NDPluginProcessEnableBackground,   &enableBackground);
-    getIntegerParam(NDPluginProcessEnableFlatField,    &enableFlatField);
-    getDoubleParam (NDPluginProcessScaleFlatField,     &scaleFlatField);
-    getIntegerParam(NDPluginProcessEnableLowClip,      &enableLowClip);
-    getDoubleParam (NDPluginProcessLowClip,            &lowClip);
-    getIntegerParam(NDPluginProcessEnableHighClip,     &enableHighClip);
-    getDoubleParam (NDPluginProcessHighClip,           &highClip);
-    getIntegerParam(NDPluginProcessEnableAverage,      &enableAverage);
-    getIntegerParam(NDPluginProcessNumAverage,         &numAverage);
-    getIntegerParam(NDPluginProcessDataType,           &dataType);
+    getIntegerParam(NDPluginProcessDataType,            &dataType);
+    getIntegerParam(NDPluginProcessEnableBackground,    &enableBackground);
+    getIntegerParam(NDPluginProcessEnableFlatField,     &enableFlatField);
+    getDoubleParam (NDPluginProcessScaleFlatField,      &scaleFlatField);
+    getIntegerParam(NDPluginProcessEnableLowClip,       &enableLowClip);
+    getIntegerParam(NDPluginProcessEnableHighClip,      &enableHighClip);
+    getIntegerParam(NDPluginProcessEnableFilter,        &enableFilter);
+    if (enableLowClip) 
+        getDoubleParam (NDPluginProcessLowClip,         &lowClip);
+    if (enableHighClip) 
+        getDoubleParam (NDPluginProcessHighClip,        &highClip);
+    if (enableFilter) {
+        getIntegerParam(NDPluginProcessNumFilter,       &numFilter);
+        getDoubleParam (NDPluginProcessOC0,             &oc0);
+        getDoubleParam (NDPluginProcessOC1,             &oc1);
+        getDoubleParam (NDPluginProcessOC2,             &oc2);
+        getDoubleParam (NDPluginProcessOC3,             &oc3);
+        getDoubleParam (NDPluginProcessOC4,             &oc4);
+        getDoubleParam (NDPluginProcessFC0,             &fc0);
+        getDoubleParam (NDPluginProcessFC1,             &fc1);
+        getDoubleParam (NDPluginProcessFC2,             &fc2);
+        getDoubleParam (NDPluginProcessFC3,             &fc3);
+        getDoubleParam (NDPluginProcessFC4,             &fc4);
+        getDoubleParam (NDPluginProcessRC0,             &rc0);
+        getDoubleParam (NDPluginProcessRC1,             &rc1);
+    }
 
+    if (this->newFilter) {
+        this->newFilter = 0;
+        /* Filtering was turned off or on, or the number to filter changed. Delete the filter array
+         * forcing filtering to restart */
+        if (this->pFilter) this->pFilter->release();
+        this->pFilter = NULL;
+    }
+
+    /* Release the lock now that we are only doing things that don't involve memory other thread
+     * cannot access */
+    this->unlock();
     /* Special case for automatic data type */
     if (dataType == -1) dataType = (int)pArray->dataType;
     
@@ -98,7 +146,7 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     anyProcess = ((enableBackground && validBackground) ||
                   (enableFlatField && validFlatField)   ||
                   enableHighClip || enableLowClip       ||
-                  enableAverage);
+                  enableFilter);
     /* If no processing is to be done just convert the input array and do callbacks */
     if (!anyProcess) {
         /* Convert the array to the desired output data type */
@@ -109,10 +157,10 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     
     /* Make a copy of the array converted to double, because we cannot modify the input array */
     this->pNDArrayPool->convert(pArray, &pScratch, NDFloat64);
-    pData = (double *)pScratch->pData;
+    data = (double *)pScratch->pData;
 
     for (i=0; i<nElements; i++) {
-        value = pData[i];
+        value = data[i];
         if (background) value -= background[i];
         if (flatField) {
             if (flatField[i] != 0.) 
@@ -122,34 +170,47 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
         }
         if (enableHighClip && (value > highClip)) value = highClip;
         if (enableLowClip  && (value < lowClip))  value = lowClip;
-        pData[i] = value;
+        data[i] = value;
     }
     
-    if (enableAverage) {
-        if (this->pAverage) {
-            this->pAverage->getInfo(&arrayInfo);
+    if (enableFilter) {
+        if (this->pFilter) {
+            this->pFilter->getInfo(&arrayInfo);
             if (nElements != arrayInfo.nElements) {
-                this->pAverage->release();
-                this->pAverage = NULL;
+                this->pFilter->release();
+                this->pFilter = NULL;
             }
         }
-        if (!this->pAverage) {
-            /* There is not a current average array */
+        if (!this->pFilter) {
+            /* There is not a current filter array */
             /* Make a copy of the current array, converted to double type */
-            this->pNDArrayPool->convert(pScratch, &this->pAverage, NDFloat64);
-            this->numAveraged = 1;
-        } else {
-            /* Merge the current array into the average, replace with average */
-            if (this->numAveraged < numAverage) this->numAveraged++;
-            average = (double *)this->pAverage->pData;
-            frac =  1./this->numAveraged;
+            this->pNDArrayPool->convert(pScratch, &this->pFilter, NDFloat64);
+            filter = (double *)this->pFilter->pData;
             for (i=0; i<nElements; i++) {
-                average[i] = frac*pData[i] + (1.-frac)*average[i];
-                pData[i] = average[i];
+                filter[i] = rc0 * rc1*data[i];
+            }           
+            this->numFiltered = 1;
+        } else {
+            /* Do the filtering */
+            if (this->numFiltered < numFilter) this->numFiltered++;
+            filter = (double *)this->pFilter->pData;
+            O1 = oc1 + oc2/this->numFiltered;
+            O2 = oc3 + oc4/this->numFiltered;
+            F1 = fc1 + fc2/this->numFiltered;
+            F2 = fc3 + fc4/this->numFiltered;
+            for (i=0; i<nElements; i++) {
+                newData   = oc0;
+                if (O1) newData += O1 * filter[i];
+                if (O2) newData += O2 * data[i];
+                newFilter = fc0;
+                if (F1) newFilter += F1 * filter[i];
+                if (F2) newFilter += F2 * data[i];
+                data[i] = newData;
+                filter[i] = newFilter;
             }
         }
     }
-    setIntegerParam(NDPluginProcessNumAveraged, this->numAveraged);
+    setIntegerParam(NDPluginProcessNumFiltered, this->numFiltered);
     
     /* Convert the array to the desired output data type */
     if (this->pArrays[0]) this->pArrays[0]->release();
@@ -158,7 +219,6 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
 
     done:
     /* Call any clients who have registered for NDArray callbacks */
-    this->unlock();
     doCallbacksGenericPointer(this->pArrays[0], NDArrayData, 0);
 
     /* We must enter the loop and exit with the mutex locked */
@@ -177,42 +237,22 @@ asynStatus NDPluginProcess::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
-    NDArray *pArray = this->pArrays[0];
-    NDArrayInfo arrayInfo;
     const char* functionName = "writeInt32";
 
     /* Set parameter and readback in parameter library */
     status = setIntegerParam(function, value);
 
     if (function == NDPluginProcessSaveBackground && value) {
-        if (this->pBackground) this->pBackground->release();
-        this->pBackground = NULL;
-        if (pArray) {
-            /* Make a copy of the current array, converted to double type */
-            this->pNDArrayPool->convert(pArray, &this->pBackground, NDFloat64);
-            this->pBackground->getInfo(&arrayInfo);
-            this->nBackgroundElements = arrayInfo.nElements;
-        }
+        this->newBackground = 1;
         setIntegerParam(NDPluginProcessSaveBackground, 0);
     }
     else if (function == NDPluginProcessSaveFlatField && value) {
-        if (this->pFlatField) this->pFlatField->release();
-        this->pFlatField = NULL;
-        pArray = this->pArrays[0];
-        if (pArray) {
-            /* Make a copy of the current array, converted to double type */
-            this->pNDArrayPool->convert(pArray, &this->pFlatField, NDFloat64);
-            this->pFlatField->getInfo(&arrayInfo);
-            this->nFlatFieldElements = arrayInfo.nElements;
-        }
+        this->newFlatField = 1;
         setIntegerParam(NDPluginProcessSaveFlatField, 0);
     }
-    else if ((function == NDPluginProcessEnableAverage) ||
-             (function == NDPluginProcessNumAverage)) {
-        /* If averaging is turned off or on, or the number to average changes, delete the average array
-         * forcing averaging to restart */
-        if (this->pAverage) this->pAverage->release();
-        this->pAverage = NULL;
+    else if ((function == NDPluginProcessEnableFilter) ||
+             (function == NDPluginProcessNumFilter)) {
+        this->newFilter = 1;
     }
     else {
         /* This was not a parameter that this driver understands, try the base class */
@@ -283,17 +323,29 @@ NDPluginProcess::NDPluginProcess(const char *portName, int queueSize, int blocki
     createParam(NDPluginProcessHighClipString,          asynParamFloat64,   &NDPluginProcessHighClip);
     createParam(NDPluginProcessEnableHighClipString,    asynParamInt32,     &NDPluginProcessEnableHighClip);
 
-    /* Frame averaging */
-    createParam(NDPluginProcessEnableAverageString,     asynParamInt32,     &NDPluginProcessEnableAverage);
-    createParam(NDPluginProcessNumAverageString,        asynParamInt32,     &NDPluginProcessNumAverage);
-    createParam(NDPluginProcessNumAveragedString,       asynParamInt32,     &NDPluginProcessNumAveraged);   
+    /* Frame filtering */
+    createParam(NDPluginProcessEnableFilterString,      asynParamInt32,     &NDPluginProcessEnableFilter);
+    createParam(NDPluginProcessNumFilterString,         asynParamInt32,     &NDPluginProcessNumFilter);
+    createParam(NDPluginProcessNumFilteredString,       asynParamInt32,     &NDPluginProcessNumFiltered);   
+    createParam(NDPluginProcessOC0String,               asynParamFloat64,   &NDPluginProcessOC0);   
+    createParam(NDPluginProcessOC1String,               asynParamFloat64,   &NDPluginProcessOC1);   
+    createParam(NDPluginProcessOC2String,               asynParamFloat64,   &NDPluginProcessOC2);   
+    createParam(NDPluginProcessOC3String,               asynParamFloat64,   &NDPluginProcessOC3);   
+    createParam(NDPluginProcessOC4String,               asynParamFloat64,   &NDPluginProcessOC4);   
+    createParam(NDPluginProcessFC0String,               asynParamFloat64,   &NDPluginProcessFC0);   
+    createParam(NDPluginProcessFC1String,               asynParamFloat64,   &NDPluginProcessFC1);   
+    createParam(NDPluginProcessFC2String,               asynParamFloat64,   &NDPluginProcessFC2);   
+    createParam(NDPluginProcessFC3String,               asynParamFloat64,   &NDPluginProcessFC3);   
+    createParam(NDPluginProcessFC4String,               asynParamFloat64,   &NDPluginProcessFC4);   
+    createParam(NDPluginProcessRC0String,               asynParamFloat64,   &NDPluginProcessRC0);   
+    createParam(NDPluginProcessRC1String,               asynParamFloat64,   &NDPluginProcessRC1);   
     
     /* Output data type */
     createParam(NDPluginProcessDataTypeString,          asynParamInt32,     &NDPluginProcessDataType);   
 
     this->pBackground = NULL;
     this->pFlatField  = NULL;
-    this->pAverage    = NULL;    
+    this->pFilter     = NULL;    
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginProcess");
