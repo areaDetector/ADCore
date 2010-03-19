@@ -10,52 +10,52 @@
 
 record(mbbo, "$(P)$(R)DataTypeOut")
 {
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PROCESS_DATA_TYPE")
-   field(ZRST, "Int8")
-   field(ZRVL, "0")
-   field(ONST, "UInt8")
-   field(ONVL, "1")
-   field(TWST, "Int16")
-   field(TWVL, "2")
-   field(THST, "UInt16")
-   field(THVL, "3")
-   field(FRST, "Int32")
-   field(FRVL, "4")
-   field(FVST, "UInt32")
-   field(FVVL, "5")
-   field(SXST, "Float32")
-   field(SXVL, "6")
-   field(SVST, "Float64")
-   field(SVVL, "7")
-   field(EIST, "Automatic")
-   field(EIVL, "-1")
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PROCESS_DATA_TYPE")
+    field(ZRST, "Int8")
+    field(ZRVL, "0")
+    field(ONST, "UInt8")
+    field(ONVL, "1")
+    field(TWST, "Int16")
+    field(TWVL, "2")
+    field(THST, "UInt16")
+    field(THVL, "3")
+    field(FRST, "Int32")
+    field(FRVL, "4")
+    field(FVST, "UInt32")
+    field(FVVL, "5")
+    field(SXST, "Float32")
+    field(SXVL, "6")
+    field(SVST, "Float64")
+    field(SVVL, "7")
+    field(EIST, "Automatic")
+    field(EIVL, "-1")
 }
 
 record(mbbi, "$(P)$(R)DataTypeOut_RBV")
 {
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PROCESS_DATA_TYPE")
-   field(ZRST, "Int8")
-   field(ZRVL, "0")
-   field(ONST, "UInt8")
-   field(ONVL, "1")
-   field(TWST, "Int16")
-   field(TWVL, "2")
-   field(THST, "UInt16")
-   field(THVL, "3")
-   field(FRST, "Int32")
-   field(FRVL, "4")
-   field(FVST, "UInt32")
-   field(FVVL, "5")
-   field(SXST, "Float32")
-   field(SXVL, "6")
-   field(SVST, "Float64")
-   field(SVVL, "7")
-   field(EIST, "Automatic")
-   field(EIVL, "-1")
-   field(SCAN, "I/O Intr")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PROCESS_DATA_TYPE")
+    field(ZRST, "Int8")
+    field(ZRVL, "0")
+    field(ONST, "UInt8")
+    field(ONVL, "1")
+    field(TWST, "Int16")
+    field(TWVL, "2")
+    field(THST, "UInt16")
+    field(THVL, "3")
+    field(FRST, "Int32")
+    field(FRVL, "4")
+    field(FVST, "UInt32")
+    field(FVVL, "5")
+    field(SXST, "Float32")
+    field(SXVL, "6")
+    field(SVST, "Float64")
+    field(SVVL, "7")
+    field(EIST, "Automatic")
+    field(EIVL, "-1")
+    field(SCAN, "I/O Intr")
 }
 
 ###################################################################
@@ -63,49 +63,49 @@ record(mbbi, "$(P)$(R)DataTypeOut_RBV")
 ###################################################################
 record(bo, "$(P)$(R)SaveBackground")
 {
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SAVE_BACKGROUND")
-   field(VAL,  "1")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SAVE_BACKGROUND")
+    field(VAL,  "1")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
 }
 
 record(bi, "$(P)$(R)SaveBackground_RBV")
 {
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SAVE_BACKGROUND")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
-   field(SCAN, "I/O Intr")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SAVE_BACKGROUND")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(SCAN, "I/O Intr")
 }
 
 record(bo, "$(P)$(R)EnableBackground")
 {
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_BACKGROUND")
-   field(ZNAM, "Disable")
-   field(ONAM, "Enable")
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_BACKGROUND")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
 }
 
 record(bi, "$(P)$(R)EnableBackground_RBV")
 {
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_BACKGROUND")
-   field(ZNAM, "Disable")
-   field(ONAM, "Enable")
-   field(ZSV,  "NO_ALARM")
-   field(OSV,  "MINOR")
-   field(SCAN, "I/O Intr")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_BACKGROUND")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+    field(ZSV,  "NO_ALARM")
+    field(OSV,  "MINOR")
+    field(SCAN, "I/O Intr")
 }
 
 record(bi, "$(P)$(R)ValidBackground_RBV")
 {
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))VALID_BACKGROUND")
-   field(ZNAM, "Invalid")
-   field(ONAM, "Valid")
-   field(SCAN, "I/O Intr")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))VALID_BACKGROUND")
+    field(ZNAM, "Invalid")
+    field(ONAM, "Valid")
+    field(SCAN, "I/O Intr")
 }
 
 ###################################################################
@@ -113,64 +113,64 @@ record(bi, "$(P)$(R)ValidBackground_RBV")
 ###################################################################
 record(bo, "$(P)$(R)SaveFlatField")
 {
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SAVE_FLAT_FIELD")
-   field(VAL,  "1")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SAVE_FLAT_FIELD")
+    field(VAL,  "1")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
 }
 
 record(bi, "$(P)$(R)SaveFlatField_RBV")
 {
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SAVE_FLAT_FIELD")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
-   field(SCAN, "I/O Intr")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SAVE_FLAT_FIELD")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(SCAN, "I/O Intr")
 }
 
 record(bo, "$(P)$(R)EnableFlatField")
 {
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_FLAT_FIELD")
-   field(ZNAM, "Disable")
-   field(ONAM, "Enable")
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_FLAT_FIELD")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
 }
 
 record(bi, "$(P)$(R)EnableFlatField_RBV")
 {
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_FLAT_FIELD")
-   field(ZNAM, "Disable")
-   field(ONAM, "Enable")
-   field(ZSV,  "NO_ALARM")
-   field(OSV,  "MINOR")
-   field(SCAN, "I/O Intr")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_FLAT_FIELD")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+    field(ZSV,  "NO_ALARM")
+    field(OSV,  "MINOR")
+    field(SCAN, "I/O Intr")
 }
 
 record(bi, "$(P)$(R)ValidFlatField_RBV")
 {
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))VALID_FLAT_FIELD")
-   field(ZNAM, "Invalid")
-   field(ONAM, "Valid")
-   field(SCAN, "I/O Intr")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))VALID_FLAT_FIELD")
+    field(ZNAM, "Invalid")
+    field(ONAM, "Valid")
+    field(SCAN, "I/O Intr")
 }
 
 record(ao, "$(P)$(R)ScaleFlatField")
 {
-   field(PINI, "YES")
-   field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SCALE_FLAT_FIELD")
-   field(VAL,  "255.")
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SCALE_FLAT_FIELD")
+    field(VAL,  "255.")
 }
 
 record(ai, "$(P)$(R)ScaleFlatField_RBV")
 {
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SCALE_FLAT_FIELD")
-   field(SCAN, "I/O Intr")
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SCALE_FLAT_FIELD")
+    field(SCAN, "I/O Intr")
 }
 
 
@@ -179,123 +179,510 @@ record(ai, "$(P)$(R)ScaleFlatField_RBV")
 ###################################################################
 record(bo, "$(P)$(R)EnableLowClip")
 {
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_LOW_CLIP")
-   field(ZNAM, "Disable")
-   field(ONAM, "Enable")
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_LOW_CLIP")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
 }
 
 record(bi, "$(P)$(R)EnableLowClip_RBV")
 {
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_LOW_CLIP")
-   field(ZNAM, "Disable")
-   field(ONAM, "Enable")
-   field(ZSV,  "NO_ALARM")
-   field(OSV,  "MINOR")
-   field(SCAN, "I/O Intr")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_LOW_CLIP")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+    field(ZSV,  "NO_ALARM")
+    field(OSV,  "MINOR")
+    field(SCAN, "I/O Intr")
 }
 
 record(ao, "$(P)$(R)LowClip")
 {
-   field(PINI, "YES")
-   field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LOW_CLIP")
-   field(VAL,  "0.0")
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LOW_CLIP")
+    field(VAL,  "0.0")
 }
 
 record(ai, "$(P)$(R)LowClip_RBV")
 {
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LOW_CLIP")
-   field(VAL, "0.0")
-   field(SCAN, "I/O Intr")
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LOW_CLIP")
+    field(VAL, "0.0")
+    field(SCAN, "I/O Intr")
 }
 
 record(bo, "$(P)$(R)EnableHighClip")
 {
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_HIGH_CLIP")
-   field(ZNAM, "Disable")
-   field(ONAM, "Enable")
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_HIGH_CLIP")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
 }
 
 record(bi, "$(P)$(R)EnableHighClip_RBV")
 {
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_HIGH_CLIP")
-   field(ZNAM, "Disable")
-   field(ONAM, "Enable")
-   field(ZSV,  "NO_ALARM")
-   field(OSV,  "MINOR")
-   field(SCAN, "I/O Intr")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_HIGH_CLIP")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+    field(ZSV,  "NO_ALARM")
+    field(OSV,  "MINOR")
+    field(SCAN, "I/O Intr")
 }
 
 record(ao, "$(P)$(R)HighClip")
 {
-   field(PINI, "YES")
-   field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIGH_CLIP")
-   field(VAL,  "0.0")
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIGH_CLIP")
+    field(VAL,  "0.0")
 }
 
 record(ai, "$(P)$(R)HighClip_RBV")
 {
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIGH_CLIP")
-   field(VAL, "0.0")
-   field(SCAN, "I/O Intr")
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIGH_CLIP")
+    field(VAL, "0.0")
+    field(SCAN, "I/O Intr")
 }
 
 ###################################################################
-# These records control frame averaging                           #
+# These records control frame filtering                           #
 ###################################################################
-record(ao, "$(P)$(R)NumAverage")
+record(bo, "$(P)$(R)EnableFilter")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_AVERAGE")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_FILTER")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+}
+
+record(bi, "$(P)$(R)EnableFilter_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_FILTER")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+    field(ZSV,  "NO_ALARM")
+    field(OSV,  "MINOR")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)NumFilter")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_FILTER")
     field(DRVL, "2")
     field(LOPR, "2")
     field(DRVH, "1e10")
     field(HOPR, "1e10")
     field(VAL,  "1")
+    field(FLNK, "$(P)$(R)NumFilterRecip.PROC PP")
 }
-record(ai, "$(P)$(R)NumAverage_RBV")
+
+record(ai, "$(P)$(R)NumFilter_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_AVERAGE")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_FILTER")
     field(VAL,  "1")
     field(SCAN, "I/O Intr")
 }
 
-record(ai, "$(P)$(R)NumAveraged_RBV")
+# This is 1/NumFilter, used in RecursiveSum filter
+record(calc, "$(P)$(R)NumFilterRecip")
+{
+    field(INPA, "$(P)$(R)NumFilter.VAL NPP")
+    field(CALC, "1./A")
+}
+
+record(ai, "$(P)$(R)NumFiltered_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_AVERAGED")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_FILTERED")
     field(VAL,  "1")
     field(SCAN, "I/O Intr")
 }
 
-record(bo, "$(P)$(R)EnableAverage")
+record(ao, "$(P)$(R)OC0")
 {
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_AVERAGE")
-   field(ZNAM, "Disable")
-   field(ONAM, "Enable")
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_OC0")
+    field(PREC, "2")
+}
+record(ai, "$(P)$(R)OC0_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_OC0")
+    field(PREC,  "2")
+    field(SCAN, "I/O Intr")
 }
 
-record(bi, "$(P)$(R)EnableAverage_RBV")
+record(ao, "$(P)$(R)OC1")
 {
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_AVERAGE")
-   field(ZNAM, "Disable")
-   field(ONAM, "Enable")
-   field(ZSV,  "NO_ALARM")
-   field(OSV,  "MINOR")
-   field(SCAN, "I/O Intr")
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_OC1")
+    field(PREC, "2")
+}
+record(ai, "$(P)$(R)OC1_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_OC1")
+    field(PREC,  "2")
+    field(SCAN, "I/O Intr")
 }
 
+record(ao, "$(P)$(R)OC2")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_OC2")
+    field(PREC, "2")
+}
+record(ai, "$(P)$(R)OC2_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_OC2")
+    field(PREC,  "2")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)OC3")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_OC3")
+    field(PREC, "2")
+}
+record(ai, "$(P)$(R)OC3_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_OC3")
+    field(PREC,  "2")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)OC4")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_OC4")
+    field(PREC, "2")
+}
+record(ai, "$(P)$(R)OC4_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_OC4")
+    field(PREC,  "2")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)FC0")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_FC0")
+    field(PREC, "2")
+}
+record(ai, "$(P)$(R)FC0_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_FC0")
+    field(PREC,  "2")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)FC1")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_FC1")
+    field(PREC, "2")
+}
+record(ai, "$(P)$(R)FC1_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_FC1")
+    field(PREC,  "2")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)FC2")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_FC2")
+    field(PREC, "2")
+}
+record(ai, "$(P)$(R)FC2_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_FC2")
+    field(PREC,  "2")
+    field(SCAN, "I/O Intr")
+}
+record(ao, "$(P)$(R)FC3")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_FC3")
+    field(PREC, "2")
+}
+record(ai, "$(P)$(R)FC3_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_FC3")
+    field(PREC,  "2")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)FC4")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_FC4")
+    field(PREC, "2")
+}
+record(ai, "$(P)$(R)FC4_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_FC4")
+    field(PREC,  "2")
+    field(SCAN, "I/O Intr")
+}
+record(ao, "$(P)$(R)RC0")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_RC0")
+    field(PREC, "2")
+}
+record(ai, "$(P)$(R)RC0_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_RC0")
+    field(PREC,  "2")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)RC1")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_RC1")
+    field(PREC, "2")
+}
+record(ai, "$(P)$(R)RC1_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_RC1")
+    field(PREC,  "2")
+    field(SCAN, "I/O Intr")
+}
+
+# We don't see PINI=YES for FilterType because we want to restore the actual coefficients
+# We do restore this record, but we don't process it
+record(mbbo, "$(P)$(R)FilterType")
+{
+    field(ZRST, "UserDefined")
+    field(ZRVL, "0")
+    field(ONST, "OffsetScale")
+    field(ONVL, "1")
+    field(TWST, "RecursiveAve")
+    field(TWVL, "2")
+    field(THST, "RecursiveSum")
+    field(THVL, "3")
+    field(FRST, "Difference")
+    field(FRVL, "4")
+    field(FVST, "RecursiveAveDiff")
+    field(FVVL, "5")
+    field(FLNK, "$(P)$(R)FilterTypeSeq PP MS")
+}
+
+record(seq, "$(P)$(R)FilterTypeSeq")
+{
+    field(SELL, "$(P)$(R)FilterType.VAL NPP")
+    field(SELM, "Specified")
+    field(DOL1, "1")
+    field(LNK1, "$(P)$(R)OffsetScaleSeq.PROC PP MS")
+    field(DOL2, "1")
+    field(LNK2, "$(P)$(R)RecursiveAveSeq.PROC PP MS")
+    field(DOL3, "1")
+    field(LNK3, "$(P)$(R)RecursiveSumSeq.PROC PP MS")
+    field(DOL4, "1")
+    field(LNK4, "$(P)$(R)DifferenceSeq.PROC PP MS")
+    field(DOL5, "1")
+    field(LNK5, "$(P)$(R)RecursiveAveDiffSeq.PROC PP MS")
+    field(FLNK, "$(P)$(R)NumFilter.PROC PP MS")
+}
+
+record(seq, "$(P)$(R)OffsetScaleSeq")
+{
+    field(DOL1, "0")
+    field(LNK1, "$(P)$(R)OC0 PP MS")
+    field(DOL2, "0")
+    field(LNK2, "$(P)$(R)OC1 PP MS")
+    field(DOL3, "0")
+    field(LNK3, "$(P)$(R)OC2 PP MS")
+    field(DOL4, "1")
+    field(LNK4, "$(P)$(R)OC3 PP MS")
+    field(DOL5, "0")
+    field(LNK5, "$(P)$(R)OC4 PP MS")
+    field(DOL6, "0")
+    field(LNK6, "$(P)$(R)FC0 PP MS")
+    field(DOL7, "0")
+    field(LNK7, "$(P)$(R)FC1 PP MS")
+    field(DOL8, "0")
+    field(LNK8, "$(P)$(R)FC2 PP MS")
+    field(DOL9, "0")
+    field(LNK9, "$(P)$(R)FC3 PP MS")
+    field(DOLA, "0")
+    field(LNKA, "$(P)$(R)FC4 PP MS")
+    field(FLNK, "$(P)$(R)OffsetScaleSeq1.PROC")
+}
+
+record(seq, "$(P)$(R)OffsetScaleSeq1")
+{
+    field(DOL1, "0")
+    field(LNK1, "$(P)$(R)RC0 PP MS")
+    field(DOL2, "0")
+    field(LNK2, "$(P)$(R)RC1 PP MS")
+}
+
+record(seq, "$(P)$(R)RecursiveAveSeq")
+{
+    field(DOL1, "0")
+    field(LNK1, "$(P)$(R)OC0 PP MS")
+    field(DOL2, "1")
+    field(LNK2, "$(P)$(R)OC1 PP MS")
+    field(DOL3, "-1")
+    field(LNK3, "$(P)$(R)OC2 PP MS")
+    field(DOL4, "0")
+    field(LNK4, "$(P)$(R)OC3 PP MS")
+    field(DOL5, "1")
+    field(LNK5, "$(P)$(R)OC4 PP MS")
+    field(DOL6, "0")
+    field(LNK6, "$(P)$(R)FC0 PP MS")
+    field(DOL7, "1")
+    field(LNK7, "$(P)$(R)FC1 PP MS")
+    field(DOL8, "-1")
+    field(LNK8, "$(P)$(R)FC2 PP MS")
+    field(DOL9, "0")
+    field(LNK9, "$(P)$(R)FC3 PP MS")
+    field(DOLA, "1")
+    field(LNKA, "$(P)$(R)FC4 PP MS")
+    field(FLNK, "$(P)$(R)RecursiveAveSeq1.PROC")
+}
+
+record(seq, "$(P)$(R)RecursiveAveSeq1")
+{
+    field(DOL1, "0")
+    field(LNK1, "$(P)$(R)RC0 PP MS")
+    field(DOL2, "1")
+    field(LNK2, "$(P)$(R)RC1 PP MS")
+}
+
+record(seq, "$(P)$(R)RecursiveSumSeq")
+{
+    field(DOL1, "0")
+    field(LNK1, "$(P)$(R)OC0 PP MS")
+    field(DOL2, "1")
+    field(LNK2, "$(P)$(R)OC1 PP MS")
+    field(DOL3, "0")
+    field(LNK3, "$(P)$(R)OC2 PP MS")
+    field(DOL4, "$(P)$(R)NumFilterRecip NPP")
+    field(LNK4, "$(P)$(R)OC3 PP MS")
+    field(DOL5, "0")
+    field(LNK5, "$(P)$(R)OC4 PP MS")
+    field(DOL6, "0")
+    field(LNK6, "$(P)$(R)FC0 PP MS")
+    field(DOL7, "1")
+    field(LNK7, "$(P)$(R)FC1 PP MS")
+    field(DOL8, "0")
+    field(LNK8, "$(P)$(R)FC2 PP MS")
+    field(DOL9, "$(P)$(R)NumFilterRecip NPP")
+    field(LNK9, "$(P)$(R)FC3 PP MS")
+    field(DOLA, "0")
+    field(LNKA, "$(P)$(R)FC4 PP MS")
+    field(FLNK, "$(P)$(R)RecursiveSumSeq1.PROC")
+}
+
+record(seq, "$(P)$(R)RecursiveSumSeq1")
+{
+    field(DOL1, "0")
+    field(LNK1, "$(P)$(R)RC0 PP MS")
+    field(DOL2, "0")
+    field(LNK2, "$(P)$(R)RC1 PP MS")
+}
+
+record(seq, "$(P)$(R)DifferenceSeq")
+{
+    field(DOL1, "0")
+    field(LNK1, "$(P)$(R)OC0 PP MS")
+    field(DOL2, "-1")
+    field(LNK2, "$(P)$(R)OC1 PP MS")
+    field(DOL3, "0")
+    field(LNK3, "$(P)$(R)OC2 PP MS")
+    field(DOL4, "1")
+    field(LNK4, "$(P)$(R)OC3 PP MS")
+    field(DOL5, "0")
+    field(LNK5, "$(P)$(R)OC4 PP MS")
+    field(DOL6, "0")
+    field(LNK6, "$(P)$(R)FC0 PP MS")
+    field(DOL7, "0")
+    field(LNK7, "$(P)$(R)FC1 PP MS")
+    field(DOL8, "0")
+    field(LNK8, "$(P)$(R)FC2 PP MS")
+    field(DOL9, "1")
+    field(LNK9, "$(P)$(R)FC3 PP MS")
+    field(DOLA, "0")
+    field(LNKA, "$(P)$(R)FC4 PP MS")
+    field(FLNK, "$(P)$(R)Difference1.PROC")
+}
+
+record(seq, "$(P)$(R)Difference1")
+{
+    field(DOL1, "0")
+    field(LNK1, "$(P)$(R)RC0 PP MS")
+    field(DOL2, "1")
+    field(LNK2, "$(P)$(R)RC1 PP MS")
+}
+
+record(seq, "$(P)$(R)RecursiveAveDiffSeq")
+{
+    field(DOL1, "0")
+    field(LNK1, "$(P)$(R)OC0 PP MS")
+    field(DOL2, "-1")
+    field(LNK2, "$(P)$(R)OC1 PP MS")
+    field(DOL3, "0")
+    field(LNK3, "$(P)$(R)OC2 PP MS")
+    field(DOL4, "1")
+    field(LNK4, "$(P)$(R)OC3 PP MS")
+    field(DOL5, "0")
+    field(LNK5, "$(P)$(R)OC4 PP MS")
+    field(DOL6, "0")
+    field(LNK6, "$(P)$(R)FC0 PP MS")
+    field(DOL7, "1")
+    field(LNK7, "$(P)$(R)FC1 PP MS")
+    field(DOL8, "-1")
+    field(LNK8, "$(P)$(R)FC2 PP MS")
+    field(DOL9, "0")
+    field(LNK9, "$(P)$(R)FC3 PP MS")
+    field(DOLA, "1")
+    field(LNKA, "$(P)$(R)FC4 PP MS")
+    field(FLNK, "$(P)$(R)RecursiveAveDiff1.PROC")
+}
+
+record(seq, "$(P)$(R)RecursiveAveDiff1")
+{
+    field(DOL1, "0")
+    field(LNK1, "$(P)$(R)RC0 PP MS")
+    field(DOL2, "1")
+    field(LNK2, "$(P)$(R)RC1 PP MS")
+}
