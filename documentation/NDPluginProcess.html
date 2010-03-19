@@ -1,0 +1,1077 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>areaDetector Plugin NDPluginROI</title>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+</head>
+<body>
+  <div style="text-align: center">
+    <h1>
+      areaDetector Plugin NDPluginROI</h1>
+    <h2>
+      March 7, 2010</h2>
+    <h2>
+      Mark Rivers</h2>
+    <h2>
+      University of Chicago</h2>
+  </div>
+  <h2>
+    Contents</h2>
+  <ul>
+    <li><a href="#Overview">Overview</a></li>
+    <li><a href="#Configuration">Configuration</a></li>
+    <li><a href="#Screens">Screen shots</a></li>
+  </ul>
+  <h2 id="Overview">
+    Overview
+  </h2>
+  <p>
+    NDPluginROI selects one or more rectangular "Regions-Of-Interest" (ROIs) from the
+    NDArray callback data. The maximum number of ROIs is defined when the plugin is
+    created. Each ROI can be any size, from a single array element to the entire array.
+    NDPluginROI optinally does the following operations with these ROIs, in this order:
+  </p>
+  <ol>
+    <li>Extracts of the selected region. When the ROI is extracted the following operations
+      can be performed:
+      <ul>
+        <li>Binning in any dimension.</li>
+        <li>Orientation reversal (mirroring) in any dimension.</li>
+        <li>Conversion to a new data type.</li>
+      </ul>
+    </li>
+    <li>Subtracts a background array which has been previously acquired.</li>
+    <li>Clips to minimum and maximum specified values.</li>
+    <li>Computes statistics, e.g. mean, maximum, minimum, total, net (background subtracted),
+      and centroid values.</li>
+    <li>Computes a histogram of the values (e.g. number of pixels versus intensity per
+      pixel)</li>
+    <li>Exports the ROI as a new NDArray object. In this regard NDPluginROI is different
+      from the NDPluginStdArrays and NDPluginFile plugins because it is both a <b>recipient</b>
+      of callbacks (as they are) and a <b>source</b> of NDArray callbacks, as a driver
+      is. This means that the NDPluginStdArrays and NDPluginFile plugins can be connected
+      to an NDPluginROI plugin, in which case they will save or display the selected ROI
+      rather than the full detector driver data.</li>
+  </ol>
+  <p>
+    Each of these operations can be enabled or disabled independently.
+  </p>
+  <p>
+    Each NDPluginROI can handle any number of ROIs. Several ROI plugins could be created
+    for a single detector driver to increase the number of threads running in parallel,
+    maximizing the use of multiple CPU cores. Individual ROIs are addressed through
+    the asyn interfaces by the asyn "addr" field in the asynUser structure. Note that
+    while the NDPluginROI should be N-dimensional, the EPICS interface to the definition
+    of the ROI is currently limited to a maximum of 3-D. This limitation may be removed
+    in a future release.
+  </p>
+  <p>
+    NDPluginROI inherits from NDPluginDriver. The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_r_o_i.html">
+      NDPluginROI class documentation</a> describes this class in detail.
+  </p>
+  <p>
+    NDPluginROI.h defines the following parameters that are global to all ROIs for a
+    plugin. It also implements all of the standard plugin parameters from <a href="pluginDoc.html#NDPluginDriver">
+      NDPluginDriver</a>. The EPICS database NDROI.template provide access to these
+    parameters, listed in the following table.
+  </p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>Parameter Definitions in NDPluginROI.h and EPICS Record Definitions in NDROI.template</b></td>
+      </tr>
+      <tr>
+        <th>
+          Enum name</th>
+        <th>
+          asyn interface</th>
+        <th>
+          Access</th>
+        <th>
+          Description</th>
+        <th>
+          drvUser string</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          EPICS record type</th>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIHighlight</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flag to indicate if the borders of ROIs should be highlighted (0=No, 1=Yes). If
+          set then the borders of all ROIs will be highlighted in all other ROIs where they
+          overlap. One common use of this is to set the first ROI to be the entire detector,
+          and then the location of all other ROIs will be visible when the first ROI is displayed.
+          The highlighting is done by replacing the border pixels with the maximum value of
+          the data in that ROI. Statistics are computed before the highlighting is done.</td>
+        <td>
+          HIGHLIGHT</td>
+        <td>
+          $(P)$(R)Highlight<br />
+          $(P)$(R)Highlight_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    NDPluginROI.h defines the following parameters that are specific to each individual
+    ROI in the plugin. The EPICS database NDROIN.template provide access to these parameters,
+    listed in the following table. The pasynUser-&gt;addr is used to control which ROI
+    is being addressed. Note that to reduce the width of this table the enum names have
+    been split into 2 lines, but these are just a single name, for example <code>NDPluginROIName</code>.
+  </p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>Parameter Definitions in NDPluginROI.h and EPICS Record Definitions in NDROIN.template</b></td>
+      </tr>
+      <tr>
+        <th>
+          Enum name</th>
+        <th>
+          asyn interface</th>
+        <th>
+          Access</th>
+        <th>
+          Description</th>
+        <th>
+          drvUser string</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          EPICS record type</th>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Name</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Name of this ROI</td>
+        <td>
+          NAME</td>
+        <td>
+          $(P)$(R)Name<br />
+          $(P)$(R)Name_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Use</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flag to control whether this ROI is used (0=No, 1=Yes). Not using an ROI reduces
+          CPU load.</td>
+        <td>
+          USE</td>
+        <td>
+          $(P)$(R)Use<br />
+          $(P)$(R)Use_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>ROI definition</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Dim0Bin</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Binning in the X direction</td>
+        <td>
+          DIM0_BIN</td>
+        <td>
+          $(P)$(R)BinX<br />
+          $(P)$(R)BinX_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Dim1Bin</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Binning in the Y direction</td>
+        <td>
+          DIM1_BIN</td>
+        <td>
+          $(P)$(R)BinY<br />
+          $(P)$(R)BinY_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Dim2Bin</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Binning in the Z direction</td>
+        <td>
+          DIM2_BIN</td>
+        <td>
+          $(P)$(R)BinZ<br />
+          $(P)$(R)BinZ_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Dim0Min</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          First pixel in the ROI in the X direction.
+          <br />
+          0 is the first pixel in the array.</td>
+        <td>
+          DIM0_MIN</td>
+        <td>
+          $(P)$(R)MinX<br />
+          $(P)$(R)MinX_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Dim1Min</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          First pixel in the ROI in the Y direction.<br />
+          0 is the first pixel in the array.</td>
+        <td>
+          DIM1_MIN</td>
+        <td>
+          $(P)$(R)MinY<br />
+          $(P)$(R)MinY_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Dim2Min</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          First pixel in the ROI in the Z direction.<br />
+          0 is the first pixel in the array.</td>
+        <td>
+          DIM2_MIN</td>
+        <td>
+          $(P)$(R)MinZ<br />
+          $(P)$(R)MinZ_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Dim0Size</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Size of the ROI in the X direction</td>
+        <td>
+          DIM0_SIZE</td>
+        <td>
+          $(P)$(R)SizeX<br />
+          $(P)$(R)SizeX_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Dim1Size</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Size of the ROI in the Y direction</td>
+        <td>
+          DIM1_SIZE</td>
+        <td>
+          $(P)$(R)SizeY<br />
+          $(P)$(R)SizeY_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Dim2Size</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Size of the ROI in the Z direction</td>
+        <td>
+          DIM2_SIZE</td>
+        <td>
+          $(P)$(R)SizeZ<br />
+          $(P)$(R)SizeZ_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Dim0MaxSize</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Maximum size of the ROI in the X direction</td>
+        <td>
+          DIM0_MAX_SIZE</td>
+        <td>
+          $(P)$(R)MaxSizeX_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Dim1MaxSize</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Maximum size of the ROI in the Y direction</td>
+        <td>
+          DIM1_MAX_SIZE</td>
+        <td>
+          $(P)$(R)MaxSizeY_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Dim2MaxSize</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Maximum size of the ROI in the Z direction</td>
+        <td>
+          DIM2_MAX_SIZE</td>
+        <td>
+          $(P)$(R)MaxSizeZ_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Dim0Reverse</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Reverse ROI in the X direction<br />
+          (0=No, 1=Yes)</td>
+        <td>
+          DIM0_REVERSE</td>
+        <td>
+          $(P)$(R)ReverseX<br />
+          $(P)$(R)ReverseX_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Dim1Reverse</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Reverse ROI in the Y direction<br />
+          (0=No, 1=Yes)</td>
+        <td>
+          DIM1_REVERSE</td>
+        <td>
+          $(P)$(R)ReverseY<br />
+          $(P)$(R)ReverseY_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Dim2Reverse</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Reverse ROI in the Z direction<br />
+          (0=No, 1=Yes)</td>
+        <td>
+          DIM2_REVERSE</td>
+        <td>
+          $(P)$(R)ReverseZ<br />
+          $(P)$(R)ReverseZ_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          DataType</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Data type of the ROI (NDDataType_t). This can be different from the data type of
+          the NDArray callback data.</td>
+        <td>
+          ROI_DATA_TYPE</td>
+        <td>
+          $(P)$(R)DataType<br />
+          $(P)$(R)DataType_RBV</td>
+        <td>
+          mbbo<br />
+          mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          BgdWidth</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Width of the background in pixels to use when computing net counts. 0=no background
+          subtraction, so the net counts is the same as the total counts.</td>
+        <td>
+          BGD_WIDTH</td>
+        <td>
+          $(P)$(R)BgdWidth<br />
+          $(P)$(R)BgdWidth_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDArraySizeX</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Size of the ROI data in the X direction</td>
+        <td>
+          ARRAY_SIZE_X</td>
+        <td>
+          $(P)$(R)ArraySizeX_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDArraySizeY</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Size of the ROI data in the Y direction</td>
+        <td>
+          ARRAY_SIZE_Y</td>
+        <td>
+          $(P)$(R)ArraySizeY_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDArraySizeZ</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Size of the ROI data in the Z direction</td>
+        <td>
+          ARRAY_SIZE_Z</td>
+        <td>
+          $(P)$(R)ArraySizeZ_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>ROI clipping and background subtraction</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          GrabBackground</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Command to use the most recently acquired ROI array as a background. Note that this
+          recently acquired ROI should have been acquired with EnableBackground=0, or else
+          that array will already have had the background subtracted, which is probably not
+          what was intended!</td>
+        <td>
+          GRAB_BACKGROUND</td>
+        <td>
+          $(P)$(R)GrabBackground<br />
+          $(P)$(R)GrabBackground_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          ValidBackground</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Flag indicating whether there is a valid background array that has been acquired
+          for this ROI using GrabBackground. This flag will be Invalid (0) if no background
+          has been acquired, or of the size of the ROI has changed since the background was
+          last acquired.</td>
+        <td>
+          VALID_BACKGROUND</td>
+        <td>
+          $(P)$(R)ValidBackground_RBV</td>
+        <td>
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          EnableBackground</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flag indicating whether the background array acquired with GrabBackground should
+          be subtracted when computing this ROI. This background subtraction is done before
+          the clipping operations, and before the statistics are computed. If ValidBackground=0
+          then no background subtraction is done. This background subtraction modifies the
+          ROI data, so other plugins that use this ROI will receive the background subtracted
+          data.</td>
+        <td>
+          ENABLE_BACKGROUND</td>
+        <td>
+          $(P)$(R)EnableBackground<br />
+          $(P)$(R)EnableBackground_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          EnableLowClip</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flag to control whether to clip values to the LowClip value for this ROI (0=No,
+          1=Yes).
+        </td>
+        <td>
+          ENABLE_LOW_CLIP</td>
+        <td>
+          $(P)$(R)EnableLowClip<br />
+          $(P)$(R)EnableLowClip_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          LowClip</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          The minimum allowed value for this ROI. If EnableLowClip=1, then all values in the
+          array less than LowClip will be replaced by LowClip. This clipping operation is
+          performed after the background is subtracted (if EnableBackground=1). This clipping
+          modifies the ROI data, so other plugins that use this ROI will receive the clipped
+          data.
+        </td>
+        <td>
+          LOW_CLIP</td>
+        <td>
+          $(P)$(R)LowClip<br />
+          $(P)$(R)LowClip_RBV</td>
+        <td>
+          ao<br />
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          EnableHighClip</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flag to control whether to clip values to the HighClip value for this ROI (0=No,
+          1=Yes).
+        </td>
+        <td>
+          ENABLE_HIGH_CLIP</td>
+        <td>
+          $(P)$(R)EnableHighClip<br />
+          $(P)$(R)EnableHighClip_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          HighClip</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          The maximum allowed value for this ROI. If EnableHighClip=1, then all values in
+          the array greater than HighClip will be replaced by HighClip. This clipping operation
+          is performed after the background is subtracted (if EnableBackground=1). This clipping
+          modifies the ROI data, so other plugins that use this ROI will receive the clipped
+          data.
+        </td>
+        <td>
+          HIGH_CLIP</td>
+        <td>
+          $(P)$(R)HighClip<br />
+          $(P)$(R)HighClip_RBV</td>
+        <td>
+          ao<br />
+          ai</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>ROI statistics</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          ComputeStatistics</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flag to control whether to compute statistics for this ROI (0=No, 1=Yes). Not computing
+          statistics reduces CPU load.</td>
+        <td>
+          COMPUTE_STATISTICS</td>
+        <td>
+          $(P)$(R)ComputeStatistics<br />
+          $(P)$(R)ComputeStatistics_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          MinValue</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Minimum value in any element in the ROI</td>
+        <td>
+          MIN_VALUE</td>
+        <td>
+          $(P)$(R)MinValue_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          MaxValue</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Maximum value in any element in the ROI</td>
+        <td>
+          MAX_VALUE</td>
+        <td>
+          $(P)$(R)MaxValue_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          MeanValue</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Mean value in the ROI</td>
+        <td>
+          MEAN_VALUE</td>
+        <td>
+          $(P)$(R)MeanValue_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Total</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Sum (total) of all elements in the ROI</td>
+        <td>
+          TOTAL</td>
+        <td>
+          $(P)$(R)Total_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Net</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Net (background subtracted) total of all elements in the ROI. The background is
+          calculated by determining the average counts per array element in a border around
+          the ROI of width NDPluginROIBgdWidth. This average background counts per element
+          is then subtracted from all elements inside the ROI. If NDPluginROIBgdWidth is &le;
+          0 then no background is computed. Note that this background subtraction is done
+          after the "array" background is subtracted if EnableBackground=1, as described above.
+        </td>
+        <td>
+          NET</td>
+        <td>
+          $(P)$(R)Net_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          CentroidX</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          X centroid of the ROI.</td>
+        <td>
+          CENTROIDX_VALUE</td>
+        <td>
+          $(P)$(R)CentroidX_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          CentroidY</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Y centroid of the ROI.</td>
+        <td>
+          CENTROIDY_VALUE</td>
+        <td>
+          $(P)$(R)CentroidY_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>ROI histogram</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          ComputeHistogram</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flag to control whether to compute the histogram for this ROI (0=No, 1=Yes). Not
+          computing the histogram reduces CPU load.</td>
+        <td>
+          COMPUTE_HISTOGRAM</td>
+        <td>
+          $(P)$(R)ComputeHistogram<br />
+          $(P)$(R)ComputeHistogram_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          HistSize</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Number of elements (bins) in the histogram</td>
+        <td>
+          HIST_SIZE</td>
+        <td>
+          $(P)$(R)HistSize<br />
+          $(P)$(R)HistSize_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          HistMin</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          Minimum value for the histogram. All values less than or equal to this will be in
+          the first bin of the histogram.</td>
+        <td>
+          HIST_MIN</td>
+        <td>
+          $(P)$(R)HistMin<br />
+          $(P)$(R)HistMin_RBV</td>
+        <td>
+          ao<br />
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          HistMax</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          Maximum value for the histogram. All values greater than or equal to this will be
+          in the last bin of the histogram.</td>
+        <td>
+          HIST_MAX</td>
+        <td>
+          $(P)$(R)HistMax<br />
+          $(P)$(R)HistMax_RBV</td>
+        <td>
+          ao<br />
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          HistEntropy</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Entropy of the image. This is a measure of the sharpness of the histogram, and is
+          often a useful figure of merit for determining sharpness of focus, etc. It is defined
+          as -SUM(BIN[i]*log(BIN[i]), where the sum is over the number of bins in the histogram
+          and BIN[i] is the number of elements in bin i.</td>
+        <td>
+          HIST_ENTROPY</td>
+        <td>
+          $(P)$(R)HistEntropy_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          HistArray</td>
+        <td>
+          asynFloat64Array</td>
+        <td>
+          r/o</td>
+        <td>
+          Histogram array, i.e. counts in each histogram bin.</td>
+        <td>
+          HIST_ARRAY</td>
+        <td>
+          $(P)$(R)Histogram_RBV</td>
+        <td>
+          waveform</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    A special case is made when the NDArray data has colorMode=NDColorModeRGB1 or NDColorModeRGB2.
+    In these cases the user interface to the array dimensions is changed so that the
+    Z PVs always refer to the color dimension (as for NDColorModeRGB3), the X dimension
+    refers to the horizontal direction, and the Y direction refers to the vertical direction.
+    This is very convenient, because it means that the ROI does not need to redefined
+    if, for example, the color mode is changed from Mono to RGB1, which would be required
+    if the X, Y and Z directions were not automatically switched.</p>
+  <h2 id="Configuration">
+    Configuration</h2>
+  <p>
+    The NDPluginROI plugin is created with the NDROIConfigure command, either from C/C++
+    or from the EPICS IOC shell.</p>
+  <pre>
+NDROIConfigure(const char *portName, int queueSize, int blockingCallbacks,
+               const char *NDArrayPort, int NDArrayAddr, int maxROIs,
+               int maxBuffers, size_t maxMemory,
+               int priority, int stackSize)
+  </pre>
+  <p>
+    For details on the meaning of the parameters to this function refer to the detailed
+    documentation on the NDROIConfigure function in the <a href="areaDetectorDoxygenHTML/_n_d_plugin_r_o_i_8cpp.html">
+      NDPluginROI.cpp documentation</a> and in the documentation for the constructor
+    for the <a href="areaDetectorDoxygenHTML/class_n_d_plugin_r_o_i.html">NDPluginROI
+      class</a>.
+  </p>
+  <h2 id="Screens">
+    Screen shots</h2>
+  <p>
+    The following is the MEDM screen that provides access to the parameters in NDPluginDriver.h
+    and NDPluginROI.h through records in NDPluginBase.template and NDROI.template. This
+    is the MEDM screen that is used to control the behavior of the ROI plugin, but not
+    the individual ROIs.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDROI.adl</h3>
+    <img alt="NDROI.png" src="NDROI.png" />
+  </div>
+  <p>
+    The following is the MEDM screen that provides access to the parameters in NDPluginROI.h
+    for an individual ROI through records in NDROIN.template. This is the MEDM screen
+    that is used to control the behavior of a specific ROI.
+    <br />
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDROIN.adl</h3>
+    <img alt="NDROIN.png" src="NDROIN.png" />
+  </div>
+  <p>
+    The following is another MEDM screen that provides access to the parameters in NDPluginROI.h
+    through records in NDROIN.template. This is the MEDM screen that is used to control
+    the most commonly used properties of 8 ROIs.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDROI8.adl</h3>
+    <img alt="NDROI8.png" src="NDROI8.png" />
+  </div>
+  <p>
+    The following is an IDL <a href="http://cars.uchicago.edu/software/idl/imaging_routines.html#epics_ad_display">
+      epics_ad_display</a> screen illustrating the highlighting of ROIs. In this example
+    the ROIs defined are those in the 8 ROI display above. The NDPluginStdArrays driver
+    has been configured to be receiving its NDArray callbacks from the first ROI (which
+    is defined to be the entire detector array), and the NDPluginROIHighlight flag is
+    set to Yes.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      Highlighted Regions-of-Interest</h3>
+    <img alt="ROI_outlines.png" src="ROI_outlines.png" />
+  </div>
+</body>
+</html>

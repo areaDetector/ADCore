@@ -1,0 +1,383 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>areaDetector Plugin NDPluginROI</title>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+</head>
+<body>
+  <div style="text-align: center">
+    <h1>
+      areaDetector Plugin NDPluginStats</h1>
+    <h2>
+      March 7, 2010</h2>
+    <h2>
+      Mark Rivers</h2>
+    <h2>
+      University of Chicago</h2>
+  </div>
+  <h2>
+    Contents</h2>
+  <ul>
+    <li><a href="#Overview">Overview</a></li>
+    <li><a href="#Configuration">Configuration</a></li>
+    <li><a href="#Screens">Screen shots</a></li>
+  </ul>
+  <h2 id="Overview">
+    Overview
+  </h2>
+  <p>
+    NDPluginStats computes array statistics, including minimum, maximum, mean, sigma, total, 
+    net (background subtracted),and centroid values.
+    It can also compute a histogram of the values (e.g. number of pixels versus intensity per
+    pixel). The basic statistics, centroid, and histogram calculationscan be enabled or disabled independently.
+  </p>
+  <p>
+    NDPluginROI inherits from NDPluginDriver. The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_stats.html">
+      NDPluginStats class documentation</a> describes this class in detail.
+  </p>
+  <p>
+    NDPluginStats.h defines the following parameters. It also implements all of the standard plugin parameters from <a href="pluginDoc.html#NDPluginDriver">
+      NDPluginDriver</a>. The EPICS database NDStats.template provide access to these
+    parameters, listed in the following table.
+  </p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>Parameter Definitions in NDPluginStats.h and EPICS Record Definitions in NDStats.template</b></td>
+      </tr>
+      <tr>
+        <th>
+          Enum name</th>
+        <th>
+          asyn interface</th>
+        <th>
+          Access</th>
+        <th>
+          Description</th>
+        <th>
+          drvUser string</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          EPICS record type</th>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          BgdWidth</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Width of the background in pixels to use when computing net counts. 0=no background
+          subtraction, so the net counts is the same as the total counts.</td>
+        <td>
+          BGD_WIDTH</td>
+        <td>
+          $(P)$(R)BgdWidth<br />
+          $(P)$(R)BgdWidth_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          ComputeStatistics</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flag to control whether to compute statistics for this ROI (0=No, 1=Yes). Not computing
+          statistics reduces CPU load.</td>
+        <td>
+          COMPUTE_STATISTICS</td>
+        <td>
+          $(P)$(R)ComputeStatistics<br />
+          $(P)$(R)ComputeStatistics_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          MinValue</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Minimum value in any element in the ROI</td>
+        <td>
+          MIN_VALUE</td>
+        <td>
+          $(P)$(R)MinValue_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          MaxValue</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Maximum value in any element in the ROI</td>
+        <td>
+          MAX_VALUE</td>
+        <td>
+          $(P)$(R)MaxValue_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          MeanValue</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Mean value in the ROI</td>
+        <td>
+          MEAN_VALUE</td>
+        <td>
+          $(P)$(R)MeanValue_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Total</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Sum (total) of all elements in the ROI</td>
+        <td>
+          TOTAL</td>
+        <td>
+          $(P)$(R)Total_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Net</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Net (background subtracted) total of all elements in the ROI. The background is
+          calculated by determining the average counts per array element in a border around
+          the ROI of width NDPluginROIBgdWidth. This average background counts per element
+          is then subtracted from all elements inside the ROI. If NDPluginROIBgdWidth is &le;
+          0 then no background is computed. Note that this background subtraction is done
+          after the "array" background is subtracted if EnableBackground=1, as described above.
+        </td>
+        <td>
+          NET</td>
+        <td>
+          $(P)$(R)Net_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          CentroidX</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          X centroid of the ROI.</td>
+        <td>
+          CENTROIDX_VALUE</td>
+        <td>
+          $(P)$(R)CentroidX_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          CentroidY</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Y centroid of the ROI.</td>
+        <td>
+          CENTROIDY_VALUE</td>
+        <td>
+          $(P)$(R)CentroidY_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>ROI histogram</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          ComputeHistogram</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flag to control whether to compute the histogram for this ROI (0=No, 1=Yes). Not
+          computing the histogram reduces CPU load.</td>
+        <td>
+          COMPUTE_HISTOGRAM</td>
+        <td>
+          $(P)$(R)ComputeHistogram<br />
+          $(P)$(R)ComputeHistogram_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          HistSize</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Number of elements (bins) in the histogram</td>
+        <td>
+          HIST_SIZE</td>
+        <td>
+          $(P)$(R)HistSize<br />
+          $(P)$(R)HistSize_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          HistMin</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          Minimum value for the histogram. All values less than or equal to this will be in
+          the first bin of the histogram.</td>
+        <td>
+          HIST_MIN</td>
+        <td>
+          $(P)$(R)HistMin<br />
+          $(P)$(R)HistMin_RBV</td>
+        <td>
+          ao<br />
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          HistMax</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          Maximum value for the histogram. All values greater than or equal to this will be
+          in the last bin of the histogram.</td>
+        <td>
+          HIST_MAX</td>
+        <td>
+          $(P)$(R)HistMax<br />
+          $(P)$(R)HistMax_RBV</td>
+        <td>
+          ao<br />
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          HistEntropy</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Entropy of the image. This is a measure of the sharpness of the histogram, and is
+          often a useful figure of merit for determining sharpness of focus, etc. It is defined
+          as -SUM(BIN[i]*log(BIN[i]), where the sum is over the number of bins in the histogram
+          and BIN[i] is the number of elements in bin i.</td>
+        <td>
+          HIST_ENTROPY</td>
+        <td>
+          $(P)$(R)HistEntropy_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          HistArray</td>
+        <td>
+          asynFloat64Array</td>
+        <td>
+          r/o</td>
+        <td>
+          Histogram array, i.e. counts in each histogram bin.</td>
+        <td>
+          HIST_ARRAY</td>
+        <td>
+          $(P)$(R)Histogram_RBV</td>
+        <td>
+          waveform</td>
+      </tr>
+    </tbody>
+  </table>
+  <h2 id="Configuration">
+    Configuration</h2>
+  <p>
+    The NDPluginROI plugin is created with the NDStatsConfigure command, either from C/C++
+    or from the EPICS IOC shell.</p>
+  <pre>
+NDStatsConfigure(const char *portName, int queueSize, int blockingCallbacks,
+               const char *NDArrayPort, int NDArrayAddr,
+               int maxBuffers, size_t maxMemory,
+               int priority, int stackSize)
+  </pre>
+  <p>
+    For details on the meaning of the parameters to this function refer to the detailed
+    documentation on the NDROIConfigure function in the <a href="areaDetectorDoxygenHTML/_n_d_plugin_r_o_i_8cpp.html">
+      NDPluginStats.cpp documentation</a> and in the documentation for the constructor
+    for the <a href="areaDetectorDoxygenHTML/class_n_d_plugin_r_o_i.html">NDPluginStats
+      class</a>.
+  </p>
+  <h2 id="Screens">
+    Screen shots</h2>
+  <p>
+    The following is the MEDM screen that provides access to the parameters in NDPluginDriver.h
+    and NDPluginStats.h through records in NDPluginBase.template and NDStats.template.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDROI.adl</h3>
+    <img alt="NDStats.png" src="NDStats.png" />
+  </div>
+</body>
+</html>
