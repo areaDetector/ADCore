@@ -20,7 +20,7 @@
 #include "NDArray.h"
 #include "NDPluginProcess.h"
 
-static const char *driverName="NDPluginProcess";
+//static const char *driverName="NDPluginProcess";
 
 
 /** Callback function that is called by the NDArray driver with new NDArray data.
@@ -40,22 +40,20 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     double  *background=NULL, *flatField=NULL, *filter=NULL;
     double  value;
     int     nElements;
-    int     validBackground;
-    int     enableBackground;
-    int     validFlatField;
-    int     enableFlatField;
+    int     saveBackground, enableBackground, validBackground;
+    int     saveFlatField,  enableFlatField,  validFlatField;
     double  scaleFlatField;
-    double  lowClip=0;
-    int     enableLowClip;
-    double  highClip=0;
-    int     enableHighClip;
-    int     enableFilter;
-    int     numFilter;
+    int     enableScaleOffset;
+    double  offset, scale;
+    double  lowClip=0, highClip=0;
+    int     enableLowClip, enableHighClip;
+    int     resetFilter, enableFilter, numFilter;
     int     dataType;
     int     anyProcess;
-    double  oc0, oc1, oc2, oc3, oc4;
-    double  fc0, fc1, fc2, fc3, fc4;
-    double  rc0, rc1;
+    double  oOffset, fOffset, rOffset, oScale, fScale;
+    double  oc1, oc2, oc3, oc4;
+    double  fc1, fc2, fc3, fc4;
+    double  rc1, rc2;
     double  F1, F2, O1, O2;
 
     //const char* functionName = "processCallbacks";
@@ -63,8 +61,21 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
 
-    if (this->newBackground) {
-        this->newBackground = 0;
+    /* Need to fetch all of these parameters while we still have the mutex */
+    getIntegerParam(NDPluginProcessDataType,            &dataType);
+    getIntegerParam(NDPluginProcessSaveBackground,      &saveBackground);
+    getIntegerParam(NDPluginProcessEnableBackground,    &enableBackground);
+    getIntegerParam(NDPluginProcessSaveFlatField,       &saveFlatField);
+    getIntegerParam(NDPluginProcessEnableFlatField,     &enableFlatField);
+    getDoubleParam (NDPluginProcessScaleFlatField,      &scaleFlatField);
+    getIntegerParam(NDPluginProcessEnableScaleOffset,   &enableScaleOffset);
+    getIntegerParam(NDPluginProcessEnableLowClip,       &enableLowClip);
+    getIntegerParam(NDPluginProcessEnableHighClip,      &enableHighClip);
+    getIntegerParam(NDPluginProcessEnableFilter,        &enableFilter);
+    getIntegerParam(NDPluginProcessResetFilter,         &resetFilter);
+
+    if (saveBackground) {
+        setIntegerParam(NDPluginProcessSaveBackground, 0);
         if (this->pBackground) this->pBackground->release();
         this->pBackground = NULL;
         if (this->pArrays[0]) {
@@ -74,9 +85,8 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
             this->nBackgroundElements = arrayInfo.nElements;
         }
     }
-
-    if (this->newFlatField) {
-        this->newFlatField = 0;
+    if (saveFlatField) {
+        setIntegerParam(NDPluginProcessSaveFlatField, 0);
         if (this->pFlatField) this->pFlatField->release();
         this->pFlatField = NULL;
         if (this->pArrays[0]) {
@@ -86,40 +96,33 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
             this->nFlatFieldElements = arrayInfo.nElements;
         }
     }
-    /* Need to fetch all of these parameters while we still have the mutex */
-    getIntegerParam(NDPluginProcessDataType,            &dataType);
-    getIntegerParam(NDPluginProcessEnableBackground,    &enableBackground);
-    getIntegerParam(NDPluginProcessEnableFlatField,     &enableFlatField);
-    getDoubleParam (NDPluginProcessScaleFlatField,      &scaleFlatField);
-    getIntegerParam(NDPluginProcessEnableLowClip,       &enableLowClip);
-    getIntegerParam(NDPluginProcessEnableHighClip,      &enableHighClip);
-    getIntegerParam(NDPluginProcessEnableFilter,        &enableFilter);
+    if (enableScaleOffset) {
+        getDoubleParam (NDPluginProcessScale,           &scale);
+        getDoubleParam (NDPluginProcessOffset,          &offset);
+    }
     if (enableLowClip) 
         getDoubleParam (NDPluginProcessLowClip,         &lowClip);
     if (enableHighClip) 
         getDoubleParam (NDPluginProcessHighClip,        &highClip);
+    if (resetFilter) 
+        setIntegerParam(NDPluginProcessResetFilter, 0);
     if (enableFilter) {
         getIntegerParam(NDPluginProcessNumFilter,       &numFilter);
-        getDoubleParam (NDPluginProcessOC0,             &oc0);
+        getDoubleParam (NDPluginProcessOOffset,         &oOffset);
+        getDoubleParam (NDPluginProcessOScale,          &oScale);
         getDoubleParam (NDPluginProcessOC1,             &oc1);
         getDoubleParam (NDPluginProcessOC2,             &oc2);
         getDoubleParam (NDPluginProcessOC3,             &oc3);
         getDoubleParam (NDPluginProcessOC4,             &oc4);
-        getDoubleParam (NDPluginProcessFC0,             &fc0);
+        getDoubleParam (NDPluginProcessFOffset,         &fOffset);
+        getDoubleParam (NDPluginProcessFScale,          &fScale);
         getDoubleParam (NDPluginProcessFC1,             &fc1);
         getDoubleParam (NDPluginProcessFC2,             &fc2);
         getDoubleParam (NDPluginProcessFC3,             &fc3);
         getDoubleParam (NDPluginProcessFC4,             &fc4);
-        getDoubleParam (NDPluginProcessRC0,             &rc0);
+        getDoubleParam (NDPluginProcessROffset,         &rOffset);
         getDoubleParam (NDPluginProcessRC1,             &rc1);
-    }
-
-    if (this->newFilter) {
-        this->newFilter = 0;
-        /* Filtering was turned off or on, or the number to filter changed. Delete the filter array
-         * forcing filtering to restart */
-        if (this->pFilter) this->pFilter->release();
-        this->pFilter = NULL;
+        getDoubleParam (NDPluginProcessRC2,             &rc2);
     }
 
     /* Release the lock now that we are only doing things that don't involve memory other thread
@@ -145,8 +148,10 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
 
     anyProcess = ((enableBackground && validBackground) ||
                   (enableFlatField && validFlatField)   ||
-                  enableHighClip || enableLowClip       ||
-                  enableFilter);
+                   enableScaleOffset                    ||
+                   enableHighClip                       || 
+                   enableLowClip                        ||
+                   enableFilter);
     /* If no processing is to be done just convert the input array and do callbacks */
     if (!anyProcess) {
         /* Convert the array to the desired output data type */
@@ -168,6 +173,7 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
             else
                 value = scaleFlatField;
         }
+        if (enableScaleOffset) value = value*scale + offset;
         if (enableHighClip && (value > highClip)) value = highClip;
         if (enableLowClip  && (value < lowClip))  value = lowClip;
         data[i] = value;
@@ -185,24 +191,30 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
             /* There is not a current filter array */
             /* Make a copy of the current array, converted to double type */
             this->pNDArrayPool->convert(pScratch, &this->pFilter, NDFloat64);
+            resetFilter = 1;
+        }
+        if (resetFilter) {
             filter = (double *)this->pFilter->pData;
             for (i=0; i<nElements; i++) {
-                filter[i] = rc0 * rc1*data[i];
+                newFilter = rOffset;
+                if (rc1) newFilter += rc1*filter[i];
+                if (rc2) newFilter += rc2*data[i];
+                filter[i] = newFilter;
             }           
             this->numFiltered = 1;
         } else {
             /* Do the filtering */
             if (this->numFiltered < numFilter) this->numFiltered++;
             filter = (double *)this->pFilter->pData;
-            O1 = oc1 + oc2/this->numFiltered;
-            O2 = oc3 + oc4/this->numFiltered;
-            F1 = fc1 + fc2/this->numFiltered;
-            F2 = fc3 + fc4/this->numFiltered;
+            O1 = oScale * (oc1 + oc2/this->numFiltered);
+            O2 = oScale * (oc3 + oc4/this->numFiltered);
+            F1 = fScale * (fc1 + fc2/this->numFiltered);
+            F2 = fScale * (fc3 + fc4/this->numFiltered);
             for (i=0; i<nElements; i++) {
-                newData   = oc0;
+                newData   = oOffset;
                 if (O1) newData += O1 * filter[i];
                 if (O2) newData += O2 * data[i];
-                newFilter = fc0;
+                newFilter = fOffset;
                 if (F1) newFilter += F1 * filter[i];
                 if (F2) newFilter += F2 * data[i];
                 data[i] = newData;
@@ -218,58 +230,15 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     pScratch->release();
 
     done:
-    /* Call any clients who have registered for NDArray callbacks */
-    doCallbacksGenericPointer(this->pArrays[0], NDArrayData, 0);
-
     /* We must enter the loop and exit with the mutex locked */
     this->lock();
+    /* Get the attributes for this driver */
+    this->getAttributes(this->pArrays[0]->pAttributeList);
+    /* Call any clients who have registered for NDArray callbacks */
+    this->unlock();
+    doCallbacksGenericPointer(this->pArrays[0], NDArrayData, 0);
+    this->lock();
     callParamCallbacks();
-}
-
-
-/** Called when asyn clients call pasynInt32->write().
-  * This function performs actions for some parameters.
-  * For other parameters it calls NDPluginDriver::writeInt32 to see if that method understands the parameter.
-  * For all parameters it sets the value in the parameter library and calls any registered callbacks..
-  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
-  * \param[in] value Value to write. */
-asynStatus NDPluginProcess::writeInt32(asynUser *pasynUser, epicsInt32 value)
-{
-    int function = pasynUser->reason;
-    asynStatus status = asynSuccess;
-    const char* functionName = "writeInt32";
-
-    /* Set parameter and readback in parameter library */
-    status = setIntegerParam(function, value);
-
-    if (function == NDPluginProcessSaveBackground && value) {
-        this->newBackground = 1;
-        setIntegerParam(NDPluginProcessSaveBackground, 0);
-    }
-    else if (function == NDPluginProcessSaveFlatField && value) {
-        this->newFlatField = 1;
-        setIntegerParam(NDPluginProcessSaveFlatField, 0);
-    }
-    else if ((function == NDPluginProcessEnableFilter) ||
-             (function == NDPluginProcessNumFilter)) {
-        this->newFilter = 1;
-    }
-    else {
-        /* This was not a parameter that this driver understands, try the base class */
-        status = NDPluginDriver::writeInt32(pasynUser, value);
-    }
-    /* Do callbacks so higher layers see any changes */
-    status = callParamCallbacks();
-
-    if (status)
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                  "%s:%s: status=%d, function=%d, value=%d",
-                  driverName, functionName, status, function, value);
-    else
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
-              "%s:%s: function=%d, value=%d\n",
-              driverName, functionName, function, value);
-    return status;
 }
 
 
@@ -323,22 +292,31 @@ NDPluginProcess::NDPluginProcess(const char *portName, int queueSize, int blocki
     createParam(NDPluginProcessHighClipString,          asynParamFloat64,   &NDPluginProcessHighClip);
     createParam(NDPluginProcessEnableHighClipString,    asynParamInt32,     &NDPluginProcessEnableHighClip);
 
+    /* Scale and offset */
+    createParam(NDPluginProcessEnableScaleOffsetString, asynParamInt32,     &NDPluginProcessEnableScaleOffset);
+    createParam(NDPluginProcessScaleString,             asynParamFloat64,   &NDPluginProcessScale);
+    createParam(NDPluginProcessOffsetString,            asynParamFloat64,   &NDPluginProcessOffset);
+
     /* Frame filtering */
     createParam(NDPluginProcessEnableFilterString,      asynParamInt32,     &NDPluginProcessEnableFilter);
+    createParam(NDPluginProcessResetFilterString,       asynParamInt32,     &NDPluginProcessResetFilter);
     createParam(NDPluginProcessNumFilterString,         asynParamInt32,     &NDPluginProcessNumFilter);
     createParam(NDPluginProcessNumFilteredString,       asynParamInt32,     &NDPluginProcessNumFiltered);   
-    createParam(NDPluginProcessOC0String,               asynParamFloat64,   &NDPluginProcessOC0);   
+    createParam(NDPluginProcessOOffsetString,           asynParamFloat64,   &NDPluginProcessOOffset);   
+    createParam(NDPluginProcessOScaleString,            asynParamFloat64,   &NDPluginProcessOScale);   
     createParam(NDPluginProcessOC1String,               asynParamFloat64,   &NDPluginProcessOC1);   
     createParam(NDPluginProcessOC2String,               asynParamFloat64,   &NDPluginProcessOC2);   
     createParam(NDPluginProcessOC3String,               asynParamFloat64,   &NDPluginProcessOC3);   
     createParam(NDPluginProcessOC4String,               asynParamFloat64,   &NDPluginProcessOC4);   
-    createParam(NDPluginProcessFC0String,               asynParamFloat64,   &NDPluginProcessFC0);   
+    createParam(NDPluginProcessFOffsetString,           asynParamFloat64,   &NDPluginProcessFOffset);   
+    createParam(NDPluginProcessFScaleString,            asynParamFloat64,   &NDPluginProcessFScale);   
     createParam(NDPluginProcessFC1String,               asynParamFloat64,   &NDPluginProcessFC1);   
     createParam(NDPluginProcessFC2String,               asynParamFloat64,   &NDPluginProcessFC2);   
     createParam(NDPluginProcessFC3String,               asynParamFloat64,   &NDPluginProcessFC3);   
     createParam(NDPluginProcessFC4String,               asynParamFloat64,   &NDPluginProcessFC4);   
-    createParam(NDPluginProcessRC0String,               asynParamFloat64,   &NDPluginProcessRC0);   
+    createParam(NDPluginProcessROffsetString,           asynParamFloat64,   &NDPluginProcessROffset);   
     createParam(NDPluginProcessRC1String,               asynParamFloat64,   &NDPluginProcessRC1);   
+    createParam(NDPluginProcessRC2String,               asynParamFloat64,   &NDPluginProcessRC2);   
     
     /* Output data type */
     createParam(NDPluginProcessDataTypeString,          asynParamInt32,     &NDPluginProcessDataType);   
