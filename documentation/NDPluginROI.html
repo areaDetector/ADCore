@@ -76,7 +76,7 @@
       </tr>
       <tr>
         <th>
-          Parameter index</th>
+          Parameter index variable</th>
         <th>
           asyn interface</th>
         <th>
@@ -179,8 +179,7 @@
         <td>
           r/w</td>
         <td>
-          First pixel in the ROI in the X direction.
-          0 is the first pixel in the array.</td>
+          First pixel in the ROI in the X direction. 0 is the first pixel in the array.</td>
         <td>
           DIM0_MIN</td>
         <td>
@@ -347,8 +346,7 @@
         <td>
           r/w</td>
         <td>
-          Reverse ROI in the X direction.
-          (0=No, 1=Yes)</td>
+          Reverse ROI in the X direction. (0=No, 1=Yes)</td>
         <td>
           DIM0_REVERSE</td>
         <td>
@@ -367,8 +365,7 @@
         <td>
           r/w</td>
         <td>
-          Reverse ROI in the Y direction.
-          (0=No, 1=Yes)</td>
+          Reverse ROI in the Y direction. (0=No, 1=Yes)</td>
         <td>
           DIM1_REVERSE</td>
         <td>
@@ -387,8 +384,7 @@
         <td>
           r/w</td>
         <td>
-          Reverse ROI in the Z direction.
-          (0=No, 1=Yes)</td>
+          Reverse ROI in the Z direction. (0=No, 1=Yes)</td>
         <td>
           DIM2_REVERSE</td>
         <td>
@@ -475,14 +471,12 @@
         <td>
           r/w</td>
         <td>
-          Enable dividing by the Scale value.
-          (0=Disable, 1=Enable).  This is very useful when binning
-          or when converting from a higher precision data type to a lower
-          precision data type.  For example when binning 2x2, then
-          Scale=4 (dividing by 4) will prevent integer overflow.  
-          Similarly, when converting from 16-bit to 8-bit integers one might
-          scale by 256, or perhaps a smaller number if the 16-bit data does not
-          use the full 16-bit range.</td>
+          Enable dividing by the Scale value. (0=Disable, 1=Enable). This is very useful when
+          binning or when converting from a higher precision data type to a lower precision
+          data type. For example when binning 2x2, then Scale=4 (dividing by 4) will prevent
+          integer overflow. Similarly, when converting from 16-bit to 8-bit integers one might
+          scale by 256, or perhaps a smaller number if the 16-bit data does not use the full
+          16-bit range.</td>
         <td>
           ENABLE_SCALE</td>
         <td>
