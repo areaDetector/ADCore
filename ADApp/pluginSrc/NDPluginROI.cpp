@@ -102,6 +102,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     }
 
     /* Make a local copy of the fixed dimensions so we can release the mutex */
+    memset(dims, 0, sizeof(NDDimension_t) * ND_ARRAY_MAX_DIMS);
     memcpy(dims, this->dims, pArray->ndims*sizeof(NDDimension_t));
 
     /* Update the parameters that may have changed */
@@ -168,8 +169,6 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
 
     /* We must enter the loop and exit with the mutex locked */
     this->lock();
-    callParamCallbacks();
-
     /* Get the attributes for this driver */
     this->getAttributes(this->pArrays[0]->pAttributeList);
     /* Call any clients who have registered for NDArray callbacks */
