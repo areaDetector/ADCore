@@ -13,7 +13,8 @@
   <ul>
     <li>General
       <ul>
-        <li>Converted to be compatible with asynPortDriver in asyn R4-13, which changes parameter handling.</li>
+        <li>Converted to be compatible with asynPortDriver in asyn R4-13, which changes parameter
+          handling.</li>
         <li>Changes to support 64-bit architectures, including linux-x86_64. This also required
           changes to the synApps modules on which areaDetector applications depend (autosave,
           busy, etc.)</li>
@@ -30,29 +31,49 @@
             <li>Added dropped frame counter.</li>
             <li>Fixed timeout problem with acquire times &gt; 1 second.</li>
             <li>Fixed logic when acquisition was turned off</li>
-            <li>Fixed problem with constructor when it encountered a minor error; was
-              causing capture thread not to be started for some cameras.</li>
-            <li>Implemented AcquireTime parameter, previously the time could only
-              be changed via a Firewire feature.</li>
-            <li>Fixed bug when setting a feature value in non-absolute mode after it was set in 
+            <li>Fixed problem with constructor when it encountered a minor error; was causing
+              capture thread not to be started for some cameras.</li>
+            <li>Implemented AcquireTime parameter, previously the time could only be changed via
+              a Firewire feature.</li>
+            <li>Fixed bug when setting a feature value in non-absolute mode after it was set in
               absolute mode.</li>
-            <li>Removed the ability to change video modes, formats or rates when acquiring
-              because it is too complex to stop and wait for it to be done.</li>
-            <li>Report details for all supported Firewire "features" in report() function, called by asynReport() and dbior().</li>
+            <li>Removed the ability to change video modes, formats or rates when acquiring because
+              it is too complex to stop and wait for it to be done.</li>
+            <li>Report details for all supported Firewire "features" in report() function, called
+              by asynReport() and dbior().</li>
           </ul>
         </li>
       </ul>
     </li>
     <li>Plugins
       <ul>
-        <li>NDPluginROI.  Several enhancements.  Thanks to Stephen Mudie from the Australian Synchrotron and
-           John Dobbins from Cornell for the initial versions of these.
+        <li>NDPluginROI. Major rewrite. Previously the ROI plugin supported multiple ROIs,
+          performed statistics calculations, and highlighted the ROIs. The new version is
+          much simpler; it supports only a single ROI, and does not calculate statistics or
+          do highlighting. Those functions have been moved to new plugins. One new function
+          has been added, the ability to divide the array by a scale factor, which is useful
+          for avoiding overflow when binning.</li>
+        <li>Added new NDPluginStats plugin. This plugin calculates statistics on an array.
+          It replaces the statistics calculations that were previously performed in the ROI
+          plugin. It also adds new statistics, including the centroid position and width.
+          Thanks to Stephen Mudie from the Australian Synchrotron and John Dobbins from Cornell
+          for the initial versions of these calculations.</li>
+        <li>Added new NDPluginProcess plugin. This plugin does arithmetic processing on arrays:
           <ul>
-            <li>Added LowClip and HighClip PVs to allow optional clipping to minimum and maximum values.</li>
-            <li>Added ability to grab a background array and optionally subtract this background from all arrays.</li>
-            <li>Added centroid calculation in X and Y.</li>
+            <li>Dark current subtraction.</li>
+            <li>Flat field normalization.</li>
+            <li>Scale and offset.</li>
+            <li>Low and high clipping.</li>
+            <li>Recursive filtering in the time domain.</li>
+            <li>Conversion to a different output data type.</li>
           </ul>
         </li>
+      </ul>
+    </li>
+    <li>Internals
+      <ul>
+        <li>Added new form of NDArrayPool::convert that only changed data type, does not take
+          dims argument.</li>
       </ul>
     </li>
   </ul>
