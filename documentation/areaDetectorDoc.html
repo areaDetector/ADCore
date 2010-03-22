@@ -10,7 +10,7 @@
     <h1>
       areaDetector: EPICS Area Detector Support</h1>
     <h2>
-      August 23, 2009</h2>
+      March 22, 2010</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -58,6 +58,9 @@
         <li><a href="NDPluginStdArrays.html">NDPluginStdArrays</a></li>
         <li><a href="NDPluginFile.html">NDPluginFile</a></li>
         <li><a href="NDPluginROI.html">NDPluginROI</a></li>
+        <li><a href="NDPluginStats.html">NDPluginStats</a></li>
+        <li><a href="NDPluginProcess.html">NDPluginProcess</a></li>
+        <li><a href="NDPluginTransform.html">NDPluginTransform</a></li>
         <li><a href="NDPluginColorConvert.html">NDPluginColorConvert</a></li>
       </ul>
     </li>
@@ -204,10 +207,10 @@
       asynPortDriver base C++ class</a> that is provided in the asyn module. That base
     class handles all of the details of registering the port driver, registering the
     supported interfaces, and registering the required interrupt sources. It also provides
-    a parameter library for int, double, and string parameters indexed by the enum values
-    defined in the driver. The parameter library provides methods to write and read
-    the parameter values, and to perform callbacks to registered clients when a parameter
-    value has changed. The <a href="http://www.aps.anl.gov/epics/modules/soft/asyn/R4-11a/asynDoxygenHTML/classasyn_port_driver.html">
+    a parameter library for int, double, and string parameters indexed by the integer
+    index values defined in the driver. The parameter library provides methods to write
+    and read the parameter values, and to perform callbacks to registered clients when
+    a parameter value has changed. The <a href="http://www.aps.anl.gov/epics/modules/soft/asyn/R4-11a/asynDoxygenHTML/classasyn_port_driver.html">
       asynPortDriver class documentation</a> describes this class in detail.
   </p>
   <h3 id="NDArray">
@@ -354,20 +357,21 @@
   </p>
   <p>
     The file <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">asynNDArrayDriver.h</a>
-    defines a number of enumerations, including NDStdDriverParam_t, which are the parameters
-    that all NDArray drivers and plugins should implement if possible. These parameters
-    are defined by enum values with an associated asyn interface, and access (read-only
-    or read-write). The EPICS database ADBase.template provides access to these standard
-    driver parameters. The following table lists the standard driver parameters. The
-    columns are defined as follows:
+    defines a number of parameters that all NDArray drivers and plugins should implement
+    if possible. These parameters are defined by strings (drvInfo strings in asyn) with
+    an associated asyn interface, and access (read-only or read-write). There is also
+    an integer index to the parameter which is assigned by asynPortDriver when the parameter
+    is created in the parameter library. The EPICS database ADBase.template provides
+    access to these standard driver parameters. The following table lists the standard
+    driver parameters. The columns are defined as follows:
   </p>
   <ul>
-    <li><b>Enum name:</b> The name of the enum value for this parameter in asynNDArrayDriver.h.
-      There are several EPICS records in ADBase.template that do not have corresponding
-      enum fields, and these are indicated as Not Applicable (N/A).</li>
+    <li><b>Parameter index variable:</b> The variable name for this parameter index in
+      the driver. There are several EPICS records in ADBase.template that do not have
+      corresponding parameter indices, and these are indicated as Not Applicable (N/A).</li>
     <li><b>asyn interface:</b> The asyn interface used to pass this parameter to the driver.</li>
     <li><b>Access:</b> Read-write (r/w) or read-only (r/o).</li>
-    <li><b>drvUser string:</b> The string used to look up the parameter in the driver
+    <li><b>drvInfo string:</b> The string used to look up the parameter in the driver
       through the drvUser interface. This string is used in the EPICS database file for
       generic asyn device support to associate a record with a particular parameter. It
       is also used to associate a <a href="areaDetectorDoxygenHTML/classparam_attribute.html">
@@ -400,7 +404,7 @@
       </tr>
       <tr>
         <th>
-          Enum name</th>
+          Parameter index variable</th>
         <th>
           asyn interface</th>
         <th>
@@ -408,7 +412,7 @@
         <th>
           Description</th>
         <th>
-          drvUser string</th>
+          drvInfo string</th>
         <th>
           EPICS record name</th>
         <th>
@@ -951,8 +955,7 @@
   </p>
   <p>
     The file <a href="areaDetectorDoxygenHTML/_a_d_driver_8h.html">ADDriver.h</a> defines
-    a number of enumerations, including ADStdDriverParam_t, which are the parameters
-    that all areaDetector drivers should implement if possible.
+    the parameters that all areaDetector drivers should implement if possible.
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
@@ -962,7 +965,7 @@
       </tr>
       <tr>
         <th>
-          Enum name</th>
+          Parameter index variable</th>
         <th>
           asyn interface</th>
         <th>
@@ -970,7 +973,7 @@
         <th>
           Description</th>
         <th>
-          drvUser string</th>
+          drvInfo string</th>
         <th>
           EPICS record name</th>
         <th>
@@ -1721,10 +1724,10 @@
       or getStringParam() function calls when they are needed.</li>
     <li>If the writeInt32(), writeFloat64() or writeOctet() functions are implemented
       they <b>must</b> call the base class function for parameters that they do not handle
-      and whose enum value is less than the value of ADLastStdParam, i.e. parameters that
-      belong to a base class.</li>
-    <li>Drivers will need to implement the drvUserCreate() function if they have additional
-      parameters beyond those in the asynPortDriver or ADDriver base classes.</li>
+      and whose parameter index value is less than the first parameter of this class,
+      i.e. parameters that belong to a base class.</li>
+    <li>Drivers will need to call the createParam() function in their constructor if they
+      have additional parameters beyond those in the asynPortDriver or ADDriver base classes.</li>
     <li>Drivers will generally need to create a new thread in which they run the acquisition
       task. Some vendor libraries create such a thread themselves, and then the driver
       must just implement a callback function that runs in that thread (the Prosilica
@@ -1794,7 +1797,8 @@
     <p>
       <b>ADEpicsShutter.adl</b></p>
     <img alt="ADEpicsShutter.png" src="ADEpicsShutter.png" /></div>
-  <h2 id="Installation">Installation, configuration, and running</h2>
+  <h2 id="Installation">
+    Installation, configuration, and running</h2>
   <h3>
     Installation: source code version</h3>
   <p>
@@ -1817,8 +1821,8 @@
       <pre>.../support/areaDetectorRX-Y
 </pre>
     </li>
-    <li>Download all required supporting modules if you don't already have them.  This includes
-      asyn, autosave, busy, etc.</li>
+    <li>Download all required supporting modules if you don't already have them. This
+      includes asyn, autosave, busy, etc.</li>
     <li>Edit the <tt>configure/RELEASE</tt> file and set the paths to your installation
       of EPICS base and to your versions of supporting modules.</li>
     <li>Run <tt>gnumake</tt> in the top level directory and check for any compilation
@@ -1826,20 +1830,21 @@
   </ol>
   <h3>
     Installation: prebuilt version</h3>
-    <p>Prebuilt versions of areaDetector are provide for Windows (win32-x86), Cygwin (cygwin-x86),
-    and Linux (linux-x86).  Follow these steps to use the prebuilt version:</p>
+  <p>
+    Prebuilt versions of areaDetector are provide for Windows (win32-x86), Cygwin (cygwin-x86),
+    and Linux (linux-x86). Follow these steps to use the prebuilt version:</p>
   <ol>
-    <li>Create an installation directory for the module.  On Windows I typically use C:\EPICS\support.  
-    On Linux I typically use /home/ACCOUNT/epics/support, where ACCOUNT is the name of the account
-    that is normally used to run the detector software, e.g. marccd on a marCCD detector, mar345 on
-    a mar345 detector, etc.</li>
+    <li>Create an installation directory for the module. On Windows I typically use C:\EPICS\support.
+      On Linux I typically use /home/ACCOUNT/epics/support, where ACCOUNT is the name
+      of the account that is normally used to run the detector software, e.g. marccd on
+      a marCCD detector, mar345 on a mar345 detector, etc.</li>
     <li>Place the distribution file in this directory. Then issue the commands (Unix style)
       <pre>tar xvzf areaDetectorPrebuilt_RX-Y.tgz</pre>
     </li>
-    <li>In the iocBoot directory make a <b>copy</b> of the example ioxXXX directory for the detector
-      you are using and give it a new local name. By doing this you will be able to update
-      to later versions of areaDetector without overwriting modifications you make in
-      the iocXXX directory.</li>
+    <li>In the iocBoot directory make a <b>copy</b> of the example ioxXXX directory for
+      the detector you are using and give it a new local name. By doing this you will
+      be able to update to later versions of areaDetector without overwriting modifications
+      you make in the iocXXX directory.</li>
     <li>In the new iocXXX directory you just created edit st.cmd to change the PV prefix
       $(P) to one that is unique to your site. PV prefixes must be unique on the subnet,
       and if you use the default prefix there could be a conflict with other detectors
@@ -1851,89 +1856,105 @@
   </ol>
   <h3>
     Installation: medm</h3>
-    <p>areaDetector provides display/control screens for the <a href="http://www.aps.anl.gov/epics/extensions/medm/">medm</a>
-    Motif Editor and Display Manager.  A prebuilt version of medm for Windows can be found in the
-    <a href="http://www.aps.anl.gov/epics/distributions/win32/">EPICS WIN32 Extensions</a>. For Linux one can build medm
-    from source code, which requires downloading and building 
-    <a href="http://www.aps.anl.gov/epics/base/">EPICS base</a> first.  Alternatively I provide a prebuilt version of
-    medm for Linux in the
-    <a href="http://cars.uchicago.edu/software/pub/EPICS_Linux_binaries.tar">EPICS_Linux_binraries.tar</a> package.
-    To use this version copy the medm executable to some location in your PATH, e.g. /usr/local/bin, or ~/bin, etc.
-    Copy the 2 shareable libraries libCom.so and libca.so to a location which is in your LD_LIBRARY_PATH.
-    To use either the source code or prebuilt version you need to have the OpenMotif package installed.  This
-    typically is <b>not</b> installed by default with recent versions of Linux.  Go to 
-    <a href="http://www.openmotif.org/">www.openmotif.org</a>
+  <p>
+    areaDetector provides display/control screens for the <a href="http://www.aps.anl.gov/epics/extensions/medm/">
+      medm</a> Motif Editor and Display Manager. A prebuilt version of medm for Windows
+    can be found in the <a href="http://www.aps.anl.gov/epics/distributions/win32/">EPICS
+      WIN32 Extensions</a>. For Linux one can build medm from source code, which requires
+    downloading and building <a href="http://www.aps.anl.gov/epics/base/">EPICS base</a>
+    first. Alternatively I provide a prebuilt version of medm for Linux in the <a href="http://cars.uchicago.edu/software/pub/EPICS_Linux_binaries.tar">
+      EPICS_Linux_binraries.tar</a> package. To use this version copy the medm executable
+    to some location in your PATH, e.g. /usr/local/bin, or ~/bin, etc. Copy the 2 shareable
+    libraries libCom.so and libca.so to a location which is in your LD_LIBRARY_PATH.
+    To use either the source code or prebuilt version you need to have the OpenMotif
+    package installed. This typically is <b>not</b> installed by default with recent
+    versions of Linux. Go to <a href="http://www.openmotif.org/">www.openmotif.org</a>
     and download and install the appropriate RPM package for your Linux version.</p>
   <h3>
     Configuration</h3>
-  <p>Before running an areaDetector application it is usually necessary to configure a number of items.</p>
+  <p>
+    Before running an areaDetector application it is usually necessary to configure
+    a number of items.</p>
   <ul>
-    <li>EPICS environment variables.  There are several environment variables that EPICS uses.  I suggest
-      setting these in the .cshrc (or .bashrc) file for the account that will be used to run the detector.
+    <li>EPICS environment variables. There are several environment variables that EPICS
+      uses. I suggest setting these in the .cshrc (or .bashrc) file for the account that
+      will be used to run the detector.
       <ul>
-        <li>EPICS_CA_AUTO_ADDR_LIST and EPICS_CA_ADDR_LIST. These variables control the IP addresses that EPICS 
-        clients use when searching for EPICS PVs.  The default is EPICS_CA_AUTO_ADDR_LIST=YES 
-        and EPICS_CA_ADDR_LIST to be the broadcast address of all networks connected to the host.
-        Some detectors, for example the marCCD and mar345, come with 2 network cards, which are on 2 different
-        subnets, typically a private one connected to the detector and a public one connected to the local LAN.
-        If the default value of these variables is used then EPICS clients (e.g. medm) running on the detector 
-        host computer will generate many errors because each EPICS PV will appear to be coming from both
-        networks.  The solution is to set these variables as follows:
-        <pre>
+        <li>EPICS_CA_AUTO_ADDR_LIST and EPICS_CA_ADDR_LIST. These variables control the IP
+          addresses that EPICS clients use when searching for EPICS PVs. The default is EPICS_CA_AUTO_ADDR_LIST=YES
+          and EPICS_CA_ADDR_LIST to be the broadcast address of all networks connected to
+          the host. Some detectors, for example the marCCD and mar345, come with 2 network
+          cards, which are on 2 different subnets, typically a private one connected to the
+          detector and a public one connected to the local LAN. If the default value of these
+          variables is used then EPICS clients (e.g. medm) running on the detector host computer
+          will generate many errors because each EPICS PV will appear to be coming from both
+          networks. The solution is to set these variables as follows:
+          <pre>
         setenv EPICS_CA_AUTO_ADDR_LIST NO
         setenv EPICS_CA_ADDR_LIST localhost:XX.YY.ZZ.255
         </pre>
-        where XX.YY.ZZ.255 should be replaced with the broadcast address for the public network on this computer.</li>
-        <li>EPICS_CA_MAX_ARRAY_BYTES.  This variable controls the maximum array size that EPICS can transmit
-        with Channel Access.  The default is only 16kB, which is much too small for most detector data.  This value
-        must be set to a large enough value on both the EPICS server computer (e.g. the one running the
-        areaDetector IOC) and client computer (e.g. the one running medm, ImageJ, IDL, etc.).  This can simply be set
-        to a very large value like 100MB.
-        <pre>
+          where XX.YY.ZZ.255 should be replaced with the broadcast address for the public
+          network on this computer.</li>
+        <li>EPICS_CA_MAX_ARRAY_BYTES. This variable controls the maximum array size that EPICS
+          can transmit with Channel Access. The default is only 16kB, which is much too small
+          for most detector data. This value must be set to a large enough value on both the
+          EPICS server computer (e.g. the one running the areaDetector IOC) and client computer
+          (e.g. the one running medm, ImageJ, IDL, etc.). This can simply be set to a very
+          large value like 100MB.
+          <pre>
         setenv EPICS_CA_MAX_ARRAY_BYTES 100000000
         </pre>
         </li>
-        <li>EPICS_DISPLAY_PATH.  This variable controls where medm looks for .adl display files.  If the recommendation
-          below is followed to copy all adl files to a single directory, then this environment variable should be defined
-          to point to that directory.  For example:
+        <li>EPICS_DISPLAY_PATH. This variable controls where medm looks for .adl display files.
+          If the recommendation below is followed to copy all adl files to a single directory,
+          then this environment variable should be defined to point to that directory. For
+          example:
           <pre>
           setenv EPICS_DISPLAY_PATH /home/mar345/epics/adls
           </pre>
         </li>
       </ul>
     </li>
-    <li>medm display files.  I find it convenient to copy all medm .adl files to a single directory and then point the
-      environment variable EPICS_DISPLAY_PATH to this directory.  The alternative is to point EPICS_DISPLAY_PATH to a long
-      list of directories where the adl files are located in the distributions, which is harder to maintain.  
-      On the mar345, for example,
-      I create a directory called /home/mar345/epics/adls, where I put all of the adl files.  To simplify copying the adl files
-      to that location I use the following one-line script, which I place in /home/mar345/bin/sync_adls.
+    <li>medm display files. I find it convenient to copy all medm .adl files to a single
+      directory and then point the environment variable EPICS_DISPLAY_PATH to this directory.
+      The alternative is to point EPICS_DISPLAY_PATH to a long list of directories where
+      the adl files are located in the distributions, which is harder to maintain. On
+      the mar345, for example, I create a directory called /home/mar345/epics/adls, where
+      I put all of the adl files. To simplify copying the adl files to that location I
+      use the following one-line script, which I place in /home/mar345/bin/sync_adls.
       <pre>
       find /home/mar345/epics/support -name '*.adl' -exec cp -fv {} /home/mar345/epics/adls \;
       </pre>
-      This script finds all adl files in the epics/support tree and copies them to /home/mar345/epics/adls.  That directory
-      must be created before running this script.  Similar scripts can be used for other Linux detectors (marCCD, Pilatus, etc.)
-      and can be used on Windows as well if Cygwin is installed.  Each time a new release of areaDetector is installed remove
-      the old versions of each support module (areaDetector, asyn, autosave, etc.) and then run this script to install the 
-      latest medm files.
-    </li>
+      This script finds all adl files in the epics/support tree and copies them to /home/mar345/epics/adls.
+      That directory must be created before running this script. Similar scripts can be
+      used for other Linux detectors (marCCD, Pilatus, etc.) and can be used on Windows
+      as well if Cygwin is installed. Each time a new release of areaDetector is installed
+      remove the old versions of each support module (areaDetector, asyn, autosave, etc.)
+      and then run this script to install the latest medm files. </li>
   </ul>
   <h3>
     Running the IOC</h3>
-  <p>Each example IOC directory comes with a Linux script (start_epics) or a Windows batch file (start_epics.bat) or both
-    depending on the architectures that the detector runs on.  These scripts provide simple examples of how to start
-    medm and the EPICS IOC.  For example, for the mar345 iocBoot/iocMAR345/start_epics contains the following:</p>
-    <pre>
+  <p>
+    Each example IOC directory comes with a Linux script (start_epics) or a Windows
+    batch file (start_epics.bat) or both depending on the architectures that the detector
+    runs on. These scripts provide simple examples of how to start medm and the EPICS
+    IOC. For example, for the mar345 iocBoot/iocMAR345/start_epics contains the following:</p>
+  <pre>
     medm -x -macro "P=13MAR345_1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, TIFF=TIFF1:, JPEG=JPEG1:, NEXUS=Nexus1:" mar345.adl &amp;
     ../../bin/linux-x86/mar345App st.cmd
     </pre>
-    <p>This script starts medm in execute mode with the appropriate medm display file and macro parameters, running it in the background.  It then
-    runs the IOC application.  This script assumes that iocBoot/iocMAR345 is the default directory when it is run, which could be added to the
-    command or set in the configuration if this script is set as the target of a desktop shortcut, etc.  The script assumes that EPICS_DISPLAY_PATH
-    has been defined to be a location where the mar345.adl and related displays that it loads can be found.  You will need to edit the script
-    in your copy of the iocXXX directory to change the prefix (P) from 13MAR345_1: to whatever prefix you chose for your IOC.  The start_epics script
-    could also be copied to a location in your PATH (e.g. /home/mar345/bin/start_epics). Add a command like 
-    <code>cd /home/mar345/epics/support/areaDetector/1-5/iocBoot/iocMAR345</code> at the beginning of the script and then type 
-    <code>start_epics</code> from any directory to start the EPICS IOC.</p>
+  <p>
+    This script starts medm in execute mode with the appropriate medm display file and
+    macro parameters, running it in the background. It then runs the IOC application.
+    This script assumes that iocBoot/iocMAR345 is the default directory when it is run,
+    which could be added to the command or set in the configuration if this script is
+    set as the target of a desktop shortcut, etc. The script assumes that EPICS_DISPLAY_PATH
+    has been defined to be a location where the mar345.adl and related displays that
+    it loads can be found. You will need to edit the script in your copy of the iocXXX
+    directory to change the prefix (P) from 13MAR345_1: to whatever prefix you chose
+    for your IOC. The start_epics script could also be copied to a location in your
+    PATH (e.g. /home/mar345/bin/start_epics). Add a command like <code>cd /home/mar345/epics/support/areaDetector/1-5/iocBoot/iocMAR345</code>
+    at the beginning of the script and then type <code>start_epics</code> from any directory
+    to start the EPICS IOC.</p>
 </body>
 </html>
