@@ -173,6 +173,63 @@ record(ai, "$(P)$(R)ScaleFlatField_RBV")
     field(SCAN, "I/O Intr")
 }
 
+###################################################################
+# These records control the scale and offset                      #
+###################################################################
+record(bo, "$(P)$(R)EnableScaleOffset")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_SCALE_OFFSET")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+}
+
+record(bi, "$(P)$(R)EnableScaleOffset_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_SCALE_OFFSET")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+    field(ZSV,  "NO_ALARM")
+    field(OSV,  "MINOR")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)Scale")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SCALE")
+    field(PREC, "2")
+    field(VAL,  "1.0")
+}
+
+record(ai, "$(P)$(R)Scale_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SCALE")
+    field(PREC, "2")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)Offset")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OFFSET")
+    field(PREC, "2")
+    field(VAL,  "1.0")
+}
+
+record(ai, "$(P)$(R)Offset_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OFFSET")
+    field(PREC, "2")
+    field(SCAN, "I/O Intr")
+}
+
 
 ###################################################################
 # These records control the high and low clipping                 #
@@ -272,20 +329,34 @@ record(bi, "$(P)$(R)EnableFilter_RBV")
     field(SCAN, "I/O Intr")
 }
 
-record(ao, "$(P)$(R)NumFilter")
+record(bo, "$(P)$(R)ResetFilter")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))RESET_FILTER")
+    field(VAL,  "1")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)ResetFilter_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))RESET_FILTER")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)NumFilter")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_FILTER")
-    field(DRVL, "2")
-    field(LOPR, "2")
-    field(DRVH, "1e10")
-    field(HOPR, "1e10")
     field(VAL,  "1")
     field(FLNK, "$(P)$(R)NumFilterRecip.PROC PP")
 }
 
-record(ai, "$(P)$(R)NumFilter_RBV")
+record(longin, "$(P)$(R)NumFilter_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_FILTER")
@@ -300,7 +371,7 @@ record(calc, "$(P)$(R)NumFilterRecip")
     field(CALC, "1./A")
 }
 
-record(ai, "$(P)$(R)NumFiltered_RBV")
+record(longin, "$(P)$(R)NumFiltered_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_FILTERED")
@@ -308,17 +379,32 @@ record(ai, "$(P)$(R)NumFiltered_RBV")
     field(SCAN, "I/O Intr")
 }
 
-record(ao, "$(P)$(R)OC0")
+record(ao, "$(P)$(R)OOffset")
 {
     field(PINI, "YES")
     field(DTYP, "asynFloat64")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_OC0")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_OOFFSET")
     field(PREC, "2")
 }
-record(ai, "$(P)$(R)OC0_RBV")
+record(ai, "$(P)$(R)OOffset_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_OC0")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_OOFFSET")
+    field(PREC,  "2")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)OScale")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_OSCALE")
+    field(PREC, "2")
+}
+record(ai, "$(P)$(R)OScale_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_OSCALE")
     field(PREC,  "2")
     field(SCAN, "I/O Intr")
 }
@@ -383,17 +469,32 @@ record(ai, "$(P)$(R)OC4_RBV")
     field(SCAN, "I/O Intr")
 }
 
-record(ao, "$(P)$(R)FC0")
+record(ao, "$(P)$(R)FOffset")
 {
     field(PINI, "YES")
     field(DTYP, "asynFloat64")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_FC0")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_FOFFSET")
     field(PREC, "2")
 }
-record(ai, "$(P)$(R)FC0_RBV")
+record(ai, "$(P)$(R)FOffset_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_FC0")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_FOFFSET")
+    field(PREC,  "2")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)FScale")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_FSCALE")
+    field(PREC, "2")
+}
+record(ai, "$(P)$(R)FScale_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_FSCALE")
     field(PREC,  "2")
     field(SCAN, "I/O Intr")
 }
@@ -456,17 +557,17 @@ record(ai, "$(P)$(R)FC4_RBV")
     field(PREC,  "2")
     field(SCAN, "I/O Intr")
 }
-record(ao, "$(P)$(R)RC0")
+record(ao, "$(P)$(R)ROffset")
 {
     field(PINI, "YES")
     field(DTYP, "asynFloat64")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_RC0")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_ROFFSET")
     field(PREC, "2")
 }
-record(ai, "$(P)$(R)RC0_RBV")
+record(ai, "$(P)$(R)ROffset_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_RC0")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_ROFFSET")
     field(PREC,  "2")
     field(SCAN, "I/O Intr")
 }
@@ -486,203 +587,170 @@ record(ai, "$(P)$(R)RC1_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(ao, "$(P)$(R)RC2")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_RC2")
+    field(PREC, "2")
+}
+record(ai, "$(P)$(R)RC2_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_RC2")
+    field(PREC,  "2")
+    field(SCAN, "I/O Intr")
+}
+
 # We don't see PINI=YES for FilterType because we want to restore the actual coefficients
 # We do restore this record, but we don't process it
 record(mbbo, "$(P)$(R)FilterType")
 {
-    field(ZRST, "UserDefined")
-    field(ZRVL, "0")
-    field(ONST, "OffsetScale")
-    field(ONVL, "1")
-    field(TWST, "RecursiveAve")
-    field(TWVL, "2")
-    field(THST, "RecursiveSum")
-    field(THVL, "3")
-    field(FRST, "Difference")
-    field(FRVL, "4")
-    field(FVST, "RecursiveAveDiff")
-    field(FVVL, "5")
+    field(ZRST, "RecursiveAve")
+    field(ZRVL, "1")
+    field(ONST, "RecursiveSum")
+    field(ONVL, "2")
+    field(TWST, "Difference")
+    field(TWVL, "3")
+    field(THST, "RecursiveAveDiff")
+    field(THVL, "4")
+    field(FRST, "CopyToFilter")
+    field(FRVL, "5")
     field(FLNK, "$(P)$(R)FilterTypeSeq PP MS")
 }
 
 record(seq, "$(P)$(R)FilterTypeSeq")
 {
-    field(SELL, "$(P)$(R)FilterType.VAL NPP")
+    field(SELL, "$(P)$(R)FilterType.RVAL NPP")
     field(SELM, "Specified")
     field(DOL1, "1")
-    field(LNK1, "$(P)$(R)OffsetScaleSeq.PROC PP MS")
+    field(LNK1, "$(P)$(R)RecursiveAveSeq.PROC PP MS")
     field(DOL2, "1")
-    field(LNK2, "$(P)$(R)RecursiveAveSeq.PROC PP MS")
+    field(LNK2, "$(P)$(R)RecursiveSumSeq.PROC PP MS")
     field(DOL3, "1")
-    field(LNK3, "$(P)$(R)RecursiveSumSeq.PROC PP MS")
+    field(LNK3, "$(P)$(R)DifferenceSeq.PROC PP MS")
     field(DOL4, "1")
-    field(LNK4, "$(P)$(R)DifferenceSeq.PROC PP MS")
+    field(LNK4, "$(P)$(R)RecursiveAveDiffSeq.PROC PP MS")
     field(DOL5, "1")
-    field(LNK5, "$(P)$(R)RecursiveAveDiffSeq.PROC PP MS")
-    field(FLNK, "$(P)$(R)NumFilter.PROC PP MS")
-}
-
-record(seq, "$(P)$(R)OffsetScaleSeq")
-{
-    field(DOL1, "0")
-    field(LNK1, "$(P)$(R)OC0 PP MS")
-    field(DOL2, "0")
-    field(LNK2, "$(P)$(R)OC1 PP MS")
-    field(DOL3, "0")
-    field(LNK3, "$(P)$(R)OC2 PP MS")
-    field(DOL4, "1")
-    field(LNK4, "$(P)$(R)OC3 PP MS")
-    field(DOL5, "0")
-    field(LNK5, "$(P)$(R)OC4 PP MS")
-    field(DOL6, "0")
-    field(LNK6, "$(P)$(R)FC0 PP MS")
-    field(DOL7, "0")
-    field(LNK7, "$(P)$(R)FC1 PP MS")
-    field(DOL8, "0")
-    field(LNK8, "$(P)$(R)FC2 PP MS")
-    field(DOL9, "0")
-    field(LNK9, "$(P)$(R)FC3 PP MS")
-    field(DOLA, "0")
-    field(LNKA, "$(P)$(R)FC4 PP MS")
-    field(FLNK, "$(P)$(R)OffsetScaleSeq1.PROC")
-}
-
-record(seq, "$(P)$(R)OffsetScaleSeq1")
-{
-    field(DOL1, "0")
-    field(LNK1, "$(P)$(R)RC0 PP MS")
-    field(DOL2, "0")
-    field(LNK2, "$(P)$(R)RC1 PP MS")
+    field(LNK5, "$(P)$(R)CopyToFilterSeq.PROC PP MS")
 }
 
 record(seq, "$(P)$(R)RecursiveAveSeq")
 {
-    field(DOL1, "0")
-    field(LNK1, "$(P)$(R)OC0 PP MS")
-    field(DOL2, "1")
-    field(LNK2, "$(P)$(R)OC1 PP MS")
-    field(DOL3, "-1")
-    field(LNK3, "$(P)$(R)OC2 PP MS")
-    field(DOL4, "0")
-    field(LNK4, "$(P)$(R)OC3 PP MS")
+    field(DOL1, "1")
+    field(LNK1, "$(P)$(R)OC1 PP MS")
+    field(DOL2, "-1")
+    field(LNK2, "$(P)$(R)OC2 PP MS")
+    field(DOL3, "0")
+    field(LNK3, "$(P)$(R)OC3 PP MS")
+    field(DOL4, "1")
+    field(LNK4, "$(P)$(R)OC4 PP MS")
     field(DOL5, "1")
-    field(LNK5, "$(P)$(R)OC4 PP MS")
-    field(DOL6, "0")
-    field(LNK6, "$(P)$(R)FC0 PP MS")
-    field(DOL7, "1")
-    field(LNK7, "$(P)$(R)FC1 PP MS")
-    field(DOL8, "-1")
-    field(LNK8, "$(P)$(R)FC2 PP MS")
+    field(LNK5, "$(P)$(R)FC1 PP MS")
+    field(DOL6, "-1")
+    field(LNK6, "$(P)$(R)FC2 PP MS")
+    field(DOL7, "0")
+    field(LNK7, "$(P)$(R)FC3 PP MS")
+    field(DOL8, "1")
+    field(LNK8, "$(P)$(R)FC4 PP MS")
     field(DOL9, "0")
-    field(LNK9, "$(P)$(R)FC3 PP MS")
+    field(LNK9, "$(P)$(R)RC1 PP MS")
     field(DOLA, "1")
-    field(LNKA, "$(P)$(R)FC4 PP MS")
-    field(FLNK, "$(P)$(R)RecursiveAveSeq1.PROC")
-}
-
-record(seq, "$(P)$(R)RecursiveAveSeq1")
-{
-    field(DOL1, "0")
-    field(LNK1, "$(P)$(R)RC0 PP MS")
-    field(DOL2, "1")
-    field(LNK2, "$(P)$(R)RC1 PP MS")
+    field(LNKA, "$(P)$(R)RC2 PP MS")
 }
 
 record(seq, "$(P)$(R)RecursiveSumSeq")
 {
-    field(DOL1, "0")
-    field(LNK1, "$(P)$(R)OC0 PP MS")
-    field(DOL2, "1")
-    field(LNK2, "$(P)$(R)OC1 PP MS")
-    field(DOL3, "0")
-    field(LNK3, "$(P)$(R)OC2 PP MS")
-    field(DOL4, "$(P)$(R)NumFilterRecip NPP")
-    field(LNK4, "$(P)$(R)OC3 PP MS")
-    field(DOL5, "0")
-    field(LNK5, "$(P)$(R)OC4 PP MS")
-    field(DOL6, "0")
-    field(LNK6, "$(P)$(R)FC0 PP MS")
-    field(DOL7, "1")
-    field(LNK7, "$(P)$(R)FC1 PP MS")
-    field(DOL8, "0")
-    field(LNK8, "$(P)$(R)FC2 PP MS")
-    field(DOL9, "$(P)$(R)NumFilterRecip NPP")
-    field(LNK9, "$(P)$(R)FC3 PP MS")
-    field(DOLA, "0")
-    field(LNKA, "$(P)$(R)FC4 PP MS")
-    field(FLNK, "$(P)$(R)RecursiveSumSeq1.PROC")
-}
-
-record(seq, "$(P)$(R)RecursiveSumSeq1")
-{
-    field(DOL1, "0")
-    field(LNK1, "$(P)$(R)RC0 PP MS")
+    field(DOL1, "1")
+    field(LNK1, "$(P)$(R)OC1 PP MS")
     field(DOL2, "0")
-    field(LNK2, "$(P)$(R)RC1 PP MS")
+    field(LNK2, "$(P)$(R)OC2 PP MS")
+    field(DOL3, "$(P)$(R)NumFilterRecip NPP")
+    field(LNK3, "$(P)$(R)OC3 PP MS")
+    field(DOL4, "0")
+    field(LNK4, "$(P)$(R)OC4 PP MS")
+    field(DOL5, "1")
+    field(LNK5, "$(P)$(R)FC1 PP MS")
+    field(DOL6, "0")
+    field(LNK6, "$(P)$(R)FC2 PP MS")
+    field(DOL7, "$(P)$(R)NumFilterRecip NPP")
+    field(LNK7, "$(P)$(R)FC3 PP MS")
+    field(DOL8, "0")
+    field(LNK8, "$(P)$(R)FC4 PP MS")
+    field(DOL9, "0")
+    field(LNK9, "$(P)$(R)RC1 PP MS")
+    field(DOLA, "0")
+    field(LNKA, "$(P)$(R)RC2 PP MS")
 }
 
 record(seq, "$(P)$(R)DifferenceSeq")
 {
-    field(DOL1, "0")
-    field(LNK1, "$(P)$(R)OC0 PP MS")
-    field(DOL2, "-1")
-    field(LNK2, "$(P)$(R)OC1 PP MS")
-    field(DOL3, "0")
-    field(LNK3, "$(P)$(R)OC2 PP MS")
-    field(DOL4, "1")
-    field(LNK4, "$(P)$(R)OC3 PP MS")
+    field(DOL1, "-1")
+    field(LNK1, "$(P)$(R)OC1 PP MS")
+    field(DOL2, "0")
+    field(LNK2, "$(P)$(R)OC2 PP MS")
+    field(DOL3, "1")
+    field(LNK3, "$(P)$(R)OC3 PP MS")
+    field(DOL4, "0")
+    field(LNK4, "$(P)$(R)OC4 PP MS")
     field(DOL5, "0")
-    field(LNK5, "$(P)$(R)OC4 PP MS")
+    field(LNK5, "$(P)$(R)FC1 PP MS")
     field(DOL6, "0")
-    field(LNK6, "$(P)$(R)FC0 PP MS")
-    field(DOL7, "0")
-    field(LNK7, "$(P)$(R)FC1 PP MS")
+    field(LNK6, "$(P)$(R)FC2 PP MS")
+    field(DOL7, "1")
+    field(LNK7, "$(P)$(R)FC3 PP MS")
     field(DOL8, "0")
-    field(LNK8, "$(P)$(R)FC2 PP MS")
-    field(DOL9, "1")
-    field(LNK9, "$(P)$(R)FC3 PP MS")
-    field(DOLA, "0")
-    field(LNKA, "$(P)$(R)FC4 PP MS")
-    field(FLNK, "$(P)$(R)Difference1.PROC")
-}
-
-record(seq, "$(P)$(R)Difference1")
-{
-    field(DOL1, "0")
-    field(LNK1, "$(P)$(R)RC0 PP MS")
-    field(DOL2, "1")
-    field(LNK2, "$(P)$(R)RC1 PP MS")
+    field(LNK8, "$(P)$(R)FC4 PP MS")
+    field(DOL9, "0")
+    field(LNK9, "$(P)$(R)RC1 PP MS")
+    field(DOLA, "1")
+    field(LNKA, "$(P)$(R)RC2 PP MS")
 }
 
 record(seq, "$(P)$(R)RecursiveAveDiffSeq")
 {
-    field(DOL1, "0")
-    field(LNK1, "$(P)$(R)OC0 PP MS")
-    field(DOL2, "-1")
-    field(LNK2, "$(P)$(R)OC1 PP MS")
-    field(DOL3, "0")
-    field(LNK3, "$(P)$(R)OC2 PP MS")
-    field(DOL4, "1")
-    field(LNK4, "$(P)$(R)OC3 PP MS")
-    field(DOL5, "0")
-    field(LNK5, "$(P)$(R)OC4 PP MS")
-    field(DOL6, "0")
-    field(LNK6, "$(P)$(R)FC0 PP MS")
-    field(DOL7, "1")
-    field(LNK7, "$(P)$(R)FC1 PP MS")
-    field(DOL8, "-1")
-    field(LNK8, "$(P)$(R)FC2 PP MS")
+    field(DOL1, "-1")
+    field(LNK1, "$(P)$(R)OC1 PP MS")
+    field(DOL2, "0")
+    field(LNK2, "$(P)$(R)OC2 PP MS")
+    field(DOL3, "1")
+    field(LNK3, "$(P)$(R)OC3 PP MS")
+    field(DOL4, "0")
+    field(LNK4, "$(P)$(R)OC4 PP MS")
+    field(DOL5, "1")
+    field(LNK5, "$(P)$(R)FC1 PP MS")
+    field(DOL6, "-1")
+    field(LNK6, "$(P)$(R)FC2 PP MS")
+    field(DOL7, "0")
+    field(LNK7, "$(P)$(R)FC3 PP MS")
+    field(DOL8, "1")
+    field(LNK8, "$(P)$(R)FC4 PP MS")
     field(DOL9, "0")
-    field(LNK9, "$(P)$(R)FC3 PP MS")
+    field(LNK9, "$(P)$(R)RC1 PP MS")
     field(DOLA, "1")
-    field(LNKA, "$(P)$(R)FC4 PP MS")
-    field(FLNK, "$(P)$(R)RecursiveAveDiff1.PROC")
+    field(LNKA, "$(P)$(R)RC2 PP MS")
 }
 
-record(seq, "$(P)$(R)RecursiveAveDiff1")
+record(seq, "$(P)$(R)CopyToFilterSeq")
 {
     field(DOL1, "0")
-    field(LNK1, "$(P)$(R)RC0 PP MS")
-    field(DOL2, "1")
-    field(LNK2, "$(P)$(R)RC1 PP MS")
+    field(LNK1, "$(P)$(R)OC1 PP MS")
+    field(DOL2, "0")
+    field(LNK2, "$(P)$(R)OC2 PP MS")
+    field(DOL3, "1")
+    field(LNK3, "$(P)$(R)OC3 PP MS")
+    field(DOL4, "0")
+    field(LNK4, "$(P)$(R)OC4 PP MS")
+    field(DOL5, "0")
+    field(LNK5, "$(P)$(R)FC1 PP MS")
+    field(DOL6, "0")
+    field(LNK6, "$(P)$(R)FC2 PP MS")
+    field(DOL7, "1")
+    field(LNK7, "$(P)$(R)FC3 PP MS")
+    field(DOL8, "0")
+    field(LNK8, "$(P)$(R)FC4 PP MS")
+    field(DOL9, "0")
+    field(LNK9, "$(P)$(R)RC1 PP MS")
+    field(DOLA, "1")
+    field(LNKA, "$(P)$(R)RC2 PP MS")
 }
