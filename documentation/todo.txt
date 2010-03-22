@@ -1,9 +1,23 @@
 R1-6
 
-    Firewire (Windows) driver
+Firewire (Windows) driver:
 - Not working correctly for AcquireTime initially - absolute/device mode
   problem
 
+Prosilica driver:
+- Switching 8/16 bits does not work until size or some other PV is processed.
+
+- ROI plugin not doing correct thing for some color modes.  Test with
+  simDetector plugin in all modes.
+
+- Test transform plugin, make medm screen compatible and write documentation
+
+- Add cross-sections to Stats plugin?
+
+- Change startup scripts, auto_settings.req, ADTop.adl and medm screens for
+  every detector
+
+- Fix bug in ImageJ viewer when no arrays available, or when IOC rebooted
 
 Longer term:
 
@@ -26,10 +40,6 @@ Longer term:
   
    File plugins
 -  Implement reading
-
-    drvNDROI
-- Add cross-sections?
-- Add scaling and offset, useful when converting data types?
 
 
     Prosilica driver

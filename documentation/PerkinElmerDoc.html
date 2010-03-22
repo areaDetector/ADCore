@@ -34,15 +34,15 @@
     This is a driver for the flat-panel amorphous silicon detectors from <a href="http://optoelectronics.perkinelmer.com/catalog/Category.aspx?CategoryName=X-Ray+Cameras">
       PerkinElmer</a>.</p>
   <p>
-    The driver is based upon the XISL library provided by PerkinElmer. It only runs on Microsoft
-    Windows computers.
+    The driver is based upon the XISL library provided by PerkinElmer. It only runs
+    on Microsoft Windows computers.
   </p>
   <p>
     This driver has been tested with the following detectors</p>
-       <ul>
-		<li>XRD0820 w/ XRD-FG PCI frame grabber</li>
-		<li>XRD1621 w/ XRD-FGX PCI frame grabber</li>
-       </ul>
+  <ul>
+    <li>XRD0820 w/ XRD-FG PCI frame grabber</li>
+    <li>XRD1621 w/ XRD-FGX PCI frame grabber</li>
+  </ul>
   <p>
     ADD ADDTIONAL INTRODUCTORY TEXT HERE.</p>
   <p>
@@ -69,7 +69,7 @@
       </tr>
       <tr>
         <th>
-          Enum name</th>
+          Parameter index variable</th>
         <th>
           EPICS record name</th>
         <th>
@@ -87,21 +87,21 @@
         <td>
           ADAcquireTime</td>
         <td>
-          $(P)$(R)AcquireTime<br/>
+          $(P)$(R)AcquireTime<br />
           $(P)$(R)AcquireTime_RBV</td>
         <td>
-          When using Internal Triggers, this parameter controls the period between trigger pulses
-          which will also be equal to the exposure time.  This parameter is only updated when the
-          detector is initialized</td>
+          When using Internal Triggers, this parameter controls the period between trigger
+          pulses which will also be equal to the exposure time. This parameter is only updated
+          when the detector is initialized</td>
       </tr>
       <tr>
         <td>
           ADTriggerMode</td>
         <td>
-          $(P)$(R)TriggerMode<br/>
+          $(P)$(R)TriggerMode<br />
           $(P)$(R)TriggerMode_RBV</td>
         <td>
-          Sets the trigger mode for the detector.  Options are:
+          Sets the trigger mode for the detector. Options are:
           <ul>
             <li>Internal</li>
             <li>External</li>
@@ -122,8 +122,8 @@
   <p>
     The PerkinElmer driver implements the following parameters in addition to those
     in asynNDArrayDriver.h and ADDriver.h. Note that to reduce the width of this table
-    the enum names have been split into 2 lines, but these are just a single name, for
-    example <code>PerkinElmerXXX</code>.
+    the parameter index variable names have been split into 2 lines, but these are just
+    a single name, for example <code>PerkinElmerXXX</code>.
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
@@ -133,7 +133,7 @@
       </tr>
       <tr>
         <th>
-          Enum name</th>
+          Parameter index variable</th>
         <th>
           asyn interface</th>
         <th>
@@ -141,7 +141,7 @@
         <th>
           Description</th>
         <th>
-          drvUser string</th>
+          drvInfo string</th>
         <th>
           EPICS record name</th>
         <th>
@@ -159,10 +159,10 @@
         <td>
           PE_NUM_FRAME_BUFFERS</td>
         <td>
-          $(P)$(R)PENumFrameBuffers<br/>
+          $(P)$(R)PENumFrameBuffers<br />
           $(P)$(R)PENumFrameBuffers_RBV</td>
         <td>
-          longout<br/>
+          longout<br />
           longin</td>
       </tr>
       <tr>
@@ -189,7 +189,7 @@
         <td>
           r/w</td>
         <td>
-          Status of PerkinElmer driver.  Need to integrate this into DetectorState</td>
+          Status of PerkinElmer driver. Need to integrate this into DetectorState</td>
         <td>
           PE_STATUS</td>
         <td>
@@ -261,7 +261,10 @@
         <td>
           longout</td>
       </tr>
-	  <tr><td align="center" colspan="7"><b>Offset corrections</b></td></tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Offset corrections</b></td>
+      </tr>
       <tr>
         <td>
           PE_NumOffsetFrames</td>
@@ -326,7 +329,10 @@
         <td>
           mbbi</td>
       </tr>
-	  <tr><td align="center" colspan="7"><b>Gain corrections</b></td></tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Gain corrections</b></td>
+      </tr>
       <tr>
         <td>
           PE_NumGainFrames</td>
@@ -391,7 +397,10 @@
         <td>
           mbbi</td>
       </tr>
-	  <tr><td align="center" colspan="7"><b>Bad pixel corrections</b></td></tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Bad pixel corrections</b></td>
+      </tr>
       <tr>
         <td>
           PE_UsePixelCorrections</td>
@@ -424,13 +433,11 @@
         <td>
           mbbi</td>
       </tr>
-
       <tr>
         <td>
-          PE_BadPixelFile
-          PE_BadPixelFile_RBV</td>
+          PE_BadPixelFile PE_BadPixelFile_RBV</td>
         <td>
-          asynOctetWrite<br/>
+          asynOctetWrite<br />
           aynnOctetRead</td>
         <td>
           w</td>
@@ -439,12 +446,15 @@
         <td>
           PE_BAD_PIXEL_FILE</td>
         <td>
-          $(P)$(R)PEBadPixelFile<br/>
+          $(P)$(R)PEBadPixelFile<br />
           $(P)$(R)PEBadPixelFile_RBV</td>
         <td>
           waveform</td>
       </tr>
-	  <tr><td align="center" colspan="7"><b>Load/Save offset/gain corrections</b></td></tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Load/Save offset/gain corrections</b></td>
+      </tr>
       <tr>
         <td>
           PE_CorrectionsDirectory</td>
@@ -501,12 +511,11 @@
     The PerkinElmer driver does not support the following standard driver parameters
     because they are not supported in the PerkinElmer library:</p>
   <ul>
-	<li> Size (ADBinX, ADBinY, ADMinX, ADMinY, ADSizeX, ADSizeY)</li>
-	<li> Type/Color (NDDataType, NDColorMode)</li>
-	<li> File ( None of the file parameters in NDFile )</li>
-	<li> Binning (Not supported in software yet ) </li>
-	<li> No Hardware shutter control </li>
-
+    <li>Size (ADBinX, ADBinY, ADMinX, ADMinY, ADSizeX, ADSizeY)</li>
+    <li>Type/Color (NDDataType, NDColorMode)</li>
+    <li>File ( None of the file parameters in NDFile )</li>
+    <li>Binning (Not supported in software yet ) </li>
+    <li>No Hardware shutter control </li>
     <li>List any unsupported parameters here (WORK NEEDED)</li>
   </ul>
   <h2 id="Configuration">

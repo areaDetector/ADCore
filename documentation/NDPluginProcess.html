@@ -66,9 +66,9 @@
     NDPluginProcess.h defines the following parameters. It also implements all of the
     standard plugin parameters from <a href="pluginDoc.html#NDPluginDriver">NDPluginDriver</a>.
     The EPICS database NDProcess.template provide access to these parameters, listed
-    in the following table. Note that to reduce the width of this table the enum names
-    have been split into 2 lines, but these are just a single name, for example <code>
-      NDPluginProcessSaveBackground</code>.
+    in the following table. Note that to reduce the width of this table the parameter
+    index variable names have been split into 2 lines, but these are just a single name,
+    for example <code>NDPluginProcessSaveBackground</code>.
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
@@ -86,7 +86,7 @@
         <th>
           Description</th>
         <th>
-          drvUser string</th>
+          drvInfo string</th>
         <th>
           EPICS record name</th>
         <th>
@@ -977,9 +977,9 @@ NDProcessConfigure(const char *portName, int queueSize, int blockingCallbacks,
     Screen shots</h2>
   <p>
     The following is the MEDM screen that provides access to the parameters in NDPluginDriver.h
-    and NDPluginProcess.h through records in NDPluginBase.template and NDProcess.template. In this
-    example the input image is first scaled by 35 and offset by -110.  The image is then run through
-    a recursive averaging filter with N=100.
+    and NDPluginProcess.h through records in NDPluginBase.template and NDProcess.template.
+    In this example the input image is first scaled by 35 and offset by -110. The image
+    is then run through a recursive averaging filter with N=100.
   </p>
   <div style="text-align: center">
     <h3>
