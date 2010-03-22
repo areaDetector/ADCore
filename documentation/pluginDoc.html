@@ -76,17 +76,17 @@
     NDPluginDriver is the class from which actual plugins are directly derived. The
     NDPluginDriver class handles most of the details of processing NDArray callbacks
     from the driver. Plugins derived from this class typically need to implement the
-    processCallbacks method, the drvUser method, and one or more of the write(Int32,
-    Float64, Octet) methods. The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_driver.html">
-      NDPluginDriver class documentation </a>describes this class in detail.
+    processCallbacks method, and one or more of the write(Int32, Float64, Octet) methods.
+    The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_driver.html">NDPluginDriver
+      class documentation </a>describes this class in detail.
   </p>
   <p>
     NDPluginDriver defines parameters that all plugin drivers should implement if possible.
-    These parameters are defined by enum values with an associated asyn interface, and
-    access (read-only or read-write). The EPICS database NDPluginBase.template provides
-    access to these standard plugin parameters, listed in the following table. Note
-    that to reduce the width of this table the enum names have been split into 2 lines,
-    but these are just a single name, for example <code>NDPluginDriverArrayPort</code>.
+    These parameters are defined by strings (drvInfo strings in asyn) with an associated
+    asyn interface, and access (read-only or read-write). The EPICS database NDPluginBase.template
+    provides access to these standard plugin parameters, listed in the following table.
+    Note that to reduce the width of this table the parameter index variable names have
+    been split into 2 lines, but these are just a single name, for example <code>NDPluginDriverArrayPort</code>.
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
@@ -96,7 +96,7 @@
       </tr>
       <tr>
         <th>
-          Enum name</th>
+          Parameter index variable</th>
         <th>
           asyn interface</th>
         <th>
@@ -104,7 +104,7 @@
         <th>
           Description</th>
         <th>
-          drvUser string</th>
+          drvInfo string</th>
         <th>
           EPICS record name</th>
         <th>
@@ -548,10 +548,11 @@
       or getStringParam() function calls when they are needed.</li>
     <li>If the writeInt32(), writeFloat64() or writeOctet() functions are implemented
       they <b>must</b> call the base class function for parameters that they do not handle
-      and whose enum value is less than the value of NDPluginDriverLastParam, i.e. parameters
-      that belong to a base class.</li>
-    <li>Plugins will need to implement the drvUserCreate() function if they have additional
-      parameters beyond those in the asynPortDriver or NDPluginDriver base classes.</li>
+      and whose parameter index value is less than the first parameter of this class,
+      i.e. parameters that belong to a base class.</li>
+    <li>Plugins will need to call the createParam() function in their constructor if they
+      have additional parameters beyond those in the asynPortDriver or NDPluginDriver
+      base classes.</li>
     <li>Plugins may <b>never</b> modify the NDArray that they receive in the processCallbacks()
       function. The reason is that other plugins may be concurrently operating on the
       same NDArray, since each is passed the same pointer. This means also that when getting
