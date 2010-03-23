@@ -1,0 +1,62 @@
+# Database for NDOverlays
+# Mark Rivers
+# March 22, 2010
+
+###################################################################
+#  These records control the label for the overlay                #
+###################################################################
+record(stringout, "$(P)$(R)Name")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynOctetWrite")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
+}
+
+record(stringin, "$(P)$(R)Name_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
+   field(SCAN, "I/O Intr")
+}
+
+
+###################################################################
+#  These records control whether this overlay is used             #
+###################################################################
+record(bo, "$(P)$(R)Use")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))USE")
+   field(VAL,  "1")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)Use_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))USE")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records control the overlay definition                   #
+###################################################################
+
+record(longout, "$(P)$(R)XPosition")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_X_POSITION")
+   field(VAL,  "1")
+}
+
+record(longin, "$(P)$(R)XPosition_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_X_POSITION")
+   field(SCAN, "I/O Intr")
+}
