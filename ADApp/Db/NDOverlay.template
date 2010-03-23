@@ -46,11 +46,20 @@ record(bi, "$(P)$(R)Use_RBV")
 #  These records control the overlay definition                   #
 ###################################################################
 
+record(longout, "$(P)$(R)PositionXLink")
+{
+    field(DOL,  "CP")
+    field(OMSL, "closed_loop")
+    field(OUT, "$(P)$(R)PositionX PP")
+}
+
 record(longout, "$(P)$(R)PositionX")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_X_POSITION")
+    field(LOPR, "1")
+    field(HOPR, "1024")
     field(VAL,  "1")
 }
 
@@ -61,11 +70,19 @@ record(longin, "$(P)$(R)PositionX_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(longout, "$(P)$(R)PositionYLink")
+{
+    field(DOL,  "CP")
+    field(OMSL, "closed_loop")
+    field(OUT, "$(P)$(R)PositionY PP")
+}
 record(longout, "$(P)$(R)PositionY")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_Y_POSITION")
+    field(LOPR, "1")
+    field(HOPR, "1024")
     field(VAL,  "1")
 }
 
@@ -76,11 +93,20 @@ record(longin, "$(P)$(R)PositionY_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(longout, "$(P)$(R)SizeXLink")
+{
+    field(DOL,  "CP")
+    field(OMSL, "closed_loop")
+    field(OUT, "$(P)$(R)SizeX PP")
+}
+
 record(longout, "$(P)$(R)SizeX")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_X_SIZE")
+    field(LOPR, "1")
+    field(HOPR, "1024")
     field(VAL,  "1")
 }
 
@@ -91,11 +117,20 @@ record(longin, "$(P)$(R)SizeX_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(longout, "$(P)$(R)SizeYLink")
+{
+    field(DOL,  "CP")
+    field(OMSL, "closed_loop")
+    field(OUT, "$(P)$(R)SizeY PP")
+}
+
 record(longout, "$(P)$(R)SizeY")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_Y_SIZE")
+    field(LOPR, "1")
+    field(HOPR, "1024")
     field(VAL,  "1")
 }
 
@@ -193,4 +228,36 @@ record(longin, "$(P)$(R)Blue_RBV")
     field(SCAN, "I/O Intr")
 }
 
+###################################################################
+#  These records set the HOPR and LOPR values for the position    #
+#  and size to the maximum for the input array                    #
+###################################################################
+
+record(longin, "$(P)$(R)MaxSizeX")
+{
+    field(INP,  "$(P)$(O)ArraySize0_RBV CP")
+    field(FLNK, "$(P)$(R)SetXHOPR.PROC PP")
+}
+
+record(dfanout, "$(P)$(R)SetXHOPR")
+{
+    field(DOL,  "$(P)$(R)MaxSizeX NPP")
+    field(OMSL, "closed_loop")
+    field(OUTA, "$(P)$(R)PositionX.HOPR NPP")
+    field(OUTB, "$(P)$(R)SizeX.HOPR NPP")
+}
+
+record(longin, "$(P)$(R)MaxSizeY")
+{
+    field(INP,  "$(P)$(O)ArraySize1_RBV CP")
+    field(FLNK, "$(P)$(R)SetYHOPR.PROC PP")
+}
+
+record(dfanout, "$(P)$(R)SetYHOPR")
+{
+    field(DOL,  "$(P)$(R)MaxSizeY NPP")
+    field(OMSL, "closed_loop")
+    field(OUTA, "$(P)$(R)PositionY.HOPR NPP")
+    field(OUTB, "$(P)$(R)SizeY.HOPR NPP")
+}
 
