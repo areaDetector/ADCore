@@ -7,16 +7,16 @@
 ###################################################################
 record(stringout, "$(P)$(R)Name")
 {
-   field(PINI, "YES")
-   field(DTYP, "asynOctetWrite")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
+    field(PINI, "YES")
+    field(DTYP, "asynOctetWrite")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
 }
 
 record(stringin, "$(P)$(R)Name_RBV")
 {
-   field(DTYP, "asynOctetRead")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
-   field(SCAN, "I/O Intr")
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
+    field(SCAN, "I/O Intr")
 }
 
 
@@ -25,38 +25,172 @@ record(stringin, "$(P)$(R)Name_RBV")
 ###################################################################
 record(bo, "$(P)$(R)Use")
 {
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))USE")
-   field(VAL,  "1")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))USE")
+    field(VAL,  "1")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
 }
 
 record(bi, "$(P)$(R)Use_RBV")
 {
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))USE")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
-   field(SCAN, "I/O Intr")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))USE")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(SCAN, "I/O Intr")
 }
 
 ###################################################################
 #  These records control the overlay definition                   #
 ###################################################################
 
-record(longout, "$(P)$(R)XPosition")
+record(longout, "$(P)$(R)PositionX")
 {
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_X_POSITION")
-   field(VAL,  "1")
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_X_POSITION")
+    field(VAL,  "1")
 }
 
-record(longin, "$(P)$(R)XPosition_RBV")
+record(longin, "$(P)$(R)PositionX_RBV")
 {
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_X_POSITION")
-   field(SCAN, "I/O Intr")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_X_POSITION")
+    field(SCAN, "I/O Intr")
 }
+
+record(longout, "$(P)$(R)PositionY")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_Y_POSITION")
+    field(VAL,  "1")
+}
+
+record(longin, "$(P)$(R)PositionY_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_Y_POSITION")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)SizeX")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_X_SIZE")
+    field(VAL,  "1")
+}
+
+record(longin, "$(P)$(R)SizeX_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_X_SIZE")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)SizeY")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_Y_SIZE")
+    field(VAL,  "1")
+}
+
+record(longin, "$(P)$(R)SizeY_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_Y_SIZE")
+    field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)Shape")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_SHAPE")
+    field(ZRST, "Cross")
+    field(ZRVL, "0")
+    field(ONST, "Rectangle")
+    field(ONVL, "1")
+}
+
+record(mbbi, "$(P)$(R)Shape_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_SHAPE")
+    field(ZRST, "Cross")
+    field(ZRVL, "0")
+    field(ONST, "Rectangle")
+    field(ONVL, "1")
+}
+
+record(mbbo, "$(P)$(R)DrawMode")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_DRAW_MODE")
+    field(ZRST, "Set")
+    field(ZRVL, "0")
+    field(ONST, "XOR")
+    field(ONVL, "1")
+}
+
+record(mbbi, "$(P)$(R)DrawMode_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_DRAW_MODE")
+    field(ZRST, "Set")
+    field(ZRVL, "0")
+    field(ONST, "XOR")
+    field(ONVL, "1")
+}
+
+record(longout, "$(P)$(R)Red")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_RED")
+    field(VAL,  "1")
+}
+
+record(longin, "$(P)$(R)Red_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_RED")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)Green")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_GREEN")
+    field(VAL,  "1")
+}
+
+record(longin, "$(P)$(R)Green_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_GREEN")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)Blue")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_BLUE")
+    field(VAL,  "1")
+}
+
+record(longin, "$(P)$(R)Blue_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_BLUE")
+    field(SCAN, "I/O Intr")
+}
+
+
