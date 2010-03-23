@@ -32,6 +32,7 @@ NDPlugin_SRCS += NDPluginStats.cpp
 NDPlugin_SRCS += NDPluginProcess.cpp
 NDPlugin_SRCS += NDPluginROI.cpp
 NDPlugin_SRCS += NDPluginTransform.cpp
+NDPlugin_SRCS += NDPluginOverlay.cpp
 NDPlugin_SRCS_DEFAULT += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNexus.cpp
 NDPlugin_SRCS_vxWorks += -nil-
 NDPlugin_LIBS += ADBase
