@@ -9,7 +9,7 @@
 typedef enum {
     NDOverlayCross,
     NDOverlayRectangle
-} NDOverlayType_t;
+} NDOverlayShape_t;
 
 typedef enum {
     NDOverlaySet,
@@ -22,7 +22,7 @@ typedef struct NDOverlay {
     int YPosition;
     int XSize;
     int YSize;
-    NDOverlayType_t type;
+    NDOverlayShape_t shape;
     NDOverlayDrawMode_t drawMode;
     int red;
     int green;
@@ -36,7 +36,7 @@ typedef struct NDOverlay {
 #define NDPluginOverlayYPositionString          "OVERLAY_Y_POSITION"    /* (asynInt32,   r/w) X position of overlay */
 #define NDPluginOverlayXSizeString              "OVERLAY_X_SIZE"        /* (asynInt32,   r/o) X size of overlay */
 #define NDPluginOverlayYSizeString              "OVERLAY_Y_SIZE"        /* (asynInt32,   r/w) X size of overlay */
-#define NDPluginOverlayTypeString               "OVERLAY_TYPE"          /* (asynInt32,   r/w) Type of overlay */
+#define NDPluginOverlayShapeString              "OVERLAY_SHAPE"         /* (asynInt32,   r/w) Shape of overlay */
 #define NDPluginOverlayDrawModeString           "OVERLAY_DRAW_MODE"     /* (asynInt32,   r/w) Drawing mode for overlay */
 #define NDPluginOverlayRedString                "OVERLAY_RED"           /* (asynInt32,   r/w) Red value for overlay */
 #define NDPluginOverlayGreenString              "OVERLAY_GREEN"         /* (asynInt32,   r/w) Green value for overlay */
@@ -60,7 +60,7 @@ protected:
     int NDPluginOverlayYPosition;
     int NDPluginOverlayXSize;
     int NDPluginOverlayYSize;
-    int NDPluginOverlayType;
+    int NDPluginOverlayShape;
     int NDPluginOverlayDrawMode;
     int NDPluginOverlayRed;
     int NDPluginOverlayGreen;

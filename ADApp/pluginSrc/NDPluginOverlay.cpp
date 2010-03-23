@@ -33,7 +33,7 @@ void doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
     epicsType *pRow;
     epicsType value = (epicsType)pOverlay->green;
 
-    switch(pOverlay->type) {
+    switch(pOverlay->shape) {
         case NDOverlayCross:
             xmin = pOverlay->XPosition - pOverlay->XSize/2;
             xmin = MAX(xmin, 0);
@@ -154,7 +154,7 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
         getIntegerParam(overlay, NDPluginOverlayYPosition,  &pOverlay->YPosition);
         getIntegerParam(overlay, NDPluginOverlayXSize,      &pOverlay->XSize);
         getIntegerParam(overlay, NDPluginOverlayYSize,      &pOverlay->YSize);
-        getIntegerParam(overlay, NDPluginOverlayType,       (int *)&pOverlay->type);
+        getIntegerParam(overlay, NDPluginOverlayShape,       (int *)&pOverlay->shape);
         getIntegerParam(overlay, NDPluginOverlayDrawMode,   (int *)&pOverlay->drawMode);
         getIntegerParam(overlay, NDPluginOverlayRed,        &pOverlay->red);
         getIntegerParam(overlay, NDPluginOverlayGreen,      &pOverlay->green);
@@ -222,7 +222,7 @@ NDPluginOverlay::NDPluginOverlay(const char *portName, int queueSize, int blocki
     createParam(NDPluginOverlayYPositionString,     asynParamInt32, &NDPluginOverlayYPosition);
     createParam(NDPluginOverlayXSizeString,         asynParamInt32, &NDPluginOverlayXSize);
     createParam(NDPluginOverlayYSizeString,         asynParamInt32, &NDPluginOverlayYSize);
-    createParam(NDPluginOverlayTypeString,          asynParamInt32, &NDPluginOverlayType);
+    createParam(NDPluginOverlayShapeString,         asynParamInt32, &NDPluginOverlayShape);
     createParam(NDPluginOverlayDrawModeString,      asynParamInt32, &NDPluginOverlayDrawMode);
     createParam(NDPluginOverlayRedString,           asynParamInt32, &NDPluginOverlayRed);
     createParam(NDPluginOverlayGreenString,         asynParamInt32, &NDPluginOverlayGreen);
