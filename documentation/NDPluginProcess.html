@@ -978,8 +978,9 @@ NDProcessConfigure(const char *portName, int queueSize, int blockingCallbacks,
   <p>
     The following is the MEDM screen that provides access to the parameters in NDPluginDriver.h
     and NDPluginProcess.h through records in NDPluginBase.template and NDProcess.template.
-    In this example the input image is first scaled by 35 and offset by -110. The image
-    is then run through a recursive averaging filter with N=100.
+    In this example the input image is first offset by -4 and scaled by 35. That result
+    is then clipped to a minimum of 0 and a maximum of 255. The image is then run through
+    a recursive averaging filter with N=100.
   </p>
   <div style="text-align: center">
     <h3>
@@ -988,7 +989,7 @@ NDProcessConfigure(const char *portName, int queueSize, int blockingCallbacks,
   </div>
   <p>
     Image collected with 30 microsecond exposure time, so it is very noisy. This is
-    the image output from the NDPlugProcess plugin with Scale and Offset as shown above,
+    the image output from the NDPlugProcess plugin with Offset and Scale as shown above,
     but with the recursive filter disabled.</p>
   <div style="text-align: center">
     <img alt="NDProcess_unfilted.jpg" src="NDProcess_unfiltered.jpg" />
@@ -1002,7 +1003,7 @@ NDProcessConfigure(const char *portName, int queueSize, int blockingCallbacks,
   </div>
   <p>
     Same image collected with 30 microsecond exposure time. This is the image output
-    from the NDPlugProcess plugin with Scale and Offset as shown above, with the recursive
+    from the NDPlugProcess plugin with Offset and Scale as shown above, with the recursive
     filter enabled. Note the dramatic improvement in signal to noise.</p>
   <div style="text-align: center">
     <img alt="NDProcess_filtered.jpg" src="NDProcess_filtered.jpg" />
