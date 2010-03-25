@@ -68,6 +68,16 @@
             <li>Conversion to a different output data type.</li>
           </ul>
         </li>
+        <li>Added new NDPluginOverlay plugin. This plugin adds graphic overlays to an image.
+          It replaces the "Highligh ROIs" function that was previously provided in the ROI
+          plugin. But it is much more general, and can be used to display multiple cursors,
+          user-defined boxes, etc.</li>
+      </ul>
+    </li>
+    <li>Viewers
+      <ul>
+        <li>Fixed a bug in the EPICS_AD_Viewer.java that required restarting the plugin if
+          it was told to start displaying before any frames had been acquired by the IOC.</li>
       </ul>
     </li>
     <li>Internals
