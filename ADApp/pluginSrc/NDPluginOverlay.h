@@ -18,10 +18,10 @@ typedef enum {
 
 /** Structure defining an overlay */
 typedef struct NDOverlay {
-    int XPosition;
-    int YPosition;
-    int XSize;
-    int YSize;
+    int PositionX;
+    int PositionY;
+    int SizeX;
+    int SizeY;
     NDOverlayShape_t shape;
     NDOverlayDrawMode_t drawMode;
     int red;
@@ -32,10 +32,10 @@ typedef struct NDOverlay {
 
 #define NDPluginOverlayNameString               "NAME"                  /* (asynOctet,   r/w) Name of this overlay */
 #define NDPluginOverlayUseString                "USE"                   /* (asynInt32,   r/w) Use this overlay? */
-#define NDPluginOverlayXPositionString          "OVERLAY_X_POSITION"    /* (asynInt32,   r/o) X positoin of overlay */
-#define NDPluginOverlayYPositionString          "OVERLAY_Y_POSITION"    /* (asynInt32,   r/w) X position of overlay */
-#define NDPluginOverlayXSizeString              "OVERLAY_X_SIZE"        /* (asynInt32,   r/o) X size of overlay */
-#define NDPluginOverlayYSizeString              "OVERLAY_Y_SIZE"        /* (asynInt32,   r/w) X size of overlay */
+#define NDPluginOverlayPositionXString          "OVERLAY_POSITION_X"    /* (asynInt32,   r/o) X positoin of overlay */
+#define NDPluginOverlayPositionYString          "OVERLAY_POSITION_Y"    /* (asynInt32,   r/w) X position of overlay */
+#define NDPluginOverlaySizeXString              "OVERLAY_SIZE_X"        /* (asynInt32,   r/o) X size of overlay */
+#define NDPluginOverlaySizeYString              "OVERLAY_SIZE_Y"        /* (asynInt32,   r/w) X size of overlay */
 #define NDPluginOverlayShapeString              "OVERLAY_SHAPE"         /* (asynInt32,   r/w) Shape of overlay */
 #define NDPluginOverlayDrawModeString           "OVERLAY_DRAW_MODE"     /* (asynInt32,   r/w) Drawing mode for overlay */
 #define NDPluginOverlayRedString                "OVERLAY_RED"           /* (asynInt32,   r/w) Red value for overlay */
@@ -56,10 +56,10 @@ protected:
     int NDPluginOverlayName;
     #define FIRST_NDPLUGIN_OVERLAY_PARAM NDPluginOverlayName
     int NDPluginOverlayUse;
-    int NDPluginOverlayXPosition;
-    int NDPluginOverlayYPosition;
-    int NDPluginOverlayXSize;
-    int NDPluginOverlayYSize;
+    int NDPluginOverlayPositionX;
+    int NDPluginOverlayPositionY;
+    int NDPluginOverlaySizeX;
+    int NDPluginOverlaySizeY;
     int NDPluginOverlayShape;
     int NDPluginOverlayDrawMode;
     int NDPluginOverlayRed;

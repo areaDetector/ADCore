@@ -38,31 +38,31 @@ void doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
 
     switch(pOverlay->shape) {
         case NDOverlayCross:
-            xmin = pOverlay->XPosition - pOverlay->XSize;
+            xmin = pOverlay->PositionX - pOverlay->SizeX;
             xmin = MAX(xmin, 0);
-            xmax = pOverlay->XPosition + pOverlay->XSize;
+            xmax = pOverlay->PositionX + pOverlay->SizeX;
             xmax = MIN(xmax, pArray->dims[0].size);
-            ymin = pOverlay->YPosition - pOverlay->YSize;
+            ymin = pOverlay->PositionY - pOverlay->SizeY;
             ymin = MAX(ymin, 0);
-            ymax = pOverlay->YPosition + pOverlay->YSize;
+            ymax = pOverlay->PositionY + pOverlay->SizeY;
             ymax = MIN(ymax, pArray->dims[1].size);
             for (iy=ymin; iy<ymax; iy++) {
                 pRow = (epicsType *)pArray->pData + iy*pArray->dims[0].size;
-                if (iy == pOverlay->YPosition) {
+                if (iy == pOverlay->PositionY) {
                     for (ix=xmin; ix<xmax; ix++) SET_PIXEL(pRow[ix], value);
                 } else {
-                    SET_PIXEL(pRow[pOverlay->XPosition], value);
+                    SET_PIXEL(pRow[pOverlay->PositionX], value);
                 }
             }
             break;
         case NDOverlayRectangle:
-            xmin = pOverlay->XPosition;
+            xmin = pOverlay->PositionX;
             xmin = MAX(xmin, 0);
-            xmax = pOverlay->XPosition + pOverlay->XSize;
+            xmax = pOverlay->PositionX + pOverlay->SizeX;
             xmax = MIN(xmax, pArray->dims[0].size);
-            ymin = pOverlay->YPosition;
+            ymin = pOverlay->PositionY;
             ymin = MAX(ymin, 0);
-            ymax = pOverlay->YPosition + pOverlay->YSize;
+            ymax = pOverlay->PositionY + pOverlay->SizeY;
             ymax = MIN(ymax, pArray->dims[1].size);
             for (iy=ymin; iy<ymax; iy++) {
                 pRow = (epicsType *)pArray->pData + iy*pArray->dims[0].size;
@@ -153,14 +153,14 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
         getIntegerParam(overlay, NDPluginOverlayUse, &use);
         if (!use) continue;
         /* Need to fetch all of these parameters while we still have the mutex */
-        getIntegerParam(overlay, NDPluginOverlayXPosition,  &pOverlay->XPosition);
-        pOverlay->XPosition = MAX(pOverlay->XPosition, 0);
-        pOverlay->XPosition = MIN(pOverlay->XPosition, pOutput->dims[0].size);
-        getIntegerParam(overlay, NDPluginOverlayYPosition,  &pOverlay->YPosition);
-        pOverlay->YPosition = MAX(pOverlay->YPosition, 0);
-        pOverlay->YPosition = MIN(pOverlay->YPosition, pOutput->dims[1].size);
-        getIntegerParam(overlay, NDPluginOverlayXSize,      &pOverlay->XSize);
-        getIntegerParam(overlay, NDPluginOverlayYSize,      &pOverlay->YSize);
+        getIntegerParam(overlay, NDPluginOverlayPositionX,  &pOverlay->PositionX);
+        pOverlay->PositionX = MAX(pOverlay->PositionX, 0);
+        pOverlay->PositionX = MIN(pOverlay->PositionX, pOutput->dims[0].size);
+        getIntegerParam(overlay, NDPluginOverlayPositionY,  &pOverlay->PositionY);
+        pOverlay->PositionY = MAX(pOverlay->PositionY, 0);
+        pOverlay->PositionY = MIN(pOverlay->PositionY, pOutput->dims[1].size);
+        getIntegerParam(overlay, NDPluginOverlaySizeX,      &pOverlay->SizeX);
+        getIntegerParam(overlay, NDPluginOverlaySizeY,      &pOverlay->SizeY);
         getIntegerParam(overlay, NDPluginOverlayShape,       (int *)&pOverlay->shape);
         getIntegerParam(overlay, NDPluginOverlayDrawMode,   (int *)&pOverlay->drawMode);
         getIntegerParam(overlay, NDPluginOverlayRed,        &pOverlay->red);
@@ -225,10 +225,10 @@ NDPluginOverlay::NDPluginOverlay(const char *portName, int queueSize, int blocki
 
     createParam(NDPluginOverlayNameString,          asynParamOctet, &NDPluginOverlayName);
     createParam(NDPluginOverlayUseString,           asynParamInt32, &NDPluginOverlayUse);
-    createParam(NDPluginOverlayXPositionString,     asynParamInt32, &NDPluginOverlayXPosition);
-    createParam(NDPluginOverlayYPositionString,     asynParamInt32, &NDPluginOverlayYPosition);
-    createParam(NDPluginOverlayXSizeString,         asynParamInt32, &NDPluginOverlayXSize);
-    createParam(NDPluginOverlayYSizeString,         asynParamInt32, &NDPluginOverlayYSize);
+    createParam(NDPluginOverlayPositionXString,     asynParamInt32, &NDPluginOverlayPositionX);
+    createParam(NDPluginOverlayPositionYString,     asynParamInt32, &NDPluginOverlayPositionY);
+    createParam(NDPluginOverlaySizeXString,         asynParamInt32, &NDPluginOverlaySizeX);
+    createParam(NDPluginOverlaySizeYString,         asynParamInt32, &NDPluginOverlaySizeY);
     createParam(NDPluginOverlayShapeString,         asynParamInt32, &NDPluginOverlayShape);
     createParam(NDPluginOverlayDrawModeString,      asynParamInt32, &NDPluginOverlayDrawMode);
     createParam(NDPluginOverlayRedString,           asynParamInt32, &NDPluginOverlayRed);
