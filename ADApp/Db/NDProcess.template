@@ -8,7 +8,7 @@
 #  of the input array.                                            # 
 ###################################################################
 
-record(mbbo, "$(P)$(R)DataTypeOut")
+record(mbbo, "$(P)$(R)DataToffypeOut")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
@@ -174,42 +174,25 @@ record(ai, "$(P)$(R)ScaleFlatField_RBV")
 }
 
 ###################################################################
-# These records control the scale and offset                      #
+# These records control the offset and scale                      #
 ###################################################################
-record(bo, "$(P)$(R)EnableScaleOffset")
+record(bo, "$(P)$(R)EnableOffsetScale")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_SCALE_OFFSET")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_OFFSET_SCALE")
     field(ZNAM, "Disable")
     field(ONAM, "Enable")
 }
 
-record(bi, "$(P)$(R)EnableScaleOffset_RBV")
+record(bi, "$(P)$(R)EnableOffsetScale_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_SCALE_OFFSET")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_OFFSET_SCALE")
     field(ZNAM, "Disable")
     field(ONAM, "Enable")
     field(ZSV,  "NO_ALARM")
     field(OSV,  "MINOR")
-    field(SCAN, "I/O Intr")
-}
-
-record(ao, "$(P)$(R)Scale")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynFloat64")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SCALE")
-    field(PREC, "2")
-    field(VAL,  "1.0")
-}
-
-record(ai, "$(P)$(R)Scale_RBV")
-{
-    field(DTYP, "asynFloat64")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SCALE")
-    field(PREC, "2")
     field(SCAN, "I/O Intr")
 }
 
@@ -230,6 +213,22 @@ record(ai, "$(P)$(R)Offset_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(ao, "$(P)$(R)Scale")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SCALE")
+    field(PREC, "2")
+    field(VAL,  "1.0")
+}
+
+record(ai, "$(P)$(R)Scale_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SCALE")
+    field(PREC, "2")
+    field(SCAN, "I/O Intr")
+}
 
 ###################################################################
 # These records control the high and low clipping                 #

@@ -18,7 +18,7 @@
 #define NDPluginProcessScaleFlatFieldString     "SCALE_FLAT_FIELD"  /* (asynInt32,   r/o) Scale factor after dividing by flat field */
 
 /* Offset and scaling */
-#define NDPluginProcessEnableScaleOffsetString  "ENABLE_SCALE_OFFSET" /* (asynInt32, r/w) Enable scale and offset? */
+#define NDPluginProcessEnableOffsetScaleString  "ENABLE_OFFSET_SCALE" /* (asynInt32, r/w) Enable offset and scale? */
 #define NDPluginProcessScaleString              "SCALE"             /* (asynFloat64, r/w) Scale value */
 #define NDPluginProcessOffsetString             "OFFSET"            /* (asynFloat64, r/w) Offset value */
 
@@ -82,7 +82,7 @@ protected:
     int NDPluginProcessScaleFlatField;
 
     /* Scale and offset */
-    int NDPluginProcessEnableScaleOffset;
+    int NDPluginProcessEnableOffsetScale;
     int NDPluginProcessScale;
     int NDPluginProcessOffset;
 

@@ -43,7 +43,7 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     int     saveBackground, enableBackground, validBackground;
     int     saveFlatField,  enableFlatField,  validFlatField;
     double  scaleFlatField;
-    int     enableScaleOffset;
+    int     enableOffsetScale;
     double  offset, scale;
     double  lowClip=0, highClip=0;
     int     enableLowClip, enableHighClip;
@@ -68,7 +68,7 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     getIntegerParam(NDPluginProcessSaveFlatField,       &saveFlatField);
     getIntegerParam(NDPluginProcessEnableFlatField,     &enableFlatField);
     getDoubleParam (NDPluginProcessScaleFlatField,      &scaleFlatField);
-    getIntegerParam(NDPluginProcessEnableScaleOffset,   &enableScaleOffset);
+    getIntegerParam(NDPluginProcessEnableOffsetScale,   &enableOffsetScale);
     getIntegerParam(NDPluginProcessEnableLowClip,       &enableLowClip);
     getIntegerParam(NDPluginProcessEnableHighClip,      &enableHighClip);
     getIntegerParam(NDPluginProcessEnableFilter,        &enableFilter);
@@ -96,7 +96,7 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
             this->nFlatFieldElements = arrayInfo.nElements;
         }
     }
-    if (enableScaleOffset) {
+    if (enableOffsetScale) {
         getDoubleParam (NDPluginProcessScale,           &scale);
         getDoubleParam (NDPluginProcessOffset,          &offset);
     }
@@ -148,7 +148,7 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
 
     anyProcess = ((enableBackground && validBackground) ||
                   (enableFlatField && validFlatField)   ||
-                   enableScaleOffset                    ||
+                   enableOffsetScale                    ||
                    enableHighClip                       || 
                    enableLowClip                        ||
                    enableFilter);
@@ -173,7 +173,7 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
             else
                 value = scaleFlatField;
         }
-        if (enableScaleOffset) value = value*scale + offset;
+        if (enableOffsetScale) value = (value + offset)*scale;
         if (enableHighClip && (value > highClip)) value = highClip;
         if (enableLowClip  && (value < lowClip))  value = lowClip;
         data[i] = value;
@@ -293,7 +293,7 @@ NDPluginProcess::NDPluginProcess(const char *portName, int queueSize, int blocki
     createParam(NDPluginProcessEnableHighClipString,    asynParamInt32,     &NDPluginProcessEnableHighClip);
 
     /* Scale and offset */
-    createParam(NDPluginProcessEnableScaleOffsetString, asynParamInt32,     &NDPluginProcessEnableScaleOffset);
+    createParam(NDPluginProcessEnableOffsetScaleString, asynParamInt32,     &NDPluginProcessEnableOffsetScale);
     createParam(NDPluginProcessScaleString,             asynParamFloat64,   &NDPluginProcessScale);
     createParam(NDPluginProcessOffsetString,            asynParamFloat64,   &NDPluginProcessOffset);
 
