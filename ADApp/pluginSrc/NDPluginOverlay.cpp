@@ -25,6 +25,9 @@
 
 //static const char *driverName="NDPluginOverlay";
 
+#define SET_PIXEL(PIXEL,VALUE) {if      (pOverlay->drawMode == NDOverlaySet) (PIXEL)=VALUE; \
+                                else if (pOverlay->drawMode == NDOverlayXOR) (PIXEL) = (int)(PIXEL)^(int)VALUE;}  
+
 
 template <typename epicsType>
 void doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
@@ -35,20 +38,20 @@ void doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
 
     switch(pOverlay->shape) {
         case NDOverlayCross:
-            xmin = pOverlay->XPosition - pOverlay->XSize/2;
+            xmin = pOverlay->XPosition - pOverlay->XSize;
             xmin = MAX(xmin, 0);
-            xmax = pOverlay->XPosition + pOverlay->XSize/2;
+            xmax = pOverlay->XPosition + pOverlay->XSize;
             xmax = MIN(xmax, pArray->dims[0].size);
-            ymin = pOverlay->YPosition - pOverlay->YSize/2;
+            ymin = pOverlay->YPosition - pOverlay->YSize;
             ymin = MAX(ymin, 0);
-            ymax = pOverlay->YPosition + pOverlay->YSize/2;
+            ymax = pOverlay->YPosition + pOverlay->YSize;
             ymax = MIN(ymax, pArray->dims[1].size);
             for (iy=ymin; iy<ymax; iy++) {
                 pRow = (epicsType *)pArray->pData + iy*pArray->dims[0].size;
                 if (iy == pOverlay->YPosition) {
-                    for (ix=xmin; ix<xmax; ix++) pRow[ix] = value;
+                    for (ix=xmin; ix<xmax; ix++) SET_PIXEL(pRow[ix], value);
                 } else {
-                    pRow[pOverlay->XPosition] = value;
+                    SET_PIXEL(pRow[pOverlay->XPosition], value);
                 }
             }
             break;
@@ -64,10 +67,10 @@ void doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
             for (iy=ymin; iy<ymax; iy++) {
                 pRow = (epicsType *)pArray->pData + iy*pArray->dims[0].size;
                 if ((iy == ymin) || (iy == ymax-1)) {
-                    for (ix=xmin; ix<xmax; ix++) pRow[ix] = value;
+                    for (ix=xmin; ix<xmax; ix++) SET_PIXEL(pRow[ix], value);
                 } else {
-                    pRow[xmin] = value;
-                    pRow[xmax-1] = value;
+                    SET_PIXEL(pRow[xmin], value);
+                    SET_PIXEL(pRow[xmax-1], value);
                 }
             }
             break;
@@ -151,7 +154,11 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
         if (!use) continue;
         /* Need to fetch all of these parameters while we still have the mutex */
         getIntegerParam(overlay, NDPluginOverlayXPosition,  &pOverlay->XPosition);
+        pOverlay->XPosition = MAX(pOverlay->XPosition, 0);
+        pOverlay->XPosition = MIN(pOverlay->XPosition, pOutput->dims[0].size);
         getIntegerParam(overlay, NDPluginOverlayYPosition,  &pOverlay->YPosition);
+        pOverlay->YPosition = MAX(pOverlay->YPosition, 0);
+        pOverlay->YPosition = MIN(pOverlay->YPosition, pOutput->dims[1].size);
         getIntegerParam(overlay, NDPluginOverlayXSize,      &pOverlay->XSize);
         getIntegerParam(overlay, NDPluginOverlayYSize,      &pOverlay->YSize);
         getIntegerParam(overlay, NDPluginOverlayShape,       (int *)&pOverlay->shape);
