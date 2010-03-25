@@ -153,6 +153,31 @@
       </tr>
       <tr>
         <td>
+          N.A.</td>
+        <td>
+          N.A.</td>
+        <td>
+          r/w</td>
+        <td>
+          Link to fetch the desired X position of this overlay. The .DOL field of this record
+          can be set to another record which will then change PositionX whenever the other
+          record updates. The link <i>must</i> have the "CP" attribute, so that this record
+          processes whenever the record it is linked to changes. For example, the link could
+          be set to "13PS1:Stats1:CentroidX_RBV CP NMS" to fetch its position from the X centroid
+          calculated by an NDPluginStats plugin, or to "13PS1:ROI1:MinX_RBV CP MS" to fetch
+          its position from the X position of an ROI. If this link field is blank or points
+          to a non-existent record then the X position of the overlay can be manually controlled.
+          Note that this linking is done entirely in the EPICS database, and not in the plugin
+          code.</td>
+        <td>
+          N.A.</td>
+        <td>
+          $(P)$(R)PositionXLink</td>
+        <td>
+          longout</td>
+      </tr>
+      <tr>
+        <td>
           NDPluginOverlay<br />
           OverlayPositionY</td>
         <td>
@@ -169,6 +194,23 @@
         <td>
           longout<br />
           longin</td>
+      </tr>
+      <tr>
+        <td>
+          N.A.</td>
+        <td>
+          N.A.</td>
+        <td>
+          r/w</td>
+        <td>
+          Link to fetch the desired Y position of this overlay. See the notes for PositionXLink
+          above.</td>
+        <td>
+          N.A.</td>
+        <td>
+          $(P)$(R)PositionYLink</td>
+        <td>
+          longout</td>
       </tr>
       <tr>
         <td>
@@ -191,6 +233,23 @@
       </tr>
       <tr>
         <td>
+          N.A.</td>
+        <td>
+          N.A.</td>
+        <td>
+          r/w</td>
+        <td>
+          Link to fetch the desired X size of this overlay. See the notes for PositionXLink
+          above.</td>
+        <td>
+          N.A.</td>
+        <td>
+          $(P)$(R)SizeXLink</td>
+        <td>
+          longout</td>
+      </tr>
+      <tr>
+        <td>
           NDPluginOverlay<br />
           OverlaySizeY</td>
         <td>
@@ -207,6 +266,23 @@
         <td>
           longout<br />
           longin</td>
+      </tr>
+      <tr>
+        <td>
+          N.A.</td>
+        <td>
+          N.A.</td>
+        <td>
+          r/w</td>
+        <td>
+          Link to fetch the desired Y size of this overlay. See the notes for PositionXLink
+          above.</td>
+        <td>
+          N.A.</td>
+        <td>
+          $(P)$(R)SizeYLink</td>
+        <td>
+          longout</td>
       </tr>
       <tr>
         <td>
