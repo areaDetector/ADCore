@@ -100,7 +100,11 @@ private:
     epicsInt32 *totalArray;
     epicsInt32 *netArray;
     int histogramSize;
+    int histSizeNew;
     double *histogram;
+    double histMin;
+    double histMax;
+    double histEntropy;
 };
 #define NUM_NDPLUGIN_STATS_PARAMS (&LAST_NDPLUGIN_STATS_PARAM - &FIRST_NDPLUGIN_STATS_PARAM + 1)
     
