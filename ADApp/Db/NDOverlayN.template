@@ -60,7 +60,7 @@ record(longout, "$(P)$(R)PositionX")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_X_POSITION")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_POSITION_X")
     field(LOPR, "1")
     field(HOPR, "1024")
     field(VAL,  "1")
@@ -69,7 +69,7 @@ record(longout, "$(P)$(R)PositionX")
 record(longin, "$(P)$(R)PositionX_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_X_POSITION")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_POSITION_X")
     field(SCAN, "I/O Intr")
 }
 
@@ -84,7 +84,7 @@ record(longout, "$(P)$(R)PositionY")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_Y_POSITION")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_POSITION_Y")
     field(LOPR, "1")
     field(HOPR, "1024")
     field(VAL,  "1")
@@ -93,7 +93,7 @@ record(longout, "$(P)$(R)PositionY")
 record(longin, "$(P)$(R)PositionY_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_Y_POSITION")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_POSITION_Y")
     field(SCAN, "I/O Intr")
 }
 
@@ -108,7 +108,7 @@ record(longout, "$(P)$(R)SizeX")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_X_SIZE")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_SIZE_X")
     field(LOPR, "1")
     field(HOPR, "1024")
     field(VAL,  "1")
@@ -117,7 +117,7 @@ record(longout, "$(P)$(R)SizeX")
 record(longin, "$(P)$(R)SizeX_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_X_SIZE")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_SIZE_X")
     field(SCAN, "I/O Intr")
 }
 
@@ -132,7 +132,7 @@ record(longout, "$(P)$(R)SizeY")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_Y_SIZE")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_SIZE_Y")
     field(LOPR, "1")
     field(HOPR, "1024")
     field(VAL,  "1")
@@ -141,7 +141,7 @@ record(longout, "$(P)$(R)SizeY")
 record(longin, "$(P)$(R)SizeY_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_Y_SIZE")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_SIZE_Y")
     field(SCAN, "I/O Intr")
 }
 
