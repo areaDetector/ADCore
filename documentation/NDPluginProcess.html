@@ -258,7 +258,7 @@
       <tr>
         <td>
           NDPluginProcess<br />
-          EnableScaleOffset</td>
+          EnableOffsetScale</td>
         <td>
           asynInt32</td>
         <td>
@@ -271,8 +271,8 @@
         <td>
           ENABLE_SCALE_OFFSET</td>
         <td>
-          $(P)$(R)EnableScaleOffset<br />
-          $(P)$(R)EnableScaleOffset_RBV</td>
+          $(P)$(R)EnableOffsetScale<br />
+          $(P)$(R)EnableOffsetScale_RBV</td>
         <td>
           bo<br />
           bi</td>
@@ -894,7 +894,7 @@ O[n] = F[n] = (1-1/N)*F[n-1] + 1/N*I[n]
     one array never complelely dissappears, but rather decays exponentially. When this
     filter is reset the filter array is initialized with the first input array. This
     filter can be used to decrease the noise and increase the dynamic range of a repetitive
-    input signal with a small signal. In that case it can be useful to use set EnableScaleOffset=Enable
+    input signal with a small signal. In that case it can be useful to use set EnableOffsetScale=Enable
     and set Scale to a large enough number to more fully use the dynamic range of the
     output data type. The averaged signal will then better use the dynamic range of
     the output data type.
