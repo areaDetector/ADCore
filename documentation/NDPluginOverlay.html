@@ -27,30 +27,34 @@
     Overview
   </h2>
   <p>
-    NDPluginOverlay adds graphics overlays to an NDArray image.  It can be used to highlight ROIs
-    on an image, to implement cursors, and other similar operations.  It supports any number of
-    overlay objects.  For each object there is control of the location, size, color, and drawing
-    mode.  The size and location can be directly controlled, or links can be used to control the 
-    position and size from other PVs.  For example, links to the PVs definining an ROI in the NDPluginROI plugin
-    can be used to define a rectangular overlay in thus plugin.  Similarly links to the PVs defining the 
-    X and Y centroid and sigma of
-    an image computed in the NDPluginStats plugin can be used to control the location and size of a crosshair
-    overlay in this plugin.  The cursor will then follow the location of a "beam" in the image.
-    Putting such graphics overlays into an areaDetector plugin allows the use
-    of simple image display clients, which don't need to compute the graphics themselves.
+    NDPluginOverlay adds graphics overlays to an NDArray image. It can be used to highlight
+    ROIs on an image, to implement cursors, and other similar operations. It supports
+    any number of overlay objects. For each object there is control of the location,
+    size, color, and drawing mode. The size and location can be directly controlled,
+    or links can be used to control the position and size from other PVs. For example,
+    links to the PVs definining an ROI in the NDPluginROI plugin can be used to define
+    a rectangular overlay in thus plugin. Similarly links to the PVs defining the X
+    and Y centroid and sigma of an image computed in the NDPluginStats plugin can be
+    used to control the location and size of a crosshair overlay in this plugin. The
+    cursor will then follow the location of a "beam" in the image. Putting such graphics
+    overlays into an areaDetector plugin allows the use of simple image display clients,
+    which don't need to compute the graphics themselves.
   </p>
-  <p>Each NDPluginOverlay plugin can contain any number of overlay objects, each with a different shape, position, color, etc.
-    The number of overlay objects is defined when the NDPluginOverlay is created in the startup script.  Each object
-    is referenced by its asyn "addr" address field.
+  <p>
+    Each NDPluginOverlay plugin can contain any number of overlay objects, each with
+    a different shape, position, color, etc. The number of overlay objects is defined
+    when the NDPluginOverlay is created in the startup script. Each object is referenced
+    by its asyn "addr" address field.
   </p>
   <p>
     NDPluginOverlay is both a <b>recipient</b> of callbacks and a <b>source</b> of NDArray
-    callbacks. This means that other plugins, such as the NDPluginStdArray plugin, can be connected 
-    to an NDPluginOverlay plugin.  In that case an image display client will receive the arrays
-    with the graphics overlays.
+    callbacks. This means that other plugins, such as the NDPluginStdArray plugin, can
+    be connected to an NDPluginOverlay plugin. In that case an image display client
+    will receive the arrays with the graphics overlays.
   </p>
   <p>
-    NDPluginOverlay can only be used for 2-D arrays or 3-D color arrays, it is not fully N-dimensional.
+    NDPluginOverlay can only be used for 2-D arrays or 3-D color arrays, it is not fully
+    N-dimensional.
   </p>
   <p>
     NDPluginOverlay inherits from NDPluginDriver. The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_overlay.html">
@@ -59,15 +63,14 @@
   <p>
     NDPluginOverlay.h defines the following parameters. It also implements all of the
     standard plugin parameters from <a href="pluginDoc.html#NDPluginDriver">NDPluginDriver</a>.
-    There are 2 EPICS databases for the NDPluginOverlay plugin. 
-    NDOverlay.template provide access to global parameters that are not specific
-    to each overlay object.  There are currently no records in this database, because it currently
-    needs nothing beyond what is contained in NDPluginBase.template, but there may be
-    records added to this in the future.  NDOverlayN.template provides access to the parameters for
-    each individual overlay object, described
-    in the following table. Note that to reduce the width of this table the parameter
-    index variable names have been split into 2 lines, but these are just a single name,
-    for example <code>NDPluginOverlayName</code>.
+    There are 2 EPICS databases for the NDPluginOverlay plugin. NDOverlay.template provide
+    access to global parameters that are not specific to each overlay object. There
+    are currently no records in this database, because it currently needs nothing beyond
+    what is contained in NDPluginBase.template, but there may be records added to this
+    in the future. NDOverlayN.template provides access to the parameters for each individual
+    overlay object, described in the following table. Note that to reduce the width
+    of this table the parameter index variable names have been split into 2 lines, but
+    these are just a single name, for example <code>NDPluginOverlayName</code>.
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
@@ -214,13 +217,14 @@
         <td>
           r/w</td>
         <td>
-          The shape of this overlay.  0=cross, 1=rectangle.  Other shapes may be added in the future.
-          The X and Y position of a cross is located at the center.  The X and Y size of a cross is the size
-          on either side of the center, i.e. the total width = 2*OverlaySizeX.  This is done so when HOPR for
-          the X and Y size records is set to the total image size, the cross can be the total size of the
-          image no matter where it is positioned.  The X and Y position of a rectangle is located at Xmin,Ymin.
-          The X and Y size of a rectangle is the total width and height.  These definitions are 
-          consistent with the way ROIs are defined in the NDPluginROI plugin.</td>
+          The shape of this overlay. 0=cross, 1=rectangle. Other shapes may be added in the
+          future. The X and Y position of a cross is located at the center. The X and Y size
+          of a cross is the size on either side of the center, i.e. the total width = 2*OverlaySizeX.
+          This is done so when HOPR for the X and Y size records is set to the total image
+          size, the cross can be the total size of the image no matter where it is positioned.
+          The X and Y position of a rectangle is located at Xmin,Ymin. The X and Y size of
+          a rectangle is the total width and height. These definitions are consistent with
+          the way ROIs are defined in the NDPluginROI plugin.</td>
         <td>
           OVERLAY_SHAPE</td>
         <td>
@@ -239,13 +243,15 @@
         <td>
           r/w</td>
         <td>
-          The operation to use when drawing this overlay. 0=Set, 1=XOR.  In Set mode the Red, Green, and Blue
-          values (Green for mono images) are written directly into the pixel values.  In XOR mode the value
-          in the pixel is XOR'ed with the Red, Green, and Blue values.  XOR operation typically results in an overlay that
-          has better visibility no matter what the values of the surrounding pixels, while Set mode with Green=255, 
-          for example, will show up well on dark areas of the image, but will be hard to see in bright areas of the image.
-          Note that XOR is not supported for NDFloat32 or NDFloat64 data types directly, but they are cast to 
-          int if XOR is selected for arrays with those data types.</td>
+          The operation to use when drawing this overlay. 0=Set, 1=XOR. In Set mode the Red,
+          Green, and Blue values (Green for mono images) are written directly into the pixel
+          values. In XOR mode the value in the pixel is XOR'ed with the Red, Green, and Blue
+          values. XOR operation typically results in an overlay that has better visibility
+          no matter what the values of the surrounding pixels, while Set mode with Green=255,
+          for example, will show up well on dark areas of the image, but will be hard to see
+          in bright areas of the image. Note that XOR is not supported for NDFloat32 or NDFloat64
+          data types directly, but they are cast to int if XOR is selected for arrays with
+          those data types.</td>
         <td>
           OVERLAY_DRAW_MODE</td>
         <td>
@@ -264,7 +270,7 @@
         <td>
           r/w</td>
         <td>
-          The red value to use when drawing the overlay.  This is only used for color images.</td>
+          The red value to use when drawing the overlay. This is only used for color images.</td>
         <td>
           OVERLAY_RED</td>
         <td>
@@ -283,7 +289,7 @@
         <td>
           r/w</td>
         <td>
-          The green value to use when drawing the overlay.  This is the value that is used
+          The green value to use when drawing the overlay. This is the value that is used
           for monochrome images as well.</td>
         <td>
           OVERLAY_GREEN</td>
@@ -303,7 +309,7 @@
         <td>
           r/w</td>
         <td>
-          The blue value to use when drawing the overlay.  This is only used for color images.</td>
+          The blue value to use when drawing the overlay. This is only used for color images.</td>
         <td>
           OVERLAY_BLUE</td>
         <td>
@@ -318,13 +324,14 @@
   <h3>
     Display limits for Position and Size fields</h3>
   <p>
-    It is very convenient to have slider widgets to control the size and position
-    of user-defined overlays.  For these to work correctly, the HOPR fields of the
-    X and Y position and size widgets must be set to the maximum allowed values.
-    This is handled in the NDOverlay.template database, where the HOPR fields are automatically
-    set to the actual size of the input array whenever that changes.  Note that if HOPR
-    changes, then with medm it is necessary to close and reopen the display with the sliders,
-    because medm only retrieves the value the display limits when it first connects to a channel.
+    It is very convenient to have slider widgets to control the size and position of
+    user-defined overlays. For these to work correctly, the HOPR fields of the X and
+    Y position and size widgets must be set to the maximum allowed values. This is handled
+    in the NDOverlay.template database, where the HOPR fields are automatically set
+    to the actual size of the input array whenever that changes. Note that if HOPR changes,
+    then with medm it is necessary to close and reopen the display with the sliders,
+    because medm only retrieves the value the display limits when it first connects
+    to a channel.
   </p>
   <h2 id="Configuration">
     Configuration</h2>
@@ -349,8 +356,8 @@ NDOverlayConfigure(const char *portName, int queueSize, int blockingCallbacks,
   <p>
     The following is the MEDM screen that provides access to the parameters in NDPluginDriver.h
     and NDPluginOverlay.h through records in NDPluginBase.template and NDOverlay.template.
-    This screen does not provide anything beyond the PVs in NDPluginBase.template except for the
-    menus to call up the related displays.
+    This screen does not provide anything beyond the PVs in NDPluginBase.template except
+    for the menus to call up the related displays.
   </p>
   <div style="text-align: center">
     <h3>
@@ -358,23 +365,23 @@ NDOverlayConfigure(const char *portName, int queueSize, int blockingCallbacks,
     <img alt="NDOverlay.png" src="NDOverlay.png" />
   </div>
   <p>
-   The following is the MEDM screen that provides access to the parameters in 
-   NDPluginOverlay.h through records in NDOverlayN.template.  This allows control of
-   the parameters of a single overlay object.
+    The following is the MEDM screen that provides access to the parameters in NDPluginOverlay.h
+    through records in NDOverlayN.template. This allows control of the parameters of
+    a single overlay object.
   </p>
   <div style="text-align: center">
     <img alt="NDOverlayN.png" src="NDOverlayN.png" />
   </div>
   <p>
-   The following is the MEDM screen that provides control of most
-   the parameters of 8 overlay objects, and a link to the screen above.
+    The following is the MEDM screen that provides control of most the parameters of
+    8 overlay objects, and a link to the screen above for each one.
   </p>
   <div style="text-align: center">
     <img alt="NDOverlay8.png" src="NDOverlay8.png" />
   </div>
   <p>
-    Image display from ImageJ for the overlay settings in the screen above.  Note that
-    the cursor is set to track the centroid of the beam via the input links.</p>
+    Image display from ImageJ for the overlay settings in the screen above. Note that
+    the cursor is set to track the centroid of a laser pointer via the input links.</p>
   <div style="text-align: center">
     <img alt="NDOverlay_image.jpg" src="NDOverlay_image.jpg" />
   </div>
