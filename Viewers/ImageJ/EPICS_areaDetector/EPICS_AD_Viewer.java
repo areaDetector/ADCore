@@ -95,7 +95,7 @@ public class EPICS_AD_Viewer implements PlugIn
 
             if (isDebugFile)
             {
-                debugFile = new FileOutputStream(System.getProperty("user.home") + 
+                debugFile = new FileOutputStream(System.getProperty("user.home") +
                                                  System.getProperty("file.separator") + "IJEPICS_debug.txt");
                 debugPrintStream = new PrintStream(debugFile);
             }
@@ -354,6 +354,7 @@ public class EPICS_AD_Viewer implements PlugIn
 
             if (nz == 0) nz = 1;
             int getsize = nx * ny * nz;
+            if (getsize == 0) return;  // Not valid dimensions
 
             if (isDebugMessages)
                 IJ.log("got image, sizes: " + nx + " " + ny + " " + nz);
