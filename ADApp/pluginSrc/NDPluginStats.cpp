@@ -48,18 +48,13 @@ void NDPluginStats::doComputeHistogramT(NDArray *pArray)
     int i;
     double scale, entropy;
     int bin;
-    int histSize;
     int nElements;
-    double histMin, histMax, value, counts;
+    double value, counts;
     NDArrayInfo arrayInfo;
 
-    getIntegerParam(NDPluginStatsHistSize, &histSize);
-    getDoubleParam (NDPluginStatsHistMin,  &histMin);
-    getDoubleParam (NDPluginStatsHistMax,  &histMax);
-
-    if (histSize != this->histogramSize) {
+    if (this->histSizeNew != this->histogramSize) {
         free(this->histogram);
-        this->histogramSize = histSize;
+        this->histogramSize = this->histSizeNew;
         this->histogram = (double *)calloc(this->histogramSize, sizeof(double));
     }
     memset(this->histogram, 0, this->histogramSize*sizeof(double));
@@ -70,18 +65,17 @@ void NDPluginStats::doComputeHistogramT(NDArray *pArray)
     for (i=0; i<nElements; i++) {
         value = (double)pData[i];
         bin = (int) (((value - histMin) * scale) + 0.5);
-        if ((bin >= 0) && (bin < histSize))this->histogram[bin]++;
+        if ((bin >= 0) && (bin < this->histogramSize))this->histogram[bin]++;
     }
 
     entropy = 0;
-    for (i=0; i<histSize; i++) {
+    for (i=0; i<this->histogramSize; i++) {
         counts = this->histogram[i];
         if (counts <= 0) counts = 1;
         entropy += counts * log(counts);
     }
     entropy = -entropy / nElements;
-    setDoubleParam(NDPluginStatsHistEntropy, entropy);
-    doCallbacksFloat64Array(this->histogram, this->histogramSize, NDPluginStatsHistArray, 0);
+    this->histEntropy = entropy;
 }
 
 int NDPluginStats::doComputeHistogram(NDArray *pArray)
@@ -237,8 +231,10 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     getIntegerParam(NDPluginStatsComputeProfiles,    &computeProfiles);
     getIntegerParam(NDPluginStatsComputeHistogram,   &computeHistogram);
     getIntegerParam(NDPluginStatsBgdWidth,           &bgdWidth);
-
+    
     if (computeStatistics) {
+        /* Now that we won't be accessing any memory other threads can access, unlock so we don't block drivers */
+        this->unlock();
         doComputeStatistics(pArray, pStats);
         /* If there is a non-zero background width then compute the background counts */
         if (bgdWidth > 0) {
@@ -280,6 +276,7 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
             avgBgd = bgdCounts / bgdPixels;
             pStats->net = pStats->total - avgBgd*pStats->nElements;
         }
+        this->lock();
         setDoubleParam(NDPluginStatsMinValue,    pStats->min);
         setDoubleParam(NDPluginStatsMaxValue,    pStats->max);
         setDoubleParam(NDPluginStatsMeanValue,   pStats->mean);
@@ -300,11 +297,16 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
         doCallbacksInt32Array(&intNet,   1, NDPluginStatsNetArray, 0);
     }
 
-    if (computeHistogram) 
+    if (computeHistogram) {
+        getIntegerParam(NDPluginStatsHistSize, &this->histSizeNew);
+        getDoubleParam (NDPluginStatsHistMin,  &this->histMin);
+        getDoubleParam (NDPluginStatsHistMax,  &this->histMax);
+        this->unlock();
         doComputeHistogram(pArray);
-
-    /* We must enter the loop and exit with the mutex locked */
-    //this->lock();
+        this->lock();
+        setDoubleParam(NDPluginStatsHistEntropy, this->histEntropy);
+        doCallbacksFloat64Array(this->histogram, this->histogramSize, NDPluginStatsHistArray, 0);
+    }
     callParamCallbacks();
 }
 
