@@ -10,6 +10,7 @@ record(stringout, "$(P)$(R)Name")
     field(PINI, "YES")
     field(DTYP, "asynOctetWrite")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
+    field(VAL,  "$(NAME)")
 }
 
 record(stringin, "$(P)$(R)Name_RBV")
@@ -39,6 +40,8 @@ record(bi, "$(P)$(R)Use_RBV")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))USE")
     field(ZNAM, "No")
     field(ONAM, "Yes")
+    field(ZSV,  "NO_ALARM")
+    field(OSV,  "MINOR")
     field(SCAN, "I/O Intr")
 }
 
@@ -48,7 +51,7 @@ record(bi, "$(P)$(R)Use_RBV")
 
 record(longout, "$(P)$(R)PositionXLink")
 {
-    field(DOL,  "CP")
+    field(DOL,  "$(XPOS) CP MS")
     field(OMSL, "closed_loop")
     field(OUT, "$(P)$(R)PositionX PP")
 }
@@ -72,10 +75,11 @@ record(longin, "$(P)$(R)PositionX_RBV")
 
 record(longout, "$(P)$(R)PositionYLink")
 {
-    field(DOL,  "CP")
+    field(DOL,  "$(YPOS) CP MS")
     field(OMSL, "closed_loop")
     field(OUT, "$(P)$(R)PositionY PP")
 }
+
 record(longout, "$(P)$(R)PositionY")
 {
     field(PINI, "YES")
@@ -95,7 +99,7 @@ record(longin, "$(P)$(R)PositionY_RBV")
 
 record(longout, "$(P)$(R)SizeXLink")
 {
-    field(DOL,  "CP")
+    field(DOL,  "$(XSIZE) CP MS")
     field(OMSL, "closed_loop")
     field(OUT, "$(P)$(R)SizeX PP")
 }
@@ -119,7 +123,7 @@ record(longin, "$(P)$(R)SizeX_RBV")
 
 record(longout, "$(P)$(R)SizeYLink")
 {
-    field(DOL,  "CP")
+    field(DOL,  "$(YSIZE) CP MS")
     field(OMSL, "closed_loop")
     field(OUT, "$(P)$(R)SizeY PP")
 }
@@ -150,6 +154,7 @@ record(mbbo, "$(P)$(R)Shape")
     field(ZRVL, "0")
     field(ONST, "Rectangle")
     field(ONVL, "1")
+    field(VAL,  "$(SHAPE)")
 }
 
 record(mbbi, "$(P)$(R)Shape_RBV")
@@ -160,6 +165,7 @@ record(mbbi, "$(P)$(R)Shape_RBV")
     field(ZRVL, "0")
     field(ONST, "Rectangle")
     field(ONVL, "1")
+    field(SCAN, "I/O Intr")
 }
 
 record(mbbo, "$(P)$(R)DrawMode")
@@ -181,6 +187,7 @@ record(mbbi, "$(P)$(R)DrawMode_RBV")
     field(ZRVL, "0")
     field(ONST, "XOR")
     field(ONVL, "1")
+    field(SCAN, "I/O Intr")
 }
 
 record(longout, "$(P)$(R)Red")
