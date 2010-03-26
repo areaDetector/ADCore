@@ -74,6 +74,7 @@ record(longout, "$(P)$(R)MinX")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_MIN")
+   field(LOPR, "0")
    field(VAL,  "0")
 }
 
@@ -89,6 +90,7 @@ record(longout, "$(P)$(R)MinY")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_MIN")
+   field(LOPR, "0")
    field(VAL,  "0")
 }
 
@@ -104,6 +106,7 @@ record(longout, "$(P)$(R)MinZ")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_MIN")
+   field(LOPR, "1")
    field(VAL,  "0")
 }
 
@@ -356,4 +359,38 @@ record(mbbi, "$(P)$(R)DataTypeOut_RBV")
    field(EIVL, "-1")
    field(SCAN, "I/O Intr")
 }
+
+###################################################################
+#  These records set the HOPR and LOPR values for the position    #
+#  and size to the maximum for the input array                    #
+###################################################################
+
+record(longin, "$(P)$(R)MaxX")
+{
+    field(INP,  "$(P)$(R)MaxSizeX_RBV CP")
+    field(FLNK, "$(P)$(R)SetXHOPR.PROC PP")
+}
+
+record(dfanout, "$(P)$(R)SetXHOPR")
+{
+    field(DOL,  "$(P)$(R)MaxX NPP")
+    field(OMSL, "closed_loop")
+    field(OUTA, "$(P)$(R)MinX.HOPR NPP")
+    field(OUTB, "$(P)$(R)SizeX.HOPR NPP")
+}
+
+record(longin, "$(P)$(R)MaxY")
+{
+    field(INP,  "$(P)$(R)MaxSizeY_RBV CP")
+    field(FLNK, "$(P)$(R)SetYHOPR.PROC PP")
+}
+
+record(dfanout, "$(P)$(R)SetYHOPR")
+{
+    field(DOL,  "$(P)$(R)MaxY NPP")
+    field(OMSL, "closed_loop")
+    field(OUTA, "$(P)$(R)MinY.HOPR NPP")
+    field(OUTB, "$(P)$(R)SizeY.HOPR NPP")
+}
+
 
