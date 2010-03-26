@@ -25,33 +25,45 @@
 
 //static const char *driverName="NDPluginOverlay";
 
-#define SET_PIXEL(PIXEL,VALUE) {if      (pOverlay->drawMode == NDOverlaySet) (PIXEL)=VALUE; \
-                                else if (pOverlay->drawMode == NDOverlayXOR) (PIXEL) = (int)(PIXEL)^(int)VALUE;}  
-
+template <typename epicsType>
+void NDPluginOverlay::setPixel(epicsType *pValue, NDOverlay_t *pOverlay)
+{
+    if ((this->arrayInfo.colorMode == NDColorModeRGB1) ||
+        (this->arrayInfo.colorMode == NDColorModeRGB2) ||
+        (this->arrayInfo.colorMode == NDColorModeRGB3)) {
+        *pValue = pOverlay->red;
+        pValue += this->arrayInfo.colorStride;
+        *pValue = pOverlay->green;
+        pValue += this->arrayInfo.colorStride;
+        *pValue = pOverlay->blue;
+    }
+    else {
+        *pValue = pOverlay->green;
+    }    
+}
 
 template <typename epicsType>
-void doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
+void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
 {
     int xmin, xmax, ymin, ymax, ix, iy;
     epicsType *pRow;
-    epicsType value = (epicsType)pOverlay->green;
 
     switch(pOverlay->shape) {
         case NDOverlayCross:
             xmin = pOverlay->PositionX - pOverlay->SizeX;
             xmin = MAX(xmin, 0);
             xmax = pOverlay->PositionX + pOverlay->SizeX;
-            xmax = MIN(xmax, pArray->dims[0].size);
+            xmax = MIN(xmax, this->arrayInfo.xSize-1);
             ymin = pOverlay->PositionY - pOverlay->SizeY;
             ymin = MAX(ymin, 0);
             ymax = pOverlay->PositionY + pOverlay->SizeY;
-            ymax = MIN(ymax, pArray->dims[1].size);
+            ymax = MIN(ymax, this->arrayInfo.ySize-1);
             for (iy=ymin; iy<ymax; iy++) {
-                pRow = (epicsType *)pArray->pData + iy*pArray->dims[0].size;
+                pRow = (epicsType *)pArray->pData + iy*this->arrayInfo.yStride;
                 if (iy == pOverlay->PositionY) {
-                    for (ix=xmin; ix<xmax; ix++) SET_PIXEL(pRow[ix], value);
+                    for (ix=xmin; ix<xmax; ix++) setPixel(&pRow[ix*this->arrayInfo.xStride], pOverlay);
                 } else {
-                    SET_PIXEL(pRow[pOverlay->PositionX], value);
+                    setPixel<epicsType>(&pRow[pOverlay->PositionX * this->arrayInfo.xStride], pOverlay);
                 }
             }
             break;
@@ -59,25 +71,25 @@ void doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
             xmin = pOverlay->PositionX;
             xmin = MAX(xmin, 0);
             xmax = pOverlay->PositionX + pOverlay->SizeX;
-            xmax = MIN(xmax, pArray->dims[0].size);
+            xmax = MIN(xmax, this->arrayInfo.xSize);
             ymin = pOverlay->PositionY;
             ymin = MAX(ymin, 0);
             ymax = pOverlay->PositionY + pOverlay->SizeY;
-            ymax = MIN(ymax, pArray->dims[1].size);
+            ymax = MIN(ymax, this->arrayInfo.ySize);
             for (iy=ymin; iy<ymax; iy++) {
-                pRow = (epicsType *)pArray->pData + iy*pArray->dims[0].size;
+                pRow = (epicsType *)pArray->pData + iy*arrayInfo.yStride;
                 if ((iy == ymin) || (iy == ymax-1)) {
-                    for (ix=xmin; ix<xmax; ix++) SET_PIXEL(pRow[ix], value);
+                    for (ix=xmin; ix<xmax; ix++) setPixel(&pRow[ix*this->arrayInfo.xStride], pOverlay);
                 } else {
-                    SET_PIXEL(pRow[xmin], value);
-                    SET_PIXEL(pRow[xmax-1], value);
+                    setPixel(&pRow[xmin*this->arrayInfo.xStride], pOverlay);
+                    setPixel(&pRow[(xmax-1)*this->arrayInfo.xStride], pOverlay);
                 }
             }
             break;
     }
 }
 
-int doOverlay(NDArray *pArray, NDOverlay_t *pOverlay)
+int NDPluginOverlay::doOverlay(NDArray *pArray, NDOverlay_t *pOverlay)
 {
     switch(pArray->dataType) {
         case NDInt8:
@@ -125,18 +137,11 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
 
     int use;
     int overlay;
-    int colorMode = NDColorModeMono;
     NDArray *pOutput;
-    NDOverlay_t *pOverlay;
-    NDAttribute *pAttribute;
     //const char* functionName = "processCallbacks";
 
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
-
-    /* We do some special treatment based on colorMode */
-    pAttribute = pArray->pAttributeList->find("ColorMode");
-	if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
 
     /* We always keep the last array so read() can use it.
      * Release previous one. */
@@ -147,6 +152,11 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
     this->pArrays[0] = this->pNDArrayPool->copy(pArray, NULL, 1);
     pOutput = this->pArrays[0];
     
+    /* Get information about the array needed later */
+    pOutput->getInfo(&this->arrayInfo);
+    setIntegerParam(NDPluginOverlayMaxSizeX, arrayInfo.xSize);
+    setIntegerParam(NDPluginOverlayMaxSizeY, arrayInfo.ySize);
+   
     /* Loop over the overlays in this driver */
     for (overlay=0; overlay<this->maxOverlays; overlay++) {
         pOverlay = &this->pOverlays[overlay];
@@ -155,13 +165,13 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
         /* Need to fetch all of these parameters while we still have the mutex */
         getIntegerParam(overlay, NDPluginOverlayPositionX,  &pOverlay->PositionX);
         pOverlay->PositionX = MAX(pOverlay->PositionX, 0);
-        pOverlay->PositionX = MIN(pOverlay->PositionX, pOutput->dims[0].size);
+        pOverlay->PositionX = MIN(pOverlay->PositionX, this->arrayInfo.xSize-1);
         getIntegerParam(overlay, NDPluginOverlayPositionY,  &pOverlay->PositionY);
         pOverlay->PositionY = MAX(pOverlay->PositionY, 0);
-        pOverlay->PositionY = MIN(pOverlay->PositionY, pOutput->dims[1].size);
+        pOverlay->PositionY = MIN(pOverlay->PositionY, this->arrayInfo.ySize-1);
         getIntegerParam(overlay, NDPluginOverlaySizeX,      &pOverlay->SizeX);
         getIntegerParam(overlay, NDPluginOverlaySizeY,      &pOverlay->SizeY);
-        getIntegerParam(overlay, NDPluginOverlayShape,       (int *)&pOverlay->shape);
+        getIntegerParam(overlay, NDPluginOverlayShape,      (int *)&pOverlay->shape);
         getIntegerParam(overlay, NDPluginOverlayDrawMode,   (int *)&pOverlay->drawMode);
         getIntegerParam(overlay, NDPluginOverlayRed,        &pOverlay->red);
         getIntegerParam(overlay, NDPluginOverlayGreen,      &pOverlay->green);
@@ -171,7 +181,7 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
          * The following code can be exected without the mutex because we are not accessing elements of
          * pPvt that other threads can access. */
         this->unlock();
-        doOverlay(pOutput, pOverlay);
+        this->doOverlay(pOutput, pOverlay);
         this->lock();
     }
     /* Get the attributes for this driver */
@@ -223,6 +233,8 @@ NDPluginOverlay::NDPluginOverlay(const char *portName, int queueSize, int blocki
     this->maxOverlays = maxOverlays;
     this->pOverlays = (NDOverlay_t *)callocMustSucceed(maxOverlays, sizeof(*this->pOverlays), functionName);
 
+    createParam(NDPluginOverlayMaxSizeXString,      asynParamInt32, &NDPluginOverlayMaxSizeX);
+    createParam(NDPluginOverlayMaxSizeYString,      asynParamInt32, &NDPluginOverlayMaxSizeY);
     createParam(NDPluginOverlayNameString,          asynParamOctet, &NDPluginOverlayName);
     createParam(NDPluginOverlayUseString,           asynParamInt32, &NDPluginOverlayUse);
     createParam(NDPluginOverlayPositionXString,     asynParamInt32, &NDPluginOverlayPositionX);
