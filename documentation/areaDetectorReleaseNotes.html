@@ -52,7 +52,9 @@
           much simpler; it supports only a single ROI, and does not calculate statistics or
           do highlighting. Those functions have been moved to new plugins. One new function
           has been added, the ability to divide the array by a scale factor, which is useful
-          for avoiding overflow when binning.</li>
+          for avoiding overflow when binning. Fixed problem when a single color is extracted
+          from a color image; it now removes the unused dimension and changes the colorMode
+          to mono.</li>
         <li>Added new NDPluginStats plugin. This plugin calculates statistics on an array.
           It replaces the statistics calculations that were previously performed in the ROI
           plugin. It also adds new statistics, including the centroid position and width.
@@ -70,8 +72,8 @@
         </li>
         <li>Added new NDPluginOverlay plugin. This plugin adds graphic overlays to an image.
           It replaces the "Highligh ROIs" function that was previously provided in the ROI
-          plugin. But it is much more general, and can be used to display multiple cursors,
-          user-defined boxes, etc.</li>
+          plugin. But it is much more general, and can be used to display not only ROIs, but
+          multiple cursors, user-defined boxes, etc.</li>
       </ul>
     </li>
     <li>Viewers
@@ -84,6 +86,8 @@
       <ul>
         <li>Added new form of NDArrayPool::convert that only changed data type, does not take
           dims argument.</li>
+        <li>Added more fields to the NDArrayInfo_t structure and the NDArray::getInfo method
+          to simplify handling color images.</li>
       </ul>
     </li>
   </ul>
