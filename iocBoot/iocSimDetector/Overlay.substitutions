@@ -1,0 +1,14 @@
+# This file defines 6 overlays.  The first 4 get their position and size from 4 ROIs; then 2 are user-defined cursors and user-defined boxes
+file "$(AREA_DETECTOR)/ADApp/Db/NDOverlayN.template"
+{
+pattern
+{     P,        R,  NAME, SHAPE,      O,                 XPOS,                 YPOS,                 XSIZE,                 YSIZE,  PORT, ADDR, TIMEOUT}
+{13SIM1:, Over1:1:, ROI1,     1, Over1:, 13SIM1:ROI1:MinX_RBV, 13SIM1:ROI1:MinY_RBV, 13SIM1:ROI1:SizeX_RBV, 13SIM1:ROI1:SizeY_RBV, OVER1,    0,       1}
+{13SIM1:, Over1:2:, ROI2,     1, Over1:, 13SIM1:ROI2:MinX_RBV, 13SIM1:ROI2:MinY_RBV, 13SIM1:ROI2:SizeX_RBV, 13SIM1:ROI2:SizeY_RBV, OVER1,    1,       1}
+{13SIM1:, Over1:3:, ROI3,     1, Over1:, 13SIM1:ROI3:MinX_RBV, 13SIM1:ROI3:MinY_RBV, 13SIM1:ROI3:SizeX_RBV, 13SIM1:ROI3:SizeY_RBV, OVER1,    2,       1}
+{13SIM1:, Over1:4:, ROI4,     1, Over1:, 13SIM1:ROI4:MinX_RBV, 13SIM1:ROI4:MinY_RBV, 13SIM1:ROI4:SizeX_RBV, 13SIM1:ROI4:SizeY_RBV, OVER1,    3,       1}
+{13SIM1:, Over1:5:, Cursor1,  0, Over1:,                   "",                   "",                    "",                    "", OVER1,    4,       1}
+{13SIM1:, Over1:6:, Cursor2,  0, Over1:,                   "",                   "",                    "",                    "", OVER1,    5,       1}
+{13SIM1:, Over1:7:, Box1,     1, Over1:,                   "",                   "",                    "",                    "", OVER1,    6,       1}
+{13SIM1:, Over1:8:, Box2,     1, Over1:,                   "",                   "",                    "",                    "", OVER1,    7,       1}
+}
