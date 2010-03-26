@@ -621,6 +621,7 @@ NDArray::~NDArray()
 int NDArray::getInfo(NDArrayInfo_t *pInfo)
 {
     int i;
+    NDAttribute *pAttribute;
 
     switch(this->dataType) {
         case NDInt8:
@@ -654,6 +655,60 @@ int NDArray::getInfo(NDArrayInfo_t *pInfo)
     pInfo->nElements = 1;
     for (i=0; i<this->ndims; i++) pInfo->nElements *= this->dims[i].size;
     pInfo->totalBytes = pInfo->nElements * pInfo->bytesPerElement;
+    pInfo->colorMode = NDColorModeMono;
+    pAttribute = this->pAttributeList->find("ColorMode");
+    if (pAttribute) pAttribute->getValue(NDAttrInt32, &pInfo->colorMode);
+    pInfo->xDim        = 0;
+    pInfo->yDim        = 0;
+    pInfo->colorDim    = 0;
+    pInfo->xSize       = 0;
+    pInfo->ySize       = 0;
+    pInfo->colorSize   = 0;
+    pInfo->xStride     = 0;
+    pInfo->yStride     = 0;
+    pInfo->colorStride = 0;
+    if (this->ndims > 0) {
+        pInfo->xStride = 1;
+        pInfo->xSize   = this->dims[0].size;
+    }
+    if (this->ndims > 1) {
+        pInfo->yDim    = 1;
+        pInfo->yStride = pInfo->xSize;
+        pInfo->ySize   = this->dims[1].size;
+    }
+    if (this->ndims == 3) {
+        switch (pInfo->colorMode) {
+            case NDColorModeRGB1:
+                pInfo->xDim        = 1;
+                pInfo->yDim        = 2;
+                pInfo->colorDim    = 0;
+                pInfo->xStride     = this->dims[0].size;
+                pInfo->yStride     = this->dims[0].size * this->dims[1].size;
+                pInfo->colorStride = 1;
+                break;
+            case NDColorModeRGB2:
+                pInfo->xDim        = 0;
+                pInfo->yDim        = 2;
+                pInfo->colorDim    = 1;
+                pInfo->xStride     = 1;
+                pInfo->yStride     = this->dims[0].size * this->dims[1].size;
+                pInfo->colorStride = this->dims[0].size;
+                break;
+            case NDColorModeRGB3:
+                pInfo->xDim        = 0;
+                pInfo->yDim        = 1;
+                pInfo->colorDim    = 2;
+                pInfo->xStride     = 1;
+                pInfo->yStride     = this->dims[0].size;
+                pInfo->colorStride = this->dims[0].size * this->dims[1].size;
+                break;
+            default:
+                break;
+        }
+        pInfo->xSize       = this->dims[pInfo->xDim].size;
+        pInfo->ySize       = this->dims[pInfo->yDim].size;
+        pInfo->colorSize   = this->dims[pInfo->colorDim].size;
+    }
     return(ND_SUCCESS);
 }
 
