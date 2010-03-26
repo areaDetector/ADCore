@@ -2,4 +2,17 @@
 # Mark Rivers
 # March 25, 2010
 
-# Nothing extra needed beyond NDPluginBase.template for now
+# These are the array dimensions in X, Y order.  Used for setting HOPR on sliders
+record(longin, "$(P)$(R)MaxSizeX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_SIZE_X")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)MaxSizeY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_SIZE_Y")
+   field(SCAN, "I/O Intr")
+}
