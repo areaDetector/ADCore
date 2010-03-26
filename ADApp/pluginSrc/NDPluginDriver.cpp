@@ -36,7 +36,7 @@ static const char *driverName="NDPluginDriver";
     void NDPluginDriver::processCallbacks(NDArray *pArray)
 {
     int arrayCounter;
-    int i, dimsChanged;
+    int i, dimsChanged, size;
     NDAttribute *pAttribute;
     int colorMode=NDColorModeMono, bayerPattern=NDBayerRGGB;
     
@@ -56,8 +56,10 @@ static const char *driverName="NDPluginDriver";
     setDoubleParam(NDTimeStamp, pArray->timeStamp);
     /* See if the array dimensions have changed.  If so then do callbacks on them. */
     for (i=0, dimsChanged=0; i<ND_ARRAY_MAX_DIMS; i++) {
-        if (pArray->dims[i].size != this->dimsPrev[i]) {
-            this->dimsPrev[i] = pArray->dims[i].size;
+        size = pArray->dims[i].size;
+        if (i >= pArray->ndims) size = 0;
+        if (size != this->dimsPrev[i]) {
+            this->dimsPrev[i] = size;
             dimsChanged = 1;
         }
     }
