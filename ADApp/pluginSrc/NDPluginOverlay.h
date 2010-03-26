@@ -30,6 +30,8 @@ typedef struct NDOverlay {
 } NDOverlay_t;
 
 
+#define NDPluginOverlayMaxSizeXString           "MAX_SIZE_X"            /* (asynInt32,   r/o) Maximum size of overlay in X dimension */
+#define NDPluginOverlayMaxSizeYString           "MAX_SIZE_Y"            /* (asynInt32,   r/o) Maximum size of overlay in Y dimension */
 #define NDPluginOverlayNameString               "NAME"                  /* (asynOctet,   r/w) Name of this overlay */
 #define NDPluginOverlayUseString                "USE"                   /* (asynInt32,   r/w) Use this overlay? */
 #define NDPluginOverlayPositionXString          "OVERLAY_POSITION_X"    /* (asynInt32,   r/o) X positoin of overlay */
@@ -51,10 +53,15 @@ public:
                  int priority, int stackSize);
     /* These methods override the virtual methods in the base class */
     void processCallbacks(NDArray *pArray);
+    template <typename epicsType> void doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay);
+    int doOverlay(NDArray *pArray, NDOverlay_t *pOverlay);
+    template <typename epicsType> void setPixel(epicsType *pValue, NDOverlay_t *pOverlay);
 
 protected:
+    int NDPluginOverlayMaxSizeX;
+    #define FIRST_NDPLUGIN_OVERLAY_PARAM NDPluginOverlayMaxSizeX
+    int NDPluginOverlayMaxSizeY;
     int NDPluginOverlayName;
-    #define FIRST_NDPLUGIN_OVERLAY_PARAM NDPluginOverlayName
     int NDPluginOverlayUse;
     int NDPluginOverlayPositionX;
     int NDPluginOverlayPositionY;
@@ -69,7 +76,9 @@ protected:
                                 
 private:
     int maxOverlays;
+    NDArrayInfo arrayInfo;
     NDOverlay_t *pOverlays;    /* Array of NDOverlay structures */
+    NDOverlay_t *pOverlay;
 };
 #define NUM_NDPLUGIN_OVERLAY_PARAMS (&LAST_NDPLUGIN_OVERLAY_PARAM - &FIRST_NDPLUGIN_OVERLAY_PARAM + 1)
     
