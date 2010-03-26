@@ -5,9 +5,9 @@ file {
 }
 display {
 	object {
-		x=55
-		y=39
-		width=420
+		x=97
+		y=165
+		width=485
 		height=300
 	}
 	clr=14
@@ -89,7 +89,7 @@ display {
 }
 text {
 	object {
-		x=110
+		x=142
 		y=6
 		width=201
 		height=31
@@ -101,19 +101,7 @@ text {
 }
 text {
 	object {
-		x=106
-		y=76
-		width=70
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Drivers"
-}
-text {
-	object {
-		x=182
+		x=406
 		y=76
 		width=70
 		height=20
@@ -125,39 +113,15 @@ text {
 }
 text {
 	object {
-		x=197
+		x=416
 		y=55
-		width=40
+		width=50
 		height=20
 	}
 	"basic attribute" {
 		clr=14
 	}
-	textix="File"
-}
-text {
-	object {
-		x=255
-		y=76
-		width=70
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Plugins"
-}
-text {
-	object {
-		x=275
-		y=55
-		width=30
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="ROI"
+	textix="Other"
 }
 text {
 	object {
@@ -181,175 +145,264 @@ text {
 	"basic attribute" {
 		clr=14
 	}
-	textix="Other"
+	textix="Stats"
 }
-composite {
+text {
+	object {
+		x=256
+		y=76
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Plugins"
+}
+text {
+	object {
+		x=276
+		y=55
+		width=30
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="ROI"
+}
+text {
+	object {
+		x=181
+		y=76
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Plugins"
+}
+text {
+	object {
+		x=196
+		y=55
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="File"
+}
+text {
+	object {
+		x=106
+		y=76
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Drivers"
+}
+text {
 	object {
 		x=12
 		y=100
-		width=386
+		width=90
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=12
-				y=100
-				width=90
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Simulator"
-		}
-		"related display" {
-			object {
-				x=109
-				y=100
-				width=64
-				height=20
-			}
-			display[0] {
-				label="Simulator #1 General"
-				name="ADBase.adl"
-				args="P=13SIM1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, JPEG=JPEG1:, TIFF=TIFF1:, NEXUS=Nexus1:, CC=CC1:"
-			}
-			display[1] {
-				label="Simulator #1 Specific"
-				name="simDetector.adl"
-				args="P=13SIM1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, JPEG=JPEG1:, TIFF=TIFF1:, NEXUS=Nexus1:, CC=CC1:"
-			}
-			display[2] {
-				label="Simulator #2 General"
-				name="ADBase.adl"
-				args="P=13SIM1:, R=cam2:, I=image2:, ROI=ROI2:, NETCDF=netCDF2:, JPEG=JPEG2:, TIFF=TIFF2:, NEXUS=Nexus2:, CC=CC2:"
-			}
-			display[3] {
-				label="Simulator #2 Specific"
-				name="simDetector.adl"
-				args="P=13SIM1:, R=cam2:, I=image2:, ROI=ROI2:, NETCDF=netCDF2:, JPEG=JPEG2:, TIFF=TIFF2:, NEXUS=Nexus2:, CC=CC2:"
-			}
-			clr=14
-			bclr=51
-		}
-		"related display" {
-			object {
-				x=185
-				y=100
-				width=64
-				height=20
-			}
-			display[0] {
-				label="netCDF file #1"
-				name="NDFileNetCDF.adl"
-				args="P=13SIM1:, R=netCDF1:"
-			}
-			display[1] {
-				label="TIFF file #1"
-				name="NDFileTIFF.adl"
-				args="P=13SIM1:, R=TIFF1:"
-			}
-			display[2] {
-				label="JPEG file #1"
-				name="NDFileJPEG.adl"
-				args="P=13SIM1:, R=JPEG1:"
-			}
-			display[3] {
-				label="NeXus file #1"
-				name="NDFileNexus.adl"
-				args="P=13SIM1:, R=Nexus1:"
-			}
-			clr=14
-			bclr=51
-		}
-		"related display" {
-			object {
-				x=257
-				y=100
-				width=64
-				height=20
-			}
-			display[0] {
-				label="ROI #1"
-				name="NDROI.adl"
-				args="P=13SIM1:, R=ROI1:"
-			}
-			display[1] {
-				label="ROI #2"
-				name="NDROI.adl"
-				args="P=13SIM1:, R=ROI2:"
-			}
-			display[2] {
-				label="ROI #3"
-				name="NDROI.adl"
-				args="P=13SIM1:, R=ROI3:"
-			}
-			display[3] {
-				label="ROI #4"
-				name="NDROI.adl"
-				args="P=13SIM1:, R=ROI4:"
-			}
-			display[4] {
-				label="ROI #5"
-				name="NDROI.adl"
-				args="P=13SIM1:, R=ROI5:"
-			}
-			clr=14
-			bclr=51
-		}
-		"related display" {
-			object {
-				x=334
-				y=100
-				width=64
-				height=20
-			}
-			display[0] {
-				label="Image #1"
-				name="NDStdArrays.adl"
-				args="P=13SIM1:, R=image1:"
-			}
-			display[1] {
-				label="Process #1"
-				name="NDProcess.adl"
-				args="P=13SIM1:, R=Proc1:"
-			}
-			display[2] {
-				label="Statistics #1"
-				name="NDStats.adl"
-				args="P=13SIM1:, R=Stats1:"
-			}
-			display[3] {
-				label="Statistics #2"
-				name="NDStats.adl"
-				args="P=13SIM1:, R=Stats2:"
-			}
-			display[4] {
-				label="Statistics #3"
-				name="NDStats.adl"
-				args="P=13SIM1:, R=Stats3:"
-			}
-			display[5] {
-				label="Statistics #4"
-				name="NDStats.adl"
-				args="P=13SIM1:, R=Stats4:"
-			}
-			display[6] {
-				label="Scan #1"
-				name="scan_more.adl"
-				args="P=13SIM1:, S=scan1, N=1"
-			}
-			display[7] {
-				label="Image #2"
-				name="NDStdArrays.adl"
-				args="P=13SIM1:, R=image2:"
-			}
-			clr=14
-			bclr=51
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="Simulator"
+}
+"related display" {
+	object {
+		x=334
+		y=100
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Statistics #1"
+		name="NDStats.adl"
+		args="P=13SIM1:, R=Stats1:"
+	}
+	display[1] {
+		label="Statistics #2"
+		name="NDStats.adl"
+		args="P=13SIM1:, R=Stats2:"
+	}
+	display[2] {
+		label="Statistics #3"
+		name="NDStats.adl"
+		args="P=13SIM1:, R=Stats3:"
+	}
+	display[3] {
+		label="Statistics #4"
+		name="NDStats.adl"
+		args="P=13SIM1:, R=Stats4:"
+	}
+	display[4] {
+		label="Statistics #5"
+		name="NDStats.adl"
+		args="P=13SIM1:, R=Stats5:"
+	}
+	display[5] {
+		label="Statistics 1-5"
+		name="NDStats5.adl"
+		args="P=13SIM1:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=259
+		y=100
+		width=64
+		height=20
+	}
+	display[0] {
+		label="ROI #1"
+		name="NDROI.adl"
+		args="P=13SIM1:, R=ROI1:"
+	}
+	display[1] {
+		label="ROI #2"
+		name="NDROI.adl"
+		args="P=13SIM1:, R=ROI2:"
+	}
+	display[2] {
+		label="ROI #3"
+		name="NDROI.adl"
+		args="P=13SIM1:, R=ROI3:"
+	}
+	display[3] {
+		label="ROI #4"
+		name="NDROI.adl"
+		args="P=13SIM1:, R=ROI4:"
+	}
+	display[4] {
+		label="ROI 1-4 combined"
+		name="NDROI4.adl"
+		args="P=13SIM1:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=184
+		y=100
+		width=64
+		height=20
+	}
+	display[0] {
+		label="netCDF file #1"
+		name="NDFileNetCDF.adl"
+		args="P=13SIM1:, R=netCDF1:"
+	}
+	display[1] {
+		label="TIFF file #1"
+		name="NDFileTIFF.adl"
+		args="P=13SIM1:, R=TIFF1:"
+	}
+	display[2] {
+		label="JPEG file #1"
+		name="NDFileJPEG.adl"
+		args="P=13SIM1:, R=JPEG1:"
+	}
+	display[3] {
+		label="NeXus file #1"
+		name="NDFileNexus.adl"
+		args="P=13SIM1:, R=Nexus1:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=109
+		y=100
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Simulator #1 General"
+		name="ADBase.adl"
+		args="P=13SIM1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, JPEG=JPEG1:, TIFF=TIFF1:, NEXUS=Nexus1:, CC=CC1:"
+	}
+	display[1] {
+		label="Simulator #1 Specific"
+		name="simDetector.adl"
+		args="P=13SIM1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, JPEG=JPEG1:, TIFF=TIFF1:, NEXUS=Nexus1:, CC=CC1:"
+	}
+	display[2] {
+		label="Simulator #2 General"
+		name="ADBase.adl"
+		args="P=13SIM1:, R=cam2:, I=image2:, ROI=ROI2:, NETCDF=netCDF2:, JPEG=JPEG2:, TIFF=TIFF2:, NEXUS=Nexus2:, CC=CC2:"
+	}
+	display[3] {
+		label="Simulator #2 Specific"
+		name="simDetector.adl"
+		args="P=13SIM1:, R=cam2:, I=image2:, ROI=ROI2:, NETCDF=netCDF2:, JPEG=JPEG2:, TIFF=TIFF2:, NEXUS=Nexus2:, CC=CC2:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=409
+		y=100
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Image #1"
+		name="NDStdArrays.adl"
+		args="P=13SIM1:, R=image1:"
+	}
+	display[1] {
+		label="Process #1"
+		name="NDProcess.adl"
+		args="P=13SIM1:, R=Proc1:"
+	}
+	display[2] {
+		label="Overlay #1"
+		name="NDOverlay.adl"
+		args="P=13SIM1:, R=Over1:"
+	}
+	display[3] {
+		label="Transform #1"
+		name="NDTransform.adl"
+		args="P=13SIM1:, R=Trans1:"
+	}
+	display[4] {
+		label="Color convert #1"
+		name="NDColorConvert.adl"
+		args="P=13SIM1:, R=CC1:"
+	}
+	display[5] {
+		label="Image #2"
+		name="NDStdArrays.adl"
+		args="P=13SIM1:, R=image2:"
+	}
+	display[6] {
+		label="Overlays 1-8"
+		name="NDOverlay8.adl"
+		args="P=13SIM1:, R=Over1:,O1=Over1:1:,O2=Over1:2:,O3=Over1:3:,O4=Over1:4:,O5=Over1:5:,O6=Over1:6:,O7=Over1:7:,O8=Over1:8:"
+	}
+	display[7] {
+		label="Scan #1"
+		name="scan_more.adl"
+		args="P=13SIM1:, S=scan1, N=1"
+	}
+	clr=14
+	bclr=51
 }
 text {
 	object {
@@ -362,6 +415,116 @@ text {
 		clr=14
 	}
 	textix="Prosilica"
+}
+"related display" {
+	object {
+		x=409
+		y=125
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Image #1"
+		name="NDStdArrays.adl"
+		args="P=13PS1:, R=image1:"
+	}
+	display[1] {
+		label="Process #1"
+		name="NDProcess.adl"
+		args="P=13PS1:, R=Proc1:"
+	}
+	display[2] {
+		label="Overlay #1"
+		name="NDOverlay.adl"
+		args="P=13PS1:, R=Over1:"
+	}
+	display[3] {
+		label="Transform #1"
+		name="NDTransform.adl"
+		args="P=13PS1:, R=Trans1:"
+	}
+	display[4] {
+		label="Color convert #2"
+		name="NDColorConvert.adl"
+		args="P=13PS1:, R=CC1:"
+	}
+	display[5] {
+		label="Image #2"
+		name="NDStdArrays.adl"
+		args="P=13PS1:, R=image2:"
+	}
+	display[6] {
+		label="Scan #1"
+		name="scan_more.adl"
+		args="P=13PS1:, S=scan1, N=1"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=259
+		y=125
+		width=64
+		height=20
+	}
+	display[0] {
+		label="ROI #1"
+		name="NDROI.adl"
+		args="P=13PS1:, R=ROI1:"
+	}
+	display[1] {
+		label="ROI #2"
+		name="NDROI.adl"
+		args="P=13PS1:, R=ROI2:"
+	}
+	display[2] {
+		label="ROI #3"
+		name="NDROI.adl"
+		args="P=13PS1:, R=ROI3:"
+	}
+	display[3] {
+		label="ROI #4"
+		name="NDROI.adl"
+		args="P=13PS1:, R=ROI4:"
+	}
+	display[4] {
+		label="ROI #5"
+		name="NDROI.adl"
+		args="P=13PS1:, R=ROI5:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=184
+		y=125
+		width=64
+		height=20
+	}
+	display[0] {
+		label="netCDF file #1"
+		name="NDFileNetCDF.adl"
+		args="P=13PS1:, R=netCDF1:"
+	}
+	display[1] {
+		label="TIFF file #1"
+		name="NDFileTIFF.adl"
+		args="P=13PS1:, R=TIFF1:"
+	}
+	display[2] {
+		label="JPEG file #1"
+		name="NDFileJPEG.adl"
+		args="P=13PS1:, R=JPEG1:"
+	}
+	display[3] {
+		label="NeXus file #1"
+		name="NDFileNexus.adl"
+		args="P=13PS1:, R=Nexus1:"
+	}
+	clr=14
+	bclr=51
 }
 "related display" {
 	object {
@@ -405,65 +568,159 @@ text {
 }
 "related display" {
 	object {
-		x=185
+		x=334
 		y=125
 		width=64
 		height=20
 	}
 	display[0] {
-		label="netCDF file #1"
-		name="NDFileNetCDF.adl"
-		args="P=13PS1:, R=netCDF1:"
+		label="Statistics #1"
+		name="NDStats.adl"
+		args="P=13PS1:, R=Stats1:"
 	}
 	display[1] {
-		label="TIFF file #1"
-		name="NDFileTIFF.adl"
-		args="P=13PS1:, R=TIFF1:"
+		label="Statistics #2"
+		name="NDStats.adl"
+		args="P=13PS1:, R=Stats2:"
 	}
 	display[2] {
-		label="JPEG file #1"
-		name="NDFileJPEG.adl"
-		args="P=13PS1:, R=JPEG1:"
+		label="Statistics #3"
+		name="NDStats.adl"
+		args="P=13PS1:, R=Stats3:"
 	}
 	display[3] {
-		label="NeXus file #1"
-		name="NDFileNexus.adl"
-		args="P=13PS1:, R=Nexus1:"
+		label="Statistics #4"
+		name="NDStats.adl"
+		args="P=13PS1:, R=Stats4:"
 	}
 	clr=14
 	bclr=51
 }
+text {
+	object {
+		x=62
+		y=150
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="ADSC"
+}
 "related display" {
 	object {
-		x=257
-		y=125
+		x=109
+		y=150
+		width=64
+		height=20
+	}
+	display[0] {
+		label="ADSC general"
+		name="ADBase.adl"
+		args="P=13ADSC1:, R=det1:"
+	}
+	display[1] {
+		label="ADSC specific"
+		name="adsc.adl"
+		args="P=13ADSC1:, R=det1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=32
+		y=175
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Pilatus"
+}
+"related display" {
+	object {
+		x=259
+		y=175
 		width=64
 		height=20
 	}
 	display[0] {
 		label="ROI #1"
 		name="NDROI.adl"
-		args="P=13PS1:, R=ROI1:"
+		args="P=13PIL1:, R=ROI1:"
 	}
 	display[1] {
 		label="ROI #2"
 		name="NDROI.adl"
-		args="P=13PS1:, R=ROI2:"
+		args="P=13PIL1:, R=ROI2:"
 	}
 	display[2] {
 		label="ROI #3"
 		name="NDROI.adl"
-		args="P=13PS1:, R=ROI3:"
+		args="P=13PIL1:, R=ROI3:"
 	}
 	display[3] {
 		label="ROI #4"
 		name="NDROI.adl"
-		args="P=13PS1:, R=ROI4:"
+		args="P=13PIL1:, R=ROI4:"
 	}
 	display[4] {
 		label="ROI #5"
 		name="NDROI.adl"
-		args="P=13PS1:, R=ROI5:"
+		args="P=13PIL1:, R=ROI5:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=184
+		y=175
+		width=64
+		height=20
+	}
+	display[0] {
+		label="netCDF file #1"
+		name="NDFileNetCDF.adl"
+		args="P=13PIL1:, R=netCDF1:"
+	}
+	display[1] {
+		label="TIFF file #1"
+		name="NDFileTIFF.adl"
+		args="P=13PIL1:, R=TIFF1:"
+	}
+	display[2] {
+		label="JPEG file #1"
+		name="NDFileJPEG.adl"
+		args="P=13PIL1:, R=JPEG1:"
+	}
+	display[3] {
+		label="NeXus file #1"
+		name="NDFileNexus.adl"
+		args="P=13PIL1:, R=Nexus1:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=109
+		y=175
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Pilatus #1 general"
+		name="ADBase.adl"
+		args="P=13PIL1:, R=cam1: "
+	}
+	display[1] {
+		label="Pilatus #1 specific"
+		name="pilatusDetector.adl"
+		args="P=13PIL1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, JPEG=JPEG1:, TIFF=TIFF1:, NEXUS=Nexus1:"
 	}
 	clr=14
 	bclr=51
@@ -471,7 +728,37 @@ text {
 "related display" {
 	object {
 		x=334
-		y=125
+		y=175
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Statistics #1"
+		name="NDStats.adl"
+		args="P=13PIL1:, R=Stats1:"
+	}
+	display[1] {
+		label="Statistics #2"
+		name="NDStats.adl"
+		args="P=13PIL1:, R=Stats2:"
+	}
+	display[2] {
+		label="Statistics #3"
+		name="NDStats.adl"
+		args="P=13PIL1:, R=Stats3:"
+	}
+	display[3] {
+		label="Statistics #4"
+		name="NDStats.adl"
+		args="P=13PIL1:, R=Stats4:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=409
+		y=175
 		width=64
 		height=20
 	}
@@ -486,880 +773,720 @@ text {
 		args="P=13PS1:, R=Proc1:"
 	}
 	display[2] {
-		label="Statistics #1"
-		name="NDStats.adl"
-		args="P=13PS1:, R=Stats1:"
-	}
-	display[3] {
-		label="Statistics #2"
-		name="NDStats.adl"
-		args="P=13PS1:, R=Stats2:"
-	}
-	display[4] {
-		label="Statistics #3"
-		name="NDStats.adl"
-		args="P=13PS1:, R=Stats3:"
-	}
-	display[5] {
-		label="Statistics #4"
-		name="NDStats.adl"
-		args="P=13PS1:, R=Stats4:"
-	}
-	display[6] {
-		label="Transform #1"
-		name="NDTransform.adl"
-		args="P=13PS1:, R=Trans1:"
-	}
-	display[7] {
-		label="Image #2"
-		name="NDStdArrays.adl"
-		args="P=13PS1:, R=image2:"
-	}
-	display[8] {
-		label="Scan #1"
-		name="scan_more.adl"
-		args="P=13PS1:, S=scan1, N=1"
-	}
-	display[9] {
 		label="Overlay #1"
 		name="NDOverlay.adl"
 		args="P=13PS1:, R=Over1:"
 	}
+	display[3] {
+		label="Transform #1"
+		name="NDTransform.adl"
+		args="P=13PS1:, R=Trans1:"
+	}
+	display[4] {
+		label="Color convert #1"
+		name="NDColorConvert.adl"
+		args="P=13PS1:, R=CC1:"
+	}
+	display[5] {
+		label="Image #2"
+		name="NDStdArrays.adl"
+		args="P=13PS1:, R=image2:"
+	}
+	display[6] {
+		label="Scan #1"
+		name="scan_more.adl"
+		args="P=13PS1:, S=scan1, N=1"
+	}
 	clr=14
 	bclr=51
 }
-composite {
-	object {
-		x=32
-		y=175
-		width=366
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=32
-				y=175
-				width=70
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Pilatus"
-		}
-		"related display" {
-			object {
-				x=109
-				y=175
-				width=64
-				height=20
-			}
-			display[0] {
-				label="Pilatus #1 general"
-				name="ADBase.adl"
-				args="P=13PIL1:, R=cam1: "
-			}
-			display[1] {
-				label="Pilatus #1 specific"
-				name="pilatusDetector.adl"
-				args="P=13PIL1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, JPEG=JPEG1:, TIFF=TIFF1:, NEXUS=Nexus1:"
-			}
-			clr=14
-			bclr=51
-		}
-		"related display" {
-			object {
-				x=185
-				y=175
-				width=64
-				height=20
-			}
-			display[0] {
-				label="netCDF file #1"
-				name="NDFileNetCDF.adl"
-				args="P=13PIL1:, R=netCDF1:"
-			}
-			display[1] {
-				label="TIFF file #1"
-				name="NDFileTIFF.adl"
-				args="P=13PIL1:, R=TIFF1:"
-			}
-			display[2] {
-				label="JPEG file #1"
-				name="NDFileJPEG.adl"
-				args="P=13PIL1:, R=JPEG1:"
-			}
-			display[3] {
-				label="NeXus file #1"
-				name="NDFileNexus.adl"
-				args="P=13PIL1:, R=Nexus1:"
-			}
-			clr=14
-			bclr=51
-		}
-		"related display" {
-			object {
-				x=257
-				y=175
-				width=64
-				height=20
-			}
-			display[0] {
-				label="ROI #1"
-				name="NDROI.adl"
-				args="P=13PIL1:, R=ROI1:"
-			}
-			display[1] {
-				label="ROI #2"
-				name="NDROI.adl"
-				args="P=13PIL1:, R=ROI2:"
-			}
-			display[2] {
-				label="ROI #3"
-				name="NDROI.adl"
-				args="P=13PIL1:, R=ROI3:"
-			}
-			display[3] {
-				label="ROI #4"
-				name="NDROI.adl"
-				args="P=13PIL1:, R=ROI4:"
-			}
-			display[4] {
-				label="ROI #5"
-				name="NDROI.adl"
-				args="P=13PIL1:, R=ROI5:"
-			}
-			clr=14
-			bclr=51
-		}
-		"related display" {
-			object {
-				x=334
-				y=175
-				width=64
-				height=20
-			}
-			display[0] {
-				label="Image #1"
-				name="NDStdArrays.adl"
-				args="P=13PIL1:, R=image1:"
-			}
-			display[1] {
-				label="Process #1"
-				name="NDProcess.adl"
-				args="P=13PIL1:, R=Proc1:"
-			}
-			display[2] {
-				label="Statistics #1"
-				name="NDStats.adl"
-				args="P=13PIL1:, R=Stats1:"
-			}
-			display[3] {
-				label="Statistics #2"
-				name="NDStats.adl"
-				args="P=13PIL1:, R=Stats2:"
-			}
-			display[4] {
-				label="Statistics #3"
-				name="NDStats.adl"
-				args="P=13PIL1:, R=Stats3:"
-			}
-			display[5] {
-				label="Statistics #4"
-				name="NDStats.adl"
-				args="P=13PIL1:, R=Stats4:"
-			}
-			display[6] {
-				label="Scan #1"
-				name="scan_more.adl"
-				args="P=13PIL1:, S=scan1, N=1"
-			}
-			display[7] {
-				label="Image #2"
-				name="NDStdArrays.adl"
-				args="P=13PIL1:, R=image2:"
-			}
-			clr=14
-			bclr=51
-		}
-	}
-}
-composite {
-	object {
-		x=62
-		y=150
-		width=111
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=62
-				y=150
-				width=40
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="ADSC"
-		}
-		"related display" {
-			object {
-				x=109
-				y=150
-				width=64
-				height=20
-			}
-			display[0] {
-				label="ADSC general"
-				name="ADBase.adl"
-				args="P=13ADSC1:, R=det1:"
-			}
-			display[1] {
-				label="ADSC specific"
-				name="adsc.adl"
-				args="P=13ADSC1:, R=det1:"
-			}
-			clr=14
-			bclr=51
-		}
-	}
-}
-composite {
+text {
 	object {
 		x=42
 		y=200
-		width=356
+		width=60
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=42
-				y=200
-				width=60
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="MarCCD"
-		}
-		"related display" {
-			object {
-				x=109
-				y=200
-				width=64
-				height=20
-			}
-			display[0] {
-				label="marCCD #1 general"
-				name="ADBase.adl"
-				args="P=13MARCCD1:, R=cam1: "
-			}
-			display[1] {
-				label="marCCD #1 specific"
-				name="marCCD.adl"
-				args="P=13MARCCD1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, JPEG=JPEG1:, TIFF=TIFF1:, NEXUS=Nexus1:"
-			}
-			clr=14
-			bclr=51
-		}
-		"related display" {
-			object {
-				x=185
-				y=200
-				width=64
-				height=20
-			}
-			display[0] {
-				label="netCDF file #1"
-				name="NDFileNetCDF.adl"
-				args="P=13MARCCD1:, R=netCDF1:"
-			}
-			display[1] {
-				label="TIFF file #1"
-				name="NDFileTIFF.adl"
-				args="P=13MARCCD1:, R=TIFF1:"
-			}
-			display[2] {
-				label="JPEG file #1"
-				name="NDFileJPEG.adl"
-				args="P=13MARCCD1:, R=JPEG1:"
-			}
-			display[3] {
-				label="NeXus file #1"
-				name="NDFileNexus.adl"
-				args="P=13MARCCD1:, R=Nexus1:"
-			}
-			clr=14
-			bclr=51
-		}
-		"related display" {
-			object {
-				x=257
-				y=200
-				width=64
-				height=20
-			}
-			display[0] {
-				label="ROI #1"
-				name="NDROI.adl"
-				args="P=13MARCCD1:, R=ROI1:"
-			}
-			display[1] {
-				label="ROI #2"
-				name="NDROI.adl"
-				args="P=13MARCCD1:, R=ROI2:"
-			}
-			display[2] {
-				label="ROI #3"
-				name="NDROI.adl"
-				args="P=13MARCCD1:, R=ROI3:"
-			}
-			display[3] {
-				label="ROI #4"
-				name="NDROI.adl"
-				args="P=13MARCCD1:, R=ROI4:"
-			}
-			display[4] {
-				label="ROI #5"
-				name="NDROI.adl"
-				args="P=13MARCCD1:, R=ROI5:"
-			}
-			clr=14
-			bclr=51
-		}
-		"related display" {
-			object {
-				x=334
-				y=200
-				width=64
-				height=20
-			}
-			display[0] {
-				label="Image #1"
-				name="NDStdArrays.adl"
-				args="P=13MARCCD1:, R=image1:"
-			}
-			display[1] {
-				label="Process #1"
-				name="NDProcess.adl"
-				args="P=13MARCCD1:, R=Proc1:"
-			}
-			display[2] {
-				label="Statistics #1"
-				name="NDStats.adl"
-				args="P=13MARCCD1:, R=Stats1:"
-			}
-			display[3] {
-				label="Statistics #2"
-				name="NDStats.adl"
-				args="P=13MARCCD1:, R=Stats2:"
-			}
-			display[4] {
-				label="Statistics #3"
-				name="NDStats.adl"
-				args="P=13MARCCD1:, R=Stats3:"
-			}
-			display[5] {
-				label="Statistics #4"
-				name="NDStats.adl"
-				args="P=13MARCCD1:, R=Stats4:"
-			}
-			display[6] {
-				label="Scan #1"
-				name="scan_more.adl"
-				args="P=13MARCCD1:, S=scan1, N=1"
-			}
-			display[7] {
-				label="Image #2"
-				name="NDStdArrays.adl"
-				args="P=13MARCCD1:, R=image2:"
-			}
-			clr=14
-			bclr=51
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="MarCCD"
 }
-composite {
+"related display" {
+	object {
+		x=259
+		y=200
+		width=64
+		height=20
+	}
+	display[0] {
+		label="ROI #1"
+		name="NDROI.adl"
+		args="P=13MARCCD1:, R=ROI1:"
+	}
+	display[1] {
+		label="ROI #2"
+		name="NDROI.adl"
+		args="P=13MARCCD1:, R=ROI2:"
+	}
+	display[2] {
+		label="ROI #3"
+		name="NDROI.adl"
+		args="P=13MARCCD1:, R=ROI3:"
+	}
+	display[3] {
+		label="ROI #4"
+		name="NDROI.adl"
+		args="P=13MARCCD1:, R=ROI4:"
+	}
+	display[4] {
+		label="ROI #5"
+		name="NDROI.adl"
+		args="P=13MARCCD1:, R=ROI5:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=184
+		y=200
+		width=64
+		height=20
+	}
+	display[0] {
+		label="netCDF file #1"
+		name="NDFileNetCDF.adl"
+		args="P=13MARCCD1:, R=netCDF1:"
+	}
+	display[1] {
+		label="TIFF file #1"
+		name="NDFileTIFF.adl"
+		args="P=13MARCCD1:, R=TIFF1:"
+	}
+	display[2] {
+		label="JPEG file #1"
+		name="NDFileJPEG.adl"
+		args="P=13MARCCD1:, R=JPEG1:"
+	}
+	display[3] {
+		label="NeXus file #1"
+		name="NDFileNexus.adl"
+		args="P=13MARCCD1:, R=Nexus1:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=109
+		y=200
+		width=64
+		height=20
+	}
+	display[0] {
+		label="marCCD #1 general"
+		name="ADBase.adl"
+		args="P=13MARCCD1:, R=cam1: "
+	}
+	display[1] {
+		label="marCCD #1 specific"
+		name="marCCD.adl"
+		args="P=13MARCCD1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, JPEG=JPEG1:, TIFF=TIFF1:, NEXUS=Nexus1:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=334
+		y=200
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Statistics #1"
+		name="NDStats.adl"
+		args="P=13MARCCD1:, R=Stats1:"
+	}
+	display[1] {
+		label="Statistics #2"
+		name="NDStats.adl"
+		args="P=13MARCCD1:, R=Stats2:"
+	}
+	display[2] {
+		label="Statistics #3"
+		name="NDStats.adl"
+		args="P=13MARCCD1:, R=Stats3:"
+	}
+	display[3] {
+		label="Statistics #4"
+		name="NDStats.adl"
+		args="P=13MARCCD1:, R=Stats4:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=409
+		y=200
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Image #1"
+		name="NDStdArrays.adl"
+		args="P=13PS1:, R=image1:"
+	}
+	display[1] {
+		label="Process #1"
+		name="NDProcess.adl"
+		args="P=13PS1:, R=Proc1:"
+	}
+	display[2] {
+		label="Overlay #1"
+		name="NDOverlay.adl"
+		args="P=13PS1:, R=Over1:"
+	}
+	display[3] {
+		label="Transform #1"
+		name="NDTransform.adl"
+		args="P=13PS1:, R=Trans1:"
+	}
+	display[4] {
+		label="Color convert #1"
+		name="NDColorConvert.adl"
+		args="P=13PS1:, R=CC1:"
+	}
+	display[5] {
+		label="Image #2"
+		name="NDStdArrays.adl"
+		args="P=13PS1:, R=image2:"
+	}
+	display[6] {
+		label="Scan #1"
+		name="scan_more.adl"
+		args="P=13PS1:, S=scan1, N=1"
+	}
+	clr=14
+	bclr=51
+}
+text {
 	object {
 		x=52
 		y=225
-		width=346
+		width=50
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=52
-				y=225
-				width=50
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Roper"
-			align="horiz. right"
-		}
-		"related display" {
-			object {
-				x=109
-				y=225
-				width=64
-				height=20
-			}
-			display[0] {
-				label="Roper #1 general"
-				name="ADBase.adl"
-				args="P=13ROPER1:, R=cam1: "
-			}
-			display[1] {
-				label="Roper #1 specific"
-				name="Roper.adl"
-				args="P=13ROPER1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, JPEG=JPEG1:, TIFF=TIFF1:, NEXUS=Nexus1:"
-			}
-			clr=14
-			bclr=51
-		}
-		"related display" {
-			object {
-				x=185
-				y=225
-				width=64
-				height=20
-			}
-			display[0] {
-				label="netCDF file #1"
-				name="NDFileNetCDF.adl"
-				args="P=13ROPER1:, R=netCDF1:"
-			}
-			display[1] {
-				label="TIFF file #1"
-				name="NDFileTIFF.adl"
-				args="P=13ROPER1:, R=TIFF1:"
-			}
-			display[2] {
-				label="JPEG file #1"
-				name="NDFileJPEG.adl"
-				args="P=13ROPER1:, R=JPEG1:"
-			}
-			display[3] {
-				label="NeXus file #1"
-				name="NDFileNexus.adl"
-				args="P=13ROPER1:, R=Nexus1:"
-			}
-			clr=14
-			bclr=51
-		}
-		"related display" {
-			object {
-				x=257
-				y=225
-				width=64
-				height=20
-			}
-			display[0] {
-				label="ROI #1"
-				name="NDROI.adl"
-				args="P=13ROPER1:, R=ROI1:"
-			}
-			display[1] {
-				label="ROI #2"
-				name="NDROI.adl"
-				args="P=13ROPER1:, R=ROI2:"
-			}
-			display[2] {
-				label="ROI #3"
-				name="NDROI.adl"
-				args="P=13ROPER1:, R=ROI3:"
-			}
-			display[3] {
-				label="ROI #4"
-				name="NDROI.adl"
-				args="P=13ROPER1:, R=ROI4:"
-			}
-			display[4] {
-				label="ROI #5"
-				name="NDROI.adl"
-				args="P=13ROPER1:, R=ROI5:"
-			}
-			clr=14
-			bclr=51
-		}
-		"related display" {
-			object {
-				x=334
-				y=225
-				width=64
-				height=20
-			}
-			display[0] {
-				label="Image #1"
-				name="NDStdArrays.adl"
-				args="P=13ROPER1:, R=image1:"
-			}
-			display[1] {
-				label="Process #1"
-				name="NDProcess.adl"
-				args="P=13ROPER1:, R=Proc1:"
-			}
-			display[2] {
-				label="Statistics #1"
-				name="NDStats.adl"
-				args="P=13ROPER1:, R=Stats1:"
-			}
-			display[3] {
-				label="Statistics #2"
-				name="NDStats.adl"
-				args="P=13ROPER1:, R=Stats2:"
-			}
-			display[4] {
-				label="Statistics #3"
-				name="NDStats.adl"
-				args="P=13ROPER1:, R=Stats3:"
-			}
-			display[5] {
-				label="Statistics #4"
-				name="NDStats.adl"
-				args="P=13ROPER1:, R=Stats4:"
-			}
-			display[6] {
-				label="Scan #1"
-				name="scan_more.adl"
-				args="P=13ROPER1:, S=scan1, N=1"
-			}
-			display[7] {
-				label="Image #2"
-				name="NDStdArrays.adl"
-				args="P=13ROPER1:, R=image2:"
-			}
-			clr=14
-			bclr=51
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="Roper"
+	align="horiz. right"
 }
-composite {
+"related display" {
+	object {
+		x=259
+		y=225
+		width=64
+		height=20
+	}
+	display[0] {
+		label="ROI #1"
+		name="NDROI.adl"
+		args="P=13ROPER1:, R=ROI1:"
+	}
+	display[1] {
+		label="ROI #2"
+		name="NDROI.adl"
+		args="P=13ROPER1:, R=ROI2:"
+	}
+	display[2] {
+		label="ROI #3"
+		name="NDROI.adl"
+		args="P=13ROPER1:, R=ROI3:"
+	}
+	display[3] {
+		label="ROI #4"
+		name="NDROI.adl"
+		args="P=13ROPER1:, R=ROI4:"
+	}
+	display[4] {
+		label="ROI #5"
+		name="NDROI.adl"
+		args="P=13ROPER1:, R=ROI5:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=184
+		y=225
+		width=64
+		height=20
+	}
+	display[0] {
+		label="netCDF file #1"
+		name="NDFileNetCDF.adl"
+		args="P=13ROPER1:, R=netCDF1:"
+	}
+	display[1] {
+		label="TIFF file #1"
+		name="NDFileTIFF.adl"
+		args="P=13ROPER1:, R=TIFF1:"
+	}
+	display[2] {
+		label="JPEG file #1"
+		name="NDFileJPEG.adl"
+		args="P=13ROPER1:, R=JPEG1:"
+	}
+	display[3] {
+		label="NeXus file #1"
+		name="NDFileNexus.adl"
+		args="P=13ROPER1:, R=Nexus1:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=109
+		y=225
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Roper #1 general"
+		name="ADBase.adl"
+		args="P=13ROPER1:, R=cam1: "
+	}
+	display[1] {
+		label="Roper #1 specific"
+		name="Roper.adl"
+		args="P=13ROPER1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, JPEG=JPEG1:, TIFF=TIFF1:, NEXUS=Nexus1:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=334
+		y=225
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Statistics #1"
+		name="NDStats.adl"
+		args="P=13ROPER1:, R=Stats1:"
+	}
+	display[1] {
+		label="Statistics #2"
+		name="NDStats.adl"
+		args="P=13ROPER1:, R=Stats2:"
+	}
+	display[2] {
+		label="Statistics #3"
+		name="NDStats.adl"
+		args="P=13ROPER1:, R=Stats3:"
+	}
+	display[3] {
+		label="Statistics #4"
+		name="NDStats.adl"
+		args="P=13ROPER1:, R=Stats4:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=409
+		y=225
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Image #1"
+		name="NDStdArrays.adl"
+		args="P=13PS1:, R=image1:"
+	}
+	display[1] {
+		label="Process #1"
+		name="NDProcess.adl"
+		args="P=13PS1:, R=Proc1:"
+	}
+	display[2] {
+		label="Overlay #1"
+		name="NDOverlay.adl"
+		args="P=13PS1:, R=Over1:"
+	}
+	display[3] {
+		label="Transform #1"
+		name="NDTransform.adl"
+		args="P=13PS1:, R=Trans1:"
+	}
+	display[4] {
+		label="Color convert #1"
+		name="NDColorConvert.adl"
+		args="P=13PS1:, R=CC1:"
+	}
+	display[5] {
+		label="Image #2"
+		name="NDStdArrays.adl"
+		args="P=13PS1:, R=image2:"
+	}
+	display[6] {
+		label="Scan #1"
+		name="scan_more.adl"
+		args="P=13PS1:, S=scan1, N=1"
+	}
+	clr=14
+	bclr=51
+}
+text {
 	object {
 		x=22
 		y=250
-		width=376
+		width=80
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=22
-				y=250
-				width=80
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Firewire"
-			align="horiz. right"
-		}
-		"related display" {
-			object {
-				x=109
-				y=250
-				width=64
-				height=20
-			}
-			display[0] {
-				label="Firewire #1 general"
-				name="ADBase.adl"
-				args="P=13FW1:, R=cam1: "
-			}
-			display[1] {
-				label="Firewire #1 specific"
-				name="firewire.adl"
-				args="P=13FW1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, JPEG=JPEG1:, TIFF=TIFF1:, NEXUS=Nexus1:, CC=CC1:"
-			}
-			clr=14
-			bclr=51
-		}
-		"related display" {
-			object {
-				x=185
-				y=250
-				width=64
-				height=20
-			}
-			display[0] {
-				label="netCDF file #1"
-				name="NDFileNetCDF.adl"
-				args="P=13FW1:, R=netCDF1:"
-			}
-			display[1] {
-				label="TIFF file #1"
-				name="NDFileTIFF.adl"
-				args="P=13FW1:, R=TIFF1:"
-			}
-			display[2] {
-				label="JPEG file #1"
-				name="NDFileJPEG.adl"
-				args="P=13FW1:, R=JPEG1:"
-			}
-			display[3] {
-				label="NeXus file #1"
-				name="NDFileNexus.adl"
-				args="P=13FW1:, R=Nexus1:"
-			}
-			clr=14
-			bclr=51
-		}
-		"related display" {
-			object {
-				x=257
-				y=250
-				width=64
-				height=20
-			}
-			display[0] {
-				label="ROI #1"
-				name="NDROI.adl"
-				args="P=13FW1:, R=ROI1:"
-			}
-			display[1] {
-				label="ROI #2"
-				name="NDROI.adl"
-				args="P=13FW1:, R=ROI2:"
-			}
-			display[2] {
-				label="ROI #3"
-				name="NDROI.adl"
-				args="P=13FW1:, R=ROI3:"
-			}
-			display[3] {
-				label="ROI #4"
-				name="NDROI.adl"
-				args="P=13FW1:, R=ROI4:"
-			}
-			display[4] {
-				label="ROI #5"
-				name="NDROI.adl"
-				args="P=13FW1:, R=ROI5:"
-			}
-			clr=14
-			bclr=51
-		}
-		"related display" {
-			object {
-				x=334
-				y=250
-				width=64
-				height=20
-			}
-			display[0] {
-				label="Image #1"
-				name="NDStdArrays.adl"
-				args="P=13FW1:, R=image1:"
-			}
-			display[1] {
-				label="Process #1"
-				name="NDProcess.adl"
-				args="P=13FW1:, R=Proc1:"
-			}
-			display[2] {
-				label="Statistics #1"
-				name="NDStats.adl"
-				args="P=13FW1:, R=Stats1:"
-			}
-			display[3] {
-				label="Statistics #2"
-				name="NDStats.adl"
-				args="P=13FW1:, R=Stats2:"
-			}
-			display[4] {
-				label="Statistics #3"
-				name="NDStats.adl"
-				args="P=13FW1:, R=Stats3:"
-			}
-			display[5] {
-				label="Statistics #4"
-				name="NDStats.adl"
-				args="P=13FW1:, R=Stats4:"
-			}
-			display[6] {
-				label="Scan #1"
-				name="scan_more.adl"
-				args="P=13FW1:, S=scan1, N=1"
-			}
-			display[7] {
-				label="Image #2"
-				name="NDStdArrays.adl"
-				args="P=13FW1:, R=image2:"
-			}
-			clr=14
-			bclr=51
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="Firewire"
+	align="horiz. right"
 }
-composite {
+"related display" {
+	object {
+		x=259
+		y=250
+		width=64
+		height=20
+	}
+	display[0] {
+		label="ROI #1"
+		name="NDROI.adl"
+		args="P=13FW1:, R=ROI1:"
+	}
+	display[1] {
+		label="ROI #2"
+		name="NDROI.adl"
+		args="P=13FW1:, R=ROI2:"
+	}
+	display[2] {
+		label="ROI #3"
+		name="NDROI.adl"
+		args="P=13FW1:, R=ROI3:"
+	}
+	display[3] {
+		label="ROI #4"
+		name="NDROI.adl"
+		args="P=13FW1:, R=ROI4:"
+	}
+	display[4] {
+		label="ROI #5"
+		name="NDROI.adl"
+		args="P=13FW1:, R=ROI5:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=184
+		y=250
+		width=64
+		height=20
+	}
+	display[0] {
+		label="netCDF file #1"
+		name="NDFileNetCDF.adl"
+		args="P=13FW1:, R=netCDF1:"
+	}
+	display[1] {
+		label="TIFF file #1"
+		name="NDFileTIFF.adl"
+		args="P=13FW1:, R=TIFF1:"
+	}
+	display[2] {
+		label="JPEG file #1"
+		name="NDFileJPEG.adl"
+		args="P=13FW1:, R=JPEG1:"
+	}
+	display[3] {
+		label="NeXus file #1"
+		name="NDFileNexus.adl"
+		args="P=13FW1:, R=Nexus1:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=109
+		y=250
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Firewire #1 general"
+		name="ADBase.adl"
+		args="P=13FW1:, R=cam1: "
+	}
+	display[1] {
+		label="Firewire #1 specific"
+		name="firewire.adl"
+		args="P=13FW1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, JPEG=JPEG1:, TIFF=TIFF1:, NEXUS=Nexus1:, CC=CC1:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=334
+		y=250
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Statistics #1"
+		name="NDStats.adl"
+		args="P=13FW1:, R=Stats1:"
+	}
+	display[1] {
+		label="Statistics #2"
+		name="NDStats.adl"
+		args="P=13FW1:, R=Stats2:"
+	}
+	display[2] {
+		label="Statistics #3"
+		name="NDStats.adl"
+		args="P=13FW1:, R=Stats3:"
+	}
+	display[3] {
+		label="Statistics #4"
+		name="NDStats.adl"
+		args="P=13FW1:, R=Stats4:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=409
+		y=250
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Image #1"
+		name="NDStdArrays.adl"
+		args="P=13PS1:, R=image1:"
+	}
+	display[1] {
+		label="Process #1"
+		name="NDProcess.adl"
+		args="P=13PS1:, R=Proc1:"
+	}
+	display[2] {
+		label="Overlay #1"
+		name="NDOverlay.adl"
+		args="P=13PS1:, R=Over1:"
+	}
+	display[3] {
+		label="Transform #1"
+		name="NDTransform.adl"
+		args="P=13PS1:, R=Trans1:"
+	}
+	display[4] {
+		label="Color convert #1"
+		name="NDColorConvert.adl"
+		args="P=13PS1:, R=CC1:"
+	}
+	display[5] {
+		label="Image #2"
+		name="NDStdArrays.adl"
+		args="P=13PS1:, R=image2:"
+	}
+	display[6] {
+		label="Scan #1"
+		name="scan_more.adl"
+		args="P=13PS1:, S=scan1, N=1"
+	}
+	clr=14
+	bclr=51
+}
+text {
 	object {
 		x=42
 		y=275
-		width=356
+		width=60
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=42
-				y=275
-				width=60
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Mar345"
-		}
-		"related display" {
-			object {
-				x=109
-				y=275
-				width=64
-				height=20
-			}
-			display[0] {
-				label="mar345 #1 general"
-				name="ADBase.adl"
-				args="P=13MAR345_1:, R=cam1: "
-			}
-			display[1] {
-				label="mar345 #1 specific"
-				name="mar345.adl"
-				args="P=13MAR345_1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, JPEG=JPEG1:, TIFF=TIFF1:, NEXUS=Nexus1:"
-			}
-			clr=14
-			bclr=51
-		}
-		"related display" {
-			object {
-				x=185
-				y=275
-				width=64
-				height=20
-			}
-			display[0] {
-				label="netCDF file #1"
-				name="NDFileNetCDF.adl"
-				args="P=13MAR345_1:, R=netCDF1:"
-			}
-			display[1] {
-				label="TIFF file #1"
-				name="NDFileTIFF.adl"
-				args="P=13MAR345_1:, R=TIFF1:"
-			}
-			display[2] {
-				label="JPEG file #1"
-				name="NDFileJPEG.adl"
-				args="P=13MAR345_1:, R=JPEG1:"
-			}
-			display[3] {
-				label="NeXus file #1"
-				name="NDFileNexus.adl"
-				args="P=13MAR345_1:, R=Nexus1:"
-			}
-			clr=14
-			bclr=51
-		}
-		"related display" {
-			object {
-				x=257
-				y=275
-				width=64
-				height=20
-			}
-			display[0] {
-				label="ROI #1"
-				name="NDROI.adl"
-				args="P=13MAR345_1:, R=ROI1:"
-			}
-			display[1] {
-				label="ROI #2"
-				name="NDROI.adl"
-				args="P=13MAR345_1:, R=ROI2:"
-			}
-			display[2] {
-				label="ROI #3"
-				name="NDROI.adl"
-				args="P=13MAR345_1:, R=ROI3:"
-			}
-			display[3] {
-				label="ROI #4"
-				name="NDROI.adl"
-				args="P=13MAR345_1:, R=ROI4:"
-			}
-			display[4] {
-				label="ROI #5"
-				name="NDROI.adl"
-				args="P=13MAR345_1:, R=ROI5:"
-			}
-			clr=14
-			bclr=51
-		}
-		"related display" {
-			object {
-				x=334
-				y=275
-				width=64
-				height=20
-			}
-			display[0] {
-				label="Image #1"
-				name="NDStdArrays.adl"
-				args="P=13MAR345_1:, R=image1:"
-			}
-			display[1] {
-				label="Process #1"
-				name="NDProcess.adl"
-				args="P=13MAR345_1:, R=Proc1:"
-			}
-			display[2] {
-				label="Statistics #1"
-				name="NDStats.adl"
-				args="P=13MAR345_1:, R=Stats1:"
-			}
-			display[3] {
-				label="Statistics #2"
-				name="NDStats.adl"
-				args="P=13MAR345_1:, R=Stats2:"
-			}
-			display[4] {
-				label="Statistics #3"
-				name="NDStats.adl"
-				args="P=13MAR345_1:, R=Stats3:"
-			}
-			display[5] {
-				label="Statistics #4"
-				name="NDStats.adl"
-				args="P=13MAR345_1:, R=Stats4:"
-			}
-			display[6] {
-				label="Scan #1"
-				name="scan_more.adl"
-				args="P=13MAR345_1:, S=scan1, N=1"
-			}
-			display[7] {
-				label="Image #2"
-				name="NDStdArrays.adl"
-				args="P=13MAR345_1:, R=image2:"
-			}
-			clr=14
-			bclr=51
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="Mar345"
+}
+"related display" {
+	object {
+		x=259
+		y=275
+		width=64
+		height=20
+	}
+	display[0] {
+		label="ROI #1"
+		name="NDROI.adl"
+		args="P=13MAR345_1:, R=ROI1:"
+	}
+	display[1] {
+		label="ROI #2"
+		name="NDROI.adl"
+		args="P=13MAR345_1:, R=ROI2:"
+	}
+	display[2] {
+		label="ROI #3"
+		name="NDROI.adl"
+		args="P=13MAR345_1:, R=ROI3:"
+	}
+	display[3] {
+		label="ROI #4"
+		name="NDROI.adl"
+		args="P=13MAR345_1:, R=ROI4:"
+	}
+	display[4] {
+		label="ROI #5"
+		name="NDROI.adl"
+		args="P=13MAR345_1:, R=ROI5:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=184
+		y=275
+		width=64
+		height=20
+	}
+	display[0] {
+		label="netCDF file #1"
+		name="NDFileNetCDF.adl"
+		args="P=13MAR345_1:, R=netCDF1:"
+	}
+	display[1] {
+		label="TIFF file #1"
+		name="NDFileTIFF.adl"
+		args="P=13MAR345_1:, R=TIFF1:"
+	}
+	display[2] {
+		label="JPEG file #1"
+		name="NDFileJPEG.adl"
+		args="P=13MAR345_1:, R=JPEG1:"
+	}
+	display[3] {
+		label="NeXus file #1"
+		name="NDFileNexus.adl"
+		args="P=13MAR345_1:, R=Nexus1:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=109
+		y=275
+		width=64
+		height=20
+	}
+	display[0] {
+		label="mar345 #1 general"
+		name="ADBase.adl"
+		args="P=13MAR345_1:, R=cam1: "
+	}
+	display[1] {
+		label="mar345 #1 specific"
+		name="mar345.adl"
+		args="P=13MAR345_1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, JPEG=JPEG1:, TIFF=TIFF1:, NEXUS=Nexus1:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=334
+		y=275
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Statistics #1"
+		name="NDStats.adl"
+		args="P=13MAR345_1:, R=Stats1:"
+	}
+	display[1] {
+		label="Statistics #2"
+		name="NDStats.adl"
+		args="P=13MAR345_1:, R=Stats2:"
+	}
+	display[2] {
+		label="Statistics #3"
+		name="NDStats.adl"
+		args="P=13MAR345_1:, R=Stats3:"
+	}
+	display[3] {
+		label="Statistics #4"
+		name="NDStats.adl"
+		args="P=13MAR345_1:, R=Stats4:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=409
+		y=275
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Image #1"
+		name="NDStdArrays.adl"
+		args="P=13PS1:, R=image1:"
+	}
+	display[1] {
+		label="Process #1"
+		name="NDProcess.adl"
+		args="P=13PS1:, R=Proc1:"
+	}
+	display[2] {
+		label="Overlay #1"
+		name="NDOverlay.adl"
+		args="P=13PS1:, R=Over1:"
+	}
+	display[3] {
+		label="Transform #1"
+		name="NDTransform.adl"
+		args="P=13PS1:, R=Trans1:"
+	}
+	display[4] {
+		label="Color convert #1"
+		name="NDColorConvert.adl"
+		args="P=13PS1:, R=CC1:"
+	}
+	display[5] {
+		label="Image #2"
+		name="NDStdArrays.adl"
+		args="P=13PS1:, R=image2:"
+	}
+	display[6] {
+		label="Scan #1"
+		name="scan_more.adl"
+		args="P=13PS1:, S=scan1, N=1"
+	}
+	clr=14
+	bclr=51
 }
