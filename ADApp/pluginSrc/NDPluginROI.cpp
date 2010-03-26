@@ -20,7 +20,7 @@
 #include "NDArray.h"
 #include "NDPluginROI.h"
 
-static const char *driverName="NDPluginROI";
+//static const char *driverName="NDPluginROI";
 
 #define MAX(A,B) (A)>(B)?(A):(B)
 #define MIN(A,B) (A)<(B)?(A):(B)
@@ -43,10 +43,9 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     int dim;
     NDDimension_t dims[ND_ARRAY_MAX_DIMS], tempDim, *pDim;
     int userDims[ND_ARRAY_MAX_DIMS];
-    NDArrayInfo arrayInfo;
-    int colorMode = NDColorModeMono;
-    NDAttribute *pAttribute;
-    NDArray *pScratch;
+    NDArrayInfo arrayInfo, scratchInfo;
+    NDArray *pScratch, *pOutput;
+    NDColorMode_t colorMode;
     double *pData;
     int enableScale;
     int i;
@@ -54,15 +53,27 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     
     //const char* functionName = "processCallbacks";
     
+    memset(dims, 0, sizeof(NDDimension_t) * ND_ARRAY_MAX_DIMS);
+
+    /* Get all parameters while we have the mutex */
+    getIntegerParam(NDPluginROIDim0Min,     &dims[0].offset);
+    getIntegerParam(NDPluginROIDim0Size,    &dims[0].size);
+    getIntegerParam(NDPluginROIDim0Bin,     &dims[0].binning);
+    getIntegerParam(NDPluginROIDim0Reverse, &dims[0].reverse);
+    getIntegerParam(NDPluginROIDim1Min,     &dims[1].offset);
+    getIntegerParam(NDPluginROIDim1Size,    &dims[1].size);
+    getIntegerParam(NDPluginROIDim1Bin,     &dims[1].binning);
+    getIntegerParam(NDPluginROIDim1Reverse, &dims[1].reverse);
+    getIntegerParam(NDPluginROIDim2Min,     &dims[2].offset);
+    getIntegerParam(NDPluginROIDim2Size,    &dims[2].size);
+    getIntegerParam(NDPluginROIDim2Bin,     &dims[2].binning);
+    getIntegerParam(NDPluginROIDim2Reverse, &dims[2].reverse);
+    getIntegerParam(NDPluginROIDataType,    &dataType);
     getIntegerParam(NDPluginROIEnableScale, &enableScale);
     getDoubleParam(NDPluginROIScale, &scale);
 
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
-
-    /* We do some special treatment based on colorMode */
-    pAttribute = pArray->pAttributeList->find("ColorMode");
-    if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
 
     /* We always keep the last array so read() can use it.
      * Release previous one. Reserve new one below. */
@@ -70,61 +81,54 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         this->pArrays[0]->release();
         this->pArrays[0] = NULL;
     }
-
-    /* Need to fetch all of these parameters while we still have the mutex */
-    getIntegerParam(NDPluginROIDataType,           &dataType);
+    
+    /* Get information about the array */
+    pArray->getInfo(&arrayInfo);
+    
+    userDims[0] = arrayInfo.xDim;
+    userDims[1] = arrayInfo.yDim;
+    userDims[2] = arrayInfo.colorDim;
 
     /* Make sure dimensions are valid, fix them if they are not */
-    /* We treat the case of RGB1 data specially, so that NX and NY are the X and Y dimensions of the
-     * image, not the first 2 dimensions.  This makes it much easier to switch back and forth between
-     * RGB1 and mono mode when using an ROI. */
-    if (colorMode == NDColorModeRGB1) {
-        userDims[0] = 1;
-        userDims[1] = 2;
-        userDims[2] = 0;
-    }
-    else if (colorMode == NDColorModeRGB2) {
-        userDims[0] = 0;
-        userDims[1] = 2;
-        userDims[2] = 1;
-    }
-    else {
-        for (dim=0; dim<ND_ARRAY_MAX_DIMS; dim++) userDims[dim] = dim;
-    }
     for (dim=0; dim<pArray->ndims; dim++) {
-        pDim = &this->dims[dim];
-        pDim->offset  = MAX(pDim->offset, 0);
-        pDim->offset  = MIN(pDim->offset, pArray->dims[userDims[dim]].size-1);
-        pDim->size    = MAX(pDim->size, 1);
-        pDim->size    = MIN(pDim->size, pArray->dims[userDims[dim]].size - pDim->offset);
+        pDim = &dims[dim];
+        pDim->offset  = MAX(pDim->offset,  0);
+        pDim->offset  = MIN(pDim->offset,  pArray->dims[userDims[dim]].size-1);
+        pDim->size    = MAX(pDim->size,    1);
+        pDim->size    = MIN(pDim->size,    pArray->dims[userDims[dim]].size - pDim->offset);
         pDim->binning = MAX(pDim->binning, 1);
         pDim->binning = MIN(pDim->binning, pDim->size);
     }
 
-    /* Make a local copy of the fixed dimensions so we can release the mutex */
-    memset(dims, 0, sizeof(NDDimension_t) * ND_ARRAY_MAX_DIMS);
-    memcpy(dims, this->dims, pArray->ndims*sizeof(NDDimension_t));
-
     /* Update the parameters that may have changed */
-    pDim = &dims[0];
-    setIntegerParam(NDPluginROIDim0Min,  pDim->offset);
-    setIntegerParam(NDPluginROIDim0Size, pDim->size);
-    setIntegerParam(NDPluginROIDim0MaxSize, pArray->dims[userDims[0]].size);
-    setIntegerParam(NDPluginROIDim0Bin,  pDim->binning);
-    pDim = &dims[1];
-    setIntegerParam(NDPluginROIDim1Min,  pDim->offset);
-    setIntegerParam(NDPluginROIDim1Size, pDim->size);
-    setIntegerParam(NDPluginROIDim1MaxSize, pArray->dims[userDims[1]].size);
-    setIntegerParam(NDPluginROIDim1Bin,  pDim->binning);
-    pDim = &dims[2];
-    setIntegerParam(NDPluginROIDim2Min,  pDim->offset);
-    setIntegerParam(NDPluginROIDim2Size, pDim->size);
-    setIntegerParam(NDPluginROIDim2MaxSize, pArray->dims[userDims[2]].size);
-    setIntegerParam(NDPluginROIDim2Bin,  pDim->binning);
+    setIntegerParam(NDPluginROIDim0MaxSize, 0);
+    setIntegerParam(NDPluginROIDim1MaxSize, 0);
+    setIntegerParam(NDPluginROIDim2MaxSize, 0);
+    if (pArray->ndims > 0) {
+        pDim = &dims[0];
+        setIntegerParam(NDPluginROIDim0Min,     pDim->offset);
+        setIntegerParam(NDPluginROIDim0Size,    pDim->size);
+        setIntegerParam(NDPluginROIDim0MaxSize, pArray->dims[userDims[0]].size);
+        setIntegerParam(NDPluginROIDim0Bin,     pDim->binning);
+    }
+    if (pArray->ndims > 1) {
+        pDim = &dims[1];
+        setIntegerParam(NDPluginROIDim1Min,     pDim->offset);
+        setIntegerParam(NDPluginROIDim1Size,    pDim->size);
+        setIntegerParam(NDPluginROIDim1MaxSize, pArray->dims[userDims[1]].size);
+        setIntegerParam(NDPluginROIDim1Bin,     pDim->binning);
+    }
+    if (pArray->ndims > 2) {
+        pDim = &dims[2];
+        setIntegerParam(NDPluginROIDim2Min,     pDim->offset);
+        setIntegerParam(NDPluginROIDim2Size,    pDim->size);
+        setIntegerParam(NDPluginROIDim2MaxSize, pArray->dims[userDims[2]].size);
+        setIntegerParam(NDPluginROIDim2Bin,     pDim->binning);
+    }
 
     /* This function is called with the lock taken, and it must be set when we exit.
-     * The following code can be exected without the mutex because we are not accessing elements of
-     * pPvt that other threads can access. */
+     * The following code can be exected without the mutex because we are not accessing memory
+     * that other threads can access. */
     this->unlock();
 
     /* Extract this ROI from the input array.  The convert() function allocates
@@ -133,13 +137,13 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     /* We treat the case of RGB1 data specially, so that NX and NY are the X and Y dimensions of the
      * image, not the first 2 dimensions.  This makes it much easier to switch back and forth between
      * RGB1 and mono mode when using an ROI. */
-    if (colorMode == NDColorModeRGB1) {
+    if (arrayInfo.colorMode == NDColorModeRGB1) {
         tempDim = dims[0];
         dims[0] = dims[2];
         dims[2] = dims[1];
         dims[1] = tempDim;
     }
-    else if (colorMode == NDColorModeRGB2) {
+    else if (arrayInfo.colorMode == NDColorModeRGB2) {
         tempDim = dims[1];
         dims[1] = dims[2];
         dims[2] = tempDim;
@@ -152,90 +156,64 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
          * We do this by extracting the ROI and converting to double, do the scaling, then convert
          * to the desired data type. */
         this->pNDArrayPool->convert(pArray, &pScratch, NDFloat64, dims);
-        pScratch->getInfo(&arrayInfo);
+        pScratch->getInfo(&scratchInfo);
         pData = (double *)pScratch->pData;
-        for (i=0; i<arrayInfo.nElements; i++) pData[i] = pData[i]/scale;
+        for (i=0; i<scratchInfo.nElements; i++) pData[i] = pData[i]/scale;
         this->pNDArrayPool->convert(pScratch, &this->pArrays[0], (NDDataType_t)dataType);
         pScratch->release();
     } 
     else {        
         this->pNDArrayPool->convert(pArray, &this->pArrays[0], (NDDataType_t)dataType, dims);
     }
+    pOutput = this->pArrays[0];
+
+    /* If we selected just one color from the array, then we need to change the
+     * dimensions and the color mode */
+    colorMode = NDColorModeMono;
+    if ((pOutput->ndims == 3) && 
+        (arrayInfo.colorMode == NDColorModeRGB1) && 
+        (pOutput->dims[0].size == 1)) 
+    {
+        pOutput->ndims = 2;
+        pOutput->dims[0] = pOutput->dims[1];
+        pOutput->dims[1] = pOutput->dims[2];
+        pOutput->pAttributeList->add("ColorMode", "Color mode", NDAttrInt32, &colorMode);
+    }
+    if ((pOutput->ndims == 3) && 
+        (arrayInfo.colorMode == NDColorModeRGB2) && 
+        (pOutput->dims[1].size == 1)) 
+    {
+        pOutput->ndims = 2;
+        pOutput->dims[1] = pOutput->dims[2];
+        pOutput->pAttributeList->add("ColorMode", "Color mode", NDAttrInt32, &colorMode);
+    }
+    if ((pOutput->ndims == 3) && 
+        (arrayInfo.colorMode == NDColorModeRGB3) && 
+        (pOutput->dims[2].size == 1)) 
+    {
+        pOutput->ndims = 2;
+        pOutput->pAttributeList->add("ColorMode", "Color mode", NDAttrInt32, &colorMode);
+    }
+    this->lock();
 
     /* Set the image size of the ROI image data */
-    setIntegerParam(NDArraySizeX, this->pArrays[0]->dims[userDims[0]].size);
-    setIntegerParam(NDArraySizeY, this->pArrays[0]->dims[userDims[1]].size);
-    setIntegerParam(NDArraySizeZ, this->pArrays[0]->dims[userDims[2]].size);
+    setIntegerParam(NDArraySizeX, 0);
+    setIntegerParam(NDArraySizeY, 0);
+    setIntegerParam(NDArraySizeZ, 0);
+    if (pOutput->ndims > 0) setIntegerParam(NDArraySizeX, this->pArrays[0]->dims[userDims[0]].size);
+    if (pOutput->ndims > 1) setIntegerParam(NDArraySizeY, this->pArrays[0]->dims[userDims[1]].size);
+    if (pOutput->ndims > 2) setIntegerParam(NDArraySizeZ, this->pArrays[0]->dims[userDims[2]].size);
 
-    /* We must enter the loop and exit with the mutex locked */
-    this->lock();
     /* Get the attributes for this driver */
     this->getAttributes(this->pArrays[0]->pAttributeList);
     /* Call any clients who have registered for NDArray callbacks */
     this->unlock();
     doCallbacksGenericPointer(this->pArrays[0], NDArrayData, 0);
+    /* We must enter the loop and exit with the mutex locked */
     this->lock();
     callParamCallbacks();
 
 }
-
-
-/** Called when asyn clients call pasynInt32->write().
-  * This function performs actions for some parameters, including minimum, size, binning, etc. for each ROI.
-  * For other parameters it calls NDPluginDriver::writeInt32 to see if that method understands the parameter.
-  * For all parameters it sets the value in the parameter library and calls any registered callbacks..
-  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
-  * \param[in] value Value to write. */
-asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
-{
-    int function = pasynUser->reason;
-    asynStatus status = asynSuccess;
-    const char* functionName = "writeInt32";
-
-    /* Set parameter and readback in parameter library */
-    status = setIntegerParam(function, value);
-    if (function == NDPluginROIDim0Min)
-            this->dims[0].offset = value;
-    else if (function == NDPluginROIDim0Size)
-            this->dims[0].size = value;
-    else if (function == NDPluginROIDim0Bin)
-            this->dims[0].binning = value;
-    else if (function == NDPluginROIDim0Reverse)
-            this->dims[0].reverse = value;
-    else if (function == NDPluginROIDim1Min)
-            this->dims[1].offset = value;
-    else if (function == NDPluginROIDim1Size)
-            this->dims[1].size = value;
-    else if (function == NDPluginROIDim1Bin)
-            this->dims[1].binning = value;
-    else if (function == NDPluginROIDim1Reverse)
-            this->dims[1].reverse = value;
-    else if (function == NDPluginROIDim2Min)
-            this->dims[2].offset = value;
-    else if (function == NDPluginROIDim2Size)
-            this->dims[2].size = value;
-    else if (function == NDPluginROIDim2Bin)
-            this->dims[2].binning = value;
-    else if (function == NDPluginROIDim2Reverse)
-            this->dims[2].reverse = value;
-    else {
-        /* This was not a parameter that this driver understands, try the base class */
-        status = NDPluginDriver::writeInt32(pasynUser, value);
-    }
-    /* Do callbacks so higher layers see any changes */
-    status = callParamCallbacks();
-
-    if (status)
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                  "%s:%s: status=%d, function=%d, value=%d",
-                  driverName, functionName, status, function, value);
-    else
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
-              "%s:%s: function=%d, value=%d\n",
-              driverName, functionName, function, value);
-    return status;
-}
-
 
 
 /** Constructor for NDPluginROI; most parameters are simply passed to NDPluginDriver::NDPluginDriver.
