@@ -91,6 +91,26 @@ NDStatsConfigure("STATS5", 20, 0, "ROI4", 0, -1, -1)
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13SIM1:,R=Stats5:,  PORT=STATS5,ADDR=0,TIMEOUT=1,NDARRAY_PORT=ROI4,NDARRAY_ADDR=0")
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStats.template",     "P=13SIM1:,R=Stats5:,  PORT=STATS5,ADDR=0,TIMEOUT=1,HIST_SIZE=256")
 
+# Create a transform plugin
+NDTransformConfigure("TRANS1", 20, 0, "SIM1", 0, -1, -1)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13SIM1:,R=Trans1:,  PORT=TRANS1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=SIM1,NDARRAY_ADDR=0")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDTransform.template", "P=13SIM1:,R=Trans1:,  PORT=TRANS1,ADDR=0,TIMEOUT=1")
+
+# Create an overlay plugin with 8 overlays
+NDOverlayConfigure("OVER1", 20, 0, "SIM1", 0, 8, -1, -1)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=13SIM1:,R=Over1:, PORT=OVER1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=SIM1,NDARRAY_ADDR=0")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDOverlay.template",   "P=13SIM1:,R=Over1:, PORT=OVER1,ADDR=0,TIMEOUT=1")
+dbLoadTemplate("Overlay.substitutions")
+
+# Create 2 color conversion plugins
+# Can't load this unless built specially, because it only works on Linux and Windows
+#NDColorConvertConfigure("CC1", 5, 0, "SIM1", 0, 20, -1)
+#dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template",   "P=13SIM1:,R=CC1:,  PORT=CC1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=SIM1,NDARRAY_ADDR=0")
+#dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDColorConvert.template", "P=13SIM1:,R=CC1:,  PORT=CC1,ADDR=0,TIMEOUT=1")
+#NDColorConvertConfigure("CC2", 5, 0, "SIM1", 0, 20, -1)
+#dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template",   "P=13SIM1:,R=CC2:,  PORT=CC2,ADDR=0,TIMEOUT=1,NDARRAY_PORT=CC1,NDARRAY_ADDR=0")
+#dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDColorConvert.template", "P=13SIM1:,R=CC2:,  PORT=CC2,ADDR=0,TIMEOUT=1")
+
 # Load scan records
 dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=13SIM1:,MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
 
