@@ -110,6 +110,17 @@ typedef struct NDArrayInfo {
     int bytesPerElement;    /**< The number of bytes per element in the array */
     int totalBytes;         /**< The total number of bytes required to hold the array;
                               *  this may be less than NDArray::dataSize. */
+                            /**< The following are mostly useful for color images (RGB1, RGB2, RGB3) */
+    NDColorMode_t colorMode; /**< The color mode */
+    int xDim;               /**< The array index which is the X dimension */
+    int yDim;               /**< The array index which is the Y dimension */
+    int colorDim;           /**< The array index which is the color dimension */
+    int xSize;              /**< The X size of the array */
+    int ySize;              /**< The Y size of the array */
+    int colorSize;          /**< The color size of the array */
+    int xStride;            /**< The number of array elements between X values */
+    int yStride;            /**< The number of array elements between Y values */
+    int colorStride;        /**< The number of array elements between color values */
 } NDArrayInfo_t;
 
 /** Structure used by the EPICS ellLib library for linked lists of C++ objects.
