@@ -31,6 +31,8 @@ simDetectorApp_SRCS_vxWorks += simDetectorApp_registerRecordDeviceDriver.cpp
 # Add locally compiled object code
 simDetectorApp_LIBS += simDetector
 simDetectorApp_LIBS += NDPlugin ADBase netCDF
+simDetectorApp_LIBS_Linux += PvAPI ImageLib
+simDetectorApp_LIBS_WIN32 += PvAPI ImageLib
 simDetectorApp_LIBS += calc busy sscan autosave 
 simDetectorApp_LIBS += asyn
 simDetectorApp_LIBS += $(EPICS_BASE_IOC_LIBS)
