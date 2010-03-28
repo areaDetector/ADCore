@@ -54,8 +54,6 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
     pAttribute = pArray->pAttributeList->find("BayerPattern");
     if (pAttribute) pAttribute->getValue(NDAttrInt32, &bayerPattern);
     
-    for (i=0; i<3; i++) 
-       
     /* This function is called with the lock taken, and it must be set when we exit.
      * The following code can be exected without the mutex because we are not accessing elements of
      * pPvt that other threads can access. */
@@ -403,12 +401,12 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
     }
     /* If the output array pointer is null then no conversion was done, copy the input to the output */
     if (!pArrayOut) pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 1);
+    this->lock();
     /* Get the attributes for this plugin */
     this->getAttributes(pArrayOut->pAttributeList);
     /* If we changed the color mode then set the attribute */
     if (changedColorMode) pArrayOut->pAttributeList->add("ColorMode", "Color Mode", NDAttrInt32, &colorModeOut);
     this->pArrays[0] = pArrayOut;
-    this->lock();
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
               "%s:%s: pArray->colorMode=%d, colorModeOut=%d, pArrayOut=%p\n",
               driverName, functionName, colorMode, colorModeOut, pArrayOut);
