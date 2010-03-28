@@ -19,7 +19,9 @@
 #include <epicsExport.h>
 
 #include "NDPluginColorConvert.h"
-#include "PvApi.h"
+#ifdef HAVE_PVAPI
+  #include "PvApi.h"
+#endif
 
 static const char *driverName="NDPluginColorConvert";
 
@@ -36,9 +38,12 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
     epicsType *pDataOut;
     NDArray *pArrayOut=NULL;
     int imageSize, rowSize, numRows;
-    tPvFrame PvFrame, *pFrame=&PvFrame;
     int dims[ND_ARRAY_MAX_DIMS];
+    #ifdef HAVE_PVAPI
+    tPvFrame PvFrame, *pFrame=&PvFrame;
     int ndims;
+    #endif
+    double value;
     int colorMode=NDColorModeMono, bayerPattern=NDBayerRGGB;
     int changedColorMode=0;
     NDAttribute *pAttribute;
@@ -48,13 +53,81 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
     if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
     pAttribute = pArray->pAttributeList->find("BayerPattern");
     if (pAttribute) pAttribute->getValue(NDAttrInt32, &bayerPattern);
+    
+    for (i=0; i<3; i++) 
        
     /* This function is called with the lock taken, and it must be set when we exit.
      * The following code can be exected without the mutex because we are not accessing elements of
      * pPvt that other threads can access. */
     this->unlock();
     switch (colorMode) {
+        case NDColorModeMono:
+            if (pArray->ndims != 2) break;
+            rowSize   = pArray->dims[0].size;
+            numRows   = pArray->dims[1].size;
+            imageSize = rowSize * numRows;
+            switch (colorModeOut) {
+                case NDColorModeRGB1:
+                    /* Make a new 3-D array */
+                    dims[0] = 3;
+                    dims[1] = rowSize;
+                    dims[2] = numRows;
+                    pArrayOut = this->pNDArrayPool->alloc(3, dims, pArray->dataType, 0, NULL);
+                    pDataOut = (epicsType *)pArrayOut->pData;
+                    pOut = pDataOut;
+                    pIn  = pDataIn;
+                    for (i=0; i<imageSize; i++) {
+                        *pOut++ = *pIn;
+                        *pOut++ = *pIn;
+                        *pOut++ = *pIn++;
+                    }
+                    changedColorMode = 1;
+                    break;
+                case NDColorModeRGB2:
+                    /* Make a new 3-D array */
+                    dims[0] = rowSize;
+                    dims[1] = 3;
+                    dims[2] = numRows;
+                    pArrayOut = this->pNDArrayPool->alloc(3, dims, pArray->dataType, 0, NULL);
+                    pDataOut = (epicsType *)pArrayOut->pData;
+                    pIn  = pDataIn;
+                    for (i=0; i<numRows; i++) {
+                        pRedOut   = pDataOut + 3*i*rowSize;
+                        pGreenOut = pRedOut + rowSize;
+                        pBlueOut  = pRedOut + 2*rowSize;
+                        for (j=0; j<rowSize; j++) {
+                            *pRedOut++   = *pIn;
+                            *pGreenOut++ = *pIn;
+                            *pBlueOut++  = *pIn++;
+                        }
+                    }
+                    changedColorMode = 1;
+                    break;
+                case NDColorModeRGB3:
+                    /* Make a new 3-D array */
+                    dims[0] = rowSize;
+                    dims[1] = numRows;
+                    dims[2] = 3;
+                    pArrayOut = this->pNDArrayPool->alloc(3, dims, pArray->dataType, 0, NULL);
+                    pDataOut = (epicsType *)pArrayOut->pData;
+                    pRedOut   = pDataOut;
+                    pGreenOut = pDataOut + imageSize;
+                    pBlueOut  = pDataOut + 2*imageSize;
+                    pIn  = pDataIn;
+                    for (i=0; i<imageSize; i++) {
+                        *pRedOut++   = *pIn;
+                        *pGreenOut++ = *pIn;
+                        *pBlueOut++  = *pIn++;
+                    }
+                    changedColorMode = 1;
+                    break;
+                default:
+                    break;
+            }
+            break;
+        #ifdef HAVE_PVAPI
         case NDColorModeBayer:
+            if (pArray->ndims != 2) break;
             switch (colorModeOut) {
                 case NDColorModeRGB1:
                 case NDColorModeRGB2:
@@ -131,26 +204,26 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     break;
             }
             break;
+        #endif
         case NDColorModeRGB1:
+            if (pArray->ndims != 3) break;
             rowSize   = pArray->dims[1].size;
             numRows   = pArray->dims[2].size;
             imageSize = rowSize * numRows;
             switch (colorModeOut) {
-                case NDColorModeRGB3:
-                    pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0);
+                case NDColorModeMono:
+                    /* Make a new 2-D array */
+                    dims[0] = rowSize;
+                    dims[1] = numRows;
+                    pArrayOut = this->pNDArrayPool->alloc(2, dims, pArray->dataType, 0, NULL);
                     pDataOut = (epicsType *)pArrayOut->pData;
+                    pOut = pDataOut;
                     pIn = pDataIn;
-                    pRedOut   = pDataOut;
-                    pGreenOut = pDataOut + imageSize;
-                    pBlueOut  = pDataOut + 2*imageSize;
                     for (i=0; i<imageSize; i++) {
-                        *pRedOut++   = *pIn++;
-                        *pGreenOut++ = *pIn++;
-                        *pBlueOut++  = *pIn++;
+                        value  = (*pIn + *(pIn+1) + *(pIn+2))/3.;
+                        *pOut++ = (epicsType)value;
+                        pIn += 3;
                     }
-                    memcpy(&pArrayOut->dims[0], &pArray->dims[1], sizeof(NDDimension_t));
-                    memcpy(&pArrayOut->dims[1], &pArray->dims[2], sizeof(NDDimension_t));
-                    memcpy(&pArrayOut->dims[2], &pArray->dims[0], sizeof(NDDimension_t));
                     changedColorMode = 1;
                     break;
                 case NDColorModeRGB2:
@@ -172,15 +245,51 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     memcpy(&pArrayOut->dims[2], &pArray->dims[2], sizeof(NDDimension_t));
                     changedColorMode = 1;
                     break;
+                case NDColorModeRGB3:
+                    pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0);
+                    pDataOut = (epicsType *)pArrayOut->pData;
+                    pIn = pDataIn;
+                    pRedOut   = pDataOut;
+                    pGreenOut = pDataOut + imageSize;
+                    pBlueOut  = pDataOut + 2*imageSize;
+                    for (i=0; i<imageSize; i++) {
+                        *pRedOut++   = *pIn++;
+                        *pGreenOut++ = *pIn++;
+                        *pBlueOut++  = *pIn++;
+                    }
+                    memcpy(&pArrayOut->dims[0], &pArray->dims[1], sizeof(NDDimension_t));
+                    memcpy(&pArrayOut->dims[1], &pArray->dims[2], sizeof(NDDimension_t));
+                    memcpy(&pArrayOut->dims[2], &pArray->dims[0], sizeof(NDDimension_t));
+                    changedColorMode = 1;
+                    break;
                 default:
                     break;
             }        
             break;
         case NDColorModeRGB2:
+            if (pArray->ndims != 3) break;
             rowSize   = pArray->dims[0].size;
             numRows   = pArray->dims[2].size;
             imageSize = rowSize * numRows;
             switch (colorModeOut) {
+                case NDColorModeMono:
+                    /* Make a new 2-D array */
+                    dims[0] = rowSize;
+                    dims[1] = numRows;
+                    pArrayOut = this->pNDArrayPool->alloc(2, dims, pArray->dataType, 0, NULL);
+                    pDataOut = (epicsType *)pArrayOut->pData;
+                    pOut = pDataOut;
+                    for (i=0; i<numRows; i++) {
+                        pRedIn   = pDataIn + 3*i*rowSize;
+                        pGreenIn = pRedIn + rowSize;
+                        pBlueIn  = pRedIn + 2*rowSize;
+                        for (j=0; j<rowSize; j++) {
+                            value = (*pRedIn++ + *pGreenIn++ + *pBlueIn++)/3.;
+                            *pOut++ = (epicsType)value;
+                        }
+                    }
+                    changedColorMode = 1;
+                    break;
                 case NDColorModeRGB1:
                     pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0);
                     pDataOut = (epicsType *)pArrayOut->pData;
@@ -226,10 +335,27 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
             }        
             break;
         case NDColorModeRGB3:
+            if (pArray->ndims != 3) break;
             rowSize   = pArray->dims[0].size;
             numRows   = pArray->dims[1].size;
             imageSize = rowSize * numRows;
             switch (colorModeOut) {
+                case NDColorModeMono:
+                    /* Make a new 2-D array */
+                    dims[0] = rowSize;
+                    dims[1] = numRows;
+                    pArrayOut = this->pNDArrayPool->alloc(2, dims, pArray->dataType, 0, NULL);
+                    pDataOut = (epicsType *)pArrayOut->pData;
+                    pOut = pDataOut;
+                    pRedIn   = pDataIn;
+                    pGreenIn = pDataIn + imageSize;
+                    pBlueIn  = pDataIn + 2*imageSize;
+                    for (i=0; i<imageSize; i++) {
+                        value = (*pRedIn++ + *pGreenIn++ + *pBlueIn++)/3.;
+                        *pOut++ = (epicsType)value;
+                    }
+                    changedColorMode = 1;
+                    break;
                 case NDColorModeRGB1:
                     pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 0);
                     pDataOut = (epicsType *)pArrayOut->pData;
