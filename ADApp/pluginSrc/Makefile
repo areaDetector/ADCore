@@ -13,13 +13,11 @@ endif
 
 # These flags are needed by PvApi.h, the Prosilca library used for Bayer to RGB color conversion
 USR_CXXFLAGS_Linux += -D_LINUX -D_x86 -O0
-
-# We build 2 libraries: one for plugins that work on all platforms
-# and one for ColorConvert that only works on Linux and Windows, because
-# it uses the Prosilica library (at least for now)
+# These flags are used for Linux and WIN32 to build the Bayer conversion in NDPluginColorConvert
+USR_CXXFLAGS_Linux += -DHAVE_PVAPI
+USR_CXXFLAGS_WIN32 += -DHAVE_PVAPI
 
 DBD += pluginSupport.dbd
-DBD += pluginColorConvertSupport.dbd
 
 INC += NDPluginDriver.h
 
@@ -33,19 +31,13 @@ NDPlugin_SRCS += NDPluginProcess.cpp
 NDPlugin_SRCS += NDPluginROI.cpp
 NDPlugin_SRCS += NDPluginTransform.cpp
 NDPlugin_SRCS += NDPluginOverlay.cpp
+NDPlugin_SRCS += NDPluginColorConvert.cpp
 NDPlugin_SRCS_DEFAULT += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNexus.cpp
 NDPlugin_SRCS_vxWorks += -nil-
 NDPlugin_LIBS += ADBase
 NDPlugin_LIBS += netCDF
 NDPlugin_LIBS += asyn
 NDPlugin_LIBS += $(EPICS_BASE_IOC_LIBS)
-
-LIBRARY_IOC_Linux = NDPluginColorConvert
-LIBRARY_IOC_WIN32 = NDPluginColorConvert
-NDPluginColorConvert_SRCS += NDPluginColorConvert.cpp
-NDPluginColorConvert_LIBS += ADBase
-NDPluginColorConvert_LIBS += asyn
-NDPluginColorConvert_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 include $(TOP)/configure/RULES
 #----------------------------------------
