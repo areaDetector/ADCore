@@ -55,6 +55,10 @@
           for avoiding overflow when binning. Fixed problem when a single color is extracted
           from a color image; it now removes the unused dimension and changes the colorMode
           to mono.</li>
+        <li>NDPluginColorConvert.  Added conversions from mono to RGB, RGB2, and RGB3, and from RGB1,
+        RGB, and RGB3 to mono. Previously this plugin only built on Linux and WIN32.  Now it builds and
+        does all conversions except Bayer on all architectures.  Bayer conversion is restricted to
+        Linux and WIN32.</li>
         <li>Added new NDPluginStats plugin. This plugin calculates statistics on an array.
           It replaces the statistics calculations that were previously performed in the ROI
           plugin. It also adds new statistics, including the centroid position and width.
@@ -62,7 +66,7 @@
           for the initial versions of these calculations.</li>
         <li>Added new NDPluginProcess plugin. This plugin does arithmetic processing on arrays:
           <ul>
-            <li>Dark current subtraction.</li>
+            <li>Background subtraction.</li>
             <li>Flat field normalization.</li>
             <li>Offset and scale.</li>
             <li>Low and high clipping.</li>
@@ -78,7 +82,7 @@
     </li>
     <li>Viewers
       <ul>
-        <li>Fixed a bug in the EPICS_AD_Viewer.java that required restarting the plugin if
+        <li>Fixed a bug in the ImageJ EPICS_AD_Viewer.java that required restarting the plugin if
           it was told to start displaying before any frames had been acquired by the IOC.</li>
       </ul>
     </li>
