@@ -5,10 +5,10 @@ file {
 }
 display {
 	object {
-		x=97
-		y=165
-		width=485
-		height=300
+		x=109
+		y=148
+		width=490
+		height=305
 	}
 	clr=14
 	bclr=4
@@ -89,7 +89,7 @@ display {
 }
 text {
 	object {
-		x=142
+		x=145
 		y=6
 		width=201
 		height=31
@@ -101,8 +101,8 @@ text {
 }
 text {
 	object {
-		x=406
-		y=76
+		x=296
+		y=50
 		width=70
 		height=20
 	}
@@ -110,90 +110,6 @@ text {
 		clr=14
 	}
 	textix="Plugins"
-}
-text {
-	object {
-		x=416
-		y=55
-		width=50
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Other"
-}
-text {
-	object {
-		x=331
-		y=76
-		width=70
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Plugins"
-}
-text {
-	object {
-		x=341
-		y=55
-		width=50
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Stats"
-}
-text {
-	object {
-		x=256
-		y=76
-		width=70
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Plugins"
-}
-text {
-	object {
-		x=276
-		y=55
-		width=30
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="ROI"
-}
-text {
-	object {
-		x=181
-		y=76
-		width=70
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Plugins"
-}
-text {
-	object {
-		x=196
-		y=55
-		width=40
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="File"
 }
 text {
 	object {
@@ -221,7 +137,7 @@ text {
 }
 "related display" {
 	object {
-		x=334
+		x=339
 		y=100
 		width=64
 		height=20
@@ -254,14 +170,14 @@ text {
 	display[5] {
 		label="Statistics 1-5"
 		name="NDStats5.adl"
-		args="P=13SIM1:"
+		args="P=13SIM1:, R1=Stats1:,R2=Stats2:,R3=Stats3:,R4=Stats4:,R5=Stats5:"
 	}
 	clr=14
 	bclr=51
 }
 "related display" {
 	object {
-		x=259
+		x=264
 		y=100
 		width=64
 		height=20
@@ -289,14 +205,14 @@ text {
 	display[4] {
 		label="ROI 1-4 combined"
 		name="NDROI4.adl"
-		args="P=13SIM1:"
+		args="P=13SIM1:, R1=ROI1:,R2=ROI2:, R3=ROI3:,R4=ROI4:"
 	}
 	clr=14
 	bclr=51
 }
 "related display" {
 	object {
-		x=184
+		x=189
 		y=100
 		width=64
 		height=20
@@ -356,7 +272,7 @@ text {
 }
 "related display" {
 	object {
-		x=409
+		x=414
 		y=100
 		width=64
 		height=20
@@ -386,11 +302,6 @@ text {
 		name="NDColorConvert.adl"
 		args="P=13SIM1:, R=CC1:"
 	}
-	display[5] {
-		label="Image #2"
-		name="NDStdArrays.adl"
-		args="P=13SIM1:, R=image2:"
-	}
 	display[6] {
 		label="Overlays 1-8"
 		name="NDOverlay8.adl"
@@ -418,7 +329,7 @@ text {
 }
 "related display" {
 	object {
-		x=409
+		x=414
 		y=125
 		width=64
 		height=20
@@ -463,7 +374,7 @@ text {
 }
 "related display" {
 	object {
-		x=259
+		x=264
 		y=125
 		width=64
 		height=20
@@ -498,7 +409,7 @@ text {
 }
 "related display" {
 	object {
-		x=184
+		x=189
 		y=125
 		width=64
 		height=20
@@ -568,7 +479,7 @@ text {
 }
 "related display" {
 	object {
-		x=334
+		x=339
 		y=125
 		width=64
 		height=20
@@ -642,7 +553,7 @@ text {
 }
 "related display" {
 	object {
-		x=259
+		x=264
 		y=175
 		width=64
 		height=20
@@ -677,7 +588,7 @@ text {
 }
 "related display" {
 	object {
-		x=184
+		x=189
 		y=175
 		width=64
 		height=20
@@ -727,7 +638,7 @@ text {
 }
 "related display" {
 	object {
-		x=334
+		x=339
 		y=175
 		width=64
 		height=20
@@ -757,7 +668,7 @@ text {
 }
 "related display" {
 	object {
-		x=409
+		x=414
 		y=175
 		width=64
 		height=20
@@ -814,7 +725,7 @@ text {
 }
 "related display" {
 	object {
-		x=259
+		x=264
 		y=200
 		width=64
 		height=20
@@ -849,7 +760,7 @@ text {
 }
 "related display" {
 	object {
-		x=184
+		x=189
 		y=200
 		width=64
 		height=20
@@ -899,7 +810,7 @@ text {
 }
 "related display" {
 	object {
-		x=334
+		x=339
 		y=200
 		width=64
 		height=20
@@ -929,7 +840,7 @@ text {
 }
 "related display" {
 	object {
-		x=409
+		x=414
 		y=200
 		width=64
 		height=20
@@ -987,7 +898,7 @@ text {
 }
 "related display" {
 	object {
-		x=259
+		x=264
 		y=225
 		width=64
 		height=20
@@ -1022,7 +933,7 @@ text {
 }
 "related display" {
 	object {
-		x=184
+		x=189
 		y=225
 		width=64
 		height=20
@@ -1072,7 +983,7 @@ text {
 }
 "related display" {
 	object {
-		x=334
+		x=339
 		y=225
 		width=64
 		height=20
@@ -1102,7 +1013,7 @@ text {
 }
 "related display" {
 	object {
-		x=409
+		x=414
 		y=225
 		width=64
 		height=20
@@ -1160,7 +1071,7 @@ text {
 }
 "related display" {
 	object {
-		x=259
+		x=264
 		y=250
 		width=64
 		height=20
@@ -1195,7 +1106,7 @@ text {
 }
 "related display" {
 	object {
-		x=184
+		x=189
 		y=250
 		width=64
 		height=20
@@ -1245,7 +1156,7 @@ text {
 }
 "related display" {
 	object {
-		x=334
+		x=339
 		y=250
 		width=64
 		height=20
@@ -1275,7 +1186,7 @@ text {
 }
 "related display" {
 	object {
-		x=409
+		x=414
 		y=250
 		width=64
 		height=20
@@ -1332,7 +1243,7 @@ text {
 }
 "related display" {
 	object {
-		x=259
+		x=264
 		y=275
 		width=64
 		height=20
@@ -1367,7 +1278,7 @@ text {
 }
 "related display" {
 	object {
-		x=184
+		x=189
 		y=275
 		width=64
 		height=20
@@ -1417,7 +1328,7 @@ text {
 }
 "related display" {
 	object {
-		x=334
+		x=339
 		y=275
 		width=64
 		height=20
@@ -1447,7 +1358,7 @@ text {
 }
 "related display" {
 	object {
-		x=409
+		x=414
 		y=275
 		width=64
 		height=20
@@ -1489,4 +1400,75 @@ text {
 	}
 	clr=14
 	bclr=51
+}
+composite {
+	object {
+		x=201
+		y=76
+		width=270
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=421
+				y=76
+				width=50
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Other"
+		}
+		text {
+			object {
+				x=346
+				y=76
+				width=50
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Stats"
+		}
+		text {
+			object {
+				x=281
+				y=76
+				width=30
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="ROI"
+		}
+		text {
+			object {
+				x=201
+				y=76
+				width=40
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="File"
+		}
+	}
+}
+rectangle {
+	object {
+		x=182
+		y=45
+		width=302
+		height=255
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
 }
