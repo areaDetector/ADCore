@@ -5,8 +5,8 @@ file {
 }
 display {
 	object {
-		x=326
-		y=109
+		x=53
+		y=266
 		width=755
 		height=745
 	}
@@ -599,210 +599,144 @@ text {
 	}
 	textix="Compute centroid"
 }
-composite {
+text {
 	object {
 		x=405
 		y=121
-		width=164
-		height=70
+		width=70
+		height=20
 	}
-	"composite name"=""
-	children {
-		composite {
-			object {
-				x=405
-				y=121
-				width=164
-				height=20
-			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=405
-						y=121
-						width=70
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Minimum"
-					align="horiz. right"
-				}
-				"text update" {
-					object {
-						x=479
-						y=122
-						width=90
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)MinValue_RBV"
-						clr=54
-						bclr=4
-					}
-					limits {
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=423
-				y=146
-				width=146
-				height=20
-			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=423
-						y=146
-						width=50
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Total"
-					align="horiz. right"
-				}
-				"text update" {
-					object {
-						x=479
-						y=147
-						width=90
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)Total_RBV"
-						clr=54
-						bclr=4
-					}
-					limits {
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=435
-				y=171
-				width=134
-				height=20
-			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=435
-						y=171
-						width=40
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Mean"
-					align="horiz. right"
-				}
-				"text update" {
-					object {
-						x=479
-						y=172
-						width=90
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)MeanValue_RBV"
-						clr=54
-						bclr=4
-					}
-					limits {
-					}
-				}
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Minimum"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=479
+		y=122
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)MinValue_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
 	}
 }
-composite {
+text {
+	object {
+		x=423
+		y=146
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Total"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=479
+		y=147
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)Total_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=435
+		y=171
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Mean"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=479
+		y=172
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)MeanValue_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
 	object {
 		x=575
 		y=121
-		width=164
+		width=70
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=575
-				y=121
-				width=70
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Maximum"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=649
-				y=122
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)MaxValue_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Maximum"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=649
+		y=122
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)MaxValue_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
 	}
 }
-composite {
+text {
 	object {
 		x=613
 		y=146
-		width=126
+		width=30
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=613
-				y=146
-				width=30
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Net"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=649
-				y=147
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)Net_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Net"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=649
+		y=147
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)Net_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
 	}
 }
 text {
@@ -868,109 +802,47 @@ composite {
 		}
 	}
 }
-composite {
+text {
 	object {
 		x=405
 		y=256
-		width=335
+		width=170
 		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=405
-				y=256
-				width=170
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Centroid threshold"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=584
-				y=257
-				width=60
-				height=19
-			}
-			control {
-				chan="$(P)$(R)CentroidThreshold"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=650
-				y=257
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)CentroidThreshold_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-	}
-}
-rectangle {
-	object {
-		x=5
-		y=500
-		width=380
-		height=40
 	}
 	"basic attribute" {
 		clr=14
-		fill="outline"
+	}
+	textix="Centroid threshold"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=584
+		y=257
+		width=60
+		height=19
+	}
+	control {
+		chan="$(P)$(R)CentroidThreshold"
+		clr=14
+		bclr=51
+	}
+	limits {
 	}
 }
-composite {
+"text update" {
 	object {
-		x=131
-		y=510
-		width=129
-		height=20
+		x=650
+		y=257
+		width=90
+		height=18
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=131
-				y=510
-				width=50
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix=" More"
-			align="horiz. right"
-		}
-		"related display" {
-			object {
-				x=190
-				y=510
-				width=70
-				height=20
-			}
-			display[0] {
-				label="asynRecord"
-				name="asynRecord.adl"
-				args="P=$(P),R=$(R)AsynIO"
-			}
-			clr=14
-			bclr=51
-		}
+	monitor {
+		chan="$(P)$(R)CentroidThreshold_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
 	}
 }
 "text update" {
@@ -1039,669 +911,8 @@ composite {
 		x=5
 		y=40
 		width=380
-		height=455
+		height=485
 	}
 	"composite name"=""
-	children {
-		rectangle {
-			object {
-				x=5
-				y=40
-				width=380
-				height=455
-			}
-			"basic attribute" {
-				clr=14
-				fill="outline"
-			}
-		}
-		"text entry" {
-			object {
-				x=172
-				y=119
-				width=100
-				height=20
-			}
-			control {
-				chan="$(P)$(R)NDArrayAddress"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=278
-				y=120
-				width=100
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)NDArrayAddress_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=32
-				y=119
-				width=130
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Array address"
-			align="horiz. right"
-		}
-		text {
-			object {
-				x=62
-				y=94
-				width=100
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Array port"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=172
-				y=94
-				width=100
-				height=20
-			}
-			control {
-				chan="$(P)$(R)NDArrayPort"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=278
-				y=95
-				width=100
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)NDArrayPort_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text entry" {
-			object {
-				x=172
-				y=219
-				width=100
-				height=20
-			}
-			control {
-				chan="$(P)$(R)ArrayCounter"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=278
-				y=220
-				width=100
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ArrayCounter_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=32
-				y=219
-				width=130
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Array counter"
-			align="horiz. right"
-		}
-		text {
-			object {
-				x=62
-				y=244
-				width=100
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Array rate"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=172
-				y=245
-				width=100
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ArrayRate_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text entry" {
-			object {
-				x=172
-				y=269
-				width=100
-				height=20
-			}
-			control {
-				chan="$(P)$(R)DroppedArrays"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=278
-				y=270
-				width=100
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)DroppedArrays_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=22
-				y=269
-				width=140
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Dropped arrays"
-			align="horiz. right"
-		}
-		text {
-			object {
-				x=102
-				y=144
-				width=60
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Enable"
-			align="horiz. right"
-		}
-		menu {
-			object {
-				x=172
-				y=144
-				width=100
-				height=20
-			}
-			control {
-				chan="$(P)$(R)EnableCallbacks"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=278
-				y=145
-				width=100
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)EnableCallbacks_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=72
-				y=169
-				width=90
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Min. time"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=172
-				y=169
-				width=100
-				height=20
-			}
-			control {
-				chan="$(P)$(R)MinCallbackTime"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=278
-				y=170
-				width=100
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)MinCallbackTime_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=62
-				y=319
-				width=100
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Array Size"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=172
-				y=320
-				width=65
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ArraySize0_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=242
-				y=320
-				width=65
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ArraySize1_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=72
-				y=344
-				width=90
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Data type"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=172
-				y=345
-				width=79
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)DataType_RBV"
-				clr=54
-				bclr=4
-			}
-			format="string"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=42
-				y=294
-				width=120
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="# dimensions"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=172
-				y=295
-				width=79
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)NDimensions_RBV"
-				clr=54
-				bclr=4
-			}
-			format="string"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=312
-				y=320
-				width=65
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ArraySize2_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=12
-				y=194
-				width=150
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Callbacks block"
-			align="horiz. right"
-		}
-		menu {
-			object {
-				x=172
-				y=194
-				width=100
-				height=20
-			}
-			control {
-				chan="$(P)$(R)BlockingCallbacks"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=278
-				y=195
-				width=100
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)BlockingCallbacks_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=72
-				y=419
-				width=90
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Unique ID"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=172
-				y=420
-				width=79
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)UniqueId_RBV"
-				clr=54
-				bclr=4
-			}
-			format="string"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=62
-				y=444
-				width=100
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Time stamp"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=172
-				y=445
-				width=150
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)TimeStamp_RBV"
-				clr=54
-				bclr=4
-			}
-			format="string"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=62
-				y=369
-				width=100
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Color mode"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=172
-				y=370
-				width=79
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ColorMode_RBV"
-				clr=54
-				bclr=4
-			}
-			format="string"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=32
-				y=394
-				width=130
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Bayer pattern"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=172
-				y=395
-				width=79
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)BayerPattern_RBV"
-				clr=54
-				bclr=4
-			}
-			format="string"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=12
-				y=469
-				width=150
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Attributes file"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=172
-				y=469
-				width=210
-				height=20
-			}
-			control {
-				chan="$(P)$(R)NDAttributesFile"
-				clr=14
-				bclr=51
-			}
-			format="string"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=172
-				y=45
-				width=160
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)PortName_RBV"
-				clr=54
-				bclr=4
-			}
-			format="string"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=72
-				y=44
-				width=90
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="asyn port"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=172
-				y=70
-				width=160
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)PluginType_RBV"
-				clr=54
-				bclr=4
-			}
-			format="string"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=52
-				y=69
-				width=110
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Plugin type"
-			align="horiz. right"
-		}
-	}
+	"composite file"="NDPluginBase.adl"
 }
