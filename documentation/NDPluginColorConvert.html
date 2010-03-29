@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugin NDPluginColorConvert</h1>
     <h2>
-      August 17, 2009</h2>
+      March 28, 2010</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -90,10 +90,11 @@
   <p>
     NDPluginColorConvert currently supports the following conversions:</p>
   <ul>
-    <li>Bayer to RGB1, RGB2, or RGB3 </li>
-    <li>RGB1 to RGB2 or RGB3</li>
-    <li>RGB2 to RGB1 or RGB3</li>
-    <li>RGB3 to RGB1 or RGB2</li>
+    <li>Mono to RGB1, RGB2, or RGB3</li>
+    <li>Bayer to RGB1, RGB2, or RGB3 (Linux and WIN32 only)</li>
+    <li>RGB1 to mono, RGB2 or RGB3</li>
+    <li>RGB2 to mono, RGB1 or RGB3</li>
+    <li>RGB3 to mono, RGB1 or RGB2</li>
   </ul>
   <p>
     The Bayer color conversion supports the 4 Bayer formats (NDBayerRGGB, NDBayerGBRG,
@@ -135,7 +136,7 @@
   <ul>
     <li>The Bayer color conversion is done using a library function provided in the Prosilica
       library. The source code for this function is not provided, and the binaries are
-      only available on Linux and Windows.</li>
+      only available on Linux and Windows.  All other conversions are supported on all platforms.</li>
     <li>YUV color conversion is not supported. This may be added in a future release.</li>
   </ul>
 </body>
