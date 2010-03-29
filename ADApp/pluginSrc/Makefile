@@ -20,6 +20,7 @@ USR_CXXFLAGS_WIN32 += -DHAVE_PVAPI
 DBD += pluginSupport.dbd
 
 INC += NDPluginDriver.h
+INC += NDPluginFile.h
 
 LIBRARY_IOC = NDPlugin
 NDPlugin_SRCS += NDPluginDriver.cpp
