@@ -1,0 +1,3252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<display typeId="org.csstudio.opibuilder.Display" version="1.0">
+  <widget_type>Display</widget_type>
+  <macros>
+    <include_parent_macros>true</include_parent_macros>
+  </macros>
+  <width>626</width>
+  <scripts />
+  <show_ruler>true</show_ruler>
+  <height>615</height>
+  <show_edit_range>true</show_edit_range>
+  <name>NDROIN ${P}${R}${N}</name>
+  <grid_space>6</grid_space>
+  <snap_to_geometry>true</snap_to_geometry>
+  <show_grid>true</show_grid>
+  <y>0</y>
+  <actions hook="false" />
+  <foreground_color>
+    <color red="192" green="192" blue="192" />
+  </foreground_color>
+  <background_color>
+    <color red="240" green="240" blue="240" />
+  </background_color>
+  <x>0</x>
+  <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0">
+    <enabled>true</enabled>
+    <widget_type>Linking Container</widget_type>
+    <macros>
+      <include_parent_macros>true</include_parent_macros>
+    </macros>
+    <visible>true</visible>
+    <width>360</width>
+    <border_style>3</border_style>
+    <scripts />
+    <zoom_to_fit>true</zoom_to_fit>
+    <height>405</height>
+    <border_width>1</border_width>
+    <name>Linking Container</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <actions hook="false" />
+    <y>40</y>
+    <opi_file>NDROIN_Description.opi</opi_file>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <x>5</x>
+    <tooltip />
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>Definition</text>
+      <visible>true</visible>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <vertical_alignment>1</vertical_alignment>
+      <width>107</width>
+      <border_style>0</border_style>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>19</height>
+      <border_width>1</border_width>
+      <name>Label</name>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>1</horizontal_alignment>
+      <transparent>false</transparent>
+      <y>2</y>
+      <actions hook="false" />
+      <tooltip />
+      <x>143</x>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>Use this ROI?</text>
+      <visible>true</visible>
+      <font>
+        <fontdata fontName="Arial" height="9" style="1" />
+      </font>
+      <vertical_alignment>1</vertical_alignment>
+      <width>100</width>
+      <border_style>0</border_style>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>20</height>
+      <border_width>1</border_width>
+      <name>Label_7</name>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>2</horizontal_alignment>
+      <transparent>true</transparent>
+      <y>31</y>
+      <actions hook="false" />
+      <tooltip />
+      <x>52</x>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <show_units>true</show_units>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>18</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Text Update_7</name>
+      <format_type>0</format_type>
+      <precision_from_pv>true</precision_from_pv>
+      <transparent>true</transparent>
+      <pv_name>${P}${R}${N}Use_RBV</pv_name>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="255" />
+      </foreground_color>
+      <widget_type>Text Update</widget_type>
+      <enabled>true</enabled>
+      <text>######</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <precision>0</precision>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>61</width>
+      <border_style>0</border_style>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>0</horizontal_alignment>
+      <y>32</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>256</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <scripts />
+      <height>23</height>
+      <name>Combo Box_1</name>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <pv_name>${P}${R}${N}Use</pv_name>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <background_color>
+        <color red="0" green="255" blue="255" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Combo Box</widget_type>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>60</width>
+      <border_style>0</border_style>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <items_from_pv>true</items_from_pv>
+      <actions hook="false" />
+      <y>32</y>
+      <x>163</x>
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <show_units>true</show_units>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>20</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Text Input_2</name>
+      <format_type>0</format_type>
+      <precision_from_pv>true</precision_from_pv>
+      <transparent>false</transparent>
+      <pv_name>${P}${R}${N}Name</pv_name>
+      <background_color>
+        <color red="0" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <widget_type>Text Input</widget_type>
+      <enabled>true</enabled>
+      <text />
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <precision>0</precision>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>150</width>
+      <border_style>3</border_style>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>1</horizontal_alignment>
+      <y>59</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>161</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>Name</text>
+      <visible>true</visible>
+      <font>
+        <fontdata fontName="Arial" height="9" style="1" />
+      </font>
+      <vertical_alignment>1</vertical_alignment>
+      <width>130</width>
+      <border_style>0</border_style>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>20</height>
+      <border_width>1</border_width>
+      <name>Label_5</name>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>2</horizontal_alignment>
+      <transparent>true</transparent>
+      <y>61</y>
+      <actions hook="false" />
+      <tooltip />
+      <x>22</x>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0">
+      <enabled>true</enabled>
+      <widget_type>Linking Container</widget_type>
+      <macros>
+        <include_parent_macros>true</include_parent_macros>
+      </macros>
+      <visible>true</visible>
+      <width>352</width>
+      <border_style>3</border_style>
+      <scripts />
+      <zoom_to_fit>true</zoom_to_fit>
+      <height>257</height>
+      <border_width>1</border_width>
+      <name>Linking Container</name>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <actions hook="false" />
+      <y>83</y>
+      <opi_file>NDROIN_Size.opi</opi_file>
+      <foreground_color>
+        <color red="192" green="192" blue="192" />
+      </foreground_color>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
+      <x>5</x>
+      <tooltip />
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <widget_type>Label</widget_type>
+        <enabled>true</enabled>
+        <text>X</text>
+        <visible>true</visible>
+        <font>
+          <fontdata fontName="Arial" height="9" style="1" />
+        </font>
+        <vertical_alignment>1</vertical_alignment>
+        <width>15</width>
+        <border_style>0</border_style>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>20</height>
+        <border_width>1</border_width>
+        <name>Label</name>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <transparent>true</transparent>
+        <y>6</y>
+        <actions hook="false" />
+        <tooltip />
+        <x>145</x>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="0" />
+        </foreground_color>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <widget_type>Label</widget_type>
+        <enabled>true</enabled>
+        <text>Y</text>
+        <visible>true</visible>
+        <font>
+          <fontdata fontName="Arial" height="9" style="1" />
+        </font>
+        <vertical_alignment>1</vertical_alignment>
+        <width>15</width>
+        <border_style>0</border_style>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>20</height>
+        <border_width>1</border_width>
+        <name>Label_1</name>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <transparent>true</transparent>
+        <y>6</y>
+        <actions hook="false" />
+        <tooltip />
+        <x>225</x>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="0" />
+        </foreground_color>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <widget_type>Label</widget_type>
+        <enabled>true</enabled>
+        <text>Z</text>
+        <visible>true</visible>
+        <font>
+          <fontdata fontName="Arial" height="9" style="1" />
+        </font>
+        <vertical_alignment>1</vertical_alignment>
+        <width>15</width>
+        <border_style>0</border_style>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>20</height>
+        <border_width>1</border_width>
+        <name>Label_2</name>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <transparent>true</transparent>
+        <y>6</y>
+        <actions hook="false" />
+        <tooltip />
+        <x>305</x>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="0" />
+        </foreground_color>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <widget_type>Label</widget_type>
+        <enabled>true</enabled>
+        <text>Input Size</text>
+        <visible>true</visible>
+        <font>
+          <fontdata fontName="Arial" height="9" style="1" />
+        </font>
+        <vertical_alignment>1</vertical_alignment>
+        <width>100</width>
+        <border_style>0</border_style>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>20</height>
+        <border_width>1</border_width>
+        <name>Label_11</name>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>2</horizontal_alignment>
+        <transparent>true</transparent>
+        <y>27</y>
+        <actions hook="false" />
+        <tooltip />
+        <x>7</x>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="0" />
+        </foreground_color>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+        <border_alarm_sensitive>false</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>18</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Update_11</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>true</transparent>
+        <pv_name>${P}${R}${N}MaxSizeX_RBV</pv_name>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="255" />
+        </foreground_color>
+        <widget_type>Text Update</widget_type>
+        <enabled>true</enabled>
+        <text>######</text>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>61</width>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>28</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>120</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>18</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Update_17</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>true</transparent>
+        <pv_name>${P}${R}${N}MaxSizeZ_RBV</pv_name>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="255" />
+        </foreground_color>
+        <widget_type>Text Update</widget_type>
+        <enabled>true</enabled>
+        <text>######</text>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>61</width>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>28</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>280</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>18</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Update_18</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>true</transparent>
+        <pv_name>${P}${R}${N}MaxSizeY_RBV</pv_name>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="255" />
+        </foreground_color>
+        <widget_type>Text Update</widget_type>
+        <enabled>true</enabled>
+        <text>######</text>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>61</width>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>28</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>200</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>18</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Update_2</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>true</transparent>
+        <pv_name>${P}${R}${N}BinX_RBV</pv_name>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="255" />
+        </foreground_color>
+        <widget_type>Text Update</widget_type>
+        <enabled>true</enabled>
+        <text>######</text>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>61</width>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>52</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>120</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>18</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Update_3</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>true</transparent>
+        <pv_name>${P}${R}${N}BinY_RBV</pv_name>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="255" />
+        </foreground_color>
+        <widget_type>Text Update</widget_type>
+        <enabled>true</enabled>
+        <text>######</text>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>61</width>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>52</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>200</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <widget_type>Label</widget_type>
+        <enabled>true</enabled>
+        <text>Binning</text>
+        <visible>true</visible>
+        <font>
+          <fontdata fontName="Arial" height="9" style="1" />
+        </font>
+        <vertical_alignment>1</vertical_alignment>
+        <width>70</width>
+        <border_style>0</border_style>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>20</height>
+        <border_width>1</border_width>
+        <name>Label_4</name>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>2</horizontal_alignment>
+        <transparent>true</transparent>
+        <y>72</y>
+        <actions hook="false" />
+        <tooltip />
+        <x>37</x>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="0" />
+        </foreground_color>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+        <border_alarm_sensitive>false</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>20</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Input</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>false</transparent>
+        <pv_name>${P}${R}${N}BinX</pv_name>
+        <background_color>
+          <color red="0" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="0" />
+        </foreground_color>
+        <widget_type>Text Input</widget_type>
+        <enabled>true</enabled>
+        <text />
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>60</width>
+        <border_style>3</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>72</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>120</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+        <border_alarm_sensitive>false</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>20</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Input_1</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>false</transparent>
+        <pv_name>${P}${R}${N}BinY</pv_name>
+        <background_color>
+          <color red="0" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="0" />
+        </foreground_color>
+        <widget_type>Text Input</widget_type>
+        <enabled>true</enabled>
+        <text />
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>60</width>
+        <border_style>3</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>72</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>201</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>18</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Update_4</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>true</transparent>
+        <pv_name>${P}${R}${N}MinX_RBV</pv_name>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="255" />
+        </foreground_color>
+        <widget_type>Text Update</widget_type>
+        <enabled>true</enabled>
+        <text>######</text>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>61</width>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>97</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>120</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>18</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Update_5</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>true</transparent>
+        <pv_name>${P}${R}${N}MinY_RBV</pv_name>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="255" />
+        </foreground_color>
+        <widget_type>Text Update</widget_type>
+        <enabled>true</enabled>
+        <text>######</text>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>61</width>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>97</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>200</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <widget_type>Label</widget_type>
+        <enabled>true</enabled>
+        <text>ROI Start</text>
+        <visible>true</visible>
+        <font>
+          <fontdata fontName="Arial" height="9" style="1" />
+        </font>
+        <vertical_alignment>1</vertical_alignment>
+        <width>82</width>
+        <border_style>0</border_style>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>20</height>
+        <border_width>1</border_width>
+        <name>Label_5</name>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>2</horizontal_alignment>
+        <transparent>true</transparent>
+        <y>117</y>
+        <actions hook="false" />
+        <tooltip />
+        <x>25</x>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="0" />
+        </foreground_color>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+        <border_alarm_sensitive>false</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>20</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Input_2</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>false</transparent>
+        <pv_name>${P}${R}${N}MinX</pv_name>
+        <background_color>
+          <color red="0" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="0" />
+        </foreground_color>
+        <widget_type>Text Input</widget_type>
+        <enabled>true</enabled>
+        <text />
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>60</width>
+        <border_style>3</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>117</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>120</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+        <border_alarm_sensitive>false</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>20</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Input_3</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>false</transparent>
+        <pv_name>${P}${R}${N}MinY</pv_name>
+        <background_color>
+          <color red="0" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="0" />
+        </foreground_color>
+        <widget_type>Text Input</widget_type>
+        <enabled>true</enabled>
+        <text />
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>60</width>
+        <border_style>3</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>117</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>201</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>18</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Update_6</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>true</transparent>
+        <pv_name>${P}${R}${N}SizeX_RBV</pv_name>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="255" />
+        </foreground_color>
+        <widget_type>Text Update</widget_type>
+        <enabled>true</enabled>
+        <text>######</text>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>61</width>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>142</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>120</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>18</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Update_7</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>true</transparent>
+        <pv_name>${P}${R}${N}SizeY_RBV</pv_name>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="255" />
+        </foreground_color>
+        <widget_type>Text Update</widget_type>
+        <enabled>true</enabled>
+        <text>######</text>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>61</width>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>142</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>200</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <widget_type>Label</widget_type>
+        <enabled>true</enabled>
+        <text>ROI Size</text>
+        <visible>true</visible>
+        <font>
+          <fontdata fontName="Arial" height="9" style="1" />
+        </font>
+        <vertical_alignment>1</vertical_alignment>
+        <width>82</width>
+        <border_style>0</border_style>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>20</height>
+        <border_width>1</border_width>
+        <name>Label_6</name>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>2</horizontal_alignment>
+        <transparent>true</transparent>
+        <y>162</y>
+        <actions hook="false" />
+        <tooltip />
+        <x>25</x>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="0" />
+        </foreground_color>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+        <border_alarm_sensitive>false</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>20</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Input_4</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>false</transparent>
+        <pv_name>${P}${R}${N}SizeX</pv_name>
+        <background_color>
+          <color red="0" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="0" />
+        </foreground_color>
+        <widget_type>Text Input</widget_type>
+        <enabled>true</enabled>
+        <text />
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>60</width>
+        <border_style>3</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>162</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>120</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+        <border_alarm_sensitive>false</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>20</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Input_5</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>false</transparent>
+        <pv_name>${P}${R}${N}SizeY</pv_name>
+        <background_color>
+          <color red="0" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="0" />
+        </foreground_color>
+        <widget_type>Text Input</widget_type>
+        <enabled>true</enabled>
+        <text />
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>60</width>
+        <border_style>3</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>162</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>201</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>18</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Update_8</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>true</transparent>
+        <pv_name>${P}${R}${N}SizeX_RBV</pv_name>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="255" />
+        </foreground_color>
+        <widget_type>Text Update</widget_type>
+        <enabled>true</enabled>
+        <text>######</text>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>61</width>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>187</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>120</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>18</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Update_9</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>true</transparent>
+        <pv_name>${P}${R}${N}SizeY_RBV</pv_name>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="255" />
+        </foreground_color>
+        <widget_type>Text Update</widget_type>
+        <enabled>true</enabled>
+        <text>######</text>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>61</width>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>187</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>200</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <widget_type>Label</widget_type>
+        <enabled>true</enabled>
+        <text>Reverse</text>
+        <visible>true</visible>
+        <font>
+          <fontdata fontName="Arial" height="9" style="1" />
+        </font>
+        <vertical_alignment>1</vertical_alignment>
+        <width>82</width>
+        <border_style>0</border_style>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>20</height>
+        <border_width>1</border_width>
+        <name>Label_7</name>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>2</horizontal_alignment>
+        <transparent>true</transparent>
+        <y>207</y>
+        <actions hook="false" />
+        <tooltip />
+        <x>25</x>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="0" />
+        </foreground_color>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0">
+        <border_alarm_sensitive>false</border_alarm_sensitive>
+        <visible>true</visible>
+        <actions_from_pv>true</actions_from_pv>
+        <scripts />
+        <height>18</height>
+        <name>Menu Button</name>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <pv_name>${P}${R}${N}ReverseX</pv_name>
+        <foreground_color>
+          <color red="0" green="0" blue="0" />
+        </foreground_color>
+        <background_color>
+          <color red="240" green="240" blue="240" />
+        </background_color>
+        <enabled>true</enabled>
+        <widget_type>Menu Button</widget_type>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <font>
+          <fontdata fontName="Arial" height="8" style="0" />
+        </font>
+        <width>60</width>
+        <border_style>6</border_style>
+        <label />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <y>207</y>
+        <x>120</x>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0">
+        <border_alarm_sensitive>false</border_alarm_sensitive>
+        <visible>true</visible>
+        <actions_from_pv>true</actions_from_pv>
+        <scripts />
+        <height>18</height>
+        <name>Menu Button_1</name>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <pv_name>${P}${R}${N}ReverseY</pv_name>
+        <foreground_color>
+          <color red="0" green="0" blue="0" />
+        </foreground_color>
+        <background_color>
+          <color red="240" green="240" blue="240" />
+        </background_color>
+        <enabled>true</enabled>
+        <widget_type>Menu Button</widget_type>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <font>
+          <fontdata fontName="Arial" height="8" style="0" />
+        </font>
+        <width>60</width>
+        <border_style>6</border_style>
+        <label />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <y>207</y>
+        <x>200</x>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+        <widget_type>Label</widget_type>
+        <enabled>true</enabled>
+        <text>ROI Size</text>
+        <visible>true</visible>
+        <font>
+          <fontdata fontName="Arial" height="9" style="1" />
+        </font>
+        <vertical_alignment>1</vertical_alignment>
+        <width>100</width>
+        <border_style>0</border_style>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>20</height>
+        <border_width>1</border_width>
+        <name>Label_8</name>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>2</horizontal_alignment>
+        <transparent>true</transparent>
+        <y>228</y>
+        <actions hook="false" />
+        <tooltip />
+        <x>7</x>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="0" />
+        </foreground_color>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>18</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Update_10</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>true</transparent>
+        <pv_name>${P}${R}${N}ArraySizeX_RBV</pv_name>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="255" />
+        </foreground_color>
+        <widget_type>Text Update</widget_type>
+        <enabled>true</enabled>
+        <text>######</text>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>61</width>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>228</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>120</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>18</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Update_12</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>true</transparent>
+        <pv_name>${P}${R}${N}ArraySizeY_RBV</pv_name>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="255" />
+        </foreground_color>
+        <widget_type>Text Update</widget_type>
+        <enabled>true</enabled>
+        <text>######</text>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>61</width>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>228</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>200</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>18</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Update_13</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>true</transparent>
+        <pv_name>${P}${R}${N}BinZ_RBV</pv_name>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="255" />
+        </foreground_color>
+        <widget_type>Text Update</widget_type>
+        <enabled>true</enabled>
+        <text>######</text>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>61</width>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>52</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>280</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+        <border_alarm_sensitive>false</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>20</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Input_6</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>false</transparent>
+        <pv_name>${P}${R}${N}BinZ</pv_name>
+        <background_color>
+          <color red="0" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="0" />
+        </foreground_color>
+        <widget_type>Text Input</widget_type>
+        <enabled>true</enabled>
+        <text />
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>60</width>
+        <border_style>3</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>72</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>281</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>18</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Update_14</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>true</transparent>
+        <pv_name>${P}${R}${N}MinZ_RBV</pv_name>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="255" />
+        </foreground_color>
+        <widget_type>Text Update</widget_type>
+        <enabled>true</enabled>
+        <text>######</text>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>61</width>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>97</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>280</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+        <border_alarm_sensitive>false</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>20</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Input_7</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>false</transparent>
+        <pv_name>${P}${R}${N}MinZ</pv_name>
+        <background_color>
+          <color red="0" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="0" />
+        </foreground_color>
+        <widget_type>Text Input</widget_type>
+        <enabled>true</enabled>
+        <text />
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>60</width>
+        <border_style>3</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>117</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>281</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>18</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Update_15</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>true</transparent>
+        <pv_name>${P}${R}${N}SizeZ_RBV</pv_name>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="255" />
+        </foreground_color>
+        <widget_type>Text Update</widget_type>
+        <enabled>true</enabled>
+        <text>######</text>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>61</width>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>142</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>280</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+        <border_alarm_sensitive>false</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>20</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Input_8</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>false</transparent>
+        <pv_name>${P}${R}${N}SizeZ</pv_name>
+        <background_color>
+          <color red="0" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="0" />
+        </foreground_color>
+        <widget_type>Text Input</widget_type>
+        <enabled>true</enabled>
+        <text />
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>60</width>
+        <border_style>3</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>162</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>281</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>18</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Update_16</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>true</transparent>
+        <pv_name>${P}${R}${N}SizeZ_RBV</pv_name>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="255" />
+        </foreground_color>
+        <widget_type>Text Update</widget_type>
+        <enabled>true</enabled>
+        <text>######</text>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>61</width>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>187</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>280</x>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0">
+        <border_alarm_sensitive>false</border_alarm_sensitive>
+        <visible>true</visible>
+        <actions_from_pv>true</actions_from_pv>
+        <scripts />
+        <height>18</height>
+        <name>Menu Button_2</name>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <pv_name>${P}${R}${N}ReverseZ</pv_name>
+        <foreground_color>
+          <color red="0" green="0" blue="0" />
+        </foreground_color>
+        <background_color>
+          <color red="240" green="240" blue="240" />
+        </background_color>
+        <enabled>true</enabled>
+        <widget_type>Menu Button</widget_type>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <font>
+          <fontdata fontName="Arial" height="8" style="0" />
+        </font>
+        <width>60</width>
+        <border_style>6</border_style>
+        <label />
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <y>207</y>
+        <x>280</x>
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      </widget>
+      <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+        <border_alarm_sensitive>true</border_alarm_sensitive>
+        <visible>true</visible>
+        <vertical_alignment>1</vertical_alignment>
+        <show_units>true</show_units>
+        <auto_size>false</auto_size>
+        <scripts />
+        <height>18</height>
+        <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+        <name>Text Update_17</name>
+        <format_type>0</format_type>
+        <precision_from_pv>true</precision_from_pv>
+        <transparent>true</transparent>
+        <pv_name>${P}${R}${N}ArraySizeZ_RBV</pv_name>
+        <background_color>
+          <color red="255" green="255" blue="255" />
+        </background_color>
+        <foreground_color>
+          <color red="0" green="0" blue="255" />
+        </foreground_color>
+        <widget_type>Text Update</widget_type>
+        <enabled>true</enabled>
+        <text>######</text>
+        <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+        <precision>0</precision>
+        <font>
+          <fontdata fontName="Arial" height="9" style="0" />
+        </font>
+        <width>61</width>
+        <border_style>0</border_style>
+        <border_width>1</border_width>
+        <border_color>
+          <color red="0" green="128" blue="255" />
+        </border_color>
+        <horizontal_alignment>1</horizontal_alignment>
+        <y>228</y>
+        <actions hook="false" />
+        <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+        <x>280</x>
+      </widget>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <show_units>true</show_units>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>20</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Text Input_1</name>
+      <format_type>0</format_type>
+      <precision_from_pv>true</precision_from_pv>
+      <transparent>false</transparent>
+      <pv_name>${P}${R}${N}BgdWidth</pv_name>
+      <background_color>
+        <color red="0" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <widget_type>Text Input</widget_type>
+      <enabled>true</enabled>
+      <text />
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <precision>0</precision>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>80</width>
+      <border_style>3</border_style>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>1</horizontal_alignment>
+      <y>370</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>163</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>Data Type</text>
+      <visible>true</visible>
+      <font>
+        <fontdata fontName="Arial" height="9" style="1" />
+      </font>
+      <vertical_alignment>1</vertical_alignment>
+      <width>130</width>
+      <border_style>0</border_style>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>20</height>
+      <border_width>1</border_width>
+      <name>Label_3</name>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>2</horizontal_alignment>
+      <transparent>true</transparent>
+      <y>351</y>
+      <actions hook="false" />
+      <tooltip />
+      <x>23</x>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <show_units>true</show_units>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>18</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Text Update_5</name>
+      <format_type>0</format_type>
+      <precision_from_pv>true</precision_from_pv>
+      <transparent>true</transparent>
+      <pv_name>${P}${R}${N}DataType_RBV</pv_name>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="255" />
+      </foreground_color>
+      <widget_type>Text Update</widget_type>
+      <enabled>true</enabled>
+      <text>######</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <precision>0</precision>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>80</width>
+      <border_style>0</border_style>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>0</horizontal_alignment>
+      <y>346</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>256</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <scripts />
+      <height>23</height>
+      <name>Combo Box_1</name>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <pv_name>${P}${R}${N}DataType</pv_name>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <background_color>
+        <color red="0" green="255" blue="255" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Combo Box</widget_type>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>80</width>
+      <border_style>0</border_style>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <items_from_pv>true</items_from_pv>
+      <actions hook="false" />
+      <y>346</y>
+      <x>163</x>
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>Bgd. width</text>
+      <visible>true</visible>
+      <font>
+        <fontdata fontName="Arial" height="9" style="1" />
+      </font>
+      <vertical_alignment>1</vertical_alignment>
+      <width>150</width>
+      <border_style>0</border_style>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>20</height>
+      <border_width>1</border_width>
+      <name>Label_6</name>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>2</horizontal_alignment>
+      <transparent>true</transparent>
+      <y>373</y>
+      <actions hook="false" />
+      <tooltip />
+      <x>3</x>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <show_units>true</show_units>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>18</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Text Update_6</name>
+      <format_type>0</format_type>
+      <precision_from_pv>true</precision_from_pv>
+      <transparent>true</transparent>
+      <pv_name>${P}${R}${N}BgdWidth_RBV</pv_name>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="255" />
+      </foreground_color>
+      <widget_type>Text Update</widget_type>
+      <enabled>true</enabled>
+      <text>######</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <precision>0</precision>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>61</width>
+      <border_style>0</border_style>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>0</horizontal_alignment>
+      <y>370</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>256</x>
+    </widget>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>${P}${R}</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>216</width>
+    <border_style>0</border_style>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>26</height>
+    <border_width>1</border_width>
+    <name>Label</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>false</transparent>
+    <y>10</y>
+    <actions hook="false" />
+    <tooltip />
+    <x>216</x>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0">
+    <enabled>true</enabled>
+    <widget_type>Linking Container</widget_type>
+    <macros>
+      <include_parent_macros>true</include_parent_macros>
+    </macros>
+    <visible>true</visible>
+    <width>360</width>
+    <border_style>3</border_style>
+    <scripts />
+    <zoom_to_fit>true</zoom_to_fit>
+    <height>160</height>
+    <border_width>1</border_width>
+    <name>Linking Container_1</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <actions hook="false" />
+    <y>450</y>
+    <opi_file>NDROIN_Statistics.opi</opi_file>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <x>5</x>
+    <tooltip />
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>Statistics</text>
+      <visible>true</visible>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <vertical_alignment>1</vertical_alignment>
+      <width>107</width>
+      <border_style>0</border_style>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>19</height>
+      <border_width>1</border_width>
+      <name>Label</name>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>1</horizontal_alignment>
+      <transparent>false</transparent>
+      <y>6</y>
+      <actions hook="false" />
+      <tooltip />
+      <x>126</x>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <scripts />
+      <height>23</height>
+      <name>Combo Box_1</name>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <pv_name>${P}${R}${N}ComputeStatistics</pv_name>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <background_color>
+        <color red="0" green="255" blue="255" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Combo Box</widget_type>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>62</width>
+      <border_style>0</border_style>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <items_from_pv>true</items_from_pv>
+      <actions hook="false" />
+      <y>38</y>
+      <x>208</x>
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>Compute Statistics</text>
+      <visible>true</visible>
+      <font>
+        <fontdata fontName="Arial" height="9" style="1" />
+      </font>
+      <vertical_alignment>1</vertical_alignment>
+      <width>185</width>
+      <border_style>0</border_style>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>20</height>
+      <border_width>1</border_width>
+      <name>Label_6</name>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>2</horizontal_alignment>
+      <transparent>true</transparent>
+      <y>37</y>
+      <actions hook="false" />
+      <tooltip />
+      <x>8</x>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <show_units>true</show_units>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>18</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Text Update_6</name>
+      <format_type>0</format_type>
+      <precision_from_pv>true</precision_from_pv>
+      <transparent>true</transparent>
+      <pv_name>${P}${R}${N}ComputeStatistics_RBV</pv_name>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="255" />
+      </foreground_color>
+      <widget_type>Text Update</widget_type>
+      <enabled>true</enabled>
+      <text>######</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <precision>0</precision>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>63</width>
+      <border_style>0</border_style>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>0</horizontal_alignment>
+      <y>38</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>277</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>Minimum</text>
+      <visible>true</visible>
+      <font>
+        <fontdata fontName="Arial" height="9" style="1" />
+      </font>
+      <vertical_alignment>1</vertical_alignment>
+      <width>72</width>
+      <border_style>0</border_style>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>20</height>
+      <border_width>1</border_width>
+      <name>Label_12</name>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>2</horizontal_alignment>
+      <transparent>true</transparent>
+      <y>69</y>
+      <actions hook="false" />
+      <tooltip />
+      <x>10</x>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <show_units>true</show_units>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>18</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Text Update_12</name>
+      <format_type>0</format_type>
+      <precision_from_pv>true</precision_from_pv>
+      <transparent>true</transparent>
+      <pv_name>${P}${R}${N}MinValue_RBV</pv_name>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="255" />
+      </foreground_color>
+      <widget_type>Text Update</widget_type>
+      <enabled>true</enabled>
+      <text>######</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <precision>0</precision>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>82</width>
+      <border_style>0</border_style>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>0</horizontal_alignment>
+      <y>70</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>94</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>Maximum</text>
+      <visible>true</visible>
+      <font>
+        <fontdata fontName="Arial" height="9" style="1" />
+      </font>
+      <vertical_alignment>1</vertical_alignment>
+      <width>72</width>
+      <border_style>0</border_style>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>20</height>
+      <border_width>1</border_width>
+      <name>Label_3</name>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>2</horizontal_alignment>
+      <transparent>true</transparent>
+      <y>94</y>
+      <actions hook="false" />
+      <tooltip />
+      <x>10</x>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <show_units>true</show_units>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>18</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Text Update_2</name>
+      <format_type>0</format_type>
+      <precision_from_pv>true</precision_from_pv>
+      <transparent>true</transparent>
+      <pv_name>${P}${R}${N}MaxValue_RBV</pv_name>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="255" />
+      </foreground_color>
+      <widget_type>Text Update</widget_type>
+      <enabled>true</enabled>
+      <text>######</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <precision>0</precision>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>82</width>
+      <border_style>0</border_style>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>0</horizontal_alignment>
+      <y>95</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>94</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>Mean</text>
+      <visible>true</visible>
+      <font>
+        <fontdata fontName="Arial" height="9" style="1" />
+      </font>
+      <vertical_alignment>1</vertical_alignment>
+      <width>45</width>
+      <border_style>0</border_style>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>20</height>
+      <border_width>1</border_width>
+      <name>Label_4</name>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>2</horizontal_alignment>
+      <transparent>true</transparent>
+      <y>69</y>
+      <actions hook="false" />
+      <tooltip />
+      <x>190</x>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <show_units>true</show_units>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>18</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Text Update_3</name>
+      <format_type>0</format_type>
+      <precision_from_pv>true</precision_from_pv>
+      <transparent>true</transparent>
+      <pv_name>${P}${R}${N}MeanValue_RBV</pv_name>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="255" />
+      </foreground_color>
+      <widget_type>Text Update</widget_type>
+      <enabled>true</enabled>
+      <text>######</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <precision>0</precision>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>79</width>
+      <border_style>0</border_style>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>0</horizontal_alignment>
+      <y>69</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>245</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>Total</text>
+      <visible>true</visible>
+      <font>
+        <fontdata fontName="Arial" height="9" style="1" />
+      </font>
+      <vertical_alignment>1</vertical_alignment>
+      <width>45</width>
+      <border_style>0</border_style>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>20</height>
+      <border_width>1</border_width>
+      <name>Label_5</name>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>2</horizontal_alignment>
+      <transparent>true</transparent>
+      <y>94</y>
+      <actions hook="false" />
+      <tooltip />
+      <x>190</x>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <show_units>true</show_units>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>18</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Text Update_4</name>
+      <format_type>0</format_type>
+      <precision_from_pv>true</precision_from_pv>
+      <transparent>true</transparent>
+      <pv_name>${P}${R}${N}Total_RBV</pv_name>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="255" />
+      </foreground_color>
+      <widget_type>Text Update</widget_type>
+      <enabled>true</enabled>
+      <text>######</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <precision>0</precision>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>79</width>
+      <border_style>0</border_style>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>0</horizontal_alignment>
+      <y>94</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>245</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>Net</text>
+      <visible>true</visible>
+      <font>
+        <fontdata fontName="Arial" height="9" style="1" />
+      </font>
+      <vertical_alignment>1</vertical_alignment>
+      <width>45</width>
+      <border_style>0</border_style>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>20</height>
+      <border_width>1</border_width>
+      <name>Label_6</name>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>2</horizontal_alignment>
+      <transparent>true</transparent>
+      <y>120</y>
+      <actions hook="false" />
+      <tooltip />
+      <x>190</x>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <show_units>true</show_units>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>18</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Text Update_5</name>
+      <format_type>0</format_type>
+      <precision_from_pv>true</precision_from_pv>
+      <transparent>true</transparent>
+      <pv_name>${P}${R}${N}Net_RBV</pv_name>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="255" />
+      </foreground_color>
+      <widget_type>Text Update</widget_type>
+      <enabled>true</enabled>
+      <text>######</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <precision>0</precision>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>79</width>
+      <border_style>0</border_style>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>0</horizontal_alignment>
+      <y>120</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>245</x>
+    </widget>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.linkingContainer" version="1.0">
+    <enabled>true</enabled>
+    <widget_type>Linking Container</widget_type>
+    <macros>
+      <include_parent_macros>true</include_parent_macros>
+    </macros>
+    <visible>true</visible>
+    <width>230</width>
+    <border_style>3</border_style>
+    <scripts />
+    <zoom_to_fit>true</zoom_to_fit>
+    <height>230</height>
+    <border_width>1</border_width>
+    <name>Linking Container_2</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <actions hook="false" />
+    <y>40</y>
+    <opi_file>NDROIN_Histogram.opi</opi_file>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <x>375</x>
+    <tooltip />
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>Histogram</text>
+      <visible>true</visible>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <vertical_alignment>1</vertical_alignment>
+      <width>100</width>
+      <border_style>0</border_style>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>19</height>
+      <border_width>1</border_width>
+      <name>Label</name>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>1</horizontal_alignment>
+      <transparent>false</transparent>
+      <y>2</y>
+      <actions hook="false" />
+      <tooltip />
+      <x>65</x>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <scripts />
+      <height>23</height>
+      <name>Combo Box_1</name>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <pv_name>${P}${R}${N}ComputeHistogram</pv_name>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <background_color>
+        <color red="0" green="255" blue="255" />
+      </background_color>
+      <enabled>true</enabled>
+      <widget_type>Combo Box</widget_type>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>62</width>
+      <border_style>0</border_style>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <items_from_pv>true</items_from_pv>
+      <actions hook="false" />
+      <y>52</y>
+      <x>132</x>
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>Compute &#xD;
+Statistics?</text>
+      <visible>true</visible>
+      <font>
+        <fontdata fontName="Arial" height="9" style="1" />
+      </font>
+      <vertical_alignment>1</vertical_alignment>
+      <width>110</width>
+      <border_style>0</border_style>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>31</height>
+      <border_width>1</border_width>
+      <name>Label_6</name>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>2</horizontal_alignment>
+      <transparent>true</transparent>
+      <y>48</y>
+      <actions hook="false" />
+      <tooltip />
+      <x>6</x>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <show_units>true</show_units>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>18</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Text Update_6</name>
+      <format_type>0</format_type>
+      <precision_from_pv>true</precision_from_pv>
+      <transparent>true</transparent>
+      <pv_name>${P}${R}${N}ComputeHistogram_RBV</pv_name>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="255" />
+      </foreground_color>
+      <widget_type>Text Update</widget_type>
+      <enabled>true</enabled>
+      <text>######</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <precision>0</precision>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>63</width>
+      <border_style>0</border_style>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>1</horizontal_alignment>
+      <y>30</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>130</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <show_units>true</show_units>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>18</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Text Update_2</name>
+      <format_type>0</format_type>
+      <precision_from_pv>true</precision_from_pv>
+      <transparent>true</transparent>
+      <pv_name>${P}${R}${N}HistSize_RBV</pv_name>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="255" />
+      </foreground_color>
+      <widget_type>Text Update</widget_type>
+      <enabled>true</enabled>
+      <text>######</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <precision>0</precision>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>61</width>
+      <border_style>0</border_style>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>1</horizontal_alignment>
+      <y>73</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>132</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>Size</text>
+      <visible>true</visible>
+      <font>
+        <fontdata fontName="Arial" height="9" style="1" />
+      </font>
+      <vertical_alignment>1</vertical_alignment>
+      <width>70</width>
+      <border_style>0</border_style>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>20</height>
+      <border_width>1</border_width>
+      <name>Label_4</name>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>2</horizontal_alignment>
+      <transparent>true</transparent>
+      <y>93</y>
+      <actions hook="false" />
+      <tooltip />
+      <x>49</x>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <show_units>true</show_units>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>20</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Text Input</name>
+      <format_type>0</format_type>
+      <precision_from_pv>true</precision_from_pv>
+      <transparent>false</transparent>
+      <pv_name>${P}${R}${N}HistSize</pv_name>
+      <background_color>
+        <color red="0" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <widget_type>Text Input</widget_type>
+      <enabled>true</enabled>
+      <text />
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <precision>0</precision>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>60</width>
+      <border_style>3</border_style>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>1</horizontal_alignment>
+      <y>93</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>132</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <show_units>true</show_units>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>18</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Text Update_4</name>
+      <format_type>0</format_type>
+      <precision_from_pv>true</precision_from_pv>
+      <transparent>true</transparent>
+      <pv_name>${P}${R}${N}HistMin_RBV</pv_name>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="255" />
+      </foreground_color>
+      <widget_type>Text Update</widget_type>
+      <enabled>true</enabled>
+      <text>######</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <precision>0</precision>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>61</width>
+      <border_style>0</border_style>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>1</horizontal_alignment>
+      <y>118</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>132</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>Minimum</text>
+      <visible>true</visible>
+      <font>
+        <fontdata fontName="Arial" height="9" style="1" />
+      </font>
+      <vertical_alignment>1</vertical_alignment>
+      <width>82</width>
+      <border_style>0</border_style>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>20</height>
+      <border_width>1</border_width>
+      <name>Label_5</name>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>2</horizontal_alignment>
+      <transparent>true</transparent>
+      <y>138</y>
+      <actions hook="false" />
+      <tooltip />
+      <x>37</x>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <show_units>true</show_units>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>20</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Text Input_2</name>
+      <format_type>0</format_type>
+      <precision_from_pv>true</precision_from_pv>
+      <transparent>false</transparent>
+      <pv_name>${P}${R}${N}HistMin</pv_name>
+      <background_color>
+        <color red="0" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <widget_type>Text Input</widget_type>
+      <enabled>true</enabled>
+      <text />
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <precision>0</precision>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>60</width>
+      <border_style>3</border_style>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>1</horizontal_alignment>
+      <y>138</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>132</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <show_units>true</show_units>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>18</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Text Update_3</name>
+      <format_type>0</format_type>
+      <precision_from_pv>true</precision_from_pv>
+      <transparent>true</transparent>
+      <pv_name>${P}${R}${N}HistMax_RBV</pv_name>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="255" />
+      </foreground_color>
+      <widget_type>Text Update</widget_type>
+      <enabled>true</enabled>
+      <text>######</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <precision>0</precision>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>61</width>
+      <border_style>0</border_style>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>1</horizontal_alignment>
+      <y>163</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>132</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>Maximum</text>
+      <visible>true</visible>
+      <font>
+        <fontdata fontName="Arial" height="9" style="1" />
+      </font>
+      <vertical_alignment>1</vertical_alignment>
+      <width>82</width>
+      <border_style>0</border_style>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>20</height>
+      <border_width>1</border_width>
+      <name>Label_4</name>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>2</horizontal_alignment>
+      <transparent>true</transparent>
+      <y>183</y>
+      <actions hook="false" />
+      <tooltip />
+      <x>37</x>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <show_units>true</show_units>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>20</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Text Input_4</name>
+      <format_type>0</format_type>
+      <precision_from_pv>true</precision_from_pv>
+      <transparent>false</transparent>
+      <pv_name>${P}${R}${N}HistMax</pv_name>
+      <background_color>
+        <color red="0" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+      <widget_type>Text Input</widget_type>
+      <enabled>true</enabled>
+      <text />
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <precision>0</precision>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>60</width>
+      <border_style>3</border_style>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>1</horizontal_alignment>
+      <y>183</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>132</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>Entropy</text>
+      <visible>true</visible>
+      <font>
+        <fontdata fontName="Arial" height="9" style="1" />
+      </font>
+      <vertical_alignment>1</vertical_alignment>
+      <width>82</width>
+      <border_style>0</border_style>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>20</height>
+      <border_width>1</border_width>
+      <name>Label_5</name>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>2</horizontal_alignment>
+      <transparent>true</transparent>
+      <y>208</y>
+      <actions hook="false" />
+      <tooltip />
+      <x>37</x>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+      <border_alarm_sensitive>true</border_alarm_sensitive>
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <show_units>true</show_units>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>18</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Text Update_4</name>
+      <format_type>0</format_type>
+      <precision_from_pv>true</precision_from_pv>
+      <transparent>true</transparent>
+      <pv_name>${P}${R}${N}HistEntropy_RBV</pv_name>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="255" />
+      </foreground_color>
+      <widget_type>Text Update</widget_type>
+      <enabled>true</enabled>
+      <text>######</text>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <precision>0</precision>
+      <font>
+        <fontdata fontName="Arial" height="9" style="0" />
+      </font>
+      <width>61</width>
+      <border_style>0</border_style>
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>1</horizontal_alignment>
+      <y>209</y>
+      <actions hook="false" />
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>132</x>
+    </widget>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0">
+    <trace_0_contatenate_data>true</trace_0_contatenate_data>
+    <trace_0_trace_color>
+      <color red="255" green="0" blue="0" />
+    </trace_0_trace_color>
+    <axis_0_auto_scale>true</axis_0_auto_scale>
+    <axis_1_time_format>0</axis_1_time_format>
+    <trace_0_plot_mode>0</trace_0_plot_mode>
+    <trace_count>1</trace_count>
+    <trace_0_chronological>true</trace_0_chronological>
+    <axis_0_show_grid>true</axis_0_show_grid>
+    <axis_0_log_scale>false</axis_0_log_scale>
+    <trace_0_point_size>4</trace_0_point_size>
+    <show_legend>true</show_legend>
+    <y>282</y>
+    <x>375</x>
+    <visible>true</visible>
+    <height>328</height>
+    <axis_1_maximum>100.0</axis_1_maximum>
+    <axis_1_title_font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </axis_1_title_font>
+    <border_width>1</border_width>
+    <axis_0_axis_color>
+      <color red="0" green="0" blue="0" />
+    </axis_0_axis_color>
+    <name>XY Graph</name>
+    <axis_1_auto_scale_threshold>0.0</axis_1_auto_scale_threshold>
+    <trace_0_line_width>1</trace_0_line_width>
+    <show_toolbar>true</show_toolbar>
+    <axis_1_show_grid>true</axis_1_show_grid>
+    <axis_0_grid_color>
+      <color red="200" green="200" blue="200" />
+    </axis_0_grid_color>
+    <axis_0_auto_scale_threshold>0.0</axis_0_auto_scale_threshold>
+    <trace_0_name>Histogram</trace_0_name>
+    <trace_0_update_mode>0</trace_0_update_mode>
+    <axis_0_axis_title>Bin Number</axis_0_axis_title>
+    <axis_1_axis_color>
+      <color red="0" green="0" blue="0" />
+    </axis_1_axis_color>
+    <foreground_color>
+      <color red="0" green="0" blue="255" />
+    </foreground_color>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <axis_1_axis_title>Counts</axis_1_axis_title>
+    <axis_0_maximum>100.0</axis_0_maximum>
+    <axis_0_time_format>0</axis_0_time_format>
+    <axis_1_log_scale>false</axis_1_log_scale>
+    <title_font>
+      <fontdata fontName="Arial" height="12" style="1" />
+    </title_font>
+    <axis_1_dash_grid_line>true</axis_1_dash_grid_line>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <trace_0_x_pv />
+    <trace_0_y_pv>${P}${R}${N}Histogram_RBV</trace_0_y_pv>
+    <axis_0_title_font>
+      <fontdata fontName="Arial" height="9" style="1" />
+    </axis_0_title_font>
+    <axis_1_auto_scale>true</axis_1_auto_scale>
+    <actions hook="false" />
+    <show_plot_area_border>false</show_plot_area_border>
+    <widget_type>XY Graph</widget_type>
+    <enabled>true</enabled>
+    <width>230</width>
+    <trace_0_buffer_size>100</trace_0_buffer_size>
+    <axis_count>2</axis_count>
+    <transparent>false</transparent>
+    <axis_0_dash_grid_line>true</axis_0_dash_grid_line>
+    <trace_0_x_axis_index>0</trace_0_x_axis_index>
+    <trace_0_point_style>0</trace_0_point_style>
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <trace_0_y_axis_index>1</trace_0_y_axis_index>
+    <border_style>0</border_style>
+    <plot_area_background_color>
+      <color red="255" green="255" blue="255" />
+    </plot_area_background_color>
+    <title />
+    <pv_name>$(trace_0_y_pv)</pv_name>
+    <axis_1_minimum>0.0</axis_1_minimum>
+    <axis_0_minimum>0.0</axis_0_minimum>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <scripts />
+    <trace_0_anti_alias>true</trace_0_anti_alias>
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <trace_0_trace_type>0</trace_0_trace_type>
+    <axis_1_grid_color>
+      <color red="200" green="200" blue="200" />
+    </axis_1_grid_color>
+    <trace_0_update_delay>100</trace_0_update_delay>
+  </widget>
+</display>
