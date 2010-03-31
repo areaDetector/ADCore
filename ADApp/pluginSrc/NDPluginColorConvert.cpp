@@ -550,7 +550,7 @@ NDPluginColorConvert::NDPluginColorConvert(const char *portName, int queueSize, 
                    0, 1, priority, stackSize)  /* Not ASYN_CANBLOCK or ASYN_MULTIDEVICE, do autoConnect */
 {
     asynStatus status;
-    const char *functionName = "NDPluginColorConvert";
+    //const char *functionName = "NDPluginColorConvert";
 
     createParam(NDPluginColorConvertColorModeOutString, asynParamInt32, &NDPluginColorConvertColorModeOut);
 
@@ -558,8 +558,6 @@ NDPluginColorConvert::NDPluginColorConvert(const char *portName, int queueSize, 
     setStringParam(NDPluginDriverPluginType, "NDPluginColorConvert");
     
     status = setIntegerParam(NDPluginColorConvertColorModeOut, NDColorModeMono);
-    if (!status)  printf("%s:%s: failed to set integer param for color mode\n",
-                         driverName, functionName);
 
     /* Try to connect to the array port */
     status = connectToArrayPort();
