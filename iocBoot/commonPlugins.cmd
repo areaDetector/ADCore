@@ -76,10 +76,13 @@ dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDOverlayN.template","P=$(PREFIX),R=Ove
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDOverlayN.template","P=$(PREFIX),R=Over1:7:,NAME=Box1,   SHAPE=1,O=Over1:,XPOS=junk,                  YPOS=junk,                  XSIZE=junk,                   YSIZE=junk,                   PORT=OVER1,ADDR=6,TIMEOUT=1")
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDOverlayN.template","P=$(PREFIX),R=Over1:8:,NAME=Box2,   SHAPE=1,O=Over1:,XPOS=junk,                  YPOS=junk,                  XSIZE=junk,                   YSIZE=junk,                   PORT=OVER1,ADDR=7,TIMEOUT=1")
 
-# Create a color conversion plugin
+# Create 2 color conversion plugins
 NDColorConvertConfigure("CC1", $(QSIZE), 0, "$(PORT)", 0, -1, -1)
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template",   "P=$(PREFIX),R=CC1:,  PORT=CC1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT),NDARRAY_ADDR=0")
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDColorConvert.template", "P=$(PREFIX),R=CC1:,  PORT=CC1,ADDR=0,TIMEOUT=1")
+NDColorConvertConfigure("CC2", $(QSIZE), 0, "$(PORT)", 0, -1, -1)
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template",   "P=$(PREFIX),R=CC2:,  PORT=CC2,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT),NDARRAY_ADDR=0")
+dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDColorConvert.template", "P=$(PREFIX),R=CC2:,  PORT=CC2,ADDR=0,TIMEOUT=1")
 
 # Load scan records
 dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=$(PREFIX),MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
