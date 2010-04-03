@@ -1,12 +1,12 @@
 
 file {
-	name="C:\epics\synApps_5_4_1\support\areaDetector\1-5beta\ADApp\op\adl\PerkinElmer.adl"
+	name="/home/epics/devel/areaDetector/ADApp/op/adl/PerkinElmer.adl"
 	version=030102
 }
 display {
 	object {
-		x=75
-		y=24
+		x=716
+		y=119
 		width=700
 		height=820
 	}
@@ -124,26 +124,6 @@ composite {
 }
 composite {
 	object {
-		x=5
-		y=38
-		width=335
-		height=250
-	}
-	"composite name"=""
-	"composite file"="ADSetup.adl;P=$(P),R=$(R)"
-}
-composite {
-	object {
-		x=345
-		y=37
-		width=350
-		height=165
-	}
-	"composite name"=""
-	"composite file"="ADShutter.adl;P=$(P),R=$(R)"
-}
-composite {
-	object {
 		x=345
 		y=208
 		width=350
@@ -164,8 +144,8 @@ composite {
 }
 composite {
 	object {
-		x=4
-		y=297
+		x=5
+		y=340
 		width=335
 		height=440
 	}
@@ -181,4 +161,34 @@ composite {
 	}
 	"composite name"=""
 	"composite file"="ADAttrFile.adl"
+}
+composite {
+	object {
+		x=5
+		y=35
+		width=335
+		height=215
+	}
+	"composite name"=""
+	"composite file"="ADSetup.adl"
+}
+composite {
+	object {
+		x=5
+		y=255
+		width=335
+		height=80
+	}
+	"composite name"=""
+	"composite file"="ADPlugins.adl"
+}
+composite {
+	object {
+		x=345
+		y=35
+		width=350
+		height=165
+	}
+	"composite name"=""
+	"composite file"="ADShutter.adl"
 }
