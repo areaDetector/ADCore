@@ -1,0 +1,350 @@
+
+file {
+	name="/home/epics/devel/areaDetector/ADApp/op/adl/ADPlugins.adl"
+	version=030102
+}
+display {
+	object {
+		x=141
+		y=292
+		width=335
+		height=80
+	}
+	clr=14
+	bclr=4
+	cmap=""
+	gridSpacing=5
+	gridOn=0
+	snapToGrid=0
+}
+"color map" {
+	ncolors=65
+	colors {
+		ffffff,
+		ececec,
+		dadada,
+		c8c8c8,
+		bbbbbb,
+		aeaeae,
+		9e9e9e,
+		919191,
+		858585,
+		787878,
+		696969,
+		5a5a5a,
+		464646,
+		2d2d2d,
+		000000,
+		00d800,
+		1ebb00,
+		339900,
+		2d7f00,
+		216c00,
+		fd0000,
+		de1309,
+		be190b,
+		a01207,
+		820400,
+		5893ff,
+		597ee1,
+		4b6ec7,
+		3a5eab,
+		27548d,
+		fbf34a,
+		f9da3c,
+		eeb62b,
+		e19015,
+		cd6100,
+		ffb0ff,
+		d67fe2,
+		ae4ebc,
+		8b1a96,
+		610a75,
+		a4aaff,
+		8793e2,
+		6a73c1,
+		4d52a4,
+		343386,
+		c7bb6d,
+		b79d5c,
+		a47e3c,
+		7d5627,
+		58340f,
+		99ffff,
+		73dfff,
+		4ea5f9,
+		2a63e4,
+		0a00b8,
+		ebf1b5,
+		d4db9d,
+		bbc187,
+		a6a462,
+		8b8239,
+		73ff6b,
+		52da3b,
+		3cb420,
+		289315,
+		1a7309,
+	}
+}
+composite {
+	object {
+		x=0
+		y=0
+		width=335
+		height=80
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=122
+				y=10
+				width=1
+				height=40
+			}
+			"basic attribute" {
+				clr=14
+			}
+		}
+		text {
+			object {
+				x=64
+				y=30
+				width=40
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="File"
+		}
+		text {
+			object {
+				x=204
+				y=30
+				width=30
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="ROI"
+		}
+		text {
+			object {
+				x=4
+				y=55
+				width=100
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Statistics"
+		}
+		text {
+			object {
+				x=184
+				y=55
+				width=50
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Other"
+		}
+		rectangle {
+			object {
+				x=0
+				y=0
+				width=335
+				height=80
+			}
+			"basic attribute" {
+				clr=14
+				fill="outline"
+			}
+		}
+		rectangle {
+			object {
+				x=113
+				y=2
+				width=107
+				height=21
+			}
+			"basic attribute" {
+				clr=2
+			}
+		}
+		text {
+			object {
+				x=87
+				y=3
+				width=159
+				height=20
+			}
+			"basic attribute" {
+				clr=54
+			}
+			textix="Plugins"
+			align="horiz. centered"
+		}
+		"related display" {
+			object {
+				x=109
+				y=30
+				width=64
+				height=20
+			}
+			display[0] {
+				label="netCDF file #1"
+				name="NDFileNetCDF.adl"
+				args="P=$(P), R=netCDF1:"
+			}
+			display[1] {
+				label="TIFF file #1"
+				name="NDFileTIFF.adl"
+				args="P=$(P), R=TIFF1:"
+			}
+			display[2] {
+				label="JPEG file #1"
+				name="NDFileJPEG.adl"
+				args="P=$(P), R=JPEG1:"
+			}
+			display[3] {
+				label="NeXus file #1"
+				name="NDFileNexus.adl"
+				args="P=$(P), R=Nexus1:"
+			}
+			clr=14
+			bclr=51
+		}
+		"related display" {
+			object {
+				x=109
+				y=55
+				width=64
+				height=20
+			}
+			display[0] {
+				label="Statistics #1"
+				name="NDStats.adl"
+				args="P=$(P), R=Stats1:"
+			}
+			display[1] {
+				label="Statistics #2"
+				name="NDStats.adl"
+				args="P=$(P), R=Stats2:"
+			}
+			display[2] {
+				label="Statistics #3"
+				name="NDStats.adl"
+				args="P=$(P), R=Stats3:"
+			}
+			display[3] {
+				label="Statistics #4"
+				name="NDStats.adl"
+				args="P=$(P), R=Stats4:"
+			}
+			display[4] {
+				label="Statistics #5"
+				name="NDStats.adl"
+				args="P=$(P), R=Stats5:"
+			}
+			display[5] {
+				label="Statistics 1-5"
+				name="NDStats5.adl"
+				args="P=$(P), R1=Stats1:,R2=Stats2:,R3=Stats3:,R4=Stats4:,R5=Stats5:"
+			}
+			clr=14
+			bclr=51
+		}
+		"related display" {
+			object {
+				x=239
+				y=30
+				width=64
+				height=20
+			}
+			display[0] {
+				label="ROI #1"
+				name="NDROI.adl"
+				args="P=$(P), R=ROI1:"
+			}
+			display[1] {
+				label="ROI #2"
+				name="NDROI.adl"
+				args="P=$(P), R=ROI2:"
+			}
+			display[2] {
+				label="ROI #3"
+				name="NDROI.adl"
+				args="P=$(P), R=ROI3:"
+			}
+			display[3] {
+				label="ROI #4"
+				name="NDROI.adl"
+				args="P=$(P), R=ROI4:"
+			}
+			display[4] {
+				label="ROI 1-4 combined"
+				name="NDROI4.adl"
+				args="P=$(P), R1=ROI1:,R2=ROI2:, R3=ROI3:,R4=ROI4:"
+			}
+			clr=14
+			bclr=51
+		}
+		"related display" {
+			object {
+				x=239
+				y=55
+				width=64
+				height=20
+			}
+			display[0] {
+				label="Image #1"
+				name="NDStdArrays.adl"
+				args="P=$(P), R=image1:"
+			}
+			display[1] {
+				label="Process #1"
+				name="NDProcess.adl"
+				args="P=$(P), R=Proc1:"
+			}
+			display[2] {
+				label="Transform #1"
+				name="NDTransform.adl"
+				args="P=$(P), R=Trans1:"
+			}
+			display[3] {
+				label="Color convert #1"
+				name="NDColorConvert.adl"
+				args="P=$(P), R=CC1:"
+			}
+			display[4] {
+				label="Color convert #2"
+				name="NDColorConvert.adl"
+				args="P=$(P), R=CC2:"
+			}
+			display[5] {
+				label="Overlay #1"
+				name="NDOverlay.adl"
+				args="P=$(P), R=Over1:"
+			}
+			display[6] {
+				label="Overlays 1-8"
+				name="NDOverlay8.adl"
+				args="P=$(P), R=Over1:,O1=Over1:1:,O2=Over1:2:,O3=Over1:3:,O4=Over1:4:,O5=Over1:5:,O6=Over1:6:,O7=Over1:7:,O8=Over1:8:"
+			}
+			display[7] {
+				label="Scan #1"
+				name="scan_more.adl"
+				args="P=$(P), S=scan1, N=1"
+			}
+			clr=14
+			bclr=51
+		}
+	}
+}
