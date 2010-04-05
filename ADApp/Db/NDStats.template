@@ -1,41 +1,4 @@
 ###################################################################
-# These records control the background width                      #
-###################################################################
-record(longout, "$(P)$(R)BgdWidth")
-{
-   field(PINI, "1")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BGD_WIDTH")
-   field(VAL,  "1")
-}
-
-record(longin, "$(P)$(R)BgdWidth_RBV")
-{
-   field(PINI, "1")
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BGD_WIDTH")
-   field(SCAN, "I/O Intr")
-}
-
-###################################################################
-# These records control the centroid threshold                    #
-###################################################################
-record(ao, "$(P)$(R)CentroidThreshold")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynFloat64")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CENTROID_THRESHOLD")
-    field(VAL,  "1")
-}
-record(ai, "$(P)$(R)CentroidThreshold_RBV")
-{
-    field(DTYP, "asynFloat64")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CENTROID_THRESHOLD")
-    field(VAL,  "0")
-    field(SCAN, "I/O Intr")
-}
-
-###################################################################
 #  These records control whether statistics are computed          #
 ###################################################################
 record(bo, "$(P)$(R)ComputeStatistics")
@@ -59,33 +22,26 @@ record(bi, "$(P)$(R)ComputeStatistics_RBV")
    field(SCAN, "I/O Intr")
 }
 
+
 ###################################################################
-#  These records control whether centroid statistics are computed #
+#  These records contain the basic statistics                     #
 ###################################################################
-record(bo, "$(P)$(R)ComputeCentroid")
+record(longout, "$(P)$(R)BgdWidth")
 {
-   field(PINI, "YES")
+   field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMPUTE_CENTROID")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BGD_WIDTH")
    field(VAL,  "1")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
 }
 
-record(bi, "$(P)$(R)ComputeCentroid_RBV")
+record(longin, "$(P)$(R)BgdWidth_RBV")
 {
+   field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMPUTE_CENTROID")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
-   field(ZSV,  "NO_ALARM")
-   field(OSV,  "MINOR")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BGD_WIDTH")
    field(SCAN, "I/O Intr")
 }
 
-###################################################################
-#  These records contain the statistics for the ROI               #
-###################################################################
 record(ai, "$(P)$(R)MinValue_RBV")
 {
    field(DTYP, "asynFloat64")
@@ -122,6 +78,62 @@ record(ai, "$(P)$(R)Sigma_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(ai, "$(P)$(R)Total_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TOTAL")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)Net_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NET")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records control whether centroid statistics are computed #
+###################################################################
+record(bo, "$(P)$(R)ComputeCentroid")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMPUTE_CENTROID")
+   field(VAL,  "1")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)ComputeCentroid_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMPUTE_CENTROID")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(ZSV,  "NO_ALARM")
+   field(OSV,  "MINOR")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records contain the centroid statistics                  #
+###################################################################
+record(ao, "$(P)$(R)CentroidThreshold")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CENTROID_THRESHOLD")
+    field(VAL,  "1")
+}
+record(ai, "$(P)$(R)CentroidThreshold_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CENTROID_THRESHOLD")
+    field(VAL,  "0")
+    field(SCAN, "I/O Intr")
+}
+
 record(ai, "$(P)$(R)CentroidX_RBV")
 {
    field(DTYP, "asynFloat64")
@@ -154,19 +166,128 @@ record(ai, "$(P)$(R)SigmaY_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(ai, "$(P)$(R)Total_RBV")
+###################################################################
+#  These records control whether profiles are computed            #
+###################################################################
+record(bo, "$(P)$(R)ComputeProfiles")
 {
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TOTAL")
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMPUTE_PROFILES")
+   field(VAL,  "1")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)ComputeProfiles_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMPUTE_PROFILES")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(ZSV,  "NO_ALARM")
+   field(OSV,  "MINOR")
    field(SCAN, "I/O Intr")
 }
 
-record(ai, "$(P)$(R)Net_RBV")
+record(longin, "$(P)$(R)ProfileSizeX_RBV")
 {
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NET")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PROFILE_SIZE_X")
    field(SCAN, "I/O Intr")
 }
+
+record(longin, "$(P)$(R)ProfileSizeY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PROFILE_SIZE_Y")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)CursorX")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CURSOR_X")
+   field(VAL,  "256")
+}
+
+record(longin, "$(P)$(R)CursorX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CURSOR_X")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)CursorY")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CURSOR_Y")
+   field(VAL,  "256")
+}
+
+record(longin, "$(P)$(R)CursorY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CURSOR_Y")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)ProfileAverageX_RBV")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PROFILE_AVERAGE_X")
+   field(FTVL, "DOUBLE")
+   field(NELM, "$(XSIZE)")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)ProfileAverageY_RBV")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PROFILE_AVERAGE_Y")
+   field(FTVL, "DOUBLE")
+   field(NELM, "$(YSIZE)")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)ProfileCentroidX_RBV")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PROFILE_CENTROID_X")
+   field(FTVL, "DOUBLE")
+   field(NELM, "$(XSIZE)")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)ProfileCentroidY_RBV")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PROFILE_CENTROID_Y")
+   field(FTVL, "DOUBLE")
+   field(NELM, "$(YSIZE)")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)ProfileCursorX_RBV")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PROFILE_CURSOR_X")
+   field(FTVL, "DOUBLE")
+   field(NELM, "$(XSIZE)")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)ProfileCursorY_RBV")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PROFILE_CURSOR_Y")
+   field(FTVL, "DOUBLE")
+   field(NELM, "$(YSIZE)")
+   field(SCAN, "I/O Intr")
+}
+
 
 ###################################################################
 #  These records control whether the histogram is computed        #
@@ -256,5 +377,38 @@ record(waveform, "$(P)$(R)Histogram_RBV")
    field(NELM, "$(HIST_SIZE)")
    field(SCAN, "I/O Intr")
 }
+
+###################################################################
+#  These records set the HOPR and LOPR values for the cursor      #
+#  and size to the maximum for the input array                    #
+###################################################################
+
+record(longin, "$(P)$(R)MaxSizeX")
+{
+    field(INP,  "$(P)$(R)ProfileSizeX_RBV CP")
+    field(FLNK, "$(P)$(R)SetXHOPR.PROC PP")
+}
+
+record(dfanout, "$(P)$(R)SetXHOPR")
+{
+    field(DOL,  "$(P)$(R)MaxSizeX NPP")
+    field(OMSL, "closed_loop")
+    field(OUTA, "$(P)$(R)CursorX.HOPR NPP")
+}
+
+record(longin, "$(P)$(R)MaxSizeY")
+{
+    field(INP,  "$(P)$(R)ProfileSizeY_RBV CP")
+    field(FLNK, "$(P)$(R)SetYHOPR.PROC PP")
+}
+
+record(dfanout, "$(P)$(R)SetYHOPR")
+{
+    field(DOL,  "$(P)$(R)MaxSizeY NPP")
+    field(OMSL, "closed_loop")
+    field(OUTA, "$(P)$(R)CursorY.HOPR NPP")
+}
+
+
 
 
