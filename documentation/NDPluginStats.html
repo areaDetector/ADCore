@@ -27,10 +27,26 @@
     Overview
   </h2>
   <p>
-    NDPluginStats computes array statistics, including minimum, maximum, mean, sigma,
-    total, net (background subtracted), and centroid values. It can also compute a histogram
-    of the values (e.g. number of pixels versus intensity per pixel). The basic statistics,
-    centroid, and histogram calculations can be enabled or disabled independently.
+    NDPluginStats computes the following.
+  </p>
+  <ol>
+    <li>Basic statistics: minimum, maximum, mean, sigma, total, and net (background subtracted).</li>
+    <li>Centroid and sigma values in the X and Y dimensions.</li>
+    <li>Profiles of the array in the X and Y dimensions. A total of 8 profiles are calculated:
+      <ul>
+        <li>The average profiles in the X and Y directions. </li>
+        <li>The average profiles in the X and Y directions, for array elements greater than
+          the centroid threshold.</li>
+        <li>The profiles in the X and Y directions at the X and Y centroid position.</li>
+        <li>The profiles in the X and Y directions at a user-defined X and Y cursor position.</li>
+      </ul>
+    </li>
+    <li>A histogram of the values (e.g. number of pixels versus intensity per pixel).</li>
+  </ol>
+  <p>
+    Each calculcation can independently enabled and disabled. Calculations 1 and 4 can
+    be perfomed on arrays of any dimension. Calculations 2 and 3 are restricted to 2-D
+    arrays.
   </p>
   <p>
     NDPluginStats inherits from NDPluginDriver. The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_stats.html">
@@ -82,8 +98,7 @@
           Flag to control whether to compute statistics for this array (0=No, 1=Yes). Not
           computing statistics reduces CPU load. Basic statistics computations are quite fast,
           since they involve mostly double precision addition, with 1 multiply to compute
-          sigma, per array element. Setting this to No will disable both basic statistics
-          and centroid statistics, but will not disable histogram calculation.</td>
+          sigma, per array element.</td>
         <td>
           COMPUTE_STATISTICS</td>
         <td>
@@ -233,10 +248,10 @@
         <td>
           r/w</td>
         <td>
-          Flag to control whether to compute the centroid statistics (0=No, 1=Yes). Centroid
-          calculations require several double precision multiplications per array element,
-          so not computing these reduces CPU load. In order for centroid statistics to be
-          computed both ComputeStatistics and ComputeCentroid must be set to Yes.</td>
+          Flag to control whether to compute the centroid statistics (0=No, 1=Yes). The centroids
+          are computed from the average row and column profiles above the centroid threshold.
+          These calculations are also quite fast, since they just involve addition operations
+          for each array element.</td>
         <td>
           COMPUTE_CENTROID</td>
         <td>
@@ -335,6 +350,241 @@
           $(P)$(R)SigmaY_RBV</td>
         <td>
           ai</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>X and Y Profiles</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          ComputeProfiles</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flag to control whether to compute the profiles for this array (0=No, 1=Yes).</td>
+        <td>
+          COMPUTE_PROFILES</td>
+        <td>
+          $(P)$(R)ComputeProfiles<br />
+          $(P)$(R)ComputeProfiles_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          ProfileSizeX</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Number of array elements in the X profiles.</td>
+        <td>
+          PROFILE_SIZE_X</td>
+        <td>
+          $(P)$(R)ProfileSizeX_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          ProfileSizeY</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Number of array elements in the Y profiles.</td>
+        <td>
+          PROFILE_SIZE_Y</td>
+        <td>
+          $(P)$(R)ProfileSizeY_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          CursorX</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          X position of a user-defined cursor for profiles.</td>
+        <td>
+          CURSOR_X</td>
+        <td>
+          $(P)$(R)CursorX<br />
+          $(P)$(R)CursorX_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          CursorY</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Y position of a user-defined cursor for profiles.</td>
+        <td>
+          CURSOR_Y</td>
+        <td>
+          $(P)$(R)CursorY<br />
+          $(P)$(R)CursorY_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          ProfileAverageX</td>
+        <td>
+          asynFloat64Array</td>
+        <td>
+          r/o</td>
+        <td>
+          Profile of the average row in the array, i.e. the sum of all rows in the array divided
+          by the number of rows.</td>
+        <td>
+          PROFILE_AVERAGE_X</td>
+        <td>
+          $(P)$(R)ProfileAverageX_RBV</td>
+        <td>
+          waveform</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          ProfileAverageY</td>
+        <td>
+          asynFloat64Array</td>
+        <td>
+          r/o</td>
+        <td>
+          Profile of the average column in the array, i.e. the sum of all columns in the array
+          divided by the number of columns.</td>
+        <td>
+          PROFILE_AVERAGE_Y</td>
+        <td>
+          $(P)$(R)ProfileAverageY_RBV</td>
+        <td>
+          waveform</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          ProfileThresholdX</td>
+        <td>
+          asynFloat64Array</td>
+        <td>
+          r/o</td>
+        <td>
+          Same as ProfileAverageX except that all array elements less than CentroidThreshold
+          are set to zero when computing the average.</td>
+        <td>
+          PROFILE_THRESHOLD_X</td>
+        <td>
+          $(P)$(R)ProfileThresholdX_RBV</td>
+        <td>
+          waveform</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          ProfileThresholdY</td>
+        <td>
+          asynFloat64Array</td>
+        <td>
+          r/o</td>
+        <td>
+          Same as ProfileAverageY except that all array elements less than CentroidThreshold
+          are set to zero when computing the average.</td>
+        <td>
+          PROFILE_THRESHOLD_Y</td>
+        <td>
+          $(P)$(R)ProfileThresholdY_RBV</td>
+        <td>
+          waveform</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          ProfileCentroidX</td>
+        <td>
+          asynFloat64Array</td>
+        <td>
+          r/o</td>
+        <td>
+          X profile through the array in the row defined by CentroidY.</td>
+        <td>
+          PROFILE_CENTROID_X</td>
+        <td>
+          $(P)$(R)ProfileCentroidX_RBV</td>
+        <td>
+          waveform</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          ProfileCentroidY</td>
+        <td>
+          asynFloat64Array</td>
+        <td>
+          r/o</td>
+        <td>
+          Y profile through the array in the column defined by CentroidX.</td>
+        <td>
+          PROFILE_CENTROID_Y</td>
+        <td>
+          $(P)$(R)ProfileCentroidY_RBV</td>
+        <td>
+          waveform</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          ProfileCursorX</td>
+        <td>
+          asynFloat64Array</td>
+        <td>
+          r/o</td>
+        <td>
+          X profile through the array in the row defined by CursorY.</td>
+        <td>
+          PROFILE_CURSOR_X</td>
+        <td>
+          $(P)$(R)ProfileCursorX_RBV</td>
+        <td>
+          waveform</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          ProfileCursorY</td>
+        <td>
+          asynFloat64Array</td>
+        <td>
+          r/o</td>
+        <td>
+          Y profile through the array in the row defined by CursorX.</td>
+        <td>
+          PROFILE_CURSOR_Y</td>
+        <td>
+          $(P)$(R)ProfileCursorY_RBV</td>
+        <td>
+          waveform</td>
       </tr>
       <tr>
         <td align="center" colspan="7,">
@@ -458,13 +708,18 @@
       </tr>
     </tbody>
   </table>
+  <p>
+    If the values of CentroidThreshold, CursorX, or CursorY are changed then the centroid
+    and profile calculations are performed again immediately on the last array collected.
+    Thus updated centroid statistics and profiles can be displayed even when new arrays
+    are not being acquired. These calculations are only performed when enabled by ComputeCentroid
+    and ComputeProfiles.</p>
   <h2 id="Configuration">
     Configuration</h2>
   <p>
     The NDPluginStats plugin is created with the NDStatsConfigure command, either from
     C/C++ or from the EPICS IOC shell.</p>
-  <pre>
-NDStatsConfigure(const char *portName, int queueSize, int blockingCallbacks,
+  <pre>NDStatsConfigure(const char *portName, int queueSize, int blockingCallbacks,
                const char *NDArrayPort, int NDArrayAddr,
                int maxBuffers, size_t maxMemory,
                int priority, int stackSize)
@@ -479,13 +734,47 @@ NDStatsConfigure(const char *portName, int queueSize, int blockingCallbacks,
   <h2 id="Screens">
     Screen shots</h2>
   <p>
-    The following is the MEDM screen that provides access to the parameters in NDPluginDriver.h
+    The following MEDM screen provides access to the parameters in NDPluginDriver.h
     and NDPluginStats.h through records in NDPluginBase.template and NDStats.template.
   </p>
   <div style="text-align: center">
     <h3>
       NDStats.adl</h3>
     <img alt="NDStats.png" src="NDStats.png" />
+  </div>
+  <p>
+    The following MEDM screen shows the average profile of an image in the X direction.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDPlot.adl</h3>
+    <img alt="NDStats_AverageX.png" src="NDStats_AverageX.png" />
+  </div>
+  <p>
+    The following MEDM screen shows the profile of an image in the Y direction at the
+    location of the user-defined cursor.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDPlot.adl</h3>
+    <img alt="NDStats_CursorY.png" src="NDStats_CursorY.png" />
+  </div>
+  <p>
+    The following MEDM screen shows the histogram of intensities of an array.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDPlot.adl</h3>
+    <img alt="NDStats_Histogram.png" src="NDStats_Histogram.png" />
+  </div>
+  <p>
+    The following MEDM screen combines many parameters for 5 NDPluginStats plugins on
+    a single screen.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDStats5.adl</h3>
+    <img alt="NDStats5.png" src="NDStats5.png" />
   </div>
 </body>
 </html>
