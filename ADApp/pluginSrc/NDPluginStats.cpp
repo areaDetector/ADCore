@@ -26,7 +26,7 @@
 static const char *driverName="NDPluginStats";
 
 template <typename epicsType>
-void NDPluginStats::doComputeHistogramT(NDArray *pArray)
+asynStatus NDPluginStats::doComputeHistogramT(NDArray *pArray)
 {
     epicsType *pData = (epicsType *)pArray->pData;
     int i;
@@ -60,40 +60,44 @@ void NDPluginStats::doComputeHistogramT(NDArray *pArray)
     }
     entropy = -entropy / nElements;
     this->histEntropy = entropy;
+    
+    return(asynSuccess);
 }
 
-int NDPluginStats::doComputeHistogram(NDArray *pArray)
+asynStatus NDPluginStats::doComputeHistogram(NDArray *pArray)
 {
+    asynStatus status;
+    
     switch(pArray->dataType) {
         case NDInt8:
-            doComputeHistogramT<epicsInt8>(pArray);
+            status = doComputeHistogramT<epicsInt8>(pArray);
             break;
         case NDUInt8:
-            doComputeHistogramT<epicsUInt8>(pArray);
+            status = doComputeHistogramT<epicsUInt8>(pArray);
             break;
         case NDInt16:
-            doComputeHistogramT<epicsInt16>(pArray);
+            status = doComputeHistogramT<epicsInt16>(pArray);
             break;
         case NDUInt16:
-            doComputeHistogramT<epicsUInt16>(pArray);
+            status = doComputeHistogramT<epicsUInt16>(pArray);
             break;
         case NDInt32:
-            doComputeHistogramT<epicsInt32>(pArray);
+            status = doComputeHistogramT<epicsInt32>(pArray);
             break;
         case NDUInt32:
-            doComputeHistogramT<epicsUInt32>(pArray);
+            status = doComputeHistogramT<epicsUInt32>(pArray);
             break;
         case NDFloat32:
-            doComputeHistogramT<epicsFloat32>(pArray);
+            status = doComputeHistogramT<epicsFloat32>(pArray);
             break;
         case NDFloat64:
-            doComputeHistogramT<epicsFloat64>(pArray);
+            status = doComputeHistogramT<epicsFloat64>(pArray);
             break;
         default:
-            return(ND_ERROR);
+            status = asynError;
         break;
     }
-    return(ND_SUCCESS);
+    return(status);
 }
 
 template <typename epicsType>
@@ -158,12 +162,14 @@ int doComputeStatistics(NDArray *pArray, NDStats_t *pStats)
 }
 
 template <typename epicsType>
-void NDPluginStats::doComputeCentroidT(NDArray *pArray)
+asynStatus NDPluginStats::doComputeCentroidT(NDArray *pArray)
 {
     epicsType *pData = (epicsType *)pArray->pData;
     double value, *pValue, centroidTotal;
     int ix, iy;
 
+    if (pArray->ndims != 2) return(asynError);
+    
     getDoubleParam (NDPluginStatsCentroidThreshold,  &this->centroidThreshold);
     centroidTotal = 0.;
     this->centroidX = 0;
@@ -218,49 +224,54 @@ void NDPluginStats::doComputeCentroidT(NDArray *pArray)
     setDoubleParam(NDPluginStatsCentroidY,   this->centroidY);
     setDoubleParam(NDPluginStatsSigmaX,      this->sigmaX);
     setDoubleParam(NDPluginStatsSigmaY,      this->sigmaY);
+    
+    return(asynSuccess);
 }
 
-int NDPluginStats::doComputeCentroid(NDArray *pArray)
+asynStatus NDPluginStats::doComputeCentroid(NDArray *pArray)
 {
+    asynStatus status;
 
     switch(pArray->dataType) {
         case NDInt8:
-            doComputeCentroidT<epicsInt8>(pArray);
+            status = doComputeCentroidT<epicsInt8>(pArray);
             break;
         case NDUInt8:
-            doComputeCentroidT<epicsUInt8>(pArray);
+            status = doComputeCentroidT<epicsUInt8>(pArray);
             break;
         case NDInt16:
-            doComputeCentroidT<epicsInt16>(pArray);
+            status = doComputeCentroidT<epicsInt16>(pArray);
             break;
         case NDUInt16:
-            doComputeCentroidT<epicsUInt16>(pArray);
+            status = doComputeCentroidT<epicsUInt16>(pArray);
             break;
         case NDInt32:
-            doComputeCentroidT<epicsInt32>(pArray);
+            status = doComputeCentroidT<epicsInt32>(pArray);
             break;
         case NDUInt32:
-            doComputeCentroidT<epicsUInt32>(pArray);
+            status = doComputeCentroidT<epicsUInt32>(pArray);
             break;
         case NDFloat32:
-            doComputeCentroidT<epicsFloat32>(pArray);
+            status = doComputeCentroidT<epicsFloat32>(pArray);
             break;
         case NDFloat64:
-            doComputeCentroidT<epicsFloat64>(pArray);
+            status = doComputeCentroidT<epicsFloat64>(pArray);
             break;
         default:
-            return(ND_ERROR);
+            status = asynError;
         break;
     }
-    return(ND_SUCCESS);
+    return(status);
 }
 
 template <typename epicsType>
-void NDPluginStats::doComputeProfilesT(NDArray *pArray)
+asynStatus NDPluginStats::doComputeProfilesT(NDArray *pArray)
 {
     epicsType *pData = (epicsType *)pArray->pData;
     epicsType *pCentroid, *pCursor;
     int ix, iy;
+
+    if (pArray->ndims != 2) return(asynError);
 
     /* Compute the X and Y profiles at the centroid and cursor positions */
     getIntegerParam (NDPluginStatsCursorX, &this->cursorX);
@@ -297,41 +308,44 @@ void NDPluginStats::doComputeProfilesT(NDArray *pArray)
     doCallbacksFloat64Array(this->profileY[profCentroid], this->profileSizeY, NDPluginStatsProfileCentroidY, 0);
     doCallbacksFloat64Array(this->profileX[profCursor],   this->profileSizeX, NDPluginStatsProfileCursorX, 0);
     doCallbacksFloat64Array(this->profileY[profCursor],   this->profileSizeY, NDPluginStatsProfileCursorY, 0);
+    
+    return(asynSuccess);
 }
 
-int NDPluginStats::doComputeProfiles(NDArray *pArray)
+asynStatus NDPluginStats::doComputeProfiles(NDArray *pArray)
 {
+    asynStatus status;
 
     switch(pArray->dataType) {
         case NDInt8:
-            doComputeProfilesT<epicsInt8>(pArray);
+            status = doComputeProfilesT<epicsInt8>(pArray);
             break;
         case NDUInt8:
-            doComputeProfilesT<epicsUInt8>(pArray);
+            status = doComputeProfilesT<epicsUInt8>(pArray);
             break;
         case NDInt16:
-            doComputeProfilesT<epicsInt16>(pArray);
+            status = doComputeProfilesT<epicsInt16>(pArray);
             break;
         case NDUInt16:
-            doComputeProfilesT<epicsUInt16>(pArray);
+            status = doComputeProfilesT<epicsUInt16>(pArray);
             break;
         case NDInt32:
-            doComputeProfilesT<epicsInt32>(pArray);
+            status = doComputeProfilesT<epicsInt32>(pArray);
             break;
         case NDUInt32:
-            doComputeProfilesT<epicsUInt32>(pArray);
+            status = doComputeProfilesT<epicsUInt32>(pArray);
             break;
         case NDFloat32:
-            doComputeProfilesT<epicsFloat32>(pArray);
+            status = doComputeProfilesT<epicsFloat32>(pArray);
             break;
         case NDFloat64:
-            doComputeProfilesT<epicsFloat64>(pArray);
+            status = doComputeProfilesT<epicsFloat64>(pArray);
             break;
         default:
-            return(ND_ERROR);
+            status = asynError;
         break;
     }
-    return(ND_SUCCESS);
+    return(status);
 }
 
 /** Callback function that is called by the NDArray driver with new NDArray data.

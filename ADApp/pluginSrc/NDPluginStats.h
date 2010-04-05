@@ -85,12 +85,12 @@ public:
     asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
     
-    template <typename epicsType> void doComputeCentroidT(NDArray *pArray);
-    int doComputeCentroid(NDArray *pArray);
-    template <typename epicsType> void doComputeProfilesT(NDArray *pArray);
-    int doComputeProfiles(NDArray *pArray);
-    template <typename epicsType> void doComputeHistogramT(NDArray *pArray);
-    int doComputeHistogram(NDArray *pArray);
+    template <typename epicsType> asynStatus doComputeCentroidT(NDArray *pArray);
+    asynStatus doComputeCentroid(NDArray *pArray);
+    template <typename epicsType> asynStatus doComputeProfilesT(NDArray *pArray);
+    asynStatus doComputeProfiles(NDArray *pArray);
+    template <typename epicsType> asynStatus doComputeHistogramT(NDArray *pArray);
+    asynStatus doComputeHistogram(NDArray *pArray);
    
 protected:
     int NDPluginStatsComputeStatistics;
