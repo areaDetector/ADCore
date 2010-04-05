@@ -18,6 +18,7 @@ typedef struct NDStats {
 
 typedef enum {
    profAverage,
+   profThreshold,
    profCentroid,
    profCursor
 } NDStatProfileType;
@@ -50,6 +51,8 @@ typedef enum {
 #define NDPluginStatsCursorYString            "CURSOR_Y"            /* (asynInt32,        r/w) Y cursor position */
 #define NDPluginStatsProfileAverageXString    "PROFILE_AVERAGE_X"   /* (asynFloat64Array, r/o) X average profile array */
 #define NDPluginStatsProfileAverageYString    "PROFILE_AVERAGE_Y"   /* (asynFloat64Array, r/o) Y average profile array */
+#define NDPluginStatsProfileThresholdXString  "PROFILE_THRESHOLD_X" /* (asynFloat64Array, r/o) X average profile array after threshold */
+#define NDPluginStatsProfileThresholdYString  "PROFILE_THRESHOLD_Y" /* (asynFloat64Array, r/o) Y average profile array after threshold */
 #define NDPluginStatsProfileCentroidXString   "PROFILE_CENTROID_X"  /* (asynFloat64Array, r/o) X centroid profile array */
 #define NDPluginStatsProfileCentroidYString   "PROFILE_CENTROID_Y"  /* (asynFloat64Array, r/o) Y centroid profile array */
 #define NDPluginStatsProfileCursorXString     "PROFILE_CURSOR_X"    /* (asynFloat64Array, r/o) X cursor profile array */
@@ -120,6 +123,8 @@ protected:
     int NDPluginStatsCursorY;
     int NDPluginStatsProfileAverageX;
     int NDPluginStatsProfileAverageY;
+    int NDPluginStatsProfileThresholdX;
+    int NDPluginStatsProfileThresholdY;
     int NDPluginStatsProfileCentroidX;
     int NDPluginStatsProfileCentroidY;
     int NDPluginStatsProfileCursorX;

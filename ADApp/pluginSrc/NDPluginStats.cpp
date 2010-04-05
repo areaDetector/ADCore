@@ -165,7 +165,7 @@ template <typename epicsType>
 asynStatus NDPluginStats::doComputeCentroidT(NDArray *pArray)
 {
     epicsType *pData = (epicsType *)pArray->pData;
-    double value, *pValue, centroidTotal;
+    double value, *pValue, *pThresh, centroidTotal;
     int ix, iy;
 
     if (pArray->ndims != 2) return(asynError);
@@ -178,12 +178,18 @@ asynStatus NDPluginStats::doComputeCentroidT(NDArray *pArray)
     this->sigmaY = 0;
     memset(this->profileX[profAverage], 0, this->profileSizeX*sizeof(double));  
     memset(this->profileY[profAverage], 0, this->profileSizeY*sizeof(double));
+    memset(this->profileX[profThreshold], 0, this->profileSizeX*sizeof(double));  
+    memset(this->profileY[profThreshold], 0, this->profileSizeY*sizeof(double));
 
     for (iy=0; iy<this->profileSizeY; iy++) {
         for (ix=0; ix<this->profileSizeX; ix++) {
             value = (double)*pData++;
             this->profileX[profAverage][ix] += value;
             this->profileY[profAverage][iy] += value;
+            if (value >= this->centroidThreshold) {
+                this->profileX[profThreshold][ix] += value;
+                this->profileY[profThreshold][iy] += value;
+            }
         }
     }
 
@@ -191,14 +197,14 @@ asynStatus NDPluginStats::doComputeCentroidT(NDArray *pArray)
     this->centroidX = 0;
     this->sigmaX = 0;
     centroidTotal = 0;
-    pValue = this->profileX[profAverage];
-    for (ix=0; ix<this->profileSizeX; ix++, pValue++) {
+    pValue  = this->profileX[profAverage];
+    pThresh = this->profileX[profThreshold];
+    for (ix=0; ix<this->profileSizeX; ix++, pValue++, pThresh++) {
         *pValue /= this->profileSizeY;
-        if (*pValue >= this->centroidThreshold) {
-            this->centroidX += *pValue * ix;
-            this->sigmaX += *pValue * ix * ix;
-            centroidTotal += *pValue;
-        }
+        *pThresh /= this->profileSizeY;
+        this->centroidX += *pThresh * ix;
+        this->sigmaX    += *pThresh * ix * ix;
+        centroidTotal   += *pThresh;
     }
     if (centroidTotal > 0.) {
         this->centroidX /= centroidTotal;
@@ -207,15 +213,15 @@ asynStatus NDPluginStats::doComputeCentroidT(NDArray *pArray)
     this->centroidY = 0;
     this->sigmaY = 0;
     centroidTotal = 0;
-    pValue = this->profileY[profAverage];
-    for (iy=0; iy<this->profileSizeY; iy++, pValue++) {
+    pValue  = this->profileY[profAverage];
+    pThresh = this->profileY[profThreshold];
+    for (iy=0; iy<this->profileSizeY; iy++, pValue++, pThresh++) {
         *pValue /= this->profileSizeX;
-        if (*pValue >= this->centroidThreshold) {
-            this->centroidY += *pValue * iy;
-            this->sigmaY += *pValue * iy * iy;
-            centroidTotal += *pValue;
-        }
-    }
+        *pThresh /= this->profileSizeX;
+        this->centroidY += *pThresh * iy;
+        this->sigmaY    += *pThresh * iy * iy;
+        centroidTotal   += *pThresh;
+   }
     if (centroidTotal > 0.) {
         this->centroidY /= centroidTotal;
         this->sigmaY = sqrt((this->sigmaY / centroidTotal) - (this->centroidY * this->centroidY));
@@ -302,12 +308,14 @@ asynStatus NDPluginStats::doComputeProfilesT(NDArray *pArray)
         pCentroid += this->profileSizeX;
         pCursor   += this->profileSizeX;
     }
-    doCallbacksFloat64Array(this->profileX[profAverage],  this->profileSizeX, NDPluginStatsProfileAverageX, 0);
-    doCallbacksFloat64Array(this->profileY[profAverage],  this->profileSizeY, NDPluginStatsProfileAverageY, 0);
-    doCallbacksFloat64Array(this->profileX[profCentroid], this->profileSizeX, NDPluginStatsProfileCentroidX, 0);
-    doCallbacksFloat64Array(this->profileY[profCentroid], this->profileSizeY, NDPluginStatsProfileCentroidY, 0);
-    doCallbacksFloat64Array(this->profileX[profCursor],   this->profileSizeX, NDPluginStatsProfileCursorX, 0);
-    doCallbacksFloat64Array(this->profileY[profCursor],   this->profileSizeY, NDPluginStatsProfileCursorY, 0);
+    doCallbacksFloat64Array(this->profileX[profAverage],   this->profileSizeX, NDPluginStatsProfileAverageX, 0);
+    doCallbacksFloat64Array(this->profileY[profAverage],   this->profileSizeY, NDPluginStatsProfileAverageY, 0);
+    doCallbacksFloat64Array(this->profileX[profThreshold], this->profileSizeX, NDPluginStatsProfileThresholdX, 0);
+    doCallbacksFloat64Array(this->profileY[profThreshold], this->profileSizeY, NDPluginStatsProfileThresholdY, 0);
+    doCallbacksFloat64Array(this->profileX[profCentroid],  this->profileSizeX, NDPluginStatsProfileCentroidX, 0);
+    doCallbacksFloat64Array(this->profileY[profCentroid],  this->profileSizeY, NDPluginStatsProfileCentroidY, 0);
+    doCallbacksFloat64Array(this->profileX[profCursor],    this->profileSizeX, NDPluginStatsProfileCursorX, 0);
+    doCallbacksFloat64Array(this->profileY[profCursor],    this->profileSizeY, NDPluginStatsProfileCursorY, 0);
     
     return(asynSuccess);
 }
@@ -575,13 +583,11 @@ asynStatus NDPluginStats::writeInt32(asynUser *pasynUser, epicsInt32 value)
         this->cursorX = value;
         if (this->pArrays[0]) {
             doComputeProfiles(this->pArrays[0]);
-            doCallbacksFloat64Array(this->profileX[profCursor], this->profileSizeX, NDPluginStatsProfileCursorX, 0);
         }
     } else if (function == NDPluginStatsCursorY) {
         this->cursorY = value;
         if (this->pArrays[0]) {
             doComputeProfiles(this->pArrays[0]);
-            doCallbacksFloat64Array(this->profileY[profCursor], this->profileSizeY, NDPluginStatsProfileCursorY, 0);
         }
     } else {
         /* If this parameter belongs to a base class call its method */
@@ -624,16 +630,10 @@ asynStatus  NDPluginStats::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 
     if (function == NDPluginStatsCentroidThreshold) {
         getIntegerParam(NDPluginStatsComputeCentroid, &computeCentroid);
-        if (computeCentroid) {
-            if (this->pArrays[0]) {
-                doComputeCentroid(this->pArrays[0]);
-                setDoubleParam(NDPluginStatsCentroidX,   this->centroidX);
-                setDoubleParam(NDPluginStatsCentroidY,   this->centroidY);
-                setDoubleParam(NDPluginStatsSigmaX,      this->sigmaX);
-                setDoubleParam(NDPluginStatsSigmaY,      this->sigmaY);
-                getIntegerParam(NDPluginStatsComputeProfiles, &computeProfiles);
-                if (computeProfiles) doComputeProfiles(this->pArrays[0]);
-            }
+        if (computeCentroid && this->pArrays[0]) {
+            doComputeCentroid(this->pArrays[0]);
+            getIntegerParam(NDPluginStatsComputeProfiles, &computeProfiles);
+            if (computeProfiles) doComputeProfiles(this->pArrays[0]);
         }
     } else {
         /* If this parameter belongs to a base class call its method */
@@ -718,6 +718,8 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
     createParam(NDPluginStatsCursorYString,           asynParamInt32,         &NDPluginStatsCursorY);
     createParam(NDPluginStatsProfileAverageXString,   asynParamFloat64Array,  &NDPluginStatsProfileAverageX);
     createParam(NDPluginStatsProfileAverageYString,   asynParamFloat64Array,  &NDPluginStatsProfileAverageY);
+    createParam(NDPluginStatsProfileThresholdXString, asynParamFloat64Array,  &NDPluginStatsProfileThresholdX);
+    createParam(NDPluginStatsProfileThresholdYString, asynParamFloat64Array,  &NDPluginStatsProfileThresholdY);
     createParam(NDPluginStatsProfileCentroidXString,  asynParamFloat64Array,  &NDPluginStatsProfileCentroidX);
     createParam(NDPluginStatsProfileCentroidYString,  asynParamFloat64Array,  &NDPluginStatsProfileCentroidY);
     createParam(NDPluginStatsProfileCursorXString,    asynParamFloat64Array,  &NDPluginStatsProfileCursorX);
