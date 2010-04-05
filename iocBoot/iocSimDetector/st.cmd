@@ -8,9 +8,11 @@ simDetectorApp_registerRecordDeviceDriver(pdbbase)
 epicsEnvSet("PREFIX", "13SIM1:")
 epicsEnvSet("PORT",   "SIM1")
 epicsEnvSet("QSIZE",  "20")
+epicsEnvSet("XSIZE",  "640")
+epicsEnvSet("YSIZE",  "480")
 
 # Create a simDetector driver
-simDetectorConfig("$(PORT)", 640, 480, 1, 500, -1)
+simDetectorConfig("$(PORT)", $(XSIZE), $(YSIZE), 1, 500, -1)
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/ADBase.template",     "P=$(PREFIX),R=cam1:,PORT=$(PORT),ADDR=0,TIMEOUT=1")
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/simDetector.template","P=$(PREFIX),R=cam1:,PORT=$(PORT),ADDR=0,TIMEOUT=1")
 
