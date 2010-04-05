@@ -25,22 +25,6 @@
 
 static const char *driverName="NDPluginStats";
 
-typedef struct NDStats {
-    int     nElements;
-    double  total;
-    double  net;
-    double  mean;
-    double  sigma;
-    double  min;
-    double  max;
-    int     computeCentroid;
-    double  centroidThreshold;
-    double  centroidX;
-    double  centroidY;
-    double  sigmaX;
-    double  sigmaY;
-} NDStats_t;
-
 template <typename epicsType>
 void NDPluginStats::doComputeHistogramT(NDArray *pArray)
 {
@@ -118,8 +102,7 @@ void doComputeStatisticsT(NDArray *pArray, NDStats_t *pStats)
     int i;
     epicsType *pData = (epicsType *)pArray->pData;
     NDArrayInfo arrayInfo;
-    double value, centroidTotal;
-    int ix, iy;
+    double value;
 
     pArray->getInfo(&arrayInfo);
     pStats->nElements = arrayInfo.nElements;
@@ -127,40 +110,16 @@ void doComputeStatisticsT(NDArray *pArray, NDStats_t *pStats)
     pStats->max = (double) pData[0];
     pStats->total = 0.;
     pStats->sigma = 0.;
-    centroidTotal = 0.;
-    pStats->centroidX = 0;
-    pStats->centroidY = 0;
-    pStats->sigmaX = 0;
-    pStats->sigmaY = 0;
-
     for (i=0; i<pStats->nElements; i++) {
         value = (double)pData[i];
         if (value < pStats->min) pStats->min = value;
         if (value > pStats->max) pStats->max = value;
         pStats->total += value;
         pStats->sigma += value * value;
-        if (pStats->computeCentroid) {
-            ix = i % pArray->dims[0].size;
-            iy = i / pArray->dims[0].size;
-            if (value < pStats->centroidThreshold) value = 0;
-            centroidTotal   += value;
-            pStats->centroidX += value * ix;
-            pStats->centroidY += value * iy;
-            pStats->sigmaX    += value * ix * ix;
-            pStats->sigmaY    += value * iy * iy;
-        }
     }
-
     pStats->net = pStats->total;
     pStats->mean = pStats->total / pStats->nElements;
     pStats->sigma = sqrt((pStats->sigma / pStats->nElements) - (pStats->mean * pStats->mean));
-
-    if (pStats->computeCentroid) {
-        pStats->centroidX /= centroidTotal;
-        pStats->centroidY /= centroidTotal;
-        pStats->sigmaX = sqrt((pStats->sigmaX / centroidTotal) - (pStats->centroidX * pStats->centroidX));
-        pStats->sigmaY = sqrt((pStats->sigmaY / centroidTotal) - (pStats->centroidY * pStats->centroidY));
-    }
 }
 
 int doComputeStatistics(NDArray *pArray, NDStats_t *pStats)
@@ -198,6 +157,183 @@ int doComputeStatistics(NDArray *pArray, NDStats_t *pStats)
     return(ND_SUCCESS);
 }
 
+template <typename epicsType>
+void NDPluginStats::doComputeCentroidT(NDArray *pArray)
+{
+    epicsType *pData = (epicsType *)pArray->pData;
+    double value, *pValue, centroidTotal;
+    int ix, iy;
+
+    getDoubleParam (NDPluginStatsCentroidThreshold,  &this->centroidThreshold);
+    centroidTotal = 0.;
+    this->centroidX = 0;
+    this->centroidY = 0;
+    this->sigmaX = 0;
+    this->sigmaY = 0;
+    memset(this->profileX[profAverage], 0, this->profileSizeX*sizeof(double));  
+    memset(this->profileY[profAverage], 0, this->profileSizeY*sizeof(double));
+
+    for (iy=0; iy<this->profileSizeY; iy++) {
+        for (ix=0; ix<this->profileSizeX; ix++) {
+            value = (double)*pData++;
+            this->profileX[profAverage][ix] += value;
+            this->profileY[profAverage][iy] += value;
+        }
+    }
+
+    /* Normalize the average profiles and compute the centroid from them */
+    this->centroidX = 0;
+    this->sigmaX = 0;
+    centroidTotal = 0;
+    pValue = this->profileX[profAverage];
+    for (ix=0; ix<this->profileSizeX; ix++, pValue++) {
+        *pValue /= this->profileSizeY;
+        if (*pValue >= this->centroidThreshold) {
+            this->centroidX += *pValue * ix;
+            this->sigmaX += *pValue * ix * ix;
+            centroidTotal += *pValue;
+        }
+    }
+    if (centroidTotal > 0.) {
+        this->centroidX /= centroidTotal;
+        this->sigmaX = sqrt((this->sigmaX / centroidTotal) - (this->centroidX * this->centroidX));
+    }
+    this->centroidY = 0;
+    this->sigmaY = 0;
+    centroidTotal = 0;
+    pValue = this->profileY[profAverage];
+    for (iy=0; iy<this->profileSizeY; iy++, pValue++) {
+        *pValue /= this->profileSizeX;
+        if (*pValue >= this->centroidThreshold) {
+            this->centroidY += *pValue * iy;
+            this->sigmaY += *pValue * iy * iy;
+            centroidTotal += *pValue;
+        }
+    }
+    if (centroidTotal > 0.) {
+        this->centroidY /= centroidTotal;
+        this->sigmaY = sqrt((this->sigmaY / centroidTotal) - (this->centroidY * this->centroidY));
+    }
+    setDoubleParam(NDPluginStatsCentroidX,   this->centroidX);
+    setDoubleParam(NDPluginStatsCentroidY,   this->centroidY);
+    setDoubleParam(NDPluginStatsSigmaX,      this->sigmaX);
+    setDoubleParam(NDPluginStatsSigmaY,      this->sigmaY);
+}
+
+int NDPluginStats::doComputeCentroid(NDArray *pArray)
+{
+
+    switch(pArray->dataType) {
+        case NDInt8:
+            doComputeCentroidT<epicsInt8>(pArray);
+            break;
+        case NDUInt8:
+            doComputeCentroidT<epicsUInt8>(pArray);
+            break;
+        case NDInt16:
+            doComputeCentroidT<epicsInt16>(pArray);
+            break;
+        case NDUInt16:
+            doComputeCentroidT<epicsUInt16>(pArray);
+            break;
+        case NDInt32:
+            doComputeCentroidT<epicsInt32>(pArray);
+            break;
+        case NDUInt32:
+            doComputeCentroidT<epicsUInt32>(pArray);
+            break;
+        case NDFloat32:
+            doComputeCentroidT<epicsFloat32>(pArray);
+            break;
+        case NDFloat64:
+            doComputeCentroidT<epicsFloat64>(pArray);
+            break;
+        default:
+            return(ND_ERROR);
+        break;
+    }
+    return(ND_SUCCESS);
+}
+
+template <typename epicsType>
+void NDPluginStats::doComputeProfilesT(NDArray *pArray)
+{
+    epicsType *pData = (epicsType *)pArray->pData;
+    epicsType *pCentroid, *pCursor;
+    int ix, iy;
+
+    /* Compute the X and Y profiles at the centroid and cursor positions */
+    getIntegerParam (NDPluginStatsCursorX, &this->cursorX);
+    getIntegerParam (NDPluginStatsCursorY, &this->cursorY);
+    iy = (int) (this->centroidY + 0.5);
+    iy = MAX(iy, 0);
+    iy = MIN(iy, this->profileSizeY-1);
+    pCentroid = pData + iy*this->profileSizeX;
+    iy = this->cursorY;
+    iy = MAX(iy, 0);
+    iy = MIN(iy, this->profileSizeY-1);
+    pCursor = pData + iy*this->profileSizeX;
+    for (ix=0; ix<this->profileSizeX; ix++) {
+        this->profileX[profCentroid][ix] = *pCentroid++;
+        this->profileX[profCursor][ix]   = *pCursor++;
+    }
+    ix = (int) (this->centroidX + 0.5);
+    ix = MAX(ix, 0);
+    ix = MIN(ix, this->profileSizeX-1);
+    pCentroid = pData + ix;
+    ix = this->cursorX;
+    ix = MAX(ix, 0);
+    ix = MIN(ix, this->profileSizeX-1);
+    pCursor = pData + ix;
+    for (iy=0; iy<this->profileSizeY; iy++) {
+        this->profileY[profCentroid][iy] = *pCentroid;
+        this->profileY[profCursor][iy]   = *pCursor;
+        pCentroid += this->profileSizeX;
+        pCursor   += this->profileSizeX;
+    }
+    doCallbacksFloat64Array(this->profileX[profAverage],  this->profileSizeX, NDPluginStatsProfileAverageX, 0);
+    doCallbacksFloat64Array(this->profileY[profAverage],  this->profileSizeY, NDPluginStatsProfileAverageY, 0);
+    doCallbacksFloat64Array(this->profileX[profCentroid], this->profileSizeX, NDPluginStatsProfileCentroidX, 0);
+    doCallbacksFloat64Array(this->profileY[profCentroid], this->profileSizeY, NDPluginStatsProfileCentroidY, 0);
+    doCallbacksFloat64Array(this->profileX[profCursor],   this->profileSizeX, NDPluginStatsProfileCursorX, 0);
+    doCallbacksFloat64Array(this->profileY[profCursor],   this->profileSizeY, NDPluginStatsProfileCursorY, 0);
+}
+
+int NDPluginStats::doComputeProfiles(NDArray *pArray)
+{
+
+    switch(pArray->dataType) {
+        case NDInt8:
+            doComputeProfilesT<epicsInt8>(pArray);
+            break;
+        case NDUInt8:
+            doComputeProfilesT<epicsUInt8>(pArray);
+            break;
+        case NDInt16:
+            doComputeProfilesT<epicsInt16>(pArray);
+            break;
+        case NDUInt16:
+            doComputeProfilesT<epicsUInt16>(pArray);
+            break;
+        case NDInt32:
+            doComputeProfilesT<epicsInt32>(pArray);
+            break;
+        case NDUInt32:
+            doComputeProfilesT<epicsUInt32>(pArray);
+            break;
+        case NDFloat32:
+            doComputeProfilesT<epicsFloat32>(pArray);
+            break;
+        case NDFloat64:
+            doComputeProfilesT<epicsFloat64>(pArray);
+            break;
+        default:
+            return(ND_ERROR);
+        break;
+    }
+    return(ND_SUCCESS);
+}
+
 /** Callback function that is called by the NDArray driver with new NDArray data.
   * Does image statistics.
   * \param[in] pArray  The NDArray from the callback.
@@ -215,8 +351,10 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     NDStats_t stats, *pStats=&stats, statsTemp, *pStatsTemp=&statsTemp;
     double bgdCounts, avgBgd;
     NDArray *pBgdArray=NULL;
-    int computeStatistics, computeProfiles, computeHistogram;
+    int computeStatistics, computeCentroid, computeProfiles, computeHistogram;
     int intTotal, intNet;
+    int sizeX=0, sizeY=0;
+    int i;
     NDArrayInfo arrayInfo;
 
     const char* functionName = "processCallbacks";
@@ -226,13 +364,32 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     
     pArray->getInfo(&arrayInfo);
     getIntegerParam(NDPluginStatsComputeStatistics,  &computeStatistics);
-    getIntegerParam(NDPluginStatsComputeCentroid,    &pStats->computeCentroid);
-    getDoubleParam (NDPluginStatsCentroidThreshold,  &pStats->centroidThreshold);
+    getIntegerParam(NDPluginStatsComputeCentroid,    &computeCentroid);
     getIntegerParam(NDPluginStatsComputeProfiles,    &computeProfiles);
     getIntegerParam(NDPluginStatsComputeHistogram,   &computeHistogram);
-    getIntegerParam(NDPluginStatsBgdWidth,           &bgdWidth);
     
+    if (pArray->ndims > 0) sizeX = pArray->dims[0].size;
+    if (pArray->ndims > 1) sizeY = pArray->dims[1].size;
+
+	if (sizeX != this->profileSizeX) {
+        this->profileSizeX = sizeX;
+        setIntegerParam(NDPluginStatsProfileSizeX,  this->profileSizeX);
+        for (i=0; i<MAX_PROFILE_TYPES; i++) {
+            if (this->profileX[i]) free(this->profileX[i]);
+            this->profileX[i] = (double *)malloc(this->profileSizeX * sizeof(double));
+        }
+    }
+	if (sizeY != this->profileSizeY) {
+        this->profileSizeY = sizeY;
+        setIntegerParam(NDPluginStatsProfileSizeY,  this->profileSizeY);
+        for (i=0; i<MAX_PROFILE_TYPES; i++) {
+            if (this->profileY[i]) free(this->profileY[i]);
+            this->profileY[i] = (double *)malloc(this->profileSizeY * sizeof(double));
+        }
+    }
+
     if (computeStatistics) {
+        getIntegerParam(NDPluginStatsBgdWidth,           &bgdWidth);
         /* Now that we won't be accessing any memory other threads can access, unlock so we don't block drivers */
         this->unlock();
         doComputeStatistics(pArray, pStats);
@@ -252,7 +409,6 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
                         driverName, functionName);
                     continue;
                 }
-                pStatsTemp->computeCentroid = 0;
                 doComputeStatistics(pBgdArray, pStatsTemp);
                 pBgdArray->release();
                 bgdPixels += pStatsTemp->nElements;
@@ -281,10 +437,6 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
         setDoubleParam(NDPluginStatsMaxValue,    pStats->max);
         setDoubleParam(NDPluginStatsMeanValue,   pStats->mean);
         setDoubleParam(NDPluginStatsSigmaValue,  pStats->sigma);
-        setDoubleParam(NDPluginStatsCentroidX,   pStats->centroidX);
-        setDoubleParam(NDPluginStatsCentroidY,   pStats->centroidY);
-        setDoubleParam(NDPluginStatsSigmaX,      pStats->sigmaX);
-        setDoubleParam(NDPluginStatsSigmaY,      pStats->sigmaY);
         setDoubleParam(NDPluginStatsTotal,       pStats->total);
         setDoubleParam(NDPluginStatsNet,         pStats->net);
         asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
@@ -297,6 +449,14 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
         doCallbacksInt32Array(&intNet,   1, NDPluginStatsNetArray, 0);
     }
 
+    if (computeCentroid) {
+        doComputeCentroid(pArray);
+    }
+         
+    if (computeProfiles) {
+        doComputeProfiles(pArray);
+    }
+    
     if (computeHistogram) {
         getIntegerParam(NDPluginStatsHistSize, &this->histSizeNew);
         getDoubleParam (NDPluginStatsHistMin,  &this->histMin);
@@ -307,12 +467,18 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
         setDoubleParam(NDPluginStatsHistEntropy, this->histEntropy);
         doCallbacksFloat64Array(this->histogram, this->histogramSize, NDPluginStatsHistArray, 0);
     }
+    
+    /* Save a copy of this array for calculations when cursor is moved or threshold is changed */
+    if (this->pArrays[0]) this->pArrays[0]->release();
+    this->pArrays[0] = this->pNDArrayPool->copy(pArray, NULL, 1);
+
     callParamCallbacks();
 }
 
 
 /** Called when asyn clients call pasynFloat64Array->read().
-  * Returns the histogram array when pasynUser->reason=NDPluginStatsHistArray.
+  * Returns the histogram array when pasynUser->reason=NDPluginStatsHistArray,
+  * or one of the profile arrays.
   * \param[in] pasynUser pasynUser structure that encodes the reason and address.
   * \param[in] value Pointer to the array to read.
   * \param[in] nElements Number of elements to read.
@@ -330,6 +496,36 @@ asynStatus NDPluginStats::readFloat64Array(asynUser *pasynUser,
         if (ncopy > nElements) ncopy = nElements;
         memcpy(value, this->histogram, ncopy*sizeof(epicsFloat64));
         *nIn = ncopy;
+    } else if (function == NDPluginStatsProfileAverageX) {
+        ncopy = this->profileSizeX;
+        if (ncopy > nElements) ncopy = nElements;
+        memcpy(value, this->profileX[profAverage], ncopy*sizeof(epicsFloat64));
+        *nIn = ncopy;
+    } else if (function == NDPluginStatsProfileAverageY) {
+        ncopy = this->profileSizeY;
+        if (ncopy > nElements) ncopy = nElements;
+        memcpy(value, this->profileY[profAverage], ncopy*sizeof(epicsFloat64));
+        *nIn = ncopy;
+    } else if (function == NDPluginStatsProfileCentroidX) {
+        ncopy = this->profileSizeX;
+        if (ncopy > nElements) ncopy = nElements;
+        memcpy(value, this->profileX[profCentroid], ncopy*sizeof(epicsFloat64));
+        *nIn = ncopy;
+    } else if (function == NDPluginStatsProfileCentroidY) {
+        ncopy = this->profileSizeY;
+        if (ncopy > nElements) ncopy = nElements;
+        memcpy(value, this->profileY[profCentroid], ncopy*sizeof(epicsFloat64));
+        *nIn = ncopy;
+    } else if (function == NDPluginStatsProfileCursorX) {
+        ncopy = this->profileSizeX;
+        if (ncopy > nElements) ncopy = nElements;
+        memcpy(value, this->profileX[profCursor], ncopy*sizeof(epicsFloat64));
+        *nIn = ncopy;
+    } else if (function == NDPluginStatsProfileCursorY) {
+        ncopy = this->profileSizeY;
+        if (ncopy > nElements) ncopy = nElements;
+        memcpy(value, this->profileY[profCursor], ncopy*sizeof(epicsFloat64));
+        *nIn = ncopy;
     } else {
         status = NDPluginDriver::readFloat64Array(pasynUser, value, nElements, nIn);
     }
@@ -343,6 +539,106 @@ asynStatus NDPluginStats::readFloat64Array(asynUser *pasynUser,
               driverName, functionName, function, *value);
     return(status);
 }
+
+/** Called when asyn clients call pasynInt32->write().
+  * This function performs actions for some parameters.
+  * For all parameters it sets the value in the parameter library and calls any registered callbacks..
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Value to write. */
+asynStatus NDPluginStats::writeInt32(asynUser *pasynUser, epicsInt32 value)
+{
+    int function = pasynUser->reason;
+    int addr=0;
+    asynStatus status = asynSuccess;
+    static const char *functionName = "writeInt32";
+
+    status = getAddress(pasynUser, &addr); if (status != asynSuccess) return(status);
+
+    /* Set the parameter in the parameter library. */
+    status = (asynStatus) setIntegerParam(addr, function, value);
+
+    if (function == NDPluginStatsCursorX) {
+        this->cursorX = value;
+        if (this->pArrays[0]) {
+            doComputeProfiles(this->pArrays[0]);
+            doCallbacksFloat64Array(this->profileX[profCursor], this->profileSizeX, NDPluginStatsProfileCursorX, 0);
+        }
+    } else if (function == NDPluginStatsCursorY) {
+        this->cursorY = value;
+        if (this->pArrays[0]) {
+            doComputeProfiles(this->pArrays[0]);
+            doCallbacksFloat64Array(this->profileY[profCursor], this->profileSizeY, NDPluginStatsProfileCursorY, 0);
+        }
+    } else {
+        /* If this parameter belongs to a base class call its method */
+        if (function < FIRST_NDPLUGIN_STATS_PARAM) 
+            status = NDPluginDriver::writeInt32(pasynUser, value);
+    }
+    
+    /* Do callbacks so higher layers see any changes */
+    status = (asynStatus) callParamCallbacks(addr);
+    
+    if (status) 
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
+                  "%s:%s: status=%d, function=%d, value=%d", 
+                  driverName, functionName, status, function, value);
+    else        
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
+              "%s:%s: function=%d, value=%d\n", 
+              driverName, functionName, function, value);
+    return status;
+}
+
+/** Called when asyn clients call pasynFloat64->write().
+  * This function performs actions for some parameters.
+  * For all parameters it sets the value in the parameter library and calls any registered callbacks..
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Value to write. */
+asynStatus  NDPluginStats::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
+{
+    int function = pasynUser->reason;
+    int addr=0;
+    asynStatus status = asynSuccess;
+    int computeCentroid, computeProfiles;
+    static const char *functionName = "writeFloat64";
+
+    status = getAddress(pasynUser, &addr); if (status != asynSuccess) return(status);
+
+    /* Set the parameter and readback in the parameter library.  This may be overwritten when we read back the
+     * status at the end, but that's OK */
+    status = setDoubleParam(addr, function, value);
+
+    if (function == NDPluginStatsCentroidThreshold) {
+        getIntegerParam(NDPluginStatsComputeCentroid, &computeCentroid);
+        if (computeCentroid) {
+            if (this->pArrays[0]) {
+                doComputeCentroid(this->pArrays[0]);
+                setDoubleParam(NDPluginStatsCentroidX,   this->centroidX);
+                setDoubleParam(NDPluginStatsCentroidY,   this->centroidY);
+                setDoubleParam(NDPluginStatsSigmaX,      this->sigmaX);
+                setDoubleParam(NDPluginStatsSigmaY,      this->sigmaY);
+                getIntegerParam(NDPluginStatsComputeProfiles, &computeProfiles);
+                if (computeProfiles) doComputeProfiles(this->pArrays[0]);
+            }
+        }
+    } else {
+        /* If this parameter belongs to a base class call its method */
+        if (function < FIRST_NDPLUGIN_STATS_PARAM) status = NDPluginDriver::writeFloat64(pasynUser, value);
+    }
+
+    /* Do callbacks so higher layers see any changes */
+    callParamCallbacks(addr);
+    if (status) 
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, 
+              "%s:%s: error, status=%d function=%d, value=%f\n", 
+              driverName, functionName, status, function, value);
+    else        
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
+              "%s:%s: function=%d, value=%f\n", 
+              driverName, functionName, function, value);
+    return status;
+}
+
 
 
 /** Constructor for NDPluginStats; most parameters are simply passed to NDPluginDriver::NDPluginDriver.
@@ -377,8 +673,12 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
 {
     asynStatus status;
     //const char *functionName = "NDPluginStats";
+    
+    memset(this->profileX, 0, sizeof(this->profileX));
+    memset(this->profileY, 0, sizeof(this->profileY));
+    this->histogram = NULL;
 
-    /* ROI statistics */
+    /* Statistics */
     createParam(NDPluginStatsComputeStatisticsString, asynParamInt32,      &NDPluginStatsComputeStatistics);
     createParam(NDPluginStatsBgdWidthString,          asynParamInt32,      &NDPluginStatsBgdWidth);
     createParam(NDPluginStatsMinValueString,          asynParamFloat64,    &NDPluginStatsMinValue);
@@ -388,7 +688,7 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
     createParam(NDPluginStatsTotalArrayString,        asynParamInt32Array, &NDPluginStatsTotalArray);
     createParam(NDPluginStatsNetArrayString,          asynParamInt32Array, &NDPluginStatsNetArray);
 
-    /* ROI centroid */
+    /* Centroid */
     createParam(NDPluginStatsComputeCentroidString,   asynParamInt32,      &NDPluginStatsComputeCentroid);
     createParam(NDPluginStatsCentroidThresholdString, asynParamFloat64,    &NDPluginStatsCentroidThreshold);
     createParam(NDPluginStatsCentroidXString,         asynParamFloat64,    &NDPluginStatsCentroidX);
@@ -396,16 +696,26 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
     createParam(NDPluginStatsSigmaXString,            asynParamFloat64,    &NDPluginStatsSigmaX);
     createParam(NDPluginStatsSigmaYString,            asynParamFloat64,    &NDPluginStatsSigmaY);
 
-    /* ROI histogram */
+    /* Profiles */
+    createParam(NDPluginStatsComputeProfilesString,   asynParamInt32,         &NDPluginStatsComputeProfiles);
+    createParam(NDPluginStatsProfileSizeXString,      asynParamInt32,         &NDPluginStatsProfileSizeX);
+    createParam(NDPluginStatsProfileSizeYString,      asynParamInt32,         &NDPluginStatsProfileSizeY);
+    createParam(NDPluginStatsCursorXString,           asynParamInt32,         &NDPluginStatsCursorX);
+    createParam(NDPluginStatsCursorYString,           asynParamInt32,         &NDPluginStatsCursorY);
+    createParam(NDPluginStatsProfileAverageXString,   asynParamFloat64Array,  &NDPluginStatsProfileAverageX);
+    createParam(NDPluginStatsProfileAverageYString,   asynParamFloat64Array,  &NDPluginStatsProfileAverageY);
+    createParam(NDPluginStatsProfileCentroidXString,  asynParamFloat64Array,  &NDPluginStatsProfileCentroidX);
+    createParam(NDPluginStatsProfileCentroidYString,  asynParamFloat64Array,  &NDPluginStatsProfileCentroidY);
+    createParam(NDPluginStatsProfileCursorXString,    asynParamFloat64Array,  &NDPluginStatsProfileCursorX);
+    createParam(NDPluginStatsProfileCursorYString,    asynParamFloat64Array,  &NDPluginStatsProfileCursorY);
+
+    /* Histogram */
     createParam(NDPluginStatsComputeHistogramString,  asynParamInt32,         &NDPluginStatsComputeHistogram);
     createParam(NDPluginStatsHistSizeString,          asynParamInt32,         &NDPluginStatsHistSize);
     createParam(NDPluginStatsHistMinString,           asynParamFloat64,       &NDPluginStatsHistMin);
     createParam(NDPluginStatsHistMaxString,           asynParamFloat64,       &NDPluginStatsHistMax);
     createParam(NDPluginStatsHistEntropyString,       asynParamFloat64,       &NDPluginStatsHistEntropy);
     createParam(NDPluginStatsHistArrayString,         asynParamFloat64Array,  &NDPluginStatsHistArray);
-
-    /* ROI profiles - not yet implemented */
-    createParam(NDPluginStatsComputeProfilesString,   asynParamInt32, &NDPluginStatsComputeProfiles);
 
     /* Arrays of total and net counts for MCA or waveform record */   
     createParam(NDPluginStatsTotalString,             asynParamFloat64, &NDPluginStatsTotal);
