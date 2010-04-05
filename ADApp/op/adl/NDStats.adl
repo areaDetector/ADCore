@@ -1024,21 +1024,31 @@ composite {
 		args="P=$(P),R=$(R),DATA=ProfileAverageY_RBV,TITLE=AverageY,XLABEL=Pixel,YLABEL=Counts"
 	}
 	display[2] {
+		label="Threshold X"
+		name="NDPlot.adl"
+		args="P=$(P),R=$(R),DATA=ProfileThresholdX_RBV,TITLE=ThresholdX,XLABEL=Pixel,YLABEL=Counts"
+	}
+	display[3] {
+		label="Threshold Y"
+		name="NDPlot.adl"
+		args="P=$(P),R=$(R),DATA=ProfileThresholdY_RBV,TITLE=ThresholdY,XLABEL=Pixel,YLABEL=Counts"
+	}
+	display[4] {
 		label="Centroid X"
 		name="NDPlot.adl"
 		args="P=$(P),R=$(R),DATA=ProfileCentroidX_RBV,TITLE=CentroidX,XLABEL=Pixel,YLABEL=Counts"
 	}
-	display[3] {
+	display[5] {
 		label="Centroid Y"
 		name="NDPlot.adl"
 		args="P=$(P),R=$(R),DATA=ProfileCentroidY_RBV,TITLE=CentroidY,XLABEL=Pixel,YLABEL=Counts"
 	}
-	display[4] {
+	display[6] {
 		label="Cursor X"
 		name="NDPlot.adl"
 		args="P=$(P),R=$(R),DATA=ProfileCursorX_RBV,TITLE=CursorX,XLABEL=Pixel,YLABEL=Counts"
 	}
-	display[5] {
+	display[7] {
 		label="Cursor Y"
 		name="NDPlot.adl"
 		args="P=$(P),R=$(R),DATA=ProfileCursorY_RBV,TITLE=CursorY,XLABEL=Pixel,YLABEL=Counts"
