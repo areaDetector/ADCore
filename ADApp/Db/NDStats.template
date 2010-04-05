@@ -252,6 +252,24 @@ record(waveform, "$(P)$(R)ProfileAverageY_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(waveform, "$(P)$(R)ProfileThresholdX_RBV")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PROFILE_THRESHOLD_X")
+   field(FTVL, "DOUBLE")
+   field(NELM, "$(XSIZE)")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)ProfileThresholdY_RBV")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PROFILE_THRESHOLD_Y")
+   field(FTVL, "DOUBLE")
+   field(NELM, "$(YSIZE)")
+   field(SCAN, "I/O Intr")
+}
+
 record(waveform, "$(P)$(R)ProfileCentroidX_RBV")
 {
    field(DTYP, "asynFloat64ArrayIn")
