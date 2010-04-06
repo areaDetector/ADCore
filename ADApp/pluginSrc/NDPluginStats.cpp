@@ -528,6 +528,16 @@ asynStatus NDPluginStats::readFloat64Array(asynUser *pasynUser,
         if (ncopy > nElements) ncopy = nElements;
         memcpy(value, this->profileY[profAverage], ncopy*sizeof(epicsFloat64));
         *nIn = ncopy;
+    } else if (function == NDPluginStatsProfileThresholdX) {
+        ncopy = this->profileSizeX;
+        if (ncopy > nElements) ncopy = nElements;
+        memcpy(value, this->profileX[profThreshold], ncopy*sizeof(epicsFloat64));
+        *nIn = ncopy;
+    } else if (function == NDPluginStatsProfileThresholdY) {
+        ncopy = this->profileSizeY;
+        if (ncopy > nElements) ncopy = nElements;
+        memcpy(value, this->profileY[profThreshold], ncopy*sizeof(epicsFloat64));
+        *nIn = ncopy;
     } else if (function == NDPluginStatsProfileCentroidX) {
         ncopy = this->profileSizeX;
         if (ncopy > nElements) ncopy = nElements;
