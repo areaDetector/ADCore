@@ -178,8 +178,8 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
         getIntegerParam(overlay, NDPluginOverlayBlue,       &pOverlay->blue);
 
         /* This function is called with the lock taken, and it must be set when we exit.
-         * The following code can be exected without the mutex because we are not accessing elements of
-         * pPvt that other threads can access. */
+         * The following code can be exected without the mutex because we are not accessing memory
+         * that other threads can access. */
         this->unlock();
         this->doOverlay(pOutput, pOverlay);
         this->lock();
