@@ -9,7 +9,7 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
-    Release 1-6 (xxx-March-2010???)</h2>
+    Release 1-6 (6-April-2010)</h2>
   <ul>
     <li>General
       <ul>
@@ -55,15 +55,18 @@
           for avoiding overflow when binning. Fixed problem when a single color is extracted
           from a color image; it now removes the unused dimension and changes the colorMode
           to mono.</li>
-        <li>NDPluginColorConvert.  Added conversions from mono to RGB, RGB2, and RGB3, and from RGB1,
-        RGB, and RGB3 to mono. Previously this plugin only built on Linux and WIN32.  Now it builds and
-        does all conversions except Bayer on all architectures.  Bayer conversion is restricted to
-        Linux and WIN32.</li>
+        <li>NDPluginColorConvert. Added conversions from mono to RGB1, RGB2, and RGB3, and
+          from RGB1, RGB2, and RGB3 to mono. Previously this plugin only built on Linux and
+          WIN32. Now it builds and does all conversions except Bayer on all architectures.
+          Bayer conversion is restricted to Linux and WIN32.</li>
         <li>Added new NDPluginStats plugin. This plugin calculates statistics on an array.
           It replaces the statistics calculations that were previously performed in the ROI
-          plugin. It also adds new statistics, including the centroid position and width.
-          Thanks to Stephen Mudie from the Australian Synchrotron and John Dobbins from Cornell
-          for the initial versions of these calculations.</li>
+          plugin. It adds new statistics, including the centroid position and width. It also
+          computes X and Y profiles, including average profiles, profiles at the centroid
+          position, and profiles at a user-defined cursor position. Thanks to Stephen Mudie
+          from the Australian Synchrotron, John Dobbins from Cornell, and Huijuan Xu from
+          Brookhaven National Lab for the initial versions
+          of these calculations.</li>
         <li>Added new NDPluginProcess plugin. This plugin does arithmetic processing on arrays:
           <ul>
             <li>Background subtraction.</li>
@@ -80,10 +83,26 @@
           multiple cursors, user-defined boxes, etc.</li>
       </ul>
     </li>
+    <li>Example IOCs
+      <ul>
+        <li>Greatly simplified the st.cmd and auto_settings.req files for each IOC. This was
+          done by creating two new files: iocBoot/commonPlugins.cmd and iocBoot/commonPlugin_settings.req.
+          These files define a common set of plugins that are loaded for all example IOCs.
+          They load all of the plugins except the NDPluginStdArrays plugin, because that plugin
+          needs to have its data type and waveform size matched to the specific detector.</li>
+      </ul>
+    </li>
+    <li>medm screens
+      <ul>
+        <li>Created medm screen "components" which are used in actual screens via the "composite
+          file" mechanism wherever possible. This simplifies the maintenance of the medm screens
+          for detectors and plugins.</li>
+      </ul>
+    </li>
     <li>Viewers
       <ul>
-        <li>Fixed a bug in the ImageJ EPICS_AD_Viewer.java that required restarting the plugin if
-          it was told to start displaying before any frames had been acquired by the IOC.</li>
+        <li>Fixed a bug in the ImageJ EPICS_AD_Viewer.java that required restarting the plugin
+          if it was told to start displaying before any frames had been acquired by the IOC.</li>
       </ul>
     </li>
     <li>Internals
