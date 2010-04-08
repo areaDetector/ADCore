@@ -50,6 +50,7 @@ typedef enum {
      * a file name that order using the format specification in NDFileTemplate.
      * For example NDFileTemplate might be "%s%s_%d.tif" */
 #define NDFilePathString        "FILE_PATH"         /**< (asynOctet,    r/w) The file path */
+#define NDFilePathExistsString  "FILE_PATH_EXISTS"  /**< (asynInt32,    r/w) File path exists? */
 #define NDFileNameString        "FILE_NAME"         /**< (asynOctet,    r/w) The file name */
 #define NDFileNumberString      "FILE_NUMBER"       /**< (asynInt32,    r/w) The next file number */
 #define NDFileTemplateString    "FILE_TEMPLATE"     /**< (asynOctet,    r/w) The file format template; C-style format string */
@@ -89,6 +90,7 @@ public:
     virtual void report(FILE *fp, int details);
 
     /* These are the methods that are new to this class */
+    virtual int checkPath();
     virtual int createFileName(int maxChars, char *fullFileName);
     virtual int createFileName(int maxChars, char *filePath, char *fileName);
     virtual int readNDAttributesFile(const char *fileName);
@@ -110,6 +112,7 @@ protected:
     int NDBayerPattern;
     int NDArrayCounter;
     int NDFilePath;
+    int NDFilePathExists;
     int NDFileName;
     int NDFileNumber;
     int NDFileTemplate;
