@@ -4,29 +4,24 @@ Firewire (Windows) driver:
 - Not working correctly for AcquireTime initially - absolute/device mode
   problem
 
-Prosilica driver:
-- Switching 8/16 bits does not work until size or some other PV is processed.
-
-- Transform plugin: write documentation
-
-- Add cross-sections to Stats plugin?
-
-- Prosilica once I fixed stale frame bug it won't exit when acquiring if very
-  busy
-
-- Change startup scripts, auto_settings.req, ADTop.adl and medm screens for
-  every detector
-
-
 Longer term:
 
     General
 
 - Supports 64-bits
 
+- Redo locking mechanism so plugins can reprocess data when something changes?
+  - One lock for parameter library, another lock for messageQueue, etc?
+  - Make overlay plugin do updates when values are changed even if new frame not acquired, etc.
+
 - Document NeXus file plugin - add XML file documentation
 
+- Transform plugin: write documentation
+
 - Performance measurements
+
+- Prosilica once I fixed stale frame bug it won't exit when acquiring if very
+  busy
 
 - Implement and improve connection management
 
