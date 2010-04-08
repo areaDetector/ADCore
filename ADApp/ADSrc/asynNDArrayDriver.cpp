@@ -27,10 +27,11 @@
 
 static const char *driverName = "asynNDArrayDriver";
 
-/** Check a file path.
-  * \param[in] filePath  The path to be checked.
+/** Checks whether the directory specified NDFilePath parameter exists.
   * 
-  * This is a convenience function that determines if the specified file path exists.
+  * This is a convenience function that determinesthe directory specified NDFilePath parameter exists.
+  * It sets the value of NDFilePathExists to 0 (does not exist) or 1 (exists).  Returns a error status
+  * if the directory does not exist.
   */
 int asynNDArrayDriver::checkPath()
 {
