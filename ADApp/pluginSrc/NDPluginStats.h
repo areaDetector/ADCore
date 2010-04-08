@@ -40,8 +40,9 @@ typedef enum {
 #define NDPluginStatsCentroidThresholdString  "CENTROID_THRESHOLD"  /* (asynFloat64,      r/w) Threshold when computing centroids */
 #define NDPluginStatsCentroidXString          "CENTROIDX_VALUE"     /* (asynFloat64,      r/o) X centroid */
 #define NDPluginStatsCentroidYString          "CENTROIDY_VALUE"     /* (asynFloat64,      r/o) Y centroid */
-#define NDPluginStatsSigmaXString             "SIGMAX_VALUE"        /* (asynFloat64,      r/o) X sigma */
-#define NDPluginStatsSigmaYString             "SIGMAY_VALUE"        /* (asynFloat64,      r/o) Y sigma */
+#define NDPluginStatsSigmaXString             "SIGMAX_VALUE"        /* (asynFloat64,      r/o) Sigma X */
+#define NDPluginStatsSigmaYString             "SIGMAY_VALUE"        /* (asynFloat64,      r/o) Sigma Y */
+#define NDPluginStatsSigmaXYString            "SIGMAXY_VALUE"       /* (asynFloat64,      r/o) Sigma XY */
     
 /* Profiles*/   
 #define NDPluginStatsComputeProfilesString    "COMPUTE_PROFILES"    /* (asynInt32,        r/w) Compute profiles? */
@@ -114,6 +115,7 @@ protected:
     int NDPluginStatsCentroidY;
     int NDPluginStatsSigmaX;
     int NDPluginStatsSigmaY;
+    int NDPluginStatsSigmaXY;
 
     /* Profiles */
     int NDPluginStatsComputeProfiles;
@@ -150,6 +152,7 @@ private:
     double  centroidY;
     double  sigmaX;
     double  sigmaY;
+    double  sigmaXY;
     double  *profileX[MAX_PROFILE_TYPES];
     double  *profileY[MAX_PROFILE_TYPES];
     int profileSizeX;
