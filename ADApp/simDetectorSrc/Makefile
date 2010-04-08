@@ -51,6 +51,9 @@ simDetectorApp_LIBS_Linux        += tiff jpeg z
 # To use system versions of these libraries use this line
 #simDetectorApp_SYS_LIBS_Linux    += tiff jpeg z
 
+simDetectorApp_LIBS_solaris        += NeXus hdf5 jpeg z
+simDetectorApp_SYS_LIBS_solaris    += tiff
+
 #=============================
 
 include $(TOP)/configure/RULES
