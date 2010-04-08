@@ -166,6 +166,14 @@ record(ai, "$(P)$(R)SigmaY_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(ai, "$(P)$(R)SigmaXY_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIGMAXY_VALUE")
+   field(PREC, "1")
+   field(SCAN, "I/O Intr")
+}
+
 ###################################################################
 #  These records control whether profiles are computed            #
 ###################################################################
