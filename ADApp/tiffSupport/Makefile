@@ -17,9 +17,11 @@ INC_cygwin32 += jpeglib.h jconfig.h jmorecfg.h jerror.h
 # Comment them out to use system versions of the libraries
 INC_Linux    += tiff.h tiffio.h tiffvers.h tiffconf.h tiffconf-32.h tiffconf-64.h 
 INC_Linux    += jpeglib.h jconfig.h jmorecfg.h jerror.h 
+INC_solaris  += jconfig.h jerror.h jmorecfg.h jpeglib.h szlib.h zconf.h zlib.h
 
 LIB_INSTALLS_WIN32    += ../libtiff.lib  ../jpeg.lib
 LIB_INSTALLS_cygwin32 += ../libtiff.lib  ../jpeg.lib
+LIB_INSTALLS_solaris += ../os/solaris-sparc/libjpeg.a ../os/solaris-sparc/libsz.a ../os/solaris-sparc/libz.a
 # Use this line to install local versions of these libraries
 # Comment it out to use system versions of the libraries
 ifeq ($(T_A), linux-x86)
