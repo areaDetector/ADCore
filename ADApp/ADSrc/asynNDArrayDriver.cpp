@@ -12,6 +12,8 @@
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include <epicsString.h>
 #include <epicsMutex.h>
@@ -24,6 +26,31 @@
 #include "asynNDArrayDriver.h"
 
 static const char *driverName = "asynNDArrayDriver";
+
+/** Check a file path.
+  * \param[in] filePath  The path to be checked.
+  * 
+  * This is a convenience function that determines if the specified file path exists.
+  */
+int asynNDArrayDriver::checkPath()
+{
+    /* Formats a complete file name from the components defined in NDStdDriverParams */
+    int status = asynError;
+    char filePath[MAX_FILENAME_LEN];
+    struct stat buff;
+    int isDir=0;
+    int pathExists=0;
+    
+    status = getStringParam(NDFilePath, sizeof(filePath), filePath); 
+    status = stat(filePath, &buff);
+    if (!status) isDir = (S_IFDIR & buff.st_mode);
+    if (!status && isDir) {
+        pathExists = 1;
+        status = asynSuccess;
+    }
+    setIntegerParam(NDFilePathExists, pathExists);
+    return(status);   
+}
 
 /** Build a file name from component parts.
   * \param[in] maxChars  The size of the fullFileName string.
@@ -45,7 +72,8 @@ int asynNDArrayDriver::createFileName(int maxChars, char *fullFileName)
     int autoIncrement;
     int len;
     
-    status |= getStringParam(NDFilePath, sizeof(filePath), filePath); 
+    this->checkPath();
+    status |= getStringParam(NDFilePath, sizeof(filePath), filePath);
     status |= getStringParam(NDFileName, sizeof(fileName), fileName); 
     status |= getStringParam(NDFileTemplate, sizeof(fileTemplate), fileTemplate); 
     status |= getIntegerParam(NDFileNumber, &fileNumber);
@@ -84,6 +112,7 @@ int asynNDArrayDriver::createFileName(int maxChars, char *filePath, char *fileNa
     int autoIncrement;
     int len;
     
+    this->checkPath();
     status |= getStringParam(NDFilePath, maxChars, filePath); 
     status |= getStringParam(NDFileName, sizeof(name), name); 
     status |= getStringParam(NDFileTemplate, sizeof(fileTemplate), fileTemplate); 
@@ -270,8 +299,9 @@ asynStatus asynNDArrayDriver::writeOctet(asynUser *pasynUser, const char *value,
 
     if (function == NDAttributesFile) {
         this->readNDAttributesFile(value);
+    } else if (function == NDFilePath) {
+        this->checkPath();
     }
-    
      /* Do callbacks so higher layers see any changes */
     status = (asynStatus)callParamCallbacks(addr, addr);
 
@@ -407,6 +437,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     createParam(NDBayerPatternString,   asynParamInt32, &NDBayerPattern);
     createParam(NDArrayCounterString,   asynParamInt32, &NDArrayCounter);
     createParam(NDFilePathString,       asynParamOctet, &NDFilePath);
+    createParam(NDFilePathExistsString, asynParamInt32, &NDFilePathExists);
     createParam(NDFileNameString,       asynParamOctet, &NDFileName);
     createParam(NDFileNumberString,     asynParamInt32, &NDFileNumber);
     createParam(NDFileTemplateString,   asynParamOctet, &NDFileTemplate);
