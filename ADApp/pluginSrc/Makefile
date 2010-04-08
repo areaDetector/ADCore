@@ -40,6 +40,14 @@ NDPlugin_LIBS += netCDF
 NDPlugin_LIBS += asyn
 NDPlugin_LIBS += $(EPICS_BASE_IOC_LIBS)
 
+NDPlugin_LIBS_solaris += NeXus hdf5_cpp hdf5
+NDPlugin_LIBS_vxWorks += ADBase netCDF asyn $(EPICS_BASE_IOC_LIBS)
+
+NDPlugin_SYS_LIBS_solaris   += tiff
+
+# use libs supplied with areaDetector (in tiffSupport)
+NDPlugin_LIBS_solaris   += jpeg sz z
+
 include $(TOP)/configure/RULES
 #----------------------------------------
 #  ADD RULES AFTER THIS LINE
