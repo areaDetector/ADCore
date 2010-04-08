@@ -391,72 +391,50 @@ composite {
 		}
 	}
 }
-composite {
+"text entry" {
+	object {
+		x=556
+		y=73
+		width=500
+		height=20
+	}
+	control {
+		chan="$(P)$(R)FilePath"
+		clr=14
+		bclr=51
+	}
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=556
+		y=50
+		width=385
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)FilePath_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
 	object {
 		x=457
-		y=50
-		width=599
-		height=43
+		y=73
+		width=90
+		height=20
 	}
-	"composite name"=""
-	children {
-		composite {
-			object {
-				x=556
-				y=50
-				width=500
-				height=43
-			}
-			"composite name"=""
-			children {
-				"text entry" {
-					object {
-						x=556
-						y=73
-						width=500
-						height=20
-					}
-					control {
-						chan="$(P)$(R)FilePath"
-						clr=14
-						bclr=51
-					}
-					format="string"
-					limits {
-					}
-				}
-				"text update" {
-					object {
-						x=556
-						y=50
-						width=500
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)FilePath_RBV"
-						clr=54
-						bclr=4
-					}
-					format="string"
-					limits {
-					}
-				}
-			}
-		}
-		text {
-			object {
-				x=457
-				y=73
-				width=90
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="File path"
-			align="horiz. right"
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="File path"
+	align="horiz. right"
 }
 rectangle {
 	object {
@@ -832,4 +810,43 @@ composite {
 	}
 	"composite name"=""
 	"composite file"="NDPluginBase.adl"
+}
+composite {
+	object {
+		x=945
+		y=50
+		width=115
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=945
+				y=50
+				width=70
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Exists:"
+		}
+		"text update" {
+			object {
+				x=1020
+				y=50
+				width=40
+				height=20
+			}
+			monitor {
+				chan="$(P)$(R)FilePathExists_RBV"
+				clr=14
+				bclr=2
+			}
+			clrmod="alarm"
+			limits {
+			}
+		}
+	}
 }

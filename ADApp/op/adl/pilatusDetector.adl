@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADApp/op/adl/pilatusDetector2.adl"
+	name="/home/epics/devel/areaDetector/ADApp/op/adl/pilatusDetector.adl"
 	version=030102
 }
 display {
@@ -387,10 +387,10 @@ composite {
 }
 composite {
 	object {
-		x=5
-		y=816
-		width=690
-		height=230
+		x=20
+		y=823
+		width=109
+		height=21
 	}
 	"composite name"=""
 	children {
@@ -403,441 +403,408 @@ composite {
 			}
 			"composite name"=""
 			children {
-				composite {
+				rectangle {
 					object {
 						x=20
 						y=823
 						width=109
 						height=21
 					}
-					"composite name"=""
-					children {
-						rectangle {
-							object {
-								x=20
-								y=823
-								width=109
-								height=21
-							}
-							"basic attribute" {
-								clr=2
-							}
-						}
-					}
-				}
-				text {
-					object {
-						x=54
-						y=823
-						width=41
-						height=20
-					}
 					"basic attribute" {
-						clr=54
-					}
-					textix="File"
-					align="horiz. centered"
-				}
-			}
-		}
-		composite {
-			object {
-				x=33
-				y=1022
-				width=653
-				height=20
-			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=33
-						y=1022
-						width=133
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Last filename"
-					align="horiz. right"
-				}
-				"text update" {
-					object {
-						x=175
-						y=1023
-						width=511
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)FullFileName_RBV"
-						clr=54
-						bclr=4
-					}
-					format="string"
-					limits {
+						clr=2
 					}
 				}
 			}
 		}
 		text {
 			object {
-				x=12
-				y=997
-				width=153
+				x=54
+				y=823
+				width=41
+				height=20
+			}
+			"basic attribute" {
+				clr=54
+			}
+			textix="File"
+			align="horiz. centered"
+		}
+	}
+}
+composite {
+	object {
+		x=33
+		y=1022
+		width=653
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=33
+				y=1022
+				width=133
 				height=20
 			}
 			"basic attribute" {
 				clr=14
 			}
-			textix="Filename format"
+			textix="Last filename"
 			align="horiz. right"
 		}
-		composite {
+		"text update" {
+			object {
+				x=175
+				y=1023
+				width=511
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)FullFileName_RBV"
+				clr=54
+				bclr=4
+			}
+			format="string"
+			limits {
+			}
+		}
+	}
+}
+text {
+	object {
+		x=12
+		y=997
+		width=153
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Filename format"
+	align="horiz. right"
+}
+composite {
+	object {
+		x=175
+		y=974
+		width=164
+		height=43
+	}
+	"composite name"=""
+	children {
+		"text update" {
 			object {
 				x=175
 				y=974
 				width=164
-				height=43
+				height=18
 			}
-			"composite name"=""
-			children {
-				"text update" {
-					object {
-						x=175
-						y=974
-						width=164
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)FileTemplate_RBV"
-						clr=54
-						bclr=4
-					}
-					format="string"
-					limits {
-					}
-				}
-				"text entry" {
-					object {
-						x=175
-						y=997
-						width=164
-						height=20
-					}
-					control {
-						chan="$(P)$(R)FileTemplate"
-						clr=14
-						bclr=51
-					}
-					format="string"
-					limits {
-					}
-				}
+			monitor {
+				chan="$(P)$(R)FileTemplate_RBV"
+				clr=54
+				bclr=4
+			}
+			format="string"
+			limits {
 			}
 		}
-		composite {
+		"text entry" {
+			object {
+				x=175
+				y=997
+				width=164
+				height=20
+			}
+			control {
+				chan="$(P)$(R)FileTemplate"
+				clr=14
+				bclr=51
+			}
+			format="string"
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=22
+		y=949
+		width=305
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
 			object {
 				x=22
 				y=949
-				width=305
+				width=143
 				height=20
 			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=22
-						y=949
-						width=143
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Auto increment"
-					align="horiz. right"
-				}
-				menu {
-					object {
-						x=175
-						y=949
-						width=66
-						height=20
-					}
-					control {
-						chan="$(P)$(R)AutoIncrement"
-						clr=14
-						bclr=51
-					}
-				}
-				"text update" {
-					object {
-						x=245
-						y=950
-						width=82
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)AutoIncrement_RBV"
-						clr=54
-						bclr=4
-					}
-					limits {
-					}
-				}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Auto increment"
+			align="horiz. right"
+		}
+		menu {
+			object {
+				x=175
+				y=949
+				width=66
+				height=20
+			}
+			control {
+				chan="$(P)$(R)AutoIncrement"
+				clr=14
+				bclr=51
 			}
 		}
-		composite {
+		"text update" {
+			object {
+				x=245
+				y=950
+				width=82
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)AutoIncrement_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=53
+		y=922
+		width=270
+		height=22
+	}
+	"composite name"=""
+	children {
+		text {
 			object {
 				x=53
+				y=923
+				width=112
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Next file #"
+			align="horiz. right"
+		}
+		"text entry" {
+			object {
+				x=175
 				y=922
-				width=270
+				width=61
 				height=22
 			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=53
-						y=923
-						width=112
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Next file #"
-					align="horiz. right"
-				}
-				"text entry" {
-					object {
-						x=175
-						y=922
-						width=61
-						height=22
-					}
-					control {
-						chan="$(P)$(R)FileNumber"
-						clr=14
-						bclr=51
-					}
-					limits {
-					}
-				}
-				"text update" {
-					object {
-						x=241
-						y=924
-						width=82
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)FileNumber_RBV"
-						clr=54
-						bclr=4
-					}
-					limits {
-					}
-				}
+			control {
+				chan="$(P)$(R)FileNumber"
+				clr=14
+				bclr=51
 			}
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=241
+				y=924
+				width=82
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)FileNumber_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=73
+		y=874
+		width=612
+		height=43
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=73
+				y=897
+				width=92
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="File name"
+			align="horiz. right"
 		}
 		composite {
 			object {
-				x=73
+				x=174
 				y=874
-				width=612
+				width=511
 				height=43
 			}
 			"composite name"=""
 			children {
-				text {
+				"text entry" {
 					object {
-						x=73
+						x=174
 						y=897
-						width=92
+						width=511
 						height=20
 					}
-					"basic attribute" {
+					control {
+						chan="$(P)$(R)FileName"
 						clr=14
+						bclr=51
 					}
-					textix="File name"
-					align="horiz. right"
+					format="string"
+					limits {
+					}
 				}
-				composite {
+				"text update" {
 					object {
 						x=174
 						y=874
 						width=511
-						height=43
-					}
-					"composite name"=""
-					children {
-						"text entry" {
-							object {
-								x=174
-								y=897
-								width=511
-								height=20
-							}
-							control {
-								chan="$(P)$(R)FileName"
-								clr=14
-								bclr=51
-							}
-							format="string"
-							limits {
-							}
-						}
-						"text update" {
-							object {
-								x=174
-								y=874
-								width=511
-								height=18
-							}
-							monitor {
-								chan="$(P)$(R)FileName_RBV"
-								clr=54
-								bclr=4
-							}
-							format="string"
-							limits {
-							}
-						}
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=73
-				y=826
-				width=612
-				height=43
-			}
-			"composite name"=""
-			children {
-				composite {
-					object {
-						x=174
-						y=826
-						width=511
-						height=43
-					}
-					"composite name"=""
-					children {
-						"text entry" {
-							object {
-								x=174
-								y=849
-								width=511
-								height=20
-							}
-							control {
-								chan="$(P)$(R)FilePath"
-								clr=14
-								bclr=51
-							}
-							format="string"
-							limits {
-							}
-						}
-						"text update" {
-							object {
-								x=174
-								y=826
-								width=511
-								height=18
-							}
-							monitor {
-								chan="$(P)$(R)FilePath_RBV"
-								clr=54
-								bclr=4
-							}
-							format="string"
-							limits {
-							}
-						}
-					}
-				}
-				text {
-					object {
-						x=73
-						y=849
-						width=92
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="File path"
-					align="horiz. right"
-				}
-			}
-		}
-		rectangle {
-			object {
-				x=5
-				y=816
-				width=690
-				height=230
-			}
-			"basic attribute" {
-				clr=14
-				fill="outline"
-			}
-		}
-		composite {
-			object {
-				x=387
-				y=997
-				width=286
-				height=20
-			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=387
-						y=997
-						width=112
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="File format"
-					align="horiz. right"
-				}
-				"text update" {
-					object {
-						x=591
-						y=998
-						width=82
 						height=18
 					}
 					monitor {
-						chan="$(P)$(R)FileFormat_RBV"
+						chan="$(P)$(R)FileName_RBV"
 						clr=54
 						bclr=4
 					}
+					format="string"
 					limits {
 					}
 				}
-				menu {
-					object {
-						x=504
-						y=997
-						width=82
-						height=20
-					}
-					control {
-						chan="$(P)$(R)FileFormat"
-						clr=14
-						bclr=51
-					}
-				}
+			}
+		}
+	}
+}
+"text entry" {
+	object {
+		x=174
+		y=849
+		width=511
+		height=20
+	}
+	control {
+		chan="$(P)$(R)FilePath"
+		clr=14
+		bclr=51
+	}
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=174
+		y=826
+		width=395
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)FilePath_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=73
+		y=849
+		width=92
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="File path"
+	align="horiz. right"
+}
+rectangle {
+	object {
+		x=5
+		y=816
+		width=690
+		height=230
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+composite {
+	object {
+		x=387
+		y=997
+		width=286
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=387
+				y=997
+				width=112
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="File format"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=591
+				y=998
+				width=82
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)FileFormat_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+		menu {
+			object {
+				x=504
+				y=997
+				width=82
+				height=20
+			}
+			control {
+				chan="$(P)$(R)FileFormat"
+				clr=14
+				bclr=51
 			}
 		}
 	}
@@ -1971,6 +1938,45 @@ composite {
 				bclr=51
 			}
 			format="string"
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=575
+		y=825
+		width=115
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=575
+				y=825
+				width=70
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Exists:"
+		}
+		"text update" {
+			object {
+				x=650
+				y=825
+				width=40
+				height=20
+			}
+			monitor {
+				chan="$(P)$(R)FilePathExists_RBV"
+				clr=14
+				bclr=2
+			}
+			clrmod="alarm"
 			limits {
 			}
 		}

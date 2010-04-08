@@ -403,493 +403,493 @@ text {
 	limits {
 	}
 }
-composite {
+rectangle {
+	object {
+		x=303
+		y=601
+		width=105
+		height=21
+	}
+	"basic attribute" {
+		clr=2
+	}
+}
+rectangle {
 	object {
 		x=5
 		y=595
 		width=690
-		height=495
+		height=230
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+text {
+	object {
+		x=276
+		y=601
+		width=157
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="Status"
+	align="horiz. centered"
+}
+composite {
+	object {
+		x=403
+		y=637
+		width=269
+		height=120
 	}
 	"composite name"=""
 	children {
-		rectangle {
-			object {
-				x=303
-				y=601
-				width=105
-				height=21
-			}
-			"basic attribute" {
-				clr=2
-			}
-		}
-		rectangle {
-			object {
-				x=5
-				y=595
-				width=690
-				height=230
-			}
-			"basic attribute" {
-				clr=14
-				fill="outline"
-			}
-		}
-		text {
-			object {
-				x=276
-				y=601
-				width=157
-				height=20
-			}
-			"basic attribute" {
-				clr=54
-			}
-			textix="Status"
-			align="horiz. centered"
-		}
 		composite {
 			object {
 				x=403
 				y=637
-				width=269
-				height=120
+				width=216
+				height=20
 			}
 			"composite name"=""
 			children {
-				composite {
+				text {
 					object {
 						x=403
 						y=637
-						width=216
+						width=140
 						height=20
 					}
-					"composite name"=""
-					children {
-						text {
-							object {
-								x=403
-								y=637
-								width=140
-								height=20
-							}
-							"basic attribute" {
-								clr=14
-							}
-							textix="Time remaining"
-							align="horiz. right"
-						}
-						"text update" {
-							object {
-								x=552
-								y=638
-								width=67
-								height=18
-							}
-							monitor {
-								chan="$(P)$(R)TimeRemaining_RBV"
-								clr=54
-								bclr=4
-							}
-							limits {
-							}
-						}
+					"basic attribute" {
+						clr=14
 					}
+					textix="Time remaining"
+					align="horiz. right"
 				}
-				composite {
+				"text update" {
 					object {
-						x=403
-						y=662
-						width=269
-						height=20
+						x=552
+						y=638
+						width=67
+						height=18
 					}
-					"composite name"=""
-					children {
-						text {
-							object {
-								x=403
-								y=662
-								width=140
-								height=20
-							}
-							"basic attribute" {
-								clr=14
-							}
-							textix="Readout status"
-							align="horiz. right"
-						}
-						"text update" {
-							object {
-								x=552
-								y=663
-								width=120
-								height=18
-							}
-							monitor {
-								chan="$(P)$(R)MarReadoutStatus_RBV"
-								clr=16
-								bclr=2
-							}
-							clrmod="alarm"
-							align="horiz. centered"
-							format="string"
-							limits {
-							}
-						}
+					monitor {
+						chan="$(P)$(R)TimeRemaining_RBV"
+						clr=54
+						bclr=4
 					}
-				}
-				composite {
-					object {
-						x=403
-						y=687
-						width=269
-						height=20
-					}
-					"composite name"=""
-					children {
-						text {
-							object {
-								x=403
-								y=687
-								width=140
-								height=20
-							}
-							"basic attribute" {
-								clr=14
-							}
-							textix="Correct status"
-							align="horiz. right"
-						}
-						"text update" {
-							object {
-								x=552
-								y=688
-								width=120
-								height=18
-							}
-							monitor {
-								chan="$(P)$(R)MarCorrectStatus_RBV"
-								clr=16
-								bclr=2
-							}
-							clrmod="alarm"
-							align="horiz. centered"
-							format="string"
-							limits {
-							}
-						}
-					}
-				}
-				composite {
-					object {
-						x=403
-						y=712
-						width=269
-						height=20
-					}
-					"composite name"=""
-					children {
-						text {
-							object {
-								x=403
-								y=712
-								width=140
-								height=20
-							}
-							"basic attribute" {
-								clr=14
-							}
-							textix="Writing status"
-							align="horiz. right"
-						}
-						"text update" {
-							object {
-								x=552
-								y=713
-								width=120
-								height=18
-							}
-							monitor {
-								chan="$(P)$(R)MarWritingStatus_RBV"
-								clr=16
-								bclr=2
-							}
-							clrmod="alarm"
-							align="horiz. centered"
-							format="string"
-							limits {
-							}
-						}
-					}
-				}
-				composite {
-					object {
-						x=403
-						y=737
-						width=269
-						height=20
-					}
-					"composite name"=""
-					children {
-						text {
-							object {
-								x=403
-								y=737
-								width=140
-								height=20
-							}
-							"basic attribute" {
-								clr=14
-							}
-							textix="Dezinger status"
-							align="horiz. right"
-						}
-						"text update" {
-							object {
-								x=552
-								y=738
-								width=120
-								height=18
-							}
-							monitor {
-								chan="$(P)$(R)MarDezingerStatus_RBV"
-								clr=16
-								bclr=2
-							}
-							clrmod="alarm"
-							align="horiz. centered"
-							format="string"
-							limits {
-							}
-						}
+					limits {
 					}
 				}
 			}
 		}
+		composite {
+			object {
+				x=403
+				y=662
+				width=269
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=403
+						y=662
+						width=140
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Readout status"
+					align="horiz. right"
+				}
+				"text update" {
+					object {
+						x=552
+						y=663
+						width=120
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)MarReadoutStatus_RBV"
+						clr=16
+						bclr=2
+					}
+					clrmod="alarm"
+					align="horiz. centered"
+					format="string"
+					limits {
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=403
+				y=687
+				width=269
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=403
+						y=687
+						width=140
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Correct status"
+					align="horiz. right"
+				}
+				"text update" {
+					object {
+						x=552
+						y=688
+						width=120
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)MarCorrectStatus_RBV"
+						clr=16
+						bclr=2
+					}
+					clrmod="alarm"
+					align="horiz. centered"
+					format="string"
+					limits {
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=403
+				y=712
+				width=269
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=403
+						y=712
+						width=140
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Writing status"
+					align="horiz. right"
+				}
+				"text update" {
+					object {
+						x=552
+						y=713
+						width=120
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)MarWritingStatus_RBV"
+						clr=16
+						bclr=2
+					}
+					clrmod="alarm"
+					align="horiz. centered"
+					format="string"
+					limits {
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=403
+				y=737
+				width=269
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=403
+						y=737
+						width=140
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Dezinger status"
+					align="horiz. right"
+				}
+				"text update" {
+					object {
+						x=552
+						y=738
+						width=120
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)MarDezingerStatus_RBV"
+						clr=16
+						bclr=2
+					}
+					clrmod="alarm"
+					align="horiz. centered"
+					format="string"
+					limits {
+					}
+				}
+			}
+		}
+	}
+}
+text {
+	object {
+		x=49
+		y=637
+		width=140
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Detector state"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=196
+		y=638
+		width=120
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)DetectorState_RBV"
+		clr=16
+		bclr=2
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+composite {
+	object {
+		x=69
+		y=662
+		width=247
+		height=20
+	}
+	"composite name"=""
+	children {
+		"text update" {
+			object {
+				x=196
+				y=663
+				width=120
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)MarState_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			format="hexadecimal"
+			limits {
+			}
+		}
 		text {
 			object {
-				x=49
-				y=637
-				width=140
+				x=69
+				y=662
+				width=120
 				height=20
 			}
 			"basic attribute" {
 				clr=14
 			}
-			textix="Detector state"
+			textix="Server state"
 			align="horiz. right"
 		}
-		"text update" {
+	}
+}
+"text update" {
+	object {
+		x=196
+		y=688
+		width=120
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)MarStatus_RBV"
+		clr=16
+		bclr=2
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=79
+		y=687
+		width=110
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Task status"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=196
+		y=713
+		width=120
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)MarAcquireStatus_RBV"
+		clr=16
+		bclr=2
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=49
+		y=712
+		width=140
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Acquire status"
+	align="horiz. right"
+}
+composite {
+	object {
+		x=54
+		y=770
+		width=593
+		height=45
+	}
+	"composite name"=""
+	children {
+		composite {
 			object {
-				x=196
-				y=638
-				width=120
-				height=18
+				x=74
+				y=770
+				width=573
+				height=20
 			}
-			monitor {
-				chan="$(P)$(R)DetectorState_RBV"
-				clr=16
-				bclr=2
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=74
+						y=770
+						width=170
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="To marCCD server:"
+					align="horiz. right"
+				}
+				"text update" {
+					object {
+						x=247
+						y=773
+						width=400
+						height=15
+					}
+					monitor {
+						chan="$(P)$(R)StringToServer_RBV"
+						clr=14
+						bclr=51
+					}
+					format="string"
+					limits {
+					}
+				}
 			}
 		}
 		composite {
 			object {
-				x=69
-				y=662
-				width=247
+				x=54
+				y=795
+				width=593
 				height=20
 			}
 			"composite name"=""
 			children {
 				"text update" {
 					object {
-						x=196
-						y=663
-						width=120
-						height=18
+						x=247
+						y=798
+						width=400
+						height=15
 					}
 					monitor {
-						chan="$(P)$(R)MarState_RBV"
-						clr=54
-						bclr=4
+						chan="$(P)$(R)StringFromServer_RBV"
+						clr=14
+						bclr=51
 					}
-					align="horiz. centered"
-					format="hexadecimal"
+					format="string"
 					limits {
 					}
 				}
 				text {
 					object {
-						x=69
-						y=662
-						width=120
+						x=54
+						y=795
+						width=190
 						height=20
 					}
 					"basic attribute" {
 						clr=14
 					}
-					textix="Server state"
+					textix="From marCCD server:"
 					align="horiz. right"
 				}
 			}
 		}
-		"text update" {
-			object {
-				x=196
-				y=688
-				width=120
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)MarStatus_RBV"
-				clr=16
-				bclr=2
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			format="string"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=79
-				y=687
-				width=110
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Task status"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=196
-				y=713
-				width=120
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)MarAcquireStatus_RBV"
-				clr=16
-				bclr=2
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			format="string"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=49
-				y=712
-				width=140
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Acquire status"
-			align="horiz. right"
-		}
-		composite {
-			object {
-				x=54
-				y=770
-				width=593
-				height=45
-			}
-			"composite name"=""
-			children {
-				composite {
-					object {
-						x=74
-						y=770
-						width=573
-						height=20
-					}
-					"composite name"=""
-					children {
-						text {
-							object {
-								x=74
-								y=770
-								width=170
-								height=20
-							}
-							"basic attribute" {
-								clr=14
-							}
-							textix="To marCCD server:"
-							align="horiz. right"
-						}
-						"text update" {
-							object {
-								x=247
-								y=773
-								width=400
-								height=15
-							}
-							monitor {
-								chan="$(P)$(R)StringToServer_RBV"
-								clr=14
-								bclr=51
-							}
-							format="string"
-							limits {
-							}
-						}
-					}
-				}
-				composite {
-					object {
-						x=54
-						y=795
-						width=593
-						height=20
-					}
-					"composite name"=""
-					children {
-						"text update" {
-							object {
-								x=247
-								y=798
-								width=400
-								height=15
-							}
-							monitor {
-								chan="$(P)$(R)StringFromServer_RBV"
-								clr=14
-								bclr=51
-							}
-							format="string"
-							limits {
-							}
-						}
-						text {
-							object {
-								x=54
-								y=795
-								width=190
-								height=20
-							}
-							"basic attribute" {
-								clr=14
-							}
-							textix="From marCCD server:"
-							align="horiz. right"
-						}
-					}
-				}
-			}
-		}
+	}
+}
+composite {
+	object {
+		x=20
+		y=837
+		width=109
+		height=21
+	}
+	"composite name"=""
+	children {
 		composite {
 			object {
 				x=20
@@ -899,604 +899,571 @@ composite {
 			}
 			"composite name"=""
 			children {
-				composite {
+				rectangle {
 					object {
 						x=20
 						y=837
 						width=109
 						height=21
 					}
-					"composite name"=""
-					children {
-						rectangle {
-							object {
-								x=20
-								y=837
-								width=109
-								height=21
-							}
-							"basic attribute" {
-								clr=2
-							}
-						}
-					}
-				}
-				text {
-					object {
-						x=54
-						y=837
-						width=41
-						height=20
-					}
 					"basic attribute" {
-						clr=54
-					}
-					textix="File"
-					align="horiz. centered"
-				}
-			}
-		}
-		composite {
-			object {
-				x=33
-				y=1036
-				width=653
-				height=20
-			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=33
-						y=1036
-						width=133
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Last filename"
-					align="horiz. right"
-				}
-				"text update" {
-					object {
-						x=175
-						y=1037
-						width=511
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)FullFileName_RBV"
-						clr=54
-						bclr=4
-					}
-					format="string"
-					limits {
+						clr=2
 					}
 				}
 			}
 		}
 		text {
 			object {
-				x=12
-				y=1011
-				width=153
+				x=54
+				y=837
+				width=41
+				height=20
+			}
+			"basic attribute" {
+				clr=54
+			}
+			textix="File"
+			align="horiz. centered"
+		}
+	}
+}
+composite {
+	object {
+		x=33
+		y=1036
+		width=653
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=33
+				y=1036
+				width=133
 				height=20
 			}
 			"basic attribute" {
 				clr=14
 			}
-			textix="Filename format"
+			textix="Last filename"
 			align="horiz. right"
 		}
-		composite {
+		"text update" {
+			object {
+				x=175
+				y=1037
+				width=511
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)FullFileName_RBV"
+				clr=54
+				bclr=4
+			}
+			format="string"
+			limits {
+			}
+		}
+	}
+}
+text {
+	object {
+		x=12
+		y=1011
+		width=153
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Filename format"
+	align="horiz. right"
+}
+composite {
+	object {
+		x=175
+		y=988
+		width=164
+		height=43
+	}
+	"composite name"=""
+	children {
+		"text update" {
 			object {
 				x=175
 				y=988
 				width=164
-				height=43
+				height=18
 			}
-			"composite name"=""
-			children {
-				"text update" {
-					object {
-						x=175
-						y=988
-						width=164
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)FileTemplate_RBV"
-						clr=54
-						bclr=4
-					}
-					format="string"
-					limits {
-					}
-				}
-				"text entry" {
-					object {
-						x=175
-						y=1011
-						width=164
-						height=20
-					}
-					control {
-						chan="$(P)$(R)FileTemplate"
-						clr=14
-						bclr=51
-					}
-					format="string"
-					limits {
-					}
-				}
+			monitor {
+				chan="$(P)$(R)FileTemplate_RBV"
+				clr=54
+				bclr=4
+			}
+			format="string"
+			limits {
 			}
 		}
-		composite {
+		"text entry" {
+			object {
+				x=175
+				y=1011
+				width=164
+				height=20
+			}
+			control {
+				chan="$(P)$(R)FileTemplate"
+				clr=14
+				bclr=51
+			}
+			format="string"
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=22
+		y=963
+		width=305
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
 			object {
 				x=22
 				y=963
-				width=305
-				height=20
-			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=22
-						y=963
-						width=143
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Auto increment"
-					align="horiz. right"
-				}
-				menu {
-					object {
-						x=175
-						y=963
-						width=66
-						height=20
-					}
-					control {
-						chan="$(P)$(R)AutoIncrement"
-						clr=14
-						bclr=51
-					}
-				}
-				"text update" {
-					object {
-						x=245
-						y=964
-						width=82
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)AutoIncrement_RBV"
-						clr=54
-						bclr=4
-					}
-					limits {
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=53
-				y=936
-				width=270
-				height=22
-			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=53
-						y=937
-						width=112
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Next file #"
-					align="horiz. right"
-				}
-				"text entry" {
-					object {
-						x=175
-						y=936
-						width=61
-						height=22
-					}
-					control {
-						chan="$(P)$(R)FileNumber"
-						clr=14
-						bclr=51
-					}
-					limits {
-					}
-				}
-				"text update" {
-					object {
-						x=241
-						y=938
-						width=82
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)FileNumber_RBV"
-						clr=54
-						bclr=4
-					}
-					limits {
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=73
-				y=888
-				width=612
-				height=43
-			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=73
-						y=911
-						width=92
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="File name"
-					align="horiz. right"
-				}
-				composite {
-					object {
-						x=174
-						y=888
-						width=511
-						height=43
-					}
-					"composite name"=""
-					children {
-						"text entry" {
-							object {
-								x=174
-								y=911
-								width=511
-								height=20
-							}
-							control {
-								chan="$(P)$(R)FileName"
-								clr=14
-								bclr=51
-							}
-							format="string"
-							limits {
-							}
-						}
-						"text update" {
-							object {
-								x=174
-								y=888
-								width=511
-								height=18
-							}
-							monitor {
-								chan="$(P)$(R)FileName_RBV"
-								clr=54
-								bclr=4
-							}
-							format="string"
-							limits {
-							}
-						}
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=73
-				y=840
-				width=612
-				height=43
-			}
-			"composite name"=""
-			children {
-				composite {
-					object {
-						x=174
-						y=840
-						width=511
-						height=43
-					}
-					"composite name"=""
-					children {
-						"text entry" {
-							object {
-								x=174
-								y=863
-								width=511
-								height=20
-							}
-							control {
-								chan="$(P)$(R)FilePath"
-								clr=14
-								bclr=51
-							}
-							format="string"
-							limits {
-							}
-						}
-						"text update" {
-							object {
-								x=174
-								y=840
-								width=511
-								height=18
-							}
-							monitor {
-								chan="$(P)$(R)FilePath_RBV"
-								clr=54
-								bclr=4
-							}
-							format="string"
-							limits {
-							}
-						}
-					}
-				}
-				text {
-					object {
-						x=73
-						y=863
-						width=92
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="File path"
-					align="horiz. right"
-				}
-			}
-		}
-		rectangle {
-			object {
-				x=5
-				y=830
-				width=690
-				height=260
-			}
-			"basic attribute" {
-				clr=14
-				fill="outline"
-			}
-		}
-		composite {
-			object {
-				x=387
-				y=1011
-				width=286
-				height=20
-			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=387
-						y=1011
-						width=112
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="File format"
-					align="horiz. right"
-				}
-				"text update" {
-					object {
-						x=591
-						y=1012
-						width=82
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)FileFormat_RBV"
-						clr=54
-						bclr=4
-					}
-					limits {
-					}
-				}
-				menu {
-					object {
-						x=504
-						y=1011
-						width=82
-						height=20
-					}
-					control {
-						chan="$(P)$(R)FileFormat"
-						clr=14
-						bclr=51
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=73
-				y=1061
-				width=163
-				height=20
-			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=73
-						y=1061
-						width=92
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Save file"
-					align="horiz. right"
-				}
-				"message button" {
-					object {
-						x=174
-						y=1061
-						width=62
-						height=20
-					}
-					control {
-						chan="$(P)$(R)WriteFile"
-						clr=14
-						bclr=51
-					}
-					label="Save"
-					press_msg="1"
-				}
-			}
-		}
-		text {
-			object {
-				x=270
-				y=1061
-				width=90
+				width=143
 				height=20
 			}
 			"basic attribute" {
 				clr=14
 			}
-			textix="Auto save"
+			textix="Auto increment"
 			align="horiz. right"
 		}
 		menu {
 			object {
-				x=364
-				y=1061
-				width=64
+				x=175
+				y=963
+				width=66
 				height=20
 			}
 			control {
-				chan="$(P)$(R)AutoSave"
+				chan="$(P)$(R)AutoIncrement"
 				clr=14
 				bclr=51
 			}
 		}
 		"text update" {
 			object {
-				x=433
-				y=1062
-				width=80
+				x=245
+				y=964
+				width=82
 				height=18
 			}
 			monitor {
-				chan="$(P)$(R)AutoSave_RBV"
+				chan="$(P)$(R)AutoIncrement_RBV"
 				clr=54
 				bclr=4
 			}
 			limits {
 			}
 		}
-		composite {
-			object {
-				x=350
-				y=963
-				width=289
-				height=20
-			}
-			"composite name"=""
-			children {
-				"related display" {
-					object {
-						x=569
-						y=963
-						width=70
-						height=20
-					}
-					display[0] {
-						label="Ancillary information"
-						name="marCCDAncillary.adl"
-						args="P=$(P),R=$(R)"
-					}
-					clr=14
-					bclr=51
-				}
-				text {
-					object {
-						x=350
-						y=963
-						width=210
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Ancillary information"
-					align="horiz. right"
-				}
-			}
-		}
+	}
+}
+composite {
+	object {
+		x=53
+		y=936
+		width=270
+		height=22
+	}
+	"composite name"=""
+	children {
 		text {
 			object {
-				x=29
-				y=737
-				width=160
+				x=53
+				y=937
+				width=112
 				height=20
 			}
 			"basic attribute" {
 				clr=14
 			}
-			textix="Status poll rate"
+			textix="Next file #"
 			align="horiz. right"
+		}
+		"text entry" {
+			object {
+				x=175
+				y=936
+				width=61
+				height=22
+			}
+			control {
+				chan="$(P)$(R)FileNumber"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=241
+				y=938
+				width=82
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)FileNumber_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=73
+		y=888
+		width=612
+		height=43
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=73
+				y=911
+				width=92
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="File name"
+			align="horiz. right"
+		}
+		composite {
+			object {
+				x=174
+				y=888
+				width=511
+				height=43
+			}
+			"composite name"=""
+			children {
+				"text entry" {
+					object {
+						x=174
+						y=911
+						width=511
+						height=20
+					}
+					control {
+						chan="$(P)$(R)FileName"
+						clr=14
+						bclr=51
+					}
+					format="string"
+					limits {
+					}
+				}
+				"text update" {
+					object {
+						x=174
+						y=888
+						width=511
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)FileName_RBV"
+						clr=54
+						bclr=4
+					}
+					format="string"
+					limits {
+					}
+				}
+			}
+		}
+	}
+}
+"text entry" {
+	object {
+		x=174
+		y=863
+		width=511
+		height=20
+	}
+	control {
+		chan="$(P)$(R)FilePath"
+		clr=14
+		bclr=51
+	}
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=174
+		y=840
+		width=395
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)FilePath_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=73
+		y=863
+		width=92
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="File path"
+	align="horiz. right"
+}
+rectangle {
+	object {
+		x=5
+		y=830
+		width=690
+		height=260
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+composite {
+	object {
+		x=387
+		y=1011
+		width=286
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=387
+				y=1011
+				width=112
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="File format"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=591
+				y=1012
+				width=82
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)FileFormat_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
 		}
 		menu {
 			object {
-				x=196
-				y=737
-				width=90
+				x=504
+				y=1011
+				width=82
 				height=20
 			}
 			control {
-				chan="$(P)$(R)ReadStatus.SCAN"
+				chan="$(P)$(R)FileFormat"
 				clr=14
 				bclr=51
 			}
+		}
+	}
+}
+composite {
+	object {
+		x=73
+		y=1061
+		width=163
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=73
+				y=1061
+				width=92
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Save file"
+			align="horiz. right"
 		}
 		"message button" {
 			object {
-				x=292
-				y=737
-				width=59
+				x=174
+				y=1061
+				width=62
 				height=20
 			}
 			control {
-				chan="$(P)$(R)ReadStatus.PROC"
+				chan="$(P)$(R)WriteFile"
 				clr=14
 				bclr=51
 			}
-			label="Poll"
+			label="Save"
 			press_msg="1"
 		}
 	}
+}
+text {
+	object {
+		x=270
+		y=1061
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Auto save"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=364
+		y=1061
+		width=64
+		height=20
+	}
+	control {
+		chan="$(P)$(R)AutoSave"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=433
+		y=1062
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)AutoSave_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+composite {
+	object {
+		x=350
+		y=963
+		width=289
+		height=20
+	}
+	"composite name"=""
+	children {
+		"related display" {
+			object {
+				x=569
+				y=963
+				width=70
+				height=20
+			}
+			display[0] {
+				label="Ancillary information"
+				name="marCCDAncillary.adl"
+				args="P=$(P),R=$(R)"
+			}
+			clr=14
+			bclr=51
+		}
+		text {
+			object {
+				x=350
+				y=963
+				width=210
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Ancillary information"
+			align="horiz. right"
+		}
+	}
+}
+text {
+	object {
+		x=29
+		y=737
+		width=160
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Status poll rate"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=196
+		y=737
+		width=90
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ReadStatus.SCAN"
+		clr=14
+		bclr=51
+	}
+}
+"message button" {
+	object {
+		x=292
+		y=737
+		width=59
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ReadStatus.PROC"
+		clr=14
+		bclr=51
+	}
+	label="Poll"
+	press_msg="1"
 }
 text {
 	object {
@@ -2162,4 +2129,43 @@ composite {
 	}
 	"composite name"=""
 	"composite file"="ADAttrFile.adl"
+}
+composite {
+	object {
+		x=575
+		y=838
+		width=115
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=575
+				y=838
+				width=70
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Exists:"
+		}
+		"text update" {
+			object {
+				x=650
+				y=838
+				width=40
+				height=20
+			}
+			monitor {
+				chan="$(P)$(R)FilePathExists_RBV"
+				clr=14
+				bclr=2
+			}
+			clrmod="alarm"
+			limits {
+			}
+		}
+	}
 }
