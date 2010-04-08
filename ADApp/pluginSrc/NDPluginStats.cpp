@@ -223,6 +223,8 @@ asynStatus NDPluginStats::doComputeCentroidT(NDArray *pArray)
         this->sigmaX  = sqrt((this->sigmaX  / centroidTotal) - (this->centroidX * this->centroidX));
         this->sigmaY  = sqrt((this->sigmaY  / centroidTotal) - (this->centroidY * this->centroidY));
         this->sigmaXY =      (this->sigmaXY / centroidTotal) - (this->centroidX * this->centroidY);
+        if ((this->sigmaX !=0) && (this->sigmaY != 0)) 
+            this->sigmaXY /= (this->sigmaX * this->sigmaY);
     }
     setDoubleParam(NDPluginStatsCentroidX,   this->centroidX);
     setDoubleParam(NDPluginStatsCentroidY,   this->centroidY);
