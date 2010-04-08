@@ -25,6 +25,17 @@ record(waveform, "$(P)$(R)FilePath_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(bi, "$(P)$(R)FilePathExists_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_PATH_EXISTS")
+    field(ZNAM, "No")
+    field(ZSV,  "MAJOR")
+    field(ONAM, "Yes")
+    field(OSV,  "NO_ALARM")
+    field(SCAN, "I/O Intr")
+}
+
 # Filename
 record(waveform, "$(P)$(R)FileName")
 {
