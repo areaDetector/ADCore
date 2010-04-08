@@ -171,11 +171,11 @@ asynStatus NDPluginStats::doComputeCentroidT(NDArray *pArray)
     if (pArray->ndims != 2) return(asynError);
     
     getDoubleParam (NDPluginStatsCentroidThreshold,  &this->centroidThreshold);
-    centroidTotal = 0.;
     this->centroidX = 0;
     this->centroidY = 0;
     this->sigmaX = 0;
     this->sigmaY = 0;
+    this->sigmaXY = 0;
     memset(this->profileX[profAverage], 0, this->profileSizeX*sizeof(double));  
     memset(this->profileY[profAverage], 0, this->profileSizeY*sizeof(double));
     memset(this->profileX[profThreshold], 0, this->profileSizeX*sizeof(double));  
@@ -189,6 +189,7 @@ asynStatus NDPluginStats::doComputeCentroidT(NDArray *pArray)
             if (value >= this->centroidThreshold) {
                 this->profileX[profThreshold][ix] += value;
                 this->profileY[profThreshold][iy] += value;
+                this->sigmaXY += value * ix * iy;
             }
         }
     }
@@ -200,36 +201,34 @@ asynStatus NDPluginStats::doComputeCentroidT(NDArray *pArray)
     pValue  = this->profileX[profAverage];
     pThresh = this->profileX[profThreshold];
     for (ix=0; ix<this->profileSizeX; ix++, pValue++, pThresh++) {
-        *pValue /= this->profileSizeY;
-        *pThresh /= this->profileSizeY;
         this->centroidX += *pThresh * ix;
         this->sigmaX    += *pThresh * ix * ix;
         centroidTotal   += *pThresh;
-    }
-    if (centroidTotal > 0.) {
-        this->centroidX /= centroidTotal;
-        this->sigmaX = sqrt((this->sigmaX / centroidTotal) - (this->centroidX * this->centroidX));
+        *pValue  /= this->profileSizeY;
+        *pThresh /= this->profileSizeY;
     }
     this->centroidY = 0;
     this->sigmaY = 0;
-    centroidTotal = 0;
     pValue  = this->profileY[profAverage];
     pThresh = this->profileY[profThreshold];
     for (iy=0; iy<this->profileSizeY; iy++, pValue++, pThresh++) {
-        *pValue /= this->profileSizeX;
-        *pThresh /= this->profileSizeX;
         this->centroidY += *pThresh * iy;
         this->sigmaY    += *pThresh * iy * iy;
-        centroidTotal   += *pThresh;
+        *pValue  /= this->profileSizeX;
+        *pThresh /= this->profileSizeX;
    }
-    if (centroidTotal > 0.) {
+   if (centroidTotal > 0.) {
+        this->centroidX /= centroidTotal;
         this->centroidY /= centroidTotal;
-        this->sigmaY = sqrt((this->sigmaY / centroidTotal) - (this->centroidY * this->centroidY));
+        this->sigmaX  = sqrt((this->sigmaX  / centroidTotal) - (this->centroidX * this->centroidX));
+        this->sigmaY  = sqrt((this->sigmaY  / centroidTotal) - (this->centroidY * this->centroidY));
+        this->sigmaXY =      (this->sigmaXY / centroidTotal) - (this->centroidX * this->centroidY);
     }
     setDoubleParam(NDPluginStatsCentroidX,   this->centroidX);
     setDoubleParam(NDPluginStatsCentroidY,   this->centroidY);
     setDoubleParam(NDPluginStatsSigmaX,      this->sigmaX);
     setDoubleParam(NDPluginStatsSigmaY,      this->sigmaY);
+    setDoubleParam(NDPluginStatsSigmaXY,     this->sigmaXY);
     
     return(asynSuccess);
 }
@@ -719,6 +718,7 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
     createParam(NDPluginStatsCentroidYString,         asynParamFloat64,    &NDPluginStatsCentroidY);
     createParam(NDPluginStatsSigmaXString,            asynParamFloat64,    &NDPluginStatsSigmaX);
     createParam(NDPluginStatsSigmaYString,            asynParamFloat64,    &NDPluginStatsSigmaY);
+    createParam(NDPluginStatsSigmaXYString,           asynParamFloat64,    &NDPluginStatsSigmaXY);
 
     /* Profiles */
     createParam(NDPluginStatsComputeProfilesString,   asynParamInt32,         &NDPluginStatsComputeProfiles);
