@@ -5,9 +5,9 @@ file {
 }
 display {
 	object {
-		x=177
-		y=122
-		width=1170
+		x=84
+		y=84
+		width=1235
 		height=375
 	}
 	clr=14
@@ -89,7 +89,7 @@ display {
 }
 rectangle {
 	object {
-		x=335
+		x=367
 		y=6
 		width=500
 		height=26
@@ -100,7 +100,7 @@ rectangle {
 }
 text {
 	object {
-		x=351
+		x=383
 		y=8
 		width=468
 		height=25
@@ -140,7 +140,7 @@ rectangle {
 	object {
 		x=680
 		y=40
-		width=415
+		width=480
 		height=45
 	}
 	"basic attribute" {
@@ -208,30 +208,6 @@ text {
 		clr=14
 	}
 	textix="SigX"
-}
-text {
-	object {
-		x=1040
-		y=66
-		width=40
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="SigY"
-}
-text {
-	object {
-		x=1110
-		y=66
-		width=40
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="More"
 }
 text {
 	object {
@@ -360,148 +336,1355 @@ text {
 	textix="Sigma"
 	align="horiz. right"
 }
-composite {
+rectangle {
 	object {
 		x=5
 		y=90
-		width=1160
+		width=1225
 		height=52
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+text {
+	object {
+		x=10
+		y=94
+		width=80
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="$(R1)"
+	align="horiz. centered"
+}
+menu {
+	object {
+		x=690
+		y=119
+		width=60
+		height=18
+	}
+	control {
+		chan="$(P)$(R1)ComputeCentroid"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=690
+		y=95
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R1)ComputeCentroid_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=765
+		y=95
+		width=60
+		height=19
+	}
+	control {
+		chan="$(P)$(R1)CentroidThreshold"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=835
+		y=95
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R1)CentroidX_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=900
+		y=95
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R1)CentroidY_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=965
+		y=95
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R1)SigmaX_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=95
+		y=119
+		width=80
+		height=18
+	}
+	control {
+		chan="$(P)$(R1)EnableCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=95
+		y=95
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R1)EnableCallbacks_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+menu {
+	object {
+		x=190
+		y=119
+		width=60
+		height=18
+	}
+	control {
+		chan="$(P)$(R1)ComputeStatistics"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=190
+		y=95
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R1)ComputeStatistics_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=260
+		y=95
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R1)MinValue_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=325
+		y=95
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R1)MaxValue_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=390
+		y=95
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R1)Total_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=455
+		y=95
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R1)Net_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=550
+		y=95
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R1)MeanValue_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=615
+		y=95
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R1)Sigma_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+rectangle {
+	object {
+		x=5
+		y=147
+		width=1225
+		height=52
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+text {
+	object {
+		x=10
+		y=151
+		width=80
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="$(R2)"
+	align="horiz. centered"
+}
+menu {
+	object {
+		x=690
+		y=176
+		width=60
+		height=18
+	}
+	control {
+		chan="$(P)$(R2)ComputeCentroid"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=690
+		y=152
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R2)ComputeCentroid_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=765
+		y=152
+		width=60
+		height=19
+	}
+	control {
+		chan="$(P)$(R2)CentroidThreshold"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=835
+		y=152
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R2)CentroidX_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=900
+		y=152
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R2)CentroidY_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=965
+		y=152
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R2)SigmaX_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=95
+		y=176
+		width=80
+		height=18
+	}
+	control {
+		chan="$(P)$(R2)EnableCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=95
+		y=152
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R2)EnableCallbacks_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+menu {
+	object {
+		x=190
+		y=176
+		width=60
+		height=18
+	}
+	control {
+		chan="$(P)$(R2)ComputeStatistics"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=190
+		y=152
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R2)ComputeStatistics_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=260
+		y=152
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R2)MinValue_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=325
+		y=152
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R2)MaxValue_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=390
+		y=152
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R2)Total_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=455
+		y=152
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R2)Net_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=550
+		y=152
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R2)MeanValue_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=615
+		y=152
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R2)Sigma_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+rectangle {
+	object {
+		x=5
+		y=204
+		width=1225
+		height=52
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+text {
+	object {
+		x=10
+		y=208
+		width=80
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="$(R3)"
+	align="horiz. centered"
+}
+menu {
+	object {
+		x=690
+		y=233
+		width=60
+		height=18
+	}
+	control {
+		chan="$(P)$(R3)ComputeCentroid"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=690
+		y=209
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R3)ComputeCentroid_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=765
+		y=209
+		width=60
+		height=19
+	}
+	control {
+		chan="$(P)$(R3)CentroidThreshold"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=835
+		y=209
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R3)CentroidX_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=900
+		y=209
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R3)CentroidY_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=965
+		y=209
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R3)SigmaX_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=95
+		y=233
+		width=80
+		height=18
+	}
+	control {
+		chan="$(P)$(R3)EnableCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=95
+		y=209
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R3)EnableCallbacks_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+menu {
+	object {
+		x=190
+		y=233
+		width=60
+		height=18
+	}
+	control {
+		chan="$(P)$(R3)ComputeStatistics"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=190
+		y=209
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R3)ComputeStatistics_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=260
+		y=209
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R3)MinValue_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=325
+		y=209
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R3)MaxValue_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=390
+		y=209
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R3)Total_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=455
+		y=209
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R3)Net_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=550
+		y=209
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R3)MeanValue_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=615
+		y=209
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R3)Sigma_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+rectangle {
+	object {
+		x=5
+		y=261
+		width=1225
+		height=52
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+text {
+	object {
+		x=10
+		y=265
+		width=80
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="$(R4)"
+	align="horiz. centered"
+}
+menu {
+	object {
+		x=690
+		y=290
+		width=60
+		height=18
+	}
+	control {
+		chan="$(P)$(R4)ComputeCentroid"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=690
+		y=266
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R4)ComputeCentroid_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=765
+		y=266
+		width=60
+		height=19
+	}
+	control {
+		chan="$(P)$(R4)CentroidThreshold"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=835
+		y=266
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R4)CentroidX_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=900
+		y=266
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R4)CentroidY_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=965
+		y=266
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R4)SigmaX_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=95
+		y=290
+		width=80
+		height=18
+	}
+	control {
+		chan="$(P)$(R4)EnableCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=95
+		y=266
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R4)EnableCallbacks_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+menu {
+	object {
+		x=190
+		y=290
+		width=60
+		height=18
+	}
+	control {
+		chan="$(P)$(R4)ComputeStatistics"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=190
+		y=266
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R4)ComputeStatistics_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=260
+		y=266
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R4)MinValue_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=325
+		y=266
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R4)MaxValue_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=390
+		y=266
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R4)Total_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=455
+		y=266
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R4)Net_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=550
+		y=266
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R4)MeanValue_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=615
+		y=266
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R4)Sigma_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+rectangle {
+	object {
+		x=5
+		y=318
+		width=1225
+		height=52
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+text {
+	object {
+		x=10
+		y=322
+		width=80
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="$(R5)"
+	align="horiz. centered"
+}
+menu {
+	object {
+		x=690
+		y=347
+		width=60
+		height=18
+	}
+	control {
+		chan="$(P)$(R5)ComputeCentroid"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=690
+		y=323
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R5)ComputeCentroid_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=765
+		y=323
+		width=60
+		height=19
+	}
+	control {
+		chan="$(P)$(R5)CentroidThreshold"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=835
+		y=323
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R5)CentroidX_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=900
+		y=323
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R5)CentroidY_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=965
+		y=323
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R5)SigmaX_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=95
+		y=347
+		width=80
+		height=18
+	}
+	control {
+		chan="$(P)$(R5)EnableCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=95
+		y=323
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R5)EnableCallbacks_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+menu {
+	object {
+		x=190
+		y=347
+		width=60
+		height=18
+	}
+	control {
+		chan="$(P)$(R5)ComputeStatistics"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=190
+		y=323
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R5)ComputeStatistics_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=260
+		y=323
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R5)MinValue_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=325
+		y=323
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R5)MaxValue_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=390
+		y=323
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R5)Total_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=455
+		y=323
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R5)Net_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=550
+		y=323
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R5)MeanValue_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=615
+		y=323
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R5)Sigma_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+composite {
+	object {
+		x=1165
+		y=66
+		width=60
+		height=276
 	}
 	"composite name"=""
 	children {
-		rectangle {
-			object {
-				x=5
-				y=90
-				width=1160
-				height=52
-			}
-			"basic attribute" {
-				clr=14
-				fill="outline"
-			}
-		}
 		text {
 			object {
-				x=10
-				y=94
-				width=80
+				x=1175
+				y=66
+				width=40
 				height=20
 			}
 			"basic attribute" {
-				clr=54
-			}
-			textix="$(R1)"
-			align="horiz. centered"
-		}
-		menu {
-			object {
-				x=690
-				y=119
-				width=60
-				height=18
-			}
-			control {
-				chan="$(P)$(R1)ComputeCentroid"
 				clr=14
-				bclr=51
 			}
-		}
-		"text update" {
-			object {
-				x=690
-				y=95
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R1)ComputeCentroid_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text entry" {
-			object {
-				x=765
-				y=95
-				width=60
-				height=19
-			}
-			control {
-				chan="$(P)$(R1)CentroidThreshold"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=835
-				y=95
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R1)CentroidX_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=900
-				y=95
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R1)CentroidY_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=965
-				y=95
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R1)SigmaX_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=1030
-				y=95
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R1)SigmaY_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
+			textix="More"
 		}
 		"related display" {
 			object {
-				x=1100
+				x=1165
 				y=94
 				width=60
 				height=20
@@ -514,276 +1697,98 @@ composite {
 			clr=53
 			bclr=4
 		}
-		menu {
+		"related display" {
 			object {
-				x=95
-				y=119
-				width=80
-				height=18
-			}
-			control {
-				chan="$(P)$(R1)EnableCallbacks"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=95
-				y=95
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R1)EnableCallbacks_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		menu {
-			object {
-				x=190
-				y=119
+				x=1165
+				y=151
 				width=60
-				height=18
+				height=20
 			}
-			control {
-				chan="$(P)$(R1)ComputeStatistics"
-				clr=14
-				bclr=51
+			display[0] {
+				label="Statistics #2 full"
+				name="NDStats.adl"
+				args="P=$(P),R=$(R2)"
 			}
+			clr=53
+			bclr=4
 		}
-		"text update" {
+		"related display" {
 			object {
-				x=190
-				y=95
+				x=1165
+				y=208
 				width=60
-				height=18
+				height=20
 			}
-			monitor {
-				chan="$(P)$(R1)ComputeStatistics_RBV"
-				clr=54
-				bclr=12
+			display[0] {
+				label="Statistics #3 full"
+				name="NDStats.adl"
+				args="P=$(P),R=$(R3)"
 			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
+			clr=53
+			bclr=4
 		}
-		"text update" {
+		"related display" {
 			object {
-				x=260
-				y=95
+				x=1165
+				y=265
 				width=60
-				height=18
+				height=20
 			}
-			monitor {
-				chan="$(P)$(R1)MinValue_RBV"
-				clr=54
-				bclr=4
+			display[0] {
+				label="Statistics #4 full"
+				name="NDStats.adl"
+				args="P=$(P),R=$(R4)"
 			}
-			limits {
-			}
+			clr=53
+			bclr=4
 		}
-		"text update" {
+		"related display" {
 			object {
-				x=325
-				y=95
+				x=1165
+				y=322
 				width=60
-				height=18
+				height=20
 			}
-			monitor {
-				chan="$(P)$(R1)MaxValue_RBV"
-				clr=54
-				bclr=4
+			display[0] {
+				label="Statistics #5 full"
+				name="NDStats.adl"
+				args="P=$(P),R=$(R5)"
 			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=390
-				y=95
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R1)Total_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=455
-				y=95
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R1)Net_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=550
-				y=95
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R1)MeanValue_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=615
-				y=95
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R1)Sigma_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
+			clr=53
+			bclr=4
 		}
 	}
 }
 composite {
 	object {
-		x=5
-		y=147
-		width=1160
-		height=52
+		x=1030
+		y=66
+		width=60
+		height=275
 	}
 	"composite name"=""
 	children {
-		rectangle {
-			object {
-				x=5
-				y=147
-				width=1160
-				height=52
-			}
-			"basic attribute" {
-				clr=14
-				fill="outline"
-			}
-		}
 		text {
 			object {
-				x=10
-				y=151
-				width=80
+				x=1040
+				y=66
+				width=40
 				height=20
 			}
 			"basic attribute" {
-				clr=54
-			}
-			textix="$(R2)"
-			align="horiz. centered"
-		}
-		menu {
-			object {
-				x=690
-				y=176
-				width=60
-				height=18
-			}
-			control {
-				chan="$(P)$(R2)ComputeCentroid"
 				clr=14
-				bclr=51
 			}
+			textix="SigY"
 		}
 		"text update" {
 			object {
-				x=690
-				y=152
+				x=1030
+				y=95
 				width=60
 				height=18
 			}
 			monitor {
-				chan="$(P)$(R2)ComputeCentroid_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text entry" {
-			object {
-				x=765
-				y=152
-				width=60
-				height=19
-			}
-			control {
-				chan="$(P)$(R2)CentroidThreshold"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=835
-				y=152
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R2)CentroidX_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=900
-				y=152
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R2)CentroidY_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=965
-				y=152
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R2)SigmaX_RBV"
+				chan="$(P)$(R1)SigmaY_RBV"
 				clr=54
 				bclr=4
 			}
@@ -805,297 +1810,6 @@ composite {
 			limits {
 			}
 		}
-		"related display" {
-			object {
-				x=1100
-				y=151
-				width=60
-				height=20
-			}
-			display[0] {
-				label="Statistics #2 full"
-				name="NDStats.adl"
-				args="P=$(P),R=$(R2)"
-			}
-			clr=53
-			bclr=4
-		}
-		menu {
-			object {
-				x=95
-				y=176
-				width=80
-				height=18
-			}
-			control {
-				chan="$(P)$(R2)EnableCallbacks"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=95
-				y=152
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R2)EnableCallbacks_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		menu {
-			object {
-				x=190
-				y=176
-				width=60
-				height=18
-			}
-			control {
-				chan="$(P)$(R2)ComputeStatistics"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=190
-				y=152
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R2)ComputeStatistics_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=260
-				y=152
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R2)MinValue_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=325
-				y=152
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R2)MaxValue_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=390
-				y=152
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R2)Total_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=455
-				y=152
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R2)Net_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=550
-				y=152
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R2)MeanValue_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=615
-				y=152
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R2)Sigma_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-	}
-}
-composite {
-	object {
-		x=5
-		y=204
-		width=1160
-		height=52
-	}
-	"composite name"=""
-	children {
-		rectangle {
-			object {
-				x=5
-				y=204
-				width=1160
-				height=52
-			}
-			"basic attribute" {
-				clr=14
-				fill="outline"
-			}
-		}
-		text {
-			object {
-				x=10
-				y=208
-				width=80
-				height=20
-			}
-			"basic attribute" {
-				clr=54
-			}
-			textix="$(R3)"
-			align="horiz. centered"
-		}
-		menu {
-			object {
-				x=690
-				y=233
-				width=60
-				height=18
-			}
-			control {
-				chan="$(P)$(R3)ComputeCentroid"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=690
-				y=209
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R3)ComputeCentroid_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text entry" {
-			object {
-				x=765
-				y=209
-				width=60
-				height=19
-			}
-			control {
-				chan="$(P)$(R3)CentroidThreshold"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=835
-				y=209
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R3)CentroidX_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=900
-				y=209
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R3)CentroidY_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=965
-				y=209
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R3)SigmaX_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
 		"text update" {
 			object {
 				x=1030
@@ -1105,297 +1819,6 @@ composite {
 			}
 			monitor {
 				chan="$(P)$(R3)SigmaY_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"related display" {
-			object {
-				x=1100
-				y=208
-				width=60
-				height=20
-			}
-			display[0] {
-				label="Statistics #3 full"
-				name="NDStats.adl"
-				args="P=$(P),R=$(R3)"
-			}
-			clr=53
-			bclr=4
-		}
-		menu {
-			object {
-				x=95
-				y=233
-				width=80
-				height=18
-			}
-			control {
-				chan="$(P)$(R3)EnableCallbacks"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=95
-				y=209
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R3)EnableCallbacks_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		menu {
-			object {
-				x=190
-				y=233
-				width=60
-				height=18
-			}
-			control {
-				chan="$(P)$(R3)ComputeStatistics"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=190
-				y=209
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R3)ComputeStatistics_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=260
-				y=209
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R3)MinValue_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=325
-				y=209
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R3)MaxValue_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=390
-				y=209
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R3)Total_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=455
-				y=209
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R3)Net_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=550
-				y=209
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R3)MeanValue_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=615
-				y=209
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R3)Sigma_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-	}
-}
-composite {
-	object {
-		x=5
-		y=261
-		width=1160
-		height=52
-	}
-	"composite name"=""
-	children {
-		rectangle {
-			object {
-				x=5
-				y=261
-				width=1160
-				height=52
-			}
-			"basic attribute" {
-				clr=14
-				fill="outline"
-			}
-		}
-		text {
-			object {
-				x=10
-				y=265
-				width=80
-				height=20
-			}
-			"basic attribute" {
-				clr=54
-			}
-			textix="$(R4)"
-			align="horiz. centered"
-		}
-		menu {
-			object {
-				x=690
-				y=290
-				width=60
-				height=18
-			}
-			control {
-				chan="$(P)$(R4)ComputeCentroid"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=690
-				y=266
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R4)ComputeCentroid_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text entry" {
-			object {
-				x=765
-				y=266
-				width=60
-				height=19
-			}
-			control {
-				chan="$(P)$(R4)CentroidThreshold"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=835
-				y=266
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R4)CentroidX_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=900
-				y=266
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R4)CentroidY_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=965
-				y=266
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R4)SigmaX_RBV"
 				clr=54
 				bclr=4
 			}
@@ -1417,297 +1840,6 @@ composite {
 			limits {
 			}
 		}
-		"related display" {
-			object {
-				x=1100
-				y=265
-				width=60
-				height=20
-			}
-			display[0] {
-				label="Statistics #4 full"
-				name="NDStats.adl"
-				args="P=$(P),R=$(R4)"
-			}
-			clr=53
-			bclr=4
-		}
-		menu {
-			object {
-				x=95
-				y=290
-				width=80
-				height=18
-			}
-			control {
-				chan="$(P)$(R4)EnableCallbacks"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=95
-				y=266
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R4)EnableCallbacks_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		menu {
-			object {
-				x=190
-				y=290
-				width=60
-				height=18
-			}
-			control {
-				chan="$(P)$(R4)ComputeStatistics"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=190
-				y=266
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R4)ComputeStatistics_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=260
-				y=266
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R4)MinValue_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=325
-				y=266
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R4)MaxValue_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=390
-				y=266
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R4)Total_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=455
-				y=266
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R4)Net_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=550
-				y=266
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R4)MeanValue_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=615
-				y=266
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R4)Sigma_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-	}
-}
-composite {
-	object {
-		x=5
-		y=318
-		width=1160
-		height=52
-	}
-	"composite name"=""
-	children {
-		rectangle {
-			object {
-				x=5
-				y=318
-				width=1160
-				height=52
-			}
-			"basic attribute" {
-				clr=14
-				fill="outline"
-			}
-		}
-		text {
-			object {
-				x=10
-				y=322
-				width=80
-				height=20
-			}
-			"basic attribute" {
-				clr=54
-			}
-			textix="$(R5)"
-			align="horiz. centered"
-		}
-		menu {
-			object {
-				x=690
-				y=347
-				width=60
-				height=18
-			}
-			control {
-				chan="$(P)$(R5)ComputeCentroid"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=690
-				y=323
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R5)ComputeCentroid_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text entry" {
-			object {
-				x=765
-				y=323
-				width=60
-				height=19
-			}
-			control {
-				chan="$(P)$(R5)CentroidThreshold"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=835
-				y=323
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R5)CentroidX_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=900
-				y=323
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R5)CentroidY_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=965
-				y=323
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R5)SigmaX_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
 		"text update" {
 			object {
 				x=1030
@@ -1723,170 +1855,92 @@ composite {
 			limits {
 			}
 		}
-		"related display" {
-			object {
-				x=1100
-				y=322
-				width=60
-				height=20
-			}
-			display[0] {
-				label="Statistics #5 full"
-				name="NDStats.adl"
-				args="P=$(P),R=$(R5)"
-			}
-			clr=53
-			bclr=4
-		}
-		menu {
-			object {
-				x=95
-				y=347
-				width=80
-				height=18
-			}
-			control {
-				chan="$(P)$(R5)EnableCallbacks"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=95
-				y=323
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R5)EnableCallbacks_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		menu {
-			object {
-				x=190
-				y=347
-				width=60
-				height=18
-			}
-			control {
-				chan="$(P)$(R5)ComputeStatistics"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=190
-				y=323
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R5)ComputeStatistics_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=260
-				y=323
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R5)MinValue_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=325
-				y=323
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R5)MaxValue_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=390
-				y=323
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R5)Total_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=455
-				y=323
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R5)Net_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=550
-				y=323
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R5)MeanValue_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=615
-				y=323
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R5)Sigma_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
+	}
+}
+text {
+	object {
+		x=1105
+		y=66
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="SigXY"
+}
+"text update" {
+	object {
+		x=1095
+		y=95
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R1)SigmaXY_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=1095
+		y=152
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R2)SigmaXY_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=1095
+		y=209
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R3)SigmaXY_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=1095
+		y=266
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R4)SigmaXY_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=1095
+		y=323
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R5)SigmaXY_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
 	}
 }
