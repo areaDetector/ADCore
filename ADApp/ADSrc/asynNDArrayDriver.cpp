@@ -30,8 +30,9 @@ static const char *driverName = "asynNDArrayDriver";
 /** Checks whether the directory specified NDFilePath parameter exists.
   * 
   * This is a convenience function that determinesthe directory specified NDFilePath parameter exists.
-  * It sets the value of NDFilePathExists to 0 (does not exist) or 1 (exists).  Returns a error status
-  * if the directory does not exist.
+  * It sets the value of NDFilePathExists to 0 (does not exist) or 1 (exists).  
+  * It also adds a trailing '/' character to the path if one is not present.
+  * Returns a error status if the directory does not exist.
   */
 int asynNDArrayDriver::checkPath()
 {
@@ -39,16 +40,28 @@ int asynNDArrayDriver::checkPath()
     int status = asynError;
     char filePath[MAX_FILENAME_LEN];
     struct stat buff;
+    int len;
     int isDir=0;
     int pathExists=0;
     
-    status = getStringParam(NDFilePath, sizeof(filePath), filePath); 
+    status = getStringParam(NDFilePath, sizeof(filePath), filePath);
+    len = strlen(filePath);
+    if (len == 0) return(asynSuccess);
+    /* If the path contains a trailing '/' or '\' remove it, because Windows won't find
+     * the directory if it has that trailing character */
+    if ((filePath[len-1] == '/') || (filePath[len-1] == '\\')) {
+        filePath[len-1] = 0;
+        len--;
+    }
     status = stat(filePath, &buff);
     if (!status) isDir = (S_IFDIR & buff.st_mode);
     if (!status && isDir) {
         pathExists = 1;
         status = asynSuccess;
     }
+    /* Add a trailing '/' character if there is room */
+    if (len < MAX_FILENAME_LEN-2) strcat(filePath, "/");
+    setStringParam(NDFilePath, filePath);
     setIntegerParam(NDFilePathExists, pathExists);
     return(status);   
 }
