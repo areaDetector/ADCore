@@ -19,8 +19,10 @@
           changes to the synApps modules on which areaDetector applications depend (autosave,
           busy, etc.)</li>
         <li>Changes in Makefiles to support the win32-x86-debug architecture.</li>
-        <li>Added status parameter to indicate if the specified file path exists. Added record
-          to NDFile.template and status indicator to all medm file saving screens.</li>
+        <li>Added status parameter to indicate if the specified file path (NDFilePath) exists.
+          Added a record to NDFile.template and a status indicator to all medm file saving
+          screens.</li>
+        <li>Append a trailing '/' character to file path (NDFilePath) if one is not present.</li>
       </ul>
     </li>
     <li>Drivers
@@ -46,6 +48,9 @@
           </ul>
         </li>
         <li>pvCam driver. Fixed problem with exposure time being rounded to integer. </li>
+        <li>ADSC driver. Fixed a bug where it would not correctly load the per-image parameters
+          for the first image in a dataset if they were changed after the acquisition was
+          started but before the first image was taken. </li>
       </ul>
     </li>
     <li>Plugins
