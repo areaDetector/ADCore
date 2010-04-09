@@ -639,19 +639,19 @@
           <pre>epicsSnprintf(
     FullFilename, 
     sizeof(FullFilename), 
-    FileFormat, FilePath, 
+    FileTemplate, FilePath, 
     Filename, FileNumber);
         </pre>
-          FilePath, Filename, FileNumber are converted in that order with FileFormat. An example
+          FilePath, Filename, FileNumber are converted in that order with FileTemplate. An example
           file format is <code>"%s%s%4.4d.tif"</code>. The first %s converts the FilePath,
           followed immediately by another %s for Filename. FileNumber is formatted with %4.4d,
           which results in a fixed field with of 4 digits, with leading zeros as required.
           Finally, the .tif extension is added to the file name. This mechanism for creating
           file names is very flexible. Other characters, such as _ can be put in Filename
-          or FileFormat as desired. If one does not want to have FileNumber in the file name
-          at all, then just omit the %d format specifier from FileFormat. If the client wishes
+          or FileTemplate as desired. If one does not want to have FileNumber in the file name
+          at all, then just omit the %d format specifier from FileTemplate. If the client wishes
           to construct the complete file name itself, then it can just put that file name
-          into NDFileFormat with no format specifiers at all, in which case NDFilePath, NDFileName,
+          into NDFileTemplate with no format specifiers at all, in which case NDFilePath, NDFileName,
           and NDFileNumber will be ignored.</td>
         <td>
           FILE_TEMPLATE</td>
