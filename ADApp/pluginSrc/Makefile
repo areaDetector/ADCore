@@ -34,14 +34,13 @@ NDPlugin_SRCS += NDPluginTransform.cpp
 NDPlugin_SRCS += NDPluginOverlay.cpp
 NDPlugin_SRCS += NDPluginColorConvert.cpp
 NDPlugin_SRCS_DEFAULT += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNexus.cpp
-NDPlugin_SRCS_vxWorks += -nil-
+NDPlugin_SRCS_vxWorks += NDFileDummy.cpp
 NDPlugin_LIBS += ADBase
 NDPlugin_LIBS += netCDF
 NDPlugin_LIBS += asyn
 NDPlugin_LIBS += $(EPICS_BASE_IOC_LIBS)
 
 NDPlugin_LIBS_solaris += NeXus hdf5_cpp hdf5
-NDPlugin_LIBS_vxWorks += ADBase netCDF asyn $(EPICS_BASE_IOC_LIBS)
 
 NDPlugin_SYS_LIBS_solaris   += tiff
 
