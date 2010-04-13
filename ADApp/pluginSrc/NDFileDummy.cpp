@@ -17,9 +17,9 @@ epicsExportRegistrar(NDFileNexusRegister);
 }
 
 
-extern "C" void NDFileTiffRegister(void)
+extern "C" void NDFileTIFFRegister(void)
 {
 }
 extern "C" {
-epicsExportRegistrar(NDFileTiffRegister);
+epicsExportRegistrar(NDFileTIFFRegister);
 }
