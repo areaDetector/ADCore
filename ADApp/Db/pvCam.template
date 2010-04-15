@@ -480,3 +480,59 @@ record(mbbi, "$(P)$(R)TriggerEdge_RBV")
    field(TWVL, "2")
    field(SCAN, "I/O Intr")
 }
+
+
+record(stringin, "$(P)$(R)PVCamVers_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_PVCAMVERS_RBV")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+
+
+record(stringin, "$(P)$(R)DevDrvVers_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_DEVDRVVERS_RBV")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+
+
+record(stringin, "$(P)$(R)CameraFirmwareVers_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_CAMFIRMWAREVERS_RBV")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+
+
+record(stringin, "$(P)$(R)HeadSerNum_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_HEADSERNUM_RBV")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)PCIFWVers_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_PCIFWVERS_RBV")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)SerialNum_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PVCAM_SERIALNUM_RBV")
+   field(SCAN, "I/O Intr")
+}
+
+
+
