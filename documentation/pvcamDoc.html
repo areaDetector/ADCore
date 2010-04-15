@@ -133,6 +133,178 @@
           longout<br />
           longin</td>
       </tr>
+      <tr>
+        <td>
+          PVCam<br />
+          InitSlot1Cam</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r</td>
+        <td>
+         String describing 1st found detector</td>
+        <td>
+          PVCAM_SLOT1</td>
+        <td>
+          $(P)$(R)Slot1_RBV</td>
+        <td>
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          PVCam<br />
+          Slot2Cam</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r</td>
+        <td>
+         String describing 2nd found detector</td>
+        <td>
+          PVCAM_SLOT2</td>
+        <td>
+          $(P)$(R)Slot2_RBV</td>
+        <td>
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          PVCam<br />
+          Slot3Cam</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r</td>
+        <td>
+         String describing 3rd found detector</td>
+        <td>
+          PVCAM_SLOT3</td>
+        <td>
+          $(P)$(R)Slot3_RBV</td>
+        <td>
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          PVCam<br />
+          SetectorSelected</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+         Index of selected detector</td>
+        <td>
+          PVCAM_DETECTORSELECTED</td>
+        <td>
+          $(P)$(R)DetecorSelected</br>
+          $(P)$(R)DetecorSelected_RBV</td>
+        <td>
+          longout</br>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          PVCam<br />
+          ChipName</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r</td>
+        <td>
+         String describing CCD chip</td>
+        <td>
+          PVCAM_CHIPNAME</td>
+        <td>
+          $(P)$(R)ChipName_RBV</td>
+        <td>
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          PVCam<br />
+          NumParallelPixels</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+         Parallel size of the CCD in active rows</td>
+        <td>
+          PVCAM_NUMPARALLELSIZE</td>
+        <td>
+          $(P)$(R)NumParallelPixels_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          PVCam<br />
+          NumSerialPixels</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+         Serial size of the CCD</td>
+        <td>
+          PVCAM_NUMSERIALSIZE</td>
+        <td>
+          $(P)$(R)NumSerialPixels_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          PVCam<br />
+          PixelParallelSize</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+         Size of the pixel in parallel direction in nanometers</td>
+        <td>
+          PVCAM_PIXELPARALLELSIZE</td>
+        <td>
+          $(P)$(R)PixelParallelSize_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          PVCam<br />
+          ChipHeight</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+         Height of CCD in mm</td>
+        <td>
+          PVCAM_CHIPHEIGHT</td>
+        <td>
+          $(P)$(R)ChipHeight_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          PVCam<br />
+          ChipWidth</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+         Width of CCD in mm</td>
+        <td>
+          PVCAM_CHIPWIDTH</td>
+        <td>
+          $(P)$(R)ChipWidth_RBV</td>
+        <td>
+          longin</td>
+      </tr>
     </tbody>
   </table>
   <h2 id="Unsupported">
@@ -148,7 +320,7 @@
   <p>
     The PVCAM driver is created with the pvCamConfig command, either from C/C++ or from
     the EPICS IOC shell.</p>
-  <pre>int pvCamConfig(const char *portName, int maxSizeX, int maxSizeY, int dataType, 
+  <pre>int pvCamConfig(const char *portName, int maxSizeX, int maxSizeY, int dataType,
                 int maxBuffers, size_t maxMemory,
                 int priority, int stackSize )
   </pre>
