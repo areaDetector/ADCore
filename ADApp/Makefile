@@ -27,8 +27,7 @@ DIRS += roperSrc
 roperSrc_DEPEND_DIRS = pluginSrc
 DIRS += firewireWinSrc
 firewireWinSrc_DEPEND_DIRS = pluginSrc
-# Uncomment this line if you have the Perkin Elmer SDK installed
-#DIRS += perkinElmerSrc
+DIRS += perkinElmerSrc
 perkinElmerSrc_DEPEND_DIRS = pluginSrc
 DIRS += pvcamSrc
 pvcamSrc_DEPEND_DIRS = pluginSrc pvcamSupport
