@@ -47,10 +47,14 @@
               by asynReport() and dbior().</li>
           </ul>
         </li>
-        <li>pvCam driver. Fixed problem with exposure time being rounded to integer. </li>
+        <li>pvCam driver. Fixed problem with exposure time being rounded to integer. Add PVs
+          to provide version information for software and firmware where possible. Add PVs
+          to provide serial numbers where possible. Perform checks on parameters that are
+          not available for all cameras. </li>
         <li>ADSC driver. Fixed a bug where it would not correctly load the per-image parameters
           for the first image in a dataset if they were changed after the acquisition was
-          started but before the first image was taken. </li>
+          started but before the first image was taken. Added ability to write simulated data
+          to disk in the simulation driver.</li>
       </ul>
     </li>
     <li>Plugins
