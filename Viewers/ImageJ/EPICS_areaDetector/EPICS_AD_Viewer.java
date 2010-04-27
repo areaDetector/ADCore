@@ -365,7 +365,7 @@ public class EPICS_AD_Viewer implements PlugIn
                 // size has changed, so we have to make a new window.
                 try
                 {
-                    if (!img.getWindow().isClosed())
+                    if (img.getWindow()==null || img.getWindow().isClosed()) 
                     {
                         img.close();
                     }
