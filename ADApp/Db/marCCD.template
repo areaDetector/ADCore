@@ -377,11 +377,13 @@ record(ao, "$(P)$(R)RotationRange")
     field(EGU,  "deg")
 }
 
-record(stringout, "$(P)$(R)TwoTheta")
+record(ao, "$(P)$(R)TwoTheta")
 {
-    field(PINI, "YES")
-    field(DTYP, "asynOctetWrite")
+    field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_TWO_THETA")
+    field(PINI, "YES")
+    field(PREC, "3")
+    field(EGU,  "deg")
 }
 
 record(ao, "$(P)$(R)Wavelength")
