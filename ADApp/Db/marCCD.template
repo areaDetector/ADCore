@@ -272,6 +272,25 @@ record(longin, "$(P)$(R)FrameShift_RBV")
     field(DESC, "Frame shift lines")
 }
 
+# Baseline stability
+record(ao, "$(P)$(R)Stability")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_STABILITY")
+    field(PINI, "YES")
+    field(PREC, "2")
+    field(DESC, "Baseline stability")
+}
+
+record(ai, "$(P)$(R)Stability_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_STABILITY")
+    field(SCAN, "I/O Intr")
+    field(PREC, "2")
+    field(DESC, "Baseline stability")
+}
+
 # We replace the choice fields for FrameType from ADBase.template
 record(mbbo, "$(P)$(R)FrameType")
 {
