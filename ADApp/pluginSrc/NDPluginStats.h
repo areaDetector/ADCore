@@ -69,6 +69,7 @@ typedef enum {
 
 
 /* Arrays of total and net counts for MCA or waveform record */   
+#define NDPluginStatsCallbackPeriodString     "CALLBACK_PERIOD"     /* (asynFloat64,      r/w) Callback period */
 #define NDPluginStatsTotalArrayString         "TOTAL_ARRAY"         /* (asynInt32Array,   r/o) Total counts array */
 #define NDPluginStatsNetArrayString           "NET_ARRAY"           /* (asynInt32Array,   r/o) Net counts array */
 
@@ -141,6 +142,7 @@ protected:
     int NDPluginStatsHistArray;
 
     /* Arrays of total and net counts for MCA or waveform record */   
+    int NDPluginStatsCallbackPeriod;
     int NDPluginStatsTotalArray;
     int NDPluginStatsNetArray;
 

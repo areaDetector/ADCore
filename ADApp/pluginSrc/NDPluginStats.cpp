@@ -746,6 +746,7 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
     createParam(NDPluginStatsHistArrayString,         asynParamFloat64Array,  &NDPluginStatsHistArray);
 
     /* Arrays of total and net counts for MCA or waveform record */   
+    createParam(NDPluginStatsCallbackPeriodString,    asynParamFloat64, &NDPluginStatsCallbackPeriod);
     createParam(NDPluginStatsTotalString,             asynParamFloat64, &NDPluginStatsTotal);
     createParam(NDPluginStatsNetString,               asynParamFloat64, &NDPluginStatsNet);
     
