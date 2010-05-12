@@ -12,7 +12,9 @@
   * data to clients that register for callbacks. 
   * The plugin currently supports the following conversions
   * <ul>
-  *  <li> Bayer color to RGB1, RGB2 or RGB3 </li>
+  *  <li> Mono to RGB1, RGB2 or RGB3 </li>
+  *  <li> RGB1, RGB2 or RGB3 to mono</li>
+  *  <li> Bayer color to RGB1, RGB2 or RGB3 (Windows and Linux only)</li>
   *  <li> RGB1 to RGB2 or RGB3 </li> 
   *  <li> RGB2 to RGB1 or RGB3 </li> 
   *  <li> RGB3 to RGB1 or RGB2 </li> 
