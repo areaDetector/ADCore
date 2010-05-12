@@ -9,7 +9,7 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
-    Release 1-6 (8-April-2010)</h2>
+    Release 1-6 (14-May-2010)</h2>
   <ul>
     <li>General
       <ul>
@@ -55,6 +55,15 @@
           for the first image in a dataset if they were changed after the acquisition was
           started but before the first image was taken. Added ability to write simulated data
           to disk in the simulation driver.</li>
+        <li>marCCD driver. Added support for baseline stabilization, which is done with the
+          "set stability" and "get stability" remote commands. Baseline stabilization is an
+          extra-cost option for marCCD, so this command only has any affect if that option
+          is present. But all versions of marCCD understand the command remote command syntax,
+          so there is no problem if the option is not installed.<br />
+          Changed the TwoTheta record from a stringout to ao, and this value is now always
+          sent with the "header" remote command. This requires that the string "theta_display_name
+          TwoTheta" be present in one of the marCCD configuration files that gets loaded,
+          typically in goniostat_none.conf or goniostat_sw.conf.</li>
       </ul>
     </li>
     <li>Plugins
@@ -114,6 +123,8 @@
       <ul>
         <li>Fixed a bug in the ImageJ EPICS_AD_Viewer.java that required restarting the plugin
           if it was told to start displaying before any frames had been acquired by the IOC.</li>
+        <li>Fixed a bug in the ImageJ EPICS_AD_Viewer.java that caused an exception when trying
+          to deference a null window pointer.</li>
       </ul>
     </li>
     <li>Internals
@@ -122,6 +133,16 @@
           dims argument.</li>
         <li>Added more fields to the NDArrayInfo_t structure and the NDArray::getInfo method
           to simplify handling color images.</li>
+      </ul>
+    </li>
+    <li>Known problems. This release of areaDetector exposed two bugs in EPICS 3.14.11.
+      Links to the required patches can be found on the <a href="http://www.aps.anl.gov/epics/base/R3-14/11-docs/KnownProblems.html">
+        EPICS 3.4.11 Known Problems page</a>.
+      <ul>
+        <li>The epicsThreadOnceOsd problem can cause crashes with an "assert" error on IOC
+          initialization on Win32 systems.</li>
+        <li>The macLib problem can cause crashes or memory corruption when the commonPlugins.cmd
+          script expands lines with macros longer than 256 characters.</li>
       </ul>
     </li>
   </ul>
