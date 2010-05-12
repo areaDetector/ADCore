@@ -6,7 +6,7 @@ file {
 display {
 	object {
 		x=478
-		y=24
+		y=30
 		width=700
 		height=1095
 	}
@@ -1736,15 +1736,74 @@ composite {
 composite {
 	object {
 		x=5
+		y=255
+		width=335
+		height=80
+	}
+	"composite name"=""
+	"composite file"="ADPlugins.adl"
+}
+composite {
+	object {
+		x=345
+		y=530
+		width=350
+		height=60
+	}
+	"composite name"=""
+	"composite file"="ADAttrFile.adl"
+}
+composite {
+	object {
+		x=575
+		y=838
+		width=115
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=575
+				y=838
+				width=70
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Exists:"
+		}
+		"text update" {
+			object {
+				x=650
+				y=838
+				width=40
+				height=20
+			}
+			monitor {
+				chan="$(P)$(R)FilePathExists_RBV"
+				clr=14
+				bclr=2
+			}
+			clrmod="alarm"
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=5
 		y=340
 		width=335
-		height=205
+		height=230
 	}
 	"composite name"=""
 	children {
 		rectangle {
 			object {
-				x=116
+				x=119
 				y=342
 				width=107
 				height=21
@@ -1758,7 +1817,7 @@ composite {
 				x=5
 				y=340
 				width=335
-				height=205
+				height=230
 			}
 			"basic attribute" {
 				clr=14
@@ -1767,7 +1826,7 @@ composite {
 		}
 		text {
 			object {
-				x=90
+				x=93
 				y=343
 				width=159
 				height=20
@@ -2108,62 +2167,47 @@ composite {
 				}
 			}
 		}
-	}
-}
-composite {
-	object {
-		x=5
-		y=255
-		width=335
-		height=80
-	}
-	"composite name"=""
-	"composite file"="ADPlugins.adl"
-}
-composite {
-	object {
-		x=345
-		y=530
-		width=350
-		height=60
-	}
-	"composite name"=""
-	"composite file"="ADAttrFile.adl"
-}
-composite {
-	object {
-		x=575
-		y=838
-		width=115
-		height=20
-	}
-	"composite name"=""
-	children {
 		text {
 			object {
-				x=575
-				y=838
-				width=70
+				x=34
+				y=543
+				width=110
 				height=20
 			}
 			"basic attribute" {
 				clr=14
 			}
-			textix="Exists:"
+			textix="Stability"
+			align="horiz. right"
+		}
+		"text entry" {
+			object {
+				x=154
+				y=543
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)Stability"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
 		}
 		"text update" {
 			object {
-				x=650
-				y=838
-				width=40
-				height=20
+				x=247
+				y=544
+				width=61
+				height=18
 			}
 			monitor {
-				chan="$(P)$(R)FilePathExists_RBV"
-				clr=14
-				bclr=2
+				chan="$(P)$(R)Stability_RBV"
+				clr=54
+				bclr=4
 			}
-			clrmod="alarm"
+			align="horiz. centered"
 			limits {
 			}
 		}
