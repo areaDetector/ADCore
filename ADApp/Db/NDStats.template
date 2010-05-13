@@ -1,5 +1,5 @@
 ###################################################################
-#  These records control whether statistics are computed          #
+#  These records contain the basic statistics                     #
 ###################################################################
 record(bo, "$(P)$(R)ComputeStatistics")
 {
@@ -22,13 +22,9 @@ record(bi, "$(P)$(R)ComputeStatistics_RBV")
    field(SCAN, "I/O Intr")
 }
 
-
-###################################################################
-#  These records contain the basic statistics                     #
-###################################################################
 record(longout, "$(P)$(R)BgdWidth")
 {
-   field(PINI, "1")
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BGD_WIDTH")
    field(VAL,  "1")
@@ -36,7 +32,6 @@ record(longout, "$(P)$(R)BgdWidth")
 
 record(longin, "$(P)$(R)BgdWidth_RBV")
 {
-   field(PINI, "1")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BGD_WIDTH")
    field(SCAN, "I/O Intr")
@@ -100,7 +95,7 @@ record(bo, "$(P)$(R)ComputeCentroid")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMPUTE_CENTROID")
-   field(VAL,  "1")
+   field(VAL,  "0")
    field(ZNAM, "No")
    field(ONAM, "Yes")
 }
@@ -175,14 +170,14 @@ record(ai, "$(P)$(R)SigmaXY_RBV")
 }
 
 ###################################################################
-#  These records control whether profiles are computed            #
+#  These records control profiles                                 #
 ###################################################################
 record(bo, "$(P)$(R)ComputeProfiles")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMPUTE_PROFILES")
-   field(VAL,  "1")
+   field(VAL,  "0")
    field(ZNAM, "No")
    field(ONAM, "Yes")
 }
@@ -316,14 +311,14 @@ record(waveform, "$(P)$(R)ProfileCursorY_RBV")
 
 
 ###################################################################
-#  These records control whether the histogram is computed        #
+#  These are used to define the histogram                         #
 ###################################################################
 record(bo, "$(P)$(R)ComputeHistogram")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COMPUTE_HISTOGRAM")
-   field(VAL,  "1")
+   field(VAL,  "0")
    field(ZNAM, "No")
    field(ONAM, "Yes")
 }
@@ -339,9 +334,6 @@ record(bi, "$(P)$(R)ComputeHistogram_RBV")
    field(SCAN, "I/O Intr")
 }
 
-###################################################################
-#  These are used to define the histogram                         #
-###################################################################
 record(longout, "$(P)$(R)HistSize")
 {
    field(PINI, "YES")
