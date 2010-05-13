@@ -10,7 +10,7 @@
     <h1>
       areaDetector Prosilica driver</h1>
     <h2>
-      August 18, 2009</h2>
+      May 13, 2010</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -38,9 +38,9 @@
   </p>
   <p>
     The vendor library supports saving individual frames as TIFF files, and this is
-    implemented in the driver. The <a href="NDPluginFile.html#netCDF">NDFileNetCDF</a>
-    plugin can be used to capture or stream images much more rapidly in the netCDF file
-    format.
+    implemented in the driver. Other file plugins, such as the <a href="NDPluginFile.html#netCDF">
+      NDFileNetCDF</a> plugin can be used to capture or stream images much more rapidly
+    in the netCDF file format.
   </p>
   <p>
     This driver inherits from <a href="areaDetectorDoc.html#ADDriver">ADDriver</a>.
@@ -97,7 +97,7 @@
     are not supported in the driver. They may be added in a future release.
   </p>
   <h2 id="Driver_parameters" style="text-align: left">
-    Pilatus specific parameters</h2>
+    Prosilica specific parameters</h2>
   <p>
     The Prosilica driver implements the following parameters in addition to those in
     asynNDArrayDriver.h and ADDriver.h:
@@ -701,20 +701,20 @@
   <h2 id="MEDM_screens" style="text-align: left">
     MEDM screens</h2>
   <p>
-    The following is the MEDM screen ADBase.adl connected to a Prosilica camera.
+    The following is the MEDM screen prosilica.adl.
   </p>
   <div style="text-align: center">
     <h3>
-      ADBase.adl</h3>
-    <img alt="ADBase_prosilica.png" src="ADBase_prosilica.png" /></div>
+      prosilica.adl</h3>
+    <img alt="prosilica.png" src="prosilica.png" /></div>
   <p>
     The following is the MEDM screen that provides access to the specific parameters
     for the Prosilica detector.
   </p>
   <div style="text-align: center">
     <h3>
-      prosilica.adl</h3>
-    <img alt="prosilica.png" src="prosilica.png" /></div>
+      prosilicaMore.adl</h3>
+    <img alt="prosilicaMore.png" src="prosilicaMore.png" /></div>
   <p>
     The following is an IDL <a href="http://cars.uchicago.edu/software/idl/imaging_routines.html#epics_ad_display">
       epics_ad_display</a> screen displaying the Prosilica detector images.
@@ -731,7 +731,7 @@
   </p>
   <p>
     The Linux driver requires a patch for EPICS base R3.14.10 because EPICS does not
-    correctly pass on SIGALARM signals. This will be fixed in R3.14.11.
+    correctly pass on SIGALARM signals. This is fixed in R3.14.11.
   </p>
 </body>
 </html>
