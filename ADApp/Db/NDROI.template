@@ -271,7 +271,7 @@ record(bo, "$(P)$(R)EnableScale")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_SCALE")
-   field(VAL,  "1")
+   field(VAL,  "0")
    field(ZNAM, "Disable")
    field(ONAM, "Enable")
 }
@@ -293,7 +293,7 @@ record(ao, "$(P)$(R)Scale")
    field(DTYP, "asynFloat64")
    field(VAL,  "1")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SCALE_VALUE")
-   field(VAL,  "0")
+   field(VAL,  "1")
 }
 
 record(ai, "$(P)$(R)Scale_RBV")
@@ -333,6 +333,7 @@ record(mbbo, "$(P)$(R)DataTypeOut")
    field(SVVL, "7")
    field(EIST, "Automatic")
    field(EIVL, "-1")
+   field(VAL,  "8")
 }
 
 record(mbbi, "$(P)$(R)DataTypeOut_RBV")
