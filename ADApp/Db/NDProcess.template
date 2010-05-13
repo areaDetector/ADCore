@@ -31,6 +31,7 @@ record(mbbo, "$(P)$(R)DataTypeOut")
     field(SVVL, "7")
     field(EIST, "Automatic")
     field(EIVL, "-1")
+    field(VAL,  "8")
 }
 
 record(mbbi, "$(P)$(R)DataTypeOut_RBV")
@@ -202,7 +203,7 @@ record(ao, "$(P)$(R)Offset")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OFFSET")
     field(PREC, "2")
-    field(VAL,  "1.0")
+    field(VAL,  "0.0")
 }
 
 record(ai, "$(P)$(R)Offset_RBV")
@@ -265,7 +266,6 @@ record(ai, "$(P)$(R)LowClip_RBV")
 {
     field(DTYP, "asynFloat64")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LOW_CLIP")
-    field(VAL, "0.0")
     field(SCAN, "I/O Intr")
 }
 
@@ -294,14 +294,13 @@ record(ao, "$(P)$(R)HighClip")
     field(PINI, "YES")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIGH_CLIP")
-    field(VAL,  "0.0")
+    field(VAL,  "100.0")
 }
 
 record(ai, "$(P)$(R)HighClip_RBV")
 {
     field(DTYP, "asynFloat64")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIGH_CLIP")
-    field(VAL, "0.0")
     field(SCAN, "I/O Intr")
 }
 
