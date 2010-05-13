@@ -360,17 +360,10 @@ public class EPICS_AD_Viewer implements PlugIn
                 IJ.log("got image, sizes: " + nx + " " + ny + " " + nz);
 
             // if image size changes we must close window and make a new one.
+            boolean makeNewWindow = false;
             if (nx != imageSizeX || ny != imageSizeY || nz != imageSizeZ || cm != colorMode || dt != dataType)
             {
-                // size has changed, so we have to make a new window.
-                try
-                {
-                    if (img.getWindow()==null || img.getWindow().isClosed()) 
-                    {
-                        img.close();
-                    }
-                }
-                catch (Exception ex) { }
+                makeNewWindow = true;
                 imageSizeX = nx;
                 imageSizeY = ny;
                 imageSizeZ = nz;
@@ -382,10 +375,23 @@ public class EPICS_AD_Viewer implements PlugIn
             }
 
             // If we are making a new stack close the window
-            if (isNewStack) img.close();
+            if (isNewStack) makeNewWindow = true;
 
-            // If the window is closed make a new one
-            if (img.getWindow().isClosed())
+            // If we need to make a new window then close the current one if it exists
+            if (makeNewWindow)
+            {
+                try
+                {
+                    if (img.getWindow() == null || !img.getWindow().isClosed())
+                    {
+                        img.close();
+                    }
+                }
+                catch (Exception ex) { }
+                makeNewWindow = false;
+            }
+            // If the window does not exist or is closed make a new one
+            if (img.getWindow() == null || img.getWindow().isClosed())
             {
                 switch (colorMode)
                 {
