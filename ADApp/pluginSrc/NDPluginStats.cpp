@@ -420,12 +420,16 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
         if (bgdWidth > 0) {
             bgdPixels = 0;
             bgdCounts = 0.;
+            /* Initialize the dimensions of the background array */
             for (dim=0; dim<pArray->ndims; dim++) {
-                memcpy(bgdDims, &pArray->dims, ND_ARRAY_MAX_DIMS*sizeof(NDDimension_t));
+                pArray->initDimension(&bgdDims[dim], pArray->dims[dim].size);
+            }
+            for (dim=0; dim<pArray->ndims; dim++) {
                 pDim = &bgdDims[dim];
-                pDim->offset = MAX(pDim->offset - bgdWidth, 0);
-                pDim->size    = MIN(bgdWidth, pArray->dims[dim].size - pDim->offset);
+                pDim->offset = 0;
+                pDim->size = MIN(bgdWidth, pDim->size);
                 this->pNDArrayPool->convert(pArray, &pBgdArray, pArray->dataType, bgdDims);
+                pDim->size = pArray->dims[dim].size;
                 if (!pBgdArray) {
                     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                         "%s::%s, error allocating array buffer in convert\n",
@@ -436,10 +440,11 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
                 pBgdArray->release();
                 bgdPixels += pStatsTemp->nElements;
                 bgdCounts += pStatsTemp->total;
-                memcpy(bgdDims, &pArray->dims, ND_ARRAY_MAX_DIMS*sizeof(NDDimension_t));
-                pDim->offset = MIN(pDim->offset + pDim->size, pArray->dims[dim].size - 1 - bgdWidth);
-                pDim->size    = MIN(bgdWidth, pArray->dims[dim].size - pDim->offset);
+                pDim->offset = MAX(0, pDim->size - 1 - bgdWidth);
+                pDim->size = MIN(bgdWidth, pArray->dims[dim].size - pDim->offset);
                 this->pNDArrayPool->convert(pArray, &pBgdArray, pArray->dataType, bgdDims);
+                pDim->offset = 0;
+                pDim->size = pArray->dims[dim].size;
                 if (!pBgdArray) {
                     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                         "%s::%s, error allocating array buffer in convert\n",
