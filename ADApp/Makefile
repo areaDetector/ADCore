@@ -31,6 +31,8 @@ DIRS += perkinElmerSrc
 perkinElmerSrc_DEPEND_DIRS = pluginSrc
 DIRS += pvcamSrc
 pvcamSrc_DEPEND_DIRS = pluginSrc pvcamSupport
+DIRS += apex2Src
+apex2Src_DEPEND_DIRS = pluginSrc
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *db*))
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *Db*))
 include $(TOP)/configure/RULES_DIRS
