@@ -10,6 +10,7 @@ epicsEnvSet("PORT",   "SIM1")
 epicsEnvSet("QSIZE",  "20")
 epicsEnvSet("XSIZE",  "640")
 epicsEnvSet("YSIZE",  "480")
+epicsEnvSet("NCHANS", "2048")
 
 # Create a simDetector driver
 simDetectorConfig("$(PORT)", $(XSIZE), $(YSIZE), 1, 500, -1)
@@ -28,6 +29,8 @@ dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=$(PREFIX),R=i
 # This creates a waveform large enough for 640x480x3 (e.g. RGB color) arrays.
 # This waveform only allows transporting 8-bit images
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStdArrays.template", "P=$(PREFIX),R=image1:,PORT=Image1,ADDR=0,TIMEOUT=1,TYPE=Int8,FTVL=UCHAR,NELEMENTS=921600")
+# This waveform allows transporting 32-bit images
+#dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStdArrays.template", "P=$(PREFIX),R=image1:,PORT=Image1,ADDR=0,TIMEOUT=1,TYPE=Int32,FTVL=LONG,NELEMENTS=921600")
 
 # Create a standard arrays plugin, set it to get data from second simDetector driver.
 NDStdArraysConfigure("Image2", 1, 0, "SIM2", 0)
