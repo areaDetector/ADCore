@@ -30,6 +30,22 @@ record(mbbi,"$(P)$(R)TriggerMode_RBV") {
     field(FRST,"Alignment")
 }
 
+# We redefine the states for the FileFormat records defined in NDFile.template
+record(mbbo, "$(P)$(R)FileFormat")
+{
+    field(ZRST, "TIFF")
+    field(ZRVL, "0")
+    field(ONST, "Invalid")
+    field(ONVL, "1")
+}
+
+record(mbbi, "$(P)$(R)FileFormat_RBV")
+{
+    field(ZRST, "TIFF")
+    field(ZRVL, "0")
+    field(ONST, "Invalid")
+    field(ONVL, "1")
+}
 
 # Armed flag, which indicates Pilatus is ready for external triggers
 record(bi, "$(P)$(R)Armed")
@@ -51,7 +67,15 @@ record(ao, "$(P)$(R)DelayTime")
     field(PREC, "6")
 }
 
-# Threshhold and gain related fields
+record(ai, "$(P)$(R)DelayTime_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DELAY_TIME")
+    field(EGU,  "s")
+    field(PREC, "6")
+    field(SCAN, "I/O Intr")
+}
+
 # Threshold energy
 record(ao, "$(P)$(R)ThresholdEnergy")
 {
@@ -62,6 +86,16 @@ record(ao, "$(P)$(R)ThresholdEnergy")
     field(EGU,  "keV")
     field(PREC, "3")
     field(VAL, "10.000")
+}
+
+record(ai, "$(P)$(R)ThresholdEnergy_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))THRESHOLD")
+    field(DESC, "Energy threshold")
+    field(EGU,  "keV")
+    field(PREC, "3")
+    field(SCAN, "I/O Intr")
 }
 
 # Gain menu.  This writes to the Gain PV in the base database.
@@ -128,6 +162,15 @@ record(longout, "$(P)$(R)MinFlatField")
     field(DESC, "Minimum flat field value")
     field(VAL,  "100")
     field(EGU,  "Counts")
+}
+
+record(longin, "$(P)$(R)MinFlatField_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_FLAT_FIELD")
+    field(DESC, "Minimum flat field value")
+    field(EGU,  "Counts")
+    field(SCAN, "I/O Intr")
 }
 
 # Flat field valid flag.
