@@ -58,6 +58,31 @@ NDStatsConfigure("STATS5", $(QSIZE), 0, "ROI4", 0, -1, -1)
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=$(PREFIX),R=Stats5:,  PORT=STATS5,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT),NDARRAY_ADDR=0")
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDStats.template",     "P=$(PREFIX),R=Stats5:,  PORT=STATS5,ADDR=0,TIMEOUT=1,HIST_SIZE=256,XSIZE=$(XSIZE),YSIZE=$(YSIZE)")
 
+# Create "fastSweep" drivers for the MCA record to do on-the-fly scanning of Stats data
+initFastSweep("SweepTotal1", "STATS1", 1, $(NCHANS), "TOTAL_ARRAY", "CALLBACK_PERIOD")
+initFastSweep("SweepNet1",   "STATS1", 1, $(NCHANS), "NET_ARRAY",   "CALLBACK_PERIOD")
+initFastSweep("SweepTotal2", "STATS2", 1, $(NCHANS), "TOTAL_ARRAY", "CALLBACK_PERIOD")
+initFastSweep("SweepNet2",   "STATS2", 1, $(NCHANS), "NET_ARRAY",   "CALLBACK_PERIOD")
+initFastSweep("SweepTotal3", "STATS3", 1, $(NCHANS), "TOTAL_ARRAY", "CALLBACK_PERIOD")
+initFastSweep("SweepNet3",   "STATS3", 1, $(NCHANS), "NET_ARRAY",   "CALLBACK_PERIOD")
+initFastSweep("SweepTotal4", "STATS4", 1, $(NCHANS), "TOTAL_ARRAY", "CALLBACK_PERIOD")
+initFastSweep("SweepNet4",   "STATS4", 1, $(NCHANS), "NET_ARRAY",   "CALLBACK_PERIOD")
+initFastSweep("SweepTotal5", "STATS5", 1, $(NCHANS), "TOTAL_ARRAY", "CALLBACK_PERIOD")
+initFastSweep("SweepNet5",   "STATS5", 1, $(NCHANS), "NET_ARRAY",   "CALLBACK_PERIOD")
+
+# Load MCA records for the fast sweep drivers
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=$(PREFIX),M=Stats1:TotalArray,DTYP=asynMCA,NCHAN=$(NCHANS),INP=@asyn(SweepTotal1 0)")
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=$(PREFIX),M=Stats2:TotalArray,DTYP=asynMCA,NCHAN=$(NCHANS),INP=@asyn(SweepTotal2 0)")
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=$(PREFIX),M=Stats3:TotalArray,DTYP=asynMCA,NCHAN=$(NCHANS),INP=@asyn(SweepTotal3 0)")
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=$(PREFIX),M=Stats4:TotalArray,DTYP=asynMCA,NCHAN=$(NCHANS),INP=@asyn(SweepTotal4 0)")
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=$(PREFIX),M=Stats5:TotalArray,DTYP=asynMCA,NCHAN=$(NCHANS),INP=@asyn(SweepTotal5 0)")
+
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=$(PREFIX),M=Stats1:NetArray,  DTYP=asynMCA,NCHAN=$(NCHANS),INP=@asyn(SweepNet1 0)")
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=$(PREFIX),M=Stats2:NetArray,  DTYP=asynMCA,NCHAN=$(NCHANS),INP=@asyn(SweepNet2 0)")
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=$(PREFIX),M=Stats3:NetArray,  DTYP=asynMCA,NCHAN=$(NCHANS),INP=@asyn(SweepNet3 0)")
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=$(PREFIX),M=Stats4:NetArray,  DTYP=asynMCA,NCHAN=$(NCHANS),INP=@asyn(SweepNet4 0)")
+dbLoadRecords("$(MCA)/mcaApp/Db/mca.db", "P=$(PREFIX),M=Stats5:NetArray,  DTYP=asynMCA,NCHAN=$(NCHANS),INP=@asyn(SweepNet5 0)")
+
 # Create a transform plugin
 NDTransformConfigure("TRANS1", $(QSIZE), 0, "$(PORT)", 0, -1, -1)
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDPluginBase.template","P=$(PREFIX),R=Trans1:,  PORT=TRANS1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT),NDARRAY_ADDR=0")
