@@ -188,13 +188,18 @@
         <td>
           r/o</td>
         <td>
-          Sum (total) of all elements in the array</td>
+          Sum (total) of all elements in the array. This is available as an ai record. The
+          total counts are also available as epicsInt32 values in an mca record via callbacks
+          to the drvFastSweep driver. The mca record is very useful for on-the-fly data acquisition
+          of the total counts in the detector or in an ROI.</td>
         <td>
           TOTAL</td>
         <td>
-          $(P)$(R)Total_RBV</td>
+          $(P)$(R)Total_RBV<br />
+          $(P)$(R)TotalArray</td>
         <td>
-          ai</td>
+          ai<br />
+          mca</td>
       </tr>
       <tr>
         <td>
@@ -209,14 +214,19 @@
           calculated by determining the average counts per array element in a border around
           the array of width NDPluginStatsBgdWidth. This average background counts per element
           is then subtracted from all elements inside the array. If NDPluginStatsBgdWidth
-          is &le; 0 then no background is computed.
+          is &le; 0 then no background is computed. The net counts is available as an ai record.
+          The net counts is also available as epicsInt32 values in an mca record via callbacks
+          to the drvFastSweep driver. The mca record is very useful for on-the-fly data acquisition
+          of the net counts in the detector or in an ROI.
         </td>
         <td>
           NET</td>
         <td>
-          $(P)$(R)Net_RBV</td>
+          $(P)$(R)Net_RBV<br />
+          $(P)$(R)NetArray</td>
         <td>
-          ai</td>
+          ai<br />
+          mca</td>
       </tr>
       <tr>
         <td>
@@ -795,6 +805,26 @@
     <h3>
       NDStats5.adl</h3>
     <img alt="NDStats5.png" src="NDStats5.png" />
+  </div>
+  <p>
+    The following MEDM screen shows the MCA record containing the total counts from
+    the Stats1 plugin. This is the total counts as a function of time, and is very useful
+    for on-the-fly data acquisition, where the NDStats plugin computes the net or total
+    counts in the detector or an ROI.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      mca.adl</h3>
+    <img alt="NDStatsTotalArray.png" src="NDStatsTotalArray.png" />
+  </div>
+  <p>
+    The following MEDM screen shows the MCA record containing the net counts from the
+    Stats1 plugin.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      mca.adl</h3>
+    <img alt="NDStatsNetArray.png" src="NDStatsNetArray.png" />
   </div>
 </body>
 </html>
