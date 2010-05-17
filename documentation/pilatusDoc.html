@@ -10,7 +10,7 @@
     <h1>
       areaDetector Pilatus driver</h1>
     <h2>
-      August 18, 2009</h2>
+      May 15, 2010</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -47,9 +47,9 @@
   </p>
   <p>
     This driver inherits from <a href="areaDetectorDoc.html#ADDriver">ADDriver</a>.
-    It implements many of the parameters in NDStdDriverParam_t (see <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">
-      asynNDArryDriver.h</a>) and in ADStdDriverParam_t (see <a href="areaDetectorDoxygenHTML/_a_d_driver_8h.html">
-        ADArrayDriver.h</a>). It also implements a number of parameters that are specific
+    It implements many of the parameters in <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">
+      asynNDArrayDriver.h</a> and in <a href="areaDetectorDoxygenHTML/_a_d_driver_8h.html">
+        ADArrayDriver.h</a>. It also implements a number of parameters that are specific
     to the Pilatus detectors.The <a href="areaDetectorDoxygenHTML/classpilatus_detector.html">
       pilatusDetector class documentation</a> describes this class in detail.</p>
   <h2 id="StandardNotes" style="text-align: left">
@@ -76,7 +76,7 @@
         <td>
           ADTriggerMode</td>
         <td>
-          $(P$(R)TriggerMode</td>
+          $(P)$(R)TriggerMode</td>
         <td>
           The driver redefines the choices for the ADTriggerMode parameter (record $(P)$(R)TriggerMode)
           from ADDriver.h. The choices for the Pilatus are:
@@ -101,7 +101,7 @@
         <td>
           ADExposureTime</td>
         <td>
-          $(P$(R)ExposureTime</td>
+          $(P)$(R)ExposureTime</td>
         <td>
           In External Enable mode this value is not used by camserver. However, it should
           be set larger than the maximum time exposure time from the external source, so that
@@ -112,7 +112,7 @@
         <td>
           ADNumImages</td>
         <td>
-          $(P$(R)NumImages</td>
+          $(P)$(R)NumImages</td>
         <td>
           Controls the number of images to acquire. It applies in all trigger modes except
           Alignment.</td>
@@ -121,7 +121,7 @@
         <td>
           ADExposurePeriod</td>
         <td>
-          $(P$(R)ExposurePeriod</td>
+          $(P)$(R)ExposurePeriod</td>
         <td>
           Controls the exposure period in seconds. It applies only in Internal or External
           Trigger modes when NumImages &gt;1.</td>
@@ -130,7 +130,7 @@
         <td>
           ADNumExposures</td>
         <td>
-          $(P$(R)NumExposures</td>
+          $(P)$(R)NumExposures</td>
         <td>
           Controls the number of exposures per image. It is only used in External Enable mode.</td>
       </tr>
@@ -138,7 +138,7 @@
         <td>
           ADAquire</td>
         <td>
-          $(P$(R)Acquire</td>
+          $(P)$(R)Acquire</td>
         <td>
           Controls the acquisition. Setting this to 1 starts image acquisition. The driver
           sets the record to 0 when acquisition is complete. This means an entire acquisition
@@ -150,7 +150,7 @@
         <td>
           NDFilePath</td>
         <td>
-          $(P$(R)FilePath</td>
+          $(P)$(R)FilePath</td>
         <td>
           Controls the path for saving images. It must be a valid path for camserver <i>and</i>
           for the areaDetector driver, which is normally running in an EPICS IOC. If camserver
@@ -159,9 +159,9 @@
       </tr>
       <tr>
         <td>
-          NDFileFormat</td>
+          NDFileTemplate</td>
         <td>
-          $(P)$(R)FileFormat</td>
+          $(P)$(R)FileTemplate</td>
         <td>
           camserver uses the file extension to determine what format to save the files in.
           The areaDetector Pilatus driver only supports TIFF files, so the extension should
@@ -186,9 +186,9 @@ test6_2_0035.tif    test6_2_0035.tif, test6_2_0036.tif, ...
     </tbody>
   </table>
   <p>
-    It is useful to use NDPluginROI to define an ROI containing the entire Pilatus detector.
-    The MaxValue_RBV PV in this ROI can be monitored to make sure that the 20-bit limit
-    of 1,048,575 is not being approached in any pixel.
+    It is useful to load and enable an NDPluginStats plugin that gets its data from
+    the Pilatus driver. The MaxValue_RBV PV for that plugin can be monitored to make
+    sure that the 20-bit limit of 1,048,575 is not being approached in any pixel.
   </p>
   <h2 id="Driver_parameters" style="text-align: left">
     Pilatus specific parameters</h2>
@@ -499,21 +499,28 @@ badX2,badY2 replacementX2,replacementY2
     controls that are not applicable to the Pilatus.</p>
   <p>
     <code>pilatusDetector.adl</code> is the main screen used to control the Pilatus
-    driver. All records except those for ROIs are accessed through this screen.
+    driver.
   </p>
   <div style="text-align: center">
     <h3 style="text-align: center">
       pilatusDetector.adl</h3>
     <img alt="pilatusDetector.png" src="pilatusDetector.png" /></div>
   <p>
-    <code>NDROI8.adl</code> is used to define the ROIs, and to display the statistics
-    for each ROI. In this example there are 3 valid ROIs defined. ROI 0 is the entire
-    detector, ROI 1 is a 100x50 rectangle starting at [300,60], and ROI 2 is a 50x30
-    rectangle starting at [320,70].</p>
+    <code>NDROI4.adl</code> is used to define the ROIs. In this example there are 3
+    valid ROIs defined. ROI 1 is the entire detector, ROI 2 is a 300x50 rectangle starting
+    at [100,60], and ROI 3 is a 50x30 rectangle starting at [220,70].</p>
   <div style="text-align: center">
     <h3 style="text-align: center">
-      NDROI8.adl</h3>
-    <img alt="NDROI8.png" src="NDROI8.png" /></div>
+      NDROI4.adl</h3>
+    <img alt="pilatusROI4.png" src="pilatusROI4.png" /></div>
+  <p>
+    <code>NDStats5.adl</code> is used to display the statistics in the ROIs defined
+    above.
+  </p>
+  <div style="text-align: center">
+    <h3 style="text-align: center">
+      NDStats5.adl</h3>
+    <img alt="pilatusStats5.png" src="pilatusStats5.png" /></div>
   <p>
     <code>mca.adl or mca_small.adl</code> can be used to plot the net or total counts
     in an ROI when NImages>1. In this example the plot is the net counts in ROI 1 as
