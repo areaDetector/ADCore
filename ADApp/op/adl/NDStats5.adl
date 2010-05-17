@@ -1661,103 +1661,42 @@ menu {
 	limits {
 	}
 }
-composite {
+text {
+	object {
+		x=1175
+		y=66
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="More"
+}
+"related display" {
 	object {
 		x=1165
-		y=66
+		y=94
 		width=60
-		height=276
+		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=1175
-				y=66
-				width=40
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="More"
-		}
-		"related display" {
-			object {
-				x=1165
-				y=94
-				width=60
-				height=20
-			}
-			display[0] {
-				label="Statistics #1 full"
-				name="NDStats.adl"
-				args="P=$(P),R=$(R1)"
-			}
-			clr=53
-			bclr=4
-		}
-		"related display" {
-			object {
-				x=1165
-				y=151
-				width=60
-				height=20
-			}
-			display[0] {
-				label="Statistics #2 full"
-				name="NDStats.adl"
-				args="P=$(P),R=$(R2)"
-			}
-			clr=53
-			bclr=4
-		}
-		"related display" {
-			object {
-				x=1165
-				y=208
-				width=60
-				height=20
-			}
-			display[0] {
-				label="Statistics #3 full"
-				name="NDStats.adl"
-				args="P=$(P),R=$(R3)"
-			}
-			clr=53
-			bclr=4
-		}
-		"related display" {
-			object {
-				x=1165
-				y=265
-				width=60
-				height=20
-			}
-			display[0] {
-				label="Statistics #4 full"
-				name="NDStats.adl"
-				args="P=$(P),R=$(R4)"
-			}
-			clr=53
-			bclr=4
-		}
-		"related display" {
-			object {
-				x=1165
-				y=322
-				width=60
-				height=20
-			}
-			display[0] {
-				label="Statistics #5 full"
-				name="NDStats.adl"
-				args="P=$(P),R=$(R5)"
-			}
-			clr=53
-			bclr=4
-		}
+	display[0] {
+		label="Statistics #1 full"
+		name="NDStats.adl"
+		args="P=$(P),R=$(R1)"
 	}
+	display[1] {
+		label="Total MCA"
+		name="mca.adl"
+		args="P=$(P),M=$(R1)TotalArray"
+	}
+	display[2] {
+		label="Net MCA"
+		name="mca.adl"
+		args="P=$(P),M=$(R1)NetArray"
+	}
+	clr=53
+	bclr=4
 }
 composite {
 	object {
@@ -1943,4 +1882,104 @@ text {
 	}
 	limits {
 	}
+}
+"related display" {
+	object {
+		x=1165
+		y=151
+		width=60
+		height=20
+	}
+	display[0] {
+		label="Statistics #1 full"
+		name="NDStats.adl"
+		args="P=$(P),R=$(R2)"
+	}
+	display[1] {
+		label="Total MCA"
+		name="mca.adl"
+		args="P=$(P),M=$(R2)TotalArray"
+	}
+	display[2] {
+		label="Net MCA"
+		name="mca.adl"
+		args="P=$(P),M=$(R2)NetArray"
+	}
+	clr=53
+	bclr=4
+}
+"related display" {
+	object {
+		x=1165
+		y=208
+		width=60
+		height=20
+	}
+	display[0] {
+		label="Statistics #1 full"
+		name="NDStats.adl"
+		args="P=$(P),R=$(R3)"
+	}
+	display[1] {
+		label="Total MCA"
+		name="mca.adl"
+		args="P=$(P),M=$(R3)TotalArray"
+	}
+	display[2] {
+		label="Net MCA"
+		name="mca.adl"
+		args="P=$(P),M=$(R3)NetArray"
+	}
+	clr=53
+	bclr=4
+}
+"related display" {
+	object {
+		x=1164
+		y=265
+		width=60
+		height=20
+	}
+	display[0] {
+		label="Statistics #1 full"
+		name="NDStats.adl"
+		args="P=$(P),R=$(R4)"
+	}
+	display[1] {
+		label="Total MCA"
+		name="mca.adl"
+		args="P=$(P),M=$(R4)TotalArray"
+	}
+	display[2] {
+		label="Net MCA"
+		name="mca.adl"
+		args="P=$(P),M=$(R4)NetArray"
+	}
+	clr=53
+	bclr=4
+}
+"related display" {
+	object {
+		x=1165
+		y=322
+		width=60
+		height=20
+	}
+	display[0] {
+		label="Statistics #1 full"
+		name="NDStats.adl"
+		args="P=$(P),R=$(R5)"
+	}
+	display[1] {
+		label="Total MCA"
+		name="mca.adl"
+		args="P=$(P),M=$(R5)TotalArray"
+	}
+	display[2] {
+		label="Net MCA"
+		name="mca.adl"
+		args="P=$(P),M=$(R5)NetArray"
+	}
+	clr=53
+	bclr=4
 }
