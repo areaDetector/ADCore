@@ -1,0 +1,24 @@
+# Database for the records specific to the APEX2 driver
+# Jeff Gebhardt
+# March 18,2010
+
+# Timeout waiting for SFRM file.
+record(ao, "$(P)$(R)ReadSFRMTimeout")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SFRM_TIMEOUT")
+    field(DESC, "Timeout for SFRM file")
+    field(VAL,  "30")
+    field(EGU,  "s")
+    field(PREC, "3")
+}
+
+# Acquire command sent to BIS
+record(waveform, "$(P)$(R)apxAcqCmd")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQUIRE_COMMAND")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
