@@ -10,7 +10,7 @@
     <h1>
       Firewire IIDC (DCAM) Windows driver</h1>
     <h2>
-      August 17, 2009</h2>
+      May 17, 2010</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -40,9 +40,9 @@
   </p>
   <p>
     This driver inherits from <a href="areaDetectorDoc.html#ADDriver">ADDriver</a>.
-    It implements many of the parameters in NDStdDriverParam_t (see <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">
-      asynNDArryDriver.h</a>) and in ADStdDriverParam_t (see <a href="areaDetectorDoxygenHTML/_a_d_driver_8h.html">
-        ADArrayDriver.h</a>). It also implements a number of parameters that are specific
+    It implements many of the parameters in <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">
+      asynNDArryDriver.h</a> and in <a href="areaDetectorDoxygenHTML/_a_d_driver_8h.html">
+        ADArrayDriver.h</a>. It also implements a number of parameters that are specific
     to the Firewire cameras. The <a href="areaDetectorDoxygenHTML/class_firewire_win_d_c_a_m.html">
       firewireWinDCAM class documentation</a> describes this class in detail.</p>
   <p>
@@ -1127,11 +1127,14 @@
   <h2 id="MEDM_screens" style="text-align: left">
     MEDM screens</h2>
   <p>
-    The following show the MEDM screens that are used to control the Firewire detectors.
-    Note that the general purpose screen ADBase.adl must be used to control many features,
-    but it exposes some controls that are not applicable to Firewire cameras, and lacks
-    many fields that are important for such cameras. A new Firewire-specific top-level
-    control screen will be added in a future release.</p>
+    The following show the MEDM screens that are used to control the Firewire detectors.</p>
+  <p>
+    <code>firewire.adl</code> is the main screen used to control Firewire cameras.
+  </p>
+  <div style="text-align: center">
+    <h3 style="text-align: center">
+      firewire.adl</h3>
+    <img alt="firewire.png" src="firewire.png" /></div>
   <p>
     <code>firewireFeatures.adl</code> is the screen used to control the features of
     Firewire cameras.
