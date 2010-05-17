@@ -123,8 +123,10 @@
       <ul>
         <li>Fixed a bug in the ImageJ EPICS_AD_Viewer.java that required restarting the plugin
           if it was told to start displaying before any frames had been acquired by the IOC.</li>
-        <li>Fixed a bug in the ImageJ EPICS_AD_Viewer.java that caused an exception when trying
-          to deference a null window pointer.</li>
+        <li>Fixed bugs in the ImageJ EPICS_AD_Viewer.java that caused an exception when trying
+          to deference a null window pointer. Some of these bugs only became apparent when
+          running the latest version of ImageJ (1.43U) which will not work with previous releases
+          of EPICS_AD_Viewer.java.</li>
       </ul>
     </li>
     <li>Internals
