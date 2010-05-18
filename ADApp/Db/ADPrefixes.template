@@ -1,0 +1,9 @@
+# Database contains a waveform record to hold a list of channel prefixes for area detector elements in an ioc
+# John Hammonds
+# May 3, 2010
+record(waveform, "$(P)$(R)ChannelPrefixes")
+{
+   field(FTVL, "UCHAR")
+   field(NELM, $(NELEMENTS))
+}
+
