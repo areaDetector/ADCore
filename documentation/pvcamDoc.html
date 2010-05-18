@@ -187,7 +187,7 @@
       <tr>
         <td>
           PVCam<br />
-          SetectorSelected</td>
+          DetectorSelected</td>
         <td>
           asynInt32</td>
         <td>
@@ -206,7 +206,7 @@
       <tr>
         <td>
           PVCam<br />
-          ChipName</td>
+          ChipNameRBV</td>
         <td>
           asynOctet</td>
         <td>
@@ -223,7 +223,7 @@
       <tr>
         <td>
           PVCam<br />
-          NumParallelPixels</td>
+          NumParallelPixelsRBV</td>
         <td>
           asynInt32</td>
         <td>
@@ -240,7 +240,7 @@
       <tr>
         <td>
           PVCam<br />
-          NumSerialPixels</td>
+          NumSerialPixelsRBV</td>
         <td>
           asynInt32</td>
         <td>
@@ -257,7 +257,7 @@
       <tr>
         <td>
           PVCam<br />
-          PixelParallelSize</td>
+          PixelParallelSizeRBV</td>
         <td>
           asynInt32</td>
         <td>
@@ -274,7 +274,7 @@
       <tr>
         <td>
           PVCam<br />
-          ChipHeight</td>
+          ChipHeightRBV</td>
         <td>
           asynInt32</td>
         <td>
@@ -291,7 +291,7 @@
       <tr>
         <td>
           PVCam<br />
-          ChipWidth</td>
+          ChipWidthRBV</td>
         <td>
           asynInt32</td>
         <td>
@@ -305,6 +305,319 @@
         <td>
           longin</td>
       </tr>
+      <tr>
+        <td>
+          PVCam<br />
+          PixelParallelDistRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+         Pixel-to-pixel distance, in parallel direction, in nanometers</td>
+        <td>
+          PVCAM_PIXELPARALLELDIST</td>
+        <td>
+          $(P)$(R)PixelParallelDist_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          PVCam<br />
+          PixelSerialDistRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+         Pixel-to-pixel distance, in serial direction, in nanometers</td>
+        <td>
+          PVCAM_PIXELSERIALDIST</td>
+        <td>
+          $(P)$(R)PixelSerialDist_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+       <tr>
+        <td>
+          PVCam<br />
+          PostMaxRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+        <td>
+          PVCAM_POSTMASK</td>
+        <td>
+          $(P)$(R)PostMask_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+       <tr>
+        <td>
+          PVCam<br />
+          PreMaskRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+        <td>
+          PVCAM_PREMASK</td>
+        <td>
+          $(P)$(R)PreMask_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+       <tr>
+        <td>
+          PVCam<br />
+          PostScanRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+        <td>
+          PVCAM_POSTSCAN</td>
+        <td>
+          $(P)$(R)PostScan_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+       <tr>
+        <td>
+          PVCam<br />
+          PreScanRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+        <td>
+          PVCAM_PRESCAN</td>
+        <td>
+          $(P)$(R)PreScan_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+       <tr>
+        <td>
+          PVCam<br />
+          NumPortsRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+        <td>
+          PVCAM_NUMPORTS</td>
+        <td>
+          $(P)$(R)NumPorts_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+       <tr>
+        <td>
+          PVCam<br />
+          FullWellCapacityRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+        <td>
+          PVCAM_FULLWELLCAPACITY</td>
+        <td>
+          $(P)$(R)FullWellCapacity_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+       <tr>
+        <td>
+          PVCam<br />
+          FrameTransferCapableRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+        <td>
+          PVCAM_FRAMETRANSFERCAPABLE</td>
+        <td>
+          $(P)$(R)FrameTransferCapable_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+       <tr>
+        <td>
+          PVCam<br />
+          NumSpeedTableEntriesRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+        <td>
+          PVCAM_NUMSPEEDTABLEENTRIES</td>
+        <td>
+          $(P)$(R)NumSpeedTableEntries_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+        <tr>
+        <td>
+          PVCam<br />
+          SpeedTableIndex<br/>
+          SpeedTableIndexRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/W</td>
+        <td>
+        <td>
+          PVCAM_SPEEDTABLEINDEX<br/>
+          PVCAM_SPEEDTABLEINDEX_RBV</td>
+        <td>
+          $(P)$(R)SpeedTableIndex<br/>
+          $(P)$(R)SpeedTableIndex_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+       <tr>
+        <td>
+          PVCam<br />
+          BitDepthRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+        <td>
+          PVCAM_BITDEPTH</td>
+        <td>
+          $(P)$(R)BitDepth_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+
+        <td>
+          PVCam<br />
+          PixelTimeRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+        <td>
+          PVCAM_PIXELTIME</td>
+        <td>
+          $(P)$(R)PixelTime_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+        <td>
+          PVCam<br />
+          GainIndex<br/>
+          GainIndexRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+        <td>
+          PVCAM_GAININDEX<br/>
+          PVCAM_GAININDEX_RBV</td>
+        <td>
+          $(P)$(R)GainIndex<br/>
+          $(P)$(R)GainIndex_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+       <tr>
+        <td>
+          PVCam<br />
+          MaxGainIndexRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+        <td>
+          PVCAM_MAXGAININDEX</td>
+        <td>
+          $(P)$(R)MaxGainIndex_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+       <tr>
+        <td>
+          PVCam<br />
+          MinShutterOpenDelayRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+        <td>
+          PVCAM_MINSHUTTEROPENDELAY</td>
+        <td>
+          $(P)$(R)MinShutterOpenDelay_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+       <tr>
+        <td>
+          PVCam<br />
+          MaxShutterOpenDelayRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+        <td>
+          PVCAM_MAXSHUTTEROPENDELAY</td>
+        <td>
+          $(P)$(R)MaxShutterOpenDelay_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+       <tr>
+        <td>
+          PVCam<br />
+          MinShutterCloseDelayRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+        <td>
+          PVCAM_MINSHUTTERCLOSEDELAY</td>
+        <td>
+          $(P)$(R)MinShutterCloseDelay_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+       <tr>
+        <td>
+          PVCam<br />
+          MaxShutterCloseDelayRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+        <td>
+          PVCAM_MAXSHUTTERCLOSEDELAY</td>
+        <td>
+          $(P)$(R)MaxShutterCloseDelay_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+
+
     </tbody>
   </table>
   <h2 id="Unsupported">
