@@ -386,8 +386,26 @@
       = UCHAR. This removes the 40 character restriction string lengths that arise if
       an EPICS "string" PV is used. MEDM allows one to edit and display such records correctly.
       EPICS clients will typically need to convert such long strings from a string to
-      an integer or byte array before sending the path name to EPICS. This is easy to
-      do in clients like SPEC, Matlab, and IDL.</li>
+      an integer or byte array before sending the path name to EPICS. In IDL this is done as follows:
+      <pre>
+      ; Convert a string to a null-terminated byte array and write with caput
+      IDL> t = caput('13PS1:TIFF1:FilePath', [byte('/home/epics/scratch'),0B])
+      ; Read a null terminated byte array 
+      IDL> t = caget('13PS1:TIFF1:FilePath', v)
+      ; Convert to a string 
+      IDL> s = string(v) 
+      </pre>
+      In SPEC this is done as follows:
+      <pre>
+      array _temp[256]
+      # Setting the array to "" will zero-fill it
+      _temp = ""
+      # Copy the string to the array.  Note, this does not null terminate, so if array already contains
+      # a longer string it needs to first be zeroed by setting it to "".
+      _temp = "/home/epics/scratch"
+      epics_put("13PS1:TIFF1:FilePath", _temp)
+      </pre>
+      </li>
   </ul>
   <p>
     Note that for parameters whose values are defined by enum values (e.g NDDataType,
