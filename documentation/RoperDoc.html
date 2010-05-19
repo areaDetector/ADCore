@@ -10,7 +10,7 @@
     <h1>
       areaDetector Roper driver</h1>
     <h2>
-      August 18, 2009</h2>
+      May 19, 2010</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -60,9 +60,9 @@
   </p>
   <p>
     This driver inherits from <a href="areaDetectorDoc.html#ADDriver">ADDriver</a>.
-    It implements many of the parameters in NDStdDriverParam_t (see <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">
-      asynNDArryDriver.h</a>) and in ADStdDriverParam_t (see <a href="areaDetectorDoxygenHTML/_a_d_driver_8h.html">
-        ADArrayDriver.h</a>). It also implements a number of parameters that are specific
+    It implements many of the parameters <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">
+      asynNDArryDriver.h</a> and in <a href="areaDetectorDoxygenHTML/_a_d_driver_8h.html">
+        ADArrayDriver.h</a>. It also implements a number of parameters that are specific
     to the Roper detectors.The <a href="areaDetectorDoxygenHTML/classroper.html">roper
       class documentation</a> describes this class in detail.</p>
   <h2 id="StandardNotes" style="text-align: left">
@@ -595,6 +595,13 @@
       add to the EPICS interface if needed in the future. Settings that EPICS does not
       control and which do not need to be frequently changed can simply be set via the
       WinView GUI.</li>
+    <li>When NumImages is greater than one WinView collects a 3-D stack of images. The
+      areaDetector driver can save that data to a file using WinView. However, the driver
+      callbacks to plugins currently only passes the first image in that stack. It is
+      not practical to pass all the images in the stack at once as a 3-d array, because
+      this would require allocating a second 3-D array of the same size as the one in
+      the WinView buffer. What would be possible is to pass each of the images in the
+      stack on after the other. This will be implemented in a future release.</li>
     <li>Reading data files back into WinView is not currently supported. This may be added
       in a future release.</li>
     <li>The values of ADNumImagesCounter ($(P)$(R)NumImagesCounter_RBV) and ADNumExposuresCounter
