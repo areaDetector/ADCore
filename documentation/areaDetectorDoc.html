@@ -10,7 +10,7 @@
     <h1>
       areaDetector: EPICS Area Detector Support</h1>
     <h2>
-      March 22, 2010</h2>
+      May 19, 2010</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -323,8 +323,7 @@
     If it is desired to eliminate all existing attributes from NDArrays each time a
     new one is allocated then the global variable <code>eraseNDAttributes</code> should
     be set to 1. This can be done at the iocsh prompt with the command:</p>
-  <pre>
-    var eraseNDAttributes 1
+  <pre>    var eraseNDAttributes 1
     </pre>
   <p>
     The <a href="areaDetectorDoxygenHTML/class_n_d_attribute_list.html">NDAttributeList
@@ -386,9 +385,9 @@
       = UCHAR. This removes the 40 character restriction string lengths that arise if
       an EPICS "string" PV is used. MEDM allows one to edit and display such records correctly.
       EPICS clients will typically need to convert such long strings from a string to
-      an integer or byte array before sending the path name to EPICS. In IDL this is done as follows:
-      <pre>
-      ; Convert a string to a null-terminated byte array and write with caput
+      an integer or byte array before sending the path name to EPICS. In IDL this is done
+      as follows:
+      <pre>      ; Convert a string to a null-terminated byte array and write with caput
       IDL> t = caput('13PS1:TIFF1:FilePath', [byte('/home/epics/scratch'),0B])
       ; Read a null terminated byte array 
       IDL> t = caget('13PS1:TIFF1:FilePath', v)
@@ -396,8 +395,7 @@
       IDL> s = string(v) 
       </pre>
       In SPEC this is done as follows:
-      <pre>
-      array _temp[256]
+      <pre>      array _temp[256]
       # Setting the array to "" will zero-fill it
       _temp = ""
       # Copy the string to the array.  Note, this does not null terminate, so if array already contains
@@ -405,7 +403,7 @@
       _temp = "/home/epics/scratch"
       epics_put("13PS1:TIFF1:FilePath", _temp)
       </pre>
-      </li>
+    </li>
   </ul>
   <p>
     Note that for parameters whose values are defined by enum values (e.g NDDataType,
@@ -660,17 +658,17 @@
     FileTemplate, FilePath, 
     Filename, FileNumber);
         </pre>
-          FilePath, Filename, FileNumber are converted in that order with FileTemplate. An example
-          file format is <code>"%s%s%4.4d.tif"</code>. The first %s converts the FilePath,
+          FilePath, Filename, FileNumber are converted in that order with FileTemplate. An
+          example file format is <code>"%s%s%4.4d.tif"</code>. The first %s converts the FilePath,
           followed immediately by another %s for Filename. FileNumber is formatted with %4.4d,
           which results in a fixed field with of 4 digits, with leading zeros as required.
           Finally, the .tif extension is added to the file name. This mechanism for creating
           file names is very flexible. Other characters, such as _ can be put in Filename
-          or FileTemplate as desired. If one does not want to have FileNumber in the file name
-          at all, then just omit the %d format specifier from FileTemplate. If the client wishes
-          to construct the complete file name itself, then it can just put that file name
-          into NDFileTemplate with no format specifiers at all, in which case NDFilePath, NDFileName,
-          and NDFileNumber will be ignored.</td>
+          or FileTemplate as desired. If one does not want to have FileNumber in the file
+          name at all, then just omit the %d format specifier from FileTemplate. If the client
+          wishes to construct the complete file name itself, then it can just put that file
+          name into NDFileTemplate with no format specifiers at all, in which case NDFilePath,
+          NDFileName, and NDFileNumber will be ignored.</td>
         <td>
           FILE_TEMPLATE</td>
         <td>
@@ -1924,8 +1922,7 @@
           variables is used then EPICS clients (e.g. medm) running on the detector host computer
           will generate many errors because each EPICS PV will appear to be coming from both
           networks. The solution is to set these variables as follows:
-          <pre>
-        setenv EPICS_CA_AUTO_ADDR_LIST NO
+          <pre>        setenv EPICS_CA_AUTO_ADDR_LIST NO
         setenv EPICS_CA_ADDR_LIST localhost:XX.YY.ZZ.255
         </pre>
           where XX.YY.ZZ.255 should be replaced with the broadcast address for the public
@@ -1936,16 +1933,14 @@
           EPICS server computer (e.g. the one running the areaDetector IOC) and client computer
           (e.g. the one running medm, ImageJ, IDL, etc.). This can simply be set to a very
           large value like 100MB.
-          <pre>
-        setenv EPICS_CA_MAX_ARRAY_BYTES 100000000
+          <pre>        setenv EPICS_CA_MAX_ARRAY_BYTES 100000000
         </pre>
         </li>
         <li>EPICS_DISPLAY_PATH. This variable controls where medm looks for .adl display files.
           If the recommendation below is followed to copy all adl files to a single directory,
           then this environment variable should be defined to point to that directory. For
           example:
-          <pre>
-          setenv EPICS_DISPLAY_PATH /home/mar345/epics/adls
+          <pre>          setenv EPICS_DISPLAY_PATH /home/mar345/epics/adls
           </pre>
         </li>
       </ul>
@@ -1957,8 +1952,7 @@
       the mar345, for example, I create a directory called /home/mar345/epics/adls, where
       I put all of the adl files. To simplify copying the adl files to that location I
       use the following one-line script, which I place in /home/mar345/bin/sync_adls.
-      <pre>
-      find /home/mar345/epics/support -name '*.adl' -exec cp -fv {} /home/mar345/epics/adls \;
+      <pre>      find /home/mar345/epics/support -name '*.adl' -exec cp -fv {} /home/mar345/epics/adls \;
       </pre>
       This script finds all adl files in the epics/support tree and copies them to /home/mar345/epics/adls.
       That directory must be created before running this script. Similar scripts can be
@@ -1974,8 +1968,7 @@
     batch file (start_epics.bat) or both depending on the architectures that the detector
     runs on. These scripts provide simple examples of how to start medm and the EPICS
     IOC. For example, for the mar345 iocBoot/iocMAR345/start_epics contains the following:</p>
-  <pre>
-    medm -x -macro "P=13MAR345_1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, TIFF=TIFF1:, JPEG=JPEG1:, NEXUS=Nexus1:" mar345.adl &amp;
+  <pre>    medm -x -macro "P=13MAR345_1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, TIFF=TIFF1:, JPEG=JPEG1:, NEXUS=Nexus1:" mar345.adl &amp;
     ../../bin/linux-x86/mar345App st.cmd
     </pre>
   <p>
