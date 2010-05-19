@@ -1,14 +1,17 @@
 R1-6
 
-Firewire (Windows) driver:
-- Not working correctly for AcquireTime initially - absolute/device mode
-  problem
+- Delete setting initial values of parameters in asynNDArrayDriver, ADDriver, etc. so database values will be used when it makes
+sense to do so.
 
 Longer term:
 
     General
 
 - Supports 64-bits
+
+- Roper driver
+  - Not passing back 3-D arrays to callbacks.  Need to loop on passing 2-D arrays.
+  - Add support for ReadStatus PV to force reading status like temperature
 
 - Redo locking mechanism so plugins can reprocess data when something changes?
   - One lock for parameter library, another lock for messageQueue, etc?
