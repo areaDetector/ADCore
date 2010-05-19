@@ -25,7 +25,8 @@ record(mbbi, "$(P)$(R)ImageMode_RBV")
     field(TWVL, "2")
 }
 
-# We replace the file format choices from ADBase.template
+# We replace the file format choices from ADBase.template.  
+# The values here must be 1,2,3 because they are passed to WinView
 record(mbbo, "$(P)$(R)FileFormat")
 {
     field(ZRST, "SPE")
@@ -34,6 +35,7 @@ record(mbbo, "$(P)$(R)FileFormat")
     field(ONVL, "2")
     field(TWST, "8-bit TIFF")
     field(TWVL, "3")
+    field(VAL,  "0")
 }
 
 record(mbbi, "$(P)$(R)FileFormat_RBV")
