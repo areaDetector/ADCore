@@ -141,38 +141,19 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int numParams, int maxBuff
     createParam(ADStringToServerString,      asynParamOctet, &ADStringToServer);
     createParam(ADStringFromServerString,    asynParamOctet, &ADStringFromServer);    
 
-    /* Set some default values for parameters */
-    setStringParam(ADManufacturer, "Unknown");
-    setStringParam(ADModel,        "Unknown");
-    setDoubleParam (ADGain,         1.0);
-    setIntegerParam(ADBinX,         1);
-    setIntegerParam(ADBinY,         1);
-    setIntegerParam(ADMinX,         0);
-    setIntegerParam(ADMinY,         0);
-    setIntegerParam(ADSizeX,        1);
-    setIntegerParam(ADSizeY,        1);
+    /* Here we set the values of read-only parameters and of read/write parameters that cannot
+     * or should not get their values from the database.  Note that values set here will override
+     * those in the database for output records because if asyn device support reads a value from 
+     * the driver with no error during initialization then it sets the output record to that value.  
+     * If a value is not set here then the read request will return an error (uninitialized).
+     * Values set here will be overridden by values from save/restore if they exist. */
     setIntegerParam(ADMaxSizeX,     1);
     setIntegerParam(ADMaxSizeY,     1);
-    setIntegerParam(ADReverseX,     0);
-    setIntegerParam(ADReverseY,     0);
-    setIntegerParam(ADFrameType,    ADFrameNormal);
-    setIntegerParam(ADImageMode,    ADImageContinuous);
-    setIntegerParam(ADTriggerMode,  0);
-    setIntegerParam(ADNumExposures, 1);
-    setIntegerParam(ADNumImages,    1);
-    setDoubleParam (ADAcquireTime,  1.0);
-    setDoubleParam (ADAcquirePeriod,0.0);
     setIntegerParam(ADStatus,       ADStatusIdle);
-    setIntegerParam(ADAcquire,      0);
     setIntegerParam(ADNumImagesCounter, 0);
     setIntegerParam(ADNumExposuresCounter, 0);
     setDoubleParam( ADTimeRemaining, 0.0);
-    setIntegerParam(ADShutterControl, 0);
     setIntegerParam(ADShutterStatus, 0);
-    setIntegerParam(ADShutterMode,   0);
-    setDoubleParam (ADShutterOpenDelay, 0.0);
-    setDoubleParam (ADShutterCloseDelay, 0.0);
-    setDoubleParam (ADTemperature, 0.0);
 
     setStringParam (ADStatusMessage,  "");
     setStringParam (ADStringToServer, "");
