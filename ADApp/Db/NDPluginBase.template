@@ -68,11 +68,11 @@ record(longin, "$(P)$(R)NDArrayAddress_RBV")
 record(bo, "$(P)$(R)EnableCallbacks")
 {
     field(PINI, "YES")
-    field(VAL,  "1")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_CALLBACKS")
     field(ZNAM, "Disable")
     field(ONAM, "Enable")
+    field(VAL,  "0")
 }
 
 record(bi, "$(P)$(R)EnableCallbacks_RBV")
@@ -91,9 +91,9 @@ record(ao, "$(P)$(R)MinCallbackTime")
     field(PINI, "YES")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_CALLBACK_TIME")
-    field(VAL,  "0.1")
     field(EGU,  "s")
     field(PREC, "3")
+    field(VAL,  "0.0")
 }
 
 record(ai, "$(P)$(R)MinCallbackTime_RBV")
@@ -113,9 +113,9 @@ record(bo, "$(P)$(R)BlockingCallbacks")
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BLOCKING_CALLBACKS")
-    field(VAL,  "0")
     field(ZNAM, "No")
     field(ONAM, "Yes")
+    field(VAL,  "0")
 }
 
 record(bi, "$(P)$(R)BlockingCallbacks_RBV")
