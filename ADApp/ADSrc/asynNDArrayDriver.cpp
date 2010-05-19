@@ -469,6 +469,12 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     createParam(NDArrayDataString,      asynParamGenericPointer, &NDArrayData);
     createParam(NDArrayCallbacksString, asynParamInt32, &NDArrayCallbacks);
 
+    /* Here we set the values of read-only parameters and of read/write parameters that cannot
+     * or should not get their values from the database.  Note that values set here will override
+     * those in the database for output records because if asyn device support reads a value from 
+     * the driver with no error during initialization then it sets the output record to that value.  
+     * If a value is not set here then the read request will return an error (uninitialized).
+     * Values set here will be overridden by values from save/restore if they exist. */
     setStringParam (NDPortNameSelf, portName);
     setIntegerParam(NDArraySizeX,   0);
     setIntegerParam(NDArraySizeY,   0);
@@ -481,21 +487,13 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     setDoubleParam (NDTimeStamp,    0.);
     setIntegerParam(NDBayerPattern, 0);
     setIntegerParam(NDArrayCounter, 0);
-    setStringParam (NDFilePath,     "");
-    setStringParam (NDFileName,     "");
-    setIntegerParam(NDFileNumber,   0);
-    setStringParam (NDFileTemplate, "");
-    setIntegerParam(NDAutoIncrement, 0);
-    setStringParam (NDFullFileName, "");
-    setIntegerParam(NDFileFormat,   0);
-    setIntegerParam(NDAutoSave,     0);
-    setIntegerParam(NDWriteFile,    0);
-    setIntegerParam(NDReadFile,     0);
-    setIntegerParam(NDFileWriteMode,   0);
-    setIntegerParam(NDFileNumCapture,  0);
+    /* Set the initial values of FileSave, FileRead, and FileCapture so the readbacks are initialized */
+    setIntegerParam(NDWriteFile, 0);
+    setIntegerParam(NDReadFile, 0);
+    setIntegerParam(NDFileCapture, 0);
+    /* We set FileTemplate to a reasonable value because it cannot be defined in the database, since it is a
+     * waveform record. However, the waveform record does not currently read the driver value for initialization! */
+    setStringParam (NDFileTemplate, "%s%s_%3.3d.dat");
     setIntegerParam(NDFileNumCaptured, 0);
-    setIntegerParam(NDFileCapture,     0);
-    setIntegerParam(NDArrayCallbacks, 1);
-
 }
 
