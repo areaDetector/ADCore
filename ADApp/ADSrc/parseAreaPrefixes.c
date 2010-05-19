@@ -30,7 +30,7 @@ void parseAreaPrefixes( char *waveformName) {
 	DBENTRY dbentry;
 	DBENTRY *pdbentry = &dbentry;
 	if (!pdbbase) {
-		printf("%s: No database loaded\n");
+		printf("%s: No database loaded\n", functionName);
 		return;
 	}
 	status = 0;
