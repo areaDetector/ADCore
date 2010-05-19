@@ -10,7 +10,7 @@
     <h1>
       areaDetector PVCAM driver</h1>
     <h2>
-      August 18, 2009</h2>
+      May 19, 2010</h2>
     <h2>
       Brian Tieman, John Hammonds, Mark Rivers</h2>
     <h2>
@@ -46,9 +46,9 @@
     ADD ADDTIONAL INTRODUCTORY TEXT HERE.</p>
   <p>
     This driver inherits from <a href="areaDetectorDoc.html#ADDriver">ADDriver</a>.
-    It implements many of the parameters in NDStdDriverParam_t (see <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">
-      asynNDArryDriver.h</a>) and in ADStdDriverParam_t (see <a href="areaDetectorDoxygenHTML/_a_d_driver_8h.html">
-        ADArrayDriver.h</a>). It also implements a number of parameters that are specific
+    It implements many of the parameters in <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">
+      asynNDArryDriver.h</a> and in <a href="areaDetectorDoxygenHTML/_a_d_driver_8h.html">
+        ADArrayDriver.h</a>. It also implements a number of parameters that are specific
     to the Roper detectors. The <a href="areaDetectorDoxygenHTML/classpv_cam.html">pvCam
       class documentation</a> describes this class in detail.</p>
   <h2 id="StandardNotes" style="text-align: left">
@@ -142,7 +142,7 @@
         <td>
           r</td>
         <td>
-         String describing 1st found detector</td>
+          String describing 1st found detector</td>
         <td>
           PVCAM_SLOT1</td>
         <td>
@@ -159,7 +159,7 @@
         <td>
           r</td>
         <td>
-         String describing 2nd found detector</td>
+          String describing 2nd found detector</td>
         <td>
           PVCAM_SLOT2</td>
         <td>
@@ -176,7 +176,7 @@
         <td>
           r</td>
         <td>
-         String describing 3rd found detector</td>
+          String describing 3rd found detector</td>
         <td>
           PVCAM_SLOT3</td>
         <td>
@@ -193,14 +193,14 @@
         <td>
           r/w</td>
         <td>
-         Index of selected detector</td>
+          Index of selected detector</td>
         <td>
           PVCAM_DETECTORSELECTED</td>
         <td>
-          $(P)$(R)DetecorSelected</br>
+          $(P)$(R)DetecorSelected<br />
           $(P)$(R)DetecorSelected_RBV</td>
         <td>
-          longout</br>
+          longout<br />
           longin</td>
       </tr>
       <tr>
@@ -212,7 +212,7 @@
         <td>
           r</td>
         <td>
-         String describing CCD chip</td>
+          String describing CCD chip</td>
         <td>
           PVCAM_CHIPNAME</td>
         <td>
@@ -229,7 +229,7 @@
         <td>
           r</td>
         <td>
-         Parallel size of the CCD in active rows</td>
+          Parallel size of the CCD in active rows</td>
         <td>
           PVCAM_NUMPARALLELPIXELS</td>
         <td>
@@ -246,7 +246,7 @@
         <td>
           r</td>
         <td>
-         Serial size of the CCD</td>
+          Serial size of the CCD</td>
         <td>
           PVCAM_NUMSERIAL</td>
         <td>
@@ -263,7 +263,7 @@
         <td>
           r</td>
         <td>
-         Size of the pixel in parallel direction in nanometers</td>
+          Size of the pixel in parallel direction in nanometers</td>
         <td>
           PVCAM_PIXELPARALLELSIZE</td>
         <td>
@@ -280,7 +280,7 @@
         <td>
           r</td>
         <td>
-         Size of the pixel in Serial direction in nanometers</td>
+          Size of the pixel in Serial direction in nanometers</td>
         <td>
           PVCAM_PIXELSERIALSIZE</td>
         <td>
@@ -297,7 +297,7 @@
         <td>
           r</td>
         <td>
-         Height of CCD in mm</td>
+          Height of CCD in mm</td>
         <td>
           PVCAM_CHIPHEIGHT</td>
         <td>
@@ -314,7 +314,7 @@
         <td>
           r</td>
         <td>
-         Width of CCD in mm</td>
+          Width of CCD in mm</td>
         <td>
           PVCAM_CHIPWIDTH</td>
         <td>
@@ -331,7 +331,7 @@
         <td>
           r</td>
         <td>
-         Pixel-to-pixel distance, in parallel direction, in nanometers</td>
+          Pixel-to-pixel distance, in parallel direction, in nanometers</td>
         <td>
           PVCAM_PIXELPARALLELDIST</td>
         <td>
@@ -348,7 +348,7 @@
         <td>
           r</td>
         <td>
-         Pixel-to-pixel distance, in serial direction, in nanometers</td>
+          Pixel-to-pixel distance, in serial direction, in nanometers</td>
         <td>
           PVCAM_PIXELSERIALDIST</td>
         <td>
@@ -356,7 +356,7 @@
         <td>
           longin</td>
       </tr>
-       <tr>
+      <tr>
         <td>
           PVCam<br />
           PostMaxRBV</td>
@@ -365,14 +365,13 @@
         <td>
           r</td>
         <td>
-        <td>
           PVCAM_POSTMASK</td>
         <td>
           $(P)$(R)PostMask_RBV</td>
         <td>
           longin</td>
       </tr>
-       <tr>
+      <tr>
         <td>
           PVCam<br />
           PreMaskRBV</td>
@@ -381,14 +380,13 @@
         <td>
           r</td>
         <td>
-        <td>
           PVCAM_PREMASK</td>
         <td>
           $(P)$(R)PreMask_RBV</td>
         <td>
           longin</td>
       </tr>
-       <tr>
+      <tr>
         <td>
           PVCam<br />
           PostScanRBV</td>
@@ -397,14 +395,13 @@
         <td>
           r</td>
         <td>
-        <td>
           PVCAM_POSTSCAN</td>
         <td>
           $(P)$(R)PostScan_RBV</td>
         <td>
           longin</td>
       </tr>
-       <tr>
+      <tr>
         <td>
           PVCam<br />
           PreScanRBV</td>
@@ -413,14 +410,13 @@
         <td>
           r</td>
         <td>
-        <td>
           PVCAM_PRESCAN</td>
         <td>
           $(P)$(R)PreScan_RBV</td>
         <td>
           longin</td>
       </tr>
-       <tr>
+      <tr>
         <td>
           PVCam<br />
           NumPortsRBV</td>
@@ -429,14 +425,13 @@
         <td>
           r</td>
         <td>
-        <td>
           PVCAM_NUMPORTS</td>
         <td>
           $(P)$(R)NumPorts_RBV</td>
         <td>
           longin</td>
       </tr>
-       <tr>
+      <tr>
         <td>
           PVCam<br />
           FullWellCapacityRBV</td>
@@ -445,14 +440,13 @@
         <td>
           r</td>
         <td>
-        <td>
           PVCAM_FULLWELLCAPACITY</td>
         <td>
           $(P)$(R)FullWellCapacity_RBV</td>
         <td>
           longin</td>
       </tr>
-       <tr>
+      <tr>
         <td>
           PVCam<br />
           FrameTransferCapableRBV</td>
@@ -461,14 +455,13 @@
         <td>
           r</td>
         <td>
-        <td>
           PVCAM_FRAMETRANSFERCAPABLE</td>
         <td>
           $(P)$(R)FrameTransferCapable_RBV</td>
         <td>
           longin</td>
       </tr>
-       <tr>
+      <tr>
         <td>
           PVCam<br />
           NumSpeedTableEntriesRBV</td>
@@ -477,34 +470,32 @@
         <td>
           r</td>
         <td>
-        <td>
           PVCAM_NUMSPEEDTABLEENTRIES</td>
         <td>
           $(P)$(R)NumSpeedTableEntries_RBV</td>
         <td>
           longin</td>
       </tr>
-        <tr>
+      <tr>
         <td>
           PVCam<br />
-          SpeedTableIndex<br/>
+          SpeedTableIndex<br />
           SpeedTableIndexRBV</td>
         <td>
           asynInt32</td>
         <td>
           r/w</td>
         <td>
-        <td>
-          PVCAM_SPEEDTABLEINDEX<br/>
+          PVCAM_SPEEDTABLEINDEX<br />
           PVCAM_SPEEDTABLEINDEX_RBV</td>
         <td>
-          $(P)$(R)SpeedTableIndex<br/>
+          $(P)$(R)SpeedTableIndex<br />
           $(P)$(R)SpeedTableIndex_RBV</td>
         <td>
-          longout<br/>
+          longout<br />
           longin</td>
       </tr>
-       <tr>
+      <tr>
         <td>
           PVCam<br />
           BitDepthRBV</td>
@@ -513,14 +504,13 @@
         <td>
           r</td>
         <td>
-        <td>
           PVCAM_BITDEPTH</td>
         <td>
           $(P)$(R)BitDepth_RBV</td>
         <td>
           longin</td>
       </tr>
-
+      <tr>
         <td>
           PVCam<br />
           PixelTimeRBV</td>
@@ -529,32 +519,31 @@
         <td>
           r</td>
         <td>
-        <td>
           PVCAM_PIXELTIME</td>
         <td>
           $(P)$(R)PixelTime_RBV</td>
         <td>
           longin</td>
       </tr>
+      <tr>
         <td>
           PVCam<br />
-          GainIndex<br/>
+          GainIndex<br />
           GainIndexRBV</td>
         <td>
           asynInt32</td>
         <td>
           r</td>
         <td>
-        <td>
-          PVCAM_GAININDEX<br/>
+          PVCAM_GAININDEX<br />
           PVCAM_GAININDEX_RBV</td>
         <td>
-          $(P)$(R)GainIndex<br/>
+          $(P)$(R)GainIndex<br />
           $(P)$(R)GainIndex_RBV</td>
         <td>
           longin</td>
       </tr>
-       <tr>
+      <tr>
         <td>
           PVCam<br />
           MaxGainIndexRBV</td>
@@ -563,14 +552,13 @@
         <td>
           r</td>
         <td>
-        <td>
           PVCAM_MAXGAININDEX</td>
         <td>
           $(P)$(R)MaxGainIndex_RBV</td>
         <td>
           longin</td>
       </tr>
-       <tr>
+      <tr>
         <td>
           PVCam<br />
           MinShutterOpenDelayRBV</td>
@@ -579,14 +567,13 @@
         <td>
           r</td>
         <td>
-        <td>
           PVCAM_MINSHUTTEROPENDELAY</td>
         <td>
           $(P)$(R)MinShutterOpenDelay_RBV</td>
         <td>
           longin</td>
       </tr>
-       <tr>
+      <tr>
         <td>
           PVCam<br />
           MaxShutterOpenDelayRBV</td>
@@ -595,14 +582,13 @@
         <td>
           r</td>
         <td>
-        <td>
           PVCAM_MAXSHUTTEROPENDELAY</td>
         <td>
           $(P)$(R)MaxShutterOpenDelay_RBV</td>
         <td>
           longin</td>
       </tr>
-       <tr>
+      <tr>
         <td>
           PVCam<br />
           MinShutterCloseDelayRBV</td>
@@ -611,14 +597,13 @@
         <td>
           r</td>
         <td>
-        <td>
           PVCAM_MINSHUTTERCLOSEDELAY</td>
         <td>
           $(P)$(R)MinShutterCloseDelay_RBV</td>
         <td>
           longin</td>
       </tr>
-       <tr>
+      <tr>
         <td>
           PVCam<br />
           MaxShutterCloseDelayRBV</td>
@@ -627,38 +612,35 @@
         <td>
           r</td>
         <td>
-        <td>
           PVCAM_MAXSHUTTERCLOSEDELAY</td>
         <td>
           $(P)$(R)MaxShutterCloseDelay_RBV</td>
         <td>
           longin</td>
       </tr>
-
-       <tr>
+      <tr>
         <td>
           PVCam<br />
-          ShutterOpenDelay<br/>
+          ShutterOpenDelay<br />
           ShutterOpenDelayRBV</td>
         <td>
           asynInt32</td>
         <td>
           r/w</td>
         <td>
-        <td>
-          PVCAM_SHUTTEROPENDELAY<br/>
+          PVCAM_SHUTTEROPENDELAY<br />
           PVCAM_SHUTTEROPENDELAY_RBV</td>
         <td>
-          $(P)$(R)OpenDelay<br/>
+          $(P)$(R)OpenDelay<br />
           $(P)$(R)OpenDelay_RBV</td>
         <td>
-          longout</td>
+          longout<br />
           longin</td>
       </tr>
-       <tr>
+      <tr>
         <td>
           PVCam<br />
-          ShutterCloseDelay<br/>
+          ShutterCloseDelay<br />
           ShutterCloseDelayRBV</td>
         <td>
           asynInt32</td>
@@ -667,16 +649,16 @@
         <td>
         </td>
         <td>
-          PVCAM_SHUTTERCLOSEDELAY<br/>
+          PVCAM_SHUTTERCLOSEDELAY<br />
           PVCAM_SHUTTERCLOSEDELAY_RBV</td>
         <td>
-          $(P)$(R)CloseDelay<br/>
+          $(P)$(R)CloseDelay<br />
           $(P)$(R)CloseDelay_RBV</td>
         <td>
-          longout<br/>
+          longout<br />
           longin</td>
       </tr>
-       <tr>
+      <tr>
         <td>
           PVCam<br />
           MeasuredTemperatureRBV</td>
@@ -693,7 +675,7 @@
         <td>
           longin</td>
       </tr>
-       <tr>
+      <tr>
         <td>
           PVCam<br />
           MinTemperatureRBV</td>
@@ -710,7 +692,7 @@
         <td>
           longin</td>
       </tr>
-	  <tr>
+      <tr>
         <td>
           PVCam<br />
           MaxTemperatureRBV</td>
@@ -727,10 +709,10 @@
         <td>
           longin</td>
       </tr>
-	  <tr>
+      <tr>
         <td>
           PVCam<br />
-          SetTemperature<br/>
+          SetTemperature<br />
           SetTemperatureRBV</td>
         <td>
           asynFloat64</td>
@@ -739,18 +721,18 @@
         <td>
         </td>
         <td>
-          PVCAM_SETTEMPERATURE<br/>
+          PVCAM_SETTEMPERATURE<br />
           PVCAM_SETTEMPERATURE_RBV</td>
         <td>
-          $(P)$(R)SetTemperature<br/>
+          $(P)$(R)SetTemperature<br />
           $(P)$(R)SetTemperature_RBV</td>
         <td>
           longin</td>
       </tr>
-	  <tr>
+      <tr>
         <td>
           PVCam<br />
-          DetectorMode<br/>
+          DetectorMode<br />
           DetectorModeRBV</td>
         <td>
           asynInt32</td>
@@ -759,19 +741,18 @@
         <td>
         </td>
         <td>
-          PVCAM_DETECTORMODE<br/>
+          PVCAM_DETECTORMODE<br />
           PVCAM_DETECTORMODE_RBV</td>
         <td>
-          $(P)$(R)DetectorMode<br/>
+          $(P)$(R)DetectorMode<br />
           $(P)$(R)DetectorMode_RBV</td>
         <td>
           longin</td>
       </tr>
-
-	  <tr>
+      <tr>
         <td>
           PVCam<br />
-          TriggerMode<br/>
+          TriggerMode<br />
           TriggerModeRBV</td>
         <td>
           asynInt32</td>
@@ -780,18 +761,18 @@
         <td>
         </td>
         <td>
-          PVCAM_TRIGGERMODE_RBV<br/>
+          PVCAM_TRIGGERMODE_RBV<br />
           PVCAM_TRIGGERMODE_RBV</td>
         <td>
-          $(P)$(R)TriggerMode<br/>
+          $(P)$(R)TriggerMode<br />
           $(P)$(R)TriggerMode_RBV</td>
         <td>
           longin</td>
       </tr>
-	  <tr>
+      <tr>
         <td>
           PVCam<br />
-          TriggerEdge<br/>
+          TriggerEdge<br />
           TriggerEdgeRBV</td>
         <td>
           asynInt32</td>
@@ -800,15 +781,15 @@
         <td>
         </td>
         <td>
-          PVCAM_TRIGGEREDGE_RBV<br/>
+          PVCAM_TRIGGEREDGE_RBV<br />
           PVCAM_TRIGGEREDGE_RBV</td>
         <td>
-          $(P)$(R)TriggerEdge<br/>
+          $(P)$(R)TriggerEdge<br />
           $(P)$(R)TriggerEdge_RBV</td>
         <td>
           longin</td>
       </tr>
-       <tr>
+      <tr>
         <td>
           PVCam<br />
           CamFirmwareVersRBV</td>
@@ -825,7 +806,7 @@
         <td>
           longin</td>
       </tr>
-       <tr>
+      <tr>
         <td>
           PVCam<br />
           PCIFWVersRBV</td>
@@ -842,7 +823,7 @@
         <td>
           longin</td>
       </tr>
-       <tr>
+      <tr>
         <td>
           PVCam<br />
           HeadSerialNumRBV</td>
@@ -859,7 +840,7 @@
         <td>
           longin</td>
       </tr>
-       <tr>
+      <tr>
         <td>
           PVCam<br />
           SerialNumRBV</td>
@@ -876,7 +857,7 @@
         <td>
           longin</td>
       </tr>
-       <tr>
+      <tr>
         <td>
           PVCam<br />
           PVCamVersRBV</td>
@@ -893,7 +874,7 @@
         <td>
           longin</td>
       </tr>
-       <tr>
+      <tr>
         <td>
           PVCam<br />
           DevDrvVersRBV</td>
@@ -910,9 +891,6 @@
         <td>
           longin</td>
       </tr>
-
-
-
     </tbody>
   </table>
   <h2 id="Unsupported">
