@@ -231,7 +231,7 @@
         <td>
          Parallel size of the CCD in active rows</td>
         <td>
-          PVCAM_NUMPARALLELSIZE</td>
+          PVCAM_NUMPARALLELPIXELS</td>
         <td>
           $(P)$(R)NumParallelPixels_RBV</td>
         <td>
@@ -248,7 +248,7 @@
         <td>
          Serial size of the CCD</td>
         <td>
-          PVCAM_NUMSERIALSIZE</td>
+          PVCAM_NUMSERIAL</td>
         <td>
           $(P)$(R)NumSerialPixels_RBV</td>
         <td>
@@ -274,9 +274,26 @@
       <tr>
         <td>
           PVCam<br />
-          ChipHeightRBV</td>
+          PixelSerialSizeRBV</td>
         <td>
           asynInt32</td>
+        <td>
+          r</td>
+        <td>
+         Size of the pixel in Serial direction in nanometers</td>
+        <td>
+          PVCAM_PIXELSERIALSIZE</td>
+        <td>
+          $(P)$(R)PixelSerialSize_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          PVCam<br />
+          ChipHeightRBV</td>
+        <td>
+          asynFloat64</td>
         <td>
           r</td>
         <td>
@@ -293,7 +310,7 @@
           PVCam<br />
           ChipWidthRBV</td>
         <td>
-          asynInt32</td>
+          asynFloat64</td>
         <td>
           r</td>
         <td>
@@ -475,7 +492,7 @@
         <td>
           asynInt32</td>
         <td>
-          r/W</td>
+          r/w</td>
         <td>
         <td>
           PVCAM_SPEEDTABLEINDEX<br/>
@@ -484,6 +501,7 @@
           $(P)$(R)SpeedTableIndex<br/>
           $(P)$(R)SpeedTableIndex_RBV</td>
         <td>
+          longout<br/>
           longin</td>
       </tr>
        <tr>
@@ -616,6 +634,283 @@
         <td>
           longin</td>
       </tr>
+
+       <tr>
+        <td>
+          PVCam<br />
+          ShutterOpenDelay<br/>
+          ShutterOpenDelayRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+        <td>
+          PVCAM_SHUTTEROPENDELAY<br/>
+          PVCAM_SHUTTEROPENDELAY_RBV</td>
+        <td>
+          $(P)$(R)OpenDelay<br/>
+          $(P)$(R)OpenDelay_RBV</td>
+        <td>
+          longout</td>
+          longin</td>
+      </tr>
+       <tr>
+        <td>
+          PVCam<br />
+          ShutterCloseDelay<br/>
+          ShutterCloseDelayRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+        </td>
+        <td>
+          PVCAM_SHUTTERCLOSEDELAY<br/>
+          PVCAM_SHUTTERCLOSEDELAY_RBV</td>
+        <td>
+          $(P)$(R)CloseDelay<br/>
+          $(P)$(R)CloseDelay_RBV</td>
+        <td>
+          longout<br/>
+          longin</td>
+      </tr>
+       <tr>
+        <td>
+          PVCam<br />
+          MeasuredTemperatureRBV</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r</td>
+        <td>
+        </td>
+        <td>
+          PVCAM_MEASUREDTEMPERATURE_RBV</td>
+        <td>
+          $(P)$(R)MeasuredTemperature_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+       <tr>
+        <td>
+          PVCam<br />
+          MinTemperatureRBV</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r</td>
+        <td>
+        </td>
+        <td>
+          PVCAM_MINTEMPERATURE</td>
+        <td>
+          $(P)$(R)MinSetTemperature</td>
+        <td>
+          longin</td>
+      </tr>
+	  <tr>
+        <td>
+          PVCam<br />
+          MaxTemperatureRBV</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r</td>
+        <td>
+        </td>
+        <td>
+          PVCAM_MAXTEMPERATURE</td>
+        <td>
+          $(P)$(R)MaxSetTemperature</td>
+        <td>
+          longin</td>
+      </tr>
+	  <tr>
+        <td>
+          PVCam<br />
+          SetTemperature<br/>
+          SetTemperatureRBV</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+        </td>
+        <td>
+          PVCAM_SETTEMPERATURE<br/>
+          PVCAM_SETTEMPERATURE_RBV</td>
+        <td>
+          $(P)$(R)SetTemperature<br/>
+          $(P)$(R)SetTemperature_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+	  <tr>
+        <td>
+          PVCam<br />
+          DetectorMode<br/>
+          DetectorModeRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+        </td>
+        <td>
+          PVCAM_DETECTORMODE<br/>
+          PVCAM_DETECTORMODE_RBV</td>
+        <td>
+          $(P)$(R)DetectorMode<br/>
+          $(P)$(R)DetectorMode_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+
+	  <tr>
+        <td>
+          PVCam<br />
+          TriggerMode<br/>
+          TriggerModeRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+        </td>
+        <td>
+          PVCAM_TRIGGERMODE_RBV<br/>
+          PVCAM_TRIGGERMODE_RBV</td>
+        <td>
+          $(P)$(R)TriggerMode<br/>
+          $(P)$(R)TriggerMode_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+	  <tr>
+        <td>
+          PVCam<br />
+          TriggerEdge<br/>
+          TriggerEdgeRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+        </td>
+        <td>
+          PVCAM_TRIGGEREDGE_RBV<br/>
+          PVCAM_TRIGGEREDGE_RBV</td>
+        <td>
+          $(P)$(R)TriggerEdge<br/>
+          $(P)$(R)TriggerEdge_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+       <tr>
+        <td>
+          PVCam<br />
+          CamFirmwareVersRBV</td>
+        <td>
+          asynOctetRead</td>
+        <td>
+          r</td>
+        <td>
+        </td>
+        <td>
+          PVCAM_CAMFIRMWAREVERS_RBV</td>
+        <td>
+          $(P)$(R)CameraFirmwareVers_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+       <tr>
+        <td>
+          PVCam<br />
+          PCIFWVersRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+        </td>
+        <td>
+          PVCAM_PCIFWVERS_RBV</td>
+        <td>
+          $(P)$(R)PCIFWVers_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+       <tr>
+        <td>
+          PVCam<br />
+          HeadSerialNumRBV</td>
+        <td>
+          asynOctetRead</td>
+        <td>
+          r</td>
+        <td>
+        </td>
+        <td>
+          PVCAM_HEADSERIALNUM_RBV</td>
+        <td>
+          $(P)$(R)HeadSerialNum_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+       <tr>
+        <td>
+          PVCam<br />
+          SerialNumRBV</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+        </td>
+        <td>
+          PVCAM_SERIALNUM_RBV</td>
+        <td>
+          $(P)$(R)SerialNum_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+       <tr>
+        <td>
+          PVCam<br />
+          PVCamVersRBV</td>
+        <td>
+          asynOctetRead</td>
+        <td>
+          r</td>
+        <td>
+        </td>
+        <td>
+          PVCAM_PVCAMVERS_RBV</td>
+        <td>
+          $(P)$(R)PVCamVers_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+       <tr>
+        <td>
+          PVCam<br />
+          DevDrvVersRBV</td>
+        <td>
+          asynOctetRead</td>
+        <td>
+          r</td>
+        <td>
+        </td>
+        <td>
+          PVCAM_DEVDRVVERS_RBV</td>
+        <td>
+          $(P)$(R)DevDrvVers_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+
 
 
     </tbody>
