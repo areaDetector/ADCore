@@ -501,13 +501,14 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     createParam(NDPluginDriverBlockingCallbacksString, asynParamInt32, &NDPluginDriverBlockingCallbacks);
     createParam(NDPluginDriverMinCallbackTimeString,   asynParamFloat64, &NDPluginDriverMinCallbackTime);
 
-    /* Set the initial values of some parameters */
-    setStringParam (NDPortNameSelf, portName);
+    /* Here we set the values of read-only parameters and of read/write parameters that cannot
+     * or should not get their values from the database.  Note that values set here will override
+     * those in the database for output records because if asyn device support reads a value from 
+     * the driver with no error during initialization then it sets the output record to that value.  
+     * If a value is not set here then the read request will return an error (uninitialized).
+     * Values set here will be overridden by values from save/restore if they exist. */
     setStringParam (NDPluginDriverArrayPort, NDArrayPort);
     setIntegerParam(NDPluginDriverArrayAddr, NDArrayAddr);
     setIntegerParam(NDPluginDriverDroppedArrays, 0);
-    setIntegerParam(NDPluginDriverEnableCallbacks, 0);
-    setIntegerParam(NDPluginDriverBlockingCallbacks, 0);
-    setDoubleParam (NDPluginDriverMinCallbackTime, 0.);
 }
 
