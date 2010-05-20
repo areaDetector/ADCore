@@ -9,7 +9,7 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
-    Release 1-6 (19-May-2010)</h2>
+    Release 1-6 (20-May-2010)</h2>
   <ul>
     <li>General
       <ul>
@@ -55,6 +55,9 @@
           for the first image in a dataset if they were changed after the acquisition was
           started but before the first image was taken. Added ability to write simulated data
           to disk in the simulation driver.</li>
+        <li>Pilatus driver. Increased the timeout for the SetThreshold command to camserver
+          from 3 seconds to 90 seconds, because it takes almost this long to execute on the
+          Pilatus 6M.</li>
         <li>marCCD driver. Added support for baseline stabilization, which is done with the
           "set stability" and "get stability" remote commands. Baseline stabilization is an
           extra-cost option for marCCD, so this command only has any affect if that option
