@@ -30,7 +30,7 @@ function read_nd_netcdf, file, range=range, attributes=attributes, dimInfo=dimIn
 ;       the second dimension and elements 2 to 5 for the last (slowest) dimension.
 ;
 ; OUTPUTS:
-;       This function returns the N-Dimensional array of data.  
+;       This function returns the N-Dimensional array of data.
 ;       The dimensions are [dim0, dim1, ..., NumArrays]
 ;
 ; KEYWORD OUTPUTS:
@@ -54,10 +54,10 @@ function read_nd_netcdf, file, range=range, attributes=attributes, dimInfo=dimIn
 ;
 ; IDL> data = read_nd_netcdf('/home/epics/scratch/test_color_70.nc', attributes=attributes, dimInfo=dimInfo)
 ;
-; IDL> help, data                                                                                           
+; IDL> help, data
 ; DATA            BYTE      = Array[3, 640, 480, 50]
 ;
-; IDL> help, /structure, dimInfo      
+; IDL> help, /structure, dimInfo
 ; ** Structure NETCDFDIMINFO, 4 tags, length=16, data length=16:
 ;    SIZE            LONG                 3
 ;    OFFSET          LONG                 0
@@ -73,7 +73,7 @@ function read_nd_netcdf, file, range=range, attributes=attributes, dimInfo=dimIn
 ; IDL> print, attributes[10].name
 ; F64Value
 ;
-; IDL> help, *attributes[10].pValue                           
+; IDL> help, *attributes[10].pValue
 ; <PtrHeapVar256> DOUBLE    = Array[50]
 ;
 ; IDL> print, (*attributes[10].pValue)[0:9], format='(f20.10)'
@@ -148,7 +148,7 @@ function read_nd_netcdf, file, range=range, attributes=attributes, dimInfo=dimIn
         dimInfo[i].binning = binning[i]
         dimInfo[i].reverse = reverse[i]
     endfor
-    
+
     ; Get the data variable id.  This must be present in every file.
     array_data_id   = ncdf_varid (file_id, 'array_data')
 
@@ -156,7 +156,7 @@ function read_nd_netcdf, file, range=range, attributes=attributes, dimInfo=dimIn
         ncdf_close, file_id
         message, 'No array_data variable in netCDF file'
     endif
-    
+
     ; Get information about the array variable
     data_info = ncdf_varinq(file_id, array_data_id)
     ; Get the number of arrays in the file
@@ -169,7 +169,7 @@ function read_nd_netcdf, file, range=range, attributes=attributes, dimInfo=dimIn
         attrStringSize = 256
     endelse
 
-    ; There can be many other variables present in the file. 
+    ; There can be many other variables present in the file.
     ; These include uniqueId, timeStamp, and all of the NDArray attributes.
     ; Create an array of structures to hold data for these variables.
     attributes = replicate(attrInfo, fileStructure.nVars-1)
@@ -182,7 +182,7 @@ function read_nd_netcdf, file, range=range, attributes=attributes, dimInfo=dimIn
         attributeIds[numAttributes] = i
         attributes[numAttributes].name = var_info.name
         attributes[numAttributes].description = var_info.name
-        ; Now that we know the name there should be a global attribute 
+        ; Now that we know the name there should be a global attribute
         ; with the description of this variable
         att_info = ncdf_attinq(file_id, /global, var_info.name+'_Description')
         if (att_info.datatype eq 'CHAR') then begin
