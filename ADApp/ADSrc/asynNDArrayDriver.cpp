@@ -39,6 +39,7 @@ int asynNDArrayDriver::checkPath()
     /* Formats a complete file name from the components defined in NDStdDriverParams */
     int status = asynError;
     char filePath[MAX_FILENAME_LEN];
+    int hasTerminator=0;
     struct stat buff;
     int len;
     int isDir=0;
@@ -52,6 +53,7 @@ int asynNDArrayDriver::checkPath()
     if ((filePath[len-1] == '/') || (filePath[len-1] == '\\')) {
         filePath[len-1] = 0;
         len--;
+        hasTerminator=1;
     }
     status = stat(filePath, &buff);
     if (!status) isDir = (S_IFDIR & buff.st_mode);
@@ -59,9 +61,11 @@ int asynNDArrayDriver::checkPath()
         pathExists = 1;
         status = asynSuccess;
     }
-    /* Add a trailing '/' character if there is room */
-    if (len < MAX_FILENAME_LEN-2) strcat(filePath, "/");
-    setStringParam(NDFilePath, filePath);
+    /* If the path did not have a trailing terminator then add it if there is room */
+    if (!hasTerminator) {
+        if (len < MAX_FILENAME_LEN-2) strcat(filePath, "/");
+        setStringParam(NDFilePath, filePath);
+    }
     setIntegerParam(NDFilePathExists, pathExists);
     return(status);   
 }
