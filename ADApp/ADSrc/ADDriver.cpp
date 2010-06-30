@@ -154,6 +154,7 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int numParams, int maxBuff
     setIntegerParam(ADNumExposuresCounter, 0);
     setDoubleParam( ADTimeRemaining, 0.0);
     setIntegerParam(ADShutterStatus, 0);
+    setIntegerParam(ADAcquire, 0);
 
     setStringParam (ADStatusMessage,  "");
     setStringParam (ADStringToServer, "");
