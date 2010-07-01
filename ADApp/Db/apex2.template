@@ -5,6 +5,7 @@
 # Timeout waiting for SFRM file.
 record(ao, "$(P)$(R)ReadSFRMTimeout")
 {
+    field(PINI, "YES")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SFRM_TIMEOUT")
     field(DESC, "Timeout for SFRM file")
@@ -13,12 +14,64 @@ record(ao, "$(P)$(R)ReadSFRMTimeout")
     field(PREC, "3")
 }
 
-# Acquire command sent to BIS
-record(waveform, "$(P)$(R)apxAcqCmd")
+# Status string from BIS
+record(waveform, "$(P)$(R)BISStatus")
 {
-    field(PINI, "1")
-    field(DTYP, "asynOctetWrite")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACQUIRE_COMMAND")
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BIS_STATUS")
     field(FTVL, "UCHAR")
-    field(NELM, "256")
+    field(NELM, "512")
+    field(SCAN, "I/O Intr")
+}
+
+# We replace the file format choices from ADBase.template
+record(mbbo, "$(P)$(R)FileFormat")
+{
+    field(ZRST, "SRFM")
+    field(ZRVL, "0")
+    field(ONST, "Invalid")
+    field(ONVL, "1")
+}
+
+record(mbbi, "$(P)$(R)FileFormat_RBV")
+{
+    field(ZRST, "SRFM")
+    field(ZRVL, "0")
+    field(ONST, "Invalid")
+    field(ONVL, "1")
+    field(SCAN, "I/O Intr")
+}
+
+# We replace the choice fields for FrameType from ADBase.template
+record(mbbo, "$(P)$(R)FrameType")
+{
+   field(ZRST, "Normal")
+   field(ZRVL, "0")
+   field(ONST, "Dark")
+   field(ONVL, "1")
+   field(TWST, "Raw")
+   field(TWVL, "2")
+   field(THST, "DblCorrelation")
+   field(THVL, "3")
+}
+
+record(mbbi, "$(P)$(R)FrameType_RBV")
+{
+   field(ZRST, "Normal")
+   field(ZRVL, "0")
+   field(ONST, "Dark")
+   field(ONVL, "1")
+   field(TWST, "Raw")
+   field(TWVL, "2")
+   field(THST, "DblCorrelation")
+   field(THVL, "3")
+   field(SCAN, "I/O Intr")
+}
+
+# asyn record for interactive communication with BIS
+record(asyn, "$(P)$(R)BISAsyn")
+{
+    field(PORT,  "$(BIS_PORT)")
+    field(IMAX, "256")
+    field(OMAX, "256")
 }
