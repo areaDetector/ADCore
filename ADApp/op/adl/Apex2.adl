@@ -6,7 +6,7 @@ file {
 display {
 	object {
 		x=173
-		y=-22
+		y=23
 		width=700
 		height=990
 	}
@@ -383,43 +383,32 @@ text {
 	textix="Status"
 	align="horiz. centered"
 }
-composite {
+text {
 	object {
-		x=403
+		x=301
 		y=637
-		width=216
+		width=140
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=403
-				y=637
-				width=140
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Time remaining"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=552
-				y=638
-				width=67
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)TimeRemaining_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Time remaining"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=446
+		y=638
+		width=55
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TimeRemaining_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
 	}
 }
 text {
@@ -886,46 +875,35 @@ rectangle {
 		fill="outline"
 	}
 }
-composite {
+"text update" {
 	object {
-		x=49
+		x=171
+		y=638
+		width=120
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)DetectorState_RBV"
+		clr=16
+		bclr=2
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=24
 		y=637
-		width=267
+		width=140
 		height=20
 	}
-	"composite name"=""
-	children {
-		"text update" {
-			object {
-				x=196
-				y=638
-				width=120
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)DetectorState_RBV"
-				clr=16
-				bclr=2
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=49
-				y=637
-				width=140
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Detector state"
-			align="horiz. right"
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="Detector state"
+	align="horiz. right"
 }
 composite {
 	object {
@@ -1569,93 +1547,6 @@ composite {
 		}
 	}
 }
-"text update" {
-	object {
-		x=183
-		y=666
-		width=500
-		height=13
-	}
-	monitor {
-		chan="$(P)$(R)StringToServer_RBV"
-		clr=14
-		bclr=51
-	}
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
-		x=40
-		y=662
-		width=140
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="To BIS server:"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=183
-		y=691
-		width=500
-		height=13
-	}
-	monitor {
-		chan="$(P)$(R)StringFromServer_RBV"
-		clr=14
-		bclr=51
-	}
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
-		x=20
-		y=687
-		width=160
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="From BIS server:"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=183
-		y=716
-		width=500
-		height=13
-	}
-	monitor {
-		chan="$(P)$(R)BISStatus"
-		clr=14
-		bclr=51
-	}
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
-		x=20
-		y=712
-		width=160
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="From BIS status:"
-	align="horiz. right"
-}
 text {
 	object {
 		x=14
@@ -1698,6 +1589,154 @@ text {
 		bclr=4
 	}
 	align="horiz. centered"
+	limits {
+	}
+}
+composite {
+	object {
+		x=35
+		y=662
+		width=643
+		height=20
+	}
+	"composite name"=""
+	children {
+		"text update" {
+			object {
+				x=178
+				y=666
+				width=500
+				height=13
+			}
+			monitor {
+				chan="$(P)$(R)StringToServer_RBV"
+				clr=14
+				bclr=51
+			}
+			format="string"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=35
+				y=662
+				width=140
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="To BIS server:"
+			align="horiz. right"
+		}
+	}
+}
+composite {
+	object {
+		x=15
+		y=687
+		width=663
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=15
+				y=687
+				width=160
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="From BIS server:"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=178
+				y=691
+				width=500
+				height=13
+			}
+			monitor {
+				chan="$(P)$(R)StringFromServer_RBV"
+				clr=14
+				bclr=51
+			}
+			format="string"
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=15
+		y=712
+		width=663
+		height=20
+	}
+	"composite name"=""
+	children {
+		"text update" {
+			object {
+				x=178
+				y=716
+				width=500
+				height=13
+			}
+			monitor {
+				chan="$(P)$(R)BISStatus"
+				clr=14
+				bclr=51
+			}
+			format="string"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=15
+				y=712
+				width=160
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="From BIS status:"
+			align="horiz. right"
+		}
+	}
+}
+text {
+	object {
+		x=519
+		y=637
+		width=110
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Temperature"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=634
+		y=638
+		width=55
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)Temperature_RBV"
+		clr=54
+		bclr=4
+	}
 	limits {
 	}
 }
