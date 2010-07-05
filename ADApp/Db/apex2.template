@@ -24,6 +24,23 @@ record(waveform, "$(P)$(R)BISStatus")
     field(SCAN, "I/O Intr")
 }
 
+# Number of dark fields
+record(longout, "$(P)$(R)NumDarks")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_DARKS")
+   field(VAL,  "2")
+}
+
+record(longin, "$(P)$(R)NumDarks_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_DARKS")
+   field(SCAN, "I/O Intr")
+}
+
+
 # We replace the file format choices from ADBase.template
 record(mbbo, "$(P)$(R)FileFormat")
 {
@@ -66,6 +83,17 @@ record(mbbi, "$(P)$(R)FrameType_RBV")
    field(THST, "DblCorrelation")
    field(THVL, "3")
    field(SCAN, "I/O Intr")
+}
+
+# Change the PREC of the temperature and time remaining records to 2
+record(ai, "$(P)$(R)Temperature_RBV")
+{
+   field(PREC, "2")
+}
+
+record(ai, "$(P)$(R)TimeRemaining_RBV")
+{
+   field(PREC, "2")
 }
 
 # asyn record for interactive communication with BIS
