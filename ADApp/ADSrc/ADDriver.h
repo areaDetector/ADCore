@@ -140,7 +140,7 @@ public:
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
 
     /* These are the methods that are new to this class */
-    void setShutter(int open);
+    virtual void setShutter(int open);
 
 protected:
     int ADManufacturer;
