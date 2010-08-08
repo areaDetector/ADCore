@@ -19,6 +19,7 @@
 #include <epicsExport.h>
 
 #include "NDPluginColorConvert.h"
+#include "colorMaps.h"
 #ifdef HAVE_PVAPI
   #include "PvApi.h"
 #endif
@@ -46,7 +47,12 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
     #endif
     double value;
     int colorMode=NDColorModeMono, bayerPattern=NDBayerRGGB;
+    int falseColor=0;
     int changedColorMode=0;
+    const unsigned char * colorMapR;
+    const unsigned char * colorMapG;
+    const unsigned char * colorMapB;        
+    const unsigned char * colorMapRGB;     
     NDAttribute *pAttribute;
      
     getIntegerParam(NDPluginColorConvertColorModeOut, (int *)&colorModeOut);
@@ -55,6 +61,26 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
     pAttribute = pArray->pAttributeList->find("BayerPattern");
     if (pAttribute) pAttribute->getValue(NDAttrInt32, &bayerPattern);
     
+    /* if we have int8 data then check for false color */
+    if (pArray->dataType == NDInt8 || pArray->dataType == NDUInt8) {
+        getIntegerParam(NDPluginColorConvertFalseColor, &falseColor);            
+        switch (falseColor) {
+        case 1:
+            colorMapR = RainbowColorR;
+            colorMapG = RainbowColorG;
+            colorMapB = RainbowColorB;
+            colorMapRGB = RainbowColorRGB;      
+            break;
+        case 2:
+            colorMapR = IronColorR;
+            colorMapG = IronColorG;
+            colorMapB = IronColorB;
+            colorMapRGB = IronColorRGB;                        
+            break;
+        default:
+            falseColor = 0;
+        }
+    }     
     /* This function is called with the lock taken, and it must be set when we exit.
      * The following code can be exected without the mutex because we are not accessing elements of
      * pPvt that other threads can access. */
@@ -82,10 +108,17 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     pDataOut = (epicsType *)pArrayOut->pData;
                     pOut = pDataOut;
                     pIn  = pDataIn;
-                    for (i=0; i<imageSize; i++) {
-                        *pOut++ = *pIn;
-                        *pOut++ = *pIn;
-                        *pOut++ = *pIn++;
+                    if (falseColor) {
+                        for (i=0; i<imageSize; i++) {
+                            memcpy(pOut, colorMapRGB + 3 * ((unsigned char)*pIn++), 3);
+                            pOut+=3;
+                        }                                       
+                    } else {
+                        for (i=0; i<imageSize; i++) {
+                            *pOut++ = *pIn;
+                            *pOut++ = *pIn;
+                            *pOut++ = *pIn++;
+                        }
                     }
                     changedColorMode = 1;
                     break;
@@ -104,16 +137,29 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     pArrayOut->dims[1] = tmpDim;
                     pDataOut = (epicsType *)pArrayOut->pData;
                     pIn  = pDataIn;
-                    for (i=0; i<numRows; i++) {
-                        pRedOut   = pDataOut + 3*i*rowSize;
-                        pGreenOut = pRedOut + rowSize;
-                        pBlueOut  = pRedOut + 2*rowSize;
-                        for (j=0; j<rowSize; j++) {
-                            *pRedOut++   = *pIn;
-                            *pGreenOut++ = *pIn;
-                            *pBlueOut++  = *pIn++;
+                    if (falseColor) {
+                        for (i=0; i<numRows; i++) {
+                            pRedOut   = pDataOut + 3*i*rowSize;
+                            pGreenOut = pRedOut + rowSize;
+                            pBlueOut  = pRedOut + 2*rowSize;
+                            for (j=0; j<rowSize; j++) {
+                                *pRedOut++   = colorMapR[(unsigned char)*pIn];
+                                *pGreenOut++ = colorMapG[(unsigned char)*pIn];
+                                *pBlueOut++  = colorMapB[(unsigned char)*pIn++];
+                            }
+                        }                                
+                    } else {
+                        for (i=0; i<numRows; i++) {
+                            pRedOut   = pDataOut + 3*i*rowSize;
+                            pGreenOut = pRedOut + rowSize;
+                            pBlueOut  = pRedOut + 2*rowSize;
+                            for (j=0; j<rowSize; j++) {
+                                *pRedOut++   = *pIn;
+                                *pGreenOut++ = *pIn;
+                                *pBlueOut++  = *pIn++;
+                            }
                         }
-                    }
+                    }                    
                     changedColorMode = 1;
                     break;
                 case NDColorModeRGB3:
@@ -133,11 +179,19 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     pGreenOut = pDataOut + imageSize;
                     pBlueOut  = pDataOut + 2*imageSize;
                     pIn  = pDataIn;
-                    for (i=0; i<imageSize; i++) {
-                        *pRedOut++   = *pIn;
-                        *pGreenOut++ = *pIn;
-                        *pBlueOut++  = *pIn++;
-                    }
+                    if (falseColor) {  
+                        for (i=0; i<imageSize; i++) {                    
+                            *pRedOut++   = colorMapR[(unsigned char)*pIn];
+                            *pGreenOut++ = colorMapG[(unsigned char)*pIn];
+                            *pBlueOut++  = colorMapB[(unsigned char)*pIn++];
+                        }                                                   
+                    } else {                                      
+                        for (i=0; i<imageSize; i++) {
+                            *pRedOut++   = *pIn;
+                            *pGreenOut++ = *pIn;
+                            *pBlueOut++  = *pIn++;
+                        }
+                    }                        
                     changedColorMode = 1;
                     break;
                 default:
@@ -553,6 +607,7 @@ NDPluginColorConvert::NDPluginColorConvert(const char *portName, int queueSize, 
     //const char *functionName = "NDPluginColorConvert";
 
     createParam(NDPluginColorConvertColorModeOutString, asynParamInt32, &NDPluginColorConvertColorModeOut);
+    createParam(NDPluginColorConvertFalseColorString,   asynParamInt32, &NDPluginColorConvertFalseColor);    
 
     /* Set the plugin type string */    
     setStringParam(NDPluginDriverPluginType, "NDPluginColorConvert");
