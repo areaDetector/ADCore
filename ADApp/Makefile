@@ -3,6 +3,7 @@ include $(TOP)/configure/CONFIG
 
 DIRS += ADSrc
 DIRS += netCDFSrc
+DIRS += cbfSrc
 # prosilicaSupport must be built before pluginSrc or prosilicaSrc because it installs
 # header and library files needed by both
 DIRS += prosilicaSupport
@@ -16,7 +17,7 @@ simDetectorSrc_DEPEND_DIRS = pluginSrc
 DIRS += prosilicaSrc
 prosilicaSrc_DEPEND_DIRS = pluginSrc
 DIRS += pilatusSrc
-pilatusSrc_DEPEND_DIRS   = pluginSrc
+pilatusSrc_DEPEND_DIRS   = pluginSrc cbfSrc
 DIRS += marCCDSrc
 marCCDSrc_DEPEND_DIRS = pluginSrc
 DIRS += mar345Src
