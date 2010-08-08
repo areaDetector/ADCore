@@ -43,7 +43,7 @@ public:
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     virtual asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
     virtual void setShutter(int open);
-    void report(FILE *fp, int details);
+    virtual void report(FILE *fp, int details);
     void simTask(); /**< Should be private, but gets called from C, so must be public */
     
 protected:
@@ -552,8 +552,6 @@ asynStatus simDetector::writeInt32(asynUser *pasynUser, epicsInt32 value)
         }
     } else if ((function == NDDataType) || (function == NDColorMode)) {
         status = setIntegerParam(SimResetImage, 1);
-    } else if (function == ADShutterControl) {
-        setShutter(value);
     } else {
         /* If this parameter belongs to a base class call its method */
         if (function < FIRST_SIM_DETECTOR_PARAM) status = ADDriver::writeInt32(pasynUser, value);
