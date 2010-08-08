@@ -49,10 +49,10 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
     int colorMode=NDColorModeMono, bayerPattern=NDBayerRGGB;
     int falseColor=0;
     int changedColorMode=0;
-    const unsigned char * colorMapR;
-    const unsigned char * colorMapG;
-    const unsigned char * colorMapB;        
-    const unsigned char * colorMapRGB;     
+    const unsigned char *colorMapR=NULL;
+    const unsigned char *colorMapG=NULL;
+    const unsigned char *colorMapB=NULL;        
+    const unsigned char *colorMapRGB=NULL;     
     NDAttribute *pAttribute;
      
     getIntegerParam(NDPluginColorConvertColorModeOut, (int *)&colorModeOut);
