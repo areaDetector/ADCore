@@ -41,7 +41,7 @@
     Dectris.
   </p>
   <p>
-    The camserver program saves the data to disk as TIFF files. The areaDetector software
+    The camserver program saves the data to disk as TIFF or CBF files. The areaDetector software
     reads these disk files in order to read the data, because camserver does not provide
     another mechanism to access the data.
   </p>
@@ -164,8 +164,8 @@
           $(P)$(R)FileTemplate</td>
         <td>
           camserver uses the file extension to determine what format to save the files in.
-          The areaDetector Pilatus driver only supports TIFF files, so the extension should
-          be .tif. When saving multiple images (NImages>1) camserver has its own rules for
+          The areaDetector Pilatus driver only supports TIFF and CBF files, so the extension should
+          be .tif or .cbf. When saving multiple images (NImages>1) camserver has its own rules for
           creating the names of the individual files. The rules are as follows. The name constructed
           using the algorithm described for NDFileTemplate under <a href="areaDetectorDoc.html#asynNDArrayDriver">
             File Saving Parameters</a> is used as a basename. The following examples show
@@ -301,22 +301,22 @@ test6_2_0035.tif    test6_2_0035.tif, test6_2_0036.tif, ...
       </tr>
       <tr>
         <td>
-          Pilatus<br />
-          TiffTimeout</td>
+          PilatusImage<br />
+          FileTmot</td>
         <td>
           asynFloat64</td>
         <td>
           r/w</td>
         <td>
-          Timeout in seconds when reading a TIFF file. It should be set to several seconds,
+          Timeout in seconds when reading a TIFF or CBF file. It should be set to several seconds,
           because there can be delays for various reasons. One reason is that there is sometimes
           a delay between when an External Enable acquisition is started and when the first
           external pulse occurs. Another is that it can take some time for camserver processes
           to finish writing the files.</td>
         <td>
-          TIFF_TIMEOUT</td>
+          IMAGE_FILE_TMOT</td>
         <td>
-          $(P)$(R)ReadTiffTimeout</td>
+          $(P)$(R)ImageFileTmot</td>
         <td>
           ao</td>
       </tr>
@@ -389,7 +389,7 @@ badX2,badY2 replacementX2,replacementY2
         <td>
           Name of a file to be used to correct for the flat field. If this record does not
           point to a valid flat field file then no flat field correction is performed. The
-          flat field file is simply a TIFF file collected by the Pilatus that is used to correct
+          flat field file is simply a TIFF or CBF file collected by the Pilatus that is used to correct
           for spatial non-uniformity in the response of the detector. It should be collected
           with a spatially uniform intensity on the detector at roughly the same energy as
           the measurements being corrected. When the flat field file is read, the average
@@ -445,6 +445,329 @@ badX2,badY2 replacementX2,replacementY2
           $(P)$(R)FlatFieldValid</td>
         <td>
           bi</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          Wavelength</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          MX wavelength to write to CBF and TIFF image header.</td>
+        <td>
+          WAVELENGTH</td>
+        <td>
+          $(P)$(R)Wavelength</td>
+        <td>
+          ao</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          EnergyLow</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          MX energy range low value to write to CBF and TIFF image header.</td>
+        <td>
+          ENERGY_LOW</td>
+        <td>
+          $(P)$(R)EnergyLow</td>
+        <td>
+          ao</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          EnergyHigh</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          MX energy range high value to write to CBF and TIFF image header.</td>
+        <td>
+          ENERGY_HIGH</td>
+        <td>
+          $(P)$(R)EnergyHigh</td>
+        <td>
+          ao</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          DetDist</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          MX detector distance to write to CBF and TIFF image header.</td>
+        <td>
+          DET_DIST</td>
+        <td>
+          $(P)$(R)DetDist</td>
+        <td>
+          ao</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          DetVOffset</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          MX detector vertical offset to write to CBF and TIFF image header.</td>
+        <td>
+          DET_VOFFSET</td>
+        <td>
+          $(P)$(R)DetVOffset</td>
+        <td>
+          ao</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          BeamX</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          MX beam X to write to CBF and TIFF image header.</td>
+        <td>
+          BEAM_X</td>
+        <td>
+          $(P)$(R)BeamX</td>
+        <td>
+          ao</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          BeamY</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          MX beam Y to write to CBF and TIFF image header.</td>
+        <td>
+          BEAM_Y</td>
+        <td>
+          $(P)$(R)BeamY</td>
+        <td>
+          ao</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          Flux</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          MX flux to write to CBF and TIFF image header.</td>
+        <td>
+          FLUX</td>
+        <td>
+          $(P)$(R)Flux</td>
+        <td>
+          ao</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          FilterTransm</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          MX filter transmission to write to CBF and TIFF image header.</td>
+        <td>
+          FILTER_TRANSM</td>
+        <td>
+          $(P)$(R)FilterTransm</td>
+        <td>
+          ao</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          StartAngle</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          MX start angle to write to CBF and TIFF image header.  When saving multiple images (ADNumImages&gt;1) camserver will automatically increment the field in the image header by PilatusAngleIncr for each image.</td>
+        <td>
+          START_ANGLE</td>
+        <td>
+          $(P)$(R)StartAngle</td>
+        <td>
+          ao</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          AngleIncr</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          MX angle increment to write to CBF and TIFF image header.  When saving multiple images (ADNumImages&gt;1) camserver will automatically increment the field corresponding to PilatusStartAngle in the image header by this value for each image.</td>
+        <td>
+          ANGLE_INCR</td>
+        <td>
+          $(P)$(R)AngleIncr</td>
+        <td>
+          ao</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          Det2theta</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          MX detector 2theta to write to CBF and TIFF image header.</td>
+        <td>
+          DET_2THETA</td>
+        <td>
+          $(P)$(R)Det2theta</td>
+        <td>
+          ao</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          Polarization</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          MX polarization to write to CBF and TIFF image header.</td>
+        <td>
+          POLARIZATION</td>
+        <td>
+          $(P)$(R)Polarization</td>
+        <td>
+          ao</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          Alpha</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          MX alpha to write to CBF and TIFF image header.</td>
+        <td>
+          ALPHA</td>
+        <td>
+          $(P)$(R)Alpha</td>
+        <td>
+          ao</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          Kappa</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          MX kappa to write to CBF and TIFF image header.</td>
+        <td>
+          KAPPA</td>
+        <td>
+          $(P)$(R)Kappa</td>
+        <td>
+          ao</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          Phi</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          MX phi to write to CBF and TIFF image header.</td>
+        <td>
+          PHI</td>
+        <td>
+          $(P)$(R)Phi</td>
+        <td>
+          ao</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          Chi</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          MX chi to write to CBF and TIFF image header.</td>
+        <td>
+          CHI</td>
+        <td>
+          $(P)$(R)Chi</td>
+        <td>
+          ao</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          OscillAxis</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          MX oscillation axis text, up to 18 characters in length, to write to CBF and TIFF image header.</td>
+        <td>
+          OSCILL_AXIS</td>
+        <td>
+          $(P)$(R)OscillAxis</td>
+        <td>
+          stringout</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          NumOscill</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          MX number of oscillations to write to CBF and TIFF image header.</td>
+        <td>
+          NUM_OSCILL</td>
+        <td>
+          $(P)$(R)NumOscill</td>
+        <td>
+          longout</td>
       </tr>
       <tr>
         <td>
@@ -851,11 +1174,11 @@ def user_getcounts '{
   <p>
     The following are some current restrictions of the areaDetector Pilatus driver:</p>
   <ul>
-    <li>Limited to TIFF file format. camserver can save files in other formats, but the
-      driver can currently only read TIFF files. It uses the standard libtiff library
-      to read the files, so it should work on big or little endian machines, and should
+    <li>Limited to TIFF or CBF file format. camserver can save files in other formats, but the
+      driver can currently only read TIFF and CBF files. It uses the standard libtiff library
+      to read the TIFF files, so it should work on big or little endian machines, and should
       work with uncompressed or compressed files. It has only been tested with uncompressed
-      files on a little-endian machine.</li>
+      files on a little-endian machine. It uses the CBFlib library to read the CBF files.</li>
     <li>The EPICS IOC should be run on the same computer as camserver. This is not strictly
       necessary, and places a small additional load on the CPU and network on that computer.
       However, we have found that TIFF files are available to be read within 10ms after
@@ -866,8 +1189,8 @@ def user_getcounts '{
       file has been written before the IOC can read it. This is true even if the files
       are being written to the computer that the IOC is running on! This 1 second delay
       is often unacceptable for fast single-exposure scans, i.e. with NImages=1.</li>
-    <li>The Pilatus driver keeps retrying to read each TIFF file until the modification
-      date of the TIFF file is <i>after</i> the time that the acquisition was started.
+    <li>The Pilatus driver keeps retrying to read each image file until the modification
+      date of the image file is <i>after</i> the time that the acquisition was started.
       If it did not do this check then it could be reading and displaying old files that
       happen to have the same name as the current files being collected. This check requires
       that the computer that is running the soft IOC must have its clock well synchronized
@@ -887,7 +1210,7 @@ def user_getcounts '{
         <li>MAX_MESSAGE_SIZE=256 The maximum size of message to/from camserver.</li>
         <li>MAX_FILENAME_LEN=256 The maximum size of a complete file name including path and
           extension.</li>
-        <li>FILE_READ_DELAY=.01 seconds. The time between polling to see if the TIFF file
+        <li>FILE_READ_DELAY=.01 seconds. The time between polling to see if the image file
           exists or if it is the expected size.</li>
         <li>MAX_BAD_PIXELS=100 The maximum number of bad pixels.</li>
       </ul>
