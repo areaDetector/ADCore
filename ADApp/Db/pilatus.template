@@ -114,12 +114,12 @@ record(mbbo, "$(P)$(R)GainMenu")
     field(VAL,  "1")
 }
 
-# Timeout waiting for TIFF file.
-record(ao, "$(P)$(R)ReadTiffTimeout")
+# Timeout waiting for image to be written to file system
+record(ao, "$(P)$(R)ImageFileTmot")
 {
     field(DTYP, "asynFloat64")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TIFF_TIMEOUT")
-    field(DESC, "Timeout for TIFF file")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_FILE_TMOT")
+    field(DESC, "Timeout for image file")
     field(VAL,  "30")
     field(EGU,  "s")
     field(PREC, "3")
@@ -191,4 +191,171 @@ record(asyn, "$(P)$(R)CamserverAsyn")
     field(PORT,  "$(CAMSERVER_PORT)")
     field(IMAX, "64")
     field(OMAX, "64")
+}
+
+# ancillary information
+
+record(ao, "$(P)$(R)Wavelength")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WAVELENGTH")
+    field(PINI, "YES")
+    field(PREC, "4")
+    field(EGU,  "Angstroms")
+}
+
+record(ao, "$(P)$(R)EnergyLow")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENERGY_LOW")
+    field(PINI, "YES")
+    field(PREC, "3")
+    field(EGU,  "eV")
+}
+
+record(ao, "$(P)$(R)EnergyHigh")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENERGY_HIGH")
+    field(PINI, "YES")
+    field(PREC, "3")
+    field(EGU,  "eV")
+}
+
+record(ao, "$(P)$(R)DetDist")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DET_DIST")
+    field(PINI, "YES")
+    field(PREC, "3")
+    field(EGU,  "mm")
+}
+
+record(ao, "$(P)$(R)DetVOffset")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DET_VOFFSET")
+    field(PINI, "YES")
+    field(PREC, "3")
+    field(EGU,  "mm")
+}
+
+record(ao, "$(P)$(R)BeamX")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BEAM_X")
+    field(PINI, "YES")
+    field(PREC, "3")
+    field(EGU,  "pixels")
+}
+
+record(ao, "$(P)$(R)BeamY")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BEAM_Y")
+    field(PINI, "YES")
+    field(PREC, "3")
+    field(EGU,  "pixels")
+}
+
+record(ao, "$(P)$(R)Flux")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FLUX")
+    field(PINI, "YES")
+    field(PREC, "4")
+    field(EGU,  "ph/s")
+}
+
+record(ao, "$(P)$(R)FilterTransm")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_TRANSM")
+    field(PINI, "YES")
+    field(PREC, "4")
+}
+
+record(ao, "$(P)$(R)StartAngle")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))START_ANGLE")
+    field(PINI, "YES")
+    field(PREC, "4")
+    field(EGU,  "deg")
+}
+
+record(ao, "$(P)$(R)AngleIncr")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANGLE_INCR")
+    field(PINI, "YES")
+    field(PREC, "4")
+    field(EGU,  "deg")
+}
+
+record(ao, "$(P)$(R)Det2theta")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DET_2THETA")
+    field(PINI, "YES")
+    field(PREC, "4")
+    field(EGU,  "deg")
+}
+
+record(ao, "$(P)$(R)Polarization")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))POLARIZATION")
+    field(PINI, "YES")
+    field(PREC, "4")
+}
+
+record(ao, "$(P)$(R)Alpha")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ALPHA")
+    field(PINI, "YES")
+    field(PREC, "4")
+    field(EGU,  "deg")
+}
+
+record(ao, "$(P)$(R)Kappa")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KAPPA")
+    field(PINI, "YES")
+    field(PREC, "4")
+    field(EGU,  "deg")
+}
+
+record(ao, "$(P)$(R)Phi")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PHI")
+    field(PINI, "YES")
+    field(PREC, "4")
+    field(EGU,  "deg")
+}
+
+record(ao, "$(P)$(R)Chi")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CHI")
+    field(PINI, "YES")
+    field(PREC, "4")
+    field(EGU,  "deg")
+}
+
+record(stringout, "$(P)$(R)OscillAxis")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OSCILL_AXIS")
+    field(PINI, "YES")
+}
+
+record(longout, "$(P)$(R)NumOscill")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_OSCILL")
+    field(PINI, "YES")
 }
