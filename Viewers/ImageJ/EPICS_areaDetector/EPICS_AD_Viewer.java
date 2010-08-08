@@ -308,12 +308,12 @@ public class EPICS_AD_Viewer implements PlugIn
         boolean connected;
         try
         {
-            connected = (ch_nx.getConnectionState() == Channel.ConnectionState.CONNECTED &&
-                         ch_ny.getConnectionState() == Channel.ConnectionState.CONNECTED &&
-                         ch_nz.getConnectionState() == Channel.ConnectionState.CONNECTED &&
-                         ch_colorMode.getConnectionState() == Channel.ConnectionState.CONNECTED &&
-                         ch_image.getConnectionState() == Channel.ConnectionState.CONNECTED &&
-                         ch_image_id.getConnectionState() == Channel.ConnectionState.CONNECTED);
+            connected = (ch_nx != null && ch_nx.getConnectionState() == Channel.ConnectionState.CONNECTED &&
+                         ch_ny != null && ch_ny.getConnectionState() == Channel.ConnectionState.CONNECTED &&
+                         ch_nz != null && ch_nz.getConnectionState() == Channel.ConnectionState.CONNECTED &&
+                         ch_colorMode != null && ch_colorMode.getConnectionState() == Channel.ConnectionState.CONNECTED &&
+                         ch_image != null && ch_image.getConnectionState() == Channel.ConnectionState.CONNECTED &&
+                         ch_image_id != null && ch_image_id.getConnectionState() == Channel.ConnectionState.CONNECTED);
             if (connected & !isConnected)
             {
                 isConnected = true;
