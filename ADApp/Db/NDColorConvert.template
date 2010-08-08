@@ -53,3 +53,28 @@ record(mbbi, "$(P)$(R)ColorModeOut_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(mbbo, "$(P)$(R)FalseColor")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FALSE_COLOR")
+   field(ZRST, "None")
+   field(ZRVL, "0")
+   field(ONST, "Rainbow")
+   field(ONVL, "1")
+   field(TWST, "Iron")
+   field(TWVL, "2")
+}
+
+record(mbbi, "$(P)$(R)FalseColor_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FALSE_COLOR")
+   field(ZRST, "None")
+   field(ZRVL, "0")
+   field(ONST, "Rainbow")
+   field(ONVL, "1")
+   field(TWST, "Iron")
+   field(TWVL, "2")
+   field(SCAN, "I/O Intr")
+}
