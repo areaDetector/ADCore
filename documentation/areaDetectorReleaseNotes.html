@@ -9,6 +9,46 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
+    Release 1-7 (XX-Aug-2010)</h2>
+  <ul>
+    <li>General
+      <ul>
+        <li>On Windows if NDFilePath has a trailing '\' then preserve it, else add a '/' character
+          if one is not present.</li>
+      </ul>
+    </li>
+    <li>Drivers
+      <ul>
+        <li>Changed the setShutter() function in ADDriver.h to be a virtual function, which
+          it should have been all along. The base-class implementation for an EPICS shutter
+          is now used by default. Changed the mar345, marCCD, Roper, and dimDetector drivers
+          to use the virtual function.</li>
+        <li>Initialized ADAcquire to 0 in ADDriver::ADDriver. In R1-6 ADAcquire was not initialized,
+          and if it had a non-zero value at iocInit then the IOC could crash with some drivers,
+          e.g. simDetector.</li>
+        <li>Pilatus driver. Added support for camserver saving data in the CBF file format,
+          which is ~4X smaller than TIFF, and for additional header information in the files
+          for crystallography. Thanks to Lewis Muir for these additions.</li>
+        <li>Renamed the apex2Src to BrukerSrc and apex2Detector to BISDetector. The driver
+          works with any BIS (Bruker Instrument Service) detector, not just the APEX-2. The
+          driver is now completely functional, while in R1-6 it was in an early beta form.</li>
+      </ul>
+    </li>
+    <li>Plugins
+      <ul>
+        <li>NDPluginColorConvert. Added support for false color when converting 8-bit mono
+          to RGB1, RGB2, or RGB3. Thanks to Tom Cobb for this addition.</li>
+        <li>NDPluginStats. Removed duplicate record for MeanValue_RBV from NDStats.template.</li>
+      </ul>
+    </li>
+    <li>Viewers
+      <ul>
+        <li>Additional sanity check in code to see if EPICS PVs are connected, prevent dereferencing
+          a null point. Thanks to Lewis Muir for this.</li>
+      </ul>
+    </li>
+  </ul>
+  <h2 style="text-align: center">
     Release 1-6 (20-May-2010)</h2>
   <ul>
     <li>General
