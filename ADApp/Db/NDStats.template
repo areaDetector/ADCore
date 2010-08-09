@@ -58,13 +58,6 @@ record(ai, "$(P)$(R)MeanValue_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(ai, "$(P)$(R)MeanValue_RBV")
-{
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MEAN_VALUE")
-   field(SCAN, "I/O Intr")
-}
-
 record(ai, "$(P)$(R)Sigma_RBV")
 {
    field(DTYP, "asynFloat64")
