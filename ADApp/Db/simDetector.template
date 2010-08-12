@@ -95,6 +95,21 @@ record(longin, "$(P)$(R)Reset_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(longout, "$(P)$(R)Noise")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_NOISE")
+}
+
+record(longin, "$(P)$(R)Noise_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_NOISE")
+   field(SCAN, "I/O Intr")
+}
+
+
 # Redefine the color mode choices from ADBase.template to only have those that the simDetector
 # driver supports.  Keep the same values (xxVL), but change the menu numbers.
 
@@ -183,6 +198,7 @@ record(mbbi, "$(P)$(R)ImageType_RBV")
 # Channels for Peaks Image Type
 record(longout, "$(P)$(R)PeakStartX")
 {
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_START_X")
 }
@@ -196,6 +212,7 @@ record(longin, "$(P)$(R)PeakStartX_RBV")
 
 record(longout, "$(P)$(R)PeakStartY")
 {
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_START_Y")
 }
@@ -209,6 +226,7 @@ record(longin, "$(P)$(R)PeakStartY_RBV")
 
 record(longout, "$(P)$(R)PeakNumX")
 {
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_NUM_X")
 }
@@ -222,6 +240,7 @@ record(longin, "$(P)$(R)PeakNumX_RBV")
 
 record(longout, "$(P)$(R)PeakNumY")
 {
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_NUM_Y")
 }
@@ -235,6 +254,7 @@ record(longin, "$(P)$(R)PeakNumY_RBV")
 
 record(longout, "$(P)$(R)PeakStepX")
 {
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_STEP_X")
 }
@@ -248,6 +268,7 @@ record(longin, "$(P)$(R)PeakStepX_RBV")
 
 record(longout, "$(P)$(R)PeakStepY")
 {
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_STEP_Y")
 }
@@ -261,6 +282,7 @@ record(longin, "$(P)$(R)PeakStepY_RBV")
 
 record(longout, "$(P)$(R)PeakWidthX")
 {
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_WIDTH_X")
 }
@@ -274,6 +296,7 @@ record(longin, "$(P)$(R)PeakWidthX_RBV")
 
 record(longout, "$(P)$(R)PeakWidthY")
 {
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_WIDTH_Y")
 }
@@ -282,6 +305,20 @@ record(longin, "$(P)$(R)PeakWidthY_RBV")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_WIDTH_Y")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)PeakVariation")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_HEIGHT_VARIATION")
+}
+
+record(longin, "$(P)$(R)PeakVariation_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_HEIGHT_VARIATION")
    field(SCAN, "I/O Intr")
 }
 
