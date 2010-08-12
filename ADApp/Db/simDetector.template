@@ -138,4 +138,150 @@ record(mbbi, "$(P)$(R)ColorMode_RBV")
    field(SCAN, "I/O Intr")
 }
 
+# Handle more types of images
+record(mbbo, "$(P)$(R)ImageType")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_IMAGE_TYPE")
+   field(ZRST, "LinearRamp")
+   field(ZRVL, "0")
+   field(ONST, "Peaks")
+   field(ONVL, "1")
+   field(TWST, "Rings")
+   field(TWVL, "2")
+   field(THST, "")
+   field(THVL, "")
+   field(FRST, "")
+   field(FVST, "")
+   field(SXST, "")
+   field(SVST, "")
+   field(EIST, "")
+}
+
+record(mbbi, "$(P)$(R)ImageType_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_IMAGE_TYPE")
+   field(ZRST, "LinearRamp")
+   field(ZRVL, "0")
+   field(ONST, "Peaks")
+   field(ONVL, "1")
+   field(TWST, "Rings")
+   field(TWVL, "2")
+   field(THST, "")
+   field(THVL, "")
+   field(FRST, "")
+   field(FVST, "")
+   field(SXST, "")
+   field(SVST, "")
+   field(EIST, "")
+   field(SCAN, "I/O Intr")
+}
+
+
+# Channels for Peaks Image Type
+record(longout, "$(P)$(R)PeakStartX")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_START_X")
+}
+
+record(longin, "$(P)$(R)PeakStartX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_START_X")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)PeakStartY")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_START_Y")
+}
+
+record(longin, "$(P)$(R)PeakStartY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_START_Y")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)PeakNumX")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_NUM_X")
+}
+
+record(longin, "$(P)$(R)PeakNumX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_NUM_X")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)PeakNumY")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_NUM_Y")
+}
+
+record(longin, "$(P)$(R)PeakNumY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_NUM_Y")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)PeakStepX")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_STEP_X")
+}
+
+record(longin, "$(P)$(R)PeakStepX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_STEP_X")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)PeakStepY")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_STEP_Y")
+}
+
+record(longin, "$(P)$(R)PeakStepY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_STEP_Y")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)PeakWidthX")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_WIDTH_X")
+}
+
+record(longin, "$(P)$(R)PeakWidthX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_WIDTH_X")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)PeakWidthY")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_WIDTH_Y")
+}
+
+record(longin, "$(P)$(R)PeakWidthY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_WIDTH_Y")
+   field(SCAN, "I/O Intr")
+}
 
