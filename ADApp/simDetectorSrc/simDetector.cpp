@@ -53,6 +53,7 @@ protected:
     int SimGainRed;
     int SimGainGreen;
     int SimGainBlue;
+	int SimNoise;
     int SimResetImage;
 	int SimImageType;
 	int SimPeakStartX;
@@ -63,8 +64,9 @@ protected:
 	int SimPeakNumY;
     int SimPeakStepX;
     int SimPeakStepY;
+    int SimPeakHeightVariation;
 
-    #define LAST_SIM_DETECTOR_PARAM SimPeakStepY
+    #define LAST_SIM_DETECTOR_PARAM SimPeakHeightVariation
 
 private:
     /* These are the methods that are new to this class */
@@ -91,6 +93,7 @@ typedef enum {
 #define SimGainRedString        "SIM_GAIN_RED"
 #define SimGainGreenString      "SIM_GAIN_GREEN"
 #define SimGainBlueString       "SIM_GAIN_BLUE"
+#define SimNoiseString			"SIM_NOISE"
 #define SimResetImageString     "RESET_IMAGE"
 #define SimImageTypeString      "SIM_IMAGE_TYPE"
 #define SimPeakStartXString     "SIM_PEAK_START_X"
@@ -101,6 +104,7 @@ typedef enum {
 #define SimPeakNumYString       "SIM_PEAK_NUM_Y"
 #define SimPeakStepXString      "SIM_PEAK_STEP_X"
 #define SimPeakStepYString      "SIM_PEAK_STEP_Y"
+#define SimPeakHeightVariationString  "SIM_PEAK_HEIGHT_VARIATION"
 
 
 #define NUM_SIM_DETECTOR_PARAMS (&LAST_SIM_DETECTOR_PARAM - &FIRST_SIM_DETECTOR_PARAM + 1)
@@ -251,6 +255,8 @@ template <typename epicsType> int simDetector::computePeaksArray(int sizeX, int 
 	int i,j,k,l;
 	int minX, maxX, minY,maxY;
 	int offsetX, offsetY;
+	int peakVariation, noisePct;
+	double gainVariation, noise;
     double gain, gainX, gainY, gainRed, gainGreen, gainBlue;
     double gaussX, gaussY;
 	double tmpValue;
@@ -270,6 +276,8 @@ template <typename epicsType> int simDetector::computePeaksArray(int sizeX, int 
 	status = getIntegerParam (SimPeakNumY,  &peaksNumY);
 	status = getIntegerParam (SimPeakWidthX,  &peaksWidthX);
 	status = getIntegerParam (SimPeakWidthY,  &peaksWidthY);
+	status = getIntegerParam (SimPeakHeightVariation,  &peakVariation);
+	status = getIntegerParam (SimNoise,  &noisePct);
 
    	switch (colorMode) {
         case NDColorModeMono:
@@ -306,10 +314,12 @@ template <typename epicsType> int simDetector::computePeaksArray(int sizeX, int 
 					(*pMono2++) = (epicsType)0;
 				}
 			}
+//			srand(epicsTimeGetCurrent(NULL));
 			for (i = 0; i<peaksNumY; i++) {
 				for (j = 0; j<peaksNumX; j++) {
 					gaussX = 0;
 					gaussY = 0;
+					gainVariation = 1.0 + (rand()%peakVariation+1)/100.0;
 					offsetY = i * peaksStepY + peaksStartY;
 					offsetX = j * peaksStepX + peaksStartX;
 					minX = (offsetX>4*peaksWidthX) ?(offsetX -4*peaksWidthX):0;
@@ -319,9 +329,10 @@ template <typename epicsType> int simDetector::computePeaksArray(int sizeX, int 
 					for (k =minY; k<maxY; k++) {
 						pMono2 = pMono + (minX + k*sizeX);
 						for (l=minX; l<maxX; l++) {
+							noise = 1.0 + (rand()%noisePct+1)/100.0;
 							gaussY = gainY * exp( -pow((double)(k-offsetY)/(double)peaksWidthY,2.0)/2.0 );
 							gaussX = gainX * exp( -pow((double)(l-offsetX)/(double)peaksWidthX,2.0)/2.0 );
-							tmpValue =  gain * gaussX * gaussY;
+							tmpValue =  gainVariation*gain * gaussX * gaussY*noise;
 							(*pMono2) += (epicsType)tmpValue;
 							pMono2++;
 						}
@@ -842,6 +853,7 @@ simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDat
     createParam(SimGainRedString,    asynParamFloat64, &SimGainRed);
     createParam(SimGainGreenString,  asynParamFloat64, &SimGainGreen);
     createParam(SimGainBlueString,   asynParamFloat64, &SimGainBlue);
+    createParam(SimNoiseString,      asynParamInt32,   &SimNoise);
     createParam(SimResetImageString, asynParamInt32,   &SimResetImage);
     createParam(SimImageTypeString,   asynParamInt32,   &SimImageType);
     createParam(SimPeakNumXString,   asynParamInt32,   &SimPeakNumX);
@@ -852,6 +864,7 @@ simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDat
     createParam(SimPeakStartYString,  asynParamInt32,   &SimPeakStartY);
     createParam(SimPeakWidthXString,  asynParamInt32,   &SimPeakWidthX);
     createParam(SimPeakWidthYString,  asynParamInt32,   &SimPeakWidthY);
+    createParam(SimPeakHeightVariationString,  asynParamInt32,   &SimPeakHeightVariation);
 
     /* Set some default values for parameters */
     status =  setStringParam (ADManufacturer, "Simulated detector");
@@ -869,6 +882,7 @@ simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDat
     status |= setDoubleParam (ADAcquireTime, .001);
     status |= setDoubleParam (ADAcquirePeriod, .005);
     status |= setIntegerParam(ADNumImages, 100);
+    status |= setIntegerParam(SimNoise, 3);
     status |= setIntegerParam(SimResetImage, 1);
     status |= setDoubleParam (SimGainX, 1);
     status |= setDoubleParam (SimGainY, 1);
@@ -884,6 +898,8 @@ simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDat
 	status |= setIntegerParam(SimPeakNumY, 1);
 	status |= setIntegerParam(SimPeakStepX, 1);
 	status |= setIntegerParam(SimPeakStepY, 1);
+	status |= setIntegerParam(SimPeakHeightVariation, 3);
+
     if (status) {
         printf("%s: unable to set camera parameters\n", functionName);
         return;
