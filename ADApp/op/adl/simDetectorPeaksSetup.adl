@@ -371,7 +371,7 @@ text {
 		height=20
 	}
 	monitor {
-		chan="$(P)$(R)PeakStepX"
+		chan="$(P)$(R)PeakStepX_RBV"
 		clr=14
 		bclr=4
 	}
@@ -386,7 +386,7 @@ text {
 		height=20
 	}
 	monitor {
-		chan="$(P)$(R)PeakStepY"
+		chan="$(P)$(R)PeakStepY_RBV"
 		clr=14
 		bclr=4
 	}
@@ -401,7 +401,7 @@ text {
 		height=20
 	}
 	monitor {
-		chan="$(P)$(R)PeakWidthX"
+		chan="$(P)$(R)PeakWidthX_RBV"
 		clr=14
 		bclr=4
 	}
@@ -416,7 +416,49 @@ text {
 		height=20
 	}
 	monitor {
-		chan="$(P)$(R)PeakWidthY"
+		chan="$(P)$(R)PeakWidthY_RBV"
+		clr=14
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=0
+		y=288
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Variation"
+}
+"text entry" {
+	object {
+		x=91
+		y=291
+		width=64
+		height=23
+	}
+	control {
+		chan="$(P)$(R)PeakVariation"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=179
+		y=288
+		width=49
+		height=20
+	}
+	monitor {
+		chan="$(P)$(R)PeakVariation"
 		clr=14
 		bclr=4
 	}
