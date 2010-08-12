@@ -319,7 +319,12 @@ template <typename epicsType> int simDetector::computePeaksArray(int sizeX, int 
 				for (j = 0; j<peaksNumX; j++) {
 					gaussX = 0;
 					gaussY = 0;
-					gainVariation = 1.0 + (rand()%peakVariation+1)/100.0;
+					if (peakVariation !=0) {
+						gainVariation = 1.0 + (rand()%peakVariation+1)/100.0;
+					}
+					else{
+						gainVariation = 1.0;
+					}
 					offsetY = i * peaksStepY + peaksStartY;
 					offsetX = j * peaksStepX + peaksStartX;
 					minX = (offsetX>4*peaksWidthX) ?(offsetX -4*peaksWidthX):0;
@@ -329,7 +334,12 @@ template <typename epicsType> int simDetector::computePeaksArray(int sizeX, int 
 					for (k =minY; k<maxY; k++) {
 						pMono2 = pMono + (minX + k*sizeX);
 						for (l=minX; l<maxX; l++) {
-							noise = 1.0 + (rand()%noisePct+1)/100.0;
+							if (noisePct !=0) {
+								noise = 1.0 + (rand()%noisePct+1)/100.0;
+							}
+							else {
+								noise = 1.0;
+							}
 							gaussY = gainY * exp( -pow((double)(k-offsetY)/(double)peaksWidthY,2.0)/2.0 );
 							gaussX = gainX * exp( -pow((double)(l-offsetX)/(double)peaksWidthX,2.0)/2.0 );
 							tmpValue =  gainVariation*gain * gaussX * gaussY*noise;
