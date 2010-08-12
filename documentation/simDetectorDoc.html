@@ -24,6 +24,13 @@
     <li><a href="#Introduction">Introduction</a></li>
     <li><a href="#Driver_parameters">Simulation driver specific parameters</a></li>
     <li><a href="#Unsupported">Unsupported standard driver parameters</a></li>
+    <li><a href="#ImageTypes">Image Types</a>
+		<ol>
+		<li><a href="#LinearRamp">Linear Ramp</a></li>
+		<li><a href="#Peaks">Array of Peaks</a></li>
+		<li><a href="#Rings">Array of Rings</a></li>
+		</ol>
+	</li>
     <li><a href="#Configuration">Configuration</a></li>
     <li><a href="#MEDM_screens">MEDM screens</a></li>
     <li><a href="#Viewers">Image viewers</a></li>
@@ -184,28 +191,220 @@
           longout<br />
           longin</td>
       </tr>
+      <tr>
+        <td>
+          SimImageType</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Set the image type to be displayed.  Options are:<br/>
+		  <ul>
+			 <li>Linear Ramp</li>
+			 <li>Array of Peaks (mono only)</li>
+			 <li>Array of Rings (Not yet implemented)</li>
+		  </ul>
+          </td>
+        <td>
+          SIM_IMAGE_TYPE</td>
+        <td>
+          $(P)$(R)ImageType<br />
+          $(P)$(R)ImageType_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+		<td><b>Parameters for Peak Array</b></td>
+      </tr>
+      <tr>
+        <td>
+          SimPeaksStartX</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          X location of the first peak centroid</td>
+        <td>
+          SIM_PEAK_START_X</td>
+        <td>
+          $(P)$(R)PeakStartX<br />
+          $(P)$(R)PeakStartX_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          SimPeaksStartY</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Y location of the first peak centroid</td>
+        <td>
+          SIM_PEAK_START_Y</td>
+        <td>
+          $(P)$(R)PeakStartY<br />
+          $(P)$(R)PeakStartY_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          SimPeaksWidthX</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          X width of the peaks</td>
+        <td>
+          SIM_PEAK_WIDTH_X</td>
+        <td>
+          $(P)$(R)PeakWidthX<br />
+          $(P)$(R)PeakWidthX_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          SimPeaksWidthY</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Y width of the peaks</td>
+        <td>
+          SIM_PEAK_WIDTH_Y</td>
+        <td>
+          $(P)$(R)PeakWidthY<br />
+          $(P)$(R)PeakWidthY_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          SimPeaksNumX</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Number of peaks in X direction</td>
+        <td>
+          SIM_PEAK_NUM_X</td>
+        <td>
+          $(P)$(R)PeakNumX<br />
+          $(P)$(R)PeakNumX_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          SimPeaksNumY</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Number of peaks in Y direction</td>
+        <td>
+          SIM_PEAK_NUM_Y</td>
+        <td>
+          $(P)$(R)PeakNumY<br />
+          $(P)$(R)PeakNumY_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          SimPeaksStepX</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          X step between peaks</td>
+        <td>
+          SIM_PEAK_STEP_X</td>
+        <td>
+          $(P)$(R)PeakStepX<br />
+          $(P)$(R)PeakStepX_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          SimPeaksStepY</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Y location of the first peak centroid</td>
+        <td>
+          SIM_PEAK_STEP_Y</td>
+        <td>
+          $(P)$(R)PeakStepY<br />
+          $(P)$(R)PeakStepY_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+
     </tbody>
   </table>
-  <p>
-    For monochrome images (NDColorMode=NDColorModeMono) the simulation driver initially
-    sets the image[i, j] = i*SimGainX + j*SimGainY * ADGain * ADAcquireTime * 1000.
-    Thus the image is a linear ramp in the X and Y directions, with the gains in each
-    direction being detector-specific parameters. Each subsquent acquisition increments
-    each pixel value by ADgain*ADAcquireTime*1000. Thus if ADGain=1 and ADAcquireTime=.001
-    second then the pixels are incremented by 1. If the array is an unsigned 8 or 16
-    bit integer then the pixels will overflow and wrap around to 0 after some period
-    of time. This gives the appearance of bands that appear to move with time. The slope
-    of the bands and their periodicity can be adjusted by changing the gains and acquire
-    times.
-  </p>
-  <p>
-    For color images (NDColorMode=NDColorModeRGB1, RGB2 or RGB3) there are 3 images
-    computed, one each for the red, green and blue channels. Each image is computed
-    with the same algorithm as for the monochrome case, except each is multiplied by
-    its appropriate gain factor (SimGainRed, SimGainGreen, SimGainBlue). Thus if each
-    of these color gains is 1.0 the color image will be identical to the monochrome
-    image, but if the color gains are different from each other then image will have
-    color bands.</p>
+
+  <h2 id="ImageTypes">Image Types</h2>
+  <h3 id="LinearRamp">Linear Ramp</h3>
+	  <p>
+		For monochrome images (NDColorMode=NDColorModeMono) the simulation driver initially
+		sets the image[i, j] = i*SimGainX + j*SimGainY * ADGain * ADAcquireTime * 1000.
+		Thus the image is a linear ramp in the X and Y directions, with the gains in each
+		direction being detector-specific parameters. Each subsquent acquisition increments
+		each pixel value by ADgain*ADAcquireTime*1000. Thus if ADGain=1 and ADAcquireTime=.001
+		second then the pixels are incremented by 1. If the array is an unsigned 8 or 16
+		bit integer then the pixels will overflow and wrap around to 0 after some period
+		of time. This gives the appearance of bands that appear to move with time. The slope
+		of the bands and their periodicity can be adjusted by changing the gains and acquire
+		times.
+	  </p>
+	  <p>
+		For color images (NDColorMode=NDColorModeRGB1, RGB2 or RGB3) there are 3 images
+		computed, one each for the red, green and blue channels. Each image is computed
+		with the same algorithm as for the monochrome case, except each is multiplied by
+		its appropriate gain factor (SimGainRed, SimGainGreen, SimGainBlue). Thus if each
+		of these color gains is 1.0 the color image will be identical to the monochrome
+		image, but if the color gains are different from each other then image will have
+		color bands.</p>
+  <h3 id="Peaks">Array of Peaks</h3>
+		<p>
+			For monochrome images, an array of gaussian peaks is produced.  The user specifies the
+			start location for the first peak in PeakStartX & PeakStartY.  The size of the peak is
+			controlled by PeakWidthX and PeakWidthY.  The array is specified by giving the number of
+			peaks in each direction with PeakNumX and PeakNumY and the step size between peak centroids
+			with PeakStepX and PeakStepY.
+		</p>
+		<p>
+			Some random behavior and RGB implementation will be added later.
+		</p>
+  <h3 id="Rings">Array of Rings</h3>
+		<p>
+			An array of Rings will be added later.
+		</p>
+
+
   <h2 id="Unsupported">
     Unsupported standard driver parameters</h2>
   <ul>
@@ -218,9 +417,9 @@
   <p>
     The simDetector driver is created with the simDetectorConfig command, either from
     C/C++ or from the EPICS IOC shell.</p>
-  <pre>int simDetectorConfig(const char *portName, 
+  <pre>int simDetectorConfig(const char *portName,
                       int maxSizeX, int maxSizeY, int dataType,
-                      int maxBuffers, size_t maxMemory, 
+                      int maxBuffers, size_t maxMemory,
                       int priority, int stackSize)
   </pre>
   <p>
