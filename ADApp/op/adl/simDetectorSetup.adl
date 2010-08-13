@@ -87,6 +87,21 @@ display {
 		1a7309,
 	}
 }
+composite {
+	object {
+		x=250
+		y=118
+		width=228
+		height=269
+	}
+	"composite name"=""
+	"composite file"="simDetectorPeaksSetup.adl;P=$(P),R=$(R)"
+	"dynamic attribute" {
+		vis="calc"
+		calc="A=1"
+		chan="$(P)$(R)ImageType"
+	}
+}
 text {
 	object {
 		x=69
@@ -105,7 +120,7 @@ composite {
 		x=10
 		y=118
 		width=235
-		height=322
+		height=304
 	}
 	"composite name"=""
 	"composite file"="simDetectorMore.adl;P=$(P),R=$(R)"
@@ -153,14 +168,29 @@ composite {
 	object {
 		x=250
 		y=118
-		width=221
-		height=232
+		width=217
+		height=100
 	}
 	"composite name"=""
-	"composite file"="simDetectorPeaksSetup.adl;P=$(P),R=$(R)"
+	"composite file"="simDetectorRingsSetup.adl;P=$(P),R=$(R)"
 	"dynamic attribute" {
 		vis="calc"
-		calc="A=1"
+		calc="A=2"
+		chan="$(P)$(R)ImageType"
+	}
+}
+composite {
+	object {
+		x=255
+		y=115
+		width=217
+		height=100
+	}
+	"composite name"=""
+	"composite file"="simDetectorLinearRampSetup.adl;P=$(P),R=$(R)"
+	"dynamic attribute" {
+		vis="calc"
+		calc="A=0"
 		chan="$(P)$(R)ImageType"
 	}
 }
