@@ -357,7 +357,7 @@ template <typename epicsType> int simDetector::computePeaksArray(int sizeX, int 
 			pRed2 = pRed;
 			for (i = 0; i<sizeY; i++) {
 				for (j = 0; j<sizeX; j++) {
-					(*pRed2++) = (epicsType)50;  //Since we are just clearing the field we will do this with one pointer
+					(*pRed2++) = (epicsType)0;  //Since we are just clearing the field we will do this with one pointer
 					(*pRed2++) = (epicsType)0;
 					(*pRed2++) = (epicsType)0;
 				}
@@ -377,6 +377,7 @@ template <typename epicsType> int simDetector::computePeaksArray(int sizeX, int 
 					minY = (offsetY>4*peaksWidthY) ?(offsetY -4*peaksWidthY):0;
 					maxY = (offsetY+4*peaksWidthY<sizeY) ?(offsetY + 4*peaksWidthY):sizeY;
 					for (k =minY; k<maxY; k++) {
+						//Move to the starting point for this peak
 						switch (colorMode) {
 							case NDColorModeRGB1:
 								pRed2 = pRed + (minX*columnStep + k*sizeX*columnStep);
@@ -394,6 +395,7 @@ template <typename epicsType> int simDetector::computePeaksArray(int sizeX, int 
 								pBlue2 = pRed2 + 2*sizeX*sizeY;
 								break;
 						}
+						//Fill in a row for this peak
 						for (l=minX; l<maxX; l++) {
 							if (noisePct !=0) {
 								noise = 1.0 + (rand()%noisePct+1)/100.0;
