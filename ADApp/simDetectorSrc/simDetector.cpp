@@ -305,16 +305,16 @@ template <typename epicsType> int simDetector::computePeaksArray(int sizeX, int 
             pBlue  = (epicsType *)this->pRaw->pData + 2*sizeX*sizeY;
             break;
     }
-
+    this->pRaw->pAttributeList->add("ColorMode", "Color mode", NDAttrInt32, &colorMode);
 	switch (colorMode) {
 		case NDColorModeMono:
+			// Clear the Image
 			pMono2 = pMono;
 			for (i = 0; i<sizeY; i++) {
 				for (j = 0; j<sizeX; j++) {
 					(*pMono2++) = (epicsType)0;
 				}
 			}
-//			srand(epicsTimeGetCurrent(NULL));
 			for (i = 0; i<peaksNumY; i++) {
 				for (j = 0; j<peaksNumX; j++) {
 					gaussX = 0;
@@ -353,9 +353,71 @@ template <typename epicsType> int simDetector::computePeaksArray(int sizeX, int 
 		case NDColorModeRGB1:
 		case NDColorModeRGB2:
 		case NDColorModeRGB3:
-			for (j = 0; j<sizeX; j++) {
-
+			// Clear the Image
+			pRed2 = pRed;
+			for (i = 0; i<sizeY; i++) {
+				for (j = 0; j<sizeX; j++) {
+					(*pRed2++) = (epicsType)50;  //Since we are just clearing the field we will do this with one pointer
+					(*pRed2++) = (epicsType)0;
+					(*pRed2++) = (epicsType)0;
+				}
 			}
+			for (i = 0; i<peaksNumY; i++) {
+				for (j = 0; j<peaksNumX; j++) {
+					if (peakVariation !=0) {
+						gainVariation = 1.0 + (rand()%peakVariation+1)/100.0;
+					}
+					else{
+						gainVariation = 1.0;
+					}
+					offsetY = i * peaksStepY + peaksStartY;
+					offsetX = j * peaksStepX + peaksStartX;
+					minX = (offsetX>4*peaksWidthX) ?(offsetX -4*peaksWidthX):0;
+					maxX = (offsetX+4*peaksWidthX<sizeX) ?(offsetX + 4*peaksWidthX):sizeX;
+					minY = (offsetY>4*peaksWidthY) ?(offsetY -4*peaksWidthY):0;
+					maxY = (offsetY+4*peaksWidthY<sizeY) ?(offsetY + 4*peaksWidthY):sizeY;
+					for (k =minY; k<maxY; k++) {
+						switch (colorMode) {
+							case NDColorModeRGB1:
+								pRed2 = pRed + (minX*columnStep + k*sizeX*columnStep);
+								pGreen2 = pRed2 + 1;
+								pBlue2 = pRed2 + 2;
+								break;
+							case NDColorModeRGB2:
+								pRed2 = pRed + (minX*columnStep + k*3*sizeX*columnStep);
+								pGreen2 = pRed2 + sizeX;
+								pBlue2 = pRed2 + 2*sizeX;
+								break;
+							case NDColorModeRGB3:
+								pRed2 = pRed + (minX*columnStep + k*sizeX*columnStep);
+								pGreen2 = pRed2 + sizeX*sizeY;
+								pBlue2 = pRed2 + 2*sizeX*sizeY;
+								break;
+						}
+						for (l=minX; l<maxX; l++) {
+							if (noisePct !=0) {
+								noise = 1.0 + (rand()%noisePct+1)/100.0;
+							}
+							else {
+								noise = 1.0;
+							}
+							gaussY = gainY * exp( -pow((double)(k-offsetY)/(double)peaksWidthY,2.0)/2.0 );
+							gaussX = gainX * exp( -pow((double)(l-offsetX)/(double)peaksWidthX,2.0)/2.0 );
+							tmpValue =  gainVariation*gain * gaussX * gaussY*noise;
+							(*pRed2) += (epicsType)(gainRed*tmpValue);
+							(*pGreen2) += (epicsType)(gainGreen*tmpValue);
+							(*pBlue2) += (epicsType)(gainBlue*tmpValue);
+
+							pRed2 += columnStep;
+							pGreen2 += columnStep;
+							pBlue2 += columnStep;
+						}
+					}
+				}
+			}
+
+
+
 			break;
 
 	}
