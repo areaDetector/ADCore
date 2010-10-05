@@ -50,6 +50,7 @@ simDetectorApp_LIBS_Linux        += NeXus mfhdf df hdf5 mxml
 simDetectorApp_LIBS_Linux        += tiff jpeg z
 # To use system versions of these libraries use this line
 #simDetectorApp_SYS_LIBS_Linux    += tiff jpeg z
+simDetectorApp_SYS_LIBS_Linux    += Magick++
 
 simDetectorApp_LIBS_solaris        += NeXus hdf5 jpeg z
 simDetectorApp_SYS_LIBS_solaris    += tiff
