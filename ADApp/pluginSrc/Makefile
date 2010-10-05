@@ -13,6 +13,7 @@ endif
 
 # These flags are needed by PvApi.h, the Prosilca library used for Bayer to RGB color conversion
 USR_CXXFLAGS_Linux += -D_LINUX -D_x86 -O0
+USR_CXXFLAGS_Linux += -I /usr/local/include/ImageMagick
 # These flags are used for Linux and WIN32 to build the Bayer conversion in NDPluginColorConvert
 USR_CXXFLAGS_Linux += -DHAVE_PVAPI
 USR_CXXFLAGS_WIN32 += -DHAVE_PVAPI
@@ -33,7 +34,7 @@ NDPlugin_SRCS += NDPluginROI.cpp
 NDPlugin_SRCS += NDPluginTransform.cpp
 NDPlugin_SRCS += NDPluginOverlay.cpp
 NDPlugin_SRCS += NDPluginColorConvert.cpp
-NDPlugin_SRCS_DEFAULT += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNexus.cpp
+NDPlugin_SRCS_DEFAULT += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNexus.cpp NDFileMagick.cpp
 NDPlugin_SRCS_vxWorks += NDFileDummy.cpp
 NDPlugin_LIBS += ADBase
 NDPlugin_LIBS += netCDF
