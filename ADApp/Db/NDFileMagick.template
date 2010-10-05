@@ -1,0 +1,121 @@
+# Database for NDFileMagick driver, which saves NDArray data 
+# in any file format supported by Magick.
+# The file format is determined by the file extension
+# Mark Rivers
+# May 10, 2009
+
+# We replace some fields in records defined in NDFile.template
+# File data format 
+record(mbbo, "$(P)$(R)FileFormat")
+{
+    field(ZRST, "Use extension")
+    field(ZRVL, "0")
+}
+
+record(mbbi, "$(P)$(R)FileFormat_RBV")
+{
+    field(ZRST, "Use extension")
+    field(ZRVL, "0")
+}
+
+# File quality 
+record(longout, "$(P)$(R)Quality")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAGICK_QUALITY")
+    field(VAL,  "100")
+    field(LOPR, "0")
+    field(DRVL, "0")
+    field(HOPR, "100")
+    field(DRVH, "100")
+}
+
+record(longin, "$(P)$(R)Quality_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAGICK_QUALITY")
+    field(LOPR, "0")
+    field(HOPR, "100")
+    field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records control the bit depth                            # 
+###################################################################
+
+record(mbbo, "$(P)$(R)BitDepth")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAGICK_BIT_DEPTH")
+   field(ZRST, "1")
+   field(ZRVL, "1")
+   field(ONST, "8")
+   field(ONVL, "8")
+   field(TWST, "16")
+   field(TWVL, "16")
+}
+
+record(mbbi, "$(P)$(R)BitDepth_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAGICK_BIT_DEPTH")
+   field(ZRST, "1")
+   field(ZRVL, "1")
+   field(ONST, "8")
+   field(ONVL, "8")
+   field(TWST, "16")
+   field(TWVL, "16")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records control the compression                          # 
+###################################################################
+
+record(mbbo, "$(P)$(R)CompressType")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAGICK_COMPRESS_TYPE")
+   field(ZRST, "None")
+   field(ZRVL, "0")
+   field(ONST, "BZip")
+   field(ONVL, "1")
+   field(TWST, "FAX")
+   field(TWVL, "2")
+   field(THST, "Group 4")
+   field(THVL, "3")
+   field(FRST, "JPEG")
+   field(FRVL, "4")
+   field(FVST, "LZW")
+   field(FVVL, "5")
+   field(SXST, "RLE")
+   field(SXVL, "6")
+   field(SVST, "Zip")
+   field(SVVL, "7")
+}
+
+record(mbbi, "$(P)$(R)CompressType_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAGICK_COMPRESS_TYPE")
+   field(ZRST, "None")
+   field(ZRVL, "0")
+   field(ONST, "BZip")
+   field(ONVL, "1")
+   field(TWST, "FAX")
+   field(TWVL, "2")
+   field(THST, "Group 4")
+   field(THVL, "3")
+   field(FRST, "JPEG")
+   field(FRVL, "4")
+   field(FVST, "LZW")
+   field(FVVL, "5")
+   field(SXST, "RLE")
+   field(SXVL, "6")
+   field(SVST, "Zip")
+   field(SVVL, "7")
+   field(SCAN, "I/O Intr")
+}
