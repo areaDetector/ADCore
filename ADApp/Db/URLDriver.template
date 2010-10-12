@@ -1,0 +1,23 @@
+# Database for the records specific to the URL driver
+# Mark Rivers
+# October 12, 2010
+
+# URL.
+record(waveform, "$(P)$(R)URL")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))URL_NAME")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(R)URL_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))URL_NAME")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
