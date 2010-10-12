@@ -8,7 +8,7 @@ display {
 		x=71
 		y=95
 		width=515
-		height=380
+		height=405
 	}
 	clr=14
 	bclr=4
@@ -2031,34 +2031,233 @@ composite {
 		}
 	}
 }
-text {
+composite {
 	object {
 		x=80
 		y=350
+		width=425
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=80
+				y=350
+				width=50
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="BIS"
+		}
+		"related display" {
+			object {
+				x=138
+				y=350
+				width=64
+				height=20
+			}
+			display[0] {
+				label="BIS #1 general"
+				name="ADBase.adl"
+				args="P=BIS:, R=cam1: "
+			}
+			display[1] {
+				label="BIS #1 specific"
+				name="BIS.adl"
+				args="P=BIS:, R=cam1:"
+			}
+			clr=14
+			bclr=51
+		}
+		"related display" {
+			object {
+				x=366
+				y=350
+				width=64
+				height=20
+			}
+			display[0] {
+				label="Statistics #1"
+				name="NDStats.adl"
+				args="P=13PVCAM1:, R=Stats1:"
+			}
+			display[1] {
+				label="Statistics #2"
+				name="NDStats.adl"
+				args="P=13PVCAM1:, R=Stats2:"
+			}
+			display[2] {
+				label="Statistics #3"
+				name="NDStats.adl"
+				args="P=13PVCAM1:, R=Stats3:"
+			}
+			display[3] {
+				label="Statistics #4"
+				name="NDStats.adl"
+				args="P=13PVCAM1:, R=Stats4:"
+			}
+			display[4] {
+				label="Statistics #5"
+				name="NDStats.adl"
+				args="P=13PVCAM1:, R=Stats5:"
+			}
+			display[5] {
+				label="Statistics 1-5"
+				name="NDStats5.adl"
+				args="P=13PVCAM1:, R1=Stats1:,R2=Stats2:,R3=Stats3:,R4=Stats4:,R5=Stats5:"
+			}
+			clr=14
+			bclr=51
+		}
+		"related display" {
+			object {
+				x=291
+				y=350
+				width=64
+				height=20
+			}
+			display[0] {
+				label="ROI #1"
+				name="NDROI.adl"
+				args="P=13PVCAM1:, R=ROI1:"
+			}
+			display[1] {
+				label="ROI #2"
+				name="NDROI.adl"
+				args="P=13PVCAM1:, R=ROI2:"
+			}
+			display[2] {
+				label="ROI #3"
+				name="NDROI.adl"
+				args="P=13PVCAM1:, R=ROI3:"
+			}
+			display[3] {
+				label="ROI #4"
+				name="NDROI.adl"
+				args="P=13PVCAM1:, R=ROI4:"
+			}
+			display[4] {
+				label="ROI 1-4 combined"
+				name="NDROI4.adl"
+				args="P=13PVCAM1:, R1=ROI1:,R2=ROI2:, R3=ROI3:,R4=ROI4:"
+			}
+			clr=14
+			bclr=51
+		}
+		"related display" {
+			object {
+				x=216
+				y=350
+				width=64
+				height=20
+			}
+			display[0] {
+				label="netCDF file #1"
+				name="NDFileNetCDF.adl"
+				args="P=13PVCAM1:, R=netCDF1:"
+			}
+			display[1] {
+				label="TIFF file #1"
+				name="NDFileTIFF.adl"
+				args="P=13PVCAM1:, R=TIFF1:"
+			}
+			display[2] {
+				label="JPEG file #1"
+				name="NDFileJPEG.adl"
+				args="P=13PVCAM1:, R=JPEG1:"
+			}
+			display[3] {
+				label="NeXus file #1"
+				name="NDFileNexus.adl"
+				args="P=13PVCAM1:, R=Nexus1:"
+			}
+			clr=14
+			bclr=51
+		}
+		"related display" {
+			object {
+				x=441
+				y=350
+				width=64
+				height=20
+			}
+			display[0] {
+				label="Image #1"
+				name="NDStdArrays.adl"
+				args="P=13PVCAM1:, R=image1:"
+			}
+			display[1] {
+				label="Process #1"
+				name="NDProcess.adl"
+				args="P=13PVCAM1:, R=Proc1:"
+			}
+			display[2] {
+				label="Transform #1"
+				name="NDTransform.adl"
+				args="P=13PVCAM1:, R=Trans1:"
+			}
+			display[3] {
+				label="Color convert #1"
+				name="NDColorConvert.adl"
+				args="P=13PVCAM1:, R=CC1:"
+			}
+			display[4] {
+				label="Color convert #2"
+				name="NDColorConvert.adl"
+				args="P=13PVCAM1:, R=CC2:"
+			}
+			display[5] {
+				label="Overlay #1"
+				name="NDOverlay.adl"
+				args="P=13PVCAM1:, R=Over1:"
+			}
+			display[6] {
+				label="Overlays 1-8"
+				name="NDOverlay8.adl"
+				args="P=13PVCAM1:, R=Over1:,O1=Over1:1:,O2=Over1:2:,O3=Over1:3:,O4=Over1:4:,O5=Over1:5:,O6=Over1:6:,O7=Over1:7:,O8=Over1:8:"
+			}
+			display[7] {
+				label="Scan #1"
+				name="scan_more.adl"
+				args="P=13PVCAM1:, S=scan1, N=1"
+			}
+			clr=14
+			bclr=51
+		}
+	}
+}
+text {
+	object {
+		x=80
+		y=375
 		width=50
 		height=20
 	}
 	"basic attribute" {
 		clr=14
 	}
-	textix="BIS"
+	textix="URL"
+	align="horiz. right"
 }
 "related display" {
 	object {
 		x=138
-		y=350
+		y=375
 		width=64
 		height=20
 	}
 	display[0] {
-		label="BIS #1 general"
+		label="URL #1 general"
 		name="ADBase.adl"
-		args="P=BIS:, R=cam1: "
+		args="P=13URL1:, R=cam1: "
 	}
 	display[1] {
-		label="BIS #1 specific"
-		name="BIS.adl"
-		args="P=BIS:, R=cam1:"
+		label="URL #1 specific"
+		name="URLDriver.adl"
+		args="P=13URL1:, R=cam1:"
 	}
 	clr=14
 	bclr=51
@@ -2066,7 +2265,7 @@ text {
 "related display" {
 	object {
 		x=366
-		y=350
+		y=375
 		width=64
 		height=20
 	}
@@ -2106,7 +2305,7 @@ text {
 "related display" {
 	object {
 		x=291
-		y=350
+		y=375
 		width=64
 		height=20
 	}
@@ -2141,7 +2340,7 @@ text {
 "related display" {
 	object {
 		x=216
-		y=350
+		y=375
 		width=64
 		height=20
 	}
@@ -2171,7 +2370,7 @@ text {
 "related display" {
 	object {
 		x=441
-		y=350
+		y=375
 		width=64
 		height=20
 	}
