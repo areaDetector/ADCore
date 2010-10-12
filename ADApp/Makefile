@@ -10,6 +10,7 @@ DIRS += prosilicaSupport
 DIRS += tiffSupport
 DIRS += nexusSupport
 DIRS += pvcamSupport
+DIRS += magickSupport
 DIRS += pluginSrc
 pluginSrc_DEPEND_DIRS = ADSrc netCDFSrc prosilicaSupport
 DIRS += simDetectorSrc
