@@ -410,58 +410,6 @@ rectangle {
 		fill="outline"
 	}
 }
-composite {
-	object {
-		x=770
-		y=221
-		width=280
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=770
-				y=221
-				width=110
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="File format"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=970
-				y=222
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)FileFormat_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		menu {
-			object {
-				x=885
-				y=221
-				width=80
-				height=20
-			}
-			control {
-				chan="$(P)$(R)FileFormat"
-				clr=14
-				bclr=51
-			}
-		}
-	}
-}
 text {
 	object {
 		x=813
@@ -766,7 +714,7 @@ composite {
 composite {
 	object {
 		x=770
-		y=191
+		y=173
 		width=274
 		height=22
 	}
@@ -775,7 +723,7 @@ composite {
 		text {
 			object {
 				x=770
-				y=192
+				y=174
 				width=120
 				height=20
 			}
@@ -788,7 +736,7 @@ composite {
 		"text entry" {
 			object {
 				x=899
-				y=191
+				y=173
 				width=60
 				height=22
 			}
@@ -803,7 +751,7 @@ composite {
 		"text update" {
 			object {
 				x=964
-				y=193
+				y=175
 				width=80
 				height=18
 			}
@@ -885,4 +833,16 @@ composite {
 			}
 		}
 	}
+}
+text {
+	object {
+		x=728
+		y=221
+		width=230
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Example: %s%s_%3.3d.jpg"
 }
