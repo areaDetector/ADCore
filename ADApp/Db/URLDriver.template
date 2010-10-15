@@ -2,10 +2,81 @@
 # Mark Rivers
 # October 12, 2010
 
-# URL.
-record(waveform, "$(P)$(R)URL")
+# URL records.  These are not PINI=YES because the URLSelect record is.
+record(waveform, "$(P)$(R)URL1")
 {
-    field(PINI, "YES")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))URL_NAME")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(R)URL2")
+{
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))URL_NAME")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(R)URL3")
+{
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))URL_NAME")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(R)URL4")
+{
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))URL_NAME")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(R)URL5")
+{
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))URL_NAME")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(R)URL6")
+{
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))URL_NAME")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(R)URL7")
+{
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))URL_NAME")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(R)URL8")
+{
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))URL_NAME")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(R)URL9")
+{
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))URL_NAME")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(R)URL10")
+{
     field(DTYP, "asynOctetWrite")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))URL_NAME")
     field(FTVL, "UCHAR")
@@ -20,4 +91,62 @@ record(waveform, "$(P)$(R)URL_RBV")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
 }
+
+# mbbo record to select 1 of the 8 URLs. 
+# The strings can be changed at run-time and are in save/restore
+record (mbbo, "$(P)$(R)URLSelect")
+{
+    field(PINI, "YES")
+    field(ZRST, "URL1")
+    field(ZRVL, "1")
+    field(ONST, "URL2")
+    field(ONVL, "2")
+    field(TWST, "URL3")
+    field(TWVL, "3")
+    field(THST, "URL4")
+    field(THVL, "4")
+    field(FRST, "URL5")
+    field(FRVL, "5")
+    field(FVST, "URL6")
+    field(FVVL, "6")
+    field(SXST, "URL7")
+    field(SXVL, "7")
+    field(SVST, "URL8")
+    field(SVVL, "8")
+    field(EIST, "URL9")
+    field(SVVL, "8")
+    field(NIST, "URL10")
+    field(NIVL, "8")
+    field(FLNK, "$(P)$(R)URLSeq.PROC PP MS")
+}
+
+record(seq, "$(P)$(R)URLSeq")
+{
+    field(SELL, "$(P)$(R)URLSelect.RVAL NPP")
+    field(SELM, "Specified")
+    field(DOL1, "1")
+    field(LNK1, "$(P)$(R)URL1.PROC PP MS")
+    field(DOL2, "1")
+    field(LNK2, "$(P)$(R)URL2.PROC PP MS")
+    field(DOL3, "1")
+    field(LNK3, "$(P)$(R)URL3.PROC PP MS")
+    field(DOL4, "1")
+    field(LNK4, "$(P)$(R)URL4.PROC PP MS")
+    field(DOL5, "1")
+    field(LNK5, "$(P)$(R)URL5.PROC PP MS")
+    field(DOL6, "1")
+    field(LNK6, "$(P)$(R)URL6.PROC PP MS")
+    field(DOL7, "1")
+    field(LNK7, "$(P)$(R)URL7.PROC PP MS")
+    field(DOL8, "1")
+    field(LNK8, "$(P)$(R)URL8.PROC PP MS")
+    field(DOL9, "1")
+    field(LNK9, "$(P)$(R)URL9.PROC PP MS")
+    field(DOLA, "1")
+    field(LNKA, "$(P)$(R)URL10.PROC PP MS")
+}
+
+
+
+
 
