@@ -5,7 +5,7 @@ file {
 }
 display {
 	object {
-		x=45
+		x=194
 		y=30
 		width=700
 		height=620
@@ -893,90 +893,95 @@ composite {
 		}
 	}
 }
+rectangle {
+	object {
+		x=5
+		y=555
+		width=690
+		height=60
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
 composite {
 	object {
-		x=346
-		y=555
-		width=350
-		height=60
+		x=297
+		y=559
+		width=107
+		height=21
 	}
 	"composite name"=""
 	children {
-		composite {
+		rectangle {
 			object {
-				x=473
-				y=557
+				x=297
+				y=559
 				width=107
 				height=21
 			}
-			"composite name"=""
-			children {
-				rectangle {
-					object {
-						x=473
-						y=557
-						width=107
-						height=21
-					}
-					"basic attribute" {
-						clr=2
-					}
-				}
-			}
-		}
-		text {
-			object {
-				x=506
-				y=557
-				width=40
-				height=20
-			}
 			"basic attribute" {
-				clr=54
-			}
-			textix="URL"
-			align="horiz. centered"
-		}
-		rectangle {
-			object {
-				x=346
-				y=555
-				width=350
-				height=60
-			}
-			"basic attribute" {
-				clr=14
-				fill="outline"
-			}
-		}
-		text {
-			object {
-				x=359
-				y=584
-				width=40
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="URL"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=404
-				y=585
-				width=280
-				height=20
-			}
-			control {
-				chan="$(P)$(R)URL"
-				clr=14
-				bclr=51
-			}
-			format="string"
-			limits {
+				clr=2
 			}
 		}
 	}
+}
+menu {
+	object {
+		x=10
+		y=587
+		width=150
+		height=20
+	}
+	control {
+		chan="$(P)$(R)URLSelect"
+		clr=14
+		bclr=51
+	}
+}
+"related display" {
+	object {
+		x=165
+		y=587
+		width=87
+		height=20
+	}
+	display[0] {
+		label="URL Setup"
+		name="URLDriverSetup.adl"
+		args="P=$(P),R=$(R)"
+	}
+	clr=14
+	bclr=51
+	label="Setup"
+}
+"text update" {
+	object {
+		x=257
+		y=588
+		width=430
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)URL_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=330
+		y=559
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="URL"
+	align="horiz. centered"
 }
