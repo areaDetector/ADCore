@@ -18,7 +18,19 @@ USR_CXXFLAGS_Linux += -D_LINUX -D_x86 -O0
 USR_CXXFLAGS_Linux += -DHAVE_PVAPI
 USR_CXXFLAGS_WIN32 += -DHAVE_PVAPI
 
-DBD += pluginSupport.dbd
+DBD += NDPluginSupport.dbd
+DBD += NDFileJPEG.dbd
+DBD += NDFileMagick.dbd
+DBD += NDFileNetCDF.dbd
+DBD += NDFileNexus.dbd
+DBD += NDFileTIFF.dbd
+DBD += NDPluginColorConvert.dbd
+DBD += NDPluginOverlay.dbd
+DBD += NDPluginProcess.dbd
+DBD += NDPluginROI.dbd
+DBD += NDPluginStats.dbd
+DBD += NDPluginStdArrays.dbd
+DBD += NDPluginTransform.dbd
 
 INC += NDPluginDriver.h
 INC += NDPluginFile.h
