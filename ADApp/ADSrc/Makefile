@@ -17,6 +17,7 @@ ifeq ($(GNU),NO)
 endif
 
 DBD += ADSupport.dbd
+DBD += commonDriverSupport.dbd
 
 INC += NDArray.h
 INC += PVAttribute.h
