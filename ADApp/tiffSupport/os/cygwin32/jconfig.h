@@ -1,58 +1,123 @@
-/* jconfig.h.  Generated automatically by configure.  */
-/* jconfig.cfg --- source file edited by configure script */
-/* see jconfig.doc for explanations */
+/* jconfig.h.  Generated from jconfig.cfg by configure.  */
+/* jconfig.cfg.  Generated from configure.ac by autoheader.  */
 
-#define HAVE_PROTOTYPES 
-#define HAVE_UNSIGNED_CHAR 
-#define HAVE_UNSIGNED_SHORT 
+/* Characters are unsigned */
+/* #undef CHAR_IS_UNSIGNED */
 
-#ifdef _WIN32
-# include <windows.h>
-/* Define "boolean" as unsigned char, not int, per Windows custom */
-# if !defined __RPCNDR_H__ || defined __MINGW32__    /* don't conflict if rpcndr.h already read */
-#  ifndef boolean     /* don't conflict if rpcndr.h already read */
-    typedef unsigned char boolean;
-#  endif /* boolean */
-# endif /* __RPCNDR_H__ */
-# define HAVE_BOOLEAN     /* prevent jmorecfg.h from redefining it */
-# define USE_WINDOWS_MESSAGEBOX 1
-#endif /* _WIN32 */
+/* Maximum data space library will allocate. */
+#define DEFAULT_MAX_MEM 1073741824
 
-#undef void
-#undef const
-#undef CHAR_IS_UNSIGNED
-#define HAVE_STDDEF_H 
-#define HAVE_STDLIB_H 
-#undef NEED_BSD_STRINGS
-#undef NEED_SYS_TYPES_H
-#undef NEED_FAR_POINTERS
-#undef NEED_SHORT_EXTERNAL_NAMES
-/* Define this if you get warnings about undefined structures. */
-#undef INCOMPLETE_TYPES_BROKEN
+/* Don't open files in binary mode. */
+/* #undef DONT_USE_B_MODE */
 
-#ifdef JPEG_INTERNALS
+/* Define to 1 if you have the <dlfcn.h> header file. */
+#define HAVE_DLFCN_H 1
 
-#undef RIGHT_SHIFT_IS_UNSIGNED
+/* Define to 1 if you have the <inttypes.h> header file. */
+#define HAVE_INTTYPES_H 1
+
+/* Define to 1 if you have the <locale.h> header file. */
+#define HAVE_LOCALE_H 1
+
+/* Define to 1 if you have the <memory.h> header file. */
+#define HAVE_MEMORY_H 1
+
+/* Compiler supports function prototypes. */
+#define HAVE_PROTOTYPES 1
+
+/* Define to 1 if you have the <stddef.h> header file. */
+#define HAVE_STDDEF_H 1
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#define HAVE_STDINT_H 1
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#define HAVE_STDLIB_H 1
+
+/* Define to 1 if you have the <strings.h> header file. */
+#define HAVE_STRINGS_H 1
+
+/* Define to 1 if you have the <string.h> header file. */
+#define HAVE_STRING_H 1
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#define HAVE_SYS_STAT_H 1
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#define HAVE_SYS_TYPES_H 1
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#define HAVE_UNISTD_H 1
+
+/* Compiler supports 'unsigned char'. */
+#define HAVE_UNSIGNED_CHAR 1
+
+/* Compiler supports 'unsigned short'. */
+#define HAVE_UNSIGNED_SHORT 1
+
+/* Compiler does not support pointers to unspecified structures. */
+/* #undef INCOMPLETE_TYPES_BROKEN */
+
+/* How to obtain function inlining. */
 #define INLINE __inline__
-/* These are for configuring the JPEG memory manager. */
-#undef DEFAULT_MAX_MEM
-#undef NO_MKTEMP
 
-#endif /* JPEG_INTERNALS */
+/* Define to the sub-directory in which libtool stores uninstalled libraries.
+   */
+#define LT_OBJDIR ".libs/"
 
-#ifdef JPEG_CJPEG_DJPEG
+/* Compiler has <strings.h> rather than standard <string.h>. */
+/* #undef NEED_BSD_STRINGS */
 
-#define BMP_SUPPORTED		/* BMP image file format */
-#define GIF_SUPPORTED		/* GIF image file format */
-#define PPM_SUPPORTED		/* PBMPLUS PPM/PGM image file format */
-#define RLE_SUPPORTED		/* Utah RLE image file format */
-#define TARGA_SUPPORTED		/* Targa image file format */
+/* Linker requires that global names be unique in first 15 characters. */
+/* #undef NEED_SHORT_EXTERNAL_NAMES */
 
-#undef TWO_FILE_COMMANDLINE
-#undef NEED_SIGNAL_CATCHER
-#undef DONT_USE_B_MODE
+/* Need signal handler to clean up temporary files. */
+/* #undef NEED_SIGNAL_CATCHER */
 
-/* Define this if you want percent-done progress reports from cjpeg/djpeg. */
-#undef PROGRESS_REPORT
+/* Need to include <sys/types.h> in order to obtain size_t. */
+/* #undef NEED_SYS_TYPES_H */
 
-#endif /* JPEG_CJPEG_DJPEG */
+/* The mktemp() function is not available. */
+/* #undef NO_MKTEMP */
+
+/* Name of package */
+#define PACKAGE "libjpeg"
+
+/* Define to the address where bug reports for this package should be sent. */
+#define PACKAGE_BUGREPORT ""
+
+/* Define to the full name of this package. */
+#define PACKAGE_NAME "libjpeg"
+
+/* Define to the full name and version of this package. */
+#define PACKAGE_STRING "libjpeg 8.0.2"
+
+/* Define to the one symbol short name of this package. */
+#define PACKAGE_TARNAME "libjpeg"
+
+/* Define to the home page for this package. */
+#define PACKAGE_URL ""
+
+/* Define to the version of this package. */
+#define PACKAGE_VERSION "8.0.2"
+
+/* Define to 1 if the C compiler supports function prototypes. */
+#define PROTOTYPES 1
+
+/* Broken compiler shifts signed values as an unsigned shift. */
+/* #undef RIGHT_SHIFT_IS_UNSIGNED */
+
+/* Define to 1 if you have the ANSI C header files. */
+#define STDC_HEADERS 1
+
+/* Version number of package */
+#define VERSION "8.0.2"
+
+/* Define like PROTOTYPES; this can be used by system headers. */
+#define __PROTOTYPES 1
+
+/* Define to empty if `const' does not conform to ANSI C. */
+/* #undef const */
+
+/* Define 'void' as 'char' for archaic compilers that don't understand it. */
+/* #undef void */

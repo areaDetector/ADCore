@@ -1,4 +1,4 @@
-/* $Id: tiffio.h,v 1.1 2009-05-07 19:31:13 rivers Exp $ */
+/* $Id: tiffio.h,v 1.56.2.3 2009-01-01 00:10:43 bfriesen Exp $ */
 
 /*
  * Copyright (c) 1988-1997 Sam Leffler
@@ -26,30 +26,6 @@
 
 #ifndef _TIFFIO_
 #define	_TIFFIO_
-
-#ifndef __GNUC__
-# define __DLL_IMPORT__  __declspec(dllimport)
-# define __DLL_EXPORT__  __declspec(dllexport)
-#else
-# define __DLL_IMPORT__  __attribute__((dllimport)) extern
-# define __DLL_EXPORT__  __attribute__((dllexport)) extern
-#endif 
-
-#if (defined __WIN32__) || (defined _WIN32)
-# ifdef BUILD_LIBTIFF_DLL
-#  define LIBTIFF_DLL_IMPEXP     __DLL_EXPORT__
-# elif defined(LIBTIFF_STATIC)
-#  define LIBTIFF_DLL_IMPEXP      
-# elif defined (USE_LIBTIFF_DLL)
-#  define LIBTIFF_DLL_IMPEXP     __DLL_IMPORT__
-# elif defined (USE_LIBTIFF_STATIC)
-#  define LIBTIFF_DLL_IMPEXP      
-# else /* assume USE_LIBTIFF_DLL */
-#  define LIBTIFF_DLL_IMPEXP     __DLL_IMPORT__
-# endif
-#else /* __WIN32__ */
-# define LIBTIFF_DLL_IMPEXP  
-#endif
 
 /*
  * TIFF I/O Library Definitions.
@@ -82,16 +58,17 @@ typedef	struct tiff TIFF;
  *     32-bit file offsets being the most important, and to ensure
  *     that it is unsigned, rather than signed.
  */
-typedef	uint32 ttag_t;		/* directory tag */
-typedef	uint16 tdir_t;		/* directory index */
-typedef	uint16 tsample_t;	/* sample number */
-typedef	uint32 tstrip_t;	/* strip number */
-typedef uint32 ttile_t;		/* tile number */
-typedef	int32 tsize_t;		/* i/o size in bytes */
-typedef	void* tdata_t;		/* image data ref */
-typedef	uint32 toff_t;		/* file offset */
+typedef uint32 ttag_t;          /* directory tag */
+typedef uint16 tdir_t;          /* directory index */
+typedef uint16 tsample_t;       /* sample number */
+typedef uint32 tstrile_t;       /* strip or tile number */
+typedef tstrile_t tstrip_t;     /* strip number */
+typedef tstrile_t ttile_t;      /* tile number */
+typedef int32 tsize_t;          /* i/o size in bytes */
+typedef void* tdata_t;          /* image data ref */
+typedef uint32 toff_t;          /* file offset */
 
-#if !defined(__WIN32__) && (defined(_WIN32) || defined(WIN32))
+#if !defined(__WIN32__) && (defined(_WIN32) || defined(WIN32)) && !defined(__CYGWIN__)
 #define __WIN32__
 #endif
 
@@ -103,20 +80,10 @@ typedef	uint32 toff_t;		/* file offset */
  */
 
 #if defined(_WINDOWS) || defined(__WIN32__) || defined(_Windows)
-#  define BINMODE "b"
-#  if !defined(__CYGWIN) && !defined(AVOID_WIN32_FILEIO) && !defined(USE_WIN32_FILEIO)
+#  if !defined(__CYGWIN__) && !defined(AVOID_WIN32_FILEIO) && !defined(USE_WIN32_FILEIO)
 #    define AVOID_WIN32_FILEIO
 #  endif
-#  include <fcntl.h>
-#  include <io.h>
-#  ifdef SET_BINARY
-#    undef SET_BINARY
-#  endif /* SET_BINARY */
-#  define SET_BINARY(f) do {if (!_isatty(f)) _setmode(f,_O_BINARY);} while (0)
-#else /* Windows */
-#  define BINMODE
-#  define SET_BINARY(f) (void)0
-#endif /* Windows */
+#endif
 
 #if defined(USE_WIN32_FILEIO)
 # define VC_EXTRALEAN
@@ -129,10 +96,6 @@ typedef	HFILE thandle_t;	/* client data handle */
 #else
 typedef	void* thandle_t;	/* client data handle */
 #endif /* USE_WIN32_FILEIO */
-
-#ifndef NULL
-# define NULL	(void *)0
-#endif
 
 /*
  * Flags to pass to TIFFPrintDirectory to control
@@ -225,35 +188,36 @@ typedef void (*tileSeparateRoutine)
  * RGBA-reader state.
  */
 struct _TIFFRGBAImage {
-	TIFF*	tif;				/* image handle */
-	int	stoponerr;			/* stop on read error */
-	int	isContig;			/* data is packed/separate */
-	int	alpha;				/* type of alpha data present */
-	uint32	width;				/* image width */
-	uint32	height;				/* image height */
-	uint16	bitspersample;			/* image bits/sample */
-	uint16	samplesperpixel;		/* image samples/pixel */
-	uint16	orientation;			/* image orientation */
-	uint16	req_orientation;		/* requested orientation */
-	uint16	photometric;			/* image photometric interp */
-	uint16*	redcmap;			/* colormap pallete */
-	uint16*	greencmap;
-	uint16*	bluecmap;
-						/* get image data routine */
-	int	(*get)(TIFFRGBAImage*, uint32*, uint32, uint32);
+	TIFF* tif;                              /* image handle */
+	int stoponerr;                          /* stop on read error */
+	int isContig;                           /* data is packed/separate */
+	int alpha;                              /* type of alpha data present */
+	uint32 width;                           /* image width */
+	uint32 height;                          /* image height */
+	uint16 bitspersample;                   /* image bits/sample */
+	uint16 samplesperpixel;                 /* image samples/pixel */
+	uint16 orientation;                     /* image orientation */
+	uint16 req_orientation;                 /* requested orientation */
+	uint16 photometric;                     /* image photometric interp */
+	uint16* redcmap;                        /* colormap pallete */
+	uint16* greencmap;
+	uint16* bluecmap;
+	/* get image data routine */
+	int (*get)(TIFFRGBAImage*, uint32*, uint32, uint32);
+	/* put decoded strip/tile */
 	union {
 	    void (*any)(TIFFRGBAImage*);
-	    tileContigRoutine	contig;
-	    tileSeparateRoutine	separate;
-	} put;					/* put decoded strip/tile */
-	TIFFRGBValue* Map;			/* sample mapping array */
-	uint32** BWmap;				/* black&white map */
-	uint32** PALmap;			/* palette image map */
-	TIFFYCbCrToRGB* ycbcr;			/* YCbCr conversion state */
-        TIFFCIELabToRGB* cielab;		/* CIE L*a*b conversion state */
+	    tileContigRoutine contig;
+	    tileSeparateRoutine separate;
+	} put;
+	TIFFRGBValue* Map;                      /* sample mapping array */
+	uint32** BWmap;                         /* black&white map */
+	uint32** PALmap;                        /* palette image map */
+	TIFFYCbCrToRGB* ycbcr;                  /* YCbCr conversion state */
+	TIFFCIELabToRGB* cielab;                /* CIE L*a*b conversion state */
 
-        int	row_offset;
-        int     col_offset;
+	int row_offset;
+	int col_offset;
 };
 
 /*
@@ -287,6 +251,10 @@ typedef struct {
 #define LOGLUV_PUBLIC		1
 #endif
 
+#if !defined(__GNUC__) && !defined(__attribute__)
+#  define __attribute__(x) /*nothing*/
+#endif
+
 #if defined(c_plusplus) || defined(__cplusplus)
 extern "C" {
 #endif
@@ -300,30 +268,30 @@ typedef	int (*TIFFMapFileProc)(thandle_t, tdata_t*, toff_t*);
 typedef	void (*TIFFUnmapFileProc)(thandle_t, tdata_t, toff_t);
 typedef	void (*TIFFExtendProc)(TIFF*); 
 
-LIBTIFF_DLL_IMPEXP	const char* TIFFGetVersion(void);
+extern	const char* TIFFGetVersion(void);
 
-LIBTIFF_DLL_IMPEXP	const TIFFCodec* TIFFFindCODEC(uint16);
-LIBTIFF_DLL_IMPEXP	TIFFCodec* TIFFRegisterCODEC(uint16, const char*, TIFFInitMethod);
-LIBTIFF_DLL_IMPEXP	void TIFFUnRegisterCODEC(TIFFCodec*);
-LIBTIFF_DLL_IMPEXP  int TIFFIsCODECConfigured(uint16);
-LIBTIFF_DLL_IMPEXP	TIFFCodec* TIFFGetConfiguredCODECs(void);
+extern	const TIFFCodec* TIFFFindCODEC(uint16);
+extern	TIFFCodec* TIFFRegisterCODEC(uint16, const char*, TIFFInitMethod);
+extern	void TIFFUnRegisterCODEC(TIFFCodec*);
+extern  int TIFFIsCODECConfigured(uint16);
+extern	TIFFCodec* TIFFGetConfiguredCODECs(void);
 
 /*
  * Auxiliary functions.
  */
 
-LIBTIFF_DLL_IMPEXP	tdata_t _TIFFmalloc(tsize_t);
-LIBTIFF_DLL_IMPEXP	tdata_t _TIFFrealloc(tdata_t, tsize_t);
-LIBTIFF_DLL_IMPEXP	void _TIFFmemset(tdata_t, int, tsize_t);
-LIBTIFF_DLL_IMPEXP	void _TIFFmemcpy(tdata_t, const tdata_t, tsize_t);
-LIBTIFF_DLL_IMPEXP	int _TIFFmemcmp(const tdata_t, const tdata_t, tsize_t);
-LIBTIFF_DLL_IMPEXP	void _TIFFfree(tdata_t);
+extern	tdata_t _TIFFmalloc(tsize_t);
+extern	tdata_t _TIFFrealloc(tdata_t, tsize_t);
+extern	void _TIFFmemset(tdata_t, int, tsize_t);
+extern	void _TIFFmemcpy(tdata_t, const tdata_t, tsize_t);
+extern	int _TIFFmemcmp(const tdata_t, const tdata_t, tsize_t);
+extern	void _TIFFfree(tdata_t);
 
 /*
 ** Stuff, related to tag handling and creating custom tags.
 */
-LIBTIFF_DLL_IMPEXP  int  TIFFGetTagListCount( TIFF * );
-LIBTIFF_DLL_IMPEXP  ttag_t TIFFGetTagListEntry( TIFF *, int tag_index );
+extern  int  TIFFGetTagListCount( TIFF * );
+extern  ttag_t TIFFGetTagListEntry( TIFF *, int tag_index );
     
 #define	TIFF_ANY	TIFF_NOTYPE	/* for field descriptor searching */
 #define	TIFF_VARIABLE	-1		/* marker for variable length tags */
@@ -349,12 +317,12 @@ typedef struct _TIFFTagValue {
     void           *value;
 } TIFFTagValue;
 
-LIBTIFF_DLL_IMPEXP	void TIFFMergeFieldInfo(TIFF*, const TIFFFieldInfo[], int);
-LIBTIFF_DLL_IMPEXP	const TIFFFieldInfo* TIFFFindFieldInfo(TIFF*, ttag_t, TIFFDataType);
-LIBTIFF_DLL_IMPEXP  const TIFFFieldInfo* TIFFFindFieldInfoByName(TIFF* , const char *,
+extern	void TIFFMergeFieldInfo(TIFF*, const TIFFFieldInfo[], int);
+extern	const TIFFFieldInfo* TIFFFindFieldInfo(TIFF*, ttag_t, TIFFDataType);
+extern  const TIFFFieldInfo* TIFFFindFieldInfoByName(TIFF* , const char *,
 						     TIFFDataType);
-LIBTIFF_DLL_IMPEXP	const TIFFFieldInfo* TIFFFieldWithTag(TIFF*, ttag_t);
-LIBTIFF_DLL_IMPEXP	const TIFFFieldInfo* TIFFFieldWithName(TIFF*, const char *);
+extern	const TIFFFieldInfo* TIFFFieldWithTag(TIFF*, ttag_t);
+extern	const TIFFFieldInfo* TIFFFieldWithName(TIFF*, const char *);
 
 typedef	int (*TIFFVSetMethod)(TIFF*, ttag_t, va_list);
 typedef	int (*TIFFVGetMethod)(TIFF*, ttag_t, va_list);
@@ -366,178 +334,180 @@ typedef struct {
     TIFFPrintMethod	printdir;	/* directory print routine */
 } TIFFTagMethods;
         
-LIBTIFF_DLL_IMPEXP  TIFFTagMethods *TIFFAccessTagMethods( TIFF * );
-LIBTIFF_DLL_IMPEXP  void *TIFFGetClientInfo( TIFF *, const char * );
-LIBTIFF_DLL_IMPEXP  void TIFFSetClientInfo( TIFF *, void *, const char * );
+extern  TIFFTagMethods *TIFFAccessTagMethods( TIFF * );
+extern  void *TIFFGetClientInfo( TIFF *, const char * );
+extern  void TIFFSetClientInfo( TIFF *, void *, const char * );
 
-LIBTIFF_DLL_IMPEXP	void TIFFCleanup(TIFF*);
-LIBTIFF_DLL_IMPEXP	void TIFFClose(TIFF*);
-LIBTIFF_DLL_IMPEXP	int TIFFFlush(TIFF*);
-LIBTIFF_DLL_IMPEXP	int TIFFFlushData(TIFF*);
-LIBTIFF_DLL_IMPEXP	int TIFFGetField(TIFF*, ttag_t, ...);
-LIBTIFF_DLL_IMPEXP	int TIFFVGetField(TIFF*, ttag_t, va_list);
-LIBTIFF_DLL_IMPEXP	int TIFFGetFieldDefaulted(TIFF*, ttag_t, ...);
-LIBTIFF_DLL_IMPEXP	int TIFFVGetFieldDefaulted(TIFF*, ttag_t, va_list);
-LIBTIFF_DLL_IMPEXP	int TIFFReadDirectory(TIFF*);
-LIBTIFF_DLL_IMPEXP	int TIFFReadCustomDirectory(TIFF*, toff_t, const TIFFFieldInfo[],
+extern	void TIFFCleanup(TIFF*);
+extern	void TIFFClose(TIFF*);
+extern	int TIFFFlush(TIFF*);
+extern	int TIFFFlushData(TIFF*);
+extern	int TIFFGetField(TIFF*, ttag_t, ...);
+extern	int TIFFVGetField(TIFF*, ttag_t, va_list);
+extern	int TIFFGetFieldDefaulted(TIFF*, ttag_t, ...);
+extern	int TIFFVGetFieldDefaulted(TIFF*, ttag_t, va_list);
+extern	int TIFFReadDirectory(TIFF*);
+extern	int TIFFReadCustomDirectory(TIFF*, toff_t, const TIFFFieldInfo[],
 				    size_t);
-LIBTIFF_DLL_IMPEXP	int TIFFReadEXIFDirectory(TIFF*, toff_t);
-LIBTIFF_DLL_IMPEXP	tsize_t TIFFScanlineSize(TIFF*);
-LIBTIFF_DLL_IMPEXP	tsize_t TIFFRasterScanlineSize(TIFF*);
-LIBTIFF_DLL_IMPEXP	tsize_t TIFFStripSize(TIFF*);
-LIBTIFF_DLL_IMPEXP	tsize_t TIFFRawStripSize(TIFF*, tstrip_t);
-LIBTIFF_DLL_IMPEXP	tsize_t TIFFVStripSize(TIFF*, uint32);
-LIBTIFF_DLL_IMPEXP	tsize_t TIFFTileRowSize(TIFF*);
-LIBTIFF_DLL_IMPEXP	tsize_t TIFFTileSize(TIFF*);
-LIBTIFF_DLL_IMPEXP	tsize_t TIFFVTileSize(TIFF*, uint32);
-LIBTIFF_DLL_IMPEXP	uint32 TIFFDefaultStripSize(TIFF*, uint32);
-LIBTIFF_DLL_IMPEXP	void TIFFDefaultTileSize(TIFF*, uint32*, uint32*);
-LIBTIFF_DLL_IMPEXP	int TIFFFileno(TIFF*);
-LIBTIFF_DLL_IMPEXP  int TIFFSetFileno(TIFF*, int);
-LIBTIFF_DLL_IMPEXP  thandle_t TIFFClientdata(TIFF*);
-LIBTIFF_DLL_IMPEXP  thandle_t TIFFSetClientdata(TIFF*, thandle_t);
-LIBTIFF_DLL_IMPEXP	int TIFFGetMode(TIFF*);
-LIBTIFF_DLL_IMPEXP	int TIFFSetMode(TIFF*, int);
-LIBTIFF_DLL_IMPEXP	int TIFFIsTiled(TIFF*);
-LIBTIFF_DLL_IMPEXP	int TIFFIsByteSwapped(TIFF*);
-LIBTIFF_DLL_IMPEXP	int TIFFIsUpSampled(TIFF*);
-LIBTIFF_DLL_IMPEXP	int TIFFIsMSB2LSB(TIFF*);
-LIBTIFF_DLL_IMPEXP	int TIFFIsBigEndian(TIFF*);
-LIBTIFF_DLL_IMPEXP	TIFFReadWriteProc TIFFGetReadProc(TIFF*);
-LIBTIFF_DLL_IMPEXP	TIFFReadWriteProc TIFFGetWriteProc(TIFF*);
-LIBTIFF_DLL_IMPEXP	TIFFSeekProc TIFFGetSeekProc(TIFF*);
-LIBTIFF_DLL_IMPEXP	TIFFCloseProc TIFFGetCloseProc(TIFF*);
-LIBTIFF_DLL_IMPEXP	TIFFSizeProc TIFFGetSizeProc(TIFF*);
-LIBTIFF_DLL_IMPEXP	TIFFMapFileProc TIFFGetMapFileProc(TIFF*);
-LIBTIFF_DLL_IMPEXP	TIFFUnmapFileProc TIFFGetUnmapFileProc(TIFF*);
-LIBTIFF_DLL_IMPEXP	uint32 TIFFCurrentRow(TIFF*);
-LIBTIFF_DLL_IMPEXP	tdir_t TIFFCurrentDirectory(TIFF*);
-LIBTIFF_DLL_IMPEXP	tdir_t TIFFNumberOfDirectories(TIFF*);
-LIBTIFF_DLL_IMPEXP	uint32 TIFFCurrentDirOffset(TIFF*);
-LIBTIFF_DLL_IMPEXP	tstrip_t TIFFCurrentStrip(TIFF*);
-LIBTIFF_DLL_IMPEXP	ttile_t TIFFCurrentTile(TIFF*);
-LIBTIFF_DLL_IMPEXP	int TIFFReadBufferSetup(TIFF*, tdata_t, tsize_t);
-LIBTIFF_DLL_IMPEXP	int TIFFWriteBufferSetup(TIFF*, tdata_t, tsize_t);
-LIBTIFF_DLL_IMPEXP	int TIFFSetupStrips(TIFF *);
-LIBTIFF_DLL_IMPEXP  int TIFFWriteCheck(TIFF*, int, const char *);
-LIBTIFF_DLL_IMPEXP	void TIFFFreeDirectory(TIFF*);
-LIBTIFF_DLL_IMPEXP  int TIFFCreateDirectory(TIFF*);
-LIBTIFF_DLL_IMPEXP	int TIFFLastDirectory(TIFF*);
-LIBTIFF_DLL_IMPEXP	int TIFFSetDirectory(TIFF*, tdir_t);
-LIBTIFF_DLL_IMPEXP	int TIFFSetSubDirectory(TIFF*, uint32);
-LIBTIFF_DLL_IMPEXP	int TIFFUnlinkDirectory(TIFF*, tdir_t);
-LIBTIFF_DLL_IMPEXP	int TIFFSetField(TIFF*, ttag_t, ...);
-LIBTIFF_DLL_IMPEXP	int TIFFVSetField(TIFF*, ttag_t, va_list);
-LIBTIFF_DLL_IMPEXP	int TIFFWriteDirectory(TIFF *);
-LIBTIFF_DLL_IMPEXP	int TIFFCheckpointDirectory(TIFF *);
-LIBTIFF_DLL_IMPEXP	int TIFFRewriteDirectory(TIFF *);
-LIBTIFF_DLL_IMPEXP	int TIFFReassignTagToIgnore(enum TIFFIgnoreSense, int);
+extern	int TIFFReadEXIFDirectory(TIFF*, toff_t);
+extern	tsize_t TIFFScanlineSize(TIFF*);
+extern	tsize_t TIFFOldScanlineSize(TIFF*);
+extern	tsize_t TIFFNewScanlineSize(TIFF*);
+extern	tsize_t TIFFRasterScanlineSize(TIFF*);
+extern	tsize_t TIFFStripSize(TIFF*);
+extern	tsize_t TIFFRawStripSize(TIFF*, tstrip_t);
+extern	tsize_t TIFFVStripSize(TIFF*, uint32);
+extern	tsize_t TIFFTileRowSize(TIFF*);
+extern	tsize_t TIFFTileSize(TIFF*);
+extern	tsize_t TIFFVTileSize(TIFF*, uint32);
+extern	uint32 TIFFDefaultStripSize(TIFF*, uint32);
+extern	void TIFFDefaultTileSize(TIFF*, uint32*, uint32*);
+extern	int TIFFFileno(TIFF*);
+extern  int TIFFSetFileno(TIFF*, int);
+extern  thandle_t TIFFClientdata(TIFF*);
+extern  thandle_t TIFFSetClientdata(TIFF*, thandle_t);
+extern	int TIFFGetMode(TIFF*);
+extern	int TIFFSetMode(TIFF*, int);
+extern	int TIFFIsTiled(TIFF*);
+extern	int TIFFIsByteSwapped(TIFF*);
+extern	int TIFFIsUpSampled(TIFF*);
+extern	int TIFFIsMSB2LSB(TIFF*);
+extern	int TIFFIsBigEndian(TIFF*);
+extern	TIFFReadWriteProc TIFFGetReadProc(TIFF*);
+extern	TIFFReadWriteProc TIFFGetWriteProc(TIFF*);
+extern	TIFFSeekProc TIFFGetSeekProc(TIFF*);
+extern	TIFFCloseProc TIFFGetCloseProc(TIFF*);
+extern	TIFFSizeProc TIFFGetSizeProc(TIFF*);
+extern	TIFFMapFileProc TIFFGetMapFileProc(TIFF*);
+extern	TIFFUnmapFileProc TIFFGetUnmapFileProc(TIFF*);
+extern	uint32 TIFFCurrentRow(TIFF*);
+extern	tdir_t TIFFCurrentDirectory(TIFF*);
+extern	tdir_t TIFFNumberOfDirectories(TIFF*);
+extern	uint32 TIFFCurrentDirOffset(TIFF*);
+extern	tstrip_t TIFFCurrentStrip(TIFF*);
+extern	ttile_t TIFFCurrentTile(TIFF*);
+extern	int TIFFReadBufferSetup(TIFF*, tdata_t, tsize_t);
+extern	int TIFFWriteBufferSetup(TIFF*, tdata_t, tsize_t);
+extern	int TIFFSetupStrips(TIFF *);
+extern  int TIFFWriteCheck(TIFF*, int, const char *);
+extern	void TIFFFreeDirectory(TIFF*);
+extern  int TIFFCreateDirectory(TIFF*);
+extern	int TIFFLastDirectory(TIFF*);
+extern	int TIFFSetDirectory(TIFF*, tdir_t);
+extern	int TIFFSetSubDirectory(TIFF*, uint32);
+extern	int TIFFUnlinkDirectory(TIFF*, tdir_t);
+extern	int TIFFSetField(TIFF*, ttag_t, ...);
+extern	int TIFFVSetField(TIFF*, ttag_t, va_list);
+extern	int TIFFWriteDirectory(TIFF *);
+extern	int TIFFCheckpointDirectory(TIFF *);
+extern	int TIFFRewriteDirectory(TIFF *);
+extern	int TIFFReassignTagToIgnore(enum TIFFIgnoreSense, int);
 
 #if defined(c_plusplus) || defined(__cplusplus)
-LIBTIFF_DLL_IMPEXP	void TIFFPrintDirectory(TIFF*, FILE*, long = 0);
-LIBTIFF_DLL_IMPEXP	int TIFFReadScanline(TIFF*, tdata_t, uint32, tsample_t = 0);
-LIBTIFF_DLL_IMPEXP	int TIFFWriteScanline(TIFF*, tdata_t, uint32, tsample_t = 0);
-LIBTIFF_DLL_IMPEXP	int TIFFReadRGBAImage(TIFF*, uint32, uint32, uint32*, int = 0);
-LIBTIFF_DLL_IMPEXP	int TIFFReadRGBAImageOriented(TIFF*, uint32, uint32, uint32*,
+extern	void TIFFPrintDirectory(TIFF*, FILE*, long = 0);
+extern	int TIFFReadScanline(TIFF*, tdata_t, uint32, tsample_t = 0);
+extern	int TIFFWriteScanline(TIFF*, tdata_t, uint32, tsample_t = 0);
+extern	int TIFFReadRGBAImage(TIFF*, uint32, uint32, uint32*, int = 0);
+extern	int TIFFReadRGBAImageOriented(TIFF*, uint32, uint32, uint32*,
 				      int = ORIENTATION_BOTLEFT, int = 0);
 #else
-LIBTIFF_DLL_IMPEXP	void TIFFPrintDirectory(TIFF*, FILE*, long);
-LIBTIFF_DLL_IMPEXP	int TIFFReadScanline(TIFF*, tdata_t, uint32, tsample_t);
-LIBTIFF_DLL_IMPEXP	int TIFFWriteScanline(TIFF*, tdata_t, uint32, tsample_t);
-LIBTIFF_DLL_IMPEXP	int TIFFReadRGBAImage(TIFF*, uint32, uint32, uint32*, int);
-LIBTIFF_DLL_IMPEXP	int TIFFReadRGBAImageOriented(TIFF*, uint32, uint32, uint32*, int, int);
+extern	void TIFFPrintDirectory(TIFF*, FILE*, long);
+extern	int TIFFReadScanline(TIFF*, tdata_t, uint32, tsample_t);
+extern	int TIFFWriteScanline(TIFF*, tdata_t, uint32, tsample_t);
+extern	int TIFFReadRGBAImage(TIFF*, uint32, uint32, uint32*, int);
+extern	int TIFFReadRGBAImageOriented(TIFF*, uint32, uint32, uint32*, int, int);
 #endif
 
-LIBTIFF_DLL_IMPEXP	int TIFFReadRGBAStrip(TIFF*, tstrip_t, uint32 * );
-LIBTIFF_DLL_IMPEXP	int TIFFReadRGBATile(TIFF*, uint32, uint32, uint32 * );
-LIBTIFF_DLL_IMPEXP	int TIFFRGBAImageOK(TIFF*, char [1024]);
-LIBTIFF_DLL_IMPEXP	int TIFFRGBAImageBegin(TIFFRGBAImage*, TIFF*, int, char [1024]);
-LIBTIFF_DLL_IMPEXP	int TIFFRGBAImageGet(TIFFRGBAImage*, uint32*, uint32, uint32);
-LIBTIFF_DLL_IMPEXP	void TIFFRGBAImageEnd(TIFFRGBAImage*);
-LIBTIFF_DLL_IMPEXP	TIFF* TIFFOpen(const char*, const char*);
+extern	int TIFFReadRGBAStrip(TIFF*, tstrip_t, uint32 * );
+extern	int TIFFReadRGBATile(TIFF*, uint32, uint32, uint32 * );
+extern	int TIFFRGBAImageOK(TIFF*, char [1024]);
+extern	int TIFFRGBAImageBegin(TIFFRGBAImage*, TIFF*, int, char [1024]);
+extern	int TIFFRGBAImageGet(TIFFRGBAImage*, uint32*, uint32, uint32);
+extern	void TIFFRGBAImageEnd(TIFFRGBAImage*);
+extern	TIFF* TIFFOpen(const char*, const char*);
 # ifdef __WIN32__
-LIBTIFF_DLL_IMPEXP	TIFF* TIFFOpenW(const wchar_t*, const char*);
+extern	TIFF* TIFFOpenW(const wchar_t*, const char*);
 # endif /* __WIN32__ */
-LIBTIFF_DLL_IMPEXP	TIFF* TIFFFdOpen(int, const char*, const char*);
-LIBTIFF_DLL_IMPEXP	TIFF* TIFFClientOpen(const char*, const char*,
+extern	TIFF* TIFFFdOpen(int, const char*, const char*);
+extern	TIFF* TIFFClientOpen(const char*, const char*,
 	    thandle_t,
 	    TIFFReadWriteProc, TIFFReadWriteProc,
 	    TIFFSeekProc, TIFFCloseProc,
 	    TIFFSizeProc,
 	    TIFFMapFileProc, TIFFUnmapFileProc);
-LIBTIFF_DLL_IMPEXP	const char* TIFFFileName(TIFF*);
-LIBTIFF_DLL_IMPEXP	const char* TIFFSetFileName(TIFF*, const char *);
-LIBTIFF_DLL_IMPEXP	void TIFFError(const char*, const char*, ...);
-LIBTIFF_DLL_IMPEXP	void TIFFErrorExt(thandle_t, const char*, const char*, ...);
-LIBTIFF_DLL_IMPEXP	void TIFFWarning(const char*, const char*, ...);
-LIBTIFF_DLL_IMPEXP	void TIFFWarningExt(thandle_t, const char*, const char*, ...);
-LIBTIFF_DLL_IMPEXP	TIFFErrorHandler TIFFSetErrorHandler(TIFFErrorHandler);
-LIBTIFF_DLL_IMPEXP	TIFFErrorHandlerExt TIFFSetErrorHandlerExt(TIFFErrorHandlerExt);
-LIBTIFF_DLL_IMPEXP	TIFFErrorHandler TIFFSetWarningHandler(TIFFErrorHandler);
-LIBTIFF_DLL_IMPEXP	TIFFErrorHandlerExt TIFFSetWarningHandlerExt(TIFFErrorHandlerExt);
-LIBTIFF_DLL_IMPEXP	TIFFExtendProc TIFFSetTagExtender(TIFFExtendProc);
-LIBTIFF_DLL_IMPEXP	ttile_t TIFFComputeTile(TIFF*, uint32, uint32, uint32, tsample_t);
-LIBTIFF_DLL_IMPEXP	int TIFFCheckTile(TIFF*, uint32, uint32, uint32, tsample_t);
-LIBTIFF_DLL_IMPEXP	ttile_t TIFFNumberOfTiles(TIFF*);
-LIBTIFF_DLL_IMPEXP	tsize_t TIFFReadTile(TIFF*,
+extern	const char* TIFFFileName(TIFF*);
+extern	const char* TIFFSetFileName(TIFF*, const char *);
+extern void TIFFError(const char*, const char*, ...) __attribute__((format (printf,2,3)));
+extern void TIFFErrorExt(thandle_t, const char*, const char*, ...) __attribute__((format (printf,3,4)));
+extern void TIFFWarning(const char*, const char*, ...) __attribute__((format (printf,2,3)));
+extern void TIFFWarningExt(thandle_t, const char*, const char*, ...) __attribute__((format (printf,3,4)));
+extern	TIFFErrorHandler TIFFSetErrorHandler(TIFFErrorHandler);
+extern	TIFFErrorHandlerExt TIFFSetErrorHandlerExt(TIFFErrorHandlerExt);
+extern	TIFFErrorHandler TIFFSetWarningHandler(TIFFErrorHandler);
+extern	TIFFErrorHandlerExt TIFFSetWarningHandlerExt(TIFFErrorHandlerExt);
+extern	TIFFExtendProc TIFFSetTagExtender(TIFFExtendProc);
+extern	ttile_t TIFFComputeTile(TIFF*, uint32, uint32, uint32, tsample_t);
+extern	int TIFFCheckTile(TIFF*, uint32, uint32, uint32, tsample_t);
+extern	ttile_t TIFFNumberOfTiles(TIFF*);
+extern	tsize_t TIFFReadTile(TIFF*,
 	    tdata_t, uint32, uint32, uint32, tsample_t);
-LIBTIFF_DLL_IMPEXP	tsize_t TIFFWriteTile(TIFF*,
+extern	tsize_t TIFFWriteTile(TIFF*,
 	    tdata_t, uint32, uint32, uint32, tsample_t);
-LIBTIFF_DLL_IMPEXP	tstrip_t TIFFComputeStrip(TIFF*, uint32, tsample_t);
-LIBTIFF_DLL_IMPEXP	tstrip_t TIFFNumberOfStrips(TIFF*);
-LIBTIFF_DLL_IMPEXP	tsize_t TIFFReadEncodedStrip(TIFF*, tstrip_t, tdata_t, tsize_t);
-LIBTIFF_DLL_IMPEXP	tsize_t TIFFReadRawStrip(TIFF*, tstrip_t, tdata_t, tsize_t);
-LIBTIFF_DLL_IMPEXP	tsize_t TIFFReadEncodedTile(TIFF*, ttile_t, tdata_t, tsize_t);
-LIBTIFF_DLL_IMPEXP	tsize_t TIFFReadRawTile(TIFF*, ttile_t, tdata_t, tsize_t);
-LIBTIFF_DLL_IMPEXP	tsize_t TIFFWriteEncodedStrip(TIFF*, tstrip_t, tdata_t, tsize_t);
-LIBTIFF_DLL_IMPEXP	tsize_t TIFFWriteRawStrip(TIFF*, tstrip_t, tdata_t, tsize_t);
-LIBTIFF_DLL_IMPEXP	tsize_t TIFFWriteEncodedTile(TIFF*, ttile_t, tdata_t, tsize_t);
-LIBTIFF_DLL_IMPEXP	tsize_t TIFFWriteRawTile(TIFF*, ttile_t, tdata_t, tsize_t);
-LIBTIFF_DLL_IMPEXP	int TIFFDataWidth(TIFFDataType);    /* table of tag datatype widths */
-LIBTIFF_DLL_IMPEXP	void TIFFSetWriteOffset(TIFF*, toff_t);
-LIBTIFF_DLL_IMPEXP	void TIFFSwabShort(uint16*);
-LIBTIFF_DLL_IMPEXP	void TIFFSwabLong(uint32*);
-LIBTIFF_DLL_IMPEXP	void TIFFSwabDouble(double*);
-LIBTIFF_DLL_IMPEXP	void TIFFSwabArrayOfShort(uint16*, unsigned long);
-LIBTIFF_DLL_IMPEXP	void TIFFSwabArrayOfTriples(uint8*, unsigned long);
-LIBTIFF_DLL_IMPEXP	void TIFFSwabArrayOfLong(uint32*, unsigned long);
-LIBTIFF_DLL_IMPEXP	void TIFFSwabArrayOfDouble(double*, unsigned long);
-LIBTIFF_DLL_IMPEXP	void TIFFReverseBits(unsigned char *, unsigned long);
-LIBTIFF_DLL_IMPEXP	const unsigned char* TIFFGetBitRevTable(int);
+extern	tstrip_t TIFFComputeStrip(TIFF*, uint32, tsample_t);
+extern	tstrip_t TIFFNumberOfStrips(TIFF*);
+extern	tsize_t TIFFReadEncodedStrip(TIFF*, tstrip_t, tdata_t, tsize_t);
+extern	tsize_t TIFFReadRawStrip(TIFF*, tstrip_t, tdata_t, tsize_t);
+extern	tsize_t TIFFReadEncodedTile(TIFF*, ttile_t, tdata_t, tsize_t);
+extern	tsize_t TIFFReadRawTile(TIFF*, ttile_t, tdata_t, tsize_t);
+extern	tsize_t TIFFWriteEncodedStrip(TIFF*, tstrip_t, tdata_t, tsize_t);
+extern	tsize_t TIFFWriteRawStrip(TIFF*, tstrip_t, tdata_t, tsize_t);
+extern	tsize_t TIFFWriteEncodedTile(TIFF*, ttile_t, tdata_t, tsize_t);
+extern	tsize_t TIFFWriteRawTile(TIFF*, ttile_t, tdata_t, tsize_t);
+extern	int TIFFDataWidth(TIFFDataType);    /* table of tag datatype widths */
+extern	void TIFFSetWriteOffset(TIFF*, toff_t);
+extern	void TIFFSwabShort(uint16*);
+extern	void TIFFSwabLong(uint32*);
+extern	void TIFFSwabDouble(double*);
+extern	void TIFFSwabArrayOfShort(uint16*, unsigned long);
+extern	void TIFFSwabArrayOfTriples(uint8*, unsigned long);
+extern	void TIFFSwabArrayOfLong(uint32*, unsigned long);
+extern	void TIFFSwabArrayOfDouble(double*, unsigned long);
+extern	void TIFFReverseBits(unsigned char *, unsigned long);
+extern	const unsigned char* TIFFGetBitRevTable(int);
 
 #ifdef LOGLUV_PUBLIC
 #define U_NEU		0.210526316
 #define V_NEU		0.473684211
 #define UVSCALE		410.
-LIBTIFF_DLL_IMPEXP	double LogL16toY(int);
-LIBTIFF_DLL_IMPEXP	double LogL10toY(int);
-LIBTIFF_DLL_IMPEXP	void XYZtoRGB24(float*, uint8*);
-LIBTIFF_DLL_IMPEXP	int uv_decode(double*, double*, int);
-LIBTIFF_DLL_IMPEXP	void LogLuv24toXYZ(uint32, float*);
-LIBTIFF_DLL_IMPEXP	void LogLuv32toXYZ(uint32, float*);
+extern	double LogL16toY(int);
+extern	double LogL10toY(int);
+extern	void XYZtoRGB24(float*, uint8*);
+extern	int uv_decode(double*, double*, int);
+extern	void LogLuv24toXYZ(uint32, float*);
+extern	void LogLuv32toXYZ(uint32, float*);
 #if defined(c_plusplus) || defined(__cplusplus)
-LIBTIFF_DLL_IMPEXP	int LogL16fromY(double, int = SGILOGENCODE_NODITHER);
-LIBTIFF_DLL_IMPEXP	int LogL10fromY(double, int = SGILOGENCODE_NODITHER);
-LIBTIFF_DLL_IMPEXP	int uv_encode(double, double, int = SGILOGENCODE_NODITHER);
-LIBTIFF_DLL_IMPEXP	uint32 LogLuv24fromXYZ(float*, int = SGILOGENCODE_NODITHER);
-LIBTIFF_DLL_IMPEXP	uint32 LogLuv32fromXYZ(float*, int = SGILOGENCODE_NODITHER);
+extern	int LogL16fromY(double, int = SGILOGENCODE_NODITHER);
+extern	int LogL10fromY(double, int = SGILOGENCODE_NODITHER);
+extern	int uv_encode(double, double, int = SGILOGENCODE_NODITHER);
+extern	uint32 LogLuv24fromXYZ(float*, int = SGILOGENCODE_NODITHER);
+extern	uint32 LogLuv32fromXYZ(float*, int = SGILOGENCODE_NODITHER);
 #else
-LIBTIFF_DLL_IMPEXP	int LogL16fromY(double, int);
-LIBTIFF_DLL_IMPEXP	int LogL10fromY(double, int);
-LIBTIFF_DLL_IMPEXP	int uv_encode(double, double, int);
-LIBTIFF_DLL_IMPEXP	uint32 LogLuv24fromXYZ(float*, int);
-LIBTIFF_DLL_IMPEXP	uint32 LogLuv32fromXYZ(float*, int);
+extern	int LogL16fromY(double, int);
+extern	int LogL10fromY(double, int);
+extern	int uv_encode(double, double, int);
+extern	uint32 LogLuv24fromXYZ(float*, int);
+extern	uint32 LogLuv32fromXYZ(float*, int);
 #endif
 #endif /* LOGLUV_PUBLIC */
     
-LIBTIFF_DLL_IMPEXP int TIFFCIELabToRGBInit(TIFFCIELabToRGB*, TIFFDisplay *, float*);
-LIBTIFF_DLL_IMPEXP void TIFFCIELabToXYZ(TIFFCIELabToRGB *, uint32, int32, int32,
+extern int TIFFCIELabToRGBInit(TIFFCIELabToRGB*, TIFFDisplay *, float*);
+extern void TIFFCIELabToXYZ(TIFFCIELabToRGB *, uint32, int32, int32,
 			    float *, float *, float *);
-LIBTIFF_DLL_IMPEXP void TIFFXYZToRGB(TIFFCIELabToRGB *, float, float, float,
+extern void TIFFXYZToRGB(TIFFCIELabToRGB *, float, float, float,
 			 uint32 *, uint32 *, uint32 *);
 
-LIBTIFF_DLL_IMPEXP int TIFFYCbCrToRGBInit(TIFFYCbCrToRGB*, float*, float*);
-LIBTIFF_DLL_IMPEXP void TIFFYCbCrtoRGB(TIFFYCbCrToRGB *, uint32, int32, int32,
+extern int TIFFYCbCrToRGBInit(TIFFYCbCrToRGB*, float*, float*);
+extern void TIFFYCbCrtoRGB(TIFFYCbCrToRGB *, uint32, int32, int32,
 			   uint32 *, uint32 *, uint32 *);
 
 #if defined(c_plusplus) || defined(__cplusplus)
