@@ -21,9 +21,12 @@ PROD_LIBS_WIN32        += jpeg libNeXus.dll
 PROD_LIBS_WIN32        += PvAPI ImageLib
 PROD_SYS_LIBS_WIN32    += Gdi32 Oleaut32
 
-PROD_LIBS_cygwin32     += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
-PROD_LIBS_cygwin32     += libtiff jpeg libNeXus.dll
-PROD_SYS_LIBS_cygwin32 += rpc
+PROD_LIBS_cygwin32     += libNeXus.dll
+PROD_LIBS_cygwin32     += libGraphicsMagick++ libGraphicsMagickWand libGraphicsMagick
+PROD_LIBS_cygwin32     += liblcms libpng14 libbz2 libfreetype
+PROD_LIBS_cygwin32     += libtiff libjpeg libjbig libz libxml2.dll
+PROD_SYS_LIBS_cygwin32 += $(CYGWIN_RPC_LIB)
+PROD_SYS_LIBS_cygwin32 += Gdi32
 
 PROD_LIBS_Linux += PvAPI ImageLib
 # To use versions of these libraries supplied with areaDetector use this line
