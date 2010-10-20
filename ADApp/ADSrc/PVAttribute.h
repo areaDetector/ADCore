@@ -15,7 +15,6 @@
 #include <cadef.h>
 
 #include "NDArray.h"
-#include "asynNDArrayDriver.h"
 
 /** Use native type for channel access */
 #define DBR_NATIVE -1
