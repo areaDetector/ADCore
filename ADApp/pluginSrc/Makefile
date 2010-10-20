@@ -36,29 +36,20 @@ INC += NDPluginDriver.h
 INC += NDPluginFile.h
 
 LIBRARY_IOC = NDPlugin
-NDPlugin_SRCS += NDPluginDriver.cpp
-NDPlugin_SRCS += NDPluginFile.cpp
-NDPlugin_SRCS += NDFileNetCDF.cpp
-NDPlugin_SRCS += NDPluginStdArrays.cpp
-NDPlugin_SRCS += NDPluginStats.cpp
-NDPlugin_SRCS += NDPluginProcess.cpp
-NDPlugin_SRCS += NDPluginROI.cpp
-NDPlugin_SRCS += NDPluginTransform.cpp
-NDPlugin_SRCS += NDPluginOverlay.cpp
-NDPlugin_SRCS += NDPluginColorConvert.cpp
-NDPlugin_SRCS_DEFAULT += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNexus.cpp NDFileMagick.cpp
-NDPlugin_SRCS_vxWorks += NDFileDummy.cpp
-NDPlugin_LIBS += ADBase
-NDPlugin_LIBS += netCDF
-NDPlugin_LIBS += asyn
-NDPlugin_LIBS += $(EPICS_BASE_IOC_LIBS)
+LIB_SRCS += NDPluginDriver.cpp
+LIB_SRCS += NDPluginFile.cpp
+LIB_SRCS += NDFileNetCDF.cpp
+LIB_SRCS += NDPluginStdArrays.cpp
+LIB_SRCS += NDPluginStats.cpp
+LIB_SRCS += NDPluginProcess.cpp
+LIB_SRCS += NDPluginROI.cpp
+LIB_SRCS += NDPluginTransform.cpp
+LIB_SRCS += NDPluginOverlay.cpp
+LIB_SRCS += NDPluginColorConvert.cpp
+LIB_SRCS_DEFAULT += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNexus.cpp NDFileMagick.cpp
+LIB_SRCS_vxWorks += NDFileDummy.cpp
 
-NDPlugin_LIBS_solaris += NeXus hdf5_cpp hdf5
-
-NDPlugin_SYS_LIBS_solaris   += tiff
-
-# use libs supplied with areaDetector (in tiffSupport)
-NDPlugin_LIBS_solaris   += jpeg sz z
+include $(AREA_DETECTOR)/ADApp/commonDriverMakefile
 
 include $(TOP)/configure/RULES
 #----------------------------------------
