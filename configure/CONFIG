@@ -12,10 +12,18 @@ include $(TOP)/configure/CONFIG_APP
 # before this takes effect.
 #IOCS_APPL_TOP = <the top of the application as seen by the IOC>
 
-STATIC_BUILD=YES
+# We don't set STATIC_BUILD for WIN32 or Cygwin, use base to configure
+ifeq (WIN32, $(OS_CLASS))
+  SHARED_LIBRARIES=YES
+  STATIC_BUILD=NO
+endif
 ifeq (Darwin, $(OS_CLASS))
   STATIC_BUILD=NO
 endif
+ifeq (Linux, $(OS_CLASS))
+  STATIC_BUILD=YES
+endif
 ifeq (solaris, $(OS_CLASS))
+  STATIC_BUILD=YES
   SHARED_LIBRARIES=NO
 endif
