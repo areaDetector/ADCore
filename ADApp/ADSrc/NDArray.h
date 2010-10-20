@@ -146,7 +146,7 @@ typedef union {
 /** NDAttribute class; an attribute has a name, description, source type, source string,
   * data type, and value.
   */
-class NDAttribute {
+class epicsShareFunc NDAttribute {
 public:
     /* Methods */
     NDAttribute(const char *pName, const char *pDescription="", 
@@ -176,7 +176,7 @@ protected:
 
 /** NDAttributeList class; this is a linked list of attributes.
   */
-class NDAttributeList {
+class epicsShareFunc NDAttributeList {
 public:
     NDAttributeList();
     ~NDAttributeList();
@@ -200,7 +200,7 @@ private:
 /** N-dimensional array class; each array has a set of dimensions, a data type, pointer to data, and optional attributes. 
   * An NDArray also has a uniqueId and timeStamp that to identify it. NDArray objects can be allocated
   * by an NDArrayPool object, which maintains a free list of NDArrays for efficient memory management. */
-class NDArray {
+class epicsShareFunc NDArray {
 public:
     /* Methods */
     NDArray();
@@ -241,9 +241,9 @@ public:
   * array. When the reference count reaches 0 again the NDArray object is placed back
   * on the free list. This mechanism minimizes the copying of array data in plugins.
   */
-class NDArrayPool {
+class epicsShareFunc NDArrayPool {
 public:
-                 NDArrayPool   (int maxBuffers, size_t maxMemory);
+    NDArrayPool   (int maxBuffers, size_t maxMemory);
     NDArray*     alloc         (int ndims, int *dims, NDDataType_t dataType, int dataSize, void *pData);
     NDArray*     copy          (NDArray *pIn, NDArray *pOut, int copyData);
 
