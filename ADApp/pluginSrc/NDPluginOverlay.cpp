@@ -15,10 +15,10 @@
 #include <epicsString.h>
 #include <epicsMutex.h>
 #include <iocsh.h>
-#include <epicsExport.h>
 
 #include "NDArray.h"
 #include "NDPluginOverlay.h"
+#include <epicsExport.h>
 
 #define MAX(A,B) (A)>(B)?(A):(B)
 #define MIN(A,B) (A)<(B)?(A):(B)
@@ -31,14 +31,14 @@ void NDPluginOverlay::setPixel(epicsType *pValue, NDOverlay_t *pOverlay)
     if ((this->arrayInfo.colorMode == NDColorModeRGB1) ||
         (this->arrayInfo.colorMode == NDColorModeRGB2) ||
         (this->arrayInfo.colorMode == NDColorModeRGB3)) {
-        *pValue = pOverlay->red;
+        *pValue = (epicsType)pOverlay->red;
         pValue += this->arrayInfo.colorStride;
-        *pValue = pOverlay->green;
+        *pValue = (epicsType)pOverlay->green;
         pValue += this->arrayInfo.colorStride;
-        *pValue = pOverlay->blue;
+        *pValue = (epicsType)pOverlay->blue;
     }
     else {
-        *pValue = pOverlay->green;
+        *pValue = (epicsType)pOverlay->green;
     }    
 }
 
