@@ -26,9 +26,9 @@
 #include <epicsMutex.h>
 #include <cantProceed.h>
 #include <iocsh.h>
-#include <epicsExport.h>
 
 #include "ADDriver.h"
+#include <epicsExport.h>
 
 static const char *driverName = "simDetector";
 
