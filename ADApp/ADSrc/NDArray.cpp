@@ -20,9 +20,11 @@
 #include <epicsString.h>
 #include <ellLib.h>
 #include <cantProceed.h>
-#include <epicsExport.h>
 
+#define epicsExportSharedSymbols
+#include <shareLib.h>
 #include "NDArray.h"
+#include <epicsExport.h>
 
 static const char *driverName = "NDArray";
 
