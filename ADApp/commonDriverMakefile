@@ -1,49 +1,72 @@
 # This file contains the commands to build driver applications using the common set of plugins
 
-LIB_LIBS += NDPlugin ADBase netCDF
-LIB_LIBS += calc busy sscan autosave
-LIB_LIBS += asyn
-LIB_LIBS += $(EPICS_BASE_IOC_LIBS)
-
+LIB_LIBS  += ADBase netCDF
 PROD_LIBS += NDPlugin ADBase netCDF
 PROD_LIBS += calc busy sscan autosave mca
+LIB_LIBS  += calc busy sscan autosave
+LIB_LIBS  += asyn
 PROD_LIBS += asyn
+LIB_LIBS  += $(EPICS_BASE_IOC_LIBS)
 PROD_LIBS += $(EPICS_BASE_IOC_LIBS)
 
-#
-PROD_LIBS_WIN32        += CORE_RL_Magick++_ CORE_RL_wand_ CORE_RL_magick_ 
-PROD_LIBS_WIN32        += CORE_RL_coders_ CORE_RL_filters_
-PROD_LIBS_WIN32        += CORE_RL_bzlib_ CORE_RL_jbig_ CORE_RL_jp2_ CORE_RL_jpeg_ CORE_RL_lcms_
-PROD_LIBS_WIN32        += CORE_RL_libxml_ CORE_RL_png_ CORE_RL_tiff_ CORE_RL_ttf_ CORE_RL_wmf_
-PROD_LIBS_WIN32        += CORE_RL_xlib_ CORE_RL_zlib_ X11 Xext
-PROD_LIBS_WIN32        += jpeg libNeXus.dll
+LIB_LIBS_WIN32        += CORE_RL_Magick++_ CORE_RL_wand_ CORE_RL_magick_ 
+PROD_LIBS_WIN32       += CORE_RL_Magick++_ CORE_RL_wand_ CORE_RL_magick_ 
+LIB_LIBS_WIN32        += CORE_RL_coders_ CORE_RL_filters_
+PROD_LIBS_WIN32       += CORE_RL_coders_ CORE_RL_filters_
+LIB_LIBS_WIN32        += CORE_RL_bzlib_ CORE_RL_jbig_ CORE_RL_jp2_ CORE_RL_jpeg_ CORE_RL_lcms_
+PROD_LIBS_WIN32       += CORE_RL_bzlib_ CORE_RL_jbig_ CORE_RL_jp2_ CORE_RL_jpeg_ CORE_RL_lcms_
+LIB_LIBS_WIN32        += CORE_RL_libxml_ CORE_RL_png_ CORE_RL_tiff_ CORE_RL_ttf_ CORE_RL_wmf_
+PROD_LIBS_WIN32       += CORE_RL_libxml_ CORE_RL_png_ CORE_RL_tiff_ CORE_RL_ttf_ CORE_RL_wmf_
+LIB_LIBS_WIN32        += CORE_RL_xlib_ CORE_RL_zlib_ X11 Xext
+PROD_LIBS_WIN32       += CORE_RL_xlib_ CORE_RL_zlib_ X11 Xext
+LIB_LIBS_WIN32        += jpeg libNeXus.dll
+PROD_LIBS_WIN32       += jpeg libNeXus.dll
 # ImageLib must be linked after Core_RL_tiff_ or we get multiply defined symbol errors for TIFF routines
-PROD_LIBS_WIN32        += PvAPI ImageLib
-PROD_SYS_LIBS_WIN32    += Gdi32 Oleaut32
+LIB_LIBS_WIN32        += PvAPI ImageLib
+PROD_LIBS_WIN32       += PvAPI ImageLib
+LIB_SYS_LIBS_WIN32    += Gdi32 Oleaut32 User32 Advapi32
+PROD_SYS_LIBS_WIN32   += Gdi32 Oleaut32 User32 Advapi32
+LIB_SYS_LIBS_WIN32    += WS2_32
+PROD_SYS_LIBS_WIN32   += WS2_32
 
+LIB_LIBS_cygwin32      += libNeXus.dll
 PROD_LIBS_cygwin32     += libNeXus.dll
+LIB_LIBS_cygwin32      += libGraphicsMagick++ libGraphicsMagickWand libGraphicsMagick
 PROD_LIBS_cygwin32     += libGraphicsMagick++ libGraphicsMagickWand libGraphicsMagick
-PROD_LIBS_cygwin32     += liblcms libpng14 libbz2 libfreetype
+LIB_LIBS_cygwin32      += liblcms libpng14 libbz2 libfreetype
+LIB_LIBS_cygwin32      += libtiff libjpeg libjbig libz libxml2.dll
 PROD_LIBS_cygwin32     += libtiff libjpeg libjbig libz libxml2.dll
+LIB_SYS_LIBS_cygwin32  += $(CYGWIN_RPC_LIB)
 PROD_SYS_LIBS_cygwin32 += $(CYGWIN_RPC_LIB)
+LIB_SYS_LIBS_cygwin32  += Gdi32
 PROD_SYS_LIBS_cygwin32 += Gdi32
 
+LIB_LIBS_Linux  += PvAPI ImageLib
 PROD_LIBS_Linux += PvAPI ImageLib
 # To use versions of these libraries supplied with areaDetector use this line
+LIV_LIBS_Linux         += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
 PROD_LIBS_Linux        += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
 # To use system versions of these libraries use this line
+#LIB_SYS_LIBS_Linux     += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
 #PROD_SYS_LIBS_Linux    += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
 # To use versions of these libraries supplied with areaDetector use this line
+LIB_LIBS_Linux         += NeXus mfhdf df hdf5 mxml
 PROD_LIBS_Linux        += NeXus mfhdf df hdf5 mxml
 # To use system versions of these libraries use this line
+#LIB_SYS_LIBS_Linux     += NeXus mfhdf df hdf5 mxml
 #PROD_SYS_LIBS_Linux    += NeXus mfhdf df hdf5 mxml
 # To use versions of these libraries supplied with areaDetector use this line
+LIB_LIBS_Linux         += tiff jpeg z
 PROD_LIBS_Linux        += tiff jpeg z
 # To use system versions of these libraries use this line
+#LIB_SYS_LIBS_Linux     += tiff jpeg z
 #PROD_SYS_LIBS_Linux    += tiff jpeg z
 
+LIB_SYS_LIBS_Linux     += gomp X11 lcms xml2 png12 bz2 Xext freetype 
 PROD_SYS_LIBS_Linux    += gomp X11 lcms xml2 png12 bz2 Xext freetype 
 
+LIB_LIBS_solaris         += NeXus hdf5 jpeg z
 PROD_LIBS_solaris        += NeXus hdf5 jpeg z
+LIB_SYS_LIBS_solaris     += tiff
 PROD_SYS_LIBS_solaris    += tiff
 
