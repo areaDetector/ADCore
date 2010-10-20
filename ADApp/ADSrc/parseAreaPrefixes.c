@@ -11,10 +11,10 @@
  */
 #include <stdio.h>
 #include <string.h>
-#include "epicsExport.h"
 #include <iocsh.h>
 #include <dbAccess.h>
 #include <dbStaticLib.h>
+#include "epicsExport.h"
 
 void parseAreaPrefixes( char *waveformName) {
 	int status;
