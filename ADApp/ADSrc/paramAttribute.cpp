@@ -16,8 +16,7 @@
 #include <epicsMutex.h>
 #include <epicsString.h>
 
-#include <asynDriver.h>
-
+#include <asynNDArrayDriver.h>
 #include "NDArray.h"
 #include "paramAttribute.h"
 
