@@ -12,9 +12,9 @@
 
 #include <epicsStdio.h>
 #include <iocsh.h>
-#include <epicsExport.h>
 
 #include "NDFileNetCDF.h"
+#include <epicsExport.h>
 
 static const char *driverName = "NDFileNetCDF";
 

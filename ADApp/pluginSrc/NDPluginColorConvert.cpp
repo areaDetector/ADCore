@@ -16,13 +16,13 @@
 #include <epicsMutex.h>
 #include <epicsString.h>
 #include <iocsh.h>
-#include <epicsExport.h>
 
 #include "NDPluginColorConvert.h"
 #include "colorMaps.h"
 #ifdef HAVE_PVAPI
   #include "PvApi.h"
 #endif
+#include <epicsExport.h>
 
 static const char *driverName="NDPluginColorConvert";
 

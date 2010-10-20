@@ -11,11 +11,11 @@
 #include <netcdf.h>
 
 #include <epicsStdio.h>
-#include <epicsExport.h>
 #include <iocsh.h>
 
 #include "NDFileTIFF.h"
 #include "tiffio.h"
+#include <epicsExport.h>
 
 static const char *driverName = "NDFileTIFF";
 

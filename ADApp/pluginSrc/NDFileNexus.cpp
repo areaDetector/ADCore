@@ -12,7 +12,6 @@
 #include <stdio.h>
 
 #include <epicsString.h>
-#include <epicsExport.h>
 #include <iocsh.h>
 #include <tinyxml.h>
 #include <napi.h>
@@ -20,6 +19,7 @@
 
 #include "asynNDArrayDriver.h"
 #include "NDFileNexus.h"
+#include <epicsExport.h>
 
 static const char *driverName="NDFileNexus";
 

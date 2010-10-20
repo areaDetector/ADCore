@@ -11,10 +11,10 @@
 #include <netcdf.h>
 
 #include <epicsStdio.h>
-#include <epicsExport.h>
 #include <iocsh.h>
 
 #include "NDFileMagick.h"
+#include <epicsExport.h>
 
 static const char *driverName = "NDFileMagick";
 
