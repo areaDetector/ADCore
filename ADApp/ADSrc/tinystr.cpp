@@ -29,6 +29,7 @@ distribution.
 
 #ifndef TIXML_USE_STL
 
+#define epicsExportSharedSymbols
 #include "tinystr.h"
 
 // Error value for find primitive

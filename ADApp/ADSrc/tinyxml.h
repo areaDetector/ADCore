@@ -1,3 +1,6 @@
+/* Note by Mark Rivers
+ * I added shareLib.h and epicsShareFunc to class definitions to allow use in win32 DLL on EPICS */
+
 /*
 www.sourceforge.net/projects/tinyxml
 Original code (2.0 and earlier )copyright (c) 2000-2006 Lee Thomason (www.grinninglizard.com)
@@ -37,6 +40,8 @@ distribution.
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+
+#include <shareLib.h>
 
 // Help out windows:
 #if defined( _DEBUG ) && !defined( DEBUG )
@@ -82,14 +87,14 @@ distribution.
 	#endif
 #endif	
 
-class TiXmlDocument;
-class TiXmlElement;
-class TiXmlComment;
-class TiXmlUnknown;
-class TiXmlAttribute;
-class TiXmlText;
-class TiXmlDeclaration;
-class TiXmlParsingData;
+class epicsShareFunc TiXmlDocument;
+class epicsShareFunc TiXmlElement;
+class epicsShareFunc TiXmlComment;
+class epicsShareFunc TiXmlUnknown;
+class epicsShareFunc TiXmlAttribute;
+class epicsShareFunc TiXmlText;
+class epicsShareFunc TiXmlDeclaration;
+class epicsShareFunc TiXmlParsingData;
 
 const int TIXML_MAJOR_VERSION = 2;
 const int TIXML_MINOR_VERSION = 5;
@@ -98,7 +103,7 @@ const int TIXML_PATCH_VERSION = 3;
 /*	Internal structure for tracking location of items 
 	in the XML file.
 */
-struct TiXmlCursor
+struct epicsShareFunc TiXmlCursor
 {
 	TiXmlCursor()		{ Clear(); }
 	void Clear()		{ row = col = -1; }
@@ -126,7 +131,7 @@ struct TiXmlCursor
 
 	@sa TiXmlNode::Accept()
 */
-class TiXmlVisitor
+class epicsShareFunc TiXmlVisitor
 {
 public:
 	virtual ~TiXmlVisitor() {}
@@ -192,7 +197,7 @@ const TiXmlEncoding TIXML_DEFAULT_ENCODING = TIXML_ENCODING_UNKNOWN;
 	A Decleration contains: Attributes (not on tree)
 	@endverbatim
 */
-class TiXmlBase
+class epicsShareFunc TiXmlBase
 {
 	friend class TiXmlNode;
 	friend class TiXmlElement;
@@ -421,7 +426,7 @@ private:
 	in a document, or stand on its own. The type of a TiXmlNode
 	can be queried, and it can be cast to its more defined type.
 */
-class TiXmlNode : public TiXmlBase
+class epicsShareFunc TiXmlNode : public TiXmlBase
 {
 	friend class TiXmlDocument;
 	friend class TiXmlElement;
@@ -777,7 +782,7 @@ private:
 		  part of the tinyXML document object model. There are other
 		  suggested ways to look at this problem.
 */
-class TiXmlAttribute : public TiXmlBase
+class epicsShareFunc TiXmlAttribute : public TiXmlBase
 {
 	friend class TiXmlAttributeSet;
 
@@ -901,7 +906,7 @@ private:
 		- I like circular lists
 		- it demonstrates some independence from the (typical) doubly linked list.
 */
-class TiXmlAttributeSet
+class epicsShareFunc TiXmlAttributeSet
 {
 public:
 	TiXmlAttributeSet();
@@ -941,7 +946,7 @@ private:
 	and can contain other elements, text, comments, and unknowns.
 	Elements also contain an arbitrary number of attributes.
 */
-class TiXmlElement : public TiXmlNode
+class epicsShareFunc TiXmlElement : public TiXmlNode
 {
 public:
 	/// Construct an element.
@@ -1151,7 +1156,7 @@ private:
 
 /**	An XML comment.
 */
-class TiXmlComment : public TiXmlNode
+class epicsShareFunc TiXmlComment : public TiXmlNode
 {
 public:
 	/// Constructs an empty comment.
@@ -1201,7 +1206,7 @@ private:
 	you generally want to leave it alone, but you can change the output mode with 
 	SetCDATA() and query it with CDATA().
 */
-class TiXmlText : public TiXmlNode
+class epicsShareFunc TiXmlText : public TiXmlNode
 {
 	friend class TiXmlElement;
 public:
@@ -1274,7 +1279,7 @@ private:
 	handled as special cases, not generic attributes, simply
 	because there can only be at most 3 and they are always the same.
 */
-class TiXmlDeclaration : public TiXmlNode
+class epicsShareFunc TiXmlDeclaration : public TiXmlNode
 {
 public:
 	/// Construct an empty declaration.
@@ -1343,7 +1348,7 @@ private:
 
 	DTD tags get thrown into TiXmlUnknowns.
 */
-class TiXmlUnknown : public TiXmlNode
+class epicsShareFunc TiXmlUnknown : public TiXmlNode
 {
 public:
 	TiXmlUnknown() : TiXmlNode( TiXmlNode::UNKNOWN )	{}
@@ -1382,7 +1387,7 @@ private:
 	XML pieces. It can be saved, loaded, and printed to the screen.
 	The 'value' of a document node is the xml file name.
 */
-class TiXmlDocument : public TiXmlNode
+class epicsShareFunc TiXmlDocument : public TiXmlNode
 {
 public:
 	/// Create an empty document, that has no name.
@@ -1631,7 +1636,7 @@ private:
 	}
 	@endverbatim
 */
-class TiXmlHandle
+class epicsShareFunc TiXmlHandle
 {
 public:
 	/// Create a handle from any node (at any depth of the tree.) This can be a null pointer.
@@ -1730,7 +1735,7 @@ private:
 	fprintf( stdout, "%s", printer.CStr() );
 	@endverbatim
 */
-class TiXmlPrinter : public TiXmlVisitor
+class epicsShareFunc TiXmlPrinter : public TiXmlVisitor
 {
 public:
 	TiXmlPrinter() : depth( 0 ), simpleTextPrint( false ),

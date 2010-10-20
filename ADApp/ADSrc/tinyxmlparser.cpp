@@ -25,6 +25,7 @@ distribution.
 #include <ctype.h>
 #include <stddef.h>
 
+#define epicsExportSharedSymbols
 #include "tinyxml.h"
 
 //#define DEBUG_PARSER

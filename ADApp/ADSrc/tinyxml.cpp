@@ -29,6 +29,7 @@ distribution.
 #include <iostream>
 #endif
 
+#define epicsExportSharedSymbols
 #include "tinyxml.h"
 
 
