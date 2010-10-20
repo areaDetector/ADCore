@@ -17,8 +17,6 @@
 #include <epicsString.h>
 
 #include <asynDriver.h>
-
-#include "NDArray.h"
 #include "PVAttribute.h"
 
 static const char *driverName = "PVAttribute";
