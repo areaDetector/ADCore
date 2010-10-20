@@ -3,8 +3,6 @@
 
 #include "asynPortDriver.h"
 #include "NDArray.h"
-#include "PVAttribute.h"
-
 
 /** Maximum length of a filename or any of its components */
 #define MAX_FILENAME_LEN 256
@@ -76,7 +74,7 @@ typedef enum {
   * For areaDetector, both plugins and detector drivers are indirectly derived from this class.
   * asynNDArrayDriver inherits from asynPortDriver.
   */
-class asynNDArrayDriver : public asynPortDriver {
+class epicsShareFunc asynNDArrayDriver : public asynPortDriver {
 public:
     asynNDArrayDriver(const char *portName, int maxAddr, int numParams, int maxBuffers, size_t maxMemory,
                       int interfaceMask, int interruptMask,
