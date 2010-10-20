@@ -15,10 +15,10 @@
 #include <epicsString.h>
 #include <epicsMutex.h>
 #include <iocsh.h>
-#include <epicsExport.h>
 
 #include "NDArray.h"
 #include "NDPluginROI.h"
+#include <epicsExport.h>
 
 //static const char *driverName="NDPluginROI";
 

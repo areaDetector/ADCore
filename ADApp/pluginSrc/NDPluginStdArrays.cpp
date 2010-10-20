@@ -21,10 +21,10 @@
 #include <epicsMessageQueue.h>
 #include <cantProceed.h>
 #include <iocsh.h>
-#include <epicsExport.h>
 
 #include "NDArray.h"
 #include "NDPluginStdArrays.h"
+#include <epicsExport.h>
 
 static const char *driverName="NDPluginStdArrays";
 

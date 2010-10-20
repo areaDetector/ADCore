@@ -15,10 +15,10 @@
 #include <epicsString.h>
 #include <epicsMutex.h>
 #include <iocsh.h>
-#include <epicsExport.h>
 
 #include "NDArray.h"
 #include "NDPluginTransform.h"
+#include <epicsExport.h>
 
 
     /** Actually perform the move of the pixel from the input NDArray to it's transformed location in the output NDArray.
