@@ -18,6 +18,9 @@ USR_CXXFLAGS_Linux += -D_LINUX -D_x86 -O0
 USR_CXXFLAGS_Linux += -DHAVE_PVAPI
 USR_CXXFLAGS_WIN32 += -DHAVE_PVAPI
 
+# This flag is used to indicate that the TIFF library was built statically
+USR_CXXFLAGS_WIN32 += -DLIBTIFF_STATIC
+
 DBD += NDPluginSupport.dbd
 DBD += NDFileJPEG.dbd
 DBD += NDFileMagick.dbd
