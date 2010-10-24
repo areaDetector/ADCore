@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>areaDetector URL driver</title>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+</head>
+<body>
+  <div style="text-align: center">
+    <h1>
+      areaDetector URL driver</h1>
+    <h2>
+      October 24, 2010</h2>
+    <h2>
+      Mark Rivers</h2>
+    <h2>
+      University of Chicago</h2>
+  </div>
+  <h2>
+    Table of Contents</h2>
+  <ul>
+    <li><a href="#Introduction">Introduction</a></li>
+    <li><a href="#StandardNotes">Implementation of standard driver parameters</a></li>
+    <li><a href="#Driver_parameters">URL specific parameters</a></li>
+    <li><a href="#Unsupported">Unsupported standard driver parameters</a></li>
+    <li><a href="#Configuration">Configuration</a></li>
+    <li><a href="#MEDM_screens">MEDM screens</a></li>
+  </ul>
+  <h2 id="Introduction" style="text-align: left">
+    Introduction</h2>
+  <p>
+    This is a driver for reading images from a URL.  It can be used to read images from Web cameras,
+    <a href="http://www.axis.com/">Axis video servers</a>, or simply from a disk file. 
+    It reads the images using <a href="http://www.graphicsmagick.org/">
+    GraphicsMagick</a> and can thus read images encoded in any of the formats supported by GraphicsMagick,
+    such as JPEG, TIFF, PNG, etc.
+  </p>
+  <p>
+    The driver simply reads images from the specified URL at the rate determined by the AcquirePeriod. Web cameras
+    and Axis video servers have a URL address from which the current image can be read.  There are often several 
+    addresses for different image sizes. 
+  </p>
+  <p>
+    This driver inherits from <a href="areaDetectorDoc.html#ADDriver">ADDriver</a>.
+    It implements many of the parameters <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">
+      asynNDArrayDriver.h</a> and in <a href="areaDetectorDoxygenHTML/_a_d_driver_8h.html">
+        ADArrayDriver.h</a>. It also implements a number of parameters that are specific
+    to the URL driver.The <a href="areaDetectorDoxygenHTML/class_u_r_l_driver.html">URL
+      driver class documentation</a> describes this class in detail.</p>
+  <h2 id="StandardNotes" style="text-align: left">
+    Implementation of standard driver parameters</h2>
+  <p>
+    The following table describes how the URL driver implements some of the standard
+    driver parameters.</p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="center" colspan="3">
+          <b>Implementation of Parameters in asynNDArrayDriver.h and ADDriver.h, and EPICS Record
+            Definitions in ADBase.template and NDFile.template</b></td>
+      </tr>
+      <tr>
+        <th>
+          Parameter index variable</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          Description</th>
+      </tr>
+      <tr>
+        <td>
+          ADAcquirePeriod</td>
+        <td>
+          $(P$(R)AcquirePeriod</td>
+        <td>
+           This controls the period between reading images. The driver attempts to collected images at this rate 
+           determined by this value.  NOTE: If this value is set to 0 or
+           too small a value can result in the driver using 100% of the CPU and becoming unresponsive to EPICS.</td>
+      </tr>
+    </tbody>
+  </table>
+  <h2 id="Driver_parameters" style="text-align: left">
+    URL driver specific parameters</h2>
+  <p>
+    The URL driver implements the following parameters in addition to those in asynNDArrayDriver.h
+    and ADDriver.h.
+  </p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Parameter Definitions in URLDriver.cpp and EPICS Record Definitions in URLDriver.template</b></td>
+      </tr>
+      <tr>
+        <th>
+          Parameter index variable</th>
+        <th>
+          asyn interface</th>
+        <th>
+          Access</th>
+        <th>
+          Description</th>
+        <th>
+          drvInfo string</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          EPICS record type</th>
+      </tr>
+      <tr>
+        <td>
+          URLName</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          The name of the URL to read images from.  There are 10 output records to control the URL name.
+        </td>
+        <td>
+          URL_NAME</td>
+        <td>
+          $(P)$(R)URLName[1-10]<br />
+          $(P)$(R)URLName_RBV</td>
+        <td>
+          waveform<br />
+          waveform</td>
+      </tr>
+  </table>
+  <p>
+  The URLs for Web cameras and video servers are typically long strings, which are difficult to remember and to type.
+  Thus, for convenience there is an EPICS mbbo record which is used to select 1 of 10 URLs.  This allows easily switching between
+  cameras, etc.  The mbbo menu string fields (e.g. ZRST, ONST, etc.) can be edited to supply a useful short
+  description of each camera (e.g. "Sample camera", and the corresponding URL waveform record will store the actual URL.
+  Both are in save/restore.  Note that when the mbbo menu string fields are edited then one will need to close the main URLDriver.adl
+  medm screen and reopen it to see the new menu choices.  This is due to restrictions in medm and Channel Access.
+  </p>
+  <h2 id="Unsupported">
+    Unsupported standard driver parameters</h2>
+  <p>
+    The URL driver does not support many of the standard driver parameters because it does not provide control of
+    image acquisition.  Thus AcquireTime, binning, region to read out, trigger modes, etc. are not supported.</p>
+  <h2 id="Configuration">
+    Configuration</h2>
+  <p>
+    The URL driver is created with the URLDriverConfig command, either from C/C++
+    or from the EPICS IOC shell.</p>
+  <pre>int URLDriverConfig(const char *portName,
+                int maxBuffers, size_t maxMemory,
+                int priority, int stackSize)
+  </pre>
+  <p>
+    For details on the meaning of the parameters to this function refer to the detailed
+    documentation on the URLDirverConfig function in the <a href="areaDetectorDoxygenHTML/u_r_l_driver_8cpp.html">
+      URLDriver.cpp documentation</a> and in the documentation for the constructor for the
+    <a href="areaDetectorDoxygenHTML/class_u_r_l_driver.html">URLDriver class</a>.
+  </p>
+  <p>
+    There an example IOC boot directory and startup script (<a href="URLDriver_st_cmd.html">iocBoot/iocURL/st.cmd)</a>
+    provided with areaDetector.
+  </p>
+  <h2 id="MEDM_screens" style="text-align: left">
+    MEDM screens</h2>
+  <p>
+    The following show the MEDM screens that are used to control the URL driver.
+    Note that the general purpose screen ADBase.adl can be used, but it exposes many
+    controls that are not applicable to the URL driver, and lacks some fields that are important
+    for the URL driver.</p>
+  <p>
+    <code>URLDriver.adl</code> is the main screen used to control the URL driver.
+  </p>
+  <div style="text-align: center">
+    <h3 style="text-align: center">
+      URLDriver.adl</h3>
+    <img alt="URLDriver.png" src="URLDriver.png" /></div>
+  <p>
+    <code>URLDriverSetup.adl</code> is the screen used to configure the mbbo menu choices and the URL strings
+    for up to 10 preset URLs.  Note that when a new value is entered into any of the URL string waveform records that URL
+    will be immediately displayed, even if it is not the URL currently selected in the mbbo menu.
+  </p>
+  <div style="text-align: center">
+    <h3 style="text-align: center">
+      URLDriverSetup.adl</h3>
+    <img alt="URLDriverSetup.png" src="URLDriverSetup.png" /></div>
+</body>
+</html>
