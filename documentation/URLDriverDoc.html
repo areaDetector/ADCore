@@ -29,16 +29,17 @@
   <h2 id="Introduction" style="text-align: left">
     Introduction</h2>
   <p>
-    This is a driver for reading images from a URL.  It can be used to read images from Web cameras,
-    <a href="http://www.axis.com/">Axis video servers</a>, or simply from a disk file. 
-    It reads the images using <a href="http://www.graphicsmagick.org/">
-    GraphicsMagick</a> and can thus read images encoded in any of the formats supported by GraphicsMagick,
+    This is a driver for reading images from a URL. It can be used to read images from
+    Web cameras, <a href="http://www.axis.com/">Axis video servers</a>, or simply from
+    a disk file. It reads the images using <a href="http://www.graphicsmagick.org/">GraphicsMagick</a>
+    and can thus read images encoded in any of the formats supported by GraphicsMagick,
     such as JPEG, TIFF, PNG, etc.
   </p>
   <p>
-    The driver simply reads images from the specified URL at the rate determined by the AcquirePeriod. Web cameras
-    and Axis video servers have a URL address from which the current image can be read.  There are often several 
-    addresses for different image sizes. 
+    The driver simply reads images from the specified URL at the rate determined by
+    the AcquirePeriod. Web cameras and Axis video servers have a URL address from which
+    the current image can be read. There are often several addresses for different image
+    sizes.
   </p>
   <p>
     This driver inherits from <a href="areaDetectorDoc.html#ADDriver">ADDriver</a>.
@@ -73,9 +74,10 @@
         <td>
           $(P$(R)AcquirePeriod</td>
         <td>
-           This controls the period between reading images. The driver attempts to collected images at this rate 
-           determined by this value.  NOTE: If this value is set to 0 or
-           too small a value can result in the driver using 100% of the CPU and becoming unresponsive to EPICS.</td>
+          This controls the period between reading images. The driver attempts to collected
+          images at this rate determined by this value. NOTE: If this value is set to 0 or
+          too small a value can result in the driver using 100% of the CPU and becoming unresponsive
+          to EPICS.</td>
       </tr>
     </tbody>
   </table>
@@ -115,7 +117,8 @@
         <td>
           r/w</td>
         <td>
-          The name of the URL to read images from.  There are 10 output records to control the URL name.
+          The name of the URL to read images from. There are 10 output records to control
+          the URL name.
         </td>
         <td>
           URL_NAME</td>
@@ -126,25 +129,30 @@
           waveform<br />
           waveform</td>
       </tr>
+    </tbody>
   </table>
   <p>
-  The URLs for Web cameras and video servers are typically long strings, which are difficult to remember and to type.
-  Thus, for convenience there is an EPICS mbbo record which is used to select 1 of 10 URLs.  This allows easily switching between
-  cameras, etc.  The mbbo menu string fields (e.g. ZRST, ONST, etc.) can be edited to supply a useful short
-  description of each camera (e.g. "Sample camera", and the corresponding URL waveform record will store the actual URL.
-  Both are in save/restore.  Note that when the mbbo menu string fields are edited then one will need to close the main URLDriver.adl
-  medm screen and reopen it to see the new menu choices.  This is due to restrictions in medm and Channel Access.
+    The URLs for Web cameras and video servers are typically long strings, which are
+    difficult to remember and to type. Thus, for convenience there is an EPICS mbbo
+    record which is used to select 1 of 10 URLs. This allows easily switching between
+    cameras, etc. The mbbo menu string fields (e.g. ZRST, ONST, etc.) can be edited
+    to supply a useful short description of each camera (e.g. "Sample camera", and the
+    corresponding URL waveform record will store the actual URL. Both are in save/restore.
+    Note that when the mbbo menu string fields are edited then one will need to close
+    the main URLDriver.adl medm screen and reopen it to see the new menu choices. This
+    is due to restrictions in medm and Channel Access.
   </p>
   <h2 id="Unsupported">
     Unsupported standard driver parameters</h2>
   <p>
-    The URL driver does not support many of the standard driver parameters because it does not provide control of
-    image acquisition.  Thus AcquireTime, binning, region to read out, trigger modes, etc. are not supported.</p>
+    The URL driver does not support many of the standard driver parameters because it
+    does not provide control of image acquisition. Thus AcquireTime, binning, region
+    to read out, trigger modes, etc. are not supported.</p>
   <h2 id="Configuration">
     Configuration</h2>
   <p>
-    The URL driver is created with the URLDriverConfig command, either from C/C++
-    or from the EPICS IOC shell.</p>
+    The URL driver is created with the URLDriverConfig command, either from C/C++ or
+    from the EPICS IOC shell.</p>
   <pre>int URLDriverConfig(const char *portName,
                 int maxBuffers, size_t maxMemory,
                 int priority, int stackSize)
@@ -152,8 +160,8 @@
   <p>
     For details on the meaning of the parameters to this function refer to the detailed
     documentation on the URLDirverConfig function in the <a href="areaDetectorDoxygenHTML/u_r_l_driver_8cpp.html">
-      URLDriver.cpp documentation</a> and in the documentation for the constructor for the
-    <a href="areaDetectorDoxygenHTML/class_u_r_l_driver.html">URLDriver class</a>.
+      URLDriver.cpp documentation</a> and in the documentation for the constructor for
+    the <a href="areaDetectorDoxygenHTML/class_u_r_l_driver.html">URLDriver class</a>.
   </p>
   <p>
     There an example IOC boot directory and startup script (<a href="URLDriver_st_cmd.html">iocBoot/iocURL/st.cmd)</a>
@@ -162,9 +170,9 @@
   <h2 id="MEDM_screens" style="text-align: left">
     MEDM screens</h2>
   <p>
-    The following show the MEDM screens that are used to control the URL driver.
-    Note that the general purpose screen ADBase.adl can be used, but it exposes many
-    controls that are not applicable to the URL driver, and lacks some fields that are important
+    The following show the MEDM screens that are used to control the URL driver. Note
+    that the general purpose screen ADBase.adl can be used, but it exposes many controls
+    that are not applicable to the URL driver, and lacks some fields that are important
     for the URL driver.</p>
   <p>
     <code>URLDriver.adl</code> is the main screen used to control the URL driver.
@@ -174,13 +182,22 @@
       URLDriver.adl</h3>
     <img alt="URLDriver.png" src="URLDriver.png" /></div>
   <p>
-    <code>URLDriverSetup.adl</code> is the screen used to configure the mbbo menu choices and the URL strings
-    for up to 10 preset URLs.  Note that when a new value is entered into any of the URL string waveform records that URL
-    will be immediately displayed, even if it is not the URL currently selected in the mbbo menu.
+    <code>URLDriverSetup.adl</code> is the screen used to configure the mbbo menu choices
+    and the URL strings for up to 10 preset URLs. Note that when a new value is entered
+    into any of the URL string waveform records that URL will be immediately displayed,
+    even if it is not the URL currently selected in the mbbo menu.
   </p>
   <div style="text-align: center">
     <h3 style="text-align: center">
       URLDriverSetup.adl</h3>
     <img alt="URLDriverSetup.png" src="URLDriverSetup.png" /></div>
+  <p>
+    The following is an ImageJ viewer window looking at the URL driver connected to
+    analog camera through an Axis video server.
+  </p>
+  <div style="text-align: center">
+    <h3 style="text-align: center">
+      ImageJ Viewer of URL driver with Axis video server</h3>
+    <img alt="ImageJ_URLDriver.jpg" src="ImageJ_URLDriver.jpg" /></div>
 </body>
 </html>
