@@ -37,6 +37,8 @@ DIRS += pvcamSrc
 pvcamSrc_DEPEND_DIRS = pluginSrc pvcamSupport
 DIRS += brukerSrc
 brukerSrc_DEPEND_DIRS = pluginSrc
+DIRS += PSLSrc
+PSLSrc_DEPEND_DIRS = pluginSrc
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *db*))
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *Db*))
 include $(TOP)/configure/RULES_DIRS
