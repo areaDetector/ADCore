@@ -18,6 +18,7 @@ ifeq (Darwin, $(OS_CLASS))
 endif
 ifeq (Linux, $(OS_CLASS))
   STATIC_BUILD=YES
+  SHARED_LIBRARIES=NO
 endif
 ifeq (solaris, $(OS_CLASS))
   STATIC_BUILD=YES
