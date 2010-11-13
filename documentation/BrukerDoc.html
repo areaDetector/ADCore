@@ -1,0 +1,296 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>areaDetector Bruker Instrument Server driver</title>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+</head>
+<body>
+  <div style="text-align: center">
+    <h1>
+      areaDetector Bruker Instrument Server (BIS) driver</h1>
+    <h2>
+      November 13, 2010</h2>
+    <h2>
+      Mark Rivers</h2>
+    <h2>
+      University of Chicago</h2>
+  </div>
+  <h2>
+    Table of Contents</h2>
+  <ul>
+    <li><a href="#Introduction">Introduction</a></li>
+    <li><a href="#StandardNotes">Implementation of standard driver parameters</a></li>
+    <li><a href="#Driver_parameters">Bruker specific parameters</a></li>
+    <li><a href="#Unsupported">Unsupported standard driver parameters</a></li>
+    <li><a href="#Configuration">Configuration</a></li>
+    <li><a href="#MEDM_screens">MEDM screens</a></li>
+    <li><a href="#Restrictions">Restrictions</a> </li>
+  </ul>
+  <h2 id="Introduction" style="text-align: left">
+    Introduction</h2>
+  <p>
+    This is a driver for detectors from <a href="http://www.bruker-axs.com/">
+      Bruker AXS </a> using the Bruker Instrument Server (BIS).</p>
+  <p>
+    The interface to the detector is via TCP/IP socket connections to the <b>Bruker Instrument Server (BIS)</b>
+    program that Bruker provides. The BIS program must be started before
+    the areaDetector software is started.
+  </p>
+  <p>
+    The Bruker Instrument Server saves the data to disk in Bruker's SRFM file format. The areaDetector
+    driver reads these disk files in order to read the data, because BIS does
+    not provide another mechanism to access the data.
+  </p>
+  <p>
+    This driver inherits from <a href="areaDetectorDoc.html#ADDriver">ADDriver</a>.
+    It implements many of the parameters in <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">
+      asynNDArrayDriver.h</a> and in <a href="areaDetectorDoxygenHTML/_a_d_driver_8h.html">
+        ADArrayDriver.h</a>. It also implements a number of parameters that are specific
+    to the Bruker detector. The <a href="areaDetectorDoxygenHTML/class_b_i_s_detector.html">BIS
+      class documentation</a> describes this class in detail.</p>
+  <h2 id="StandardNotes" style="text-align: left">
+    Implementation of standard driver parameters</h2>
+  <p>
+    The following table describes how the BIS driver implements some of the standard
+    driver parameters.
+  </p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="center" colspan="3">
+          <b>Implementation of Parameters in asynNDArrayDriver.h and ADDriver.h, and EPICS Record
+            Definitions in ADBase.template and NDFile.template</b></td>
+      </tr>
+      <tr>
+        <th>
+          Parameter index variable</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          Description</th>
+      </tr>
+      <tr>
+        <td>
+          ADNumImages</td>
+        <td>
+          $(P)$(R)NumImages</td>
+        <td>
+          Controls the number of images to acquire when ADImageMode is ADImageMultiple.</td>
+      </tr>
+      <tr>
+        <td>
+          ADAcquirePeriod</td>
+        <td>
+          $(P)$(R)AcquirePeriod</td>
+        <td>
+          Controls the period between images when ADImageMode is ADImageMultiple or ADImageContinuous.
+          If this is greater than the acquisition time plus readout overhead then the driver
+          will wait until the period has elapsed before starting the next acquisition.</td>
+      </tr>
+      <tr>
+        <td>
+          NDFilePath</td>
+        <td>
+          $(P)$(R)FilePath</td>
+        <td>
+          Controls the path for saving images. It must be a valid path for BIS <i>and</i>
+          for the areaDetector driver, which is normally running in an EPICS IOC. Normally BIS
+          and the EPICS IOC are run on the same machine so this is not an issue. Running the
+          IOC on another machine is difficult because Windows does not support soft links 
+          that could be used to make the paths look identical.<br/>  
+          The terminator at the end of
+          FilePath <b>must</b> be a "\" character, it cannot be a "/" character, because BIS
+          only recognizes the "\".
+        </td>
+      </tr>
+      <tr>
+        <td>
+          NDFileFormat</td>
+        <td>
+          $(P)$(R)FileFormat</td>
+        <td>
+          BIS only supports Bruker format SRFM files.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          ADFrameType</td>
+        <td>
+          $(P)$(R)FrameType</td>
+        <td>
+          The driver redefines the choices for the ADFrameType parameter (record $(P)$(R)FrameType)
+          from ADDriver.h. The choices for the BIS driver are:
+          <ul>
+            <li>Normal (corrected data frame without double correlation)</li>
+            <li>Dark (NumDarks background frames with same exposure time)</li>
+            <li>Raw (data frame without correction for background)</li>
+            <li>DblCorrelation (two images each collected for half the nominal acquisition time,
+              zingers removed by double correlation)</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+    <p>
+    BIS will automatically open and close the shutter when exposures are collected.  It does this by changing the state of
+    pin 3 of the parallel port DB-25 connector on the PC.  This signal is connected to a shutter control box.  Alternatively,
+    if ADShutterMode is set to ADShutterModeEPICS, then any EPICS PV can be used to control a shutter.</p>
+  </p>
+  <h2 id="Driver_parameters" style="text-align: left">
+    Bruker specific parameters</h2>
+  <p>
+    The Bruker driver implements the following parameters in addition to those in asynNDArrayDriver.h
+    and ADDriver.h. Note that to reduce the width of this table the parameter index
+    variable names have been split into 2 lines, but these are just a single name, for
+    example <code>mar345ScanSize</code>.
+  </p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Parameter Definitions in mar345.cpp and EPICS Record Definitions in mar345.template</b></td>
+      </tr>
+      <tr>
+        <th>
+          Parameter index variable</th>
+        <th>
+          asyn interface</th>
+        <th>
+          Access</th>
+        <th>
+          Description</th>
+        <th>
+          drvInfo string</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          EPICS record type</th>
+      </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Readout parameters</b></td>
+      </tr>
+      <tr>
+        <td>
+          BISSFRMTimeout</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          The timeout waiting for the SFRM file to appear.</td>
+        <td>
+          SRFMTimeout</td>
+        <td>
+          $(P)$(R)ReadSFRMTimeout</td>
+        <td>
+          ao
+        </td>
+      </tr>
+      <tr>
+        <td>
+          BISStatus</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          The status string returned from BIS.</td>
+        <td>
+          BIS_STATUS</td>
+        <td>
+          $(P)$(R)BISStatus</td>
+        <td>
+          waveform
+        </td>
+      </tr>
+      <tr>
+        <td>
+          BISNumDarks</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          The number of dark fields to collect when ADFrameType=Dark.</td>
+        <td>
+          NUM_DARKS</td>
+        <td>
+          $(P)$(R)NumDarks<br />
+          $(P)$(R)NumDarks_RBV</td>
+        <td>
+          longout
+          <br />
+          longin
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <h2 id="Unsupported">
+    Unsupported standard driver parameters</h2>
+  <p>
+    The Bruker driver does not support the following standard driver parameters because
+    they are not supported in the BIS server:</p>
+  <ul>
+    <li>Number of exposures per image (ADNumExposures)</li>
+    <li>Trigger mode (ADTriggerMode)</li>
+    <li>Gain (ADGain)</li>
+    <li>Region to read out (ADMinX, ADMinY, ADSizeX, ADSizeY, ADReverseX, ADReverseY)</li>
+    <li>Data type (NDDataType)</li>
+    <li>Reading previous files (NDReadFile)</li>
+    <li>Capture or stream file saving (NDFileWriteMode, NDFileCapture, NDNumCapture, NDNumCaptured)</li>
+  </ul>
+  <p>
+    BIS supports binning, but the binning in the X and Y directions must be the same, so only ADBinX is supported.</p>
+  <h2 id="Configuration">
+    Configuration</h2>
+  <p>
+    The Bruker driver is created with the BISDetectorConfig command, either from C/C++ or
+    from the EPICS IOC shell.</p>
+  <pre>
+  BISDetectorConfig(const char *portName, const char *commandPort, const char *statusPort,
+                    int maxBuffers, size_t maxMemory,
+                    int priority, int stackSize)
+  </pre>
+  <p>
+    For details on the meaning of the parameters to this function refer to the detailed
+    documentation on theBISDetectorConfig function in the <a href="areaDetectorDoxygenHTML/_b_i_s_detector_8cpp.html">
+      BIS.cpp documentation</a> and in the documentation for the constructor for
+    the <a href="areaDetectorDoxygenHTML/class_b_i_s_detector.html">BIS class</a>.
+  </p>
+  <p>
+    There an example IOC boot directory and startup script (<a href="bruker_st_cmd.html">iocBoot/iocBruker/st.cmd)</a>
+    provided with areaDetector.
+  </p>
+  <h2 id="MEDM_screens" style="text-align: left">
+    MEDM screens</h2>
+  <p>
+    The following show the MEDM screen that is used to control the Bruker detector.
+    Note that the general purpose screen ADBase.adl can be used, but it exposes many
+    controls that are not applicable to the Bruker, and lacks some fields that are important
+    for the Bruker.</p>
+  <p>
+    <code>BIS.adl</code> is the main screen used to control the Bruker driver.
+  </p>
+  <div style="text-align: center">
+    <h3 style="text-align: center">
+      BIS.adl</h3>
+    <img alt="BIS.png" src="BIS.png" /></div>
+  <h2 id="Restrictions">
+    Restrictions</h2>
+  <p>
+    The following are some current restrictions of the Bruker driver:</p>
+  <ul>
+    <li>If NumDarks is greater than 1 then the driver does not correctly wait long enough for the
+    dark images to be completed.  If one looks at the status responses in the medm screen one can
+    tell when it is actually done.  This should be fixed in a future release.</li>
+    <li>If BIS has not previously collected a dark image with the current binning and exposure time
+    then it will first automatically collect one when told to acquire normal frame.  
+    The driver has no way of knowing that BIS is doing this and
+    so it will time out waiting for the normal image to appear.  This can be avoided by always
+    collecting a Dark frame whenever the binning or exposure time is changed to a value
+    that has not been previously used.</li>
+  </ul>
+</body>
+</html>
