@@ -118,6 +118,7 @@ record(mbbo, "$(P)$(R)GainMenu")
 # Timeout waiting for image to be written to file system
 record(ao, "$(P)$(R)ImageFileTmot")
 {
+    field(PINI, "YES")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_FILE_TMOT")
     field(DESC, "Timeout for image file")
@@ -158,6 +159,7 @@ record(waveform, "$(P)$(R)FlatFieldFile")
 # Minimum flat field value
 record(longout, "$(P)$(R)MinFlatField")
 {
+    field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_FLAT_FIELD")
     field(DESC, "Minimum flat field value")
@@ -200,7 +202,6 @@ record(ao, "$(P)$(R)Wavelength")
 {
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WAVELENGTH")
-    field(PINI, "YES")
     field(PREC, "4")
     field(VAL,  "1.54")
     field(EGU,  "Angstroms")
@@ -208,9 +209,9 @@ record(ao, "$(P)$(R)Wavelength")
 
 record(ao, "$(P)$(R)EnergyLow")
 {
+    field(PINI, "YES")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENERGY_LOW")
-    field(PINI, "YES")
     field(PREC, "3")
     field(VAL,  "0")
     field(EGU,  "eV")
@@ -218,9 +219,9 @@ record(ao, "$(P)$(R)EnergyLow")
 
 record(ao, "$(P)$(R)EnergyHigh")
 {
+    field(PINI, "YES")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENERGY_HIGH")
-    field(PINI, "YES")
     field(PREC, "3")
     field(VAL,  "0")
     field(EGU,  "eV")
@@ -228,9 +229,9 @@ record(ao, "$(P)$(R)EnergyHigh")
 
 record(ao, "$(P)$(R)DetDist")
 {
+    field(PINI, "YES")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DET_DIST")
-    field(PINI, "YES")
     field(PREC, "3")
     field(VAL,  "1000")
     field(EGU,  "mm")
@@ -238,9 +239,9 @@ record(ao, "$(P)$(R)DetDist")
 
 record(ao, "$(P)$(R)DetVOffset")
 {
+    field(PINI, "YES")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DET_VOFFSET")
-    field(PINI, "YES")
     field(PREC, "3")
     field(VAL,  "0")
     field(EGU,  "mm")
@@ -248,9 +249,9 @@ record(ao, "$(P)$(R)DetVOffset")
 
 record(ao, "$(P)$(R)BeamX")
 {
+    field(PINI, "YES")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BEAM_X")
-    field(PINI, "YES")
     field(PREC, "3")
     field(VAL,  "0")
     field(EGU,  "pixels")
@@ -258,9 +259,9 @@ record(ao, "$(P)$(R)BeamX")
 
 record(ao, "$(P)$(R)BeamY")
 {
+    field(PINI, "YES")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BEAM_Y")
-    field(PINI, "YES")
     field(PREC, "3")
     field(VAL,  "0")
     field(EGU,  "pixels")
@@ -268,9 +269,9 @@ record(ao, "$(P)$(R)BeamY")
 
 record(ao, "$(P)$(R)Flux")
 {
+    field(PINI, "YES")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FLUX")
-    field(PINI, "YES")
     field(PREC, "4")
     field(VAL,  "0")
     field(EGU,  "ph/s")
@@ -278,18 +279,18 @@ record(ao, "$(P)$(R)Flux")
 
 record(ao, "$(P)$(R)FilterTransm")
 {
+    field(PINI, "YES")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_TRANSM")
-    field(PINI, "YES")
     field(VAL,  "1.0")
     field(PREC, "4")
 }
 
 record(ao, "$(P)$(R)StartAngle")
 {
+    field(PINI, "YES")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))START_ANGLE")
-    field(PINI, "YES")
     field(PREC, "4")
     field(VAL,  "0")
     field(EGU,  "deg")
@@ -297,9 +298,9 @@ record(ao, "$(P)$(R)StartAngle")
 
 record(ao, "$(P)$(R)AngleIncr")
 {
+    field(PINI, "YES")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANGLE_INCR")
-    field(PINI, "YES")
     field(PREC, "4")
     field(VAL,  "0.1")
     field(EGU,  "deg")
@@ -307,9 +308,9 @@ record(ao, "$(P)$(R)AngleIncr")
 
 record(ao, "$(P)$(R)Det2theta")
 {
+    field(PINI, "YES")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DET_2THETA")
-    field(PINI, "YES")
     field(PREC, "4")
     field(VAL,  "0")
     field(EGU,  "deg")
@@ -317,18 +318,18 @@ record(ao, "$(P)$(R)Det2theta")
 
 record(ao, "$(P)$(R)Polarization")
 {
+    field(PINI, "YES")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))POLARIZATION")
-    field(PINI, "YES")
     field(PREC, "4")
     field(VAL,  "0.99")
 }
 
 record(ao, "$(P)$(R)Alpha")
 {
+    field(PINI, "YES")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ALPHA")
-    field(PINI, "YES")
     field(PREC, "4")
     field(VAL,  "0")
     field(EGU,  "deg")
@@ -336,9 +337,9 @@ record(ao, "$(P)$(R)Alpha")
 
 record(ao, "$(P)$(R)Kappa")
 {
+    field(PINI, "YES")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KAPPA")
-    field(PINI, "YES")
     field(PREC, "4")
     field(VAL,  "0")
     field(EGU,  "deg")
@@ -346,9 +347,9 @@ record(ao, "$(P)$(R)Kappa")
 
 record(ao, "$(P)$(R)Phi")
 {
+    field(PINI, "YES")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PHI")
-    field(PINI, "YES")
     field(PREC, "4")
     field(VAL,  "0")
     field(EGU,  "deg")
@@ -356,9 +357,9 @@ record(ao, "$(P)$(R)Phi")
 
 record(ao, "$(P)$(R)Chi")
 {
+    field(PINI, "YES")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CHI")
-    field(PINI, "YES")
     field(PREC, "4")
     field(VAL,  "0")
     field(EGU,  "deg")
@@ -366,16 +367,16 @@ record(ao, "$(P)$(R)Chi")
 
 record(stringout, "$(P)$(R)OscillAxis")
 {
+    field(PINI, "YES")
     field(DTYP, "asynOctetWrite")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OSCILL_AXIS")
-    field(PINI, "YES")
     field(VAL,  "X, CW")
 }
 
 record(longout, "$(P)$(R)NumOscill")
 {
+    field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_OSCILL")
-    field(PINI, "YES")
     field(VAL,  "1")
 }
