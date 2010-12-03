@@ -23,3 +23,10 @@ extern "C" void NDFileTIFFRegister(void)
 extern "C" {
 epicsExportRegistrar(NDFileTIFFRegister);
 }
+
+extern "C" void NDFileMagickRegister(void)
+{
+}
+extern "C" {
+epicsExportRegistrar(NDFileMagickRegister);
+}
