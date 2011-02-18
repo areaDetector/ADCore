@@ -16,6 +16,7 @@ USR_CXXFLAGS_Linux += -D_LINUX -D_x86 -O0
 
 # These flags are used for Linux and WIN32 to build the Bayer conversion in NDPluginColorConvert
 USR_CXXFLAGS_Linux += -DHAVE_PVAPI
+USR_CXXFLAGS_Darwin += -DHAVE_PVAPI
 USR_CXXFLAGS_WIN32 += -DHAVE_PVAPI
 
 # This flag is used to indicate that the TIFF library was built statically
