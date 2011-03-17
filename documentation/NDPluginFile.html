@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugin NDPluginFile</h1>
     <h2>
-      May 19, 2010</h2>
+      December 5, 2010</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -24,6 +24,7 @@
     <li><a href="#TIFF">TIFF file plugin</a></li>
     <li><a href="#netCDF">netCDF file plugin</a></li>
     <li><a href="#NeXus">NeXus (HDF) file plugin</a></li>
+    <li><a href="#Magick">GraphicsMagick file plugin</a></li>
     <li><a href="#Screens">Screen shots</a></li>
   </ul>
   <h2 id="Overview">
@@ -31,7 +32,9 @@
   </h2>
   <p>
     NDPluginFile is a base class from which actual file plugins are derived. There are
-    currently file plugins for JPEG, TIFF, netCDF, and Nexus (HDF) file formats.
+    currently file plugins for JPEG, TIFF, netCDF, Nexus (HDF) file formats. The GraphicsMagick
+    plugin can write a large number of formats, including JPEG, TIFF, PNG, PDF and many
+    others.
   </p>
   <p>
     NDPluginFile inherits from NDPluginDriver. The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_file.html">
@@ -126,6 +129,61 @@
     is limited to a single array per file, but capture and stream mode are supported
     by writing multiple TIFF files.
   </p>
+  <p>
+    The <a href="areaDetectorDoxygenHTML/class_n_d_file_t_i_f_f.html">NDFileNetTIFF class
+      documentation </a>describes this class in detail.
+  </p>
+  <p>
+    The NDFileTIFF plugin is created with the NDFileTIFFConfigure command, either from
+    C/C++ or from the EPICS IOC shell.</p>
+  <pre>NDFileTIFFConfigure (const char *portName, int queueSize, int blockingCallbacks, 
+                     const char *NDArrayPort, int NDArrayAddr, size_t maxMemory, 
+                     int priority, int stackSize)
+  </pre>
+  <p>
+    For details on the meaning of the parameters to this function refer to the detailed
+    documentation on the NDFileTIFFConfigure function in the <a href="areaDetectorDoxygenHTML/_n_d_file_t_i_f_f_8cpp.html">
+      NDFileTIFF.cpp documentation</a> and in the documentation for the constructor
+    for the <a href="areaDetectorDoxygenHTML/class_n_d_file_t_i_f_f.html">NDFileTIFF class</a>.
+  </p>
+  <h2 id="Magick">
+    GraphicsMagick file plugin
+  </h2>
+  <p>
+    NDFileMagick inherits from NDPluginFile. This plugin saves data in any of the formats
+    supported by the <a href="http://www.graphicsmagick.org/">GraphicsMagick</a> package.
+    GraphicsMagick supports dozens of file formats, including TIFF, JPEG, PNG, PDF,
+    and many others. GraphicsMagick automatically selects the output file format based
+    on the extension of the file (.jpg=JPEG, .tif=TIFF, etc. The GraphicsMagick plugin
+    should be able to write files in any format in the <a href="http://www.graphicsmagick.org/formats.html">
+      list of GraphicsMagick supported file formats"</a> that has a "W" or "RW" in the
+    Mode column.</a>.
+  </p>
+  <p>
+    The GraphicsMagick plugin is limited to 8 and 16-bit integer arrays. It supports
+    color modes Mono and RGB1. NDFileMagick is limited to a single array per file, but
+    capture and stream mode are supported by writing multiple files.
+  </p>
+  <p>
+    The GraphicsMagick plugin supports the Int32 parameter NDFileMagickCompressType
+    to control the compression mode of the file. NDFileMagick.template defines 2 records
+    to support this: $(P)$(R)CompressMode (longout) and $(P)$(R)CompressMode_RBV (longin).
+    The following are the supported compression modes:</p>
+  <ul>
+    <li>"None"</li>
+    <li>"BZip"</li>
+    <li>"FAX"</li>
+    <li>"Group 4"</li>
+    <li>"JPEG"</li>
+    <li>"LZW"</li>
+    <li>"RLE""</li>
+    <li>"Zip"</li>
+  </ul>
+  <p>
+    No formats support all of these compression modes. Many support only one, or have
+    an implicit compression mode and so ignore the CompressMode parameter. For example,
+    the JPEG format supports only the JPEG compression scheme, which is implicit. The
+    TIFF format supports "None", ...</p>
   <p>
     The <a href="areaDetectorDoxygenHTML/class_n_d_file_t_i_f_f.html">NDFileNetTIFF class
       documentation </a>describes this class in detail.
@@ -407,7 +465,7 @@ variables:
     there are example XML template files in the iocSimDetector and iocPerkinElmer directories.
     Documentation on the XML file contents will be written ASAP.</p>
   <p>
-    The prebuilt Linux libraries libhdf5. and libNeXus.a are built with HDF5 1.6.9.
+    The prebuilt Linux libraries libhdf5.a and libNeXus.a are built with HDF5 1.6.9.
     When they are built with the latest version, 1.8.2, they require GLIBC version 2.7
     or higher, i.e. /lib/libc-2.7.so or higher. Since users may want to install areaDetector
     on older Linux systems (which predate Fedora Core 8 for example), it was decided
