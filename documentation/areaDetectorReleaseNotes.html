@@ -15,21 +15,22 @@
       <ul>
         <li>On Windows if NDFilePath has a trailing '\' then preserve it, else add a '/' character
           if one is not present.</li>
+        <li>Added support for Mac OS X (Darwin).</li>
       </ul>
     </li>
     <li>Drivers
       <ul>
         <li>New URL driver which reads images from any URL, including Web cameras and Axis
-          video servers.  This driver uses GraphicsMagick to read the images, and can thus handle
-          a large number of image formats (JPEG, TIFF, PNG, etc.).</li>
+          video servers. This driver uses GraphicsMagick to read the images, and can thus
+          handle a large number of image formats (JPEG, TIFF, PNG, etc.).</li>
         <li>New driver for Bruker BIS (Bruker Instrument Service) detectors. There was a preliminary
-          version of this driver in the apex2Src directory in R1-6.  It is now fully functional. and should
-          work with an BIS detector, not just the Apex2.</li>
-        <li>New driver for Photonic Sciences Ltd. (PSL) detectors.  This driver currently can do everything
-          except read the data back from the detector.  That capability needs to be added, which requires
-          access to a PSL detector for development and testing.</li>
-        <li>Simulation driver.  Added additional simulation modes, Gaussian peaks and rings.  John Hammonds
-          added these features.</li>
+          version of this driver in the apex2Src directory in R1-6. It is now fully functional.
+          and should work with an BIS detector, not just the Apex2.</li>
+        <li>New driver for Photonic Sciences Ltd. (PSL) detectors. This driver currently can
+          do everything except read the data back from the detector. That capability needs
+          to be added, which requires access to a PSL detector for development and testing.</li>
+        <li>Simulation driver. Added additional simulation modes, Gaussian peaks and rings.
+          John Hammonds added these features.</li>
         <li>Changed the setShutter() function in ADDriver.h to be a virtual function, which
           it should have been all along. The base-class implementation for an EPICS shutter
           is now used by default. Changed the drivers to use the virtual function.</li>
@@ -38,17 +39,19 @@
           e.g. simDetector.</li>
         <li>Pilatus driver. Added support for camserver saving data in the CBF file format,
           which is ~4X smaller than TIFF, and for additional header information in the files
-          for crystallography. Thanks to Lewis Muir for these additions.</li>
-        <li>Prosilica driver.  Removed support for writing TIFF files using the driver library.  This was
-          a problem because their driver uses an incompatible version of libtiff that conflicts with
-          the new version used by GraphicsMagick.  The driver TIFF writer had no advantage over using the
-          NDFileTIFF and NDFileMagick plugins, which have more features and can run in their own threads.</li>
+          for crystallography. Thanks to Lewis Muir for these additions. Set FullFilename_RBV
+          for each file in a multi-image sequence, which was not previously being done.</li>
+        <li>Prosilica driver. Removed support for writing TIFF files using the driver library.
+          This was a problem because their driver uses an incompatible version of libtiff
+          that conflicts with the new version used by GraphicsMagick. The driver TIFF writer
+          had no advantage over using the NDFileTIFF and NDFileMagick plugins, which have
+          more features and can run in their own threads.</li>
       </ul>
     </li>
     <li>Plugins
       <ul>
-        <li>New file writing plugin, NDFileMagick.  This uses GraphicsMagick to write files, and
-          can write in dozens of file formats, including JPEG, TIFF, PNG, PDF, etc.</li>
+        <li>New file writing plugin, NDFileMagick. This uses GraphicsMagick to write files,
+          and can write in dozens of file formats, including JPEG, TIFF, PNG, PDF, etc.</li>
         <li>NDPluginColorConvert. Added support for false color when converting 8-bit mono
           to RGB1, RGB2, or RGB3. Thanks to Tom Cobb for this addition.</li>
         <li>NDPluginStats. Removed duplicate record for MeanValue_RBV from NDStats.template.</li>
@@ -56,20 +59,23 @@
     </li>
     <li>Viewers
       <ul>
-        <li>ImageJ EPICS_AD_Viewer.  Additional sanity check in code to see if EPICS PVs are connected, 
-          prevent dereferencing a null pointer. Thanks to Lewis Muir for this.</li>
+        <li>ImageJ EPICS_AD_Viewer. Additional sanity check in code to see if EPICS PVs are
+          connected, prevent dereferencing a null pointer. Thanks to Lewis Muir for this.</li>
       </ul>
     </li>
     <li>Internals
       <ul>
-        <li>Greatly simplified the Makefiles in each driver source directory by having them each include 
-        a common Makefile.</li>
-        <li>Greatly simplified the dbd files in each driver source directory by having them each include 
-        a common dbd file.</li>
-        <li>Renamed pluginSupport.dbd to NDPluginSupport.dbd, and made individual DBD files for each plugin
-        to make it easy for external software to use only a subset of the plugins.</li>
-        <li>Use CYCGWIN_RPC_LIB variable when building on Cygwin to allow either Cygwin 1.5.x or 1.7.x.</li>
-        <li>Minor changes to many drivers and plugins to allow building dynamically (DLLs) on WIN32.</li>
+        <li>Greatly simplified the Makefiles in each driver source directory by having them
+          each include a common Makefile.</li>
+        <li>Greatly simplified the dbd files in each driver source directory by having them
+          each include a common dbd file.</li>
+        <li>Renamed pluginSupport.dbd to NDPluginSupport.dbd, and made individual DBD files
+          for each plugin to make it easy for external software to use only a subset of the
+          plugins.</li>
+        <li>Use CYCGWIN_RPC_LIB variable when building on Cygwin to allow either Cygwin 1.5.x
+          or 1.7.x.</li>
+        <li>Minor changes to many drivers and plugins to allow building dynamically (DLLs)
+          on WIN32.</li>
       </ul>
     </li>
   </ul>
