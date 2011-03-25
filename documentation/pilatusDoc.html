@@ -10,7 +10,7 @@
     <h1>
       areaDetector Pilatus driver</h1>
     <h2>
-      May 15, 2010</h2>
+      March 25, 2011</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -41,9 +41,9 @@
     Dectris.
   </p>
   <p>
-    The camserver program saves the data to disk as TIFF or CBF files. The areaDetector software
-    reads these disk files in order to read the data, because camserver does not provide
-    another mechanism to access the data.
+    The camserver program saves the data to disk as TIFF or CBF files. The areaDetector
+    software reads these disk files in order to read the data, because camserver does
+    not provide another mechanism to access the data.
   </p>
   <p>
     This driver inherits from <a href="areaDetectorDoc.html#ADDriver">ADDriver</a>.
@@ -99,9 +99,9 @@
       </tr>
       <tr>
         <td>
-          ADExposureTime</td>
+          ADAcquireTime</td>
         <td>
-          $(P)$(R)ExposureTime</td>
+          $(P)$(R)AcquireTime</td>
         <td>
           In External Enable mode this value is not used by camserver. However, it should
           be set larger than the maximum time exposure time from the external source, so that
@@ -119,9 +119,9 @@
       </tr>
       <tr>
         <td>
-          ADExposurePeriod</td>
+          ADAcquirePeriod</td>
         <td>
-          $(P)$(R)ExposurePeriod</td>
+          $(P)$(R)AcquirePeriod</td>
         <td>
           Controls the exposure period in seconds. It applies only in Internal or External
           Trigger modes when NumImages &gt;1.</td>
@@ -164,10 +164,10 @@
           $(P)$(R)FileTemplate</td>
         <td>
           camserver uses the file extension to determine what format to save the files in.
-          The areaDetector Pilatus driver only supports TIFF and CBF files, so the extension should
-          be .tif or .cbf. When saving multiple images (NImages>1) camserver has its own rules for
-          creating the names of the individual files. The rules are as follows. The name constructed
-          using the algorithm described for NDFileTemplate under <a href="areaDetectorDoc.html#asynNDArrayDriver">
+          The areaDetector Pilatus driver only supports TIFF and CBF files, so the extension
+          should be .tif or .cbf. When saving multiple images (NImages>1) camserver has its
+          own rules for creating the names of the individual files. The rules are as follows.
+          The name constructed using the algorithm described for NDFileTemplate under <a href="areaDetectorDoc.html#asynNDArrayDriver">
             File Saving Parameters</a> is used as a basename. The following examples show
           the interpretation of the basename.
           <pre>Basename            Files produced
@@ -308,11 +308,11 @@ test6_2_0035.tif    test6_2_0035.tif, test6_2_0036.tif, ...
         <td>
           r/w</td>
         <td>
-          Timeout in seconds when reading a TIFF or CBF file. It should be set to several seconds,
-          because there can be delays for various reasons. One reason is that there is sometimes
-          a delay between when an External Enable acquisition is started and when the first
-          external pulse occurs. Another is that it can take some time for camserver processes
-          to finish writing the files.</td>
+          Timeout in seconds when reading a TIFF or CBF file. It should be set to several
+          seconds, because there can be delays for various reasons. One reason is that there
+          is sometimes a delay between when an External Enable acquisition is started and
+          when the first external pulse occurs. Another is that it can take some time for
+          camserver processes to finish writing the files.</td>
         <td>
           IMAGE_FILE_TMOT</td>
         <td>
@@ -389,14 +389,14 @@ badX2,badY2 replacementX2,replacementY2
         <td>
           Name of a file to be used to correct for the flat field. If this record does not
           point to a valid flat field file then no flat field correction is performed. The
-          flat field file is simply a TIFF or CBF file collected by the Pilatus that is used to correct
-          for spatial non-uniformity in the response of the detector. It should be collected
-          with a spatially uniform intensity on the detector at roughly the same energy as
-          the measurements being corrected. When the flat field file is read, the average
-          pixel value (averageFlatField) is computed using all pixels with intensities &gt;PilatusMinFlatField.
-          All pixels with intensity &lt;PilatusMinFlatField in the flat field are replaced
-          with averageFlatField. When images are collected before the NDArray callbacks are
-          performed the following per-pixel correction is applied:
+          flat field file is simply a TIFF or CBF file collected by the Pilatus that is used
+          to correct for spatial non-uniformity in the response of the detector. It should
+          be collected with a spatially uniform intensity on the detector at roughly the same
+          energy as the measurements being corrected. When the flat field file is read, the
+          average pixel value (averageFlatField) is computed using all pixels with intensities
+          &gt;PilatusMinFlatField. All pixels with intensity &lt;PilatusMinFlatField in the
+          flat field are replaced with averageFlatField. When images are collected before
+          the NDArray callbacks are performed the following per-pixel correction is applied:
           <pre>ImageData[i] = 
     (averageFlatField * 
     ImageData[i])/flatField[i];
@@ -608,7 +608,9 @@ badX2,badY2 replacementX2,replacementY2
         <td>
           r/w</td>
         <td>
-          MX start angle to write to CBF and TIFF image header.  When saving multiple images (ADNumImages&gt;1) camserver will automatically increment the field in the image header by PilatusAngleIncr for each image.</td>
+          MX start angle to write to CBF and TIFF image header. When saving multiple images
+          (ADNumImages&gt;1) camserver will automatically increment the field in the image
+          header by PilatusAngleIncr for each image.</td>
         <td>
           START_ANGLE</td>
         <td>
@@ -625,7 +627,9 @@ badX2,badY2 replacementX2,replacementY2
         <td>
           r/w</td>
         <td>
-          MX angle increment to write to CBF and TIFF image header.  When saving multiple images (ADNumImages&gt;1) camserver will automatically increment the field corresponding to PilatusStartAngle in the image header by this value for each image.</td>
+          MX angle increment to write to CBF and TIFF image header. When saving multiple images
+          (ADNumImages&gt;1) camserver will automatically increment the field corresponding
+          to PilatusStartAngle in the image header by this value for each image.</td>
         <td>
           ANGLE_INCR</td>
         <td>
@@ -744,7 +748,8 @@ badX2,badY2 replacementX2,replacementY2
         <td>
           r/w</td>
         <td>
-          MX oscillation axis text, up to 18 characters in length, to write to CBF and TIFF image header.</td>
+          MX oscillation axis text, up to 18 characters in length, to write to CBF and TIFF
+          image header.</td>
         <td>
           OSCILL_AXIS</td>
         <td>
@@ -1099,19 +1104,19 @@ def user_getcounts '{
     Trigger pulses</h3>
   <p>
     The Pilatus supports 3 types of external triggering. In External Trigger mode (the
-    camserver ExtTrigger command) the Pilatus uses the programmed values of ExposureTime,
-    ExposurePeriod, NImages and NExposures. It waits for a single external trigger,
-    then waits for Delay seconds and then collects the entire sequence. It is very similar
+    camserver ExtTrigger command) the Pilatus uses the programmed values of AcquireTime,
+    AcquirePeriod, NImages and NExposures. It waits for a single external trigger, then
+    waits for Delay seconds and then collects the entire sequence. It is very similar
     to Internal mode with NImages>1, except that it waits for a trigger to begin collecting
     the sequence.</p>
   <p>
     In External Enable mode (the camserver ExtEnable command) the Pilatus uses the external
-    signal to control acquisition. Only NImages and NExposures are used, ExposureTime
-    and ExposurePeriod are not used. When the signal is high the detector counts, and
+    signal to control acquisition. Only NImages and NExposures are used, AcquireTime
+    and AcquirePeriod are not used. When the signal is high the detector counts, and
     on the transition to low it begins its readout.</p>
   <p>
     In External MultiTrigger Mode (the camserver ExtMTrigger command) the Pilatus uses
-    the programmed ExposureTime, in addition to NImages and NExposures. Each external
+    the programmed AcquireTime, in addition to NImages and NExposures. Each external
     trigger pulse causes the Pilatus to collect one image at the programmed exposure
     time. This mode works well with a trigger source like the Newport motor controllers
     or the SIS380x multichannel scaler, that put out a short trigger pulse for each
@@ -1174,11 +1179,12 @@ def user_getcounts '{
   <p>
     The following are some current restrictions of the areaDetector Pilatus driver:</p>
   <ul>
-    <li>Limited to TIFF or CBF file format. camserver can save files in other formats, but the
-      driver can currently only read TIFF and CBF files. It uses the standard libtiff library
-      to read the TIFF files, so it should work on big or little endian machines, and should
-      work with uncompressed or compressed files. It has only been tested with uncompressed
-      files on a little-endian machine. It uses the CBFlib library to read the CBF files.</li>
+    <li>Limited to TIFF or CBF file format. camserver can save files in other formats,
+      but the driver can currently only read TIFF and CBF files. It uses the standard
+      libtiff library to read the TIFF files, so it should work on big or little endian
+      machines, and should work with uncompressed or compressed files. It has only been
+      tested with uncompressed files on a little-endian machine. It uses the CBFlib library
+      to read the CBF files.</li>
     <li>The EPICS IOC should be run on the same computer as camserver. This is not strictly
       necessary, and places a small additional load on the CPU and network on that computer.
       However, we have found that TIFF files are available to be read within 10ms after
