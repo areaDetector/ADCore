@@ -46,10 +46,10 @@ extern "C" {epicsExportAddress(int, eraseNDAttributes);}
   * all of the NDArray objects; -1=unlimited.
   */
 NDArrayPool::NDArrayPool(int maxBuffers, size_t maxMemory)
-    : maxBuffers(maxBuffers), numBuffers(0), maxMemory(maxMemory), memorySize(0), numFree(0)
+    : maxBuffers_(maxBuffers), numBuffers_(0), maxMemory_(maxMemory), memorySize_(0), numFree_(0)
 {
-    ellInit(&this->freeList);
-    this->listLock = epicsMutexCreate();
+    ellInit(&freeList_);
+    listLock_ = epicsMutexCreate();
 }
 
 /** Allocates a new NDArray object; the first 3 arguments are required.
@@ -78,22 +78,22 @@ NDArray* NDArrayPool::alloc(int ndims, int *dims, NDDataType_t dataType, int dat
     int i;
     const char* functionName = "NDArrayPool::alloc:";
 
-    epicsMutexLock(this->listLock);
+    epicsMutexLock(listLock_);
 
     /* Find a free image */
-    pArray = (NDArray *)ellFirst(&this->freeList);
+    pArray = (NDArray *)ellFirst(&freeList_);
 
     if (!pArray) {
         /* We did not find a free image.
          * Allocate a new one if we have not exceeded the limit */
-        if ((this->maxBuffers > 0) && (this->numBuffers >= this->maxBuffers)) {
+        if ((maxBuffers_ > 0) && (numBuffers_ >= maxBuffers_)) {
             printf("%s: error: reached limit of %d buffers (memory use=%ld/%ld bytes)\n",
-                   functionName, this->maxBuffers, (long)this->memorySize, (long)this->maxMemory);
+                   functionName, maxBuffers_, (long)memorySize_, (long)maxMemory_);
         } else {
-            this->numBuffers++;
+            numBuffers_++;
             pArray = new NDArray;
-            ellAdd(&this->freeList, &pArray->node);
-            this->numFree++;
+            ellAdd(&freeList_, &pArray->node);
+            numFree_++;
         }
     }
 
@@ -130,20 +130,20 @@ NDArray* NDArrayPool::alloc(int ndims, int *dims, NDDataType_t dataType, int dat
             if (pArray->dataSize < dataSize) {
                 /* No, we need to free the current buffer and allocate a new one */
                 /* See if there is enough room */
-                this->memorySize -= pArray->dataSize;
+                memorySize_ -= pArray->dataSize;
                 if (pArray->pData) {
                     free(pArray->pData);
                     pArray->pData = NULL;
                 }
-                if ((this->maxMemory > 0) && ((this->memorySize + dataSize) > this->maxMemory)) {
+                if ((maxMemory_ > 0) && ((memorySize_ + dataSize) > maxMemory_)) {
                     printf("%s: error: reached limit of %ld memory (%d/%d buffers)\n",
-                           functionName, (long)this->maxMemory, this->numBuffers, this->maxBuffers);
+                           functionName, (long)maxMemory_, numBuffers_, maxBuffers_);
                     pArray = NULL;
                 } else {
                     pArray->pData = callocMustSucceed(dataSize, 1,
                                                       functionName);
                     pArray->dataSize = dataSize;
-                    this->memorySize += dataSize;
+                    memorySize_ += dataSize;
                 }
             }
         }
@@ -151,10 +151,10 @@ NDArray* NDArrayPool::alloc(int ndims, int *dims, NDDataType_t dataType, int dat
     if (pArray) {
         /* Set the reference count to 1, remove from free list */
         pArray->referenceCount = 1;
-        ellDelete(&this->freeList, &pArray->node);
-        this->numFree--;
+        ellDelete(&freeList_, &pArray->node);
+        numFree_--;
     }
-    epicsMutexUnlock(this->listLock);
+    epicsMutexUnlock(listLock_);
     return (pArray);
 }
 
@@ -214,9 +214,9 @@ int NDArrayPool::reserve(NDArray *pArray)
                driverName, functionName, pArray->pNDArrayPool, this);
         return(ND_ERROR);
     }
-    epicsMutexLock(this->listLock);
+    epicsMutexLock(listLock_);
     pArray->referenceCount++;
-    epicsMutexUnlock(this->listLock);
+    epicsMutexUnlock(listLock_);
     return ND_SUCCESS;
 }
 
@@ -238,18 +238,18 @@ int NDArrayPool::release(NDArray *pArray)
                driverName, functionName, pArray->pNDArrayPool, this);
         return(ND_ERROR);
     }
-    epicsMutexLock(this->listLock);
+    epicsMutexLock(listLock_);
     pArray->referenceCount--;
     if (pArray->referenceCount == 0) {
         /* The last user has released this image, add it back to the free list */
-        ellAdd(&this->freeList, &pArray->node);
-        this->numFree++;
+        ellAdd(&freeList_, &pArray->node);
+        numFree_++;
     }
     if (pArray->referenceCount < 0) {
         printf("%s:release ERROR, reference count < 0 pArray=%p\n",
             driverName, pArray);
     }
-    epicsMutexUnlock(this->listLock);
+    epicsMutexUnlock(listLock_);
     return ND_SUCCESS;
 }
 
@@ -579,6 +579,35 @@ int NDArrayPool::convert(NDArray *pIn,
     return ND_SUCCESS;
 }
 
+/** Returns maximum number of buffers this object is allowed to allocate; -1=unlimited */
+int NDArrayPool::maxBuffers()
+{  
+return maxBuffers_;
+}
+
+/** Returns number of buffers this object has currently allocated */
+int NDArrayPool::numBuffers()
+{  
+return numBuffers_;
+}
+
+/** Returns maximum bytes of memory this object is allowed to allocate; -1=unlimited */
+size_t NDArrayPool::maxMemory()
+{  
+return maxMemory_;
+}
+
+/** Returns mumber of bytes of memory this object has currently allocated */
+size_t NDArrayPool::memorySize()
+{
+  return memorySize_;
+}
+
+/** Returns number of NDArray objects in the free list */
+int NDArrayPool::numFree()
+{
+  return numFree_;
+}
 
 /** Reports on the free list size and other properties of the NDArrayPool
   * object.
@@ -588,11 +617,11 @@ int NDArrayPool::report(int details)
 {
     printf("NDArrayPool:\n");
     printf("  numBuffers=%d, maxBuffers=%d\n",
-        this->numBuffers, this->maxBuffers);
+        numBuffers_, maxBuffers_);
     printf("  memorySize=%ld, maxMemory=%ld\n",
-        (long)this->memorySize, (long)this->maxMemory);
+        (long)memorySize_, (long)maxMemory_);
     printf("  numFree=%d\n",
-        this->numFree);
+        numFree_);
         
     return ND_SUCCESS;
 }
