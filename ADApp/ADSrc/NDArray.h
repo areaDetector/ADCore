@@ -243,28 +243,33 @@ public:
   */
 class epicsShareFunc NDArrayPool {
 public:
-    NDArrayPool   (int maxBuffers, size_t maxMemory);
-    NDArray*     alloc         (int ndims, int *dims, NDDataType_t dataType, int dataSize, void *pData);
-    NDArray*     copy          (NDArray *pIn, NDArray *pOut, int copyData);
+    NDArrayPool  (int maxBuffers, size_t maxMemory);
+    NDArray*     alloc     (int ndims, int *dims, NDDataType_t dataType, int dataSize, void *pData);
+    NDArray*     copy      (NDArray *pIn, NDArray *pOut, int copyData);
 
-    int          reserve       (NDArray *pArray);
-    int          release       (NDArray *pArray);
-    int          convert       (NDArray *pIn,
-                                NDArray **ppOut,
-                                NDDataType_t dataTypeOut,
-                                NDDimension_t *outDims);
-    int          convert       (NDArray *pIn,
-                                NDArray **ppOut,
-                                NDDataType_t dataTypeOut);
-    int          report        (int details);
+    int          reserve   (NDArray *pArray);
+    int          release   (NDArray *pArray);
+    int          convert   (NDArray *pIn,
+                            NDArray **ppOut,
+                            NDDataType_t dataTypeOut,
+                            NDDimension_t *outDims);
+    int          convert   (NDArray *pIn,
+                            NDArray **ppOut,
+                            NDDataType_t dataTypeOut);
+    int          report     (int details);
+    int          maxBuffers ();
+    int          numBuffers ();
+    size_t       maxMemory  ();
+    size_t       memorySize ();
+    int          numFree    ();
 private:
-    ELLLIST      freeList;      /**< Linked list of free NDArray objects that form the pool */
-    epicsMutexId listLock;      /**< Mutex to protect the free list */
-    int          maxBuffers;    /**< Maximum number of buffers this object is allowed to allocate; -1=unlimited */
-    int          numBuffers;    /**< Number of buffers this object has currently allocated */
-    size_t       maxMemory;     /**< Maximum bytes of memory this object is allowed to allocate; -1=unlimited */
-    size_t       memorySize;    /**< Number of bytes of memory this object has currently allocated */
-    int          numFree;       /**< Number of NDArray objects in the free list */
+    ELLLIST      freeList_;      /**< Linked list of free NDArray objects that form the pool */
+    epicsMutexId listLock_;      /**< Mutex to protect the free list */
+    int          maxBuffers_;    /**< Maximum number of buffers this object is allowed to allocate; -1=unlimited */
+    int          numBuffers_;    /**< Number of buffers this object has currently allocated */
+    size_t       maxMemory_;     /**< Maximum bytes of memory this object is allowed to allocate; -1=unlimited */
+    size_t       memorySize_;    /**< Number of bytes of memory this object has currently allocated */
+    int          numFree_;       /**< Number of NDArray objects in the free list */
 };
 
 
