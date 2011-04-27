@@ -410,6 +410,9 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 			dataclass[0] = '\0';
 
 			NXopendata(this->nxFileHandle, nodeValue);
+// If you are having problems with NXgetgroupinfo in Visual Studio,
+// Checkout this link: http://trac.nexusformat.org/code/ticket/217
+// Fixed in Nexus 4.2.1
 //printf("%s:%s: calling NXgetgroupinfo!\n", driverName, functionName);
 			NXgetgroupinfo(this->nxFileHandle, &numItems, dPath, dataclass);
 //printf("dPath=%s, nodeValue=%s\n", dPath, nodeValue );
@@ -798,7 +801,7 @@ void NDFileNexus::loadTemplateFile() {
 	status = getStringParam(addr, NDFileNexusTemplateFile, sizeof(template_file), template_file);
 	sprintf(fullFilename, "%s%s", template_path, template_file);
     if (strlen(fullFilename) == 0) return;
-    
+
 	/* Load the Nexus template file */
 	loadStatus = this->configDoc.LoadFile(fullFilename);
 
