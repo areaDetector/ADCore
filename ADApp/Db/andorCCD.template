@@ -1,0 +1,204 @@
+# Database for the records specific to the Andor CCD.
+# Matthew Pearson
+# June 2009
+
+record(bo, "$(P)$(R)AndorCooler")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COOLER")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+}
+
+
+record(bi, "$(P)$(R)AndorCooler_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COOLER")
+    field(ZNAM, "OFF")
+    field(ONAM, "ON")
+    field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)AndorShutdown")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SHUTDOWN")
+}
+
+
+record(bo, "$(P)$(R)AndorStartup")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))STARTUP")
+}
+
+
+record(mbbo, "$(P)$(R)AndorImageMode")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_MODE_AM")
+   field(ZRST, "Accumulate")
+   field(ZRVL, "0")
+   field(ONST, "Kinetics")
+   field(ONVL, "1")
+   field(TWST, "Fast Kinetics")
+   field(TWVL, "2")
+}
+
+# Accumulated cycle time in kinetics mode. 
+record(ao, "$(P)$(R)AndorACTInKinetics")
+{
+   field(PINI, "1")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACT_KINETICS")
+   field(PREC, "3")
+}
+
+# Number of accumulations in kinetics mode. 
+record(ao, "$(P)$(R)AndorANumInKinetics")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANUM_KINETICS")
+   field(PREC, "3")
+}
+
+record(ao, "$(P)$(R)AndorFKHeight")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FK_HEIGHT")
+   field(PREC, "3")
+}
+
+record(ao, "$(P)$(R)AndorFKHBinning")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FKH_BINNING")
+   field(PREC, "3")
+}
+
+record(ao, "$(P)$(R)AndorFKVBinning")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FKV_BINNING")
+   field(PREC, "3")
+}
+
+
+record(ao, "$(P)$(R)AndorFKOffset")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FK_OFFSET")
+   field(PREC, "3")
+}
+
+
+# Status message concerning temperature.
+record(waveform, "$(P)$(R)AndorTempStatus_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMP_STAT")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
+# Status message not related to data acquisition (error messages, information messages, etc.)
+record(waveform, "$(P)$(R)AndorMessage_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_MESSAGE")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)AndorShutterMode")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_SHUTTER_MODE")
+    field(ZRST, "Auto")
+    field(ZRVL, "0")
+    field(ONST, "Open")
+    field(ONVL, "1")
+}
+
+record(bo, "$(P)$(R)AndorShutterExTTL")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_SHUTTER_EXTTL")
+    field(ZNAM, "LOW TO OPEN")
+    field(ONAM, "HIGH TO OPEN")
+    field(RVAL, "1")
+}
+
+record(mbbo, "$(P)$(R)AndorFileFormat")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_FORMAT")
+   field(ZRST, "TIFF")
+   field(ZRVL, "0")
+   field(ONST, "BMP")
+   field(ONVL, "1")
+   field(TWST, "SIF")
+   field(TWVL, "2")
+   field(THST, "EDF")
+   field(THVL, "3")
+   field(FRST, "RAW")
+   field(FRVL, "4")
+   field(FVST, "TEXT")
+   field(FVVL, "5")
+}
+
+# Filename of the PAL file
+record(waveform, "$(P)$(R)PALFilePath")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PAL_FILE_PATH")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(R)PALFilePath_RBV")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PAL_FILE_PATH")
+    field(FTVL, "UCHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)AndorADCSpeed")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_ADC_SPEED")
+    field(ZRST, "0.05 MHz")
+    field(ZRVL, "0")
+    field(ONST, "2.5 MHz")
+    field(ONVL, "1")
+    field(VAL, "1")
+}
+
+record(mbbi, "$(P)$(R)AndorADCSpeed_RBV")
+{
+   field(PINI, "1")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_ADC_SPEED")
+   field(ZRST, "0.05 MHz")
+   field(ZRVL, "0")
+   field(ONST, "2.5 MHz")
+   field(ONVL, "1")
+   field(SCAN, "I/O Intr")
+}
