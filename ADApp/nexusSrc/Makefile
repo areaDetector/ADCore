@@ -1,0 +1,27 @@
+TOP=../..
+include $(TOP)/configure/CONFIG
+#----------------------------------------
+#  ADD MACRO DEFINITIONS AFTER THIS LINE
+#=============================
+
+
+INC += napi.h
+
+LIBRARY_IOC_WIN32 += nexus
+LIBRARY_IOC_cygwin += nexus
+
+LIB_SRCS += napi.c
+LIB_SRCS += napi5.c
+LIB_SRCS += napiu.c
+LIB_SRCS += nxdataset.c
+LIB_SRCS += nxio.c
+LIB_SRCS += nxstack.c
+LIB_SRCS += nxxml.c
+LIB_SRCS += stptok.c
+
+#=============================
+
+include $(TOP)/configure/RULES
+#----------------------------------------
+#  ADD RULES AFTER THIS LINE
+
