@@ -8,6 +8,7 @@ DIRS += cbfSrc
 # header and library files needed by both
 DIRS += prosilicaSupport
 DIRS += tiffSupport
+DIRS += nexusSrc
 DIRS += nexusSupport
 DIRS += pvcamSupport
 DIRS += magickSupport
