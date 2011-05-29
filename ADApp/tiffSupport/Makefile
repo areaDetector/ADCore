@@ -4,10 +4,13 @@ include $(TOP)/configure/CONFIG
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 #=============================
 
-# This directory contains files to support libtiff and libjpeg on WIN32, so users don't need to install it.
+# This directory contains header files to support libtiff and libjpeg on WIN32.
 # These files were obtained from the distribution at
 # http://gnuwin32.sourceforge.net/packages/tiff.htm
 # http://gnuwin32.sourceforge.net/packages/jpeg.htm
+#
+# The libraries themselves are now contained in the GraphicsMagick package, and are no longer 
+# obtained from the above locations.
 # 
 INC_WIN32    += tiff.h tiffio.h tiffvers.h tiffconf.h 
 INC_cygwin32 += tiff.h tiffio.h tiffvers.h tiffconf.h 
