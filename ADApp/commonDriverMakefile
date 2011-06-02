@@ -21,13 +21,13 @@ LIB_LIBS_WIN32          += CORE_RL_libxml_ CORE_RL_png_ CORE_RL_tiff_ CORE_RL_tt
 PROD_LIBS_WIN32         += CORE_RL_libxml_ CORE_RL_png_ CORE_RL_tiff_ CORE_RL_ttf_ CORE_RL_wmf_
 LIB_LIBS_WIN32          += CORE_RL_xlib_ CORE_RL_zlib_
 PROD_LIBS_WIN32         += CORE_RL_xlib_ CORE_RL_zlib_
-LIB_LIBS_WIN32          += nexus hdf5 libszip zlib
-PROD_LIBS_WIN32         += nexus hdf5 libszip zlib
+LIB_LIBS_WIN32          += NeXus hdf5 libszip zlib
+PROD_LIBS_WIN32         += NeXus hdf5 libszip zlib
 LIB_SYS_LIBS_WIN32      += Gdi32 Oleaut32 
 PROD_SYS_LIBS_WIN32     += Gdi32 Oleaut32
 
-LIB_LIBS_cygwin32       += nexus hdf5 libszip zlib
-PROD_LIBS_cygwin32      += nexus hdf5 libszip zlib
+LIB_LIBS_cygwin32       += NeXus hdf5 libszip zlib
+PROD_LIBS_cygwin32      += NeXus hdf5 libszip zlib
 LIB_LIBS_cygwin32       += libGraphicsMagick++ libGraphicsMagickWand libGraphicsMagick
 PROD_LIBS_cygwin32      += libGraphicsMagick++ libGraphicsMagickWand libGraphicsMagick
 LIB_LIBS_cygwin32       += liblcms libpng14 libbz2 libfreetype
@@ -48,11 +48,11 @@ PROD_LIBS_Linux         += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
 #LIB_SYS_LIBS_Linux     += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
 #PROD_SYS_LIBS_Linux    += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
 # To use versions of these libraries supplied with areaDetector use this line
-LIB_LIBS_Linux          += NeXus mfhdf df hdf5 mxml
-PROD_LIBS_Linux         += NeXus mfhdf df hdf5 mxml
+LIB_LIBS_Linux          += NeXus hdf5 sz
+PROD_LIBS_Linux         += NeXus hdf5 sz
 # To use system versions of these libraries use this line
-#LIB_SYS_LIBS_Linux     += NeXus mfhdf df hdf5 mxml
-#PROD_SYS_LIBS_Linux    += NeXus mfhdf df hdf5 mxml
+#LIB_SYS_LIBS_Linux     += NeXus hdf5 sz
+#PROD_SYS_LIBS_Linux    += NeXus hdf5 sz
 # To use versions of these libraries supplied with areaDetector use this line
 LIB_LIBS_Linux          += tiff jpeg z
 PROD_LIBS_Linux         += tiff jpeg z
