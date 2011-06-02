@@ -8,12 +8,12 @@ DIRS += cbfSrc
 # header and library files needed by both
 DIRS += prosilicaSupport
 DIRS += tiffSupport
+DIRS += hdf5Support
 DIRS += nexusSrc
-DIRS += nexusSupport
 DIRS += pvcamSupport
 DIRS += magickSupport
 DIRS += pluginSrc
-pluginSrc_DEPEND_DIRS = ADSrc netCDFSrc prosilicaSupport tiffSupport nexusSupport magickSupport
+pluginSrc_DEPEND_DIRS = ADSrc netCDFSrc prosilicaSupport tiffSupport hdf5Support nexusSrc magickSupport
 DIRS += simDetectorSrc
 simDetectorSrc_DEPEND_DIRS = pluginSrc
 DIRS += URLSrc
