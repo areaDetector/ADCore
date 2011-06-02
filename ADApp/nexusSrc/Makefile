@@ -7,8 +7,10 @@ include $(TOP)/configure/CONFIG
 
 INC += napi.h
 
-LIBRARY_IOC_WIN32 += nexus
-LIBRARY_IOC_cygwin32 += nexus
+LIBRARY_IOC_WIN32    += NeXus
+LIBRARY_IOC_cygwin32 += NeXus
+LIBRARY_IOC_Linux    += NeXus
+LIBRARY_IOC_Darwin   += NeXus
 
 LIB_SRCS += napi.c
 LIB_SRCS += napi5.c
