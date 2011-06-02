@@ -142,8 +142,8 @@ record(bo, "$(P)$(R)StoreAttr")
     field(DTYP, "asynInt32")
     field(OUT, "@asyn($(PORT),0)HDF5_storeAttributes")
     field(PINI, "NO")
-    field(ZNAM, "off")
-    field(ONAM, "on")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
 }
 
 record(bi, "$(P)$(R)StoreAttr_RBV")
@@ -152,8 +152,8 @@ record(bi, "$(P)$(R)StoreAttr_RBV")
     field(INP, "@asyn($(PORT),0)HDF5_storeAttributes")
     field(PINI, "NO")
     field(SCAN, "I/O Intr")
-    field(ZNAM, "off")
-    field(ONAM, "on")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
 }
 
 record(bo, "$(P)$(R)StorePerform")
@@ -161,8 +161,8 @@ record(bo, "$(P)$(R)StorePerform")
     field(DTYP, "asynInt32")
     field(OUT, "@asyn($(PORT),0)HDF5_storePerformance")
     field(PINI, "NO")
-    field(ZNAM, "off")
-    field(ONAM, "on")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
 }
 
 record(bi, "$(P)$(R)StorePerform_RBV")
@@ -171,12 +171,12 @@ record(bi, "$(P)$(R)StorePerform_RBV")
     field(INP, "@asyn($(PORT),0)HDF5_storePerformance")
     field(PINI, "NO")
     field(SCAN, "I/O Intr")
-    field(ZNAM, "off")
-    field(ONAM, "on")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
 }
 
 # % gdatag, pv, ro, $(PORT)_NDFileHDF5, runtime, Total runtime from first frame to file closed
-record(ai, "$(P)$(R)Runtime")
+record(ai, "$(P)$(R)RunTime")
 {
     field(DTYP, "asynFloat64")
     field(INP,  "@asyn($(PORT),0)HDF5_totalRuntime")
@@ -198,8 +198,8 @@ record(ai, "$(P)$(R)IOSpeed")
 }
 
 
-# % gdatag, pv, rw, $(PORT)_NDFileHDF5, Compression, Select or switch off compression filter
-record(mbbo, "$(P)$(R)Compression")
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, CompressType, Select or switch off compression filter
+record(mbbo, "$(P)$(R)CompressType")
 {
     field(DTYP, "asynInt32")
     field(OUT, "@asyn($(PORT),0)HDF5_compressionType")
@@ -213,8 +213,8 @@ record(mbbo, "$(P)$(R)Compression")
     field(THVL, "3")
 }
 
-# % gdatag, pv, ro, $(PORT)_NDFileHDF5, NumBitOffset_RBV, Readback selected compression filter
-record(mbbi, "$(P)$(R)Compression_RBV")
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, CompressType_RBV, Readback selected compression filter
+record(mbbi, "$(P)$(R)CompressType_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP, "@asyn($(PORT),0)HDF5_compressionType")
@@ -230,7 +230,7 @@ record(mbbi, "$(P)$(R)Compression_RBV")
     field(THVL, "3")
 }
 
-# % gdatag, pv, rw, $(PORT)_NDFileHDF5, NumBitPrecision, N-bit compression filter: number of data bits per pixel
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, NumDataBits, N-bit compression filter: number of data bits per pixel
 record(longout, "$(P)$(R)NumDataBits")
 {
     field(DTYP, "asynInt32")
@@ -239,7 +239,7 @@ record(longout, "$(P)$(R)NumDataBits")
     field(EGU,  "bit")
 }
 
-# % gdatag, pv, ro, $(PORT)_NDFileHDF5, NumBitPrecision_RBV, Readback N-bit compression filter: number of data bits per pixel
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, NumDataBits_RBV, Readback N-bit compression filter: number of data bits per pixel
 record(longin, "$(P)$(R)NumDataBits_RBV")
 {
     field(DTYP, "asynInt32")
@@ -249,7 +249,7 @@ record(longin, "$(P)$(R)NumDataBits_RBV")
     field(EGU,  "bit")
 }
 
-# % gdatag, pv, rw, $(PORT)_NDFileHDF5, NumBitOffset, N-bit compression filter: dataword bit-offset in pixel
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, DataBitsOffset, N-bit compression filter: dataword bit-offset in pixel
 record(longout, "$(P)$(R)DataBitsOffset")
 {
     field(DTYP, "asynInt32")
@@ -258,7 +258,7 @@ record(longout, "$(P)$(R)DataBitsOffset")
     field(EGU,  "bit")
 }
 
-# % gdatag, pv, ro, $(PORT)_NDFileHDF5, NumBitOffset_RBV, Readback N-bit compression filter: dataword bit-offset in pixel
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, DataBitsOffset_RBV, Readback N-bit compression filter: dataword bit-offset in pixel
 record(longin, "$(P)$(R)DataBitsOffset_RBV")
 {
     field(DTYP, "asynInt32")
