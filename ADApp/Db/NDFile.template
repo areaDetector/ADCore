@@ -12,7 +12,7 @@ record(waveform, "$(P)$(R)FilePath")
     field(PINI, "YES")
     field(DTYP, "asynOctetWrite")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_PATH")
-    field(FTVL, "UCHAR")
+    field(FTVL, "CHAR")
     field(NELM, "256")
 }
 
@@ -20,7 +20,7 @@ record(waveform, "$(P)$(R)FilePath_RBV")
 {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_PATH")
-    field(FTVL, "UCHAR")
+    field(FTVL, "CHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
 }
@@ -42,7 +42,7 @@ record(waveform, "$(P)$(R)FileName")
     field(PINI, "YES")
     field(DTYP, "asynOctetWrite")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NAME")
-    field(FTVL, "UCHAR")
+    field(FTVL, "CHAR")
     field(NELM, "256")
 }
 
@@ -50,7 +50,7 @@ record(waveform, "$(P)$(R)FileName_RBV")
 {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NAME")
-    field(FTVL, "UCHAR")
+    field(FTVL, "CHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
 }
@@ -111,7 +111,7 @@ record(waveform, "$(P)$(R)FileTemplate")
     field(PINI, "YES")
     field(DTYP, "asynOctetWrite")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_TEMPLATE")
-    field(FTVL, "UCHAR")
+    field(FTVL, "CHAR")
     field(NELM, "256")
 }
 
@@ -119,7 +119,7 @@ record(waveform, "$(P)$(R)FileTemplate_RBV")
 {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_TEMPLATE")
-    field(FTVL, "UCHAR")
+    field(FTVL, "CHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
 }
@@ -129,7 +129,7 @@ record(waveform, "$(P)$(R)FullFileName_RBV")
 {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FULL_FILE_NAME")
-    field(FTVL, "UCHAR")
+    field(FTVL, "CHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
 }
