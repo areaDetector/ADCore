@@ -1,0 +1,324 @@
+# Database for NDFileHDF5 driver, which saves files for NDArray data.
+
+# Macros:
+# % macro, P, Device Prefix
+# % macro, R, Device Suffix
+# % macro, PORT, Asyn Port name
+
+# % gdatag, template, NDFileHDF5, $(PORT)_NDFileHDF5, $(PORT) NDFileHDF5 class instance
+
+# This associates the template with an edm screen
+# % gui, $(PORT), edmtab, NDFileHDF5.edl, P=$(P),R=$(R)
+
+# We replace some fields in records defined in NDFile.template
+# File data format 
+record(mbbo, "$(P)$(R)FileFormat")
+{
+    field(ZRST, "HDF5")
+    field(ZRVL, "0")
+    field(ONST, "Invalid")
+    field(ONVL, "1")
+}
+
+record(mbbi, "$(P)$(R)FileFormat_RBV")
+{
+    field(ZRST, "HDF5")
+    field(ZRVL, "0")
+    field(ONST, "Undefined")
+    field(ONVL, "1")
+}
+
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, NumRowChunks, Number of rows to use per chunk
+record(longout, "$(P)$(R)NumRowChunks")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_nRowChunks")
+    field(PINI, "YES")
+}
+
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, NumRowChunks_RBV, Readback of number of rows to use per chunk
+record(longin, "$(P)$(R)NumRowChunks_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_nRowChunks")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, NumExtraDims, Number of extra dimensions [0..2]
+record(longout, "$(P)$(R)NumExtraDims")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_nExtraDims")
+    field(PINI, "YES")
+}
+
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, NumExtraDims_RBV, Readback number of extra dimensions
+record(longin, "$(P)$(R)NumExtraDims_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_nExtraDims")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, ExtraDimSizeN, Size of extra dimension N (no. of frames per point)
+record(longout, "$(P)$(R)ExtraDimSizeN")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimSizeN")
+    field(PINI, "YES")
+}
+
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, ExtraDimSizeN_RBV, Readback size of extra dimension N (no. of frames per point)
+record(longin, "$(P)$(R)ExtraDimSizeN_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimSizeN")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)ExtraDimNameN_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimNameN")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, ExtraDimSizeX, Size of extra dimension X
+record(longout, "$(P)$(R)ExtraDimSizeX")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimSizeX")
+    field(PINI, "YES")
+}
+
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, ExtraDimSizeX_RBV, Readback size of extra dimension X
+record(longin, "$(P)$(R)ExtraDimSizeX_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimSizeX")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)ExtraDimNameX_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimNameX")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, ExtraDimSizeY, Size of extra dimension Y
+record(longout, "$(P)$(R)ExtraDimSizeY")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimSizeY")
+    field(PINI, "YES")
+}
+
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, ExtraDimSizeY_RBV, Readback size of extra dimension Y
+record(longin, "$(P)$(R)ExtraDimSizeY_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimSizeY")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)ExtraDimNameY_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimNameY")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)StoreAttr")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_storeAttributes")
+    field(PINI, "NO")
+    field(ZNAM, "off")
+    field(ONAM, "on")
+}
+
+record(bi, "$(P)$(R)StoreAttr_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_storeAttributes")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+    field(ZNAM, "off")
+    field(ONAM, "on")
+}
+
+record(bo, "$(P)$(R)StorePerform")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_storePerformance")
+    field(PINI, "NO")
+    field(ZNAM, "off")
+    field(ONAM, "on")
+}
+
+record(bi, "$(P)$(R)StorePerform_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_storePerformance")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+    field(ZNAM, "off")
+    field(ONAM, "on")
+}
+
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, runtime, Total runtime from first frame to file closed
+record(ai, "$(P)$(R)Runtime")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),0)HDF5_totalRuntime")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+    field(PREC, "3")
+    field(EGU,  "s")
+}
+
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, IOSpeed, Overall IO speed from first frame to file closed
+record(ai, "$(P)$(R)IOSpeed")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),0)HDF5_totalIoSpeed")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+    field(PREC, "1")
+    field(EGU,  "Mbit/s")
+}
+
+
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, Compression, Select or switch off compression filter
+record(mbbo, "$(P)$(R)Compression")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_compressionType")
+    field(ZRST, "None")
+    field(ZRVL, "0")
+    field(ONST, "N-bit")
+    field(ONVL, "1")
+    field(TWST, "szip")
+    field(TWVL, "2")
+    field(THST, "zlib")
+    field(THVL, "3")
+}
+
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, NumBitOffset_RBV, Readback selected compression filter
+record(mbbi, "$(P)$(R)Compression_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_compressionType")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+    field(ZRST, "None")
+    field(ZRVL, "0")
+    field(ONST, "nbit")
+    field(ONVL, "1")
+    field(TWST, "szip")
+    field(TWVL, "2")
+    field(THST, "zlib")
+    field(THVL, "3")
+}
+
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, NumBitPrecision, N-bit compression filter: number of data bits per pixel
+record(longout, "$(P)$(R)NumDataBits")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_nbitsPrecision")
+    field(PINI, "NO")
+    field(EGU,  "bit")
+}
+
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, NumBitPrecision_RBV, Readback N-bit compression filter: number of data bits per pixel
+record(longin, "$(P)$(R)NumDataBits_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_nbitsPrecision")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+    field(EGU,  "bit")
+}
+
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, NumBitOffset, N-bit compression filter: dataword bit-offset in pixel
+record(longout, "$(P)$(R)DataBitsOffset")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_nbitsOffset")
+    field(PINI, "NO")
+    field(EGU,  "bit")
+}
+
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, NumBitOffset_RBV, Readback N-bit compression filter: dataword bit-offset in pixel
+record(longin, "$(P)$(R)DataBitsOffset_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_nbitsOffset")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+    field(EGU,  "bit")
+}
+
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, szipNumPixels, szip compression filter: number of pixels in filter
+record(longout, "$(P)$(R)SZipNumPixels")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_szipNumPixels")
+    field(PINI, "NO")
+    field(EGU,  "bit")
+}
+
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, szipNumPixels_RBV, Readback szip compression filter: number of pixels in filter
+record(longin, "$(P)$(R)SZipNumPixels_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_szipNumPixels")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+    field(EGU,  "bit")
+}
+
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, ZCompressLevel, zlib compression filter: compression level
+record(longout, "$(P)$(R)ZLevel")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_zCompressLevel")
+    field(PINI, "NO")
+}
+
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, ZCompressLevel_RBV, Readback zlib compression filter: compression level
+record(longin, "$(P)$(R)ZLevel_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_zCompressLevel")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+
+# override the FTVL field of the string records so we can do dbpf in startup script
+record(waveform, "$(P)$(R)FilePath")
+{
+    field(FTVL, "CHAR")
+}
+record(waveform, "$(P)$(R)FileName")
+{
+    field(FTVL, "CHAR")
+}
+record(waveform, "$(P)$(R)FileTemplate")
+{
+    field(FTVL, "CHAR")
+}
+record(waveform, "$(P)$(R)NDAttributesFile")
+{
+    field(FTVL, "CHAR")
+}
