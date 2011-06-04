@@ -303,22 +303,3 @@ record(longin, "$(P)$(R)ZLevel_RBV")
     field(PINI, "NO")
     field(SCAN, "I/O Intr")
 }
-
-
-# override the FTVL field of the string records so we can do dbpf in startup script
-record(waveform, "$(P)$(R)FilePath")
-{
-    field(FTVL, "CHAR")
-}
-record(waveform, "$(P)$(R)FileName")
-{
-    field(FTVL, "CHAR")
-}
-record(waveform, "$(P)$(R)FileTemplate")
-{
-    field(FTVL, "CHAR")
-}
-record(waveform, "$(P)$(R)NDAttributesFile")
-{
-    field(FTVL, "CHAR")
-}
