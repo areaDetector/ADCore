@@ -133,7 +133,7 @@ record(waveform, "$(P)$(R)BadPixelFile")
     field(PINI, "YES")
     field(DTYP, "asynOctetWrite")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BAD_PIXEL_FILE")
-    field(FTVL, "UCHAR")
+    field(FTVL, "CHAR")
     field(NELM, "256")
 }
 
@@ -152,7 +152,7 @@ record(waveform, "$(P)$(R)FlatFieldFile")
     field(PINI, "YES")
     field(DTYP, "asynOctetWrite")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FLAT_FIELD_FILE")
-    field(FTVL, "UCHAR")
+    field(FTVL, "CHAR")
     field(NELM, "256")
 }
 

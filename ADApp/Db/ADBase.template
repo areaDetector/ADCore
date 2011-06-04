@@ -633,7 +633,7 @@ record(waveform, "$(P)$(R)NDAttributesFile")
     field(PINI, "YES")
     field(DTYP, "asynOctetWrite")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ND_ATTRIBUTES_FILE")
-    field(FTVL, "UCHAR")
+    field(FTVL, "CHAR")
     field(NELM, "256")
 }
 
@@ -646,7 +646,7 @@ record(waveform, "$(P)$(R)StatusMessage_RBV")
 {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))STATUS_MESSAGE")
-    field(FTVL, "UCHAR")
+    field(FTVL, "CHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
 }
@@ -655,7 +655,7 @@ record(waveform, "$(P)$(R)StringToServer_RBV")
 {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))STRING_TO_SERVER")
-    field(FTVL, "UCHAR")
+    field(FTVL, "CHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
 }
@@ -664,7 +664,7 @@ record(waveform, "$(P)$(R)StringFromServer_RBV")
 {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))STRING_FROM_SERVER")
-    field(FTVL, "UCHAR")
+    field(FTVL, "CHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
 }

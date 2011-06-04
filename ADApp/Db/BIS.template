@@ -18,7 +18,7 @@ record(waveform, "$(P)$(R)BISStatus")
 {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BIS_STATUS")
-    field(FTVL, "UCHAR")
+    field(FTVL, "CHAR")
     field(NELM, "512")
     field(SCAN, "I/O Intr")
 }
