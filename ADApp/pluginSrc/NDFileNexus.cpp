@@ -208,7 +208,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
   NXstatus stat;
   if (strcmp (nodeValue, "NXroot") == 0) {
     this->iterateNodes(curNode, pArray);
-  }
+  }  /*  only include all the NeXus base classes */
   else if ((strcmp (nodeValue, "NXentry") ==0) ||
            (strcmp (nodeValue, "NXinstrument") ==0) ||
            (strcmp (nodeValue, "NXsample") ==0) ||
@@ -247,6 +247,12 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
            (strcmp (nodeValue, "NXorientation") ==0) ||
            (strcmp (nodeValue, "NXenvironment") ==0) ||
            (strcmp (nodeValue, "NXsensor") ==0) ||
+           (strcmp (nodeValue, "NXcapillary") ==0) ||
+           (strcmp (nodeValue, "NXcollection") ==0) ||
+           (strcmp (nodeValue, "NXdetector_group") ==0) ||
+           (strcmp (nodeValue, "NXparameters") ==0) ||
+           (strcmp (nodeValue, "NXsubentry") ==0) ||
+           (strcmp (nodeValue, "NXxraylens") ==0) ||
            (nodeType && strcmp (nodeType, "UserGroup") == 0) ) {
   nodeName = curNode->ToElement()->Attribute("name");
   if (nodeName == NULL) {
