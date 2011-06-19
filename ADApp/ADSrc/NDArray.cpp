@@ -130,39 +130,44 @@ NDArray* NDArrayPool::alloc(int ndims, int *dims, NDDataType_t dataType, int dat
       if (pArray->dataSize < dataSize) {
         /* No, we need to free the current buffer and allocate a new one */
         /* See if there is enough room */
-        memorySize_ -= pArray->dataSize;
         if (pArray->pData) {
+          memorySize_ -= pArray->dataSize;
           free(pArray->pData);
           pArray->pData = NULL;
+          pArray->dataSize = 0;
         }
         if ((maxMemory_ > 0) && ((memorySize_ + dataSize) > maxMemory_)) {
           // We don't have enough memory to allocate the array
           // See if we can get memory by deleting arrays
           NDArray *freeArray = (NDArray *)ellFirst(&freeList_);
-          while (freeArray && ((memorySize_ + dataSize) > maxMemory_))
-          {
-            ellDelete(&freeList_, &freeArray->node);
-            numBuffers_--;
-            numFree_--;
-            if (freeArray->pData)
+          while (freeArray && ((memorySize_ + dataSize) > maxMemory_)) {
+            if (freeArray->pData) {
               memorySize_ -= freeArray->dataSize;
-            delete(freeArray);
+              free(freeArray->pData);
+              freeArray->pData = NULL;
+              freeArray->dataSize = 0;
+            }
             // Next array
-            freeArray = (NDArray *)ellFirst(&freeList_);
+            freeArray = (NDArray *)ellNext(&freeArray->node);
           }
         }
-        if ((memorySize_ + dataSize) > maxMemory_) {
+        if ((maxMemory_ > 0) && ((memorySize_ + dataSize) > maxMemory_)) {
           printf("%s: error: reached limit of %ld memory (%d/%d buffers)\n",
                  functionName, (long)maxMemory_, numBuffers_, maxBuffers_);
           pArray = NULL;
         } else {
-          pArray->pData = callocMustSucceed(dataSize, 1,
-                                            functionName);
-          pArray->dataSize = dataSize;
-          memorySize_ += dataSize;
+          pArray->pData = malloc(dataSize);
+          if (pArray->pData) {
+            pArray->dataSize = dataSize;
+            memorySize_ += dataSize;
+          } else {
+            pArray = NULL;
+          }
         }
       }
     }
+    // If we don't have a valid memory buffer see pArray to NULL to indicate error
+    if (pArray && (pArray->pData == NULL)) pArray = NULL;
   }
   if (pArray) {
     /* Set the reference count to 1, remove from free list */
