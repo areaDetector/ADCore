@@ -46,6 +46,9 @@
           for each file in a multi-image sequence, which was not previously being done.</li>
         <li>Prosilica driver. 
           <ul>
+            <li>Added support for opening cameras by IP address or IP DNS name, in addition to UniqueID.
+            This allows communicating with cameras that are not on the local subnet.  The change is backwards
+            compatible with existing iocsh startup scripts.</li>
             <li>Removed support for writing TIFF files using the driver library.
             This was a problem because their driver uses an incompatible version of libtiff
             that conflicts with the new version used by GraphicsMagick. The driver TIFF writer
