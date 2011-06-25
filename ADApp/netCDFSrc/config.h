@@ -76,7 +76,9 @@
 /* #undef HAVE_UCHAR */
 
 /* Define to 1 if you have the <unistd.h> header file. */
-#define HAVE_UNISTD_H 1
+#ifndef _WIN32 
+  #define HAVE_UNISTD_H 1
+#endif
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
@@ -142,7 +144,7 @@
 /* Define to the version of this package. */
 #define PACKAGE_VERSION "3.6.2"
 
-/* This is not pretty. netCDF is really set up to use a single config.h file which is generate
+/* This is not pretty. netCDF is really set up to use a single config.h file which is generated
  * by configure.  But that does not work when multiple architectures share a source tree or for cross-compiling
  * We need to put specific architecture tests here */
 
