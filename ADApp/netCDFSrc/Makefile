@@ -21,6 +21,7 @@ LIB_SRCS += t_nc.c
 LIB_SRCS += v1hpg.c
 LIB_SRCS += v2i.c
 LIB_SRCS += var.c
+LIB_SRCS += utf8proc.c
 
 include $(TOP)/configure/RULES
 #----------------------------------------
