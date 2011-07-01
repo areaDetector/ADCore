@@ -12,19 +12,55 @@
 /* set this only when building a DLL under MinGW */
 /* #undef DLL_NETCDF */
 
-#ifndef _WIN32
-    /* Define to 1 if you have `alloca', as a function or macro. */
-    #define HAVE_ALLOCA 1
+/* if true, run extra tests which may not work with HDF5 beta release */
+/* #undef EXTRA_TESTS */
 
-    /* Define to 1 if you have <alloca.h> and it should be used (not on Ultrix).
-       */
-    #define HAVE_ALLOCA_H 1
+/* Define to 1 if you have `alloca', as a function or macro. */
+#ifndef _WIN32
+#define HAVE_ALLOCA 1
 #endif
+
+/* Define to 1 if you have <alloca.h> and it should be used (not on Ultrix).
+   */
+#ifndef _WIN32
+#define HAVE_ALLOCA_H 1
+#endif
+
+/* Define to 1 if you have the declaration of `isfinite', and to 0 if you
+   don't. */
+#define HAVE_DECL_ISFINITE 0
+
+/* Define to 1 if you have the declaration of `isinf', and to 0 if you don't.
+   */
+#define HAVE_DECL_ISINF 1
+
+/* Define to 1 if you have the declaration of `isnan', and to 0 if you don't.
+   */
+#define HAVE_DECL_ISNAN 1
+
+/* Define to 1 if you have the declaration of `signbit', and to 0 if you
+   don't. */
+#define HAVE_DECL_SIGNBIT 0
+
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #define HAVE_DLFCN_H 1
 
+/* Define to 1 if you have the <hdf5.h> header file. */
+/* #undef HAVE_HDF5_H */
+
 /* Define to 1 if you have the <inttypes.h> header file. */
+#if !defined(vxWorks) && !defined(_WIN32)
 #define HAVE_INTTYPES_H 1
+#endif
+
+/* Define to 1 if you have the `hdf5' library (-lhdf5). */
+/* #undef HAVE_LIBHDF5 */
+
+/* Define to 1 if you have the `hdf5_hl' library (-lhdf5_hl). */
+/* #undef HAVE_LIBHDF5_HL */
+
+/* Define to 1 if the system has the type `long long int'. */
+/* #undef HAVE_LONG_LONG_INT */
 
 /* Define to 1 if you have the <memory.h> header file. */
 #define HAVE_MEMORY_H 1
@@ -32,11 +68,16 @@
 /* Define to 1 if the system has the type `ptrdiff_t'. */
 #define HAVE_PTRDIFF_T 1
 
+/* Define to 1 if the system has the type `ssize_t'. */
 #ifdef _WIN32
-    typedef int ssize_t;
+typedef int ssize_t;
 #else
-    /* Define to 1 if the system has the type `ssize_t'. */
-    #define HAVE_SSIZE_T 1
+#define HAVE_SSIZE_T 1
+#endif
+
+/* Define to 1 if stdbool.h conforms to C99. */
+#if !defined(vxWorks) && !defined(_WIN32)
+#define HAVE_STDBOOL_H 1
 #endif
 
 /* Define to 1 if you have the <stdint.h> header file. */
@@ -58,12 +99,12 @@
 /* #undef HAVE_STRLCAT */
 
 /* Define to 1 if `st_blksize' is member of `struct stat'. */
-#ifndef _WIN32
-    #define HAVE_STRUCT_STAT_ST_BLKSIZE 1
+#define HAVE_STRUCT_STAT_ST_BLKSIZE 1
 
-    /* Define to 1 if your `struct stat' has `st_blksize'. Deprecated, use
-       `HAVE_STRUCT_STAT_ST_BLKSIZE' instead. */
-    #define HAVE_ST_BLKSIZE 1
+/* Define to 1 if your `struct stat' has `st_blksize'. Deprecated, use
+   `HAVE_STRUCT_STAT_ST_BLKSIZE' instead. */
+#ifndef _WIN32
+#define HAVE_ST_BLKSIZE 1
 #endif
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
@@ -76,40 +117,49 @@
 /* #undef HAVE_UCHAR */
 
 /* Define to 1 if you have the <unistd.h> header file. */
-#ifndef _WIN32 
-  #define HAVE_UNISTD_H 1
+#define HAVE_UNISTD_H 1
+
+/* Define to 1 if the system has the type `unsigned long long int'. */
+/* #undef HAVE_UNSIGNED_LONG_LONG_INT */
+
+/* Define to 1 if the system has the type `_Bool'. */
+#if !defined(vxWorks) && !defined(_WIN32)
+#define HAVE__BOOL 1
 #endif
+
+/* do large file tests */
+/* #undef LARGE_FILE_TESTS */
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
 #define LT_OBJDIR ".libs/"
 
 /* type definition */
-/* #undef NCBYTE_T */
+#define NCBYTE_T byte
 
 /* type definition */
-/* #undef NCSHORT_T */
+#define NCSHORT_T integer*2
 
 /* default */
-/* #undef NF_DOUBLEPRECISION_IS_C_DOUBLE */
+#define NF_DOUBLEPRECISION_IS_C_DOUBLE 1
 
 /* default */
-/* #undef NF_INT1_IS_C_SIGNED_CHAR */
+#define NF_INT1_IS_C_SIGNED_CHAR 1
 
 /* type thing */
-/* #undef NF_INT1_T */
+#define NF_INT1_T byte
 
 /* default */
-/* #undef NF_INT2_IS_C_SHORT */
+#define NF_INT2_IS_C_SHORT 1
 
 /* type thing */
-/* #undef NF_INT2_T */
+#define NF_INT2_T integer*2
 
 /* default */
-/* #undef NF_INT_IS_C_INT */
+#define NF_INT_IS_C_INT 1
 
 /* default */
-/* #undef NF_REAL_IS_C_FLOAT */
+#define NF_REAL_IS_C_FLOAT 1
 
 /* no IEEE float on this platform */
 /* #undef NO_IEEE_FLOAT */
@@ -136,19 +186,14 @@
 #define PACKAGE_NAME "netCDF"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "netCDF 3.6.2"
+#define PACKAGE_STRING "netCDF 3.6.3"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "netcdf"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "3.6.2"
+#define PACKAGE_VERSION "3.6.3"
 
-/* This is not pretty. netCDF is really set up to use a single config.h file which is generated
- * by configure.  But that does not work when multiple architectures share a source tree or for cross-compiling
- * We need to put specific architecture tests here */
-
-/* All supported platforms have 8 byte doubles, 4 byte floats, 4 byte ints, 2 byte shorts */
 /* The size of `double', as computed by sizeof. */
 #define SIZEOF_DOUBLE 8
 
@@ -158,29 +203,21 @@
 /* The size of `int', as computed by sizeof. */
 #define SIZEOF_INT 4
 
-/* The size of `short', as computed by sizeof. */
-#define SIZEOF_SHORT 2
-
-#if defined(_X86_64_)
-/* The size of `size_t', as computed by sizeof. */
-#define SIZEOF_SIZE_T 8
-/* The size of `long', as computed by sizeof. */
-#define SIZEOF_LONG 8
-#else
-/* The size of `size_t', as computed by sizeof. */
-#define SIZEOF_SIZE_T 4
 /* The size of `long', as computed by sizeof. */
 #define SIZEOF_LONG 4
-#endif
 
 /* The size of `off_t', as computed by sizeof. */
-/* All archs except vxWorks have 8 byte off_t ?*/
-#if defined(vxWorks)
+#if defined(vxWorks) || defined(_WIN32)
 #define SIZEOF_OFF_T 4
 #else
 #define SIZEOF_OFF_T 8
 #endif
 
+/* The size of `short', as computed by sizeof. */
+#define SIZEOF_SHORT 2
+
+/* The size of `size_t', as computed by sizeof. */
+#define SIZEOF_SIZE_T 4
 
 /* If using the C implementation of alloca, define if you know the
    direction of stack growth for your system; otherwise it will be
@@ -194,19 +231,37 @@
 #define STDC_HEADERS 1
 
 /* Place to put very large netCDF test files. */
-#define TEMP_LARGE $TEMP_LARGE
+#define TEMP_LARGE "."
 
 /* set this to use extreme numbers in tests */
 #define USE_EXTREME_NUMBERS 1
 
-/* Version number of package */
-#define VERSION "3.6.2"
+/* if true, parallel netCDF-4 is in use */
+/* #undef USE_PARALLEL */
 
-/* Define to 1 if your processor stores words with the most significant byte
-   first (like Motorola and SPARC, unlike Intel and VAX). */
-#if defined(vxWorks)
-#undef WORDS_BIGENDIAN
+/* if true, compile in parallel netCDF-4 based on MPI/IO */
+/* #undef USE_PARALLEL_MPIO */
+
+/* if true, compile in parallel netCDF-4 based on MPI/POSIX */
+/* #undef USE_PARALLEL_POSIX */
+
+/* if true, compile in zlib compression in netCDF-4 variables */
+/* #undef USE_ZLIB */
+
+/* Version number of package */
+#define VERSION "3.6.3"
+
+/* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
+   significant byte first (like Motorola and SPARC, unlike Intel and VAX). */
+#if defined __BIG_ENDIAN__
+# define WORDS_BIGENDIAN 1
+#elif ! defined __LITTLE_ENDIAN__
+/* # undef WORDS_BIGENDIAN */
 #endif
+
+/* Define to 1 if `lex' declares `yytext' as a `char *' by default, not a
+   `char[]'. */
+#define YYTEXT_POINTER 1
 
 /* Number of bits in a file offset, on hosts where this is settable. */
 #define _FILE_OFFSET_BITS 64
@@ -235,7 +290,7 @@
 /* #undef off_t */
 
 /* Turned on by netCDF configure. */
-/* #undef pgiFortran */
+#define pgiFortran 1
 
 /* Define to `unsigned int' if <sys/types.h> does not define. */
 /* #undef size_t */

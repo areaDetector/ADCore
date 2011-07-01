@@ -30,7 +30,7 @@
  * NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
  * WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-/* "$Id: netcdf3.h,v 1.1 2008-04-18 19:34:34 rivers Exp $" */
+/* "$Id: netcdf3.h,v 2.3 2008/03/28 20:50:28 dmh Exp $" */
 
 #ifndef _NETCDF3_
 #define _NETCDF3_
@@ -175,6 +175,13 @@ nc3_del_att(int ncid, int varid, const char *name);
 /* Begin {put,get}_att */
 
 EXTERNL int
+nc3_put_att(int ncid, int varid, const char *name, nc_type datatype,
+	   size_t len, const void *value);
+
+EXTERNL int
+nc3_get_att(int ncid, int varid, const char *name, void *value);
+
+EXTERNL int
 nc3_put_att_text(int ncid, int varid, const char *name,
 	size_t len, const char *op);
 
@@ -273,6 +280,12 @@ nc3_copy_var(int ncid_in, int varid, int ncid_out);
 /* Begin {put,get}_var1 */
 
 EXTERNL int
+nc3_put_var1(int ncid, int varid, const size_t *indexp, const void *value);
+
+EXTERNL int
+nc3_get_var1(int ncid, int varid, const size_t *indexp, void *value);
+
+EXTERNL int
 nc3_put_var1_text(int ncid, int varid, const size_t *indexp, const char *op);
 
 EXTERNL int
@@ -328,6 +341,14 @@ nc3_get_var1_double(int ncid, int varid, const size_t *indexp, double *ip);
 
 /* End {put,get}_var1 */
 /* Begin {put,get}_vara */
+
+EXTERNL int
+nc3_put_vara(int ncid, int varid,
+	 const size_t *start, const size_t *count, const void *value);
+
+EXTERNL int
+nc3_get_vara(int ncid, int varid,
+	 const size_t *start, const size_t *count, void *value);
 
 EXTERNL int
 nc3_put_vara_text(int ncid, int varid,
@@ -395,6 +416,22 @@ nc3_get_vara_double(int ncid, int varid,
 
 /* End {put,get}_vara */
 /* Begin {put,get}_vars */
+
+/* Why were these two not here originally?*/
+EXTERNL int
+nc3_put_vars(int ncid, int varid,
+	 const size_t *start, const size_t *count, const ptrdiff_t *stride,
+	 const void * value);
+
+EXTERNL int
+nc3_get_vars(int ncid, int varid,
+	 const size_t *start, const size_t *count, const ptrdiff_t *stride,
+	 void * value);
+
+EXTERNL int
+nc_put_vars_text(int ncid, int varid,
+	const size_t *startp, const size_t *countp, const ptrdiff_t *stridep,
+	const char *op);
 
 EXTERNL int
 nc3_put_vars_text(int ncid, int varid,
@@ -478,6 +515,15 @@ nc3_get_vars_double(int ncid, int varid,
 
 /* End {put,get}_vars */
 /* Begin {put,get}_varm */
+
+EXTERNL int
+nc3_put_varm(int ncid, int varid, const size_t *start, const size_t *count, 
+            const ptrdiff_t *stride, const ptrdiff_t *imapp, 
+	    const void *value);
+
+EXTERNL int
+nc3_get_varm(int ncid, int varid, const size_t *start, const size_t *count, 
+	    const ptrdiff_t *stride, const ptrdiff_t *imapp, void *value);
 
 EXTERNL int
 nc3_put_varm_text(int ncid, int varid,
@@ -664,6 +710,8 @@ nc3_inq_base_pe(int ncid, int *pe);
 
 
 /* Begin v2.4 backward compatiblity */
+#ifndef NO_NETCDF_2
+
 EXTERNL void
 nc3_advise(const char *cdf_routine_name, int err, const char *fmt,...);
 
@@ -797,5 +845,6 @@ nc3recput(int ncid, long recnum, void *const *datap);
 
 #if defined(__cplusplus)
 }
+#endif
 #endif
 

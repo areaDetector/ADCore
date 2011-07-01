@@ -2,13 +2,13 @@
  *	Copyright 1996, University Corporation for Atmospheric Research
  *      See netcdf/COPYRIGHT file for copying and redistribution conditions.
  */
-/* $Id: v2i.c,v 1.1 2008-04-18 19:34:31 rivers Exp $ */
+/* $Id: v2i.c,v 1.50 2008/03/28 20:50:28 dmh Exp $ */
+
+#ifndef NO_NETCDF_2
 
 #include <config.h>
 #include <stdlib.h>
-#include <netcdf.h>
-
-#ifndef NO_NETCDF_2
+#include "netcdf.h"
 
 #if SIZEOF_LONG == SIZEOF_SIZE_T
 /*

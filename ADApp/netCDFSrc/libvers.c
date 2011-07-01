@@ -2,10 +2,19 @@
  *	Copyright 1996, University Corporation for Atmospheric Research
  *      See netcdf/COPYRIGHT file for copying and redistribution conditions.
  */
-/* $Id: libvers.c,v 1.1 2008-04-18 19:34:28 rivers Exp $ */
+/* $Id: libvers.c,v 2.12 2008/04/04 18:47:58 dmh Exp $ */
 
 #include <config.h>
-#include "netcdf.h"
+
+#if defined(USE_DAP)
+#include <netcdf3l.h>
+#include <nc3local.h>
+#elif defined(USE_RENAMEV3)
+#include <netcdf3.h>
+#include <nc3convert.h>
+#else
+#include <netcdf.h>
+#endif
 
 /*
  * A version string. This whole function is not needed in netCDF-4,

@@ -2,7 +2,7 @@
  *	Copyright 1996, University Corporation for Atmospheric Research
  *      See netcdf/COPYRIGHT file for copying and redistribution conditions.
  */
-/* $Id: v1hpg.c,v 1.2 2009-08-31 20:51:56 rivers Exp $ */
+/* $Id: v1hpg.c,v 1.68 2008/06/10 19:38:03 russ Exp $ */
 
 #include "nc.h"
 #include <stdlib.h>
@@ -1160,30 +1160,6 @@ NC_computeshapes(NC *ncp)
 }
 
 
-/*
- * Return actual unpadded length (in bytes) of a variable, which
- * doesn't include any extra padding used for alignment.  For a record
- * variable, this is the length in bytes of one record's worth of that
- * variable's data.
- */
-/*
-static off_t
-NC_var_unpadded_len(const NC_var *varp, const NC_dimarray *dims)
-{
-    size_t *shp;
-    off_t product = 1;
-    
-    if(varp->ndims != 0) {
-	for(shp = varp->shape + varp->ndims -1; shp >= varp->shape; shp--) {
-	    if(!(shp == varp->shape && IS_RECVAR(varp)))
-		product *= *shp;
-	}
-    }
-    product = product * varp->xsz;
-    return product;
-}
-*/
-
 /* How much space in the header is required for the NC data structure? */
 size_t
 ncx_len_NC(const NC *ncp, size_t sizeof_off_t)
@@ -1325,6 +1301,11 @@ nc_get_NC(NC *ncp)
 		        status = ncio_filesize(ncp->nciop, &filesize);
 			if(status)
 			    return status;
+			if(filesize < sizeof(ncmagic)) { /* too small, not netcdf */
+
+			    status = NC_ENOTNC;
+			    return status;
+			}
 			/* first time read */
 			extent = ncp->chunk;
 			/* Protection for when ncp->chunk is huge;

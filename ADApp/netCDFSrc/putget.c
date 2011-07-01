@@ -3,7 +3,7 @@
  *	Copyright 1996, University Corporation for Atmospheric Research
  *      See netcdf/COPYRIGHT file for copying and redistribution conditions.
  */
-/* $Id: putget.c,v 1.2 2009-08-31 20:52:52 rivers Exp $ */
+/* $Id: putget.m4,v 2.63 2008/06/10 19:26:39 russ Exp $ */
 
 #include "nc.h"
 #include <string.h>
@@ -62,7 +62,7 @@ nctypelen(nc_type type)
 	case NC_DOUBLE : 
 		return((int)sizeof(double));
 	default:
-		return -1;
+	        return -1;
 	}
 }
 
@@ -2414,9 +2414,10 @@ putNCv_schar(NC *ncp, const NC_var *varp,
 	case NC_DOUBLE: 
 		return putNCvx_double_schar(ncp, varp, start, nelems,
 			value);
-	default:
-		return NC_EBADTYPE;
+	case NC_NAT:
+	        return NC_EBADTYPE;
 	}
+	return NC_EBADTYPE;
 }
 
 static int
@@ -2441,9 +2442,10 @@ putNCv_uchar(NC *ncp, const NC_var *varp,
 	case NC_DOUBLE: 
 		return putNCvx_double_uchar(ncp, varp, start, nelems,
 			value);
-	default:
-		return NC_EBADTYPE;
+	case NC_NAT:
+	        return NC_EBADTYPE;
 	}
+	return NC_EBADTYPE;
 }
 
 static int
@@ -2468,9 +2470,10 @@ putNCv_short(NC *ncp, const NC_var *varp,
 	case NC_DOUBLE: 
 		return putNCvx_double_short(ncp, varp, start, nelems,
 			value);
-	default:
-		return NC_EBADTYPE;
+	case NC_NAT:
+	        return NC_EBADTYPE;
 	}
+	return NC_EBADTYPE;
 }
 
 static int
@@ -2495,9 +2498,10 @@ putNCv_int(NC *ncp, const NC_var *varp,
 	case NC_DOUBLE: 
 		return putNCvx_double_int(ncp, varp, start, nelems,
 			value);
-	default:
-		return NC_EBADTYPE;
+	case NC_NAT:
+	        return NC_EBADTYPE;
 	}
+	return NC_EBADTYPE;
 }
 
 static int
@@ -2522,9 +2526,10 @@ putNCv_long(NC *ncp, const NC_var *varp,
 	case NC_DOUBLE: 
 		return putNCvx_double_long(ncp, varp, start, nelems,
 			value);
-	default:
-		return NC_EBADTYPE;
+	case NC_NAT:
+	        return NC_EBADTYPE;
 	}
+	return NC_EBADTYPE;
 }
 
 static int
@@ -2549,9 +2554,10 @@ putNCv_float(NC *ncp, const NC_var *varp,
 	case NC_DOUBLE: 
 		return putNCvx_double_float(ncp, varp, start, nelems,
 			value);
-	default:
-		return NC_EBADTYPE;
+	case NC_NAT:
+	        return NC_EBADTYPE;
 	}
+	return NC_EBADTYPE;
 }
 
 static int
@@ -2576,9 +2582,10 @@ putNCv_double(NC *ncp, const NC_var *varp,
 	case NC_DOUBLE: 
 		return putNCvx_double_double(ncp, varp, start, nelems,
 			value);
-	default:
-		return NC_EBADTYPE;
+	case NC_NAT:
+	        return NC_EBADTYPE;
 	}
+	return NC_EBADTYPE;
 }
 
 
@@ -4054,9 +4061,10 @@ getNCv_schar(const NC *ncp, const NC_var *varp,
 	case NC_DOUBLE: 
 		return getNCvx_double_schar(ncp, varp, start, nelems,
 			value);
-	default:
-		return NC_EBADTYPE;
+	case NC_NAT:
+	        return NC_EBADTYPE;
 	}
+	return NC_EBADTYPE;
 }
 
 static int
@@ -4081,9 +4089,10 @@ getNCv_uchar(const NC *ncp, const NC_var *varp,
 	case NC_DOUBLE: 
 		return getNCvx_double_uchar(ncp, varp, start, nelems,
 			value);
-	default:
-		return NC_EBADTYPE;
+	case NC_NAT:
+	        return NC_EBADTYPE;
 	}
+	return NC_EBADTYPE;
 }
 
 static int
@@ -4108,9 +4117,10 @@ getNCv_short(const NC *ncp, const NC_var *varp,
 	case NC_DOUBLE: 
 		return getNCvx_double_short(ncp, varp, start, nelems,
 			value);
-	default:
-		return NC_EBADTYPE;
+	case NC_NAT:
+	        return NC_EBADTYPE;
 	}
+	return NC_EBADTYPE;
 }
 
 static int
@@ -4135,9 +4145,10 @@ getNCv_int(const NC *ncp, const NC_var *varp,
 	case NC_DOUBLE: 
 		return getNCvx_double_int(ncp, varp, start, nelems,
 			value);
-	default:
-		return NC_EBADTYPE;
+	case NC_NAT:
+	        return NC_EBADTYPE;
 	}
+	return NC_EBADTYPE;
 }
 
 static int
@@ -4162,9 +4173,10 @@ getNCv_long(const NC *ncp, const NC_var *varp,
 	case NC_DOUBLE: 
 		return getNCvx_double_long(ncp, varp, start, nelems,
 			value);
-	default:
-		return NC_EBADTYPE;
+	case NC_NAT:
+	        return NC_EBADTYPE;
 	}
+	return NC_EBADTYPE;
 }
 
 static int
@@ -4189,9 +4201,10 @@ getNCv_float(const NC *ncp, const NC_var *varp,
 	case NC_DOUBLE: 
 		return getNCvx_double_float(ncp, varp, start, nelems,
 			value);
-	default:
-		return NC_EBADTYPE;
+	case NC_NAT:
+	        return NC_EBADTYPE;
 	}
+	return NC_EBADTYPE;
 }
 
 static int
@@ -4216,9 +4229,10 @@ getNCv_double(const NC *ncp, const NC_var *varp,
 	case NC_DOUBLE: 
 		return getNCvx_double_double(ncp, varp, start, nelems,
 			value);
-	default:
-		return NC_EBADTYPE;
+	case NC_NAT:
+	        return NC_EBADTYPE;
 	}
+	return NC_EBADTYPE;
 }
 
 
@@ -11220,9 +11234,10 @@ nc_get_att(int ncid, int varid, const char *name, void *value)
 	case NC_DOUBLE:
 		return nc_get_att_double(ncid, varid, name,
 			(double *)value);
-	default:
+	case NC_NAT:
 		return NC_EBADTYPE;
 	}
+	return NC_EBADTYPE;
 }
 
 
@@ -11259,9 +11274,10 @@ nc_put_att(
 	case NC_DOUBLE:
 		return nc_put_att_double(ncid, varid, name, type, nelems,
 			(double *)value);
-	default:
+	case NC_NAT:
 		return NC_EBADTYPE;
 	}
+	return NC_EBADTYPE;
 }
 
 
@@ -11294,9 +11310,10 @@ nc_get_var1(int ncid, int varid, const size_t *coord, void *value)
 	case NC_DOUBLE: 
 		return nc_get_var1_double(ncid, varid, coord,
 			(double *) value);
-	default:
+	case NC_NAT:
 		return NC_EBADTYPE;
 	}
+	return NC_EBADTYPE;
 }
 
 
@@ -11329,9 +11346,10 @@ nc_put_var1(int ncid, int varid, const size_t *coord, const void *value)
 	case NC_DOUBLE: 
 		return nc_put_var1_double(ncid, varid, coord,
 			(const double *) value);
-	default:
+	case NC_NAT:
 		return NC_EBADTYPE;
 	}
+	return NC_EBADTYPE;
 }
 
 
@@ -11372,9 +11390,10 @@ nc_get_vara(int ncid, int varid,
 	case NC_DOUBLE: 
 		return nc_get_vara_double(ncid, varid, start, edges,
 			(double *) value);
-	default:
+	case NC_NAT:
 		return NC_EBADTYPE;
 	}
+	return NC_EBADTYPE;
 }
 
 int
@@ -11407,9 +11426,10 @@ nc_put_vara(int ncid, int varid,
 	case NC_DOUBLE: 
 		return nc_put_vara_double(ncid, varid, start, edges,
 			(const double *) value);
-	default:
+	case NC_NAT:
 		return NC_EBADTYPE;
 	}
+	return NC_EBADTYPE;
 }
 
 int

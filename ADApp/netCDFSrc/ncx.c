@@ -21,7 +21,7 @@
  *	they handle IEEE subnormals properly, and their "n" versions
  *	operate speedily on arrays.
  */
-/* $Id: ncx.c,v 1.1 2008-04-18 19:34:29 rivers Exp $ */
+/* $Id: ncx.m4,v 2.53 2008/03/03 16:48:20 russ Exp $ */
 
 /*
  * An external data representation interface.
@@ -193,6 +193,7 @@ swap8b(void *dst, const void *src)
 {
 	char *op = dst;
 	const char *ip = src;
+#  ifndef FLOAT_WORDS_BIGENDIAN
 	op[0] = ip[7];
 	op[1] = ip[6];
 	op[2] = ip[5];
@@ -201,6 +202,16 @@ swap8b(void *dst, const void *src)
 	op[5] = ip[2];
 	op[6] = ip[1];
 	op[7] = ip[0];
+#  else
+	op[0] = ip[3];
+	op[1] = ip[2];
+	op[2] = ip[1];
+	op[3] = ip[0];
+	op[4] = ip[7];
+	op[5] = ip[6];
+	op[6] = ip[5];
+	op[7] = ip[4];
+#  endif
 }
 # endif /* !vax */
 
@@ -226,6 +237,7 @@ swapn8b(void *dst, const void *src, size_t nn)
  *		ip += 8;
  *	}
  */
+#  ifndef FLOAT_WORDS_BIGENDIAN
 	while(nn > 1)
 	{
 		op[0] = ip[7];
@@ -261,6 +273,21 @@ swapn8b(void *dst, const void *src, size_t nn)
 		op += 8;
 		ip += 8;
 	}
+#  else
+	while(nn-- != 0)
+	{
+		op[0] = ip[3];
+		op[1] = ip[2];
+		op[2] = ip[1];
+		op[3] = ip[0];
+		op[4] = ip[7];
+		op[5] = ip[6];
+		op[6] = ip[5];
+		op[7] = ip[4];
+		op += 8;
+		ip += 8;
+	}
+#  endif
 }
 # endif /* !vax */
 
@@ -1057,7 +1084,7 @@ put_ix_float(void *xp, const float *ip)
 	}
 	else if(ieee_exp > -23)
 	{
-		/* ieee subnormal, right  */
+		/* ieee subnormal, right shift */
 		const int rshift = (48 - 23 - ieee_exp);
 
 		isp->mant = csp->mant >> rshift;
@@ -1105,7 +1132,7 @@ put_ix_float(void *xp, const float *ip)
 	}
 	else if(ieee_exp > -23)
 	{
-		/* ieee subnormal, right  */
+		/* ieee subnormal, right shift */
 		const int rshift = (48 - 23 - ieee_exp);
 
 		isp->mant = csp->mant >> rshift;
@@ -1591,14 +1618,14 @@ put_ix_double(void *xp, const double *ip)
 	}
 	else if(ieee_exp >= (-(52 -48)))
 	{
-		/* ieee subnormal, left  */
+		/* ieee subnormal, left shift */
 		const int lshift = (52 - 48) + ieee_exp;
 		idp->mant = csp->mant << lshift;
 		idp->exp  = 0;
 	}
 	else if(ieee_exp >= -52)
 	{
-		/* ieee subnormal, right  */
+		/* ieee subnormal, right shift */
 		const int rshift = (- (52 - 48) - ieee_exp);
 
 		idp->mant = csp->mant >> rshift;

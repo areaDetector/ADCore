@@ -2,7 +2,7 @@
  *	Copyright 1996, University Corporation for Atmospheric Research
  *      See netcdf/COPYRIGHT file for copying and redistribution conditions.
  */
-/* $Id: var.c,v 1.2 2009-08-31 20:51:23 rivers Exp $ */
+/* $Id: var.c,v 1.133 2008/06/10 19:38:03 russ Exp $ */
 
 #include "nc.h"
 #include <stdlib.h>
@@ -10,6 +10,7 @@
 #include <assert.h>
 #include "ncx.h"
 #include "rnd.h"
+#include "utf8proc.h"
 
 
 /*
@@ -76,13 +77,17 @@ new_x_NC_var(
 NC_new_var()
  */
 static NC_var *
-new_NC_var(const char *name, nc_type type,
+new_NC_var(const char *uname, nc_type type,
 	size_t ndims, const int *dimids)
 {
 	NC_string *strp;
 	NC_var *varp;
 
+	char *name = (char *)utf8proc_NFC((const unsigned char *)uname);
+	if(name == NULL)
+	    return NULL;
 	strp = new_NC_string(strlen(name), name);
+	free(name);
 	if(strp == NULL)
 		return NULL;
 
@@ -293,11 +298,12 @@ elem_NC_vararray(const NC_vararray *ncap, size_t elem)
 NC_hvarid
  */
 int
-NC_findvar(const NC_vararray *ncap, const char *name, NC_var **varpp)
+NC_findvar(const NC_vararray *ncap, const char *uname, NC_var **varpp)
 {
 	NC_var **loc;
 	size_t slen;
 	int varid;
+	char *name;
 
 	assert(ncap != NULL);
 
@@ -306,6 +312,10 @@ NC_findvar(const NC_vararray *ncap, const char *name, NC_var **varpp)
 
 	loc = (NC_var **) ncap->value;
 
+	/* normalized version of uname */
+	name = (char *)utf8proc_NFC((const unsigned char *)uname);
+	if(name == NULL)
+	    return NC_ENOMEM;
 	slen = strlen(name);
 
 	for(varid = 0; (size_t) varid < ncap->nelems; varid++, loc++)
@@ -315,9 +325,11 @@ NC_findvar(const NC_vararray *ncap, const char *name, NC_var **varpp)
 		{
 			if(varpp != NULL)
 				*varpp = *loc;
+			free(name);
 			return(varid); /* Normal return */
 		}
 	}
+	free(name);
 	return(-1); /* not found */
 }
 
@@ -345,9 +357,8 @@ ncx_szof(nc_type type)
 	case NC_DOUBLE : 
 		return X_SIZEOF_DOUBLE;
 	default:
-		/* default */
-		assert("ncx_szof invalid type" == 0);
-		return 0;
+	        assert("ncx_szof invalid type" == 0);
+	        return 0;
 	}
 }
 
@@ -398,33 +409,41 @@ NC_var_shape(NC_var *varp, const NC_dimarray *dims)
 			shp--, dsp--)
 	{
 		if(!(shp == varp->shape && IS_RECVAR(varp)))
-			product *= *shp;
+		{
+			if( *shp <= X_UINT_MAX / product ) 
+			{
+				product *= *shp;
+			} else 
+			{
+				product = X_UINT_MAX ;
+			}
+		}
 		*dsp = product;
 	}
 
 
 out :
-    if( varp->xsz <= X_UINT_MAX / product ) /* if integer multiply will not overflow */
+    if( varp->xsz <= (X_UINT_MAX - 1) / product ) /* if integer multiply will not overflow */
 	{
 	        varp->len = product * varp->xsz;
+		switch(varp->type) {
+		case NC_BYTE :
+		case NC_CHAR :
+		case NC_SHORT :
+		        if( varp->len%4 != 0 )
+			{
+			        varp->len += 4 - varp->len%4; /* round up */
+		/*		*dsp += 4 - *dsp%4; */
+		    }
+		    break;
+		default:
+			/* already aligned */
+			break;
+		}
         } else
 	{	/* OK for last var to be "too big", indicated by this special len */
 	        varp->len = X_UINT_MAX;
         }
-	switch(varp->type) {
-	case NC_BYTE :
-	case NC_CHAR :
-	case NC_SHORT :
-		if( varp->len%4 != 0 )
-		{
-			varp->len += 4 - varp->len%4; /* round up */
-	/*		*dsp += 4 - *dsp%4; */
-		}
-		break;
-	default:
-		/* already aligned */
-		break;
-	}
 #if 0
 	arrayp("\tshape", varp->ndims, varp->shape);
 	arrayp("\tdsizes", varp->ndims, varp->dsizes);
@@ -750,13 +769,14 @@ nc_inq_varnatts(int ncid, int varid, int *nattsp)
 }
 
 int
-nc_rename_var(int ncid, int varid, const char *newname)
+nc_rename_var(int ncid, int varid, const char *unewname)
 {
 	int status;
 	NC *ncp;
 	NC_var *varp;
 	NC_string *old, *newStr;
 	int other;
+	char *newname;		/* normalized */
 
 	status = NC_check_id(ncid, &ncp); 
 	if(status != NC_NOERR)
@@ -767,12 +787,12 @@ nc_rename_var(int ncid, int varid, const char *newname)
 		return NC_EPERM;
 	}
 
-	status = NC_check_name(newname);
+	status = NC_check_name(unewname);
 	if(status != NC_NOERR)
 		return status;
 
 	/* check for name in use */
-	other = NC_findvar(&ncp->vars, newname, &varp);
+	other = NC_findvar(&ncp->vars, unewname, &varp);
 	if(other != -1)
 	{
 		return NC_ENAMEINUSE;
@@ -786,9 +806,13 @@ nc_rename_var(int ncid, int varid, const char *newname)
 	}
 
 	old = varp->name;
+	newname = (char *)utf8proc_NFC((const unsigned char *)unewname);
+	if(newname == NULL)
+	    return NC_ENOMEM;
 	if(NC_indef(ncp))
 	{
 		newStr = new_NC_string(strlen(newname),newname);
+		free(newname);
 		if(newStr == NULL)
 			return(-1);
 		varp->name = newStr;
@@ -798,6 +822,7 @@ nc_rename_var(int ncid, int varid, const char *newname)
 
 	/* else, not in define mode */
 	status = set_NC_string(varp->name, newname);
+	free(newname);
 	if(status != NC_NOERR)
 		return status;
 

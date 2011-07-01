@@ -12,11 +12,14 @@
 #include <stdlib.h>
 
 /* If netcdf-4 is in use, rename all nc_ functions to nc3_ functions. */
-#ifdef USE_NETCDF4
+#if defined(USE_DAP)
+#include <netcdf3l.h>
+#include <nc3local.h>
+#elif defined(USE_RENAMEV3)
 #include <netcdf3.h>
 #include <nc3convert.h>
 #else
-#include "netcdf.h"
+#include <netcdf.h>
 #endif
 
 #ifdef HAVE_STRERROR

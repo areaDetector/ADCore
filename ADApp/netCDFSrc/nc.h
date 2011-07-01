@@ -2,7 +2,7 @@
  *	Copyright 1996, University Corporation for Atmospheric Research
  *      See netcdf/COPYRIGHT file for copying and redistribution conditions.
  */
-/* $Id: nc.h,v 1.1 2008-04-18 19:34:33 rivers Exp $ */
+/* $Id: nc.h,v 2.85 2008/04/04 18:47:58 dmh Exp $ */
 #ifndef _NC_H_
 #define _NC_H_
 
@@ -11,10 +11,14 @@
  */
 #include <config.h>
 
-/* If netcdf-4 is in use, rename all nc_ functions to nc3_ functions. */
-#ifdef USE_NETCDF4
+#if defined(USE_DAP)
+#include <netcdf3l.h>
+#include <nc3local.h>
+#elif defined(USE_RENAMEV3)
 #include <netcdf3.h>
 #include <nc3convert.h>
+#else
+#include <netcdf.h>
 #endif
 
 #include	<stddef.h>	/* size_t */

@@ -30,7 +30,7 @@
  * NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION
  * WITH THE ACCESS, USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-/* "$Id: netcdf.h,v 1.1 2008-04-18 19:34:35 rivers Exp $" */
+/* "$Id: netcdf.h,v 2.117 2008/03/28 20:50:28 dmh Exp $" */
 
 #ifndef _NETCDF_
 #define _NETCDF_
@@ -853,10 +853,13 @@ EXTERNL void
 nc_exit(void);
 #endif
 
-EXTERNL void 
+/* This is only defined for netcdf-4 apparently */
+#ifdef USE_NETCDF4
+EXTERNL void
 nc_set_log_level(int new_level);
 /* Use this to turn off logging by calling
    nc_log_level(NC_TURN_OFF_LOGGING) */
+#endif
 #define NC_TURN_OFF_LOGGING (-1)
 
 #else /* not LOGGING */

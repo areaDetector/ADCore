@@ -2,7 +2,7 @@
  *	Copyright 1996, University Corporation for Atmospheric Research
  *      See netcdf/COPYRIGHT file for copying and redistribution conditions.
  */
-/* $Id: nc.c,v 1.2 2009-08-31 20:50:31 rivers Exp $ */
+/* $Id: nc.c,v 2.147 2008/06/10 19:38:03 russ Exp $ */
 
 #include "nc.h"
 #include "rnd.h"
@@ -199,7 +199,7 @@ ncx_howmany(nc_type type, size_t xbufsize)
 	case NC_DOUBLE:
 		return xbufsize/X_SIZEOF_DOUBLE;
 	default:
-		assert("ncx_howmany: Bad type" == 0);
+	        assert("ncx_howmany: Bad type" == 0);
 		return(0);
 	}
 }
@@ -499,7 +499,6 @@ static int
 fill_added_recs(NC *gnu, NC *old)
 {
 	NC_var ** const gnu_varpp = (NC_var **)gnu->vars.value;
-	/*NC_var *const *const gnu_end = &gnu_varpp[gnu->vars.nelems];*/
 
 	const int old_nrecs = (int) NC_get_numrecs(old);
 	int recno = 0;

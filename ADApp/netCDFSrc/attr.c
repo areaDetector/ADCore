@@ -3,7 +3,7 @@
  *	Copyright 1996, University Corporation for Atmospheric Research
  *      See netcdf/COPYRIGHT file for copying and redistribution conditions.
  */
-/* $Id: attr.c,v 1.2 2009-08-31 14:03:52 rivers Exp $ */
+/* $Id: attr.m4,v 2.31 2008/06/10 19:26:39 russ Exp $ */
 
 #include "nc.h"
 #include <stdlib.h>
@@ -12,6 +12,7 @@
 #include "ncx.h"
 #include "fbits.h"
 #include "rnd.h"
+#include "utf8proc.h"
 
 
 /*
@@ -50,10 +51,9 @@ ncx_len_NC_attrV(nc_type type, size_t nelems)
 	case NC_DOUBLE:
 		return ncx_len_double(nelems);
 	default:
-		/* default */
-		assert("ncx_len_NC_attr bad type" == 0);
-		return 0;
+	        assert("ncx_len_NC_attr bad type" == 0);
 	}
+	return 0;
 }
 
 
@@ -95,16 +95,20 @@ NC_new_attr(name,type,count,value)
  */
 static NC_attr *
 new_NC_attr(
-	const char *name,
+	const char *uname,
 	nc_type type,
 	size_t nelems)
 {
 	NC_string *strp;
 	NC_attr *attrp;
 
+	char *name = (char *)utf8proc_NFC((const unsigned char *)uname);
+	if(name == NULL)
+	    return NULL;
 	assert(name != NULL && *name != 0);
 
 	strp = new_NC_string(strlen(name), name);
+	free(name);
 	if(strp == NULL)
 		return NULL;
 	
@@ -314,14 +318,15 @@ NC_attrarray0( NC *ncp, int varid)
 
 /*
  * Step thru NC_ATTRIBUTE array, seeking match on name.
- *  return match or NULL if Not Found.
+ *  return match or NULL if Not Found or out of memory.
  */
 NC_attr **
-NC_findattr(const NC_attrarray *ncap, const char *name)
+NC_findattr(const NC_attrarray *ncap, const char *uname)
 {
 	NC_attr **attrpp;
 	size_t attrid;
 	size_t slen;
+	char *name;
 
 	assert(ncap != NULL);
 
@@ -330,6 +335,10 @@ NC_findattr(const NC_attrarray *ncap, const char *name)
 
 	attrpp = (NC_attr **) ncap->value;
 
+	/* normalized version of uname */
+	name = (char *)utf8proc_NFC((const unsigned char *)uname);
+	if(name == NULL)
+	    return NULL; /* TODO: need better way to indicate no memory */
 	slen = strlen(name);
 
 	for(attrid = 0; attrid < ncap->nelems; attrid++, attrpp++)
@@ -337,9 +346,11 @@ NC_findattr(const NC_attrarray *ncap, const char *name)
 		if(strlen((*attrpp)->name->cp) == slen &&
 			strncmp((*attrpp)->name->cp, name, slen) == 0)
 		{
+		        free(name);
 			return(attrpp); /* Normal return */
 		}
 	}
+	free(name);
 	return(NULL);
 }
 
@@ -488,7 +499,7 @@ nc_inq_att(int ncid,
 
 
 int
-nc_rename_att( int ncid, int varid, const char *name, const char *newname)
+nc_rename_att( int ncid, int varid, const char *name, const char *unewname)
 {
 	int status;
 	NC *ncp;
@@ -496,6 +507,7 @@ nc_rename_att( int ncid, int varid, const char *name, const char *newname)
 	NC_attr **tmp;
 	NC_attr *attrp;
 	NC_string *newStr, *old;
+	char *newname;  /* normalized version */
 
 			/* sortof inline clone of NC_lookupattr() */
 	status = NC_check_id(ncid, &ncp);
@@ -509,7 +521,7 @@ nc_rename_att( int ncid, int varid, const char *name, const char *newname)
 	if(ncap == NULL)
 		return NC_ENOTVAR;
 
-	status = NC_check_name(newname);
+	status = NC_check_name(unewname);
 	if(status != NC_NOERR)
 		return status;
 
@@ -519,16 +531,20 @@ nc_rename_att( int ncid, int varid, const char *name, const char *newname)
 	attrp = *tmp;
 			/* end inline clone NC_lookupattr() */
 
-	if(NC_findattr(ncap, newname) != NULL)
+	if(NC_findattr(ncap, unewname) != NULL)
 	{
 		/* name in use */
 		return NC_ENAMEINUSE;
 	}
 
 	old = attrp->name;
+	newname = (char *)utf8proc_NFC((const unsigned char *)unewname);
+	if(newname == NULL)
+	    return NC_EBADNAME;
 	if(NC_indef(ncp))
 	{
 		newStr = new_NC_string(strlen(newname), newname);
+		free(newname);
 		if( newStr == NULL)
 			return NC_ENOMEM;
 		attrp->name = newStr;
@@ -537,6 +553,7 @@ nc_rename_att( int ncid, int varid, const char *name, const char *newname)
 	}
 	/* else */
 	status = set_NC_string(old, newname);
+	free(newname);
 	if( status != NC_NOERR)
 		return status;
 
@@ -648,7 +665,7 @@ nc_copy_att(int ncid_in, int varid_in, const char *name, int ncid_out, int ovari
 
 
 int
-nc_del_att(int ncid, int varid, const char *name)
+nc_del_att(int ncid, int varid, const char *uname)
 {
 	int status;
 	NC *ncp;
@@ -669,18 +686,25 @@ nc_del_att(int ncid, int varid, const char *name)
 	if(ncap == NULL)
 		return NC_ENOTVAR;
 
+	{
+	char *name = (char *)utf8proc_NFC((const unsigned char *)uname);
+	if(name == NULL)
+	    return NC_ENOMEM;
+	
 			/* sortof inline NC_findattr() */
 	slen = strlen(name);
 
 	attrpp = (NC_attr **) ncap->value;
 	for(attrid = 0; (size_t) attrid < ncap->nelems; attrid++, attrpp++)
-	{
+	    {
 		if( slen == (*attrpp)->name->nchars &&
 			strncmp(name, (*attrpp)->name->cp, slen) == 0)
 		{
 			old = *attrpp;
 			break;
 		}
+	    }
+	free(name);
 	}
 	if( (size_t) attrid == ncap->nelems )
 		return NC_ENOTATT;
@@ -719,9 +743,9 @@ ncx_pad_putn_Iuchar(void **xpp, size_t nelems, const uchar *tp, nc_type type)
 	case NC_DOUBLE:
 		return ncx_putn_double_uchar(xpp, nelems, tp);
 	default:
-		assert("ncx_pad_putn_Iuchar invalid type" == 0);
-		return NC_EBADTYPE;
+                assert("ncx_pad_putn_Iuchar invalid type" == 0);
 	}
+	return NC_EBADTYPE;
 }
 
 static int
@@ -741,9 +765,9 @@ ncx_pad_getn_Iuchar(const void **xpp, size_t nelems, uchar *tp, nc_type type)
 	case NC_DOUBLE:
 		return ncx_getn_double_uchar(xpp, nelems, tp);
 	default:
-		assert("ncx_pad_getn_Iuchar invalid type" == 0);
-		return NC_EBADTYPE;
+	        assert("ncx_pad_getn_Iuchar invalid type" == 0);
 	}
+	return NC_EBADTYPE;
 }
 
 
@@ -764,9 +788,9 @@ ncx_pad_putn_Ischar(void **xpp, size_t nelems, const schar *tp, nc_type type)
 	case NC_DOUBLE:
 		return ncx_putn_double_schar(xpp, nelems, tp);
 	default:
-		assert("ncx_pad_putn_Ischar invalid type" == 0);
-		return NC_EBADTYPE;
+                assert("ncx_pad_putn_Ischar invalid type" == 0);
 	}
+	return NC_EBADTYPE;
 }
 
 static int
@@ -786,9 +810,9 @@ ncx_pad_getn_Ischar(const void **xpp, size_t nelems, schar *tp, nc_type type)
 	case NC_DOUBLE:
 		return ncx_getn_double_schar(xpp, nelems, tp);
 	default:
-		assert("ncx_pad_getn_Ischar invalid type" == 0);
-		return NC_EBADTYPE;
+	        assert("ncx_pad_getn_Ischar invalid type" == 0);
 	}
+	return NC_EBADTYPE;
 }
 
 
@@ -809,9 +833,9 @@ ncx_pad_putn_Ishort(void **xpp, size_t nelems, const short *tp, nc_type type)
 	case NC_DOUBLE:
 		return ncx_putn_double_short(xpp, nelems, tp);
 	default:
-		assert("ncx_pad_putn_Ishort invalid type" == 0);
-		return NC_EBADTYPE;
+                assert("ncx_pad_putn_Ishort invalid type" == 0);
 	}
+	return NC_EBADTYPE;
 }
 
 static int
@@ -831,9 +855,9 @@ ncx_pad_getn_Ishort(const void **xpp, size_t nelems, short *tp, nc_type type)
 	case NC_DOUBLE:
 		return ncx_getn_double_short(xpp, nelems, tp);
 	default:
-		assert("ncx_pad_getn_Ishort invalid type" == 0);
-		return NC_EBADTYPE;
+	        assert("ncx_pad_getn_Ishort invalid type" == 0);
 	}
+	return NC_EBADTYPE;
 }
 
 
@@ -854,9 +878,9 @@ ncx_pad_putn_Iint(void **xpp, size_t nelems, const int *tp, nc_type type)
 	case NC_DOUBLE:
 		return ncx_putn_double_int(xpp, nelems, tp);
 	default:
-		assert("ncx_pad_putn_Iint invalid type" == 0);
-		return NC_EBADTYPE;
+                assert("ncx_pad_putn_Iint invalid type" == 0);
 	}
+	return NC_EBADTYPE;
 }
 
 static int
@@ -876,9 +900,9 @@ ncx_pad_getn_Iint(const void **xpp, size_t nelems, int *tp, nc_type type)
 	case NC_DOUBLE:
 		return ncx_getn_double_int(xpp, nelems, tp);
 	default:
-		assert("ncx_pad_getn_Iint invalid type" == 0);
-		return NC_EBADTYPE;
+	        assert("ncx_pad_getn_Iint invalid type" == 0);
 	}
+	return NC_EBADTYPE;
 }
 
 
@@ -899,9 +923,9 @@ ncx_pad_putn_Ilong(void **xpp, size_t nelems, const long *tp, nc_type type)
 	case NC_DOUBLE:
 		return ncx_putn_double_long(xpp, nelems, tp);
 	default:
-		assert("ncx_pad_putn_Ilong invalid type" == 0);
-		return NC_EBADTYPE;
+                assert("ncx_pad_putn_Ilong invalid type" == 0);
 	}
+	return NC_EBADTYPE;
 }
 
 static int
@@ -921,9 +945,9 @@ ncx_pad_getn_Ilong(const void **xpp, size_t nelems, long *tp, nc_type type)
 	case NC_DOUBLE:
 		return ncx_getn_double_long(xpp, nelems, tp);
 	default:
-		assert("ncx_pad_getn_Ilong invalid type" == 0);
-		return NC_EBADTYPE;
+	        assert("ncx_pad_getn_Ilong invalid type" == 0);
 	}
+	return NC_EBADTYPE;
 }
 
 
@@ -944,9 +968,9 @@ ncx_pad_putn_Ifloat(void **xpp, size_t nelems, const float *tp, nc_type type)
 	case NC_DOUBLE:
 		return ncx_putn_double_float(xpp, nelems, tp);
 	default:
-		assert("ncx_pad_putn_Ifloat invalid type" == 0);
-		return NC_EBADTYPE;
+                assert("ncx_pad_putn_Ifloat invalid type" == 0);
 	}
+	return NC_EBADTYPE;
 }
 
 static int
@@ -966,9 +990,9 @@ ncx_pad_getn_Ifloat(const void **xpp, size_t nelems, float *tp, nc_type type)
 	case NC_DOUBLE:
 		return ncx_getn_double_float(xpp, nelems, tp);
 	default:
-		assert("ncx_pad_getn_Ifloat invalid type" == 0);
-		return NC_EBADTYPE;
+	        assert("ncx_pad_getn_Ifloat invalid type" == 0);
 	}
+	return NC_EBADTYPE;
 }
 
 
@@ -989,9 +1013,9 @@ ncx_pad_putn_Idouble(void **xpp, size_t nelems, const double *tp, nc_type type)
 	case NC_DOUBLE:
 		return ncx_putn_double_double(xpp, nelems, tp);
 	default:
-		assert("ncx_pad_putn_Idouble invalid type" == 0);
-		return NC_EBADTYPE;
+                assert("ncx_pad_putn_Idouble invalid type" == 0);
 	}
+	return NC_EBADTYPE;
 }
 
 static int
@@ -1011,9 +1035,9 @@ ncx_pad_getn_Idouble(const void **xpp, size_t nelems, double *tp, nc_type type)
 	case NC_DOUBLE:
 		return ncx_getn_double_double(xpp, nelems, tp);
 	default:
-		assert("ncx_pad_getn_Idouble invalid type" == 0);
-		return NC_EBADTYPE;
+	        assert("ncx_pad_getn_Idouble invalid type" == 0);
 	}
+	return NC_EBADTYPE;
 }
 
 

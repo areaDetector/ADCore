@@ -76,8 +76,24 @@ typedef unsigned char _Bool;
 # define __bool_true_false_are_defined 1
 #endif
 #include <sys/types.h>
+#ifdef HAVE_INTTYPES_H
 #include <inttypes.h>
+#else
+#ifdef _WIN32
+typedef int int32_t;
+typedef short int16_t;
+typedef unsigned short uint16_t;
+typedef int8_t;
+typedef unsigned char uint8_t;
+#endif
+#endif
 #include <limits.h>
+
+/* For some reason vxWorks limits.h defines SSIZE_MAX to be an empty string, so we redefine it. */
+#ifdef vxWorks
+#undef  SSIZE_MAX
+#define SSIZE_MAX (LONG_MAX)
+#endif
 
 #ifndef SSIZE_MAX
 #define SSIZE_MAX (SIZE_MAX/2)
