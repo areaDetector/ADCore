@@ -76,11 +76,20 @@ typedef unsigned char _Bool;
 # define __bool_true_false_are_defined 1
 #endif
 #include <sys/types.h>
+#ifdef HAVE_INTTYPES_H
 #include <inttypes.h>
+#else
+#include "pstdint.h"
+#endif
 #include <limits.h>
 
 #ifndef HAVE_SSIZE_T
 #define ssize_t int
+#endif
+
+#ifdef vxWorks
+#undef SSIZE_MAX
+#define SSIZE_MAX LONG_MAX
 #endif
 
 #ifndef SSIZE_MAX
