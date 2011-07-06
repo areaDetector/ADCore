@@ -603,7 +603,7 @@ NCDEFAULT_put_varm(
       size_t varshape[NC_MAX_VAR_DIMS];
       int isrecvar;
       size_t numrecs;
-      int stride1; /* is stride all ones? */
+      int stride1=0; /* is stride all ones? */
 
       /*
        * Verify stride argument.
