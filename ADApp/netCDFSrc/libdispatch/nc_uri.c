@@ -27,12 +27,12 @@
 #define NILLEN(s) ((s)==NULL?0:strlen(s))
 #endif
 
-#ifndef nulldup
-#define nulldup(s) ((s)==NULL?NULL:strdup(s))
-#endif
-
-#ifndef HAVE_STRDUP
-static char* nulldup(char* s)
+#ifdef HAVE_STRDUP
+  #ifndef nulldup
+    #define nulldup(s) ((s)==NULL?NULL:strdup(s))
+  #endif
+#else
+static char* nulldup(const char* s)
 {
     char* dup = NULL;
     if(s != NULL) {
@@ -81,7 +81,7 @@ nc_uriparse(const char* uri0, NC_URI** nc_urip)
     if(nc_uri == NULL) return 0;    
 
     /* make local copy of uri */
-    uri = strdup(uri0);
+    uri = nulldup(uri0);
 
     /* remove all whitespace*/
     p = uri;
@@ -151,20 +151,20 @@ nc_uriparse(const char* uri0, NC_URI** nc_urip)
 
     /* assemble the component pieces*/
     if(uri0 && strlen(uri0) > 0)
-        nc_uri->uri = strdup(uri0);
+        nc_uri->uri = nulldup(uri0);
     if(protocol && strlen(protocol) > 0) {
-        nc_uri->protocol = strdup(protocol);
+        nc_uri->protocol = nulldup(protocol);
         /* remove trailing ':' */
         nc_uri->protocol[strlen(protocol)-1] = '\0';
     }
     if(user && strlen(user) > 0)
-        nc_uri->user = strdup(user);
+        nc_uri->user = nulldup(user);
     if(pwd && strlen(pwd) > 0)
-        nc_uri->password = strdup(pwd);
+        nc_uri->password = nulldup(pwd);
     if(host && strlen(host) > 0)
-        nc_uri->host = strdup(host);
+        nc_uri->host = nulldup(host);
     if(port && strlen(port) > 0)
-        nc_uri->port = strdup(port);
+        nc_uri->port = nulldup(port);
     if(file && strlen(file) > 0) {
 	/* Add back the leading / */
         nc_uri->file = malloc(strlen(file)+2);
@@ -172,7 +172,7 @@ nc_uriparse(const char* uri0, NC_URI** nc_urip)
         strcat(nc_uri->file,file);
     }
     if(constraint && strlen(constraint) > 0)
-        nc_uri->constraint = strdup(constraint);
+        nc_uri->constraint = nulldup(constraint);
     nc_urisetconstraints(nc_uri,constraint);
     if(params != NULL && strlen(params) > 0) {
         nc_uri->params = (char*)malloc(1+2+strlen(params));
@@ -239,7 +239,7 @@ nc_urisetconstraints(NC_URI* duri,const char* constraints)
 
     if(constraints == NULL || strlen(constraints)==0) return;
 
-    duri->constraint = strdup(constraints);
+    duri->constraint = nulldup(constraints);
     if(*duri->constraint == '?')
 	strcpy(duri->constraint,duri->constraint+1);
 
@@ -375,15 +375,15 @@ nc_uridecodeparams(NC_URI* nc_uri)
 
     /* Pass 1 to replace beginning '[' and ending ']' */
     if(params0[0] == '[') 
-	params = strdup(params0+1);
+	params = nulldup(params0+1);
     else
-	params = strdup(params0);	
+	params = nulldup(params0);	
 
     if(params[strlen(params)-1] == ']')
 	params[strlen(params)-1] = '\0';
 
     /* Pass 2 to replace "][" pairs with ','*/
-    params1 = strdup(params);
+    params1 = nulldup(params);
     cp=params; cq = params1;
     while((c=*cp++)) {
 	if(c == RBRACKET && *cp == LBRACKET) {cp++; c = ',';}
@@ -413,8 +413,8 @@ nc_uridecodeparams(NC_URI* nc_uri)
 	/*break up the ith param*/
 	vp = strchr(cp,'=');
 	if(vp != NULL) {*vp = '\0'; vp++;} else {vp = "";}
-	plist[2*i] = strdup(cp);	
-	plist[2*i+1] = strdup(vp);
+	plist[2*i] = nulldup(cp);	
+	plist[2*i+1] = nulldup(vp);
 	cp = next;
     }
     plist[2*nparams] = NULL;
@@ -527,8 +527,8 @@ nc_paraminsert(char** params, const char* key, const char* value)
     len = sizeof(char*)*((2*i)+1);
     newp = realloc(params,len+2*sizeof(char*));
     memcpy(newp,params,len);
-    newp[2*i] = strdup(key);
-    newp[2*i+1] = (value==NULL?NULL:strdup(value));
+    newp[2*i] = nulldup(key);
+    newp[2*i+1] = (value==NULL?NULL:nulldup(value));
     return newp;
 }
 
