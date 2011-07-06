@@ -303,7 +303,7 @@
 #ifndef UINT8_MAX
 # define UINT8_MAX 0xff
 #endif
-#ifndef uint8_t
+#if !defined(uint8_t) && !defined(vxWorks)
 # if (UCHAR_MAX == UINT8_MAX) || defined (S_SPLINT_S)
     typedef unsigned char uint8_t;
 #   define UINT8_C(v) ((uint8_t) v)
@@ -318,7 +318,7 @@
 #ifndef INT8_MIN
 # define INT8_MIN INT8_C(0x80)
 #endif
-#ifndef int8_t
+#if !defined(int8_t) && !defined(vxWorks)
 # if (SCHAR_MAX == INT8_MAX) || defined (S_SPLINT_S)
     typedef signed char int8_t;
 #   define INT8_C(v) ((int8_t) v)
@@ -330,7 +330,7 @@
 #ifndef UINT16_MAX
 # define UINT16_MAX 0xffff
 #endif
-#ifndef uint16_t
+#if !defined(uint16_t) && !defined(vxWorks)
 #if (UINT_MAX == UINT16_MAX) || defined (S_SPLINT_S)
   typedef unsigned int uint16_t;
 # ifndef PRINTF_INT16_MODIFIER
@@ -354,7 +354,7 @@
 #ifndef INT16_MIN
 # define INT16_MIN INT16_C(0x8000)
 #endif
-#ifndef int16_t
+#if !defined(int16_t) && !defined(vxWorks)
 #if (INT_MAX == INT16_MAX) || defined (S_SPLINT_S)
   typedef signed int int16_t;
 # define INT16_C(v) ((int16_t) (v))
@@ -375,7 +375,7 @@
 #ifndef UINT32_MAX
 # define UINT32_MAX (0xffffffffUL)
 #endif
-#ifndef uint32_t
+#if !defined(uint32_t) && !defined(vxWorks)
 #if (ULONG_MAX == UINT32_MAX) || defined (S_SPLINT_S)
   typedef unsigned long uint32_t;
 # define UINT32_C(v) v ## UL
@@ -405,7 +405,7 @@
 #ifndef INT32_MIN
 # define INT32_MIN INT32_C(0x80000000)
 #endif
-#ifndef int32_t
+#if !defined(int32_t) && !defined(vxWorks)
 #if (LONG_MAX == INT32_MAX) || defined (S_SPLINT_S)
   typedef signed long int32_t;
 # define INT32_C(v) v ## L
@@ -451,7 +451,7 @@
 #endif
 
 #if !defined (stdint_int64_defined)
-# if defined(__GNUC__)
+# if defined(__GNUC__) && !defined(vxWorks)
 #  define stdint_int64_defined
    __extension__ typedef long long int64_t;
    __extension__ typedef unsigned long long uint64_t;
@@ -646,7 +646,7 @@ typedef uint_least32_t uint_fast32_t;
  *  type limits.
  */
 
-#if defined(__WATCOMC__) || defined(_MSC_VER) || defined (__GNUC__)
+#if defined(__WATCOMC__) || defined(_MSC_VER) || defined (__GNUC__) && !defined(vxWorks)
 # include <wchar.h>
 # ifndef WCHAR_MIN
 #  define WCHAR_MIN 0
