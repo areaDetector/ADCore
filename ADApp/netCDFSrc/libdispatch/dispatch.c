@@ -109,7 +109,7 @@ NC_urlmodel(const char* path)
 	    model |= protolist->modelflags;
 	    if(protolist->substitute) {
 	        if(tmpurl->protocol) free(tmpurl->protocol);
-		tmpurl->protocol = strdup(protolist->substitute);
+		tmpurl->protocol = nulldup(protolist->substitute);
 	    }
 	    break;	    
 	}
