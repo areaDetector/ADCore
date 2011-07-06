@@ -362,9 +362,14 @@ extern const char* NCDAP_urllookup(void* dapurl, const char* param);
 
 /* Misc */
 
-#ifndef nulldup
-#define nulldup(s) ((s)==NULL?NULL:strdup(s))
+#ifdef HAVE_STRDUP
+  #ifndef nulldup
+    #define nulldup(s) ((s)==NULL?NULL:strdup(s))
+  #endif
+#else
+  char *nulldup(const char* s);
 #endif
+
 
 #define nulllen(s) (s==NULL?0:strlen(s))
 #define nullstring(s) (s==NULL?"(null)":s)
