@@ -43,7 +43,9 @@
 /* #undef H5_USE_16_API */
 
 /* Define to 1 if you have `alloca', as a function or macro. */
+#if !defined(_WIN32)
 #define HAVE_ALLOCA 1
+#endif
 
 /* Define to 1 if you have <alloca.h> and it should be used (not on Ultrix).
    */
@@ -115,7 +117,9 @@
 /* #undef HAVE_HDF5_H */
 
 /* Define to 1 if you have the <inttypes.h> header file. */
+#if !defined(vxWorks) && !defined(_WIN32)
 #define HAVE_INTTYPES_H 1
+#endif
 
 /* Define to 1 if you have the `curl' library (-lcurl). */
 #define HAVE_LIBCURL 1
@@ -172,16 +176,27 @@
 #define HAVE_SNPRINTF 1
 
 /* Define to 1 if the system has the type `ssize_t'. */
+#if !defined(_WIN32)
 #define HAVE_SSIZE_T 1
+#endif
 
 /* Define to 1 if you have the <stdarg.h> header file. */
 #define HAVE_STDARG_H 1
 
 /* Define to 1 if stdbool.h conforms to C99. */
+#if !defined(vxWorks) && !defined(_WIN32)
 #define HAVE_STDBOOL_H 1
+#endif
 
 /* Define to 1 if you have the <stdint.h> header file. */
+#if !defined(vxWorks) && !defined(_WIN32)
 #define HAVE_STDINT_H 1
+#endif
+
+/* Define to 1 if you have the <sys/param.h> header file. */
+#if !defined(vxWorks) && !defined(_WIN32)
+#define HAVE_SYS_PARAM_H 1
+#endif
 
 /* Define to 1 if you have the <stdio.h> header file. */
 #define HAVE_STDIO_H 1
@@ -202,7 +217,9 @@
 #define HAVE_STRCPY 1
 
 /* Define to 1 if you have the `strdup' function. */
+#if !defined(vxWorks)
 #define HAVE_STRDUP 1
+#endif
 
 /* Define to 1 if you have the `strerror' function. */
 #define HAVE_STRERROR 1
@@ -233,7 +250,9 @@
 
 /* Define to 1 if your `struct stat' has `st_blksize'. Deprecated, use
    `HAVE_STRUCT_STAT_ST_BLKSIZE' instead. */
+#if !defined(_WIN32)
 #define HAVE_ST_BLKSIZE 1
+#endif
 
 /* Define to 1 if you have the <sys/dir.h> header file, and it defines `DIR'.
    */
@@ -262,7 +281,9 @@
 /* #undef HAVE_UCHAR */
 
 /* Define to 1 if you have the <unistd.h> header file. */
+#if !defined(_WIN32)
 #define HAVE_UNISTD_H 1
+#endif
 
 /* Define to 1 if the system has the type `unsigned long long int'. */
 /* #undef HAVE_UNSIGNED_LONG_LONG_INT */
@@ -271,7 +292,9 @@
 #define HAVE_VPRINTF 1
 
 /* Define to 1 if the system has the type `_Bool'. */
+#if !defined(vxWorks) && !defined(_WIN32)
 #define HAVE__BOOL 1
+#endif
 
 /* do large file tests */
 /* #undef LARGE_FILE_TESTS */
@@ -365,7 +388,19 @@
 #define SIZEOF_LONG 4
 
 /* The size of `off_t', as computed by sizeof. */
-#define SIZEOF_OFF_T 8
+#if defined(vxWorks)
+  #define SIZEOF_OFF_T 4
+#elif defined(_WIN32)
+  #include <io.h>
+  #include <process.h>
+  #define SIZEOF_OFF_T 8
+  #define lseek _lseeki64
+  #define off_t __int64
+  #define _off_t __int64
+  #define _OFF_T_DEFINED
+#else
+  #define SIZEOF_OFF_T 8
+#endif
 
 /* The size of `short', as computed by sizeof. */
 #define SIZEOF_SHORT 2
@@ -400,7 +435,9 @@
 #define USE_EXTREME_NUMBERS 1
 
 /* if true, include experimental fsync code */
+#if !defined(vxWorks) && !defined(_WIN32)
 #define USE_FSYNC 1
+#endif
 
 /* if true, use HDF4 too */
 /* #undef USE_HDF4 */
