@@ -15,10 +15,10 @@
       <ul>
         <li>On Windows if NDFilePath has a trailing '\' then preserve it, else add a '/' character
           if one is not present.</li>
-        <li>Added support for Mac OS X (Darwin).  Thanks to Eric Norum for this.</li>
+        <li>Added support for Mac OS X (Darwin). Thanks to Eric Norum for this.</li>
         <li>Added support for 64-bit Windows, windows-x64.</li>
-        <li>Replaced FTVL=UCHAR with FTVL=CHAR in all waveform records, so they can be written to 
-        with dbpf from the IOC shell.</li>
+        <li>Replaced FTVL=UCHAR with FTVL=CHAR in all waveform records, so they can be written
+          to with dbpf from the IOC shell.</li>
       </ul>
     </li>
     <li>Drivers
@@ -32,8 +32,8 @@
         <li>New driver for Photonic Sciences Ltd. (PSL) detectors. This driver currently can
           do everything except read the data back from the detector. That capability needs
           to be added, which requires access to a PSL detector for development and testing.</li>
-        <li>Simulation driver. Added additional simulation mode for Gaussian peaks.
-          John Hammonds added this feature.</li>
+        <li>Simulation driver. Added additional simulation mode for Gaussian peaks. John Hammonds
+          added this feature.</li>
         <li>Changed the setShutter() function in ADDriver.h to be a virtual function, which
           it should have been all along. The base-class implementation for an EPICS shutter
           is now used by default. Changed the drivers to use the virtual function.</li>
@@ -44,22 +44,26 @@
           which is ~4X smaller than TIFF, and for additional header information in the files
           for crystallography. Thanks to Lewis Muir for these additions. Set FullFilename_RBV
           for each file in a multi-image sequence, which was not previously being done.</li>
-        <li>Prosilica driver. 
+        <li>Prosilica driver.
           <ul>
-            <li>Added support for opening cameras by IP address or IP DNS name, in addition to UniqueID.
-            This allows communicating with cameras that are not on the local subnet.  The change is backwards
-            compatible with existing iocsh startup scripts.</li>
-            <li>Removed support for writing TIFF files using the driver library.
-            This was a problem because their driver uses an incompatible version of libtiff
-            that conflicts with the new version used by GraphicsMagick. The driver TIFF writer
-            had no advantage over using the NDFileTIFF and NDFileMagick plugins, which have
-            more features and can run in their own threads.</li>
-            <li>Fixed a bug that could cause a blue-screen crash on Windows 7.  The new version
-            of their library requires clearing a structure to 0 before using it.</li>
-            <li>Upgraded to version 1.24 of the AVT SDK, and 1.20 of the Windows filter driver.  Users
-            should install the latest Sample Viewer and filter driver 1.20 on Windows machines so that 
-            the areaDetector application can use the filter driver. The filter driver version in
-            areaDetector must match the one installed on Windows in order to use it.</li>
+            <li>Added support for opening cameras by IP address or IP DNS name, in addition to
+              UniqueID. This allows communicating with cameras that are not on the local subnet.
+              The change is backwards compatible with existing iocsh startup scripts.</li>
+            <li>Removed support for writing TIFF files using the driver library. This was a problem
+              because their driver uses an incompatible version of libtiff that conflicts with
+              the new version used by GraphicsMagick. The driver TIFF writer had no advantage
+              over using the NDFileTIFF and NDFileMagick plugins, which have more features and
+              can run in their own threads.</li>
+            <li>Fixed a bug that could cause a blue-screen crash on Windows 7. The new version
+              of their library requires clearing a structure to 0 before using it.</li>
+            <li>Send command to stop acquistion when first connecting to a camera. This fixes
+              a problem when connecting to CMOS cameras that were left in the acquiring state
+              when the IOC exited.</li>
+            <li>Upgraded to version 1.24 of the AVT SDK, and 1.20 of the Windows filter driver.
+              Users should install the latest Sample Viewer and filter driver 1.20 on Windows
+              machines so that the areaDetector application can use the filter driver. The filter
+              driver version in areaDetector must match the one installed on Windows in order
+              to use it.</li>
           </ul>
         </li>
       </ul>
@@ -67,18 +71,22 @@
     <li>Plugins
       <ul>
         <li>New file writing plugin, NDFileHDF5. This plugin writes HDF5 files with the native
-          HDF5 API, unlike the NeXus plugin which uses the NeXus API.  It supports 3 types of compression.
-          Thanks to Ulrik Pedersen at Diamond Light Source for providing this plugin.</li>
+          HDF5 API, unlike the NeXus plugin which uses the NeXus API. It supports 3 types
+          of compression. Thanks to Ulrik Pedersen at Diamond Light Source for providing this
+          plugin.</li>
         <li>New file writing plugin, NDFileMagick. This uses GraphicsMagick to write files,
           and can write in dozens of file formats, including JPEG, TIFF, PNG, PDF, etc.</li>
         <li>NDPluginColorConvert. Added support for false color when converting 8-bit mono
           to RGB1, RGB2, or RGB3. Thanks to Tom Cobb for this addition.</li>
         <li>NDPluginStats. Removed duplicate record for MeanValue_RBV from NDStats.template.</li>
+        <li>NDFileNetCDF. Upgraded from netCDF 3.6.2 to netCDF 4.1.3. Fixed bug which was
+          causing crashes when when writing files >2GB on win32-x86. netCDF files of any size
+          can now be written on all platforms.</li>
         <li>NDFileNexus. This is now built from the NeXus source code on all platforms, rather
-          than including prebuilt binaries in nexusSupport.  Upgraded from Nexus 4.2.0 to 4.2.1, 
-          which fixes a stack overflow problem with the default stack size on win32-x86. 
-          Removed support for HDF4 and XML files, only HDF5 is now supported.
-          Thanks to Jeff Gebhardt for initially doing this.</li>
+          than including prebuilt binaries in nexusSupport. Upgraded from Nexus 4.2.0 to 4.2.1,
+          which fixes a stack overflow problem with the default stack size on win32-x86. Removed
+          support for HDF4 and XML files, only HDF5 is now supported. Thanks to Jeff Gebhardt
+          for initially doing this.</li>
       </ul>
     </li>
     <li>Viewers
@@ -96,25 +104,26 @@
         <li>Renamed pluginSupport.dbd to NDPluginSupport.dbd, and made individual DBD files
           for each plugin to make it easy for external software to use only a subset of the
           plugins.</li>
-        <li>Removed nexusSupport directory, which had previously contained prebuilt versions of the NeXus
-          library, as well as prebuilt versions of the HDF5 support library. This was replaced 
-          with a NeXusSrc directory which builds the NeXus library from source code on all platforms.
-          This is currently version NeXus 4.2.1.
-          A new support directory, hdf5Support, was added which contains the header files and prebuilt
-          libraries for HDF5.  This is currently version 1.8.7 of HDF5.</li>
+        <li>Removed nexusSupport directory, which had previously contained prebuilt versions
+          of the NeXus library, as well as prebuilt versions of the HDF5 support library.
+          This was replaced with a NeXusSrc directory which builds the NeXus library from
+          source code on all platforms. This is currently version NeXus 4.2.1. A new support
+          directory, hdf5Support, was added which contains the header files and prebuilt libraries
+          for HDF5. This is currently version 1.8.7 of HDF5.</li>
         <li>Use CYCGWIN_RPC_LIB variable when building on Cygwin to allow either Cygwin 1.5.x
           or 1.7.x.</li>
         <li>Minor changes to many drivers and plugins to allow building dynamically (DLLs)
           on WIN32.</li>
         <li>Added methods to the NDArray class to provide access to maxBuffers, numBuffers,
           etc.</li>
-        <li>Removed JPEG and TIFF libraries on win32-x86, they are not needed because the libraries
-         are part of GraphicsMagick.</li>
-        <li>Changed Makefiles so they will work correctly with the -debug variant on the target archs.</li>
+        <li>Removed JPEG and TIFF libraries on win32-x86, they are not needed because the
+          libraries are part of GraphicsMagick.</li>
+        <li>Changed Makefiles so they will work correctly with the -debug variant on the target
+          archs.</li>
         <li>Install ADApp/Db/*.template files as part of build process.</li>
-        <li>Changed NDArrayPool so that it will free the memory in NDArrays in the pool to permit allocating
-        one with sufficient memory to satisfy an alloc() request.  Thanks to Tim Madden for the initial
-        version of this.</li> 
+        <li>Changed NDArrayPool so that it will free the memory in NDArrays in the pool to
+          permit allocating one with sufficient memory to satisfy an alloc() request. Thanks
+          to Tim Madden for the initial version of this.</li>
       </ul>
     </li>
   </ul>
