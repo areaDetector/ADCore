@@ -189,7 +189,9 @@
 
 /* Define to the type of a signed integer type of width exactly 64 bits if
    such a type exists and the standard includes do not define it. */
+#ifndef __LP64__
 typedef long long int64_t;
+#endif
 
 /* Define to the type of a signed integer type of width exactly 8 bits if such
    a type exists and the standard includes do not define it. */
