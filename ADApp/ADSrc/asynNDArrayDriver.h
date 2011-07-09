@@ -63,6 +63,9 @@ typedef enum {
 #define NDFileNumCapturedString "NUM_CAPTURED"      /**< (asynInt32,    r/o) Number of arrays already captured */
 #define NDFileCaptureString     "CAPTURE"           /**< (asynInt32,    r/w) Start or stop capturing arrays */
 
+#define NDFileDeleteDriverFileString  "DELETE_DRIVER_FILE"  /**< (asynInt32,    r/w) Delete driver file */
+
+
 #define NDAttributesFileString  "ND_ATTRIBUTES_FILE" /**< (asynOctet,    r/w) Attributes file name */
 
     /* The detector array data */
@@ -124,6 +127,7 @@ protected:
     int NDFileNumCapture;
     int NDFileNumCaptured;
     int NDFileCapture;   
+    int NDFileDeleteDriverFile;
     int NDAttributesFile;
     int NDArrayData;
     int NDArrayCallbacks;

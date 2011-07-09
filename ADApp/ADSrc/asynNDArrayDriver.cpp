@@ -471,6 +471,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     createParam(NDFileNumCaptureString, asynParamInt32, &NDFileNumCapture);
     createParam(NDFileNumCapturedString,asynParamInt32, &NDFileNumCaptured);
     createParam(NDFileCaptureString,    asynParamInt32, &NDFileCapture);   
+    createParam(NDFileDeleteDriverFileString, asynParamInt32, &NDFileDeleteDriverFile);
     createParam(NDAttributesFileString, asynParamOctet, &NDAttributesFile);
     createParam(NDArrayDataString,      asynParamGenericPointer, &NDArrayData);
     createParam(NDArrayCallbacksString, asynParamInt32, &NDArrayCallbacks);
