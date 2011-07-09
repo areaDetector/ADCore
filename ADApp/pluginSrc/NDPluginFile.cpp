@@ -121,7 +121,10 @@ asynStatus NDPluginFile::writeFileBase()
     int fileWriteMode;
     int numCapture, numCaptured;
     int i;
+    int deleteDriverFile;
     NDArray *pArray;
+    NDAttribute *pAttribute;
+    char driverFileName[MAX_FILENAME_LEN];
     const char* functionName = "writeFileBase";
 
     /* Make sure there is a valid array */
@@ -145,17 +148,16 @@ asynStatus NDPluginFile::writeFileBase()
         case NDFileModeSingle:
             setIntegerParam(NDWriteFile, 1);
             callParamCallbacks();
-            status = this->openFileBase(NDFileModeWrite, this->pArrays[0]);
-            if (status == asynSuccess) {
-                this->unlock();
-                epicsMutexLock(this->fileMutexId);
-                status = this->writeFile(this->pArrays[0]);
-                epicsMutexUnlock(this->fileMutexId);
-                this->lock();
-                status += this->closeFileBase();
-                setIntegerParam(NDWriteFile, 0);
-                callParamCallbacks();
-            }
+            status += this->openFileBase(NDFileModeWrite, this->pArrays[0]);
+            if (status != asynSuccess) break;
+            this->unlock();
+            epicsMutexLock(this->fileMutexId);
+            status += this->writeFile(this->pArrays[0]);
+            epicsMutexUnlock(this->fileMutexId);
+            this->lock();
+            status += this->closeFileBase();
+            setIntegerParam(NDWriteFile, 0);
+            callParamCallbacks();
             break;
         case NDFileModeCapture:
             /* Write the file */
@@ -168,15 +170,15 @@ asynStatus NDPluginFile::writeFileBase()
             setIntegerParam(NDWriteFile, 1);
             callParamCallbacks();
             if (this->supportsMultipleArrays)
-                status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, this->pArrays[0]);
+                status += this->openFileBase(NDFileModeWrite | NDFileModeMultiple, this->pArrays[0]);
             if (status == asynSuccess) {
                 for (i=0; i<numCaptured; i++) {
                     pArray = this->pCapture[i];
                     if (!this->supportsMultipleArrays)
-                        status = this->openFileBase(NDFileModeWrite, pArray);
+                        status += this->openFileBase(NDFileModeWrite, pArray);
                     if (status == asynSuccess) {
                         epicsMutexLock(this->fileMutexId);
-                        status = this->writeFile(pArray);
+                        status += this->writeFile(pArray);
                         epicsMutexUnlock(this->fileMutexId);
                         if (!this->supportsMultipleArrays)
                             status += this->closeFileBase();
@@ -189,7 +191,7 @@ asynStatus NDPluginFile::writeFileBase()
                 delete pArray;
             }
             if (this->supportsMultipleArrays) 
-                status = this->closeFileBase();
+                status += this->closeFileBase();
             free(this->pCapture);
             this->pCapture = NULL;
             setIntegerParam(NDFileNumCaptured, 0);
@@ -198,20 +200,42 @@ asynStatus NDPluginFile::writeFileBase()
             break;
         case NDFileModeStream:
             if (!this->supportsMultipleArrays)
-                status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, this->pArrays[0]);
+                status += this->openFileBase(NDFileModeWrite | NDFileModeMultiple, this->pArrays[0]);
             this->unlock();
             epicsMutexLock(this->fileMutexId);
-            status = this->writeFile(this->pArrays[0]);
+            status += this->writeFile(this->pArrays[0]);
             epicsMutexUnlock(this->fileMutexId);
             this->lock();
             if (!this->supportsMultipleArrays) 
-                status = this->closeFileBase();
+                status += this->closeFileBase();
             break;
         default:
             asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                 "%s:%s: ERROR, unknown fileWriteMode %d\n", 
                 driverName, functionName, fileWriteMode);
             break;
+    }
+    
+    /* Check to see if we should delete the original file
+     * Only do this if all of the following conditions are met
+     *  - DeleteOriginalFile is true
+     *  - There were no errors above
+     *  - The NDFullFileName attribute is present and contains a non-blank string
+     */
+    getIntegerParam(NDFileDeleteDriverFile, &deleteDriverFile);
+    if ((status == asynSuccess) && deleteDriverFile) {
+        pAttribute = this->pArrays[0]->pAttributeList->find("DriverFileName");
+        if (pAttribute) {
+            status = pAttribute->getValue(NDAttrString, driverFileName, sizeof(driverFileName));
+            if ((status == asynSuccess) && (strlen(driverFileName) > 0)) {
+                status = remove(driverFileName);
+                if (status != 0) {
+                    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+                              "%s:%s: error deleting file %s, error=%s\n",
+                              driverName, functionName, driverFileName, strerror(errno));
+                }
+            }
+        }
     }
     
     return((asynStatus)status);
@@ -496,7 +520,7 @@ NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCall
     this->fileMutexId = epicsMutexCreate();
     /* Set the plugin type string */    
     setStringParam(NDPluginDriverPluginType, "NDPluginFile");
-    
+
     /* Try to connect to the NDArray port */
     status = connectToArrayPort();
 }
