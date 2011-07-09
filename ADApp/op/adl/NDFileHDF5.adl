@@ -1583,3 +1583,55 @@ text {
 	limits {
 	}
 }
+composite {
+	object {
+		x=712
+		y=366
+		width=338
+		height=20
+	}
+	"composite name"=""
+	children {
+		menu {
+			object {
+				x=901
+				y=366
+				width=64
+				height=20
+			}
+			control {
+				chan="$(P)$(R)DeleteDriverFile"
+				clr=14
+				bclr=51
+			}
+		}
+		text {
+			object {
+				x=712
+				y=366
+				width=180
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Delete driver file"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=970
+				y=367
+				width=80
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)DeleteDriverFile_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+	}
+}

@@ -5,10 +5,10 @@ file {
 }
 display {
 	object {
-		x=318
-		y=143
+		x=35
+		y=109
 		width=685
-		height=405
+		height=410
 	}
 	clr=14
 	bclr=4
@@ -829,4 +829,56 @@ text {
 		clr=14
 	}
 	textix="Example: %s%s_%3.3d.dat"
+}
+composite {
+	object {
+		x=327
+		y=366
+		width=338
+		height=20
+	}
+	"composite name"=""
+	children {
+		menu {
+			object {
+				x=516
+				y=366
+				width=64
+				height=20
+			}
+			control {
+				chan="$(P)$(R)DeleteDriverFile"
+				clr=14
+				bclr=51
+			}
+		}
+		text {
+			object {
+				x=327
+				y=366
+				width=180
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Delete driver file"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=585
+				y=367
+				width=80
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)DeleteDriverFile_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+	}
 }
