@@ -289,4 +289,24 @@ record(longin, "$(P)$(R)NumCaptured_RBV")
     field(SCAN, "I/O Intr")
 }
 
+# Delete driver file flag
+record(bo, "$(P)$(R)DeleteDriverFile")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DELETE_DRIVER_FILE")
+    field(VAL,  "0")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)DeleteDriverFile_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DELETE_DRIVER_FILE")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(SCAN, "I/O Intr")
+}
+
 
