@@ -70,6 +70,21 @@
     </li>
     <li>Plugins
       <ul>
+        <li>New record in the NDPluginFile base class called DeleteDriverFile. This record allows
+          the file writing plugins to delete the "original" file that the driver created for
+          that array.  This can be useful for detectors that must write the data to disk in order
+          for the areaDetector driver to read it back.  Once a file-writing plugin has rewritten the
+          data in another format it can be desireable to then delete the original file. The file
+          is only deleted if the following are all true:
+          <ol>
+            <li>The DeleteDriverFile record is "Yes".</li>
+            <li>The file plugin has successfully written a new file.</li>
+            <li>The array contains an attribute called "DriverFileName" that contains the full
+              file name of the original file.  The driver attributes XML file should contain a line
+              like the following:<br/> 
+                <tt>&lt;Attribute name="DriverFileName" type="PARAM" source="FULL_FILE_NAME" datatype="string" description="Driver file name"/&gt;</tt><br/>
+            </li>
+          </ol></li>              
         <li>New file writing plugin, NDFileHDF5. This plugin writes HDF5 files with the native
           HDF5 API, unlike the NeXus plugin which uses the NeXus API. It supports 3 types
           of compression. Thanks to Ulrik Pedersen at Diamond Light Source for providing this
