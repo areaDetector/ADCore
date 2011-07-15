@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+########### SVN repository information ###################
+# $Date$
+# $Author$
+# $Revision$
+# $HeadURL$
+# $Id$
+########### SVN repository information ###################
+-->
+
+<!--  usage:
+   xmllint - -noout - -schema /path1/attributes.xsd /path2/attributes.xml
+   (put the two minus signs together for the actual command, 
+   XML can't have them together in an XML file, even in a comment!
+   
+   see ADApp/ADSrc/asynNDArrayDriver.cpp for the rules implemented here
+-->
+
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+  <xs:element name="Attributes">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="Attribute"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Attribute">
+    <xs:annotation>
+      <xs:documentation>
+        Each NDAttribute (currently either PVAttribute or paramAttribute, other types may be added in the future) 
+        is defined with an <b>Attribute</b> tag. 
+        (N.B.: Unfortunately there are 2 meanings of attribute here: the NDAttribute and the XML attribute)
+        For each Attribute declaration, there are a number of XML attributes.
+        XML attributes have the syntax name="value".  
+        <!-- This next is a choice for our XML files, not a general rule for all XML files. -->
+        The XML attribute names are case-sensitive and must be lower case, i.e. name="xxx", not NAME="xxx".  
+        The XML attribute values however, are case-insensitive, i.e. type="epics_pv" is equivalent to type="EPICS_PV".
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attributeGroup ref="common_attributes"/>
+      <!-- only two types here: PARAM or EPICS_PV, each requires a different attribute -->
+      <xs:attribute name="type" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:pattern value="([pP][aA][rR][aA][mM])"/>
+            <xs:pattern value="([eE][pP][iI][cC][sS]_[pP][vV])"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <!-- see ADApp/ADSrc/asynNDArrayDriver.cpp for the rules -->
+      <xs:attribute name="datatype" type="allowed_datatypes" default="INT">
+        <!-- only for type="PARAM" -->
+        <xs:annotation>
+          <xs:documentation>
+            Declares the parameter data type for type="PARAM".
+      	    It must match the actual data type in the driver 
+      	    or plugin parameter library.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="addr" type="xs:string" default="0">
+        <!-- only for type="PARAM" -->
+        <xs:annotation>
+          <xs:documentation>
+            Declares the asyn addr (address) for type="PARAM".
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="dbrtype" type="allowed_dbrtypes" default="DBR_NATIVE">
+        <!-- only for type="EPICS_PV" -->
+        <xs:annotation>
+          <xs:documentation>
+            Declares the data type that will be used to read an 
+            EPICS Process Variable value with Channel Access.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:attributeGroup name="common_attributes">
+    <xs:attribute name="description" default="">
+      <xs:annotation>
+        <xs:documentation>
+          words to explain this information
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="name" use="required">
+      <xs:annotation>
+        <xs:documentation>
+          One-word mnemonic reference that determines the name of the NDAttribute.  
+          It is required, must be unique, is case-insensitive, and must start with a letter.
+          It can include only letters, numbers and underscore. (No whitespace or other punctuation.)
+        </xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:pattern value="[A-Za-z_][\w_]*" />
+	  <xs:maxLength value="63" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="source" use="required" type="xs:NMTOKEN">
+      <xs:annotation>
+        <xs:documentation>
+          Declares the source of the NDAttribute.  It is required. 
+          If type="EPICS_PV" then this is the name of the EPICS PV, 
+          which is case-sensitive. 
+          If type="PARAM" then this is the drvInfo string that is 
+          used in EPICS database files (e.g. ADBase.template) 
+          to identify this parameter.
+          <!-- 
+            This could be restricted to an enumeration of allowed PARAM parameters
+            or a regular expression for EPICS PV names (if that is possible).
+            Either way, it _should_ be restricted to not allow whitespace.
+          --> 
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:attributeGroup>
+  
+  <xs:simpleType name="allowed_datatypes">
+    <xs:annotation>
+      <xs:documentation>
+        Data type that will be used to read an EPICS_PV value with channel access
+        Data types allowed in the driver or plugin parameter library, 
+        and must be "INT", "DOUBLE", or "STRING" (case insensitive). 
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:token">
+      <!-- case-insensitive rule is painful -->
+      <xs:pattern value="([iI][nN][tT])">
+        <xs:annotation>
+          <xs:documentation>
+            (default) use integer data type
+          </xs:documentation>
+        </xs:annotation>
+      </xs:pattern>
+      <xs:pattern value="([dD][oO][uU][bB][lL][eE])" />
+      <xs:pattern value="([sS][tT][rR][iI][nN][gG])" />
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="allowed_dbrtypes">
+    <xs:annotation>
+      <xs:documentation>
+        Data type that will be used to read an EPICS_PV value with channel access.
+        The allowed values are all case insensitive but it is advised to use uppercase.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:pattern value="([Dd][Bb][Rr]_[Cc][Hh][Aa][Rr])" />
+      <xs:pattern value="([Dd][Bb][Rr]_[Ss][Hh][Oo][Rr][Tt])" />
+      <xs:pattern value="([Dd][Bb][Rr]_[Ee][Nn][Uu][Mm])" />
+      <xs:pattern value="([Dd][Bb][Rr]_[Ii][Nn][Tt])" />
+      <xs:pattern value="([Dd][Bb][Rr]_[Ll][Oo][Nn][Gg])" />
+      <xs:pattern value="([Dd][Bb][Rr]_[Ff][Ll][Oo][Aa][Tt])" />
+      <xs:pattern value="([Dd][Bb][Rr]_[Dd][Oo][Uu][Bb][Ll][Ee])" />
+      <xs:pattern value="([Dd][Bb][Rr]_[Ss][Tt][Rr][Ii][Nn][Gg])" />
+      <xs:pattern value="([Dd][Bb][Rr]_[Nn][Aa][Tt][Ii][Vv][Ee])">
+        <xs:annotation>
+          <xs:documentation>
+            (default) use native Channel Access data type
+          </xs:documentation>
+        </xs:annotation>
+      </xs:pattern>
+    </xs:restriction>
+  </xs:simpleType>
+  
+</xs:schema>
