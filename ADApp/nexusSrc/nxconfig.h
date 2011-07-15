@@ -141,7 +141,11 @@
 #define SIZEOF_INT 4
 
 /* The size of `long int', as computed by sizeof. */
+#ifdef __LP64__
+#define SIZEOF_LONG_INT 8
+#else
 #define SIZEOF_LONG_INT 4
+#endif
 
 /* The size of `long long int', as computed by sizeof. */
 #define SIZEOF_LONG_LONG_INT 8
