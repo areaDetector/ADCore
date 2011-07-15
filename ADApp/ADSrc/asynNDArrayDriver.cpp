@@ -170,7 +170,7 @@ int asynNDArrayDriver::createFileName(int maxChars, char *filePath, char *fileNa
   * Each NDAttribute (currently either an PVAttribute or paramAttribute, but other types may be added in the future) 
   * is defined with an XML <b>Attribute</b> tag.  For each attribute there are a number of XML attributes
   * (unfortunately there are 2 meanings of attribute here: the NDAttribute and the XML attribute).  
-  * XML attributes have the syntax name=value.  The XML attribute names are case-sensitive and must be lower case, i.e. name="xxx", not NAME="xxx".  
+  * XML attributes have the syntax name="value".  The XML attribute names are case-sensitive and must be lower case, i.e. name="xxx", not NAME="xxx".  
   * The XML attribute values however, are case-insensitive, i.e. type="epics_pv" is equivalent to type="EPICS_PV".
   * The XML attribute names are listed here:
   *
