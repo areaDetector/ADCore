@@ -57,7 +57,8 @@
             <model type="ND_ATTR" source="CameraModel" /> 
             <ImageCounter type="ND_ATTR" source="ImageCounter" /> 
             <data type = "pArray">
-                <Attr name="make" type="ND_ATTR" source="CameraManufacturer" /> 
+                <Attr name="signal" type="CONST" outtype="NX_CHAR">1</Attr>
+		<Attr name="make" type="ND_ATTR" source="CameraManufacturer" /> 
                 <Attr name="model" type="ND_ATTR" source="CameraModel" /> 
                 <Attr name="float" type="CONST" outtype="NX_FLOAT32" > 1.0</Attr>
                 <Attr name="double" type="CONST" outtype="NX_FLOAT64" >2.0</Attr> 
