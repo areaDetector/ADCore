@@ -39,7 +39,8 @@
         XML attributes have the syntax name="value".  
         <!-- This next is a choice for our XML files, not a general rule for all XML files. -->
         The XML attribute names are case-sensitive and must be lower case, i.e. name="xxx", not NAME="xxx".  
-        The XML attribute values however, are case-insensitive, i.e. type="epics_pv" is equivalent to type="EPICS_PV".
+        The XML attribute values are specified by the XML Schema and are always
+	uppercase for datatype and dbrtype attributes.
       </xs:documentation>
     </xs:annotation>
     <xs:complexType>
@@ -48,8 +49,8 @@
       <xs:attribute name="type" use="required">
         <xs:simpleType>
           <xs:restriction base="xs:string">
-            <xs:pattern value="([pP][aA][rR][aA][mM])"/>
-            <xs:pattern value="([eE][pP][iI][cC][sS]_[pP][vV])"/>
+            <xs:enumeration value="PARAM"/>
+            <xs:enumeration value="EPICS_PV"/>
           </xs:restriction>
         </xs:simpleType>
       </xs:attribute>
@@ -131,20 +132,19 @@
       <xs:documentation>
         Data type that will be used to read an EPICS_PV value with channel access
         Data types allowed in the driver or plugin parameter library, 
-        and must be "INT", "DOUBLE", or "STRING" (case insensitive). 
+        and must be "INT", "DOUBLE", or "STRING" (uppercase only). 
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:token">
-      <!-- case-insensitive rule is painful -->
-      <xs:pattern value="([iI][nN][tT])">
+      <xs:enumeration value="DOUBLE" />
+      <xs:enumeration value="STRING" />
+      <xs:enumeration value="INT">
         <xs:annotation>
           <xs:documentation>
             (default) use integer data type
           </xs:documentation>
         </xs:annotation>
-      </xs:pattern>
-      <xs:pattern value="([dD][oO][uU][bB][lL][eE])" />
-      <xs:pattern value="([sS][tT][rR][iI][nN][gG])" />
+      </xs:enumeration>
     </xs:restriction>
   </xs:simpleType>
   
@@ -152,25 +152,25 @@
     <xs:annotation>
       <xs:documentation>
         Data type that will be used to read an EPICS_PV value with channel access.
-        The allowed values are all case insensitive but it is advised to use uppercase.
+        The allowed values are all uppercase only.
       </xs:documentation>
     </xs:annotation>
     <xs:restriction base="xs:token">
-      <xs:pattern value="([Dd][Bb][Rr]_[Cc][Hh][Aa][Rr])" />
-      <xs:pattern value="([Dd][Bb][Rr]_[Ss][Hh][Oo][Rr][Tt])" />
-      <xs:pattern value="([Dd][Bb][Rr]_[Ee][Nn][Uu][Mm])" />
-      <xs:pattern value="([Dd][Bb][Rr]_[Ii][Nn][Tt])" />
-      <xs:pattern value="([Dd][Bb][Rr]_[Ll][Oo][Nn][Gg])" />
-      <xs:pattern value="([Dd][Bb][Rr]_[Ff][Ll][Oo][Aa][Tt])" />
-      <xs:pattern value="([Dd][Bb][Rr]_[Dd][Oo][Uu][Bb][Ll][Ee])" />
-      <xs:pattern value="([Dd][Bb][Rr]_[Ss][Tt][Rr][Ii][Nn][Gg])" />
-      <xs:pattern value="([Dd][Bb][Rr]_[Nn][Aa][Tt][Ii][Vv][Ee])">
+      <xs:enumeration value="DBR_CHAR" />
+      <xs:enumeration value="DBR_DOUBLE" />
+      <xs:enumeration value="DBR_ENUM" />
+      <xs:enumeration value="DBR_FLOAT" />
+      <xs:enumeration value="DBR_INT" />
+      <xs:enumeration value="DBR_LONG" />
+      <xs:enumeration value="DBR_SHORT" />
+      <xs:enumeration value="DBR_STRING" />
+      <xs:enumeration value="DBR_NATIVE">
         <xs:annotation>
           <xs:documentation>
             (default) use native Channel Access data type
           </xs:documentation>
         </xs:annotation>
-      </xs:pattern>
+      </xs:enumeration>
     </xs:restriction>
   </xs:simpleType>
   
