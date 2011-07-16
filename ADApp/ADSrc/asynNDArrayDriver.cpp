@@ -164,17 +164,18 @@ int asynNDArrayDriver::createFileName(int maxChars, char *filePath, char *fileNa
   * <?xml version="1.0" standalone="no" ?>
   * \<Attributes>
   * \<Attribute name="AcquireTime"         type="EPICS_PV" source="13SIM1:cam1:AcquireTime"      dbrtype="DBR_NATIVE"  description="Camera acquire time"/>
-  * \<Attribute name="CameraManufacturer"  type="PARAM"    source="MANUFACTURER"                 datatype="string"     description="Camera manufacturer"/>
+  * \<Attribute name="CameraManufacturer"  type="PARAM"    source="MANUFACTURER"                 datatype="STRING"     description="Camera manufacturer"/>
   * \</Attributes>
   * </pre>
   * Each NDAttribute (currently either an PVAttribute or paramAttribute, but other types may be added in the future) 
   * is defined with an XML <b>Attribute</b> tag.  For each attribute there are a number of XML attributes
   * (unfortunately there are 2 meanings of attribute here: the NDAttribute and the XML attribute).  
   * XML attributes have the syntax name="value".  The XML attribute names are case-sensitive and must be lower case, i.e. name="xxx", not NAME="xxx".  
-  * The XML attribute values however, are case-insensitive, i.e. type="epics_pv" is equivalent to type="EPICS_PV".
+  * The XML attribute values are specified by the XML Schema and are always uppercase for <b>datatype</b> and <b>dbrtype</b> attributes.
   * The XML attribute names are listed here:
   *
-  * <b>name</b> determines the name of the NDAttribute.  It is required, must be unique, and is case-insensitive.
+  * <b>name</b> determines the name of the NDAttribute.  It is required, must be unique, is case-insensitive, 
+  * and must start with a letter.  It can include only letters, numbers and underscore. (No whitespace or other punctuation.)
   *
   * <b>type</b> determines the type of the NDAttribute.  "EPICS_PV" creates a PVAttribute, while "PARAM" creates a paramAttribute.
   * The default is EPICS_PV if this XML attribute is absent.
@@ -185,10 +186,10 @@ int asynNDArrayDriver::createFileName(int maxChars, char *filePath, char *fileNa
   *
   * <b>dbrtype</b> determines the data type that will be used to read an EPICS_PV value with channel access.  It can be one of the standard EPICS
   * DBR types (e.g. "DBR_DOUBLE", "DBR_STRING", ...) or it can be the special type "DBR_NATIVE" which means to use the native channel access
-  * data type for this PV.  The default is DBR_NATIVE if this XML attribute is absent.
+  * data type for this PV.  The default is DBR_NATIVE if this XML attribute is absent.  Always use uppercase.
   *
   * <b>datatype</b> determines the parameter data type for type="PARAM".  It must match the actual data type in the driver or plugin
-  * parameter library, and must be "INT", "DOUBLE", or "STRING".  The default is "INT" if this XML attribute is absent.
+  * parameter library, and must be "INT", "DOUBLE", or "STRING".  The default is "INT" if this XML attribute is absent.   Always use uppercase.
   * 
   * <b>addr</b> determines the asyn addr (address) for type="PARAM".  The default is 0 if the XML attribute is absent.
   * 
@@ -239,7 +240,8 @@ int asynNDArrayDriver::readNDAttributesFile(const char *fileName)
         if (epicsStrCaseCmp(pType, "EPICS_PV") == 0) {
             pDBRType = Attr->Attribute("dbrtype");
             dbrType = DBR_NATIVE;
-            if (pDBRType) {
+            // do not enforce new uppercase rule yet on value of dbrtype attribute
+	    if (pDBRType) {
                 if      (!epicsStrCaseCmp(pDBRType, "DBR_CHAR"))   dbrType = DBR_CHAR;
                 else if (!epicsStrCaseCmp(pDBRType, "DBR_SHORT"))  dbrType = DBR_SHORT;
                 else if (!epicsStrCaseCmp(pDBRType, "DBR_ENUM"))   dbrType = DBR_ENUM;
@@ -262,7 +264,8 @@ int asynNDArrayDriver::readNDAttributesFile(const char *fileName)
             pPVAttribute = new PVAttribute(pName, pDescription, pSource, dbrType);
             this->pAttributeList->add(pPVAttribute);
         } else if (epicsStrCaseCmp(pType, "PARAM") == 0) {
-            pDataType = Attr->Attribute("datatype");
+            // do not enforce new uppercase rule yet on value of datatype attribute
+	    pDataType = Attr->Attribute("datatype");
             if (!pDataType) pDataType = "int";
             pAddr = Attr->Attribute("addr");
             if (pAddr) addr = strtol(pAddr, NULL, 0);
