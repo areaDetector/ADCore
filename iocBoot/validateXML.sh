@@ -25,3 +25,5 @@ xmllint --noout --schema ./attributes.xsd iocSimDetector/simDetectorAttributes.x
 #
 #iocPerkinElmer/nexus_templates/example.xml fails to validate
 #iocSimDetector/NexusTemplate.xml fails to validate
+xmllint --noout --schema ./NeXus_templates.xsd iocPerkinElmer/nexus_templates/example.xml
+xmllint --noout --schema ./NeXus_templates.xsd iocSimDetector/NexusTemplate.xml

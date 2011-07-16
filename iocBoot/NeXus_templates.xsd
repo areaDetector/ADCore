@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ########### SVN repository information ###################
+  # $Date$
+  # $Author$
+  # $Revision$
+  # $HeadURL$
+  # $Id$
+  ########### SVN repository information ###################
+-->
+
+<!--  usage:
+  xmllint - -noout - -schema /path1/NeXus_templates.xsd /path2/NX_template_file.xml
+  (put the two minus signs together for the actual command, 
+  XML can't have them together in an XML file, even in a comment!
+  
+  TODO:  This XML Schema validates the example files as-written in areaDetector 
+  but is not sufficient for general use yet.
+-->
+
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="NXroot" >
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="Facility"/>
+        <xs:element ref="NXentry"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="common_attributes"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Facility">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="facility_name"/>
+        <xs:element ref="facility_sector"/>
+        <xs:element ref="facility_beamline"/>
+        <xs:element ref="facility_station"/>
+        <xs:element ref="facility_float"/>
+        <xs:element ref="facility_int"/>
+      </xs:sequence>
+      <xs:attribute name="type" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="facility_name">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:NCName">
+          <xs:attribute name="outtype" use="required" type="xs:NCName"/>
+          <xs:attribute name="type" use="required" type="xs:NCName"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="facility_sector">
+    <xs:complexType mixed="true">
+      <xs:attribute name="outtype" use="required" type="xs:NCName"/>
+      <xs:attribute name="type" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="facility_beamline">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:NMTOKEN">
+          <xs:attribute name="outtype" use="required" type="xs:NCName"/>
+          <xs:attribute name="type" use="required" type="xs:NCName"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="facility_station">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:NCName">
+          <xs:attribute name="outtype" use="required" type="xs:NCName"/>
+          <xs:attribute name="type" use="required" type="xs:NCName"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="facility_float">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:decimal">
+          <xs:attribute name="outtype" use="required" type="xs:NCName"/>
+          <xs:attribute name="type" use="required" type="xs:NCName"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="facility_int">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:integer">
+          <xs:attribute name="outtype" use="required" type="xs:NCName"/>
+          <xs:attribute name="type" use="required" type="xs:NCName"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NXentry">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="title"/>
+        <xs:element ref="experiment_identifier"/>
+        <xs:element ref="experiment_description"/>
+        <xs:element ref="experiment_documentation"/>
+        <xs:element ref="collection_identifier"/>
+        <xs:element ref="collection_description"/>
+        <xs:element ref="entry_identifier"/>
+        <xs:element ref="definition"/>
+        <xs:element ref="start_time"/>
+        <xs:element ref="end_time"/>
+        <xs:element ref="duration"/>
+        <xs:element ref="collection_time"/>
+        <xs:element ref="run_cycle"/>
+        <xs:element ref="program_name"/>
+        <xs:element ref="revision"/>
+        <xs:element ref="notes"/>
+        <xs:element ref="NXuser"/>
+        <xs:element ref="NXdata"/>
+        <xs:element ref="NXinstrument"/>
+        <xs:element minOccurs="0" ref="NXcollection"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="common_attributes"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="title" type="commonElement"/>
+  <xs:element name="experiment_identifier" type="commonElement"/>
+  <xs:element name="experiment_description" type="commonElement"/>
+  <xs:element name="experiment_documentation" type="commonElement"/>
+  <xs:element name="collection_identifier" type="commonElement"/>
+  <xs:element name="collection_description" type="commonElement"/>
+  <xs:element name="entry_identifier" type="commonElement"/>
+  <xs:element name="definition" type="commonElement"/>
+  <xs:element name="start_time" type="commonElement"/>
+  <xs:element name="end_time" type="commonElement"/>
+  <xs:element name="duration" type="commonElement"/>
+  <xs:element name="collection_time" type="commonElement"/>
+  <xs:element name="run_cycle" type="commonElement"/>
+  <xs:element name="program_name" type="commonElement"/>
+  <xs:element name="revision" type="commonElement"/>
+  <xs:element name="notes" type="commonElement"/>
+  <xs:element name="NXuser">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="name"/>
+        <xs:element ref="role"/>
+        <xs:element ref="affiliation"/>
+        <xs:element ref="address"/>
+        <xs:element ref="telephone_number"/>
+        <xs:element ref="fax_number"/>
+        <xs:element ref="email"/>
+        <xs:element ref="facility_user_id"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="common_attributes"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="role" type="commonElement"/>
+  <xs:element name="affiliation" type="commonElement"/>
+  <xs:element name="address" type="commonElement"/>
+  <xs:element name="telephone_number" type="commonElement"/>
+  <xs:element name="fax_number" type="commonElement"/>
+  <xs:element name="email" type="commonElement"/>
+  <xs:element name="facility_user_id" type="commonElement"/>
+  <xs:element name="NXdata">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="maxSizeX"/>
+        <xs:element ref="maxSizeY"/>
+        <xs:element ref="make"/>
+        <xs:element ref="model"/>
+        <xs:element minOccurs="0" ref="ImageCounter"/>
+        <xs:element ref="data"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="common_attributes"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="maxSizeX" type="commonElement"/>
+  <xs:element name="maxSizeY" type="commonElement"/>
+  <xs:element name="make" type="commonElement"/>
+  <xs:element name="model" type="commonElement"/>
+  <xs:element name="ImageCounter" type="commonElement"/>
+  <xs:element name="data" type="commonElement"/>
+  <xs:element name="NXinstrument">
+    <xs:complexType>
+      <xs:sequence minOccurs="0">
+        <xs:element ref="NXinsertion_device"/>
+        <xs:element ref="NXsource"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="common_attributes"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NXinsertion_device">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="type"/>
+        <xs:element ref="energy"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="common_attributes"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="energy" type="commonElement"/>
+  <xs:element name="NXsource">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="name"/>
+        <xs:element ref="type"/>
+        <xs:element ref="probe"/>
+        <xs:element ref="current"/>
+        <xs:element ref="top_up"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="common_attributes"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="probe" type="commonElement"/>
+  <xs:element name="current" type="commonElement"/>
+  <xs:element name="top_up" type="commonElement"/>
+  <xs:element name="NXcollection">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="beamline"/>
+      </xs:sequence>
+      <xs:attributeGroup ref="common_attributes"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="beamline" type="xs:NMTOKEN"/>
+  <xs:element name="name" type="commonElement"/>
+  <xs:element name="type" type="commonElement"/>
+  
+  <xs:complexType name="commonElement" mixed="true">
+    <xs:group ref="Attr_group"/>
+    <xs:attributeGroup ref="common_attributes"/>
+  </xs:complexType>
+
+  <xs:attributeGroup name="common_attributes">
+    <xs:attribute name="name" type="xs:NCName"/>
+    <xs:attribute name="type">
+      <xs:simpleType>
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="ATTR"/>
+          <xs:enumeration value="CONST"/>
+          <xs:enumeration value="ND_ATTR"/>
+          <xs:enumeration value="pArray"/>
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="outtype" type="xs:string"/>
+    <xs:attribute name="source" type="xs:string"/>
+  </xs:attributeGroup>
+  
+  <xs:group name="Attr_group">
+    <xs:sequence>
+      <xs:element name="Attr" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType mixed="true">
+          <xs:attribute name="name" type="xs:NCName"/>
+          <xs:attribute name="outtype" type="xs:string"/>
+          <xs:attribute name="source"></xs:attribute>
+          <xs:attribute name="type" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:string">
+                <xs:enumeration value="ATTR"/>
+                <xs:enumeration value="CONST"/>
+                <xs:enumeration value="ND_ATTR"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:group>
+
+</xs:schema>
