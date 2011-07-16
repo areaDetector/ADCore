@@ -240,7 +240,7 @@ int asynNDArrayDriver::readNDAttributesFile(const char *fileName)
         if (epicsStrCaseCmp(pType, "EPICS_PV") == 0) {
             pDBRType = Attr->Attribute("dbrtype");
             dbrType = DBR_NATIVE;
-            // do not enforce new uppercase rule yet on value of dbrtype attribute
+            // TODO: do not enforce new uppercase rule yet on value of dbrtype attribute
 	    if (pDBRType) {
                 if      (!epicsStrCaseCmp(pDBRType, "DBR_CHAR"))   dbrType = DBR_CHAR;
                 else if (!epicsStrCaseCmp(pDBRType, "DBR_SHORT"))  dbrType = DBR_SHORT;
@@ -264,7 +264,7 @@ int asynNDArrayDriver::readNDAttributesFile(const char *fileName)
             pPVAttribute = new PVAttribute(pName, pDescription, pSource, dbrType);
             this->pAttributeList->add(pPVAttribute);
         } else if (epicsStrCaseCmp(pType, "PARAM") == 0) {
-            // do not enforce new uppercase rule yet on value of datatype attribute
+            // TODO: do not enforce new uppercase rule yet on value of datatype attribute
 	    pDataType = Attr->Attribute("datatype");
             if (!pDataType) pDataType = "int";
             pAddr = Attr->Attribute("addr");

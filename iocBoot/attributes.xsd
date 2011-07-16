@@ -116,10 +116,15 @@
           which is case-sensitive. 
           If type="PARAM" then this is the drvInfo string that is 
           used in EPICS database files (e.g. ADBase.template) 
-          to identify this parameter.
+          to identify this parameter.  This must be identical with
+		  the declaration in the source code.  
+		  Use uppercase letters or numbers or underline.
+		  Must start with an uppercase letter.
           <!-- 
-            This could be restricted to an enumeration of allowed PARAM parameters
+            This could be restricted to an enumeration of allowed PARAM parameters (too many .h files to search)
+			   xs:pattern value="[A-Z][A-Z0-9_]*" 
             or a regular expression for EPICS PV names (if that is possible).
+			xs:pattern value="+++ what is the pattern? +++"
             Either way, it _should_ be restricted to not allow whitespace.
           --> 
         </xs:documentation>
