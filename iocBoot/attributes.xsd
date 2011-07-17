@@ -40,7 +40,7 @@
         <!-- This next is a choice for our XML files, not a general rule for all XML files. -->
         The XML attribute names are case-sensitive and must be lower case, i.e. name="xxx", not NAME="xxx".  
         The XML attribute values are specified by the XML Schema and are always
-	uppercase for datatype and dbrtype attributes.
+        uppercase for datatype and dbrtype attributes.
       </xs:documentation>
     </xs:annotation>
     <xs:complexType>
@@ -104,7 +104,6 @@
       <xs:simpleType>
         <xs:restriction base="xs:token">
           <xs:pattern value="[A-Za-z_][\w_]*" />
-	  <xs:maxLength value="63" />
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
