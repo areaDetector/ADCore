@@ -177,26 +177,23 @@
   
   <xs:attributeGroup name="common_attributes">
     <xs:attribute name="name" type="type_NeXus_name"/>
+    <xs:attribute name="outtype" type="type_outtype"/>
+    <xs:attribute name="source" type="type_source"/>
     <xs:attribute name="type" type="type_basic_values"/>
-    <xs:attribute name="outtype" type="xs:string"/>
-    <xs:attribute name="source" type="xs:string"/>
   </xs:attributeGroup>
   
   <xs:attributeGroup name="data_attributes">
     <xs:attribute name="name" type="type_NeXus_name"/>
+    <xs:attribute name="outtype" type="type_outtype"/>
+    <xs:attribute name="source" type="type_source"/>
     <xs:attribute name="type" type="type_basic_values_and_pArray"/>
-    <xs:attribute name="outtype" type="xs:string"/>
-    <xs:attribute name="source" type="xs:string"/>
   </xs:attributeGroup>
   
   <xs:group name="Attr_group">
     <xs:sequence>
       <xs:element name="Attr" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType mixed="true">
-          <xs:attribute name="name" type="type_NeXus_name"/>
-          <xs:attribute name="outtype" type="xs:string"/>
-          <xs:attribute name="source" type="type_source"/>
-          <xs:attribute name="type" use="required" type="type_basic_values"/>
+          <xs:attributeGroup ref="common_attributes"/>
         </xs:complexType>
       </xs:element>
     </xs:sequence>
@@ -246,6 +243,10 @@
     <xs:restriction base="xs:token">
       <xs:pattern value="[A-Za-z_][\w_]*" />
     </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="type_outtype">
+    <xs:list itemType="xs:string"/>
   </xs:simpleType>
   
   <xs:simpleType name="type_NeXus_name">

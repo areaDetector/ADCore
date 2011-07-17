@@ -108,7 +108,7 @@
         </xs:restriction>
       </xs:simpleType>
     </xs:attribute>
-    <xs:attribute name="source" use="required" type="xs:NMTOKEN">
+    <xs:attribute name="source" use="required" type="type_source">
       <xs:annotation>
         <xs:documentation>
           Declares the source of the NDAttribute.  It is required. 
@@ -176,6 +176,37 @@
           </xs:documentation>
         </xs:annotation>
       </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="type_source">
+    <!-- EPICS PV name rules
+      see: http://www.aps.anl.gov/epics/wiki/index.php/RRM_3-14_Concepts#Database_Addresses
+      The record name can be a mix of the following: 
+      a-z A-Z 0-9 _ - : . [ ] < > ;
+      The field name is always upper case. 
+      
+      full regular expression: [\w_\-:.[\]<>;]+([.][A-Z0-9]+)?
+      BUT, cannot express "<" in XML, must use &lt; but that won't parse!
+      So, use use a reduced (but very likely) subset of rules.  
+      Do not allow these symbols: []<>
+    -->
+    <xs:union memberTypes="type_EPICS_PV_source type_PARAM_source"/>
+  </xs:simpleType>
+  
+  <xs:simpleType name="type_EPICS_PV_source">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:pattern value="[\w_\-:.;]+([.][A-Z0-9]+)?"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="type_PARAM_source">
+    <!-- All the ND parameters listed in the various .h files in the source code
+      appear to follow the pattern of all uppercase plus numbers and the underline.
+      This may not be a rule but it seems to be common practice.  Here, we make it a rule.
+    -->
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:pattern value="[A-Z0-9_]+"/>
     </xs:restriction>
   </xs:simpleType>
   
