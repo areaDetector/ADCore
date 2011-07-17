@@ -25,7 +25,15 @@
   <xs:element name="NXroot" >
     <xs:complexType>
       <xs:sequence>
-        <xs:element ref="Facility" minOccurs="0"/>  <!-- not recommended for new projects -->
+        <xs:element ref="Facility" minOccurs="0">
+          <xs:annotation>
+            <xs:documentation>
+              Facility is a legacy group from APS's CCDImageServer.
+              It is not a NeXus group and is used only by some custom at APS.
+              Not recommended for new projects.
+            </xs:documentation>
+          </xs:annotation>
+        </xs:element>
         <xs:element ref="NXentry" maxOccurs="unbounded"/>
       </xs:sequence>
       <xs:attribute name="name" type="type_NeXus_name" />
