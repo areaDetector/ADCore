@@ -1,6 +1,9 @@
 <?xml version="1.0" standalone="no" ?>
 <!-- Attributes -->
-<Attributes>
+<Attributes
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://epics.aps.anl.gov/areaDetector/attributes ../attributes.xsd"
+    >
     <Attribute name="AcquireTime"         type="EPICS_PV" source="13SIM1:cam1:AcquireTime"      dbrtype="DBR_NATIVE"  description="Camera acquire time"/>
     <Attribute name="RingCurrent"         type="EPICS_PV" source="S:SRcurrentAI"                dbrtype="DBR_NATIVE"  description="Storage ring current"/>
     <Attribute name="RingCurrent_EGU"     type="EPICS_PV" source="S:SRcurrentAI.EGU"            dbrtype="DBR_NATIVE"  description="Storage ring current units"/>
