@@ -99,6 +99,37 @@ record(ai, "$(P)$(R)ThresholdEnergy_RBV")
     field(SCAN, "I/O Intr")
 }
 
+# Threshold apply command
+record(busy, "$(P)$(R)ThresholdApply")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))THRESHOLD_APPLY")
+    field(ZNAM, "Done")
+    field(ONAM, "Apply")
+    field(VAL,  "0")
+}
+
+# Threshold auto apply flag
+record(bo, "$(P)$(R)ThresholdAutoApply")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))THRESHOLD_AUTO_APPLY")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(VAL,  "1")
+}
+
+# Threshold auto apply flag
+record(bi, "$(P)$(R)ThresholdAutoApply_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))THRESHOLD_AUTO_APPLY")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(SCAN, "I/O Intr")
+}
+
 # Gain menu.  This writes to the Gain PV in the base database.
 record(mbbo, "$(P)$(R)GainMenu")
 {
@@ -185,6 +216,33 @@ record(bi, "$(P)$(R)FlatFieldValid")
     field(ZNAM, "No")
     field(ONAM, "Yes")
     field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)GapFill")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GAP_FILL")
+   field(ZRST, "N.A.")
+   field(ZRVL, "2")
+   field(ONST, "0")
+   field(ONVL, "0")
+   field(TWST, "-1")
+   field(TWVL, "-1")
+   field(VAL,  "0")
+}
+
+record(mbbi, "$(P)$(R)GapFill_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GAP_FILL")
+   field(ZRST, "N.A.")
+   field(ZRVL, "2")
+   field(ONST, "0")
+   field(ONVL, "0")
+   field(TWST, "-1")
+   field(TWVL, "-1")
+   field(SCAN, "I/O Intr")
 }
 
 
