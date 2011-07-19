@@ -1,0 +1,744 @@
+<display typeId="org.csstudio.opibuilder.Display" version="1.0">
+  <auto_zoom_to_fit_all>false</auto_zoom_to_fit_all>
+  <macros>
+    <include_parent_macros>true</include_parent_macros>
+  </macros>
+  <scripts />
+  <show_ruler>true</show_ruler>
+  <height>80</height>
+  <name>ADPlugins</name>
+  <snap_to_geometry>false</snap_to_geometry>
+  <show_grid>false</show_grid>
+  <background_color>
+    <color name="Gray_4" />
+  </background_color>
+  <foreground_color>
+    <color name="Gray_14" />
+  </foreground_color>
+  <widget_type>Display</widget_type>
+  <show_close_button>true</show_close_button>
+  <width>335</width>
+  <rules />
+  <show_edit_range>true</show_edit_range>
+  <grid_space>5</grid_space>
+  <actions hook="false" />
+  <y>292</y>
+  <x>141</x>
+  <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
+    <enabled>true</enabled>
+    <widget_type>Grouping Container</widget_type>
+    <macros>
+      <include_parent_macros>true</include_parent_macros>
+    </macros>
+    <visible>true</visible>
+    <font>
+      <opifont.name>Default</opifont.name>
+    </font>
+    <width>335</width>
+    <border_style>0</border_style>
+    <rules />
+    <lock_children>false</lock_children>
+    <scripts />
+    <height>80</height>
+    <border_width>1</border_width>
+    <name>Grouping Container</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <transparent>false</transparent>
+    <show_scrollbar>false</show_scrollbar>
+    <y>0</y>
+    <actions hook="false" />
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <background_color>
+      <color red="187" green="187" blue="187" />
+    </background_color>
+    <x>0</x>
+    <tooltip />
+    <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+      <visible>true</visible>
+      <fill_level>0.0</fill_level>
+      <line_color>
+        <color name="Gray_14" />
+      </line_color>
+      <scripts />
+      <height>80</height>
+      <anti_alias>true</anti_alias>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Rectangle</name>
+      <transparent>true</transparent>
+      <pv_name />
+      <background_color>
+        <color red="0" green="0" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color name="Gray_14" />
+      </foreground_color>
+      <widget_type>Rectangle</widget_type>
+      <enabled>true</enabled>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <opifont.name>Default</opifont.name>
+      </font>
+      <line_style>0</line_style>
+      <width>335</width>
+      <border_style>0</border_style>
+      <rules />
+      <border_width>1</border_width>
+      <line_width>0</line_width>
+      <horizontal_fill>true</horizontal_fill>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <actions hook="false" />
+      <y>0</y>
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>0</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Rectangle" version="1.0">
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+      <visible>true</visible>
+      <fill_level>100.0</fill_level>
+      <line_color>
+        <color red="128" green="0" blue="255" />
+      </line_color>
+      <scripts />
+      <height>21</height>
+      <anti_alias>true</anti_alias>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Rectangle</name>
+      <transparent>false</transparent>
+      <pv_name />
+      <background_color>
+        <color red="0" green="0" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color name="Gray_2" />
+      </foreground_color>
+      <widget_type>Rectangle</widget_type>
+      <enabled>true</enabled>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <opifont.name>Default</opifont.name>
+      </font>
+      <line_style>0</line_style>
+      <width>107</width>
+      <border_style>0</border_style>
+      <rules />
+      <border_width>1</border_width>
+      <line_width>0</line_width>
+      <horizontal_fill>true</horizontal_fill>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <actions hook="false" />
+      <y>2</y>
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>113</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>40</height>
+      <name>Label</name>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color name="Gray_14" />
+      </foreground_color>
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text />
+      <font>
+        <fontdata fontName="Sans" height="30" style="0" />
+      </font>
+      <width>1</width>
+      <border_style>0</border_style>
+      <rules />
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>0</horizontal_alignment>
+      <actions hook="false" />
+      <y>10</y>
+      <wrap_words>true</wrap_words>
+      <tooltip />
+      <x>122</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>20</height>
+      <name>Label</name>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color name="Gray_14" />
+      </foreground_color>
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>File</text>
+      <font>
+        <fontdata fontName="Sans" height="14" style="0" />
+      </font>
+      <width>40</width>
+      <border_style>0</border_style>
+      <rules />
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>0</horizontal_alignment>
+      <actions hook="false" />
+      <y>30</y>
+      <wrap_words>true</wrap_words>
+      <tooltip />
+      <x>64</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>20</height>
+      <name>Label</name>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color name="Gray_14" />
+      </foreground_color>
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>ROI</text>
+      <font>
+        <fontdata fontName="Sans" height="14" style="0" />
+      </font>
+      <width>30</width>
+      <border_style>0</border_style>
+      <rules />
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>0</horizontal_alignment>
+      <actions hook="false" />
+      <y>30</y>
+      <wrap_words>true</wrap_words>
+      <tooltip />
+      <x>204</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>20</height>
+      <name>Label</name>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color name="Gray_14" />
+      </foreground_color>
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>Statistics</text>
+      <font>
+        <fontdata fontName="Sans" height="14" style="0" />
+      </font>
+      <width>100</width>
+      <border_style>0</border_style>
+      <rules />
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>0</horizontal_alignment>
+      <actions hook="false" />
+      <y>55</y>
+      <wrap_words>true</wrap_words>
+      <tooltip />
+      <x>4</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>20</height>
+      <name>Label</name>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color name="Gray_14" />
+      </foreground_color>
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>Other</text>
+      <font>
+        <fontdata fontName="Sans" height="14" style="0" />
+      </font>
+      <width>50</width>
+      <border_style>0</border_style>
+      <rules />
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>0</horizontal_alignment>
+      <actions hook="false" />
+      <y>55</y>
+      <wrap_words>true</wrap_words>
+      <tooltip />
+      <x>184</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+      <visible>true</visible>
+      <vertical_alignment>1</vertical_alignment>
+      <auto_size>false</auto_size>
+      <scripts />
+      <height>20</height>
+      <name>Label</name>
+      <transparent>true</transparent>
+      <show_scrollbar>false</show_scrollbar>
+      <background_color>
+        <color red="255" green="255" blue="255" />
+      </background_color>
+      <foreground_color>
+        <color name="ioc_read_fg" />
+      </foreground_color>
+      <widget_type>Label</widget_type>
+      <enabled>true</enabled>
+      <text>Plugins</text>
+      <font>
+        <fontdata fontName="Sans" height="14" style="0" />
+      </font>
+      <width>159</width>
+      <border_style>0</border_style>
+      <rules />
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <horizontal_alignment>1</horizontal_alignment>
+      <actions hook="false" />
+      <y>3</y>
+      <wrap_words>true</wrap_words>
+      <tooltip />
+      <x>87</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0">
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+      <visible>true</visible>
+      <actions_from_pv>false</actions_from_pv>
+      <scripts />
+      <height>20</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Menu Button</name>
+      <transparent>false</transparent>
+      <pv_name />
+      <background_color>
+        <color name="ioc_write_bg" />
+      </background_color>
+      <foreground_color>
+        <color name="Gray_14" />
+      </foreground_color>
+      <widget_type>Menu Button</widget_type>
+      <enabled>true</enabled>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <opifont.name>Default</opifont.name>
+      </font>
+      <width>64</width>
+      <border_style>6</border_style>
+      <label />
+      <rules />
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <y>30</y>
+      <actions hook="false">
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>NDFileNetCDF.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <R>netCDF1:</R>
+          </macros>
+          <Position>1</Position>
+          <description>netCDF file #1</description>
+        </action>
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>NDFileTIFF.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <R>TIFF1:</R>
+          </macros>
+          <Position>1</Position>
+          <description>TIFF file #1</description>
+        </action>
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>NDFileJPEG.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <R>JPEG1:</R>
+          </macros>
+          <Position>1</Position>
+          <description>JPEG file #1</description>
+        </action>
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>NDFileNexus.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <R>Nexus1:</R>
+          </macros>
+          <Position>1</Position>
+          <description>NeXus file #1</description>
+        </action>
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>NDFileMagick.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <R>Magick1:</R>
+          </macros>
+          <Position>1</Position>
+          <description>Magick file #1</description>
+        </action>
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>NDFileHDF5.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <R>HDF1:</R>
+          </macros>
+          <Position>1</Position>
+          <description>HDF5 file #1</description>
+        </action>
+      </actions>
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>109</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0">
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+      <visible>true</visible>
+      <actions_from_pv>false</actions_from_pv>
+      <scripts />
+      <height>20</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Menu Button</name>
+      <transparent>false</transparent>
+      <pv_name />
+      <background_color>
+        <color name="ioc_write_bg" />
+      </background_color>
+      <foreground_color>
+        <color name="Gray_14" />
+      </foreground_color>
+      <widget_type>Menu Button</widget_type>
+      <enabled>true</enabled>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <opifont.name>Default</opifont.name>
+      </font>
+      <width>64</width>
+      <border_style>6</border_style>
+      <label />
+      <rules />
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <y>55</y>
+      <actions hook="false">
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>NDStats.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <R>Stats1:</R>
+          </macros>
+          <Position>1</Position>
+          <description>Statistics #1</description>
+        </action>
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>NDStats.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <R>Stats2:</R>
+          </macros>
+          <Position>1</Position>
+          <description>Statistics #2</description>
+        </action>
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>NDStats.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <R>Stats3:</R>
+          </macros>
+          <Position>1</Position>
+          <description>Statistics #3</description>
+        </action>
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>NDStats.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <R>Stats4:</R>
+          </macros>
+          <Position>1</Position>
+          <description>Statistics #4</description>
+        </action>
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>NDStats.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <R>Stats5:</R>
+          </macros>
+          <Position>1</Position>
+          <description>Statistics #5</description>
+        </action>
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>NDStats5.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <R1>Stats1:</R1>
+            <R2>Stats2:</R2>
+            <R3>Stats3:</R3>
+            <R4>Stats4:</R4>
+            <R5>Stats5:</R5>
+          </macros>
+          <Position>1</Position>
+          <description>Statistics 1-5</description>
+        </action>
+      </actions>
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>109</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0">
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+      <visible>true</visible>
+      <actions_from_pv>false</actions_from_pv>
+      <scripts />
+      <height>20</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Menu Button</name>
+      <transparent>false</transparent>
+      <pv_name />
+      <background_color>
+        <color name="ioc_write_bg" />
+      </background_color>
+      <foreground_color>
+        <color name="Gray_14" />
+      </foreground_color>
+      <widget_type>Menu Button</widget_type>
+      <enabled>true</enabled>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <opifont.name>Default</opifont.name>
+      </font>
+      <width>64</width>
+      <border_style>6</border_style>
+      <label />
+      <rules />
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <y>30</y>
+      <actions hook="false">
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>NDROI.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <R>ROI1:</R>
+          </macros>
+          <Position>1</Position>
+          <description>ROI #1</description>
+        </action>
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>NDROI.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <R>ROI2:</R>
+          </macros>
+          <Position>1</Position>
+          <description>ROI #2</description>
+        </action>
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>NDROI.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <R>ROI3:</R>
+          </macros>
+          <Position>1</Position>
+          <description>ROI #3</description>
+        </action>
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>NDROI.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <R>ROI4:</R>
+          </macros>
+          <Position>1</Position>
+          <description>ROI #4</description>
+        </action>
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>NDROI4.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <R1>ROI1:</R1>
+            <R2>ROI2:</R2>
+            <R3>ROI3:</R3>
+            <R4>ROI4:</R4>
+          </macros>
+          <Position>1</Position>
+          <description>ROI 1-4 combined</description>
+        </action>
+      </actions>
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>239</x>
+    </widget>
+    <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0">
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+      <visible>true</visible>
+      <actions_from_pv>false</actions_from_pv>
+      <scripts />
+      <height>20</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Menu Button</name>
+      <transparent>false</transparent>
+      <pv_name />
+      <background_color>
+        <color name="ioc_write_bg" />
+      </background_color>
+      <foreground_color>
+        <color name="Gray_14" />
+      </foreground_color>
+      <widget_type>Menu Button</widget_type>
+      <enabled>true</enabled>
+      <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+      <font>
+        <opifont.name>Default</opifont.name>
+      </font>
+      <width>64</width>
+      <border_style>6</border_style>
+      <label />
+      <rules />
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
+      <y>55</y>
+      <actions hook="false">
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>NDStdArrays.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <R>image1:</R>
+          </macros>
+          <Position>1</Position>
+          <description>Image #1</description>
+        </action>
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>NDProcess.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <R>Proc1:</R>
+          </macros>
+          <Position>1</Position>
+          <description>Process #1</description>
+        </action>
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>NDTransform.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <R>Trans1:</R>
+          </macros>
+          <Position>1</Position>
+          <description>Transform #1</description>
+        </action>
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>NDColorConvert.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <R>CC1:</R>
+          </macros>
+          <Position>1</Position>
+          <description>Color convert #1</description>
+        </action>
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>NDColorConvert.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <R>CC2:</R>
+          </macros>
+          <Position>1</Position>
+          <description>Color convert #2</description>
+        </action>
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>NDOverlay.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <R>Over1:</R>
+          </macros>
+          <Position>1</Position>
+          <description>Overlay #1</description>
+        </action>
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>NDOverlay8.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <R>Over1:</R>
+            <O1>Over1:1:</O1>
+            <O2>Over1:2:</O2>
+            <O3>Over1:3:</O3>
+            <O4>Over1:4:</O4>
+            <O5>Over1:5:</O5>
+            <O6>Over1:6:</O6>
+            <O7>Over1:7:</O7>
+            <O8>Over1:8:</O8>
+          </macros>
+          <Position>1</Position>
+          <description>Overlays 1-8</description>
+        </action>
+        <action type="OPEN_OPI_IN_VIEW">
+          <path>scan_more.opi</path>
+          <macros>
+            <include_parent_macros>true</include_parent_macros>
+            <S>scan1</S>
+            <N>1</N>
+          </macros>
+          <Position>1</Position>
+          <description>Scan #1</description>
+        </action>
+      </actions>
+      <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+      <x>239</x>
+    </widget>
+  </widget>
+</display>
