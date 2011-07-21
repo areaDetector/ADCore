@@ -184,14 +184,15 @@
     No formats support all of these compression types. Many support only one, or have
     an implicit compression mode and so ignore the CompressType parameter. For example,
     the JPEG format supports only the JPEG compression scheme, which is implicit. The
-    TIFF format supports &quot;None&quot;, (ADD DOCUMENTATION ON TIFF COMPRESSION AND OTHER FORMATS)</p>
+    TIFF format supports &quot;None&quot;, (ADD DOCUMENTATION ON TIFF COMPRESSION AND
+    OTHER FORMATS)</p>
   <p>
     The <a href="areaDetectorDoxygenHTML/class_n_d_file_magick.html">NDFileMagick class
       documentation </a>describes this class in detail.
   </p>
   <p>
-    The NDFileMagick plugin is created with the NDFileMagickConfigure command, either from
-    C/C++ or from the EPICS IOC shell.</p>
+    The NDFileMagick plugin is created with the NDFileMagickConfigure command, either
+    from C/C++ or from the EPICS IOC shell.</p>
   <pre>NDFileMagickConfigure(const char *portName, int queueSize, int blockingCallbacks, 
                       const char *NDArrayPort, int NDArrayAddr, size_t maxMemory, 
                       int priority, int stackSize)
@@ -200,7 +201,8 @@
     For details on the meaning of the parameters to this function refer to the detailed
     documentation on the NDFileMagickConfigure function in the <a href="areaDetectorDoxygenHTML/_n_d_file_magick_8cpp.html">
       NDFileMagick.cpp documentation</a> and in the documentation for the constructor
-    for the <a href="areaDetectorDoxygenHTML/class_n_d_file_magick.html">NDFileMagick class</a>.
+    for the <a href="areaDetectorDoxygenHTML/class_n_d_file_magick.html">NDFileMagick
+      class</a>.
   </p>
   <h2 id="netCDF">
     netCDF file plugin
@@ -657,7 +659,15 @@ entry                   &lt;-- NX_class=NXentry
     The following compression filters are supported in the NDFileHDF5 plugin:</p>
   <ul>
     <li>Lossless <a href="http://www.hdfgroup.org/doc_resource/SZIP/">SZIP</a> compression
-      is using a separate library from the hdfgroup</li>
+      is using a separate library from the hdfgroup. NOTE: The szip library contains the
+      following in its COPYING license agreement file:<br />
+      <tt>Revocable (in the event of breach by the user or if required by law), royalty-free,
+        nonexclusive sublicense to use SZIP compression software routines and underlying
+        patents for non-commercial, scientific use only is hereby granted by ICs, LLC, to
+        users of and in conjunction with HDF data storage and retrieval file format and
+        software library products.</tt><br />
+      This means that the szip compression should not be used by commercial users without
+      first obtaining a license.</li>
     <li>External libz -also lossless</li>
     <li><a href="http://www.hdfgroup.org/HDF5/doc/RM/RM_H5P.html#Property-SetNbit">N-bit</a>
       compression is a bit-packing scheme to be used when a detector provide fewer databits
