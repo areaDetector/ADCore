@@ -9,16 +9,16 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
-    Release 1-7 (XX-June-2011)</h2>
+    Release 1-7 (XX-July-2011)</h2>
   <ul>
     <li>General
       <ul>
-        <li>On Windows if NDFilePath has a trailing '\' then preserve it, else add a '/' character
-          if one is not present.</li>
         <li>Added support for Mac OS X (Darwin). Thanks to Eric Norum for this.</li>
         <li>Added support for 64-bit Windows, windows-x64.</li>
         <li>Replaced FTVL=UCHAR with FTVL=CHAR in all waveform records, so they can be written
           to with dbpf from the IOC shell.</li>
+        <li>On Windows if NDFilePath has a trailing '\' then preserve it, else add a '/' character
+          if one is not present.</li>
       </ul>
     </li>
     <li>Drivers
@@ -40,10 +40,22 @@
         <li>Initialized ADAcquire to 0 in ADDriver::ADDriver. In R1-6 ADAcquire was not initialized,
           and if it had a non-zero value at iocInit then the IOC could crash with some drivers,
           e.g. simDetector.</li>
-        <li>Pilatus driver. Added support for camserver saving data in the CBF file format,
-          which is ~4X smaller than TIFF, and for additional header information in the files
-          for crystallography. Thanks to Lewis Muir for these additions. Set FullFilename_RBV
-          for each file in a multi-image sequence, which was not previously being done.</li>
+        <li>Pilatus driver.
+          <ul>
+            <li>Added support for camserver saving data in the CBF file format, which is ~4X smaller
+              than TIFF, and for additional header information in the files for crystallography.
+              Thanks to Lewis Muir for these additions. </li>
+            <li>Set FullFilename_RBV for each file in a multi-image sequence, which was not previously
+              being done.</li>
+            <li>Several changes from Emma Shepherd at DLS to improve error handling.</li>
+            <li>Added GapFill record to control what value camserver puts in the data files in
+              the gaps between modules in multi-element Pilatus detectors.</li>
+            <li>Added ThresholdAutoApply and ThresholdApply records. These allow only sending
+              the gain and threshold energy once to camserver, rather than each time either is
+              changed. This can speed operations significantly on larger detectors. For example,
+              on the 6M it takes 78 seconds for camserver to execute the SetThreshold command.</li>
+          </ul>
+        </li>
         <li>Prosilica driver.
           <ul>
             <li>Added support for opening cameras by IP address or IP DNS name, in addition to
@@ -70,21 +82,23 @@
     </li>
     <li>Plugins
       <ul>
-        <li>New record in the NDPluginFile base class called DeleteDriverFile. This record allows
-          the file writing plugins to delete the "original" file that the driver created for
-          that array.  This can be useful for detectors that must write the data to disk in order
-          for the areaDetector driver to read it back.  Once a file-writing plugin has rewritten the
-          data in another format it can be desireable to then delete the original file. The file
-          is only deleted if the following are all true:
+        <li>New record in the NDPluginFile base class called DeleteDriverFile. This record
+          allows the file writing plugins to delete the "original" file that the driver created
+          for that array. This can be useful for detectors that must write the data to disk
+          in order for the areaDetector driver to read it back. Once a file-writing plugin
+          has rewritten the data in another format it can be desireable to then delete the
+          original file. The file is only deleted if the following are all true:
           <ol>
             <li>The DeleteDriverFile record is "Yes".</li>
             <li>The file plugin has successfully written a new file.</li>
             <li>The array contains an attribute called "DriverFileName" that contains the full
-              file name of the original file.  The driver attributes XML file should contain a line
-              like the following:<br/> 
-                <tt>&lt;Attribute name="DriverFileName" type="PARAM" source="FULL_FILE_NAME" datatype="string" description="Driver file name"/&gt;</tt><br/>
+              file name of the original file. The driver attributes XML file should contain a
+              line like the following:<br />
+              <tt>&lt;Attribute name="DriverFileName" type="PARAM" source="FULL_FILE_NAME" datatype="string"
+                description="Driver file name"/&gt;</tt><br />
             </li>
-          </ol></li>              
+          </ol>
+        </li>
         <li>New file writing plugin, NDFileHDF5. This plugin writes HDF5 files with the native
           HDF5 API, unlike the NeXus plugin which uses the NeXus API. It supports 3 types
           of compression. Thanks to Ulrik Pedersen at Diamond Light Source for providing this
