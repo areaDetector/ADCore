@@ -1,14 +1,14 @@
 
 file {
-	name="/home/epics/devel/areaDetector/1-5/ADApp/op/adl/prosilicaStatistics.adl"
+	name="/home/epics/devel/areaDetector/ADApp/op/adl/prosilicaMore.adl"
 	version=030102
 }
 display {
 	object {
-		x=145
-		y=167
+		x=348
+		y=135
 		width=430
-		height=680
+		height=720
 	}
 	clr=14
 	bclr=4
@@ -816,178 +816,16 @@ composite {
 		}
 	}
 }
-text {
+rectangle {
 	object {
-		x=84
-		y=477
-		width=144
-		height=15
+		x=5
+		y=65
+		width=420
+		height=320
 	}
 	"basic attribute" {
 		clr=14
-	}
-	textix="Frames completed"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=236
-		y=477
-		width=120
-		height=15
-	}
-	monitor {
-		chan="$(P)$(R)PSFramesCompleted_RBV"
-		clr=54
-		bclr=3
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-text {
-	object {
-		x=102
-		y=497
-		width=126
-		height=15
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Frames dropped"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=236
-		y=497
-		width=120
-		height=15
-	}
-	monitor {
-		chan="$(P)$(R)PSFramesDropped_RBV"
-		clr=54
-		bclr=3
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-text {
-	object {
-		x=75
-		y=517
-		width=153
-		height=15
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Packets erroneous"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=236
-		y=517
-		width=120
-		height=15
-	}
-	monitor {
-		chan="$(P)$(R)PSPacketsErroneous_RBV"
-		clr=54
-		bclr=3
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-text {
-	object {
-		x=102
-		y=537
-		width=126
-		height=15
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Packets missed"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=236
-		y=537
-		width=120
-		height=15
-	}
-	monitor {
-		chan="$(P)$(R)PSPacketsMissed_RBV"
-		clr=54
-		bclr=3
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-text {
-	object {
-		x=84
-		y=557
-		width=144
-		height=15
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Packets received"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=236
-		y=557
-		width=120
-		height=15
-	}
-	monitor {
-		chan="$(P)$(R)PSPacketsReceived_RBV"
-		clr=54
-		bclr=3
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-text {
-	object {
-		x=75
-		y=577
-		width=153
-		height=15
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Packets requested"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=236
-		y=577
-		width=120
-		height=15
-	}
-	monitor {
-		chan="$(P)$(R)PSPacketsRequested_RBV"
-		clr=54
-		bclr=3
-	}
-	align="horiz. centered"
-	limits {
+		fill="outline"
 	}
 }
 text {
@@ -1021,26 +859,280 @@ text {
 }
 text {
 	object {
+		x=165
+		y=393
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Statistics"
+	align="horiz. right"
+}
+rectangle {
+	object {
+		x=5
+		y=390
+		width=420
+		height=320
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+composite {
+	object {
 		x=102
 		y=437
+		width=254
+		height=15
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=102
+				y=437
+				width=126
+				height=15
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Filter version"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=236
+				y=437
+				width=120
+				height=15
+			}
+			monitor {
+				chan="$(P)$(R)PSFilterVersion_RBV"
+				clr=54
+				bclr=3
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+	}
+}
+text {
+	object {
+		x=102
+		y=477
 		width=126
 		height=15
 	}
 	"basic attribute" {
 		clr=14
 	}
-	textix="Filter version"
+	textix="Stream bytes per second"
 	align="horiz. right"
 }
 "text update" {
 	object {
 		x=236
-		y=437
+		y=457
 		width=120
 		height=15
 	}
 	monitor {
-		chan="$(P)$(R)PSFilterVersion_RBV"
+		chan="$(P)$(R)PSByteRate_RBV"
+		clr=54
+		bclr=3
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=236
+		y=477
+		width=120
+		height=20
+	}
+	control {
+		chan="$(P)$(R)PSByteRate"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=84
+		y=520
+		width=144
+		height=15
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Frames completed"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=236
+		y=520
+		width=120
+		height=15
+	}
+	monitor {
+		chan="$(P)$(R)PSFramesCompleted_RBV"
+		clr=54
+		bclr=3
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=102
+		y=540
+		width=126
+		height=15
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Frames dropped"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=236
+		y=540
+		width=120
+		height=15
+	}
+	monitor {
+		chan="$(P)$(R)PSFramesDropped_RBV"
+		clr=54
+		bclr=3
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=75
+		y=560
+		width=153
+		height=15
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Packets erroneous"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=236
+		y=560
+		width=120
+		height=15
+	}
+	monitor {
+		chan="$(P)$(R)PSPacketsErroneous_RBV"
+		clr=54
+		bclr=3
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=102
+		y=580
+		width=126
+		height=15
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Packets missed"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=236
+		y=580
+		width=120
+		height=15
+	}
+	monitor {
+		chan="$(P)$(R)PSPacketsMissed_RBV"
+		clr=54
+		bclr=3
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=84
+		y=600
+		width=144
+		height=15
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Packets received"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=236
+		y=600
+		width=120
+		height=15
+	}
+	monitor {
+		chan="$(P)$(R)PSPacketsReceived_RBV"
+		clr=54
+		bclr=3
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=75
+		y=620
+		width=153
+		height=15
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Packets requested"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=236
+		y=620
+		width=120
+		height=15
+	}
+	monitor {
+		chan="$(P)$(R)PSPacketsRequested_RBV"
 		clr=54
 		bclr=3
 	}
@@ -1051,7 +1143,7 @@ text {
 text {
 	object {
 		x=138
-		y=457
+		y=500
 		width=90
 		height=15
 	}
@@ -1064,7 +1156,7 @@ text {
 "text update" {
 	object {
 		x=236
-		y=457
+		y=500
 		width=120
 		height=15
 	}
@@ -1080,7 +1172,7 @@ text {
 text {
 	object {
 		x=129
-		y=644
+		y=687
 		width=99
 		height=15
 	}
@@ -1093,7 +1185,7 @@ text {
 menu {
 	object {
 		x=236
-		y=642
+		y=685
 		width=100
 		height=18
 	}
@@ -1106,7 +1198,7 @@ menu {
 composite {
 	object {
 		x=102
-		y=597
+		y=640
 		width=254
 		height=15
 	}
@@ -1115,7 +1207,7 @@ composite {
 		text {
 			object {
 				x=102
-				y=597
+				y=640
 				width=126
 				height=15
 			}
@@ -1128,7 +1220,7 @@ composite {
 		"text update" {
 			object {
 				x=236
-				y=597
+				y=640
 				width=120
 				height=15
 			}
@@ -1146,7 +1238,7 @@ composite {
 text {
 	object {
 		x=102
-		y=617
+		y=660
 		width=126
 		height=15
 	}
@@ -1159,7 +1251,7 @@ text {
 "text update" {
 	object {
 		x=236
-		y=617
+		y=660
 		width=120
 		height=15
 	}
@@ -1170,42 +1262,5 @@ text {
 	}
 	align="horiz. centered"
 	limits {
-	}
-}
-text {
-	object {
-		x=165
-		y=393
-		width=100
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Statistics"
-	align="horiz. right"
-}
-rectangle {
-	object {
-		x=5
-		y=65
-		width=420
-		height=320
-	}
-	"basic attribute" {
-		clr=14
-		fill="outline"
-	}
-}
-rectangle {
-	object {
-		x=5
-		y=390
-		width=420
-		height=280
-	}
-	"basic attribute" {
-		clr=14
-		fill="outline"
 	}
 }
