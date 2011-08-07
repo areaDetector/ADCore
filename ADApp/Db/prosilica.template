@@ -183,6 +183,21 @@ record(ai, "$(P)$(R)PSFrameRate_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(longout, "$(P)$(R)PSByteRate")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_BYTE_RATE")
+   field(VAL,  "115000000")
+}
+
+record(longin, "$(P)$(R)PSByteRate_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_BYTE_RATE")
+   field(SCAN, "I/O Intr")
+}
+
 record(longin, "$(P)$(R)PSFramesCompleted_RBV")
 {
    field(DTYP, "asynInt32")
