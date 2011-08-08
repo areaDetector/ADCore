@@ -9,7 +9,7 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
-    Release 1-7 (XX-July-2011)</h2>
+    Release 1-7 (09-August-2011)</h2>
   <ul>
     <li>General
       <ul>
@@ -92,12 +92,12 @@
     </li>
     <li>Plugins
       <ul>
-        <li>New record in the NDPluginFile base class called DeleteDriverFile. This record
-          allows the file writing plugins to delete the "original" file that the driver created
-          for that array. This can be useful for detectors that must write the data to disk
-          in order for the areaDetector driver to read it back. Once a file-writing plugin
-          has rewritten the data in another format it can be desireable to then delete the
-          original file. The file is only deleted if the following are all true:
+        <li>NDPluginFile: Added a new record called DeleteDriverFile. This record allows the
+          file writing plugins to delete the "original" file that the driver created for that
+          array. This can be useful for detectors that must write the data to disk in order
+          for the areaDetector driver to read it back. Once a file-writing plugin has rewritten
+          the data in another format it can be desireable to then delete the original file.
+          The file is only deleted if the following are all true:
           <ol>
             <li>The DeleteDriverFile record is "Yes".</li>
             <li>The file plugin has successfully written a new file.</li>
@@ -109,6 +109,14 @@
             </li>
           </ol>
         </li>
+        <li>NDPluginFile: Added support for getting the file name and file number from array
+          attributes rather than from the normal EPICS PVs. Having the file information come
+          from the array allows the driver to control which plugin saves a particular array.
+          For example, there may be two file writing plugins active; the first saves the flat
+          field files for a tomography experiment, and the second saves the normal projections,
+          each streaming data to a separate file. The driver knows which files are flat fields
+          and which are normal projections, and adds the appropriate attributes to control
+          which plugin saves each array. Thanks to Ulrik Pedersen for this addition.</li>
         <li>New file writing plugin, NDFileHDF5. This plugin writes HDF5 files with the native
           HDF5 API, unlike the NeXus plugin which uses the NeXus API. It supports 3 types
           of compression. Thanks to Ulrik Pedersen at Diamond Light Source for providing this
@@ -120,7 +128,6 @@
           data, because the driver was forced to wait to queue the next frame until the plugin
           was done processing. The new version behaves correctly, dropping frames when the
           plugin cannot keep up, rather than slowing down the driver.</li>
-        the change the plugin
         <li>NDPluginColorConvert. Added support for false color when converting 8-bit mono
           to RGB1, RGB2, or RGB3. Thanks to Tom Cobb for this addition.</li>
         <li>NDPluginStats. Removed duplicate record for MeanValue_RBV from NDStats.template.</li>
