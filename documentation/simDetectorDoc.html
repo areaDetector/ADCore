@@ -10,7 +10,7 @@
     <h1 style="text-align: center">
       areaDetector Simulation driver</h1>
     <h2>
-      May 19, 2010</h2>
+      August 8, 2011</h2>
     <h2>
       Mark Rivers and John Hammonds</h2>
     <h2>
@@ -24,13 +24,12 @@
     <li><a href="#Introduction">Introduction</a></li>
     <li><a href="#Driver_parameters">Simulation driver specific parameters</a></li>
     <li><a href="#Unsupported">Unsupported standard driver parameters</a></li>
-    <li><a href="#ImageTypes">Image Types</a>
-		<ol>
-		<li><a href="#LinearRamp">Linear Ramp</a></li>
-		<li><a href="#Peaks">Array of Peaks</a></li>
-		<li><a href="#Rings">Array of Rings</a></li>
-		</ol>
-	</li>
+    <li><a href="#SimModes">Simulation modes</a>
+      <ol>
+        <li><a href="#LinearRamp">Linear ramp</a></li>
+        <li><a href="#Peaks">Array of peaks</a></li>
+      </ol>
+    </li>
     <li><a href="#Configuration">Configuration</a></li>
     <li><a href="#MEDM_screens">MEDM screens</a></li>
     <li><a href="#Viewers">Image viewers</a></li>
@@ -193,50 +192,30 @@
       </tr>
       <tr>
         <td>
-          SimImageType</td>
+          SimMode</td>
         <td>
           asynInt32</td>
         <td>
           r/w</td>
         <td>
-          Set the image type to be displayed.  Options are:<br/>
-		  <ul>
-			 <li>Linear Ramp</li>
-			 <li>Array of Peaks (mono only)</li>
-			 <li>Array of Rings (Not yet implemented)</li>
-		  </ul>
-          </td>
-        <td>
-          SIM_IMAGE_TYPE</td>
-        <td>
-          $(P)$(R)ImageType<br />
-          $(P)$(R)ImageType_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          SimNoise</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Used to introduce randomness.  Each affected pixel is assigned a scaling factor.<br/>
-          scalingFactor = 1.0 + (rand()%noise +1)/100.0
+          Sets the simulation mode. Options are:<br />
+          <ul>
+            <li>Linear Ramp</li>
+            <li>Array of Peaks</li>
+          </ul>
         </td>
         <td>
-          SIM_NOISE</td>
+          SIM_MODE</td>
         <td>
-          $(P)$(R)Noise<br />
-          $(P)$(R)Noise_RBV</td>
+          $(P)$(R)SimMode<br />
+          $(P)$(R)SimMode_RBV</td>
         <td>
           longout<br />
           longin</td>
       </tr>
       <tr>
-		<td><b>Parameters for Peak Array</b></td>
+        <td align="center" colspan="7">
+          <b>Parameters for Array of Peaks Mode</b></td>
       </tr>
       <tr>
         <td>
@@ -390,7 +369,8 @@
         <td>
           r/w</td>
         <td>
-          Used to introduce randomness.  Each gaussian peak in the array is assigned a scaling factor.<br/>
+          Used to introduce randomness in the peak height. Each gaussian peak in the array
+          is assigned a scaling factor.<br />
           scalingFactor = 1.0 + (rand()%peakVariation +1)/100.0
         </td>
         <td>
@@ -402,56 +382,75 @@
           longout<br />
           longin</td>
       </tr>
-
+      <tr>
+        <td>
+          SimNoise</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Used to introduce randomness. Each affected pixel is assigned a scaling factor.<br />
+          scalingFactor = 1.0 + (rand()%noise +1)/100.0
+        </td>
+        <td>
+          SIM_NOISE</td>
+        <td>
+          $(P)$(R)Noise<br />
+          $(P)$(R)Noise_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
     </tbody>
   </table>
-
-  <h2 id="ImageTypes">Image Types</h2>
-  <h3 id="LinearRamp">Linear Ramp</h3>
-	  <p>
-		For monochrome images (NDColorMode=NDColorModeMono) the simulation driver initially
-		sets the image[i, j] = i*SimGainX + j*SimGainY * ADGain * ADAcquireTime * 1000.
-		Thus the image is a linear ramp in the X and Y directions, with the gains in each
-		direction being detector-specific parameters. Each subsquent acquisition increments
-		each pixel value by ADgain*ADAcquireTime*1000. Thus if ADGain=1 and ADAcquireTime=.001
-		second then the pixels are incremented by 1. If the array is an unsigned 8 or 16
-		bit integer then the pixels will overflow and wrap around to 0 after some period
-		of time. This gives the appearance of bands that appear to move with time. The slope
-		of the bands and their periodicity can be adjusted by changing the gains and acquire
-		times.
-	  </p>
-	  <p>
-		For color images (NDColorMode=NDColorModeRGB1, RGB2 or RGB3) there are 3 images
-		computed, one each for the red, green and blue channels. Each image is computed
-		with the same algorithm as for the monochrome case, except each is multiplied by
-		its appropriate gain factor (SimGainRed, SimGainGreen, SimGainBlue). Thus if each
-		of these color gains is 1.0 the color image will be identical to the monochrome
-		image, but if the color gains are different from each other then image will have
-		color bands.</p>
-  <h3 id="Peaks">Array of Peaks</h3>
-		<p>
-			For monochrome images, an array of gaussian peaks is produced.  The user specifies the
-			start location for the first peak in PeakStartX & PeakStartY.  The size of the peak is
-			controlled by PeakWidthX and PeakWidthY.  The array is specified by giving the number of
-			peaks in each direction with PeakNumX and PeakNumY and the step size between peak centroids
-			with PeakStepX and PeakStepY.  Note that data for each peak is only added to the image over a
-			range of four times the PeakWidth in any direction (in the interest of speed).
-		</p>
-		<p>
-			Dynamic behavior can be introduced into the system by changing PeakVariation and Noise
-			records.  PeakVariation introduces variation on each pixel in the array and Noise introduces
-			variation in each pixel.
-		</p>
-		<p>
-			The description for RGB images is the same as for the Linear Ramp.  Pixels are computed the same way
-			as for monochrome and there is a separate gain for each color.
-		</p>
-  <h3 id="Rings">Array of Rings</h3>
-		<p>
-			An array of Rings will be added later.
-		</p>
-
-
+  <h2 id="SimModes">
+    Simulation Modes</h2>
+  <h3 id="LinearRamp">
+    Linear Ramp</h3>
+  <p>
+    For monochrome images (NDColorMode=NDColorModeMono) the simulation driver initially
+    sets the image[i, j] = i*SimGainX + j*SimGainY * ADGain * ADAcquireTime * 1000.
+    Thus the image is a linear ramp in the X and Y directions, with the gains in each
+    direction being detector-specific parameters. Each subsquent acquisition increments
+    each pixel value by ADgain*ADAcquireTime*1000. Thus if ADGain=1 and ADAcquireTime=.001
+    second then the pixels are incremented by 1. If the array is an unsigned 8 or 16
+    bit integer then the pixels will overflow and wrap around to 0 after some period
+    of time. This gives the appearance of bands that appear to move with time. The slope
+    of the bands and their periodicity can be adjusted by changing the gains and acquire
+    times.
+  </p>
+  <p>
+    For color images (NDColorMode=NDColorModeRGB1, RGB2 or RGB3) there are 3 images
+    computed, one each for the red, green and blue channels. Each image is computed
+    with the same algorithm as for the monochrome case, except each is multiplied by
+    its appropriate gain factor (SimGainRed, SimGainGreen, SimGainBlue). Thus if each
+    of these color gains is 1.0 the color image will be identical to the monochrome
+    image, but if the color gains are different from each other then image will have
+    color bands.</p>
+  <h3 id="Peaks">
+    Array of Peaks</h3>
+  <p>
+    For monochrome images, an array of gaussian peaks is produced. The user specifies
+    the start location for the first peak in PeakStartX & PeakStartY. The size of the
+    peak is controlled by PeakWidthX and PeakWidthY. The array is specified by giving
+    the number of peaks in each direction with PeakNumX and PeakNumY and the step size
+    between peak centroids with PeakStepX and PeakStepY. The amplitude of each peak
+    is controlled by SimGainX, SimGainY, and ADGain. If SimGainX=1, SimGainY=1, SimNoise=0,
+    and SimPeakHeightVariation=0 then the peak height is equal to ADGain, ADGain=255
+    would be appropriate for an 8-bit image. Note that data for each peak is only added
+    to the image over a range of four times the PeakWidth in any direction (in the interest
+    of speed).
+  </p>
+  <p>
+    Dynamic behavior can be introduced into the system by changing PeakVariation and
+    Noise records. PeakVariation introduces variation in the height of each peak in
+    the array and Noise introduces variation in each pixel.
+  </p>
+  <p>
+    The description for RGB images is the same as for the Linear Ramp. Pixels are computed
+    the same way as for monochrome and there is a separate gain for each color.
+  </p>
   <h2 id="Unsupported">
     Unsupported standard driver parameters</h2>
   <ul>
@@ -516,13 +515,8 @@
   </p>
   <div style="text-align: center">
     <h3>
-      simDetectorSetup.adl for Linear Ramp</h3>
-    <img alt="simDetectorSetupLinearRamp.png" src="simDetectorSetupLinearRamp.png" />
-  </div>
-  <div style="text-align: center">
-    <h3>
-      simDetectorSetup.adl for an array of peaks</h3>
-    <img alt="simDetectorSetupPeaks.png" src="simDetectorSetupPeaks.png" />
+      simDetectorSetup.adl</h3>
+    <img alt="simDetectorSetup.png" src="simDetectorSetup.png" />
   </div>
   <h2 id="Viewers">
     Image viewers</h2>
@@ -550,7 +544,5 @@
       ImageJ plugin EPICS_AD_Viewer with an Array of Peaks</h3>
     <img alt="simDetector_ImageJ_Peaks.png" src="simDetector_ImageJ_Peaks.png" />
   </div>
-
-
 </body>
 </html>
