@@ -75,6 +75,7 @@
       </ul>
     </li>
     <li><a href="#Installation">Installation, configuration, and startup</a></li>
+    <li><a href="#Acknowledgments">Acknowledgments and licenses</a></li>
   </ul>
   <p>
     &nbsp;</p>
@@ -858,6 +859,28 @@
           $(P)$(R)NumCaptured_RBV</td>
         <td>
           longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDFileDeleteDriverFile</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flag to enable deleting original driver file after a plugin has re-written the file
+          in a different format. This can be useful for detectors that must write the data
+          to disk in order for the areaDetector driver to read it back. Once a file-writing
+          plugin has rewritten the data in another format it can be desireable to then delete
+          the original file.</td>
+        <td>
+          DELETE_DRIVER_FILE</td>
+        <td>
+          $(P)$(R)DeleteDriverFile<br />
+          $(P)$(R)DeleteDriverFile_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
       </tr>
       <tr>
         <td align="center" colspan="7">
@@ -1986,5 +2009,9 @@
     PATH (e.g. /home/mar345/bin/start_epics). Add a command like <code>cd /home/mar345/epics/support/areaDetector/1-5/iocBoot/iocMAR345</code>
     at the beginning of the script and then type <code>start_epics</code> from any directory
     to start the EPICS IOC.</p>
+  <h2 id="Acknowledgments">
+    Acknowledgements and licenses</h2>
+  <p>
+    "This software is based in part on the work of the Independent JPEG Group".</p>
 </body>
 </html>
