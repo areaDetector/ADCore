@@ -138,8 +138,9 @@
             this->pArrays[0] = NULL;
         }
 
+        /* Release the lock; this is computationally intensive and does not access any shared data */
+        this->unlock();
         /* Copy the information from the current array */
-            this->lock();
         this->pArrays[0] = this->pNDArrayPool->copy(pArray, NULL, 1);
         transformedArray = this->pArrays[0];
         if ( pArray->ndims == 2 ) {
@@ -156,7 +157,7 @@
             asynPrint( this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s, this method is meant to transform 2d images.  Need ndims >=2\n",
                         pluginName, functionName);
         }
-            this->unlock();
+        this->lock();
 
         doCallbacksGenericPointer(transformedArray, NDArrayData,0);
         callParamCallbacks();
@@ -207,7 +208,7 @@
             (transformType == TransformFlip0011) ||
             (transformType == TransformFlip0110) ) {
             return true;
-             }
+        }
         return false;
 
     }
