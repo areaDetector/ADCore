@@ -28,7 +28,7 @@
           handle a large number of image formats (JPEG, TIFF, PNG, etc.).</li>
         <li>New driver for Bruker BIS (Bruker Instrument Service) detectors. There was a preliminary
           version of this driver in the apex2Src directory in R1-6. It is now fully functional.
-          and should work with an BIS detector, not just the Apex2.</li>
+          and should work with any BIS detector, not just the Apex2.</li>
         <li>New driver for Photonic Sciences Ltd. (PSL) detectors. This driver currently can
           do everything except read the data back from the detector. That capability needs
           to be added, which requires access to a PSL detector for development and testing.</li>
@@ -61,6 +61,16 @@
             <li>Added support for opening cameras by IP address or IP DNS name, in addition to
               UniqueID. This allows communicating with cameras that are not on the local subnet.
               The change is backwards compatible with existing iocsh startup scripts.</li>
+            <li>Added new records PSByteRate and PSByteRate_RBV that control and read the StreamBytesPerSecond
+              parameter in the Prosilica PvAPI driver. This allows limiting the bandwidth that
+              a camera uses. It also allows operation of GigE cameras on non-Gigabit Ethernet
+              networks.</li>
+            <li>Added new parameter, maxPvAPIFrames, to the prosilicaConfig command in the startup
+              script. This parameter controls how many frame buffers are allocated in the PvAPI
+              driver. This is the last parameter in the prosilicaConfig command, and if it is
+              absent the default value of 2 is used, which is sufficient in most circumstances.
+              However, with very high frame rates or busy IOCs increasing this value can reduce
+              dropped frames. </li>
             <li>Removed support for writing TIFF files using the driver library. This was a problem
               because their driver uses an incompatible version of libtiff that conflicts with
               the new version used by GraphicsMagick. The driver TIFF writer had no advantage
@@ -105,6 +115,12 @@
           plugin.</li>
         <li>New file writing plugin, NDFileMagick. This uses GraphicsMagick to write files,
           and can write in dozens of file formats, including JPEG, TIFF, PNG, PDF, etc.</li>
+        <li>Fixed problem with NDPluginTransform. It was holding the lock while it did computationally
+          intensive tasks. This slowed down the driver from which the plugin was getting its
+          data, because the driver was forced to wait to queue the next frame until the plugin
+          was done processing. The new version behaves correctly, dropping frames when the
+          plugin cannot keep up, rather than slowing down the driver.</li>
+        the change the plugin
         <li>NDPluginColorConvert. Added support for false color when converting 8-bit mono
           to RGB1, RGB2, or RGB3. Thanks to Tom Cobb for this addition.</li>
         <li>NDPluginStats. Removed duplicate record for MeanValue_RBV from NDStats.template.</li>
