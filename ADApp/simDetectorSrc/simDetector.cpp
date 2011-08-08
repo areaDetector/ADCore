@@ -53,15 +53,15 @@ protected:
     int SimGainRed;
     int SimGainGreen;
     int SimGainBlue;
-	int SimNoise;
+    int SimNoise;
     int SimResetImage;
-	int SimImageType;
-	int SimPeakStartX;
-	int SimPeakStartY;
+    int SimMode;
+    int SimPeakStartX;
+    int SimPeakStartY;
     int SimPeakWidthX;
     int SimPeakWidthY;
-  	int SimPeakNumX;
-	int SimPeakNumY;
+    int SimPeakNumX;
+    int SimPeakNumY;
     int SimPeakStepX;
     int SimPeakStepY;
     int SimPeakHeightVariation;
@@ -73,7 +73,6 @@ private:
     template <typename epicsType> int computeArray(int sizeX, int sizeY);
     template <typename epicsType> int computeLinearRampArray(int sizeX, int sizeY);
     template <typename epicsType> int computePeaksArray(int sizeX, int sizeY);
-    template <typename epicsType> int computeRingsArray(int sizeX, int sizeY);
     int computeImage();
 
     /* Our data */
@@ -83,19 +82,18 @@ private:
 };
 
 typedef enum {
-	SimImageLinearRamp,
-	SimImagePeaks,
-	SimImageRings
-}SimImageTypes_t;
+    SimModeLinearRamp,
+    SimModePeaks,
+}SimModes_t;
 
 #define SimGainXString          "SIM_GAIN_X"
 #define SimGainYString          "SIM_GAIN_Y"
 #define SimGainRedString        "SIM_GAIN_RED"
 #define SimGainGreenString      "SIM_GAIN_GREEN"
 #define SimGainBlueString       "SIM_GAIN_BLUE"
-#define SimNoiseString			"SIM_NOISE"
+#define SimNoiseString          "SIM_NOISE"
 #define SimResetImageString     "RESET_IMAGE"
-#define SimImageTypeString      "SIM_IMAGE_TYPE"
+#define SimModeString           "SIM_MODE"
 #define SimPeakStartXString     "SIM_PEAK_START_X"
 #define SimPeakStartYString     "SIM_PEAK_START_Y"
 #define SimPeakWidthXString     "SIM_PEAK_WIDTH_X"
@@ -115,22 +113,19 @@ typedef enum {
 /** Template function to compute the simulated detector data for any data type */
 template <typename epicsType> int simDetector::computeArray(int sizeX, int sizeY)
 {
-	int imageType=0;
-	int status = asynSuccess;
+    int simMode=0;
+    int status = asynSuccess;
 
-	status = getIntegerParam (SimImageType, &imageType);
-	switch(imageType) {
-		case SimImageLinearRamp:
-			status = computeLinearRampArray<epicsType>(sizeX, sizeY);
-			break;
-		case SimImagePeaks:
-			status = computePeaksArray<epicsType>(sizeX, sizeY);
-			break;
-		case SimImageRings:
-			status = computeRingsArray<epicsType>(sizeX, sizeY);
-			break;
-	}
-	return status;
+    status = getIntegerParam (SimMode, &simMode);
+    switch(simMode) {
+        case SimModeLinearRamp:
+            status = computeLinearRampArray<epicsType>(sizeX, sizeY);
+            break;
+        case SimModePeaks:
+            status = computePeaksArray<epicsType>(sizeX, sizeY);
+            break;
+    }
+    return status;
 }
 
 /** Template function to compute the simulated detector data for any data type */
@@ -249,17 +244,17 @@ template <typename epicsType> int simDetector::computePeaksArray(int sizeX, int 
     epicsType *pMono=NULL, *pRed=NULL, *pGreen=NULL, *pBlue=NULL;
     epicsType *pMono2=NULL, *pRed2=NULL, *pGreen2=NULL, *pBlue2=NULL;
     int columnStep=0, rowStep=0, colorMode;
-	int peaksStartX, peaksStartY, peaksStepX, peaksStepY;
-	int peaksNumX, peaksNumY, peaksWidthX, peaksWidthY;
- 	int status = asynSuccess;
-	int i,j,k,l;
-	int minX, maxX, minY,maxY;
-	int offsetX, offsetY;
-	int peakVariation, noisePct;
-	double gainVariation, noise;
+    int peaksStartX, peaksStartY, peaksStepX, peaksStepY;
+    int peaksNumX, peaksNumY, peaksWidthX, peaksWidthY;
+     int status = asynSuccess;
+    int i,j,k,l;
+    int minX, maxX, minY,maxY;
+    int offsetX, offsetY;
+    int peakVariation, noisePct;
+    double gainVariation, noise;
     double gain, gainX, gainY, gainRed, gainGreen, gainBlue;
     double gaussX, gaussY;
-	double tmpValue;
+    double tmpValue;
 
     status = getIntegerParam(NDColorMode,   &colorMode);
     status = getDoubleParam (ADGain,        &gain);
@@ -268,18 +263,18 @@ template <typename epicsType> int simDetector::computePeaksArray(int sizeX, int 
     status = getDoubleParam (SimGainRed,    &gainRed);
     status = getDoubleParam (SimGainGreen,  &gainGreen);
     status = getDoubleParam (SimGainBlue,   &gainBlue);
-	status = getIntegerParam (SimPeakStartX,  &peaksStartX);
-	status = getIntegerParam (SimPeakStartY,  &peaksStartY);
-	status = getIntegerParam (SimPeakStepX,  &peaksStepX);
-	status = getIntegerParam (SimPeakStepY,  &peaksStepY);
-	status = getIntegerParam (SimPeakNumX,  &peaksNumX);
-	status = getIntegerParam (SimPeakNumY,  &peaksNumY);
-	status = getIntegerParam (SimPeakWidthX,  &peaksWidthX);
-	status = getIntegerParam (SimPeakWidthY,  &peaksWidthY);
-	status = getIntegerParam (SimPeakHeightVariation,  &peakVariation);
-	status = getIntegerParam (SimNoise,  &noisePct);
+    status = getIntegerParam (SimPeakStartX,  &peaksStartX);
+    status = getIntegerParam (SimPeakStartY,  &peaksStartY);
+    status = getIntegerParam (SimPeakStepX,  &peaksStepX);
+    status = getIntegerParam (SimPeakStepY,  &peaksStepY);
+    status = getIntegerParam (SimPeakNumX,  &peaksNumX);
+    status = getIntegerParam (SimPeakNumY,  &peaksNumY);
+    status = getIntegerParam (SimPeakWidthX,  &peaksWidthX);
+    status = getIntegerParam (SimPeakWidthY,  &peaksWidthY);
+    status = getIntegerParam (SimPeakHeightVariation,  &peakVariation);
+    status = getIntegerParam (SimNoise,  &noisePct);
 
-   	switch (colorMode) {
+       switch (colorMode) {
         case NDColorModeMono:
             pMono = (epicsType *)this->pRaw->pData;
             break;
@@ -306,130 +301,124 @@ template <typename epicsType> int simDetector::computePeaksArray(int sizeX, int 
             break;
     }
     this->pRaw->pAttributeList->add("ColorMode", "Color mode", NDAttrInt32, &colorMode);
-	switch (colorMode) {
-		case NDColorModeMono:
-			// Clear the Image
-			pMono2 = pMono;
-			for (i = 0; i<sizeY; i++) {
-				for (j = 0; j<sizeX; j++) {
-					(*pMono2++) = (epicsType)0;
-				}
-			}
-			for (i = 0; i<peaksNumY; i++) {
-				for (j = 0; j<peaksNumX; j++) {
-					gaussX = 0;
-					gaussY = 0;
-					if (peakVariation !=0) {
-						gainVariation = 1.0 + (rand()%peakVariation+1)/100.0;
-					}
-					else{
-						gainVariation = 1.0;
-					}
-					offsetY = i * peaksStepY + peaksStartY;
-					offsetX = j * peaksStepX + peaksStartX;
-					minX = (offsetX>4*peaksWidthX) ?(offsetX -4*peaksWidthX):0;
-					maxX = (offsetX+4*peaksWidthX<sizeX) ?(offsetX + 4*peaksWidthX):sizeX;
-					minY = (offsetY>4*peaksWidthY) ?(offsetY -4*peaksWidthY):0;
-					maxY = (offsetY+4*peaksWidthY<sizeY) ?(offsetY + 4*peaksWidthY):sizeY;
-					for (k =minY; k<maxY; k++) {
-						pMono2 = pMono + (minX + k*sizeX);
-						for (l=minX; l<maxX; l++) {
-							if (noisePct !=0) {
-								noise = 1.0 + (rand()%noisePct+1)/100.0;
-							}
-							else {
-								noise = 1.0;
-							}
-							gaussY = gainY * exp( -pow((double)(k-offsetY)/(double)peaksWidthY,2.0)/2.0 );
-							gaussX = gainX * exp( -pow((double)(l-offsetX)/(double)peaksWidthX,2.0)/2.0 );
-							tmpValue =  gainVariation*gain * gaussX * gaussY*noise;
-							(*pMono2) += (epicsType)tmpValue;
-							pMono2++;
-						}
-					}
-				}
-			}
-			break;
-		case NDColorModeRGB1:
-		case NDColorModeRGB2:
-		case NDColorModeRGB3:
-			// Clear the Image
-			pRed2 = pRed;
-			for (i = 0; i<sizeY; i++) {
-				for (j = 0; j<sizeX; j++) {
-					(*pRed2++) = (epicsType)0;  //Since we are just clearing the field we will do this with one pointer
-					(*pRed2++) = (epicsType)0;
-					(*pRed2++) = (epicsType)0;
-				}
-			}
-			for (i = 0; i<peaksNumY; i++) {
-				for (j = 0; j<peaksNumX; j++) {
-					if (peakVariation !=0) {
-						gainVariation = 1.0 + (rand()%peakVariation+1)/100.0;
-					}
-					else{
-						gainVariation = 1.0;
-					}
-					offsetY = i * peaksStepY + peaksStartY;
-					offsetX = j * peaksStepX + peaksStartX;
-					minX = (offsetX>4*peaksWidthX) ?(offsetX -4*peaksWidthX):0;
-					maxX = (offsetX+4*peaksWidthX<sizeX) ?(offsetX + 4*peaksWidthX):sizeX;
-					minY = (offsetY>4*peaksWidthY) ?(offsetY -4*peaksWidthY):0;
-					maxY = (offsetY+4*peaksWidthY<sizeY) ?(offsetY + 4*peaksWidthY):sizeY;
-					for (k =minY; k<maxY; k++) {
-						//Move to the starting point for this peak
-						switch (colorMode) {
-							case NDColorModeRGB1:
-								pRed2 = pRed + (minX*columnStep + k*sizeX*columnStep);
-								pGreen2 = pRed2 + 1;
-								pBlue2 = pRed2 + 2;
-								break;
-							case NDColorModeRGB2:
-								pRed2 = pRed + (minX*columnStep + k*3*sizeX*columnStep);
-								pGreen2 = pRed2 + sizeX;
-								pBlue2 = pRed2 + 2*sizeX;
-								break;
-							case NDColorModeRGB3:
-								pRed2 = pRed + (minX*columnStep + k*sizeX*columnStep);
-								pGreen2 = pRed2 + sizeX*sizeY;
-								pBlue2 = pRed2 + 2*sizeX*sizeY;
-								break;
-						}
-						//Fill in a row for this peak
-						for (l=minX; l<maxX; l++) {
-							if (noisePct !=0) {
-								noise = 1.0 + (rand()%noisePct+1)/100.0;
-							}
-							else {
-								noise = 1.0;
-							}
-							gaussY = gainY * exp( -pow((double)(k-offsetY)/(double)peaksWidthY,2.0)/2.0 );
-							gaussX = gainX * exp( -pow((double)(l-offsetX)/(double)peaksWidthX,2.0)/2.0 );
-							tmpValue =  gainVariation*gain * gaussX * gaussY*noise;
-							(*pRed2) += (epicsType)(gainRed*tmpValue);
-							(*pGreen2) += (epicsType)(gainGreen*tmpValue);
-							(*pBlue2) += (epicsType)(gainBlue*tmpValue);
+    switch (colorMode) {
+        case NDColorModeMono:
+            // Clear the Image
+            pMono2 = pMono;
+            for (i = 0; i<sizeY; i++) {
+                for (j = 0; j<sizeX; j++) {
+                    (*pMono2++) = (epicsType)0;
+                }
+            }
+            for (i = 0; i<peaksNumY; i++) {
+                for (j = 0; j<peaksNumX; j++) {
+                    gaussX = 0;
+                    gaussY = 0;
+                    if (peakVariation !=0) {
+                        gainVariation = 1.0 + (rand()%peakVariation+1)/100.0;
+                    }
+                    else{
+                        gainVariation = 1.0;
+                    }
+                    offsetY = i * peaksStepY + peaksStartY;
+                    offsetX = j * peaksStepX + peaksStartX;
+                    minX = (offsetX>4*peaksWidthX) ?(offsetX -4*peaksWidthX):0;
+                    maxX = (offsetX+4*peaksWidthX<sizeX) ?(offsetX + 4*peaksWidthX):sizeX;
+                    minY = (offsetY>4*peaksWidthY) ?(offsetY -4*peaksWidthY):0;
+                    maxY = (offsetY+4*peaksWidthY<sizeY) ?(offsetY + 4*peaksWidthY):sizeY;
+                    for (k =minY; k<maxY; k++) {
+                        pMono2 = pMono + (minX + k*sizeX);
+                        for (l=minX; l<maxX; l++) {
+                            if (noisePct !=0) {
+                                noise = 1.0 + (rand()%noisePct+1)/100.0;
+                            }
+                            else {
+                                noise = 1.0;
+                            }
+                            gaussY = gainY * exp( -pow((double)(k-offsetY)/(double)peaksWidthY,2.0)/2.0 );
+                            gaussX = gainX * exp( -pow((double)(l-offsetX)/(double)peaksWidthX,2.0)/2.0 );
+                            tmpValue =  gainVariation*gain * gaussX * gaussY*noise;
+                            (*pMono2) += (epicsType)tmpValue;
+                            pMono2++;
+                        }
+                    }
+                }
+            }
+            break;
+        case NDColorModeRGB1:
+        case NDColorModeRGB2:
+        case NDColorModeRGB3:
+            // Clear the Image
+            pRed2 = pRed;
+            for (i = 0; i<sizeY; i++) {
+                for (j = 0; j<sizeX; j++) {
+                    (*pRed2++) = (epicsType)0;  //Since we are just clearing the field we will do this with one pointer
+                    (*pRed2++) = (epicsType)0;
+                    (*pRed2++) = (epicsType)0;
+                }
+            }
+            for (i = 0; i<peaksNumY; i++) {
+                for (j = 0; j<peaksNumX; j++) {
+                    if (peakVariation !=0) {
+                        gainVariation = 1.0 + (rand()%peakVariation+1)/100.0;
+                    }
+                    else{
+                        gainVariation = 1.0;
+                    }
+                    offsetY = i * peaksStepY + peaksStartY;
+                    offsetX = j * peaksStepX + peaksStartX;
+                    minX = (offsetX>4*peaksWidthX) ?(offsetX -4*peaksWidthX):0;
+                    maxX = (offsetX+4*peaksWidthX<sizeX) ?(offsetX + 4*peaksWidthX):sizeX;
+                    minY = (offsetY>4*peaksWidthY) ?(offsetY -4*peaksWidthY):0;
+                    maxY = (offsetY+4*peaksWidthY<sizeY) ?(offsetY + 4*peaksWidthY):sizeY;
+                    for (k =minY; k<maxY; k++) {
+                        //Move to the starting point for this peak
+                        switch (colorMode) {
+                            case NDColorModeRGB1:
+                                pRed2 = pRed + (minX*columnStep + k*sizeX*columnStep);
+                                pGreen2 = pRed2 + 1;
+                                pBlue2 = pRed2 + 2;
+                                break;
+                            case NDColorModeRGB2:
+                                pRed2 = pRed + (minX*columnStep + k*3*sizeX*columnStep);
+                                pGreen2 = pRed2 + sizeX;
+                                pBlue2 = pRed2 + 2*sizeX;
+                                break;
+                            case NDColorModeRGB3:
+                                pRed2 = pRed + (minX*columnStep + k*sizeX*columnStep);
+                                pGreen2 = pRed2 + sizeX*sizeY;
+                                pBlue2 = pRed2 + 2*sizeX*sizeY;
+                                break;
+                        }
+                        //Fill in a row for this peak
+                        for (l=minX; l<maxX; l++) {
+                            if (noisePct !=0) {
+                                noise = 1.0 + (rand()%noisePct+1)/100.0;
+                            }
+                            else {
+                                noise = 1.0;
+                            }
+                            gaussY = gainY * exp( -pow((double)(k-offsetY)/(double)peaksWidthY,2.0)/2.0 );
+                            gaussX = gainX * exp( -pow((double)(l-offsetX)/(double)peaksWidthX,2.0)/2.0 );
+                            tmpValue =  gainVariation*gain * gaussX * gaussY*noise;
+                            (*pRed2) += (epicsType)(gainRed*tmpValue);
+                            (*pGreen2) += (epicsType)(gainGreen*tmpValue);
+                            (*pBlue2) += (epicsType)(gainBlue*tmpValue);
 
-							pRed2 += columnStep;
-							pGreen2 += columnStep;
-							pBlue2 += columnStep;
-						}
-					}
-				}
-			}
+                            pRed2 += columnStep;
+                            pGreen2 += columnStep;
+                            pBlue2 += columnStep;
+                        }
+                    }
+                }
+            }
 
 
 
-			break;
+            break;
 
-	}
-	return status;
-}
-
-/** Compute array for array of peaks */
-template <typename epicsType> int simDetector::computeRingsArray(int sizeX, int sizeY)
-{
-	return asynSuccess;
+    }
+    return status;
 }
 
 /** Controls the shutter */
@@ -795,7 +784,9 @@ asynStatus simDetector::writeInt32(asynUser *pasynUser, epicsInt32 value)
             /* Send the stop event */
             epicsEventSignal(this->stopEventId);
         }
-    } else if ((function == NDDataType) || (function == NDColorMode)) {
+    } else if ((function == NDDataType) || 
+               (function == NDColorMode) ||
+               (function == SimMode)) {
         status = setIntegerParam(SimResetImage, 1);
     } else {
         /* If this parameter belongs to a base class call its method */
@@ -922,18 +913,18 @@ simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDat
         return;
     }
 
-    createParam(SimGainXString,      asynParamFloat64, &SimGainX);
-    createParam(SimGainYString,      asynParamFloat64, &SimGainY);
-    createParam(SimGainRedString,    asynParamFloat64, &SimGainRed);
-    createParam(SimGainGreenString,  asynParamFloat64, &SimGainGreen);
-    createParam(SimGainBlueString,   asynParamFloat64, &SimGainBlue);
-    createParam(SimNoiseString,      asynParamInt32,   &SimNoise);
-    createParam(SimResetImageString, asynParamInt32,   &SimResetImage);
-    createParam(SimImageTypeString,   asynParamInt32,   &SimImageType);
-    createParam(SimPeakNumXString,   asynParamInt32,   &SimPeakNumX);
-    createParam(SimPeakNumYString,   asynParamInt32,   &SimPeakNumY);
-    createParam(SimPeakStepXString,  asynParamInt32,   &SimPeakStepX);
-    createParam(SimPeakStepYString,  asynParamInt32,   &SimPeakStepY);
+    createParam(SimGainXString,       asynParamFloat64, &SimGainX);
+    createParam(SimGainYString,       asynParamFloat64, &SimGainY);
+    createParam(SimGainRedString,     asynParamFloat64, &SimGainRed);
+    createParam(SimGainGreenString,   asynParamFloat64, &SimGainGreen);
+    createParam(SimGainBlueString,    asynParamFloat64, &SimGainBlue);
+    createParam(SimNoiseString,       asynParamInt32,   &SimNoise);
+    createParam(SimResetImageString,  asynParamInt32,   &SimResetImage);
+    createParam(SimModeString,        asynParamInt32,   &SimMode);
+    createParam(SimPeakNumXString,    asynParamInt32,   &SimPeakNumX);
+    createParam(SimPeakNumYString,    asynParamInt32,   &SimPeakNumY);
+    createParam(SimPeakStepXString,   asynParamInt32,   &SimPeakStepX);
+    createParam(SimPeakStepYString,   asynParamInt32,   &SimPeakStepY);
     createParam(SimPeakStartXString,  asynParamInt32,   &SimPeakStartX);
     createParam(SimPeakStartYString,  asynParamInt32,   &SimPeakStartY);
     createParam(SimPeakWidthXString,  asynParamInt32,   &SimPeakWidthX);
@@ -963,16 +954,16 @@ simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDat
     status |= setDoubleParam (SimGainRed, 1);
     status |= setDoubleParam (SimGainGreen, 1);
     status |= setDoubleParam (SimGainBlue, 1);
-	status |= setIntegerParam(SimImageType, 0);
-	status |= setIntegerParam(SimPeakStartX, 1);
-	status |= setIntegerParam(SimPeakStartY, 1);
-	status |= setIntegerParam(SimPeakWidthX, 10);
-	status |= setIntegerParam(SimPeakWidthY, 20);
-	status |= setIntegerParam(SimPeakNumX, 1);
-	status |= setIntegerParam(SimPeakNumY, 1);
-	status |= setIntegerParam(SimPeakStepX, 1);
-	status |= setIntegerParam(SimPeakStepY, 1);
-	status |= setIntegerParam(SimPeakHeightVariation, 3);
+    status |= setIntegerParam(SimMode, 0);
+    status |= setIntegerParam(SimPeakStartX, 1);
+    status |= setIntegerParam(SimPeakStartY, 1);
+    status |= setIntegerParam(SimPeakWidthX, 10);
+    status |= setIntegerParam(SimPeakWidthY, 20);
+    status |= setIntegerParam(SimPeakNumX, 1);
+    status |= setIntegerParam(SimPeakNumY, 1);
+    status |= setIntegerParam(SimPeakStepX, 1);
+    status |= setIntegerParam(SimPeakStepY, 1);
+    status |= setIntegerParam(SimPeakHeightVariation, 3);
 
     if (status) {
         printf("%s: unable to set camera parameters\n", functionName);
