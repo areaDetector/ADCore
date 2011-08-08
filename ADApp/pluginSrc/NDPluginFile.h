@@ -16,6 +16,10 @@
 #define NDFileModeMultiple 0x08
 typedef int NDFileOpenMode_t;
 
+#define FILEPLUGIN_NAME        "FilePluginFileName"
+#define FILEPLUGIN_NUMBER      "FilePluginFileNumber"
+#define FILEPLUGIN_DESTINATION "FilePluginDestination"
+
 /** Base class for NDArray file writing plugins; actual file writing plugins inherit from this class.
   * This class handles the logic of single file per image, capture into buffer or streaming multiple images
   * to a single file.  
@@ -66,8 +70,13 @@ private:
     asynStatus writeFileBase();
     asynStatus closeFileBase();
     asynStatus doCapture(int capture);
+    asynStatus attrFileNameCheck();
+    asynStatus attrFileNameSet();
+    bool attrIsProcessingRequired(NDAttributeList* pAttrList);
+
     NDArray **pCapture;
     epicsMutexId fileMutexId;
+    bool useAttrFilePrefix;
 };
 
 #define NUM_NDPLUGIN_FILE_PARAMS 0
