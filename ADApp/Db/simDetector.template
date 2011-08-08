@@ -2,6 +2,45 @@
 # Mark Rivers
 # March 23, 2008
 
+# Redefine the color mode choices from ADBase.template to only have those that the simDetector
+# driver supports.  Keep the same values (xxVL), but change the menu numbers.
+
+record(mbbo, "$(P)$(R)ColorMode")
+{
+   field(ZRST, "Mono")
+   field(ZRVL, "0")
+   field(ONST, "RGB1")
+   field(ONVL, "2")
+   field(TWST, "RGB2")
+   field(TWVL, "3")
+   field(THST, "RGB3")
+   field(THVL, "4")
+   field(FRST, "")
+   field(FVST, "")
+   field(SXST, "")
+   field(SVST, "")
+   field(EIST, "")
+}
+
+record(mbbi, "$(P)$(R)ColorMode_RBV")
+{
+   field(ZRST, "Mono")
+   field(ZRVL, "0")
+   field(ONST, "RGB1")
+   field(ONVL, "2")
+   field(TWST, "RGB2")
+   field(TWVL, "3")
+   field(THST, "RGB3")
+   field(THVL, "4")
+   field(FRST, "")
+   field(FVST, "")
+   field(SXST, "")
+   field(SVST, "")
+   field(EIST, "")
+}
+
+
+# New records for simulation detector
 record(ao, "$(P)$(R)GainX")
 {
    field(PINI, "YES")
@@ -109,93 +148,29 @@ record(longin, "$(P)$(R)Noise_RBV")
    field(SCAN, "I/O Intr")
 }
 
-
-# Redefine the color mode choices from ADBase.template to only have those that the simDetector
-# driver supports.  Keep the same values (xxVL), but change the menu numbers.
-
-record(mbbo, "$(P)$(R)ColorMode")
+record(mbbo, "$(P)$(R)SimMode")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COLOR_MODE")
-   field(ZRST, "Mono")
-   field(ZRVL, "0")
-   field(ONST, "RGB1")
-   field(ONVL, "2")
-   field(TWST, "RGB2")
-   field(TWVL, "3")
-   field(THST, "RGB3")
-   field(THVL, "4")
-   field(FRST, "")
-   field(FVST, "")
-   field(SXST, "")
-   field(SVST, "")
-   field(EIST, "")
-}
-
-record(mbbi, "$(P)$(R)ColorMode_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COLOR_MODE")
-   field(ZRST, "Mono")
-   field(ZRVL, "0")
-   field(ONST, "RGB1")
-   field(ONVL, "2")
-   field(TWST, "RGB2")
-   field(TWVL, "3")
-   field(THST, "RGB3")
-   field(THVL, "4")
-   field(FRST, "")
-   field(FVST, "")
-   field(SXST, "")
-   field(SVST, "")
-   field(EIST, "")
-   field(SCAN, "I/O Intr")
-}
-
-# Handle more types of images
-record(mbbo, "$(P)$(R)ImageType")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_IMAGE_TYPE")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_MODE")
    field(ZRST, "LinearRamp")
    field(ZRVL, "0")
    field(ONST, "Peaks")
    field(ONVL, "1")
-   field(TWST, "Rings")
-   field(TWVL, "2")
-   field(THST, "")
-   field(THVL, "")
-   field(FRST, "")
-   field(FVST, "")
-   field(SXST, "")
-   field(SVST, "")
-   field(EIST, "")
 }
 
-record(mbbi, "$(P)$(R)ImageType_RBV")
+record(mbbi, "$(P)$(R)SimMode_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_IMAGE_TYPE")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_MODE")
    field(ZRST, "LinearRamp")
    field(ZRVL, "0")
    field(ONST, "Peaks")
    field(ONVL, "1")
-   field(TWST, "Rings")
-   field(TWVL, "2")
-   field(THST, "")
-   field(THVL, "")
-   field(FRST, "")
-   field(FVST, "")
-   field(SXST, "")
-   field(SVST, "")
-   field(EIST, "")
    field(SCAN, "I/O Intr")
 }
 
-
-# Channels for Peaks Image Type
+# Records for peak simulation mode
 record(longout, "$(P)$(R)PeakStartX")
 {
    field(PINI, "YES")
