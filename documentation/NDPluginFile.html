@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugin NDPluginFile</h1>
     <h2>
-      June 19, 2011</h2>
+      August 8, 2011</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -22,20 +22,19 @@
     <li><a href="#Overview">Overview</a></li>
     <li><a href="#JPEG">JPEG file plugin</a></li>
     <li><a href="#TIFF">TIFF file plugin</a></li>
+    <li><a href="#Magick">GraphicsMagick file plugin</a></li>
     <li><a href="#netCDF">netCDF file plugin</a></li>
     <li><a href="#NeXus">NeXus (HDF) file plugin</a></li>
     <li><a href="#HDF5">HDF5 file plugin</a></li>
-    <li><a href="#Magick">GraphicsMagick file plugin</a></li>
-    <li><a href="#Screens">Screen shots</a></li>
   </ul>
   <h2 id="Overview">
     Overview
   </h2>
   <p>
     NDPluginFile is a base class from which actual file plugins are derived. There are
-    currently file plugins for JPEG, TIFF, netCDF, Nexus (HDF) file formats. The GraphicsMagick
-    plugin can write a large number of formats, including JPEG, TIFF, PNG, PDF and many
-    others.
+    currently file plugins for JPEG, TIFF, netCDF, Nexus, and HD5 file formats. The
+    GraphicsMagick plugin can write a large number of formats, including JPEG, TIFF,
+    PNG, PDF and many others.
   </p>
   <p>
     NDPluginFile inherits from NDPluginDriver. The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_file.html">
@@ -78,6 +77,41 @@
       asynNDArrayDriver</a>, e.g. NDFilePath, NDFileName, etc. Thus, the same interface
     that is used for saving files directly in a driver is used for this plugin.
   </p>
+  <p>
+    The base class will delete the "original" file that the driver created for that
+    array if the following are all true:</p>
+  <ol>
+    <li>The DeleteDriverFile record is "Yes".</li>
+    <li>The file plugin has successfully written a new file.</li>
+    <li>The array contains an attribute called "DriverFileName" that contains the full
+      file name of the original file. The driver attributes XML file should contain a
+      line like the following:<br />
+      <tt>&lt;Attribute name="DriverFileName" type="PARAM" source="FULL_FILE_NAME" datatype="string"
+        description="Driver file name"/&gt;</tt><br />
+    </li>
+  </ol>
+  <p>
+    The file saving plugins normally determine the name of the file from the FileName
+    and FileNumber records. However, it is possible to have these values come instead
+    from attributes in the array passed to the callback. The following 3 special attributes
+    are used:</p>
+  <ol>
+    <li>FilePluginFileName: This attribute contains the file name.</li>
+    <li>FilePluginFileNumber - This attribute contains the file number.</li>
+    <li>FilePluginDestination - If this attribute contains the string "all" or the name
+      of the asyn port for this plugin (e.g. FileTIFF1) then the plugin will write the
+      array to a file. If this attribute has any other value then the plugin will ignore
+      this array, and not write a file.</li>
+  </ol>
+  <p>
+    Having the file information come from the array allows the driver to control which
+    plugin saves a particular array. For example, there may be two file writing plugins
+    active; the first saves the flat field files for a tomography experiment, and the
+    second saves the normal projections. These plugins each stream data to a separate
+    file. The driver knows which files are flat fields and which are normal projections,
+    and adds the appropriate attributes to control which plugin saves each array. This
+    would not be possible using a single plugin and EPICS PVs to switch the file, because
+    of the problem of frames being buffered in the plugin queue.</p>
   <h2 id="JPEG">
     JPEG file plugin
   </h2>
@@ -115,6 +149,12 @@
       NDFileJPEG.cpp documentation</a> and in the documentation for the constructor
     for the <a href="areaDetectorDoxygenHTML/class_n_d_file_j_p_e_g.html">NDFileJPEG class</a>.
   </p>
+  <div style="text-align: center">
+    <h3>
+      NDFileJPEG.adl</h3>
+    <p>
+      <img alt="NDFileJPEG.png" src="NDFileJPEG.png" /></p>
+  </div>
   <h2 id="TIFF">
     TIFF file plugin
   </h2>
@@ -147,6 +187,12 @@
       NDFileTIFF.cpp documentation</a> and in the documentation for the constructor
     for the <a href="areaDetectorDoxygenHTML/class_n_d_file_t_i_f_f.html">NDFileTIFF class</a>.
   </p>
+  <div style="text-align: center">
+    <h3>
+      NDFileTIFF.adl</h3>
+    <p>
+      <img alt="NDFileTIFF.png" src="NDFileTIFF.png" /></p>
+  </div>
   <h2 id="Magick">
     GraphicsMagick file plugin
   </h2>
@@ -183,9 +229,9 @@
   <p>
     No formats support all of these compression types. Many support only one, or have
     an implicit compression mode and so ignore the CompressType parameter. For example,
-    the JPEG format supports only the JPEG compression scheme, which is implicit. The
-    TIFF format supports &quot;None&quot;, (ADD DOCUMENTATION ON TIFF COMPRESSION AND
-    OTHER FORMATS)</p>
+    the JPEG and PNG formats support only their respective implicit compression modes.
+    I have determined empirically that the TIFF format supports "None", "JPEG", "LZW",
+    and "ZIP", while the PDF format supports "None", "BZip", "FAX", and "JPEG".</p>
   <p>
     The <a href="areaDetectorDoxygenHTML/class_n_d_file_magick.html">NDFileMagick class
       documentation </a>describes this class in detail.
@@ -204,6 +250,12 @@
     for the <a href="areaDetectorDoxygenHTML/class_n_d_file_magick.html">NDFileMagick
       class</a>.
   </p>
+  <div style="text-align: center">
+    <h3>
+      NDFileMagick.adl</h3>
+    <p>
+      <img alt="NDFileMagick.png" src="NDFileMagick.png" /></p>
+  </div>
   <h2 id="netCDF">
     netCDF file plugin
   </h2>
@@ -371,6 +423,12 @@ variables:
       here</a>. This plugin is also contained in the areaDetector distribution in the
     Viewers/ImageJ/EPICS_areaDetector directory.
   </p>
+  <div style="text-align: center">
+    <h3>
+      NDFileNetCDF.adl</h3>
+    <p>
+      <img alt="NDFileNetCDF.png" src="NDFileNetCDF.png" /></p>
+  </div>
   <h2 id="NeXus">
     NeXus (HDF) file plugin
   </h2>
@@ -494,8 +552,7 @@ variables:
   <p>
     The NDFileHDF5 plugin is created with the NDFileHDF5Configure command, either from
     C/C++ or from the EPICS IOC shell.</p>
-  <pre>
-NDFileHDF5Configure (const char *portName, int queueSize, int blockingCallbacks, 
+  <pre>NDFileHDF5Configure (const char *portName, int queueSize, int blockingCallbacks, 
                      const char *NDArrayPort, int NDArrayAddr, size_t maxMemory, 
                      int priority, int stackSize)
   </pre>
@@ -521,8 +578,7 @@ NDFileHDF5Configure (const char *portName, int queueSize, int blockingCallbacks,
   </p>
   <p>
     The directory structure of the HDF5 files, generated by this plugin:</p>
-  <pre>
-entry                   &lt;-- NX_class=NXentry
+  <pre>entry                   &lt;-- NX_class=NXentry
 |
 +--instrument           &lt;-- NX_class=NXinstrument
    |
@@ -962,18 +1018,11 @@ entry                   &lt;-- NX_class=NXentry
   </table>
   <p>
     <i>The NDFileHDF5 plugin was developed by Ulrik Kofoed Pedersen at Diamond Light Source.</i></p>
-  <h2 id="Screens">
-    Screen shots</h2>
-  <p>
-    The following is the MEDM screen that provides access to the parameters in NDPluginDriver.h
-    and NDPluginFile.h through records in NDPluginBase.template and NDFileNetCDF.template.
-    This is the MEDM screen that is used to control the saving of images to disk in
-    netCDF format.</p>
   <div style="text-align: center">
     <h3>
-      NDPluginFileNetCDF.adl</h3>
+      NDFileHDF5.adl</h3>
     <p>
-      <img alt="NDFileNetCDF.png" src="NDFileNetCDF.png" /></p>
+      <img alt="NDFileHDF5.png" src="NDFileHDF5.png" /></p>
   </div>
 </body>
 </html>
