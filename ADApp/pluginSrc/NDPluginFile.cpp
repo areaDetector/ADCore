@@ -37,6 +37,9 @@ asynStatus NDPluginFile::openFileBase(NDFileOpenMode_t openMode, NDArray *pArray
     char fullFileName[MAX_FILENAME_LEN];
     const char* functionName = "openFileBase";
 
+    if (this->useAttrFilePrefix)
+        this->attrFileNameSet();
+
     status = (asynStatus)createFileName(MAX_FILENAME_LEN, fullFileName);
     if (status) { 
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
@@ -263,6 +266,10 @@ asynStatus NDPluginFile::doCapture(int capture)
         return(asynError);
     }
     
+    /* Decide whether or not to use the NDAttribute named "fileprefix" to create the filename */
+    if( pArray->pAttributeList->find(FILEPLUGIN_NAME) != NULL)
+        this->useAttrFilePrefix = true;
+
     getIntegerParam(NDFileWriteMode, &fileWriteMode);    
     getIntegerParam(NDFileNumCapture, &numCapture);
 
@@ -307,7 +314,7 @@ asynStatus NDPluginFile::doCapture(int capture)
         case NDFileModeStream:
             if (capture) {
                 /* Streaming was just started */
-                if (this->supportsMultipleArrays)
+                if (this->supportsMultipleArrays && !this->useAttrFilePrefix)
                     status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, pArray);
                 setIntegerParam(NDFileNumCaptured, 0);
                 setIntegerParam(NDWriteFile, 1);
@@ -320,6 +327,138 @@ asynStatus NDPluginFile::doCapture(int capture)
             }
     }
     return(status);
+}
+
+/** Check whether the attributes defining the filename has changed since last write.
+ * If this is the first frame (NDFileNumCaptured == 1) then the file is opened.
+ * For other frames we check whether the attribute file name or number has changed
+ * since last write. If this is the case then the current file is closed a new one opened.
+ */
+asynStatus NDPluginFile::attrFileNameCheck()
+{
+    asynStatus status = asynSuccess;
+    NDAttribute *NDattrFileName, *NDattrFileNumber;
+    int compare, attrFileNumber, ndFileNumber;
+    char attrFileName[MAX_FILENAME_LEN];
+    char ndFileName[MAX_FILENAME_LEN];
+    int numCapture, numCaptured;
+    bool reopenFile = false;
+
+    if (!this->useAttrFilePrefix) return status;
+
+    getIntegerParam(NDFileNumCapture, &numCapture);
+    getIntegerParam(NDFileNumCaptured, &numCaptured);
+
+    if (numCaptured == 1) {
+        status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, this->pArrays[0]);
+        return status;
+    }
+
+    NDattrFileName   = this->pArrays[0]->pAttributeList->find( FILEPLUGIN_NAME   );
+    if (NDattrFileName != NULL) {
+        NDattrFileName->getValue(NDAttrString, attrFileName, MAX_FILENAME_LEN);
+        getStringParam(NDFileName, MAX_FILENAME_LEN, ndFileName);
+        compare = epicsStrnCaseCmp(attrFileName, ndFileName, strlen(attrFileName));
+        if (compare != 0)
+            reopenFile = true;
+    }
+
+    NDattrFileNumber = this->pArrays[0]->pAttributeList->find( FILEPLUGIN_NUMBER );
+    if (NDattrFileNumber != NULL)
+    {
+        NDattrFileNumber->getValue(NDAttrInt32, (void*) &attrFileNumber, 0);
+        getIntegerParam(NDFileNumber, &ndFileNumber);
+        if (ndFileNumber != attrFileNumber)
+        {
+            reopenFile = true;
+            setIntegerParam( NDFileNumber, attrFileNumber);
+        }
+    }
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "attrFileNameCheck: name=%s(%s) num=%d (%s) reopen=%d\n",
+            attrFileName, ndFileName, attrFileNumber, NDattrFileNumber->pSource, (int)reopenFile );
+    if (reopenFile)
+    {
+        this->closeFileBase();
+        setIntegerParam(NDFileNumCaptured, 1);
+        status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, this->pArrays[0]);
+    }
+    return status;
+}
+
+/** Look up filename related attributes in the NDArray.
+ *  If file name or number is found in the NDArray, the values are replacing the existing ones
+ *  in the parameter library. If not found the existing settings remain.
+ */
+asynStatus NDPluginFile::attrFileNameSet()
+{
+    asynStatus status = asynSuccess;
+    NDAttribute *ndAttr;
+    char attrFileName[MAX_FILENAME_LEN];
+    epicsInt32 attrFileNumber;
+    size_t attrFileNameLen;
+    NDAttrDataType_t attrDataType;
+    NDArray *pArray = this->pArrays[0];
+
+    if (this->useAttrFilePrefix == false)
+        return status;
+
+    /* first check if the attribute contain a fileprefix to form part of the filename. */
+    ndAttr = pArray->pAttributeList->find(FILEPLUGIN_NAME);
+    if (ndAttr != NULL)
+    {
+        ndAttr->getValueInfo(&attrDataType, &attrFileNameLen);
+        if (attrDataType == NDAttrString)
+        {
+            if (attrFileNameLen > MAX_FILENAME_LEN) attrFileNameLen = MAX_FILENAME_LEN;
+            ndAttr->getValue(NDAttrString, attrFileName, attrFileNameLen);
+            setStringParam(NDFileName, attrFileName);
+        }
+    }
+
+    ndAttr = pArray->pAttributeList->find(FILEPLUGIN_NUMBER);
+    if (ndAttr != NULL)
+    {
+        ndAttr->getValueInfo(&attrDataType, &attrFileNameLen);
+        if (attrDataType == NDAttrInt32)
+        {
+            ndAttr->getValue(NDAttrInt32, &attrFileNumber, 0);
+            setIntegerParam(NDFileNumber, attrFileNumber);
+            // ensure auto increment is switched off when using attribute file numbers
+            setIntegerParam(NDAutoIncrement, 0);
+        }
+    }
+    return status;
+}
+
+/** Decide whether or not this frame is intended to be processed by this plugin.
+ * By default all frames are processed. The decision not to process a frame is
+ * made based on the string value of the FILEPLUGIN_DESTINATION: if the value does not equal
+ * either "all" or the ASYN port name of the current plugin the frame is not to be processed.
+ * \param[in] pAttrList  A pointer to the current NDArray's attribute list.
+ * \returns true if the frame is to be processed. false if the frame is not to be processed.
+ */
+bool NDPluginFile::attrIsProcessingRequired(NDAttributeList* pAttrList)
+{
+    char destPortName[MAX_FILENAME_LEN];
+    NDAttribute *ndAttr;
+    size_t destPortNameLen;
+    NDAttrDataType_t attrDataType;
+
+    ndAttr = pAttrList->find(FILEPLUGIN_DESTINATION);
+    if (ndAttr != NULL)
+    {
+        ndAttr->getValueInfo(&attrDataType, &destPortNameLen);
+        if (attrDataType == NDAttrString && destPortNameLen > 1)
+        {
+            if (destPortNameLen > MAX_FILENAME_LEN)
+                destPortNameLen = MAX_FILENAME_LEN;
+            ndAttr->getValue(NDAttrString, destPortName, destPortNameLen);
+            if (epicsStrnCaseCmp(destPortName, "all", destPortNameLen>3?3:destPortNameLen) != 0 &&
+                epicsStrnCaseCmp(destPortName, this->portName, destPortNameLen) != 0)
+                return false;
+        }
+    }
+    return true;
 }
 
 /** Callback function that is called by the NDArray driver with new NDArray data.
@@ -337,6 +476,10 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
     int status=asynSuccess;
     int numCapture, numCaptured;
     //const char* functionName = "processCallbacks";
+
+    /* First check if the callback is really for this file saving plugin */
+    if (!this->attrIsProcessingRequired(pArray->pAttributeList))
+        return;
 
     /* Most plugins want to increment the arrayCounter each time they are called, which NDPluginDriver
      * does.  However, for this plugin we only want to increment it when we actually got a callback we were
@@ -517,6 +660,7 @@ NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCall
     //const char *functionName = "NDPluginFile";
     asynStatus status;
     
+    this->useAttrFilePrefix = false;
     this->fileMutexId = epicsMutexCreate();
     /* Set the plugin type string */    
     setStringParam(NDPluginDriverPluginType, "NDPluginFile");
