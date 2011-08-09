@@ -17,6 +17,24 @@
         <li>Added support for 64-bit Windows, windows-x64.</li>
         <li>Replaced FTVL=UCHAR with FTVL=CHAR in all waveform records, so they can be written
           to with dbpf from the IOC shell.</li>
+        <li>Improved XML files for NDArray attributes and Nexus template files. Added a shell
+          script to validate XML files. <strong>Note</strong>: the attribute values for datatype
+          and dbrtype have been case-insensitive in the past. In the next release of areaDetector
+          this will be changed to <strong>require</strong> uppercase for these values. For
+          example the line:<br />
+          <code>&lt;Attribute name="AcquireTime" type="EPICS_PV" source="13SIM1:cam1:AcquireTime"
+            dbrtype="dbr_native" description="Camera acquire time"/&gt;</code><br />
+          must be changed to<br />
+          <code>&lt;Attribute name="AcquireTime" type="EPICS_PV" source="13SIM1:cam1:AcquireTime"
+            dbrtype="DBR_NATIVE" description="Camera acquire time"/&gt;</code><br />
+          and<br />
+          <code>&lt;Attribute name="CameraManufacturer" type="PARAM" source="MANUFACTURER" datatype="string"
+            description="Camera manufacturer"/&gt;</code><br />
+          must be changed to<br />
+          <code>&lt;Attribute name="CameraManufacturer" type="PARAM" source="MANUFACTURER" datatype="STRING"
+            description="Camera manufacturer"/&gt;</code><br />
+          This change will make it much easier to validate the XML files. Thanks to Pete Jemian
+          for these changes.</li>
         <li>On Windows if NDFilePath has a trailing '\' then preserve it, else add a '/' character
           if one is not present.</li>
       </ul>
