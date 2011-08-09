@@ -524,7 +524,12 @@ variables:
   <p>
     There is currently no documentation on the contents of the XML template file. However,
     there are example XML template files in the iocSimDetector and iocPerkinElmer directories.
-    Documentation on the XML file contents will be written ASAP.</p>
+    Documentation on the XML file contents will be written ASAP.
+	<!-- TODO: Document the XML template file contents-->
+    It is possible to validate most of the syntax in a NeXus template XML file.  
+	For example, the command (starting from the <tt>iocBoot</tt> directory) to 
+	validate the syntax of the <tt>iocBoot/iocSimDetector/NexusTemplate.xml</tt> file is:
+	<pre>xmllint --noout --schematron ./template.sch iocSimDetector/NexusTemplate.xml</pre></p>
   <p>
     The prebuilt Linux libraries libhdf5.a and libNeXus.a are built with HDF5 1.6.9.
     When they are built with the latest version, 1.8.2, they require GLIBC version 2.7
@@ -702,6 +707,11 @@ variables:
       </ul>
     </li>
   </ul>
+  <p>
+    It is possible to validate the syntax of an NDArray attributes XML file.  
+	For example, the command (starting from the <tt>iocBoot</tt> directory) to 
+	validate the syntax of the <tt>iocBoot/iocSimDetector/simDetectorAttributes.xml</tt> file is:
+	<pre>xmllint --noout --schema ./attributes.xsd iocSimDetector/simDetectorAttributes.xml</pre></p>
   <h3>
     Compression
   </h3>

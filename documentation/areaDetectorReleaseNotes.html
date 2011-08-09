@@ -135,6 +135,8 @@
           each streaming data to a separate file. The driver knows which files are flat fields
           and which are normal projections, and adds the appropriate attributes to control
           which plugin saves each array. Thanks to Ulrik Pedersen for this addition.</li>
+        <li>NDPluginFile: Added XML Schema file (<tt>iocBoot/attributes.xsd</tt>) to 
+          allow syntax validation of an NDArray driver attributes XML file.</li>
         <li>New file writing plugin, NDFileHDF5. This plugin writes HDF5 files with the native
           HDF5 API, unlike the NeXus plugin which uses the NeXus API. It supports 3 types
           of compression. Thanks to Ulrik Pedersen at Diamond Light Source for providing this
@@ -157,6 +159,8 @@
           which fixes a stack overflow problem with the default stack size on win32-x86. Removed
           support for HDF4 and XML files, only HDF5 is now supported. Thanks to Jeff Gebhardt
           for initially doing this.</li>
+        <li>NDFileNexus: Added Schematron file (<tt>iocBoot/template.sch</tt>) to allow 
+          syntax validation of a NeXus template XML file.</li>
       </ul>
     </li>
     <li>Viewers
