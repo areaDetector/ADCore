@@ -37,6 +37,7 @@ DB += simDetector.template
 # Plugins
 DB += NDColorConvert.template
 DB += NDFile.template
+DB += NDFileHDF5.template
 DB += NDFileJPEG.template
 DB += NDFileMagick.template
 DB += NDFileNetCDF.template
