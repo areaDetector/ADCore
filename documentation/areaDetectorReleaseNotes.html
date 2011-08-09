@@ -20,18 +20,20 @@
         <li>Improved XML files for NDArray attributes and Nexus template files. Added a shell
           script to validate XML files. <strong>Note</strong>: the attribute values for datatype
           and dbrtype have been case-insensitive in the past. In the next release of areaDetector
-          this will be changed to <strong>require</strong> uppercase for these values. For
-          example the line:<br />
+          this will be changed to <strong>require</strong> uppercase for these values. The
+          next release will also change the syntax of the <code>Attribute</code> element by
+          moving the content of the <code>type</code> attribute to become the element name.
+          For example the line:<br />
           <code>&lt;Attribute name="AcquireTime" type="EPICS_PV" source="13SIM1:cam1:AcquireTime"
             dbrtype="dbr_native" description="Camera acquire time"/&gt;</code><br />
           must be changed to<br />
-          <code>&lt;Attribute name="AcquireTime" type="EPICS_PV" source="13SIM1:cam1:AcquireTime"
-            dbrtype="DBR_NATIVE" description="Camera acquire time"/&gt;</code><br />
+          <code>&lt;EPICS_PV name="AcquireTime" source="13SIM1:cam1:AcquireTime" dbrtype="DBR_NATIVE"
+            description="Camera acquire time"/&gt;</code><br />
           and<br />
           <code>&lt;Attribute name="CameraManufacturer" type="PARAM" source="MANUFACTURER" datatype="string"
             description="Camera manufacturer"/&gt;</code><br />
           must be changed to<br />
-          <code>&lt;Attribute name="CameraManufacturer" type="PARAM" source="MANUFACTURER" datatype="STRING"
+          <code>&lt;PARAM name="CameraManufacturer" source="MANUFACTURER" datatype="STRING"
             description="Camera manufacturer"/&gt;</code><br />
           This change will make it much easier to validate the XML files. Thanks to Pete Jemian
           for these changes.</li>
@@ -135,8 +137,8 @@
           each streaming data to a separate file. The driver knows which files are flat fields
           and which are normal projections, and adds the appropriate attributes to control
           which plugin saves each array. Thanks to Ulrik Pedersen for this addition.</li>
-        <li>NDPluginFile: Added XML Schema file (<tt>iocBoot/attributes.xsd</tt>) to 
-          allow syntax validation of an NDArray driver attributes XML file.</li>
+        <li>NDPluginFile: Added XML Schema file (<tt>iocBoot/attributes.xsd</tt>) to allow
+          syntax validation of an NDArray driver attributes XML file.</li>
         <li>New file writing plugin, NDFileHDF5. This plugin writes HDF5 files with the native
           HDF5 API, unlike the NeXus plugin which uses the NeXus API. It supports 3 types
           of compression. Thanks to Ulrik Pedersen at Diamond Light Source for providing this
@@ -159,8 +161,8 @@
           which fixes a stack overflow problem with the default stack size on win32-x86. Removed
           support for HDF4 and XML files, only HDF5 is now supported. Thanks to Jeff Gebhardt
           for initially doing this.</li>
-        <li>NDFileNexus: Added Schematron file (<tt>iocBoot/template.sch</tt>) to allow 
-          syntax validation of a NeXus template XML file.</li>
+        <li>NDFileNexus: Added Schematron file (<tt>iocBoot/template.sch</tt>) to allow syntax
+          validation of a NeXus template XML file.</li>
       </ul>
     </li>
     <li>Viewers
