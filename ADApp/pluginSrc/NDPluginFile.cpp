@@ -354,7 +354,7 @@ asynStatus NDPluginFile::attrFileNameCheck()
         return status;
     }
 
-    NDattrFileName   = this->pArrays[0]->pAttributeList->find( FILEPLUGIN_NAME   );
+    NDattrFileName   = this->pArrays[0]->pAttributeList->find(FILEPLUGIN_NAME);
     if (NDattrFileName != NULL) {
         NDattrFileName->getValue(NDAttrString, attrFileName, MAX_FILENAME_LEN);
         getStringParam(NDFileName, MAX_FILENAME_LEN, ndFileName);
@@ -363,7 +363,7 @@ asynStatus NDPluginFile::attrFileNameCheck()
             reopenFile = true;
     }
 
-    NDattrFileNumber = this->pArrays[0]->pAttributeList->find( FILEPLUGIN_NUMBER );
+    NDattrFileNumber = this->pArrays[0]->pAttributeList->find(FILEPLUGIN_NUMBER);
     if (NDattrFileNumber != NULL)
     {
         NDattrFileNumber->getValue(NDAttrInt32, (void*) &attrFileNumber, 0);
