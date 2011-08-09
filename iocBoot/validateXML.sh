@@ -10,20 +10,19 @@
 
 # Validate the XML Attribute and Template files
 
+ATTRIBUTE_SCHEMA="--noout --schema ./attributes.xsd"
+#TEMPLATE_SCHEMA="--noout --schema ./NeXus_templates.xsd"
+TEMPLATE_SCHEMA="--noout --schematron ./template.sch"
 
 # NDArray Attribute declaration files
-xmllint --noout --schema ./attributes.xsd iocPerkinElmer/nexus_templates/PerkinElmerParams.xml
-xmllint --noout --schema ./attributes.xsd iocPilatus/pilatusAttributes.xml
-xmllint --noout --schema ./attributes.xsd iocProsilica/prosilicaAttributes.xml
-xmllint --noout --schema ./attributes.xsd iocSimDetector/ROIAttributes.xml
-xmllint --noout --schema ./attributes.xsd iocSimDetector/netCDFAttributes.xml
-xmllint --noout --schema ./attributes.xsd iocSimDetector/simDetectorAttributes.xml
+xmllint ${ATTRIBUTE_SCHEMA} iocPerkinElmer/nexus_templates/PerkinElmerParams.xml
+xmllint ${ATTRIBUTE_SCHEMA} iocPilatus/pilatusAttributes.xml
+xmllint ${ATTRIBUTE_SCHEMA} iocProsilica/prosilicaAttributes.xml
+xmllint ${ATTRIBUTE_SCHEMA} iocSimDetector/ROIAttributes.xml
+xmllint ${ATTRIBUTE_SCHEMA} iocSimDetector/netCDFAttributes.xml
+xmllint ${ATTRIBUTE_SCHEMA} iocSimDetector/simDetectorAttributes.xml
 
-# template files
+# NeXus file writer plugin template files
 #
-# cannot validate, no XML Schema developed yet
-#
-#iocPerkinElmer/nexus_templates/example.xml fails to validate
-#iocSimDetector/NexusTemplate.xml fails to validate
-xmllint --noout --schema ./NeXus_templates.xsd iocPerkinElmer/nexus_templates/example.xml
-xmllint --noout --schema ./NeXus_templates.xsd iocSimDetector/NexusTemplate.xml
+xmllint ${TEMPLATE_SCHEMA} iocPerkinElmer/nexus_templates/example.xml
+xmllint ${TEMPLATE_SCHEMA} iocSimDetector/NexusTemplate.xml

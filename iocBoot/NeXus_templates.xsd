@@ -10,14 +10,24 @@
   ########### SVN repository information ###################
 -->
 
+<!--
+    Use of this XML Schema file is deprecated.
+    Instead, use the Schematron file:  template.sch
+    Schematron:
+        allows arbitrary element names
+        allows arbitrary UserGroup names
+        enforces one signal="1" attribute per NXdata group
+        cannot apply a regexp match for the allowed names
+      
+-->
+
 <!--  usage:
   xmllint - -noout - -schema /path1/NeXus_templates.xsd /path2/NX_template_file.xml
   (put the two minus signs together for the actual command, 
   XML can't have them together in an XML file, even in a comment!
   
-  TODO:  This XML Schema validates the example files as-written in areaDetector 
-  but is not sufficient for general use yet.
-  
+  Note:  This XML Schema validates the example files as-written in areaDetector 
+  but is not sufficient for general use.  It may be removed in future areaDetector releases.
 -->
 
 
