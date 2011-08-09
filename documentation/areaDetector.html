@@ -65,9 +65,10 @@
   <p>
     From <a href="http://www.bruker-axs.de/">Bruker</a></p>
   <ul>
-    <li>The SMART CCD camera line with Photometrics cameras. This requires the PCI interface
-      card, replacing the old ISA bus card, and requires controlling the detector with
-      WinView, not the SMART software.</li>
+    <li>Detectors that run under the Bruker Instrument Server (BIS) server.</li>
+    <li>The old SMART CCD camera line with Photometrics cameras. This requires the PCI
+      interface card, replacing the old ISA bus card, and requires controlling the detector
+      with WinView, not the SMART software.</li>
   </ul>
   <p>
     From <a href="http://www.ptgrey.com/products/flea2/index.asp">Point Grey Research</a>
@@ -84,6 +85,17 @@
   <ul>
     <li>Amorphous silicon flat panel detectors. This support was written by Brian Tieman
       and John Hammonds from the APS.</li>
+  </ul>
+  <p>
+    From <a href="http://www.axis.com/">Axis Communications"</a> and many other manufacturers.</p>
+  <ul>
+    <li>The areaDetector URL driver can read images from any URL, including Web cameras,
+      video servers, disk files, etc.</li>
+  </ul>
+  <p>
+    From <a href="http://photonic-science.co.uk/">Photonic Science</a></p>
+  <ul>
+    <li>CCD and CMOS cameras.</li>
   </ul>
   <p>
     Please email any comments and bug reports to <a href="mailto:rivers@cars.uchicago.edu">
@@ -120,13 +132,23 @@
       </tr>
       <tr>
         <td>
-          1-7beta1</td>
+          1-7</td>
         <td>
-          3-Dec-2010</td>
+          9-Aug-2011</td>
         <td>
-          <a href="http://cars.uchicago.edu/software/pub/areaDetectorR1-7beta1.tgz">areaDetectorR1-7beta1.tgz</a></td>
+          <a href="http://cars.uchicago.edu/software/pub/areaDetectorR1-7.tgz">areaDetectorR1-7.tgz</a></td>
         <td>
-          Not available yet.</td>
+          <a href="http://cars.uchicago.edu/software/pub/areaDetectorPrebuilt_R1-7_linux-x86.tgz">
+            areaDetectorPrebuilt_R1-7_linux-x86.tgz</a><br />
+          <a href="http://cars.uchicago.edu/software/pub/areaDetectorPrebuilt_R1-7_linux-x86_64.tgz">
+            areaDetectorPrebuilt_R1-7_linux-x86_64.tgz</a><br />
+          <a href="http://cars.uchicago.edu/software/pub/areaDetectorPrebuilt_R1-7_win32-x86.tgz">
+            areaDetectorPrebuilt_R1-7_win32-x86.tgz</a><br />
+          <a href="http://cars.uchicago.edu/software/pub/areaDetectorPrebuilt_R1-7_windows_x64.tgz">
+            areaDetectorPrebuilt_R1-7_windows_x64.tgz</a><br />
+          <a href="http://cars.uchicago.edu/software/pub/areaDetectorPrebuilt_R1-7_cygwin-x86.tgz">
+            areaDetectorPrebuilt_R1-7_cygwin-x86.tgz</a>
+        </td>
         <td>
           <a href="areaDetectorDoc.html">areaDetectorDoc</a></td>
         <td>
@@ -264,11 +286,11 @@
       </tr>
       <tr>
         <td rowspan="7">
-          1-7beta1</td>
+          1-7</td>
         <td>
           EPICS base</td>
         <td>
-          3.14.11</td>
+          3.14.12.1</td>
         <td>
           Base support</td>
       </tr>
@@ -276,7 +298,7 @@
         <td>
           asyn</td>
         <td>
-          4-14</td>
+          4-17</td>
         <td>
           Socket and interface support</td>
       </tr>
@@ -308,7 +330,7 @@
         <td>
           mca</td>
         <td>
-          6-12-4</td>
+          7-0</td>
         <td>
           mca record for getting time sequence of Total or Net counts from statistics plugin</td>
       </tr>
