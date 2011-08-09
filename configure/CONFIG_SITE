@@ -38,8 +38,11 @@ ifeq (Linux, $(OS_CLASS))
   STATIC_BUILD=YES
   SHARED_LIBRARIES=NO
 endif
+# Building statically on Darwin is not possible (well, it's possible but difficult and discouraged
+# by Apple), but we can build depending only on system libraries that are part of Mac OS X
 #ifeq (Darwin, $(OS_CLASS))
 #  STATIC_BUILD=NO
+#  SHARED_LIBRARIES=NO
 #endif
 #ifeq (solaris, $(OS_CLASS))
 #  STATIC_BUILD=YES
