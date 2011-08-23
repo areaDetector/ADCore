@@ -34,6 +34,7 @@ typedef enum {
 #define NDPluginStatsSigmaValueString         "SIGMA_VALUE"         /* (asynFloat64,      r/o) Sigma of all elements */
 #define NDPluginStatsTotalString              "TOTAL"               /* (asynFloat64,      r/o) Sum of all elements */
 #define NDPluginStatsNetString                "NET"                 /* (asynFloat64,      r/o) Sum of all elements minus background */
+#define NDPluginStatsMaxString                "MAX"                 /* (asynFloat64,      r/o) Sum of all max elements */
 
 /* Centroid */
 #define NDPluginStatsComputeCentroidString    "COMPUTE_CENTROID"    /* (asynInt32,        r/w) Compute centroid? */
@@ -72,6 +73,7 @@ typedef enum {
 #define NDPluginStatsCallbackPeriodString     "CALLBACK_PERIOD"     /* (asynFloat64,      r/w) Callback period */
 #define NDPluginStatsTotalArrayString         "TOTAL_ARRAY"         /* (asynInt32Array,   r/o) Total counts array */
 #define NDPluginStatsNetArrayString           "NET_ARRAY"           /* (asynInt32Array,   r/o) Net counts array */
+#define NDPluginStatsMaxArrayString           "MAX_ARRAY"           /* (asynInt32Array,   r/o) Max counts array */
 
 /** Does image statistics.  These include
   * Min, max, mean, sigma
@@ -108,6 +110,7 @@ protected:
     int NDPluginStatsSigmaValue;
     int NDPluginStatsTotal;
     int NDPluginStatsNet;
+    int NDPluginStatsMax;
 
     /* Centroid */
     int NDPluginStatsComputeCentroid;
@@ -145,8 +148,9 @@ protected:
     int NDPluginStatsCallbackPeriod;
     int NDPluginStatsTotalArray;
     int NDPluginStatsNetArray;
+    int NDPluginStatsMaxArray;
 
-    #define LAST_NDPLUGIN_STATS_PARAM NDPluginStatsNetArray
+    #define LAST_NDPLUGIN_STATS_PARAM NDPluginStatsMaxArray
                                 
 private:
     double  centroidThreshold;

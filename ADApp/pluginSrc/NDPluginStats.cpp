@@ -375,7 +375,7 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     double bgdCounts, avgBgd;
     NDArray *pBgdArray=NULL;
     int computeStatistics, computeCentroid, computeProfiles, computeHistogram;
-    int intTotal, intNet;
+    int intTotal, intNet, intMax;
     int sizeX=0, sizeY=0;
     int i;
     NDArrayInfo arrayInfo;
@@ -473,8 +473,10 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
             driverName, functionName, pStats->min, pStats->max, pStats->mean, pStats->total, pStats->net);
         intTotal = (int)pStats->total;
         intNet   = (int)pStats->net;
+	intMax   = (int)pStats->max;
         doCallbacksInt32Array(&intTotal, 1, NDPluginStatsTotalArray, 0);
         doCallbacksInt32Array(&intNet,   1, NDPluginStatsNetArray, 0);
+	doCallbacksInt32Array(&intMax,   1, NDPluginStatsMaxArray, 0);
     }
 
     if (computeCentroid) {
@@ -717,6 +719,7 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
     createParam(NDPluginStatsSigmaValueString,        asynParamFloat64,    &NDPluginStatsSigmaValue);
     createParam(NDPluginStatsTotalArrayString,        asynParamInt32Array, &NDPluginStatsTotalArray);
     createParam(NDPluginStatsNetArrayString,          asynParamInt32Array, &NDPluginStatsNetArray);
+    createParam(NDPluginStatsMaxArrayString,          asynParamInt32Array, &NDPluginStatsMaxArray);
 
     /* Centroid */
     createParam(NDPluginStatsComputeCentroidString,   asynParamInt32,      &NDPluginStatsComputeCentroid);
@@ -754,6 +757,7 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
     createParam(NDPluginStatsCallbackPeriodString,    asynParamFloat64, &NDPluginStatsCallbackPeriod);
     createParam(NDPluginStatsTotalString,             asynParamFloat64, &NDPluginStatsTotal);
     createParam(NDPluginStatsNetString,               asynParamFloat64, &NDPluginStatsNet);
+    createParam(NDPluginStatsMaxString,               asynParamFloat64, &NDPluginStatsMax);
     
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginStats");
