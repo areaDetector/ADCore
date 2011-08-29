@@ -10,7 +10,7 @@
     <h1>
       Firewire IIDC (DCAM) Windows driver</h1>
     <h2>
-      August 9, 2011</h2>
+      August 29, 2011</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -1099,6 +1099,33 @@
         <td>
           $(P)$(R)$(FEATURE)_ABS_MAX</td>
         <td>
+          ai
+        </td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Readout time parameters. In firewireDCAM.template.</b></td>
+      </tr>
+      <tr>
+        <td>
+          FDC_<br />
+          READOUT_TIME</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          The readout time in seconds. This value is added to the AcquireTime to determine
+          how long to wait before a frame timeout is reported. It should be set to a value
+          slightly larger than the actual readout time of the camera in the current mode.</td>
+        <td>
+          FDC_READOUT_TIME</td>
+        <td>
+          $(P)$(R)READOUT_TIME<br />
+          $(P)$(R)READOUT_TIME_RBV</td>
+        <td>
+          ao
+          <br />
           ai
         </td>
       </tr>
