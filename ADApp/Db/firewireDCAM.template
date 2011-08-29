@@ -234,3 +234,19 @@ record(longin, "$(P)$(R)DROPPED_FRAMES_RBV") {
   field(INP,  "@asyn($(PORT) 0)FDC_DROPPED_FRAMES")
   field(SCAN, "I/O Intr")
 }
+
+# Readout time
+record(ao, "$(P)$(R)READOUT_TIME") {
+  field(PINI, "YES")
+  field(DTYP, "asynFloat64")
+  field(OUT,  "@asyn($(PORT) 0)FDC_READOUT_TIME")
+  field(PREC, "1")
+  field(VAL, "1.0")
+}
+
+record(ai, "$(P)$(R)READOUT_TIME_RBV") {
+  field(DTYP, "asynFloat64")
+  field(INP,  "@asyn($(PORT) 0)FDC_READOUT_TIME")
+  field(PREC, "1")
+  field(SCAN, "I/O Intr")
+}
