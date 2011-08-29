@@ -9,6 +9,17 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
+    Release 1-8 (XXX-YYY-2011)</h2>
+  <ul>
+    <li>Drivers
+      <ul>
+        <li>Firewire Windows driver. Added READOUT_TIME parameter. The sum of the AcquireTime
+          plus the READOUT_TIME controls how long to wait before a frame timeout occurs. Previously
+          a hardcoded value of 1.0 second was used, which was too short for some slow cameras.</li>
+      </ul>
+    </li>
+  </ul>
+  <h2 style="text-align: center">
     Release 1-7 (09-August-2011)</h2>
   <ul>
     <li>General
@@ -163,8 +174,8 @@
           for initially doing this.</li>
         <li>NDFileNexus: Added Schematron file (<tt>iocBoot/template.sch</tt>) to allow syntax
           validation of a NeXus template XML file.</li>
-        <li>NDFileNexus: Now recognizes all current NeXus base class names 
-          (was missing some newer base classes such as <tt>NXcollection</tt>).</li>
+        <li>NDFileNexus: Now recognizes all current NeXus base class names (was missing some
+          newer base classes such as <tt>NXcollection</tt>).</li>
       </ul>
     </li>
     <li>Viewers
