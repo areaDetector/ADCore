@@ -9,13 +9,38 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
-    Release 1-8 (XXX-YYY-2011)</h2>
+    Release 1-7-1 (2-September-2011)</h2>
   <ul>
     <li>Drivers
       <ul>
         <li>Firewire Windows driver. Added READOUT_TIME parameter. The sum of the AcquireTime
           plus the READOUT_TIME controls how long to wait before a frame timeout occurs. Previously
           a hardcoded value of 1.0 second was used, which was too short for some slow cameras.</li>
+        <li>Pilatus driver. Fixed 2 minor bugs. It was reporting a read timeout error from
+          camserver each time an image was acquired. Fixed a problem if the user aborted an
+          acquisition twice in a row.</li>
+      </ul>
+    </li>
+    <li>Support libraries
+      <br />
+      The static Linux support libraries provided in R1-7 were built on a Fedora Core
+      9 system (gcc 4.3.0) for 32-bit linux-x86, and on a Fedora Core 14 system (gcc 4.5.1)
+      for 64-bit linux-x86_64. Problems arose when trying to build with these libraries
+      or to run the pre-built binaries on older Linux systems, e.g. those with gcc 4.1.2.
+      These were fixed as follows:
+      <ul>
+        <li>The Prosilica libPvAPI.a file had been taken from the AVT gcc 4.3 directory. This
+          was replaced with the one from the gcc 4.1 directory because the 4.3 version requires
+          a newer version of GLIBCXX.</li>
+        <li>The HDF5 library had been built with the default -std=c99. This caused the function
+          isoc99_sscanf() to be called instead of sscanf(), and the former function does not
+          exist on older Linux systems. The HDF library was rebuilt with -std=gnu89 on 32-bit
+          and 64-bit Linux.</li>
+        <li>libGraphicsMagic++.a on 64-bit was invoking std::_List_mode_base functions that
+          do not exist in earlier versions of GLIBCXX. GraphicsMagick was rebuilt on an older
+          Linux system (gcc 4.2.1) for 64-bit Linux.</li>
+        <li>All of the prebuilt 64-bit binaries were recompiled and relinked on an older Linux
+          system (gcc 4.2.1).</li>
       </ul>
     </li>
   </ul>
