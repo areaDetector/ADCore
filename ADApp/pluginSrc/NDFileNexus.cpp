@@ -615,7 +615,7 @@ void NDFileNexus::findConstText(TiXmlNode *curNode, char *outtext) {
     sprintf(outtext, "%s", "");
     return;
   }
-  while (childNode->Type() != 4) {
+  while ((childNode) && (childNode->Type() != 4)) {
     childNode = curNode->IterateChildren(childNode);
   }
   if(childNode != NULL) {
