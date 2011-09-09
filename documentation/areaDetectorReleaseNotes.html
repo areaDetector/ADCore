@@ -9,7 +9,7 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
-    Release 1-7-1 (2-September-2011)</h2>
+    Release 1-7-1 (XX-September-2011)</h2>
   <ul>
     <li>Drivers
       <ul>
@@ -19,6 +19,12 @@
         <li>Pilatus driver. Fixed 2 minor bugs. It was reporting a read timeout error from
           camserver each time an image was acquired. Fixed a problem if the user aborted an
           acquisition twice in a row.</li>
+      </ul>
+    </li>
+    <li>Plugins
+      <ul>
+        <li>NDFileNexus. Fixed a bug which caused the plugin to crash with the example iocSimDetector/NexusTemplate.xml
+          template file. It could use a null object pointer in some circumstances.</li>
       </ul>
     </li>
     <li>Support libraries
