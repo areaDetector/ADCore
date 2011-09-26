@@ -107,54 +107,6 @@ composite {
 				clr=14
 			}
 		}
-		text {
-			object {
-				x=64
-				y=30
-				width=40
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="File"
-		}
-		text {
-			object {
-				x=204
-				y=30
-				width=30
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="ROI"
-		}
-		text {
-			object {
-				x=4
-				y=55
-				width=100
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Statistics"
-		}
-		text {
-			object {
-				x=184
-				y=55
-				width=50
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Other"
-		}
 		rectangle {
 			object {
 				x=0
@@ -191,10 +143,58 @@ composite {
 			textix="Plugins"
 			align="horiz. centered"
 		}
+		text {
+			object {
+				x=90
+				y=29
+				width=40
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="File"
+		}
+		text {
+			object {
+				x=230
+				y=29
+				width=30
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="ROI"
+		}
+		text {
+			object {
+				x=80
+				y=55
+				width=50
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Stats"
+		}
+		text {
+			object {
+				x=210
+				y=55
+				width=50
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Other"
+		}
 		"related display" {
 			object {
-				x=109
-				y=30
+				x=135
+				y=29
 				width=64
 				height=20
 			}
@@ -233,7 +233,7 @@ composite {
 		}
 		"related display" {
 			object {
-				x=109
+				x=135
 				y=55
 				width=64
 				height=20
@@ -273,8 +273,8 @@ composite {
 		}
 		"related display" {
 			object {
-				x=239
-				y=30
+				x=265
+				y=29
 				width=64
 				height=20
 			}
@@ -308,7 +308,7 @@ composite {
 		}
 		"related display" {
 			object {
-				x=239
+				x=265
 				y=55
 				width=64
 				height=20
@@ -355,6 +355,22 @@ composite {
 			}
 			clr=14
 			bclr=51
+		}
+		"related display" {
+			object {
+				x=10
+				y=29
+				width=64
+				height=20
+			}
+			display[0] {
+				label="Common plugins"
+				name="commonPlugins.adl"
+				args="P=$(P)"
+			}
+			clr=14
+			bclr=51
+			label="-All"
 		}
 	}
 }
