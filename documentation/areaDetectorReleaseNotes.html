@@ -25,11 +25,22 @@
       <ul>
         <li>NDFileNexus. Fixed a bug which caused the plugin to crash with the example iocSimDetector/NexusTemplate.xml
           template file. It could use a null object pointer in some circumstances.</li>
-        <li>NDPluginProcess. Set default values for the recursive filter coefficients in the template file for recursive filter with
-          scale factors of 1.0.  The previous defaults were 0.0 for all coefficients, which produced all zero output arrays.
-          Selecting a predefined filter did not fix this problem, because that does not set the values of OScale and FScale.
-          Fixed errors in the template file for the readback values of the filter coefficients.  They had DTYP=asynInt32, 
-          corrected to asynFloat64.</li>
+        <li>NDPluginProcess
+          <ul>
+            <li>Set default values for the recursive filter coefficients in the template file
+              for recursive filter with scale factors of 1.0. The previous defaults were 0.0 for
+              all coefficients, which produced all zero output arrays. Selecting a predefined
+              filter did not fix this problem, because that does not set the values of OScale
+              and FScale.</li>
+            <li>Fixed errors in the template file for the readback values of the filter coefficients.
+              They had DTYP=asynInt32, corrected to asynFloat64.</li>
+            <li>Improved the logic of the SaveBackground and SaveFlatField parameters. Previously
+              they saved the <i>next</i> frame received after the Save request as the background
+              or flat field. This behavior was not what was documented, expected or desired. The
+              documented behaviour is to save the <i>current frame</i> when the SaveBackground
+              or SaveFlatField is done, and the driver has been changed to do this.</li>
+          </ul>
+        </li>
       </ul>
     </li>
     <li>Support libraries
