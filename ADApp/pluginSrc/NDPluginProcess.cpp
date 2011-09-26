@@ -20,7 +20,7 @@
 #include "NDPluginProcess.h"
 #include <epicsExport.h>
 
-//static const char *driverName="NDPluginProcess";
+static const char *driverName="NDPluginProcess";
 
 
 /** Callback function that is called by the NDArray driver with new NDArray data.
@@ -74,28 +74,6 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     getIntegerParam(NDPluginProcessEnableFilter,        &enableFilter);
     getIntegerParam(NDPluginProcessResetFilter,         &resetFilter);
 
-    if (saveBackground) {
-        setIntegerParam(NDPluginProcessSaveBackground, 0);
-        if (this->pBackground) this->pBackground->release();
-        this->pBackground = NULL;
-        if (this->pArrays[0]) {
-            /* Make a copy of the current array, converted to double type */
-            this->pNDArrayPool->convert(this->pArrays[0], &this->pBackground, NDFloat64);
-            this->pBackground->getInfo(&arrayInfo);
-            this->nBackgroundElements = arrayInfo.nElements;
-        }
-    }
-    if (saveFlatField) {
-        setIntegerParam(NDPluginProcessSaveFlatField, 0);
-        if (this->pFlatField) this->pFlatField->release();
-        this->pFlatField = NULL;
-        if (this->pArrays[0]) {
-            /* Make a copy of the current array, converted to double type */
-            this->pNDArrayPool->convert(this->pArrays[0], &this->pFlatField, NDFloat64);
-            this->pFlatField->getInfo(&arrayInfo);
-            this->nFlatFieldElements = arrayInfo.nElements;
-        }
-    }
     if (enableOffsetScale) {
         getDoubleParam (NDPluginProcessScale,           &scale);
         getDoubleParam (NDPluginProcessOffset,          &offset);
@@ -241,6 +219,69 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     callParamCallbacks();
 }
 
+/** Called when asyn clients call pasynInt32->write().
+  * This function performs actions for some parameters.
+  * For all parameters it sets the value in the parameter library and calls any registered callbacks..
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Value to write. */
+asynStatus NDPluginProcess::writeInt32(asynUser *pasynUser, epicsInt32 value)
+{
+    int function = pasynUser->reason;
+    int addr=0;
+    NDArrayInfo arrayInfo;
+    asynStatus status = asynSuccess;
+    static const char *functionName = "writeInt32";
+
+    status = getAddress(pasynUser, &addr); if (status != asynSuccess) return(status);
+
+    /* Set the parameter in the parameter library. */
+    status = (asynStatus) setIntegerParam(addr, function, value);
+
+    if (function == NDPluginProcessSaveBackground) {
+        setIntegerParam(NDPluginProcessSaveBackground, 0);
+        if (this->pBackground) this->pBackground->release();
+        this->pBackground = NULL;
+        setIntegerParam(NDPluginProcessValidBackground, 0);
+        if (this->pArrays[0]) {
+            /* Make a copy of the current array, converted to double type */
+            this->pNDArrayPool->convert(this->pArrays[0], &this->pBackground, NDFloat64);
+            this->pBackground->getInfo(&arrayInfo);
+            this->nBackgroundElements = arrayInfo.nElements;
+            setIntegerParam(NDPluginProcessValidBackground, 1);
+        }
+    } else if (function == NDPluginProcessSaveFlatField) {
+        setIntegerParam(NDPluginProcessSaveFlatField, 0);
+        if (this->pFlatField) this->pFlatField->release();
+        this->pFlatField = NULL;
+        setIntegerParam(NDPluginProcessValidFlatField, 0);
+        if (this->pArrays[0]) {
+            /* Make a copy of the current array, converted to double type */
+            this->pNDArrayPool->convert(this->pArrays[0], &this->pFlatField, NDFloat64);
+            this->pFlatField->getInfo(&arrayInfo);
+            this->nFlatFieldElements = arrayInfo.nElements;
+            setIntegerParam(NDPluginProcessValidFlatField, 1);
+        }
+    } else {
+        /* If this parameter belongs to a base class call its method */
+        if (function < FIRST_NDPLUGIN_PROCESS_PARAM) 
+            status = NDPluginDriver::writeInt32(pasynUser, value);
+    }
+    
+    /* Do callbacks so higher layers see any changes */
+    status = (asynStatus) callParamCallbacks(addr);
+    
+    if (status) 
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
+                  "%s:%s: status=%d, function=%d, value=%d", 
+                  driverName, functionName, status, function, value);
+    else        
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
+              "%s:%s: function=%d, value=%d\n", 
+              driverName, functionName, function, value);
+    return status;
+}
+
+
 
 /** Constructor for NDPluginProcess; most parameters are simply passed to NDPluginDriver::NDPluginDriver.
   * After calling the base class constructor this method sets reasonable default values for all of the
@@ -323,7 +364,9 @@ NDPluginProcess::NDPluginProcess(const char *portName, int queueSize, int blocki
 
     this->pBackground = NULL;
     this->pFlatField  = NULL;
-    this->pFilter     = NULL;    
+    this->pFilter     = NULL;
+    setIntegerParam(NDPluginProcessValidBackground, 0);
+    setIntegerParam(NDPluginProcessValidFlatField, 0);
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginProcess");
