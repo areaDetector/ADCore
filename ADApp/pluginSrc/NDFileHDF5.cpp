@@ -4,7 +4,10 @@
  * Ulrik Kofoed Pedersen
  * March 20. 2011
  */
- 
+
+#define H5Gcreate_vers 2
+#define H5Dopen_vers 2
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
