@@ -277,7 +277,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
     nodeName = curNode->ToElement()->Attribute("name");
     nodeSource = curNode->ToElement()->Attribute("source");
     if (nodeType && strcmp(nodeType, "ND_ATTR") == 0 ) {
-      pAttr = pArray->pAttributeList->find(nodeSource);
+      pAttr = this->pFileAttributes->find(nodeSource);
       if (pAttr != NULL ){
         pAttr->getValueInfo(&attrDataType, &attrDataSize);
         this->getAttrTypeNSize(pAttr, &dataOutType, &wordSize);
@@ -327,7 +327,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
   else {
     nodeSource = curNode->ToElement()->Attribute("source");
     if (nodeType && strcmp(nodeType, "ND_ATTR") == 0 ) {
-      pAttr = pArray->pAttributeList->find(nodeSource);
+      pAttr = this->pFileAttributes->find(nodeSource);
       if ( pAttr != NULL) {
         pAttr->getValueInfo(&attrDataType, &attrDataSize);
         this->getAttrTypeNSize(pAttr, &dataOutType, &wordSize);
