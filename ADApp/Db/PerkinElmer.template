@@ -45,10 +45,16 @@ record(mbbi, "$(P)$(R)PEStatus_RBV")
    field(TWSV, "MAJOR")
 }
 
-record(longout, "$(P)$(R)PEAcquireOffset")
+record(busy, "$(P)$(R)PEAcquireOffset")
 {
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_ACQUIRE_OFFSET")
+   field(ZNAM, "Done")
+   field(ONAM, "Acquire")
+   field(ZNAM, "Done")
+   field(ZSV,  "NO_ALARM")
+   field(ONAM, "Acquire")
+   field(OSV,  "MINOR")
 }
 
 record(longout, "$(P)$(R)PENumOffsetFrames")
@@ -58,6 +64,13 @@ record(longout, "$(P)$(R)PENumOffsetFrames")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_NUM_OFFSET_FRAMES")
    field(LOPR, "1")
    field(HOPR, "500")
+}
+
+record(longin, "$(P)$(R)PECurrentOffsetFrame")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_CURRENT_OFFSET_FRAME")
+   field(SCAN, "I/O Intr")
 }
 
 record(mbbi, "$(P)$(R)PEOffsetAvailable")
@@ -73,21 +86,23 @@ record(mbbi, "$(P)$(R)PEOffsetAvailable")
    field(ONSV, "NO_ALARM")
 }
 
-record(mbbo, "$(P)$(R)PEUseOffset")
+record(bo, "$(P)$(R)PEUseOffset")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_USE_OFFSET")
-   field(ZRST, "Off")
-   field(ZRVL, "0")
-   field(ONST, "On")
-   field(ONVL, "1")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
 }
 
-record(longout, "$(P)$(R)PEAcquireGain")
+record(busy, "$(P)$(R)PEAcquireGain")
 {
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_ACQUIRE_GAIN")
+   field(ZNAM, "Done")
+   field(ZSV,  "NO_ALARM")
+   field(ONAM, "Acquire")
+   field(OSV,  "MINOR")
 }
 
 record(mbbi, "$(P)$(R)PEGainAvailable")
@@ -125,15 +140,21 @@ record(longout, "$(P)$(R)PENumGainFrames")
    field(HOPR, "500")
 }
 
-record(mbbo, "$(P)$(R)PEUseGain")
+record(longin, "$(P)$(R)PECurrentGainFrame")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_CURRENT_GAIN_FRAME")
+   field(SCAN, "I/O Intr")
+}
+
+
+record(bo, "$(P)$(R)PEUseGain")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_USE_GAIN")
-   field(ZRST, "Off")
-   field(ZRVL, "0")
-   field(ONST, "On")
-   field(ONVL, "1")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
 }
 
 
