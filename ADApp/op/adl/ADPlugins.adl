@@ -1,7 +1,7 @@
 
 file {
 	name="/home/epics/devel/areaDetector/ADApp/op/adl/ADPlugins.adl"
-	version=030102
+	version=030105
 }
 display {
 	object {
@@ -227,6 +227,11 @@ composite {
 				label="HDF5 file #1"
 				name="NDFileHDF5.adl"
 				args="P=$(P), R=HDF1:"
+			}
+			display[6] {
+				label="Null file #1"
+				name="NDFileNull.adl"
+				args="P=$(P), R=Null1:"
 			}
 			clr=14
 			bclr=51
