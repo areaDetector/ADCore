@@ -29,6 +29,7 @@ DBD += NDFileNetCDF.dbd
 DBD += NDFileNexus.dbd
 DBD += NDFileHDF5.dbd
 DBD += NDFileTIFF.dbd
+DBD += NDFileNull.dbd
 DBD += NDPluginColorConvert.dbd
 DBD += NDPluginOverlay.dbd
 DBD += NDPluginProcess.dbd
@@ -51,7 +52,7 @@ LIB_SRCS += NDPluginROI.cpp
 LIB_SRCS += NDPluginTransform.cpp
 LIB_SRCS += NDPluginOverlay.cpp
 LIB_SRCS += NDPluginColorConvert.cpp
-LIB_SRCS_DEFAULT += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNexus.cpp NDFileHDF5.cpp NDFileMagick.cpp
+LIB_SRCS_DEFAULT += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNexus.cpp NDFileHDF5.cpp NDFileMagick.cpp NDFileNull.cpp
 LIB_SRCS_vxWorks += NDFileDummy.cpp
 
 include $(AREA_DETECTOR)/ADApp/commonDriverMakefile
