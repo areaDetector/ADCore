@@ -2,6 +2,40 @@
 # Brian Tieman
 # July 23, 2008
 
+######################
+# Override ADBase to extend Trigger Mode
+######################
+record(mbbo, "$(P)$(R)TriggerMode")
+{
+   field(TWST, "Free Running")
+   field(TWVL, "2")
+   field(THST, "Soft Trigger")
+   field(THVL, "3")
+ }
+
+record(mbbi, "$(P)$(R)TriggerMode_RBV")
+{
+   field(TWST, "Free Running")
+   field(TWVL, "2")
+   field(THST, "Soft Trigger")
+   field(THVL, "3")
+}
+
+######################
+# Override ADBase to extend Image Mode
+######################
+record(mbbo, "$(P)$(R)ImageMode")
+{
+   field(THST,  "Average")
+   field(THVL,  "3")
+}
+
+record(mbbi, "$(P)$(R)ImageMode_RBV")
+{
+   field(THST, "Average")
+   field(THVL, "3")
+}
+
 record(longin, "$(P)$(R)PESystemID")
 {
    field(DTYP, "asynInt32")
@@ -391,24 +425,3 @@ record(longin, "$(P)$(R)PENumPulsesToSkip_RBV")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_NUM_PULSES_TO_SKIP")
    field(SCAN, "I/O Intr")
 }
-
-
-######################
-# Override ADBase to extend Trigger Mode
-######################
-record(mbbo, "$(P)$(R)TriggerMode")
-{
-   field(TWST, "Free Running")
-   field(TWVL, "2")
-   field(THST, "Soft Trigger")
-   field(THVL, "3")
- }
-
-record(mbbi, "$(P)$(R)TriggerMode_RBV")
-{
-   field(TWST, "Free Running")
-   field(TWVL, "2")
-   field(THST, "Soft Trigger")
-   field(THVL, "3")
-}
-
