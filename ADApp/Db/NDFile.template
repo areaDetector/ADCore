@@ -309,4 +309,24 @@ record(bi, "$(P)$(R)DeleteDriverFile_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(bi, "$(P)$(R)WriteStatus")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WRITE_STATUS")
+    field(ZNAM, "Write OK")
+    field(ZSV,  "NO_ALARM")
+    field(ONAM, "Write error")
+    field(OSV,  "MAJOR")
+    field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)WriteMessage")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WRITE_MESSAGE")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
 
