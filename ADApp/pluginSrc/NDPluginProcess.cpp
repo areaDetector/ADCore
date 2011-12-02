@@ -47,7 +47,8 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     double  offset, scale;
     double  lowClip=0, highClip=0;
     int     enableLowClip, enableHighClip;
-    int     resetFilter, enableFilter, numFilter;
+    int     resetFilter, autoResetFilter, filterCallbacks, doCallbacks=1;
+    int     enableFilter, numFilter;
     int     dataType;
     int     anyProcess;
     double  oOffset, fOffset, rOffset, oScale, fScale;
@@ -73,6 +74,8 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     getIntegerParam(NDPluginProcessEnableHighClip,      &enableHighClip);
     getIntegerParam(NDPluginProcessEnableFilter,        &enableFilter);
     getIntegerParam(NDPluginProcessResetFilter,         &resetFilter);
+    getIntegerParam(NDPluginProcessAutoResetFilter,     &autoResetFilter);
+    getIntegerParam(NDPluginProcessFilterCallbacks,     &filterCallbacks);
 
     if (enableOffsetScale) {
         getDoubleParam (NDPluginProcessScale,           &scale);
@@ -171,6 +174,8 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
             this->pNDArrayPool->convert(pScratch, &this->pFilter, NDFloat64);
             resetFilter = 1;
         }
+        if ((this->numFiltered == numFilter) && autoResetFilter)
+          resetFilter = 1;
         if (resetFilter) {
             filter = (double *)this->pFilter->pData;
             for (i=0; i<nElements; i++) {
@@ -199,23 +204,27 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
                 filter[i] = newFilter;
             }
         }
+        if ((this->numFiltered != numFilter) && filterCallbacks)
+          doCallbacks = 0;
     }
     setIntegerParam(NDPluginProcessNumFiltered, this->numFiltered);
     
-    /* Convert the array to the desired output data type */
-    if (this->pArrays[0]) this->pArrays[0]->release();
-    this->pNDArrayPool->convert(pScratch, &this->pArrays[0], (NDDataType_t)dataType);
-    pScratch->release();
+    if (doCallbacks) {
+      /* Convert the array to the desired output data type */
+      if (this->pArrays[0]) this->pArrays[0]->release();
+      this->pNDArrayPool->convert(pScratch, &this->pArrays[0], (NDDataType_t)dataType);
+      pScratch->release();
 
-    done:
-    /* We must enter the loop and exit with the mutex locked */
-    this->lock();
-    /* Get the attributes for this driver */
-    this->getAttributes(this->pArrays[0]->pAttributeList);
-    /* Call any clients who have registered for NDArray callbacks */
-    this->unlock();
-    doCallbacksGenericPointer(this->pArrays[0], NDArrayData, 0);
-    this->lock();
+      done:
+      /* We must enter the loop and exit with the mutex locked */
+      this->lock();
+      /* Get the attributes for this driver */
+      this->getAttributes(this->pArrays[0]->pAttributeList);
+      /* Call any clients who have registered for NDArray callbacks */
+      this->unlock();
+      doCallbacksGenericPointer(this->pArrays[0], NDArrayData, 0);
+      this->lock();
+    }
     callParamCallbacks();
 }
 
@@ -341,6 +350,8 @@ NDPluginProcess::NDPluginProcess(const char *portName, int queueSize, int blocki
     /* Frame filtering */
     createParam(NDPluginProcessEnableFilterString,      asynParamInt32,     &NDPluginProcessEnableFilter);
     createParam(NDPluginProcessResetFilterString,       asynParamInt32,     &NDPluginProcessResetFilter);
+    createParam(NDPluginProcessAutoResetFilterString,   asynParamInt32,     &NDPluginProcessAutoResetFilter);
+    createParam(NDPluginProcessFilterCallbacksString,   asynParamInt32,     &NDPluginProcessFilterCallbacks);
     createParam(NDPluginProcessNumFilterString,         asynParamInt32,     &NDPluginProcessNumFilter);
     createParam(NDPluginProcessNumFilteredString,       asynParamInt32,     &NDPluginProcessNumFiltered);   
     createParam(NDPluginProcessOOffsetString,           asynParamFloat64,   &NDPluginProcessOOffset);   
