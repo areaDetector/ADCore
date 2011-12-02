@@ -31,6 +31,8 @@
 /* Recursive filter */
 #define NDPluginProcessEnableFilterString       "ENABLE_FILTER"     /* (asynInt32,   r/w) Enable frame filtering? */
 #define NDPluginProcessResetFilterString        "RESET_FILTER"      /* (asynInt32,   r/w) Reset frame filtering when 1 */
+#define NDPluginProcessAutoResetFilterString    "AUTO_RESET_FILTER" /* (asynInt32,   r/w) Auto-reset filter on N */
+#define NDPluginProcessFilterCallbacksString    "FILTER_CALLBACKS"  /* (asynInt32,   r/w) Only do callbacks on N */
 #define NDPluginProcessNumFilterString          "NUM_FILTER"        /* (asynInt32,   r/w) Number of frames to filter */
 #define NDPluginProcessNumFilteredString        "NUM_FILTERED"      /* (asynInt32,   r/o) Number of frames filtered */
 #define NDPluginProcessOOffsetString            "FILTER_OOFFSET"    /* (asynFloat64, r/w) Output offset */
@@ -96,6 +98,8 @@ protected:
     /* Frame filtering */
     int NDPluginProcessEnableFilter;
     int NDPluginProcessResetFilter;
+    int NDPluginProcessAutoResetFilter;
+    int NDPluginProcessFilterCallbacks;
     int NDPluginProcessNumFilter;
     int NDPluginProcessNumFiltered;
     int NDPluginProcessOOffset;
