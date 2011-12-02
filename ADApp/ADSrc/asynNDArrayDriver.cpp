@@ -446,38 +446,40 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     this->pArrays = (NDArray **)calloc(maxAddr, sizeof(NDArray *));
     this->pAttributeList = new NDAttributeList();
     
-    createParam(NDPortNameSelfString,   asynParamOctet, &NDPortNameSelf);
-    createParam(NDArraySizeXString,     asynParamInt32, &NDArraySizeX);
-    createParam(NDArraySizeYString,     asynParamInt32, &NDArraySizeY);
-    createParam(NDArraySizeZString,     asynParamInt32, &NDArraySizeZ);
-    createParam(NDArraySizeString,      asynParamInt32, &NDArraySize);
-    createParam(NDNDimensionsString,    asynParamInt32, &NDNDimensions);
-    createParam(NDDimensionsString,     asynParamInt32, &NDDimensions);
-    createParam(NDDataTypeString,       asynParamInt32, &NDDataType);
-    createParam(NDColorModeString,      asynParamInt32, &NDColorMode);
-    createParam(NDUniqueIdString,       asynParamInt32, &NDUniqueId);
-    createParam(NDTimeStampString,      asynParamFloat64, &NDTimeStamp);
-    createParam(NDBayerPatternString,   asynParamInt32, &NDBayerPattern);
-    createParam(NDArrayCounterString,   asynParamInt32, &NDArrayCounter);
-    createParam(NDFilePathString,       asynParamOctet, &NDFilePath);
-    createParam(NDFilePathExistsString, asynParamInt32, &NDFilePathExists);
-    createParam(NDFileNameString,       asynParamOctet, &NDFileName);
-    createParam(NDFileNumberString,     asynParamInt32, &NDFileNumber);
-    createParam(NDFileTemplateString,   asynParamOctet, &NDFileTemplate);
-    createParam(NDAutoIncrementString,  asynParamInt32, &NDAutoIncrement);
-    createParam(NDFullFileNameString,   asynParamOctet, &NDFullFileName);
-    createParam(NDFileFormatString,     asynParamInt32, &NDFileFormat);
-    createParam(NDAutoSaveString,       asynParamInt32, &NDAutoSave);
-    createParam(NDWriteFileString,      asynParamInt32, &NDWriteFile);
-    createParam(NDReadFileString,       asynParamInt32, &NDReadFile);
-    createParam(NDFileWriteModeString,  asynParamInt32, &NDFileWriteMode);
-    createParam(NDFileNumCaptureString, asynParamInt32, &NDFileNumCapture);
-    createParam(NDFileNumCapturedString,asynParamInt32, &NDFileNumCaptured);
-    createParam(NDFileCaptureString,    asynParamInt32, &NDFileCapture);   
-    createParam(NDFileDeleteDriverFileString, asynParamInt32, &NDFileDeleteDriverFile);
-    createParam(NDAttributesFileString, asynParamOctet, &NDAttributesFile);
-    createParam(NDArrayDataString,      asynParamGenericPointer, &NDArrayData);
-    createParam(NDArrayCallbacksString, asynParamInt32, &NDArrayCallbacks);
+    createParam(NDPortNameSelfString,         asynParamOctet,           &NDPortNameSelf);
+    createParam(NDArraySizeXString,           asynParamInt32,           &NDArraySizeX);
+    createParam(NDArraySizeYString,           asynParamInt32,           &NDArraySizeY);
+    createParam(NDArraySizeZString,           asynParamInt32,           &NDArraySizeZ);
+    createParam(NDArraySizeString,            asynParamInt32,           &NDArraySize);
+    createParam(NDNDimensionsString,          asynParamInt32,           &NDNDimensions);
+    createParam(NDDimensionsString,           asynParamInt32,           &NDDimensions);
+    createParam(NDDataTypeString,             asynParamInt32,           &NDDataType);
+    createParam(NDColorModeString,            asynParamInt32,           &NDColorMode);
+    createParam(NDUniqueIdString,             asynParamInt32,           &NDUniqueId);
+    createParam(NDTimeStampString,            asynParamFloat64,         &NDTimeStamp);
+    createParam(NDBayerPatternString,         asynParamInt32,           &NDBayerPattern);
+    createParam(NDArrayCounterString,         asynParamInt32,           &NDArrayCounter);
+    createParam(NDFilePathString,             asynParamOctet,           &NDFilePath);
+    createParam(NDFilePathExistsString,       asynParamInt32,           &NDFilePathExists);
+    createParam(NDFileNameString,             asynParamOctet,           &NDFileName);
+    createParam(NDFileNumberString,           asynParamInt32,           &NDFileNumber);
+    createParam(NDFileTemplateString,         asynParamOctet,           &NDFileTemplate);
+    createParam(NDAutoIncrementString,        asynParamInt32,           &NDAutoIncrement);
+    createParam(NDFullFileNameString,         asynParamOctet,           &NDFullFileName);
+    createParam(NDFileFormatString,           asynParamInt32,           &NDFileFormat);
+    createParam(NDAutoSaveString,             asynParamInt32,           &NDAutoSave);
+    createParam(NDWriteFileString,            asynParamInt32,           &NDWriteFile);
+    createParam(NDReadFileString,             asynParamInt32,           &NDReadFile);
+    createParam(NDFileWriteModeString,        asynParamInt32,           &NDFileWriteMode);
+    createParam(NDFileWriteStatusString,      asynParamInt32,           &NDFileWriteStatus);
+    createParam(NDFileWriteMessageString,     asynParamOctet,           &NDFileWriteMessage);
+    createParam(NDFileNumCaptureString,       asynParamInt32,           &NDFileNumCapture);
+    createParam(NDFileNumCapturedString,      asynParamInt32,           &NDFileNumCaptured);
+    createParam(NDFileCaptureString,          asynParamInt32,           &NDFileCapture);   
+    createParam(NDFileDeleteDriverFileString, asynParamInt32,           &NDFileDeleteDriverFile);
+    createParam(NDAttributesFileString,       asynParamOctet,           &NDAttributesFile);
+    createParam(NDArrayDataString,            asynParamGenericPointer,  &NDArrayData);
+    createParam(NDArrayCallbacksString,       asynParamInt32,           &NDArrayCallbacks);
 
     /* Here we set the values of read-only parameters and of read/write parameters that cannot
      * or should not get their values from the database.  Note that values set here will override
@@ -501,6 +503,8 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     setIntegerParam(NDWriteFile, 0);
     setIntegerParam(NDReadFile, 0);
     setIntegerParam(NDFileCapture, 0);
+    setIntegerParam(NDFileWriteStatus, 0);
+    setStringParam (NDFileWriteMessage, "");
     /* We set FileTemplate to a reasonable value because it cannot be defined in the database, since it is a
      * waveform record. However, the waveform record does not currently read the driver value for initialization! */
     setStringParam (NDFileTemplate, "%s%s_%3.3d.dat");

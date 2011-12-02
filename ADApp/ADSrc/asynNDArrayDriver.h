@@ -15,6 +15,10 @@ typedef enum {
     NDFileModeStream        /**< Stream arrays continuously to a single file if the file format supports this */
 } NDFileMode_t;
 
+typedef enum {
+    NDFileWriteOK,
+    NDFileWriteError
+} NDFileWriteStatus_t;
 
 /** Strings defining parameters that affect the behaviour of the detector. 
   * These are the values passed to drvUserCreate. 
@@ -59,6 +63,8 @@ typedef enum {
 #define NDWriteFileString       "WRITE_FILE"        /**< (asynInt32,    r/w) Manually save the most recent array to a file when value=1 */
 #define NDReadFileString        "READ_FILE"         /**< (asynInt32,    r/w) Manually read file when value=1 */
 #define NDFileWriteModeString   "WRITE_MODE"        /**< (asynInt32,    r/w) File saving mode (NDFileMode_t) */
+#define NDFileWriteStatusString "WRITE_STATUS"      /**< (asynInt32,    r/w) File write status */
+#define NDFileWriteMessageString "WRITE_MESSAGE"    /**< (asynOctet,    r/w) File write message */
 #define NDFileNumCaptureString  "NUM_CAPTURE"       /**< (asynInt32,    r/w) Number of arrays to capture */
 #define NDFileNumCapturedString "NUM_CAPTURED"      /**< (asynInt32,    r/o) Number of arrays already captured */
 #define NDFileCaptureString     "CAPTURE"           /**< (asynInt32,    r/w) Start or stop capturing arrays */
@@ -124,6 +130,8 @@ protected:
     int NDWriteFile;
     int NDReadFile;
     int NDFileWriteMode;
+    int NDFileWriteStatus;
+    int NDFileWriteMessage;
     int NDFileNumCapture;
     int NDFileNumCaptured;
     int NDFileCapture;   
