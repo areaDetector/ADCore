@@ -1,14 +1,14 @@
 
 file {
 	name="/home/epics/devel/areaDetector/ADApp/op/adl/NDFile.adl"
-	version=030102
+	version=030105
 }
 display {
 	object {
 		x=35
 		y=109
 		width=685
-		height=410
+		height=455
 	}
 	clr=14
 	bclr=4
@@ -403,7 +403,7 @@ rectangle {
 		x=5
 		y=40
 		width=675
-		height=360
+		height=405
 	}
 	"basic attribute" {
 		clr=14
@@ -877,6 +877,76 @@ composite {
 				clr=54
 				bclr=4
 			}
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=21
+		y=393
+		width=654
+		height=45
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=21
+				y=393
+				width=140
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Write status"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=170
+				y=393
+				width=120
+				height=20
+			}
+			monitor {
+				chan="$(P)$(R)WriteStatus"
+				clr=63
+				bclr=4
+			}
+			clrmod="alarm"
+			format="string"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=21
+				y=418
+				width=140
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Write message"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=170
+				y=421
+				width=505
+				height=14
+			}
+			monitor {
+				chan="$(P)$(R)WriteMessage"
+				clr=20
+				bclr=2
+			}
+			format="string"
 			limits {
 			}
 		}

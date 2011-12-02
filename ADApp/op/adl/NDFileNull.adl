@@ -441,7 +441,7 @@ rectangle {
 		x=390
 		y=40
 		width=675
-		height=355
+		height=400
 	}
 	"basic attribute" {
 		clr=14
@@ -857,6 +857,76 @@ composite {
 				clr=54
 				bclr=4
 			}
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=407
+		y=391
+		width=654
+		height=45
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=407
+				y=391
+				width=140
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Write status"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=556
+				y=391
+				width=120
+				height=20
+			}
+			monitor {
+				chan="$(P)$(R)WriteStatus"
+				clr=63
+				bclr=4
+			}
+			clrmod="alarm"
+			format="string"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=407
+				y=416
+				width=140
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Write message"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=556
+				y=419
+				width=505
+				height=14
+			}
+			monitor {
+				chan="$(P)$(R)WriteMessage"
+				clr=20
+				bclr=2
+			}
+			format="string"
 			limits {
 			}
 		}

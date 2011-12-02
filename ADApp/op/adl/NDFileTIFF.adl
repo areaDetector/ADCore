@@ -1,12 +1,12 @@
 
 file {
 	name="/home/epics/devel/areaDetector/ADApp/op/adl/NDFileTIFF.adl"
-	version=030102
+	version=030105
 }
 display {
 	object {
-		x=716
-		y=108
+		x=386
+		y=126
 		width=1070
 		height=530
 	}
@@ -441,7 +441,7 @@ rectangle {
 		x=390
 		y=40
 		width=675
-		height=355
+		height=405
 	}
 	"basic attribute" {
 		clr=14
@@ -562,7 +562,7 @@ text {
 }
 text {
 	object {
-		x=476
+		x=477
 		y=366
 		width=70
 		height=20
@@ -857,6 +857,76 @@ composite {
 				clr=54
 				bclr=4
 			}
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=407
+		y=393
+		width=654
+		height=45
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=407
+				y=393
+				width=140
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Write status"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=556
+				y=393
+				width=120
+				height=20
+			}
+			monitor {
+				chan="$(P)$(R)WriteStatus"
+				clr=63
+				bclr=4
+			}
+			clrmod="alarm"
+			format="string"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=407
+				y=418
+				width=140
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Write message"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=556
+				y=421
+				width=505
+				height=14
+			}
+			monitor {
+				chan="$(P)$(R)WriteMessage"
+				clr=20
+				bclr=2
+			}
+			format="string"
 			limits {
 			}
 		}
