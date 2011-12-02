@@ -345,6 +345,40 @@ record(bi, "$(P)$(R)ResetFilter_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(bo, "$(P)$(R)AutoResetFilter")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_RESET_FILTER")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)AutoResetFilter_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_RESET_FILTER")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)FilterCallbacks")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_CALLBACKS")
+    field(ZNAM, "Every array")
+    field(ONAM, "Array N only")
+}
+
+record(bi, "$(P)$(R)FilterCallbacks_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_CALLBACKS")
+    field(ZNAM, "Every array")
+    field(ONAM, "Array N only")
+    field(SCAN, "I/O Intr")
+}
+
 record(longout, "$(P)$(R)NumFilter")
 {
     field(PINI, "YES")
