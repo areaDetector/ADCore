@@ -10,9 +10,9 @@
     <h1>
       areaDetector: EPICS Area Detector Support</h1>
     <h2>
-      Release 1-7</h2>
+      Release 1-8</h2>
     <h2>
-      August 9, 2011</h2>
+      December 3, 2011</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -809,6 +809,40 @@
         <td>
           mbbo<br />
           mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          NDFileWriteStatus</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          File write status. Gives status information on last file open or file write operation.
+          Values are WriteOK (0) and WriteError (1).</td>
+        <td>
+          WRITE_STATUS</td>
+        <td>
+          $(P)$(R)FileWriteStatus</td>
+        <td>
+          mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          NDFileWriteMessage</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/o</td>
+        <td>
+          File write error message. An error message string if the previous file open or file
+          write operation resulted in an error.</td>
+        <td>
+          WRITE_MESSAGE</td>
+        <td>
+          $(P)$(R)FileWriteMessage</td>
+        <td>
+          waveform</td>
       </tr>
       <tr>
         <td>
