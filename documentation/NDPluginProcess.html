@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugin NDPluginProcess</h1>
     <h2>
-      August 9, 2011</h2>
+      December 3, 2011</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -472,6 +472,53 @@
       <tr>
         <td>
           NDPluginProcess<br />
+          AutoResetFilter</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          If enabled then when NumFiltered=NumFilter the filter automatically resets. This
+          can be very useful when using the Average or Sum filter modes. As soon as N sums
+          or averages have been performed the filter resets, so the next sum or average is
+          computed.</td>
+        <td>
+          AUTO_RESET_FILTER</td>
+        <td>
+          $(P)$(R)AutoResetFilter<br />
+          $(P)$(R)AutoResetFilter_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginProcess<br />
+          FilterCallbacks</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Choices are "Every array" and "Array N only". If "Every array" is selected then
+          the plugin does callbacks for every incoming array it receives. If "Array N only"
+          is selected then the plugin only does callbacks when NumFiltered=NumFilter. This
+          can be very useful when using the Sum or Average filter modes. Callbacks are then
+          done only when N sums or averages have been performed. If used with AutoResetFilter
+          then as input arrays arrive the plugin will continually output one summed or averaged
+          array after every N incoming arrays.</td>
+        <td>
+          FILTER_CALLBACKS</td>
+        <td>
+          $(P)$(R)FilterCallbacks<br />
+          $(P)$(R)FilterCallbacks_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginProcess<br />
           NumFilter</td>
         <td>
           asynInt32</td>
@@ -900,17 +947,34 @@ O[n] = F[n] = (1-1/N)*F[n-1] + 1/N*I[n]
     the output data type.
   </p>
   <h4>
-    Recursive Sum</h4>
+    Average</h4>
   <p>
-    The recursive average filter does input array summing. It is defined as:</p>
+    The average filter does input array averaging. It is defined as:</p>
   <pre>
 O[n] = F[n] = F[n-1] + 1/N*I[n]
 </pre>
   <p>
-    N is the characteristic number of arrays in the sum. For example, if N=100, then
-    each new array is weighted by 0.01. When this filter is reset the filter array is
-    initialized to 0. This filter typically cannot be run forever, because the output
-    grows monotonically and will lead to overflow.
+    N is the number of arrays in the average. For example, if N=100, then each new array
+    is weighted by 0.01. When this filter is reset the filter array is initialized to
+    0. This filter typically cannot be run forever, because the output grows monotonically
+    and will lead to overflow. However, if AutoResetFilter is enabled then the filter
+    will be reset when NumFiltered=NumFilter. If ArrayCallbacks is "Array N only" then
+    callbacks will be done only with the final averaged value.
+  </p>
+  <h4>
+    Sum</h4>
+  <p>
+    The sum filter does input array summing. It is defined as:</p>
+  <pre>
+O[n] = F[n] = F[n-1] + I[n]
+</pre>
+  <p>
+    This filter simply computes the sum of input arrays. When this filter is reset the
+    filter array is initialized to 0. It is often necessary to set the output data type
+    to one with a larger maximum value than the input array to prevent overflow. If
+    AutoResetFilter is enabled then the filter will be reset when NumFiltered=NumFilter.
+    If ArrayCallbacks is "Array N only" then callbacks will be done only with the final
+    summed value.
   </p>
   <h4>
     Difference</h4>
