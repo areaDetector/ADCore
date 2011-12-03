@@ -34,7 +34,7 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
      * structures don't need to be protected.
      */
     int i;
-    NDArray *pScratch;
+    NDArray *pScratch=NULL;
     double  *data, newData, newFilter;
     NDArrayInfo arrayInfo;
     double  *background=NULL, *flatField=NULL, *filter=NULL;
@@ -207,24 +207,23 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
         if ((this->numFiltered != numFilter) && filterCallbacks)
           doCallbacks = 0;
     }
-    setIntegerParam(NDPluginProcessNumFiltered, this->numFiltered);
     
     if (doCallbacks) {
       /* Convert the array to the desired output data type */
       if (this->pArrays[0]) this->pArrays[0]->release();
       this->pNDArrayPool->convert(pScratch, &this->pArrays[0], (NDDataType_t)dataType);
-      pScratch->release();
-
-      done:
-      /* We must enter the loop and exit with the mutex locked */
       this->lock();
       /* Get the attributes for this driver */
       this->getAttributes(this->pArrays[0]->pAttributeList);
       /* Call any clients who have registered for NDArray callbacks */
       this->unlock();
       doCallbacksGenericPointer(this->pArrays[0], NDArrayData, 0);
-      this->lock();
     }
+    done:
+    if (pScratch) pScratch->release();
+    /* We must enter the loop and exit with the mutex locked */
+    this->lock();
+    setIntegerParam(NDPluginProcessNumFiltered, this->numFiltered);
     callParamCallbacks();
 }
 
