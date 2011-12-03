@@ -12,27 +12,27 @@ SUPPORT=/corvette/home/epics/devel
 -include $(TOP)/../configure/SUPPORT.$(EPICS_HOST_ARCH)
 
 # ASYN is needed for sockets and for smartControl
-ASYN=$(SUPPORT)/asyn-4-17
+ASYN=$(SUPPORT)/asyn-4-18
 
 # CALC is needed for scalcout record that SSCAN uses
-CALC=$(SUPPORT)/calc-2-8
+CALC=$(SUPPORT)/calc-2-9
 
 # BUSY is needed for busy record
-BUSY=$(SUPPORT)/busy-1-3
+BUSY=$(SUPPORT)/busy-1-4
 
 # SSCAN is needed for scanning threshold on Pilatus
-SSCAN=$(SUPPORT)/sscan-2-6-6
+SSCAN=$(SUPPORT)/sscan-2-7
 
 # MCA is needed for fast accumulation of ROI counts
-MCA=$(SUPPORT)/mca-7-0
+MCA=$(SUPPORT)/mca-7-1
 
 #AUTOSAVE is needed for save_restore
-AUTOSAVE=$(SUPPORT)/autosave-4-7
+AUTOSAVE=$(SUPPORT)/autosave-4-8
 
-AREA_DETECTOR=$(SUPPORT)/areaDetector-1-7-1
+AREA_DETECTOR=$(SUPPORT)/areaDetector-1-8
 
 # EPICS_BASE usually appears last so other apps can override stuff:
-EPICS_BASE=/corvette/usr/local/epics/base-3.14.12.1
+EPICS_BASE=/corvette/usr/local/epics/base-3.14.12.2-rc1
 -include $(TOP)/../configure/EPICS_BASE.$(EPICS_HOST_ARCH)
 
 #Capfast users may need the following definitions
