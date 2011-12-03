@@ -26,6 +26,7 @@
     <li><a href="#netCDF">netCDF file plugin</a></li>
     <li><a href="#NeXus">NeXus (HDF) file plugin</a></li>
     <li><a href="#HDF5">HDF5 file plugin</a></li>
+    <li><a href="#Null">Null file plugin</a></li>
   </ul>
   <h2 id="Overview">
     Overview
@@ -525,11 +526,11 @@ variables:
     There is currently no documentation on the contents of the XML template file. However,
     there are example XML template files in the iocSimDetector and iocPerkinElmer directories.
     Documentation on the XML file contents will be written ASAP.
-	<!-- TODO: Document the XML template file contents-->
-    It is possible to validate most of the syntax in a NeXus template XML file.  
-	For example, the command (starting from the <tt>iocBoot</tt> directory) to 
-	validate the syntax of the <tt>iocBoot/iocSimDetector/NexusTemplate.xml</tt> file is:
-	<pre>xmllint --noout --schematron ./template.sch iocSimDetector/NexusTemplate.xml</pre></p>
+    <!-- TODO: Document the XML template file contents-->
+    It is possible to validate most of the syntax in a NeXus template XML file. For
+    example, the command (starting from the <tt>iocBoot</tt> directory) to validate
+    the syntax of the <tt>iocBoot/iocSimDetector/NexusTemplate.xml</tt> file is:</p>
+  <pre>xmllint --noout --schematron ./template.sch iocSimDetector/NexusTemplate.xml</pre>
   <p>
     The prebuilt Linux libraries libhdf5.a and libNeXus.a are built with HDF5 1.6.9.
     When they are built with the latest version, 1.8.2, they require GLIBC version 2.7
@@ -708,10 +709,10 @@ variables:
     </li>
   </ul>
   <p>
-    It is possible to validate the syntax of an NDArray attributes XML file.  
-	For example, the command (starting from the <tt>iocBoot</tt> directory) to 
-	validate the syntax of the <tt>iocBoot/iocSimDetector/simDetectorAttributes.xml</tt> file is:
-	<pre>xmllint --noout --schema ./attributes.xsd iocSimDetector/simDetectorAttributes.xml</pre></p>
+    It is possible to validate the syntax of an NDArray attributes XML file. For example,
+    the command (starting from the <tt>iocBoot</tt> directory) to validate the syntax
+    of the <tt>iocBoot/iocSimDetector/simDetectorAttributes.xml</tt> file is:</p>
+  <pre>xmllint --noout --schema ./attributes.xsd iocSimDetector/simDetectorAttributes.xml</pre>
   <h3>
     Compression
   </h3>
@@ -1034,5 +1035,28 @@ variables:
     <p>
       <img alt="NDFileHDF5.png" src="NDFileHDF5.png" /></p>
   </div>
+  <h2 id="Null">
+    Null file plugin
+  </h2>
+  <p>
+    NDFileNull inherits from NDPluginFile. This is a dummy file writer, which does not
+    actually write anything. Its main purpose is to delete original driver files (DeleteDriverFile
+    record) without writing the data to disk. For example, if the Pilatus is being used
+    simply for alignment or testing one might want to display the images but then immediately
+    delete the files that the Pilatus had created. This plugin allows one to do this,
+    since it always reports success in "writing" the file, so the NDPluginFile base
+    class will deleted the driver file if all the conditions outlined above are met.
+  </p>
+  <p>
+    The <a href="areaDetectorDoxygenHTML/class_n_d_file_null.html">NDFileNull class documentation
+    </a>describes this class in detail.
+  </p>
+  <p>
+    The NDFileNull plugin is created with the NDFileNullConfigure command, either from
+    C/C++ or from the EPICS IOC shell.</p>
+  <pre>NDFileNullConfigure (const char *portName, int queueSize, int blockingCallbacks, 
+                     const char *NDArrayPort, int NDArrayAddr, size_t maxMemory, 
+                     int priority, int stackSize)
+  </pre>
 </body>
 </html>
