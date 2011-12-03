@@ -396,10 +396,12 @@ record(longin, "$(P)$(R)NumFilter_RBV")
 }
 
 # This is 1/NumFilter, used in RecursiveSum filter
+# If this value changes we need to process FilterType to make it update filter coefficients
 record(calc, "$(P)$(R)NumFilterRecip")
 {
     field(INPA, "$(P)$(R)NumFilter.VAL NPP")
     field(CALC, "1./A")
+    field(FLNK, "$(P)$(R)FilterType.PROC PP")
 }
 
 record(longin, "$(P)$(R)NumFiltered_RBV")
@@ -653,14 +655,16 @@ record(mbbo, "$(P)$(R)FilterType")
 {
     field(ZRST, "RecursiveAve")
     field(ZRVL, "1")
-    field(ONST, "RecursiveSum")
+    field(ONST, "Average")
     field(ONVL, "2")
-    field(TWST, "Difference")
+    field(TWST, "Sum")
     field(TWVL, "3")
-    field(THST, "RecursiveAveDiff")
+    field(THST, "Difference")
     field(THVL, "4")
-    field(FRST, "CopyToFilter")
+    field(FRST, "RecursiveAveDiff")
     field(FRVL, "5")
+    field(FVST, "CopyToFilter")
+    field(FVVL, "6")
     field(FLNK, "$(P)$(R)FilterTypeSeq PP MS")
 }
 
@@ -671,13 +675,15 @@ record(seq, "$(P)$(R)FilterTypeSeq")
     field(DOL1, "1")
     field(LNK1, "$(P)$(R)RecursiveAveSeq.PROC PP MS")
     field(DOL2, "1")
-    field(LNK2, "$(P)$(R)RecursiveSumSeq.PROC PP MS")
+    field(LNK2, "$(P)$(R)AverageSeq.PROC PP MS")
     field(DOL3, "1")
-    field(LNK3, "$(P)$(R)DifferenceSeq.PROC PP MS")
+    field(LNK3, "$(P)$(R)SumSeq.PROC PP MS")
     field(DOL4, "1")
-    field(LNK4, "$(P)$(R)RecursiveAveDiffSeq.PROC PP MS")
+    field(LNK4, "$(P)$(R)DifferenceSeq.PROC PP MS")
     field(DOL5, "1")
-    field(LNK5, "$(P)$(R)CopyToFilterSeq.PROC PP MS")
+    field(LNK5, "$(P)$(R)RecursiveAveDiffSeq.PROC PP MS")
+    field(DOL6, "1")
+    field(LNK6, "$(P)$(R)CopyToFilterSeq.PROC PP MS")
 }
 
 record(seq, "$(P)$(R)RecursiveAveSeq")
@@ -704,7 +710,7 @@ record(seq, "$(P)$(R)RecursiveAveSeq")
     field(LNKA, "$(P)$(R)RC2 PP MS")
 }
 
-record(seq, "$(P)$(R)RecursiveSumSeq")
+record(seq, "$(P)$(R)AverageSeq")
 {
     field(DOL1, "1")
     field(LNK1, "$(P)$(R)OC1 PP MS")
@@ -719,6 +725,30 @@ record(seq, "$(P)$(R)RecursiveSumSeq")
     field(DOL6, "0")
     field(LNK6, "$(P)$(R)FC2 PP MS")
     field(DOL7, "$(P)$(R)NumFilterRecip NPP")
+    field(LNK7, "$(P)$(R)FC3 PP MS")
+    field(DOL8, "0")
+    field(LNK8, "$(P)$(R)FC4 PP MS")
+    field(DOL9, "0")
+    field(LNK9, "$(P)$(R)RC1 PP MS")
+    field(DOLA, "0")
+    field(LNKA, "$(P)$(R)RC2 PP MS")
+}
+
+record(seq, "$(P)$(R)SumSeq")
+{
+    field(DOL1, "1")
+    field(LNK1, "$(P)$(R)OC1 PP MS")
+    field(DOL2, "0")
+    field(LNK2, "$(P)$(R)OC2 PP MS")
+    field(DOL3, "1")
+    field(LNK3, "$(P)$(R)OC3 PP MS")
+    field(DOL4, "0")
+    field(LNK4, "$(P)$(R)OC4 PP MS")
+    field(DOL5, "1")
+    field(LNK5, "$(P)$(R)FC1 PP MS")
+    field(DOL6, "0")
+    field(LNK6, "$(P)$(R)FC2 PP MS")
+    field(DOL7, "1")
     field(LNK7, "$(P)$(R)FC3 PP MS")
     field(DOL8, "0")
     field(LNK8, "$(P)$(R)FC4 PP MS")
