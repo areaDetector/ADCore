@@ -138,7 +138,7 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
         /* Convert the array to the desired output data type */
         if (this->pArrays[0]) this->pArrays[0]->release();
         this->pNDArrayPool->convert(pArray, &this->pArrays[0], (NDDataType_t)dataType);
-        goto done;
+        goto doCallbacks;
     }
     
     /* Make a copy of the array converted to double, because we cannot modify the input array */
@@ -174,7 +174,7 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
             this->pNDArrayPool->convert(pScratch, &this->pFilter, NDFloat64);
             resetFilter = 1;
         }
-        if ((this->numFiltered == numFilter) && autoResetFilter)
+        if ((this->numFiltered >= numFilter) && autoResetFilter)
           resetFilter = 1;
         if (resetFilter) {
             filter = (double *)this->pFilter->pData;
@@ -184,34 +184,37 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
                 if (rc2) newFilter += rc2*data[i];
                 filter[i] = newFilter;
             }           
-            this->numFiltered = 1;
-        } else {
-            /* Do the filtering */
-            if (this->numFiltered < numFilter) this->numFiltered++;
-            filter = (double *)this->pFilter->pData;
-            O1 = oScale * (oc1 + oc2/this->numFiltered);
-            O2 = oScale * (oc3 + oc4/this->numFiltered);
-            F1 = fScale * (fc1 + fc2/this->numFiltered);
-            F2 = fScale * (fc3 + fc4/this->numFiltered);
-            for (i=0; i<nElements; i++) {
-                newData   = oOffset;
-                if (O1) newData += O1 * filter[i];
-                if (O2) newData += O2 * data[i];
-                newFilter = fOffset;
-                if (F1) newFilter += F1 * filter[i];
-                if (F2) newFilter += F2 * data[i];
-                data[i] = newData;
-                filter[i] = newFilter;
-            }
+            this->numFiltered = 0;
+        }
+        /* Do the filtering */
+        if (this->numFiltered < numFilter) this->numFiltered++;
+        filter = (double *)this->pFilter->pData;
+        O1 = oScale * (oc1 + oc2/this->numFiltered);
+        O2 = oScale * (oc3 + oc4/this->numFiltered);
+        F1 = fScale * (fc1 + fc2/this->numFiltered);
+        F2 = fScale * (fc3 + fc4/this->numFiltered);
+        for (i=0; i<nElements; i++) {
+            newData   = oOffset;
+            if (O1) newData += O1 * filter[i];
+            if (O2) newData += O2 * data[i];
+            newFilter = fOffset;
+            if (F1) newFilter += F1 * filter[i];
+            if (F2) newFilter += F2 * data[i];
+            data[i] = newData;
+            filter[i] = newFilter;
         }
         if ((this->numFiltered != numFilter) && filterCallbacks)
           doCallbacks = 0;
     }
-    
+
     if (doCallbacks) {
       /* Convert the array to the desired output data type */
       if (this->pArrays[0]) this->pArrays[0]->release();
       this->pNDArrayPool->convert(pScratch, &this->pArrays[0], (NDDataType_t)dataType);
+    }
+
+    doCallbacks:    
+    if (doCallbacks) {
       this->lock();
       /* Get the attributes for this driver */
       this->getAttributes(this->pArrays[0]->pAttributeList);
@@ -219,7 +222,6 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
       this->unlock();
       doCallbacksGenericPointer(this->pArrays[0], NDArrayData, 0);
     }
-    done:
     if (pScratch) pScratch->release();
     /* We must enter the loop and exit with the mutex locked */
     this->lock();
