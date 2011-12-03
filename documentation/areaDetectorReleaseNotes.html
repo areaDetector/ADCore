@@ -9,10 +9,33 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
-    Release 1-7-1 (XX-September-2011)</h2>
+    Release 1-8 (XX-December-2011)</h2>
   <ul>
     <li>Drivers
       <ul>
+        <li>Perkin Elmer driver. Many new features:
+          <ul>
+            <li>Added support for 64-bit Windows.</li>
+            <li>Added support for binning. The allowed binning modes (X,Y) are (1,1), (2,2), (4,4),
+              (1,2), and (1,4).</li>
+            <li>Added new records (PECurrentOffsetFrame, PECurrentGainFrame) to provide operator
+              feedback when acquiring offset and gain images. The PEAcquireOffset and PEAcquireGain
+              records have been changed to "busy" records so that clients can use ca_put_callback
+              to wait for the operation to complete.</li>
+            <li>Added an additional ImageMode="Average". In this mode NumImages frames are averaged
+              in the Perkin Elmer driver. This is useful for long acquisition times, because the
+              maximum acquisition time that the hardware supports in Internal trigger mode is
+              5 seconds.</li>
+            <li>Removed the maxSizeX, maxSizeY, and dataType arguments from the PerkinElmerConfig()
+              command. These values are now determined automatically. This means that startup
+              scripts need to be modified.</li>
+            <li>Improved performance of driver, eliminated unneeded copying of data, reduced lines
+              of code by 10%.</li>
+            <li>Demonstrated ability to stream data continuously to local disk at 15 frames/s
+              at 2048x2048 (120 MB/s) and 30 frames/s at 1024x1024 (60 MB/s). These tests were
+              done on a Windows 7 64-bit machine with 2 disk drives (SAS, 15K RPM, RAID 0).</li>
+          </ul>
+        </li>
         <li>Firewire Windows driver. Added READOUT_TIME parameter. The sum of the AcquireTime
           plus the READOUT_TIME controls how long to wait before a frame timeout occurs. Previously
           a hardcoded value of 1.0 second was used, which was too short for some slow cameras.</li>
@@ -23,10 +46,35 @@
     </li>
     <li>Plugins
       <ul>
+        <li>NDPluginFile. Added 2 new records, WriteStatus and WriteMessage to display status
+          of file writing operations. Write status is a bi record with values "WriteOK" (0)
+          and "WriteError" (1). WriteMessage is a waveform record containing a string with
+          any error messages. The NDFilePlugin base class now updates these records for each
+          file open or file write operation. All of the file plugin medm screens have been
+          updated to display these new PVs.</li>
         <li>NDFileNexus. Fixed a bug which caused the plugin to crash with the example iocSimDetector/NexusTemplate.xml
           template file. It could use a null object pointer in some circumstances.</li>
         <li>NDPluginProcess
           <ul>
+            <li>Renamed the filter type "RecursiveSum" to "Average", which is a more accurate
+              description.</li>
+            <li>Added new filter type "Sum" which is a true sum of NumFilter arrays.</li>
+            <li>Added new bo record, AutoResetFilter. If enabled then when NumFiltered=NumFilter
+              the filter automatically resets. This can be very useful when using the Average
+              or Sum filter modes. As soon as N sums or averages have been performed the filter
+              resets so the next sum or average is computed.</li>
+            <li>Added new bo record, FilterCallbacks with choices "Every array" and "Array N only".
+              "Every array" selects the previous behavior, where the plugin does callbacks for
+              every incoming array it receives. "Array N only" causes the plugin to only do callbacks
+              when NumFiltered=NumFilter. This can be very useful when using the Sum or Average
+              filter modes. Callbacks are then done only when N sums or averages have been performed.
+              If used with AutoResetFilter then as input arrays arrive the plugin will continually
+              output one summed or averaged array after every N incoming arrays.</li>
+            <li>Improved the logic of the SaveBackground and SaveFlatField parameters. Previously
+              they saved the <i>next</i> frame received after the Save request as the background
+              or flat field. This behavior was not what was documented, expected or desired. The
+              documented behaviour is to save the <i>current frame</i> when the SaveBackground
+              or SaveFlatField is done, and the driver has been changed to do this.</li>
             <li>Set default values for the recursive filter coefficients in the template file
               for recursive filter with scale factors of 1.0. The previous defaults were 0.0 for
               all coefficients, which produced all zero output arrays. Selecting a predefined
@@ -34,11 +82,6 @@
               and FScale.</li>
             <li>Fixed errors in the template file for the readback values of the filter coefficients.
               They had DTYP=asynInt32, corrected to asynFloat64.</li>
-            <li>Improved the logic of the SaveBackground and SaveFlatField parameters. Previously
-              they saved the <i>next</i> frame received after the Save request as the background
-              or flat field. This behavior was not what was documented, expected or desired. The
-              documented behaviour is to save the <i>current frame</i> when the SaveBackground
-              or SaveFlatField is done, and the driver has been changed to do this.</li>
           </ul>
         </li>
       </ul>
