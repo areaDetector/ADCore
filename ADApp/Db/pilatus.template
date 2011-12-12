@@ -16,6 +16,7 @@ record(mbbo,"$(P)$(R)TriggerMode") {
     field(FRVL,"4")
     field(FRST,"Alignment")
 }
+
 record(mbbi,"$(P)$(R)TriggerMode_RBV") {
     field(DESC,"Acquire mode")
     field(ZRVL,"0")
@@ -135,16 +136,17 @@ record(mbbo, "$(P)$(R)GainMenu")
 {
     field(DESC, "Shaping time and gain")
     field(OUT,  "$(P)$(R)Gain.VAL PP MS")
-    field(ZRST, "Fast/Low")
+    field(ZRST, "7-30KeV/Fast/LowG")
     field(ZRVL, "0")
-    field(ONST, "Medium/Medium")
+    field(ONST, "5-18KeV/Med/MedG")
     field(ONVL, "1")
-    field(TWST, "Slow/High")
+    field(TWST, "3-6KeV/Slow/HighG")
     field(TWVL, "2")
-    field(THST, "Slow/Ultrahigh")
+    field(THST, "2-5KeV/Slow/UltraG")
     field(THVL, "3")
     field(VAL,  "1")
 }
+
 
 # Timeout waiting for image to be written to file system
 record(ao, "$(P)$(R)ImageFileTmot")
@@ -258,6 +260,7 @@ record(asyn, "$(P)$(R)CamserverAsyn")
 
 record(ao, "$(P)$(R)Wavelength")
 {
+    field(PINI, "YES")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))WAVELENGTH")
     field(PREC, "4")
@@ -437,4 +440,172 @@ record(longout, "$(P)$(R)NumOscill")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_OSCILL")
     field(VAL,  "1")
+}
+
+
+# Set DISA for PVs in ADBase that do not apply to Pilatus
+
+record(mbbo, "$(P)$(R)DataType")
+{
+    field(DISA, "1")
+}
+record(mbbi, "$(P)$(R)DataType_RBV")
+{
+    field(DISA, "1")
+}
+record(mbbo, "$(P)$(R)ColorMode")
+{
+    field(DISA, "1")
+}
+record(mbbi, "$(P)$(R)ColorMode_RBV")
+{
+    field(DISA, "1")
+}
+record(longout, "$(P)$(R)BinX")
+{
+    field(DISA, "1")
+}
+record(longin, "$(P)$(R)BinX_RBV")
+{
+    field(DISA, "1")
+}
+record(longout, "$(P)$(R)BinY")
+{
+    field(DISA, "1")
+}
+record(longin, "$(P)$(R)BinY_RBV")
+{
+    field(DISA, "1")
+}
+record(longout, "$(P)$(R)MinX")
+{
+    field(DISA, "1")
+}
+record(longin, "$(P)$(R)MinX_RBV")
+{
+    field(DISA, "1")
+}
+record(longout, "$(P)$(R)MinY")
+{
+    field(DISA, "1")
+}
+record(longin, "$(P)$(R)MinY_RBV")
+{
+    field(DISA, "1")
+}
+record(longout, "$(P)$(R)SizeX")
+{
+    field(DISA, "1")
+}
+record(longin, "$(P)$(R)SizeX_RBV")
+{
+    field(DISA, "1")
+}
+record(longout, "$(P)$(R)SizeY")
+{
+    field(DISA, "1")
+}
+record(longin, "$(P)$(R)SizeY_RBV")
+{
+    field(DISA, "1")
+}
+record(bo, "$(P)$(R)ReverseX")
+{
+    field(DISA, "1")
+}
+record(bi, "$(P)$(R)ReverseX_RBV")
+{
+    field(DISA, "1")
+}
+record(bo, "$(P)$(R)ReverseY")
+{
+    field(DISA, "1")
+}
+record(bi, "$(P)$(R)ReverseY_RBV")
+{
+    field(DISA, "1")
+}
+
+record(ai, "$(P)$(R)PixelCutOff_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PIXEL_CUTOFF")
+    field(EGU,  "counts")
+    field(SCAN, "I/O Intr")
+    field(VAL,  "0")
+    field(PINI, "YES")
+}
+
+record(ai, "$(P)$(R)Temp0_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TH_TEMP_0")
+    field(EGU,  "C")
+    field(SCAN, "I/O Intr")
+    field(VAL,  "0")
+    field(PINI, "YES")
+    field(PREC, "1")
+}
+
+record(ai, "$(P)$(R)Temp1_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TH_TEMP_1")
+    field(EGU,  "C")
+    field(SCAN, "I/O Intr")
+    field(VAL,  "0")
+    field(PINI, "YES")
+    field(PREC, "1")
+}
+
+record(ai, "$(P)$(R)Temp2_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TH_TEMP_2")
+    field(EGU,  "C")
+    field(SCAN, "I/O Intr")
+    field(VAL,  "0")
+    field(PINI, "YES")
+    field(PREC, "1")
+}
+
+record(ai, "$(P)$(R)Humid0_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TH_HUMID_0")
+    field(EGU,  "%")
+    field(SCAN, "I/O Intr")
+    field(VAL,  "0")
+    field(PINI, "YES")
+    field(PREC, "1")
+}
+
+record(ai, "$(P)$(R)Humid1_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TH_HUMID_1")
+    field(EGU,  "%")
+    field(SCAN, "I/O Intr")
+    field(VAL,  "0")
+    field(PINI, "YES")
+    field(PREC, "1")
+}
+
+record(ai, "$(P)$(R)Humid2_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TH_HUMID_2")
+    field(EGU,  "%")
+    field(SCAN, "I/O Intr")
+    field(VAL,  "0")
+    field(PINI, "YES")
+    field(PREC, "1")
+}
+
+record(stringin, "$(P)$(R)TVXVersion_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TVXVERSION")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
 }
