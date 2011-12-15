@@ -68,6 +68,9 @@ PROD_LIBS_solaris        += NeXus hdf5 jpeg z
 LIB_SYS_LIBS_solaris     += tiff
 PROD_SYS_LIBS_solaris    += tiff
 
+ifeq ($(OS_CLASS), Darwin)
+LDFLAGS += -framework CoreFoundation
+endif
 LIB_LIBS_Darwin         += PvAPI
 PROD_LIBS_Darwin        += PvAPI
 # To use versions of these libraries supplied with areaDetector use this line
@@ -82,6 +85,9 @@ PROD_LIBS_Darwin        += NeXus hdf5 sz
 # To use system versions of these libraries use this line
 #LIB_SYS_LIBS_Darwin    += NeXus hdf5 sz
 #PROD_SYS_LIBS_Darwin   += NeXus hdf5 sz
+### Explicitly include system version of zlib
+LIB_SYS_LIBS_Darwin    += z
+PROD_SYS_LIBS_Darwin   += z
 # To use versions of these libraries supplied with areaDetector use this line
 LIB_LIBS_Darwin         += png tiff jpeg
 PROD_LIBS_Darwin        += png tiff jpeg
