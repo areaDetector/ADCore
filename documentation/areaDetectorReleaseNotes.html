@@ -36,12 +36,31 @@
               done on a Windows 7 64-bit machine with 2 disk drives (SAS, 15K RPM, RAID 0).</li>
           </ul>
         </li>
+        <li>Pilatus driver. Thanks to Matt Pearson from Diamond Light Source for most of these
+          changes.
+          <ul>
+            <li>New records for detector temperature and humidity, and a driver thread to poll
+              these values.</li>
+            <li>Read back the actual value of the threshold.</li>
+            <li>Read the Tau value when setting the exposure time.</li>
+            <li>New record with TVX version number, read at startup.</li>
+            <li>Disabled unused records from ADBase.template.</li>
+            <li>Fixed 2 minor bugs. It was reporting a read timeout error from camserver each
+              time an image was acquired. Fixed a problem if the user aborted an acquisition twice
+              in a row.</li>
+          </ul>
+        </li>
+        <li>Prosilica driver. Added support for the following:
+          <ul>
+            <li>FrameStartTriggerDelay: Delay between trigger signal and actual frame start.</li>
+            <li>FrameStartTriggerEvent: Edge or level of signal to use for trigger.</li>
+            <li>FrameStartTriggerOverlap: Trigger handling when the previous frame is incomplete.</li>
+            <li>FrameStartTriggerSoftware: Software trigger when TriggerMode=Software.</li>
+          </ul>
+        </li>
         <li>Firewire Windows driver. Added READOUT_TIME parameter. The sum of the AcquireTime
           plus the READOUT_TIME controls how long to wait before a frame timeout occurs. Previously
           a hardcoded value of 1.0 second was used, which was too short for some slow cameras.</li>
-        <li>Pilatus driver. Fixed 2 minor bugs. It was reporting a read timeout error from
-          camserver each time an image was acquired. Fixed a problem if the user aborted an
-          acquisition twice in a row.</li>
       </ul>
     </li>
     <li>Plugins
@@ -52,8 +71,14 @@
           any error messages. The NDFilePlugin base class now updates these records for each
           file open or file write operation. All of the file plugin medm screens have been
           updated to display these new PVs.</li>
-        <li>NDFileNexus. Fixed a bug which caused the plugin to crash with the example iocSimDetector/NexusTemplate.xml
-          template file. It could use a null object pointer in some circumstances.</li>
+        <li>NDFileNexus.
+          <ul>
+            <li>Fixed a bug which caused the plugin to crash with the example iocSimDetector/NexusTemplate.xml
+              template file. It could use a null object pointer in some circumstances.</li>
+            <li>Fixed a bug which cause the plugin to use stale attributes when creating files
+              in Stream or Capture modes. Thanks to Kevin Peterson for this fix.</li>
+          </ul>
+        </li>
         <li>NDPluginProcess
           <ul>
             <li>Renamed the filter type "RecursiveSum" to "Average", which is a more accurate
@@ -86,13 +111,11 @@
         </li>
       </ul>
     </li>
-    <li>Support libraries
-      <br />
-      The static Linux support libraries provided in R1-7 were built on a Fedora Core
-      9 system (gcc 4.3.0) for 32-bit linux-x86, and on a Fedora Core 14 system (gcc 4.5.1)
-      for 64-bit linux-x86_64. Problems arose when trying to build with these libraries
-      or to run the pre-built binaries on older Linux systems, e.g. those with gcc 4.1.2.
-      These were fixed as follows:
+    <li>Support libraries. The static Linux support libraries provided in R1-7 were built
+      on a Fedora Core 9 system (gcc 4.3.0) for 32-bit linux-x86, and on a Fedora Core
+      14 system (gcc 4.5.1) for 64-bit linux-x86_64. Problems arose when trying to build
+      with these libraries or to run the pre-built binaries on older Linux systems, e.g.
+      those with gcc 4.1.2. These were fixed as follows:
       <ul>
         <li>The Prosilica libPvAPI.a file had been taken from the AVT gcc 4.3 directory. This
           was replaced with the one from the gcc 4.1 directory because the 4.3 version requires
@@ -114,6 +137,11 @@
           of all the common plugins, and allows one to enable/disable and change the asyn
           source port. ADPlugins.adl which is included on all the detector medm screens now
           contains an "All" button to load commonPlugins.adl.</li>
+      </ul>
+    </li>
+    <li>Miscellaneous
+      <ul>
+        <li>Fixes to commonDriverMakefile to build on Darwin (OS X).</li>
       </ul>
     </li>
   </ul>
