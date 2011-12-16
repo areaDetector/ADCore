@@ -48,25 +48,6 @@ record(mbbi, "$(P)$(R)TriggerMode_RBV")
    field(SCAN, "I/O Intr")
 }
 
-###############################################################################
-#  These records control the file format.                                     # 
-###############################################################################
-record(mbbo, "$(P)$(R)FileFormat")
-{
-    field(ZRST, "TIFF")
-    field(ZRVL, "0")
-    field(ONST, "Invalid")
-    field(ONVL, "1")
-}
-
-record(mbbi, "$(P)$(R)FileFormat_RBV")
-{
-    field(ZRST, "TIFF")
-    field(ZRVL, "0")
-    field(ONST, "Invalid")
-    field(ONVL, "1")
-}
-
 # Only 2 data types are supported, unsigned 8 and 16 bit integers
 record(mbbo, "$(P)$(R)DataType")
 {
@@ -253,6 +234,101 @@ record(longin, "$(P)$(R)PSBadFrameCounter_RBV")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_BAD_FRAME_COUNTER")
    field(SCAN, "I/O Intr")
 }
+
+###############################################################################
+#  These records control the trigger delay.                                   # 
+###############################################################################
+record(ao, "$(P)$(R)TriggerDelay")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_TRIGGER_DELAY")
+   field(PREC, "6")
+}
+
+record(ai, "$(P)$(R)TriggerDelay_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_TRIGGER_DELAY")
+   field(PREC, "6")
+   field(SCAN, "I/O Intr")
+}
+
+###############################################################################
+#  These records control the trigger event.                                   # 
+###############################################################################
+record(mbbo, "$(P)$(R)TriggerEvent")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_TRIGGER_EVENT")
+   field(PINI, "YES")
+   field(ZRST, "Rising edge")
+   field(ZRVL, "0")
+   field(ONST, "Falling edge")
+   field(ONVL, "1")
+   field(TWST, "Any edge")
+   field(TWVL, "2")
+   field(THST, "High level")
+   field(THVL, "3")
+   field(FRST, "Low level")
+   field(FRVL, "4")
+}
+
+record(mbbi, "$(P)$(R)TriggerEvent_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_TRIGGER_EVENT")
+   field(PINI, "YES")
+   field(ZRST, "Rising edge")
+   field(ZRVL, "0")
+   field(ONST, "Falling edge")
+   field(ONVL, "1")
+   field(TWST, "Any edge")
+   field(TWVL, "2")
+   field(THST, "High level")
+   field(THVL, "3")
+   field(FRST, "Low level")
+   field(FRVL, "4")
+   field(SCAN, "I/O Intr")
+}
+
+###############################################################################
+#  These records control the trigger overlap.                                 # 
+###############################################################################
+record(mbbo, "$(P)$(R)TriggerOverlap")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_TRIGGER_OVERLAP")
+   field(PINI, "YES")
+   field(ZRST, "Off")
+   field(ZRVL, "0")
+   field(ONST, "Previous frame")
+   field(ONVL, "1")
+}
+
+record(mbbi, "$(P)$(R)TriggerOverlap_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_TRIGGER_OVERLAP")
+   field(ZRST, "Off")
+   field(ZRVL, "0")
+   field(ONST, "Previous frame")
+   field(ONVL, "1")
+   field(SCAN, "I/O Intr")
+}
+
+###############################################################################
+#  This record is a software trigger.                                         # 
+###############################################################################
+record(bo, "$(P)$(R)TriggerSoftware")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_TRIGGER_SOFTWARE")
+   field(ZNAM, "Off")
+   field(ONAM, "On")
+}
+
+
 
 ###############################################################################
 #  These records are for hardware synchronization and digital I/O             #
