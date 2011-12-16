@@ -10,7 +10,7 @@
     <h1>
       areaDetector Prosilica driver</h1>
     <h2>
-      August 9, 2011</h2>
+      December 15, 2011</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -113,6 +113,94 @@
       <tr>
         <td align="center" colspan="7,">
           <b>Trigger and I/O Control</b></td>
+      </tr>
+      <tr>
+        <td>
+          PSTriggerEvent</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          The edge or level for the selected trigger signal when ADTriggerMode=Sync In 1 to
+          SyncIn 4. Allowed values are:<br />
+          Rising edge<br />
+          Falling edge<br />
+          Any edge<br />
+          High level<br />
+          Low level
+        </td>
+        <td>
+          PS_TRIGGER_EVENT</td>
+        <td>
+          $(P)$(R)TriggerEvent<br />
+          $(P)$(R)TriggerEvent_RBV</td>
+        <td>
+          mbbo
+          <br />
+          mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          PSTriggerDelay</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          The delay in seconds between the trigger signal and when the frame is actually acquired.
+          Minimum value is 1 microsecond.
+        </td>
+        <td>
+          PS_TRIGGER_DELAY</td>
+        <td>
+          $(P)$(R)TriggerDelay<br />
+          $(P)$(R)TriggerDelay_RBV</td>
+        <td>
+          ao
+          <br />
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          PSTriggerOverlap</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Controls the behavior when an external trigger signal arrives before the camera
+          is ready for the next trigger. Allowed values are:<br />
+          Off - the external trigger is ignored<br />
+          Previous frame - the external trigger is latched and triggers the next frame when
+          the current frame completes<br />
+        </td>
+        <td>
+          PS_TRIGGER_OVERLAP</td>
+        <td>
+          $(P)$(R)TriggerOverlap<br />
+          $(P)$(R)TriggerOverlap_RBV</td>
+        <td>
+          mbbo
+          <br />
+          mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          PSTriggerSoftware</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Processing this record performs a software trigger if ADTriggerMode=Software.
+        </td>
+        <td>
+          PS_TRIGGER_SOFTWARE</td>
+        <td>
+          $(P)$(R)TriggerSoftware</td>
+        <td>
+          bo</td>
       </tr>
       <tr>
         <td>
