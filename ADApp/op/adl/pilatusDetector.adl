@@ -1,14 +1,14 @@
 
 file {
 	name="/home/epics/devel/areaDetector/ADApp/op/adl/pilatusDetector.adl"
-	version=030102
+	version=030105
 }
 display {
 	object {
 		x=234
-		y=30
+		y=34
 		width=1400
-		height=590
+		height=625
 	}
 	clr=14
 	bclr=4
@@ -147,7 +147,7 @@ rectangle {
 		x=5
 		y=340
 		width=335
-		height=205
+		height=280
 	}
 	"basic attribute" {
 		clr=14
@@ -167,51 +167,6 @@ text {
 	textix="Detector"
 	align="horiz. centered"
 }
-text {
-	object {
-		x=15
-		y=395
-		width=130
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Detector Size"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=155
-		y=396
-		width=61
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)MaxSizeX_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=248
-		y=396
-		width=61
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)MaxSizeY_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
 composite {
 	object {
 		x=5
@@ -221,71 +176,6 @@ composite {
 	}
 	"composite name"=""
 	"composite file"="ADPlugins.adl"
-}
-composite {
-	object {
-		x=179
-		y=370
-		width=103
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=179
-				y=370
-				width=10
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="X"
-			align="horiz. right"
-		}
-		text {
-			object {
-				x=272
-				y=370
-				width=10
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Y"
-			align="horiz. right"
-		}
-	}
-}
-text {
-	object {
-		x=21
-		y=495
-		width=180
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Read file timeout:"
-	align="horiz. right"
-}
-"text entry" {
-	object {
-		x=206
-		y=495
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(R)ImageFileTmot"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
 }
 composite {
 	object {
@@ -1925,87 +1815,65 @@ composite {
 }
 composite {
 	object {
-		x=21
-		y=470
-		width=305
+		x=61
+		y=370
+		width=264
 		height=20
 	}
 	"composite name"=""
 	children {
 		text {
 			object {
-				x=21
-				y=470
-				width=180
+				x=61
+				y=370
+				width=130
 				height=20
 			}
 			"basic attribute" {
 				clr=14
 			}
-			textix="Shaping time/Gain:"
+			textix="Detector Size"
 			align="horiz. right"
 		}
-		menu {
+		"text update" {
 			object {
-				x=206
-				y=470
-				width=120
-				height=20
+				x=196
+				y=371
+				width=60
+				height=18
 			}
-			control {
-				chan="$(P)$(R)GainMenu"
-				clr=14
-				bclr=51
+			monitor {
+				chan="$(P)$(R)MaxSizeX_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=265
+				y=371
+				width=60
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)MaxSizeY_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
 			}
 		}
 	}
-}
-text {
-	object {
-		x=41
-		y=445
-		width=160
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Threshold apply:"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=206
-		y=445
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)ThresholdAutoApply"
-		clr=14
-		bclr=51
-	}
-}
-"message button" {
-	object {
-		x=274
-		y=446
-		width=60
-		height=19
-	}
-	control {
-		chan="$(P)$(R)ThresholdApply"
-		clr=14
-		bclr=51
-	}
-	label="Apply"
-	press_msg="1"
 }
 composite {
 	object {
 		x=41
-		y=420
-		width=265
+		y=395
+		width=281
 		height=20
 	}
 	"composite name"=""
@@ -2013,21 +1881,21 @@ composite {
 		text {
 			object {
 				x=41
-				y=420
-				width=160
+				y=395
+				width=150
 				height=20
 			}
 			"basic attribute" {
 				clr=14
 			}
-			textix="Threshold (keV):"
+			textix="Threshold (keV)"
 			align="horiz. right"
 		}
 		"text entry" {
 			object {
-				x=206
-				y=420
-				width=100
+				x=196
+				y=395
+				width=60
 				height=20
 			}
 			control {
@@ -2038,20 +1906,204 @@ composite {
 			limits {
 			}
 		}
+		"text update" {
+			object {
+				x=262
+				y=396
+				width=60
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)ThresholdEnergy_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
 	}
 }
 composite {
 	object {
 		x=41
+		y=420
+		width=283
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=41
+				y=420
+				width=150
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Threshold apply"
+			align="horiz. right"
+		}
+		menu {
+			object {
+				x=196
+				y=420
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)ThresholdAutoApply"
+				clr=14
+				bclr=51
+			}
+		}
+		"message button" {
+			object {
+				x=264
+				y=421
+				width=60
+				height=19
+			}
+			control {
+				chan="$(P)$(R)ThresholdApply"
+				clr=14
+				bclr=51
+			}
+			label="Apply"
+			press_msg="1"
+		}
+	}
+}
+composite {
+	object {
+		x=21
+		y=445
+		width=315
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=21
+				y=445
+				width=170
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Shaping time/Gain"
+			align="horiz. right"
+		}
+		menu {
+			object {
+				x=196
+				y=445
+				width=140
+				height=20
+			}
+			control {
+				chan="$(P)$(R)GainMenu"
+				clr=14
+				bclr=51
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=61
+		y=470
+		width=195
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=61
+				y=470
+				width=130
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Pixel cutoff"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=196
+				y=471
+				width=60
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)PixelCutOff_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=21
+		y=495
+		width=235
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=21
+				y=495
+				width=170
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Read file timeout"
+			align="horiz. right"
+		}
+		"text entry" {
+			object {
+				x=196
+				y=495
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)ImageFileTmot"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=111
 		y=520
-		width=292
+		width=212
 		height=20
 	}
 	"composite name"=""
 	children {
 		"text update" {
 			object {
-				x=272
+				x=262
 				y=521
 				width=61
 				height=18
@@ -2067,7 +2119,7 @@ composite {
 		}
 		menu {
 			object {
-				x=206
+				x=196
 				y=520
 				width=60
 				height=20
@@ -2080,16 +2132,199 @@ composite {
 		}
 		text {
 			object {
-				x=41
+				x=111
 				y=520
-				width=160
+				width=80
 				height=20
 			}
 			"basic attribute" {
 				clr=14
 			}
-			textix="Gap fill:"
+			textix="Gap fill"
 			align="horiz. right"
+		}
+	}
+}
+composite {
+	object {
+		x=32
+		y=545
+		width=304
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=32
+				y=545
+				width=110
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Temperature"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=147
+				y=546
+				width=60
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)Temp0_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=212
+				y=546
+				width=60
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)Temp1_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=276
+				y=546
+				width=60
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)Temp2_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=61
+		y=570
+		width=274
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=61
+				y=570
+				width=80
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Humidity"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=146
+				y=571
+				width=60
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)Humid0_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=211
+				y=571
+				width=60
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)Humid1_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=275
+				y=571
+				width=60
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)Humid2_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=31
+		y=595
+		width=295
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=31
+				y=595
+				width=110
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="TVX version"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=146
+				y=596
+				width=180
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)TVXVersion_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
 		}
 	}
 }
