@@ -134,7 +134,8 @@ asynStatus NDFileNexus::readFile(NDArray **pArray) {
 
 /** Closes the NeXus file opened with NDFileNexus::openFile */
 asynStatus NDFileNexus::closeFile() {
-  asynStatus status;
+  asynStatus status = asynSuccess;
+  NXstatus nxstat;
   int numCapture, numCaptured;
   int fileWriteMode;
   int addr =0;
@@ -144,17 +145,22 @@ asynStatus NDFileNexus::closeFile() {
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
             "Entering %s:%s\n", driverName, functionName );
 
-  status = getIntegerParam(addr, NDFileWriteMode, &fileWriteMode);
-  status = getIntegerParam(addr, NDFileNumCapture, &numCapture);
-  status = getIntegerParam(addr, NDFileNumCaptured, &numCaptured);
+  getIntegerParam(addr, NDFileWriteMode, &fileWriteMode);
+  getIntegerParam(addr, NDFileNumCapture, &numCapture);
+  getIntegerParam(addr, NDFileNumCaptured, &numCaptured);
 
   /* close the nexus file */
-  status = (asynStatus)NXclose(&nxFileHandle);
+  nxstat = NXclose(&nxFileHandle);
+  if (nxstat == NX_ERROR) {
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+              "Error %s:%s error closing file, status=%d\n", driverName, functionName, nxstat);
+    status = asynError;
+  }
   this->imageNumber = 0;
 
   /*Print trace information if level is set correctly */
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
-            "Leaving %s:%s\n", driverName, functionName );
+            "Leaving %s:%s nxstat=%d\n", driverName, functionName, nxstat);
 
   return status;
 }
