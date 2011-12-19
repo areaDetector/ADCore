@@ -32,14 +32,16 @@ typedef enum
 /** Enumeration of detector status */
 typedef enum
 {
-    ADStatusIdle,       /**< Detector is idle */
-    ADStatusAcquire,    /**< Detector is acquiring */
-    ADStatusReadout,    /**< Detector is reading out */
-    ADStatusCorrect,    /**< Detector is correcting data */
-    ADStatusSaving,     /**< Detector is saving data */
-    ADStatusAborting,   /**< Detector is aborting an operation */
-    ADStatusError,      /**< Detector has encountered an error */
-    ADStatusWaiting     /**< Detector is waiting for something, typically for the acquire period to elapse */
+    ADStatusIdle,         /**< Detector is idle */
+    ADStatusAcquire,      /**< Detector is acquiring */
+    ADStatusReadout,      /**< Detector is reading out */
+    ADStatusCorrect,      /**< Detector is correcting data */
+    ADStatusSaving,       /**< Detector is saving data */
+    ADStatusAborting,     /**< Detector is aborting an operation */
+    ADStatusError,        /**< Detector has encountered an error */
+    ADStatusWaiting,      /**< Detector is waiting for something, typically for the acquire period to elapse */
+    ADStatusInitializing, /**< Detector is initializing, typically at startup */
+    ADStatusDisconnected  /**< Detector is not connected */            
 } ADStatus_t;
 
 /** Enumeration of image collection modes */
