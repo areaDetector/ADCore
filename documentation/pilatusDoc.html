@@ -10,7 +10,7 @@
     <h1>
       areaDetector Pilatus driver</h1>
     <h2>
-      August 9, 2011</h2>
+      December 18, 2011</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -31,8 +31,9 @@
   <h2 id="Introduction" style="text-align: left">
     Introduction</h2>
   <p>
-    This is a driver for the Pilatus pixel array detectors <a href="http://www.dectris.com">
-      Dectris</a>.
+    This is an <a href="http://www.aps.anl.gov/epics">EPICS</a> <a href="areaDetector.html">
+      areaDetector</a> driver for the Pilatus pixel array detectors from <a href="http://www.dectris.com">
+        Dectris</a>.
   </p>
   <p>
     The interface to the detector is via a TCP/IP socket interface to the <b>camserver</b>
@@ -62,7 +63,8 @@
     <tbody>
       <tr>
         <td align="center" colspan="3">
-          <b>Parameter Definitions in pilatusDetector.cpp and EPICS Record Definitions in pilatus.template</b></td>
+          <b>Parameter Definitions in pilatusDetector.cpp and EPICS Record Definitions in pilatus.template</b>
+        </td>
       </tr>
       <tr>
         <th>
@@ -94,8 +96,7 @@
           The first 4 modes correspond directly to the camserver commands <code>Exposure</code>,
           <code>ExtEnable</code>, <code>ExtTrigger</code>, and <code>ExtMTrigger</code> respectively.
           Alignment mode uses the <code>Exposure</code> command as well, but continuously
-          takes images into the same temporary file (<code>alignment.tif</code>).
-        </td>
+          takes images into the same temporary file (<code>alignment.tif</code>).</td>
       </tr>
       <tr>
         <td>
@@ -132,7 +133,8 @@
         <td>
           $(P)$(R)NumExposures</td>
         <td>
-          Controls the number of exposures per image. It is only used in External Enable mode.</td>
+          Controls the number of exposures per image. It is only used in External Enable mode.
+        </td>
       </tr>
       <tr>
         <td>
@@ -202,7 +204,8 @@ test6_2_0035.tif    test6_2_0035.tif, test6_2_0036.tif, ...
     <tbody>
       <tr>
         <td align="center" colspan="7">
-          <b>Parameter Definitions in pilatusDetector.cpp and EPICS Record Definitions in pilatus.template</b></td>
+          <b>Parameter Definitions in pilatusDetector.cpp and EPICS Record Definitions in pilatus.template</b>
+        </td>
       </tr>
       <tr>
         <th>
@@ -773,6 +776,142 @@ badX2,badY2 replacementX2,replacementY2
           $(P)$(R)NumOscill</td>
         <td>
           longout</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          PixelCutoff</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Maximum possible count rate per pixel.</td>
+        <td>
+          PIXEL_CUTOFF</td>
+        <td>
+          $(P)$(R)PixelCutOff_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          ThTemp0</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Temperature readout 0.</td>
+        <td>
+          TH_TEMP_0</td>
+        <td>
+          $(P)$(R)Temp0_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          ThTemp1</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Temperature readout 1.</td>
+        <td>
+          TH_TEMP_1</td>
+        <td>
+          $(P)$(R)Temp1_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          ThTemp2</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Temperature readout 2.</td>
+        <td>
+          TH_TEMP_2</td>
+        <td>
+          $(P)$(R)Temp2_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          ThHumid0</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Humidity readout 0.</td>
+        <td>
+          TH_HUMID_0</td>
+        <td>
+          $(P)$(R)Humid0_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          ThHumid1</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Humidity readout 1.</td>
+        <td>
+          TH_HUMID_1</td>
+        <td>
+          $(P)$(R)Humid1_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          ThHumid2</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Humidity readout 2.</td>
+        <td>
+          TH_HUMID_2</td>
+        <td>
+          $(P)$(R)Humid2_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          Pilatus<br />
+          TvxVersion</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/o</td>
+        <td>
+          Version of TVX and camserver.</td>
+        <td>
+          TVXVERSION</td>
+        <td>
+          $(P)$(R)TVXVersion_RBV</td>
+        <td>
+          stringin</td>
       </tr>
       <tr>
         <td>
