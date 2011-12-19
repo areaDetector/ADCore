@@ -61,6 +61,8 @@
         <li>Firewire Windows driver. Added READOUT_TIME parameter. The sum of the AcquireTime
           plus the READOUT_TIME controls how long to wait before a frame timeout occurs. Previously
           a hardcoded value of 1.0 second was used, which was too short for some slow cameras.</li>
+        <li>URL driver. Bug fix to prevent infinite loop if there is an error reading the
+          image. Thanks to Wang Xiaoqiang from PSI for finding this problem.</li>
       </ul>
     </li>
     <li>Plugins
