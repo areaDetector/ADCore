@@ -1968,9 +1968,10 @@ static int countObjectsInGroup(hid_t loc_id)
 	H5Tclose(atype);
 	atype=H5Tcopy(type);
 	H5Tset_size(atype,*datalen);  
-	// use these two lines and remove the strlen one to not force NULL termination
+	/* use these two lines and remove the strlen one to not force NULL termination
 	// H5Tset_strpad(atype, H5T_STR_NULLPAD);
 	// *datalen = asize;
+        */
 	iRet = H5Aread(pFile->iCurrentA, atype, data);
 	*datalen = strlen((char*)data);
      } else {
