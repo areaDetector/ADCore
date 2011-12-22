@@ -63,22 +63,6 @@ record(longout, "$(P)$(R)PEInitialize")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_INITIALIZE")
 }
 
-record(mbbi, "$(P)$(R)PEStatus_RBV")
-{
-   field(SCAN, "I/O Intr")
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_STATUS_RBV")
-   field(ZRST, "OK")
-   field(ZRVL, "0")
-   field(ZRSV, "NO_ALARM")
-   field(ONST, "Initializing")
-   field(ONVL, "1")
-   field(ONSV, "MINOR")
-   field(TWST, "Error")
-   field(TWVL, "2")
-   field(TWSV, "MAJOR")
-}
-
 record(busy, "$(P)$(R)PEAcquireOffset")
 {
    field(DTYP, "asynInt32")
@@ -214,7 +198,7 @@ record(mbbo, "$(P)$(R)PEGain")
 record(mbbi, "$(P)$(R)PEGain_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_GAIN_RBV")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_GAIN")
    field(SCAN, "I/O Intr")
    field(ZRST, "0.25pF")
    field(ZRVL, "0")
@@ -257,7 +241,7 @@ record(mbbo, "$(P)$(R)PEDwellTime")
 record(mbbi, "$(P)$(R)PEDwellTime_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_DWELL_TIME_RBV")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_DWELL_TIME")
    field(SCAN, "I/O Intr")
    field(ZRST, "66.5ms")
    field(ZRVL, "0")
@@ -289,40 +273,10 @@ record(longout, "$(P)$(R)PENumFrameBuffers")
 record(longin, "$(P)$(R)PENumFrameBuffers_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_NUM_FRAME_BUFFERS_RBV")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_NUM_FRAME_BUFFERS")
    field(SCAN, "I/O Intr")
    field(LOPR, "0")
    field(HOPR, "500")
-}
-
-record(mbbo, "$(P)$(R)PESyncMode")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_SYNC_MODE")
-   field(ZRST, "Internal Timer")
-   field(ZRVL, "0")
-   field(ONST, "External Trig")
-   field(ONVL, "1")
-   field(TWST, "Free Running")
-   field(TWVL, "2")
-   field(THST, "Soft Trigger")
-   field(THVL, "3")
- }
-
-record(mbbi, "$(P)$(R)PESyncMode_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_SYNC_MODE_RBV")
-   field(SCAN, "I/O Intr")
-   field(ZRST, "Internal Timer")
-   field(ZRVL, "0")
-   field(ONST, "External Trig")
-   field(ONVL, "1")
-   field(TWST, "Free Running")
-   field(TWVL, "2")
-   field(THST, "Soft Trigger")
-   field(THVL, "3")
 }
 
 record(longout, "$(P)$(R)PETrigger")
@@ -341,7 +295,7 @@ record(longout, "$(P)$(R)PESyncTime")
 record(longout, "$(P)$(R)PESyncTime_RBV")
 {
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_SYNC_TIME_RBV")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_SYNC_TIME")
 }
 
 record(longout, "$(P)$(R)PELoadCorrections")
@@ -370,9 +324,9 @@ record(mbbo, "$(P)$(R)PEUsePixelCorrection")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_USE_PIXEL_CORRECTION")
-   field(ZRST, "Off")
+   field(ZRST, "Disable")
    field(ZRVL, "0")
-   field(ONST, "On")
+   field(ONST, "Enable")
    field(ONVL, "1")
 }
 
@@ -388,40 +342,40 @@ record(waveform, "$(P)$(R)PEBadPixelFile")
 record(waveform, "$(P)$(R)PEBadPixelFile_RBV")
 {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_PIXEL_CORRECTION_FILE_RBV")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_PIXEL_CORRECTION_FILE")
     field(FTVL, "CHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
 }
 
-record(bo, "$(P)$(R)PESkipLeadingPulses")
+record(bo, "$(P)$(R)PESkipFrames")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_SKIP_LEADING_PULSES")
-   field(ZNAM, "NO")
-   field(ONAM, "YES")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_SKIP_FRAMES")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
 }
 
-record(bi, "$(P)$(R)PESkipLeadingPulses_RBV")
+record(bi, "$(P)$(R)PESkipFrames_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_SKIP_LEADING_PULSES")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_SKIP_FRAMES")
    field(SCAN, "I/O Intr")
-   field(ZNAM, "NO")
-   field(ONAM, "YES")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
 }
 
-record(longout, "$(P)$(R)PENumPulsesToSkip")
+record(longout, "$(P)$(R)PENumFramesToSkip")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_NUM_PULSES_TO_SKIP")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_NUM_FRAMES_TO_SKIP")
 }
 
-record(longin, "$(P)$(R)PENumPulsesToSkip_RBV")
+record(longin, "$(P)$(R)PENumFramesToSkip_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_NUM_PULSES_TO_SKIP")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PE_NUM_FRAMES_TO_SKIP")
    field(SCAN, "I/O Intr")
 }
