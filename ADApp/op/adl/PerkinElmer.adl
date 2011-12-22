@@ -1,6 +1,6 @@
 
 file {
-	name="j:\epics\devel\areaDetector\ADApp\op\adl\PerkinElmer.adl"
+	name="/home/epics/devel/areaDetector/ADApp/op/adl/PerkinElmer.adl"
 	version=030105
 }
 display {
@@ -431,120 +431,6 @@ rectangle {
 }
 text {
 	object {
-		x=482
-		y=65
-		width=60
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Offset"
-}
-text {
-	object {
-		x=407
-		y=409
-		width=220
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Corrections Directory"
-}
-"text entry" {
-	object {
-		x=355
-		y=435
-		width=315
-		height=20
-	}
-	control {
-		chan="$(P)$(R)PECorrectionsDir"
-		clr=14
-		bclr=51
-	}
-	format="string"
-	limits {
-	}
-}
-"message button" {
-	object {
-		x=355
-		y=460
-		width=200
-		height=20
-	}
-	control {
-		chan="$(P)$(R)PELoadCorrections"
-		clr=14
-		bclr=51
-	}
-	label="Load Offset and Gain Files"
-	press_msg="1"
-}
-"message button" {
-	object {
-		x=356
-		y=485
-		width=200
-		height=20
-	}
-	control {
-		chan="$(P)$(R)PESaveCorrections"
-		clr=14
-		bclr=51
-	}
-	label="Save Offset and Gain Files"
-	press_msg="1"
-}
-text {
-	object {
-		x=442
-		y=295
-		width=140
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Bad Pixel File"
-}
-"text entry" {
-	object {
-		x=355
-		y=345
-		width=315
-		height=20
-	}
-	control {
-		chan="$(P)$(R)PEBadPixelFile"
-		clr=14
-		bclr=51
-	}
-	format="string"
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=355
-		y=320
-		width=300
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)PEBadPixelFile_RBV"
-		clr=54
-		bclr=4
-	}
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
 		x=457
 		y=36
 		width=110
@@ -561,384 +447,11 @@ rectangle {
 		x=345
 		y=35
 		width=335
-		height=485
+		height=475
 	}
 	"basic attribute" {
 		clr=14
 		fill="outline"
-	}
-}
-rectangle {
-	object {
-		x=350
-		y=60
-		width=325
-		height=110
-	}
-	"basic attribute" {
-		clr=14
-		fill="outline"
-	}
-}
-text {
-	object {
-		x=492
-		y=180
-		width=40
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Gain"
-}
-"text update" {
-	object {
-		x=460
-		y=141
-		width=110
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)PEOffsetAvailable"
-		clr=54
-		bclr=2
-	}
-	clrmod="alarm"
-	limits {
-	}
-}
-menu {
-	object {
-		x=575
-		y=141
-		width=90
-		height=19
-	}
-	control {
-		chan="$(P)$(R)PEUseOffset"
-		clr=14
-		bclr=51
-	}
-}
-text {
-	object {
-		x=355
-		y=140
-		width=100
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Correction"
-}
-composite {
-	object {
-		x=355
-		y=115
-		width=305
-		height=20
-	}
-	"composite name"=""
-	children {
-		"text update" {
-			object {
-				x=560
-				y=116
-				width=100
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)PEAcquireOffset"
-				clr=54
-				bclr=2
-			}
-			clrmod="alarm"
-			limits {
-			}
-		}
-		"message button" {
-			object {
-				x=355
-				y=115
-				width=200
-				height=20
-			}
-			control {
-				chan="$(P)$(R)PEAcquireOffset"
-				clr=14
-				bclr=51
-			}
-			label="Acquire Offset Correction"
-			press_msg="1"
-		}
-	}
-}
-rectangle {
-	object {
-		x=350
-		y=175
-		width=325
-		height=110
-	}
-	"basic attribute" {
-		clr=14
-		fill="outline"
-	}
-}
-text {
-	object {
-		x=355
-		y=255
-		width=100
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Correction"
-}
-"text update" {
-	object {
-		x=460
-		y=256
-		width=110
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)PEGainAvailable"
-		clr=54
-		bclr=2
-	}
-	clrmod="alarm"
-	limits {
-	}
-}
-menu {
-	object {
-		x=575
-		y=256
-		width=90
-		height=19
-	}
-	control {
-		chan="$(P)$(R)PEUseGain"
-		clr=14
-		bclr=51
-	}
-}
-composite {
-	object {
-		x=355
-		y=230
-		width=305
-		height=20
-	}
-	"composite name"=""
-	children {
-		"message button" {
-			object {
-				x=355
-				y=230
-				width=200
-				height=20
-			}
-			control {
-				chan="$(P)$(R)PEAcquireGain"
-				clr=14
-				bclr=51
-			}
-			label="Acquire Gain Correction"
-			press_msg="1"
-		}
-		"text update" {
-			object {
-				x=560
-				y=231
-				width=100
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)PEAcquireGain"
-				clr=54
-				bclr=2
-			}
-			clrmod="alarm"
-			limits {
-			}
-		}
-	}
-}
-composite {
-	object {
-		x=395
-		y=205
-		width=270
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=395
-				y=205
-				width=130
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="# Gain Frames"
-		}
-		"text entry" {
-			object {
-				x=540
-				y=205
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)PENumGainFrames"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=605
-				y=206
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)PECurrentGainFrame"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-	}
-}
-composite {
-	object {
-		x=380
-		y=90
-		width=285
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=380
-				y=90
-				width=150
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="# Offset Frames"
-		}
-		"text entry" {
-			object {
-				x=540
-				y=90
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)PENumOffsetFrames"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=605
-				y=91
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)PECurrentOffsetFrame"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-	}
-}
-rectangle {
-	object {
-		x=350
-		y=290
-		width=325
-		height=110
-	}
-	"basic attribute" {
-		clr=14
-		fill="outline"
-	}
-}
-text {
-	object {
-		x=355
-		y=370
-		width=100
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Correction"
-}
-menu {
-	object {
-		x=575
-		y=371
-		width=90
-		height=19
-	}
-	control {
-		chan="$(P)$(R)PEUsePixelCorrection"
-		clr=14
-		bclr=51
-	}
-}
-rectangle {
-	object {
-		x=350
-		y=405
-		width=325
-		height=110
-	}
-	"basic attribute" {
-		clr=14
-		fill="outline"
-	}
-}
-"text update" {
-	object {
-		x=460
-		y=371
-		width=110
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)PEPixelCorrectionAvailable"
-		clr=54
-		bclr=2
-	}
-	clrmod="alarm"
-	limits {
 	}
 }
 rectangle {
@@ -1797,4 +1310,528 @@ composite {
 			}
 		}
 	}
+}
+composite {
+	object {
+		x=350
+		y=60
+		width=325
+		height=55
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=407
+				y=64
+				width=220
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Corrections Directory"
+		}
+		"text entry" {
+			object {
+				x=355
+				y=90
+				width=315
+				height=20
+			}
+			control {
+				chan="$(P)$(R)PECorrectionsDir"
+				clr=14
+				bclr=51
+			}
+			format="string"
+			limits {
+			}
+		}
+		rectangle {
+			object {
+				x=350
+				y=60
+				width=325
+				height=55
+			}
+			"basic attribute" {
+				clr=14
+				fill="outline"
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=350
+		y=120
+		width=325
+		height=110
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=482
+				y=125
+				width=60
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Offset"
+		}
+		rectangle {
+			object {
+				x=350
+				y=120
+				width=325
+				height=110
+			}
+			"basic attribute" {
+				clr=14
+				fill="outline"
+			}
+		}
+		"text update" {
+			object {
+				x=460
+				y=201
+				width=110
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)PEOffsetAvailable"
+				clr=54
+				bclr=2
+			}
+			clrmod="alarm"
+			limits {
+			}
+		}
+		menu {
+			object {
+				x=575
+				y=201
+				width=90
+				height=19
+			}
+			control {
+				chan="$(P)$(R)PEUseOffset"
+				clr=14
+				bclr=51
+			}
+		}
+		text {
+			object {
+				x=355
+				y=200
+				width=100
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Correction"
+		}
+		composite {
+			object {
+				x=355
+				y=175
+				width=305
+				height=20
+			}
+			"composite name"=""
+			children {
+				"text update" {
+					object {
+						x=560
+						y=176
+						width=100
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)PEAcquireOffset"
+						clr=54
+						bclr=2
+					}
+					clrmod="alarm"
+					limits {
+					}
+				}
+				"message button" {
+					object {
+						x=355
+						y=175
+						width=200
+						height=20
+					}
+					control {
+						chan="$(P)$(R)PEAcquireOffset"
+						clr=14
+						bclr=51
+					}
+					label="Acquire Offset Correction"
+					press_msg="1"
+				}
+			}
+		}
+		composite {
+			object {
+				x=380
+				y=150
+				width=285
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=380
+						y=150
+						width=150
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="# Offset Frames"
+				}
+				"text entry" {
+					object {
+						x=540
+						y=150
+						width=60
+						height=20
+					}
+					control {
+						chan="$(P)$(R)PENumOffsetFrames"
+						clr=14
+						bclr=51
+					}
+					limits {
+					}
+				}
+				"text update" {
+					object {
+						x=605
+						y=151
+						width=60
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)PECurrentOffsetFrame"
+						clr=54
+						bclr=4
+					}
+					limits {
+					}
+				}
+			}
+		}
+	}
+}
+text {
+	object {
+		x=442
+		y=405
+		width=140
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Bad Pixel File"
+}
+rectangle {
+	object {
+		x=350
+		y=400
+		width=325
+		height=105
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+"text entry" {
+	object {
+		x=355
+		y=430
+		width=315
+		height=20
+	}
+	control {
+		chan="$(P)$(R)PEPixelCorrectionFile"
+		clr=14
+		bclr=51
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=355
+		y=455
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Correction"
+}
+menu {
+	object {
+		x=575
+		y=456
+		width=90
+		height=19
+	}
+	control {
+		chan="$(P)$(R)PEUsePixelCorrection"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=460
+		y=456
+		width=110
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)PEPixelCorrectionAvailable"
+		clr=54
+		bclr=2
+	}
+	clrmod="alarm"
+	limits {
+	}
+}
+"message button" {
+	object {
+		x=437
+		y=480
+		width=150
+		height=20
+	}
+	control {
+		chan="$(P)$(R)PELoadPixelCorrection"
+		clr=14
+		bclr=51
+	}
+	label="Load Bad Pixel File"
+	press_msg="1"
+}
+text {
+	object {
+		x=492
+		y=240
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Gain"
+}
+rectangle {
+	object {
+		x=350
+		y=235
+		width=325
+		height=160
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+text {
+	object {
+		x=355
+		y=315
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Correction"
+}
+"text update" {
+	object {
+		x=460
+		y=316
+		width=110
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)PEGainAvailable"
+		clr=54
+		bclr=2
+	}
+	clrmod="alarm"
+	limits {
+	}
+}
+menu {
+	object {
+		x=575
+		y=316
+		width=90
+		height=19
+	}
+	control {
+		chan="$(P)$(R)PEUseGain"
+		clr=14
+		bclr=51
+	}
+}
+composite {
+	object {
+		x=355
+		y=290
+		width=305
+		height=20
+	}
+	"composite name"=""
+	children {
+		"message button" {
+			object {
+				x=355
+				y=290
+				width=200
+				height=20
+			}
+			control {
+				chan="$(P)$(R)PEAcquireGain"
+				clr=14
+				bclr=51
+			}
+			label="Acquire Gain Correction"
+			press_msg="1"
+		}
+		"text update" {
+			object {
+				x=560
+				y=291
+				width=100
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)PEAcquireGain"
+				clr=54
+				bclr=2
+			}
+			clrmod="alarm"
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=395
+		y=265
+		width=270
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=395
+				y=265
+				width=130
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="# Gain Frames"
+		}
+		"text entry" {
+			object {
+				x=540
+				y=265
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)PENumGainFrames"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=605
+				y=266
+				width=60
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)PECurrentGainFrame"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+	}
+}
+"text entry" {
+	object {
+		x=355
+		y=340
+		width=315
+		height=20
+	}
+	control {
+		chan="$(P)$(R)PEGainFile"
+		clr=14
+		bclr=51
+	}
+	format="string"
+	limits {
+	}
+}
+"message button" {
+	object {
+		x=382
+		y=370
+		width=120
+		height=20
+	}
+	control {
+		chan="$(P)$(R)PELoadGainFile"
+		clr=14
+		bclr=51
+	}
+	label="Load Gain File"
+	press_msg="1"
+}
+"message button" {
+	object {
+		x=522
+		y=370
+		width=120
+		height=20
+	}
+	control {
+		chan="$(P)$(R)PESaveGainFile"
+		clr=14
+		bclr=51
+	}
+	label="Save Gain File"
+	press_msg="1"
 }
