@@ -505,137 +505,112 @@ text {
 	label="Initialize"
 	press_msg="1"
 }
+text {
+	object {
+		x=43
+		y=550
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="# Frame Buffers"
+}
 composite {
 	object {
-		x=13
+		x=202
 		y=550
-		width=319
-		height=70
+		width=128
+		height=20
 	}
 	"composite name"=""
 	children {
-		"text update" {
+		"text entry" {
 			object {
-				x=191
-				y=594
-				width=2
-				height=2
+				x=202
+				y=550
+				width=60
+				height=20
 			}
-			monitor {
+			control {
+				chan="$(P)$(R)PENumFrameBuffers"
 				clr=14
 				bclr=51
 			}
 			limits {
 			}
 		}
-		text {
-			object {
-				x=43
-				y=550
-				width=150
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="# Frame Buffers"
-		}
-		composite {
-			object {
-				x=202
-				y=550
-				width=128
-				height=20
-			}
-			"composite name"=""
-			children {
-				"text entry" {
-					object {
-						x=202
-						y=550
-						width=60
-						height=20
-					}
-					control {
-						chan="$(P)$(R)PENumFrameBuffers"
-						clr=14
-						bclr=51
-					}
-					limits {
-					}
-				}
-				"text update" {
-					object {
-						x=269
-						y=551
-						width=61
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)PENumFrameBuffers_RBV"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
-			}
-		}
-		text {
-			object {
-				x=13
-				y=575
-				width=180
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Frame buffer index"
-		}
 		"text update" {
 			object {
-				x=202
-				y=576
-				width=130
+				x=269
+				y=551
+				width=61
 				height=18
 			}
 			monitor {
-				chan="$(P)$(R)PEFrameBuffIndex"
+				chan="$(P)$(R)PENumFrameBuffers_RBV"
 				clr=54
 				bclr=4
 			}
+			align="horiz. centered"
 			limits {
 			}
 		}
-		text {
-			object {
-				x=73
-				y=600
-				width=120
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Image Number"
-		}
-		"text update" {
-			object {
-				x=202
-				y=601
-				width=130
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)PEImageNumber"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
+	}
+}
+text {
+	object {
+		x=13
+		y=575
+		width=180
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Frame buffer index"
+}
+"text update" {
+	object {
+		x=202
+		y=576
+		width=130
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)PEFrameBuffIndex"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=73
+		y=600
+		width=120
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Image Number"
+}
+"text update" {
+	object {
+		x=202
+		y=601
+		width=130
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)PEImageNumber"
+		clr=54
+		bclr=4
+	}
+	limits {
 	}
 }
 composite {
