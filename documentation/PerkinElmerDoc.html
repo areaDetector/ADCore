@@ -31,19 +31,20 @@
   <h2 id="Introduction" style="text-align: left">
     Introduction</h2>
   <p>
-    This is a driver for the flat-panel amorphous silicon detectors from <a href="http://optoelectronics.perkinelmer.com/catalog/Category.aspx?CategoryName=X-Ray+Cameras">
-      PerkinElmer</a>.</p>
+    This is an <a href="http://www.aps.anl.gov/epics">EPICS</a> <a href="areaDetector.html">
+      areaDetector</a> driver for the flat-panel amorphous silicon detectors from <a href="http://optoelectronics.perkinelmer.com/catalog/Category.aspx?CategoryName=X-Ray+Cameras">
+        PerkinElmer</a>.</p>
   <p>
     The driver is based upon the XISL library provided by PerkinElmer. It only runs
-    on Microsoft Windows computers.  It supports both 32-bit and 64-bit versions of Windows.
+    on Microsoft Windows computers. It supports both 32-bit and 64-bit versions of Windows.
   </p>
   <p>
     This driver has been tested with the following detectors</p>
   <ul>
     <li>XRD0820 w/ XRD-FG PCI frame grabber</li>
     <li>XRD1621 w/ XRD-FGX PCI frame grabber</li>
-  <li>XRD1621 w/ XRD-FGe Opto PCI-Express frame grabber</li>
-</ul>
+    <li>XRD1621 w/ XRD-FGe Opto PCI-Express frame grabber</li>
+  </ul>
   <p>
     This driver inherits from <a href="areaDetectorDoc.html#ADDriver">ADDriver</a>.
     It implements many of the parameters in <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">
@@ -78,7 +79,8 @@
         <td>
           $(P)$(R)NumImages</td>
         <td>
-          Controls the number of images to acquire when ADImageMode is Multiple or Average</td>
+          Controls the number of images to acquire when ADImageMode is Multiple or Average
+        </td>
       </tr>
       <tr>
         <td>
@@ -88,8 +90,7 @@
           $(P)$(R)AcquireTime_RBV</td>
         <td>
           When using Internal Triggers, this parameter controls the period between trigger
-          pulses which will also be equal to the exposure time. This parameter is only updated
-          when the detector is initialized.</td>
+          pulses which will also be equal to the exposure time.</td>
       </tr>
       <tr>
         <td>
@@ -102,30 +103,30 @@
           <ul>
             <li>Internal</li>
             <li>External</li>
-            <li>Free Run</li>
+            <li>Free Running</li>
             <li>Soft Trigger</li>
           </ul>
         </td>
       </tr>
-  <tr>
-    <td>
-      ADImageMode</td>
-    <td>
-      $(P)$(R)ImageMode<br />
-      $(P)$(R)ImageMode_RBV</td>
-    <td>
-      Sets the trigger mode for the detector. Options are:
-      <ul>
-        <li>Single</li>
-        <li>Multiple</li>
-        <li>Continuous</li>
-        <li>Average.  This mode is new for the Perkin Elmer.  It averages NumImages frames in
-        the hardware frame grabber.  It is useful when the total acquisition time is longer than
-        the 5 second maximum allowed in Internal trigger mode, etc.</li>
-      </ul>
-    </td>
-  </tr>
-</tbody>
+      <tr>
+        <td>
+          ADImageMode</td>
+        <td>
+          $(P)$(R)ImageMode<br />
+          $(P)$(R)ImageMode_RBV</td>
+        <td>
+          Sets the trigger mode for the detector. Options are:
+          <ul>
+            <li>Single</li>
+            <li>Multiple</li>
+            <li>Continuous</li>
+            <li>Average. This mode is new for the Perkin Elmer. It averages NumImages frames in
+              the hardware frame grabber. It is useful when the total acquisition time is longer
+              than the 5 second maximum allowed in Internal trigger mode, etc.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
   </table>
   <h2 id="Driver_parameters" style="text-align: left">
     PerkinElmer specific parameters</h2>
@@ -139,7 +140,8 @@
     <tbody>
       <tr>
         <td align="center" colspan="7">
-          <b>Parameter Definitions in PerkinElmer.h and EPICS Record Definitions in PerkinElmer.template</b></td>
+          <b>Parameter Definitions in PerkinElmer.h and EPICS Record Definitions in PerkinElmer.template</b>
+        </td>
       </tr>
       <tr>
         <th>
@@ -165,7 +167,7 @@
         <td>
           r/w</td>
         <td>
-          Number of frame buffers to use</td>
+          Number of software frame buffers to use</td>
         <td>
           PE_NUM_FRAME_BUFFERS</td>
         <td>
@@ -199,7 +201,7 @@
         <td>
           r/w</td>
         <td>
-          Status of PerkinElmer driver. Need to integrate this into DetectorState</td>
+          Status of PerkinElmer driver. SHOULD DELETE THIS AND JUST USE DETECTOR STATE.</td>
         <td>
           PE_STATUS</td>
         <td>
@@ -247,7 +249,8 @@
         <td>
           r</td>
         <td>
-          Frame number from the hardware frame buffer for this image.  Values go from 1 to 8.</td>
+          Frame number from the hardware frame buffer for this image. Values go from 1 to
+          8.</td>
         <td>
           PE_FRAME_BUFFER_INDEX</td>
         <td>
@@ -263,7 +266,7 @@
         <td>
           r</td>
         <td>
-          Image number for this image in the image buffer array.</td>
+          Image number for this image in the software frame buffer array.</td>
         <td>
           PE_IMAGE_NUMBER</td>
         <td>
@@ -283,7 +286,7 @@
         <td>
           r/w</td>
         <td>
-          Number of frames to collect and average when collecting offset image</td>
+          Number of frames to collect and average when collecting offset frames</td>
         <td>
           PE_NUM_OFFSET_FRAMES</td>
         <td>
@@ -293,19 +296,35 @@
       </tr>
       <tr>
         <td>
+          PE_CurrentOffsetFrame</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+          Current offset frame being collected when collecting offset frames</td>
+        <td>
+          PE_CURRENT_OFFSET_FRAMEs</td>
+        <td>
+          $(P)$(R)PECurrentOffsetFrame</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
           PE_AcquireOffset</td>
         <td>
           asynInt32</td>
         <td>
-          w</td>
+          r/w</td>
         <td>
-          Acquire Offset Image</td>
+          Acquire offset frames</td>
         <td>
           PE_ACQUIRE_OFFSET</td>
         <td>
           $(P)$(R)PEAcquireOffset</td>
         <td>
-          longout</td>
+          busy</td>
       </tr>
       <tr>
         <td>
@@ -313,9 +332,10 @@
         <td>
           asynInt32</td>
         <td>
-          w</td>
+          r/w</td>
         <td>
-          Set wether offset image is to be used</td>
+          Set whether offset image is to be used. Choices are "Disable" (0) and "Enable" (1).
+        </td>
         <td>
           PE_USE_OFFSET</td>
         <td>
@@ -331,7 +351,8 @@
         <td>
           r</td>
         <td>
-          Report whether offset image has been collected</td>
+          Report whether offset image has been collected and is available for use. Choices
+          are "Not available" (0) and "Available" (1).</td>
         <td>
           PE_OFFSET_AVAILABLE</td>
         <td>
@@ -351,7 +372,7 @@
         <td>
           r/w</td>
         <td>
-          Number of frames to collect and average when collecting gain image</td>
+          Number of frames to collect and average when collecting gain frames</td>
         <td>
           PE_NUM_GAIN_FRAMES</td>
         <td>
@@ -361,19 +382,35 @@
       </tr>
       <tr>
         <td>
+          PE_CurrentGainFrame</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r</td>
+        <td>
+          Current gain frame being collected when collecting gain frames</td>
+        <td>
+          PE_CURRENT_GAIN_FRAMEs</td>
+        <td>
+          $(P)$(R)PECurrentGainFrame</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
           PE_AcquireGain</td>
         <td>
           asynInt32</td>
         <td>
           w</td>
         <td>
-          Acquire Gain Image</td>
+          Acquire gain frames</td>
         <td>
           PE_ACQUIRE_GAIN</td>
         <td>
           $(P)$(R)PEAcquireGain</td>
         <td>
-          longout</td>
+          busy</td>
       </tr>
       <tr>
         <td>
@@ -383,7 +420,8 @@
         <td>
           w</td>
         <td>
-          Set wether gain image is to be used</td>
+          Set whether gain image is to be used. Choices are "Disable" (0) and "Enable" (1).
+        </td>
         <td>
           PE_USE_GAIN</td>
         <td>
@@ -399,7 +437,8 @@
         <td>
           r</td>
         <td>
-          Report whether gain image has been collected</td>
+          Report whether offset image has been collected and is available for use. Choices
+          are "Not available" (0) and "Available" (1).</td>
         <td>
           PE_GAIN_AVAILABLE</td>
         <td>
@@ -419,7 +458,7 @@
         <td>
           w</td>
         <td>
-          Set wether pixel correction is to be used</td>
+          Set whether bad pixel correction is to be used</td>
         <td>
           PE_USE_PIXEL_CORRECTION</td>
         <td>
@@ -435,7 +474,7 @@
         <td>
           r</td>
         <td>
-          Report whether pixel correction file has been set</td>
+          Report whether pixel correction file has been set and is available for use</td>
         <td>
           PE_PIXEL_CORRECTION_AVAILABLE</td>
         <td>
