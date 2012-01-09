@@ -2,44 +2,58 @@
 # Matthew Pearson
 # June 2009
 
+# These are the records that we modify from NDFile.template
+record(mbbo, "$(P)$(R)FileFormat")
+{
+   field(ZRST, "TIFF")
+   field(ZRVL, "0")
+   field(ONST, "BMP")
+   field(ONVL, "1")
+   field(TWST, "SIF")
+   field(TWVL, "2")
+   field(THST, "EDF")
+   field(THVL, "3")
+   field(FRST, "RAW")
+   field(FRVL, "4")
+   field(FVST, "TEXT")
+   field(FVVL, "5")
+}
+
+# These are the records that are new for the Andor detector 
 record(bo, "$(P)$(R)AndorCooler")
 {
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COOLER")
-    field(ZNAM, "OFF")
-    field(ONAM, "ON")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_COOLER")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
 }
-
 
 record(bi, "$(P)$(R)AndorCooler_RBV")
 {
-    field(PINI, "1")
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COOLER")
-    field(ZNAM, "OFF")
-    field(ONAM, "ON")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_COOLER")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
     field(SCAN, "I/O Intr")
 }
 
 record(bo, "$(P)$(R)AndorShutdown")
 {
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SHUTDOWN")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_SHUTDOWN")
 }
-
 
 record(bo, "$(P)$(R)AndorStartup")
 {
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))STARTUP")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_STARTUP")
 }
-
 
 record(mbbo, "$(P)$(R)AndorImageMode")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))IMAGE_MODE_AM")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_IMAGE_MODE_AM")
    field(ZRST, "Accumulate")
    field(ZRVL, "0")
    field(ONST, "Kinetics")
@@ -53,16 +67,18 @@ record(ao, "$(P)$(R)AndorACTInKinetics")
 {
    field(PINI, "1")
    field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ACT_KINETICS")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_ACT_KINETICS")
    field(PREC, "3")
+   field(VAL, "0.0")
+   
 }
 
-# Number of accumulations in kinetics mode. 
+# Number of accumulations in kinetics mode.
 record(ao, "$(P)$(R)AndorANumInKinetics")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANUM_KINETICS")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_ANUM_KINETICS")
    field(PREC, "3")
 }
 
@@ -70,7 +86,7 @@ record(ao, "$(P)$(R)AndorFKHeight")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FK_HEIGHT")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_FK_HEIGHT")
    field(PREC, "3")
 }
 
@@ -78,7 +94,7 @@ record(ao, "$(P)$(R)AndorFKHBinning")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FKH_BINNING")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_FKH_BINNING")
    field(PREC, "3")
 }
 
@@ -86,16 +102,15 @@ record(ao, "$(P)$(R)AndorFKVBinning")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FKV_BINNING")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_FKV_BINNING")
    field(PREC, "3")
 }
-
 
 record(ao, "$(P)$(R)AndorFKOffset")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FK_OFFSET")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_FK_OFFSET")
    field(PREC, "3")
 }
 
@@ -104,8 +119,8 @@ record(ao, "$(P)$(R)AndorFKOffset")
 record(waveform, "$(P)$(R)AndorTempStatus_RBV")
 {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMP_STAT")
-    field(FTVL, "CHAR")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_TEMP_STAT")
+    field(FTVL, "UCHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
 }
@@ -115,7 +130,7 @@ record(waveform, "$(P)$(R)AndorMessage_RBV")
 {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_MESSAGE")
-    field(FTVL, "CHAR")
+    field(FTVL, "UCHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
 }
@@ -133,48 +148,30 @@ record(mbbo, "$(P)$(R)AndorShutterMode")
 
 record(bo, "$(P)$(R)AndorShutterExTTL")
 {
+    field(PINI, "1")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_SHUTTER_EXTTL")
-    field(ZNAM, "LOW TO OPEN")
-    field(ONAM, "HIGH TO OPEN")
+    field(ZNAM, "Low To Open")
+    field(ONAM, "High To Open")
     field(RVAL, "1")
 }
 
-record(mbbo, "$(P)$(R)AndorFileFormat")
-{
-   field(PINI, "1")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_FORMAT")
-   field(ZRST, "TIFF")
-   field(ZRVL, "0")
-   field(ONST, "BMP")
-   field(ONVL, "1")
-   field(TWST, "SIF")
-   field(TWVL, "2")
-   field(THST, "EDF")
-   field(THVL, "3")
-   field(FRST, "RAW")
-   field(FRVL, "4")
-   field(FVST, "TEXT")
-   field(FVVL, "5")
-}
 
 # Filename of the PAL file
 record(waveform, "$(P)$(R)PALFilePath")
 {
     field(PINI, "1")
     field(DTYP, "asynOctetWrite")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PAL_FILE_PATH")
-    field(FTVL, "CHAR")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_PAL_FILE_PATH")
+    field(FTVL, "UCHAR")
     field(NELM, "256")
 }
 
 record(waveform, "$(P)$(R)PALFilePath_RBV")
 {
-    field(PINI, "1")
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PAL_FILE_PATH")
-    field(FTVL, "CHAR")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_PAL_FILE_PATH")
+    field(FTVL, "UCHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
 }
@@ -191,9 +188,9 @@ record(mbbo, "$(P)$(R)AndorADCSpeed")
     field(VAL, "1")
 }
 
+#% archiver 10 Monitor
 record(mbbi, "$(P)$(R)AndorADCSpeed_RBV")
 {
-   field(PINI, "1")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_ADC_SPEED")
    field(ZRST, "0.05 MHz")
@@ -201,4 +198,49 @@ record(mbbi, "$(P)$(R)AndorADCSpeed_RBV")
    field(ONST, "2.5 MHz")
    field(ONVL, "1")
    field(SCAN, "I/O Intr")
+}
+
+
+
+#Records in ADBase that do not apply to Andor
+
+record(mbbo, "$(P)$(R)DataType")
+{
+    field(DISA, "1")
+}
+record(mbbi, "$(P)$(R)DataType_RBV")
+{
+    field(DISA, "1")
+}
+record(mbbo, "$(P)$(R)ColorMode")
+{
+    field(DISA, "1")
+}
+record(mbbi, "$(P)$(R)ColorMode_RBV")
+{
+    field(DISA, "1")
+}
+record(bo, "$(P)$(R)ReverseX")
+{
+    field(DISA, "1")
+}
+record(bi, "$(P)$(R)ReverseX_RBV")
+{
+    field(DISA, "1")
+}
+record(bo, "$(P)$(R)ReverseY")
+{
+    field(DISA, "1")
+}
+record(bi, "$(P)$(R)ReverseY_RBV")
+{
+    field(DISA, "1")
+}
+record(ao, "$(P)$(R)Gain")
+{
+    field(DISA, "1")
+}
+record(ai, "$(P)$(R)Gain_RBV")
+{
+    field(DISA, "1")
 }
