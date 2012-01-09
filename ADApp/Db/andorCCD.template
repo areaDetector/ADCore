@@ -120,7 +120,7 @@ record(waveform, "$(P)$(R)AndorTempStatus_RBV")
 {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_TEMP_STAT")
-    field(FTVL, "UCHAR")
+    field(FTVL, "CHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
 }
@@ -130,7 +130,7 @@ record(waveform, "$(P)$(R)AndorMessage_RBV")
 {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_MESSAGE")
-    field(FTVL, "UCHAR")
+    field(FTVL, "CHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
 }
@@ -163,7 +163,7 @@ record(waveform, "$(P)$(R)PALFilePath")
     field(PINI, "1")
     field(DTYP, "asynOctetWrite")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_PAL_FILE_PATH")
-    field(FTVL, "UCHAR")
+    field(FTVL, "CHAR")
     field(NELM, "256")
 }
 
@@ -171,7 +171,7 @@ record(waveform, "$(P)$(R)PALFilePath_RBV")
 {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_PAL_FILE_PATH")
-    field(FTVL, "UCHAR")
+    field(FTVL, "CHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
 }
