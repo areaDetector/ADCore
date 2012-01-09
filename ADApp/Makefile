@@ -13,6 +13,7 @@ DIRS += nexusSrc
 DIRS += pvcamSupport
 DIRS += perkinElmerSupport
 DIRS += magickSupport
+DIRS += andorSupport
 DIRS += pluginSrc
 pluginSrc_DEPEND_DIRS = ADSrc netCDFSrc prosilicaSupport tiffSupport hdf5Support nexusSrc magickSupport
 DIRS += simDetectorSrc
@@ -41,6 +42,8 @@ DIRS += brukerSrc
 brukerSrc_DEPEND_DIRS = pluginSrc
 DIRS += PSLSrc
 PSLSrc_DEPEND_DIRS = pluginSrc
+DIRS += andorSrc
+andorSrc_DEPEND_DIRS = andorSupport pluginSrc
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *db*))
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *Db*))
 include $(TOP)/configure/RULES_DIRS
