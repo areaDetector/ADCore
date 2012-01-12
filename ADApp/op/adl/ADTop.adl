@@ -1,14 +1,14 @@
 
 file {
 	name="/home/epics/devel/areaDetector/ADApp/op/adl/ADTop.adl"
-	version=030102
+	version=030105
 }
 display {
 	object {
 		x=171
 		y=78
 		width=225
-		height=405
+		height=430
 	}
 	clr=14
 	bclr=4
@@ -251,39 +251,6 @@ text {
 }
 text {
 	object {
-		x=80
-		y=225
-		width=50
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Roper"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=138
-		y=225
-		width=64
-		height=20
-	}
-	display[0] {
-		label="Roper #1 general"
-		name="ADBase.adl"
-		args="P=13ROPER1:, R=cam1: "
-	}
-	display[1] {
-		label="Roper #1 specific"
-		name="Roper.adl"
-		args="P=13ROPER1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
 		x=70
 		y=275
 		width=60
@@ -515,6 +482,83 @@ text {
 		label="URL #1 specific"
 		name="URLDriver.adl"
 		args="P=13URL1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+composite {
+	object {
+		x=80
+		y=225
+		width=122
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=80
+				y=225
+				width=50
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Roper"
+			align="horiz. right"
+		}
+		"related display" {
+			object {
+				x=138
+				y=225
+				width=64
+				height=20
+			}
+			display[0] {
+				label="Roper #1 general"
+				name="ADBase.adl"
+				args="P=13ROPER1:, R=cam1: "
+			}
+			display[1] {
+				label="Roper #1 specific"
+				name="Roper.adl"
+				args="P=13ROPER1:, R=cam1:"
+			}
+			clr=14
+			bclr=51
+		}
+	}
+}
+text {
+	object {
+		x=80
+		y=400
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Andor"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=138
+		y=400
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Andor #1 general"
+		name="ADBase.adl"
+		args="P=13ANDOR1:, R=cam1: "
+	}
+	display[1] {
+		label="Andor #1 specific"
+		name="Andor.adl"
+		args="P=13ANDOR1:, R=cam1:"
 	}
 	clr=14
 	bclr=51
