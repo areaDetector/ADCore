@@ -19,6 +19,23 @@ record(mbbo, "$(P)$(R)FileFormat")
    field(FVVL, "5")
 }
 
+# These are the records that we modify from NDFile.template
+record(mbbi, "$(P)$(R)FileFormat_RBV")
+{
+   field(ZRST, "TIFF")
+   field(ZRVL, "0")
+   field(ONST, "BMP")
+   field(ONVL, "1")
+   field(TWST, "SIF")
+   field(TWVL, "2")
+   field(THST, "EDF")
+   field(THVL, "3")
+   field(FRST, "RAW")
+   field(FRVL, "4")
+   field(FVST, "TEXT")
+   field(FVVL, "5")
+}
+
 # These are the records that are new for the Andor detector 
 record(bo, "$(P)$(R)AndorCooler")
 {
@@ -74,44 +91,39 @@ record(ao, "$(P)$(R)AndorACTInKinetics")
 }
 
 # Number of accumulations in kinetics mode.
-record(ao, "$(P)$(R)AndorANumInKinetics")
+record(longout, "$(P)$(R)AndorANumInKinetics")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_ANUM_KINETICS")
-   field(PREC, "3")
 }
 
-record(ao, "$(P)$(R)AndorFKHeight")
+record(longout, "$(P)$(R)AndorFKHeight")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_FK_HEIGHT")
-   field(PREC, "3")
 }
 
-record(ao, "$(P)$(R)AndorFKHBinning")
+record(longout, "$(P)$(R)AndorFKHBinning")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_FKH_BINNING")
-   field(PREC, "3")
 }
 
-record(ao, "$(P)$(R)AndorFKVBinning")
+record(longout, "$(P)$(R)AndorFKVBinning")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_FKV_BINNING")
-   field(PREC, "3")
 }
 
-record(ao, "$(P)$(R)AndorFKOffset")
+record(longout, "$(P)$(R)AndorFKOffset")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_FK_OFFSET")
-   field(PREC, "3")
 }
 
 
