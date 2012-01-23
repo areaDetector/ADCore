@@ -31,20 +31,20 @@
     Introduction</h2>
   <p>
     This is an <a href="http://www.aps.anl.gov/epics">EPICS</a> <a href="areaDetector.html">
-      areaDetector</a> driver for CCD and CMOS detectors from <a href="http://www.andor.com">Andor Technology</a>.
-      It has been tested on the Andor iKon CCD cameras with USB interface, but should work with other cameras as well.</p>
+      areaDetector</a> driver for CCD and CMOS detectors from <a href="http://www.andor.com">
+        Andor Technology</a>. It has been tested on the Andor iKon CCD cameras with
+    USB interface, but should work with other cameras as well.</p>
   <p>
-  The driver currently provides the following features:</p>
-    <ul>
-      <li>Take images in single image mode and accumulate mode</li>
-      <li>Set the exposure time</li>
-      <li>Set the filename</li>
-      <li>Change the ADC sampling speed (0.05MHz and 2.5MHz)</li>
-      <li>Set a region of interest (a smaller region can be read out faster)</li>
-      <li>Set and monitor the CCD temperature</li>
-      <li>Set the number of images to use in accumulate mode</li>
-    </ul>
-
+    The driver currently provides the following features:</p>
+  <ul>
+    <li>Take images in single image mode and accumulate mode</li>
+    <li>Set the exposure time</li>
+    <li>Set the filename</li>
+    <li>Change the ADC sampling speed (0.05MHz and 2.5MHz)</li>
+    <li>Set a region of interest (a smaller region can be read out faster)</li>
+    <li>Set and monitor the CCD temperature</li>
+    <li>Set the number of images to use in accumulate mode</li>
+  </ul>
   <p>
     This driver inherits from <a href="areaDetectorDoc.html#ADDriver">ADDriver</a>.
     It implements many of the parameters in <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">
@@ -55,8 +55,8 @@
   <h2 id="StandardNotes" style="text-align: left">
     Implementation of standard driver parameters</h2>
   <p>
-    The following table describes how the Andor driver implements some of the
-    standard driver parameters.
+    The following table describes how the Andor driver implements some of the standard
+    driver parameters.
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
@@ -85,8 +85,7 @@
             <li>Internal</li>
             <li>External</li>
           </ul>
-          This has not yet been tested.
-        </td>
+          This has not yet been tested. </td>
       </tr>
       <tr>
         <td>
@@ -110,8 +109,7 @@
           $(P)$(R)NumImages<br />
           $(P)$(R)NumImages_RBV</td>
         <td>
-          Set the number of images to take in multiple (accumulate) mode 
-        </td>
+          Set the number of images to take in multiple (accumulate) mode </td>
       </tr>
       <tr>
         <td>
@@ -120,18 +118,15 @@
           $(P)$(R)Temperature<br />
           $(P)$(R)Temperature_RBV</td>
         <td>
-          Set and read the operating temperature of the CCD (-120C to 20C)
-        </td>
+          Set and read the operating temperature of the CCD (-120C to 20C) </td>
       </tr>
     </tbody>
   </table>
-
-
   <h2 id="Driver_parameters" style="text-align: left">
     Andor specific parameters</h2>
   <p>
-    The Andor driver implements the following parameters in addition to those
-    in asynNDArrayDriver.h and ADDriver.h.
+    The Andor driver implements the following parameters in addition to those in asynNDArrayDriver.h
+    and ADDriver.h.
   </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
@@ -157,151 +152,257 @@
           EPICS record type</th>
       </tr>
       <tr>
-        <td>AndorCoolerParam</td>
-        <td>asynInt32</td>
-        <td>R/W</td>
-        <td>Turn the CCD cooler on and off</td>
-        <td>ANDOR_COOLER</td>
-        <td>AndorCooler<br/>
-            AndorCooler_RBV</td>
-        <td>bo<br/>
-            bi</td>
+        <td>
+          AndorCoolerParam</td>
+        <td>
+          asynInt32</td>
+        <td>
+          R/W</td>
+        <td>
+          Turn the CCD cooler on and off</td>
+        <td>
+          ANDOR_COOLER</td>
+        <td>
+          AndorCooler<br />
+          AndorCooler_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
       </tr>
       <tr>
-        <td>AndorShutdownParam</td>
-        <td>asynInt32</td>
-        <td>R/W</td>
-        <td>Write a 1 to this PV to shutdown the CCD and the driver cleanly. This must be done before rebooting the IOC.</td>
-        <td>ANDOR_SHUTDOWN</td>
-        <td>AndorShutdown</td>
-        <td>bo</td>
+        <td>
+          AndorShutdownParam</td>
+        <td>
+          asynInt32</td>
+        <td>
+          R/W</td>
+        <td>
+          Write a 1 to this PV to shutdown the CCD and the driver cleanly. This must be done
+          before rebooting the IOC.</td>
+        <td>
+          ANDOR_SHUTDOWN</td>
+        <td>
+          AndorShutdown</td>
+        <td>
+          bo</td>
       </tr>
       <tr>
-        <td>AndorStartupParam</td>
-        <td>asynInt32</td>
-        <td>R/W</td>
-        <td>Write a 1 to this PV to reinitialize the Andor software.</td>
-        <td>ANDOR_STARTUP</td>
-        <td>AndorStartup</td>
-        <td>bo</td>
+        <td>
+          AndorStartupParam</td>
+        <td>
+          asynInt32</td>
+        <td>
+          R/W</td>
+        <td>
+          Write a 1 to this PV to reinitialize the Andor software.</td>
+        <td>
+          ANDOR_STARTUP</td>
+        <td>
+          AndorStartup</td>
+        <td>
+          bo</td>
       </tr>
       <tr>
-        <td>AndorImageModeAMultiParam</td>
-        <td>asynInt32</td>
-        <td>R/W</td>
-        <td>Selects the Andor imaging mode.  Choices are:
+        <td>
+          AndorImageModeAMultiParam</td>
+        <td>
+          asynInt32</td>
+        <td>
+          R/W</td>
+        <td>
+          Selects the Andor imaging mode. Choices are:
           <ul>
             <li>Accumulate</li>
             <li>Kinetics</li>
             <li>Fast Kintetics</li>
-        </ul></td>
-        <td>ANDOR_IMAGE_MODE_AM</td>
-        <td>AndorImageMode</td>
-        <td>mbbo</td>
+          </ul>
+        </td>
+        <td>
+          ANDOR_IMAGE_MODE_AM</td>
+        <td>
+          AndorImageMode</td>
+        <td>
+          mbbo</td>
       </tr>
       <tr>
-        <td>AndorACTInKineticsParam</td>
-        <td>asynFloat64</td>
-        <td>R/W</td>
-        <td>Accumulated cycle time in kinetics mode.</td>
-        <td>ANDOR_ACT_KINETICS</td>
-        <td>AndorACTInKinetics</td>
-        <td>ao</td>
+        <td>
+          AndorACTInKineticsParam</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          R/W</td>
+        <td>
+          Accumulated cycle time in kinetics mode.</td>
+        <td>
+          ANDOR_ACT_KINETICS</td>
+        <td>
+          AndorACTInKinetics</td>
+        <td>
+          ao</td>
       </tr>
       <tr>
-        <td>AndorANumInKineticsParam</td>
-        <td>asynInt32</td>
-        <td>R/W</td>
-        <td>Number of accumulations in kinetics mode.</td>
-        <td>ANDOR_ANUM_KINETICS</td>
-        <td>AndorANumInKinetics</td>
-        <td>ao</td>
+        <td>
+          AndorANumInKineticsParam</td>
+        <td>
+          asynInt32</td>
+        <td>
+          R/W</td>
+        <td>
+          Number of accumulations in kinetics mode.</td>
+        <td>
+          ANDOR_ANUM_KINETICS</td>
+        <td>
+          AndorANumInKinetics</td>
+        <td>
+          ao</td>
       </tr>
       <tr>
-        <td>AndorFKHeightParam</td>
-        <td>asynInt32</td>
-        <td>R/W</td>
-        <td>Height of the region in Fast Kinetics mode.</td>
-        <td>ANDOR_FK_HEIGHT</td>
-        <td>AndorFKHeight</td>
-        <td>ao</td>
+        <td>
+          AndorFKHeightParam</td>
+        <td>
+          asynInt32</td>
+        <td>
+          R/W</td>
+        <td>
+          Height of the region in Fast Kinetics mode.</td>
+        <td>
+          ANDOR_FK_HEIGHT</td>
+        <td>
+          AndorFKHeight</td>
+        <td>
+          ao</td>
       </tr>
       <tr>
-        <td>AndorFKHBinningParam</td>
-        <td>asynInt32</td>
-        <td>R/W</td>
-        <td>Horizontal binning of the region in Fast Kinetics mode.</td>
-        <td>ANDOR_FKH_BINNING</td>
-        <td>AndorFKHBinning</td>
-        <td>ao</td>
+        <td>
+          AndorFKHBinningParam</td>
+        <td>
+          asynInt32</td>
+        <td>
+          R/W</td>
+        <td>
+          Horizontal binning of the region in Fast Kinetics mode.</td>
+        <td>
+          ANDOR_FKH_BINNING</td>
+        <td>
+          AndorFKHBinning</td>
+        <td>
+          ao</td>
       </tr>
       <tr>
-        <td>AndorFKVBinningParam</td>
-        <td>asynInt32</td>
-        <td>R/W</td>
-        <td>Vertical binning of the region in Fast Kinetics mode.</td>
-        <td>ANDOR_FKV_BINNING</td>
-        <td>AndorFKVBinning</td>
-        <td>ao</td>
+        <td>
+          AndorFKVBinningParam</td>
+        <td>
+          asynInt32</td>
+        <td>
+          R/W</td>
+        <td>
+          Vertical binning of the region in Fast Kinetics mode.</td>
+        <td>
+          ANDOR_FKV_BINNING</td>
+        <td>
+          AndorFKVBinning</td>
+        <td>
+          ao</td>
       </tr>
       <tr>
-        <td>AndorFKOffsetParam</td>
-        <td>asynInt32</td>
-        <td>R/W</td>
-        <td>Offset in Fast Kinetics mode.</td>
-        <td>ANDOR_FK_OFFSET</td>
-        <td>AndorFKOffset</td>
-        <td>ao</td>
+        <td>
+          AndorFKOffsetParam</td>
+        <td>
+          asynInt32</td>
+        <td>
+          R/W</td>
+        <td>
+          Offset in Fast Kinetics mode.</td>
+        <td>
+          ANDOR_FK_OFFSET</td>
+        <td>
+          AndorFKOffset</td>
+        <td>
+          ao</td>
       </tr>
       <tr>
-        <td>AndorTempStatusMessage</td>
-        <td>asynOctet</td>
-        <td>R/O</td>
-        <td>Temperature status message.</td>
-        <td>ANDOR_TEMP_STAT</td>
-        <td>AndorTempStatus_RBV</td>
-        <td>waveform</td>
+        <td>
+          AndorTempStatusMessage</td>
+        <td>
+          asynOctet</td>
+        <td>
+          R/O</td>
+        <td>
+          Temperature status message.</td>
+        <td>
+          ANDOR_TEMP_STAT</td>
+        <td>
+          AndorTempStatus_RBV</td>
+        <td>
+          waveform</td>
       </tr>
       <tr>
-        <td>AndorMessage</td>
-        <td>asynOctet</td>
-        <td>R/O</td>
-        <td>Other status message.</td>
-        <td>ANDOR_MESSAGE</td>
-        <td>AndorMessage_RBV</td>
-        <td>waveform</td>
+        <td>
+          AndorMessage</td>
+        <td>
+          asynOctet</td>
+        <td>
+          R/O</td>
+        <td>
+          Other status message.</td>
+        <td>
+          ANDOR_MESSAGE</td>
+        <td>
+          AndorMessage_RBV</td>
+        <td>
+          waveform</td>
       </tr>
       <tr>
-        <td>AndorShutterMode</td>
-        <td>asynInt32</td>
-        <td>R/W</td>
-        <td>Selects the Andor shutter mode.  Choices are:
+        <td>
+          AndorShutterMode</td>
+        <td>
+          asynInt32</td>
+        <td>
+          R/W</td>
+        <td>
+          Selects the Andor shutter mode. Choices are:
           <ul>
             <li>Auto</li>
             <li>Open</li>
-        </ul></td>
-        <td>ANDOR_SHUTTER_MODE</td>
-        <td>AndorShutterMode</td>
-        <td>mbbo</td>
+          </ul>
+        </td>
+        <td>
+          ANDOR_SHUTTER_MODE</td>
+        <td>
+          AndorShutterMode</td>
+        <td>
+          mbbo</td>
       </tr>
       <tr>
-        <td>AndorShutterExTTL</td>
-        <td>asynInt32</td>
-        <td>R/W</td>
-        <td>Selects the TTL polarity of an external shutter.  Choices are:
+        <td>
+          AndorShutterExTTL</td>
+        <td>
+          asynInt32</td>
+        <td>
+          R/W</td>
+        <td>
+          Selects the TTL polarity of an external shutter. Choices are:
           <ul>
             <li>Low To Open</li>
             <li>High To Open</li>
-        </ul></td>
-        <td>ANDOR_SHUTTER_EXTTL</td>
-        <td>AndorShutterExTTL</td>
-        <td>bo</td>
+          </ul>
+        </td>
+        <td>
+          ANDOR_SHUTTER_EXTTL</td>
+        <td>
+          AndorShutterExTTL</td>
+        <td>
+          bo</td>
       </tr>
       <tr>
-        <td>AndorFileFormat</td>
-        <td>asynInt32</td>
-        <td>R/W</td>
-        <td>Selects the file format for save files with the Andor driver.  Choices are:
+        <td>
+          AndorFileFormat</td>
+        <td>
+          asynInt32</td>
+        <td>
+          R/W</td>
+        <td>
+          Selects the file format for save files with the Andor driver. Choices are:
           <ul>
             <li>TIFF</li>
             <li>BMP</li>
@@ -309,57 +410,74 @@
             <li>EDF</li>
             <li>RAW</li>
             <li>TEXT</li>
-        </ul> 
-        NOTE: Currently only TIFF is supported.</td>
-        <td>ANDOR_FILE_FORMAT</td>
-        <td>AndorFileFormat</td>
-        <td>mbbo</td>
+          </ul>
+          NOTE: Currently only TIFF is supported.</td>
+        <td>
+          ANDOR_FILE_FORMAT</td>
+        <td>
+          AndorFileFormat</td>
+        <td>
+          mbbo</td>
       </tr>
       <tr>
-        <td>AndorPALFileName</td>
-        <td>asynOctet</td>
-        <td>R/W</td>
-        <td>Path and Filename of pallette file (used for TIFF file colours) (255 chars max).</td>
-        <td>ANDOR_PAL_FILE_PATH</td>
-        <td>PALFilePath</td>
-        <td>waveform</td>
+        <td>
+          AndorPALFileName</td>
+        <td>
+          asynOctet</td>
+        <td>
+          R/W</td>
+        <td>
+          Path and Filename of pallette file (used for TIFF file colours) (255 chars max).
+        </td>
+        <td>
+          ANDOR_PAL_FILE_PATH</td>
+        <td>
+          PALFilePath</td>
+        <td>
+          waveform</td>
       </tr>
       <tr>
-        <td>AndorAdcSpeed</td>
-        <td>asynInt32</td>
-        <td>R/W</td>
-        <td>Switch between the slow (low noise) ADC and the fast ADC.  Choices are:
+        <td>
+          AndorAdcSpeed</td>
+        <td>
+          asynInt32</td>
+        <td>
+          R/W</td>
+        <td>
+          Switch between the slow (low noise) ADC and the fast ADC. Choices are:
           <ul>
             <li>0.05 MHz</li>
             <li>2.5 MHz</li>
-        </ul> </td>
-        <td>ANDOR_ADC_SPEED</td>
-        <td>AndorADCSpeed<br/>
-            AndorADCSpeed_RBV</td>
-        <td>mbbo<br/>
-            mbbi</td>
+          </ul>
+        </td>
+        <td>
+          ANDOR_ADC_SPEED</td>
+        <td>
+          AndorADCSpeed<br />
+          AndorADCSpeed_RBV</td>
+        <td>
+          mbbo<br />
+          mbbi</td>
       </tr>
     </tbody>
   </table>
-
-
   <h2 id="Usage" style="text-align: left">
     Usage</h2>
-<p>
-Always use channel access put callback when setting parameters.</p>
-<p>
-If any of the parameters set are out of range or fail in some way, then the PV will be put into alarm state. 
-This should be checked after every PV set. </p>
-<p>
-An example palette file for a TIFF file is GREY.PAL in the iocAndor directory.</p>
-
+  <p>
+    Always use channel access put callback when setting parameters.</p>
+  <p>
+    If any of the parameters set are out of range or fail in some way, then the PV will
+    be put into alarm state. This should be checked after every PV set.
+  </p>
+  <p>
+    An example palette file for a TIFF file is GREY.PAL in the iocAndor directory.</p>
   <h2 id="Andor_docs" style="text-align: left">
     Andor CCD information and user manual</h2>
-<p>
-file:///dls_sw/work/R3.14.8.2/support/andorCCD/etc/private/iKon-M_Manual.pdf</p>
-<p>
-file:///dls_sw/work/R3.14.8.2/support/andorCCD/etc/private/Software_Development_Kit_V2.81.pdf (for developers only)</p>
-
+  <p>
+    file:///dls_sw/work/R3.14.8.2/support/andorCCD/etc/private/iKon-M_Manual.pdf</p>
+  <p>
+    file:///dls_sw/work/R3.14.8.2/support/andorCCD/etc/private/Software_Development_Kit_V2.81.pdf
+    (for developers only)</p>
   <h2 id="Future_plans" style="text-align: left">
     Future plans</h2>
   <ul>
