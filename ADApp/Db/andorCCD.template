@@ -36,9 +36,38 @@ record(mbbi, "$(P)$(R)FileFormat_RBV")
    field(FVVL, "5")
 }
 
+record(mbbo, "$(P)$(R)ImageMode")
+{
+   field(ZRST, "Single")
+   field(ZRVL, "0")
+   field(ONST, "Multiple")
+   field(ONVL, "1")
+   field(TWST, "Continuous")
+   field(TWVL, "2")
+   field(THST, "Fast Kinetics")
+   field(THVL, "3")
+   field(VAL,  "2")
+}
+
+record(mbbi, "$(P)$(R)ImageMode_RBV")
+{
+   field(ZRST, "Single")
+   field(ZRVL, "0")
+   field(ONST, "Multiple")
+   field(ONVL, "1")
+   field(TWST, "Continuous")
+   field(TWVL, "2")
+   field(THST, "Fast Kinetics")
+   field(THVL, "3")
+   field(SCAN, "I/O Intr")
+}
+
+
+
 # These are the records that are new for the Andor detector 
 record(bo, "$(P)$(R)AndorCooler")
 {
+    field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_COOLER")
     field(ZNAM, "Off")
@@ -54,78 +83,48 @@ record(bi, "$(P)$(R)AndorCooler_RBV")
     field(SCAN, "I/O Intr")
 }
 
-record(bo, "$(P)$(R)AndorShutdown")
-{
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_SHUTDOWN")
-}
-
-record(bo, "$(P)$(R)AndorStartup")
-{
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_STARTUP")
-}
-
-record(mbbo, "$(P)$(R)AndorImageMode")
-{
-   field(PINI, "1")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_IMAGE_MODE_AM")
-   field(ZRST, "Accumulate")
-   field(ZRVL, "0")
-   field(ONST, "Kinetics")
-   field(ONVL, "1")
-   field(TWST, "Fast Kinetics")
-   field(TWVL, "2")
-}
-
-# Accumulated cycle time in kinetics mode. 
-record(ao, "$(P)$(R)AndorACTInKinetics")
+# Accumulation period.
+record(ao, "$(P)$(R)AndorAccumulatePeriod")
 {
    field(PINI, "1")
    field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_ACT_KINETICS")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_ACCUMULATE_PERIOD")
    field(PREC, "3")
-   field(VAL, "0.0")
+   field(VAL,  "0.1")
    
 }
 
-# Number of accumulations in kinetics mode.
-record(longout, "$(P)$(R)AndorANumInKinetics")
+record(ai, "$(P)$(R)AndorAccumulatePeriod_RBV")
 {
-   field(PINI, "1")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_ANUM_KINETICS")
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_ACCUMULATE_PERIOD")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
 }
 
-record(longout, "$(P)$(R)AndorFKHeight")
+record(ai, "$(P)$(R)AndorAcquireTimeActual")
 {
-   field(PINI, "1")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_FK_HEIGHT")
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_ACQUIRE_TIME_ACTUAL")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
 }
 
-record(longout, "$(P)$(R)AndorFKHBinning")
+record(ai, "$(P)$(R)AndorAcquirePeriodActual")
 {
-   field(PINI, "1")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_FKH_BINNING")
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_ACQUIRE_PERIOD_ACTUAL")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
 }
 
-record(longout, "$(P)$(R)AndorFKVBinning")
+record(ai, "$(P)$(R)AndorAccumulatePeriodActual")
 {
-   field(PINI, "1")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_FKV_BINNING")
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_ACCUMULATE_PERIOD_ACTUAL")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
 }
-
-record(longout, "$(P)$(R)AndorFKOffset")
-{
-   field(PINI, "1")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_FK_OFFSET")
-}
-
 
 # Status message concerning temperature.
 record(waveform, "$(P)$(R)AndorTempStatus_RBV")
