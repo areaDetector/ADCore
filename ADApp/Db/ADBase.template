@@ -849,6 +849,15 @@ record(ai, "$(P)$(R)Temperature_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(ai, "$(P)$(R)TemperatureActual")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMPERATURE_ACTUAL")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+
 ###################################################################
 #  The asynRecord is used for mainly for trace mask               # 
 ###################################################################
