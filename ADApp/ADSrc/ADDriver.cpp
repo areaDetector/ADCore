@@ -136,6 +136,7 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int numParams, int maxBuff
     createParam(ADShutterOpenDelayString,    asynParamFloat64, &ADShutterOpenDelay);
     createParam(ADShutterCloseDelayString,   asynParamFloat64, &ADShutterCloseDelay);
     createParam(ADTemperatureString,         asynParamFloat64, &ADTemperature);
+    createParam(ADTemperatureActualString,   asynParamFloat64, &ADTemperatureActual);
     createParam(ADReadStatusString,          asynParamInt32, &ADReadStatus);
     createParam(ADStatusMessageString,       asynParamOctet, &ADStatusMessage);
     createParam(ADStringToServerString,      asynParamOctet, &ADStringToServer);

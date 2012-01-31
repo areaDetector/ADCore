@@ -116,6 +116,7 @@ typedef enum
 
     /* Temperature parameters */
 #define ADTemperatureString         "TEMPERATURE"           /**< (asynFloat64,  r/w) Detector temperature */
+#define ADTemperatureActualString   "TEMPERATURE_ACTUAL"    /**< (asynFloat64,  r/o) Actual detector temperature */
 
     /* Statistics on number of images collected and the image rate */
 #define ADNumImagesCounterString    "NIMAGES_COUNTER"       /**< (asynInt32,    r/o) Number of images collected in current acquisition sequence */
@@ -178,6 +179,7 @@ protected:
     int ADShutterOpenDelay;
     int ADShutterCloseDelay;
     int ADTemperature;
+    int ADTemperatureActual;
     int ADReadStatus;
     int ADStatusMessage;
     int ADStringToServer;
