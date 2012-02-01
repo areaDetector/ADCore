@@ -17,7 +17,6 @@
 #include <napi.h>
 #include <string.h>
 
-#include "asynNDArrayDriver.h"
 #include "NDFileNexus.h"
 #include <epicsExport.h>
 
