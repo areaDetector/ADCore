@@ -15,8 +15,6 @@ record(mbbo, "$(P)$(R)FileFormat")
    field(THVL, "3")
    field(FRST, "RAW")
    field(FRVL, "4")
-   field(FVST, "TEXT")
-   field(FVVL, "5")
 }
 
 # These are the records that we modify from NDFile.template
@@ -32,8 +30,6 @@ record(mbbi, "$(P)$(R)FileFormat_RBV")
    field(THVL, "3")
    field(FRST, "RAW")
    field(FRVL, "4")
-   field(FVST, "TEXT")
-   field(FVVL, "5")
 }
 
 record(mbbo, "$(P)$(R)ImageMode")
@@ -60,6 +56,91 @@ record(mbbi, "$(P)$(R)ImageMode_RBV")
    field(THST, "Fast Kinetics")
    field(THVL, "3")
    field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)TriggerMode")
+{
+   field(ZRST, "Internal")
+   field(ZRVL, "0")
+   field(ONST, "External")
+   field(ONVL, "1")
+   field(TWST, "External Start")
+   field(TWVL, "6")
+   field(THST, "External Exposure")
+   field(THVL, "7")
+   field(FRST, "External FVP")
+   field(FRVL, "9")
+   field(FVST, "Software")
+   field(FVVL, "10")
+}
+
+record(mbbi, "$(P)$(R)TriggerMode_RBV")
+{
+   field(ZRST, "Internal")
+   field(ZRVL, "0")
+   field(ONST, "External")
+   field(ONVL, "1")
+   field(TWST, "External Start")
+   field(TWVL, "6")
+   field(THST, "External Exposure")
+   field(THVL, "7")
+   field(FRST, "External FVP")
+   field(FRVL, "9")
+   field(FVST, "Software")
+   field(FVVL, "10")
+}
+
+record(ao, "$(P)$(R)Gain")
+{
+   field(PREC, "0")
+}
+
+record(ai, "$(P)$(R)Gain_RBV")
+{
+   field(PREC, "0")
+}
+
+record(mbbo, "$(P)$(R)DataType")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DATA_TYPE")
+   field(ZRST, "UInt16")
+   field(ZRVL, "3")
+   field(ONST, "UInt32")
+   field(ONVL, "5")
+   field(TWST, "")
+   field(TWVL, "")
+   field(THST, "")
+   field(THVL, "")
+   field(FRST, "")
+   field(FRVL, "")
+   field(FVST, "")
+   field(FVVL, "")
+   field(SXST, "")
+   field(SXVL, "")
+   field(SVST, "")
+   field(SVVL, "")
+}
+
+record(mbbi, "$(P)$(R)DataType_RBV")
+{
+   field(ZRST, "UInt16")
+   field(ZRVL, "3")
+   field(ONST, "UInt32")
+   field(ONVL, "5")
+   field(TWST, "")
+   field(TWVL, "")
+   field(THST, "")
+   field(THVL, "")
+   field(FRST, "")
+   field(FRVL, "")
+   field(FVST, "")
+   field(FVVL, "")
+   field(SXST, "")
+   field(SXVL, "")
+   field(SVST, "")
+   field(SVVL, "")
 }
 
 
@@ -98,30 +179,6 @@ record(ai, "$(P)$(R)AndorAccumulatePeriod_RBV")
 {
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_ACCUMULATE_PERIOD")
-   field(PREC, "3")
-   field(SCAN, "I/O Intr")
-}
-
-record(ai, "$(P)$(R)AndorAcquireTimeActual")
-{
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_ACQUIRE_TIME_ACTUAL")
-   field(PREC, "3")
-   field(SCAN, "I/O Intr")
-}
-
-record(ai, "$(P)$(R)AndorAcquirePeriodActual")
-{
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_ACQUIRE_PERIOD_ACTUAL")
-   field(PREC, "3")
-   field(SCAN, "I/O Intr")
-}
-
-record(ai, "$(P)$(R)AndorAccumulatePeriodActual")
-{
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_ACCUMULATE_PERIOD_ACTUAL")
    field(PREC, "3")
    field(SCAN, "I/O Intr")
 }
@@ -215,14 +272,6 @@ record(mbbi, "$(P)$(R)AndorADCSpeed_RBV")
 
 #Records in ADBase that do not apply to Andor
 
-record(mbbo, "$(P)$(R)DataType")
-{
-    field(DISA, "1")
-}
-record(mbbi, "$(P)$(R)DataType_RBV")
-{
-    field(DISA, "1")
-}
 record(mbbo, "$(P)$(R)ColorMode")
 {
     field(DISA, "1")
@@ -244,14 +293,6 @@ record(bo, "$(P)$(R)ReverseY")
     field(DISA, "1")
 }
 record(bi, "$(P)$(R)ReverseY_RBV")
-{
-    field(DISA, "1")
-}
-record(ao, "$(P)$(R)Gain")
-{
-    field(DISA, "1")
-}
-record(ai, "$(P)$(R)Gain_RBV")
 {
     field(DISA, "1")
 }
