@@ -778,7 +778,7 @@ asynStatus NDFileNexus::writeOctet(asynUser *pasynUser, const char *value,
   else {
     /* If this parameter belongs to a base class call its method */
     if (function < FIRST_NDFILE_NEXUS_PARAM)
-    status = asynNDArrayDriver::writeOctet(pasynUser, value, nChars, nActual);
+    status = NDPluginFile::writeOctet(pasynUser, value, nChars, nActual);
   }
 
    /* Do callbacks so higher layers see any changes */
