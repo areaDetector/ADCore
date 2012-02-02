@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>areaDetector Andor driver</title>
@@ -10,7 +10,7 @@
     <h1>
       areaDetector Andor driver</h1>
     <h2>
-      January 7, 2012</h2>
+      February 2, 2012</h2>
     <h2>
       Matthew Pearson, Diamond Light Source</h2>
     <h2>
@@ -23,9 +23,10 @@
     <li><a href="#StandardNotes">Implementation of standard driver parameters</a></li>
     <li><a href="#Driver_parameters">Andor specific parameters</a></li>
     <li><a href="#Unsupported">Unsupported standard driver parameters</a></li>
+    <li><a href="#Usage">Usage</a></li>
     <li><a href="#Configuration">Configuration</a></li>
-    <li><a href="#MEDM_screens">MEDM screens</a></li>
-    <li><a href="#Future_plans">Future plans</a> </li>
+    <li><a href="#MEDM_screen">MEDM screen</a></li>
+    <li><a href="#Restrictions">Restrictions</a> </li>
   </ul>
   <h2 id="Introduction" style="text-align: left">
     Introduction</h2>
@@ -33,17 +34,21 @@
     This is an <a href="http://www.aps.anl.gov/epics">EPICS</a> <a href="areaDetector.html">
       areaDetector</a> driver for CCD and CMOS detectors from <a href="http://www.andor.com">
         Andor Technology</a>. It has been tested on the Andor iKon CCD cameras with
-    USB interface, but should work with other cameras as well.</p>
+    USB interface, but should work with other cameras as well. The driver is supported
+    on 32-bit and 64- bit Linux and 32-bit and 64-bit Windows.</p>
   <p>
-    The driver currently provides the following features:</p>
+    The driver currently provides access to most of the features of the Andor cameras:</p>
   <ul>
-    <li>Take images in single image mode and accumulate mode</li>
-    <li>Set the exposure time</li>
-    <li>Set the filename</li>
-    <li>Change the ADC sampling speed (0.05MHz and 2.5MHz)</li>
+    <li>All Andor acquisition modes (Single Scan, Accumulate, Kinetics, Run Till Abort,
+      and Fast Kinetics</li>
+    <li>Control of the exposure time, accumulate cycle time, and kinetic cycle time</li>
+    <li>Support for all of the Andor trigger modes</li>
+    <li>Support for all of the Andor shutter modes</li>
+    <li>Support for reading the detectors with 16-bit or 32-bit depth</li>
+    <li>Saving files using the Andor SDK and/or with the standard areaDetector plugins</li>
+    <li>Change the ADC sampling speed (0.05MHz and 2.5MHz on the iKon)</li>
     <li>Set a region of interest (a smaller region can be read out faster)</li>
     <li>Set and monitor the CCD temperature</li>
-    <li>Set the number of images to use in accumulate mode</li>
   </ul>
   <p>
     This driver inherits from <a href="areaDetectorDoc.html#ADDriver">ADDriver</a>.
@@ -52,6 +57,11 @@
         ADArrayDriver.h</a>. It also implements a number of parameters that are specific
     to the Andor detectors. The <a href="areaDetectorDoxygenHTML/class_andor_c_c_d.html">
       Andor class documentation</a> describes this class in detail.</p>
+  <p>
+    This document does not attempt to explain the meaning of the Andor-specific parameters.
+    The <a href="Andor Software Development Kit documentation" target="_blank">Andor_Software_Development_Kit.pdf"</a>
+    provides this detailed information, and the reader is referred to that document.
+  </p>
   <h2 id="StandardNotes" style="text-align: left">
     Implementation of standard driver parameters</h2>
   <p>
@@ -84,8 +94,12 @@
           <ul>
             <li>Internal</li>
             <li>External</li>
+            <li>External Start</li>
+            <li>External Exposure</li>
+            <li>External FVP</li>
+            <li>Software</li>
           </ul>
-          This has not yet been tested. </td>
+        </td>
       </tr>
       <tr>
         <td>
@@ -94,13 +108,25 @@
           $(P)$(R)ImageMode<br />
           $(P)$(R)ImageMode_RBV</td>
         <td>
-          Sets the trigger mode for the detector. Options are:
+          Sets the image mode for the detector. Options are:
           <ul>
             <li>Single</li>
-            <li>Multiple (accumulate)</li>
-            <li>Continuous (not supported yet)</li>
+            <li>Multiple</li>
+            <li>Continuous</li>
+            <li>Fast Kinetics</li>
           </ul>
-        </td>
+          The relation of ImageMode to the Andor acquisition modes are given in the table
+          below. </td>
+      </tr>
+      <tr>
+        <td>
+          ADNumExposures</td>
+        <td>
+          $(P)$(R)NumExposures<br />
+          $(P)$(R)NumExposures_RBV</td>
+        <td>
+          Sets the number of accumulations (performed in software in Andor's driver) in Single
+          and Multiple modes</td>
       </tr>
       <tr>
         <td>
@@ -109,7 +135,52 @@
           $(P)$(R)NumImages<br />
           $(P)$(R)NumImages_RBV</td>
         <td>
-          Set the number of images to take in multiple (accumulate) mode </td>
+          Sets the number of images to take in multiple (Kinetics Series) mode </td>
+      </tr>
+      <tr>
+        <td>
+          ADAcquirePeriod</td>
+        <td>
+          $(P)$(R)AcquirePeriod<br />
+          $(P)$(R)AcquirePeriod_RBV</td>
+        <td>
+          Sets the time between images in Multiple (Kinetics Series) and Continuous (Run Till
+          Abort) modes</td>
+      </tr>
+      <tr>
+        <td>
+          ADGain</td>
+        <td>
+          $(P)$(R)Gain<br />
+          $(P)$(R)Gain_RBV</td>
+        <td>
+          Sets the pre-amp gain of the detector. For the Andor driver the Gain is treated
+          as an integer index into the supported gain table of the specific detector. The
+          list of supported gains for the detector gain be found by typing "asynReport 1,ANDOR"
+          at the IOC prompt. For example, on the iKon-M the relationship is:
+          <ul>
+            <li>Gain=0 Andor gain=1.0</li>
+            <li>Gain=1 Andor gain=2.0</li>
+            <li>Gain=2 Andor gain=4.0</li>
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          NDDataType</td>
+        <td>
+          $(P)$(R)DataType<br />
+          $(P)$(R)DataType_RBV</td>
+        <td>
+          Sets data type for reading out the detector. Allowed values are:
+          <ul>
+            <li>UInt16</li>
+            <li>UInt32</li>
+          </ul>
+          UInt16 can be used when reading out a 16-bit detector with NumExposures=1, (i.e.
+          without accumulations), or when one can be sure that multiple accumulations will
+          not overflow 16 bits. UInt32 should be used for 32-bit detectors or when multiple
+          accumulations could cause 16-bit overflow. </td>
       </tr>
       <tr>
         <td>
@@ -118,7 +189,143 @@
           $(P)$(R)Temperature<br />
           $(P)$(R)Temperature_RBV</td>
         <td>
-          Set and read the operating temperature of the CCD (-120C to 20C) </td>
+          Sets the setpoint temperature of the CCD (-120C to 20C) </td>
+      </tr>
+      <tr>
+        <td>
+          ADTemperatureActual</td>
+        <td>
+          $(P)$(R)TemperatureActual</td>
+        <td>
+          Reads the actual temperature of the CCD</td>
+      </tr>
+      <tr>
+        <td>
+          NDFileFormat</td>
+        <td>
+          $(P)$(R)FileFormat<br />
+          $(P)$(R)FileFormat_RBV</td>
+        <td>
+          Selects the file format for saving files with the Andor driver. Choices are:
+          <ul>
+            <li>TIFF</li>
+            <li>BMP</li>
+            <li>SIF</li>
+            <li>EDF</li>
+            <li>RAW</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    The following table shows the relationship of ImageMode to the Andor acquisition
+    modes, and the meaning of NumExposures and NumImages.</p>
+  <table border="1">
+    <tbody>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Relationship of ImageMode to the Andor acquisition modes, and the meaning of NumExposures
+            and NumImages.</b></td>
+      </tr>
+      <tr>
+        <th>
+          ImageMode</th>
+        <th>
+          NumExposures</th>
+        <th>
+          AcquireTime</th>
+        <th>
+          AndorAccumulatePeriod</th>
+        <th>
+          NumImages</th>
+        <th>
+          AcquirePeriod</th>
+        <th>
+          Andor acquisition mode</th>
+      </tr>
+      <tr>
+        <td>
+          Single</td>
+        <td>
+          1</td>
+        <td>
+          Sets exposure time</td>
+        <td>
+          Not applicable</td>
+        <td>
+          Not applicable</td>
+        <td>
+          Not applicable</td>
+        <td>
+          Single Scan</td>
+      </tr>
+      <tr>
+        <td>
+          Single</td>
+        <td>
+          &gt;1 Sets number of accumulations per image.</td>
+        <td>
+          Sets exposure time per accumulation</td>
+        <td>
+          Sets accumulation period (cycle time)</td>
+        <td>
+          Not applicable</td>
+        <td>
+          Not applicable</td>
+        <td>
+          Accumulate</td>
+      </tr>
+      <tr>
+        <td>
+          Multiple</td>
+        <td>
+          Sets number of accumulations per image</td>
+        <td>
+          Sets exposure time per accumulation</td>
+        <td>
+          Sets accumulation period if NumExposures &gt; 1</td>
+        <td>
+          Sets number of images </td>
+        <td>
+          Sets time between images (cycle time)</td>
+        <td>
+          Kinetic Series</td>
+      </tr>
+      <tr>
+        <td>
+          Continuous</td>
+        <td>
+          Not applicable</td>
+        <td>
+          Sets exposure time per image</td>
+        <td>
+          Not applicable</td>
+        <td>
+          Not applicable</td>
+        <td>
+          Sets time between images (cycle time)</td>
+        <td>
+          Run Till Abort</td>
+      </tr>
+      <tr>
+        <td>
+          Fast Kinetics</td>
+        <td>
+          Not applicable</td>
+        <td>
+          Sets exposure time per sub-area</td>
+        <td>
+          Not applicable</td>
+        <td>
+          Controls number of sub-area exposures, each being followed by a vertical shift of
+          SizeY. MinY controls the offset of the first row from the bottom of the CCD. SizeY
+          controls the sub-area height. BinX and BinY control the horizontal and vertical
+          binning.</td>
+        <td>
+          Not applicable</td>
+        <td>
+          Fast Kinetics</td>
       </tr>
     </tbody>
   </table>
@@ -168,157 +375,6 @@
         <td>
           bo<br />
           bi</td>
-      </tr>
-      <tr>
-        <td>
-          AndorShutdownParam</td>
-        <td>
-          asynInt32</td>
-        <td>
-          R/W</td>
-        <td>
-          Write a 1 to this PV to shutdown the CCD and the driver cleanly. This must be done
-          before rebooting the IOC.</td>
-        <td>
-          ANDOR_SHUTDOWN</td>
-        <td>
-          AndorShutdown</td>
-        <td>
-          bo</td>
-      </tr>
-      <tr>
-        <td>
-          AndorStartupParam</td>
-        <td>
-          asynInt32</td>
-        <td>
-          R/W</td>
-        <td>
-          Write a 1 to this PV to reinitialize the Andor software.</td>
-        <td>
-          ANDOR_STARTUP</td>
-        <td>
-          AndorStartup</td>
-        <td>
-          bo</td>
-      </tr>
-      <tr>
-        <td>
-          AndorImageModeAMultiParam</td>
-        <td>
-          asynInt32</td>
-        <td>
-          R/W</td>
-        <td>
-          Selects the Andor imaging mode. Choices are:
-          <ul>
-            <li>Accumulate</li>
-            <li>Kinetics</li>
-            <li>Fast Kintetics</li>
-          </ul>
-        </td>
-        <td>
-          ANDOR_IMAGE_MODE_AM</td>
-        <td>
-          AndorImageMode</td>
-        <td>
-          mbbo</td>
-      </tr>
-      <tr>
-        <td>
-          AndorACTInKineticsParam</td>
-        <td>
-          asynFloat64</td>
-        <td>
-          R/W</td>
-        <td>
-          Accumulated cycle time in kinetics mode.</td>
-        <td>
-          ANDOR_ACT_KINETICS</td>
-        <td>
-          AndorACTInKinetics</td>
-        <td>
-          ao</td>
-      </tr>
-      <tr>
-        <td>
-          AndorANumInKineticsParam</td>
-        <td>
-          asynInt32</td>
-        <td>
-          R/W</td>
-        <td>
-          Number of accumulations in kinetics mode.</td>
-        <td>
-          ANDOR_ANUM_KINETICS</td>
-        <td>
-          AndorANumInKinetics</td>
-        <td>
-          ao</td>
-      </tr>
-      <tr>
-        <td>
-          AndorFKHeightParam</td>
-        <td>
-          asynInt32</td>
-        <td>
-          R/W</td>
-        <td>
-          Height of the region in Fast Kinetics mode.</td>
-        <td>
-          ANDOR_FK_HEIGHT</td>
-        <td>
-          AndorFKHeight</td>
-        <td>
-          ao</td>
-      </tr>
-      <tr>
-        <td>
-          AndorFKHBinningParam</td>
-        <td>
-          asynInt32</td>
-        <td>
-          R/W</td>
-        <td>
-          Horizontal binning of the region in Fast Kinetics mode.</td>
-        <td>
-          ANDOR_FKH_BINNING</td>
-        <td>
-          AndorFKHBinning</td>
-        <td>
-          ao</td>
-      </tr>
-      <tr>
-        <td>
-          AndorFKVBinningParam</td>
-        <td>
-          asynInt32</td>
-        <td>
-          R/W</td>
-        <td>
-          Vertical binning of the region in Fast Kinetics mode.</td>
-        <td>
-          ANDOR_FKV_BINNING</td>
-        <td>
-          AndorFKVBinning</td>
-        <td>
-          ao</td>
-      </tr>
-      <tr>
-        <td>
-          AndorFKOffsetParam</td>
-        <td>
-          asynInt32</td>
-        <td>
-          R/W</td>
-        <td>
-          Offset in Fast Kinetics mode.</td>
-        <td>
-          ANDOR_FK_OFFSET</td>
-        <td>
-          AndorFKOffset</td>
-        <td>
-          ao</td>
       </tr>
       <tr>
         <td>
@@ -396,39 +452,14 @@
       </tr>
       <tr>
         <td>
-          AndorFileFormat</td>
-        <td>
-          asynInt32</td>
-        <td>
-          R/W</td>
-        <td>
-          Selects the file format for save files with the Andor driver. Choices are:
-          <ul>
-            <li>TIFF</li>
-            <li>BMP</li>
-            <li>SIF</li>
-            <li>EDF</li>
-            <li>RAW</li>
-            <li>TEXT</li>
-          </ul>
-          NOTE: Currently only TIFF is supported.</td>
-        <td>
-          ANDOR_FILE_FORMAT</td>
-        <td>
-          AndorFileFormat</td>
-        <td>
-          mbbo</td>
-      </tr>
-      <tr>
-        <td>
           AndorPALFileName</td>
         <td>
           asynOctet</td>
         <td>
           R/W</td>
         <td>
-          Path and Filename of pallette file (used for TIFF file colours) (255 chars max).
-        </td>
+          Path and Filename of pallette file (used for TIFF and BMP file colours) (255 chars
+          max). </td>
         <td>
           ANDOR_PAL_FILE_PATH</td>
         <td>
@@ -459,8 +490,82 @@
           mbbo<br />
           mbbi</td>
       </tr>
+      <tr>
+        <td>
+          AndorAccumulatePeriod</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          R/W</td>
+        <td>
+          Controls the period between accumulations when ImageMode=Single or Multiple and
+          NumExposures&gt;1. </td>
+        <td>
+          ANDOR_ACCUMULATE_PERIOD</td>
+        <td>
+          AndorAccumulatePeriod<br />
+          AndorAccumulatePeriod_RBV</td>
+        <td>
+          ao<br />
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          AndorAccumulatePeriodActual</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          R/O</td>
+        <td>
+          Reads the actual value of AndorAccumulatePeriod, which may differ from the requested
+          value due to timing limitations of the detector. </td>
+        <td>
+          ANDOR_ACCUMULATE_PERIOD_ACTUAL</td>
+        <td>
+          AndorAccumulatePeriodActual</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          AndorAcquireTimeActual</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          R/O</td>
+        <td>
+          Reads the actual value of ADAcquireTime, which may differ from the requested value
+          due to timing limitations of the detector. </td>
+        <td>
+          ANDOR_ACQUIRE_TIME_ACTUAL</td>
+        <td>
+          AndorAcquireTimeActual</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          AndorAcquirePeriodActual</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          R/O</td>
+        <td>
+          Reads the actual value of ADAcquirePeriod, which may differ from the requested value
+          due to timing limitations of the detector. </td>
+        <td>
+          ANDOR_ACQUIRE_PERIOD_ACTUAL</td>
+        <td>
+          AndorAcquirePeriodActual</td>
+        <td>
+          ai</td>
+      </tr>
     </tbody>
   </table>
+  <h2 id="Unsupported" style="text-align: left">
+    Unsupported standard driver parameters</h2>
+  <p>
+    ColorMode, ReverseX, and ReverseY are currently not supported.</p>
   <h2 id="Usage" style="text-align: left">
     Usage</h2>
   <p>
@@ -471,25 +576,54 @@
   </p>
   <p>
     An example palette file for a TIFF file is GREY.PAL in the iocAndor directory.</p>
-  <h2 id="Andor_docs" style="text-align: left">
-    Andor CCD information and user manual</h2>
+  <h2 id="Configuration">
+    Configuration</h2>
   <p>
-    file:///dls_sw/work/R3.14.8.2/support/andorCCD/etc/private/iKon-M_Manual.pdf</p>
+    The Andor driver is created with the andorCCDConfig command, either from C/C++ or
+    from the EPICS IOC shell.</p>
+  <pre>int andorCCDConfig(const char *portName,
+                int maxBuffers, size_t maxMemory,
+                const char* installPath,
+                int priority, int stackSize)
+  </pre>
   <p>
-    file:///dls_sw/work/R3.14.8.2/support/andorCCD/etc/private/Software_Development_Kit_V2.81.pdf
-    (for developers only)</p>
-  <h2 id="Future_plans" style="text-align: left">
-    Future plans</h2>
+    For details on the meaning of the parameters to this function refer to the detailed
+    documentation on the andorCCDConfig function in the <a href="areaDetectorDoxygenHTML/andor_c_c_d_8cpp.html">
+      andor_c_c_d.cpp documentation</a> and in the documentation for the constructor
+    for the <a href="areaDetectorDoxygenHTML/class_andor_c_c_d.html">andorCCD class</a>.
+  </p>
+  <p>
+    There an example IOC boot directory and startup script (<a href="andor_st_cmd.html">iocBoot/iocAndor/st.cmd)</a>
+    provided with areaDetector.
+  </p>
+  <h2 id="MEDM_screen" style="text-align: left">
+    MEDM screen</h2>
+  <p>
+    The following shows the MEDM screen that is used to control the Andor detector.
+    Note that the general purpose screen ADBase.adl can be used, but it exposes a few
+    controls that are not applicable to the Andor, and lacks some fields that are important
+    for the Andor.</p>
+  <p>
+    <code>Andor.adl</code> is the main screen used to control the Andor driver.
+  </p>
+  <div style="text-align: center">
+    <h3 style="text-align: center">
+      Andor.adl</h3>
+    <img alt="Andor.png" src="Andor.png" /></div>
+  <h2 id="Restrictions" style="text-align: left">
+    Restrictions</h2>
+  <p>
+    The following are known restrictions of the Andor driver. These should be fixed
+    in a future release.</p>
   <ul>
-    <li>Support for more data acquisiton modes (kinetic and fast kinetics)</li>
-    <li>Automatic filename handling</li>
-    <li>Support for more file types (EDF)</li>
-    <li>Support for array callbacks to support plugins.</li>
-    <li>Support for setting more iKon detector parameters</li>
-    <li>Support for detector output signals (trigger and gate)</li>
-    <li>Set up autosave restore of settings, and archiving of parameters.</li>
-    <li>Remove AndorShutdown, use an EPICS exit handler instead.</li>
-    <li>Remove AndorFileFormat, just use normal NDFileFormat.</li>
+    <li>No support for detector output signals (trigger and gate).</li>
+    <li>The actual value of AndorAccumulatePeriod seems to be set to the AcquirePeriod,
+      which is not correct. This prevents the AccumulateCycleTime from working and KineticCycleTime
+      from working independently and correctly.</li>
+    <li>Saving files using the Andor driver in Multiple and Continuous modes results in
+      errors because the Andor SDK functions won't save files if acquisition is in progress.</li>
+    <li>FastKinetics mode does not work, it always reports an error on the second parameter,</li>
+    <li>Trigger modes have not been tested.</li>
   </ul>
 </body>
 </html>
