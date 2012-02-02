@@ -9,10 +9,13 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
-    Release 1-8 (XX-December-2011)</h2>
+    Release 1-8 (XX-February-2012)</h2>
   <ul>
     <li>Drivers
       <ul>
+        <li>New Andor driver. Orginal version by Matt Pearson from Diamond Light Source. This
+          driver supports both USB and PCI cameras from Andor. It runs on 32-bit and 64-bit
+          Linux and 32-bit and 64-bit Windows.</li>
         <li>Perkin Elmer driver. Many new features:
           <ul>
             <li>Added support for 64-bit Windows.</li>
@@ -79,6 +82,10 @@
               template file. It could use a null object pointer in some circumstances.</li>
             <li>Fixed a bug which cause the plugin to use stale attributes when creating files
               in Stream or Capture modes. Thanks to Kevin Peterson for this fix.</li>
+            <li>Fixed a bug that caused it to ignore the NDArrayPort PV, so the array source could
+              not be changed from that in the startup script (i.e. change to ROI1, etc.).</li>
+            <li>Increased the stack size for this plugin in iocBoot/commonPlugins.cmd, because
+              it was crashing with a stack overflow on windows-x64.</li>
           </ul>
         </li>
         <li>NDPluginProcess
@@ -144,8 +151,6 @@
     <li>Miscellaneous
       <ul>
         <li>Fixes to commonDriverMakefile to build on Darwin (OS X).</li>
-        <li>Increased stack size of NDFileNexus plugin in iocBoot/commonPlugins.cmd because
-          it was crashing on windows-x64.</li>
       </ul>
     </li>
   </ul>
