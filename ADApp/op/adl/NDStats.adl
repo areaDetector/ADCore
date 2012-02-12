@@ -1,14 +1,14 @@
 
 file {
 	name="/home/epics/devel/areaDetector/ADApp/op/adl/NDStats.adl"
-	version=030102
+	version=030105
 }
 display {
 	object {
-		x=148
-		y=62
-		width=755
-		height=780
+		x=87
+		y=64
+		width=1120
+		height=555
 	}
 	clr=14
 	bclr=4
@@ -89,7 +89,7 @@ display {
 }
 rectangle {
 	object {
-		x=127
+		x=310
 		y=9
 		width=500
 		height=26
@@ -100,7 +100,7 @@ rectangle {
 }
 text {
 	object {
-		x=269
+		x=452
 		y=10
 		width=216
 		height=25
@@ -120,6 +120,290 @@ composite {
 	}
 	"composite name"=""
 	"composite file"="NDPluginBase.adl"
+}
+composite {
+	object {
+		x=755
+		y=245
+		width=360
+		height=180
+	}
+	"composite name"=""
+	children {
+		rectangle {
+			object {
+				x=882
+				y=247
+				width=107
+				height=21
+			}
+			"basic attribute" {
+				clr=2
+			}
+		}
+		text {
+			object {
+				x=885
+				y=247
+				width=100
+				height=20
+			}
+			"basic attribute" {
+				clr=54
+			}
+			textix="Histogram"
+			align="horiz. centered"
+		}
+		menu {
+			object {
+				x=951
+				y=275
+				width=60
+				height=18
+			}
+			control {
+				chan="$(P)$(R)ComputeHistogram"
+				clr=14
+				bclr=51
+			}
+		}
+		text {
+			object {
+				x=830
+				y=274
+				width=110
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Compute histogram?"
+			align="horiz. right"
+		}
+		"text entry" {
+			object {
+				x=951
+				y=299
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)HistSize"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		text {
+			object {
+				x=870
+				y=299
+				width=70
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Size"
+			align="horiz. right"
+		}
+		"text entry" {
+			object {
+				x=951
+				y=324
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)HistMin"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		text {
+			object {
+				x=870
+				y=324
+				width=70
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Minimum"
+			align="horiz. right"
+		}
+		"text entry" {
+			object {
+				x=951
+				y=349
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)HistMax"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		text {
+			object {
+				x=870
+				y=349
+				width=70
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Maximum"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=951
+				y=375
+				width=61
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)HistEntropy_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+		text {
+			object {
+				x=840
+				y=374
+				width=100
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Entropy"
+			align="horiz. right"
+		}
+		rectangle {
+			object {
+				x=755
+				y=245
+				width=360
+				height=180
+			}
+			"basic attribute" {
+				clr=14
+				fill="outline"
+			}
+		}
+		"text update" {
+			object {
+				x=1018
+				y=275
+				width=90
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)ComputeHistogram_RBV"
+				clr=54
+				bclr=12
+			}
+			clrmod="alarm"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=1018
+				y=300
+				width=90
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)HistSize_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=1018
+				y=325
+				width=90
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)HistMin_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=1018
+				y=350
+				width=90
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)HistMax_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+		composite {
+			object {
+				x=900
+				y=399
+				width=111
+				height=20
+			}
+			"composite name"=""
+			children {
+				"related display" {
+					object {
+						x=951
+						y=399
+						width=60
+						height=20
+					}
+					display[0] {
+						label="netCDF file #1"
+						name="NDPlot.adl"
+						args="P=$(P),R=$(R),DATA=Histogram_RBV,TITLE=Histogram,XLABEL=Bin Number,YLABEL=Counts"
+					}
+					clr=14
+					bclr=51
+				}
+				text {
+					object {
+						x=900
+						y=399
+						width=40
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Plot"
+				}
+			}
+		}
+	}
 }
 rectangle {
 	object {
@@ -433,18 +717,279 @@ text {
 }
 composite {
 	object {
-		x=390
-		y=595
+		x=755
+		y=40
 		width=360
-		height=180
+		height=200
 	}
 	"composite name"=""
 	children {
 		rectangle {
 			object {
-				x=517
-				y=597
-				width=107
+				x=755
+				y=40
+				width=360
+				height=200
+			}
+			"basic attribute" {
+				clr=14
+				fill="outline"
+			}
+		}
+		composite {
+			object {
+				x=770
+				y=121
+				width=339
+				height=87
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=770
+						y=143
+						width=170
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Cursor X"
+					align="horiz. right"
+				}
+				valuator {
+					object {
+						x=949
+						y=143
+						width=160
+						height=20
+					}
+					control {
+						chan="$(P)$(R)CursorX"
+						clr=54
+						bclr=51
+					}
+					dPrecision=1.000000
+					limits {
+					}
+				}
+				"text entry" {
+					object {
+						x=949
+						y=121
+						width=60
+						height=19
+					}
+					control {
+						chan="$(P)$(R)CursorX"
+						clr=14
+						bclr=51
+					}
+					limits {
+					}
+				}
+				"text update" {
+					object {
+						x=1014
+						y=121
+						width=90
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)CursorX_RBV"
+						clr=54
+						bclr=4
+					}
+					limits {
+					}
+				}
+				text {
+					object {
+						x=770
+						y=188
+						width=170
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Cursor Y"
+					align="horiz. right"
+				}
+				valuator {
+					object {
+						x=949
+						y=188
+						width=160
+						height=20
+					}
+					control {
+						chan="$(P)$(R)CursorY"
+						clr=54
+						bclr=51
+					}
+					dPrecision=1.000000
+					limits {
+					}
+				}
+				"text entry" {
+					object {
+						x=949
+						y=166
+						width=60
+						height=19
+					}
+					control {
+						chan="$(P)$(R)CursorY"
+						clr=14
+						bclr=51
+					}
+					limits {
+					}
+				}
+				"text update" {
+					object {
+						x=1014
+						y=166
+						width=90
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)CursorY_RBV"
+						clr=54
+						bclr=4
+					}
+					limits {
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=760
+				y=71
+				width=345
+				height=20
+			}
+			"composite name"=""
+			children {
+				menu {
+					object {
+						x=949
+						y=72
+						width=60
+						height=18
+					}
+					control {
+						chan="$(P)$(R)ComputeProfiles"
+						clr=14
+						bclr=51
+					}
+				}
+				"text update" {
+					object {
+						x=1015
+						y=72
+						width=90
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)ComputeProfiles_RBV"
+						clr=54
+						bclr=12
+					}
+					clrmod="alarm"
+					limits {
+					}
+				}
+				text {
+					object {
+						x=760
+						y=71
+						width=180
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Compute profiles"
+					align="horiz. right"
+				}
+			}
+		}
+		composite {
+			object {
+				x=759
+				y=96
+				width=346
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=759
+						y=96
+						width=100
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Size X"
+					align="horiz. right"
+				}
+				"text update" {
+					object {
+						x=863
+						y=97
+						width=90
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)ProfileSizeX_RBV"
+						clr=54
+						bclr=4
+					}
+					limits {
+					}
+				}
+				"text update" {
+					object {
+						x=1015
+						y=97
+						width=90
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)ProfileSizeY_RBV"
+						clr=54
+						bclr=4
+					}
+					limits {
+					}
+				}
+				text {
+					object {
+						x=979
+						y=96
+						width=30
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Y"
+					align="horiz. right"
+				}
+			}
+		}
+		rectangle {
+			object {
+				x=880
+				y=45
+				width=110
 				height=21
 			}
 			"basic attribute" {
@@ -453,232 +998,21 @@ composite {
 		}
 		text {
 			object {
-				x=520
-				y=597
-				width=100
+				x=883
+				y=45
+				width=103
 				height=20
 			}
 			"basic attribute" {
 				clr=54
 			}
-			textix="Histogram"
+			textix="Profiles"
 			align="horiz. centered"
-		}
-		menu {
-			object {
-				x=586
-				y=625
-				width=60
-				height=18
-			}
-			control {
-				chan="$(P)$(R)ComputeHistogram"
-				clr=14
-				bclr=51
-			}
-		}
-		text {
-			object {
-				x=465
-				y=624
-				width=110
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Compute histogram?"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=586
-				y=649
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)HistSize"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=505
-				y=649
-				width=70
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Size"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=586
-				y=674
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)HistMin"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=505
-				y=674
-				width=70
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Minimum"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=586
-				y=699
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)HistMax"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=505
-				y=699
-				width=70
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Maximum"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=586
-				y=725
-				width=61
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)HistEntropy_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=475
-				y=724
-				width=100
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Entropy"
-			align="horiz. right"
-		}
-		rectangle {
-			object {
-				x=390
-				y=595
-				width=360
-				height=180
-			}
-			"basic attribute" {
-				clr=14
-				fill="outline"
-			}
-		}
-		"text update" {
-			object {
-				x=653
-				y=625
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ComputeHistogram_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=653
-				y=650
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)HistSize_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=653
-				y=675
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)HistMin_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=653
-				y=700
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)HistMax_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
 		}
 		composite {
 			object {
-				x=535
-				y=749
+				x=900
+				y=213
 				width=111
 				height=20
 			}
@@ -686,23 +1020,58 @@ composite {
 			children {
 				"related display" {
 					object {
-						x=586
-						y=749
+						x=951
+						y=213
 						width=60
 						height=20
 					}
 					display[0] {
-						label="netCDF file #1"
+						label="Average X"
 						name="NDPlot.adl"
-						args="P=$(P),R=$(R),DATA=Histogram_RBV,TITLE=Histogram,XLABEL=Bin Number,YLABEL=Counts"
+						args="P=$(P),R=$(R),DATA=ProfileAverageX_RBV,TITLE=AverageX,XLABEL=Pixel,YLABEL=Counts"
+					}
+					display[1] {
+						label="Average Y"
+						name="NDPlot.adl"
+						args="P=$(P),R=$(R),DATA=ProfileAverageY_RBV,TITLE=AverageY,XLABEL=Pixel,YLABEL=Counts"
+					}
+					display[2] {
+						label="Threshold X"
+						name="NDPlot.adl"
+						args="P=$(P),R=$(R),DATA=ProfileThresholdX_RBV,TITLE=ThresholdX,XLABEL=Pixel,YLABEL=Counts"
+					}
+					display[3] {
+						label="Threshold Y"
+						name="NDPlot.adl"
+						args="P=$(P),R=$(R),DATA=ProfileThresholdY_RBV,TITLE=ThresholdY,XLABEL=Pixel,YLABEL=Counts"
+					}
+					display[4] {
+						label="Centroid X"
+						name="NDPlot.adl"
+						args="P=$(P),R=$(R),DATA=ProfileCentroidX_RBV,TITLE=CentroidX,XLABEL=Pixel,YLABEL=Counts"
+					}
+					display[5] {
+						label="Centroid Y"
+						name="NDPlot.adl"
+						args="P=$(P),R=$(R),DATA=ProfileCentroidY_RBV,TITLE=CentroidY,XLABEL=Pixel,YLABEL=Counts"
+					}
+					display[6] {
+						label="Cursor X"
+						name="NDPlot.adl"
+						args="P=$(P),R=$(R),DATA=ProfileCursorX_RBV,TITLE=CursorX,XLABEL=Pixel,YLABEL=Counts"
+					}
+					display[7] {
+						label="Cursor Y"
+						name="NDPlot.adl"
+						args="P=$(P),R=$(R),DATA=ProfileCursorY_RBV,TITLE=CursorY,XLABEL=Pixel,YLABEL=Counts"
 					}
 					clr=14
 					bclr=51
 				}
 				text {
 					object {
-						x=535
-						y=749
+						x=900
+						y=213
 						width=40
 						height=20
 					}
@@ -715,12 +1084,292 @@ composite {
 		}
 	}
 }
+"related display" {
+	object {
+		x=590
+		y=196
+		width=60
+		height=20
+	}
+	display[0] {
+		label="Total"
+		name="NDTimeSeries.adl"
+		args="P=$(P),R=$(R),PLT=TSTotal"
+	}
+	display[1] {
+		label="Net"
+		name="NDTimeSeries.adl"
+		args="P=$(P),R=$(R),PLT=TSNet"
+	}
+	display[2] {
+		label="Min"
+		name="NDTimeSeries.adl"
+		args="P=$(P),R=$(R),PLT=TSMinValue"
+	}
+	display[3] {
+		label="Max"
+		name="NDTimeSeries.adl"
+		args="P=$(P),R=$(R),PLT=TSMaxValue"
+	}
+	display[4] {
+		label="Mean"
+		name="NDTimeSeries.adl"
+		args="P=$(P),R=$(R),PLT=TSMeanValue"
+	}
+	display[5] {
+		label="Sigma"
+		name="NDTimeSeries.adl"
+		args="$(P),R=$(R),PLT=TSSigmaValue"
+	}
+	clr=14
+	bclr=51
+}
+rectangle {
+	object {
+		x=509
+		y=420
+		width=120
+		height=21
+	}
+	"basic attribute" {
+		clr=2
+	}
+}
+rectangle {
+	object {
+		x=389
+		y=415
+		width=360
+		height=130
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+text {
+	object {
+		x=514
+		y=420
+		width=110
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="Time Series"
+	align="horiz. centered"
+}
+text {
+	object {
+		x=394
+		y=311
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Centroid X"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=498
+		y=312
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)CentroidX_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=650
+		y=312
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)CentroidY_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=614
+		y=311
+		width=30
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Y"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=650
+		y=337
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)SigmaY_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=614
+		y=336
+		width=30
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Y"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=584
+		y=262
+		width=60
+		height=18
+	}
+	control {
+		chan="$(P)$(R)ComputeCentroid"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=650
+		y=262
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ComputeCentroid_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	limits {
+	}
+}
+text {
+	object {
+		x=395
+		y=261
+		width=180
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Compute centroid"
+	align="horiz. right"
+}
+composite {
+	object {
+		x=515
+		y=235
+		width=110
+		height=21
+	}
+	"composite name"=""
+	children {
+		rectangle {
+			object {
+				x=515
+				y=235
+				width=110
+				height=21
+			}
+			"basic attribute" {
+				clr=2
+			}
+		}
+		text {
+			object {
+				x=518
+				y=235
+				width=103
+				height=20
+			}
+			"basic attribute" {
+				clr=54
+			}
+			textix="Centroid"
+			align="horiz. centered"
+		}
+	}
+}
+text {
+	object {
+		x=405
+		y=286
+		width=170
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Centroid threshold"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=584
+		y=287
+		width=60
+		height=19
+	}
+	control {
+		chan="$(P)$(R)CentroidThreshold"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=650
+		y=287
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)CentroidThreshold_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
 rectangle {
 	object {
 		x=390
-		y=390
+		y=230
 		width=360
-		height=200
+		height=180
 	}
 	"basic attribute" {
 		clr=14
@@ -729,550 +1378,22 @@ rectangle {
 }
 composite {
 	object {
-		x=405
-		y=471
-		width=339
-		height=87
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=405
-				y=493
-				width=170
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Cursor X"
-			align="horiz. right"
-		}
-		valuator {
-			object {
-				x=584
-				y=493
-				width=160
-				height=20
-			}
-			control {
-				chan="$(P)$(R)CursorX"
-				clr=54
-				bclr=51
-			}
-			dPrecision=1.000000
-			limits {
-			}
-		}
-		"text entry" {
-			object {
-				x=584
-				y=471
-				width=60
-				height=19
-			}
-			control {
-				chan="$(P)$(R)CursorX"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=649
-				y=471
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)CursorX_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=405
-				y=538
-				width=170
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Cursor Y"
-			align="horiz. right"
-		}
-		valuator {
-			object {
-				x=584
-				y=538
-				width=160
-				height=20
-			}
-			control {
-				chan="$(P)$(R)CursorY"
-				clr=54
-				bclr=51
-			}
-			dPrecision=1.000000
-			limits {
-			}
-		}
-		"text entry" {
-			object {
-				x=584
-				y=516
-				width=60
-				height=19
-			}
-			control {
-				chan="$(P)$(R)CursorY"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=649
-				y=516
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)CursorY_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-	}
-}
-composite {
-	object {
-		x=395
-		y=421
-		width=345
+		x=424
+		y=336
+		width=164
 		height=20
 	}
 	"composite name"=""
 	children {
-		menu {
-			object {
-				x=584
-				y=422
-				width=60
-				height=18
-			}
-			control {
-				chan="$(P)$(R)ComputeProfiles"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=650
-				y=422
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ComputeProfiles_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=395
-				y=421
-				width=180
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Compute profiles"
-			align="horiz. right"
-		}
-	}
-}
-composite {
-	object {
-		x=394
-		y=446
-		width=346
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=394
-				y=446
-				width=100
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Size X"
-			align="horiz. right"
-		}
 		"text update" {
 			object {
 				x=498
-				y=447
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ProfileSizeX_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=650
-				y=447
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ProfileSizeY_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=614
-				y=446
-				width=30
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Y"
-			align="horiz. right"
-		}
-	}
-}
-rectangle {
-	object {
-		x=515
-		y=395
-		width=110
-		height=21
-	}
-	"basic attribute" {
-		clr=2
-	}
-}
-text {
-	object {
-		x=518
-		y=395
-		width=103
-		height=20
-	}
-	"basic attribute" {
-		clr=54
-	}
-	textix="Profiles"
-	align="horiz. centered"
-}
-composite {
-	object {
-		x=390
-		y=230
-		width=360
-		height=155
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=394
-				y=311
-				width=100
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Centroid X"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=498
-				y=312
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)CentroidX_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=650
-				y=312
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)CentroidY_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=614
-				y=311
-				width=30
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Y"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=650
 				y=337
 				width=90
 				height=18
 			}
 			monitor {
-				chan="$(P)$(R)SigmaY_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=614
-				y=336
-				width=30
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Y"
-			align="horiz. right"
-		}
-		menu {
-			object {
-				x=584
-				y=262
-				width=60
-				height=18
-			}
-			control {
-				chan="$(P)$(R)ComputeCentroid"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=650
-				y=262
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ComputeCentroid_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=395
-				y=261
-				width=180
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Compute centroid"
-			align="horiz. right"
-		}
-		composite {
-			object {
-				x=515
-				y=235
-				width=110
-				height=21
-			}
-			"composite name"=""
-			children {
-				rectangle {
-					object {
-						x=515
-						y=235
-						width=110
-						height=21
-					}
-					"basic attribute" {
-						clr=2
-					}
-				}
-				text {
-					object {
-						x=518
-						y=235
-						width=103
-						height=20
-					}
-					"basic attribute" {
-						clr=54
-					}
-					textix="Centroid"
-					align="horiz. centered"
-				}
-			}
-		}
-		text {
-			object {
-				x=405
-				y=286
-				width=170
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Centroid threshold"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=584
-				y=287
-				width=60
-				height=19
-			}
-			control {
-				chan="$(P)$(R)CentroidThreshold"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=650
-				y=287
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)CentroidThreshold_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		rectangle {
-			object {
-				x=390
-				y=230
-				width=360
-				height=155
-			}
-			"basic attribute" {
-				clr=14
-				fill="outline"
-			}
-		}
-		composite {
-			object {
-				x=424
-				y=336
-				width=164
-				height=20
-			}
-			"composite name"=""
-			children {
-				"text update" {
-					object {
-						x=498
-						y=337
-						width=90
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)SigmaX_RBV"
-						clr=54
-						bclr=4
-					}
-					limits {
-					}
-				}
-				text {
-					object {
-						x=424
-						y=336
-						width=70
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Sigma X"
-					align="horiz. right"
-				}
-			}
-		}
-		"text update" {
-			object {
-				x=498
-				y=362
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)SigmaXY_RBV"
+				chan="$(P)$(R)SigmaX_RBV"
 				clr=54
 				bclr=4
 			}
@@ -1282,120 +1403,303 @@ composite {
 		text {
 			object {
 				x=424
-				y=361
+				y=336
 				width=70
 				height=20
 			}
 			"basic attribute" {
 				clr=14
 			}
-			textix="Sigma XY"
+			textix="Sigma X"
 			align="horiz. right"
 		}
 	}
 }
-composite {
+"text update" {
 	object {
-		x=535
-		y=563
-		width=111
+		x=498
+		y=362
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)SigmaXY_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=424
+		y=361
+		width=70
 		height=20
 	}
-	"composite name"=""
-	children {
-		"related display" {
-			object {
-				x=586
-				y=563
-				width=60
-				height=20
-			}
-			display[0] {
-				label="Average X"
-				name="NDPlot.adl"
-				args="P=$(P),R=$(R),DATA=ProfileAverageX_RBV,TITLE=AverageX,XLABEL=Pixel,YLABEL=Counts"
-			}
-			display[1] {
-				label="Average Y"
-				name="NDPlot.adl"
-				args="P=$(P),R=$(R),DATA=ProfileAverageY_RBV,TITLE=AverageY,XLABEL=Pixel,YLABEL=Counts"
-			}
-			display[2] {
-				label="Threshold X"
-				name="NDPlot.adl"
-				args="P=$(P),R=$(R),DATA=ProfileThresholdX_RBV,TITLE=ThresholdX,XLABEL=Pixel,YLABEL=Counts"
-			}
-			display[3] {
-				label="Threshold Y"
-				name="NDPlot.adl"
-				args="P=$(P),R=$(R),DATA=ProfileThresholdY_RBV,TITLE=ThresholdY,XLABEL=Pixel,YLABEL=Counts"
-			}
-			display[4] {
-				label="Centroid X"
-				name="NDPlot.adl"
-				args="P=$(P),R=$(R),DATA=ProfileCentroidX_RBV,TITLE=CentroidX,XLABEL=Pixel,YLABEL=Counts"
-			}
-			display[5] {
-				label="Centroid Y"
-				name="NDPlot.adl"
-				args="P=$(P),R=$(R),DATA=ProfileCentroidY_RBV,TITLE=CentroidY,XLABEL=Pixel,YLABEL=Counts"
-			}
-			display[6] {
-				label="Cursor X"
-				name="NDPlot.adl"
-				args="P=$(P),R=$(R),DATA=ProfileCursorX_RBV,TITLE=CursorX,XLABEL=Pixel,YLABEL=Counts"
-			}
-			display[7] {
-				label="Cursor Y"
-				name="NDPlot.adl"
-				args="P=$(P),R=$(R),DATA=ProfileCursorY_RBV,TITLE=CursorY,XLABEL=Pixel,YLABEL=Counts"
-			}
-			clr=14
-			bclr=51
-		}
-		text {
-			object {
-				x=535
-				y=563
-				width=40
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Plot"
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="Sigma XY"
+	align="horiz. right"
 }
 "related display" {
 	object {
-		x=586
-		y=197
+		x=590
+		y=385
 		width=60
 		height=20
 	}
 	display[0] {
-		label="Total MCA"
-		name="mca.adl"
-		args="P=$(P),M=$(R)TotalArray"
+		label="Centroid X"
+		name="NDTimeSeries.adl"
+		args="P=$(P),R=$(R),PLT=TSCentroidY"
 	}
 	display[1] {
-		label="Net MCA"
-		name="mca.adl"
-		args="P=$(P),M=$(R)NetArray"
+		label="Centroid Y"
+		name="NDTimeSeries.adl"
+		args="P=$(P),R=$(R),PLT=TSCentroidX"
+	}
+	display[2] {
+		label="Sigma X"
+		name="NDTimeSeries.adl"
+		args="P=$(P),R=$(R),PLT=TSSigmaX"
+	}
+	display[3] {
+		label="Sigma Y"
+		name="NDTimeSeries.adl"
+		args="P=$(P),R=$(R),PLT=TSSigmaY"
+	}
+	display[4] {
+		label="Sigma XY"
+		name="NDTimeSeries.adl"
+		args="P=$(P),R=$(R),PLT=TSSigmaXY"
 	}
 	clr=14
 	bclr=51
 }
 text {
 	object {
-		x=535
-		y=197
-		width=40
+		x=415
+		y=385
+		width=170
 		height=20
 	}
 	"basic attribute" {
 		clr=14
 	}
-	textix="Plot"
+	textix="Time series plots"
+}
+text {
+	object {
+		x=415
+		y=196
+		width=170
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Time series plots"
+}
+composite {
+	object {
+		x=450
+		y=497
+		width=225
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=450
+				y=497
+				width=130
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Current point"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=585
+				y=498
+				width=90
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)TSCurrentPoint"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=490
+		y=522
+		width=240
+		height=20
+	}
+	"composite name"=""
+	children {
+		menu {
+			object {
+				x=585
+				y=523
+				width=80
+				height=18
+			}
+			control {
+				chan="$(P)$(R)TSRead.SCAN"
+				clr=14
+				bclr=51
+			}
+		}
+		"message button" {
+			object {
+				x=670
+				y=522
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)TSControl"
+				clr=14
+				bclr=51
+			}
+			label="Read"
+			press_msg="3"
+		}
+		text {
+			object {
+				x=490
+				y=522
+				width=90
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Read rate"
+		}
+	}
+}
+composite {
+	object {
+		x=412
+		y=447
+		width=315
+		height=20
+	}
+	"composite name"=""
+	children {
+		"message button" {
+			object {
+				x=412
+				y=447
+				width=90
+				height=20
+			}
+			control {
+				chan="$(P)$(R)TSControl"
+				clr=14
+				bclr=51
+			}
+			label="Erase/Start"
+			press_msg="0"
+		}
+		"message button" {
+			object {
+				x=507
+				y=447
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)TSControl"
+				clr=14
+				bclr=51
+			}
+			label="Stop"
+			press_msg="2"
+		}
+		"message button" {
+			object {
+				x=572
+				y=447
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)TSControl"
+				clr=14
+				bclr=51
+			}
+			label="Start"
+			press_msg="1"
+		}
+		"text update" {
+			object {
+				x=637
+				y=448
+				width=90
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)TSAcquiring"
+				clr=54
+				bclr=12
+			}
+			clrmod="alarm"
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=420
+		y=472
+		width=225
+		height=20
+	}
+	"composite name"=""
+	children {
+		"text entry" {
+			object {
+				x=585
+				y=473
+				width=60
+				height=19
+			}
+			control {
+				chan="$(P)$(R)TSNumPoints"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		text {
+			object {
+				x=420
+				y=472
+				width=160
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Number of points"
+			align="horiz. right"
+		}
+	}
 }
