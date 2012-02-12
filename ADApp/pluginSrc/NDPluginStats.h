@@ -17,13 +17,34 @@ typedef struct NDStats {
 } NDStats_t;
 
 typedef enum {
-   profAverage,
-   profThreshold,
-   profCentroid,
-   profCursor
+    profAverage,
+    profThreshold,
+    profCentroid,
+    profCursor
 } NDStatProfileType;
-
 #define MAX_PROFILE_TYPES profCursor+1
+
+typedef enum {
+    TSMinValue,
+    TSMaxValue,
+    TSMeanValue,
+    TSSigmaValue,
+    TSTotal,
+    TSNet,
+    TSCentroidX,
+    TSCentroidY,
+    TSSigmaX,
+    TSSigmaY,
+    TSSigmaXY
+} NDStatTSType;
+#define MAX_TIME_SERIES_TYPES TSSigmaXY+1
+
+typedef enum {
+    TSEraseStart,
+    TSStart,
+    TSStop,
+    TSRead
+} NDStatsTSControl_t;
 
 /* Statistics */
 #define NDPluginStatsComputeStatisticsString  "COMPUTE_STATISTICS"  /* (asynInt32,        r/w) Compute statistics? */
@@ -34,7 +55,6 @@ typedef enum {
 #define NDPluginStatsSigmaValueString         "SIGMA_VALUE"         /* (asynFloat64,      r/o) Sigma of all elements */
 #define NDPluginStatsTotalString              "TOTAL"               /* (asynFloat64,      r/o) Sum of all elements */
 #define NDPluginStatsNetString                "NET"                 /* (asynFloat64,      r/o) Sum of all elements minus background */
-#define NDPluginStatsMaxString                "MAX"                 /* (asynFloat64,      r/o) Sum of all max elements */
 
 /* Centroid */
 #define NDPluginStatsComputeCentroidString    "COMPUTE_CENTROID"    /* (asynInt32,        r/w) Compute centroid? */
@@ -45,6 +65,24 @@ typedef enum {
 #define NDPluginStatsSigmaYString             "SIGMAY_VALUE"        /* (asynFloat64,      r/o) Sigma Y */
 #define NDPluginStatsSigmaXYString            "SIGMAXY_VALUE"       /* (asynFloat64,      r/o) Sigma XY */
     
+/* Time series of basic statistics and centroid statistics */
+#define NDPluginStatsTSControlString          "TS_CONTROL"          /* (asynInt32,        r/w) Erase/start, stop, start */
+#define NDPluginStatsTSNumPointsString        "TS_NUM_POINTS"       /* (asynInt32,        r/w) Number of time series points to use */
+#define NDPluginStatsTSCurrentPointString     "TS_CURRENT_POINT"    /* (asynInt32,        r/o) Current point in time series */
+#define NDPluginStatsTSAcquiringString        "TS_ACQUIRING"        /* (asynInt32,        r/o) Acquiring time series */
+#define NDPluginStatsTSMinValueString         "TS_MIN_VALUE"        /* (asynFloat64Array, r/o) Series of minimum counts */
+#define NDPluginStatsTSMaxValueString         "TS_MAX_VALUE"        /* (asynFloat64Array, r/o) Series of maximum counts */
+#define NDPluginStatsTSMeanValueString        "TS_MEAN_VALUE"       /* (asynFloat64Array, r/o) Series of mean counts */
+#define NDPluginStatsTSSigmaValueString       "TS_SIGMA_VALUE"      /* (asynFloat64Array, r/o) Series of sigma */
+#define NDPluginStatsTSTotalString            "TS_TOTAL"            /* (asynFloat64Array, r/o) Series of total */
+#define NDPluginStatsTSNetString              "TS_NET"              /* (asynFloat64Array, r/o) Series of net */
+#define NDPluginStatsTSSeriesMaxString        "TS_MAX_SUM"          /* (asynFloat64Array, r/o) Series of max elements sum */
+#define NDPluginStatsTSCentroidXString        "TS_CENTROIDX_VALUE"  /* (asynFloat64Array, r/o) Series of X centroid */
+#define NDPluginStatsTSCentroidYString        "TS_CENTROIDY_VALUE"  /* (asynFloat64Array, r/o) Series of Y centroid */
+#define NDPluginStatsTSSigmaXString           "TS_SIGMAX_VALUE"     /* (asynFloat64Array, r/o) Series of sigma X */
+#define NDPluginStatsTSSigmaYString           "TS_SIGMAY_VALUE"     /* (asynFloat64Array, r/o) Series of sigma Y */
+#define NDPluginStatsTSSigmaXYString          "TS_SIGMAXY_VALUE"    /* (asynFloat64Array, r/o) Series of sigma XY */
+
 /* Profiles*/   
 #define NDPluginStatsComputeProfilesString    "COMPUTE_PROFILES"    /* (asynInt32,        r/w) Compute profiles? */
 #define NDPluginStatsProfileSizeXString       "PROFILE_SIZE_X"      /* (asynInt32,        r/o) X profile size */
@@ -88,10 +126,11 @@ public:
                  int priority, int stackSize);
     /* These methods override the virtual methods in the base class */
     void processCallbacks(NDArray *pArray);
-    asynStatus readFloat64Array(asynUser *pasynUser, epicsFloat64 *value, size_t nElements, size_t *nIn);
     asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
     
+    template <typename epicsType> void doComputeStatisticsT(NDArray *pArray, NDStats_t *pStats);
+    int doComputeStatistics(NDArray *pArray, NDStats_t *pStats);
     template <typename epicsType> asynStatus doComputeCentroidT(NDArray *pArray);
     asynStatus doComputeCentroid(NDArray *pArray);
     template <typename epicsType> asynStatus doComputeProfilesT(NDArray *pArray);
@@ -110,7 +149,6 @@ protected:
     int NDPluginStatsSigmaValue;
     int NDPluginStatsTotal;
     int NDPluginStatsNet;
-    int NDPluginStatsMax;
 
     /* Centroid */
     int NDPluginStatsComputeCentroid;
@@ -121,6 +159,23 @@ protected:
     int NDPluginStatsSigmaY;
     int NDPluginStatsSigmaXY;
 
+    /* Time Series */
+    int NDPluginStatsTSControl;
+    int NDPluginStatsTSNumPoints;
+    int NDPluginStatsTSCurrentPoint;
+    int NDPluginStatsTSAcquiring;
+    int NDPluginStatsTSMinValue;
+    int NDPluginStatsTSMaxValue;
+    int NDPluginStatsTSMeanValue;
+    int NDPluginStatsTSSigmaValue;
+    int NDPluginStatsTSTotal;
+    int NDPluginStatsTSNet;
+    int NDPluginStatsTSCentroidX;
+    int NDPluginStatsTSCentroidY;
+    int NDPluginStatsTSSigmaX;
+    int NDPluginStatsTSSigmaY;
+    int NDPluginStatsTSSigmaXY;
+    
     /* Profiles */
     int NDPluginStatsComputeProfiles;
     int NDPluginStatsProfileSizeX;
@@ -161,6 +216,7 @@ private:
     double  sigmaXY;
     double  *profileX[MAX_PROFILE_TYPES];
     double  *profileY[MAX_PROFILE_TYPES];
+    double  *timeSeries[MAX_TIME_SERIES_TYPES];
     int profileSizeX;
     int profileSizeY;
     int cursorX;
@@ -173,6 +229,7 @@ private:
     double histMin;
     double histMax;
     double histEntropy;
+    void doTimeSeriesCallbacks();
 };
 #define NUM_NDPLUGIN_STATS_PARAMS (&LAST_NDPLUGIN_STATS_PARAM - &FIRST_NDPLUGIN_STATS_PARAM + 1)
     
