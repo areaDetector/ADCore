@@ -87,30 +87,6 @@ display {
 		1a7309,
 	}
 }
-rectangle {
-	object {
-		x=25
-		y=5
-		width=450
-		height=25
-	}
-	"basic attribute" {
-		clr=54
-	}
-}
-text {
-	object {
-		x=205
-		y=5
-		width=96
-		height=25
-	}
-	"basic attribute" {
-		clr=0
-	}
-	textix="$(P)$(R)$(PLT)"
-	align="horiz. centered"
-}
 "cartesian plot" {
 	object {
 		x=10
@@ -339,6 +315,41 @@ composite {
 			}
 			textix="Number of points"
 			align="horiz. right"
+		}
+	}
+}
+composite {
+	object {
+		x=25
+		y=5
+		width=450
+		height=25
+	}
+	"composite name"=""
+	children {
+		rectangle {
+			object {
+				x=25
+				y=5
+				width=450
+				height=25
+			}
+			"basic attribute" {
+				clr=54
+			}
+		}
+		text {
+			object {
+				x=205
+				y=5
+				width=96
+				height=25
+			}
+			"basic attribute" {
+				clr=0
+			}
+			textix="$(P)$(R)$(PLT)"
+			align="horiz. centered"
 		}
 	}
 }
