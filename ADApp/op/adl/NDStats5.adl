@@ -1,7 +1,7 @@
 
 file {
 	name="/home/epics/devel/areaDetector/ADApp/op/adl/NDStats5.adl"
-	version=030102
+	version=030105
 }
 display {
 	object {
@@ -1686,14 +1686,19 @@ text {
 		args="P=$(P),R=$(R1)"
 	}
 	display[1] {
-		label="Total MCA"
-		name="mca.adl"
-		args="P=$(P),M=$(R1)TotalArray"
+		label="Total time-series"
+		name="NDTimeSeries.adl"
+		args="P=$(P),R=$(R1),PLT=TSTotal"
 	}
 	display[2] {
-		label="Net MCA"
-		name="mca.adl"
-		args="P=$(P),M=$(R1)NetArray"
+		label="Net time-series"
+		name="NDTimeSeries.adl"
+		args="P=$(P),R=$(R1),PLT=TSNet"
+	}
+	display[3] {
+		label="All time-series"
+		name="NDTimeSeriesAll.adl"
+		args="P=$(P),R=$(R1)"
 	}
 	clr=53
 	bclr=4
@@ -1896,14 +1901,19 @@ text {
 		args="P=$(P),R=$(R2)"
 	}
 	display[1] {
-		label="Total MCA"
-		name="mca.adl"
-		args="P=$(P),M=$(R2)TotalArray"
+		label="Total time-series"
+		name="NDTimeSeries.adl"
+		args="P=$(P),R=$(R2),PLT=TSTotal"
 	}
 	display[2] {
-		label="Net MCA"
-		name="mca.adl"
-		args="P=$(P),M=$(R2)NetArray"
+		label="Net time-series"
+		name="NDTimeSeries.adl"
+		args="P=$(P),R=$(R2),PLT=TSNet"
+	}
+	display[3] {
+		label="All time-series"
+		name="NDTimeSeriesAll.adl"
+		args="P=$(P),R=$(R2)"
 	}
 	clr=53
 	bclr=4
@@ -1921,14 +1931,19 @@ text {
 		args="P=$(P),R=$(R3)"
 	}
 	display[1] {
-		label="Total MCA"
-		name="mca.adl"
-		args="P=$(P),M=$(R3)TotalArray"
+		label="Total time-series"
+		name="NDTimeSeries.adl"
+		args="P=$(P),R=$(R3),PLT=TSTotal"
 	}
 	display[2] {
-		label="Net MCA"
-		name="mca.adl"
-		args="P=$(P),M=$(R3)NetArray"
+		label="Net time-series"
+		name="NDTimeSeries.adl"
+		args="P=$(P),R=$(R3),PLT=TSNet"
+	}
+	display[3] {
+		label="All time-series"
+		name="NDTimeSeriesAll.adl"
+		args="P=$(P),R=$(R3)"
 	}
 	clr=53
 	bclr=4
@@ -1946,14 +1961,19 @@ text {
 		args="P=$(P),R=$(R4)"
 	}
 	display[1] {
-		label="Total MCA"
-		name="mca.adl"
-		args="P=$(P),M=$(R4)TotalArray"
+		label="Total time-series"
+		name="NDTimeSeries.adl"
+		args="P=$(P),R=$(R4),PLT=TSTotal"
 	}
 	display[2] {
-		label="Net MCA"
-		name="mca.adl"
-		args="P=$(P),M=$(R4)NetArray"
+		label="Net time-series"
+		name="NDTimeSeries.adl"
+		args="P=$(P),R=$(R4),PLT=TSNet"
+	}
+	display[3] {
+		label="All time-series"
+		name="NDTimeSeriesAll.adl"
+		args="P=$(P),R=$(R4)"
 	}
 	clr=53
 	bclr=4
@@ -1971,14 +1991,19 @@ text {
 		args="P=$(P),R=$(R5)"
 	}
 	display[1] {
-		label="Total MCA"
-		name="mca.adl"
-		args="P=$(P),M=$(R5)TotalArray"
+		label="Total time-series"
+		name="NDTimeSeries.adl"
+		args="P=$(P),R=$(R5),PLT=TSTotal"
 	}
 	display[2] {
-		label="Net MCA"
-		name="mca.adl"
-		args="P=$(P),M=$(R5)NetArray"
+		label="Net time-series"
+		name="NDTimeSeries.adl"
+		args="P=$(P),R=$(R5),PLT=TSNet"
+	}
+	display[3] {
+		label="All time-series"
+		name="NDTimeSeriesAll.adl"
+		args="P=$(P),R=$(R5)"
 	}
 	clr=53
 	bclr=4
