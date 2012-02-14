@@ -118,6 +118,28 @@
               They had DTYP=asynInt32, corrected to asynFloat64.</li>
           </ul>
         </li>
+        <li>NDPluginStats
+          <ul>
+            <li>Time-series arrays
+              <ul>
+                <li>Changed code so that time series are collected internally in the plugin, rather
+                  than using callbacks to the fastSweep device support for the mca record. This is
+                  more efficient, and eliminates the dependence of the areaDetector module on the
+                  mca module. </li>
+                <li>NOTE: This change is not backwards compatible. Clients that are collecting time-series
+                  data with the mca record will need to be modified to use the new PVs that are now
+                  provided in this plugin.</li>
+                <li>Time series data is now available for all basic statistics and centroid statistics.
+                  Previously it was only available for Total, Net, and Max.</li>
+                <li>New PVs to control time series collection and provide status on it.</li>
+                <li>New medm screen, NDTimeSeries.adl, to display time series data.</li>
+              </ul>
+            </li>
+            <li>Fixed bug that degraded driver performance in some circumstances. The plugin was
+              not releasing the lock during come computationally expensive operations, which would
+              cause the driver to wait when queueing the next array during a callback.</li>
+          </ul>
+        </li>
       </ul>
     </li>
     <li>Support libraries. The static Linux support libraries provided in R1-7 were built
@@ -151,6 +173,10 @@
     <li>Miscellaneous
       <ul>
         <li>Fixes to commonDriverMakefile to build on Darwin (OS X).</li>
+        <li>Removed dependence of areaDetector on the synApps mca module. The mca module was
+          being used only to collect time-series data of the statistics in the NDPluginStats
+          plugin. NDPluginStats has been changed to collect this time-series itself, using
+          only standard waveform records with asyn device support.</li>
       </ul>
     </li>
   </ul>
