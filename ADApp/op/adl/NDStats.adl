@@ -1121,6 +1121,11 @@ composite {
 		name="NDTimeSeries.adl"
 		args="$(P),R=$(R),PLT=TSSigmaValue"
 	}
+	display[6] {
+		label="All"
+		name="NDTimeSeriesAll.adl"
+		args="P=$(P),R=$(R)"
+	}
 	clr=14
 	bclr=51
 }
@@ -1474,6 +1479,11 @@ text {
 		label="Sigma XY"
 		name="NDTimeSeries.adl"
 		args="P=$(P),R=$(R),PLT=TSSigmaXY"
+	}
+	display[5] {
+		label="All"
+		name="NDTimeSeriesAll.adl"
+		args="P=$(P),R=$(R)"
 	}
 	clr=14
 	bclr=51
