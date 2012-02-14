@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugin NDPluginStats</h1>
     <h2>
-      August 9, 2011</h2>
+      February 12, 2012</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -49,6 +49,11 @@
     arrays.
   </p>
   <p>
+    Time-series arrays of the basic statistics, centroid and sigma statistics can also
+    be collected. This is very useful for on-the-fly data acquisition, where the NDStats
+    plugin computes the net or total counts in the detector or an ROI. It can also be
+    used to quickly plot a time-history of beam position or width, etc.</p>
+  <p>
     NDPluginStats inherits from NDPluginDriver. The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_stats.html">
       NDPluginStats class documentation</a> describes this class in detail.
   </p>
@@ -64,7 +69,8 @@
     <tbody>
       <tr>
         <td align="center" colspan="7,">
-          <b>Parameter Definitions in NDPluginStats.h and EPICS Record Definitions in NDStats.template</b></td>
+          <b>Parameter Definitions in NDPluginStats.h and EPICS Record Definitions in NDStats.template</b>
+        </td>
       </tr>
       <tr>
         <th>
@@ -217,8 +223,7 @@
           is &le; 0 then no background is computed. The net counts is available as an ai record.
           The net counts is also available as epicsInt32 values in an mca record via callbacks
           to the drvFastSweep driver. The mca record is very useful for on-the-fly data acquisition
-          of the net counts in the detector or in an ROI.
-        </td>
+          of the net counts in the detector or in an ROI. </td>
         <td>
           NET</td>
         <td>
@@ -380,6 +385,162 @@
           $(P)$(R)SigmaXY_RBV</td>
         <td>
           ai</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>Time-Series data</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          TSControl</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Controls time-series data collection. The enum choices are:
+          <ul>
+            <li>Erase/Start: Clears all time-series arrays, sets TS_CURRENT_POINT=0, and starts
+              time-series data collection.</li>
+            <li>Start: Starts time-series data collection without clearing arrays or modifying
+              TS_CURRENT_POINT. Used to restart collection after a Stop operation.</li>
+            <li>Stop: Stops times-series data collection. Performs callbacks on all time-series
+              waveform records.</li>
+            <li>
+            Read: Performs callbacks on all time-series waveform records, updating the values.
+          </ul>
+        </td>
+        <td>
+          TS_CONTROL</td>
+        <td>
+          $(P)$(R)TSControl</td>
+        <td>
+          mbbo</td>
+      </tr>
+      <tr>
+        <td>
+          N.A.</td>
+        <td>
+          N.A.</td>
+        <td>
+          r/w</td>
+        <td>
+          Sends the "Read" command to the TSControl record above. This record can be periodically
+          processed to update the time-series waveform records. It is scan disabled if TSAcquiring=Done,
+          so that updates are only performed when time-series acquisition is in progress.
+        </td>
+        <td>
+          N.A.</td>
+        <td>
+          $(P)$(R)TSRead</td>
+        <td>
+          longout</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          TSNumPoints</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Controls the number of time-series points to collect. There is no maximum value,
+          the time-series arrays in the plugin are freed and reallocated each time this value
+          is changed. However, the size of the waveform records is fixed when the IOC is started,
+          so NELM in those records must be large enough for the largest time-series needed.
+        </td>
+        <td>
+          TS_NUM_POINTS</td>
+        <td>
+          $(P)$(R)TSNumPoints</td>
+        <td>
+          longout</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          TSCurrentPoint</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The current time-series point. If TSCurrentPoint reaches TSNumPoints then time-series
+          acquisition is automatically stopped, and callbacks are done on all time-series
+          waveform records, updating the values. This means that even if TSRead has SCAN=Passive
+          that the waveform records will update when time-series acquisition is complete.
+        </td>
+        <td>
+          TS_CURRENT_POINT</td>
+        <td>
+          $(P)$(R)TSCurrentPoint</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          TSAcquiring</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Indicates status of time-series data acquisition. Values are 0=Done and 1=Acquiring.
+        </td>
+        <td>
+          TS_ACQUIRING</td>
+        <td>
+          $(P)$(R)TSAcquiring</td>
+        <td>
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          TSXXX</td>
+        <td>
+          asynFloat64Array</td>
+        <td>
+          r/o</td>
+        <td>
+          The time series data arrays. XXX is one of the following, corresponding to each
+          of the basic statistics and centroid and sigma statistics described above:
+          <ul>
+            <li>MinValue</li>
+            <li>MaxValue</li>
+            <li>MeanValue</li>
+            <li>Sigma</li>
+            <li>Total</li>
+            <li>Net</li>
+            <li>CentroidX</li>
+            <li>CentroidY</li>
+            <li>SigmaX</li>
+            <li>SigmaY</li>
+            <li>SigmaXY</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>TS_MIN_VALUE</li>
+            <li>TS_MAX_VALUE</li>
+            <li>TS_MEAN_VALUE</li>
+            <li>TS_SIGMA_VALUE</li>
+            <li>TS_TOTAL</li>
+            <li>TS_NET</li>
+            <li>TS_CENTROIDX_VALUE</li>
+            <li>TS_CENTROIDY_VALUE</li>
+            <li>TS_SIGMAX_VALUE</li>
+            <li>TS_SIGMAY_VALUE</li>
+            <li>TS_SIGMAXY_VALUE</li>
+          </ul>
+        </td>
+        <td>
+          $(P)$(R)TSXXX</td>
+        <td>
+          waveform</td>
       </tr>
       <tr>
         <td align="center" colspan="7,">
@@ -807,24 +968,22 @@
     <img alt="NDStats5.png" src="NDStats5.png" />
   </div>
   <p>
-    The following MEDM screen shows the MCA record containing the total counts from
-    the Stats1 plugin. This is the total counts as a function of time, and is very useful
-    for on-the-fly data acquisition, where the NDStats plugin computes the net or total
-    counts in the detector or an ROI.
+    The following MEDM screen shows the the total counts from the Stats5 plugin. This
+    is the total counts as a function of time.
   </p>
   <div style="text-align: center">
     <h3>
-      mca.adl</h3>
-    <img alt="NDStatsTotalArray.png" src="NDStatsTotalArray.png" />
+      NDTimeSeries.adl</h3>
+    <img alt="NDTimeSeriesTotal.png" src="NDTimeSeriesTotal.png" />
   </div>
   <p>
-    The following MEDM screen shows the MCA record containing the net counts from the
-    Stats1 plugin.
+    The following MEDM screen shows the Y centroid as a function of time from the Stats5
+    plugin.
   </p>
   <div style="text-align: center">
     <h3>
-      mca.adl</h3>
-    <img alt="NDStatsNetArray.png" src="NDStatsNetArray.png" />
+      NDTimeSeries.adl</h3>
+    <img alt="NDTimeSeriesCentroidY.png" src="NDTimeSeriesCentroidY.png" />
   </div>
 </body>
 </html>
