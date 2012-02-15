@@ -30,8 +30,6 @@ DIRS += mar345Src
 mar345Src_DEPEND_DIRS = pluginSrc
 DIRS += adscSrc
 adscSrc_DEPEND_DIRS = pluginSrc
-DIRS += roperSrc
-roperSrc_DEPEND_DIRS = pluginSrc
 DIRS += firewireWinSrc
 firewireWinSrc_DEPEND_DIRS = pluginSrc
 DIRS += perkinElmerSrc
@@ -44,6 +42,8 @@ DIRS += PSLSrc
 PSLSrc_DEPEND_DIRS = pluginSrc
 DIRS += andorSrc
 andorSrc_DEPEND_DIRS = andorSupport pluginSrc
+DIRS += roperSrc
+roperSrc_DEPEND_DIRS = pluginSrc
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *db*))
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *Db*))
 include $(TOP)/configure/RULES_DIRS
