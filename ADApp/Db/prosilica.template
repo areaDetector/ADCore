@@ -179,6 +179,21 @@ record(longin, "$(P)$(R)PSByteRate_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(longout, "$(P)$(R)PSPacketSize")
+{
+#   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKET_SIZE")
+   field(VAL,  "1500")
+}
+
+record(longin, "$(P)$(R)PSPacketSize_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_PACKET_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
 record(longin, "$(P)$(R)PSFramesCompleted_RBV")
 {
    field(DTYP, "asynInt32")
