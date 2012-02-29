@@ -635,20 +635,16 @@
         <td>
           asynInt32</td>
         <td>
-          r/w</td>
+          r/o</td>
         <td>
-          Packet size of Ethernet packets. The driver attempts to autonegotiate the maximum
-          packet size supported by the camera and the IOC computer at initialization. The
-          actual value being used is read back in the PSPacketSize_RBV PV. One can set a new
-          packet size with the PSPacketSize PV, however this is currently generating an error.
-        </td>
+          Actual packet size of Ethernet packets. When connecting to the camera the driver
+          always automatically negotiates the largest packet size that the camera and IOC
+          computer support. </td>
         <td>
           PS_PACKET_SIZE</td>
         <td>
-          $(P)$(R)PSPacketSize<br />
           $(P)$(R)PSPacketSize_RBV</td>
         <td>
-          longout<br />
           longin</td>
       </tr>
       <tr>
