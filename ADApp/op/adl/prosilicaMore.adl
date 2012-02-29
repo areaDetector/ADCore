@@ -5,10 +5,10 @@ file {
 }
 display {
 	object {
-		x=348
-		y=135
+		x=387
+		y=70
 		width=430
-		height=850
+		height=865
 	}
 	clr=14
 	bclr=4
@@ -636,478 +636,6 @@ rectangle {
 }
 composite {
 	object {
-		x=5
-		y=510
-		width=420
-		height=320
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=129
-				y=537
-				width=99
-				height=15
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Driver type"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=236
-				y=537
-				width=120
-				height=15
-			}
-			monitor {
-				chan="$(P)$(R)PSDriverType_RBV"
-				clr=54
-				bclr=3
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=165
-				y=513
-				width=100
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Statistics"
-			align="horiz. right"
-		}
-		rectangle {
-			object {
-				x=5
-				y=510
-				width=420
-				height=320
-			}
-			"basic attribute" {
-				clr=14
-				fill="outline"
-			}
-		}
-		composite {
-			object {
-				x=102
-				y=557
-				width=254
-				height=15
-			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=102
-						y=557
-						width=126
-						height=15
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Filter version"
-					align="horiz. right"
-				}
-				"text update" {
-					object {
-						x=236
-						y=557
-						width=120
-						height=15
-					}
-					monitor {
-						chan="$(P)$(R)PSFilterVersion_RBV"
-						clr=54
-						bclr=3
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
-			}
-		}
-		text {
-			object {
-				x=102
-				y=597
-				width=126
-				height=15
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Stream bytes per second"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=236
-				y=577
-				width=120
-				height=15
-			}
-			monitor {
-				chan="$(P)$(R)PSByteRate_RBV"
-				clr=54
-				bclr=3
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text entry" {
-			object {
-				x=236
-				y=597
-				width=120
-				height=20
-			}
-			control {
-				chan="$(P)$(R)PSByteRate"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=84
-				y=640
-				width=144
-				height=15
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Frames completed"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=236
-				y=640
-				width=120
-				height=15
-			}
-			monitor {
-				chan="$(P)$(R)PSFramesCompleted_RBV"
-				clr=54
-				bclr=3
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=102
-				y=660
-				width=126
-				height=15
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Frames dropped"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=236
-				y=660
-				width=120
-				height=15
-			}
-			monitor {
-				chan="$(P)$(R)PSFramesDropped_RBV"
-				clr=54
-				bclr=3
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=75
-				y=680
-				width=153
-				height=15
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Packets erroneous"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=236
-				y=680
-				width=120
-				height=15
-			}
-			monitor {
-				chan="$(P)$(R)PSPacketsErroneous_RBV"
-				clr=54
-				bclr=3
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=102
-				y=700
-				width=126
-				height=15
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Packets missed"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=236
-				y=700
-				width=120
-				height=15
-			}
-			monitor {
-				chan="$(P)$(R)PSPacketsMissed_RBV"
-				clr=54
-				bclr=3
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=84
-				y=720
-				width=144
-				height=15
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Packets received"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=236
-				y=720
-				width=120
-				height=15
-			}
-			monitor {
-				chan="$(P)$(R)PSPacketsReceived_RBV"
-				clr=54
-				bclr=3
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=75
-				y=740
-				width=153
-				height=15
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Packets requested"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=236
-				y=740
-				width=120
-				height=15
-			}
-			monitor {
-				chan="$(P)$(R)PSPacketsRequested_RBV"
-				clr=54
-				bclr=3
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=138
-				y=620
-				width=90
-				height=15
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Frame rate"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=236
-				y=620
-				width=120
-				height=15
-			}
-			monitor {
-				chan="$(P)$(R)PSFrameRate_RBV"
-				clr=54
-				bclr=3
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=129
-				y=807
-				width=99
-				height=15
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Update rate"
-			align="horiz. right"
-		}
-		menu {
-			object {
-				x=236
-				y=805
-				width=100
-				height=18
-			}
-			control {
-				chan="$(P)$(R)PSReadStatistics.SCAN"
-				clr=14
-				bclr=51
-			}
-		}
-		composite {
-			object {
-				x=102
-				y=760
-				width=254
-				height=15
-			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=102
-						y=760
-						width=126
-						height=15
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Packets resent"
-					align="horiz. right"
-				}
-				"text update" {
-					object {
-						x=236
-						y=760
-						width=120
-						height=15
-					}
-					monitor {
-						chan="$(P)$(R)PSPacketsResent_RBV"
-						clr=54
-						bclr=3
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
-			}
-		}
-		text {
-			object {
-				x=102
-				y=780
-				width=126
-				height=15
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Bad frames"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=236
-				y=780
-				width=120
-				height=15
-			}
-			monitor {
-				chan="$(P)$(R)PSBadFrameCounter_RBV"
-				clr=54
-				bclr=3
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-	}
-}
-text {
-	object {
-		x=134
-		y=396
-		width=150
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Trigger control"
-	align="horiz. centered"
-}
-rectangle {
-	object {
-		x=5
-		y=391
-		width=420
-		height=100
-	}
-	"basic attribute" {
-		clr=14
-		fill="outline"
-	}
-}
-composite {
-	object {
 		x=10
 		y=314
 		width=410
@@ -1313,211 +841,785 @@ composite {
 }
 composite {
 	object {
-		x=220
-		y=422
-		width=60
-		height=64
+		x=5
+		y=391
+		width=420
+		height=100
 	}
 	"composite name"=""
 	children {
+		text {
+			object {
+				x=134
+				y=396
+				width=150
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Trigger control"
+			align="horiz. centered"
+		}
+		rectangle {
+			object {
+				x=5
+				y=391
+				width=420
+				height=100
+			}
+			"basic attribute" {
+				clr=14
+				fill="outline"
+			}
+		}
+		composite {
+			object {
+				x=220
+				y=422
+				width=60
+				height=64
+			}
+			"composite name"=""
+			children {
+				"text entry" {
+					object {
+						x=220
+						y=466
+						width=60
+						height=20
+					}
+					control {
+						chan="$(P)$(R)TriggerDelay"
+						clr=14
+						bclr=51
+					}
+					limits {
+					}
+				}
+				text {
+					object {
+						x=225
+						y=422
+						width=50
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Delay"
+					align="horiz. right"
+				}
+				"text update" {
+					object {
+						x=220
+						y=447
+						width=60
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)TriggerDelay_RBV"
+						clr=54
+						bclr=4
+					}
+					align="horiz. centered"
+					limits {
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=105
+				y=422
+				width=110
+				height=63
+			}
+			"composite name"=""
+			children {
+				menu {
+					object {
+						x=105
+						y=467
+						width=110
+						height=18
+					}
+					control {
+						chan="$(P)$(R)TriggerEvent"
+						clr=14
+						bclr=51
+					}
+				}
+				text {
+					object {
+						x=135
+						y=422
+						width=50
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Event"
+					align="horiz. right"
+				}
+				"text update" {
+					object {
+						x=105
+						y=447
+						width=110
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)TriggerEvent_RBV"
+						clr=54
+						bclr=4
+					}
+					align="horiz. centered"
+					limits {
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=285
+				y=422
+				width=120
+				height=63
+			}
+			"composite name"=""
+			children {
+				menu {
+					object {
+						x=285
+						y=467
+						width=120
+						height=18
+					}
+					control {
+						chan="$(P)$(R)TriggerOverlap"
+						clr=14
+						bclr=51
+					}
+				}
+				text {
+					object {
+						x=310
+						y=422
+						width=70
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Overlap"
+					align="horiz. right"
+				}
+				"text update" {
+					object {
+						x=285
+						y=447
+						width=120
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)TriggerOverlap_RBV"
+						clr=54
+						bclr=4
+					}
+					align="horiz. centered"
+					limits {
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=10
+				y=422
+				width=90
+				height=63
+			}
+			"composite name"=""
+			children {
+				menu {
+					object {
+						x=10
+						y=467
+						width=90
+						height=18
+					}
+					control {
+						chan="$(P)$(R)TriggerMode"
+						clr=14
+						bclr=51
+					}
+				}
+				text {
+					object {
+						x=35
+						y=422
+						width=40
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Mode"
+					align="horiz. right"
+				}
+				"text update" {
+					object {
+						x=10
+						y=447
+						width=90
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)TriggerMode_RBV"
+						clr=54
+						bclr=4
+					}
+					align="horiz. centered"
+					limits {
+					}
+				}
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=5
+		y=581
+		width=420
+		height=275
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=129
+				y=608
+				width=99
+				height=15
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Driver type"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=236
+				y=608
+				width=120
+				height=15
+			}
+			monitor {
+				chan="$(P)$(R)PSDriverType_RBV"
+				clr=54
+				bclr=3
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=165
+				y=584
+				width=100
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Statistics"
+			align="horiz. right"
+		}
+		rectangle {
+			object {
+				x=5
+				y=581
+				width=420
+				height=275
+			}
+			"basic attribute" {
+				clr=14
+				fill="outline"
+			}
+		}
+		text {
+			object {
+				x=102
+				y=628
+				width=126
+				height=15
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Filter version"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=236
+				y=628
+				width=120
+				height=15
+			}
+			monitor {
+				chan="$(P)$(R)PSFilterVersion_RBV"
+				clr=54
+				bclr=3
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=84
+				y=668
+				width=144
+				height=15
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Frames completed"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=236
+				y=668
+				width=120
+				height=15
+			}
+			monitor {
+				chan="$(P)$(R)PSFramesCompleted_RBV"
+				clr=54
+				bclr=3
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=102
+				y=688
+				width=126
+				height=15
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Frames dropped"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=236
+				y=688
+				width=120
+				height=15
+			}
+			monitor {
+				chan="$(P)$(R)PSFramesDropped_RBV"
+				clr=54
+				bclr=3
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=75
+				y=708
+				width=153
+				height=15
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Packets erroneous"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=236
+				y=708
+				width=120
+				height=15
+			}
+			monitor {
+				chan="$(P)$(R)PSPacketsErroneous_RBV"
+				clr=54
+				bclr=3
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=102
+				y=728
+				width=126
+				height=15
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Packets missed"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=236
+				y=728
+				width=120
+				height=15
+			}
+			monitor {
+				chan="$(P)$(R)PSPacketsMissed_RBV"
+				clr=54
+				bclr=3
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=84
+				y=748
+				width=144
+				height=15
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Packets received"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=236
+				y=748
+				width=120
+				height=15
+			}
+			monitor {
+				chan="$(P)$(R)PSPacketsReceived_RBV"
+				clr=54
+				bclr=3
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=75
+				y=768
+				width=153
+				height=15
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Packets requested"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=236
+				y=768
+				width=120
+				height=15
+			}
+			monitor {
+				chan="$(P)$(R)PSPacketsRequested_RBV"
+				clr=54
+				bclr=3
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=138
+				y=648
+				width=90
+				height=15
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Frame rate"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=236
+				y=648
+				width=120
+				height=15
+			}
+			monitor {
+				chan="$(P)$(R)PSFrameRate_RBV"
+				clr=54
+				bclr=3
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=102
+				y=788
+				width=126
+				height=15
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Bad frames"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=236
+				y=788
+				width=120
+				height=15
+			}
+			monitor {
+				chan="$(P)$(R)PSBadFrameCounter_RBV"
+				clr=54
+				bclr=3
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		composite {
+			object {
+				x=129
+				y=828
+				width=207
+				height=18
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=129
+						y=830
+						width=99
+						height=15
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Update rate"
+					align="horiz. right"
+				}
+				menu {
+					object {
+						x=236
+						y=828
+						width=100
+						height=18
+					}
+					control {
+						chan="$(P)$(R)PSReadStatistics.SCAN"
+						clr=14
+						bclr=51
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=102
+				y=808
+				width=254
+				height=15
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=102
+						y=808
+						width=126
+						height=15
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Packets resent"
+					align="horiz. right"
+				}
+				"text update" {
+					object {
+						x=236
+						y=808
+						width=120
+						height=15
+					}
+					monitor {
+						chan="$(P)$(R)PSPacketsResent_RBV"
+						clr=54
+						bclr=3
+					}
+					align="horiz. centered"
+					limits {
+					}
+				}
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=5
+		y=496
+		width=420
+		height=80
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=134
+				y=501
+				width=150
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="GigE"
+			align="horiz. centered"
+		}
+		rectangle {
+			object {
+				x=5
+				y=496
+				width=420
+				height=80
+			}
+			"basic attribute" {
+				clr=14
+				fill="outline"
+			}
+		}
+		composite {
+			object {
+				x=20
+				y=526
+				width=394
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=20
+						y=529
+						width=144
+						height=15
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Stream bytes/sec"
+					align="horiz. right"
+				}
+				"text entry" {
+					object {
+						x=169
+						y=526
+						width=120
+						height=20
+					}
+					control {
+						chan="$(P)$(R)PSByteRate"
+						clr=14
+						bclr=51
+					}
+					limits {
+					}
+				}
+				"text update" {
+					object {
+						x=294
+						y=529
+						width=120
+						height=15
+					}
+					monitor {
+						chan="$(P)$(R)PSByteRate_RBV"
+						clr=54
+						bclr=3
+					}
+					align="horiz. centered"
+					limits {
+					}
+				}
+			}
+		}
+		text {
+			object {
+				x=20
+				y=554
+				width=144
+				height=15
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Packet size"
+			align="horiz. right"
+		}
 		"text entry" {
 			object {
-				x=220
-				y=466
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)TriggerDelay"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=225
-				y=422
-				width=50
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Delay"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=220
-				y=447
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)TriggerDelay_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-	}
-}
-composite {
-	object {
-		x=105
-		y=422
-		width=110
-		height=63
-	}
-	"composite name"=""
-	children {
-		menu {
-			object {
-				x=105
-				y=467
-				width=110
-				height=18
-			}
-			control {
-				chan="$(P)$(R)TriggerEvent"
-				clr=14
-				bclr=51
-			}
-		}
-		text {
-			object {
-				x=135
-				y=422
-				width=50
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Event"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=105
-				y=447
-				width=110
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)TriggerEvent_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-	}
-}
-composite {
-	object {
-		x=285
-		y=422
-		width=120
-		height=63
-	}
-	"composite name"=""
-	children {
-		menu {
-			object {
-				x=285
-				y=467
+				x=169
+				y=551
 				width=120
-				height=18
+				height=20
 			}
 			control {
-				chan="$(P)$(R)TriggerOverlap"
+				chan="$(P)$(R)PSPacketSize"
 				clr=14
 				bclr=51
 			}
-		}
-		text {
-			object {
-				x=310
-				y=422
-				width=70
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Overlap"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=285
-				y=447
-				width=120
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)TriggerOverlap_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
 			limits {
 			}
 		}
-	}
-}
-composite {
-	object {
-		x=10
-		y=422
-		width=90
-		height=63
-	}
-	"composite name"=""
-	children {
-		menu {
-			object {
-				x=10
-				y=467
-				width=90
-				height=18
-			}
-			control {
-				chan="$(P)$(R)TriggerMode"
-				clr=14
-				bclr=51
-			}
-		}
-		text {
-			object {
-				x=35
-				y=422
-				width=40
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Mode"
-			align="horiz. right"
-		}
 		"text update" {
 			object {
-				x=10
-				y=447
-				width=90
-				height=18
+				x=294
+				y=554
+				width=120
+				height=15
 			}
 			monitor {
-				chan="$(P)$(R)TriggerMode_RBV"
+				chan="$(P)$(R)PSPacketSize_RBV"
 				clr=54
-				bclr=4
+				bclr=3
 			}
 			align="horiz. centered"
 			limits {
