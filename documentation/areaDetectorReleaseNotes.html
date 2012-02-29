@@ -59,8 +59,9 @@
             <li>FrameStartTriggerEvent: Edge or level of signal to use for trigger.</li>
             <li>FrameStartTriggerOverlap: Trigger handling when the previous frame is incomplete.</li>
             <li>FrameStartTriggerSoftware: Software trigger when TriggerMode=Software.</li>
-            <li>PacketSize: Ethernet packet size. Can set a value larger than 1504 for jumbo frames,
-              and read back the actual value in use.</li>
+            <li>PacketSize: When connecting to the camera the driver has always automatically
+              found the largest packet size that the camera and IOC computer support. This new
+              read-only record provides the actual packet size.</li>
           </ul>
         </li>
         <li>Firewire Windows driver. Added READOUT_TIME parameter. The sum of the AcquireTime
