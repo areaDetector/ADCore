@@ -10,7 +10,7 @@
     <h1>
       areaDetector Andor driver</h1>
     <h2>
-      February 2, 2012</h2>
+      March 6, 2012</h2>
     <h2>
       Matthew Pearson, Diamond Light Source</h2>
     <h2>
@@ -499,7 +499,11 @@
           R/W</td>
         <td>
           Controls the period between accumulations when ImageMode=Single or Multiple and
-          NumExposures&gt;1. </td>
+          NumExposures&gt;1. NOTE: Some Andor detectors (including the iKon) only support
+          a single period when doing multiple accumulations in kinetic series mode. For these
+          cameras ANDOR_ACCUMULATE_PERIOD has no effect, ACQUIRE_PERIOD determines the time
+          between accumulations, and the time between images is 0, i.e. the next image starts
+          as soon as the previous one is complete.</td>
         <td>
           ANDOR_ACCUMULATE_PERIOD</td>
         <td>
@@ -617,12 +621,14 @@
     in a future release.</p>
   <ul>
     <li>No support for detector output signals (trigger and gate).</li>
-    <li>The actual value of AndorAccumulatePeriod seems to be set to the AcquirePeriod,
-      which is not correct. This prevents the AccumulateCycleTime from working and KineticCycleTime
-      from working independently and correctly.</li>
+    <li>Some Andor detectors (including the iKon) only support a single period when doing
+      multiple accumulations in kinetic series mode. For these cameras ANDOR_ACCUMULATE_PERIOD
+      has no effect, ACQUIRE_PERIOD determines the time between accumulations, and the
+      time between images is 0, i.e. the next image starts as soon as the previous one
+      is complete.</li>
     <li>Saving files using the Andor driver in Multiple and Continuous modes results in
-      errors because the Andor SDK functions won't save files if acquisition is in progress.</li>
-    <li>FastKinetics mode does not work, it always reports an error on the second parameter,</li>
+      errors because the Andor SDK functions won't save files if acquisition is in progress.
+      Saving files in Single mode and Fast Kinetics mode works fine.</li>
     <li>Trigger modes have not been tested.</li>
   </ul>
 </body>
