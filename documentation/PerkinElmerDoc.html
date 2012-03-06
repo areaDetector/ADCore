@@ -10,11 +10,11 @@
     <h1>
       areaDetector PerkinElmer driver</h1>
     <h2>
-      December 3, 2011</h2>
+      March 6, 2012</h2>
     <h2>
-      John Hammonds, Brian Tieman, Mark Rivers</h2>
+      Mark Rivers, John Hammonds, Brian Tieman</h2>
     <h2>
-      Argonne National Laboratory and University of Chicago</h2>
+      University of Chicago and Argonne National Laboratory</h2>
   </div>
   <h2>
     Table of Contents</h2>
@@ -42,6 +42,7 @@
     This driver has been tested with the following detectors</p>
   <ul>
     <li>XRD0820 w/ XRD-FG PCI frame grabber</li>
+    <li>XRD0822 w/ Gigabit Ethernet interface</li>
     <li>XRD1621 w/ XRD-FGX PCI frame grabber</li>
     <li>XRD1621 w/ XRD-FGe Opto PCI-Express frame grabber</li>
   </ul>
@@ -560,19 +561,17 @@
     The PerkinElmer driver does not support the following standard driver parameters
     because they are not supported in the PerkinElmer library:</p>
   <ul>
-    <li>Size (ADBinX, ADBinY, ADMinX, ADMinY, ADSizeX, ADSizeY)</li>
+    <li>Readout region (ADMinX, ADMinY, ADSizeX, ADSizeY)</li>
     <li>Type/Color (NDDataType, NDColorMode)</li>
-    <li>File ( None of the file parameters in NDFile )</li>
-    <li>Binning (Not supported in software yet ) </li>
+    <li>File (None of the file parameters in NDFile)</li>
     <li>No Hardware shutter control </li>
-    <li>List any unsupported parameters here (WORK NEEDED)</li>
   </ul>
   <h2 id="Configuration">
     Configuration</h2>
   <p>
     The PerkinElmer driver is created with the perkinElmerConfig command, either from
     C/C++ or from the EPICS IOC shell.</p>
-  <pre>int PerkinElmerConfig(const char *portName, int maxSizeX, int maxSizeY, int dataType,
+  <pre>int PerkinElmerConfig(const char *portName, int IDType, const char* IDValue,
                       int maxBuffers, size_t maxMemory,
                       int priority, int stackSize )
   </pre>
@@ -606,14 +605,32 @@
   <p>
     The following measurements were done to demonstrate the performance that can be
     obtained with the areaDetector PerkinElmer driver.</p>
+  <ul>
+    <li>XRD1621 detector with the XRD-FGe Opto PCI-Express frame grabber
+      <ul>
+        <li>Can stream data continuously to local disk at 15 frames/s at 2048x2048 (120 MB/s)
+          and 30 frames/s at 1024x1024 (60 MB/s). These tests were done on a Windows 7 64-bit
+          machine with 2 disk drives (SAS, 15K RPM, RAID 0).</li>
+      </ul>
+    </li>
+    <li>XRD0822 detector with a GigE interface
+      <ul>
+        <li>Can stream data continuously to local disk at 25 frames/s at 1024x1024 (50 MB/s)
+          and 50 frames/s at 512x512 (25 MB/s). These tests were done on a Windows 7 64-bit
+          laptop with a local disk drive.</li>
+      </ul>
+    </li>
+  </ul>
   <p>
-    PUT A TABLE OF PERFORMANCE MEASUREMENTS HERE</p>
+  </p>
   <h2 id="Restrictions">
     Restrictions</h2>
   <p>
     The following are some current restrictions of the PerkinElmer driver:</p>
   <ul>
-    <li>DOCUMENT ANY IMPORTANT RESTRICTIONS OF THE PERKIN ELMER DRIVER HERE</li>
+    <li>The driver currently only supports a single frame-grabber or directly connected
+      GigE detector. Future releases may allow the IDValue parameter to specify a specific
+      frame grabber or directly connected GigE detector.</li>
   </ul>
 </body>
 </html>
