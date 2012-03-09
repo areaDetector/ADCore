@@ -786,13 +786,13 @@ asynStatus simDetector::writeInt32(asynUser *pasynUser, epicsInt32 value)
     /* Ensure that ADStatus is set correctly before we set ADAcquire.*/
     getIntegerParam(ADStatus, &adstatus);
     if (function == ADAcquire) {
-      if (value && ((adstatus == ADStatusIdle) || adstatus == ADStatusError)) {
+      if (value && ((adstatus == ADStatusIdle) || adstatus == ADStatusError || adstatus == ADStatusAborted)) {
 	setStringParam(ADStatusMessage, "Acquiring data");
 	setIntegerParam(ADStatus, ADStatusAcquire); 
       }
       if (!value && (adstatus != ADStatusIdle)) {
 	setStringParam(ADStatusMessage, "Acquisition aborted");
-	setIntegerParam(ADStatus, ADStatusError);
+	setIntegerParam(ADStatus, ADStatusAborted);
       }
     }
     callParamCallbacks();
@@ -803,7 +803,7 @@ asynStatus simDetector::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
     /* For a real detector this is where the parameter is sent to the hardware */
     if (function == ADAcquire) {
-        if (value && ((adstatus == ADStatusIdle) || adstatus == ADStatusError)) {
+        if (value && ((adstatus == ADStatusIdle) || adstatus == ADStatusError || adstatus == ADStatusAborted)) {
             /* Send an event to wake up the simulation task.
              * It won't actually start generating new images until we release the lock below */
             epicsEventSignal(this->startEventId); 
