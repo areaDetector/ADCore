@@ -32,7 +32,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
     /* When we create TIFF variables and dimensions, we get back an
      * ID for each one. */
     static const char *functionName = "openFile";
-    int sizeX, sizeY, rowsPerStrip, samplesPerPixel, photoMetric, planarConfig;
+    int sizeX, sizeY, rowsPerStrip, bitsPerSample, sampleFormat, samplesPerPixel, photoMetric, planarConfig;
     int colorMode=NDColorModeMono;
     NDAttribute *pAttribute;
     char ManufacturerString[MAX_ATTRIBUTE_STRING_SIZE] = "Unknown";
@@ -57,22 +57,36 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
 
     switch (pArray->dataType) {
         case NDInt8:
+            sampleFormat = SAMPLEFORMAT_INT;
+            bitsPerSample = 8;
+            break;
         case NDUInt8:
-            this->bitsPerSample = 8;
+            sampleFormat = SAMPLEFORMAT_UINT;
+            bitsPerSample = 8;
             break;
         case NDInt16:
+            sampleFormat = SAMPLEFORMAT_INT;
+            bitsPerSample = 16;
+            break;
         case NDUInt16:
-            this->bitsPerSample = 16;
+            sampleFormat = SAMPLEFORMAT_UINT;
+            bitsPerSample = 16;
             break;
         case NDInt32:
+            sampleFormat = SAMPLEFORMAT_INT;
+            bitsPerSample = 32;
+            break;
         case NDUInt32:
-            this->bitsPerSample = 32;
+            sampleFormat = SAMPLEFORMAT_UINT;
+            bitsPerSample = 32;
             break;
         case NDFloat32:
-            this->bitsPerSample = 8;
+            sampleFormat = SAMPLEFORMAT_IEEEFP;
+            bitsPerSample = 32;
             break;
         case NDFloat64:
-            this->bitsPerSample = 8;
+            sampleFormat = SAMPLEFORMAT_IEEEFP;
+            bitsPerSample = 64;
             break;
     }
     if (pArray->ndims == 2) {
@@ -115,6 +129,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
     }
 
     TIFFSetField(this->output, TIFFTAG_BITSPERSAMPLE, bitsPerSample);
+    TIFFSetField(this->output, TIFFTAG_SAMPLEFORMAT, sampleFormat);
     TIFFSetField(this->output, TIFFTAG_SAMPLESPERPIXEL, samplesPerPixel);
     TIFFSetField(this->output, TIFFTAG_PHOTOMETRIC, photoMetric);
     TIFFSetField(this->output, TIFFTAG_PLANARCONFIG, planarConfig);
