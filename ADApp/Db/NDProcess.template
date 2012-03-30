@@ -347,6 +347,7 @@ record(bi, "$(P)$(R)ResetFilter_RBV")
 
 record(bo, "$(P)$(R)AutoResetFilter")
 {
+    field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_RESET_FILTER")
     field(ZNAM, "No")
@@ -364,6 +365,7 @@ record(bi, "$(P)$(R)AutoResetFilter_RBV")
 
 record(bo, "$(P)$(R)FilterCallbacks")
 {
+    field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_CALLBACKS")
     field(ZNAM, "Every array")
