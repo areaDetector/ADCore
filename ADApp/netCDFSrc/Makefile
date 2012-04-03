@@ -8,10 +8,9 @@ include $(TOP)/configure/CONFIG
 
 LIBRARY_IOC = netCDF
 NETCDF = $(TOP)/ADApp/netCDFSrc
-USR_INCLUDES += -I$(NETCDF)/include
 USR_CFLAGS += -DHAVE_CONFIG_H
 
-SRC_DIRS += $(NETCDF)/include
+SRC_DIRS += $(NETCDF)/inc
 INC += netcdf.h
 
 SRC_DIRS += $(NETCDF)/libsrc
