@@ -22,6 +22,9 @@
             <li>Added support for 64-bit Windows.</li>
             <li>Added support for binning. The allowed binning modes (X,Y) are (1,1), (2,2), (4,4),
               (1,2), and (1,4).</li>
+            <li>Added shutter control for EPICS shutter. Shutter opens and closes automatically
+              when collecting gain images or normal images, and always closes before collecting
+              offset images.</li>
             <li>Added new records (PECurrentOffsetFrame, PECurrentGainFrame) to provide operator
               feedback when acquiring offset and gain images. The PEAcquireOffset and PEAcquireGain
               records have been changed to "busy" records so that clients can use ca_put_callback
@@ -183,6 +186,8 @@
           system (gcc 4.2.1).</li>
       </ul>
     </li>
+    <li>Renamed netCDFSrc/include to netCDFSrc/inc to work around a bug in make 3.82 on
+      Cygwin. </li>
     <li>medm screens
       <ul>
         <li>New medm screen, commonPlugins.adl. This screen provides an overview of the status
