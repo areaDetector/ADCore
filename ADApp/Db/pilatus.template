@@ -254,6 +254,7 @@ record(asyn, "$(P)$(R)CamserverAsyn")
     field(PORT,  "$(CAMSERVER_PORT)")
     field(IMAX, "64")
     field(OMAX, "64")
+    field(AUCT, "0")
 }
 
 # ancillary information
@@ -609,3 +610,13 @@ record(stringin, "$(P)$(R)TVXVersion_RBV")
    field(VAL,  "Unknown")
    field(SCAN, "I/O Intr")
 }
+
+record(waveform, "$(P)$(R)CbfTemplateFile")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CBFTEMPLATEFILE")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
+}
+
