@@ -90,16 +90,6 @@ record(mbbi, "$(P)$(R)TriggerMode_RBV")
    field(FVVL, "10")
 }
 
-record(ao, "$(P)$(R)Gain")
-{
-   field(PREC, "0")
-}
-
-record(ai, "$(P)$(R)Gain_RBV")
-{
-   field(PREC, "0")
-}
-
 record(mbbo, "$(P)$(R)DataType")
 {
    field(PINI, "YES")
@@ -244,16 +234,12 @@ record(waveform, "$(P)$(R)PALFilePath_RBV")
     field(SCAN, "I/O Intr")
 }
 
+# The ADC speed enum values are constructed at run-time based on camera capabilities
 record(mbbo, "$(P)$(R)AndorADCSpeed")
 {
     field(PINI, "1")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_ADC_SPEED")
-    field(ZRST, "0.05 MHz")
-    field(ZRVL, "0")
-    field(ONST, "2.5 MHz")
-    field(ONVL, "1")
-    field(VAL, "1")
 }
 
 #% archiver 10 Monitor
@@ -261,10 +247,22 @@ record(mbbi, "$(P)$(R)AndorADCSpeed_RBV")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_ADC_SPEED")
-   field(ZRST, "0.05 MHz")
-   field(ZRVL, "0")
-   field(ONST, "2.5 MHz")
-   field(ONVL, "1")
+   field(SCAN, "I/O Intr")
+}
+
+# The pre-amp gain enum values are constructed at run-time based on camera capabilities
+record(mbbo, "$(P)$(R)AndorPreAmpGain")
+{
+    field(PINI, "1")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_PREAMP_GAIN")
+}
+
+#% archiver 10 Monitor
+record(mbbi, "$(P)$(R)AndorPreAmpGain_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ANDOR_PREAMP_GAIN")
    field(SCAN, "I/O Intr")
 }
 
