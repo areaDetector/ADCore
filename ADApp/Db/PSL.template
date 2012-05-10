@@ -1,0 +1,60 @@
+# Database for the records specific to the PSL driver
+# Mark Rivers
+# May 9, 2012
+
+# These are the records from ADBase.template that we modify some fields for
+
+# We replace the file format choices from ADBase.template.  
+record(mbbo, "$(P)$(R)FileFormat")
+{
+    field(ZRST, "TIFF")
+    field(ZRVL, "0")
+    field(ONST, "JPEG")
+    field(ONVL, "1")
+    field(TWST, "BMP")
+    field(TWVL, "2")
+    field(THST, "GIF")
+    field(THVL, "3")
+    field(FRST, "PNG")
+    field(FRVL, "4")
+    field(FVST, "FLF")
+    field(FVVL, "5")
+    field(VAL,  "0")
+}
+
+record(mbbi, "$(P)$(R)FileFormat_RBV")
+{
+    field(ZRST, "TIFF")
+    field(ZRVL, "0")
+    field(ONST, "JPEG")
+    field(ONVL, "1")
+    field(TWST, "BMP")
+    field(TWVL, "2")
+    field(THST, "GIF")
+    field(THVL, "3")
+    field(FRST, "PNG")
+    field(FRVL, "4")
+    field(FVST, "FLF")
+    field(FVVL, "5")
+}
+
+# These are new records for the PSL detector
+
+record(waveform, "$(P)$(R)TIFFComment")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PSL_TIFF_COMMENT")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(R)TIFFComment_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PSL_TIFF_COMMENT")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
