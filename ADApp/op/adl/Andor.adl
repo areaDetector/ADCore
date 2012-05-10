@@ -945,49 +945,6 @@ composite {
 	limits {
 	}
 }
-"text entry" {
-	object {
-		x=148
-		y=650
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)Gain"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-text {
-	object {
-		x=97
-		y=650
-		width=40
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Gain"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=241
-		y=651
-		width=61
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)Gain_RBV"
-		clr=54
-		bclr=4
-	}
-	limits {
-	}
-}
 rectangle {
 	object {
 		x=345
@@ -2110,7 +2067,7 @@ text {
 	"basic attribute" {
 		clr=14
 	}
-	textix="Data type"
+	textix="Data Type"
 	align="horiz. right"
 }
 menu {
@@ -2142,28 +2099,67 @@ menu {
 	limits {
 	}
 }
-text {
+composite {
 	object {
 		x=47
 		y=675
-		width=90
-		height=20
+		width=274
+		height=21
 	}
-	"basic attribute" {
-		clr=14
+	"composite name"=""
+	children {
+		"text update" {
+			object {
+				x=241
+				y=676
+				width=80
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)AndorADCSpeed_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+		menu {
+			object {
+				x=148
+				y=676
+				width=80
+				height=20
+			}
+			control {
+				chan="$(P)$(R)AndorADCSpeed"
+				clr=14
+				bclr=51
+			}
+		}
+		text {
+			object {
+				x=47
+				y=675
+				width=90
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="ADC Speed"
+			align="horiz. right"
+		}
 	}
-	textix="ADC Speed"
-	align="horiz. right"
 }
 "text update" {
 	object {
 		x=241
-		y=676
+		y=651
 		width=80
 		height=18
 	}
 	monitor {
-		chan="$(P)$(R)AndorADCSpeed_RBV"
+		chan="$(P)$(R)AndorPreAmpGain_RBV"
 		clr=54
 		bclr=4
 	}
@@ -2173,13 +2169,26 @@ text {
 menu {
 	object {
 		x=148
-		y=676
+		y=651
 		width=80
 		height=20
 	}
 	control {
-		chan="$(P)$(R)AndorADCSpeed"
+		chan="$(P)$(R)AndorPreAmpGain"
 		clr=14
 		bclr=51
 	}
+}
+text {
+	object {
+		x=47
+		y=650
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Pre-amp Gain"
+	align="horiz. right"
 }
