@@ -101,6 +101,7 @@ dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=$(PREFIX),MAXPTS1=2000,MAXPTS2=
 
 set_requestfile_path("./")
 set_requestfile_path("$(AREA_DETECTOR)/ADApp/Db")
+set_requestfile_path("$(CALC)/calcApp/Db")
 set_requestfile_path("$(SSCAN)/sscanApp/Db")
 set_savefile_path("./autosave")
 set_pass0_restoreFile("auto_settings.sav")
