@@ -37,6 +37,56 @@ record(mbbi, "$(P)$(R)FileFormat_RBV")
     field(FVST, "FLF")
     field(FVVL, "5")
 }
+# We replace the trigger mode choices from ADBase.template.  
+record(mbbo, "$(P)$(R)TriggerMode")
+{
+    field(ZRST, "Software")
+    field(ZRVL, "0")
+    field(ONST, "FreeRunning")
+    field(ONVL, "1")
+    field(TWST, "External")
+    field(TWVL, "2")
+    field(THST, "Pipeline")
+    field(THVL, "3")
+    field(FRST, "Hardware_Falling")
+    field(FRVL, "4")
+    field(FVST, "Hardware_Rising")
+    field(FVVL, "5")
+    field(SXST, "Pipeline_Falling")
+    field(SXVL, "6")
+    field(SVST, "Pipeline_Rising")
+    field(SVVL, "7")
+    field(EIST, "Integration_Low")
+    field(EIVL, "8")
+    field(NIST, "Integration_High")
+    field(NIVL, "9")
+    field(VAL,  "0")
+}
+
+record(mbbi, "$(P)$(R)TriggerMode_RBV")
+{
+    field(ZRST, "Software")
+    field(ZRVL, "0")
+    field(ONST, "FreeRunning")
+    field(ONVL, "1")
+    field(TWST, "External")
+    field(TWVL, "2")
+    field(THST, "Pipeline")
+    field(THVL, "3")
+    field(FRST, "Hardware_Falling")
+    field(FRVL, "4")
+    field(FVST, "Hardware_Rising")
+    field(FVVL, "5")
+    field(SXST, "Pipeline_Falling")
+    field(SXVL, "6")
+    field(SVST, "Pipeline_Rising")
+    field(SVVL, "7")
+    field(EIST, "Integration_Low")
+    field(EIVL, "8")
+    field(NIST, "Integration_High")
+    field(NIVL, "9")
+}
+
 
 # These are new records for the PSL detector
 
