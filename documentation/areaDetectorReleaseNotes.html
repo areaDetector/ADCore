@@ -66,6 +66,12 @@
             <li>PacketSize: When connecting to the camera the driver has always automatically
               found the largest packet size that the camera and IOC computer support. This new
               read-only record provides the actual packet size.</li>
+            <li>Fixed bug which arose if MinX + SizeX was greater than MaxSizeX (same for Y).
+              This is an invalid geometry, but their library does not return an error status,
+              and silently reduces SizeX. However, it has a subtle bad side-effect; subsequent
+              attempts to change the AcquireTime or AcquirePeriod do not return errors, but they
+              do not take effect until the IOC is rebooted! Fixed the problem by reducing SizeX
+              or SizeY if the requested region would be larger than the chip.</li>
           </ul>
         </li>
         <li>Firewire Windows driver. Added READOUT_TIME parameter. The sum of the AcquireTime
@@ -90,14 +96,15 @@
         <li>NDFileTIFF.
           <ul>
             <li>Previously TIFF files were being written without the SampleFormat TIFF tag. This
-              meant that the file Previously TIFF files were being written without the SampleFormat
-              TIFF tag. This meant that the file did not distinguish between signed and unsigned
-              integers, and floating point TIFF files were not supported. Some readers, notably
-              the Python Imaging Library (PIL), do not recognize 32-bit TIFF files unless they
-              contain the SampleFormat tag.</li>
+              meant that the file did not distinguish between signed and unsigned integers, and
+              floating point TIFF files were not supported. Some readers, notably the Python Imaging
+              Library (PIL), do not recognize 32-bit TIFF files unless they contain the SampleFormat
+              tag.</li>
             <li>Added the SampleFormat TIFF tag, and added support for 32-bit and 64-bit floating
-              point arrays. 2, Float64). IDL can read TIFF files with all of these data types.
-              ImageJ can read all except Float64. PIL can read all except Int8, UInt32, and Float64.</li>
+              point arrays. The plugin can now write TIFF files with any NDArray type (Int8, UInt8,
+              Int16, UInt16, Int32, UInt32, Float32, and Float64). IDL can read TIFF files with
+              all of these data types. ImageJ can read all except Float64. PIL can read all except
+              Int8, UInt32, and Float64.</li>
           </ul>
         </li>
         <li>NDFileNexus.
