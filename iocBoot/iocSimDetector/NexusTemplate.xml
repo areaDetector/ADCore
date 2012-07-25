@@ -58,6 +58,7 @@
             <make type="ND_ATTR" source="CameraManufacturer" /> 
             <model type="ND_ATTR" source="CameraModel" /> 
             <ImageCounter type="ND_ATTR" source="ImageCounter" /> 
+            <AcquireTime type="ND_ATTR" source="AcquireTime" /> 
             <data type = "pArray">
                 <Attr name="signal" type="CONST" outtype="NX_CHAR">1</Attr>
                 <Attr name="make" type="ND_ATTR" source="CameraManufacturer" /> 
@@ -66,6 +67,7 @@
                 <Attr name="double" type="CONST" outtype="NX_FLOAT64" >2.0</Attr> 
                 <Attr name="randomText" type="CONST" outtype="NX_CHAR">Hello world</Attr>
                 <Attr name="randomText2" type="CONST" >goodbye world</Attr>
+                <Attr name="acquire time" type="ND_ATTR" source="AcquireTime" /> 
             </data>
         </NXdata>
         <NXinstrument name="microDiffraction">
