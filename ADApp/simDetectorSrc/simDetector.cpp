@@ -644,18 +644,18 @@ void simDetector::simTask()
         /* Is acquisition active? */
         getIntegerParam(ADAcquire, &acquire);
 
-	/* If we are not acquiring then wait for a semaphore that is given when acquisition is started */
-	if ((aborted) || (!acquire)) {
-	  /* Release the lock while we wait for an event that says acquire has started, then lock again */
+        /* If we are not acquiring then wait for a semaphore that is given when acquisition is started */
+        if ((aborted) || (!acquire)) {
+          /* Release the lock while we wait for an event that says acquire has started, then lock again */
             asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
                 "%s:%s: waiting for acquire to start\n", driverName, functionName);
             this->unlock();
             status = epicsEventWait(this->startEventId);
             this->lock();
-	    aborted = 0;
-	    setStringParam(ADStatusMessage, "Acquiring data");
+            aborted = 0;
+            setStringParam(ADStatusMessage, "Acquiring data");
             setIntegerParam(ADNumImagesCounter, 0);
-	}
+        }
 
         /* We are acquiring. */
         /* Get the current time */
@@ -680,9 +680,9 @@ void simDetector::simTask()
             this->unlock();
             status = epicsEventWaitWithTimeout(this->stopEventId, acquireTime);
             this->lock();
-	    if (status == epicsEventWaitOK) {
-	      aborted = 1;
-	    }
+            if (status == epicsEventWaitOK) {
+                aborted = 1;
+            }
         }
 
         /* Update the image */
@@ -691,83 +691,83 @@ void simDetector::simTask()
 
         /* Close the shutter */
         setShutter(ADShutterClosed);
-	
-	if (!aborted) {
-	  setIntegerParam(ADStatus, ADStatusReadout);
-	  /* Call the callbacks to update any changes */
-	  callParamCallbacks();
+        
+        if (!aborted) {
+          setIntegerParam(ADStatus, ADStatusReadout);
+          /* Call the callbacks to update any changes */
+          callParamCallbacks();
 
-	  pImage = this->pArrays[0];
-	  
-	  /* Get the current parameters */
-	  getIntegerParam(NDArrayCounter, &imageCounter);
-	  getIntegerParam(ADNumImages, &numImages);
-	  getIntegerParam(ADNumImagesCounter, &numImagesCounter);
-	  getIntegerParam(ADImageMode, &imageMode);
-	  getIntegerParam(NDArrayCallbacks, &arrayCallbacks);
-	  imageCounter++;
-	  numImagesCounter++;
-	  setIntegerParam(NDArrayCounter, imageCounter);
-	  setIntegerParam(ADNumImagesCounter, numImagesCounter);
-	  
-	  /* Put the frame number and time stamp into the buffer */
-	  pImage->uniqueId = imageCounter;
-	  pImage->timeStamp = startTime.secPastEpoch + startTime.nsec / 1.e9;
-	  
-	  /* Get any attributes that have been defined for this driver */
-	  this->getAttributes(pImage->pAttributeList);
-	  
-	  if (arrayCallbacks) {
+          pImage = this->pArrays[0];
+          
+          /* Get the current parameters */
+          getIntegerParam(NDArrayCounter, &imageCounter);
+          getIntegerParam(ADNumImages, &numImages);
+          getIntegerParam(ADNumImagesCounter, &numImagesCounter);
+          getIntegerParam(ADImageMode, &imageMode);
+          getIntegerParam(NDArrayCallbacks, &arrayCallbacks);
+          imageCounter++;
+          numImagesCounter++;
+          setIntegerParam(NDArrayCounter, imageCounter);
+          setIntegerParam(ADNumImagesCounter, numImagesCounter);
+          
+          /* Put the frame number and time stamp into the buffer */
+          pImage->uniqueId = imageCounter;
+          pImage->timeStamp = startTime.secPastEpoch + startTime.nsec / 1.e9;
+          
+          /* Get any attributes that have been defined for this driver */
+          this->getAttributes(pImage->pAttributeList);
+          
+          if (arrayCallbacks) {
             /* Call the NDArray callback */
             /* Must release the lock here, or we can get into a deadlock, because we can
              * block on the plugin lock, and the plugin can be calling us */
             this->unlock();
             asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
-		      "%s:%s: calling imageData callback\n", driverName, functionName);
+                      "%s:%s: calling imageData callback\n", driverName, functionName);
             doCallbacksGenericPointer(pImage, NDArrayData, 0);
             this->lock();
-	  }
-	  
-	  /* See if acquisition is done */
-	  if ((imageMode == ADImageSingle) ||
-	      ((imageMode == ADImageMultiple) &&
-	       (numImagesCounter >= numImages))) {
-	    
-	    /* First do callback on ADStatus. */
-	    setStringParam(ADStatusMessage, "Waiting for acqusition");
-	    setIntegerParam(ADStatus, ADStatusIdle);
-	    callParamCallbacks();
+          }
+          
+          /* See if acquisition is done */
+          if ((imageMode == ADImageSingle) ||
+              ((imageMode == ADImageMultiple) &&
+               (numImagesCounter >= numImages))) {
+            
+            /* First do callback on ADStatus. */
+            setStringParam(ADStatusMessage, "Waiting for acqusition");
+            setIntegerParam(ADStatus, ADStatusIdle);
+            callParamCallbacks();
 
             setIntegerParam(ADAcquire, 0);
             asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
-		      "%s:%s: acquisition completed\n", driverName, functionName);
-	  }
-	  
-	  /* Call the callbacks to update any changes */
-	  callParamCallbacks();
-	  getIntegerParam(ADAcquire, &acquire);
-	  
-	  /* If we are acquiring then sleep for the acquire period minus elapsed time. */
-	  if (acquire) {
+                      "%s:%s: acquisition completed\n", driverName, functionName);
+          }
+          
+          /* Call the callbacks to update any changes */
+          callParamCallbacks();
+          getIntegerParam(ADAcquire, &acquire);
+          
+          /* If we are acquiring then sleep for the acquire period minus elapsed time. */
+          if (acquire) {
             epicsTimeGetCurrent(&endTime);
             elapsedTime = epicsTimeDiffInSeconds(&endTime, &startTime);
             delay = acquirePeriod - elapsedTime;
             asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
-		      "%s:%s: delay=%f\n",
+                      "%s:%s: delay=%f\n",
                       driverName, functionName, delay);
             if (delay >= 0.0) {
-	      /* We set the status to readOut to indicate we are in the period delay */
-	      setIntegerParam(ADStatus, ADStatusWaiting);
-	      callParamCallbacks();
-	      this->unlock();
-	      status = epicsEventWaitWithTimeout(this->stopEventId, delay);
-	      if (status == epicsEventWaitOK) {
-		aborted = 1;
-	      }
-	      this->lock();
+              /* We set the status to readOut to indicate we are in the period delay */
+              setIntegerParam(ADStatus, ADStatusWaiting);
+              callParamCallbacks();
+              this->unlock();
+              status = epicsEventWaitWithTimeout(this->stopEventId, delay);
+              if (status == epicsEventWaitOK) {
+                aborted = 1;
+              }
+              this->lock();
             }
-	  }
-	}
+          }
+        }
     }
 }
 
@@ -787,12 +787,12 @@ asynStatus simDetector::writeInt32(asynUser *pasynUser, epicsInt32 value)
     getIntegerParam(ADStatus, &adstatus);
     if (function == ADAcquire) {
       if (value && ((adstatus == ADStatusIdle) || adstatus == ADStatusError || adstatus == ADStatusAborted)) {
-	setStringParam(ADStatusMessage, "Acquiring data");
-	setIntegerParam(ADStatus, ADStatusAcquire); 
+        setStringParam(ADStatusMessage, "Acquiring data");
+        setIntegerParam(ADStatus, ADStatusAcquire); 
       }
       if (!value && (adstatus != ADStatusIdle)) {
-	setStringParam(ADStatusMessage, "Acquisition aborted");
-	setIntegerParam(ADStatus, ADStatusAborted);
+        setStringParam(ADStatusMessage, "Acquisition aborted");
+        setIntegerParam(ADStatus, ADStatusAborted);
       }
     }
     callParamCallbacks();
