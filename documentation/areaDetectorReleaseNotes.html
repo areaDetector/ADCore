@@ -32,7 +32,11 @@
             <li>Added an additional ImageMode="Average". In this mode NumImages frames are averaged
               in the Perkin Elmer driver. This is useful for long acquisition times, because the
               maximum acquisition time that the hardware supports in Internal trigger mode is
-              5 seconds.</li>
+              5 seconds. NOTE: There is a bug in the current Perkin Elmer SDK library which causes
+              a memory leak if the number of frames to average is 2^N (2,4,8,16, etc.) on optical
+              interface frame grabbers. This problem can be worked around by average a different
+              number of frames (7 rather than 8 for example). It will be fixed in the next release
+              of their SDK.</li>
             <li>Removed the maxSizeX, maxSizeY, and dataType arguments from the PerkinElmerConfig()
               command. These values are now determined automatically. This means that startup
               scripts need to be modified.</li>
