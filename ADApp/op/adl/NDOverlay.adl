@@ -1,14 +1,14 @@
 
 file {
 	name="/home/epics/devel/areaDetector/ADApp/op/adl/NDOverlay.adl"
-	version=030102
+	version=030105
 }
 display {
 	object {
 		x=154
 		y=55
 		width=390
-		height=615
+		height=640
 	}
 	clr=14
 	bclr=4
@@ -111,136 +111,147 @@ text {
 	textix="$(P)$(R)"
 	align="horiz. centered"
 }
-rectangle {
-	object {
-		x=5
-		y=525
-		width=380
-		height=85
-	}
-	"basic attribute" {
-		clr=14
-		fill="outline"
-	}
-}
-"related display" {
-	object {
-		x=172
-		y=555
-		width=160
-		height=20
-	}
-	display[0] {
-		label="Overlay 1"
-		name="NDOverlayN.adl"
-		args="P=$(P), R=$(R)1:"
-	}
-	display[1] {
-		label="Overlay 2"
-		name="NDOverlayN.adl"
-		args="P=$(P), R=$(R)2:"
-	}
-	display[2] {
-		label="Overlay 3"
-		name="NDOverlayN.adl"
-		args="P=$(P), R=$(R)3:"
-	}
-	display[3] {
-		label="Overlay 4"
-		name="NDOverlayN.adl"
-		args="P=$(P), R=$(R)4:"
-	}
-	display[4] {
-		label="Overlay 5"
-		name="NDOverlayN.adl"
-		args="P=$(P), R=$(R)5:"
-	}
-	display[5] {
-		label="Overlay 6"
-		name="NDOverlayN.adl"
-		args="P=$(P), R=$(R)6:"
-	}
-	display[6] {
-		label="Overlay 7"
-		name="NDOverlayN.adl"
-		args="P=$(P), R=$(R)7:"
-	}
-	display[7] {
-		label="Overlay 8"
-		name="NDOverlayN.adl"
-		args="P=$(P), R=$(R)8:"
-	}
-	clr=14
-	bclr=51
-	label="Individual Overlays"
-}
-text {
-	object {
-		x=22
-		y=555
-		width=140
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Individual 0-7"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=172
-		y=582
-		width=160
-		height=20
-	}
-	display[0] {
-		label="Overlays 1-8"
-		name="NDOverlay8.adl"
-		args="P=$(P),R=$(R),O1=$(R)1:,O2=$(R)2:,O3=$(R)3:,O4=$(R)4:,O5=$(R)5:,O6=$(R)6:,O7=$(R)7:,O8=$(R)8:"
-	}
-	display[1] {
-		label="Overlays 9-16"
-		name="NDOverlay8.adl"
-		args="P=$(P),R=$(R),O1=$(R)9:,O2=$(R)10:,O3=$(R)11:,O4=$(R)12:,O5=$(R)13:,O6=$(R)14:,O7=$(R)15:,O8=$(R)16:"
-	}
-	clr=14
-	bclr=51
-	label="Combined Overlays"
-}
-text {
-	object {
-		x=138
-		y=530
-		width=150
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Overlay definitions"
-	align="horiz. right"
-}
-text {
-	object {
-		x=82
-		y=583
-		width=80
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Combined"
-	align="horiz. right"
-}
 composite {
 	object {
 		x=5
 		y=40
 		width=380
-		height=485
+		height=505
 	}
 	"composite name"=""
 	"composite file"="NDPluginBase.adl"
+}
+composite {
+	object {
+		x=5
+		y=550
+		width=380
+		height=85
+	}
+	"composite name"=""
+	children {
+		rectangle {
+			object {
+				x=5
+				y=550
+				width=380
+				height=85
+			}
+			"basic attribute" {
+				clr=14
+				fill="outline"
+			}
+		}
+		"related display" {
+			object {
+				x=172
+				y=580
+				width=160
+				height=20
+			}
+			display[0] {
+				label="Overlay 1"
+				name="NDOverlayN.adl"
+				args="P=$(P), R=$(R)1:"
+			}
+			display[1] {
+				label="Overlay 2"
+				name="NDOverlayN.adl"
+				args="P=$(P), R=$(R)2:"
+			}
+			display[2] {
+				label="Overlay 3"
+				name="NDOverlayN.adl"
+				args="P=$(P), R=$(R)3:"
+			}
+			display[3] {
+				label="Overlay 4"
+				name="NDOverlayN.adl"
+				args="P=$(P), R=$(R)4:"
+			}
+			display[4] {
+				label="Overlay 5"
+				name="NDOverlayN.adl"
+				args="P=$(P), R=$(R)5:"
+			}
+			display[5] {
+				label="Overlay 6"
+				name="NDOverlayN.adl"
+				args="P=$(P), R=$(R)6:"
+			}
+			display[6] {
+				label="Overlay 7"
+				name="NDOverlayN.adl"
+				args="P=$(P), R=$(R)7:"
+			}
+			display[7] {
+				label="Overlay 8"
+				name="NDOverlayN.adl"
+				args="P=$(P), R=$(R)8:"
+			}
+			clr=14
+			bclr=51
+			label="Individual Overlays"
+		}
+		text {
+			object {
+				x=22
+				y=580
+				width=140
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Individual 0-7"
+			align="horiz. right"
+		}
+		"related display" {
+			object {
+				x=172
+				y=607
+				width=160
+				height=20
+			}
+			display[0] {
+				label="Overlays 1-8"
+				name="NDOverlay8.adl"
+				args="P=$(P),R=$(R),O1=$(R)1:,O2=$(R)2:,O3=$(R)3:,O4=$(R)4:,O5=$(R)5:,O6=$(R)6:,O7=$(R)7:,O8=$(R)8:"
+			}
+			display[1] {
+				label="Overlays 9-16"
+				name="NDOverlay8.adl"
+				args="P=$(P),R=$(R),O1=$(R)9:,O2=$(R)10:,O3=$(R)11:,O4=$(R)12:,O5=$(R)13:,O6=$(R)14:,O7=$(R)15:,O8=$(R)16:"
+			}
+			clr=14
+			bclr=51
+			label="Combined Overlays"
+		}
+		text {
+			object {
+				x=138
+				y=555
+				width=150
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Overlay definitions"
+			align="horiz. right"
+		}
+		text {
+			object {
+				x=82
+				y=608
+				width=80
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Combined"
+			align="horiz. right"
+		}
+	}
 }

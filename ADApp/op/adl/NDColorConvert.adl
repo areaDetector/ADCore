@@ -1,14 +1,14 @@
 
 file {
 	name="/home/epics/devel/areaDetector/ADApp/op/adl/NDColorConvert.adl"
-	version=030102
+	version=030105
 }
 display {
 	object {
-		x=120
-		y=312
+		x=193
+		y=91
 		width=390
-		height=595
+		height=620
 	}
 	clr=14
 	bclr=4
@@ -116,54 +116,106 @@ composite {
 		x=5
 		y=40
 		width=380
-		height=485
+		height=505
 	}
 	"composite name"=""
 	"composite file"="NDPluginBase.adl"
 }
-rectangle {
+composite {
 	object {
 		x=5
-		y=530
+		y=555
 		width=380
 		height=60
 	}
-	"basic attribute" {
-		clr=14
-		fill="outline"
-	}
-}
-composite {
-	object {
-		x=12
-		y=538
-		width=366
-		height=20
-	}
 	"composite name"=""
 	children {
+		rectangle {
+			object {
+				x=5
+				y=555
+				width=380
+				height=60
+			}
+			"basic attribute" {
+				clr=14
+				fill="outline"
+			}
+		}
+		composite {
+			object {
+				x=12
+				y=563
+				width=366
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=12
+						y=563
+						width=150
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Color mode out"
+					align="horiz. right"
+				}
+				menu {
+					object {
+						x=172
+						y=563
+						width=100
+						height=20
+					}
+					control {
+						chan="$(P)$(R)ColorModeOut"
+						clr=14
+						bclr=51
+					}
+				}
+				"text update" {
+					object {
+						x=278
+						y=564
+						width=100
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)ColorModeOut_RBV"
+						clr=54
+						bclr=4
+					}
+					limits {
+					}
+				}
+			}
+		}
 		text {
 			object {
 				x=12
-				y=538
+				y=588
 				width=150
 				height=20
 			}
 			"basic attribute" {
 				clr=14
 			}
-			textix="Color mode out"
+			textix="False color map"
 			align="horiz. right"
 		}
 		menu {
 			object {
 				x=172
-				y=538
+				y=588
 				width=100
 				height=20
 			}
 			control {
-				chan="$(P)$(R)ColorModeOut"
+				chan="$(P)$(R)FalseColor"
 				clr=14
 				bclr=51
 			}
@@ -171,58 +223,17 @@ composite {
 		"text update" {
 			object {
 				x=278
-				y=539
+				y=589
 				width=100
 				height=18
 			}
 			monitor {
-				chan="$(P)$(R)ColorModeOut_RBV"
+				chan="$(P)$(R)FalseColor_RBV"
 				clr=54
 				bclr=4
 			}
 			limits {
 			}
 		}
-	}
-}
-text {
-	object {
-		x=12
-		y=563
-		width=150
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="False color map"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=172
-		y=563
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(R)FalseColor"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=278
-		y=564
-		width=100
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)FalseColor_RBV"
-		clr=54
-		bclr=4
-	}
-	limits {
 	}
 }
