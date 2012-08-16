@@ -13,7 +13,7 @@ epicsEnvSet("YSIZE",  "1024")
 epicsEnvSet("NCHANS", "2048")
 
 # Create a simDetector driver
-simDetectorConfig("$(PORT)", $(XSIZE), $(YSIZE), 1, 500, -1)
+simDetectorConfig("$(PORT)", $(XSIZE), $(YSIZE), 1, 500, 0)
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/ADBase.template",     "P=$(PREFIX),R=cam1:,PORT=$(PORT),ADDR=0,TIMEOUT=1")
 dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/simDetector.template","P=$(PREFIX),R=cam1:,PORT=$(PORT),ADDR=0,TIMEOUT=1")
 
