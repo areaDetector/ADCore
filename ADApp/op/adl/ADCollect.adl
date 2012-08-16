@@ -1,14 +1,14 @@
 
 file {
 	name="/home/epics/devel/areaDetector/ADApp/op/adl/ADCollect.adl"
-	version=030102
+	version=030105
 }
 display {
 	object {
 		x=44
 		y=221
 		width=350
-		height=385
+		height=435
 	}
 	clr=14
 	bclr=4
@@ -578,7 +578,7 @@ rectangle {
 		x=0
 		y=0
 		width=350
-		height=385
+		height=435
 	}
 	"basic attribute" {
 		clr=14
@@ -810,4 +810,110 @@ composite {
 			}
 		}
 	}
+}
+"text update" {
+	object {
+		x=300
+		y=381
+		width=30
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)PoolFreeBuffers"
+		clr=54
+		bclr=4
+	}
+	align="horiz. right"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=265
+		y=381
+		width=30
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)PoolAllocBuffers"
+		clr=54
+		bclr=4
+	}
+	align="horiz. right"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=230
+		y=381
+		width=30
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)PoolMaxBuffers"
+		clr=54
+		bclr=4
+	}
+	align="horiz. right"
+	limits {
+	}
+}
+text {
+	object {
+		x=5
+		y=380
+		width=220
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Buffers max/alloc/free"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=275
+		y=406
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)PoolUsedMem"
+		clr=54
+		bclr=4
+	}
+	align="horiz. right"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=210
+		y=406
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)PoolMaxMem"
+		clr=54
+		bclr=4
+	}
+	align="horiz. right"
+	limits {
+	}
+}
+text {
+	object {
+		x=5
+		y=405
+		width=200
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Memory max/used (MB)"
+	align="horiz. right"
 }
