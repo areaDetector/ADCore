@@ -41,9 +41,9 @@ volatile int eraseNDAttributes=0;
 extern "C" {epicsExportAddress(int, eraseNDAttributes);}
 
 /** NDArrayPool constructor
-  * \param[in] maxBuffers Maximum number of NDArray objects that the pool is allowed to contain; -1=unlimited.
+  * \param[in] maxBuffers Maximum number of NDArray objects that the pool is allowed to contain; 0=unlimited.
   * \param[in] maxMemory Maxiumum number of bytes of memory the the pool is allowed to use, summed over
-  * all of the NDArray objects; -1=unlimited.
+  * all of the NDArray objects; 0=unlimited.
   */
 NDArrayPool::NDArrayPool(int maxBuffers, size_t maxMemory)
   : maxBuffers_(maxBuffers), numBuffers_(0), maxMemory_(maxMemory), memorySize_(0), numFree_(0)
@@ -600,7 +600,7 @@ int NDArrayPool::convert(NDArray *pIn,
   return ND_SUCCESS;
 }
 
-/** Returns maximum number of buffers this object is allowed to allocate; -1=unlimited */
+/** Returns maximum number of buffers this object is allowed to allocate; 0=unlimited */
 int NDArrayPool::maxBuffers()
 {  
 return maxBuffers_;
@@ -612,7 +612,7 @@ int NDArrayPool::numBuffers()
 return numBuffers_;
 }
 
-/** Returns maximum bytes of memory this object is allowed to allocate; -1=unlimited */
+/** Returns maximum bytes of memory this object is allowed to allocate; 0=unlimited */
 size_t NDArrayPool::maxMemory()
 {  
 return maxMemory_;
