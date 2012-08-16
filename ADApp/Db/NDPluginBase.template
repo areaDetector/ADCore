@@ -173,6 +173,32 @@ record(longin, "$(P)$(R)DroppedArrays_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(longin, "$(P)$(R)QueueSize")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))QUEUE_SIZE")
+    field(PINI, "YES")
+    field(FLNK, "$(P)$(R)QueueFreeLow")
+}
+
+record(calcout, "$(P)$(R)QueueFreeLow") {
+    field(CALC, "A*0.25")
+    field(INPA, "$(P)$(R)QueueSize")
+    field(OUT,  "$(P)$(R)QueueFree.LOW")
+}
+
+record(longin, "$(P)$(R)QueueFree")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))QUEUE_FREE")
+    field(LLSV, "MAJOR")
+    field(LSV,  "MINOR")
+    field(LOLO, "0")
+    field(HYST, "1")
+    field(SCAN, "I/O Intr")
+}
+
+
 ###################################################################
 #  These records are the array size and data type                 #
 ###################################################################
@@ -336,6 +362,66 @@ record(waveform, "$(P)$(R)NDAttributesFile")
     field(FTVL, "CHAR")
     field(NELM, "256")
 }
+
+record(longin, "$(P)$(R)FifoFill") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FIFO_FILL")
+    field(SCAN, ".1 second")
+    field(HHSV, "MAJOR")
+    field(HSV,  "MINOR")
+    field(HYST, "1")
+}
+
+
+###################################################################
+#                                                                 #
+#  Status of NDArrayPool - number of buffers, memory used etc.    # 
+#  This is only really useful information for plugins that        #
+#  produce output (callbacks) that other plugins can attach to    #
+#                                                                 #
+###################################################################
+
+record(ai, "$(P)$(R)PoolMaxMem")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))POOL_MAX_MEMORY")
+   field(PREC, "1")
+   field(EGU,  "MB")
+   field(SCAN, "Passive")
+   field(PINI, "YES")
+}
+
+record(ai, "$(P)$(R)PoolUsedMem")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))POOL_USED_MEMORY")
+   field(PREC, "1")
+   field(EGU,  "MB")
+   field(SCAN, ".1 second")
+}
+
+record(longin, "$(P)$(R)PoolMaxBuffers")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))POOL_MAX_BUFFERS")
+   field(SCAN, "Passive")
+   field(PINI, "YES")
+}
+
+record(longin, "$(P)$(R)PoolAllocBuffers")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))POOL_ALLOC_BUFFERS")
+   field(SCAN, ".1 second")
+}
+
+record(longin, "$(P)$(R)PoolFreeBuffers")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))POOL_FREE_BUFFERS")
+   field(SCAN, ".1 second")
+}
+
 
 ###################################################################
 #  The asynRecord is used for mainly for trace mask               # 
