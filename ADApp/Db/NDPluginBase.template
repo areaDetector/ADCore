@@ -363,22 +363,11 @@ record(waveform, "$(P)$(R)NDAttributesFile")
     field(NELM, "256")
 }
 
-record(longin, "$(P)$(R)FifoFill") {
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FIFO_FILL")
-    field(SCAN, ".1 second")
-    field(HHSV, "MAJOR")
-    field(HSV,  "MINOR")
-    field(HYST, "1")
-}
-
 
 ###################################################################
-#                                                                 #
 #  Status of NDArrayPool - number of buffers, memory used etc.    # 
 #  This is only really useful information for plugins that        #
 #  produce output (callbacks) that other plugins can attach to    #
-#                                                                 #
 ###################################################################
 
 record(ai, "$(P)$(R)PoolMaxMem")
