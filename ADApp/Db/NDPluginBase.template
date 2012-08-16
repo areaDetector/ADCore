@@ -411,6 +411,12 @@ record(longin, "$(P)$(R)PoolFreeBuffers")
    field(SCAN, ".1 second")
 }
 
+record(calc, "$(P)$(R)PoolUsedBuffers")
+{
+    field(INPA, "$(P)$(R)PoolAllocBuffers CP MS")
+    field(INPB, "$(P)$(R)PoolFreeBuffers CP MS")
+    field(CALC, "A-B")
+}
 
 ###################################################################
 #  The asynRecord is used for mainly for trace mask               # 
