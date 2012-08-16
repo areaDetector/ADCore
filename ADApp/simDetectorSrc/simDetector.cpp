@@ -1014,11 +1014,13 @@ simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDat
 
 /** Configuration command, called directly or from iocsh */
 extern "C" int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int dataType,
-                                 int maxBuffers, size_t maxMemory, int priority, int stackSize)
+                                 int maxBuffers, int maxMemory, int priority, int stackSize)
 {
     simDetector *pSimDetector
         = new simDetector(portName, maxSizeX, maxSizeY, (NDDataType_t)dataType,
-                          maxBuffers, maxMemory, priority, stackSize);
+                          (maxBuffers < 0) ? 0 : maxBuffers,
+                          (maxMemory < 0) ? 0 : maxMemory, 
+                          priority, stackSize);
     pSimDetector = NULL;
     return(asynSuccess);
 }
