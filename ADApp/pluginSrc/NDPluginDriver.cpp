@@ -91,13 +91,14 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
     double minCallbackTime, deltaTime;
     int status=0;
     int blockingCallbacks;
-    int arrayCounter, droppedArrays;
+    int arrayCounter, droppedArrays, queueSize, queueFree;
     const char *functionName = "driverCallback";
 
     this->lock();
 
     status |= getDoubleParam(NDPluginDriverMinCallbackTime, &minCallbackTime);
     status |= getIntegerParam(NDPluginDriverBlockingCallbacks, &blockingCallbacks);
+    status |= getIntegerParam(NDPluginDriverQueueSize, &queueSize);
     
     epicsTimeGetCurrent(&tNow);
     deltaTime = epicsTimeDiffInSeconds(&tNow, &this->lastProcessTime);
@@ -122,6 +123,8 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
             /* Try to put this array on the message queue.  If there is no room then return
              * immediately. */
             status = epicsMessageQueueTrySend(this->msgQId, &pArray, sizeof(&pArray));
+            queueFree = queueSize - epicsMessageQueuePending(this->msgQId);
+            setIntegerParam(NDPluginDriverQueueFree, queueFree);
             if (status) {
                 status |= getIntegerParam(NDArrayCounter, &arrayCounter);
                 status |= getIntegerParam(NDPluginDriverDroppedArrays, &droppedArrays);
@@ -497,6 +500,8 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     createParam(NDPluginDriverArrayAddrString,         asynParamInt32, &NDPluginDriverArrayAddr);
     createParam(NDPluginDriverPluginTypeString,        asynParamOctet, &NDPluginDriverPluginType);
     createParam(NDPluginDriverDroppedArraysString,     asynParamInt32, &NDPluginDriverDroppedArrays);
+    createParam(NDPluginDriverQueueSizeString,         asynParamInt32, &NDPluginDriverQueueSize);
+    createParam(NDPluginDriverQueueFreeString,         asynParamInt32, &NDPluginDriverQueueFree);
     createParam(NDPluginDriverEnableCallbacksString,   asynParamInt32, &NDPluginDriverEnableCallbacks);
     createParam(NDPluginDriverBlockingCallbacksString, asynParamInt32, &NDPluginDriverBlockingCallbacks);
     createParam(NDPluginDriverMinCallbackTimeString,   asynParamFloat64, &NDPluginDriverMinCallbackTime);
@@ -510,5 +515,6 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     setStringParam (NDPluginDriverArrayPort, NDArrayPort);
     setIntegerParam(NDPluginDriverArrayAddr, NDArrayAddr);
     setIntegerParam(NDPluginDriverDroppedArrays, 0);
+    setIntegerParam(NDPluginDriverQueueSize, queueSize);
 }
 
