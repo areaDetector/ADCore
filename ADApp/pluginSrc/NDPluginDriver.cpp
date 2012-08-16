@@ -159,6 +159,7 @@ void processTask(void *drvPvt)
 void NDPluginDriver::processTask(void)
 {
     /* This thread processes a new array when it arrives */
+    int queueSize, queueFree;
 
     /* Loop forever */
     NDArray *pArray;
@@ -170,6 +171,10 @@ void NDPluginDriver::processTask(void)
         /* Take the lock.  The function we are calling must release the lock
          * during time-consuming operations when it does not need it. */
         this->lock();
+        getIntegerParam(NDPluginDriverQueueSize, &queueSize);
+        queueFree = queueSize - epicsMessageQueuePending(this->msgQId);
+        setIntegerParam(NDPluginDriverQueueFree, queueFree);
+
         /* Call the function that does the callbacks to standard asyn interfaces */
         processCallbacks(pArray); 
         this->unlock();
