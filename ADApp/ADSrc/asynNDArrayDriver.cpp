@@ -397,6 +397,44 @@ asynStatus asynNDArrayDriver::writeGenericPointer(asynUser *pasynUser, void *gen
     return status;
 }
 
+asynStatus asynNDArrayDriver::readInt32(asynUser *pasynUser, epicsInt32 *value)
+{
+    int function = pasynUser->reason;
+    asynStatus status = asynSuccess;
+
+    // Just read the status of the NDArrayPool
+    if (function == NDPoolMaxBuffers) {
+        setIntegerParam(function, this->pNDArrayPool->maxBuffers());
+    } else if (function == NDPoolAllocBuffers) {
+        setIntegerParam(function, this->pNDArrayPool->numBuffers());
+    } else if (function == NDPoolFreeBuffers) {
+        setIntegerParam(function, this->pNDArrayPool->numFree());
+    }
+
+    // Call base class
+    status = asynPortDriver::readInt32(pasynUser, value);
+    return status;
+}
+
+#define MEGABYTE_DBL 1048576.
+asynStatus asynNDArrayDriver::readFloat64(asynUser *pasynUser, epicsFloat64 *value)
+{
+    int function = pasynUser->reason;
+    asynStatus status = asynSuccess;
+
+    // Just read the status of the NDArrayPool
+    if (function == NDPoolMaxMemory) {
+        setDoubleParam(function, this->pNDArrayPool->maxMemory() / MEGABYTE_DBL);
+    } else if (function == NDPoolUsedMemory) {
+        setDoubleParam(function, this->pNDArrayPool->memorySize() / MEGABYTE_DBL);
+    }
+
+    // Call base class
+    status = asynPortDriver::readFloat64(pasynUser, value);
+    return status;
+}
+
+
 /** Report status of the driver.
   * This method calls the report function in the asynPortDriver base class. It then
   * calls the NDArrayPool::report() method if details >5.
@@ -480,6 +518,11 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     createParam(NDAttributesFileString,       asynParamOctet,           &NDAttributesFile);
     createParam(NDArrayDataString,            asynParamGenericPointer,  &NDArrayData);
     createParam(NDArrayCallbacksString,       asynParamInt32,           &NDArrayCallbacks);
+    createParam(NDPoolMaxBuffersString,       asynParamInt32,           &NDPoolMaxBuffers);
+    createParam(NDPoolAllocBuffersString,     asynParamInt32,           &NDPoolAllocBuffers);
+    createParam(NDPoolFreeBuffersString,      asynParamInt32,           &NDPoolFreeBuffers);
+    createParam(NDPoolMaxMemoryString,        asynParamFloat64,         &NDPoolMaxMemory);
+    createParam(NDPoolUsedMemoryString,       asynParamFloat64,         &NDPoolUsedMemory);
 
     /* Here we set the values of read-only parameters and of read/write parameters that cannot
      * or should not get their values from the database.  Note that values set here will override
@@ -509,5 +552,10 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
      * waveform record. However, the waveform record does not currently read the driver value for initialization! */
     setStringParam (NDFileTemplate, "%s%s_%3.3d.dat");
     setIntegerParam(NDFileNumCaptured, 0);
+
+    setIntegerParam(NDPoolMaxBuffers, this->pNDArrayPool->maxBuffers());
+    setIntegerParam(NDPoolAllocBuffers, this->pNDArrayPool->numBuffers());
+    setIntegerParam(NDPoolFreeBuffers, this->pNDArrayPool->numFree());
+
 }
 

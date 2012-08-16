@@ -78,6 +78,13 @@ typedef enum {
 #define NDArrayDataString       "ARRAY_DATA"        /**< (asynGenericPointer,   r/w) NDArray data */
 #define NDArrayCallbacksString  "ARRAY_CALLBACKS"   /**< (asynInt32,    r/w) Do callbacks with array data (0=No, 1=Yes) */
 
+    /* NDArray Pool status */
+#define NDPoolMaxBuffersString      "POOL_MAX_BUFFERS"
+#define NDPoolAllocBuffersString    "POOL_ALLOC_BUFFERS"
+#define NDPoolFreeBuffersString     "POOL_FREE_BUFFERS"
+#define NDPoolMaxMemoryString       "POOL_MAX_MEMORY"
+#define NDPoolUsedMemoryString      "POOL_USED_MEMORY"
+
 /** This is the class from which NDArray drivers are derived; implements the asynGenericPointer functions 
   * for NDArray objects. 
   * For areaDetector, both plugins and detector drivers are indirectly derived from this class.
@@ -94,6 +101,8 @@ public:
                           size_t *nActual);
     virtual asynStatus readGenericPointer(asynUser *pasynUser, void *genericPointer);
     virtual asynStatus writeGenericPointer(asynUser *pasynUser, void *genericPointer);
+    virtual asynStatus readInt32(asynUser *pasynUser, epicsInt32 *value);
+    virtual asynStatus readFloat64(asynUser *pasynUser, epicsFloat64 *value);
     virtual void report(FILE *fp, int details);
 
     /* These are the methods that are new to this class */
@@ -139,7 +148,12 @@ protected:
     int NDAttributesFile;
     int NDArrayData;
     int NDArrayCallbacks;
-    #define LAST_NDARRAY_PARAM NDArrayCallbacks
+    int NDPoolMaxBuffers;
+    int NDPoolAllocBuffers;
+    int NDPoolFreeBuffers;
+    int NDPoolMaxMemory;
+    int NDPoolUsedMemory;
+    #define LAST_NDARRAY_PARAM NDPoolUsedMemory
 
     NDArray **pArrays;             /**< An array of NDArray pointers used to store data in the driver */
     NDArrayPool *pNDArrayPool;     /**< An NDArrayPool object used to allocate and manipulate NDArray objects */
