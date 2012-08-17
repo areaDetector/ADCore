@@ -8,7 +8,7 @@ display {
 		x=44
 		y=221
 		width=350
-		height=460
+		height=510
 	}
 	clr=14
 	bclr=4
@@ -578,7 +578,7 @@ rectangle {
 		x=0
 		y=0
 		width=350
-		height=460
+		height=510
 	}
 	"basic attribute" {
 		clr=14
@@ -628,7 +628,7 @@ composite {
 composite {
 	object {
 		x=35
-		y=280
+		y=305
 		width=212
 		height=20
 	}
@@ -637,7 +637,7 @@ composite {
 		text {
 			object {
 				x=35
-				y=280
+				y=305
 				width=140
 				height=20
 			}
@@ -650,7 +650,7 @@ composite {
 		"text update" {
 			object {
 				x=180
-				y=281
+				y=306
 				width=67
 				height=18
 			}
@@ -667,7 +667,7 @@ composite {
 "text entry" {
 	object {
 		x=180
-		y=305
+		y=330
 		width=60
 		height=20
 	}
@@ -682,7 +682,7 @@ composite {
 text {
 	object {
 		x=45
-		y=305
+		y=330
 		width=130
 		height=20
 	}
@@ -695,7 +695,7 @@ text {
 "text update" {
 	object {
 		x=245
-		y=306
+		y=331
 		width=80
 		height=18
 	}
@@ -710,7 +710,7 @@ text {
 composite {
 	object {
 		x=75
-		y=330
+		y=355
 		width=205
 		height=20
 	}
@@ -719,7 +719,7 @@ composite {
 		text {
 			object {
 				x=75
-				y=330
+				y=355
 				width=100
 				height=20
 			}
@@ -732,7 +732,7 @@ composite {
 		"text update" {
 			object {
 				x=180
-				y=331
+				y=356
 				width=100
 				height=18
 			}
@@ -749,7 +749,7 @@ composite {
 composite {
 	object {
 		x=5
-		y=355
+		y=380
 		width=330
 		height=20
 	}
@@ -758,7 +758,7 @@ composite {
 		text {
 			object {
 				x=5
-				y=355
+				y=380
 				width=150
 				height=20
 			}
@@ -771,7 +771,7 @@ composite {
 		menu {
 			object {
 				x=160
-				y=355
+				y=380
 				width=90
 				height=20
 			}
@@ -784,7 +784,7 @@ composite {
 		"text update" {
 			object {
 				x=255
-				y=357
+				y=382
 				width=80
 				height=18
 			}
@@ -803,7 +803,7 @@ composite {
 text {
 	object {
 		x=5
-		y=430
+		y=455
 		width=200
 		height=20
 	}
@@ -816,7 +816,7 @@ text {
 "text update" {
 	object {
 		x=210
-		y=431
+		y=456
 		width=60
 		height=18
 	}
@@ -832,7 +832,7 @@ text {
 "text update" {
 	object {
 		x=275
-		y=431
+		y=456
 		width=60
 		height=18
 	}
@@ -848,7 +848,7 @@ text {
 composite {
 	object {
 		x=45
-		y=380
+		y=405
 		width=270
 		height=20
 	}
@@ -857,7 +857,7 @@ composite {
 		text {
 			object {
 				x=45
-				y=380
+				y=405
 				width=160
 				height=20
 			}
@@ -870,7 +870,7 @@ composite {
 		"text update" {
 			object {
 				x=210
-				y=381
+				y=406
 				width=50
 				height=18
 			}
@@ -886,7 +886,7 @@ composite {
 		"text update" {
 			object {
 				x=265
-				y=381
+				y=406
 				width=50
 				height=18
 			}
@@ -904,7 +904,7 @@ composite {
 composite {
 	object {
 		x=25
-		y=405
+		y=430
 		width=290
 		height=20
 	}
@@ -913,7 +913,7 @@ composite {
 		text {
 			object {
 				x=25
-				y=405
+				y=430
 				width=180
 				height=20
 			}
@@ -926,7 +926,7 @@ composite {
 		"text update" {
 			object {
 				x=210
-				y=406
+				y=431
 				width=50
 				height=18
 			}
@@ -942,7 +942,7 @@ composite {
 		"text update" {
 			object {
 				x=265
-				y=406
+				y=431
 				width=50
 				height=18
 			}
@@ -955,5 +955,60 @@ composite {
 			limits {
 			}
 		}
+	}
+}
+text {
+	object {
+		x=5
+		y=480
+		width=230
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Buffer & memory polling"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=240
+		y=480
+		width=90
+		height=20
+	}
+	control {
+		chan="$(P)$(R)PoolUsedMem.SCAN"
+		clr=14
+		bclr=51
+	}
+}
+text {
+	object {
+		x=5
+		y=280
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Status"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=70
+		y=280
+		width=275
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)StatusMessage_RBV"
+		clr=54
+		bclr=2
+	}
+	format="string"
+	limits {
 	}
 }
