@@ -41,7 +41,7 @@ paramAttribute::paramAttribute(const char *pName, const char *pDescription, cons
     : NDAttribute(pName)
 {
     static const char *functionName = "paramAttribute";
-    asynUser *pasynUser;
+    asynUser *pasynUser=NULL;
     int status;
     
     /* Create the static pasynUser if not already done */
@@ -51,7 +51,7 @@ paramAttribute::paramAttribute(const char *pName, const char *pDescription, cons
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
             "paramAttribute: ERROR, must specify source string\n",
             driverName, functionName);
-        return;
+        goto error;
     }
     this->setSource(pSource);
     this->paramType = paramAttrTypeUnknown;
@@ -64,26 +64,28 @@ paramAttribute::paramAttribute(const char *pName, const char *pDescription, cons
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s: ERROR, cannot connect to driver for parameter %s\n",
             driverName, functionName, pSource);
-        return;
+        goto error;
     }
     status = this->pDriver->drvUserCreate(pasynUser, pSource, NULL, 0);
     if (status) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s: ERROR, cannot find parameter %s\n",
             driverName, functionName, pSource);
-        return;
+        goto error;
     }
     this->paramId = pasynUser->reason;
     status = pasynManager->disconnect(pasynUser);
     if (status) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-            "%s:%s: ERROR, cannot connect to driver for parameter %s\n",
+            "%s:%s: ERROR, cannot disconnect from driver for parameter %s\n",
             driverName, functionName, pSource);
-        return;
+        goto error;
     }
     if (epicsStrCaseCmp(dataType, "int") == 0)    this->paramType=paramAttrTypeInt;
     if (epicsStrCaseCmp(dataType, "double") == 0) this->paramType=paramAttrTypeDouble;
     if (epicsStrCaseCmp(dataType, "string") == 0) this->paramType=paramAttrTypeString;
+error:
+    if (pasynUser) pasynManager->freeAsynUser(pasynUser);
 }
 
 /** Destructor for driver/plugin attribute
