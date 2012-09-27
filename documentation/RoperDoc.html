@@ -134,7 +134,8 @@
         <td>
           $(P)$(R)NumExposures</td>
         <td>
-          Controls the number of exposures (accumulations) to acquire into a single image.</td>
+          Controls the number of exposures (accumulations) to acquire into a single image.
+        </td>
       </tr>
       <tr>
         <td>
@@ -191,8 +192,7 @@
         <td>
           The precision of the $(P)$(R)Gain record is changed to 0 because the gain in WinView
           is an integer. Allowed values are detector dependent, but 1 and 2 are typically
-          supported.
-        </td>
+          supported. </td>
       </tr>
     </tbody>
   </table>
@@ -208,7 +208,8 @@
     <tbody>
       <tr>
         <td align="center" colspan="7">
-          <b>Parameter Definitions in roper.cpp and EPICS Record Definitions in roper.template</b></td>
+          <b>Parameter Definitions in roper.cpp and EPICS Record Definitions in roper.template</b>
+        </td>
       </tr>
       <tr>
         <th>
@@ -240,8 +241,7 @@
           r/w</td>
         <td>
           The number of acquisitions to perform when acquisition is started. This controls
-          the number of iterations in the outermost acquisition loop explained above.
-        </td>
+          the number of iterations in the outermost acquisition loop explained above. </td>
         <td>
           ROPER_NACQUISITIONS</td>
         <td>
@@ -260,8 +260,7 @@
         <td>
           r/o</td>
         <td>
-          The number of acquisitions performed so far.
-        </td>
+          The number of acquisitions performed so far. </td>
         <td>
           ROPER_NACQUISITIONS_COUNTER</td>
         <td>
@@ -281,8 +280,7 @@
           A flag controlling whether WinView will automatically chose the optimal data type
           for the image data. 0=No, 1=Yes. If this flag is 1 then the NDDataType parameter
           ($(P)$(R)DataType record) is ignored. If this flag is 0 then the NDDataType parameter
-          controls the data type of the images.
-        </td>
+          controls the data type of the images. </td>
         <td>
           AUTO_DATA_TYPE</td>
         <td>
@@ -355,8 +353,8 @@
   <h2 id="Configuration">
     Configuration</h2>
   <p>
-    The Roper driver is created with the roperConfig command, either from C/C++
-    or from the EPICS IOC shell.</p>
+    The Roper driver is created with the roperConfig command, either from C/C++ or from
+    the EPICS IOC shell.</p>
   <pre>int roperConfig(const char *portName,
                 int maxBuffers, size_t maxMemory,
                 int priority, int stackSize)
@@ -452,48 +450,37 @@
       </tr>
       <tr>
         <td>
-          1x1
-        </td>
+          1x1 </td>
         <td>
-          1392x1040
-        </td>
+          1392x1040 </td>
         <td>
-          2827 KB
-        </td>
+          2827 KB </td>
         <td>
-          1 SPE file
-        </td>
+          1 SPE file </td>
         <td>
           29.49</td>
         <td>
-          0.28
-        </td>
+          0.28 </td>
         <td>
-          276 MB
-        </td>
+          276 MB </td>
         <td>
           20.04</td>
       </tr>
       <tr>
         <td>
-          1x1
-        </td>
+          1x1 </td>
         <td>
-          1392x1040
-        </td>
+          1392x1040 </td>
         <td>
-          2827 KB
-        </td>
+          2827 KB </td>
         <td>
-          100 SPE files
-        </td>
+          100 SPE files </td>
         <td>
           80.67</td>
         <td>
           0.79</td>
         <td>
-          2.76 MB
-        </td>
+          2.76 MB </td>
         <td>
           -3.62</td>
       </tr>
@@ -503,18 +490,15 @@
         <td>
           696x520</td>
         <td>
-          707 KB
-        </td>
+          707 KB </td>
         <td>
-          1 SPE file
-        </td>
+          1 SPE file </td>
         <td>
           10.27</td>
         <td>
           0.09</td>
         <td>
-          69 MB
-        </td>
+          69 MB </td>
         <td>
           4.86</td>
       </tr>
@@ -524,18 +508,15 @@
         <td>
           696x520</td>
         <td>
-          707 KB
-        </td>
+          707 KB </td>
         <td>
-          100 SPE files
-        </td>
+          100 SPE files </td>
         <td>
           46.14</td>
         <td>
           0.45</td>
         <td>
-          0.71 MB
-        </td>
+          0.71 MB </td>
         <td>
           -.72</td>
       </tr>
@@ -545,18 +526,15 @@
         <td>
           348x260</td>
         <td>
-          177 KB
-        </td>
+          177 KB </td>
         <td>
-          1 SPE file
-        </td>
+          1 SPE file </td>
         <td>
           4.48</td>
         <td>
           0.03</td>
         <td>
-          17 MB
-        </td>
+          17 MB </td>
         <td>
           1.40</td>
       </tr>
@@ -566,18 +544,15 @@
         <td>
           348x260</td>
         <td>
-          177 KB
-        </td>
+          177 KB </td>
         <td>
-          100 SPE files
-        </td>
+          100 SPE files </td>
         <td>
           36.59</td>
         <td>
           0.35</td>
         <td>
-          0.18 MB
-        </td>
+          0.18 MB </td>
         <td>
           0.69</td>
       </tr>
