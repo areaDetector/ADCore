@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugins</h1>
     <h2>
-      August 9, 2011</h2>
+      September 28, 2012</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -96,7 +96,8 @@
     <tbody>
       <tr>
         <td align="center" colspan="7,">
-          <b>Parameter Definitions in NDPluginDriver.h and EPICS Record Definitions in NDPluginBase.template</b></td>
+          <b>Parameter Definitions in NDPluginDriver.h and EPICS Record Definitions in NDPluginBase.template</b>
+        </td>
       </tr>
       <tr>
         <th>
@@ -165,7 +166,8 @@
           r/w</td>
         <td>
           asyn port name for NDArray driver that will make callbacks to this plugin. This
-          port can be changed at run time, connecting the plugin to a different NDArray driver.</td>
+          port can be changed at run time, connecting the plugin to a different NDArray driver.
+        </td>
         <td>
           NDARRAY_PORT</td>
         <td>
@@ -198,6 +200,151 @@
       </tr>
       <tr>
         <td align="center" colspan="7,">
+          <b>Queue size and status</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriver<br />
+          QueueSize</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The total queue size for callbacks when BlockingCallbacks=0. </td>
+        <td>
+          QUEUE_SIZE</td>
+        <td>
+          $(P)$(R)QueueSize</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriver<br />
+          QueueFree</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The number of free queue lelements. </td>
+        <td>
+          QUEUE_FREE</td>
+        <td>
+          $(P)$(R)QueueFree</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>NDArray pool size and status (only for plugins that generate NDArrays for use by
+            other plugins)</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDPool<br />
+          MaxMemory</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          The maximum amount of NDArrayPool memory this plugin is allowed to allocate.</td>
+        <td>
+          POOL_MAX_MEMORY</td>
+        <td>
+          $(P)$(R)PoolMaxMem</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPool<br />
+          UsedMemory</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          The actual amount of NDArrayPool memory this plugin is currently using.</td>
+        <td>
+          POOL_USED_MEMORY</td>
+        <td>
+          $(P)$(R)PoolUsedMem</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPool<br />
+          MaxBuffers</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The maximum number of NDArrays this plugin is allowed to allocate.</td>
+        <td>
+          POOL_MAX_BUFFERS</td>
+        <td>
+          $(P)$(R)PoolMaxBuffers</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPool<br />
+          AllocBuffers</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The number of NDArrays this plugin has currently allocated.</td>
+        <td>
+          POOL_ALLOC_BUFFERS</td>
+        <td>
+          $(P)$(R)PoolAllocBuffers</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPool<br />
+          FreeBuffers</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The number of free NDArrays this plugin has in its NDArrayPool.</td>
+        <td>
+          POOL_FREE_BUFFERS</td>
+        <td>
+          $(P)$(R)PoolFreeBuffers</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          N/A</td>
+        <td>
+          N.A</td>
+        <td>
+          N/A</td>
+        <td>
+          The number of used NDArrays this plugin has in its NDArrayPool. Calculated from
+          PoolAllocBuffers and PoolFreeBuffers.</td>
+        <td>
+          N/A</td>
+        <td>
+          $(P)$(R)PoolUsedBuffers</td>
+        <td>
+          calc</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
           <b>Callback enable, minimum time, and statistics</b></td>
       </tr>
       <tr>
@@ -210,7 +357,8 @@
           r/w</td>
         <td>
           Enable (1) or disable (0) callbacks from the driver to this plugin. If callbacks
-          are disabled then the plugin will normally be idle and consume no CPU resources.</td>
+          are disabled then the plugin will normally be idle and consume no CPU resources.
+        </td>
         <td>
           ENABLE_CALLBACKS</td>
         <td>
@@ -504,7 +652,8 @@
         <td>
           The name of an XML file defining the PVAttributes and paramAttributes to be added
           to each NDArray by this plugin. The format of the XML file is described in the documentation
-          for <a href="areaDetectorDoxygenHTML/classasyn_n_d_array_driver.html">asynNDArrayDriver::readNDAttributesFile().</a></td>
+          for <a href="areaDetectorDoxygenHTML/classasyn_n_d_array_driver.html">asynNDArrayDriver::readNDAttributesFile().</a>
+        </td>
         <td>
           ND_ATTRIBUTES_FILE</td>
         <td>
