@@ -64,7 +64,8 @@
     <tbody>
       <tr>
         <td align="center" colspan="7">
-          <b>Parameter Definitions in simDetector.cpp and EPICS Record Definitions in simDetector.template</b></td>
+          <b>Parameter Definitions in simDetector.cpp and EPICS Record Definitions in simDetector.template</b>
+        </td>
       </tr>
       <tr>
         <th>
@@ -371,8 +372,7 @@
         <td>
           Used to introduce randomness in the peak height. Each gaussian peak in the array
           is assigned a scaling factor.<br />
-          scalingFactor = 1.0 + (rand()%peakVariation +1)/100.0
-        </td>
+          scalingFactor = 1.0 + (rand()%peakVariation +1)/100.0 </td>
         <td>
           SIM_PEAK_HEIGHT_VARIATION</td>
         <td>
@@ -391,8 +391,7 @@
           r/w</td>
         <td>
           Used to introduce randomness. Each affected pixel is assigned a scaling factor.<br />
-          scalingFactor = 1.0 + (rand()%noise +1)/100.0
-        </td>
+          scalingFactor = 1.0 + (rand()%noise +1)/100.0 </td>
         <td>
           SIM_NOISE</td>
         <td>
