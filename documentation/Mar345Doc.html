@@ -103,8 +103,7 @@
           if ADNumImages is greater than 1. If mar345Abort is set to 0 then the acquisition
           is terminated as soon as possible without saving the data. Note however that commands
           to the mar345 server to erase, change mode, or scan cannot be aborted, so the driver
-          must wait for these commands to complete.
-        </td>
+          must wait for these commands to complete. </td>
       </tr>
       <tr>
         <td>
@@ -159,8 +158,7 @@
         <td>
           $(P)$(R)FileFormat</td>
         <td>
-          mar345 only supports mar345 format binary files.
-        </td>
+          mar345 only supports mar345 format binary files. </td>
       </tr>
       <tr>
         <td>
@@ -169,8 +167,7 @@
           $(P)$(R)DetectorState_RBV</td>
         <td>
           mar345 replaces the state strings with the following: Exposing, Scanning, Erasing,
-          Changing Mode, Aborting, Error, and Waiting.
-        </td>
+          Changing Mode, Aborting, Error, and Waiting. </td>
       </tr>
     </tbody>
   </table>
@@ -191,7 +188,8 @@
     <tbody>
       <tr>
         <td align="center" colspan="7">
-          <b>Parameter Definitions in mar345.cpp and EPICS Record Definitions in mar345.template</b></td>
+          <b>Parameter Definitions in mar345.cpp and EPICS Record Definitions in mar345.template</b>
+        </td>
       </tr>
       <tr>
         <th>
@@ -222,7 +220,8 @@
         <td>
           r/w</td>
         <td>
-          The detector diameter to read out. Choices are 180mm, 240mm, 300mm, and 345mm.</td>
+          The detector diameter to read out. Choices are 180mm, 240mm, 300mm, and 345mm.
+        </td>
         <td>
           MAR_SIZE</td>
         <td>
@@ -231,8 +230,7 @@
         <td>
           mbbo
           <br />
-          mbbi
-        </td>
+          mbbi </td>
       </tr>
       <tr>
         <td>
@@ -243,7 +241,8 @@
         <td>
           r/w</td>
         <td>
-          The pixel size to use when reading the detector out. Choices are 0.10 and 0.15mm.</td>
+          The pixel size to use when reading the detector out. Choices are 0.10 and 0.15mm.
+        </td>
         <td>
           MAR_RESOLUTION</td>
         <td>
@@ -252,8 +251,7 @@
         <td>
           mbbo
           <br />
-          mbbi
-        </td>
+          mbbi </td>
       </tr>
       <tr>
         <td>
@@ -277,8 +275,7 @@
         <td>
           busy
           <br />
-          bi
-        </td>
+          bi </td>
       </tr>
       <tr>
         <td align="center" colspan="7">
@@ -303,8 +300,7 @@
         <td>
           mbbo
           <br />
-          mbbi
-        </td>
+          mbbi </td>
       </tr>
       <tr>
         <td>
@@ -326,8 +322,7 @@
         <td>
           longout
           <br />
-          longin
-        </td>
+          longin </td>
       </tr>
       <tr>
         <td>
@@ -348,8 +343,7 @@
         <td>
           busy
           <br />
-          bi
-        </td>
+          bi </td>
       </tr>
       <tr>
         <td align="center" colspan="7">
@@ -366,7 +360,8 @@
         <td>
           Writing 1 to this parameter aborts the current operation as soon as possible and
           returns the driver to the idle state. Note however that commands to the mar345 server
-          cannot be aborted, so the driver must wait for the current command to complete.</td>
+          cannot be aborted, so the driver must wait for the current command to complete.
+        </td>
         <td>
           MAR_ABORT</td>
         <td>
@@ -375,8 +370,7 @@
         <td>
           bo
           <br />
-          bi
-        </td>
+          bi </td>
       </tr>
       <tr>
         <td align="center" colspan="7">
@@ -474,163 +468,115 @@
       </tr>
       <tr>
         <td>
-          180 mm
-        </td>
+          180 mm </td>
         <td>
-          0.15 mm
-        </td>
+          0.15 mm </td>
         <td>
-          1200x1200
-        </td>
+          1200x1200 </td>
         <td>
-          2.7
-        </td>
+          2.7 </td>
         <td>
-          38.6
-        </td>
+          38.6 </td>
         <td>
-          37.8
-        </td>
+          37.8 </td>
       </tr>
       <tr>
         <td>
-          240 mm
-        </td>
+          240 mm </td>
         <td>
-          0.15 mm
-        </td>
+          0.15 mm </td>
         <td>
-          1600x1600
-        </td>
+          1600x1600 </td>
         <td>
-          4.9
-        </td>
+          4.9 </td>
         <td>
-          50.4
-        </td>
+          50.4 </td>
         <td>
-          50.8
-        </td>
+          50.8 </td>
       </tr>
       <tr>
         <td>
-          300 mm
-        </td>
+          300 mm </td>
         <td>
-          0.15 mm
-        </td>
+          0.15 mm </td>
         <td>
-          2000x2000
-        </td>
+          2000x2000 </td>
         <td>
-          7.6
-        </td>
+          7.6 </td>
         <td>
-          74.7
-        </td>
+          74.7 </td>
         <td>
-          66.9
-        </td>
+          66.9 </td>
       </tr>
       <tr>
         <td>
-          345 mm
-        </td>
+          345 mm </td>
         <td>
-          0.15 mm
-        </td>
+          0.15 mm </td>
         <td>
-          2300x2300
-        </td>
+          2300x2300 </td>
         <td>
-          10.1
-        </td>
+          10.1 </td>
         <td>
-          88.6
-        </td>
+          88.6 </td>
         <td>
-          82.7
-        </td>
+          82.7 </td>
       </tr>
       <tr>
         <td>
-          180 mm
-        </td>
+          180 mm </td>
         <td>
-          0.10 mm
-        </td>
+          0.10 mm </td>
         <td>
-          1800x1800
-        </td>
+          1800x1800 </td>
         <td>
-          6.2
-        </td>
+          6.2 </td>
         <td>
-          46.4
-        </td>
+          46.4 </td>
         <td>
-          45.9
-        </td>
+          45.9 </td>
       </tr>
       <tr>
         <td>
-          240 mm
-        </td>
+          240 mm </td>
         <td>
-          0.10 mm
-        </td>
+          0.10 mm </td>
         <td>
-          2400x2400
-        </td>
+          2400x2400 </td>
         <td>
-          11.0
-        </td>
+          11.0 </td>
         <td>
-          71.9
-        </td>
+          71.9 </td>
         <td>
-          63.8
-        </td>
+          63.8 </td>
       </tr>
       <tr>
         <td>
-          300 mm
-        </td>
+          300 mm </td>
         <td>
-          0.10 mm
-        </td>
+          0.10 mm </td>
         <td>
-          3000x3000
-        </td>
+          3000x3000 </td>
         <td>
-          17.2
-        </td>
+          17.2 </td>
         <td>
-          89.1
-        </td>
+          89.1 </td>
         <td>
-          87.0
-        </td>
+          87.0 </td>
       </tr>
       <tr>
         <td>
-          345 mm
-        </td>
+          345 mm </td>
         <td>
-          0.10 mm
-        </td>
+          0.10 mm </td>
         <td>
-          3450x3450
-        </td>
+          3450x3450 </td>
         <td>
-          22.7
-        </td>
+          22.7 </td>
         <td>
-          107.5
-        </td>
+          107.5 </td>
         <td>
-          107.1
-        </td>
+          107.1 </td>
       </tr>
     </tbody>
   </table>
