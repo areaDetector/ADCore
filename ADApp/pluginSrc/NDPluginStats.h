@@ -109,9 +109,6 @@ typedef enum {
 
 /* Arrays of total and net counts for MCA or waveform record */   
 #define NDPluginStatsCallbackPeriodString     "CALLBACK_PERIOD"     /* (asynFloat64,      r/w) Callback period */
-#define NDPluginStatsTotalArrayString         "TOTAL_ARRAY"         /* (asynInt32Array,   r/o) Total counts array */
-#define NDPluginStatsNetArrayString           "NET_ARRAY"           /* (asynInt32Array,   r/o) Net counts array */
-#define NDPluginStatsMaxArrayString           "MAX_ARRAY"           /* (asynInt32Array,   r/o) Max counts array */
 
 /** Does image statistics.  These include
   * Min, max, mean, sigma
@@ -199,13 +196,7 @@ protected:
     int NDPluginStatsHistEntropy;
     int NDPluginStatsHistArray;
 
-    /* Arrays of total and net counts for MCA or waveform record */   
-    int NDPluginStatsCallbackPeriod;
-    int NDPluginStatsTotalArray;
-    int NDPluginStatsNetArray;
-    int NDPluginStatsMaxArray;
-
-    #define LAST_NDPLUGIN_STATS_PARAM NDPluginStatsMaxArray
+    #define LAST_NDPLUGIN_STATS_PARAM NDPluginStatsHistArray
                                 
 private:
     double  centroidThreshold;
