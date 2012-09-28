@@ -91,7 +91,8 @@
     <tbody>
       <tr>
         <td align="center" colspan="7">
-          <b>Parameter Definitions in URLDriver.cpp and EPICS Record Definitions in URLDriver.template</b></td>
+          <b>Parameter Definitions in URLDriver.cpp and EPICS Record Definitions in URLDriver.template</b>
+        </td>
       </tr>
       <tr>
         <th>
@@ -118,8 +119,7 @@
           r/w</td>
         <td>
           The name of the URL to read images from. There are 10 output records to control
-          the URL name.
-        </td>
+          the URL name. </td>
         <td>
           URL_NAME</td>
         <td>
@@ -136,8 +136,8 @@
     difficult to remember and to type. Thus, for convenience there is an EPICS mbbo
     record which is used to select 1 of 10 URLs. This allows easily switching between
     cameras, etc. The mbbo menu string fields (e.g. ZRST, ONST, etc.) can be edited
-    to supply a useful short description of each camera (e.g. "Sample camera"), and the
-    corresponding URL waveform record will store the actual URL. Both are in save/restore.
+    to supply a useful short description of each camera (e.g. "Sample camera"), and
+    the corresponding URL waveform record will store the actual URL. Both are in save/restore.
     Note that when the mbbo menu string fields are edited then one will need to close
     the main URLDriver.adl medm screen and reopen it to see the new menu choices. This
     is due to restrictions in medm and Channel Access.
