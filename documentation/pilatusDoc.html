@@ -10,7 +10,7 @@
     <h1>
       areaDetector Pilatus driver</h1>
     <h2>
-      December 18, 2011</h2>
+      September 21, 2012</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -104,10 +104,12 @@
         <td>
           $(P)$(R)AcquireTime</td>
         <td>
-          In External Enable mode this value is not used by camserver. However, it should
-          be set larger than the maximum time exposure time from the external source, so that
-          the driver can estimate how long to wait for the data files to be created before
-          timing out.</td>
+          Controls the acquisision time in all modes except External Enable. In External Enable
+          mode the timing is controlled entirely by the external trigger line. However, even
+          in ExternalEnable mode AcquireTime is used by camserver and by the driver to estimate
+          how long the acquisition will take. Hardware timeouts will occur if the actual time
+          to acquire differs significantly from the estimated time based on AcquireTime and
+          AcquirePeriod.</td>
       </tr>
       <tr>
         <td>
@@ -124,8 +126,12 @@
         <td>
           $(P)$(R)AcquirePeriod</td>
         <td>
-          Controls the exposure period in seconds. It applies only in Internal or External
-          Trigger modes when NumImages &gt;1.</td>
+          Controls the exposure period in seconds in Internal or External Trigger modes when
+          NumImages &gt;1. In External Enable mode the timing is controlled entirely by the
+          external trigger line. However, even in ExternalEnable mode AcquirePeriod is used
+          by camserver and by the driver to estimate how long the acquisition will take. Hardware
+          timeouts will occur if the actual time to acquire differs significantly from the
+          estimated time based on AcquireTime and AcquirePeriod.</td>
       </tr>
       <tr>
         <td>
@@ -133,8 +139,8 @@
         <td>
           $(P)$(R)NumExposures</td>
         <td>
-          Controls the number of exposures per image. It is only used in External Enable mode.
-        </td>
+          Controls the number of exposures per image. It is most useful in External Enable
+          mode, but it can be set in any mode. </td>
       </tr>
       <tr>
         <td>
