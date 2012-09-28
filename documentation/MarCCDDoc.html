@@ -160,8 +160,7 @@ remote_mode_server_arguments 2222
         <td>
           $(P)$(R)FileFormat</td>
         <td>
-          marccd only supports TIFF files.
-        </td>
+          marccd only supports TIFF files. </td>
       </tr>
     </tbody>
   </table>
@@ -182,7 +181,8 @@ remote_mode_server_arguments 2222
     <tbody>
       <tr>
         <td align="center" colspan="7">
-          <b>Parameter Definitions in marccd.cpp and EPICS Record Definitions in marccd.template</b></td>
+          <b>Parameter Definitions in marccd.cpp and EPICS Record Definitions in marccd.template</b>
+        </td>
       </tr>
       <tr>
         <th>
@@ -251,7 +251,8 @@ remote_mode_server_arguments 2222
         <td>
           r/o</td>
         <td>
-          Status of the marccd server acquire task (Idle, Queued, Executing, Error, or Reserved)</td>
+          Status of the marccd server acquire task (Idle, Queued, Executing, Error, or Reserved)
+        </td>
         <td>
           MAR_ACQUIRE_STATUS</td>
         <td>
@@ -268,7 +269,8 @@ remote_mode_server_arguments 2222
         <td>
           r/o</td>
         <td>
-          Status of the marccd server readout task (Idle, Queued, Executing, Error, or Reserved)</td>
+          Status of the marccd server readout task (Idle, Queued, Executing, Error, or Reserved)
+        </td>
         <td>
           MAR_READOUT_STATUS</td>
         <td>
@@ -285,7 +287,8 @@ remote_mode_server_arguments 2222
         <td>
           r/o</td>
         <td>
-          Status of the marccd server correct task (Idle, Queued, Executing, Error, or Reserved)</td>
+          Status of the marccd server correct task (Idle, Queued, Executing, Error, or Reserved)
+        </td>
         <td>
           MAR_CORRECT_STATUS</td>
         <td>
@@ -320,7 +323,8 @@ remote_mode_server_arguments 2222
         <td>
           r/o</td>
         <td>
-          Status of the marccd server dezinger task (Idle, Queued, Executing, Error, or Reserved)</td>
+          Status of the marccd server dezinger task (Idle, Queued, Executing, Error, or Reserved)
+        </td>
         <td>
           MAR_DEZINGER_STATUS</td>
         <td>
@@ -447,7 +451,8 @@ remote_mode_server_arguments 2222
           ADU (and each individual pixel will also have contributions due to X-rays and read
           noise). The accuracy limit of this software feature is about 0.01 ADU, so any target
           value entered between 0 and 0.01 is automatically converted to the limit, 0.01 ADU.
-          Entering a target value of 0 is equivalent to turning off the baseline stabilization."</td>
+          Entering a target value of 0 is equivalent to turning off the baseline stabilization."
+        </td>
         <td>
           MAR_STABILITY</td>
         <td>
@@ -671,7 +676,8 @@ remote_mode_server_arguments 2222
         <td>
           N/A</td>
         <td>
-          asyn record to control debugging communication with marccd_server_socket program</td>
+          asyn record to control debugging communication with marccd_server_socket program
+        </td>
         <td>
           N/A</td>
         <td>
@@ -776,135 +782,99 @@ remote_mode_server_arguments 2222
       </tr>
       <tr>
         <td>
-          2x2
-        </td>
+          2x2 </td>
         <td>
-          2048x2048
-        </td>
+          2048x2048 </td>
         <td>
-          Sequential
-        </td>
+          Sequential </td>
         <td>
-          50.0
-        </td>
+          50.0 </td>
         <td>
-          4.00
-        </td>
+          4.00 </td>
         <td>
           Readout: 3.02
           <br />
           Correct: 0.56
           <br />
-          Save: 0.20
-        </td>
+          Save: 0.20 </td>
       </tr>
       <tr>
         <td>
-          2x2
-        </td>
+          2x2 </td>
         <td>
-          2048x2048
-        </td>
+          2048x2048 </td>
         <td>
-          Overlap
-        </td>
+          Overlap </td>
         <td>
-          46.2
-        </td>
+          46.2 </td>
         <td>
-          3.62
-        </td>
+          3.62 </td>
         <td>
-          Same
-        </td>
+          Same </td>
       </tr>
       <tr>
         <td>
-          4x4
-        </td>
+          4x4 </td>
         <td>
-          1024x1024
-        </td>
+          1024x1024 </td>
         <td>
-          Sequential
-        </td>
+          Sequential </td>
         <td>
-          29.0
-        </td>
+          29.0 </td>
         <td>
-          1.90
-        </td>
+          1.90 </td>
         <td>
           Readout: 1.30
           <br />
           Correct: 0.28
           <br />
-          Save: 0.06
-        </td>
+          Save: 0.06 </td>
       </tr>
       <tr>
         <td>
-          4x4
-        </td>
+          4x4 </td>
         <td>
-          1024x1024
-        </td>
+          1024x1024 </td>
         <td>
-          Overlap
-        </td>
+          Overlap </td>
         <td>
-          28.7
-        </td>
+          28.7 </td>
         <td>
-          1.87
-        </td>
+          1.87 </td>
         <td>
-          Same
-        </td>
+          Same </td>
       </tr>
       <tr>
         <td>
-          8x8
-        </td>
+          8x8 </td>
         <td>
-          512x512
-        </td>
+          512x512 </td>
         <td>
-          Sequential
-        </td>
+          Sequential </td>
         <td>
-          24.0
-        </td>
+          24.0 </td>
         <td>
-          1.40
-        </td>
+          1.40 </td>
         <td>
           Readout: 0.78
           <br />
           Correct: 0.29
           <br />
-          Save: 0.06
-        </td>
+          Save: 0.06 </td>
       </tr>
       <tr>
         <td>
-          8x8
-        </td>
+          8x8 </td>
         <td>
-          512x512
-        </td>
+          512x512 </td>
         <td>
-          Overlap
-        </td>
+          Overlap </td>
         <td>
-          23.6
-        </td>
+          23.6 </td>
         <td>
-          1.36
-        </td>
+          1.36 </td>
         <td>
-          Same
-        </td>
+          Same </td>
       </tr>
     </tbody>
   </table>
@@ -914,7 +884,8 @@ remote_mode_server_arguments 2222
     The following are some current restrictions of the MarCCD driver:</p>
   <ul>
     <li>The marccd program can save files in many different formats, with TIFF being the
-      default. The areaDetector driver can only read TIFF files, not other formats. </li>
+      default. The areaDetector driver can only read TIFF files, not other formats.
+    </li>
     <li>The areaDetector driver can in principle be run on machines other than the Linux
       machine running marccd, since the connection is via a socket. It has only been tested
       on Linux.</li>
