@@ -74,7 +74,8 @@
     <tbody>
       <tr>
         <td align="center" colspan="7,">
-          <b>Parameter Definitions in NDPluginProcess.h and EPICS Record Definitions in NDProcess.template</b></td>
+          <b>Parameter Definitions in NDPluginProcess.h and EPICS Record Definitions in NDProcess.template</b>
+        </td>
       </tr>
       <tr>
         <th>
@@ -240,8 +241,7 @@
         <td>
           The scale factor to multiply by after dividing the array by the flat field array.
           This scale factor is normally chosen so that the data after scaling fills the dynamic
-          range of the output data type.
-        </td>
+          range of the output data type. </td>
         <td>
           SCALE_FLAT_FIELD</td>
         <td>
@@ -286,8 +286,7 @@
         <td>
           r/w</td>
         <td>
-          The scale factor to multiply by.
-        </td>
+          The scale factor to multiply by. </td>
         <td>
           SCALE</td>
         <td>
@@ -306,8 +305,7 @@
         <td>
           r/w</td>
         <td>
-          The offset to add.
-        </td>
+          The offset to add. </td>
         <td>
           OFFSET</td>
         <td>
@@ -331,8 +329,7 @@
           r/w</td>
         <td>
           Flag to control whether to clip values to the LowClip value for this array (0=Disable,
-          1=Enable).
-        </td>
+          1=Enable). </td>
         <td>
           ENABLE_LOW_CLIP</td>
         <td>
@@ -352,8 +349,7 @@
           r/w</td>
         <td>
           The minimum allowed value for this array. If EnableLowClip=1, then all values in
-          the array less than LowClip will be replaced by LowClip.
-        </td>
+          the array less than LowClip will be replaced by LowClip. </td>
         <td>
           LOW_CLIP</td>
         <td>
@@ -373,8 +369,7 @@
           r/w</td>
         <td>
           Flag to control whether to clip values to the HighClip value for this array (0=Disable,
-          1=Enable).
-        </td>
+          1=Enable). </td>
         <td>
           ENABLE_HIGH_CLIP</td>
         <td>
@@ -394,8 +389,7 @@
           r/w</td>
         <td>
           The maximum allowed value for this array. If EnableHighClip=1, then all values in
-          the array greater than HighClip will be replaced by HighClip.
-        </td>
+          the array greater than HighClip will be replaced by HighClip. </td>
         <td>
           HIGH_CLIP</td>
         <td>
@@ -528,8 +522,7 @@
           The characteristic number of arrays to use when filtering. The value of NumFiltered
           will increase as each array is processed, until it reaches the value of NumFilter,
           when it will no longer increase. The value of NumFiltered is used in the filter
-          equations, as explained below.
-        </td>
+          equations, as explained below. </td>
         <td>
           NUM_FILTER</td>
         <td>
@@ -551,8 +544,7 @@
           The number of arrays that have been processed by the filter since the filter was
           last reset. The value of NumFiltered is incremented as each array is processed,
           until it reaches the value of NumFilter, when it will cease incrementing. The value
-          of NumFiltered is used in the filter equations, as explained below.
-        </td>
+          of NumFiltered is used in the filter equations, as explained below. </td>
         <td>
           NUM_FILTERED</td>
         <td>
@@ -568,8 +560,7 @@
         <td>
           r/w</td>
         <td>
-          The filter type, chosen from a predefined list, as described below.
-        </td>
+          The filter type, chosen from a predefined list, as described below. </td>
         <td>
           N.A.</td>
         <td>
@@ -586,8 +577,7 @@
         <td>
           r/w</td>
         <td>
-          Output offset coefficient.
-        </td>
+          Output offset coefficient. </td>
         <td>
           FILTER_OOFFSET</td>
         <td>
@@ -606,8 +596,7 @@
         <td>
           r/w</td>
         <td>
-          Output scale coefficient.
-        </td>
+          Output scale coefficient. </td>
         <td>
           FILTER_OSCALE</td>
         <td>
@@ -626,8 +615,7 @@
         <td>
           r/w</td>
         <td>
-          Output coefficient #1.
-        </td>
+          Output coefficient #1. </td>
         <td>
           FILTER_OC1</td>
         <td>
@@ -646,8 +634,7 @@
         <td>
           r/w</td>
         <td>
-          Output coefficient #2.
-        </td>
+          Output coefficient #2. </td>
         <td>
           FILTER_OC2</td>
         <td>
@@ -666,8 +653,7 @@
         <td>
           r/w</td>
         <td>
-          Output coefficient #3.
-        </td>
+          Output coefficient #3. </td>
         <td>
           FILTER_OC3</td>
         <td>
@@ -686,8 +672,7 @@
         <td>
           r/w</td>
         <td>
-          Output coefficient #4.
-        </td>
+          Output coefficient #4. </td>
         <td>
           FILTER_OC4</td>
         <td>
@@ -706,8 +691,7 @@
         <td>
           r/w</td>
         <td>
-          Filter offset coefficient.
-        </td>
+          Filter offset coefficient. </td>
         <td>
           FILTER_FOFFSET</td>
         <td>
@@ -726,8 +710,7 @@
         <td>
           r/w</td>
         <td>
-          Filter scale coefficient.
-        </td>
+          Filter scale coefficient. </td>
         <td>
           FILTER_FSCALE</td>
         <td>
@@ -746,8 +729,7 @@
         <td>
           r/w</td>
         <td>
-          Filter coefficient #1.
-        </td>
+          Filter coefficient #1. </td>
         <td>
           FILTER_FC1</td>
         <td>
@@ -766,8 +748,7 @@
         <td>
           r/w</td>
         <td>
-          Filter coefficient #2.
-        </td>
+          Filter coefficient #2. </td>
         <td>
           FILTER_FC2</td>
         <td>
@@ -786,8 +767,7 @@
         <td>
           r/w</td>
         <td>
-          Filter coefficient #3.
-        </td>
+          Filter coefficient #3. </td>
         <td>
           FILTER_FC3</td>
         <td>
@@ -806,8 +786,7 @@
         <td>
           r/w</td>
         <td>
-          Filter coefficient #4.
-        </td>
+          Filter coefficient #4. </td>
         <td>
           FILTER_FC4</td>
         <td>
@@ -826,8 +805,7 @@
         <td>
           r/w</td>
         <td>
-          Reset offset coefficient.
-        </td>
+          Reset offset coefficient. </td>
         <td>
           FILTER_ROFFSET</td>
         <td>
@@ -846,8 +824,7 @@
         <td>
           r/w</td>
         <td>
-          Filter coefficient #1.
-        </td>
+          Filter coefficient #1. </td>
         <td>
           FILTER_RC1</td>
         <td>
@@ -866,8 +843,7 @@
         <td>
           r/w</td>
         <td>
-          Filter coefficient #2.
-        </td>
+          Filter coefficient #2. </td>
         <td>
           FILTER_RC2</td>
         <td>
