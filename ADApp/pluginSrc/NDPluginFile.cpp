@@ -242,15 +242,9 @@ asynStatus NDPluginFile::writeFileBase()
                     }
                 }
             }
-            /* Free the capture buffer */
-            for (i=0; i<numCapture; i++) {
-                pArray = this->pCapture[i];
-                delete pArray;
-            }
+            freeCaptureBuffer(numCapture);
             if ((status == asynSuccess) && this->supportsMultipleArrays) 
                 status = this->closeFileBase();
-            free(this->pCapture);
-            this->pCapture = NULL;
             setIntegerParam(NDFileNumCaptured, 0);
             setIntegerParam(NDWriteFile, 0);
             callParamCallbacks();
@@ -310,6 +304,22 @@ asynStatus NDPluginFile::writeFileBase()
     return((asynStatus)status);
 }
 
+void NDPluginFile::freeCaptureBuffer(int numCapture)
+{
+    int i;
+    NDArray *pArray;
+    
+    if (!this->pCapture) return;
+    /* Free the capture buffer */
+    for (i=0; i<numCapture; i++) {
+        pArray = this->pCapture[i];
+        if (!pArray) break;
+        delete pArray;
+    }
+    free(this->pCapture);
+    this->pCapture = NULL;
+}
+
 /** Handles the logic for when NDFileCapture changes state, starting or stopping capturing or streaming NDArrays
   * to a file.
   * \param[in] capture Flag to start or stop capture; 1=start capture, 0=stop capture. */
@@ -354,6 +364,7 @@ asynStatus NDPluginFile::doCapture(int capture)
                     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                         "%s:%s ERROR: cannot allocate capture buffer\n",
                         driverName, functionName);
+                    setIntegerParam(NDFileCapture, 0);
                     return(asynError);
                 }
                 for (i=0; i<numCapture; i++) {
@@ -362,14 +373,18 @@ asynStatus NDPluginFile::doCapture(int capture)
                         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                             "%s:%s ERROR: cannot allocate capture buffer %d\n",
                             driverName, functionName, i);
+                        setIntegerParam(NDFileCapture, 0);
+                        freeCaptureBuffer(numCapture);
                         return(asynError);
                     }
                     this->pCapture[i]->dataSize = arrayInfo.totalBytes;
                     this->pCapture[i]->pData = malloc(arrayInfo.totalBytes);
                     if (!this->pCapture[i]->pData) {
                         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                            "%s:%s ERROR: cannot allocate capture array for buffer %s\n",
+                            "%s:%s ERROR: cannot allocate capture array for buffer %d\n",
                             driverName, functionName, i);
+                        setIntegerParam(NDFileCapture, 0);
+                        freeCaptureBuffer(numCapture);
                         return(asynError);
                     }
                 }
