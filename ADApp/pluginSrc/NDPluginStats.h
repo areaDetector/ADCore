@@ -13,7 +13,11 @@ typedef struct NDStats {
     double  mean;
     double  sigma;
     double  min;
+    int     minX;
+    int     minY;    
     double  max;
+    int     maxX;
+    int     maxY;
 } NDStats_t;
 
 typedef enum {
@@ -26,7 +30,11 @@ typedef enum {
 
 typedef enum {
     TSMinValue,
+    TSMinX,
+    TSMinY,    
     TSMaxValue,
+    TSMaxX,
+    TSMaxY,
     TSMeanValue,
     TSSigmaValue,
     TSTotal,
@@ -50,7 +58,11 @@ typedef enum {
 #define NDPluginStatsComputeStatisticsString  "COMPUTE_STATISTICS"  /* (asynInt32,        r/w) Compute statistics? */
 #define NDPluginStatsBgdWidthString           "BGD_WIDTH"           /* (asynInt32,        r/w) Width of background region when computing net */
 #define NDPluginStatsMinValueString           "MIN_VALUE"           /* (asynFloat64,      r/o) Minimum counts in any element */
+#define NDPluginStatsMinXString               "MIN_X"               /* (asynFloat64,      r/o) X position of minimum counts */
+#define NDPluginStatsMinYString               "MIN_Y"               /* (asynFloat64,      r/o) Y position of minimum counts */
 #define NDPluginStatsMaxValueString           "MAX_VALUE"           /* (asynFloat64,      r/o) Maximum counts in any element */
+#define NDPluginStatsMaxXString               "MAX_X"               /* (asynFloat64,      r/o) X position of maximum counts */
+#define NDPluginStatsMaxYString               "MAX_Y"               /* (asynFloat64,      r/o) Y position of maximum counts */
 #define NDPluginStatsMeanValueString          "MEAN_VALUE"          /* (asynFloat64,      r/o) Mean counts of all elements */
 #define NDPluginStatsSigmaValueString         "SIGMA_VALUE"         /* (asynFloat64,      r/o) Sigma of all elements */
 #define NDPluginStatsTotalString              "TOTAL"               /* (asynFloat64,      r/o) Sum of all elements */
@@ -71,7 +83,11 @@ typedef enum {
 #define NDPluginStatsTSCurrentPointString     "TS_CURRENT_POINT"    /* (asynInt32,        r/o) Current point in time series */
 #define NDPluginStatsTSAcquiringString        "TS_ACQUIRING"        /* (asynInt32,        r/o) Acquiring time series */
 #define NDPluginStatsTSMinValueString         "TS_MIN_VALUE"        /* (asynFloat64Array, r/o) Series of minimum counts */
+#define NDPluginStatsTSMinXString             "TS_MIN_X"            /* (asynFloat64Array, r/o) Series of X position of minimum counts */
+#define NDPluginStatsTSMinYString             "TS_MIN_Y"            /* (asynFloat64Array, r/o) Series of Y position of minimum counts */
 #define NDPluginStatsTSMaxValueString         "TS_MAX_VALUE"        /* (asynFloat64Array, r/o) Series of maximum counts */
+#define NDPluginStatsTSMaxXString             "TS_MAX_X"            /* (asynFloat64Array, r/o) Series of X position of maximum counts */
+#define NDPluginStatsTSMaxYString             "TS_MAX_Y"            /* (asynFloat64Array, r/o) Series of Y position of maximum counts */
 #define NDPluginStatsTSMeanValueString        "TS_MEAN_VALUE"       /* (asynFloat64Array, r/o) Series of mean counts */
 #define NDPluginStatsTSSigmaValueString       "TS_SIGMA_VALUE"      /* (asynFloat64Array, r/o) Series of sigma */
 #define NDPluginStatsTSTotalString            "TS_TOTAL"            /* (asynFloat64Array, r/o) Series of total */
@@ -141,7 +157,11 @@ protected:
     /* Statistics */
     int NDPluginStatsBgdWidth;
     int NDPluginStatsMinValue;
+    int NDPluginStatsMinX;
+    int NDPluginStatsMinY;            
     int NDPluginStatsMaxValue;
+    int NDPluginStatsMaxX;
+    int NDPluginStatsMaxY;        
     int NDPluginStatsMeanValue;
     int NDPluginStatsSigmaValue;
     int NDPluginStatsTotal;
@@ -162,7 +182,11 @@ protected:
     int NDPluginStatsTSCurrentPoint;
     int NDPluginStatsTSAcquiring;
     int NDPluginStatsTSMinValue;
+    int NDPluginStatsTSMinX;
+    int NDPluginStatsTSMinY;                
     int NDPluginStatsTSMaxValue;
+    int NDPluginStatsTSMaxX;
+    int NDPluginStatsTSMaxY;            
     int NDPluginStatsTSMeanValue;
     int NDPluginStatsTSSigmaValue;
     int NDPluginStatsTSTotal;
