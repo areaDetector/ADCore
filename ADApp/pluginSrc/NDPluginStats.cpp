@@ -105,7 +105,7 @@ asynStatus NDPluginStats::doComputeHistogram(NDArray *pArray)
 template <typename epicsType>
 void NDPluginStats::doComputeStatisticsT(NDArray *pArray, NDStats_t *pStats)
 {
-    int i;
+    int i, imin, imax;
     epicsType *pData = (epicsType *)pArray->pData;
     NDArrayInfo arrayInfo;
     double value;
@@ -114,16 +114,28 @@ void NDPluginStats::doComputeStatisticsT(NDArray *pArray, NDStats_t *pStats)
     pArray->getInfo(&arrayInfo);
     pStats->nElements = arrayInfo.nElements;
     pStats->min = (double) pData[0];
+    imin = 0;
     pStats->max = (double) pData[0];
+    imax = 0;
     pStats->total = 0.;
     pStats->sigma = 0.;
     for (i=0; i<pStats->nElements; i++) {
         value = (double)pData[i];
-        if (value < pStats->min) pStats->min = value;
-        if (value > pStats->max) pStats->max = value;
+        if (value < pStats->min) {
+        	pStats->min = value;
+        	imin = i;
+        }
+        if (value > pStats->max) {
+        	pStats->max = value;
+        	imax = i;     	
+        }
         pStats->total += value;
         pStats->sigma += value * value;
     }
+	pStats->minX = imin % arrayInfo.xSize;
+	pStats->minY = imin / arrayInfo.xSize;        	    
+	pStats->maxX = imax % arrayInfo.xSize;
+	pStats->maxY = imax / arrayInfo.xSize;        	    	
     pStats->net = pStats->total;
     pStats->mean = pStats->total / pStats->nElements;
     pStats->sigma = sqrt((pStats->sigma / pStats->nElements) - (pStats->mean * pStats->mean));
@@ -366,7 +378,11 @@ void NDPluginStats::doTimeSeriesCallbacks()
     getIntegerParam(NDPluginStatsTSCurrentPoint, &currentPoint);
 
     doCallbacksFloat64Array(this->timeSeries[TSMinValue],   currentPoint, NDPluginStatsTSMinValue, 0);
+    doCallbacksFloat64Array(this->timeSeries[TSMinX],       currentPoint, NDPluginStatsTSMinX,     0);
+    doCallbacksFloat64Array(this->timeSeries[TSMinY],       currentPoint, NDPluginStatsTSMinY,     0);            
     doCallbacksFloat64Array(this->timeSeries[TSMaxValue],   currentPoint, NDPluginStatsTSMaxValue, 0);
+    doCallbacksFloat64Array(this->timeSeries[TSMaxX],       currentPoint, NDPluginStatsTSMaxX,     0);
+    doCallbacksFloat64Array(this->timeSeries[TSMaxY],       currentPoint, NDPluginStatsTSMaxY,     0);                
     doCallbacksFloat64Array(this->timeSeries[TSMeanValue],  currentPoint, NDPluginStatsTSMeanValue, 0);
     doCallbacksFloat64Array(this->timeSeries[TSSigmaValue], currentPoint, NDPluginStatsTSSigmaValue, 0);
     doCallbacksFloat64Array(this->timeSeries[TSTotal],      currentPoint, NDPluginStatsTSTotal, 0);
@@ -481,7 +497,11 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
             pStats->net = pStats->total - avgBgd*pStats->nElements;
         }
         setDoubleParam(NDPluginStatsMinValue,    pStats->min);
+        setDoubleParam(NDPluginStatsMinX,        pStats->minX);
+        setDoubleParam(NDPluginStatsMinY,        pStats->minY);                        
         setDoubleParam(NDPluginStatsMaxValue,    pStats->max);
+        setDoubleParam(NDPluginStatsMaxX,        pStats->maxX);
+        setDoubleParam(NDPluginStatsMaxY,        pStats->maxY);                                
         setDoubleParam(NDPluginStatsMeanValue,   pStats->mean);
         setDoubleParam(NDPluginStatsSigmaValue,  pStats->sigma);
         setDoubleParam(NDPluginStatsTotal,       pStats->total);
@@ -519,7 +539,11 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     getIntegerParam(NDPluginStatsTSAcquiring,        &TSAcquiring);
     if (TSAcquiring) {
         timeSeries[TSMinValue][currentTSPoint]    = pStats->min;
+        timeSeries[TSMinX][currentTSPoint]        = pStats->minX;
+        timeSeries[TSMinY][currentTSPoint]        = pStats->minY;                        
         timeSeries[TSMaxValue][currentTSPoint]    = pStats->max;
+        timeSeries[TSMaxX][currentTSPoint]        = pStats->maxX;
+        timeSeries[TSMaxY][currentTSPoint]        = pStats->maxY;                                
         timeSeries[TSMeanValue][currentTSPoint]   = pStats->mean;
         timeSeries[TSSigmaValue][currentTSPoint]  = pStats->sigma;
         timeSeries[TSTotal][currentTSPoint]       = pStats->total;
@@ -703,7 +727,11 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
     createParam(NDPluginStatsComputeStatisticsString, asynParamInt32,      &NDPluginStatsComputeStatistics);
     createParam(NDPluginStatsBgdWidthString,          asynParamInt32,      &NDPluginStatsBgdWidth);
     createParam(NDPluginStatsMinValueString,          asynParamFloat64,    &NDPluginStatsMinValue);
+    createParam(NDPluginStatsMinXString,              asynParamFloat64,    &NDPluginStatsMinX);
+    createParam(NDPluginStatsMinYString,              asynParamFloat64,    &NDPluginStatsMinY);            
     createParam(NDPluginStatsMaxValueString,          asynParamFloat64,    &NDPluginStatsMaxValue);
+    createParam(NDPluginStatsMaxXString,              asynParamFloat64,    &NDPluginStatsMaxX);
+    createParam(NDPluginStatsMaxYString,              asynParamFloat64,    &NDPluginStatsMaxY);                
     createParam(NDPluginStatsMeanValueString,         asynParamFloat64,    &NDPluginStatsMeanValue);
     createParam(NDPluginStatsSigmaValueString,        asynParamFloat64,    &NDPluginStatsSigmaValue);
     createParam(NDPluginStatsTotalString,             asynParamFloat64,    &NDPluginStatsTotal);
@@ -724,7 +752,11 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
     createParam(NDPluginStatsTSCurrentPointString,    asynParamInt32,        &NDPluginStatsTSCurrentPoint);
     createParam(NDPluginStatsTSAcquiringString,       asynParamInt32,        &NDPluginStatsTSAcquiring);
     createParam(NDPluginStatsTSMinValueString,        asynParamFloat64Array, &NDPluginStatsTSMinValue);
+    createParam(NDPluginStatsTSMinXString,            asynParamFloat64Array, &NDPluginStatsTSMinX);
+    createParam(NDPluginStatsTSMinYString,            asynParamFloat64Array, &NDPluginStatsTSMinY);            
     createParam(NDPluginStatsTSMaxValueString,        asynParamFloat64Array, &NDPluginStatsTSMaxValue);
+    createParam(NDPluginStatsTSMaxXString,            asynParamFloat64Array, &NDPluginStatsTSMaxX);
+    createParam(NDPluginStatsTSMaxYString,            asynParamFloat64Array, &NDPluginStatsTSMaxY);                
     createParam(NDPluginStatsTSMeanValueString,       asynParamFloat64Array, &NDPluginStatsTSMeanValue);
     createParam(NDPluginStatsTSSigmaValueString,      asynParamFloat64Array, &NDPluginStatsTSSigmaValue);
     createParam(NDPluginStatsTSTotalString,           asynParamFloat64Array, &NDPluginStatsTSTotal);
