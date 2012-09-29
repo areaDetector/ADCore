@@ -17,6 +17,7 @@ DB += ADPrefixes.template
 
 # Drivers
 DB += BIS.template
+DB += PSL.template
 DB += PerkinElmer.template
 DB += URLDriver.template
 DB += adsc.template
