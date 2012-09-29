@@ -128,6 +128,13 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
         return(asynError);
     }
 
+    /* this is in the unallocated 'reusable' range */
+    static const int TIFFTAG_NDTIMESTAMP = 65000;
+    static const TIFFFieldInfo fi = {
+        TIFFTAG_NDTIMESTAMP,1,1,TIFF_DOUBLE,FIELD_CUSTOM,1,0,"NDTimeStamp"
+    };
+    TIFFMergeFieldInfo(output, &fi, 1);
+    TIFFSetField(this->output, TIFFTAG_NDTIMESTAMP, pArray->timeStamp);
     TIFFSetField(this->output, TIFFTAG_BITSPERSAMPLE, bitsPerSample);
     TIFFSetField(this->output, TIFFTAG_SAMPLEFORMAT, sampleFormat);
     TIFFSetField(this->output, TIFFTAG_SAMPLESPERPIXEL, samplesPerPixel);
@@ -156,6 +163,13 @@ asynStatus NDFileTIFF::writeFile(NDArray *pArray)
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
               "%s:s: %d, %d\n", 
               driverName, functionName, pArray->dims[0].size, pArray->dims[1].size);
+
+    if (this->output == NULL) {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+        "%s:%s NULL TIFF file\n",
+        driverName, functionName);
+        return(asynError);
+    }
 
     stripSize = TIFFStripSize(this->output);
     TIFFGetField(this->output, TIFFTAG_IMAGELENGTH, &sizeY);
@@ -212,7 +226,14 @@ asynStatus NDFileTIFF::readFile(NDArray **pArray)
 /** Closes the TIFF file. */
 asynStatus NDFileTIFF::closeFile()
 {
-    //static const char *functionName = "closeFile";
+    static const char *functionName = "closeFile";
+
+    if (this->output == NULL) {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+        "%s:%s NULL TIFF file\n",
+        driverName, functionName);
+        return(asynError);
+    }
 
     TIFFClose(this->output);
 
