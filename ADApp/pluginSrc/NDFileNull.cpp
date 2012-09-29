@@ -17,7 +17,7 @@
 
 #include "NDFileNull.h"
 
-static const char *driverName = "NDFileNull";
+//static const char *driverName = "NDFileNull";
 
 #define MAX_ATTRIBUTE_STRING_SIZE 256
 
