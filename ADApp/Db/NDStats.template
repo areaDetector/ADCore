@@ -195,7 +195,8 @@ record(longout, "$(P)$(R)TSNumPoints")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_NUM_POINTS")
-   field(VAL,  "256")
+   field(VAL,  "$(NCHANS)")
+   field(DRVH, "$(NCHANS)")
 }
 
 record(longin, "$(P)$(R)TSCurrentPoint")
