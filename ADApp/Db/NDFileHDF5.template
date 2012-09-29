@@ -45,6 +45,40 @@ record(longin, "$(P)$(R)NumRowChunks_RBV")
     field(SCAN, "I/O Intr")
 }
 
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, NumColChunks, Number of columns to use per chunk
+record(longout, "$(P)$(R)NumColChunks")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_nColChunks")
+    field(PINI, "YES")
+}
+
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, NumColChunks_RBV, Readback of number of columns to use per chunk
+record(longin, "$(P)$(R)NumColChunks_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_nColChunks")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, NumFramesChunks, Number of frames to cache and use per chunk
+record(longout, "$(P)$(R)NumFramesChunks")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_nFramesChunks")
+    field(PINI, "YES")
+}
+
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, NumFramesChunks_RBV, Readback of number of frames to use and cache per chunk
+record(longin, "$(P)$(R)NumFramesChunks_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_nFramesChunks")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
 # % gdatag, pv, rw, $(PORT)_NDFileHDF5, NumExtraDims, Number of extra dimensions [0..2]
 record(longout, "$(P)$(R)NumExtraDims")
 {
@@ -197,9 +231,23 @@ record(ai, "$(P)$(R)IOSpeed")
     field(EGU,  "Mbit/s")
 }
 
+record(longout, "$(P)$(R)NumFramesFlush")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_flushNthFrame")
+    field(PINI, "NO")
+}
 
-# % gdatag, pv, rw, $(PORT)_NDFileHDF5, CompressType, Select or switch off compression filter
-record(mbbo, "$(P)$(R)CompressType")
+record(longin, "$(P)$(R)NumFramesFlush_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_flushNthFrame")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+# % gdatag, mbbinary, rw, $(PORT)_NDFileHDF5, Compression, Select or switch off compression filter
+record(mbbo, "$(P)$(R)Compression")
 {
     field(DTYP, "asynInt32")
     field(OUT, "@asyn($(PORT),0)HDF5_compressionType")
@@ -213,8 +261,8 @@ record(mbbo, "$(P)$(R)CompressType")
     field(THVL, "3")
 }
 
-# % gdatag, pv, ro, $(PORT)_NDFileHDF5, CompressType_RBV, Readback selected compression filter
-record(mbbi, "$(P)$(R)CompressType_RBV")
+# % gdatag, mbbinary, ro, $(PORT)_NDFileHDF5, Compression_RBV, Readback selected compression filter
+record(mbbi, "$(P)$(R)Compression_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP, "@asyn($(PORT),0)HDF5_compressionType")
@@ -230,7 +278,7 @@ record(mbbi, "$(P)$(R)CompressType_RBV")
     field(THVL, "3")
 }
 
-# % gdatag, pv, rw, $(PORT)_NDFileHDF5, NumDataBits, N-bit compression filter: number of data bits per pixel
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, NumBitPrecision, N-bit compression filter: number of data bits per pixel
 record(longout, "$(P)$(R)NumDataBits")
 {
     field(DTYP, "asynInt32")
@@ -239,7 +287,7 @@ record(longout, "$(P)$(R)NumDataBits")
     field(EGU,  "bit")
 }
 
-# % gdatag, pv, ro, $(PORT)_NDFileHDF5, NumDataBits_RBV, Readback N-bit compression filter: number of data bits per pixel
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, NumBitPrecision_RBV, Readback N-bit compression filter: number of data bits per pixel
 record(longin, "$(P)$(R)NumDataBits_RBV")
 {
     field(DTYP, "asynInt32")
@@ -249,7 +297,7 @@ record(longin, "$(P)$(R)NumDataBits_RBV")
     field(EGU,  "bit")
 }
 
-# % gdatag, pv, rw, $(PORT)_NDFileHDF5, DataBitsOffset, N-bit compression filter: dataword bit-offset in pixel
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, NumBitOffset, N-bit compression filter: dataword bit-offset in pixel
 record(longout, "$(P)$(R)DataBitsOffset")
 {
     field(DTYP, "asynInt32")
@@ -258,7 +306,7 @@ record(longout, "$(P)$(R)DataBitsOffset")
     field(EGU,  "bit")
 }
 
-# % gdatag, pv, ro, $(PORT)_NDFileHDF5, DataBitsOffset_RBV, Readback N-bit compression filter: dataword bit-offset in pixel
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, NumBitOffset_RBV, Readback N-bit compression filter: dataword bit-offset in pixel
 record(longin, "$(P)$(R)DataBitsOffset_RBV")
 {
     field(DTYP, "asynInt32")
