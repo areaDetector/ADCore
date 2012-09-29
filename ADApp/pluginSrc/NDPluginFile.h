@@ -70,6 +70,7 @@ private:
     asynStatus writeFileBase();
     asynStatus closeFileBase();
     asynStatus doCapture(int capture);
+    void       freeCaptureBuffer(int numCapture);
     asynStatus attrFileNameCheck();
     asynStatus attrFileNameSet();
     bool attrIsProcessingRequired(NDAttributeList* pAttrList);
