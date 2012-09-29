@@ -554,7 +554,7 @@ asynStatus NDPluginStats::writeInt32(asynUser *pasynUser, epicsInt32 value)
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
     int i;
-    int numPoints;
+    int numPoints, currentPoint;
     static const char *functionName = "writeInt32";
 
 
@@ -587,7 +587,11 @@ asynStatus NDPluginStats::writeInt32(asynUser *pasynUser, epicsInt32 value)
                 }
                 break;
             case TSStart:
-                setIntegerParam(NDPluginStatsTSAcquiring, 1);
+                getIntegerParam(NDPluginStatsTSNumPoints, &numPoints);
+                getIntegerParam(NDPluginStatsTSCurrentPoint, &currentPoint);
+                if (currentPoint < numPoints) {
+                    setIntegerParam(NDPluginStatsTSAcquiring, 1);
+                }
                 break;
             case TSStop:
                 setIntegerParam(NDPluginStatsTSAcquiring, 0);
@@ -756,7 +760,8 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
 
     memset(this->profileX, 0, sizeof(this->profileX));
     memset(this->profileY, 0, sizeof(this->profileY));
-    setIntegerParam(NDPluginStatsTSNumPoints, numTSPoints);
+    // If we uncomment the following line then we can't set numTSPoints from database at initialisation
+    //setIntegerParam(NDPluginStatsTSNumPoints, numTSPoints);
     setIntegerParam(NDPluginStatsTSAcquiring, 0);
     setIntegerParam(NDPluginStatsTSCurrentPoint, 0);
     for (i=0; i<MAX_TIME_SERIES_TYPES; i++) {
