@@ -80,6 +80,34 @@ record(ai, "$(P)$(R)Net_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(ai, "$(P)$(R)MinX_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_X")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)MinY_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_Y")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)MaxX_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_X")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)MaxY_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_Y")
+   field(SCAN, "I/O Intr")
+}
+
 ###################################################################
 #  These records control whether centroid statistics are computed #
 ###################################################################
@@ -226,10 +254,46 @@ record(waveform, "$(P)$(R)TSMinValue")
    field(SCAN, "I/O Intr")
 }
 
+record(waveform, "$(P)$(R)TSMinX")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_MIN_X")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)TSMinY")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_MIN_Y")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
+
 record(waveform, "$(P)$(R)TSMaxValue")
 {
    field(DTYP, "asynFloat64ArrayIn")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_MAX_VALUE")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)TSMaxX")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_MAX_X")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)TSMaxY")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_MAX_Y")
    field(NELM, "$(NCHANS)")
    field(FTVL, "DOUBLE")
    field(SCAN, "I/O Intr")
