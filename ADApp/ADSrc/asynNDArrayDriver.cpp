@@ -478,7 +478,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
                      asynFlags, autoConnect, priority, stackSize),
       pNDArrayPool(NULL)
 {
-    if ((maxBuffers != 0) || (maxMemory != 0)) this->pNDArrayPool = new NDArrayPool(maxBuffers, maxMemory);
+    this->pNDArrayPool = new NDArrayPool(maxBuffers, maxMemory);
 
     /* Allocate pArray pointer array */
     this->pArrays = (NDArray **)calloc(maxAddr, sizeof(NDArray *));
