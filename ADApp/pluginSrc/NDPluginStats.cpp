@@ -122,20 +122,20 @@ void NDPluginStats::doComputeStatisticsT(NDArray *pArray, NDStats_t *pStats)
     for (i=0; i<pStats->nElements; i++) {
         value = (double)pData[i];
         if (value < pStats->min) {
-        	pStats->min = value;
-        	imin = i;
+            pStats->min = value;
+            imin = i;
         }
         if (value > pStats->max) {
-        	pStats->max = value;
-        	imax = i;     	
+            pStats->max = value;
+            imax = i; 
         }
         pStats->total += value;
         pStats->sigma += value * value;
     }
-	pStats->minX = imin % arrayInfo.xSize;
-	pStats->minY = imin / arrayInfo.xSize;        	    
-	pStats->maxX = imax % arrayInfo.xSize;
-	pStats->maxY = imax / arrayInfo.xSize;        	    	
+    pStats->minX = imin % arrayInfo.xSize;
+    pStats->minY = imin / arrayInfo.xSize;
+    pStats->maxX = imax % arrayInfo.xSize;
+    pStats->maxY = imax / arrayInfo.xSize;
     pStats->net = pStats->total;
     pStats->mean = pStats->total / pStats->nElements;
     pStats->sigma = sqrt((pStats->sigma / pStats->nElements) - (pStats->mean * pStats->mean));
