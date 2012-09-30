@@ -15,16 +15,19 @@
 #define NDPluginROIDim0MaxSizeString        "DIM0_MAX_SIZE"     /* (asynInt32,   r/o) Maximum size of ROI in each dimension */
 #define NDPluginROIDim0BinString            "DIM0_BIN"          /* (asynInt32,   r/w) Binning of ROI in each dimension */
 #define NDPluginROIDim0ReverseString        "DIM0_REVERSE"      /* (asynInt32,   r/w) Reversal of ROI in each dimension */
+#define NDPluginROIDim0EnableString         "DIM0_ENABLE"       /* (asynInt32,   r/w) If set then do ROI in this dimension */
 #define NDPluginROIDim1MinString            "DIM1_MIN"          /* (asynInt32,   r/w) Starting element of ROI in each dimension */
 #define NDPluginROIDim1SizeString           "DIM1_SIZE"         /* (asynInt32,   r/w) Size of ROI in each dimension */
 #define NDPluginROIDim1MaxSizeString        "DIM1_MAX_SIZE"     /* (asynInt32,   r/o) Maximum size of ROI in each dimension */
 #define NDPluginROIDim1BinString            "DIM1_BIN"          /* (asynInt32,   r/w) Binning of ROI in each dimension */
 #define NDPluginROIDim1ReverseString        "DIM1_REVERSE"      /* (asynInt32,   r/w) Reversal of ROI in each dimension */
+#define NDPluginROIDim1EnableString         "DIM1_ENABLE"       /* (asynInt32,   r/w) If set then do ROI in this dimension */
 #define NDPluginROIDim2MinString            "DIM2_MIN"          /* (asynInt32,   r/w) Starting element of ROI in each dimension */
 #define NDPluginROIDim2SizeString           "DIM2_SIZE"         /* (asynInt32,   r/w) Size of ROI in each dimension */
 #define NDPluginROIDim2MaxSizeString        "DIM2_MAX_SIZE"     /* (asynInt32,   r/o) Maximum size of ROI in each dimension */
 #define NDPluginROIDim2BinString            "DIM2_BIN"          /* (asynInt32,   r/w) Binning of ROI in each dimension */
 #define NDPluginROIDim2ReverseString        "DIM2_REVERSE"      /* (asynInt32,   r/w) Reversal of ROI in each dimension */
+#define NDPluginROIDim2EnableString         "DIM2_ENABLE"       /* (asynInt32,   r/w) If set then do ROI in this dimension */
 #define NDPluginROIDataTypeString           "ROI_DATA_TYPE"     /* (asynInt32,   r/w) Data type for ROI.  -1 means automatic. */
 #define NDPluginROIEnableScaleString        "ENABLE_SCALE"      /* (asynInt32,   r/w) Disable/Enable scaling */
 #define NDPluginROIScaleString              "SCALE_VALUE"       /* (asynFloat64, r/w) Scaling value, used as divisor */
@@ -52,16 +55,19 @@ protected:
     int NDPluginROIDim0MaxSize;
     int NDPluginROIDim0Bin;
     int NDPluginROIDim0Reverse;
+    int NDPluginROIDim0Enable;
     int NDPluginROIDim1Min;
     int NDPluginROIDim1Size;
     int NDPluginROIDim1MaxSize;
     int NDPluginROIDim1Bin;
     int NDPluginROIDim1Reverse;
+    int NDPluginROIDim1Enable;    
     int NDPluginROIDim2Min;
     int NDPluginROIDim2Size;
     int NDPluginROIDim2MaxSize;
     int NDPluginROIDim2Bin;
     int NDPluginROIDim2Reverse;
+    int NDPluginROIDim2Enable;    
     int NDPluginROIDataType;
     int NDPluginROIEnableScale;
     int NDPluginROIScale;
