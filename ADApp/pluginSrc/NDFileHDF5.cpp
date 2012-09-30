@@ -466,7 +466,7 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
 
   if (flush > 0)
   {
-	if (numCaptured % flush == 0) {
+      if (numCaptured % flush == 0) {
       asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s flushing metadata (%d)\n", driverName, functionName, numCaptured);
       hdfstatus = H5Fflush( this->file, H5F_SCOPE_GLOBAL );
       if (hdfstatus < 0) {
@@ -487,7 +487,7 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
         setIntegerParam(NDWriteFile, 0);
         return asynError;
       }
-	}
+    }
   }
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s wrote frame. dt=%.5fs (T=%.5fs)\n", driverName, functionName, dt, period);
 
