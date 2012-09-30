@@ -186,6 +186,15 @@ record(bo, "$(P)$(R)EnableOffsetScale")
     field(ONAM, "Enable")
 }
 
+# Oneshot record for calculating scale and offset
+record(busy, "$(P)$(R)AutoOffsetScale")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_OFFSET_SCALE")
+    field(ZNAM, "Done")
+    field(ONAM, "Calculating")
+}
+
 record(bi, "$(P)$(R)EnableOffsetScale_RBV")
 {
     field(DTYP, "asynInt32")
