@@ -122,7 +122,7 @@ record(longout, "$(P)$(R)SizeX")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_SIZE")
-   field(VAL,  "1")
+   field(VAL,  "1000000")
 }
 
 record(longin, "$(P)$(R)SizeX_RBV")
@@ -137,7 +137,7 @@ record(longout, "$(P)$(R)SizeY")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_SIZE")
-   field(VAL,  "1")
+   field(VAL,  "1000000")
 }
 
 record(longin, "$(P)$(R)SizeY_RBV")
@@ -152,7 +152,7 @@ record(longout, "$(P)$(R)SizeZ")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_SIZE")
-   field(VAL,  "1")
+   field(VAL,  "1000000")
 }
 
 record(longin, "$(P)$(R)SizeZ_RBV")
@@ -260,6 +260,64 @@ record(longin, "$(P)$(R)ArraySizeZ_RBV")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_Z")
    field(SCAN, "I/O Intr")
 }
+
+record(bo, "$(P)$(R)EnableX")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_ENABLE")
+   field(VAL,  "0")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)EnableX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_ENABLE")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)EnableY")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_ENABLE")
+   field(VAL,  "0")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)EnableY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_ENABLE")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)EnableZ")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_ENABLE")
+   field(VAL,  "0")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)EnableZ_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_ENABLE")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
 
 ###################################################################
 #  These records control the scaling of the data.  Useful when    #
