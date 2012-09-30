@@ -43,8 +43,8 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     int     saveBackground, enableBackground, validBackground;
     int     saveFlatField,  enableFlatField,  validFlatField;
     double  scaleFlatField;
-    int     enableOffsetScale;
-    double  offset, scale;
+    int     enableOffsetScale, autoOffsetScale;
+    double  offset, scale, minValue, maxValue;
     double  lowClip=0, highClip=0;
     int     enableLowClip, enableHighClip;
     int     resetFilter, autoResetFilter, filterCallbacks, doCallbacks=1;
@@ -70,6 +70,7 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     getIntegerParam(NDPluginProcessEnableFlatField,     &enableFlatField);
     getDoubleParam (NDPluginProcessScaleFlatField,      &scaleFlatField);
     getIntegerParam(NDPluginProcessEnableOffsetScale,   &enableOffsetScale);
+    getIntegerParam(NDPluginProcessAutoOffsetScale,     &autoOffsetScale);
     getIntegerParam(NDPluginProcessEnableLowClip,       &enableLowClip);
     getIntegerParam(NDPluginProcessEnableHighClip,      &enableHighClip);
     getIntegerParam(NDPluginProcessEnableFilter,        &enableFilter);
@@ -130,6 +131,7 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     anyProcess = ((enableBackground && validBackground) ||
                   (enableFlatField && validFlatField)   ||
                    enableOffsetScale                    ||
+                   autoOffsetScale                      ||
                    enableHighClip                       || 
                    enableLowClip                        ||
                    enableFilter);
@@ -145,8 +147,19 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     this->pNDArrayPool->convert(pArray, &pScratch, NDFloat64);
     data = (double *)pScratch->pData;
 
+    if (nElements > 0) {
+        minValue = data[0];
+        maxValue = data[0];
+    } else {
+        minValue = 0;
+        maxValue = 1;
+    }
     for (i=0; i<nElements; i++) {
         value = data[i];
+        if (autoOffsetScale) {
+            if (data[i] < minValue) minValue = data[i];
+            if (data[i] > maxValue) maxValue = data[i];
+        }
         if (background) value -= background[i];
         if (flatField) {
             if (flatField[i] != 0.) 
@@ -213,6 +226,20 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
       this->pNDArrayPool->convert(pScratch, &this->pArrays[0], (NDDataType_t)dataType);
     }
 
+    if (autoOffsetScale && this->pArrays[0] != NULL) {
+        this->pArrays[0]->getInfo(&arrayInfo);
+        double maxScale = pow(2, arrayInfo.bytesPerElement*8) - 1;
+        scale = maxScale /(maxValue-minValue);
+        offset = -minValue;
+        setDoubleParam (NDPluginProcessScale,             scale);
+        setDoubleParam (NDPluginProcessOffset,            offset);
+        setDoubleParam (NDPluginProcessLowClip,           0);
+        setDoubleParam (NDPluginProcessHighClip,          maxScale);
+        setIntegerParam(NDPluginProcessEnableOffsetScale, 1);
+        setIntegerParam(NDPluginProcessEnableLowClip,     1);
+        setIntegerParam(NDPluginProcessEnableHighClip,    1);
+    }
+
     doCallbacks:    
     if (doCallbacks) {
       this->lock();
@@ -227,6 +254,10 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     this->lock();
     setIntegerParam(NDPluginProcessNumFiltered, this->numFiltered);
     callParamCallbacks();
+    if (autoOffsetScale && this->pArrays[0] != NULL) {
+        setIntegerParam(NDPluginProcessAutoOffsetScale, 0);
+        callParamCallbacks();
+    }
 }
 
 /** Called when asyn clients call pasynInt32->write().
@@ -345,6 +376,7 @@ NDPluginProcess::NDPluginProcess(const char *portName, int queueSize, int blocki
 
     /* Scale and offset */
     createParam(NDPluginProcessEnableOffsetScaleString, asynParamInt32,     &NDPluginProcessEnableOffsetScale);
+    createParam(NDPluginProcessAutoOffsetScaleString,   asynParamInt32,     &NDPluginProcessAutoOffsetScale);
     createParam(NDPluginProcessScaleString,             asynParamFloat64,   &NDPluginProcessScale);
     createParam(NDPluginProcessOffsetString,            asynParamFloat64,   &NDPluginProcessOffset);
 
@@ -379,6 +411,7 @@ NDPluginProcess::NDPluginProcess(const char *portName, int queueSize, int blocki
     this->pFilter     = NULL;
     setIntegerParam(NDPluginProcessValidBackground, 0);
     setIntegerParam(NDPluginProcessValidFlatField, 0);
+    setIntegerParam(NDPluginProcessAutoOffsetScale, 0);
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginProcess");

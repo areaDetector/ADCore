@@ -19,6 +19,7 @@
 
 /* Offset and scaling */
 #define NDPluginProcessEnableOffsetScaleString  "ENABLE_OFFSET_SCALE" /* (asynInt32, r/w) Enable offset and scale? */
+#define NDPluginProcessAutoOffsetScaleString    "AUTO_OFFSET_SCALE" /* (asynInt32,   r/w) Oneshot calc of scale and offset value from min and max values */
 #define NDPluginProcessScaleString              "SCALE"             /* (asynFloat64, r/w) Scale value */
 #define NDPluginProcessOffsetString             "OFFSET"            /* (asynFloat64, r/w) Offset value */
 
@@ -86,6 +87,7 @@ protected:
 
     /* Scale and offset */
     int NDPluginProcessEnableOffsetScale;
+    int NDPluginProcessAutoOffsetScale;
     int NDPluginProcessScale;
     int NDPluginProcessOffset;
 
