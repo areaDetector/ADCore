@@ -39,35 +39,35 @@ public:
     virtual asynStatus readFile(NDArray **pArray);
     virtual asynStatus writeFile(NDArray *pArray);
     virtual asynStatus closeFile();
-	asynStatus writeOctet(asynUser *pasynUser, const char *value,
+    asynStatus writeOctet(asynUser *pasynUser, const char *value,
                                     size_t nChars, size_t *nActual);
 protected:
-	int NDFileNexusTemplatePath;
+    int NDFileNexusTemplatePath;
     #define FIRST_NDFILE_NEXUS_PARAM NDFileNexusTemplatePath
-	int NDFileNexusTemplateFile;
-	int NDFileNexusTemplateValid;
+    int NDFileNexusTemplateFile;
+    int NDFileNexusTemplateValid;
     #define LAST_NDFILE_NEXUS_PARAM NDFileNexusTemplateValid
 
 private:
-	NXhandle nxFileHandle;
-	int bitsPerSample;
+    NXhandle nxFileHandle;
+    int bitsPerSample;
     NDColorMode_t colorMode;
-	TiXmlDocument configDoc;
-	TiXmlElement *rootNode;
+    TiXmlDocument configDoc;
+    TiXmlElement *rootNode;
     NDAttributeList *pFileAttributes;
-	NXname dataPath;
-	NXname dataName;
-	int imageNumber;
+    NXname dataPath;
+    NXname dataName;
+    int imageNumber;
 
-	int processNode(TiXmlNode *curNode, NDArray *);
-	int processStreamData(NDArray *);
-	void getAttrTypeNSize(NDAttribute *pAttr, int *retType, int *retSize);
-	void iterateNodes(TiXmlNode *curNode, NDArray *pArray);
-	void findConstText(TiXmlNode *curNode, char *outtext);
-	void * allocConstValue(int dataType, int length);
-	void constTextToDataType(char *inText, int dataType, void *pValue);
-	int typeStringToVal( const char * typeStr );
-	void loadTemplateFile();
+    int processNode(TiXmlNode *curNode, NDArray *);
+    int processStreamData(NDArray *);
+    void getAttrTypeNSize(NDAttribute *pAttr, int *retType, int *retSize);
+    void iterateNodes(TiXmlNode *curNode, NDArray *pArray);
+    void findConstText(TiXmlNode *curNode, char *outtext);
+    void * allocConstValue(int dataType, int length);
+    void constTextToDataType(char *inText, int dataType, void *pValue);
+    int typeStringToVal( const char * typeStr );
+    void loadTemplateFile();
 
 };
 #define NUM_NDFILE_NEXUS_PARAMS (&LAST_NDFILE_NEXUS_PARAM - &FIRST_NDFILE_NEXUS_PARAM + 1)
