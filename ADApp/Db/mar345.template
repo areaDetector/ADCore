@@ -98,7 +98,7 @@ record(busy,"$(P)$(R)ChangeMode") {
 }
 
 record(bi,"$(P)$(R)ChangeMode_RBV") {
-	field(DTYP,"asynInt32")
+    field(DTYP,"asynInt32")
     field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_CHANGE_MODE")
     field(ZNAM,"Done")
     field(ZSV, "NO_ALARM")
