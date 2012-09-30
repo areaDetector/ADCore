@@ -116,7 +116,7 @@ rectangle {
 		x=390
 		y=40
 		width=350
-		height=505
+		height=530
 	}
 	"basic attribute" {
 		clr=14
@@ -126,7 +126,7 @@ rectangle {
 composite {
 	object {
 		x=442
-		y=490
+		y=515
 		width=280
 		height=45
 	}
@@ -135,7 +135,7 @@ composite {
 		composite {
 			object {
 				x=473
-				y=515
+				y=540
 				width=249
 				height=20
 			}
@@ -144,7 +144,7 @@ composite {
 				text {
 					object {
 						x=473
-						y=515
+						y=540
 						width=90
 						height=20
 					}
@@ -157,7 +157,7 @@ composite {
 				menu {
 					object {
 						x=574
-						y=516
+						y=541
 						width=80
 						height=18
 					}
@@ -170,7 +170,7 @@ composite {
 				"text update" {
 					object {
 						x=660
-						y=516
+						y=541
 						width=62
 						height=18
 					}
@@ -188,7 +188,7 @@ composite {
 		rectangle {
 			object {
 				x=442
-				y=490
+				y=515
 				width=280
 				height=21
 			}
@@ -199,7 +199,7 @@ composite {
 		text {
 			object {
 				x=447
-				y=490
+				y=515
 				width=270
 				height=20
 			}
@@ -214,7 +214,7 @@ composite {
 composite {
 	object {
 		x=411
-		y=350
+		y=375
 		width=319
 		height=120
 	}
@@ -223,7 +223,7 @@ composite {
 		composite {
 			object {
 				x=411
-				y=375
+				y=400
 				width=319
 				height=95
 			}
@@ -232,7 +232,7 @@ composite {
 				text {
 					object {
 						x=421
-						y=375
+						y=400
 						width=150
 						height=20
 					}
@@ -245,7 +245,7 @@ composite {
 				"text update" {
 					object {
 						x=668
-						y=376
+						y=401
 						width=62
 						height=18
 					}
@@ -262,7 +262,7 @@ composite {
 				text {
 					object {
 						x=431
-						y=400
+						y=425
 						width=140
 						height=20
 					}
@@ -275,7 +275,7 @@ composite {
 				"text update" {
 					object {
 						x=668
-						y=401
+						y=426
 						width=62
 						height=18
 					}
@@ -291,7 +291,7 @@ composite {
 				text {
 					object {
 						x=411
-						y=425
+						y=450
 						width=160
 						height=20
 					}
@@ -304,7 +304,7 @@ composite {
 				"text update" {
 					object {
 						x=668
-						y=426
+						y=451
 						width=62
 						height=18
 					}
@@ -321,7 +321,7 @@ composite {
 				"text update" {
 					object {
 						x=668
-						y=450
+						y=475
 						width=62
 						height=18
 					}
@@ -337,7 +337,7 @@ composite {
 				text {
 					object {
 						x=421
-						y=450
+						y=475
 						width=150
 						height=20
 					}
@@ -350,7 +350,7 @@ composite {
 				menu {
 					object {
 						x=582
-						y=376
+						y=401
 						width=80
 						height=19
 					}
@@ -363,7 +363,7 @@ composite {
 				"text entry" {
 					object {
 						x=582
-						y=401
+						y=426
 						width=80
 						height=19
 					}
@@ -378,7 +378,7 @@ composite {
 				menu {
 					object {
 						x=582
-						y=426
+						y=451
 						width=80
 						height=19
 					}
@@ -391,7 +391,7 @@ composite {
 				"text entry" {
 					object {
 						x=582
-						y=450
+						y=475
 						width=80
 						height=19
 					}
@@ -408,7 +408,7 @@ composite {
 		rectangle {
 			object {
 				x=442
-				y=350
+				y=375
 				width=280
 				height=21
 			}
@@ -419,7 +419,7 @@ composite {
 		text {
 			object {
 				x=447
-				y=350
+				y=375
 				width=270
 				height=20
 			}
@@ -431,192 +431,28 @@ composite {
 		}
 	}
 }
-composite {
-	object {
-		x=401
-		y=135
-		width=329
-		height=95
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=421
-				y=160
-				width=150
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Save flat field"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=668
-				y=161
-				width=62
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ValidFlatField_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		text {
-			object {
-				x=401
-				y=185
-				width=170
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Enable flat field"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=668
-				y=186
-				width=62
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)EnableFlatField_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=411
-				y=210
-				width=160
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Scale flat field"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=668
-				y=211
-				width=62
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)ScaleFlatField_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-		"message button" {
-			object {
-				x=582
-				y=161
-				width=80
-				height=19
-			}
-			control {
-				chan="$(P)$(R)SaveFlatField"
-				clr=14
-				bclr=51
-			}
-			label="Save"
-			press_msg="1"
-		}
-		menu {
-			object {
-				x=582
-				y=186
-				width=80
-				height=19
-			}
-			control {
-				chan="$(P)$(R)EnableFlatField"
-				clr=14
-				bclr=51
-			}
-		}
-		"text entry" {
-			object {
-				x=582
-				y=211
-				width=80
-				height=19
-			}
-			control {
-				chan="$(P)$(R)ScaleFlatField"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		rectangle {
-			object {
-				x=437
-				y=135
-				width=280
-				height=21
-			}
-			"basic attribute" {
-				clr=2
-			}
-		}
-		text {
-			object {
-				x=442
-				y=135
-				width=270
-				height=20
-			}
-			"basic attribute" {
-				clr=54
-			}
-			textix="Flat field normalization"
-			align="horiz. centered"
-		}
-	}
-}
 text {
 	object {
 		x=421
-		y=70
+		y=160
 		width=150
 		height=20
 	}
 	"basic attribute" {
 		clr=14
 	}
-	textix="Save background"
+	textix="Save flat field"
 	align="horiz. right"
 }
 "text update" {
 	object {
 		x=668
-		y=71
+		y=161
 		width=62
 		height=18
 	}
 	monitor {
-		chan="$(P)$(R)ValidBackground_RBV"
+		chan="$(P)$(R)ValidFlatField_RBV"
 		clr=54
 		bclr=4
 	}
@@ -626,24 +462,25 @@ text {
 text {
 	object {
 		x=401
-		y=95
+		y=185
 		width=170
 		height=20
 	}
 	"basic attribute" {
 		clr=14
 	}
-	textix="Enable background"
+	textix="Enable flat field"
+	align="horiz. right"
 }
 "text update" {
 	object {
 		x=668
-		y=96
+		y=186
 		width=62
 		height=18
 	}
 	monitor {
-		chan="$(P)$(R)EnableBackground_RBV"
+		chan="$(P)$(R)EnableFlatField_RBV"
 		clr=54
 		bclr=12
 	}
@@ -652,15 +489,43 @@ text {
 	limits {
 	}
 }
+text {
+	object {
+		x=411
+		y=210
+		width=160
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Scale flat field"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=668
+		y=211
+		width=62
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ScaleFlatField_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
 "message button" {
 	object {
 		x=582
-		y=71
+		y=161
 		width=80
 		height=19
 	}
 	control {
-		chan="$(P)$(R)SaveBackground"
+		chan="$(P)$(R)SaveFlatField"
 		clr=14
 		bclr=51
 	}
@@ -670,20 +535,35 @@ text {
 menu {
 	object {
 		x=582
-		y=96
+		y=186
 		width=80
 		height=19
 	}
 	control {
-		chan="$(P)$(R)EnableBackground"
+		chan="$(P)$(R)EnableFlatField"
 		clr=14
 		bclr=51
+	}
+}
+"text entry" {
+	object {
+		x=582
+		y=211
+		width=80
+		height=19
+	}
+	control {
+		chan="$(P)$(R)ScaleFlatField"
+		clr=14
+		bclr=51
+	}
+	limits {
 	}
 }
 rectangle {
 	object {
 		x=437
-		y=42
+		y=135
 		width=280
 		height=21
 	}
@@ -694,14 +574,14 @@ rectangle {
 text {
 	object {
 		x=442
-		y=42
+		y=135
 		width=270
 		height=20
 	}
 	"basic attribute" {
 		clr=54
 	}
-	textix="Background subtraction"
+	textix="Flat field normalization"
 	align="horiz. centered"
 }
 rectangle {
@@ -951,178 +831,36 @@ composite {
 		}
 	}
 }
-composite {
+rectangle {
 	object {
-		x=421
+		x=442
 		y=245
-		width=309
-		height=95
+		width=280
+		height=21
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=421
-				y=270
-				width=150
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Enable scale/off."
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=668
-				y=271
-				width=62
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)EnableOffsetScale_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		text {
-			object {
-				x=431
-				y=295
-				width=140
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Scale value"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=668
-				y=296
-				width=62
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)Scale_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		menu {
-			object {
-				x=582
-				y=271
-				width=80
-				height=19
-			}
-			control {
-				chan="$(P)$(R)EnableOffsetScale"
-				clr=14
-				bclr=51
-			}
-		}
-		"text entry" {
-			object {
-				x=582
-				y=296
-				width=80
-				height=19
-			}
-			control {
-				chan="$(P)$(R)Scale"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		rectangle {
-			object {
-				x=442
-				y=245
-				width=280
-				height=21
-			}
-			"basic attribute" {
-				clr=2
-			}
-		}
-		text {
-			object {
-				x=447
-				y=245
-				width=270
-				height=20
-			}
-			"basic attribute" {
-				clr=54
-			}
-			textix="Scale and Offset"
-			align="horiz. centered"
-		}
-		text {
-			object {
-				x=421
-				y=320
-				width=150
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Offset value"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=582
-				y=320
-				width=80
-				height=19
-			}
-			control {
-				chan="$(P)$(R)Offset"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=668
-				y=320
-				width=62
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)Offset_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
+	"basic attribute" {
+		clr=2
 	}
+}
+text {
+	object {
+		x=447
+		y=245
+		width=270
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="Scale and Offset"
+	align="horiz. centered"
 }
 composite {
 	object {
 		x=5
 		y=40
 		width=380
-		height=485
+		height=505
 	}
 	"composite name"=""
 	"composite file"="NDPluginBase.adl"
@@ -1972,4 +1710,283 @@ menu {
 		clr=14
 		bclr=51
 	}
+}
+composite {
+	object {
+		x=401
+		y=42
+		width=329
+		height=73
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=421
+				y=70
+				width=150
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Save background"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=668
+				y=71
+				width=62
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)ValidBackground_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+		text {
+			object {
+				x=401
+				y=95
+				width=170
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Enable background"
+		}
+		"text update" {
+			object {
+				x=668
+				y=96
+				width=62
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)EnableBackground_RBV"
+				clr=54
+				bclr=12
+			}
+			clrmod="alarm"
+			align="horiz. centered"
+			limits {
+			}
+		}
+		"message button" {
+			object {
+				x=582
+				y=71
+				width=80
+				height=19
+			}
+			control {
+				chan="$(P)$(R)SaveBackground"
+				clr=14
+				bclr=51
+			}
+			label="Save"
+			press_msg="1"
+		}
+		menu {
+			object {
+				x=582
+				y=96
+				width=80
+				height=19
+			}
+			control {
+				chan="$(P)$(R)EnableBackground"
+				clr=14
+				bclr=51
+			}
+		}
+		rectangle {
+			object {
+				x=437
+				y=42
+				width=280
+				height=21
+			}
+			"basic attribute" {
+				clr=2
+			}
+		}
+		text {
+			object {
+				x=442
+				y=42
+				width=270
+				height=20
+			}
+			"basic attribute" {
+				clr=54
+			}
+			textix="Background subtraction"
+			align="horiz. centered"
+		}
+	}
+}
+text {
+	object {
+		x=431
+		y=320
+		width=140
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Scale value"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=668
+		y=321
+		width=62
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)Scale_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=582
+		y=321
+		width=80
+		height=19
+	}
+	control {
+		chan="$(P)$(R)Scale"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=421
+		y=345
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Offset value"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=582
+		y=345
+		width=80
+		height=19
+	}
+	control {
+		chan="$(P)$(R)Offset"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=668
+		y=345
+		width=62
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)Offset_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=421
+		y=270
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Enable scale/off."
+	align="horiz. right"
+}
+menu {
+	object {
+		x=582
+		y=271
+		width=80
+		height=19
+	}
+	control {
+		chan="$(P)$(R)EnableOffsetScale"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=668
+		y=271
+		width=62
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)EnableOffsetScale_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=421
+		y=295
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Auto scale/off."
+	align="horiz. right"
+}
+"message button" {
+	object {
+		x=582
+		y=296
+		width=80
+		height=19
+	}
+	control {
+		chan="$(P)$(R)AutoOffsetScale"
+		clr=14
+		bclr=51
+	}
+	label="Auto calc"
+	press_msg="1"
 }
