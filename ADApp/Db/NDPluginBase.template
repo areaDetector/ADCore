@@ -185,6 +185,24 @@ record(calcout, "$(P)$(R)QueueFreeLow") {
     field(CALC, "A*0.25")
     field(INPA, "$(P)$(R)QueueSize")
     field(OUT,  "$(P)$(R)QueueFree.LOW")
+    field(FLNK, "$(P)$(R)QueueUseHIGH")
+}
+
+# Set a HIGH warning level for the input queue fill level to 75%
+# of the full size of the queue
+record(calcout, "$(P)$(R)QueueUseHIGH") {
+   field(CALC, "A*0.75")
+   field(INPA, "$(P)$(R)QueueSize")
+   field(OUT,  "$(P)$(R)QueueUse.HIGH")
+   field(FLNK, "$(P)$(R)QueueUseHIHI")
+}
+
+# Set a HIHI level for the input queue fill level to indicate an error
+# (MAJOR alarm)  when it fills up to the full size of the queue (frames start dropping)
+record(calcout, "$(P)$(R)QueueUseHIHI") {
+   field(CALC, "A*1.0")
+   field(INPA, "$(P)$(R)QueueSize")
+   field(OUT,  "$(P)$(R)QueueUse.HIHI")
 }
 
 record(longin, "$(P)$(R)QueueFree")
@@ -196,6 +214,17 @@ record(longin, "$(P)$(R)QueueFree")
     field(LOLO, "0")
     field(HYST, "1")
     field(SCAN, "I/O Intr")
+}
+
+# Display the fill level on the plugins input queue
+record(calc, "$(P)$(R)QueueUse") {
+    field(CALC, "A-B")
+    field(INPA, "$(P)$(R)QueueSize")
+    field(INPB, "$(P)$(R)QueueFree CP")
+    field(SCAN, "Passive")
+    field(HHSV, "MAJOR")
+    field(HSV,  "MINOR")
+    field(HYST, "1")
 }
 
 
