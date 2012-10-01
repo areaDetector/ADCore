@@ -1,0 +1,228 @@
+4 0 1
+beginScreenProperties
+major 4
+minor 0
+release 1
+x 1474
+y 79
+w 390
+h 820
+font "arial-bold-r-12.0"
+ctlFont "arial-bold-r-12.0"
+btnFont "arial-bold-r-12.0"
+fgColor index 14
+bgColor index 3
+textColor index 14
+ctlFgColor1 index 25
+ctlFgColor2 index 25
+ctlBgColor1 index 3
+ctlBgColor2 index 3
+topShadowColor index 1
+botShadowColor index 11
+showGrid
+snapToGrid
+gridSize 5
+endScreenProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 0
+y 385
+w 390
+h 435
+lineColor index 5
+fill
+fillColor index 5
+endObjectProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 0
+y 0
+w 390
+h 385
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+displaySource "file"
+file "NDPluginBase"
+sizeOfs 5
+numDsps 2
+displayFileName {
+  0 "NDPluginBase"
+  1 "NDPluginBase"
+}
+noScroll
+endObjectProperties
+
+# (Choice Button)
+object activeChoiceButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 5
+y 390
+w 380
+h 25
+fgColor index 14
+bgColor index 3
+selectColor index 4
+inconsistentColor index 0
+topShadowColor index 1
+botShadowColor index 11
+controlPv "LOC\\$(!W)tab=e:0,O1,O2,O3,O4,O5,O6,O7,O8"
+font "arial-bold-r-12.0"
+orientation "horizontal"
+endObjectProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 5
+y 415
+w 380
+h 370
+fgColor index 14
+bgColor index 3
+topShadowColor index 0
+botShadowColor index 0
+displaySource "menu"
+filePv "LOC\\$(!W)tab"
+sizeOfs 5
+numDsps 8
+displayFileName {
+  0 "NDOverlayN"
+  1 "NDOverlayN"
+  2 "NDOverlayN"
+  3 "NDOverlayN"
+  4 "NDOverlayN"
+  5 "NDOverlayN"
+  6 "NDOverlayN"
+  7 "NDOverlayN"
+}
+symbols {
+  0 "O=1:"
+  1 "O=2:"
+  2 "O=3:"
+  3 "O=4:"
+  4 "O=5:"
+  5 "O=6:"
+  6 "O=7:"
+  7 "O=8:"
+}
+noScroll
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 5
+y 415
+w 380
+h 370
+lineColor index 1
+fillColor index 0
+numPoints 3
+xPoints {
+  0 5
+  1 385
+  2 385
+}
+yPoints {
+  0 785
+  1 785
+  2 415
+}
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 5
+y 415
+w 380
+h 370
+lineColor index 11
+fillColor index 0
+numPoints 3
+xPoints {
+  0 5
+  1 5
+  2 385
+}
+yPoints {
+  0 785
+  1 415
+  2 415
+}
+endObjectProperties
+
+# (Shell Command)
+object shellCmdClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 5
+y 790
+w 185
+h 25
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "arial-bold-r-12.0"
+buttonLabel "HTML Documentation"
+numCmds 1
+command {
+  0 "firefox \"file://$(which ADBase.edl | sed \"s|data/ADBase.edl|documentation/NDPluginOverlay.html|\")\" &"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 2
+release 0
+x 200
+y 790
+w 185
+h 25
+fgColor index 43
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "arial-bold-r-12.0"
+xPosOffset 200
+yPosOffset -200
+buttonLabel "Advanced..."
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "NDPluginDriverAdvanced.edl"
+}
+setPosition {
+  0 "button"
+}
+endObjectProperties
+
