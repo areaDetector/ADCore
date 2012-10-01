@@ -677,16 +677,19 @@ void simDetector::simTask()
             this->unlock();
             status = epicsEventWaitWithTimeout(this->stopEventId, acquireTime);
             this->lock();
-            if (status == epicsEventWaitOK) {
-                acquire = 0;
-                if (imageMode == ADImageContinuous) {
-                  setIntegerParam(ADStatus, ADStatusIdle);
-                } else {
-                  setIntegerParam(ADStatus, ADStatusAborted);
-                }
-                callParamCallbacks();
+        } else {
+            status = epicsEventTryWait(this->stopEventId);
+        }        
+        if (status == epicsEventWaitOK) {
+            acquire = 0;
+            if (imageMode == ADImageContinuous) {
+              setIntegerParam(ADStatus, ADStatusIdle);
+            } else {
+              setIntegerParam(ADStatus, ADStatusAborted);
             }
+            callParamCallbacks();
         }
+            
 
         /* Update the image */
         status = computeImage();
