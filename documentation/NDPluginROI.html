@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugin NDPluginROI</h1>
     <h2>
-      August 9, 2011</h2>
+      October 1, 2012</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -117,13 +117,76 @@
       <tr>
         <td>
           NDPluginROI<br />
+          Dim0Enable</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Enable ROI calculations in the X dimension. If not enabled then the start, size,
+          binning, and reverse operations are disabled in the X dimension, and the values
+          from the input array are used.</td>
+        <td>
+          DIM0_ENABLE</td>
+        <td>
+          $(P)$(R)EnableX<br />
+          $(P)$(R)EnableX_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Dim1Enable</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Enable ROI calculations in the Y dimension. If not enabled then the start, size,
+          binning, and reverse operations are disabled in the Y dimension, and the values
+          from the input array are used.</td>
+        <td>
+          DIM1_ENABLE</td>
+        <td>
+          $(P)$(R)EnableY<br />
+          $(P)$(R)EnableY_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          Dim2Enable</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Enable ROI calculations in the Z dimension. If not enabled then the start, size,
+          binning, and reverse operations are disabled in the Z dimension, and the values
+          from the input array are used.</td>
+        <td>
+          DIM2_ENABLE</td>
+        <td>
+          $(P)$(R)EnableZ<br />
+          $(P)$(R)EnableZ_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
           Dim0Bin</td>
         <td>
           asynInt32</td>
         <td>
           r/w</td>
         <td>
-          Binning in the X direction</td>
+          Binning in the X dimension</td>
         <td>
           DIM0_BIN</td>
         <td>
@@ -142,7 +205,7 @@
         <td>
           r/w</td>
         <td>
-          Binning in the Y direction</td>
+          Binning in the Y dimension</td>
         <td>
           DIM1_BIN</td>
         <td>
@@ -161,7 +224,7 @@
         <td>
           r/w</td>
         <td>
-          Binning in the Z direction</td>
+          Binning in the Z dimension</td>
         <td>
           DIM2_BIN</td>
         <td>
@@ -180,7 +243,7 @@
         <td>
           r/w</td>
         <td>
-          First pixel in the ROI in the X direction. 0 is the first pixel in the array.</td>
+          First pixel in the ROI in the X dimension. 0 is the first pixel in the array.</td>
         <td>
           DIM0_MIN</td>
         <td>
@@ -199,7 +262,7 @@
         <td>
           r/w</td>
         <td>
-          First pixel in the ROI in the Y direction.<br />
+          First pixel in the ROI in the Y dimension.<br />
           0 is the first pixel in the array.</td>
         <td>
           DIM1_MIN</td>
@@ -219,7 +282,7 @@
         <td>
           r/w</td>
         <td>
-          First pixel in the ROI in the Z direction.<br />
+          First pixel in the ROI in the Z dimension.<br />
           0 is the first pixel in the array.</td>
         <td>
           DIM2_MIN</td>
@@ -239,7 +302,7 @@
         <td>
           r/w</td>
         <td>
-          Size of the ROI in the X direction</td>
+          Size of the ROI in the X dimension</td>
         <td>
           DIM0_SIZE</td>
         <td>
@@ -258,7 +321,7 @@
         <td>
           r/w</td>
         <td>
-          Size of the ROI in the Y direction</td>
+          Size of the ROI in the Y dimension</td>
         <td>
           DIM1_SIZE</td>
         <td>
@@ -277,7 +340,7 @@
         <td>
           r/w</td>
         <td>
-          Size of the ROI in the Z direction</td>
+          Size of the ROI in the Z dimension</td>
         <td>
           DIM2_SIZE</td>
         <td>
@@ -296,7 +359,7 @@
         <td>
           r/o</td>
         <td>
-          Maximum size of the ROI in the X direction</td>
+          Maximum size of the ROI in the X dimension</td>
         <td>
           DIM0_MAX_SIZE</td>
         <td>
@@ -313,7 +376,7 @@
         <td>
           r/o</td>
         <td>
-          Maximum size of the ROI in the Y direction</td>
+          Maximum size of the ROI in the Y dimension</td>
         <td>
           DIM1_MAX_SIZE</td>
         <td>
@@ -330,7 +393,7 @@
         <td>
           r/o</td>
         <td>
-          Maximum size of the ROI in the Z direction</td>
+          Maximum size of the ROI in the Z dimension</td>
         <td>
           DIM2_MAX_SIZE</td>
         <td>
@@ -347,7 +410,7 @@
         <td>
           r/w</td>
         <td>
-          Reverse ROI in the X direction. (0=No, 1=Yes)</td>
+          Reverse ROI in the X dimension. (0=No, 1=Yes)</td>
         <td>
           DIM0_REVERSE</td>
         <td>
@@ -366,7 +429,7 @@
         <td>
           r/w</td>
         <td>
-          Reverse ROI in the Y direction. (0=No, 1=Yes)</td>
+          Reverse ROI in the Y dimension. (0=No, 1=Yes)</td>
         <td>
           DIM1_REVERSE</td>
         <td>
@@ -385,7 +448,7 @@
         <td>
           r/w</td>
         <td>
-          Reverse ROI in the Z direction. (0=No, 1=Yes)</td>
+          Reverse ROI in the Z dimension. (0=No, 1=Yes)</td>
         <td>
           DIM2_REVERSE</td>
         <td>
@@ -423,7 +486,7 @@
         <td>
           r/o</td>
         <td>
-          Size of the ROI data in the X direction</td>
+          Size of the ROI data in the X dimension</td>
         <td>
           ARRAY_SIZE_X</td>
         <td>
@@ -439,7 +502,7 @@
         <td>
           r/o</td>
         <td>
-          Size of the ROI data in the Y direction</td>
+          Size of the ROI data in the Y dimension</td>
         <td>
           ARRAY_SIZE_Y</td>
         <td>
@@ -455,7 +518,7 @@
         <td>
           r/o</td>
         <td>
-          Size of the ROI data in the Z direction</td>
+          Size of the ROI data in the Z dimension</td>
         <td>
           ARRAY_SIZE_Z</td>
         <td>
@@ -512,10 +575,10 @@
     A special case is made when the NDArray data has colorMode=NDColorModeRGB1 or NDColorModeRGB2.
     In these cases the user interface to the array dimensions is changed so that the
     Z PVs always refer to the color dimension (as for NDColorModeRGB3), the X dimension
-    refers to the horizontal direction, and the Y direction refers to the vertical direction.
+    refers to the horizontal dimension, and the Y dimension refers to the vertical dimension.
     This is very convenient, because it means that the ROI does not need to redefined
     if, for example, the color mode is changed from Mono to RGB1, which would be required
-    if the X, Y and Z directions were not automatically switched.</p>
+    if the X, Y and Z dimensions were not automatically switched.</p>
   <h2 id="Configuration">
     Configuration</h2>
   <p>
