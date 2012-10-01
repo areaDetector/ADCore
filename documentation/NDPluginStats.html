@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugin NDPluginStats</h1>
     <h2>
-      February 12, 2012</h2>
+      October 1, 2012</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -154,6 +154,42 @@
       <tr>
         <td>
           NDPluginStats<br />
+          MinX</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          X pixel location of minimum value in the array. This is only valid for 2-D monochromatic
+          arrays.</td>
+        <td>
+          MIN_X</td>
+        <td>
+          $(P)$(R)MinX_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          MinY</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Y pixel location of minimum value in the array. This is only valid for 2-D monochromatic
+          arrays.</td>
+        <td>
+          MIN_Y</td>
+        <td>
+          $(P)$(R)MinY_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
           MaxValue</td>
         <td>
           asynFloat64</td>
@@ -165,6 +201,42 @@
           MAX_VALUE</td>
         <td>
           $(P)$(R)MaxValue_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          MaxX</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          X pixel location of maximum value in the array. This is only valid for 2-D monochromatic
+          arrays.</td>
+        <td>
+          MAX_X</td>
+        <td>
+          $(P)$(R)MaxX_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          MaxY</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Y pixel location of maximum value in the array. This is only valid for 2-D monochromatic
+          arrays.</td>
+        <td>
+          MAX_Y</td>
+        <td>
+          $(P)$(R)MaxY_RBV</td>
         <td>
           ai</td>
       </tr>
@@ -510,7 +582,11 @@
           of the basic statistics and centroid and sigma statistics described above:
           <ul>
             <li>MinValue</li>
+            <li>MinX</li>
+            <li>MinY</li>
             <li>MaxValue</li>
+            <li>MaxX</li>
+            <li>MaxY</li>
             <li>MeanValue</li>
             <li>Sigma</li>
             <li>Total</li>
@@ -525,7 +601,11 @@
         <td>
           <ul>
             <li>TS_MIN_VALUE</li>
+            <li>TS_MIN_X</li>
+            <li>TS_MIN_Y</li>
             <li>TS_MAX_VALUE</li>
+            <li>TS_MAX_X</li>
+            <li>TS_MAX_Y</li>
             <li>TS_MEAN_VALUE</li>
             <li>TS_SIGMA_VALUE</li>
             <li>TS_TOTAL</li>
