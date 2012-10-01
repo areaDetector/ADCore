@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugin NDPluginProcess</h1>
     <h2>
-      December 3, 2011</h2>
+      October 1, 2012</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -269,13 +269,36 @@
           <br />
           Array = Array * Scale + Offset</td>
         <td>
-          ENABLE_SCALE_OFFSET</td>
+          ENABLE_OFFSET_SCALE</td>
         <td>
           $(P)$(R)EnableOffsetScale<br />
           $(P)$(R)EnableOffsetScale_RBV</td>
         <td>
           bo<br />
           bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginProcess<br />
+          AutoOffsetScale</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Processing this record will enable Offset and Scale calculations, and set the Offset=-min(Array)
+          and Scale=MaxScale/(max(Array)-min(Array)), where MaxScale is the maximum value
+          of the output data type. The output array will thus be scaled to completely fill
+          the range of the output data type. Note that the calculation of the offset and scale
+          factors is only done once when this record is processed, and these values are used
+          for subsequent array callbacks, i.e. it does not autoscale on each array callback.
+          Thanks to Tom Cobb for this addition.
+          <td>
+            AUTO_OFFSET_SCALE</td>
+          <td>
+            $(P)$(R)AutoOffsetScale</td>
+          <td>
+            busy</td>
       </tr>
       <tr>
         <td>
