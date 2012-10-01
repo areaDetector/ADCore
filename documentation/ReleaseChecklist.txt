@@ -2,16 +2,30 @@ Release checklist for areaDetector
 
 - Make sure the epics_ad_view.sav file in /usr/local/idl_user/imaging is
 up-to-date
+
 - Run "update_files" from the Viewers/IDL directory
+
 - Make sure that documentation/areaDetectorDoc.html and
 areaDetectorReleaseNotes.html have everything for this release, including the
 date.
+
 - Check in everything to BCDA SVN repository
+
 - Make the SVN repository tag with "make_release areaDetector RX-Y" from the devel directory
-- Do "make clean uninstall", "make" on Linux/vxWorks, win32-x86, win32-x86-debug and cygwin-x86
-  - The prebuilt binaries must be built on gse-pilatus1 for linux-86_64 and on idea for linux-x86. If not they
-    won't run on older Pilatus systems.
+
+- Do "make clean uninstall", "make" on the following platforms:
+  win32-x86: rivers-mobile (at least for roperApp)
+  windows-x64: rivers-mobile2
+  cygwin-x86: rivers-mobile2
+  linux-x86: corvette
+  linux-x86_64: corvette
+  linux-x86-gcc43: idea
+  linux-x86_64-gcc42: gse-pilatus1
+
 - Run "make clean", "make" in the documentation directory
+
 - Run "makeADStandaloneTar from the top-level areaDetector directory
+
 - Run "make_tar_file areaDetector RX-Y" from the devel directory
+
 - Run "install_documentation areaDetector" from the devel directory
