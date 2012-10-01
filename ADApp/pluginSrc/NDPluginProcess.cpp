@@ -228,7 +228,7 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
 
     if (autoOffsetScale && this->pArrays[0] != NULL) {
         this->pArrays[0]->getInfo(&arrayInfo);
-        double maxScale = pow(2, arrayInfo.bytesPerElement*8) - 1;
+        double maxScale = pow(2., arrayInfo.bytesPerElement*8) - 1;
         scale = maxScale /(maxValue-minValue);
         offset = -minValue;
         setDoubleParam (NDPluginProcessScale,             scale);
