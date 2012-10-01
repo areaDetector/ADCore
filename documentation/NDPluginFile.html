@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugin NDPluginFile</h1>
     <h2>
-      August 9, 2011</h2>
+      October 1, 2012</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -33,8 +33,8 @@
   </h2>
   <p>
     NDPluginFile is a base class from which actual file plugins are derived. There are
-    currently file plugins for JPEG, TIFF, netCDF, Nexus, and HD5 file formats. The
-    GraphicsMagick plugin can write a large number of formats, including JPEG, TIFF,
+    currently file plugins for JPEG, TIFF, netCDF, Nexus, HDF5, and GraphicsMagick.
+    The GraphicsMagick plugin can write a large number of formats, including JPEG, TIFF,
     PNG, PDF and many others.
   </p>
   <p>
@@ -57,14 +57,12 @@
       they all must fit in a memory buffer. It is the fastest mode, with the least probability
       of dropping arrays, because no disk I/O is required while capture is in progress.</li>
     <li>Stream mode. In this mode the data are written to a single disk file for those
-      file formats that support multiple arrays per file (currently only netCDF; NeXus/HDF
-      support for multiple arrays per file is planned for a future release). Each frame
-      is appended to the file without closing it. It is intermediate in speed between
+      file formats that support multiple arrays per file (netCDF, NeXus and HDF5). Each
+      frame is appended to the file without closing it. It is intermediate in speed between
       single mode and capture mode, but unlike capture mode it is not limited by available
       memory in the number of arrays that can be saved. For file formats that do not support
-      multiple arrays per file (e.g. JPEG, TIFF and currently NeXus/HDF) this mode is
-      really the same as Single mode, except that one can specify a total number of files
-      to save before stopping.</li>
+      multiple arrays per file (e.g. JPEG, TIFF) this mode is really the same as Single
+      mode, except that one can specify a total number of files to save before stopping.</li>
   </ol>
   <p>
     At least one array with the same datatype, array size, and attributes must have
@@ -539,6 +537,12 @@ variables:
     on older Linux systems (which predate Fedora Core 8 for example), it was decided
     to use this older version of HDF5. Future releases of areaDetector may use HDF5
     1.8.2 or later, and hence not work with older Linux systems.</p>
+  <div style="text-align: center">
+    <h3>
+      NDFileNexus.adl</h3>
+    <p>
+      <img alt="NDFileNexus.png" src="NDFileNexus.png" /></p>
+  </div>
   <h2 id="HDF5">
     HDF5 file plugin
   </h2>
@@ -782,6 +786,62 @@ variables:
         <td>
           $(P)$(R)NumRowChunks<br />
           $(P)$(R)NumRowChunks_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          nColChunks</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Configure HDF5 &quot;chunking&quot; to approriate size for the filesystem: sets
+          number of columns to use per chunk</td>
+        <td>
+          HDF5_nColChunks</td>
+        <td>
+          $(P)$(R)NumColChunks<br />
+          $(P)$(R)NumColChunks_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          nFramesChunks</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Configure HDF5 &quot;chunking&quot; to approriate size for the filesystem: sets
+          number of frames to use per chunk</td>
+        <td>
+          HDF5_nFramesChunks</td>
+        <td>
+          $(P)$(R)NumFramesChunks<br />
+          $(P)$(R)NumFramesChunks_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          flushNthFrame</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flush the file to disk every N'th frame.</td>
+        <td>
+          HDF5_flushNthFrame</td>
+        <td>
+          $(P)$(R)NumFramesFlush<br />
+          $(P)$(R)NumFramesFlush_RBV</td>
         <td>
           longout<br />
           longin</td>
