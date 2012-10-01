@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugins</h1>
     <h2>
-      September 28, 2012</h2>
+      October 1, 2012</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -22,6 +22,7 @@
     <li><a href="#Overview">Overview</a></li>
     <li><a href="#NDPluginDriver">NDPluginDriver</a></li>
     <li><a href="#Guidelines">Guidelines and rules for plugins</a></li>
+    <li><a href="#commomPlugins">commonPlugins.cmd</a></li>
     <li><a href="NDPluginColorConvert.html">NDPluginColorConvert</a></li>
     <li><a href="NDPluginFile.html">NDPluginFile</a></li>
     <li><a href="NDPluginOverlay.html">NDPluginOverlay</a></li>
@@ -228,13 +229,30 @@
         <td>
           r/o</td>
         <td>
-          The number of free queue lelements. </td>
+          The number of free queue elements.</td>
         <td>
           QUEUE_FREE</td>
         <td>
           $(P)$(R)QueueFree</td>
         <td>
           longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriver<br />
+          QueueUse</td>
+        <td>
+          N/A</td>
+        <td>
+          r/o</td>
+        <td>
+          The number of used queue elements.</td>
+        <td>
+          N/A</td>
+        <td>
+          $(P)$(R)QueueUse</td>
+        <td>
+          calc</td>
       </tr>
       <tr>
         <td align="center" colspan="7,">
@@ -720,11 +738,28 @@
       because it does not modify it.</li>
     <li>Plugins must release their mutex by calling this->unlock() when they do time-consuming
       operations. If they do not then they will not be able to queue new NDArrays callbacks
-      or obtain new parameter values. Obviously they must mot access memory locations
+      or obtain new parameter values. Obviously they must not access memory locations
       that other threads could modify during this time, so they should only access local
       variables, not class variables (which includes the parameter library).</li>
     <li>If plugins generate new or modified NDArrays then they must call doCallbacksGenericPointer()
       so that registered clients can get the values of the new arrays.</li>
   </ul>
+  <h2 id="commonPlugins">
+    commonPlugins.cmd</h2>
+  <p>
+    The areaDetector iocBoot directory contains a file called commonPlugins.cmd. This
+    file is loaded by all of the example driver IOC startup scripts. It loads a set
+    of plugins which are typically useful for detectors IOCs. Each detector medm screen
+    has links to related displays for each of the common plugins. While this set of
+    plugins is often useful and sufficient, users are free to add or remove plugins
+    from this set for their own IOCs. New medm displays will typically need to be created
+    if that is done, to have the required links to related displays.</p>
+  <p>
+    The following medm screen shows the status of all of the common plugins at a glance,
+    with links to bring up the detailed screen for each.</p>
+  <div style="text-align: center">
+    <h3 style="text-align: center">
+      commonPlugins.adl</h3>
+    <img alt="commonPlugins.png" src="commomPlugins.png" /></div>
 </body>
 </html>
