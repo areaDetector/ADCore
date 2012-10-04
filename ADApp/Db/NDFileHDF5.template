@@ -79,6 +79,42 @@ record(longin, "$(P)$(R)NumFramesChunks_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(longout, "$(P)$(R)BoundaryAlign")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_chunkBoundaryAlign")
+    field(PINI, "YES")
+    field(VAL, "0")
+    field(EGU, "bytes")
+}
+
+record(longin, "$(P)$(R)BoundaryAlign_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_chunkBoundaryAlign")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+    field(EGU, "bytes")
+}
+
+record(longout, "$(P)$(R)BoundaryThreshold")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_chunkBoundaryThreshold")
+    field(PINI, "YES")
+    field(VAL, "1")
+    field(EGU, "bytes")
+}
+
+record(longin, "$(P)$(R)BoundaryThreshold_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_chunkBoundaryThreshold")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+    field(EGU, "bytes")
+}
+
 # % gdatag, pv, rw, $(PORT)_NDFileHDF5, NumExtraDims, Number of extra dimensions [0..2]
 record(longout, "$(P)$(R)NumExtraDims")
 {
@@ -231,6 +267,7 @@ record(ai, "$(P)$(R)IOSpeed")
     field(EGU,  "Mbit/s")
 }
 
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, NumFramesFlush, Flush to file every Nth frame
 record(longout, "$(P)$(R)NumFramesFlush")
 {
     field(DTYP, "asynInt32")
@@ -238,6 +275,7 @@ record(longout, "$(P)$(R)NumFramesFlush")
     field(PINI, "NO")
 }
 
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, NumFramesFlush_RBV, Readback the number of frames between file flush
 record(longin, "$(P)$(R)NumFramesFlush_RBV")
 {
     field(DTYP, "asynInt32")
