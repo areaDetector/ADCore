@@ -62,6 +62,8 @@ protected:
   int NDFileHDF5_nColChunks;
   int NDFileHDF5_extraDimSizeN;
   int NDFileHDF5_nFramesChunks;
+  int NDFileHDF5_chunkBoundaryAlign;
+  int NDFileHDF5_chunkBoundaryThreshold;
   int NDFileHDF5_nExtraDims;
   int NDFileHDF5_extraDimNameN;
   int NDFileHDF5_extraDimSizeX;
@@ -165,6 +167,8 @@ static const char *driverName = "NDFileHDF5";
 #define str_NDFileHDF5_nColChunks        "HDF5_nColChunks"
 #define str_NDFileHDF5_extraDimSizeN     "HDF5_extraDimSizeN"
 #define str_NDFileHDF5_nFramesChunks     "HDF5_nFramesChunks"
+#define str_NDFileHDF5_chunkBoundaryAlign "HDF5_chunkBoundaryAlign"
+#define str_NDFileHDF5_chunkBoundaryThreshold "HDF5_chunkBoundaryThreshold"
 #define str_NDFileHDF5_extraDimNameN     "HDF5_extraDimNameN"
 #define str_NDFileHDF5_nExtraDims        "HDF5_nExtraDims"
 #define str_NDFileHDF5_extraDimSizeX     "HDF5_extraDimSizeX"
@@ -260,10 +264,27 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
   /* Work out the various dimensions used in the dataset */
   this->configureDims(pArray);
 
-  /* File access property list: set the alignment boundary to 1MB block size
-   * which matches disk boundaries */
+  /* File access property list: set the alignment boundary to a user defined block size
+   * which ideally matches disk boundaries.
+   * If user sets size to 0 we do not set alignment at all. */
   hid_t access_plist = H5Pcreate(H5P_FILE_ACCESS);
-  hdfstatus = H5Pset_alignment( access_plist, 1, ALIGNMENT_BOUNDARY );
+  hsize_t align = 0;
+  hsize_t threshold = 0;
+  getIntegerParam(NDFileHDF5_chunkBoundaryAlign, (int*)&align);
+  getIntegerParam(NDFileHDF5_chunkBoundaryThreshold, (int*)&threshold);
+  if (align > 0)
+  {
+    hdfstatus = H5Pset_alignment( access_plist, threshold, align );
+    if (hdfstatus < 0)
+    {
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+          "%s%s Warning: failed to set boundary threshod=%d and alignment=%d bytes\n",
+          driverName, functionName, threshold, align);
+      H5Pget_alignment( access_plist, &threshold, &align );
+      setIntegerParam(NDFileHDF5_chunkBoundaryAlign, align);
+      setIntegerParam(NDFileHDF5_chunkBoundaryThreshold, threshold);
+    }
+  }
 
   /* File creation property list: set the i-storek according to HDF group recommendations */
   hid_t create_plist = H5Pcreate(H5P_FILE_CREATE);
@@ -279,6 +300,7 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
               "%s::%s Unable to create HDF5 file: %s\n", 
               driverName, functionName, fileName);
+    this->file = 0;
     return asynError;
   }
 
@@ -487,7 +509,7 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
         setIntegerParam(NDWriteFile, 0);
         return asynError;
       }
-    }
+  }
   }
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s wrote frame. dt=%.5fs (T=%.5fs)\n", driverName, functionName, dt, period);
 
@@ -776,6 +798,8 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   this->createParam(str_NDFileHDF5_nColChunks,      asynParamInt32,   &NDFileHDF5_nColChunks);
   this->createParam(str_NDFileHDF5_extraDimSizeN,   asynParamInt32,   &NDFileHDF5_extraDimSizeN);
   this->createParam(str_NDFileHDF5_nFramesChunks,   asynParamInt32,   &NDFileHDF5_nFramesChunks);
+  this->createParam(str_NDFileHDF5_chunkBoundaryAlign, asynParamInt32,&NDFileHDF5_chunkBoundaryAlign);
+  this->createParam(str_NDFileHDF5_chunkBoundaryThreshold, asynParamInt32,&NDFileHDF5_chunkBoundaryThreshold);
   this->createParam(str_NDFileHDF5_extraDimNameN,   asynParamOctet,   &NDFileHDF5_extraDimNameN);
   this->createParam(str_NDFileHDF5_nExtraDims,      asynParamInt32,   &NDFileHDF5_nExtraDims);
   this->createParam(str_NDFileHDF5_extraDimSizeX,   asynParamInt32,   &NDFileHDF5_extraDimSizeX);
@@ -799,6 +823,8 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   setIntegerParam(NDFileHDF5_nColChunks,      0);
   setIntegerParam(NDFileHDF5_nFramesChunks,   0);
   setIntegerParam(NDFileHDF5_extraDimSizeN,   1);
+  setIntegerParam(NDFileHDF5_chunkBoundaryAlign, 0);
+  setIntegerParam(NDFileHDF5_chunkBoundaryAlign, 1);
   setIntegerParam(NDFileHDF5_nExtraDims,      0);
   setIntegerParam(NDFileHDF5_extraDimSizeX,   1);
   setIntegerParam(NDFileHDF5_extraDimOffsetX, 0);
@@ -912,6 +938,7 @@ unsigned int NDFileHDF5::calc_istorek()
         num_chunks *= (unsigned int)div_result;
     }
     retval = num_chunks/2;
+    if (retval <= 0) retval = 1;
     return retval;
 }
 
@@ -1244,7 +1271,7 @@ asynStatus NDFileHDF5::writeRawdataAttribute()
   int i;
   const char *functionName = "writeDatasetAttribute";
 
-  /* attach an attribute and write an integer data to it.  */
+  /* attach an attribute and write an integer data to it. ('signal', 1)  */
   /* First create the data space for the attribute. */
   asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER, "%s::%s Adding a single constant attribute to \'data\'\n", driverName, functionName);
   hdfattrdims = 1;
@@ -1256,6 +1283,9 @@ asynStatus NDFileHDF5::writeRawdataAttribute()
   hdfstatus        = H5Awrite(hdfattr, H5T_NATIVE_INT32, (void*)&hdfattrval);
   hdfstatus        = H5Aclose(hdfattr);
   hdfstatus        = H5Sclose(hdfattrdataspace);
+
+  /* attach an attribute and write an string of data to it. ('interpretation', 'image')  */
+  this->writeStringAttribute(this->dataset, "interpretation", "image");
 
   /* Write the human-readable dimension names as an attribute to the rawdata set */
   for (i=0; i<this->rank; i++)
