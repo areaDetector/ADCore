@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugin NDPluginFile</h1>
     <h2>
-      October 1, 2012</h2>
+      October 6, 2012</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -27,6 +27,7 @@
     <li><a href="#NeXus">NeXus (HDF) file plugin</a></li>
     <li><a href="#HDF5">HDF5 file plugin</a></li>
     <li><a href="#Null">Null file plugin</a></li>
+    <li><a href="#Performance">Performance</a></li>
   </ul>
   <h2 id="Overview">
     Overview
@@ -719,6 +720,28 @@ variables:
     of the <tt>iocBoot/iocSimDetector/simDetectorAttributes.xml</tt> file is:</p>
   <pre>xmllint --noout --schema ./attributes.xsd iocSimDetector/simDetectorAttributes.xml</pre>
   <h3>
+    Chunking
+  </h3>
+  <p>
+    This plugin uses HDF5 chunking to store the raw image data. The chunk size (the
+    size of each I/O block) can be configured for the frame X and Y dimensions as well
+    as the N'th image (which essentially implies memory caching before writing to disk).
+    Configuring chunking correctly for a given application is a complex matter where
+    both the write performance and the read performance for a given post processing
+    application will have to be evaluated. As a basic starting point, setting the nColChunks
+    and nRowChunks parameters to the X and Y frame size respectively, should give a
+    decent result. In fact if these parameters are configured by the user to the special
+    value 0, they will default to the dimensions of the incoming frames. Further explanations
+    and documentation of the HDF5 chunking feature is available in the HDF5 documentation:</p>
+  <ul>
+    <li>HDF5 documentation advanced topics: <a href="http://www.hdfgroup.org/HDF5/doc/Advanced/Chunking/index.html">
+      Chunking in HDF5 </a></li>
+    <li>HDF5 User guide: <a href="http://www.hdfgroup.org/training/HDFtraining/UsersGuide/Perform.fm2.html">
+      14.3 Data Chunking </a></li>
+    <li>hdfgroup presentation: <a href="http://www.hdfgroup.org/pubs/presentations/HDF5-EOSXIII-Advanced-Chunking.pdf">
+      HDF5 Advanced Topics - Chunking in HDF5 </a></li>
+  </ul>
+  <h3>
     Compression
   </h3>
   <p>
@@ -772,6 +795,10 @@ variables:
           EPICS record type</th>
       </tr>
       <tr>
+        <td align="center" colspan="7,">
+          <b>HDF5 Chunk Configuration</b></td>
+      </tr>
+      <tr>
         <td>
           nRowChunks</td>
         <td>
@@ -818,7 +845,8 @@ variables:
           r/w</td>
         <td>
           Configure HDF5 &quot;chunking&quot; to approriate size for the filesystem: sets
-          number of frames to use per chunk</td>
+          number of frames to use per chunk. For a 2D image, setting this parameter > 1 essentially
+          implies using in-memory cache as HDF5 only writes full chunks to disk.</td>
         <td>
           HDF5_nFramesChunks</td>
         <td>
@@ -829,22 +857,61 @@ variables:
           longin</td>
       </tr>
       <tr>
+        <td align="center" colspan="7,">
+          <b>Disk Boundary Alignment</b></td>
+      </tr>
+      <tr>
         <td>
-          flushNthFrame</td>
+          chunkBoundaryAlign</td>
         <td>
           asynInt32</td>
         <td>
           r/w</td>
         <td>
-          Flush the file to disk every N'th frame.</td>
+          Set the disk boundary alignment in bytes. This parameter can be used to optimise
+          file I/O performance on some file systems. For instance on the Lustre file system
+          where the it is optimal to align data to the 'stripe size' (default 1MB).
+          <br />
+          This parameter applies to all datasets in the file.
+          <br />
+          Setting this parameter to 0 disables use of disk boundary alignment.
+          <br />
+          <i>Warning: setting this parameter to a larger size than the size of a single chunk
+            will cause datafiles to grow larger than the actual contained data.</i> </td>
         <td>
-          HDF5_flushNthFrame</td>
+          HDF5_chunkBoundaryAlign</td>
         <td>
-          $(P)$(R)NumFramesFlush<br />
-          $(P)$(R)NumFramesFlush_RBV</td>
+          $(P)$(R)BoundaryAlign<br />
+          $(P)$(R)BoundaryAlign_RBV</td>
         <td>
           longout<br />
           longin</td>
+      </tr>
+      <tr>
+        <td>
+          chunkBoundaryThreshold</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Set a minimum size (bytes) of chunk or dataset where boundary alignment is to be
+          applied. This can be used to filter out small datasets like NDAttributes from the
+          boundary alignment as it could blow up the file size.
+          <br />
+          Setting this parameter to 0 will disable the use of boundary alignment </td>
+        <td>
+          HDF5_chunkBoundaryThreshold</td>
+        <td>
+          $(P)$(R)BoundaryThreshold<br />
+          $(P)$(R)BoundaryThreshold_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>Metadata</b></td>
       </tr>
       <tr>
         <td>
@@ -881,6 +948,26 @@ variables:
         <td>
           bo<br />
           bi</td>
+      </tr>
+      <tr>
+        <td>
+          flushNthFrame</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flush the file metadata to disk every N'th frame. Image data is written to disk
+          on every write operation, but HDF5 internal metadata to describe the data layout
+          and indices is normally only written at close time. </td>
+        <td>
+          HDF5_flushNthFrame</td>
+        <td>
+          $(P)$(R)NumFramesFlush<br />
+          $(P)$(R)NumFramesFlush_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
       </tr>
       <tr>
         <td align="center" colspan="7,">
@@ -1120,5 +1207,180 @@ variables:
                      const char *NDArrayPort, int NDArrayAddr, size_t maxMemory, 
                      int priority, int stackSize)
   </pre>
+  <h2 id="Performance">
+    Performance
+  </h2>
+  <p>
+    Performance measurements were made on the Linux and Windows systems shown in the
+    following table.</p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <th>
+          Model</th>
+        <th>
+          Operating system</th>
+        <th>
+          CPU</th>
+        <th>
+          RAM</th>
+        <th>
+          Disk</th>
+      </tr>
+      <tr>
+        <td>
+          Dell Precision T7500 </td>
+        <td>
+          Windows 7 64-bit </td>
+        <td>
+          Two quad-core Xeon X5647, 2.93 GHz (8 cores total) </td>
+        <td>
+          96 GB</td>
+        <td>
+          Two 500 GB 15K RPM SAS disks RAID 0 </td>
+      </tr>
+      <tr>
+        <td>
+          Penguin Relion 1751 Server</td>
+        <td>
+          Linux, Fedora Core 14 64-bit</td>
+        <td>
+          Two quad-core Xeon E5630, 2.53 GHz (8 cores total) </td>
+        <td>
+          12 GB</td>
+        <td>
+          Three 300 GB 15K RPM SAS disks No RAID</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    The tests were performed under the following conditions:</p>
+  <ul>
+    <li>Simulation detector with a single small peak in Peaks mode. The driver was running
+      in Continuous mode with AcquireTime=0, and AcquirePeriod=0, to achieve maximum frame
+      rate. Both Windows and Linux were able to generate about 1500 frames/sec, which
+      was faster than any of the file plugins could write, so they were always dropping
+      frames.</li>
+    <li>1024 x 1024 8-bit images, so each image was 1 MB.</li>
+    <li>File plugins operating in non-blocking mode.</li>
+    <li>Files were written to a local disk.</li>
+    <li>For the file plugins that cannot save multiple images per file (JPEG, TIFF, Magick),
+      tests were done only in Stream mode, which allows specifying the total number of
+      files to write. For the drivers that can save multiple images per file (netCDF,
+      Nexus, HDF5) tests were done first in Stream mode which saved 5000 images to a single
+      5GB file. Tests were then done in Single mode. In this mode it is not possible to
+      tell the file plugin to save exactly 5000 frames. Instead the simulation driver
+      was put in Multiple mode with NumImages=5000. Thus the driver generated 5000 frames,
+      but the plugin saved fewer than 5000 because it was dropping frames. The file rate
+      was calculated as the number of frames actually written divided by the elapsed time.</li>
+    <li>Note that the amount of data written to the files (5GB) was less than the amound
+      of RAM on each system. It is thus possible that files are being cached in RAM, and
+      that for more frames the I/O rate would drop. This is almost certainly true for
+      the HDF5 file in stream mode on Windows, which has a data rate over 1GB/s.</li>
+  </ul>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <th>
+          File plugin</th>
+        <th>
+          Mode</th>
+        <th>
+          Windows (frames/s = MB/s)</th>
+        <th>
+          Linux (frames/s = MB/s)</th>
+      </tr>
+      <tr>
+        <td>
+          JPEG</td>
+        <td>
+          Stream</td>
+        <td>
+          79.1</td>
+        <td>
+          68.4</td>
+      </tr>
+      <tr>
+        <td>
+          TIFF</td>
+        <td>
+          Stream</td>
+        <td>
+          259.9</td>
+        <td>
+          186.4</td>
+      </tr>
+      <tr>
+        <td>
+          Magick, TIFF</td>
+        <td>
+          Stream</td>
+        <td>
+          55.7</td>
+        <td>
+          39.0</td>
+      </tr>
+      <tr>
+        <td>
+          netCDF</td>
+        <td>
+          Stream</td>
+        <td>
+          204.3</td>
+        <td>
+          185.0</td>
+      </tr>
+      <tr>
+        <td>
+          netCDF</td>
+        <td>
+          Single</td>
+        <td>
+          133.7</td>
+        <td>
+          179.1</td>
+      </tr>
+      <tr>
+        <td>
+          Nexus</td>
+        <td>
+          Stream</td>
+        <td>
+          192.3</td>
+        <td>
+          193.4</td>
+      </tr>
+      <tr>
+        <td>
+          Nexus</td>
+        <td>
+          Single</td>
+        <td>
+          106.3</td>
+        <td>
+          145.6</td>
+      </tr>
+      <tr>
+        <td>
+          HDF5</td>
+        <td>
+          Stream</td>
+        <td>
+          1113.5</td>
+        <td>
+          192.0</td>
+      </tr>
+      <tr>
+        <td>
+          HDF5</td>
+        <td>
+          Single</td>
+        <td>
+          139.7</td>
+        <td>
+          108.6</td>
+      </tr>
+    </tbody>
+  </table>
 </body>
 </html>
