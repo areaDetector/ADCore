@@ -9,13 +9,47 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
-    Release 1-8 (XX-March-2012)</h2>
+    Release 1-8 (6-October-2012)</h2>
   <ul>
+    <li>Base classes
+      <ul>
+        <li>ADDriver
+          <ul>
+            <li>Added new parameter ADTemperatureActual and new record TemperatureActual, so that
+              the setpoint temperature and actual temperature are now separate parameters. </li>
+            <li>Added 3 new values to the ADStatus_t enum: ADStatusInitializing, ADStatusDisconnected,
+              and ADStatusAborted.</li>
+          </ul>
+        </li>
+        <li>NDArray
+          <ul>
+            <li>The documented behavior of the maxBuffers and maxMemory arguments to the constructor
+              has been changed. Previously the value -1 was documented to indicate "unlimited".</li>
+            <li>However, these arguments have type size_t, so -1 is actually not a valid value,
+              and in fact "unlimited" was being used if the value was &lt; 1. The new documented
+              behavior is that 0 should be used to indicate "unlimited".</li>
+            <li>Startup scripts should be modified to reflect this change, but old startup scripts
+              using -1 will continue to work. Example startup scripts have all been corrected.</li>
+          </ul>
+        </li>
+        <li>asynNDArrayDriver
+          <ul>
+            <li>Added new parameters: NDPoolMaxMemory, NDPoolUsedMemory, NDPoolMaxBuffers, NDPoolAllocBuffers,
+              NDPoolFreeBuffers) to monitor memory and buffer usage. Thanks to Ulrik Pedersen
+              for this addition.</li>
+            <li>Always create an NDArrayPool. Previously it did not create an NDArrayPool if maxMemory
+              and maxBuffers were both 0. 0 now means unlimited, so we need to create always.</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
     <li>Drivers
       <ul>
         <li>New Andor driver. Orginal version by Matt Pearson from Diamond Light Source. This
           driver supports both USB and PCI cameras from Andor. It runs on 32-bit and 64-bit
-          Linux and 32-bit and 64-bit Windows.</li>
+          Linux and 32-bit and 64-bit Windows. This driver only supports the Andor CCD cameras,
+          not the new Neo and Zyla sCMOS cameras. The sCMOS cameras use a new SDK library,
+          and will be supported in the next release.</li>
         <li>Perkin Elmer driver. Many new features:
           <ul>
             <li>Added support for detectors with Gigabit Ethernet interfaces (e.g. model 0822).</li>
@@ -47,18 +81,52 @@
               done on a Windows 7 64-bit machine with 2 disk drives (SAS, 15K RPM, RAID 0).</li>
           </ul>
         </li>
+        <li>PSL driver.
+          <ul>
+            <li>Added support for getting images from the camera for callbacks.</li>
+            <li>Changes to support new version of PSL socket server syntax.</li>
+            <li>Many improvements from testing with working detector.</li>
+          </ul>
+        </li>
         <li>Pilatus driver. Thanks to Matt Pearson from Diamond Light Source for most of these
           changes.
           <ul>
+            <li>Allow NumExposures &gt; 1 in all modes. It was previously limiting NumExposures
+              to 1 in all modes except ExternalEnable. It is actually only very useful in ExternalEnable
+              mode, but we now allow it in all modes.</li>
+            <li>Fixed bug with the driver timeout when NumExposures &gt; 1. Previously the driver
+              could time out before the exposure sequence was complete.</li>
+            <li>Improved documentation to emphasize the importance of setting AcquireTime and
+              AcquirePeriod correctly in ExternalEnable mode.</li>
             <li>New records for detector temperature and humidity, and a driver thread to poll
               these values.</li>
             <li>Read back the actual value of the threshold.</li>
             <li>Read the Tau value when setting the exposure time.</li>
             <li>New record with TVX version number, read at startup.</li>
             <li>Disabled unused records from ADBase.template.</li>
-            <li>Fixed 2 minor bugs. It was reporting a read timeout error from camserver each
-              time an image was acquired. Fixed a problem if the user aborted an acquisition twice
-              in a row.</li>
+            <li>Fixed a problem reporting a read timeout error from camserver each time an image
+              was acquired.</li>
+            <li>Fixed a problem if the user aborted an acquisition twice in a row.</li>
+            <li>Fixed thread polling for Threshold, as it wasn't working for 2M or 6M detectors.</li>
+            <li>Added a 2s delay when aborting an acquisition, which seems to be needed to allow
+              camserver time to clean up in some modes.</li>
+            <li>Improved error reporting for multi frame acqusitions, when callbacks are turned
+              off.</li>
+            <li>Fixed a race condition to ensure we don't miss a stopEvent if we are doing a successful
+              read from camserver.</li>
+            <li>Added an automatic stop when getting a timeout from camserver, if we got no response
+              (this prevents camserver and the pilatus driver getting out of sync.)</li>
+            <li>Fixed race conditions that meant we occasionally read back the wrong ADStatus
+              at the end of an exposure.</li>
+            <li>Fixed a race condition in pilatusTask, that can cause a problem reading ADStatus
+              if we sent a start and a stop in quick succession (before the pilatusTask thread
+              had time to run).</li>
+            <li>Added support for setting cbf_template_file.</li>
+            <li>Turned off auto reconnect on the Asyn port, to force a IOC reboot if camserver
+              if has been restarted.</li>
+            <li>Fixed logic for setting the threshold, if we have auto apply turned off.</li>
+            <li>Modified the Pilatus driver to take advantage of the new aborted state, ie. replaced
+              some of the ADErrors with ADStatusAborted.</li>
           </ul>
         </li>
         <li>Prosilica driver. Added support for the following:
@@ -76,6 +144,11 @@
               attempts to change the AcquireTime or AcquirePeriod do not return errors, but they
               do not take effect until the IOC is rebooted! Fixed the problem by reducing SizeX
               or SizeY if the requested region would be larger than the chip.</li>
+            <li>Updated the support libraries to PvAPI V1.26. This means that Windows users should
+              install V1.26 of the Sample Viewer program so that they are running a compatible
+              version (V1.22) of the packet filter driver.</li>
+            <li>Added the PvAPI library version to the report() function, to see what version
+              of the library the driver was built with.</li>
           </ul>
         </li>
         <li>Firewire Windows driver. Added READOUT_TIME parameter. The sum of the AcquireTime
@@ -83,10 +156,24 @@
           a hardcoded value of 1.0 second was used, which was too short for some slow cameras.</li>
         <li>URL driver. Bug fix to prevent infinite loop if there is an error reading the
           image. Thanks to Wang Xiaoqiang from PSI for finding this problem.</li>
+        <li>Simulation driver. Improvements in handling of ADStatus and ADStatusMessage, support
+          new ADStatusAborted status.</li>
       </ul>
     </li>
     <li>Plugins
       <ul>
+        <li>General
+          <ul>
+            <li>Added new records (QueueSize, QueueFree, QueueFreeLow) to monitor queue usage
+              by all plugins. Thanks to Ulrik Pedersen for this addition.</li>
+          </ul>
+          <ul>
+            <li>Added new records (PoolMaxMem, PoolUsedMem, PoolMaxBuffers, PoolAllocBuffers,
+              PoolFreeBuffers, PoolUsedBuffers) to monitor memory and buffer usage by plugins
+              that produce NDArray outputs that other plugins attach to. Thanks to Ulrik Pedersen
+              for this addition.</li>
+          </ul>
+        </li>
         <li>NDPluginFile.
           <ul>
             <li>Added 2 new records, WriteStatus and WriteMessage to display status of file writing
@@ -95,6 +182,7 @@
               The NDFilePlugin base class now updates these records for each file open or file
               write operation. All of the file plugin medm screens have been updated to display
               these new PVs.</li>
+            <li>Fixed bugs that caused crashes if memory allocation failed in Capture Mode.</li>
           </ul>
         </li>
         <li>NDFileTIFF.
@@ -109,6 +197,31 @@
               Int16, UInt16, Int32, UInt32, Float32, and Float64). IDL can read TIFF files with
               all of these data types. ImageJ can read all except Float64. PIL can read all except
               Int8, UInt32, and Float64.</li>
+            <li>Write the timestamp of the array to a special TIFF tag. TIFF has a standard timestamp
+              field, but unfortunately it has to be 20 characters in a standard date/time format
+              so it cannot store time to sub-second precision, so a custom tag was necessary.
+              Thanks to Tom Cobb for this.</li>
+            <li>Added a NULL file name pointer check.</li>
+          </ul>
+        </li>
+        <li>NDFileHDF5.
+          <ul>
+            <li>The first change below is from Michael Davidsaver, the rest are from Ulrik Pedersen.</li>
+            <li>Added a flag to allow building with HDF5 1.8.4 and above.</li>
+            <li>Fixed segfault that could occur when trying to write a single frame with an uninitialised
+              plugin.</li>
+            <li>Added feature to do file flushing on every Nth frame.</li>
+            <li>Added feature to write the current hostname to the metadata in the output file.</li>
+            <li>Changed to not close and reopen datasets for each write as this causes a crash
+              on windows-x64 platform when using caching in the hdf5 library -i.e. when chunking
+              a 3D dataset in the first (frame) dimension,</li>
+            <li>Various fixes to reduce buildtime errors and warnings on the 64bit windows platform.</li>
+            <li>Added HDF5 library version number to the module name string.</li>
+            <li>Added ability to change the chunking size for columns and captured frames in addition
+              to the number of rows.</li>
+            <li>Improved error handling when failing to open file, create dataset or write a frame.</li>
+            <li>Added boundary alignment, boundary threshold, and setting istore_k parameter.</li>
+            <li>Check for failure to create a new file.</li>
           </ul>
         </li>
         <li>NDFileNexus.
@@ -121,6 +234,12 @@
               not be changed from that in the startup script (i.e. change to ROI1, etc.).</li>
             <li>Increased the stack size for this plugin in iocBoot/commonPlugins.cmd, because
               it was crashing with a stack overflow on windows-x64.</li>
+          </ul>
+        </li>
+        <li>NDFileNull.
+          <ul>
+            <li>New file plugin which does not write anything. It is designed only delete the
+              original driver file after it has been read back in using the DeleteDriverFile support.</li>
           </ul>
         </li>
         <li>NDPluginProcess
@@ -151,10 +270,18 @@
               and FScale.</li>
             <li>Fixed errors in the template file for the readback values of the filter coefficients.
               They had DTYP=asynInt32, corrected to asynFloat64.</li>
+            <li>Added new record AutoOffsetScale. Processing this record will enable Offset and
+              Scale calculations, and set the Offset=-min(input) and Scale=MaxScale/(max(input)-min(input)),
+              where MaxScale is the maximum value of the output data type. The input image will
+              thus be scaled to completely fill the range of the output data type. Thanks to Tom
+              Cobb for this addition.</li>
           </ul>
         </li>
         <li>NDPluginStats
           <ul>
+            <li>New statistics added which give the X and Y pixel locations of the minimum and
+              maximum values, MinX_RBV, MinY_RBV, MaxX_RBV, MaY_RBV. Note that these are only
+              valid for 2-D monochromatic images. Thanks to Tom Cobb for these additions.</li>
             <li>Time-series arrays
               <ul>
                 <li>Changed code so that time series are collected internally in the plugin, rather
@@ -170,9 +297,16 @@
                 <li>New medm screen, NDTimeSeries.adl, to display time series data.</li>
               </ul>
             </li>
-            <li>Fixed bug that degraded driver performance in some circumstances. The plugin was
-              not releasing the lock during come computationally expensive operations, which would
-              cause the driver to wait when queueing the next array during a callback.</li>
+            <li>Fixed a bug that degraded driver performance in some circumstances. The plugin
+              was not releasing the lock during come computationally expensive operations, which
+              would cause the driver to wait when queueing the next array during a callback.</li>
+          </ul>
+        </li>
+        <li>NDPluginROI
+          <ul>
+            <li>Added new demonstration database, NDROI_sync.template, that synchronizes an ROI
+              to be the size of the entire detector. This is useful when the detector binning
+              or readout region is changed.</li>
           </ul>
         </li>
       </ul>
@@ -193,18 +327,27 @@
         <li>libGraphicsMagic++.a on 64-bit was invoking std::_List_mode_base functions that
           do not exist in earlier versions of GLIBCXX. GraphicsMagick was rebuilt on an older
           Linux system (gcc 4.2.1) for 64-bit Linux.</li>
-        <li>All of the prebuilt 64-bit binaries were recompiled and relinked on an older Linux
-          system (gcc 4.2.1).</li>
       </ul>
     </li>
-    <li>Renamed netCDFSrc/include to netCDFSrc/inc to work around a bug in make 3.82 on
-      Cygwin. </li>
-    <li>medm screens
+    <li>New host architectures, linux-x86-gcc43 and linxux-86_64-gcc42. Most libraries
+      and binaries for the linux-86 and linux-x86_64 architectures are now built with
+      gcc 4.6.3 on a 2.6.43 Linux kernel. These binaries will not run on older Linux systems
+      because of incompatibilities in the GCC and C run-time libraries. Binaries built
+      on older Linux architectures are now also provided. For 32-bits the architecture
+      is called linux-x86-gcc43 and is built with gcc 4.3.0 on a 2.6.27 Linux kernel.
+      For 64-bits the architecture is called linux-x86_64-gcc42 and is built with gcc
+      4.2.1 on a 2.6.27 Linux kernel. Users with older Linux systems should be able to
+      run one of these architectures. </li>
+    <li>OPI files
       <ul>
         <li>New medm screen, commonPlugins.adl. This screen provides an overview of the status
           of all the common plugins, and allows one to enable/disable and change the asyn
           source port. ADPlugins.adl which is included on all the detector medm screens now
           contains an "All" button to load commonPlugins.adl.</li>
+        <li>New directory, ADApp/op/opi, which contains CSS-BOY screens. Thanks to Erik Hanson
+          for providing these.</li>
+        <li>New directory, ADApp/op/edl, which contains EDM screens. Thanks to the folks from
+          Diamond for providing these.</li>
       </ul>
     </li>
     <li>Miscellaneous
@@ -214,6 +357,13 @@
           being used only to collect time-series data of the statistics in the NDPluginStats
           plugin. NDPluginStats has been changed to collect this time-series itself, using
           only standard waveform records with asyn device support.</li>
+        <li>Fixes to build on Darwin.</li>
+        <li>Increased stack size for HDF5 plugin in commonPlugins.cmd to avoid stack overflow
+          on Windows.</li>
+        <li>Fixed memory leak in constructor for paramAttribute. Thanks to Jason Abernathy
+          from the University of Victoria for finding this.</li>
+        <li>Renamed netCDFSrc/include to netCDFSrc/inc to work around a bug in make 3.82 on
+          Cygwin. </li>
       </ul>
     </li>
   </ul>
