@@ -189,7 +189,7 @@ function epics_ad_control::init
 ; PURPOSE:
 ;       This is the initialization code which is invoked when a new object of
 ;       type EPICS_AD_CONTROL is created.  It cannot be called directly, but only
-;       indirectly by the IDL OBJ_NEW() function. 
+;       indirectly by the IDL OBJ_NEW() function.
 ;
 ; CATEGORY:
 ;       IDL device class library.
@@ -210,7 +210,7 @@ function epics_ad_control::init
 ;       software installed.  This requires the shareable object ezcaIDL.dll or
 ;       ezcaIDL.so.  The EZCA_IDL_SHARE environment variable must point to this
 ;       shareable object file.  It must be a version of this library built with
-;       EPICS 3.14 to transfer arrays larger than 16,000 bytes. 
+;       EPICS 3.14 to transfer arrays larger than 16,000 bytes.
 ;       The EPICS_CA_MAX_ARRAY_BYTES environment variable must be set to a value
 ;       at least as large as the biggest array that will be used.
 ;
