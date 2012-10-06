@@ -1,3 +1,11 @@
+;*************************************************************************
+; Copyright (c) 2002 The University of Chicago, as Operator of Argonne
+; National Laboratory.
+; Copyright (c) 2002 The Regents of the University of California, as
+; Operator of Los Alamos National Laboratory.
+; This file is distributed subject to a Software License Agreement found
+; in the file LICENSE that is included with this distribution. 
+;*************************************************************************
 ;*****************************************************************************
 ;+
 ; NAME:
@@ -82,7 +90,13 @@ common ezca_common, program, IDL_object, ingroup, MAX_STRING_SIZE, MAX_ENUM_STAT
 if (n_elements(program) eq 0) then begin
     if (strpos(strupcase(!dir), 'IDL') ne -1) then program='IDL' else program='PV-WAVE'
     IDL_object = getenv('EZCA_IDL_SHARE')
-    if IDL_object eq "" then IDL_object = 'ezcaIDL.so'
+    if IDL_object eq "" then begin
+        if (!version.os eq 'Win32') then base = 'ezcaIDL.dll' else base = 'libezcaIDL.so'
+        temp = base + '_' + !version.os + '_' + !version.arch
+        IDL_object = file_which(temp)
+    endif
+    ;print, 'call_Ezca, shareable library = ', temp
+    ;print, 'call_Ezca, full path = ', IDL_object
     ; Clear the ingroup flag if it doesn't exist yet
     if (n_elements(ingroup) eq 0) then ingroup=0
 endif
@@ -885,7 +899,7 @@ function caEndGroup, status
 end
 
 
-function caSetMonitor, pvname
+function caSetMonitor, pvname, count
 ;+
 ; NAME:
 ;       caSetMonitor
@@ -905,6 +919,7 @@ function caSetMonitor, pvname
 ;
 ; INPUTS:
 ;       pvname: The name of the process variable on which to set the monitor.
+;       count:  The maximum number of elements to monitor.  Default (0) is native element count
 ;
 ; OUTPUTS:
 ;       The function return value of caSetMonitor is a status value.  The
@@ -924,10 +939,11 @@ function caSetMonitor, pvname
 ;       Written by:     Mark Rivers
 ;       June 28, 1995
 ;-
-    status = caGetCountAndType(pvname, count, type)
+    status = caGetCountAndType(pvname, cnt, type)
+    if (n_elements(count) eq 0) then count = 0
     if (status ne 0) then return, status
     status = call_ezca('ezcaIDLSetMonitor', ezcaStringToByte(pvname), $
-                        byte(type(2)))
+                        byte(type(2)), long(count))
     return, status
 end
 
