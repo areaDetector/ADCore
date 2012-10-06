@@ -316,14 +316,14 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
   /*
    * Create the data space with appropriate dimensions
    */
-  asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER, "%s::%s Creating dataspace with given dimensions\n", driverName, functionName);
+  asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s Creating dataspace with given dimensions\n", driverName, functionName);
   this->dataspace = H5Screate_simple(this->rank, this->framesize, this->maxdims);
 
   /*
    * Modify dataset creation properties, i.e. enable chunking.
    */
   this->cparms = H5Pcreate(H5P_DATASET_CREATE);
-  asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER, "%s::%s Configuring chunking\n", driverName, functionName);
+  asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s Configuring chunking\n", driverName, functionName);
   hdfstatus = H5Pset_chunk( this->cparms, this->rank, this->chunkdims);
 
   /* Get the datatype */
@@ -333,13 +333,13 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
   /* configure compression if required */
   this->configureCompression();
 
-  asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER, "%s::%s Setting fillvalue\n", driverName, functionName);
+  asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s Setting fillvalue\n", driverName, functionName);
   hdfstatus = H5Pset_fill_value (this->cparms, this->datatype, this->ptrFillValue );
 
   hid_t dset_access_plist = H5Pcreate(H5P_DATASET_ACCESS);
   size_t nbytes = this->calc_chunk_cache_bytes();
   size_t nslots = this->calc_chunk_cache_slots();
-  asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER, "%s::%s Setting cache size=%d slots=%d\n",
+  asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s Setting cache size=%d slots=%d\n",
             driverName, functionName,
             nbytes, nslots);
   H5Pset_chunk_cache( dset_access_plist, nslots, nbytes, 1.0);
@@ -348,7 +348,7 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
    * Create a new dataset within the file using cparms
    * creation properties.
    */
-  asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER, "%s::%s Creating first empty dataset called \"data\"\n", driverName, functionName);
+  asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s Creating first empty dataset called \"data\"\n", driverName, functionName);
   this->dataset = H5Dcreate2(this->groupDetector, "data", this->datatype, this->dataspace,
                              H5P_DEFAULT, this->cparms, dset_access_plist);
   if (this->dataset == 0) {
@@ -426,14 +426,14 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
 
   // For multi frame files we now extend the HDF dataset to fit an additional frame
   if (this->multiFrameFile) this->extendDataSet();
-  asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER, "%s::%s: set_extent dims={%d,%d,%d}\n",
+  asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s: set_extent dims={%d,%d,%d}\n",
             driverName, functionName,
             (int)this->dims[0], (int)this->dims[1], (int)this->dims[2]);
   hdfstatus = H5Dset_extent(this->dataset, this->dims);
 
   // Select a hyperslab.
   hid_t fspace = H5Dget_space(this->dataset);
-  asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER, "%s::%s: select_hyperslab offset={%d,%d,%d} fsize={%d,%d,%d}\n",
+  asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s: select_hyperslab offset={%d,%d,%d} fsize={%d,%d,%d}\n",
             driverName, functionName,
             (int)this->offset[0], (int)this->offset[1], (int)this->offset[2],
             (int)this->framesize[0], (int)this->framesize[1], (int)this->framesize[2]);
@@ -442,7 +442,7 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
                                   this->framesize, NULL);
 
   // Write the data to the hyperslab.
-  asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER, "%s::%s: Writing dataset: %p\n",
+  asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s: Writing dataset: %p\n",
             driverName, functionName, pArray->pData);
   hdfstatus = H5Dwrite(this->dataset, this->datatype, this->dataspace, fspace,
                        H5P_DEFAULT, pArray->pData);
@@ -488,7 +488,7 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
 
   if (flush > 0)
   {
-      if (numCaptured % flush == 0) {
+    if (numCaptured % flush == 0) {
       asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s flushing metadata (%d)\n", driverName, functionName, numCaptured);
       hdfstatus = H5Fflush( this->file, H5F_SCOPE_GLOBAL );
       if (hdfstatus < 0) {
@@ -509,7 +509,7 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
         setIntegerParam(NDWriteFile, 0);
         return asynError;
       }
-  }
+    }
   }
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s wrote frame. dt=%.5fs (T=%.5fs)\n", driverName, functionName, dt, period);
 
@@ -1184,7 +1184,7 @@ asynStatus NDFileHDF5::writeAttributeDataset()
 
     // Work with HDF5 library to select a suitable hyperslab (one element) and write the new data to it
     hdfAttrNode->hdffilespace = H5Dget_space(hdfAttrNode->hdfdataset);
-//    asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER, "%s::%s: attribute=%s select_hyperslab offset=%lli fsize=%lli\n",
+//    asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s: attribute=%s select_hyperslab offset=%lli fsize=%lli\n",
 //              driverName, functionName, hdfAttrNode->attrName,
 //              hdfAttrNode->offset,
 //              elementSize);
@@ -1218,7 +1218,7 @@ asynStatus NDFileHDF5::closeAttributeDataset()
 
   while(hdfAttrNode != NULL)
   {
-    asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER, "%s::%s: closing attribute dataset \'%s\'\n",
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s: closing attribute dataset \'%s\'\n",
               driverName, functionName, hdfAttrNode->attrName);
     H5Dclose(hdfAttrNode->hdfdataset);
     H5Sclose(hdfAttrNode->hdfmemspace);
@@ -1273,7 +1273,7 @@ asynStatus NDFileHDF5::writeRawdataAttribute()
 
   /* attach an attribute and write an integer data to it. ('signal', 1)  */
   /* First create the data space for the attribute. */
-  asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER, "%s::%s Adding a single constant attribute to \'data\'\n", driverName, functionName);
+  asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s Adding a single constant attribute to \'data\'\n", driverName, functionName);
   hdfattrdims = 1;
   hdfattrval = 1;
   hdfattrdataspace = H5Screate_simple(1, &hdfattrdims, NULL);
@@ -1290,7 +1290,7 @@ asynStatus NDFileHDF5::writeRawdataAttribute()
   /* Write the human-readable dimension names as an attribute to the rawdata set */
   for (i=0; i<this->rank; i++)
   {
-    //asynPrint(this->pasynUserSelf, ASYN_TRACEIO_FLOW, "%s::%s   dim%d name: \'%s\'\n",
+    //asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s   dim%d name: \'%s\'\n",
     //    driverName, functionName, i, this->ptrDimensionNames[i]);
 
     /* Create string attribute.  */
