@@ -15,8 +15,6 @@ import java.util.*;
  * Plot size etc. are set by Edit>Options>Profile Plot Options
  *
  * Restrictions:
- * - Plots of rectangular selections are always horizontal, irrespective of the
- *   "vertical profile" option in Edit>Options>Profile Plot Options.
  * - The plot window is not calibrated. Use Analyze>Plot Profile to get a
  *   spatially calibrated plot window where you can do measurements.
  *
@@ -74,7 +72,12 @@ public class Dynamic_Profiler
 
     // this listener is activated if the image content is changed (by imp.updateAndDraw)
     public synchronized void imageUpdated(ImagePlus imp) {
-        if (imp == this.imp) { doUpdate = true; notify(); }
+        if (imp == this.imp) { 
+            if (!isSelection())
+                IJ.run(imp, "Restore Selection", "");
+            doUpdate = true;
+            notify();
+        }
     }
 
     // if either the plot image or the image we are listening to is closed, exit
@@ -159,7 +162,7 @@ public class Dynamic_Profiler
             ip.setInterpolate(PlotWindow.interpolate);
         else
             ip.setInterpolate(false);
-        ProfilePlot profileP = new ProfilePlot(imp);//get the profile
+        ProfilePlot profileP = new ProfilePlot(imp, Prefs.verticalProfile);//get the profile
         if (profileP == null) return null;
         double[] profile = profileP.getProfile();
         if (profile==null || profile.length<2)
