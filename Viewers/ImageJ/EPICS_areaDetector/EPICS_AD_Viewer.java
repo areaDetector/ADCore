@@ -80,7 +80,7 @@ public class EPICS_AD_Viewer implements PlugIn
         IJ.showStatus("epics running");
         try
         {
-            isDebugFile = true;
+            isDebugFile = false;
             isDebugMessages = false;
             isDisplayImages = false;
             isPluginRunning = true;
@@ -239,6 +239,7 @@ public class EPICS_AD_Viewer implements PlugIn
 
         try
         {
+            System.setProperty("jca.use_env", "true");
             // Get the JCALibrary instance.
             jca = JCALibrary.getInstance();
             ctxt = jca.createContext(JCALibrary.CHANNEL_ACCESS_JAVA);
