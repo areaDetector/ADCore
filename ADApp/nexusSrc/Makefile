@@ -9,6 +9,8 @@ INC += napi.h
 
 USR_CFLAGS += -DHDF5 -DH5_USE_16_API -D_FILE_OFFSET_BITS=64
 
+NeXus_LIBS_Darwin += hdf5 sz
+
 LIBRARY_IOC_WIN32    += NeXus
 LIBRARY_IOC_cygwin32 += NeXus
 LIBRARY_IOC_Linux    += NeXus
