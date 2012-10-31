@@ -1,0 +1,316 @@
+# Database for the records specific to the Andor SDK3 cameras
+# Phillip Sorensen
+# October 8, 2012
+
+###############################################################################
+#  Note: The following are records defined in ADBase.template.                #
+#        We are changing some of the fields here to reflect valid values for  #
+#        Andor SDK3                                                           #
+###############################################################################
+
+###############################################################################
+#  These records control the image mode.                                      #
+###############################################################################
+record(mbbo, "$(P)$(R)ImageMode")
+{
+   field(ZRST, "Fixed")
+   field(ZRVL, "0")
+   field(ONST, "Continuous")
+   field(ONVL, "1")
+   field(TWST, "")
+   field(TWVL, "")
+   field(VAL, "0")
+}
+
+record(mbbi, "$(P)$(R)ImageMode_RBV")
+{
+   field(ZRST, "Fixed")
+   field(ZRVL, "0")
+   field(ONST, "Continuous")
+   field(ONVL, "1")
+   field(TWST, "")
+   field(TWVL, "")
+   field(SCAN, "I/O Intr")
+}
+
+###############################################################################
+#  These records control the trigger mode.                                    # 
+###############################################################################
+record(mbbo, "$(P)$(R)TriggerMode")
+{
+   field(ZRST, "Internal")
+   field(ZRVL, "0")
+   field(ONST, "External Level Transition")
+   field(ONVL, "1")
+   field(TWST, "External Start")
+   field(TWVL, "2")
+   field(THST, "External Exposure")
+   field(THVL, "3")
+   field(FRST, "Software")
+   field(FRVL, "4")
+   field(FVST, "Advanced")
+   field(FVVL, "5")
+   field(SXST, "External")
+   field(SXVL, "6")
+ }
+
+record(mbbi, "$(P)$(R)TriggerMode_RBV")
+{
+   field(ZRST, "Internal")
+   field(ZRVL, "0")
+   field(ONST, "External Level Transition")
+   field(ONVL, "1")
+   field(TWST, "External Start")
+   field(TWVL, "2")
+   field(THST, "External Exposure")
+   field(THVL, "3")
+   field(FRST, "Software")
+   field(FRVL, "4")
+   field(FVST, "Advanced")
+   field(FVVL, "5")
+   field(SXST, "External")
+   field(SXVL, "6")
+   field(SCAN, "I/O Intr")
+}
+
+###############################################################################
+#  These records control the data type and color.                             # 
+###############################################################################
+
+# Only 1 data type is supported, unsigned 16 bit integers
+record(mbbo, "$(P)$(R)DataType")
+{
+   field(ZRST, "UInt16")
+   field(ZRVL, "3")
+   field(ONST, "")
+   field(ONVL, "")
+   field(TWST, "")
+   field(TWVL, "")
+   field(THST, "")
+   field(THVL, "")
+   field(FRST, "")
+   field(FRVL, "")
+   field(FVST, "")
+   field(FVVL, "")
+   field(SXST, "")
+   field(SXVL, "")
+   field(SVST, "")
+   field(SVVL, "")
+}
+
+record(mbbi, "$(P)$(R)DataType_RBV")
+{
+   field(ZRST, "UInt16")
+   field(ZRVL, "3")
+   field(ONST, "")
+   field(ONVL, "")
+   field(TWST, "")
+   field(TWVL, "")
+   field(THST, "")
+   field(THVL, "")
+   field(FRST, "")
+   field(FRVL, "")
+   field(FVST, "")
+   field(FVVL, "")
+   field(SXST, "")
+   field(SXVL, "")
+   field(SVST, "")
+   field(SVVL, "")
+}
+
+# Only Mono color mode is supported at this time
+record(mbbo, "$(P)$(R)ColorMode")
+{
+   field(ZRST, "Mono")
+   field(ZRVL, "0")
+   field(ONST, "")
+   field(ONVL, "")
+   field(TWST, "")
+   field(TWVL, "")
+   field(THST, "")
+   field(THVL, "")
+   field(FRST, "")
+   field(FRVL, "")
+   field(FVST, "")
+   field(FVVL, "")
+   field(SXST, "")
+   field(SXVL, "")
+   field(SVST, "")
+   field(SVVL, "")
+}
+
+record(mbbi, "$(P)$(R)ColorMode_RBV")
+{
+   field(ZRST, "Mono")
+   field(ZRVL, "0")
+   field(ONST, "")
+   field(ONVL, "")
+   field(TWST, "")
+   field(TWVL, "")
+   field(THST, "")
+   field(THVL, "")
+   field(FRST, "")
+   field(FRVL, "")
+   field(FVST, "")
+   field(FVVL, "")
+   field(SXST, "")
+   field(SXVL, "")
+   field(SVST, "")
+   field(SVVL, "")
+}
+
+
+# The following records are specific to the Andor SDK3
+
+###############################################################################
+#  These records are additional acquisition parameters                        #
+###############################################################################
+
+record(ao, "$(P)$(R)FrameRate")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_FRAME_RATE")  
+   field(VAL,  "10")
+}
+
+record(ai, "$(P)$(R)FrameRate_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_FRAME_RATE")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)A3ShutterMode")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_SHUTTER_MODE")
+   field(ZRST, "Rolling")
+   field(ZRVL, "0")
+   field(ONST, "Global")
+   field(ONVL, "1")
+}
+
+record(mbbi, "$(P)$(R)A3ShutterMode_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_SHUTTER_MODE")
+   field(ZRST, "Rolling")
+   field(ZRVL, "0")
+   field(ONST, "Global")
+   field(ONVL, "1")
+   field(SCAN, "I/O Intr")
+}
+
+
+record(mbbo, "$(P)$(R)PixelEncoding")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_PIXEL_ENCODING")
+   field(ZRST, "Mono12")
+   field(ZRVL, "0")
+   field(ONST, "Mono12Packed")
+   field(ONVL, "1")
+   field(TWST, "Mono16")
+   field(TWVL, "2")
+}
+
+record(mbbi, "$(P)$(R)PixelEncoding_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_PIXEL_ENCODING")
+   field(ZRST, "Mono12")
+   field(ZRVL, "0")
+   field(ONST, "Mono12Packed")
+   field(ONVL, "1")
+   field(TWST, "Mono16")
+   field(TWVL, "2")
+   field(SCAN, "I/O Intr")
+}
+
+record(bi, "$(P)$(R)FullAOIControl_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_FULL_AOI_CONTROL")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)SensorCooling")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_SENSOR_COOLING")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)SensorCooling_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_SENSOR_COOLING")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)TempControl")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_TEMP_CONTROL")
+   field(ZRST, "-15")
+   field(ZRVL, "0")
+   field(ONST, "-20")
+   field(ONVL, "1")
+   field(TWST, "-25")
+   field(TWVL, "2")
+   field(THST, "-30")
+   field(THVL, "3")
+   field(FRST, "-35")
+   field(FRVL, "4")
+   field(FVST, "-40")
+   field(FVVL, "5")
+}
+
+record(mbbi, "$(P)$(R)TempControl_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_TEMP_CONTROL")
+   field(ZRST, "-15")
+   field(ZRVL, "0")
+   field(ONST, "-20")
+   field(ONVL, "1")
+   field(TWST, "-25")
+   field(TWVL, "2")
+   field(THST, "-30")
+   field(THVL, "3")
+   field(FRST, "-35")
+   field(FRVL, "4")
+   field(FVST, "-40")
+   field(FVVL, "5")
+   field(SCAN, "I/O Intr")
+}
+
+record(mbbi, "$(P)$(R)TempStatus_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_TEMP_STATUS")
+   field(ZRST, "Cooler Off")
+   field(ZRVL, "0")
+   field(ONST, "Stabilised")
+   field(ONVL, "1")
+   field(TWST, "Cooling")
+   field(TWVL, "2")
+   field(THST, "Drift")
+   field(THVL, "3")
+   field(FRST, "Not Stabilised")
+   field(FRVL, "4")
+   field(FVST, "Fault")
+   field(FVVL, "5")
+   field(SCAN, "I/O Intr")
+}
