@@ -240,6 +240,40 @@ record(bi, "$(P)$(R)FullAOIControl_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(mbbo, "$(P)$(R)A3Binning")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_BINNING")
+   field(ZRST, "1x1")
+   field(ZRVL, "0")
+   field(ONST, "2x2")
+   field(ONVL, "1")
+   field(TWST, "3x3")
+   field(TWVL, "2")
+   field(THST, "4x4")
+   field(THVL, "3")
+   field(FRST, "8x8")
+   field(FRVL, "4")
+}
+
+record(mbbi, "$(P)$(R)A3Binning_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_BINNING")
+   field(ZRST, "1x1")
+   field(ZRVL, "0")
+   field(ONST, "2x2")
+   field(ONVL, "1")
+   field(TWST, "3x3")
+   field(TWVL, "2")
+   field(THST, "4x4")
+   field(THVL, "3")
+   field(FRST, "8x8")
+   field(FRVL, "4")
+   field(SCAN, "I/O Intr")
+}
+
 record(bo, "$(P)$(R)SensorCooling")
 {
    field(PINI, "YES")
