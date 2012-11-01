@@ -182,29 +182,6 @@ record(ai, "$(P)$(R)FrameRate_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(mbbo, "$(P)$(R)A3ShutterMode")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_SHUTTER_MODE")
-   field(ZRST, "Rolling")
-   field(ZRVL, "0")
-   field(ONST, "Global")
-   field(ONVL, "1")
-}
-
-record(mbbi, "$(P)$(R)A3ShutterMode_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_SHUTTER_MODE")
-   field(ZRST, "Rolling")
-   field(ZRVL, "0")
-   field(ONST, "Global")
-   field(ONVL, "1")
-   field(SCAN, "I/O Intr")
-}
-
-
 record(mbbo, "$(P)$(R)PixelEncoding")
 {
    field(PINI, "YES")
@@ -272,6 +249,36 @@ record(mbbi, "$(P)$(R)A3Binning_RBV")
    field(FRST, "8x8")
    field(FRVL, "4")
    field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)A3ShutterMode")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_SHUTTER_MODE")
+   field(ZRST, "Rolling")
+   field(ZRVL, "0")
+   field(ONST, "Global")
+   field(ONVL, "1")
+}
+
+record(mbbi, "$(P)$(R)A3ShutterMode_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_SHUTTER_MODE")
+   field(ZRST, "Rolling")
+   field(ZRVL, "0")
+   field(ONST, "Global")
+   field(ONVL, "1")
+   field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)SoftwareTrigger")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_SOFTWARE_TRIGGER")
+   field(ZNAM, "Done")
+   field(ONAM, "Trigger")
 }
 
 record(bo, "$(P)$(R)SensorCooling")
@@ -347,4 +354,32 @@ record(mbbi, "$(P)$(R)TempStatus_RBV")
    field(FVST, "Fault")
    field(FVVL, "5")
    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)SerialNumber")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_SERIAL_NUMBER")
+}
+
+record(stringin, "$(P)$(R)FirmwareVersion")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_FIRMWARE_VERSION")
+}
+
+record(stringin, "$(P)$(R)SoftwareVersion")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_SOFTWARE_VERSION")
+}
+
+record(stringin, "$(P)$(R)ControllerID")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_CONTROLLER_ID")
 }
