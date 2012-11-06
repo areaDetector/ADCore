@@ -9,71 +9,6 @@
 ###############################################################################
 
 ###############################################################################
-#  These records control the image mode.                                      #
-###############################################################################
-record(mbbo, "$(P)$(R)ImageMode")
-{
-   field(ZRST, "Fixed")
-   field(ZRVL, "0")
-   field(ONST, "Continuous")
-   field(ONVL, "1")
-   field(TWST, "")
-   field(TWVL, "")
-   field(VAL, "0")
-}
-
-record(mbbi, "$(P)$(R)ImageMode_RBV")
-{
-   field(ZRST, "Fixed")
-   field(ZRVL, "0")
-   field(ONST, "Continuous")
-   field(ONVL, "1")
-   field(TWST, "")
-   field(TWVL, "")
-   field(SCAN, "I/O Intr")
-}
-
-###############################################################################
-#  These records control the trigger mode.                                    # 
-###############################################################################
-record(mbbo, "$(P)$(R)TriggerMode")
-{
-   field(ZRST, "Internal")
-   field(ZRVL, "0")
-   field(ONST, "External Level Transition")
-   field(ONVL, "1")
-   field(TWST, "External Start")
-   field(TWVL, "2")
-   field(THST, "External Exposure")
-   field(THVL, "3")
-   field(FRST, "Software")
-   field(FRVL, "4")
-   field(FVST, "Advanced")
-   field(FVVL, "5")
-   field(SXST, "External")
-   field(SXVL, "6")
- }
-
-record(mbbi, "$(P)$(R)TriggerMode_RBV")
-{
-   field(ZRST, "Internal")
-   field(ZRVL, "0")
-   field(ONST, "External Level Transition")
-   field(ONVL, "1")
-   field(TWST, "External Start")
-   field(TWVL, "2")
-   field(THST, "External Exposure")
-   field(THVL, "3")
-   field(FRST, "Software")
-   field(FRVL, "4")
-   field(FVST, "Advanced")
-   field(FVVL, "5")
-   field(SXST, "External")
-   field(SXVL, "6")
-   field(SCAN, "I/O Intr")
-}
-
-###############################################################################
 #  These records control the data type and color.                             # 
 ###############################################################################
 
@@ -161,6 +96,10 @@ record(mbbi, "$(P)$(R)ColorMode_RBV")
 
 
 # The following records are specific to the Andor SDK3
+# Note that we don't define the choices for mbbo and mbii records here.
+# These choices are built at iocInit by reading the list of valid choices
+# from the Andor SDK.  This is very nice because they automatically change
+# depending on the capabilities of the camera.
 
 ###############################################################################
 #  These records are additional acquisition parameters                        #
@@ -182,29 +121,71 @@ record(ai, "$(P)$(R)FrameRate_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(mbbo, "$(P)$(R)PreAmpGain")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_PREAMP_GAIN")
+}
+
+record(mbbi, "$(P)$(R)PreAmpGain_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_PREAMP_GAIN")
+   field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)ReadoutRate")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_READOUT_RATE")
+}
+
+record(mbbi, "$(P)$(R)ReadoutRate_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_READOUT_RATE")
+   field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)Overlap")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_OVERLAP")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)Overlap_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_OVERLAP")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
 record(mbbo, "$(P)$(R)PixelEncoding")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_PIXEL_ENCODING")
-   field(ZRST, "Mono12")
-   field(ZRVL, "0")
-   field(ONST, "Mono12Packed")
-   field(ONVL, "1")
-   field(TWST, "Mono16")
-   field(TWVL, "2")
 }
 
 record(mbbi, "$(P)$(R)PixelEncoding_RBV")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_PIXEL_ENCODING")
-   field(ZRST, "Mono12")
-   field(ZRVL, "0")
-   field(ONST, "Mono12Packed")
-   field(ONVL, "1")
-   field(TWST, "Mono16")
-   field(TWVL, "2")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)ReadoutTime")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_READOUT_TIME")
+   field(PREC, "4")
    field(SCAN, "I/O Intr")
 }
 
@@ -222,32 +203,12 @@ record(mbbo, "$(P)$(R)A3Binning")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_BINNING")
-   field(ZRST, "1x1")
-   field(ZRVL, "0")
-   field(ONST, "2x2")
-   field(ONVL, "1")
-   field(TWST, "3x3")
-   field(TWVL, "2")
-   field(THST, "4x4")
-   field(THVL, "3")
-   field(FRST, "8x8")
-   field(FRVL, "4")
 }
 
 record(mbbi, "$(P)$(R)A3Binning_RBV")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_BINNING")
-   field(ZRST, "1x1")
-   field(ZRVL, "0")
-   field(ONST, "2x2")
-   field(ONVL, "1")
-   field(TWST, "3x3")
-   field(TWVL, "2")
-   field(THST, "4x4")
-   field(THVL, "3")
-   field(FRST, "8x8")
-   field(FRVL, "4")
    field(SCAN, "I/O Intr")
 }
 
@@ -256,20 +217,12 @@ record(mbbo, "$(P)$(R)A3ShutterMode")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_SHUTTER_MODE")
-   field(ZRST, "Rolling")
-   field(ZRVL, "0")
-   field(ONST, "Global")
-   field(ONVL, "1")
 }
 
 record(mbbi, "$(P)$(R)A3ShutterMode_RBV")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_SHUTTER_MODE")
-   field(ZRST, "Rolling")
-   field(ZRVL, "0")
-   field(ONST, "Global")
-   field(ONVL, "1")
    field(SCAN, "I/O Intr")
 }
 
@@ -286,17 +239,17 @@ record(bo, "$(P)$(R)SensorCooling")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_SENSOR_COOLING")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
+   field(ZNAM, "Off")
+   field(ONAM, "On")
 }
 
 record(bi, "$(P)$(R)SensorCooling_RBV")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_SENSOR_COOLING")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
    field(SCAN, "I/O Intr")
+   field(ZNAM, "Off")
+   field(ONAM, "On")
 }
 
 record(mbbo, "$(P)$(R)TempControl")
@@ -304,36 +257,12 @@ record(mbbo, "$(P)$(R)TempControl")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_TEMP_CONTROL")
-   field(ZRST, "-15")
-   field(ZRVL, "0")
-   field(ONST, "-20")
-   field(ONVL, "1")
-   field(TWST, "-25")
-   field(TWVL, "2")
-   field(THST, "-30")
-   field(THVL, "3")
-   field(FRST, "-35")
-   field(FRVL, "4")
-   field(FVST, "-40")
-   field(FVVL, "5")
 }
 
 record(mbbi, "$(P)$(R)TempControl_RBV")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_TEMP_CONTROL")
-   field(ZRST, "-15")
-   field(ZRVL, "0")
-   field(ONST, "-20")
-   field(ONVL, "1")
-   field(TWST, "-25")
-   field(TWVL, "2")
-   field(THST, "-30")
-   field(THVL, "3")
-   field(FRST, "-35")
-   field(FRVL, "4")
-   field(FVST, "-40")
-   field(FVVL, "5")
    field(SCAN, "I/O Intr")
 }
 
@@ -341,18 +270,20 @@ record(mbbi, "$(P)$(R)TempStatus_RBV")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_TEMP_STATUS")
-   field(ZRST, "Cooler Off")
-   field(ZRVL, "0")
-   field(ONST, "Stabilised")
-   field(ONVL, "1")
-   field(TWST, "Cooling")
-   field(TWVL, "2")
-   field(THST, "Drift")
-   field(THVL, "3")
-   field(FRST, "Not Stabilised")
-   field(FRVL, "4")
-   field(FVST, "Fault")
-   field(FVVL, "5")
+   field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)FanSpeed")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_FAN_SPEED")
+}
+
+record(mbbi, "$(P)$(R)FanSpeed_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_FAN_SPEED")
    field(SCAN, "I/O Intr")
 }
 
