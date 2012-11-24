@@ -9,6 +9,40 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
+    Release 1-9 (XXX-November-2012)</h2>
+  <ul>
+    <li>Drivers
+      <ul>
+        <li>New Andor3 driver for sCMOS (e.g. Neo and Zyla) cameras from Andor. This uses
+        Version 3 of the Andor Software Development Kit (SDK).
+        Orginal version was written by Phillip Sorensen from Cornell University. 
+        It runs on 32-bit and 64-bit Linux and 32-bit and 64-bit Windows.</li>
+      </ul>
+    <li>ImageJ Viewer
+      <ul>
+        <li>Upgraded CAJ from 1.1.5 to 1.1.10, and JCA from 2.3.2 to 2.3.6. This fixes a problem
+          on some platforms (e.g. Windows 7 64-bit) where the display viewer would occasionally
+          stop receiving CA monitor callbacks, and so the display would freeze until the PVs
+          were disconnected and reconnected.</li>
+        <li>The previous version of CAJ did not require setting EPICS_CA_MAX_ARRAY_BYTES,
+          because it would increase the receive buffer size to whatever was required. This
+          is no longer true, so EPICS_CA_MAX_ARRAY_BYTES must be set to at least the size
+          of the largest array to be displayed.</li>
+        <li>The previous version of CAJ required setting the EPICS Channel Access parameters
+          in a JCALibrary.properties file. The parameters could not be set from the normal
+          environment variables (e.g. EPICS_CA_MAX_ARRAY_BYTES, EPICS_CA_ADDR_LIST, etc.)
+          used by the IOC and C language clients. The new versions of CAJ and JCA now support
+          a Java system property called "jca.use_env". If this is set to "true" then it enables
+          the use of the normal EPICS environment variables. This is very convenient, since
+          there is now a single place to set the CA parameters for IOCs, C clients, and Java
+          clients. </li>
+        <li>EPICS_AD_Display now sets "jca.use_env=true" before it initializes CAJ, enabling
+          the use of the normal EPICS environment variables.</li>
+      </ul>
+    </li>
+    <li>Fixes to allow building on Darwin. Thanks to Lewis Muir for these.</li>
+  </ul>
+  <h2 style="text-align: center">
     Release 1-8 (6-October-2012)</h2>
   <ul>
     <li>Base classes
