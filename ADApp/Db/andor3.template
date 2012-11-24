@@ -12,13 +12,13 @@
 #  These records control the data type and color.                             # 
 ###############################################################################
 
-# Only 1 data type is supported, unsigned 16 bit integers
+# Only unsigned 16 and 32 bit integers are supported.  Determined by PixelEncoding
 record(mbbo, "$(P)$(R)DataType")
 {
    field(ZRST, "UInt16")
    field(ZRVL, "3")
-   field(ONST, "")
-   field(ONVL, "")
+   field(ONST, "UInt32")
+   field(ONVL, "5")
    field(TWST, "")
    field(TWVL, "")
    field(THST, "")
@@ -37,8 +37,8 @@ record(mbbi, "$(P)$(R)DataType_RBV")
 {
    field(ZRST, "UInt16")
    field(ZRVL, "3")
-   field(ONST, "")
-   field(ONVL, "")
+   field(ONST, "UInt32")
+   field(ONVL, "5")
    field(TWST, "")
    field(TWVL, "")
    field(THST, "")
@@ -167,6 +167,24 @@ record(bi, "$(P)$(R)Overlap_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(bo, "$(P)$(R)NoiseFilter")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_NOISE_FILTER")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+}
+
+record(bi, "$(P)$(R)NoiseFilter_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_NOISE_FILTER")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
 record(mbbo, "$(P)$(R)PixelEncoding")
 {
    field(PINI, "YES")
@@ -189,7 +207,15 @@ record(ai, "$(P)$(R)ReadoutTime")
    field(SCAN, "I/O Intr")
 }
 
-record(bi, "$(P)$(R)FullAOIControl_RBV")
+record(ai, "$(P)$(R)TransferRate")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_TRANSFER_RATE")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+record(bi, "$(P)$(R)FullAOIControl")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))A3_FULL_AOI_CONTROL")
