@@ -81,7 +81,7 @@ pNXDS createTextNXDataset(char *name){
   pNew->rank = 1;
   pNew->type = NX_CHAR;
   pNew->magic = MAGIC;
-  pNew->dim[0] = strlen(name);
+  pNew->dim[0] = (int)strlen(name);
   return pNew;
 }
 /*-----------------------------------------------------------------------*/

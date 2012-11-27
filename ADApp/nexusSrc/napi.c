@@ -23,7 +23,7 @@
 
 ----------------------------------------------------------------------------*/
 
-static const char* rscid = "$Id: napi.c 1429 2010-02-24 19:15:27Z Freddie Akeroyd $";	/* Revision inserted by CVS */
+/* static const char* rscid = "$Id: napi.c 1429 2010-02-24 19:15:27Z Freddie Akeroyd $"; */	/* Revision inserted by CVS */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -74,7 +74,7 @@ static const char* rscid = "$Id: napi.c 1429 2010-02-24 19:15:27Z Freddie Akeroy
 #define NXFILE 1
 
 /*--------------------------------------------------------------------*/
-static int iFortifyScope;
+/* static int iFortifyScope; */
 /*----------------------------------------------------------------------
   This is a section with code for searching the NX_LOAD_PATH
   -----------------------------------------------------------------------*/
@@ -111,7 +111,7 @@ static int canOpen(char *filename){
 static char *locateNexusFileInPath(char *startName){
   char *loadPath = NULL, *testPath = NULL, *pPtr = NULL;
   char pathPrefix[256];
-  int length;
+  size_t length;
 
   if(canOpen(startName)){
     return strdup(startName);
@@ -158,6 +158,8 @@ NXstatus NXsetcache(long newVal)
 }
     
 /*-----------------------------------------------------------------------*/
+
+#ifdef NXXML
 static NXstatus NXisXML(CONSTCHAR *filename)
 {
   FILE *fd = NULL;
@@ -173,6 +175,7 @@ static NXstatus NXisXML(CONSTCHAR *filename)
   }
   return NX_ERROR;
 }
+#endif
 
 /*-------------------------------------------------------------------------*/
   static void NXNXNXReportError(void *pData, char *string)
@@ -300,9 +303,6 @@ static NXstatus   NXinternalopen(CONSTCHAR *userfilename, NXaccess am, pFileStac
   {
     int hdf_type=0;
     int iRet=0;
-    NXhandle hdf5_handle = NULL;
-    NXhandle hdf4_handle = NULL;
-    NXhandle xmlHandle = NULL;
     pNexusFunction fHandle = NULL;
     NXstatus retstat = NX_ERROR;
     char error[1024];
@@ -383,6 +383,7 @@ static NXstatus   NXinternalopen(CONSTCHAR *userfilename, NXaccess am, pFileStac
     if (hdf_type==1) {
       /* HDF4 type */
 #ifdef HDF4
+    NXhandle hdf4_handle = NULL;
       retstat = NX4open((const char *)filename,am,&hdf4_handle);
       if(retstat != NX_OK){
 	free(fHandle);
@@ -402,6 +403,7 @@ static NXstatus   NXinternalopen(CONSTCHAR *userfilename, NXaccess am, pFileStac
     } else if (hdf_type==2) {
       /* HDF5 type */
 #ifdef HDF5
+    NXhandle hdf5_handle = NULL;
       retstat = NX5open(filename,am,&hdf5_handle);
       if(retstat != NX_OK){
 	free(fHandle);
@@ -423,6 +425,7 @@ static NXstatus   NXinternalopen(CONSTCHAR *userfilename, NXaccess am, pFileStac
 	XML type
       */
 #ifdef NXXML
+    NXhandle xmlHandle = NULL;
       retstat = NXXopen(filename,am,&xmlHandle);
       if(retstat != NX_OK){
 	free(fHandle);
@@ -500,7 +503,7 @@ static int analyzeNapimount(char *napiMount, char *extFile, int extFileLen,
   }
   path = strrchr(napiMount,'#');
   if(path == NULL){
-    length = strlen(napiMount) - 9;
+    length = (int)strlen(napiMount) - 9;
     if(length > extFileLen){
       NXIReportError(NXpData,"ERROR: internal errro with external linking");
       return NXBADURL;
@@ -510,13 +513,13 @@ static int analyzeNapimount(char *napiMount, char *extFile, int extFileLen,
     return NXFILE;
   } else {
     pPtr += 9;
-    length = path - pPtr;
+    length = (int)(path - pPtr);
     if(length > extFileLen){
       NXIReportError(NXpData,"ERROR: internal errro with external linking");
       return NXBADURL;
     }
     memcpy(extFile,pPtr,length);
-    length = strlen(path-1);
+    length = (int)strlen(path-1);
     if(length > extPathLen){
       NXIReportError(NXpData,"ERROR: internal error with external linking");
       return NXBADURL;
@@ -543,7 +546,7 @@ static int analyzeNapimount(char *napiMount, char *extFile, int extFileLen,
 
     status = pFunc->nxopengroup(pFunc->pNexusData, name, nxclass);  
     if(status == NX_OK){
-      pushPath(fileStack,name);
+      pushPath(fileStack, (char *)name);
     }
     oldError = NXMGetError();
     NXIReportError = NXNXNoReport;
@@ -642,7 +645,7 @@ static int analyzeNapimount(char *napiMount, char *extFile, int extFileLen,
     fileStack = (pFileStack)fid;
     status = pFunc->nxopendata(pFunc->pNexusData, name); 
     if(status == NX_OK){
-      pushPath(fileStack,name);
+      pushPath(fileStack,(char *)name);
     }
     return status;
   } 
@@ -825,8 +828,8 @@ static int analyzeNapimount(char *napiMount, char *extFile, int extFileLen,
 
 char *nxitrim(char *str)
 {
-      char *ibuf = str, *obuf = str;
-      int i = 0, cnt = 0;
+      char *ibuf = str;
+      size_t i = 0;
 
       /*
       **  Trap NULL
@@ -885,7 +888,6 @@ char *nxitrim(char *str)
 				    int dimension[], int *iType)
   {
     int status;
-    char *pPtr = NULL;
 
     pNexusFunction pFunc = handleToNexusFunc(fid);
     status = pFunc->nxgetinfo(pFunc->pNexusData, rank, dimension, iType);
@@ -910,7 +912,7 @@ char *nxitrim(char *str)
       if(pPtr != NULL){
 	memset(pPtr,0,(dimension[0]+1)*sizeof(char));
 	pFunc->nxgetdata(pFunc->pNexusData, pPtr);
-	dimension[0] = strlen(nxitrim(pPtr));
+	dimension[0] = (int)strlen(nxitrim(pPtr));
 	free(pPtr);
       }
     } 
@@ -1025,7 +1027,7 @@ char *nxitrim(char *str)
   fileStack = (pFileStack)handle;
   pPtr = peekFilenameOnStack(fileStack);
   if(pPtr != NULL){
-    length = strlen(pPtr);
+    length = (int)strlen(pPtr);
     if(length > filenameBufferLength){
       length = filenameBufferLength -1;
     }
@@ -1055,7 +1057,7 @@ NXstatus  NXisexternalgroup(NXhandle fid, CONSTCHAR *name, CONSTCHAR *nxclass,
   NXIReportError = oldError;
   pFunc->nxclosegroup(pFunc->pNexusData);
   if(attStatus == NX_OK){
-    length = strlen(nxurl);
+    length = (int)strlen(nxurl);
     if(length > urlLen){
       length = urlLen - 1;
     }
@@ -1076,7 +1078,7 @@ NXstatus  NXlinkexternal(NXhandle fid, CONSTCHAR *name, CONSTCHAR *nxclass,
   if(status != NX_OK){
     return status;
   }
-  length = strlen(url);
+  length = (int)strlen(url);
   status = NXputattr(fid, "napimount",(void *)url,length, type);
   if(status != NX_OK){
     return status;
@@ -1129,7 +1131,7 @@ static int isRoot(NXhandle hfil)
 static char *extractNextPath(char *path, NXname element)
 {
   char *pPtr, *pStart;
-  int length;
+  size_t length;
 
   pPtr = path;
   /*

@@ -75,7 +75,7 @@ void pushFileStack(pFileStack self, pNexusFunction pDriv, char *file){
   self->fileStackPointer++;
   self->fileStack[self->fileStackPointer].pDriver = pDriv;
   memset(&self->fileStack[self->fileStackPointer].closeID,0,sizeof(NXlink));
-  length = strlen(file);
+  length = (int)strlen(file);
   if(length >= 1024){
     length = 1023;
   }
@@ -126,7 +126,7 @@ int buildPath(pFileStack self, char *path, int pathlen){
   char *totalPath;
 
   for(i = 0, totalPathLength = 5; i <= self->pathPointer; i++){
-    totalPathLength += strlen(self->pathStack[i]) + 1;
+    totalPathLength += (int)strlen(self->pathStack[i]) + 1;
   }
   totalPath = malloc(totalPathLength*sizeof(char));
   if(totalPath == NULL){

@@ -24,7 +24,7 @@
   $Id: napiu.c 671 2005-11-08 19:13:23Z faa59 $
 
  ----------------------------------------------------------------------------*/
-static const char* rscid = "$Id: napiu.c 671 2005-11-08 19:13:23Z faa59 $";	/* Revision interted by CVS */
+/* static const char* rscid = "$Id: napiu.c 671 2005-11-08 19:13:23Z faa59 $"; */	/* Revision interted by CVS */
 
 #include <stdlib.h>
 #include <assert.h>
@@ -35,7 +35,7 @@ static const char* rscid = "$Id: napiu.c 671 2005-11-08 19:13:23Z faa59 $";	/* R
 #define DO_GLOBAL(__name) \
 	if (__name != NULL) \
 	{ \
-		if (NXputattr(file_id, #__name, (char*)__name, strlen(__name), NX_CHAR) != NX_OK) \
+		if (NXputattr(file_id, #__name, (char*)__name, (int)strlen(__name), NX_CHAR) != NX_OK) \
 		{ \
 			return NX_ERROR; \
 		} \
