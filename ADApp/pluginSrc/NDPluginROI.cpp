@@ -41,14 +41,15 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
 
     int dataType;
     int dim;
+    int itemp;
     NDDimension_t dims[ND_ARRAY_MAX_DIMS], tempDim, *pDim;
-    int userDims[ND_ARRAY_MAX_DIMS];
+    size_t userDims[ND_ARRAY_MAX_DIMS];
     NDArrayInfo arrayInfo, scratchInfo;
     NDArray *pScratch, *pOutput;
     NDColorMode_t colorMode;
     double *pData;
     int enableScale, enableDim[3];
-    int i;
+    size_t i;
     double scale;
     
     //const char* functionName = "processCallbacks";
@@ -56,18 +57,18 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     memset(dims, 0, sizeof(NDDimension_t) * ND_ARRAY_MAX_DIMS);
 
     /* Get all parameters while we have the mutex */
-    getIntegerParam(NDPluginROIDim0Min,     &dims[0].offset);
-    getIntegerParam(NDPluginROIDim0Size,    &dims[0].size);
+    getIntegerParam(NDPluginROIDim0Min,     &itemp); dims[0].offset = itemp;
+    getIntegerParam(NDPluginROIDim0Size,    &itemp); dims[0].size = itemp;
     getIntegerParam(NDPluginROIDim0Bin,     &dims[0].binning);
     getIntegerParam(NDPluginROIDim0Reverse, &dims[0].reverse);
     getIntegerParam(NDPluginROIDim0Enable,  &enableDim[0]);
-    getIntegerParam(NDPluginROIDim1Min,     &dims[1].offset);
-    getIntegerParam(NDPluginROIDim1Size,    &dims[1].size);
+    getIntegerParam(NDPluginROIDim1Min,     &itemp); dims[1].offset = itemp;
+    getIntegerParam(NDPluginROIDim1Size,    &itemp); dims[1].size = itemp;
     getIntegerParam(NDPluginROIDim1Bin,     &dims[1].binning);
     getIntegerParam(NDPluginROIDim1Reverse, &dims[1].reverse);
     getIntegerParam(NDPluginROIDim1Enable,  &enableDim[1]);
-    getIntegerParam(NDPluginROIDim2Min,     &dims[2].offset);
-    getIntegerParam(NDPluginROIDim2Size,    &dims[2].size);
+    getIntegerParam(NDPluginROIDim2Min,     &itemp); dims[2].offset = itemp;
+    getIntegerParam(NDPluginROIDim2Size,    &itemp); dims[2].size = itemp;
     getIntegerParam(NDPluginROIDim2Bin,     &dims[2].binning);
     getIntegerParam(NDPluginROIDim2Reverse, &dims[2].reverse);
     getIntegerParam(NDPluginROIDim2Enable,  &enableDim[2]);
@@ -101,7 +102,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
             pDim->size    = MAX(pDim->size,    1);
             pDim->size    = MIN(pDim->size,    pArray->dims[userDims[dim]].size - pDim->offset);
             pDim->binning = MAX(pDim->binning, 1);
-            pDim->binning = MIN(pDim->binning, pDim->size);
+            pDim->binning = MIN(pDim->binning, (int)pDim->size);
         } else {
             pDim->offset  = 0;
             pDim->size    = pArray->dims[userDims[dim]].size;
@@ -115,29 +116,29 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     setIntegerParam(NDPluginROIDim2MaxSize, 0);
     if (pArray->ndims > 0) {
         pDim = &dims[0];
-        setIntegerParam(NDPluginROIDim0MaxSize, pArray->dims[userDims[0]].size);
+        setIntegerParam(NDPluginROIDim0MaxSize, (int)pArray->dims[userDims[0]].size);
         if (enableDim[0]) {
-            setIntegerParam(NDPluginROIDim0Min,     pDim->offset);
-            setIntegerParam(NDPluginROIDim0Size,    pDim->size);
-            setIntegerParam(NDPluginROIDim0Bin,     pDim->binning);
+            setIntegerParam(NDPluginROIDim0Min,  (int)pDim->offset);
+            setIntegerParam(NDPluginROIDim0Size, (int)pDim->size);
+            setIntegerParam(NDPluginROIDim0Bin,  pDim->binning);
         }
     }
     if (pArray->ndims > 1) {
         pDim = &dims[1];
-        setIntegerParam(NDPluginROIDim1MaxSize, pArray->dims[userDims[1]].size);
+        setIntegerParam(NDPluginROIDim1MaxSize, (int)pArray->dims[userDims[1]].size);
         if (enableDim[1]) {
-            setIntegerParam(NDPluginROIDim1Min,     pDim->offset);
-            setIntegerParam(NDPluginROIDim1Size,    pDim->size);
-            setIntegerParam(NDPluginROIDim1Bin,     pDim->binning);
+            setIntegerParam(NDPluginROIDim1Min,  (int)pDim->offset);
+            setIntegerParam(NDPluginROIDim1Size, (int)pDim->size);
+            setIntegerParam(NDPluginROIDim1Bin,  pDim->binning);
         }
     }
     if (pArray->ndims > 2) {
         pDim = &dims[2];
-        setIntegerParam(NDPluginROIDim2MaxSize, pArray->dims[userDims[2]].size);
+        setIntegerParam(NDPluginROIDim2MaxSize, (int)pArray->dims[userDims[2]].size);
         if (enableDim[2]) {
-            setIntegerParam(NDPluginROIDim2Min,     pDim->offset);
-            setIntegerParam(NDPluginROIDim2Size,    pDim->size);
-            setIntegerParam(NDPluginROIDim2Bin,     pDim->binning);
+            setIntegerParam(NDPluginROIDim2Min,  (int)pDim->offset);
+            setIntegerParam(NDPluginROIDim2Size, (int)pDim->size);
+            setIntegerParam(NDPluginROIDim2Bin,  pDim->binning);
         }
     }
 
@@ -215,9 +216,9 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     setIntegerParam(NDArraySizeX, 0);
     setIntegerParam(NDArraySizeY, 0);
     setIntegerParam(NDArraySizeZ, 0);
-    if (pOutput->ndims > 0) setIntegerParam(NDArraySizeX, this->pArrays[0]->dims[userDims[0]].size);
-    if (pOutput->ndims > 1) setIntegerParam(NDArraySizeY, this->pArrays[0]->dims[userDims[1]].size);
-    if (pOutput->ndims > 2) setIntegerParam(NDArraySizeZ, this->pArrays[0]->dims[userDims[2]].size);
+    if (pOutput->ndims > 0) setIntegerParam(NDArraySizeX, (int)this->pArrays[0]->dims[userDims[0]].size);
+    if (pOutput->ndims > 1) setIntegerParam(NDArraySizeY, (int)this->pArrays[0]->dims[userDims[1]].size);
+    if (pOutput->ndims > 2) setIntegerParam(NDArraySizeZ, (int)this->pArrays[0]->dims[userDims[2]].size);
 
     /* Get the attributes for this driver */
     this->getAttributes(this->pArrays[0]->pAttributeList);
@@ -261,7 +262,6 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    ASYN_MULTIDEVICE, 1, priority, stackSize)
 {
-    asynStatus status;
     //const char *functionName = "NDPluginROI";
 
     /* ROI general parameters */
@@ -294,7 +294,7 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
     setStringParam(NDPluginDriverPluginType, "NDPluginROI");
 
     /* Try to connect to the array port */
-    status = connectToArrayPort();
+    connectToArrayPort();
 }
 
 /** Configuration command */
@@ -303,10 +303,8 @@ extern "C" int NDROIConfigure(const char *portName, int queueSize, int blockingC
                                  int maxBuffers, size_t maxMemory,
                                  int priority, int stackSize)
 {
-    NDPluginROI *pPlugin =
-        new NDPluginROI(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                        maxBuffers, maxMemory, priority, stackSize);
-    pPlugin = NULL;  /* This is just to eliminate compiler warning about unused variables/objects */
+    new NDPluginROI(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                    maxBuffers, maxMemory, priority, stackSize);
     return(asynSuccess);
 }
 

@@ -29,10 +29,10 @@ template <typename epicsType>
 asynStatus NDPluginStats::doComputeHistogramT(NDArray *pArray)
 {
     epicsType *pData = (epicsType *)pArray->pData;
-    int i;
+    size_t i;
     double scale, entropy;
-    int bin;
-    int nElements;
+    size_t bin;
+    size_t nElements;
     double value, counts;
     NDArrayInfo arrayInfo;
 
@@ -49,7 +49,7 @@ asynStatus NDPluginStats::doComputeHistogramT(NDArray *pArray)
 
     for (i=0; i<nElements; i++) {
         value = (double)pData[i];
-        bin = (int) (((value - histMin) * scale) + 0.5);
+        bin = (size_t) (((value - histMin) * scale) + 0.5);
         if ((bin >= 0) && (bin < this->histogramSize))this->histogram[bin]++;
     }
 
@@ -105,7 +105,7 @@ asynStatus NDPluginStats::doComputeHistogram(NDArray *pArray)
 template <typename epicsType>
 void NDPluginStats::doComputeStatisticsT(NDArray *pArray, NDStats_t *pStats)
 {
-    int i, imin, imax;
+    size_t i, imin, imax;
     epicsType *pData = (epicsType *)pArray->pData;
     NDArrayInfo arrayInfo;
     double value;
@@ -182,7 +182,7 @@ asynStatus NDPluginStats::doComputeCentroidT(NDArray *pArray)
 {
     epicsType *pData = (epicsType *)pArray->pData;
     double value, *pValue, *pThresh, centroidTotal;
-    int ix, iy;
+    size_t ix, iy;
 
     if (pArray->ndims != 2) return(asynError);
     
@@ -288,15 +288,16 @@ asynStatus NDPluginStats::doComputeProfilesT(NDArray *pArray)
 {
     epicsType *pData = (epicsType *)pArray->pData;
     epicsType *pCentroid, *pCursor;
-    int ix, iy;
+    size_t ix, iy;
+    int itemp;
 
     if (pArray->ndims != 2) return(asynError);
 
     /* Compute the X and Y profiles at the centroid and cursor positions */
-    getIntegerParam (NDPluginStatsCursorX, &this->cursorX);
-    getIntegerParam (NDPluginStatsCursorY, &this->cursorY);
+    getIntegerParam (NDPluginStatsCursorX, &itemp); this->cursorX = itemp;
+    getIntegerParam (NDPluginStatsCursorY, &itemp); this->cursorY = itemp;
     this->unlock();
-    iy = (int) (this->centroidY + 0.5);
+    iy = (size_t) (this->centroidY + 0.5);
     iy = MAX(iy, 0);
     iy = MIN(iy, this->profileSizeY-1);
     pCentroid = pData + iy*this->profileSizeX;
@@ -308,7 +309,7 @@ asynStatus NDPluginStats::doComputeProfilesT(NDArray *pArray)
         this->profileX[profCentroid][ix] = *pCentroid++;
         this->profileX[profCursor][ix]   = *pCursor++;
     }
-    ix = (int) (this->centroidX + 0.5);
+    ix = (size_t) (this->centroidX + 0.5);
     ix = MAX(ix, 0);
     ix = MIN(ix, this->profileSizeX-1);
     pCentroid = pData + ix;
@@ -406,15 +407,16 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
      * structures don't need to be protected.
      */
     NDDimension_t bgdDims[ND_ARRAY_MAX_DIMS], *pDim;
-    int bgdPixels;
+    size_t bgdPixels;
     int bgdWidth;
     int dim;
     NDStats_t stats, *pStats=&stats, statsTemp, *pStatsTemp=&statsTemp;
     double bgdCounts, avgBgd;
     NDArray *pBgdArray=NULL;
     int computeStatistics, computeCentroid, computeProfiles, computeHistogram;
-    int sizeX=0, sizeY=0;
+    size_t sizeX=0, sizeY=0;
     int i;
+    int itemp;
     int numTSPoints, currentTSPoint, TSAcquiring;
     NDArrayInfo arrayInfo;
 
@@ -434,7 +436,7 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
 
     if (sizeX != this->profileSizeX) {
         this->profileSizeX = sizeX;
-        setIntegerParam(NDPluginStatsProfileSizeX,  this->profileSizeX);
+        setIntegerParam(NDPluginStatsProfileSizeX,  (int)this->profileSizeX);
         for (i=0; i<MAX_PROFILE_TYPES; i++) {
             if (this->profileX[i]) free(this->profileX[i]);
             this->profileX[i] = (double *)malloc(this->profileSizeX * sizeof(double));
@@ -442,7 +444,7 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     }
     if (sizeY != this->profileSizeY) {
         this->profileSizeY = sizeY;
-        setIntegerParam(NDPluginStatsProfileSizeY,  this->profileSizeY);
+        setIntegerParam(NDPluginStatsProfileSizeY,  (int)this->profileSizeY);
         for (i=0; i<MAX_PROFILE_TYPES; i++) {
             if (this->profileY[i]) free(this->profileY[i]);
             this->profileY[i] = (double *)malloc(this->profileSizeY * sizeof(double));
@@ -463,7 +465,7 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
             for (dim=0; dim<pArray->ndims; dim++) {
                 pDim = &bgdDims[dim];
                 pDim->offset = 0;
-                pDim->size = MIN(bgdWidth, pDim->size);
+                pDim->size = MIN((size_t)bgdWidth, pDim->size);
                 this->pNDArrayPool->convert(pArray, &pBgdArray, pArray->dataType, bgdDims);
                 pDim->size = pArray->dims[dim].size;
                 if (!pBgdArray) {
@@ -477,7 +479,7 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
                 bgdPixels += pStatsTemp->nElements;
                 bgdCounts += pStatsTemp->total;
                 pDim->offset = MAX(0, pDim->size - 1 - bgdWidth);
-                pDim->size = MIN(bgdWidth, pArray->dims[dim].size - pDim->offset);
+                pDim->size = MIN((size_t)bgdWidth, pArray->dims[dim].size - pDim->offset);
                 this->pNDArrayPool->convert(pArray, &pBgdArray, pArray->dataType, bgdDims);
                 pDim->offset = 0;
                 pDim->size = pArray->dims[dim].size;
@@ -497,11 +499,11 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
             pStats->net = pStats->total - avgBgd*pStats->nElements;
         }
         setDoubleParam(NDPluginStatsMinValue,    pStats->min);
-        setDoubleParam(NDPluginStatsMinX,        pStats->minX);
-        setDoubleParam(NDPluginStatsMinY,        pStats->minY);                        
+        setDoubleParam(NDPluginStatsMinX,        (double)pStats->minX);
+        setDoubleParam(NDPluginStatsMinY,        (double)pStats->minY);                        
         setDoubleParam(NDPluginStatsMaxValue,    pStats->max);
-        setDoubleParam(NDPluginStatsMaxX,        pStats->maxX);
-        setDoubleParam(NDPluginStatsMaxY,        pStats->maxY);                                
+        setDoubleParam(NDPluginStatsMaxX,        (double)pStats->maxX);
+        setDoubleParam(NDPluginStatsMaxY,        (double)pStats->maxY);                                
         setDoubleParam(NDPluginStatsMeanValue,   pStats->mean);
         setDoubleParam(NDPluginStatsSigmaValue,  pStats->sigma);
         setDoubleParam(NDPluginStatsTotal,       pStats->total);
@@ -526,7 +528,7 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     }
     
     if (computeHistogram) {
-        getIntegerParam(NDPluginStatsHistSize, &this->histSizeNew);
+        getIntegerParam(NDPluginStatsHistSize, &itemp); this->histSizeNew = itemp;
         getDoubleParam (NDPluginStatsHistMin,  &this->histMin);
         getDoubleParam (NDPluginStatsHistMax,  &this->histMax);
         doComputeHistogram(pArray);
@@ -539,11 +541,11 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     getIntegerParam(NDPluginStatsTSAcquiring,        &TSAcquiring);
     if (TSAcquiring) {
         timeSeries[TSMinValue][currentTSPoint]    = pStats->min;
-        timeSeries[TSMinX][currentTSPoint]        = pStats->minX;
-        timeSeries[TSMinY][currentTSPoint]        = pStats->minY;                        
+        timeSeries[TSMinX][currentTSPoint]        = (double)pStats->minX;
+        timeSeries[TSMinY][currentTSPoint]        = (double)pStats->minY;                        
         timeSeries[TSMaxValue][currentTSPoint]    = pStats->max;
-        timeSeries[TSMaxX][currentTSPoint]        = pStats->maxX;
-        timeSeries[TSMaxY][currentTSPoint]        = pStats->maxY;                                
+        timeSeries[TSMaxX][currentTSPoint]        = (double)pStats->maxX;
+        timeSeries[TSMaxY][currentTSPoint]        = (double)pStats->maxY;                                
         timeSeries[TSMeanValue][currentTSPoint]   = pStats->mean;
         timeSeries[TSSigmaValue][currentTSPoint]  = pStats->sigma;
         timeSeries[TSTotal][currentTSPoint]       = pStats->total;
@@ -718,7 +720,6 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    0, 1, priority, stackSize)
 {
-    asynStatus status;
     int numTSPoints=256;  // Initial size of time series
     int i;
     //const char *functionName = "NDPluginStats";
@@ -805,7 +806,7 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
     setStringParam(NDPluginDriverPluginType, "NDPluginStats");
 
     /* Try to connect to the array port */
-    status = connectToArrayPort();
+    connectToArrayPort();
 }
 
 /** Configuration command */
@@ -814,10 +815,8 @@ extern "C" int NDStatsConfigure(const char *portName, int queueSize, int blockin
                                  int maxBuffers, size_t maxMemory,
                                  int priority, int stackSize)
 {
-    NDPluginStats *pPlugin =
-        new NDPluginStats(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                        maxBuffers, maxMemory, priority, stackSize);
-    pPlugin = NULL;  /* This is just to eliminate compiler warning about unused variables/objects */
+    new NDPluginStats(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                      maxBuffers, maxMemory, priority, stackSize);
     return(asynSuccess);
 }
 

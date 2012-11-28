@@ -41,6 +41,6 @@ private:
     /* These methods are just for this class */
     template <typename epicsType> void convertColor(NDArray *pArray);
 };
-#define NUM_NDPLUGIN_COLOR_CONVERT_PARAMS (&LAST_NDPLUGIN_COLOR_CONVERT_PARAM - &FIRST_NDPLUGIN_COLOR_CONVERT_PARAM + 1)
+#define NUM_NDPLUGIN_COLOR_CONVERT_PARAMS ((int)(&LAST_NDPLUGIN_COLOR_CONVERT_PARAM - &FIRST_NDPLUGIN_COLOR_CONVERT_PARAM + 1))
  
 #endif
