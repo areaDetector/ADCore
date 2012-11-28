@@ -165,6 +165,8 @@ and these came close:
   c ^= b; c -= rot(b,24); \
 }
 
+#ifdef SELF_TEST
+/* Only build hashword and hashword2 if SELF_TEST is true, to avoid compiler warnings, they are otherwise unused */
 /*
 --------------------------------------------------------------------
  This works on all machines.  To be useful, it requires
@@ -260,7 +262,10 @@ uint32_t       *pb)               /* IN: more seed OUT: secondary hash value */
   /*------------------------------------------------------ report the result */
   *pc=c; *pb=b;
 }
+#endif /* SELF_TEST */
 
+#ifndef WORDS_BIGENDIAN
+/* Only compile hashlittle on little-endian machines to avoid compiler warnings */
 
 /*
 -------------------------------------------------------------------------------
@@ -458,8 +463,10 @@ hashlittle( const void *key, size_t length, uint32_t initval)
   final(a,b,c);
   return c;
 }
+#endif /* WORDS_BIGENDIAN */
 
-
+#ifdef SELF_TEST
+/* Only build hashlittle2 if SELF_TEST is true, to avoid compiler warnings, it is otherwise unused */
 /*
  * hashlittle2: return 2 32-bit hash values
  *
@@ -644,9 +651,12 @@ hashlittle2(
   final(a,b,c);
   *pc=c; *pb=b;
 }
+#endif /* SELF_TEST */
 
 
 
+#ifdef WORDS_BIGENDIAN
+/* Only build hashbig on big-endian machines to avoid compiler warnings */
 /*
  * hashbig():
  * This is the same as hashword() on big-endian machines.  It is different
@@ -775,6 +785,8 @@ hashbig( const void *key, size_t length, uint32_t initval)
   final(a,b,c);
   return c;
 }
+
+#endif /* WORDS_BIGENDIAN */
 
 /* 
  * hash_fast(key, length, initval)
