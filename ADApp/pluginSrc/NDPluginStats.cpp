@@ -31,7 +31,7 @@ asynStatus NDPluginStats::doComputeHistogramT(NDArray *pArray)
     epicsType *pData = (epicsType *)pArray->pData;
     size_t i;
     double scale, entropy;
-    size_t bin;
+    int bin;
     size_t nElements;
     double value, counts;
     NDArrayInfo arrayInfo;
@@ -49,8 +49,8 @@ asynStatus NDPluginStats::doComputeHistogramT(NDArray *pArray)
 
     for (i=0; i<nElements; i++) {
         value = (double)pData[i];
-        bin = (size_t) (((value - histMin) * scale) + 0.5);
-        if ((bin >= 0) && (bin < this->histogramSize))this->histogram[bin]++;
+        bin = (int)(((value - histMin) * scale) + 0.5);
+        if ((bin >= 0) && (bin < (int)this->histogramSize)) this->histogram[bin]++;
     }
 
     entropy = 0;
