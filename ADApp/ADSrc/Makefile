@@ -18,6 +18,7 @@ endif
 
 DBD += ADSupport.dbd
 DBD += commonDriverSupport.dbd
+DBD += commonDriverSupportNoMagick.dbd
 
 INC += NDArray.h
 INC += PVAttribute.h
