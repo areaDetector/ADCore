@@ -9,15 +9,27 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
-    Release 1-9 (XXX-November-2012)</h2>
+    Release 1-9 (XXX-December-2012)</h2>
   <ul>
+    <li>ADBase
+      <ul>
+        <li>Changed NDArray so that some variables that were previously <code>int</code> are
+          now <code>size_t</code>. This allows areaDetector to handle arrays with more elements
+          than an <code>int</code> can represent. This is not backwards compatible with some
+          drivers and plugins, because for example, the <code>dims[]</code> argument to <code>
+            NDArrayPool->alloc()</code> has been changed from <code>int</code> to <code>size_t</code>.
+          All drivers and plugins in areaDetector have been modified to reflect this change,
+          but user-written drivers and plugins may need some minor modifications.</li>
+      </ul>
+    </li>
     <li>Drivers
       <ul>
         <li>New Andor3 driver for sCMOS (e.g. Neo and Zyla) cameras from Andor. This uses
-        Version 3 of the Andor Software Development Kit (SDK).
-        Orginal version was written by Phillip Sorensen from Cornell University. 
-        It runs on 32-bit and 64-bit Linux and 32-bit and 64-bit Windows.</li>
+          Version 3 of the Andor Software Development Kit (SDK). Orginal version was written
+          by Phillip Sorensen from Cornell University. It runs on 32-bit and 64-bit Linux
+          and 32-bit and 64-bit Windows.</li>
       </ul>
+    </li>
     <li>ImageJ Viewer
       <ul>
         <li>Upgraded CAJ from 1.1.5 to 1.1.10, and JCA from 2.3.2 to 2.3.6. This fixes a problem
@@ -40,7 +52,13 @@
           the use of the normal EPICS environment variables.</li>
       </ul>
     </li>
-    <li>Fixes to allow building on Darwin. Thanks to Lewis Muir for these.</li>
+    <li>Other
+      <ul>
+        <li>Fixes to allow building on Darwin. Thanks to Lewis Muir for these.</li>
+        <li>Many minor changes to avoid compiler warnings on Linux, Windows, and Darwin. The
+          only remaining compiler warnings come from imported packages, such as netCDF.</li>
+      </ul>
+    </li>
   </ul>
   <h2 style="text-align: center">
     Release 1-8 (6-October-2012)</h2>
