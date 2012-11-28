@@ -829,7 +829,7 @@ static int analyzeNapimount(char *napiMount, char *extFile, int extFileLen,
 char *nxitrim(char *str)
 {
       char *ibuf = str;
-      size_t i = 0;
+      int i = 0;
 
       /*
       **  Trap NULL
@@ -848,7 +848,7 @@ char *nxitrim(char *str)
             /*
             **  Remove trailing spaces (from RMTRAIL.C)
             */
-	    i = strlen(str);
+	    i = (int)strlen(str);
             while (--i >= 0)
             {
                   if (!isspace(str[i]))
