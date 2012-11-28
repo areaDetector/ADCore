@@ -41,7 +41,7 @@ void parseAreaPrefixes( char *waveformName) {
 	while (!status) {
 		status=dbFirstRecord(pdbentry);
 		while (!status) {
-			sprintf(inBuffer, dbGetRecordName(pdbentry));
+			strcpy(inBuffer, dbGetRecordName(pdbentry));
 			status = dbFindInfo(pdbentry, "ADType");
 			if (!status) {
 				if (nFound != 0){
