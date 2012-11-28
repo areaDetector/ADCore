@@ -22,6 +22,7 @@ INC_Linux    += tiff.h tiffio.h tiffvers.h tiffconf.h tiffconf-32.h tiffconf-64.
 INC_Linux    += jpeglib.h jconfig.h jmorecfg.h jerror.h 
 INC_solaris  += jconfig.h jerror.h jmorecfg.h jpeglib.h szlib.h zconf.h zlib.h
 INC_Darwin   += tiff.h tiffio.h tiffvers.h tiffconf.h
+INC_Darwin   += jpeglib.h jconfig.h jmorecfg.h jerror.h
 
 LIB_INSTALLS_solaris += ../os/solaris-sparc/libjpeg.a ../os/solaris-sparc/libsz.a ../os/solaris-sparc/libz.a
 LIB_INSTALLS_cygwin32 += ../os/cygwin32/libtiff.lib    ../os/cygwin32/libjpeg.lib    ../os/cygwin32/libz.lib
