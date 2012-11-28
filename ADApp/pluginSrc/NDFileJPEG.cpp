@@ -57,26 +57,26 @@ asynStatus NDFileJPEG::openFile(const char *fileName, NDFileOpenMode_t openMode,
     if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
 
     if (pArray->ndims == 2) {
-        this->jpegInfo.image_width  = pArray->dims[0].size;
-        this->jpegInfo.image_height = pArray->dims[1].size;
+        this->jpegInfo.image_width  = (JDIMENSION)pArray->dims[0].size;
+        this->jpegInfo.image_height = (JDIMENSION)pArray->dims[1].size;
         this->jpegInfo.input_components = 1;
         this->jpegInfo.in_color_space = JCS_GRAYSCALE;
         this->colorMode = NDColorModeMono;
     } else if ((pArray->ndims == 3) && (pArray->dims[0].size == 3) && (colorMode == NDColorModeRGB1)) {
-        this->jpegInfo.image_width  = pArray->dims[1].size;
-        this->jpegInfo.image_height = pArray->dims[2].size;
+        this->jpegInfo.image_width  = (JDIMENSION)pArray->dims[1].size;
+        this->jpegInfo.image_height = (JDIMENSION)pArray->dims[2].size;
         this->jpegInfo.input_components = 3;
         this->jpegInfo.in_color_space = JCS_RGB;
         this->colorMode = NDColorModeRGB1;
     } else if ((pArray->ndims == 3) && (pArray->dims[1].size == 3) && (colorMode == NDColorModeRGB2)) {
-        this->jpegInfo.image_width  = pArray->dims[0].size;
-        this->jpegInfo.image_height = pArray->dims[2].size;
+        this->jpegInfo.image_width  = (JDIMENSION)pArray->dims[0].size;
+        this->jpegInfo.image_height = (JDIMENSION)pArray->dims[2].size;
         this->jpegInfo.input_components = 3;
         this->jpegInfo.in_color_space = JCS_RGB;
         this->colorMode = NDColorModeRGB2;
     } else if ((pArray->ndims == 3) && (pArray->dims[2].size == 3) && (colorMode == NDColorModeRGB3)) {
-        this->jpegInfo.image_width  = pArray->dims[0].size;
-        this->jpegInfo.image_height = pArray->dims[1].size;
+        this->jpegInfo.image_width  = (JDIMENSION)pArray->dims[0].size;
+        this->jpegInfo.image_height = (JDIMENSION)pArray->dims[1].size;
         this->jpegInfo.input_components = 3;
         this->jpegInfo.in_color_space = JCS_RGB;
         this->colorMode = NDColorModeRGB3;
@@ -334,10 +334,8 @@ extern "C" int NDFileJPEGConfigure(const char *portName, int queueSize, int bloc
                                    const char *NDArrayPort, int NDArrayAddr,
                                    int priority, int stackSize)
 {
-    NDFileJPEG *pPlugin =
-        new NDFileJPEG(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                       priority, stackSize);
-    pPlugin = NULL;  /* This is just to eliminate compiler warning about unused variables/objects */
+    new NDFileJPEG(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                   priority, stackSize);
     return(asynSuccess);
 }
 

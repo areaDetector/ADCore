@@ -123,7 +123,7 @@ asynStatus NDFileMagick::writeFile(NDArray *pArray)
         case NDColorModeRGB1:
         case NDColorModeBayer:
             image.type(this->imageType);
-            image.read(this->sizeX, this->sizeY, this->colorMap, this->storageType, pArray->pData);
+            image.read((unsigned int)this->sizeX, (unsigned int)this->sizeY, this->colorMap, this->storageType, pArray->pData);
             if (this->colorMode == NDColorModeMono) image.channel(RedChannel);
             image.quality(quality);
             image.depth(depth);
@@ -217,10 +217,8 @@ extern "C" int NDFileMagickConfigure(const char *portName, int queueSize, int bl
                                    const char *NDArrayPort, int NDArrayAddr,
                                    int priority, int stackSize)
 {
-    NDFileMagick *pPlugin = 
-        new NDFileMagick(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                       priority, stackSize);
-    pPlugin = NULL;  /* This is just to eliminate compiler warning about unused variables/objects */
+    new NDFileMagick(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                     priority, stackSize);
     return(asynSuccess);
 }
 

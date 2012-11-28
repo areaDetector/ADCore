@@ -100,8 +100,8 @@ private:
   asynStatus writePerformanceDataset();
   void calcNumFrames();
   unsigned int calc_istorek();
-  size_t calc_chunk_cache_bytes();
-  size_t calc_chunk_cache_slots();
+  hsize_t calc_chunk_cache_bytes();
+  hsize_t calc_chunk_cache_slots();
 
   int arrayDataId;
   int uniqueIdId;
@@ -155,7 +155,7 @@ private:
   char *dimsreport;       /** < A string which contain a verbose report of all dimension sizes. The method getDimsReport fill in this */
 };
 
-#define NUM_NDFILE_HDF5_PARAMS (&LAST_NDFILE_HDF5_PARAM - &FIRST_NDFILE_HDF5_PARAM + 1)
+#define NUM_NDFILE_HDF5_PARAMS ((int)(&LAST_NDFILE_HDF5_PARAM - &FIRST_NDFILE_HDF5_PARAM + 1))
 #define DIMSREPORTSIZE 512
 #define DIMNAMESIZE 40
 #define MAXEXTRADIMS 3
@@ -281,8 +281,8 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
           "%s%s Warning: failed to set boundary threshod=%d and alignment=%d bytes\n",
           driverName, functionName, threshold, align);
       H5Pget_alignment( access_plist, &threshold, &align );
-      setIntegerParam(NDFileHDF5_chunkBoundaryAlign, align);
-      setIntegerParam(NDFileHDF5_chunkBoundaryThreshold, threshold);
+      setIntegerParam(NDFileHDF5_chunkBoundaryAlign, (int)align);
+      setIntegerParam(NDFileHDF5_chunkBoundaryThreshold, (int)threshold);
     }
   }
 
@@ -337,12 +337,12 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
   hdfstatus = H5Pset_fill_value (this->cparms, this->datatype, this->ptrFillValue );
 
   hid_t dset_access_plist = H5Pcreate(H5P_DATASET_ACCESS);
-  size_t nbytes = this->calc_chunk_cache_bytes();
-  size_t nslots = this->calc_chunk_cache_slots();
+  hsize_t nbytes = this->calc_chunk_cache_bytes();
+  hsize_t nslots = this->calc_chunk_cache_slots();
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s Setting cache size=%d slots=%d\n",
             driverName, functionName,
-            nbytes, nslots);
-  H5Pset_chunk_cache( dset_access_plist, nslots, nbytes, 1.0);
+            (int)nbytes, (int)nslots);
+  H5Pset_chunk_cache( dset_access_plist, (size_t)nslots, (size_t)nbytes, 1.0);
 
   /*
    * Create a new dataset within the file using cparms
@@ -942,9 +942,9 @@ unsigned int NDFileHDF5::calc_istorek()
     return retval;
 }
 
-size_t NDFileHDF5::calc_chunk_cache_bytes()
+hsize_t NDFileHDF5::calc_chunk_cache_bytes()
 {
-    size_t nbytes = 0;
+    hsize_t nbytes = 0;
     epicsInt32 n_frames_chunk=0;
     getIntegerParam(NDFileHDF5_nFramesChunks, &n_frames_chunk);
     nbytes = this->maxdims[this->rank - 1] * this->maxdims[this->rank - 2]
@@ -968,7 +968,7 @@ bool is_prime(unsigned int long number)
     return divisor == 1;
 }
 
-size_t NDFileHDF5::calc_chunk_cache_slots()
+hsize_t NDFileHDF5::calc_chunk_cache_slots()
 {
     unsigned int long nslots = 1;
     unsigned int long num_chunks = 1;
@@ -1022,7 +1022,6 @@ asynStatus NDFileHDF5::configurePerformanceDataset()
 asynStatus NDFileHDF5::writePerformanceDataset()
 {
   hsize_t dims[2];
-  herr_t status;
   hid_t dataspace_id, dataset_id;
   epicsInt32 numCaptured;
 
@@ -1038,18 +1037,18 @@ asynStatus NDFileHDF5::writePerformanceDataset()
                           H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
   /* Write the second dataset. */
-  status = H5Dwrite(dataset_id, H5T_NATIVE_DOUBLE,
+  H5Dwrite(dataset_id, H5T_NATIVE_DOUBLE,
                     H5S_ALL, H5S_ALL,
                     H5P_DEFAULT, this->performanceBuf);
 
   /* Close the data space for the second dataset. */
-  status = H5Sclose(dataspace_id);
+  H5Sclose(dataspace_id);
 
   /* Close the second dataset */
-  status = H5Dclose(dataset_id);
+  H5Dclose(dataset_id);
 
   /* Close the group. */
-  status = H5Gclose(this->groupPerfomance);
+  H5Gclose(this->groupPerfomance);
   return asynSuccess;
 }
 
@@ -1060,7 +1059,6 @@ asynStatus NDFileHDF5::createAttributeDataset()
 {
   HDFAttributeNode *hdfAttrNode;
   NDAttribute *ndAttr = NULL;
-  herr_t hdfstatus;
   int extraDims;
   hsize_t hdfdims=1;
   int numCaptures = 1;
@@ -1068,7 +1066,8 @@ asynStatus NDFileHDF5::createAttributeDataset()
   const char *attrNames[3] = {"description", "source", NULL};
   char *attrStrings[3] = {NULL,NULL,NULL};
   int i;
-  NDAttrDataType_t ndAttrDataType; size_t size;
+  NDAttrDataType_t ndAttrDataType; 
+  size_t size;
   const char *functionName = "createAttributeDataset";
 
   getIntegerParam(NDFileHDF5_nExtraDims, &extraDims);
@@ -1106,7 +1105,7 @@ asynStatus NDFileHDF5::createAttributeDataset()
       hdfAttrNode->hdfcparm   = H5Pcreate(H5P_DATASET_CREATE);
 
       hdfAttrNode->hdfdatatype  = this->type_nd2hdf((NDDataType_t)ndAttr->dataType);
-      hdfstatus                 = H5Pset_fill_value (hdfAttrNode->hdfcparm, hdfAttrNode->hdfdatatype, this->ptrFillValue );
+      H5Pset_fill_value (hdfAttrNode->hdfcparm, hdfAttrNode->hdfdatatype, this->ptrFillValue );
 
       hdfAttrNode->hdfdataset   = H5Dcreate2(hdfgroup, hdfAttrNode->attrName,
                                              hdfAttrNode->hdfdatatype, hdfAttrNode->hdfdataspace,
@@ -1151,7 +1150,6 @@ asynStatus NDFileHDF5::writeAttributeDataset()
   asynStatus status = asynSuccess;
   HDFAttributeNode *hdfAttrNode = NULL;
   NDAttribute *ndAttr = NULL;
-  herr_t hdfstatus;
   //hsize_t elementSize = 1;
   void* datavalue;
   int ret;
@@ -1188,12 +1186,12 @@ asynStatus NDFileHDF5::writeAttributeDataset()
 //              driverName, functionName, hdfAttrNode->attrName,
 //              hdfAttrNode->offset,
 //              elementSize);
-    hdfstatus = H5Sselect_hyperslab(hdfAttrNode->hdffilespace, H5S_SELECT_SET,
+    H5Sselect_hyperslab(hdfAttrNode->hdffilespace, H5S_SELECT_SET,
                                     &hdfAttrNode->offset, NULL,
                                     &hdfAttrNode->elementSize, NULL);
 
     // Write the data to the hyperslab.
-    hdfstatus = H5Dwrite(hdfAttrNode->hdfdataset, hdfAttrNode->hdfdatatype,
+    H5Dwrite(hdfAttrNode->hdfdataset, hdfAttrNode->hdfdatatype,
                          hdfAttrNode->hdfmemspace, hdfAttrNode->hdffilespace,
                          H5P_DEFAULT, datavalue);
 
@@ -1239,21 +1237,20 @@ asynStatus NDFileHDF5::closeAttributeDataset()
 asynStatus NDFileHDF5::writeStringAttribute(hid_t element, const char * attrName, const char* attrStrValue)
 {
   asynStatus status = asynSuccess;
-  herr_t hdfstatus;
   hid_t hdfdatatype;
   hid_t hdfattr;
   hid_t hdfattrdataspace;
 
   hdfattrdataspace = H5Screate(H5S_SCALAR);
   hdfdatatype      = H5Tcopy(H5T_C_S1);
-  hdfstatus        = H5Tset_size(hdfdatatype, strlen(attrStrValue));
-  hdfstatus        = H5Tset_strpad(hdfdatatype, H5T_STR_NULLTERM);
+  H5Tset_size(hdfdatatype, strlen(attrStrValue));
+  H5Tset_strpad(hdfdatatype, H5T_STR_NULLTERM);
   hdfattr          = H5Acreate2(element, attrName,
                                 hdfdatatype, hdfattrdataspace,
                                 H5P_DEFAULT, H5P_DEFAULT);
-  hdfstatus        = H5Awrite(hdfattr, hdfdatatype, attrStrValue);
-  hdfstatus        = H5Aclose (hdfattr);
-  hdfstatus        = H5Sclose(hdfattrdataspace);
+  H5Awrite(hdfattr, hdfdatatype, attrStrValue);
+  H5Aclose(hdfattr);
+  H5Sclose(hdfattrdataspace);
 
   return status;
 }
@@ -1261,12 +1258,10 @@ asynStatus NDFileHDF5::writeStringAttribute(hid_t element, const char * attrName
 asynStatus NDFileHDF5::writeRawdataAttribute()
 {
   asynStatus status = asynSuccess;
-  herr_t hdfstatus;
   hid_t hdfattr;
   hid_t hdfattrdataspace;
   hsize_t hdfattrdims;
   epicsInt32 hdfattrval;
-  size_t namelen;
   char hdfattrname[DIMNAMESIZE];
   int i;
   const char *functionName = "writeDatasetAttribute";
@@ -1280,9 +1275,9 @@ asynStatus NDFileHDF5::writeRawdataAttribute()
   hdfattr          = H5Acreate2(this->dataset, "signal",
                                 H5T_NATIVE_INT32, hdfattrdataspace,
                                 H5P_DEFAULT, H5P_DEFAULT);
-  hdfstatus        = H5Awrite(hdfattr, H5T_NATIVE_INT32, (void*)&hdfattrval);
-  hdfstatus        = H5Aclose(hdfattr);
-  hdfstatus        = H5Sclose(hdfattrdataspace);
+  H5Awrite(hdfattr, H5T_NATIVE_INT32, (void*)&hdfattrval);
+  H5Aclose(hdfattr);
+  H5Sclose(hdfattrdataspace);
 
   /* attach an attribute and write an string of data to it. ('interpretation', 'image')  */
   this->writeStringAttribute(this->dataset, "interpretation", "image");
@@ -1295,7 +1290,6 @@ asynStatus NDFileHDF5::writeRawdataAttribute()
 
     /* Create string attribute.  */
     epicsSnprintf(hdfattrname, DIMNAMESIZE, "dim%d", i);
-    namelen = strlen(this->ptrDimensionNames[i]);
     this->writeStringAttribute(this->dataset, hdfattrname, this->ptrDimensionNames[i]);
   }
 
@@ -1506,7 +1500,6 @@ asynStatus NDFileHDF5::configureDims(NDArray *pArray)
 asynStatus NDFileHDF5::configureCompression()
 {
   asynStatus status = asynSuccess;
-  herr_t hdfstatus;
   int compressionScheme;
   int szipNumPixels = 0;
   int nbitPrecision = 0;
@@ -1524,9 +1517,9 @@ asynStatus NDFileHDF5::configureCompression()
     getIntegerParam(NDFileHDF5_nbitsPrecision, &nbitPrecision);
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s Setting N-bit filter precision=%d bit offset=%d bit\n",
               driverName, functionName, nbitPrecision, nbitOffset);
-    hdfstatus = H5Tset_precision (this->datatype, nbitPrecision);
-    hdfstatus = H5Tset_offset (this->datatype, nbitOffset);
-    hdfstatus = H5Pset_nbit (this->cparms);
+    H5Tset_precision (this->datatype, nbitPrecision);
+    H5Tset_offset (this->datatype, nbitOffset);
+    H5Pset_nbit (this->cparms);
 
     // Finally read back the parameters we've just sent to HDF5
     nbitOffset = H5Tget_offset(this->datatype);
@@ -1538,13 +1531,13 @@ asynStatus NDFileHDF5::configureCompression()
     getIntegerParam(NDFileHDF5_szipNumPixels, &szipNumPixels);
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s Setting szip compression filter # pixels=%d\n",
               driverName, functionName, szipNumPixels);
-    hdfstatus = H5Pset_szip (this->cparms, H5_SZIP_NN_OPTION_MASK, szipNumPixels);
+    H5Pset_szip (this->cparms, H5_SZIP_NN_OPTION_MASK, szipNumPixels);
     break;
   case HDF5CompressZlib:
     getIntegerParam(NDFileHDF5_zCompressLevel, &zLevel);
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s Setting zlib compression filter level=%d\n",
               driverName, functionName, zLevel);
-    hdfstatus = H5Pset_deflate(this->cparms, zLevel);
+    H5Pset_deflate(this->cparms, zLevel);
     break;
   }
 
@@ -1654,10 +1647,8 @@ extern "C" int NDFileHDF5Configure(const char *portName, int queueSize, int bloc
                                    const char *NDArrayPort, int NDArrayAddr,
                                    int priority, int stackSize)
 {
-  NDFileHDF5 *pPlugin =
-    new NDFileHDF5(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                   priority, stackSize);
-  pPlugin = NULL;  /* This is just to eliminate compiler warning about unused variables/objects */
+  new NDFileHDF5(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                 priority, stackSize);
   return(asynSuccess);
 }
 
