@@ -1442,7 +1442,7 @@ asynStatus NDFileHDF5::configureDims(NDArray *pArray)
       this->virtualdims[i] = numCapture;
       //asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s extradim=%d ncapture=%d\n",
       //        driverName, functionName, i, numCapture);
-      epicsSnprintf(this->ptrDimensionNames[i], DIMNAMESIZE, extradimdefs[MAXEXTRADIMS - extradims +i].dimName);
+      epicsSnprintf(this->ptrDimensionNames[i], DIMNAMESIZE, "%s", extradimdefs[MAXEXTRADIMS - extradims +i].dimName);
     }
   }
 
