@@ -64,13 +64,13 @@ private:
     void getAttrTypeNSize(NDAttribute *pAttr, int *retType, int *retSize);
     void iterateNodes(TiXmlNode *curNode, NDArray *pArray);
     void findConstText(TiXmlNode *curNode, char *outtext);
-    void * allocConstValue(int dataType, int length);
+    void * allocConstValue(int dataType, size_t length);
     void constTextToDataType(char *inText, int dataType, void *pValue);
     int typeStringToVal( const char * typeStr );
     void loadTemplateFile();
 
 };
-#define NUM_NDFILE_NEXUS_PARAMS (&LAST_NDFILE_NEXUS_PARAM - &FIRST_NDFILE_NEXUS_PARAM + 1)
+#define NUM_NDFILE_NEXUS_PARAMS ((int)(&LAST_NDFILE_NEXUS_PARAM - &FIRST_NDFILE_NEXUS_PARAM + 1))
 
 #endif
 

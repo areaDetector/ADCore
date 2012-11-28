@@ -124,8 +124,8 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
         sprintf(dimName, "dim%d", i);
         if ((retval = nc_def_dim(this->ncId, dimName, pArray->dims[j].size, &dimIds[i+1])))
             ERR(retval);
-        size[i]    = pArray->dims[i].size;
-        offset[i]  = pArray->dims[i].offset;
+        size[i]    = (int)pArray->dims[i].size;
+        offset[i]  = (int)pArray->dims[i].offset;
         binning[i] = pArray->dims[i].binning;
         reverse[i]  = pArray->dims[i].reverse;
     }
@@ -475,10 +475,8 @@ extern "C" int NDFileNetCDFConfigure(const char *portName, int queueSize, int bl
                                      const char *NDArrayPort, int NDArrayAddr,
                                      int priority, int stackSize)
 {
-    NDFileNetCDF *pPlugin =
-        new NDFileNetCDF(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                         priority, stackSize);
-    pPlugin = NULL;  /* This is just to eliminate compiler warning about unused variables/objects */
+    new NDFileNetCDF(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                     priority, stackSize);
     return(asynSuccess);
 }
 

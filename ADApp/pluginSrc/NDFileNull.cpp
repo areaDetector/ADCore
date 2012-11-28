@@ -94,10 +94,8 @@ extern "C" int NDFileNullConfigure(const char *portName, int queueSize, int bloc
                                    const char *NDArrayPort, int NDArrayAddr,
                                    int priority, int stackSize)
 {
-    NDFileNull *pPlugin = 
-        new NDFileNull(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                       priority, stackSize);
-    pPlugin = NULL;  /* This is just to eliminate compiler warning about unused variables/objects */
+    new NDFileNull(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                   priority, stackSize);
     return(asynSuccess);
 }
 

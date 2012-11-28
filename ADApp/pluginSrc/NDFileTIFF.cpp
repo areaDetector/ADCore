@@ -32,7 +32,8 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
     /* When we create TIFF variables and dimensions, we get back an
      * ID for each one. */
     static const char *functionName = "openFile";
-    int sizeX, sizeY, rowsPerStrip, bitsPerSample, sampleFormat, samplesPerPixel, photoMetric, planarConfig;
+    size_t sizeX, sizeY, rowsPerStrip;
+    int bitsPerSample, sampleFormat, samplesPerPixel, photoMetric, planarConfig;
     int colorMode=NDColorModeMono;
     NDAttribute *pAttribute;
     char ManufacturerString[MAX_ATTRIBUTE_STRING_SIZE] = "Unknown";
@@ -131,7 +132,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
     /* this is in the unallocated 'reusable' range */
     static const int TIFFTAG_NDTIMESTAMP = 65000;
     static const TIFFFieldInfo fi = {
-        TIFFTAG_NDTIMESTAMP,1,1,TIFF_DOUBLE,FIELD_CUSTOM,1,0,"NDTimeStamp"
+        TIFFTAG_NDTIMESTAMP,1,1,TIFF_DOUBLE,FIELD_CUSTOM,1,0,(char *)"NDTimeStamp"
     };
     TIFFMergeFieldInfo(output, &fi, 1);
     TIFFSetField(this->output, TIFFTAG_NDTIMESTAMP, pArray->timeStamp);
@@ -140,9 +141,9 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
     TIFFSetField(this->output, TIFFTAG_SAMPLESPERPIXEL, samplesPerPixel);
     TIFFSetField(this->output, TIFFTAG_PHOTOMETRIC, photoMetric);
     TIFFSetField(this->output, TIFFTAG_PLANARCONFIG, planarConfig);
-    TIFFSetField(this->output, TIFFTAG_IMAGEWIDTH, sizeX);
-    TIFFSetField(this->output, TIFFTAG_IMAGELENGTH, sizeY);
-    TIFFSetField(this->output, TIFFTAG_ROWSPERSTRIP, rowsPerStrip);
+    TIFFSetField(this->output, TIFFTAG_IMAGEWIDTH, (epicsUInt32)sizeX);
+    TIFFSetField(this->output, TIFFTAG_IMAGELENGTH, (epicsUInt32)sizeY);
+    TIFFSetField(this->output, TIFFTAG_ROWSPERSTRIP, (epicsUInt32)rowsPerStrip);
     TIFFSetField(this->output, TIFFTAG_MAKE, ManufacturerString);
     TIFFSetField(this->output, TIFFTAG_MODEL, ModelString);
     
@@ -279,10 +280,8 @@ extern "C" int NDFileTIFFConfigure(const char *portName, int queueSize, int bloc
                                    const char *NDArrayPort, int NDArrayAddr,
                                    int priority, int stackSize)
 {
-    NDFileTIFF *pPlugin = 
-        new NDFileTIFF(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                       priority, stackSize);
-    pPlugin = NULL;  /* This is just to eliminate compiler warning about unused variables/objects */
+    new NDFileTIFF(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                   priority, stackSize);
     return(asynSuccess);
 }
 

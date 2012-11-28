@@ -67,7 +67,7 @@ asynStatus NDFileNexus::openFile( const char *fileName, NDFileOpenMode_t openMod
             "Error %s:%s cannot open file %s\n", driverName, functionName, fileName );
   return (asynError);
   }
-  nxstat = NXputattr( this->nxFileHandle, "creator", programName, strlen(programName), NX_CHAR);
+  nxstat = NXputattr( this->nxFileHandle, "creator", programName, (int)strlen(programName), NX_CHAR);
 
   processNode(this->rootNode, pArray);
 
@@ -172,7 +172,6 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
   const char *nodeSource;
   const char *nodeType;
   //float data;
-  int numpts;
   int rank;
   NDDataType_t type;
   int ii;
@@ -185,15 +184,13 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
   size_t nodeTextLen;
   int wordSize;
   int dataOutType;
-  int numWords;
+  size_t numWords;
   int numItems = 0;
   int addr =0;
-  char *pString;
   void *pValue;
   char nodeText[256];
   NXname dataclass;
   NXname dPath;
-  TiXmlNode *childNode;
   static const char *functionName = "processNode";
 
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
@@ -203,13 +200,11 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
   getIntegerParam(addr, NDFileNumCapture, &numCapture);
   getIntegerParam(addr, NDFileNumCaptured, &numCaptured);
 
-  numpts = 1;
   nodeValue = curNode->Value();
   asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
             "%s:%s  Value=%s Type=%d\n", driverName, functionName,
             curNode->Value(), curNode->Type());
   nodeType = curNode->ToElement()->Attribute("type");
-  childNode = 0;
   NXstatus stat;
   if (strcmp (nodeValue, "NXroot") == 0) {
     this->iterateNodes(curNode, pArray);
@@ -289,10 +284,9 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 
         if (dataOutType > 0) {
           pValue = calloc( attrDataSize, wordSize );
-          pString = (char *)pValue;
           pAttr->getValue(attrDataType, (char *)pValue, attrDataSize*wordSize);
 
-          NXputattr(this->nxFileHandle, nodeName, pValue, attrDataSize/wordSize, dataOutType);
+          NXputattr(this->nxFileHandle, nodeName, pValue, (int)(attrDataSize/wordSize), dataOutType);
 
           free(pValue);
         }
@@ -318,7 +312,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
       }
       pValue = allocConstValue( dataOutType, nodeTextLen);
       constTextToDataType(nodeText, dataOutType, pValue);
-      NXputattr(this->nxFileHandle, nodeName, pValue, nodeTextLen, dataOutType);
+      NXputattr(this->nxFileHandle, nodeName, pValue, (int)nodeTextLen, dataOutType);
       free(pValue);
 
     }
@@ -339,7 +333,6 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 
         if (dataOutType > 0) {
           pValue = calloc( attrDataSize, wordSize );
-          pString = (char *)pValue;
           pAttr->getValue(attrDataType, (char *)pValue, attrDataSize);
 
           numWords = attrDataSize/wordSize;
@@ -362,7 +355,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
       rank = pArray->ndims;
       type = pArray->dataType;
       for (ii=0; ii<rank; ii++) {
-        dims[(rank-1) - ii] = pArray->dims[ii].size;
+        dims[(rank-1) - ii] = (int)pArray->dims[ii].size;
       }
 
       switch(type) {
@@ -488,7 +481,6 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
 int NDFileNexus::processStreamData(NDArray *pArray) {
   int fileWriteMode;
   int numCapture;
-  int dims[ND_ARRAY_MAX_DIMS];
   int slabOffset[ND_ARRAY_MAX_DIMS];
   int slabSize[ND_ARRAY_MAX_DIMS];
   int rank;
@@ -503,15 +495,13 @@ int NDFileNexus::processStreamData(NDArray *pArray) {
   for (ii=0; ii<rank; ii++) {
     switch(fileWriteMode) {
     case NDFileModeSingle:
-      dims[(rank-1) - ii] = pArray->dims[ii].size;
       slabOffset[(rank-1) - ii] = 0;
-      slabSize[(rank-1) -ii] = pArray->dims[ii].size;
+      slabSize[(rank-1) -ii] = (int)pArray->dims[ii].size;
       break;
     case NDFileModeCapture:
     case NDFileModeStream:
-      dims[(rank) - ii] = pArray->dims[ii].size;
       slabOffset[(rank) - ii] = 0;
-      slabSize[(rank) -ii] = pArray->dims[ii].size;
+      slabSize[(rank) -ii] = (int)pArray->dims[ii].size;
       break;
     }
   }
@@ -632,7 +622,7 @@ void NDFileNexus::findConstText(TiXmlNode *curNode, char *outtext) {
   return;
 }
 
-void * NDFileNexus::allocConstValue(int dataType, int length ) {
+void * NDFileNexus::allocConstValue(int dataType, size_t length ) {
   void *pValue;
   switch (dataType) {
     case  NX_INT8:
@@ -797,7 +787,6 @@ asynStatus NDFileNexus::writeOctet(asynUser *pasynUser, const char *value,
 
 void NDFileNexus::loadTemplateFile() {
   bool loadStatus;
-  int status = asynSuccess;
   int addr = 0;
   char fullFilename[2*MAX_FILENAME_LEN] = "";
   char template_path[MAX_FILENAME_LEN] = "";
@@ -805,8 +794,8 @@ void NDFileNexus::loadTemplateFile() {
   static const char *functionName = "loadTemplateFile";
 
   /* get the filename to be used for nexus template */
-  status = getStringParam(addr, NDFileNexusTemplatePath, sizeof(template_path), template_path);
-  status = getStringParam(addr, NDFileNexusTemplateFile, sizeof(template_file), template_file);
+  getStringParam(addr, NDFileNexusTemplatePath, sizeof(template_path), template_path);
+  getStringParam(addr, NDFileNexusTemplateFile, sizeof(template_file), template_file);
   sprintf(fullFilename, "%s%s", template_path, template_file);
   if (strlen(fullFilename) == 0) return;
 
@@ -876,10 +865,8 @@ extern "C" int NDFileNexusConfigure(const char *portName, int queueSize, int blo
                                     const char *NDArrayPort, int NDArrayAddr,
                                     int priority, int stackSize)
 {
-  NDFileNexus *pPlugin =
-    new NDFileNexus(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                    priority, stackSize);
-  pPlugin = NULL;  /* This is just to eliminate compiler warning about unused variables/objects */
+  new NDFileNexus(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                  priority, stackSize);
   return(asynSuccess);
 }
 
