@@ -88,8 +88,8 @@ typedef enum
 
 /** Structure defining a dimension of an NDArray */
 typedef struct NDDimension {
-    int size;       /**< The number of elements in this dimension of the array */
-    int offset;     /**< The offset relative to the origin of the original data source (detector, for example).
+    size_t size;    /**< The number of elements in this dimension of the array */
+    size_t offset;  /**< The offset relative to the origin of the original data source (detector, for example).
                       * If a selected region of the detector is being read, then this value may be > 0. 
                       * The offset value is cumulative, so if a plugin such as NDPluginROI further selects
                       * a subregion, the offset is relative to the first element in the detector, and not 
@@ -106,21 +106,21 @@ typedef struct NDDimension {
 
 /** Structure returned by NDArray::getInfo */
 typedef struct NDArrayInfo {
-    int nElements;          /**< The total number of elements in the array */
+    size_t nElements;       /**< The total number of elements in the array */
     int bytesPerElement;    /**< The number of bytes per element in the array */
-    int totalBytes;         /**< The total number of bytes required to hold the array;
+    size_t totalBytes;      /**< The total number of bytes required to hold the array;
                               *  this may be less than NDArray::dataSize. */
                             /**< The following are mostly useful for color images (RGB1, RGB2, RGB3) */
     NDColorMode_t colorMode; /**< The color mode */
     int xDim;               /**< The array index which is the X dimension */
     int yDim;               /**< The array index which is the Y dimension */
     int colorDim;           /**< The array index which is the color dimension */
-    int xSize;              /**< The X size of the array */
-    int ySize;              /**< The Y size of the array */
-    int colorSize;          /**< The color size of the array */
-    int xStride;            /**< The number of array elements between X values */
-    int yStride;            /**< The number of array elements between Y values */
-    int colorStride;        /**< The number of array elements between color values */
+    size_t xSize;           /**< The X size of the array */
+    size_t ySize;           /**< The Y size of the array */
+    size_t colorSize;       /**< The color size of the array */
+    size_t xStride;         /**< The number of array elements between X values */
+    size_t yStride;         /**< The number of array elements between Y values */
+    size_t colorStride;     /**< The number of array elements between color values */
 } NDArrayInfo_t;
 
 /** Structure used by the EPICS ellLib library for linked lists of C++ objects.
@@ -205,7 +205,7 @@ public:
     /* Methods */
     NDArray();
     ~NDArray();
-    int          initDimension   (NDDimension_t *pDimension, int size);
+    int          initDimension   (NDDimension_t *pDimension, size_t size);
     int          getInfo         (NDArrayInfo_t *pInfo);
     int          reserve();
     int          release();
@@ -224,7 +224,7 @@ public:
     int           ndims;        /**< The number of dimensions in this array; minimum=1. */
     NDDimension_t dims[ND_ARRAY_MAX_DIMS]; /**< Array of dimension sizes for this array; first ndims values are meaningful. */
     NDDataType_t  dataType;     /**< Data type for this array. */
-    int           dataSize;     /**< Data size for this array; actual amount of memory allocated for *pData, may be more than
+    size_t        dataSize;     /**< Data size for this array; actual amount of memory allocated for *pData, may be more than
                                   * required to hold the array*/
     void          *pData;       /**< Pointer to the array data.
                                   * The data is assumed to be stored in the order of dims[0] changing fastest, and 
@@ -244,7 +244,7 @@ public:
 class epicsShareFunc NDArrayPool {
 public:
     NDArrayPool  (int maxBuffers, size_t maxMemory);
-    NDArray*     alloc     (int ndims, int *dims, NDDataType_t dataType, int dataSize, void *pData);
+    NDArray*     alloc     (int ndims, size_t *dims, NDDataType_t dataType, size_t dataSize, void *pData);
     NDArray*     copy      (NDArray *pIn, NDArray *pOut, int copyData);
 
     int          reserve   (NDArray *pArray);
