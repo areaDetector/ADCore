@@ -130,14 +130,11 @@ void PVAttribute::connectCallback(struct connection_handler_args cha)
 {
     chid  chanId = cha.chid;
     const char *functionName = "connectCallback";
-    enum channel_state state = cs_never_conn;
     chtype dbfType, dbrType=this->dbrType;
     int nRequest=1;
     int elementCount;
     
     epicsMutexLock(this->lock);
-    if (chanId) state = ca_state(chanId);
-
     if (chanId && (ca_state(chanId) == cs_conn)) {
         dbfType = ca_field_type(chanId);
         elementCount = ca_element_count(chanId);
