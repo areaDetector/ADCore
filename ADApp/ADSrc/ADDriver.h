@@ -187,6 +187,6 @@ protected:
     int ADStringFromServer; 
     #define LAST_AD_PARAM ADStringFromServer   
 };
-#define NUM_AD_PARAMS (&LAST_AD_PARAM - &FIRST_AD_PARAM + 1)
+#define NUM_AD_PARAMS ((int)(&LAST_AD_PARAM - &FIRST_AD_PARAM + 1))
 
 #endif

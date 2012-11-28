@@ -24,7 +24,7 @@ void parseAreaPrefixes( char *waveformName) {
 	char waveformNameFull[128];
 	char *indexPtr;
 	int nFound;
-	int foundLen;
+	size_t foundLen;
 	DBADDR dbaddr;
 	DBADDR *pdbaddr = &dbaddr;
 	DBENTRY dbentry;
@@ -62,7 +62,7 @@ void parseAreaPrefixes( char *waveformName) {
 	sprintf ( waveformNameFull, "%s", waveformName);
 	status = dbNameToAddr( waveformName, pdbaddr);
 	if ( status == 0 ) {
-		dbPutField(pdbaddr, DBR_UCHAR, outBuffer, strlen(outBuffer));
+		dbPutField(pdbaddr, DBR_UCHAR, outBuffer, (long)strlen(outBuffer));
 	}
 	else {
 		printf("Cannot find channel %s\n", waveformName);
