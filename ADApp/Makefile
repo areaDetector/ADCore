@@ -10,6 +10,8 @@ DIRS += prosilicaSupport
 DIRS += tiffSupport
 DIRS += hdf5Support
 DIRS += nexusSrc
+# On some platforms hdf5Support must be built before nexus because of library dependencies
+nexusSrc_DEPEND_DIRS = hdf5Support
 DIRS += pvcamSupport
 DIRS += perkinElmerSupport
 DIRS += magickSupport
