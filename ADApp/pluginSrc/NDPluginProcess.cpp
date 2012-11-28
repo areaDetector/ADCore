@@ -33,13 +33,13 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
      * It is called with the mutex already locked.  It unlocks it during long calculations when private
      * structures don't need to be protected.
      */
-    int i;
+    size_t i;
     NDArray *pScratch=NULL;
     double  *data, newData, newFilter;
     NDArrayInfo arrayInfo;
     double  *background=NULL, *flatField=NULL, *filter=NULL;
     double  value;
-    int     nElements;
+    size_t  nElements;
     int     saveBackground, enableBackground, validBackground;
     int     saveFlatField,  enableFlatField,  validFlatField;
     double  scaleFlatField;
@@ -354,7 +354,6 @@ NDPluginProcess::NDPluginProcess(const char *portName, int queueSize, int blocki
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    ASYN_MULTIDEVICE, 1, priority, stackSize)
 {
-    asynStatus status;
     //const char *functionName = "NDPluginProcess";
 
     /* Background array subtraction */
@@ -417,7 +416,7 @@ NDPluginProcess::NDPluginProcess(const char *portName, int queueSize, int blocki
     setStringParam(NDPluginDriverPluginType, "NDPluginProcess");
 
     /* Try to connect to the array port */
-    status = connectToArrayPort();
+    connectToArrayPort();
 }
 
 /** Configuration command */
@@ -426,10 +425,8 @@ extern "C" int NDProcessConfigure(const char *portName, int queueSize, int block
                                  int maxBuffers, size_t maxMemory,
                                  int priority, int stackSize)
 {
-    NDPluginProcess *pPlugin =
-        new NDPluginProcess(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+    new NDPluginProcess(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
                         maxBuffers, maxMemory, priority, stackSize);
-    pPlugin = NULL;  /* This is just to eliminate compiler warning about unused variables/objects */
     return(asynSuccess);
 }
 

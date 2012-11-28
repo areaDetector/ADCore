@@ -69,7 +69,7 @@ private:
     epicsTimeStamp lastProcessTime;
     int dimsPrev[ND_ARRAY_MAX_DIMS];
 };
-#define NUM_NDPLUGIN_PARAMS (&LAST_NDPLUGIN_PARAM - &FIRST_NDPLUGIN_PARAM + 1)
+#define NUM_NDPLUGIN_PARAMS ((int)(&LAST_NDPLUGIN_PARAM - &FIRST_NDPLUGIN_PARAM + 1))
 
     
 #endif

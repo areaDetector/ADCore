@@ -32,14 +32,14 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
 {
     NDColorMode_t colorModeOut;
     const char* functionName = "convertColor";
-    int i, j;
+    size_t i, j;
     epicsType *pIn, *pRedIn, *pGreenIn, *pBlueIn;
     epicsType *pOut, *pRedOut, *pGreenOut, *pBlueOut;
     epicsType *pDataIn  = (epicsType *)pArray->pData;
     epicsType *pDataOut;
     NDArray *pArrayOut=NULL;
-    int imageSize, rowSize, numRows;
-    int dims[3];
+    size_t imageSize, rowSize, numRows;
+    size_t dims[3];
     NDDimension_t tmpDim;
     #ifdef HAVE_PVAPI
     tPvFrame PvFrame, *pFrame=&PvFrame;
@@ -220,12 +220,12 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     /* For now we use the Prosilica library functions to convert Bayer to RGB */
                     /* This requires creating their tPvFrame data structure */
                     memset(pFrame, 0, sizeof(tPvFrame));
-                    pFrame->Width = pArray->dims[0].size;
-                    pFrame->Height = pArray->dims[1].size;
-                    pFrame->RegionX = pArray->dims[0].offset;
-                    pFrame->RegionY = pArray->dims[1].offset;
+                    pFrame->Width = (unsigned long)pArray->dims[0].size;
+                    pFrame->Height = (unsigned long)pArray->dims[1].size;
+                    pFrame->RegionX = (unsigned long)pArray->dims[0].offset;
+                    pFrame->RegionY = (unsigned long)pArray->dims[1].offset;
                     pFrame->ImageBuffer = pArray->pData;
-                    pFrame->ImageBufferSize = pArray->dataSize;
+                    pFrame->ImageBufferSize = (unsigned long)pArray->dataSize;
                     pFrame->ImageSize = pFrame->ImageBufferSize;
                     pFrame->BayerPattern = (tPvBayerPattern)bayerPattern;
                     switch(pArray->dataType) {
@@ -251,7 +251,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
             }
             switch (colorModeOut) {
                 case NDColorModeRGB1:
-                    PvUtilityColorInterpolate(pFrame, pDataOut,  pDataOut+1,  pDataOut+2, 2, 0);
+                    PvUtilityColorInterpolate(pFrame, pDataOut, pDataOut+1, pDataOut+2, 2, 0);
                     pArrayOut->dims[0].size = 3;
                     memcpy(&pArrayOut->dims[1], &pArray->dims[0], sizeof(NDDimension_t));
                     memcpy(&pArrayOut->dims[2], &pArray->dims[1], sizeof(NDDimension_t));
@@ -259,7 +259,8 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     break;
                 
                 case NDColorModeRGB2:
-                    PvUtilityColorInterpolate(pFrame, pDataOut,  pDataOut+rowSize,  pDataOut+2*rowSize, 0, 2*rowSize);
+                    PvUtilityColorInterpolate(pFrame, pDataOut,  pDataOut+rowSize, pDataOut+2*rowSize, 
+                                              0, (unsigned long)(2*rowSize));
                     memcpy(&pArrayOut->dims[0], &pArray->dims[0], sizeof(NDDimension_t));
                     pArrayOut->dims[1].size = 3;
                     memcpy(&pArrayOut->dims[2], &pArray->dims[1], sizeof(NDDimension_t));
@@ -267,7 +268,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     break;
 
                 case NDColorModeRGB3:
-                    PvUtilityColorInterpolate(pFrame, pDataOut,  pDataOut+imageSize,  pDataOut+2*imageSize, 0, 0);
+                    PvUtilityColorInterpolate(pFrame, pDataOut,  pDataOut+imageSize, pDataOut+2*imageSize, 0, 0);
                     memcpy(&pArrayOut->dims[0], &pArray->dims[0], sizeof(NDDimension_t));
                     memcpy(&pArrayOut->dims[1], &pArray->dims[1], sizeof(NDDimension_t));
                     pArrayOut->dims[2].size = 3;
@@ -603,7 +604,6 @@ NDPluginColorConvert::NDPluginColorConvert(const char *portName, int queueSize, 
                    asynGenericPointerMask,
                    0, 1, priority, stackSize)  /* Not ASYN_CANBLOCK or ASYN_MULTIDEVICE, do autoConnect */
 {
-    asynStatus status;
     //const char *functionName = "NDPluginColorConvert";
 
     createParam(NDPluginColorConvertColorModeOutString, asynParamInt32, &NDPluginColorConvertColorModeOut);
@@ -612,10 +612,10 @@ NDPluginColorConvert::NDPluginColorConvert(const char *portName, int queueSize, 
     /* Set the plugin type string */    
     setStringParam(NDPluginDriverPluginType, "NDPluginColorConvert");
     
-    status = setIntegerParam(NDPluginColorConvertColorModeOut, NDColorModeMono);
+    setIntegerParam(NDPluginColorConvertColorModeOut, NDColorModeMono);
 
     /* Try to connect to the array port */
-    status = connectToArrayPort();
+    connectToArrayPort();
 }
 
 extern "C" int NDColorConvertConfigure(const char *portName, int queueSize, int blockingCallbacks, 
@@ -623,10 +623,8 @@ extern "C" int NDColorConvertConfigure(const char *portName, int queueSize, int 
                                           int maxBuffers, size_t maxMemory,
                                           int priority, int stackSize)
 {
-    NDPluginColorConvert *pPlugin =  
-        new NDPluginColorConvert(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, 
-                                 maxBuffers, maxMemory, priority, stackSize);
-    pPlugin = NULL;  /* This is just to eliminate compiler warning about unused variables/objects */
+    new NDPluginColorConvert(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, 
+                             maxBuffers, maxMemory, priority, stackSize);
     return(asynSuccess);
 }
 

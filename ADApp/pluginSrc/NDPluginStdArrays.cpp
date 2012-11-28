@@ -83,7 +83,7 @@ asynStatus NDPluginStdArrays::readArray(asynUser *pasynUser, epicsType *value, s
             goto done;
         }
         myArray->getInfo(&arrayInfo);
-        if (arrayInfo.nElements > (int)nElements) {
+        if (arrayInfo.nElements > nElements) {
             /* We have been requested fewer pixels than we have.
              * Just pass the first nElements. */
              arrayInfo.nElements = nElements;
@@ -275,7 +275,6 @@ NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int bl
                     * It does autoconnect */
                    0, 1, priority, stackSize)
 {
-    asynStatus status;
     //char *functionName = "NDPluginStdArrays";
     
     createParam(NDPluginStdArraysDataString, asynParamGenericPointer, &NDPluginStdArraysData);
@@ -284,7 +283,7 @@ NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int bl
     setStringParam(NDPluginDriverPluginType, "NDPluginStdArrays");
 
     /* Try to connect to the NDArray port */
-    status = connectToArrayPort();
+    connectToArrayPort();
 }
 
 /* Configuration routine.  Called directly, or from the iocsh function */
@@ -292,10 +291,8 @@ extern "C" int NDStdArraysConfigure(const char *portName, int queueSize, int blo
                                     const char *NDArrayPort, int NDArrayAddr, size_t maxMemory,
                                     int priority, int stackSize)
 {
-    NDPluginStdArrays *pPlugin =
-        new NDPluginStdArrays(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxMemory,
-                              priority, stackSize);
-    pPlugin = NULL;  /* This is just to eliminate compiler warning about unused variables/objects */
+    new NDPluginStdArrays(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxMemory,
+                          priority, stackSize);
     return(asynSuccess);
 }
 
