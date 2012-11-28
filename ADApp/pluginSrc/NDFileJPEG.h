@@ -53,6 +53,6 @@ private:
     JOCTET jpegBuffer[JPEG_BUF_SIZE];
     jpegDestMgr destMgr;
 };
-#define NUM_NDFILE_JPEG_PARAMS (&LAST_NDFILE_JPEG_PARAM - &FIRST_NDFILE_JPEG_PARAM + 1)
+#define NUM_NDFILE_JPEG_PARAMS ((int)(&LAST_NDFILE_JPEG_PARAM - &FIRST_NDFILE_JPEG_PARAM + 1))
 
 #endif
