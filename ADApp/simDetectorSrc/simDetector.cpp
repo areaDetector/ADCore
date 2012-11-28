@@ -105,7 +105,7 @@ typedef enum {
 #define SimPeakHeightVariationString  "SIM_PEAK_HEIGHT_VARIATION"
 
 
-#define NUM_SIM_DETECTOR_PARAMS (&LAST_SIM_DETECTOR_PARAM - &FIRST_SIM_DETECTOR_PARAM + 1)
+#define NUM_SIM_DETECTOR_PARAMS ((int)(&LAST_SIM_DETECTOR_PARAM - &FIRST_SIM_DETECTOR_PARAM + 1))
 
 
 
@@ -241,9 +241,9 @@ template <typename epicsType> int simDetector::computeLinearRampArray(int sizeX,
 /** Compute array for array of peaks */
 template <typename epicsType> int simDetector::computePeaksArray(int sizeX, int sizeY)
 {
-    epicsType *pMono=NULL, *pRed=NULL, *pGreen=NULL, *pBlue=NULL;
+    epicsType *pMono=NULL, *pRed=NULL;
     epicsType *pMono2=NULL, *pRed2=NULL, *pGreen2=NULL, *pBlue2=NULL;
-    int columnStep=0, rowStep=0, colorMode;
+    int columnStep=0, colorMode;
     int peaksStartX, peaksStartY, peaksStepX, peaksStepY;
     int peaksNumX, peaksNumY, peaksWidthX, peaksWidthY;
      int status = asynSuccess;
@@ -280,24 +280,15 @@ template <typename epicsType> int simDetector::computePeaksArray(int sizeX, int 
             break;
         case NDColorModeRGB1:
             columnStep = 3;
-            rowStep = 0;
             pRed   = (epicsType *)this->pRaw->pData;
-            pGreen = (epicsType *)this->pRaw->pData+1;
-            pBlue  = (epicsType *)this->pRaw->pData+2;
             break;
         case NDColorModeRGB2:
             columnStep = 1;
-            rowStep = 2 * sizeX;
             pRed   = (epicsType *)this->pRaw->pData;
-            pGreen = (epicsType *)this->pRaw->pData + sizeX;
-            pBlue  = (epicsType *)this->pRaw->pData + 2*sizeX;
             break;
         case NDColorModeRGB3:
             columnStep = 1;
-            rowStep = 0;
             pRed   = (epicsType *)this->pRaw->pData;
-            pGreen = (epicsType *)this->pRaw->pData + sizeX*sizeY;
-            pBlue  = (epicsType *)this->pRaw->pData + 2*sizeX*sizeY;
             break;
     }
     this->pRaw->pAttributeList->add("ColorMode", "Color mode", NDAttrInt32, &colorMode);
@@ -448,7 +439,7 @@ int simDetector::computeImage()
     int colorMode;
     int ndims=0;
     NDDimension_t dimsOut[3];
-    int dims[3];
+    size_t dims[3];
     NDArrayInfo_t arrayInfo;
     NDArray *pImage;
     const char* functionName = "computeImage";
@@ -604,9 +595,9 @@ int simDetector::computeImage()
     pImage = this->pArrays[0];
     pImage->getInfo(&arrayInfo);
     status = asynSuccess;
-    status |= setIntegerParam(NDArraySize,  arrayInfo.totalBytes);
-    status |= setIntegerParam(NDArraySizeX, pImage->dims[xDim].size);
-    status |= setIntegerParam(NDArraySizeY, pImage->dims[yDim].size);
+    status |= setIntegerParam(NDArraySize,  (int)arrayInfo.totalBytes);
+    status |= setIntegerParam(NDArraySizeX, (int)pImage->dims[xDim].size);
+    status |= setIntegerParam(NDArraySizeY, (int)pImage->dims[yDim].size);
     status |= setIntegerParam(SimResetImage, 0);
     if (status) asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                     "%s:%s: error setting parameters\n",
@@ -1035,12 +1026,10 @@ simDetector::simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDat
 extern "C" int simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int dataType,
                                  int maxBuffers, int maxMemory, int priority, int stackSize)
 {
-    simDetector *pSimDetector
-        = new simDetector(portName, maxSizeX, maxSizeY, (NDDataType_t)dataType,
-                          (maxBuffers < 0) ? 0 : maxBuffers,
-                          (maxMemory < 0) ? 0 : maxMemory, 
-                          priority, stackSize);
-    pSimDetector = NULL;
+    new simDetector(portName, maxSizeX, maxSizeY, (NDDataType_t)dataType,
+                    (maxBuffers < 0) ? 0 : maxBuffers,
+                    (maxMemory < 0) ? 0 : maxMemory, 
+                    priority, stackSize);
     return(asynSuccess);
 }
 
