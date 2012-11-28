@@ -18,10 +18,10 @@ typedef enum {
 
 /** Structure defining an overlay */
 typedef struct NDOverlay {
-    int PositionX;
-    int PositionY;
-    int SizeX;
-    int SizeY;
+    size_t PositionX;
+    size_t PositionY;
+    size_t SizeX;
+    size_t SizeY;
     NDOverlayShape_t shape;
     NDOverlayDrawMode_t drawMode;
     int red;
@@ -80,6 +80,6 @@ private:
     NDOverlay_t *pOverlays;    /* Array of NDOverlay structures */
     NDOverlay_t *pOverlay;
 };
-#define NUM_NDPLUGIN_OVERLAY_PARAMS (&LAST_NDPLUGIN_OVERLAY_PARAM - &FIRST_NDPLUGIN_OVERLAY_PARAM + 1)
+#define NUM_NDPLUGIN_OVERLAY_PARAMS ((int)(&LAST_NDPLUGIN_OVERLAY_PARAM - &FIRST_NDPLUGIN_OVERLAY_PARAM + 1))
     
 #endif

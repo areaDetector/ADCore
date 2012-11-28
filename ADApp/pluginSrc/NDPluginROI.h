@@ -76,6 +76,6 @@ protected:
                                 
 private:
 };
-#define NUM_NDPLUGIN_ROI_PARAMS (&LAST_NDPLUGIN_ROI_PARAM - &FIRST_NDPLUGIN_ROI_PARAM + 1)
+#define NUM_NDPLUGIN_ROI_PARAMS ((int)(&LAST_NDPLUGIN_ROI_PARAM - &FIRST_NDPLUGIN_ROI_PARAM + 1))
     
 #endif

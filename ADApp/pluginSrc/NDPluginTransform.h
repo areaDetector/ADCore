@@ -18,9 +18,9 @@ typedef struct NDTransform {
 
 /** Structure to define a pair of indices */
 typedef struct {
-    int index0;
-    int index1;
-    int index2;
+    size_t index0;
+    size_t index1;
+    size_t index2;
 } NDTransformIndex_t;
 
 /* Enums to describe the types of transformations */
@@ -113,25 +113,25 @@ protected:
 
 private:
 
-    int userDims[ND_ARRAY_MAX_DIMS];
-    int realDims[ND_ARRAY_MAX_DIMS];
+    size_t userDims[ND_ARRAY_MAX_DIMS];
+    size_t realDims[ND_ARRAY_MAX_DIMS];
     int transformFlipsAxes(int);
     void setMaxSizes(int);
     int maxTransforms;
     NDTransform_t *pTransforms;    /* Array of NDTransform structures */
-    int originLocation;
+    size_t originLocation;
     epicsInt32 *totalArray;
     epicsInt32 *netArray;
 
-    NDTransformIndex_t transformNone(NDTransformIndex_t indexIn, int originLocation, int transformNumber);
-    NDTransformIndex_t transformRotateCW90(NDTransformIndex_t indexIn, int originLocation, int transformNumber);
-    NDTransformIndex_t transformRotateCCW90(NDTransformIndex_t indexIn, int originLocation, int transformNumber);
-    NDTransformIndex_t transformRotate180(NDTransformIndex_t indexIn, int originLocation, int transformNumber);
-    NDTransformIndex_t transformFlip0011(NDTransformIndex_t indexIn, int originLocation, int transformNumber);
-    NDTransformIndex_t transformFlip0110(NDTransformIndex_t indexIn, int originLocation, int transformNumber);
-    NDTransformIndex_t transformFlipX(NDTransformIndex_t indexIn, int originLocation, int transformNumber);
-    NDTransformIndex_t transformFlipY(NDTransformIndex_t indexIn, int originLocation, int transformNumber);
-    NDTransformIndex_t transformPixel(NDTransformIndex_t indexIn, int originLocation);
+    NDTransformIndex_t transformNone(NDTransformIndex_t indexIn, size_t originLocation, int transformNumber);
+    NDTransformIndex_t transformRotateCW90(NDTransformIndex_t indexIn, size_t originLocation, int transformNumber);
+    NDTransformIndex_t transformRotateCCW90(NDTransformIndex_t indexIn, size_t originLocation, int transformNumber);
+    NDTransformIndex_t transformRotate180(NDTransformIndex_t indexIn, size_t originLocation, int transformNumber);
+    NDTransformIndex_t transformFlip0011(NDTransformIndex_t indexIn, size_t originLocation, int transformNumber);
+    NDTransformIndex_t transformFlip0110(NDTransformIndex_t indexIn, size_t originLocation, int transformNumber);
+    NDTransformIndex_t transformFlipX(NDTransformIndex_t indexIn, size_t originLocation, int transformNumber);
+    NDTransformIndex_t transformFlipY(NDTransformIndex_t indexIn, size_t originLocation, int transformNumber);
+    NDTransformIndex_t transformPixel(NDTransformIndex_t indexIn, size_t originLocation);
     void transform2DArray(NDArray *inArray, NDArray *outArray);
     void transform3DArray(NDArray *inArray, NDArray *outArray);
     void moveStdPixel(NDArray *inArray, NDTransformIndex_t pixelIndexIn, NDArray *outArray, NDTransformIndex_t pixelIndexOut);
@@ -139,6 +139,6 @@ private:
     void moveRGB2Pixel(NDArray *inArray, NDTransformIndex_t pixelIndexIn, NDArray *outArray, NDTransformIndex_t pixelIndexOut);
 
 };
-#define NUM_TRANSFORM_PARAMS (&LAST_TRANSFORM_PARAM - &FIRST_TRANSFORM_PARAM + 1)
+#define NUM_TRANSFORM_PARAMS ((int)(&LAST_TRANSFORM_PARAM - &FIRST_TRANSFORM_PARAM + 1))
 
 #endif

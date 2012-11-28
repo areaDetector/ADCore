@@ -554,7 +554,6 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
 {
     int fileWriteMode, autoSave, capture;
     int arrayCounter;
-    int status=asynSuccess;
     int numCapture, numCaptured;
     //const char* functionName = "processCallbacks";
 
@@ -586,7 +585,7 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
         case NDFileModeSingle:
             if (autoSave) {
                 arrayCounter++;
-                status = writeFileBase();
+                writeFileBase();
             }
             break;
         case NDFileModeCapture:
@@ -598,7 +597,7 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
                 } 
                 if (numCaptured == numCapture) {
                     if (autoSave) {
-                        status = writeFileBase();
+                        writeFileBase();
                     }
                     capture = 0;
                     setIntegerParam(NDFileCapture, capture);
@@ -610,7 +609,7 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
                 numCaptured++;
                 arrayCounter++;
                 setIntegerParam(NDFileNumCaptured, numCaptured);
-                status = writeFileBase();
+                writeFileBase();
                 if (numCaptured == numCapture) {
                     doCapture(0);
                 }
@@ -739,7 +738,6 @@ NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCall
                      asynFlags, autoConnect, priority, stackSize)
 {
     //const char *functionName = "NDPluginFile";
-    asynStatus status;
     
     this->useAttrFilePrefix = false;
     this->fileMutexId = epicsMutexCreate();
@@ -747,6 +745,6 @@ NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCall
     setStringParam(NDPluginDriverPluginType, "NDPluginFile");
 
     /* Try to connect to the NDArray port */
-    status = connectToArrayPort();
+    connectToArrayPort();
 }
 
