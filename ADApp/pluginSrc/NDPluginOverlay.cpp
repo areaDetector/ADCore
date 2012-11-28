@@ -45,7 +45,7 @@ void NDPluginOverlay::setPixel(epicsType *pValue, NDOverlay_t *pOverlay)
 template <typename epicsType>
 void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
 {
-    int xmin, xmax, ymin, ymax, ix, iy;
+    size_t xmin, xmax, ymin, ymax, ix, iy;
     epicsType *pRow;
 
     switch(pOverlay->shape) {
@@ -136,6 +136,7 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
      */
 
     int use;
+    int itemp;
     int overlay;
     NDArray *pOutput;
     //const char* functionName = "processCallbacks";
@@ -154,8 +155,8 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
     
     /* Get information about the array needed later */
     pOutput->getInfo(&this->arrayInfo);
-    setIntegerParam(NDPluginOverlayMaxSizeX, arrayInfo.xSize);
-    setIntegerParam(NDPluginOverlayMaxSizeY, arrayInfo.ySize);
+    setIntegerParam(NDPluginOverlayMaxSizeX, (int)arrayInfo.xSize);
+    setIntegerParam(NDPluginOverlayMaxSizeY, (int)arrayInfo.ySize);
    
     /* Loop over the overlays in this driver */
     for (overlay=0; overlay<this->maxOverlays; overlay++) {
@@ -163,14 +164,14 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
         getIntegerParam(overlay, NDPluginOverlayUse, &use);
         if (!use) continue;
         /* Need to fetch all of these parameters while we still have the mutex */
-        getIntegerParam(overlay, NDPluginOverlayPositionX,  &pOverlay->PositionX);
+        getIntegerParam(overlay, NDPluginOverlayPositionX,  &itemp); pOverlay->PositionX = itemp;
         pOverlay->PositionX = MAX(pOverlay->PositionX, 0);
         pOverlay->PositionX = MIN(pOverlay->PositionX, this->arrayInfo.xSize-1);
-        getIntegerParam(overlay, NDPluginOverlayPositionY,  &pOverlay->PositionY);
+        getIntegerParam(overlay, NDPluginOverlayPositionY,  &itemp); pOverlay->PositionY = itemp;
         pOverlay->PositionY = MAX(pOverlay->PositionY, 0);
         pOverlay->PositionY = MIN(pOverlay->PositionY, this->arrayInfo.ySize-1);
-        getIntegerParam(overlay, NDPluginOverlaySizeX,      &pOverlay->SizeX);
-        getIntegerParam(overlay, NDPluginOverlaySizeY,      &pOverlay->SizeY);
+        getIntegerParam(overlay, NDPluginOverlaySizeX,      &itemp); pOverlay->SizeX = itemp;
+        getIntegerParam(overlay, NDPluginOverlaySizeY,      &itemp); pOverlay->SizeY = itemp;
         getIntegerParam(overlay, NDPluginOverlayShape,      (int *)&pOverlay->shape);
         getIntegerParam(overlay, NDPluginOverlayDrawMode,   (int *)&pOverlay->drawMode);
         getIntegerParam(overlay, NDPluginOverlayRed,        &pOverlay->red);
@@ -226,7 +227,6 @@ NDPluginOverlay::NDPluginOverlay(const char *portName, int queueSize, int blocki
                    asynGenericPointerMask,
                    ASYN_MULTIDEVICE, 1, priority, stackSize)
 {
-    asynStatus status;
     const char *functionName = "NDPluginOverlay";
 
 
@@ -251,7 +251,7 @@ NDPluginOverlay::NDPluginOverlay(const char *portName, int queueSize, int blocki
     setStringParam(NDPluginDriverPluginType, "NDPluginOverlay");
 
     /* Try to connect to the array port */
-    status = connectToArrayPort();
+    connectToArrayPort();
 }
 
 /** Configuration command */
@@ -260,10 +260,8 @@ extern "C" int NDOverlayConfigure(const char *portName, int queueSize, int block
                                  int maxBuffers, size_t maxMemory,
                                  int priority, int stackSize)
 {
-    NDPluginOverlay *pPlugin =
-        new NDPluginOverlay(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxOverlays,
+    new NDPluginOverlay(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxOverlays,
                         maxBuffers, maxMemory, priority, stackSize);
-    pPlugin = NULL;  /* This is just to eliminate compiler warning about unused variables/objects */
     return(asynSuccess);
 }
 

@@ -127,12 +127,12 @@ protected:
                                 
 private:
     NDArray *pBackground;
-    int     nBackgroundElements;
+    size_t  nBackgroundElements;
     NDArray *pFlatField;
-    int     nFlatFieldElements;
+    size_t  nFlatFieldElements;
     NDArray *pFilter;
-    int     numFiltered;
+    int  numFiltered;
 };
-#define NUM_NDPLUGIN_PROCESS_PARAMS (&LAST_NDPLUGIN_PROCESS_PARAM - &FIRST_NDPLUGIN_PROCESS_PARAM + 1)
+#define NUM_NDPLUGIN_PROCESS_PARAMS ((int)(&LAST_NDPLUGIN_PROCESS_PARAM - &FIRST_NDPLUGIN_PROCESS_PARAM + 1))
     
 #endif
