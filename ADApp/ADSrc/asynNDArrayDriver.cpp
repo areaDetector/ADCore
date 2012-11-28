@@ -43,7 +43,7 @@ int asynNDArrayDriver::checkPath()
     char filePath[MAX_FILENAME_LEN];
     int hasTerminator=0;
     struct stat buff;
-    int len;
+    size_t len;
     int isDir=0;
     int pathExists=0;
     

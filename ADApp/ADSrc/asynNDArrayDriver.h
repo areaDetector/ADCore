@@ -161,5 +161,5 @@ protected:
                                           *  attributes */
 };
 
-#define NUM_NDARRAY_PARAMS (&LAST_NDARRAY_PARAM - &FIRST_NDARRAY_PARAM + 1)
+#define NUM_NDARRAY_PARAMS ((int)(&LAST_NDARRAY_PARAM - &FIRST_NDARRAY_PARAM + 1))
 #endif
