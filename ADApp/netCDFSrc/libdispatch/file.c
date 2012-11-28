@@ -45,7 +45,7 @@ NC_check_file_type(const char *path, int use_parallel, void *mpi_info,
 #endif /* USE_PARALLEL */
    {
       FILE *fp;
-      int i;
+      size_t i;
 
       if (!(fp = fopen(path, "r")))
 	 return errno;
