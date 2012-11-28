@@ -7,17 +7,17 @@
 #include "NDPluginDriver.h"
 
 typedef struct NDStats {
-    int     nElements;
+    size_t  nElements;
     double  total;
     double  net;
     double  mean;
     double  sigma;
     double  min;
-    int     minX;
-    int     minY;    
+    size_t  minX;
+    size_t  minY;    
     double  max;
-    int     maxX;
-    int     maxY;
+    size_t  maxX;
+    size_t  maxY;
 } NDStats_t;
 
 typedef enum {
@@ -232,20 +232,20 @@ private:
     double  *profileX[MAX_PROFILE_TYPES];
     double  *profileY[MAX_PROFILE_TYPES];
     double  *timeSeries[MAX_TIME_SERIES_TYPES];
-    int profileSizeX;
-    int profileSizeY;
-    int cursorX;
-    int cursorY;
+    size_t profileSizeX;
+    size_t profileSizeY;
+    size_t cursorX;
+    size_t cursorY;
     epicsInt32 *totalArray;
     epicsInt32 *netArray;
-    int histogramSize;
-    int histSizeNew;
+    size_t histogramSize;
+    size_t histSizeNew;
     double *histogram;
     double histMin;
     double histMax;
     double histEntropy;
     void doTimeSeriesCallbacks();
 };
-#define NUM_NDPLUGIN_STATS_PARAMS (&LAST_NDPLUGIN_STATS_PARAM - &FIRST_NDPLUGIN_STATS_PARAM + 1)
+#define NUM_NDPLUGIN_STATS_PARAMS ((int)(&LAST_NDPLUGIN_STATS_PARAM - &FIRST_NDPLUGIN_STATS_PARAM + 1))
     
 #endif

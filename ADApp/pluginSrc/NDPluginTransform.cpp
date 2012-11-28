@@ -125,7 +125,7 @@
         for (ii = 0; ii < ND_ARRAY_MAX_DIMS; ii++) {
             dimsIn[userDims[ii]].size = pArray->dims[ii].size;
             if ( ii < 3 ) {
-                setIntegerParam(NDPluginTransformArraySize0 + ii, dimsIn[userDims[ii]].size);
+                setIntegerParam(NDPluginTransformArraySize0 + ii, (int)dimsIn[userDims[ii]].size);
             }
         }
         /* set max size params based on what the transform does to the image */
@@ -253,9 +253,9 @@
                     this->pTransforms[ii].dims[2].size = dimMaxSize[this->userDims[2]];
                 }
             }
-            setIntegerParam( (NDPluginTransform1Dim0MaxSize + 3*(ii)), this->pTransforms[ii].dims[0].size);
-            setIntegerParam( (NDPluginTransform1Dim1MaxSize + 3*(ii)), this->pTransforms[ii].dims[1].size);
-            setIntegerParam( (NDPluginTransform1Dim2MaxSize + 3*(ii)), this->pTransforms[ii].dims[2].size);
+            setIntegerParam( (NDPluginTransform1Dim0MaxSize + 3*(ii)), (int)this->pTransforms[ii].dims[0].size);
+            setIntegerParam( (NDPluginTransform1Dim1MaxSize + 3*(ii)), (int)this->pTransforms[ii].dims[1].size);
+            setIntegerParam( (NDPluginTransform1Dim2MaxSize + 3*(ii)), (int)this->pTransforms[ii].dims[2].size);
 
         }
         callParamCallbacks();
@@ -268,7 +268,7 @@
       * \param[in] transformNumber Index into the list of transforms to be performed.
       * \return the transformed pixel location
     */
-    NDTransformIndex_t NDPluginTransform::transformNone(NDTransformIndex_t indexIn, int originLocation, int transformNumber){
+    NDTransformIndex_t NDPluginTransform::transformNone(NDTransformIndex_t indexIn, size_t originLocation, int transformNumber){
         NDTransformIndex_t indexOut;
         indexOut.index0 = indexIn.index0;
         indexOut.index1 = indexIn.index1;
@@ -282,7 +282,7 @@
       * \param[in] transformNumber Index into the list of transforms to be performed.
       * \return the transformed pixel location
     */
-    NDTransformIndex_t NDPluginTransform::transformRotateCW90(NDTransformIndex_t indexIn, int originLocation, int transformNumber){
+    NDTransformIndex_t NDPluginTransform::transformRotateCW90(NDTransformIndex_t indexIn, size_t originLocation, int transformNumber){
         NDTransformIndex_t indexOut;
         if ( (originLocation == 0 ) || (this->originLocation == 3)){
             indexOut.index0 = indexIn.index1;
@@ -303,7 +303,7 @@
       * \param[in] transformNumber Index into the list of transforms to be performed.
       * \return the transformed pixel location
     */
-    NDTransformIndex_t NDPluginTransform::transformRotateCCW90(NDTransformIndex_t indexIn, int originLocation, int transformNumber){
+    NDTransformIndex_t NDPluginTransform::transformRotateCCW90(NDTransformIndex_t indexIn, size_t originLocation, int transformNumber){
         NDTransformIndex_t indexOut;
         if ( (originLocation == 0 ) || (this->originLocation == 3)){
             indexOut.index0 = (this->pTransforms[transformNumber].dims[0].size - 1) - indexIn.index1;
@@ -325,7 +325,7 @@
       * \param[in] transformNumber Index into the list of transforms to be performed.
       * \return the transformed pixel location
     */
-    NDTransformIndex_t NDPluginTransform::transformRotate180(NDTransformIndex_t indexIn, int originLocation, int transformNumber){
+    NDTransformIndex_t NDPluginTransform::transformRotate180(NDTransformIndex_t indexIn, size_t originLocation, int transformNumber){
         NDTransformIndex_t indexOut;
         indexOut.index0 = (this->pTransforms[transformNumber].dims[0].size - 1) - indexIn.index0;
         indexOut.index1 = (this->pTransforms[transformNumber].dims[1].size - 1) - indexIn.index1;
@@ -340,7 +340,7 @@
       * \param[in] transformNumber Index into the list of transforms to be performed.
       * \return the transformed pixel location
     */
-    NDTransformIndex_t NDPluginTransform::transformFlip0011(NDTransformIndex_t indexIn, int originLocation, int transformNumber){
+    NDTransformIndex_t NDPluginTransform::transformFlip0011(NDTransformIndex_t indexIn, size_t originLocation, int transformNumber){
         NDTransformIndex_t indexOut;
         indexOut.index0 = indexIn.index1;
         indexOut.index1 = indexIn.index0;
@@ -355,7 +355,7 @@
       * \param[in] transformNumber Index into the list of transforms to be performed.
       * \return the transformed pixel location
     */
-    NDTransformIndex_t NDPluginTransform::transformFlip0110(NDTransformIndex_t indexIn, int originLocation, int transformNumber){
+    NDTransformIndex_t NDPluginTransform::transformFlip0110(NDTransformIndex_t indexIn, size_t originLocation, int transformNumber){
         NDTransformIndex_t indexOut;
         indexOut.index0 = (this->pTransforms[transformNumber].dims[0].size - 1) - indexIn.index1;
         indexOut.index1 = (this->pTransforms[transformNumber].dims[1].size - 1) - indexIn.index0;
@@ -370,7 +370,7 @@
       * \param[in] transformNumber Index into the list of transforms to be performed.
       * \return the transformed pixel location
     */
-    NDTransformIndex_t NDPluginTransform::transformFlipX(NDTransformIndex_t indexIn, int originLocation, int transformNumber){
+    NDTransformIndex_t NDPluginTransform::transformFlipX(NDTransformIndex_t indexIn, size_t originLocation, int transformNumber){
         NDTransformIndex_t indexOut;
         indexOut.index0 = (this->pTransforms[transformNumber].dims[0].size - 1) - indexIn.index0;
         indexOut.index1 = indexIn.index1;
@@ -385,7 +385,7 @@
       * \param[in] transformNumber Index into the list of transforms to be performed.
       * \return the transformed pixel location
     */
-    NDTransformIndex_t NDPluginTransform::transformFlipY(NDTransformIndex_t indexIn, int originLocation, int transformNumber){
+    NDTransformIndex_t NDPluginTransform::transformFlipY(NDTransformIndex_t indexIn, size_t originLocation, int transformNumber){
         NDTransformIndex_t indexOut;
         indexOut.index0 = indexIn.index0;
         indexOut.index1 = (this->pTransforms[transformNumber].dims[1].size - 1) - indexIn.index1;
@@ -400,7 +400,7 @@
       * \param[in] originLocation Indicates the physical location of 0,0.
       * \return the transformed pixel location
     */
-    NDTransformIndex_t NDPluginTransform::transformPixel(NDTransformIndex_t indexIn, int originLocation){
+    NDTransformIndex_t NDPluginTransform::transformPixel(NDTransformIndex_t indexIn, size_t originLocation){
         int transformIndex;
         NDTransformIndex_t pixelIndexIn, pixelIndexOut;
         pixelIndexIn.index0 = indexIn.index0;
@@ -537,8 +537,8 @@
   * \param[in] outArray the transformed Array
   */
 void NDPluginTransform::transform3DArray(NDArray *inArray, NDArray *outArray) {
-    int ii, jj, kk;
-    int maxInSize[3], maxOutSize[3];
+    size_t ii, jj, kk;
+    size_t maxInSize[3], maxOutSize[3];
     NDTransformIndex_t pixelIndexIn, pixelIndexOut, pixelIndexInit;
     int colorMode;
 
@@ -583,8 +583,8 @@ void NDPluginTransform::transform3DArray(NDArray *inArray, NDArray *outArray) {
   */
 
 void NDPluginTransform::transform2DArray(NDArray *inArray, NDArray *outArray) {
-    int ii, jj;
-    int maxInSize0, maxInSize1, maxOutSize0, maxOutSize1;
+    size_t ii, jj;
+    size_t maxInSize0, maxInSize1, maxOutSize0, maxOutSize1;
     NDTransformIndex_t pixelIndexIn, pixelIndexOut, pixelIndexInit;
 
 
@@ -640,7 +640,6 @@ NDPluginTransform::NDPluginTransform(const char *portName, int queueSize, int bl
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    ASYN_MULTIDEVICE, 1, priority, stackSize)
 {
-    asynStatus status;
     const char *functionName = "NDPluginTransform";
     int ii, jj;
 
@@ -705,11 +704,8 @@ NDPluginTransform::NDPluginTransform(const char *portName, int queueSize, int bl
     setIntegerParam(NDPluginTransformArraySize1, 0);
     setIntegerParam(NDPluginTransformArraySize2, 0);
 
-
-
-
     /* Try to connect to the array port */
-    status = connectToArrayPort();
+    connectToArrayPort();
 }
 
 /** Configuration command */
@@ -718,10 +714,8 @@ extern "C" int NDTransformConfigure(const char *portName, int queueSize, int blo
                                  int maxBuffers, size_t maxMemory,
                                  int priority, int stackSize)
 {
-    NDPluginTransform *pPlugin =
     new NDPluginTransform(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                    maxBuffers, maxMemory, priority, stackSize);
-    pPlugin = NULL;  /* This is just to eliminate compiler warning about unused variables/objects */
+                          maxBuffers, maxMemory, priority, stackSize);
     return(asynSuccess);
 }
 
