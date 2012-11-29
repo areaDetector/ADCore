@@ -7,7 +7,7 @@ include $(TOP)/configure/CONFIG
 
 INC += napi.h
 
-USR_CFLAGS += -DHDF5 -DH5_USE_16_API -D_FILE_OFFSET_BITS=64
+USR_CFLAGS += -DHDF5 -D_FILE_OFFSET_BITS=64
 
 NeXus_LIBS_Darwin += hdf5 sz
 
