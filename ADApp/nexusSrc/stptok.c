@@ -38,7 +38,6 @@ char *stptok(const char *s, char *tok, size_t toklen, char *brk)
       return (char *)s;
 }
 /*---------------------------------------------------------------------------*/
-/*
  static char *SkipSpace(char *pText)
  {
    char *pRes;
@@ -54,7 +53,7 @@ char *stptok(const char *s, char *tok, size_t toklen, char *brk)
    }
    return NULL;
  }
-*/ 
+ 
 
 
 

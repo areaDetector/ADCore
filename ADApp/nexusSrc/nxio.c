@@ -21,7 +21,7 @@
  *  License along with this library; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *  For further information, see <http://www.neutron.anl.gov/NeXus/>
+ *  For further information, see <http://www.nexusformat.org>
  */
 
 #ifdef NXXML 
@@ -37,6 +37,10 @@
 #ifndef MXML_WRAP
 #define MXML_WRAP 79
 #endif
+
+#ifdef _MSC_VER
+#define snprintf _snprintf
+#endif /* _MSC_VER */
 
 /* #define TESTMAIN 1 */
 /*=================== type code handling ================================= */
@@ -93,12 +97,12 @@ void initializeNumberFormats(){
   typecode[7] = myCode;
 
   strcpy(myCode.name,"NX_INT64");
-  strcpy(myCode.format,"%24" PRINTF_INT64 );
+  strcpy(myCode.format,"%24lld");
   myCode.nx_type = NX_INT64;
   typecode[8] = myCode;
 
   strcpy(myCode.name,"NX_UINT64");
-  strcpy(myCode.format,"%24" PRINTF_UINT64);
+  strcpy(myCode.format,"%24llu");
   myCode.nx_type = NX_UINT64;
   typecode[9] = myCode;
 
@@ -147,7 +151,7 @@ static int				/* O  - 0 on success, -1 on error */
 myxml_add_char(int  ch,			/* I  - Character to add */
               char **bufptr,		/* IO - Current position in buffer */
 	      char **buffer,		/* IO - Current buffer */
-	      int  *bufsize)		/* IO - Current buffer size */
+	      size_t  *bufsize)		/* IO - Current buffer size */
 {
   char	*newbuffer;			/* New buffer value */
 
@@ -236,7 +240,7 @@ extern char *stptok(char *s, char *tok, size_t toklen, char *brk);
  * needs to do a strlen() or equivalent 
  */
 void analyzeDim(const char *typeString, int *rank, 
-			    int *iDim, int *type){
+			    int64_t *iDim, int *type){
   char dimString[132];
   char dim[20];
   const char *dimStart, *dimEnd;
@@ -325,8 +329,8 @@ static mxml_node_t* findDimsNode(mxml_node_t *node)
 
 /*---------------------------------------------------------------------*/
 /*return 1 if in table mode , 0 if not */
-static int analyzeDataType(mxml_node_t *parent, int *rank, int *type,
-			    int *iDim){
+static void analyzeDataType(mxml_node_t *parent, int *rank, int *type,
+			    int64_t *iDim){
   const char *typeString;
   mxml_node_t* tnode;
   int nx_type = -1;
@@ -347,7 +351,7 @@ static int analyzeDataType(mxml_node_t *parent, int *rank, int *type,
   }
   typeString = mxmlElementGetAttr(parent,TYPENAME);
   if(typeString == NULL){
-    return table_mode;
+    return;
   }
 
   nx_type = translateTypeCode((char *)typeString);
@@ -360,7 +364,7 @@ static int analyzeDataType(mxml_node_t *parent, int *rank, int *type,
      "ERROR: %s is an invalid NeXus type, I try to continue but may fail",
      typeString);
     *type =NX_CHAR;
-    return table_mode;
+    return;
   }
 
   *type = nx_type;
@@ -371,7 +375,7 @@ static int analyzeDataType(mxml_node_t *parent, int *rank, int *type,
 	*rank = 1;
 	iDim[0] = 1;
   }
-  return table_mode;
+  return;
 }
 /*-------------------------------------------------------------------*/
 void destroyDataset(void *data){
@@ -439,14 +443,14 @@ mxml_type_t nexusTypeCallback(mxml_node_t *parent){
 /*----------------------------------------------------------------------*/
 int nexusLoadCallback(mxml_node_t *node, const char *buffer){
   mxml_node_t *parent = NULL;
-  int rank, type, iDim[NX_MAXRANK];
+  int rank, type; 
+  int64_t iDim[NX_MAXRANK];
   char pNumber[80], *pStart;
   long address, maxAddress;
   pNXDS dataset = NULL;
-  int table_mode;
 
   parent = node->parent;
-  table_mode = analyzeDataType(parent,&rank,&type,iDim);
+  analyzeDataType(parent,&rank,&type,iDim);
   if(iDim[0] == -1 || !strcmp(parent->parent->value.element.name, DIMS_NODE_NAME)){
     iDim[0] = strlen(buffer);
     node->value.custom.data = strdup(buffer);
@@ -477,7 +481,7 @@ int nexusLoadCallback(mxml_node_t *node, const char *buffer){
   return 0;
 }
 /*---------------------------------------------------------------------*/
-static void stringIntoBuffer(char **buffer, char **bufPtr, int *bufSize, 
+static void stringIntoBuffer(char **buffer, char **bufPtr, size_t *bufSize, 
 		      char *string){
   size_t i;
 
@@ -532,7 +536,8 @@ char *nexusWriteCallback(mxml_node_t *node){
   char pNumber[80], indent[80], format[30];
   char *buffer, *bufPtr;
   pNXDS dataset;
-  int bufsize, i, length, currentLen, table_style = 0; 
+  int currentLen, table_style = 0; 
+  size_t i, bufsize, length;
   int is_definition = 0;
   /* this is set by nxconvert when making a definiton */
   is_definition = (getenv("NX_IS_DEFINITION") != NULL);

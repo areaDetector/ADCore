@@ -19,9 +19,9 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
              
-  For further information, see <http://www.neutron.anl.gov/NeXus/>
+  For further information, see <http://www.nexusformat.org>
   
-  $Id: napi4.c 1427 2010-02-24 11:38:23Z Freddie Akeroyd $
+  $Id: napi4.c 1814 2012-02-07 14:37:57Z Freddie Akeroyd $
 
 ----------------------------------------------------------------------------*/
 
@@ -56,9 +56,6 @@ extern	void *NXpData;
     char iAccess[2];
   } NexusFile, *pNexusFile;
    /*-------------------------------------------------------------------*/
-   static void ignoreError(void *data, char *text){
-   }
-   /*--------------------------------------------------------------------*/
 
   static pNexusFile NXIassert(NXhandle fid)
   {
@@ -126,7 +123,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
       }
       pArray = (int32 *) malloc (iN * sizeof (int32));
       if (!pArray) {
-        NXIReportError (NXpData, "ERROR: out of memory in NXIFindVgroup");
+        NXReportError( "ERROR: out of memory in NXIFindVgroup");
         return NX_EOD;
       }
       Vlone (pFile->iVID, pArray, iN);
@@ -186,7 +183,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     if (self->iCurrentVG == 0) {
       i = SDfileinfo (self->iSID, &iN, &iA);
       if (i < 0) {
-        NXIReportError (NXpData, "ERROR: failure to read file information");
+        NXReportError( "ERROR: failure to read file information");
         return NX_EOD;
       }
       for (i = 0; i < iN; i++) {
@@ -245,7 +242,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
       self->iStack[iStackPtr].iRefDir = 
           (int32 *) malloc (self->iStack[iStackPtr].iNDir * sizeof (int32) + 1);
       if (!self->iStack[iStackPtr].iRefDir) {
-        NXIReportError (NXpData, "ERROR: out of memory in NXIInitDir");
+        NXReportError( "ERROR: out of memory in NXIInitDir");
         return NX_EOD;
       }
       Vlone (self->iVID,
@@ -260,7 +257,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
         (int32 *) malloc (self->iStack[iStackPtr].iNDir * sizeof (int32) + 1);
       if ((!self->iStack[iStackPtr].iRefDir) ||
           (!self->iStack[iStackPtr].iTagDir)) {
-        NXIReportError (NXpData, "ERROR: out of memory in NXIInitDir");
+        NXReportError( "ERROR: out of memory in NXIInitDir");
         return NX_EOD;
       }
       for (i = 0; i < self->iStack[self->iStackPtr].iNDir; i++) {
@@ -314,7 +311,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
       }
     }
     if (iRet < 0) {
-      NXIReportError (NXpData, "ERROR: HDF cannot read attribute numbers");
+      NXReportError( "ERROR: HDF cannot read attribute numbers");
       pFile->iAtt.iNDir = 0;
       return NX_ERROR;
     }
@@ -353,13 +350,13 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
           if (Vgetname(groupID, pText) != -1) {
               strncat(buffer,pText,bufLen-strlen(buffer));
           } else {
-              NXIReportError (NXpData, "ERROR: NXIbuildPath cannot get vgroup name");
+              NXReportError( "ERROR: NXIbuildPath cannot get vgroup name");
           }
           Vdetach(groupID);
       }
       else
       {
-          NXIReportError (NXpData, "ERROR: NXIbuildPath cannot attach to vgroup");
+          NXReportError( "ERROR: NXIbuildPath cannot attach to vgroup");
       }
     }
     if(pFile->iCurrentSDS != 0){
@@ -369,7 +366,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
       }
       else
       {
-          NXIReportError (NXpData, "ERROR: NXIbuildPath cannot read SDS");
+          NXReportError( "ERROR: NXIbuildPath cannot read SDS");
       }
     }
   } 
@@ -389,7 +386,6 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     char HDF_VERSION[64];
     uint32 lmajor, lminor, lrelease;
     int32 am1=0;
-    int32 file_id=0, an_id=0, ann_id=0;
   
     *pHandle = NULL;
 
@@ -408,7 +404,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     /* get memory */
     pNew = (pNexusFile) malloc (sizeof (NexusFile));
     if (!pNew) {
-      NXIReportError (NXpData, "ERROR: no memory to create File datastructure");
+      NXReportError( "ERROR: no memory to create File datastructure");
       return NX_ERROR;
     }
     memset (pNew, 0, sizeof (NexusFile));
@@ -421,7 +417,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     if (am == NXACC_CREATE || am == NXACC_CREATE4) {
       if ( (file_id = Hopen(filename, am1, 0)) == -1 ) {
         sprintf (pBuffer, "ERROR: cannot open file_a: %s", filename);
-        NXIReportError (NXpData, pBuffer);
+        NXReportError( pBuffer);
         free (pNew);
         return NX_ERROR;
       }
@@ -432,7 +428,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
       ANend(an_id);
       if (Hclose(file_id) == -1) {
         sprintf (pBuffer, "ERROR: cannot close file: %s", filename);
-        NXIReportError (NXpData, pBuffer);
+        NXReportError( pBuffer);
         free (pNew);
         return NX_ERROR;
       }
@@ -444,7 +440,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     pNew->iSID = SDstart (filename, am1);
     if (pNew->iSID <= 0) {
       sprintf (pBuffer, "ERROR: cannot open file_b: %s", filename);
-      NXIReportError (NXpData, pBuffer);
+      NXReportError( pBuffer);
       free (pNew);
       return NX_ERROR;
     }
@@ -454,12 +450,12 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
  */
     if (am != NXACC_READ) {
       if (SDsetattr(pNew->iSID, "NeXus_version", DFNT_CHAR8, strlen(NEXUS_VERSION), NEXUS_VERSION) < 0) {
-          NXIReportError (NXpData, "ERROR: HDF failed to store NeXus_version attribute ");
+          NXReportError( "ERROR: HDF failed to store NeXus_version attribute ");
           return NX_ERROR;
       }
       Hgetlibversion(&lmajor, &lminor, &lrelease, HDF_VERSION); 
       if (SDsetattr(pNew->iSID, "HDF_version", DFNT_CHAR8, strlen(HDF_VERSION), HDF_VERSION) < 0) {
-          NXIReportError (NXpData, "ERROR: HDF failed to store HDF_version attribute ");
+          NXReportError( "ERROR: HDF failed to store HDF_version attribute ");
           return NX_ERROR;
       }
     }
@@ -467,13 +463,13 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     time_puffer = NXIformatNeXusTime();
     if (am == NXACC_CREATE || am == NXACC_CREATE4) {
       if (SDsetattr(pNew->iSID, "file_name", DFNT_CHAR8, strlen(filename), (char*)filename) < 0) {
-        NXIReportError (NXpData, "ERROR: HDF failed to store file_name attribute ");
+        NXReportError( "ERROR: HDF failed to store file_name attribute ");
         return NX_ERROR;
       }
       if(time_puffer != NULL){
 	if (SDsetattr(pNew->iSID, "file_time", DFNT_CHAR8, 
 		      strlen(time_puffer), time_puffer) < 0) {
-	  NXIReportError (NXpData, 
+	  NXReportError( 
 			  "ERROR: HDF failed to store file_time attribute ");
 	  free(time_puffer);
 	  return NX_ERROR;
@@ -505,7 +501,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     pNew->iVID = Hopen(filename, am1, 100);
     if (pNew->iVID <= 0) {
       sprintf (pBuffer, "ERROR: cannot open file_c: %s", filename);
-      NXIReportError (NXpData, pBuffer);
+      NXReportError( pBuffer);
       free (pNew);
       return NX_ERROR;
     }
@@ -534,17 +530,17 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
       iRet = SDendaccess (pFile->iCurrentSDS);
     }
     if (iRet < 0) {
-      NXIReportError (NXpData, "ERROR: ending access to SDS");
+      NXReportError( "ERROR: ending access to SDS");
     }
     /* close the SDS and Vgroup API's */
     Vend (pFile->iVID);
     iRet = SDend (pFile->iSID);
     if (iRet < 0) {
-      NXIReportError (NXpData, "ERROR: HDF cannot close SDS interface");
+      NXReportError( "ERROR: HDF cannot close SDS interface");
     }
     iRet = Hclose (pFile->iVID);
     if (iRet < 0) {
-      NXIReportError (NXpData, "ERROR: HDF cannot close HDF file");
+      NXReportError( "ERROR: HDF cannot close HDF file");
     }
     /* release memory */
     NXIKillDir (pFile);
@@ -571,14 +567,14 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     if ((iRet = NXIFindVgroup (pFile, (char*)name, nxclass)) >= 0) {
       sprintf (pBuffer, "ERROR: Vgroup %s, class %s already exists", 
                         name, nxclass);
-      NXIReportError (NXpData, pBuffer);
+      NXReportError( pBuffer);
       return NX_ERROR;
     }
   
     /* create and configure the group */
     iNew = Vattach (pFile->iVID, -1, "w");
     if (iNew < 0) {
-      NXIReportError (NXpData, "ERROR: HDF could not create Vgroup");
+      NXReportError( "ERROR: HDF could not create Vgroup");
       return NX_ERROR;
     }
     Vsetname (iNew, name);
@@ -591,7 +587,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     }
     Vdetach (iNew);
     if (iRet < 0) {
-      NXIReportError (NXpData, "ERROR: HDF failed to insert Vgroup");
+      NXReportError( "ERROR: HDF failed to insert Vgroup");
       return NX_ERROR;
     }
     return NX_OK;
@@ -609,8 +605,8 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
   
     iRef = NXIFindVgroup (pFile, (char*)name, nxclass);
     if (iRef < 0) {
-      sprintf (pBuffer, "ERROR: Vgroup %s, class %s NOT found", name, nxclass);
-      NXIReportError (NXpData, pBuffer);
+      sprintf (pBuffer, "ERROR: Vgroup \"%s\", class \"%s\" NOT found", name, nxclass);
+      NXReportError( pBuffer);
       return NX_ERROR;
     }
     /* are we at root level ? */
@@ -665,8 +661,8 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
   
   /* --------------------------------------------------------------------- */
   
-  NXstatus  NX4makedata (NXhandle fid, CONSTCHAR *name, int datatype, int rank,
-              int dimensions[])
+  NXstatus  NX4makedata64 (NXhandle fid, CONSTCHAR *name, int datatype, int rank,
+              int64_t dimensions[])
   {
     pNexusFile pFile;
     int32 iNew;
@@ -683,7 +679,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
      
     if ((iNew = NXIFindSDS (fid, name))>=0) {
       sprintf (pBuffer, "ERROR: SDS %s already exists at this level", name);
-      NXIReportError (NXpData, pBuffer);
+      NXReportError( pBuffer);
       return NX_ERROR;
     }
   
@@ -725,14 +721,14 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     }
     else
     {
-      NXIReportError (NXpData, "ERROR: invalid type in NX4makedata");
+      NXReportError( "ERROR: invalid type in NX4makedata");
       return NX_ERROR;
     }
       
     if (rank <= 0) {
       sprintf (pBuffer, "ERROR: invalid rank specified for SDS %s",
                name);
-      NXIReportError (NXpData, pBuffer);
+      NXReportError( pBuffer);
       return NX_ERROR;
     }
 
@@ -743,9 +739,9 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     for (i = 1; i < rank; i++) {
       if (dimensions[i] <= 0) {
         sprintf (pBuffer,
-                 "ERROR: invalid dimension %d, value %d given for SDS %s",
-                 i, dimensions[i], name);
-        NXIReportError (NXpData, pBuffer);
+                 "ERROR: invalid dimension %d, value %lld given for SDS %s",
+                 i, (long long)dimensions[i], name);
+        NXReportError( pBuffer);
         return NX_ERROR;
       }
     }
@@ -766,7 +762,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     /* Do not allow creation of SDS's at the root level */
     if (pFile->iCurrentVG == 0) {
       sprintf(pBuffer, "ERROR: SDS creation at root level is not permitted");
-      NXIReportError(NXpData, pBuffer);
+      NXReportError( pBuffer);
       return NX_ERROR;
     }
           
@@ -776,7 +772,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     if (iNew < 0) {
       sprintf (pBuffer, "ERROR: cannot create SDS %s, check arguments",
                name);
-      NXIReportError (NXpData, pBuffer);
+      NXReportError( pBuffer);
       return NX_ERROR;
     }
     /* link into Vgroup, if in one */
@@ -785,7 +781,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     }
     iRet = SDendaccess (iNew);
     if (iRet < 0) {
-      NXIReportError (NXpData, "ERROR: HDF cannot end access to SDS");
+      NXReportError( "ERROR: HDF cannot end access to SDS");
       return NX_ERROR;
     }
     return NX_OK;
@@ -795,8 +791,8 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
  /* --------------------------------------------------------------------- */
   
    
-  NXstatus  NX4compmakedata (NXhandle fid, CONSTCHAR *name, int datatype, int rank,
-              int dimensions[],int compress_type, int chunk_size[])
+  NXstatus  NX4compmakedata64 (NXhandle fid, CONSTCHAR *name, int datatype, int rank,
+              int64_t dimensions[],int compress_type, int64_t chunk_size[])
   {
     pNexusFile pFile;
     int32 iNew, iRet, type;
@@ -814,7 +810,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
      
     if ((iNew = NXIFindSDS (fid, name))>=0) {
       sprintf (pBuffer, "ERROR: SDS %s already exists at this level", name);
-      NXIReportError (NXpData, pBuffer);
+      NXReportError( pBuffer);
       return NX_ERROR;
     }
   
@@ -856,14 +852,14 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     }
     else
     {
-      NXIReportError (NXpData, "ERROR: invalid datatype in NX4compmakedata");
+      NXReportError( "ERROR: invalid datatype in NX4compmakedata");
       return NX_ERROR;
     }
       
     if (rank <= 0) {
       sprintf (pBuffer, "ERROR: invalid rank specified for SDS %s",
                name);
-      NXIReportError (NXpData, pBuffer);
+      NXReportError( pBuffer);
       return NX_ERROR;
     }
 
@@ -874,9 +870,9 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     for (i = 1; i < rank; i++) {
       if (dimensions[i] <= 0) {
         sprintf (pBuffer,
-                 "ERROR: invalid dimension %d, value %d given for SDS %s",
-                 i, dimensions[i], name);
-        NXIReportError (NXpData, pBuffer);
+                 "ERROR: invalid dimension %d, value %lld given for SDS %s",
+                 i, (long long)dimensions[i], name);
+        NXReportError( pBuffer);
         return NX_ERROR;
       }
     }
@@ -897,7 +893,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     /* Do not allow creation of SDS's at the root level */
     if (pFile->iCurrentVG == 0) {
       sprintf(pBuffer, "ERROR: SDS creation at root level is not permitted");
-      NXIReportError(NXpData, pBuffer);
+      NXReportError( pBuffer);
       return NX_ERROR;
     }
           
@@ -907,7 +903,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     if (iNew < 0) {
       sprintf (pBuffer, "ERROR: cannot create SDS %s, check arguments",
                name);
-      NXIReportError (NXpData, pBuffer);
+      NXReportError( pBuffer);
       return NX_ERROR;
     }
      
@@ -925,7 +921,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
       iRet = SDsetcompress(iNew, COMP_CODE_DEFLATE, &compstruct);
       if (iRet < 0) 
       {
-        NXIReportError (NXpData, "LZW-Compression failure!");
+        NXReportError( "LZW-Compression failure!");
         return NX_ERROR;
       } 
     }
@@ -934,7 +930,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
       iRet = SDsetcompress(iNew, COMP_CODE_RLE, &compstruct);
       if (iRet < 0) 
         {
-          NXIReportError (NXpData, "RLE-Compression failure!");
+          NXReportError( "RLE-Compression failure!");
           return NX_ERROR;
         }   
     }
@@ -944,7 +940,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
       iRet = SDsetcompress(iNew, COMP_CODE_SKPHUFF, &compstruct);
       if (iRet < 0) 
         {
-          NXIReportError (NXpData, "HUF-Compression failure!");
+          NXReportError( "HUF-Compression failure!");
           return NX_ERROR;
         }  
     }
@@ -954,7 +950,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     }
     else 
     {
-      NXIReportError (NXpData, "Unknown compression method!");
+      NXReportError( "Unknown compression method!");
       return NX_ERROR; 
     }
     /* link into Vgroup, if in one */
@@ -963,7 +959,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     }
     iRet = SDendaccess (iNew);
     if (iRet < 0) {
-      NXIReportError (NXpData, "ERROR: HDF cannot end access to SDS");
+      NXReportError( "ERROR: HDF cannot end access to SDS");
       return NX_ERROR;
     }
     
@@ -988,7 +984,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
   
     /* check if there is an SDS open */
     if (pFile->iCurrentSDS == 0) {
-      NXIReportError (NXpData, "ERROR: no SDS open");
+      NXReportError( "ERROR: no SDS open");
       return NX_ERROR;
     }
     
@@ -1035,7 +1031,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     iRet = SDsetcompress(pFile->iCurrentSDS, compress_typei, &compstruct);
     if (iRet < 0) {
       sprintf (pError, "ERROR: failure to compress data to %s", pBuffer);
-      NXIReportError (NXpData, pError);
+      NXReportError( pError);
       return NX_ERROR;
     }
     return NX_OK;
@@ -1056,8 +1052,8 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     /* First find the reference number of the SDS */
     iNew = NXIFindSDS (fid, name);
     if (iNew < 0) {
-      sprintf (pBuffer, "ERROR: SDS %s not found at this level", name);
-      NXIReportError (NXpData, pBuffer);
+      sprintf (pBuffer, "ERROR: SDS \"%s\" not found at this level", name);
+      NXReportError( pBuffer);
       return NX_ERROR;
     }
     /* Be nice: properly close the old open SDS silently if there is
@@ -1066,7 +1062,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     if (pFile->iCurrentSDS) {
       iRet = SDendaccess (pFile->iCurrentSDS);
       if (iRet < 0) {
-        NXIReportError (NXpData, "ERROR: HDF cannot end access to SDS");
+        NXReportError( "ERROR: HDF cannot end access to SDS");
       }
     }
     /* clear pending attribute directories first */
@@ -1085,7 +1081,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     }
 
     if (pFile->iCurrentSDS < 0) {
-      NXIReportError (NXpData, "ERROR: HDF error opening SDS");
+      NXReportError( "ERROR: HDF error opening SDS");
       pFile->iCurrentSDS = 0;
       return NX_ERROR;
     }
@@ -1106,11 +1102,11 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
       iRet = SDendaccess (pFile->iCurrentSDS);
       pFile->iCurrentSDS = 0;
       if (iRet < 0) {
-        NXIReportError (NXpData, "ERROR: HDF cannot end access to SDS");
+        NXReportError( "ERROR: HDF cannot end access to SDS");
         return NX_ERROR;
       }
     } else {
-      NXIReportError (NXpData, "ERROR: no SDS open --> nothing to do");
+      NXReportError( "ERROR: no SDS open --> nothing to do");
       return NX_ERROR;
     }
     NXIKillAttDir (pFile);                /* for attribute data */
@@ -1120,7 +1116,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
   
   /* ------------------------------------------------------------------- */
 
-  NXstatus  NX4putdata (NXhandle fid, void *data)
+  NXstatus  NX4putdata (NXhandle fid, const void *data)
   {
     pNexusFile pFile;
     int32 iStart[H4_MAX_VAR_DIMS], iSize[H4_MAX_VAR_DIMS], iStride[H4_MAX_VAR_DIMS];
@@ -1132,7 +1128,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
   
     /* check if there is an SDS open */
     if (pFile->iCurrentSDS == 0) {
-      NXIReportError (NXpData, "ERROR: no SDS open");
+      NXReportError( "ERROR: no SDS open");
       return NX_ERROR;
     }
     /* first read dimension information */
@@ -1145,11 +1141,11 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     }
   
     /* actually write */
-    iRet = SDwritedata (pFile->iCurrentSDS, iStart, iStride, iSize, data);
+    iRet = SDwritedata (pFile->iCurrentSDS, iStart, iStride, iSize, (void*)data);
     if (iRet < 0) {
       /* HEprint(stdout,0); */
       sprintf (pError, "ERROR: failure to write data to %s", pBuffer);
-      NXIReportError (NXpData, pError);
+      NXReportError( pError);
       return NX_ERROR;
     }
     return NX_OK;
@@ -1158,7 +1154,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
   /* ------------------------------------------------------------------- */
 
   NXstatus
-   NX4putattr (NXhandle fid, CONSTCHAR *name, void *data, int datalen, int iType)
+   NX4putattr (NXhandle fid, CONSTCHAR *name, const void *data, int datalen, int iType)
   {
     pNexusFile pFile;
     int iRet, type;
@@ -1202,7 +1198,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     }
     else
     {
-      NXIReportError (NXpData, "ERROR: Invalid data type for HDF attribute");
+      NXReportError( "ERROR: Invalid data type for HDF attribute");
       return NX_ERROR;
     }
     if (pFile->iCurrentSDS != 0) {
@@ -1222,7 +1218,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     }
     iType = type;
     if (iRet < 0) {
-      NXIReportError (NXpData, "ERROR: HDF failed to store attribute ");
+      NXReportError( "ERROR: HDF failed to store attribute ");
       return NX_ERROR;
     }
     return NX_OK;
@@ -1231,7 +1227,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
    /* ------------------------------------------------------------------- */
 
    
-  NXstatus  NX4putslab (NXhandle fid, void *data, int iStart[], int iSize[])
+  NXstatus  NX4putslab64 (NXhandle fid, const void *data, const int64_t iStart[], const int64_t iSize[])
   {
     pNexusFile pFile;
     int iRet;
@@ -1245,7 +1241,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
   
     /* check if there is an SDS open */
     if (pFile->iCurrentSDS == 0) {
-      NXIReportError (NXpData, "ERROR: no SDS open");
+      NXReportError( "ERROR: no SDS open");
       return NX_ERROR;
     }
     /* initialise stride to 1 */
@@ -1253,11 +1249,6 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
       iStride[i] = 1;
     }
 
-    /* if an int is not 32-bit we have to cast them properly in order
-       to kill a bug.
-    */
-    if(sizeof(int) != 4)
-    {
          SDgetinfo (pFile->iCurrentSDS, pBuffer, 
             &iRank, myStart, &iType, &iAtt);
          for(i = 0; i < iRank; i++)
@@ -1267,19 +1258,12 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
          }
          /* finally write */
          iRet = SDwritedata (pFile->iCurrentSDS, myStart, 
-                        iStride, mySize, data);
+                        iStride, mySize, (void*)data);
 
-    }
-    else
-    {
-       /* write directly */ 
-       
-       iRet = SDwritedata (pFile->iCurrentSDS,(int32*)iStart, iStride, (int32*)iSize, data);
-    }
 
     /* deal with HDF errors */
     if (iRet < 0) {
-      NXIReportError (NXpData, "ERROR: writing slab failed");
+      NXReportError( "ERROR: writing slab failed");
       return NX_ERROR;
     }
     return NX_OK;
@@ -1291,7 +1275,6 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
   NXstatus  NX4getdataID (NXhandle fid, NXlink* sRes)
   {
     pNexusFile pFile;
-    ErrFunc oldErr;
     int datalen, type = NX_CHAR;
 
     pFile = NXIassert (fid);
@@ -1302,15 +1285,14 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     } else {
       sRes->iTag = DFTAG_NDG;
       sRes->iRef = SDidtoref (pFile->iCurrentSDS);
-      oldErr = NXMGetError();
-      NXMSetError(NXpData, ignoreError);
+      NXMDisableErrorReporting();
       datalen = 1024;
       memset(&sRes->targetPath,0,1024);
       if(NX4getattr(fid,"target",&sRes->targetPath,&datalen,&type) != NX_OK)
       {
 	NXIbuildPath(pFile,sRes->targetPath,1024);
       }
-      NXMSetError(NXpData,oldErr);
+      NXMEnableErrorReporting();
       return NX_OK;
     }
     sRes->iTag = NX_ERROR;
@@ -1358,7 +1340,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     pNexusFile pFile;
     int32 dataID, type = DFNT_CHAR8, length, dataType = NX_CHAR, 
       rank = 1, attType = NX_INT32;
-    int iDim[1];
+    int64_t iDim[1];
     char name[] = "target";
     int tags[2];  
 
@@ -1376,7 +1358,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
        sLink->iTag == DFTAG_SDS)
     {
       iDim[0] = 1;
-      NX4makedata(fid,newname, dataType,rank,iDim);
+      NX4makedata64(fid,newname, dataType,rank,iDim);
       NX4opendata(fid,newname);
       NX4putattr(fid,"NAPIlink",tags, 2, attType);
       NX4closedata(fid); 
@@ -1400,8 +1382,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
   
   NXstatus  NX4printlink (NXhandle fid, NXlink* sLink)
   {
-    pNexusFile pFile;
-    pFile = NXIassert (fid);
+     NXIassert (fid);
      printf("HDF4 link: iTag = %ld, iRef = %ld, target=\"%s\"\n", sLink->iTag, sLink->iRef, sLink->targetPath);
     return NX_OK;
   }
@@ -1429,7 +1410,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     */
     iRet = Hfidinquire(pFile->iVID,&pFileName,&access,&dummy);
     if (iRet < 0) {
-      NXIReportError (NXpData, 
+      NXReportError( 
         "ERROR: Failed to inquire file name for HDF file");
       return NX_ERROR;
     }
@@ -1438,13 +1419,13 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     }else if(pFile->iAccess[0] == 'w') {
       ac = NXACC_RDWR;
     } else {
-      NXIReportError (NXpData, 
+      NXReportError( 
         "ERROR: NX4flush failed to determine file access mode");
       return NX_ERROR;
     }
     pCopy = (char *)malloc((strlen(pFileName)+10)*sizeof(char));
     if(!pCopy) {
-      NXIReportError (NXpData, 
+      NXReportError( 
         "ERROR: Failed to allocate data for filename copy");
       return NX_ERROR;
     }
@@ -1457,7 +1438,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
       iStack = pFile->iStackPtr + 1;
       iRefs = (int *)malloc(iStack*sizeof(int));
       if(!iRefs){
-        NXIReportError (NXpData, 
+        NXReportError( 
         "ERROR: Failed to allocate data for hierarchy copy");
         return NX_ERROR;
       }
@@ -1509,7 +1490,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     if (pFile->iStack[pFile->iStackPtr].iRefDir == NULL) {
       iRet = NXIInitDir (pFile);
       if (iRet < 0) {
-        NXIReportError (NXpData,
+        NXReportError(
                         "ERROR: no memory to store directory info");
         return NX_EOD;
       }
@@ -1526,7 +1507,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
       iTemp = Vattach (pFile->iVID,
                        pFile->iStack[iStackPtr].iRefDir[iCurDir], "r");
       if (iTemp < 0) {
-        NXIReportError (NXpData, "ERROR: HDF cannot attach to Vgroup");
+        NXReportError( "ERROR: HDF cannot attach to Vgroup");
         return NX_ERROR;
       }
       Vgetname (iTemp, name);
@@ -1540,7 +1521,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
         iTemp = Vattach (pFile->iVID,
                          pFile->iStack[iStackPtr].iRefDir[iCurDir], "r");
         if (iTemp < 0) {
-          NXIReportError (NXpData, "ERROR: HDF cannot attach to Vgroup");
+          NXReportError( "ERROR: HDF cannot attach to Vgroup");
           return NX_ERROR;
         }
         Vgetname (iTemp, name);
@@ -1589,7 +1570,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
   
     /* check if there is an SDS open */
     if (pFile->iCurrentSDS == 0) {
-      NXIReportError (NXpData, "ERROR: no SDS open");
+      NXReportError( "ERROR: no SDS open");
       return NX_ERROR;
     }
     /* first read dimension information */
@@ -1603,7 +1584,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
   /*-------------------------------------------------------------------------*/
 
   NXstatus
-   NX4getinfo (NXhandle fid, int *rank, int dimension[], 
+   NX4getinfo64 (NXhandle fid, int *rank, int64_t dimension[], 
 			    int *iType)
   {
     pNexusFile pFile;
@@ -1614,7 +1595,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
   
     /* check if there is an SDS open */
     if (pFile->iCurrentSDS == 0) {
-      NXIReportError (NXpData, "ERROR: no SDS open");
+      NXReportError( "ERROR: no SDS open");
       return NX_ERROR;
     }
     /* read information */
@@ -1635,7 +1616,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
   /*-------------------------------------------------------------------------*/
 
   
-  NXstatus  NX4getslab (NXhandle fid, void *data, int iStart[], int iSize[])
+  NXstatus  NX4getslab64 (NXhandle fid, void *data, const int64_t iStart[], const int64_t iSize[])
   {
     pNexusFile pFile;
     int32 myStart[H4_MAX_VAR_DIMS], mySize[H4_MAX_VAR_DIMS];
@@ -1646,15 +1627,10 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
   
     /* check if there is an SDS open */
     if (pFile->iCurrentSDS == 0) {
-      NXIReportError (NXpData, "ERROR: no SDS open");
+      NXReportError( "ERROR: no SDS open");
       return NX_ERROR;
     }
 
-    /* if an int is not 32-bit we have to cast them properly in order
-       to kill a bug.
-    */
-    if(sizeof(int) != 4)
-    {
          SDgetinfo (pFile->iCurrentSDS, pBuffer, 
             &iRank, myStart, &iType, &iAtt);
          for(i = 0; i < iRank; i++)
@@ -1666,14 +1642,6 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
         SDreaddata (pFile->iCurrentSDS, myStart, NULL, 
                    mySize, data);
         return NX_OK;
-    }
-    else
-    {
-        /* read directly  */
-        SDreaddata (pFile->iCurrentSDS, (int32*)iStart, NULL, 
-                   (int32*)iSize, data);
-        return NX_OK;
-    }
   }
   
   /*-------------------------------------------------------------------------*/
@@ -1715,7 +1683,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
                          pName, &iPType, &iCount);
     }
     if (iRet < 0) {
-      NXIReportError (NXpData, "ERROR: HDF cannot read attribute info");
+      NXReportError( "ERROR: HDF cannot read attribute info");
       return NX_ERROR;
     }
     *iLength = iCount;
@@ -1792,8 +1760,8 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
       }
     }
     if (iNew < 0) {
-      sprintf (pBuffer, "ERROR: attribute %s not found", name);
-      NXIReportError (NXpData, pBuffer);
+      sprintf (pBuffer, "ERROR: attribute \"%s\" not found", name);
+      NXReportError( pBuffer);
       return NX_ERROR;
     }
     /* get more info, allocate temporary data space */
@@ -1810,7 +1778,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     }
     if (iRet < 0) {
       sprintf (pBuffer, "ERROR: HDF could not read attribute info");
-      NXIReportError (NXpData, pBuffer);
+      NXReportError( pBuffer);
       return NX_ERROR;
     }
     *iType = (int)iType32;
@@ -1820,7 +1788,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     }
     pData = (void *) malloc (iLen);
     if (!pData) {
-      NXIReportError (NXpData, "ERROR: allocating memory in NXgetattr");
+      NXReportError( "ERROR: allocating memory in NXgetattr");
       return NX_ERROR;
     }
     memset (pData, 0, iLen);
@@ -1837,7 +1805,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     }
     if (iRet < 0) {
       sprintf (pBuffer, "ERROR: HDF could not read attribute data");
-      NXIReportError (NXpData, pBuffer);
+      NXReportError( pBuffer);
       return NX_ERROR;
     }
     /* copy data to caller */
@@ -1877,7 +1845,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
       }
     }
     if (iRet < 0) {
-      NXIReportError (NXpData, "NX_ERROR: HDF cannot read attribute numbers");
+      NXReportError( "NX_ERROR: HDF cannot read attribute numbers");
       *iN = 0;
       return NX_ERROR;
     }
@@ -1933,9 +1901,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
 
   NXstatus  NX4sameID (NXhandle fileid, NXlink* pFirstID, NXlink* pSecondID)
   {
-    pNexusFile pFile;
-
-    pFile = NXIassert (fileid);
+    NXIassert (fileid);
     if ((pFirstID->iTag == pSecondID->iTag) & (pFirstID->iRef == pSecondID->iRef)) {
        return NX_OK;
     } else {
@@ -1972,7 +1938,7 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
     NXIKillDir (pFile);
     iRet = NXIInitDir (pFile);
     if (iRet < 0) {
-      NXIReportError (NXpData,"NX_ERROR: no memory to store directory info");
+      NXReportError("NX_ERROR: no memory to store directory info");
       return NX_EOD;
     }
     return NX_OK;
@@ -1982,25 +1948,26 @@ static int findNapiClass(pNexusFile pFile, int groupRef, NXname nxclass)
 void NX4assignFunctions(pNexusFunction fHandle)
 {
       fHandle->nxclose=NX4close;
+	  fHandle->nxreopen=NULL;
       fHandle->nxflush=NX4flush;
       fHandle->nxmakegroup=NX4makegroup;
       fHandle->nxopengroup=NX4opengroup;
       fHandle->nxclosegroup=NX4closegroup;
-      fHandle->nxmakedata=NX4makedata;
-      fHandle->nxcompmakedata=NX4compmakedata;
+      fHandle->nxmakedata64=NX4makedata64;
+      fHandle->nxcompmakedata64=NX4compmakedata64;
       fHandle->nxcompress=NX4compress;
       fHandle->nxopendata=NX4opendata;
       fHandle->nxclosedata=NX4closedata;
       fHandle->nxputdata=NX4putdata;
       fHandle->nxputattr=NX4putattr;
-      fHandle->nxputslab=NX4putslab;    
+      fHandle->nxputslab64=NX4putslab64;    
       fHandle->nxgetdataID=NX4getdataID;
       fHandle->nxmakelink=NX4makelink;
       fHandle->nxmakenamedlink=NX4makenamedlink;
       fHandle->nxgetdata=NX4getdata;
-      fHandle->nxgetinfo=NX4getinfo;
+      fHandle->nxgetinfo64=NX4getinfo64;
       fHandle->nxgetnextentry=NX4getnextentry;
-      fHandle->nxgetslab=NX4getslab;
+      fHandle->nxgetslab64=NX4getslab64;
       fHandle->nxgetnextattr=NX4getnextattr;
       fHandle->nxgetattr=NX4getattr;
       fHandle->nxgetattrinfo=NX4getattrinfo;
@@ -2010,6 +1977,7 @@ void NX4assignFunctions(pNexusFunction fHandle)
       fHandle->nxinitgroupdir=NX4initgroupdir;
       fHandle->nxinitattrdir=NX4initattrdir;
       fHandle->nxprintlink=NX4printlink;
+      fHandle->nxnativeexternallink=NULL;
 }
 
 #endif /*HDF4*/

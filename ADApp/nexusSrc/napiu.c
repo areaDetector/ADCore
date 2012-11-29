@@ -21,10 +21,10 @@
  
   For further information, see <http://www.nexus.anl.gov/>
   
-  $Id: napiu.c 671 2005-11-08 19:13:23Z faa59 $
+  $Id: napiu.c 1548 2010-10-06 18:57:35Z Tobias Richter $
 
  ----------------------------------------------------------------------------*/
-/* static const char* rscid = "$Id: napiu.c 671 2005-11-08 19:13:23Z faa59 $"; */	/* Revision interted by CVS */
+static const char* rscid = "$Id: napiu.c 1548 2010-10-06 18:57:35Z Tobias Richter $";	/* Revision interted by CVS */
 
 #include <stdlib.h>
 #include <assert.h>
@@ -35,7 +35,7 @@
 #define DO_GLOBAL(__name) \
 	if (__name != NULL) \
 	{ \
-		if (NXputattr(file_id, #__name, (char*)__name, (int)strlen(__name), NX_CHAR) != NX_OK) \
+		if (NXputattr(file_id, #__name, (char*)__name, strlen(__name), NX_CHAR) != NX_OK) \
 		{ \
 			return NX_ERROR; \
 		} \
@@ -103,7 +103,7 @@ static int NXcompress_size = 0;
 	 }
 	 else
 	 {
-		 NXIReportError(NXpData, "Invalid compression option");
+		 NXReportError( "Invalid compression option");
          status = NX_ERROR;
 	 }
 	 return status;

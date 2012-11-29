@@ -18,7 +18,7 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  
-  For further information, see <http://www.neutron.anl.gov/NeXus/>
+  For further information, see <http://www.nexusformat.org>
 
   Added code to support the path stack for NXgetpath, 
         Mark Koennecke, October 2009
@@ -70,12 +70,12 @@ int getFileStackSize(){
 }
 /*----------------------------------------------------------------------*/
 void pushFileStack(pFileStack self, pNexusFunction pDriv, char *file){
-  int length;
+  size_t length;
 
   self->fileStackPointer++;
   self->fileStack[self->fileStackPointer].pDriver = pDriv;
   memset(&self->fileStack[self->fileStackPointer].closeID,0,sizeof(NXlink));
-  length = (int)strlen(file);
+  length = strlen(file);
   if(length >= 1024){
     length = 1023;
   }
@@ -109,7 +109,7 @@ int fileStackDepth(pFileStack self){
   return self->fileStackPointer;
 }
 /*----------------------------------------------------------------------*/
-void pushPath(pFileStack self, char *name){
+void pushPath(pFileStack self, const char *name){
   self->pathPointer++;
   strncpy(self->pathStack[self->pathPointer],name,NX_MAXNAMELEN-1);
 }
@@ -122,13 +122,14 @@ void popPath(pFileStack self){
 }
 /*-----------------------------------------------------------------------*/
 int buildPath(pFileStack self, char *path, int pathlen){
-  int i, totalPathLength;
+  int i;
+  size_t totalPathLength;
   char *totalPath;
 
   for(i = 0, totalPathLength = 5; i <= self->pathPointer; i++){
-    totalPathLength += (int)strlen(self->pathStack[i]) + 1;
+    totalPathLength += strlen(self->pathStack[i]) + 1;
   }
-  totalPath = malloc(totalPathLength*sizeof(char));
+  totalPath = (char*)malloc(totalPathLength*sizeof(char));
   if(totalPath == NULL){
     return 0;
   }

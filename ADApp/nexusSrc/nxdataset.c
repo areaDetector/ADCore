@@ -33,16 +33,17 @@ static int getTypeSize(int typecode){
   }
 }
 /*-----------------------------------------------------------------------*/
-pNXDS createNXDataset(int rank, int typecode, int dim[]){
+pNXDS createNXDataset(int rank, int typecode, int64_t dim[]){
   pNXDS pNew = NULL;
-  int i, length;
+  int64_t length;
+  int i;
 
   pNew = (pNXDS)malloc(sizeof(NXDS));
   if(pNew == NULL){
     return NULL;
   }
 
-  pNew->dim = (int *)malloc(rank*sizeof(int));
+  pNew->dim = (int64_t *)malloc(rank*sizeof(int64_t));
   for(i = 0, length = 1; i < rank; i++){
     length *= dim[i];
   }
@@ -72,7 +73,7 @@ pNXDS createTextNXDataset(char *name){
   if(pNew == NULL){
     return NULL;
   }
-  pNew->dim = (int *)malloc(sizeof(int));
+  pNew->dim = (int64_t *)malloc(sizeof(int64_t));
   pNew->u.cPtr = strdup(name);
   if(pNew->dim == NULL || pNew->u.ptr == NULL){
     free(pNew);
@@ -81,7 +82,7 @@ pNXDS createTextNXDataset(char *name){
   pNew->rank = 1;
   pNew->type = NX_CHAR;
   pNew->magic = MAGIC;
-  pNew->dim[0] = (int)strlen(name);
+  pNew->dim[0] = strlen(name);
   return pNew;
 }
 /*-----------------------------------------------------------------------*/
@@ -159,8 +160,8 @@ int getNXDatasetByteLength(pNXDS dataset){
 /*----------------------------------------------------------------------
   This calculates an arbitray address in C storage order
   -----------------------------------------------------------------------*/
-static int calculateAddress(pNXDS dataset, int pos[]){
-  int result, mult;
+static int64_t calculateAddress(pNXDS dataset, int64_t pos[]){
+  int64_t result, mult;
   int i, j;
 
   result = pos[dataset->rank - 1];
@@ -176,8 +177,8 @@ static int calculateAddress(pNXDS dataset, int pos[]){
   return result;
 }
 /*-----------------------------------------------------------------------*/
-double getNXDatasetValue(pNXDS dataset, int pos[]){
-  int address;
+double getNXDatasetValue(pNXDS dataset, int64_t pos[]){
+  int64_t address;
  
   if(dataset == NULL){
     return 0;
@@ -190,7 +191,7 @@ double getNXDatasetValue(pNXDS dataset, int pos[]){
   return getNXDatasetValueAt(dataset, address);
 }
 /*----------------------------------------------------------------------*/
-double getNXDatasetValueAt(pNXDS dataset, int address){
+double getNXDatasetValueAt(pNXDS dataset, int64_t address){
   double value;
 
   if(dataset == NULL){
@@ -263,8 +264,8 @@ char  *getNXDatasetText(pNXDS dataset){
   return resultBuffer;
 }
 /*----------------------------------------------------------------------*/
-int   putNXDatasetValue(pNXDS dataset, int pos[], double value){
-  int address;
+int   putNXDatasetValue(pNXDS dataset, int64_t pos[], double value){
+  int64_t address;
 
   if(dataset == NULL){
     return 0;
@@ -277,7 +278,7 @@ int   putNXDatasetValue(pNXDS dataset, int pos[], double value){
   return putNXDatasetValueAt(dataset,address,value);
 }
   /*---------------------------------------------------------------------*/
-int putNXDatasetValueAt(pNXDS dataset, int address, double value){
+int putNXDatasetValueAt(pNXDS dataset, int64_t address, double value){
   /*
     this code is dangerous, it casts without checking the data range.
     This may cause trouble in some cases

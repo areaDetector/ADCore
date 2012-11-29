@@ -18,7 +18,7 @@ typedef struct {
                    int magic;
                    int rank;
                    int type;
-                   int *dim;
+                   int64_t *dim;
                    char *format;
                    union {
 		     void *ptr;
@@ -53,7 +53,7 @@ typedef struct {
 #endif
 
 
-pNXDS createNXDataset(int rank, int typecode, int dim[]);
+pNXDS createNXDataset(int rank, int typecode, int64_t dim[]);
 pNXDS createTextNXDataset(char *name);
 
 void  dropNXDataset(pNXDS dataset);
@@ -64,11 +64,11 @@ int   getNXDatasetType(pNXDS dataset);
 int   getNXDatasetLength(pNXDS dataset);
 int   getNXDatasetByteLength(pNXDS dataset);
 
-double getNXDatasetValue(pNXDS dataset, int pos[]);
-double getNXDatasetValueAt(pNXDS dataset, int address);
+double getNXDatasetValue(pNXDS dataset, int64_t pos[]);
+double getNXDatasetValueAt(pNXDS dataset, int64_t address);
 char  *getNXDatasetText(pNXDS dataset);
 
-int   putNXDatasetValue(pNXDS dataset, int pos[], double value);
-int   putNXDatasetValueAt(pNXDS dataset, int address, double value);
+int   putNXDatasetValue(pNXDS dataset, int64_t pos[], double value);
+int   putNXDatasetValueAt(pNXDS dataset, int64_t address, double value);
 
 #endif

@@ -20,7 +20,7 @@
  *  License along with this library; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- *  For further information, see <http://www.neutron.anl.gov/NeXus/>
+ *  For further information, see <http://www.nexusformat.org>
  */
 
 #ifndef __NXIO
@@ -44,7 +44,7 @@ void destroyDataset(void *data);
 int translateTypeCode(const char *code);
 int isDataNode(mxml_node_t *node);
 void analyzeDim(const char *typeString, int *rank, 
-		int *iDim, int *type);
+		int64_t *iDim, int *type);
 
 
 #endif
