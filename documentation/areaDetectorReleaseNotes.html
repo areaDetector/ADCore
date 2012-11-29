@@ -11,15 +11,15 @@
   <h2 style="text-align: center">
     Release 1-9 (XXX-December-2012)</h2>
   <ul>
-    <li>ADBase
+    <li>NDArray
       <ul>
-        <li>Changed NDArray so that some variables that were previously <code>int</code> are
-          now <code>size_t</code>. This allows areaDetector to handle arrays with more elements
-          than an <code>int</code> can represent. This is not backwards compatible with some
-          drivers and plugins, because for example, the <code>dims[]</code> argument to <code>
-            NDArrayPool->alloc()</code> has been changed from <code>int</code> to <code>size_t</code>.
-          All drivers and plugins in areaDetector have been modified to reflect this change,
-          but user-written drivers and plugins may need some minor modifications.</li>
+        <li>Changed some variables that were previously <code>int</code> to <code>size_t</code>.
+          This allows areaDetector to handle arrays with more elements than an <code>int</code>
+          can represent. This is not backwards compatible with some drivers and plugins, because
+          for example, the <code>dims[]</code> argument to <code>NDArrayPool->alloc()</code>
+          has been changed from <code>int</code> to <code>size_t</code>. All drivers and plugins
+          in areaDetector have been modified to reflect this change, but user-written drivers
+          and plugins may need some minor modifications.</li>
       </ul>
     </li>
     <li>Drivers
