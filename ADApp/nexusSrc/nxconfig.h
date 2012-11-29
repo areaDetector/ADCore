@@ -19,9 +19,6 @@
 /* Define to 1 if you have the `hdf5' library (-lhdf5). */
 #define HAVE_LIBHDF5 1
 
-/* Define to 1 if you have the `history' library (-lhistory). */
-#define HAVE_LIBHISTORY 1
-
 /* Define to 1 if you have the `jpeg' library (-ljpeg). */
 #define HAVE_LIBJPEG 1
 
@@ -45,6 +42,9 @@
 
 /* Define to 1 if you have the `sz' library (-lsz). */
 /* #undef HAVE_LIBSZ */
+
+/* Define to 1 if you have the `termcap' library (-ltermcap). */
+/* #undef HAVE_LIBTERMCAP */
 
 /* Define to 1 if you have the `xml2' library (-lxml2). */
 #define HAVE_LIBXML2 1
@@ -97,6 +97,9 @@
 /* Define to 1 if you have <sys/wait.h> that is POSIX.1 compatible. */
 #define HAVE_SYS_WAIT_H 1
 
+/* Define to 1 if compiler supports __thread */
+/* #undef HAVE_TLS */
+
 /* Define to 1 if you have the `tzset' function. */
 #define HAVE_TZSET 1
 
@@ -123,19 +126,16 @@
 #define PACKAGE_NAME "NeXus Library"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "NeXus Library 4.2.1"
+#define PACKAGE_STRING "NeXus Library 4.3.0"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "nexus"
 
+/* Define to the home page for this package. */
+#define PACKAGE_URL ""
+
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "4.2.1"
-
-/* Set to printf format for int64_t */
-#define PRINTF_INT64 "lld"
-
-/* Set to printf format for uint64_t */
-#define PRINTF_UINT64 "llu"
+#define PACKAGE_VERSION "4.3.0"
 
 /* The size of `int', as computed by sizeof. */
 #define SIZEOF_INT 4
@@ -153,11 +153,14 @@
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
 
+/* SVN Revision */
+#define SVN_REVISION "1835"
+
 /* Define to 1 if your <sys/time.h> declares `struct tm'. */
 /* #undef TM_IN_SYS_TIME */
 
 /* Version number of package */
-#define VERSION "4.2.1"
+#define VERSION "4.3.0"
 
 /* Number of bits in a file offset, on hosts where this is settable. */
 #define _FILE_OFFSET_BITS 64
