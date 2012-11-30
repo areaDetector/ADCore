@@ -96,7 +96,7 @@ NXstatus  NX5closegroup (NXhandle fid);
 
 static herr_t readStringAttribute(hid_t attr, char** data)
 {
-     int iSize;
+     size_t iSize;
      herr_t iRet;
      hid_t atype = -1, btype = -1;
 
@@ -145,13 +145,13 @@ static void buildCurrentPath(pNexusFile5 self, char *pathBuffer,
   memset(pathBuffer,0,pathBufferLen);
   if(self->iCurrentG != 0) {
     strcpy(pathBuffer,"/");
-    if(strlen(self->name_ref) + 1 < pathBufferLen){
+    if((int)strlen(self->name_ref) + 1 < pathBufferLen){
       strcat(pathBuffer, self->name_ref);
     }
   }
   if(self->iCurrentD != 0){
     strcat(pathBuffer,"/");
-    if(strlen(self->iCurrentLD) + strlen(pathBuffer) < pathBufferLen){
+    if((int)strlen(self->iCurrentLD) + (int)strlen(pathBuffer) < pathBufferLen){
       strcat(pathBuffer,self->iCurrentLD);
     }
   }
@@ -577,8 +577,8 @@ NXstatus  NX5open(CONSTCHAR *filename, NXaccess am,
       /* close the current group and decrement name_ref */
       H5Gclose (pFile->iCurrentG);
       i = 0;
-      i = strlen(pFile->iStack5[pFile->iStackPtr].irefn);
-      ii = strlen(pFile->name_ref);
+      i = (int)strlen(pFile->iStack5[pFile->iStackPtr].irefn);
+      ii = (int)strlen(pFile->name_ref);
       if (pFile->iStackPtr>1) {
          ii=ii-i-1;
       } else {
@@ -658,7 +658,8 @@ static hid_t nxToHDF5Type(int datatype)
       hid_t type, cparms = -1;
       pNexusFile5 pFile;
       char pBuffer[256];
-      int i, byte_zahl = 0;
+      int i;
+      size_t byte_zahl = 0;
       hsize_t chunkdims[H5S_MAX_RANK];
       hsize_t mydim[H5S_MAX_RANK], mydim1[H5S_MAX_RANK];  
       hsize_t size[H5S_MAX_RANK];
@@ -712,7 +713,7 @@ static hid_t nxToHDF5Type(int datatype)
           *
           *  search for tests on H5T_STRING
           */
-          byte_zahl=mydim[rank-1]; 
+          byte_zahl=(size_t)mydim[rank-1]; 
           for(i = 0; i < rank; i++)
           {
               mydim1[i] = mydim[i];
@@ -1474,7 +1475,7 @@ static int countObjectsInGroup(hid_t loc_id)
     return 0;
   }
 
-  count = numobj.nlinks;
+  count = (int)numobj.nlinks;
   return count;
 }
 /*----------------------------------------------------------------------------*/
@@ -1801,7 +1802,8 @@ static int countObjectsInGroup(hid_t loc_id)
      int i, iStart[H5S_MAX_RANK], status;
      hid_t memtype_id; 
      H5T_class_t tclass;
-     hsize_t ndims,dims[H5S_MAX_RANK],len;    
+     hsize_t ndims,dims[H5S_MAX_RANK];
+     size_t len;    
      char** vstrdata = NULL;
 
      pFile = NXI5assert (fid);
@@ -1822,7 +1824,7 @@ static int countObjectsInGroup(hid_t loc_id)
      tclass = H5Tget_class(pFile->iCurrentT);
      if ( H5Tis_variable_str(pFile->iCurrentT) )
      {
-        vstrdata = (char **) malloc (dims[0] * sizeof (char *));
+        vstrdata = (char **) malloc ((size_t)dims[0] * sizeof (char *));
 	memtype_id = H5Tcopy(H5T_C_S1);
 	H5Tset_size(memtype_id, H5T_VARIABLE);
         status = H5Dread (pFile->iCurrentD, memtype_id, 
@@ -1926,7 +1928,8 @@ static int countObjectsInGroup(hid_t loc_id)
      hid_t   memtype_id;
      char *tmp_data = NULL;
      char *data1;
-     int i, dims, iRank, mtype = 0;
+     int i, iRank, mtype = 0;
+     size_t dims;
 
      pFile = NXI5assert (fid);
      /* check if there is an Dataset open */
@@ -1953,7 +1956,7 @@ static int countObjectsInGroup(hid_t loc_id)
 	 if (mySize[0] == 1) {
 	     mySize[0]  = H5Tget_size(pFile->iCurrentT);
 	 }    
-	 tmp_data = (char*) malloc(mySize[0]);
+	 tmp_data = (char*) malloc((size_t)mySize[0]);
 	 memset(tmp_data,0,sizeof(mySize[0]));
 	 iRet = H5Sselect_hyperslab(pFile->iCurrentS, H5S_SELECT_SET, mStart,
 				NULL, mySize, NULL);
@@ -1994,7 +1997,7 @@ static int countObjectsInGroup(hid_t loc_id)
 	 iRet = H5Dread(pFile->iCurrentD, memtype_id, H5S_ALL, 
 		     H5S_ALL, H5P_DEFAULT,tmp_data);
 	  data1 = tmp_data + myStart[0];
-	  strncpy((char*)data,data1,(hsize_t)iSize[0]);
+	  strncpy((char*)data,data1,(size_t)iSize[0]);
 	  free(tmp_data);           
       } else {    
 	 iRet = H5Dread(pFile->iCurrentD, memtype_id, memspace, 
@@ -2086,7 +2089,7 @@ static int countObjectsInGroup(hid_t loc_id)
      if (attr_id==H5T_STRING) {
        iPType=NX_CHAR;
        readStringAttribute(pFile->iCurrentA, &vlen_str);
-       rank = strlen(vlen_str);
+       rank = (int)strlen(vlen_str);
        free(vlen_str);
      }
      if (rank == 0) {
@@ -2134,7 +2137,7 @@ static int countObjectsInGroup(hid_t loc_id)
      {
 	atype = H5Aget_type(pFile->iCurrentA);
 	iRet = readStringAttributeN(pFile->iCurrentA, data, *datalen);
-	*datalen = strlen((char*)data);
+	*datalen = (int)strlen((char*)data);
      } else {
        iRet = H5Aread(pFile->iCurrentA, type, data);
        *datalen=1;
@@ -2173,7 +2176,7 @@ static int countObjectsInGroup(hid_t loc_id)
      vid = getAttVID(pFile);
 
      H5Oget_info(vid, &oinfo);
-     idx=oinfo.num_attrs;
+     idx=(hid_t)oinfo.num_attrs;
      if (idx > 0) {
        if(pFile->iCurrentG > 0 && pFile->iCurrentD == 0){
 	 *iN = idx -1; 

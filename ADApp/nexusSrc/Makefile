@@ -6,6 +6,8 @@ include $(TOP)/configure/CONFIG
 
 
 INC += napi.h
+INC += napiconfig.h
+INC += nxconfig.h
 
 USR_CFLAGS += -DHDF5 -D_FILE_OFFSET_BITS=64
 

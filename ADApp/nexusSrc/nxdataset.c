@@ -48,7 +48,7 @@ pNXDS createNXDataset(int rank, int typecode, int64_t dim[]){
     length *= dim[i];
   }
   /* add +1 in case of string NULL termination */
-  pNew->u.ptr = malloc(length*getTypeSize(typecode)+1);
+  pNew->u.ptr = malloc((size_t)length*getTypeSize(typecode)+1);
 
   if(pNew->dim == NULL || pNew->u.ptr == NULL){
     free(pNew);
@@ -62,7 +62,7 @@ pNXDS createNXDataset(int rank, int typecode, int64_t dim[]){
   }
   pNew->magic = MAGIC;
   /* add +1 in case of string NULL termination  - see above */
-  memset(pNew->u.ptr,0,length*getTypeSize(typecode)+1);
+  memset(pNew->u.ptr,0,(size_t)length*getTypeSize(typecode)+1);
   return pNew;
 }
 /*---------------------------------------------------------------------*/
@@ -125,7 +125,7 @@ int   getNXDatasetDim(pNXDS dataset, int which){
   if(which < 0 || which >= dataset->rank){
     return 0;
   }
-  return dataset->dim[which];
+  return (int)dataset->dim[which];
 }
 /*------------------------------------------------------------------------*/
 int   getNXDatasetType(pNXDS dataset){
@@ -147,9 +147,9 @@ int getNXDatasetLength(pNXDS dataset){
   if(dataset->magic != MAGIC){
     return 0;
   }
-  length = dataset->dim[0];
+  length = (int)dataset->dim[0];
   for(i = 1; i < dataset->rank; i++){
-    length *= dataset->dim[i];
+    length *= (int)dataset->dim[i];
   }
   return length;
 }
@@ -254,12 +254,12 @@ char  *getNXDatasetText(pNXDS dataset){
   if(status == 0){
     return strdup("NO type problem");
   }else{
-    resultBuffer = (char *)malloc((dataset->dim[0]+10)*sizeof(char));
+    resultBuffer = (char *)malloc(((size_t)dataset->dim[0]+10)*sizeof(char));
     if(resultBuffer == NULL){
       return strdup("NO Memory");
     }
-    memset(resultBuffer,0,(dataset->dim[0]+10)*sizeof(char));
-    strncpy(resultBuffer,dataset->u.cPtr,dataset->dim[0]);
+    memset(resultBuffer,0,((size_t)dataset->dim[0]+10)*sizeof(char));
+    strncpy(resultBuffer,dataset->u.cPtr,(size_t)dataset->dim[0]);
   }
   return resultBuffer;
 }
