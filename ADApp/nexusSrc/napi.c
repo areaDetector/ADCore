@@ -23,7 +23,7 @@
 
 ----------------------------------------------------------------------------*/
 
-static const char* rscid = "$Id: napi.c 1814 2012-02-07 14:37:57Z Freddie Akeroyd $";	/* Revision inserted by CVS */
+/* static const char* rscid = "$Id: napi.c 1814 2012-02-07 14:37:57Z Freddie Akeroyd $"; */	/* Revision inserted by CVS */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -32,9 +32,7 @@ static const char* rscid = "$Id: napi.c 1814 2012-02-07 14:37:57Z Freddie Akeroy
 #include <ctype.h>
 #include <time.h>
 #include <stdarg.h>
-#include <stdint.h>
 
-#include "nxconfig.h"
 #include "napi.h"
 #include "nxstack.h"
 
@@ -45,7 +43,7 @@ static const char* rscid = "$Id: napi.c 1814 2012-02-07 14:37:57Z Freddie Akeroy
 #define NXFILE 1
 
 /*--------------------------------------------------------------------*/
-static int iFortifyScope;
+/* static int iFortifyScope; */
 /*----------------------------------------------------------------------
   This is a section with code for searching the NX_LOAD_PATH
   -----------------------------------------------------------------------*/
@@ -162,7 +160,7 @@ int validNXName(const char* name, int allow_colon)
     {
 	return 0;
     }
-    for(i=0; i<strlen(name); ++i)
+    for(i=0; i<(int)strlen(name); ++i)
     {
 	if ( (name[i] >= 'a' && name[i] <= 'z') ||
 	     (name[i] >= 'A' && name[i] <= 'Z') ||
@@ -234,7 +232,7 @@ static char *locateNexusFileInPath(char *startName){
 
   pPtr = stptok(loadPath,pathPrefix,255,LIBSEP);
   while(pPtr != NULL){
-    length = strlen(pathPrefix) + strlen(startName) + strlen(PATHSEP) + 2;
+    length = (int)strlen(pathPrefix) + (int)strlen(startName) + (int)strlen(PATHSEP) + 2;
     testPath = (char*)malloc(length*sizeof(char));
     if(testPath == NULL){
       return strdup(startName);
@@ -265,7 +263,8 @@ NXstatus NXsetcache(long newVal)
   }
   return NX_ERROR;
 }
-    
+
+#ifdef NXXML
 /*-----------------------------------------------------------------------*/
 static NXstatus NXisXML(CONSTCHAR *filename)
 {
@@ -287,6 +286,7 @@ static NXstatus NXisXML(CONSTCHAR *filename)
   }
   return NX_ERROR;
 }
+#endif
 
 /*-------------------------------------------------------------------------*/
   static void NXNXNXReportError(void *pData, char *string)
@@ -480,8 +480,6 @@ static NXstatus   NXinternalopenImpl(CONSTCHAR *userfilename, NXaccess am, pFile
     int hdf_type=0;
     int iRet=0;
     NXhandle hdf5_handle = NULL;
-    NXhandle hdf4_handle = NULL;
-    NXhandle xmlHandle = NULL;
     pNexusFunction fHandle = NULL;
     NXstatus retstat = NX_ERROR;
     char error[1024];
@@ -568,6 +566,7 @@ static NXstatus   NXinternalopenImpl(CONSTCHAR *userfilename, NXaccess am, pFile
     if (hdf_type==1) {
       /* HDF4 type */
 #ifdef HDF4
+    NXhandle hdf4_handle = NULL;
       retstat = NX4open((const char *)filename,am,&hdf4_handle);
       if(retstat != NX_OK){
 	free(fHandle);
@@ -608,6 +607,7 @@ static NXstatus   NXinternalopenImpl(CONSTCHAR *userfilename, NXaccess am, pFile
 	XML type
       */
 #ifdef NXXML
+    NXhandle xmlHandle = NULL;
       retstat = NXXopen(filename,am,&xmlHandle);
       if(retstat != NX_OK){
 	free(fHandle);
@@ -733,7 +733,7 @@ static int analyzeNapimount(char *napiMount, char *extFile, int extFileLen,
   }
   path = strrchr(napiMount,'#');
   if(path == NULL){
-    length = strlen(napiMount) - 9;
+    length = (int)strlen(napiMount) - 9;
     if(length > extFileLen){
       NXReportError("ERROR: internal errro with external linking");
       return NXBADURL;
@@ -743,13 +743,13 @@ static int analyzeNapimount(char *napiMount, char *extFile, int extFileLen,
     return NXFILE;
   } else {
     pPtr += 9;
-    length = path - pPtr;
+    length = (int)(path - pPtr);
     if(length > extFileLen){
       NXReportError("ERROR: internal errro with external linking");
       return NXBADURL;
     }
     memcpy(extFile,pPtr,length);
-    length = strlen(path-1);
+    length = (int)strlen(path-1);
     if(length > extPathLen){
       NXReportError("ERROR: internal error with external linking");
       return NXBADURL;
@@ -1094,7 +1094,7 @@ static int analyzeNapimount(char *napiMount, char *extFile, int extFileLen,
 				   const int dimensions[], int datatype)
   {
 	  int status;
-	  int64_t* dims64 = dupDimsArray(dimensions, rank);
+	  int64_t* dims64 = dupDimsArray((int *)dimensions, rank);
 	  status = NXmalloc64(data, rank, dims64, datatype);
 	  free(dims64);
 	  return status;
@@ -1108,7 +1108,7 @@ static int analyzeNapimount(char *napiMount, char *extFile, int extFileLen,
     *data = NULL;
     for(i=0; i<rank; i++)
 	{
-        size *= dimensions[i];
+        size *= (size_t)dimensions[i];
 	}
     if ((datatype == NX_CHAR) || (datatype == NX_INT8) 
 	    || (datatype == NX_UINT8)) {
@@ -1193,7 +1193,7 @@ char *nxitrim(char *str)
             /*
             **  Remove trailing spaces (from RMTRAIL.C)
             */
-	    i = strlen(str);
+	    i = (int)strlen(str);
             while (--i >= 0)
             {
                   if (!isspace(str[i]))
@@ -1216,8 +1216,8 @@ char *nxitrim(char *str)
     /* only strip one dimensional strings */
     if ( (type == NX_CHAR) && (pFunc->stripFlag == 1) && (rank == 1) )
     {
-		pPtr = (char*)malloc(iDim[0]+5);
-        memset(pPtr, 0, iDim[0]+5);
+		pPtr = (char*)malloc((size_t)iDim[0]+5);
+        memset(pPtr, 0, (size_t)iDim[0]+5);
         status = LOCKED_CALL(pFunc->nxgetdata(pFunc->pNexusData, pPtr)); 
 		pPtr2 = nxitrim(pPtr);
 		strncpy((char*)data, pPtr2, strlen(pPtr2)); /* not NULL terminated by default */
@@ -1246,7 +1246,7 @@ char *nxitrim(char *str)
     status = LOCKED_CALL(pFunc->nxgetinfo64(pFunc->pNexusData, rank, dims64, iType));
 	for(i=0; i < *rank; ++i)
 	{
-		dimension[i] = dims64[i];
+		dimension[i] = (int)dims64[i];
 	}
     return status;
   }
@@ -1260,7 +1260,7 @@ char *nxitrim(char *str)
 	  status = NXgetinfo64(fid, rank, dims64, iType);
 	  for(i=0; i < *rank; ++i)
 	  {
-		  dimension[i] = dims64[i];
+		  dimension[i] = (int)dims64[i];
 	  }
 	  return status;
   }
@@ -1278,9 +1278,9 @@ char *nxitrim(char *str)
     */
     /* only strip one dimensional strings */
     if((*iType == NX_CHAR) && (pFunc->stripFlag == 1) && (*rank == 1)){
-      pPtr = (char *)malloc((dimension[0]+1)*sizeof(char));
+      pPtr = (char *)malloc((size_t)(dimension[0]+1)*sizeof(char));
       if(pPtr != NULL){
-	memset(pPtr,0,(dimension[0]+1)*sizeof(char));
+	memset(pPtr,0,(size_t)(dimension[0]+1)*sizeof(char));
 	LOCKED_CALL(pFunc->nxgetdata(pFunc->pNexusData, pPtr));
 	dimension[0] = strlen(nxitrim(pPtr));
 	free(pPtr);
@@ -1425,7 +1425,7 @@ char *nxitrim(char *str)
   fileStack = (pFileStack)handle;
   pPtr = peekFilenameOnStack(fileStack);
   if(pPtr != NULL){
-    length = strlen(pPtr);
+    length = (int)strlen(pPtr);
     if(length > filenameBufferLength){
       length = filenameBufferLength -1;
     }
@@ -1461,7 +1461,7 @@ NXstatus  NXisexternalgroup(NXhandle fid, CONSTCHAR *name, CONSTCHAR *nxclass,
   NXMEnableErrorReporting();
   LOCKED_CALL(pFunc->nxclosegroup(pFunc->pNexusData));
   if(attStatus == NX_OK){
-    length = strlen(nxurl);
+    length = (int)strlen(nxurl);
     if(length >= urlLen){
       length = urlLen - 1;
     }
@@ -1497,7 +1497,7 @@ NXstatus  NXisexternaldataset(NXhandle fid, CONSTCHAR *name,
   NXMEnableErrorReporting();
   LOCKED_CALL(pFunc->nxclosedata(pFunc->pNexusData));
   if(attStatus == NX_OK){
-    length = strlen(nxurl);
+    length = (int)strlen(nxurl);
     if(length >= urlLen){
       length = urlLen - 1;
     }
@@ -1516,7 +1516,7 @@ NXstatus  NXlinkexternal(NXhandle fid, CONSTCHAR *name, CONSTCHAR *nxclass, CONS
 
   // in HDF5 we support external linking natively
   if (pFunc->nxnativeexternallink != NULL) {
-        urllen = strlen(url);
+        urllen = (int)strlen(url);
         memset(nxurl, 0, length);
         if(urllen >= length){
           urllen = length - 1;
@@ -1541,7 +1541,7 @@ NXstatus  NXlinkexternal(NXhandle fid, CONSTCHAR *name, CONSTCHAR *nxclass, CONS
   if(status != NX_OK){
     return status;
   }
-  length = strlen(url);
+  length = (int)strlen(url);
   status = NXputattr(fid, "napimount",url,length, type);
   if(status != NX_OK){
     return status;
@@ -1562,7 +1562,7 @@ NXstatus  NXlinkexternaldataset(NXhandle fid, CONSTCHAR *name,
 
   // in HDF5 we support external linking natively
   if (pFunc->nxnativeexternallink != NULL) {
-        urllen = strlen(url);
+        urllen = (int)strlen(url);
         memset(nxurl, 0, length);
         if(urllen > length){
           urllen = length - 1;
@@ -1588,7 +1588,7 @@ NXstatus  NXlinkexternaldataset(NXhandle fid, CONSTCHAR *name,
   if(status != NX_OK){
     return status;
   }
-  length = strlen(url);
+  length = (int)strlen(url);
   status = NXputattr(fid, "napimount",url,length, type);
   if(status != NX_OK){
     return status;
@@ -1665,7 +1665,7 @@ static char *extractNextPath(char *path, NXname element)
     strcpy(element,pStart);
     return NULL;
   } else {
-    length = pPtr - pStart;
+    length = (int)(pPtr - pStart);
     strncpy(element,pStart,length);
     element[length] = '\0';
   }
