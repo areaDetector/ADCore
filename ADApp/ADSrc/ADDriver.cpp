@@ -29,10 +29,11 @@ static const char *driverName = "ADDriver";
 void ADDriver::setShutter(int open)
 {
     ADShutterMode_t shutterMode;
+    int itemp;
     double delay;
     double shutterOpenDelay, shutterCloseDelay;
 
-    getIntegerParam(ADShutterMode, (int *)&shutterMode);
+    getIntegerParam(ADShutterMode, &itemp); shutterMode = (ADShutterMode_t)itemp;
     getDoubleParam(ADShutterOpenDelay, &shutterOpenDelay);
     getDoubleParam(ADShutterCloseDelay, &shutterCloseDelay);
 
