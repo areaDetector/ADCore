@@ -432,6 +432,7 @@ int simDetector::computeImage()
 {
     int status = asynSuccess;
     NDDataType_t dataType;
+    int itemp;
     int binX, binY, minX, minY, sizeX, sizeY, reverseX, reverseY;
     int xDim=0, yDim=1, colorDim=-1;
     int resetImage;
@@ -457,7 +458,7 @@ int simDetector::computeImage()
     status |= getIntegerParam(ADMaxSizeX,     &maxSizeX);
     status |= getIntegerParam(ADMaxSizeY,     &maxSizeY);
     status |= getIntegerParam(NDColorMode,    &colorMode);
-    status |= getIntegerParam(NDDataType,     (int *)&dataType);
+    status |= getIntegerParam(NDDataType,     &itemp); dataType = (NDDataType_t)itemp;
     status |= getIntegerParam(SimResetImage,  &resetImage);
     if (status) asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                     "%s:%s: error getting parameters\n",
