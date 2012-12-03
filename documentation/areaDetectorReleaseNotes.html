@@ -28,6 +28,9 @@
           Version 3 of the Andor Software Development Kit (SDK). Orginal version was written
           by Phillip Sorensen from Cornell University. It runs on 32-bit and 64-bit Linux
           and 32-bit and 64-bit Windows.</li>
+        <li>Bruker, Pilatus, marCCD, and mar345 drivers. The driver lock was not being taken
+          in a few places when the parameter library was being accessed. This could lead to
+          crashes.</li>
       </ul>
     </li>
     <li>Plugins
