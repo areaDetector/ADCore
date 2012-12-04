@@ -78,7 +78,7 @@ NDFileNull::NDFileNull(const char *portName, int queueSize, int blockingCallback
      * Set autoconnect to 1.  priority and stacksize can be 0, which will use defaults. */
     : NDPluginFile(portName, queueSize, blockingCallbacks,
                    NDArrayPort, NDArrayAddr, 1, NUM_NDFILE_NULL_PARAMS,
-                   2, -1, asynGenericPointerMask, asynGenericPointerMask, 
+                   2, 0, asynGenericPointerMask, asynGenericPointerMask, 
                    ASYN_CANBLOCK, 1, priority, stackSize)
 {
     //const char *functionName = "NDFileNull";
