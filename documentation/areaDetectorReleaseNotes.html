@@ -35,6 +35,8 @@
     </li>
     <li>Plugins
       <ul>
+        <li>Fixed a bug that could result in plugins being registered for callbacks multiple
+          times.</li>
         <li>NDFileNexus. Changed the version of the Nexus SDK being used from 4-2-1 to version
           4-3-0. Modified the files in this distribution to eliminate all compiler warnings
           on Windows, Linux, and Darwin. Sent these changes back to the Nexus developers,
@@ -65,6 +67,11 @@
     </li>
     <li>Other
       <ul>
+        <li>Changed the build system so that the use of GraphicsMagick is optional. If the
+          RELEASE file defines USE_GRAPHICSMAGICK=YES then the URL driver and the NDFileMagick
+          plugin will be built. This makes it easy to build without GraphicsMagick, which
+          can be necessary when using compiler versions which are incompatible with the GraphicsMagick
+          libraries included with areaDetector.</li>
         <li>Fixes to allow building on Darwin. Thanks to Lewis Muir for these.</li>
         <li>Many minor changes to avoid compiler warnings on Linux, Windows, and Darwin. The
           only remaining compiler warnings come from imported packages, such as netCDF.</li>
