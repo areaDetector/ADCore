@@ -15,9 +15,12 @@ LIBRARY_IOC = simDetector
 LIB_SRCS += simDetector.cpp
 
 #==================================
-PROD_IOC += simDetectorApp
+PROD_NAME += simDetectorApp
+PROD_IOC = $(PROD_NAME)
+
 # <name>.dbd will be created from <name>Include.dbd
-DBD += simDetectorApp.dbd
+DBD += $(PROD_NAME).dbd
+$(PROD_NAME)_DBD += simDetectorSupport.dbd
 DBD += simDetectorSupport.dbd
 
 # <name>_registerRecordDeviceDriver.cpp will be created from <name>.dbd
