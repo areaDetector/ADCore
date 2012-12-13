@@ -15,7 +15,7 @@ LIBRARY_IOC = simDetector
 LIB_SRCS += simDetector.cpp
 
 #==================================
-PROD_NAME += simDetectorApp
+PROD_NAME = simDetectorApp
 PROD_IOC = $(PROD_NAME)
 
 # <name>.dbd will be created from <name>Include.dbd
