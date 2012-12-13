@@ -1,4 +1,10 @@
 # This file contains the commands to build driver applications using the common set of plugins
+# The variable PROD_NAME must be defined, and is used to optionally add NDFileMagick to $(PROD_NAME)Include.dbd
+
+$(PROD_NAME)_DBD += commonDriverSupport.dbd
+ifeq ($(USE_GRAPHICSMAGICK), YES)
+$(PROD_NAME)_DBD += NDFileMagick.dbd
+endif
 
 LIB_LIBS                += ADBase netCDF
 PROD_LIBS               += NDPlugin ADBase netCDF
@@ -45,6 +51,13 @@ PROD_LIBS_Darwin        += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
 # To use versions of these libraries supplied with areaDetector use this line
 LIB_SYS_LIBS_Darwin     += png xml2 bz2
 PROD_SYS_LIBS_Darwin    += png xml2 bz2
+else
+# I don't understand why we need to set this when not using GraphicsMagick, but we do
+ifeq (win32-x86, $(findstring win32-x86, $(T_A)))
+USR_LDFLAGS_WIN32 += /NODEFAULTLIB:MSVCRT.lib
+endif
+LIB_LIBS_WIN32          += libtiff libjpeg
+PROD_LIBS_WIN32         += libtiff libjpeg
 endif
 
 LIB_LIBS_WIN32          += PvAPI
