@@ -35,7 +35,7 @@ else ifeq (darwin-x86, $(findstring darwin-x86, $(T_A)))
 LIB_INSTALLS_Darwin += ../os/darwin-x86/libtiff.a ../os/darwin-x86/libjpeg.a
 else ifeq (win32-x86, $(findstring win32-x86, $(T_A)))
 LIB_INSTALLS_WIN32 += ../os/win32-x86/libtiff.lib ../os/win32-x86/libjpeg.lib
-BIN_INSTALLS_WIN32 += ../os/win32-x86/libtiff3.dll ../os/win32-x86/jpeg62.dll
+BIN_INSTALLS_WIN32 += ../os/win32-x86/libtiff3.dll ../os/win32-x86/jpeg62.dll ../os/win32-x86/zlib1.dll
 endif 
 
 #=============================
