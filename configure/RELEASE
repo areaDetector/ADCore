@@ -8,11 +8,16 @@ TEMPLATE_TOP=$(EPICS_BASE)/templates/makeBaseApp/top
 # define INSTALL_LOCATION_APP here
 #INSTALL_LOCATION_APP=<fullpathname>
 
+# To include GraphicsMagick support set the following to YES
+# To not use it comment out the line or set it to NO
+# GraphicsMagick is required for NDFileMagick and the URL driver.
+#USE_GRAPHICSMAGICK=YES
+
 SUPPORT=/corvette/home/epics/devel
 -include $(TOP)/../configure/SUPPORT.$(EPICS_HOST_ARCH)
 
 # ASYN is needed for base classes 
-ASYN=$(SUPPORT)/asyn-4-20
+ASYN=$(SUPPORT)/asyn-4-21
 
 # CALC is needed for scalcout record that SSCAN uses
 CALC=$(SUPPORT)/calc-3-0
@@ -26,7 +31,7 @@ SSCAN=$(SUPPORT)/sscan-2-8-1
 #AUTOSAVE is needed for save_restore
 AUTOSAVE=$(SUPPORT)/autosave-5-0
 
-AREA_DETECTOR=$(SUPPORT)/areaDetector-1-8
+AREA_DETECTOR=$(SUPPORT)/areaDetector-1-9
 
 # EPICS_BASE usually appears last so other apps can override stuff:
 EPICS_BASE=/corvette/usr/local/epics/base-3.14.12.2
