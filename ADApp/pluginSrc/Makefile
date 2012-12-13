@@ -24,7 +24,6 @@ USR_CXXFLAGS_WIN32 += -DHAVE_PVAPI
 USR_CXXFLAGS_WIN32 += -DLIBTIFF_STATIC
 
 DBD += NDPluginSupport.dbd
-DBD += NDPluginSupportNoMagick.dbd
 DBD += NDFileJPEG.dbd
 DBD += NDFileMagick.dbd
 DBD += NDFileNetCDF.dbd
