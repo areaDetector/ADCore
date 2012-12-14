@@ -48,7 +48,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     NDArray *pScratch, *pOutput;
     NDColorMode_t colorMode;
     double *pData;
-    int enableScale, enableDim[3];
+    int enableScale, enableDim[3], autoSize[3];
     size_t i;
     double scale;
     
@@ -57,23 +57,26 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     memset(dims, 0, sizeof(NDDimension_t) * ND_ARRAY_MAX_DIMS);
 
     /* Get all parameters while we have the mutex */
-    getIntegerParam(NDPluginROIDim0Min,     &itemp); dims[0].offset = itemp;
-    getIntegerParam(NDPluginROIDim0Size,    &itemp); dims[0].size = itemp;
-    getIntegerParam(NDPluginROIDim0Bin,     &dims[0].binning);
-    getIntegerParam(NDPluginROIDim0Reverse, &dims[0].reverse);
-    getIntegerParam(NDPluginROIDim0Enable,  &enableDim[0]);
-    getIntegerParam(NDPluginROIDim1Min,     &itemp); dims[1].offset = itemp;
-    getIntegerParam(NDPluginROIDim1Size,    &itemp); dims[1].size = itemp;
-    getIntegerParam(NDPluginROIDim1Bin,     &dims[1].binning);
-    getIntegerParam(NDPluginROIDim1Reverse, &dims[1].reverse);
-    getIntegerParam(NDPluginROIDim1Enable,  &enableDim[1]);
-    getIntegerParam(NDPluginROIDim2Min,     &itemp); dims[2].offset = itemp;
-    getIntegerParam(NDPluginROIDim2Size,    &itemp); dims[2].size = itemp;
-    getIntegerParam(NDPluginROIDim2Bin,     &dims[2].binning);
-    getIntegerParam(NDPluginROIDim2Reverse, &dims[2].reverse);
-    getIntegerParam(NDPluginROIDim2Enable,  &enableDim[2]);
-    getIntegerParam(NDPluginROIDataType,    &dataType);
-    getIntegerParam(NDPluginROIEnableScale, &enableScale);
+    getIntegerParam(NDPluginROIDim0Min,      &itemp); dims[0].offset = itemp;
+    getIntegerParam(NDPluginROIDim1Min,      &itemp); dims[1].offset = itemp;
+    getIntegerParam(NDPluginROIDim2Min,      &itemp); dims[2].offset = itemp;
+    getIntegerParam(NDPluginROIDim0Size,     &itemp); dims[0].size = itemp;
+    getIntegerParam(NDPluginROIDim1Size,     &itemp); dims[1].size = itemp;
+    getIntegerParam(NDPluginROIDim2Size,     &itemp); dims[2].size = itemp;
+    getIntegerParam(NDPluginROIDim0Bin,      &dims[0].binning);
+    getIntegerParam(NDPluginROIDim1Bin,      &dims[1].binning);
+    getIntegerParam(NDPluginROIDim2Bin,      &dims[2].binning);
+    getIntegerParam(NDPluginROIDim0Reverse,  &dims[0].reverse);
+    getIntegerParam(NDPluginROIDim1Reverse,  &dims[1].reverse);
+    getIntegerParam(NDPluginROIDim2Reverse,  &dims[2].reverse);
+    getIntegerParam(NDPluginROIDim0Enable,   &enableDim[0]);
+    getIntegerParam(NDPluginROIDim1Enable,   &enableDim[1]);
+    getIntegerParam(NDPluginROIDim2Enable,   &enableDim[2]);
+    getIntegerParam(NDPluginROIDim0AutoSize, &autoSize[0]);
+    getIntegerParam(NDPluginROIDim1AutoSize, &autoSize[1]);
+    getIntegerParam(NDPluginROIDim2AutoSize, &autoSize[2]);
+    getIntegerParam(NDPluginROIDataType,     &dataType);
+    getIntegerParam(NDPluginROIEnableScale,  &enableScale);
     getDoubleParam(NDPluginROIScale, &scale);
 
     /* Call the base class method */
@@ -99,6 +102,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         if (enableDim[dim]) {
             pDim->offset  = MAX(pDim->offset,  0);
             pDim->offset  = MIN(pDim->offset,  pArray->dims[userDims[dim]].size-1);
+            if (autoSize[dim]) pDim->size = pArray->dims[userDims[dim]].size;
             pDim->size    = MAX(pDim->size,    1);
             pDim->size    = MIN(pDim->size,    pArray->dims[userDims[dim]].size - pDim->offset);
             pDim->binning = MAX(pDim->binning, 1);
@@ -269,23 +273,26 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
 
      /* ROI definition */
     createParam(NDPluginROIDim0MinString,           asynParamInt32, &NDPluginROIDim0Min);
-    createParam(NDPluginROIDim0SizeString,          asynParamInt32, &NDPluginROIDim0Size);
-    createParam(NDPluginROIDim0MaxSizeString,       asynParamInt32, &NDPluginROIDim0MaxSize);
-    createParam(NDPluginROIDim0BinString,           asynParamInt32, &NDPluginROIDim0Bin);
-    createParam(NDPluginROIDim0ReverseString,       asynParamInt32, &NDPluginROIDim0Reverse);
-    createParam(NDPluginROIDim0EnableString,        asynParamInt32, &NDPluginROIDim0Enable);
     createParam(NDPluginROIDim1MinString,           asynParamInt32, &NDPluginROIDim1Min);
-    createParam(NDPluginROIDim1SizeString,          asynParamInt32, &NDPluginROIDim1Size);
-    createParam(NDPluginROIDim1MaxSizeString,       asynParamInt32, &NDPluginROIDim1MaxSize);
-    createParam(NDPluginROIDim1BinString,           asynParamInt32, &NDPluginROIDim1Bin);
-    createParam(NDPluginROIDim1ReverseString,       asynParamInt32, &NDPluginROIDim1Reverse);
-    createParam(NDPluginROIDim1EnableString,        asynParamInt32, &NDPluginROIDim1Enable);
     createParam(NDPluginROIDim2MinString,           asynParamInt32, &NDPluginROIDim2Min);
+    createParam(NDPluginROIDim0SizeString,          asynParamInt32, &NDPluginROIDim0Size);
+    createParam(NDPluginROIDim1SizeString,          asynParamInt32, &NDPluginROIDim1Size);
     createParam(NDPluginROIDim2SizeString,          asynParamInt32, &NDPluginROIDim2Size);
+    createParam(NDPluginROIDim0MaxSizeString,       asynParamInt32, &NDPluginROIDim0MaxSize);
+    createParam(NDPluginROIDim1MaxSizeString,       asynParamInt32, &NDPluginROIDim1MaxSize);
     createParam(NDPluginROIDim2MaxSizeString,       asynParamInt32, &NDPluginROIDim2MaxSize);
+    createParam(NDPluginROIDim0BinString,           asynParamInt32, &NDPluginROIDim0Bin);
+    createParam(NDPluginROIDim1BinString,           asynParamInt32, &NDPluginROIDim1Bin);
     createParam(NDPluginROIDim2BinString,           asynParamInt32, &NDPluginROIDim2Bin);
+    createParam(NDPluginROIDim0ReverseString,       asynParamInt32, &NDPluginROIDim0Reverse);
+    createParam(NDPluginROIDim1ReverseString,       asynParamInt32, &NDPluginROIDim1Reverse);
     createParam(NDPluginROIDim2ReverseString,       asynParamInt32, &NDPluginROIDim2Reverse);
+    createParam(NDPluginROIDim0EnableString,        asynParamInt32, &NDPluginROIDim0Enable);
+    createParam(NDPluginROIDim1EnableString,        asynParamInt32, &NDPluginROIDim1Enable);
     createParam(NDPluginROIDim2EnableString,        asynParamInt32, &NDPluginROIDim2Enable);
+    createParam(NDPluginROIDim0AutoSizeString,      asynParamInt32, &NDPluginROIDim0AutoSize);
+    createParam(NDPluginROIDim1AutoSizeString,      asynParamInt32, &NDPluginROIDim1AutoSize);
+    createParam(NDPluginROIDim2AutoSizeString,      asynParamInt32, &NDPluginROIDim2AutoSize);
     createParam(NDPluginROIDataTypeString,          asynParamInt32, &NDPluginROIDataType);
     createParam(NDPluginROIEnableScaleString,       asynParamInt32, &NDPluginROIEnableScale);
     createParam(NDPluginROIScaleString,             asynParamFloat64, &NDPluginROIScale);
