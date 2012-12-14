@@ -184,7 +184,7 @@ asynStatus NDPluginStats::doComputeCentroidT(NDArray *pArray)
     double value, *pValue, *pThresh, centroidTotal;
     size_t ix, iy;
 
-    if (pArray->ndims != 2) return(asynError);
+    if (pArray->ndims > 2) return(asynError);
     
     getDoubleParam (NDPluginStatsCentroidThreshold,  &this->centroidThreshold);
     this->unlock();
@@ -291,7 +291,7 @@ asynStatus NDPluginStats::doComputeProfilesT(NDArray *pArray)
     size_t ix, iy;
     int itemp;
 
-    if (pArray->ndims != 2) return(asynError);
+    if (pArray->ndims > 2) return(asynError);
 
     /* Compute the X and Y profiles at the centroid and cursor positions */
     getIntegerParam (NDPluginStatsCursorX, &itemp); this->cursorX = itemp;
@@ -432,7 +432,8 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     getIntegerParam(NDPluginStatsComputeHistogram,   &computeHistogram);
     
     if (pArray->ndims > 0) sizeX = pArray->dims[0].size;
-    if (pArray->ndims > 1) sizeY = pArray->dims[1].size;
+    if (pArray->ndims == 1) sizeY = 1;
+    if (pArray->ndims > 1)  sizeY = pArray->dims[1].size;
 
     if (sizeX != this->profileSizeX) {
         this->profileSizeX = sizeX;
