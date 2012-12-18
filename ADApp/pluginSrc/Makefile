@@ -42,19 +42,23 @@ DBD += NDPluginTransform.dbd
 INC += NDPluginDriver.h
 INC += NDPluginFile.h
 
-LIBRARY_IOC = NDPlugin
-LIB_SRCS += NDPluginDriver.cpp
-LIB_SRCS += NDPluginFile.cpp
-LIB_SRCS += NDFileNetCDF.cpp
-LIB_SRCS += NDPluginStdArrays.cpp
-LIB_SRCS += NDPluginStats.cpp
-LIB_SRCS += NDPluginProcess.cpp
-LIB_SRCS += NDPluginROI.cpp
-LIB_SRCS += NDPluginTransform.cpp
-LIB_SRCS += NDPluginOverlay.cpp
-LIB_SRCS += NDPluginColorConvert.cpp
-LIB_SRCS_DEFAULT += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNexus.cpp NDFileHDF5.cpp NDFileMagick.cpp NDFileNull.cpp
-LIB_SRCS_vxWorks += NDFileDummy.cpp
+LIBRARY_IOC += NDPlugin
+NDPlugin_SRCS += NDPluginDriver.cpp
+NDPlugin_SRCS += NDPluginFile.cpp
+NDPlugin_SRCS += NDFileNetCDF.cpp
+NDPlugin_SRCS += NDPluginStdArrays.cpp
+NDPlugin_SRCS += NDPluginStats.cpp
+NDPlugin_SRCS += NDPluginProcess.cpp
+NDPlugin_SRCS += NDPluginROI.cpp
+NDPlugin_SRCS += NDPluginTransform.cpp
+NDPlugin_SRCS += NDPluginOverlay.cpp
+NDPlugin_SRCS += NDPluginColorConvert.cpp
+NDPlugin_SRCS_DEFAULT += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNexus.cpp NDFileHDF5.cpp NDFileNull.cpp
+NDPlugin_SRCS_vxWorks += NDFileDummy.cpp
+
+LIBRARY_IOC += NDFileMagick
+NDFileMagick_SRCS_DEFAULT += NDFileMagick.cpp 
+NDFileMagick_SRCS_vxWorks += NDFileDummyMagick.cpp
 
 include $(AREA_DETECTOR)/ADApp/commonDriverMakefile
 
