@@ -17,6 +17,9 @@ PROD_LIBS               += $(EPICS_BASE_IOC_LIBS)
 
 # The following libraries are only needed for GraphicsMagick
 ifeq ($(USE_GRAPHICSMAGICK), YES)
+LIB_LIBS                += NDFileMagick
+PROD_LIBS               += NDFileMagick
+
 LIB_LIBS_WIN32          += CORE_RL_Magick++_ CORE_RL_wand_ CORE_RL_magick_ 
 PROD_LIBS_WIN32         += CORE_RL_Magick++_ CORE_RL_wand_ CORE_RL_magick_ 
 LIB_LIBS_WIN32          += CORE_RL_coders_ CORE_RL_filters_
@@ -53,11 +56,9 @@ LIB_SYS_LIBS_Darwin     += png xml2 bz2
 PROD_SYS_LIBS_Darwin    += png xml2 bz2
 else
 # I don't understand why we need to set this when not using GraphicsMagick, but we do
-ifeq (win32-x86, $(findstring win32-x86, $(T_A)))
 USR_LDFLAGS_WIN32 += /NODEFAULTLIB:MSVCRT.lib
-endif
-LIB_LIBS_WIN32          += libtiff libjpeg
-PROD_LIBS_WIN32         += libtiff libjpeg
+LIB_LIBS_WIN32          += tiff jpeg
+PROD_LIBS_WIN32         += tiff jpeg
 endif
 
 LIB_LIBS_WIN32          += PvAPI
