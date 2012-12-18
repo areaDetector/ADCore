@@ -1,11 +1,8 @@
-TOP=../..
+TOP=../../..
 include $(TOP)/configure/CONFIG
 #----------------------------------------
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 #=============================
-
-DIRS += tiffSrc
-DIRS += jpegSrc
 
 # This directory contains header files to support libtiff and libjpeg on WIN32.
 # These files were obtained from the distribution at
@@ -15,9 +12,7 @@ DIRS += jpegSrc
 # These files for Windows in this directory are needed when GraphicsMagick is not being used.  
 # If GraphicsMagick is being used then it comes with its own TIFF and JPEG support and 
 # the files in this directory are not used.
-INC_WIN32    += tiff.h tiffio.h tiffvers.h tiffconf.h 
 INC_cygwin32 += tiff.h tiffio.h tiffvers.h tiffconf.h 
-INC_WIN32    += jpeglib.h jconfig.h jmorecfg.h jerror.h 
 INC_cygwin32 += jpeglib.h jconfig.h jmorecfg.h jerror.h 
 # Use these lines to install local versions of these libraries
 # Comment them out to use system versions of the libraries
@@ -43,7 +38,7 @@ endif
 
 #=============================
 
-include $(TOP)/configure/RULES_DIRS
+include $(TOP)/configure/RULES
 #----------------------------------------
 #  ADD RULES AFTER THIS LINE
 
