@@ -71,13 +71,18 @@
           the use of the normal EPICS environment variables.</li>
       </ul>
     </li>
-    <li>Other
+    <li>Build system
       <ul>
         <li>Changed the build system so that the use of GraphicsMagick is optional. If the
           RELEASE file defines USE_GRAPHICSMAGICK=YES then the URL driver and the NDFileMagick
           plugin will be built. This makes it easy to build without GraphicsMagick, which
           can be necessary when using compiler versions which are incompatible with the GraphicsMagick
           libraries included with areaDetector.</li>
+        <li>On Windows the TIFF and JPEG support comes from GraphicsMagick DLLs if USE_GRAPHICSMAGICK=YES.
+          To enable the use of TIFF and JPEG when GraphicsMagick is not being used the TIFF
+          and JPEG libraries are now also built from source code in the ADApp/tiffSupport
+          directory on Windows. Which version of the TIFF and JPEG library to link with is
+          chosen in commonDriverMakefile based on the value of USE_GRAPHICSMAGICK.</li>
         <li>Fixes to allow building on Darwin. Thanks to Lewis Muir for these.</li>
         <li>Many minor changes to avoid compiler warnings on Linux, Windows, and Darwin. The
           only remaining compiler warnings come from imported packages, such as netCDF.</li>
