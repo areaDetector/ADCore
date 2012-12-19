@@ -1,5 +1,5 @@
 /* jconfig.sas --- jconfig.h for Amiga systems using SAS C 6.0 and up. */
-/* see jconfig.txt for explanations */
+/* see jconfig.doc for explanations */
 
 #define HAVE_PROTOTYPES
 #define HAVE_UNSIGNED_CHAR

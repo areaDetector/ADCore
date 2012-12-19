@@ -2,7 +2,6 @@
  * rdppm.c
  *
  * Copyright (C) 1991-1997, Thomas G. Lane.
- * Modified 2009 by Bill Allombert, Guido Vollbeding.
  * This file is part of the Independent JPEG Group's software.
  * For conditions of distribution and use, see the accompanying README file.
  *
@@ -251,8 +250,8 @@ get_word_gray_row (j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
   bufferptr = source->iobuffer;
   for (col = cinfo->image_width; col > 0; col--) {
     register int temp;
-    temp  = UCH(*bufferptr++) << 8;
-    temp |= UCH(*bufferptr++);
+    temp  = UCH(*bufferptr++);
+    temp |= UCH(*bufferptr++) << 8;
     *ptr++ = rescale[temp];
   }
   return 1;
@@ -275,14 +274,14 @@ get_word_rgb_row (j_compress_ptr cinfo, cjpeg_source_ptr sinfo)
   bufferptr = source->iobuffer;
   for (col = cinfo->image_width; col > 0; col--) {
     register int temp;
-    temp  = UCH(*bufferptr++) << 8;
-    temp |= UCH(*bufferptr++);
+    temp  = UCH(*bufferptr++);
+    temp |= UCH(*bufferptr++) << 8;
     *ptr++ = rescale[temp];
-    temp  = UCH(*bufferptr++) << 8;
-    temp |= UCH(*bufferptr++);
+    temp  = UCH(*bufferptr++);
+    temp |= UCH(*bufferptr++) << 8;
     *ptr++ = rescale[temp];
-    temp  = UCH(*bufferptr++) << 8;
-    temp |= UCH(*bufferptr++);
+    temp  = UCH(*bufferptr++);
+    temp |= UCH(*bufferptr++) << 8;
     *ptr++ = rescale[temp];
   }
   return 1;

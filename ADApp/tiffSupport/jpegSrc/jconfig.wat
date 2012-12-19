@@ -1,5 +1,5 @@
 /* jconfig.wat --- jconfig.h for Watcom C/C++ on MS-DOS or OS/2. */
-/* see jconfig.txt for explanations */
+/* see jconfig.doc for explanations */
 
 #define HAVE_PROTOTYPES
 #define HAVE_UNSIGNED_CHAR
