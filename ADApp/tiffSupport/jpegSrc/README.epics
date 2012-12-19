@@ -1,0 +1,13 @@
+This directory contains the source code for JPEG, which is built for Windows
+only.
+
+It is based on jpeg-6b with the following changes:
+
+- Makefile rewritten to use EPICS build system
+- tif_stream.cxx renamed to tif_stream.cpp for EPICS compatibility
+- jconfic.vc copied to jconfig.h
+- Added __ifdef __cplusplus to jpeglib.h to allow use of the header file from
+  C++ code with C linkage to JPEG library
+
+Mark Rivers
+Dec. 19, 2012
