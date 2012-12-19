@@ -5,8 +5,8 @@ include $(TOP)/configure/CONFIG
 #=============================
 
 DIRS += tiffBin
-DIRS += tiffSrc
 DIRS += jpegSrc
+DIRS += tiffSrc
 
 #=============================
 
