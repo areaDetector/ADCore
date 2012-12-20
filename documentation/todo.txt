@@ -1,3 +1,19 @@
+R1-9
+
+- Update documentation for andor3 and andor to
+   - Remove link to PDF file.  
+   - Add note about needing to add SDK to PATH or LD_LIBRARY_PATH
+   
+- Andor3 driver.
+  - Get them to fix or explain why we can't collect more than 309 frames at full rate
+  - Test on win32, windows-x64, linux-x86, linux-x86_64
+   
+- Prosilica driver
+  - Connection management
+    - Sense disconnect, autoreconnect
+    - Implement link callback.  When matches uniqueID, call Disconnect or Connect
+ 
+
 Future releases:
 
 - Xihui's suggestion of File Overwrite Flag, don't allow overwrite if set
@@ -57,10 +73,6 @@ Future releases:
 -  Implement reading
 
 
-    Prosilica driver
-- Connection management
-  - Sense disconnect, autoreconnect
-  - Implement link callback.  When matches uniqueID, call Disconnect or Connect
   
    IDL
 - Get Stephen Mudie's code included and fixed
