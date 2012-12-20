@@ -155,7 +155,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
   */
 asynStatus NDFileTIFF::writeFile(NDArray *pArray)
 {
-    unsigned long int stripSize;
+    unsigned long stripSize;
     tsize_t nwrite=0;
     int strip, sizeY;
     unsigned char *pRed, *pGreen, *pBlue;
@@ -172,7 +172,7 @@ asynStatus NDFileTIFF::writeFile(NDArray *pArray)
         return(asynError);
     }
 
-    stripSize = TIFFStripSize(this->output);
+    stripSize = (unsigned long)TIFFStripSize(this->output);
     TIFFGetField(this->output, TIFFTAG_IMAGELENGTH, &sizeY);
 
     switch (this->colorMode) {
