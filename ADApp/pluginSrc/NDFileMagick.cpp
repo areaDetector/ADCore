@@ -110,8 +110,8 @@ asynStatus NDFileMagick::writeFile(NDArray *pArray)
     CompressionType compressType;
 
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
-              "%s:%s: size=[%d, %d]\n", 
-              driverName, functionName, this->sizeX, this->sizeY);
+              "%s:%s: size=[%lu, %lu]\n", 
+              driverName, functionName, (unsigned long)this->sizeX, (unsigned long)this->sizeY);
               
     getIntegerParam(NDFileMagickQuality, &quality);
     getIntegerParam(NDFileMagickBitDepth, &depth);

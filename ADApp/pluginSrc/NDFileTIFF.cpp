@@ -162,8 +162,8 @@ asynStatus NDFileTIFF::writeFile(NDArray *pArray)
     static const char *functionName = "writeFile";
 
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
-              "%s:s: %d, %d\n", 
-              driverName, functionName, pArray->dims[0].size, pArray->dims[1].size);
+              "%s:%s: %lu, %lu\n", 
+              driverName, functionName, (unsigned long)pArray->dims[0].size, (unsigned long)pArray->dims[1].size);
 
     if (this->output == NULL) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 

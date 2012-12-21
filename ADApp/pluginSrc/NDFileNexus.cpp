@@ -346,7 +346,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
       }
       else {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                  "%s:%s Could not add node %s could not find an attribute by that name %s",
+                  "%s:%s Could not add node %s could not find an attribute by that name",
                   driverName, functionName, nodeSource);
       }
     }
