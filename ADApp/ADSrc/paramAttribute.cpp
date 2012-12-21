@@ -49,7 +49,7 @@ paramAttribute::paramAttribute(const char *pName, const char *pDescription, cons
     if (pDescription) this->setDescription(pDescription);
     if (!pSource) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-            "paramAttribute: ERROR, must specify source string\n",
+            "%s:%s: ERROR, must specify source string\n",
             driverName, functionName);
         goto error;
     }

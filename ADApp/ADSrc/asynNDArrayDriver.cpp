@@ -375,8 +375,8 @@ asynStatus asynNDArrayDriver::readGenericPointer(asynUser *pasynUser, void *gene
     }
     if (!status)
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
-              "%s:%s: error, maxBytes=%d, data=%p\n",
-              driverName, functionName, arrayInfo.totalBytes, pArray->pData);
+              "%s:%s: error, maxBytes=%lu, data=%p\n",
+              driverName, functionName, (unsigned long)arrayInfo.totalBytes, pArray->pData);
     this->unlock();
     return status;
 }

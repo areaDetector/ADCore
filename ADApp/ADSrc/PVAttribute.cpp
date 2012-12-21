@@ -61,7 +61,7 @@ PVAttribute::PVAttribute(const char *pName, const char *pDescription,
     if (pDescription) this->setDescription(pDescription);
     if (!pSource) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-            "PVAttribute: ERROR, must specify source string\n",
+            "%s:%s: ERROR, must specify source string\n",
             driverName, functionName);
         return;
     }
@@ -139,7 +139,7 @@ void PVAttribute::connectCallback(struct connection_handler_args cha)
         dbfType = ca_field_type(chanId);
         elementCount = ca_element_count(chanId);
         asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
-            "%s:%s: Connect event, PV=%s, chanId=%d, dbfType=%d, elementCount=%d, dbrType=%d\n", 
+            "%s:%s: Connect event, PV=%s, chanId=%p, dbfType=%ld, elementCount=%d, dbrType=%ld\n", 
             driverName, functionName, this->pSource, chanId, dbfType, elementCount, dbrType);
         switch(dbfType) {
             case DBF_STRING:
@@ -171,7 +171,7 @@ void PVAttribute::connectCallback(struct connection_handler_args cha)
                 break;
             default:
                 asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-                "%s:%s: unknown DBF type = %d\n",
+                "%s:%s: unknown DBF type = %ld\n",
                 driverName, functionName, dbfType);
                 goto done;
         }
@@ -202,12 +202,12 @@ void PVAttribute::connectCallback(struct connection_handler_args cha)
                 break;
             default:
                 asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-                "%s:%s: unknown DBR type = %d\n",
+                "%s:%s: unknown DBR type = %ld\n",
                 driverName, functionName, dbrType);
                 goto done;
         }
         asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
-            "%s:%s: Connect event, PV=%s, chanId=%d, type=%d\n", 
+            "%s:%s: Connect event, PV=%s, chanId=%p, type=%d\n", 
             driverName, functionName, this->pSource, chanId, this->dataType);
             
         /* Set value change callback on this PV */
@@ -223,7 +223,7 @@ void PVAttribute::connectCallback(struct connection_handler_args cha)
         /* This is a disconnection event, set the data type to undefined */
         this->setValue(NDAttrUndefined, 0);
         asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
-            "%s:%s: Disconnect event, PV=%s, chanId=%d\n", 
+            "%s:%s: Disconnect event, PV=%s, chanId=%p\n", 
             driverName, functionName, this->pSource, chanId);
     }
     done:
