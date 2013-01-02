@@ -9,7 +9,7 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
-    Release 1-9 (XXX-December-2012)</h2>
+    Release 1-9 (XXX-January-2013)</h2>
   <ul>
     <li>NDArray
       <ul>
@@ -35,8 +35,16 @@
     </li>
     <li>Plugins
       <ul>
-        <li>Fixed a bug that could result in plugins being registered for callbacks multiple
-          times.</li>
+        <li>NDPluginDriver: Fixed a bug that could result in plugins being registered for
+          callbacks multiple times.</li>
+        <li>NDPluginDriver: Fixed a bug that could result in plugins not being registered
+          for callbacks when setting EnableCallbacks=1. This problem was restricted to the
+          case where the port and address were not being autoconnected, because no EPICS records
+          were connected to that port and address. Removed incorrect code that was using exceptionDisconnect
+          and exceptionConnect when connecting a plugin to a port and address. Added new code
+          that uses pasynCommonSyncIO to force connection to the port and address. The code
+          cannot rely on autoconnect, because there might be no queued requests to a given
+          port address, only interrupt callbacks.</li>
         <li>NDPluginStats: Changes to allow centroid and profile calculations for 1-D arrays.</li>
         <li>NDPluginROI: Added new parameters AutoSize[X,Y,Z]. If these are true then the
           size of the ROI in that dimension is automatically set to be the size of the input
