@@ -21,6 +21,8 @@
 #include <epicsMessageQueue.h>
 #include <cantProceed.h>
 
+#include <asynCommonSyncIO.h>
+
 #include "NDPluginDriver.h"
 
 
@@ -227,6 +229,7 @@ asynStatus NDPluginDriver::connectToArrayPort(void)
 {
     asynStatus status;
     asynInterface *pasynInterface;
+    asynUser *pasynUserCommon;
     int isConnected;
     int enableCallbacks;
     char arrayPort[20];
@@ -246,16 +249,26 @@ asynStatus NDPluginDriver::connectToArrayPort(void)
     
     /* Disconnect the array port from our asynUser.  Ignore error if there is no device
      * currently connected. */
-    pasynManager->exceptionCallbackRemove(this->pasynUserGenericPointer);
     pasynManager->disconnect(this->pasynUserGenericPointer);
+
+    // Try to connect to the array port and address.  We cannot rely on autoconnect because
+    // there may not be any requests queued to this port/address, only interrupt callbacks
+    pasynCommonSyncIO->connect(arrayPort, arrayAddr, &pasynUserCommon, "ARRAY_DATA");
+    status = pasynCommonSyncIO->connectDevice(pasynUserCommon);
+    pasynCommonSyncIO->disconnect(pasynUserCommon);
+    if (status != asynSuccess) {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                  "%s::%s Error calling pasynCommonSyncIO->connectDevice to array port %s address %d, status=%d, error=%s\n",
+                  driverName, functionName, arrayPort, arrayAddr, status, pasynUserCommon->errorMessage);
+        return (status);
+    }
 
     /* Connect to the array port driver */
     status = pasynManager->connectDevice(this->pasynUserGenericPointer, arrayPort, arrayAddr);
     if (status != asynSuccess) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                  "%s::%s ERROR: Can't connect to array port %s address %d: %s\n",
-                  driverName, functionName, arrayPort, arrayAddr, this->pasynUserGenericPointer->errorMessage);
-        pasynManager->exceptionDisconnect(this->pasynUserSelf);
+                  "%s::%s Error calling pasynManager->connectDevice to array port %s address %d, status=%d, error=%s\n",
+                  driverName, functionName, arrayPort, arrayAddr, status, this->pasynUserGenericPointer->errorMessage);
         return (status);
     }
 
@@ -265,12 +278,10 @@ asynStatus NDPluginDriver::connectToArrayPort(void)
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                   "%s::connectToPort ERROR: Can't find asynGenericPointer interface on array port %s address %d\n",
                   driverName, arrayPort, arrayAddr);
-        pasynManager->exceptionDisconnect(this->pasynUserSelf);
         return(asynError);
     }
     this->pasynGenericPointer = (asynGenericPointer *)pasynInterface->pinterface;
     this->asynGenericPointerPvt = pasynInterface->drvPvt;
-    pasynManager->exceptionConnect(this->pasynUserSelf);
 
     /* Enable or disable interrupt callbacks */
     status = setArrayInterrupt(enableCallbacks);
