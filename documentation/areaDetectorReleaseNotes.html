@@ -49,6 +49,8 @@
               that uses pasynCommonSyncIO to force connection to the port and address. The code
               cannot rely on autoconnect, because there might be no queued requests to a given
               port address, only interrupt callbacks.</li>
+            <li>Changed the names of the plugin threads from "NDPluginTask" to portName+"_Plugin"
+              to make them more meaningful.</li>
           </ul>
         </li>
         <li>NDPluginStats: Changes to allow centroid and profile calculations for 1-D arrays.</li>
@@ -61,8 +63,14 @@
           4-3-0. Modified the files in this distribution to eliminate all compiler warnings
           on Windows, Linux, and Darwin. Sent these changes back to the Nexus developers,
           so hopefully they will be in the next Nexus release as well.</li>
-        <li>NDFileNetCDF: Fixed bug that caused invalid files to be written on big-endian
-          machines, e.g. vxWorks.</li>
+        <li>NDFileNetCDF:
+          <ul>
+            <li>Fixed bug that caused invalid files to be written on big-endian machines, e.g.
+              vxWorks.</li>
+            <li>Increased default stack size from epicsThreadStackMedium to epicsThreadStackBig
+              because netCDF needs a relatively large stack and it was crashing on vxWorks.</li>
+          </ul>
+        </li>
         <li>NDFileDummy: Added NDFileHDF5Register and NDFileNullRegister, needed for running
           areaDetector on vxWorks.</li>
       </ul>
