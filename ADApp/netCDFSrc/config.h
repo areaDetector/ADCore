@@ -476,10 +476,9 @@
 # if defined __BIG_ENDIAN__
 #  define WORDS_BIGENDIAN 1
 # endif
-#else
-# ifndef WORDS_BIGENDIAN
-/* #  undef WORDS_BIGENDIAN */
-# endif
+#endif
+#if defined(vxWorks)
+#  define WORDS_BIGENDIAN 1
 #endif
 
 /* Number of bits in a file offset, on hosts where this is settable. */
