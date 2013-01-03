@@ -106,7 +106,7 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
     epicsTimeGetCurrent(&tNow);
     deltaTime = epicsTimeDiffInSeconds(&tNow, &this->lastProcessTime);
 
-    if (deltaTime > minCallbackTime) {  
+    if ((minCallbackTime == 0.) || (deltaTime > minCallbackTime)) {  
         /* Time to process the next array */
         
         /* The callbacks can operate in 2 modes: blocking or non-blocking.
@@ -178,7 +178,7 @@ void NDPluginDriver::processTask(void)
         queueFree = queueSize - epicsMessageQueuePending(this->msgQId);
         setIntegerParam(NDPluginDriverQueueFree, queueFree);
 
-        /* Call the function that does the callbacks to standard asyn interfaces */
+        /* Call the function that does the business of this callback */
         processCallbacks(pArray); 
         this->unlock();
         
