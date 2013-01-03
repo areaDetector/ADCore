@@ -95,7 +95,7 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
     int status=0;
     int blockingCallbacks;
     int arrayCounter, droppedArrays, queueSize, queueFree;
-    const char *functionName = "driverCallback";
+    static const char *functionName = "driverCallback";
 
     this->lock();
 
@@ -194,7 +194,7 @@ void NDPluginDriver::processTask(void)
 asynStatus NDPluginDriver::setArrayInterrupt(int enableCallbacks)
 {
     asynStatus status = asynSuccess;
-    const char *functionName = "setArrayInterrupt";
+    static const char *functionName = "setArrayInterrupt";
     
     if (enableCallbacks && !this->asynGenericPointerInterruptPvt) {
         status = this->pasynGenericPointer->registerInterruptUser(
@@ -234,7 +234,7 @@ asynStatus NDPluginDriver::connectToArrayPort(void)
     int enableCallbacks;
     char arrayPort[20];
     int arrayAddr;
-    const char *functionName = "connectToArrayPort";
+    static const char *functionName = "connectToArrayPort";
 
     getStringParam(NDPluginDriverArrayPort, sizeof(arrayPort), arrayPort);
     getIntegerParam(NDPluginDriverArrayAddr, &arrayAddr);
@@ -302,7 +302,7 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
     int addr=0;
     asynStatus status = asynSuccess;
     int isConnected;
-    const char* functionName = "writeInt32";
+    static const char* functionName = "writeInt32";
 
     status = getAddress(pasynUser, &addr); if (status != asynSuccess) return(status);
 
@@ -367,7 +367,7 @@ asynStatus NDPluginDriver::writeOctet(asynUser *pasynUser, const char *value,
     int addr=0;
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
-    const char *functionName = "writeOctet";
+    static const char *functionName = "writeOctet";
 
     status = getAddress(pasynUser, &addr); if (status != asynSuccess) return(status);
     /* Set the parameter in the parameter library. */
@@ -411,7 +411,7 @@ asynStatus NDPluginDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *value
     int addr=0;
     size_t ncopy;
     asynStatus status = asynSuccess;
-    const char *functionName = "readInt32Array";
+    static const char *functionName = "readInt32Array";
 
     status = getAddress(pasynUser, &addr); if (status != asynSuccess) return(status);
     if (function == NDDimensions) {
@@ -473,7 +473,8 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
           asynFlags, autoConnect, priority, stackSize)    
 {
     asynStatus status;
-    const char *functionName = "NDPluginDriver";
+    static const char *functionName = "NDPluginDriver";
+    char taskName[256];
     asynUser *pasynUser;
 
     /* Initialize some members to 0 */
@@ -499,8 +500,10 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     /* We use the same stack size for our callback thread as for the port thread */
     if (stackSize <= 0) stackSize = epicsThreadGetStackSize(epicsThreadStackMedium);
 
+    strcpy(taskName, portName);
+    strcat(taskName, "_Plugin");
     /* Create the thread that handles the NDArray callbacks */
-    status = (asynStatus)(epicsThreadCreate("NDPluginTask",
+    status = (asynStatus)(epicsThreadCreate(taskName,
                           epicsThreadPriorityMedium,
                           stackSize,
                           (EPICSTHREADFUNC)::processTask,
