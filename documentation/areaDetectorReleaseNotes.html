@@ -35,16 +35,22 @@
     </li>
     <li>Plugins
       <ul>
-        <li>NDPluginDriver: Fixed a bug that could result in plugins being registered for
-          callbacks multiple times.</li>
-        <li>NDPluginDriver: Fixed a bug that could result in plugins not being registered
-          for callbacks when setting EnableCallbacks=1. This problem was restricted to the
-          case where the port and address were not being autoconnected, because no EPICS records
-          were connected to that port and address. Removed incorrect code that was using exceptionDisconnect
-          and exceptionConnect when connecting a plugin to a port and address. Added new code
-          that uses pasynCommonSyncIO to force connection to the port and address. The code
-          cannot rely on autoconnect, because there might be no queued requests to a given
-          port address, only interrupt callbacks.</li>
+        <li>NDPluginDriver:
+          <ul>
+            <li>Fixed a bug that could result in plugins being registered for callbacks multiple
+              times.</li>
+            <li>Fixed a bug that could result in plugins not running when they should if MinCallbackTime
+              was 0 and the time between callbacks was less than one system clock tick.</li>
+            <li>Fixed a bug that could result in plugins not being registered for callbacks when
+              setting EnableCallbacks=1. This problem was restricted to the case where the port
+              and address were not being autoconnected, because no EPICS records were connected
+              to that port and address. Removed incorrect code that was using exceptionDisconnect
+              and exceptionConnect when connecting a plugin to a port and address. Added new code
+              that uses pasynCommonSyncIO to force connection to the port and address. The code
+              cannot rely on autoconnect, because there might be no queued requests to a given
+              port address, only interrupt callbacks.</li>
+          </ul>
+        </li>
         <li>NDPluginStats: Changes to allow centroid and profile calculations for 1-D arrays.</li>
         <li>NDPluginROI: Added new parameters AutoSize[X,Y,Z]. If these are true then the
           size of the ROI in that dimension is automatically set to be the size of the input
@@ -55,6 +61,10 @@
           4-3-0. Modified the files in this distribution to eliminate all compiler warnings
           on Windows, Linux, and Darwin. Sent these changes back to the Nexus developers,
           so hopefully they will be in the next Nexus release as well.</li>
+        <li>NDFileNetCDF: Fixed bug that caused invalid files to be written on big-endian
+          machines, e.g. vxWorks.</li>
+        <li>NDFileDummy: Added NDFileHDF5Register and NDFileNullRegister, needed for running
+          areaDetector on vxWorks.</li>
       </ul>
     </li>
     <li>ImageJ Viewer
