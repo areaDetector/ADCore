@@ -11,6 +11,7 @@
 #include <netcdf.h>
 
 #include <epicsStdio.h>
+#include <epicsThread.h>
 #include <iocsh.h>
 
 #include "NDFileNetCDF.h"
@@ -459,7 +460,9 @@ NDFileNetCDF::NDFileNetCDF(const char *portName, int queueSize, int blockingCall
     : NDPluginFile(portName, queueSize, blockingCallbacks,
                    NDArrayPort, NDArrayAddr, 1, NUM_NDFILE_NETCDF_PARAMS,
                    2, 0, asynGenericPointerMask, asynGenericPointerMask, 
-                   ASYN_CANBLOCK, 1, priority, stackSize)
+                   ASYN_CANBLOCK, 1, priority, 
+                   /* netCDF needs a relatively large stack, make the default be large */
+                   (stackSize==0) ? epicsThreadGetStackSize(epicsThreadStackBig) : stackSize)
 {
     //const char *functionName = "NDFileNetCDF";
     
