@@ -904,12 +904,13 @@ record(longin, "$(P)$(R)PoolFreeBuffers")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))POOL_FREE_BUFFERS")
+   field(FLNK, "$(P)$(R)PoolUsedBuffers")
 }
 
 record(calc, "$(P)$(R)PoolUsedBuffers")
 {
-    field(INPA, "$(P)$(R)PoolAllocBuffers CP MS")
-    field(INPB, "$(P)$(R)PoolFreeBuffers CP MS")
+    field(INPA, "$(P)$(R)PoolAllocBuffers NPP MS")
+    field(INPB, "$(P)$(R)PoolFreeBuffers NPP MS")
     field(CALC, "A-B")
 }
 
