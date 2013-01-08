@@ -474,7 +474,9 @@ void asynNDArrayDriver::report(FILE *fp, int details)
 asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numParams, int maxBuffers,
                                      size_t maxMemory, int interfaceMask, int interruptMask,
                                      int asynFlags, int autoConnect, int priority, int stackSize)
-    : asynPortDriver(portName, maxAddr, numParams+NUM_NDARRAY_PARAMS, interfaceMask, interruptMask,
+    : asynPortDriver(portName, maxAddr, numParams+NUM_NDARRAY_PARAMS, 
+                     interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynGenericPointerMask, 
+                     interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask,
                      asynFlags, autoConnect, priority, stackSize),
       pNDArrayPool(NULL)
 {
