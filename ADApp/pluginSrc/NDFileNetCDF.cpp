@@ -345,8 +345,11 @@ asynStatus NDFileNetCDF::writeFile(NDArray *pArray)
 
     switch (pArray->dataType) {
         case NDInt8:
-        case NDUInt8:
             if ((retval = nc_put_vara_schar(this->ncId, this->arrayDataId, start, count, (signed char*)pArray->pData)))
+                ERR(retval);
+            break;
+        case NDUInt8:
+            if ((retval = nc_put_vara_uchar(this->ncId, this->arrayDataId, start, count, (unsigned char*)pArray->pData)))
                 ERR(retval);
             break;
         case NDInt16:
