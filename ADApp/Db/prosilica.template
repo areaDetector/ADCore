@@ -27,7 +27,7 @@ record(mbbo, "$(P)$(R)TriggerMode")
    field(FVVL, "5")
    field(SXST, "Software")
    field(SXVL, "6")
- }
+}
 
 record(mbbi, "$(P)$(R)TriggerMode_RBV")
 {
@@ -805,4 +805,48 @@ record(ai, "$(P)$(R)Strobe1Duration_RBV")
    field(SCAN, "I/O Intr")
 }
 
+###############################################################################
+# This record controls the contents of the NDArray timestamp parameter        #
+###############################################################################
+record(mbbo, "$(P)$(R)PSTimestampType")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_TIMESTAMP_TYPE")
+   field(ZRST, "NativeTicks")
+   field(ZRVL, "0")
+   field(ONST, "NativeSeconds")
+   field(ONVL, "1")
+   field(TWST, "POSIX")
+   field(TWVL, "2")
+   field(THST, "EPICS")
+   field(THVL, "3")
+   field(VAL, "0")
+   field(PINI, "YES")
+}
+
+record(mbbi, "$(P)$(R)PSTimestampType_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_TIMESTAMP_TYPE")
+   field(ZRST, "NativeTicks")
+   field(ZRVL, "0")
+   field(ONST, "NativeSeconds")
+   field(ONVL, "1")
+   field(TWST, "POSIX")
+   field(TWVL, "2")
+   field(THST, "EPICS")
+   field(THVL, "3")
+   field(SCAN, "I/O Intr")
+}
+
+
+###############################################################################
+# Processing this record will reset the internal camera timer                 #
+###############################################################################
+record(longout, "$(P)$(R)PSResetTimer")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PS_RESET_TIMER")
+   field(SCAN, "$(TRSCAN)")
+}
 
