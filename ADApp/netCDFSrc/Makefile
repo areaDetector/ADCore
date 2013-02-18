@@ -13,8 +13,6 @@ USR_CFLAGS += -DHAVE_CONFIG_H
 SRC_DIRS += $(NETCDF)/inc
 INC += netcdf.h
 
-LIB_LIBS += hdf5
-
 SRC_DIRS += $(NETCDF)/libsrc
 LIB_SRCS += attr.c
 LIB_SRCS += dim.c
