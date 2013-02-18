@@ -8,6 +8,8 @@ INC_WIN32 += tiff.h tiffio.h tiffvers.h tiffconf.h
 
 LIBRARY_IOC_WIN32 = tiff
 
+LIB_SYS_LIBS_WIN32 += User32
+
 LIB_SRCS += tif_aux.c
 LIB_SRCS += tif_close.c
 LIB_SRCS += tif_codec.c
