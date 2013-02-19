@@ -41,9 +41,6 @@ public:
 protected:
     virtual void processCallbacks(NDArray *pArray);
     virtual asynStatus connectToArrayPort(void);    
-    asynUser *pasynUserGenericPointer;          /**< asynUser for connecting to NDArray driver */
-    void *asynGenericPointerPvt;                /**< Handle for connecting to NDArray driver */
-    asynGenericPointer *pasynGenericPointer;    /**< asyn interface for connecting to NDArray driver */
 
 protected:
     int NDPluginDriverArrayPort;
@@ -65,6 +62,10 @@ private:
     void *asynGenericPointerInterruptPvt;
 
     /* Our data */
+    asynUser *pasynUserGenericPointer;          /**< asynUser for connecting to NDArray driver */
+    void *asynGenericPointerPvt;                /**< Handle for connecting to NDArray driver */
+    asynGenericPointer *pasynGenericPointer;    /**< asyn interface for connecting to NDArray driver */
+    bool connectedToArrayPort;
     epicsMessageQueueId msgQId;
     epicsTimeStamp lastProcessTime;
     int dimsPrev[ND_ARRAY_MAX_DIMS];
