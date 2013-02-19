@@ -542,6 +542,59 @@
       </tr>
       <tr>
         <td align="center" colspan="7,">
+          <b>Timestamp Control</b></td>
+      </tr>
+      <tr>
+        <td>
+          PSResetTimer</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Resets the timestamp timer in the camera. If PSTimestampType is POSIX or EPICS then
+          it also stores the current POSIX or EPICS time in the driver.</td>
+        <td>
+          PS_RESET_TIMER</td>
+        <td>
+          $(P)$(R)PSResetTimer</td>
+        <td>
+          longout</td>
+      </tr>
+      <tr>
+        <td>
+          PSTimestampType</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Controls the type of timestamp in the timeStamp field of each NDArray. Choices are:
+          <ul>
+            <li>NativeTicks: The number of internal camera clock ticks which have elapsed since
+              the last timer reset.</li>
+            <li>NativeSeconds: The number of seconds which have elapsed since the last timer reset.
+              This is NativeTicks divided by the internal camera clock frequency.</li>
+            <li>POSIX: The number of seconds since the POSIX Epoch (00:00:00 UTC, January 1, 1970).</li>
+            <li>EPICS The number of seconds since the EPICS Epoch (January 1, 1990).</li>
+          </ul>
+          The POSIX and EPICS timestamps are calculated as follows: when the timer is reset
+          the current POSIX or EPICS time is stored, and the internal camera timer is reset.
+          The timestamps are then computed by adding the camera ticks (converted to seconds)
+          to the stored POSIX or EPICS time. Thus, the relative times of each frame are accurately
+          controlled by the internal camera clock. The accuracy of the absolute time is determined
+          by the accuracy of the time of day clock in the IOC computer.</td>
+        <td>
+          PS_TIMESTAMP_TYPE</td>
+        <td>
+          $(P)$(R)PSTimestampType<br />
+          $(P)$(R)PSTimestampType_RBV</td>
+        <td>
+          mbbo<br />
+          mbbi</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
           <b>Statistics Information</b></td>
       </tr>
       <tr>
