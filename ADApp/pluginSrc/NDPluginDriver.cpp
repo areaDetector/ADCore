@@ -229,8 +229,6 @@ asynStatus NDPluginDriver::connectToArrayPort(void)
 {
     asynStatus status;
     asynInterface *pasynInterface;
-    asynUser *pasynUserCommon;
-    int isConnected;
     int enableCallbacks;
     char arrayPort[20];
     int arrayAddr;
@@ -239,29 +237,16 @@ asynStatus NDPluginDriver::connectToArrayPort(void)
     getStringParam(NDPluginDriverArrayPort, sizeof(arrayPort), arrayPort);
     getIntegerParam(NDPluginDriverArrayAddr, &arrayAddr);
     getIntegerParam(NDPluginDriverEnableCallbacks, &enableCallbacks);
-    status = pasynManager->isConnected(this->pasynUserGenericPointer, &isConnected);
-    if (status) isConnected=0;
 
-    /* If we are currently connected cancel interrupt request */    
-    if (isConnected) {
+    /* If we are currently connected to an array port cancel interrupt request */    
+    if (this->connectedToArrayPort) {
         status = setArrayInterrupt(0);
     }
     
     /* Disconnect the array port from our asynUser.  Ignore error if there is no device
      * currently connected. */
     pasynManager->disconnect(this->pasynUserGenericPointer);
-
-    // Try to connect to the array port and address.  We cannot rely on autoconnect because
-    // there may not be any requests queued to this port/address, only interrupt callbacks
-    pasynCommonSyncIO->connect(arrayPort, arrayAddr, &pasynUserCommon, "ARRAY_DATA");
-    status = pasynCommonSyncIO->connectDevice(pasynUserCommon);
-    pasynCommonSyncIO->disconnect(pasynUserCommon);
-    if (status != asynSuccess) {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                  "%s::%s Error calling pasynCommonSyncIO->connectDevice to array port %s address %d, status=%d, error=%s\n",
-                  driverName, functionName, arrayPort, arrayAddr, status, pasynUserCommon->errorMessage);
-        return (status);
-    }
+    this->connectedToArrayPort = false;
 
     /* Connect to the array port driver */
     status = pasynManager->connectDevice(this->pasynUserGenericPointer, arrayPort, arrayAddr);
@@ -282,6 +267,7 @@ asynStatus NDPluginDriver::connectToArrayPort(void)
     }
     this->pasynGenericPointer = (asynGenericPointer *)pasynInterface->pinterface;
     this->asynGenericPointerPvt = pasynInterface->drvPvt;
+    this->connectedToArrayPort = true;
 
     /* Enable or disable interrupt callbacks */
     status = setArrayInterrupt(enableCallbacks);
@@ -301,21 +287,16 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
     int function = pasynUser->reason;
     int addr=0;
     asynStatus status = asynSuccess;
-    int isConnected;
     static const char* functionName = "writeInt32";
 
     status = getAddress(pasynUser, &addr); if (status != asynSuccess) return(status);
-
-    /* See if we are connected */
-    status = pasynManager->isConnected(this->pasynUserGenericPointer, &isConnected);
-    if (status) {isConnected=0; status=asynSuccess;}
 
     /* Set the parameter in the parameter library. */
     status = (asynStatus) setIntegerParam(addr, function, value);
 
     if (function == NDPluginDriverEnableCallbacks) {
         if (value) {  
-            if (isConnected) {
+            if (this->connectedToArrayPort) {
                 /* We need to register to be called with interrupts from the detector driver on 
                  * the asynGenericPointer interface. Must do this with the lock released. */
                 this->unlock();
@@ -323,7 +304,7 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
                 this->lock();
             }
         } else {
-            if (isConnected) {
+            if (this->connectedToArrayPort) {
                 this->unlock();
                 status = setArrayInterrupt(0);
                 this->lock();
@@ -331,7 +312,7 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
         }
     } else if (function == NDPluginDriverArrayAddr) {
         this->unlock();
-        connectToArrayPort();
+        status = connectToArrayPort();
         this->lock();
     } else {
         /* If this parameter belongs to a base class call its method */
@@ -340,16 +321,16 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
     }
     
     /* Do callbacks so higher layers see any changes */
-    status = (asynStatus) callParamCallbacks(addr, addr);
+    callParamCallbacks(addr);
     
     if (status) 
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                  "%s:%s: status=%d, function=%d, value=%d", 
-                  driverName, functionName, status, function, value);
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, 
+              "%s:%s: function=%d, value=%d, connectedToArrayPort=%d\n", 
+              driverName, functionName, function, value, this->connectedToArrayPort);
     else        
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, value=%d, isConnected=%d\n", 
-              driverName, functionName, function, value, isConnected);
+              "%s:%s: function=%d, value=%d, connectedToArrayPort=%d\n", 
+              driverName, functionName, function, value, connectedToArrayPort);
     return status;
 }
 
@@ -384,7 +365,7 @@ asynStatus NDPluginDriver::writeOctet(asynUser *pasynUser, const char *value,
     }
     
      /* Do callbacks so higher layers see any changes */
-    status = (asynStatus)callParamCallbacks(addr, addr);
+    status = (asynStatus)callParamCallbacks(addr);
 
     if (status) 
         epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
@@ -483,6 +464,7 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     this->pasynGenericPointer = NULL;
     this->asynGenericPointerPvt = NULL;
     this->asynGenericPointerInterruptPvt = NULL;
+    this->connectedToArrayPort = false;
        
     /* Create asynUser for communicating with NDArray port */
     pasynUser = pasynManager->createAsynUser(0, 0);
