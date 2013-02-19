@@ -68,8 +68,11 @@
     areaDetector includes the header and library files required to build the andor driver
     on any Linux or Windows computer. However, it does not include the shareable libraries,
     DLLs or drivers to actually run a detector. Those must be obtained from Andor, either
-    by purchasing their SDK or their Solis application software.</p>
-  </p>
+    by purchasing their SDK or their Solis application software. On Windows the path
+    to the directory containing the Andor DLLs from the SDK or Solis must be added to
+    the PATH environment variable when running the areaDetector IOC. On Linux the path
+    to the directory containing the Andor shareable libraries from the SDK must be added
+    to the LD_LIBRARY_PATH environment variable when running the areaDetector IOC.</p>
   <h2 id="StandardNotes" style="text-align: left">
     Implementation of standard driver parameters</h2>
   <p>
