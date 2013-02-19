@@ -56,7 +56,7 @@ LIB_SYS_LIBS_Darwin     += png xml2 bz2
 PROD_SYS_LIBS_Darwin    += png xml2 bz2
 else
 # I don't understand why we need to set this when not using GraphicsMagick, but we do
-USR_LDFLAGS_WIN32 += /NODEFAULTLIB:MSVCRT.lib
+USR_LDFLAGS_WIN32       += /NODEFAULTLIB:MSVCRT.lib
 LIB_LIBS_WIN32          += tiff jpeg
 PROD_LIBS_WIN32         += tiff jpeg
 endif
