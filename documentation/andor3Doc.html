@@ -10,7 +10,7 @@
     <h1>
       areaDetector Andor3 driver</h1>
     <h2>
-      November 24, 2012</h2>
+      February 19, 2013</h2>
     <h2>
       Phillip Sorensen, Cornell University</h2>
     <h2>
@@ -32,15 +32,16 @@
     Introduction</h2>
   <p>
     This is an <a href="http://www.aps.anl.gov/epics">EPICS</a> <a href="areaDetector.html">
-      areaDetector</a> driver for CMOS detectors from <a href="http://www.andor.com">
-        Andor Technology</a>. It has been tested on the Andor Neo sCMOS camera with
-    3-tap Camera Link interface, but should work with other cameras (e.g. Zyla) as well. 
-    The driver is supported on 32-bit and 64- bit Linux and 32-bit and 64-bit Windows.  The driver
-    is called "Andor3" because it is built with Version 3 of the Andor Software Development Kit (SDK).
-    This version of the SDK is required to work with the Andor sCMOS cameras, and currently does <b>not</b>
-    work with the Andor CCD cameras.</p>
+      areaDetector</a> driver for CMOS detectors from <a href="http://www.andor.com">Andor
+        Technology</a>. It has been tested on the Andor Neo sCMOS camera with 3-tap
+    Camera Link interface, but should work with other cameras (e.g. Zyla) as well. The
+    driver is supported on 32-bit and 64- bit Linux and 32-bit and 64-bit Windows. The
+    driver is called "Andor3" because it is built with Version 3 of the Andor Software
+    Development Kit (SDK). This version of the SDK is required to work with the Andor
+    sCMOS cameras, and currently does <b>not</b> work with the Andor CCD cameras.</p>
   <p>
-    The driver provides access to essentially all of the features of the Andor sCMOS cameras:</p>
+    The driver provides access to essentially all of the features of the Andor sCMOS
+    cameras:</p>
   <ul>
     <li>Fixed number of frames or continuous acquisition.</li>
     <li>Multiple accumulations per frame.</li>
@@ -56,18 +57,20 @@
     It implements many of the parameters in <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">
       asynNDArrayDriver.h</a> and in <a href="areaDetectorDoxygenHTML/_a_d_driver_8h.html">
         ADArrayDriver.h</a>. It also implements a number of parameters that are specific
-    to the Andor detectors. The <a href="areaDetectorDoxygenHTML/classandor3.html">
-      andor3 class documentation</a> describes this class in detail.</p>
+    to the Andor detectors. The <a href="areaDetectorDoxygenHTML/classandor3.html">andor3
+      class documentation</a> describes this class in detail.</p>
   <p>
     This document does not attempt to explain the meaning of the Andor-specific parameters.
-    The <a href="Andor_Software_Development_Kit_3.pdf" target="_blank">Andor Software Development
-      Kit documentation</a> provides this detailed information, and the reader is referred
-    to that document.
+    The Andor Software Development Kit documentation provides this detailed information.
+    Andor does not allow me to redistribute the SDK documentation as part of areaDetector.
+    It must be obtained from <a href="http://www.andor.com/scientific-software/software-development-kit/andor-sdk">
+      Andor's Web site</a>.
   </p>
-  <p> The Andor3 SDK is very well designed.  Camera parameters (e.g. exposure time, binning) are called
-  "features".  Features can be integer, float, bool, string, or enum.  
-  Each feature can be queried to determine if it is implemented on the current detector.
-  In addition:</p>
+  <p>
+    The Andor3 SDK is very well designed. Camera parameters (e.g. exposure time, binning)
+    are called "features". Features can be integer, float, bool, string, or enum. Each
+    feature can be queried to determine if it is implemented on the current detector.
+    In addition:</p>
   <ul>
     <li>For integer and float features:
       <ul>
@@ -86,18 +89,24 @@
         </li>
       </ul>
     </li>
-    <li>Ability to register a user-defined C callback function that will be called whenever a 
-      feature value changes.  These changes can be the indirect result of changing another feature.  
-      For example, changing the binning might force the exposure time to change, etc.</li>
+    <li>Ability to register a user-defined C callback function that will be called whenever
+      a feature value changes. These changes can be the indirect result of changing another
+      feature. For example, changing the binning might force the exposure time to change,
+      etc.</li>
   </ul>
-  <p>The areaDetector driver uses these features.  All of the enum menus are built dynamically at iocInit,
-    they are not preset in the template file.  This ensures that the enum choices match the actual capabilities
-    of the current camera.  Whenever an integer or float parameter is changed it is checked
-    to ensure it is within the current valid bounds for that feature.  The feature callback is used to
-    ensure that the current EPICS readback value of that parameter matches the actual camera value, without
+  <p>
+    The areaDetector driver uses these features. All of the enum menus are built dynamically
+    at iocInit, they are not preset in the template file. This ensures that the enum
+    choices match the actual capabilities of the current camera. Whenever an integer
+    or float parameter is changed it is checked to ensure it is within the current valid
+    bounds for that feature. The feature callback is used to ensure that the current
+    EPICS readback value of that parameter matches the actual camera value, without
     requiring the driver to poll.</p>
-
-
+  <p>
+    areaDetector includes the header and library files required to build the andor3
+    driver on any Linux or Windows computer. However, it does not include the shareable
+    libraries, DLLs or drivers to actually run a detector. Those must be obtained from
+    Andor, either by purchasing their SDK or their Solis application software.</p>
   <h2 id="StandardNotes" style="text-align: left">
     Implementation of standard driver parameters</h2>
   <p>
@@ -159,7 +168,8 @@
           $(P)$(R)NumExposures<br />
           $(P)$(R)NumExposures_RBV</td>
         <td>
-          Sets the number of accumulations per image.  This is performed in Andor's driver, not on the chip.</td>
+          Sets the number of accumulations per image. This is performed in Andor's driver,
+          not on the chip.</td>
       </tr>
       <tr>
         <td>
@@ -177,9 +187,10 @@
           $(P)$(R)AcquirePeriod<br />
           $(P)$(R)AcquirePeriod_RBV</td>
         <td>
-          Sets the FrameRate (=1./AcquirePeriod).  The FrameRate can also be set directly.  The minimum
-          AcquirePeriod (maximum FrameRate) depends on a number of other parameters, including the
-          A3Binning, SizeX, SizeY, ReadoutRate, A3ShutterMode, PixelEncoding, and Overlap.</td>
+          Sets the FrameRate (=1./AcquirePeriod). The FrameRate can also be set directly.
+          The minimum AcquirePeriod (maximum FrameRate) depends on a number of other parameters,
+          including the A3Binning, SizeX, SizeY, ReadoutRate, A3ShutterMode, PixelEncoding,
+          and Overlap.</td>
       </tr>
       <tr>
         <td>
@@ -193,9 +204,9 @@
             <li>UInt16</li>
             <li>UInt32</li>
           </ul>
-          The DataType is selected automatically, based upon the PixelEncoding record. 
-          The data type will be UInt32 if PixelEncoding is Mono32, and UInt16 for all other values
-          of PixelEncoding. PixelEncoding=Mono32 can be used when A3Binning &gt; 1x1, or when 
+          The DataType is selected automatically, based upon the PixelEncoding record. The
+          data type will be UInt32 if PixelEncoding is Mono32, and UInt16 for all other values
+          of PixelEncoding. PixelEncoding=Mono32 can be used when A3Binning &gt; 1x1, or when
           multiple accumulations (NumExposures &gt; 1) could cause 16-bit overflow. </td>
       </tr>
       <tr>
@@ -248,8 +259,7 @@
       </tr>
       <tr>
         <td align="center" colspan="7">
-          <b>Version information</b>
-        </td>
+          <b>Version information</b> </td>
       </tr>
       <tr>
         <td>
@@ -317,8 +327,7 @@
       </tr>
       <tr>
         <td align="center" colspan="7">
-          <b>Cooling control and status</b>
-        </td>
+          <b>Cooling control and status</b> </td>
       </tr>
       <tr>
         <td>
@@ -346,15 +355,15 @@
         <td>
           R/O</td>
         <td>
-          Temperature status.  Values and strings on the Neo are:
-            <ul>
-              <li>0 = Cooler Off</li>
-              <li>1 = Stabilized</li>
-              <li>2 = Cooling</li>
-              <li>3 = Drift</li>
-              <li>4 = Not Stabilized</li>
-              <li>5 = Fault</li>
-            </ul>
+          Temperature status. Values and strings on the Neo are:
+          <ul>
+            <li>0 = Cooler Off</li>
+            <li>1 = Stabilized</li>
+            <li>2 = Cooling</li>
+            <li>3 = Drift</li>
+            <li>4 = Not Stabilized</li>
+            <li>5 = Fault</li>
+          </ul>
         </td>
         <td>
           A3_TEMP_STATUS</td>
@@ -371,9 +380,10 @@
         <td>
           R/W</td>
         <td>
-          Temperature setpoint value in degrees C.  On the cooled cameras (e.g. Neo) the temperature is set
-          to discrete values, rather than continuously with the Temperature record, because the firmware
-          does pixel corrections for specific temperatures.  Choices on the Neo are:
+          Temperature setpoint value in degrees C. On the cooled cameras (e.g. Neo) the temperature
+          is set to discrete values, rather than continuously with the Temperature record,
+          because the firmware does pixel corrections for specific temperatures. Choices on
+          the Neo are:
           <ul>
             <li>0 = -15</li>
             <li>1 = -20</li>
@@ -386,10 +396,10 @@
         <td>
           A3_TEMP_CONTROL</td>
         <td>
-          TempControl<br/>
+          TempControl<br />
           TempControl_RBV</td>
         <td>
-          mbbo<br/>
+          mbbo<br />
           mbbi</td>
       </tr>
       <tr>
@@ -400,7 +410,7 @@
         <td>
           R/W</td>
         <td>
-          Fan speed.  Choices on the Neo are:
+          Fan speed. Choices on the Neo are:
           <ul>
             <li>0 = Off</li>
             <li>1 = Low</li>
@@ -410,16 +420,15 @@
         <td>
           A3_FAN_SPEED</td>
         <td>
-          FanSpeed<br/>
+          FanSpeed<br />
           FanSpeed_RBV</td>
         <td>
-          mbbo<br/>
+          mbbo<br />
           mbbi</td>
       </tr>
       <tr>
         <td align="center" colspan="7">
-          <b>Readout control and status</b>
-        </td>
+          <b>Readout control and status</b> </td>
       </tr>
       <tr>
         <td>
@@ -434,19 +443,19 @@
             <li>0 = Rolling</li>
             <li>1 = Global</li>
           </ul>
-          Rolling shutter mode interleaves exposure and readout.  This is the fastest readout mode, but
-          means that each row of the sensor acquires data for a different time period.  In Rolling mode
-          the exposure time is determined by the row readout time, and cannot be independently controlled.
-          In Global mode all pixels acquire for the same time period and are then read out.  The exposure time
-          is independent of the readout time, and can be as short as 9 microseconds on the Neo.
-        </td>
+          Rolling shutter mode interleaves exposure and readout. This is the fastest readout
+          mode, but means that each row of the sensor acquires data for a different time period.
+          In Rolling mode the exposure time is determined by the row readout time, and cannot
+          be independently controlled. In Global mode all pixels acquire for the same time
+          period and are then read out. The exposure time is independent of the readout time,
+          and can be as short as 9 microseconds on the Neo. </td>
         <td>
           A3_SHUTTER_MODE</td>
         <td>
-          A3ShutterMode<br/>
+          A3ShutterMode<br />
           A3ShutterMode_RBV</td>
         <td>
-          mbbo<br/>
+          mbbo<br />
           mbbi</td>
       </tr>
       <tr>
@@ -457,27 +466,29 @@
         <td>
           R/W</td>
         <td>
-          Frame rate.  This is the reciprocal of ADAcquirePeriod, and is the units used to control
-          the Andor cameras.  There are two limitations on the frame rate:
+          Frame rate. This is the reciprocal of ADAcquirePeriod, and is the units used to
+          control the Andor cameras. There are two limitations on the frame rate:
           <ol>
-            <li>The maximum rate that the sensor can be read out into the RAM on the camera head.  
-              The driver will limit the FrameRate to this value in all cases.  This value can be
-              obtained for the current acquisition settings by typing "asynReport 1" to get a detailed 
-              report from the Andor3 driver.</li>
-            <li>The maximum sustained frame transfer rate that the interface (e.g. CameraLink card) can support.
-              This value is contained in the TransferRate PV. It is permissible to exceed this value for a limited number of
-              frames, allowing the frames to accumulate in the camera head RAM.  The number of frames that will fit in
-              the camera head RAM is controlled by the PixelEncoding and the AOI parameters (A3Binning, SizeX, SizeY).
-              If the camera head RAM fills up the acquisition will hang, and must be stopped and restarted.</li>
+            <li>The maximum rate that the sensor can be read out into the RAM on the camera head.
+              The driver will limit the FrameRate to this value in all cases. This value can be
+              obtained for the current acquisition settings by typing "asynReport 1" to get a
+              detailed report from the Andor3 driver.</li>
+            <li>The maximum sustained frame transfer rate that the interface (e.g. CameraLink
+              card) can support. This value is contained in the TransferRate PV. It is permissible
+              to exceed this value for a limited number of frames, allowing the frames to accumulate
+              in the camera head RAM. The number of frames that will fit in the camera head RAM
+              is controlled by the PixelEncoding and the AOI parameters (A3Binning, SizeX, SizeY).
+              If the camera head RAM fills up the acquisition will hang, and must be stopped and
+              restarted.</li>
           </ol>
         </td>
         <td>
           A3_FRAME_RATE</td>
         <td>
-          FrameRate<br/>
+          FrameRate<br />
           FrameRate_RBV</td>
         <td>
-          ao<br/>
+          ao<br />
           ai</td>
       </tr>
       <tr>
@@ -488,9 +499,8 @@
         <td>
           R/O</td>
         <td>
-          The maximum transfer rate in frames/s of the interface (e.g. CameraLink card).  This is the maximum
-          sustained FrameRate which can be achieved.
-        </td>
+          The maximum transfer rate in frames/s of the interface (e.g. CameraLink card). This
+          is the maximum sustained FrameRate which can be achieved. </td>
         <td>
           A3_TRANSFER_RATE</td>
         <td>
@@ -537,8 +547,8 @@
             <li>2 = Mono16</li>
             <li>9 = Mono32</li>
           </ul>
-          Mono12 and Mono12Packed are only available when PreAmpGain is one of the 11-bit modes.
-        </td>
+          Mono12 and Mono12Packed are only available when PreAmpGain is one of the 11-bit
+          modes. </td>
         <td>
           A3_PIXEL_ENCODING</td>
         <td>
@@ -580,8 +590,7 @@
         <td>
           R/O</td>
         <td>
-          The readout time from the sensor into camera RAM.
-        </td>
+          The readout time from the sensor into camera RAM. </td>
         <td>
           A3_READOUT_TIME</td>
         <td>
@@ -597,10 +606,9 @@
         <td>
           R/W</td>
         <td>
-          Controls whether acquisition and readout are overlapped.  Choices are 0 (No) and 1 (Yes).
-          On the Neo if Overlap=Yes then the minimum exposure time is limited to about 10 ms.  If
-          Overlap=No then the minimum exposure time is 9 microseconds.
-        </td>
+          Controls whether acquisition and readout are overlapped. Choices are 0 (No) and
+          1 (Yes). On the Neo if Overlap=Yes then the minimum exposure time is limited to
+          about 10 ms. If Overlap=No then the minimum exposure time is 9 microseconds. </td>
         <td>
           A3_OVERLAP</td>
         <td>
@@ -618,8 +626,8 @@
         <td>
           R/W</td>
         <td>
-          Controls whether the firmware applies the Spurious Noise Filter.  Choices are 0 (No) and 1 (Yes).
-        </td>
+          Controls whether the firmware applies the Spurious Noise Filter. Choices are 0 (No)
+          and 1 (Yes). </td>
         <td>
           A3_NOISE_FILTER</td>
         <td>
@@ -631,8 +639,7 @@
       </tr>
       <tr>
         <td align="center" colspan="7">
-          <b>Trigger control</b>
-        </td>
+          <b>Trigger control</b> </td>
       </tr>
       <tr>
         <td>
@@ -653,8 +660,7 @@
       </tr>
       <tr>
         <td align="center" colspan="7">
-          <b>Area-Of-Interest (AOI) Control</b>
-        </td>
+          <b>Area-Of-Interest (AOI) Control</b> </td>
       </tr>
       <tr>
         <td>
@@ -664,7 +670,7 @@
         <td>
           R/O</td>
         <td>
-          Indicates whether this camera supports full AOI control.  This is Yes for the Neo.
+          Indicates whether this camera supports full AOI control. This is Yes for the Neo.
         </td>
         <td>
           A3_FULL_AOI_CONTROL</td>
@@ -681,8 +687,8 @@
         <td>
           R/W</td>
         <td>
-          Controls the binning. The binning on the sCMOS camera is done in firmware and only certain preset
-          values are allowed.  Choices for the Neo are:
+          Controls the binning. The binning on the sCMOS camera is done in firmware and only
+          certain preset values are allowed. Choices for the Neo are:
           <ul>
             <li>0 = 1x1</li>
             <li>1 = 2x2</li>
@@ -709,8 +715,9 @@
   <h2 id="Usage" style="text-align: left">
     Usage</h2>
   <p>
-    If any of the parameters set are out of range the driver will set them to the minimum or maximum
-    allowed value for that parameter.  The _RBV value will indicate the actual value in effect.
+    If any of the parameters set are out of range the driver will set them to the minimum
+    or maximum allowed value for that parameter. The _RBV value will indicate the actual
+    value in effect.
   </p>
   <h2 id="Configuration">
     Configuration</h2>
@@ -724,13 +731,13 @@
   <p>
     For details on the meaning of the parameters to this function refer to the detailed
     documentation on the andor3Config function in the <a href="areaDetectorDoxygenHTML/andor3_8cpp.html">
-      andor3.cpp documentation</a> and in the documentation for the constructor
-    for the <a href="areaDetectorDoxygenHTML/classandor3.html">andor3 class</a>.  The maxFrames parameter controls
-    the number of frame buffers the driver queues to the SDK when acquiring data.  The default value is 10.
-    Increasing this number will allow the SDK to transfer images from the camera at the full interface speed 
-    even when the driver is not reading them that quickly.  
-    This will help to prevent frames from filling the camera RAM when operating close
-    to the maximum interface transfer rate (=TransferRate).
+      andor3.cpp documentation</a> and in the documentation for the constructor for
+    the <a href="areaDetectorDoxygenHTML/classandor3.html">andor3 class</a>. The maxFrames
+    parameter controls the number of frame buffers the driver queues to the SDK when
+    acquiring data. The default value is 10. Increasing this number will allow the SDK
+    to transfer images from the camera at the full interface speed even when the driver
+    is not reading them that quickly. This will help to prevent frames from filling
+    the camera RAM when operating close to the maximum interface transfer rate (=TransferRate).
   </p>
   <p>
     There an example IOC boot directory and startup script (<a href="andor3_st_cmd.html">iocBoot/iocAndor3/st.cmd)</a>
@@ -753,6 +760,7 @@
   <h2 id="Restrictions" style="text-align: left">
     Restrictions</h2>
   <p>
-    Selecting 3x3 binning will crash the driver.  Hopefully this will be fixed in the next version of the SDK.</p>
+    There is currently no way to query the driver to know how much memory remains in
+    the on-board RAM. When the RAM fills up the camera stops acquiring images.</p>
 </body>
 </html>
