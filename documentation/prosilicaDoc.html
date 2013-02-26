@@ -24,7 +24,7 @@
     <li><a href="#Driver_parameters">Prosilica specific parameters</a></li>
     <li><a href="#Configuration">Configuration</a></li>
     <li><a href="#MEDM_screens">MEDM screens</a></li>
-    <li><a href="#Future">Future enhancements</a></li>
+    <li><a href="#ConnectionManagement">Connection management</a></li>
   </ul>
   <h2 id="Overview">
     Overview</h2>
@@ -901,11 +901,27 @@
     <h3>
       epics_ad_display.pro</h3>
     <img alt="prosilica_tvscl.jpg" src="prosilica_tvscl.jpg" /></div>
-  <h2 id="Future">
-    Future enhancements</h2>
+  <h2 id="ConnectionManagement">
+    Connection management</h2>
   <p>
-    Work is needed on connection management. If the camera is unplugged or powered off
-    when the areaDetector driver is running it does not gracefully recover.
+    The Prosilica driver implements connection management. Cameras do not need to be
+    accessible when the IOC starts up, and can be power-cycled or disconnected and reconnected
+    from the Ethernet without restarting the IOC.</p>
+  <p>
+    Whenever a new camera is detected on the network the Prosilica library issues a
+    callback to the driver. If the driver is not currently connected to a camera it
+    will attempt to connect when receiving the callback. This mechanism should work
+    no matter how the camera is identified in the startup script, i.e. by Unique ID,
+    IP address, or IP name. It is also possible to manually connect and disconnect the
+    camera by using the $(P)$(R)AsynIO.CNCT PV, which is labeled "Connect" and "Disconnect"
+    on the medm screen.</p>
+  <p>
+    If the camera is not accessible when the IOC boots, or is power-cycled then the
+    EPICS output records may not match the actual camera settings and readbacks. They
+    can be made to agree by processing the output record, e.g. by pressing Enter or
+    Return in the medm output widget. In the future this may be improved by sending
+    all of the EPICS settings to the camera when it connects, though it is not clear
+    if this would always be the desired behavior.
   </p>
 </body>
 </html>
