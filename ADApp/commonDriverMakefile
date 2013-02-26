@@ -8,8 +8,8 @@ endif
 
 LIB_LIBS                += ADBase netCDF
 PROD_LIBS               += NDPlugin ADBase netCDF
-PROD_LIBS               += calc busy sscan autosave
 LIB_LIBS                += calc busy sscan autosave
+PROD_LIBS               += calc busy sscan autosave
 LIB_LIBS                += asyn
 PROD_LIBS               += asyn
 LIB_LIBS                += $(EPICS_BASE_IOC_LIBS)
@@ -17,7 +17,10 @@ PROD_LIBS               += $(EPICS_BASE_IOC_LIBS)
 
 # The following libraries are only needed for GraphicsMagick
 ifeq ($(USE_GRAPHICSMAGICK), YES)
+# Darwin gives a circular reference if this line is used
+ifneq (darwin-x86, $(findstring darwin-x86, $(T_A)))
 LIB_LIBS                += NDFileMagick
+endif
 PROD_LIBS               += NDFileMagick
 
 LIB_LIBS_WIN32          += CORE_RL_Magick++_ CORE_RL_wand_ CORE_RL_magick_ 
@@ -106,8 +109,8 @@ PROD_LIBS_Darwin        += NeXus hdf5 sz
 #LIB_SYS_LIBS_Darwin    += NeXus hdf5 sz
 #PROD_SYS_LIBS_Darwin   += NeXus hdf5 sz
 # To use versions of these libraries supplied with areaDetector use this line
-LIB_LIBS_Darwin         += tiff jpeg z
-PROD_LIBS_Darwin        += tiff jpeg z
+LIB_LIBS_Darwin         += tiff jpeg 
+PROD_LIBS_Darwin        += tiff jpeg
 # To use system versions of these libraries use this line
 #LIB_SYS_LIBS_Darwin    += tiff jpeg z
 #PROD_SYS_LIBS_Darwin   += tiff jpeg z
