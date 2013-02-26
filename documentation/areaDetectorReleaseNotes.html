@@ -9,7 +9,7 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
-    Release 1-9 (XXX-January-2013)</h2>
+    Release 1-9 (XXX-February-2013)</h2>
   <ul>
     <li>NDArray
       <ul>
@@ -31,6 +31,21 @@
         <li>Bruker, Pilatus, marCCD, and mar345 drivers. The driver lock was not being taken
           in a few places when the parameter library was being accessed. This could lead to
           crashes.</li>
+        <li>Prosilica driver. Thanks to Jason Abernathy from University of Victoria for these
+          enhancements.
+          <ul>
+            <li>Implemented connection management. Cameras no longer need to be accessible when
+              the IOC starts up, and can be power-cycled or disconnected and reconnected from
+              the Ethernet without restarting the IOC. If the camera is not accessible when the
+              IOC boots, or is power-cycled then the EPICS output records may not match the actual
+              camera settings and readbacks. They can be made to agree by processing the output
+              record, e.g. by pressing Enter or Return in the medm output widget.</li>
+            <li>Added new record PSTimestampType which contains the type of time stamp in the
+              NDArrays. Choices are "NativeTicks", "NativeSeconds","POSIX", and "EPICS". Previously
+              the time stamp was always "NativeTicks".</li>
+            <li>Added new record PSResetTimer which resets the time offset for time stamps.</li>
+          </ul>
+        </li>
       </ul>
     </li>
     <li>Plugins
@@ -45,10 +60,7 @@
               setting EnableCallbacks=1. This problem was restricted to the case where the port
               and address were not being autoconnected, because no EPICS records were connected
               to that port and address. Removed incorrect code that was using exceptionDisconnect
-              and exceptionConnect when connecting a plugin to a port and address. Added new code
-              that uses pasynCommonSyncIO to force connection to the port and address. The code
-              cannot rely on autoconnect, because there might be no queued requests to a given
-              port address, only interrupt callbacks.</li>
+              and exceptionConnect when connecting a plugin to a port and address.</li>
             <li>Changed the names of the plugin threads from "NDPluginTask" to portName+"_Plugin"
               to make them more meaningful.</li>
           </ul>
