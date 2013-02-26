@@ -12,7 +12,7 @@
     <h2>
       Release 1-9</h2>
     <h2>
-      December XXX, 2012</h2>
+      February XXX, 2013</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -1019,6 +1019,110 @@
           $(P)$(R)NDAttributesFile</td>
         <td>
           waveform</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Array pool status</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDPoolMaxMemory</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          The maximum number of NDArrayPool memory bytes that can be allocated. 0=unlimited.
+        </td>
+        <td>
+          POOL_MAX_MEMORY</td>
+        <td>
+          $(P)$(R)PoolMaxMem</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPoolUsedMemory</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          The number of NDArrayPool memory bytes currently allocated. The SCAN rate of this
+          record controls the scanning of all of the dynamic NDArrayPool status records.
+        </td>
+        <td>
+          POOL_USED_MEMORY</td>
+        <td>
+          $(P)$(R)PoolUsedMem</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPoolMaxBuffers</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The maximum number of NDArrayPool buffers that can be allocated. 0=unlimited.</td>
+        <td>
+          POOL_MAX_BUFFERS</td>
+        <td>
+          $(P)$(R)PoolMaxBuffers</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPoolAllocBuffers</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The number of NDArrayPool buffers currently allocated.</td>
+        <td>
+          POOL_ALLOC_BUFFERS</td>
+        <td>
+          $(P)$(R)PoolAllocBuffers</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPoolFreeBuffers</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The number of NDArrayPool buffers currently allocated but free.</td>
+        <td>
+          POOL_FREE_BUFFERS</td>
+        <td>
+          $(P)$(R)PoolFreeBuffers</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          N.A.</td>
+        <td>
+          N.A.</td>
+        <td>
+          r/o</td>
+        <td>
+          The number of NDArrayPool buffers currently in use. This is calculated as NDPoolAllocBuffers
+          - NDPoolFreeBuffers.</td>
+        <td>
+          N.A.</td>
+        <td>
+          $(P)$(R)PoolUsedBuffers</td>
+        <td>
+          calc</td>
       </tr>
       <tr>
         <td align="center" colspan="7">
