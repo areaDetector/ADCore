@@ -67,8 +67,7 @@ function call_Ezca, routine, p1, p2, p3, p4, p5
 ; COMMON BLOCKS:
 ;       EZCA_COMMON is used to store the name of the program being run,
 ;       the name of the shareable image, a flag which indicates if we
-;       are currently in an asynchronous group, and the maximum string size
-;       and maximum number of enum strings.
+;       are currently in an asynchronous group, and various EPICS limits
 ;
 ; PROCEDURE:
 ;       This routine calls call_external with IDL or linknload with PV-WAVE.
@@ -85,7 +84,7 @@ function call_Ezca, routine, p1, p2, p3, p4, p5
 ; The first time through determine if we are running IDL or PV-WAVE and set
 ; things up accordingly
 
-common ezca_common, program, IDL_object, ingroup, MAX_STRING_SIZE, MAX_ENUM_STATES
+common ezca_common, program, IDL_object, ingroup, MAX_STRING_SIZE, MAX_ENUM_STATES, MAX_PVNAME_SIZE
 
 if (n_elements(program) eq 0) then begin
     if (strpos(strupcase(!dir), 'IDL') ne -1) then program='IDL' else program='PV-WAVE'
@@ -146,10 +145,10 @@ function ezcaStringToByte, str, num
 ;       byt = ezcaStringToByte(Str, Num)
 ;
 ; INPUTS:
-;       Str:   A 1-D array of strings, typically EPICS PV names.
+;       Str:   A 1-D array of strings.  Do not use this function for EPICS PV names, use ezcaPVNameToByte below.
 ;
 ; OUTPUTS:
-;       This function returns a 2-D byte [MAX_STRING_SIZE, n_elements(Str)] which
+;       This function returns a 2-D byte array [MAX_STRING_SIZE, n_elements(Str)] which
 ;       is the input string array converted to fixed-length byte arrays.
 ;
 ;       Num: Returns n_elements(Str) as a short integer
@@ -161,7 +160,7 @@ function ezcaStringToByte, str, num
 ;       IDL> str = ['a', 'b', 'c']
 ;       IDL> byt = ezcaStringToByte(str, num)
 ;       IDL> help, byt, num
-;       BYT             BYTE      = Array[132, 3]
+;       BYT             BYTE      = Array[40, 3]
 ;       NUM             INT       =        3
 ;
 ; MODIFICATION HISTORY:
@@ -179,6 +178,58 @@ function ezcaStringToByte, str, num
         byt[0, i] = byte(str[i])
         ; Make sure string is null terminated
         byt[MAX_STRING_SIZE-1, i] = 0
+    endfor
+    return, byt
+end
+
+
+function ezcaPVNameToByte, str, num
+;+
+; NAME:
+;       ezcaPVNameToByte
+;
+; PURPOSE:
+;       This function converts an array of PV names to a 2-D byte array
+;
+; CATEGORY:
+;       EPICS Channel Access Interface
+;
+; CALLING SEQUENCE:
+;       byt = ezcaPVNameToByte(Str, Num)
+;
+; INPUTS:
+;       Str:   A 1-D array of EPICS PV names.
+;
+; OUTPUTS:
+;       This function returns a 2-D byte [MAX_PVNAME_SIZE, n_elements(Str)] which
+;       is the input string array converted to fixed-length byte arrays.
+;
+;       Num: Returns n_elements(Str) as a short integer
+;
+; COMMON BLOCKS:
+;       ezca_common holds the value of MAX_PVNAME_SIZE.
+;
+; EXAMPLE:
+;       IDL> str = ['a', 'b', 'c']
+;       IDL> byt = ezcaStringToByte(str, num)
+;       IDL> help, byt, num
+;       BYT             BYTE      = Array[61, 3]
+;       NUM             INT       =        3
+;
+; MODIFICATION HISTORY:
+;       Written by:   Mark Rivers, 11-Dec-2012.  This function was added and all routines
+;                     that previously called ezcaStringToByte for PV names were changed to use
+;                     this function because it allows 60 character names, rather than 40.
+;-
+
+    common ezca_common
+
+    num = fix(n_elements(str))
+    byt = bytarr(MAX_PVNAME_SIZE, num)
+    for i=0,num-1 do begin
+        byt[0, i] = byte(str[i])
+        ; Make sure string is null terminated
+        byt[MAX_PVNAME_SIZE-1, i] = 0
     endfor
     return, byt
 end
@@ -321,7 +372,7 @@ function caGetCountAndType, pvname, count, type
 
     ca_type = 0B
     count = 0L
-    status = call_ezca('ezcaIDLGetCountAndType', ezcaStringToByte(pvname), $
+    status = call_ezca('ezcaIDLGetCountAndType', ezcaPVNameToByte(pvname), $
                         count, ca_type)
     if (status ne 0) then return, status
     case ca_type of
@@ -504,7 +555,7 @@ function caGet, pvname, val, string=string, maximum_elements=max
             5: val=  dblarr(nelem)              ; Double
         endcase
     endelse
-    status = call_ezca('ezcaIDLGet', ezcaStringToByte(pvname), byte(type), $
+    status = call_ezca('ezcaIDLGet', ezcaPVNameToByte(pvname), byte(type), $
                       long(nelem), val)
     if ((not ingroup) and (type eq 1)) then val = string(val)
     return, status
@@ -736,18 +787,18 @@ function caPut, name, value, wait=wait
     if (type eq 1) then begin  ; Convert strings to byte arrays
         temp = ezcaStringToByte(value)
         if (keyword_set(wait)) then begin
-            status = call_ezca('ezcaIDLPut', ezcaStringToByte(name), $
+            status = call_ezca('ezcaIDLPut', ezcaPVNameToByte(name), $
                           byte(type), long(nelem), temp)
         endif else begin
-            status = call_ezca('ezcaIDLPutOldCa', ezcaStringToByte(name), $
+            status = call_ezca('ezcaIDLPutOldCa', ezcaPVNameToByte(name), $
                           byte(type), long(nelem), temp)
         endelse
     endif else begin
         if (keyword_set(wait)) then begin
-            status = call_ezca('ezcaIDLPut', ezcaStringToByte(name), $
+            status = call_ezca('ezcaIDLPut', ezcaPVNameToByte(name), $
                           byte(type), long(nelem), value)
         endif else begin
-            status = call_ezca('ezcaIDLPutOldCa', ezcaStringToByte(name), $
+            status = call_ezca('ezcaIDLPutOldCa', ezcaPVNameToByte(name), $
                           byte(type), long(nelem), value)
         endelse
     endelse
@@ -942,7 +993,7 @@ function caSetMonitor, pvname, count
     status = caGetCountAndType(pvname, cnt, type)
     if (n_elements(count) eq 0) then count = 0
     if (status ne 0) then return, status
-    status = call_ezca('ezcaIDLSetMonitor', ezcaStringToByte(pvname), $
+    status = call_ezca('ezcaIDLSetMonitor', ezcaPVNameToByte(pvname), $
                         byte(type(2)), long(count))
     return, status
 end
@@ -986,7 +1037,7 @@ function caClearMonitor, pvname
 ;-
     status = caGetCountAndType(pvname, count, type)
     if (status ne 0) then return, status
-    status = call_ezca('ezcaIDLClearMonitor', ezcaStringToByte(pvname), $
+    status = call_ezca('ezcaIDLClearMonitor', ezcaPVNameToByte(pvname), $
                         byte(type(2)))
     return, status
 end
@@ -1031,7 +1082,7 @@ function caCheckMonitor, pvname
 ;-
     status = caGetCountAndType(pvname, count, type)
     if (status ne 0) then return, status
-    status = call_ezca('ezcaIDLNewMonitorValue', ezcaStringToByte(pvname), $
+    status = call_ezca('ezcaIDLNewMonitorValue', ezcaPVNameToByte(pvname), $
                         byte(type(2)))
     return, status
 end
@@ -1210,7 +1261,7 @@ function caGetEnumStrings, pvname, strings
     if (type(0) ne 3) then return, -1
     array = bytarr(MAX_STRING_SIZE, MAX_ENUM_STATES)
     n = 0L
-    status = call_ezca('ezcaIDLGetEnumStrings', ezcaStringToByte(pvname), $
+    status = call_ezca('ezcaIDLGetEnumStrings', ezcaPVNameToByte(pvname), $
                         n, array)
     if (status ne 0) then return, status
     strings = string(array(*, 0:n-1))
@@ -1258,7 +1309,7 @@ function caGetControlLimits, pvname, low, high
 ;-
     low = 0.D0
     high = 0.D0
-    status = call_ezca('ezcaIDLGetControlLimits', ezcaStringToByte(pvname), $
+    status = call_ezca('ezcaIDLGetControlLimits', ezcaPVNameToByte(pvname), $
                         low, high)
     return, status
 end
@@ -1304,7 +1355,7 @@ function caGetGraphicLimits, pvname, low, high
 ;-
     low = 0.D0
     high = 0.D0
-    status = call_ezca('ezcaIDLGetGraphicLimits', ezcaStringToByte(pvname), $
+    status = call_ezca('ezcaIDLGetGraphicLimits', ezcaPVNameToByte(pvname), $
                         low, high)
     return, status
 end
@@ -1347,7 +1398,7 @@ function caGetPrecision, pvname, precision
 ;       June 28, 1995
 ;-
     precision = 0
-    status = call_ezca('ezcaIDLGetPrecision', ezcaStringToByte(pvname), $
+    status = call_ezca('ezcaIDLGetPrecision', ezcaPVNameToByte(pvname), $
                         precision)
     return, status
 end
@@ -1398,7 +1449,7 @@ function caGetStatus, pvname, timestamp, status, severity
     timestamp = lonarr(2)
     status = 0
     severity = 0
-    status = call_ezca('ezcaIDLGetStatus', ezcaStringToByte(pvname), $
+    status = call_ezca('ezcaIDLGetStatus', ezcaPVNameToByte(pvname), $
                         timestamp, status, severity)
     return, status
 end
@@ -1446,7 +1497,7 @@ function caGetUnits, pvname, units
 ;-
     common ezca_common
     units = bytarr(MAX_STRING_SIZE)
-    status = call_ezca('ezcaIDLGetUnits', ezcaStringToByte(pvname), units)
+    status = call_ezca('ezcaIDLGetUnits', ezcaPVNameToByte(pvname), units)
     if (ingroup eq 0) then units = string(units)
     return, status
 end
@@ -1584,13 +1635,13 @@ FUNCTION caVersion
 END
 
 PRO caVersion, help=help
-    print,' '
+    print
     print,"caVersion() - "
-    print,'         to get ezcaIDL version information which includes
-    print,'         ezca, Ezca, and EPICS base version
-    print,'  e.g.'
-    print,'        str = caVersion()'
-    print,' '
+    print,"         to get ezcaIDL version information which includes"
+    print,"         ezca, Ezca, and EPICS base version"
+    print,"  e.g."
+    print,"        str = caVersion()"
+    print
 END
 
 
@@ -1653,11 +1704,11 @@ PRO caInit,flag, help=help , print=print
     ; The following constants are in ezca_common.
     ; NOTE: MAX_STRING_SIZE must agree with the value in base/include/epicsTypes.h
     ; NOTE: MAX_ENUM_STATES must agree with the value in base/include/db_access.h
-    ; Note also that MAX_STRING_SIZE is used not only for EPICS strings but also
-    ; as the maximum length of a PV-NAME.  This is OK for now, but may need to be
-    ; revisited in the future.
+    ; NOTE: MAX_PVNAME_SIZE should be larger than PVNAME_STRINGSZ (=61) from dbDefs.h, since that does not
+    ;       include the field name.  We make it 128 to allow for future expansion.
     MAX_STRING_SIZE = 40
     MAX_ENUM_STATES = 16
+    MAX_PVNAME_SIZE = 128
 
     if keyword_set(help) then goto, help1
     int = 0
@@ -1668,23 +1719,23 @@ PRO caInit,flag, help=help , print=print
 
 ; help on caInit
 help1:
-    print,' '
+    print
     print,"caInit [,flag]   - "
-    print,'
-    print,'   If flag is not set, the default timeout used by list
-    print,'   array  functions
-    print,'         set 1.0 second for single process variables'
-    print,'         set 3.0 second for lists of process variables'
-    print,'         set .001 second for ca_pend_event'
-    print,'
-    print,'   If flag is set to -1, the default timeout used by list
-    print,'   array  functions
-    print,'         set 5.0 second for single process variables'
-    print,'         set 10.0 second for lists of process variables'
-    print,'         set .001 second for ca_pend_event'
-    print,'  e.g.'
-    print,'         caInit'
-    print,' '
+    print
+    print,"   If flag is not set, the default timeout used by list"
+    print,"   array  functions"
+    print,"         set 1.0 second for single process variables"
+    print,"         set 3.0 second for lists of process variables"
+    print,"         set .001 second for ca_pend_event"
+    print
+    print,"   If flag is set to -1, the default timeout used by list"
+    print,"   array  functions"
+    print,"         set 5.0 second for single process variables"
+    print,"         set 10.0 second for lists of process variables"
+    print,"         set .001 second for ca_pend_event"
+    print,"  e.g.:"
+    print,"         caInit"
+    print
 END
 
 
@@ -1742,17 +1793,17 @@ PRO caPendEvent, time=time, help=help
     return
 
 help1:
-    print,' '
+    print
     print,"caPendEvent,[time=time]  - "
-    print,'        to call channel access routine ca_pend_event which
-    print,'        does the callbacks to event monitor routines'
-    print,''
-    print,'        Use the time=time keyword to set the time out for ca_pend_event'
-    print,'        This time will be used from then on in all ca_pend_event calls.'
-    print,''
-    print,' e.g.'
+    print,"        to call channel access routine ca_pend_event which"
+    print,"        does the callbacks to event monitor routines"
+    print
+    print,"        Use the time=time keyword to set the time out for ca_pend_event"
+    print,"        This time will be used from then on in all ca_pend_event calls."
+    print
+    print," e.g."
     print,"        caPendEvent, time=0.001"
-    print,' '
+    print
 END
 
 
@@ -1818,21 +1869,21 @@ PRO caPendIO, time=time, list_time=list_time, help=help
 
 ; help on caPendIO
 help1:
-    print,' '
+    print
     print,"caPendIO, time=time, list_time=list_time  - "
-    print,'        to call channel access routine ca_pend_io.
-    print,''
-    print,'        Use the time=time keyword to set the time out for
-    print,'         ca_pend_io calls for single process variables.
-    print,'         Use the list_time keyword to set the time out for
-    print,'         lists of process variables.
-    print, ''
-    print,'        These times will be used in array get/put from then
-    print,'        on in all ca_pend_io calls.'
-    print,''
-    print,' e.g.'
-    print,'        caPendIO, time=0.1, list_time=3.'
-    print,' '
+    print,"        to call channel access routine ca_pend_io."
+    print
+    print,"        Use the time=time keyword to set the time out for"
+    print,"         ca_pend_io calls for single process variables."
+    print,"         Use the list_time keyword to set the time out for"
+    print,"         lists of process variables."
+    print
+    print,"        These times will be used in array get/put from then"
+    print,"        on in all ca_pend_io calls."
+    print
+    print," e.g."
+    print,"        caPendIO, time=0.1, list_time=3."
+    print
 END
 
 
@@ -1885,7 +1936,7 @@ FUNCTION caTimeStamp, name
 
     on_error,2              ; Return to caller IF an error occurs
     val = bytarr(MAX_STRING_SIZE)
-    ln = call_ezca('EzcaTimeStamp',ezcaStringToByte(name),val)
+    ln = call_ezca('EzcaTimeStamp',ezcaPVNameToByte(name),val)
     IF ln NE 0 THEN print,'Error: Irrelavent return value'
     val = string(val)
     val = strmid(val,0,21) + '        '
@@ -1894,14 +1945,14 @@ END
 
 ; help on caTimeStamp
 PRO caTimeStamp,help=help
-    print,' '
+    print
     print,"caTimeStamp('name') - "
-    print,'         this function returns the time stamp of corresponding value'
-    print,'         for the specified record name.'
-    print,''
-    print,' e.g.'
+    print,"         this function returns the time stamp of corresponding value"
+    print,"         for the specified record name."
+    print
+    print," e.g."
     print,"         print,caTimeStamp('chademoai1')"
-    print,' '
+    print
 END
 
 
@@ -1954,7 +2005,7 @@ FUNCTION caSearch, name
 ;      04-11-96   bkc   Fix typo error names to name
 ;-
     on_error,2              ; Return to caller IF an error occurs
-    nms = ezcaStringToByte(name, no)
+    nms = ezcaPVNameToByte(name, no)
     ln = call_ezca('EzcaSearchList',fix(no),nms)
 ;   IF ln NE 0 THEN print,'Error: Irrelavent return value'
     return, ln
@@ -1962,16 +2013,16 @@ END
 
 ; help on caSearch
 PRO caSearch,help=help
-    print,' '
+    print
     print,"caSearch(['name1','name2',...]) - "
-    print,'         a channel access function searches for one or more'
-    print,'         process variable names. It returns 0 if succeeded,'
-    print,'         returns -1 if failed on any one from the list.'
-    print,''
-    print,' e.g.'
+    print,"         a channel access function searches for one or more"
+    print,"         process variable names. It returns 0 if succeeded,"
+    print,"         returns -1 if failed on any one from the list."
+    print
+    print," e.g."
     print,"         x = ['chademoai1','chademoai2']"
     print,"         print,caSearch(x)"
-    print,' '
+    print
 END
 
 
@@ -2022,7 +2073,7 @@ FUNCTION caGetError, name, x
 ; MODIFICATION HISTORY:
 ;       Written by:     Ben-chin Cha      Dec, 1995
 ;-
-        nms = ezcaStringToByte(name, no)
+        nms = ezcaPVNameToByte(name, no)
         x = lonarr(no)
         ln = call_ezca('EzcaGetError', no, x, nms)
         return,ln
@@ -2030,52 +2081,52 @@ END
 
 ; help on caGetError
 PRO caGetError,help=help
-    print,' '
+    print
     print,"caGetError(name,err) - "
-    print,'         this function returns the status of last channel access'
-    print,'         call from EzcaScan library.
-    print,'         It returns 0 if OK, returns  -1 if error occured.'
-    print,' INPUT:
-    print,'      name -   single or a list of PV names
-    print,'
-    print,' OUTPUT:
-    print,'      err  -   single or a list of error codes for the PV names
-    print,'
-    print,' e.g.'
+    print,"         this function returns the status of last channel access"
+    print,"         call from EzcaScan library."
+    print,"         It returns 0 if OK, returns  -1 if error occured."
+    print," INPUT:"
+    print,"      name -   single or a list of PV names"
+    print
+    print," OUTPUT:"
+    print,"      err  -   single or a list of error codes for the PV names"
+    print
+    print," e.g."
     print,"         st = caGetError('idl_test:wf1',err)"
-    print,' '
+    print
 END
 
 
 PRO caGetTypeCount,help=help
-    print,''
+    print
     print,"status = caGetTypeCount(names,types,counts,idl_types) "
-    print,'
-    print,'  This function return 0 if succeeds, -1 if failed. '
-    print,'
-    print,'  INPUT:   names      -   A list of pvnames
-    print,'
-    print,'  OUTPUT:
-    print,'           types      -   Returns the native data types
-    print,'                          for the PV names
-    print,'
-    print,'           counts     -   Returns the native element counts
-    print,'                          for the PV names
-    print,'
-    print,'           idl_types -   Returns the corresponding IDL data types
-    print,'                          for the PV names
-    print,'
-    print,' e.g.'
-    print,"         names=['chademowf7','chademowf8']
+    print
+    print,"  This function return 0 if succeeds, -1 if failed."
+    print
+    print,"  INPUT:   names      -   A list of pvnames"
+    print
+    print,"  OUTPUT:"
+    print,"           types      -   Returns the native data types"
+    print,"                          for the PV names"
+    print
+    print,"           counts     -   Returns the native element counts"
+    print,"                          for the PV names"
+    print
+    print,"           idl_types -   Returns the corresponding IDL data types"
+    print,"                          for the PV names"
+    print
+    print," e.g."
+    print,"         names=['chademowf7','chademowf8']"
     print,"         st = caGetTypeCount(names,types,counts,idl_types)"
-    print,' '
+    print
 END
 
 
 FUNCTION caGetTypeCount, name,type,count,wave_type
 ; this routine gives type, and count array for the requested name array
     on_error,2              ; Return to caller IF an error occurs
-    nms = ezcaStringToByte(name, no)
+    nms = ezcaPVNameToByte(name, no)
     type = lonarr(no)
     wave_type = lonarr(no)
     count= lonarr(no)
@@ -2099,70 +2150,70 @@ END
 
 
 PRO caGetArray,help=help
-    print,' '
+    print
     print,"status = caGetArray(names,pdata,max=no,type=i,/TYPE,/EVENT) "
-    print,'
-    print,'  This function returns 0 if everything went OK or -1
-    print,'  if something went wrong during the get.
-    print,'
-    print,'  The names can be a list of PV names or a single PV name.
-    print,'  The pdata argument returns the array of data obtained.
-    print,'  The keyword max= n is used to specify the maximum element of
-    print,'  data to be returned for each record in the list.'
-    print,'  The keyword type=i is used to specify the IDL type of
-    print,'  data to be returned for each record in the list.'
-    print,'
-    print,'  If both max and type are not specified, and single PV is
-    print,'  entered the native data array is returned for the PV.
-    print,'
-    print,'  INPUT:    names      -  A list of PV names
-    print,'
-    print,'  OUTPUT:
-    print,'           pdata(max,noNames)
-    print,'
-    print,'                          Returns the composite data array
-    print,'                          of user specified type, noNames is
-    print,'                          the no of pvnames in the names list
-    print,'
-    print,'  KEYWORD:
-    print,'            max=no     -  (Default to 1)
-    print,'                          Maximum number of datas to be returned
-    print,'                          for each requested waveform record.
-    print,'                          If the no is greater than the native
-    print,'                          count, zeros will be padded.
-    print,'                          If not specified, only the first value
-    print,'                          is returned for a list of PVs.
-    print,''
-    print,'            type=i     -  (Default to 5)
-    print,'                          IDL data type to be returned if not
-    print,'                          specified the double is assumed
-    print,'                                 1 - byte    2 - short
-    print,'                                 3 - long    4 - float
-    print,'                                 5 - double  7 - string
-    print,'
-    print,'             /TYPE     -  Instead of type=i a user can use
-    print,'                          the type keyword directly, the type
-    print,'                          keyword supercedes the type=i specification
-    print,'
-    print,'                                 /double
-    print,'                                 /float
-    print,'                                 /string
-    print,'                                 /long
-    print,'                                 /short
-    print,'                                 /byte
-    print,'
-    print,'            /EVENT     - If specified use the ca_array_get_callback
-    print,'                         otherwise use the ca_array_get
-    print,'
-    print,'            /PRINT     - Only if this keyword is specified, then every
-    print,'                         channel not found will be printed.
-    print,''
-    print,' e.g.'
-    print,"         names=['chademowf7','chademowf8']
+    print
+    print,"  This function returns 0 if everything went OK or -1"
+    print,"  if something went wrong during the get."
+    print
+    print,"  The names can be a list of PV names or a single PV name."
+    print,"  The pdata argument returns the array of data obtained."
+    print,"  The keyword max= n is used to specify the maximum element of"
+    print,"  data to be returned for each record in the list."
+    print,"  The keyword type=i is used to specify the IDL type of"
+    print,"  data to be returned for each record in the list."
+    print
+    print,"  If both max and type are not specified, and single PV is"
+    print,"  entered the native data array is returned for the PV."
+    print
+    print,"  INPUT:    names      -  A list of PV names"
+    print
+    print,"  OUTPUT:"
+    print,"           pdata(max,noNames)"
+    print
+    print,"                          Returns the composite data array"
+    print,"                          of user specified type, noNames is"
+    print,"                          the no of pvnames in the names list"
+    print
+    print,"  KEYWORD:"
+    print,"            max=no     -  (Default to 1)"
+    print,"                          Maximum number of datas to be returned"
+    print,"                          for each requested waveform record."
+    print,"                          If the no is greater than the native"
+    print,"                          count, zeros will be padded."
+    print,"                          If not specified, only the first value"
+    print,"                          is returned for a list of PVs."
+    print
+    print,"            type=i     -  (Default to 5)"
+    print,"                          IDL data type to be returned if not"
+    print,"                          specified the double is assumed"
+    print,"                                 1 - byte    2 - short"
+    print,"                                 3 - long    4 - float"
+    print,"                                 5 - double  7 - string"
+    print
+    print,"             /TYPE     -  Instead of type=i a user can use"
+    print,"                          the type keyword directly, the type"
+    print,"                          keyword supercedes the type=i specification"
+    print
+    print,"                                 /double"
+    print,"                                 /float"
+    print,"                                 /string"
+    print,"                                 /long"
+    print,"                                 /short"
+    print,"                                 /byte"
+    print
+    print,"            /EVENT     - If specified use the ca_array_get_callback"
+    print,"                         otherwise use the ca_array_get"
+    print
+    print,"            /PRINT     - Only if this keyword is specified, then every"
+    print,"                         channel not found will be printed."
+    print
+    print," e.g."
+    print,"         names=['chademowf7','chademowf8']"
     print,"         st = caGetArray(names,pdata)"
     print,"         st = caGetArray(names,pdata,max=10,/float)"
     print,"         st = caGetArray(names,pdata,max=10,type=4)"
-    print,' '
+    print
 END
 
 FUNCTION caGetArray,names,pdata,max_no=max_no,type=type, $
@@ -2266,7 +2317,7 @@ FUNCTION caGetArray,names,pdata,max_no=max_no,type=type, $
     if keyword_set(short) then type=2
     if keyword_set(byte) then type=1
 
-    nms = ezcaStringToByte(names, no)
+    nms = ezcaPVNameToByte(names, no)
     if (no eq 1) then begin
         st = caGetTypeCount(names, ty, ct, wty)
         if st eq -1 then begin
@@ -2341,32 +2392,32 @@ END
 
 
 PRO caPutArray,help=help
-    print,' '
+    print
     print,"status = caPutArray(names,pdata,/event) "
-    print,'
-    print,'  This function writes the pdata array for the requested names.
-    print,'  It returns 0 if succeed, else return -1.
-    print,'
-    print,'  INPUT:    names      -  A list of PV names
-    print,'            pdata      -  The input data array corresponding to the PV names
-    print,'                          to be written to IOC.
-    print,'
-    print,'  KEYWORD:
-    print,'            /EVENT     -  If specified use the ca_array_put_callback
-    print,'                          otherwise use the ca_array_put
-    print,' Examples:
-    print,'
-    print,'       In the following example write values [1,2,3] to two waveform records
-    print,'       chademowf2,  and chademowf5
-    print,'
-    print,"        x = ['chademowf2','chademowf5']
-    print,'        y = make_array(3, 2)
-    print,'        y(0,0) = [1,2,3]
-    print,'        y(0,1) = [1,2,3]
-    print,'        print,caPutArray(x,y)
-    print,'        print,caGetArray(x,pd,max=10)
-    print,'        print,pd
-    print,''
+    print
+    print,"  This function writes the pdata array for the requested names."
+    print,"  It returns 0 if succeed, else return -1."
+    print
+    print,"  INPUT:    names      -  A list of PV names"
+    print,"            pdata      -  The input data array corresponding to the PV names"
+    print,"                          to be written to IOC."
+    print
+    print,"  KEYWORD:"
+    print,"            /EVENT     -  If specified use the ca_array_put_callback"
+    print,"                          otherwise use the ca_array_put"
+    print," Examples:"
+    print
+    print,"       In the following example write values [1,2,3] to two waveform records"
+    print,"       chademowf2,  and chademowf5"
+    print
+    print,"        x = ['chademowf2','chademowf5']"
+    print,"        y = make_array(3, 2)"
+    print,"        y(0,0) = [1,2,3]"
+    print,"        y(0,1) = [1,2,3]"
+    print,"        print,caPutArray(x,y)"
+    print,"        print,caGetArray(x,pd,max=10)"
+    print,"        print,pd"
+    print
 END
 
 
@@ -2441,7 +2492,7 @@ FUNCTION caPutArray,names,pdata,event=event
 ;-
     common ezca_common
 
-    nms = ezcaStringToByte(names, no)
+    nms = ezcaPVNameToByte(names, no)
     if no eq 1 then begin
         st = caGetTypeCount(names, ty, ct, wty)
         num = ct(0)
@@ -2514,52 +2565,52 @@ END
 
 PRO caScan,help=help
     N=''
-    print,''
-    print,'caScan(name,pvnames,nonames,npts,vals,op_keyword,max=no) -
-    print,'      Add/Get/Zero/Clear monitor of the specified name and pvnames
-    print,'
-    print,'      Input:
-    print,'       name    -   pvname for triggering scanning'
-    print,'       pvnames -   a list of detector pvnames monitored by the trigger name'
-    print,'
-    print,'      Output:
-    print,'         nonames - no of detector pvnames triggered by name
-    print,'         npts    - no of points so far detected for each pvname
-    print,'                   if /GET option is specified
-    print,'         vals    - array holds the detected values
-    print,'                   if /GET option is specified
-    print,'
-    print,'     op_keyword:
-    print,'
-    print,'        /ADD       add monitor
-    print,'                      Return [npts nonames] for success
-    print,'                      Return -1 if failed
-    print,'                      Return 1 if old monitor already existed
-    print,'        /CLEAR     clear monitor
-    print,'                      Return 0 for success, -1 for failure
-    print,'         /GET      get scan array of monitor values back
-    print,'                      Return -1 for failure
-    print,'                      Return 1 if scan is not triggered yet
-    print,'                      Return >1 if real data detected
+    print
+    print,"caScan(name,pvnames,nonames,npts,vals,op_keyword,max=no) -"
+    print,"      Add/Get/Zero/Clear monitor of the specified name and pvnames"
+    print
+    print,"      Input:"
+    print,"       name    -   pvname for triggering scanning"
+    print,"       pvnames -   a list of detector pvnames monitored by the trigger name"
+    print
+    print,"      Output:"
+    print,"         nonames - no of detector pvnames triggered by name"
+    print,"         npts    - no of points so far detected for each pvname"
+    print,"                   if /GET option is specified"
+    print,"         vals    - array holds the detected values"
+    print,"                   if /GET option is specified"
+    print
+    print,"     op_keyword:"
+    print
+    print,"        /ADD       add monitor"
+    print,"                      Return [npts nonames] for success"
+    print,"                      Return -1 if failed"
+    print,"                      Return 1 if old monitor already existed"
+    print,"        /CLEAR     clear monitor"
+    print,"                      Return 0 for success, -1 for failure"
+    print,"         /GET      get scan array of monitor values back"
+    print,"                      Return -1 for failure"
+    print,"                      Return 1 if scan is not triggered yet"
+    print,"                      Return >1 if real data detected"
     READ,'MORE... ',n
-    print,'        /ZERO      zero allocated space before taking new scan data
-    print,'                      Return 0 for success, -1 for failure
-    print,'        max=no     specifies the max number of monitor values to be returned'
-    print,'                      If the trigger name is not a scan record,
-    print,'                      the max=no must be provided.
-    print,' e.g.'
+    print,"        /ZERO      zero allocated space before taking new scan data"
+    print,"                      Return 0 for success, -1 for failure"
+    print,"        max=no     specifies the max number of monitor values to be returned"
+    print,"                      If the trigger name is not a scan record,"
+    print,"                      the max=no must be provided."
+    print," e.g."
     print,"         print,caScan('name',pvnames,/add)"
     print,"         print,caScan('name',pvnames,nonames,npts,vals,/get)"
     print,"         print,caScan('name',pvnames,/zero)"
     print,"         print,caScan('name',pvnames,/clear)"
-    print,'
+    print
     print,"   Non-Scan record type trigger"
-    print,'
+    print
     print,"         print,caScan('name',pvnames,/add,max=100)"
     print,"         print,caScan('name',pvnames,nonames,npts,vals,/get,max=100)"
     print,"         print,caScan('name',pvnames,/zero,max=100)"
     print,"         print,caScan('name',pvnames,/clear,max=100)"
-    print,' '
+    print
 END
 
 
@@ -2666,19 +2717,19 @@ FUNCTION caScan, name, pvnames, nonames, npts, vals, add=add, get=get, clear=cle
 
 ; clear
     if (clear) then begin
-        ln = call_ezca('EzcaMonitorScan_Clear', 1, ezcaStringToByte(name))
+        ln = call_ezca('EzcaMonitorScan_Clear', 1, ezcaPVNameToByte(name))
 ;       IF ln NE 0 THEN print,'Error: caScan,/clear failed on ',name
         return,ln
     endif
 ; zero
     if (zero) then begin
-        ln = call_ezca('EzcaMonitorScan_Zero', 1, ezcaStringToByte(name))
+        ln = call_ezca('EzcaMonitorScan_Zero', 1, ezcaPVNameToByte(name))
         IF ln NE 0 THEN print,'Error: caScan,/Zero failed on ',name
         return,ln
     endif
 
 ; set npts, nonames
-    pvnms = ezcaStringToByte(pvnames, nonames)
+    pvnms = ezcaPVNameToByte(pvnames, nonames)
     if (n_elements(max) eq 0) then begin
         st = caget(name+'.NPTS',npts)
         if npts le 0 then return, -1
@@ -2689,7 +2740,7 @@ FUNCTION caScan, name, pvnames, nonames, npts, vals, add=add, get=get, clear=cle
 ; add
     if (add) then begin
         ln = call_ezca('EzcaMonitorScan_Add', npts, nonames, $
-                        ezcaStringToByte(name), pvnms)
+                        ezcaPVNameToByte(name), pvnms)
         IF ln EQ -1 THEN print,'Error: caScan/add failed on ',name
         IF ln EQ 1 THEN print,'Error: old monitor on ',name
         return,ln
@@ -2699,7 +2750,7 @@ FUNCTION caScan, name, pvnames, nonames, npts, vals, add=add, get=get, clear=cle
     if (get) then begin
         vals = dblarr(nonames,npts)
         ln = call_ezca('EzcaMonitorScan_Get', npts, nonames, vals, $
-                        ezcaStringToByte(name))
+                        ezcaPVNameToByte(name))
         return,ln
     end
 
@@ -2709,74 +2760,74 @@ END
 PRO caMonitor,help=help
 ; help on caMonitor
     N=''
-    print,' '
+    print
     print,"caMonitor(names,vals,num,overflow,operation_keyword,type_keyword,maxqueue=no) - "
-    print,'         Add/Get/Check/Clear monitor of the specified record name.'
-    print,'         Currently this array monitor is targetted for scalar type of PVs.'
-    print,''
-    print,'  INPUT:   names      -   A single or a list of pvnames
-    print,'
-    print,'  OUTPUT:  vals       -   Returns the array of data if either keyword /GET
-    print,'                          or /CHECK is specified
-    print,'           num        -   Returns the real number of data in the vals array
-    print,'                          for the /QUEUE mode
-
-    print,'           overflow   -   Returns the buffer full indicator for /the QUEUE mode
-    print,'                          0 - vals queue buff is not full
-    print,'                          1 - vals queue buff is full
-    print,'
-    print,'         Operation_keyword:'
-    print,'             /ADD
-    print,'                Add CA monitor for the specified name.'
-    print,'                Return 0 for success, -1 for failure.'
+    print,"         Add/Get/Check/Clear monitor of the specified record name."
+    print,"         Currently this array monitor is targetted for scalar type of PVs."
+    print
+    print,"  INPUT:   names      -   A single or a list of pvnames"
+    print
+    print,"  OUTPUT:  vals       -   Returns the array of data if either keyword /GET"
+    print,"                          or /CHECK is specified"
+    print,"           num        -   Returns the real number of data in the vals array"
+    print,"                          for the /QUEUE mode"
+    print
+    print,"           overflow   -   Returns the buffer full indicator for /the QUEUE mode"
+    print,"                          0 - vals queue buff is not full"
+    print,"                          1 - vals queue buff is full"
+    print
+    print,"         Operation_keyword:"
+    print,"             /ADD"
+    print,"                Add CA monitor for the specified name."
+    print,"                Return 0 for success, -1 for failure."
+    READ,"MORE... ",n
+    print,"             /CLEAR"
+    print,"                Clear CA monitor and free space for the  specified name."
+    print,"                Return 0 for success, -1 for failure."
+    print,"             /CHECK"
+    print,"                Check whether any event happened for the list."
+    print,"                Return 0 for success, -1 for failure."
+    print,"                The output vals array variable contains event flags,"
+    print,"                0 -  no new event detected"
+    print,"                1 -  new value change event detected"
+    print,"             /GET"
+    print,"                Get monitor values back for the specified name."
+    print,"                Different values are returned for different type of monitor."
+    print,"                If no queue type specified, the vals array returns the current"
+    print,"                values for the PVs."
+    print,"                If the keyword /QUEUE is specified, in addition of"
+    print,"                vals array both the number of data and the buffer full"
+    print,"                indicator are returned."
+    print
+    print,"         Type_keyword:"
+    print,"             /QUEUE [, MODE=i ]"
+    print,"                Queue the value changes for the monitored channel until"
+    print,"                the user gets them."
     READ,'MORE... ',n
-    print,'             /CLEAR
-    print,'                Clear CA monitor and free space for the  specified name.'
-    print,'                Return 0 for success, -1 for failure.'
-    print,'             /CHECK
-    print,'                Check whether any event happened for the list.
-    print,'                Return 0 for success, -1 for failure.'
-    print,'                The output vals array variable contains event flags,
-    print,'                0 -  no new event detected
-    print,'                1 -  new value change event detected
-    print,'             /GET
-    print,'                Get monitor values back for the specified name.'
-    print,'                Different values are returned for different type of monitor.
-    print,'                If no queue type specified, the vals array returns the current
-    print,'                values for the PVs.
-    print,'                If the keyword /QUEUE is specified, in addition of
-    print,'                vals array both the number of data and the buffer full
-    print,'                indicator are returned.
-    print,''
-    print,'         Type_keyword:'
-    print,'             /QUEUE [, MODE=i ]
-    print,'                Queue the value changes for the monitored channel until
-    print,'                the user gets them. '
-    READ,'MORE... ',n
-    print,'                The keyword MODE is optional, it defaults to 1.'
-    print,'                The MODE can be 1/2/3.  The MODE=1 or 2 will fill the '
-    print,'                buffer with new values until it is fulled. '
-    print,'                If MODE=1, the /GET will clear the QUEUE buff.
-    print,'                If MODE=2, the /GET will not clear the QUEUE buff.
-    print,'                The MODE=3 keeps the most current MAXQUEUE values'
-    print,'                in the queue buffer.'
-    print,'                The MAXQUEUE must be provided if /QUEUE mode is specified .'
-    print,''
-    print,'         MAXQUEUE=no
-    print,'                This specifis the size of array for queue values.
-    print,'                Data may be lost if size specified is too small, and the
-    print,'                data coming too fast before a user is able to cash them.
-    print,''
-    print,' Examples'
-    print,''
-    print,"         print,caMonitor('chademoai1',/add)
-    print,"         print,caMonitor('chademoai1',vals,/get)
-    print,"         print,caMonitor('chademoai1',/clear)
-    print,''
+    print,"                The keyword MODE is optional, it defaults to 1."
+    print,"                The MODE can be 1/2/3.  The MODE=1 or 2 will fill the"
+    print,"                buffer with new values until it is fulled."
+    print,"                If MODE=1, the /GET will clear the QUEUE buff."
+    print,"                If MODE=2, the /GET will not clear the QUEUE buff."
+    print,"                The MODE=3 keeps the most current MAXQUEUE values"
+    print,"                in the queue buffer."
+    print,"                The MAXQUEUE must be provided if /QUEUE mode is specified ."
+    print
+    print,"         MAXQUEUE=no"
+    print,"                This specifis the size of array for queue values."
+    print,"                Data may be lost if size specified is too small, and the"
+    print,"                data coming too fast before a user is able to cash them."
+    print
+    print," Examples"
+    print
+    print,"         print,caMonitor('chademoai1',/add)"
+    print,"         print,caMonitor('chademoai1',vals,/get)"
+    print,"         print,caMonitor('chademoai1',/clear)"
+    print
     print,"         print, caMonitor('chademoai1',/add,/queue,maxqueue=100)"
     print,"         print, caMonitor('chademoai1',vals,num,overflow,/get,/queue,maxqueue=100)"
     print,"         print, caMonitor('chademoai1',/clear,/queue)"
-    print,' '
+    print
 END
 
 
@@ -2894,7 +2945,7 @@ FUNCTION caMonitor, name, vals, num, overflow, $
 ;                         /byte,/int,/long,/float,/string
 ;-
     on_error,2              ; Return to caller IF an error occurs
-    nms = ezcaStringToByte(name, nvals)
+    nms = ezcaPVNameToByte(name, nvals)
     queue = keyword_set(queue)
 
 ; clear
@@ -2919,7 +2970,7 @@ FUNCTION caMonitor, name, vals, num, overflow, $
     zero = keyword_set(zero)
     if (zero) then begin
         ln = call_ezca('EzcaMonitorQueue_Zero', nvals, nms)
-;       IF ln NE 0 THEN print,'Error: caMonitor,/Queue,/Zero failed on ',name
+;       IF ln NE 0 THEN print,"Error: caMonitor,/Queue,/Zero failed on ',name
         return,ln
     endif
 
@@ -2942,7 +2993,7 @@ FUNCTION caMonitor, name, vals, num, overflow, $
 ; add
     if (add) then begin
 ;       if (wf) then begin
-;           ln = call_ezca('',fix(nvals),ezcaStringToByte(name))
+;           ln = call_ezca('',fix(nvals),ezcaPVNameToByte(name))
 ;           IF ln NE 0 THEN print,'Error: /add failed on waveform record',name
 ;           return,ln
 ;       endif
