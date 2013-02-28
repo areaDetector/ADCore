@@ -1,21 +1,7 @@
-R1-9
-
-- Update documentation for andor3 and andor to
-   - Remove link to PDF file.  
-   - Add note about needing to add SDK to PATH or LD_LIBRARY_PATH
-   
-- Andor3 driver.
-  - Get them to fix or explain why we can't collect more than 309 frames at full rate
-  - Test on win32, windows-x64, linux-x86, linux-x86_64
-   
-- Prosilica driver
-  - Connection management
-    - Sense disconnect, autoreconnect
-    - Implement link callback.  When matches uniqueID, call Disconnect or Connect
- 
-
 Future releases:
 
+- New color management patches from Jason - put color bar in overlay plugin
+   
 - Xihui's suggestion of File Overwrite Flag, don't allow overwrite if set
 
 - Fix andorCCD driver to use exiting_ flag, statusTask and dataTask both do while (!exiting_)
@@ -59,8 +45,6 @@ Future releases:
 
 - Prosilica once I fixed stale frame bug it won't exit when acquiring if very
   busy
-
-- Implement and improve connection management
 
     asynPortDriver
 - Implement portNameSelf in asynPortDriver (but leave it in ADBase.template).
