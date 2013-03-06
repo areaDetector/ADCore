@@ -101,6 +101,9 @@ dbLoadRecords("$(AREA_DETECTOR)/ADApp/Db/NDColorConvert.template", "P=$(PREFIX),
 # Load scan records
 dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=$(PREFIX),MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
 
+# Load sseq record for acquisition sequence
+dbLoadRecords("$(CALC)/calcApp/Db/yySseq.db", "P=$(PREFIX), S=AcquireSequence")
+
 set_requestfile_path("./")
 set_requestfile_path("$(AREA_DETECTOR)/ADApp/Db")
 set_requestfile_path("$(CALC)/calcApp/Db")
