@@ -63,6 +63,9 @@ USR_LDFLAGS_WIN32       += /NODEFAULTLIB:MSVCRT.lib
 LIB_LIBS_WIN32          += tiff jpeg
 PROD_LIBS_WIN32         += tiff jpeg
 endif
+ifeq (win32-x86-debug, $(findstring win32-x86-debug, $(T_A)))
+USR_LDFLAGS_WIN32       += /NODEFAULTLIB:LIBCMT.lib
+endif
 
 LIB_LIBS_WIN32          += PvAPI
 PROD_LIBS_WIN32         += PvAPI
