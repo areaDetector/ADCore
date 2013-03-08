@@ -9,11 +9,21 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
-    Release 1-9-1 (1-March-2013)</h2>
-  <p>
-    R1-9 does not work with detectors that use TCP socket servers (Pilatus, marCCD,
-    mar345, PSL, and Bruker) because drvAsynIPPort.dbd was not being included. R1-9-1
-    fixes this. R1-9 can be patched with <a href="areaDetectorR1-9_IPPort.patch">areaDetectorR1-9_IPPort.patch</a>.</p>
+    Release 1-9-1 (8-March-2013)</h2>
+  <ul>
+    <li>R1-9 does not work with detectors that use TCP socket servers (Pilatus, marCCD,
+      mar345, PSL, and Bruker) because drvAsynIPPort.dbd was not being included.</li>
+    <li>marCCD: Fixed mutex bug introduced in R1-9.</li>
+    <li>commonDriverPlugins.cmd: Added loading yySseq.db for string sequence record. This
+      allows creation of simple acquisition sequences, for example:
+      <ol>
+        <li>Close shutter, wait 0.1 seconds</li>
+        <li>Take image (dark current), wait for acquisition to complete</li>
+        <li>Open shutter, wait 0.1 seconds</li>
+        <li>Take image</li>
+      </ol>
+    </li>
+  </ul>
   <h2 style="text-align: center">
     Release 1-9 (27-February-2013)</h2>
   <ul>
