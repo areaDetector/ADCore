@@ -1,14 +1,14 @@
 
 file {
 	name="/home/epics/devel/areaDetector/ADApp/op/adl/pilatusAncillary.adl"
-	version=030102
+	version=030105
 }
 display {
 	object {
 		x=38
 		y=118
 		width=560
-		height=515
+		height=565
 	}
 	clr=14
 	bclr=4
@@ -418,19 +418,6 @@ text {
 	textix="Chi"
 	align="horiz. right"
 }
-text {
-	object {
-		x=10
-		y=481
-		width=220
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Number of oscillations"
-	align="horiz. right"
-}
 "text entry" {
 	object {
 		x=237
@@ -515,21 +502,6 @@ text {
 	}
 	control {
 		chan="$(P)$(R)Chi"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-"text entry" {
-	object {
-		x=237
-		y=481
-		width=80
-		height=20
-	}
-	control {
-		chan="$(P)$(R)NumOscill"
 		clr=14
 		bclr=51
 	}
@@ -834,5 +806,102 @@ composite {
 			textix="Pilatus Ancillary Information"
 			align="horiz. centered"
 		}
+	}
+}
+composite {
+	object {
+		x=10
+		y=481
+		width=307
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=10
+				y=481
+				width=220
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Number of oscillations"
+			align="horiz. right"
+		}
+		"text entry" {
+			object {
+				x=237
+				y=481
+				width=80
+				height=20
+			}
+			control {
+				chan="$(P)$(R)NumOscill"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+	}
+}
+text {
+	object {
+		x=10
+		y=506
+		width=220
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="CBF/TIFF template file"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=237
+		y=506
+		width=320
+		height=20
+	}
+	control {
+		chan="$(P)$(R)CbfTemplateFile"
+		clr=14
+		bclr=51
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=10
+		y=531
+		width=220
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Header string"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=237
+		y=531
+		width=320
+		height=20
+	}
+	control {
+		chan="$(P)$(R)HeaderString"
+		clr=14
+		bclr=51
+	}
+	format="string"
+	limits {
 	}
 }
