@@ -9,7 +9,7 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
-    Release 1-9-1 (8-March-2013)</h2>
+    Release 1-9-1 (11-March-2013)</h2>
   <ul>
     <li>R1-9 does not work with detectors that use TCP socket servers (Pilatus, marCCD,
       mar345, PSL, and Bruker) because drvAsynIPPort.dbd was not being included.</li>
@@ -23,9 +23,13 @@
         <li>Take image</li>
       </ol>
     </li>
-    <li>Pilatus driver: Added new HeaderString record which writes a string in the comments
-      of a CBF file. Added documentation for the CbfTemplateFile record which was added
-      in R1-8.</li>
+    <li>Pilatus driver:
+      <ul>
+        <li>Added new HeaderString record which writes a string in the comments of a CBF file.
+          Thanks to Richard Fearn from DLS for this.</li>
+        <li>Added documentation for the CbfTemplateFile record which was added in R1-8.</li>
+      </ul>
+    </li>
   </ul>
   <h2 style="text-align: center">
     Release 1-9 (27-February-2013)</h2>
