@@ -1,85 +1,70 @@
+#NOTES
+#     - To remove detectors from the build, delete or comment out the detector
+#       in the <areaDetector>/configure/CONFIG_SITE file; not here.
+
+# Note the only dependencies that matter in $(<detector>)_DEPEND_DIRS are
+# compile-time dependencies.
+
 TOP = ..
 include $(TOP)/configure/CONFIG
 
-DIRS += ADSrc
-
-DIRS += netCDFSrc
-
-DIRS += cbfSrc
-
-# prosilicaSupport must be built before pluginSrc or prosilicaSrc because it installs
-# header and library files needed by both
-DIRS += prosilicaSupport
-
-DIRS += tiffSupport
-
-DIRS += hdf5Support
-
-DIRS += nexusSrc
-# On some platforms hdf5Support must be built before nexus because of library dependencies
-nexusSrc_DEPEND_DIRS = hdf5Support
-
-DIRS += pvcamSupport
-
-DIRS += perkinElmerSupport
-
-DIRS += magickSupport
-
-DIRS += andorSupport
-
-DIRS += andor3Support
-
-DIRS += pluginSrc
-pluginSrc_DEPEND_DIRS = ADSrc netCDFSrc prosilicaSupport tiffSupport hdf5Support nexusSrc magickSupport
-
-DIRS += simDetectorSrc
-simDetectorSrc_DEPEND_DIRS = pluginSrc
-
-ifeq ($(USE_GRAPHICSMAGICK), YES)
-DIRS += URLSrc
-URLSrc_DEPEND_DIRS = pluginSrc
-endif
-
-DIRS += prosilicaSrc
-prosilicaSrc_DEPEND_DIRS = pluginSrc
-
-DIRS += pilatusSrc
-pilatusSrc_DEPEND_DIRS   = pluginSrc cbfSrc
-
-DIRS += marCCDSrc
-marCCDSrc_DEPEND_DIRS = pluginSrc
-
-DIRS += mar345Src
-mar345Src_DEPEND_DIRS = pluginSrc
-
-DIRS += adscSrc
-adscSrc_DEPEND_DIRS = pluginSrc
-
-DIRS += firewireWinSrc
-firewireWinSrc_DEPEND_DIRS = pluginSrc
-
-DIRS += perkinElmerSrc
-perkinElmerSrc_DEPEND_DIRS = perkinElmerSupport pluginSrc
-
-DIRS += pvcamSrc
-pvcamSrc_DEPEND_DIRS = pluginSrc pvcamSupport
-
-DIRS += brukerSrc
-brukerSrc_DEPEND_DIRS = pluginSrc
-
-DIRS += PSLSrc
-PSLSrc_DEPEND_DIRS = pluginSrc
-
-DIRS += andorSrc
-andorSrc_DEPEND_DIRS = andorSupport pluginSrc
-
-DIRS += andor3Src
-andor3Src_DEPEND_DIRS = andor3Support pluginSrc
-
-DIRS += roperSrc
-roperSrc_DEPEND_DIRS = pluginSrc
-
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *db*))
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *Db*))
+
+define  AD_defined
+  ifdef $(1)
+  SUPPORT_DIRS  += $($(1))
+   endif  
+endef
+
+PLUGIN_LIST = NETCDF_SRC PROSILICA_SUP TIFF_SUP HDF5_SUP NEXUS_SRC MAGICK_SUP PLUGIN_SRC
+$(foreach plugin, $(PLUGIN_LIST), $(eval $(call AD_defined,$(plugin)) ))
+
+$(NEXUS_SRC)_DEPEND_DIRS   = $(HDF5_SUP)
+$(PLUGIN_SRC)_DEPEND_DIRS  = ADSrc $(NETCDF_SRC) $(PROSILICA_SUP) $(TIFF_SUP)
+$(PLUGIN_SRC)_DEPEND_DIRS += $(HDF5_SUP) $(NEXUS_SRC) $(MAGIK_SUP)
+
+DET_LIST  = SIM_DETECTOR PROSILICA PILATUS MAR_CCD MAR_345 ADSC
+DET_LIST += FIREWIRE_WIN PERKIN_ELMER PVCAM BRUKER PSL ANDOR 
+DET_LIST += ANDOR3 ROPER URL
+$(foreach det, $(DET_LIST), $(eval $(call AD_defined,$(det)) ))
+
+$(SIM_DETECTOR)_DEPEND_DIRS = pluginSrc
+$(PROSILICA)_DEPEND_DIRS    = pluginSrc
+$(PILATUS)_DEPEND_DIRS      = pluginSrc cbfSrc
+$(MAR_CCD)_DEPEND_DIRS      = pluginSrc
+$(MAR_345)_DEPEND_DIRS      = pluginSrc
+$(ADSC)_DEPEND_DIRS         = pluginSrc
+$(FIREWIRE_WIN)_DEPEND_DIRS = pluginSrc
+$(PERKIN_ELMER)_DEPEND_DIRS = perkinElmerSupport pluginSrc
+$(PVCAM)_DEPEND_DIRS        = pluginSrc pvcamSupport
+$(BRUKER)_DEPEND_DIRS       = pluginSrc
+$(PSL)_DEPEND_DIRS          = pluginSrc
+$(ANDOR)_DEPEND_DIRS        = andorSupport pluginSrc
+$(ANDOR3)_DEPEND_DIRS       = andor3Support pluginSrc
+$(ROPER)_DEPEND_DIRS        = pluginSrc
+$(SCINTX)_DEPEND_DIRS       = scintxSupport pluginSrc
+$(QIMAGE)_DEPEND_DIRS       = qimageSupport pluginSrc
+
+DIRS += ADSrc
+
+ifdef PILATUS
+DIRS += cbfSrc
+endif
+ifdef PVCAM
+DIRS += pvcamSupport
+endif
+ifdef PERKIN_ELMER
+DIRS += perkinElmerSupport
+endif
+ifdef ANDOR
+DIRS += andorSupport
+endif
+ifdef ANDOR3
+DIRS += andor3Support
+endif
+
+DIRS += $(SUPPORT_DIRS)
+
 include $(TOP)/configure/RULES_DIRS
 

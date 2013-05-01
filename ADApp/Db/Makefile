@@ -21,6 +21,7 @@ DB += PSL.template
 DB += PerkinElmer.template
 DB += URLDriver.template
 DB += adsc.template
+DB += andor3.template
 DB += andorCCD.template
 DB += firewireColorCodes.template
 DB += firewireDCAM.template
