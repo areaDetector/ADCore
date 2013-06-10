@@ -43,6 +43,7 @@ $(PSL)_DEPEND_DIRS          = pluginSrc
 $(ANDOR)_DEPEND_DIRS        = andorSupport pluginSrc
 $(ANDOR3)_DEPEND_DIRS       = andor3Support pluginSrc
 $(ROPER)_DEPEND_DIRS        = pluginSrc
+$(URL)_DEPEND_DIRS          = pluginSrc
 $(SCINTX)_DEPEND_DIRS       = scintxSupport pluginSrc
 $(QIMAGE)_DEPEND_DIRS       = qimageSupport pluginSrc
 
