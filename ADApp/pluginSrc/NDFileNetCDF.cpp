@@ -443,8 +443,10 @@ asynStatus NDFileNetCDF::closeFile()
     int retval;
     static const char *functionName = "closeFile";
 
+    if (this->ncId == 0) return asynSuccess;
     if ((retval = nc_close(this->ncId)))
         ERR(retval);
+    this->ncId = 0;
     return asynSuccess;
 }
 
@@ -473,6 +475,7 @@ NDFileNetCDF::NDFileNetCDF(const char *portName, int queueSize, int blockingCall
     setStringParam(NDPluginDriverPluginType, "NDFileNetCDF");
     this->supportsMultipleArrays = 1;
     this->pAttributeId = NULL;
+    this->ncId = 0;
     this->pFileAttributes = new NDAttributeList;
 }
 
