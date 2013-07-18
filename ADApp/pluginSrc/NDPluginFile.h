@@ -70,12 +70,13 @@ private:
     asynStatus writeFileBase();
     asynStatus closeFileBase();
     asynStatus doCapture(int capture);
-    void       freeCaptureBuffer(int numCapture);
+    void       freeCaptureBuffer();
     asynStatus attrFileNameCheck();
     asynStatus attrFileNameSet();
     bool attrIsProcessingRequired(NDAttributeList* pAttrList);
 
     NDArray **pCapture;
+    int captureBufferSize;
     epicsMutexId fileMutexId;
     bool useAttrFilePrefix;
 };
