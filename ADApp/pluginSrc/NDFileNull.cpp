@@ -19,8 +19,6 @@
 
 //static const char *driverName = "NDFileNull";
 
-#define MAX_ATTRIBUTE_STRING_SIZE 256
-
 /** Opens a Null file.
   * \param[in] fileName The name of the file to open.
   * \param[in] openMode Mask defining how the file should be opened; bits are 
