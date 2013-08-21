@@ -26,10 +26,6 @@ static const char *driverName = "NDFileNetCDF";
                 driverName, functionName, nc_strerror(e)); \
                 return(asynError);}
 
-/* NDArray string attributes can be of any length, but netCDF requires a fixed maximum length
- * which we define here. */
-#define MAX_ATTRIBUTE_STRING_SIZE 256
-
 /** Opens a netCDF file.  
   * In write mode if NDFileModeMultiple is set then the first dimension is set to NC_UNLIMITED to allow 
   * multiple arrays to be written to the same file.
