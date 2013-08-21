@@ -19,7 +19,6 @@
 
 
 static const char *driverName = "NDFileJPEG";
-#define MAX_ATTRIBUTE_STRING_SIZE 256
 
 /** Opens a JPEG file.
   * \param[in] fileName The name of the file to open.
