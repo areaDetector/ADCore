@@ -18,8 +18,6 @@
 
 static const char *driverName = "NDFileMagick";
 
-#define MAX_ATTRIBUTE_STRING_SIZE 256
-
 static CompressionType compressionTypes[] = {NoCompression, BZipCompression, FaxCompression, Group4Compression, 
                                              JPEGCompression, LZWCompression, RLECompression, ZipCompression};
 
