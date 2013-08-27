@@ -23,6 +23,10 @@ USR_CXXFLAGS_WIN32 += -DHAVE_PVAPI
 # This flag is used to indicate that the TIFF library was built statically
 USR_CXXFLAGS_WIN32 += -DLIBTIFF_STATIC
 
+ifeq ($(STATIC_BUILD), NO)
+  USR_CXXFLAGS_WIN32 += -DH5_BUILT_AS_DYNAMIC_LIB
+endif
+
 DBD += NDPluginSupport.dbd
 DBD += NDFileJPEG.dbd
 DBD += NDFileMagick.dbd
@@ -55,10 +59,14 @@ NDPlugin_SRCS += NDPluginOverlay.cpp
 NDPlugin_SRCS += NDPluginColorConvert.cpp
 NDPlugin_SRCS_DEFAULT += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNexus.cpp NDFileHDF5.cpp NDFileNull.cpp
 NDPlugin_SRCS_vxWorks += NDFileDummy.cpp
+NDPlugin_SYS_LIBS_WIN32 += Ws2_32
+NDPlugin_SYS_LIBS_WIN32 += User32
 
+ifeq ($(USE_GRAPHICSMAGICK), YES)
 LIBRARY_IOC += NDFileMagick
 NDFileMagick_SRCS_DEFAULT += NDFileMagick.cpp 
 NDFileMagick_SRCS_vxWorks += NDFileDummyMagick.cpp
+endif
 
 include $(AREA_DETECTOR)/ADApp/commonDriverMakefile
 
