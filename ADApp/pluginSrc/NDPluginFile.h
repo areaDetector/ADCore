@@ -24,7 +24,7 @@ typedef int NDFileOpenMode_t;
   * This class handles the logic of single file per image, capture into buffer or streaming multiple images
   * to a single file.  
   * Derived classes must implement the 4 pure virtual functions: openFile, readFile, writeFile and closeFile. */
-class NDPluginFile : public NDPluginDriver {
+class epicsShareClass NDPluginFile : public NDPluginDriver {
 public:
     NDPluginFile(const char *portName, int queueSize, int blockingCallbacks, 
                  const char *NDArrayPort, int NDArrayAddr, int maxAddr, int numParams,
