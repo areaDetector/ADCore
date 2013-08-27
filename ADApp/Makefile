@@ -26,7 +26,7 @@ $(PLUGIN_SRC)_DEPEND_DIRS += $(HDF5_SUP) $(NEXUS_SRC) $(MAGIK_SUP)
 
 DET_LIST  = SIM_DETECTOR PROSILICA PILATUS MAR_CCD MAR_345 ADSC
 DET_LIST += FIREWIRE_WIN PERKIN_ELMER PVCAM BRUKER PSL ANDOR 
-DET_LIST += ANDOR3 ROPER URL
+DET_LIST += ANDOR3 ROPER LIGHTFIELD URL
 $(foreach det, $(DET_LIST), $(eval $(call AD_defined,$(det)) ))
 
 $(SIM_DETECTOR)_DEPEND_DIRS = pluginSrc
@@ -43,6 +43,7 @@ $(PSL)_DEPEND_DIRS          = pluginSrc
 $(ANDOR)_DEPEND_DIRS        = andorSupport pluginSrc
 $(ANDOR3)_DEPEND_DIRS       = andor3Support pluginSrc
 $(ROPER)_DEPEND_DIRS        = pluginSrc
+$(LIGHTFIELD)_DEPEND_DIRS   = pluginSrc
 $(URL)_DEPEND_DIRS          = pluginSrc
 $(SCINTX)_DEPEND_DIRS       = scintxSupport pluginSrc
 $(QIMAGE)_DEPEND_DIRS       = qimageSupport pluginSrc
