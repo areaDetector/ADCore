@@ -21,6 +21,8 @@
 #include <epicsMessageQueue.h>
 #include <cantProceed.h>
 
+#include <NDPluginDriver.h>
+#include <epicsExport.h>
 #include "NDPluginFile.h"
 
 
