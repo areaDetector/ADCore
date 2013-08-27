@@ -19,10 +19,10 @@
 #include <epicsString.h>
 #include <epicsTime.h>
 #include <iocsh.h>
-#include <epicsExport.h>
 #include "NDPluginFile.h"
-//#include "winsock2.h"
 #include "osiSock.h"
+
+#include <epicsExport.h>
 
 typedef struct HDFAttributeNode {
   ELLNODE node;
