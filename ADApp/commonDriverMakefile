@@ -59,7 +59,7 @@ LIB_SYS_LIBS_Darwin     += png xml2 bz2
 PROD_SYS_LIBS_Darwin    += png xml2 bz2
 else
 # I don't understand why we need to set this when not using GraphicsMagick, but we do
-USR_LDFLAGS_WIN32       += /NODEFAULTLIB:MSVCRT.lib
+#USR_LDFLAGS_WIN32       += /NODEFAULTLIB:MSVCRT.lib
 LIB_LIBS_WIN32          += tiff jpeg
 PROD_LIBS_WIN32         += tiff jpeg
 endif
@@ -69,8 +69,8 @@ endif
 
 LIB_LIBS_WIN32          += PvAPI
 PROD_LIBS_WIN32         += PvAPI
-LIB_LIBS_WIN32          += NeXus hdf5 libszip zlib
-PROD_LIBS_WIN32         += NeXus hdf5 libszip zlib
+LIB_LIBS_WIN32          += NeXus hdf5dll szip zlib1
+PROD_LIBS_WIN32         += NeXus hdf5dll szip zlib1
 LIB_SYS_LIBS_WIN32      += Gdi32 Oleaut32 
 PROD_SYS_LIBS_WIN32     += Gdi32 Oleaut32
 
