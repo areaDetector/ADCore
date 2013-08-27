@@ -23,6 +23,7 @@
 
 #include <asynCommonSyncIO.h>
 
+#include <epicsExport.h>
 #include "NDPluginDriver.h"
 
 
