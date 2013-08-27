@@ -20,7 +20,7 @@
                                                                          *  to execute plugin code */
 
 /** Class from which actual plugin drivers are derived; derived from asynNDArrayDriver */
-class NDPluginDriver : public asynNDArrayDriver {
+class epicsShareClass NDPluginDriver : public asynNDArrayDriver {
 public:
     NDPluginDriver(const char *portName, int queueSize, int blockingCallbacks, 
                    const char *NDArrayPort, int NDArrayAddr, int maxAddr, int numParams,
