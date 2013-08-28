@@ -58,8 +58,10 @@ PROD_LIBS_Darwin        += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
 LIB_SYS_LIBS_Darwin     += png xml2 bz2
 PROD_SYS_LIBS_Darwin    += png xml2 bz2
 else
-# I don't understand why we need to set this when not using GraphicsMagick, but we do
-#USR_LDFLAGS_WIN32       += /NODEFAULTLIB:MSVCRT.lib
+# I don't understand why we need to set this when building statically and not using GraphicsMagick
+ifeq ($(STATIC_BUILD), YES)
+USR_LDFLAGS_WIN32       += /NODEFAULTLIB:MSVCRT.lib
+endif
 LIB_LIBS_WIN32          += tiff jpeg
 PROD_LIBS_WIN32         += tiff jpeg
 endif
@@ -69,8 +71,16 @@ endif
 
 LIB_LIBS_WIN32          += PvAPI
 PROD_LIBS_WIN32         += PvAPI
-LIB_LIBS_WIN32          += NeXus hdf5dll szip zlib1
-PROD_LIBS_WIN32         += NeXus hdf5dll szip zlib1
+LIB_LIBS_WIN32          += NeXus
+PROD_LIBS_WIN32         += NeXus
+ifeq ($(STATIC_BUILD), NO)
+LIB_LIBS_WIN32          += hdf5dll szip zlib1
+PROD_LIBS_WIN32         += hdf5dll szip zlib1
+else
+LIB_LIBS_WIN32          += hdf5 libszip zlib
+PROD_LIBS_WIN32         += hdf5 libszip zlib
+endif
+
 LIB_SYS_LIBS_WIN32      += Gdi32 Oleaut32 
 PROD_SYS_LIBS_WIN32     += Gdi32 Oleaut32
 
