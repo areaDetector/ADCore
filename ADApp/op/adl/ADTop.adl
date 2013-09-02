@@ -8,7 +8,7 @@ display {
 		x=171
 		y=78
 		width=225
-		height=430
+		height=455
 	}
 	clr=14
 	bclr=4
@@ -530,19 +530,6 @@ composite {
 		}
 	}
 }
-text {
-	object {
-		x=80
-		y=400
-		width=50
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Andor"
-	align="horiz. right"
-}
 "related display" {
 	object {
 		x=138
@@ -572,4 +559,50 @@ text {
 	}
 	clr=14
 	bclr=51
+}
+text {
+	object {
+		x=80
+		y=400
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Andor"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=139
+		y=425
+		width=64
+		height=20
+	}
+	display[0] {
+		label="LightField #1 general"
+		name="ADBase.adl"
+		args="P=13LF1:, R=cam1: "
+	}
+	display[1] {
+		label="LightField #1 specific"
+		name="LightField.adl"
+		args="P=13LF1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=81
+		y=425
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="LightField"
+	align="horiz. right"
 }
