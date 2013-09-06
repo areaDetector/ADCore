@@ -188,6 +188,10 @@
 #define HAVE_STDBOOL_H 1
 #endif
 
+#if defined(vxWorks) && defined(_WRS_VXWORKS_MAJOR) && (_WRS_VXWORKS_MAJOR >= 6) && (_WRS_VXWORKS_MINOR >= 8)
+#define HAVE_STDBOOL_H 1
+#endif
+
 /* Define to 1 if you have the <stdint.h> header file. */
 #if !defined(vxWorks) && !defined(_WIN32)
 #define HAVE_STDINT_H 1
@@ -293,10 +297,6 @@
 
 /* Define to 1 if the system has the type `_Bool'. */
 #if !defined(vxWorks) && !defined(_WIN32)
-#define HAVE__BOOL 1
-#endif
-
-#if defined(vxWorks) && defined(_WRS_VXWORKS_MAJOR) && (_WRS_VXWORKS_MAJOR >= 6) && (_WRS_VXWORKS_MINOR >= 8)
 #define HAVE__BOOL 1
 #endif
 
