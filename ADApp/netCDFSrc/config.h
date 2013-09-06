@@ -296,6 +296,10 @@
 #define HAVE__BOOL 1
 #endif
 
+#if defined(vxWorks) && defined(_WRS_VXWORKS_MAJOR) && (_WRS_VXWORKS_MAJOR >= 6) && (_WRS_VXWORKS_MINOR >= 8)
+#define HAVE__BOOL 1
+#endif
+
 /* do large file tests */
 /* #undef LARGE_FILE_TESTS */
 
