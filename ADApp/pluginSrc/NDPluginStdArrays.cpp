@@ -130,7 +130,7 @@ void NDPluginStdArrays::processCallbacks(NDArray *pArray)
     int float32Initialized=0;
     int float64Initialized=0;
     NDArrayInfo_t arrayInfo;
-    asynStandardInterfaces *pInterfaces = &this->asynStdInterfaces;
+    asynStandardInterfaces *pInterfaces = this->getAsynStdInterfaces();
     /* const char* functionName = "NDStdArraysDoCallbacks"; */
 
     /* Call the base class method */
