@@ -1,0 +1,266 @@
+# Database for the records specific to the LightField driver
+# Mark Rivers
+# September 5, 2013
+
+# These are the records from ADBase.template that we modify some fields for
+
+# We replace the choice fields for ImageMode from ADBase.template
+record(mbbo, "$(P)$(R)ImageMode")
+{
+    field(ZRST, "Normal")
+    field(ZRVL, "0")
+    field(ONST, "Preview")
+    field(ONVL, "1")
+    field(TWST, "Background")
+    field(TWVL, "2")
+}
+
+record(mbbi, "$(P)$(R)ImageMode_RBV")
+{
+    field(ZRST, "Normal")
+    field(ZRVL, "0")
+    field(ONST, "Preview")
+    field(ONVL, "1")
+    field(TWST, "Backgroup")
+    field(TWVL, "2")
+}
+
+record(mbbo, "$(P)$(R)TriggerMode")
+{
+   field(ZRST, "Internal")
+   field(ZRVL, "2")
+   field(ONST, "External")
+   field(ONVL, "1")
+   field(VAL,  "2")
+}
+
+record(mbbi, "$(P)$(R)TriggerMode_RBV")
+{
+   field(ZRST, "Internal")
+   field(ZRVL, "2")
+   field(ONST, "External")
+   field(ONVL, "1")
+}
+
+
+# We change the precision on the Gain record to 0, because it is an integer on LightField
+record(ao, "$(P)$(R)Gain")
+{
+   field(PREC, "0")
+}
+
+record(ai, "$(P)$(R)Gain_RBV")
+{
+   field(PREC, "0")
+}
+
+
+# These are new records for the LightField detector
+
+record(longout, "$(P)$(R)NumAccumulations")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_NUM_ACCUMULATIONS")
+}
+
+record(longin, "$(P)$(R)NumAccumulations_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_NUM_ACCUMULATIONS")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)NumAcquisitions")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_NUM_ACQUISITIONS")
+}
+
+record(longin, "$(P)$(R)NumAcquisitions_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_NUM_ACQUISITIONS")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)NumAcquisitionsCounter_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_NUM_ACQUISITIONS_COUNTER")
+   field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)LFGain")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_GAIN")
+    field(ZRST, "Low")
+    field(ZRVL, "1")
+    field(ONST, "Medium")
+    field(ONVL, "2")
+    field(TWST, "High")
+    field(TWVL, "3")
+}
+
+record(mbbi, "$(P)$(R)LFGain_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_GAIN")
+    field(ZRST, "Low")
+    field(ZRVL, "1")
+    field(ONST, "Medium")
+    field(ONVL, "2")
+    field(TWST, "High")
+    field(TWVL, "3")
+    field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)LFShutterMode")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_SHUTTER_MODE")
+    field(ZRST, "Normal")
+    field(ZRVL, "1")
+    field(ONST, "Always closed")
+    field(ONVL, "2")
+    field(TWST, "Always open")
+    field(TWVL, "3")
+    field(THST, "Open before trigger")
+    field(THVL, "4")
+}
+
+record(mbbi, "$(P)$(R)LFShutterMode_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_SHUTTER_MODE")
+    field(ZRST, "Normal")
+    field(ZRVL, "1")
+    field(ONST, "Always closed")
+    field(ONVL, "2")
+    field(TWST, "Always open")
+    field(TWVL, "3")
+    field(THST, "Open before trigger")
+    field(THVL, "4")
+    field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)LFExperimentName")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_EXPERIMENT_NAME")
+}
+
+record(mbbi, "$(P)$(R)LFExperimentName_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_EXPERIMENT_NAME")
+    field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)LFGrating")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_GRATING")
+}
+
+record(mbbi, "$(P)$(R)LFGrating_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_GRATING")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)LFGratingWavelength")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_GRATING_WAVELENGTH")
+    field(PREC, "3")
+}
+
+record(ai, "$(P)$(R)LFGratingWavelength_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_GRATING_WAVELENGTH")
+    field(SCAN, "I/O Intr")
+    field(PREC, "3")
+}
+
+record(longout, "$(P)$(R)LFEntranceWidth")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_ENTRANCE_SIDE_WIDTH")
+}
+
+record(longin, "$(P)$(R)LFEntranceWidth_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_ENTRANCE_SIDE_WIDTH")
+    field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)LFExitPort")
+{
+#    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_EXIT_SELECTED")
+    field(ZRST, "Side")
+    field(ZRVL, "5")
+    field(ONST, "Front")
+    field(ONVL, "4")
+}
+
+record(mbbi, "$(P)$(R)LFExitPort_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_EXIT_SELECTED")
+    field(ZRST, "Side")
+    field(ZRVL, "5")
+    field(ONST, "Front")
+    field(ONVL, "4")
+    field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)BackgroundFile")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_BACKGROUND_FILE")
+    field(FTVL, "CHAR")
+    field(NELM, "80")
+}
+
+record(waveform, "$(P)$(R)BackgroundFile_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_BACKGROUND_FILE")
+    field(FTVL, "CHAR")
+    field(NELM, "80")
+    field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)LFBackgroundEnable")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_BACKGROUND_ENABLE")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+}
+
+record(bi, "$(P)$(R)LFBackgroundEnable_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_BACKGROUND_ENABLE")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+    field(SCAN, "I/O Intr")
+}
+
