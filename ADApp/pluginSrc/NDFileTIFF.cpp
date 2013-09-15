@@ -128,12 +128,30 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
     }
 
     /* this is in the unallocated 'reusable' range */
-    static const int TIFFTAG_NDTIMESTAMP = 65000;
-    static const TIFFFieldInfo fi = {
+    static const int TIFFTAG_NDTIMESTAMP    = 65000;
+    static const int TIFFTAG_UNIQUEID       = 65001;
+    static const int TIFFTAG_EPICSTSSEC     = 65002;
+    static const int TIFFTAG_EPICSTSNSEC    = 65003;
+    static const TIFFFieldInfo NDTimeStampFI = {
         TIFFTAG_NDTIMESTAMP,1,1,TIFF_DOUBLE,FIELD_CUSTOM,1,0,(char *)"NDTimeStamp"
     };
-    TIFFMergeFieldInfo(output, &fi, 1);
+    static const TIFFFieldInfo NDUniqueIdFI = {
+        TIFFTAG_UNIQUEID,1,1,TIFF_LONG,FIELD_CUSTOM,1,0,(char *)"NDUniqueId"
+    };
+    static const TIFFFieldInfo EPICSTSSecFI = {
+        TIFFTAG_EPICSTSSEC,1,1,TIFF_LONG,FIELD_CUSTOM,1,0,(char *)"EPICSTSSec"
+    };
+    static const TIFFFieldInfo EPICSTSNsecFI = {
+        TIFFTAG_EPICSTSNSEC,1,1,TIFF_LONG,FIELD_CUSTOM,1,0,(char *)"EPICSTSNsec"
+    };
+    TIFFMergeFieldInfo(output, &NDTimeStampFI, 1);
+    TIFFMergeFieldInfo(output, &NDUniqueIdFI, 1);
+    TIFFMergeFieldInfo(output, &EPICSTSSecFI, 1);
+    TIFFMergeFieldInfo(output, &EPICSTSNsecFI, 1);
     TIFFSetField(this->output, TIFFTAG_NDTIMESTAMP, pArray->timeStamp);
+    TIFFSetField(this->output, TIFFTAG_UNIQUEID, pArray->uniqueId);
+    TIFFSetField(this->output, TIFFTAG_EPICSTSSEC, pArray->epicsTS.secPastEpoch);
+    TIFFSetField(this->output, TIFFTAG_EPICSTSNSEC, pArray->epicsTS.nsec);
     TIFFSetField(this->output, TIFFTAG_BITSPERSAMPLE, bitsPerSample);
     TIFFSetField(this->output, TIFFTAG_SAMPLEFORMAT, sampleFormat);
     TIFFSetField(this->output, TIFFTAG_SAMPLESPERPIXEL, samplesPerPixel);
