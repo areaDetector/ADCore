@@ -372,6 +372,7 @@ asynStatus asynNDArrayDriver::readGenericPointer(asynUser *pasynUser, void *gene
         myArray->getInfo(&arrayInfo);
         if (arrayInfo.totalBytes > pArray->dataSize) arrayInfo.totalBytes = pArray->dataSize;
         memcpy(pArray->pData, myArray->pData, arrayInfo.totalBytes);
+        pasynUser->timestamp = myArray->epicsTS;
     }
     if (!status)
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
@@ -497,6 +498,8 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     createParam(NDColorModeString,            asynParamInt32,           &NDColorMode);
     createParam(NDUniqueIdString,             asynParamInt32,           &NDUniqueId);
     createParam(NDTimeStampString,            asynParamFloat64,         &NDTimeStamp);
+    createParam(NDEpicsTSSecString,           asynParamInt32,           &NDEpicsTSSec);
+    createParam(NDEpicsTSNsecString,          asynParamInt32,           &NDEpicsTSNsec);
     createParam(NDBayerPatternString,         asynParamInt32,           &NDBayerPattern);
     createParam(NDArrayCounterString,         asynParamInt32,           &NDArrayCounter);
     createParam(NDFilePathString,             asynParamOctet,           &NDFilePath);
@@ -542,6 +545,8 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     setIntegerParam(NDColorMode,    NDColorModeMono);
     setIntegerParam(NDUniqueId,     0);
     setDoubleParam (NDTimeStamp,    0.);
+    setIntegerParam(NDEpicsTSSec,   0);
+    setIntegerParam(NDEpicsTSNsec,  0);
     setIntegerParam(NDBayerPattern, 0);
     setIntegerParam(NDArrayCounter, 0);
     /* Set the initial values of FileSave, FileRead, and FileCapture so the readbacks are initialized */
