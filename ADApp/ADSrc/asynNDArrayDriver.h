@@ -40,6 +40,8 @@ typedef enum {
 #define NDColorModeString       "COLOR_MODE"        /**< (asynInt32,    r/w) Color mode (NDColorMode_t) */
 #define NDUniqueIdString        "UNIQUE_ID"         /**< (asynInt32,    r/o) Unique ID number of array */
 #define NDTimeStampString       "TIME_STAMP"        /**< (asynFloat64,  r/o) Time stamp of array */
+#define NDEpicsTSSecString      "EPICS_TS_SEC"      /**< (asynInt32,    r/o) EPOCS time stamp secPastEpoch of array */
+#define NDEpicsTSNsecString     "EPICS_TS_NSEC"     /**< (asynInt32,    r/o) EPOCS time stamp nsec of array */
 #define NDBayerPatternString    "BAYER_PATTERN"     /**< (asynInt32,    r/o) Bayer pattern of array  (from bayerPattern array attribute if present) */
 
     /* Statistics on number of arrays collected */
@@ -125,6 +127,8 @@ protected:
     int NDColorMode;
     int NDUniqueId;
     int NDTimeStamp;
+    int NDEpicsTSSec;
+    int NDEpicsTSNsec;
     int NDBayerPattern;
     int NDArrayCounter;
     int NDFilePath;
