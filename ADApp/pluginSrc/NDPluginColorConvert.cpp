@@ -215,6 +215,7 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
                     /* There is a problem: the uniqueId and timeStamp are not preserved! */
                     pArrayOut = this->pNDArrayPool->alloc(ndims, dims, pArray->dataType, 0, NULL);
                     pArrayOut->uniqueId = pArray->uniqueId;
+                    pArrayOut->epicsTS = pArray->epicsTS;
                     pArrayOut->timeStamp = pArray->timeStamp;
                     pDataOut = (epicsType *)pArrayOut->pData;
                     /* For now we use the Prosilica library functions to convert Bayer to RGB */
