@@ -12,19 +12,19 @@ SUPPORT=/corvette/home/epics/devel
 -include $(TOP)/../configure/SUPPORT.$(EPICS_HOST_ARCH)
 
 # ASYN is needed for base classes 
-ASYN=$(SUPPORT)/asyn-4-21
+ASYN=$(SUPPORT)/asyn-4-22
 
 # CALC is needed for scalcout record that SSCAN uses
-CALC=$(SUPPORT)/calc-3-0
+CALC=$(SUPPORT)/calc-3-2
 
 # BUSY is needed for busy record
-BUSY=$(SUPPORT)/busy-1-4
+BUSY=$(SUPPORT)/busy-1-6
 
 # SSCAN is needed for scanning threshold on Pilatus and general scanning
-SSCAN=$(SUPPORT)/sscan-2-8-1
+SSCAN=$(SUPPORT)/sscan-2-9
 
 #AUTOSAVE is needed for save_restore
-AUTOSAVE=$(SUPPORT)/autosave-5-0
+AUTOSAVE=$(SUPPORT)/autosave-5-1
 
 AREA_DETECTOR=$(SUPPORT)/areaDetector-1-9-1
 
