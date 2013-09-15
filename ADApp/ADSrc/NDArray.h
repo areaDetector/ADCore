@@ -15,6 +15,7 @@
 #include <ellLib.h>
 #include <epicsMutex.h>
 #include <epicsTypes.h>
+#include <epicsTime.h>
 
 /** The maximum number of dimensions in an NDArray */
 #define ND_ARRAY_MAX_DIMS 10
@@ -221,6 +222,8 @@ public:
     int           uniqueId;     /**< A number that must be unique for all NDArrays produced by a driver after is has started */
     double        timeStamp;    /**< The time stamp in seconds for this array; seconds since Epoch (00:00:00 UTC, January 1, 1970)
                                   * is recommended, but some drivers may use a different start time.*/
+    epicsTimeStamp epicsTS;     /**< The epicsTimeStamp; this is set with pasynManager->updateTimeStamp(), 
+                                  * and can come from a user-defined timestamp source. */
     int           ndims;        /**< The number of dimensions in this array; minimum=1. */
     NDDimension_t dims[ND_ARRAY_MAX_DIMS]; /**< Array of dimension sizes for this array; first ndims values are meaningful. */
     NDDataType_t  dataType;     /**< Data type for this array. */
