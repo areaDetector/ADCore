@@ -39,6 +39,8 @@ private:
     int arrayDataId;
     int uniqueIdId;
     int timeStampId;
+    int epicsTSSecId;
+    int epicsTSNsecId;
     int nextRecord;
     int *pAttributeId;
     NDAttributeList *pFileAttributes;
