@@ -57,7 +57,10 @@ static const char *driverName="NDPluginDriver";
     setIntegerParam(NDColorMode, colorMode);
     setIntegerParam(NDBayerPattern, bayerPattern);
     setIntegerParam(NDUniqueId, pArray->uniqueId);
+    setTimeStamp(&pArray->epicsTS);
     setDoubleParam(NDTimeStamp, pArray->timeStamp);
+    setIntegerParam(NDEpicsTSSec, pArray->epicsTS.secPastEpoch);
+    setIntegerParam(NDEpicsTSNsec, pArray->epicsTS.nsec);
     /* See if the array dimensions have changed.  If so then do callbacks on them. */
     for (i=0, dimsChanged=0; i<ND_ARRAY_MAX_DIMS; i++) {
         size = (int)pArray->dims[i].size;
