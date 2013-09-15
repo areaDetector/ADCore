@@ -56,6 +56,7 @@ void NDPluginStdArrays::arrayInterruptCallback(NDArray *pArray, NDArrayPool *pND
                 }
                 pData = (epicsType *)pOutput->pData;
             }
+            pInterrupt->pasynUser->timestamp = pArray->epicsTS;
             pInterrupt->callback(pInterrupt->userPvt,
                                  pInterrupt->pasynUser,
                                  pData, arrayInfo.nElements);
@@ -99,6 +100,8 @@ asynStatus NDPluginStdArrays::readArray(asynUser *pasynUser, epicsType *value, s
         *nIn = arrayInfo.nElements;
         memcpy(value, pOutput->pData, *nIn*sizeof(epicsType));
         pOutput->release();
+        /* Set the timestamp */
+        pasynUser->timestamp = myArray->epicsTS;
     } else {
         epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
                   "%s::readArray, unknown command %d",
