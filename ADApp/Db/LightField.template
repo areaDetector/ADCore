@@ -208,7 +208,7 @@ record(longin, "$(P)$(R)LFEntranceWidth_RBV")
 
 record(mbbo, "$(P)$(R)LFExitPort")
 {
-#    field(PINI, "YES")
+    field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_EXIT_SELECTED")
     field(ZRST, "Side")
@@ -262,5 +262,59 @@ record(bi, "$(P)$(R)LFBackgroundEnable_RBV")
     field(ZNAM, "Disable")
     field(ONAM, "Enable")
     field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)LFGatingMode")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_GATING_MODE")
+    field(ZRST, "Repetitive")
+    field(ZRVL, "1")
+    field(ONST, "Sequential")
+    field(ONVL, "2")
+}
+
+record(mbbi, "$(P)$(R)LFGatingMode_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_GATING_MODE")
+    field(ZRST, "Repetitive")
+    field(ZRVL, "1")
+    field(ONST, "Sequential")
+    field(ONVL, "2")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)LFTriggerFrequency")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_TRIGGER_FREQUENCY")
+    field(PREC, "0")
+}
+
+record(ai, "$(P)$(R)LFTriggerFrequency_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_TRIGGER_FREQUENCY")
+    field(SCAN, "I/O Intr")
+    field(PREC, "0")
+}
+
+record(ao, "$(P)$(R)LFGateDelay")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_GATE_DELAY")
+    field(PREC, "2")
+}
+
+record(ai, "$(P)$(R)LFGateDelay_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_GATE_DELAY")
+    field(SCAN, "I/O Intr")
+    field(PREC, "2")
 }
 
