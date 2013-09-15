@@ -205,6 +205,7 @@ NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, int copyData)
   }
   pOut->uniqueId = pIn->uniqueId;
   pOut->timeStamp = pIn->timeStamp;
+  pOut->epicsTS = pIn->epicsTS;
   pOut->ndims = pIn->ndims;
   memcpy(pOut->dims, pIn->dims, sizeof(pIn->dims));
   pOut->dataType = pIn->dataType;
@@ -528,6 +529,7 @@ int NDArrayPool::convert(NDArray *pIn,
   }
   /* Copy fields from input to output */
   pOut->timeStamp = pIn->timeStamp;
+  pOut->epicsTS = pIn->epicsTS;
   pOut->uniqueId = pIn->uniqueId;
   /* Replace the dimensions with those passed to this function */
   memcpy(pOut->dims, dimsOutCopy, pIn->ndims*sizeof(NDDimension_t));
@@ -655,6 +657,8 @@ NDArray::NDArray()
     uniqueId(0), timeStamp(0.0), ndims(0), dataType(NDInt8),
     dataSize(0),  pData(NULL)
 {
+  this->epicsTS.secPastEpoch = 0;
+  this->epicsTS.nsec = 0;
   memset(this->dims, 0, sizeof(this->dims));
   memset(&this->node, 0, sizeof(this->node));
   this->pAttributeList = new NDAttributeList();
