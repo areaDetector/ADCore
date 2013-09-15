@@ -711,6 +711,7 @@ void simDetector::simTask()
         /* Put the frame number and time stamp into the buffer */
         pImage->uniqueId = imageCounter;
         pImage->timeStamp = startTime.secPastEpoch + startTime.nsec / 1.e9;
+        updateTimeStamp(&pImage->epicsTS);
 
         /* Get any attributes that have been defined for this driver */
         this->getAttributes(pImage->pAttributeList);
