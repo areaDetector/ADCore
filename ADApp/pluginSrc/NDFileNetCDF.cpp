@@ -178,6 +178,15 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
                  &dimIds[0], &this->timeStampId)))
         ERR(retval);
 
+    /* Define the EPICS timestamp data variables. */
+    if ((retval = nc_def_var(this->ncId, "epicsTSSec", NC_INT, 1, 
+                 &dimIds[0], &this->epicsTSSecId)))
+        ERR(retval);
+
+    if ((retval = nc_def_var(this->ncId, "epicsTSNsec", NC_INT, 1, 
+                 &dimIds[0], &this->epicsTSNsecId)))
+        ERR(retval);
+
     /* Define the array data variable. */
     if ((retval = nc_def_var(this->ncId, "array_data", ncType, pArray->ndims+1,
                  dimIds, &this->arrayDataId)))
@@ -337,6 +346,10 @@ asynStatus NDFileNetCDF::writeFile(NDArray *pArray)
     if ((retval = nc_put_vara_int(this->ncId, this->uniqueIdId, start, count, &pArray->uniqueId)))
                 ERR(retval);
     if ((retval = nc_put_vara_double(this->ncId, this->timeStampId, start, count, &pArray->timeStamp)))
+                ERR(retval);
+    if ((retval = nc_put_vara_int(this->ncId, this->epicsTSSecId, start, count, (int *)&pArray->epicsTS.secPastEpoch)))
+                ERR(retval);
+    if ((retval = nc_put_vara_int(this->ncId, this->epicsTSNsecId, start, count, (int *)&pArray->epicsTS.nsec)))
                 ERR(retval);
 
     switch (pArray->dataType) {
