@@ -362,7 +362,7 @@ record(mbbi, "$(P)$(R)BayerPattern_RBV")
 }
 
 ###################################################################
-#  These records are the uniqueId and time stamp of the array     #
+#  These records are the uniqueId and time stamps of the array     #
 ###################################################################
 record(longin, "$(P)$(R)UniqueId_RBV")
 {
@@ -376,6 +376,20 @@ record(ai, "$(P)$(R)TimeStamp_RBV")
     field(DTYP, "asynFloat64")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TIME_STAMP")
     field(PREC, "3")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)EpicsTSSec_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))EPICS_TS_SEC")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)EpicsTSNsec_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))EPICS_TS_NSEC")
     field(SCAN, "I/O Intr")
 }
 
