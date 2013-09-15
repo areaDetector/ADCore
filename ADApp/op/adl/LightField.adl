@@ -286,26 +286,11 @@ composite {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(R)Gain_RBV"
+		chan="$(P)$(R)LFGain_RBV"
 		clr=54
 		bclr=4
 	}
 	align="horiz. centered"
-	limits {
-	}
-}
-"text entry" {
-	object {
-		x=148
-		y=650
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)Gain"
-		clr=14
-		bclr=51
-	}
 	limits {
 	}
 }
@@ -2580,5 +2565,18 @@ composite {
 			limits {
 			}
 		}
+	}
+}
+menu {
+	object {
+		x=148
+		y=650
+		width=70
+		height=20
+	}
+	control {
+		chan="$(P)$(R)LFGain"
+		clr=14
+		bclr=51
 	}
 }
