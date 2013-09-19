@@ -228,7 +228,7 @@ record(mbbi, "$(P)$(R)LFExitPort_RBV")
     field(SCAN, "I/O Intr")
 }
 
-record(waveform, "$(P)$(R)BackgroundFile")
+record(waveform, "$(P)$(R)LFBackgroundFile")
 {
     field(PINI, "YES")
     field(DTYP, "asynOctetWrite")
@@ -237,7 +237,7 @@ record(waveform, "$(P)$(R)BackgroundFile")
     field(NELM, "80")
 }
 
-record(waveform, "$(P)$(R)BackgroundFile_RBV")
+record(waveform, "$(P)$(R)LFBackgroundFile_RBV")
 {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_BACKGROUND_FILE")
@@ -300,6 +300,22 @@ record(ai, "$(P)$(R)LFTriggerFrequency_RBV")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_TRIGGER_FREQUENCY")
     field(SCAN, "I/O Intr")
     field(PREC, "0")
+}
+
+record(ao, "$(P)$(R)LFGateWidth")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_GATE_WIDTH")
+    field(PREC, "2")
+}
+
+record(ai, "$(P)$(R)LFGateWidth_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_GATE_WIDTH")
+    field(SCAN, "I/O Intr")
+    field(PREC, "2")
 }
 
 record(ao, "$(P)$(R)LFGateDelay")
