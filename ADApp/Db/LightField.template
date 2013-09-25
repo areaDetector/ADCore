@@ -31,7 +31,6 @@ record(mbbo, "$(P)$(R)TriggerMode")
    field(ZRVL, "2")
    field(ONST, "External")
    field(ONVL, "1")
-   field(VAL,  "2")
 }
 
 record(mbbi, "$(P)$(R)TriggerMode_RBV")
@@ -264,6 +263,40 @@ record(bi, "$(P)$(R)LFBackgroundEnable_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(bo, "$(P)$(R)LFIntensifierEnable")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_INTENSIFIER_ENABLE")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+}
+
+record(bi, "$(P)$(R)LFIntensifierEnable_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_INTENSIFIER_ENABLE")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)LFIntensifierGain")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_INTENSIFIER_GAIN")
+    field(PREC, "0")
+}
+
+record(ai, "$(P)$(R)LFIntensifierGain_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_INTENSIFIER_GAIN")
+    field(SCAN, "I/O Intr")
+    field(PREC, "0")
+}
+
 record(mbbo, "$(P)$(R)LFGatingMode")
 {
     field(PINI, "YES")
@@ -302,34 +335,132 @@ record(ai, "$(P)$(R)LFTriggerFrequency_RBV")
     field(PREC, "0")
 }
 
-record(ao, "$(P)$(R)LFGateWidth")
+record(bo, "$(P)$(R)LFSyncMasterEnable")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_SYNCMASTER_ENABLE")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+}
+
+record(bi, "$(P)$(R)LFSyncMasterEnable_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_SYNCMASTER_ENABLE")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)LFSyncMaster2Delay")
 {
     field(PINI, "YES")
     field(DTYP, "asynFloat64")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_GATE_WIDTH")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_SYNCMASTER2_DELAY")
     field(PREC, "2")
 }
 
-record(ai, "$(P)$(R)LFGateWidth_RBV")
+record(ai, "$(P)$(R)LFSyncMaster2Delay_RBV")
 {
     field(DTYP, "asynFloat64")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_GATE_WIDTH")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT)))LF_SYNCMASTER2_DELAY")
     field(SCAN, "I/O Intr")
     field(PREC, "2")
 }
 
-record(ao, "$(P)$(R)LFGateDelay")
+record(ao, "$(P)$(R)LFRepGateWidth")
 {
     field(PINI, "YES")
     field(DTYP, "asynFloat64")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_GATE_DELAY")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_REP_GATE_WIDTH")
     field(PREC, "2")
 }
 
-record(ai, "$(P)$(R)LFGateDelay_RBV")
+record(ai, "$(P)$(R)LFRepGateWidth_RBV")
 {
     field(DTYP, "asynFloat64")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_GATE_DELAY")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_REP_GATE_WIDTH")
+    field(SCAN, "I/O Intr")
+    field(PREC, "2")
+}
+
+record(ao, "$(P)$(R)LFRepGateDelay")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_REP_GATE_DELAY")
+    field(PREC, "2")
+}
+
+record(ai, "$(P)$(R)LFRepGateDelay_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_REP_GATE_DELAY")
+    field(SCAN, "I/O Intr")
+    field(PREC, "2")
+}
+
+record(ao, "$(P)$(R)LFSeqStartGateWidth")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_SEQ_START_GATE_WIDTH")
+    field(PREC, "2")
+}
+
+record(ai, "$(P)$(R)LFSeqStartGateWidth_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_SEQ_START_GATE_WIDTH")
+    field(SCAN, "I/O Intr")
+    field(PREC, "2")
+}
+
+record(ao, "$(P)$(R)LFSeqStartGateDelay")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_SEQ_START_GATE_DELAY")
+    field(PREC, "2")
+}
+
+record(ai, "$(P)$(R)LFSeqStartGateDelay_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_SEQ_START_GATE_DELAY")
+    field(SCAN, "I/O Intr")
+    field(PREC, "2")
+}
+
+record(ao, "$(P)$(R)LFSeqEndGateWidth")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_SEQ_END_GATE_WIDTH")
+    field(PREC, "2")
+}
+
+record(ai, "$(P)$(R)LFSeqEndGateWidth_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_SEQ_END_GATE_WIDTH")
+    field(SCAN, "I/O Intr")
+    field(PREC, "2")
+}
+
+record(ao, "$(P)$(R)LFSeqEndGateDelay")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_SEQ_END_GATE_DELAY")
+    field(PREC, "2")
+}
+
+record(ai, "$(P)$(R)LFSeqEndGateDelay_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_SEQ_END_GATE_DELAY")
     field(SCAN, "I/O Intr")
     field(PREC, "2")
 }
