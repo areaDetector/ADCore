@@ -1,7 +1,7 @@
 
 file {
 	name="/home/epics/devel/areaDetector/ADApp/op/adl/ADTop.adl"
-	version=030105
+	version=030107
 }
 display {
 	object {
@@ -589,6 +589,11 @@ text {
 		label="LightField #1 specific"
 		name="LightField.adl"
 		args="P=13LF1:, R=cam1:"
+	}
+	display[2] {
+		label="LightField #2 specific"
+		name="LightField.adl"
+		args="P=13LF2:, R=cam1:"
 	}
 	clr=14
 	bclr=51
