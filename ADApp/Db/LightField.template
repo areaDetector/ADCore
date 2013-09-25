@@ -21,7 +21,7 @@ record(mbbi, "$(P)$(R)ImageMode_RBV")
     field(ZRVL, "0")
     field(ONST, "Preview")
     field(ONVL, "1")
-    field(TWST, "Backgroup")
+    field(TWST, "Background")
     field(TWVL, "2")
 }
 
@@ -364,7 +364,7 @@ record(ao, "$(P)$(R)LFSyncMaster2Delay")
 record(ai, "$(P)$(R)LFSyncMaster2Delay_RBV")
 {
     field(DTYP, "asynFloat64")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT)))LF_SYNCMASTER2_DELAY")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_SYNCMASTER2_DELAY")
     field(SCAN, "I/O Intr")
     field(PREC, "2")
 }
@@ -461,6 +461,38 @@ record(ai, "$(P)$(R)LFSeqEndGateDelay_RBV")
 {
     field(DTYP, "asynFloat64")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_SEQ_END_GATE_DELAY")
+    field(SCAN, "I/O Intr")
+    field(PREC, "2")
+}
+
+record(ao, "$(P)$(R)LFAuxWidth")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_AUX_WIDTH")
+    field(PREC, "2")
+}
+
+record(ai, "$(P)$(R)LFAuxWidth_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_AUX_WIDTH")
+    field(SCAN, "I/O Intr")
+    field(PREC, "2")
+}
+
+record(ao, "$(P)$(R)LFAuxDelay")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_AUX_DELAY")
+    field(PREC, "2")
+}
+
+record(ai, "$(P)$(R)LFAuxDelay_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_AUX_DELAY")
     field(SCAN, "I/O Intr")
     field(PREC, "2")
 }
