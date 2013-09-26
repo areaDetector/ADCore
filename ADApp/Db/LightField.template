@@ -41,6 +41,14 @@ record(mbbi, "$(P)$(R)TriggerMode_RBV")
    field(ONVL, "1")
 }
 
+# Change state 7 (ADStatusWaiting) string to Busy and alarm status to minor
+record(mbbi, "$(P)$(R)DetectorState_RBV")
+{
+    field(SVST, "Busy")
+    field(SVVL, "7")
+    field(SVSV, "MINOR")
+}
+
 
 # We change the precision on the Gain record to 0, because it is an integer on LightField
 record(ao, "$(P)$(R)Gain")
@@ -227,13 +235,22 @@ record(mbbi, "$(P)$(R)LFExitPort_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(waveform, "$(P)$(R)LFFileName_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_FILE_NAME")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
 record(waveform, "$(P)$(R)LFBackgroundFile")
 {
-    field(PINI, "YES")
+#    field(PINI, "YES")
     field(DTYP, "asynOctetWrite")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_BACKGROUND_FILE")
     field(FTVL, "CHAR")
-    field(NELM, "80")
+    field(NELM, "256")
 }
 
 record(waveform, "$(P)$(R)LFBackgroundFile_RBV")
@@ -241,7 +258,7 @@ record(waveform, "$(P)$(R)LFBackgroundFile_RBV")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_BACKGROUND_FILE")
     field(FTVL, "CHAR")
-    field(NELM, "80")
+    field(NELM, "256")
     field(SCAN, "I/O Intr")
 }
 
@@ -495,5 +512,16 @@ record(ai, "$(P)$(R)LFAuxDelay_RBV")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_AUX_DELAY")
     field(SCAN, "I/O Intr")
     field(PREC, "2")
+}
+
+record(bi, "$(P)$(R)LFReadyToRun")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_READY_TO_RUN")
+    field(ZNAM, "NotReady")
+    field(ZSV,  "MAJOR")
+    field(ONAM, "Ready")
+    field(OSV,  "NO_ALARM")
+    field(SCAN, "I/O Intr")
 }
 
