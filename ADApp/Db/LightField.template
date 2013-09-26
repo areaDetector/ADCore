@@ -235,6 +235,15 @@ record(mbbi, "$(P)$(R)LFExitPort_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(waveform, "$(P)$(R)LFFilePath_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_FILE_PATH")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
 record(waveform, "$(P)$(R)LFFileName_RBV")
 {
     field(DTYP, "asynOctetRead")
@@ -244,9 +253,27 @@ record(waveform, "$(P)$(R)LFFileName_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(waveform, "$(P)$(R)LFBackgroundPath")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_BACKGROUND_PATH")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(R)LFBackgroundPath_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_BACKGROUND_PATH")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
 record(waveform, "$(P)$(R)LFBackgroundFile")
 {
-#    field(PINI, "YES")
+    field(PINI, "YES")
     field(DTYP, "asynOctetWrite")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_BACKGROUND_FILE")
     field(FTVL, "CHAR")
@@ -257,6 +284,15 @@ record(waveform, "$(P)$(R)LFBackgroundFile_RBV")
 {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_BACKGROUND_FILE")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)LFBackgroundFullFile_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_BACKGROUND_FULL_FILE")
     field(FTVL, "CHAR")
     field(NELM, "256")
     field(SCAN, "I/O Intr")
