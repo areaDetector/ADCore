@@ -2,6 +2,137 @@
 # Mark Rivers
 # October 31, 2008
 
+
+###################################################
+# These are records we change from ADBase.template
+###################################################
+
+
+# Note: the enum choices for ImageMode and TriggerMode depend on the marCCD server mode and so
+# are set in the marCCD:readEnums method
+
+record(mbbo, "$(P)$(R)FrameType")
+{
+   field(ZRST, "Normal")
+   field(ZRVL, "0")
+   field(ONST, "Background")
+   field(ONVL, "1")
+   field(TWST, "Raw")
+   field(TWVL, "2")
+   field(THST, "DblCorrelation")
+   field(THVL, "3")
+}
+
+record(mbbi, "$(P)$(R)FrameType_RBV")
+{
+   field(ZRST, "Normal")
+   field(ZRVL, "0")
+   field(ONST, "Background")
+   field(ONVL, "1")
+   field(TWST, "Raw")
+   field(TWVL, "2")
+   field(THST, "DblCorrelation")
+   field(THVL, "3")
+   field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)FileFormat")
+{
+    field(ZRST, "TIFF")
+    field(ZRVL, "0")
+    field(ONST, "Invalid")
+    field(ONVL, "1")
+}
+
+record(mbbi, "$(P)$(R)FileFormat_RBV")
+{
+    field(ZRST, "TIFF")
+    field(ZRVL, "0")
+    field(ONST, "Invalid")
+    field(ONVL, "1")
+}
+
+
+############################################
+# These are records that are new to marCCD
+############################################
+
+# Note: the enum choices for GateMode and ReadoutMode depend on the marCCD server mode and so
+# are set in the marCCD:readEnums method
+
+record(mbbo, "$(P)$(R)GateMode")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_GATE_MODE")
+   field(VAL,  "0")
+}
+
+# Note, the enum string
+record(mbbi, "$(P)$(R)GateMode_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_GATE_MODE")
+   field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)ReadoutMode")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_READOUT_MODE")
+   field(VAL,  "0")
+}
+
+record(mbbi, "$(P)$(R)ReadoutMode_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_READOUT_MODE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)ServerMode_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_SERVER_MODE")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)SeriesFileTemplate")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_SERIES_FILE_TEMPLATE")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(R)SeriesFileTemplate_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_SERIES_FILE_TEMPLATE")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)SeriesFileDigits")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_SERIES_FILE_DIGITS")
+    field(PINI, "YES")
+    field(DESC, "Series file digits")
+    field(VAL,  "5")
+}
+
+record(longin, "$(P)$(R)SeriesFileDigits_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_SERIES_FILE_DIGITS")
+    field(SCAN, "I/O Intr")
+    field(DESC, "Series file digits")
+}
+
 record(longin,"$(P)$(R)MarState_RBV") {
     field(DTYP,"asynInt32")
     field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_STATE")
@@ -223,6 +354,40 @@ record(mbbi,"$(P)$(R)MarDezingerStatus_RBV") {
     field(EISV, "MINOR")
 }
 
+record(mbbi,"$(P)$(R)MarSeriesStatus_RBV") {
+    field(DTYP,"asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_SERIES_STATUS")
+    field(SCAN, "I/O Intr")
+    field(DESC,"Series status")
+    field(ZRVL,"0")
+    field(ZRST,"Idle")
+    field(ZRSV,"NO_ALARM")
+    field(ONVL,"1")
+    field(ONST,"Queued")
+    field(ONSV, "MINOR")
+    field(TWVL,"2")
+    field(TWST,"Executing")
+    field(TWSV, "MINOR")
+    field(THVL,"3")
+    field(THST,"Undefined 3")
+    field(THSV, "INVALID")
+    field(FRVL,"4")
+    field(FRST,"Error")
+    field(FRSV, "MAJOR")
+    field(FVVL,"5")
+    field(FVST,"Undefined 5")
+    field(FVSV, "INVALID")
+    field(SXVL,"6")
+    field(SXST,"Undefined 6")
+    field(SXSV, "INVALID")
+    field(SVVL,"7")
+    field(SVST,"Undefined 7")
+    field(SVSV, "INVALID")
+    field(EIVL,"8")
+    field(EIST,"Reserved")
+    field(EISV, "MINOR")
+}
+
 # Timeout waiting for TIFF file.
 record(ao, "$(P)$(R)ReadTiffTimeout")
 {
@@ -291,51 +456,7 @@ record(ai, "$(P)$(R)Stability_RBV")
     field(DESC, "Baseline stability")
 }
 
-# We replace the choice fields for FrameType from ADBase.template
-record(mbbo, "$(P)$(R)FrameType")
-{
-   field(ZRST, "Normal")
-   field(ZRVL, "0")
-   field(ONST, "Background")
-   field(ONVL, "1")
-   field(TWST, "Raw")
-   field(TWVL, "2")
-   field(THST, "DblCorrelation")
-   field(THVL, "3")
-}
-
-record(mbbi, "$(P)$(R)FrameType_RBV")
-{
-   field(ZRST, "Normal")
-   field(ZRVL, "0")
-   field(ONST, "Background")
-   field(ONVL, "1")
-   field(TWST, "Raw")
-   field(TWVL, "2")
-   field(THST, "DblCorrelation")
-   field(THVL, "3")
-   field(SCAN, "I/O Intr")
-}
-
-# We replace the file format choices from ADBase.template
-record(mbbo, "$(P)$(R)FileFormat")
-{
-    field(ZRST, "TIFF")
-    field(ZRVL, "0")
-    field(ONST, "Invalid")
-    field(ONVL, "1")
-}
-
-record(mbbi, "$(P)$(R)FileFormat_RBV")
-{
-    field(ZRST, "TIFF")
-    field(ZRVL, "0")
-    field(ONST, "Invalid")
-    field(ONVL, "1")
-    field(SCAN, "I/O Intr")
-}
-
-# asyn record for interactive communication with marServer
+## asyn record for interactive communication with marServer
 record(asyn, "$(P)$(R)marServerAsyn")
 {
     field(PORT,  "$(MARSERVER_PORT)")
