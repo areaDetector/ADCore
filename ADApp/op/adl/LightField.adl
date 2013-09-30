@@ -8,7 +8,7 @@ display {
 		x=216
 		y=94
 		width=1060
-		height=755
+		height=760
 	}
 	clr=14
 	bclr=4
@@ -888,7 +888,7 @@ rectangle {
 		x=345
 		y=230
 		width=350
-		height=470
+		height=475
 	}
 	"basic attribute" {
 		clr=14
@@ -2794,7 +2794,7 @@ composite {
 "related display" {
 	object {
 		x=428
-		y=718
+		y=732
 		width=180
 		height=20
 	}
@@ -3009,6 +3009,34 @@ text {
 		bclr=2
 	}
 	clrmod="alarm"
+	limits {
+	}
+}
+text {
+	object {
+		x=345
+		y=709
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="File:"
+}
+"text update" {
+	object {
+		x=400
+		y=716
+		width=295
+		height=12
+	}
+	monitor {
+		chan="$(P)$(R)FullFileName_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
 	limits {
 	}
 }
