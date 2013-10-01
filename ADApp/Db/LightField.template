@@ -169,6 +169,14 @@ record(mbbi, "$(P)$(R)LFExperimentName_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(bo, "$(P)$(R)LFUpdateExperiments")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LF_UPDATE_EXPERIMENTS")
+    field(ZNAM, "Done")
+    field(ONAM, "Update")
+}
+
 record(mbbo, "$(P)$(R)LFGrating")
 {
     field(PINI, "YES")
