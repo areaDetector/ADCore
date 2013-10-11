@@ -133,6 +133,23 @@ record(longin, "$(P)$(R)SeriesFileDigits_RBV")
     field(DESC, "Series file digits")
 }
 
+record(longout, "$(P)$(R)SeriesFileFirst")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_SERIES_FILE_FIRST")
+    field(PINI, "YES")
+    field(DESC, "Series file first")
+    field(VAL,  "1")
+}
+
+record(longin, "$(P)$(R)SeriesFileFirst_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_SERIES_FILE_FIRST")
+    field(SCAN, "I/O Intr")
+    field(DESC, "Series file first")
+}
+
 record(longin,"$(P)$(R)MarState_RBV") {
     field(DTYP,"asynInt32")
     field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAR_STATE")
