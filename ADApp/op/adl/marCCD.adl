@@ -8,7 +8,7 @@ display {
 		x=27
 		y=59
 		width=1395
-		height=655
+		height=665
 	}
 	clr=14
 	bclr=4
@@ -969,58 +969,47 @@ composite {
 		}
 	}
 }
-composite {
+text {
 	object {
 		x=748
 		y=406
-		width=270
-		height=22
+		width=112
+		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=748
-				y=407
-				width=112
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Next file #"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=870
-				y=406
-				width=61
-				height=22
-			}
-			control {
-				chan="$(P)$(R)FileNumber"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=936
-				y=408
-				width=82
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)FileNumber_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Next file #"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=870
+		y=406
+		width=61
+		height=20
+	}
+	control {
+		chan="$(P)$(R)FileNumber"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=936
+		y=407
+		width=82
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)FileNumber_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
 	}
 }
 composite {
@@ -1140,7 +1129,7 @@ rectangle {
 		x=700
 		y=300
 		width=690
-		height=335
+		height=360
 	}
 	"basic attribute" {
 		clr=14
@@ -2199,7 +2188,7 @@ text {
 composite {
 	object {
 		x=728
-		y=581
+		y=604
 		width=653
 		height=45
 	}
@@ -2208,7 +2197,7 @@ composite {
 		composite {
 			object {
 				x=768
-				y=606
+				y=629
 				width=163
 				height=20
 			}
@@ -2217,7 +2206,7 @@ composite {
 				text {
 					object {
 						x=768
-						y=606
+						y=629
 						width=92
 						height=20
 					}
@@ -2230,7 +2219,7 @@ composite {
 				"message button" {
 					object {
 						x=869
-						y=606
+						y=629
 						width=62
 						height=20
 					}
@@ -2247,7 +2236,7 @@ composite {
 		text {
 			object {
 				x=965
-				y=606
+				y=629
 				width=90
 				height=20
 			}
@@ -2260,7 +2249,7 @@ composite {
 		menu {
 			object {
 				x=1059
-				y=606
+				y=629
 				width=64
 				height=20
 			}
@@ -2273,7 +2262,7 @@ composite {
 		"text update" {
 			object {
 				x=1128
-				y=607
+				y=630
 				width=80
 				height=18
 			}
@@ -2288,7 +2277,7 @@ composite {
 		composite {
 			object {
 				x=728
-				y=581
+				y=604
 				width=653
 				height=20
 			}
@@ -2297,7 +2286,7 @@ composite {
 				text {
 					object {
 						x=728
-						y=581
+						y=604
 						width=133
 						height=20
 					}
@@ -2310,7 +2299,7 @@ composite {
 				"text update" {
 					object {
 						x=870
-						y=582
+						y=605
 						width=511
 						height=18
 					}
@@ -2399,7 +2388,50 @@ text {
 text {
 	object {
 		x=748
+		y=556
+		width=112
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="First series #"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=870
+		y=556
+		width=61
+		height=20
+	}
+	control {
+		chan="$(P)$(R)SeriesFileFirst"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=936
 		y=557
+		width=82
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)SeriesFileFirst_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=748
+		y=581
 		width=112
 		height=20
 	}
@@ -2412,9 +2444,9 @@ text {
 "text entry" {
 	object {
 		x=870
-		y=556
+		y=581
 		width=61
-		height=22
+		height=20
 	}
 	control {
 		chan="$(P)$(R)SeriesFileDigits"
@@ -2427,7 +2459,7 @@ text {
 "text update" {
 	object {
 		x=936
-		y=558
+		y=582
 		width=82
 		height=18
 	}
