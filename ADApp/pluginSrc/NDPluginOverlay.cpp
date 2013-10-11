@@ -61,7 +61,7 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
             for (iy=ymin; iy<ymax; iy++) {
                 pRow = (epicsType *)pArray->pData + iy*this->arrayInfo.yStride;
                 if (iy == pOverlay->PositionY) {
-                    for (ix=xmin; ix<xmax; ix++) setPixel(&pRow[ix*this->arrayInfo.xStride], pOverlay);
+                    for (ix=xmin; ix<xmax; ix++) setPixel<epicsType>(&pRow[ix*this->arrayInfo.xStride], pOverlay);
                 } else {
                     setPixel<epicsType>(&pRow[pOverlay->PositionX * this->arrayInfo.xStride], pOverlay);
                 }
@@ -79,10 +79,10 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
             for (iy=ymin; iy<ymax; iy++) {
                 pRow = (epicsType *)pArray->pData + iy*arrayInfo.yStride;
                 if ((iy == ymin) || (iy == ymax-1)) {
-                    for (ix=xmin; ix<xmax; ix++) setPixel(&pRow[ix*this->arrayInfo.xStride], pOverlay);
+                    for (ix=xmin; ix<xmax; ix++) setPixel<epicsType>(&pRow[ix*this->arrayInfo.xStride], pOverlay);
                 } else {
-                    setPixel(&pRow[xmin*this->arrayInfo.xStride], pOverlay);
-                    setPixel(&pRow[(xmax-1)*this->arrayInfo.xStride], pOverlay);
+                    setPixel<epicsType>(&pRow[xmin*this->arrayInfo.xStride], pOverlay);
+                    setPixel<epicsType>(&pRow[(xmax-1)*this->arrayInfo.xStride], pOverlay);
                 }
             }
             break;
