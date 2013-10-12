@@ -234,11 +234,11 @@ void PVAttribute::connectCallback(struct connection_handler_args cha)
   * calls base class NDAttribute::report() to report on the parameter value.
   * \param[in] details Level of report details desired; currently does nothing in this derived class.
   */
-int PVAttribute::report(int details)
+int PVAttribute::report(FILE *fp, int details)
 {
-    NDAttribute::report(details);
-    printf("  PVAttribute\n");
-    printf("    dbrType=%s\n", dbr_type_to_text(this->dbrType));
+    NDAttribute::report(fp, details);
+    fprintf(fp, "  PVAttribute\n");
+    fprintf(fp, "    dbrType=%s\n", dbr_type_to_text(this->dbrType));
     return(ND_SUCCESS);
 }
     
