@@ -33,7 +33,7 @@ static asynUser *pasynUserSelf = NULL;
   * \param[in] pName The name of the attribute to be created; case-insensitive. 
   * \param[in] pDescription The description of the attribute.
   * \param[in] pSource The symbol name for the function to be called to get the value of the parameter.
-  * \param[in] fParam A string that will be passed to the function, typically to specify what/how to get the value.
+  * \param[in] pParam A string that will be passed to the function, typically to specify what/how to get the value.
   */
 functAttribute::functAttribute(const char *pName, const char *pDescription, const char *pSource, const char *pParam)
 
@@ -90,6 +90,7 @@ int functAttribute::updateValue()
 
 /** Reports on the properties of the functAttribute object; 
   * calls base class NDAttribute::report() to report on the parameter value.
+  * \param[in] fp File pointer for the report output.
   * \param[in] details Level of report details desired; currently does nothing in this derived class.
   */
 int functAttribute::report(FILE *fp, int details)

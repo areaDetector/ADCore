@@ -643,6 +643,7 @@ int NDArrayPool::numFree()
 
 /** Reports on the free list size and other properties of the NDArrayPool
   * object.
+  * \param[in] fp File pointer for the report output.
   * \param[in] details Level of report details desired; does nothing at present.
   */
 int NDArrayPool::report(FILE *fp, int details)
@@ -815,6 +816,7 @@ int NDArray::release()
 }
 
 /** Reports on the properties of the array.
+  * \param[in] fp File pointer for the report output.
   * \param[in] details Level of report details desired; if >5 calls NDAttributeList::report().
   */
 int NDArray::report(FILE *fp, int details)
@@ -1053,6 +1055,7 @@ int NDAttributeList::updateValues()
 }
 
 /** Reports on the properties of the attribute list.
+  * \param[in] fp File pointer for the report output.
   * \param[in] details Level of report details desired; if >10 calls NDAttribute::report() for each attribute.
   */
 int NDAttributeList::report(FILE *fp, int details)
@@ -1325,7 +1328,8 @@ int NDAttribute::updateValue()
 }
 
 /** Reports on the properties of the attribute.
- * \param[in] details Level of report details desired; currently does nothing
+  * \param[in] fp File pointer for the report output.
+  * \param[in] details Level of report details desired; currently does nothing
   */
 int NDAttribute::report(FILE *fp, int details)
 {

@@ -232,6 +232,7 @@ void PVAttribute::connectCallback(struct connection_handler_args cha)
 
 /** Reports on the properties of the PVAttribute object; 
   * calls base class NDAttribute::report() to report on the parameter value.
+  * \param[in] fp File pointer for the report output.
   * \param[in] details Level of report details desired; currently does nothing in this derived class.
   */
 int PVAttribute::report(FILE *fp, int details)
