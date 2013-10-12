@@ -81,9 +81,9 @@ paramAttribute::paramAttribute(const char *pName, const char *pDescription, cons
             driverName, functionName, pSource);
         goto error;
     }
-    if (epicsStrCaseCmp(dataType, "int") == 0)    this->paramType=paramAttrTypeInt;
-    if (epicsStrCaseCmp(dataType, "double") == 0) this->paramType=paramAttrTypeDouble;
-    if (epicsStrCaseCmp(dataType, "string") == 0) this->paramType=paramAttrTypeString;
+    if      (!strcmp(dataType, "INT"))     this->paramType=paramAttrTypeInt;
+    else if (!strcmp(dataType, "DOUBLE"))  this->paramType=paramAttrTypeDouble;
+    else if (!strcmp(dataType, "STRING"))  this->paramType=paramAttrTypeString;
 error:
     if (pasynUser) pasynManager->freeAsynUser(pasynUser);
 }
@@ -136,13 +136,13 @@ int paramAttribute::updateValue()
   * calls base class NDAttribute::report() to report on the parameter value.
   * \param[in] details Level of report details desired; currently does nothing in this derived class.
   */
-int paramAttribute::report(int details)
+int paramAttribute::report(FILE *fp, int details)
 {
-    NDAttribute::report(details);
-    printf("  paramAttribute\n");
-    printf("    Addr=%d\n", this->paramAddr);
-    printf("    Param type=%d\n", this->paramType);
-    printf("    Param ID=%d\n", this->paramId);
+    NDAttribute::report(fp, details);
+    fprintf(fp, "  paramAttribute\n");
+    fprintf(fp, "    Addr=%d\n", this->paramAddr);
+    fprintf(fp, "    Param type=%d\n", this->paramType);
+    fprintf(fp, "    Param ID=%d\n", this->paramId);
     return(ND_SUCCESS);
 }
     
