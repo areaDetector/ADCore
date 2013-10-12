@@ -28,6 +28,14 @@
 
 static const char *driverName = "NDArray";
 
+static const char *NDAttrSourceNames[] = 
+{
+    "NDAttrSourceDriver",
+    "NDAttrSourceParam",
+    "NDAttrSourceEPICS_PV",
+    "NDAttrSourceFunction"
+};
+
 /** eraseNDAttributes is a global flag the controls whether NDArray::clearAttributes() is called
   * each time a new array is allocated with NDArrayPool->alloc().
   * The default value is 0, meaning that clearAttributes() is not called.  This mode is efficient
@@ -637,14 +645,15 @@ int NDArrayPool::numFree()
   * object.
   * \param[in] details Level of report details desired; does nothing at present.
   */
-int NDArrayPool::report(int details)
+int NDArrayPool::report(FILE *fp, int details)
 {
-  printf("NDArrayPool:\n");
-  printf("  numBuffers=%d, maxBuffers=%d\n",
+  fprintf(fp, "\n");
+  fprintf(fp, "NDArrayPool:\n");
+  fprintf(fp, "  numBuffers=%d, maxBuffers=%d\n",
          numBuffers_, maxBuffers_);
-  printf("  memorySize=%ld, maxMemory=%ld\n",
+  fprintf(fp, "  memorySize=%ld, maxMemory=%ld\n",
         (long)memorySize_, (long)maxMemory_);
-  printf("  numFree=%d\n",
+  fprintf(fp, "  numFree=%d\n",
          numFree_);
       
   return ND_SUCCESS;
@@ -808,23 +817,23 @@ int NDArray::release()
 /** Reports on the properties of the array.
   * \param[in] details Level of report details desired; if >5 calls NDAttributeList::report().
   */
-int NDArray::report(int details)
+int NDArray::report(FILE *fp, int details)
 {
   int dim;
   
-  printf("\n");
-  printf("NDArray  Array address=%p:\n", this);
-  printf("  ndims=%d dims=[",
+  fprintf(fp, "\n");
+  fprintf(fp, "NDArray  Array address=%p:\n", this);
+  fprintf(fp, "  ndims=%d dims=[",
     this->ndims);
-  for (dim=0; dim<this->ndims; dim++) printf("%d ", (int)this->dims[dim].size);
-  printf("]\n");
-  printf("  dataType=%d, dataSize=%d, pData=%p\n",
+  for (dim=0; dim<this->ndims; dim++) fprintf(fp, "%d ", (int)this->dims[dim].size);
+  fprintf(fp, "]\n");
+  fprintf(fp, "  dataType=%d, dataSize=%d, pData=%p\n",
         this->dataType, (int)this->dataSize, this->pData);
-  printf("  uniqueId=%d, timeStamp=%f\n",
+  fprintf(fp, "  uniqueId=%d, timeStamp=%f\n",
         this->uniqueId, this->timeStamp);
-  printf("  number of attributes=%d\n", this->pAttributeList->count());
+  fprintf(fp, "  number of attributes=%d\n", this->pAttributeList->count());
   if (details > 5) {
-    this->pAttributeList->report(details);
+    this->pAttributeList->report(fp, details);
   }
   return ND_SUCCESS;
 }
@@ -899,7 +908,7 @@ NDAttribute* NDAttributeList::add(const char *pName, const char *pDescription, N
 
 
 
-/** Finds an attribute by name; the search is case-insensitive.
+/** Finds an attribute by name; the search is now case sensitive (R1-10)
   * \param[in] pName The name of the attribute to be found.
   * \return Returns a pointer to the attribute if found, NULL if not found. 
   */
@@ -913,7 +922,7 @@ NDAttribute* NDAttributeList::find(const char *pName)
   pListNode = (NDAttributeListNode *)ellFirst(&this->list);
   while (pListNode) {
     pAttribute = pListNode->pNDAttribute;
-    if (epicsStrCaseCmp(pAttribute->pName, pName) == 0) goto done;
+    if (strcmp(pAttribute->pName, pName) == 0) goto done;
     pListNode = (NDAttributeListNode *)ellNext(&pListNode->node);
   }
   pAttribute = NULL;
@@ -1046,20 +1055,20 @@ int NDAttributeList::updateValues()
 /** Reports on the properties of the attribute list.
   * \param[in] details Level of report details desired; if >10 calls NDAttribute::report() for each attribute.
   */
-int NDAttributeList::report(int details)
+int NDAttributeList::report(FILE *fp, int details)
 {
   NDAttribute *pAttribute;
   NDAttributeListNode *pListNode;
   
   epicsMutexLock(this->lock);
-  printf("\n");
-  printf("NDAttributeList: address=%p:\n", this);
-  printf("  number of attributes=%d\n", this->count());
+  fprintf(fp, "\n");
+  fprintf(fp, "NDAttributeList: address=%p:\n", this);
+  fprintf(fp, "  number of attributes=%d\n", this->count());
   if (details > 10) {
     pListNode = (NDAttributeListNode *) ellFirst(&this->list);
     while (pListNode) {
       pAttribute = (NDAttribute *)pListNode->pNDAttribute;
-      pAttribute->report(details);
+      pAttribute->report(fp, details);
       pListNode = (NDAttributeListNode *) ellNext(&pListNode->node);
     }
   }
@@ -1139,7 +1148,7 @@ int NDAttribute::setDescription(const char *pDescription) {
 int NDAttribute::setSource(const char *pSource) {
 
   if (this->pSource) {
-    /* If the new srouce is the same as the old one return, 
+    /* If the new source is the same as the old one return, 
      * saves freeing and allocating memory */
     if (strcmp(this->pSource, pSource) == 0) return(ND_SUCCESS);
     free(this->pSource);
@@ -1318,47 +1327,57 @@ int NDAttribute::updateValue()
 /** Reports on the properties of the attribute.
  * \param[in] details Level of report details desired; currently does nothing
   */
-int NDAttribute::report(int details)
+int NDAttribute::report(FILE *fp, int details)
 {
   
-  printf("NDAttribute, address=%p:\n", this);
-  printf("  name=%s\n", this->pName);
-  printf("  description=%s\n", this->pDescription);
-  printf("  source type=%d\n", this->sourceType);
-  printf("  source=%s\n", this->pSource);
+  fprintf(fp, "\n");
+  fprintf(fp, "NDAttribute, address=%p:\n", this);
+  fprintf(fp, "  name=%s\n", this->pName);
+  fprintf(fp, "  description=%s\n", this->pDescription);
+  fprintf(fp, "  source type=%s\n", NDAttrSourceNames[this->sourceType]);
+  fprintf(fp, "  source=%s\n", this->pSource);
   switch (this->dataType) {
     case NDAttrInt8:
-      printf("  dataType=NDAttrInt8, value=%d\n", this->value.i8);
+      fprintf(fp, "  dataType=NDAttrInt8\n");
+      fprintf(fp, "  value=%d\n", this->value.i8);
       break;
     case NDAttrUInt8:
-      printf("  dataType=NDAttrUInt8, value=%u\n", this->value.ui8);
+      fprintf(fp, "  dataType=NDAttrUInt8\n"); 
+      fprintf(fp, "  value=%u\n", this->value.ui8);
       break;
     case NDAttrInt16:
-      printf("  dataType=NDAttrInt16, value=%d\n", this->value.i16);
+      fprintf(fp, "  dataType=NDAttrInt16\n"); 
+      fprintf(fp, "  value=%d\n", this->value.i16);
       break;
     case NDAttrUInt16:
-      printf("  dataType=NDAttrUInt16, value=%d\n", this->value.ui16);
+      fprintf(fp, "  dataType=NDAttrUInt16\n"); 
+      fprintf(fp, "  value=%d\n", this->value.ui16);
       break;
     case NDAttrInt32:
-      printf("  dataType=NDAttrInt32, value=%d\n", this->value.i32);
+      fprintf(fp, "  dataType=NDAttrInt32\n"); 
+      fprintf(fp, "  value=%d\n", this->value.i32);
       break;
     case NDAttrUInt32:
-      printf("  dataType=NDAttrUInt32, value=%d\n", this->value.ui32);
+      fprintf(fp, "  dataType=NDAttrUInt32\n"); 
+      fprintf(fp, "  value=%d\n", this->value.ui32);
       break;
     case NDAttrFloat32:
-      printf("  dataType=NDAttrFloat32, value=%f\n", this->value.f32);
+      fprintf(fp, "  dataType=NDAttrFloat32\n"); 
+      fprintf(fp, "  value=%f\n", this->value.f32);
       break;
     case NDAttrFloat64:
-      printf("  dataType=NDAttrFloat64, value=%f\n", this->value.f64);
+      fprintf(fp, "  dataType=NDAttrFloat64\n"); 
+      fprintf(fp, "  value=%f\n", this->value.f64);
       break;
     case NDAttrString:
-      printf("  dataType=NDAttrString, value=%s\n", this->pString);
+      fprintf(fp, "  dataType=NDAttrString\n"); 
+      fprintf(fp, "  value=%s\n", this->pString);
       break;
     case NDAttrUndefined:
-      printf("  dataType=NDAttrUndefined\n");
+      fprintf(fp, "  dataType=NDAttrUndefined\n");
       break;
     default:
-      printf("  dataType=UNKNOWN\n");
+      fprintf(fp, "  dataType=UNKNOWN\n");
       return(ND_ERROR);
       break;
   }
