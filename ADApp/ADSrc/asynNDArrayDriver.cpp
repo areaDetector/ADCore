@@ -22,6 +22,7 @@
 #include "tinyxml.h"
 #include "PVAttribute.h"
 #include "paramAttribute.h"
+#include "functAttribute.h"
 #include <asynDriver.h>
 #define epicsExportSharedSymbols
 #include <shareLib.h>
@@ -200,11 +201,7 @@ int asynNDArrayDriver::readNDAttributesFile(const char *fileName)
 {
     static const char *functionName = "readNDAttributesFile";
     
-    const char *pName, *pDBRType, *pSource, *pType, *pDataType, *pAddr, *pDescription=NULL;
-    int dbrType;
-    int addr=0;
-    PVAttribute *pPVAttribute=NULL;
-    paramAttribute *pParamAttribute=NULL;
+    const char *pName, *pSource, *pAttrType, *pDescription=NULL;
     TiXmlDocument doc(fileName);
     TiXmlElement *Attr, *Attrs;
     
@@ -235,22 +232,21 @@ int asynNDArrayDriver::readNDAttributesFile(const char *fileName)
         }
         pDescription = Attr->Attribute("description");
         pSource = Attr->Attribute("source");
-        pType = Attr->Attribute("type");
-        if (!pType) pType = "EPICS_PV";
-        if (epicsStrCaseCmp(pType, "EPICS_PV") == 0) {
-            pDBRType = Attr->Attribute("dbrtype");
-            dbrType = DBR_NATIVE;
-            // TODO: do not enforce new uppercase rule yet on value of dbrtype attribute
+        pAttrType = Attr->Attribute("type");
+        if (!pAttrType) pAttrType = "EPICS_PV";
+        if (strcmp(pAttrType, "EPICS_PV") == 0) {
+            const char *pDBRType = Attr->Attribute("dbrtype");
+            int dbrType = DBR_NATIVE;
             if (pDBRType) {
-                if      (!epicsStrCaseCmp(pDBRType, "DBR_CHAR"))   dbrType = DBR_CHAR;
-                else if (!epicsStrCaseCmp(pDBRType, "DBR_SHORT"))  dbrType = DBR_SHORT;
-                else if (!epicsStrCaseCmp(pDBRType, "DBR_ENUM"))   dbrType = DBR_ENUM;
-                else if (!epicsStrCaseCmp(pDBRType, "DBR_INT"))    dbrType = DBR_INT;
-                else if (!epicsStrCaseCmp(pDBRType, "DBR_LONG"))   dbrType = DBR_LONG;
-                else if (!epicsStrCaseCmp(pDBRType, "DBR_FLOAT"))  dbrType = DBR_FLOAT;
-                else if (!epicsStrCaseCmp(pDBRType, "DBR_DOUBLE")) dbrType = DBR_DOUBLE;
-                else if (!epicsStrCaseCmp(pDBRType, "DBR_STRING")) dbrType = DBR_STRING;
-                else if (!epicsStrCaseCmp(pDBRType, "DBR_NATIVE")) dbrType = DBR_NATIVE;
+                if      (!strcmp(pDBRType, "DBR_CHAR"))   dbrType = DBR_CHAR;
+                else if (!strcmp(pDBRType, "DBR_SHORT"))  dbrType = DBR_SHORT;
+                else if (!strcmp(pDBRType, "DBR_ENUM"))   dbrType = DBR_ENUM;
+                else if (!strcmp(pDBRType, "DBR_INT"))    dbrType = DBR_INT;
+                else if (!strcmp(pDBRType, "DBR_LONG"))   dbrType = DBR_LONG;
+                else if (!strcmp(pDBRType, "DBR_FLOAT"))  dbrType = DBR_FLOAT;
+                else if (!strcmp(pDBRType, "DBR_DOUBLE")) dbrType = DBR_DOUBLE;
+                else if (!strcmp(pDBRType, "DBR_STRING")) dbrType = DBR_STRING;
+                else if (!strcmp(pDBRType, "DBR_NATIVE")) dbrType = DBR_NATIVE;
                 else {
                     asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
                         "%s:%s: unknown dbrType = %s\n", 
@@ -261,20 +257,27 @@ int asynNDArrayDriver::readNDAttributesFile(const char *fileName)
             asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
                 "%s:%s: Name=%s, PVName=%s, pDBRType=%s, dbrType=%d, pDescription=%s\n",
                 driverName, functionName, pName, pSource, pDBRType, dbrType, pDescription);
-            pPVAttribute = new PVAttribute(pName, pDescription, pSource, dbrType);
+            PVAttribute *pPVAttribute = new PVAttribute(pName, pDescription, pSource, dbrType);
             this->pAttributeList->add(pPVAttribute);
-        } else if (epicsStrCaseCmp(pType, "PARAM") == 0) {
-            // TODO: do not enforce new uppercase rule yet on value of datatype attribute
-            pDataType = Attr->Attribute("datatype");
+        } else if (strcmp(pAttrType, "PARAM") == 0) {
+            const char *pDataType = Attr->Attribute("datatype");
             if (!pDataType) pDataType = "int";
-            pAddr = Attr->Attribute("addr");
+            const char *pAddr = Attr->Attribute("addr");
+            int addr=0;
             if (pAddr) addr = strtol(pAddr, NULL, 0);
-            else addr = 0;
             asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
                 "%s:%s: Name=%s, drvInfo=%s, dataType=%s,pDescription=%s\n",
                 driverName, functionName, pName, pSource, pDataType, pDescription); 
-            pParamAttribute = new paramAttribute(pName, pDescription, pSource, addr, this, pDataType);
+            paramAttribute *pParamAttribute = new paramAttribute(pName, pDescription, pSource, addr, this, pDataType);
             this->pAttributeList->add(pParamAttribute);
+        } else if (strcmp(pAttrType, "FUNCTION") == 0) {
+            const char *pParam = Attr->Attribute("param");
+            if (!pParam) pParam = epicsStrDup("");
+            asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
+                "%s:%s: Name=%s, function=%s, pParam=%s, pDescription=%s\n",
+                driverName, functionName, pName, pSource, pParam, pDescription); 
+            functAttribute *pFunctAttribute = new functAttribute(pName, pDescription, pSource, pParam);
+            this->pAttributeList->add(pFunctAttribute);
         }
     }
     return(asynSuccess);
@@ -445,9 +448,18 @@ asynStatus asynNDArrayDriver::readFloat64(asynUser *pasynUser, epicsFloat64 *val
 void asynNDArrayDriver::report(FILE *fp, int details)
 {
     asynPortDriver::report(fp, details);
+    if (this->pArrays[0]) {
+        fprintf(fp, "\n");
+        fprintf(fp, "%s: pArrays[0] report\n", this->portName);
+        this->pArrays[0]->report(fp, details);
+    }
     if (details > 5) {
-        if (this->pNDArrayPool) this->pNDArrayPool->report(details);
-        this->pAttributeList->report(details);
+        fprintf(fp, "\n");
+        fprintf(fp, "%s: NDArrayPool report\n", this->portName);
+        if (this->pNDArrayPool) this->pNDArrayPool->report(fp, details);
+        fprintf(fp, "\n");
+        fprintf(fp, "%s: pAttributeList report\n", this->portName);
+        this->pAttributeList->report(fp, details);
     }
 }
 
