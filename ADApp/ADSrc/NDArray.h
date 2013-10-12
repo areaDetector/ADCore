@@ -16,6 +16,7 @@
 #include <epicsMutex.h>
 #include <epicsTypes.h>
 #include <epicsTime.h>
+#include <stdio.h>
 
 /** The maximum number of dimensions in an NDArray */
 #define ND_ARRAY_MAX_DIMS 10
@@ -59,7 +60,8 @@ typedef enum
 {
     NDAttrSourceDriver,  /**< Attribute is obtained directly from driver */
     NDAttrSourceParam,   /**< Attribute is obtained from parameter library */
-    NDAttrSourceEPICSPV  /**< Attribute is obtained from an EPICS PV */
+    NDAttrSourceEPICSPV, /**< Attribute is obtained from an EPICS PV */
+    NDAttrSourceFunct    /**< Attribute is obtained from a user-specified function */
 } NDAttrSource_t;
 
 /** Enumeration of color modes for NDArray attribute "colorMode" */
@@ -160,7 +162,7 @@ public:
     virtual int getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSize=0);
     virtual int setValue(NDAttrDataType_t dataType, void *pValue);
     virtual int updateValue();
-    virtual int report(int details);
+    virtual int report(FILE *fp, int details);
     char *pName;                /**< Name string */
     char *pDescription;         /**< Description string */
     char *pSource;              /**< Source string - EPICS PV name or DRV_INFO string */
@@ -191,7 +193,7 @@ public:
     int          clear();
     int          copy(NDAttributeList *pOut);
     int          updateValues();
-    int          report(int details);
+    int          report(FILE *fp, int details);
     
 private:
     ELLLIST      list;   /**< The EPICS ELLLIST  */
@@ -210,7 +212,7 @@ public:
     int          getInfo         (NDArrayInfo_t *pInfo);
     int          reserve();
     int          release();
-    int          report(int details);
+    int          report(FILE *fp, int details);
     friend class NDArrayPool;
     
 private:
@@ -259,7 +261,7 @@ public:
     int          convert   (NDArray *pIn,
                             NDArray **ppOut,
                             NDDataType_t dataTypeOut);
-    int          report     (int details);
+    int          report     (FILE  *fp, int details);
     int          maxBuffers ();
     int          numBuffers ();
     size_t       maxMemory  ();
