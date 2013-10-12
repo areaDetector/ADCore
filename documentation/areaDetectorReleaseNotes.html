@@ -16,6 +16,22 @@
       is similar in concept to the existing Roper driver that uses WinView.  Lightfield
       runs on Windows 7 64-bit and is the platform Princeton Instruments supports
       for their newer cameras.</li>
+    <li>NDArray and asynNDArrayDriver
+      <ul>
+        <li>Changed all report() methods to have a FILE *fp argument so output can go to a file.</li>
+        <li>Added new attribute type, NDAttrSourceFunct.  This type of attribute gets its value from
+        a user-defined C++ function.  It can thus be use to get any type of metadata. Previously
+        only EPICS PVs and driver/plugin parameters were available as metadata.</li>
+        <li>Added a new example file, ADSrc/myAttributeFunctions.cpp, that demonstrates how to write 
+        user-defined attribute functions.</li>
+        <li>Made all contents of attribute XML files be case-sensitive.  It was announced in R1-7
+        that datatype and dbrtype strings would need to be upper-case.  This is now enforced.
+        In addition attribute names are now case-sensitive.  Any mix of case is allowed, but the
+        NDAttributeList::find() method is now case sensitive.  This was done because it was found
+        that the epicsStrCaseCmp function was significantly reducing performance with long attribute
+        lists.</li>
+      </ul>
+    </li>
     <li>Added support for dynamic builds on win32-x86 and windows-x64.</li>
     <li>Added support for 64-bit Windows in Firewire driver.</li>
   </ul>
