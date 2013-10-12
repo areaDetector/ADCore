@@ -35,7 +35,7 @@ public:
                     class asynNDArrayDriver *pDriver, const char *dataType);
     ~paramAttribute();
     virtual int updateValue();
-    int report(int details);
+    int report(FILE *fp, int details);
 
 private:
     int         paramId;
