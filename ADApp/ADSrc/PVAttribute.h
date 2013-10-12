@@ -28,7 +28,7 @@ public:
     /* These callbacks must be public because they are called from C */
     void connectCallback(struct connection_handler_args cha);
     void monitorCallback(struct event_handler_args cha);
-    int report(int details);
+    int report(FILE *fp, int details);
 
 private:
     chid        chanId;
