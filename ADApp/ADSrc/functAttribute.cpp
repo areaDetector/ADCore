@@ -75,6 +75,20 @@ functAttribute::~functAttribute()
     free(functParam);
 }
 
+functAttribute* functAttribute::copy(NDAttribute *pAttr)
+{
+  functAttribute *pOut = (functAttribute *)pAttr;
+  if (!pOut) 
+    pOut = new functAttribute(this->pName, this->pDescription, this->pSource, this->functParam);
+  else {
+    // NOTE: We assume that if the attribute name is the same then the function name and parameter are also the same
+    // are also the same
+    NDAttribute::copy(pOut);
+  }
+  return(pOut);
+}
+
+
 /** Updates the current value of this attribute; sets the attribute value to the return value of the
   * specified function.
   */
