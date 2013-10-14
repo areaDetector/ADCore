@@ -132,6 +132,22 @@ int paramAttribute::updateValue()
     return(status);
 }
 
+paramAttribute* paramAttribute::copy(NDAttribute *pAttr)
+{
+  paramAttribute *pOut = (paramAttribute *)pAttr;
+  if (!pOut) 
+    pOut = new paramAttribute(*this);
+  else {
+    NDAttribute::copy(pOut);
+    pOut->paramId   = this->paramId;
+    pOut->paramAddr = this->paramAddr;
+    pOut->paramType = this->paramType;
+    pOut->pDriver   = this->pDriver;
+  }
+  return(pOut);
+}
+
+
 /** Reports on the properties of the paramAttribute object; 
   * calls base class NDAttribute::report() to report on the parameter value.
   * \param[in] fp File pointer for the report output.
