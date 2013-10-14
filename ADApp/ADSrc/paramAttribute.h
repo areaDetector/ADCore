@@ -34,7 +34,8 @@ public:
     paramAttribute(const char *pName, const char *pDescription, const char *pSource, int addr, 
                     class asynNDArrayDriver *pDriver, const char *dataType);
     ~paramAttribute();
-    virtual int updateValue();
+    paramAttribute* copy(NDAttribute *pAttribute);
+    int updateValue();
     int report(FILE *fp, int details);
 
 private:
