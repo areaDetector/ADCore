@@ -266,7 +266,7 @@ int NDArrayPool::release(NDArray *pArray)
   if (pArray->pNDArrayPool != this) {
     printf("%s:%s: ERROR, not owner!  owner=%p, should be this=%p\n",
            driverName, functionName, pArray->pNDArrayPool, this);
-     return(ND_ERROR);
+    return(ND_ERROR);
   }
   epicsMutexLock(listLock_);
   pArray->referenceCount--;
@@ -1095,6 +1095,21 @@ NDAttribute::NDAttribute(const char *pName, const char *pDescription, NDAttrData
   this->sourceType = NDAttrSourceDriver;
   this->pString = NULL;
   if (pValue) this->setValue(dataType, pValue);
+  this->listNode.pNDAttribute = this;
+}
+
+NDAttribute::NDAttribute(NDAttribute& attribute)
+{
+  void *pValue;
+  this->pName = epicsStrDup(attribute.pName);
+  this->pDescription = epicsStrDup(attribute.pDescription);
+  this->pSource = epicsStrDup(attribute.pSource);
+  this->sourceType = attribute.sourceType;
+  this->pString = NULL;
+  this->dataType = attribute.dataType;
+  if (attribute.dataType == NDAttrString) pValue = attribute.pString;
+  else pValue = &attribute.value;
+  this->setValue(attribute.dataType, pValue);
   this->listNode.pNDAttribute = this;
 }
 
