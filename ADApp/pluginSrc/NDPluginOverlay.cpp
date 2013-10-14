@@ -47,6 +47,10 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
 {
     size_t xmin, xmax, ymin, ymax, ix, iy;
     epicsType *pRow;
+    
+asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
+"NDPluginOverlay::DoOverlayT, shape=%d, Xpos=%d, Ypos=%d, Xsize=%d, Ysize=%d\n",
+pOverlay->shape, pOverlay->PositionX, pOverlay->PositionY, pOverlay->SizeX, pOverlay->SizeY);
 
     switch(pOverlay->shape) {
         case NDOverlayCross:
@@ -162,6 +166,9 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
     for (overlay=0; overlay<this->maxOverlays; overlay++) {
         pOverlay = &this->pOverlays[overlay];
         getIntegerParam(overlay, NDPluginOverlayUse, &use);
+asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
+"NDPluginOverlay::processCallbacks, overlay=%d, use=%d\n",
+overlay, use);
         if (!use) continue;
         /* Need to fetch all of these parameters while we still have the mutex */
         getIntegerParam(overlay, NDPluginOverlayPositionX,  &itemp); pOverlay->PositionX = itemp;
