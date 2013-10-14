@@ -81,6 +81,19 @@ PVAttribute::~PVAttribute()
 }
 
 
+PVAttribute* PVAttribute::copy(NDAttribute *pAttr)
+{
+  PVAttribute *pOut = (PVAttribute *)pAttr;
+  if (!pOut) 
+    pOut = new PVAttribute(this->pName, this->pDescription, this->pSource, this->dbrType);
+  else {
+    // NOTE: We assume that if the attribute name is the same then the source PV and dbrTtype
+    // are also the same
+    NDAttribute::copy(pOut);
+  }
+  return(pOut);
+}
+
 static void monitorCallbackC(struct event_handler_args cha)
 {
     PVAttribute *pAttribute = (PVAttribute *)ca_puser(cha.chid);
@@ -240,6 +253,8 @@ int PVAttribute::report(FILE *fp, int details)
     NDAttribute::report(fp, details);
     fprintf(fp, "  PVAttribute\n");
     fprintf(fp, "    dbrType=%s\n", dbr_type_to_text(this->dbrType));
+    fprintf(fp, "    chanId=%p\n", this->chanId);
+    fprintf(fp, "    eventId=%p\n", this->eventId);
     return(ND_SUCCESS);
 }
     
