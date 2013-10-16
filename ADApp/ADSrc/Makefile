@@ -22,6 +22,7 @@ DBD += commonDriverSupport.dbd
 INC += NDArray.h
 INC += PVAttribute.h
 INC += paramAttribute.h
+INC += functAttribute.h
 INC += asynNDArrayDriver.h
 INC += ADDriver.h
 INC += tinyxml.h
