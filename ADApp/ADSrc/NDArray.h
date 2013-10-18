@@ -167,7 +167,8 @@ public:
     char *pName;                /**< Name string */
     char *pDescription;         /**< Description string */
     char *pSource;              /**< Source string - EPICS PV name or DRV_INFO string */
-    NDAttrSource_t sourceType;  /**< Source type; driver hardcoded, EPICS PV or driver/plugin parameter */
+    NDAttrSource_t sourceType;  /**< Source type */
+    char *pSourceTypeString;
     NDAttrDataType_t dataType;  /**< Data type of attribute */
     friend class NDArray;
     friend class NDAttributeList;
