@@ -19,6 +19,8 @@ endif
 DBD += ADSupport.dbd
 DBD += commonDriverSupport.dbd
 
+INC += NDAttribute.h
+INC += NDAttributeList.h
 INC += NDArray.h
 INC += PVAttribute.h
 INC += paramAttribute.h
@@ -29,6 +31,9 @@ INC += tinyxml.h
 INC += tinystr.h
 
 LIBRARY_IOC = ADBase
+LIB_SRCS += NDAttribute.cpp
+LIB_SRCS += NDAttributeList.cpp
+LIB_SRCS += NDArrayPool.cpp
 LIB_SRCS += NDArray.cpp
 LIB_SRCS += asynNDArrayDriver.cpp
 LIB_SRCS += ADDriver.cpp
