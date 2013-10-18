@@ -51,7 +51,7 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
     int i, j;
     NDAttribute *pAttribute;
     char tempString[MAX_ATTRIBUTE_STRING_SIZE];
-    const char *dataTypeString=NULL, *sourceTypeString=NULL;
+    const char *dataTypeString=NULL;
     NDAttrDataType_t attrDataType;
     size_t attrSize;
     int numAttributes, attrCount;
@@ -166,6 +166,11 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
         case NDFloat64:
             ncType = NC_DOUBLE;
             break;
+        default:
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s:%s error, unknown array datatype=%d\n",
+                driverName, functionName, pArray->dataType);
+            return asynError;
     }
 
     /* Define the uniqueId data variable. */
@@ -231,6 +236,12 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
             case NDAttrUndefined:
                 dataTypeString = "Undefined";
                 break;
+            default:
+                asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                    "%s:%s error, unknown attrDataType=%d\n",
+                    driverName, functionName, attrDataType);
+                return asynError;
+                break;
         }
         epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_DataType", pAttribute->pName);
         if ((retval = nc_put_att_text(this->ncId, NC_GLOBAL, tempString, 
@@ -245,19 +256,10 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
                                      strlen(pAttribute->pSource), pAttribute->pSource)))
             ERR(retval);
         epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_SourceType", pAttribute->pName);
-        switch (pAttribute->sourceType) {
-            case NDAttrSourceDriver:
-                sourceTypeString = "Driver";
-                break;
-            case NDAttrSourceParam:
-                sourceTypeString = "Param";
-                break;
-            case NDAttrSourceEPICSPV:
-                sourceTypeString = "EPICS_PV";
-                break;
-        }
+
         if ((retval = nc_put_att_text(this->ncId, NC_GLOBAL, tempString, 
-                                     strlen(sourceTypeString), sourceTypeString)))
+                                     strlen(pAttribute->pSourceTypeString), 
+                                     pAttribute->pSourceTypeString)))
             ERR(retval);
         switch (attrDataType) {
             case NDAttrInt8:
@@ -283,6 +285,12 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
                 break;
             case NDAttrUndefined:
                 ncType = NC_BYTE;
+                break;
+            default:
+                asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                    "%s:%s error, unknown attrDataType=%d\n",
+                    driverName, functionName, attrDataType);
+                return asynError;
                 break;
         }
         epicsSnprintf(tempString, sizeof(tempString), "Attr_%s", pAttribute->pName);
@@ -379,6 +387,12 @@ asynStatus NDFileNetCDF::writeFile(NDArray *pArray)
             if ((retval = nc_put_vara_double(this->ncId, this->arrayDataId, start, count, (double *)pArray->pData)))
                 ERR(retval);
             break;
+        default:
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s:%s error, unknown array data type =%d\n",
+                driverName, functionName, pArray->dataType);
+            return asynError;
+            break;
     }
     /* Write the attributes.  Loop through the list of attributes.  These must not have changed since define time! */
     pAttribute = this->pFileAttributes->next(NULL);
@@ -428,6 +442,11 @@ asynStatus NDFileNetCDF::writeFile(NDArray *pArray)
                 if ((retval = nc_put_vara_schar(this->ncId, attrId, start, count, (signed char*)&attrVal.i8)))
                     ERR(retval);
                 break;
+            default:
+                asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                    "%s:%s error, unknown attrDataType=%d\n",
+                    driverName, functionName, attrDataType);
+                return asynError;
                 break;
         }
         pAttribute = this->pFileAttributes->next(pAttribute);
