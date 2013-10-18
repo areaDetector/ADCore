@@ -33,6 +33,7 @@ class paramAttribute : public NDAttribute {
 public:
     paramAttribute(const char *pName, const char *pDescription, const char *pSource, int addr, 
                     class asynNDArrayDriver *pDriver, const char *dataType);
+    paramAttribute(paramAttribute& attribute);
     ~paramAttribute();
     paramAttribute* copy(NDAttribute *pAttribute);
     int updateValue();
