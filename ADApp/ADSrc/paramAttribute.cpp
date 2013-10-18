@@ -93,7 +93,7 @@ error:
   * \param[in] attribute A paramAttribute to copy from 
   */
 paramAttribute::paramAttribute(paramAttribute& attribute)
-    : NDAttribute(pName)
+    : NDAttribute(attribute)
 {
     paramType = attribute.paramType;
     paramAddr = attribute.paramAddr;
