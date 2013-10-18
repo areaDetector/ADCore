@@ -13,7 +13,7 @@
 
 #include "NDArray.h"
 
-typedef int (*NDAttributeFunction)(const char *functParam, class functAttribute *pAttribute);
+typedef int (*NDAttributeFunction)(const char *functParam, void **functionPvt, class functAttribute *pAttribute);
 
 /** Attribute that gets its value from a user-defined function
   * The updateValue() method for this class retrieves the current value from the function.
@@ -30,6 +30,7 @@ public:
 private:
     char *functParam;
     NDAttributeFunction pFunction;
+    void *functionPvt;
 };
 
 #endif /*INCfunctAttributeH*/
