@@ -38,7 +38,7 @@ static asynUser *pasynUserSelf = NULL;
 functAttribute::functAttribute(const char *pName, const char *pDescription, const char *pSource, const char *pParam)
 
     : NDAttribute(pName, pDescription),
-      pFunction(0)
+      pFunction(0), functionPvt(0)
 {
     static const char *functionName = "functAttribute";
     
@@ -78,6 +78,7 @@ functAttribute::functAttribute(functAttribute& attribute)
 {
     functParam = epicsStrDup(attribute.functParam);
     pFunction = attribute.pFunction;
+    functionPvt = attribute.functionPvt;
 }
 
 /** Destructor for driver/plugin attribute
@@ -110,7 +111,7 @@ int functAttribute::updateValue()
     
     if (!this->pFunction) return asynError;
     
-    this->pFunction(this->functParam, this);
+    this->pFunction(this->functParam, &functionPvt, this);
     return asynSuccess;
 }
 
@@ -126,6 +127,7 @@ int functAttribute::report(FILE *fp, int details)
     fprintf(fp, "  functAttribute\n");
     fprintf(fp, "    functParam=%s\n", this->functParam);
     fprintf(fp, "    pFunction=%p\n", this->pFunction);
+    fprintf(fp, "    functionPvt=%p\n", this->functionPvt);
     return(ND_SUCCESS);
 }
     
