@@ -28,14 +28,6 @@
 
 static const char *driverName = "NDArray";
 
-static const char *NDAttrSourceNames[] = 
-{
-    "NDAttrSourceDriver",
-    "NDAttrSourceParam",
-    "NDAttrSourceEPICS_PV",
-    "NDAttrSourceFunction"
-};
-
 /** eraseNDAttributes is a global flag the controls whether NDArray::clearAttributes() is called
   * each time a new array is allocated with NDArrayPool->alloc().
   * The default value is 0, meaning that clearAttributes() is not called.  This mode is efficient
@@ -898,7 +890,6 @@ NDAttribute* NDAttributeList::add(const char *pName, const char *pDescription, N
   epicsMutexLock(this->lock);
   pAttribute = this->find(pName);
   if (pAttribute) {
-    pAttribute->setDescription(pDescription);
     pAttribute->setValue(dataType, pValue);
   } else {
     pAttribute = new NDAttribute(pName, pDescription, dataType, pValue);
@@ -1093,6 +1084,7 @@ NDAttribute::NDAttribute(const char *pName, const char *pDescription, NDAttrData
   this->pDescription = epicsStrDup(pDescription);
   this->pSource = epicsStrDup("");
   this->sourceType = NDAttrSourceDriver;
+  this->pSourceTypeString = epicsStrDup("NDAttrSourceDriver");
   this->pString = NULL;
   if (pValue) this->setValue(dataType, pValue);
   this->listNode.pNDAttribute = this;
@@ -1105,6 +1097,7 @@ NDAttribute::NDAttribute(NDAttribute& attribute)
   this->pDescription = epicsStrDup(attribute.pDescription);
   this->pSource = epicsStrDup(attribute.pSource);
   this->sourceType = attribute.sourceType;
+  this->pSourceTypeString = epicsStrDup(attribute.pSourceTypeString);
   this->pString = NULL;
   this->dataType = attribute.dataType;
   if (attribute.dataType == NDAttrString) pValue = attribute.pString;
@@ -1133,14 +1126,13 @@ NDAttribute* NDAttribute::copy(NDAttribute *pOut)
 {
   void *pValue;
   
-  if (!pOut) pOut = new NDAttribute(this->pName);
-  pOut->setDescription(this->pDescription);
-  pOut->setSource(this->pSource);
-  pOut->sourceType = this->sourceType;
-  pOut->dataType = this->dataType;
-  if (this->dataType == NDAttrString) pValue = this->pString;
-  else pValue = &this->value;
-  pOut->setValue(this->dataType, pValue);
+  if (!pOut) 
+    pOut = new NDAttribute(*this);
+  else {
+    if (this->dataType == NDAttrString) pValue = this->pString;
+    else pValue = &this->value;
+    pOut->setValue(this->dataType, pValue);
+  }
   return(pOut);
 }
 
@@ -1330,7 +1322,7 @@ int NDAttribute::getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSi
       return(ND_ERROR);
       break;
   }
-  return(ND_SUCCESS);
+  return ND_SUCCESS ;
 }
 
 /** Updates the current value of this attribute.
@@ -1339,7 +1331,7 @@ int NDAttribute::getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSi
  */
 int NDAttribute::updateValue()
 {
-  return(ND_SUCCESS);
+  return ND_SUCCESS;
 }
 
 /** Reports on the properties of the attribute.
@@ -1353,7 +1345,7 @@ int NDAttribute::report(FILE *fp, int details)
   fprintf(fp, "NDAttribute, address=%p:\n", this);
   fprintf(fp, "  name=%s\n", this->pName);
   fprintf(fp, "  description=%s\n", this->pDescription);
-  fprintf(fp, "  source type=%s\n", NDAttrSourceNames[this->sourceType]);
+  fprintf(fp, "  source type=%s\n", this->pSourceTypeString);
   fprintf(fp, "  source=%s\n", this->pSource);
   switch (this->dataType) {
     case NDAttrInt8:
