@@ -24,6 +24,7 @@
 class PVAttribute : public NDAttribute {
 public:
     PVAttribute(const char *pName, const char *pDescription, const char *pSource, chtype dbrType);
+    PVAttribute(PVAttribute& attribute);
     ~PVAttribute();
     PVAttribute* copy(NDAttribute *pAttribute);
     /* These callbacks must be public because they are called from C */
