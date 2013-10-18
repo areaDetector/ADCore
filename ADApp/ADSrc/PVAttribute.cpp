@@ -39,7 +39,8 @@ static asynUser *pasynUserSelf = NULL;
   */
 PVAttribute::PVAttribute(const char *pName, const char *pDescription,
                          const char *pSource, chtype dbrType)
-    : NDAttribute(pName)
+    : NDAttribute(pName),
+    callbackString(0)
 {
     static const char *functionName = "PVAttribute";
     
@@ -135,6 +136,12 @@ void PVAttribute::monitorCallback(struct event_handler_args eha)
         driverName, functionName, eha.status);
         goto done;
     }
+    /* Treat strings specially */
+    if (dataType == NDAttrString) {
+      if (this->callbackString) free(this->callbackString);
+      this->callbackString = epicsStrDup((char *)eha.dbr);
+      goto done;
+    }
     switch (dataType) {
       case NDAttrInt8:
         callbackValue.i8 = *(epicsInt8 *)eha.dbr;
@@ -173,7 +180,12 @@ int PVAttribute::updateValue()
 {
     //static const char *functionName = "updateValue";
     
-    value = callbackValue;
+    epicsMutexLock(this->lock);
+    if (dataType == NDAttrString)
+        pString = callbackString;
+    else
+        value = callbackValue;
+    epicsMutexUnlock(this->lock);
     return asynSuccess;
 }
 
