@@ -27,6 +27,7 @@ public:
     PVAttribute(PVAttribute& attribute);
     ~PVAttribute();
     PVAttribute* copy(NDAttribute *pAttribute);
+    virtual int updateValue();
     /* These callbacks must be public because they are called from C */
     void connectCallback(struct connection_handler_args cha);
     void monitorCallback(struct event_handler_args cha);
@@ -36,6 +37,7 @@ private:
     chid        chanId;
     evid        eventId;
     chtype      dbrType;
+    NDAttrValue callbackValue;
     epicsMutexId lock;
 };
 
