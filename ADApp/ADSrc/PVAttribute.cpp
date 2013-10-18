@@ -68,16 +68,30 @@ PVAttribute::PVAttribute(const char *pName, const char *pDescription,
     this->setSource(pSource);
     this->dbrType = dbrType;
     this->sourceType = NDAttrSourceEPICSPV;
+    this->pSourceTypeString = epicsStrDup("NDAttrSourceEPICSPV");
     /* Set connection callback on this PV */
     SEVCHK(ca_create_channel(pSource, connectCallbackC, this, 10 ,&this->chanId),
            "ca_create_channel");
+}
+
+/** Copy constructor for an EPICS PV attribute
+  * \param[in] attribute The PVAttribute to copy from.
+  * NOTE: The copy is not "functional", i.e. it does not update when the PV changes, the value is frozen. 
+  */
+PVAttribute::PVAttribute(PVAttribute& attribute)
+    : NDAttribute(attribute)
+{
+    dbrType = attribute.dbrType;
+    eventId = 0;
+    chanId = 0;
+    lock = 0;
 }
 
 
 PVAttribute::~PVAttribute()
 {
     if (this->chanId) SEVCHK(ca_clear_channel(this->chanId),"ca_clear_channel");
-    epicsMutexDestroy(this->lock);
+    if (this->lock) epicsMutexDestroy(this->lock);
 }
 
 
@@ -85,7 +99,7 @@ PVAttribute* PVAttribute::copy(NDAttribute *pAttr)
 {
   PVAttribute *pOut = (PVAttribute *)pAttr;
   if (!pOut) 
-    pOut = new PVAttribute(this->pName, this->pDescription, this->pSource, this->dbrType);
+    pOut = new PVAttribute(*this);
   else {
     // NOTE: We assume that if the attribute name is the same then the source PV and dbrTtype
     // are also the same
