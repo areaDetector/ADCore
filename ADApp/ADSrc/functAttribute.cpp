@@ -49,6 +49,7 @@ functAttribute::functAttribute(const char *pName, const char *pDescription, cons
     else
         functParam = epicsStrDup("");
     this->sourceType = NDAttrSourceFunct;
+    this->pSourceTypeString = epicsStrDup("NDAttrSourceFunct");
     if (!pSource) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s: ERROR, must specify function name\n",
@@ -68,6 +69,17 @@ error:
     return;
 }
 
+/** Copy constructor for function attribute
+  * \param[in] attribute The functAttribute to copy from.
+  */
+functAttribute::functAttribute(functAttribute& attribute)
+
+    : NDAttribute(attribute)
+{
+    functParam = epicsStrDup(attribute.functParam);
+    pFunction = attribute.pFunction;
+}
+
 /** Destructor for driver/plugin attribute
   */
 functAttribute::~functAttribute()
@@ -79,7 +91,7 @@ functAttribute* functAttribute::copy(NDAttribute *pAttr)
 {
   functAttribute *pOut = (functAttribute *)pAttr;
   if (!pOut) 
-    pOut = new functAttribute(this->pName, this->pDescription, this->pSource, this->functParam);
+    pOut = new functAttribute(*this);
   else {
     // NOTE: We assume that if the attribute name is the same then the function name and parameter are also the same
     // are also the same
@@ -101,6 +113,7 @@ int functAttribute::updateValue()
     this->pFunction(this->functParam, this);
     return asynSuccess;
 }
+
 
 /** Reports on the properties of the functAttribute object; 
   * calls base class NDAttribute::report() to report on the parameter value.
