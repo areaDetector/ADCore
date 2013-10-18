@@ -56,6 +56,7 @@ paramAttribute::paramAttribute(const char *pName, const char *pDescription, cons
     this->setSource(pSource);
     this->paramType = paramAttrTypeUnknown;
     this->sourceType = NDAttrSourceParam;
+    this->pSourceTypeString = epicsStrDup("NDAttrSourceParam");
     this->paramAddr = addr;
     this->pDriver = pDriver;
     pasynUser = pasynManager->createAsynUser(0,0);
@@ -86,6 +87,18 @@ paramAttribute::paramAttribute(const char *pName, const char *pDescription, cons
     else if (!strcmp(dataType, "STRING"))  this->paramType=paramAttrTypeString;
 error:
     if (pasynUser) pasynManager->freeAsynUser(pasynUser);
+}
+
+/** Copy constructor for driver/plugin attribute
+  * \param[in] attribute A paramAttribute to copy from 
+  */
+paramAttribute::paramAttribute(paramAttribute& attribute)
+    : NDAttribute(pName)
+{
+    paramType = attribute.paramType;
+    paramAddr = attribute.paramAddr;
+    pDriver = attribute.pDriver;
+    paramId = attribute.paramId;
 }
 
 /** Destructor for driver/plugin attribute
@@ -139,10 +152,6 @@ paramAttribute* paramAttribute::copy(NDAttribute *pAttr)
     pOut = new paramAttribute(*this);
   else {
     NDAttribute::copy(pOut);
-    pOut->paramId   = this->paramId;
-    pOut->paramAddr = this->paramAddr;
-    pOut->paramType = this->paramType;
-    pOut->pDriver   = this->pDriver;
   }
   return(pOut);
 }
