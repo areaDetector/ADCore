@@ -135,10 +135,48 @@ void PVAttribute::monitorCallback(struct event_handler_args eha)
         driverName, functionName, eha.status);
         goto done;
     }
-    this->setValue(this->dataType, (void *)eha.dbr);
+    switch (dataType) {
+      case NDAttrInt8:
+        callbackValue.i8 = *(epicsInt8 *)eha.dbr;
+        break;
+      case NDAttrUInt8:
+        callbackValue.ui8 = *(epicsUInt8 *)eha.dbr;
+        break;
+      case NDAttrInt16:
+        callbackValue.i16 = *(epicsInt16 *)eha.dbr;
+        break;
+      case NDAttrUInt16:
+        callbackValue.ui16 = *(epicsUInt16 *)eha.dbr;
+        break;
+      case NDAttrInt32:
+        callbackValue.i32 = *(epicsInt32*)eha.dbr;
+        break;
+      case NDAttrUInt32:
+        callbackValue.ui32 = *(epicsUInt32 *)eha.dbr;
+        break;
+      case NDAttrFloat32:
+        callbackValue.f32 = *(epicsFloat32 *)eha.dbr;
+        break;
+      case NDAttrFloat64:
+        callbackValue.f64 = *(epicsFloat64 *)eha.dbr;
+        break;
+      case NDAttrUndefined:
+        break;
+      default:
+        break;
+    }
     done:
     epicsMutexUnlock(this->lock);
 }
+
+int PVAttribute::updateValue()
+{
+    //static const char *functionName = "updateValue";
+    
+    value = callbackValue;
+    return asynSuccess;
+}
+
 
 
 static void connectCallbackC(struct connection_handler_args cha)
