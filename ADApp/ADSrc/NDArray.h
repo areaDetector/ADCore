@@ -9,60 +9,18 @@
  *
  */
 
-#ifndef ND_ARRAY_H
-#define ND_ARRAY_H
+#ifndef NDArray_H
+#define NDArray_H
 
-#include <ellLib.h>
 #include <epicsMutex.h>
-#include <epicsTypes.h>
 #include <epicsTime.h>
 #include <stdio.h>
 
+#include "NDAttribute.h"
+#include "NDAttributeList.h"
+
 /** The maximum number of dimensions in an NDArray */
 #define ND_ARRAY_MAX_DIMS 10
-/** Success return code  */
-#define ND_SUCCESS 0
-/** Failure return code  */
-#define ND_ERROR -1
-
-#define MAX_ATTRIBUTE_STRING_SIZE 256
-
-/** Enumeration of NDArray data types */
-typedef enum
-{
-    NDInt8,     /**< Signed 8-bit integer */
-    NDUInt8,    /**< Unsigned 8-bit integer */
-    NDInt16,    /**< Signed 16-bit integer */
-    NDUInt16,   /**< Unsigned 16-bit integer */
-    NDInt32,    /**< Signed 32-bit integer */
-    NDUInt32,   /**< Unsigned 32-bit integer */
-    NDFloat32,  /**< 32-bit float */
-    NDFloat64   /**< 64-bit float */
-} NDDataType_t;
-
-/** Enumeration of NDAttribute attribute data types */
-typedef enum
-{
-    NDAttrInt8    = NDInt8,     /**< Signed 8-bit integer */
-    NDAttrUInt8   = NDUInt8,    /**< Unsigned 8-bit integer */
-    NDAttrInt16   = NDInt16,    /**< Signed 16-bit integer */
-    NDAttrUInt16  = NDUInt16,   /**< Unsigned 16-bit integer */
-    NDAttrInt32   = NDInt32,    /**< Signed 32-bit integer */
-    NDAttrUInt32  = NDUInt32,   /**< Unsigned 32-bit integer */
-    NDAttrFloat32 = NDFloat32,  /**< 32-bit float */
-    NDAttrFloat64 = NDFloat64,  /**< 64-bit float */
-    NDAttrString,               /**< Dynamic length string */
-    NDAttrUndefined             /**< Undefined data type */
-} NDAttrDataType_t;
-
-/** Enumeration of NDAttibute source types */
-typedef enum
-{
-    NDAttrSourceDriver,  /**< Attribute is obtained directly from driver */
-    NDAttrSourceParam,   /**< Attribute is obtained from parameter library */
-    NDAttrSourceEPICSPV, /**< Attribute is obtained from an EPICS PV */
-    NDAttrSourceFunct    /**< Attribute is obtained from a user-specified function */
-} NDAttrSource_t;
 
 /** Enumeration of color modes for NDArray attribute "colorMode" */
 typedef enum
@@ -126,82 +84,6 @@ typedef struct NDArrayInfo {
     size_t colorStride;     /**< The number of array elements between color values */
 } NDArrayInfo_t;
 
-/** Structure used by the EPICS ellLib library for linked lists of C++ objects.
-  * This is needed for ellLists of C++ objects, for which making the first data element the ELLNODE 
-  * does not work if the class has virtual functions or derived classes. */
-typedef struct NDAttributeListNode {
-    ELLNODE node;
-    class NDAttribute *pNDAttribute;
-} NDAttributeListNode;
-
-/** Union defining the values in an NDAttribute object */
-typedef union {
-    epicsInt8    i8;    /**< Signed 8-bit integer */
-    epicsUInt8   ui8;   /**< Unsigned 8-bit integer */
-    epicsInt16   i16;   /**< Signed 16-bit integer */
-    epicsUInt16  ui16;  /**< Unsigned 16-bit integer */
-    epicsInt32   i32;   /**< Signed 32-bit integer */
-    epicsUInt32  ui32;  /**< Unsigned 32-bit integer */
-    epicsFloat32 f32;   /**< 32-bit float */
-    epicsFloat64 f64;   /**< 64-bit float */
-} NDAttrValue;
-
-/** NDAttribute class; an attribute has a name, description, source type, source string,
-  * data type, and value.
-  */
-class epicsShareClass NDAttribute {
-public:
-    /* Methods */
-    NDAttribute(const char *pName, const char *pDescription="", 
-                NDAttrDataType_t dataType=NDAttrUndefined, void *pValue=NULL);
-    NDAttribute(NDAttribute& attribute);
-    virtual ~NDAttribute();
-    virtual NDAttribute* copy(NDAttribute *pAttribute);
-    virtual int setDescription(const char *pDescription);
-    virtual int setSource(const char *pSource);
-    virtual int getValueInfo(NDAttrDataType_t *pDataType, size_t *pDataSize);
-    virtual int getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSize=0);
-    virtual int setValue(NDAttrDataType_t dataType, void *pValue);
-    virtual int updateValue();
-    virtual int report(FILE *fp, int details);
-    char *pName;                /**< Name string */
-    char *pDescription;         /**< Description string */
-    char *pSource;              /**< Source string - EPICS PV name or DRV_INFO string */
-    NDAttrSource_t sourceType;  /**< Source type */
-    char *pSourceTypeString;
-    NDAttrDataType_t dataType;  /**< Data type of attribute */
-    friend class NDArray;
-    friend class NDAttributeList;
-
-protected:
-    NDAttrValue value;             /**< Value of attribute unless it is a string */
-    char *pString;                 /**< Value when attribute type is NDAttrString; dynamic length string */
-    NDAttributeListNode listNode;  /**< Used for NDAttributeList */
-};
-
-/** NDAttributeList class; this is a linked list of attributes.
-  */
-class epicsShareClass NDAttributeList {
-public:
-    NDAttributeList();
-    ~NDAttributeList();
-    int          add(NDAttribute *pAttribute);
-    NDAttribute* add(const char *pName, const char *pDescription="", 
-                     NDAttrDataType_t dataType=NDAttrUndefined, void *pValue=NULL);
-    NDAttribute* find(const char *pName);
-    NDAttribute* next(NDAttribute *pAttribute);
-    int          count();
-    int          remove(const char *pName);
-    int          clear();
-    int          copy(NDAttributeList *pOut);
-    int          updateValues();
-    int          report(FILE *fp, int details);
-    
-private:
-    ELLLIST      list;   /**< The EPICS ELLLIST  */
-    epicsMutexId lock;  /**< Mutex to protect the ELLLIST */
-};
-
 /** N-dimensional array class; each array has a set of dimensions, a data type, pointer to data, and optional attributes. 
   * An NDArray also has a uniqueId and timeStamp that to identify it. NDArray objects can be allocated
   * by an NDArrayPool object, which maintains a free list of NDArrays for efficient memory management. */
@@ -238,8 +120,6 @@ public:
                                   * dims[ndims-1] changing slowest. */
     NDAttributeList *pAttributeList;  /**< Linked list of attributes */
 };
-
-
 
 /** The NDArrayPool class manages a free list (pool) of NDArray objects.
   * Drivers allocate NDArray objects from the pool, and pass these objects to plugins.
@@ -278,6 +158,5 @@ private:
     size_t       memorySize_;    /**< Number of bytes of memory this object has currently allocated */
     int          numFree_;       /**< Number of NDArray objects in the free list */
 };
-
 
 #endif
