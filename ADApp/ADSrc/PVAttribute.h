@@ -38,6 +38,7 @@ private:
     evid        eventId;
     chtype      dbrType;
     NDAttrValue callbackValue;
+    char        *callbackString;
     epicsMutexId lock;
 };
 
