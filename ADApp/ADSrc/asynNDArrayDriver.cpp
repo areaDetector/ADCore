@@ -280,6 +280,10 @@ int asynNDArrayDriver::readNDAttributesFile(const char *fileName)
             this->pAttributeList->add(pFunctAttribute);
         }
     }
+    // Wait a short while for channel access callbacks on EPICS PVs
+    epicsThreadSleep(0.5);
+    // Get the initial values
+    this->pAttributeList->updateValues();
     return(asynSuccess);
 }
 
