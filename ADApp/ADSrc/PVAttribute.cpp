@@ -39,8 +39,8 @@ static asynUser *pasynUserSelf = NULL;
   */
 PVAttribute::PVAttribute(const char *pName, const char *pDescription,
                          const char *pSource, chtype dbrType)
-    : NDAttribute(pName),
-    callbackString(0)
+    : NDAttribute(pName, pDescription, NDAttrSourceEPICSPV, pSource, NDAttrUndefined, 0),
+    dbrType(dbrType), callbackString(0)
 {
     static const char *functionName = "PVAttribute";
     
@@ -59,17 +59,12 @@ PVAttribute::PVAttribute(const char *pName, const char *pDescription,
      * that which created the context */
     ca_attach_context(pCaInputContext);
     this->lock = epicsMutexCreate();
-    if (pDescription) this->setDescription(pDescription);
     if (!pSource) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s: ERROR, must specify source string\n",
             driverName, functionName);
         return;
     }
-    this->setSource(pSource);
-    this->dbrType = dbrType;
-    this->sourceType = NDAttrSourceEPICSPV;
-    this->pSourceTypeString = epicsStrDup("NDAttrSourceEPICSPV");
     /* Set connection callback on this PV */
     SEVCHK(ca_create_channel(pSource, connectCallbackC, this, 10 ,&this->chanId),
            "ca_create_channel");
@@ -123,12 +118,13 @@ static void monitorCallbackC(struct event_handler_args cha)
 void PVAttribute::monitorCallback(struct event_handler_args eha)
 {
     //chid  chanId = eha.chid;
+    NDAttrDataType_t dataType = this->getDataType();
     const char *functionName = "monitorCallback";
 
     epicsMutexLock(this->lock);
     asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
         "%s:%s: PV=%s\n", 
-        driverName, functionName, this->pSource);
+        driverName, functionName, this->getSource());
 
     if (eha.status != ECA_NORMAL) {
         asynPrint(pasynUserSelf,  ASYN_TRACE_ERROR,
@@ -178,13 +174,17 @@ void PVAttribute::monitorCallback(struct event_handler_args eha)
 
 int PVAttribute::updateValue()
 {
-    //static const char *functionName = "updateValue";
+    //static const char *functionName = "updateValue"
+    
+    void *pValue;
+    NDAttrDataType_t dataType = this->getDataType();
     
     epicsMutexLock(this->lock);
     if (dataType == NDAttrString)
-        pString = callbackString;
+        pValue = callbackString;
     else
-        value = callbackValue;
+        pValue = &callbackValue;
+    this->setValue(pValue);
     epicsMutexUnlock(this->lock);
     return asynSuccess;
 }
@@ -210,6 +210,8 @@ void PVAttribute::connectCallback(struct connection_handler_args cha)
     chtype dbfType, dbrType=this->dbrType;
     int nRequest=1;
     int elementCount;
+    NDAttrDataType_t dataType;
+    NDAttrDataType_t prevDataType = this->getDataType();
     
     epicsMutexLock(this->lock);
     if (chanId && (ca_state(chanId) == cs_conn)) {
@@ -217,7 +219,7 @@ void PVAttribute::connectCallback(struct connection_handler_args cha)
         elementCount = ca_element_count(chanId);
         asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
             "%s:%s: Connect event, PV=%s, chanId=%p, dbfType=%ld, elementCount=%d, dbrType=%ld\n", 
-            driverName, functionName, this->pSource, chanId, dbfType, elementCount, dbrType);
+            driverName, functionName, this->getSource(), chanId, dbfType, elementCount, dbrType);
         switch(dbfType) {
             case DBF_STRING:
                 if (this->dbrType == DBR_NATIVE) dbrType = DBR_STRING;
@@ -254,28 +256,28 @@ void PVAttribute::connectCallback(struct connection_handler_args cha)
         }
         switch(dbrType) {
             case DBR_STRING:
-                this->dataType = NDAttrString;
+                dataType = NDAttrString;
                 break;
             case DBR_SHORT:
-                this->dataType = NDAttrInt16;
+                dataType = NDAttrInt16;
                 break;
             case DBR_FLOAT:
-                this->dataType = NDAttrFloat32;
+                dataType = NDAttrFloat32;
                 break;
             case DBR_ENUM:
-                this->dataType = NDAttrInt16;
+                dataType = NDAttrInt16;
                 break;
             case DBR_CHAR:
-                this->dataType = NDAttrInt8;
+                dataType = NDAttrInt8;
                 /* If the dbrType is DBR_CHAR but the requested type is DBR_STRING
                  * read a char array and treat as string */
-                if (this->dbrType == DBR_STRING) this->dataType = NDAttrString;
+                if (this->dbrType == DBR_STRING) dataType = NDAttrString;
                 break;
             case DBR_LONG:
-                this->dataType = NDAttrInt32;
+                dataType = NDAttrInt32;
                 break;
             case DBR_DOUBLE:
-                this->dataType = NDAttrFloat64;
+                dataType = NDAttrFloat64;
                 break;
             default:
                 asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
@@ -285,7 +287,14 @@ void PVAttribute::connectCallback(struct connection_handler_args cha)
         }
         asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
             "%s:%s: Connect event, PV=%s, chanId=%p, type=%d\n", 
-            driverName, functionName, this->pSource, chanId, this->dataType);
+            driverName, functionName, this->getSource(), chanId, dataType);
+        if (prevDataType == NDAttrUndefined) {
+            this->setDataType(dataType);
+        } else if (prevDataType != dataType) {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+                "%s:%s: error, previous dataType=%d, new dataType=%d\n", 
+                driverName, functionName, prevDataType, dataType);
+        }
             
         /* Set value change callback on this PV */
         SEVCHK(ca_add_masked_array_event(
@@ -297,11 +306,10 @@ void PVAttribute::connectCallback(struct connection_handler_args cha)
             0.0,0.0,0.0,
             &this->eventId, DBE_VALUE),"ca_add_masked_array_event");
     } else {
-        /* This is a disconnection event, set the data type to undefined */
-        this->setValue(NDAttrUndefined, 0);
+        /* This is a disconnection event */
         asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
             "%s:%s: Disconnect event, PV=%s, chanId=%p\n", 
-            driverName, functionName, this->pSource, chanId);
+            driverName, functionName, this->getSource(), chanId);
     }
     done:
     epicsMutexUnlock(this->lock);
