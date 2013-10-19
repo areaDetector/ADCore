@@ -14,8 +14,10 @@
 
 /** NDAttribute constructor
   * \param[in] pName The name of the attribute to be created. 
+  * \param[in] sourceType The source type of the attribute (NDAttrSource_t).
+  * \param[in] pSource The source string for the attribute.
   * \param[in] pDescription The description of the attribute.
-  * \param[in] dataType The data type of the attribute.
+  * \param[in] dataType The data type of the attribute (NDAttrDataType_t).
   * \param[in] pValue A pointer to the value for this attribute.
   */
   NDAttribute::NDAttribute(const char *pName, const char *pDescription, 
@@ -161,7 +163,6 @@ const char *NDAttribute::getSourceInfo(NDAttrSource_t *pSourceType)
 }
 
 /** Sets the value for this attribute. 
-  * \param[in] dataType Data type of the value.
   * \param[in] pValue Pointer to the value. */
 int NDAttribute::setValue(void *pValue)
 {
