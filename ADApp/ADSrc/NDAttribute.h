@@ -54,10 +54,10 @@ typedef enum
 /** Enumeration of NDAttibute source types */
 typedef enum
 {
-    NDAttrSourceDriver,  /**< Attribute is obtained directly from driver */
-    NDAttrSourceParam,   /**< Attribute is obtained from parameter library */
-    NDAttrSourceEPICSPV, /**< Attribute is obtained from an EPICS PV */
-    NDAttrSourceFunct    /**< Attribute is obtained from a user-specified function */
+    NDAttrSourceDriver,    /**< Attribute is obtained directly from driver */
+    NDAttrSourceParam,     /**< Attribute is obtained from parameter library */
+    NDAttrSourceEPICSPV,   /**< Attribute is obtained from an EPICS PV */
+    NDAttrSourceFunct      /**< Attribute is obtained from a user-specified function */
 } NDAttrSource_t;
 
 /** Union defining the values in an NDAttribute object */
@@ -86,30 +86,35 @@ typedef struct NDAttributeListNode {
 class epicsShareClass NDAttribute {
 public:
     /* Methods */
-    NDAttribute(const char *pName, const char *pDescription="", 
-                NDAttrDataType_t dataType=NDAttrUndefined, void *pValue=NULL);
+    NDAttribute(const char *pName, const char *pDescription, 
+                NDAttrSource_t sourceType, const char *pSource, NDAttrDataType_t dataType, void *pValue);
     NDAttribute(NDAttribute& attribute);
     virtual ~NDAttribute();
     virtual NDAttribute* copy(NDAttribute *pAttribute);
-    virtual int setDescription(const char *pDescription);
-    virtual int setSource(const char *pSource);
+    virtual const char *getName();
+    virtual const char *getDescription();
+    virtual const char *getSource();
+    virtual const char *getSourceInfo(NDAttrSource_t *pSourceType);
+    virtual NDAttrDataType_t getDataType();
     virtual int getValueInfo(NDAttrDataType_t *pDataType, size_t *pDataSize);
     virtual int getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSize=0);
-    virtual int setValue(NDAttrDataType_t dataType, void *pValue);
+    virtual int setDataType(NDAttrDataType_t dataType);
+    virtual int setValue(void *pValue);
     virtual int updateValue();
     virtual int report(FILE *fp, int details);
-    char *pName;                /**< Name string */
-    char *pDescription;         /**< Description string */
-    char *pSource;              /**< Source string - EPICS PV name or DRV_INFO string */
-    NDAttrSource_t sourceType;  /**< Source type */
-    char *pSourceTypeString;
-    NDAttrDataType_t dataType;  /**< Data type of attribute */
     friend class NDArray;
     friend class NDAttributeList;
 
-protected:
+
+private:
+    char *pName;                   /**< Name string */
+    char *pDescription;            /**< Description string */
+    NDAttrDataType_t dataType;     /**< Data type of attribute */
     NDAttrValue value;             /**< Value of attribute except for strings */
-    char *pString;
+    char *pString;                 /**< Value of attribute for strings */
+    char *pSource;                 /**< Source string - EPICS PV name or DRV_INFO string */
+    NDAttrSource_t sourceType;     /**< Source type */
+    char *pSourceTypeString;       /**< Source type string */
     NDAttributeListNode listNode;  /**< Used for NDAttributeList */
 };
 
