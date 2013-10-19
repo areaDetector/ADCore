@@ -37,7 +37,7 @@ static asynUser *pasynUserSelf = NULL;
   */
 functAttribute::functAttribute(const char *pName, const char *pDescription, const char *pSource, const char *pParam)
 
-    : NDAttribute(pName, pDescription),
+    : NDAttribute(pName, pDescription, NDAttrSourceFunct, pSource, NDAttrUndefined, 0),
       pFunction(0), functionPvt(0)
 {
     static const char *functionName = "functAttribute";
@@ -48,15 +48,12 @@ functAttribute::functAttribute(const char *pName, const char *pDescription, cons
         functParam = epicsStrDup(pParam);
     else
         functParam = epicsStrDup("");
-    this->sourceType = NDAttrSourceFunct;
-    this->pSourceTypeString = epicsStrDup("NDAttrSourceFunct");
     if (!pSource) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s: ERROR, must specify function name\n",
             driverName, functionName);
         goto error;
     }
-    this->setSource(pSource);
     this->pFunction = (NDAttributeFunction)registryFunctionFind(pSource);
     if (!this->pFunction) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
