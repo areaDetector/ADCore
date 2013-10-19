@@ -113,6 +113,10 @@ const char *NDAttribute::getName()
   */
 int NDAttribute::setDataType(NDAttrDataType_t type)
 {
+  // It is OK to set the data type to the same type as the existing type.
+  // This will happen on channel access reconnects and if drivers create a parameter
+  // and call this function every time.
+  if (type == this->dataType) return ND_SUCCESS;
   if (this->dataType != NDAttrUndefined) {
     fprintf(stderr, "NDAttribute::setDataType, data type already defined = %d\n", this->dataType);
     return ND_ERROR;
