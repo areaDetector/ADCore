@@ -204,6 +204,11 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
     this->pAttributeId = (int *)calloc(numAttributes, sizeof(int));
     pAttribute = this->pFileAttributes->next(NULL);
     while (pAttribute) {
+        const char *attributeName = pAttribute->getName();
+        const char *attributeDescription = pAttribute->getDescription();
+        const char *attributeSource = pAttribute->getSource();
+        NDAttrSource_t attributeSourceType;
+        const char *attributeSourceTypeString = pAttribute->getSourceInfo(&attributeSourceType);
         pAttribute->getValueInfo(&attrDataType, &attrSize);
         switch (attrDataType) {
             case NDAttrInt8:
@@ -243,23 +248,23 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
                 return asynError;
                 break;
         }
-        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_DataType", pAttribute->pName);
+        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_DataType", attributeName);
         if ((retval = nc_put_att_text(this->ncId, NC_GLOBAL, tempString, 
                                      strlen(dataTypeString), dataTypeString)))
             ERR(retval);
-        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_Description", pAttribute->pName);
+        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_Description", attributeName);
         if ((retval = nc_put_att_text(this->ncId, NC_GLOBAL, tempString, 
-                                     strlen(pAttribute->pDescription), pAttribute->pDescription)))
+                                     strlen(attributeDescription), attributeDescription)))
             ERR(retval);
-        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_Source", pAttribute->pName);
+        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_Source", attributeName);
         if ((retval = nc_put_att_text(this->ncId, NC_GLOBAL, tempString, 
-                                     strlen(pAttribute->pSource), pAttribute->pSource)))
+                                     strlen(attributeSource), attributeSource)))
             ERR(retval);
-        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_SourceType", pAttribute->pName);
+        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s_SourceType", attributeName);
 
         if ((retval = nc_put_att_text(this->ncId, NC_GLOBAL, tempString, 
-                                     strlen(pAttribute->pSourceTypeString), 
-                                     pAttribute->pSourceTypeString)))
+                                     strlen(attributeSourceTypeString), 
+                                     attributeSourceTypeString)))
             ERR(retval);
         switch (attrDataType) {
             case NDAttrInt8:
@@ -293,7 +298,7 @@ asynStatus NDFileNetCDF::openFile(const char *fileName, NDFileOpenMode_t openMod
                 return asynError;
                 break;
         }
-        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s", pAttribute->pName);
+        epicsSnprintf(tempString, sizeof(tempString), "Attr_%s", pAttribute->getName());
         if (attrDataType == NDAttrString) {
             if ((retval = nc_def_var(this->ncId, tempString, ncType, 2,
                     stringDimIds, &this->pAttributeId[attrCount++])))
