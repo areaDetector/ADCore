@@ -31,15 +31,19 @@ static int myAttrFunct1(const char *paramString, void **functionPvt, functAttrib
         // Convert paramString to paramIndex
         
         if (!strcmp(paramString, "PI")) {
+            pAttribute->setDataType(NDAttrFloat64);
             *paramIndex = functPi;
         }
         else if (!strcmp(paramString, "E")) {
+            pAttribute->setDataType(NDAttrFloat64);
             *paramIndex = functE;
         } 
         else if (!strcmp(paramString, "10")) {
+            pAttribute->setDataType(NDAttrInt32);
             *paramIndex = functTen;
         }
         else if (!strcmp(paramString, "GETTYSBURG")) {
+            pAttribute->setDataType(NDAttrString);
             *paramIndex = functGettysburg;
         } 
         else {
@@ -52,19 +56,19 @@ static int myAttrFunct1(const char *paramString, void **functionPvt, functAttrib
     
     switch (*paramIndex) {
         case functPi:
-            pAttribute->setValue(NDAttrFloat64, &_PI);
+            pAttribute->setValue(&_PI);
             break;
         
         case functE:
-            pAttribute->setValue(NDAttrFloat64, &_E);
+            pAttribute->setValue(&_E);
             break;
         
         case functTen:
-            pAttribute->setValue(NDAttrInt32, &ten);
+            pAttribute->setValue(&ten);
             break;
             
         case functGettysburg:
-            pAttribute->setValue(NDAttrString, (char *)gettysburg);
+            pAttribute->setValue((char *)gettysburg);
             break;
             
         default:
