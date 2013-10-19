@@ -38,7 +38,8 @@ static asynUser *pasynUserSelf = NULL;
   */
 paramAttribute::paramAttribute(const char *pName, const char *pDescription, const char *pSource, int addr, 
                                class asynNDArrayDriver *pDriver, const char *dataType)
-    : NDAttribute(pName)
+    : NDAttribute(pName, pDescription, NDAttrSourceParam, pSource, NDAttrUndefined, 0),
+    paramAddr(addr), paramType(paramAttrTypeUnknown), pDriver(pDriver)
 {
     static const char *functionName = "paramAttribute";
     asynUser *pasynUser=NULL;
@@ -46,19 +47,12 @@ paramAttribute::paramAttribute(const char *pName, const char *pDescription, cons
     
     /* Create the static pasynUser if not already done */
     if (!pasynUserSelf) pasynUserSelf = pasynManager->createAsynUser(0,0);
-    if (pDescription) this->setDescription(pDescription);
     if (!pSource) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s: ERROR, must specify source string\n",
             driverName, functionName);
         goto error;
     }
-    this->setSource(pSource);
-    this->paramType = paramAttrTypeUnknown;
-    this->sourceType = NDAttrSourceParam;
-    this->pSourceTypeString = epicsStrDup("NDAttrSourceParam");
-    this->paramAddr = addr;
-    this->pDriver = pDriver;
     pasynUser = pasynManager->createAsynUser(0,0);
     status = pasynManager->connectDevice(pasynUser, pDriver->portName, this->paramAddr);
     if (status) {
@@ -82,9 +76,19 @@ paramAttribute::paramAttribute(const char *pName, const char *pDescription, cons
             driverName, functionName, pSource);
         goto error;
     }
-    if      (!strcmp(dataType, "INT"))     this->paramType=paramAttrTypeInt;
-    else if (!strcmp(dataType, "DOUBLE"))  this->paramType=paramAttrTypeDouble;
-    else if (!strcmp(dataType, "STRING"))  this->paramType=paramAttrTypeString;
+    if      (!strcmp(dataType, "INT")) {
+        this->paramType=paramAttrTypeInt;
+        this->setDataType(NDAttrInt32);
+    }
+    else if (!strcmp(dataType, "DOUBLE")) {
+        this->paramType=paramAttrTypeDouble;
+        this->setDataType(NDAttrFloat64);
+    }
+    else if (!strcmp(dataType, "STRING")) {
+        this->paramType=paramAttrTypeString;
+        this->setDataType(NDAttrString);
+    }
+
 error:
     if (pasynUser) pasynManager->freeAsynUser(pasynUser);
 }
@@ -122,17 +126,17 @@ int paramAttribute::updateValue()
         case paramAttrTypeInt:
             status = this->pDriver->getIntegerParam(this->paramAddr, this->paramId, 
                                                  &i32Value);
-            this->setValue(NDAttrInt32, &i32Value);
+            this->setValue(&i32Value);
             break;
         case paramAttrTypeDouble:
             status = this->pDriver->getDoubleParam(this->paramAddr, this->paramId,
                                                 &f64Value);
-            this->setValue(NDAttrFloat64, &f64Value);
+            this->setValue(&f64Value);
             break;
         case paramAttrTypeString:
             status = this->pDriver->getStringParam(this->paramAddr, this->paramId,
                                                 MAX_ATTRIBUTE_STRING_SIZE, stringValue);
-            this->setValue(NDAttrString, stringValue);
+            this->setValue(stringValue);
             break;
         default:
             break;
@@ -140,7 +144,7 @@ int paramAttribute::updateValue()
     if (status) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s: ERROR reading parameter attribute value, name=%s, source=%s, type=%d\n",
-            driverName, functionName, this->pName, this->pSource, this->paramType);
+            driverName, functionName, this->getName(), this->getSource(), this->paramType);
     }
     return(status);
 }
