@@ -211,7 +211,6 @@ void PVAttribute::connectCallback(struct connection_handler_args cha)
     int nRequest=1;
     int elementCount;
     NDAttrDataType_t dataType;
-    NDAttrDataType_t prevDataType = this->getDataType();
     
     epicsMutexLock(this->lock);
     if (chanId && (ca_state(chanId) == cs_conn)) {
@@ -288,13 +287,7 @@ void PVAttribute::connectCallback(struct connection_handler_args cha)
         asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
             "%s:%s: Connect event, PV=%s, chanId=%p, type=%d\n", 
             driverName, functionName, this->getSource(), chanId, dataType);
-        if (prevDataType == NDAttrUndefined) {
-            this->setDataType(dataType);
-        } else if (prevDataType != dataType) {
-            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
-                "%s:%s: error, previous dataType=%d, new dataType=%d\n", 
-                driverName, functionName, prevDataType, dataType);
-        }
+        this->setDataType(dataType);
             
         /* Set value change callback on this PV */
         SEVCHK(ca_add_masked_array_event(
