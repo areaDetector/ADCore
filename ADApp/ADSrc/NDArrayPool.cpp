@@ -581,11 +581,11 @@ int NDArrayPool::convert(NDArray *pIn,
   pAttribute = pOut->pAttributeList->find("ColorMode");
   if (pAttribute && pAttribute->getValue(NDAttrInt32, &colorMode)) {
     if      ((colorMode == NDColorModeRGB1) && (pOut->dims[0].size != 3)) 
-      pAttribute->setValue(NDAttrInt32, (void *)&colorModeMono);
+      pAttribute->setValue(&colorModeMono);
     else if ((colorMode == NDColorModeRGB2) && (pOut->dims[1].size != 3)) 
-      pAttribute->setValue(NDAttrInt32, (void *)&colorModeMono);
+      pAttribute->setValue(&colorModeMono);
     else if ((colorMode == NDColorModeRGB3) && (pOut->dims[2].size != 3))
-      pAttribute->setValue(NDAttrInt32, (void *)&colorModeMono);
+      pAttribute->setValue(&colorModeMono);
   }
   return ND_SUCCESS;
 }
