@@ -18,19 +18,42 @@
   * \param[in] dataType The data type of the attribute.
   * \param[in] pValue A pointer to the value for this attribute.
   */
-NDAttribute::NDAttribute(const char *pName, const char *pDescription, NDAttrDataType_t dataType, void *pValue)
+  NDAttribute::NDAttribute(const char *pName, const char *pDescription, 
+                           NDAttrSource_t sourceType, const char *pSource, 
+                           NDAttrDataType_t dataType, void *pValue)
+                           
+  : dataType(NDAttrUndefined)
+                           
 {
 
   this->pName = epicsStrDup(pName);
   this->pDescription = epicsStrDup(pDescription);
-  this->pSource = epicsStrDup("");
-  this->sourceType = NDAttrSourceDriver;
-  this->pSourceTypeString = epicsStrDup("NDAttrSourceDriver");
+  switch (sourceType) {
+    case NDAttrSourceDriver:
+      this->pSourceTypeString = epicsStrDup("NDAttrSourceDriver");
+      break;
+    case NDAttrSourceEPICSPV:
+      this->pSourceTypeString = epicsStrDup("NDAttrSourceEPICSPV");
+      break;
+    case NDAttrSourceParam:
+      this->pSourceTypeString = epicsStrDup("NDAttrSourceParam");
+      break;
+    case NDAttrSourceFunct:
+      this->pSourceTypeString = epicsStrDup("NDAttrSourceFunct");
+      break;
+  }
+  this->pSource = epicsStrDup(pSource);
   this->pString = NULL;
-  if (pValue) this->setValue(dataType, pValue);
+  if (pValue) {
+    this->setDataType(dataType);
+    this->setValue(pValue);
+  }
   this->listNode.pNDAttribute = this;
 }
 
+/** NDAttribute copy constructor
+  * \param[in] attribute The attribute to copy from
+  */
 NDAttribute::NDAttribute(NDAttribute& attribute)
 {
   void *pValue;
@@ -43,24 +66,26 @@ NDAttribute::NDAttribute(NDAttribute& attribute)
   this->dataType = attribute.dataType;
   if (attribute.dataType == NDAttrString) pValue = attribute.pString;
   else pValue = &attribute.value;
-  this->setValue(attribute.dataType, pValue);
+  this->setValue(pValue);
   this->listNode.pNDAttribute = this;
 }
 
 
 /** NDAttribute destructor 
-  * Frees the strings for the name, and if they exist, the description and pString. */
+  * Frees the strings for this attribute */
 NDAttribute::~NDAttribute()
 {
   if (this->pName) free(this->pName);
   if (this->pDescription) free(this->pDescription);
   if (this->pSource) free(this->pSource);
+  if (this->pSourceTypeString) free(this->pSourceTypeString);
   if (this->pString) free(this->pString);
 }
 
 /** Copies properties from <b>this</b> to pOut.
   * \param[in] pOut A pointer to the output attribute
-  *         If NULL the output attribute will be created.
+  *         If NULL the output attribute will be created using the copy constructor
+  * Only the value is copied, all other fields are assumed to already be the same in pOut
   * \return  Returns a pointer to the copy
   */
 NDAttribute* NDAttribute::copy(NDAttribute *pOut)
@@ -72,66 +97,84 @@ NDAttribute* NDAttribute::copy(NDAttribute *pOut)
   else {
     if (this->dataType == NDAttrString) pValue = this->pString;
     else pValue = &this->value;
-    pOut->setValue(this->dataType, pValue);
+    pOut->setValue(pValue);
   }
-  return(pOut);
+  return pOut;
 }
 
-/** Sets the description string for this attribute.
-  * This method must be used to set the description string; pDescription must not be directly modified. 
-  * \param[in] pDescription String with the desciption. */
-int NDAttribute::setDescription(const char *pDescription) {
-
-  if (this->pDescription) {
-    /* If the new description is the same as the old one return, 
-     * saves freeing and allocating memory */
-    if (strcmp(this->pDescription, pDescription) == 0) return(ND_SUCCESS);
-    free(this->pDescription);
-  }
-  if (pDescription) this->pDescription = epicsStrDup(pDescription);
-  else this->pDescription = NULL;
-  return(ND_SUCCESS);
+/** Returns the name of this attribute.
+  */
+const char *NDAttribute::getName()
+{
+  return pName;
 }
 
-/** Sets the source string for this attribute. 
-  * This method must be used to set the source string; pSource must not be directly modified. 
-  * \param[in] pSource String with the source. */
-int NDAttribute::setSource(const char *pSource) {
-
-  if (this->pSource) {
-    /* If the new source is the same as the old one return, 
-     * saves freeing and allocating memory */
-    if (strcmp(this->pSource, pSource) == 0) return(ND_SUCCESS);
-    free(this->pSource);
+/** Sets the data type of this attribute. This can only be called once.
+  */
+int NDAttribute::setDataType(NDAttrDataType_t type)
+{
+  if (this->dataType != NDAttrUndefined) {
+    fprintf(stderr, "NDAttribute::setDataType, data type already defined = %d\n", this->dataType);
+    return ND_ERROR;
   }
-  if (pSource) this->pSource = epicsStrDup(pSource);
-  else this->pSource = NULL;
-  return(ND_SUCCESS);
+  if ((type < NDAttrInt8) || (type > NDAttrString)) {
+    fprintf(stderr, "NDAttribute::setDataType, invalid data type = %d\n", type);
+    return ND_ERROR;
+  }
+  this->dataType = type;
+  return ND_SUCCESS;
+}
+
+/** Returns the data type of this attribute.
+  */
+NDAttrDataType_t NDAttribute::getDataType()
+{
+  return dataType;
+}
+
+/** Returns the description of this attribute.
+  */
+const char *NDAttribute::getDescription()
+{
+  return pDescription;
+}
+
+/** Returns the source string of this attribute.
+  */
+const char *NDAttribute::getSource()
+{
+  return pSource;
+}
+
+/** Returns the source information of this attribute.
+  * \param[out] pSourceType Source type (NDAttrSource_t) of this attribute.
+  * \return The source type string of this attribute
+  */
+const char *NDAttribute::getSourceInfo(NDAttrSource_t *pSourceType)
+{
+  *pSourceType = sourceType;
+  return pSourceTypeString;
 }
 
 /** Sets the value for this attribute. 
   * \param[in] dataType Data type of the value.
   * \param[in] pValue Pointer to the value. */
-int NDAttribute::setValue(NDAttrDataType_t dataType, void *pValue)
+int NDAttribute::setValue(void *pValue)
 {
-  NDAttrDataType_t prevDataType = this->dataType;
-    
-  this->dataType = dataType;
-
   /* If any data type but undefined then pointer must be valid */
-  if ((dataType != NDAttrUndefined) && !pValue) return(ND_ERROR);
+  if ((dataType != NDAttrUndefined) && !pValue) return ND_ERROR;
 
   /* Treat strings specially */
   if (dataType == NDAttrString) {
     /* If the previous value was the same string don't do anything, 
      * saves freeing and allocating memory.  
      * If not the same free the old string and copy new one. */
-    if ((prevDataType == NDAttrString) && this->pString) {
-      if (strcmp(this->pString, (char *)pValue) == 0) return(ND_SUCCESS);
+    if (this->pString) {
+      if (strcmp(this->pString, (char *)pValue) == 0) return ND_SUCCESS;
       free(this->pString);
     }
     this->pString = epicsStrDup((char *)pValue);
-    return(ND_SUCCESS);
+    return ND_SUCCESS;
   }
   if (this->pString) {
     free(this->pString);
@@ -165,10 +208,10 @@ int NDAttribute::setValue(NDAttrDataType_t dataType, void *pValue)
     case NDAttrUndefined:
       break;
     default:
-      return(ND_ERROR);
+      return ND_ERROR;
       break;
   }
-  return(ND_SUCCESS);
+  return ND_SUCCESS;
 }
 
 /** Returns the data type and size of this attribute.
@@ -212,10 +255,10 @@ int NDAttribute::getValueInfo(NDAttrDataType_t *pDataType, size_t *pSize)
       *pSize = 0;
       break;
     default:
-      return(ND_ERROR);
+      return ND_ERROR;
       break;
   }
-  return(ND_SUCCESS);
+  return ND_SUCCESS;
 }
 
 /** Returns the value of this attribute.
@@ -227,7 +270,7 @@ int NDAttribute::getValueInfo(NDAttrDataType_t *pDataType, size_t *pSize)
   * and ND_ERROR is returned if it does not.  In the future data type conversion may be added. */
 int NDAttribute::getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSize)
 {
-  if (dataType != this->dataType) return(ND_ERROR);
+  if (dataType != this->dataType) return ND_ERROR;
   switch (this->dataType) {
     case NDAttrInt8:
       *(epicsInt8 *)pValue = this->value.i8;
@@ -260,7 +303,7 @@ int NDAttribute::getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSi
       break;
     case NDAttrUndefined:
     default:
-      return(ND_ERROR);
+      return ND_ERROR;
       break;
   }
   return ND_SUCCESS ;
@@ -330,7 +373,7 @@ int NDAttribute::report(FILE *fp, int details)
       break;
     default:
       fprintf(fp, "  dataType=UNKNOWN\n");
-      return(ND_ERROR);
+      return ND_ERROR;
       break;
   }
   return ND_SUCCESS;
