@@ -68,9 +68,9 @@ NDAttribute* NDAttributeList::add(const char *pName, const char *pDescription, N
   epicsMutexLock(this->lock);
   pAttribute = this->find(pName);
   if (pAttribute) {
-    pAttribute->setValue(dataType, pValue);
+    pAttribute->setValue(pValue);
   } else {
-    pAttribute = new NDAttribute(pName, pDescription, dataType, pValue);
+    pAttribute = new NDAttribute(pName, pDescription, NDAttrSourceDriver, "Driver", dataType, pValue);
     ellAdd(&this->list, &pAttribute->listNode.node);
   }
   epicsMutexUnlock(this->lock);
