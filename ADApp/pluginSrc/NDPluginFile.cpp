@@ -460,7 +460,7 @@ asynStatus NDPluginFile::attrFileNameCheck()
         }
     }
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "attrFileNameCheck: name=%s(%s) num=%d (%s) reopen=%d\n",
-            attrFileName, ndFileName, attrFileNumber, NDattrFileNumber->pSource, (int)reopenFile );
+            attrFileName, ndFileName, attrFileNumber, NDattrFileNumber->getSource(), (int)reopenFile );
     if (reopenFile)
     {
         this->closeFileBase();
