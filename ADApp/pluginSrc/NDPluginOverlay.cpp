@@ -49,8 +49,9 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
     epicsType *pRow;
     
     asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
-    "NDPluginOverlay::DoOverlayT, shape=%d, Xpos=%d, Ypos=%d, Xsize=%d, Ysize=%d\n",
-    pOverlay->shape, pOverlay->PositionX, pOverlay->PositionY, pOverlay->SizeX, pOverlay->SizeY);
+        "NDPluginOverlay::DoOverlayT, shape=%d, Xpos=%ld, Ypos=%ld, Xsize=%ld, Ysize=%ld\n",
+        pOverlay->shape, (long)pOverlay->PositionX, (long)pOverlay->PositionY, 
+        (long)pOverlay->SizeX, (long)pOverlay->SizeY);
 
     switch(pOverlay->shape) {
         case NDOverlayCross:
