@@ -1128,15 +1128,21 @@ asynStatus NDFileHDF5::createAttributeDataset()
   ndAttr = this->pFileAttributes->next(ndAttr); // get the first NDAttribute
   while(ndAttr != NULL)
   {
+    NDAttrDataType_t dataType = ndAttr->getDataType();
+    NDAttrSource_t sourceType;
+    ndAttr->getSourceInfo(&sourceType);
+    const char *pName = ndAttr->getName();
+    const char *pDescription = ndAttr->getDescription();
+    const char *pSource = ndAttr->getSource();
     hdfgroup = this->groupNDAttributes;
-    if (ndAttr->sourceType == NDAttrSourceEPICSPV) hdfgroup = this->groupEpicsPvData;
+    if (sourceType == NDAttrSourceEPICSPV) hdfgroup = this->groupEpicsPvData;
 
-    if (ndAttr->dataType < NDAttrString)
+    if (dataType < NDAttrString)
     {
 
       // allocate another name-nodes
       hdfAttrNode = (HDFAttributeNode*)calloc(1, sizeof(HDFAttributeNode));
-      hdfAttrNode->attrName = epicsStrDup(ndAttr->pName); // copy the attribute name
+      hdfAttrNode->attrName = epicsStrDup(pName); // copy the attribute name
 
       hdfAttrNode->offset     = 0;
       hdfAttrNode->hdfdims    = hdfdims;
@@ -1146,7 +1152,7 @@ asynStatus NDFileHDF5::createAttributeDataset()
       hdfAttrNode->hdfdataspace = H5Screate_simple(hdfAttrNode->hdfrank, &hdfAttrNode->hdfdims, NULL);
       hdfAttrNode->hdfcparm   = H5Pcreate(H5P_DATASET_CREATE);
 
-      hdfAttrNode->hdfdatatype  = this->type_nd2hdf((NDDataType_t)ndAttr->dataType);
+      hdfAttrNode->hdfdatatype  = this->type_nd2hdf((NDDataType_t)dataType);
       H5Pset_fill_value (hdfAttrNode->hdfcparm, hdfAttrNode->hdfdatatype, this->ptrFillValue );
 
       hdfAttrNode->hdfdataset   = H5Dcreate2(hdfgroup, hdfAttrNode->attrName,
@@ -1158,8 +1164,8 @@ asynStatus NDFileHDF5::createAttributeDataset()
       hdfAttrNode->hdfmemspace  = H5Screate_simple(hdfAttrNode->hdfrank, &hdfAttrNode->elementSize, NULL);
 
       // Write some description of the NDAttribute as a HDF attribute to the dataset
-      attrStrings[0] = ndAttr->pDescription;
-      attrStrings[1] = ndAttr->pSource;
+      attrStrings[0] = (char *)pDescription;
+      attrStrings[1] = (char *)pSource;
       for (i=0; attrNames[i] != NULL; i++)
       {
         size = strlen(attrStrings[i]);
@@ -1170,13 +1176,13 @@ asynStatus NDFileHDF5::createAttributeDataset()
       ellAdd(&this->attrList, (ELLNODE *)hdfAttrNode);
     }
      // if the NDArray attribute is a string we attach it as an HDF attribute to the meta data group.
-    else if (ndAttr->dataType == NDAttrString)
+    else if (dataType == NDAttrString)
     {
       // Write some description of the NDAttribute as a HDF attribute to the dataset
       ndAttr->getValueInfo(&ndAttrDataType, &size);
       attrStrings[0] = (char*)calloc(size, sizeof(char));
       ndAttr->getValue(ndAttrDataType, attrStrings[0], size);
-      if (size > 0) this->writeStringAttribute(hdfgroup, ndAttr->pName, attrStrings[0]);
+      if (size > 0) this->writeStringAttribute(hdfgroup, pName, attrStrings[0]);
       free(attrStrings[0]);
     }
     ndAttr = this->pFileAttributes->next(ndAttr);
@@ -1217,11 +1223,13 @@ asynStatus NDFileHDF5::writeAttributeDataset()
       continue;
     }
     // find the data based on datatype
-    ret = ndAttr->getValue(ndAttr->dataType, datavalue, 8);
+    NDAttrDataType_t dataType = ndAttr->getDataType();
+    const char *pName = ndAttr->getName();
+    ret = ndAttr->getValue(dataType, datavalue, 8);
     if (ret == ND_ERROR) {
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
         "%s::%s: ERROR did not get data from NDAttribute \'%s\'\n",
-        driverName, functionName, ndAttr->pName);
+        driverName, functionName, pName);
       memset(datavalue, 0, 8);
     }
 
