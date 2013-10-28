@@ -10,6 +10,8 @@
 
 #include <epicsString.h>
 
+#include <epicsExport.h>
+
 #include "NDAttribute.h"
 
 /** NDAttribute constructor
