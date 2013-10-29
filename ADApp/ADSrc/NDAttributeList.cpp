@@ -8,6 +8,8 @@
  
 #include <stdlib.h>
 
+#include <epicsExport.h>
+
 #include "NDAttributeList.h"
 
 /** NDAttributeList constructor
