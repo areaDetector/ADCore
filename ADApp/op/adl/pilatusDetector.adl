@@ -1,14 +1,14 @@
 
 file {
 	name="/home/epics/devel/areaDetector/ADApp/op/adl/pilatusDetector.adl"
-	version=030105
+	version=030107
 }
 display {
 	object {
-		x=234
-		y=34
+		x=112
+		y=57
 		width=1400
-		height=625
+		height=650
 	}
 	clr=14
 	bclr=4
@@ -147,7 +147,7 @@ rectangle {
 		x=5
 		y=340
 		width=335
-		height=280
+		height=305
 	}
 	"basic attribute" {
 		clr=14
@@ -2326,5 +2326,31 @@ composite {
 			limits {
 			}
 		}
+	}
+}
+text {
+	object {
+		x=21
+		y=620
+		width=170
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Status rate"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=196
+		y=620
+		width=140
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ReadStatus.SCAN"
+		clr=14
+		bclr=51
 	}
 }
