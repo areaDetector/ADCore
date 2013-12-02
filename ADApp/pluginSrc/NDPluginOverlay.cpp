@@ -39,13 +39,14 @@ void NDPluginOverlay::setPixel(epicsType *pValue, NDOverlay_t *pOverlay)
     }
     else {
         *pValue = (epicsType)pOverlay->green;
-    }    
+    }
 }
 
 template <typename epicsType>
 void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
 {
     size_t xmin, xmax, ymin, ymax, ix, iy;
+    long diff;
     epicsType *pRow;
     
     asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
@@ -55,12 +56,12 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
 
     switch(pOverlay->shape) {
         case NDOverlayCross:
-            xmin = pOverlay->PositionX - pOverlay->SizeX;
-            xmin = MAX(xmin, 0);
+            diff = pOverlay->PositionX - pOverlay->SizeX;
+            xmin = MAX(diff, 0);
             xmax = pOverlay->PositionX + pOverlay->SizeX;
             xmax = MIN(xmax, this->arrayInfo.xSize-1);
-            ymin = pOverlay->PositionY - pOverlay->SizeY;
-            ymin = MAX(ymin, 0);
+            diff = pOverlay->PositionY - pOverlay->SizeY;
+            ymin = MAX(diff, 0);
             ymax = pOverlay->PositionY + pOverlay->SizeY;
             ymax = MIN(ymax, this->arrayInfo.ySize-1);
             for (iy=ymin; iy<ymax; iy++) {
