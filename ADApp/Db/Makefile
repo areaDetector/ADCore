@@ -16,24 +16,6 @@ DB += ADBase.template
 DB += ADPrefixes.template
 
 # Drivers
-DB += BIS.template
-DB += PSL.template
-DB += PerkinElmer.template
-DB += URLDriver.template
-DB += adsc.template
-DB += andor3.template
-DB += andorCCD.template
-DB += firewireColorCodes.template
-DB += firewireDCAM.template
-DB += firewireFeature.template
-DB += firewireVideoModes.template
-DB += firewireWhiteBalance.template
-DB += mar345.template
-DB += marCCD.template
-DB += pilatus.template
-DB += prosilica.template
-DB += pvCam.template
-DB += roper.template
 DB += simDetector.template
 
 # Plugins
