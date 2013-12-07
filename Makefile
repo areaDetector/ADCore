@@ -5,6 +5,7 @@ DIRS := $(DIRS) $(filter-out $(DIRS), configure)
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *App))
 DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *app))
 ifeq ($(BUILD_APPS), YES)
-DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard iocBoot))
+DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard iocs))
+iocs_DEPEND_DIRS += ADApp
 endif
 include $(TOP)/configure/RULES_TOP
