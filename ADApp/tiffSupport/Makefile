@@ -4,7 +4,6 @@ include $(TOP)/configure/CONFIG
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 #=============================
 
-DIRS += tiffBin
 DIRS += jpegSrc
 DIRS += tiffSrc
 
