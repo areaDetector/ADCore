@@ -39,18 +39,12 @@ PROD_LIBS_cygwin32      += libGraphicsMagick++ libGraphicsMagickWand libGraphics
 LIB_LIBS_cygwin32       += liblcms libpng14 libbz2 libfreetype
 PROD_LIBS_cygwin32      += liblcms libpng14 libbz2 libfreetype
 
-# To use versions of these libraries supplied with areaDetector use this line
-LIB_LIBS_Linux          += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
-PROD_LIBS_Linux         += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
-# To use system versions of these libraries use this line
-#LIB_SYS_LIBS_Linux     += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
-#PROD_SYS_LIBS_Linux    += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
+# The following system libraries must be installed to use GraphicsMagick
+LIB_SYS_LIBS_Linux      += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
+PROD_SYS_LIBS_Linux     += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
 LIB_SYS_LIBS_Linux      += gomp X11 xml2 png12 bz2 Xext freetype 
 PROD_SYS_LIBS_Linux     += gomp X11 xml2 png12 bz2 Xext freetype 
 
-# To use versions of these libraries supplied with areaDetector use this line
-LIB_LIBS_Darwin         += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
-PROD_LIBS_Darwin        += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
 # To use system versions of these libraries use this line
 #LIB_SYS_LIBS_Darwin    += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
 #PROD_SYS_LIBS_Darwin   += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
@@ -69,8 +63,6 @@ ifeq (win32-x86-debug, $(findstring win32-x86-debug, $(T_A)))
 USR_LDFLAGS_WIN32       += /NODEFAULTLIB:LIBCMT.lib
 endif
 
-LIB_LIBS_WIN32          += PvAPI
-PROD_LIBS_WIN32         += PvAPI
 LIB_LIBS_WIN32          += NeXus
 PROD_LIBS_WIN32         += NeXus
 ifeq ($(STATIC_BUILD), NO)
@@ -93,38 +85,31 @@ PROD_SYS_LIBS_cygwin32  += $(CYGWIN_RPC_LIB)
 LIB_SYS_LIBS_cygwin32   += Gdi32
 PROD_SYS_LIBS_cygwin32  += Gdi32
 
-LIB_LIBS_Linux          += PvAPI
-PROD_LIBS_Linux         += PvAPI
-# To use versions of these libraries supplied with areaDetector use this line
-LIB_LIBS_Linux          += NeXus hdf5 sz
-PROD_LIBS_Linux         += NeXus hdf5 sz
-# To use system versions of these libraries use this line
-#LIB_SYS_LIBS_Linux     += NeXus hdf5 sz
-#PROD_SYS_LIBS_Linux    += NeXus hdf5 sz
-# To use versions of these libraries supplied with areaDetector use this line
-LIB_LIBS_Linux          += tiff jpeg z
-PROD_LIBS_Linux         += tiff jpeg z
-# To use system versions of these libraries use this line
-#LIB_SYS_LIBS_Linux     += tiff jpeg z
-#PROD_SYS_LIBS_Linux    += tiff jpeg z
+# Nexus is built from source in areaDetector
+LIB_LIBS_Linux          += NeXus
+PROD_LIBS_Linux         += NeXus
+# The following system libraries must be installed
+LIB_SYS_LIBS_Linux      += hdf5 sz
+PROD_SYS_LIBS_Linux     += hdf5 sz
+LIB_SYS_LIBS_Linux      += tiff jpeg z
+PROD_SYS_LIBS_Linux     += tiff jpeg z
 
-LIB_LIBS_solaris         += NeXus hdf5
-PROD_LIBS_solaris        += NeXus hdf5
-LIB_SYS_LIBS_solaris     += tiff jpeg z
-PROD_SYS_LIBS_solaris    += tiff jpeg z
+# Nexus is built from source in areaDetector
+LIB_LIBS_solaris        += NeXus
+PROD_LIBS_solaris       += NeXus
+# The following system libraries must be installed
+LIB_LIBS_solaris        += hdf5 sz
+PROD_LIBS_solaris       += hdf5 sz
+LIB_SYS_LIBS_solaris    += tiff jpeg z
+PROD_SYS_LIBS_solaris   += tiff jpeg z
 
 USR_LDFLAGS_Darwin      += -framework CoreFoundation
-LIB_LIBS_Darwin         += PvAPI
-PROD_LIBS_Darwin        += PvAPI
-LIB_LIBS_Darwin         += NeXus hdf5 sz
-PROD_LIBS_Darwin        += NeXus hdf5 sz
-# To use system versions of these libraries use this line
-#LIB_SYS_LIBS_Darwin    += NeXus hdf5 sz
-#PROD_SYS_LIBS_Darwin   += NeXus hdf5 sz
-# To use versions of these libraries supplied with areaDetector use this line
-LIB_LIBS_Darwin         += tiff jpeg 
-PROD_LIBS_Darwin        += tiff jpeg
-# To use system versions of these libraries use this line
-#LIB_SYS_LIBS_Darwin    += tiff jpeg z
-#PROD_SYS_LIBS_Darwin   += tiff jpeg z
+# Nexus is built from source in areaDetector
+LIB_LIBS_Darwin         += NeXus
+PROD_LIBS_Darwin        += NeXus
+# The following system libraries must be installed
+LIB_SYS_LIBS_Darwin     += hdf5 sz
+PROD_SYS_LIBS_Darwin    += hdf5 sz
+LIB_SYS_LIBS_Darwin     += tiff jpeg z
+PROD_SYS_LIBS_Darwin    += tiff jpeg z
 
