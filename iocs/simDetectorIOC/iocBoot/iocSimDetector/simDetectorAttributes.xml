@@ -1,0 +1,23 @@
+<?xml version="1.0" standalone="no" ?>
+<!-- Attributes -->
+<Attributes
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://epics.aps.anl.gov/areaDetector/attributes ../attributes.xsd"
+    >
+    <Attribute name="AcquireTime"         type="EPICS_PV" source="13SIM1:cam1:AcquireTime"      dbrtype="DBR_NATIVE"  description="Camera acquire time"/>
+    <Attribute name="RingCurrent"         type="EPICS_PV" source="S:SRcurrentAI"                dbrtype="DBR_NATIVE"  description="Storage ring current"/>
+    <Attribute name="RingCurrent_EGU"     type="EPICS_PV" source="S:SRcurrentAI.EGU"            dbrtype="DBR_NATIVE"  description="Storage ring current units"/>
+    <Attribute name="ID_Energy"           type="EPICS_PV" source="ID34:Energy"                  dbrtype="DBR_NATIVE"  description="Undulator energy"/>
+    <Attribute name="ID_Energy_EGU"       type="EPICS_PV" source="ID34:Energy.EGU"              dbrtype="DBR_NATIVE"  description="Undulator energy units"/>
+    <Attribute name="ImageCounter"        type="PARAM"    source="ARRAY_COUNTER"                datatype="INT"        description="Image counter"/>
+    <Attribute name="MaxSizeX"            type="PARAM"    source="MAX_SIZE_X"                   datatype="INT"        description="Detector X size"/>
+    <Attribute name="MaxSizeY"            type="PARAM"    source="MAX_SIZE_Y"                   datatype="INT"        description="Detector Y size"/>
+    <Attribute name="CameraModel"         type="PARAM"    source="MODEL"                        datatype="STRING"     description="Camera model"/>
+    <Attribute name="CameraManufacturer"  type="PARAM"    source="MANUFACTURER"                 datatype="STRING"     description="Camera manufacturer"/>
+    <Attribute name="Pi"                  type="FUNCTION" source="myAttrFunct1"                 param="PI"            description="Value of PI"/>
+    <Attribute name="E"                   type="FUNCTION" source="myAttrFunct1"                 param="E"             description="Value of exp(1.0)"/>
+    <Attribute name="Ten"                 type="FUNCTION" source="myAttrFunct1"                 param="10"            description="Value 10"/>
+    <Attribute name="Gettysburg"          type="FUNCTION" source="myAttrFunct1"                 param="GETTYSBURG"    description="Start of Gettysburg address"/>
+</Attributes>
+    
+    

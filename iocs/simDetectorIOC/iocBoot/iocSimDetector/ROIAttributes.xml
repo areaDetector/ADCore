@@ -1,0 +1,16 @@
+<?xml version="1.0" standalone="no" ?>
+<!-- Attributes -->
+<Attributes
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://epics.aps.anl.gov/areaDetector/attributes ../attributes.xsd"
+    >
+    <Attribute name="BinX"          type="EPICS_PV" source="13SIM1:ROI1:0:BinX_RBV"  dbrtype="DBR_NATIVE"  description="X binning"/>
+    <Attribute name="BinY"          type="EPICS_PV" source="13SIM1:ROI1:0:BinY_RBV"  dbrtype="DBR_NATIVE"  description="Y binning"/>
+    <Attribute name="TimeStamp"     type="PARAM"    source="TIME_STAMP"              datatype="DOUBLE"     description="Time stamp"/>
+    <Attribute name="ROI0Mean"      type="PARAM"    source="MEAN_VALUE"              datatype="DOUBLE"     description="Mean value ROI 0"/>
+    <Attribute name="ROI1Mean"      type="PARAM"    source="MEAN_VALUE" addr="1"     datatype="DOUBLE"     description="Mean value ROI 0"/>
+    <Attribute name="ROI0Total"     type="PARAM"    source="TOTAL"                   datatype="DOUBLE"     description="Total counts ROI 0"/>
+    <Attribute name="ROI1Total"     type="PARAM"    source="TOTAL"      addr="1"     datatype="DOUBLE"     description="Total counts ROI 1"/>
+</Attributes>
+    
+    
