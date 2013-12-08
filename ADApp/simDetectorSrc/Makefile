@@ -17,7 +17,7 @@ LIB_SRCS += simDetector.cpp
 
 DBD += simDetectorSupport.dbd
 
-include $(TOP)/ADApp/commonDriverMakefile
+#include $(TOP)/ADApp/commonDriverMakefile
 
 #=============================
 
