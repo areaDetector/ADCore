@@ -32,72 +32,11 @@ CHECK_RELEASE = YES
 #   take effect.
 #IOCS_APPL_TOP = </IOC/path/to/application/top>
 
-# We don't set STATIC_BUILD for WIN32 or Cygwin, use base to configure
-# We build statically on Linux because want to install on detector systems without many .so files
-ifeq (Linux, $(OS_CLASS))
-  STATIC_BUILD=YES
-  SHARED_LIBRARIES=NO
+# Get settings from ADCORE, so we only have to configure once for all detectors if we want to
+include $(ADCORE)/configure/CONFIG_SITE
+-include $(ADCORE)/configure/CONFIG_SITE.$(EPICS_HOST_ARCH)
+-include $(ADCORE)/configure/CONFIG_SITE.$(EPICS_HOST_ARCH).Common
+ifdef T_A
+  -include $(ADCORE)/configure/CONFIG_SITE.Common.$(T_A)
+  -include $(ADCORE)/configure/CONFIG_SITE.$(EPICS_HOST_ARCH).$(T_A)
 endif
-# Building statically on Darwin is not possible (well, it's possible but difficult and discouraged
-# by Apple), but we can build depending only on system libraries that are part of Mac OS X
-#ifeq (Darwin, $(OS_CLASS))
-#  STATIC_BUILD=NO
-#  SHARED_LIBRARIES=NO
-#endif
-#ifeq (solaris, $(OS_CLASS))
-#  STATIC_BUILD=YES
-#  SHARED_LIBRARIES=NO
-#endif
-
-###############################################
-
-#NOTES
-#
-#     - To build the ioc applications set BUILD_APPS to YES
-#       Otherwise set it to NO
-
-BUILD_APPS=YES
-
-#     - The plugins
-
-#     - prosilicaSupport must be built before pluginSrc or prosilicaSrc because it installs
-#       header and library files needed by both
-#     - On some platforms hdf5Support must be built before nexus because of library dependencies
-
-HDF5_SUP      = hdf5Support
-MAGICK_SUP    = magickSupport
-NETCDF_SRC    = netCDFSrc
-NEXUS_SRC     = nexusSrc
-PLUGIN_SRC    = pluginSrc
-PROSILICA_SUP = prosilicaSupport
-TIFF_SUP      = tiffSupport
-
-#     - To include GraphicsMagick support set the following to YES
-#     - To not use it comment out the line or set it to NO
-#     - GraphicsMagick is required for NDFileMagick and the URL driver.
-
-USE_GRAPHICSMAGICK=NO
-
-#     - The detectors
-
-#     - To remove detectors from the build, comment out the detector name.
-
-ADSC         = adscSrc
-ANDOR        = andorSrc
-ANDOR3       = andor3Src
-BRUKER       = brukerSrc
-FIREWIRE_WIN = firewireWinSrc
-LIGHTFIELD   = LightFieldSrc
-MAR_345      = mar345Src
-MAR_CCD      = marCCDSrc
-PERKIN_ELMER = perkinElmerSrc
-PILATUS      = pilatusSrc
-PROSILICA    = prosilicaSrc
-PSL          = PSLSrc
-PVCAM        = pvcamSrc
-ROPER        = roperSrc
-SIM_DETECTOR = simDetectorSrc
-URL          = URLSrc
-
-
-
