@@ -65,11 +65,12 @@ NDPlugin_SYS_LIBS_WIN32 += User32
 
 ifeq ($(USE_GRAPHICSMAGICK), YES)
 LIBRARY_IOC += NDFileMagick
+USR_CXXFLAGS += -I$(GRAPHICS_MAGICK_INCLUDE)
 NDFileMagick_SRCS_DEFAULT += NDFileMagick.cpp 
 NDFileMagick_SRCS_vxWorks += NDFileDummyMagick.cpp
 endif
 
-include $(ADCORE)/ADApp/commonDriverMakefile
+#include $(ADCORE)/ADApp/commonDriverMakefile
 
 include $(TOP)/configure/RULES
 #----------------------------------------
