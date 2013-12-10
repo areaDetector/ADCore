@@ -8,7 +8,7 @@ include $(TOP)/configure/CONFIG
 # so we get automatic template instantiation.
 # This is what we want for the source files that define template functions.
 ifeq (vxWorks,$(findstring vxWorks, $(T_A)))
-CODE_CXXFLAGS=
+  CODE_CXXFLAGS=
 endif
 
 # These flags are needed by PvApi.h, the Prosilca library used for Bayer to RGB color conversion
@@ -64,13 +64,13 @@ NDPlugin_SYS_LIBS_WIN32 += Ws2_32
 NDPlugin_SYS_LIBS_WIN32 += User32
 
 ifeq ($(USE_GRAPHICSMAGICK), YES)
-LIBRARY_IOC += NDFileMagick
-USR_CXXFLAGS += -I$(GRAPHICS_MAGICK_INCLUDE)
-NDFileMagick_SRCS_DEFAULT += NDFileMagick.cpp 
-NDFileMagick_SRCS_vxWorks += NDFileDummyMagick.cpp
+  LIBRARY_IOC += NDFileMagick
+  USR_CXXFLAGS += -I$(GRAPHICS_MAGICK_INCLUDE)
+  NDFileMagick_SRCS_DEFAULT += NDFileMagick.cpp 
+  NDFileMagick_SRCS_vxWorks += NDFileDummyMagick.cpp
 endif
 
-#include $(ADCORE)/ADApp/commonDriverMakefile
+include $(TOP)/ADApp/commonLibraryMakefile
 
 include $(TOP)/configure/RULES
 #----------------------------------------
