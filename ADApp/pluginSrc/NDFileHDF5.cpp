@@ -562,10 +562,10 @@ asynStatus NDFileHDF5::closeFile()
 
   if (this->file == 0)
   {
-    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
       "%s::%s file was not open! Ignoring close command.\n", 
       driverName, functionName);
-    return asynError;
+    return asynSuccess;
   }
 
   getIntegerParam(NDFileHDF5_storeAttributes, &storeAttributes);
