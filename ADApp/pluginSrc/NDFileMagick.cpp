@@ -8,7 +8,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <netcdf.h>
 
 #include <epicsStdio.h>
 #include <iocsh.h>
