@@ -4,39 +4,39 @@ LIB_LIBS                += $(EPICS_BASE_IOC_LIBS)
 
 # The following libraries are only needed for GraphicsMagick
 ifeq ($(USE_GRAPHICSMAGICK), YES)
-  LIB_LIBS_WIN32          += CORE_RL_Magick++_ CORE_RL_wand_ CORE_RL_magick_ 
-  LIB_LIBS_WIN32          += CORE_RL_coders_ CORE_RL_filters_
-  LIB_LIBS_WIN32          += CORE_RL_bzlib_ CORE_RL_jbig_ CORE_RL_jp2_ CORE_RL_jpeg_ CORE_RL_lcms_
-  LIB_LIBS_WIN32          += CORE_RL_libxml_ CORE_RL_png_ CORE_RL_tiff_ CORE_RL_ttf_ CORE_RL_wmf_
-  LIB_LIBS_WIN32          += CORE_RL_xlib_ CORE_RL_zlib_
+  LIB_LIBS_WIN32        += CORE_RL_Magick++_ CORE_RL_wand_ CORE_RL_magick_ 
+  LIB_LIBS_WIN32        += CORE_RL_coders_ CORE_RL_filters_
+  LIB_LIBS_WIN32        += CORE_RL_bzlib_ CORE_RL_jbig_ CORE_RL_jp2_ CORE_RL_jpeg_ CORE_RL_lcms_
+  LIB_LIBS_WIN32        += CORE_RL_libxml_ CORE_RL_png_ CORE_RL_tiff_ CORE_RL_ttf_ CORE_RL_wmf_
+  LIB_LIBS_WIN32        += CORE_RL_xlib_ CORE_RL_zlib_
 
-  LIB_LIBS_cygwin32       += libGraphicsMagick++ libGraphicsMagickWand libGraphicsMagick
-  LIB_LIBS_cygwin32       += liblcms libpng14 libbz2 libfreetype
+  LIB_LIBS_cygwin32     += libGraphicsMagick++ libGraphicsMagickWand libGraphicsMagick
+  LIB_LIBS_cygwin32     += liblcms libpng14 libbz2 libfreetype
 
   # The following system libraries must be installed to use GraphicsMagick
-  LIB_SYS_LIBS_Linux      += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
-  LIB_SYS_LIBS_Linux      += gomp X11 xml2 png12 bz2 Xext freetype 
+  LIB_SYS_LIBS_Linux    += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
+  LIB_SYS_LIBS_Linux    += gomp X11 xml2 png12 bz2 Xext freetype 
 
   # To use system versions of these libraries use this line
-  #LIB_SYS_LIBS_Darwin    += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
-  LIB_SYS_LIBS_Darwin     += png xml2 bz2
+  #LIB_SYS_LIBS_Darwin  += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
+  LIB_SYS_LIBS_Darwin   += png xml2 bz2
 else
   # I don't understand why we need to set this when building statically and not using GraphicsMagick
   ifeq ($(STATIC_BUILD), YES)
-    USR_LDFLAGS_WIN32       += /NODEFAULTLIB:MSVCRT.lib
+    USR_LDFLAGS_WIN32   += /NODEFAULTLIB:MSVCRT.lib
   endif
-  LIB_LIBS_WIN32          += tiff jpeg
+  LIB_LIBS_WIN32        += tiff jpeg
 endif
 
 ifeq (win32-x86-debug, $(findstring win32-x86-debug, $(T_A)))
-  USR_LDFLAGS_WIN32       += /NODEFAULTLIB:LIBCMT.lib
+  USR_LDFLAGS_WIN32     += /NODEFAULTLIB:LIBCMT.lib
 endif
 
 LIB_LIBS_WIN32          += NeXus
 ifeq ($(STATIC_BUILD), NO)
-  LIB_LIBS_WIN32          += hdf5dll szip zlib1
+  LIB_LIBS_WIN32        += hdf5dll szip zlib1
 else
-  LIB_LIBS_WIN32          += hdf5 libszip zlib
+  LIB_LIBS_WIN32        += hdf5 libszip zlib
 endif
 LIB_SYS_LIBS_WIN32      += Gdi32 Oleaut32 
 
