@@ -1,9 +1,12 @@
 # This file contains the commands to build driver applications using the common set of plugins
-# The variable PROD_NAME must be defined, and is used to optionally add NDFileMagick to $(PROD_NAME)Include.dbd
+# The variable PROD_NAME must be defined
 
 $(PROD_NAME)_DBD += commonDriverSupport.dbd
 
 PROD_LIBS               += NDPlugin ADBase netCDF
+ifneq (vxWorks, $(findstring vxWorks, $(T_A)))
+  PROD_LIBS             += NeXus
+endif
 PROD_LIBS               += calc busy sscan autosave
 PROD_LIBS               += asyn
 PROD_LIBS               += $(EPICS_BASE_IOC_LIBS)
@@ -19,14 +22,12 @@ ifeq ($(USE_GRAPHICSMAGICK), YES)
   PROD_LIBS_cygwin32    += libGraphicsMagick++ libGraphicsMagickWand libGraphicsMagick
   PROD_LIBS_cygwin32    += liblcms libpng14 libbz2 libfreetype
 
+  PROD_LIBS_Linux       += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
   # The following system libraries must be installed to use GraphicsMagick
-  PROD_SYS_LIBS_Linux   += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
   PROD_SYS_LIBS_Linux   += gomp X11 xml2 png12 bz2 Xext freetype 
 
-  # To use system versions of these libraries use this line
-  #LIB_SYS_LIBS_Darwin  += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
-  #PROD_SYS_LIBS_Darwin += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
-  # To use versions of these libraries supplied with areaDetector use this line
+  PROD_LIBS_Darwin      += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
+  # The following system libraries must be installed to use GraphicsMagick
   PROD_SYS_LIBS_Darwin  += png xml2 bz2
 else
   # I don't understand why we need to set this when building statically and not using GraphicsMagick
@@ -39,7 +40,6 @@ ifeq (win32-x86-debug, $(findstring win32-x86-debug, $(T_A)))
   USR_LDFLAGS_WIN32     += /NODEFAULTLIB:LIBCMT.lib
 endif
 
-PROD_LIBS_WIN32         += NeXus
 ifeq ($(STATIC_BUILD), NO)
   PROD_LIBS_WIN32       += hdf5dll szip zlib1
 else
@@ -48,27 +48,23 @@ endif
 
 PROD_SYS_LIBS_WIN32     += Gdi32 Oleaut32
 
-PROD_LIBS_cygwin32      += NeXus libhdf5 libsz
+PROD_LIBS_cygwin32      += libhdf5 libsz
 PROD_LIBS_cygwin32      += libtiff libjpeg libjbig libz libxml2.dll
 PROD_SYS_LIBS_cygwin32  += $(CYGWIN_RPC_LIB)
 PROD_SYS_LIBS_cygwin32  += Gdi32
 
-# Nexus is built from source in areaDetector
-PROD_LIBS_Linux         += NeXus
-# The following system libraries must be installed
-PROD_SYS_LIBS_Linux     += hdf5 sz
+PROD_LIBS_Linux         += hdf5 sz
 PROD_SYS_LIBS_Linux     += tiff jpeg z
 
-# Nexus is built from source in areaDetector
-PROD_LIBS_solaris       += NeXus
-# The following system libraries must be installed
 PROD_LIBS_solaris       += hdf5 sz
 PROD_SYS_LIBS_solaris   += tiff jpeg z
 
 USR_LDFLAGS_Darwin      += -framework CoreFoundation
-# Nexus is built from source in areaDetector
-PROD_LIBS_Darwin        += NeXus
-# The following system libraries must be installed
-PROD_SYS_LIBS_Darwin    += hdf5 sz
+PROD_LIBS_Darwin        += hdf5 sz
 PROD_SYS_LIBS_Darwin    += tiff jpeg z
 
+hdf5_DIR=$(HDF5_DIR)
+sz_DIR=$(SZ_DIR)
+GraphicsMagick_DIR=$(GRAPHICS_MAGICK_DIR)
+GraphicsMagick++_DIR=$(GRAPHICS_MAGICK_DIR)
+GraphicsMagickWand_DIR=$(GRAPHICS_MAGICK_DIR)
