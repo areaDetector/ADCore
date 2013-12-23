@@ -64,11 +64,14 @@ NDPlugin_SYS_LIBS_WIN32 += Ws2_32
 NDPlugin_SYS_LIBS_WIN32 += User32
 
 ifeq ($(USE_GRAPHICSMAGICK), YES)
-  USR_CXXFLAGS += -I$(GRAPHICS_MAGICK_INCLUDE)
+  USR_INCLUDES += $(GRAPHICS_MAGICK_INCLUDES)
   NDPlugin_SRCS += NDFileMagick.cpp
 else 
   NDPlugin_SRCS += NDFileMagickStub.cpp
 endif
+
+USR_INCLUDES += $(HDF5_INCLUDES)
+USR_INCLUDES += $(SZ_INCLUDES)
 
 include $(TOP)/ADApp/commonLibraryMakefile
 
