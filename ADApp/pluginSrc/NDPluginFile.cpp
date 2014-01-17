@@ -248,8 +248,11 @@ asynStatus NDPluginFile::writeFileBase()
                     }
                 }
             }
+            freeCaptureBuffer(numCapture);
             if ((status == asynSuccess) && this->supportsMultipleArrays) 
                 status = this->closeFileBase();
+            this->registerInitFrameInfo(NULL);
+            setIntegerParam(NDFileNumCaptured, 0);
             setIntegerParam(NDWriteFile, 0);
             callParamCallbacks();
             break;
@@ -316,22 +319,20 @@ asynStatus NDPluginFile::writeFileBase()
     return((asynStatus)status);
 }
 
-void NDPluginFile::freeCaptureBuffer()
+void NDPluginFile::freeCaptureBuffer(int numCapture)
 {
     int i;
     NDArray *pArray;
     
-    if (this->pCapture) {
+    if (!this->pCapture) return;
     /* Free the capture buffer */
-        for (i=0; i<captureBufferSize; i++) {
+    for (i=0; i<numCapture; i++) {
         pArray = this->pCapture[i];
         if (!pArray) break;
         delete pArray;
     }
     free(this->pCapture);
     this->pCapture = NULL;
-}
-    this->captureBufferSize = 0;
 }
 
 /** Handles the logic for when NDFileCapture changes state, starting or stopping capturing or streaming NDArrays
@@ -380,9 +381,8 @@ asynStatus NDPluginFile::doCapture(int capture)
                         driverName, functionName);
                     return(asynError);
                 }
-
                 pArray->getInfo(&arrayInfo);
-                freeCaptureBuffer();
+                this->registerInitFrameInfo(pArray);
                 this->pCapture = (NDArray **)calloc(numCapture, sizeof(NDArray *));
                 if (!this->pCapture) {
                     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
@@ -391,7 +391,6 @@ asynStatus NDPluginFile::doCapture(int capture)
                     setIntegerParam(NDFileCapture, 0);
                     return(asynError);
                 }
-                captureBufferSize = numCapture;
                 for (i=0; i<numCapture; i++) {
                     pCapture[i] = new NDArray;
                     if (!this->pCapture[i]) {
@@ -399,7 +398,7 @@ asynStatus NDPluginFile::doCapture(int capture)
                             "%s:%s ERROR: cannot allocate capture buffer %d\n",
                             driverName, functionName, i);
                         setIntegerParam(NDFileCapture, 0);
-                        freeCaptureBuffer();
+                        freeCaptureBuffer(numCapture);
                         return(asynError);
                     }
                     this->pCapture[i]->dataSize = arrayInfo.totalBytes;
@@ -409,7 +408,7 @@ asynStatus NDPluginFile::doCapture(int capture)
                             "%s:%s ERROR: cannot allocate capture array for buffer %d\n",
                             driverName, functionName, i);
                         setIntegerParam(NDFileCapture, 0);
-                        freeCaptureBuffer();
+                        freeCaptureBuffer(numCapture);
                         return(asynError);
                     }
                 }
@@ -633,6 +632,7 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
     int fileWriteMode, autoSave, capture;
     int arrayCounter;
     int numCapture, numCaptured;
+    asynStatus status = asynSuccess;
     const char* functionName = "processCallbacks";
 
     /* First check if the callback is really for this file saving plugin */
@@ -669,14 +669,6 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
         case NDFileModeCapture:
             if (capture) {
                 if (numCaptured < numCapture && this->isFrameValid(pArray)) {
-                    if (!this->pCapture) {
-                        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                            "%s:%s: ERROR, no capture buffer present\n", 
-                            driverName, functionName);
-                        setIntegerParam(NDFileWriteStatus, NDFileWriteError);
-                        setStringParam(NDFileWriteMessage, "ERROR, no capture buffer present");
-                        break;
-                    }
                     this->pNDArrayPool->copy(pArray, this->pCapture[numCaptured++], 1);
                     arrayCounter++;
                     setIntegerParam(NDFileNumCaptured, numCaptured);
