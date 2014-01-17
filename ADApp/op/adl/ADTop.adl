@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADApp/op/adl/ADTop.adl"
+	name="/home/epics/devel/areaDetector-2-0/ADCore/ADApp/op/adl/ADTop.adl"
 	version=030107
 }
 display {
@@ -8,7 +8,7 @@ display {
 		x=171
 		y=78
 		width=225
-		height=455
+		height=480
 	}
 	clr=14
 	bclr=4
@@ -573,41 +573,85 @@ text {
 	textix="Andor"
 	align="horiz. right"
 }
-"related display" {
+composite {
 	object {
-		x=139
+		x=81
 		y=425
-		width=64
+		width=122
 		height=20
 	}
-	display[0] {
-		label="LightField #1 general"
-		name="ADBase.adl"
-		args="P=13LF1:, R=cam1: "
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=81
+				y=425
+				width=50
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="LightField"
+			align="horiz. right"
+		}
+		"related display" {
+			object {
+				x=139
+				y=425
+				width=64
+				height=20
+			}
+			display[0] {
+				label="LightField #1 general"
+				name="ADBase.adl"
+				args="P=13LF1:, R=cam1: "
+			}
+			display[1] {
+				label="LightField #1 specific"
+				name="LightField.adl"
+				args="P=13LF1:, R=cam1:"
+			}
+			display[2] {
+				label="LightField #2 specific"
+				name="LightField.adl"
+				args="P=13LF2:, R=cam1:"
+			}
+			clr=14
+			bclr=51
+		}
 	}
-	display[1] {
-		label="LightField #1 specific"
-		name="LightField.adl"
-		args="P=13LF1:, R=cam1:"
-	}
-	display[2] {
-		label="LightField #2 specific"
-		name="LightField.adl"
-		args="P=13LF2:, R=cam1:"
-	}
-	clr=14
-	bclr=51
 }
 text {
 	object {
 		x=81
-		y=425
+		y=450
 		width=50
 		height=20
 	}
 	"basic attribute" {
 		clr=14
 	}
-	textix="LightField"
+	textix="Pixirad"
 	align="horiz. right"
+}
+"related display" {
+	object {
+		x=139
+		y=450
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Pixirad #1 general"
+		name="ADBase.adl"
+		args="P=13PR1:, R=cam1: "
+	}
+	display[1] {
+		label="Pixirad #1 specific"
+		name="pixirad.adl"
+		args="P=13PR1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
 }

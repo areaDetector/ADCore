@@ -1,6 +1,8 @@
 /* NDFileMagick.cpp
  * Writes NDArrays to any file format supported by ImageMagick.
  *
+ * This is a stub file for systems that don't support GraphicsMagick
+ *
  * Mark Rivers
  * September 30, 2010
  */
@@ -12,13 +14,10 @@
 #include <epicsStdio.h>
 #include <iocsh.h>
 
-#include "NDFileMagick.h"
+#include "NDFileMagickStub.h"
 #include <epicsExport.h>
 
-static const char *driverName = "NDFileMagick";
-
-static CompressionType compressionTypes[] = {NoCompression, BZipCompression, FaxCompression, Group4Compression, 
-                                             JPEGCompression, LZWCompression, RLECompression, ZipCompression};
+static const char *driverName = "NDFileMagickStub";
 
 /** Opens a Magick file.
   * \param[in] fileName The name of the file to open.
@@ -29,69 +28,10 @@ static CompressionType compressionTypes[] = {NoCompression, BZipCompression, Fax
 asynStatus NDFileMagick::openFile(const char *fileName, NDFileOpenMode_t openMode, NDArray *pArray)
 {
     static const char *functionName = "openFile";
-    NDAttribute *pAttribute;
-
-    /* We don't support reading yet */
-    if (openMode & NDFileModeRead) return(asynError);
-
-    /* We don't support opening an existing file for appending yet */
-    if (openMode & NDFileModeAppend) return(asynError);
-    
-    strncpy(this->fileName, fileName, sizeof(this->fileName));
-    this->colorMode = NDColorModeMono;
-
-    /* We do some special treatment based on colorMode */
-    pAttribute = pArray->pAttributeList->find("ColorMode");
-    if (pAttribute) pAttribute->getValue(NDAttrInt32, &this->colorMode);
-
-    switch (pArray->dataType) {
-        case NDInt8:
-        case NDUInt8:
-            this->storageType = CharPixel;
-            break;
-        case NDInt16:
-        case NDUInt16:
-            this->storageType = ShortPixel;
-            break;
-        case NDInt32:
-        case NDUInt32:
-            this->storageType = IntegerPixel;
-            break;
-        case NDFloat32:
-            this->storageType = FloatPixel;
-            break;
-        case NDFloat64:
-            this->storageType = DoublePixel;
-            break;
-    }
-    if (pArray->ndims == 2) {
-        sizeX = pArray->dims[0].size;
-        sizeY = pArray->dims[1].size;
-        this->colorMap = "R";
-        this->imageType = GrayscaleType;
-    } else if ((pArray->ndims == 3) && (pArray->dims[0].size == 3) && (this->colorMode == NDColorModeRGB1)) {
-        sizeX = pArray->dims[1].size;
-        sizeY = pArray->dims[2].size;
-        this->colorMap = "RGB";
-        this->imageType = TrueColorType;
-    } else if ((pArray->ndims == 3) && (pArray->dims[1].size == 3) && (this->colorMode == NDColorModeRGB2)) {
-        sizeX = pArray->dims[0].size;
-        sizeY = pArray->dims[2].size;
-        this->colorMap = "RGB";
-        this->imageType = TrueColorType;
-    } else if ((pArray->ndims == 3) && (pArray->dims[2].size == 3) && (this->colorMode == NDColorModeRGB3)) {
-        sizeX = pArray->dims[0].size;
-        sizeY = pArray->dims[1].size;
-        this->colorMap = "RGB";
-        this->imageType = TrueColorType;
-    } else {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-            "%s:%s: unsupported array structure\n",
-            driverName, functionName);
-        return(asynError);
-    }
-
-    return(asynSuccess);
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+        "%s:%s: not supported!\n",
+        driverName, functionName);
+    return(asynError);
 }
 
 /** Writes single NDArray to the Magick file.
@@ -100,54 +40,10 @@ asynStatus NDFileMagick::openFile(const char *fileName, NDFileOpenMode_t openMod
 asynStatus NDFileMagick::writeFile(NDArray *pArray)
 {
     static const char *functionName = "writeFile";
-    Image image;
-    int quality;
-    int depth;
-    int compressIndex;
-    CompressionType compressType;
-
-    asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
-              "%s:%s: size=[%lu, %lu]\n", 
-              driverName, functionName, (unsigned long)this->sizeX, (unsigned long)this->sizeY);
-              
-    getIntegerParam(NDFileMagickQuality, &quality);
-    getIntegerParam(NDFileMagickBitDepth, &depth);
-    getIntegerParam(NDFileMagickCompressType, &compressIndex);
-    compressType = compressionTypes[compressIndex];
-
-    switch (this->colorMode) {
-        case NDColorModeMono:
-        case NDColorModeRGB1:
-        case NDColorModeBayer:
-            image.type(this->imageType);
-            image.read((unsigned int)this->sizeX, (unsigned int)this->sizeY, this->colorMap, this->storageType, pArray->pData);
-            if (this->colorMode == NDColorModeMono) image.channel(RedChannel);
-            image.quality(quality);
-            image.depth(depth);
-            image.compressType(compressType);
-            break;
-        case NDColorModeRGB2:
-            break;
-        case NDColorModeRGB3:
-            break;
-        default:
-            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-                "%s:%s: unknown color mode %d\n",
-                driverName, functionName, this->colorMode);
-            return(asynError);
-            break;
-    }
-    try {
-        image.write(this->fileName);
-    }
-    catch (exception ex) {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-            "%s:%s: error writing data to file\n",
-            driverName, functionName);
-        return(asynError);
-    }
-
-    return(asynSuccess);
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+        "%s:%s: not supported!\n",
+        driverName, functionName);
+    return(asynError);
 }
 
 /** Reads single NDArray from a file; NOT CURRENTLY IMPLEMENTED.
@@ -164,9 +60,11 @@ asynStatus NDFileMagick::readFile(NDArray **pArray)
 /** Closes the file. */
 asynStatus NDFileMagick::closeFile()
 {
-    //static const char *functionName = "closeFile";
-
-    return asynSuccess;
+    static const char *functionName = "closeFile";
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+        "%s:%s: not supported!\n",
+        driverName, functionName);
+    return(asynError);
 }
 
 
@@ -204,8 +102,6 @@ NDFileMagick::NDFileMagick(const char *portName, int queueSize, int blockingCall
     createParam(NDFileMagickQualityString,       asynParamInt32, &NDFileMagickQuality);
     createParam(NDFileMagickCompressTypeString,  asynParamInt32, &NDFileMagickCompressType);
     createParam(NDFileMagickBitDepthString,      asynParamInt32, &NDFileMagickBitDepth);
-    
-    InitializeMagick(NULL);
 }
 
 /* Configuration routine.  Called directly, or from the iocsh  */

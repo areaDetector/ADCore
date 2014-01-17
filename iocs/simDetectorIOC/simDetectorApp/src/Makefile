@@ -10,9 +10,6 @@ ifeq (vxWorks,$(findstring vxWorks, $(T_A)))
 CODE_CXXFLAGS=
 endif
 
-#====== DETECTOR APPLICATION ============
-
-ifeq ($(BUILD_APPS), YES)
 PROD_NAME = simDetectorApp
 PROD_IOC = $(PROD_NAME)
 
@@ -27,7 +24,6 @@ PROD_SRCS_vxWorks += $(PROD_NAME)_registerRecordDeviceDriver.cpp
 PROD_LIBS += simDetector
 
 include $(ADCORE)/ADApp/commonDriverMakefile
-endif
 
 #=============================
 
