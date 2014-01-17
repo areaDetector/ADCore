@@ -480,7 +480,7 @@ asynStatus NDPluginFile::attrFileNameCheck()
         }
     }
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "attrFileNameCheck: name=%s(%s) num=%d (%s) reopen=%d\n",
-            attrFileName, ndFileName, attrFileNumber, NDattrFileNumber->pSource, (int)reopenFile );
+            attrFileName, ndFileName, attrFileNumber, NDattrFileNumber->getSource(), (int)reopenFile );
     if (reopenFile)
     {
         this->closeFileBase();
@@ -611,7 +611,7 @@ bool NDPluginFile::isFrameValid(NDArray *pArray)
     // Check frame size in X and Y dimensions
     if ((initInfo->xSize != info.xSize) || (initInfo->ySize != info.ySize)) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                "NDPluginFile::isFrameValid: WARNING: Frame dimensions have changed X:%d,%d Y:%d,%d]\n",
+                "NDPluginFile::isFrameValid: WARNING: Frame dimensions have changed X:%ld,%ld Y:%ld,%ld]\n",
                 initInfo->xSize, info.xSize, initInfo->ySize, info.ySize);
         valid = false;
     }
