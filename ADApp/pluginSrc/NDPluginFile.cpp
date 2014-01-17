@@ -255,11 +255,11 @@ asynStatus NDPluginFile::writeFileBase()
             break;
         case NDFileModeStream:
             doLazyOpen = this->lazyOpen && (numCaptured == 0);
-            if (!this->supportsMultipleArrays)
+            if (!this->supportsMultipleArrays || doLazyOpen)
                 status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, this->pArrays[0]);
             else
                 this->attrFileNameCheck();
-            if (!this->isFrameValid(this->pArrays[0]) || doLazyOpen) {
+            if (!this->isFrameValid(this->pArrays[0])) {
                     setIntegerParam(NDFileWriteStatus, NDFileWriteError);
                     setStringParam(NDFileWriteMessage, "Invalid frame. Ignoring.");
                     status = asynError;
