@@ -153,6 +153,7 @@ asynStatus NDPluginFile::writeFileBase()
     int fileWriteMode;
     int numCapture, numCaptured;
     int i;
+    bool doLazyOpen;
     int deleteDriverFile;
     NDArray *pArray;
     NDAttribute *pAttribute;
@@ -253,11 +254,12 @@ asynStatus NDPluginFile::writeFileBase()
             callParamCallbacks();
             break;
         case NDFileModeStream:
+            doLazyOpen = this->lazyOpen && (numCaptured == 0);
             if (!this->supportsMultipleArrays)
                 status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, this->pArrays[0]);
             else
                 this->attrFileNameCheck();
-            if (!this->isFrameValid(this->pArrays[0])) {
+            if (!this->isFrameValid(this->pArrays[0]) || doLazyOpen) {
                     setIntegerParam(NDFileWriteStatus, NDFileWriteError);
                     setStringParam(NDFileWriteMessage, "Invalid frame. Ignoring.");
                     status = asynError;
@@ -347,7 +349,7 @@ asynStatus NDPluginFile::doCapture(int capture)
     const char* functionName = "doCapture";
 
     /* Make sure there is a valid array */
-    if (!pArray) {
+    if (!pArray && !this->lazyOpen) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s: ERROR, must collect an array to get dimensions first\n",
             driverName, functionName);
@@ -355,8 +357,10 @@ asynStatus NDPluginFile::doCapture(int capture)
     }
     
     /* Decide whether or not to use the NDAttribute named "fileprefix" to create the filename */
+    if (pArray) {
         if( pArray->pAttributeList->find(FILEPLUGIN_NAME) != NULL)
             this->useAttrFilePrefix = true;
+    }
 
     getIntegerParam(NDFileWriteMode, &fileWriteMode);    
     getIntegerParam(NDFileNumCapture, &numCapture);
@@ -370,6 +374,13 @@ asynStatus NDPluginFile::doCapture(int capture)
             if (capture) {
                 /* Capturing was just started */
                 setIntegerParam(NDFileNumCaptured, 0);
+                if (!pArray) {
+                    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                        "%s:%s ERROR: No arrays collected: cannot allocate capture buffer\n",
+                        driverName, functionName);
+                    return(asynError);
+                }
+
                 pArray->getInfo(&arrayInfo);
                 freeCaptureBuffer();
                 this->pCapture = (NDArray **)calloc(numCapture, sizeof(NDArray *));
@@ -409,7 +420,7 @@ asynStatus NDPluginFile::doCapture(int capture)
         case NDFileModeStream:
             if (capture) {
                 /* Streaming was just started */
-                if (this->supportsMultipleArrays && !this->useAttrFilePrefix)
+                if (this->supportsMultipleArrays && !this->useAttrFilePrefix && !this->lazyOpen)
                     status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, pArray);
                 setIntegerParam(NDFileNumCaptured, 0);
                 setIntegerParam(NDWriteFile, 1);
@@ -681,10 +692,12 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
             break;
         case NDFileModeStream:
             if (capture) {
-                    numCaptured++;
                 arrayCounter++;
+                status = writeFileBase();
+                if (status == asynSuccess) {
+                	numCaptured++;
                     setIntegerParam(NDFileNumCaptured, numCaptured);
-                writeFileBase();
+                }
                 if (numCaptured == numCapture) {
                     doCapture(0);
                 }
@@ -736,8 +749,22 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
             setIntegerParam(NDReadFile, 0);
         }
     } else if (function == NDFileCapture) {
+    	/* Latch the NDFileLazyOpen parameter so that we don't need to care
+    	 * if the user modifies this parameter before first frame has arrived. */
+    	int paramFileLazyOpen = 0;
+    	getIntegerParam(NDFileLazyOpen, &paramFileLazyOpen);
+    	this->lazyOpen = (paramFileLazyOpen != 0);
+    	/* So far everything is OK, so we just clear the FileWriteStatus parameters */
+        setIntegerParam(NDFileWriteStatus, NDFileWriteOK);
+        setStringParam(NDFileWriteMessage, "");
+        setStringParam(NDFullFileName, "");
         /* Must call doCapture if capturing was just started or stopped */
         status = doCapture(value);
+        if (status == asynSuccess) {
+            if (this->lazyOpen) setStringParam(NDFileWriteMessage, "Lazy Open...");
+        } else {
+        	setIntegerParam(NDFileCapture, 0);
+        }
     } else {
         /* This was not a parameter that this driver understands, try the base class */
         if (function <= LAST_NDPLUGIN_PARAM) status = NDPluginDriver::writeInt32(pasynUser, value);
@@ -814,6 +841,11 @@ NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCall
     pCapture(NULL), captureBufferSize(0)
 {
     //const char *functionName = "NDPluginFile";
+
+    this->ndArrayInfoInit = NULL;
+    this->lazyOpen = false;
+    this->createParam("FILE_LAZY_OPEN", asynParamInt32, &NDFileLazyOpen);
+    //setIntegerParam(NDFileLazyOpen, 1);
 
     this->useAttrFilePrefix = false;
     this->fileMutexId = epicsMutexCreate();

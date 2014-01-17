@@ -74,13 +74,20 @@ private:
     asynStatus attrFileNameCheck();
     asynStatus attrFileNameSet();
     bool attrIsProcessingRequired(NDAttributeList* pAttrList);
+    void registerInitFrameInfo(NDArray *pArray); /**< Grab a copy of the NDArrayInfo_t structure for future reference */
+    bool isFrameValid(NDArray *pArray); /**< Compare pArray dimensions and datatype against latched NDArrayInfo_t structure */
 
     NDArray **pCapture;
     int captureBufferSize;
     epicsMutexId fileMutexId;
     bool useAttrFilePrefix;
+    bool lazyOpen;
+    NDArrayInfo_t *ndArrayInfoInit; /**< The NDArray information at file open time.
+                                      *  Used to check against changes in incoming frames dimensions or datatype */
+protected:
+    int NDFileLazyOpen;
 };
 
-#define NUM_NDPLUGIN_FILE_PARAMS 0
+#define NUM_NDPLUGIN_FILE_PARAMS 1
     
 #endif
