@@ -841,6 +841,7 @@ record(ao, "$(P)$(R)Temperature")
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMPERATURE")
    field(PREC, "3")
+   field(EGU,  "C")
    field(VAL,  "25.0")
 }
 
@@ -849,6 +850,7 @@ record(ai, "$(P)$(R)Temperature_RBV")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMPERATURE")
    field(PREC, "3")
+   field(EGU,  "C")
    field(SCAN, "I/O Intr")
 }
 
@@ -857,6 +859,7 @@ record(ai, "$(P)$(R)TemperatureActual")
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMPERATURE_ACTUAL")
    field(PREC, "3")
+   field(EGU,  "C")
    field(SCAN, "I/O Intr")
 }
 
