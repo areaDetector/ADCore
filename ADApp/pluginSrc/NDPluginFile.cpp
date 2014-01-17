@@ -224,6 +224,8 @@ asynStatus NDPluginFile::writeFileBase()
                     pArray = this->pCapture[i];
                     if (!this->supportsMultipleArrays)
                         status = this->openFileBase(NDFileModeWrite, pArray);
+                    else
+                        this->attrFileNameCheck();
                     if (status == asynSuccess) {
                         this->unlock();
                         epicsMutexLock(this->fileMutexId);
@@ -251,11 +253,11 @@ asynStatus NDPluginFile::writeFileBase()
             callParamCallbacks();
             break;
         case NDFileModeStream:
-            if (!this->supportsMultipleArrays) {
+            if (!this->supportsMultipleArrays)
                 status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, this->pArrays[0]);
-            }
-            else {
-                if (!this->isFrameValid(this->pArrays[0])) {
+            else
+                this->attrFileNameCheck();
+            if (!this->isFrameValid(this->pArrays[0])) {
                     setIntegerParam(NDFileWriteStatus, NDFileWriteError);
                     setStringParam(NDFileWriteMessage, "Invalid frame. Ignoring.");
                     status = asynError;
@@ -468,7 +470,7 @@ asynStatus NDPluginFile::attrFileNameCheck()
         }
     }
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "attrFileNameCheck: name=%s(%s) num=%d (%s) reopen=%d\n",
-            attrFileName, ndFileName, attrFileNumber, NDattrFileNumber->getSource(), (int)reopenFile );
+            attrFileName, ndFileName, attrFileNumber, NDattrFileNumber->pSource, (int)reopenFile );
     if (reopenFile)
     {
         this->closeFileBase();
