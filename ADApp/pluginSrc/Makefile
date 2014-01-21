@@ -8,7 +8,7 @@ include $(TOP)/configure/CONFIG
 # so we get automatic template instantiation.
 # This is what we want for the source files that define template functions.
 ifeq (vxWorks,$(findstring vxWorks, $(T_A)))
-  CODE_CXXFLAGS=
+CODE_CXXFLAGS=
 endif
 
 # These flags are needed by PvApi.h, the Prosilca library used for Bayer to RGB color conversion
@@ -58,7 +58,7 @@ NDPlugin_SRCS += NDPluginROI.cpp
 NDPlugin_SRCS += NDPluginTransform.cpp
 NDPlugin_SRCS += NDPluginOverlay.cpp
 NDPlugin_SRCS += NDPluginColorConvert.cpp
-NDPlugin_SRCS_DEFAULT += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNexus.cpp NDFileHDF5.cpp NDFileNull.cpp
+NDPlugin_SRCS_DEFAULT += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNexus.cpp NDFileHDF5.cpp NDFileHDF5Dataset.cpp NDFileHDF5LayoutXML.cpp NDFileHDF5Layout.cpp NDFileNull.cpp
 NDPlugin_SRCS_vxWorks += NDFileDummy.cpp
 NDPlugin_SYS_LIBS_WIN32 += Ws2_32
 NDPlugin_SYS_LIBS_WIN32 += User32
@@ -72,6 +72,9 @@ endif
 
 USR_INCLUDES += $(HDF5_INCLUDES)
 USR_INCLUDES += $(SZ_INCLUDES)
+# Point to libxml2 header files
+# TODO: enable supporting a windows version of libxml2
+USR_INCLUDES += -I/usr/include/libxml2
 
 include $(TOP)/ADApp/commonLibraryMakefile
 
