@@ -445,7 +445,7 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     }
     if (sizeY != this->profileSizeY) {
         this->profileSizeY = sizeY;
-        setIntegerParam(NDPluginStatsProfileSizeY,  (int)this->profileSizeY);
+        setIntegerParam(NDPluginStatsProfileSizeY, (int)this->profileSizeY);
         for (i=0; i<MAX_PROFILE_TYPES; i++) {
             if (this->profileY[i]) free(this->profileY[i]);
             this->profileY[i] = (double *)malloc(this->profileSizeY * sizeof(double));
@@ -453,7 +453,7 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     }
 
     if (computeStatistics) {
-        getIntegerParam(NDPluginStatsBgdWidth,           &bgdWidth);
+        getIntegerParam(NDPluginStatsBgdWidth, &bgdWidth);
         doComputeStatistics(pArray, pStats);
         /* If there is a non-zero background width then compute the background counts */
         if (bgdWidth > 0) {
@@ -479,7 +479,7 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
                 pBgdArray->release();
                 bgdPixels += pStatsTemp->nElements;
                 bgdCounts += pStatsTemp->total;
-                pDim->offset = MAX(0, pDim->size - 1 - bgdWidth);
+                pDim->offset = MAX(0, (int)(pDim->size - 1 - bgdWidth));
                 pDim->size = MIN((size_t)bgdWidth, pArray->dims[dim].size - pDim->offset);
                 this->pNDArrayPool->convert(pArray, &pBgdArray, pArray->dataType, bgdDims);
                 pDim->offset = 0;
