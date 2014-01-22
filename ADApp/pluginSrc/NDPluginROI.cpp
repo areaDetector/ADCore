@@ -199,7 +199,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         pOutput->dims[1] = pOutput->dims[2];
         pOutput->pAttributeList->add("ColorMode", "Color mode", NDAttrInt32, &colorMode);
     }
-    if ((pOutput->ndims == 3) && 
+    else if ((pOutput->ndims == 3) && 
         (arrayInfo.colorMode == NDColorModeRGB2) && 
         (pOutput->dims[1].size == 1)) 
     {
@@ -207,8 +207,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         pOutput->dims[1] = pOutput->dims[2];
         pOutput->pAttributeList->add("ColorMode", "Color mode", NDAttrInt32, &colorMode);
     }
-    if ((pOutput->ndims == 3) && 
-        (arrayInfo.colorMode == NDColorModeRGB3) && 
+    else if ((pOutput->ndims == 3) && 
         (pOutput->dims[2].size == 1)) 
     {
         pOutput->ndims = 2;
