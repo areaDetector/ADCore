@@ -403,7 +403,7 @@ asynStatus NDFileHDF5::create_file_layout()
     // Init the dataset destination NDAttribute name
     ndDsetName = "";
     // Check for NDAttribute name of data destination switch
-    std::string ddest = this->layout.get_global("detector_switch");
+    std::string ddest = this->layout.get_global("detector_data_destination");
     if (ddest != ""){
       //std::cout << "Data destination attribute name: " << ddest << std::endl;
       ndDsetName = ddest;

@@ -32,7 +32,7 @@ const std::string LayoutXML::ATTR_SRC_CONST_TYPE     = "type";
 const std::string LayoutXML::ATTR_GRP_NDATTR_DEFAULT = "ndattr_default";
 const std::string LayoutXML::ATTR_SRC_WHEN           = "when";
 const std::string LayoutXML::ATTR_GLOBAL_NAME        = "name";
-const std::string LayoutXML::ATTR_GLOBAL_VALUE       = "value";
+const std::string LayoutXML::ATTR_GLOBAL_VALUE       = "ndattribute";
 
 const std::string LayoutXML::DEFAULT_LAYOUT = " \
 <group name=\"entry\"> \
