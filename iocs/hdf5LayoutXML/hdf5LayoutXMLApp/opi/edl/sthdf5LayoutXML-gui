@@ -1,0 +1,26 @@
+#!/bin/sh
+TOP="$(cd $(dirname "$0")/../..; pwd)"
+
+# first load the paths. These have been generated from the configure/RELEASE
+# tree. If we have a -d arg then load the opi/edl paths first
+unset EDMDATAFILES
+if [ "$1" = "-d" ]; then
+    if ls ${TOP}/*App/opi/edl > /dev/null 2>&1; then
+        for d in ${TOP}/*App/opi/edl; do
+            export EDMDATAFILES="${EDMDATAFILES}${d}:"
+        done
+    fi
+    export EDMDATAFILES="${EDMDATAFILES}${TOP}/data:"
+
+    OPTS="-x -eolc"
+else
+    OPTS="-x -eolc"
+#    OPTS="-x -eolc -noedit"
+fi
+export EDMDATAFILES="${EDMDATAFILES}${TOP}/hdf5LayoutXMLApp/opi/edl"
+export EDMDATAFILES="${EDMDATAFILES}:${TOP}/../../ADApp/op/edl"
+
+
+# Set the path to include any scripts in data dirs
+export PATH=${EDMDATAFILES}:${PATH}
+edm ${OPTS}  CAM1.edl
