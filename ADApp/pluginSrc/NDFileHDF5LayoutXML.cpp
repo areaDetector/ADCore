@@ -32,7 +32,7 @@ const std::string LayoutXML::ATTR_SRC_CONST_TYPE     = "type";
 const std::string LayoutXML::ATTR_GRP_NDATTR_DEFAULT = "ndattr_default";
 const std::string LayoutXML::ATTR_SRC_WHEN           = "when";
 const std::string LayoutXML::ATTR_GLOBAL_NAME        = "name";
-const std::string LayoutXML::ATTR_GLOBAL_VALUE       = "value";
+const std::string LayoutXML::ATTR_GLOBAL_VALUE       = "ndattribute";
 
 const std::string LayoutXML::DEFAULT_LAYOUT = " \
 <group name=\"entry\"> \
@@ -128,6 +128,38 @@ int LayoutXML::load_xml(const std::string& filename)
 
     LOG4CXX_DEBUG(log, "XML layout tree shape: " << this->ptr_tree->_str_() );
     return ret;
+}
+
+int LayoutXML::verify_xml(const std::string& filename)
+{
+    int ret = 0;
+
+    this->xmlreader = xmlReaderForFile(filename.c_str(), NULL, 0);
+    if (this->xmlreader == NULL) {
+        LOG4CXX_ERROR(log, "Unable to open XML file: " << filename );
+        this->xmlreader = NULL;
+        return -1;
+    }
+
+    LOG4CXX_INFO(log, "Loading HDF5 layout XML file: " << filename);
+    while ( (ret = xmlTextReaderRead(this->xmlreader)) == 1) {
+        this->process_node();
+    }
+    xmlFreeTextReader(this->xmlreader);
+    if (ret != 0) {
+      this->ptr_tree = NULL;
+      this->globals.clear();
+    	LOG4CXX_ERROR(log, "Failed to parse XML file: "<< filename );
+      return -1;
+    }
+
+    // Parsed OK, now free everything
+    delete this->ptr_tree;
+    this->ptr_tree = NULL;
+    // Empty the globals store
+    this->globals.clear();
+
+    return 0;
 }
 
 /**

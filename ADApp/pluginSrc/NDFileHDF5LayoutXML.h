@@ -86,6 +86,7 @@ public:
 //    int load_xml(std::string& filename){ return this->load_xml(filename.c_str()); };
     int load_xml();
     int load_xml(const std::string& filename);
+    int verify_xml(const std::string& filename);
     int unload_xml();
 
     HdfRoot* get_hdftree();
