@@ -130,6 +130,38 @@ int LayoutXML::load_xml(const std::string& filename)
     return ret;
 }
 
+int LayoutXML::verify_xml(const std::string& filename)
+{
+    int ret = 0;
+
+    this->xmlreader = xmlReaderForFile(filename.c_str(), NULL, 0);
+    if (this->xmlreader == NULL) {
+        LOG4CXX_ERROR(log, "Unable to open XML file: " << filename );
+        this->xmlreader = NULL;
+        return -1;
+    }
+
+    LOG4CXX_INFO(log, "Loading HDF5 layout XML file: " << filename);
+    while ( (ret = xmlTextReaderRead(this->xmlreader)) == 1) {
+        this->process_node();
+    }
+    xmlFreeTextReader(this->xmlreader);
+    if (ret != 0) {
+      this->ptr_tree = NULL;
+      this->globals.clear();
+    	LOG4CXX_ERROR(log, "Failed to parse XML file: "<< filename );
+      return -1;
+    }
+
+    // Parsed OK, now free everything
+    delete this->ptr_tree;
+    this->ptr_tree = NULL;
+    // Empty the globals store
+    this->globals.clear();
+
+    return 0;
+}
+
 /**
  * Free all resources and reset the xml tree
  */

@@ -79,9 +79,10 @@ void write_h5attr_float64(hid_t element, const std::string &attr_name, const std
 hid_t from_hdf_to_hid_datatype(hdf5::HDF_DataType_t in) const;
 hid_t create_dataset_detector(hid_t group, hdf5::HdfDataset *dset);
 
-int checkLayoutPath();
+//int checkLayoutPath();
 int fileExists(char *filename);
-int createLayoutFileName(int maxChars, char *fullFileName);
+int verifyLayoutXMLFile();
+//int createLayoutFileName(int maxChars, char *fullFileName);
 
 std::map<std::string, NDFileHDF5Dataset *> detDataMap;  // Map of handles to detector datasets, indexed by name
 std::map<std::string, hid_t>               attDataMap;  // Map of handles to attribute datasets, indexed by name
@@ -117,8 +118,8 @@ protected:
   int NDFileHDF5_nbitsOffset;
   int NDFileHDF5_szipNumPixels;
   int NDFileHDF5_zCompressLevel;
-  int NDFileHDF5_layoutDirectory;
-  int NDFileHDF5_layoutPathExists;
+  int NDFileHDF5_layoutErrorMsg;
+  int NDFileHDF5_layoutValid;
   int NDFileHDF5_layoutFilename;
   #define LAST_NDFILE_HDF5_PARAM NDFileHDF5_layoutFilename
 
@@ -232,8 +233,8 @@ static const char *driverName = "NDFileHDF5";
 #define str_NDFileHDF5_nbitsOffset       "HDF5_nbitsOffset"
 #define str_NDFileHDF5_szipNumPixels     "HDF5_szipNumPixels"
 #define str_NDFileHDF5_zCompressLevel    "HDF5_zCompressLevel"
-#define str_NDFileHDF5_layoutDirectory   "HDF5_layoutDirectory"
-#define str_NDFileHDF5_layoutPathExists  "HDF5_layoutPathExists"
+#define str_NDFileHDF5_layoutErrorMsg    "HDF5_layoutErrorMsg"
+#define str_NDFileHDF5_layoutValid       "HDF5_layoutValid"
 #define str_NDFileHDF5_layoutFilename    "HDF5_layoutFilename"
 
 
@@ -267,6 +268,12 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
     setIntegerParam(NDWriteFile, 0);
     return(asynError);
   }
+
+  // Verify the XML path and filename
+  if (this->verifyLayoutXMLFile()){
+    return asynError;
+  }
+
 
   // Check to see if a file is already open and close it
   this->checkForOpenFile();
@@ -303,7 +310,6 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
 
   /* Work out the various dimensions used in the dataset */
   this->configureDims(pArray);
-
 
   // Create the new file
   if (this->createNewFile(fileName)){
@@ -1183,6 +1189,12 @@ asynStatus NDFileHDF5::closeFile()
   for (iter2 = this->attDataMap.begin(); iter2 != this->attDataMap.end(); ++iter2){
     H5Dclose(iter2->second);
   }
+
+  // Just before closing the file lets ensure there are no hanging references
+  //std::cout << "Remaining Groups:     " << H5Fget_obj_count(this->file, H5F_OBJ_GROUP) << std::endl;
+  //std::cout << "Remaining Datasets:   " << H5Fget_obj_count(this->file, H5F_OBJ_DATASET) << std::endl;
+  //std::cout << "Remaining Attributes: " << H5Fget_obj_count(this->file, H5F_OBJ_ATTR) << std::endl;
+
   // Close the HDF file
   //H5Fclose(this->__temp_file);
   //this->__temp_file = 0;
@@ -1432,16 +1444,10 @@ asynStatus NDFileHDF5::writeOctet(asynUser *pasynUser, const char *value, size_t
   // Set the parameter in the parameter library.
   status = (asynStatus)setStringParam(addr, function, (char *)value);
 
-  if (function == NDFileHDF5_layoutDirectory) {
-    this->checkLayoutPath();
-    //char fullName[MAX_FILENAME_LEN];
-    //this->createFileName(MAX_FILENAME_LEN, fullName);
-    //setStringParam(addr, NDFileHDF5_PercFullFileName, fullName);
-  } else if (function == NDFileHDF5_layoutFilename){
-    // Currently do nothing
-    //char fullName[MAX_FILENAME_LEN];
-    //this->createFileName(MAX_FILENAME_LEN, fullName);
-    //setStringParam(addr, PercFullFileName, fullName);
+  if (function == NDFileHDF5_layoutFilename){
+    if (this->verifyLayoutXMLFile()){
+      return asynError;
+    }
   }
 
   // Do callbacks so higher layers see any changes
@@ -1468,6 +1474,7 @@ asynStatus NDFileHDF5::writeOctet(asynUser *pasynUser, const char *value, size_t
   * It also adds a trailing '/' character to the path if one is not present.
   * Returns a error status if the directory does not exist.
   */
+/*
 int NDFileHDF5::checkLayoutPath()
 {
   // Formats a complete file name from the components
@@ -1503,11 +1510,56 @@ int NDFileHDF5::checkLayoutPath()
   setIntegerParam(NDFileHDF5_layoutPathExists, pathExists);
   return(status);
 }
+*/
 
 int NDFileHDF5::fileExists(char *filename)
 {
   struct stat buffer;   
   return (stat (filename, &buffer) == 0);
+}
+
+int NDFileHDF5::verifyLayoutXMLFile()
+{
+  int status = asynSuccess;
+  char fileName[MAX_FILENAME_LEN];
+  int len;
+  struct stat buffer;   
+  const char *functionName = "verifyLayoutXMLFile";
+
+  status = getStringParam(NDFileHDF5_layoutFilename, sizeof(fileName), fileName);
+  len = strlen(fileName);
+  if (len == 0){
+    setIntegerParam(NDFileHDF5_layoutValid, 1);
+    setStringParam(NDFileHDF5_layoutErrorMsg, "Default layout selected");
+    return(asynSuccess);
+  }
+
+  if (stat(fileName, &buffer)){
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+              "%s::%s XML description file could not be opened.\n", 
+              driverName, functionName);
+    setIntegerParam(NDFileHDF5_layoutValid, 0);
+    setStringParam(NDFileHDF5_layoutErrorMsg, "XML description file cannot be opened");
+    // Do callbacks so higher layers see any changes
+    callParamCallbacks();
+    return asynError;
+  }
+
+  if (this->layout.verify_xml(fileName)){
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+              "%s::%s XML description file parser error.\n", 
+              driverName, functionName);
+    setIntegerParam(NDFileHDF5_layoutValid, 0);
+    setStringParam(NDFileHDF5_layoutErrorMsg, "XML description file parser error");
+    // Do callbacks so higher layers see any changes
+    callParamCallbacks();
+    return asynError;
+  }
+
+  setIntegerParam(NDFileHDF5_layoutValid, 1);
+  setStringParam(NDFileHDF5_layoutErrorMsg, "");
+
+  return status;
 }
 
 /** Build a file name from component parts.
@@ -1516,6 +1568,7 @@ int NDFileHDF5::fileExists(char *filename)
   *
   * This is a convenience function that constructs a complete file name
   */
+/*
 int NDFileHDF5::createLayoutFileName(int maxChars, char *fullFileName)
 {
   // Formats a complete file name from the components defined in NDStdDriverParams
@@ -1535,6 +1588,7 @@ int NDFileHDF5::createLayoutFileName(int maxChars, char *fullFileName)
   }
   return(status);
 }
+*/
 
 /** Constructor for NDFileHDF5; parameters are identical to those for NDPluginFile::NDPluginFile,
     and are passed directly to that base class constructor.
@@ -1578,8 +1632,8 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   this->createParam(str_NDFileHDF5_nbitsOffset,     asynParamInt32,   &NDFileHDF5_nbitsOffset);
   this->createParam(str_NDFileHDF5_szipNumPixels,   asynParamInt32,   &NDFileHDF5_szipNumPixels);
   this->createParam(str_NDFileHDF5_zCompressLevel,  asynParamInt32,   &NDFileHDF5_zCompressLevel);
-  this->createParam(str_NDFileHDF5_layoutDirectory, asynParamOctet,   &NDFileHDF5_layoutDirectory);
-  this->createParam(str_NDFileHDF5_layoutPathExists,asynParamInt32,   &NDFileHDF5_layoutPathExists);
+  this->createParam(str_NDFileHDF5_layoutErrorMsg,  asynParamOctet,   &NDFileHDF5_layoutErrorMsg);
+  this->createParam(str_NDFileHDF5_layoutValid,     asynParamInt32,   &NDFileHDF5_layoutValid);
   this->createParam(str_NDFileHDF5_layoutFilename,  asynParamOctet,   &NDFileHDF5_layoutFilename);
 
   setIntegerParam(NDFileHDF5_nRowChunks,      0);
@@ -1603,8 +1657,8 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   setIntegerParam(NDFileHDF5_nbitsOffset,     0);
   setIntegerParam(NDFileHDF5_szipNumPixels,   16);
   setIntegerParam(NDFileHDF5_zCompressLevel,  6);
-  setStringParam (NDFileHDF5_layoutDirectory, "");
-  setIntegerParam(NDFileHDF5_layoutPathExists,0);
+  setStringParam (NDFileHDF5_layoutErrorMsg,  "");
+  setIntegerParam(NDFileHDF5_layoutValid,     1);
   setStringParam (NDFileHDF5_layoutFilename,  "");
 
 
@@ -2600,6 +2654,7 @@ asynStatus NDFileHDF5::createNewFile(const char *fileName)
   }
 
   /* File creation property list: set the i-storek according to HDF group recommendations */
+  H5Pset_fclose_degree(access_plist, H5F_CLOSE_STRONG);
   hid_t create_plist = H5Pcreate(H5P_FILE_CREATE);
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
             "%s::%s Setting istorek=%d\n",
@@ -2656,7 +2711,8 @@ asynStatus NDFileHDF5::createFileLayout(NDArray *pArray)
   hdfstatus = H5Pset_fill_value (this->cparms, this->datatype, this->ptrFillValue );
 
   char layoutFile[MAX_FILENAME_LEN];
-  int status = createLayoutFileName(MAX_FILENAME_LEN, layoutFile);
+  int status = getStringParam(NDFileHDF5_layoutFilename, sizeof(layoutFile), layoutFile);
+  //int status = createLayoutFileName(MAX_FILENAME_LEN, layoutFile);
   if (status){
     return asynError;
   }

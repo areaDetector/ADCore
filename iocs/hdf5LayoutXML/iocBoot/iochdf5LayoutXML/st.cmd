@@ -27,7 +27,7 @@ dbLoadRecords("$(ADCORE)/db/simDetector.template","P=TESTSIMDETECTOR,R=:CAM:,POR
 # NDStatsConfigure(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxBuffers, maxMemory)
 NDStatsConfigure("CAM1.STAT", 30, 0, "CAM1.CAM", 0, 50, 0)
 dbLoadRecords("$(ADCORE)/db/NDPluginBase.template", "P=TESTSIMDETECTOR,R=:STAT:,PORT=CAM1.STAT,TIMEOUT=1,ADDR=0,NDARRAY_PORT=CAM1.CAM,NDARRAY_ADDR=0,Enabled=1")
-dbLoadRecords("$(ADCORE)/db/NDStats.template", "P=TESTSIMDETECTOR,R=:STAT:,PORT=CAM1.STAT,TIMEOUT=1,ADDR=0,XSIZE=512,YSIZE=512,HIST_SIZE=256,NCHAN=1000")
+dbLoadRecords("$(ADCORE)/db/NDStats.template", "P=TESTSIMDETECTOR,R=:STAT:,PORT=CAM1.STAT,TIMEOUT=1,ADDR=0,XSIZE=512,YSIZE=512,HIST_SIZE=256,NCHANS=1000")
 
 # NDProcessConfigure(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxBuffers, maxMemory)
 NDProcessConfigure("CAM1.PROC", 30, 0, "CAM1.CAM", 0, 50, 0)
@@ -59,12 +59,12 @@ iocInit
 #asynSetTraceMask("CAM1.STAT",0,255)
 
 # Extra post-init IOC commands
+dbpf TESTSIMDETECTOR:CAM:ArrayCallbacks "Enable"
 dbpf TESTSIMDETECTOR:HDF:FilePath "./"
 dbpf TESTSIMDETECTOR:HDF:FileName "test"
 dbpf TESTSIMDETECTOR:HDF:FileTemplate "%s%s_%d.hdf5"
 dbpf TESTSIMDETECTOR:HDF:FileWriteMode "Stream"
-dbpf TESTSIMDETECTOR:HDF:XMLPath "hdf5LayoutXMLApp/data"
-dbpf TESTSIMDETECTOR:HDF:XMLFileName "layout.xml"
+dbpf TESTSIMDETECTOR:HDF:XMLFileName "hdf5LayoutXMLApp/data/new_txm_sample.xml"
 
 
 dbpf TESTSIMDETECTOR:CAM:NDAttributesFile, hdf5LayoutXMLApp/data/CAM1.CAM.xml
