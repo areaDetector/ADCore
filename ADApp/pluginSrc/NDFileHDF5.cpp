@@ -1191,9 +1191,24 @@ asynStatus NDFileHDF5::closeFile()
   }
 
   // Just before closing the file lets ensure there are no hanging references
-  //std::cout << "Remaining Groups:     " << H5Fget_obj_count(this->file, H5F_OBJ_GROUP) << std::endl;
-  //std::cout << "Remaining Datasets:   " << H5Fget_obj_count(this->file, H5F_OBJ_DATASET) << std::endl;
-  //std::cout << "Remaining Attributes: " << H5Fget_obj_count(this->file, H5F_OBJ_ATTR) << std::endl;
+  int obj_count = H5Fget_obj_count(this->file, H5F_OBJ_GROUP);
+  if (obj_count > 0){
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+              "%s::%s Closing file not totally clean.  Groups remaining=%d\n",
+              driverName, functionName, obj_count);
+  }
+  obj_count = H5Fget_obj_count(this->file, H5F_OBJ_DATASET);
+  if (obj_count > 0){
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+              "%s::%s Closing file not totally clean.  Datasets remaining=%d\n",
+              driverName, functionName, obj_count);
+  }
+  obj_count = H5Fget_obj_count(this->file, H5F_OBJ_ATTR);
+  if (obj_count > 0){
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+              "%s::%s Closing file not totally clean.  Attributes remaining=%d\n",
+              driverName, functionName, obj_count);
+  }
 
   // Close the HDF file
   //H5Fclose(this->__temp_file);
@@ -2013,12 +2028,15 @@ asynStatus NDFileHDF5::createAttributeDataset()
     {
       hid_t dsetgroup;
       hdf5::HdfDataset *dset = NULL;
+      int closeGroup = 0;
       // Search for the dataset of the NDAttribute.  If it exists then we use it
       if (root->find_dset_ndattr(ndAttr->getName(), &dset) == 0){
         // In here we need to open the dataset for writing
         // Get the group from the dataset
         //hid_t dsetgroup = H5Gopen(this->__temp_file, dset->get_parent()->get_full_name().c_str(), H5P_DEFAULT);
         dsetgroup = H5Gopen(this->file, dset->get_parent()->get_full_name().c_str(), H5P_DEFAULT);
+        // Here we must close the group after writing the attribute
+        closeGroup = 1;
       } else {
         dsetgroup = hdfgroup;
       }
@@ -2028,6 +2046,9 @@ asynStatus NDFileHDF5::createAttributeDataset()
       ndAttr->getValue(ndAttrDataType, attrDataTypeStr, size);
       if (size > 0) this->writeStringAttribute(dsetgroup, ndAttr->getName(), attrDataTypeStr);
       free(attrDataTypeStr);
+      if (closeGroup == 1){
+        H5Gclose(dsetgroup);
+      }
     }
     ndAttr = this->pFileAttributes->next(ndAttr);
   }
