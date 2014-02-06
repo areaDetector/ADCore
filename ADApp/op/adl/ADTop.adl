@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-0/ADCore/ADApp/op/adl/ADTop.adl"
+	name="/home/epics/devel-AD2.0/areaDetector-2-0/ADCore/ADApp/op/adl/ADTop.adl"
 	version=030107
 }
 display {
@@ -8,7 +8,7 @@ display {
 		x=171
 		y=78
 		width=225
-		height=480
+		height=505
 	}
 	clr=14
 	bclr=4
@@ -651,6 +651,39 @@ text {
 		label="Pixirad #1 specific"
 		name="pixirad.adl"
 		args="P=13PR1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=81
+		y=475
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Point Grey"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=139
+		y=475
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Point Grey #1 general"
+		name="ADBase.adl"
+		args="P=13PG1:, R=cam1: "
+	}
+	display[1] {
+		label="Point Grey #1 specific"
+		name="PointGrey.adl"
+		args="P=13PG1:, R=cam1:"
 	}
 	clr=14
 	bclr=51
