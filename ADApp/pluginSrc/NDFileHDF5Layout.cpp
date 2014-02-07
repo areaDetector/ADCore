@@ -165,7 +165,7 @@ std::string HdfElement::get_path(bool trailing_slash)
 	if (this->parent != NULL) {
 		path.insert(0, this->parent->get_name());
 		path.insert(0, this->parent->get_path(true));
-		if (not trailing_slash) path.erase(path.end() - 1);
+		if (! trailing_slash) path.erase(path.end() - 1);
 	}
 	return path;
 }
@@ -559,11 +559,11 @@ bool HdfGroup::name_exist(const std::string& name)
 }
 
 HdfRoot::HdfRoot()
-: HdfGroup::HdfGroup(){}
+: HdfGroup(){}
 HdfRoot::HdfRoot(const std::string& name)
-: HdfGroup::HdfGroup(name){}
+: HdfGroup(name){}
 HdfRoot::HdfRoot(const char *name)
-: HdfGroup::HdfGroup(name){}
+: HdfGroup(name){}
 
 
 void HdfRoot::merge_ndattributes(MapNDAttrSrc_t::const_iterator it_begin,

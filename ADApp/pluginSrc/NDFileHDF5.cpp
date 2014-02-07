@@ -16,14 +16,16 @@
 #include <sstream>
 #include <hdf5.h>
 #include <sys/stat.h>
+#include <stdint.h>
 // #include <hdf5_hl.h> // high level HDF5 API not currently used (requires use of library hdf5_hl)
+
+#include "NDPluginFile.h"
 
 #include <epicsStdio.h>
 #include <epicsString.h>
 #include <epicsTime.h>
 #include <iocsh.h>
 #include <epicsExport.h>
-#include "NDPluginFile.h"
 #include "NDFileHDF5Dataset.h"
 #include "NDFileHDF5LayoutXML.h"
 #include "NDFileHDF5Layout.h"
@@ -770,7 +772,7 @@ void NDFileHDF5::write_h5attr_int32(hid_t element, const std::string &attr_name,
     // Vector array of integers
     hsize_t dims[1];
     dims[0] = vect.size();
-    int ivalues[vect.size()];
+    int *ivalues = new int[vect.size()];
     for (int index = 0; index < (int)vect.size(); index++){
       ivalues[index] = vect[index];
     }
@@ -778,12 +780,14 @@ void NDFileHDF5::write_h5attr_int32(hid_t element, const std::string &attr_name,
     H5Sset_extent_simple(hdfattrdataspace, 1, dims, NULL);
     hdfattr = H5Acreate2(element, attr_name.c_str(), hdfdatatype, hdfattrdataspace, H5P_DEFAULT, H5P_DEFAULT);
     if (hdfattr < 0) {
+      delete [] ivalues;
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s unable to create attribute: %s\n",
                 driverName, functionName, attr_name.c_str());
       H5Sclose(hdfattrdataspace);
       return;
     }
     hdfstatus = H5Awrite(hdfattr, hdfdatatype, ivalues);
+    delete [] ivalues;
     if (hdfstatus < 0) {
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s unable to write attribute: %s\n",
                 driverName, functionName, attr_name.c_str());
@@ -851,7 +855,7 @@ void NDFileHDF5::write_h5attr_float64(hid_t element, const std::string &attr_nam
     // Vector array of doubles
     hsize_t dims[1];
     dims[0] = vect.size();
-    double fvalues[vect.size()];
+    double *fvalues = new double[vect.size()];
     for (int index = 0; index < (int)vect.size(); index++){
       fvalues[index] = vect[index];
     }
@@ -859,12 +863,14 @@ void NDFileHDF5::write_h5attr_float64(hid_t element, const std::string &attr_nam
     H5Sset_extent_simple(hdfattrdataspace, 1, dims, NULL);
     hdfattr = H5Acreate2(element, attr_name.c_str(), hdfdatatype, hdfattrdataspace, H5P_DEFAULT, H5P_DEFAULT);
     if (hdfattr < 0) {
+      delete [] fvalues;
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s unable to create attribute: %s\n",
                 driverName, functionName, attr_name.c_str());
       H5Sclose(hdfattrdataspace);
       return;
     }
     hdfstatus = H5Awrite(hdfattr, hdfdatatype, fvalues);
+    delete [] fvalues;
     if (hdfstatus < 0) {
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s unable to write attribute: %s\n",
                 driverName, functionName, attr_name.c_str());

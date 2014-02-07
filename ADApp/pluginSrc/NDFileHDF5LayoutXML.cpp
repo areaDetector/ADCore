@@ -270,7 +270,7 @@ int LayoutXML::process_node()
 int LayoutXML::process_dset_xml_attribute(HdfDataSource& out)
 {
     int ret = -1;
-    if (not xmlTextReaderHasAttributes(this->xmlreader) ) return ret;
+    if (! xmlTextReaderHasAttributes(this->xmlreader) ) return ret;
 
     xmlChar *attr_src = NULL;
     std::string str_attr_src;
@@ -298,7 +298,7 @@ int LayoutXML::process_dset_xml_attribute(HdfDataSource& out)
 int LayoutXML::process_attribute_xml_attribute(HdfAttribute& out)
 {
     int ret = -1;
-    if (not xmlTextReaderHasAttributes(this->xmlreader) ) return ret;
+    if (! xmlTextReaderHasAttributes(this->xmlreader) ) return ret;
 
     xmlChar *attr_src = NULL;
     std::string str_attr_src;
@@ -355,7 +355,7 @@ int LayoutXML::process_attribute_xml_attribute(HdfAttribute& out)
 int LayoutXML::new_group()
 {
     // First check the basics
-    if (not xmlTextReaderHasAttributes(this->xmlreader) ) return -1;
+    if (! xmlTextReaderHasAttributes(this->xmlreader) ) return -1;
 
     xmlChar * group_name = NULL;
     group_name = xmlTextReaderGetAttribute(this->xmlreader,
@@ -405,7 +405,7 @@ int LayoutXML::new_group()
 int LayoutXML::new_dataset()
 {
     // First check the basics
-    if (not xmlTextReaderHasAttributes(this->xmlreader) ) return -1;
+    if (! xmlTextReaderHasAttributes(this->xmlreader) ) return -1;
     if (this->ptr_curr_element == NULL) return -1;
 
     xmlChar *dset_name = NULL;
@@ -456,7 +456,7 @@ int LayoutXML::new_attribute()
 {
     int ret = 0;
     // First check the basics
-    if (not xmlTextReaderHasAttributes(this->xmlreader) ) return -1;
+    if (! xmlTextReaderHasAttributes(this->xmlreader) ) return -1;
     if (this->ptr_curr_element == NULL) return -1;
 
     xmlChar *ndattr_name = NULL;
@@ -477,7 +477,7 @@ int LayoutXML::new_global()
 {
   int ret = 0;
   // First check the basics
-  if (not xmlTextReaderHasAttributes(this->xmlreader) ) return -1;
+  if (! xmlTextReaderHasAttributes(this->xmlreader) ) return -1;
   xmlChar *global_name = NULL;
   global_name = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_GLOBAL_NAME.c_str());
   if (global_name == NULL) return -1;
