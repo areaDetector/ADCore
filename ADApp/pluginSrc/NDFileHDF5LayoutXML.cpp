@@ -134,11 +134,22 @@ int LayoutXML::verify_xml(const std::string& filename)
 {
     int ret = 0;
 
-    this->xmlreader = xmlReaderForFile(filename.c_str(), NULL, 0);
-    if (this->xmlreader == NULL) {
-        LOG4CXX_ERROR(log, "Unable to open XML file: " << filename );
-        this->xmlreader = NULL;
-        return -1;
+    // if the file name contains <?xml then load it as an xml string from memory
+    if (filename.find("<?xml") != std::string::npos) {
+        this->xmlreader = xmlReaderForMemory(filename.c_str(), filename.length(), NULL, NULL, 0);
+        if (this->xmlreader == NULL) {
+           LOG4CXX_ERROR(log, "Unable to open XML file: " << filename );
+           this->xmlreader = NULL;
+           return -1;
+        }
+    }
+    else {
+        this->xmlreader = xmlReaderForFile(filename.c_str(), NULL, 0);
+        if (this->xmlreader == NULL) {
+            LOG4CXX_ERROR(log, "Unable to open XML file: " << filename );
+            this->xmlreader = NULL;
+            return -1;
+        }
     }
 
     LOG4CXX_INFO(log, "Loading HDF5 layout XML file: " << filename);
