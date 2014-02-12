@@ -35,7 +35,6 @@
 #define METADATA_NDIMS 1
 
 typedef struct HDFAttributeNode {
-  ELLNODE node;
   char *attrName;
   hid_t hdfdataset;
   hid_t hdfdataspace;
