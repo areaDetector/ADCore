@@ -136,7 +136,7 @@ void HdfDataSource::set_const_datatype_value(HDF_DataType_t dtype, const std::st
 /* ================== HdfElement Class public methods ==================== */
 HdfElement::HdfElement()
 {
-    this->name = "entry";
+    this->name = "";
     this->parent = NULL;
 }
 
@@ -435,7 +435,12 @@ HdfGroup* HdfGroup::find_ndattr_default_group()
 		if (it->second->ndattr_default_container) {
 			result = it->second;
 			break;
-		}
+		} else {
+      result = it->second->find_ndattr_default_group();
+      if (result != NULL){
+        break;
+      }
+    }
 	}
 	return result;
 }
