@@ -368,16 +368,17 @@ int LayoutXML::new_group()
 
     // Initialise the tree if it has not already been done.
     if (this->ptr_tree == NULL) {
-        this->ptr_tree = new HdfRoot(str_group_name);
+        this->ptr_tree = new HdfRoot();
         //LOG4CXX_DEBUG(log, "  Initialised the root of the tree: " << *this->ptr_tree );
         this->ptr_curr_element = this->ptr_tree;
-    } else {
-        HdfGroup *parent = static_cast<HdfGroup *>(this->ptr_curr_element);
-        HdfGroup *new_group = NULL;
-        new_group = parent->new_group(str_group_name);
-        if (new_group == NULL) return -1;
-        this->ptr_curr_element = new_group;
     }
+
+    // Obtain the parent and create this group from that parent
+    HdfGroup *parent = static_cast<HdfGroup *>(this->ptr_curr_element);
+    HdfGroup *new_group = NULL;
+    new_group = parent->new_group(str_group_name);
+    if (new_group == NULL) return -1;
+    this->ptr_curr_element = new_group;
 
     if (this->ptr_curr_element != NULL)
     {
