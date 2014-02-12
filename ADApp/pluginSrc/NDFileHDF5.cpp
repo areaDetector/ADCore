@@ -406,16 +406,17 @@ asynStatus NDFileHDF5::create_file_layout()
     // Check for NDAttribute name of data destination switch
     std::string ddest = this->layout.get_global("detector_data_destination");
     if (ddest != ""){
-      //std::cout << "Data destination attribute name: " << ddest << std::endl;
       ndDsetName = ddest;
     } else {
-      //std::cout << "No data destination attribute specified, all routing to default" << std::endl;
+      // Nothing to do here
     }
 
   }
   return retcode;
 }
 
+/** Check through attributes and store any that have been marked as onOpen
+ */
 asynStatus NDFileHDF5::store_onOpen_attributes()
 {
   asynStatus status = asynSuccess;
@@ -488,6 +489,8 @@ asynStatus NDFileHDF5::store_onOpen_attributes()
   return status;
 }
 
+/** Check through attributes and store any that have been marked as onClose
+ */
 asynStatus NDFileHDF5::store_onClose_attributes()
 {
   asynStatus status = asynSuccess;
@@ -601,7 +604,6 @@ asynStatus NDFileHDF5::create_tree(hdf5::HdfGroup* root, hid_t h5handle)
     // Write the hdf attributes to the dataset
     this->write_hdf_attributes( new_dset,  it_dsets->second);
     // Datasets are closed after data has been written
-    //H5Dclose(new_dset);
   }
 
   hdf5::HdfGroup::MapGroups_t::const_iterator it_group;
@@ -925,7 +927,6 @@ hid_t NDFileHDF5::create_dataset_detector(hid_t group, hdf5::HdfDataset *dset)
   static const char *functionName = "create_dataset_detector";
 
   if (dset == NULL) return -1; // sanity check
-  //if (!dset->data_source().is_src_detector()) return -1;
   hid_t dataset = -1;
 
   hid_t dset_access_plist = H5Pcreate(H5P_DATASET_ACCESS);
@@ -953,17 +954,6 @@ hid_t NDFileHDF5::create_dataset_detector(hid_t group, hdf5::HdfDataset *dset)
 
   return dataset;
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-
 
 /** Writes NDArray data to a HDF5 file.
   * \param[in] pArray Pointer to an NDArray to write to the file. This function can be called multiple
@@ -1181,8 +1171,8 @@ asynStatus NDFileHDF5::readFile(NDArray **pArray)
   return asynError;
 }
 
-
-/** Closes the HDF5 file opened with NDFileHDF5::openFile */ 
+/** Closes the HDF5 file opened with NDFileHDF5::openFile 
+ */ 
 asynStatus NDFileHDF5::closeFile()
 {
   int storeAttributes, storePerformance;
@@ -1278,6 +1268,8 @@ asynStatus NDFileHDF5::closeFile()
   return asynSuccess;
 }
 
+/** Perform any actions required when an int32 parameter is updated.
+ */
 asynStatus NDFileHDF5::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
   int addr=0;
@@ -1519,12 +1511,20 @@ asynStatus NDFileHDF5::writeOctet(asynUser *pasynUser, const char *value, size_t
   return status;
 }
 
+/** Check if the specified filename/path exists
+ */
 int NDFileHDF5::fileExists(char *filename)
 {
   struct stat buffer;   
   return (stat (filename, &buffer) == 0);
 }
 
+/** Verify the XML layout file is valid.
+ *
+ *  This method checks the file exists and can be opened.  If these checks
+ *  pass then the file is opened and the XML is also parsed and verified.  Any
+ *  error messages are reported and the status set accordingly.
+ */
 int NDFileHDF5::verifyLayoutXMLFile()
 {
   int status = asynSuccess;
@@ -1791,6 +1791,8 @@ hsize_t NDFileHDF5::calc_chunk_cache_slots()
     return nslots;
 }
 
+/** Setup the required allocation for the performance dataset
+ */
 asynStatus NDFileHDF5::configurePerformanceDataset()
 {
   int numCaptureFrames;
@@ -1806,12 +1808,11 @@ asynStatus NDFileHDF5::configurePerformanceDataset()
   }
   this->performancePtr  = this->performanceBuf;
 
-  // create the performance group in the file
-  //this->groupPerfomance = H5Gcreate(this->groupInstrument, "performance", H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-
   return asynSuccess;
 }
 
+/** Write out the performance dataset
+ */
 asynStatus NDFileHDF5::writePerformanceDataset()
 {
   hsize_t dims[2];
@@ -2057,6 +2058,8 @@ asynStatus NDFileHDF5::writeAttributeDataset()
   return status;
 }
 
+/** Close all attribute datasets and clear out memory
+ */
 asynStatus NDFileHDF5::closeAttributeDataset()
 {
   asynStatus status = asynSuccess;
@@ -2103,6 +2106,11 @@ asynStatus NDFileHDF5::writeStringAttribute(hid_t element, const char * attrName
   return status;
 }
 
+/** Configure the required dimensions for a dataset.
+ *
+ *  This method will call the configureDims method for each detector dataset
+ *  created.
+ */
 asynStatus NDFileHDF5::configureDatasetDims(NDArray *pArray)
 {
   int i = 0;
@@ -2279,7 +2287,8 @@ asynStatus NDFileHDF5::configureDims(NDArray *pArray)
   return status;
 }
 
-
+/** Configure compression
+ */
 asynStatus NDFileHDF5::configureCompression()
 {
   asynStatus status = asynSuccess;
@@ -2330,7 +2339,8 @@ asynStatus NDFileHDF5::configureCompression()
   return status;
 }
 
-/** Translate the NDArray datatype to HDF5 datatypes */
+/** Translate the NDArray datatype to HDF5 datatypes 
+ */
 hid_t NDFileHDF5::type_nd2hdf(NDDataType_t datatype)
 {
   hid_t result;
@@ -2501,6 +2511,8 @@ asynStatus NDFileHDF5::createNewFile(const char *fileName)
   return asynSuccess;
 }
 
+/** Create the output file layout as specified by the XML layout.
+ */
 asynStatus NDFileHDF5::createFileLayout(NDArray *pArray)
 {
   herr_t hdfstatus;
@@ -2538,7 +2550,6 @@ asynStatus NDFileHDF5::createFileLayout(NDArray *pArray)
 
   char layoutFile[MAX_FILENAME_LEN];
   int status = getStringParam(NDFileHDF5_layoutFilename, sizeof(layoutFile), layoutFile);
-  //int status = createLayoutFileName(MAX_FILENAME_LEN, layoutFile);
   if (status){
     return asynError;
   }
