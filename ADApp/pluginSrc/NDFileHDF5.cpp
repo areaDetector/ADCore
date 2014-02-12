@@ -1558,18 +1558,16 @@ int NDFileHDF5::verifyLayoutXMLFile()
   }
 
   if (strstr(fileName, "<?xml") == NULL) {
-    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-              "%s::%s Not XML string.\n", 
-              driverName, functionName);
-    if(stat(fileName, &buffer))
-    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-              "%s::%s XML description file could not be opened.\n", 
-              driverName, functionName);
-    setIntegerParam(NDFileHDF5_layoutValid, 0);
-    setStringParam(NDFileHDF5_layoutErrorMsg, "XML description file cannot be opened");
-    // Do callbacks so higher layers see any changes
-    callParamCallbacks();
-    return asynError;
+    if(stat(fileName, &buffer)) {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+                  "%s::%s XML description file could not be opened.\n", 
+                  driverName, functionName);
+        setIntegerParam(NDFileHDF5_layoutValid, 0);
+        setStringParam(NDFileHDF5_layoutErrorMsg, "XML description file cannot be opened");
+        // Do callbacks so higher layers see any changes
+        callParamCallbacks();
+        return asynError;
+    }
   }
 
   if (this->layout.verify_xml(fileName)){
