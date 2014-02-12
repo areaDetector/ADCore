@@ -34,6 +34,7 @@
 #include "osiSock.h"
 
 #define METADATA_NDIMS 1
+#define MAX_LAYOUT_LEN 1048576
 
 typedef struct HDFAttributeNode {
   ELLNODE node;
@@ -1542,7 +1543,8 @@ int NDFileHDF5::fileExists(char *filename)
 int NDFileHDF5::verifyLayoutXMLFile()
 {
   int status = asynSuccess;
-  char fileName[MAX_FILENAME_LEN];
+//  Reading in a filename or string of xml. We will need more than 256 bytes
+  char fileName[MAX_LAYOUT_LEN];
   int len;
   struct stat buffer;   
   const char *functionName = "verifyLayoutXMLFile";
@@ -1555,7 +1557,11 @@ int NDFileHDF5::verifyLayoutXMLFile()
     return(asynSuccess);
   }
 
-  if (stat(fileName, &buffer)){
+  if (strstr(fileName, "<?xml") == NULL) {
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+              "%s::%s Not XML string.\n", 
+              driverName, functionName);
+    if(stat(fileName, &buffer))
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
               "%s::%s XML description file could not be opened.\n", 
               driverName, functionName);
@@ -2737,7 +2743,9 @@ asynStatus NDFileHDF5::createFileLayout(NDArray *pArray)
     driverName, functionName);
   hdfstatus = H5Pset_fill_value (this->cparms, this->datatype, this->ptrFillValue );
 
-  char layoutFile[MAX_FILENAME_LEN];
+  //We use MAX_LAYOUT_LEN instead of MAX_FILENAME_LEN because we want to be able to load
+  // in an xml string or a file containing the xml
+  char layoutFile[MAX_LAYOUT_LEN];
   int status = getStringParam(NDFileHDF5_layoutFilename, sizeof(layoutFile), layoutFile);
   //int status = createLayoutFileName(MAX_FILENAME_LEN, layoutFile);
   if (status){
@@ -2754,7 +2762,7 @@ asynStatus NDFileHDF5::createFileLayout(NDArray *pArray)
       return asynError;
     }
   } else {
-    if (this->fileExists(layoutFile)){
+    if (strstr(layoutFile, "<?xml") != NULL || this->fileExists(layoutFile)){
       // File specified and exists, use the file
       asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s Layout file exists, using the file: %s\n",
                 driverName, functionName, layoutFile);

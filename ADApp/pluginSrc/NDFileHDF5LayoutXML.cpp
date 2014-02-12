@@ -103,8 +103,12 @@ int LayoutXML::load_xml()
 int LayoutXML::load_xml(const std::string& filename)
 {
     int ret = 0;
+    // if the file name contains <?xml then load it as an xml string from memory
+    if (filename.find("<?xml") != std::string::npos) 
+        this->xmlreader = xmlReaderForMemory(filename.c_str(), filename.length(), NULL, NULL, 0);
+    else  
+        this->xmlreader = xmlReaderForFile(filename.c_str(), NULL, 0);
 
-    this->xmlreader = xmlReaderForFile(filename.c_str(), NULL, 0);
     if (this->xmlreader == NULL) {
         LOG4CXX_ERROR(log, "Unable to open XML file: " << filename );
         this->xmlreader = NULL;
@@ -138,7 +142,7 @@ int LayoutXML::verify_xml(const std::string& filename)
     if (filename.find("<?xml") != std::string::npos) {
         this->xmlreader = xmlReaderForMemory(filename.c_str(), filename.length(), NULL, NULL, 0);
         if (this->xmlreader == NULL) {
-           LOG4CXX_ERROR(log, "Unable to open XML file: " << filename );
+           LOG4CXX_ERROR(log, "Unable to parse XML string: " << filename );
            this->xmlreader = NULL;
            return -1;
         }

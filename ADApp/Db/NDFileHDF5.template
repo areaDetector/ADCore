@@ -429,7 +429,7 @@ record(waveform, "$(P)$(R)XMLFileName")
     field(DTYP, "asynOctetWrite")
     field(INP,  "@asyn($(PORT),0)HDF5_layoutFilename")
     field(FTVL, "CHAR")
-    field(NELM, "256")
+    field(NELM, "1048576")
 }
 
 record(waveform, "$(P)$(R)XMLFileName_RBV")
@@ -437,7 +437,7 @@ record(waveform, "$(P)$(R)XMLFileName_RBV")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),0)HDF5_layoutFilename")
     field(FTVL, "CHAR")
-    field(NELM, "256")
+    field(NELM, "1048576")
     field(SCAN, "I/O Intr")
 }
 
