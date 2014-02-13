@@ -1554,8 +1554,6 @@ int NDFileHDF5::verifyLayoutXMLFile()
                   driverName, functionName);
         setIntegerParam(NDFileHDF5_layoutValid, 0);
         setStringParam(NDFileHDF5_layoutErrorMsg, "XML description file cannot be opened");
-        // Do callbacks so higher layers see any changes
-        callParamCallbacks();
         return asynError;
     }
   }
@@ -1566,8 +1564,6 @@ int NDFileHDF5::verifyLayoutXMLFile()
               driverName, functionName);
     setIntegerParam(NDFileHDF5_layoutValid, 0);
     setStringParam(NDFileHDF5_layoutErrorMsg, "XML description file parser error");
-    // Do callbacks so higher layers see any changes
-    callParamCallbacks();
     return asynError;
   }
 
