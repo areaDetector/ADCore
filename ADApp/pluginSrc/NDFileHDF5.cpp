@@ -1494,15 +1494,14 @@ asynStatus NDFileHDF5::writeOctet(asynUser *pasynUser, const char *value, size_t
   status = getAddress(pasynUser, &addr); if (status != asynSuccess) return(status);
   // Set the parameter in the parameter library.
   status = (asynStatus)setStringParam(addr, function, (char *)value);
+  if (status != asynSuccess) return(status);
 
   if (function == NDFileHDF5_layoutFilename){
-    if (this->verifyLayoutXMLFile()){
-      return asynError;
-    }
+    status = (asynStatus)this->verifyLayoutXMLFile();
   }
 
   // Do callbacks so higher layers see any changes
-  status = (asynStatus)callParamCallbacks(addr, addr);
+  callParamCallbacks(addr, addr);
 
   if (status){
     epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
@@ -1540,7 +1539,7 @@ int NDFileHDF5::verifyLayoutXMLFile()
   struct stat buffer;   
   const char *functionName = "verifyLayoutXMLFile";
 
-  status = getStringParam(NDFileHDF5_layoutFilename, sizeof(fileName), fileName);
+  getStringParam(NDFileHDF5_layoutFilename, sizeof(fileName), fileName);
   len = strlen(fileName);
   if (len == 0){
     setIntegerParam(NDFileHDF5_layoutValid, 1);
