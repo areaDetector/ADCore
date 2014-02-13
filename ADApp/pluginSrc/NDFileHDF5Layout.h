@@ -99,8 +99,8 @@ public:
     HdfElement& operator=(const HdfElement& src);
 
     const std::string& get_name();
-    std::string get_full_name();
-    std::string get_path(bool trailing_slash=false);
+    virtual std::string get_full_name();
+    virtual std::string get_path(bool trailing_slash=false);
     int add_attribute(HdfAttribute& attr);
     bool has_attribute(const std::string& attr_name);
     int tree_level();
@@ -223,6 +223,8 @@ public:
     virtual void merge_ndattributes(MapNDAttrSrc_t::const_iterator it_begin,
     								MapNDAttrSrc_t::const_iterator it_end,
     								std::set<std::string>& used_ndattribute_srcs);
+  std::string get_full_name(){ return ""; };
+  std::string get_path(bool trailing_slash=false){ return ""; };
 };
 
 } // hdf5
