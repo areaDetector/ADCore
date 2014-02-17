@@ -1,14 +1,14 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADApp/op/adl/NDFileHDF5.adl"
-	version=030105
+	name="/local/aglowacki/src/areaDetector/ADCore/ADApp/op/adl/NDFileHDF5.adl"
+	version=030108
 }
 display {
 	object {
 		x=114
 		y=59
 		width=1070
-		height=720
+		height=798
 	}
 	clr=14
 	bclr=4
@@ -1953,77 +1953,103 @@ composite {
 		}
 	}
 }
-text {
-   object {
-      x=438
-      y=767
-      width=90
-      height=20
-   }
-   "basic attribute" {
-      clr=14
-   }
-   textix="XML File name"
-   align="horiz. right"
+composite {
+	object {
+		x=416
+		y=696
+		width=625
+		height=91
+	}
+	"composite name"=""
+	children {
+		"text update" {
+			object {
+				x=1001
+				y=696
+				width=40
+				height=20
+			}
+			monitor {
+				chan="$(P)$(R)XMLValid_RBV"
+				clr=14
+				bclr=2
+			}
+			clrmod="alarm"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=926
+				y=696
+				width=70
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Exists:"
+		}
+		"text update" {
+			object {
+				x=416
+				y=698
+				width=500
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)XMLErrorMsg_RBV"
+				clr=54
+				bclr=4
+			}
+			format="string"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=537
+				y=744
+				width=500
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)XMLFileName_RBV"
+				clr=54
+				bclr=4
+			}
+			format="string"
+			limits {
+			}
+		}
+		"text entry" {
+			object {
+				x=537
+				y=767
+				width=500
+				height=20
+			}
+			control {
+				chan="$(P)$(R)XMLFileName"
+				clr=14
+				bclr=51
+			}
+			format="string"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=438
+				y=767
+				width=90
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="XML File name"
+			align="horiz. right"
+		}
+	}
 }
-"text entry" {
-   object {
-      x=537
-      y=767
-      width=500
-      height=20
-   }
-   control {
-      chan="$(P)$(R)XMLFileName"
-      clr=14
-      bclr=51
-   }
-   format="string"
-   limits {
-   }
-}
-"text update" {
-   object {
-      x=537
-      y=744
-      width=500
-      height=18
-   }
-   monitor {
-      chan="$(P)$(R)XMLFileName_RBV"
-      clr=54
-      bclr=4
-   }
-   format="string"
-   limits {
-   }
-}
-text {
-   object {
-      x=926
-      y=696
-      width=70
-      height=20
-   }
-   "basic attribute" {
-      clr=14
-   }
-   textix="Exists:"
-}
-"text update" {
-   object {
-      x=1001
-      y=696
-      width=40
-      height=20
-   }
-   monitor {
-      chan="$(P)$(R)XMLValid_RBV"
-      clr=14
-      bclr=2
-   }
-   clrmod="alarm"
-   limits {
-   }
-}
-
