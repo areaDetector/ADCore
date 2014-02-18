@@ -35,14 +35,14 @@
   <h2 id="Overview">
     Overview</h2>
   <p>
-    A powerful feature of the <a href="areaDetectorDoc.html">areaDetector</a> module
-    is the concept of plugins. A plugin is code that is called by a driver that passes
-    NDArray data in a callback. Plugins can be used to process array data in real time.
-    Existing plugins convert data to standard asyn arrays (NDPluginStdArrays), save
-    data to disk (NDPluginFile), select regions-of-interest (NDPluginROI), and convert
-    color modes (NDPluginColorConvert). New plugins could be written to perform functions
-    like finding the centroid of a beam, etc. Once a plugin is written it will work
-    with any areaDetector driver. Plugins have the the following properties:
+    A powerful feature of the <a href="http://www.aps.anl.gov/epics/">EPICS</a> <a href="areaDetectorDoc.html">
+      areaDetector</a> module is the concept of plugins. A plugin is code that is called
+    by a driver that passes NDArray data in a callback. Plugins can be used to process
+    array data in real time. Existing plugins convert data to standard asyn arrays (NDPluginStdArrays),
+    save data to disk (NDPluginFile), select regions-of-interest (NDPluginROI), and
+    convert color modes (NDPluginColorConvert). New plugins could be written to perform
+    functions like finding the centroid of a beam, etc. Once a plugin is written it
+    will work with any areaDetector driver. Plugins have the the following properties:
   </p>
   <ul>
     <li>They can execute either in a blocking mode or a non-blocking mode. In the blocking
