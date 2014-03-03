@@ -29,8 +29,8 @@ R2-0
 * Re-organized the directory structure to separate the driver library from the example 
   simDetector IOC application.
 * Moved the pre-built libraries for Windows to the new ADBinaries repository.
-* Removed pre-built libraties for Linux.  
-  Support libraries such as HDF5 and GraphicsMagick must now be present on the build system computer.
+* Removed pre-built libraries for Linux.  Support libraries such as HDF5 and GraphicsMagick 
+  must now be present on the build system computer.
 * Added support for dynamic builds on win32-x86 and windows-x64. 
 
 ###NDArray and asynNDArrayDriver
@@ -55,7 +55,7 @@ epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
     - $(P)$(R)EpicsTSNsec_RBV contains the current NDArray.epicsTS.nsec
 
 * The changes in R2-0 for enhanced timestamp support are described in 
-[areaDetectorTimeStampSupport](https://cars.uchicago.edu/software/epics/areaDetectorTimeStampSupport.html).
+[areaDetectorTimeStampSupport](http://cars.uchicago.edu/software/epics/areaDetectorTimeStampSupport.html).
 
 ###NDAttribute
 * Added new attribute type, NDAttrSourceFunct. 
