@@ -28,7 +28,8 @@ R2-0
 * Moved the repository to [Github](https://github.com/areaDetector/ADCore).
 * Re-organized the directory structure to separate the driver library from the example IOC application.
 * Moved the pre-built libraries for Windows to the new ADBinaries repository.
-* Removed pre-built libraties for Linux.  Support libraries such as HDF5 and GraphicsMagick must now be present on the build system computer.
+* Removed pre-built libraties for Linux.  
+  Support libraries such as HDF5 and GraphicsMagick must now be present on the build system computer.
 * Added support for dynamic builds on win32-x86 and windows-x64. 
 
 ####NDArray and asynNDArrayDriver
@@ -45,6 +46,12 @@ R2-0
   Any mix of case is allowed, but the NDAttributeList::find() method is now case sensitive. 
   This was done because it was found that the epicsStrCaseCmp function was significantly 
   reducing performance with long attribute lists. 
+* Added a new fieldm epicsTS, to the NDArray class. This is the definition of that field.
+
+    epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
+                               * pasynManager->updateTimeStamp(), 
+                               * and can come from a user-defined timestamp source. */
+
    
 ####Plugins
 * NDPluginOverlay. Fixed bug in the cross overlay that caused lines not to display if the cross was 
