@@ -73,6 +73,9 @@ epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
   it is created. The datatype can only be changed from NDAttrUndefined to one of the actual values.
 * Added new setDataType() method, removed dataType from setValue() method.
 * Added getName(), getDescription(), getSource(), getSourceInfo(), getDataType() methods.
+* Fixed logic problem with PVAttribute.  Previously it could update the actual attribute value
+  whenever a channel access callback arrived.  It now caches the callback value in private data and
+  only copied it to the value field when updateValue() is called.
 * Changed constructor to have 6 required paramters, added sourceType and pSource.
 
 ####Plugins
@@ -94,9 +97,11 @@ epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
   clipped to the image boundaries. The problem was attempting to store a signed value in a size_t variable. 
 * NDPluginROI. Make 3-D [X, Y, 1] arrays be converted to 2-D even if they are not RGB3. 
 * NDPluginStats. Fixed bug if a dimension was 1; this bug was introduced when changing dimensions to size_t. 
-* NDFileNetCDF. Writes 2 new variables to every netCDF file for each NDArray. 
-    - epicsTSSec contains NDArray.epicsTS.secPastEpoch. 
-    - epicsTSNsec contains NDArray.epicsTS.nsec. 
+* NDFileNetCDF. 
+    - Writes 2 new variables to every netCDF file for each NDArray. 
+        - epicsTSSec contains NDArray.epicsTS.secPastEpoch. 
+        - epicsTSNsec contains NDArray.epicsTS.nsec. 
+    - Changes to work on vxWorks 6.8 and above.
     
   Note that these variables are arrays of length numArrays,
   where numArrays is the number of NDArrays (images) in the file. It was not possible
