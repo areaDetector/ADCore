@@ -28,8 +28,7 @@ R2-0
 * Moved the repository to [Github](https://github.com/areaDetector/ADCore).
 * Re-organized the directory structure to separate the driver library from the example IOC application.
 * Moved the pre-built libraries for Windows to the new ADBinaries repository.
-* Removed pre-built libraties for Linux.  Support libraries such as HDF5 and GraphicsMagick must now be
-  present on the build system computer.
+* Removed pre-built libraties for Linux.  Support libraries such as HDF5 and GraphicsMagick must now be present on the build system computer.
 * Added support for dynamic builds on win32-x86 and windows-x64. 
 
 * **NDArray and asynNDArrayDriver**
@@ -49,7 +48,7 @@ R2-0
    
 * **Plugins**
 * NDPluginOverlay. Fixed bug in the cross overlay that caused lines not to display if the cross was 
-   clipped to the image boundaries. The problem was attempting to store a signed value in a size_t variable. 
+  clipped to the image boundaries. The problem was attempting to store a signed value in a size_t variable. 
 * NDPluginROI. Make 3-D [X, Y, 1] arrays be converted to 2-D even if they are not RGB3. 
 * NDPluginStats. Fixed bug if a dimension was 1; this bug was introduced when changing dimensions to size_t. 
 
