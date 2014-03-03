@@ -31,7 +31,7 @@ R2-0
 * Removed pre-built libraties for Linux.  Support libraries such as HDF5 and GraphicsMagick must now be present on the build system computer.
 * Added support for dynamic builds on win32-x86 and windows-x64. 
 
-* **NDArray and asynNDArrayDriver**
+####NDArray and asynNDArrayDriver
 * Changed all report() methods to have a FILE *fp argument so output can go to a file. 
 * Added new attribute type, NDAttrSourceFunct. 
   This type of attribute gets its value from a user-defined C++ function. 
@@ -46,7 +46,7 @@ R2-0
   This was done because it was found that the epicsStrCaseCmp function was significantly 
   reducing performance with long attribute lists. 
    
-* **Plugins**
+####Plugins
 * NDPluginOverlay. Fixed bug in the cross overlay that caused lines not to display if the cross was 
   clipped to the image boundaries. The problem was attempting to store a signed value in a size_t variable. 
 * NDPluginROI. Make 3-D [X, Y, 1] arrays be converted to 2-D even if they are not RGB3. 
