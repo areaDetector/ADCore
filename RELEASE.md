@@ -33,7 +33,30 @@ R2-0
 * Added support for dynamic builds on win32-x86 and windows-x64. 
 
 ####NDArray and asynNDArrayDriver
+* Split NDArray.h and NDArray.cpp into separate files for each class: 
+  NDArray, NDAttribute, NDAttributeList, and NDArrayPool.
 * Changed all report() methods to have a FILE *fp argument so output can go to a file. 
+* Added a new field, epicsTS, to the NDArray class. The existing timeStamp field is a double,
+  which is convenient because it can be easily displayed and interpreted.  However, it cannot
+  preserve all of the information in an epicsTimeStamp, which this new field does.
+  This is the definition of the new epicsTS field.
+```
+epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
+                           * pasynManager->updateTimeStamp(), 
+                           * and can come from a user-defined timestamp source. */
+```
+* Two new asynInt32 parameters have been added to the asynNDArrayDriver class.
+    - NDEpicsTSSec contains NDArray.epicsTS.secPastEpoch
+    - NDEpicsTSNsec contains NDArray.epicsTS.nsec
+
+* Two new records have been added to NDPluginBase.template.
+    - $(P)$(R)EpicsTSSec_RBV contains the current NDArray.epicsTS.secPastEpoch
+    - $(P)$(R)EpicsTSNsec_RBV contains the current NDArray.epicsTS.nsec
+
+* The changes in R2-0 for enhanced timestamp support are described in 
+[areaDetectorTimeStampSupport](https://cars.uchicago.edu/software/epics/areaDetectorTimeStampSupport.html).
+
+####NDAttribute
 * Added new attribute type, NDAttrSourceFunct. 
   This type of attribute gets its value from a user-defined C++ function. 
   It can thus be used to get any type of metadata. Previously only EPICS PVs 
@@ -46,30 +69,12 @@ R2-0
   Any mix of case is allowed, but the NDAttributeList::find() method is now case sensitive. 
   This was done because it was found that the epicsStrCaseCmp function was significantly 
   reducing performance with long attribute lists. 
-* Added a new field, epicsTS, to the NDArray class. The existing timeStamp field is a double,
-  which is convenient because it can be easily displayed and interpreted.  However, it cannot
-  preserve all of the information in an epicsTimeStamp, which this new field does.
-  This is the definition of the new epicsTS field.
-```
-epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
-                           * pasynManager->updateTimeStamp(), 
-                           * and can come from a user-defined timestamp source. */
-```
-* Two new asynInt32 parameters have been added to the asynNDArrayDriver class.
-```
-NDEpicsTSSec contains NDArray.epicsTS.secPastEpoch
-NDEpicsTSNsec contains NDArray.epicsTS.nsec
-```
-* Two new records have been added to NDPluginBase.template.
-    - $(P)$(R)EpicsTSSec_RBV contains the current NDArray.epicsTS.secPastEpoch
-    - $(P)$(R)EpicsTSNsec_RBV contains the current NDArray.epicsTS.nsec
+* Removed the possibility to change anything except the datatype and value of an attribute once 
+  it is created. The datatype can only be changed from NDAttrUndefined to one of the actual values.
+* Added new setDataType() method, removed dataType from setValue() method.
+* Added getName(), getDescription(), getSource(), getSourceInfo(), getDataType() methods.
+* Changed constructor to have 6 required paramters, added sourceType and pSource.
 
-
-
-* The changes in R2-0 for enhanced timestamp support are described in 
-[areaDetectorTimeStampSupport](https://cars.uchicago.edu/software/epics/areaDetectorTimeStampSupport.html).
-
-   
 ####Plugins
 * NDPluginDriver (the base class from which all plugins derive) added the following calls
   to the NDPluginDriver::processCallbacks() method:
