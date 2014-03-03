@@ -26,13 +26,14 @@ Release Notes
 R2-0
 ----
 * Moved the repository to [Github](https://github.com/areaDetector/ADCore).
-* Re-organized the directory structure to separate the driver library from the example IOC application.
+* Re-organized the directory structure to separate the driver library from the example 
+  simDetector IOC application.
 * Moved the pre-built libraries for Windows to the new ADBinaries repository.
 * Removed pre-built libraties for Linux.  
   Support libraries such as HDF5 and GraphicsMagick must now be present on the build system computer.
 * Added support for dynamic builds on win32-x86 and windows-x64. 
 
-####NDArray and asynNDArrayDriver
+###NDArray and asynNDArrayDriver
 * Split NDArray.h and NDArray.cpp into separate files for each class: 
   NDArray, NDAttribute, NDAttributeList, and NDArrayPool.
 * Changed all report() methods to have a FILE *fp argument so output can go to a file. 
@@ -45,18 +46,18 @@ epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
                            * pasynManager->updateTimeStamp(), 
                            * and can come from a user-defined timestamp source. */
 ```
-* Two new asynInt32 parameters have been added to the asynNDArrayDriver class.
+* Added 2 new asynInt32 parameters to the asynNDArrayDriver class.
     - NDEpicsTSSec contains NDArray.epicsTS.secPastEpoch
     - NDEpicsTSNsec contains NDArray.epicsTS.nsec
 
-* Two new records have been added to NDPluginBase.template.
+* Added 2 new records to NDPluginBase.template.
     - $(P)$(R)EpicsTSSec_RBV contains the current NDArray.epicsTS.secPastEpoch
     - $(P)$(R)EpicsTSNsec_RBV contains the current NDArray.epicsTS.nsec
 
 * The changes in R2-0 for enhanced timestamp support are described in 
 [areaDetectorTimeStampSupport](https://cars.uchicago.edu/software/epics/areaDetectorTimeStampSupport.html).
 
-####NDAttribute
+###NDAttribute
 * Added new attribute type, NDAttrSourceFunct. 
   This type of attribute gets its value from a user-defined C++ function. 
   It can thus be used to get any type of metadata. Previously only EPICS PVs 
@@ -78,7 +79,7 @@ epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
   only copied it to the value field when updateValue() is called.
 * Changed constructor to have 6 required paramters, added sourceType and pSource.
 
-####Plugins
+###Plugins
 * NDPluginDriver (the base class from which all plugins derive) added the following calls
   to the NDPluginDriver::processCallbacks() method:
     - setTimeStamp(&pArray->epicsTS);
@@ -98,16 +99,16 @@ epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
 * NDPluginROI. Make 3-D [X, Y, 1] arrays be converted to 2-D even if they are not RGB3. 
 * NDPluginStats. Fixed bug if a dimension was 1; this bug was introduced when changing dimensions to size_t. 
 * NDFileNetCDF. 
+    - Changes to work on vxWorks 6.8 and above.
     - Writes 2 new variables to every netCDF file for each NDArray. 
         - epicsTSSec contains NDArray.epicsTS.secPastEpoch. 
         - epicsTSNsec contains NDArray.epicsTS.nsec. 
-    - Changes to work on vxWorks 6.8 and above.
     
   Note that these variables are arrays of length numArrays,
   where numArrays is the number of NDArrays (images) in the file. It was not possible
   to write the timestamp as a single 64-bit value because the classic netCDF file
   format does not support 64-bit integers.
-* NDFileTIFF. 3 new TIFF tags have been added to each TIFF file:</p>
+* NDFileTIFF. Added 3 new TIFF tags to each TIFF file:</p>
     - Tag=65001, field name=NDUniqueId, field_type=TIFF_LONG, value=NDArray.uniqueId.
     - Tag=65002, field name=EPICSTSSec, field_type=TIFF_LONG, value=NDArray.epicsTS.secPastEpoch.
     - Tag=65003, field name=EPICSTSNsec, field_type=TIFF_LONG, value=NDArray.epicsTS.nsec.
