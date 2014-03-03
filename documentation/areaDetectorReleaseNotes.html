@@ -9,39 +9,18 @@
   <h1 style="text-align: center">
     areaDetector Release Notes</h1>
   <h2 style="text-align: center">
-    Release 2-0 (XXX-Feb-2014)</h2>
+    Release 2-0 (XXX-Mar-2014)</h2>
+  <p>
+    Starting with areaDetector R2-0 the release notes are no longer in this document,
+    but are in the following locations.</p>
   <ul>
-    <li>New driver for Princeton Instruments cameras using their LightField program. This
-      can be used to control their new cameras (PI-MAX4, PIXIS, etc.). It is similar in
-      concept to the existing Roper driver that uses WinView. Lightfield runs on Windows
-      7 64-bit and is the platform Princeton Instruments supports for their newer cameras.</li>
-    <li>Pilatus driver. Increased timeout when setting threshold from 90 to 110 seconds.
-      Needed on 6M with new camserver. Thanks to Lewis Muir.</li>
-    <li>NDArray and asynNDArrayDriver
-      <ul>
-        <li>Changed all report() methods to have a FILE *fp argument so output can go to a
-          file.</li>
-        <li>Added new attribute type, NDAttrSourceFunct. This type of attribute gets its value
-          from a user-defined C++ function. It can thus be use to get any type of metadata.
-          Previously only EPICS PVs and driver/plugin parameters were available as metadata.</li>
-        <li>Added a new example file, ADSrc/myAttributeFunctions.cpp, that demonstrates how
-          to write user-defined attribute functions.</li>
-        <li>Made all contents of attribute XML files be case-sensitive. It was announced in
-          R1-7 that datatype and dbrtype strings would need to be upper-case. This is now
-          enforced. In addition attribute names are now case-sensitive. Any mix of case is
-          allowed, but the NDAttributeList::find() method is now case sensitive. This was
-          done because it was found that the epicsStrCaseCmp function was significantly reducing
-          performance with long attribute lists.</li>
-      </ul>
-    </li>
-    <li>Added support for dynamic builds on win32-x86 and windows-x64.</li>
-    <li>Added support for 64-bit Windows in Firewire driver.</li>
-    <li>NDPluginOverlay. Fixed bug in the cross overlay that caused lines not to display
-      if the cross was clipped to the image boundaries. The problem was attempting to
-      store a signed value in a size_t variable.</li>
-    <li>NDPluginROI. Make 3-D [X, Y, 1] arrays be converted to 2-D even if they are not RGB3.</li>
-    <li>NDPluginStats. Fixed bug if a dimension was 1; this bug was introduced when changing dimensions
-      to size_t.</li>
+    <li>The top-level release notes for areaDetector are in <a href="https://github.com/areaDetector/areaDetector/blob/master/RELEASE.md">
+      github.com/areaDetector/areaDetector/RELEASE.md</a>.</li>
+    <li>The release notes for the base classes and plugins are in <a href="https://github.com/areaDetector/ADCore/blob/master/RELEASE.md">
+      github.com/areaDetector/ADCore/RELEASE.md</a>.</li>
+    <li>The release notes for the each detector are in the repository for that detector.
+      For example, for the Pilatus detector <a href="https://github.com/areaDetector/ADPilatus/blob/master/RELEASE.md">
+        github.com/areaDetector/ADPilatus/RELEASE.md</a>.</li>
   </ul>
   <h2 style="text-align: center">
     Release 1-9-1 (11-March-2013)</h2>
