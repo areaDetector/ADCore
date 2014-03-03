@@ -61,10 +61,9 @@ NDEpicsTSSec contains NDArray.epicsTS.secPastEpoch
 NDEpicsTSNsec contains NDArray.epicsTS.nsec
 ```
 * Two new records have been added to NDPluginBase.template.
-```
-$(P)$(R)EpicsTSSec_RBV contains the current NDArray.epicsTS.secPastEpoch
-$(P)$(R)EpicsTSNsec_RBV contains the current NDArray.epicsTS.nsec
-```
+    - $(P)$(R)EpicsTSSec_RBV contains the current NDArray.epicsTS.secPastEpoch
+    - $(P)$(R)EpicsTSNsec_RBV contains the current NDArray.epicsTS.nsec
+
 
 
 * The changes in R2-0 for enhanced timestamp support are described in 
@@ -73,12 +72,10 @@ $(P)$(R)EpicsTSNsec_RBV contains the current NDArray.epicsTS.nsec
    
 ####Plugins
 * NDPluginDriver (the base class from which all plugins derive) added the following calls
-    to the NDPluginDriver::processCallbacks() method:
-```
-    setTimeStamp(&pArray->epicsTS);
-    setIntegerParam(NDEpicsTSSec, pArray->epicsTS.secPastEpoch);
-    setIntegerParam(NDEpicsTSNsec, pArray->epicsTS.nsec);
-```
+  to the NDPluginDriver::processCallbacks() method:
+    - setTimeStamp(&pArray->epicsTS);
+    - setIntegerParam(NDEpicsTSSec, pArray->epicsTS.secPastEpoch);
+    - setIntegerParam(NDEpicsTSNsec, pArray->epicsTS.nsec);
   It calls setTimeStamp with the epicsTS field from the NDArray that was passed to the
   plugin. setTimeStamp sets the internal timestamp in pasynManager. This is the timestamp
   that will be used for all callbacks to device support and read() operations in this
@@ -98,11 +95,9 @@ $(P)$(R)EpicsTSNsec_RBV contains the current NDArray.epicsTS.nsec
     to write the timestamp as a single 64-bit value because the classic netCDF file
     format does not support 64-bit integers.
 * NDFileTIFF. 3 new TIFF tags have been added to each TIFF file:</p>
-```
-Tag=65001, field name=NDUniqueId, field_type=TIFF_LONG, value=NDArray.uniqueId.
-Tag=65002, field name=EPICSTSSec, field_type=TIFF_LONG, value=NDArray.epicsTS.secPastEpoch.
-Tag=65003, field name=EPICSTSNsec, field_type=TIFF_LONG, value=NDArray.epicsTS.nsec.
-```
+    - Tag=65001, field name=NDUniqueId, field_type=TIFF_LONG, value=NDArray.uniqueId.
+    - Tag=65002, field name=EPICSTSSec, field_type=TIFF_LONG, value=NDArray.epicsTS.secPastEpoch.
+    - Tag=65003, field name=EPICSTSNsec, field_type=TIFF_LONG, value=NDArray.epicsTS.nsec.
 It was not possible to write the timestamp as a single 64-bit value because TIFF
 does not support 64-bit integer tags. It does have a type called TIFF_RATIONAL which
 is a pair of 32-bit integers. However, when reading such a tag what is returned
