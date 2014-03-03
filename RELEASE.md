@@ -46,18 +46,68 @@ R2-0
   Any mix of case is allowed, but the NDAttributeList::find() method is now case sensitive. 
   This was done because it was found that the epicsStrCaseCmp function was significantly 
   reducing performance with long attribute lists. 
-* Added a new field, epicsTS, to the NDArray class. This is the definition of that field.
+* Added a new field, epicsTS, to the NDArray class. The existing timeStamp field is a double,
+  which is convenient because it can be easily displayed and interpreted.  However, it cannot
+  preserve all of the information in an epicsTimeStamp, which this new field does.
+  This is the definition of the new epicsTS field.
 ```
 epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
                            * pasynManager->updateTimeStamp(), 
                            * and can come from a user-defined timestamp source. */
 ```
+* Two new asynInt32 parameters have been added to the asynNDArrayDriver class.
+```
+NDEpicsTSSec contains NDArray.epicsTS.secPastEpoch
+NDEpicsTSNsec contains NDArray.epicsTS.nsec
+```
+* Two new records have been added to NDPluginBase.template.
+```
+$(P)$(R)EpicsTSSec_RBV contains the current NDArray.epicsTS.secPastEpoch
+$(P)$(R)EpicsTSNsec_RBV contains the current NDArray.epicsTS.nsec
+```
+
+
+* The changes in R2-0 for enhanced timestamp support are described in 
+[areaDetectorTimeStampSupport](https://cars.uchicago.edu/software/epics/areaDetectorTimeStampSupport.html).
+
    
 ####Plugins
+* NDPluginDriver (the base class from which all plugins derive) added the following calls
+    to the NDPluginDriver::processCallbacks() method:
+```
+    setTimeStamp(&pArray->epicsTS);
+    setIntegerParam(NDEpicsTSSec, pArray->epicsTS.secPastEpoch);
+    setIntegerParam(NDEpicsTSNsec, pArray->epicsTS.nsec);
+```
+  It calls setTimeStamp with the epicsTS field from the NDArray that was passed to the
+  plugin. setTimeStamp sets the internal timestamp in pasynManager. This is the timestamp
+  that will be used for all callbacks to device support and read() operations in this
+  plugin asynPortDriver. Thus, the record timestamps will come from the NDArray passed
+  to the plugin if the record TSE field is -2. It also sets the new asynNDArrayDriver
+  NDEpicsTSSec and NDEpicsTSNsec parameters to the fields from the NDArray.epicsTS.
+  These records can then be used to monitor the EPICS timestamp in the NDArray even
+  if TSE is not -2.
 * NDPluginOverlay. Fixed bug in the cross overlay that caused lines not to display if the cross was 
   clipped to the image boundaries. The problem was attempting to store a signed value in a size_t variable. 
 * NDPluginROI. Make 3-D [X, Y, 1] arrays be converted to 2-D even if they are not RGB3. 
 * NDPluginStats. Fixed bug if a dimension was 1; this bug was introduced when changing dimensions to size_t. 
+* NDFileNetCDF. Writes 2 new variables to every netCDF file for each NDArray. 
+    epicsTSSec contains NDArray.epicsTS.secPastEpoch. 
+    epicsTSNsec contains NDArray.epicsTS.nsec. Note that these variables are arrays of length numArrays,
+    where numArrays is the number of NDArrays (images) in the file. It was not possible
+    to write the timestamp as a single 64-bit value because the classic netCDF file
+    format does not support 64-bit integers.
+* NDFileTIFF. 3 new TIFF tags have been added to each TIFF file:</p>
+```
+Tag=65001, field name=NDUniqueId, field_type=TIFF_LONG, value=NDArray.uniqueId.
+Tag=65002, field name=EPICSTSSec, field_type=TIFF_LONG, value=NDArray.epicsTS.secPastEpoch.
+Tag=65003, field name=EPICSTSNsec, field_type=TIFF_LONG, value=NDArray.epicsTS.nsec.
+```
+It was not possible to write the timestamp as a single 64-bit value because TIFF
+does not support 64-bit integer tags. It does have a type called TIFF_RATIONAL which
+is a pair of 32-bit integers. However, when reading such a tag what is returned
+is the quotient of the two numbers, which is not what is desired.
+
 
 
 R1-9-1 and earlier
