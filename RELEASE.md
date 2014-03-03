@@ -76,6 +76,7 @@ NDEpicsTSNsec contains NDArray.epicsTS.nsec
     - setTimeStamp(&pArray->epicsTS);
     - setIntegerParam(NDEpicsTSSec, pArray->epicsTS.secPastEpoch);
     - setIntegerParam(NDEpicsTSNsec, pArray->epicsTS.nsec);
+
   It calls setTimeStamp with the epicsTS field from the NDArray that was passed to the
   plugin. setTimeStamp sets the internal timestamp in pasynManager. This is the timestamp
   that will be used for all callbacks to device support and read() operations in this
@@ -89,19 +90,22 @@ NDEpicsTSNsec contains NDArray.epicsTS.nsec
 * NDPluginROI. Make 3-D [X, Y, 1] arrays be converted to 2-D even if they are not RGB3. 
 * NDPluginStats. Fixed bug if a dimension was 1; this bug was introduced when changing dimensions to size_t. 
 * NDFileNetCDF. Writes 2 new variables to every netCDF file for each NDArray. 
-    epicsTSSec contains NDArray.epicsTS.secPastEpoch. 
-    epicsTSNsec contains NDArray.epicsTS.nsec. Note that these variables are arrays of length numArrays,
-    where numArrays is the number of NDArrays (images) in the file. It was not possible
-    to write the timestamp as a single 64-bit value because the classic netCDF file
-    format does not support 64-bit integers.
+    - epicsTSSec contains NDArray.epicsTS.secPastEpoch. 
+    - epicsTSNsec contains NDArray.epicsTS.nsec. 
+    
+  Note that these variables are arrays of length numArrays,
+  where numArrays is the number of NDArrays (images) in the file. It was not possible
+  to write the timestamp as a single 64-bit value because the classic netCDF file
+  format does not support 64-bit integers.
 * NDFileTIFF. 3 new TIFF tags have been added to each TIFF file:</p>
     - Tag=65001, field name=NDUniqueId, field_type=TIFF_LONG, value=NDArray.uniqueId.
     - Tag=65002, field name=EPICSTSSec, field_type=TIFF_LONG, value=NDArray.epicsTS.secPastEpoch.
     - Tag=65003, field name=EPICSTSNsec, field_type=TIFF_LONG, value=NDArray.epicsTS.nsec.
-It was not possible to write the timestamp as a single 64-bit value because TIFF
-does not support 64-bit integer tags. It does have a type called TIFF_RATIONAL which
-is a pair of 32-bit integers. However, when reading such a tag what is returned
-is the quotient of the two numbers, which is not what is desired.
+
+  It was not possible to write the timestamp as a single 64-bit value because TIFF
+  does not support 64-bit integer tags. It does have a type called TIFF_RATIONAL which
+  is a pair of 32-bit integers. However, when reading such a tag what is returned
+  is the quotient of the two numbers, which is not what is desired.
 
 
 
