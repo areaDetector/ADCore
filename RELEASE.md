@@ -47,11 +47,11 @@ R2-0
   This was done because it was found that the epicsStrCaseCmp function was significantly 
   reducing performance with long attribute lists. 
 * Added a new fieldm epicsTS, to the NDArray class. This is the definition of that field.
-
-    epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
-                               * pasynManager->updateTimeStamp(), 
-                               * and can come from a user-defined timestamp source. */
-
+'''
+epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
+                           * pasynManager->updateTimeStamp(), 
+                           * and can come from a user-defined timestamp source. */
+'''
    
 ####Plugins
 * NDPluginOverlay. Fixed bug in the cross overlay that caused lines not to display if the cross was 
