@@ -46,12 +46,12 @@ R2-0
   Any mix of case is allowed, but the NDAttributeList::find() method is now case sensitive. 
   This was done because it was found that the epicsStrCaseCmp function was significantly 
   reducing performance with long attribute lists. 
-* Added a new fieldm epicsTS, to the NDArray class. This is the definition of that field.
-'''
+* Added a new field, epicsTS, to the NDArray class. This is the definition of that field.
+```
 epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
                            * pasynManager->updateTimeStamp(), 
                            * and can come from a user-defined timestamp source. */
-'''
+```
    
 ####Plugins
 * NDPluginOverlay. Fixed bug in the cross overlay that caused lines not to display if the cross was 
