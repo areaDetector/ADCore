@@ -1,7 +1,7 @@
 ADcore Future Plans
 ===================
-This is a list of some features that may be implemented in the future.  Some features are
-planned for a specific release which is indicated.
+This is a list of some features that may be implemented in the future.  If features are
+planned for a specific release then this is indicated.
 
 * NDArrayPool
     - Add a driver parameter to log cases when buffer could not be allocated?
@@ -9,6 +9,14 @@ planned for a specific release which is indicated.
 * NDPluginBase
     - Redo locking mechanism so plugins can reprocess data when something changes?
       One lock for parameter library, another lock for messageQueue, etc?
+      
+* ADBase
+    - Add base class virtual methods to do operations that all drivers need to do
+        - setUniqueID()
+        - setTimeStamp()
+        - setAttributes()
+        - callPlugins()
+        - A method that does all 4 of the above steps
 
 * File plugins
     - Add new HDF5 file plugin that can be configured with XML file.  This should replace the
@@ -33,6 +41,14 @@ planned for a specific release which is indicated.
 
 * NDAttribute
     - Support macro substitution in attributes files
+    
+* simDetector
+    - Remove iocsh commands from driver
+    - See if driver can be built with only libCom and asynDriver core
+    - Make an example C++ main program that acquires data with statistics plugin using nothing
+      from base except libCom.  asyn needs to build a "core" library with only libCom
+    - If this is successful then do this for all real drivers so areaDetector drivers can be used
+      outside EPICS IOC
 
 
 
