@@ -49,6 +49,7 @@ typedef struct HDFAttributeNode {
   hsize_t offset;
   hsize_t elementSize;
   int hdfrank;
+  hdf5::HdfWhen_t whenToSave;
 } HDFAttributeNode;
 
 enum HDF5Compression_t {HDF5CompressNone=0, HDF5CompressNumBits, HDF5CompressSZip, HDF5CompressZlib};
@@ -132,7 +133,7 @@ private:
   asynStatus configureCompression();
   char* getDimsReport();
   asynStatus writeStringAttribute(hid_t element, const char* attrName, const char* attrStrValue);
-  asynStatus writeAttributeDataset();
+  asynStatus writeAttributeDataset(hdf5::HdfWhen_t whenToSave);
   asynStatus closeAttributeDataset();
   asynStatus configurePerformanceDataset();
   asynStatus writePerformanceDataset();
@@ -345,6 +346,7 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
   getIntegerParam(NDFileHDF5_storeAttributes, &storeAttributes);
   if (storeAttributes == 1){
     this->createAttributeDataset();
+    this->writeAttributeDataset(hdf5::OnFileOpen);
   }
 
   getIntegerParam(NDFileHDF5_storePerformance, &storePerformance);
@@ -1096,7 +1098,7 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
   }
 
   if (storeAttributes == 1){
-    status = this->writeAttributeDataset();
+    status = this->writeAttributeDataset(hdf5::OnFrame);
     if (status != asynSuccess){
       return status;
     }
@@ -1195,10 +1197,13 @@ asynStatus NDFileHDF5::closeFile()
   }
 
   this->store_onClose_attributes();
-
+    
   getIntegerParam(NDFileHDF5_storeAttributes, &storeAttributes);
   getIntegerParam(NDFileHDF5_storePerformance, &storePerformance);
-  if (storeAttributes == 1)  this->closeAttributeDataset();
+  if (storeAttributes == 1) {
+     this->writeAttributeDataset(hdf5::OnFileClose);
+     this->closeAttributeDataset();
+  }
   if (storePerformance == 1) this->writePerformanceDataset();
 
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
@@ -1906,8 +1911,9 @@ asynStatus NDFileHDF5::createAttributeDataset()
       hdfAttrNode->offset     = 0;
       hdfAttrNode->hdfdims    = hdfdims;
       hdfAttrNode->hdfrank    = 1;
-      hdfAttrNode->hdfdataspace = H5Screate_simple(hdfAttrNode->hdfrank, &hdfAttrNode->hdfdims, NULL);
       hdfAttrNode->hdfcparm   = H5Pcreate(H5P_DATASET_CREATE);
+      //set the default save frequence to be every frame
+      hdfAttrNode->whenToSave = hdf5::OnFrame;
 
       hdfAttrNode->hdfdatatype  = this->type_nd2hdf((NDDataType_t)ndAttr->getDataType());
       H5Pset_fill_value (hdfAttrNode->hdfcparm, hdfAttrNode->hdfdatatype, this->ptrFillValue );
@@ -1917,6 +1923,14 @@ asynStatus NDFileHDF5::createAttributeDataset()
       if (root->find_dset_ndattr(hdfAttrNode->attrName, &dset) == 0){
         // In here we need to open the dataset for writing
 
+        hdf5::HdfDataSource dsource = dset->data_source();
+        hdfAttrNode->whenToSave = dsource.get_when_to_save();
+        if(hdfAttrNode->whenToSave != hdf5::OnFrame) {
+            //set dim size to 1 for OnFileOpen and OnFileClose
+            hdfAttrNode->hdfdims = 1;
+        }
+
+        hdfAttrNode->hdfdataspace = H5Screate_simple(hdfAttrNode->hdfrank, &hdfAttrNode->hdfdims, NULL);
         // Get the group from the dataset
         hid_t dsetgroup = H5Gopen(this->file, dset->get_parent()->get_full_name().c_str(), H5P_DEFAULT);
 
@@ -1948,6 +1962,7 @@ asynStatus NDFileHDF5::createAttributeDataset()
 
 
       } else {
+        hdfAttrNode->hdfdataspace = H5Screate_simple(hdfAttrNode->hdfrank, &hdfAttrNode->hdfdims, NULL);
         // In here we need to create the dataset
         hdfAttrNode->hdfdataset   = H5Dcreate2(hdfgroup, hdfAttrNode->attrName,
                                                hdfAttrNode->hdfdatatype, hdfAttrNode->hdfdataspace,
@@ -2012,7 +2027,7 @@ asynStatus NDFileHDF5::createAttributeDataset()
 /** Write the NDArray attributes to the file
  *
  */
-asynStatus NDFileHDF5::writeAttributeDataset()
+asynStatus NDFileHDF5::writeAttributeDataset(hdf5::HdfWhen_t whenToSave)
 {
   asynStatus status = asynSuccess;
   HDFAttributeNode *hdfAttrNode = NULL;
@@ -2036,6 +2051,10 @@ asynStatus NDFileHDF5::writeAttributeDataset()
         driverName, functionName, hdfAttrNode->attrName);
       continue;
     }
+    //check if when to save matches.
+    if (hdfAttrNode->whenToSave != whenToSave) 
+      continue;
+
     // find the data based on datatype
     ret = ndAttr->getValue(ndAttr->getDataType(), datavalue, 8);
     if (ret == ND_ERROR) {

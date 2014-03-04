@@ -335,11 +335,14 @@ int LayoutXML::process_attribute_xml_attribute(HdfAttribute& out)
     	attr_val = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_SRC_NDATTR.c_str());
     	if (attr_val != NULL) str_attr_val = (char*)attr_val;
     	out.source = HdfDataSource( hdf_ndattribute, str_attr_val );
-      // Check for a when="OnFileClose" tag
+      // Check for a when="OnFileClose" or when="OnFileOpen" tag
     	attr_when = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_SRC_WHEN.c_str());
     	if (attr_when != NULL) str_attr_when = (char*)attr_when;
-      if (str_attr_when == "OnFileClose"){
-        out.setOnFileOpen(false);
+      if (str_attr_when == "OnFileOpen"){
+        out.source.set_when_to_save(OnFileOpen);
+      }
+      else if (str_attr_when == "OnFileClose"){
+        out.source.set_when_to_save(OnFileClose);
       }
     }
     // On the other hand if source="constant"
@@ -454,7 +457,7 @@ int LayoutXML::new_dataset()
 
     HdfDataSource attrval;
     this->process_dset_xml_attribute(attrval);   
-    dset->set_data_source(attrval);
+
     // Check for ndattribute and store the name
     if (attrval.is_src_ndattribute()){
       xmlChar *attr_ndname = NULL;
@@ -463,8 +466,25 @@ int LayoutXML::new_dataset()
       if (attr_ndname != NULL){
         str_attr_ndname = (char*)attr_ndname;
         dset->set_ndattr_name(str_attr_ndname);
+        //if ndattribute, check for 'when' tag
+        xmlChar *attr_when = NULL;
+        attr_when = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_SRC_WHEN.c_str());
+        if (attr_when != NULL){
+          std::string str_attr_when( (char*)attr_when );
+          HdfWhen_t when_to_save = OnFrame; //Default is to save every frame
+          if (str_attr_when == "OnFileOpen"){
+            when_to_save = OnFileOpen;
+          }
+          else if(str_attr_when == "OnFileClose"){
+            when_to_save = OnFileClose;
+          }
+          attrval.set_when_to_save(when_to_save);
+        }
       }
     }
+
+    dset->set_data_source(attrval);
+
     return 0;
 }
 

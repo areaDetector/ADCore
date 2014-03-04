@@ -40,25 +40,27 @@ void HdfAttribute::setOnFileOpen(bool onOpen)
 
 bool HdfAttribute::is_onFileOpen()
 {
-  return this->onFileOpen;
+  HdfWhen_t when = source.get_when_to_save();
+  return (when == OnFileOpen) || (when == OnFrame);
 }
 
 bool HdfAttribute::is_onFileClose()
 {
-  return !this->onFileOpen;
+  HdfWhen_t when = source.get_when_to_save();
+  return (when == OnFileClose) || (when == OnFrame);
 }
 
 // constructors
 HdfDataSource::HdfDataSource()
-: data_src(hdf_notset), val(""), datatype(hdf_int8){}
+: data_src(hdf_notset), val(""), datatype(hdf_int8), when_to_save(OnFrame){}
 HdfDataSource::HdfDataSource( HdfDataSrc_t srctype, const std::string& val)
-: data_src(srctype), val(val), datatype(hdf_string){}
+: data_src(srctype), val(val), datatype(hdf_string), when_to_save(OnFrame){}
 HdfDataSource::HdfDataSource( HdfDataSrc_t src, HDF_DataType_t type)
-: data_src(src), val(""), datatype(type){}
+: data_src(src), val(""), datatype(type), when_to_save(OnFrame){}
 HdfDataSource::HdfDataSource( HdfDataSrc_t src)
-: data_src(src), val(""), datatype(hdf_string){}
+: data_src(src), val(""), datatype(hdf_string), when_to_save(OnFrame){}
 HdfDataSource::HdfDataSource( const HdfDataSource& src)
-: data_src(src.data_src), val(src.val), datatype(src.datatype){}
+: data_src(src.data_src), val(src.val), datatype(src.datatype), when_to_save(src.when_to_save){}
 
 /** Assignment operator
  * Copies the sources private data members to this object.
@@ -68,6 +70,7 @@ HdfDataSource& HdfDataSource::operator=(const HdfDataSource& src)
 	this->data_src = src.data_src;
 	this->val = src.val;
 	this->datatype = src.datatype;
+   this->when_to_save = src.when_to_save;
 	return *this;
 };
 
@@ -132,6 +135,15 @@ void HdfDataSource::set_const_datatype_value(HDF_DataType_t dtype, const std::st
 	this->val = str_val;
 }
 
+void HdfDataSource::set_when_to_save(HdfWhen_t when)
+{
+    when_to_save = when;
+}
+
+HdfWhen_t HdfDataSource::get_when_to_save()
+{
+    return when_to_save;
+}
 
 /* ================== HdfElement Class public methods ==================== */
 HdfElement::HdfElement()
