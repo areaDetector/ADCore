@@ -26,6 +26,9 @@ planned for a specific release then this is indicated.
     - Document NeXus file plugin, document structure of XML file
     - Add File Overwrite Flag, don't allow overwrite if set
     - Add Create Directory flag.  Create new directory if new path is set and directory does not exist
+    - Get the GraphicsMagick plugin working again.  This requires getting versions of GraphicsMagick that 
+      work on static and dynamic, 32 and 64 bit, Linux and Windows.  
+      No time to do this before R2-0 release. This is also required to get URL driver working. (R-21)
 
 * NDPluginTransform
     - Rewrite to do a single transformation rather than a sequence.  8 possible transformations:
