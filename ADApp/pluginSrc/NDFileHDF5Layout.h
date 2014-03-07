@@ -16,6 +16,12 @@
 namespace hdf5 {
 
 typedef enum {
+   OnFrame,
+   OnFileOpen,
+   OnFileClose
+} HdfWhen_t;
+
+typedef enum {
 	hdf_notset,
 	hdf_detector,
 	hdf_ndattribute,
@@ -58,10 +64,14 @@ public:
     size_t datatype_size();
     void set_const_datatype_value(HDF_DataType_t dtype, const std::string& str_val);
 
+    void set_when_to_save(HdfWhen_t when);
+    HdfWhen_t get_when_to_save();
+   
 private:
     HdfDataSrc_t data_src;
     std::string val;
     HDF_DataType_t datatype;
+    HdfWhen_t when_to_save;
 };
 
 
