@@ -1,7 +1,7 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADApp/op/adl/NDStats.adl"
-	version=030105
+	name="/home/epics/devel-AD2.0/areaDetector-2-0/ADCore/ADApp/op/adl/NDStats.adl"
+	version=030107
 }
 display {
 	object {
@@ -1878,7 +1878,7 @@ composite {
 	display[9] {
 		label="Sigma"
 		name="NDTimeSeries.adl"
-		args="$(P),R=$(R),PLT=TSSigmaValue"
+		args="P=$(P),R=$(R),PLT=TSSigmaValue"
 	}
 	display[10] {
 		label="All"
