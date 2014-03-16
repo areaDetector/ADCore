@@ -81,7 +81,7 @@
     <li>CCD and CMOS cameras.</li>
   </ul>
   <p>
-    From <a href="http://www.ptgrey.com/products/flea2/index.asp">Point Grey Research</a>
+    From <a href="http://www.ptgrey.com/products/index.asp">Point Grey Research</a>
     and many other manufacturers</p>
   <ul>
     <li>All Firewire (IEEE 1394) cameras that follow the <a href="http://damien.douxchamps.net/ieee1394/libdc1394/iidc/IIDC_1.31.pdf">
@@ -89,6 +89,12 @@
       in the areaDetector module itself. There is also support for Firewire cameras under
       Linux written by Ulrik Pedersen from Diamond Light Source, and distributed separately
       from the areaDetector module.</li>
+  </ul>
+  <p>
+    From <a href="http://www.ptgrey.com/products/index.asp">Point Grey Research</a>
+    </p>
+  <ul>
+    <li>All Point Grey cameras (Firewire, USB 2.0 and 3.0, GigE) using their FlyCapture2 SDK.</li>
   </ul>
   <p>
     From <a href="http://www.rayonix.com/">Rayonix (formely Mar-USA)</a></p>
@@ -114,12 +120,26 @@
   <h2>
     Where to find it</h2>
   <p>
-    The areaDetector module is in the <a href="https://subversion.xor.aps.anl.gov/synApps/areaDetector">
+    Beginning with release R2-0 (March 2014) the areaDetector module is in the 
+    <a href="https://github.com/areaDetector">areaDetector project on Github</a>.  
+      This project is organized as a 
+     <a href="https://github.com/areaDetector/areaDetector">top level module</a>
+     and a set of submodules, e.g.  
+     <a href="https://github.com/areaDetector/ADCore">ADCore</a>,
+     <a href="https://github.com/areaDetector/ADProsilica">ADProsilica</a>,
+     <a href="https://github.com/areaDetector/ADPilatus">ADPilatus</a>, etc.
+  </p>
+  <p>
+    Each of the Github repositories contains a RELEASE.md file that contains release notes and links
+    to download both source code and pre-built binary applications for an EPICS IOC.
+    </p>
+  <p>
+    Prior to release R2-0 the areaDetector module is in the <a href="https://subversion.xor.aps.anl.gov/synApps/areaDetector">
       synApps Subversion repository at the APS</a>. The "trunk" directory contains the
     most recent unreleased code, while the "tags" directory contains the released versions.
   </p>
   <p>
-    You can also download the software from the links in the table below. The software
+    For releases prior to R2-0 the software can be downloaded from the links in the table below. The software
     is available both in source code form, and in pre-built form so that it can be used
     without an EPICS build system. There are separate pre-built binary packages for
     linux-x86, linux-x86_64, win32-x86, windows-x64, and cygwin-x86.</p>
@@ -916,8 +936,13 @@
   <h2>
     Installation and Building</h2>
   <p>
-    This is described in detail in the <a href="areaDetectorDoc.html#Installation">installation
-      section of the areaDetector documentation</a>.</p>
+    For R2-0 and later this is described in the 
+     <a href="https://github.com/areaDetector/areaDetector/blob/master/INSTALL_GUIDE.md">INSTALL_GUIDE.md</a>
+     on Github.
+     </p>
+  <p>
+    For releases prior to R2-0 this is described in detail in the <a href="areaDetectorDoc.html#Installation">installation
+      section of the areaDetector documentation</a> for that particular release.</p>
   <p>
     Please email&nbsp; <a href="mailto:rivers@cars.uchicago.edu">Mark Rivers</a>&nbsp;
     so that a record can be kept of which sites are using this software.</p>
