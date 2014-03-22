@@ -43,6 +43,7 @@ DBD += NDPluginROI.dbd
 DBD += NDPluginStats.dbd
 DBD += NDPluginStdArrays.dbd
 DBD += NDPluginTransform.dbd
+DBD += NDPluginAttribute.dbd
 
 INC += NDPluginDriver.h
 INC += NDPluginFile.h
@@ -56,6 +57,7 @@ NDPlugin_SRCS += NDPluginStats.cpp
 NDPlugin_SRCS += NDPluginProcess.cpp
 NDPlugin_SRCS += NDPluginROI.cpp
 NDPlugin_SRCS += NDPluginTransform.cpp
+NDPlugin_SRCS += NDPluginAttribute.cpp
 NDPlugin_SRCS += NDPluginOverlay.cpp
 NDPlugin_SRCS += NDPluginColorConvert.cpp
 NDPlugin_SRCS_DEFAULT += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNexus.cpp NDFileHDF5.cpp NDFileNull.cpp
