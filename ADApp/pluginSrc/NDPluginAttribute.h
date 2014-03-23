@@ -25,10 +25,8 @@
 
 #include "NDPluginDriver.h"
 
-/* ROI general parameters */
-#define NDPluginAttributeNameString       "ATTR_NAME"                /* (asynOctet,   r/w) Name of this ROI */
-
-/* ROI definition */
+/* General parameters */
+#define NDPluginAttributeNameString       "ATTR_NAME"                /* (asynOctet,   r/w) Name of this attribute */
 #define NDPluginAttributeAttrNameString   "ATTR_ATTRNAME"  /* (asynInt32,   r/w) Name of Attribute */
 #define NDPluginAttributeResetString      "ATTR_RESET"     /* (asynInt32,   r/w) Clear the array data */
 #define NDPluginAttributeUpdateString      "ATTR_UPDATE"     /* (asynInt32,   r/w) Update the data array */
