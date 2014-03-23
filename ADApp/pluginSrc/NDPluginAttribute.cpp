@@ -47,8 +47,8 @@ const epicsInt32 NDPluginAttribute::MAX_ATTR_NAME_ = 256;
   */
 void NDPluginAttribute::processCallbacks(NDArray *pArray)
 {
-    /* This function computes the ROIs.
-     * It is called with the mutex already locked.  It unlocks it during long calculations when private
+  /*
+     * This function is called with the mutex already locked.  It unlocks it during long calculations when private
      * structures don't need to be protected.
      */
 
@@ -160,8 +160,7 @@ asynStatus NDPluginAttribute::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
 
 /** Constructor for NDPluginAttribute; most parameters are simply passed to NDPluginDriver::NDPluginDriver.
-  * After calling the base class constructor this method sets reasonable default values for all of the
-  * ROI parameters.
+  *
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when
   *            NDPluginDriverBlockingCallbacks=0.  Larger queues can decrease the number of dropped arrays,
