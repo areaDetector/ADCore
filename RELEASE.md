@@ -117,7 +117,7 @@ epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
   does not support 64-bit integer tags. It does have a type called TIFF_RATIONAL which
   is a pair of 32-bit integers. However, when reading such a tag what is returned
   is the quotient of the two numbers, which is not what is desired.
-
+* NDPluginAttribute. New plugin that allows trending and publishing an NDArray attribute over channel access.
 
 
 R1-9-1 and earlier
