@@ -427,6 +427,11 @@ int LayoutXML::new_dataset()
     if (! xmlTextReaderHasAttributes(this->xmlreader) ) return -1;
     if (this->ptr_curr_element == NULL) return -1;
 
+    std::string str_val = "";
+    xmlChar *c_val = NULL;
+    std::string str_type = "";
+    xmlChar *c_type = NULL;
+
     xmlChar *dset_name = NULL;
     dset_name = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar *)LayoutXML::ATTR_ELEMENT_NAME.c_str());
     //LOG4CXX_DEBUG(log, "  new_dataset: " << dset_name );
@@ -482,7 +487,22 @@ int LayoutXML::new_dataset()
         }
       }
     }
-
+    else if (attrval.is_src_constant())
+    {
+        //if constant data
+        c_val = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_SRC_CONST_VALUE.c_str());
+        if (c_val != NULL) str_val = (char*)c_val;
+    	  c_type = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_SRC_CONST_TYPE.c_str());
+    	  if (c_type != NULL) 
+        {
+    	      str_type = (char*)c_type;
+    	      HDF_DataType_t dtype = hdf_string;
+            if (str_type == "int") dtype = hdf_int32;
+            else if (str_type == "float") dtype = hdf_float64;
+            else if (str_type == "string") dtype = hdf_string;
+            attrval.set_const_datatype_value(dtype, str_val);
+        }
+    }
     dset->set_data_source(attrval);
 
     return 0;
