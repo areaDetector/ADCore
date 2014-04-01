@@ -173,7 +173,6 @@ NDPluginAttribute::NDPluginAttribute(const char *portName, int queueSize, int bl
                    asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
                    ASYN_MULTIDEVICE, 1, priority, stackSize)
 {
-    asynStatus status;
     const char *functionName = "NDPluginAttribute::NDPluginAttribute";
 
     /* parameters */
@@ -210,7 +209,7 @@ NDPluginAttribute::NDPluginAttribute(const char *portName, int queueSize, int bl
     setDoubleParam(NDPluginAttributeValSum, 0.0);
 
     /* Try to connect to the array port */
-    status = connectToArrayPort();
+    connectToArrayPort();
 
     callParamCallbacks();
 
@@ -223,10 +222,8 @@ extern "C" int NDAttrConfigure(const char *portName, int queueSize, int blocking
 			       int priority, int stackSize, 
 			       int maxTimeSeries, const char *attrName)
 {
-    NDPluginAttribute *pPlugin =
-        new NDPluginAttribute(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-			      maxBuffers, maxMemory, priority, stackSize, maxTimeSeries, attrName);
-    pPlugin = NULL;  /* This is just to eliminate compiler warning about unused variables/objects */
+    new NDPluginAttribute(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+		    maxBuffers, maxMemory, priority, stackSize, maxTimeSeries, attrName);
     return(asynSuccess);
 }
 
