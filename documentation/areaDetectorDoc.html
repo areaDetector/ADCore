@@ -12,7 +12,7 @@
     <h2>
       Release 2-0</h2>
     <h2>
-      March XXX, 2014</h2>
+      April 4, 2014</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -72,7 +72,7 @@
         <li><a href="NDPluginOverlay.html">NDPluginOverlay</a></li>
         <li><a href="NDPluginTransform.html">NDPluginTransform</a></li>
         <li><a href="NDPluginColorConvert.html">NDPluginColorConvert</a></li>
-	<li><a href="NDPluginAttribute.html">NDPluginAttribute</a></li>
+        <li><a href="NDPluginAttribute.html">NDPluginAttribute</a></li>
       </ul>
     </li>
     <li><a href="#MEDM_screens">MEDM screens</a></li>
@@ -115,7 +115,8 @@
     <li>Provide detector drivers for commonly used detectors in synchrotron applications.
       These include Prosilica GigE video cameras, IEEE 1394 (Firewire) cameras, ADSC and
       MAR CCD x-ray detectors, MAR-345 online imaging plate detectors, the Pilatus pixel-array
-      detector, Roper Scientific CCD cameras, Perkin-Elmer amorphous silicon detector, and many others.</li>
+      detector, Roper Scientific CCD cameras, Perkin-Elmer amorphous silicon detector,
+      and many others.</li>
   </ul>
   <p>
     &nbsp;</p>
@@ -136,17 +137,16 @@
       class. It uses the standard asyn interfaces for control and status information.
       Each time it receives a new data array it can pass it as an NDArray object to all
       Layer 3 clients that have registered for callbacks. This is the only code that needs
-      to be written to implement a new detector. Existing drivers range from about 800 to 2600
-      lines of code.</li>
+      to be written to implement a new detector. Existing drivers range from about 800
+      to 2600 lines of code.</li>
     <li>Layer 3. Code running at this level is called a "plug-in". This code registers
       with a driver for a callback whenever there is a new data array. The existing plugins
       implement file saving (NDPluginFile), region-of-interest (ROI) calculations (NDPluginROI),
-      statistics calculations (NDPluginStats), image processing (NDPluginProcess),
-      geometric transformations (NDPluginTransform),
-      color mode conversion (NDPluginColorConvert), and conversion of detector data to
-      standard EPICS array types for use by Channel Access clients (NDPluginStdArrays).
-      Plugins are normally written in C++ and inherit from NDPluginDriver. Existing plugins
-      range from about 300 to 800 lines of code.</li>
+      statistics calculations (NDPluginStats), image processing (NDPluginProcess), geometric
+      transformations (NDPluginTransform), color mode conversion (NDPluginColorConvert),
+      and conversion of detector data to standard EPICS array types for use by Channel
+      Access clients (NDPluginStdArrays). Plugins are normally written in C++ and inherit
+      from NDPluginDriver. Existing plugins range from about 300 to 800 lines of code.</li>
     <li>Layer 4. This is standard asyn device support that comes with the EPICS asyn module.</li>
     <li>Layer 5. These are standard EPICS records, and EPICS database (template) files
       that define records to communicate with drivers at Layer 2 and plugins at Layer
@@ -158,8 +158,8 @@
       the other is a freely runnable IDL application.</li>
   </ul>
   <p>
-    The code in Layers 1-3 is essentially independent of EPICS. In principle there are only 2 EPICS
-    dependencies in this code.
+    The code in Layers 1-3 is essentially independent of EPICS. In principle there are
+    only 2 EPICS dependencies in this code.
   </p>
   <ol>
     <li><a href="http://www.aps.anl.gov/epics/base/R3-14/10-docs/AppDevGuide.pdf">libCom</a>.
@@ -169,21 +169,21 @@
       module that provides interthread messaging services, including queueing and callbacks.</li>
   </ol>
   <p>
-    In particular it should be possible to eliminate layers 4-6 in the architecture shown in
-    Figure 1. This means that in principle it is not necessary to run an EPICS IOC or to use EPICS
-    Channel Access when using the drivers and plugins at Layers 2 and 3.  In practice this has not
-    yet been demonstrated.
+    In particular it should be possible to eliminate layers 4-6 in the architecture
+    shown in Figure 1. This means that in principle it is not necessary to run an EPICS
+    IOC or to use EPICS Channel Access when using the drivers and plugins at Layers
+    2 and 3. In practice this has not yet been demonstrated.
   </p>
   <p>
     The plugin architecture is very powerful, because new plugins can be written for
     application-specific purposes. For example, a plugin could be written to analyze
-    images and do some application specific functions, and such a plugin would then work with any
-    detector driver. Plugins are also powerful because they can be reconfigured at run-time.
-    For example the NDPluginStdArrays can switch from getting its array data from a
-    detector driver to an NDPluginROI plugin. That way it will switch from displaying
-    the entire detector to whatever sub-region the ROI driver has selected. Any Channel
-    Access clients connected to the NDPluginStdArrays driver will automatically switch
-    to displaying this subregion. Similarly, the NDPluginFile plugin can be switched
+    images and do some application specific functions, and such a plugin would then
+    work with any detector driver. Plugins are also powerful because they can be reconfigured
+    at run-time. For example the NDPluginStdArrays can switch from getting its array
+    data from a detector driver to an NDPluginROI plugin. That way it will switch from
+    displaying the entire detector to whatever sub-region the ROI driver has selected.
+    Any Channel Access clients connected to the NDPluginStdArrays driver will automatically
+    switch to displaying this subregion. Similarly, the NDPluginFile plugin can be switched
     at run-time from saving the entire image to saving a selected ROI, just by changing
     its input source. Plugins can be used to form an image processing pipeline, for
     example with a detector providing data to a color convert plugin, which feeds an
@@ -362,11 +362,11 @@
     functAttribute</h3>
   <p>
     The functAttribute class is derived from NDAttribute. It obtains its value from
-    a user-written C++ function. The functAttribute class is thus very general, and can
-    be used to add almost any information to an NDArray. ADCore contains example code,
-    myAttributeFunctions.cpp that demonstates how to write such functions. The 
-    <a href="areaDetectorDoxygenHTML/classfunct_attribute.html">functAttribute
-      class documentation</a> describes this class in detail.
+    a user-written C++ function. The functAttribute class is thus very general, and
+    can be used to add almost any information to an NDArray. ADCore contains example
+    code, myAttributeFunctions.cpp that demonstates how to write such functions. The
+    <a href="areaDetectorDoxygenHTML/classfunct_attribute.html">functAttribute class documentation</a>
+    describes this class in detail.
   </p>
   <h3 id="asynNDArrayDriver">
     asynNDArrayDriver</h3>
@@ -2034,11 +2034,11 @@
     <img alt="ADEpicsShutter.png" src="ADEpicsShutter.png" /></div>
   <h2 id="Installation">
     Installation, configuration, and running</h2>
-    <p>Installation instructions for release R2-0 and later can be found on
-    <a href="https://github.com/areaDetector/areaDetector/blob/master/INSTALL_GUIDE.md">
+  <p>
+    Installation instructions for release R2-0 and later can be found on <a href="https://github.com/areaDetector/areaDetector/blob/master/INSTALL_GUIDE.md">
       INSTALL_GUIDE.md</a> on Github.</p>
-    For releases prior to R2-0 the version of this document contained in the source
-    code release contains the installation instructions.</p>
+  For releases prior to R2-0 the version of this document contained in the source
+  code release contains the installation instructions.</p>
   <h2 id="Acknowledgments">
     Acknowledgements and licenses</h2>
   <p>
