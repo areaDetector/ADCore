@@ -37,6 +37,7 @@ asynStatus NDPluginFile::openFileBase(NDFileOpenMode_t openMode, NDArray *pArray
     /* Opens a file for reading or writing */
     asynStatus status = asynSuccess;
     char fullFileName[MAX_FILENAME_LEN];
+    char tempSuffix[MAX_FILENAME_LEN];
     char errorMessage[256];
     const char* functionName = "openFileBase";
 
@@ -55,7 +56,13 @@ asynStatus NDPluginFile::openFileBase(NDFileOpenMode_t openMode, NDArray *pArray
         return(status);
     }
     setStringParam(NDFullFileName, fullFileName);
-    
+
+    getStringParam(NDTempSuffix, sizeof(tempSuffix), tempSuffix);
+    if ( *tempSuffix != 0 && 
+         (strlen(fullFileName) + strlen(tempSuffix)) < sizeof(fullFileName) ) {
+        strcat( fullFileName, tempSuffix );
+    }
+
     /* Call the openFile method in the derived class */
     epicsMutexLock(this->fileMutexId);
     this->registerInitFrameInfo(pArray);
@@ -80,11 +87,18 @@ asynStatus NDPluginFile::closeFileBase()
 {
     /* Closes a file */
     asynStatus status = asynSuccess;
+    char fullFileName[MAX_FILENAME_LEN];
+    char tempSuffix[MAX_FILENAME_LEN];
+    char tempFileName[MAX_FILENAME_LEN];
     char errorMessage[256];
     const char* functionName = "closeFileBase";
 
     setIntegerParam(NDFileWriteStatus, NDFileWriteOK);
     setStringParam(NDFileWriteMessage, "");
+
+    getStringParam(NDFullFileName, sizeof(fullFileName), fullFileName);
+    getStringParam(NDTempSuffix, sizeof(tempSuffix), tempSuffix);
+
      /* Call the closeFile method in the derived class */
     epicsMutexLock(this->fileMutexId);
     status = this->closeFile();
@@ -97,6 +111,21 @@ asynStatus NDPluginFile::closeFileBase()
         setIntegerParam(NDFileWriteStatus, NDFileWriteError);
         setStringParam(NDFileWriteMessage, errorMessage);
     }
+
+    if ( *tempSuffix != 0 && 
+         (strlen(fullFileName) - strlen(tempSuffix)) < sizeof(fullFileName) ) {
+        strcpy( tempFileName, fullFileName );
+        strcat( tempFileName, tempSuffix );
+        if ( rename( tempFileName, fullFileName ) != 0 ) {
+            epicsSnprintf(errorMessage, sizeof(errorMessage)-1, 
+                          "Error renaming temporary file %s to %s", tempFileName, fullFileName );
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+                      "%s:%s %s\n", 
+                      driverName, functionName, errorMessage);
+            status=asynError;
+        }
+    }
+
     epicsMutexUnlock(this->fileMutexId);
     
     return(status);
@@ -838,6 +867,9 @@ NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCall
     this->lazyOpen = false;
     this->createParam("FILE_LAZY_OPEN", asynParamInt32, &NDFileLazyOpen);
     //setIntegerParam(NDFileLazyOpen, 1);
+
+    this->createParam("TEMP_SUFFIX", asynParamOctet, &NDTempSuffix);
+    setStringParam(NDTempSuffix, "");
 
     this->useAttrFilePrefix = false;
     this->fileMutexId = epicsMutexCreate();
