@@ -341,16 +341,16 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
     return asynError;
   }
 
-  // Store any attributes that have been marked as onOpen
-  if (this->store_onOpen_attributes()){
-    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-              "%s::%s ERROR Failed to store the onOpen attributes\n",
-              driverName, functionName);
-    return asynError;
-  }
-
   getIntegerParam(NDFileHDF5_storeAttributes, &storeAttributes);
   if (storeAttributes == 1){
+    // Store any attributes that have been marked as onOpen
+    if (this->store_onOpen_attributes()){
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+                "%s::%s ERROR Failed to store the onOpen attributes\n",
+                driverName, functionName);
+      return asynError;
+    }
+
     this->createAttributeDataset();
     this->writeAttributeDataset(hdf5::OnFileOpen);
   }
@@ -579,6 +579,7 @@ asynStatus NDFileHDF5::store_onClose_attributes()
 asynStatus NDFileHDF5::create_tree(hdf5::HdfGroup* root, hid_t h5handle)
 {
   asynStatus retcode = asynSuccess;
+  int storeAttributes;
   static const char *functionName = "create_tree";
 
   if (root == NULL) return asynError; // sanity check
@@ -605,8 +606,11 @@ asynStatus NDFileHDF5::create_tree(hdf5::HdfGroup* root, hid_t h5handle)
   // Write contant datasets to file
   this->write_hdf_const_datasets(new_group, root);
 
-  // Set some attributes on the group
-  this->write_hdf_attributes(new_group,  root);
+  getIntegerParam(NDFileHDF5_storeAttributes, &storeAttributes);
+  if (storeAttributes == 1){
+    // Set some attributes on the group
+    this->write_hdf_attributes(new_group,  root);
+  }
 
   // Create all the datasets in this group
   hdf5::HdfGroup::MapDatasets_t::iterator it_dsets;
@@ -1451,11 +1455,10 @@ asynStatus NDFileHDF5::closeFile()
     return asynSuccess;
   }
 
-  this->store_onClose_attributes();
-    
   getIntegerParam(NDFileHDF5_storeAttributes, &storeAttributes);
   getIntegerParam(NDFileHDF5_storePerformance, &storePerformance);
   if (storeAttributes == 1) {
+     this->store_onClose_attributes();
      this->writeAttributeDataset(hdf5::OnFileClose);
      this->closeAttributeDataset();
   }
