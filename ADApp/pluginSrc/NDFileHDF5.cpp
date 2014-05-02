@@ -1770,7 +1770,6 @@ int NDFileHDF5::verifyLayoutXMLFile()
 //  Reading in a filename or string of xml. We will need more than 256 bytes
   char fileName[MAX_LAYOUT_LEN];
   int len;
-  struct stat buffer;   
   const char *functionName = "verifyLayoutXMLFile";
 
   getStringParam(NDFileHDF5_layoutFilename, sizeof(fileName), fileName);
@@ -1782,7 +1781,7 @@ int NDFileHDF5::verifyLayoutXMLFile()
   }
 
   if (strstr(fileName, "<?xml") == NULL) {
-    if(stat(fileName, &buffer)) {
+    if(!fileExists(fileName)) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
                   "%s::%s XML description file could not be opened.\n", 
                   driverName, functionName);
