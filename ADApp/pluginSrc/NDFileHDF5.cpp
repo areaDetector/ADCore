@@ -72,6 +72,7 @@ public:
 asynStatus create_file_layout();
 asynStatus store_onOpen_attributes();
 asynStatus store_onClose_attributes();
+asynStatus store_onOpenClose_attribute(hdf5::HdfElement *element, bool open);
 asynStatus create_tree(hdf5::HdfGroup* root, hid_t h5handle);
 
 void write_hdf_const_datasets( hid_t h5_handle, hdf5::HdfGroup* group);
@@ -430,71 +431,17 @@ asynStatus NDFileHDF5::create_file_layout()
 asynStatus NDFileHDF5::store_onOpen_attributes()
 {
   asynStatus status = asynSuccess;
-  NDAttribute *ndAttr = NULL;
-  void* datavalue;
-  int ret;
   const char *functionName = "store_onOpen_attributes";
 
-  hdf5::HdfElement::MapAttributes_t::iterator it_attr;
   // Loop over the stored onOpen elements
   for (std::map<std::string, hdf5::HdfElement *>::iterator it_element = onOpenMap.begin() ; it_element != onOpenMap.end(); ++it_element){
     hdf5::HdfElement *element = it_element->second;
-    // Attempt to Open the Object, we do not know (or care?) if it is a group or dataset
-    hid_t hdf_id = H5Oopen(this->file, element->get_full_name().c_str(), H5P_DEFAULT);
-    // For each element search for any attributes that match the pArray
-    for (it_attr=element->get_attributes().begin(); it_attr != element->get_attributes().end(); ++it_attr){
-      hdf5::HdfAttribute &attr = it_attr->second; // Take a reference - i.e. *not* a copy!
-      if (attr.source.is_src_ndattribute()){
-        // Is the attribute 'OnFileOpen'
-        if (attr.is_onFileOpen()){
-          // find the named attribute in the NDAttributeList
-          ndAttr = this->pFileAttributes->find(attr.source.get_src_def().c_str());
-          if (ndAttr == NULL){
-            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s could not find attribute: %s\n",
-                      driverName, functionName, attr.source.get_src_def().c_str());
-          } else {
-            // find the data based on datatype
-            NDAttrDataType_t dataType;
-            size_t dataSize;
-            if (ndAttr->getValueInfo(&dataType, &dataSize) != ND_ERROR){
-              datavalue = calloc(dataSize, sizeof(char));
-              ret = ndAttr->getValue(dataType, datavalue, dataSize);
-              if (ret == ND_ERROR) {
-                asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s could not get data from attribute: %s\n",
-                          driverName, functionName, attr.get_name().c_str());
-              } else {
-                if (dataType != NDAttrString && dataType != NDAttrUndefined){
-                  hid_t hdfattrdataspace = H5Screate(H5S_SCALAR);
-                  hid_t hdfdatatype      = H5Tcopy(this->type_nd2hdf((NDDataType_t)dataType));
-                  hid_t hdfattr = H5Acreate2(hdf_id, attr.get_name().c_str(), hdfdatatype, hdfattrdataspace, H5P_DEFAULT, H5P_DEFAULT);
-                  if (hdfattr < 0) {
-                    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s unable to create attribute: %s\n",
-                              driverName, functionName, attr.get_name().c_str());
-                    H5Sclose(hdfattrdataspace);
-                  } else {
-                    herr_t hdfstatus = H5Awrite(hdfattr, hdfdatatype, datavalue);
-                    if (hdfstatus < 0) {
-                      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s unable to write attribute: %s\n",
-                                driverName, functionName, attr.get_name().c_str());
-                    }
-                    H5Aclose(hdfattr);
-                    H5Sclose(hdfattrdataspace);
-                  }
-                } else if(dataType == NDAttrString){
-                  // This is a string attribute
-                  std::string str_val((char *)datavalue);
-                  this->write_h5attr_str(hdf_id, attr.get_name(), str_val);
-                }
-              }
-            } else {
-              asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s could not get datatype information for attribute: %s\n",
-                        driverName, functionName, attr.get_name().c_str());
-            }
-          }
-        }
-      }
+    status = store_onOpenClose_attribute(element, true);
+    if (status != asynSuccess){
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s failed to store onOpen attributes\n",
+                driverName, functionName);
+      return status;
     }
-    H5Oclose(hdf_id);
   }
   return status;
 }
@@ -504,72 +451,96 @@ asynStatus NDFileHDF5::store_onOpen_attributes()
 asynStatus NDFileHDF5::store_onClose_attributes()
 {
   asynStatus status = asynSuccess;
+  const char *functionName = "store_onClose_attributes";
+
+  // Loop over the stored onClose elements
+  for (std::map<std::string, hdf5::HdfElement *>::iterator it_element = onCloseMap.begin() ; it_element != onCloseMap.end(); ++it_element){
+    hdf5::HdfElement *element = it_element->second;
+    status = store_onOpenClose_attribute(element, false);
+    if (status != asynSuccess){
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s failed to store onClose attributes\n",
+                driverName, functionName);
+      return status;
+    }
+  }
+  return status;
+}
+
+/** Check attribute and store if marked as onOpen or onClose when opening or closing
+ */
+asynStatus NDFileHDF5::store_onOpenClose_attribute(hdf5::HdfElement *element, bool open)
+{
+  asynStatus status = asynSuccess;
   NDAttribute *ndAttr = NULL;
   void* datavalue;
   int ret;
-  const char *functionName = "store_onClose_attributes";
+  bool saveAttribute = false;
+  const char *functionName = "store_onOpenClose_attribute";
 
   hdf5::HdfElement::MapAttributes_t::iterator it_attr;
-  // Loop over the stored onOpen elements
-  for (std::map<std::string, hdf5::HdfElement *>::iterator it_element = onCloseMap.begin() ; it_element != onCloseMap.end(); ++it_element){
-    hdf5::HdfElement *element = it_element->second;
-    // Attempt to Open the Object, we do not know (or care?) if it is a group or dataset
-    hid_t hdf_id = H5Oopen(this->file, element->get_full_name().c_str(), H5P_DEFAULT);
-    // For each element search for any attributes that match the pArray
-    for (it_attr=element->get_attributes().begin(); it_attr != element->get_attributes().end(); ++it_attr){
-      hdf5::HdfAttribute &attr = it_attr->second; // Take a reference - i.e. *not* a copy!
-      if (attr.source.is_src_ndattribute()){
-        // Is the attribute 'OnFileClose'
-        if (attr.is_onFileClose()){
-          // find the named attribute in the NDAttributeList
-          ndAttr = this->pFileAttributes->find(attr.source.get_src_def().c_str());
-          if (ndAttr == NULL){
-            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s could not find attribute: %s\n",
-                      driverName, functionName, attr.source.get_src_def().c_str());
-          } else {
-            // find the data based on datatype
-            NDAttrDataType_t dataType;
-            size_t dataSize;
-            if (ndAttr->getValueInfo(&dataType, &dataSize) != ND_ERROR){
-              datavalue = calloc(dataSize, sizeof(char));
-              ret = ndAttr->getValue(dataType, datavalue, dataSize);
-              if (ret == ND_ERROR) {
-                asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s could not get data from attribute: %s\n",
-                          driverName, functionName, attr.get_name().c_str());
-              } else {
-                if (dataType != NDAttrString && dataType != NDAttrUndefined){
-                  hid_t hdfattrdataspace = H5Screate(H5S_SCALAR);
-                  hid_t hdfdatatype      = H5Tcopy(this->type_nd2hdf((NDDataType_t)dataType));
-                  hid_t hdfattr = H5Acreate2(hdf_id, attr.get_name().c_str(), hdfdatatype, hdfattrdataspace, H5P_DEFAULT, H5P_DEFAULT);
-                  if (hdfattr < 0) {
-                    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s unable to create attribute: %s\n",
-                              driverName, functionName, attr.get_name().c_str());
-                    H5Sclose(hdfattrdataspace);
-                  } else {
-                    herr_t hdfstatus = H5Awrite(hdfattr, hdfdatatype, datavalue);
-                    if (hdfstatus < 0) {
-                      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s unable to write attribute: %s\n",
-                                driverName, functionName, attr.get_name().c_str());
-                    }
-                    H5Aclose(hdfattr);
-                    H5Sclose(hdfattrdataspace);
-                  }
-                } else if(dataType == NDAttrString){
-                  // This is a string attribute
-                  std::string str_val((char *)datavalue);
-                  this->write_h5attr_str(hdf_id, attr.get_name(), str_val);
-                }
-              }
-            } else {
-              asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s could not get datatype information for attribute: %s\n",
+  // Attempt to Open the Object, we do not know (or care?) if it is a group or dataset
+  hid_t hdf_id = H5Oopen(this->file, element->get_full_name().c_str(), H5P_DEFAULT);
+  // For each element search for any attributes that match the pArray
+  for (it_attr=element->get_attributes().begin(); it_attr != element->get_attributes().end(); ++it_attr){
+    saveAttribute = false;
+    hdf5::HdfAttribute &attr = it_attr->second; // Take a reference - i.e. *not* a copy!
+    if (attr.source.is_src_ndattribute()){
+      // Is the attribute marked as we require, if so mark it for saving
+      if ((open == true) && (attr.is_onFileOpen() == true)){
+        saveAttribute = true;
+      }
+      if ((open == false) && (attr.is_onFileClose() == true)){
+        saveAttribute = true;
+      }
+      if (saveAttribute == true){
+        // find the named attribute in the NDAttributeList
+        ndAttr = this->pFileAttributes->find(attr.source.get_src_def().c_str());
+        if (ndAttr == NULL){
+          asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s could not find attribute: %s\n",
+                    driverName, functionName, attr.source.get_src_def().c_str());
+        } else {
+          // find the data based on datatype
+          NDAttrDataType_t dataType;
+          size_t dataSize;
+          if (ndAttr->getValueInfo(&dataType, &dataSize) != ND_ERROR){
+            datavalue = calloc(dataSize, sizeof(char));
+            ret = ndAttr->getValue(dataType, datavalue, dataSize);
+            if (ret == ND_ERROR) {
+              asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s could not get data from attribute: %s\n",
                         driverName, functionName, attr.get_name().c_str());
+            } else {
+              if (dataType != NDAttrString && dataType != NDAttrUndefined){
+                hid_t hdfattrdataspace = H5Screate(H5S_SCALAR);
+                hid_t hdfdatatype      = H5Tcopy(this->type_nd2hdf((NDDataType_t)dataType));
+                hid_t hdfattr = H5Acreate2(hdf_id, attr.get_name().c_str(), hdfdatatype, hdfattrdataspace, H5P_DEFAULT, H5P_DEFAULT);
+                if (hdfattr < 0) {
+                  asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s unable to create attribute: %s\n",
+                            driverName, functionName, attr.get_name().c_str());
+                  H5Sclose(hdfattrdataspace);
+                } else {
+                  herr_t hdfstatus = H5Awrite(hdfattr, hdfdatatype, datavalue);
+                  if (hdfstatus < 0) {
+                    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s unable to write attribute: %s\n",
+                              driverName, functionName, attr.get_name().c_str());
+                  }
+                  H5Aclose(hdfattr);
+                  H5Sclose(hdfattrdataspace);
+                }
+              } else if(dataType == NDAttrString){
+                // This is a string attribute
+                std::string str_val((char *)datavalue);
+                this->write_h5attr_str(hdf_id, attr.get_name(), str_val);
+              }
             }
+          } else {
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s could not get datatype information for attribute: %s\n",
+                      driverName, functionName, attr.get_name().c_str());
           }
         }
       }
     }
-    H5Oclose(hdf_id);
   }
+  H5Oclose(hdf_id);
   return status;
 }
 
