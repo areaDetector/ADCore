@@ -532,6 +532,9 @@ asynStatus NDFileHDF5::store_onOpenClose_attribute(hdf5::HdfElement *element, bo
                 this->write_h5attr_str(hdf_id, attr.get_name(), str_val);
               }
             }
+            if (datavalue){
+              free(datavalue);
+            }
           } else {
             asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s could not get datatype information for attribute: %s\n",
                       driverName, functionName, attr.get_name().c_str());
