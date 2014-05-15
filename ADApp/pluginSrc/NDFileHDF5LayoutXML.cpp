@@ -63,7 +63,9 @@ ptr_tree(NULL), ptr_curr_element(NULL)
 
 LayoutXML::~LayoutXML()
 {
+  if (this->ptr_tree){
     delete this->ptr_tree;
+  }
 }
 
 int LayoutXML::load_xml()
