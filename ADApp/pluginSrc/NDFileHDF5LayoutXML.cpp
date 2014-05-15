@@ -200,7 +200,7 @@ int LayoutXML::unload_xml()
 }
 
 
-HdfRoot* LayoutXML::get_hdftree()
+Root* LayoutXML::get_hdftree()
 {
     return this->ptr_tree;
 }
@@ -282,7 +282,7 @@ int LayoutXML::process_node()
 /** Process a datasets XML attributes
  * to work out the source of the attribute value: either detector data, NDAttribute or constant.
  */
-int LayoutXML::process_dset_xml_attribute(HdfDataSource& out)
+int LayoutXML::process_dset_xml_attribute(DataSource& out)
 {
     int ret = -1;
     if (! xmlTextReaderHasAttributes(this->xmlreader) ) return ret;
@@ -295,22 +295,22 @@ int LayoutXML::process_dset_xml_attribute(HdfDataSource& out)
     str_attr_src = (char*)attr_src;
 
     if (str_attr_src == LayoutXML::ATTR_SRC_DETECTOR) {
-        out = HdfDataSource( hdf_detector );
+        out = DataSource( detector );
         ret = 0;
     }
     if (str_attr_src == LayoutXML::ATTR_SRC_NDATTR) {
-        out = HdfDataSource( hdf_ndattribute );
+        out = DataSource( ndattribute );
         ret = 0;
     }
     if (str_attr_src == LayoutXML::ATTR_SRC_CONST) {
-        out = HdfDataSource( hdf_constant );
+        out = DataSource( constant );
         ret = 0;
     }
 
     return ret;
 }
 
-int LayoutXML::process_attribute_xml_attribute(HdfAttribute& out)
+int LayoutXML::process_attribute_xml_attribute(Attribute& out)
 {
     int ret = -1;
     if (! xmlTextReaderHasAttributes(this->xmlreader) ) return ret;
@@ -330,11 +330,11 @@ int LayoutXML::process_attribute_xml_attribute(HdfAttribute& out)
     xmlChar *attr_when = NULL;
 
     // If the tag is: source="ndattribute"
-    // Then setup the data source as a hdf_ndattribute with the name of the NDAttribute as argument value
+    // Then setup the data source as a ndattribute with the name of the NDAttribute as argument value
     if (str_attr_src == LayoutXML::ATTR_SRC_NDATTR) {
     	attr_val = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_SRC_NDATTR.c_str());
     	if (attr_val != NULL) str_attr_val = (char*)attr_val;
-    	out.source = HdfDataSource( hdf_ndattribute, str_attr_val );
+    	out.source = DataSource( ndattribute, str_attr_val );
       // Check for a when="OnFileClose" or when="OnFileOpen" tag
     	attr_when = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_SRC_WHEN.c_str());
     	if (attr_when != NULL) str_attr_when = (char*)attr_when;
@@ -346,21 +346,21 @@ int LayoutXML::process_attribute_xml_attribute(HdfAttribute& out)
       }
     }
     // On the other hand if source="constant"
-    // Then setup the data source as a hdf_constant with a string value.
+    // Then setup the data source as a constant with a string value.
     // Todo: a constant currently is only supported as a string type. This is
     // probably Good Enough (TM) for most use but should really be made work for
     // at least a int and float as well.
     else if (str_attr_src == LayoutXML::ATTR_SRC_CONST) {
     	attr_val = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_SRC_CONST_VALUE.c_str());
     	if (attr_val != NULL) str_attr_val = (char*)attr_val;
-    	out.source = HdfDataSource( hdf_constant, str_attr_val );
+    	out.source = DataSource( constant, str_attr_val );
     	attr_type = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_SRC_CONST_TYPE.c_str());
     	if (attr_type != NULL) {
     		str_attr_type = (char*)attr_type;
-    		HDF_DataType_t dtype = hdf_string;
-    		if (str_attr_type == "int") dtype = hdf_int32;
-    		else if (str_attr_type == "float") dtype = hdf_float64;
-    		else if (str_attr_type == "string") dtype = hdf_string;
+    		DataType_t dtype = string;
+    		if (str_attr_type == "int") dtype = int32;
+    		else if (str_attr_type == "float") dtype = float64;
+    		else if (str_attr_type == "string") dtype = string;
     		out.source.set_const_datatype_value(dtype, str_attr_val);
     	}
     }
@@ -386,14 +386,14 @@ int LayoutXML::new_group()
 
     // Initialise the tree if it has not already been done.
     if (this->ptr_tree == NULL) {
-        this->ptr_tree = new HdfRoot();
+        this->ptr_tree = new Root();
         //LOG4CXX_DEBUG(log, "  Initialised the root of the tree: " << *this->ptr_tree );
         this->ptr_curr_element = this->ptr_tree;
     }
 
     // Obtain the parent and create this group from that parent
-    HdfGroup *parent = static_cast<HdfGroup *>(this->ptr_curr_element);
-    HdfGroup *new_group = NULL;
+    Group *parent = static_cast<Group *>(this->ptr_curr_element);
+    Group *new_group = NULL;
     new_group = parent->new_group(str_group_name);
     if (new_group == NULL) return -1;
     this->ptr_curr_element = new_group;
@@ -413,7 +413,7 @@ int LayoutXML::new_group()
         	// then set the group as the default container for NDAttributes.
         	if (str_ndattr_default == "true")
         	{
-        		HdfGroup * new_group = static_cast<HdfGroup*>(this->ptr_curr_element);
+        		Group * new_group = static_cast<Group*>(this->ptr_curr_element);
         		new_group->set_default_ndattr_group();
         	}
     	}
@@ -439,8 +439,8 @@ int LayoutXML::new_dataset()
 
     std::string str_dset_name((char*)dset_name);
 
-    HdfGroup *parent = (HdfGroup *)this->ptr_curr_element;
-    HdfDataset *dset = NULL;
+    Group *parent = (Group *)this->ptr_curr_element;
+    Dataset *dset = NULL;
     dset = parent->new_dset(str_dset_name);
     if (dset == NULL) return -1;
 
@@ -460,7 +460,7 @@ int LayoutXML::new_dataset()
 
     this->ptr_curr_element = dset;
 
-    HdfDataSource attrval;
+    DataSource attrval;
     this->process_dset_xml_attribute(attrval);   
 
     // Check for ndattribute and store the name
@@ -476,7 +476,7 @@ int LayoutXML::new_dataset()
         attr_when = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_SRC_WHEN.c_str());
         if (attr_when != NULL){
           std::string str_attr_when( (char*)attr_when );
-          HdfWhen_t when_to_save = OnFrame; //Default is to save every frame
+          When_t when_to_save = OnFrame; //Default is to save every frame
           if (str_attr_when == "OnFileOpen"){
             when_to_save = OnFileOpen;
           }
@@ -496,10 +496,10 @@ int LayoutXML::new_dataset()
     	  if (c_type != NULL) 
         {
     	      str_type = (char*)c_type;
-    	      HDF_DataType_t dtype = hdf_string;
-            if (str_type == "int") dtype = hdf_int32;
-            else if (str_type == "float") dtype = hdf_float64;
-            else if (str_type == "string") dtype = hdf_string;
+    	      DataType_t dtype = string;
+            if (str_type == "int") dtype = int32;
+            else if (str_type == "float") dtype = float64;
+            else if (str_type == "string") dtype = string;
             attrval.set_const_datatype_value(dtype, str_val);
         }
     }
@@ -522,7 +522,7 @@ int LayoutXML::new_attribute()
     if (ndattr_name == NULL) return -1;
 
     std::string str_ndattr_name((char*)ndattr_name);
-    HdfAttribute ndattr(str_ndattr_name);
+    Attribute ndattr(str_ndattr_name);
     this->process_attribute_xml_attribute(ndattr);
 
     ret = this->ptr_curr_element->add_attribute(ndattr);

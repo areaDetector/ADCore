@@ -49,7 +49,7 @@ typedef struct HDFAttributeNode {
   hsize_t offset;
   hsize_t elementSize;
   int hdfrank;
-  hdf5::HdfWhen_t whenToSave;
+  hdf5::When_t whenToSave;
 } HDFAttributeNode;
 
 enum HDF5Compression_t {HDF5CompressNone=0, HDF5CompressNumBits, HDF5CompressSZip, HDF5CompressZlib};
@@ -72,23 +72,23 @@ public:
 asynStatus create_file_layout();
 asynStatus store_onOpen_attributes();
 asynStatus store_onClose_attributes();
-asynStatus store_onOpenClose_attribute(hdf5::HdfElement *element, bool open);
-asynStatus create_tree(hdf5::HdfGroup* root, hid_t h5handle);
+asynStatus store_onOpenClose_attribute(hdf5::Element *element, bool open);
+asynStatus create_tree(hdf5::Group* root, hid_t h5handle);
 
-void write_hdf_const_datasets( hid_t h5_handle, hdf5::HdfGroup* group);
+void write_hdf_const_datasets( hid_t h5_handle, hdf5::Group* group);
 void write_h5dset_str(hid_t element, const std::string &name, const std::string &str_value) const;
 void write_h5dset_int32(hid_t element, const std::string &name, const std::string &str_value) const;
 void write_h5dset_float64(hid_t element, const std::string &name, const std::string &str_value) const;
 
-void write_hdf_attributes( hid_t h5_handle, hdf5::HdfElement* element);
-hid_t create_dataset(hid_t group, hdf5::HdfDataset *dset);
+void write_hdf_attributes( hid_t h5_handle, hdf5::Element* element);
+hid_t create_dataset(hid_t group, hdf5::Dataset *dset);
 void write_h5attr_str(hid_t element,
                       const std::string &attr_name,
                       const std::string &str_attr_value) const;
 void write_h5attr_int32(hid_t element, const std::string &attr_name, const std::string &str_attr_value) const;
 void write_h5attr_float64(hid_t element, const std::string &attr_name, const std::string &str_attr_value) const;
-hid_t from_hdf_to_hid_datatype(hdf5::HDF_DataType_t in) const;
-hid_t create_dataset_detector(hid_t group, hdf5::HdfDataset *dset);
+hid_t from_hdf_to_hid_datatype(hdf5::DataType_t in) const;
+hid_t create_dataset_detector(hid_t group, hdf5::Dataset *dset);
 
 int fileExists(char *filename);
 int verifyLayoutXMLFile();
@@ -97,8 +97,8 @@ std::map<std::string, NDFileHDF5Dataset *> detDataMap;  // Map of handles to det
 std::map<std::string, hid_t>               attDataMap;  // Map of handles to attribute datasets, indexed by name
 std::string                                defDsetName; // Name of the default data set
 std::string                                ndDsetName;  // Name of NDAttribute that specifies the destination data set
-std::map<std::string, hdf5::HdfElement *>  onOpenMap;   // Map of handles to elements with onOpen ndattributes, indexed by fullname
-std::map<std::string, hdf5::HdfElement *>  onCloseMap;  // Map of handles to elements with onClose ndattributes, indexed by fullname
+std::map<std::string, hdf5::Element *>  onOpenMap;   // Map of handles to elements with onOpen ndattributes, indexed by fullname
+std::map<std::string, hdf5::Element *>  onCloseMap;  // Map of handles to elements with onClose ndattributes, indexed by fullname
 
 protected:
   /* plugin parameters */
@@ -140,7 +140,7 @@ private:
   asynStatus configureCompression();
   char* getDimsReport();
   asynStatus writeStringAttribute(hid_t element, const char* attrName, const char* attrStrValue);
-  asynStatus writeAttributeDataset(hdf5::HdfWhen_t whenToSave);
+  asynStatus writeAttributeDataset(hdf5::When_t whenToSave);
   asynStatus closeAttributeDataset();
   asynStatus configurePerformanceDataset();
   asynStatus writePerformanceDataset();
@@ -375,7 +375,7 @@ asynStatus NDFileHDF5::create_file_layout()
   onOpenMap.clear();
   onCloseMap.clear();
 
-  hdf5::HdfRoot *root = this->layout.get_hdftree();
+  hdf5::Root *root = this->layout.get_hdftree();
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s Root tree: %s\n",
             driverName, functionName,
             root->_str_().c_str());
@@ -387,7 +387,7 @@ asynStatus NDFileHDF5::create_file_layout()
     // Attempt to search for a dataset with a default flag and record the dataset name.
     // If no default is found then set the first as the default.
     // If no datasets are found then this is an error.
-    hdf5::HdfDataset *dset;
+    hdf5::Dataset *dset;
     int retval = root->find_detector_default_dset(&dset);
     if (!retval){
       this->defDsetName = dset->get_full_name();
@@ -434,8 +434,8 @@ asynStatus NDFileHDF5::store_onOpen_attributes()
   const char *functionName = "store_onOpen_attributes";
 
   // Loop over the stored onOpen elements
-  for (std::map<std::string, hdf5::HdfElement *>::iterator it_element = onOpenMap.begin() ; it_element != onOpenMap.end(); ++it_element){
-    hdf5::HdfElement *element = it_element->second;
+  for (std::map<std::string, hdf5::Element *>::iterator it_element = onOpenMap.begin() ; it_element != onOpenMap.end(); ++it_element){
+    hdf5::Element *element = it_element->second;
     status = store_onOpenClose_attribute(element, true);
     if (status != asynSuccess){
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s failed to store onOpen attributes\n",
@@ -454,8 +454,8 @@ asynStatus NDFileHDF5::store_onClose_attributes()
   const char *functionName = "store_onClose_attributes";
 
   // Loop over the stored onClose elements
-  for (std::map<std::string, hdf5::HdfElement *>::iterator it_element = onCloseMap.begin() ; it_element != onCloseMap.end(); ++it_element){
-    hdf5::HdfElement *element = it_element->second;
+  for (std::map<std::string, hdf5::Element *>::iterator it_element = onCloseMap.begin() ; it_element != onCloseMap.end(); ++it_element){
+    hdf5::Element *element = it_element->second;
     status = store_onOpenClose_attribute(element, false);
     if (status != asynSuccess){
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s failed to store onClose attributes\n",
@@ -468,7 +468,7 @@ asynStatus NDFileHDF5::store_onClose_attributes()
 
 /** Check attribute and store if marked as onOpen or onClose when opening or closing
  */
-asynStatus NDFileHDF5::store_onOpenClose_attribute(hdf5::HdfElement *element, bool open)
+asynStatus NDFileHDF5::store_onOpenClose_attribute(hdf5::Element *element, bool open)
 {
   asynStatus status = asynSuccess;
   NDAttribute *ndAttr = NULL;
@@ -477,13 +477,13 @@ asynStatus NDFileHDF5::store_onOpenClose_attribute(hdf5::HdfElement *element, bo
   bool saveAttribute = false;
   const char *functionName = "store_onOpenClose_attribute";
 
-  hdf5::HdfElement::MapAttributes_t::iterator it_attr;
+  hdf5::Element::MapAttributes_t::iterator it_attr;
   // Attempt to Open the Object, we do not know (or care?) if it is a group or dataset
   hid_t hdf_id = H5Oopen(this->file, element->get_full_name().c_str(), H5P_DEFAULT);
   // For each element search for any attributes that match the pArray
   for (it_attr=element->get_attributes().begin(); it_attr != element->get_attributes().end(); ++it_attr){
     saveAttribute = false;
-    hdf5::HdfAttribute &attr = it_attr->second; // Take a reference - i.e. *not* a copy!
+    hdf5::Attribute &attr = it_attr->second; // Take a reference - i.e. *not* a copy!
     if (attr.source.is_src_ndattribute()){
       // Is the attribute marked as we require, if so mark it for saving
       if ((open == true) && (attr.is_onFileOpen() == true)){
@@ -550,7 +550,7 @@ asynStatus NDFileHDF5::store_onOpenClose_attribute(hdf5::HdfElement *element, bo
 /** Create the root group and recursively create all subgroups and datasets in the HDF5 file.
  *
  */
-asynStatus NDFileHDF5::create_tree(hdf5::HdfGroup* root, hid_t h5handle)
+asynStatus NDFileHDF5::create_tree(hdf5::Group* root, hid_t h5handle)
 {
   asynStatus retcode = asynSuccess;
   int storeAttributes;
@@ -561,8 +561,8 @@ asynStatus NDFileHDF5::create_tree(hdf5::HdfGroup* root, hid_t h5handle)
   std::string name = root->get_name();
   if (root->get_parent() == NULL){
     // This is a reserved element and should not be created.  Simply pass through
-    hdf5::HdfGroup::MapGroups_t::const_iterator it_group;
-    hdf5::HdfGroup::MapGroups_t& groups = root->get_groups();
+    hdf5::Group::MapGroups_t::const_iterator it_group;
+    hdf5::Group::MapGroups_t& groups = root->get_groups();
     for (it_group = groups.begin(); it_group != groups.end(); ++it_group){
       // recursively call this function to create all subgroups
       retcode = this->create_tree( it_group->second, h5handle );
@@ -587,8 +587,8 @@ asynStatus NDFileHDF5::create_tree(hdf5::HdfGroup* root, hid_t h5handle)
   }
 
   // Create all the datasets in this group
-  hdf5::HdfGroup::MapDatasets_t::iterator it_dsets;
-  hdf5::HdfGroup::MapDatasets_t& datasets = root->get_datasets();
+  hdf5::Group::MapDatasets_t::iterator it_dsets;
+  hdf5::Group::MapDatasets_t& datasets = root->get_datasets();
   for (it_dsets = datasets.begin(); it_dsets != datasets.end(); ++it_dsets){
     hid_t new_dset = this->create_dataset(new_group, it_dsets->second);
     if (new_dset <= 0) continue; // failure to create the datasets so move on to next
@@ -597,8 +597,8 @@ asynStatus NDFileHDF5::create_tree(hdf5::HdfGroup* root, hid_t h5handle)
     // Datasets are closed after data has been written
   }
 
-  hdf5::HdfGroup::MapGroups_t::const_iterator it_group;
-  hdf5::HdfGroup::MapGroups_t& groups = root->get_groups();
+  hdf5::Group::MapGroups_t::const_iterator it_group;
+  hdf5::Group::MapGroups_t& groups = root->get_groups();
   for (it_group = groups.begin(); it_group != groups.end(); ++it_group){
     // recursively call this function to create all subgroups
     retcode = this->create_tree( it_group->second, new_group );
@@ -618,13 +618,13 @@ asynStatus NDFileHDF5::create_tree(hdf5::HdfGroup* root, hid_t h5handle)
  *  by a ','
  *
  */
-void NDFileHDF5::write_hdf_attributes( hid_t h5_handle, hdf5::HdfElement* element)
+void NDFileHDF5::write_hdf_attributes( hid_t h5_handle, hdf5::Element* element)
 {
-  hdf5::HdfElement::MapAttributes_t::iterator it_attr;
-  hdf5::HDF_DataType_t attr_dtype = hdf5::hdf_string;
+  hdf5::Element::MapAttributes_t::iterator it_attr;
+  hdf5::DataType_t attr_dtype = hdf5::string;
 
   for (it_attr=element->get_attributes().begin(); it_attr != element->get_attributes().end(); ++it_attr){
-    hdf5::HdfAttribute &attr = it_attr->second; // Take a reference - i.e. *not* a copy!
+    hdf5::Attribute &attr = it_attr->second; // Take a reference - i.e. *not* a copy!
     if (attr.source.is_src_ndattribute()){
       // This is an onOpen/Close ndattribute, store into the appropriate container
       if (attr.is_onFileOpen()){
@@ -636,13 +636,13 @@ void NDFileHDF5::write_hdf_attributes( hid_t h5_handle, hdf5::HdfElement* elemen
       attr_dtype = attr.source.get_datatype();
       switch ( attr_dtype )
       {
-        case hdf5::hdf_string:
+        case hdf5::string:
           this->write_h5attr_str(h5_handle, attr.get_name(), attr.source.get_src_def());
           break;
-        case hdf5::hdf_float64:
+        case hdf5::float64:
           this->write_h5attr_float64(h5_handle, attr.get_name(), attr.source.get_src_def());
           break;
-        case hdf5::hdf_int32:
+        case hdf5::int32:
           this->write_h5attr_int32(h5_handle, attr.get_name(), attr.source.get_src_def());
           break;
         default:
@@ -659,26 +659,26 @@ void NDFileHDF5::write_hdf_attributes( hid_t h5_handle, hdf5::HdfElement* elemen
  *  by a ','
  *
  */
-void NDFileHDF5::write_hdf_const_datasets( hid_t h5_handle, hdf5::HdfGroup* group)
+void NDFileHDF5::write_hdf_const_datasets( hid_t h5_handle, hdf5::Group* group)
 {
-  hdf5::HdfGroup::MapDatasets_t::iterator it_dsets;
-  hdf5::HDF_DataType_t dtype = hdf5::hdf_string;
+  hdf5::Group::MapDatasets_t::iterator it_dsets;
+  hdf5::DataType_t dtype = hdf5::string;
 
   for (it_dsets=group->get_datasets().begin(); it_dsets != group->get_datasets().end(); ++it_dsets)
   {
-    hdf5::HdfDataset* dset = it_dsets->second;
+    hdf5::Dataset* dset = it_dsets->second;
     if(dset != NULL && dset->data_source().is_src_constant())
     {
       dtype = dset->data_source().get_datatype();
       switch ( dtype )
       {
-        case hdf5::hdf_string:
+        case hdf5::string:
           this->write_h5dset_str(h5_handle, dset->get_name(), dset->data_source().get_src_def());
           break;
-        case hdf5::hdf_float64:
+        case hdf5::float64:
           this->write_h5dset_float64(h5_handle, dset->get_name(), dset->data_source().get_src_def());
           break;
-        case hdf5::hdf_int32:
+        case hdf5::int32:
           this->write_h5dset_int32(h5_handle, dset->get_name(), dset->data_source().get_src_def());
           break;
         default:
@@ -904,7 +904,7 @@ void NDFileHDF5::write_h5dset_float64(hid_t element, const std::string &name, co
  *  then the type is not yet known and the dataset will be created when the ndattribute is first
  *  read.
  */
-hid_t NDFileHDF5::create_dataset(hid_t group, hdf5::HdfDataset *dset)
+hid_t NDFileHDF5::create_dataset(hid_t group, hdf5::Dataset *dset)
 {
   int retcode = -1;
   if (dset == NULL) return -1; // sanity check
@@ -1129,28 +1129,28 @@ void NDFileHDF5::write_h5attr_float64(hid_t element, const std::string &attr_nam
 /** Utility method to convert from hdf5 to hid datatype.
  *
  */
-hid_t NDFileHDF5::from_hdf_to_hid_datatype(hdf5::HDF_DataType_t in) const
+hid_t NDFileHDF5::from_hdf_to_hid_datatype(hdf5::DataType_t in) const
 {
   hid_t out;
   switch(in)
   {
-  case hdf5::hdf_int8:
+  case hdf5::int8:
     out = H5T_NATIVE_INT8; break;
-  case hdf5::hdf_uint8:
+  case hdf5::uint8:
     out = H5T_NATIVE_UINT8; break;
-  case hdf5::hdf_int16:
+  case hdf5::int16:
     out = H5T_NATIVE_INT16; break;
-  case hdf5::hdf_uint16:
+  case hdf5::uint16:
     out = H5T_NATIVE_UINT16; break;
-  case hdf5::hdf_int32:
+  case hdf5::int32:
     out = H5T_NATIVE_INT32; break;
-  case hdf5::hdf_uint32:
+  case hdf5::uint32:
     out = H5T_NATIVE_UINT32; break;
-  case hdf5::hdf_float32:
+  case hdf5::float32:
     out = H5T_NATIVE_FLOAT; break;
-  case hdf5::hdf_float64:
+  case hdf5::float64:
     out = H5T_NATIVE_DOUBLE; break;
-  case hdf5::hdf_string:
+  case hdf5::string:
     out = H5T_C_S1; break;
   default:
     out = H5T_NATIVE_INT8;
@@ -1163,7 +1163,7 @@ hid_t NDFileHDF5::from_hdf_to_hid_datatype(hdf5::HDF_DataType_t in) const
  * Return the hid_t handle to the new dataset on success; -1 on error.
  * Errors: fail to set chunk size or failure to create the dataset in the file.
  */
-hid_t NDFileHDF5::create_dataset_detector(hid_t group, hdf5::HdfDataset *dset)
+hid_t NDFileHDF5::create_dataset_detector(hid_t group, hdf5::Dataset *dset)
 {
   static const char *functionName = "create_dataset_detector";
 
@@ -2059,9 +2059,9 @@ asynStatus NDFileHDF5::writePerformanceDataset()
   hid_t dataspace_id, dataset_id, group_performance;
   epicsInt32 numCaptured;
 
-  hdf5::HdfRoot *root = this->layout.get_hdftree();
+  hdf5::Root *root = this->layout.get_hdftree();
   if (root){
-    hdf5::HdfGroup* def_group = root->find_ndattr_default_group();
+    hdf5::Group* def_group = root->find_ndattr_default_group();
     group_performance = H5Gopen(this->file, def_group->get_full_name().c_str(), H5P_DEFAULT);
 
     /* Create the data space for the second dataset. */
@@ -2120,8 +2120,8 @@ asynStatus NDFileHDF5::createAttributeDataset()
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s Creating attribute datasets. extradims=%d attribute count=%d\n",
             driverName, functionName, extraDims, this->pFileAttributes->count());
 
-  hdf5::HdfRoot *root = this->layout.get_hdftree();
-  hdf5::HdfGroup* def_group = root->find_ndattr_default_group();
+  hdf5::Root *root = this->layout.get_hdftree();
+  hdf5::Group* def_group = root->find_ndattr_default_group();
   hid_t groupDefault = H5Gopen(this->file, def_group->get_full_name().c_str(), H5P_DEFAULT);
   if (strlen(this->hostname) > 0) {
     this->writeStringAttribute(groupDefault, "hostname", this->hostname);
@@ -2149,12 +2149,12 @@ asynStatus NDFileHDF5::createAttributeDataset()
       hdfAttrNode->hdfdatatype  = this->type_nd2hdf((NDDataType_t)ndAttr->getDataType());
       H5Pset_fill_value (hdfAttrNode->hdfcparm, hdfAttrNode->hdfdatatype, this->ptrFillValue );
 
-      hdf5::HdfDataset *dset = NULL;
+      hdf5::Dataset *dset = NULL;
       // Search for the dataset of the NDAttribute.  If it exists then we use it
       if (root->find_dset_ndattr(hdfAttrNode->attrName, &dset) == 0){
         // In here we need to open the dataset for writing
 
-        hdf5::HdfDataSource dsource = dset->data_source();
+        hdf5::DataSource dsource = dset->data_source();
         hdfAttrNode->whenToSave = dsource.get_when_to_save();
         if(hdfAttrNode->whenToSave != hdf5::OnFrame) {
             //set dim size to 1 for OnFileOpen and OnFileClose
@@ -2226,7 +2226,7 @@ asynStatus NDFileHDF5::createAttributeDataset()
     else if (ndAttr->getDataType() == NDAttrString)
     {
       hid_t dsetgroup;
-      hdf5::HdfDataset *dset = NULL;
+      hdf5::Dataset *dset = NULL;
       int closeGroup = 0;
       // Search for the dataset of the NDAttribute.  If it exists then we use it
       if (root->find_dset_ndattr(ndAttr->getName(), &dset) == 0){
@@ -2258,7 +2258,7 @@ asynStatus NDFileHDF5::createAttributeDataset()
 /** Write the NDArray attributes to the file
  *
  */
-asynStatus NDFileHDF5::writeAttributeDataset(hdf5::HdfWhen_t whenToSave)
+asynStatus NDFileHDF5::writeAttributeDataset(hdf5::When_t whenToSave)
 {
   asynStatus status = asynSuccess;
   HDFAttributeNode *hdfAttrNode = NULL;

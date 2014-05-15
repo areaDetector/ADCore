@@ -47,11 +47,11 @@ namespace log4cxx
 namespace hdf5 {
 
 // forward declarations
-class HdfGroup;
-class HdfRoot;
-class HdfDataSource;
-class HdfAttribute;
-class HdfElement;
+class Group;
+class Root;
+class DataSource;
+class Attribute;
+class Element;
 
 int main_xml(const char *fname);
 
@@ -89,14 +89,14 @@ public:
     int verify_xml(const std::string& filename);
     int unload_xml();
 
-    HdfRoot* get_hdftree();
+    Root* get_hdftree();
     std::string get_global(const std::string& name);
 
 private:
     int process_node();
 
-    int process_dset_xml_attribute(HdfDataSource& out);
-    int process_attribute_xml_attribute(HdfAttribute& out);
+    int process_dset_xml_attribute(DataSource& out);
+    int process_attribute_xml_attribute(Attribute& out);
 
     int new_group();
     int new_dataset();
@@ -104,8 +104,8 @@ private:
     int new_global();
 
     log4cxx::LoggerPtr log;
-    HdfRoot* ptr_tree;
-    HdfElement *ptr_curr_element;
+    Root* ptr_tree;
+    Element *ptr_curr_element;
     xmlTextReaderPtr xmlreader;
     std::map<std::string, std::string> globals;
 
