@@ -2725,15 +2725,21 @@ asynStatus NDFileHDF5::createNewFile(const char *fileName)
    * which ideally matches disk boundaries.
    * If user sets size to 0 we do not set alignment at all. */
   hid_t access_plist = H5Pcreate(H5P_FILE_ACCESS);
+  int tempAlign = 0;
   hsize_t align = 0;
+  getIntegerParam(NDFileHDF5_chunkBoundaryAlign, &tempAlign);
+  if (tempAlign > 0){
+    align = tempAlign;
+  }
+  int tempThreshold = 0;
   hsize_t threshold = 0;
-  getIntegerParam(NDFileHDF5_chunkBoundaryAlign, (int*)&align);
-  getIntegerParam(NDFileHDF5_chunkBoundaryThreshold, (int*)&threshold);
-  if (align > 0)
-  {
+  getIntegerParam(NDFileHDF5_chunkBoundaryThreshold, (int*)&tempThreshold);
+  if (tempThreshold > 0){
+    threshold = tempThreshold;
+  }
+  if (align > 0){
     hdfstatus = H5Pset_alignment( access_plist, threshold, align );
-    if (hdfstatus < 0)
-    {
+    if (hdfstatus < 0){
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
           "%s%s Warning: failed to set boundary threshod=%llu and alignment=%llu bytes\n",
           driverName, functionName, threshold, align);
