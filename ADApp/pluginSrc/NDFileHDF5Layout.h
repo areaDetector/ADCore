@@ -93,7 +93,7 @@ namespace hdf5
 
       DataSource source;
     private:
-      void _copy(const Attribute& src){this->name = src.name; this->source = src.source; this->onFileOpen = src.onFileOpen;};
+      void _copy(const Attribute& src);
       std::string name;
       bool onFileOpen;
   };

@@ -58,6 +58,13 @@ namespace hdf5
     return (when == OnFileClose) || (when == OnFrame);
   }
 
+  void Attribute::_copy(const Attribute& src)
+  {
+    this->name = src.name;
+    this->source = src.source;
+    this->onFileOpen = src.onFileOpen;
+  }
+
   DataSource::DataSource() : data_src(notset), val(""), datatype(int8), when_to_save(OnFrame)
   {
   }
