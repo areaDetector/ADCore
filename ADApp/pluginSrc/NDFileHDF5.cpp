@@ -2327,6 +2327,7 @@ asynStatus NDFileHDF5::closeAttributeDataset()
     H5Sclose(hdfAttrNode->hdfdataspace);
     H5Pclose(hdfAttrNode->hdfcparm);
     free(hdfAttrNode->attrName);
+    free(hdfAttrNode);
   }
   return status;
 }
