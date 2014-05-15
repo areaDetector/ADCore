@@ -334,7 +334,10 @@ namespace hdf5
     ret = this->datasets.insert(std::pair<std::string, Dataset*>(name, ds));
 
     // Check for successful insertion.
-    if (ret.second == false) return NULL;
+    if (ret.second == false){
+      delete ds;
+      return NULL;
+    }
     return ds;
   }
 
