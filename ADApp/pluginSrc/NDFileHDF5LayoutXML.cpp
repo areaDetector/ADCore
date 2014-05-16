@@ -79,7 +79,6 @@ int LayoutXML::load_xml()
 
     if (this->xmlreader == NULL) {
         LOG4CXX_ERROR(log, "Unable to open default XML string");
-        this->xmlreader = NULL;
         return -1;
     }
 
@@ -88,6 +87,7 @@ int LayoutXML::load_xml()
         this->process_node();
     }
     xmlFreeTextReader(this->xmlreader);
+    this->xmlreader = NULL;
     if (ret != 0) {
     	LOG4CXX_ERROR(log, "Failed to parse default XML string");
     }
@@ -113,7 +113,6 @@ int LayoutXML::load_xml(const std::string& filename)
 
     if (this->xmlreader == NULL) {
         LOG4CXX_ERROR(log, "Unable to open XML file: " << filename );
-        this->xmlreader = NULL;
         return -1;
     }
 
@@ -122,6 +121,7 @@ int LayoutXML::load_xml(const std::string& filename)
         this->process_node();
     }
     xmlFreeTextReader(this->xmlreader);
+    this->xmlreader = NULL;
     if (ret != 0) {
     	LOG4CXX_ERROR(log, "Failed to parse XML file: "<< filename );
     }
@@ -164,6 +164,7 @@ int LayoutXML::verify_xml(const std::string& filename)
         this->process_node();
       }
       xmlFreeTextReader(this->xmlreader);
+      this->xmlreader = NULL;
       if (ret != 0) {
     	  LOG4CXX_ERROR(log, "Failed to parse XML file: "<< filename );
         status = -1;
@@ -186,19 +187,19 @@ int LayoutXML::verify_xml(const std::string& filename)
 int LayoutXML::unload_xml()
 {
   // Release any stored resource elements
-//  if (this->ptr_tree != NULL){
-//    delete this->ptr_tree;
+  if (this->ptr_tree != NULL){
+    delete this->ptr_tree;
     this->ptr_tree = NULL;
-//  }
+  }
 
   // Empty the globals store
   this->globals.clear();
 
   // Release the xml reader
-//  if (this->xmlreader != NULL){
-//    delete this->xmlreader;
-//    this->xmlreader = NULL;
-//  }
+  if (this->xmlreader != NULL){
+    xmlFreeTextReader(this->xmlreader);
+    this->xmlreader = NULL;
+  }
   return 0;
 }
 
