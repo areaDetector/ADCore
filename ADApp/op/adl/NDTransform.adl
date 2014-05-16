@@ -1,14 +1,14 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADApp/op/adl/NDTransform.adl"
-	version=030105
+	name="D:\epics\synApps_5_7\support\areaDetector-1-9-1\ADApp\op\adl\NDTransform.adl"
+	version=030107
 }
 display {
 	object {
-		x=218
-		y=105
-		width=735
-		height=550
+		x=658
+		y=231
+		width=390
+		height=660
 	}
 	clr=14
 	bclr=4
@@ -89,9 +89,9 @@ display {
 }
 rectangle {
 	object {
-		x=12
+		x=5
 		y=5
-		width=710
+		width=380
 		height=25
 	}
 	"basic attribute" {
@@ -100,9 +100,9 @@ rectangle {
 }
 text {
 	object {
-		x=17
+		x=10
 		y=6
-		width=700
+		width=370
 		height=25
 	}
 	"basic attribute" {
@@ -111,476 +111,136 @@ text {
 	textix="$(P)$(R)"
 	align="horiz. centered"
 }
+composite {
+	object {
+		x=5
+		y=150
+		width=380
+		height=505
+	}
+	"composite name"=""
+	"composite file"="NDPluginBase.adl"
+}
 rectangle {
 	object {
-		x=390
-		y=35
-		width=340
-		height=205
+		x=5
+		y=40
+		width=380
+		height=100
 	}
 	"basic attribute" {
 		clr=13
 		fill="outline"
 	}
 }
-composite {
-	object {
-		x=397
-		y=114
-		width=325
-		height=122
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=397
-				y=114
-				width=140
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Transform Type"
-		}
-		composite {
-			object {
-				x=517
-				y=142
-				width=65
-				height=93
-			}
-			"composite name"=""
-			children {
-				"text update" {
-					object {
-						x=517
-						y=142
-						width=65
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)T1MaxSize0"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
-				"text update" {
-					object {
-						x=517
-						y=167
-						width=65
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)T2MaxSize0"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
-				"text update" {
-					object {
-						x=517
-						y=192
-						width=65
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)T3MaxSize0"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
-				"text update" {
-					object {
-						x=517
-						y=217
-						width=65
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)T4MaxSize0"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=587
-				y=142
-				width=65
-				height=93
-			}
-			"composite name"=""
-			children {
-				"text update" {
-					object {
-						x=587
-						y=142
-						width=65
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)T1MaxSize1"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
-				"text update" {
-					object {
-						x=587
-						y=167
-						width=65
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)T2MaxSize1"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
-				"text update" {
-					object {
-						x=587
-						y=192
-						width=65
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)T3MaxSize1"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
-				"text update" {
-					object {
-						x=587
-						y=217
-						width=65
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)T4MaxSize1"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=657
-				y=142
-				width=65
-				height=93
-			}
-			"composite name"=""
-			children {
-				"text update" {
-					object {
-						x=657
-						y=142
-						width=65
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)T1MaxSize2"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
-				"text update" {
-					object {
-						x=657
-						y=167
-						width=65
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)T2MaxSize2"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
-				"text update" {
-					object {
-						x=657
-						y=192
-						width=65
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)T3MaxSize2"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
-				"text update" {
-					object {
-						x=657
-						y=217
-						width=65
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)T4MaxSize2"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=412
-				y=141
-				width=100
-				height=95
-			}
-			"composite name"=""
-			children {
-				menu {
-					object {
-						x=412
-						y=141
-						width=100
-						height=20
-					}
-					control {
-						chan="$(P)$(R)Type1"
-						clr=14
-						bclr=51
-					}
-				}
-				menu {
-					object {
-						x=412
-						y=166
-						width=100
-						height=20
-					}
-					control {
-						chan="$(P)$(R)Type2"
-						clr=14
-						bclr=51
-					}
-				}
-				menu {
-					object {
-						x=412
-						y=191
-						width=100
-						height=20
-					}
-					control {
-						chan="$(P)$(R)Type3"
-						clr=14
-						bclr=51
-					}
-				}
-				menu {
-					object {
-						x=412
-						y=216
-						width=100
-						height=20
-					}
-					control {
-						chan="$(P)$(R)Type4"
-						clr=14
-						bclr=51
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=397
-				y=141
-				width=10
-				height=95
-			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=397
-						y=141
-						width=10
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="1"
-				}
-				text {
-					object {
-						x=397
-						y=166
-						width=10
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="2"
-				}
-				text {
-					object {
-						x=397
-						y=191
-						width=10
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="3"
-				}
-				text {
-					object {
-						x=397
-						y=216
-						width=10
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="4"
-				}
-			}
-		}
-	}
-}
-composite {
-	object {
-		x=397
-		y=41
-		width=323
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=397
-				y=41
-				width=40
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Name"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=442
-				y=41
-				width=278
-				height=20
-			}
-			control {
-				chan="$(P)$(R)Name"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-	}
-}
-menu {
-	object {
-		x=552
-		y=89
-		width=150
-		height=20
-	}
-	control {
-		chan="$(P)$(R)OriginLocation"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=552
-		y=66
-		width=150
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)OriginLocation_RBV"
-		clr=54
-		bclr=4
-	}
-	align="horiz. centered"
-	limits {
-	}
-}
 text {
 	object {
-		x=397
-		y=89
-		width=150
+		x=10
+		y=85
+		width=100
 		height=20
 	}
 	"basic attribute" {
 		clr=14
 	}
-	textix="Origin location"
-	align="horiz. right"
+	textix="Transform Type"
+}
+menu {
+	object {
+		x=10
+		y=112
+		width=150
+		height=20
+	}
+	control {
+		chan="$(P)$(R)Type1"
+		clr=14
+		bclr=51
+	}
 }
 composite {
 	object {
-		x=5
-		y=35
-		width=380
-		height=505
+		x=170
+		y=113
+		width=205
+		height=18
 	}
 	"composite name"=""
-	"composite file"="NDPluginBase.adl"
+	children {
+		"text update" {
+			object {
+				x=170
+				y=113
+				width=65
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)T1MaxSize0"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=240
+				y=113
+				width=65
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)T1MaxSize1"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=310
+				y=113
+				width=65
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)T1MaxSize2"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+	}
+}
+text {
+	object {
+		x=10
+		y=46
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Name"
+}
+"text entry" {
+	object {
+		x=50
+		y=46
+		width=278
+		height=20
+	}
+	control {
+		chan="$(P)$(R)Name"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
 }
