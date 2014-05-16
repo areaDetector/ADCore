@@ -184,9 +184,10 @@ asynStatus NDPluginFile::writeFileBase()
             callParamCallbacks();
             status = this->openFileBase(NDFileModeWrite, this->pArrays[0]);
             if (status == asynSuccess) {
+                NDArray *pArrayOut = this->pArrays[0];
                 this->unlock();
                 epicsMutexLock(this->fileMutexId);
-                status = this->writeFile(this->pArrays[0]);
+                status = this->writeFile(pArrayOut);
                 epicsMutexUnlock(this->fileMutexId);
                 this->lock();
                 if (status) {
