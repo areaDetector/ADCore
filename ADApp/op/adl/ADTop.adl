@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel-AD2.0/areaDetector-2-0/ADCore/ADApp/op/adl/ADTop.adl"
+	name="/home/epics/devel/areaDetector-2-0/ADCore/ADApp/op/adl/ADTop.adl"
 	version=030107
 }
 display {
@@ -556,6 +556,11 @@ composite {
 		label="Andor3 #1 specific"
 		name="Andor3.adl"
 		args="P=13ANDOR3:, R=cam1: "
+	}
+	display[4] {
+		label="Shamrock #1"
+		name="Shamrock.adl"
+		args="P=13ANDOR1:, R=sham1:"
 	}
 	clr=14
 	bclr=51
