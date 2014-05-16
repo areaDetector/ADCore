@@ -47,22 +47,22 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
     colorStride = arrayInfo->colorStride;
     elementSize = arrayInfo->bytesPerElement;
 
+    // Assume output array is same dimensions as input.  Handle rotation cases below.
+    outArray->dims[arrayInfo->xDim].size = inArray->dims[arrayInfo->xDim].size;
+    outArray->dims[arrayInfo->yDim].size = inArray->dims[arrayInfo->yDim].size;
+    if (inArray->ndims > 2) outArray->dims[arrayInfo->colorDim].size = inArray->dims[arrayInfo->colorDim].size;
+
     switch (transformType)
     {
         case (TransformNone):
 
-            outArray->dims[arrayInfo->xDim].size = inArray->dims[arrayInfo->xDim].size;
-            outArray->dims[arrayInfo->yDim].size = inArray->dims[arrayInfo->yDim].size;
-            outArray->dims[arrayInfo->colorDim].size = inArray->dims[arrayInfo->colorDim].size;
-
-            memcpy(outData, inData, arrayInfo->totalBytes);
+            // Nothing to do, since the input array has already been copied to the output array
             break;
 
         case (TransformRotateCW90):
 
             outArray->dims[arrayInfo->xDim].size = inArray->dims[arrayInfo->yDim].size;
             outArray->dims[arrayInfo->yDim].size = inArray->dims[arrayInfo->xDim].size;
-            outArray->dims[arrayInfo->colorDim].size = inArray->dims[arrayInfo->colorDim].size;
 
             if (colorMode == NDColorModeMono)
             {            
@@ -109,9 +109,6 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
                 }
             }
 
-            /** For this mode, since the red, green, and blue information is contiguous in memory,
-                we can use memcpy to move them all at once for each pixel
-            */
             if (colorMode == NDColorModeRGB1)
             {
                 int source_offset;
@@ -126,7 +123,9 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
                     {
                         source_offset = (x * xStride) + (y * yStride);
                         target_offset = (((ySize - 1) - y) * xStride) + (x * (newStride));
-                        memcpy(outData + target_offset, inData + source_offset, (xStride * elementSize));
+                        outData[target_offset + 0] = inData[source_offset + 0];;
+                        outData[target_offset + 1] = inData[source_offset + 1];;
+                        outData[target_offset + 2] = inData[source_offset + 2];;
                     }
                 }
             }
@@ -134,10 +133,6 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
             break;
 
         case (TransformRotate180):
-
-            outArray->dims[arrayInfo->xDim].size = inArray->dims[arrayInfo->xDim].size;
-            outArray->dims[arrayInfo->yDim].size = inArray->dims[arrayInfo->yDim].size;
-            outArray->dims[arrayInfo->colorDim].size = inArray->dims[arrayInfo->colorDim].size;
 
             if (colorMode == NDColorModeMono)
             {
@@ -168,7 +163,6 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
 
             outArray->dims[arrayInfo->xDim].size = inArray->dims[arrayInfo->yDim].size;
             outArray->dims[arrayInfo->yDim].size = inArray->dims[arrayInfo->xDim].size;
-            outArray->dims[arrayInfo->colorDim].size = inArray->dims[arrayInfo->colorDim].size;
 
             if (colorMode == NDColorModeMono)
             {
@@ -188,8 +182,8 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
                     for (y = 0; y < ySize; y++)
                     {
                         /** Copy three values for each iteration of the inner loop.  This moves the red, green, and blue information. */
-                        outData[(y * xStride) + (((xSize - 1) - x) * ySize)] = inData[(y * yStride) + (x * xStride)];
-                        outData[(y * xStride) + (((xSize - 1) - x) * ySize) + colorStride] = inData[(y * yStride) + (x * xStride) + colorStride];
+                        outData[(y * xStride) + (((xSize - 1) - x) * ySize)]                     = inData[(y * yStride) + (x * xStride)];
+                        outData[(y * xStride) + (((xSize - 1) - x) * ySize) + colorStride]       = inData[(y * yStride) + (x * xStride) + colorStride];
                         outData[(y * xStride) + (((xSize - 1) - x) * ySize) + (2 * colorStride)] = inData[(y * yStride) + (x * xStride) + (2 * colorStride)];
                     }
                 }
@@ -208,26 +202,13 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
                     for (x = (xSize - 1); x >= 0; x--)
                     {
                         /** Copy three values for each iteration of the inner loop.  This moves the red, green, and blue information. */
-                        color = 0;
-                        outData[(y * xStride) + (((xSize - 1) - x) * newYStride) + (color * newColorStride)] = inData[(y * yStride) + (x * xStride) + (color * colorStride)];
-                        color = 1;
-                        outData[(y * xStride) + (((xSize - 1) - x) * newYStride) + (color * newColorStride)] = inData[(y * yStride) + (x * xStride) + (color * colorStride)];
-                        color = 2;
-                        outData[(y * xStride) + (((xSize - 1) - x) * newYStride) + (color * newColorStride)] = inData[(y * yStride) + (x * xStride) + (color * colorStride)];
-
-                        /** These lines don't work.  The red is moved correctly, but not the green or blue.  I don't understand
-                            how the above works and not this.
-                        */
-                        //outData[(y * xStride) + (((xSize - 1) - x) * newYStride)] = inData[(y * yStride) + (x * xStride)];
-                        //outData[(y * xStride) + (((xSize - 1) - x) * newYStride) + newColorStride] = inData[(y * yStride) + (x * xStride) + newColorStride];
-                        //outData[(y * xStride) + (((xSize - 1) - x) * newYStride) + (2 * newColorStride)] = inData[(y * yStride) + (x * xStride) + (2 * newColorStride)];
+                        outData[(y * xStride) + (((xSize - 1) - x) * newYStride)]                        = inData[(y * yStride) + (x * xStride)];
+                        outData[(y * xStride) + (((xSize - 1) - x) * newYStride) + newColorStride]       = inData[(y * yStride) + (x * xStride) + colorStride];
+                        outData[(y * xStride) + (((xSize - 1) - x) * newYStride) + (2 * newColorStride)] = inData[(y * yStride) + (x * xStride) + (2 * colorStride)];
                     }
                 }
             }
 
-            /** For this mode, since the red, green, and blue information is contiguous in memory,
-                we can use memcpy to move them all at once for each pixel
-            */
             if (colorMode == NDColorModeRGB1)
             {
                 int source_offset;
@@ -242,7 +223,9 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
                     {
                         source_offset = (x * xStride) + (y * yStride);
                         target_offset = (y * xStride) + (((xSize-1) - x) * (newStride));
-                        memcpy(outData + target_offset, inData + source_offset, (xStride * elementSize));
+                        outData[target_offset + 0] = inData[source_offset + 0];;
+                        outData[target_offset + 1] = inData[source_offset + 1];;
+                        outData[target_offset + 2] = inData[source_offset + 2];;
                     }
                 }
             }
@@ -253,7 +236,6 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
 
             outArray->dims[arrayInfo->xDim].size = inArray->dims[arrayInfo->yDim].size;
             outArray->dims[arrayInfo->yDim].size = inArray->dims[arrayInfo->xDim].size;
-            outArray->dims[arrayInfo->colorDim].size = inArray->dims[arrayInfo->colorDim].size;
 
             if (colorMode == NDColorModeMono)
             {
@@ -300,9 +282,6 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
                 }
             }
 
-            /** For this mode, since the red, green, and blue information is contiguous in memory,
-                we can use memcpy to move them all at once for each pixel
-            */
             if (colorMode == NDColorModeRGB1)
             {
                 int source_offset;
@@ -317,7 +296,9 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
                     {
                         source_offset = (x * xStride) + (y * yStride);
                         target_offset = (y * xStride) + (x * (newStride));
-                        memcpy(outData + target_offset, inData + source_offset, (xStride * elementSize));
+                        outData[target_offset + 0] = inData[source_offset + 0];;
+                        outData[target_offset + 1] = inData[source_offset + 1];;
+                        outData[target_offset + 2] = inData[source_offset + 2];;
                     }
                 }
             }
@@ -328,7 +309,6 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
 
             outArray->dims[arrayInfo->xDim].size = inArray->dims[arrayInfo->yDim].size;
             outArray->dims[arrayInfo->yDim].size = inArray->dims[arrayInfo->xDim].size;
-            outArray->dims[arrayInfo->colorDim].size = inArray->dims[arrayInfo->colorDim].size;
 
             if (colorMode == NDColorModeMono)
             {
@@ -375,9 +355,6 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
                 }
             }
 
-            /** For this mode, since the red, green, and blue information is contiguous in memory,
-                we can use memcpy to move them all at once for each pixel
-            */
             if (colorMode == NDColorModeRGB1)
             {
                 int source_offset;
@@ -392,7 +369,9 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
                     {
                         source_offset = (((xSize - 1) - x) * xStride) + (((ySize - 1) - y) * yStride);
                         target_offset = (y * xStride) + (x * (newStride));
-                        memcpy(outData + target_offset, inData + source_offset, (xStride * elementSize));
+                        outData[target_offset + 0] = inData[source_offset + 0];;
+                        outData[target_offset + 1] = inData[source_offset + 1];;
+                        outData[target_offset + 2] = inData[source_offset + 2];;
                     }
                 }
             }
@@ -400,10 +379,6 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
             break;
 
         case (TransformFlipHoriz):
-
-            outArray->dims[arrayInfo->xDim].size = inArray->dims[arrayInfo->xDim].size;
-            outArray->dims[arrayInfo->yDim].size = inArray->dims[arrayInfo->yDim].size;
-            outArray->dims[arrayInfo->colorDim].size = inArray->dims[arrayInfo->colorDim].size;
 
             if (colorMode == NDColorModeMono)
             {
@@ -434,10 +409,6 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
 
             int source_offset;
             int target_offset;
-
-            outArray->dims[arrayInfo->xDim].size = inArray->dims[arrayInfo->xDim].size;
-            outArray->dims[arrayInfo->yDim].size = inArray->dims[arrayInfo->yDim].size;
-            outArray->dims[arrayInfo->colorDim].size = inArray->dims[arrayInfo->colorDim].size;
 
             /** In this mode, we are moving an entire row at once.  First all of the red rows are moved.
                 Next, all of the green rows are moved.  Lastly, all of the blue rows are moved.  In mono
@@ -470,9 +441,6 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
                 }
             }
 
-            /** For this mode, since the red, green, and blue information is contiguous in memory,
-                we can use memcpy to move them all at once for each pixel
-            */
             if (colorMode == NDColorModeRGB1)
             {
                 for (y = 0; y < ySize; y++)
@@ -481,7 +449,9 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
                     {
                         source_offset = (x * xStride) + (y * yStride);
                         target_offset = (x * xStride) + (((ySize-1) - y) * yStride);
-                        memcpy(outData + target_offset, inData + source_offset, (xStride * elementSize));
+                        outData[target_offset + 0] = inData[source_offset + 0];;
+                        outData[target_offset + 1] = inData[source_offset + 1];;
+                        outData[target_offset + 2] = inData[source_offset + 2];;
                     }
                 }
             }
