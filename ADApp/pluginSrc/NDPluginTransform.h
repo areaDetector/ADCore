@@ -68,7 +68,7 @@ protected:
     int NDPluginTransformName;           /* (asynOctet;   r/w) Name of this Transform */
     #define FIRST_TRANSFORM_PARAM NDPluginTransformName
     int NDPluginTransformType;
-	int NDPluginTransformDim0MaxSize;
+    int NDPluginTransformDim0MaxSize;
     int NDPluginTransformDim1MaxSize;
     int NDPluginTransformDim2MaxSize;
     int NDPluginTransformArraySize0;
@@ -77,11 +77,9 @@ protected:
     #define LAST_TRANSFORM_PARAM NDPluginTransformArraySize2
 
 private:
-
     size_t userDims[ND_ARRAY_MAX_DIMS];
-	NDTransform_t transformStruct;
-
-	void transformImage(NDArray *inArray, NDArray *outArray, NDArrayInfo_t *arrayInfo);
+    NDTransform_t transformStruct;
+    void transformImage(NDArray *inArray, NDArray *outArray, NDArrayInfo_t *arrayInfo);
 };
 #define NUM_TRANSFORM_PARAMS ((int)(&LAST_TRANSFORM_PARAM - &FIRST_TRANSFORM_PARAM + 1))
 
