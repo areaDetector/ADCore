@@ -139,6 +139,7 @@ int LayoutXML::load_xml(const std::string& filename)
 int LayoutXML::verify_xml(const std::string& filename)
 {
     int ret = 0;
+    int status = 0;
 
     // if the file name contains <?xml then load it as an xml string from memory
     if (filename.find("<?xml") != std::string::npos) {
@@ -146,37 +147,37 @@ int LayoutXML::verify_xml(const std::string& filename)
         if (this->xmlreader == NULL) {
            LOG4CXX_ERROR(log, "Unable to parse XML string: " << filename );
            this->xmlreader = NULL;
-           return -1;
+           status = -1;
         }
-    }
-    else {
+    } else {
         this->xmlreader = xmlReaderForFile(filename.c_str(), NULL, 0);
         if (this->xmlreader == NULL) {
             LOG4CXX_ERROR(log, "Unable to open XML file: " << filename );
             this->xmlreader = NULL;
-            return -1;
+            status = -1;
         }
     }
 
-    LOG4CXX_INFO(log, "Loading HDF5 layout XML file: " << filename);
-    while ( (ret = xmlTextReaderRead(this->xmlreader)) == 1) {
+    if  (status == 0){
+      LOG4CXX_INFO(log, "Loading HDF5 layout XML file: " << filename);
+      while ( (ret = xmlTextReaderRead(this->xmlreader)) == 1) {
         this->process_node();
+      }
+      xmlFreeTextReader(this->xmlreader);
+      if (ret != 0) {
+    	  LOG4CXX_ERROR(log, "Failed to parse XML file: "<< filename );
+        status = -1;
+      }
     }
-    xmlFreeTextReader(this->xmlreader);
-    if (ret != 0) {
-      this->ptr_tree = NULL;
-      this->globals.clear();
-    	LOG4CXX_ERROR(log, "Failed to parse XML file: "<< filename );
-      return -1;
-    }
-
     // Parsed OK, now free everything
-    delete this->ptr_tree;
+    if (this->ptr_tree){
+      delete this->ptr_tree;
+    }
     this->ptr_tree = NULL;
     // Empty the globals store
     this->globals.clear();
 
-    return 0;
+    return status;
 }
 
 /**
