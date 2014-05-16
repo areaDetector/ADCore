@@ -70,26 +70,26 @@ class NDFileHDF5 : public NDPluginFile
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     virtual asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t nChars, size_t *nActual);
 
-    asynStatus create_file_layout();
-    asynStatus store_onOpen_attributes();
-    asynStatus store_onClose_attributes();
-    asynStatus store_onOpenClose_attribute(hdf5::Element *element, bool open);
-    asynStatus create_tree(hdf5::Group* root, hid_t h5handle);
+    asynStatus createXMLFileLayout();
+    asynStatus storeOnOpenAttributes();
+    asynStatus storeOnCloseAttributes();
+    asynStatus storeOnOpenCloseAttribute(hdf5::Element *element, bool open);
+    asynStatus createTree(hdf5::Group* root, hid_t h5handle);
 
-    void write_hdf_const_datasets( hid_t h5_handle, hdf5::Group* group);
-    void write_h5dset_str(hid_t element, const std::string &name, const std::string &str_value) const;
-    void write_h5dset_int32(hid_t element, const std::string &name, const std::string &str_value) const;
-    void write_h5dset_float64(hid_t element, const std::string &name, const std::string &str_value) const;
+    void writeHdfConstDatasets( hid_t h5_handle, hdf5::Group* group);
+    void writeH5dsetStr(hid_t element, const std::string &name, const std::string &str_value) const;
+    void writeH5dsetInt32(hid_t element, const std::string &name, const std::string &str_value) const;
+    void writeH5dsetFloat64(hid_t element, const std::string &name, const std::string &str_value) const;
 
-    void write_hdf_attributes( hid_t h5_handle, hdf5::Element* element);
-    hid_t create_dataset(hid_t group, hdf5::Dataset *dset);
-    void write_h5attr_str(hid_t element,
+    void writeHdfAttributes( hid_t h5_handle, hdf5::Element* element);
+    hid_t createDataset(hid_t group, hdf5::Dataset *dset);
+    void writeH5attrStr(hid_t element,
                           const std::string &attr_name,
                           const std::string &str_attr_value) const;
-    void write_h5attr_int32(hid_t element, const std::string &attr_name, const std::string &str_attr_value) const;
-    void write_h5attr_float64(hid_t element, const std::string &attr_name, const std::string &str_attr_value) const;
-    hid_t from_hdf_to_hid_datatype(hdf5::DataType_t in) const;
-    hid_t create_dataset_detector(hid_t group, hdf5::Dataset *dset);
+    void writeH5attrInt32(hid_t element, const std::string &attr_name, const std::string &str_attr_value) const;
+    void writeH5attrFloat64(hid_t element, const std::string &attr_name, const std::string &str_attr_value) const;
+    hid_t fromHdfToHidDatatype(hdf5::DataType_t in) const;
+    hid_t createDatasetDetector(hid_t group, hdf5::Dataset *dset);
 
     int fileExists(char *filename);
     int verifyLayoutXMLFile();
@@ -135,7 +135,7 @@ class NDFileHDF5 : public NDPluginFile
 
   private:
     /* private helper functions */
-    hid_t type_nd2hdf(NDDataType_t datatype);
+    hid_t typeNd2Hdf(NDDataType_t datatype);
     asynStatus configureDatasetDims(NDArray *pArray);
     asynStatus configureDims(NDArray *pArray);
     asynStatus configureCompression();
@@ -146,9 +146,9 @@ class NDFileHDF5 : public NDPluginFile
     asynStatus configurePerformanceDataset();
     asynStatus writePerformanceDataset();
     void calcNumFrames();
-    unsigned int calc_istorek();
-    hsize_t calc_chunk_cache_bytes();
-    hsize_t calc_chunk_cache_slots();
+    unsigned int calcIstorek();
+    hsize_t calcChunkCacheBytes();
+    hsize_t calcChunkCacheSlots();
 
     void checkForOpenFile();
     asynStatus createNewFile(const char *fileName);
@@ -347,7 +347,7 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
   getIntegerParam(NDFileHDF5_storeAttributes, &storeAttributes);
   if (storeAttributes == 1){
     // Store any attributes that have been marked as onOpen
-    if (this->store_onOpen_attributes()){
+    if (this->storeOnOpenAttributes()){
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
                 "%s::%s ERROR Failed to store the onOpen attributes\n",
                 driverName, functionName);
@@ -368,10 +368,10 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
 
 /** Create the groups and datasets in the HDF5 file.
  */
-asynStatus NDFileHDF5::create_file_layout()
+asynStatus NDFileHDF5::createXMLFileLayout()
 {
   asynStatus retcode = asynSuccess;
-  static const char *functionName = "create_file_layout";
+  static const char *functionName = "createXMLFileLayout";
  
   // Clear out any previous onOpen and onClose vectors
   onOpenMap.clear();
@@ -382,7 +382,7 @@ asynStatus NDFileHDF5::create_file_layout()
             driverName, functionName,
             root->_str_().c_str());
 
-  retcode = this->create_tree(root, this->file);
+  retcode = this->createTree(root, this->file);
 
   // Only proceed if there was no error in creating the tree
   if (retcode == asynSuccess){
@@ -431,15 +431,15 @@ asynStatus NDFileHDF5::create_file_layout()
 /**
  * Check through attributes and store any that have been marked as onOpen
  */
-asynStatus NDFileHDF5::store_onOpen_attributes()
+asynStatus NDFileHDF5::storeOnOpenAttributes()
 {
   asynStatus status = asynSuccess;
-  const char *functionName = "store_onOpen_attributes";
+  const char *functionName = "storeOnOpenAttributes";
 
   // Loop over the stored onOpen elements
   for (std::map<std::string, hdf5::Element *>::iterator it_element = onOpenMap.begin() ; it_element != onOpenMap.end(); ++it_element){
     hdf5::Element *element = it_element->second;
-    status = store_onOpenClose_attribute(element, true);
+    status = storeOnOpenCloseAttribute(element, true);
     if (status != asynSuccess){
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s failed to store onOpen attributes\n",
                 driverName, functionName);
@@ -451,15 +451,15 @@ asynStatus NDFileHDF5::store_onOpen_attributes()
 
 /** Check through attributes and store any that have been marked as onClose
  */
-asynStatus NDFileHDF5::store_onClose_attributes()
+asynStatus NDFileHDF5::storeOnCloseAttributes()
 {
   asynStatus status = asynSuccess;
-  const char *functionName = "store_onClose_attributes";
+  const char *functionName = "storeOnCloseAttributes";
 
   // Loop over the stored onClose elements
   for (std::map<std::string, hdf5::Element *>::iterator it_element = onCloseMap.begin() ; it_element != onCloseMap.end(); ++it_element){
     hdf5::Element *element = it_element->second;
-    status = store_onOpenClose_attribute(element, false);
+    status = storeOnOpenCloseAttribute(element, false);
     if (status != asynSuccess){
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s failed to store onClose attributes\n",
                 driverName, functionName);
@@ -471,14 +471,14 @@ asynStatus NDFileHDF5::store_onClose_attributes()
 
 /** Check attribute and store if marked as onOpen or onClose when opening or closing
  */
-asynStatus NDFileHDF5::store_onOpenClose_attribute(hdf5::Element *element, bool open)
+asynStatus NDFileHDF5::storeOnOpenCloseAttribute(hdf5::Element *element, bool open)
 {
   asynStatus status = asynSuccess;
   NDAttribute *ndAttr = NULL;
   void* datavalue;
   int ret;
   bool saveAttribute = false;
-  const char *functionName = "store_onOpenClose_attribute";
+  const char *functionName = "storeOnOpenCloseAttribute";
 
   hdf5::Element::MapAttributes_t::iterator it_attr;
   // Attempt to Open the Object, we do not know (or care?) if it is a group or dataset
@@ -514,7 +514,7 @@ asynStatus NDFileHDF5::store_onOpenClose_attribute(hdf5::Element *element, bool 
             } else {
               if (dataType != NDAttrString && dataType != NDAttrUndefined){
                 hid_t hdfattrdataspace = H5Screate(H5S_SCALAR);
-                hid_t hdfdatatype      = H5Tcopy(this->type_nd2hdf((NDDataType_t)dataType));
+                hid_t hdfdatatype      = H5Tcopy(this->typeNd2Hdf((NDDataType_t)dataType));
                 hid_t hdfattr = H5Acreate2(hdf_id, attr.get_name().c_str(), hdfdatatype, hdfattrdataspace, H5P_DEFAULT, H5P_DEFAULT);
                 if (hdfattr < 0) {
                   asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s unable to create attribute: %s\n",
@@ -532,7 +532,7 @@ asynStatus NDFileHDF5::store_onOpenClose_attribute(hdf5::Element *element, bool 
               } else if(dataType == NDAttrString){
                 // This is a string attribute
                 std::string str_val((char *)datavalue);
-                this->write_h5attr_str(hdf_id, attr.get_name(), str_val);
+                this->writeH5attrStr(hdf_id, attr.get_name(), str_val);
               }
             }
             if (datavalue){
@@ -553,11 +553,11 @@ asynStatus NDFileHDF5::store_onOpenClose_attribute(hdf5::Element *element, bool 
 /** Create the root group and recursively create all subgroups and datasets in the HDF5 file.
  *
  */
-asynStatus NDFileHDF5::create_tree(hdf5::Group* root, hid_t h5handle)
+asynStatus NDFileHDF5::createTree(hdf5::Group* root, hid_t h5handle)
 {
   asynStatus retcode = asynSuccess;
   int storeAttributes;
-  static const char *functionName = "create_tree";
+  static const char *functionName = "createTree";
 
   if (root == NULL) return asynError; // sanity check
 
@@ -568,7 +568,7 @@ asynStatus NDFileHDF5::create_tree(hdf5::Group* root, hid_t h5handle)
     hdf5::Group::MapGroups_t& groups = root->get_groups();
     for (it_group = groups.begin(); it_group != groups.end(); ++it_group){
       // recursively call this function to create all subgroups
-      retcode = this->create_tree( it_group->second, h5handle );
+      retcode = this->createTree( it_group->second, h5handle );
     }
   } else {
     //First make the current group inside the given hdf handle.
@@ -580,22 +580,22 @@ asynStatus NDFileHDF5::create_tree(hdf5::Group* root, hid_t h5handle)
     }
 
     // Write contant datasets to file
-    this->write_hdf_const_datasets(new_group, root);
+    this->writeHdfConstDatasets(new_group, root);
 
     getIntegerParam(NDFileHDF5_storeAttributes, &storeAttributes);
     if (storeAttributes == 1){
       // Set some attributes on the group
-      this->write_hdf_attributes(new_group,  root);
+      this->writeHdfAttributes(new_group,  root);
     }
 
     // Create all the datasets in this group
     hdf5::Group::MapDatasets_t::iterator it_dsets;
     hdf5::Group::MapDatasets_t& datasets = root->get_datasets();
     for (it_dsets = datasets.begin(); it_dsets != datasets.end(); ++it_dsets){
-      hid_t new_dset = this->create_dataset(new_group, it_dsets->second);
+      hid_t new_dset = this->createDataset(new_group, it_dsets->second);
       if (new_dset <= 0) continue; // failure to create the datasets so move on to next
       // Write the hdf attributes to the dataset
-      this->write_hdf_attributes( new_dset,  it_dsets->second);
+      this->writeHdfAttributes( new_dset,  it_dsets->second);
       // Datasets are closed after data has been written
     }
 
@@ -603,7 +603,7 @@ asynStatus NDFileHDF5::create_tree(hdf5::Group* root, hid_t h5handle)
     hdf5::Group::MapGroups_t& groups = root->get_groups();
     for (it_group = groups.begin(); it_group != groups.end(); ++it_group){
       // recursively call this function to create all subgroups
-      retcode = this->create_tree( it_group->second, new_group );
+      retcode = this->createTree( it_group->second, new_group );
     }
     // close the handle to the group that we've created in this instance
     // of the function. This is to ensure we're not leaving any hanging,
@@ -620,7 +620,7 @@ asynStatus NDFileHDF5::create_tree(hdf5::Group* root, hid_t h5handle)
  *  by a ','
  *
  */
-void NDFileHDF5::write_hdf_attributes( hid_t h5_handle, hdf5::Element* element)
+void NDFileHDF5::writeHdfAttributes( hid_t h5_handle, hdf5::Element* element)
 {
   hdf5::Element::MapAttributes_t::iterator it_attr;
   hdf5::DataType_t attr_dtype = hdf5::string;
@@ -639,13 +639,13 @@ void NDFileHDF5::write_hdf_attributes( hid_t h5_handle, hdf5::Element* element)
       switch ( attr_dtype )
       {
         case hdf5::string:
-          this->write_h5attr_str(h5_handle, attr.get_name(), attr.source.get_src_def());
+          this->writeH5attrStr(h5_handle, attr.get_name(), attr.source.get_src_def());
           break;
         case hdf5::float64:
-          this->write_h5attr_float64(h5_handle, attr.get_name(), attr.source.get_src_def());
+          this->writeH5attrFloat64(h5_handle, attr.get_name(), attr.source.get_src_def());
           break;
         case hdf5::int32:
-          this->write_h5attr_int32(h5_handle, attr.get_name(), attr.source.get_src_def());
+          this->writeH5attrInt32(h5_handle, attr.get_name(), attr.source.get_src_def());
           break;
         default:
           break;
@@ -661,7 +661,7 @@ void NDFileHDF5::write_hdf_attributes( hid_t h5_handle, hdf5::Element* element)
  *  by a ','
  *
  */
-void NDFileHDF5::write_hdf_const_datasets( hid_t h5_handle, hdf5::Group* group)
+void NDFileHDF5::writeHdfConstDatasets( hid_t h5_handle, hdf5::Group* group)
 {
   hdf5::Group::MapDatasets_t::iterator it_dsets;
   hdf5::DataType_t dtype = hdf5::string;
@@ -675,13 +675,13 @@ void NDFileHDF5::write_hdf_const_datasets( hid_t h5_handle, hdf5::Group* group)
       switch ( dtype )
       {
         case hdf5::string:
-          this->write_h5dset_str(h5_handle, dset->get_name(), dset->data_source().get_src_def());
+          this->writeH5dsetStr(h5_handle, dset->get_name(), dset->data_source().get_src_def());
           break;
         case hdf5::float64:
-          this->write_h5dset_float64(h5_handle, dset->get_name(), dset->data_source().get_src_def());
+          this->writeH5dsetFloat64(h5_handle, dset->get_name(), dset->data_source().get_src_def());
           break;
         case hdf5::int32:
-          this->write_h5dset_int32(h5_handle, dset->get_name(), dset->data_source().get_src_def());
+          this->writeH5dsetInt32(h5_handle, dset->get_name(), dset->data_source().get_src_def());
           break;
         default:
           break;
@@ -693,7 +693,7 @@ void NDFileHDF5::write_hdf_const_datasets( hid_t h5_handle, hdf5::Group* group)
 /** 
  * Write a string constant dataset.
  */
-void NDFileHDF5::write_h5dset_str(hid_t element, const std::string &name, const std::string &str_value) const
+void NDFileHDF5::writeH5dsetStr(hid_t element, const std::string &name, const std::string &str_value) const
 {
   herr_t hdfstatus = -1;
   hid_t hdfdatatype = -1;
@@ -701,7 +701,7 @@ void NDFileHDF5::write_h5dset_str(hid_t element, const std::string &name, const 
   hid_t hdfdataspace = -1;
   int rank = 1;
   hsize_t dims = 1;
-  static const char *functionName = "write_h5dset_str";
+  static const char *functionName = "writeH5dsetStr";
 
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s name=%s value=%s\n",
             driverName, functionName,
@@ -737,13 +737,13 @@ void NDFileHDF5::write_h5dset_str(hid_t element, const std::string &name, const 
   return;
 }
 
-void NDFileHDF5::write_h5dset_int32(hid_t element, const std::string &name, const std::string &str_value) const
+void NDFileHDF5::writeH5dsetInt32(hid_t element, const std::string &name, const std::string &str_value) const
 {
   herr_t hdfstatus = -1;
   hid_t hdfdatatype = -1;
   hid_t hdfdset = -1;
   hid_t hdfdataspace = -1;
-  static const char *functionName = "write_h5dset_int32";
+  static const char *functionName = "writeH5dsetInt32";
 
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s name=%s value=%s\n",
             driverName, functionName,
@@ -818,13 +818,13 @@ void NDFileHDF5::write_h5dset_int32(hid_t element, const std::string &name, cons
 
 }
 
-void NDFileHDF5::write_h5dset_float64(hid_t element, const std::string &name, const std::string &str_value) const
+void NDFileHDF5::writeH5dsetFloat64(hid_t element, const std::string &name, const std::string &str_value) const
 {
   herr_t hdfstatus = -1;
   hid_t hdfdatatype = -1;
   hid_t hdfdset = -1;
   hid_t hdfdataspace = -1;
-  static const char *functionName = "write_h5dset_float64";
+  static const char *functionName = "writeH5dsetFloat64";
 
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s name=%s value=%s\n",
             driverName, functionName,
@@ -906,13 +906,13 @@ void NDFileHDF5::write_h5dset_float64(hid_t element, const std::string &name, co
  * then the type is not yet known and the dataset will be created when the ndattribute is first
  * read.
  */
-hid_t NDFileHDF5::create_dataset(hid_t group, hdf5::Dataset *dset)
+hid_t NDFileHDF5::createDataset(hid_t group, hdf5::Dataset *dset)
 {
   int retcode = -1;
   if (dset == NULL) return -1; // sanity check
 
   if (dset->data_source().is_src_detector()) {
-    return this->create_dataset_detector(group, dset);
+    return this->createDatasetDetector(group, dset);
   }
   if (dset->data_source().is_src_ndattribute()) {
     // At this time we cannot create the dataset as we do not know its type yet
@@ -925,13 +925,13 @@ hid_t NDFileHDF5::create_dataset(hid_t group, hdf5::Dataset *dset)
 /**
  * Write a string constant attribute.
  */
-void NDFileHDF5::write_h5attr_str(hid_t element, const std::string &attr_name, const std::string &str_attr_value) const
+void NDFileHDF5::writeH5attrStr(hid_t element, const std::string &attr_name, const std::string &str_attr_value) const
 {
   herr_t hdfstatus = -1;
   hid_t hdfdatatype = -1;
   hid_t hdfattr = -1;
   hid_t hdfattrdataspace = -1;
-  static const char *functionName = "write_h5attr_str";
+  static const char *functionName = "writeH5attrStr";
 
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s name=%s value=%s\n",
             driverName, functionName,
@@ -965,13 +965,13 @@ void NDFileHDF5::write_h5attr_str(hid_t element, const std::string &attr_name, c
 /** 
  * Write an int (or array of ints) constant attribute.
  */
-void NDFileHDF5::write_h5attr_int32(hid_t element, const std::string &attr_name, const std::string &str_attr_value) const
+void NDFileHDF5::writeH5attrInt32(hid_t element, const std::string &attr_name, const std::string &str_attr_value) const
 {
   herr_t hdfstatus = -1;
   hid_t hdfdatatype = -1;
   hid_t hdfattr = -1;
   hid_t hdfattrdataspace = -1;
-  static const char *functionName = "write_h5attr_int32";
+  static const char *functionName = "writeH5attrInt32";
 
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s name=%s value=%s\n",
             driverName, functionName,
@@ -1048,13 +1048,13 @@ void NDFileHDF5::write_h5attr_int32(hid_t element, const std::string &attr_name,
 /** 
  * Write a float (or array of floats) constant attribute.
  */
-void NDFileHDF5::write_h5attr_float64(hid_t element, const std::string &attr_name, const std::string &str_attr_value) const
+void NDFileHDF5::writeH5attrFloat64(hid_t element, const std::string &attr_name, const std::string &str_attr_value) const
 {
   herr_t hdfstatus = -1;
   hid_t hdfdatatype = -1;
   hid_t hdfattr = -1;
   hid_t hdfattrdataspace = -1;
-  static const char *functionName = "write_h5attr_float64";
+  static const char *functionName = "writeH5attrFloat64";
 
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s name=%s value=%s\n",
             driverName, functionName,
@@ -1131,7 +1131,7 @@ void NDFileHDF5::write_h5attr_float64(hid_t element, const std::string &attr_nam
 /**
  * Utility method to convert from hdf5 to hid datatype.
  */
-hid_t NDFileHDF5::from_hdf_to_hid_datatype(hdf5::DataType_t in) const
+hid_t NDFileHDF5::fromHdfToHidDatatype(hdf5::DataType_t in) const
 {
   hid_t out;
   switch(in)
@@ -1165,16 +1165,16 @@ hid_t NDFileHDF5::from_hdf_to_hid_datatype(hdf5::DataType_t in) const
  * Return the hid_t handle to the new dataset on success; -1 on error.
  * Errors: fail to set chunk size or failure to create the dataset in the file.
  */
-hid_t NDFileHDF5::create_dataset_detector(hid_t group, hdf5::Dataset *dset)
+hid_t NDFileHDF5::createDatasetDetector(hid_t group, hdf5::Dataset *dset)
 {
-  static const char *functionName = "create_dataset_detector";
+  static const char *functionName = "createDatasetDetector";
 
   if (dset == NULL) return -1; // sanity check
   hid_t dataset = -1;
 
   hid_t dset_access_plist = H5Pcreate(H5P_DATASET_ACCESS);
-  hsize_t nbytes = this->calc_chunk_cache_bytes();
-  hsize_t nslots = this->calc_chunk_cache_slots();
+  hsize_t nbytes = this->calcChunkCacheBytes();
+  hsize_t nslots = this->calcChunkCacheSlots();
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s Setting cache size=%d slots=%d\n",
             driverName, functionName,
             (int)nbytes, (int)nslots);
@@ -1434,7 +1434,7 @@ asynStatus NDFileHDF5::closeFile()
   getIntegerParam(NDFileHDF5_storeAttributes, &storeAttributes);
   getIntegerParam(NDFileHDF5_storePerformance, &storePerformance);
   if (storeAttributes == 1) {
-     this->store_onClose_attributes();
+     this->storeOnCloseAttributes();
      this->writeAttributeDataset(hdf5::OnFileClose);
      this->closeAttributeDataset();
   }
@@ -1948,7 +1948,7 @@ void NDFileHDF5::calcNumFrames()
   setIntegerParam(NDFileNumCapture, maxFramesInDims);
 }
 
-unsigned int NDFileHDF5::calc_istorek()
+unsigned int NDFileHDF5::calcIstorek()
 {
   unsigned int retval = 0;
   unsigned int num_chunks = 1; // Number of chunks that fit in the full dataset
@@ -1978,7 +1978,7 @@ unsigned int NDFileHDF5::calc_istorek()
   return retval;
 }
 
-hsize_t NDFileHDF5::calc_chunk_cache_bytes()
+hsize_t NDFileHDF5::calcChunkCacheBytes()
 {
   hsize_t nbytes = 0;
   epicsInt32 n_frames_chunk=0;
@@ -2003,7 +2003,7 @@ bool is_prime(unsigned int long number)
   return divisor == 1;
 }
 
-hsize_t NDFileHDF5::calc_chunk_cache_slots()
+hsize_t NDFileHDF5::calcChunkCacheSlots()
 {
   unsigned int long nslots = 1;
   unsigned int long num_chunks = 1;
@@ -2145,7 +2145,7 @@ asynStatus NDFileHDF5::createAttributeDataset()
       //set the default save frequence to be every frame
       hdfAttrNode->whenToSave = hdf5::OnFrame;
 
-      hdfAttrNode->hdfdatatype  = this->type_nd2hdf((NDDataType_t)ndAttr->getDataType());
+      hdfAttrNode->hdfdatatype  = this->typeNd2Hdf((NDDataType_t)ndAttr->getDataType());
       H5Pset_fill_value (hdfAttrNode->hdfcparm, hdfAttrNode->hdfdatatype, this->ptrFillValue );
 
       hdf5::Dataset *dset = NULL;
@@ -2594,7 +2594,7 @@ asynStatus NDFileHDF5::configureCompression()
 
 /** Translate the NDArray datatype to HDF5 datatypes 
  */
-hid_t NDFileHDF5::type_nd2hdf(NDDataType_t datatype)
+hid_t NDFileHDF5::typeNd2Hdf(NDDataType_t datatype)
 {
   hid_t result;
   int fillvalue = 0;
@@ -2636,7 +2636,7 @@ hid_t NDFileHDF5::type_nd2hdf(NDDataType_t datatype)
     default:
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
                 "%s::%s cannot convert NDArrayType: %d to HDF5 datatype\n",
-                driverName, "type_nd2hdf", datatype);
+                driverName, "typeNd2Hdf", datatype);
       result = -1;
   }
   return result;
@@ -2757,8 +2757,8 @@ asynStatus NDFileHDF5::createNewFile(const char *fileName)
   hid_t create_plist = H5Pcreate(H5P_FILE_CREATE);
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
             "%s::%s Setting istorek=%d\n",
-            driverName, functionName, this->calc_istorek());
-  hdfstatus = H5Pset_istore_k(create_plist, this->calc_istorek());
+            driverName, functionName, this->calcIstorek());
+  hdfstatus = H5Pset_istore_k(create_plist, this->calcIstorek());
 
   this->file = H5Fcreate(fileName, H5F_ACC_TRUNC, create_plist, access_plist);
   if (this->file <= 0){
@@ -2797,7 +2797,7 @@ asynStatus NDFileHDF5::createFileLayout(NDArray *pArray)
   hdfstatus = H5Pset_chunk(this->cparms, this->rank, this->chunkdims);
 
   /* Get the datatype */
-  hdfdatatype = this->type_nd2hdf(pArray->dataType);
+  hdfdatatype = this->typeNd2Hdf(pArray->dataType);
   this->datatype = H5Tcopy(hdfdatatype);
 
   /* configure compression if required */
@@ -2841,11 +2841,11 @@ asynStatus NDFileHDF5::createFileLayout(NDArray *pArray)
                 "%s%s Warning: specified XML file does not exist, using default\n",
                 driverName, functionName);
       this->layout.load_xml();
-      this->create_file_layout();
+      this->createXMLFileLayout();
       return asynError;
     }
   }
-  return this->create_file_layout();
+  return this->createXMLFileLayout();
 }
 
 
