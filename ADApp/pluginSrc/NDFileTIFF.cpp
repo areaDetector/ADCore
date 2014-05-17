@@ -283,7 +283,7 @@ NDFileTIFF::NDFileTIFF(const char *portName, int queueSize, int blockingCallback
                    2, 0, asynGenericPointerMask, asynGenericPointerMask, 
                    ASYN_CANBLOCK, 1, priority, stackSize)
 {
-    //const char *functionName = "NDFileTIFF";
+    //static const char *functionName = "NDFileTIFF";
 
     /* Set the plugin type string */    
     setStringParam(NDPluginDriverPluginType, "NDFileTIFF");

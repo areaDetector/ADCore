@@ -626,7 +626,7 @@ asynStatus NDFileHDF5::writeInt32(asynUser *pasynUser, epicsInt32 value)
   htri_t avail;
   unsigned int filter_info;
   H5Z_filter_t filterId;
-  const char *functionName = "writeInt32";
+  static const char *functionName = "writeInt32";
 
   status = getAddress(pasynUser, &addr); if (status != asynSuccess) return(status);
   getIntegerParam(function, &oldvalue);
@@ -834,7 +834,7 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
                  2, 0, asynGenericPointerMask, asynGenericPointerMask, 
                  ASYN_CANBLOCK, 1, priority, stackSize)
 {
-  //const char *functionName = "NDFileHDF5";
+  //static const char *functionName = "NDFileHDF5";
 
   this->createParam(str_NDFileHDF5_nRowChunks,      asynParamInt32,   &NDFileHDF5_nRowChunks);
   this->createParam(str_NDFileHDF5_nColChunks,      asynParamInt32,   &NDFileHDF5_nColChunks);
@@ -1110,7 +1110,7 @@ asynStatus NDFileHDF5::createAttributeDataset()
   int i;
   NDAttrDataType_t ndAttrDataType; 
   size_t size;
-  const char *functionName = "createAttributeDataset";
+  static const char *functionName = "createAttributeDataset";
 
   getIntegerParam(NDFileHDF5_nExtraDims, &extraDims);
   getIntegerParam(NDFileNumCapture, &numCaptures);
@@ -1201,7 +1201,7 @@ asynStatus NDFileHDF5::writeAttributeDataset()
   //hsize_t elementSize = 1;
   void* datavalue;
   int ret;
-  const char *functionName = "writeAttributeDataset";
+  static const char *functionName = "writeAttributeDataset";
 
   hdfAttrNode = (HDFAttributeNode*)ellFirst(&this->attrList);
   datavalue = calloc(8, sizeof(char));
@@ -1262,7 +1262,7 @@ asynStatus NDFileHDF5::closeAttributeDataset()
 {
   asynStatus status = asynSuccess;
   HDFAttributeNode *hdfAttrNode;
-  const char *functionName = "closeAttributeDataset";
+  static const char *functionName = "closeAttributeDataset";
 
   hdfAttrNode = (HDFAttributeNode*)ellFirst(&this->attrList);
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s Closing attribute datasets. firstnode=%p\n",
@@ -1318,7 +1318,7 @@ asynStatus NDFileHDF5::writeRawdataAttribute()
   epicsInt32 hdfattrval;
   char hdfattrname[DIMNAMESIZE];
   int i;
-  const char *functionName = "writeDatasetAttribute";
+  static const char *functionName = "writeDatasetAttribute";
 
   /* attach an attribute and write an integer data to it. ('signal', 1)  */
   /* First create the data space for the attribute. */
@@ -1363,7 +1363,7 @@ void NDFileHDF5::extendDataSet()
   bool growoffset = true;
   int extradims = 0;
   int nFramesCaptured=0;
-  //const char *functionName = "extendDataSet";
+  //static const char *functionName = "extendDataSet";
 
   // Get the number of virtual dimensions from the plugin
   getIntegerParam(NDFileHDF5_nExtraDims, &extradims);
@@ -1435,7 +1435,7 @@ asynStatus NDFileHDF5::configureDims(NDArray *pArray)
   int numCapture;
   asynStatus status = asynSuccess;
   char strdims[DIMSREPORTSIZE];
-  const char *functionName = "configureDims";
+  static const char *functionName = "configureDims";
   //strdims = (char*)calloc(DIMSREPORTSIZE, sizeof(char));
 
   if (this->multiFrameFile)
@@ -1574,7 +1574,7 @@ asynStatus NDFileHDF5::configureCompression()
   int nbitPrecision = 0;
   int nbitOffset = 0;
   int zLevel = 0;
-  const char * functionName = "configureCompression";
+  static const char * functionName = "configureCompression";
 
   getIntegerParam(NDFileHDF5_compressionType, &compressionScheme);
   switch (compressionScheme)

@@ -752,7 +752,7 @@ asynStatus NDFileNexus::writeOctet(asynUser *pasynUser, const char *value,
   int addr=0;
   int function = pasynUser->reason;
   asynStatus status = asynSuccess;
-  const char *functionName = "writeOctet";
+  static const char *functionName = "writeOctet";
 
   status = getAddress(pasynUser, &addr); if (status != asynSuccess) return(status);
   /* Set the parameter in the parameter library. */
@@ -847,7 +847,7 @@ NDFileNexus::NDFileNexus(const char *portName, int queueSize, int blockingCallba
                  2, 0, asynGenericPointerMask, asynGenericPointerMask,
                  ASYN_CANBLOCK, 1, priority, stackSize)
 {
-  //const char *functionName = "NDFileNexus";
+  //static const char *functionName = "NDFileNexus";
   createParam(NDFileNexusTemplatePathString,  asynParamOctet, &NDFileNexusTemplatePath);
   createParam(NDFileNexusTemplateFileString,  asynParamOctet, &NDFileNexusTemplateFile);
   createParam(NDFileNexusTemplateValidString, asynParamInt32, &NDFileNexusTemplateValid);

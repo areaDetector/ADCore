@@ -303,7 +303,7 @@ NDFileJPEG::NDFileJPEG(const char *portName, int queueSize, int blockingCallback
                    2, 0, asynGenericPointerMask, asynGenericPointerMask, 
                    ASYN_CANBLOCK, 1, priority, stackSize)
 {
-    //const char *functionName = "NDFileJPEG";
+    //static const char *functionName = "NDFileJPEG";
 
     createParam(NDFileJPEGQualityString, asynParamInt32, &NDFileJPEGQuality);
     
