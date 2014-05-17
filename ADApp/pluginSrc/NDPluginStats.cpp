@@ -563,10 +563,25 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
             doTimeSeriesCallbacks();
         }
     }
-            
-    /* Save a copy of this array for calculations when cursor is moved or threshold is changed */
-    if (this->pArrays[0]) this->pArrays[0]->release();
-    this->pArrays[0] = this->pNDArrayPool->copy(pArray, NULL, 1);
+
+    NDArray *pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 1);
+
+	if (NULL != pArrayOut) {
+
+        this->getAttributes(pArrayOut->pAttributeList);
+
+        this->unlock();
+        doCallbacksGenericPointer(pArrayOut, NDArrayData, 0);
+        this->lock();
+
+        /* Save a copy of this array for calculations when cursor is moved or threshold is changed */
+        if (this->pArrays[0]) this->pArrays[0]->release();
+        this->pArrays[0] = pArrayOut;
+	}
+    else {
+
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s: Couldn't allocate output array. Further processing terminated.\n", driverName, __func__);
+    }
 
     callParamCallbacks();
 }
