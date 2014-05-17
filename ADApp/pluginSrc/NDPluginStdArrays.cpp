@@ -134,7 +134,7 @@ void NDPluginStdArrays::processCallbacks(NDArray *pArray)
     int float64Initialized=0;
     NDArrayInfo_t arrayInfo;
     asynStandardInterfaces *pInterfaces = this->getAsynStdInterfaces();
-    /* const char* functionName = "NDStdArraysDoCallbacks"; */
+    /* static const char* functionName = "processCallbacks"; */
 
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
@@ -278,7 +278,7 @@ NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int bl
                     * It does autoconnect */
                    0, 1, priority, stackSize)
 {
-    //char *functionName = "NDPluginStdArrays";
+    //static const char *functionName = "NDPluginStdArrays";
     
     createParam(NDPluginStdArraysDataString, asynParamGenericPointer, &NDPluginStdArraysData);
 

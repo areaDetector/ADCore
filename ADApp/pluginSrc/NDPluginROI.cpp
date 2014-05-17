@@ -51,8 +51,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     int enableScale, enableDim[3], autoSize[3];
     size_t i;
     double scale;
-    
-    //const char* functionName = "processCallbacks";
+    //static const char* functionName = "processCallbacks";
     
     memset(dims, 0, sizeof(NDDimension_t) * ND_ARRAY_MAX_DIMS);
 
@@ -265,7 +264,7 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    ASYN_MULTIDEVICE, 1, priority, stackSize)
 {
-    //const char *functionName = "NDPluginROI";
+    //static const char *functionName = "NDPluginROI";
 
     /* ROI general parameters */
     createParam(NDPluginROINameString,              asynParamOctet, &NDPluginROIName);

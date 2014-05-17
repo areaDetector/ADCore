@@ -474,7 +474,7 @@ void NDPluginTransform::processCallbacks(NDArray *pArray){
     NDArray *transformedArray;
     NDArrayInfo_t arrayInfo;
     int ii;
-    const char* functionName = "processCallbacks";
+    static const char* functionName = "processCallbacks";
 
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
@@ -545,7 +545,7 @@ asynStatus NDPluginTransform::writeInt32(asynUser *pasynUser, epicsInt32 value){
 /** Transform the image according to the selected choice.*/    
 void NDPluginTransform::transformImage(NDArray *inArray, NDArray *outArray, NDArrayInfo_t *arrayInfo)
 {
-    //const char *functionName = "transformNDArray";
+    //static const char *functionName = "transformNDArray";
     int colorMode;
 
     colorMode = NDColorModeMono;
@@ -615,7 +615,7 @@ NDPluginTransform::NDPluginTransform(const char *portName, int queueSize, int bl
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    ASYN_MULTIDEVICE, 1, priority, stackSize)
 {
-    //const char *functionName = "NDPluginTransform";
+    //static const char *functionName = "NDPluginTransform";
     int i;
 
     createParam(NDPluginTransformNameString,         asynParamOctet, &NDPluginTransformName);

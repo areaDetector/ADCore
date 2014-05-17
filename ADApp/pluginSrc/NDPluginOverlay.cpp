@@ -145,7 +145,7 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
     int itemp;
     int overlay;
     NDArray *pOutput;
-    //const char* functionName = "processCallbacks";
+    //static const char* functionName = "processCallbacks";
 
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
@@ -236,7 +236,7 @@ NDPluginOverlay::NDPluginOverlay(const char *portName, int queueSize, int blocki
                    asynGenericPointerMask,
                    ASYN_MULTIDEVICE, 1, priority, stackSize)
 {
-    const char *functionName = "NDPluginOverlay";
+    static const char *functionName = "NDPluginOverlay";
 
 
     this->maxOverlays = maxOverlays;
