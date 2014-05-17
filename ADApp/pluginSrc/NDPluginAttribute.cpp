@@ -1,4 +1,3 @@
-
 /*
  * NDPluginAttribute.cpp
  *
@@ -42,12 +41,10 @@ void NDPluginAttribute::processCallbacks(NDArray *pArray)
   epicsFloat64 attrValue = 0.0;
   epicsFloat64 updatePeriod = 0.0;
 
-  const char *functionName = "NDPluginAttribute::processCallbacks";
+  static const char *functionName = "NDPluginAttribute::processCallbacks";
   
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
-	    "Starting %s. currentPoint_: %d\n", functionName, currentPoint_);
-
-  
+      "Starting %s. currentPoint_: %d\n", functionName, currentPoint_);
 
   /* Get the time and decide if we update the array.*/
   getDoubleParam(NDPluginAttributeUpdatePeriod, &updatePeriod);
@@ -80,8 +77,8 @@ void NDPluginAttribute::processCallbacks(NDArray *pArray)
       valueSum_ = valueSum_ + attrValue;
       setDoubleParam(NDPluginAttributeValSum, valueSum_);
       if (currentPoint_ < maxTimeSeries_) {
-	pTimeSeries_[currentPoint_] = attrValue;
-	++currentPoint_;
+          pTimeSeries_[currentPoint_] = attrValue;
+          ++currentPoint_;
       }
     }
 
@@ -123,7 +120,7 @@ asynStatus NDPluginAttribute::writeInt32(asynUser *pasynUser, epicsInt32 value)
     else {
       /* If this parameter belongs to a base class call its method */
       if (function < FIRST_NDPLUGIN_ATTR_PARAM) 
-	status = NDPluginDriver::writeInt32(pasynUser, value);
+        status = NDPluginDriver::writeInt32(pasynUser, value);
     }
 
     /* Do callbacks so higher layers see any changes */
@@ -162,10 +159,10 @@ asynStatus NDPluginAttribute::writeInt32(asynUser *pasynUser, epicsInt32 value)
   * \param[in] attrName The name of the NDArray attribute
   */
 NDPluginAttribute::NDPluginAttribute(const char *portName, int queueSize, int blockingCallbacks,
-				     const char *NDArrayPort, int NDArrayAddr,
-				     int maxBuffers, size_t maxMemory,
-				     int priority, int stackSize, 
-				     int maxTimeSeries, const char *attrName)
+                                     const char *NDArrayPort, int NDArrayAddr,
+                                     int maxBuffers, size_t maxMemory,
+                                     int priority, int stackSize, 
+                                     int maxTimeSeries, const char *attrName)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
                    NDArrayPort, NDArrayAddr, 1, NUM_NDPLUGIN_ATTR_PARAMS, maxBuffers, maxMemory,
@@ -173,7 +170,7 @@ NDPluginAttribute::NDPluginAttribute(const char *portName, int queueSize, int bl
                    asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
                    ASYN_MULTIDEVICE, 1, priority, stackSize)
 {
-    const char *functionName = "NDPluginAttribute::NDPluginAttribute";
+    static const char *functionName = "NDPluginAttribute::NDPluginAttribute";
 
     /* parameters */
     createParam(NDPluginAttributeNameString,              asynParamOctet, &NDPluginAttributeName);
@@ -217,13 +214,13 @@ NDPluginAttribute::NDPluginAttribute(const char *portName, int queueSize, int bl
 
 /** Configuration command */
 extern "C" int NDAttrConfigure(const char *portName, int queueSize, int blockingCallbacks,
-			       const char *NDArrayPort, int NDArrayAddr,
-			       int maxBuffers, size_t maxMemory,
-			       int priority, int stackSize, 
-			       int maxTimeSeries, const char *attrName)
+                               const char *NDArrayPort, int NDArrayAddr,
+                               int maxBuffers, size_t maxMemory,
+                               int priority, int stackSize, 
+                               int maxTimeSeries, const char *attrName)
 {
     new NDPluginAttribute(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-		    maxBuffers, maxMemory, priority, stackSize, maxTimeSeries, attrName);
+                          maxBuffers, maxMemory, priority, stackSize, maxTimeSeries, attrName);
     return(asynSuccess);
 }
 
@@ -248,14 +245,14 @@ static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg6,
                                             &initArg7,
                                             &initArg8,
-					    &initArg9,
+                                            &initArg9,
                                             &initArg10};
 static const iocshFuncDef initFuncDef = {"NDAttrConfigure",11,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
     NDAttrConfigure(args[0].sval, args[1].ival, args[2].ival,
-                   args[3].sval, args[4].ival, args[5].ival,
-		    args[6].ival, args[7].ival, args[8].ival, args[9].ival, args[10].sval);
+                    args[3].sval, args[4].ival, args[5].ival,
+                    args[6].ival, args[7].ival, args[8].ival, args[9].ival, args[10].sval);
 }
 
 extern "C" void NDAttrRegister(void)
