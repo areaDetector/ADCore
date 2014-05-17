@@ -38,7 +38,7 @@ asynStatus NDPluginFile::openFileBase(NDFileOpenMode_t openMode, NDArray *pArray
     asynStatus status = asynSuccess;
     char fullFileName[MAX_FILENAME_LEN];
     char errorMessage[256];
-    const char* functionName = "openFileBase";
+    static const char* functionName = "openFileBase";
 
     if (this->useAttrFilePrefix)
         this->attrFileNameSet();
@@ -80,7 +80,7 @@ asynStatus NDPluginFile::closeFileBase()
     /* Closes a file */
     asynStatus status = asynSuccess;
     char errorMessage[256];
-    const char* functionName = "closeFileBase";
+    static const char* functionName = "closeFileBase";
 
     setIntegerParam(NDFileWriteStatus, NDFileWriteOK);
     setStringParam(NDFileWriteMessage, "");
@@ -110,7 +110,7 @@ asynStatus NDPluginFile::readFileBase(void)
     char fullFileName[MAX_FILENAME_LEN];
     int dataType=0;
     NDArray *pArray=NULL;
-    const char* functionName = "readFileBase";
+    static const char* functionName = "readFileBase";
 
     status = (asynStatus)createFileName(MAX_FILENAME_LEN, fullFileName);
     if (status) { 
@@ -157,7 +157,7 @@ asynStatus NDPluginFile::writeFileBase()
     NDAttribute *pAttribute;
     char driverFileName[MAX_FILENAME_LEN];
     char errorMessage[256];
-    const char* functionName = "writeFileBase";
+    static const char* functionName = "writeFileBase";
 
     /* Make sure there is a valid array */
     if (!this->pArrays[0]) {
@@ -254,9 +254,10 @@ asynStatus NDPluginFile::writeFileBase()
             if (!this->supportsMultipleArrays)
                 status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, this->pArrays[0]);
             if (status == asynSuccess) {
+                NDArray *pArrayOut = this->pArrays[0];
                 this->unlock();
                 epicsMutexLock(this->fileMutexId);
-                status = this->writeFile(this->pArrays[0]);
+                status = this->writeFile(pArrayOut);
                 epicsMutexUnlock(this->fileMutexId);
                 this->lock();
                 if (status) {
@@ -335,7 +336,7 @@ asynStatus NDPluginFile::doCapture(int capture)
     NDArrayInfo_t arrayInfo;
     int i;
     int numCapture;
-    const char* functionName = "doCapture";
+    static const char* functionName = "doCapture";
 
     /* Make sure there is a valid array */
     if (!pArray) {
@@ -418,38 +419,39 @@ asynStatus NDPluginFile::doCapture(int capture)
 
 /** Decide if a previous plugin has requested that this plugin stores the array data
  */
-bool NDPluginFile::attrIsStorageRequested ( NDAttributeList* pAttrList ) {
-
+bool NDPluginFile::attrIsStorageRequested ( NDAttributeList* pAttrList ) 
+{
     NDAttribute *attribute;
     attribute = pAttrList->find ( FILEPLUGIN_WRITEFILE );
+    static const char *functionName = "attrIsStorageRequested";
 
     if ( NULL == attribute ) {
-
-	    asynPrint ( this->pasynUserSelf, ASYN_TRACE_FLOW, "%s:%s: FILEPLUGIN_WRITEFILE attribute unavailable.\n", driverName, __func__ );
+        asynPrint ( this->pasynUserSelf, ASYN_TRACE_FLOW, 
+            "%s:%s: FILEPLUGIN_WRITEFILE attribute unavailable.\n", 
+            driverName, functionName );
         return false;
     }
 
     switch ( attribute->getDataType() ) {
-
         case NDAttrInt32: {
-
             int value = 0;
             attribute->getValue ( NDAttrInt32, &value );
             if ( 1 == value ) {
-
-                asynPrint ( this->pasynUserSelf, ASYN_TRACE_FLOW, "%s:%s: storage requested.\n", driverName, __func__ );
-				this->useAttrFilePrefix = true;
+                asynPrint ( this->pasynUserSelf, ASYN_TRACE_FLOW, 
+                    "%s:%s: storage requested.\n", 
+                    driverName, functionName );
+                this->useAttrFilePrefix = true;
                 return true;
             }
             break;
         }
         default: {
-
-            asynPrint ( this->pasynUserSelf, ASYN_TRACE_FLOW, "%s:%s: FILEPLUGIN_WRITEFILE attribute must have type NDAttrInt32.\n", driverName, __func__ );
+            asynPrint ( this->pasynUserSelf, ASYN_TRACE_FLOW, 
+                "%s:%s: FILEPLUGIN_WRITEFILE attribute must have type NDAttrInt32.\n", 
+                driverName, functionName );
             return false;
         }
     }
-
     return false;
 }
 
@@ -599,7 +601,7 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
     int fileWriteMode, autoSave, capture;
     int arrayCounter;
     int numCapture, numCaptured;
-    const char* functionName = "processCallbacks";
+    static const char* functionName = "processCallbacks";
 
     /* First check if the callback is really for this file saving plugin */
     if (!this->attrIsProcessingRequired(pArray->pAttributeList))
@@ -684,7 +686,7 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
-    const char* functionName = "writeInt32";
+    static const char* functionName = "writeInt32";
 
     /* Set the parameter in the parameter library. */
     status = (asynStatus) setIntegerParam(function, value);
@@ -739,7 +741,7 @@ asynStatus NDPluginFile::writeNDArray(asynUser *pasynUser, void *genericPointer)
 {
     NDArray *pArray = (NDArray *)genericPointer;
     asynStatus status = asynSuccess;
-    //const char *functionName = "writeNDArray";
+    //static const char *functionName = "writeNDArray";
         
     this->pArrays[0] = pArray;
     setIntegerParam(NDFileWriteMode, NDFileModeSingle);
@@ -790,7 +792,7 @@ NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCall
                      asynFlags, autoConnect, priority, stackSize),
     pCapture(NULL), captureBufferSize(0)
 {
-    //const char *functionName = "NDPluginFile";
+    //static const char *functionName = "NDPluginFile";
     
     this->useAttrFilePrefix = false;
     this->fileMutexId = epicsMutexCreate();
