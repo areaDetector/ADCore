@@ -58,7 +58,7 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     double  F1, F2, O1, O2;
 
     NDArray *pArrayOut = NULL;
-    //const char* functionName = "processCallbacks";
+    static const char* functionName = "processCallbacks";
 
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
@@ -145,9 +145,10 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     
     /* Make a copy of the array converted to double, because we cannot modify the input array */
     this->pNDArrayPool->convert(pArray, &pScratch, NDFloat64);
-    if ( NULL == pScratch ) {
-
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s:%s Processing aborted; cannot allocate an NDArray for storage of temporary data.\n", driverName, __func__);
+    if (NULL == pScratch) {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+            "%s:%s Processing aborted; cannot allocate an NDArray for storage of temporary data.\n", 
+            driverName, functionName);
         goto doCallbacks;
     }
     data = (double *)pScratch->pData;
@@ -190,9 +191,10 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
             /* There is not a current filter array */
             /* Make a copy of the current array, converted to double type */
             this->pNDArrayPool->convert(pScratch, &this->pFilter, NDFloat64);
-            if ( NULL == this->pFilter ) {
-
-                asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s:%s Processing aborted; cannot allocate an NDArray to store the filter.\n", driverName, __func__);
+            if (NULL == this->pFilter) {
+                asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+                    "%s:%s Processing aborted; cannot allocate an NDArray to store the filter.\n", 
+                    driverName,functionName);
                 goto doCallbacks;
             }
             resetFilter = 1;
@@ -250,22 +252,17 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     }
 
     doCallbacks:    
+    /* We must exit with the mutex locked */
+    this->lock();
     if (doCallbacks && (NULL != pArrayOut)) {
-
         /* Get the attributes from this driver */
         this->getAttributes(pArrayOut->pAttributeList);
         /* Call any clients who have registered for NDArray callbacks */
+        this->unlock();
         doCallbacksGenericPointer( pArrayOut, NDArrayData, 0);
-
-        /* We must exit with the mutex locked */
         this->lock();
         if (NULL != this->pArrays[0]) this->pArrays[0]->release();
         this->pArrays[0] = pArrayOut;
-    }
-    else {
-
-        /* We must exit with the mutex locked */
-        this->lock();
     }
 
     if (NULL != pScratch) pScratch->release();
@@ -372,7 +369,7 @@ NDPluginProcess::NDPluginProcess(const char *portName, int queueSize, int blocki
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    ASYN_MULTIDEVICE, 1, priority, stackSize)
 {
-    //const char *functionName = "NDPluginProcess";
+    //static const char *functionName = "NDPluginProcess";
 
     /* Background array subtraction */
     createParam(NDPluginProcessSaveBackgroundString,    asynParamInt32,     &NDPluginProcessSaveBackground);
