@@ -36,6 +36,16 @@ public:
 private:
     TIFF *output;
     NDColorMode_t colorMode;
+    int *pAttributeId;
+    NDAttributeList *pFileAttributes;
+    TIFFFieldInfo **fieldInfo_;
+    int numAttributes_;
+
+    static const int TIFFTAG_START_;
+    static const int TIFFTAG_END_;
+
+    asynStatus populateAsciiFieldInfo(TIFFFieldInfo *fieldInfo, int fieldTag, const char *tagName);
+
 };
 #define NUM_NDFILE_TIFF_PARAMS 0
 #endif
