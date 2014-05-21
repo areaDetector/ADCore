@@ -254,7 +254,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
         case NDAttrUInt32:
 	  {
 	    pAttribute->getValue(attrDataType, &value.i32);
-	    (tagString, MAX_ATTRIBUTE_STRING_SIZE, "%s:%d", attributeName, value.i32);
+	    epicsSnPrintf(tagString, MAX_ATTRIBUTE_STRING_SIZE, "%s:%d", attributeName, value.i32);
 	    break;
 	  }
         case NDAttrFloat32:
