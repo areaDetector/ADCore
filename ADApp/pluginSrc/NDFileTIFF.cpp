@@ -254,26 +254,26 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
         case NDAttrUInt32:
 	  {
 	    pAttribute->getValue(attrDataType, &value.i32);
-	    snprintf(tagString, MAX_ATTRIBUTE_STRING_SIZE, "%s:%d", attributeName, value.i32);
+	    (tagString, MAX_ATTRIBUTE_STRING_SIZE, "%s:%d", attributeName, value.i32);
 	    break;
 	  }
         case NDAttrFloat32:
 	  {
 	    pAttribute->getValue(attrDataType, &value.f32);
-	    snprintf(tagString, MAX_ATTRIBUTE_STRING_SIZE, "%s:%f", attributeName, value.f32);
+	    epicsSnprintf(tagString, MAX_ATTRIBUTE_STRING_SIZE, "%s:%f", attributeName, value.f32);
 	    break;
 	  }
         case NDAttrFloat64:
 	  {
 	    pAttribute->getValue(attrDataType, &value.f64);
-	    snprintf(tagString, MAX_ATTRIBUTE_STRING_SIZE, "%s:%f", attributeName, value.f64);
+	    epicsSnprintf(tagString, MAX_ATTRIBUTE_STRING_SIZE, "%s:%f", attributeName, value.f64);
 	    break;
 	  }
         case NDAttrString:
 	  {
 	    memset(attrString, 0, MAX_ATTRIBUTE_STRING_SIZE);
 	    pAttribute->getValue(attrDataType, attrString, MAX_ATTRIBUTE_STRING_SIZE);
-	    snprintf(tagString, MAX_ATTRIBUTE_STRING_SIZE, "%s:%s", attributeName, attrString);
+	    epicsSnprintf(tagString, MAX_ATTRIBUTE_STRING_SIZE, "%s:%s", attributeName, attrString);
 	    break;
 	  }
         case NDAttrUndefined:
