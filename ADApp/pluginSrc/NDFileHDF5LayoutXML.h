@@ -1,12 +1,12 @@
 /*
- * layoutxml.h
+ * NDFileHDF5LayoutXML.h
  *
  *  Created on: 26 Jan 2012
  *      Author: up45
  */
 
-#ifndef LAYOUTXML_H_
-#define LAYOUTXML_H_
+#ifndef NDFILEHDF5LAYOUTXML_H_
+#define NDFILEHDF5LAYOUTXML_H_
 
 #include <libxml/xmlreader.h>
 #include <string>
@@ -21,14 +21,12 @@
 
 namespace log4cxx
 {
-
   class Logger
   {
     public:
       static Logger* getLogger(const std::string& name){ return new Logger(); }
   };
   typedef Logger* LoggerPtr;
-
 } // namespace log4cxx
 
 #ifdef HDF5_LOGGING
@@ -44,73 +42,71 @@ namespace log4cxx
 #endif
 #endif
 
-namespace hdf5 {
+namespace hdf5
+{
 
-// forward declarations
-class HdfGroup;
-class HdfRoot;
-class HdfDataSource;
-class HdfAttribute;
-class HdfElement;
+  // forward declarations
+  class Group;
+  class Root;
+  class DataSource;
+  class Attribute;
+  class Element;
 
-int main_xml(const char *fname);
+  int main_xml(const char *fname);
 
+  class LayoutXML
+  {
+    public:
+      static const std::string ATTR_ELEMENT_NAME;
+      static const std::string ATTR_GROUP;
+      static const std::string ATTR_DATASET;
+      static const std::string ATTR_ATTRIBUTE;
+      static const std::string ATTR_GLOBAL;
 
-class LayoutXML {
-public:
+      static const std::string ATTR_SOURCE;
+      static const std::string ATTR_SRC_DETECTOR;
+      static const std::string ATTR_SRC_DET_DEFAULT;
+      static const std::string ATTR_SRC_NDATTR;
+      static const std::string ATTR_SRC_CONST;
+      static const std::string ATTR_SRC_CONST_VALUE;
+      static const std::string ATTR_SRC_CONST_TYPE;
+      static const std::string ATTR_GRP_NDATTR_DEFAULT;
+      static const std::string ATTR_SRC_WHEN;
+      static const std::string ATTR_GLOBAL_NAME;
+      static const std::string ATTR_GLOBAL_VALUE;
 
-  static const std::string ATTR_ELEMENT_NAME;
-  static const std::string ATTR_GROUP;
-  static const std::string ATTR_DATASET;
-  static const std::string ATTR_ATTRIBUTE;
-  static const std::string ATTR_GLOBAL;
+      static const std::string DEFAULT_LAYOUT;
 
-  static const std::string ATTR_SOURCE;
-  static const std::string ATTR_SRC_DETECTOR;
-  static const std::string ATTR_SRC_DET_DEFAULT;
-  static const std::string ATTR_SRC_NDATTR;
-  static const std::string ATTR_SRC_CONST;
-  static const std::string ATTR_SRC_CONST_VALUE;
-  static const std::string ATTR_SRC_CONST_TYPE;
-  static const std::string ATTR_GRP_NDATTR_DEFAULT;
-  static const std::string ATTR_SRC_WHEN;
-  static const std::string ATTR_GLOBAL_NAME;
-  static const std::string ATTR_GLOBAL_VALUE;
+      LayoutXML();
+      ~LayoutXML();
 
+      int load_xml();
+      int load_xml(const std::string& filename);
+      int verify_xml(const std::string& filename);
+      int unload_xml();
 
-  static const std::string DEFAULT_LAYOUT;
+      Root* get_hdftree();
+      std::string get_global(const std::string& name);
 
-    LayoutXML();
-    ~LayoutXML();
+    private:
+      int process_node();
 
-//    int load_xml(std::string& filename){ return this->load_xml(filename.c_str()); };
-    int load_xml();
-    int load_xml(const std::string& filename);
-    int verify_xml(const std::string& filename);
-    int unload_xml();
+      int process_dset_xml_attribute(DataSource& out);
+      int process_attribute_xml_attribute(Attribute& out);
 
-    HdfRoot* get_hdftree();
-    std::string get_global(const std::string& name);
+      int new_group();
+      int new_dataset();
+      int new_attribute();
+      int new_global();
 
-private:
-    int process_node();
-
-    int process_dset_xml_attribute(HdfDataSource& out);
-    int process_attribute_xml_attribute(HdfAttribute& out);
-
-    int new_group();
-    int new_dataset();
-    int new_attribute();
-    int new_global();
-
-    log4cxx::LoggerPtr log;
-    HdfRoot* ptr_tree;
-    HdfElement *ptr_curr_element;
-    xmlTextReaderPtr xmlreader;
-    std::map<std::string, std::string> globals;
-
-};
+      log4cxx::LoggerPtr log;
+      Root* ptr_tree;
+      Element *ptr_curr_element;
+      xmlTextReaderPtr xmlreader;
+      std::map<std::string, std::string> globals;
+  };
 
 } // hdf5
 
-#endif /* LAYOUTXML_H_ */
+#endif /* NDFILEHDF5LAYOUTXML_H_ */
+

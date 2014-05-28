@@ -4,9 +4,9 @@
 static const char *fileName = "NDFileHDF5Dataset";
 
 /** Constructor.
-  * \param[in] name - String name of the dataset.
-  * \param[in] dataset - HDF5 handle to the dataset.
-  */
+ * \param[in] name - String name of the dataset.
+ * \param[in] dataset - HDF5 handle to the dataset.
+ */
 NDFileHDF5Dataset::NDFileHDF5Dataset(asynUser *pAsynUser, const std::string& name, hid_t dataset) : 
                                      pAsynUser_(pAsynUser), name_(name), dataset_(dataset), nextRecord_(0)
 {
@@ -18,13 +18,13 @@ NDFileHDF5Dataset::NDFileHDF5Dataset(asynUser *pAsynUser, const std::string& nam
 }
  
 /** configureDims.
-  * Setup any extra dimensions required for this dataset
-  * \param[in] pArray - A pointer to an NDArray which contains dimension information.
-  * \param[in] multiframe - Is this multiframe?
-  * \param[in] extradimensions - The number of extra dimensions.
-  * \param[in] extra_dims - The size of extra dimensions.
-  * \param[in] user_chunking - Array of user defined chunking dimensions.
-  */
+ * Setup any extra dimensions required for this dataset
+ * \param[in] pArray - A pointer to an NDArray which contains dimension information.
+ * \param[in] multiframe - Is this multiframe?
+ * \param[in] extradimensions - The number of extra dimensions.
+ * \param[in] extra_dims - The size of extra dimensions.
+ * \param[in] user_chunking - Array of user defined chunking dimensions.
+ */
 asynStatus NDFileHDF5Dataset::configureDims(NDArray *pArray, bool multiframe, int extradimensions, int *extra_dims, int *user_chunking)
 {
   int i=0,j=0, extradims = 0, ndims=0;
@@ -81,26 +81,24 @@ asynStatus NDFileHDF5Dataset::configureDims(NDArray *pArray, bool multiframe, in
   int max_items = 0;
   int hdfdim = 0;
   for (i = 0; i<3; i++){
-      hdfdim = ndims - i - 1;
-      max_items = (int)this->maxdims_[hdfdim];
-      if (max_items <= 0)
-      {
-        max_items = 1; // For infinite length dimensions
-      } else {
-        if (user_chunking[i] > max_items) user_chunking[i] = max_items;
-      }
-      if (user_chunking[i] < 1) user_chunking[i] = max_items;
-      this->chunkdims_[hdfdim] = user_chunking[i];
+    hdfdim = ndims - i - 1;
+    max_items = (int)this->maxdims_[hdfdim];
+    if (max_items <= 0){
+      max_items = 1; // For infinite length dimensions
+    } else {
+      if (user_chunking[i] > max_items) user_chunking[i] = max_items;
+    }
+    if (user_chunking[i] < 1) user_chunking[i] = max_items;
+    this->chunkdims_[hdfdim] = user_chunking[i];
   }
-
   return status;
 }
 
 /** extendDataSet.
-  * Extend this dataset as necessary.  If no extra dimensions are specified
-  * then the dataset is simply increased in the frame number direction.
-  * \param[in] extradims - The number of extra dimensions.
-  */
+ * Extend this dataset as necessary.  If no extra dimensions are specified
+ * then the dataset is simply increased in the frame number direction.
+ * \param[in] extradims - The number of extra dimensions.
+ */
 void NDFileHDF5Dataset::extendDataSet(int extradims)
 {
   int i=0;
@@ -145,17 +143,16 @@ void NDFileHDF5Dataset::extendDataSet(int extradims)
       growdims = true;
     }
   }
-
   return;
 }
 
 /** writeFile.
-  * Write the data using the HDF5 library calls.
-  * \param[in] pArray - The NDArray containing the data to write.
-  * \param[in] datatype - The HDF5 datatype of the data.
-  * \param[in] dataspace - A handle to the HDF5 dataspace for this dataset.
-  * \param[in] framesize - The size of the data to write.
-  */
+ * Write the data using the HDF5 library calls.
+ * \param[in] pArray - The NDArray containing the data to write.
+ * \param[in] datatype - The HDF5 datatype of the data.
+ * \param[in] dataspace - A handle to the HDF5 dataspace for this dataset.
+ * \param[in] framesize - The size of the data to write.
+ */
 asynStatus NDFileHDF5Dataset::writeFile(NDArray *pArray, hid_t datatype, hid_t dataspace, hsize_t *framesize)
 {
   herr_t hdfstatus;
@@ -207,8 +204,8 @@ asynStatus NDFileHDF5Dataset::writeFile(NDArray *pArray, hid_t datatype, hid_t d
 }
 
 /** getHandle.
-  * Returns the HDF5 handle to this dataset.
-  */
+ * Returns the HDF5 handle to this dataset.
+ */
 hid_t NDFileHDF5Dataset::getHandle()
 {
   return this->dataset_;
