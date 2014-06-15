@@ -30,21 +30,21 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
 {
     epicsType *inData = (epicsType *)inArray->pData;
     epicsType *outData = (epicsType *)outArray->pData;
-    size_t x, y, color;
-    size_t xSize, ySize, colorSize;
-    size_t xStride, yStride, colorStride;
+    int x, y, color;
+    int xSize, ySize, colorSize;
+    int xStride, yStride, colorStride;
     int elementSize;
 
-    xSize = arrayInfo->xSize;
-    ySize = arrayInfo->ySize;
+    xSize = (int)arrayInfo->xSize;
+    ySize = (int)arrayInfo->ySize;
     if (arrayInfo->colorSize > 0)
-        colorSize = arrayInfo->colorSize;
+        colorSize = (int)arrayInfo->colorSize;
     else
         colorSize = 1;
 
-    xStride = arrayInfo->xStride;
-    yStride = arrayInfo->yStride;
-    colorStride = arrayInfo->colorStride;
+    xStride = (int)arrayInfo->xStride;
+    yStride = (int)arrayInfo->yStride;
+    colorStride = (int)arrayInfo->colorStride;
     elementSize = arrayInfo->bytesPerElement;
 
     // Assume output array is same dimensions as input.  Handle rotation cases below.
@@ -94,8 +94,8 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
                 /** The values of colorStride and yStride need to change
                     because the dimensions of the image may have changed.
                 */
-                size_t newColorStride = ySize;
-                size_t newYStride = newColorStride * colorSize;
+                int newColorStride = ySize;
+                int newYStride = newColorStride * colorSize;
 
                 for (y = (ySize - 1); y >= 0; y--)
                 {
@@ -111,11 +111,11 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
 
             if (colorMode == NDColorModeRGB1)
             {
-                size_t source_offset;
-                size_t target_offset;
+                int source_offset;
+                int target_offset;
 
                 /** Calculate a new value for the Y stride. */
-                size_t newStride = colorSize * ySize;
+                int newStride = colorSize * ySize;
 
                 for (y = (ySize - 1); y >= 0; y--)
                 {
@@ -194,8 +194,8 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
                 /** The values of colorStride and yStride need to change
                     because the dimensions of the image may have changed.
                 */
-                size_t newColorStride = ySize;
-                size_t newYStride = newColorStride * colorSize;
+                int newColorStride = ySize;
+                int newYStride = newColorStride * colorSize;
 
                 for (y = 0; y < ySize; y++)
                 {
@@ -211,11 +211,11 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
 
             if (colorMode == NDColorModeRGB1)
             {
-                size_t source_offset;
-                size_t target_offset;
+                int source_offset;
+                int target_offset;
 
                 /** Calculate a new value for the Y stride. */
-                size_t newStride = colorSize * ySize;
+                int newStride = colorSize * ySize;
 
                 for (y = 0; y < ySize; y++)
                 {
@@ -267,8 +267,8 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
                 /** The values of colorStride and yStride need to change
                     because the dimensions of the image may have changed.
                 */
-                size_t newColorStride = ySize;
-                size_t newYStride = newColorStride * colorSize;
+                int newColorStride = ySize;
+                int newYStride = newColorStride * colorSize;
 
                 for (y = 0; y < ySize; y++)
                 {
@@ -284,11 +284,11 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
 
             if (colorMode == NDColorModeRGB1)
             {
-                size_t source_offset;
-                size_t target_offset;
+                int source_offset;
+                int target_offset;
 
                 /** Calculate a new value for the Y stride. */
-                size_t newStride = colorSize * ySize;
+                int newStride = colorSize * ySize;
 
                 for (y = 0; y < ySize; y++)
                 {
@@ -340,8 +340,8 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
                 /** The values of colorStride and yStride need to change
                     because the dimensions of the image may have changed.
                 */
-                size_t newColorStride = ySize;
-                size_t newYStride = newColorStride * colorSize;
+                int newColorStride = ySize;
+                int newYStride = newColorStride * colorSize;
 
                 for (y = (ySize - 1); y >= 0; y--)
                 {
@@ -357,11 +357,11 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
 
             if (colorMode == NDColorModeRGB1)
             {
-                size_t source_offset;
-                size_t target_offset;
+                int source_offset;
+                int target_offset;
 
                 /** Calculate a new value for the Y stride. */
-                size_t newStride = colorSize * ySize;
+                int newStride = colorSize * ySize;
 
                 for (y = (ySize - 1); y >= 0; y--)
                 {
@@ -407,8 +407,8 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
 
         case (TransformFlipVert):
 
-            size_t source_offset;
-            size_t target_offset;
+            int source_offset;
+            int target_offset;
 
             /** In this mode, we are moving an entire row at once.  First all of the red rows are moved.
                 Next, all of the green rows are moved.  Lastly, all of the blue rows are moved.  In mono
