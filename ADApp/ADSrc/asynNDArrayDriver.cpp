@@ -582,3 +582,11 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
 
 }
 
+
+asynNDArrayDriver::~asynNDArrayDriver()
+{ 
+    delete this->pNDArrayPool;
+    delete this->pArrays;
+    delete this->pAttributeList;
+}    
+
