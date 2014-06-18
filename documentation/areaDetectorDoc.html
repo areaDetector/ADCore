@@ -10,9 +10,9 @@
     <h1>
       areaDetector: EPICS Area Detector Support</h1>
     <h2>
-      Release 1-9-1</h2>
+      Release 2-0</h2>
     <h2>
-      March 11, 2013</h2>
+      April 4, 2014</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -51,6 +51,8 @@
         <li><a href="MarCCDDoc.html">MarCCD driver</a></li>
         <li><a href="PerkinElmerDoc.html">Perkin-Elmer flat panel driver</a></li>
         <li><a href="pilatusDoc.html">Pilatus driver</a></li>
+        <li><a href="PixiradDoc.html">Pixirad driver</a></li>
+        <li><a href="PointGreyDoc.html">Point Grey driver</a></li>
         <li><a href="prosilicaDoc.html">Prosilica driver</a></li>
         <li><a href="pvcamDoc.html">PVCAM driver</a></li>
         <li><a href="RoperDoc.html">Roper driver</a></li>
@@ -70,6 +72,7 @@
         <li><a href="NDPluginOverlay.html">NDPluginOverlay</a></li>
         <li><a href="NDPluginTransform.html">NDPluginTransform</a></li>
         <li><a href="NDPluginColorConvert.html">NDPluginColorConvert</a></li>
+        <li><a href="NDPluginAttribute.html">NDPluginAttribute</a></li>
       </ul>
     </li>
     <li><a href="#MEDM_screens">MEDM screens</a></li>
@@ -112,7 +115,8 @@
     <li>Provide detector drivers for commonly used detectors in synchrotron applications.
       These include Prosilica GigE video cameras, IEEE 1394 (Firewire) cameras, ADSC and
       MAR CCD x-ray detectors, MAR-345 online imaging plate detectors, the Pilatus pixel-array
-      detector, Roper Scientific CCD cameras, and the Perkin-Elmer amorphous silicon detector.</li>
+      detector, Roper Scientific CCD cameras, Perkin-Elmer amorphous silicon detector,
+      and many others.</li>
   </ul>
   <p>
     &nbsp;</p>
@@ -133,15 +137,16 @@
       class. It uses the standard asyn interfaces for control and status information.
       Each time it receives a new data array it can pass it as an NDArray object to all
       Layer 3 clients that have registered for callbacks. This is the only code that needs
-      to be written to implement a new detector. Existing drivers range from 800 to 1800
-      lines of code.</li>
+      to be written to implement a new detector. Existing drivers range from about 800
+      to 2600 lines of code.</li>
     <li>Layer 3. Code running at this level is called a "plug-in". This code registers
       with a driver for a callback whenever there is a new data array. The existing plugins
       implement file saving (NDPluginFile), region-of-interest (ROI) calculations (NDPluginROI),
-      color mode conversion (NDPluginColorConvert), and conversion of detector data to
-      standard EPICS array types for use by Channel Access clients (NDPluginStdArrays).
-      Plugins are normally written in C++ and inherit from NDPluginDriver. Existing plugins
-      range from 300 to 800 lines of code.</li>
+      statistics calculations (NDPluginStats), image processing (NDPluginProcess), geometric
+      transformations (NDPluginTransform), color mode conversion (NDPluginColorConvert),
+      and conversion of detector data to standard EPICS array types for use by Channel
+      Access clients (NDPluginStdArrays). Plugins are normally written in C++ and inherit
+      from NDPluginDriver. Existing plugins range from about 300 to 800 lines of code.</li>
     <li>Layer 4. This is standard asyn device support that comes with the EPICS asyn module.</li>
     <li>Layer 5. These are standard EPICS records, and EPICS database (template) files
       that define records to communicate with drivers at Layer 2 and plugins at Layer
@@ -153,8 +158,8 @@
       the other is a freely runnable IDL application.</li>
   </ul>
   <p>
-    The code in Layers 1-3 is essentially independent of EPICS. There are only 2 EPICS
-    dependencies in this code.
+    The code in Layers 1-3 is essentially independent of EPICS. In principle there are
+    only 2 EPICS dependencies in this code.
   </p>
   <ol>
     <li><a href="http://www.aps.anl.gov/epics/base/R3-14/10-docs/AppDevGuide.pdf">libCom</a>.
@@ -164,21 +169,21 @@
       module that provides interthread messaging services, including queueing and callbacks.</li>
   </ol>
   <p>
-    In particular it is possible to eliminate layers 4-6 in the architecture shown in
-    Figure 1, providing there is a programs such as the high-performance GUI shown in
-    Layer 3. This means that it is not necessary to run an EPICS IOC or to use EPICS
-    Channel Access when using the drivers and plugins at Layers 2 and 3.
+    In particular it should be possible to eliminate layers 4-6 in the architecture
+    shown in Figure 1. This means that in principle it is not necessary to run an EPICS
+    IOC or to use EPICS Channel Access when using the drivers and plugins at Layers
+    2 and 3. In practice this has not yet been demonstrated.
   </p>
   <p>
     The plugin architecture is very powerful, because new plugins can be written for
     application-specific purposes. For example, a plugin could be written to analyze
-    images and find the center of the beam, and such a plugin would then work with any
-    detector driver. Plugins are also powerful because they can be reconfigured at run-time.
-    For example the NDPluginStdArrays can switch from getting its array data from a
-    detector driver to an NDPluginROI plugin. That way it will switch from displaying
-    the entire detector to whatever sub-region the ROI driver has selected. Any Channel
-    Access clients connected to the NDPluginStdArrays driver will automatically switch
-    to displaying this subregion. Similarly, the NDPluginFile plugin can be switched
+    images and do some application specific functions, and such a plugin would then
+    work with any detector driver. Plugins are also powerful because they can be reconfigured
+    at run-time. For example the NDPluginStdArrays can switch from getting its array
+    data from a detector driver to an NDPluginROI plugin. That way it will switch from
+    displaying the entire detector to whatever sub-region the ROI driver has selected.
+    Any Channel Access clients connected to the NDPluginStdArrays driver will automatically
+    switch to displaying this subregion. Similarly, the NDPluginFile plugin can be switched
     at run-time from saving the entire image to saving a selected ROI, just by changing
     its input source. Plugins can be used to form an image processing pipeline, for
     example with a detector providing data to a color convert plugin, which feeds an
@@ -212,14 +217,14 @@
     Detector drivers and plugins are asyn port drivers, meaning that they implement
     one or more of the standard asyn interfaces. They register themselves as interrupt
     sources, so that they do callbacks to registered asyn clients when values change.
-    They inherit from the <a href="http://www.aps.anl.gov/epics/modules/soft/asyn/R4-11a/asynPortDriver.html">
+    They inherit from the <a href="http://www.aps.anl.gov/epics/modules/soft/asyn/R4-22/asynPortDriver.html">
       asynPortDriver base C++ class</a> that is provided in the asyn module. That base
     class handles all of the details of registering the port driver, registering the
     supported interfaces, and registering the required interrupt sources. It also provides
     a parameter library for int, double, and string parameters indexed by the integer
     index values defined in the driver. The parameter library provides methods to write
     and read the parameter values, and to perform callbacks to registered clients when
-    a parameter value has changed. The <a href="http://www.aps.anl.gov/epics/modules/soft/asyn/R4-11a/asynDoxygenHTML/classasyn_port_driver.html">
+    a parameter value has changed. The <a href="http://www.aps.anl.gov/epics/modules/soft/asyn/R4-22/asynDoxygenHTML/classasyn_port_driver.html">
       asynPortDriver class documentation</a> describes this class in detail.
   </p>
   <h3 id="NDArray">
@@ -293,9 +298,7 @@
     </tbody>
   </table>
   <p>
-    Attribute names are case-insensitive in the areaDetector software, but external
-    software may not be case-insensitive so the attribute names should generally be
-    used exactly as they appear above. For attributes not in this table a good convention
+    Attribute names are case-sensitive. For attributes not in this table a good convention
     would be to use the corresponding driver parameter without the leading ND or AD,
     and with the first character of every "word" of the name starting with upper case.
     For example, the standard attribute name for ADManufacturer should be "Manufacturer",
@@ -354,6 +357,16 @@
     of a corresponding PVAttribute might not be current because the EPICS PV has not
     yet updated. The <a href="areaDetectorDoxygenHTML/classparam_attribute.html">paramAttribute
       class documentation</a> describes this class in detail.
+  </p>
+  <h3 id="functAttribute">
+    functAttribute</h3>
+  <p>
+    The functAttribute class is derived from NDAttribute. It obtains its value from
+    a user-written C++ function. The functAttribute class is thus very general, and
+    can be used to add almost any information to an NDArray. ADCore contains example
+    code, myAttributeFunctions.cpp that demonstates how to write such functions. The
+    <a href="areaDetectorDoxygenHTML/classfunct_attribute.html">functAttribute class documentation</a>
+    describes this class in detail.
   </p>
   <h3 id="asynNDArrayDriver">
     asynNDArrayDriver</h3>
@@ -2021,158 +2034,11 @@
     <img alt="ADEpicsShutter.png" src="ADEpicsShutter.png" /></div>
   <h2 id="Installation">
     Installation, configuration, and running</h2>
-  <h3>
-    Installation: source code version</h3>
   <p>
-    After obtaining a copy of the distribution, it must be installed and built for use
-    at your site. These steps only need to be performed once for the site (unless versions
-    of the module running under different releases of EPICS and/or the other required
-    modules are needed).</p>
-  <ol>
-    <li>Create an installation directory for the module, usually this will end with<br />
-      <br />
-      <tt>.../support/</tt>
-      <br />
-    </li>
-    <li>Place the distribution file in this directory. Then issue the commands (Unix style)
-      <pre>tar xvzf areaDetectorRX-Y.tgz
-
-</pre>
-      where X-Y is the release.</li>
-    <li>This creates a &lt;top&gt; application.<br />
-      <pre>.../support/areaDetectorRX-Y
-</pre>
-    </li>
-    <li>Download all required supporting modules if you don't already have them. This
-      includes asyn, autosave, busy, etc.</li>
-    <li>Edit the <tt>configure/RELEASE</tt> file and set the paths to your installation
-      of EPICS base and to your versions of supporting modules.</li>
-    <li>Run <tt>gnumake</tt> in the top level directory and check for any compilation
-      errors.</li>
-  </ol>
-  <h3>
-    Installation: prebuilt version</h3>
-  <p>
-    Prebuilt versions of areaDetector are provide for Windows (win32-x86), Cygwin (cygwin-x86),
-    and Linux (linux-x86). Follow these steps to use the prebuilt version:</p>
-  <ol>
-    <li>Create an installation directory for the module. On Windows I typically use C:\EPICS\support.
-      On Linux I typically use /home/ACCOUNT/epics/support, where ACCOUNT is the name
-      of the account that is normally used to run the detector software, e.g. marccd on
-      a marCCD detector, mar345 on a mar345 detector, etc.</li>
-    <li>Place the distribution file in this directory. Then issue the commands (Unix style)
-      <pre>tar xvzf areaDetectorPrebuilt_RX-Y.tgz</pre>
-    </li>
-    <li>In the iocBoot directory make a <b>copy</b> of the example ioxXXX directory for
-      the detector you are using and give it a new local name. By doing this you will
-      be able to update to later versions of areaDetector without overwriting modifications
-      you make in the iocXXX directory.</li>
-    <li>In the new iocXXX directory you just created edit st.cmd to change the PV prefix
-      $(P) to one that is unique to your site. PV prefixes must be unique on the subnet,
-      and if you use the default prefix there could be a conflict with other detectors
-      of the same type. </li>
-    <li>In the same iocXXX directory edit the file envPaths to point to the locations
-      of all of the support modules on your system. Normally this is handled by the EPICS
-      build system, but when using the prebuilt version this must be manually edited.
-      Do not worry about the path to EPICS_BASE, it is not required.</li>
-  </ol>
-  <h3>
-    Installation: medm</h3>
-  <p>
-    areaDetector provides display/control screens for the <a href="http://www.aps.anl.gov/epics/extensions/medm/">
-      medm</a> Motif Editor and Display Manager. A prebuilt version of medm for Windows
-    can be found in the <a href="http://www.aps.anl.gov/epics/distributions/win32/">EPICS
-      WIN32 Extensions</a>. For Linux one can build medm from source code, which requires
-    downloading and building <a href="http://www.aps.anl.gov/epics/base/">EPICS base</a>
-    first. Alternatively I provide a prebuilt version of medm for Linux in the <a href="http://cars.uchicago.edu/software/pub/EPICS_Linux_binaries.tar">
-      EPICS_Linux_binraries.tar</a> package. To use this version copy the medm executable
-    to some location in your PATH, e.g. /usr/local/bin, or ~/bin, etc. Copy the 2 shareable
-    libraries libCom.so and libca.so to a location which is in your LD_LIBRARY_PATH.
-    To use either the source code or prebuilt version you need to have the OpenMotif
-    package installed. This typically is <b>not</b> installed by default with recent
-    versions of Linux. Go to <a href="http://www.openmotif.org/">www.openmotif.org</a>
-    and download and install the appropriate RPM package for your Linux version.</p>
-  <h3>
-    Configuration</h3>
-  <p>
-    Before running an areaDetector application it is usually necessary to configure
-    a number of items.</p>
-  <ul>
-    <li>EPICS environment variables. There are several environment variables that EPICS
-      uses. I suggest setting these in the .cshrc (or .bashrc) file for the account that
-      will be used to run the detector.
-      <ul>
-        <li>EPICS_CA_AUTO_ADDR_LIST and EPICS_CA_ADDR_LIST. These variables control the IP
-          addresses that EPICS clients use when searching for EPICS PVs. The default is EPICS_CA_AUTO_ADDR_LIST=YES
-          and EPICS_CA_ADDR_LIST to be the broadcast address of all networks connected to
-          the host. Some detectors, for example the marCCD and mar345, come with 2 network
-          cards, which are on 2 different subnets, typically a private one connected to the
-          detector and a public one connected to the local LAN. If the default value of these
-          variables is used then EPICS clients (e.g. medm) running on the detector host computer
-          will generate many errors because each EPICS PV will appear to be coming from both
-          networks. The solution is to set these variables as follows:
-          <pre>        setenv EPICS_CA_AUTO_ADDR_LIST NO
-        setenv EPICS_CA_ADDR_LIST localhost:XX.YY.ZZ.255
-        </pre>
-          where XX.YY.ZZ.255 should be replaced with the broadcast address for the public
-          network on this computer.</li>
-        <li>EPICS_CA_MAX_ARRAY_BYTES. This variable controls the maximum array size that EPICS
-          can transmit with Channel Access. The default is only 16kB, which is much too small
-          for most detector data. This value must be set to a large enough value on both the
-          EPICS server computer (e.g. the one running the areaDetector IOC) and client computer
-          (e.g. the one running medm, ImageJ, IDL, etc.). This can simply be set to a very
-          large value like 100MB.
-          <pre>        setenv EPICS_CA_MAX_ARRAY_BYTES 100000000
-        </pre>
-        </li>
-        <li>EPICS_DISPLAY_PATH. This variable controls where medm looks for .adl display files.
-          If the recommendation below is followed to copy all adl files to a single directory,
-          then this environment variable should be defined to point to that directory. For
-          example:
-          <pre>          setenv EPICS_DISPLAY_PATH /home/mar345/epics/adls
-          </pre>
-        </li>
-      </ul>
-    </li>
-    <li>medm display files. I find it convenient to copy all medm .adl files to a single
-      directory and then point the environment variable EPICS_DISPLAY_PATH to this directory.
-      The alternative is to point EPICS_DISPLAY_PATH to a long list of directories where
-      the adl files are located in the distributions, which is harder to maintain. On
-      the mar345, for example, I create a directory called /home/mar345/epics/adls, where
-      I put all of the adl files. To simplify copying the adl files to that location I
-      use the following one-line script, which I place in /home/mar345/bin/sync_adls.
-      <pre>      find /home/mar345/epics/support -name '*.adl' -exec cp -fv {} /home/mar345/epics/adls \;
-      </pre>
-      This script finds all adl files in the epics/support tree and copies them to /home/mar345/epics/adls.
-      That directory must be created before running this script. Similar scripts can be
-      used for other Linux detectors (marCCD, Pilatus, etc.) and can be used on Windows
-      as well if Cygwin is installed. Each time a new release of areaDetector is installed
-      remove the old versions of each support module (areaDetector, asyn, autosave, etc.)
-      and then run this script to install the latest medm files. </li>
-  </ul>
-  <h3>
-    Running the IOC</h3>
-  <p>
-    Each example IOC directory comes with a Linux script (start_epics) or a Windows
-    batch file (start_epics.bat) or both depending on the architectures that the detector
-    runs on. These scripts provide simple examples of how to start medm and the EPICS
-    IOC. For example, for the mar345 iocBoot/iocMAR345/start_epics contains the following:</p>
-  <pre>    medm -x -macro "P=13MAR345_1:, R=cam1:, I=image1:, ROI=ROI1:, NETCDF=netCDF1:, TIFF=TIFF1:, JPEG=JPEG1:, NEXUS=Nexus1:" mar345.adl &amp;
-    ../../bin/linux-x86/mar345App st.cmd
-    </pre>
-  <p>
-    This script starts medm in execute mode with the appropriate medm display file and
-    macro parameters, running it in the background. It then runs the IOC application.
-    This script assumes that iocBoot/iocMAR345 is the default directory when it is run,
-    which could be added to the command or set in the configuration if this script is
-    set as the target of a desktop shortcut, etc. The script assumes that EPICS_DISPLAY_PATH
-    has been defined to be a location where the mar345.adl and related displays that
-    it loads can be found. You will need to edit the script in your copy of the iocXXX
-    directory to change the prefix (P) from 13MAR345_1: to whatever prefix you chose
-    for your IOC. The start_epics script could also be copied to a location in your
-    PATH (e.g. /home/mar345/bin/start_epics). Add a command like <code>cd /home/mar345/epics/support/areaDetector/1-5/iocBoot/iocMAR345</code>
-    at the beginning of the script and then type <code>start_epics</code> from any directory
-    to start the EPICS IOC.</p>
+    Installation instructions for release R2-0 and later can be found on <a href="https://github.com/areaDetector/areaDetector/blob/master/INSTALL_GUIDE.md">
+      INSTALL_GUIDE.md</a> on Github.</p>
+  For releases prior to R2-0 the version of this document contained in the source
+  code release contains the installation instructions.</p>
   <h2 id="Acknowledgments">
     Acknowledgements and licenses</h2>
   <p>

@@ -51,8 +51,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     int enableScale, enableDim[3], autoSize[3];
     size_t i;
     double scale;
-    
-    //const char* functionName = "processCallbacks";
+    //static const char* functionName = "processCallbacks";
     
     memset(dims, 0, sizeof(NDDimension_t) * ND_ARRAY_MAX_DIMS);
 
@@ -199,7 +198,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         pOutput->dims[1] = pOutput->dims[2];
         pOutput->pAttributeList->add("ColorMode", "Color mode", NDAttrInt32, &colorMode);
     }
-    if ((pOutput->ndims == 3) && 
+    else if ((pOutput->ndims == 3) && 
         (arrayInfo.colorMode == NDColorModeRGB2) && 
         (pOutput->dims[1].size == 1)) 
     {
@@ -207,8 +206,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         pOutput->dims[1] = pOutput->dims[2];
         pOutput->pAttributeList->add("ColorMode", "Color mode", NDAttrInt32, &colorMode);
     }
-    if ((pOutput->ndims == 3) && 
-        (arrayInfo.colorMode == NDColorModeRGB3) && 
+    else if ((pOutput->ndims == 3) && 
         (pOutput->dims[2].size == 1)) 
     {
         pOutput->ndims = 2;
@@ -266,7 +264,7 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    ASYN_MULTIDEVICE, 1, priority, stackSize)
 {
-    //const char *functionName = "NDPluginROI";
+    //static const char *functionName = "NDPluginROI";
 
     /* ROI general parameters */
     createParam(NDPluginROINameString,              asynParamOctet, &NDPluginROIName);

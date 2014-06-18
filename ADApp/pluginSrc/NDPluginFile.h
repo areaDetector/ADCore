@@ -19,6 +19,7 @@ typedef int NDFileOpenMode_t;
 #define FILEPLUGIN_NAME        "FilePluginFileName"
 #define FILEPLUGIN_NUMBER      "FilePluginFileNumber"
 #define FILEPLUGIN_DESTINATION "FilePluginDestination"
+#define FILEPLUGIN_WRITEFILE   "FilePluginWriteFile"
 
 /** Base class for NDArray file writing plugins; actual file writing plugins inherit from this class.
   * This class handles the logic of single file per image, capture into buffer or streaming multiple images
@@ -76,6 +77,7 @@ private:
     bool attrIsProcessingRequired(NDAttributeList* pAttrList);
     void registerInitFrameInfo(NDArray *pArray); /**< Grab a copy of the NDArrayInfo_t structure for future reference */
     bool isFrameValid(NDArray *pArray); /**< Compare pArray dimensions and datatype against latched NDArrayInfo_t structure */
+    bool attrIsStorageRequested(NDAttributeList* pAttrList);
 
     NDArray **pCapture;
     int captureBufferSize;

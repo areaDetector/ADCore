@@ -43,6 +43,7 @@ DBD += NDPluginROI.dbd
 DBD += NDPluginStats.dbd
 DBD += NDPluginStdArrays.dbd
 DBD += NDPluginTransform.dbd
+DBD += NDPluginAttribute.dbd
 
 INC += NDPluginDriver.h
 INC += NDPluginFile.h
@@ -56,6 +57,7 @@ NDPlugin_SRCS += NDPluginStats.cpp
 NDPlugin_SRCS += NDPluginProcess.cpp
 NDPlugin_SRCS += NDPluginROI.cpp
 NDPlugin_SRCS += NDPluginTransform.cpp
+NDPlugin_SRCS += NDPluginAttribute.cpp
 NDPlugin_SRCS += NDPluginOverlay.cpp
 NDPlugin_SRCS += NDPluginColorConvert.cpp
 NDPlugin_SRCS_DEFAULT += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNexus.cpp NDFileHDF5.cpp NDFileHDF5Dataset.cpp NDFileHDF5LayoutXML.cpp NDFileHDF5Layout.cpp NDFileNull.cpp
@@ -64,14 +66,14 @@ NDPlugin_SYS_LIBS_WIN32 += Ws2_32
 NDPlugin_SYS_LIBS_WIN32 += User32
 
 ifeq ($(USE_GRAPHICSMAGICK), YES)
-  USR_INCLUDES += $(GRAPHICS_MAGICK_INCLUDES)
+  USR_INCLUDES += $(GRAPHICS_MAGICK_INCLUDE)
   NDPlugin_SRCS += NDFileMagick.cpp
 else 
   NDPlugin_SRCS += NDFileMagickStub.cpp
 endif
 
-USR_INCLUDES += $(HDF5_INCLUDES)
-USR_INCLUDES += $(SZ_INCLUDES)
+USR_INCLUDES += $(HDF5_INCLUDE)
+USR_INCLUDES += $(SZ_INCLUDE)
 # Point to libxml2 header files
 # TODO: enable supporting a windows version of libxml2
 USR_INCLUDES += -I/usr/include/libxml2

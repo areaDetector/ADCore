@@ -79,7 +79,7 @@ NDFileNull::NDFileNull(const char *portName, int queueSize, int blockingCallback
                    2, 0, asynGenericPointerMask, asynGenericPointerMask, 
                    ASYN_CANBLOCK, 1, priority, stackSize)
 {
-    //const char *functionName = "NDFileNull";
+    //static const char *functionName = "NDFileNull";
 
     /* Set the plugin type string */    
     setStringParam(NDPluginDriverPluginType, "NDFileNull");

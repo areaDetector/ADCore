@@ -63,8 +63,8 @@ USR_LDFLAGS_Darwin      += -framework CoreFoundation
 PROD_LIBS_Darwin        += hdf5 sz
 PROD_SYS_LIBS_Darwin    += tiff jpeg z
 
-hdf5_DIR=$(HDF5_DIR)
-sz_DIR=$(SZ_DIR)
-GraphicsMagick_DIR=$(GRAPHICS_MAGICK_DIR)
-GraphicsMagick++_DIR=$(GRAPHICS_MAGICK_DIR)
-GraphicsMagickWand_DIR=$(GRAPHICS_MAGICK_DIR)
+hdf5_DIR               = $(HDF5_LIB)
+sz_DIR                 = $(SZIP_LIB)
+GraphicsMagick_DIR     = $(GRAPHICS_MAGICK_LIB)
+GraphicsMagick++_DIR   = $(GRAPHICS_MAGICK_LIB)
+GraphicsMagickWand_DIR = $(GRAPHICS_MAGICK_LIB)

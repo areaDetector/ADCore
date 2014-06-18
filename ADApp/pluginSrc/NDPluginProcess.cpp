@@ -57,7 +57,8 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     double  rc1, rc2;
     double  F1, F2, O1, O2;
 
-    //const char* functionName = "processCallbacks";
+    NDArray *pArrayOut = NULL;
+    static const char* functionName = "processCallbacks";
 
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
@@ -138,13 +139,18 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     /* If no processing is to be done just convert the input array and do callbacks */
     if (!anyProcess) {
         /* Convert the array to the desired output data type */
-        if (this->pArrays[0]) this->pArrays[0]->release();
-        this->pNDArrayPool->convert(pArray, &this->pArrays[0], (NDDataType_t)dataType);
+        this->pNDArrayPool->convert(pArray, &pArrayOut, (NDDataType_t)dataType);
         goto doCallbacks;
     }
     
     /* Make a copy of the array converted to double, because we cannot modify the input array */
     this->pNDArrayPool->convert(pArray, &pScratch, NDFloat64);
+    if (NULL == pScratch) {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+            "%s:%s Processing aborted; cannot allocate an NDArray for storage of temporary data.\n", 
+            driverName, functionName);
+        goto doCallbacks;
+    }
     data = (double *)pScratch->pData;
 
     if (nElements > 0) {
@@ -185,6 +191,12 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
             /* There is not a current filter array */
             /* Make a copy of the current array, converted to double type */
             this->pNDArrayPool->convert(pScratch, &this->pFilter, NDFloat64);
+            if (NULL == this->pFilter) {
+                asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+                    "%s:%s Processing aborted; cannot allocate an NDArray to store the filter.\n", 
+                    driverName,functionName);
+                goto doCallbacks;
+            }
             resetFilter = 1;
         }
         if ((this->numFiltered >= numFilter) && autoResetFilter)
@@ -222,12 +234,11 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
 
     if (doCallbacks) {
       /* Convert the array to the desired output data type */
-      if (this->pArrays[0]) this->pArrays[0]->release();
-      this->pNDArrayPool->convert(pScratch, &this->pArrays[0], (NDDataType_t)dataType);
+      this->pNDArrayPool->convert(pScratch, &pArrayOut, (NDDataType_t)dataType);
     }
 
-    if (autoOffsetScale && this->pArrays[0] != NULL) {
-        this->pArrays[0]->getInfo(&arrayInfo);
+    if (autoOffsetScale && (NULL != pArrayOut)) {
+        pArrayOut->getInfo(&arrayInfo);
         double maxScale = pow(2., arrayInfo.bytesPerElement*8) - 1;
         scale = maxScale /(maxValue-minValue);
         offset = -minValue;
@@ -241,17 +252,21 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     }
 
     doCallbacks:    
-    if (doCallbacks) {
-      this->lock();
-      /* Get the attributes for this driver */
-      this->getAttributes(this->pArrays[0]->pAttributeList);
-      /* Call any clients who have registered for NDArray callbacks */
-      this->unlock();
-      doCallbacksGenericPointer(this->pArrays[0], NDArrayData, 0);
-    }
-    if (pScratch) pScratch->release();
-    /* We must enter the loop and exit with the mutex locked */
+    /* We must exit with the mutex locked */
     this->lock();
+    if (doCallbacks && (NULL != pArrayOut)) {
+        /* Get the attributes from this driver */
+        this->getAttributes(pArrayOut->pAttributeList);
+        /* Call any clients who have registered for NDArray callbacks */
+        this->unlock();
+        doCallbacksGenericPointer( pArrayOut, NDArrayData, 0);
+        this->lock();
+        if (NULL != this->pArrays[0]) this->pArrays[0]->release();
+        this->pArrays[0] = pArrayOut;
+    }
+
+    if (NULL != pScratch) pScratch->release();
+
     setIntegerParam(NDPluginProcessNumFiltered, this->numFiltered);
     callParamCallbacks();
     if (autoOffsetScale && this->pArrays[0] != NULL) {
@@ -354,7 +369,7 @@ NDPluginProcess::NDPluginProcess(const char *portName, int queueSize, int blocki
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    ASYN_MULTIDEVICE, 1, priority, stackSize)
 {
-    //const char *functionName = "NDPluginProcess";
+    //static const char *functionName = "NDPluginProcess";
 
     /* Background array subtraction */
     createParam(NDPluginProcessSaveBackgroundString,    asynParamInt32,     &NDPluginProcessSaveBackground);

@@ -419,8 +419,7 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     int itemp;
     int numTSPoints, currentTSPoint, TSAcquiring;
     NDArrayInfo arrayInfo;
-
-    const char* functionName = "processCallbacks";
+    static const char* functionName = "processCallbacks";
 
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
@@ -445,7 +444,7 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     }
     if (sizeY != this->profileSizeY) {
         this->profileSizeY = sizeY;
-        setIntegerParam(NDPluginStatsProfileSizeY,  (int)this->profileSizeY);
+        setIntegerParam(NDPluginStatsProfileSizeY, (int)this->profileSizeY);
         for (i=0; i<MAX_PROFILE_TYPES; i++) {
             if (this->profileY[i]) free(this->profileY[i]);
             this->profileY[i] = (double *)malloc(this->profileSizeY * sizeof(double));
@@ -453,7 +452,7 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     }
 
     if (computeStatistics) {
-        getIntegerParam(NDPluginStatsBgdWidth,           &bgdWidth);
+        getIntegerParam(NDPluginStatsBgdWidth, &bgdWidth);
         doComputeStatistics(pArray, pStats);
         /* If there is a non-zero background width then compute the background counts */
         if (bgdWidth > 0) {
@@ -479,7 +478,7 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
                 pBgdArray->release();
                 bgdPixels += pStatsTemp->nElements;
                 bgdCounts += pStatsTemp->total;
-                pDim->offset = MAX(0, pDim->size - 1 - bgdWidth);
+                pDim->offset = MAX(0, (int)(pDim->size - 1 - bgdWidth));
                 pDim->size = MIN((size_t)bgdWidth, pArray->dims[dim].size - pDim->offset);
                 this->pNDArrayPool->convert(pArray, &pBgdArray, pArray->dataType, bgdDims);
                 pDim->offset = 0;
@@ -563,10 +562,22 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
             doTimeSeriesCallbacks();
         }
     }
-            
-    /* Save a copy of this array for calculations when cursor is moved or threshold is changed */
-    if (this->pArrays[0]) this->pArrays[0]->release();
-    this->pArrays[0] = this->pNDArrayPool->copy(pArray, NULL, 1);
+
+    NDArray *pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 1);
+    if (NULL != pArrayOut) {
+        this->getAttributes(pArrayOut->pAttributeList);
+        this->unlock();
+        doCallbacksGenericPointer(pArrayOut, NDArrayData, 0);
+        this->lock();
+        /* Save a copy of this array for calculations when cursor is moved or threshold is changed */
+        if (this->pArrays[0]) this->pArrays[0]->release();
+        this->pArrays[0] = pArrayOut;
+    }
+    else {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+            "%s::%s: Couldn't allocate output array. Further processing terminated.\n", 
+            driverName, functionName);
+    }
 
     callParamCallbacks();
 }
@@ -723,7 +734,7 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
 {
     int numTSPoints=256;  // Initial size of time series
     int i;
-    //const char *functionName = "NDPluginStats";
+    //static const char *functionName = "NDPluginStats";
     
     /* Statistics */
     createParam(NDPluginStatsComputeStatisticsString, asynParamInt32,      &NDPluginStatsComputeStatistics);

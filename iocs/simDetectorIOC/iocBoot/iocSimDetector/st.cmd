@@ -44,10 +44,6 @@ dbLoadRecords("$(ADCORE)/db/NDPluginBase.template","P=$(PREFIX),R=image2:,PORT=I
 # This waveform allows transporting 64-bit images, so it can handle any detector data type at the expense of more memory and bandwidth
 dbLoadRecords("$(ADCORE)/db/NDStdArrays.template", "P=$(PREFIX),R=image2:,PORT=Image2,ADDR=0,TIMEOUT=1,TYPE=Float64,FTVL=DOUBLE,NELEMENTS=921600")
 
-# This loads a database to tie the ROI size to the detector readout size
-dbLoadRecords("$(ADCORE)/db/NDROI_sync.template", "P=$(PREFIX),CAM=cam1:,ROI=ROI1:")
-dbLoadRecords("$(ADCORE)/db/NDROI_sync.template", "P=$(PREFIX),CAM=cam1:,ROI=ROI2:")
-
 # Load all other plugins using commonPlugins.cmd
 < $(ADCORE)/iocBoot/commonPlugins.cmd
 

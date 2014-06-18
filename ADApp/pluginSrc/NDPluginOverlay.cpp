@@ -46,7 +46,6 @@ template <typename epicsType>
 void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
 {
     size_t xmin, xmax, ymin, ymax, ix, iy;
-    long diff;
     epicsType *pRow;
     
     asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
@@ -56,12 +55,14 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
 
     switch(pOverlay->shape) {
         case NDOverlayCross:
-            diff = pOverlay->PositionX - pOverlay->SizeX;
-            xmin = MAX(diff, 0);
+            xmin = 0;
+            if (pOverlay->PositionX > pOverlay->SizeX)
+                xmin = pOverlay->PositionX - pOverlay->SizeX;
             xmax = pOverlay->PositionX + pOverlay->SizeX;
             xmax = MIN(xmax, this->arrayInfo.xSize-1);
-            diff = pOverlay->PositionY - pOverlay->SizeY;
-            ymin = MAX(diff, 0);
+            ymin = 0;
+            if (pOverlay->PositionY > pOverlay->SizeY)
+                ymin = pOverlay->PositionY - pOverlay->SizeY;
             ymax = pOverlay->PositionY + pOverlay->SizeY;
             ymax = MIN(ymax, this->arrayInfo.ySize-1);
             for (iy=ymin; iy<ymax; iy++) {
@@ -145,7 +146,7 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
     int itemp;
     int overlay;
     NDArray *pOutput;
-    //const char* functionName = "processCallbacks";
+    //static const char* functionName = "processCallbacks";
 
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
@@ -236,7 +237,7 @@ NDPluginOverlay::NDPluginOverlay(const char *portName, int queueSize, int blocki
                    asynGenericPointerMask,
                    ASYN_MULTIDEVICE, 1, priority, stackSize)
 {
-    const char *functionName = "NDPluginOverlay";
+    static const char *functionName = "NDPluginOverlay";
 
 
     this->maxOverlays = maxOverlays;

@@ -93,7 +93,7 @@ NDFileMagick::NDFileMagick(const char *portName, int queueSize, int blockingCall
                    2, 0, asynGenericPointerMask, asynGenericPointerMask, 
                    ASYN_CANBLOCK, 1, priority, stackSize)
 {
-    //const char *functionName = "NDFileMagick";
+    //static const char *functionName = "NDFileMagick";
 
     /* Set the plugin type string */    
     setStringParam(NDPluginDriverPluginType, "NDFileMagick");

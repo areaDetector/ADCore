@@ -30,8 +30,8 @@
                            
 {
 
-  this->pName = epicsStrDup(pName);
-  this->pDescription = epicsStrDup(pDescription);
+  this->pName = pName? epicsStrDup(pName): epicsStrDup("");
+  this->pDescription = pDescription? epicsStrDup(pDescription): epicsStrDup("");
   switch (sourceType) {
     case NDAttrSourceDriver:
       this->pSourceTypeString = epicsStrDup("NDAttrSourceDriver");
@@ -45,8 +45,10 @@
     case NDAttrSourceFunct:
       this->pSourceTypeString = epicsStrDup("NDAttrSourceFunct");
       break;
+    default:
+      this->pSourceTypeString = epicsStrDup("Undefined");
   }
-  this->pSource = epicsStrDup(pSource);
+  this->pSource = pSource? epicsStrDup(pSource): epicsStrDup("");
   this->pString = NULL;
   if (pValue) {
     this->setDataType(dataType);

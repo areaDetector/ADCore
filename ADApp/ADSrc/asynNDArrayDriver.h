@@ -97,7 +97,7 @@ public:
     asynNDArrayDriver(const char *portName, int maxAddr, int numParams, int maxBuffers, size_t maxMemory,
                       int interfaceMask, int interruptMask,
                       int asynFlags, int autoConnect, int priority, int stackSize);
-
+    virtual ~asynNDArrayDriver();
     /* These are the methods that we override from asynPortDriver */
     virtual asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t maxChars,
                           size_t *nActual);
