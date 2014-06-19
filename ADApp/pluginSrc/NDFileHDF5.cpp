@@ -2060,20 +2060,40 @@ asynStatus NDFileHDF5::writePerformanceDataset()
 
   hdf5::Root *root = this->layout.get_hdftree();
   if (root){
-    hdf5::Group* def_group = root->find_ndattr_default_group();
-    group_performance = H5Gopen(this->file, def_group->get_full_name().c_str(), H5P_DEFAULT);
+    hdf5::Group* perf_group = root->find_ndattr_default_group(); // Generally use the default ndattribute dataset for 'timestamp'
+    hdf5::Dataset *tsDset = NULL;
 
-    /* Create the data space for the second dataset. */
+    // Look if a "performance/timestamp" dataset can be found.
+    // If so, use that dataset to store performance timestamps.
+    // This is a slight HACK to retain backwards compatibility
+    // with the location of the performance/timestamp dataset. (Ulrik June 2014)
+    root->find_dset("timestamp", &tsDset);
+    if ( tsDset != NULL) {
+      hdf5::Group* grp = dynamic_cast<hdf5::Group*>(tsDset->get_parent());
+      // Check that the group name is performance AND that
+      // the dataset is not already reserved for an NDAttribute
+      if (grp->get_name() == "performance" &&
+          !tsDset->data_source().is_src_ndattribute() ) {
+          perf_group = grp;
+      }
+    }
+
     getIntegerParam(NDFileNumCaptured, &numCaptured);
     dims[1] = 5;
     if (numCaptured < this->numPerformancePoints) dims[0] = numCaptured;
     else dims[0] = this->numPerformancePoints;
-    dataspace_id = H5Screate_simple(2, dims, NULL);
 
-    /* Create the second dataset in group "Group_A". */
+    /* Create the "timestamp" dataset */
+    dataspace_id = H5Screate_simple(2, dims, NULL);
+    group_performance = H5Gopen(this->file, perf_group->get_full_name().c_str(), H5P_DEFAULT);
     dataset_id = H5Dcreate2(group_performance, "timestamp", H5T_NATIVE_DOUBLE, dataspace_id,
                             H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-
+    if (!H5Iis_valid(dataset_id)) {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING, "NDFileHDF5::writePerformanceDataset: unable to create \'timestamp\' dataset.");
+        H5Sclose(dataspace_id);
+        H5Gclose(group_performance);
+        return asynError;
+    }
     /* Write the second dataset. */
     H5Dwrite(dataset_id, H5T_NATIVE_DOUBLE,
              H5S_ALL, H5S_ALL,
