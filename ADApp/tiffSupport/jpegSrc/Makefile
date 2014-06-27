@@ -4,9 +4,11 @@ include $(TOP)/configure/CONFIG
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 #=============================
 
-INC_WIN32 += jpeglib.h jconfig.h jmorecfg.h jerror.h 
+INC_WIN32    += jpeglib.h jconfig.h jmorecfg.h jerror.h 
+INC_cygwin32 += jpeglib.h jconfig.h jmorecfg.h jerror.h 
 
-LIBRARY_IOC_WIN32 = jpeg
+LIBRARY_IOC_WIN32    = jpeg
+LIBRARY_IOC_cygwin32 = jpeg
 
 LIB_SRCS += jcapimin.c 
 LIB_SRCS += jcapistd.c 
