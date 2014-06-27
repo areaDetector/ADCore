@@ -4,11 +4,9 @@ include $(TOP)/configure/CONFIG
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 #=============================
 
-INC_WIN32    += tiff.h tiffio.h tiffvers.h tiffconf.h 
-INC_cygwin32 += tiff.h tiffio.h tiffvers.h tiffconf.h 
+INC_WIN32 += tiff.h tiffio.h tiffvers.h tiffconf.h 
 
-LIBRARY_IOC_WIN32    = tiff
-LIBRARY_IOC_cygwin32 = tiff
+LIBRARY_IOC_WIN32 = tiff
 
 LIB_SYS_LIBS_WIN32 += User32
 
