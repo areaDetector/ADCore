@@ -8,7 +8,8 @@
 
 typedef enum {
     NDOverlayCross,
-    NDOverlayRectangle
+    NDOverlayRectangle,
+    NDOverlayText
 } NDOverlayShape_t;
 
 typedef enum {
@@ -27,6 +28,9 @@ typedef struct NDOverlay {
     int red;
     int green;
     int blue;
+    int TimeStampType;
+    int Font;
+    char DisplayText[256];
 } NDOverlay_t;
 
 
@@ -43,6 +47,9 @@ typedef struct NDOverlay {
 #define NDPluginOverlayRedString                "OVERLAY_RED"           /* (asynInt32,   r/w) Red value for overlay */
 #define NDPluginOverlayGreenString              "OVERLAY_GREEN"         /* (asynInt32,   r/w) Green value for overlay */
 #define NDPluginOverlayBlueString               "OVERLAY_BLUE"          /* (asynInt32,   r/w) Blue value for overlay */
+#define NDPluginOverlayTimeStampTypeString      "OVERLAY_TIMESTAMP_TYPE" /* (asynInt32,   r/w) Type of Time Stamp to show (if any) */
+#define NDPluginOverlayFontString               "OVERLAY_FONT"          /* (asynInt32,   r/w) Type of Time Stamp to show (if any) */
+#define NDPluginOverlayDisplayTextString        "OVERLAY_DISPLAY_TEXT"  /* (asynOctet,   r/w) The text to display */
 
 /** Overlay graphics on top of an image.  Useful for highlighting ROIs and displaying cursors */
 class NDPluginOverlay : public NDPluginDriver {
@@ -72,7 +79,10 @@ protected:
     int NDPluginOverlayRed;
     int NDPluginOverlayGreen;
     int NDPluginOverlayBlue;
-    #define LAST_NDPLUGIN_OVERLAY_PARAM NDPluginOverlayBlue
+    int NDPluginOverlayTimeStampType;
+    int NDPluginOverlayFont;
+    int NDPluginOverlayDisplayText;
+    #define LAST_NDPLUGIN_OVERLAY_PARAM NDPluginOverlayDisplayText
                                 
 private:
     int maxOverlays;
