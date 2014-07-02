@@ -40,18 +40,18 @@ void NDPluginOverlay::setPixel(epicsType *pValue, NDOverlay_t *pOverlay)
             pValue += this->arrayInfo.colorStride;
             *pValue = (epicsType)pOverlay->blue;
         } else if (pOverlay->drawMode == NDOverlayXOR) {
-            *pValue = (int)*pValue ^ (int)pOverlay->red;
+            *pValue = (epicsType)((int)*pValue ^ (int)pOverlay->red);
             pValue += this->arrayInfo.colorStride;
-            *pValue = (int)*pValue ^ (int)pOverlay->green;
+            *pValue = (epicsType)((int)*pValue ^ (int)pOverlay->green);
             pValue += this->arrayInfo.colorStride;
-            *pValue = (int)*pValue ^ (int)pOverlay->blue;
+            *pValue = (epicsType)((int)*pValue ^ (int)pOverlay->blue);
         }
     }
     else {
         if (pOverlay->drawMode == NDOverlaySet)
             *pValue = (epicsType)pOverlay->green;
         else if (pOverlay->drawMode == NDOverlayXOR)
-            *pValue = (int)*pValue ^ (int)pOverlay->green;
+            *pValue = (epicsType)((int)*pValue ^ (int)pOverlay->green);
     }
 }
 
@@ -66,9 +66,6 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
     int bmc;                                 // current byte in the font bitmap
     int mask;                                // selects the bit in bmc to look at
     char tstr[64];                           // Used to build the time string
-    unsigned int msec;                       // The fractional part of the second.  TODO (maybe): support micro second resolution time stamps too.
-    struct tm coursetime;                    // The normal conversion routines have lots of nice formating options but are only good to a second
-    struct timespec theTime;                 // High resolution time.  TODO: make this the time the image was collected, not the time we happened to get the image here
     NDPluginOverlayTextFontBitmapType *bmp;  // pointer to our font information (bitmap pointer, perhaps misnamed)
     int bpc;                                 // bytes per char, ie, 1 for 6x13 font, 2 for 9x15 font
     int sbc;                                 // "sub" byte counter to keep track of which byte we are looking at for multi byte fonts
@@ -121,7 +118,7 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
             break;
 
         case NDOverlayText:
-            if( (pOverlay->Font >= 0) && (pOverlay->Font < NDPluginOverlayTextFontBitmapTypeN)) {
+            if ((pOverlay->Font >= 0) && (pOverlay->Font < NDPluginOverlayTextFontBitmapTypeN)) {
                 bmp = &NDPluginOverlayTextFontBitmaps[pOverlay->Font];
             } else {
                 // Really, no reason to go on if the font is ill defined
@@ -130,16 +127,11 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
 
             bpc = bmp->width / 8 + 1;
 
-            if( pOverlay->TimeStampType) {
-                clock_gettime( CLOCK_REALTIME, &theTime);
-                localtime_r( &theTime.tv_sec, &coursetime);
-                strftime( tstr, sizeof( tstr)-1, "%Y-%m-%d %H:%M:%S", &coursetime);
-                tstr[sizeof( tstr)-1] = 0;
-
-                msec = theTime.tv_nsec / 1000000;
-                epicsSnprintf( textOutStr, sizeof( textOutStr)-1, "%s%s.%.03u", pOverlay->DisplayText, tstr, msec);
+            if (strlen(pOverlay->TimeStampFormat) > 0) {
+                epicsTimeToStrftime(tstr, sizeof(tstr)-1, pOverlay->TimeStampFormat, &pArray->epicsTS);
+                epicsSnprintf(textOutStr, sizeof(textOutStr)-1, "%s%s", pOverlay->DisplayText, tstr);
             } else {
-                epicsSnprintf( textOutStr, sizeof( textOutStr)-1, "%s", pOverlay->DisplayText);
+                epicsSnprintf(textOutStr, sizeof(textOutStr)-1, "%s", pOverlay->DisplayText);
             }
             textOutStr[sizeof(textOutStr)-1] = 0;
 
@@ -154,40 +146,39 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
             ymax = MIN(ymax, pOverlay->PositionY + bmp->height);
             ymax = MIN(ymax, this->arrayInfo.ySize);
 
-
             // Loop over vertical lines
-            for( jj=0, iy=ymin; iy<ymax; jj++, iy++) {
+            for (jj=0, iy=ymin; iy<ymax; jj++, iy++) {
                 pRow = (epicsType *)pArray->pData + iy*arrayInfo.yStride;
 
                 // Loop over characters
-                for( ii=0; cp[ii]!=0; ii++) {
+                for (ii=0; cp[ii]!=0; ii++) {
                     if( cp[ii] < 32)
                         continue;
 
-                    if( xmin+ii * bmp->width >= xmax)
+                    if (xmin+ii * bmp->width >= xmax)
                         // None of this character can be written
                         break;
 
                     sbc = 0;
                     bmc = bmp->bitmap[(bmp->height*(cp[ii] - 32) + jj)*bpc];
                     mask = 0x80;
-                    for( ib=0; ib<bmp->width; ib++) {
+                    for (ib=0; ib<bmp->width; ib++) {
                         ix = xmin + ii * bmp->width + ib;
-                        if( ix >= xmax)
+                        if (ix >= xmax)
                             break;
-                        if( mask & bmc) {
+                        if (mask & bmc) {
                             setPixel( &pRow[ix*this->arrayInfo.xStride], pOverlay);
                         }
                         mask >>= 1;
-                        if( !mask) {
+                        if (!mask) {
                             mask = 0x80;
                             sbc++;
                             bmc = bmp->bitmap[(bmp->height*(cp[ii] - 32) + jj)*bpc + sbc];
                         }
                     }
                 }
-          }
-          break;
+            }
+            break;
 
     }
 }
@@ -283,7 +274,7 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
         getIntegerParam(overlay, NDPluginOverlayRed,        &pOverlay->red);
         getIntegerParam(overlay, NDPluginOverlayGreen,      &pOverlay->green);
         getIntegerParam(overlay, NDPluginOverlayBlue,       &pOverlay->blue);
-        getIntegerParam(overlay, NDPluginOverlayTimeStampType, &pOverlay->TimeStampType);
+        getStringParam( overlay, NDPluginOverlayTimeStampFormat, sizeof(pOverlay->TimeStampFormat), pOverlay->TimeStampFormat);
         getIntegerParam(overlay, NDPluginOverlayFont,       &pOverlay->Font);
         getStringParam( overlay, NDPluginOverlayDisplayText, sizeof(pOverlay->DisplayText), pOverlay->DisplayText);
 
@@ -357,7 +348,7 @@ NDPluginOverlay::NDPluginOverlay(const char *portName, int queueSize, int blocki
     createParam(NDPluginOverlayRedString,           asynParamInt32, &NDPluginOverlayRed);
     createParam(NDPluginOverlayGreenString,         asynParamInt32, &NDPluginOverlayGreen);
     createParam(NDPluginOverlayBlueString,          asynParamInt32, &NDPluginOverlayBlue);
-    createParam(NDPluginOverlayTimeStampTypeString, asynParamInt32, &NDPluginOverlayTimeStampType);
+    createParam(NDPluginOverlayTimeStampFormatString, asynParamOctet, &NDPluginOverlayTimeStampFormat);
     createParam(NDPluginOverlayFontString,          asynParamInt32, &NDPluginOverlayFont);
     createParam(NDPluginOverlayDisplayTextString,   asynParamOctet, &NDPluginOverlayDisplayText);      
 
