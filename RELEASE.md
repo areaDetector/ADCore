@@ -23,6 +23,23 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
+R2-1 (July XXX 2014)
+--------------------
+* NDPluginOverlay
+    - Added support for text overlays. Thanks to Keith Brister for this.
+    - Fixed problem with DrawMode=XOR. This stopped working back in 2010 when color support was added.
+* NDPluginTransform
+    - Complete rewrite to greatly improve simplicity and efficiency.  It now supports 8 transformations
+      including the null transformation.  Performance improved 10-100 times.  Thanks to Chris Roehrig
+      for this.
+* NDPluginFile
+    - Added support for an NDArray attribute "FilePluginWriteFile".  If this exists and is 0 then
+      the NDArray will not be written to the file. 
+* NDFileTiff
+    - All NDArray attributes are now written as TIFF ASCII file tags, up to a maximum of 490 tags.
+      Thanks to Matt Pearson for this.
+* Added support for cygwin32 architecture.  This did not work in R2-0.  NOT YET WORKING.
+
 R2-0
 ----
 * Moved the repository to [Github](https://github.com/areaDetector/ADCore).
