@@ -28,7 +28,7 @@ typedef struct NDOverlay {
     int red;
     int green;
     int blue;
-    int TimeStampType;
+    char TimeStampFormat[64];
     int Font;
     char DisplayText[256];
 } NDOverlay_t;
@@ -47,7 +47,7 @@ typedef struct NDOverlay {
 #define NDPluginOverlayRedString                "OVERLAY_RED"           /* (asynInt32,   r/w) Red value for overlay */
 #define NDPluginOverlayGreenString              "OVERLAY_GREEN"         /* (asynInt32,   r/w) Green value for overlay */
 #define NDPluginOverlayBlueString               "OVERLAY_BLUE"          /* (asynInt32,   r/w) Blue value for overlay */
-#define NDPluginOverlayTimeStampTypeString      "OVERLAY_TIMESTAMP_TYPE" /* (asynInt32,   r/w) Type of Time Stamp to show (if any) */
+#define NDPluginOverlayTimeStampFormatString    "OVERLAY_TIMESTAMP_FORMAT" /* (asynOctet,r/w) Time stamp format */
 #define NDPluginOverlayFontString               "OVERLAY_FONT"          /* (asynInt32,   r/w) Type of Time Stamp to show (if any) */
 #define NDPluginOverlayDisplayTextString        "OVERLAY_DISPLAY_TEXT"  /* (asynOctet,   r/w) The text to display */
 
@@ -79,7 +79,7 @@ protected:
     int NDPluginOverlayRed;
     int NDPluginOverlayGreen;
     int NDPluginOverlayBlue;
-    int NDPluginOverlayTimeStampType;
+    int NDPluginOverlayTimeStampFormat;
     int NDPluginOverlayFont;
     int NDPluginOverlayDisplayText;
     #define LAST_NDPLUGIN_OVERLAY_PARAM NDPluginOverlayDisplayText
