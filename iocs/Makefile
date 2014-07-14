@@ -2,6 +2,7 @@ TOP = ..
 include $(TOP)/configure/CONFIG
 
 DIRS := $(wildcard *IOC)
+DIRS := $(wildcard hdf*)
 
 include $(TOP)/configure/RULES_TOP
 
