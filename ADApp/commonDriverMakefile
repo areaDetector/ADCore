@@ -48,8 +48,8 @@ endif
 
 PROD_SYS_LIBS_WIN32     += Gdi32 Oleaut32
 
-PROD_LIBS_cygwin32      += libhdf5 libsz
-PROD_LIBS_cygwin32      += libtiff libjpeg libjbig libz libxml2.dll
+PROD_SYS_LIBS_cygwin32  += hdf5 sz
+PROD_SYS_LIBS_cygwin32  += tiff jpeg jbig z xml2
 PROD_SYS_LIBS_cygwin32  += $(CYGWIN_RPC_LIB)
 PROD_SYS_LIBS_cygwin32  += Gdi32
 

@@ -154,6 +154,8 @@ record(mbbo, "$(P)$(R)Shape")
     field(ZRVL, "0")
     field(ONST, "Rectangle")
     field(ONVL, "1")
+    field(TWST, "Text")
+    field(TWVL, "2")
     field(VAL,  "$(SHAPE)")
 }
 
@@ -165,6 +167,8 @@ record(mbbi, "$(P)$(R)Shape_RBV")
     field(ZRVL, "0")
     field(ONST, "Rectangle")
     field(ONVL, "1")
+    field(TWST, "Text")
+    field(TWVL, "2")
     field(SCAN, "I/O Intr")
 }
 
@@ -268,3 +272,69 @@ record(dfanout, "$(P)$(R)SetYHOPR")
     field(OUTB, "$(P)$(R)SizeY.HOPR NPP")
 }
 
+###################################################################
+#  Text overlay (Keith Brister 2014-06-26)
+###################################################################
+
+record(waveform, "$(P)$(R)DisplayText")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_DISPLAY_TEXT")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(R)DisplayText_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_DISPLAY_TEXT")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)TimeStampFormat")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynOctetWrite")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_TIMESTAMP_FORMAT")
+    field(VAL,  "%Y-%m-%d %H:%M:%S.%03f")
+}
+
+record(stringin, "$(P)$(R)TimeStampFormat_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_TIMESTAMP_FORMAT")
+    field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)Font")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_FONT")
+    field(ZRST, "6x13")
+    field(ZRVL, "0")
+    field(ONST, "6x13 Bold")
+    field(ONVL, "1")
+    field(TWST, "9x15")
+    field(TWVL, "2")
+    field(THST, "9x15 Bold")
+    field(THVL, "3")
+}
+
+record(mbbi, "$(P)$(R)Font_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_FONT")
+    field(ZRST, "6x13")
+    field(ZRVL, "0")
+    field(ONST, "6x13 Bold")
+    field(ONVL, "1")
+    field(TWST, "9x15")
+    field(TWVL, "2")
+    field(THST, "9x15 Bold")
+    field(THVL, "3")
+    field(SCAN, "I/O Intr")
+}
