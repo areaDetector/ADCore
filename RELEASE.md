@@ -34,11 +34,17 @@ R2-1 (July XXX 2014)
       for this.
 * NDPluginFile
     - Added support for an NDArray attribute "FilePluginWriteFile".  If this exists and is 0 then
-      the NDArray will not be written to the file. 
+      the NDArray will not be written to the file.
+    - Added new optional feature "LazyOpen" which, when enabled and in "Stream" mode, will defer 
+      file creation until the first frame arrives in the plugin. This removes the need to initialise
+      the plugin with a dummy frame before starting capture.  
 * NDFileTiff
     - All NDArray attributes are now written as TIFF ASCII file tags, up to a maximum of 490 tags.
       Thanks to Matt Pearson for this.
 * Added support for cygwin32 architecture.  This did not work in R2-0.  NOT YET WORKING.
+* NDFileHDF5
+    - Added support for defining the layout of the HDF5 file groups, dataset and attributes in an XML
+      definition file.
 
 R2-0
 ----
