@@ -51,7 +51,7 @@ record(bi, "$(P)$(R)Use_RBV")
 
 record(longout, "$(P)$(R)PositionXLink")
 {
-    field(DOL,  "$(XPOS) CP MS")
+    field(DOL,  "$(XPOS="") CP MS")
     field(OMSL, "closed_loop")
     field(OUT, "$(P)$(R)PositionX PP")
 }
@@ -75,7 +75,7 @@ record(longin, "$(P)$(R)PositionX_RBV")
 
 record(longout, "$(P)$(R)PositionYLink")
 {
-    field(DOL,  "$(YPOS) CP MS")
+    field(DOL,  "$(YPOS="") CP MS")
     field(OMSL, "closed_loop")
     field(OUT, "$(P)$(R)PositionY PP")
 }
@@ -99,7 +99,7 @@ record(longin, "$(P)$(R)PositionY_RBV")
 
 record(longout, "$(P)$(R)SizeXLink")
 {
-    field(DOL,  "$(XSIZE) CP MS")
+    field(DOL,  "$(XSIZE="") CP MS")
     field(OMSL, "closed_loop")
     field(OUT, "$(P)$(R)SizeX PP")
 }
@@ -123,7 +123,7 @@ record(longin, "$(P)$(R)SizeX_RBV")
 
 record(longout, "$(P)$(R)SizeYLink")
 {
-    field(DOL,  "$(YSIZE) CP MS")
+    field(DOL,  "$(YSIZE="") CP MS")
     field(OMSL, "closed_loop")
     field(OUT, "$(P)$(R)SizeY PP")
 }
@@ -142,6 +142,54 @@ record(longin, "$(P)$(R)SizeY_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_SIZE_Y")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)WidthXLink")
+{
+    field(DOL,  "$(XWIDTH="") CP MS")
+    field(OMSL, "closed_loop")
+    field(OUT, "$(P)$(R)WidthX PP")
+}
+
+record(longout, "$(P)$(R)WidthX")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_WIDTH_X")
+    field(LOPR, "1")
+    field(HOPR, "1024")
+    field(VAL,  "1")
+}
+
+record(longin, "$(P)$(R)WidthX_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_WIDTH_X")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)WidthYLink")
+{
+    field(DOL,  "$(YWIDTH="") CP MS")
+    field(OMSL, "closed_loop")
+    field(OUT, "$(P)$(R)WidthY PP")
+}
+
+record(longout, "$(P)$(R)WidthY")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_WIDTH_Y")
+    field(LOPR, "1")
+    field(HOPR, "1024")
+    field(VAL,  "1")
+}
+
+record(longin, "$(P)$(R)WidthY_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_WIDTH_Y")
     field(SCAN, "I/O Intr")
 }
 
