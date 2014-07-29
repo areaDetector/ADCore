@@ -23,6 +23,8 @@ typedef struct NDOverlay {
     size_t PositionY;
     size_t SizeX;
     size_t SizeY;
+    size_t WidthX;
+    size_t WidthY;
     NDOverlayShape_t shape;
     NDOverlayDrawMode_t drawMode;
     int red;
@@ -38,10 +40,12 @@ typedef struct NDOverlay {
 #define NDPluginOverlayMaxSizeYString           "MAX_SIZE_Y"            /* (asynInt32,   r/o) Maximum size of overlay in Y dimension */
 #define NDPluginOverlayNameString               "NAME"                  /* (asynOctet,   r/w) Name of this overlay */
 #define NDPluginOverlayUseString                "USE"                   /* (asynInt32,   r/w) Use this overlay? */
-#define NDPluginOverlayPositionXString          "OVERLAY_POSITION_X"    /* (asynInt32,   r/o) X positoin of overlay */
-#define NDPluginOverlayPositionYString          "OVERLAY_POSITION_Y"    /* (asynInt32,   r/w) X position of overlay */
+#define NDPluginOverlayPositionXString          "OVERLAY_POSITION_X"    /* (asynInt32,   r/o) X position of overlay */
+#define NDPluginOverlayPositionYString          "OVERLAY_POSITION_Y"    /* (asynInt32,   r/w) Y position of overlay */
 #define NDPluginOverlaySizeXString              "OVERLAY_SIZE_X"        /* (asynInt32,   r/o) X size of overlay */
-#define NDPluginOverlaySizeYString              "OVERLAY_SIZE_Y"        /* (asynInt32,   r/w) X size of overlay */
+#define NDPluginOverlaySizeYString              "OVERLAY_SIZE_Y"        /* (asynInt32,   r/w) Y size of overlay */
+#define NDPluginOverlayWidthXString             "OVERLAY_WIDTH_X"       /* (asynInt32,   r/o) X width of overlay */
+#define NDPluginOverlayWidthYString             "OVERLAY_WIDTH_Y"       /* (asynInt32,   r/w) Y width of overlay */
 #define NDPluginOverlayShapeString              "OVERLAY_SHAPE"         /* (asynInt32,   r/w) Shape of overlay */
 #define NDPluginOverlayDrawModeString           "OVERLAY_DRAW_MODE"     /* (asynInt32,   r/w) Drawing mode for overlay */
 #define NDPluginOverlayRedString                "OVERLAY_RED"           /* (asynInt32,   r/w) Red value for overlay */
@@ -74,6 +78,8 @@ protected:
     int NDPluginOverlayPositionY;
     int NDPluginOverlaySizeX;
     int NDPluginOverlaySizeY;
+    int NDPluginOverlayWidthX;
+    int NDPluginOverlayWidthY;
     int NDPluginOverlayShape;
     int NDPluginOverlayDrawMode;
     int NDPluginOverlayRed;
