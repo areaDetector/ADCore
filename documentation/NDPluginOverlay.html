@@ -30,7 +30,7 @@
     NDPluginOverlay adds graphics overlays to an NDArray image. It can be used to highlight
     ROIs on an image, to implement cursors, and other similar operations. It supports
     any number of overlay objects. For each object there is control of the location,
-    size, color, and drawing mode. The size and location can be directly controlled,
+    size, width, color, and drawing mode. The size, width and location can be directly controlled,
     or links can be used to control the position and size from other PVs. For example,
     links to the PVs definining an ROI in the NDPluginROI plugin can be used to define
     a rectangular overlay in thus plugin. Similarly links to the PVs defining the X
@@ -282,6 +282,81 @@
           N.A.</td>
         <td>
           $(P)$(R)SizeYLink</td>
+        <td>
+          longout</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginOverlay<br />
+          OverlayWidthX</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          The X width of this overlay. For the cross overlay this will increase the width of the line
+          on both sides at the same time, to maintain the central point of the cross. For the rectangle
+          overlay the line thickness will grow inwards to the center. For both overlay types
+          odd numbers are ignored, only even numbers cause the width to change.</td>
+        <td>
+          OVERLAY_WIDTH_X</td>
+        <td>
+          $(P)$(R)WidthX<br />
+          $(P)$(R)WidthX_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          N.A.</td>
+        <td>
+          N.A.</td>
+        <td>
+          r/w</td>
+        <td>
+          Link to fetch the desired X width of this overlay. See the notes for PositionXLink
+          above.</td>
+        <td>
+          N.A.</td>
+        <td>
+          $(P)$(R)WidthXLink</td>
+        <td>
+          longout</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginOverlay<br />
+          OverlayWidthY</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          The Y width of this overlay. This behaves in the same way as the OverlayWidthX.</td>
+        <td>
+          OVERLAY_WIDTH_Y</td>
+        <td>
+          $(P)$(R)WidthY<br />
+          $(P)$(R)WidthY_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          N.A.</td>
+        <td>
+          N.A.</td>
+        <td>
+          r/w</td>
+        <td>
+          Link to fetch the desired Y width of this overlay. See the notes for PositionXLink
+          above.</td>
+        <td>
+          N.A.</td>
+        <td>
+          $(P)$(R)WidthYLink</td>
         <td>
           longout</td>
       </tr>
