@@ -2,7 +2,6 @@
 #define NDPluginStats_H
 
 #include <epicsTypes.h>
-#include <asynStandardInterfaces.h>
 
 #include "NDPluginDriver.h"
 

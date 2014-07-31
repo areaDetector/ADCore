@@ -20,9 +20,9 @@
 #include <epicsMutex.h>
 #include <iocsh.h>
 
-#include "NDArray.h"
-#include "NDPluginTransform.h"
+#include "NDPluginDriver.h"
 #include <epicsExport.h>
+#include "NDPluginTransform.h"
     
 /** Perform the move of the pixels to the new orientation. */
 template <typename epicsType>
