@@ -1,9 +1,6 @@
 #ifndef NDPluginOverlay_H
 #define NDPluginOverlay_H
 
-#include <epicsTypes.h>
-#include <asynStandardInterfaces.h>
-
 #include "NDPluginDriver.h"
 
 typedef enum {

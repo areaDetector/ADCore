@@ -17,7 +17,7 @@
 #include <epicsMutex.h>
 #include <iocsh.h>
 
-#include "NDArray.h"
+#include "NDPluginDriver.h"
 #include "NDPluginOverlayTextFont.h"
 #include <epicsExport.h>
 #include "NDPluginOverlay.h"
@@ -102,7 +102,7 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
                 } else {
                     xwidemin_line = (pOverlay->PositionX - xwide)*this->arrayInfo.xStride;
                     xwidemax_line = (pOverlay->PositionX + xwide)*this->arrayInfo.xStride;
-                    for (epicsUInt32 line=xwidemin_line; line<=xwidemax_line; ++line) {
+                    for (size_t line=xwidemin_line; line<=xwidemax_line; ++line) {
                         setPixel<epicsType>(&pRow[line], pOverlay);
                     }
                 }
@@ -131,10 +131,10 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
                 } else if ((iy >= (ymax-1 - ywide)) && (iy <= ymax-1)) {
                     for (ix=xmin; ix<xmax; ix++) setPixel(&pRow[ix*this->arrayInfo.xStride], pOverlay);
                 } else {
-                    for (epicsUInt32 line=xmin; line<=xmin+xwide; ++line) {
+                    for (size_t line=xmin; line<=xmin+xwide; ++line) {
                         setPixel(&pRow[line*this->arrayInfo.xStride], pOverlay);
                     }
-                    for (epicsUInt32 line=(xmax-xwide); line<=xmax; ++line) {
+                    for (size_t line=(xmax-xwide); line<=xmax; ++line) {
                         setPixel(&pRow[(line-1)*this->arrayInfo.xStride], pOverlay);
                     }
                 }
@@ -281,8 +281,8 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
         pOverlay = &this->pOverlays[overlay];
         getIntegerParam(overlay, NDPluginOverlayUse, &use);
         asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
-        "NDPluginOverlay::processCallbacks, overlay=%d, use=%d\n",
-        overlay, use);
+            "NDPluginOverlay::processCallbacks, overlay=%d, use=%d\n",
+            overlay, use);
         if (!use) continue;
         /* Need to fetch all of these parameters while we still have the mutex */
         getIntegerParam(overlay, NDPluginOverlayPositionX,  &itemp); pOverlay->PositionX = itemp;
