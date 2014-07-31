@@ -30,15 +30,15 @@
     NDPluginOverlay adds graphics overlays to an NDArray image. It can be used to highlight
     ROIs on an image, to implement cursors, and other similar operations. It supports
     any number of overlay objects. For each object there is control of the location,
-    size, width, color, and drawing mode. The size, width and location can be directly controlled,
-    or links can be used to control the position and size from other PVs. For example,
-    links to the PVs definining an ROI in the NDPluginROI plugin can be used to define
-    a rectangular overlay in thus plugin. Similarly links to the PVs defining the X
-    and Y centroid and sigma of an image computed in the NDPluginStats plugin can be
-    used to control the location and size of a crosshair overlay in this plugin. The
-    cursor will then follow the location of a "beam" in the image. Putting such graphics
-    overlays into an areaDetector plugin allows the use of simple image display clients,
-    which don't need to compute the graphics themselves.
+    size, line width, color, and drawing mode. The size, line width and location can
+    be directly controlled, or links can be used to control the position and size from
+    other PVs. For example, links to the PVs definining an ROI in the NDPluginROI plugin
+    can be used to define a rectangular overlay in thus plugin. Similarly links to the
+    PVs defining the X and Y centroid and sigma of an image computed in the NDPluginStats
+    plugin can be used to control the location and size of a crosshair overlay in this
+    plugin. The cursor will then follow the location of a "beam" in the image. Putting
+    such graphics overlays into an areaDetector plugin allows the use of simple image
+    display clients, which don't need to compute the graphics themselves.
   </p>
   <p>
     Each NDPluginOverlay plugin can contain any number of overlay objects, each with
@@ -294,10 +294,11 @@
         <td>
           r/w</td>
         <td>
-          The X width of this overlay. For the cross overlay this will increase the width of the line
-          on both sides at the same time, to maintain the central point of the cross. For the rectangle
-          overlay the line thickness will grow inwards to the center. For both overlay types
-          odd numbers are ignored, only even numbers cause the width to change.</td>
+          The X line width of this overlay. For the cross overlay this will increase the width
+          of the line on both sides at the same time, to maintain the central point of the
+          cross. For the rectangle overlay the line thickness will grow inwards to the center.
+          For both overlay types odd numbers &gt;1 are ignored, only even numbers cause the
+          width to change.</td>
         <td>
           OVERLAY_WIDTH_X</td>
         <td>
@@ -315,7 +316,7 @@
         <td>
           r/w</td>
         <td>
-          Link to fetch the desired X width of this overlay. See the notes for PositionXLink
+          Link to fetch the desired X line width of this overlay. See the notes for PositionXLink
           above.</td>
         <td>
           N.A.</td>
@@ -333,7 +334,8 @@
         <td>
           r/w</td>
         <td>
-          The Y width of this overlay. This behaves in the same way as the OverlayWidthX.</td>
+          The Y line width of this overlay. This behaves in the same way as the OverlayWidthX.
+        </td>
         <td>
           OVERLAY_WIDTH_Y</td>
         <td>
@@ -351,7 +353,7 @@
         <td>
           r/w</td>
         <td>
-          Link to fetch the desired Y width of this overlay. See the notes for PositionXLink
+          Link to fetch the desired Y line width of this overlay. See the notes for PositionXLink
           above.</td>
         <td>
           N.A.</td>
