@@ -4,7 +4,6 @@
 #include <epicsTypes.h>
 #include <epicsMessageQueue.h>
 #include <epicsTime.h>
-#include <asynStandardInterfaces.h>
 
 #include "asynNDArrayDriver.h"
 

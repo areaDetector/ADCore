@@ -16,9 +16,9 @@
 #include <epicsMutex.h>
 #include <iocsh.h>
 
-#include "NDArray.h"
-#include "NDPluginProcess.h"
+#include "NDPluginDriver.h"
 #include <epicsExport.h>
+#include "NDPluginProcess.h"
 
 static const char *driverName="NDPluginProcess";
 

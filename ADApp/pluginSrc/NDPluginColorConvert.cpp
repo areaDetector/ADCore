@@ -17,12 +17,13 @@
 #include <epicsString.h>
 #include <iocsh.h>
 
-#include "NDPluginColorConvert.h"
+#include "NDPluginDriver.h"
 #include "colorMaps.h"
 #ifdef HAVE_PVAPI
   #include "PvApi.h"
 #endif
 #include <epicsExport.h>
+#include "NDPluginColorConvert.h"
 
 static const char *driverName="NDPluginColorConvert";
 
