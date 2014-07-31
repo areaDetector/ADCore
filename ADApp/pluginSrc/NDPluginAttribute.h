@@ -3,7 +3,6 @@
 #define NDPluginAttribute_H
 
 #include <epicsTypes.h>
-#include <asynStandardInterfaces.h>
 
 #include "NDPluginDriver.h"
 
