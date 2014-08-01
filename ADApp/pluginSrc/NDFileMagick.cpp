@@ -12,8 +12,9 @@
 #include <epicsStdio.h>
 #include <iocsh.h>
 
-#include "NDFileMagick.h"
+#include "NDPluginFile.h"
 #include <epicsExport.h>
+#include "NDFileMagick.h"
 
 static const char *driverName = "NDFileMagick";
 

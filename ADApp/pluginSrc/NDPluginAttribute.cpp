@@ -16,9 +16,9 @@
 #include <epicsMutex.h>
 #include <iocsh.h>
 
-#include "NDArray.h"
-#include "NDPluginAttribute.h"
+#include "NDPluginDriver.h"
 #include <epicsExport.h>
+#include "NDPluginAttribute.h"
 
 const epicsInt32 NDPluginAttribute::MAX_ATTR_NAME_ = 256;
 

@@ -13,9 +13,8 @@
 #include <epicsStdio.h>
 #include <iocsh.h>
 
-#include "NDFileNull.h"
-
 #include <epicsExport.h>
+#include "NDFileNull.h"
 
 //static const char *driverName = "NDFileNull";
 

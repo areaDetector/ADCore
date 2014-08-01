@@ -1,9 +1,6 @@
 #ifndef NDPluginROI_H
 #define NDPluginROI_H
 
-#include <epicsTypes.h>
-#include <asynStandardInterfaces.h>
-
 #include "NDPluginDriver.h"
 
 /* ROI general parameters */

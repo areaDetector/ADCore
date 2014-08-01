@@ -16,9 +16,9 @@
 #include <epicsMutex.h>
 #include <iocsh.h>
 
-#include "NDArray.h"
-#include "NDPluginStats.h"
+#include "NDPluginDriver.h"
 #include <epicsExport.h>
+#include "NDPluginStats.h"
 
 #define MAX(A,B) (A)>(B)?(A):(B)
 #define MIN(A,B) (A)<(B)?(A):(B)

@@ -17,8 +17,9 @@
 #include <napi.h>
 #include <string.h>
 
-#include "NDFileNexus.h"
+#include "NDPluginFile.h"
 #include <epicsExport.h>
+#include "NDFileNexus.h"
 
 static const char *driverName="NDFileNexus";
 

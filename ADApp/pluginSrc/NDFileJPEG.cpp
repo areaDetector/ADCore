@@ -14,8 +14,8 @@
 #include <iocsh.h>
 
 #include "NDPluginFile.h"
-#include "NDFileJPEG.h"
 #include <epicsExport.h>
+#include "NDFileJPEG.h"
 
 
 static const char *driverName = "NDFileJPEG";

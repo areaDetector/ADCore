@@ -22,9 +22,9 @@
 #include <cantProceed.h>
 #include <iocsh.h>
 
-#include "NDArray.h"
-#include "NDPluginStdArrays.h"
+#include "NDPluginDriver.h"
 #include <epicsExport.h>
+#include "NDPluginStdArrays.h"
 
 static const char *driverName="NDPluginStdArrays";
 

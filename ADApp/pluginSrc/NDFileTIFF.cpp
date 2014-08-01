@@ -27,9 +27,10 @@
 #include <epicsStdio.h>
 #include <iocsh.h>
 
-#include "NDFileTIFF.h"
+#include "NDPluginFile.h"
 #include "tiffio.h"
 #include <epicsExport.h>
+#include "NDFileTIFF.h"
 
 static const char *driverName = "NDFileTIFF";
 
