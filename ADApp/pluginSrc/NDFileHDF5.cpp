@@ -27,6 +27,8 @@
 #include <epicsTime.h>
 #include <iocsh.h>
 #include <epicsExport.h>
+#define epicsAssertAuthor "the EPICS areaDetector collaboration (https://github.com/areaDetector/ADCore/issues)"
+#include <epicsAssert.h>
 #include "NDFileHDF5Dataset.h"
 #include "NDFileHDF5LayoutXML.h"
 #include "NDFileHDF5Layout.h"
@@ -2542,7 +2544,7 @@ asynStatus NDFileHDF5::configureDims(NDArray *pArray)
         if (user_chunking[i] > max_items) user_chunking[i] = max_items;
       }
       if (user_chunking[i] < 1) user_chunking[i] = max_items;
-      this->chunkdims[hdfdim] = user_chunking[i];
+      assert(hdfdim >= 0); this->chunkdims[hdfdim] = user_chunking[i];
   }
   setIntegerParam(NDFileHDF5_nFramesChunks, user_chunking[2]);
   setIntegerParam(NDFileHDF5_nRowChunks,    user_chunking[1]);
