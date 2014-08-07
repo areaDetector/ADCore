@@ -194,6 +194,11 @@
 #define HAVE_STDBOOL_H 1
 #endif
 
+/*Visual studio 2013 is C99 compliant*/
+#if defined(_MSC_VER) && (_MSC_VER >= 1800)
+#define HAVE_STDBOOL_H 1
+#endif
+
 /* Define to 1 if you have the <stdint.h> header file. */
 #if !defined(vxWorks) && !defined(_WIN32)
 #define HAVE_STDINT_H 1

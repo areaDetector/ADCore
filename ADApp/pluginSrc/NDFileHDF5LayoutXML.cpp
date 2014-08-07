@@ -391,7 +391,7 @@ namespace hdf5
     if (group_name == NULL) return -1;
 
     std::string str_group_name((char*)group_name);
-    free(group_name);
+	xmlFree(group_name);
 
     // Initialise the tree if it has not already been done.
     if (this->ptr_tree == NULL){
@@ -414,7 +414,7 @@ namespace hdf5
       ndattr_default = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar *)LayoutXML::ATTR_GRP_NDATTR_DEFAULT.c_str());
       if (ndattr_default != NULL){
         std::string str_ndattr_default((char*)ndattr_default);
-        free(ndattr_default);
+		xmlFree(ndattr_default);
         // if the group has tag: ndattr_default="true" (true in lower case)
         // then set the group as the default container for NDAttributes.
         if (str_ndattr_default == "true"){

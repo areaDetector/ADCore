@@ -405,6 +405,7 @@ asynStatus NDPluginFile::doCapture(int capture)
                     }
                     this->pCapture[i]->dataSize = arrayInfo.totalBytes;
                     this->pCapture[i]->pData = malloc(arrayInfo.totalBytes);
+					this->pCapture[i]->ndims = pArray->ndims;
                     if (!this->pCapture[i]->pData) {
                         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                             "%s:%s ERROR: cannot allocate capture array for buffer %d\n",

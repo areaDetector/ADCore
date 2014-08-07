@@ -27,6 +27,7 @@
 #include <epicsTime.h>
 #include <iocsh.h>
 #include <epicsExport.h>
+#include <epicsAssert.h>
 #include "NDFileHDF5Dataset.h"
 #include "NDFileHDF5LayoutXML.h"
 #include "NDFileHDF5Layout.h"
@@ -1773,15 +1774,17 @@ int NDFileHDF5::verifyLayoutXMLFile()
 {
   int status = asynSuccess;
 //  Reading in a filename or string of xml. We will need more than 256 bytes
-  char fileName[MAX_LAYOUT_LEN];
+  char *fileName = new char[MAX_LAYOUT_LEN];
+  fileName[MAX_LAYOUT_LEN - 1] = '\0';
   int len;
   const char *functionName = "verifyLayoutXMLFile";
 
-  getStringParam(NDFileHDF5_layoutFilename, sizeof(fileName), fileName);
+  getStringParam(NDFileHDF5_layoutFilename, MAX_LAYOUT_LEN-1, fileName);
   len = strlen(fileName);
   if (len == 0){
     setIntegerParam(NDFileHDF5_layoutValid, 1);
     setStringParam(NDFileHDF5_layoutErrorMsg, "Default layout selected");
+	delete [] fileName; 
     return(asynSuccess);
   }
 
@@ -1792,22 +1795,25 @@ int NDFileHDF5::verifyLayoutXMLFile()
                   driverName, functionName);
         setIntegerParam(NDFileHDF5_layoutValid, 0);
         setStringParam(NDFileHDF5_layoutErrorMsg, "XML description file cannot be opened");
+		delete [] fileName;
         return asynError;
     }
   }
 
-  if (this->layout.verify_xml(fileName)){
+  std::string strFileName = std::string(fileName);
+  if (this->layout.verify_xml(strFileName)){
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
               "%s::%s XML description file parser error.\n", 
               driverName, functionName);
     setIntegerParam(NDFileHDF5_layoutValid, 0);
     setStringParam(NDFileHDF5_layoutErrorMsg, "XML description file parser error");
+	delete [] fileName;
     return asynError;
   }
 
   setIntegerParam(NDFileHDF5_layoutValid, 1);
   setStringParam(NDFileHDF5_layoutErrorMsg, "");
-
+  delete [] fileName;
   return status;
 }
 
@@ -2441,8 +2447,11 @@ asynStatus NDFileHDF5::configureDims(NDArray *pArray)
     getIntegerParam(NDFileHDF5_nExtraDims, &extradims);
     extradims += 1;
   }
-
+  
   ndims = pArray->ndims + extradims;
+
+  //if (this->multiFrameFile == false && ndims == 2)
+//	  ndims = 3;
 
   // first check whether the dimension arrays have been allocated
   // or the number of dimensions have changed.
@@ -2490,7 +2499,7 @@ asynStatus NDFileHDF5::configureDims(NDArray *pArray)
     //  driverName, functionName, extradims);
     for (i=0; i<extradims; i++)
     {
-      this->framesize[i]   = 1;
+      this->framesize[i] = (hsize_t)1;
       this->chunkdims[i]   = 1;
       this->maxdims[i]     = H5S_UNLIMITED;
       this->dims[i]        = 1;
@@ -2511,7 +2520,7 @@ asynStatus NDFileHDF5::configureDims(NDArray *pArray)
   //  driverName, functionName, this->rank);
   for (j=pArray->ndims-1,i=extradims; i<this->rank; i++,j--)
   {
-    this->framesize[i]  = pArray->dims[j].size;
+	this->framesize[i] = (hsize_t)(pArray->dims[j].size);
     this->chunkdims[i]  = pArray->dims[j].size;
     this->maxdims[i]    = pArray->dims[j].size;
     this->dims[i]       = pArray->dims[j].size;
@@ -2531,7 +2540,7 @@ asynStatus NDFileHDF5::configureDims(NDArray *pArray)
   getIntegerParam(NDFileHDF5_nColChunks,    &user_chunking[0]);
   int max_items = 0;
   int hdfdim = 0;
-  for (i = 0; i<3; i++)
+  for (i = 0; i<ndims; i++)
   {
       hdfdim = ndims - i - 1;
       max_items = (int)this->maxdims[hdfdim];
@@ -2542,7 +2551,9 @@ asynStatus NDFileHDF5::configureDims(NDArray *pArray)
         if (user_chunking[i] > max_items) user_chunking[i] = max_items;
       }
       if (user_chunking[i] < 1) user_chunking[i] = max_items;
-      this->chunkdims[hdfdim] = user_chunking[i];
+	  ////-if (hdfdim > -1) //heap was being corrupted
+        ////this->chunkdims[hdfdim] = user_chunking[i];
+	  assert(hdfdim >= 0); this->chunkdims[hdfdim] = user_chunking[i];
   }
   setIntegerParam(NDFileHDF5_nFramesChunks, user_chunking[2]);
   setIntegerParam(NDFileHDF5_nRowChunks,    user_chunking[1]);
@@ -2830,9 +2841,11 @@ asynStatus NDFileHDF5::createFileLayout(NDArray *pArray)
 
   //We use MAX_LAYOUT_LEN instead of MAX_FILENAME_LEN because we want to be able to load
   // in an xml string or a file containing the xml
-  char layoutFile[MAX_LAYOUT_LEN];
-  int status = getStringParam(NDFileHDF5_layoutFilename, sizeof(layoutFile), layoutFile);
+  char *layoutFile = new char[MAX_LAYOUT_LEN];
+  layoutFile[MAX_LAYOUT_LEN - 1] = '\0';
+  int status = getStringParam(NDFileHDF5_layoutFilename, MAX_LAYOUT_LEN - 1, layoutFile);
   if (status){
+	  delete [] layoutFile;
     return asynError;
   }
   // Test here for invalid filename or empty filename.
@@ -2843,6 +2856,7 @@ asynStatus NDFileHDF5::createFileLayout(NDArray *pArray)
     status = this->layout.load_xml();
     if (status == -1){
       this->layout.unload_xml();
+	  delete [] layoutFile;
       return asynError;
     }
   } else {
@@ -2850,9 +2864,11 @@ asynStatus NDFileHDF5::createFileLayout(NDArray *pArray)
       // File specified and exists, use the file
       asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s Layout file exists, using the file: %s\n",
                 driverName, functionName, layoutFile);
-      status = this->layout.load_xml(layoutFile);
+	  std::string strLayoutFile = std::string(layoutFile);
+	  status = this->layout.load_xml(strLayoutFile);
       if (status == -1){
         this->layout.unload_xml();
+		delete[] layoutFile;
         return asynError;
       }
     } else {
@@ -2862,9 +2878,11 @@ asynStatus NDFileHDF5::createFileLayout(NDArray *pArray)
                 driverName, functionName);
       this->layout.load_xml();
       this->createXMLFileLayout();
+	  delete[] layoutFile;
       return asynError;
     }
   }
+  delete [] layoutFile;
   return this->createXMLFileLayout();
 }
 

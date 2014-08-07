@@ -19,8 +19,8 @@
 
 #include "NDArray.h"
 #include "NDPluginOverlayTextFont.h"
-#include <epicsExport.h>
 #include "NDPluginOverlay.h"
+#include <epicsExport.h>
 
 #define MAX(A,B) (A)>(B)?(A):(B)
 #define MIN(A,B) (A)<(B)?(A):(B)
