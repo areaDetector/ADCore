@@ -405,6 +405,7 @@ asynStatus NDPluginFile::doCapture(int capture)
                     }
                     this->pCapture[i]->dataSize = arrayInfo.totalBytes;
                     this->pCapture[i]->pData = malloc(arrayInfo.totalBytes);
+                    this->pCapture[i]->ndims = pArray->ndims;
                     if (!this->pCapture[i]->pData) {
                         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                             "%s:%s ERROR: cannot allocate capture array for buffer %d\n",
@@ -599,7 +600,7 @@ bool NDPluginFile::attrIsProcessingRequired(NDAttributeList* pAttrList)
         {
             if (destPortNameLen > MAX_FILENAME_LEN)
                 destPortNameLen = MAX_FILENAME_LEN;
-            ndAttr->getValue(NDAttrString, destPortName, destPortNameLen);
+                ndAttr->getValue(NDAttrString, destPortName, destPortNameLen);
             if (epicsStrnCaseCmp(destPortName, "all", destPortNameLen>3?3:destPortNameLen) != 0 &&
                 epicsStrnCaseCmp(destPortName, this->portName, destPortNameLen) != 0)
                 return false;
@@ -729,7 +730,7 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
                 arrayCounter++;
                 status = writeFileBase();
                 if (status == asynSuccess) {
-                	numCaptured++;
+                    numCaptured++;
                     setIntegerParam(NDFileNumCaptured, numCaptured);
                 }
                 if (numCaptured == numCapture) {
@@ -783,12 +784,12 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
             setIntegerParam(NDReadFile, 0);
         }
     } else if (function == NDFileCapture) {
-    	/* Latch the NDFileLazyOpen parameter so that we don't need to care
-    	 * if the user modifies this parameter before first frame has arrived. */
-    	int paramFileLazyOpen = 0;
-    	getIntegerParam(NDFileLazyOpen, &paramFileLazyOpen);
-    	this->lazyOpen = (paramFileLazyOpen != 0);
-    	/* So far everything is OK, so we just clear the FileWriteStatus parameters */
+        /* Latch the NDFileLazyOpen parameter so that we don't need to care
+         * if the user modifies this parameter before first frame has arrived. */
+        int paramFileLazyOpen = 0;
+        getIntegerParam(NDFileLazyOpen, &paramFileLazyOpen);
+        this->lazyOpen = (paramFileLazyOpen != 0);
+        /* So far everything is OK, so we just clear the FileWriteStatus parameters */
         setIntegerParam(NDFileWriteStatus, NDFileWriteOK);
         setStringParam(NDFileWriteMessage, "");
         setStringParam(NDFullFileName, "");
@@ -797,7 +798,7 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
         if (status == asynSuccess) {
             if (this->lazyOpen) setStringParam(NDFileWriteMessage, "Lazy Open...");
         } else {
-        	setIntegerParam(NDFileCapture, 0);
+            setIntegerParam(NDFileCapture, 0);
         }
     } else {
         /* This was not a parameter that this driver understands, try the base class */
