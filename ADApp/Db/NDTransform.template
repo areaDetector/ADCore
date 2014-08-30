@@ -1,77 +1,22 @@
-record(stringout, "$(P)$(R)Name")
-{
-   field(PINI, "1")
-   field(DTYP, "asynOctetWrite")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
-}
-
-record(mbbo, "$(P)$(R)Type1")
+record(mbbo, "$(P)$(R)Type")
 {
    field(PINI, "1")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TYPE")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TRANSFORM_TYPE")
    field(ZRST, "None")
    field(ZRVL, "0")
-   field(ONST, "RotateCW90")
+   field(ONST, "Rot90")
    field(ONVL, "1")
-   field(TWST, "RotateCCW90")
+   field(TWST, "Rot180")
    field(TWVL, "2")
-   field(THST, "Rotate180")
+   field(THST, "Rot270")
    field(THVL, "3")
-   field(FRST, "Transpose")
+   field(FRST, "Mirror")
    field(FRVL, "4")
-   field(FVST, "TransposeRotate180")
+   field(FVST, "Rot90Mirror")
    field(FVVL, "5")
-   field(SXST, "FlipHoriz")
+   field(SXST, "Rot180Mirror")
    field(SXVL, "6")
-   field(SVST, "FlipVert")
+   field(SVST, "Rot270Mirror")
    field(SVVL, "7")
-}
-
-record(longin, "$(P)$(R)T1MaxSize0")
-{
-   field(PINI, "1")
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_MAX_SIZE")
-   field(SCAN, "I/O Intr")
-}
-
-record(longin, "$(P)$(R)T1MaxSize1")
-{
-   field(PINI, "1")
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_MAX_SIZE")
-   field(SCAN, "I/O Intr")
-}
-
-record(longin, "$(P)$(R)T1MaxSize2")
-{
-   field(PINI, "1")
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_MAX_SIZE")
-   field(SCAN, "I/O Intr")
-}
-
-record(longin, "$(P)$(R)ArraySize0")
-{
-   field(PINI, "1")
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_0")
-   field(SCAN, "I/O Intr")
-}
-
-record(longin, "$(P)$(R)ArraySize1")
-{
-   field(PINI, "1")
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_1")
-   field(SCAN, "I/O Intr")
-}
-
-record(longin, "$(P)$(R)ArraySize2")
-{
-   field(PINI, "1")
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_2")
-   field(SCAN, "I/O Intr")
 }
