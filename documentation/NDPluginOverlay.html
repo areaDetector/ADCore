@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugin NDPluginOverlay</h1>
     <h2>
-      August 22, 2014</h2>
+      September 1, 2014</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -371,22 +371,31 @@
         <td>
           r/w</td>
         <td>
-          The shape of this overlay. 0=cross, 1=rectangle. Other shapes may be added in the
-          future. The X and Y position of a cross is located at the center. The X and Y size
-          of a cross is the size on either side of the center, i.e. the total width = 2*OverlaySizeX.
-          This is done so when HOPR for the X and Y size records is set to the total image
+          The shape of this overlay. Choices are:
+          <ul>
+            <li>0="Cross"</li>
+            <li>1="Rectangle"</li>
+            <li>2="Text"</li>
+          </ul>
+          Other shapes may be added in the future. The PositionX and PositionY position of
+          a cross defines the location of the center of the cross. The SizeX and SizeY of
+          a cross is the size on either side of the center, i.e. the total width = 2*OverlaySizeX.
+          This is done so when HOPR for the SizeX and SizeY records is set to the total image
           size, the cross can be the total size of the image no matter where it is positioned.
-          The X and Y position of a rectangle is located at Xmin,Ymin. The X and Y size of
-          a rectangle is the total width and height. These definitions are consistent with
-          the way ROIs are defined in the NDPluginROI plugin.</td>
+          The PositionX and PositionY of a rectangle defines the lower left corner of the
+          rectangle. SizeX and SizeY of a rectangle define total width and height. These definitions
+          are consistent with the way ROIs are defined in the NDPluginROI plugin. The XPosition
+          and YPosition of the text overlay defines the lower left corner of the text. The
+          SizeX and SizeY are ignored for the text overlay, the size is defined by the text
+          string and the font.</td>
         <td>
           OVERLAY_SHAPE</td>
         <td>
           $(P)$(R)Shape<br />
           $(P)$(R)Shape_RBV</td>
         <td>
-          longout<br />
-          longin</td>
+          mbbo<br />
+          mbbi</td>
       </tr>
       <tr>
         <td>
@@ -397,23 +406,27 @@
         <td>
           r/w</td>
         <td>
-          The operation to use when drawing this overlay. 0=Set, 1=XOR. In Set mode the Red,
-          Green, and Blue values (Green for mono images) are written directly into the pixel
-          values. In XOR mode the value in the pixel is XOR'ed with the Red, Green, and Blue
-          values. XOR operation typically results in an overlay that has better visibility
-          no matter what the values of the surrounding pixels, while Set mode with Green=255,
-          for example, will show up well on dark areas of the image, but will be hard to see
-          in bright areas of the image. Note that XOR is not supported for NDFloat32 or NDFloat64
-          data types directly, but they are cast to int if XOR is selected for arrays with
-          those data types.</td>
+          The operation to use when drawing this overlay. Choices are:
+          <ul>
+            <li>0="Set"</li>
+            <li>1="XOR"</li>
+          </ul>
+          In Set mode the Red, Green, and Blue values (Green for mono images) are written
+          directly into the pixel values. In XOR mode the value in the pixel is XOR'ed with
+          the Red, Green, and Blue values. XOR operation typically results in an overlay that
+          has better visibility no matter what the values of the surrounding pixels, while
+          Set mode with Green=255, for example, will show up well on dark areas of the image,
+          but will be hard to see in bright areas of the image. Note that XOR is not supported
+          for NDFloat32 or NDFloat64 data types directly, but they are cast to int if XOR
+          is selected for arrays with those data types.</td>
         <td>
           OVERLAY_DRAW_MODE</td>
         <td>
           $(P)$(R)DrawMode<br />
           $(P)$(R)DrawMode_RBV</td>
         <td>
-          longout<br />
-          longin</td>
+          mbbo<br />
+          mbbi</td>
       </tr>
       <tr>
         <td>
@@ -474,6 +487,72 @@
         <td>
           longout<br />
           longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginOverlay<br />
+          DisplayText</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          The text string to write for this overlay if Shape="Text". </td>
+        <td>
+          OVERLAY_DISPLAY_TEXT</td>
+        <td>
+          $(P)$(R)DisplayText<br />
+          $(P)$(R)DisplayText_RBV</td>
+        <td>
+          waveform<br />
+          waveform</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginOverlay<br />
+          TimeStampFormat</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          The format string to use when outputting the EPICS time stamp (epicsTS) field of
+          the NDArray in the text overlay. Default="%Y-%m-%d %H:%M:%S.%03f". Any of the components
+          of the format can be omitted to suppress the display of that field. </td>
+        <td>
+          OVERLAY_TIMESTAMP_FORMAT</td>
+        <td>
+          $(P)$(R)TimeStampFormat<br />
+          $(P)$(R)TimeStampFormat_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginOverlay<br />
+          Font</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          The font to use for the text display. Choices are:
+          <ul>
+            <li>0="6x13"</li>
+            <li>1="6x13 Bold"</li>
+            <li>2="9x15"</li>
+            <li>3="9x15 Bold"</li>
+          </ul>
+        </td>
+        <td>
+          OVERLAY_FONT</td>
+        <td>
+          $(P)$(R)Font<br />
+          $(P)$(R)Font_RBV</td>
+        <td>
+          mbbo<br />
+          mbbi</td>
       </tr>
     </tbody>
   </table>
