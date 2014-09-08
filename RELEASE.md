@@ -37,7 +37,7 @@ R2-1 (September XXX 2014)
     - All NDArray attributes are now written as TIFF ASCII file tags, up to a maximum of 490 tags.
       Thanks to Matt Pearson for this.
 * Added a new table to the 
-  [top-level documentation] (http://cars.uchicago.edu/software/epics/areaDetector.html) 
+  [top-level documentation] (http://cars.uchicago.edu/software/epics/areaDetector.html).
   This contains for each module, links to:
   - The Github repository
   - The Release Notes
