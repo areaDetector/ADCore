@@ -39,9 +39,10 @@ R2-1 (September XXX 2014)
 * Added a new table to the 
   [top-level documentation] (http://cars.uchicago.edu/software/epics/areaDetector.html).
   This contains for each module, links to:
-  - The Github repository
-  - The Release Notes
-  - The directory containing pre-built binary files
+  - Github repository
+  - Documentation
+  - Release Notes
+  - Directory containing pre-built binary files
 * Added support for cygwin32 architecture.  This did not work in R2-0.  NOT YET WORKING.
 
 
