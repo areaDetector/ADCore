@@ -936,6 +936,30 @@
           bi</td>
       </tr>
       <tr>
+        <td>
+          NDFileLazyOpen</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flag to defer the creation of a new file until the first NDArray to write has been
+          received. This removes the need for passing an extra NDArray through the
+          file writing plugin to initialise dimensions and possibly NDAttribute list before 
+          opening the file. The downside is that file creation can potentially be time-consuming
+          so processing the first NDArray may be slower than subsequent ones. 
+          <br/>Only makes sense to use with file plugins which support multiple frames per file
+          and only in "Stream" mode.</td>
+        <td>
+          FILE_LAZY_OPEN</td>
+        <td>
+          $(P)$(R)LazyOpen<br />
+          $(P)$(R)LazyOpen_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
         <td align="center" colspan="7">
           <b>Array data</b></td>
       </tr>

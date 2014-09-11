@@ -574,22 +574,222 @@ variables:
       NDFileHDF5.cpp documentation</a> and in the documentation for the constructor
     for the <a href="areaDetectorDoxygenHTML/class_n_d_file_h_d_f5.html">NDFileHDF5 class</a>.</p>
   <h3>
-    File structure
+    File Structure Layout
   </h3>
   <p>
     The HDF5 files comprises a hierachial data structure, similar to a file system structure
     with directories (groups) and files (datasets) [<a href="http://www.hdfgroup.org/HDF5/Tutor/fileorg.html">ref</a>]
   </p>
+  <h4>XML Defined File Structure Layout</h4>
   <p>
-    This plugin writes HDF5 files that are compatible with the Nexus file format. This
+    It is possible to define the layout of the data structures in an XML definition file. The XML
+    file allow defining the location of HDF5 Groups, Datasets and Attributes based on detector data
+    (NDArrays), metadata (NDAttributes) and constants (for instance NeXus tags). 
+  </p>
+  <p>
+    The XML definition contains the following 3 main elements: group, dataset, attribute. The terms refer
+    to the HDF5 elements of the same names.
+  </p>
+  <p>
+    <ul>
+      <li><b>attribute:</b> represent a HDF5 attribute (key, value metadata) and is assigned to groups
+      and datasets</li>
+      <li><b>dataset:</b> represent a HDF5 dataset (N-dimensional array). Can contain attributes and is
+      assigned to a group </li>
+      <li><b>group:</b> represent a HDF5 group. Groups can contain datasets, attributes and other groups (recursively)</li>
+      <li><b>global:</b> Rather than representing a HDF5 object; this element represent a global functionality definition</li>
+    </ul>
+  </p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <th>
+          XML attribute</th>
+        <th>
+          Required</th>
+        <th>
+          Description</th>
+        <th>
+          Value</th>
+      </tr>
+       <tr>
+        <td align="center" colspan="4,">
+          XML <b>"attribute"</b> element attributes
+        </td>
+      </tr>
+     <tr>
+        <td>name</td>
+        <td>yes</td>
+        <td>Name (key) of the HDF attribute (key, value) pair</td>
+        <td>string</td>
+      </tr>
+     <tr>
+        <td>source</td>
+        <td>yes</td>
+        <td>Definition of where the attribute gets its value from</td>
+        <td>Enum string: "constant", "ndattribute"</td>
+      </tr>
+     <tr>
+        <td>when</td>
+        <td>optional</td>
+        <td>Event when the attribute data is updated</td>
+        <td>Enum string: "OnFileOpen", "OnFileClose", "OnFileWrite"</td>
+      </tr>
+     <tr>
+        <td>value</td>
+        <td>Required only if source="constant"</td>
+        <td>The constant value to give the attribute</td>
+        <td>string (possibly containing an int or float)</td>
+      </tr>
+     <tr>
+        <td>type</td>
+        <td>optional - use if source="constant"</td>
+        <td>The constant datatype</td>
+        <td>Enum string: "int", "float", "string"</td>
+      </tr>
+     <tr>
+        <td>ndattribute</td>
+        <td>Required only if source="ndattribute"</td>
+        <td>Name of the areaDetector NDAttribute which is the source of this HDF5 attribute's
+        data value</td>
+        <td>string containing the name of an NDAttribute</td>
+      </tr>
+ 
+      <tr>
+        <td align="center" colspan="4,">
+          XML <b>"group"</b> element attributes
+        </td>
+      </tr>
+      <tr>
+        <td>name</td>
+        <td>yes</td>
+        <td>The (relative) name of the HDF5 group</td>
+        <td>string</td>
+      </tr>
+      <tr>
+        <td>ndattr_default</td>
+        <td>optional</td>
+        <td>This attribute flags a group as being a 'default' container for NDAttributes which
+            have not been defined to be stored elsewhere</td>
+        <td>boolean (default=false)</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="4,">
+          XML <b>"dataset"</b> element attributes
+        </td>
+      </tr>
+     <tr>
+        <td>name</td>
+        <td>yes</td>
+        <td>Name of the HDF5 dataset</td>
+        <td>string</td>
+      </tr>
+      <tr>
+        <td>source</td>
+        <td>yes</td>
+        <td>Definition of where the dataset gets its data values from</td>
+        <td>string enum: "detector", "ndattribute", "constant"</td>
+      </tr>
+      <tr>
+        <td>value</td>
+        <td>Required only if source="constant"</td>
+        <td>Constant value to write directly into the HDF5 dataset</td>
+        <td>String - possibly containing int or float values. 
+        Arrays of int and float values can also be represented in a comma-separated string</td>
+      </tr>
+      <tr>
+        <td>ndattribute</td>
+        <td>Required only if source="ndattribute"</td>
+        <td>The name of the areaDetector NDAttribute to use as a data source for this HDF5 dataset</td>
+        <td>string containing the name of the NDAttribute</td>
+      </tr>
+      <tr>
+        <td>det_default</td>
+        <td>optional</td>
+        <td>Flag to indicate that this HDF5 dataset is the default dataset for the detector to write
+        NDArrays into. Only sensible to set true if source="detector"</td>
+        <td>boolean (default=false)</td>
+      </tr>
+      <tr>
+      <td align="center" colspan="4,">
+          XML <b>"global"</b> element attributes
+        </td>
+      </tr>
+     <tr>
+        <td>name</td>
+        <td>yes</td>
+        <td>Name of the global functionality or parameter to set</td>
+        <td>enum string: "detector_data_destination" <br/>
+        (currently only one supported parameter)</td>
+      </tr>
+     <tr>
+        <td>ndattribute</td>
+        <td>Required when name="detector_data_destination"</td>
+        <td>Name of the NDAttribute which defines the name of the dataset where incoming
+        NDArrays are to be stored</td>
+        <td>string containing the name of an NDAttribute</td>
+      </tr>
+    </tbody>
+  </table>
+    
+  <p>Example XML layout files are provided in the ADCore/iocs/hdf5LayoutXML/hdf5LayoutXMLApp/data directory.</p>
+  <p>An XML schema is provided in "ADCore/iocBoot/hdf5_xml_layout_schema.xsd".
+  The schema can be used with the 'xmllint' command to validate a users XML definition: </p>
+  <pre>xmllint --noout --schema ADCore/iocBoot/hdf5_xml_layout_schema.xsd /path/to/users/layout.xml</pre>
+  
+  
+  <h4>Default File Structure Layout</h4>
+  <p>
+    If no XML Layout Definition file is loaded, the plugin will revert to using its default
+    file structure layout. The default layout is compatible with the plugin's original, 
+    hard-code layout.
+  </p>
+  <p>
+    This default layout is compatible with the Nexus file format. This
     is achieved by defining a specific hierachial structure of groups and datasets and
     by tagging elements in the hierachi with certain &quot;NX_class=nnn&quot; attributes.
     Although Nexus libraries are not used to write the data to disk, this file structure
     allow Nexus-aware readers to open and read the content of these HDF5 files. This
     has been tested with the Nexus reader in the <a href="http://opengda.org/">GDA application</a>.
   </p>
+  <h5>
+    NDArray attributes
+  </h5>
   <p>
-    The directory structure of the HDF5 files, generated by this plugin:</p>
+    The attributes from NDArrays are stored in the HDF5 files. The list of attributes
+    is loaded when a file is opened so XML attributes files should not be reloaded during
+    an acquisition run.
+  </p>
+  <p>
+    The type of attribute is used to determine where in the file structure the attribute
+    data will end up. All attribute datasets will be named by the NDArray attribute
+    name. They will also have metadata (known as HDF &quot;attributes&quot;) to indicate
+    their source type and origin.</p>
+  <ul>
+    <li>Attributes from EPICS PVs (type=&quot;EPICS_PV&quot;) will be stored as 1D datasets
+      in the group &quot;/entry/instrument/NDAttributes/&quot;
+      <ul>
+        <li>Special case is attributes of datatype string, which will be stored as HDF5 metadata
+          attributes to the same group.</li>
+      </ul>
+    </li>
+    <li>All other attributes (type=&quot;PARAM&quot;) will be stored as 1D datasets in
+      the group &quot;/entry/instrument/detector/NDAttributes/&quot;
+      <ul>
+        <li>Special case is attributes of datatype string, which will be stored as HDF5 metadata
+          attributes to the same group.</li>
+      </ul>
+    </li>
+  </ul>
+  <p>
+    It is possible to validate the syntax of an NDArray attributes XML file. For example,
+    the command (starting from the <tt>iocBoot</tt> directory) to validate the syntax
+    of the <tt>iocBoot/iocSimDetector/simDetectorAttributes.xml</tt> file is:</p>
+  <pre>xmllint --noout --schema ./attributes.xsd iocSimDetector/simDetectorAttributes.xml</pre>
+
+  <h5>Default tree structure</h5>
+  <p>
+    The group/dataset structure of the HDF5 files, generated by this plugin:</p>
   <pre>entry                   &lt;-- NX_class=NXentry
 |
 +--instrument           &lt;-- NX_class=NXinstrument
@@ -686,40 +886,6 @@ variables:
       {Y, X, Nth frame, width, height}</li>
   </ul>
   <h3>
-    NDArray attributes
-  </h3>
-  <p>
-    The attributes from NDArrays are stored in the HDF5 files. The list of attributes
-    is loaded when a file is opened so XML attributes files should not be reloaded during
-    an acquisition run.
-  </p>
-  <p>
-    The type of attribute is used to determine where in the file structure the attribute
-    data will end up. All attribute datasets will be named by the NDArray attribute
-    name. They will also have metadata (known as HDF &quot;attributes&quot;) to indicate
-    their source type and origin.</p>
-  <ul>
-    <li>Attributes from EPICS PVs (type=&quot;EPICS_PV&quot;) will be stored as 1D datasets
-      in the group &quot;/entry/instrument/NDAttributes/&quot;
-      <ul>
-        <li>Special case is attributes of datatype string, which will be stored as HDF5 metadata
-          attributes to the same group.</li>
-      </ul>
-    </li>
-    <li>All other attributes (type=&quot;PARAM&quot;) will be stored as 1D datasets in
-      the group &quot;/entry/instrument/detector/NDAttributes/&quot;
-      <ul>
-        <li>Special case is attributes of datatype string, which will be stored as HDF5 metadata
-          attributes to the same group.</li>
-      </ul>
-    </li>
-  </ul>
-  <p>
-    It is possible to validate the syntax of an NDArray attributes XML file. For example,
-    the command (starting from the <tt>iocBoot</tt> directory) to validate the syntax
-    of the <tt>iocBoot/iocSimDetector/simDetectorAttributes.xml</tt> file is:</p>
-  <pre>xmllint --noout --schema ./attributes.xsd iocSimDetector/simDetectorAttributes.xml</pre>
-  <h3>
     Chunking
   </h3>
   <p>
@@ -793,6 +959,42 @@ variables:
           EPICS record name</th>
         <th>
           EPICS record type</th>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>HDF5 XML Layout Definition</b></td>
+      </tr>
+      <tr>
+        <td>XMLFileName</td>
+        <td>asynOctet</td>
+        <td>r/w</td>
+        <td>XML filename, pointing to an XML HDF5 Layout Definition<br/>
+        This waveform also supports loading raw XML code directly; up to a maximum
+        of 1MB long (NELM=1MB)</td>
+        <td>HDF5_layoutFilename</td>
+        <td>$(P)$(R)XMLFileName</br>
+            $(P)$(R)XMLFileName_RBV</td>
+        <td>waveform</td>
+      </tr>
+      <tr>
+        <td>layoutValid</td>
+        <td>asynInt32</td>
+        <td>r/o</td>
+        <td>Flag to report the validity (xml syntax only) of the loaded XML. 
+        Updated when the XMLFileName is updated with a new filename and when 
+        the XML file is read at HDF5 file creation</td>
+        <td>HDF5_layoutValid</td>
+        <td>$(P)$(R)XMLValid_RBV</td>
+        <td>bi</td>
+      </tr>
+      <tr>
+        <td>layoutErrorMsg</td>
+        <td>asynOctet</td>
+        <td>r/o</td>
+        <td>XML parser error message</td>
+        <td>HDF5_layoutErrorMsg</td>
+        <td>$(P)$(R)XMLErrorMsg_RBV</td>
+        <td>waveform</td>
       </tr>
       <tr>
         <td align="center" colspan="7,">
