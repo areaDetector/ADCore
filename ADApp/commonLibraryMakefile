@@ -37,9 +37,9 @@ ifeq (win32-x86-debug, $(findstring win32-x86-debug, $(T_A)))
 endif
 
 ifeq ($(STATIC_BUILD), NO)
-  LIB_LIBS_WIN32        += hdf5dll szip zlib1
+  LIB_LIBS_WIN32        += hdf5dll szip zlib1 libxml2
 else
-  LIB_LIBS_WIN32        += hdf5 libszip zlib
+  LIB_LIBS_WIN32        += hdf5 libszip zlib libxml2
 endif
 LIB_SYS_LIBS_WIN32      += Gdi32 Oleaut32 
 
