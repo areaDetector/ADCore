@@ -438,45 +438,6 @@ asynStatus NDPluginFile::doCapture(int capture)
 }
 
 
-/** Decide if a previous plugin has requested that this plugin stores the array data
- */
-bool NDPluginFile::attrIsStorageRequested ( NDAttributeList* pAttrList ) 
-{
-    NDAttribute *attribute;
-    attribute = pAttrList->find ( FILEPLUGIN_WRITEFILE );
-    static const char *functionName = "attrIsStorageRequested";
-
-    if ( NULL == attribute ) {
-        asynPrint ( this->pasynUserSelf, ASYN_TRACE_FLOW, 
-            "%s:%s: FILEPLUGIN_WRITEFILE attribute unavailable.\n", 
-            driverName, functionName );
-        return false;
-    }
-
-    switch ( attribute->getDataType() ) {
-        case NDAttrInt32: {
-            int value = 0;
-            attribute->getValue ( NDAttrInt32, &value );
-            if ( 1 == value ) {
-                asynPrint ( this->pasynUserSelf, ASYN_TRACE_FLOW, 
-                    "%s:%s: storage requested.\n", 
-                    driverName, functionName );
-                this->useAttrFilePrefix = true;
-                return true;
-            }
-            break;
-        }
-        default: {
-            asynPrint ( this->pasynUserSelf, ASYN_TRACE_FLOW, 
-                "%s:%s: FILEPLUGIN_WRITEFILE attribute must have type NDAttrInt32.\n", 
-                driverName, functionName );
-            return false;
-        }
-    }
-    return false;
-}
-
-
 /** Check whether the attributes defining the filename has changed since last write.
  * If this is the first frame (NDFileNumCaptured == 1) then the file is opened.
  * For other frames we check whether the attribute file name or number has changed
@@ -704,7 +665,7 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
     
     switch(fileWriteMode) {
         case NDFileModeSingle:
-            if (autoSave || this->attrIsStorageRequested(pArray->pAttributeList)) {
+            if (autoSave) {
                 arrayCounter++;
                 writeFileBase();
             }
