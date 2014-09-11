@@ -19,13 +19,14 @@
 #include <epicsMutex.h>
 #include <cantProceed.h>
 
+#include <asynDriver.h>
+
+#define epicsExportSharedSymbols
+#include <shareLib.h>
 #include "tinyxml.h"
 #include "PVAttribute.h"
 #include "paramAttribute.h"
 #include "functAttribute.h"
-#include <asynDriver.h>
-#define epicsExportSharedSymbols
-#include <shareLib.h>
 #include "asynNDArrayDriver.h"
 
 static const char *driverName = "asynNDArrayDriver";

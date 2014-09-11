@@ -17,6 +17,9 @@
 #include <epicsString.h>
 
 #include <asynDriver.h>
+
+#define epicsExportSharedSymbols
+#include <shareLib.h>
 #include "PVAttribute.h"
 
 static const char *driverName = "PVAttribute";
