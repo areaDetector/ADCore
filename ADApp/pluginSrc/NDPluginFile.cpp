@@ -618,7 +618,7 @@ bool NDPluginFile::isFrameValid(NDArray *pArray)
     if ((initInfo->xSize != info.xSize) || (initInfo->ySize != info.ySize)) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                 "NDPluginFile::isFrameValid: WARNING: Frame dimensions have changed X:%ld,%ld Y:%ld,%ld]\n",
-                initInfo->xSize, info.xSize, initInfo->ySize, info.ySize);
+                (long)initInfo->xSize, (long)info.xSize, (long)initInfo->ySize, (long)info.ySize);
         valid = false;
     }
 
@@ -639,7 +639,7 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
     int arrayCounter;
     int numCapture, numCaptured;
     asynStatus status = asynSuccess;
-    static const char* functionName = "processCallbacks";
+    //static const char* functionName = "processCallbacks";
 
     /* First check if the callback is really for this file saving plugin */
     if (!this->attrIsProcessingRequired(pArray->pAttributeList))
