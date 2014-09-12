@@ -186,7 +186,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
   size_t attrDataSize;
   size_t nodeTextLen;
   int wordSize;
-  int dataOutType;
+  int dataOutType=NDInt8;
   size_t numWords;
   int numItems = 0;
   int addr =0;
@@ -387,9 +387,9 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
           wordSize = 4;
           break;
         case NDFloat32:
-           dataOutType = NX_FLOAT32;
+          dataOutType = NX_FLOAT32;
           wordSize = 4;
-           break;
+          break;
         case NDFloat64:
           dataOutType = NX_FLOAT64;
           wordSize = 8;
