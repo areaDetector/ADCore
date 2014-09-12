@@ -2138,7 +2138,6 @@ asynStatus NDFileHDF5::createAttributeDataset()
   int i;
   NDAttrDataType_t ndAttrDataType; 
   size_t size;
-  int dataset_found = 0;
   static const char *functionName = "createAttributeDataset";
 
   getIntegerParam(NDFileHDF5_nExtraDims, &extraDims);
@@ -2217,8 +2216,6 @@ asynStatus NDFileHDF5::createAttributeDataset()
           this->writeStringAttribute(hdfAttrNode->hdfdataset, attrNames[i], attrStrings[i]);
         }
 
-       dataset_found = 1;
-
 
       } else {
         hdfAttrNode->hdfdataspace = H5Screate_simple(hdfAttrNode->hdfrank, &hdfAttrNode->hdfdims, NULL);
@@ -2227,8 +2224,6 @@ asynStatus NDFileHDF5::createAttributeDataset()
                                                hdfAttrNode->hdfdatatype, hdfAttrNode->hdfdataspace,
                                                H5P_DEFAULT, hdfAttrNode->hdfcparm, H5P_DEFAULT);
 
-
-        dataset_found = 0;
 
         // create a memory space of exactly one element dimension to use for writing slabs
         hdfAttrNode->elementSize  = 1;
@@ -2398,7 +2393,7 @@ asynStatus NDFileHDF5::configureDatasetDims(NDArray *pArray)
 {
   int i = 0;
   int extradims = 0;
-  int *numCapture;
+  int *numCapture=NULL;
   asynStatus status = asynSuccess;
 
   if (this->multiFrameFile){
@@ -2803,7 +2798,6 @@ asynStatus NDFileHDF5::createNewFile(const char *fileName)
  */
 asynStatus NDFileHDF5::createFileLayout(NDArray *pArray)
 {
-  herr_t hdfstatus;
   hid_t hdfdatatype;
   static const char *functionName = "createFileLayout";
 
@@ -2822,7 +2816,7 @@ asynStatus NDFileHDF5::createFileLayout(NDArray *pArray)
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
     "%s::%s Configuring chunking\n", 
     driverName, functionName);
-  hdfstatus = H5Pset_chunk(this->cparms, this->rank, this->chunkdims);
+  H5Pset_chunk(this->cparms, this->rank, this->chunkdims);
 
   /* Get the datatype */
   hdfdatatype = this->typeNd2Hdf(pArray->dataType);
@@ -2834,7 +2828,8 @@ asynStatus NDFileHDF5::createFileLayout(NDArray *pArray)
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
     "%s::%s Setting fillvalue\n", 
     driverName, functionName);
-  hdfstatus = H5Pset_fill_value(this->cparms, this->datatype, this->ptrFillValue );
+  H5Pset_fill_value(this->cparms, this->datatype, this->ptrFillValue );
+  
 
   //We use MAX_LAYOUT_LEN instead of MAX_FILENAME_LEN because we want to be able to load
   // in an xml string or a file containing the xml
