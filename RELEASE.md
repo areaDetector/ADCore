@@ -23,7 +23,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
-R2-1 (September XXX 2014)
+R2-1 (September XXX, 2014)
 --------------------
 * NDPluginOverlay
     - Added support for text overlays. Thanks to Keith Brister for this.
@@ -34,13 +34,9 @@ R2-1 (September XXX 2014)
       including the null transformation.  Performance improved by a factor of 13 to 85 depending
       on the transformation.  Thanks to Chris Roehrig for this.
 * NDPluginFile
-    - Added support for an NDArray attribute "FilePluginWriteFile".  If this exists and is 0 then
-      the NDArray will not be written to the file.
     - Added new optional feature "LazyOpen" which, when enabled and in "Stream" mode, will defer 
       file creation until the first frame arrives in the plugin. This removes the need to initialise
       the plugin with a dummy frame before starting capture.  
-      including the null transformation.  Performance improved by a factor of 13 to 85 depending
-      on the transformation.  Thanks to Chris Roehrig for this.
 * NDFileTiff
     - All NDArray attributes are now written as TIFF ASCII file tags, up to a maximum of 490 tags.
       Thanks to Matt Pearson for this.
@@ -51,7 +47,7 @@ R2-1 (September XXX 2014)
   - Documentation
   - Release Notes
   - Directory containing pre-built binary files
-* Added support for cygwin32 architecture.  This did not work in R2-0.  NOT YET WORKING.
+* Added support for cygwin32 architecture.  This did not work in R2-0.
 * NDFileHDF5
     - Added support for defining the layout of the HDF5 file groups, dataset and attributes in an XML
       definition file. This was a collaboration between DLS and APS: Ulrik Pedersen, Alan Greer, 
