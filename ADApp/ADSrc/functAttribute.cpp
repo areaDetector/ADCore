@@ -17,6 +17,8 @@
 #include <epicsString.h>
 #include <registryFunction.h>
 
+#include <asynDriver.h>
+
 #define epicsExportSharedSymbols
 #include <shareLib.h>
 #include <asynNDArrayDriver.h>
