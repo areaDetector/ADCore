@@ -43,8 +43,10 @@ else
 endif
 LIB_SYS_LIBS_WIN32      += Gdi32 Oleaut32 
 
-LIB_LIBS_cygwin32       += libhdf5 libsz
-LIB_SYS_LIBS_cygwin32   += libtiff libjpeg libjbig libz libxml2.dll
+# Note that libhdf5 and libsz can't be linked in here because they are static and are already linked
+# into NeXus
+#LIB_LIBS_cygwin32       += libhdf5 libsz
+LIB_SYS_LIBS_cygwin32   += libtiff libjpeg libjbig libz libxml2
 LIB_SYS_LIBS_cygwin32   += $(CYGWIN_RPC_LIB)
 LIB_SYS_LIBS_cygwin32   += Gdi32
 
