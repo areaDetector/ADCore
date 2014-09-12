@@ -142,7 +142,7 @@ namespace hdf5
       Dataset(const std::string& name);
       Dataset(const Dataset& src);
       Dataset& operator=(const Dataset& src);
-      ~Dataset();
+      virtual ~Dataset();
 
       /** Stream operator: use to prints a string representation of this class */
       inline friend std::ostream& operator<<(std::ostream& out, Dataset& dset)
