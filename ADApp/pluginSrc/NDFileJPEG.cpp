@@ -13,8 +13,10 @@
 #include <epicsStdio.h>
 #include <iocsh.h>
 
-#include "NDPluginFile.h"
+#include <asynDriver.h>
+
 #include <epicsExport.h>
+#include "NDPluginFile.h"
 #include "NDFileJPEG.h"
 
 
