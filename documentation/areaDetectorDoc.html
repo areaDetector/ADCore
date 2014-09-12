@@ -944,11 +944,12 @@
           r/w</td>
         <td>
           Flag to defer the creation of a new file until the first NDArray to write has been
-          received. This removes the need for passing an extra NDArray through the
-          file writing plugin to initialise dimensions and possibly NDAttribute list before 
-          opening the file. The downside is that file creation can potentially be time-consuming
-          so processing the first NDArray may be slower than subsequent ones. 
-          <br/>Only makes sense to use with file plugins which support multiple frames per file
+          received. This removes the need for passing an extra NDArray through the file writing
+          plugin to initialise dimensions and possibly NDAttribute list before opening the
+          file. The downside is that file creation can potentially be time-consuming so processing
+          the first NDArray may be slower than subsequent ones.
+          <br />
+          Only makes sense to use with file plugins which support multiple frames per file
           and only in "Stream" mode.</td>
         <td>
           FILE_LAZY_OPEN</td>
@@ -2062,8 +2063,9 @@
   <p>
     Installation instructions for release R2-0 and later can be found on <a href="https://github.com/areaDetector/areaDetector/blob/master/INSTALL_GUIDE.md">
       INSTALL_GUIDE.md</a> on Github.</p>
-  <p>For releases prior to R2-0 the version of this document contained in the source
-  code release contains the installation instructions.</p>
+  <p>
+    For releases prior to R2-0 the version of this document contained in the source
+    code release contains the installation instructions.</p>
   <h2 id="Acknowledgments">
     Acknowledgements and licenses</h2>
   <p>
