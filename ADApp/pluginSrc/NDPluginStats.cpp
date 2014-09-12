@@ -16,8 +16,10 @@
 #include <epicsMutex.h>
 #include <iocsh.h>
 
-#include "NDPluginDriver.h"
+#include <asynDriver.h>
+
 #include <epicsExport.h>
+#include "NDPluginDriver.h"
 #include "NDPluginStats.h"
 
 #define MAX(A,B) (A)>(B)?(A):(B)

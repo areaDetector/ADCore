@@ -16,8 +16,10 @@
 #include <epicsMutex.h>
 #include <iocsh.h>
 
-#include "NDPluginDriver.h"
+#include <asynDriver.h>
+
 #include <epicsExport.h>
+#include "NDPluginDriver.h"
 #include "NDPluginROI.h"
 
 //static const char *driverName="NDPluginROI";

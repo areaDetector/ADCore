@@ -13,6 +13,8 @@
 #include <epicsStdio.h>
 #include <iocsh.h>
 
+#include <asynDriver.h>
+
 #include <epicsExport.h>
 #include "NDFileNull.h"
 

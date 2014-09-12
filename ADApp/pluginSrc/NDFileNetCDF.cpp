@@ -14,8 +14,10 @@
 #include <epicsThread.h>
 #include <iocsh.h>
 
-#include "NDPluginFile.h"
+#include <asynDriver.h>
+
 #include <epicsExport.h>
+#include "NDPluginFile.h"
 #include "NDFileNetCDF.h"
 
 static const char *driverName = "NDFileNetCDF";

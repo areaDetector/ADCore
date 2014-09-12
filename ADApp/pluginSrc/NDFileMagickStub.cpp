@@ -14,8 +14,10 @@
 #include <epicsStdio.h>
 #include <iocsh.h>
 
-#include "NDPluginFile.h"
+#include <asynDriver.h>
+
 #include <epicsExport.h>
+#include "NDPluginFile.h"
 #include "NDFileMagickStub.h"
 
 static const char *driverName = "NDFileMagickStub";
