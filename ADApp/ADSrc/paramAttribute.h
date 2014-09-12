@@ -11,9 +11,6 @@
 #ifndef INCparamAttributeH
 #define INCparamAttributeH
 
-#include <ellLib.h>
-#include <cadef.h>
-
 #include "NDArray.h"
 
 /** Use native type for channel access */
