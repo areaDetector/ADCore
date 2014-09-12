@@ -20,15 +20,17 @@
 #include <stdint.h>
 // #include <hdf5_hl.h> // high level HDF5 API not currently used (requires use of library hdf5_hl)
 
-#include "NDPluginFile.h"
-
 #include <epicsStdio.h>
 #include <epicsString.h>
 #include <epicsTime.h>
 #include <iocsh.h>
-#include <epicsExport.h>
 #define epicsAssertAuthor "the EPICS areaDetector collaboration (https://github.com/areaDetector/ADCore/issues)"
 #include <epicsAssert.h>
+
+#include <asynDriver.h>
+
+#include <epicsExport.h>
+#include "NDPluginFile.h"
 #include "NDFileHDF5Dataset.h"
 #include "NDFileHDF5LayoutXML.h"
 #include "NDFileHDF5Layout.h"
