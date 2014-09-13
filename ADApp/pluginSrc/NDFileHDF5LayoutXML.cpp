@@ -80,7 +80,7 @@ namespace hdf5
   {
     int ret = 0;
     this->xmlreader = xmlReaderForMemory(DEFAULT_LAYOUT.c_str(),
-                                         DEFAULT_LAYOUT.size(),
+                                         (int)DEFAULT_LAYOUT.size(),
                                          "noname.xml",
                                          NULL,
                                          0);
@@ -115,7 +115,7 @@ namespace hdf5
     int ret = 0;
     // if the file name contains <?xml then load it as an xml string from memory
     if (filename.find("<?xml") != std::string::npos){
-      this->xmlreader = xmlReaderForMemory(filename.c_str(), filename.length(), NULL, NULL, 0);
+      this->xmlreader = xmlReaderForMemory(filename.c_str(), (int)filename.length(), NULL, NULL, 0);
     } else {
       this->xmlreader = xmlReaderForFile(filename.c_str(), NULL, 0);
     }
@@ -152,7 +152,7 @@ namespace hdf5
 
     // if the file name contains <?xml then load it as an xml string from memory
     if (filename.find("<?xml") != std::string::npos){
-      this->xmlreader = xmlReaderForMemory(filename.c_str(), filename.length(), NULL, NULL, 0);
+      this->xmlreader = xmlReaderForMemory(filename.c_str(), (int)filename.length(), NULL, NULL, 0);
       if (this->xmlreader == NULL){
         LOG4CXX_ERROR(log, "Unable to parse XML string: " << filename );
         this->xmlreader = NULL;
