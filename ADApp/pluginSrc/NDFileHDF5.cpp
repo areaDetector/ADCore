@@ -1472,7 +1472,7 @@ asynStatus NDFileHDF5::closeFile()
   }
 
   // Just before closing the file lets ensure there are no hanging references
-  int obj_count = H5Fget_obj_count(this->file, H5F_OBJ_GROUP);
+  int obj_count = (int)H5Fget_obj_count(this->file, H5F_OBJ_GROUP);
   if (obj_count > 0){
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
               "%s::%s Closing file not totally clean.  Groups remaining=%d\n",
