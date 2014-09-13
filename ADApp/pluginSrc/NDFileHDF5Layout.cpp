@@ -475,12 +475,12 @@ namespace hdf5
 
   int Group::num_datasets()
   {
-    return this->datasets.size();
+    return (int)this->datasets.size();
   }
 
   int Group::num_groups()
   {
-    return this->groups.size();
+    return (int)this->groups.size();
   }
 
   std::string Group::_str_()
