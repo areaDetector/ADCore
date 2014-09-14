@@ -125,7 +125,7 @@ asynStatus NDFileNexus::readFile(NDArray **pArray) {
             "Entering %s:%s\n", driverName, functionName );
 
   asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-            "%s:%s Reading image not implemented",
+            "%s:%s Reading image not implemented\n",
              driverName, functionName);
 
   /* Print trace information if level is set correctly */
@@ -265,14 +265,14 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
   stat |= NXopengroup(this->nxFileHandle, (const char *)nodeName, (const char *)nodeValue);
   if (stat != NX_OK ) {
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-              "%s:%s Error creating group %s %s",
+              "%s:%s Error creating group %s %s\n",
               driverName, functionName, nodeName, nodeValue);
   }
   this->iterateNodes(curNode, pArray);
   stat = NXclosegroup(this->nxFileHandle);
   if (stat != NX_OK ) {
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-              "%s:%s Error closing group %s %s",
+              "%s:%s Error closing group %s %s\n",
               driverName, functionName, nodeName, nodeValue);
     }
   }
@@ -296,7 +296,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
       }
       else {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                  "%s:%s Could not find attribute named %s",
+                  "%s:%s Could not find attribute named %s\n",
                   driverName, functionName, nodeSource);
       }
     }
@@ -321,7 +321,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
     }
     else if (nodeType) {
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                "%s:%s Node type %s for node %s is invalid",
+                "%s:%s Node type %s for node %s is invalid\n",
                 driverName, functionName, nodeType, nodeValue);
     }
   }
@@ -349,7 +349,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
       }
       else {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                  "%s:%s Could not add node %s could not find an attribute by that name",
+                  "%s:%s Could not add node %s could not find an attribute by that name\n",
                   driverName, functionName, nodeSource);
       }
     }
@@ -452,7 +452,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
     }
     else if (nodeType) {
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                "%s:%s Node type %s for node %s is invalid",
+                "%s:%s Node type %s for node %s is invalid\n",
                 driverName, functionName, nodeType, nodeValue);
     }
     else {
