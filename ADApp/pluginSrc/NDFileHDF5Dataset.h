@@ -5,6 +5,8 @@
 #include <hdf5.h>
 #include "NDPluginFile.h"
 
+/** Class used for writing a Dataset with the NDFileHDF5 plugin.
+  */
 class NDFileHDF5Dataset
 {
   public:

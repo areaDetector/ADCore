@@ -17,6 +17,8 @@ using namespace std;
 #define NDFileMagickCompressTypeString "MAGICK_COMPRESS_TYPE"  /* (asynInt32, r/w) Compression type */
 #define NDFileMagickBitDepthString     "MAGICK_BIT_DEPTH"      /* (asynInt32, r/w) Bit depth */
 
+/** Writes NDArrays to files using the GraphicsMagick library; can write many different file formats.
+  */
 class NDFileMagick : public NDPluginFile {
 public:
     NDFileMagick(const char *portName, int queueSize, int blockingCallbacks,

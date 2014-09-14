@@ -41,6 +41,8 @@ namespace hdf5
     string
   } DataType_t;
 
+  /** Class used for writing a DataSource with the NDFileHDF5 plugin.
+    */
   class DataSource
   {
     public:
@@ -77,6 +79,8 @@ namespace hdf5
   };
 
 
+  /** Class used for writing an Attribute with the NDFileHDF5 plugin.
+    */
   class Attribute
   {
     public:
@@ -99,7 +103,7 @@ namespace hdf5
   };
 
   /**
-   * Describe a generic structure element.
+   * Describe a generic structure element with the NDFileHDF5 plugin.
    * An element can contain a number of attributes and
    * be a subset of a number of parents.
    */
@@ -135,6 +139,8 @@ namespace hdf5
   };
 
 
+  /** Class used for writing a DataSet with the NDFileHDF5 plugin.
+    */
   class Dataset: public Element
   {
     public:
@@ -231,6 +237,8 @@ namespace hdf5
       std::map<std::string, Group*> groups;
   };
 
+  /** Class used for writing the root of the file with the NDFileHDF5 plugin.
+    */
   class Root: public Group 
   {
     public:

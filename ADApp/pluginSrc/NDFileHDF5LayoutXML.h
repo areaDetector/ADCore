@@ -54,6 +54,8 @@ namespace hdf5
 
   int main_xml(const char *fname);
 
+  /**  Used to define layout of HDF5 file with NDFileHDF5 plugin 
+    */ 
   class LayoutXML
   {
     public:

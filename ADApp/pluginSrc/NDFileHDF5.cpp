@@ -41,6 +41,8 @@
 #define METADATA_NDIMS 1
 #define MAX_LAYOUT_LEN 1048576
 
+/** Defines an attribute node with the NDFileHDF5 plugin.
+  */
 typedef struct HDFAttributeNode {
   char *attrName;
   hid_t hdfdataset;
@@ -58,6 +60,8 @@ typedef struct HDFAttributeNode {
 
 enum HDF5Compression_t {HDF5CompressNone=0, HDF5CompressNumBits, HDF5CompressSZip, HDF5CompressZlib};
 
+/** Writes NDArrays in the HDF5 file format; an XML file can control the structure of the HDF5 file.
+  */
 class NDFileHDF5 : public NDPluginFile
 {
   public:
