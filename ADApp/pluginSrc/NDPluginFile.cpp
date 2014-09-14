@@ -186,6 +186,9 @@ asynStatus NDPluginFile::writeFileBase()
         case NDFileModeSingle:
             setIntegerParam(NDWriteFile, 1);
             callParamCallbacks();
+            // Some file writing plugins (e.g. HDF5) use the value of NDFileNumCaptured 
+            // even in single mode
+            setIntegerParam(NDFileNumCaptured, 1);
             status = this->openFileBase(NDFileModeWrite, this->pArrays[0]);
             if (status == asynSuccess) {
                 NDArray *pArrayOut = this->pArrays[0];
