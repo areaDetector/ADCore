@@ -80,7 +80,7 @@ asynStatus NDFileHDF5Dataset::configureDims(NDArray *pArray, bool multiframe, in
   // infinite lenght dimensions (-1); the chunking value is set to 1.
   int max_items = 0;
   int hdfdim = 0;
-  for (i = 0; i<3; i++){
+  for (i = 0; i<ndims; i++){
     hdfdim = ndims - i - 1;
     max_items = (int)this->maxdims_[hdfdim];
     if (max_items <= 0){
