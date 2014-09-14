@@ -2467,7 +2467,9 @@ asynStatus NDFileHDF5::configureDims(NDArray *pArray)
     this->framesize     = (hsize_t*)calloc(ndims,     sizeof(hsize_t));
     this->dims          = (hsize_t*)calloc(ndims,     sizeof(hsize_t));
     this->offset        = (hsize_t*)calloc(ndims,     sizeof(hsize_t));
-    this->virtualdims   = (hsize_t*)calloc(extradims, sizeof(hsize_t));
+    int nvirtual = extradims;
+    if (nvirtual <= 0) nvirtual = 1;
+    this->virtualdims   = (hsize_t*)calloc(nvirtual, sizeof(hsize_t));
   }
 
   if (this->multiFrameFile)
