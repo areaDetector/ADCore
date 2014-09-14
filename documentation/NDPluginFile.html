@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugin NDPluginFile</h1>
     <h2>
-      October 6, 2012</h2>
+      Semptember, 12, 2014</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -66,11 +66,14 @@
       mode, except that one can specify a total number of files to save before stopping.</li>
   </ol>
   <p>
-    At least one array with the same datatype, array size, and attributes must have
+    If value of the LazyOpen record is "No" (0) then at least one array with the same datatype, 
+    array size, and attributes must have
     been collected by the driver (and/or plugins) from which the file saving plugin
     is getting its data <b>before</b> capture or stream mode file saving is started.
     This is required so that the openFile() function can know the dimensions and datatype
-    of the arrays.
+    of the arrays.  If LazyOpen is "Yes" and the mode is Stream then the file open if deferred 
+    until the first array callback after streaming is started.  This will slow down the saving
+    of the first file.
   </p>
   <p>
     NDPluginFile supports all of the file saving parameters defined in <a href="areaDetectorDoc.html#asynNDArrayDriver">
@@ -164,12 +167,17 @@
     is TIFF support for almost all languages and programs such as IDL and Matlab.
   </p>
   <p>
-    The TIFF plugin is limited to 8, 16 and 32-bit integer arrays. It supports all color
-    modes (Mono, RGB1, RGB2, and RGB3). Note that some TIFF readers do not support 16
-    or 32 bit TIFF files, and many do not support 16 or 32 bit color files. NDFileTIFF
+    The TIFF plugin supports all 8 NDArray data types (signed and unsigned 8, 16, 32
+    bit integers, 32 and 64 bit floating point. It supports all color modes (Mono, RGB1,
+    RGB2, and RGB3). Note that many TIFF readers do not support 16 or 32 bit integer
+    TIFF files, floating point TIFF files, and 16 or 32 bit color files. NDFileTIFF
     is limited to a single array per file, but capture and stream mode are supported
-    by writing multiple TIFF files.
-  </p>
+    by writing multiple TIFF files.</p>
+  <p>
+    Tests were done with IDL, ImageJ, and the Python Imaging Library (PIL) to read TIFF
+    files with all 8 data types. IDL can read all 8 types, although it does not support
+    signed 8-bit integers so it treats them as unsigned. ImageJ can read all types except
+    NDFloat64. PIL cannot read NDInt8, NDUInt32, or NDFloat64.</p>
   <p>
     The <a href="areaDetectorDoxygenHTML/class_n_d_file_t_i_f_f.html">NDFileNetTIFF class
       documentation </a>describes this class in detail.
@@ -580,26 +588,28 @@ variables:
     The HDF5 files comprises a hierachial data structure, similar to a file system structure
     with directories (groups) and files (datasets) [<a href="http://www.hdfgroup.org/HDF5/Tutor/fileorg.html">ref</a>]
   </p>
-  <h4>XML Defined File Structure Layout</h4>
+  <h4>
+    XML Defined File Structure Layout</h4>
   <p>
-    It is possible to define the layout of the data structures in an XML definition file. The XML
-    file allow defining the location of HDF5 Groups, Datasets and Attributes based on detector data
-    (NDArrays), metadata (NDAttributes) and constants (for instance NeXus tags). 
+    It is possible to define the layout of the data structures in an XML definition
+    file. The XML file allow defining the location of HDF5 Groups, Datasets and Attributes
+    based on detector data (NDArrays), metadata (NDAttributes) and constants (for instance
+    NeXus tags).
   </p>
   <p>
-    The XML definition contains the following 3 main elements: group, dataset, attribute. The terms refer
-    to the HDF5 elements of the same names.
+    The XML definition contains the following 3 main elements: group, dataset, attribute.
+    The terms refer to the HDF5 elements of the same names.
   </p>
-  <p>
-    <ul>
-      <li><b>attribute:</b> represent a HDF5 attribute (key, value metadata) and is assigned to groups
-      and datasets</li>
-      <li><b>dataset:</b> represent a HDF5 dataset (N-dimensional array). Can contain attributes and is
-      assigned to a group </li>
-      <li><b>group:</b> represent a HDF5 group. Groups can contain datasets, attributes and other groups (recursively)</li>
-      <li><b>global:</b> Rather than representing a HDF5 object; this element represent a global functionality definition</li>
-    </ul>
-  </p>
+  <ul>
+    <li><b>attribute:</b> represent a HDF5 attribute (key, value metadata) and is assigned
+      to groups and datasets</li>
+    <li><b>dataset:</b> represent a HDF5 dataset (N-dimensional array). Can contain attributes
+      and is assigned to a group </li>
+    <li><b>group:</b> represent a HDF5 group. Groups can contain datasets, attributes
+      and other groups (recursively)</li>
+    <li><b>global:</b> Rather than representing a HDF5 object; this element represent
+      a global functionality definition</li>
+  </ul>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
       <tr>
@@ -612,145 +622,203 @@ variables:
         <th>
           Value</th>
       </tr>
-       <tr>
-        <td align="center" colspan="4,">
-          XML <b>"attribute"</b> element attributes
-        </td>
-      </tr>
-     <tr>
-        <td>name</td>
-        <td>yes</td>
-        <td>Name (key) of the HDF attribute (key, value) pair</td>
-        <td>string</td>
-      </tr>
-     <tr>
-        <td>source</td>
-        <td>yes</td>
-        <td>Definition of where the attribute gets its value from</td>
-        <td>Enum string: "constant", "ndattribute"</td>
-      </tr>
-     <tr>
-        <td>when</td>
-        <td>optional</td>
-        <td>Event when the attribute data is updated</td>
-        <td>Enum string: "OnFileOpen", "OnFileClose", "OnFileWrite"</td>
-      </tr>
-     <tr>
-        <td>value</td>
-        <td>Required only if source="constant"</td>
-        <td>The constant value to give the attribute</td>
-        <td>string (possibly containing an int or float)</td>
-      </tr>
-     <tr>
-        <td>type</td>
-        <td>optional - use if source="constant"</td>
-        <td>The constant datatype</td>
-        <td>Enum string: "int", "float", "string"</td>
-      </tr>
-     <tr>
-        <td>ndattribute</td>
-        <td>Required only if source="ndattribute"</td>
-        <td>Name of the areaDetector NDAttribute which is the source of this HDF5 attribute's
-        data value</td>
-        <td>string containing the name of an NDAttribute</td>
-      </tr>
- 
       <tr>
         <td align="center" colspan="4,">
-          XML <b>"group"</b> element attributes
-        </td>
+          XML <b>"attribute"</b> element attributes </td>
       </tr>
       <tr>
-        <td>name</td>
-        <td>yes</td>
-        <td>The (relative) name of the HDF5 group</td>
-        <td>string</td>
+        <td>
+          name</td>
+        <td>
+          yes</td>
+        <td>
+          Name (key) of the HDF attribute (key, value) pair</td>
+        <td>
+          string</td>
       </tr>
       <tr>
-        <td>ndattr_default</td>
-        <td>optional</td>
-        <td>This attribute flags a group as being a 'default' container for NDAttributes which
-            have not been defined to be stored elsewhere</td>
-        <td>boolean (default=false)</td>
+        <td>
+          source</td>
+        <td>
+          yes</td>
+        <td>
+          Definition of where the attribute gets its value from</td>
+        <td>
+          Enum string: "constant", "ndattribute"</td>
+      </tr>
+      <tr>
+        <td>
+          when</td>
+        <td>
+          optional</td>
+        <td>
+          Event when the attribute data is updated</td>
+        <td>
+          Enum string: "OnFileOpen", "OnFileClose", "OnFileWrite"</td>
+      </tr>
+      <tr>
+        <td>
+          value</td>
+        <td>
+          Required only if source="constant"</td>
+        <td>
+          The constant value to give the attribute</td>
+        <td>
+          string (possibly containing an int or float)</td>
+      </tr>
+      <tr>
+        <td>
+          type</td>
+        <td>
+          optional - use if source="constant"</td>
+        <td>
+          The constant datatype</td>
+        <td>
+          Enum string: "int", "float", "string"</td>
+      </tr>
+      <tr>
+        <td>
+          ndattribute</td>
+        <td>
+          Required only if source="ndattribute"</td>
+        <td>
+          Name of the areaDetector NDAttribute which is the source of this HDF5 attribute's
+          data value</td>
+        <td>
+          string containing the name of an NDAttribute</td>
       </tr>
       <tr>
         <td align="center" colspan="4,">
-          XML <b>"dataset"</b> element attributes
+          XML <b>"group"</b> element attributes </td>
+      </tr>
+      <tr>
+        <td>
+          name</td>
+        <td>
+          yes</td>
+        <td>
+          The (relative) name of the HDF5 group</td>
+        <td>
+          string</td>
+      </tr>
+      <tr>
+        <td>
+          ndattr_default</td>
+        <td>
+          optional</td>
+        <td>
+          This attribute flags a group as being a 'default' container for NDAttributes which
+          have not been defined to be stored elsewhere</td>
+        <td>
+          boolean (default=false)</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="4,">
+          XML <b>"dataset"</b> element attributes </td>
+      </tr>
+      <tr>
+        <td>
+          name</td>
+        <td>
+          yes</td>
+        <td>
+          Name of the HDF5 dataset</td>
+        <td>
+          string</td>
+      </tr>
+      <tr>
+        <td>
+          source</td>
+        <td>
+          yes</td>
+        <td>
+          Definition of where the dataset gets its data values from</td>
+        <td>
+          string enum: "detector", "ndattribute", "constant"</td>
+      </tr>
+      <tr>
+        <td>
+          value</td>
+        <td>
+          Required only if source="constant"</td>
+        <td>
+          Constant value to write directly into the HDF5 dataset</td>
+        <td>
+          String - possibly containing int or float values. Arrays of int and float values
+          can also be represented in a comma-separated string</td>
+      </tr>
+      <tr>
+        <td>
+          ndattribute</td>
+        <td>
+          Required only if source="ndattribute"</td>
+        <td>
+          The name of the areaDetector NDAttribute to use as a data source for this HDF5 dataset
         </td>
-      </tr>
-     <tr>
-        <td>name</td>
-        <td>yes</td>
-        <td>Name of the HDF5 dataset</td>
-        <td>string</td>
+        <td>
+          string containing the name of the NDAttribute</td>
       </tr>
       <tr>
-        <td>source</td>
-        <td>yes</td>
-        <td>Definition of where the dataset gets its data values from</td>
-        <td>string enum: "detector", "ndattribute", "constant"</td>
+        <td>
+          det_default</td>
+        <td>
+          optional</td>
+        <td>
+          Flag to indicate that this HDF5 dataset is the default dataset for the detector
+          to write NDArrays into. Only sensible to set true if source="detector"</td>
+        <td>
+          boolean (default=false)</td>
       </tr>
       <tr>
-        <td>value</td>
-        <td>Required only if source="constant"</td>
-        <td>Constant value to write directly into the HDF5 dataset</td>
-        <td>String - possibly containing int or float values. 
-        Arrays of int and float values can also be represented in a comma-separated string</td>
+        <td align="center" colspan="4,">
+          XML <b>"global"</b> element attributes </td>
       </tr>
       <tr>
-        <td>ndattribute</td>
-        <td>Required only if source="ndattribute"</td>
-        <td>The name of the areaDetector NDAttribute to use as a data source for this HDF5 dataset</td>
-        <td>string containing the name of the NDAttribute</td>
+        <td>
+          name</td>
+        <td>
+          yes</td>
+        <td>
+          Name of the global functionality or parameter to set</td>
+        <td>
+          enum string: "detector_data_destination"
+          <br />
+          (currently only one supported parameter)</td>
       </tr>
       <tr>
-        <td>det_default</td>
-        <td>optional</td>
-        <td>Flag to indicate that this HDF5 dataset is the default dataset for the detector to write
-        NDArrays into. Only sensible to set true if source="detector"</td>
-        <td>boolean (default=false)</td>
-      </tr>
-      <tr>
-      <td align="center" colspan="4,">
-          XML <b>"global"</b> element attributes
-        </td>
-      </tr>
-     <tr>
-        <td>name</td>
-        <td>yes</td>
-        <td>Name of the global functionality or parameter to set</td>
-        <td>enum string: "detector_data_destination" <br/>
-        (currently only one supported parameter)</td>
-      </tr>
-     <tr>
-        <td>ndattribute</td>
-        <td>Required when name="detector_data_destination"</td>
-        <td>Name of the NDAttribute which defines the name of the dataset where incoming
-        NDArrays are to be stored</td>
-        <td>string containing the name of an NDAttribute</td>
+        <td>
+          ndattribute</td>
+        <td>
+          Required when name="detector_data_destination"</td>
+        <td>
+          Name of the NDAttribute which defines the name of the dataset where incoming NDArrays
+          are to be stored</td>
+        <td>
+          string containing the name of an NDAttribute</td>
       </tr>
     </tbody>
   </table>
-    
-  <p>Example XML layout files are provided in the ADCore/iocs/hdf5LayoutXML/hdf5LayoutXMLApp/data directory.</p>
-  <p>An XML schema is provided in "ADCore/iocBoot/hdf5_xml_layout_schema.xsd".
-  The schema can be used with the 'xmllint' command to validate a users XML definition: </p>
-  <pre>xmllint --noout --schema ADCore/iocBoot/hdf5_xml_layout_schema.xsd /path/to/users/layout.xml</pre>
-  
-  
-  <h4>Default File Structure Layout</h4>
   <p>
-    If no XML Layout Definition file is loaded, the plugin will revert to using its default
-    file structure layout. The default layout is compatible with the plugin's original, 
-    hard-code layout.
+    Example XML layout files are provided in the ADCore/iocBoot directory.</p>
+  <p>
+    An XML schema is provided in "ADCore/iocBoot/hdf5_xml_layout_schema.xsd". The schema
+    can be used with the 'xmllint' command to validate a users XML definition:
+  </p>
+  <pre>xmllint --noout --schema ADCore/iocBoot/hdf5_xml_layout_schema.xsd /path/to/users/layout.xml</pre>
+  <h4>
+    Default File Structure Layout</h4>
+  <p>
+    If no XML Layout Definition file is loaded, the plugin will revert to using its
+    default file structure layout. The default layout is compatible with the plugin's
+    original, hard-code layout.
   </p>
   <p>
-    This default layout is compatible with the Nexus file format. This
-    is achieved by defining a specific hierachial structure of groups and datasets and
-    by tagging elements in the hierachi with certain &quot;NX_class=nnn&quot; attributes.
-    Although Nexus libraries are not used to write the data to disk, this file structure
-    allow Nexus-aware readers to open and read the content of these HDF5 files. This
-    has been tested with the Nexus reader in the <a href="http://opengda.org/">GDA application</a>.
+    This default layout is compatible with the Nexus file format. This is achieved by
+    defining a specific hierachial structure of groups and datasets and by tagging elements
+    in the hierachi with certain &quot;NX_class=nnn&quot; attributes. Although Nexus
+    libraries are not used to write the data to disk, this file structure allow Nexus-aware
+    readers to open and read the content of these HDF5 files. This has been tested with
+    the Nexus reader in the <a href="http://opengda.org/">GDA application</a>.
   </p>
   <h5>
     NDArray attributes
@@ -786,8 +854,8 @@ variables:
     the command (starting from the <tt>iocBoot</tt> directory) to validate the syntax
     of the <tt>iocBoot/iocSimDetector/simDetectorAttributes.xml</tt> file is:</p>
   <pre>xmllint --noout --schema ./attributes.xsd iocSimDetector/simDetectorAttributes.xml</pre>
-
-  <h5>Default tree structure</h5>
+  <h5>
+    Default tree structure</h5>
   <p>
     The group/dataset structure of the HDF5 files, generated by this plugin:</p>
   <pre>entry                   &lt;-- NX_class=NXentry
@@ -965,36 +1033,57 @@ variables:
           <b>HDF5 XML Layout Definition</b></td>
       </tr>
       <tr>
-        <td>XMLFileName</td>
-        <td>asynOctet</td>
-        <td>r/w</td>
-        <td>XML filename, pointing to an XML HDF5 Layout Definition<br/>
-        This waveform also supports loading raw XML code directly; up to a maximum
-        of 1MB long (NELM=1MB)</td>
-        <td>HDF5_layoutFilename</td>
-        <td>$(P)$(R)XMLFileName</br>
-            $(P)$(R)XMLFileName_RBV</td>
-        <td>waveform</td>
+        <td>
+          XMLFileName</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          XML filename, pointing to an XML HDF5 Layout Definition<br />
+          This waveform also supports loading raw XML code directly; up to a maximum of 1MB
+          long (NELM=1MB)</td>
+        <td>
+          HDF5_layoutFilename</td>
+        <td>
+          $(P)$(R)XMLFileName<br />
+          $(P)$(R)XMLFileName_RBV</td>
+        <td>
+          waveform</td>
       </tr>
       <tr>
-        <td>layoutValid</td>
-        <td>asynInt32</td>
-        <td>r/o</td>
-        <td>Flag to report the validity (xml syntax only) of the loaded XML. 
-        Updated when the XMLFileName is updated with a new filename and when 
-        the XML file is read at HDF5 file creation</td>
-        <td>HDF5_layoutValid</td>
-        <td>$(P)$(R)XMLValid_RBV</td>
-        <td>bi</td>
+        <td>
+          layoutValid</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Flag to report the validity (xml syntax only) of the loaded XML. Updated when the
+          XMLFileName is updated with a new filename and when the XML file is read at HDF5
+          file creation</td>
+        <td>
+          HDF5_layoutValid</td>
+        <td>
+          $(P)$(R)XMLValid_RBV</td>
+        <td>
+          bi</td>
       </tr>
       <tr>
-        <td>layoutErrorMsg</td>
-        <td>asynOctet</td>
-        <td>r/o</td>
-        <td>XML parser error message</td>
-        <td>HDF5_layoutErrorMsg</td>
-        <td>$(P)$(R)XMLErrorMsg_RBV</td>
-        <td>waveform</td>
+        <td>
+          layoutErrorMsg</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/o</td>
+        <td>
+          XML parser error message</td>
+        <td>
+          HDF5_layoutErrorMsg</td>
+        <td>
+          $(P)$(R)XMLErrorMsg_RBV</td>
+        <td>
+          waveform</td>
       </tr>
       <tr>
         <td align="center" colspan="7,">
