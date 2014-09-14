@@ -4,6 +4,7 @@
 static const char *fileName = "NDFileHDF5Dataset";
 
 /** Constructor.
+ * \param[in] pAsynUser - asynUser that is used to control debugging output
  * \param[in] name - String name of the dataset.
  * \param[in] dataset - HDF5 handle to the dataset.
  */
