@@ -55,6 +55,7 @@ namespace hdf5
         <attribute name=\"NX_class\" source=\"constant\" value=\"NXcollection\" type=\"string\"></attribute> \
       </group>            <!-- end group NDAttribute (default) --> \
       <group name=\"performance\"> \
+        <attribute name=\"NX_class\" source=\"constant\" value=\"NXcollection\" type=\"string\"></attribute> \
         <dataset name=\"timestamp\"></dataset> \
       </group>            <!-- end group performance --> \
     </group>              <!-- end group instrument --> \
