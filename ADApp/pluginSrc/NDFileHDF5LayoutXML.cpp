@@ -37,25 +37,31 @@ namespace hdf5
 
   const std::string LayoutXML::DEFAULT_LAYOUT = " \
   <group name=\"entry\"> \
-    <attribute name=\"NX_class\" source=\"constant\" value=\"NX_entry\" type=\"string\"></attribute> \
+    <attribute name=\"NX_class\" source=\"constant\" value=\"NXentry\" type=\"string\"></attribute> \
     <group name=\"instrument\"> \
-      <attribute name=\"NX_class\" source=\"constant\" value=\"NX_instrument\" type=\"string\"></attribute> \
+      <attribute name=\"NX_class\" source=\"constant\" value=\"NXinstrument\" type=\"string\"></attribute> \
       <group name=\"detector\"> \
+        <attribute name=\"NX_class\" source=\"constant\" value=\"NXdetector\" type=\"string\"></attribute> \
         <dataset name=\"data\" source=\"detector\" det_default=\"true\"> \
-          <attribute name=\"NX_class\" source=\"constant\" value=\"SDS\"></attribute> \
           <attribute name=\"signal\" source=\"constant\" value=\"1\" type=\"int\"></attribute> \
         </dataset> \
         <group name=\"NDAttributes\"> \
+          <attribute name=\"NX_class\" source=\"constant\" value=\"NXcollection\" type=\"string\"></attribute> \
           <dataset name=\"ColorMode\" source=\"ndattribute\" ndattribute=\"ColorMode\"> \
           </dataset> \
         </group>          <!-- end group NDAttribute --> \
       </group>            <!-- end group detector --> \
       <group name=\"NDAttributes\" ndattr_default=\"true\"> \
+        <attribute name=\"NX_class\" source=\"constant\" value=\"NXcollection\" type=\"string\"></attribute> \
       </group>            <!-- end group NDAttribute (default) --> \
       <group name=\"performance\"> \
         <dataset name=\"timestamp\"></dataset> \
       </group>            <!-- end group performance --> \
     </group>              <!-- end group instrument --> \
+    <group name=\"data\"> \
+      <attribute name=\"NX_class\" source=\"constant\" value=\"NXdata\" type=\"string\"></attribute> \
+      <!-- needs a hard link from /entry/instrument/detector/data to /entry/data/data --> \
+    </group>              <!-- end group data --> \
   </group>                <!-- end group entry --> ";
 
   LayoutXML::LayoutXML() : ptr_tree(NULL), ptr_curr_element(NULL)
