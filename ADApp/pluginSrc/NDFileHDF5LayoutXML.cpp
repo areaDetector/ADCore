@@ -43,6 +43,7 @@ namespace hdf5
       <group name=\"detector\"> \
         <attribute name=\"NX_class\" source=\"constant\" value=\"NXdetector\" type=\"string\"></attribute> \
         <dataset name=\"data\" source=\"detector\" det_default=\"true\"> \
+          <attribute name=\"NX_class\" source=\"constant\" value=\"SDS\" type=\"string\"></attribute> \
           <attribute name=\"signal\" source=\"constant\" value=\"1\" type=\"int\"></attribute> \
         </dataset> \
         <group name=\"NDAttributes\"> \
@@ -55,7 +56,6 @@ namespace hdf5
         <attribute name=\"NX_class\" source=\"constant\" value=\"NXcollection\" type=\"string\"></attribute> \
       </group>            <!-- end group NDAttribute (default) --> \
       <group name=\"performance\"> \
-        <attribute name=\"NX_class\" source=\"constant\" value=\"NXcollection\" type=\"string\"></attribute> \
         <dataset name=\"timestamp\"></dataset> \
       </group>            <!-- end group performance --> \
     </group>              <!-- end group instrument --> \
