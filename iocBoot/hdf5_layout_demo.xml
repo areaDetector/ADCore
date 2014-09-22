@@ -3,9 +3,9 @@
   <group name="entry">
     <attribute name="test_float_array" source="constant" value="1.3,2.9,3.4,4.8,5.234" type="float"></attribute>
     <attribute name="test_int_array" source="constant" value="1,2,3,4,5,6,7,8,9,0" type="int"></attribute>
-    <attribute name="NX_class" source="constant" value="NX_entry" type="string"></attribute>
+    <attribute name="NX_class" source="constant" value="NXentry" type="string"></attribute>
     <group name="detector">
-      <attribute name="NX_class" source="constant" value="NX_detector" type="string"></attribute>
+      <attribute name="NX_class" source="constant" value="NXdata" type="string"></attribute>
       <dataset name="data1" source="detector" det_default="true">
         <attribute name="test_att_1" source="ndattribute" ndattribute="ArrayCounter"></attribute>
         <attribute name="test_att_2" source="ndattribute" ndattribute="AcqTime"></attribute>
@@ -32,7 +32,7 @@
       <dataset name="ArrayCounter" source="ndattribute" ndattribute="ArrayCounter"/>
     </group>
     <group name="instruments" ndattr_default="true">
-      <attribute name="NX_class" source="constant" value="NX_instrument" type="string"></attribute>
+      <attribute name="NX_class" source="constant" value="NXinstrument" type="string"></attribute>
     </group>
   </group>
 </xml>
