@@ -845,7 +845,6 @@ NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCall
 
     this->ndArrayInfoInit = NULL;
     this->lazyOpen = false;
-    this->createParam("FILE_LAZY_OPEN", asynParamInt32, &NDFileLazyOpen);
     //setIntegerParam(NDFileLazyOpen, 1);
 
     this->useAttrFilePrefix = false;
