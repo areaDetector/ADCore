@@ -15,8 +15,8 @@
 #include <cmath>
 #include <iostream>
 #include <sstream>
-#include <sys/stat.h>
 #include <hdf5.h>
+#include <sys/stat.h>
 // #include <hdf5_hl.h> // high level HDF5 API not currently used (requires use of library hdf5_hl)
 
 #include <epicsStdio.h>
