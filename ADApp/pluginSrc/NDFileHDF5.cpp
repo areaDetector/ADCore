@@ -17,7 +17,6 @@
 #include <sstream>
 #include <hdf5.h>
 #include <sys/stat.h>
-#include <stdint.h>
 // #include <hdf5_hl.h> // high level HDF5 API not currently used (requires use of library hdf5_hl)
 
 #include <epicsStdio.h>
@@ -779,7 +778,7 @@ void NDFileHDF5::writeH5dsetInt32(hid_t element, const std::string &name, const 
       H5Sclose(hdfdataspace);
       return;
     }
-    int32_t ival;
+    epicsInt32 ival;
     sscanf(str_value.c_str(), "%d", &ival);
     hdfstatus = H5Dwrite(hdfdset, hdfdatatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, &ival);
     if (hdfstatus < 0) {
@@ -1007,7 +1006,7 @@ void NDFileHDF5::writeH5attrInt32(hid_t element, const std::string &attr_name, c
       H5Sclose(hdfattrdataspace);
       return;
     }
-    int32_t ival;
+    epicsInt32 ival;
     sscanf(str_attr_value.c_str(), "%d", &ival);
     hdfstatus = H5Awrite(hdfattr, hdfdatatype, &ival);
     if (hdfstatus < 0) {
