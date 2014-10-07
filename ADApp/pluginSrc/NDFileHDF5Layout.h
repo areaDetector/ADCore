@@ -184,6 +184,30 @@ namespace hdf5
       std::string ndattr_name;
   };
 
+  /** Class used for writing a HardLink with the NDFileHDF5 plugin.
+    */
+  class HardLink: public Element
+  {
+    public:
+      HardLink();
+      HardLink(const std::string& name);
+      HardLink(const HardLink& src);
+      HardLink& operator=(const HardLink& src);
+      virtual ~HardLink();
+
+      /** Stream operator: use to prints a string representation of this class */
+      inline friend std::ostream& operator<<(std::ostream& out, HardLink& hardLink)
+      { out << hardLink._str_(); return out; }
+      std::string _str_();  /** Return a string representation of the object */
+
+      void set_source(const std::string& src);
+      std::string& get_source();
+
+    private:
+      void _copy(const HardLink& src);
+      std::string source;
+  };
+
   /**
    * Describe a group element.
    * A group is like a directory in a file system. It can contain
@@ -203,12 +227,14 @@ namespace hdf5
       Dataset* new_dset(const char * name);
       Group* new_group(const std::string& name);
       Group* new_group(const char * name);
+      HardLink* new_hardlink(const std::string& name);
+      HardLink* new_hardlink(const char * name);
       int find_dset_ndattr(const std::string& ndattr_name, Dataset** dset); /** << Find and return a reference to the dataset for a given NDAttribute */
       int find_dset_ndattr(const char * ndattr_name, Dataset** dset);
       int find_dset( std::string& dsetname, Dataset** dest);
       int find_dset( const char* dsetname, Dataset** dest);
       void set_default_ndattr_group();
-      Group* find_ndattr_default_group(); //** << search through subgroups to return a pointer to the NDAttribute default container group
+      Group* find_ndattr_default_group(); /** << search through subgroups to return a pointer to the NDAttribute default container group */
       int find_detector_default_dset(Dataset** dset);
       int num_groups();
       int num_datasets();
@@ -220,9 +246,11 @@ namespace hdf5
 
       typedef std::map<std::string, Group*> MapGroups_t;
       typedef std::map<std::string, Dataset*> MapDatasets_t;
+      typedef std::map<std::string, HardLink*> MapHardLinks_t;
       MapGroups_t& get_groups();
       MapDatasets_t& get_datasets();
-      void find_dsets(DataSrc_t source, MapDatasets_t& dsets); //** return a map of datasets <string name, Dataset dset> which contains all datasets, marked as <source> data.
+      MapHardLinks_t& get_hardlinks();
+      void find_dsets(DataSrc_t source, MapDatasets_t& dsets); /** return a map of datasets <string name, Dataset dset> which contains all datasets, marked as <source> data. */
 
       typedef std::map<std::string, DataSource*> MapNDAttrSrc_t;
       virtual void merge_ndattributes(MapNDAttrSrc_t::const_iterator it_begin,
@@ -235,6 +263,7 @@ namespace hdf5
       bool ndattr_default_container;
       std::map<std::string, Dataset*> datasets;
       std::map<std::string, Group*> groups;
+      std::map<std::string, HardLink*> hardlinks;
   };
 
   /** Class used for writing the root of the file with the NDFileHDF5 plugin.
