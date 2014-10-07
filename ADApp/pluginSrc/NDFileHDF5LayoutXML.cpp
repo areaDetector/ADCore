@@ -36,7 +36,7 @@ namespace hdf5
   const std::string LayoutXML::ATTR_GLOBAL_NAME        = "name";
   const std::string LayoutXML::ATTR_GLOBAL_VALUE       = "ndattribute";
   const std::string LayoutXML::ATTR_HARDLINK_NAME      = "name";
-  const std::string LayoutXML::ATTR_HARDLINK_SOURCE    = "source";
+  const std::string LayoutXML::ATTR_HARDLINK_TARGET    = "target";
 
   const std::string LayoutXML::DEFAULT_LAYOUT = " \
   <group name=\"entry\"> \
@@ -64,7 +64,7 @@ namespace hdf5
     </group>              <!-- end group instrument --> \
     <group name=\"data\"> \
       <attribute name=\"NX_class\" source=\"constant\" value=\"NXdata\" type=\"string\"></attribute> \
-      <hardlink name=\"data\" source=\"/entry/instrument/detector/data\"></hardlink> \
+      <hardlink name=\"data\" target=\"/entry/instrument/detector/data\"></hardlink> \
     </group>              <!-- end group data --> \
   </group>                <!-- end group entry --> ";
 
@@ -564,17 +564,17 @@ namespace hdf5
     xmlChar *hardlink_name = NULL;
     hardlink_name = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_ELEMENT_NAME.c_str());
     if (hardlink_name == NULL) return -1;
-    xmlChar *hardlink_src = NULL;
-    hardlink_src = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_HARDLINK_SOURCE.c_str());
-    if (hardlink_src == NULL) return -1;
+    xmlChar *hardlink_target = NULL;
+    hardlink_target = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_HARDLINK_TARGET.c_str());
+    if (hardlink_target == NULL) return -1;
 
     std::string str_hardlink_name((char*)hardlink_name);
     Group *parent = (Group *)this->ptr_curr_element;
     HardLink *hardlink = NULL;
     hardlink = parent->new_hardlink(str_hardlink_name);
     if (hardlink == NULL) return -1;
-    const std::string str_hardlink_src((char*)hardlink_src);
-    hardlink->set_source(str_hardlink_src);
+    const std::string str_hardlink_target((char*)hardlink_target);
+    hardlink->set_target(str_hardlink_target);
     return 0;
   }
 
