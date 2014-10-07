@@ -1,5 +1,5 @@
 /*
- * layout.h
+ * NDFileHDF5Layout.h
  *
  *  Created on: 23 Jan 2012
  *      Author: up45
@@ -200,12 +200,12 @@ namespace hdf5
       { out << hardLink._str_(); return out; }
       std::string _str_();  /** Return a string representation of the object */
 
-      void set_source(const std::string& src);
-      std::string& get_source();
+      void set_target(const std::string& target);
+      std::string& get_target();
 
     private:
       void _copy(const HardLink& src);
-      std::string source;
+      std::string target;
   };
 
   /**
