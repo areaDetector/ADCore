@@ -64,6 +64,7 @@ namespace hdf5
       static const std::string ATTR_DATASET;
       static const std::string ATTR_ATTRIBUTE;
       static const std::string ATTR_GLOBAL;
+      static const std::string ATTR_HARDLINK;
 
       static const std::string ATTR_SOURCE;
       static const std::string ATTR_SRC_DETECTOR;
@@ -76,6 +77,8 @@ namespace hdf5
       static const std::string ATTR_SRC_WHEN;
       static const std::string ATTR_GLOBAL_NAME;
       static const std::string ATTR_GLOBAL_VALUE;
+      static const std::string ATTR_HARDLINK_NAME;
+      static const std::string ATTR_HARDLINK_SOURCE;
 
       static const std::string DEFAULT_LAYOUT;
 
@@ -100,6 +103,7 @@ namespace hdf5
       int new_dataset();
       int new_attribute();
       int new_global();
+      int new_hardlink();
 
       log4cxx::LoggerPtr log;
       Root* ptr_tree;
