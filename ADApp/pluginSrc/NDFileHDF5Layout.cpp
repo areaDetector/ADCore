@@ -838,16 +838,16 @@ namespace hdf5
   }
 
   /* ================== HardLink Class public methods ==================== */
-  HardLink::HardLink(const HardLink& src) : source("")
+  HardLink::HardLink(const HardLink& src) : target("")
   {
     this->_copy(src);
   }
 
-  HardLink::HardLink() : Element(), source("")
+  HardLink::HardLink() : Element(), target("")
   {
   }
 
-  HardLink::HardLink(const std::string& name) : Element(name), source("")
+  HardLink::HardLink(const std::string& name) : Element(name), target("")
   {
   }
 
@@ -869,19 +869,19 @@ namespace hdf5
   {
     std::stringstream out(std::stringstream::out);
     out << "< HardLink: \'" << this->get_full_name() << "\'";
-    out << " source: " << this->source;
+    out << " target: " << this->target;
     out << ">";
     return out.str();
   }
 
-  void HardLink::set_source(const std::string& src)
+  void HardLink::set_target(const std::string& tgt)
   {
-    source = src;
+    target = tgt;
   }
 
-  std::string& HardLink::get_source()
+  std::string& HardLink::get_target()
   {
-    return this->source;
+    return this->target;
   }
 
 
@@ -889,7 +889,7 @@ namespace hdf5
   void HardLink::_copy(const HardLink& src)
   {
     Element::_copy(src);
-    this->source = src.source;
+    this->target = src.target;
   }
 
 } // hdf5
