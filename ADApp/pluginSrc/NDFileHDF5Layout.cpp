@@ -377,6 +377,36 @@ namespace hdf5
     return this->new_group(str_name);
   }
 
+  /**
+   * Create a new HardLink, insert it into the group list, set the full path name,
+   * and finally return a pointer to the newly created object.
+   * Return NULL on error (hardlink already exists or list insertion fails)
+   */
+  HardLink* Group::new_hardlink(const std::string& name)
+  {
+    HardLink* hardlink = NULL;
+
+    // First check that a dataset, group or hardlink with this name doesn't already exist
+    if ( this->name_exist(name) ) return NULL;
+
+    // Create the new hardlink
+    hardlink = new HardLink(name);
+    hardlink->parent = this;
+
+    // Insert the string, Dataset pointer pair in the datasets map.
+    std::pair<std::map<std::string, HardLink*>::iterator,bool> ret;
+    ret = this->hardlinks.insert(std::pair<std::string, HardLink*>(name, hardlink));
+    // Check for successful insertion.
+    if (ret.second == false) return NULL;
+    return hardlink;
+  }
+
+  HardLink* Group::new_hardlink(const char * name)
+  {
+    std::string str_name(name);
+    return this->new_hardlink(str_name);
+  }
+
   int Group::find_dset_ndattr(const char * ndattr_name, Dataset** dset)
   {
     std::string str_name(ndattr_name);
@@ -510,6 +540,11 @@ namespace hdf5
   Group::MapGroups_t& Group::get_groups()
   {
     return this->groups;
+  }
+
+  Group::MapHardLinks_t& Group::get_hardlinks()
+  {
+    return this->hardlinks;
   }
 
   void Group::find_dsets(DataSrc_t source, MapDatasets_t& results)
@@ -800,6 +835,61 @@ namespace hdf5
     this->data_max_bytes = src.data_max_bytes;
     this->data_nelements = src.data_nelements;
     this->data_ptr = calloc( this->data_nelements, this->datasource.datatype_size() );
+  }
+
+  /* ================== HardLink Class public methods ==================== */
+  HardLink::HardLink(const HardLink& src) : source("")
+  {
+    this->_copy(src);
+  }
+
+  HardLink::HardLink() : Element(), source("")
+  {
+  }
+
+  HardLink::HardLink(const std::string& name) : Element(name), source("")
+  {
+  }
+
+  HardLink::~HardLink()
+  {
+  }
+
+  HardLink& HardLink::operator =(const HardLink& src)
+  {
+    // Check for self-assignment
+    if (this == &src){
+      return *this;
+    }
+    this->_copy(src);
+    return *this;
+  }
+
+  std::string HardLink::_str_()
+  {
+    std::stringstream out(std::stringstream::out);
+    out << "< HardLink: \'" << this->get_full_name() << "\'";
+    out << " source: " << this->source;
+    out << ">";
+    return out.str();
+  }
+
+  void HardLink::set_source(const std::string& src)
+  {
+    source = src;
+  }
+
+  std::string& HardLink::get_source()
+  {
+    return this->source;
+  }
+
+
+  /* ================== HardLink Class private methods ==================== */
+  void HardLink::_copy(const HardLink& src)
+  {
+    Element::_copy(src);
+    this->source = src.source;
   }
 
 } // hdf5
