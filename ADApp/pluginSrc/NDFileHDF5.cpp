@@ -83,6 +83,7 @@ class NDFileHDF5 : public NDPluginFile
     asynStatus storeOnCloseAttributes();
     asynStatus storeOnOpenCloseAttribute(hdf5::Element *element, bool open);
     asynStatus createTree(hdf5::Group* root, hid_t h5handle);
+    asynStatus createHardLinks(hdf5::Group* root);
 
     void writeHdfConstDatasets( hid_t h5_handle, hdf5::Group* group);
     void writeH5dsetStr(hid_t element, const std::string &name, const std::string &str_value) const;
@@ -433,6 +434,9 @@ asynStatus NDFileHDF5::createXMLFileLayout()
     }
 
   }
+  
+  retcode = this->createHardLinks(root);
+
   return retcode;
 }
 
@@ -617,6 +621,49 @@ asynStatus NDFileHDF5::createTree(hdf5::Group* root, hid_t h5handle)
     // of the function. This is to ensure we're not leaving any hanging,
     // unused, and unreferenced handles around.
     H5Gclose(new_group);
+  }
+  return retcode;
+}
+
+/** Create the hardlinks in the HDF5 file.
+ *
+ */
+asynStatus NDFileHDF5::createHardLinks(hdf5::Group* root)
+{
+  asynStatus retcode = asynSuccess;
+  static const char *functionName = "createHardLinks";
+
+  if (root == NULL) return asynError; // sanity check
+
+  std::string name = root->get_name();
+  if (root->get_parent() == NULL){
+    // This is a reserved element and cannot contain hard links.  Do its groups.
+    hdf5::Group::MapGroups_t::const_iterator it_group;
+    hdf5::Group::MapGroups_t& groups = root->get_groups();
+    for (it_group = groups.begin(); it_group != groups.end(); ++it_group){
+      // recursively call this function to create hardlinks in all subgroups
+      retcode = this->createHardLinks(it_group->second);
+    }
+  } else {
+    // Create all the hardlinks in this group
+    hdf5::Group::MapHardLinks_t::iterator it_hardlinks;
+    hdf5::Group::MapHardLinks_t& hardlinks = root->get_hardlinks();
+    for (it_hardlinks = hardlinks.begin(); it_hardlinks != hardlinks.end(); ++it_hardlinks){
+      std::string targetName = it_hardlinks->second->get_source();
+      std::string linkName = it_hardlinks->second->get_full_name();
+      herr_t err = H5Lcreate_hard(this->file, targetName.c_str(), this->file, linkName.c_str(), 0, 0);
+      if (err < 0) {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s error creating hard link from: %s to %s\n",
+                  driverName, functionName, targetName.c_str(), linkName.c_str());
+      }
+    }
+
+    hdf5::Group::MapGroups_t::const_iterator it_group;
+    hdf5::Group::MapGroups_t& groups = root->get_groups();
+    for (it_group = groups.begin(); it_group != groups.end(); ++it_group){
+      // recursively call this function to create hardlinks in all subgroups
+      retcode = this->createHardLinks(it_group->second);
+    }
   }
   return retcode;
 }
