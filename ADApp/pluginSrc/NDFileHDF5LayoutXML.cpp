@@ -22,6 +22,7 @@ namespace hdf5
   const std::string LayoutXML::ATTR_DATASET            = "dataset";
   const std::string LayoutXML::ATTR_ATTRIBUTE          = "attribute";
   const std::string LayoutXML::ATTR_GLOBAL             = "global";
+  const std::string LayoutXML::ATTR_HARDLINK           = "hardlink";
 
   const std::string LayoutXML::ATTR_SOURCE             = "source";
   const std::string LayoutXML::ATTR_SRC_DETECTOR       = "detector";
@@ -34,6 +35,8 @@ namespace hdf5
   const std::string LayoutXML::ATTR_SRC_WHEN           = "when";
   const std::string LayoutXML::ATTR_GLOBAL_NAME        = "name";
   const std::string LayoutXML::ATTR_GLOBAL_VALUE       = "ndattribute";
+  const std::string LayoutXML::ATTR_HARDLINK_NAME      = "name";
+  const std::string LayoutXML::ATTR_HARDLINK_SOURCE    = "source";
 
   const std::string LayoutXML::DEFAULT_LAYOUT = " \
   <group name=\"entry\"> \
@@ -258,6 +261,8 @@ namespace hdf5
           ret = this->new_attribute();
         } else if (name == LayoutXML::ATTR_GLOBAL){
           ret = this->new_global();
+        } else if (name == LayoutXML::ATTR_HARDLINK){
+          ret = this->new_hardlink();
         }
         if (ret != 0){
           LOG4CXX_WARN(log, "adding new node: " << name << " failed..." );
@@ -550,6 +555,27 @@ namespace hdf5
 
     this->globals[str_global_name] = str_global_value;
     return ret;
+  }
+
+  int LayoutXML::new_hardlink()
+  {
+    // First check the basics
+    if (! xmlTextReaderHasAttributes(this->xmlreader) ) return -1;
+    xmlChar *hardlink_name = NULL;
+    hardlink_name = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_ELEMENT_NAME.c_str());
+    if (hardlink_name == NULL) return -1;
+    xmlChar *hardlink_src = NULL;
+    hardlink_src = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_HARDLINK_SOURCE.c_str());
+    if (hardlink_src == NULL) return -1;
+
+    std::string str_hardlink_name((char*)hardlink_name);
+    Group *parent = (Group *)this->ptr_curr_element;
+    HardLink *hardlink = NULL;
+    hardlink = parent->new_hardlink(str_hardlink_name);
+    if (hardlink == NULL) return -1;
+    const std::string str_hardlink_src((char*)hardlink_src);
+    hardlink->set_source(str_hardlink_src);
+    return 0;
   }
 
 } // hdf5
