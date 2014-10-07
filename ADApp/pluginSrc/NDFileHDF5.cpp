@@ -648,7 +648,7 @@ asynStatus NDFileHDF5::createHardLinks(hdf5::Group* root)
     hdf5::Group::MapHardLinks_t::iterator it_hardlinks;
     hdf5::Group::MapHardLinks_t& hardlinks = root->get_hardlinks();
     for (it_hardlinks = hardlinks.begin(); it_hardlinks != hardlinks.end(); ++it_hardlinks){
-      std::string targetName = it_hardlinks->second->get_source();
+      std::string targetName = it_hardlinks->second->get_target();
       std::string linkName = it_hardlinks->second->get_full_name();
       herr_t err = H5Lcreate_hard(this->file, targetName.c_str(), this->file, linkName.c_str(), 0, 0);
       if (err < 0) {
@@ -1528,13 +1528,13 @@ asynStatus NDFileHDF5::closeFile()
               "%s::%s Closing file not totally clean.  Groups remaining=%d\n",
               driverName, functionName, obj_count);
   }
-  obj_count = H5Fget_obj_count(this->file, H5F_OBJ_DATASET);
+  obj_count = (int)H5Fget_obj_count(this->file, H5F_OBJ_DATASET);
   if (obj_count > 0){
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
               "%s::%s Closing file not totally clean.  Datasets remaining=%d\n",
               driverName, functionName, obj_count);
   }
-  obj_count = H5Fget_obj_count(this->file, H5F_OBJ_ATTR);
+  obj_count = (int)H5Fget_obj_count(this->file, H5F_OBJ_ATTR);
   if (obj_count > 0){
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
               "%s::%s Closing file not totally clean.  Attributes remaining=%d\n",
@@ -1829,12 +1829,10 @@ int NDFileHDF5::verifyLayoutXMLFile()
 //  Reading in a filename or string of xml. We will need more than 256 bytes
   char *fileName = new char[MAX_LAYOUT_LEN];
   fileName[MAX_LAYOUT_LEN - 1] = '\0';
-  int len;
   const char *functionName = "verifyLayoutXMLFile";
 
   getStringParam(NDFileHDF5_layoutFilename, MAX_LAYOUT_LEN-1, fileName);
-  len = strlen(fileName);
-  if (len == 0){
+  if (strlen(fileName) == 0){
     setIntegerParam(NDFileHDF5_layoutValid, 1);
     setStringParam(NDFileHDF5_layoutErrorMsg, "Default layout selected");
     delete [] fileName; 
