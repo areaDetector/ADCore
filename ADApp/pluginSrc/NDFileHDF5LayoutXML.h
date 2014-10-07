@@ -78,7 +78,7 @@ namespace hdf5
       static const std::string ATTR_GLOBAL_NAME;
       static const std::string ATTR_GLOBAL_VALUE;
       static const std::string ATTR_HARDLINK_NAME;
-      static const std::string ATTR_HARDLINK_SOURCE;
+      static const std::string ATTR_HARDLINK_TARGET;
 
       static const std::string DEFAULT_LAYOUT;
 
