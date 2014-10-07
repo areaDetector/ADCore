@@ -64,7 +64,7 @@ namespace hdf5
     </group>              <!-- end group instrument --> \
     <group name=\"data\"> \
       <attribute name=\"NX_class\" source=\"constant\" value=\"NXdata\" type=\"string\"></attribute> \
-      <!-- needs a hard link from /entry/instrument/detector/data to /entry/data/data --> \
+      <hardlink name=\"data\" source=\"/entry/instrument/detector/data\"></hardlink> \
     </group>              <!-- end group data --> \
   </group>                <!-- end group entry --> ";
 
