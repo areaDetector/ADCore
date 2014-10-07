@@ -11,6 +11,7 @@
         <attribute name="test_att_2" source="ndattribute" ndattribute="AcqTime"></attribute>
         <attribute name="NX_class" source="constant" value="SDS"></attribute>
         <attribute name="signal" source="constant" value="1" type="int"></attribute>
+        <attribute name="target" source="constant" value="/entry/detector/data1" type="string"></attribute> 
       </dataset>
       <dataset name="data2" source="detector">
         <attribute name="NX_class" source="constant" value="SDS"></attribute>
@@ -33,6 +34,10 @@
     </group>
     <group name="instruments" ndattr_default="true">
       <attribute name="NX_class" source="constant" value="NXinstrument" type="string"></attribute>
+    </group>
+    <group name="data"> 
+      <attribute name="NX_class" source="constant" value="NXdata" type="string"></attribute> 
+      <hardlink name="data" target="/entry/detector/data1"></hardlink>
     </group>
   </group>
 </xml>
