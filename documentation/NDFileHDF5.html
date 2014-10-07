@@ -23,7 +23,7 @@
   <p>
     The plugin supports all NDArray datatypes and any number of NDArray dimensions (tested
     up to 3). It supports storing multiple NDArrays in a single file (in stream or capture
-    modes) where each NDArray get appended to an extra dimension.
+    modes) where each NDArray gets appended to an extra dimension.
   </p>
   <p>
     NDArray attributes are stored in the HDF5 file. In case of multi-frame files the
@@ -38,7 +38,7 @@
   </pre>
   <p>
     For details on the meaning of the parameters to this function refer to the detailed
-    documentation on the NDFileNexusConfigure function in the <a href="areaDetectorDoxygenHTML/_n_d_file_h_d_f5_8cpp.html">
+    documentation on the NDFileHDF5Configure function in the <a href="areaDetectorDoxygenHTML/_n_d_file_h_d_f5_8cpp.html">
       NDFileHDF5.cpp documentation</a> and in the documentation for the constructor
     for the <a href="areaDetectorDoxygenHTML/class_n_d_file_h_d_f5.html">NDFileHDF5 class</a>.</p>
   <h3>
@@ -57,8 +57,8 @@
     NeXus tags).
   </p>
   <p>
-    The XML definition contains the following 3 main elements: group, dataset, attribute.
-    The terms refer to the HDF5 elements of the same names.
+    The XML definition contains the following 4 main elements: group, dataset, attribute,
+    and hardlink. The terms refer to the HDF5 elements of the same names.
   </p>
   <ul>
     <li><b>attribute:</b> represent a HDF5 attribute (key, value metadata) and is assigned
@@ -67,7 +67,10 @@
       and is assigned to a group </li>
     <li><b>group:</b> represent a HDF5 group. Groups can contain datasets, attributes
       and other groups (recursively)</li>
-    <li><b>global:</b> Rather than representing a HDF5 object; this element represent
+    <li><b>hardlink:</b> represent an HDF5 hard link. Hardlinks can point to other elements
+      in the file, such as datasets. They are analogous to hard links in the Linux file
+      system.</li>
+    <li><b>global:</b> Rather than representing a HDF5 object; this element represents
       a global functionality definition</li>
   </ul>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
@@ -256,13 +259,37 @@
         <td>
           string containing the name of an NDAttribute</td>
       </tr>
+      <td align="center" colspan="4,">
+        XML <b>"hardlink"</b> element attributes </td>
+      </tr>
+      <tr>
+        <td>
+          name</td>
+        <td>
+          yes</td>
+        <td>
+          Name of the link</td>
+        <td>
+          string: string containing the name of the hardlink being created </td>
+      </tr>
+      <tr>
+        <td>
+          target</td>
+        <td>
+          yes</td>
+        <td>
+          Name of the existing target object in the HDF5 file being linked to.</td>
+        <td>
+          string containing the name of the target object being linked to</td>
+      </tr>
     </tbody>
   </table>
   <p>
-    Example XML layout files are provided in the ADCore/iocBoot directory.</p>
+    An example XML layout file is provided in "ADCore/iocs/simDetectorIOC/iocBoot/iocSimDetector/hdf5_layout_demo.xml".</p>
   <p>
     An XML schema is provided in "ADCore/iocBoot/hdf5_xml_layout_schema.xsd". The schema
-    can be used with the 'xmllint' command to validate a users XML definition:
+    defines the syntax that is allowed in the user's XML definition. It can also be
+    used with the 'xmllint' command to validate a user's XML definition:
   </p>
   <pre>xmllint --noout --schema ADCore/iocBoot/hdf5_xml_layout_schema.xsd /path/to/users/layout.xml</pre>
   <h4>
@@ -270,7 +297,8 @@
   <p>
     If no XML Layout Definition file is loaded, the plugin will revert to using its
     default file structure layout. The default layout is compatible with the plugin's
-    original, hard-code layout.
+    original, hard-code layout. This layout is actually defined by an XML layout string
+    defined in the source code file NDFileHDF5LayoutXML.cpp.
   </p>
   <p>
     This default layout is compatible with the Nexus file format. This is achieved by
@@ -278,7 +306,10 @@
     in the hierachi with certain &quot;NX_class=nnn&quot; attributes. Although Nexus
     libraries are not used to write the data to disk, this file structure allow Nexus-aware
     readers to open and read the content of these HDF5 files. This has been tested with
-    the Nexus reader in the <a href="http://opengda.org/">GDA application</a>.
+    the Nexus reader in the <a href="http://opengda.org/">GDA application</a>. Hardlinks
+    in the HDF5 file can be used to make the same dataset appear in more than one location.
+    This can be useful for defining a layout that is Nexus compatible, as well as conforming
+    to some other desired layout.
   </p>
   <h5>
     NDArray attributes
@@ -341,7 +372,10 @@
    +--performance       &lt;-- Performance of the file writing
       |
       +--timestamp      &lt;-- A 2D dataset of different timing measurements taking during file writing
-    </pre>
++--data                 &lt;-- NX_class=NDdata
+   |  |
+   |  +--data           &lt;-- Hardlink to /entry/instrument/detector/data
+</pre>
   <h3>
     HDF5 File Viewers
   </h3>
