@@ -3,10 +3,10 @@ beginScreenProperties
 major 4
 minor 0
 release 0
-x 821
-y 91
-w 335
-h 595
+x 241
+y 55
+w 975
+h 330
 font "helvetica-medium-r-18.0"
 ctlFont "helvetica-medium-r-8.0"
 btnFont "helvetica-medium-r-18.0"
@@ -33,7 +33,7 @@ release 0
 x 5
 y 40
 w 325
-h 550
+h 280
 lineColor index 14
 fillColor index 14
 lineWidth 0
@@ -45,7 +45,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 0
+x 320
 y 5
 w 334
 h 25
@@ -61,7 +61,7 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 59
+x 379
 y 5
 w 216
 h 25
@@ -462,16 +462,106 @@ objType "controls"
 newPos
 endObjectProperties
 
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 155
+y 220
+w 160
+h 20
+controlPv "$(P)$(R)DisplayText"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 14
+bgColor index 51
+editable
+autoHeight
+format "string"
+motifWidget
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 70
+y 220
+w 80
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Display Text"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 90
+y 245
+w 60
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Time format"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 155
+y 245
+w 160
+h 20
+controlPv "$(P)$(R)TimeStampFormat"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 14
+bgColor index 51
+editable
+autoHeight
+format "string"
+motifWidget
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 20
-y 225
-w 285
-h 170
+x 60
+y 295
+w 195
+h 20
 
 beginGroup
 
@@ -482,8 +572,83 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 190
-y 225
+x 60
+y 295
+w 90
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Font"
+}
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 90
+y 270
+w 60
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Format example"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 157
+y 273
+w 60
+h 14
+font "helvetica-medium-r-8.0"
+fgColor index 14
+useDisplayBg
+value {
+ "%Y-%m-%d %H:%M:%S.%03f"
+}
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 335
+y 40
+w 315
+h 255
+
+beginGroup
+
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 515
+y 45
 w 10
 h 20
 font "helvetica-medium-r-8.0"
@@ -501,8 +666,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 155
-y 275
+x 480
+y 95
 w 150
 h 20
 fgColor index 14
@@ -517,36 +682,14 @@ limitsFromDb
 increment 1
 endObjectProperties
 
-# (Motif Slider)
-object activeMotifSliderClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 155
-y 350
-w 150
-h 20
-fgColor index 14
-bgColor index 51
-2ndBgColor index 4
-topShadowColor index 2
-botShadowColor index 12
-controlPv "$(P)$(R)SizeX"
-controlLabelType "pvName"
-font "helvetica-medium-r-10.0"
-limitsFromDb
-increment 1
-endObjectProperties
-
 # (Static Text)
 object activeXTextClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 70
-y 250
+x 395
+y 70
 w 80
 h 20
 font "helvetica-medium-r-8.0"
@@ -564,8 +707,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 155
-y 250
+x 480
+y 70
 w 60
 h 20
 controlPv "$(P)$(R)PositionX"
@@ -590,8 +733,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 220
-y 251
+x 545
+y 71
 w 61
 h 18
 controlPv "$(P)$(R)PositionX_RBV"
@@ -615,8 +758,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 20
-y 300
+x 345
+y 120
 w 130
 h 20
 font "helvetica-medium-r-8.0"
@@ -634,8 +777,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 155
-y 300
+x 480
+y 120
 w 150
 h 20
 controlPv "$(P)$(R)PositionXLink.DOL"
@@ -654,14 +797,65 @@ objType "controls"
 newPos
 endObjectProperties
 
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 335
+y 40
+w 315
+h 255
+lineColor index 14
+fillColor index 14
+lineWidth 0
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 385
+y 145
+w 245
+h 70
+
+beginGroup
+
+
+# (Motif Slider)
+object activeMotifSliderClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 480
+y 170
+w 150
+h 20
+fgColor index 14
+bgColor index 51
+2ndBgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)SizeX"
+controlLabelType "pvName"
+font "helvetica-medium-r-10.0"
+limitsFromDb
+increment 1
+endObjectProperties
+
 # (Static Text)
 object activeXTextClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 110
-y 325
+x 435
+y 145
 w 40
 h 20
 font "helvetica-medium-r-8.0"
@@ -679,8 +873,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 155
-y 325
+x 480
+y 145
 w 60
 h 20
 controlPv "$(P)$(R)SizeX"
@@ -705,8 +899,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 220
-y 326
+x 545
+y 146
 w 61
 h 18
 controlPv "$(P)$(R)SizeX_RBV"
@@ -730,8 +924,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 155
-y 375
+x 480
+y 195
 w 150
 h 20
 controlPv "$(P)$(R)SizeXLink.DOL"
@@ -756,8 +950,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 60
-y 375
+x 385
+y 195
 w 90
 h 20
 font "helvetica-medium-r-8.0"
@@ -774,31 +968,16 @@ endGroup
 endObjectProperties
 
 
-# (Rectangle)
-object activeRectangleClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 10
-y 220
-w 315
-h 180
-lineColor index 14
-fillColor index 14
-lineWidth 0
-endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 20
-y 410
-w 285
-h 170
+x 375
+y 220
+w 255
+h 70
 
 beginGroup
 
@@ -809,8 +988,169 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 155
-y 485
+x 480
+y 245
+w 150
+h 20
+fgColor index 14
+bgColor index 51
+2ndBgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)WidthX"
+controlLabelType "pvName"
+font "helvetica-medium-r-10.0"
+limitsFromDb
+increment 1
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 425
+y 220
+w 50
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Width"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 480
+y 220
+w 60
+h 20
+controlPv "$(P)$(R)WidthX"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 14
+bgColor index 51
+editable
+autoHeight
+format decimal
+motifWidget
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 545
+y 221
+w 61
+h 18
+controlPv "$(P)$(R)WidthX_RBV"
+font "helvetica-medium-r-8.0"
+fontAlign "center"
+smartRefresh
+fastUpdate
+fgColor index 54
+bgColor index 4
+autoHeight
+format decimal
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 480
+y 270
+w 150
+h 20
+controlPv "$(P)$(R)WidthXLink.DOL"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 14
+bgColor index 51
+editable
+autoHeight
+format "string"
+motifWidget
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 375
+y 270
+w 100
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Width link"
+}
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
+endGroup
+
+endObjectProperties
+
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 655
+y 40
+w 315
+h 255
+
+beginGroup
+
+
+# (Motif Slider)
+object activeMotifSliderClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 800
+y 120
 w 150
 h 20
 fgColor index 14
@@ -831,8 +1171,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 155
-y 535
+x 800
+y 170
 w 150
 h 20
 fgColor index 14
@@ -853,8 +1193,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 190
-y 410
+x 835
+y 45
 w 10
 h 20
 font "helvetica-medium-r-8.0"
@@ -872,8 +1212,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 70
-y 435
+x 715
+y 70
 w 211
 h 20
 
@@ -886,8 +1226,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 70
-y 435
+x 715
+y 70
 w 80
 h 20
 font "helvetica-medium-r-8.0"
@@ -905,8 +1245,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 155
-y 435
+x 800
+y 70
 w 60
 h 20
 controlPv "$(P)$(R)PositionY"
@@ -931,8 +1271,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 220
-y 436
+x 865
+y 71
 w 61
 h 18
 controlPv "$(P)$(R)PositionY_RBV"
@@ -961,8 +1301,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 20
-y 460
+x 665
+y 95
 w 285
 h 20
 
@@ -975,8 +1315,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 20
-y 460
+x 665
+y 95
 w 130
 h 20
 font "helvetica-medium-r-8.0"
@@ -994,8 +1334,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 155
-y 460
+x 800
+y 95
 w 150
 h 20
 controlPv "$(P)$(R)PositionYLink.DOL"
@@ -1025,8 +1365,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 110
-y 510
+x 755
+y 145
 w 171
 h 20
 
@@ -1039,8 +1379,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 110
-y 510
+x 755
+y 145
 w 40
 h 20
 font "helvetica-medium-r-8.0"
@@ -1058,8 +1398,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 155
-y 510
+x 800
+y 145
 w 60
 h 20
 controlPv "$(P)$(R)SizeY"
@@ -1084,8 +1424,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 220
-y 511
+x 865
+y 146
 w 61
 h 18
 controlPv "$(P)$(R)SizeY_RBV"
@@ -1114,8 +1454,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 60
-y 560
+x 705
+y 195
 w 245
 h 20
 
@@ -1128,8 +1468,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 60
-y 560
+x 705
+y 195
 w 90
 h 20
 font "helvetica-medium-r-8.0"
@@ -1147,8 +1487,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 155
-y 560
+x 800
+y 195
 w 150
 h 20
 controlPv "$(P)$(R)SizeYLink.DOL"
@@ -1172,25 +1512,162 @@ endGroup
 endObjectProperties
 
 
-endGroup
-
-endObjectProperties
-
-
 # (Rectangle)
 object activeRectangleClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 10
-y 405
+x 655
+y 40
 w 315
-h 180
+h 255
 lineColor index 14
 fillColor index 14
 lineWidth 0
 endObjectProperties
+
+# (Motif Slider)
+object activeMotifSliderClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 800
+y 245
+w 150
+h 20
+fgColor index 14
+bgColor index 51
+2ndBgColor index 4
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)WidthY"
+controlLabelType "pvName"
+font "helvetica-medium-r-10.0"
+limitsFromDb
+increment 1
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 745
+y 220
+w 50
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Width"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 800
+y 220
+w 60
+h 20
+controlPv "$(P)$(R)WidthY"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 14
+bgColor index 51
+editable
+autoHeight
+format decimal
+motifWidget
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 865
+y 221
+w 61
+h 18
+controlPv "$(P)$(R)WidthY_RBV"
+font "helvetica-medium-r-8.0"
+fontAlign "center"
+smartRefresh
+fastUpdate
+fgColor index 54
+bgColor index 4
+autoHeight
+format decimal
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 800
+y 270
+w 150
+h 20
+controlPv "$(P)$(R)WidthYLink.DOL"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 14
+bgColor index 51
+editable
+autoHeight
+format "string"
+motifWidget
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 695
+y 270
+w 100
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Width link"
+}
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
 
 # (Menu Button)
 object activeMenuButtonClass
@@ -1257,10 +1734,61 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 20
-y 225
-w 285
-h 170
+x 60
+y 295
+w 195
+h 20
+
+beginGroup
+
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 155
+y 295
+w 100
+h 18
+fgColor index 14
+bgColor index 51
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)Font"
+indicatorPv "$(P)$(R)Font"
+font "helvetica-medium-r-10.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 335
+y 40
+w 315
+h 255
+
+beginGroup
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 385
+y 145
+w 245
+h 70
 
 beginGroup
 
@@ -1275,10 +1803,33 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 20
-y 410
-w 285
-h 170
+x 375
+y 220
+w 255
+h 70
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 655
+y 40
+w 315
+h 255
 
 beginGroup
 
@@ -1288,8 +1839,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 70
-y 435
+x 715
+y 70
 w 211
 h 20
 
@@ -1306,8 +1857,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 20
-y 460
+x 665
+y 95
 w 285
 h 20
 
@@ -1324,8 +1875,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 110
-y 510
+x 755
+y 145
 w 171
 h 20
 
@@ -1342,8 +1893,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 60
-y 560
+x 705
+y 195
 w 245
 h 20
 
