@@ -3,10 +3,10 @@ beginScreenProperties
 major 4
 minor 0
 release 0
-x 114
-y 59
+x 143
+y 120
 w 1070
-h 720
+h 798
 font "helvetica-medium-r-18.0"
 ctlFont "helvetica-medium-r-8.0"
 btnFont "helvetica-medium-r-18.0"
@@ -159,20 +159,6 @@ value {
 }
 endObjectProperties
 
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 556
-y 198
-w 160
-h 43
-
-beginGroup
-
-
 # (Text Control)
 object activeXTextDspClass
 beginObjectProperties
@@ -222,11 +208,6 @@ useHexPrefix
 objType "controls"
 newPos
 endObjectProperties
-
-endGroup
-
-endObjectProperties
-
 
 # (Group)
 object activeGroupClass
@@ -563,340 +544,10 @@ release 0
 x 390
 y 40
 w 675
-h 400
+h 425
 lineColor index 14
 fillColor index 14
 lineWidth 0
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 807
-y 296
-w 90
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Auto save"
-}
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 970
-y 297
-w 80
-h 18
-controlPv "$(P)$(R)AutoSave_RBV"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 54
-bgColor index 4
-autoHeight
-format decimal
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 457
-y 296
-w 90
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Save file"
-}
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 636
-y 296
-w 90
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Read file"
-}
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 476
-y 366
-w 70
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Capture"
-}
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 407
-y 322
-w 140
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Write mode"
-}
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 644
-y 323
-w 70
-h 18
-controlPv "$(P)$(R)FileWriteMode_RBV"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 54
-bgColor index 4
-autoHeight
-format decimal
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 719
-y 321
-w 339
-h 22
-
-beginGroup
-
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 719
-y 322
-w 90
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "# Capture"
-}
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 818
-y 321
-w 60
-h 22
-controlPv "$(P)$(R)NumCapture"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 14
-bgColor index 51
-editable
-autoHeight
-format decimal
-motifWidget
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 978
-y 323
-w 80
-h 18
-controlPv "$(P)$(R)NumCaptured_RBV"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 54
-bgColor index 4
-autoHeight
-format decimal
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 883
-y 323
-w 80
-h 18
-controlPv "$(P)$(R)NumCapture_RBV"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 54
-bgColor index 4
-autoHeight
-format decimal
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-endGroup
-
-endObjectProperties
-
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 556
-y 274
-w 100
-h 20
-controlPv "$(P)$(R)WriteFile_RBV"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 63
-fgAlarm
-bgColor index 4
-autoHeight
-format "string"
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 731
-y 274
-w 100
-h 20
-controlPv "$(P)$(R)ReadFile_RBV"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 63
-fgAlarm
-bgColor index 4
-autoHeight
-format "string"
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 556
-y 344
-w 100
-h 20
-controlPv "$(P)$(R)Capture_RBV"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 63
-fgAlarm
-bgColor index 4
-autoHeight
-format "string"
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
 endObjectProperties
 
 # (Group)
@@ -1020,15 +671,30 @@ value {
 }
 endObjectProperties
 
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 5
+y 550
+w 380
+h 160
+lineColor index 14
+fillColor index 14
+lineWidth 0
+endObjectProperties
+
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 712
-y 366
-w 338
+x 105
+y 555
+w 270
 h 20
 
 beginGroup
@@ -1040,16 +706,16 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 712
-y 366
-w 180
+x 105
+y 555
+w 140
 h 20
 font "helvetica-medium-r-8.0"
 fontAlign "right"
 fgColor index 14
 useDisplayBg
 value {
- "Delete driver file"
+ "Rows per chunk"
 }
 endObjectProperties
 
@@ -1059,11 +725,37 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 970
-y 367
-w 80
+x 250
+y 555
+w 60
+h 20
+controlPv "$(P)$(R)NumRowChunks"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 14
+bgColor index 51
+editable
+autoHeight
+format decimal
+motifWidget
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 315
+y 556
+w 60
 h 18
-controlPv "$(P)$(R)DeleteDriverFile_RBV"
+controlPv "$(P)$(R)NumRowChunks_RBV"
 font "helvetica-medium-r-8.0"
 smartRefresh
 fastUpdate
@@ -1082,22 +774,36 @@ endGroup
 endObjectProperties
 
 
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 75
+y 580
+w 300
+h 20
+
+beginGroup
+
+
 # (Static Text)
 object activeXTextClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 840
-y 505
-w 60
+x 75
+y 580
+w 170
 h 20
 font "helvetica-medium-r-8.0"
 fontAlign "right"
 fgColor index 14
 useDisplayBg
 value {
- "Size N"
+ "Columns per chunk"
 }
 endObjectProperties
 
@@ -1107,11 +813,11 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 904
-y 504
+x 250
+y 580
 w 60
-h 22
-controlPv "$(P)$(R)ExtraDimSizeN"
+h 20
+controlPv "$(P)$(R)NumColChunks"
 font "helvetica-medium-r-8.0"
 smartRefresh
 fastUpdate
@@ -1133,11 +839,11 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 970
-y 506
-w 80
+x 315
+y 581
+w 60
 h 18
-controlPv "$(P)$(R)ExtraDimSizeN_RBV"
+controlPv "$(P)$(R)NumColChunks_RBV"
 font "helvetica-medium-r-8.0"
 smartRefresh
 fastUpdate
@@ -1151,24 +857,24 @@ objType "controls"
 newPos
 endObjectProperties
 
-# (Static Text)
-object activeXTextClass
+endGroup
+
+endObjectProperties
+
+
+# (Group)
+object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 840
-y 532
-w 60
+x 15
+y 605
+w 360
 h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Name N"
-}
-endObjectProperties
+
+beginGroup
+
 
 # (Static Text)
 object activeXTextClass
@@ -1176,16 +882,16 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 840
-y 559
-w 60
+x 15
+y 605
+w 230
 h 20
 font "helvetica-medium-r-8.0"
 fontAlign "right"
 fgColor index 14
 useDisplayBg
 value {
- "Size X"
+ "Frames cached per chunk"
 }
 endObjectProperties
 
@@ -1195,11 +901,11 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 904
-y 558
+x 250
+y 605
 w 60
-h 22
-controlPv "$(P)$(R)ExtraDimSizeX"
+h 20
+controlPv "$(P)$(R)NumFramesChunks"
 font "helvetica-medium-r-8.0"
 smartRefresh
 fastUpdate
@@ -1221,11 +927,11 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 970
-y 560
-w 80
+x 315
+y 606
+w 60
 h 18
-controlPv "$(P)$(R)ExtraDimSizeX_RBV"
+controlPv "$(P)$(R)NumFramesChunks_RBV"
 font "helvetica-medium-r-8.0"
 smartRefresh
 fastUpdate
@@ -1239,24 +945,24 @@ objType "controls"
 newPos
 endObjectProperties
 
-# (Static Text)
-object activeXTextClass
+endGroup
+
+endObjectProperties
+
+
+# (Group)
+object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 840
-y 586
-w 60
+x 15
+y 630
+w 360
 h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Name X"
-}
-endObjectProperties
+
+beginGroup
+
 
 # (Static Text)
 object activeXTextClass
@@ -1264,16 +970,16 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 840
-y 613
-w 60
+x 15
+y 630
+w 230
 h 20
 font "helvetica-medium-r-8.0"
 fontAlign "right"
 fgColor index 14
 useDisplayBg
 value {
- "Size Y"
+ "Boundary alignment"
 }
 endObjectProperties
 
@@ -1283,11 +989,11 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 904
-y 612
+x 250
+y 630
 w 60
-h 22
-controlPv "$(P)$(R)ExtraDimSizeY"
+h 20
+controlPv "$(P)$(R)BoundaryAlign"
 font "helvetica-medium-r-8.0"
 smartRefresh
 fastUpdate
@@ -1309,11 +1015,11 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 970
-y 614
-w 80
+x 315
+y 631
+w 60
 h 18
-controlPv "$(P)$(R)ExtraDimSizeY_RBV"
+controlPv "$(P)$(R)BoundaryAlign_RBV"
 font "helvetica-medium-r-8.0"
 smartRefresh
 fastUpdate
@@ -1327,24 +1033,24 @@ objType "controls"
 newPos
 endObjectProperties
 
-# (Static Text)
-object activeXTextClass
+endGroup
+
+endObjectProperties
+
+
+# (Group)
+object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 840
-y 640
-w 60
+x 15
+y 655
+w 360
 h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Name Y"
-}
-endObjectProperties
+
+beginGroup
+
 
 # (Static Text)
 object activeXTextClass
@@ -1352,16 +1058,16 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 830
-y 478
-w 70
+x 15
+y 655
+w 230
 h 20
 font "helvetica-medium-r-8.0"
 fontAlign "right"
 fgColor index 14
 useDisplayBg
 value {
- "# (0-2)"
+ "Boundary threshold"
 }
 endObjectProperties
 
@@ -1371,11 +1077,11 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 904
-y 477
+x 250
+y 655
 w 60
-h 22
-controlPv "$(P)$(R)NumExtraDims"
+h 20
+controlPv "$(P)$(R)BoundaryThreshold"
 font "helvetica-medium-r-8.0"
 smartRefresh
 fastUpdate
@@ -1397,11 +1103,11 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 970
-y 479
-w 80
+x 315
+y 656
+w 60
 h 18
-controlPv "$(P)$(R)NumExtraDims_RBV"
+controlPv "$(P)$(R)BoundaryThreshold_RBV"
 font "helvetica-medium-r-8.0"
 smartRefresh
 fastUpdate
@@ -1414,6 +1120,113 @@ useHexPrefix
 objType "controls"
 newPos
 endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 55
+y 680
+w 320
+h 20
+
+beginGroup
+
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 55
+y 680
+w 190
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Flush on N'th frame"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 250
+y 680
+w 60
+h 20
+controlPv "$(P)$(R)NumFramesFlush"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 14
+bgColor index 51
+editable
+autoHeight
+format decimal
+motifWidget
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 315
+y 681
+w 60
+h 18
+controlPv "$(P)$(R)NumFramesFlush_RBV"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 54
+bgColor index 4
+autoHeight
+format decimal
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 390
+y 470
+w 675
+h 320
+
+beginGroup
+
 
 # (Static Text)
 object activeXTextClass
@@ -1422,7 +1235,7 @@ major 4
 minor 0
 release 0
 x 852
-y 450
+y 475
 w 160
 h 20
 font "helvetica-medium-r-8.0"
@@ -1440,121 +1253,15 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 904
-y 533
-w 150
+x 400
+y 715
+w 500
 h 18
-controlPv "$(P)$(R)ExtraDimNameN_RBV"
+controlPv "$(P)$(R)XMLErrorMsg_RBV"
 font "helvetica-medium-r-8.0"
 smartRefresh
 fastUpdate
 fgColor index 54
-bgColor index 4
-autoHeight
-format decimal
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 904
-y 587
-w 150
-h 18
-controlPv "$(P)$(R)ExtraDimNameX_RBV"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 54
-bgColor index 4
-autoHeight
-format decimal
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 904
-y 641
-w 150
-h 18
-controlPv "$(P)$(R)ExtraDimNameY_RBV"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 54
-bgColor index 4
-autoHeight
-format decimal
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 406
-y 390
-w 654
-h 45
-
-beginGroup
-
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 406
-y 390
-w 140
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Write status"
-}
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 555
-y 390
-w 120
-h 20
-controlPv "$(P)$(R)WriteStatus"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 63
-fgAlarm
 bgColor index 4
 autoHeight
 format "string"
@@ -1564,203 +1271,20 @@ objType "controls"
 newPos
 endObjectProperties
 
-# (Static Text)
-object activeXTextClass
+# (Rectangle)
+object activeRectangleClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 406
-y 415
-w 140
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Write message"
-}
+x 390
+y 470
+w 675
+h 320
+lineColor index 14
+fillColor index 14
+lineWidth 0
 endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 555
-y 418
-w 505
-h 14
-controlPv "$(P)$(R)WriteMessage"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 20
-bgColor index 2
-autoHeight
-format "string"
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-endGroup
-
-endObjectProperties
-
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 520
-y 450
-w 260
-h 20
-
-beginGroup
-
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 520
-y 450
-w 110
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Compression"
-}
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 700
-y 451
-w 80
-h 18
-controlPv "$(P)$(R)Compression_RBV"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 54
-bgColor index 4
-autoHeight
-format decimal
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-endGroup
-
-endObjectProperties
-
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 520
-y 475
-w 260
-h 22
-
-beginGroup
-
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 520
-y 476
-w 110
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "# data bits"
-}
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 634
-y 475
-w 60
-h 22
-controlPv "$(P)$(R)NumDataBits"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 14
-bgColor index 51
-editable
-autoHeight
-format decimal
-motifWidget
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 700
-y 477
-w 80
-h 18
-controlPv "$(P)$(R)NumDataBits_RBV"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 54
-bgColor index 4
-autoHeight
-format decimal
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-endGroup
-
-endObjectProperties
-
 
 # (Group)
 object activeGroupClass
@@ -1769,9 +1293,9 @@ major 4
 minor 0
 release 0
 x 470
-y 502
+y 525
 w 310
-h 22
+h 20
 
 beginGroup
 
@@ -1783,7 +1307,7 @@ major 4
 minor 0
 release 0
 x 470
-y 503
+y 525
 w 160
 h 20
 font "helvetica-medium-r-8.0"
@@ -1801,10 +1325,10 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 634
-y 502
+x 635
+y 525
 w 60
-h 22
+h 20
 controlPv "$(P)$(R)DataBitsOffset"
 font "helvetica-medium-r-8.0"
 smartRefresh
@@ -1828,7 +1352,7 @@ major 4
 minor 0
 release 0
 x 700
-y 504
+y 526
 w 80
 h 18
 controlPv "$(P)$(R)DataBitsOffset_RBV"
@@ -1857,9 +1381,9 @@ major 4
 minor 0
 release 0
 x 500
-y 529
+y 550
 w 280
-h 22
+h 20
 
 beginGroup
 
@@ -1871,7 +1395,7 @@ major 4
 minor 0
 release 0
 x 500
-y 530
+y 550
 w 130
 h 20
 font "helvetica-medium-r-8.0"
@@ -1889,10 +1413,10 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 634
-y 529
+x 635
+y 550
 w 60
-h 22
+h 20
 controlPv "$(P)$(R)SZipNumPixels"
 font "helvetica-medium-r-8.0"
 smartRefresh
@@ -1916,7 +1440,7 @@ major 4
 minor 0
 release 0
 x 700
-y 531
+y 551
 w 80
 h 18
 controlPv "$(P)$(R)SZipNumPixels_RBV"
@@ -1945,9 +1469,9 @@ major 4
 minor 0
 release 0
 x 530
-y 556
+y 575
 w 250
-h 22
+h 20
 
 beginGroup
 
@@ -1959,7 +1483,7 @@ major 4
 minor 0
 release 0
 x 530
-y 557
+y 575
 w 100
 h 20
 font "helvetica-medium-r-8.0"
@@ -1977,10 +1501,10 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 634
-y 556
+x 635
+y 575
 w 60
-h 22
+h 20
 controlPv "$(P)$(R)ZLevel"
 font "helvetica-medium-r-8.0"
 smartRefresh
@@ -2004,7 +1528,7 @@ major 4
 minor 0
 release 0
 x 700
-y 558
+y 576
 w 80
 h 18
 controlPv "$(P)$(R)ZLevel_RBV"
@@ -2033,7 +1557,7 @@ major 4
 minor 0
 release 0
 x 460
-y 583
+y 600
 w 320
 h 20
 
@@ -2047,7 +1571,7 @@ major 4
 minor 0
 release 0
 x 460
-y 583
+y 600
 w 170
 h 20
 font "helvetica-medium-r-8.0"
@@ -2066,7 +1590,7 @@ major 4
 minor 0
 release 0
 x 700
-y 584
+y 601
 w 80
 h 18
 controlPv "$(P)$(R)StorePerform_RBV"
@@ -2088,6 +1612,20 @@ endGroup
 endObjectProperties
 
 
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 470
+y 625
+w 310
+h 20
+
+beginGroup
+
+
 # (Static Text)
 object activeXTextClass
 beginObjectProperties
@@ -2095,7 +1633,7 @@ major 4
 minor 0
 release 0
 x 470
-y 608
+y 625
 w 160
 h 20
 font "helvetica-medium-r-8.0"
@@ -2114,7 +1652,7 @@ major 4
 minor 0
 release 0
 x 700
-y 609
+y 626
 w 80
 h 18
 controlPv "$(P)$(R)StoreAttr_RBV"
@@ -2131,17 +1669,124 @@ objType "controls"
 newPos
 endObjectProperties
 
+endGroup
+
+endObjectProperties
+
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 830
+y 500
+w 220
+h 20
+
+beginGroup
+
+
 # (Text Control)
 object activeXTextDspClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 634
-y 658
+x 905
+y 500
+w 60
+h 20
+controlPv "$(P)$(R)NumExtraDims"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 14
+bgColor index 51
+editable
+autoHeight
+format decimal
+motifWidget
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 830
+y 500
+w 70
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "# (0-2)"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 970
+y 501
 w 80
 h 18
-controlPv "$(P)$(R)IOSpeed"
+controlPv "$(P)$(R)NumExtraDims_RBV"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 54
+bgColor index 4
+autoHeight
+format decimal
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 520
+y 475
+w 260
+h 20
+
+beginGroup
+
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 700
+y 476
+w 80
+h 18
+controlPv "$(P)$(R)Compression_RBV"
 font "helvetica-medium-r-8.0"
 smartRefresh
 fastUpdate
@@ -2161,37 +1806,37 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 540
-y 657
-w 90
+x 520
+y 475
+w 110
 h 20
 font "helvetica-medium-r-8.0"
 fontAlign "right"
 fgColor index 14
 useDisplayBg
 value {
- "I/O speed"
+ "Compression"
 }
 endObjectProperties
 
-# (Static Text)
-object activeXTextClass
+endGroup
+
+endObjectProperties
+
+
+# (Group)
+object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
 x 550
-y 633
-w 80
+y 650
+w 165
 h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Run time"
-}
-endObjectProperties
+
+beginGroup
+
 
 # (Text Control)
 object activeXTextDspClass
@@ -2199,8 +1844,8 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 634
-y 634
+x 635
+y 651
 w 80
 h 18
 controlPv "$(P)$(R)RunTime"
@@ -2217,16 +1862,40 @@ objType "controls"
 newPos
 endObjectProperties
 
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 550
+y 650
+w 80
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Run time"
+}
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 45
-y 688
-w 340
-h 22
+x 540
+y 675
+w 175
+h 20
 
 beginGroup
 
@@ -2237,16 +1906,16 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 45
-y 689
-w 190
+x 540
+y 675
+w 90
 h 20
 font "helvetica-medium-r-8.0"
 fontAlign "right"
 fgColor index 14
 useDisplayBg
 value {
- "Flush on N'th frame"
+ "I/O speed"
 }
 endObjectProperties
 
@@ -2256,37 +1925,11 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 239
-y 688
-w 60
-h 22
-controlPv "$(P)$(R)NumFramesFlush"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 14
-bgColor index 51
-editable
-autoHeight
-format decimal
-motifWidget
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 305
-y 690
+x 635
+y 676
 w 80
 h 18
-controlPv "$(P)$(R)NumFramesFlush_RBV"
+controlPv "$(P)$(R)IOSpeed"
 font "helvetica-medium-r-8.0"
 smartRefresh
 fastUpdate
@@ -2305,22 +1948,36 @@ endGroup
 endObjectProperties
 
 
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 520
+y 500
+w 260
+h 20
+
+beginGroup
+
+
 # (Static Text)
 object activeXTextClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 5
-y 635
-w 230
+x 520
+y 500
+w 110
 h 20
 font "helvetica-medium-r-8.0"
 fontAlign "right"
 fgColor index 14
 useDisplayBg
 value {
- "Boundary alignment"
+ "# data bits"
 }
 endObjectProperties
 
@@ -2330,11 +1987,11 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 239
-y 634
+x 635
+y 500
 w 60
-h 22
-controlPv "$(P)$(R)BoundaryAlign"
+h 20
+controlPv "$(P)$(R)NumDataBits"
 font "helvetica-medium-r-8.0"
 smartRefresh
 fastUpdate
@@ -2356,11 +2013,11 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 305
-y 636
+x 700
+y 501
 w 80
 h 18
-controlPv "$(P)$(R)BoundaryAlign_RBV"
+controlPv "$(P)$(R)NumDataBits_RBV"
 font "helvetica-medium-r-8.0"
 smartRefresh
 fastUpdate
@@ -2374,22 +2031,41 @@ objType "controls"
 newPos
 endObjectProperties
 
+endGroup
+
+endObjectProperties
+
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 840
+y 525
+w 210
+h 20
+
+beginGroup
+
+
 # (Static Text)
 object activeXTextClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 5
-y 662
-w 230
+x 840
+y 525
+w 60
 h 20
 font "helvetica-medium-r-8.0"
 fontAlign "right"
 fgColor index 14
 useDisplayBg
 value {
- "Boundary threshold"
+ "Size N"
 }
 endObjectProperties
 
@@ -2399,11 +2075,11 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 239
-y 661
+x 905
+y 525
 w 60
-h 22
-controlPv "$(P)$(R)BoundaryThreshold"
+h 20
+controlPv "$(P)$(R)ExtraDimSizeN"
 font "helvetica-medium-r-8.0"
 smartRefresh
 fastUpdate
@@ -2425,11 +2101,11 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 305
-y 663
+x 970
+y 526
 w 80
 h 18
-controlPv "$(P)$(R)BoundaryThreshold_RBV"
+controlPv "$(P)$(R)ExtraDimSizeN_RBV"
 font "helvetica-medium-r-8.0"
 smartRefresh
 fastUpdate
@@ -2443,18 +2119,9 @@ objType "controls"
 newPos
 endObjectProperties
 
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 95
-y 553
-w 290
-h 22
+endGroup
 
-beginGroup
+endObjectProperties
 
 
 # (Group)
@@ -2463,10 +2130,10 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 95
-y 553
-w 290
-h 22
+x 840
+y 550
+w 215
+h 20
 
 beginGroup
 
@@ -2477,8 +2144,587 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 95
-y 554
+x 840
+y 550
+w 60
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Name N"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 905
+y 551
+w 150
+h 18
+controlPv "$(P)$(R)ExtraDimNameN_RBV"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 54
+bgColor index 4
+autoHeight
+format decimal
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 840
+y 575
+w 210
+h 20
+
+beginGroup
+
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 840
+y 575
+w 60
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Size X"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 905
+y 575
+w 60
+h 20
+controlPv "$(P)$(R)ExtraDimSizeX"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 14
+bgColor index 51
+editable
+autoHeight
+format decimal
+motifWidget
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 970
+y 576
+w 80
+h 18
+controlPv "$(P)$(R)ExtraDimSizeX_RBV"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 54
+bgColor index 4
+autoHeight
+format decimal
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 840
+y 600
+w 215
+h 20
+
+beginGroup
+
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 840
+y 600
+w 60
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Name X"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 905
+y 601
+w 150
+h 18
+controlPv "$(P)$(R)ExtraDimNameX_RBV"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 54
+bgColor index 4
+autoHeight
+format decimal
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 840
+y 625
+w 210
+h 20
+
+beginGroup
+
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 840
+y 625
+w 60
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Size Y"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 905
+y 625
+w 60
+h 20
+controlPv "$(P)$(R)ExtraDimSizeY"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 14
+bgColor index 51
+editable
+autoHeight
+format decimal
+motifWidget
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 970
+y 626
+w 80
+h 18
+controlPv "$(P)$(R)ExtraDimSizeY_RBV"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 54
+bgColor index 4
+autoHeight
+format decimal
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 840
+y 650
+w 215
+h 20
+
+beginGroup
+
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 840
+y 650
+w 60
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Name Y"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 905
+y 651
+w 150
+h 18
+controlPv "$(P)$(R)ExtraDimNameY_RBV"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 54
+bgColor index 4
+autoHeight
+format decimal
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 926
+y 715
+w 115
+h 20
+
+beginGroup
+
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 1001
+y 715
+w 40
+h 20
+controlPv "$(P)$(R)XMLValid_RBV"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 14
+fgAlarm
+bgColor index 2
+autoHeight
+format decimal
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 926
+y 715
+w 70
+h 20
+font "helvetica-medium-r-8.0"
+fgColor index 14
+useDisplayBg
+value {
+ "Exists:"
+}
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 400
+y 740
+w 635
+h 43
+
+beginGroup
+
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 535
+y 740
+w 500
+h 18
+controlPv "$(P)$(R)XMLFileName_RBV"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 54
+bgColor index 4
+autoHeight
+format "string"
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 400
+y 763
+w 635
+h 20
+
+beginGroup
+
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 400
+y 763
+w 130
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "XML File name"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 535
+y 763
+w 500
+h 20
+controlPv "$(P)$(R)XMLFileName"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 14
+bgColor index 51
+editable
+autoHeight
+format "string"
+motifWidget
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
+endGroup
+
+endObjectProperties
+
+
+endGroup
+
+endObjectProperties
+
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 457
+y 322
+w 90
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Save file"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 636
+y 322
+w 90
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Read file"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 476
+y 392
+w 70
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Capture"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 407
+y 348
 w 140
 h 20
 font "helvetica-medium-r-8.0"
@@ -2486,7 +2732,7 @@ fontAlign "right"
 fgColor index 14
 useDisplayBg
 value {
- "Rows per chunk"
+ "Write mode"
 }
 endObjectProperties
 
@@ -2496,11 +2742,54 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 239
-y 553
+x 644
+y 349
+w 70
+h 18
+controlPv "$(P)$(R)FileWriteMode_RBV"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 54
+bgColor index 4
+autoHeight
+format decimal
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 719
+y 347
+w 90
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "# Capture"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 818
+y 347
 w 60
-h 22
-controlPv "$(P)$(R)NumRowChunks"
+h 20
+controlPv "$(P)$(R)NumCapture"
 font "helvetica-medium-r-8.0"
 smartRefresh
 fastUpdate
@@ -2522,11 +2811,11 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 305
-y 555
+x 978
+y 348
 w 80
 h 18
-controlPv "$(P)$(R)NumRowChunks_RBV"
+controlPv "$(P)$(R)NumCaptured_RBV"
 font "helvetica-medium-r-8.0"
 smartRefresh
 fastUpdate
@@ -2540,15 +2829,104 @@ objType "controls"
 newPos
 endObjectProperties
 
-endGroup
-
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 883
+y 348
+w 80
+h 18
+controlPv "$(P)$(R)NumCapture_RBV"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 54
+bgColor index 4
+autoHeight
+format decimal
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
 endObjectProperties
 
-
-endGroup
-
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 556
+y 300
+w 100
+h 20
+controlPv "$(P)$(R)WriteFile_RBV"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 63
+fgAlarm
+bgColor index 4
+autoHeight
+format "string"
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
 endObjectProperties
 
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 731
+y 300
+w 100
+h 20
+controlPv "$(P)$(R)ReadFile_RBV"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 63
+fgAlarm
+bgColor index 4
+autoHeight
+format "string"
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 556
+y 370
+w 100
+h 20
+controlPv "$(P)$(R)Capture_RBV"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 63
+fgAlarm
+bgColor index 4
+autoHeight
+format "string"
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
 
 # (Group)
 object activeGroupClass
@@ -2556,24 +2934,10 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 65
-y 580
-w 320
-h 22
-
-beginGroup
-
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 65
-y 580
-w 320
-h 22
+x 712
+y 392
+w 338
+h 20
 
 beginGroup
 
@@ -2584,16 +2948,16 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 65
-y 581
-w 170
+x 712
+y 392
+w 180
 h 20
 font "helvetica-medium-r-8.0"
 fontAlign "right"
 fgColor index 14
 useDisplayBg
 value {
- "Columns per chunk"
+ "Delete driver file"
 }
 endObjectProperties
 
@@ -2603,37 +2967,11 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 239
-y 580
-w 60
-h 22
-controlPv "$(P)$(R)NumColChunks"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 14
-bgColor index 51
-editable
-autoHeight
-format decimal
-motifWidget
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 305
-y 582
+x 970
+y 393
 w 80
 h 18
-controlPv "$(P)$(R)NumColChunks_RBV"
+controlPv "$(P)$(R)DeleteDriverFile_RBV"
 font "helvetica-medium-r-8.0"
 smartRefresh
 fastUpdate
@@ -2652,35 +2990,16 @@ endGroup
 endObjectProperties
 
 
-endGroup
-
-endObjectProperties
-
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 5
-y 607
-w 380
-h 22
-
-beginGroup
-
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 5
-y 607
-w 380
-h 22
+x 406
+y 416
+w 654
+h 45
 
 beginGroup
 
@@ -2691,16 +3010,16 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 5
-y 608
-w 230
+x 406
+y 416
+w 140
 h 20
 font "helvetica-medium-r-8.0"
 fontAlign "right"
 fgColor index 14
 useDisplayBg
 value {
- "Frames cached per chunk"
+ "Write status"
 }
 endObjectProperties
 
@@ -2710,24 +3029,42 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 239
-y 607
-w 60
-h 22
-controlPv "$(P)$(R)NumFramesChunks"
+x 555
+y 416
+w 120
+h 20
+controlPv "$(P)$(R)WriteStatus"
 font "helvetica-medium-r-8.0"
 smartRefresh
 fastUpdate
-fgColor index 14
-bgColor index 51
-editable
+fgColor index 63
+fgAlarm
+bgColor index 4
 autoHeight
-format decimal
-motifWidget
+format "string"
 nullColor index 32
 useHexPrefix
 objType "controls"
 newPos
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 406
+y 441
+w 140
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Write message"
+}
 endObjectProperties
 
 # (Text Control)
@@ -2736,11 +3073,73 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 305
-y 609
+x 555
+y 444
+w 505
+h 14
+controlPv "$(P)$(R)WriteMessage"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 20
+bgColor index 2
+autoHeight
+format "string"
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 807
+y 322
+w 243
+h 20
+
+beginGroup
+
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 807
+y 322
+w 90
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Auto save"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 970
+y 323
 w 80
 h 18
-controlPv "$(P)$(R)NumFramesChunks_RBV"
+controlPv "$(P)$(R)AutoSave_RBV"
 font "helvetica-medium-r-8.0"
 smartRefresh
 fastUpdate
@@ -2758,6 +3157,63 @@ endGroup
 
 endObjectProperties
 
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 457
+y 273
+w 248
+h 20
+
+beginGroup
+
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 457
+y 273
+w 90
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Lazy open"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 625
+y 274
+w 80
+h 18
+controlPv "$(P)$(R)LazyOpen_RBV"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 54
+bgColor index 4
+autoHeight
+format decimal
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
 
 endGroup
 
@@ -2791,24 +3247,6 @@ x 417
 y 246
 w 639
 h 20
-
-beginGroup
-
-
-endGroup
-
-endObjectProperties
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 556
-y 198
-w 160
-h 43
 
 beginGroup
 
@@ -2909,164 +3347,6 @@ endGroup
 
 endObjectProperties
 
-
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 901
-y 296
-w 64
-h 20
-fgColor index 14
-bgColor index 51
-inconsistentColor index 12
-topShadowColor index 2
-botShadowColor index 12
-controlPv "$(P)$(R)AutoSave"
-indicatorPv "$(P)$(R)AutoSave"
-font "helvetica-medium-r-10.0"
-endObjectProperties
-
-# (Message Button)
-object activeMessageButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 556
-y 296
-w 60
-h 20
-fgColor index 14
-onColor index 51
-offColor index 51
-topShadowColor index 0
-botShadowColor index 14
-controlPv "$(P)$(R)WriteFile"
-pressValue "1"
-releaseValue 
-onLabel "Save"
-offLabel "Save"
-3d
-useEnumNumeric
-font "helvetica-medium-r-10.0"
-endObjectProperties
-
-# (Message Button)
-object activeMessageButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 731
-y 296
-w 60
-h 20
-fgColor index 14
-onColor index 51
-offColor index 51
-topShadowColor index 0
-botShadowColor index 14
-controlPv "$(P)$(R)ReadFile"
-pressValue "1"
-releaseValue 
-onLabel "Read"
-offLabel "Read"
-3d
-useEnumNumeric
-font "helvetica-medium-r-10.0"
-endObjectProperties
-
-# (Message Button)
-object activeMessageButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 556
-y 366
-w 59
-h 20
-fgColor index 14
-onColor index 51
-offColor index 51
-topShadowColor index 0
-botShadowColor index 14
-controlPv "$(P)$(R)Capture"
-pressValue "1"
-releaseValue 
-onLabel "Start"
-offLabel "Start"
-3d
-useEnumNumeric
-font "helvetica-medium-r-10.0"
-endObjectProperties
-
-# (Message Button)
-object activeMessageButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 623
-y 366
-w 59
-h 20
-fgColor index 14
-onColor index 51
-offColor index 51
-topShadowColor index 0
-botShadowColor index 14
-controlPv "$(P)$(R)Capture"
-pressValue "0"
-releaseValue 
-onLabel "Stop"
-offLabel "Stop"
-3d
-useEnumNumeric
-font "helvetica-medium-r-10.0"
-endObjectProperties
-
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 556
-y 322
-w 80
-h 20
-fgColor index 14
-bgColor index 51
-inconsistentColor index 12
-topShadowColor index 2
-botShadowColor index 12
-controlPv "$(P)$(R)FileWriteMode"
-indicatorPv "$(P)$(R)FileWriteMode"
-font "helvetica-medium-r-10.0"
-endObjectProperties
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 719
-y 321
-w 339
-h 22
-
-beginGroup
-
-
-endGroup
-
-endObjectProperties
-
 # (Group)
 object activeGroupClass
 beginObjectProperties
@@ -3091,8 +3371,656 @@ beginObjectProperties
 major 4
 minor 0
 release 0
+x 105
+y 555
+w 270
+h 20
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 75
+y 580
+w 300
+h 20
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 605
+w 360
+h 20
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 630
+w 360
+h 20
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 15
+y 655
+w 360
+h 20
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 55
+y 680
+w 320
+h 20
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 390
+y 470
+w 675
+h 320
+
+beginGroup
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 470
+y 525
+w 310
+h 20
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 500
+y 550
+w 280
+h 20
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 530
+y 575
+w 250
+h 20
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 460
+y 600
+w 320
+h 20
+
+beginGroup
+
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 635
+y 600
+w 60
+h 20
+fgColor index 14
+bgColor index 51
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)StorePerform"
+indicatorPv "$(P)$(R)StorePerform"
+font "helvetica-medium-r-10.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 470
+y 625
+w 310
+h 20
+
+beginGroup
+
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 635
+y 625
+w 60
+h 20
+fgColor index 14
+bgColor index 51
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)StoreAttr"
+indicatorPv "$(P)$(R)StoreAttr"
+font "helvetica-medium-r-10.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 830
+y 500
+w 220
+h 20
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 520
+y 475
+w 260
+h 20
+
+beginGroup
+
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 635
+y 475
+w 60
+h 20
+fgColor index 14
+bgColor index 51
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)Compression"
+indicatorPv "$(P)$(R)Compression"
+font "helvetica-medium-r-10.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 550
+y 650
+w 165
+h 20
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 540
+y 675
+w 175
+h 20
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 520
+y 500
+w 260
+h 20
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 840
+y 525
+w 210
+h 20
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 840
+y 550
+w 215
+h 20
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 840
+y 575
+w 210
+h 20
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 840
+y 600
+w 215
+h 20
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 840
+y 625
+w 210
+h 20
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 840
+y 650
+w 215
+h 20
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 926
+y 715
+w 115
+h 20
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 400
+y 740
+w 635
+h 43
+
+beginGroup
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 400
+y 763
+w 635
+h 20
+
+beginGroup
+
+
+endGroup
+
+endObjectProperties
+
+
+endGroup
+
+endObjectProperties
+
+
+endGroup
+
+endObjectProperties
+
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 556
+y 322
+w 60
+h 20
+fgColor index 14
+onColor index 51
+offColor index 51
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)WriteFile"
+pressValue "1"
+releaseValue 
+onLabel "Save"
+offLabel "Save"
+3d
+useEnumNumeric
+font "helvetica-medium-r-10.0"
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 731
+y 322
+w 60
+h 20
+fgColor index 14
+onColor index 51
+offColor index 51
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)ReadFile"
+pressValue "1"
+releaseValue 
+onLabel "Read"
+offLabel "Read"
+3d
+useEnumNumeric
+font "helvetica-medium-r-10.0"
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 556
+y 392
+w 59
+h 20
+fgColor index 14
+onColor index 51
+offColor index 51
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)Capture"
+pressValue "1"
+releaseValue 
+onLabel "Start"
+offLabel "Start"
+3d
+useEnumNumeric
+font "helvetica-medium-r-10.0"
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 623
+y 392
+w 59
+h 20
+fgColor index 14
+onColor index 51
+offColor index 51
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)Capture"
+pressValue "0"
+releaseValue 
+onLabel "Stop"
+offLabel "Stop"
+3d
+useEnumNumeric
+font "helvetica-medium-r-10.0"
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 556
+y 348
+w 80
+h 20
+fgColor index 14
+bgColor index 51
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)FileWriteMode"
+indicatorPv "$(P)$(R)FileWriteMode"
+font "helvetica-medium-r-10.0"
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
 x 712
-y 366
+y 392
 w 338
 h 20
 
@@ -3106,7 +4034,7 @@ major 4
 minor 0
 release 0
 x 901
-y 366
+y 392
 w 64
 h 20
 fgColor index 14
@@ -3130,7 +4058,7 @@ major 4
 minor 0
 release 0
 x 406
-y 390
+y 416
 w 654
 h 45
 
@@ -3147,9 +4075,9 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 520
-y 450
-w 260
+x 807
+y 322
+w 243
 h 20
 
 beginGroup
@@ -3161,17 +4089,17 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 634
-y 450
-w 60
+x 901
+y 322
+w 64
 h 20
 fgColor index 14
 bgColor index 51
 inconsistentColor index 12
 topShadowColor index 2
 botShadowColor index 12
-controlPv "$(P)$(R)Compression"
-indicatorPv "$(P)$(R)Compression"
+controlPv "$(P)$(R)AutoSave"
+indicatorPv "$(P)$(R)AutoSave"
 font "helvetica-medium-r-10.0"
 endObjectProperties
 
@@ -3185,81 +4113,9 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 520
-y 475
-w 260
-h 22
-
-beginGroup
-
-
-endGroup
-
-endObjectProperties
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 470
-y 502
-w 310
-h 22
-
-beginGroup
-
-
-endGroup
-
-endObjectProperties
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 500
-y 529
-w 280
-h 22
-
-beginGroup
-
-
-endGroup
-
-endObjectProperties
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 530
-y 556
-w 250
-h 22
-
-beginGroup
-
-
-endGroup
-
-endObjectProperties
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 460
-y 583
-w 320
+x 457
+y 273
+w 248
 h 20
 
 beginGroup
@@ -3271,165 +4127,19 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 634
-y 583
-w 60
+x 556
+y 273
+w 64
 h 20
 fgColor index 14
 bgColor index 51
 inconsistentColor index 12
 topShadowColor index 2
 botShadowColor index 12
-controlPv "$(P)$(R)StorePerform"
-indicatorPv "$(P)$(R)StorePerform"
+controlPv "$(P)$(R)LazyOpen"
+indicatorPv "$(P)$(R)LazyOpen"
 font "helvetica-medium-r-10.0"
 endObjectProperties
-
-endGroup
-
-endObjectProperties
-
-
-# (Menu Button)
-object activeMenuButtonClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 634
-y 608
-w 60
-h 20
-fgColor index 14
-bgColor index 51
-inconsistentColor index 12
-topShadowColor index 2
-botShadowColor index 12
-controlPv "$(P)$(R)StoreAttr"
-indicatorPv "$(P)$(R)StoreAttr"
-font "helvetica-medium-r-10.0"
-endObjectProperties
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 45
-y 688
-w 340
-h 22
-
-beginGroup
-
-
-endGroup
-
-endObjectProperties
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 95
-y 553
-w 290
-h 22
-
-beginGroup
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 95
-y 553
-w 290
-h 22
-
-beginGroup
-
-
-endGroup
-
-endObjectProperties
-
-
-endGroup
-
-endObjectProperties
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 65
-y 580
-w 320
-h 22
-
-beginGroup
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 65
-y 580
-w 320
-h 22
-
-beginGroup
-
-
-endGroup
-
-endObjectProperties
-
-
-endGroup
-
-endObjectProperties
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 5
-y 607
-w 380
-h 22
-
-beginGroup
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 5
-y 607
-w 380
-h 22
-
-beginGroup
-
-
-endGroup
-
-endObjectProperties
-
 
 endGroup
 
