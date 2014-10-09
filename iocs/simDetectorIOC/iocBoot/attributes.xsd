@@ -32,7 +32,7 @@
   <xs:element name="Attribute">
     <xs:annotation>
       <xs:documentation>
-        Each NDAttribute (currently either PVAttribute or paramAttribute, other types may be added in the future) 
+        Each NDAttribute (currently PVAttribute, functAttribute, or paramAttribute, other types may be added in the future) 
         is defined with an <b>Attribute</b> tag. 
         (N.B.: Unfortunately there are 2 meanings of attribute here: the NDAttribute and the XML attribute)
         For each Attribute declaration, there are a number of XML attributes.
@@ -45,12 +45,13 @@
     </xs:annotation>
     <xs:complexType>
       <xs:attributeGroup ref="common_attributes"/>
-      <!-- only two types here: PARAM or EPICS_PV, each requires a different attribute -->
+      <!-- three types here: PARAM, EPICS_PV, or FUNCTION each requires a different attribute -->
       <xs:attribute name="type" use="required">
         <xs:simpleType>
           <xs:restriction base="xs:string">
             <xs:enumeration value="PARAM"/>
             <xs:enumeration value="EPICS_PV"/>
+            <xs:enumeration value="FUNCTION"/>
           </xs:restriction>
         </xs:simpleType>
       </xs:attribute>
@@ -79,6 +80,14 @@
           <xs:documentation>
             Declares the data type that will be used to read an 
             EPICS Process Variable value with Channel Access.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="param" type="xs:string" default="">
+        <!-- only for type="FUNCTION" -->
+        <xs:annotation>
+          <xs:documentation>
+            Declares the string parameter that will be passed to the function.
           </xs:documentation>
         </xs:annotation>
       </xs:attribute>
