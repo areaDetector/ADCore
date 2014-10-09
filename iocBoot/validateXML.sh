@@ -10,19 +10,15 @@
 
 # Validate the XML Attribute and Template files
 
-ATTRIBUTE_SCHEMA="--noout --schema ./attributes.xsd"
+ATTRIBUTE_SCHEMA="--noout --schema ./NDAttributes.xsd"
 #TEMPLATE_SCHEMA="--noout --schema ./NeXus_templates.xsd"
 TEMPLATE_SCHEMA="--noout --schematron ./template.sch"
 
 # NDArray Attribute declaration files
-xmllint ${ATTRIBUTE_SCHEMA} iocPerkinElmer/nexus_templates/PerkinElmerParams.xml
-xmllint ${ATTRIBUTE_SCHEMA} iocPilatus/pilatusAttributes.xml
-xmllint ${ATTRIBUTE_SCHEMA} iocProsilica/prosilicaAttributes.xml
-xmllint ${ATTRIBUTE_SCHEMA} iocSimDetector/ROIAttributes.xml
-xmllint ${ATTRIBUTE_SCHEMA} iocSimDetector/netCDFAttributes.xml
-xmllint ${ATTRIBUTE_SCHEMA} iocSimDetector/simDetectorAttributes.xml
+mllint ${ATTRIBUTE_SCHEMA} ../iocs/simDetectorIOC/iocBoot/iocSimDetector/ROIAttributes.xml
+xmllint ${ATTRIBUTE_SCHEMA} ../iocs/simDetectorIOC/iocBoot/iocSimDetector/netCDFAttributes.xml
+xmllint ${ATTRIBUTE_SCHEMA} ../iocs/simDetectorIOC/iocBoot/iocSimDetector/simDetectorAttributes.xml
 
 # NeXus file writer plugin template files
 #
-xmllint ${TEMPLATE_SCHEMA} iocPerkinElmer/nexus_templates/example.xml
-xmllint ${TEMPLATE_SCHEMA} iocSimDetector/NexusTemplate.xml
+xmllint ${TEMPLATE_SCHEMA} ../iocs/simDetectorIOC/iocBoot/iocSimDetector/NexusTemplate.xml
