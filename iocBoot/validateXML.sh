@@ -1,14 +1,6 @@
 #!/bin/sh
 
-########### SVN repository information ###################
-# $Date$
-# $Author$
-# $Revision$
-# $HeadURL$
-# $Id$
-########### SVN repository information ###################
-
-# Validate the XML Attribute and Template files
+# Validate the XML Attribute and Nexus and HDF5 Template files
 
 ATTRIBUTE_SCHEMA="--noout --schema ./NDAttributes.xsd"
 NEXUS_TEMPLATE_SCHEMA="--noout --schematron ./template.sch"
