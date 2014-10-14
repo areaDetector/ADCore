@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
-    ########### SVN repository information ###################
-    # $Date$
-    # $Author$
-    # $Revision$
-    # $HeadURL$
-    # $Id$
-    ########### SVN repository information ###################
--->
 
 <!--  usage:
     xmllint - -schematron /path1/template.sch /path2/NX_template_file.xml
