@@ -23,16 +23,8 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
-R2-1 (October XXX, 2014)
+R2-1 (October 14, 2014)
 --------------------
-* NDPluginOverlay
-    - Added support for text overlays. Thanks to Keith Brister for this.
-    - Added support for line width in rectangle and cross overlays.  Thanks to Matt Pearson for this.
-    - Fixed problem with DrawMode=XOR. This stopped working back in 2010 when color support was added.
-* NDPluginTransform
-    - Complete rewrite to greatly improve simplicity and efficiency.  It now supports 8 transformations
-      including the null transformation.  Performance improved by a factor of 13 to 85 depending
-      on the transformation.  Thanks to Chris Roehrig for this.
 * NDPluginFile
     - Added new optional feature "LazyOpen" which, when enabled and in "Stream" mode, will defer 
       file creation until the first frame arrives in the plugin. This removes the need to initialise
@@ -46,6 +38,14 @@ R2-1 (October XXX, 2014)
 * NDFileTiff
     - All NDArray attributes are now written as TIFF ASCII file tags, up to a maximum of 490 tags.
       Thanks to Matt Pearson for this.
+* NDPluginOverlay
+    - Added support for text overlays. Thanks to Keith Brister for this.
+    - Added support for line width in rectangle and cross overlays.  Thanks to Matt Pearson for this.
+    - Fixed problem with DrawMode=XOR. This stopped working back in 2010 when color support was added.
+* NDPluginTransform
+    - Complete rewrite to greatly improve simplicity and efficiency.  It now supports 8 transformations
+      including the null transformation.  Performance improved by a factor of 13 to 85 depending
+      on the transformation.  Thanks to Chris Roehrig for this.
 * Added a new table to the 
   [top-level documentation] (http://cars.uchicago.edu/software/epics/areaDetector.html).
   This contains for each module, links to:
