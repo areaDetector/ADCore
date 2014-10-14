@@ -145,9 +145,10 @@
       implement file saving (NDPluginFile), region-of-interest (ROI) calculations (NDPluginROI),
       statistics calculations (NDPluginStats), image processing (NDPluginProcess), geometric
       transformations (NDPluginTransform), color mode conversion (NDPluginColorConvert),
-      and conversion of detector data to standard EPICS array types for use by Channel
-      Access clients (NDPluginStdArrays). Plugins are normally written in C++ and inherit
-      from NDPluginDriver. Existing plugins range from about 300 to 800 lines of code.</li>
+      graphics and text overlays (NDPluginOverlay), and conversion of detector data to
+      standard EPICS array types for use by Channel Access clients (NDPluginStdArrays).
+      Plugins are normally written in C++ and inherit from NDPluginDriver. Existing plugins
+      range from about 300 to 3000 lines of code.</li>
     <li>Layer 4. This is standard asyn device support that comes with the EPICS asyn module.</li>
     <li>Layer 5. These are standard EPICS records, and EPICS database (template) files
       that define records to communicate with drivers at Layer 2 and plugins at Layer
@@ -163,7 +164,7 @@
     only 2 EPICS dependencies in this code.
   </p>
   <ol>
-    <li><a href="http://www.aps.anl.gov/epics/base/R3-14/10-docs/AppDevGuide.pdf">libCom</a>.
+    <li><a href="http://www.aps.anl.gov/epics/base/R3-14/12-docs/AppDevGuide/">libCom</a>.
       libCom from EPICS base provides operating-system independent functions for threads,
       mutexes, etc.</li>
     <li><a href="http://www.aps.anl.gov/epics/modules/soft/asyn/">asyn</a>. asyn is a
