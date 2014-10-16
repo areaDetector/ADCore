@@ -57,11 +57,11 @@ PROD_LIBS_Linux         += hdf5 sz
 PROD_SYS_LIBS_Linux     += tiff jpeg xml2 z m
 
 PROD_LIBS_solaris       += hdf5 sz
-PROD_SYS_LIBS_solaris   += tiff jpeg z
+PROD_SYS_LIBS_solaris   += tiff jpeg xml2 z
 
 USR_LDFLAGS_Darwin      += -framework CoreFoundation
 PROD_LIBS_Darwin        += hdf5 sz
-PROD_SYS_LIBS_Darwin    += tiff jpeg z
+PROD_SYS_LIBS_Darwin    += tiff jpeg xml2 z
 
 hdf5_DIR               = $(HDF5_LIB)
 sz_DIR                 = $(SZIP_LIB)
