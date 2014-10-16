@@ -169,8 +169,9 @@ public class EPICS_AD_Viewer implements PlugIn
 
     public void makeImageCopy()
     {
-        ImageProcessor dipcopy = img.getProcessor().duplicate();
-        ImagePlus imgcopy = new ImagePlus(PVPrefix + ":" + UniqueId, dipcopy);
+        ImageProcessor ip = img.getProcessor();
+        if (ip == null) return;
+        ImagePlus imgcopy = new ImagePlus(PVPrefix + ":" + UniqueId, ip.duplicate());
         imgcopy.show();
     }
 
