@@ -23,7 +23,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
-R2-1 (October 14, 2014)
+R2-1 (October 17, 2014)
 --------------------
 * NDPluginFile
     - Added new optional feature "LazyOpen" which, when enabled and in "Stream" mode, will defer 
