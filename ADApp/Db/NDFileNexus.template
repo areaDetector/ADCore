@@ -28,6 +28,7 @@ record(waveform, "$(P)$(R)TemplateFilePath")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMPLATE_FILE_PATH")
     field(FTVL, "CHAR")
     field(NELM, "256")
+   info( autosaveFields, "VAL" )
 }
 
 record(waveform, "$(P)$(R)TemplateFilePath_RBV")
@@ -47,6 +48,7 @@ record(waveform, "$(P)$(R)TemplateFileName")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMPLATE_FILE_NAME")
     field(FTVL, "CHAR")
     field(NELM, "256")
+   info( autosaveFields, "VAL" )
 }
 
 record(waveform, "$(P)$(R)TemplateFileName_RBV")

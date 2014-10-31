@@ -37,6 +37,7 @@ record(stringout, "$(P)$(R)NDArrayPort")
     field(DTYP, "asynOctetWrite")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_PORT")
     field(VAL,  "$(NDARRAY_PORT)")
+   info( autosaveFields, "VAL" )
 }
 
 record(stringin, "$(P)$(R)NDArrayPort_RBV")
@@ -52,6 +53,7 @@ record(longout, "$(P)$(R)NDArrayAddress")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_ADDR")
     field(VAL,  "$(NDARRAY_ADDR)")
+   info( autosaveFields, "VAL" )
 }
 
 record(longin, "$(P)$(R)NDArrayAddress_RBV")
@@ -73,6 +75,7 @@ record(bo, "$(P)$(R)EnableCallbacks")
     field(ZNAM, "Disable")
     field(ONAM, "Enable")
     field(VAL,  "0")
+   info( autosaveFields, "VAL" )
 }
 
 record(bi, "$(P)$(R)EnableCallbacks_RBV")
@@ -94,6 +97,7 @@ record(ao, "$(P)$(R)MinCallbackTime")
     field(EGU,  "s")
     field(PREC, "3")
     field(VAL,  "0.0")
+   info( autosaveFields, "VAL" )
 }
 
 record(ai, "$(P)$(R)MinCallbackTime_RBV")
@@ -116,6 +120,7 @@ record(bo, "$(P)$(R)BlockingCallbacks")
     field(ZNAM, "No")
     field(ONAM, "Yes")
     field(VAL,  "0")
+   info( autosaveFields, "VAL" )
 }
 
 record(bi, "$(P)$(R)BlockingCallbacks_RBV")
@@ -145,6 +150,7 @@ record(longin, "$(P)$(R)ArrayCounter_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_COUNTER")
     field(SCAN, "I/O Intr")
+   info( autosaveFields, "TSE" )
 }
 
 # Updated rate calculation to use a smoothing factor w/ guard against negative values
@@ -375,6 +381,7 @@ record(longin, "$(P)$(R)UniqueId_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))UNIQUE_ID")
     field(SCAN, "I/O Intr")
+   info( autosaveFields, "TSE" )
 }
 
 record(ai, "$(P)$(R)TimeStamp_RBV")
@@ -383,6 +390,7 @@ record(ai, "$(P)$(R)TimeStamp_RBV")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TIME_STAMP")
     field(PREC, "3")
     field(SCAN, "I/O Intr")
+   info( autosaveFields, "TSE" )
 }
 
 record(longin, "$(P)$(R)EpicsTSSec_RBV")
@@ -390,6 +398,7 @@ record(longin, "$(P)$(R)EpicsTSSec_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))EPICS_TS_SEC")
     field(SCAN, "I/O Intr")
+   info( autosaveFields, "TSE" )
 }
 
 record(longin, "$(P)$(R)EpicsTSNsec_RBV")
@@ -397,6 +406,7 @@ record(longin, "$(P)$(R)EpicsTSNsec_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))EPICS_TS_NSEC")
     field(SCAN, "I/O Intr")
+   info( autosaveFields, "TSE" )
 }
 
 ###################################################################

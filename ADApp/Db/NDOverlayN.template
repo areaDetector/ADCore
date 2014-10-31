@@ -11,6 +11,7 @@ record(stringout, "$(P)$(R)Name")
     field(DTYP, "asynOctetWrite")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
     field(VAL,  "$(NAME)")
+   info( autosaveFields, "VAL" )
 }
 
 record(stringin, "$(P)$(R)Name_RBV")
@@ -32,6 +33,7 @@ record(bo, "$(P)$(R)Use")
     field(VAL,  "0")
     field(ZNAM, "No")
     field(ONAM, "Yes")
+   info( autosaveFields, "VAL" )
 }
 
 record(bi, "$(P)$(R)Use_RBV")
@@ -54,6 +56,7 @@ record(longout, "$(P)$(R)PositionXLink")
     field(DOL,  "$(XPOS="") CP MS")
     field(OMSL, "closed_loop")
     field(OUT, "$(P)$(R)PositionX PP")
+   info( autosaveFields, "VAL" )
 }
 
 record(longout, "$(P)$(R)PositionX")
@@ -64,6 +67,7 @@ record(longout, "$(P)$(R)PositionX")
     field(LOPR, "1")
     field(HOPR, "1024")
     field(VAL,  "1")
+   info( autosaveFields, "VAL" )
 }
 
 record(longin, "$(P)$(R)PositionX_RBV")
@@ -88,6 +92,7 @@ record(longout, "$(P)$(R)PositionY")
     field(LOPR, "1")
     field(HOPR, "1024")
     field(VAL,  "1")
+   info( autosaveFields, "VAL" )
 }
 
 record(longin, "$(P)$(R)PositionY_RBV")
@@ -112,6 +117,7 @@ record(longout, "$(P)$(R)SizeX")
     field(LOPR, "1")
     field(HOPR, "1024")
     field(VAL,  "1")
+   info( autosaveFields, "VAL" )
 }
 
 record(longin, "$(P)$(R)SizeX_RBV")
@@ -136,6 +142,7 @@ record(longout, "$(P)$(R)SizeY")
     field(LOPR, "1")
     field(HOPR, "1024")
     field(VAL,  "1")
+   info( autosaveFields, "VAL" )
 }
 
 record(longin, "$(P)$(R)SizeY_RBV")
@@ -205,6 +212,7 @@ record(mbbo, "$(P)$(R)Shape")
     field(TWST, "Text")
     field(TWVL, "2")
     field(VAL,  "$(SHAPE)")
+   info( autosaveFields, "VAL" )
 }
 
 record(mbbi, "$(P)$(R)Shape_RBV")
@@ -229,6 +237,7 @@ record(mbbo, "$(P)$(R)DrawMode")
     field(ZRVL, "0")
     field(ONST, "XOR")
     field(ONVL, "1")
+   info( autosaveFields, "VAL" )
 }
 
 record(mbbi, "$(P)$(R)DrawMode_RBV")
@@ -248,6 +257,7 @@ record(longout, "$(P)$(R)Red")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_RED")
     field(VAL,  "1")
+   info( autosaveFields, "VAL" )
 }
 
 record(longin, "$(P)$(R)Red_RBV")
@@ -263,6 +273,7 @@ record(longout, "$(P)$(R)Green")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_GREEN")
     field(VAL,  "1")
+   info( autosaveFields, "VAL" )
 }
 
 record(longin, "$(P)$(R)Green_RBV")
@@ -278,6 +289,7 @@ record(longout, "$(P)$(R)Blue")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_BLUE")
     field(VAL,  "1")
+   info( autosaveFields, "VAL" )
 }
 
 record(longin, "$(P)$(R)Blue_RBV")
