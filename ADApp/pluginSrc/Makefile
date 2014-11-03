@@ -47,6 +47,15 @@ DBD += NDPluginAttribute.dbd
 
 INC += NDPluginDriver.h
 INC += NDPluginFile.h
+INC += NDPluginStdArrays.h
+INC += NDPluginStats.h
+INC += NDPluginProcess.h
+INC += NDPluginROI.h
+INC += NDPluginTransform.h
+INC += NDPluginAttribute.h
+INC += NDPluginOverlay.h
+INC += NDPluginOverlayTextFont.h
+INC += NDPluginColorConvert.h
 
 LIBRARY_IOC += NDPlugin
 NDPlugin_SRCS += NDPluginDriver.cpp
