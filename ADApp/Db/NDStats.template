@@ -9,6 +9,7 @@ record(bo, "$(P)$(R)ComputeStatistics")
    field(VAL,  "1")
    field(ZNAM, "No")
    field(ONAM, "Yes")
+   info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)ComputeStatistics_RBV")
@@ -28,6 +29,7 @@ record(longout, "$(P)$(R)BgdWidth")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BGD_WIDTH")
    field(VAL,  "1")
+   info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)BgdWidth_RBV")
@@ -119,6 +121,7 @@ record(bo, "$(P)$(R)ComputeCentroid")
    field(VAL,  "0")
    field(ZNAM, "No")
    field(ONAM, "Yes")
+   info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)ComputeCentroid_RBV")
@@ -141,6 +144,7 @@ record(ao, "$(P)$(R)CentroidThreshold")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CENTROID_THRESHOLD")
     field(VAL,  "1")
+    info(autosaveFields, "VAL")
 }
 record(ai, "$(P)$(R)CentroidThreshold_RBV")
 {
@@ -216,6 +220,7 @@ record(longout, "$(P)$(R)TSRead")
    field(OUT,  "$(P)$(R)TSControl PP MS")
    field(VAL,  "3")
    field(SCAN, "1 second")
+   info(autosaveFields, "SCAN")
 }
 
 record(longout, "$(P)$(R)TSNumPoints")
@@ -225,6 +230,7 @@ record(longout, "$(P)$(R)TSNumPoints")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_NUM_POINTS")
    field(VAL,  "$(NCHANS)")
    field(DRVH, "$(NCHANS)")
+   info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)TSCurrentPoint")
@@ -392,6 +398,7 @@ record(bo, "$(P)$(R)ComputeProfiles")
    field(VAL,  "0")
    field(ZNAM, "No")
    field(ONAM, "Yes")
+   info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)ComputeProfiles_RBV")
@@ -425,6 +432,7 @@ record(longout, "$(P)$(R)CursorX")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CURSOR_X")
    field(VAL,  "256")
+   info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)CursorX_RBV")
@@ -440,6 +448,7 @@ record(longout, "$(P)$(R)CursorY")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CURSOR_Y")
    field(VAL,  "256")
+   info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)CursorY_RBV")
@@ -533,6 +542,7 @@ record(bo, "$(P)$(R)ComputeHistogram")
    field(VAL,  "0")
    field(ZNAM, "No")
    field(ONAM, "Yes")
+   info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)ComputeHistogram_RBV")
@@ -552,6 +562,7 @@ record(longout, "$(P)$(R)HistSize")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_SIZE")
    field(VAL,  "256")
+   info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)HistSize_RBV")
@@ -567,6 +578,7 @@ record(ao, "$(P)$(R)HistMin")
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_MIN")
    field(VAL,  "0")
+   info(autosaveFields, "VAL")
 }
 
 record(ai, "$(P)$(R)HistMin_RBV")
@@ -582,6 +594,7 @@ record(ao, "$(P)$(R)HistMax")
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_MAX")
    field(VAL,  "255")
+   info(autosaveFields, "VAL")
 }
 
 record(ai, "$(P)$(R)HistMax_RBV")
