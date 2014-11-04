@@ -1,0 +1,34 @@
+
+# Add-on template for the ROI plugin to provide 'End' records for the ROI
+# Load this after the normal NDROI.template
+# DIM macro has to be set to X, Y or Z
+
+record(longout, "$(P)$(R)End$(DIM)")
+{
+   field(OUT, "$(P)$(R)End$(DIM)Calc.B PP")
+}
+
+record(calcout, "$(P)$(R)End$(DIM)Calc")
+{
+   field(INPA, "$(P)$(R)Min$(DIM)")
+   field(CALC, "B-A")
+   field(DOPT, "Use CALC")
+   field(OUT, "$(P)$(R)Size$(DIM) PP")
+}
+
+record(calc, "$(P)$(R)End$(DIM)_RBV")
+{
+   field(INPA, "$(P)$(R)Size$(DIM)_RBV CP")
+   field(INPB, "$(P)$(R)Min$(DIM)_RBV CP")
+   field(CALC, "A+B")
+}
+
+# When Min$(DIM)_RBV changes, reprocess End$(DIM) to get Size$(DIM) right.
+record(calcout, "$(P)$(R)End$(DIM)Sync")
+{
+   field(INPA, "$(P)$(R)Min$(DIM)_RBV CP")
+   field(INPB, "$(P)$(R)End$(DIM)")
+   field(CALC, "B")
+   field(DOPT, "Use CALC")
+   field(OUT, "$(P)$(R)End$(DIM) PP")
+}
