@@ -33,6 +33,7 @@ DB += NDPluginBase.template
 DB += NDProcess.template
 DB += NDROI.template
 DB += NDROIStat.template
+DB += NDROIStatN.template
 DB += NDStats.template
 DB += NDStdArrays.template
 DB += NDTransform.template
