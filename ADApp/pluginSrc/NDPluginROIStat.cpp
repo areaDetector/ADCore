@@ -32,32 +32,54 @@ asynStatus NDPluginROIStat::doComputeStatisticsT(NDArray *pArray, NDROI *pROI)
     double value = 0;
     int sizex = 0;
     int sizey = 0;
-    int x = 0;
-    int y = 0;
+    epicsUInt32 x = 0;
+    epicsUInt32 y = 0;
+    bool initial = true;
 
-    pROI->min = (double) pData[0];
-    pROI->max = (double) pData[0];
+    pROI->min = 0;
+    pROI->max = 0;
     pROI->total = 0;
     pROI->mean = 0;
 
+    printf(" compute: dims: %d\n", (int)pArray->ndims);
+    printf(" pROI->dims[0].size: %d\n", (int)pROI->dims[0].size);
+    printf(" pROI->dims[1].size: %d\n", (int)pROI->dims[1].size);
+    printf(" pROI->dims[0].offset: %d\n", (int)pROI->dims[0].offset);
+    printf(" pROI->dims[1].offset: %d\n", (int)pROI->dims[1].offset);
+    
     if (pArray->ndims == 1) {
       pROI->nElements = pROI->dims[0].size;
-      for (x=pROI->dims[0].offset; x<pROI->nElements; ++x) {
+      for (x=pROI->dims[0].offset; x<(pROI->dims[0].offset+pROI->nElements); ++x) {
 	value = (double)pData[x];
+	if (initial) {
+	  pROI->min = value;
+	  pROI->max = value;
+	}  
         if (value < pROI->min) pROI->min = value;
         if (value > pROI->max) pROI->max = value;
 	pROI->total += value;
+	initial = false;
       }
     } else if (pArray->ndims == 2) {
       sizex = pROI->dims[0].size;
       sizey = pROI->dims[1].size;
       pROI->nElements = sizex * sizey;
-      for (y=pROI->dims[1].offset; y<sizey; ++y) {
-	for (x=pROI->dims[0].offset; x<sizex; ++x) {
+      for (y=pROI->dims[1].offset; y<(pROI->dims[1].offset+sizey); ++y) {
+	for (x=pROI->dims[0].offset; x<(pROI->dims[0].offset+sizex); ++x) {
+
+	  printf("  y=%d, x=%d\n", y, x);
+
 	  value = (double)pData[x+(y*sizex)];
+	  if (initial) {
+	    pROI->min = value;
+	    pROI->max = value;
+	  } 
 	  if (value < pROI->min) pROI->min = value;
 	  if (value > pROI->max) pROI->max = value;
 	  pROI->total += value;
+	  initial = false;
+	  printf("  value=%f, pROI->min=%f, pROI->max=%f, pROI->total=%f\n", value, pROI->min, pROI->max, pROI->total);
+
 	}
       }
     }
@@ -125,11 +147,11 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
   
   int use = 0;
   int itemp = 0;
-  int dim;
-  int status;
-  NDDimension_t dims[ND_ARRAY_MAX_DIMS], *pDim;
+  int dim = 0;
+  int status = 0;
+  NDDimension_t *pDim;
   int userDims[ND_ARRAY_MAX_DIMS];
-  NDROI *pROI;
+  NDROI *pROI = NULL;
   int colorMode = NDColorModeMono;
   NDAttribute *pAttribute;
   const char* functionName = "NDPluginROIStat::processCallbacks";
@@ -149,7 +171,12 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
     if (!use) {
       continue;
     }
-    
+
+    if (pROI == NULL) {
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "Error. pROI==NULL. %s\n", functionName);
+      return;
+    }
+
     /* Need to fetch all of these parameters while we still have the mutex */
     getIntegerParam(roi, NDPluginROIStatDim0Min,      &itemp); pROI->dims[0].offset = itemp;
     getIntegerParam(roi, NDPluginROIStatDim1Min,      &itemp); pROI->dims[1].offset = itemp;
@@ -173,7 +200,9 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
       userDims[2] = 1;
     }
     else {
-      for (dim=0; dim<ND_ARRAY_MAX_DIMS; dim++) userDims[dim] = dim;
+      for (dim=0; dim<ND_ARRAY_MAX_DIMS; dim++) {
+	userDims[dim] = dim;
+      }
     }
     for (dim=0; dim<pArray->ndims; dim++) {
       pDim = &pROI->dims[dim];
@@ -184,24 +213,27 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
       pDim->binning = 1;
     }
     
+    printf(" roi: %d\n", roi);
+    printf(" pArray->ndims: %d\n", pArray->ndims);
+
     /* Update the parameters that may have changed */
     setIntegerParam(roi, NDPluginROIStatDim0MaxSize, 0);
     setIntegerParam(roi, NDPluginROIStatDim1MaxSize, 0);
     setIntegerParam(roi, NDPluginROIStatDim2MaxSize, 0);
     if (pArray->ndims > 0) {
-      pDim = &dims[0];
+      pDim = &pROI->dims[0];
       setIntegerParam(roi, NDPluginROIStatDim0MaxSize, (int)pArray->dims[userDims[0]].size);
       setIntegerParam(roi, NDPluginROIStatDim0Min,  (int)pDim->offset);
       setIntegerParam(roi, NDPluginROIStatDim0Size, (int)pDim->size);
     }
     if (pArray->ndims > 1) {
-      pDim = &dims[1];
+      pDim = &pROI->dims[1];
       setIntegerParam(roi, NDPluginROIStatDim1MaxSize, (int)pArray->dims[userDims[1]].size);
       setIntegerParam(roi, NDPluginROIStatDim1Min,  (int)pDim->offset);
       setIntegerParam(roi, NDPluginROIStatDim1Size, (int)pDim->size);
     }
     if (pArray->ndims > 2) {
-      pDim = &dims[2];
+      pDim = &pROI->dims[2];
       setIntegerParam(roi, NDPluginROIStatDim2MaxSize, (int)pArray->dims[userDims[2]].size);
       setIntegerParam(roi, NDPluginROIStatDim2Min,  (int)pDim->offset);
       setIntegerParam(roi, NDPluginROIStatDim2Size, (int)pDim->size);
@@ -228,7 +260,9 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
       pROI->dims[2] = tempDim;
     }
     
-      status = doComputeStatistics(pArray, pROI);      
+      status = doComputeStatistics(pArray, pROI);  
+
+      lock();
       setDoubleParam(roi, NDPluginROIStatMinValue,    pROI->min);
       setDoubleParam(roi, NDPluginROIStatMaxValue,    pROI->max);
       setDoubleParam(roi, NDPluginROIStatMeanValue,   pROI->mean);
@@ -237,8 +271,14 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
 		"%s ROI=%d, min=%f, max=%f, mean=%f, total=%f, net=%f",
 		functionName, roi, pROI->min, pROI->max, pROI->mean, pROI->total, pROI->net);
     
+      setIntegerParam(NDArraySizeX, 0);
+      setIntegerParam(NDArraySizeY, 0);
+      setIntegerParam(NDArraySizeZ, 0);
+      if (pArray->ndims > 0) setIntegerParam(NDArraySizeX, (int)pROI->dims[userDims[0]].size);
+      if (pArray->ndims > 1) setIntegerParam(NDArraySizeY, (int)pROI->dims[userDims[1]].size);
+      if (pArray->ndims > 2) setIntegerParam(NDArraySizeZ, (int)pROI->dims[userDims[2]].size);
+
     /* We must enter the loop and exit with the mutex locked */
-    this->lock();
     callParamCallbacks(roi);
   }
   callParamCallbacks();
