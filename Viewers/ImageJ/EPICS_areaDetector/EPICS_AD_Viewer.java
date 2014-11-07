@@ -316,7 +316,7 @@ public class EPICS_AD_Viewer implements PlugIn
                          ch_colorMode != null && ch_colorMode.getConnectionState() == Channel.ConnectionState.CONNECTED &&
                          ch_image != null && ch_image.getConnectionState() == Channel.ConnectionState.CONNECTED &&
                          ch_image_id != null && ch_image_id.getConnectionState() == Channel.ConnectionState.CONNECTED);
-            if (connected & !isConnected)
+            if (connected && !isConnected)
             {
                 isConnected = true;
                 logMessage("Connected to EPICS PVs OK", true, true);
