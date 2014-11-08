@@ -32,6 +32,7 @@ asynStatus NDPluginROIStat::doComputeStatisticsT(NDArray *pArray, NDROI *pROI)
     double value = 0;
     int sizex = 0;
     int sizey = 0;
+    int maxSizex = pArray->dims[0].size;
     epicsUInt32 x = 0;
     epicsUInt32 y = 0;
     bool initial = true;
@@ -67,9 +68,9 @@ asynStatus NDPluginROIStat::doComputeStatisticsT(NDArray *pArray, NDROI *pROI)
       for (y=pROI->dims[1].offset; y<(pROI->dims[1].offset+sizey); ++y) {
 	for (x=pROI->dims[0].offset; x<(pROI->dims[0].offset+sizex); ++x) {
 
-	  printf("  y=%d, x=%d\n", y, x);
+	  printf("  y=%d, x=%d, index=%d\n", y, x, x+(y*maxSizex));
 
-	  value = (double)pData[x+(y*sizex)];
+	  value = (double)pData[x+(y*maxSizex)];
 	  if (initial) {
 	    pROI->min = value;
 	    pROI->max = value;
