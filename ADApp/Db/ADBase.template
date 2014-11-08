@@ -555,20 +555,17 @@ record(longin, "$(P)$(R)ArrayCounter_RBV")
 }
 
 # Updated rate calculation to use a smoothing factor w/ guard against negative values
-# 0 rate sets alarm state to MINOR
 record(calc, "$(P)$(R)ArrayRate_RBV")
 {
-    field(INPA, "$(P)$(R)ArrayRate_RBV.LB NPP NMS" )   # Previous counter value
-	field(INPB, "$(P)$(R)ArrayCounter_RBV NPP NMS" )   # Current counter value
-    field(INPC, "1.0")								   # Delta time in seconds
-    field(INPD, "$(P)$(R)ArrayRate_RBV.VAL NPP NMS" )  # Previous rate
-    field(INPE, "0.2" ) # Smoothing factor
-    field(CALC, "(D*E)/C+MAX(0,B-A)*(1-E)/C" )
+    field(INPA, "$(P)$(R)ArrayRate_RBV.LB NPP NMS")   # Previous counter value
+    field(INPB, "$(P)$(R)ArrayCounter_RBV NPP NMS")   # Current counter value
+    field(INPC, "1.0")                                # Delta time in seconds
+    field(INPD, "$(P)$(R)ArrayRate_RBV.VAL NPP NMS")  # Previous rate
+    field(INPE, "$(RATE_SMOOTH=0.0)")                 # Smoothing factor
+    field(CALC, "(D*E)/C+MAX(0,B-A)*(1-E)/C")
     field(PREC, "2" )
     field(EGU,  "Hz" )
     field(SCAN, "1 second")
-	field( LOW,  "0" )
-	field( LSV,  "MINOR" )
 }
 
 ###################################################################
@@ -900,9 +897,6 @@ record(ai, "$(P)$(R)PoolUsedMem")
    field(EGU,  "MB")
    field(SCAN, "1 second")
    field(FLNK, "$(P)$(R)PoolAllocBuffers")
-   field(DISV, "0")
-   field(SDIS, "$(P)$(R)AsynIO.CNCT")
-   field(DISS, "INVALID")
 }
 
 record(longin, "$(P)$(R)PoolAllocBuffers")
