@@ -40,6 +40,8 @@ typedef struct NDROI {
     double mean;
     double min;
     double max;
+  int arraySizeX;
+  int arraySizeY;
 } NDROI_t;
 
 
