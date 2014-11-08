@@ -46,7 +46,6 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     int itemp;
     NDDimension_t dims[ND_ARRAY_MAX_DIMS], tempDim, *pDim;
     size_t userDims[ND_ARRAY_MAX_DIMS];
-    size_t maxSize[ND_ARRAY_MAX_DIMS];
     NDArrayInfo arrayInfo, scratchInfo;
     NDArray *pScratch, *pOutput;
     NDColorMode_t colorMode;
@@ -65,9 +64,6 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     getIntegerParam(NDPluginROIDim0Size,     &itemp); dims[0].size = itemp;
     getIntegerParam(NDPluginROIDim1Size,     &itemp); dims[1].size = itemp;
     getIntegerParam(NDPluginROIDim2Size,     &itemp); dims[2].size = itemp;
-    getIntegerParam(NDPluginROIDim0MaxSize,  &itemp); maxSize[0] = itemp;
-    getIntegerParam(NDPluginROIDim1MaxSize,  &itemp); maxSize[1] = itemp;
-    getIntegerParam(NDPluginROIDim2MaxSize,  &itemp); maxSize[2] = itemp;
     getIntegerParam(NDPluginROIDim0Bin,      &dims[0].binning);
     getIntegerParam(NDPluginROIDim1Bin,      &dims[1].binning);
     getIntegerParam(NDPluginROIDim2Bin,      &dims[2].binning);
@@ -105,12 +101,10 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     for (dim=0; dim<pArray->ndims; dim++) {
         pDim = &dims[dim];
         if (enableDim[dim]) {
-			size_t		newDimSize	= pArray->dims[userDims[dim]].size;
+            size_t newDimSize = pArray->dims[userDims[dim]].size;
             pDim->offset  = MAX(pDim->offset,  0);
             pDim->offset  = MIN(pDim->offset,  newDimSize-1);
             if (autoSize[dim]) pDim->size = newDimSize;
-			/* If ROI was set to show the max, show the new max */
-            if (pDim->size == maxSize[dim]) pDim->size = newDimSize;
             pDim->size    = MAX(pDim->size,    1);
             pDim->size    = MIN(pDim->size,    newDimSize - pDim->offset);
             pDim->binning = MAX(pDim->binning, 1);
