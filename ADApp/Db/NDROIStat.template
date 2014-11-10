@@ -1,0 +1,35 @@
+###################################################################
+#
+# Database template for ROI Stat plugin. This only provides
+# the Name records. To add in ROIs use the NDROIStatN.template,
+# or alternatively use a single NDROIStat8.template to get up to 8
+# ROIs.
+# 
+# Macros:
+# P,R - Base PV name
+# PORT - Asyn port name
+# ADDR - The Asyn address
+# TIMEOUT - Asyn port timeout
+#
+# Matt Pearson
+# Nov 2014
+#
+###################################################################
+
+###################################################################
+#  These records control the label for the ROI                    #
+###################################################################
+record(stringout, "$(P)$(R)Name")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynOctetWrite")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
+}
+
+record(stringin, "$(P)$(R)Name_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
+   field(SCAN, "I/O Intr")
+}
+
