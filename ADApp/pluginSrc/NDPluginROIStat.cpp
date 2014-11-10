@@ -204,9 +204,6 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
       pDim->binning = 1;
     }
     
-    printf(" roi: %d\n", roi);
-    printf(" pArray->ndims: %d\n", pArray->ndims);
-
     /* Update the parameters that may have changed */
     setIntegerParam(roi, NDPluginROIStatDim0MaxSize, 0);
     setIntegerParam(roi, NDPluginROIStatDim1MaxSize, 0);
