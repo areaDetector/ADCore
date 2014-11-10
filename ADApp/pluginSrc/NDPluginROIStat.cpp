@@ -250,24 +250,24 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
     
     pROI->arraySizeX = (int)pArray->dims[userDims[0]].size;
     pROI->arraySizeY = (int)pArray->dims[userDims[1]].size;
-      status = doComputeStatistics(pArray, pROI);  
+    status = doComputeStatistics(pArray, pROI);  
 
-      lock();
-      setDoubleParam(roi, NDPluginROIStatMinValue,    pROI->min);
-      setDoubleParam(roi, NDPluginROIStatMaxValue,    pROI->max);
-      setDoubleParam(roi, NDPluginROIStatMeanValue,   pROI->mean);
-      setDoubleParam(roi, NDPluginROIStatTotal,       pROI->total);
-      asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
-		"%s ROI=%d, min=%f, max=%f, mean=%f, total=%f, net=%f",
-		functionName, roi, pROI->min, pROI->max, pROI->mean, pROI->total, pROI->net);
+    lock();
+    setDoubleParam(roi, NDPluginROIStatMinValue,    pROI->min);
+    setDoubleParam(roi, NDPluginROIStatMaxValue,    pROI->max);
+    setDoubleParam(roi, NDPluginROIStatMeanValue,   pROI->mean);
+    setDoubleParam(roi, NDPluginROIStatTotal,       pROI->total);
+    asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
+	      "%s ROI=%d, min=%f, max=%f, mean=%f, total=%f, net=%f",
+	      functionName, roi, pROI->min, pROI->max, pROI->mean, pROI->total, pROI->net);
     
-      setIntegerParam(NDArraySizeX, 0);
-      setIntegerParam(NDArraySizeY, 0);
-      setIntegerParam(NDArraySizeZ, 0);
-      if (pArray->ndims > 0) setIntegerParam(NDArraySizeX, (int)pROI->dims[userDims[0]].size);
-      if (pArray->ndims > 1) setIntegerParam(NDArraySizeY, (int)pROI->dims[userDims[1]].size);
-      if (pArray->ndims > 2) setIntegerParam(NDArraySizeZ, (int)pROI->dims[userDims[2]].size);
-
+    setIntegerParam(NDArraySizeX, 0);
+    setIntegerParam(NDArraySizeY, 0);
+    setIntegerParam(NDArraySizeZ, 0);
+    if (pArray->ndims > 0) setIntegerParam(NDArraySizeX, (int)pROI->dims[userDims[0]].size);
+    if (pArray->ndims > 1) setIntegerParam(NDArraySizeY, (int)pROI->dims[userDims[1]].size);
+    if (pArray->ndims > 2) setIntegerParam(NDArraySizeZ, (int)pROI->dims[userDims[2]].size);
+    
     /* We must enter the loop and exit with the mutex locked */
     callParamCallbacks(roi);
   }
