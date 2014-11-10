@@ -41,12 +41,6 @@ asynStatus NDPluginROIStat::doComputeStatisticsT(NDArray *pArray, NDROI *pROI)
     pROI->total = 0;
     pROI->mean = 0;
 
-    printf(" compute: dims: %d\n", (int)pArray->ndims);
-    printf(" pROI->dims[0].size: %d\n", (int)pROI->dims[0].size);
-    printf(" pROI->dims[1].size: %d\n", (int)pROI->dims[1].size);
-    printf(" pROI->dims[0].offset: %d\n", (int)pROI->dims[0].offset);
-    printf(" pROI->dims[1].offset: %d\n", (int)pROI->dims[1].offset);
-    
     if (pArray->ndims == 1) {
       pROI->nElements = pROI->dims[0].size;
       for (x=pROI->dims[0].offset; x<(pROI->dims[0].offset+pROI->nElements); ++x) {
@@ -66,9 +60,6 @@ asynStatus NDPluginROIStat::doComputeStatisticsT(NDArray *pArray, NDROI *pROI)
       pROI->nElements = sizex * sizey;
       for (y=pROI->dims[1].offset; y<(pROI->dims[1].offset+sizey); ++y) {
 	for (x=pROI->dims[0].offset; x<(pROI->dims[0].offset+sizex); ++x) {
-
-	  printf("  y=%d, x=%d, index=%d\n", y, x, x+(y*pROI->arraySizeX));
-
 	  value = (double)pData[x+(y*pROI->arraySizeX)];
 	  if (initial) {
 	    pROI->min = value;
@@ -78,8 +69,6 @@ asynStatus NDPluginROIStat::doComputeStatisticsT(NDArray *pArray, NDROI *pROI)
 	  if (value > pROI->max) pROI->max = value;
 	  pROI->total += value;
 	  initial = false;
-	  printf("  value=%f, pROI->min=%f, pROI->max=%f, pROI->total=%f\n", value, pROI->min, pROI->max, pROI->total);
-
 	}
       }
     }
