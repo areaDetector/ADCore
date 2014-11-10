@@ -258,8 +258,8 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
     setDoubleParam(roi, NDPluginROIStatMeanValue,   pROI->mean);
     setDoubleParam(roi, NDPluginROIStatTotal,       pROI->total);
     asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
-	      "%s ROI=%d, min=%f, max=%f, mean=%f, total=%f, net=%f",
-	      functionName, roi, pROI->min, pROI->max, pROI->mean, pROI->total, pROI->net);
+	      "%s ROI=%d, min=%f, max=%f, mean=%f, total=%f\n",
+	      functionName, roi, pROI->min, pROI->max, pROI->mean, pROI->total);
     
     setIntegerParam(NDArraySizeX, 0);
     setIntegerParam(NDArraySizeY, 0);

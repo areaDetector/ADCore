@@ -36,7 +36,6 @@ typedef struct NDROI {
     NDDimension_t dims[ND_ARRAY_MAX_DIMS];
     int nElements;
     double total;
-    double net;
     double mean;
     double min;
     double max;
