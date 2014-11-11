@@ -77,10 +77,15 @@ typedef unsigned char _Bool;
 #endif
 #include <sys/types.h>
 #ifdef HAVE_INTTYPES_H
-#include <inttypes.h>
+  #include <inttypes.h>
 #else
-#include "pstdint.h"
+  #if HAVE_STDINT_H
+    #include <stdint.h>
+  #else
+    #include "pstdint.h"
+  #endif
 #endif
+
 #include <limits.h>
 
 #ifndef HAVE_SSIZE_T
