@@ -320,6 +320,7 @@ asynStatus NDPluginROIStat::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
 /**
  * Reset the data for an ROI.
+ * \param[in] roi
  */
 asynStatus NDPluginROIStat::clear(epicsUInt32 roi)
 {
@@ -327,6 +328,9 @@ asynStatus NDPluginROIStat::clear(epicsUInt32 roi)
   bool stat = true;
   const char* functionName = "NDPluginROIStat::clear";
   
+  asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
+	    "%s: Clearing params. roi=%d\n", functionName, roi);
+
   stat = (setDoubleParam(roi, NDPluginROIStatMinValue,  0.0) == asynSuccess) && stat;
   stat = (setDoubleParam(roi, NDPluginROIStatMaxValue,  0.0) == asynSuccess) && stat;
   stat = (setDoubleParam(roi, NDPluginROIStatMeanValue, 0.0) == asynSuccess) && stat;
