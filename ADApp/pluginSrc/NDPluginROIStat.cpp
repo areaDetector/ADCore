@@ -389,6 +389,7 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
   if(!this->pROIs) {cantProceed(functionName);}
   
   /* ROI general parameters */
+  createParam(NDPluginROIStatFirstString,              asynParamInt32, &NDPluginROIStatFirst);
   createParam(NDPluginROIStatNameString,              asynParamOctet, &NDPluginROIStatName);
   createParam(NDPluginROIStatUseString,               asynParamInt32, &NDPluginROIStatUse);
   createParam(NDPluginROIStatResetString,             asynParamInt32, &NDPluginROIStatReset);
@@ -410,11 +411,17 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
   createParam(NDPluginROIStatMaxValueString,          asynParamFloat64, &NDPluginROIStatMaxValue);
   createParam(NDPluginROIStatMeanValueString,         asynParamFloat64, &NDPluginROIStatMeanValue);
   createParam(NDPluginROIStatTotalString,             asynParamFloat64, &NDPluginROIStatTotal);
+
+  createParam(NDPluginROIStatLastString,              asynParamInt32, &NDPluginROIStatLast);
   
   /* Set the plugin type string */
   setStringParam(NDPluginDriverPluginType, "NDPluginROIStat");
   
   for (int roi=0; roi<this->maxROIs; ++roi) {
+    
+    setIntegerParam(roi , NDPluginROIStatFirst,               0);
+    setIntegerParam(roi , NDPluginROIStatLast,               0);
+
     setStringParam (roi,  NDPluginROIStatName,              "");
     setIntegerParam(roi , NDPluginROIStatUse,               0);
     
@@ -432,11 +439,13 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
     setDoubleParam (roi , NDPluginROIStatMaxValue,          0.0);
     setDoubleParam (roi , NDPluginROIStatMeanValue,         0.0);
     setDoubleParam (roi , NDPluginROIStatTotal,             0.0);
+    callParamCallbacks(roi);
   }
 
   /* Try to connect to the array port */
   connectToArrayPort();
 
+  callParamCallbacks();
   
 }
 

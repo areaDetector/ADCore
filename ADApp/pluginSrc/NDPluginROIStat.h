@@ -11,6 +11,8 @@
 #include "NDPluginDriver.h"
 
 /* ROI general parameters */
+#define NDPluginROIStatFirstString              "FIRST"
+#define NDPluginROIStatLastString               "LAST"
 #define NDPluginROIStatNameString               "NAME"                /* (asynOctet,   r/w) Name of this ROI */
 #define NDPluginROIStatUseString                "USE"                 /* (asynInt32,   r/w) Use this ROI? */
 #define NDPluginROIStatResetString              "RESET"               /* (asynInt32,   r/w) Reset ROI data. */
@@ -61,6 +63,7 @@ public:
     asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
 
 protected:
+
     //ROI general parameters
     int NDPluginROIStatFirst;
     #define FIRST_NDPLUGIN_ROISTAT_PARAM NDPluginROIStatFirst
