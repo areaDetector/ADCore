@@ -33,3 +33,12 @@ record(stringin, "$(P)$(R)Name_RBV")
    field(SCAN, "I/O Intr")
 }
 
+###################################################################
+#  Rset the data for all the ROIs                                 #
+###################################################################
+record(bo, "$(P)$(R)ResetAll")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))RESETALL")
+}
+

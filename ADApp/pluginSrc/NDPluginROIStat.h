@@ -13,6 +13,8 @@
 /* ROI general parameters */
 #define NDPluginROIStatNameString               "NAME"                /* (asynOctet,   r/w) Name of this ROI */
 #define NDPluginROIStatUseString                "USE"                 /* (asynInt32,   r/w) Use this ROI? */
+#define NDPluginROIStatResetString              "RESET"               /* (asynInt32,   r/w) Reset ROI data. */
+#define NDPluginROIStatResetAllString           "RESETALL"            /* (asynInt32,   r/w) Reset ROI data for all ROIs. */
 
 /* ROI definition */
 #define NDPluginROIStatDim0MinString            "DIM0_MIN"          /* (asynInt32,   r/w) Starting element of ROI in each dimension */
@@ -64,6 +66,8 @@ protected:
     #define FIRST_NDPLUGIN_ROISTAT_PARAM NDPluginROIStatFirst
     int NDPluginROIStatName;
     int NDPluginROIStatUse;
+    int NDPluginROIStatReset;
+    int NDPluginROIStatResetAll;
 
     //ROI definition
     int NDPluginROIStatDim0Min;

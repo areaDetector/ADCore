@@ -10,7 +10,7 @@
 # P,R - Base PV name
 # PORT - Asyn port name
 # ROI - The address to use for this ROI (start at 0, up to maxROIs)
-#        This ROI number is appended on to the end of the R base PV name.
+#       This ROI number is appended on to the end of the R macro base PV name.
 # TIMEOUT - Asyn port timeout
 #
 # Matt Pearson
@@ -40,6 +40,15 @@ record(bi, "$(P)$(R)$(ROI):Use_RBV")
    field(ZNAM, "No")
    field(ONAM, "Yes")
    field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  Only reset the data for this ROI                               #
+###################################################################
+record(bo, "$(P)$(R)$(ROI):Reset")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ROI),$(TIMEOUT))RESET")
 }
 
 ###################################################################

@@ -274,7 +274,6 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
   callParamCallbacks();
 }
 
-
 /** Called when asyn clients call pasynInt32->write().
   * This function performs actions for some parameters, including minimum, size, binning, etc. for each ROI.
   * For other parameters it calls NDPluginDriver::writeInt32 to see if that method understands the parameter.
@@ -285,7 +284,7 @@ asynStatus NDPluginROIStat::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
-    int roi=0;
+    int roi = 0;
     NDROI *pROI;
     const char* functionName = "NDPluginROIStat::writeInt32";
 
@@ -361,6 +360,8 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
   /* ROI general parameters */
   createParam(NDPluginROIStatNameString,              asynParamOctet, &NDPluginROIStatName);
   createParam(NDPluginROIStatUseString,               asynParamInt32, &NDPluginROIStatUse);
+  createParam(NDPluginROIStatResetString,             asynParamInt32, &NDPluginROIStatReset);
+  createParam(NDPluginROIStatResetAllString,          asynParamInt32, &NDPluginROIStatResetAll);
   
   /* ROI definition */
   createParam(NDPluginROIStatDim0MinString,           asynParamInt32, &NDPluginROIStatDim0Min);
