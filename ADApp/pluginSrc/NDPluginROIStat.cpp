@@ -268,7 +268,6 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
 }
 
 /** Called when asyn clients call pasynInt32->write().
-  * This function performs actions for some parameters, including minimum, size, binning, etc. for each ROI.
   * For other parameters it calls NDPluginDriver::writeInt32 to see if that method understands the parameter.
   * For all parameters it sets the value in the parameter library and calls any registered callbacks..
   * \param[in] pasynUser pasynUser structure that encodes the reason and address.
@@ -277,34 +276,39 @@ asynStatus NDPluginROIStat::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
+    bool stat = true;
     int roi = 0;
     NDROI *pROI;
     const char* functionName = "NDPluginROIStat::writeInt32";
 
-    status = getAddress(pasynUser, &roi); if (status != asynSuccess) return(status);
+    status = getAddress(pasynUser, &roi); 
+    if (status != asynSuccess) {
+      return status;
+    }
 
     pROI = &this->pROIs[roi];
     /* Set parameter and readback in parameter library */
-    status = setIntegerParam(roi, function, value);
+    stat = (setIntegerParam(roi, function, value) == asynSuccess) && stat;
     
     if (function == NDPluginROIStatReset) {
-      status = clear(roi);
+      stat = (clear(roi) == asynSuccess) && stat;
     } else if (function < FIRST_NDPLUGIN_ROISTAT_PARAM) {
-      status = NDPluginDriver::writeInt32(pasynUser, value);
+      stat = (NDPluginDriver::writeInt32(pasynUser, value) == asynSuccess) && stat;
     }
     
     /* Do callbacks so higher layers see any changes */
-    status = callParamCallbacks(roi);
-    status = callParamCallbacks();
+    stat = (callParamCallbacks(roi) == asynSuccess) && stat;
+    stat = (callParamCallbacks() == asynSuccess) && stat;
 
-    if (status) {
+    if (!stat) {
         epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-                  "%s: status=%d, function=%d, value=%d",
-                  functionName, status, function, value);
+		      "%s: status=%d, function=%d, value=%d",
+		      functionName, status, function, value);
+	status = asynError;
     } else {
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
-              "%s: function=%d, roi=%d, value=%d\n",
-              functionName, function, roi, value);
+      asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+		"%s: function=%d, roi=%d, value=%d\n",
+		functionName, function, roi, value);
     }
     
     return status;
