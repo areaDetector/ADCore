@@ -433,6 +433,10 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
     setDoubleParam (roi , NDPluginROIStatMeanValue,         0.0);
     setDoubleParam (roi , NDPluginROIStatTotal,             0.0);
   }
+
+  /* Try to connect to the array port */
+  connectToArrayPort();
+
   
 }
 
