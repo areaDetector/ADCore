@@ -261,13 +261,6 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
 	      "%s ROI=%d, min=%f, max=%f, mean=%f, total=%f\n",
 	      functionName, roi, pROI->min, pROI->max, pROI->mean, pROI->total);
     
-    setIntegerParam(NDArraySizeX, 0);
-    setIntegerParam(NDArraySizeY, 0);
-    setIntegerParam(NDArraySizeZ, 0);
-    if (pArray->ndims > 0) setIntegerParam(NDArraySizeX, (int)pROI->dims[userDims[0]].size);
-    if (pArray->ndims > 1) setIntegerParam(NDArraySizeY, (int)pROI->dims[userDims[1]].size);
-    if (pArray->ndims > 2) setIntegerParam(NDArraySizeZ, (int)pROI->dims[userDims[2]].size);
-    
     /* We must enter the loop and exit with the mutex locked */
     callParamCallbacks(roi);
   }
