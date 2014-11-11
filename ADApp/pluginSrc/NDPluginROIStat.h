@@ -93,6 +93,7 @@ private:
 
     template <typename epicsType> asynStatus doComputeStatisticsT(NDArray *pArray, NDROI_t *pROI);
     asynStatus doComputeStatistics(NDArray *pArray, NDROI_t *pStats);
+    asynStatus clear(epicsUInt32 roi);
 
     int maxROIs;
     NDROI_t *pROIs;    /* Array of NDROI structures */

@@ -288,10 +288,7 @@ asynStatus NDPluginROIStat::writeInt32(asynUser *pasynUser, epicsInt32 value)
     status = setIntegerParam(roi, function, value);
     
     if (function == NDPluginROIStatReset) {
-      setDoubleParam (roi , NDPluginROIStatMinValue,          0.0);
-      setDoubleParam (roi , NDPluginROIStatMaxValue,          0.0);
-      setDoubleParam (roi , NDPluginROIStatMeanValue,         0.0);
-      setDoubleParam (roi , NDPluginROIStatTotal,             0.0);
+      status = clear(roi);
     } else if (function < FIRST_NDPLUGIN_ROISTAT_PARAM) {
       status = NDPluginDriver::writeInt32(pasynUser, value);
     }
@@ -311,6 +308,29 @@ asynStatus NDPluginROIStat::writeInt32(asynUser *pasynUser, epicsInt32 value)
     }
     
     return status;
+}
+
+/**
+ * Reset the data for an ROI.
+ */
+asynStatus NDPluginROIStat::clear(epicsUInt32 roi)
+{
+  asynStatus status = asynSuccess;
+  bool stat = true;
+  const char* functionName = "NDPluginROIStat::clear";
+  
+  stat = (setDoubleParam(roi, NDPluginROIStatMinValue,  0.0) == asynSuccess) && stat;
+  stat = (setDoubleParam(roi, NDPluginROIStatMaxValue,  0.0) == asynSuccess) && stat;
+  stat = (setDoubleParam(roi, NDPluginROIStatMeanValue, 0.0) == asynSuccess) && stat;
+  stat = (setDoubleParam(roi, NDPluginROIStatTotal,     0.0) == asynSuccess) && stat;
+
+  if (!stat) {
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+	      "%s: Error clearing params. roi=%d\n", functionName, roi);
+    status = asynError;
+  }
+
+  return status;
 }
 
 
