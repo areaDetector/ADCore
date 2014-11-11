@@ -18,22 +18,7 @@
 #
 ###################################################################
 
-###################################################################
-#  These records control the label for the ROI                    #
-###################################################################
-record(stringout, "$(P)$(R)Name")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynOctetWrite")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
-}
-
-record(stringin, "$(P)$(R)Name_RBV")
-{
-   field(DTYP, "asynOctetRead")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
-   field(SCAN, "I/O Intr")
-}
+include "NDROIStat.template"
 
 ###################################################################
 # Instantiate the ROI specific records

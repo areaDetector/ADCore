@@ -292,6 +292,10 @@ asynStatus NDPluginROIStat::writeInt32(asynUser *pasynUser, epicsInt32 value)
     
     if (function == NDPluginROIStatReset) {
       stat = (clear(roi) == asynSuccess) && stat;
+    } else if (function == NDPluginROIStatResetAll) {
+      for (int i=0; i<this->maxROIs; ++i) {
+	stat = (clear(i) == asynSuccess) && stat;
+      }
     } else if (function < FIRST_NDPLUGIN_ROISTAT_PARAM) {
       stat = (NDPluginDriver::writeInt32(pasynUser, value) == asynSuccess) && stat;
     }
@@ -327,6 +331,8 @@ asynStatus NDPluginROIStat::clear(epicsUInt32 roi)
   stat = (setDoubleParam(roi, NDPluginROIStatMaxValue,  0.0) == asynSuccess) && stat;
   stat = (setDoubleParam(roi, NDPluginROIStatMeanValue, 0.0) == asynSuccess) && stat;
   stat = (setDoubleParam(roi, NDPluginROIStatTotal,     0.0) == asynSuccess) && stat;
+
+  stat = (callParamCallbacks(roi) == asynSuccess) && stat;
 
   if (!stat) {
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
