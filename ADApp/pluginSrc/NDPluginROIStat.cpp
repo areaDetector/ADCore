@@ -292,10 +292,14 @@ asynStatus NDPluginROIStat::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
     pROI = &this->pROIs[roi];
     /* Set parameter and readback in parameter library */
-    status = setIntegerParam(roi , function, value);
+    status = setIntegerParam(roi, function, value);
     
-    /* This was not a parameter that this driver understands, try the base class */
-    if (function < FIRST_NDPLUGIN_ROISTAT_PARAM) {
+    if (function == NDPluginROIStatReset) {
+      setDoubleParam (roi , NDPluginROIStatMinValue,          0.0);
+      setDoubleParam (roi , NDPluginROIStatMaxValue,          0.0);
+      setDoubleParam (roi , NDPluginROIStatMeanValue,         0.0);
+      setDoubleParam (roi , NDPluginROIStatTotal,             0.0);
+    } else if (function < FIRST_NDPLUGIN_ROISTAT_PARAM) {
       status = NDPluginDriver::writeInt32(pasynUser, value);
     }
     
