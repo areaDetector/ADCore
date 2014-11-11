@@ -43,6 +43,7 @@ public:
                  int priority, int stackSize);
     /* These methods override the virtual methods in the base class */
     void processCallbacks(NDArray *pArray);
+    asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
 
 protected:
     /* ROI general parameters */
@@ -78,6 +79,8 @@ protected:
     #define LAST_NDPLUGIN_ROI_PARAM NDPluginROIScale
                                 
 private:
+    int requestedSize_[3];
+    int requestedOffset_[3];
 };
 #define NUM_NDPLUGIN_ROI_PARAMS ((int)(&LAST_NDPLUGIN_ROI_PARAM - &FIRST_NDPLUGIN_ROI_PARAM + 1))
     
