@@ -153,6 +153,64 @@
 	  bi
 	</td>
       </tr>
+
+      <tr>
+        <td>
+          NDArraySizeX</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The X size of the output NDArray object.</td>
+        <td>
+          ARRAY_SIZE_X</td>
+        <td> 
+	  $(P)$(R)ArraySizeX_RBV
+	</td>
+        <td>
+	  longin
+	</td>
+      </tr>
+
+      <tr>
+        <td>
+          NDArraySizeY</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The Y size of the output NDArray object.</td>
+        <td>
+          ARRAY_SIZE_Y</td>
+        <td> 
+	  $(P)$(R)ArraySizeY_RBV
+	</td>
+        <td>
+	  longin
+	</td>
+      </tr>
+
+      <tr>
+        <td>
+          NDArraySizeZ</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The Z size of the output NDArray object.</td>
+        <td>
+          ARRAY_SIZE_Z</td>
+        <td> 
+	  $(P)$(R)ArraySizeZ_RBV
+	</td>
+        <td>
+	  longin
+	</td>
+      </tr>
+
       </tbody>
       </table>
   
@@ -505,6 +563,6 @@
 
   <h2 id="Notes">
     Notes</h2>
-  None so far.
+  The EPICS database interface supports 3-D ROIs, but the driver only supports 1-D and 2-D at the moment.
 </body>
 </html>
