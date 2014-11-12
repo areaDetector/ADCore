@@ -154,6 +154,11 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
   pAttribute = pArray->pAttributeList->find("ColorMode");
   if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
 
+  //Set NDArraySize params to the input pArray, because this plugin doesn't change them
+  if (pArray->ndims > 0) setIntegerParam(NDArraySizeX, (int)pArray->dims[0].size);
+  if (pArray->ndims > 1) setIntegerParam(NDArraySizeY, (int)pArray->dims[1].size);
+  if (pArray->ndims > 2) setIntegerParam(NDArraySizeZ, (int)pArray->dims[2].size);
+
   /* Loop over the ROIs in this driver */
   for (int roi=0; roi<this->maxROIs; ++roi) {
     
