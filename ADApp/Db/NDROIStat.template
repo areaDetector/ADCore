@@ -16,14 +16,15 @@
 #
 ###################################################################
 
-###################################################################
-#  These records control the label for the ROI                    #
-###################################################################
+# ///
+# /// The name of the plugin.
+# ///
 record(stringout, "$(P)$(R)Name")
 {
    field(PINI, "YES")
    field(DTYP, "asynOctetWrite")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
+   info(autosaveFields, "VAL")
 }
 
 record(stringin, "$(P)$(R)Name_RBV")
@@ -33,12 +34,39 @@ record(stringin, "$(P)$(R)Name_RBV")
    field(SCAN, "I/O Intr")
 }
 
-###################################################################
-#  Reset the data for all the ROIs                                 #
-###################################################################
+# ///
+# /// Reset the data for all the ROIs
+# ///
 record(bo, "$(P)$(R)ResetAll")
 {
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))RESETALL")
+}
+
+# ///
+# /// Do NDArray callbacks. This is an option for efficiency reasons. 
+# /// If enabled, a new NDArray will be output with a modified NDAttributeList. 
+# /// This can be used to save the ROI data to the output NDArray.
+# ///
+record(bo, "$(P)$(R)NDArrayCallbacks")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_CALLBACKS")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(VAL,  "0")
+   info(autosaveFields, "VAL")
+}
+
+# ///
+# /// Do NDArray callbacks (readback)
+# ///
+record(bi, "$(P)$(R)NDArrayCallbacks_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_CALLBACKS")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
 }
 

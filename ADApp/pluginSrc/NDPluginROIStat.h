@@ -17,6 +17,7 @@
 #define NDPluginROIStatUseString                "USE"                 /* (asynInt32,   r/w) Use this ROI? */
 #define NDPluginROIStatResetString              "RESET"               /* (asynInt32,   r/w) Reset ROI data. */
 #define NDPluginROIStatResetAllString           "RESETALL"            /* (asynInt32,   r/w) Reset ROI data for all ROIs. */
+#define NDPluginROIStatNDArrayCallbacksString   "NDARRAY_CALLBACKS"   /* (asynInt32,   r/w) Do NDArray callbacks. */
 
 /* ROI definition */
 #define NDPluginROIStatDim0MinString            "DIM0_MIN"          /* (asynInt32,   r/w) Starting element of ROI in each dimension */
@@ -71,6 +72,7 @@ protected:
     int NDPluginROIStatUse;
     int NDPluginROIStatReset;
     int NDPluginROIStatResetAll;
+    int NDPluginROIStatNDArrayCallbacks;
 
     //ROI definition
     int NDPluginROIStatDim0Min;

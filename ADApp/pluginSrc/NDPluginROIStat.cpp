@@ -257,7 +257,7 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
     pROI->arraySizeY = (int)pArray->dims[userDims[1]].size;
     status = doComputeStatistics(pArray, pROI);  
 
-    lock();
+    this->lock();
     setDoubleParam(roi, NDPluginROIStatMinValue,    pROI->min);
     setDoubleParam(roi, NDPluginROIStatMaxValue,    pROI->max);
     setDoubleParam(roi, NDPluginROIStatMeanValue,   pROI->mean);
@@ -265,6 +265,25 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
     asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
 	      "%s ROI=%d, min=%f, max=%f, mean=%f, total=%f\n",
 	      functionName, roi, pROI->min, pROI->max, pROI->mean, pROI->total);
+    
+
+    int arrayCallbacks = 0;
+    getIntegerParam(NDPluginROIStatNDArrayCallbacks, &arrayCallbacks);
+    if (arrayCallbacks == 1) {
+      NDArray *pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 1);
+      if (pArrayOut != NULL) {
+        this->getAttributes(pArrayOut->pAttributeList);
+        this->unlock();
+        doCallbacksGenericPointer(pArrayOut, NDArrayData, 0);
+        this->lock();
+        pArrayOut->release();
+      }
+      else {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+		  "%s: Couldn't allocate output array. Callbacks failed.\n", 
+		  functionName);
+      }
+    }
     
     /* We must enter the loop and exit with the mutex locked */
     callParamCallbacks(roi);
@@ -394,11 +413,12 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
   if(!this->pROIs) {cantProceed(functionName);}
   
   /* ROI general parameters */
-  createParam(NDPluginROIStatFirstString,              asynParamInt32, &NDPluginROIStatFirst);
+  createParam(NDPluginROIStatFirstString,             asynParamInt32, &NDPluginROIStatFirst);
   createParam(NDPluginROIStatNameString,              asynParamOctet, &NDPluginROIStatName);
   createParam(NDPluginROIStatUseString,               asynParamInt32, &NDPluginROIStatUse);
   createParam(NDPluginROIStatResetString,             asynParamInt32, &NDPluginROIStatReset);
   createParam(NDPluginROIStatResetAllString,          asynParamInt32, &NDPluginROIStatResetAll);
+  createParam(NDPluginROIStatNDArrayCallbacksString,  asynParamInt32, &NDPluginROIStatNDArrayCallbacks);
   
   /* ROI definition */
   createParam(NDPluginROIStatDim0MinString,           asynParamInt32, &NDPluginROIStatDim0Min);
@@ -419,13 +439,15 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
 
   createParam(NDPluginROIStatLastString,              asynParamInt32, &NDPluginROIStatLast);
   
+  //Note: params set to a default value here will overwrite a default database value
+
   /* Set the plugin type string */
   setStringParam(NDPluginDriverPluginType, "NDPluginROIStat");
   
   for (int roi=0; roi<this->maxROIs; ++roi) {
     
-    setIntegerParam(roi , NDPluginROIStatFirst,               0);
-    setIntegerParam(roi , NDPluginROIStatLast,               0);
+    setIntegerParam(roi , NDPluginROIStatFirst,             0);
+    setIntegerParam(roi , NDPluginROIStatLast,              0);
 
     setStringParam (roi,  NDPluginROIStatName,              "");
     setIntegerParam(roi , NDPluginROIStatUse,               0);
