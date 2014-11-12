@@ -11,30 +11,30 @@
 #include "NDPluginDriver.h"
 
 /* ROI general parameters */
-#define NDPluginROIStatFirstString              "FIRST"
-#define NDPluginROIStatLastString               "LAST"
-#define NDPluginROIStatNameString               "NAME"                /* (asynOctet,   r/w) Name of this ROI */
-#define NDPluginROIStatResetAllString           "RESETALL"            /* (asynInt32,   r/w) Reset ROI data for all ROIs. */
-#define NDPluginROIStatNDArrayCallbacksString   "NDARRAY_CALLBACKS"   /* (asynInt32,   r/w) Do NDArray callbacks. */
+#define NDPluginROIStatFirstString              "ROISTAT_FIRST"
+#define NDPluginROIStatLastString               "ROISTAT_LAST"
+#define NDPluginROIStatNameString               "ROISTAT_NAME"              /* (asynOctet, r/w) Name of this ROI */
+#define NDPluginROIStatResetAllString           "ROISTAT_RESETALL"          /* (asynInt32, r/w) Reset ROI data for all ROIs. */
+#define NDPluginROIStatNDArrayCallbacksString   "ROISTAT_NDARRAY_CALLBACKS" /* (asynInt32, r/w) Do NDArray callbacks. */
 
 /* ROI definition */
-#define NDPluginROIStatUseString                "USE"               /* (asynInt32,   r/w) Use this ROI? */
-#define NDPluginROIStatResetString              "RESET"             /* (asynInt32,   r/w) Reset ROI data. */
-#define NDPluginROIStatDim0MinString            "DIM0_MIN"          /* (asynInt32,   r/w) Starting element of ROI in X dimension */
-#define NDPluginROIStatDim0SizeString           "DIM0_SIZE"         /* (asynInt32,   r/w) Size of ROI in X dimension */
-#define NDPluginROIStatDim0MaxSizeString        "DIM0_MAX_SIZE"     /* (asynInt32,   r/o) Maximum size of ROI in X dimension */
-#define NDPluginROIStatDim1MinString            "DIM1_MIN"          /* (asynInt32,   r/w) Starting element of ROI in Y dimension */
-#define NDPluginROIStatDim1SizeString           "DIM1_SIZE"         /* (asynInt32,   r/w) Size of ROI in Y dimension */
-#define NDPluginROIStatDim1MaxSizeString        "DIM1_MAX_SIZE"     /* (asynInt32,   r/o) Maximum size of ROI in Y dimension */
-#define NDPluginROIStatDim2MinString            "DIM2_MIN"          /* (asynInt32,   r/w) Starting element of ROI in Z dimension */
-#define NDPluginROIStatDim2SizeString           "DIM2_SIZE"         /* (asynInt32,   r/w) Size of ROI in Z dimension */
-#define NDPluginROIStatDim2MaxSizeString        "DIM2_MAX_SIZE"     /* (asynInt32,   r/o) Maximum size of ROI in Z dimension */
+#define NDPluginROIStatUseString                "ROISTAT_USE"               /* (asynInt32, r/w) Use this ROI? */
+#define NDPluginROIStatResetString              "ROISTAT_RESET"             /* (asynInt32, r/w) Reset ROI data. */
+#define NDPluginROIStatDim0MinString            "ROISTAT_DIM0_MIN"          /* (asynInt32, r/w) Starting element of ROI in X dimension */
+#define NDPluginROIStatDim0SizeString           "ROISTAT_DIM0_SIZE"         /* (asynInt32, r/w) Size of ROI in X dimension */
+#define NDPluginROIStatDim0MaxSizeString        "ROISTAT_DIM0_MAX_SIZE"     /* (asynInt32, r/o) Maximum size of ROI in X dimension */
+#define NDPluginROIStatDim1MinString            "ROISTAT_DIM1_MIN"          /* (asynInt32, r/w) Starting element of ROI in Y dimension */
+#define NDPluginROIStatDim1SizeString           "ROISTAT_DIM1_SIZE"         /* (asynInt32, r/w) Size of ROI in Y dimension */
+#define NDPluginROIStatDim1MaxSizeString        "ROISTAT_DIM1_MAX_SIZE"     /* (asynInt32, r/o) Maximum size of ROI in Y dimension */
+#define NDPluginROIStatDim2MinString            "ROISTAT_DIM2_MIN"          /* (asynInt32, r/w) Starting element of ROI in Z dimension */
+#define NDPluginROIStatDim2SizeString           "ROISTAT_DIM2_SIZE"         /* (asynInt32, r/w) Size of ROI in Z dimension */
+#define NDPluginROIStatDim2MaxSizeString        "ROISTAT_DIM2_MAX_SIZE"     /* (asynInt32, r/o) Maximum size of ROI in Z dimension */
 
 /* ROI statistics */
-#define NDPluginROIStatMinValueString           "MIN_VALUE"         /* (asynFloat64, r/o) Minimum counts in any element */
-#define NDPluginROIStatMaxValueString           "MAX_VALUE"         /* (asynFloat64, r/o) Maximum counts in any element */
-#define NDPluginROIStatMeanValueString          "MEAN_VALUE"        /* (asynFloat64, r/o) Mean counts of all elements */
-#define NDPluginROIStatTotalString              "TOTAL"             /* (asynFloat64, r/o) Sum of all elements */
+#define NDPluginROIStatMinValueString           "ROISTAT_MIN_VALUE"         /* (asynFloat64, r/o) Minimum counts in any element */
+#define NDPluginROIStatMaxValueString           "ROISTAT_MAX_VALUE"         /* (asynFloat64, r/o) Maximum counts in any element */
+#define NDPluginROIStatMeanValueString          "ROISTAT_MEAN_VALUE"        /* (asynFloat64, r/o) Mean counts of all elements */
+#define NDPluginROIStatTotalString              "ROISTAT_TOTAL"             /* (asynFloat64, r/o) Sum of all elements */
 
 /** Structure defining a Region-Of-Interest and Stats */
 typedef struct NDROI {

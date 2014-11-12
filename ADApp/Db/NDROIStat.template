@@ -23,14 +23,14 @@ record(stringout, "$(P)$(R)Name")
 {
    field(PINI, "YES")
    field(DTYP, "asynOctetWrite")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_NAME")
    info(autosaveFields, "VAL")
 }
 
 record(stringin, "$(P)$(R)Name_RBV")
 {
    field(DTYP, "asynOctetRead")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_NAME")
    field(SCAN, "I/O Intr")
 }
 
@@ -40,7 +40,7 @@ record(stringin, "$(P)$(R)Name_RBV")
 record(bo, "$(P)$(R)ResetAll")
 {
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))RESETALL")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_RESETALL")
 }
 
 # ///
@@ -51,7 +51,7 @@ record(bo, "$(P)$(R)ResetAll")
 record(bo, "$(P)$(R)NDArrayCallbacks")
 {
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_CALLBACKS")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_NDARRAY_CALLBACKS")
    field(ZNAM, "No")
    field(ONAM, "Yes")
    field(VAL,  "0")
@@ -64,9 +64,35 @@ record(bo, "$(P)$(R)NDArrayCallbacks")
 record(bi, "$(P)$(R)NDArrayCallbacks_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_CALLBACKS")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_NDARRAY_CALLBACKS")
    field(ZNAM, "No")
    field(ONAM, "Yes")
    field(SCAN, "I/O Intr")
 }
 
+###################################################################
+# Set the NDArray sizes. 
+# These parameters are defined in asynNDArrayDriver. They will
+# define the size of the NDArray output, and should match the input size.
+###################################################################
+
+record(longin, "$(P)$(R)ArraySizeX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_X")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)ArraySizeY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_Y")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)ArraySizeZ_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_Z")
+   field(SCAN, "I/O Intr")
+}
