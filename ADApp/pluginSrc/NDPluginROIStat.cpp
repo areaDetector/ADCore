@@ -129,7 +129,7 @@ asynStatus NDPluginROIStat::doComputeStatistics(NDArray *pArray, NDROI *pROI)
     return asynError;
     break;
   }
-  return asynSuccess;
+  return status;
 }
 
 
@@ -148,7 +148,7 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
   int use = 0;
   int itemp = 0;
   int dim = 0;
-  int status = 0;
+  asynStatus status = asynSuccess;
   NDDimension_t *pDim;
   int userDims[ND_ARRAY_MAX_DIMS];
   NDROI *pROI = NULL;
@@ -264,7 +264,12 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
     
     pROI->arraySizeX = (int)pArray->dims[userDims[0]].size;
     pROI->arraySizeY = (int)pArray->dims[userDims[1]].size;
-    status = doComputeStatistics(pArray, pROI);  
+    status = doComputeStatistics(pArray, pROI);
+    if (status != asynSuccess) {
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+		"%s: doComputeStatistics failed. status=%d\n", 
+		functionName, status);
+    }
 
     this->lock();
     setDoubleParam(roi, NDPluginROIStatMinValue,    pROI->min);
@@ -313,7 +318,6 @@ asynStatus NDPluginROIStat::writeInt32(asynUser *pasynUser, epicsInt32 value)
     asynStatus status = asynSuccess;
     bool stat = true;
     int roi = 0;
-    NDROI *pROI;
     const char* functionName = "NDPluginROIStat::writeInt32";
 
     status = getAddress(pasynUser, &roi); 
@@ -321,7 +325,6 @@ asynStatus NDPluginROIStat::writeInt32(asynUser *pasynUser, epicsInt32 value)
       return status;
     }
 
-    pROI = &this->pROIs[roi];
     /* Set parameter and readback in parameter library */
     stat = (setIntegerParam(roi, function, value) == asynSuccess) && stat;
     
