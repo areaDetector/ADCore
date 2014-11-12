@@ -75,7 +75,9 @@ asynStatus NDPluginROIStat::doComputeStatisticsT(NDArray *pArray, NDROI *pROI)
       }
     }
 
-    pROI->mean = pROI->total / pROI->nElements;
+    if (pROI->nElements > 0) {
+      pROI->mean = pROI->total / pROI->nElements;
+    }
 
     return asynSuccess;
 
