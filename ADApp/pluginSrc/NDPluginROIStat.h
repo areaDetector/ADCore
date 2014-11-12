@@ -14,21 +14,21 @@
 #define NDPluginROIStatFirstString              "FIRST"
 #define NDPluginROIStatLastString               "LAST"
 #define NDPluginROIStatNameString               "NAME"                /* (asynOctet,   r/w) Name of this ROI */
-#define NDPluginROIStatUseString                "USE"                 /* (asynInt32,   r/w) Use this ROI? */
-#define NDPluginROIStatResetString              "RESET"               /* (asynInt32,   r/w) Reset ROI data. */
 #define NDPluginROIStatResetAllString           "RESETALL"            /* (asynInt32,   r/w) Reset ROI data for all ROIs. */
 #define NDPluginROIStatNDArrayCallbacksString   "NDARRAY_CALLBACKS"   /* (asynInt32,   r/w) Do NDArray callbacks. */
 
 /* ROI definition */
-#define NDPluginROIStatDim0MinString            "DIM0_MIN"          /* (asynInt32,   r/w) Starting element of ROI in each dimension */
-#define NDPluginROIStatDim0SizeString           "DIM0_SIZE"         /* (asynInt32,   r/w) Size of ROI in each dimension */
-#define NDPluginROIStatDim0MaxSizeString        "DIM0_MAX_SIZE"     /* (asynInt32,   r/o) Maximum size of ROI in each dimension */
-#define NDPluginROIStatDim1MinString            "DIM1_MIN"          /* (asynInt32,   r/w) Starting element of ROI in each dimension */
-#define NDPluginROIStatDim1SizeString           "DIM1_SIZE"         /* (asynInt32,   r/w) Size of ROI in each dimension */
-#define NDPluginROIStatDim1MaxSizeString        "DIM1_MAX_SIZE"     /* (asynInt32,   r/o) Maximum size of ROI in each dimension */
-#define NDPluginROIStatDim2MinString            "DIM2_MIN"          /* (asynInt32,   r/w) Starting element of ROI in each dimension */
-#define NDPluginROIStatDim2SizeString           "DIM2_SIZE"         /* (asynInt32,   r/w) Size of ROI in each dimension */
-#define NDPluginROIStatDim2MaxSizeString        "DIM2_MAX_SIZE"     /* (asynInt32,   r/o) Maximum size of ROI in each dimension */
+#define NDPluginROIStatUseString                "USE"               /* (asynInt32,   r/w) Use this ROI? */
+#define NDPluginROIStatResetString              "RESET"             /* (asynInt32,   r/w) Reset ROI data. */
+#define NDPluginROIStatDim0MinString            "DIM0_MIN"          /* (asynInt32,   r/w) Starting element of ROI in X dimension */
+#define NDPluginROIStatDim0SizeString           "DIM0_SIZE"         /* (asynInt32,   r/w) Size of ROI in X dimension */
+#define NDPluginROIStatDim0MaxSizeString        "DIM0_MAX_SIZE"     /* (asynInt32,   r/o) Maximum size of ROI in X dimension */
+#define NDPluginROIStatDim1MinString            "DIM1_MIN"          /* (asynInt32,   r/w) Starting element of ROI in Y dimension */
+#define NDPluginROIStatDim1SizeString           "DIM1_SIZE"         /* (asynInt32,   r/w) Size of ROI in Y dimension */
+#define NDPluginROIStatDim1MaxSizeString        "DIM1_MAX_SIZE"     /* (asynInt32,   r/o) Maximum size of ROI in Y dimension */
+#define NDPluginROIStatDim2MinString            "DIM2_MIN"          /* (asynInt32,   r/w) Starting element of ROI in Z dimension */
+#define NDPluginROIStatDim2SizeString           "DIM2_SIZE"         /* (asynInt32,   r/w) Size of ROI in Z dimension */
+#define NDPluginROIStatDim2MaxSizeString        "DIM2_MAX_SIZE"     /* (asynInt32,   r/o) Maximum size of ROI in Z dimension */
 
 /* ROI statistics */
 #define NDPluginROIStatMinValueString           "MIN_VALUE"         /* (asynFloat64, r/o) Minimum counts in any element */

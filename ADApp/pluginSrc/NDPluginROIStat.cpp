@@ -2,8 +2,8 @@
  * NDPluginROIStat.cpp
  *
  * Region of interest plugin that calculates simple statistics
- * on multiple regions. This plugin is not a NDArray producer, only
- * a comsumer.
+ * on multiple regions. Each ROI is identified by an asyn address
+ * (starting at 0). 
  * 
  * @author Matt Pearson 
  * @date Nov 2014
@@ -25,6 +25,12 @@
 #define MAX(A,B) (A)>(B)?(A):(B)
 #define MIN(A,B) (A)<(B)?(A):(B)
   
+/**
+ * Templated function to calculate statistics on different NDArray data types.
+ * \param[in] NDArray The pointer to the NDArray object
+ * \param[in] NDROI The pointer to the NDROI object
+ * \return asynStatus
+ */
 template <typename epicsType>
 asynStatus NDPluginROIStat::doComputeStatisticsT(NDArray *pArray, NDROI *pROI)
 {
@@ -85,10 +91,10 @@ asynStatus NDPluginROIStat::doComputeStatisticsT(NDArray *pArray, NDROI *pROI)
 
      
 /**
- * Call the templated doComputeStatistics so we can cast
- * correctly. 
- * \param[in] NDArray
- * \param[in] NDROI
+ * Call the templated doComputeStatistics so we can cast correctly. 
+ * \param[in] NDArray The pointer to the NDArray object
+ * \param[in] NDROI The pointer to the NDROI object
+ * \return asynStatus
  */
 asynStatus NDPluginROIStat::doComputeStatistics(NDArray *pArray, NDROI *pROI)
 {
@@ -127,16 +133,17 @@ asynStatus NDPluginROIStat::doComputeStatistics(NDArray *pArray, NDROI *pROI)
 }
 
 
-/** Callback function that is called by the NDArray driver with new NDArray data.
-  * Computes statistics on the ROIs if NDPluginROIStatComputeStatistics is 1.
-  * \param[in] pArray The NDArray from the callback.
-  */
+/** 
+ * Callback function that is called by the NDArray driver with new NDArray data.
+ * Computes statistics on the ROIs if NDPluginROIStatUse is 1.
+ * If NDPluginROIStatNDArrayCallbacks is 1 then it also does NDArray callbacks.
+ * \param[in] pArray The NDArray from the callback.
+ */
 void NDPluginROIStat::processCallbacks(NDArray *pArray)
 {
-  /* This function computes the ROIs.
-   * It is called with the mutex already locked.  It unlocks it during long calculations when private
-   * structures don't need to be protected.
-   */
+
+  //This function is called with the mutex already locked.  
+  //It unlocks it during long calculations when private structures don't need to be protected.
   
   int use = 0;
   int itemp = 0;
@@ -295,9 +302,11 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
 
 /** Called when asyn clients call pasynInt32->write().
   * For other parameters it calls NDPluginDriver::writeInt32 to see if that method understands the parameter.
-  * For all parameters it sets the value in the parameter library and calls any registered callbacks..
+  * For all parameters it sets the value in the parameter library and calls any registered callbacks.
   * \param[in] pasynUser pasynUser structure that encodes the reason and address.
-  * \param[in] value Value to write. */
+  * \param[in] value The value to write. 
+  * \return asynStatus
+  */
 asynStatus NDPluginROIStat::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
     int function = pasynUser->reason;
@@ -346,7 +355,8 @@ asynStatus NDPluginROIStat::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
 /**
  * Reset the data for an ROI.
- * \param[in] roi
+ * \param[in] roi number
+ * \return asynStatus
  */
 asynStatus NDPluginROIStat::clear(epicsUInt32 roi)
 {
