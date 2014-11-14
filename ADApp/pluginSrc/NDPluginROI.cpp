@@ -45,7 +45,6 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
 
     int dataType;
     int dim;
-    int itemp;
     NDDimension_t dims[ND_ARRAY_MAX_DIMS], tempDim, *pDim;
     size_t userDims[ND_ARRAY_MAX_DIMS];
     NDArrayInfo arrayInfo, scratchInfo;
