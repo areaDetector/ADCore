@@ -28,7 +28,7 @@
   * This version is currently limited to writing a single NDArray to each NeXus file.
   * Future releases will be capable of storing multiple NDArrays in each NeXus file.
   */
-class NDFileNexus : public NDPluginFile {
+class epicsShareClass NDFileNexus : public NDPluginFile {
 public:
     NDFileNexus(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr,

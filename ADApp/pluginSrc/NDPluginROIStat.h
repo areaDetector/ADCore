@@ -51,7 +51,7 @@ typedef struct NDROI {
 /** Extract Regions-Of-Interest (ROI) from NDArray data; the plugin can be a source of NDArray callbacks for
   * other plugins, passing these sub-arrays. 
   * The plugin also optionally computes a statistics on the ROI. */
-class NDPluginROIStat : public NDPluginDriver {
+class epicsShareClass NDPluginROIStat : public NDPluginDriver {
 public:
     NDPluginROIStat(const char *portName, int queueSize, int blockingCallbacks, 
                  const char *NDArrayPort, int NDArrayAddr, int maxROIs, 

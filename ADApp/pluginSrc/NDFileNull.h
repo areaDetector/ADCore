@@ -14,7 +14,7 @@
 
 /** Writes NDArrays in the Null file format. */
 
-class NDFileNull : public NDPluginFile {
+class epicsShareClass NDFileNull : public NDPluginFile {
 public:
     NDFileNull(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr,
