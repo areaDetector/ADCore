@@ -1,0 +1,89 @@
+# Macros:
+# % macro, P,         Device Prefix
+# % macro, R,         Device Suffix
+# % macro, PORT,      Asyn Port name
+# % macro, PRECOUNT,  Pre-trigger frame count
+# % macro, POSTCOUNT, Post-trigger frame count
+# % gui, $(PORT), edmtab, NDCircularBuffPlugin.edl, P=$(P),R=$(R)
+
+# # Control record, are we running
+record(longout, "$(P)$(R)Capture") {
+  field(DTYP, "asynInt32")
+  field(OUT, "@asyn($(PORT) 0)CIRCULAR_BUFF_CONTROL")
+  field(VAL, "0")
+}
+
+# # Control readback record
+record(longin, "$(P)$(R)Capture_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) 0)CIRCULAR_BUFF_CONTROL")
+}
+
+# # Status message
+record(stringin, "$(P)$(R)StatusMessage")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT) 0)CIRCULAR_BUFF_STATUS")
+    field(SCAN, "I/O Intr")
+}
+
+# # Number of pre-count frames
+record(longout, "$(P)$(R)PRECOUNT") {
+  field(DTYP, "asynInt32")
+  field(OUT, "@asyn($(PORT) 0)CIRCULAR_BUFF_PRE_TRIGGER")
+  field(VAL, "$(PRECOUNT=100)")
+  field(PINI, "1")
+}
+
+# # Number of pre-count frames readback from driver
+record(longin, "$(P)$(R)PRECOUNT_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) 0)CIRCULAR_BUFF_PRE_TRIGGER")
+}
+
+# # Number of post-count frames
+record(longout, "$(P)$(R)POSTCOUNT") {
+  field(DTYP, "asynInt32")
+  field(OUT, "@asyn($(PORT) 0)CIRCULAR_BUFF_POST_TRIGGER")
+  field(VAL, "$(POSTCOUNT=100)")
+  field(PINI, "1")
+}
+
+# # Number of post-count frames readback from driver
+record(longin, "$(P)$(R)POSTCOUNT_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) 0)CIRCULAR_BUFF_POST_TRIGGER")
+}
+
+# # Size of pre count buffer
+record(longin, "$(P)$(R)CurrentQty_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) 0)CIRCULAR_BUFF_CURRENT_IMAGE")
+}
+
+# # Size of post trigger frames made available
+record(longin, "$(P)$(R)PostTriggerQty_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) 0)CIRCULAR_BUFF_POST_COUNT")
+}
+
+# # Force a soft trigger
+record(longout, "$(P)$(R)Trigger") {
+  field(DTYP, "asynInt32")
+  field(OUT, "@asyn($(PORT) 0)CIRCULAR_BUFF_SOFT_TRIGGER")
+  field(VAL, "1")
+}
+
+# # Has a trigger been received
+record(longin, "$(P)$(R)Trigger_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) 0)CIRCULAR_BUFF_TRIGGERED")
+}
+
