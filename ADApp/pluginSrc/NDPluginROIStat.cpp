@@ -37,58 +37,58 @@
 template <typename epicsType>
 asynStatus NDPluginROIStat::doComputeStatisticsT(NDArray *pArray, NDROI *pROI)
 {
-    epicsType *pData = (epicsType *)pArray->pData;
-    double value = 0;
-    int sizex = 0;
-    int sizey = 0;
-    epicsUInt32 x = 0;
-    epicsUInt32 y = 0;
-    bool initial = true;
-    epicsUInt32 yOffset = 0;
+  epicsType *pData = (epicsType *)pArray->pData;
+  double value = 0;
+  size_t sizex = 0;
+  size_t sizey = 0;
+  size_t x = 0;
+  size_t y = 0;
+  bool initial = true;
+  size_t yOffset = 0;
 
-    pROI->min = 0;
-    pROI->max = 0;
-    pROI->total = 0;
-    pROI->mean = 0;
+  pROI->min = 0;
+  pROI->max = 0;
+  pROI->total = 0;
+  pROI->mean = 0;
 
-    if (pArray->ndims == 1) {
-      pROI->nElements = pROI->dims[0].size;
-      for (x=pROI->dims[0].offset; x<(pROI->dims[0].offset+pROI->nElements); ++x) {
-	value = (double)pData[x];
-	if (initial) {
-	  pROI->min = value;
-	  pROI->max = value;
-	}  
+  if (pArray->ndims == 1) {
+    pROI->nElements = pROI->dims[0].size;
+    for (x=pROI->dims[0].offset; x<(pROI->dims[0].offset+pROI->nElements); ++x) {
+      value = (double)pData[x];
+      if (initial) {
+        pROI->min = value;
+        pROI->max = value;
+      }  
+      if (value < pROI->min) pROI->min = value;
+      if (value > pROI->max) pROI->max = value;
+      pROI->total += value;
+      initial = false;
+    }
+  } else if (pArray->ndims == 2) {
+    sizex = pROI->dims[0].size;
+    sizey = pROI->dims[1].size;
+    pROI->nElements = sizex * sizey;
+    for (y=pROI->dims[1].offset; y<(pROI->dims[1].offset+sizey); ++y) {
+      yOffset = y*pROI->arraySizeX;
+      for (x=pROI->dims[0].offset; x<(pROI->dims[0].offset+sizex); ++x) {
+        value = (double)pData[x+yOffset];
+        if (initial) {
+          pROI->min = value;
+          pROI->max = value;
+        } 
         if (value < pROI->min) pROI->min = value;
         if (value > pROI->max) pROI->max = value;
-	pROI->total += value;
-	initial = false;
-      }
-    } else if (pArray->ndims == 2) {
-      sizex = pROI->dims[0].size;
-      sizey = pROI->dims[1].size;
-      pROI->nElements = sizex * sizey;
-      for (y=pROI->dims[1].offset; y<(pROI->dims[1].offset+sizey); ++y) {
-	yOffset = y*pROI->arraySizeX;
-	for (x=pROI->dims[0].offset; x<(pROI->dims[0].offset+sizex); ++x) {
-	  value = (double)pData[x+yOffset];
-	  if (initial) {
-	    pROI->min = value;
-	    pROI->max = value;
-	  } 
-	  if (value < pROI->min) pROI->min = value;
-	  if (value > pROI->max) pROI->max = value;
-	  pROI->total += value;
-	  initial = false;
-	}
+        pROI->total += value;
+        initial = false;
       }
     }
+  }
 
-    if (pROI->nElements > 0) {
-      pROI->mean = pROI->total / pROI->nElements;
-    }
+  if (pROI->nElements > 0) {
+    pROI->mean = pROI->total / pROI->nElements;
+  }
 
-    return asynSuccess;
+  return asynSuccess;
 
 }
 
@@ -209,7 +209,7 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
     }
     else {
       for (dim=0; dim<ND_ARRAY_MAX_DIMS; dim++) {
-	userDims[dim] = dim;
+        userDims[dim] = dim;
       }
     }
     for (dim=0; dim<pArray->ndims; dim++) {
@@ -270,8 +270,8 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
     status = doComputeStatistics(pArray, pROI);
     if (status != asynSuccess) {
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-		"%s: doComputeStatistics failed. status=%d\n", 
-		functionName, status);
+        "%s: doComputeStatistics failed. status=%d\n", 
+        functionName, status);
     }
 
     this->lock();
@@ -280,8 +280,8 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
     setDoubleParam(roi, NDPluginROIStatMeanValue,   pROI->mean);
     setDoubleParam(roi, NDPluginROIStatTotal,       pROI->total);
     asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
-	      "%s ROI=%d, min=%f, max=%f, mean=%f, total=%f\n",
-	      functionName, roi, pROI->min, pROI->max, pROI->mean, pROI->total);
+          "%s ROI=%d, min=%f, max=%f, mean=%f, total=%f\n",
+          functionName, roi, pROI->min, pROI->max, pROI->mean, pROI->total);
     
 
     int arrayCallbacks = 0;
@@ -297,8 +297,8 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
       }
       else {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-		  "%s: Couldn't allocate output array. Callbacks failed.\n", 
-		  functionName);
+          "%s: Couldn't allocate output array. Callbacks failed.\n", 
+          functionName);
       }
     }
     
@@ -335,7 +335,7 @@ asynStatus NDPluginROIStat::writeInt32(asynUser *pasynUser, epicsInt32 value)
       stat = (clear(roi) == asynSuccess) && stat;
     } else if (function == NDPluginROIStatResetAll) {
       for (int i=0; i<this->maxROIs; ++i) {
-	stat = (clear(i) == asynSuccess) && stat;
+        stat = (clear(i) == asynSuccess) && stat;
       }
     } else if (function < FIRST_NDPLUGIN_ROISTAT_PARAM) {
       stat = (NDPluginDriver::writeInt32(pasynUser, value) == asynSuccess) && stat;
@@ -347,13 +347,13 @@ asynStatus NDPluginROIStat::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
     if (!stat) {
         epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-		      "%s: status=%d, function=%d, value=%d",
-		      functionName, status, function, value);
-	status = asynError;
+              "%s: status=%d, function=%d, value=%d",
+              functionName, status, function, value);
+    status = asynError;
     } else {
       asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
-		"%s: function=%d, roi=%d, value=%d\n",
-		functionName, function, roi, value);
+        "%s: function=%d, roi=%d, value=%d\n",
+        functionName, function, roi, value);
     }
     
     return status;
@@ -371,7 +371,7 @@ asynStatus NDPluginROIStat::clear(epicsUInt32 roi)
   const char* functionName = "NDPluginROIStat::clear";
   
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
-	    "%s: Clearing params. roi=%d\n", functionName, roi);
+        "%s: Clearing params. roi=%d\n", functionName, roi);
 
   stat = (setDoubleParam(roi, NDPluginROIStatMinValue,  0.0) == asynSuccess) && stat;
   stat = (setDoubleParam(roi, NDPluginROIStatMaxValue,  0.0) == asynSuccess) && stat;
@@ -382,7 +382,7 @@ asynStatus NDPluginROIStat::clear(epicsUInt32 roi)
 
   if (!stat) {
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-	      "%s: Error clearing params. roi=%d\n", functionName, roi);
+          "%s: Error clearing params. roi=%d\n", functionName, roi);
     status = asynError;
   }
 
@@ -416,10 +416,10 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
                          int priority, int stackSize)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
-                   NDArrayPort, NDArrayAddr, maxROIs, NUM_NDPLUGIN_ROISTAT_PARAMS, maxBuffers, maxMemory,
-		     asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
-		     asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
-                   ASYN_MULTIDEVICE, 1, priority, stackSize)
+             NDArrayPort, NDArrayAddr, maxROIs, NUM_NDPLUGIN_ROISTAT_PARAMS, maxBuffers, maxMemory,
+             asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
+             asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
+             ASYN_MULTIDEVICE, 1, priority, stackSize)
 {
   const char *functionName = "NDPluginROIStat";
 
