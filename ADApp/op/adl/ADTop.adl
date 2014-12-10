@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-0/ADCore/ADApp/op/adl/ADTop.adl"
+	name="/home/epics/devel/areaDetector-2-1/ADCore/ADApp/op/adl/ADTop.adl"
 	version=030107
 }
 display {
@@ -8,7 +8,7 @@ display {
 		x=171
 		y=78
 		width=225
-		height=490
+		height=515
 	}
 	clr=14
 	bclr=4
@@ -102,92 +102,6 @@ text {
 "related display" {
 	object {
 		x=135
-		y=435
-		width=64
-		height=20
-	}
-	display[0] {
-		label="Simulator #1 General"
-		name="ADBase.adl"
-		args="P=13SIM1:, R=cam1:"
-	}
-	display[1] {
-		label="Simulator #1 Specific"
-		name="simDetector.adl"
-		args="P=13SIM1:, R=cam1:"
-	}
-	display[2] {
-		label="Simulator #2 General"
-		name="ADBase.adl"
-		args="P=13SIM1:, R=cam2:"
-	}
-	display[3] {
-		label="Simulator #2 Specific"
-		name="simDetector.adl"
-		args="P=13SIM1:, R=cam2:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=40
-		y=435
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Simulator"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=135
-		y=335
-		width=64
-		height=20
-	}
-	display[0] {
-		label="Prosilica #1 general"
-		name="ADBase.adl"
-		args="P=13PS1:, R=cam1:"
-	}
-	display[1] {
-		label="Prosilica #1 specific"
-		name="prosilica.adl"
-		args="P=13PS1:, R=cam1:"
-	}
-	display[2] {
-		label="Prosilica #2 general"
-		name="ADBase.adl"
-		args="P=13PS1:, R=cam2:"
-	}
-	display[3] {
-		label="Prosilica #2 specific"
-		name="prosilica.adl"
-		args="P=13PS1:, R=cam2:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=40
-		y=335
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Prosilica"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=135
 		y=60
 		width=64
 		height=20
@@ -221,7 +135,93 @@ text {
 "related display" {
 	object {
 		x=135
-		y=260
+		y=460
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Simulator #1 General"
+		name="ADBase.adl"
+		args="P=13SIM1:, R=cam1:"
+	}
+	display[1] {
+		label="Simulator #1 Specific"
+		name="simDetector.adl"
+		args="P=13SIM1:, R=cam1:"
+	}
+	display[2] {
+		label="Simulator #2 General"
+		name="ADBase.adl"
+		args="P=13SIM1:, R=cam2:"
+	}
+	display[3] {
+		label="Simulator #2 Specific"
+		name="simDetector.adl"
+		args="P=13SIM1:, R=cam2:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=40
+		y=460
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Simulator"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=135
+		y=360
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Prosilica #1 general"
+		name="ADBase.adl"
+		args="P=13PS1:, R=cam1:"
+	}
+	display[1] {
+		label="Prosilica #1 specific"
+		name="prosilica.adl"
+		args="P=13PS1:, R=cam1:"
+	}
+	display[2] {
+		label="Prosilica #2 general"
+		name="ADBase.adl"
+		args="P=13PS1:, R=cam2:"
+	}
+	display[3] {
+		label="Prosilica #2 specific"
+		name="prosilica.adl"
+		args="P=13PS1:, R=cam2:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=40
+		y=360
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Prosilica"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=135
+		y=285
 		width=64
 		height=20
 	}
@@ -241,7 +241,7 @@ text {
 text {
 	object {
 		x=60
-		y=260
+		y=285
 		width=70
 		height=20
 	}
@@ -254,7 +254,7 @@ text {
 "related display" {
 	object {
 		x=135
-		y=210
+		y=235
 		width=64
 		height=20
 	}
@@ -274,7 +274,7 @@ text {
 text {
 	object {
 		x=70
-		y=210
+		y=235
 		width=60
 		height=20
 	}
@@ -287,7 +287,7 @@ text {
 "related display" {
 	object {
 		x=135
-		y=410
+		y=435
 		width=64
 		height=20
 	}
@@ -307,7 +307,7 @@ text {
 text {
 	object {
 		x=80
-		y=410
+		y=435
 		width=50
 		height=20
 	}
@@ -320,7 +320,7 @@ text {
 "related display" {
 	object {
 		x=135
-		y=135
+		y=160
 		width=64
 		height=20
 	}
@@ -340,7 +340,7 @@ text {
 text {
 	object {
 		x=50
-		y=135
+		y=160
 		width=80
 		height=20
 	}
@@ -353,7 +353,7 @@ text {
 "related display" {
 	object {
 		x=135
-		y=185
+		y=210
 		width=64
 		height=20
 	}
@@ -373,7 +373,7 @@ text {
 text {
 	object {
 		x=70
-		y=185
+		y=210
 		width=60
 		height=20
 	}
@@ -386,7 +386,7 @@ text {
 "related display" {
 	object {
 		x=135
-		y=235
+		y=260
 		width=64
 		height=20
 	}
@@ -406,7 +406,7 @@ text {
 text {
 	object {
 		x=10
-		y=235
+		y=260
 		width=120
 		height=20
 	}
@@ -419,7 +419,7 @@ text {
 "related display" {
 	object {
 		x=135
-		y=360
+		y=385
 		width=64
 		height=20
 	}
@@ -439,7 +439,7 @@ text {
 text {
 	object {
 		x=80
-		y=360
+		y=385
 		width=50
 		height=20
 	}
@@ -452,7 +452,7 @@ text {
 "related display" {
 	object {
 		x=135
-		y=110
+		y=135
 		width=64
 		height=20
 	}
@@ -472,7 +472,7 @@ text {
 text {
 	object {
 		x=100
-		y=110
+		y=135
 		width=30
 		height=20
 	}
@@ -485,7 +485,7 @@ text {
 "related display" {
 	object {
 		x=135
-		y=460
+		y=485
 		width=64
 		height=20
 	}
@@ -505,7 +505,7 @@ text {
 text {
 	object {
 		x=100
-		y=460
+		y=485
 		width=30
 		height=20
 	}
@@ -513,6 +513,143 @@ text {
 		clr=14
 	}
 	textix="URL"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=135
+		y=185
+		width=64
+		height=20
+	}
+	display[0] {
+		label="LightField #1 general"
+		name="ADBase.adl"
+		args="P=13LF1:, R=cam1: "
+	}
+	display[1] {
+		label="LightField #1 specific"
+		name="LightField.adl"
+		args="P=13LF1:, R=cam1:"
+	}
+	display[2] {
+		label="LightField #2 specific"
+		name="LightField.adl"
+		args="P=13LF2:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=29
+		y=185
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="LightField"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=135
+		y=310
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Pixirad #1 general"
+		name="ADBase.adl"
+		args="P=13PR1:, R=cam1: "
+	}
+	display[1] {
+		label="Pixirad #1 specific"
+		name="pixirad.adl"
+		args="P=13PR1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=59
+		y=310
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Pixirad"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=135
+		y=335
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Point Grey #1 general"
+		name="ADBase.adl"
+		args="P=13PG1:, R=cam1: "
+	}
+	display[1] {
+		label="Point Grey #1 specific"
+		name="pointGrey.adl"
+		args="P=13PG1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=29
+		y=335
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Point Grey"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=135
+		y=410
+		width=64
+		height=20
+	}
+	display[0] {
+		label="PSL #1 general"
+		name="ADBase.adl"
+		args="P=13PSL1:, R=cam1: "
+	}
+	display[1] {
+		label="PSL #1 specific"
+		name="PSL.adl"
+		args="P=13PSL1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=99
+		y=410
+		width=30
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="PSL"
 	align="horiz. right"
 }
 "related display" {
@@ -566,137 +703,33 @@ text {
 "related display" {
 	object {
 		x=135
-		y=160
+		y=110
 		width=64
 		height=20
 	}
 	display[0] {
-		label="LightField #1 general"
+		label="aravisGigE #1 general"
 		name="ADBase.adl"
-		args="P=13LF1:, R=cam1: "
+		args="P=13ARV1:, R=cam1: "
 	}
 	display[1] {
-		label="LightField #1 specific"
-		name="LightField.adl"
-		args="P=13LF1:, R=cam1:"
-	}
-	display[2] {
-		label="LightField #2 specific"
-		name="LightField.adl"
-		args="P=13LF2:, R=cam1:"
+		label="aravisGigE #1 specific"
+		name="ADBase.adl"
+		args="P=13ARV1:, R=cam1:"
 	}
 	clr=14
 	bclr=51
 }
 text {
 	object {
-		x=29
-		y=160
+		x=30
+		y=110
 		width=100
 		height=20
 	}
 	"basic attribute" {
 		clr=14
 	}
-	textix="LightField"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=135
-		y=285
-		width=64
-		height=20
-	}
-	display[0] {
-		label="Pixirad #1 general"
-		name="ADBase.adl"
-		args="P=13PR1:, R=cam1: "
-	}
-	display[1] {
-		label="Pixirad #1 specific"
-		name="pixirad.adl"
-		args="P=13PR1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=59
-		y=285
-		width=70
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Pixirad"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=135
-		y=310
-		width=64
-		height=20
-	}
-	display[0] {
-		label="Point Grey #1 general"
-		name="ADBase.adl"
-		args="P=13PG1:, R=cam1: "
-	}
-	display[1] {
-		label="Point Grey #1 specific"
-		name="pointGrey.adl"
-		args="P=13PG1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=29
-		y=310
-		width=100
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Point Grey"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=135
-		y=385
-		width=64
-		height=20
-	}
-	display[0] {
-		label="PSL #1 general"
-		name="ADBase.adl"
-		args="P=13PSL1:, R=cam1: "
-	}
-	display[1] {
-		label="PSL #1 specific"
-		name="PSL.adl"
-		args="P=13PSL1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=99
-		y=385
-		width=30
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="PSL"
+	textix="aravisGigE"
 	align="horiz. right"
 }

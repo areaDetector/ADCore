@@ -6,7 +6,6 @@
 #define NDPluginROIStat_H
 
 #include <epicsTypes.h>
-#include <asynStandardInterfaces.h>
 
 #include "NDPluginDriver.h"
 
@@ -39,20 +38,20 @@
 /** Structure defining a Region-Of-Interest and Stats */
 typedef struct NDROI {
     NDDimension_t dims[ND_ARRAY_MAX_DIMS];
-    int nElements;
+    size_t nElements;
     double total;
     double mean;
     double min;
     double max;
-  int arraySizeX;
-  int arraySizeY;
+    size_t arraySizeX;
+    size_t arraySizeY;
 } NDROI_t;
 
 
 /** Extract Regions-Of-Interest (ROI) from NDArray data; the plugin can be a source of NDArray callbacks for
   * other plugins, passing these sub-arrays. 
   * The plugin also optionally computes a statistics on the ROI. */
-class NDPluginROIStat : public NDPluginDriver {
+class epicsShareClass NDPluginROIStat : public NDPluginDriver {
 public:
     NDPluginROIStat(const char *portName, int queueSize, int blockingCallbacks, 
                  const char *NDArrayPort, int NDArrayAddr, int maxROIs, 
@@ -104,6 +103,6 @@ private:
     NDROI_t *pROIs;    /* Array of NDROI structures */
 };
 
-#define NUM_NDPLUGIN_ROISTAT_PARAMS (&LAST_NDPLUGIN_ROISTAT_PARAM - &FIRST_NDPLUGIN_ROISTAT_PARAM + 1)
+#define NUM_NDPLUGIN_ROISTAT_PARAMS (int)(&LAST_NDPLUGIN_ROISTAT_PARAM - &FIRST_NDPLUGIN_ROISTAT_PARAM + 1)
     
 #endif //NDPluginROIStat_H

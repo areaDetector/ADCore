@@ -253,7 +253,7 @@ asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
     } else if (function == NDPluginROIDim1Min) {
         requestedOffset_[1] = value;
     } else if (function == NDPluginROIDim2Min) {
-        requestedOffset_[1] = value;
+        requestedOffset_[2] = value;
     } else if (function == NDPluginROIDim0Size) {
         requestedSize_[0] = value;
     } else if (function == NDPluginROIDim1Size) {
