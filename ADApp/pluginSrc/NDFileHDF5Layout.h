@@ -8,6 +8,7 @@
 #ifndef NDFILEHDF5LAYOUT_H_
 #define NDFILEHDF5LAYOUT_H_
 
+#include <ostream>
 #include <string>
 #include <vector>
 #include <map>
