@@ -30,7 +30,9 @@ else
   include $(ADCORE)/ADApp/commonDriverMakefile
 endif
 
-USR_INCLUDES += -I/usr/include/libxml2
+USR_INCLUDES += $(HDF5_INCLUDE)
+USR_INCLUDES += $(SZ_INCLUDE)
+USR_INCLUDES += $(XML2_INCLUDE)
 
 #=============================
 
