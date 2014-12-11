@@ -80,35 +80,41 @@ R2-2 (January XXX, 2015)
 
 R2-1 (October 17, 2014)
 -----------------------
-* NDPluginFile
-    - Added new optional feature "LazyOpen" which, when enabled and in "Stream" mode, will defer 
-      file creation until the first frame arrives in the plugin. This removes the need to initialise
-      the plugin with a dummy frame before starting capture.  
-* NDFileHDF5
-    - Added support for defining the layout of the HDF5 file groups, dataset and attributes in an XML
-      definition file. This was a collaboration between DLS and APS: Ulrik Pedersen, Alan Greer, 
-      Nicholas Schwarz, and Arthur Glowacki. See project pages: 
-      [AreaDetector HDF5 XML Layout](http://confluence.diamond.ac.uk/x/epF-AQ)
-      [HDF5 Writer Plugin](https://confluence.aps.anl.gov/x/d4GG)
-* NDFileTiff
-    - All NDArray attributes are now written as TIFF ASCII file tags, up to a maximum of 490 tags.
-      Thanks to Matt Pearson for this.
-* NDPluginOverlay
-    - Added support for text overlays. Thanks to Keith Brister for this.
-    - Added support for line width in rectangle and cross overlays.  Thanks to Matt Pearson for this.
-    - Fixed problem with DrawMode=XOR. This stopped working back in 2010 when color support was added.
-* NDPluginTransform
-    - Complete rewrite to greatly improve simplicity and efficiency.  It now supports 8 transformations
-      including the null transformation.  Performance improved by a factor of 13 to 85 depending
-      on the transformation.  Thanks to Chris Roehrig for this.
-* Added a new table to the 
+### NDPluginFile
+* Added new optional feature "LazyOpen" which, when enabled and in "Stream" mode, will defer 
+  file creation until the first frame arrives in the plugin. This removes the need to initialise
+  the plugin with a dummy frame before starting capture.  
+
+### NDFileHDF5
+* Added support for defining the layout of the HDF5 file groups, dataset and attributes in an XML
+  definition file. This was a collaboration between DLS and APS: Ulrik Pedersen, Alan Greer, 
+  Nicholas Schwarz, and Arthur Glowacki. See project pages: 
+  [AreaDetector HDF5 XML Layout](http://confluence.diamond.ac.uk/x/epF-AQ)
+  [HDF5 Writer Plugin](https://confluence.aps.anl.gov/x/d4GG)
+
+### NDFileTiff
+* All NDArray attributes are now written as TIFF ASCII file tags, up to a maximum of 490 tags.
+  Thanks to Matt Pearson for this.
+
+### NDPluginOverlay
+* Added support for text overlays. Thanks to Keith Brister for this.
+* Added support for line width in rectangle and cross overlays.  Thanks to Matt Pearson for this.
+* Fixed problem with DrawMode=XOR. This stopped working back in 2010 when color support was added.
+
+### NDPluginTransform
+* Complete rewrite to greatly improve simplicity and efficiency.  It now supports 8 transformations
+  including the null transformation.  Performance improved by a factor of 13 to 85 depending
+  on the transformation.  Thanks to Chris Roehrig for this.
+
+### Added a new table to the 
   [top-level documentation] (http://cars.uchicago.edu/software/epics/areaDetector.html).
   This contains for each module, links to:
   - Github repository
   - Documentation
   - Release Notes
   - Directory containing pre-built binary files
-* Added support for cygwin32 architecture.  This did not work in R2-0.
+
+### Added support for cygwin32 architecture.  This did not work in R2-0.
 
 
 R2-0 (April 4, 2014)
