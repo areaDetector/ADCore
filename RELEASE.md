@@ -32,36 +32,36 @@ R2-2 (January XXX, 2015)
   needs the libCom library from EPICS base and the asyn library.  It does not need any other
   libraries from EPICS base or synApps.
 
-### NDPluginROIStat
-* New plugin that supports multiple regions-of-interest with simple statistics on each.
-  It is more efficient and convenient than the existing NDPluginROI and NDPluginStats when many 
-  regions of interest with simple statistics are needed.  Written by Matthew Pearson.
+### Plugins
+* Added epicsShareClass to class definitions so classes are exported with Windows DLLs.
+* Install all plugin header files so the classes can be used from other applications.
+* NDPluginROIStat
+  - New plugin that supports multiple regions-of-interest with simple statistics on each.
+    It is more efficient and convenient than the existing NDPluginROI and NDPluginStats when many 
+    regions of interest with simple statistics are needed.  Written by Matthew Pearson.
   
-### NDPluginStats
-* Added capability to reset the statistics to 0 (or other user-defined values) with a new
-  $(P)$(R)Reset sseq records in NDStats.template.  The reset behavior can be changed by 
-  configuring these records.
+* NDPluginStats
+  - Added capability to reset the statistics to 0 (or other user-defined values) with a new
+    $(P)$(R)Reset sseq records in NDStats.template.  The reset behavior can be changed by 
+    configuring these records.
 
-### NDPluginROI
-* Remember the requested ROI size and offset.  If the requested values cannot be satisfied due
-  to constraints such as binning or the input array size, then use the requested values when the
-  constraints no longer apply.
+* NDPluginROI
+  - Remember the requested ROI size and offset.  If the requested values cannot be satisfied due
+    to constraints such as binning or the input array size, then use the requested values when the
+    constraints no longer apply.
   
-### NDFileHDF5
-* Created separated NDFileHDF5.h so class can be exported to other applications.
+* NDFileHDF5
+  - Created separated NDFileHDF5.h so class can be exported to other applications.
+
+* netCDFSupport
+ - Fixes to work on vxWorks 6.9 from Tim Mooney.
 
 ### ImageJ Viewer
 * Bug fixes from Lewis Muir.
 
 ### simDetector driver
 * Created separate simDetector.h file so class can be exported to other applications.
-  
-### netCDFSupport
-* Fixes to work on vxWorks 6.9 from Tim Mooney.
-  
-### Plugins
-* Added epicsShareClass to class definitions so classes are exported with Windows DLLs.
-* Install all plugin header files so the classes can be used from other applications.
+    
   
 ### Makefiles
 * Added new build variable $(XML2_INCLUDE), which replaces hardcoded /usr/include/libxml2 in
@@ -127,7 +127,7 @@ R2-0 (April 4, 2014)
   must now be present on the build system computer.
 * Added support for dynamic builds on win32-x86 and windows-x64. 
 
-###NDArray and asynNDArrayDriver
+### NDArray and asynNDArrayDriver
 * Split NDArray.h and NDArray.cpp into separate files for each class: 
   NDArray, NDAttribute, NDAttributeList, and NDArrayPool.
 * Changed all report() methods to have a FILE *fp argument so output can go to a file. 
@@ -151,7 +151,7 @@ epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
 * The changes in R2-0 for enhanced timestamp support are described in 
 [areaDetectorTimeStampSupport](http://cars.uchicago.edu/software/epics/areaDetectorTimeStampSupport.html).
 
-###NDAttribute
+### NDAttribute
 * Added new attribute type, NDAttrSourceFunct. 
   This type of attribute gets its value from a user-defined C++ function. 
   It can thus be used to get any type of metadata. Previously only EPICS PVs 
@@ -173,7 +173,7 @@ epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
   only copied it to the value field when updateValue() is called.
 * Changed constructor to have 6 required paramters, added sourceType and pSource.
 
-###Plugins
+### Plugins
 * NDPluginDriver (the base class from which all plugins derive) added the following calls
   to the NDPluginDriver::processCallbacks() method:
     - setTimeStamp(&pArray->epicsTS);
