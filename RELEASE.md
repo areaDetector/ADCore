@@ -24,7 +24,7 @@ Release Notes
 =============
 
 R2-2 (January XXX, 2015)
-------------------------
+========================
 ### iocs/simDetectorNoIOC
 * New application that demonstrates how to instantiate a simDetector driver
   and a number of plugins in a standalone C++ application, without running an EPICS IOC.
@@ -32,7 +32,7 @@ R2-2 (January XXX, 2015)
   needs the libCom library from EPICS base and the asyn library.  It does not need any other
   libraries from EPICS base or synApps.
 
-## NDPluginROIStat
+### NDPluginROIStat
 * New plugin that supports multiple regions-of-interest with simple statistics on each.
   It is more efficient and convenient than the existing NDPluginROI and NDPluginStats when many 
   regions of interest with simple statistics are needed.  Written by Matthew Pearson.
@@ -79,7 +79,7 @@ R2-2 (January XXX, 2015)
 
 
 R2-1 (October 17, 2014)
------------------------
+=======================
 ### NDPluginFile
 * Added new optional feature "LazyOpen" which, when enabled and in "Stream" mode, will defer 
   file creation until the first frame arrives in the plugin. This removes the need to initialise
@@ -118,7 +118,7 @@ R2-1 (October 17, 2014)
 
 
 R2-0 (April 4, 2014)
---------------------
+====================
 * Moved the repository to [Github](https://github.com/areaDetector/ADCore).
 * Re-organized the directory structure to separate the driver library from the example 
   simDetector IOC application.
@@ -226,6 +226,6 @@ epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
 
 
 R1-9-1 and earlier
-------------------
+==================
 Release notes are part of the
 [areaDetector Release Notes](http://cars.uchicago.edu/software/epics/areaDetectorReleaseNotes.html).
