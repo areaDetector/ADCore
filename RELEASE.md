@@ -25,57 +25,57 @@ Release Notes
 
 R2-2 (January XXX, 2015)
 ------------------------
-* iocs/simDetectorNoIOC
-  - New application that demonstrates how to instantiate a simDetector driver
-    and a number of plugins in a standalone C++ application, without running an EPICS IOC.
-    If asyn and ADCore are built with the EPICS_LIBCOM_ONLY flag then this application only
-    needs the libCom library from EPICS base and the asyn library.  It does not need any other
-    libraries from EPICS base or synApps.
+### iocs/simDetectorNoIOC
+* New application that demonstrates how to instantiate a simDetector driver
+  and a number of plugins in a standalone C++ application, without running an EPICS IOC.
+  If asyn and ADCore are built with the EPICS_LIBCOM_ONLY flag then this application only
+  needs the libCom library from EPICS base and the asyn library.  It does not need any other
+  libraries from EPICS base or synApps.
 
-* NDPluginROIStat
-  - New plugin that supports multiple regions-of-interest with simple statistics on each.
-    It is more efficient and convenient than the existing NDPluginROI and NDPluginStats when many 
-    regions of interest with simple statistics are needed.  Written by Matthew Pearson.
+### NDPluginROIStat
+* New plugin that supports multiple regions-of-interest with simple statistics on each.
+  It is more efficient and convenient than the existing NDPluginROI and NDPluginStats when many 
+  regions of interest with simple statistics are needed.  Written by Matthew Pearson.
   
-* NDPluginStats
-  - Added capability to reset the statistics to 0 (or other user-defined values) with a new
-    $(P)$(R)Reset sseq records in NDStats.template.  The reset behavior can be changed by 
-    configuring these records.
+### NDPluginStats
+* Added capability to reset the statistics to 0 (or other user-defined values) with a new
+  $(P)$(R)Reset sseq records in NDStats.template.  The reset behavior can be changed by 
+  configuring these records.
 
-* NDPluginROI
-  - Remember the requested ROI size and offset.  If the requested values cannot be satisfied due
-    to constraints such as binning or the input array size, then use the requested values when the
-    constraints no longer apply.
+### NDPluginROI
+* Remember the requested ROI size and offset.  If the requested values cannot be satisfied due
+  to constraints such as binning or the input array size, then use the requested values when the
+  constraints no longer apply.
   
-* NDFileHDF5
-  - Created separated NDFileHDF5.h so class can be exported to other applications.
+### NDFileHDF5
+* Created separated NDFileHDF5.h so class can be exported to other applications.
 
-* ImageJ Viewer
-  - Bug fixes from Lewis Muir.
+### ImageJ Viewer
+* Bug fixes from Lewis Muir.
 
-* simDetector driver
-  - Created separate simDetector.h file so class can be exported to other applications.
+### simDetector driver
+* Created separate simDetector.h file so class can be exported to other applications.
   
-* netCDFSupport
-  - Fixes to work on vxWorks 6.9.
+### netCDFSupport
+* Fixes to work on vxWorks 6.9 from Tim Mooney.
   
-* Plugins
-  - Added epicsShareClass to class definitions so classes are exported with Windows DLLs.
-  - Install all plugin header files so the classes can be used from other applications.
+### Plugins
+* Added epicsShareClass to class definitions so classes are exported with Windows DLLs.
+* Install all plugin header files so the classes can be used from other applications.
   
-* Makefiles
-  - Added new build variable $(XML2_INCLUDE), which replaces hardcoded /usr/include/libxml2 in
-    several Makefiles.  $(XML2_INCLUDE) is normally defined in 
-    $(AREA_DETECTOR)/configure/CONFIG_SITE.local, typically to be /usr/include/libxml2.
-  - Changes to support the EPICS_LIBCOM_ONLY flag to build applications that depend only
-    on libCom and asyn.
+### Makefiles
+* Added new build variable $(XML2_INCLUDE), which replaces hardcoded /usr/include/libxml2 in
+  several Makefiles.  $(XML2_INCLUDE) is normally defined in 
+  $(AREA_DETECTOR)/configure/CONFIG_SITE.local, typically to be /usr/include/libxml2.
+* Changes to support the EPICS_LIBCOM_ONLY flag to build applications that depend only
+  on libCom and asyn.
     
-* Template files
-  - Added the info tag "autosaveFields" to allow automatic creation of autosave files.
-  - ADBase.template
-    * Added optional macro parameter RATE_SMOOTH to smooth the calculated array rate.
-      The default value is 0.0, which does no smoothing.  Range 0.0-1.0, larger values 
-      result in more smoothing.
+### Template files
+* Added the info tag "autosaveFields" to allow automatic creation of autosave files.
+* ADBase.template
+  - Added optional macro parameter RATE_SMOOTH to smooth the calculated array rate.
+    The default value is 0.0, which does no smoothing.  Range 0.0-1.0, larger values 
+    result in more smoothing.
 
 
 R2-1 (October 17, 2014)
@@ -106,15 +106,15 @@ R2-1 (October 17, 2014)
   including the null transformation.  Performance improved by a factor of 13 to 85 depending
   on the transformation.  Thanks to Chris Roehrig for this.
 
-### Added a new table to the 
+### Miscellaneous
+* Added a new table to the 
   [top-level documentation] (http://cars.uchicago.edu/software/epics/areaDetector.html).
   This contains for each module, links to:
   - Github repository
   - Documentation
   - Release Notes
   - Directory containing pre-built binary files
-
-### Added support for cygwin32 architecture.  This did not work in R2-0.
+* Added support for cygwin32 architecture.  This did not work in R2-0.
 
 
 R2-0 (April 4, 2014)
