@@ -32,37 +32,37 @@ R2-2 (January XXX, 2015)
   needs the libCom library from EPICS base and the asyn library.  It does not need any other
   libraries from EPICS base or synApps.
 
-### Plugins
+## NDPluginROIStat
+* New plugin that supports multiple regions-of-interest with simple statistics on each.
+  It is more efficient and convenient than the existing NDPluginROI and NDPluginStats when many 
+  regions of interest with simple statistics are needed.  Written by Matthew Pearson.
+  
+### NDPluginStats
+* Added capability to reset the statistics to 0 (or other user-defined values) with a new
+  $(P)$(R)Reset sseq records in NDStats.template.  The reset behavior can be changed by 
+  configuring these records.
+
+### NDPluginROI
+* Remember the requested ROI size and offset.  If the requested values cannot be satisfied due
+  to constraints such as binning or the input array size, then use the requested values when the
+  constraints no longer apply.
+  
+### NDFileHDF5
+* Created separated NDFileHDF5.h so class can be exported to other applications.
+
+### Plugins general
 * Added epicsShareClass to class definitions so classes are exported with Windows DLLs.
 * Install all plugin header files so the classes can be used from other applications.
-* NDPluginROIStat
-  - New plugin that supports multiple regions-of-interest with simple statistics on each.
-    It is more efficient and convenient than the existing NDPluginROI and NDPluginStats when many 
-    regions of interest with simple statistics are needed.  Written by Matthew Pearson.
-  
-* NDPluginStats
-  - Added capability to reset the statistics to 0 (or other user-defined values) with a new
-    $(P)$(R)Reset sseq records in NDStats.template.  The reset behavior can be changed by 
-    configuring these records.
 
-* NDPluginROI
-  - Remember the requested ROI size and offset.  If the requested values cannot be satisfied due
-    to constraints such as binning or the input array size, then use the requested values when the
-    constraints no longer apply.
-  
-* NDFileHDF5
-  - Created separated NDFileHDF5.h so class can be exported to other applications.
-
-* netCDFSupport
- - Fixes to work on vxWorks 6.9 from Tim Mooney.
+### netCDFSupport
+* Fixes to work on vxWorks 6.9 from Tim Mooney.
 
 ### ImageJ Viewer
 * Bug fixes from Lewis Muir.
 
 ### simDetector driver
 * Created separate simDetector.h file so class can be exported to other applications.
-    
-  
+      
 ### Makefiles
 * Added new build variable $(XML2_INCLUDE), which replaces hardcoded /usr/include/libxml2 in
   several Makefiles.  $(XML2_INCLUDE) is normally defined in 
@@ -173,8 +173,8 @@ epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
   only copied it to the value field when updateValue() is called.
 * Changed constructor to have 6 required paramters, added sourceType and pSource.
 
-### Plugins
-* NDPluginDriver (the base class from which all plugins derive) added the following calls
+### NDPluginDriver 
+* This is the base class from which all plugins derive. Added the following calls
   to the NDPluginDriver::processCallbacks() method:
     - setTimeStamp(&pArray->epicsTS);
     - setIntegerParam(NDEpicsTSSec, pArray->epicsTS.secPastEpoch);
@@ -188,30 +188,41 @@ epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
   NDEpicsTSSec and NDEpicsTSNsec parameters to the fields from the NDArray.epicsTS.
   These records can then be used to monitor the EPICS timestamp in the NDArray even
   if TSE is not -2.
-* NDPluginOverlay. Fixed bug in the cross overlay that caused lines not to display if the cross was 
+
+### NDPluginOverlay. 
+* Fixed bug in the cross overlay that caused lines not to display if the cross was 
   clipped to the image boundaries. The problem was attempting to store a signed value in a size_t variable. 
-* NDPluginROI. Make 3-D [X, Y, 1] arrays be converted to 2-D even if they are not RGB3. 
-* NDPluginStats. Fixed bug if a dimension was 1; this bug was introduced when changing dimensions to size_t. 
-* NDFileNetCDF. 
-    - Changes to work on vxWorks 6.8 and above.
-    - Writes 2 new variables to every netCDF file for each NDArray. 
-        - epicsTSSec contains NDArray.epicsTS.secPastEpoch. 
-        - epicsTSNsec contains NDArray.epicsTS.nsec. 
+
+### NDPluginROI. 
+* Make 3-D [X, Y, 1] arrays be converted to 2-D even if they are not RGB3. 
+
+###NDPluginStats. 
+* Fixed bug if a dimension was 1; this bug was introduced when changing dimensions to size_t. 
+
+### NDFileNetCDF. 
+* Changes to work on vxWorks 6.8 and above.
+* Writes 2 new variables to every netCDF file for each NDArray. 
+  - epicsTSSec contains NDArray.epicsTS.secPastEpoch. 
+  - epicsTSNsec contains NDArray.epicsTS.nsec. 
     
   Note that these variables are arrays of length numArrays,
   where numArrays is the number of NDArrays (images) in the file. It was not possible
   to write the timestamp as a single 64-bit value because the classic netCDF file
   format does not support 64-bit integers.
-* NDFileTIFF. Added 3 new TIFF tags to each TIFF file:</p>
-    - Tag=65001, field name=NDUniqueId, field_type=TIFF_LONG, value=NDArray.uniqueId.
-    - Tag=65002, field name=EPICSTSSec, field_type=TIFF_LONG, value=NDArray.epicsTS.secPastEpoch.
-    - Tag=65003, field name=EPICSTSNsec, field_type=TIFF_LONG, value=NDArray.epicsTS.nsec.
+
+### NDFileTIFF. 
+* Added 3 new TIFF tags to each TIFF file:</p>
+  - Tag=65001, field name=NDUniqueId, field_type=TIFF_LONG, value=NDArray.uniqueId.
+  - Tag=65002, field name=EPICSTSSec, field_type=TIFF_LONG, value=NDArray.epicsTS.secPastEpoch.
+  - Tag=65003, field name=EPICSTSNsec, field_type=TIFF_LONG, value=NDArray.epicsTS.nsec.
 
   It was not possible to write the timestamp as a single 64-bit value because TIFF
   does not support 64-bit integer tags. It does have a type called TIFF_RATIONAL which
   is a pair of 32-bit integers. However, when reading such a tag what is returned
   is the quotient of the two numbers, which is not what is desired.
-* NDPluginAttribute. New plugin that allows trending and publishing an NDArray attribute over channel access.
+
+### NDPluginAttribute. 
+* New plugin that allows trending and publishing an NDArray attribute over channel access.
 
 
 R1-9-1 and earlier
