@@ -39,11 +39,23 @@ record(longin, "$(P)$(R)BgdWidth_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(ao, "$(P)$(R)MinValue")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_VALUE")
+}
+
 record(ai, "$(P)$(R)MinValue_RBV")
 {
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_VALUE")
    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)MaxValue")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_VALUE")
 }
 
 record(ai, "$(P)$(R)MaxValue_RBV")
@@ -53,11 +65,23 @@ record(ai, "$(P)$(R)MaxValue_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(ao, "$(P)$(R)MeanValue")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MEAN_VALUE")
+}
+
 record(ai, "$(P)$(R)MeanValue_RBV")
 {
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MEAN_VALUE")
    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)SigmaValue")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIGMA_VALUE")
 }
 
 record(ai, "$(P)$(R)Sigma_RBV")
@@ -68,11 +92,23 @@ record(ai, "$(P)$(R)Sigma_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(ao, "$(P)$(R)Total")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TOTAL")
+}
+
 record(ai, "$(P)$(R)Total_RBV")
 {
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TOTAL")
    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)Net")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NET")
 }
 
 record(ai, "$(P)$(R)Net_RBV")
@@ -82,11 +118,23 @@ record(ai, "$(P)$(R)Net_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(ao, "$(P)$(R)MinX")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_X")
+}
+
 record(ai, "$(P)$(R)MinX_RBV")
 {
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_X")
    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)MinY")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MIN_Y")
 }
 
 record(ai, "$(P)$(R)MinY_RBV")
@@ -96,11 +144,23 @@ record(ai, "$(P)$(R)MinY_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(ao, "$(P)$(R)MaxX")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_X")
+}
+
 record(ai, "$(P)$(R)MaxX_RBV")
 {
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_X")
    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)MaxY")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_Y")
 }
 
 record(ai, "$(P)$(R)MaxY_RBV")
@@ -154,12 +214,24 @@ record(ai, "$(P)$(R)CentroidThreshold_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(ao, "$(P)$(R)CentroidX")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CENTROIDX_VALUE")
+}
+
 record(ai, "$(P)$(R)CentroidX_RBV")
 {
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CENTROIDX_VALUE")
    field(PREC, "1")
    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)CentroidY")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CENTROIDY_VALUE")
 }
 
 record(ai, "$(P)$(R)CentroidY_RBV")
@@ -170,6 +242,12 @@ record(ai, "$(P)$(R)CentroidY_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(ao, "$(P)$(R)SigmaX")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIGMAX_VALUE")
+}
+
 record(ai, "$(P)$(R)SigmaX_RBV")
 {
    field(DTYP, "asynFloat64")
@@ -178,12 +256,24 @@ record(ai, "$(P)$(R)SigmaX_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(ao, "$(P)$(R)SigmaY")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIGMAY_VALUE")
+}
+
 record(ai, "$(P)$(R)SigmaY_RBV")
 {
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIGMAY_VALUE")
    field(PREC, "1")
    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)SigmaXY")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIGMAXY_VALUE")
 }
 
 record(ai, "$(P)$(R)SigmaXY_RBV")
@@ -604,6 +694,12 @@ record(ai, "$(P)$(R)HistMax_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(ao, "$(P)$(R)HistEntropy")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_ENTROPY")
+}
+
 record(ai, "$(P)$(R)HistEntropy_RBV")
 {
    field(DTYP, "asynFloat64")
@@ -652,6 +748,68 @@ record(dfanout, "$(P)$(R)SetYHOPR")
     field(OUTA, "$(P)$(R)CursorY.HOPR NPP")
 }
 
+###################################################################
+#  These records reset the statistics                             #
+###################################################################
+record(sseq, "$(P)$(R)Reset")
+{
+   field(DOL1, "0")
+   field(DLY1, "0")
+   field(LNK1, "$(P)$(R)MinValue PP MS")    
+   field(DOL2, "0")
+   field(DLY2, "0")
+   field(LNK2, "$(P)$(R)MaxValue PP MS")    
+   field(DOL3, "0")
+   field(DLY3, "0")
+   field(LNK3, "$(P)$(R)MaxValue PP MS")    
+   field(DOL4, "0")
+   field(DLY4, "0")
+   field(LNK4, "$(P)$(R)MeanValue PP MS")    
+   field(DOL5, "0")
+   field(DLY5, "0")
+   field(LNK5, "$(P)$(R)SigmaValue PP MS")    
+   field(DOL6, "0")
+   field(DLY6, "0")
+   field(LNK6, "$(P)$(R)Total PP MS")    
+   field(DOL7, "0")
+   field(DLY7, "0")
+   field(LNK7, "$(P)$(R)Net PP MS")    
+   field(DOL8, "0")
+   field(DLY8, "0")
+   field(LNK8, "$(P)$(R)MinX PP MS")    
+   field(DOL9, "0")
+   field(DLY9, "0")
+   field(LNK9, "$(P)$(R)MinY PP MS")    
+   field(DOLA, "0")
+   field(DLYA, "0")
+   field(LNKA, "$(P)$(R)MaxX PP MS")    
+   field(FLNK, "$(P)$(R)Reset1")   
+}
+
+record(sseq, "$(P)$(R)Reset1")
+{
+   field(DOL1, "0")
+   field(DLY1, "0")
+   field(LNK1, "$(P)$(R)MaxY PP MS")
+   field(DOL2, "0")
+   field(DLY2, "0")
+   field(LNK2, "$(P)$(R)CentroidX PP MS")    
+   field(DOL3, "0")
+   field(DLY3, "0")
+   field(LNK3, "$(P)$(R)CentroidY PP MS")    
+   field(DOL4, "0")
+   field(DLY4, "0")
+   field(LNK4, "$(P)$(R)SigmaX PP MS")    
+   field(DOL5, "0")
+   field(DLY5, "0")
+   field(LNK5, "$(P)$(R)SigmaY PP MS")    
+   field(DOL6, "0")
+   field(DLY6, "0")
+   field(LNK6, "$(P)$(R)SigmaXY PP MS")    
+   field(DOL7, "0")
+   field(DLY7, "0")
+   field(LNK7, "$(P)$(R)HistEntropy PP MS")    
+}
 
 
 

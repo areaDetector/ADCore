@@ -38,13 +38,13 @@
 /** Structure defining a Region-Of-Interest and Stats */
 typedef struct NDROI {
     NDDimension_t dims[ND_ARRAY_MAX_DIMS];
-    int nElements;
+    size_t nElements;
     double total;
     double mean;
     double min;
     double max;
-  int arraySizeX;
-  int arraySizeY;
+    size_t arraySizeX;
+    size_t arraySizeY;
 } NDROI_t;
 
 
@@ -103,6 +103,6 @@ private:
     NDROI_t *pROIs;    /* Array of NDROI structures */
 };
 
-#define NUM_NDPLUGIN_ROISTAT_PARAMS (&LAST_NDPLUGIN_ROISTAT_PARAM - &FIRST_NDPLUGIN_ROISTAT_PARAM + 1)
+#define NUM_NDPLUGIN_ROISTAT_PARAMS (int)(&LAST_NDPLUGIN_ROISTAT_PARAM - &FIRST_NDPLUGIN_ROISTAT_PARAM + 1)
     
 #endif //NDPluginROIStat_H

@@ -11,16 +11,6 @@ ifeq (vxWorks,$(findstring vxWorks, $(T_A)))
 CODE_CXXFLAGS=
 endif
 
-# These flags are needed by PvApi.h, the Prosilca library used for Bayer to RGB color conversion
-USR_CXXFLAGS_Linux += -D_LINUX -D_x86 -O0
-USR_CXXFLAGS_Darwin += -D_OSX -D_x86
-
-# We no longer set the -DHAVE_PVAPI flag to build the Bayer conversion in NDPluginColorConvert
-# because PvAPI binary is no longer included.  This can be done in CONFIG_SITE if the library is available.
-#USR_CXXFLAGS_Linux += -DHAVE_PVAPI
-#USR_CXXFLAGS_Darwin += -DHAVE_PVAPI
-#USR_CXXFLAGS_WIN32 += -DHAVE_PVAPI
-
 # This flag is used to indicate that the TIFF library was built statically
 USR_CXXFLAGS_WIN32 += -DLIBTIFF_STATIC
 
@@ -97,9 +87,7 @@ endif
 
 USR_INCLUDES += $(HDF5_INCLUDE)
 USR_INCLUDES += $(SZ_INCLUDE)
-# Point to libxml2 header files
-# TODO: enable supporting a windows version of libxml2
-USR_INCLUDES += -I/usr/include/libxml2
+USR_INCLUDES += $(XML2_INCLUDE)
 
 include $(TOP)/ADApp/commonLibraryMakefile
 
