@@ -9,11 +9,12 @@
  *
  */
 
+#include <epicsThread.h>
 #include <asynPortClient.h>
 #include <NDPluginStats.h>
 #include <NDPluginStdArrays.h>
-#include "simDetector.h"
-#include <epicsThread.h>
+#include <NDFileHDF5.h>
+#include <simDetector.h>
 
 void statsCounterCallback(void *drvPvt, asynUser *pasynUser, epicsInt32 data)
 {
@@ -29,8 +30,9 @@ int main(int argc, char **argv)
   asynStatus status;
 
   simDetector                simD  = simDetector("SIM1", 1024, 1024, NDUInt8, 0, 0, 0, 0);
-  NDPluginStats             stats  = NDPluginStats("STATS1", 20, 0, "SIM1", 0, 0, 0, 0, 0);
-  NDPluginStdArrays     stdArrays  = NDPluginStdArrays("STD1", 20, 0, "SIM1", 0, 0, 0, 0);
+  NDPluginStats             stats  = NDPluginStats    ("STATS1", 20, 0, "SIM1", 0, 0, 0, 0, 0);
+  NDPluginStdArrays     stdArrays  = NDPluginStdArrays("STD1",   20, 0, "SIM1", 0, 0, 0, 0);
+  NDFileHDF5             fileHDF5  = NDFileHDF5       ("HDF5",   20, 0, "SIM1", 0, 0, 0);
   asynInt32Client         acquire  = asynInt32Client("SIM1",   0, ADAcquireString);
   asynInt32Client  arrayCallbacks  = asynInt32Client("SIM1",   0, NDArrayCallbacksString);
   asynInt32Client     enableStats  = asynInt32Client("STATS1", 0, NDPluginDriverEnableCallbacksString);

@@ -10,7 +10,9 @@ ifeq (vxWorks,$(findstring vxWorks, $(T_A)))
 CODE_CXXFLAGS=
 endif
 
-PROD_IOC  += simDetectorNoIOCApp
+PROD_IOC_Linux  += simDetectorNoIOCApp
+PROD_IOC_WIN32  += simDetectorNoIOCApp
+PROD_IOC_Darwin  += simDetectorNoIOCApp
 PROD_SRCS += simDetectorNoIOC.cpp
 
 PROD_LIBS += simDetector
@@ -27,6 +29,8 @@ ifeq ($(EPICS_LIBCOM_ONLY),YES)
 else
   include $(ADCORE)/ADApp/commonDriverMakefile
 endif
+
+USR_INCLUDES += -I/usr/include/libxml2
 
 #=============================
 

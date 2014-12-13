@@ -2,7 +2,7 @@
 #include "ADDriver.h"
 
 /** Simulation detector driver; demonstrates most of the features that areaDetector drivers can support. */
-class simDetector : public ADDriver {
+class epicsShareClass simDetector : public ADDriver {
 public:
     simDetector(const char *portName, int maxSizeX, int maxSizeY, NDDataType_t dataType,
                 int maxBuffers, size_t maxMemory,

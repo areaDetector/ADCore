@@ -18,7 +18,7 @@
 #define NDPluginAttributeUpdatePeriodString  "ATTR_UPDATE_PERIOD" /* (asynFloat64, r/o) Update period for array */
 
 /** Extract an Attribute from an NDArray and publish the value (and array of values) over channel access.  */
-class NDPluginAttribute : public NDPluginDriver {
+class epicsShareClass NDPluginAttribute : public NDPluginDriver {
 public:
     NDPluginAttribute(const char *portName, int queueSize, int blockingCallbacks, 
                       const char *NDArrayPort, int NDArrayAddr,

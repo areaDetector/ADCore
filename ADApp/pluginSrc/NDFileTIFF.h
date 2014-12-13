@@ -21,7 +21,7 @@
     The current version is only capable of writing 2-D images with one image per file.
     */
 
-class NDFileTIFF : public NDPluginFile {
+class epicsShareClass NDFileTIFF : public NDPluginFile {
 public:
     NDFileTIFF(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr,

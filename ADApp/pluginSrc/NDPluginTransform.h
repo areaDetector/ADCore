@@ -13,7 +13,7 @@
 static const char* pluginName = "NDPluginTransform";
 
 /** Perform transformations (rotations, flips) on NDArrays.   */
-class NDPluginTransform : public NDPluginDriver {
+class epicsShareClass NDPluginTransform : public NDPluginDriver {
 public:
     NDPluginTransform(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr,
