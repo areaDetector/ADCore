@@ -579,6 +579,10 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     setStringParam (NDFileWriteMessage, "");
     /* We set FileTemplate to a reasonable value because it cannot be defined in the database, since it is a
      * waveform record. However, the waveform record does not currently read the driver value for initialization! */
+    setStringParam (NDFilePath, "");
+    setStringParam (NDFileName, "");
+    setIntegerParam(NDFileNumber, 0);
+    setIntegerParam(NDAutoIncrement, 0);
     setStringParam (NDFileTemplate, "%s%s_%3.3d.dat");
     setIntegerParam(NDFileNumCaptured, 0);
 
