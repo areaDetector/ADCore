@@ -23,7 +23,7 @@ typedef struct NDCircularBuff {
 #define NDPluginCircularBuffSoftTriggerString        "CIRCULAR_BUFF_SOFT_TRIGGER"  /* (asynInt32,        r/w) Force a soft trigger */
 #define NDPluginCircularBuffTriggeredString          "CIRCULAR_BUFF_TRIGGERED"     /* (asynInt32,        r/o) Have we had a trigger event */
 
-#define NDPluginCircularBuffTriggeredAttribute       "EXT_TRIGGER"
+#define NDPluginCircularBuffTriggeredAttribute       "ExternalTrigger"
 
 /* Arrays of total and net counts for MCA or waveform record */   
 #define NDPluginCircularBuffCallbackPeriodString     "CALLBACK_PERIOD"     /* (asynFloat64,      r/w) Callback period */

@@ -66,15 +66,16 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
         triggered = 1;
         setIntegerParam(NDPluginCircularBuffTriggered, triggered);
       } else {
-        // Check for the trigger meta-data in the NDArray
-        triggerAttribute = pArray->pAttributeList->find(NDPluginCircularBuffTriggeredAttribute);
-        if (triggerAttribute != NULL){
-          // Read the attribute to see if a trigger happened on this frame
-          triggerAttribute->getValue(NDAttrInt32, (void *)&triggered);
-          setIntegerParam(NDPluginCircularBuffTriggered, triggered);
-        } else {
-          getIntegerParam(NDPluginCircularBuffTriggered, &triggered);
-        }
+	  getIntegerParam(NDPluginCircularBuffTriggered, &triggered);
+	  if (!triggered) { 
+	      // Check for the trigger meta-data in the NDArray
+	      triggerAttribute = pArray->pAttributeList->find(NDPluginCircularBuffTriggeredAttribute);
+	      if (triggerAttribute != NULL){
+		  // Read the attribute to see if a trigger happened on this frame
+		  triggerAttribute->getValue(NDAttrInt32, (void *)&triggered);
+		  setIntegerParam(NDPluginCircularBuffTriggered, triggered);
+	      }
+	  }
       }
 //printf("Triggered: %d\n", triggered);
 
@@ -86,7 +87,7 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
 
         // Set the Attribute to triggered
         if (softTrigger){
-          pArrayCpy->pAttributeList->add("EXT_TRIGGER", "External trigger (1 = detected)", NDAttrInt32, (void *)&softTrigger);
+	    pArrayCpy->pAttributeList->add(NDPluginCircularBuffTriggeredAttribute, "External trigger (1 = detected)", NDAttrInt32, (void *)&softTrigger);
         }
 
         // Have we detected a trigger event yet?
@@ -126,6 +127,7 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
               }
             }
           }
+	  
           currentPostCount++;
           setIntegerParam(NDPluginCircularBuffPostCount,  currentPostCount);
 
