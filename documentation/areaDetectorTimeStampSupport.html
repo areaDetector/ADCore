@@ -1,0 +1,672 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Support for EPICS Time Stamps in areaDetector R2-0</title>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+</head>
+<body>
+  <div style="text-align: center">
+    <h1>
+      Support for EPICS Time Stamps in areaDetector R2-0</h1>
+    <h2>
+      March 3, 2014</h2>
+    <h2>
+      Mark Rivers</h2>
+    <h2>
+      University of Chicago</h2>
+  </div>
+  <h2>
+    Overview</h2>
+  <p>
+    Several changes to support EPICS time stamps in areaDetector were made in areaDetector/ADCore
+    R2-0. These are used by setting the TSE field in the EPICS records to -2. The record
+    support then directly uses the TIME field in the record as the timestamp. Device
+    support must have properly set the TIME field in the record.
+  </p>
+  <p>
+    Setting the timestamp when the driver processes, rather than later on when the record
+    processes can be desirable because the timestamp then reflects more accurately the
+    actual time that the I/O operation was performed. It is also desirable to allow
+    for a user-defined function to provide the timestamp, rather than being restricted
+    to simply calling epicsTimeGetCurrent(). For example, the driver may be associated
+    with a particular EPICS event, and the user-defined function would then call epicsTimeGetEvent()
+    with that event ID. This can also return a site-specific time format. For example
+    at LCLS epicsTimeGetEvent() returns a timestamp where the low-order bits of the
+    nsec field encode the pulse ID. They want the areaDetector drivers to read that
+    timestamp as soon as possible after the I/O is complete. In areaDetector these timestamps
+    should also be written to data files by the standard file-writing plugins whenever
+    possible.
+  </p>
+  <p>
+    asyn R4-22 added new timestamp support functions to asynManager and asynPortDriver.
+    areaDetector R2-0 uses these new functions. now.
+  </p>
+  <h2>
+    NDArray changes</h2>
+  <p>
+    A new field has been added to the NDArray class. This is the definition of that
+    field.</p>
+  <pre>
+epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
+                           * pasynManager->updateTimeStamp(), 
+                           * and can come from a user-defined timestamp source. */
+</pre>
+  <h2>
+    asynNDArrayDriver changes</h2>
+  <p>
+    Two new asynInt32 parameters have been added to the asynNDArrayDriver class.</p>
+  <ul>
+    <li>NDEpicsTSSec contains NDArray.epicsTS.secPastEpoch.</li>
+    <li>NDEpicsTSNsec contains NDArray.epicsTS.nsec</li>
+  </ul>
+  <p>
+    2 new records have been added to NDPluginBase.template.</p>
+  <ul>
+    <li>$(P)$(R)EpicsTSSec_RBV contains the secPastEpoch field of the current NDArray.epicsTS
+      timestamp</li>
+    <li>$(P)$(R)EpicsTSNsec_RBV contains the nsec fields of the current NDArray.epicsTS
+      timestamp</li>
+  </ul>
+  <h2>
+    Detector driver changes</h2>
+  <p>
+    All detector drivers required a single-line addition of a call to updateTimeStamp,
+    like the following:</p>
+  <pre>
+         pImage->timeStamp = startTime.secPastEpoch + startTime.nsec / 1.e9;
+        updateTimeStamp(&pImage->epicsTS);
+</pre>
+  <p>
+    The drivers were already setting the double NDArray.timeStamp field, typically with
+    the time from a call to epicsTimeGetCurrent. The call to asynPortDriver::updateTimeStamp
+    calls pasynManager->updateTimeStamp(), which gets the current time either from its
+    internal time stamp source function, or from a user-defined timestamp source function.
+    This line has been added to all detector drivers in areaDetector. Any detector drivers
+    that are not part of the areaDetector module will also need this line to be added.
+  </p>
+  <h2>
+    NDPluginDriver changes</h2>
+  <p>
+    NDPluginDriver, which is the base class from which all plugins derive has had the
+    following additions to the NDPluginDriver::processCallbacks() method:</p>
+  <pre>
+     setIntegerParam(NDColorMode, colorMode);
+     setIntegerParam(NDBayerPattern, bayerPattern);
+     setIntegerParam(NDUniqueId, pArray->uniqueId);
++    setTimeStamp(&pArray->epicsTS);
+     setDoubleParam(NDTimeStamp, pArray->timeStamp);
++    setIntegerParam(NDEpicsTSSec, pArray->epicsTS.secPastEpoch);
++    setIntegerParam(NDEpicsTSNsec, pArray->epicsTS.nsec);
+     /* See if the array dimensions have changed.  If so then do callbacks on them. */
+</pre>
+  <p>
+    It calls setTimeStamp with the epicsTimeStamp from NDArray that was passed to the
+    plugin. setTimeStamp sets the internal timestamp in pasynManager. This is the timestamp
+    that will be used for all callbacks to device support and read() operations in this
+    plugin asynPortDriver. Thus, the record timestamps will come from the NDArray passed
+    to the plugin if the record TSE field is -2. It also sets the new asynNDArrayDriver
+    NDEpicsTSSec and NDEpicsTSNsec parameters to the fields from the NDArray.epicsTS.
+    These records can then be used to monitor the EPICS timestamp in the NDArray even
+    if TSE is not -2.
+  </p>
+  <h2>
+    NDPluginStdArrays changes</h2>
+  <p>
+    The pasynUser->timestamp field is now set from the NDArray.epicsTS field for both
+    array callbacks and array read operations. The waveform records holding the NDArray
+    data thus have the timestamps from the NDArray if TSE=-2.</p>
+  <h2>
+    NDFileNetCDF changes</h2>
+  <p>
+    The netCDF file writing plugin was changed to write 2 new variables to every netCDF
+    file for each NDArray. epicsTSSec contains NDArray.epicsTS.secPastEpoch. epicsTSNsec
+    contains NDArray.epicsTS.nsec. Note that these variables are arrays of length numArrays,
+    where numArrays is the number of NDArrays (images) in the file. It was not possible
+    to write the timestamp as a single 64-bit value because the classic netCDF file
+    format does not support 64-bit integers.
+  </p>
+  <h2>
+    NDFileTIFF changes</h2>
+  <p>
+    The TIFF file writing plugin previously had one user-defined TIFF tag that contained
+    the double NDArray.timeStamp field.</p>
+  <pre>
+Tag=65000, field name=NDTimeStamp, field_type=TIFF_DOUBLE, value=NDArray.timeStamp. 
+</pre>
+  <p>
+    3 new TIFF tags have been added to each TIFF file:</p>
+  <pre>
+Tag=65001, field name=NDUniqueId, field_type=TIFF_LONG, value=NDArray.uniqueId.
+Tag=65002, field name=EPICSTSSec, field_type=TIFF_LONG, value=NDArray.epicsTS.secPastEpoch.
+Tag=65003, field name=EPICSTSNsec, field_type=TIFF_LONG, value=NDArray.epicsTS.nsec.
+</pre>
+  <p>
+    It was not possible to write the timestamp as a single 64-bit value because TIFF
+    does not support 64-bit integer tags. It does have a type called TIFF_RATIONAL which
+    is a pair of 32-bit integers. However, when reading such a tag what is returned
+    is the quotient of the two numbers, which is not what is desired.
+  </p>
+  <h2>
+    Testing</h2>
+  <p>
+    ADApp/ADSrc/myTimeStampSource.cpp is a new file that contains an example of a user-defined
+    timestamp source. The timestamp source in that file simply calls epicsTimeGetCurrent(&timeStamp)
+    and then sets timeStamp.nsec=0, so the time stamp is always an integer number of
+    seconds. This makes it easy to tell that the user-defined timestamp source is being
+    used. That function is loaded and unloaded with the new commands that were recently
+    added to asyn:</p>
+  <pre>
+registerTimeStampSource("port", "myTimeStampSource")
+</pre>
+  <p>
+    and
+  </p>
+  <pre>
+unregisterTimeStampSource("port")
+</pre>
+  <p>
+    A new shell script for testing has been added in ADCore/iocs/simDetectorIOC/iocBoot/timeStampMonitor.sh.
+    This script takes 2 arguments: $1=PV prefix, $2=TSE value for records being monitored.
+    The script first sets the TSE field of all records being monitored to $2, and then
+    runs camonitor on all of the PVs. It monitors some PVs from the detector database
+    (ADBase.template), some PVs from the NDPluginStdArrays plugin (image1), some PVs
+    from the NDPluginROI plugin (ROI1), and some PVs from the NDPluginStats plugin (Stats1).
+    The plugins are arranged with Prosilica driver->ROI1->Stats1. Thus, monitoring timestamps
+    on the Stats1 plugin tests whether the timestamps are passed correctly through a
+    plugin chain. The timestamp tests were done with the Prosilica camera running at
+    a fixed rate of 2 frames/sec. Tests were done with TSE=0 (normal operation), TSE=-2
+    with default timestamp source, and TSE=-2 with the user-defined timestamp source.
+  </p>
+  <h3>
+    Timestamp test 1. TSE=0
+  </h3>
+  <pre>
+corvette:~/devel/areaDetector/iocBoot>./timeStampMonitor.sh 13PS1 0
+Old : 13PS1:cam1:ArrayCounter_RBV.TSE 0
+New : 13PS1:cam1:ArrayCounter_RBV.TSE 0
+Old : 13PS1:image1:ArrayCounter_RBV.TSE 0
+New : 13PS1:image1:ArrayCounter_RBV.TSE 0
+Old : 13PS1:image1:UniqueId_RBV.TSE  0
+New : 13PS1:image1:UniqueId_RBV.TSE  0
+Old : 13PS1:image1:ArrayData.TSE     0
+New : 13PS1:image1:ArrayData.TSE     0
+Old : 13PS1:image1:EpicsTSSec_RBV.TSE 0
+New : 13PS1:image1:EpicsTSSec_RBV.TSE 0
+Old : 13PS1:image1:EpicsTSNsec_RBV.TSE 0
+New : 13PS1:image1:EpicsTSNsec_RBV.TSE 0
+Old : 13PS1:ROI1:ArrayCounter_RBV.TSE 0
+New : 13PS1:ROI1:ArrayCounter_RBV.TSE 0
+Old : 13PS1:ROI1:UniqueId_RBV.TSE    0
+New : 13PS1:ROI1:UniqueId_RBV.TSE    0
+Old : 13PS1:Stats1:ArrayCounter_RBV.TSE 0
+New : 13PS1:Stats1:ArrayCounter_RBV.TSE 0
+Old : 13PS1:Stats1:UniqueId_RBV.TSE  0
+New : 13PS1:Stats1:UniqueId_RBV.TSE  0
+Old : 13PS1:Stats1:MeanValue_RBV.TSE 0
+New : 13PS1:Stats1:MeanValue_RBV.TSE 0
+13PS1:cam1:ArrayCounter_RBV    2013-09-15 12:00:19.230659 1 20529  
+13PS1:image1:ArrayCounter_RBV  2013-09-15 12:00:19.231246 1 20529  
+13PS1:image1:UniqueId_RBV      2013-09-15 12:00:19.231249 1 20529  
+13PS1:image1:ArrayData         2013-09-15 12:00:19.231243 1 33  
+13PS1:image1:EpicsTSSec_RBV    2013-09-15 12:00:19.231253 1 748112419  
+13PS1:image1:EpicsTSNsec_RBV   2013-09-15 12:00:19.231255 1 230464364  
+13PS1:ROI1:ArrayCounter_RBV    2013-09-15 12:00:19.230632 1 20455  
+13PS1:ROI1:UniqueId_RBV        2013-09-15 12:00:19.230635 1 20529  
+13PS1:Stats1:ArrayCounter_RBV  2013-09-15 12:00:19.237740 1 20455  
+13PS1:Stats1:UniqueId_RBV      2013-09-15 12:00:19.237743 1 20529  
+13PS1:Stats1:MeanValue_RBV     2013-09-15 12:00:19.237758 1 73.3657  
+13PS1:ROI1:ArrayCounter_RBV    2013-09-15 12:00:19.730675 1 20456  
+13PS1:ROI1:UniqueId_RBV        2013-09-15 12:00:19.730739 1 20530  
+13PS1:cam1:ArrayCounter_RBV    2013-09-15 12:00:19.730760 1 20530  
+13PS1:image1:ArrayData         2013-09-15 12:00:19.731286 1 33  
+13PS1:image1:ArrayCounter_RBV  2013-09-15 12:00:19.731348 1 20530  
+13PS1:image1:UniqueId_RBV      2013-09-15 12:00:19.731352 1 20530  
+13PS1:image1:EpicsTSNsec_RBV   2013-09-15 12:00:19.731357 1 730472829  
+13PS1:Stats1:ArrayCounter_RBV  2013-09-15 12:00:19.737856 1 20456  
+13PS1:Stats1:UniqueId_RBV      2013-09-15 12:00:19.737866 1 20530  
+13PS1:Stats1:MeanValue_RBV     2013-09-15 12:00:19.737889 1 73.6318  
+13PS1:ROI1:ArrayCounter_RBV    2013-09-15 12:00:20.230544 1 20457  
+13PS1:ROI1:UniqueId_RBV        2013-09-15 12:00:20.230604 1 20531  
+13PS1:cam1:ArrayCounter_RBV    2013-09-15 12:00:20.230650 1 20531  
+13PS1:image1:ArrayData         2013-09-15 12:00:20.231253 1 33  
+13PS1:image1:ArrayCounter_RBV  2013-09-15 12:00:20.231316 1 20531  
+13PS1:image1:UniqueId_RBV      2013-09-15 12:00:20.231320 1 20531  
+13PS1:image1:EpicsTSSec_RBV    2013-09-15 12:00:20.231327 1 748112420  
+13PS1:image1:EpicsTSNsec_RBV   2013-09-15 12:00:20.231332 1 230366264  
+13PS1:Stats1:ArrayCounter_RBV  2013-09-15 12:00:20.237810 1 20457  
+13PS1:Stats1:UniqueId_RBV      2013-09-15 12:00:20.237885 1 20531  
+13PS1:Stats1:MeanValue_RBV     2013-09-15 12:00:20.237911 1 74.2664  
+13PS1:ROI1:ArrayCounter_RBV    2013-09-15 12:00:20.730565 1 20458  
+13PS1:ROI1:UniqueId_RBV        2013-09-15 12:00:20.730625 1 20532  
+13PS1:cam1:ArrayCounter_RBV    2013-09-15 12:00:20.730644 1 20532  
+13PS1:image1:ArrayData         2013-09-15 12:00:20.731285 1 32  
+13PS1:image1:ArrayCounter_RBV  2013-09-15 12:00:20.731325 1 20532  
+13PS1:image1:UniqueId_RBV      2013-09-15 12:00:20.731330 1 20532  
+13PS1:image1:EpicsTSNsec_RBV   2013-09-15 12:00:20.731376 1 730415475  
+13PS1:Stats1:ArrayCounter_RBV  2013-09-15 12:00:20.738065 1 20458  
+13PS1:Stats1:UniqueId_RBV      2013-09-15 12:00:20.738103 1 20532  
+13PS1:Stats1:MeanValue_RBV     2013-09-15 12:00:20.738127 1 74.8682  
+13PS1:ROI1:ArrayCounter_RBV    2013-09-15 12:00:21.230629 1 20459  
+13PS1:ROI1:UniqueId_RBV        2013-09-15 12:00:21.230648 1 20533  
+13PS1:cam1:ArrayCounter_RBV    2013-09-15 12:00:21.230678 1 20533  
+13PS1:image1:ArrayData         2013-09-15 12:00:21.231301 1 32  
+13PS1:image1:ArrayCounter_RBV  2013-09-15 12:00:21.231341 1 20533  
+13PS1:image1:UniqueId_RBV      2013-09-15 12:00:21.231345 1 20533  
+13PS1:image1:EpicsTSSec_RBV    2013-09-15 12:00:21.231352 1 748112421  
+13PS1:image1:EpicsTSNsec_RBV   2013-09-15 12:00:21.231355 1 230466245  
+13PS1:Stats1:ArrayCounter_RBV  2013-09-15 12:00:21.237705 1 20459  
+13PS1:Stats1:UniqueId_RBV      2013-09-15 12:00:21.237716 1 20533  
+13PS1:Stats1:MeanValue_RBV     2013-09-15 12:00:21.237734 1 75.4404  
+</pre>
+  <p>
+    This test shows the expected normal behavior. Each record is processing every 0.5
+    seconds. The timestamps for each record in the group are slightly different because
+    the timestamp is generated when the record processes.
+  </p>
+  <h3>
+    Timestamp test 2. TSE=-2, default timestamp source</h3>
+  <pre>
+corvette:~/devel/areaDetector/iocBoot>./timeStampMonitor.sh 13PS1 -2
+Old : 13PS1:cam1:ArrayCounter_RBV.TSE -2
+New : 13PS1:cam1:ArrayCounter_RBV.TSE -2
+Old : 13PS1:image1:ArrayCounter_RBV.TSE -2
+New : 13PS1:image1:ArrayCounter_RBV.TSE -2
+Old : 13PS1:image1:UniqueId_RBV.TSE  -2
+New : 13PS1:image1:UniqueId_RBV.TSE  -2
+Old : 13PS1:image1:ArrayData.TSE     -2
+New : 13PS1:image1:ArrayData.TSE     -2
+Old : 13PS1:image1:EpicsTSSec_RBV.TSE -2
+New : 13PS1:image1:EpicsTSSec_RBV.TSE -2
+Old : 13PS1:image1:EpicsTSNsec_RBV.TSE -2
+New : 13PS1:image1:EpicsTSNsec_RBV.TSE -2
+Old : 13PS1:ROI1:ArrayCounter_RBV.TSE -2
+New : 13PS1:ROI1:ArrayCounter_RBV.TSE -2
+Old : 13PS1:ROI1:UniqueId_RBV.TSE    -2
+New : 13PS1:ROI1:UniqueId_RBV.TSE    -2
+Old : 13PS1:Stats1:ArrayCounter_RBV.TSE -2
+New : 13PS1:Stats1:ArrayCounter_RBV.TSE -2
+Old : 13PS1:Stats1:UniqueId_RBV.TSE  -2
+New : 13PS1:Stats1:UniqueId_RBV.TSE  -2
+Old : 13PS1:Stats1:MeanValue_RBV.TSE -2
+New : 13PS1:Stats1:MeanValue_RBV.TSE -2
+13PS1:cam1:ArrayCounter_RBV    2013-09-15 12:03:55.228895 1 20961  
+13PS1:image1:ArrayCounter_RBV  2013-09-15 12:03:55.228895 1 20961  
+13PS1:image1:UniqueId_RBV      2013-09-15 12:03:55.228895 1 20961  
+13PS1:image1:ArrayData         2013-09-15 12:03:55.228895 1 40  
+13PS1:image1:EpicsTSSec_RBV    2013-09-15 12:03:55.228895 1 748112635  
+13PS1:image1:EpicsTSNsec_RBV   2013-09-15 12:03:55.228895 1 228895370  
+13PS1:ROI1:ArrayCounter_RBV    2013-09-15 12:03:55.228895 1 20887  
+13PS1:ROI1:UniqueId_RBV        2013-09-15 12:03:55.228895 1 20961  
+13PS1:Stats1:ArrayCounter_RBV  2013-09-15 12:03:55.228895 1 20887  
+13PS1:Stats1:UniqueId_RBV      2013-09-15 12:03:55.228895 1 20961  
+13PS1:Stats1:MeanValue_RBV     2013-09-15 12:03:55.228895 1 85.0236  
+13PS1:ROI1:ArrayCounter_RBV    2013-09-15 12:03:55.728924 1 20888  
+13PS1:ROI1:UniqueId_RBV        2013-09-15 12:03:55.728924 1 20962  
+13PS1:cam1:ArrayCounter_RBV    2013-09-15 12:03:55.728924 1 20962  
+13PS1:image1:ArrayData         2013-09-15 12:03:55.728924 1 38  
+13PS1:image1:ArrayCounter_RBV  2013-09-15 12:03:55.728924 1 20962  
+13PS1:image1:UniqueId_RBV      2013-09-15 12:03:55.728924 1 20962  
+13PS1:image1:EpicsTSNsec_RBV   2013-09-15 12:03:55.728924 1 728923543  
+13PS1:Stats1:ArrayCounter_RBV  2013-09-15 12:03:55.728924 1 20888  
+13PS1:Stats1:UniqueId_RBV      2013-09-15 12:03:55.728924 1 20962  
+13PS1:Stats1:MeanValue_RBV     2013-09-15 12:03:55.728924 1 84.8537  
+13PS1:ROI1:ArrayCounter_RBV    2013-09-15 12:03:56.229066 1 20889  
+13PS1:ROI1:UniqueId_RBV        2013-09-15 12:03:56.229066 1 20963  
+13PS1:cam1:ArrayCounter_RBV    2013-09-15 12:03:56.229066 1 20963  
+13PS1:image1:ArrayData         2013-09-15 12:03:56.229066 1 39  
+13PS1:image1:ArrayCounter_RBV  2013-09-15 12:03:56.229066 1 20963  
+13PS1:image1:UniqueId_RBV      2013-09-15 12:03:56.229066 1 20963  
+13PS1:image1:EpicsTSSec_RBV    2013-09-15 12:03:56.229066 1 748112636  
+13PS1:image1:EpicsTSNsec_RBV   2013-09-15 12:03:56.229066 1 229065628  
+13PS1:Stats1:ArrayCounter_RBV  2013-09-15 12:03:56.229066 1 20889  
+13PS1:Stats1:UniqueId_RBV      2013-09-15 12:03:56.229066 1 20963  
+13PS1:Stats1:MeanValue_RBV     2013-09-15 12:03:56.229066 1 84.968  
+13PS1:ROI1:ArrayCounter_RBV    2013-09-15 12:03:56.728913 1 20890  
+13PS1:ROI1:UniqueId_RBV        2013-09-15 12:03:56.728913 1 20964  
+13PS1:cam1:ArrayCounter_RBV    2013-09-15 12:03:56.728913 1 20964  
+13PS1:image1:ArrayData         2013-09-15 12:03:56.728913 1 38  
+13PS1:image1:ArrayCounter_RBV  2013-09-15 12:03:56.728913 1 20964  
+13PS1:image1:UniqueId_RBV      2013-09-15 12:03:56.728913 1 20964  
+13PS1:image1:EpicsTSNsec_RBV   2013-09-15 12:03:56.728913 1 728913237  
+13PS1:Stats1:ArrayCounter_RBV  2013-09-15 12:03:56.728913 1 20890  
+13PS1:Stats1:UniqueId_RBV      2013-09-15 12:03:56.728913 1 20964  
+13PS1:Stats1:MeanValue_RBV     2013-09-15 12:03:56.728913 1 85.035  
+13PS1:ROI1:ArrayCounter_RBV    2013-09-15 12:03:57.228957 1 20891  
+13PS1:ROI1:UniqueId_RBV        2013-09-15 12:03:57.228957 1 20965  
+13PS1:cam1:ArrayCounter_RBV    2013-09-15 12:03:57.228957 1 20965  
+13PS1:image1:ArrayData         2013-09-15 12:03:57.228957 1 38  
+13PS1:image1:ArrayCounter_RBV  2013-09-15 12:03:57.228957 1 20965  
+13PS1:image1:UniqueId_RBV      2013-09-15 12:03:57.228957 1 20965  
+13PS1:image1:EpicsTSSec_RBV    2013-09-15 12:03:57.228957 1 748112637  
+13PS1:image1:EpicsTSNsec_RBV   2013-09-15 12:03:57.228957 1 228957340  
+13PS1:Stats1:ArrayCounter_RBV  2013-09-15 12:03:57.228957 1 20891  
+13PS1:Stats1:UniqueId_RBV      2013-09-15 12:03:57.228957 1 20965  
+13PS1:Stats1:MeanValue_RBV     2013-09-15 12:03:57.228957 1 84.9281
+</pre>
+  <p>
+    This test shows the expected result. The timestamps within a single 0.5 second group
+    are identical, which is different from test 1. Timestamps for the Prosilica driver
+    records (13PS1:cam1:ArrayCounter_RBV) are coming from the most recent call by the
+    driver to updateTimeStamp(). Timestamps for all of the plugin records are coming
+    from the NDArray.epicsTS field, which is used in the call to setTimeStamp() in the
+    plugin driver. The default timestamp source is clearly being used because the fractional
+    seconds are non-zero. This has the desired result that all records associated with
+    a particular image have the timestamp at the time the Prosilica driver received
+    that image.
+  </p>
+  <h3>
+    Timestamp test 3. TSE=-2, user timestamp source</h3>
+  <pre>
+corvette:~/devel/areaDetector/iocBoot>./timeStampMonitor.sh 13PS1 -2
+Old : 13PS1:cam1:ArrayCounter_RBV.TSE -2
+New : 13PS1:cam1:ArrayCounter_RBV.TSE -2
+Old : 13PS1:image1:ArrayCounter_RBV.TSE -2
+New : 13PS1:image1:ArrayCounter_RBV.TSE -2
+Old : 13PS1:image1:UniqueId_RBV.TSE  -2
+New : 13PS1:image1:UniqueId_RBV.TSE  -2
+Old : 13PS1:image1:ArrayData.TSE     -2
+New : 13PS1:image1:ArrayData.TSE     -2
+Old : 13PS1:image1:EpicsTSSec_RBV.TSE -2
+New : 13PS1:image1:EpicsTSSec_RBV.TSE -2
+Old : 13PS1:image1:EpicsTSNsec_RBV.TSE -2
+New : 13PS1:image1:EpicsTSNsec_RBV.TSE -2
+Old : 13PS1:ROI1:ArrayCounter_RBV.TSE -2
+New : 13PS1:ROI1:ArrayCounter_RBV.TSE -2
+Old : 13PS1:ROI1:UniqueId_RBV.TSE    -2
+New : 13PS1:ROI1:UniqueId_RBV.TSE    -2
+Old : 13PS1:Stats1:ArrayCounter_RBV.TSE -2
+New : 13PS1:Stats1:ArrayCounter_RBV.TSE -2
+Old : 13PS1:Stats1:UniqueId_RBV.TSE  -2
+New : 13PS1:Stats1:UniqueId_RBV.TSE  -2
+Old : 13PS1:Stats1:MeanValue_RBV.TSE -2
+New : 13PS1:Stats1:MeanValue_RBV.TSE -2
+13PS1:cam1:ArrayCounter_RBV    2013-09-15 12:13:25.000000 1 22102  
+13PS1:image1:ArrayCounter_RBV  2013-09-15 12:13:25.000000 1 22102  
+13PS1:image1:UniqueId_RBV      2013-09-15 12:13:25.000000 1 22102  
+13PS1:image1:ArrayData         2013-09-15 12:13:25.000000 1 27  
+13PS1:image1:EpicsTSSec_RBV    2013-09-15 12:13:25.000000 1 748113205  
+13PS1:image1:EpicsTSNsec_RBV   2013-09-15 12:13:22.000000 1 0  
+13PS1:ROI1:ArrayCounter_RBV    2013-09-15 12:13:25.000000 1 22028  
+13PS1:ROI1:UniqueId_RBV        2013-09-15 12:13:25.000000 1 22102  
+13PS1:Stats1:ArrayCounter_RBV  2013-09-15 12:13:25.000000 1 22028  
+13PS1:Stats1:UniqueId_RBV      2013-09-15 12:13:25.000000 1 22102  
+13PS1:Stats1:MeanValue_RBV     2013-09-15 12:13:25.000000 1 59.7119  
+13PS1:ROI1:ArrayCounter_RBV    2013-09-15 12:13:26.000000 1 22029  
+13PS1:ROI1:UniqueId_RBV        2013-09-15 12:13:26.000000 1 22103  
+13PS1:cam1:ArrayCounter_RBV    2013-09-15 12:13:26.000000 1 22103  
+13PS1:image1:ArrayData         2013-09-15 12:13:26.000000 1 28  
+13PS1:image1:ArrayCounter_RBV  2013-09-15 12:13:26.000000 1 22103  
+13PS1:image1:UniqueId_RBV      2013-09-15 12:13:26.000000 1 22103  
+13PS1:image1:EpicsTSSec_RBV    2013-09-15 12:13:26.000000 1 748113206  
+13PS1:Stats1:ArrayCounter_RBV  2013-09-15 12:13:26.000000 1 22029  
+13PS1:Stats1:UniqueId_RBV      2013-09-15 12:13:26.000000 1 22103  
+13PS1:Stats1:MeanValue_RBV     2013-09-15 12:13:26.000000 1 60.5082  
+13PS1:ROI1:ArrayCounter_RBV    2013-09-15 12:13:26.000000 1 22030  
+13PS1:ROI1:UniqueId_RBV        2013-09-15 12:13:26.000000 1 22104  
+13PS1:cam1:ArrayCounter_RBV    2013-09-15 12:13:26.000000 1 22104  
+13PS1:image1:ArrayData         2013-09-15 12:13:26.000000 1 28  
+13PS1:image1:ArrayCounter_RBV  2013-09-15 12:13:26.000000 1 22104  
+13PS1:image1:UniqueId_RBV      2013-09-15 12:13:26.000000 1 22104  
+13PS1:Stats1:ArrayCounter_RBV  2013-09-15 12:13:26.000000 1 22030  
+13PS1:Stats1:UniqueId_RBV      2013-09-15 12:13:26.000000 1 22104  
+13PS1:Stats1:MeanValue_RBV     2013-09-15 12:13:26.000000 1 61.1341  
+13PS1:ROI1:ArrayCounter_RBV    2013-09-15 12:13:27.000000 1 22031  
+13PS1:ROI1:UniqueId_RBV        2013-09-15 12:13:27.000000 1 22105  
+13PS1:cam1:ArrayCounter_RBV    2013-09-15 12:13:27.000000 1 22105  
+13PS1:image1:ArrayData         2013-09-15 12:13:27.000000 1 29  
+13PS1:image1:ArrayCounter_RBV  2013-09-15 12:13:27.000000 1 22105  
+13PS1:image1:UniqueId_RBV      2013-09-15 12:13:27.000000 1 22105  
+13PS1:image1:EpicsTSSec_RBV    2013-09-15 12:13:27.000000 1 748113207  
+13PS1:Stats1:ArrayCounter_RBV  2013-09-15 12:13:27.000000 1 22031  
+13PS1:Stats1:UniqueId_RBV      2013-09-15 12:13:27.000000 1 22105  
+13PS1:Stats1:MeanValue_RBV     2013-09-15 12:13:27.000000 1 62.0059  
+13PS1:ROI1:ArrayCounter_RBV    2013-09-15 12:13:27.000000 1 22032  
+13PS1:ROI1:UniqueId_RBV        2013-09-15 12:13:27.000000 1 22106  
+13PS1:cam1:ArrayCounter_RBV    2013-09-15 12:13:27.000000 1 22106  
+13PS1:image1:ArrayData         2013-09-15 12:13:27.000000 1 30  
+13PS1:image1:ArrayCounter_RBV  2013-09-15 12:13:27.000000 1 22106  
+13PS1:image1:UniqueId_RBV      2013-09-15 12:13:27.000000 1 22106  
+13PS1:Stats1:ArrayCounter_RBV  2013-09-15 12:13:27.000000 1 22032  
+13PS1:Stats1:UniqueId_RBV      2013-09-15 12:13:27.000000 1 22106  
+13PS1:Stats1:MeanValue_RBV     2013-09-15 12:13:27.000000 1 62.6052  
+</pre>
+  <p>
+    This test shows the expected result. The timestamps within a single 0.5 second group
+    are identical, the same as test 2. The user timestamp source is clearly being used
+    because the fractional seconds are all zero. This has the desired result that all
+    records associated with a particular image have the timestamp at the time the Prosilica
+    driver received that image, and the user-defined timestamp source is being used.
+  </p>
+  <h3>
+    netCDF file test</h3>
+  <p>
+    The netCDF files should now contain the NDArray.epicsTS data in two arrays. The
+    values do not depend on TSE, since that only affects the record timestamps. The
+    values do depend on whether the default timestamp source or the user-defined timestamp
+    source is being used. For these tests 10 images were collected in each netCDF file
+    in "stream" mode.
+  </p>
+  <p>
+    This is the output of the "ncdump" utility on a netCDF file collected with the default
+    timestamp source:</p>
+  <pre>
+corvette:~/scratch>ncdump -v uniqueId,timeStamp,epicsTSSec,epicsTSNsec ~/scratch/test_DefaultSource_001.nc
+netcdf test_DefaultSource_001 {
+dimensions:
+        numArrays = UNLIMITED ; // (10 currently)
+        dim0 = 512 ;
+        dim1 = 680 ;
+        attrStringSize = 256 ;
+variables:
+        int uniqueId(numArrays) ;
+        double timeStamp(numArrays) ;
+        int epicsTSSec(numArrays) ;
+        int epicsTSNsec(numArrays) ;
+        byte array_data(numArrays, dim0, dim1) ;
+        int Attr_BayerPattern(numArrays) ;
+        int Attr_ColorMode(numArrays) ;
+        double Attr_AcquireTime(numArrays) ;
+        char Attr_CameraModel(numArrays, attrStringSize) ;
+        int Attr_FramesDropped(numArrays) ;
+
+// global attributes:
+                :dataType = 1 ;
+                :NDNetCDFFileVersion = 3. ;
+                :numArrayDims = 2 ;
+                :dimSize = 680, 512 ;
+                :dimOffset = 0, 0 ;
+                :dimBinning = 2, 2 ;
+                :dimReverse = 0, 0 ;
+                :Attr_BayerPattern_DataType = "Int32" ;
+                :Attr_BayerPattern_Description = "Bayer Pattern" ;
+                :Attr_BayerPattern_Source =  ;
+                :Attr_BayerPattern_SourceType = "Driver" ;
+                :Attr_ColorMode_DataType = "Int32" ;
+                :Attr_ColorMode_Description = "Color Mode" ;
+                :Attr_ColorMode_Source =  ;
+                :Attr_ColorMode_SourceType = "Driver" ;
+                :Attr_AcquireTime_DataType = "Float64" ;
+                :Attr_AcquireTime_Description = "Camera acquire time" ;
+                :Attr_AcquireTime_Source = "13PS1:cam1:AcquireTime" ;
+                :Attr_AcquireTime_SourceType = "EPICS_PV" ;
+                :Attr_CameraModel_DataType = "String" ;
+                :Attr_CameraModel_Description = "CameraModel" ;
+                :Attr_CameraModel_Source = "MODEL" ;
+                :Attr_CameraModel_SourceType = "Param" ;
+                :Attr_FramesDropped_DataType = "Int32" ;
+                :Attr_FramesDropped_Description = "FramesDropped" ;
+                :Attr_FramesDropped_Source = "PS_FRAMES_DROPPED" ;
+                :Attr_FramesDropped_SourceType = "Param" ;
+data:
+
+ uniqueId = 23569, 23570, 23571, 23572, 23573, 23574, 23575, 23576, 23577, 
+    23578 ;
+
+ timeStamp = 748113951.240688, 748113951.740688, 748113952.240688, 
+    748113952.740688, 748113953.240688, 748113953.740688, 748113954.240688, 
+    748113954.740688, 748113955.240688, 748113955.740688 ;
+
+ epicsTSSec = 748113951, 748113951, 748113952, 748113952, 748113953, 
+    748113953, 748113954, 748113954, 748113955, 748113955 ;
+
+ epicsTSNsec = 259958854, 759958117, 259985340, 759984911, 259874142, 
+    760020860, 259933342, 759950117, 259764554, 759964413 ;
+}
+</pre>
+  <p>
+    This shows the expected result. The epicsTSNsec values are non-zero, because the
+    default timestamp source is being used. The epicsTSSec values are the same as the
+    integer part of the timeStamp values.
+  </p>
+  <p>
+    This is the output of the "ncdump" utility on a netCDF file collected with the user-defined
+    timestamp source:</p>
+  <pre>
+corvette:~/scratch>ncdump -v uniqueId,timeStamp,epicsTSSec,epicsTSNsec ~/scratch/test_UserSource_001.nc 
+netcdf test_UserSource_001 {
+dimensions:
+        numArrays = UNLIMITED ; // (10 currently)
+        dim0 = 512 ;
+        dim1 = 680 ;
+        attrStringSize = 256 ;
+variables:
+        int uniqueId(numArrays) ;
+        double timeStamp(numArrays) ;
+        int epicsTSSec(numArrays) ;
+        int epicsTSNsec(numArrays) ;
+        byte array_data(numArrays, dim0, dim1) ;
+        int Attr_BayerPattern(numArrays) ;
+        int Attr_ColorMode(numArrays) ;
+        double Attr_AcquireTime(numArrays) ;
+        char Attr_CameraModel(numArrays, attrStringSize) ;
+        int Attr_FramesDropped(numArrays) ;
+
+// global attributes:
+                :dataType = 1 ;
+                :NDNetCDFFileVersion = 3. ;
+                :numArrayDims = 2 ;
+                :dimSize = 680, 512 ;
+                :dimOffset = 0, 0 ;
+                :dimBinning = 2, 2 ;
+                :dimReverse = 0, 0 ;
+                :Attr_BayerPattern_DataType = "Int32" ;
+                :Attr_BayerPattern_Description = "Bayer Pattern" ;
+                :Attr_BayerPattern_Source =  ;
+                :Attr_BayerPattern_SourceType = "Driver" ;
+                :Attr_ColorMode_DataType = "Int32" ;
+                :Attr_ColorMode_Description = "Color Mode" ;
+                :Attr_ColorMode_Source =  ;
+                :Attr_ColorMode_SourceType = "Driver" ;
+                :Attr_AcquireTime_DataType = "Float64" ;
+                :Attr_AcquireTime_Description = "Camera acquire time" ;
+                :Attr_AcquireTime_Source = "13PS1:cam1:AcquireTime" ;
+                :Attr_AcquireTime_SourceType = "EPICS_PV" ;
+                :Attr_CameraModel_DataType = "String" ;
+                :Attr_CameraModel_Description = "CameraModel" ;
+                :Attr_CameraModel_Source = "MODEL" ;
+                :Attr_CameraModel_SourceType = "Param" ;
+                :Attr_FramesDropped_DataType = "Int32" ;
+                :Attr_FramesDropped_Description = "FramesDropped" ;
+                :Attr_FramesDropped_Source = "PS_FRAMES_DROPPED" ;
+                :Attr_FramesDropped_SourceType = "Param" ;
+data:
+
+ uniqueId = 24063, 24064, 24065, 24066, 24067, 24068, 24069, 24070, 24071, 
+    24072 ;
+
+ timeStamp = 748114198.240688, 748114198.740688, 748114199.240688, 
+    748114199.740688, 748114200.240688, 748114200.740688, 748114201.240688, 
+    748114201.740688, 748114202.240688, 748114202.740688 ;
+
+ epicsTSSec = 748114198, 748114198, 748114199, 748114199, 748114200, 
+    748114200, 748114201, 748114201, 748114202, 748114202 ;
+
+ epicsTSNsec = 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ;
+}
+</pre>
+  <p>
+    This shows the expected result. The epicsTSNsec values are zero, because the user-defined
+    timestamp source is being used. The epicsTSSec values are the same as the integer
+    part of the timeStamp values.
+  </p>
+  <h3>
+    TIFF file test</h3>
+  <p>
+    The netCDF files should now contain the NDArray.epicsTS data in two tags, 65002
+    and 65003. The values do not depend on TSE, since that only affects the record timestamps.
+    The values do depend on whether the default timestamp source or the user-defined
+    timestamp source is being used.
+  </p>
+  <p>
+    This is the output of the "tiffinfo" utility on a TIFF file collected with the default
+    timestamp source:</p>
+  <pre>
+corvette:~/scratch>tiffinfo tiff_DefaultTS_001.tif
+TIFFReadDirectory: Warning, tiff_DefaultTS_001.tif: unknown field with tag 65000 (0xfde8) encountered.
+TIFFReadDirectory: Warning, tiff_DefaultTS_001.tif: unknown field with tag 65001 (0xfde9) encountered.
+TIFFReadDirectory: Warning, tiff_DefaultTS_001.tif: unknown field with tag 65002 (0xfdea) encountered.
+TIFFReadDirectory: Warning, tiff_DefaultTS_001.tif: unknown field with tag 65003 (0xfdeb) encountered.
+TIFF Directory at offset 0x55008 (348168)
+  Image Width: 680 Image Length: 512
+  Bits/Sample: 8
+  Sample Format: unsigned integer
+  Compression Scheme: None
+  Photometric Interpretation: min-is-black
+  Samples/Pixel: 1
+  Rows/Strip: 512
+  Planar Configuration: single image plane
+  Make: Unknown
+  Model: Unknown
+  Tag 65000: 748114737.240688
+  Tag 65001: 25141
+  Tag 65002: 748114737
+  Tag 65003: 254905820
+</pre>
+  <p>
+    This shows the expected result. The epicsTSNsec (tag 65003) values are non-zero,
+    because the default timestamp source is being used. The epicsTSSec values are the
+    same as the integer part of the timeStamp values.
+  </p>
+  <p>
+    This is the output of the "tiffinfo" utility on a TIFF file collected with the used-defined
+    timestamp source:
+  </p>
+  <pre>
+corvette:~/scratch>tiffinfo tiff_UserTS_001.tif 
+TIFFReadDirectory: Warning, tiff_UserTS_001.tif: unknown field with tag 65000 (0xfde8) encountered.
+TIFFReadDirectory: Warning, tiff_UserTS_001.tif: unknown field with tag 65001 (0xfde9) encountered.
+TIFFReadDirectory: Warning, tiff_UserTS_001.tif: unknown field with tag 65002 (0xfdea) encountered.
+TIFFReadDirectory: Warning, tiff_UserTS_001.tif: unknown field with tag 65003 (0xfdeb) encountered.
+TIFF Directory at offset 0x55008 (348168)
+  Image Width: 680 Image Length: 512
+  Bits/Sample: 8
+  Sample Format: unsigned integer
+  Compression Scheme: None
+  Photometric Interpretation: min-is-black
+  Samples/Pixel: 1
+  Rows/Strip: 512
+  Planar Configuration: single image plane
+  Make: Unknown
+  Model: Unknown
+  Tag 65000: 748114762.240688
+  Tag 65001: 25191
+  Tag 65002: 748114762
+  Tag 65003: 0
+</pre>
+  <p>
+    This shows the expected result. The epicsTSNsec (tag 65003) values are zero, because
+    the user-defined timestamp source is being used. The epicsTSSec values are the same
+    as the integer part of the timeStamp values.
+  </p>
+  <h2>
+    Future plans</h2>
+  <p>
+    While making these changes I found that the NDFileNexus and NDFileHDF5 plugins,
+    which write Nexus-HDF5 and native HDF5 files respectively, do not currently store
+    the NDArray.timeStamp information at all in the files. This is an oversight that
+    should be fixed, and they should of course be extended to also store NDArray.epicsTS.
+    I did not write these plugins, so I am hoping that the original authors can make
+    these changes.</p>
+</body>
+</html>

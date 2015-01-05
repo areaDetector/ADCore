@@ -21,8 +21,10 @@
 #include <epicsMessageQueue.h>
 #include <cantProceed.h>
 
-#include <NDPluginDriver.h>
+#include <asynDriver.h>
+
 #include <epicsExport.h>
+#include <NDPluginDriver.h>
 #include "NDPluginFile.h"
 
 
@@ -39,7 +41,7 @@ asynStatus NDPluginFile::openFileBase(NDFileOpenMode_t openMode, NDArray *pArray
     char fullFileName[MAX_FILENAME_LEN];
     char tempSuffix[MAX_FILENAME_LEN];
     char errorMessage[256];
-    const char* functionName = "openFileBase";
+    static const char* functionName = "openFileBase";
 
     if (this->useAttrFilePrefix)
         this->attrFileNameSet();
@@ -91,7 +93,7 @@ asynStatus NDPluginFile::closeFileBase()
     char tempSuffix[MAX_FILENAME_LEN];
     char tempFileName[MAX_FILENAME_LEN];
     char errorMessage[256];
-    const char* functionName = "closeFileBase";
+    static const char* functionName = "closeFileBase";
 
     setIntegerParam(NDFileWriteStatus, NDFileWriteOK);
     setStringParam(NDFileWriteMessage, "");
@@ -140,7 +142,7 @@ asynStatus NDPluginFile::readFileBase(void)
     char fullFileName[MAX_FILENAME_LEN];
     int dataType=0;
     NDArray *pArray=NULL;
-    const char* functionName = "readFileBase";
+    static const char* functionName = "readFileBase";
 
     status = (asynStatus)createFileName(MAX_FILENAME_LEN, fullFileName);
     if (status) { 
@@ -188,7 +190,7 @@ asynStatus NDPluginFile::writeFileBase()
     NDAttribute *pAttribute;
     char driverFileName[MAX_FILENAME_LEN];
     char errorMessage[256];
-    const char* functionName = "writeFileBase";
+    static const char* functionName = "writeFileBase";
 
     /* Make sure there is a valid array */
     if (!this->pArrays[0]) {
@@ -213,11 +215,15 @@ asynStatus NDPluginFile::writeFileBase()
         case NDFileModeSingle:
             setIntegerParam(NDWriteFile, 1);
             callParamCallbacks();
+            // Some file writing plugins (e.g. HDF5) use the value of NDFileNumCaptured 
+            // even in single mode
+            setIntegerParam(NDFileNumCaptured, 1);
             status = this->openFileBase(NDFileModeWrite, this->pArrays[0]);
             if (status == asynSuccess) {
+                NDArray *pArrayOut = this->pArrays[0];
                 this->unlock();
                 epicsMutexLock(this->fileMutexId);
-                status = this->writeFile(this->pArrays[0]);
+                status = this->writeFile(pArrayOut);
                 epicsMutexUnlock(this->fileMutexId);
                 this->lock();
                 if (status) {
@@ -297,9 +303,10 @@ asynStatus NDPluginFile::writeFileBase()
                     status = asynError;
             }
             if (status == asynSuccess) {
+                NDArray *pArrayOut = this->pArrays[0];
                 this->unlock();
                 epicsMutexLock(this->fileMutexId);
-                status = this->writeFile(this->pArrays[0]);
+                status = this->writeFile(pArrayOut);
                 epicsMutexUnlock(this->fileMutexId);
                 this->lock();
                 if (status) {
@@ -376,7 +383,7 @@ asynStatus NDPluginFile::doCapture(int capture)
     NDArrayInfo_t arrayInfo;
     int i;
     int numCapture;
-    const char* functionName = "doCapture";
+    static const char* functionName = "doCapture";
 
     /* Make sure there is a valid array */
     if (!pArray && !this->lazyOpen) {
@@ -432,6 +439,7 @@ asynStatus NDPluginFile::doCapture(int capture)
                     }
                     this->pCapture[i]->dataSize = arrayInfo.totalBytes;
                     this->pCapture[i]->pData = malloc(arrayInfo.totalBytes);
+                    this->pCapture[i]->ndims = pArray->ndims;
                     if (!this->pCapture[i]->pData) {
                         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                             "%s:%s ERROR: cannot allocate capture array for buffer %d\n",
@@ -462,6 +470,7 @@ asynStatus NDPluginFile::doCapture(int capture)
     }
     return(status);
 }
+
 
 /** Check whether the attributes defining the filename has changed since last write.
  * If this is the first frame (NDFileNumCaptured == 1) then the file is opened.
@@ -586,7 +595,7 @@ bool NDPluginFile::attrIsProcessingRequired(NDAttributeList* pAttrList)
         {
             if (destPortNameLen > MAX_FILENAME_LEN)
                 destPortNameLen = MAX_FILENAME_LEN;
-            ndAttr->getValue(NDAttrString, destPortName, destPortNameLen);
+                ndAttr->getValue(NDAttrString, destPortName, destPortNameLen);
             if (epicsStrnCaseCmp(destPortName, "all", destPortNameLen>3?3:destPortNameLen) != 0 &&
                 epicsStrnCaseCmp(destPortName, this->portName, destPortNameLen) != 0)
                 return false;
@@ -641,7 +650,7 @@ bool NDPluginFile::isFrameValid(NDArray *pArray)
     if ((initInfo->xSize != info.xSize) || (initInfo->ySize != info.ySize)) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                 "NDPluginFile::isFrameValid: WARNING: Frame dimensions have changed X:%ld,%ld Y:%ld,%ld]\n",
-                initInfo->xSize, info.xSize, initInfo->ySize, info.ySize);
+                (long)initInfo->xSize, (long)info.xSize, (long)initInfo->ySize, (long)info.ySize);
         valid = false;
     }
 
@@ -662,7 +671,7 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
     int arrayCounter;
     int numCapture, numCaptured;
     asynStatus status = asynSuccess;
-    const char* functionName = "processCallbacks";
+    //static const char* functionName = "processCallbacks";
 
     /* First check if the callback is really for this file saving plugin */
     if (!this->attrIsProcessingRequired(pArray->pAttributeList))
@@ -716,7 +725,7 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
                 arrayCounter++;
                 status = writeFileBase();
                 if (status == asynSuccess) {
-                	numCaptured++;
+                    numCaptured++;
                     setIntegerParam(NDFileNumCaptured, numCaptured);
                 }
                 if (numCaptured == numCapture) {
@@ -741,7 +750,7 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
-    const char* functionName = "writeInt32";
+    static const char* functionName = "writeInt32";
 
     /* Set the parameter in the parameter library. */
     status = (asynStatus) setIntegerParam(function, value);
@@ -770,12 +779,12 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
             setIntegerParam(NDReadFile, 0);
         }
     } else if (function == NDFileCapture) {
-    	/* Latch the NDFileLazyOpen parameter so that we don't need to care
-    	 * if the user modifies this parameter before first frame has arrived. */
-    	int paramFileLazyOpen = 0;
-    	getIntegerParam(NDFileLazyOpen, &paramFileLazyOpen);
-    	this->lazyOpen = (paramFileLazyOpen != 0);
-    	/* So far everything is OK, so we just clear the FileWriteStatus parameters */
+        /* Latch the NDFileLazyOpen parameter so that we don't need to care
+         * if the user modifies this parameter before first frame has arrived. */
+        int paramFileLazyOpen = 0;
+        getIntegerParam(NDFileLazyOpen, &paramFileLazyOpen);
+        this->lazyOpen = (paramFileLazyOpen != 0);
+        /* So far everything is OK, so we just clear the FileWriteStatus parameters */
         setIntegerParam(NDFileWriteStatus, NDFileWriteOK);
         setStringParam(NDFileWriteMessage, "");
         setStringParam(NDFullFileName, "");
@@ -784,7 +793,7 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
         if (status == asynSuccess) {
             if (this->lazyOpen) setStringParam(NDFileWriteMessage, "Lazy Open...");
         } else {
-        	setIntegerParam(NDFileCapture, 0);
+            setIntegerParam(NDFileCapture, 0);
         }
     } else {
         /* This was not a parameter that this driver understands, try the base class */
@@ -810,7 +819,7 @@ asynStatus NDPluginFile::writeNDArray(asynUser *pasynUser, void *genericPointer)
 {
     NDArray *pArray = (NDArray *)genericPointer;
     asynStatus status = asynSuccess;
-    //const char *functionName = "writeNDArray";
+    //static const char *functionName = "writeNDArray";
         
     this->pArrays[0] = pArray;
     setIntegerParam(NDFileWriteMode, NDFileModeSingle);
@@ -861,11 +870,10 @@ NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCall
                      asynFlags, autoConnect, priority, stackSize),
     pCapture(NULL), captureBufferSize(0)
 {
-    //const char *functionName = "NDPluginFile";
+    //static const char *functionName = "NDPluginFile";
 
     this->ndArrayInfoInit = NULL;
     this->lazyOpen = false;
-    this->createParam("FILE_LAZY_OPEN", asynParamInt32, &NDFileLazyOpen);
     //setIntegerParam(NDFileLazyOpen, 1);
 
     this->createParam("TEMP_SUFFIX", asynParamOctet, &NDTempSuffix);

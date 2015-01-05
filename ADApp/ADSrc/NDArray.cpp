@@ -135,6 +135,13 @@ int NDArray::getInfo(NDArrayInfo_t *pInfo)
         pInfo->colorStride = this->dims[0].size * this->dims[1].size;
         break;
       default:
+        // This is a 3-D array, but is not RGB
+        pInfo->xDim    = 0;
+        pInfo->yDim    = 1;
+        pInfo->colorDim  = 2;
+        pInfo->xStride   = 1;
+        pInfo->yStride   = this->dims[0].size;
+        pInfo->colorStride = this->dims[0].size * this->dims[1].size;
         break;
     }
     pInfo->xSize     = this->dims[pInfo->xDim].size;

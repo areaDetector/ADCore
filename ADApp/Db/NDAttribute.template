@@ -1,0 +1,97 @@
+# % macro, P, Device Prefix
+# % macro, R, Device Suffix
+# % macro, PORT, Asyn Port name
+# The asyn port name should match what you have
+# written in your startup script
+# % macro, NELEMENTS, Number of elements in attribute waveform
+# % macro, ADDR, Asyn Port address
+# % macro, TIMEOUT, Timeout
+
+record(waveform, "$(P)$(R)ArrayData_RBV")
+{
+    field(DTYP, "asynFloat64ArrayIn")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_ARRAY")
+    field(FTVL, "DOUBLE")
+    field(NELM, "$(NELEMENTS)")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)Value_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_VAL")
+   field(PREC, "4")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)ValueSum_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_VAL_SUM")
+   field(PREC, "4")
+   field(SCAN, "I/O Intr")
+}
+
+
+record(bo, "$(P)$(R)Reset")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_RESET")
+   field(ZNAM, "Done Reset")
+   field(ONAM, "Reset")
+   field(VAL,  "0")
+   field(FLNK, "$(P)$(R)ResetArrayCounter.PROC")
+}
+
+record(bo, "$(P)$(R)Update")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_UPDATE")
+   field(ZNAM, "Done Update Array")
+   field(ONAM, "Update Array")
+   field(VAL,  "0")
+}
+
+record(dfanout, "$(P)$(R)ResetArrayCounter")
+{
+   field(VAL, "0")
+   field(OUTA, "$(P)$(R)ArrayCounter PP")
+}
+
+record(waveform, "$(P)$(R)AttrName")
+{
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_ATTRNAME")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(R)AttrName_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_ATTRNAME")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)UpdatePeriod")
+{
+   field(DESC, "Array Update Period")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_UPDATE_PERIOD")
+   field(PREC, "0")
+   field(VAL, "100")
+   field(PINI, "YES")
+}
+
+record(ai, "$(P)$(R)UpdatePeriod_RBV")
+{
+   field(DESC, "Array Update Period")
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_UPDATE_PERIOD")
+   field(PREC, "0")
+   field(SCAN, "I/O Intr")
+   field(EGU, "ms")	
+}
+

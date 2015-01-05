@@ -16,6 +16,10 @@
 #include <epicsMutex.h>
 #include <epicsString.h>
 
+#include <asynDriver.h>
+
+#define epicsExportSharedSymbols
+#include <shareLib.h>
 #include <asynNDArrayDriver.h>
 #include "NDArray.h"
 #include "paramAttribute.h"

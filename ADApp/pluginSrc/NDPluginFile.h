@@ -86,10 +86,9 @@ private:
     NDArrayInfo_t *ndArrayInfoInit; /**< The NDArray information at file open time.
                                       *  Used to check against changes in incoming frames dimensions or datatype */
 protected:
-    int NDFileLazyOpen;
     int NDTempSuffix;
 };
 
-#define NUM_NDPLUGIN_FILE_PARAMS 2
+#define NUM_NDPLUGIN_FILE_PARAMS 1
     
 #endif

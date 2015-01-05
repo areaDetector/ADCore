@@ -11,8 +11,9 @@
 #ifndef INCPVAttributeH
 #define INCPVAttributeH
 
-#include <ellLib.h>
 #include <cadef.h>
+#include <epicsMutex.h>
+#include <epicsEvent.h>
 
 #include "NDArray.h"
 

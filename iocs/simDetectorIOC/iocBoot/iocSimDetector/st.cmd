@@ -12,11 +12,25 @@ epicsEnvSet("XSIZE",  "1024")
 epicsEnvSet("YSIZE",  "1024")
 epicsEnvSet("NCHANS", "2048")
 
+# The EPICS environment variable EPICS_CA_MAX_ARRAY_BYTES needs to be set to a value at least as large
+# as the largest image that the standard arrays plugin will send.
+# That vlaue is $(XSIZE) * $(YSIZE) * sizeof(FTVL data type) for the FTVL used when loading the NDStdArrays.template file.
+# The variable can be set in the environment before running the IOC or it can be set here.
+# It is often convenient to set it in the environment outside the IOC to the largest array any client 
+# or server will need.  For example 10000000 (ten million) bytes may be enough.
+# If it is set here then remember to also set it outside the IOC for any CA clients that need to access the waveform record.  
+# Do not set EPICS_CA_MAX_ARRAY_BYTES to a value much larger than that required, because EPICS Channel Access actually
+# allocates arrays of this size every time it needs a buffer larger than 16K.
+# Uncomment the following line to set it in the IOC.
+#epicsEnvSet("EPICS_CA_MAX_ARRAY_BYTES", "10000000")
+
 # Create a simDetector driver
 # simDetectorConfig(const char *portName, int maxSizeX, int maxSizeY, int dataType,
 #                   int maxBuffers, int maxMemory, int priority, int stackSize)
 simDetectorConfig("$(PORT)", $(XSIZE), $(YSIZE), 1, 0, 0)
 dbLoadRecords("$(ADCORE)/db/ADBase.template",     "P=$(PREFIX),R=cam1:,PORT=$(PORT),ADDR=0,TIMEOUT=1")
+# To have the rate calculation use a non-zero smoothing factor use the following line
+#dbLoadRecords("$(ADCORE)/db/ADBase.template",     "P=$(PREFIX),R=cam1:,PORT=$(PORT),ADDR=0,TIMEOUT=1,RATE_SMOOTH=0.2")
 dbLoadRecords("$(ADCORE)/db/simDetector.template","P=$(PREFIX),R=cam1:,PORT=$(PORT),ADDR=0,TIMEOUT=1")
 
 # Create a second simDetector driver
@@ -43,10 +57,6 @@ dbLoadRecords("$(ADCORE)/db/NDPluginBase.template","P=$(PREFIX),R=image2:,PORT=I
 # This creates a waveform large enough for 640x480x3 (e.g. RGB color) arrays.
 # This waveform allows transporting 64-bit images, so it can handle any detector data type at the expense of more memory and bandwidth
 dbLoadRecords("$(ADCORE)/db/NDStdArrays.template", "P=$(PREFIX),R=image2:,PORT=Image2,ADDR=0,TIMEOUT=1,TYPE=Float64,FTVL=DOUBLE,NELEMENTS=921600")
-
-# This loads a database to tie the ROI size to the detector readout size
-dbLoadRecords("$(ADCORE)/db/NDROI_sync.template", "P=$(PREFIX),CAM=cam1:,ROI=ROI1:")
-dbLoadRecords("$(ADCORE)/db/NDROI_sync.template", "P=$(PREFIX),CAM=cam1:,ROI=ROI2:")
 
 # Load all other plugins using commonPlugins.cmd
 < $(ADCORE)/iocBoot/commonPlugins.cmd

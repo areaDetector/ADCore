@@ -1,0 +1,98 @@
+###################################################################
+#
+# Database template for ROI Stat plugin. This only provides
+# the Name records. To add in ROIs use the NDROIStatN.template,
+# or alternatively use a single NDROIStat8.template to get up to 8
+# ROIs.
+# 
+# Macros:
+# P,R - Base PV name
+# PORT - Asyn port name
+# ADDR - The Asyn address
+# TIMEOUT - Asyn port timeout
+#
+# Matt Pearson
+# Nov 2014
+#
+###################################################################
+
+# ///
+# /// The name of the plugin.
+# ///
+record(stringout, "$(P)$(R)Name")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynOctetWrite")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_NAME")
+   info(autosaveFields, "VAL")
+}
+
+record(stringin, "$(P)$(R)Name_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_NAME")
+   field(SCAN, "I/O Intr")
+}
+
+# ///
+# /// Reset the data for all the ROIs
+# ///
+record(bo, "$(P)$(R)ResetAll")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_RESETALL")
+}
+
+# ///
+# /// Do NDArray callbacks. This is an option for efficiency reasons. 
+# /// If enabled, a new NDArray will be output with a modified NDAttributeList. 
+# /// This can be used to save the ROI data to the output NDArray.
+# ///
+record(bo, "$(P)$(R)NDArrayCallbacks")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_NDARRAY_CALLBACKS")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(VAL,  "0")
+   info(autosaveFields, "VAL")
+}
+
+# ///
+# /// Do NDArray callbacks (readback)
+# ///
+record(bi, "$(P)$(R)NDArrayCallbacks_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_NDARRAY_CALLBACKS")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+# Set the NDArray sizes. 
+# These parameters are defined in asynNDArrayDriver. They will
+# define the size of the NDArray output, and should match the input size.
+###################################################################
+
+record(longin, "$(P)$(R)ArraySizeX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_X")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)ArraySizeY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_Y")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)ArraySizeZ_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_Z")
+   field(SCAN, "I/O Intr")
+}

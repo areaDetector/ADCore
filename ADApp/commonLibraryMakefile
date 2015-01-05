@@ -4,7 +4,11 @@ ifneq (vxWorks, $(findstring vxWorks, $(T_A)))
   LIB_LIBS              += NeXus
 endif
 LIB_LIBS                += asyn
-LIB_LIBS                += $(EPICS_BASE_IOC_LIBS)
+ifeq ($(EPICS_LIBCOM_ONLY),YES)
+  LIB_LIBS              += Com
+else
+  LIB_LIBS              += $(EPICS_BASE_IOC_LIBS)
+endif
 
 # The following libraries are only needed for GraphicsMagick
 ifeq ($(USE_GRAPHICSMAGICK), YES)
@@ -32,34 +36,36 @@ else
   LIB_LIBS_WIN32        += tiff jpeg
 endif
 
-ifeq (win32-x86-debug, $(findstring win32-x86-debug, $(T_A)))
+ifeq ($(OS_CLASS), WIN32)
+  ifeq (debug, $(findstring debug, $(T_A)))
   USR_LDFLAGS_WIN32     += /NODEFAULTLIB:LIBCMT.lib
+  endif
 endif
 
 ifeq ($(STATIC_BUILD), NO)
-  LIB_LIBS_WIN32        += hdf5dll szip zlib1
+  LIB_LIBS_WIN32        += hdf5dll szip zlib1 libxml2
 else
-  LIB_LIBS_WIN32        += hdf5 libszip zlib
+  LIB_LIBS_WIN32        += hdf5 libszip zlib libxml2
 endif
 LIB_SYS_LIBS_WIN32      += Gdi32 Oleaut32 
 
-LIB_LIBS_cygwin32       += libhdf5 libsz
-LIB_LIBS_cygwin32       += libtiff libjpeg libjbig libz libxml2.dll
+LIB_SYS_LIBS_cygwin32   += libhdf5
+LIB_SYS_LIBS_cygwin32   += libtiff libjpeg libjbig libz libxml2
 LIB_SYS_LIBS_cygwin32   += $(CYGWIN_RPC_LIB)
 LIB_SYS_LIBS_cygwin32   += Gdi32
 
 LIB_LIBS_Linux          += hdf5 sz
-LIB_SYS_LIBS_Linux      += tiff jpeg z
+LIB_SYS_LIBS_Linux      += tiff jpeg xml2 z
 
 LIB_LIBS_solaris        += hdf5 sz
-LIB_SYS_LIBS_solaris    += tiff jpeg z
+LIB_SYS_LIBS_solaris    += tiff jpeg xml2 z
 
 USR_LDFLAGS_Darwin      += -framework CoreFoundation
 LIB_LIBS_Darwin         += hdf5 sz
-LIB_SYS_LIBS_Darwin     += tiff jpeg z
+LIB_SYS_LIBS_Darwin     += tiff jpeg xml2 z
 
-hdf5_DIR=$(HDF5_DIR)
-sz_DIR=$(SZ_DIR)
-GraphicsMagick_DIR=$(GRAPHICS_MAGICK_DIR)
-GraphicsMagick++_DIR=$(GRAPHICS_MAGICK_DIR)
-GraphicsMagickWand_DIR=$(GRAPHICS_MAGICK_DIR)
+hdf5_DIR               = $(HDF5_LIB)
+sz_DIR                 = $(SZIP_LIB)
+GraphicsMagick_DIR     = $(GRAPHICS_MAGICK_LIB)
+GraphicsMagick++_DIR   = $(GRAPHICS_MAGICK_LIB)
+GraphicsMagickWand_DIR = $(GRAPHICS_MAGICK_LIB)

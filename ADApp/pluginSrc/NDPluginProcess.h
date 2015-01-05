@@ -2,8 +2,6 @@
 #define NDPluginProcess_H
 
 #include <epicsTypes.h>
-#include <asynStandardInterfaces.h>
-
 #include "NDPluginDriver.h"
 
 /* Background array subtraction */
@@ -62,7 +60,7 @@
   * Low clipping
   * High clipping
   * Frame averaging */
-class NDPluginProcess : public NDPluginDriver {
+class epicsShareClass NDPluginProcess : public NDPluginDriver {
 public:
     NDPluginProcess(const char *portName, int queueSize, int blockingCallbacks, 
                  const char *NDArrayPort, int NDArrayAddr,

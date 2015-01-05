@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>areaDetector Plugin NDFileNetCDF</title>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+</head>
+<body>
+  <div style="text-align: center">
+    <h1>
+      areaDetector Plugin NDFileNetCDF</h1>
+    <h2>
+      October 7, 2014</h2>
+    <h2>
+      Mark Rivers</h2>
+    <h2>
+      University of Chicago</h2>
+  </div>
+  <p>
+    NDFileNetCDF inherits from NDPluginFile. This plugin saves data in the <a href="http://www.unidata.ucar.edu/software/netcdf/">
+      netCDF</a> file format, which is a portable self-describing binary file format
+    supported by <a href="http://www.unidata.ucar.edu/">UniData</a> at <a href="http://www.ucar.edu/">
+      UCAR (University Corporation for Atmospheric Research).</a> There are netCDF libraries
+    for C, C++, Fortran, and Java. Other languages, including Matlab and IDL have built-in
+    support for netCDF. There are also add-on interfaces available for Python, Ruby
+    and other languages.
+  </p>
+  <p>
+    The netCDF plugin supports all NDArray data types and any number of array dimensions.
+    It also has full support for NDArray attributes. It will write all attributes associated
+    with the NDArray to the file. If multiple arrays are written to a single netCDF
+    file (stream or capture mode) then each attribute will be an array, with the attribute
+    value for each NDArray in the file being stored. Note that the number and data types
+    of attributes must not be changed while file capture or file streaming are in progress
+    because that would change the structure of the attribute array. Also the colorMode
+    attribute must not be changed while capture or streaming is in progress, because
+    that would change the structure of the NDArray data.</p>
+  <p>
+    The <a href="areaDetectorDoxygenHTML/class_n_d_file_net_c_d_f.html">NDFileNetCDF class
+      documentation </a>describes this class in detail.
+  </p>
+  <p>
+    The NDFileNetCDF plugin is created with the NDFileNetCDFConfigure command, either
+    from C/C++ or from the EPICS IOC shell.</p>
+  <pre>NDFileNetCDFConfigure (const char *portName, int queueSize, int blockingCallbacks, 
+                       const char *NDArrayPort, int NDArrayAddr, size_t maxMemory, 
+                       int priority, int stackSize)
+  </pre>
+  <p>
+    For details on the meaning of the parameters to this function refer to the detailed
+    documentation on the NDFileNetCDFConfigure function in the <a href="areaDetectorDoxygenHTML/_n_d_file_net_c_d_f_8cpp.html">
+      NDFileNetCDF.cpp documentation</a> and in the documentation for the constructor
+    for the <a href="areaDetectorDoxygenHTML/class_n_d_file_net_c_d_f.html">NDFileNetCDF
+      class</a>.
+  </p>
+  <p>
+    The following is the header contents of a netCDF file produced by this plugin. This
+    information was produced with the following command:</p>
+  <pre>ncdump -h test_netCDF_68.nc
+
+netcdf test_netCDF_68 {
+dimensions:
+	numArrays = UNLIMITED ; // (10 currently)
+	dim0 = 240 ;
+	dim1 = 320 ;
+	dim2 = 1 ;
+	attrStringSize = 256 ;
+variables:
+	int uniqueId(numArrays) ;
+	double timeStamp(numArrays) ;
+	float array_data(numArrays, dim0, dim1, dim2) ;
+	int Attr_colorMode(numArrays) ;
+	double Attr_AcquireTime(numArrays) ;
+	double Attr_RingCurrent(numArrays) ;
+	int Attr_ImageCounter(numArrays) ;
+	char Attr_CameraModel(numArrays, attrStringSize) ;
+	int Attr_BinX(numArrays) ;
+	int Attr_BinY(numArrays) ;
+	double Attr_AttrTimeStamp(numArrays) ;
+	double Attr_ROI0Mean(numArrays) ;
+	double Attr_ROI1Mean(numArrays) ;
+	char Attr_FilePath(numArrays, attrStringSize) ;
+	char Attr_FileName(numArrays, attrStringSize) ;
+
+// global attributes:
+		:dataType = 6 ;
+		:NDNetCDFFileVersion = 3. ;
+		:numArrayDims = 3 ;
+		:dimSize = 1, 320, 240 ;
+		:dimOffset = 0, 0, 0 ;
+		:dimBinning = 1, 2, 2 ;
+		:dimReverse = 0, 0, 0 ;
+		:Attr_colorMode_DataType = &quot;Int32&quot; ;
+		:Attr_colorMode_Description = &quot;Color mode&quot; ;
+		:Attr_colorMode_Source =  ;
+		:Attr_colorMode_SourceType = &quot;Driver&quot; ;
+		:Attr_AcquireTime_DataType = &quot;Float64&quot; ;
+		:Attr_AcquireTime_Description = &quot;Camera acquire time&quot; ;
+		:Attr_AcquireTime_Source = &quot;13SIM1:cam1:AcquireTime&quot; ;
+		:Attr_AcquireTime_SourceType = &quot;EPICS_PV&quot; ;
+		:Attr_RingCurrent_DataType = &quot;Float64&quot; ;
+		:Attr_RingCurrent_Description = &quot;Storage ring current&quot; ;
+		:Attr_RingCurrent_Source = &quot;S:SRcurrentAI&quot; ;
+		:Attr_RingCurrent_SourceType = &quot;EPICS_PV&quot; ;
+		:Attr_ImageCounter_DataType = &quot;Int32&quot; ;
+		:Attr_ImageCounter_Description = &quot;Image counter&quot; ;
+		:Attr_ImageCounter_Source = &quot;ARRAY_COUNTER&quot; ;
+		:Attr_ImageCounter_SourceType = &quot;Param&quot; ;
+		:Attr_CameraModel_DataType = &quot;String&quot; ;
+		:Attr_CameraModel_Description = &quot;Camera model&quot; ;
+		:Attr_CameraModel_Source = &quot;MODEL&quot; ;
+		:Attr_CameraModel_SourceType = &quot;Param&quot; ;
+		:Attr_BinX_DataType = &quot;Int32&quot; ;
+		:Attr_BinX_Description = &quot;X binning&quot; ;
+		:Attr_BinX_Source = &quot;13SIM1:ROI1:0:BinX_RBV&quot; ;
+		:Attr_BinX_SourceType = &quot;EPICS_PV&quot; ;
+		:Attr_BinY_DataType = &quot;Int32&quot; ;
+		:Attr_BinY_Description = &quot;Y binning&quot; ;
+		:Attr_BinY_Source = &quot;13SIM1:ROI1:0:BinY_RBV&quot; ;
+		:Attr_BinY_SourceType = &quot;EPICS_PV&quot; ;
+		:Attr_AttrTimeStamp_DataType = &quot;Float64&quot; ;
+		:Attr_AttrTimeStamp_Description = &quot;Time stamp&quot; ;
+		:Attr_AttrTimeStamp_Source = &quot;TIME_STAMP&quot; ;
+		:Attr_AttrTimeStamp_SourceType = &quot;Param&quot; ;
+		:Attr_ROI0Mean_DataType = &quot;Float64&quot; ;
+		:Attr_ROI0Mean_Description = &quot;Mean value ROI 0&quot; ;
+		:Attr_ROI0Mean_Source = &quot;MEAN_VALUE&quot; ;
+		:Attr_ROI0Mean_SourceType = &quot;Param&quot; ;
+		:Attr_ROI1Mean_DataType = &quot;Float64&quot; ;
+		:Attr_ROI1Mean_Description = &quot;Mean value ROI 0&quot; ;
+		:Attr_ROI1Mean_Source = &quot;MEAN_VALUE&quot; ;
+		:Attr_ROI1Mean_SourceType = &quot;Param&quot; ;
+		:Attr_FilePath_DataType = &quot;String&quot; ;
+		:Attr_FilePath_Description = &quot;File path&quot; ;
+		:Attr_FilePath_Source = &quot;13SIM1:netCDF1:FilePath_RBV&quot; ;
+		:Attr_FilePath_SourceType = &quot;EPICS_PV&quot; ;
+		:Attr_FileName_DataType = &quot;String&quot; ;
+		:Attr_FileName_Description = &quot;File name&quot; ;
+		:Attr_FileName_Source = &quot;13SIM1:netCDF1:FileName_RBV&quot; ;
+		:Attr_FileName_SourceType = &quot;EPICS_PV&quot; ;
+}  </pre>
+  <p>
+    ncdump is one of a number of very useful command line utilities that come with the
+    netCDF package. The -h option to ncdump means to dump only the header information,
+    not the variable data. This is an explanation of this output:
+  </p>
+  <ul>
+    <li>dimensions: numArrays is the number of arrays in the file. It will be 1 for files
+      collected in Single mode, and is normally &gt;1 for files collected in Capture or
+      Stream mode. For each array dim0 is the slowest varying dimension, dim1 the next
+      slowest, etc. attrStringSize is the maximum string length for string attributes.</li>
+    <li>variables: There are 15 variables in this netCDF file. uniqueId is the unique
+      ID number of each array. timeStamp is the timestamp in seconds for each array. array_data
+      is the array data. Its data type depends on the data type of the NDArray data passed
+      in the callbacks. It dimensions are [numArrays, dim0, dim1, ...dimN]. This notation
+      is in the Fortran syntax where the slowest varying dimension comes first in the
+      list. The remaining variables all have the prefix Attr_ and are the attributes for
+      the arrays. Each can have its own data type, and all have the numArrays elements.</li>
+    <li>global attributes. dataType is the NDDataType_t enum value for the array data
+      type. numArrayDims is the number of dimensions in each array. array_data has 1 more
+      dimension than this, numArrays, because it contains all of the array callback data.
+      dimSize is an array[numArrayDims] containing the size of each dimension, with the
+      fastest varying dimension first. dimOffset, dimBinning, and dimReverse are the values
+      of the offset, binning and reverse fields in the NDDimension_t structure for each
+      dimension. The remaining netCDF global attributes all have the prefix Attr_, and
+      describe the NDArray attribute values. For each NDArray attribute there is information
+      on the data type, a description, source string and source type. </li>
+  </ul>
+  <p>
+    There is an IDL function, <a href="http://cars.uchicago.edu/software/idl/detector_routines.html#read_nd_netcdf">
+      read_nd_netcdf</a> that can be used to read the netCDF files created by this plugin.
+    This routine is contained in the <a href="http://cars.uchicago.edu/software/idl/detectors.html#read_nd_netcdf">
+      CARS IDL detector package</a>. This function is also contained in the areaDetector
+    distribution in the Viewers/IDL directory.
+  </p>
+  <p>
+    There is a plugin for the popular <a href="http://rsbweb.nih.gov/ij/">ImageJ</a>
+    program that can be used to read the netCDF files created by this plugin. This ImageJ
+    plugin can be downloaded <a href="http://lmb.informatik.uni-freiburg.de/lmbsoft/imagej_plugins/netcdf.html">
+      here</a>. This plugin is also contained in the areaDetector distribution in the
+    Viewers/ImageJ/EPICS_areaDetector directory.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDFileNetCDF.adl</h3>
+    <p>
+      <img alt="NDFileNetCDF.png" src="NDFileNetCDF.png" /></p>
+  </div>
+</body>
+</html>

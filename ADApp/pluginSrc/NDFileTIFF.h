@@ -21,7 +21,7 @@
     The current version is only capable of writing 2-D images with one image per file.
     */
 
-class NDFileTIFF : public NDPluginFile {
+class epicsShareClass NDFileTIFF : public NDPluginFile {
 public:
     NDFileTIFF(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr,
@@ -36,6 +36,16 @@ public:
 private:
     TIFF *output;
     NDColorMode_t colorMode;
+    int *pAttributeId;
+    NDAttributeList *pFileAttributes;
+    TIFFFieldInfo **fieldInfo_;
+    int numAttributes_;
+
+    static const int TIFFTAG_START_;
+    static const int TIFFTAG_END_;
+
+    asynStatus populateAsciiFieldInfo(TIFFFieldInfo *fieldInfo, int fieldTag, const char *tagName);
+
 };
 #define NUM_NDFILE_TIFF_PARAMS 0
 #endif

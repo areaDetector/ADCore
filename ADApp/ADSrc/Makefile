@@ -37,16 +37,24 @@ LIB_SRCS += NDArrayPool.cpp
 LIB_SRCS += NDArray.cpp
 LIB_SRCS += asynNDArrayDriver.cpp
 LIB_SRCS += ADDriver.cpp
-LIB_SRCS += PVAttribute.cpp
 LIB_SRCS += paramAttribute.cpp
-LIB_SRCS += functAttribute.cpp
+ifeq ($(EPICS_LIBCOM_ONLY),YES)
+  USR_CXXFLAGS += -DEPICS_LIBCOM_ONLY
+else
+  LIB_SRCS += PVAttribute.cpp
+  LIB_SRCS += functAttribute.cpp
+  LIB_SRCS += parseAreaPrefixes.c
+  LIB_SRCS += myTimeStampSource.cpp
+  LIB_SRCS += myAttributeFunctions.cpp
+endif
 LIB_SRCS += tinyxml.cpp tinystr.cpp tinyxmlparser.cpp tinyxmlerror.cpp
-LIB_SRCS += parseAreaPrefixes.c
-LIB_SRCS += myTimeStampSource.cpp
-LIB_SRCS += myAttributeFunctions.cpp
 
 LIB_LIBS += asyn
-LIB_LIBS += $(EPICS_BASE_IOC_LIBS)
+ifeq ($(EPICS_LIBCOM_ONLY),YES)
+  LIB_LIBS += Com
+else
+  LIB_LIBS += $(EPICS_BASE_IOC_LIBS)
+endif
 
 include $(TOP)/configure/RULES
 #----------------------------------------

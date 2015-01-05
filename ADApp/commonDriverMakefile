@@ -36,35 +36,38 @@ else
   endif
   PROD_LIBS_WIN32       += tiff jpeg
 endif
-ifeq (win32-x86-debug, $(findstring win32-x86-debug, $(T_A)))
+
+ifeq ($(OS_CLASS), WIN32)
+  ifeq (debug, $(findstring debug, $(T_A)))
   USR_LDFLAGS_WIN32     += /NODEFAULTLIB:LIBCMT.lib
+  endif
 endif
 
 ifeq ($(STATIC_BUILD), NO)
-  PROD_LIBS_WIN32       += hdf5dll szip zlib1
+  PROD_LIBS_WIN32       += hdf5dll szip zlib1 libxml2
 else
-  PROD_LIBS_WIN32       += hdf5 libszip zlib
+  PROD_LIBS_WIN32       += hdf5 libszip zlib libxml2
 endif
 
 PROD_SYS_LIBS_WIN32     += Gdi32 Oleaut32
 
-PROD_LIBS_cygwin32      += libhdf5 libsz
-PROD_LIBS_cygwin32      += libtiff libjpeg libjbig libz libxml2.dll
+PROD_SYS_LIBS_cygwin32  += libhdf5
+PROD_SYS_LIBS_cygwin32  += libtiff libjpeg libjbig libz libxml2
 PROD_SYS_LIBS_cygwin32  += $(CYGWIN_RPC_LIB)
 PROD_SYS_LIBS_cygwin32  += Gdi32
 
 PROD_LIBS_Linux         += hdf5 sz
-PROD_SYS_LIBS_Linux     += tiff jpeg z
+PROD_SYS_LIBS_Linux     += tiff jpeg xml2 z m
 
 PROD_LIBS_solaris       += hdf5 sz
-PROD_SYS_LIBS_solaris   += tiff jpeg z
+PROD_SYS_LIBS_solaris   += tiff jpeg xml2 z
 
 USR_LDFLAGS_Darwin      += -framework CoreFoundation
 PROD_LIBS_Darwin        += hdf5 sz
-PROD_SYS_LIBS_Darwin    += tiff jpeg z
+PROD_SYS_LIBS_Darwin    += tiff jpeg xml2 z
 
-hdf5_DIR=$(HDF5_DIR)
-sz_DIR=$(SZ_DIR)
-GraphicsMagick_DIR=$(GRAPHICS_MAGICK_DIR)
-GraphicsMagick++_DIR=$(GRAPHICS_MAGICK_DIR)
-GraphicsMagickWand_DIR=$(GRAPHICS_MAGICK_DIR)
+hdf5_DIR               = $(HDF5_LIB)
+sz_DIR                 = $(SZIP_LIB)
+GraphicsMagick_DIR     = $(GRAPHICS_MAGICK_LIB)
+GraphicsMagick++_DIR   = $(GRAPHICS_MAGICK_LIB)
+GraphicsMagickWand_DIR = $(GRAPHICS_MAGICK_LIB)

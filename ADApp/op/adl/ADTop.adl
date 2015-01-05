@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-0/ADCore/ADApp/op/adl/ADTop.adl"
+	name="/home/epics/devel/areaDetector-2-1/ADCore/ADApp/op/adl/ADTop.adl"
 	version=030107
 }
 display {
@@ -8,7 +8,7 @@ display {
 		x=171
 		y=78
 		width=225
-		height=480
+		height=515
 	}
 	clr=14
 	bclr=4
@@ -99,76 +99,10 @@ text {
 	}
 	textix="Area Detector"
 }
-text {
+"related display" {
 	object {
 		x=135
-		y=76
-		width=70
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Drivers"
-}
-text {
-	object {
-		x=40
-		y=125
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Prosilica"
-}
-"related display" {
-	object {
-		x=138
-		y=125
-		width=64
-		height=20
-	}
-	display[0] {
-		label="Prosilica #1 general"
-		name="ADBase.adl"
-		args="P=13PS1:, R=cam1:"
-	}
-	display[1] {
-		label="Prosilica #1 specific"
-		name="prosilica.adl"
-		args="P=13PS1:, R=cam1:"
-	}
-	display[2] {
-		label="Prosilica #2 general"
-		name="ADBase.adl"
-		args="P=13PS1:, R=cam2:"
-	}
-	display[3] {
-		label="Prosilica #2 specific"
-		name="prosilica.adl"
-		args="P=13PS1:, R=cam2:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=90
-		y=150
-		width=40
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="ADSC"
-}
-"related display" {
-	object {
-		x=138
-		y=150
+		y=60
 		width=64
 		height=20
 	}
@@ -187,214 +121,21 @@ text {
 }
 text {
 	object {
-		x=60
-		y=175
-		width=70
+		x=90
+		y=60
+		width=40
 		height=20
 	}
 	"basic attribute" {
 		clr=14
 	}
-	textix="Pilatus"
-}
-"related display" {
-	object {
-		x=138
-		y=175
-		width=64
-		height=20
-	}
-	display[0] {
-		label="Pilatus #1 general"
-		name="ADBase.adl"
-		args="P=13PIL1:, R=cam1: "
-	}
-	display[1] {
-		label="Pilatus #1 specific"
-		name="pilatusDetector.adl"
-		args="P=13PIL1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=70
-		y=200
-		width=60
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="MarCCD"
-}
-"related display" {
-	object {
-		x=138
-		y=200
-		width=64
-		height=20
-	}
-	display[0] {
-		label="marCCD #1 general"
-		name="ADBase.adl"
-		args="P=13MARCCD1:, R=cam1: "
-	}
-	display[1] {
-		label="marCCD #1 specific"
-		name="marCCD.adl"
-		args="P=13MARCCD1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=70
-		y=275
-		width=60
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Mar345"
-}
-"related display" {
-	object {
-		x=138
-		y=275
-		width=64
-		height=20
-	}
-	display[0] {
-		label="mar345 #1 general"
-		name="ADBase.adl"
-		args="P=13MAR345_1:, R=cam1: "
-	}
-	display[1] {
-		label="mar345 #1 specific"
-		name="mar345.adl"
-		args="P=13MAR345_1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=10
-		y=300
-		width=120
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Perkin Elmer"
+	textix="ADSC"
 	align="horiz. right"
 }
 "related display" {
 	object {
-		x=138
-		y=300
-		width=64
-		height=20
-	}
-	display[0] {
-		label="Perkin Elmer #1 general"
-		name="ADBase.adl"
-		args="P=13PE1:, R=cam1: "
-	}
-	display[1] {
-		label="Perkin Elmer #1 specific"
-		name="PerkinElmer.adl"
-		args="P=13PE1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=80
-		y=325
-		width=50
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="PVCAM"
-}
-"related display" {
-	object {
-		x=138
-		y=325
-		width=64
-		height=20
-	}
-	display[0] {
-		label="PVCAM #1 general"
-		name="ADBase.adl"
-		args="P=13PVCAM1:, R=cam1: "
-	}
-	display[1] {
-		label="PVCAM #1 specific"
-		name="pvCam.adl"
-		args="P=13PVCAM1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=50
-		y=250
-		width=80
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Firewire"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=138
-		y=250
-		width=64
-		height=20
-	}
-	display[0] {
-		label="Firewire #1 general"
-		name="ADBase.adl"
-		args="P=13FW1:, R=cam1: "
-	}
-	display[1] {
-		label="Firewire #1 specific"
-		name="firewire.adl"
-		args="P=13FW1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=40
-		y=100
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Simulator"
-}
-"related display" {
-	object {
-		x=138
-		y=100
+		x=135
+		y=460
 		width=64
 		height=20
 	}
@@ -423,20 +164,295 @@ text {
 }
 text {
 	object {
-		x=100
-		y=350
-		width=30
+		x=40
+		y=460
+		width=90
 		height=20
 	}
 	"basic attribute" {
 		clr=14
 	}
-	textix="BIS"
+	textix="Simulator"
+	align="horiz. right"
 }
 "related display" {
 	object {
-		x=138
-		y=350
+		x=135
+		y=360
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Prosilica #1 general"
+		name="ADBase.adl"
+		args="P=13PS1:, R=cam1:"
+	}
+	display[1] {
+		label="Prosilica #1 specific"
+		name="prosilica.adl"
+		args="P=13PS1:, R=cam1:"
+	}
+	display[2] {
+		label="Prosilica #2 general"
+		name="ADBase.adl"
+		args="P=13PS1:, R=cam2:"
+	}
+	display[3] {
+		label="Prosilica #2 specific"
+		name="prosilica.adl"
+		args="P=13PS1:, R=cam2:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=40
+		y=360
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Prosilica"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=135
+		y=285
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Pilatus #1 general"
+		name="ADBase.adl"
+		args="P=13PIL1:, R=cam1: "
+	}
+	display[1] {
+		label="Pilatus #1 specific"
+		name="pilatusDetector.adl"
+		args="P=13PIL1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=60
+		y=285
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Pilatus"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=135
+		y=235
+		width=64
+		height=20
+	}
+	display[0] {
+		label="marCCD #1 general"
+		name="ADBase.adl"
+		args="P=13MARCCD1:, R=cam1: "
+	}
+	display[1] {
+		label="marCCD #1 specific"
+		name="marCCD.adl"
+		args="P=13MARCCD1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=70
+		y=235
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="MarCCD"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=135
+		y=435
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Roper #1 general"
+		name="ADBase.adl"
+		args="P=13ROPER1:, R=cam1: "
+	}
+	display[1] {
+		label="Roper #1 specific"
+		name="Roper.adl"
+		args="P=13ROPER1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=80
+		y=435
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Roper"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=135
+		y=160
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Firewire #1 general"
+		name="ADBase.adl"
+		args="P=13FW1:, R=cam1: "
+	}
+	display[1] {
+		label="Firewire #1 specific"
+		name="firewire.adl"
+		args="P=13FW1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=50
+		y=160
+		width=80
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Firewire"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=135
+		y=210
+		width=64
+		height=20
+	}
+	display[0] {
+		label="mar345 #1 general"
+		name="ADBase.adl"
+		args="P=13MAR345_1:, R=cam1: "
+	}
+	display[1] {
+		label="mar345 #1 specific"
+		name="mar345.adl"
+		args="P=13MAR345_1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=70
+		y=210
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Mar345"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=135
+		y=260
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Perkin Elmer #1 general"
+		name="ADBase.adl"
+		args="P=13PE1:, R=cam1: "
+	}
+	display[1] {
+		label="Perkin Elmer #1 specific"
+		name="PerkinElmer.adl"
+		args="P=13PE1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=10
+		y=260
+		width=120
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Perkin Elmer"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=135
+		y=385
+		width=64
+		height=20
+	}
+	display[0] {
+		label="PVCAM #1 general"
+		name="ADBase.adl"
+		args="P=13PVCAM1:, R=cam1: "
+	}
+	display[1] {
+		label="PVCAM #1 specific"
+		name="pvCam.adl"
+		args="P=13PVCAM1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=80
+		y=385
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="PVCAM"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=135
+		y=135
 		width=64
 		height=20
 	}
@@ -456,20 +472,20 @@ text {
 text {
 	object {
 		x=100
-		y=375
+		y=135
 		width=30
 		height=20
 	}
 	"basic attribute" {
 		clr=14
 	}
-	textix="URL"
+	textix="BIS"
 	align="horiz. right"
 }
 "related display" {
 	object {
-		x=138
-		y=375
+		x=135
+		y=485
 		width=64
 		height=20
 	}
@@ -486,54 +502,160 @@ text {
 	clr=14
 	bclr=51
 }
-composite {
+text {
 	object {
-		x=80
-		y=225
-		width=122
+		x=100
+		y=485
+		width=30
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=80
-				y=225
-				width=50
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Roper"
-			align="horiz. right"
-		}
-		"related display" {
-			object {
-				x=138
-				y=225
-				width=64
-				height=20
-			}
-			display[0] {
-				label="Roper #1 general"
-				name="ADBase.adl"
-				args="P=13ROPER1:, R=cam1: "
-			}
-			display[1] {
-				label="Roper #1 specific"
-				name="Roper.adl"
-				args="P=13ROPER1:, R=cam1:"
-			}
-			clr=14
-			bclr=51
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="URL"
+	align="horiz. right"
 }
 "related display" {
 	object {
-		x=138
-		y=400
+		x=135
+		y=185
+		width=64
+		height=20
+	}
+	display[0] {
+		label="LightField #1 general"
+		name="ADBase.adl"
+		args="P=13LF1:, R=cam1: "
+	}
+	display[1] {
+		label="LightField #1 specific"
+		name="LightField.adl"
+		args="P=13LF1:, R=cam1:"
+	}
+	display[2] {
+		label="LightField #2 specific"
+		name="LightField.adl"
+		args="P=13LF2:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=29
+		y=185
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="LightField"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=135
+		y=310
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Pixirad #1 general"
+		name="ADBase.adl"
+		args="P=13PR1:, R=cam1: "
+	}
+	display[1] {
+		label="Pixirad #1 specific"
+		name="pixirad.adl"
+		args="P=13PR1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=59
+		y=310
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Pixirad"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=135
+		y=335
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Point Grey #1 general"
+		name="ADBase.adl"
+		args="P=13PG1:, R=cam1: "
+	}
+	display[1] {
+		label="Point Grey #1 specific"
+		name="pointGrey.adl"
+		args="P=13PG1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=29
+		y=335
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Point Grey"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=135
+		y=410
+		width=64
+		height=20
+	}
+	display[0] {
+		label="PSL #1 general"
+		name="ADBase.adl"
+		args="P=13PSL1:, R=cam1: "
+	}
+	display[1] {
+		label="PSL #1 specific"
+		name="PSL.adl"
+		args="P=13PSL1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=99
+		y=410
+		width=30
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="PSL"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=135
+		y=85
 		width=64
 		height=20
 	}
@@ -557,13 +679,18 @@ composite {
 		name="Andor3.adl"
 		args="P=13ANDOR3:, R=cam1: "
 	}
+	display[4] {
+		label="Shamrock #1"
+		name="Shamrock.adl"
+		args="P=13ANDOR1:, R=sham1:"
+	}
 	clr=14
 	bclr=51
 }
 text {
 	object {
 		x=80
-		y=400
+		y=85
 		width=50
 		height=20
 	}
@@ -573,85 +700,36 @@ text {
 	textix="Andor"
 	align="horiz. right"
 }
-composite {
+"related display" {
 	object {
-		x=81
-		y=425
-		width=122
+		x=135
+		y=110
+		width=64
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=81
-				y=425
-				width=50
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="LightField"
-			align="horiz. right"
-		}
-		"related display" {
-			object {
-				x=139
-				y=425
-				width=64
-				height=20
-			}
-			display[0] {
-				label="LightField #1 general"
-				name="ADBase.adl"
-				args="P=13LF1:, R=cam1: "
-			}
-			display[1] {
-				label="LightField #1 specific"
-				name="LightField.adl"
-				args="P=13LF1:, R=cam1:"
-			}
-			display[2] {
-				label="LightField #2 specific"
-				name="LightField.adl"
-				args="P=13LF2:, R=cam1:"
-			}
-			clr=14
-			bclr=51
-		}
+	display[0] {
+		label="aravisGigE #1 general"
+		name="ADBase.adl"
+		args="P=13ARV1:, R=cam1: "
 	}
+	display[1] {
+		label="aravisGigE #1 specific"
+		name="ADBase.adl"
+		args="P=13ARV1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
 }
 text {
 	object {
-		x=81
-		y=450
-		width=50
+		x=30
+		y=110
+		width=100
 		height=20
 	}
 	"basic attribute" {
 		clr=14
 	}
-	textix="Pixirad"
+	textix="aravisGigE"
 	align="horiz. right"
-}
-"related display" {
-	object {
-		x=139
-		y=450
-		width=64
-		height=20
-	}
-	display[0] {
-		label="Pixirad #1 general"
-		name="ADBase.adl"
-		args="P=13PR1:, R=cam1: "
-	}
-	display[1] {
-		label="Pixirad #1 specific"
-		name="pixirad.adl"
-		args="P=13PR1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
 }

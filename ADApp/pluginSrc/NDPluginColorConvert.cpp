@@ -17,12 +17,15 @@
 #include <epicsString.h>
 #include <iocsh.h>
 
-#include "NDPluginColorConvert.h"
+#include <asynDriver.h>
+
+#include <epicsExport.h>
+#include "NDPluginDriver.h"
 #include "colorMaps.h"
 #ifdef HAVE_PVAPI
   #include "PvApi.h"
 #endif
-#include <epicsExport.h>
+#include "NDPluginColorConvert.h"
 
 static const char *driverName="NDPluginColorConvert";
 
@@ -31,7 +34,7 @@ template <typename epicsType>
 void NDPluginColorConvert::convertColor(NDArray *pArray)
 {
     NDColorMode_t colorModeOut;
-    const char* functionName = "convertColor";
+    static const char* functionName = "convertColor";
     size_t i, j;
     epicsType *pIn, *pRedIn, *pGreenIn, *pBlueIn;
     epicsType *pOut, *pRedOut, *pGreenOut, *pBlueOut;
@@ -521,7 +524,7 @@ void NDPluginColorConvert::processCallbacks(NDArray *pArray)
      * structures don't need to be protected.
      */
      
-    const char* functionName = "processCallbacks";
+    static const char* functionName = "processCallbacks";
          
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
@@ -605,7 +608,7 @@ NDPluginColorConvert::NDPluginColorConvert(const char *portName, int queueSize, 
                    asynGenericPointerMask,
                    0, 1, priority, stackSize)  /* Not ASYN_CANBLOCK or ASYN_MULTIDEVICE, do autoConnect */
 {
-    //const char *functionName = "NDPluginColorConvert";
+    //static const char *functionName = "NDPluginColorConvert";
 
     createParam(NDPluginColorConvertColorModeOutString, asynParamInt32, &NDPluginColorConvertColorModeOut);
     createParam(NDPluginColorConvertFalseColorString,   asynParamInt32, &NDPluginColorConvertFalseColor);    

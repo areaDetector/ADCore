@@ -189,6 +189,7 @@ NDArray* NDArrayPool::copy(NDArray *pIn, NDArray *pOut, int copyData)
   if (!pOut) {
     for (i=0; i<pIn->ndims; i++) dimSizeOut[i] = pIn->dims[i].size;
     pOut = this->alloc(pIn->ndims, dimSizeOut, pIn->dataType, 0, NULL);
+    if(NULL==pOut) return NULL;
   }
   pOut->uniqueId = pIn->uniqueId;
   pOut->timeStamp = pIn->timeStamp;

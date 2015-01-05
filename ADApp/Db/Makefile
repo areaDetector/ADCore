@@ -32,9 +32,13 @@ DB += NDOverlayN.template
 DB += NDPluginBase.template
 DB += NDProcess.template
 DB += NDROI.template
+DB += NDROIStat.template
+DB += NDROIStatN.template
+DB += NDROIStat8.template
 DB += NDStats.template
 DB += NDStdArrays.template
 DB += NDTransform.template
+DB += NDAttribute.template
 
 #----------------------------------------------------
 # If <anyname>.db template is not named <anyname>*.template add

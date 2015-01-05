@@ -14,8 +14,11 @@
 #include <epicsThread.h>
 #include <iocsh.h>
 
-#include "NDFileNetCDF.h"
+#include <asynDriver.h>
+
 #include <epicsExport.h>
+#include "NDPluginFile.h"
+#include "NDFileNetCDF.h"
 
 static const char *driverName = "NDFileNetCDF";
 
@@ -502,7 +505,7 @@ NDFileNetCDF::NDFileNetCDF(const char *portName, int queueSize, int blockingCall
                    /* netCDF needs a relatively large stack, make the default be large */
                    (stackSize==0) ? epicsThreadGetStackSize(epicsThreadStackBig) : stackSize)
 {
-    //const char *functionName = "NDFileNetCDF";
+    //static const char *functionName = "NDFileNetCDF";
     
     /* Set the plugin type string */    
     setStringParam(NDPluginDriverPluginType, "NDFileNetCDF");

@@ -11,14 +11,18 @@
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
+#include <time.h>
 
 #include <epicsString.h>
 #include <epicsMutex.h>
 #include <iocsh.h>
 
-#include "NDArray.h"
-#include "NDPluginOverlay.h"
+#include <asynDriver.h>
+
 #include <epicsExport.h>
+#include "NDPluginDriver.h"
+#include "NDPluginOverlayTextFont.h"
+#include "NDPluginOverlay.h"
 
 #define MAX(A,B) (A)>(B)?(A):(B)
 #define MIN(A,B) (A)<(B)?(A):(B)
@@ -31,23 +35,43 @@ void NDPluginOverlay::setPixel(epicsType *pValue, NDOverlay_t *pOverlay)
     if ((this->arrayInfo.colorMode == NDColorModeRGB1) ||
         (this->arrayInfo.colorMode == NDColorModeRGB2) ||
         (this->arrayInfo.colorMode == NDColorModeRGB3)) {
-        *pValue = (epicsType)pOverlay->red;
-        pValue += this->arrayInfo.colorStride;
-        *pValue = (epicsType)pOverlay->green;
-        pValue += this->arrayInfo.colorStride;
-        *pValue = (epicsType)pOverlay->blue;
+        if (pOverlay->drawMode == NDOverlaySet) {
+            *pValue = (epicsType)pOverlay->red;
+            pValue += this->arrayInfo.colorStride;
+            *pValue = (epicsType)pOverlay->green;
+            pValue += this->arrayInfo.colorStride;
+            *pValue = (epicsType)pOverlay->blue;
+        } else if (pOverlay->drawMode == NDOverlayXOR) {
+            *pValue = (epicsType)((int)*pValue ^ (int)pOverlay->red);
+            pValue += this->arrayInfo.colorStride;
+            *pValue = (epicsType)((int)*pValue ^ (int)pOverlay->green);
+            pValue += this->arrayInfo.colorStride;
+            *pValue = (epicsType)((int)*pValue ^ (int)pOverlay->blue);
+        }
     }
     else {
-        *pValue = (epicsType)pOverlay->green;
+        if (pOverlay->drawMode == NDOverlaySet)
+            *pValue = (epicsType)pOverlay->green;
+        else if (pOverlay->drawMode == NDOverlayXOR)
+            *pValue = (epicsType)((int)*pValue ^ (int)pOverlay->green);
     }
 }
+
 
 template <typename epicsType>
 void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
 {
-    size_t xmin, xmax, ymin, ymax, ix, iy;
-    long diff;
+    size_t xmin, xmax, ymin, ymax, ix, iy, ii, jj, ib;
+    size_t xwide, ywide, xwidemax_line, xwidemin_line;
     epicsType *pRow;
+    char textOutStr[512];                    // our string, maybe with a time stamp, to place into the image array
+    char *cp;                                // character pointer to current character being rendered
+    int bmc;                                 // current byte in the font bitmap
+    int mask;                                // selects the bit in bmc to look at
+    char tstr[64];                           // Used to build the time string
+    NDPluginOverlayTextFontBitmapType *bmp;  // pointer to our font information (bitmap pointer, perhaps misnamed)
+    int bpc;                                 // bytes per char, ie, 1 for 6x13 font, 2 for 9x15 font
+    int sbc;                                 // "sub" byte counter to keep track of which byte we are looking at for multi byte fonts
     
     asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
         "NDPluginOverlay::DoOverlayT, shape=%d, Xpos=%ld, Ypos=%ld, Xsize=%ld, Ysize=%ld\n",
@@ -56,23 +80,37 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
 
     switch(pOverlay->shape) {
         case NDOverlayCross:
-            diff = pOverlay->PositionX - pOverlay->SizeX;
-            xmin = MAX(diff, 0);
+            xmin = 0;
+            if (pOverlay->PositionX > pOverlay->SizeX)
+                xmin = pOverlay->PositionX - pOverlay->SizeX;
             xmax = pOverlay->PositionX + pOverlay->SizeX;
             xmax = MIN(xmax, this->arrayInfo.xSize-1);
-            diff = pOverlay->PositionY - pOverlay->SizeY;
-            ymin = MAX(diff, 0);
+            ymin = 0;
+            if (pOverlay->PositionY > pOverlay->SizeY)
+                ymin = pOverlay->PositionY - pOverlay->SizeY;
             ymax = pOverlay->PositionY + pOverlay->SizeY;
             ymax = MIN(ymax, this->arrayInfo.ySize-1);
+            xwide = (pOverlay->WidthX == 1) ? 0 : pOverlay->WidthX / 2;
+            ywide = (pOverlay->WidthY == 1) ? 0 : pOverlay->WidthY / 2;
+            xwide = MIN(xwide, pOverlay->SizeX-1);
+            ywide = MIN(ywide, pOverlay->SizeY);
+
             for (iy=ymin; iy<ymax; iy++) {
                 pRow = (epicsType *)pArray->pData + iy*this->arrayInfo.yStride;
-                if (iy == pOverlay->PositionY) {
-                    for (ix=xmin; ix<xmax; ix++) setPixel<epicsType>(&pRow[ix*this->arrayInfo.xStride], pOverlay);
+                if ((iy >= (pOverlay->PositionY - ywide)) && (iy <= (pOverlay->PositionY + ywide))) {
+                    for (ix=xmin; ix<xmax; ++ix) {
+                        setPixel(&pRow[ix*this->arrayInfo.xStride], pOverlay);
+                    }
                 } else {
-                    setPixel<epicsType>(&pRow[pOverlay->PositionX * this->arrayInfo.xStride], pOverlay);
+                    xwidemin_line = (pOverlay->PositionX - xwide)*this->arrayInfo.xStride;
+                    xwidemax_line = (pOverlay->PositionX + xwide)*this->arrayInfo.xStride;
+                    for (size_t line=xwidemin_line; line<=xwidemax_line; ++line) {
+                        setPixel<epicsType>(&pRow[line], pOverlay);
+                    }
                 }
             }
             break;
+
         case NDOverlayRectangle:
             xmin = pOverlay->PositionX;
             xmin = MAX(xmin, 0);
@@ -82,16 +120,92 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
             ymin = MAX(ymin, 0);
             ymax = pOverlay->PositionY + pOverlay->SizeY;
             ymax = MIN(ymax, this->arrayInfo.ySize);
+            xwide = (pOverlay->WidthX == 1) ? 0 : pOverlay->WidthX / 2;
+            ywide = (pOverlay->WidthY == 1) ? 0 : pOverlay->WidthY / 2;
+            xwide = MIN(xwide, pOverlay->SizeX-1);
+            ywide = MIN(ywide, pOverlay->SizeY);
+
+            //For non-zero width, grow the rectangle towards the center.
             for (iy=ymin; iy<ymax; iy++) {
                 pRow = (epicsType *)pArray->pData + iy*arrayInfo.yStride;
-                if ((iy == ymin) || (iy == ymax-1)) {
-                    for (ix=xmin; ix<xmax; ix++) setPixel<epicsType>(&pRow[ix*this->arrayInfo.xStride], pOverlay);
+                if ((iy >= ymin) && (iy <= (ymin + ywide))) {
+                    for (ix=xmin; ix<xmax; ix++) setPixel(&pRow[ix*this->arrayInfo.xStride], pOverlay);
+                } else if ((iy >= (ymax-1 - ywide)) && (iy <= ymax-1)) {
+                    for (ix=xmin; ix<xmax; ix++) setPixel(&pRow[ix*this->arrayInfo.xStride], pOverlay);
                 } else {
-                    setPixel<epicsType>(&pRow[xmin*this->arrayInfo.xStride], pOverlay);
-                    setPixel<epicsType>(&pRow[(xmax-1)*this->arrayInfo.xStride], pOverlay);
+                    for (size_t line=xmin; line<=xmin+xwide; ++line) {
+                        setPixel(&pRow[line*this->arrayInfo.xStride], pOverlay);
+                    }
+                    for (size_t line=(xmax-xwide); line<=xmax; ++line) {
+                        setPixel(&pRow[(line-1)*this->arrayInfo.xStride], pOverlay);
+                    }
                 }
             }
             break;
+
+        case NDOverlayText:
+            if ((pOverlay->Font >= 0) && (pOverlay->Font < NDPluginOverlayTextFontBitmapTypeN)) {
+                bmp = &NDPluginOverlayTextFontBitmaps[pOverlay->Font];
+            } else {
+                // Really, no reason to go on if the font is ill defined
+                return;
+            }
+
+            bpc = bmp->width / 8 + 1;
+
+            if (strlen(pOverlay->TimeStampFormat) > 0) {
+                epicsTimeToStrftime(tstr, sizeof(tstr)-1, pOverlay->TimeStampFormat, &pArray->epicsTS);
+                epicsSnprintf(textOutStr, sizeof(textOutStr)-1, "%s%s", pOverlay->DisplayText, tstr);
+            } else {
+                epicsSnprintf(textOutStr, sizeof(textOutStr)-1, "%s", pOverlay->DisplayText);
+            }
+            textOutStr[sizeof(textOutStr)-1] = 0;
+
+            cp   = textOutStr;
+            xmin = pOverlay->PositionX;
+            xmin = MAX(xmin, 0);
+            xmax = pOverlay->PositionX + pOverlay->SizeX;
+            xmax = MAX(xmax, this->arrayInfo.xSize);
+            ymin = pOverlay->PositionY;
+            ymin = MAX(ymin, 0);
+            ymax = pOverlay->PositionY + pOverlay->SizeY;
+            ymax = MIN(ymax, pOverlay->PositionY + bmp->height);
+            ymax = MIN(ymax, this->arrayInfo.ySize);
+
+            // Loop over vertical lines
+            for (jj=0, iy=ymin; iy<ymax; jj++, iy++) {
+                pRow = (epicsType *)pArray->pData + iy*arrayInfo.yStride;
+
+                // Loop over characters
+                for (ii=0; cp[ii]!=0; ii++) {
+                    if( cp[ii] < 32)
+                        continue;
+
+                    if (xmin+ii * bmp->width >= xmax)
+                        // None of this character can be written
+                        break;
+
+                    sbc = 0;
+                    bmc = bmp->bitmap[(bmp->height*(cp[ii] - 32) + jj)*bpc];
+                    mask = 0x80;
+                    for (ib=0; ib<bmp->width; ib++) {
+                        ix = xmin + ii * bmp->width + ib;
+                        if (ix >= xmax)
+                            break;
+                        if (mask & bmc) {
+                            setPixel( &pRow[ix*this->arrayInfo.xStride], pOverlay);
+                        }
+                        mask >>= 1;
+                        if (!mask) {
+                            mask = 0x80;
+                            sbc++;
+                            bmc = bmp->bitmap[(bmp->height*(cp[ii] - 32) + jj)*bpc + sbc];
+                        }
+                    }
+                }
+            }
+            break;
+
     }
 }
 
@@ -145,7 +259,7 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
     int itemp;
     int overlay;
     NDArray *pOutput;
-    //const char* functionName = "processCallbacks";
+    //static const char* functionName = "processCallbacks";
 
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
@@ -169,8 +283,8 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
         pOverlay = &this->pOverlays[overlay];
         getIntegerParam(overlay, NDPluginOverlayUse, &use);
         asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
-        "NDPluginOverlay::processCallbacks, overlay=%d, use=%d\n",
-        overlay, use);
+            "NDPluginOverlay::processCallbacks, overlay=%d, use=%d\n",
+            overlay, use);
         if (!use) continue;
         /* Need to fetch all of these parameters while we still have the mutex */
         getIntegerParam(overlay, NDPluginOverlayPositionX,  &itemp); pOverlay->PositionX = itemp;
@@ -181,11 +295,18 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
         pOverlay->PositionY = MIN(pOverlay->PositionY, this->arrayInfo.ySize-1);
         getIntegerParam(overlay, NDPluginOverlaySizeX,      &itemp); pOverlay->SizeX = itemp;
         getIntegerParam(overlay, NDPluginOverlaySizeY,      &itemp); pOverlay->SizeY = itemp;
+        getIntegerParam(overlay, NDPluginOverlayWidthX,     &itemp); pOverlay->WidthX = itemp;
+        getIntegerParam(overlay, NDPluginOverlayWidthY,     &itemp); pOverlay->WidthY = itemp;
         getIntegerParam(overlay, NDPluginOverlayShape,      &itemp); pOverlay->shape = (NDOverlayShape_t)itemp;
         getIntegerParam(overlay, NDPluginOverlayDrawMode,   &itemp); pOverlay->drawMode = (NDOverlayDrawMode_t)itemp;
         getIntegerParam(overlay, NDPluginOverlayRed,        &pOverlay->red);
         getIntegerParam(overlay, NDPluginOverlayGreen,      &pOverlay->green);
         getIntegerParam(overlay, NDPluginOverlayBlue,       &pOverlay->blue);
+        getStringParam( overlay, NDPluginOverlayTimeStampFormat, sizeof(pOverlay->TimeStampFormat), pOverlay->TimeStampFormat);
+        getIntegerParam(overlay, NDPluginOverlayFont,       &pOverlay->Font);
+        getStringParam( overlay, NDPluginOverlayDisplayText, sizeof(pOverlay->DisplayText), pOverlay->DisplayText);
+
+        pOverlay->DisplayText[sizeof(pOverlay->DisplayText)-1] = 0;
 
         /* This function is called with the lock taken, and it must be set when we exit.
          * The following code can be exected without the mutex because we are not accessing memory
@@ -236,7 +357,7 @@ NDPluginOverlay::NDPluginOverlay(const char *portName, int queueSize, int blocki
                    asynGenericPointerMask,
                    ASYN_MULTIDEVICE, 1, priority, stackSize)
 {
-    const char *functionName = "NDPluginOverlay";
+    static const char *functionName = "NDPluginOverlay";
 
 
     this->maxOverlays = maxOverlays;
@@ -250,11 +371,16 @@ NDPluginOverlay::NDPluginOverlay(const char *portName, int queueSize, int blocki
     createParam(NDPluginOverlayPositionYString,     asynParamInt32, &NDPluginOverlayPositionY);
     createParam(NDPluginOverlaySizeXString,         asynParamInt32, &NDPluginOverlaySizeX);
     createParam(NDPluginOverlaySizeYString,         asynParamInt32, &NDPluginOverlaySizeY);
+    createParam(NDPluginOverlayWidthXString,        asynParamInt32, &NDPluginOverlayWidthX);
+    createParam(NDPluginOverlayWidthYString,        asynParamInt32, &NDPluginOverlayWidthY);
     createParam(NDPluginOverlayShapeString,         asynParamInt32, &NDPluginOverlayShape);
     createParam(NDPluginOverlayDrawModeString,      asynParamInt32, &NDPluginOverlayDrawMode);
     createParam(NDPluginOverlayRedString,           asynParamInt32, &NDPluginOverlayRed);
     createParam(NDPluginOverlayGreenString,         asynParamInt32, &NDPluginOverlayGreen);
     createParam(NDPluginOverlayBlueString,          asynParamInt32, &NDPluginOverlayBlue);
+    createParam(NDPluginOverlayTimeStampFormatString, asynParamOctet, &NDPluginOverlayTimeStampFormat);
+    createParam(NDPluginOverlayFontString,          asynParamInt32, &NDPluginOverlayFont);
+    createParam(NDPluginOverlayDisplayTextString,   asynParamOctet, &NDPluginOverlayDisplayText);      
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginOverlay");

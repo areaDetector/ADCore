@@ -19,13 +19,14 @@
 #include <epicsMutex.h>
 #include <cantProceed.h>
 
+#include <asynDriver.h>
+
+#define epicsExportSharedSymbols
+#include <shareLib.h>
 #include "tinyxml.h"
 #include "PVAttribute.h"
 #include "paramAttribute.h"
 #include "functAttribute.h"
-#include <asynDriver.h>
-#define epicsExportSharedSymbols
-#include <shareLib.h>
 #include "asynNDArrayDriver.h"
 
 static const char *driverName = "asynNDArrayDriver";
@@ -257,8 +258,10 @@ int asynNDArrayDriver::readNDAttributesFile(const char *fileName)
             asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
                 "%s:%s: Name=%s, PVName=%s, pDBRType=%s, dbrType=%d, pDescription=%s\n",
                 driverName, functionName, pName, pSource, pDBRType, dbrType, pDescription);
+#ifndef EPICS_LIBCOM_ONLY
             PVAttribute *pPVAttribute = new PVAttribute(pName, pDescription, pSource, dbrType);
             this->pAttributeList->add(pPVAttribute);
+#endif
         } else if (strcmp(pAttrType, "PARAM") == 0) {
             const char *pDataType = Attr->Attribute("datatype");
             if (!pDataType) pDataType = "int";
@@ -276,8 +279,10 @@ int asynNDArrayDriver::readNDAttributesFile(const char *fileName)
             asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
                 "%s:%s: Name=%s, function=%s, pParam=%s, pDescription=%s\n",
                 driverName, functionName, pName, pSource, pParam, pDescription); 
+#ifndef EPICS_LIBCOM_ONLY
             functAttribute *pFunctAttribute = new functAttribute(pName, pDescription, pSource, pParam);
             this->pAttributeList->add(pFunctAttribute);
+#endif
         }
     }
     // Wait a short while for channel access callbacks on EPICS PVs
@@ -536,6 +541,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     createParam(NDFileNumCapturedString,      asynParamInt32,           &NDFileNumCaptured);
     createParam(NDFileCaptureString,          asynParamInt32,           &NDFileCapture);   
     createParam(NDFileDeleteDriverFileString, asynParamInt32,           &NDFileDeleteDriverFile);
+    createParam(NDFileLazyOpenString,         asynParamInt32,           &NDFileLazyOpen);
     createParam(NDAttributesFileString,       asynParamOctet,           &NDAttributesFile);
     createParam(NDArrayDataString,            asynParamGenericPointer,  &NDArrayData);
     createParam(NDArrayCallbacksString,       asynParamInt32,           &NDArrayCallbacks);
@@ -573,6 +579,10 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     setStringParam (NDFileWriteMessage, "");
     /* We set FileTemplate to a reasonable value because it cannot be defined in the database, since it is a
      * waveform record. However, the waveform record does not currently read the driver value for initialization! */
+    setStringParam (NDFilePath, "");
+    setStringParam (NDFileName, "");
+    setIntegerParam(NDFileNumber, 0);
+    setIntegerParam(NDAutoIncrement, 0);
     setStringParam (NDFileTemplate, "%s%s_%3.3d.dat");
     setIntegerParam(NDFileNumCaptured, 0);
 
@@ -581,4 +591,12 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     setIntegerParam(NDPoolFreeBuffers, this->pNDArrayPool->numFree());
 
 }
+
+
+asynNDArrayDriver::~asynNDArrayDriver()
+{ 
+    delete this->pNDArrayPool;
+    delete this->pArrays;
+    delete this->pAttributeList;
+}    
 

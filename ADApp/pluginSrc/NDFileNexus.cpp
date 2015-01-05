@@ -17,8 +17,11 @@
 #include <napi.h>
 #include <string.h>
 
-#include "NDFileNexus.h"
+#include <asynDriver.h>
+
 #include <epicsExport.h>
+#include "NDPluginFile.h"
+#include "NDFileNexus.h"
 
 static const char *driverName="NDFileNexus";
 
@@ -122,7 +125,7 @@ asynStatus NDFileNexus::readFile(NDArray **pArray) {
             "Entering %s:%s\n", driverName, functionName );
 
   asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-            "%s:%s Reading image not implemented",
+            "%s:%s Reading image not implemented\n",
              driverName, functionName);
 
   /* Print trace information if level is set correctly */
@@ -183,7 +186,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
   size_t attrDataSize;
   size_t nodeTextLen;
   int wordSize;
-  int dataOutType;
+  int dataOutType=NDInt8;
   size_t numWords;
   int numItems = 0;
   int addr =0;
@@ -262,14 +265,14 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
   stat |= NXopengroup(this->nxFileHandle, (const char *)nodeName, (const char *)nodeValue);
   if (stat != NX_OK ) {
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-              "%s:%s Error creating group %s %s",
+              "%s:%s Error creating group %s %s\n",
               driverName, functionName, nodeName, nodeValue);
   }
   this->iterateNodes(curNode, pArray);
   stat = NXclosegroup(this->nxFileHandle);
   if (stat != NX_OK ) {
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-              "%s:%s Error closing group %s %s",
+              "%s:%s Error closing group %s %s\n",
               driverName, functionName, nodeName, nodeValue);
     }
   }
@@ -293,7 +296,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
       }
       else {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                  "%s:%s Could not find attribute named %s",
+                  "%s:%s Could not find attribute named %s\n",
                   driverName, functionName, nodeSource);
       }
     }
@@ -318,7 +321,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
     }
     else if (nodeType) {
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                "%s:%s Node type %s for node %s is invalid",
+                "%s:%s Node type %s for node %s is invalid\n",
                 driverName, functionName, nodeType, nodeValue);
     }
   }
@@ -346,7 +349,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
       }
       else {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                  "%s:%s Could not add node %s could not find an attribute by that name",
+                  "%s:%s Could not add node %s could not find an attribute by that name\n",
                   driverName, functionName, nodeSource);
       }
     }
@@ -384,9 +387,9 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
           wordSize = 4;
           break;
         case NDFloat32:
-           dataOutType = NX_FLOAT32;
+          dataOutType = NX_FLOAT32;
           wordSize = 4;
-           break;
+          break;
         case NDFloat64:
           dataOutType = NX_FLOAT64;
           wordSize = 8;
@@ -449,7 +452,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
     }
     else if (nodeType) {
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                "%s:%s Node type %s for node %s is invalid",
+                "%s:%s Node type %s for node %s is invalid\n",
                 driverName, functionName, nodeType, nodeValue);
     }
     else {
@@ -752,7 +755,7 @@ asynStatus NDFileNexus::writeOctet(asynUser *pasynUser, const char *value,
   int addr=0;
   int function = pasynUser->reason;
   asynStatus status = asynSuccess;
-  const char *functionName = "writeOctet";
+  static const char *functionName = "writeOctet";
 
   status = getAddress(pasynUser, &addr); if (status != asynSuccess) return(status);
   /* Set the parameter in the parameter library. */
@@ -847,7 +850,7 @@ NDFileNexus::NDFileNexus(const char *portName, int queueSize, int blockingCallba
                  2, 0, asynGenericPointerMask, asynGenericPointerMask,
                  ASYN_CANBLOCK, 1, priority, stackSize)
 {
-  //const char *functionName = "NDFileNexus";
+  //static const char *functionName = "NDFileNexus";
   createParam(NDFileNexusTemplatePathString,  asynParamOctet, &NDFileNexusTemplatePath);
   createParam(NDFileNexusTemplateFileString,  asynParamOctet, &NDFileNexusTemplateFile);
   createParam(NDFileNexusTemplateValidString, asynParamInt32, &NDFileNexusTemplateValid);

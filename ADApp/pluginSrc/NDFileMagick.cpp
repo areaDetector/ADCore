@@ -12,8 +12,11 @@
 #include <epicsStdio.h>
 #include <iocsh.h>
 
-#include "NDFileMagick.h"
+#include <asynDriver.h>
+
 #include <epicsExport.h>
+#include "NDPluginFile.h"
+#include "NDFileMagick.h"
 
 static const char *driverName = "NDFileMagick";
 
@@ -195,7 +198,7 @@ NDFileMagick::NDFileMagick(const char *portName, int queueSize, int blockingCall
                    2, 0, asynGenericPointerMask, asynGenericPointerMask, 
                    ASYN_CANBLOCK, 1, priority, stackSize)
 {
-    //const char *functionName = "NDFileMagick";
+    //static const char *functionName = "NDFileMagick";
 
     /* Set the plugin type string */    
     setStringParam(NDPluginDriverPluginType, "NDFileMagick");

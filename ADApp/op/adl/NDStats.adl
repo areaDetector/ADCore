@@ -1,12 +1,12 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADApp/op/adl/NDStats.adl"
-	version=030105
+	name="/home/epics/devel/areaDetector-2-1/ADCore/ADApp/op/adl/NDStats.adl"
+	version=030107
 }
 display {
 	object {
-		x=62
-		y=213
+		x=78
+		y=136
 		width=1120
 		height=605
 	}
@@ -1878,7 +1878,7 @@ composite {
 	display[9] {
 		label="Sigma"
 		name="NDTimeSeries.adl"
-		args="$(P),R=$(R),PLT=TSSigmaValue"
+		args="P=$(P),R=$(R),PLT=TSSigma"
 	}
 	display[10] {
 		label="All"
@@ -1899,4 +1899,101 @@ text {
 		clr=14
 	}
 	textix="Time series plots"
+}
+rectangle {
+	object {
+		x=882
+		y=432
+		width=107
+		height=21
+	}
+	"basic attribute" {
+		clr=2
+	}
+}
+text {
+	object {
+		x=885
+		y=432
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="Reset"
+	align="horiz. centered"
+}
+text {
+	object {
+		x=830
+		y=459
+		width=110
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Reset"
+	align="horiz. right"
+}
+rectangle {
+	object {
+		x=755
+		y=430
+		width=360
+		height=80
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+"related display" {
+	object {
+		x=951
+		y=484
+		width=60
+		height=20
+	}
+	display[0] {
+		label="Reset"
+		name="yySseq_full.adl"
+		args="P=$(P),S=$(R)Reset"
+	}
+	display[1] {
+		label="Reset1"
+		name="yySseq_full.adl"
+		args="P=$(P),S=$(R)Reset1"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=850
+		y=484
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Configure"
+	align="horiz. right"
+}
+"message button" {
+	object {
+		x=951
+		y=459
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)Reset.PROC"
+		clr=14
+		bclr=51
+	}
+	label="Reset"
+	press_msg="1"
 }

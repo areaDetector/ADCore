@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>areaDetector Plugin NDFileJPEG</title>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+</head>
+<body>
+  <div style="text-align: center">
+    <h1>
+      areaDetector Plugin NDFileJPEG</h1>
+    <h2>
+      October 7, 2014</h2>
+    <h2>
+      Mark Rivers</h2>
+    <h2>
+      University of Chicago</h2>
+  </div>
+  <p>
+    NDFileJPEG inherits from NDPluginFile. This plugin saves data in the <a href="http://en.wikipedia.org/wiki/JPEG">
+      JPEG</a> file format, which is a compressed file format for storing images. There
+    is JPEG support for almost all languages and programs such as IDL and Matlab.
+  </p>
+  <p>
+    The JPEG plugin is limited to 8-bit arrays. It supports all color modes (Mono, RGB1,
+    RGB2, and RGB3). It is limited to a single array per file, but capture and stream
+    mode are supported by writing multiple JPEG files.
+  </p>
+  <p>
+    The JPEG plugin supports the Int32 parameter NDFileJPEGQuality to control the amount
+    of compression in the file. This parameter varies from 0 (maximum compression, lowest
+    quality) to 100 (least compression, best quality). NDFileJPEG.template defines 2
+    records to support this: $(P)$(R)JPEGQuality (longout) and $(P)$(R)JPEGQuality_RBV
+    (longin).
+  </p>
+  <p>
+    The <a href="areaDetectorDoxygenHTML/class_n_d_file_j_p_e_g.html">NDFileJPEG class
+      documentation </a>describes this class in detail.
+  </p>
+  <p>
+    The NDFileJPEG plugin is created with the NDFileJPEGConfigure command, either from
+    C/C++ or from the EPICS IOC shell.</p>
+  <pre>NDFileJPEGConfigure (const char *portName, int queueSize, int blockingCallbacks, 
+                     const char *NDArrayPort, int NDArrayAddr, size_t maxMemory, 
+                     int priority, int stackSize)
+  </pre>
+  <p>
+    For details on the meaning of the parameters to this function refer to the detailed
+    documentation on the NDFileJPEGConfigure function in the <a href="areaDetectorDoxygenHTML/_n_d_file_j_p_e_g_8cpp.html">
+      NDFileJPEG.cpp documentation</a> and in the documentation for the constructor
+    for the <a href="areaDetectorDoxygenHTML/class_n_d_file_j_p_e_g.html">NDFileJPEG class</a>.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDFileJPEG.adl</h3>
+    <p>
+      <img alt="NDFileJPEG.png" src="NDFileJPEG.png" /></p>
+  </div>
+</body>
+</html>

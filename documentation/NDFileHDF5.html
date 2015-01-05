@@ -1,0 +1,971 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>areaDetector Plugin NDFileHDF5</title>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+</head>
+<body>
+  <div style="text-align: center">
+    <h1>
+      areaDetector Plugin NDFileHDF5</h1>
+    <h2>
+      October 7, 2014</h2>
+    <h2>
+      Ulrik Pedersen (Diamond Light Source), Arthur Glowacki (Argonne National Laboratory),
+      Alan Greer (Observatory Sciences), (Mark Rivers (University of Chicago)</h2>
+  </div>
+  <p>
+    NDFileHDF5 inherits from NDPluginFile. This plugin uses the HDF5 libraries to store
+    data. HDF5 file format is a self-describing binary format supported by the <a href="http://www.hdfgroup.org/HDF5">
+      hdfgroup</a>.
+  </p>
+  <p>
+    The plugin supports all NDArray datatypes and any number of NDArray dimensions (tested
+    up to 3). It supports storing multiple NDArrays in a single file (in stream or capture
+    modes) where each NDArray gets appended to an extra dimension.
+  </p>
+  <p>
+    NDArray attributes are stored in the HDF5 file. In case of multi-frame files the
+    attributes are stored in 1D datasets (arrays).
+  </p>
+  <p>
+    The NDFileHDF5 plugin is created with the NDFileHDF5Configure command, either from
+    C/C++ or from the EPICS IOC shell.</p>
+  <pre>NDFileHDF5Configure (const char *portName, int queueSize, int blockingCallbacks, 
+                     const char *NDArrayPort, int NDArrayAddr, size_t maxMemory, 
+                     int priority, int stackSize)
+  </pre>
+  <p>
+    For details on the meaning of the parameters to this function refer to the detailed
+    documentation on the NDFileHDF5Configure function in the <a href="areaDetectorDoxygenHTML/_n_d_file_h_d_f5_8cpp.html">
+      NDFileHDF5.cpp documentation</a> and in the documentation for the constructor
+    for the <a href="areaDetectorDoxygenHTML/class_n_d_file_h_d_f5.html">NDFileHDF5 class</a>.</p>
+  <h3>
+    File Structure Layout
+  </h3>
+  <p>
+    The HDF5 files comprises a hierachial data structure, similar to a file system structure
+    with directories (groups) and files (datasets) [<a href="http://www.hdfgroup.org/HDF5/Tutor/fileorg.html">ref</a>]
+  </p>
+  <h4>
+    XML Defined File Structure Layout</h4>
+  <p>
+    It is possible to define the layout of the data structures in an XML definition
+    file. The XML file allow defining the location of HDF5 Groups, Datasets and Attributes
+    based on detector data (NDArrays), metadata (NDAttributes) and constants (for instance
+    NeXus tags).
+  </p>
+  <p>
+    The XML definition contains the following 4 main elements: group, dataset, attribute,
+    and hardlink. The terms refer to the HDF5 elements of the same names.
+  </p>
+  <ul>
+    <li><b>attribute:</b> represent a HDF5 attribute (key, value metadata) and is assigned
+      to groups and datasets</li>
+    <li><b>dataset:</b> represent a HDF5 dataset (N-dimensional array). Can contain attributes
+      and is assigned to a group </li>
+    <li><b>group:</b> represent a HDF5 group. Groups can contain datasets, attributes
+      and other groups (recursively)</li>
+    <li><b>hardlink:</b> represent an HDF5 hard link. Hardlinks can point to other elements
+      in the file, such as datasets. They are analogous to hard links in the Linux file
+      system.</li>
+    <li><b>global:</b> Rather than representing a HDF5 object; this element represents
+      a global functionality definition</li>
+  </ul>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <th>
+          XML attribute</th>
+        <th>
+          Required</th>
+        <th>
+          Description</th>
+        <th>
+          Value</th>
+      </tr>
+      <tr>
+        <td align="center" colspan="4,">
+          XML <b>"attribute"</b> element attributes </td>
+      </tr>
+      <tr>
+        <td>
+          name</td>
+        <td>
+          yes</td>
+        <td>
+          Name (key) of the HDF attribute (key, value) pair</td>
+        <td>
+          string</td>
+      </tr>
+      <tr>
+        <td>
+          source</td>
+        <td>
+          yes</td>
+        <td>
+          Definition of where the attribute gets its value from</td>
+        <td>
+          Enum string: "constant", "ndattribute"</td>
+      </tr>
+      <tr>
+        <td>
+          when</td>
+        <td>
+          optional</td>
+        <td>
+          Event when the attribute data is updated</td>
+        <td>
+          Enum string: "OnFileOpen", "OnFileClose", "OnFileWrite"</td>
+      </tr>
+      <tr>
+        <td>
+          value</td>
+        <td>
+          Required only if source="constant"</td>
+        <td>
+          The constant value to give the attribute</td>
+        <td>
+          string (possibly containing an int or float)</td>
+      </tr>
+      <tr>
+        <td>
+          type</td>
+        <td>
+          optional - use if source="constant"</td>
+        <td>
+          The constant datatype</td>
+        <td>
+          Enum string: "int", "float", "string"</td>
+      </tr>
+      <tr>
+        <td>
+          ndattribute</td>
+        <td>
+          Required only if source="ndattribute"</td>
+        <td>
+          Name of the areaDetector NDAttribute which is the source of this HDF5 attribute's
+          data value</td>
+        <td>
+          string containing the name of an NDAttribute</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="4,">
+          XML <b>"group"</b> element attributes </td>
+      </tr>
+      <tr>
+        <td>
+          name</td>
+        <td>
+          yes</td>
+        <td>
+          The (relative) name of the HDF5 group</td>
+        <td>
+          string</td>
+      </tr>
+      <tr>
+        <td>
+          ndattr_default</td>
+        <td>
+          optional</td>
+        <td>
+          This attribute flags a group as being a 'default' container for NDAttributes which
+          have not been defined to be stored elsewhere</td>
+        <td>
+          boolean (default=false)</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="4,">
+          XML <b>"dataset"</b> element attributes </td>
+      </tr>
+      <tr>
+        <td>
+          name</td>
+        <td>
+          yes</td>
+        <td>
+          Name of the HDF5 dataset</td>
+        <td>
+          string</td>
+      </tr>
+      <tr>
+        <td>
+          source</td>
+        <td>
+          yes</td>
+        <td>
+          Definition of where the dataset gets its data values from</td>
+        <td>
+          string enum: "detector", "ndattribute", "constant"</td>
+      </tr>
+      <tr>
+        <td>
+          value</td>
+        <td>
+          Required only if source="constant"</td>
+        <td>
+          Constant value to write directly into the HDF5 dataset</td>
+        <td>
+          String - possibly containing int or float values. Arrays of int and float values
+          can also be represented in a comma-separated string</td>
+      </tr>
+      <tr>
+        <td>
+          ndattribute</td>
+        <td>
+          Required only if source="ndattribute"</td>
+        <td>
+          The name of the areaDetector NDAttribute to use as a data source for this HDF5 dataset
+        </td>
+        <td>
+          string containing the name of the NDAttribute</td>
+      </tr>
+      <tr>
+        <td>
+          det_default</td>
+        <td>
+          optional</td>
+        <td>
+          Flag to indicate that this HDF5 dataset is the default dataset for the detector
+          to write NDArrays into. Only sensible to set true if source="detector"</td>
+        <td>
+          boolean (default=false)</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="4,">
+          XML <b>"global"</b> element attributes </td>
+      </tr>
+      <tr>
+        <td>
+          name</td>
+        <td>
+          yes</td>
+        <td>
+          Name of the global functionality or parameter to set</td>
+        <td>
+          enum string: "detector_data_destination"
+          <br />
+          (currently only one supported parameter)</td>
+      </tr>
+      <tr>
+        <td>
+          ndattribute</td>
+        <td>
+          Required when name="detector_data_destination"</td>
+        <td>
+          Name of the NDAttribute which defines the name of the dataset where incoming NDArrays
+          are to be stored</td>
+        <td>
+          string containing the name of an NDAttribute</td>
+      </tr>
+      <td align="center" colspan="4,">
+        XML <b>"hardlink"</b> element attributes </td>
+      </tr>
+      <tr>
+        <td>
+          name</td>
+        <td>
+          yes</td>
+        <td>
+          Name of the link</td>
+        <td>
+          string: string containing the name of the hardlink being created </td>
+      </tr>
+      <tr>
+        <td>
+          target</td>
+        <td>
+          yes</td>
+        <td>
+          Name of the existing target object in the HDF5 file being linked to.</td>
+        <td>
+          string containing the name of the target object being linked to</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    An example XML layout file is provided in "ADCore/iocs/simDetectorIOC/iocBoot/iocSimDetector/hdf5_layout_demo.xml".</p>
+  <p>
+    An XML schema is provided in "ADCore/iocBoot/hdf5_xml_layout_schema.xsd". The schema
+    defines the syntax that is allowed in the user's XML definition. It can also be
+    used with the 'xmllint' command to validate a user's XML definition:
+  </p>
+  <pre>xmllint --noout --schema ADCore/iocBoot/hdf5_xml_layout_schema.xsd /path/to/users/layout.xml</pre>
+  <h4>
+    Default File Structure Layout</h4>
+  <p>
+    If no XML Layout Definition file is loaded, the plugin will revert to using its
+    default file structure layout. The default layout is compatible with the plugin's
+    original, hard-code layout. This layout is actually defined by an XML layout string
+    defined in the source code file NDFileHDF5LayoutXML.cpp.
+  </p>
+  <p>
+    This default layout is compatible with the Nexus file format. This is achieved by
+    defining a specific hierachial structure of groups and datasets and by tagging elements
+    in the hierachi with certain &quot;NX_class=nnn&quot; attributes. Although Nexus
+    libraries are not used to write the data to disk, this file structure allow Nexus-aware
+    readers to open and read the content of these HDF5 files. This has been tested with
+    the Nexus reader in the <a href="http://opengda.org/">GDA application</a>. Hardlinks
+    in the HDF5 file can be used to make the same dataset appear in more than one location.
+    This can be useful for defining a layout that is Nexus compatible, as well as conforming
+    to some other desired layout.
+  </p>
+  <h5>
+    NDArray attributes
+  </h5>
+  <p>
+    The attributes from NDArrays are stored in the HDF5 files. The list of attributes
+    is loaded when a file is opened so XML attributes files should not be reloaded during
+    an acquisition run.
+  </p>
+  <p>
+    The type of attribute is used to determine where in the file structure the attribute
+    data will end up. All attribute datasets will be named by the NDArray attribute
+    name. They will also have metadata (known as HDF &quot;attributes&quot;) to indicate
+    their source type and origin.</p>
+  <ul>
+    <li>Attributes from EPICS PVs (type=&quot;EPICS_PV&quot;) will be stored as 1D datasets
+      in the group &quot;/entry/instrument/NDAttributes/&quot;
+      <ul>
+        <li>Special case is attributes of datatype string, which will be stored as HDF5 metadata
+          attributes to the same group.</li>
+      </ul>
+    </li>
+    <li>All other attributes (type=&quot;PARAM&quot;) will be stored as 1D datasets in
+      the group &quot;/entry/instrument/detector/NDAttributes/&quot;
+      <ul>
+        <li>Special case is attributes of datatype string, which will be stored as HDF5 metadata
+          attributes to the same group.</li>
+      </ul>
+    </li>
+  </ul>
+  <p>
+    It is possible to validate the syntax of an NDArray attributes XML file. For example,
+    the command (starting from the <tt>iocBoot</tt> directory) to validate the syntax
+    of the <tt>iocBoot/iocSimDetector/simDetectorAttributes.xml</tt> file is:</p>
+  <pre>xmllint --noout --schema ./attributes.xsd iocSimDetector/simDetectorAttributes.xml</pre>
+  <h5>
+    Default tree structure</h5>
+  <p>
+    The group/dataset structure of the HDF5 files, generated by this plugin:</p>
+  <pre>entry                   &lt;-- NX_class=NXentry
+|
++--instrument           &lt;-- NX_class=NXinstrument
+   |
+   +--NDAttributes
+   |  |
+   |  +---              &lt;-- Any number of EPICS PV based NDAttributes as individual 1D datasets
+   |  +---                  The PV attributes are in the 'instrument' group as they are expected 
+   |                        to originate from the beamline/instrument rather than the detector itself
+   |
+   +--detector          &lt;-- NX_class=NXdetector
+   |  |
+   |  +--data           &lt;-- NX_class=SDS, signal=1
+   |  |
+   |  +--NDAttributes
+   |     |
+   |     +---           &lt;-- Any number of PARAM type NDAttributes as individual 1D datasets
+   |     +---               These type of parameters are in the 'detector' group as they
+   |                        originate from the areaDetector system
+   |
+   +--performance       &lt;-- Performance of the file writing
+      |
+      +--timestamp      &lt;-- A 2D dataset of different timing measurements taking during file writing
++--data                 &lt;-- NX_class=NDdata
+   |  |
+   |  +--data           &lt;-- Hardlink to /entry/instrument/detector/data
+</pre>
+  <h3>
+    HDF5 File Viewers
+  </h3>
+  <p>
+    <a href="http://www.hdfgroup.org/hdf-java-html/hdfview/index.html">HDFView</a> is
+    a simple GUI tool for viewing and browsing HDF files. It has some limited support
+    for viewing images, plotting graphs and displaying data tables.
+  </p>
+  <p>
+    The <a href="http://www.hdfgroup.org/HDF5/release/obtain5.html">HDF5 libraries</a>
+    also ships with a number of command-line tools for browsing and dumping data.
+  </p>
+  <p>
+    The screenshot below shows the hdfview application with a datafile open. The datafile
+    is generated by the plugin and a number of elements are visible:</p>
+  <ul>
+    <li>A number of NDAttributes sourced from EPICS PVs during detector acquisition appear
+      as 1D datasets in the group &quot;/entry/instrument/NDAttributes/&quot;</li>
+    <li>Several NDAttributes from the areaDetector show up as datasets in the group &quot;/entry/instrument/detector/NDAttributes/&quot;</li>
+    <li>The image data is in the dataset &quot;/entry/instrument/detector/data&quot;.
+      The metadata (in HDF known as &quot;attributes&quot;) for that dataset indicate
+      8bit unsigned char data, 10 frames of 60x40 pixels</li>
+    <li>Image and table view of the first frame data is open</li>
+  </ul>
+  <div style="text-align: center">
+    <img alt="==== HDFView-screenshot.png ====" src="HDFView-screenshot.png" /></div>
+  <h3>
+    Multiple Dimensions
+  </h3>
+  <p>
+    Both areaDetector and the HDF5 file format supports multidimensional datasets. The
+    dimensions from the NDArray are preserved when writing to the HDF5 file. In multi-frame
+    files (plugin in Stream or Capture mode) an additional dimension is added to the
+    dataset to hold the array of frames.
+  </p>
+  <p>
+    In addition to the dimensions of the NDArray it is also possible to specify up to
+    2 extra &quot;virtual&quot; dimensions to store datasets in the file. This is to
+    support applications where a sample is scanned in up to two dimensions, say X and
+    Y. For each scan point a dataset comprising of multiple frames can be stored. The
+    length of (i.e. number of points in) each of the two virtual dimensions have to
+    be specified before the plugin opens the file for writing. This feature is only
+    supported in the Stream and Capture modes.
+  </p>
+  <p>
+    This feature allow for creating very large sets of scan data which matches the dimensions
+    of the performed scan in one datafile. Depending on the application this can be
+    a benefit in post processing.
+  </p>
+  <p>
+    The figure below illustrate the use of the two extra &quot;virtual&quot; dimensions
+    in a 2D (X,Y) raster scan with N frames per point:</p>
+  <div style="text-align: center">
+    <img alt="HDFmultiple-dimensions.png" src="HDFmultiple-dimensions.png" /></div>
+  <p>
+    Prior to starting a scan like this the user will need to configure the number of
+    virtual dimensions to use (none, 1 or 2); the number of frames per point; and the
+    length of each of the virtual dimensions (4 x 2 in the example figure). It is not
+    possible to change the number or size of dimensions while the file is open.
+  </p>
+  <p>
+    For 2D image (greyscale) formats the dimensions in the multiframe HDF5 file are
+    organised as follows:</p>
+  <ul>
+    <li>For a multiframe file with no use of &quot;virtual&quot; dimension the order is:
+      {Nth frame, width, height}</li>
+    <li>For a multiframe file using 1 &quot;virtual&quot; dimension (X) the order is:
+      {X, Nth frame, width, height}</li>
+    <li>For a multiframe file using 2 &quot;virtual&quot; dimension (X,Y) the order is:
+      {Y, X, Nth frame, width, height}</li>
+  </ul>
+  <h3>
+    Chunking
+  </h3>
+  <p>
+    This plugin uses HDF5 chunking to store the raw image data. The chunk size (the
+    size of each I/O block) can be configured for the frame X and Y dimensions as well
+    as the N'th image (which essentially implies memory caching before writing to disk).
+    Configuring chunking correctly for a given application is a complex matter where
+    both the write performance and the read performance for a given post processing
+    application will have to be evaluated. As a basic starting point, setting the nColChunks
+    and nRowChunks parameters to the X and Y frame size respectively, should give a
+    decent result. In fact if these parameters are configured by the user to the special
+    value 0, they will default to the dimensions of the incoming frames. Further explanations
+    and documentation of the HDF5 chunking feature is available in the HDF5 documentation:</p>
+  <ul>
+    <li>HDF5 documentation advanced topics: <a href="http://www.hdfgroup.org/HDF5/doc/Advanced/Chunking/index.html">
+      Chunking in HDF5 </a></li>
+    <li>HDF5 User guide: <a href="http://www.hdfgroup.org/training/HDFtraining/UsersGuide/Perform.fm2.html">
+      14.3 Data Chunking </a></li>
+    <li>hdfgroup presentation: <a href="http://www.hdfgroup.org/pubs/presentations/HDF5-EOSXIII-Advanced-Chunking.pdf">
+      HDF5 Advanced Topics - Chunking in HDF5 </a></li>
+  </ul>
+  <h3>
+    Compression
+  </h3>
+  <p>
+    The HDF5 library supports a number of compression algorithms. When using HDF5 libraries
+    to write and read files the compression is seemless: it only need to be switched
+    on when writing and HDF5 enabled applications can read the files without any additional
+    configuration. Only one compression filter can be applied at the time.
+  </p>
+  <p>
+    The following compression filters are supported in the NDFileHDF5 plugin:</p>
+  <ul>
+    <li>Lossless <a href="http://www.hdfgroup.org/doc_resource/SZIP/">SZIP</a> compression
+      is using a separate library from the hdfgroup. NOTE: The szip library contains the
+      following in its COPYING license agreement file:<br />
+      <tt>Revocable (in the event of breach by the user or if required by law), royalty-free,
+        nonexclusive sublicense to use SZIP compression software routines and underlying
+        patents for non-commercial, scientific use only is hereby granted by ICs, LLC, to
+        users of and in conjunction with HDF data storage and retrieval file format and
+        software library products.</tt><br />
+      This means that the szip compression should not be used by commercial users without
+      first obtaining a license.</li>
+    <li>External libz -also lossless</li>
+    <li><a href="http://www.hdfgroup.org/HDF5/doc/RM/RM_H5P.html#Property-SetNbit">N-bit</a>
+      compression is a bit-packing scheme to be used when a detector provide fewer databits
+      than standard 8,16,32 bit words. Data width and offset in the word is user configurable</li>
+  </ul>
+  <h3>
+    Parameters and Records
+  </h3>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>Parameter Definitions and EPICS Record Definitions in NDFileHDF5.template</b>
+        </td>
+      </tr>
+      <tr>
+        <th>
+          Parameter index variable</th>
+        <th>
+          asyn interface</th>
+        <th>
+          Access</th>
+        <th>
+          Description</th>
+        <th>
+          drvInfo string</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          EPICS record type</th>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>HDF5 XML Layout Definition</b></td>
+      </tr>
+      <tr>
+        <td>
+          XMLFileName</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          XML filename, pointing to an XML HDF5 Layout Definition<br />
+          This waveform also supports loading raw XML code directly; up to a maximum of 1MB
+          long (NELM=1MB)</td>
+        <td>
+          HDF5_layoutFilename</td>
+        <td>
+          $(P)$(R)XMLFileName<br />
+          $(P)$(R)XMLFileName_RBV</td>
+        <td>
+          waveform</td>
+      </tr>
+      <tr>
+        <td>
+          layoutValid</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Flag to report the validity (xml syntax only) of the loaded XML. Updated when the
+          XMLFileName is updated with a new filename and when the XML file is read at HDF5
+          file creation</td>
+        <td>
+          HDF5_layoutValid</td>
+        <td>
+          $(P)$(R)XMLValid_RBV</td>
+        <td>
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          layoutErrorMsg</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/o</td>
+        <td>
+          XML parser error message</td>
+        <td>
+          HDF5_layoutErrorMsg</td>
+        <td>
+          $(P)$(R)XMLErrorMsg_RBV</td>
+        <td>
+          waveform</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>HDF5 Chunk Configuration</b></td>
+      </tr>
+      <tr>
+        <td>
+          nRowChunks</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Configure HDF5 &quot;chunking&quot; to approriate size for the filesystem: sets
+          number of rows to use per chunk</td>
+        <td>
+          HDF5_nRowChunks</td>
+        <td>
+          $(P)$(R)NumRowChunks<br />
+          $(P)$(R)NumRowChunks_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          nColChunks</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Configure HDF5 &quot;chunking&quot; to approriate size for the filesystem: sets
+          number of columns to use per chunk</td>
+        <td>
+          HDF5_nColChunks</td>
+        <td>
+          $(P)$(R)NumColChunks<br />
+          $(P)$(R)NumColChunks_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          nFramesChunks</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Configure HDF5 &quot;chunking&quot; to approriate size for the filesystem: sets
+          number of frames to use per chunk. For a 2D image, setting this parameter > 1 essentially
+          implies using in-memory cache as HDF5 only writes full chunks to disk.</td>
+        <td>
+          HDF5_nFramesChunks</td>
+        <td>
+          $(P)$(R)NumFramesChunks<br />
+          $(P)$(R)NumFramesChunks_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>Disk Boundary Alignment</b></td>
+      </tr>
+      <tr>
+        <td>
+          chunkBoundaryAlign</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Set the disk boundary alignment in bytes. This parameter can be used to optimise
+          file I/O performance on some file systems. For instance on the Lustre file system
+          where the it is optimal to align data to the 'stripe size' (default 1MB).
+          <br />
+          This parameter applies to all datasets in the file.
+          <br />
+          Setting this parameter to 0 disables use of disk boundary alignment.
+          <br />
+          <i>Warning: setting this parameter to a larger size than the size of a single chunk
+            will cause datafiles to grow larger than the actual contained data.</i> </td>
+        <td>
+          HDF5_chunkBoundaryAlign</td>
+        <td>
+          $(P)$(R)BoundaryAlign<br />
+          $(P)$(R)BoundaryAlign_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          chunkBoundaryThreshold</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Set a minimum size (bytes) of chunk or dataset where boundary alignment is to be
+          applied. This can be used to filter out small datasets like NDAttributes from the
+          boundary alignment as it could blow up the file size.
+          <br />
+          Setting this parameter to 0 will disable the use of boundary alignment </td>
+        <td>
+          HDF5_chunkBoundaryThreshold</td>
+        <td>
+          $(P)$(R)BoundaryThreshold<br />
+          $(P)$(R)BoundaryThreshold_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>Metadata</b></td>
+      </tr>
+      <tr>
+        <td>
+          storeAttributes</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Enable or disable support for storing NDArray attributes in file</td>
+        <td>
+          HDF5_storeAttributes</td>
+        <td>
+          $(P)$(R)StoreAttr<br />
+          $(P)$(R)StoreAttr_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          storePerformance</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Enable or disable support for storing file IO timing measurements in file</td>
+        <td>
+          HDF5_storePerformance</td>
+        <td>
+          $(P)$(R)StorePerform<br />
+          $(P)$(R)StorePerform_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          flushNthFrame</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Flush the file metadata to disk every N'th frame. Image data is written to disk
+          on every write operation, but HDF5 internal metadata to describe the data layout
+          and indices is normally only written at close time. </td>
+        <td>
+          HDF5_flushNthFrame</td>
+        <td>
+          $(P)$(R)NumFramesFlush<br />
+          $(P)$(R)NumFramesFlush_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>Additional Virtual Dimensions</b></td>
+      </tr>
+      <tr>
+        <td>
+          nExtraDims</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Number of extra dimensions [0..2]</td>
+        <td>
+          HDF5_nExtraDims</td>
+        <td>
+          $(P)$(R)NumExtraDims<br />
+          $(P)$(R)NumExtraDims</td>
+        <td>
+          mbbo<br />
+          mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          extraDimSizeN</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Size of extra dimension N (no. of frames per point)</td>
+        <td>
+          HDF5_extraDimSizeN</td>
+        <td>
+          $(P)$(R)ExtraDimSizeN<br />
+          $(P)$(R)ExtraDimSizeN_RBV</td>
+        <td>
+        </td>
+      </tr>
+      <tr>
+        <td>
+          extraDimSizeX</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Size of extra dimension X</td>
+        <td>
+          HDF5_extraDimSizeX</td>
+        <td>
+          $(P)$(R)ExtraDimSizeX<br />
+          $(P)$(R)ExtraDimSizeX_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          extraDimSizeY</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Size of extra dimension Y</td>
+        <td>
+          HDF5_extraDimSizeY</td>
+        <td>
+          $(P)$(R)ExtraDimSizeY<br />
+          $(P)$(R)ExtraDimSizeY_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>Runtime Statistics</b></td>
+      </tr>
+      <tr>
+        <td>
+          totalRuntime</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Total runtime in seconds from first frame to file closed</td>
+        <td>
+          HDF5_totalRuntime</td>
+        <td>
+          $(P)$(R)Runtime</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          totalIoSpeed</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Overall IO write speed in megabit per second from first frame to file closed</td>
+        <td>
+          HDF5_totalIoSpeed</td>
+        <td>
+          $(P)$(R)IOSpeed</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>Compression Filters</b></td>
+      </tr>
+      <tr>
+        <td>
+          compressionType</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Select or switch off compression filter</td>
+        <td>
+          HDF5_compressionType</td>
+        <td>
+          $(P)$(R)Compression<br />
+          $(P)$(R)Compression_RBV</td>
+        <td>
+          mbbo<br />
+          mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          nbitsPrecision</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          N-bit compression filter: number of data bits per pixel</td>
+        <td>
+          HDF5_nbitsPrecision</td>
+        <td>
+          $(P)$(R)NumDataBits<br />
+          $(P)$(R)NumDataBits_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          nbitsOffset</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          N-bit compression filter: dataword bit-offset in pixel</td>
+        <td>
+          HDF5_nbitsOffset</td>
+        <td>
+          $(P)$(R)DataBitsOffset<br />
+          $(P)$(R)DataBitsOffset_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          szipNumPixels</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          szip compression filter: number of pixels in filter [1..32]</td>
+        <td>
+          HDF5_szipNumPixels</td>
+        <td>
+          $(P)$(R)SZipNumPixels<br />
+          $(P)$(R)SZipNumPixels_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          zCompressLevel</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          zlib compression filter: compression level [1..9]</td>
+        <td>
+          HDF5_zCompressLevel</td>
+        <td>
+          $(P)$(R)ZLevel<br />
+          $(P)$(R)ZLevel_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="text-align: center">
+    <h3>
+      NDFileHDF5.adl</h3>
+    <p>
+      <img alt="NDFileHDF5.png" src="NDFileHDF5.png" /></p>
+  </div>
+</body>
+</html>
