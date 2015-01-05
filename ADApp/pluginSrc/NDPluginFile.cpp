@@ -59,7 +59,7 @@ asynStatus NDPluginFile::openFileBase(NDFileOpenMode_t openMode, NDArray *pArray
     }
     setStringParam(NDFullFileName, fullFileName);
 
-    getStringParam(NDTempSuffix, sizeof(tempSuffix), tempSuffix);
+    getStringParam(NDFileTempSuffix, sizeof(tempSuffix), tempSuffix);
     if ( *tempSuffix != 0 && 
          (strlen(fullFileName) + strlen(tempSuffix)) < sizeof(fullFileName) ) {
         strcat( fullFileName, tempSuffix );
@@ -99,7 +99,7 @@ asynStatus NDPluginFile::closeFileBase()
     setStringParam(NDFileWriteMessage, "");
 
     getStringParam(NDFullFileName, sizeof(fullFileName), fullFileName);
-    getStringParam(NDTempSuffix, sizeof(tempSuffix), tempSuffix);
+    getStringParam(NDFileTempSuffix, sizeof(tempSuffix), tempSuffix);
 
      /* Call the closeFile method in the derived class */
     epicsMutexLock(this->fileMutexId);
@@ -874,10 +874,6 @@ NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCall
 
     this->ndArrayInfoInit = NULL;
     this->lazyOpen = false;
-    //setIntegerParam(NDFileLazyOpen, 1);
-
-    this->createParam("TEMP_SUFFIX", asynParamOctet, &NDTempSuffix);
-    setStringParam(NDTempSuffix, "");
 
     this->useAttrFilePrefix = false;
     this->fileMutexId = epicsMutexCreate();

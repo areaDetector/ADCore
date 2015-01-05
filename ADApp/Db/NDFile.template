@@ -362,14 +362,14 @@ record(stringout, "$(P)$(R)TempSuffix")
 {
     field(PINI, "YES")
     field(DTYP, "asynOctetWrite")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMP_SUFFIX")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_TEMP_SUFFIX")
     field(VAL,  "")
 }
 
 record(stringin, "$(P)$(R)TempSuffix_RBV")
 {
     field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TEMP_SUFFIX")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_TEMP_SUFFIX")
     field(VAL,  "")
     field(SCAN, "I/O Intr")
 }
