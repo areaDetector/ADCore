@@ -37,20 +37,25 @@ record(bi, "$(P)$(R)FilePathExists_RBV")
     field(SCAN, "I/O Intr")
 }
 
-record(longout, "$(P)$(R)CreateDirectory")
+record(bo, "$(P)$(R)CreateDirectory")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CREATE_DIR")
     field(VAL,  "0" )
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    info(autosaveFields, "VAL")
 }
 
-record(longin, "$(P)$(R)CreateDirectory_RBV")
+record(bi, "$(P)$(R)CreateDirectory_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CREATE_DIR")
     field(VAL,  "")
     field(SCAN, "I/O Intr")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
 }
 
 # Filename

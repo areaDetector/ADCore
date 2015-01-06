@@ -3,8 +3,8 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 566
-y 47
+x 615
+y 52
 w 417
 h 905
 font "arial-bold-r-12.0"
@@ -93,8 +93,8 @@ minor 1
 release 1
 x 5
 y 295
-w 122
-h 14
+w 118
+h 13
 font "arial-medium-r-12.0"
 fgColor index 14
 bgColor index 5
@@ -212,8 +212,8 @@ minor 1
 release 1
 x 5
 y 470
-w 135
-h 14
+w 134
+h 13
 font "arial-medium-r-12.0"
 fgColor index 14
 bgColor index 5
@@ -309,8 +309,8 @@ minor 1
 release 1
 x 5
 y 385
-w 122
-h 14
+w 118
+h 13
 font "arial-medium-r-12.0"
 fgColor index 14
 bgColor index 5
@@ -420,8 +420,8 @@ minor 1
 release 1
 x 5
 y 690
-w 109
-h 14
+w 105
+h 13
 font "arial-medium-r-12.0"
 fgColor index 14
 bgColor index 5
@@ -531,8 +531,8 @@ minor 1
 release 1
 x 5
 y 625
-w 112
-h 14
+w 108
+h 13
 font "arial-medium-r-12.0"
 fgColor index 14
 bgColor index 5
@@ -642,8 +642,8 @@ minor 1
 release 1
 x 5
 y 530
-w 117
-h 14
+w 112
+h 13
 font "arial-medium-r-12.0"
 fgColor index 14
 bgColor index 5
@@ -809,8 +809,8 @@ minor 1
 release 1
 x 5
 y 50
-w 145
-h 14
+w 143
+h 13
 font "arial-medium-r-12.0"
 fgColor index 14
 bgColor index 5
@@ -1012,8 +1012,8 @@ minor 1
 release 1
 x 5
 y 230
-w 122
-h 14
+w 118
+h 13
 font "arial-medium-r-12.0"
 fgColor index 14
 bgColor index 5
@@ -1202,8 +1202,8 @@ minor 1
 release 1
 x 5
 y 755
-w 132
-h 14
+w 126
+h 13
 font "arial-medium-r-12.0"
 fgColor index 14
 bgColor index 5
@@ -1345,24 +1345,6 @@ value {
 }
 endObjectProperties
 
-# (Textentry)
-object TextentryClass
-beginObjectProperties
-major 10
-minor 0
-release 0
-x 245
-y 835
-w 75
-h 20
-controlPv "$(P)$(R)CreateDirectory"
-fgColor index 25
-fgAlarm
-bgColor index 3
-fill
-font "arial-medium-r-12.0"
-endObjectProperties
-
 # (Textupdate)
 object TextupdateClass
 beginObjectProperties
@@ -1380,5 +1362,25 @@ bgColor index 10
 fill
 font "arial-medium-r-12.0"
 fontAlign "center"
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 245
+y 835
+w 75
+h 20
+fgColor index 25
+bgColor index 3
+inconsistentColor index 0
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(P)$(R)CreateDirectory"
+indicatorPv "$(P)$(R)CreateDirectory_RBV"
+font "arial-bold-r-12.0"
 endObjectProperties
 
