@@ -37,6 +37,22 @@ record(bi, "$(P)$(R)FilePathExists_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(longout, "$(P)$(R)CreateDirectory")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CREATE_DIR")
+    field(VAL,  "0" )
+}
+
+record(longin, "$(P)$(R)CreateDirectory_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CREATE_DIR")
+    field(VAL,  "")
+    field(SCAN, "I/O Intr")
+}
+
 # Filename
 record(waveform, "$(P)$(R)FileName")
 {
