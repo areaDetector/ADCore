@@ -962,6 +962,31 @@
           bi</td>
       </tr>
       <tr>
+        <td>
+          NDFileCreateDir</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          This parameter is used to automatically create directories if they don't exist. 
+          If it is zero (default), no directories are created. If it is negative, then the 
+          absolute value is the maximum of directories that will be created (i.e. -1 will 
+          create a maximum of one directory to complete the path, -2 will create a maximum 
+          of 2 directories). If it is positive, then at least that many directories in the 
+          path must exist (i.e. a value of 1 will create all directories below the root 
+          directory and 2 will not create a directory in the root directory).
+        </td>
+        <td>
+          CREATE_DIR</td>
+        <td>
+          $(P)$(R)CreateDirectory<br />
+          $(P)$(R)CreateDirectory_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
         <td align="center" colspan="7">
           <b>Array data</b></td>
       </tr>
