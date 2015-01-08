@@ -962,6 +962,29 @@
           bi</td>
       </tr>
       <tr>
+        <td>
+          NDFileTempSuffix</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          If this string is non-null, the file is opened with this suffix temporarily 
+          appended to the file name. When the file is closed it is then renamed to the 
+          correct file name without the suffix. This is useful for processing software 
+          watching for the file to appear since the file appears as an atomic operation 
+          when it is ready to be opened.
+        </td>
+        <td>
+          FILE_TEMP_SUFFIX</td>
+        <td>
+          $(P)$(R)TempSuffix<br />
+          $(P)$(R)TempSuffix_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
         <td align="center" colspan="7">
           <b>Array data</b></td>
       </tr>

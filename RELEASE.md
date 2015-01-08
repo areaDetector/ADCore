@@ -46,6 +46,13 @@ R2-2 (January XXX, 2015)
 * Remember the requested ROI size and offset.  If the requested values cannot be satisfied due
   to constraints such as binning or the input array size, then use the requested values when the
   constraints no longer apply.
+
+### NDPluginFile
+* Added the NDFileTempSuffix string parameter. When this string is not empty it will be
+  used as a temporary suffix on the output filename while the file is being written. When writing
+  is complete, the file is closed and then renamed to have the suffix removed. The rename operation 
+  is atomic from a filesystem view and can be used by monitoring applications like rsync or inotify
+  to kick off processing applications. 
   
 ### NDFileHDF5
 * Created separated NDFileHDF5.h so class can be exported to other applications.
