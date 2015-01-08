@@ -21,7 +21,7 @@
 #define REPORT_LEVEL 10
 
 #ifndef EPICS_LIBCOM_ONLY
-    epicsShareExtern int interruptAccept;
+  #include <dbAccess.h>
 #endif
 
 void statsCounterCallback(void *drvPvt, asynUser *pasynUser, epicsInt32 data)
