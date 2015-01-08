@@ -68,7 +68,8 @@ typedef struct NDDimension {
 /** Structure returned by NDArray::getInfo */
 typedef struct NDArrayInfo {
     size_t nElements;       /**< The total number of elements in the array */
-    int bytesPerElement;    /**< The number of bytes per element in the array */
+    int	   bitsPerElement;  /**< The number of bits   per element in the array */
+    int	   bytesPerElement; /**< The number of bytes per element in the array */
     size_t totalBytes;      /**< The total number of bytes required to hold the array;
                               *  this may be less than NDArray::dataSize. */
                             /**< The following are mostly useful for color images (RGB1, RGB2, RGB3) */
@@ -115,6 +116,7 @@ public:
     NDDataType_t  dataType;     /**< Data type for this array. */
     size_t        dataSize;     /**< Data size for this array; actual amount of memory allocated for *pData, may be more than
                                   * required to hold the array*/
+    int	       bitsPerElement;  /**< The number of bits   per element in the array */
     void          *pData;       /**< Pointer to the array data.
                                   * The data is assumed to be stored in the order of dims[0] changing fastest, and 
                                   * dims[ndims-1] changing slowest. */

@@ -152,7 +152,9 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
 
     /* Extract this ROI from the input array.  The convert() function allocates
      * a new array and it is reserved (reference count = 1) */
-    if (dataType == -1) dataType = (int)pArray->dataType;
+    if (dataType == -1) {
+		dataType	 = (int)pArray->dataType;
+	}
     /* We treat the case of RGB1 data specially, so that NX and NY are the X and Y dimensions of the
      * image, not the first 2 dimensions.  This makes it much easier to switch back and forth between
      * RGB1 and mono mode when using an ROI. */
@@ -213,6 +215,12 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         pOutput->pAttributeList->add("ColorMode", "Color mode", NDAttrInt32, &colorMode);
     }
     this->lock();
+    NDArrayInfo arrayInfoOut;
+	pOutput->getInfo(&arrayInfoOut);
+
+    /* Set the image size of the ROI image data */
+    setIntegerParam(NDBitsPerPixel,		arrayInfo.bitsPerElement);
+    setIntegerParam(NDBytesPerPixel,	arrayInfo.bytesPerElement);
 
     /* Set the image size of the ROI image data */
     setIntegerParam(NDArraySizeX, 0);

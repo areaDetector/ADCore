@@ -36,6 +36,8 @@ typedef enum
     NDFloat64   /**< 64-bit float */
 } NDDataType_t;
 
+extern int GetNDDataTypeBits( NDDataType_t );
+
 /** Enumeration of NDAttribute attribute data types */
 typedef enum
 {

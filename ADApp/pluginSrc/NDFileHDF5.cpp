@@ -98,7 +98,7 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
   NDArrayInfo_t info;
   pArray->getInfo(&info);
   this->frameSize = (8.0 * info.totalBytes)/(1024.0 * 1024.0);
-  this->bytesPerElement = info.bytesPerElement;
+  this->bytesPerPixel = info.bytesPerElement;
 
   // Construct an attribute list. We use a separate attribute list from the one in pArray
   // to avoid the need to copy the array.
