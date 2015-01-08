@@ -543,6 +543,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     createParam(NDFileDeleteDriverFileString, asynParamInt32,           &NDFileDeleteDriverFile);
     createParam(NDFileLazyOpenString,         asynParamInt32,           &NDFileLazyOpen);
     createParam(NDFileCreateDirString,        asynParamInt32,           &NDFileCreateDir);
+    createParam(NDFileTempSuffixString,       asynParamOctet,           &NDFileTempSuffix);
     createParam(NDAttributesFileString,       asynParamOctet,           &NDAttributesFile);
     createParam(NDArrayDataString,            asynParamGenericPointer,  &NDArrayData);
     createParam(NDArrayCallbacksString,       asynParamInt32,           &NDArrayCallbacks);
@@ -587,6 +588,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     setStringParam (NDFileTemplate, "%s%s_%3.3d.dat");
     setIntegerParam(NDFileNumCaptured, 0);
     setIntegerParam(NDFileCreateDir, 0);
+    setStringParam (NDFileTempSuffix, "");
 
     setIntegerParam(NDPoolMaxBuffers, this->pNDArrayPool->maxBuffers());
     setIntegerParam(NDPoolAllocBuffers, this->pNDArrayPool->numBuffers());

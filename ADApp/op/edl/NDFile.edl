@@ -3,8 +3,8 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 565
-y 284
+x 23
+y 272
 w 390
 h 280
 font "arial-bold-r-12.0"
@@ -60,11 +60,11 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 5
 y 5
 w 32
-h 14
+h 13
 font "arial-medium-r-12.0"
 fgColor index 14
 bgColor index 5
@@ -80,7 +80,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 20
 w 370
@@ -90,7 +90,7 @@ fgColor index 14
 bgColor index 3
 useDisplayBg
 value {
-  "File path, Name"
+  "File path, name, tmp. suffix"
 }
 endObjectProperties
 
@@ -119,9 +119,9 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 305
+x 295
 y 125
-w 75
+w 85
 h 20
 fgColor index 25
 bgColor index 3
@@ -155,7 +155,7 @@ endObjectProperties
 object activeXTextDspClass
 beginObjectProperties
 major 4
-minor 5
+minor 6
 release 0
 x 10
 y 35
@@ -177,7 +177,7 @@ endObjectProperties
 object activeXTextDspClass
 beginObjectProperties
 major 4
-minor 5
+minor 6
 release 0
 x 10
 y 55
@@ -203,12 +203,12 @@ endObjectProperties
 object activeXTextDspClass
 beginObjectProperties
 major 4
-minor 5
+minor 6
 release 0
 x 10
 y 80
-w 370
-h 18
+w 255
+h 20
 controlPv "$(P)$(R)FileName_RBV"
 font "helvetica-medium-r-10.0"
 fgColor index 16
@@ -225,11 +225,11 @@ endObjectProperties
 object activeXTextDspClass
 beginObjectProperties
 major 4
-minor 5
+minor 6
 release 0
 x 10
 y 100
-w 370
+w 255
 h 20
 controlPv "$(P)$(R)FileName"
 font "helvetica-medium-r-10.0"
@@ -252,7 +252,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 125
 w 70
@@ -271,8 +271,8 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
-x 210
+release 1
+x 195
 y 125
 w 95
 h 20
@@ -289,7 +289,7 @@ endObjectProperties
 object activeXTextDspClass
 beginObjectProperties
 major 4
-minor 5
+minor 6
 release 0
 x 10
 y 255
@@ -312,7 +312,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 150
 w 80
@@ -330,7 +330,7 @@ endObjectProperties
 object activeXTextDspClass
 beginObjectProperties
 major 4
-minor 5
+minor 6
 release 0
 x 85
 y 150
@@ -356,7 +356,7 @@ endObjectProperties
 object activeXTextDspClass
 beginObjectProperties
 major 4
-minor 5
+minor 6
 release 0
 x 190
 y 150
@@ -437,7 +437,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 240
 y 175
 w 60
@@ -476,7 +476,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 175
 w 80
@@ -533,7 +533,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 10
 y 205
 w 90
@@ -551,7 +551,7 @@ endObjectProperties
 object activeMessageButtonClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
 x 200
 y 205
@@ -593,7 +593,7 @@ endObjectProperties
 object activeMessageButtonClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
 x 250
 y 205
@@ -631,7 +631,7 @@ object activeXTextClass
 beginObjectProperties
 major 4
 minor 1
-release 0
+release 1
 x 300
 y 205
 w 40
@@ -667,7 +667,7 @@ endObjectProperties
 object activeMessageButtonClass
 beginObjectProperties
 major 4
-minor 0
+minor 1
 release 0
 x 335
 y 205
@@ -716,7 +716,7 @@ endObjectProperties
 object activeXTextDspClass
 beginObjectProperties
 major 4
-minor 5
+minor 6
 release 0
 x 10
 y 230
@@ -751,5 +751,53 @@ onColor index 20
 offColor index 24
 lineWidth 2
 numBits 1
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 6
+release 0
+x 270
+y 100
+w 110
+h 20
+controlPv "$(P)$(R)TempSuffix"
+font "helvetica-medium-r-10.0"
+fgColor index 25
+bgColor index 3
+editable
+motifWidget
+limitsFromDb
+nullColor index 0
+useKp
+file
+useHexPrefix
+newPos
+inputFocusUpdates
+objType "controls"
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 6
+release 0
+x 270
+y 80
+w 110
+h 20
+controlPv "$(P)$(R)TempSuffix_RBV"
+font "helvetica-medium-r-10.0"
+fgColor index 16
+bgColor index 10
+limitsFromDb
+nullColor index 0
+smartRefresh
+useHexPrefix
+newPos
+objType "controls"
 endObjectProperties
 

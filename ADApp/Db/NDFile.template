@@ -77,17 +77,11 @@ record(waveform, "$(P)$(R)FileName_RBV")
 record(longout, "$(P)$(R)FileNumber")
 {
     field(PINI, "YES")
-    field(OUT, "$(P)$(R)FileNumber_write PP")
-    field(VAL, "1")
-    info(autosaveFields, "VAL")
-}
-
-record(longout, "$(P)$(R)FileNumber_write")
-{
-    field(SDIS, "$(P)$(R)FileNumber_Sync.PACT")
-    field(DISV, "1")
     field(DTYP, "asynInt32")
-    field(OUT, "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NUMBER")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NUMBER")
+    field(VAL,  "1")
+    info(asyn:READBACK, "1")
+    info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)FileNumber_RBV")
@@ -95,14 +89,6 @@ record(longin, "$(P)$(R)FileNumber_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NUMBER")
     field(SCAN, "I/O Intr")
-    field(FLNK, "$(P)$(R)FileNumber_Sync")
-}
-
-record(longout, "$(P)$(R)FileNumber_Sync")
-{
-    field(DOL,  "$(P)$(R)FileNumber_RBV NPP")
-    field(OMSL, "closed_loop")
-    field(OUT,  "$(P)$(R)FileNumber PP")
 }
 
 # Autoincrement flag
@@ -375,3 +361,18 @@ record(bi, "$(P)$(R)LazyOpen_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(stringout, "$(P)$(R)TempSuffix")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynOctetWrite")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_TEMP_SUFFIX")
+    field(VAL,  "")
+}
+
+record(stringin, "$(P)$(R)TempSuffix_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_TEMP_SUFFIX")
+    field(VAL,  "")
+    field(SCAN, "I/O Intr")
+}
