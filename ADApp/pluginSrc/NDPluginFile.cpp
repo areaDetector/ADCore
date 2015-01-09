@@ -38,15 +38,20 @@ static const char *driverName="NDPluginFile";
  */
 #define MAX_PATH_PARTS 32
 
-#if defined(_WIN32)
-#include <direct.h>
-#define strtok_r(a,b,c) strtok(a,b)
-#define mkdir(a,b) _mkdir(a)
-#define delim "\\"
-#else
-#include <sys/stat.h>
-#include <sys/types.h>
-#define delim "/"
+#if defined(_WIN32)              // Windows
+  #include <direct.h>
+  #define strtok_r(a,b,c) strtok(a,b)
+  #define MKDIR(a,b) _mkdir(a)
+  #define delim "\\"
+#elif defined(vxWorks)           // VxWorks
+  #include <sys/stat.h>
+  #define MKDIR(a,b) mkdir(a)
+  #define delim "/"
+#else                            // Linux
+  #include <sys/stat.h>
+  #include <sys/types.h>
+  #define delim "/"
+  #define MKDIR(a,b) mkdir(a,b)
 #endif
 
 /** Function to create a directory path for a file.
@@ -114,7 +119,7 @@ asynStatus NDPluginFile::createDirectoryPath( char *createPath, int stem_size )
 
         if ( i >= stem_size )
         {
-            if(mkdir(nextDir, 0777) != 0 && errno != EEXIST)
+            if(MKDIR(nextDir, 0777) != 0 && errno != EEXIST)
             {
                 result = asynError;
             }
