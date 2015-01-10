@@ -36,8 +36,11 @@ else
   endif
   PROD_LIBS_WIN32       += tiff jpeg
 endif
-ifeq (win32-x86-debug, $(findstring win32-x86-debug, $(T_A)))
+
+ifeq ($(OS_CLASS), WIN32)
+  ifeq (debug, $(findstring debug, $(T_A)))
   USR_LDFLAGS_WIN32     += /NODEFAULTLIB:LIBCMT.lib
+  endif
 endif
 
 ifeq ($(STATIC_BUILD), NO)

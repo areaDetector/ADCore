@@ -60,7 +60,7 @@
   * Low clipping
   * High clipping
   * Frame averaging */
-class NDPluginProcess : public NDPluginDriver {
+class epicsShareClass NDPluginProcess : public NDPluginDriver {
 public:
     NDPluginProcess(const char *portName, int queueSize, int blockingCallbacks, 
                  const char *NDArrayPort, int NDArrayAddr,

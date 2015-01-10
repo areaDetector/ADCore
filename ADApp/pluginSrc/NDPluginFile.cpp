@@ -31,6 +31,105 @@
 static const char *driverName="NDPluginFile";
 
 
+
+/**
+ * Make sure all the directories in the create path exist.  Returns asnySuccess
+ * or asynFail in the hope that this is propagated back to GDA.
+ */
+#define MAX_PATH_PARTS 32
+
+#if defined(_WIN32)              // Windows
+  #include <direct.h>
+  #define strtok_r(a,b,c) strtok(a,b)
+  #define MKDIR(a,b) _mkdir(a)
+  #define delim "\\"
+#elif defined(vxWorks)           // VxWorks
+  #include <sys/stat.h>
+  #define MKDIR(a,b) mkdir(a)
+  #define delim "/"
+#else                            // Linux
+  #include <sys/stat.h>
+  #include <sys/types.h>
+  #define delim "/"
+  #define MKDIR(a,b) mkdir(a,b)
+#endif
+
+/** Function to create a directory path for a file.
+  \param[in] createPath  Path to create. The final part is the file name and is not created.
+  \param[in] stem_size   This determines how much file stem to assume exists before attempting
+                         to create directories:
+                         stem_size = 0 create no directories
+                         stem_size = 1 create all directories needed (i.e. only assume root directory exists).
+                         stem_size = 2  Assume 1 directory below the root directory exists
+                         stem_size = -1 Assume all but one direcory exists
+                         stem_size = -2 Assume all but two directories exist.
+*/
+asynStatus NDPluginFile::createDirectoryPath( char *createPath, int stem_size )
+{
+    asynStatus result = asynSuccess;
+    char * parts[MAX_PATH_PARTS];
+    int num_parts;
+    char directory[MAX_FILENAME_LEN];
+
+    // Initialise the directory to create
+    char nextDir[MAX_FILENAME_LEN];
+
+    // Extract the next name from the directory
+    char* saveptr;
+    int i=0;
+
+    // Check for trivial case.
+    if (stem_size == 0) return asynSuccess;
+
+    // Check for Windows disk designator
+    if ( createPath[1] == ':' )
+    {
+        nextDir[0]=createPath[0];
+        nextDir[1]=':';
+        i+=2;
+    }
+
+    // Skip over any more delimiters
+    while ( (createPath[i] == '/' || createPath[i] == '\\') && i < MAX_FILENAME_LEN)
+    {
+        nextDir[i] = createPath[i];
+        ++i;
+    }
+    nextDir[i] = 0;
+
+    // Now, tokenise the path - first making a copy because strtok is destructive
+    strcpy( directory, &createPath[i] );
+    num_parts = 0;
+    parts[num_parts] = strtok_r( directory, "\\/",&saveptr);
+    while ( parts[num_parts] != NULL ) {
+        parts[++num_parts] = strtok_r(NULL, "\\/",&saveptr);
+    }
+
+    // Handle the case if the stem size is negative
+    if (stem_size < 0)
+    {
+        stem_size = num_parts + stem_size;
+        if (stem_size < 1) stem_size = 1;
+    }
+
+    // Loop through parts creating dirctories
+    for ( i = 1; i < num_parts && result != asynError; i++ )
+    {
+        strcat(nextDir, parts[i-1]);
+
+        if ( i >= stem_size )
+        {
+            if(MKDIR(nextDir, 0777) != 0 && errno != EEXIST)
+            {
+                result = asynError;
+            }
+        }
+        strcat(nextDir, delim);
+   }
+
+    return result;
+}
+
 /** Base method for opening a file
   * Creates the file name with NDPluginBase::createFileName, then calls the pure virtual function openFile
   * in the derived class. */
@@ -39,6 +138,7 @@ asynStatus NDPluginFile::openFileBase(NDFileOpenMode_t openMode, NDArray *pArray
     /* Opens a file for reading or writing */
     asynStatus status = asynSuccess;
     char fullFileName[MAX_FILENAME_LEN];
+    char tempSuffix[MAX_FILENAME_LEN];
     char errorMessage[256];
     static const char* functionName = "openFileBase";
 
@@ -58,6 +158,17 @@ asynStatus NDPluginFile::openFileBase(NDFileOpenMode_t openMode, NDArray *pArray
     }
     setStringParam(NDFullFileName, fullFileName);
     
+    int createDirectory;
+    getIntegerParam( NDFileCreateDir, &createDirectory );
+    if (createDirectory)
+        status = createDirectoryPath( fullFileName, createDirectory );
+
+    getStringParam(NDFileTempSuffix, sizeof(tempSuffix), tempSuffix);
+    if ( *tempSuffix != 0 && 
+         (strlen(fullFileName) + strlen(tempSuffix)) < sizeof(fullFileName) ) {
+        strcat( fullFileName, tempSuffix );
+    }
+
     /* Call the openFile method in the derived class */
     epicsMutexLock(this->fileMutexId);
     this->registerInitFrameInfo(pArray);
@@ -82,11 +193,18 @@ asynStatus NDPluginFile::closeFileBase()
 {
     /* Closes a file */
     asynStatus status = asynSuccess;
+    char fullFileName[MAX_FILENAME_LEN];
+    char tempSuffix[MAX_FILENAME_LEN];
+    char tempFileName[MAX_FILENAME_LEN];
     char errorMessage[256];
     static const char* functionName = "closeFileBase";
 
     setIntegerParam(NDFileWriteStatus, NDFileWriteOK);
     setStringParam(NDFileWriteMessage, "");
+
+    getStringParam(NDFullFileName, sizeof(fullFileName), fullFileName);
+    getStringParam(NDFileTempSuffix, sizeof(tempSuffix), tempSuffix);
+
      /* Call the closeFile method in the derived class */
     epicsMutexLock(this->fileMutexId);
     status = this->closeFile();
@@ -99,6 +217,21 @@ asynStatus NDPluginFile::closeFileBase()
         setIntegerParam(NDFileWriteStatus, NDFileWriteError);
         setStringParam(NDFileWriteMessage, errorMessage);
     }
+
+    if ( *tempSuffix != 0 && 
+         (strlen(fullFileName) - strlen(tempSuffix)) < sizeof(fullFileName) ) {
+        strcpy( tempFileName, fullFileName );
+        strcat( tempFileName, tempSuffix );
+        if ( rename( tempFileName, fullFileName ) != 0 ) {
+            epicsSnprintf(errorMessage, sizeof(errorMessage)-1, 
+                          "Error renaming temporary file %s to %s", tempFileName, fullFileName );
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+                      "%s:%s %s\n", 
+                      driverName, functionName, errorMessage);
+            status=asynError;
+        }
+    }
+
     epicsMutexUnlock(this->fileMutexId);
     
     return(status);
@@ -620,8 +753,9 @@ bool NDPluginFile::isFrameValid(NDArray *pArray)
     // Check frame size in X and Y dimensions
     if ((initInfo->xSize != info.xSize) || (initInfo->ySize != info.ySize)) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                "NDPluginFile::isFrameValid: WARNING: Frame dimensions have changed X:%ld,%ld Y:%ld,%ld]\n",
-                (long)initInfo->xSize, (long)info.xSize, (long)initInfo->ySize, (long)info.ySize);
+                "NDPluginFile::isFrameValid: WARNING: Frame dimensions have changed X:%lu,%lu Y:%lu,%lu]\n",
+                (unsigned long)initInfo->xSize, (unsigned long)info.xSize,
+                (unsigned long)initInfo->ySize, (unsigned long)info.ySize);
         valid = false;
     }
 
@@ -845,7 +979,6 @@ NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCall
 
     this->ndArrayInfoInit = NULL;
     this->lazyOpen = false;
-    //setIntegerParam(NDFileLazyOpen, 1);
 
     this->useAttrFilePrefix = false;
     this->fileMutexId = epicsMutexCreate();

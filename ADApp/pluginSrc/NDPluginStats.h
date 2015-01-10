@@ -130,7 +130,7 @@ typedef enum {
   * X and Y centroid and sigma
   * Histogram
   */
-class NDPluginStats : public NDPluginDriver {
+class epicsShareClass NDPluginStats : public NDPluginDriver {
 public:
     NDPluginStats(const char *portName, int queueSize, int blockingCallbacks, 
                  const char *NDArrayPort, int NDArrayAddr,

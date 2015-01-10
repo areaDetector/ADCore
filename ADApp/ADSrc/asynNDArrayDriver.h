@@ -72,7 +72,8 @@ typedef enum {
 #define NDFileCaptureString     "CAPTURE"           /**< (asynInt32,    r/w) Start or stop capturing arrays */
 #define NDFileDeleteDriverFileString  "DELETE_DRIVER_FILE"  /**< (asynInt32,    r/w) Delete driver file */
 #define NDFileLazyOpenString    "FILE_LAZY_OPEN"    /**< (asynInt32,    r/w) Don't open file until first frame arrives in Stream mode */
-
+#define NDFileCreateDirString   "CREATE_DIR"        /**< (asynInt32,    r/w) If set then create the target directory before writing file */
+#define NDFileTempSuffixString  "FILE_TEMP_SUFFIX"  /**< (asynOctet,    r/w) Temporary filename suffix while writing data to file. The file will be renamed (suffix removed) upon closing the file. */
 
 #define NDAttributesFileString  "ND_ATTRIBUTES_FILE" /**< (asynOctet,    r/w) Attributes file name */
 
@@ -150,6 +151,8 @@ protected:
     int NDFileCapture;   
     int NDFileDeleteDriverFile;
     int NDFileLazyOpen;
+    int NDFileCreateDir;
+    int NDFileTempSuffix;
     int NDAttributesFile;
     int NDArrayData;
     int NDArrayCallbacks;

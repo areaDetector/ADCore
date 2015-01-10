@@ -37,6 +37,7 @@ record(stringout, "$(P)$(R)NDArrayPort")
     field(DTYP, "asynOctetWrite")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_PORT")
     field(VAL,  "$(NDARRAY_PORT)")
+    info(autosaveFields, "VAL")
 }
 
 record(stringin, "$(P)$(R)NDArrayPort_RBV")
@@ -52,6 +53,7 @@ record(longout, "$(P)$(R)NDArrayAddress")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_ADDR")
     field(VAL,  "$(NDARRAY_ADDR)")
+    info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)NDArrayAddress_RBV")
@@ -73,6 +75,7 @@ record(bo, "$(P)$(R)EnableCallbacks")
     field(ZNAM, "Disable")
     field(ONAM, "Enable")
     field(VAL,  "0")
+    info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)EnableCallbacks_RBV")
@@ -94,6 +97,7 @@ record(ao, "$(P)$(R)MinCallbackTime")
     field(EGU,  "s")
     field(PREC, "3")
     field(VAL,  "0.0")
+    info(autosaveFields, "VAL")
 }
 
 record(ai, "$(P)$(R)MinCallbackTime_RBV")
@@ -116,6 +120,7 @@ record(bo, "$(P)$(R)BlockingCallbacks")
     field(ZNAM, "No")
     field(ONAM, "Yes")
     field(VAL,  "0")
+    info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)BlockingCallbacks_RBV")
@@ -147,15 +152,18 @@ record(longin, "$(P)$(R)ArrayCounter_RBV")
     field(SCAN, "I/O Intr")
 }
 
-# This record needs work, because B should reflect the time since last processed
+# Updated rate calculation to use a smoothing factor w/ guard against negative values
 record(calc, "$(P)$(R)ArrayRate_RBV")
 {
-    field(INPA, "$(P)$(R)ArrayRate_RBV.B NPP NMS")  # Previous counter value
-    field(INPB, "$(P)$(R)ArrayCounter_RBV NPP NMS") # Current counter value
-    field(INPC, "1.0")                              # Delta time, needs work
-    field(CALC, "(B-A)/C")
-    field(PREC, "1")
-    field(SCAN, "1 second")
+    field(INPA, "$(P)$(R)ArrayRate_RBV.LB NPP NMS")   # Previous counter value
+    field(INPB, "$(P)$(R)ArrayCounter_RBV NPP NMS")   # Current counter value
+    field(INPC, "1.0")                                # Delta time in seconds
+    field(INPD, "$(P)$(R)ArrayRate_RBV.VAL NPP NMS")  # Previous rate
+    field(INPE, "$(RATE_SMOOTH=0.0)")                 # Smoothing factor
+    field(CALC, "(D*E)/C+MAX(0,B-A)*(1-E)/C")
+    field(PREC, "2" )
+    field(EGU,  "Hz" )
+    field(SCAN, "1 second" )
 }
 
 record(longout, "$(P)$(R)DroppedArrays")
@@ -404,6 +412,7 @@ record(waveform, "$(P)$(R)NDAttributesFile")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ND_ATTRIBUTES_FILE")
     field(FTVL, "CHAR")
     field(NELM, "256")
+    info(autosaveFields, "VAL")
 }
 
 

@@ -74,6 +74,8 @@
         <li><a href="NDPluginTransform.html">NDPluginTransform</a></li>
         <li><a href="NDPluginColorConvert.html">NDPluginColorConvert</a></li>
         <li><a href="NDPluginAttribute.html">NDPluginAttribute</a></li>
+	<li><a href="NDPluginCircularBuff.html">NDPluginCircularBuff</a></li>
+	<li>
       </ul>
     </li>
     <li><a href="#MEDM_screens">MEDM screens</a></li>
@@ -960,6 +962,54 @@
         <td>
           bo<br />
           bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDFileCreateDir</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          This parameter is used to automatically create directories if they don't exist. 
+          If it is zero (default), no directories are created. If it is negative, then the 
+          absolute value is the maximum of directories that will be created (i.e. -1 will 
+          create a maximum of one directory to complete the path, -2 will create a maximum 
+          of 2 directories). If it is positive, then at least that many directories in the 
+          path must exist (i.e. a value of 1 will create all directories below the root 
+          directory and 2 will not create a directory in the root directory).
+        </td>
+        <td>
+          CREATE_DIR</td>
+        <td>
+          $(P)$(R)CreateDirectory<br />
+          $(P)$(R)CreateDirectory_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDFileTempSuffix</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          If this string is non-null, the file is opened with this suffix temporarily 
+          appended to the file name. When the file is closed it is then renamed to the 
+          correct file name without the suffix. This is useful for processing software 
+          watching for the file to appear since the file appears as an atomic operation 
+          when it is ready to be opened.
+        </td>
+        <td>
+          FILE_TEMP_SUFFIX</td>
+        <td>
+          $(P)$(R)TempSuffix<br />
+          $(P)$(R)TempSuffix_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
       </tr>
       <tr>
         <td align="center" colspan="7">

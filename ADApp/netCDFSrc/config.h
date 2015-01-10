@@ -120,9 +120,6 @@
 #if !defined(vxWorks) && !defined(_WIN32)
 #define HAVE_INTTYPES_H 1
 #endif
-#if defined(vxWorks) && defined(_WRS_VXWORKS_MAJOR) && (_WRS_VXWORKS_MAJOR >= 6) && (_WRS_VXWORKS_MINOR >= 9)
-#define HAVE_INTTYPES_H 1
-#endif
 
 /* Define to 1 if you have the `curl' library (-lcurl). */
 #define HAVE_LIBCURL 1
