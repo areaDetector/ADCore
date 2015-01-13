@@ -43,11 +43,16 @@ ifeq ($(OS_CLASS), WIN32)
   endif
 endif
 
-ifeq ($(STATIC_BUILD), NO)
-  PROD_LIBS_WIN32       += hdf5dll szip zlib1 libxml2
+ifeq ($(HDF5_STATIC_BUILD), NO)
+  USR_CXXFLAGS_WIN32    += -DH5_BUILT_AS_DYNAMIC_LIB
+  USR_CFLAGS_WIN32      += -DH5_BUILT_AS_DYNAMIC_LIB
+  PROD_LIBS_WIN32       += hdf5 szip zlib
 else
-  PROD_LIBS_WIN32       += hdf5 libszip zlib libxml2
+  USR_CXXFLAGS_WIN32    += -DH5_BUILT_AS_STATIC_LIB
+  USR_CFLAGS_WIN32      += -DH5_BUILT_AS_STATIC_LIB
+  PROD_LIBS_WIN32       += libhdf5 libszip libzlib
 endif
+PROD_LIBS_WIN32         += libxml2
 
 PROD_SYS_LIBS_WIN32     += Gdi32 Oleaut32
 

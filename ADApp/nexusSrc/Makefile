@@ -10,12 +10,17 @@ INC += napiconfig.h
 INC += nxconfig.h
 
 USR_CFLAGS += -DHDF5 -D_FILE_OFFSET_BITS=64
-ifeq ($(STATIC_BUILD), NO)
-  USR_CFLAGS_WIN32 += -DH5_BUILT_AS_DYNAMIC_LIB
+ifeq ($(HDF5_STATIC_BUILD), NO)
+  USR_CXXFLAGS_WIN32    += -DH5_BUILT_AS_DYNAMIC_LIB
+  USR_CFLAGS_WIN32      += -DH5_BUILT_AS_DYNAMIC_LIB
+  LIB_LIBS_WIN32        += hdf5 szip zlib
+else
+  USR_CXXFLAGS_WIN32    += -DH5_BUILT_AS_STATIC_LIB
+  USR_CFLAGS_WIN32      += -DH5_BUILT_AS_STATIC_LIB
+  LIB_LIBS_WIN32        += libhdf5 libszip libzlib
 endif
 USR_INCLUDES += $(HDF5_INCLUDE)
 
-LIB_LIBS_WIN32        += hdf5dll szip zlib1
 LIB_SYS_LIBS_cygwin32 += libhdf5
 LIB_SYS_LIBS_cygwin32 += libz
 LIB_LIBS_Linux        += hdf5 sz

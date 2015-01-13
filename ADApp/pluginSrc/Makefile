@@ -14,10 +14,6 @@ endif
 # This flag is used to indicate that the TIFF library was built statically
 USR_CXXFLAGS_WIN32 += -DLIBTIFF_STATIC
 
-ifeq ($(STATIC_BUILD), NO)
-  USR_CXXFLAGS_WIN32 += -DH5_BUILT_AS_DYNAMIC_LIB
-endif
-
 DBD += NDPluginSupport.dbd
 DBD += NDFileJPEG.dbd
 DBD += NDFileMagick.dbd
