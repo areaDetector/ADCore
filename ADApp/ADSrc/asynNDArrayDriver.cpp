@@ -516,6 +516,8 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     createParam(NDNDimensionsString,          asynParamInt32,           &NDNDimensions);
     createParam(NDDimensionsString,           asynParamInt32,           &NDDimensions);
     createParam(NDDataTypeString,             asynParamInt32,           &NDDataType);
+    createParam(NDBitsPerPixelString,         asynParamInt32,           &NDBitsPerPixel);
+    createParam(NDBytesPerPixelString,        asynParamInt32,           &NDBytesPerPixel);
     createParam(NDColorModeString,            asynParamInt32,           &NDColorMode);
     createParam(NDUniqueIdString,             asynParamInt32,           &NDUniqueId);
     createParam(NDTimeStampString,            asynParamFloat64,         &NDTimeStamp);
@@ -566,6 +568,8 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     setIntegerParam(NDArraySize,    0);
     setIntegerParam(NDNDimensions,  0);
     setIntegerParam(NDDataType,     NDUInt8);
+    setIntegerParam(NDBitsPerPixel, 8);
+    setIntegerParam(NDBytesPerPixel,1);
     setIntegerParam(NDColorMode,    NDColorModeMono);
     setIntegerParam(NDUniqueId,     0);
     setDoubleParam (NDTimeStamp,    0.);
