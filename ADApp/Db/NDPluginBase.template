@@ -150,6 +150,8 @@ record(longin, "$(P)$(R)ArrayCounter_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_COUNTER")
     field(SCAN, "I/O Intr")
+    field(TSE,  "$(TSE=-2)")
+    info(autosaveFields, "DESC LOLO LOW HIGH HIHI LLSV LSV HSV HHSV TSE")
 }
 
 # Updated rate calculation to use a smoothing factor w/ guard against negative values
@@ -377,6 +379,8 @@ record(longin, "$(P)$(R)UniqueId_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))UNIQUE_ID")
     field(SCAN, "I/O Intr")
+    field(TSE,  "$(TSE=-2)")
+    info(autosaveFields, "DESC LOLO LOW HIGH HIHI LLSV LSV HSV HHSV EGU TSE")
 }
 
 record(ai, "$(P)$(R)TimeStamp_RBV")
@@ -385,6 +389,8 @@ record(ai, "$(P)$(R)TimeStamp_RBV")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TIME_STAMP")
     field(PREC, "3")
     field(SCAN, "I/O Intr")
+    field(TSE,  "$(TSE=-2)")
+    info(autosaveFields, "DESC LOLO LOW HIGH HIHI LLSV LSV HSV HHSV EGU PREC TSE")
 }
 
 record(longin, "$(P)$(R)EpicsTSSec_RBV")
@@ -392,6 +398,8 @@ record(longin, "$(P)$(R)EpicsTSSec_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))EPICS_TS_SEC")
     field(SCAN, "I/O Intr")
+    field(TSE,  "$(TSE=-2)")
+    info(autosaveFields, "DESC LOLO LOW HIGH HIHI LLSV LSV HSV HHSV EGU TSE")
 }
 
 record(longin, "$(P)$(R)EpicsTSNsec_RBV")
@@ -399,6 +407,8 @@ record(longin, "$(P)$(R)EpicsTSNsec_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))EPICS_TS_NSEC")
     field(SCAN, "I/O Intr")
+    field(TSE,  "$(TSE=-2)")
+    info(autosaveFields, "DESC LOLO LOW HIGH HIHI LLSV LSV HSV HHSV EGU TSE")
 }
 
 ###################################################################
