@@ -43,7 +43,7 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
     NDArrayInfo arrayInfo;
     int triggered = 0;
 
-    const char* functionName = "processCallbacks";
+    //const char* functionName = "processCallbacks";
 
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
