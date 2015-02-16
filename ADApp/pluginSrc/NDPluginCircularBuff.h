@@ -37,7 +37,6 @@ public:
     /* These methods override the virtual methods in the base class */
     void processCallbacks(NDArray *pArray);
     asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
-    asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
     
     //template <typename epicsType> asynStatus doProcessCircularBuffT(NDArray *pArray);
     //asynStatus doProcessCircularBuff(NDArray *pArray);
