@@ -47,6 +47,9 @@ R2-2 (January XXX, 2015)
   to constraints such as binning or the input array size, then use the requested values when the
   constraints no longer apply.
 
+### NDPluginOverlay
+* Bug fix: the vertical line in the cross overlay was not drawn correctly if WidthX was greater than 1.
+
 ### NDPluginFile
 * Created the NDFileCreateDir parameter. This allows file writers to create a controlled number
   of directories in the path of the output file.
@@ -55,10 +58,10 @@ R2-2 (January XXX, 2015)
   is complete, the file is closed and then renamed to have the suffix removed. The rename operation 
   is atomic from a filesystem view and can be used by monitoring applications like rsync or inotify
   to kick off processing applications. 
->>>>>>> master
   
 ### NDFileHDF5
 * Created separated NDFileHDF5.h so class can be exported to other applications.
+* Bug fix: The NDArrayPort could not be changed after iocInit.
 
 ### Plugins general
 * Added epicsShareClass to class definitions so classes are exported with Windows DLLs.

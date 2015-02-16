@@ -1590,6 +1590,11 @@ asynStatus NDFileHDF5::writeOctet(asynUser *pasynUser, const char *value, size_t
 
   if (function == NDFileHDF5_layoutFilename){
     status = (asynStatus)this->verifyLayoutXMLFile();
+  } 
+  
+  else if (function < FIRST_NDFILE_HDF5_PARAM) {
+      /* If this parameter belongs to a base class call its method */
+      status = NDPluginFile::writeOctet(pasynUser, value, nChars, nActual);
   }
 
   // Do callbacks so higher layers see any changes

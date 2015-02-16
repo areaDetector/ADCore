@@ -102,10 +102,10 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
                         setPixel(&pRow[ix*this->arrayInfo.xStride], pOverlay);
                     }
                 } else {
-                    xwidemin_line = (pOverlay->PositionX - xwide)*this->arrayInfo.xStride;
-                    xwidemax_line = (pOverlay->PositionX + xwide)*this->arrayInfo.xStride;
+                    xwidemin_line = pOverlay->PositionX - xwide;
+                    xwidemax_line = pOverlay->PositionX + xwide;
                     for (size_t line=xwidemin_line; line<=xwidemax_line; ++line) {
-                        setPixel<epicsType>(&pRow[line], pOverlay);
+                        setPixel(&pRow[line*this->arrayInfo.xStride], pOverlay);
                     }
                 }
             }
