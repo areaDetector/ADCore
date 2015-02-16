@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel-AD2.0/areaDetector/ADCore/ADApp/op/adl/ADPlugins.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/ADPlugins.adl"
 	version=030107
 }
 display {
@@ -345,11 +345,16 @@ text {
 		args="P=$(P), R=Over1:,O1=Over1:1:,O2=Over1:2:,O3=Over1:3:,O4=Over1:4:,O5=Over1:5:,O6=Over1:6:,O7=Over1:7:,O8=Over1:8:"
 	}
 	display[7] {
+		label="Circular buffer #1"
+		name="NDCircularBuff.adl"
+		args="P=$(P), R=CB1:"
+	}
+	display[8] {
 		label="Scan #1"
 		name="scan_more.adl"
 		args="P=$(P), S=scan1, N=1"
 	}
-	display[8] {
+	display[9] {
 		label="Acquire Sequence"
 		name="yySseq.adl"
 		args="P=$(P), S=AcquireSequence"
