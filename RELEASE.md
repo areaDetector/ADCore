@@ -37,6 +37,11 @@ R2-2 (January XXX, 2015)
   It is more efficient and convenient than the existing NDPluginROI and NDPluginStats when many 
   regions of interest with simple statistics are needed.  Written by Matthew Pearson.
   
+### NDPluginCircularBuff
+* New plugin that implements a circular buffer.  NDArrays are stored in the buffer until a trigger
+  is received.  When a trigger is received it outputs a configurable number of pre-trigger and post-trigger
+  NDArrays.  Written by Edmund Warrick.
+  
 ### NDPluginStats
 * Added capability to reset the statistics to 0 (or other user-defined values) with a new
   $(P)$(R)Reset sseq records in NDStats.template.  The reset behavior can be changed by 
@@ -62,6 +67,12 @@ R2-2 (January XXX, 2015)
 ### NDFileHDF5
 * Created separated NDFileHDF5.h so class can be exported to other applications.
 * Bug fix: The NDArrayPort could not be changed after iocInit.
+* Updated the HDF5 library for Windows in ADBinaries from 1.8.7 to 1.8.14.  The names of the libraries has changed,
+  so Makefiles in ADCore needed to be changed.  There is a new flag, HDF5_STATIC_BUILD which can be set to
+  NO or YES depending on which version of the HDF5 library should be used.  This symbol is now defined in
+  areaDetector/configure/EXAMPLE_CONFIG_SITE.local to be YES for static builds and NO for dynamic builds.
+  In principle one can use the dynamic version of the HDF5 library when doing a static build, and vice-versa.
+  In practice this has not been tested.
 
 ### Plugins general
 * Added epicsShareClass to class definitions so classes are exported with Windows DLLs.
@@ -90,6 +101,11 @@ R2-2 (January XXX, 2015)
     The default value is 0.0, which does no smoothing.  Range 0.0-1.0, larger values 
     result in more smoothing.
 
+### TODO befor R2-2 is released
+* Add new NDFile PVs to medm screens
+* Get Tim to convert medm screens converted to edm, etc.
+* Create medm screen for NDPluginCircularBuff
+* Add NDPluginCircularBuff to commonPlugins.cmd, commonPlugin_settings.req, medm plugins screen
 
 R2-1 (October 17, 2014)
 =======================
