@@ -59,35 +59,34 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
     getIntegerParam(NDPluginCircularBuffSoftTrigger, &softTrigger);
 
     // Are we running?
-    if (scopeControl){
+    if (scopeControl) {
 
       // Check for a soft trigger
       if (softTrigger){
         triggered = 1;
         setIntegerParam(NDPluginCircularBuffTriggered, triggered);
       } else {
-	  getIntegerParam(NDPluginCircularBuffTriggered, &triggered);
-	  if (!triggered) { 
-	      // Check for the trigger meta-data in the NDArray
-	      triggerAttribute = pArray->pAttributeList->find(NDPluginCircularBuffTriggeredAttribute);
-	      if (triggerAttribute != NULL){
-		  // Read the attribute to see if a trigger happened on this frame
-		  triggerAttribute->getValue(NDAttrInt32, (void *)&triggered);
-		  setIntegerParam(NDPluginCircularBuffTriggered, triggered);
-	      }
-	  }
+        getIntegerParam(NDPluginCircularBuffTriggered, &triggered);
+        if (!triggered) { 
+          // Check for the trigger meta-data in the NDArray
+          triggerAttribute = pArray->pAttributeList->find(NDPluginCircularBuffTriggeredAttribute);
+          if (triggerAttribute != NULL){
+          // Read the attribute to see if a trigger happened on this frame
+          triggerAttribute->getValue(NDAttrInt32, (void *)&triggered);
+          setIntegerParam(NDPluginCircularBuffTriggered, triggered);
+          }
+        }
       }
-//printf("Triggered: %d\n", triggered);
 
       // First copy the buffer into our buffer pool so we can release the resource on the driver
       pArrayCpy = this->pNDArrayPool->copy(pArray, NULL, 1);
-//printf("pArrayCpy: %d\n", pArrayCpy);
 
       if (pArrayCpy){
 
         // Set the Attribute to triggered
         if (softTrigger){
-	    pArrayCpy->pAttributeList->add(NDPluginCircularBuffTriggeredAttribute, "External trigger (1 = detected)", NDAttrInt32, (void *)&softTrigger);
+          pArrayCpy->pAttributeList->add(NDPluginCircularBuffTriggeredAttribute, 
+                                        "External trigger (1 = detected)", NDAttrInt32, (void *)&softTrigger);
         }
 
         // Have we detected a trigger event yet?
@@ -105,8 +104,6 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
             setStringParam(NDPluginCircularBuffStatus, "Buffer Wrapping");
           }
         } else {
-//printf("Num buffers: %d\n", this->pNDArrayPool->numBuffers());
-//printf("Free buffers: %d\n", this->pNDArrayPool->numFree());
           // Trigger detected
           // Start making frames available if trigger has occured
           setStringParam(NDPluginCircularBuffStatus, "Flushing");
@@ -120,14 +117,14 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
               this->unlock();
               doCallbacksGenericPointer(preBuffer_->readFromStart(), NDArrayData, 0);
               this->lock();
-              while (preBuffer_->hasNext()){
+              while (preBuffer_->hasNext()) {
                 this->unlock();
                 doCallbacksGenericPointer(preBuffer_->readNext(), NDArrayData, 0);
                 this->lock();
               }
             }
           }
-	  
+      
           currentPostCount++;
           setIntegerParam(NDPluginCircularBuffPostCount,  currentPostCount);
 
@@ -145,13 +142,12 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
           setStringParam(NDPluginCircularBuffStatus, "Acquisition Completed");
         }
       } else {
-//printf("pArray NULL, failed to copy the data\n");
+        //printf("pArray NULL, failed to copy the data\n");
       }
     } else {
       // Currently do nothing
     }
             
-
     callParamCallbacks();
 }
 
@@ -166,8 +162,6 @@ asynStatus NDPluginCircularBuff::writeInt32(asynUser *pasynUser, epicsInt32 valu
     asynStatus status = asynSuccess;
     int preCount;
     static const char *functionName = "writeInt32";
-
-
 
     if (function == NDPluginCircularBuffControl){
         if (value == 1){
@@ -248,37 +242,6 @@ asynStatus NDPluginCircularBuff::writeInt32(asynUser *pasynUser, epicsInt32 valu
     else        
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
               "%s:%s: function=%d, value=%d\n", 
-              driverName, functionName, function, value);
-    return status;
-}
-
-/** Called when asyn clients call pasynFloat64->write().
-  * This function performs actions for some parameters.
-  * For all parameters it sets the value in the parameter library and calls any registered callbacks..
-  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
-  * \param[in] value Value to write. */
-asynStatus  NDPluginCircularBuff::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
-{
-    int function = pasynUser->reason;
-    asynStatus status = asynSuccess;
-    static const char *functionName = "writeFloat64";
-
-    /* Set the parameter and readback in the parameter library.  This may be overwritten when we read back the
-     * status at the end, but that's OK */
-    status = setDoubleParam(function, value);
-
-    /* If this parameter belongs to a base class call its method */
-    if (function < FIRST_NDPLUGIN_CIRCULAR_BUFF_PARAM) status = NDPluginDriver::writeFloat64(pasynUser, value);
-
-    /* Do callbacks so higher layers see any changes */
-    callParamCallbacks();
-    if (status) 
-        asynPrint(pasynUser, ASYN_TRACE_ERROR, 
-              "%s:%s: error, status=%d function=%d, value=%f\n", 
-              driverName, functionName, status, function, value);
-    else        
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, value=%f\n", 
               driverName, functionName, function, value);
     return status;
 }
