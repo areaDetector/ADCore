@@ -7,17 +7,24 @@
 # % gui, $(PORT), edmtab, NDCircularBuff.edl, P=$(P),R=$(R)
 
 # # Control record, are we running
-record(longout, "$(P)$(R)Capture") {
+record(busy, "$(P)$(R)Capture") {
   field(DTYP, "asynInt32")
   field(OUT, "@asyn($(PORT) 0)CIRCULAR_BUFF_CONTROL")
-  field(VAL, "0")
+  field(ZNAM, "Done")
+  field(ZSV,  "NO_ALARM")
+  field(ONAM, "Capture")
+  field(OSV,  "MINOR")
 }
 
 # # Control readback record
-record(longin, "$(P)$(R)Capture_RBV") {
+record(bi, "$(P)$(R)Capture_RBV") {
   field(SCAN, "I/O Intr")
   field(DTYP, "asynInt32")
   field(INP, "@asyn($(PORT) 0)CIRCULAR_BUFF_CONTROL")
+  field(ZNAM, "Done")
+  field(ZSV,  "NO_ALARM")
+  field(ONAM, "Capturing")
+  field(OSV,  "MINOR")
 }
 
 # # Status message
@@ -74,16 +81,24 @@ record(longin, "$(P)$(R)PostTriggerQty_RBV") {
 }
 
 # # Force a soft trigger
-record(longout, "$(P)$(R)Trigger") {
+record(busy, "$(P)$(R)Trigger") {
   field(DTYP, "asynInt32")
   field(OUT, "@asyn($(PORT) 0)CIRCULAR_BUFF_SOFT_TRIGGER")
+  field(ZNAM, "Done")
+  field(ZSV,  "NO_ALARM")
+  field(ONAM, "Trigger")
+  field(OSV,  "MINOR")
   field(VAL, "1")
 }
 
 # # Has a trigger been received
-record(longin, "$(P)$(R)Trigger_RBV") {
+record(bi, "$(P)$(R)Trigger_RBV") {
   field(SCAN, "I/O Intr")
   field(DTYP, "asynInt32")
   field(INP, "@asyn($(PORT) 0)CIRCULAR_BUFF_TRIGGERED")
+  field(ZNAM, "Done")
+  field(ZSV,  "NO_ALARM")
+  field(ONAM, "Triggered")
+  field(OSV,  "MINOR")
 }
 
