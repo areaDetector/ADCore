@@ -5,12 +5,20 @@ errlogInit(20000)
 dbLoadDatabase("$(TOP)/dbd/simDetectorApp.dbd")
 simDetectorApp_registerRecordDeviceDriver(pdbbase) 
 
+# Prefix for all records
 epicsEnvSet("PREFIX", "13SIM1:")
+# The port name for the detector
 epicsEnvSet("PORT",   "SIM1")
+# The queue size for all plugins
 epicsEnvSet("QSIZE",  "20")
+# The maximim image width; used for row profiles in the NDPluginStats plugin
 epicsEnvSet("XSIZE",  "1024")
+# The maximim image height; used for column profiles in the NDPluginStats plugin
 epicsEnvSet("YSIZE",  "1024")
+# The maximum number of time seried points in the NDPluginStats plugin
 epicsEnvSet("NCHANS", "2048")
+# The maximum number of frames buffered in the NDPluginCircularBuff plugin
+epicsEnvSet("CBUFFS", "500")
 
 # The EPICS environment variable EPICS_CA_MAX_ARRAY_BYTES needs to be set to a value at least as large
 # as the largest image that the standard arrays plugin will send.
