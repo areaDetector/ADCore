@@ -28,14 +28,26 @@
     Overview
   </h2>
   <p>
-    NDPluginCircularBuff is a triggering plugin. It receives NDArrays from a plugin or driver and checks them for the "ExternalTrigger" attribute. Once this is detected it outputs the triggering NDArray, along with a configurable number of pre- and post-trigger NDArrays.</p>
+    NDPluginCircularBuff is a triggering plugin. It receives NDArrays from a plugin
+    or driver and checks them for the "ExternalTrigger" attribute. Once this is detected
+    it outputs the triggering NDArray, along with a configurable number of pre- and
+    post-trigger NDArrays.</p>
   <p>
-    Acquisition is started by setting the "NDPluginCircularBuffControl" parameter to non-zero (via the "Capture" record in the associated database). The plugin then copies all received NDArrays to its ring buffer, wrapping once the specified pre-count is reached.</p> 
+    Acquisition is started by setting the "NDPluginCircularBuffControl" parameter to
+    non-zero (via the "Capture" record in the associated database). The plugin then
+    copies all received NDArrays to its ring buffer, wrapping once the specified pre-count
+    is reached.</p>
   <p>
-    Triggering can be achieved either by setting the "ExternalTrigger" attribute to non-zero on an NDArray sent to the plugin, or else by using the soft trigger (controlled from the "Trigger" database record).
+    Triggering can be achieved either by setting the "ExternalTrigger" attribute to
+    non-zero on an NDArray sent to the plugin, or else by using the soft trigger (controlled
+    from the "Trigger" database record).
   </p>
   <p>
-    Once the trigger is detected, the plugin will immediately output all the NDArrays stored in the ring buffer in order from oldest to newest (by calling doCallbacksGenericPointer). After the trigger is set, new NDArrays will then be output as soon as they arrive, until the post-count is reached. The plugin will then stop buffering or outputting NDArrays until it is reset via NDPluginCircularBuffControl</p> 
+    Once the trigger is detected, the plugin will immediately output all the NDArrays
+    stored in the ring buffer in order from oldest to newest (by calling doCallbacksGenericPointer).
+    After the trigger is set, new NDArrays will then be output as soon as they arrive,
+    until the post-count is reached. The plugin will then stop buffering or outputting
+    NDArrays until it is reset via NDPluginCircularBuffControl</p>
   <p>
     NDPluginCircularBuff inherits from NDPluginDriver. The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_circular_buff.html">
       NDPluginCircularBuff class documentation</a> describes this class in detail.
@@ -85,137 +97,149 @@
           <br />
           $(P)$(R)Capture_RBV </td>
         <td>
+          busy
+          <br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginCircularBuffStatus</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/o</td>
+        <td>
+          Plugin status feedback string</td>
+        <td>
+          CIRCULAR_BUFF_STATUS</td>
+        <td>
+          $(P)$(R)StatusMessage</td>
+        <td>
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginCircularBuffPreTrigger</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Number of pre-trigger NDArrays to store</td>
+        <td>
+          CIRCULAR_BUFF_PRE_TRIGGER</td>
+        <td>
+          $(P)$(R)PRECOUNT
+          <br />
+          $(P)$(R)PRECOUNT_RBV</td>
+        <td>
           longout
           <br />
           longin</td>
       </tr>
       <tr>
-	<td>
-	  NDPluginCircularBuffStatus</td>
-	<td>
-	  asynOctet</td>
-	<td>
-	  r/o</td>
-	<td>
-	  Plugin status feedback string</td>
-	<td>
-	  CIRCULAR_BUFF_STATUS</td>
-	<td>
-	  $(P)$(R)StatusMessage</td>
-	<td>
-	  stringin</td>
+        <td>
+          NDPluginCircularBuffPostTrigger</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Number of post-trigger NDArrays to output</td>
+        <td>
+          CIRCULAR_BUFF_POST_TRIGGER</td>
+        <td>
+          $(P)$(R)POSTCOUNT
+          <br />
+          $(P)$(R)POSTCOUNT_RBV</td>
+        <td>
+          longout
+          <br />
+          longin</td>
       </tr>
       <tr>
-	<td>
-	  NDPluginCircularBuffPreTrigger</td>
-	<td>
-	  asynInt32</td>
-	<td>
-	  r/w</td>
-	<td>
-	  Number of pre-trigger NDArrays to store</td>
-	<td>
-	  CIRCULAR_BUFF_PRE_TRIGGER</td>
-	<td>
-	  $(P)$(R)PRECOUNT
-	  <br />
-	  $(P)$(R)PRECOUNT_RBV</td>
-	<td>
-	  longout
-	  <br />
-	  longin</td>
+        <td>
+          NDPluginCircularBuffCurrentImage</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Number of NDArrays currently stored in ring buffer</td>
+        <td>
+          CIRCULAR_BUFF_CURRENT_IMAGE</td>
+        <td>
+          $(P)$(R)CurrentQty_RBV</td>
+        <td>
+          longin</td>
       </tr>
       <tr>
-	<td>
-	  NDPluginCircularBuffPostTrigger</td>
-	<td>
-	  asynInt32</td>
-	<td>
-	  r/w</td>
-	<td>
-	  Number of post-trigger NDArrays to output</td>
-	<td>
-	  CIRCULAR_BUFF_POST_TRIGGER</td>
-	<td>
-	  $(P)$(R)POSTCOUNT
-	  <br />
-	  $(P)$(R)POSTCOUNT_RBV</td>
-	<td>
-	  longout
-	  <br />
-	  longin</td>
+        <td>
+          NDPluginCircularBuffPostCount</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Number of post-trigger NDArrays emitted so far</td>
+        <td>
+          CIRCULAR_BUFF_POST_COUNT</td>
+        <td>
+          $(P)$(R)PostTriggerQty_RBV</td>
+        <td>
+          longin</td>
       </tr>
       <tr>
-	<td>
-	  NDPluginCircularBuffCurrentImage</td>
-	<td>
-	  asynInt32</td>
-	<td>
-	  r/o</td>
-	<td>
-	  Number of NDArrays currently stored in ring buffer</td>
-	<td>
-	  CIRCULAR_BUFF_CURRENT_IMAGE</td>
-	<td>
-	  $(P)$(R)CurrentQty_RBV</td>
-	<td>
-	  longin</td>
+        <td>
+          NDPluginCircularBuffSoftTrigger</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Set to non-zero to force a trigger on next NDArray</td>
+        <td>
+          CIRCULAR_BUFF_SOFT_TRIGGER</td>
+        <td>
+          $(P)$(R)Trigger</td>
+        <td>
+          busy</td>
       </tr>
       <tr>
-	<td>
-	  NDPluginCircularBuffPostCount</td>
-	<td>
-	  asynInt32</td>
-	<td>
-	  r/o</td>
-	<td>
-	  Number of post-trigger NDArrays emitted so far</td>
-	<td>
-	  CIRCULAR_BUFF_POST_COUNT</td>
-	<td>
-	  $(P)$(R)PostTriggerQty_RBV</td>
-	<td>
-	  longin</td>
-      </tr>
-      <tr>
-	<td>
-	  NDPluginCircularBuffSoftTrigger</td>
-	<td>
-	  asynInt32</td>
-	<td>
-	  r/w</td>
-	<td>
-	  Set to non-zero to force a trigger on next NDArray</td>
-	<td>
-	  CIRCULAR_BUFF_SOFT_TRIGGER</td>
-	<td>
-	  $(P)$(R)Trigger</td>
-	<td>
-	  longout</td>
-      </tr>
-      <tr>
-	<td>
-	  NDPluginCircularBuffTriggered</td>
-	<td>
-	  asynInt32</td>
-	<td>
-	  r/o</td>
-	<td>
-	  Current trigger status</td>
-	<td>
-	  CIRCULAR_BUFF_TRIGGERED</td>
-	<td>
-	  $(P)$(R)Trigger_RBV</td>
-v	<td>
-	  longin</td>
+        <td>
+          NDPluginCircularBuffTriggered</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Current trigger status</td>
+        <td>
+          CIRCULAR_BUFF_TRIGGERED</td>
+        <td>
+          $(P)$(R)Trigger_RBV</td>
+        <td>
+          bi</td>
       </tr>
     </tbody>
   </table>
+  <h2 id="Screens">
+    Screen shots</h2>
+  <p>
+    The following is the MEDM screen that provides access to the parameters in NDPluginDriver.h
+    and NDPluginCircularBuff.h through records in NDPluginBase.template and NDCircularBuff.template.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDCircularBuff.adl</h3>
+    <p>
+      <img alt="NDCircularBuff.png" src="NDCircularBuff.png" /></p>
+  </div>
   <h2 id="Configuration">
     Configuration</h2>
   <p>
-    The NDPluginCircularBuff plugin is created with the NDCircularBuffConfigure command, either
-    from C/C++ or from the EPICS IOC shell.</p>
+    The NDPluginCircularBuff plugin is created with the NDCircularBuffConfigure command,
+    either from C/C++ or from the EPICS IOC shell.</p>
   <pre>
 NDCircularBuffConfigure(const char *portName, int queueSize, int blockingCallbacks,
                         const char *NDArrayPort, int NDArrayAddr,
@@ -229,6 +253,9 @@ NDCircularBuffConfigure(const char *portName, int queueSize, int blockingCallbac
       class</a>.
   </p>
   <p>
-    In particular, note that maxBuffers constrains the size of the ring buffer - the plugin will discard any changes to the pre- or post count if this would result in (pre-count + post-count) exceeding maxBuffers.
+    In particular, note that maxBuffers constrains the size of the ring buffer - the
+    plugin will discard any changes to the pre- or post count if this would result in
+    (pre-count + post-count) exceeding maxBuffers.
+  </p>
 </body>
 </html>
