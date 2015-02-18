@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/ADPlugins.adl"
+	name="/home/epics/devel/areaDetector-2-1/ADCore/ADApp/op/adl/ADPlugins.adl"
 	version=030107
 }
 display {
@@ -350,11 +350,16 @@ text {
 		args="P=$(P), R=CB1:"
 	}
 	display[8] {
+		label="ROI Statistics #1"
+		name="NDROIStat.adl"
+		args="P=$(P), R=ROIStat1:"
+	}
+	display[9] {
 		label="Scan #1"
 		name="scan_more.adl"
 		args="P=$(P), S=scan1, N=1"
 	}
-	display[9] {
+	display[10] {
 		label="Acquire Sequence"
 		name="yySseq.adl"
 		args="P=$(P), S=AcquireSequence"
