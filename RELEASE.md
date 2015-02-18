@@ -104,8 +104,6 @@ R2-2 (January XXX, 2015)
 ### TODO befor R2-2 is released
 * Add new NDFile PVs to medm screens
 * Get Tim to convert medm screens converted to edm, etc.
-* Create medm screen for NDPluginCircularBuff
-* Add NDPluginCircularBuff to commonPlugins.cmd, commonPlugin_settings.req, medm plugins screen
 
 R2-1 (October 17, 2014)
 =======================
