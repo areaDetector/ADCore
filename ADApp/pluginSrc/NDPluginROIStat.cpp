@@ -39,10 +39,17 @@ asynStatus NDPluginROIStat::doComputeStatisticsT(NDArray *pArray, NDROI *pROI)
 {
   epicsType *pData = (epicsType *)pArray->pData;
   double value = 0;
-  size_t sizex = 0;
-  size_t sizey = 0;
+  double bgd=0;
+  size_t sizeX = pROI->size[0];
+  size_t sizeY = pROI->size[1];
+  size_t offsetX = pROI->offset[0];
+  size_t offsetY = pROI->offset[1];
   size_t x = 0;
   size_t y = 0;
+  size_t nElements = 0;
+  size_t nBgd = 0;
+  size_t bgdWidthX = MIN(pROI->bgdWidth, sizeX);
+  size_t bgdWidthY = MIN(pROI->bgdWidth, sizeY);
   bool initial = true;
   size_t yOffset = 0;
 
@@ -50,42 +57,86 @@ asynStatus NDPluginROIStat::doComputeStatisticsT(NDArray *pArray, NDROI *pROI)
   pROI->max = 0;
   pROI->total = 0;
   pROI->mean = 0;
+  pROI->net = 0;
 
   if (pArray->ndims == 1) {
-    pROI->nElements = pROI->dims[0].size;
-    for (x=pROI->dims[0].offset; x<(pROI->dims[0].offset+pROI->nElements); ++x) {
+    nElements = sizeX;
+    for (x=offsetX; x<offsetX+sizeX; ++x) {
       value = (double)pData[x];
       if (initial) {
         pROI->min = value;
         pROI->max = value;
+        initial = false;
       }  
       if (value < pROI->min) pROI->min = value;
       if (value > pROI->max) pROI->max = value;
       pROI->total += value;
-      initial = false;
     }
+    if (pROI->bgdWidth > 0) {
+      for (x=offsetX; x<offsetX+bgdWidthX; ++x) {
+        nBgd++;
+        bgd += (double)pData[x];
+      }
+      for (x=offsetX+sizeX-bgdWidthX; x<offsetX+sizeX; ++x) {
+        nBgd++;
+        bgd += (double)pData[x];
+      }
+      bgd = bgd/nBgd * nElements;
+      pROI->net = pROI->total - bgd;
+    }
+    
   } else if (pArray->ndims == 2) {
-    sizex = pROI->dims[0].size;
-    sizey = pROI->dims[1].size;
-    pROI->nElements = sizex * sizey;
-    for (y=pROI->dims[1].offset; y<(pROI->dims[1].offset+sizey); ++y) {
-      yOffset = y*pROI->arraySizeX;
-      for (x=pROI->dims[0].offset; x<(pROI->dims[0].offset+sizex); ++x) {
+    nElements = sizeX * sizeY;
+    for (y=offsetY; y<offsetY+sizeY; ++y) {
+      yOffset = y*pROI->arraySize[0];
+      for (x=offsetX; x<offsetX+sizeX; ++x) {
         value = (double)pData[x+yOffset];
         if (initial) {
           pROI->min = value;
           pROI->max = value;
+          initial = false;
         } 
         if (value < pROI->min) pROI->min = value;
         if (value > pROI->max) pROI->max = value;
         pROI->total += value;
-        initial = false;
       }
+    }
+    if (pROI->bgdWidth > 0) {
+      // Compute total counts in the bgdWidthY rows at the top
+      for (y=offsetY; y<offsetY+bgdWidthY; ++y) {
+        yOffset = y*pROI->arraySize[0];
+        for (x=offsetX; x<offsetX+sizeX; ++x) {
+          nBgd++;
+          bgd += (double)pData[x+yOffset];
+        }
+      }
+      // Compute total counts in the bgdWidthY rows at the bottom
+      for (y=offsetY+sizeY-bgdWidthY; y<offsetY+sizeY; ++y) {
+        yOffset = y*pROI->arraySize[0];
+        for (x=offsetX; x<offsetX+sizeX; ++x) {
+          nBgd++;
+          bgd += (double)pData[x+yOffset];
+        }
+      }
+      // Compute total counts in the bgdWidthX columns left and right
+      for (y=offsetY+bgdWidthY; y<offsetY+sizeY-bgdWidthY; ++y) {
+        yOffset = y*pROI->arraySize[0];
+        for (x=offsetX; x<offsetX+bgdWidthX; ++x) {
+          nBgd++;
+          bgd += (double)pData[x+yOffset];
+        }
+        for (x=offsetX+sizeX-bgdWidthX; x<offsetX+sizeX; ++x) {
+          nBgd++;
+          bgd += (double)pData[x+yOffset];
+        }
+      }
+      bgd = bgd/nBgd * nElements;
+      pROI->net = pROI->total - bgd;
     }
   }
 
-  if (pROI->nElements > 0) {
-    pROI->mean = pROI->total / pROI->nElements;
+  if (nElements > 0) {
+    pROI->mean = pROI->total / nElements;
   }
 
   return asynSuccess;
@@ -152,24 +203,22 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
   int itemp = 0;
   int dim = 0;
   asynStatus status = asynSuccess;
-  NDDimension_t *pDim;
-  int userDims[ND_ARRAY_MAX_DIMS];
-  NDROI *pROI = NULL;
-  int colorMode = NDColorModeMono;
-  NDAttribute *pAttribute;
+  NDROI *pROI;
   const char* functionName = "NDPluginROIStat::processCallbacks";
 
   /* Call the base class method */
   NDPluginDriver::processCallbacks(pArray);
 
-  /* We do some special treatment based on colorMode */
-  pAttribute = pArray->pAttributeList->find("ColorMode");
-  if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
+  // This plugin only works with 1-D or 2-D arrays
+  if ((pArray->ndims < 1) || (pArray->ndims > 2)) {
+      asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+        "%s: error, number of array dimensions must be 1 or 2\n",
+        functionName);
+  }
 
   //Set NDArraySize params to the input pArray, because this plugin doesn't change them
   if (pArray->ndims > 0) setIntegerParam(NDArraySizeX, (int)pArray->dims[0].size);
   if (pArray->ndims > 1) setIntegerParam(NDArraySizeY, (int)pArray->dims[1].size);
-  if (pArray->ndims > 2) setIntegerParam(NDArraySizeZ, (int)pArray->dims[2].size);
 
   /* Loop over the ROIs in this driver */
   for (int roi=0; roi<this->maxROIs; ++roi) {
@@ -180,68 +229,33 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
       continue;
     }
 
-    if (pROI == NULL) {
-      asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "Error. pROI==NULL. %s\n", functionName);
-      return;
-    }
-
     /* Need to fetch all of these parameters while we still have the mutex */
-    getIntegerParam(roi, NDPluginROIStatDim0Min,      &itemp); pROI->dims[0].offset = itemp;
-    getIntegerParam(roi, NDPluginROIStatDim1Min,      &itemp); pROI->dims[1].offset = itemp;
-    getIntegerParam(roi, NDPluginROIStatDim2Min,      &itemp); pROI->dims[2].offset = itemp;
-    getIntegerParam(roi, NDPluginROIStatDim0Size,     &itemp); pROI->dims[0].size = itemp;
-    getIntegerParam(roi, NDPluginROIStatDim1Size,     &itemp); pROI->dims[1].size = itemp;
-    getIntegerParam(roi, NDPluginROIStatDim2Size,     &itemp); pROI->dims[2].size = itemp;
+    getIntegerParam(roi, NDPluginROIStatDim0Min,      &itemp); pROI->offset[0] = itemp;
+    getIntegerParam(roi, NDPluginROIStatDim1Min,      &itemp); pROI->offset[1] = itemp;
+    getIntegerParam(roi, NDPluginROIStatDim0Size,     &itemp); pROI->size[0] = itemp;
+    getIntegerParam(roi, NDPluginROIStatDim1Size,     &itemp); pROI->size[1] = itemp;
+    getIntegerParam(roi, NDPluginROIStatBgdWidth,     &itemp); pROI->bgdWidth = itemp;
     
-    /* Make sure dimensions are valid, fix them if they are not */
-    /* We treat the case of RGB1 data specially, so that NX and NY are the X and Y dimensions of the
-     * image, not the first 2 dimensions.  This makes it much easier to switch back and forth between
-     * RGB1 and mono mode when using an ROI. */
-    if (colorMode == NDColorModeRGB1) {
-      userDims[0] = 1;
-      userDims[1] = 2;
-      userDims[2] = 0;
-    }
-    else if (colorMode == NDColorModeRGB2) {
-      userDims[0] = 0;
-      userDims[1] = 2;
-      userDims[2] = 1;
-    }
-    else {
-      for (dim=0; dim<ND_ARRAY_MAX_DIMS; dim++) {
-        userDims[dim] = dim;
-      }
-    }
     for (dim=0; dim<pArray->ndims; dim++) {
-      pDim = &pROI->dims[dim];
-      pDim->offset  = MAX(pDim->offset, 0);
-      pDim->offset  = MIN(pDim->offset, pArray->dims[userDims[dim]].size-1);
-      pDim->size    = MAX(pDim->size, 1);
-      pDim->size    = MIN(pDim->size, pArray->dims[userDims[dim]].size - pDim->offset);
-      pDim->binning = 1;
+      pROI->offset[dim]  = MAX(pROI->offset[dim], 0);
+      pROI->offset[dim]  = MIN(pROI->offset[dim], pArray->dims[dim].size-1);
+      pROI->size[dim]    = MAX(pROI->size[dim], 1);
+      pROI->size[dim]    = MIN(pROI->size[dim], pArray->dims[dim].size - pROI->offset[dim]);
+      pROI->arraySize[dim] = (int)pArray->dims[dim].size;
     }
     
     /* Update the parameters that may have changed */
     setIntegerParam(roi, NDPluginROIStatDim0MaxSize, 0);
     setIntegerParam(roi, NDPluginROIStatDim1MaxSize, 0);
-    setIntegerParam(roi, NDPluginROIStatDim2MaxSize, 0);
     if (pArray->ndims > 0) {
-      pDim = &pROI->dims[0];
-      setIntegerParam(roi, NDPluginROIStatDim0MaxSize, (int)pArray->dims[userDims[0]].size);
-      setIntegerParam(roi, NDPluginROIStatDim0Min,  (int)pDim->offset);
-      setIntegerParam(roi, NDPluginROIStatDim0Size, (int)pDim->size);
+      setIntegerParam(roi, NDPluginROIStatDim0MaxSize, (int)pArray->dims[0].size);
+      setIntegerParam(roi, NDPluginROIStatDim0Min,  (int)pROI->offset[0]);
+      setIntegerParam(roi, NDPluginROIStatDim0Size, (int)pROI->size[0]);
     }
     if (pArray->ndims > 1) {
-      pDim = &pROI->dims[1];
-      setIntegerParam(roi, NDPluginROIStatDim1MaxSize, (int)pArray->dims[userDims[1]].size);
-      setIntegerParam(roi, NDPluginROIStatDim1Min,  (int)pDim->offset);
-      setIntegerParam(roi, NDPluginROIStatDim1Size, (int)pDim->size);
-    }
-    if (pArray->ndims > 2) {
-      pDim = &pROI->dims[2];
-      setIntegerParam(roi, NDPluginROIStatDim2MaxSize, (int)pArray->dims[userDims[2]].size);
-      setIntegerParam(roi, NDPluginROIStatDim2Min,  (int)pDim->offset);
-      setIntegerParam(roi, NDPluginROIStatDim2Size, (int)pDim->size);
+      setIntegerParam(roi, NDPluginROIStatDim1MaxSize, (int)pArray->dims[1].size);
+      setIntegerParam(roi, NDPluginROIStatDim1Min,  (int)pROI->offset[1]);
+      setIntegerParam(roi, NDPluginROIStatDim1Size, (int)pROI->size[1]);
     }
         
     /* This function is called with the lock taken, and it must be set when we exit.
@@ -249,24 +263,6 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
      * pPvt that other threads can access. */
     this->unlock();
     
-    /* We treat the case of RGB1 data specially, so that NX and NY are the X and Y dimensions of the
-     * image, not the first 2 dimensions.  This makes it much easier to switch back and forth between
-     * RGB1 and mono mode when using an ROI. */
-    NDDimension_t tempDim;
-    if (colorMode == NDColorModeRGB1) {
-      tempDim = pROI->dims[0];
-      pROI->dims[0] = pROI->dims[2];
-      pROI->dims[2] = pROI->dims[1];
-      pROI->dims[1] = tempDim;
-    }
-    else if (colorMode == NDColorModeRGB2) {
-      tempDim = pROI->dims[1];
-      pROI->dims[1] = pROI->dims[2];
-      pROI->dims[2] = tempDim;
-    }
-    
-    pROI->arraySizeX = (int)pArray->dims[userDims[0]].size;
-    pROI->arraySizeY = (int)pArray->dims[userDims[1]].size;
     status = doComputeStatistics(pArray, pROI);
     if (status != asynSuccess) {
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
@@ -274,36 +270,36 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
         functionName, status);
     }
 
+    /* We must enter the loop and exit with the mutex locked */
     this->lock();
     setDoubleParam(roi, NDPluginROIStatMinValue,    pROI->min);
     setDoubleParam(roi, NDPluginROIStatMaxValue,    pROI->max);
     setDoubleParam(roi, NDPluginROIStatMeanValue,   pROI->mean);
     setDoubleParam(roi, NDPluginROIStatTotal,       pROI->total);
+    setDoubleParam(roi, NDPluginROIStatNet,         pROI->net);
     asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
-          "%s ROI=%d, min=%f, max=%f, mean=%f, total=%f\n",
-          functionName, roi, pROI->min, pROI->max, pROI->mean, pROI->total);
-    
+          "%s ROI=%d, min=%f, max=%f, mean=%f, total=%f, net=%f\n",
+          functionName, roi, pROI->min, pROI->max, pROI->mean, pROI->total, pROI->net);
 
-    int arrayCallbacks = 0;
-    getIntegerParam(NDPluginROIStatNDArrayCallbacks, &arrayCallbacks);
-    if (arrayCallbacks == 1) {
-      NDArray *pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 1);
-      if (pArrayOut != NULL) {
-        this->getAttributes(pArrayOut->pAttributeList);
-        this->unlock();
-        doCallbacksGenericPointer(pArrayOut, NDArrayData, 0);
-        this->lock();
-        pArrayOut->release();
-      }
-      else {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-          "%s: Couldn't allocate output array. Callbacks failed.\n", 
-          functionName);
-      }
-    }
-    
-    /* We must enter the loop and exit with the mutex locked */
     callParamCallbacks(roi);
+  }
+
+  int arrayCallbacks = 0;
+  getIntegerParam(NDPluginROIStatNDArrayCallbacks, &arrayCallbacks);
+  if (arrayCallbacks == 1) {
+    NDArray *pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 1);
+    if (pArrayOut != NULL) {
+      this->getAttributes(pArrayOut->pAttributeList);
+      this->unlock();
+      doCallbacksGenericPointer(pArrayOut, NDArrayData, 0);
+      this->lock();
+      pArrayOut->release();
+    }
+    else {
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+        "%s: Couldn't allocate output array. Callbacks failed.\n", 
+        functionName);
+    }
   }
   callParamCallbacks();
 }
@@ -421,7 +417,7 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
              asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
              ASYN_MULTIDEVICE, 1, priority, stackSize)
 {
-  const char *functionName = "NDPluginROIStat";
+  const char *functionName = "NDPluginROIStat::NDPluginROIStat";
 
   if (maxROIs < 1) {
     maxROIs = 1;
@@ -437,6 +433,7 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
   createParam(NDPluginROIStatResetString,             asynParamInt32, &NDPluginROIStatReset);
   createParam(NDPluginROIStatResetAllString,          asynParamInt32, &NDPluginROIStatResetAll);
   createParam(NDPluginROIStatNDArrayCallbacksString,  asynParamInt32, &NDPluginROIStatNDArrayCallbacks);
+  createParam(NDPluginROIStatBgdWidthString,          asynParamInt32, &NDPluginROIStatBgdWidth);
   
   /* ROI definition */
   createParam(NDPluginROIStatDim0MinString,           asynParamInt32, &NDPluginROIStatDim0Min);
@@ -454,6 +451,7 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
   createParam(NDPluginROIStatMaxValueString,          asynParamFloat64, &NDPluginROIStatMaxValue);
   createParam(NDPluginROIStatMeanValueString,         asynParamFloat64, &NDPluginROIStatMeanValue);
   createParam(NDPluginROIStatTotalString,             asynParamFloat64, &NDPluginROIStatTotal);
+  createParam(NDPluginROIStatNetString,               asynParamFloat64, &NDPluginROIStatNet);
 
   createParam(NDPluginROIStatLastString,              asynParamInt32, &NDPluginROIStatLast);
   
