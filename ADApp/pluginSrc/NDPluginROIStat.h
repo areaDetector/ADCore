@@ -19,6 +19,7 @@
 /* ROI definition */
 #define NDPluginROIStatUseString                "ROISTAT_USE"               /* (asynInt32, r/w) Use this ROI? */
 #define NDPluginROIStatResetString              "ROISTAT_RESET"             /* (asynInt32, r/w) Reset ROI data. */
+#define NDPluginROIStatBgdWidthString           "ROISTAT_BGD_WIDTH"         /* (asynInt32, r/w) Width of background region when computing net */
 #define NDPluginROIStatDim0MinString            "ROISTAT_DIM0_MIN"          /* (asynInt32, r/w) Starting element of ROI in X dimension */
 #define NDPluginROIStatDim0SizeString           "ROISTAT_DIM0_SIZE"         /* (asynInt32, r/w) Size of ROI in X dimension */
 #define NDPluginROIStatDim0MaxSizeString        "ROISTAT_DIM0_MAX_SIZE"     /* (asynInt32, r/o) Maximum size of ROI in X dimension */
@@ -34,23 +35,23 @@
 #define NDPluginROIStatMaxValueString           "ROISTAT_MAX_VALUE"         /* (asynFloat64, r/o) Maximum counts in any element */
 #define NDPluginROIStatMeanValueString          "ROISTAT_MEAN_VALUE"        /* (asynFloat64, r/o) Mean counts of all elements */
 #define NDPluginROIStatTotalString              "ROISTAT_TOTAL"             /* (asynFloat64, r/o) Sum of all elements */
+#define NDPluginROIStatNetString                "ROISTAT_NET"               /* (asynFloat64, r/o) Sum of all elements minus background */
 
 /** Structure defining a Region-Of-Interest and Stats */
 typedef struct NDROI {
-    NDDimension_t dims[ND_ARRAY_MAX_DIMS];
-    size_t nElements;
+    size_t offset[2];
+    size_t size[2];
+    size_t bgdWidth;
     double total;
     double mean;
     double min;
     double max;
-    size_t arraySizeX;
-    size_t arraySizeY;
+    double net;
+    size_t arraySize[2];
 } NDROI_t;
 
 
-/** Extract Regions-Of-Interest (ROI) from NDArray data; the plugin can be a source of NDArray callbacks for
-  * other plugins, passing these sub-arrays. 
-  * The plugin also optionally computes a statistics on the ROI. */
+/** Compute statistics on ROIs in an array */
 class epicsShareClass NDPluginROIStat : public NDPluginDriver {
 public:
     NDPluginROIStat(const char *portName, int queueSize, int blockingCallbacks, 
@@ -70,6 +71,7 @@ protected:
     int NDPluginROIStatName;
     int NDPluginROIStatUse;
     int NDPluginROIStatReset;
+    int NDPluginROIStatBgdWidth;
     int NDPluginROIStatResetAll;
     int NDPluginROIStatNDArrayCallbacks;
 
@@ -89,6 +91,7 @@ protected:
     int NDPluginROIStatMaxValue;
     int NDPluginROIStatMeanValue;
     int NDPluginROIStatTotal;
+    int NDPluginROIStatNet;
 
     int NDPluginROIStatLast;
     #define LAST_NDPLUGIN_ROISTAT_PARAM NDPluginROIStatLast
