@@ -17,24 +17,6 @@
 ###################################################################
 
 # ///
-# /// The name of the plugin.
-# ///
-record(stringout, "$(P)$(R)Name")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynOctetWrite")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_NAME")
-   info(autosaveFields, "VAL")
-}
-
-record(stringin, "$(P)$(R)Name_RBV")
-{
-   field(DTYP, "asynOctetRead")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_NAME")
-   field(SCAN, "I/O Intr")
-}
-
-# ///
 # /// Reset the data for all the ROIs
 # ///
 record(bo, "$(P)$(R)ResetAll")
@@ -96,3 +78,4 @@ record(longin, "$(P)$(R)ArraySizeZ_RBV")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_SIZE_Z")
    field(SCAN, "I/O Intr")
 }
+
