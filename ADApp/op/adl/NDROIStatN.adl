@@ -573,226 +573,149 @@ composite {
 		}
 	}
 }
-composite {
+text {
 	object {
-		x=152
-		y=345
-		width=158
-		height=70
+		x=15
+		y=395
+		width=40
+		height=20
 	}
-	"composite name"=""
-	children {
-		composite {
-			object {
-				x=162
-				y=345
-				width=148
-				height=20
-			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=162
-						y=345
-						width=40
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Mean"
-					align="horiz. right"
-				}
-				"text update" {
-					object {
-						x=207
-						y=346
-						width=103
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)MeanValue_RBV"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=152
-				y=370
-				width=158
-				height=20
-			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=152
-						y=370
-						width=50
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Total"
-					align="horiz. right"
-				}
-				"text update" {
-					object {
-						x=207
-						y=371
-						width=103
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)Total_RBV"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=172
-				y=395
-				width=138
-				height=20
-			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=172
-						y=395
-						width=30
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Net"
-					align="horiz. right"
-				}
-				"text update" {
-					object {
-						x=207
-						y=396
-						width=103
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)Net_RBV"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Mean"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=60
+		y=396
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)MeanValue_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
 	}
 }
-composite {
+text {
+	object {
+		x=165
+		y=345
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Total"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=220
+		y=346
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)Total_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=185
+		y=370
+		width=30
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Net"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=220
+		y=371
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)Net_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=60
+		y=346
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)MinValue_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
 	object {
 		x=15
 		y=345
-		width=127
-		height=45
+		width=40
+		height=20
 	}
-	"composite name"=""
-	children {
-		composite {
-			object {
-				x=15
-				y=345
-				width=127
-				height=20
-			}
-			"composite name"=""
-			children {
-				"text update" {
-					object {
-						x=60
-						y=346
-						width=82
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)MinValue_RBV"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
-				text {
-					object {
-						x=15
-						y=345
-						width=40
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Min."
-					align="horiz. right"
-				}
-			}
-		}
-		composite {
-			object {
-				x=15
-				y=370
-				width=127
-				height=20
-			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=15
-						y=370
-						width=40
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Max."
-					align="horiz. right"
-				}
-				"text update" {
-					object {
-						x=60
-						y=371
-						width=82
-						height=18
-					}
-					monitor {
-						chan="$(P)$(R)MaxValue_RBV"
-						clr=54
-						bclr=4
-					}
-					align="horiz. centered"
-					limits {
-					}
-				}
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Min."
+	align="horiz. right"
+}
+text {
+	object {
+		x=15
+		y=370
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Max."
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=60
+		y=371
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)MaxValue_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
 	}
 }
 "message button" {
