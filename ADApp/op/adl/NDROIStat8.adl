@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDROIStat8.adl"
+	name="/home/epics/devel/areaDetector-2-1/ADCore/ADApp/op/adl/NDROIStat8.adl"
 	version=030107
 }
 display {
@@ -239,18 +239,6 @@ text {
 		clr=14
 	}
 	textix="Counts"
-}
-text {
-	object {
-		x=936
-		y=60
-		width=50
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="More"
 }
 composite {
 	object {
@@ -1422,347 +1410,6 @@ composite {
 }
 composite {
 	object {
-		x=851
-		y=60
-		width=75
-		height=219
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=890
-				y=60
-				width=30
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Max"
-		}
-		"text update" {
-			object {
-				x=851
-				y=84
-				width=75
-				height=20
-			}
-			monitor {
-				chan="$(P)$(ROI1)MaxValue_RBV"
-				clr=53
-				bclr=4
-			}
-			align="horiz. right"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=851
-				y=109
-				width=75
-				height=20
-			}
-			monitor {
-				chan="$(P)$(ROI2)MaxValue_RBV"
-				clr=53
-				bclr=4
-			}
-			align="horiz. right"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=851
-				y=134
-				width=75
-				height=20
-			}
-			monitor {
-				chan="$(P)$(ROI3)MaxValue_RBV"
-				clr=53
-				bclr=4
-			}
-			align="horiz. right"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=851
-				y=159
-				width=75
-				height=20
-			}
-			monitor {
-				chan="$(P)$(ROI4)MaxValue_RBV"
-				clr=53
-				bclr=4
-			}
-			align="horiz. right"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=851
-				y=184
-				width=75
-				height=20
-			}
-			monitor {
-				chan="$(P)$(ROI5)MaxValue_RBV"
-				clr=53
-				bclr=4
-			}
-			align="horiz. right"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=851
-				y=209
-				width=75
-				height=20
-			}
-			monitor {
-				chan="$(P)$(ROI6)MaxValue_RBV"
-				clr=53
-				bclr=4
-			}
-			align="horiz. right"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=851
-				y=234
-				width=75
-				height=20
-			}
-			monitor {
-				chan="$(P)$(ROI7)MaxValue_RBV"
-				clr=53
-				bclr=4
-			}
-			align="horiz. right"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=851
-				y=259
-				width=75
-				height=20
-			}
-			monitor {
-				chan="$(P)$(ROI8)MaxValue_RBV"
-				clr=53
-				bclr=4
-			}
-			align="horiz. right"
-			limits {
-			}
-		}
-	}
-}
-"related display" {
-	object {
-		x=931
-		y=84
-		width=60
-		height=20
-	}
-	display[0] {
-		label="ROIStat full"
-		name="NDROIStatN.adl"
-		args="P=$(P),R=$(ROI1)"
-	}
-	clr=53
-	bclr=4
-}
-"related display" {
-	object {
-		x=931
-		y=109
-		width=60
-		height=20
-	}
-	display[0] {
-		label="Total counts plot"
-		name="mca.adl"
-		args="P=$(P),M=$(ROI2)TotalArray"
-	}
-	display[1] {
-		label="Net counts plot"
-		name="mca.adl"
-		args="P=$(P),M=$(ROI2)NetArray"
-	}
-	display[2] {
-		label="ROI full"
-		name="NDROIN.adl"
-		args="P=$(P),R=$(ROI2)"
-	}
-	clr=53
-	bclr=4
-}
-"related display" {
-	object {
-		x=931
-		y=134
-		width=60
-		height=20
-	}
-	display[0] {
-		label="Total counts plot"
-		name="mca.adl"
-		args="P=$(P),M=$(ROI3)TotalArray"
-	}
-	display[1] {
-		label="Net counts plot"
-		name="mca.adl"
-		args="P=$(P),M=$(ROI3)NetArray"
-	}
-	display[2] {
-		label="ROI full"
-		name="NDROIN.adl"
-		args="P=$(P),R=$(ROI3)"
-	}
-	clr=53
-	bclr=4
-}
-"related display" {
-	object {
-		x=931
-		y=159
-		width=60
-		height=20
-	}
-	display[0] {
-		label="Total counts plot"
-		name="mca.adl"
-		args="P=$(P),M=$(ROI4)TotalArray"
-	}
-	display[1] {
-		label="Net counts plot"
-		name="mca.adl"
-		args="P=$(P),M=$(ROI4)NetArray"
-	}
-	display[2] {
-		label="ROI full"
-		name="NDROIN.adl"
-		args="P=$(P),R=$(ROI4)"
-	}
-	clr=53
-	bclr=4
-}
-"related display" {
-	object {
-		x=931
-		y=184
-		width=60
-		height=20
-	}
-	display[0] {
-		label="Total counts plot"
-		name="mca.adl"
-		args="P=$(P),M=$(ROI5)TotalArray"
-	}
-	display[1] {
-		label="Net counts plot"
-		name="mca.adl"
-		args="P=$(P),M=$(ROI5)NetArray"
-	}
-	display[2] {
-		label="ROI full"
-		name="NDROIN.adl"
-		args="P=$(P),R=$(ROI4)"
-	}
-	clr=53
-	bclr=4
-}
-"related display" {
-	object {
-		x=931
-		y=209
-		width=60
-		height=20
-	}
-	display[0] {
-		label="Total counts plot"
-		name="mca.adl"
-		args="P=$(P),M=$(ROI6)TotalArray"
-	}
-	display[1] {
-		label="Net counts plot"
-		name="mca.adl"
-		args="P=$(P),M=$(ROI6)NetArray"
-	}
-	display[2] {
-		label="ROI full"
-		name="NDROIN.adl"
-		args="P=$(P),R=$(ROI6)"
-	}
-	clr=53
-	bclr=4
-}
-"related display" {
-	object {
-		x=931
-		y=234
-		width=60
-		height=20
-	}
-	display[0] {
-		label="Total counts plot"
-		name="mca.adl"
-		args="P=$(P),M=$(ROI7)TotalArray"
-	}
-	display[1] {
-		label="Net counts plot"
-		name="mca.adl"
-		args="P=$(P),M=$(ROI7)NetArray"
-	}
-	display[2] {
-		label="ROI full"
-		name="NDROIN.adl"
-		args="P=$(P),R=$(ROI7)"
-	}
-	clr=53
-	bclr=4
-}
-"related display" {
-	object {
-		x=931
-		y=259
-		width=60
-		height=20
-	}
-	display[0] {
-		label="Total counts plot"
-		name="mca.adl"
-		args="P=$(P),M=$(ROI8)TotalArray"
-	}
-	display[1] {
-		label="Net counts plot"
-		name="mca.adl"
-		args="P=$(P),M=$(ROI8)NetArray"
-	}
-	display[2] {
-		label="ROI full"
-		name="NDROIN.adl"
-		args="P=$(P),R=$(ROI8)"
-	}
-	clr=53
-	bclr=4
-}
-composite {
-	object {
 		x=145
 		y=60
 		width=60
@@ -2026,6 +1673,300 @@ composite {
 				clr=14
 				bclr=51
 			}
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=931
+		y=60
+		width=60
+		height=219
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=941
+				y=60
+				width=40
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="More"
+		}
+		"related display" {
+			object {
+				x=931
+				y=84
+				width=60
+				height=20
+			}
+			display[0] {
+				label="ROIStat full"
+				name="NDROIStatN.adl"
+				args="P=$(P),R=$(ROI1)"
+			}
+			clr=53
+			bclr=4
+		}
+		"related display" {
+			object {
+				x=931
+				y=109
+				width=60
+				height=20
+			}
+			display[0] {
+				label="ROIStat full"
+				name="NDROIStatN.adl"
+				args="P=$(P),R=$(ROI2)"
+			}
+			clr=53
+			bclr=4
+		}
+		"related display" {
+			object {
+				x=931
+				y=134
+				width=60
+				height=20
+			}
+			display[0] {
+				label="ROIStat full"
+				name="NDROIStatN.adl"
+				args="P=$(P),R=$(ROI3)"
+			}
+			clr=53
+			bclr=4
+		}
+		"related display" {
+			object {
+				x=931
+				y=159
+				width=60
+				height=20
+			}
+			display[0] {
+				label="ROIStat full"
+				name="NDROIStatN.adl"
+				args="P=$(P),R=$(ROI4)"
+			}
+			clr=53
+			bclr=4
+		}
+		"related display" {
+			object {
+				x=931
+				y=184
+				width=60
+				height=20
+			}
+			display[0] {
+				label="ROIStat full"
+				name="NDROIStatN.adl"
+				args="P=$(P),R=$(ROI5)"
+			}
+			clr=53
+			bclr=4
+		}
+		"related display" {
+			object {
+				x=931
+				y=209
+				width=60
+				height=20
+			}
+			display[0] {
+				label="ROIStat full"
+				name="NDROIStatN.adl"
+				args="P=$(P),R=$(ROI6)"
+			}
+			clr=53
+			bclr=4
+		}
+		"related display" {
+			object {
+				x=931
+				y=234
+				width=60
+				height=20
+			}
+			display[0] {
+				label="ROIStat full"
+				name="NDROIStatN.adl"
+				args="P=$(P),R=$(ROI7)"
+			}
+			clr=53
+			bclr=4
+		}
+		"related display" {
+			object {
+				x=931
+				y=259
+				width=60
+				height=20
+			}
+			display[0] {
+				label="ROIStat full"
+				name="NDROIStatN.adl"
+				args="P=$(P),R=$(ROI8)"
+			}
+			clr=53
+			bclr=4
+		}
+	}
+}
+composite {
+	object {
+		x=851
+		y=60
+		width=75
+		height=219
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=890
+				y=60
+				width=30
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Max"
+		}
+		"text update" {
+			object {
+				x=851
+				y=84
+				width=75
+				height=20
+			}
+			monitor {
+				chan="$(P)$(ROI1)MaxValue_RBV"
+				clr=53
+				bclr=4
+			}
+			align="horiz. right"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=851
+				y=109
+				width=75
+				height=20
+			}
+			monitor {
+				chan="$(P)$(ROI2)MaxValue_RBV"
+				clr=53
+				bclr=4
+			}
+			align="horiz. right"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=851
+				y=134
+				width=75
+				height=20
+			}
+			monitor {
+				chan="$(P)$(ROI3)MaxValue_RBV"
+				clr=53
+				bclr=4
+			}
+			align="horiz. right"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=851
+				y=159
+				width=75
+				height=20
+			}
+			monitor {
+				chan="$(P)$(ROI4)MaxValue_RBV"
+				clr=53
+				bclr=4
+			}
+			align="horiz. right"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=851
+				y=184
+				width=75
+				height=20
+			}
+			monitor {
+				chan="$(P)$(ROI5)MaxValue_RBV"
+				clr=53
+				bclr=4
+			}
+			align="horiz. right"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=851
+				y=209
+				width=75
+				height=20
+			}
+			monitor {
+				chan="$(P)$(ROI6)MaxValue_RBV"
+				clr=53
+				bclr=4
+			}
+			align="horiz. right"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=851
+				y=234
+				width=75
+				height=20
+			}
+			monitor {
+				chan="$(P)$(ROI7)MaxValue_RBV"
+				clr=53
+				bclr=4
+			}
+			align="horiz. right"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=851
+				y=259
+				width=75
+				height=20
+			}
+			monitor {
+				chan="$(P)$(ROI8)MaxValue_RBV"
+				clr=53
+				bclr=4
+			}
+			align="horiz. right"
 			limits {
 			}
 		}
