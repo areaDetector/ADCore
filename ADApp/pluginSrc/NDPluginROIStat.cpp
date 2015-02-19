@@ -39,7 +39,7 @@ asynStatus NDPluginROIStat::doComputeStatisticsT(NDArray *pArray, NDROI *pROI)
 {
   epicsType *pData = (epicsType *)pArray->pData;
   double value = 0;
-  double bgd=0;
+  double bgd = 0;
   size_t sizeX = pROI->size[0];
   size_t sizeY = pROI->size[1];
   size_t offsetX = pROI->offset[0];
@@ -81,10 +81,7 @@ asynStatus NDPluginROIStat::doComputeStatisticsT(NDArray *pArray, NDROI *pROI)
         nBgd++;
         bgd += (double)pData[x];
       }
-      bgd = bgd/nBgd * nElements;
-      pROI->net = pROI->total - bgd;
-    }
-    
+    }    
   } else if (pArray->ndims == 2) {
     nElements = sizeX * sizeY;
     for (y=offsetY; y<offsetY+sizeY; ++y) {
@@ -130,10 +127,13 @@ asynStatus NDPluginROIStat::doComputeStatisticsT(NDArray *pArray, NDROI *pROI)
           bgd += (double)pData[x+yOffset];
         }
       }
-      bgd = bgd/nBgd * nElements;
-      pROI->net = pROI->total - bgd;
     }
   }
+
+  if (nBgd > 0) {
+    bgd = bgd/nBgd * nElements;
+  }
+  pROI->net = pROI->total - bgd;
 
   if (nElements > 0) {
     pROI->mean = pROI->total / nElements;
@@ -373,6 +373,7 @@ asynStatus NDPluginROIStat::clear(epicsUInt32 roi)
   stat = (setDoubleParam(roi, NDPluginROIStatMaxValue,  0.0) == asynSuccess) && stat;
   stat = (setDoubleParam(roi, NDPluginROIStatMeanValue, 0.0) == asynSuccess) && stat;
   stat = (setDoubleParam(roi, NDPluginROIStatTotal,     0.0) == asynSuccess) && stat;
+  stat = (setDoubleParam(roi, NDPluginROIStatNet,       0.0) == asynSuccess) && stat;
 
   stat = (callParamCallbacks(roi) == asynSuccess) && stat;
 
