@@ -7,7 +7,7 @@ display {
 	object {
 		x=328
 		y=55
-		width=1000
+		width=1075
 		height=290
 	}
 	clr=14
@@ -1680,7 +1680,7 @@ composite {
 }
 composite {
 	object {
-		x=931
+		x=1006
 		y=60
 		width=60
 		height=219
@@ -1689,7 +1689,7 @@ composite {
 	children {
 		text {
 			object {
-				x=941
+				x=1016
 				y=60
 				width=40
 				height=20
@@ -1701,7 +1701,7 @@ composite {
 		}
 		"related display" {
 			object {
-				x=931
+				x=1006
 				y=84
 				width=60
 				height=20
@@ -1716,7 +1716,7 @@ composite {
 		}
 		"related display" {
 			object {
-				x=931
+				x=1006
 				y=109
 				width=60
 				height=20
@@ -1731,7 +1731,7 @@ composite {
 		}
 		"related display" {
 			object {
-				x=931
+				x=1006
 				y=134
 				width=60
 				height=20
@@ -1746,7 +1746,7 @@ composite {
 		}
 		"related display" {
 			object {
-				x=931
+				x=1006
 				y=159
 				width=60
 				height=20
@@ -1761,7 +1761,7 @@ composite {
 		}
 		"related display" {
 			object {
-				x=931
+				x=1006
 				y=184
 				width=60
 				height=20
@@ -1776,7 +1776,7 @@ composite {
 		}
 		"related display" {
 			object {
-				x=931
+				x=1006
 				y=209
 				width=60
 				height=20
@@ -1791,7 +1791,7 @@ composite {
 		}
 		"related display" {
 			object {
-				x=931
+				x=1006
 				y=234
 				width=60
 				height=20
@@ -1806,7 +1806,7 @@ composite {
 		}
 		"related display" {
 			object {
-				x=931
+				x=1006
 				y=259
 				width=60
 				height=20
@@ -1970,5 +1970,146 @@ composite {
 			limits {
 			}
 		}
+	}
+}
+text {
+	object {
+		x=955
+		y=60
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Mean"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=926
+		y=84
+		width=75
+		height=20
+	}
+	monitor {
+		chan="$(P)$(ROI1)MeanValue_RBV"
+		clr=53
+		bclr=4
+	}
+	align="horiz. right"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=926
+		y=109
+		width=75
+		height=20
+	}
+	monitor {
+		chan="$(P)$(ROI2)MeanValue_RBV"
+		clr=53
+		bclr=4
+	}
+	align="horiz. right"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=926
+		y=134
+		width=75
+		height=20
+	}
+	monitor {
+		chan="$(P)$(ROI3)MeanValue_RBV"
+		clr=53
+		bclr=4
+	}
+	align="horiz. right"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=926
+		y=159
+		width=75
+		height=20
+	}
+	monitor {
+		chan="$(P)$(ROI4)MeanValue_RBV"
+		clr=53
+		bclr=4
+	}
+	align="horiz. right"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=926
+		y=184
+		width=75
+		height=20
+	}
+	monitor {
+		chan="$(P)$(ROI5)MeanValue_RBV"
+		clr=53
+		bclr=4
+	}
+	align="horiz. right"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=926
+		y=209
+		width=75
+		height=20
+	}
+	monitor {
+		chan="$(P)$(ROI6)MeanValue_RBV"
+		clr=53
+		bclr=4
+	}
+	align="horiz. right"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=926
+		y=234
+		width=75
+		height=20
+	}
+	monitor {
+		chan="$(P)$(ROI7)MeanValue_RBV"
+		clr=53
+		bclr=4
+	}
+	align="horiz. right"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=926
+		y=259
+		width=75
+		height=20
+	}
+	monitor {
+		chan="$(P)$(ROI8)MeanValue_RBV"
+		clr=53
+		bclr=4
+	}
+	align="horiz. right"
+	limits {
 	}
 }
