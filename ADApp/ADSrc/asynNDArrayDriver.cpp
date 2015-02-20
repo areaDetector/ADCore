@@ -29,6 +29,24 @@
 #include "functAttribute.h"
 #include "asynNDArrayDriver.h"
 
+#define MAX_PATH_PARTS 32
+
+#if defined(_WIN32)              // Windows
+  #include <direct.h>
+  #define strtok_r(a,b,c) strtok(a,b)
+  #define MKDIR(a,b) _mkdir(a)
+  #define delim "\\"
+#elif defined(vxWorks)           // VxWorks
+  #include <sys/stat.h>
+  #define MKDIR(a,b) mkdir(a)
+  #define delim "/"
+#else                            // Linux
+  #include <sys/stat.h>
+  #include <sys/types.h>
+  #define delim "/"
+  #define MKDIR(a,b) mkdir(a,b)
+#endif
+
 static const char *driverName = "asynNDArrayDriver";
 
 /** Checks whether the directory specified NDFilePath parameter exists.
@@ -38,41 +56,112 @@ static const char *driverName = "asynNDArrayDriver";
   * It also adds a trailing '/' character to the path if one is not present.
   * Returns a error status if the directory does not exist.
   */
-int asynNDArrayDriver::checkPath()
+asynStatus asynNDArrayDriver::checkPath()
 {
     /* Formats a complete file name from the components defined in NDStdDriverParams */
-    int status = asynError;
+    asynStatus status = asynError;
     char filePath[MAX_FILENAME_LEN];
     int hasTerminator=0;
     struct stat buff;
+    int istat;
     size_t len;
     int isDir=0;
     int pathExists=0;
     
-    status = getStringParam(NDFilePath, sizeof(filePath), filePath);
+    getStringParam(NDFilePath, sizeof(filePath), filePath);
     len = strlen(filePath);
     if (len == 0) return(asynSuccess);
     /* If the path contains a trailing '/' or '\' remove it, because Windows won't find
      * the directory if it has that trailing character */
-    if ((filePath[len-1] == '/') || (filePath[len-1] == '\\')) {
+    if (strncmp(&filePath[len-1], delim, 1) == 0) {
         filePath[len-1] = 0;
         len--;
         hasTerminator=1;
     }
-    status = stat(filePath, &buff);
-    if (!status) isDir = (S_IFDIR & buff.st_mode);
-    if (!status && isDir) {
+    istat = stat(filePath, &buff);
+    if (!istat) isDir = (S_IFDIR & buff.st_mode);
+    if (!istat && isDir) {
         pathExists = 1;
         status = asynSuccess;
     }
     /* If the path did not have a trailing terminator then add it if there is room */
     if (!hasTerminator) {
-        if (len < MAX_FILENAME_LEN-2) strcat(filePath, "/");
+        if (len < MAX_FILENAME_LEN-2) strcat(filePath, delim);
         setStringParam(NDFilePath, filePath);
     }
     setIntegerParam(NDFilePathExists, pathExists);
-    return(status);   
+    return status;   
 }
+
+/** Function to create a directory path for a file.
+  \param[in] path  Path to create. The final part is the file name and is not created.
+  \param[in] pathDepth  This determines how much of the path to assume exists before attempting
+                      to create directories:
+                      pathDepth = 0 create no directories
+                      pathDepth = 1 create all directories needed (i.e. only assume root directory exists).
+                      pathDepth = 2  Assume 1 directory below the root directory exists
+                      pathDepth = -1 Assume all but one direcory exists
+                      pathDepth = -2 Assume all but two directories exist.
+*/
+asynStatus asynNDArrayDriver::createFilePath(const char *path, int pathDepth)
+{
+    asynStatus result = asynSuccess;
+    char *parts[MAX_PATH_PARTS];
+    int num_parts;
+    char directory[MAX_FILENAME_LEN];
+
+    // Initialise the directory to create
+    char nextDir[MAX_FILENAME_LEN];
+
+    // Extract the next name from the directory
+    char* saveptr;
+    int i=0;
+
+    // Check for trivial case.
+    if (pathDepth == 0) return asynSuccess;
+
+    // Check for Windows disk designator
+    if (path[1] == ':') {
+        nextDir[0]=path[0];
+        nextDir[1]=':';
+        i+=2;
+    }
+
+    // Skip over any more delimiters
+    while ((path[i] == '/' || path[i] == '\\') && i < MAX_FILENAME_LEN) {
+        nextDir[i] = path[i];
+        ++i;
+    }
+    nextDir[i] = 0;
+
+    // Now, tokenise the path - first making a copy because strtok is destructive
+    strcpy(directory, &path[i] );
+    num_parts = 0;
+    parts[num_parts] = strtok_r( directory, "\\/", &saveptr);
+    while ( parts[num_parts] != NULL ) {
+        parts[++num_parts] = strtok_r(NULL, "\\/", &saveptr);
+    }
+
+    // Handle the case if the path depth is negative
+    if (pathDepth < 0) {
+        pathDepth = num_parts + pathDepth;
+        if (pathDepth < 1) pathDepth = 1;
+    }
+
+    // Loop through parts creating directories
+    for ( i = 0; i < num_parts && result != asynError; i++ ) {
+        strcat(nextDir, parts[i]);
+        if ( i >= pathDepth ) {
+            if(MKDIR(nextDir, 0777) != 0 && errno != EEXIST) {
+                result = asynError;
+            }
+        }
+        strcat(nextDir, delim);
+   }
+
+    return result;
+}
+
 
 /** Build a file name from component parts.
   * \param[in] maxChars  The size of the fullFileName string.
@@ -83,7 +172,7 @@ int asynNDArrayDriver::checkPath()
   * NDFileTemplate parameters. If NDAutoIncrement is true then it increments the
   * NDFileNumber after creating the file name.
   */
-int asynNDArrayDriver::createFileName(int maxChars, char *fullFileName)
+asynStatus asynNDArrayDriver::createFileName(int maxChars, char *fullFileName)
 {
     /* Formats a complete file name from the components defined in NDStdDriverParams */
     int status = asynSuccess;
@@ -100,18 +189,18 @@ int asynNDArrayDriver::createFileName(int maxChars, char *fullFileName)
     status |= getStringParam(NDFileTemplate, sizeof(fileTemplate), fileTemplate); 
     status |= getIntegerParam(NDFileNumber, &fileNumber);
     status |= getIntegerParam(NDAutoIncrement, &autoIncrement);
-    if (status) return(status);
+    if (status) return (asynStatus) status;
     len = epicsSnprintf(fullFileName, maxChars, fileTemplate, 
                         filePath, fileName, fileNumber);
     if (len < 0) {
         status |= asynError;
-        return(status);
+        return (asynStatus) status;
     }
     if (autoIncrement) {
         fileNumber++;
         status |= setIntegerParam(NDFileNumber, fileNumber);
     }
-    return(status);   
+    return (asynStatus) status;   
 }
 
 /** Build a file name from component parts.
@@ -124,7 +213,7 @@ int asynNDArrayDriver::createFileName(int maxChars, char *fullFileName)
   * NDFileTemplate parameters. If NDAutoIncrement is true then it increments the
   * NDFileNumber after creating the file name.
   */
-int asynNDArrayDriver::createFileName(int maxChars, char *filePath, char *fileName)
+asynStatus asynNDArrayDriver::createFileName(int maxChars, char *filePath, char *fileName)
 {
     /* Formats a complete file name from the components defined in NDStdDriverParams */
     int status = asynSuccess;
@@ -140,18 +229,18 @@ int asynNDArrayDriver::createFileName(int maxChars, char *filePath, char *fileNa
     status |= getStringParam(NDFileTemplate, sizeof(fileTemplate), fileTemplate); 
     status |= getIntegerParam(NDFileNumber, &fileNumber);
     status |= getIntegerParam(NDAutoIncrement, &autoIncrement);
-    if (status) return(status);
+    if (status) return (asynStatus) status;
     len = epicsSnprintf(fileName, maxChars, fileTemplate, 
                         name, fileNumber);
     if (len < 0) {
         status |= asynError;
-        return(status);
+        return (asynStatus) status;
     }
     if (autoIncrement) {
         fileNumber++;
         status |= setIntegerParam(NDFileNumber, fileNumber);
     }
-    return(status);   
+    return (asynStatus) status;  
 }
 
 /** Create this driver's NDAttributeList (pAttributeList) by reading an XML file
@@ -198,7 +287,7 @@ int asynNDArrayDriver::createFileName(int maxChars, char *filePath, char *fileNa
   * <b>description</b> determines the description for this attribute.  It is not required, and the default is a NULL string.
   *
   */
-int asynNDArrayDriver::readNDAttributesFile(const char *fileName)
+asynStatus asynNDArrayDriver::readNDAttributesFile(const char *fileName)
 {
     static const char *functionName = "readNDAttributesFile";
     
@@ -303,14 +392,14 @@ int asynNDArrayDriver::readNDAttributesFile(const char *fileName)
   * list from the NDArray they were passed in NDPluginDriver::processCallbacks, because
   * that modifies the original NDArray which is forbidden.
   */
-int asynNDArrayDriver::getAttributes(NDAttributeList *pList)
+asynStatus asynNDArrayDriver::getAttributes(NDAttributeList *pList)
 {
     //const char *functionName = "getAttributes";
     int status = asynSuccess;
     
     status = this->pAttributeList->updateValues();
     status = this->pAttributeList->copy(pList);
-    return(status);
+    return (asynStatus) status;
 }
 
 /** Called when asyn clients call pasynOctet->write().
@@ -335,7 +424,14 @@ asynStatus asynNDArrayDriver::writeOctet(asynUser *pasynUser, const char *value,
     if (function == NDAttributesFile) {
         this->readNDAttributesFile(value);
     } else if (function == NDFilePath) {
-        this->checkPath();
+        status = this->checkPath();
+        if (status == asynError) {
+            // If the directory does not exist then try to create it
+            int pathDepth;
+            getIntegerParam(NDFileCreateDir, &pathDepth);
+            status = createFilePath(value, pathDepth);
+            status = this->checkPath();
+        }
     }
      /* Do callbacks so higher layers see any changes */
     status = (asynStatus)callParamCallbacks(addr, addr);
