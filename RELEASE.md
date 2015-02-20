@@ -101,10 +101,6 @@ R2-2 (January XXX, 2015)
     The default value is 0.0, which does no smoothing.  Range 0.0-1.0, larger values 
     result in more smoothing.
 
-### TODO befor R2-2 is released
-* Add new NDFile PVs to medm screens
-* Get Tim to convert medm screens converted to edm, etc.
-
 R2-1 (October 17, 2014)
 =======================
 ### NDPluginFile
