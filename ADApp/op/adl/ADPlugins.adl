@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-1/ADCore/ADApp/op/adl/ADPlugins.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/ADPlugins.adl"
 	version=030107
 }
 display {
@@ -192,37 +192,37 @@ text {
 	display[0] {
 		label="netCDF file #1"
 		name="NDFileNetCDF.adl"
-		args="P=$(P), R=netCDF1:"
+		args="P=$(P), R=netCDF1:, EXT=nc"
 	}
 	display[1] {
 		label="TIFF file #1"
 		name="NDFileTIFF.adl"
-		args="P=$(P), R=TIFF1:"
+		args="P=$(P), R=TIFF1:, EXT=tif"
 	}
 	display[2] {
 		label="JPEG file #1"
 		name="NDFileJPEG.adl"
-		args="P=$(P), R=JPEG1:"
+		args="P=$(P), R=JPEG1:, EXT=jpg"
 	}
 	display[3] {
 		label="NeXus file #1"
 		name="NDFileNexus.adl"
-		args="P=$(P), R=Nexus1:"
+		args="P=$(P), R=Nexus1:, EXT=h5"
 	}
 	display[4] {
 		label="Magick file #1"
 		name="NDFileMagick.adl"
-		args="P=$(P), R=Magick1:"
+		args="P=$(P), R=Magick1:, EXT=tif"
 	}
 	display[5] {
 		label="HDF5 file #1"
 		name="NDFileHDF5.adl"
-		args="P=$(P), R=HDF1:"
+		args="P=$(P), R=HDF1:, EXT=h5"
 	}
 	display[6] {
 		label="Null file #1"
 		name="NDFileNull.adl"
-		args="P=$(P), R=Null1:"
+		args="P=$(P), R=Null1:, EXT=null"
 	}
 	clr=14
 	bclr=51
