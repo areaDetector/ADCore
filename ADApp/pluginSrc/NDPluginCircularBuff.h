@@ -1,11 +1,12 @@
 #ifndef NDPluginCircularBuff_H
 #define NDPluginCircularBuff_H
 
+#include <deque>
+
 #include <epicsTypes.h>
 #include <asynStandardInterfaces.h>
 
 #include "NDPluginDriver.h"
-#include "NDArrayRing.h"
 
 typedef struct NDCircularBuff {
     size_t  nElements;
@@ -57,7 +58,7 @@ protected:
                                 
 private:
 
-    NDArrayRing *preBuffer_;
+    std::deque<NDArray *> *preBuffer_;
     NDArray *pOldArray_;
     int previousTrigger_;
     int maxBuffers_;

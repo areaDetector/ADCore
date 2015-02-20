@@ -7,18 +7,24 @@
  * Created June 21, 2013
  */
 
+// C dependencies
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
 
+// C++ dependencies
+using namespace std;
+
+// EPICS dependencies
 #include <epicsString.h>
 #include <epicsMutex.h>
+#include <epicsExport.h>
 #include <iocsh.h>
 
+// Project dependencies
 #include "NDArray.h"
 #include "NDPluginCircularBuff.h"
-#include <epicsExport.h>
 
 #define MAX(A,B) (A)>(B)?(A):(B)
 #define MIN(A,B) (A)<(B)?(A):(B)
@@ -62,7 +68,7 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
     if (scopeControl) {
 
       // Check for a soft trigger
-      if (softTrigger){
+      if (softTrigger) {
         triggered = 1;
         setIntegerParam(NDPluginCircularBuffTriggered, triggered);
       } else {
@@ -91,13 +97,15 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
 
         // Have we detected a trigger event yet?
         if (!triggered){
-          // No trigger so add the NDArray to the pre-trigger ring
-          pOldArray_ = preBuffer_->addToEnd(pArrayCpy);
-          // If we overwrote an existing array in the ring, release it here
-          if (pOldArray_){
-            pOldArray_->release();
-            pOldArray_ = NULL;
-          }
+            // No trigger so add the NDArray to the pre-trigger ring
+            preBuffer_->push_back(pArrayCpy);
+            if (preBuffer_->size() > preCount) {
+        	pOldArray_ = preBuffer_->front();
+        	pOldArray_->release();
+        	pOldArray_ = NULL;
+        	preBuffer_->pop_front();
+            }
+
           // Set the size
           setIntegerParam(NDPluginCircularBuffCurrentImage,  preBuffer_->size());
           if (preBuffer_->size() == preCount){
@@ -111,17 +119,15 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
           // Has the trigger occured on this frame?
           if (previousTrigger_ == 0){
             previousTrigger_ = 1;
-            // Yes, so flush the ring first
 
-            if (preBuffer_->size() > 0){
+            // Yes, so flush the ring first
+            while (preBuffer_->size() > 0){
               this->unlock();
-              doCallbacksGenericPointer(preBuffer_->readFromStart(), NDArrayData, 0);
+              doCallbacksGenericPointer(preBuffer_->front(), NDArrayData, 0);
               this->lock();
-              while (preBuffer_->hasNext()) {
-                this->unlock();
-                doCallbacksGenericPointer(preBuffer_->readNext(), NDArrayData, 0);
-                this->lock();
-              }
+              preBuffer_->front()->release();
+              preBuffer_->pop_front();
+
             }
           }
       
@@ -164,15 +170,18 @@ asynStatus NDPluginCircularBuff::writeInt32(asynUser *pasynUser, epicsInt32 valu
     static const char *functionName = "writeInt32";
 
     if (function == NDPluginCircularBuffControl){
-        if (value == 1){
-          // If the control is turned on then create our new ring buffer
-          getIntegerParam(NDPluginCircularBuffPreTrigger,  &preCount);
-          if (preBuffer_){
-            delete preBuffer_;
-          }
-          preBuffer_ = new NDArrayRing(preCount);
-          if (pOldArray_){
-            pOldArray_->release();
+	if (value == 1){
+	    // If the control is turned on then create our new ring buffer
+	    getIntegerParam(NDPluginCircularBuffPreTrigger,  &preCount);
+	    if (preBuffer_){
+		for (std::deque<NDArray *>::iterator iter = preBuffer_->begin(); iter != preBuffer_->end(); ++iter) {
+		    (*iter)->release();
+		}
+		delete preBuffer_;
+	    }
+	    preBuffer_ = new deque<NDArray *>();
+	    if (pOldArray_){
+		pOldArray_->release();
           }
           pOldArray_ = NULL;
  

@@ -56,7 +56,6 @@ INC += NDPluginStats.h
 INC += NDPluginStdArrays.h
 INC += NDPluginTransform.h
 INC += NDPluginCircularBuff.h
-INC += NDArrayRing.h
 
 LIBRARY_IOC += NDPlugin
 NDPlugin_SRCS += NDPluginDriver.cpp
@@ -73,7 +72,6 @@ NDPlugin_SRCS += NDPluginOverlay.cpp
 NDPlugin_SRCS += NDPluginOverlayTextFont.cpp
 NDPlugin_SRCS += NDPluginColorConvert.cpp
 NDPlugin_SRCS += NDPluginCircularBuff.cpp
-NDPlugin_SRCS += NDArrayRing.cpp
 NDPlugin_SRCS_DEFAULT += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNexus.cpp NDFileHDF5.cpp NDFileHDF5Dataset.cpp NDFileHDF5LayoutXML.cpp NDFileHDF5Layout.cpp NDFileNull.cpp
 NDPlugin_SRCS_vxWorks += NDFileDummy.cpp
 NDPlugin_SYS_LIBS_WIN32 += Ws2_32
