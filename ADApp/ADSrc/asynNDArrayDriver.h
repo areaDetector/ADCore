@@ -72,7 +72,7 @@ typedef enum {
 #define NDFileCaptureString     "CAPTURE"           /**< (asynInt32,    r/w) Start or stop capturing arrays */
 #define NDFileDeleteDriverFileString  "DELETE_DRIVER_FILE"  /**< (asynInt32,    r/w) Delete driver file */
 #define NDFileLazyOpenString    "FILE_LAZY_OPEN"    /**< (asynInt32,    r/w) Don't open file until first frame arrives in Stream mode */
-#define NDFileCreateDirString   "CREATE_DIR"        /**< (asynInt32,    r/w) If set then create the target directory before writing file */
+#define NDFileCreateDirString   "CREATE_DIR"        /**< (asynInt32,    r/w) Create the target directory up to this depth */
 #define NDFileTempSuffixString  "FILE_TEMP_SUFFIX"  /**< (asynOctet,    r/w) Temporary filename suffix while writing data to file. The file will be renamed (suffix removed) upon closing the file. */
 
 #define NDAttributesFileString  "ND_ATTRIBUTES_FILE" /**< (asynOctet,    r/w) Attributes file name */
@@ -109,11 +109,12 @@ public:
     virtual void report(FILE *fp, int details);
 
     /* These are the methods that are new to this class */
-    virtual int checkPath();
-    virtual int createFileName(int maxChars, char *fullFileName);
-    virtual int createFileName(int maxChars, char *filePath, char *fileName);
-    virtual int readNDAttributesFile(const char *fileName);
-    virtual int getAttributes(NDAttributeList *pAttributeList);
+    virtual asynStatus createFilePath(const char *path, int pathDepth);
+    virtual asynStatus checkPath();
+    virtual asynStatus createFileName(int maxChars, char *fullFileName);
+    virtual asynStatus createFileName(int maxChars, char *filePath, char *fileName);
+    virtual asynStatus readNDAttributesFile(const char *fileName);
+    virtual asynStatus getAttributes(NDAttributeList *pAttributeList);
 
 protected:
     int NDPortNameSelf;
