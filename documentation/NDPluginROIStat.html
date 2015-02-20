@@ -10,17 +10,19 @@
     <h1>
       areaDetector Plugin NDPluginROIStat</h1>
     <h2>
-      Nov, 2014</h2>
+      February 19, 2015</h2>
     <h2>
-      Matt Pearson</h2>
+      Matt Pearson, Mark Rivers</h2>
     <h2>
-      Oak Ridge National Lab</h2>
+      Oak Ridge National Lab<br />
+      University of Chicago</h2>
   </div>
   <h2>
     Contents</h2>
   <ul>
     <li><a href="#Overview">Overview</a></li>
     <li><a href="#Configuration">Configuration</a></li>
+    <li><a href="#Screens">Screen shots</a></li>
     <li><a href="#Notes">Notes</a></li>
   </ul>
   <h2 id="Overview">
@@ -28,7 +30,7 @@
   </h2>
   <p>
     This plugin provides multiple regions-of-interest (ROIs) on 1-D and 2-D data and
-    calculates basic statistics (min, max, mean and total counts). The asyn address
+    calculates basic statistics (min, max, mean, total, and net counts). The asyn address
     parameter is used to identify the ROIs, and so a very high number of ROIs can be
     dealt with in a single thread. The purpose of this plugin is to make it easy for
     IOC application developers to do simple ROI calculations, without having to use
@@ -101,23 +103,6 @@
           EPICS record name</th>
         <th>
           EPICS record type</th>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROIStatName</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          The name of the plugin.</td>
-        <td>
-          ROISTAT_NAME</td>
-        <td>
-          $(P)$(R)Name<br />
-          $(P)$(R)Name_RBV</td>
-        <td>
-          waveform</td>
       </tr>
       <tr>
         <td>
@@ -230,6 +215,23 @@
       </tr>
       <tr>
         <td>
+          NDPluginROIStatName</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          The name of the plugin.</td>
+        <td>
+          ROISTAT_NAME</td>
+        <td>
+          $(P)$(R)Name<br />
+          $(P)$(R)Name_RBV</td>
+        <td>
+          stringout</td>
+      </tr>
+      <tr>
+        <td>
           NDPluginROIStatUse</td>
         <td>
           asynInt32</td>
@@ -262,6 +264,27 @@
           $(P)$(R)Reset </td>
         <td>
           bo </td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIStatBgdWidth</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          The background width for the net counts calculation. The average background counts
+          in a border of this width around the ROI are computed. The border begins at the
+          outer edge of the defined ROI and progresses inward by the BgdWidth.</td>
+        <td>
+          ROISTAT_BGD_WIDTH</td>
+        <td>
+          $(P)$(R)BgdWidth<br />
+          $(P)$(R)BgdWidth_RBV </td>
+        <td>
+          longout
+          <br />
+          longin </td>
       </tr>
       <tr>
         <td>
@@ -371,59 +394,6 @@
       </tr>
       <tr>
         <td>
-          NDPluginROIStatDim2Min</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Start element in the Z dimension.</td>
-        <td>
-          ROISTAT_DIM2_MIN</td>
-        <td>
-          $(P)$(R)MinZ<br />
-          $(P)$(R)MinZ_RBV </td>
-        <td>
-          longout<br />
-          longin </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROIStatDim2Size</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          The ROI size in the Z dimension.</td>
-        <td>
-          ROISTAT_DIM2_SIZE</td>
-        <td>
-          $(P)$(R)SizeZ<br />
-          $(P)$(R)SizeZ_RBV </td>
-        <td>
-          longout<br />
-          longin </td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginROIStatDim2MaxSize</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Max size of the ROI in the Z dimension.</td>
-        <td>
-          ROISTAT_DIM2_MAX_SIZE</td>
-        <td>
-          $(P)$(R)MaxSizeZ<br />
-          $(P)$(R)MaxSizeZ_RBV </td>
-        <td>
-          longin </td>
-      </tr>
-      <tr>
-        <td>
           NDPluginROIStatMinValue</td>
         <td>
           asynFloat64</td>
@@ -486,6 +456,22 @@
         <td>
           ai </td>
       </tr>
+      <tr>
+        <td>
+          NDPluginROIStatNet</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Net (background subtracted) counts in the ROI.</td>
+        <td>
+          ROISTAT_NET</td>
+        <td>
+          $(P)$(R)Net_RBV </td>
+        <td>
+          ai </td>
+      </tr>
     </tbody>
   </table>
   <h2 id="Configuration">
@@ -504,10 +490,39 @@
     <br />
     <code>NDROIStatConfigure("DET1.ROI", 100, 0, "DET1", 0, 8, -1, -1, 0, 0)</code>
   </p>
+  <h2 id="Screens">
+    Screen shots</h2>
+  <p>
+    The following MEDM screen provides access to the parameters in NDPluginDriver.h
+    and NDPluginROIStat.h through records in NDPluginBase.template, and NDROIStat.template.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDROIStat.adl</h3>
+    <img alt="NDROIStat.png" src="NDROIStat.png" />
+  </div>
+  <p>
+    The following MEDM screen provides access to the parameters in NDPluginROIStat.h
+    through records in NDROIStatN.template.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDROIStatN.adl</h3>
+    <img alt="NDROIStatN.png" src="NDROIStatN.png" />
+  </div>
+  <p>
+    The following MEDM screen provides access to 8 ROIs at once.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDROIStat8.adl</h3>
+    <img alt="NDROIStat8.png" src="NDROIStat8.png" />
+  </div>
   <h2 id="Notes">
     Notes</h2>
   <p>
-    The EPICS database interface supports 3-D ROIs, but the driver only supports 1-D
-    and 2-D at the moment.</p>
+    This plugin only supports 1-D and 2-D arrays. The NDPluginStats plugin can compute
+    statistics on N-dimensional arrays, but it is less efficient for these simple statistics
+    on 1-D and 2-D arrays.</p>
 </body>
 </html>
