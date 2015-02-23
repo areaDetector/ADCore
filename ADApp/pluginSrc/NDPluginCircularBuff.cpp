@@ -56,6 +56,7 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
     
     pArray->getInfo(&arrayInfo);
 
+    printf("First param: %d", FIRST_NDPLUGIN_CIRCULAR_BUFF_PARAM);
     // Retrieve the running state
     getIntegerParam(NDPluginCircularBuffControl,  &scopeControl);
     getIntegerParam(NDPluginCircularBuffPreTrigger,  &preCount);
@@ -99,7 +100,7 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
         if (!triggered){
             // No trigger so add the NDArray to the pre-trigger ring
             preBuffer_->push_back(pArrayCpy);
-            if (preBuffer_->size() > preCount) {
+            if (preBuffer_->size() > (size_t)preCount) {
         	pOldArray_ = preBuffer_->front();
         	pOldArray_->release();
         	pOldArray_ = NULL;
@@ -108,7 +109,7 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
 
           // Set the size
           setIntegerParam(NDPluginCircularBuffCurrentImage,  preBuffer_->size());
-          if (preBuffer_->size() == preCount){
+          if (preBuffer_->size() == (size_t)preCount){
             setStringParam(NDPluginCircularBuffStatus, "Buffer Wrapping");
           }
         } else {
@@ -217,6 +218,8 @@ asynStatus NDPluginCircularBuff::writeInt32(asynUser *pasynUser, epicsInt32 valu
         getIntegerParam(NDPluginCircularBuffPostTrigger,  &postCount);
         if ((postCount + value) > (maxBuffers_ - 1)){
           setStringParam(NDPluginCircularBuffStatus, "Pre count too high");
+        } else if (value < 0) {
+          setStringParam(NDPluginCircularBuffStatus, "Pre count can't be negative");
         } else {
           // Set the parameter in the parameter library.
           status = (asynStatus) setIntegerParam(function, value);
@@ -227,6 +230,8 @@ asynStatus NDPluginCircularBuff::writeInt32(asynUser *pasynUser, epicsInt32 valu
         getIntegerParam(NDPluginCircularBuffPreTrigger,  &preCount);
         if ((preCount + value) > (maxBuffers_ - 1)){
           setStringParam(NDPluginCircularBuffStatus, "Post count too high");
+        } else if (value <= 0) {
+          setStringParam(NDPluginCircularBuffStatus, "Post count must be at least 1");
         } else {
           // Set the parameter in the parameter library.
           status = (asynStatus) setIntegerParam(function, value);

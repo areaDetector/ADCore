@@ -19,5 +19,7 @@ DIRS += nexusSrc
 
 DIRS += tiffSupport
 
+DIRS += pluginTests
+
 include $(TOP)/configure/RULES_DIRS
 
