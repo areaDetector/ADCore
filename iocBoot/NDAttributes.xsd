@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--  usage:
-   xmllint - -noout - -schema /path1/attributes.xsd /path2/attributes.xml
+   xmllint - -noout - -schema /path1/NDattributes.xsd /path2/attributes.xml
    (put the two minus signs together for the actual command, 
    XML can't have them together in an XML file, even in a comment!
    
@@ -128,6 +128,20 @@
           --> 
         </xs:documentation>
       </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="when" use="optional">
+      <xs:annotation>
+        <xs:documentation>
+          Event when the attribute data is updated.
+        </xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+ 	<xs:restriction base="xs:token">
+ 	  <xs:enumeration value="OnFileOpen" />
+ 	  <xs:enumeration value="OnFileClose" />
+ 	  <xs:enumeration value="OnFileWrite" />
+ 	</xs:restriction>
+      </xs:simpleType>
     </xs:attribute>
   </xs:attributeGroup>
   
