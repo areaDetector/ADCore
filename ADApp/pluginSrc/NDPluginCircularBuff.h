@@ -2,7 +2,6 @@
 #define NDPluginCircularBuff_H
 
 #include <epicsTypes.h>
-#include <asynStandardInterfaces.h>
 
 #include "NDPluginDriver.h"
 #include "NDArrayRing.h"
