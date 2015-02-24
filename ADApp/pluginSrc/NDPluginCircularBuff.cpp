@@ -16,6 +16,8 @@
 #include <epicsMutex.h>
 #include <iocsh.h>
 
+#include <asynDriver.h>
+
 #include <epicsExport.h>
 #include "NDArray.h"
 #include "NDPluginCircularBuff.h"
