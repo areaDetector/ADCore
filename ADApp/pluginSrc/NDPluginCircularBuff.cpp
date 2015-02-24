@@ -16,12 +16,9 @@
 #include <epicsMutex.h>
 #include <iocsh.h>
 
+#include <epicsExport.h>
 #include "NDArray.h"
 #include "NDPluginCircularBuff.h"
-#include <epicsExport.h>
-
-#define MAX(A,B) (A)>(B)?(A):(B)
-#define MIN(A,B) (A)<(B)?(A):(B)
 
 static const char *driverName="NDPluginCircularBuff";
 
