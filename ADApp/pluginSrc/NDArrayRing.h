@@ -1,9 +1,6 @@
 #ifndef NDARRAYRING_H
 #define NDARRAYRING_H
 
-#include <epicsTypes.h>
-#include <asynStandardInterfaces.h>
-
 #include "NDArray.h"
 
 class NDArrayRing
