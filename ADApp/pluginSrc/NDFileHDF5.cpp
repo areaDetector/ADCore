@@ -233,8 +233,6 @@ asynStatus NDFileHDF5::createXMLFileLayout()
 
   }
   
-  retcode = this->createHardLinks(root);
-
   return retcode;
 }
 
@@ -1292,6 +1290,9 @@ asynStatus NDFileHDF5::closeFile()
      this->closeAttributeDataset();
   }
   if (storePerformance == 1) this->writePerformanceDataset();
+
+  hdf5::Root *root = this->layout.get_hdftree();
+  this->createHardLinks(root);
 
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
             "%s::%s closing HDF cparms %d\n", 
