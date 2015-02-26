@@ -323,8 +323,8 @@ asynStatus asynNDArrayDriver::readNDAttributesFile(const char *fileName)
         pDescription = Attr->Attribute("description");
         pSource = Attr->Attribute("source");
         pAttrType = Attr->Attribute("type");
-        if (!pAttrType) pAttrType = "EPICS_PV";
-        if (strcmp(pAttrType, "EPICS_PV") == 0) {
+        if (!pAttrType) pAttrType = NDAttribute::attrSourceString(NDAttrSourceEPICSPV);
+        if (strcmp(pAttrType, NDAttribute::attrSourceString(NDAttrSourceEPICSPV)) == 0) {
             const char *pDBRType = Attr->Attribute("dbrtype");
             int dbrType = DBR_NATIVE;
             if (pDBRType) {
@@ -351,7 +351,7 @@ asynStatus asynNDArrayDriver::readNDAttributesFile(const char *fileName)
             PVAttribute *pPVAttribute = new PVAttribute(pName, pDescription, pSource, dbrType);
             this->pAttributeList->add(pPVAttribute);
 #endif
-        } else if (strcmp(pAttrType, "PARAM") == 0) {
+        } else if (strcmp(pAttrType, NDAttribute::attrSourceString(NDAttrSourceParam)) == 0) {
             const char *pDataType = Attr->Attribute("datatype");
             if (!pDataType) pDataType = "int";
             const char *pAddr = Attr->Attribute("addr");
@@ -362,7 +362,7 @@ asynStatus asynNDArrayDriver::readNDAttributesFile(const char *fileName)
                 driverName, functionName, pName, pSource, pDataType, pDescription); 
             paramAttribute *pParamAttribute = new paramAttribute(pName, pDescription, pSource, addr, this, pDataType);
             this->pAttributeList->add(pParamAttribute);
-        } else if (strcmp(pAttrType, "FUNCTION") == 0) {
+        } else if (strcmp(pAttrType, NDAttribute::attrSourceString(NDAttrSourceFunct)) == 0) {
             const char *pParam = Attr->Attribute("param");
             if (!pParam) pParam = epicsStrDup("");
             asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
