@@ -62,7 +62,7 @@ This problem is illustrated in the test2 files.  test2_layout.xml contains the f
         <dataset name="start_time"     ndattribute="StartTime"      source="ndattribute" />
 
 The resulting HDF5 file should thus contain a dataset called "start_time".  
-However, it does not, rather it contains an ATTRIBUTE called "StartTime.
+However, it does not, rather it contains an ATTRIBUTE called "StartTime as shown by the following hfdump output:
 
       ATTRIBUTE "StartTime" {
          DATATYPE  H5T_STRING {
