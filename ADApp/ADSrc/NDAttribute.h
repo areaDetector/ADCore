@@ -89,6 +89,7 @@ public:
     NDAttribute(const char *pName, const char *pDescription, 
                 NDAttrSource_t sourceType, const char *pSource, NDAttrDataType_t dataType, void *pValue);
     NDAttribute(NDAttribute& attribute);
+    static const char *attrSourceString(NDAttrSource_t type);
     virtual ~NDAttribute();
     virtual NDAttribute* copy(NDAttribute *pAttribute);
     virtual const char *getName();
