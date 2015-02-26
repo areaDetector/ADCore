@@ -100,6 +100,20 @@ record(mbbi, "$(P)$(R)DataType_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record( longin, "$(P)$(R)BytesPerPixel_RBV" )
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))BYTES_PER_PIXEL")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)BitsPerPixel_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))BITS_PER_PIXEL")
+    field(SCAN, "I/O Intr")
+}
+
 ###################################################################
 #  These records control the color mode                           #
 #  These choices must agree with NDColorMode_t in NDArray.h       # 
@@ -508,6 +522,8 @@ record(longin, "$(P)$(R)NumExposuresCounter_RBV")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NEXPOSURES_COUNTER")
    field(SCAN, "I/O Intr")
+   field(TSE,  "$(TSE=-2)")
+   info(autosaveFields, "TSE")
 }
 record(longout, "$(P)$(R)NumImages")
 {
@@ -523,6 +539,8 @@ record(longin, "$(P)$(R)NumImages_RBV")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NIMAGES")
    field(SCAN, "I/O Intr")
+   field(TSE,  "$(TSE=-2)")
+   info(autosaveFields, "TSE")
 }
 
 record(longin, "$(P)$(R)NumImagesCounter_RBV")
@@ -530,6 +548,8 @@ record(longin, "$(P)$(R)NumImagesCounter_RBV")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NIMAGES_COUNTER")
    field(SCAN, "I/O Intr")
+   field(TSE,  "$(TSE=-2)")
+   info(autosaveFields, "TSE")
 }
 
 ###################################################################
@@ -570,6 +590,8 @@ record(longin, "$(P)$(R)ArrayCounter_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_COUNTER")
     field(SCAN, "I/O Intr")
+    field(TSE,  "$(TSE=-2)")
+    info(autosaveFields, "TSE")
 }
 
 # Updated rate calculation to use a smoothing factor w/ guard against negative values

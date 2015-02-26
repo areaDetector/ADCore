@@ -30,7 +30,7 @@
 NDArray::NDArray()
   : referenceCount(0), pNDArrayPool(NULL),  
     uniqueId(0), timeStamp(0.0), ndims(0), dataType(NDInt8),
-    dataSize(0),  pData(NULL)
+    dataSize(0), bitsPerElement(0), pData(NULL)
 {
   this->epicsTS.secPastEpoch = 0;
   this->epicsTS.nsec = 0;
@@ -148,6 +148,7 @@ int NDArray::getInfo(NDArrayInfo_t *pInfo)
     pInfo->ySize     = this->dims[pInfo->yDim].size;
     pInfo->colorSize = this->dims[pInfo->colorDim].size;
   }
+  pInfo->bitsPerElement = this->bitsPerElement;
   return(ND_SUCCESS);
 }
 
@@ -201,8 +202,8 @@ int NDArray::report(FILE *fp, int details)
     this->ndims);
   for (dim=0; dim<this->ndims; dim++) fprintf(fp, "%d ", (int)this->dims[dim].size);
   fprintf(fp, "]\n");
-  fprintf(fp, "  dataType=%d, dataSize=%d, pData=%p\n",
-        this->dataType, (int)this->dataSize, this->pData);
+  fprintf(fp, "  dataType=%d, nBitsPerPixel=%d, dataSize=%d, pData=%p\n",
+        this->dataType, this->bitsPerElement, (int)this->dataSize, this->pData);
   fprintf(fp, "  uniqueId=%d, timeStamp=%f\n",
         this->uniqueId, this->timeStamp);
   fprintf(fp, "  number of attributes=%d\n", this->pAttributeList->count());
