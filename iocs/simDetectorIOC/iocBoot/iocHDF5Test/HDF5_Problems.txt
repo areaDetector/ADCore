@@ -41,8 +41,8 @@ The errors are captured in test2_master_ioc_error.txt.  These errors include the
 
 I was able to fix this problem.  I moved the location of the call to HDF5::createHardLinks 
 from the HDF5::openFile function to to HDF5::closeFile function.  The linked objects did not
-exist yet when HDF5::createHardLinks was called from the HDF5::openFile function.
-test2_branch_fix1.h5
+exist yet when HDF5::createHardLinks was called from the HDF5::openFile function.  That changed
+has been committed to the hdf5-bugfix branch.
 
 2) Requested hard links are still not created under some circumstances.
 This problem is found when running the current bugfix branch that fixes problem 1) above
@@ -52,8 +52,9 @@ HDF5-DIAG: Error detected in HDF5 (1.8.7) thread 0:
 ...
 2015/02/26 13:42:03.228 NDFileHDF5::createHardLinks error creating hard link from: /example/this_file_name to /example/data_link_in_same_group
 
+Is this because either the source or target of the hardlink is in the outermost group, "/entry"?
 
-3) Some requested datasets stored as attributes of parent group
+3) Some requested datasets are actually stored as attributes of parent group
 This problem is illustrated in the test2 files.  test2_layout.xml contains the following lines:
     <group name="entry"> 
         <attribute name="NX_class" source="constant" value="NXentry" type="string" />
@@ -170,5 +171,12 @@ Note that it contains the "automatic" attributes "description" and "source" disc
 the requested attribute "units".
 
 6) If the xml layout file does not define a group with “ndattr_default=true” it crashes the application.
+This can be seen by using the file test2_layout_no_ndattr_default.xml.  This file is the same as
+test2_layout.xml except the following group was deleted:
+            <group name="NDattributes" ndattr_default="true"> 
+                <attribute name="NX_class" source="constant" value="NXcollection" type="string" />
+                <!-- contains any attributes not described elsewhere-->
+            </group>              <!-- NXcollection -->
+Trying to save a file with this xml file will crash simDetector application.
 
 
