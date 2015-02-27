@@ -1982,12 +1982,13 @@ asynStatus NDFileHDF5::createAttributeDataset()
 {
   HDFAttributeNode *hdfAttrNode;
   NDAttribute *ndAttr = NULL;
+  NDAttrSource_t ndAttrSourceType;
   int extraDims;
   hsize_t hdfdims=1;
   int numCaptures = 1;
   hid_t hdfgroup;
-  const char *attrNames[3] = {"description", "source", NULL};
-  const char *attrStrings[3] = {NULL,NULL,NULL};
+  const char *attrNames[5] = {"NDAttrName", "NDAttrDescription", "NDAttrSourceType", "NDAttrSource", NULL};
+  const char *attrStrings[5] = {NULL,NULL,NULL,NULL,NULL};
   int i;
   NDAttrDataType_t ndAttrDataType; 
   size_t size;
@@ -2015,6 +2016,10 @@ asynStatus NDFileHDF5::createAttributeDataset()
     if (ndAttr->getDataType() < NDAttrString)
     {
 
+      attrStrings[0] = ndAttr->getName();
+      attrStrings[1] = ndAttr->getDescription();
+      attrStrings[2] = ndAttr->getSourceInfo(&ndAttrSourceType);
+      attrStrings[3] = ndAttr->getSource();
       // allocate another name-nodes
       hdfAttrNode = (HDFAttributeNode*)calloc(1, sizeof(HDFAttributeNode));
       hdfAttrNode->attrName = epicsStrDup(ndAttr->getName()); // copy the attribute name
@@ -2060,8 +2065,6 @@ asynStatus NDFileHDF5::createAttributeDataset()
         hdfAttrNode->hdfmemspace  = H5Screate_simple(hdfAttrNode->hdfrank, &hdfAttrNode->elementSize, NULL);
 
         // Write some description of the NDAttribute as a HDF attribute to the dataset
-        attrStrings[0] = ndAttr->getDescription();
-        attrStrings[1] = ndAttr->getSource();
         for (i=0; attrNames[i] != NULL; i++)
         {
           size = strlen(attrStrings[i]);
@@ -2083,8 +2086,6 @@ asynStatus NDFileHDF5::createAttributeDataset()
         hdfAttrNode->hdfmemspace  = H5Screate_simple(hdfAttrNode->hdfrank, &hdfAttrNode->elementSize, NULL);
 
         // Write some description of the NDAttribute as a HDF attribute to the dataset
-        attrStrings[0] = ndAttr->getDescription();
-        attrStrings[1] = ndAttr->getSource();
         for (i=0; attrNames[i] != NULL; i++)
         {
           size = strlen(attrStrings[i]);
