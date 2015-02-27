@@ -8,12 +8,6 @@
 
 #include "NDPluginDriver.h"
 
-typedef struct NDCircularBuff {
-    size_t  nElements;
-    size_t  preTrigger;
-    size_t  postTrigger;
-} NDCircularBuff_t;
-
 /* Param definitions */
 #define NDPluginCircularBuffControlString            "CIRCULAR_BUFF_CONTROL"       /* (asynInt32,        r/w) Run scope? */
 #define NDPluginCircularBuffStatusString             "CIRCULAR_BUFF_STATUS"        /* (asynOctetRead,    r/o) Scope status */
