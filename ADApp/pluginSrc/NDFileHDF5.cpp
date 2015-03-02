@@ -392,7 +392,7 @@ asynStatus NDFileHDF5::createTree(hdf5::Group* root, hid_t h5handle)
     }
 
     // Write contant datasets to file
-    this->writeHdfConstDatasets(new_group, root);
+//    this->writeHdfConstDatasets(new_group, root);
 
     getIntegerParam(NDFileHDF5_storeAttributes, &storeAttributes);
     if (storeAttributes == 1){
@@ -503,6 +503,8 @@ void NDFileHDF5::writeHdfAttributes( hid_t h5_handle, hdf5::Element* element)
           this->writeH5attrInt32(h5_handle, attr.get_name(), attr.source.get_src_def());
           break;
         default:
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::writeHdfAttributes unknown type: unable to create attribute: %s\n",
+              driverName, attr.get_name());
           break;
       }
     }
@@ -545,10 +547,35 @@ void NDFileHDF5::writeHdfConstDatasets( hid_t h5_handle, hdf5::Group* group)
   }
 }
 
+hid_t NDFileHDF5::writeHdfConstDataset( hid_t h5_handle, hdf5::Dataset* dset)
+{
+  hdf5::DataType_t dtype = hdf5::string;
+
+  if(dset != NULL && dset->data_source().is_src_constant())
+  {
+    dtype = dset->data_source().get_datatype();
+    switch ( dtype )
+    {
+      case hdf5::string:
+        return this->writeH5dsetStr(h5_handle, dset->get_name(), dset->data_source().get_src_def());
+        break;
+      case hdf5::float64:
+        return this->writeH5dsetFloat64(h5_handle, dset->get_name(), dset->data_source().get_src_def());
+        break;
+      case hdf5::int32:
+        return this->writeH5dsetInt32(h5_handle, dset->get_name(), dset->data_source().get_src_def());
+        break;
+      default:
+        return -1;
+        break;
+    }
+  }
+}
+
 /** 
  * Write a string constant dataset.
  */
-void NDFileHDF5::writeH5dsetStr(hid_t element, const std::string &name, const std::string &str_value) const
+hid_t NDFileHDF5::writeH5dsetStr(hid_t element, const std::string &name, const std::string &str_value) const
 {
   herr_t hdfstatus = -1;
   hid_t hdfdatatype = -1;
@@ -572,7 +599,7 @@ void NDFileHDF5::writeH5dsetStr(hid_t element, const std::string &name, const st
               driverName, functionName, name.c_str());
     H5Tclose(hdfdatatype);
     H5Sclose(hdfdataspace);
-    return;
+    return -1;
   }
 
   hdfstatus = H5Dwrite(hdfdset, hdfdatatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, str_value.c_str());
@@ -582,17 +609,17 @@ void NDFileHDF5::writeH5dsetStr(hid_t element, const std::string &name, const st
     H5Aclose (hdfdset);
     H5Tclose(hdfdatatype);
     H5Sclose(hdfdataspace);
-    return;
+    return -1;
   }
 
-  H5Dclose (hdfdset);
+  //H5Dclose (hdfdset);
   H5Tclose(hdfdatatype);
   H5Sclose(hdfdataspace);
 
-  return;
+  return hdfdset;
 }
 
-void NDFileHDF5::writeH5dsetInt32(hid_t element, const std::string &name, const std::string &str_value) const
+hid_t NDFileHDF5::writeH5dsetInt32(hid_t element, const std::string &name, const std::string &str_value) const
 {
   herr_t hdfstatus = -1;
   hid_t hdfdatatype = -1;
@@ -624,7 +651,7 @@ void NDFileHDF5::writeH5dsetInt32(hid_t element, const std::string &name, const 
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s unable to create dataset: %s\n",
                 driverName, functionName, name.c_str());
       H5Sclose(hdfdataspace);
-      return;
+      return -1;
     }
     epicsInt32 ival;
     sscanf(str_value.c_str(), "%d", &ival);
@@ -634,7 +661,7 @@ void NDFileHDF5::writeH5dsetInt32(hid_t element, const std::string &name, const 
                 driverName, functionName, name.c_str());
       H5Dclose(hdfdset);
       H5Sclose(hdfdataspace);
-      return;
+      return -1;
     }
   } else {
     // Here we have an array of integer values
@@ -655,7 +682,7 @@ void NDFileHDF5::writeH5dsetInt32(hid_t element, const std::string &name, const 
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s unable to create dataset: %s\n",
                 driverName, functionName, name.c_str());
       H5Sclose(hdfdataspace);
-      return;
+      return -1;
     }
     hdfstatus = H5Dwrite(hdfdset, hdfdatatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, ivalues);
     delete [] ivalues;
@@ -664,16 +691,16 @@ void NDFileHDF5::writeH5dsetInt32(hid_t element, const std::string &name, const 
                 driverName, functionName, name.c_str());
       H5Dclose (hdfdset);
       H5Sclose(hdfdataspace);
-      return;
+      return -1;
     }
   }
-  H5Dclose (hdfdset);
+  //H5Dclose (hdfdset);
   H5Sclose(hdfdataspace);
-  return;
+  return hdfdset;
 
 }
 
-void NDFileHDF5::writeH5dsetFloat64(hid_t element, const std::string &name, const std::string &str_value) const
+hid_t NDFileHDF5::writeH5dsetFloat64(hid_t element, const std::string &name, const std::string &str_value) const
 {
   herr_t hdfstatus = -1;
   hid_t hdfdatatype = -1;
@@ -705,7 +732,7 @@ void NDFileHDF5::writeH5dsetFloat64(hid_t element, const std::string &name, cons
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s unable to create dataset: %s\n",
                 driverName, functionName, name.c_str());
       H5Sclose(hdfdataspace);
-      return;
+      return -1;
     }
     double fval;
     sscanf(str_value.c_str(), "%lf", &fval);
@@ -715,7 +742,7 @@ void NDFileHDF5::writeH5dsetFloat64(hid_t element, const std::string &name, cons
                 driverName, functionName, name.c_str());
       H5Dclose (hdfdset);
       H5Sclose(hdfdataspace);
-      return;
+      return -1;
     }
   } else {
     // Here we have an array of integer values
@@ -736,7 +763,7 @@ void NDFileHDF5::writeH5dsetFloat64(hid_t element, const std::string &name, cons
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s unable to create dataset: %s\n",
                 driverName, functionName, name.c_str());
       H5Sclose(hdfdataspace);
-      return;
+      return -1;
     }
     hdfstatus = H5Dwrite(hdfdset, hdfdatatype, H5S_ALL, H5S_ALL, H5P_DEFAULT, fvalues);
     delete [] fvalues;
@@ -745,12 +772,12 @@ void NDFileHDF5::writeH5dsetFloat64(hid_t element, const std::string &name, cons
                 driverName, functionName, name.c_str());
       H5Dclose(hdfdset);
       H5Sclose(hdfdataspace);
-      return;
+      return -1;
     }
   }
-  H5Dclose (hdfdset);
+  //H5Dclose (hdfdset);
   H5Sclose(hdfdataspace);
-  return;
+  return hdfdset;
 
 }
 
@@ -768,6 +795,9 @@ hid_t NDFileHDF5::createDataset(hid_t group, hdf5::Dataset *dset)
 
   if (dset->data_source().is_src_detector()) {
     return this->createDatasetDetector(group, dset);
+  }
+  if(dset->data_source().is_src_constant()) {
+    return this->writeHdfConstDataset(group,  dset);
   }
   if (dset->data_source().is_src_ndattribute()) {
     // At this time we cannot create the dataset as we do not know its type yet
@@ -1926,6 +1956,13 @@ asynStatus NDFileHDF5::writePerformanceDataset()
     hdf5::Group* perf_group = root->find_ndattr_default_group(); // Generally use the default ndattribute dataset for 'timestamp'
     hdf5::Dataset *tsDset = NULL;
 
+    if(perf_group == NULL)
+    {
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING, "%s::writePerformanceDataset No default attribute group defined.\n",
+                driverName);
+      return asynError;
+    }
+
     // Look if a "performance/timestamp" dataset can be found.
     // If so, use that dataset to store performance timestamps.
     // This is a slight HACK to retain backwards compatibility
@@ -2004,6 +2041,14 @@ asynStatus NDFileHDF5::createAttributeDataset()
 
   hdf5::Root *root = this->layout.get_hdftree();
   hdf5::Group* def_group = root->find_ndattr_default_group();
+  //check for NULL
+  if(def_group == NULL)
+  {
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING, "%s::%s No default attribute group defined.\n",
+              driverName, functionName);
+
+    return asynError;
+  }
   hid_t groupDefault = H5Gopen(this->file, def_group->get_full_name().c_str(), H5P_DEFAULT);
   if (strlen(this->hostname) > 0) {
     this->writeStringAttribute(groupDefault, "hostname", this->hostname);
