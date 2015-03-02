@@ -170,6 +170,10 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
     this->configurePerformanceDataset();
   }
 
+  // Create all of the hardlinks in the file
+  hdf5::Root *root = this->layout.get_hdftree();
+  this->createHardLinks(root);
+
   return asynSuccess;
 }
 
@@ -1290,9 +1294,6 @@ asynStatus NDFileHDF5::closeFile()
      this->closeAttributeDataset();
   }
   if (storePerformance == 1) this->writePerformanceDataset();
-
-  hdf5::Root *root = this->layout.get_hdftree();
-  this->createHardLinks(root);
 
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
             "%s::%s closing HDF cparms %d\n", 
