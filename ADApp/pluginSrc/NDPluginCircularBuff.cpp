@@ -14,6 +14,7 @@
 
 #include <epicsString.h>
 #include <epicsMutex.h>
+#include <epicsMath.h>
 #include <iocsh.h>
 #include <postfix.h>
 
@@ -42,8 +43,8 @@ asynStatus NDPluginCircularBuff::calculateTrigger(NDArray *pArray, int *trig)
     getIntegerParam(NDPluginCircularBuffCurrentImage, &currentImage);
     getIntegerParam(NDPluginCircularBuffTriggered,    &triggered);   
 
-    triggerCalcArgs_[0] = NAN;
-    triggerCalcArgs_[1] = NAN;
+    triggerCalcArgs_[0] = epicsNAN;
+    triggerCalcArgs_[1] = epicsNAN;
     triggerCalcArgs_[2] = preTrigger;
     triggerCalcArgs_[3] = postTrigger;
     triggerCalcArgs_[4] = currentImage;
@@ -55,7 +56,6 @@ asynStatus NDPluginCircularBuff::calculateTrigger(NDArray *pArray, int *trig)
         status = trigger->getValue(NDAttrFloat64, &triggerValue);
         if (status == asynSuccess) {
             triggerCalcArgs_[0] = triggerValue;
-            setDoubleParam(NDPluginCircularBuffTriggerAVal, triggerValue);
         }
     }
     getStringParam(NDPluginCircularBuffTriggerB, sizeof(triggerString), triggerString);
@@ -64,10 +64,11 @@ asynStatus NDPluginCircularBuff::calculateTrigger(NDArray *pArray, int *trig)
         status = trigger->getValue(NDAttrFloat64, &triggerValue);
         if (status == asynSuccess) {
             triggerCalcArgs_[1] = triggerValue;
-            setDoubleParam(NDPluginCircularBuffTriggerBVal, triggerValue);
         }
     }
     
+    setDoubleParam(NDPluginCircularBuffTriggerAVal, triggerCalcArgs_[0]);
+    setDoubleParam(NDPluginCircularBuffTriggerBVal, triggerCalcArgs_[1]);
     status = calcPerform(triggerCalcArgs_, &calcResult, triggerCalcPostfix_);
     if (status) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
