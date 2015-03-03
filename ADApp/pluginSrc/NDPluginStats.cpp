@@ -569,20 +569,25 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
         }
     }
 
-    NDArray *pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 1);
-    if (NULL != pArrayOut) {
-        this->getAttributes(pArrayOut->pAttributeList);
-        this->unlock();
-        doCallbacksGenericPointer(pArrayOut, NDArrayData, 0);
-        this->lock();
-        /* Save a copy of this array for calculations when cursor is moved or threshold is changed */
-        if (this->pArrays[0]) this->pArrays[0]->release();
-        this->pArrays[0] = pArrayOut;
-    }
-    else {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-            "%s::%s: Couldn't allocate output array. Further processing terminated.\n", 
-            driverName, functionName);
+
+    int arrayCallbacks = 0;
+    getIntegerParam(NDArrayCallbacks, &arrayCallbacks);
+    if (arrayCallbacks == 1) {
+        NDArray *pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 1);
+        if (NULL != pArrayOut) {
+            this->getAttributes(pArrayOut->pAttributeList);
+            this->unlock();
+            doCallbacksGenericPointer(pArrayOut, NDArrayData, 0);
+            this->lock();
+            /* Save a copy of this array for calculations when cursor is moved or threshold is changed */
+            if (this->pArrays[0]) this->pArrays[0]->release();
+            this->pArrays[0] = pArrayOut;
+        }
+        else {
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+                "%s::%s: Couldn't allocate output array. Further processing terminated.\n", 
+                driverName, functionName);
+        }
     }
 
     callParamCallbacks();
