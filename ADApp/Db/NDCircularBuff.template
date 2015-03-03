@@ -36,6 +36,88 @@ record(stringin, "$(P)$(R)StatusMessage")
     field(SCAN, "I/O Intr")
 }
 
+# # TriggerA attribute name
+record(waveform, "$(P)$(R)TriggerA") {
+  field(DTYP, "asynOctetWrite")
+  field(INP,  "@asyn($(PORT) 0)CIRCULAR_BUFF_TRIGGER_A")
+  field(FTVL, "CHAR")
+  field(NELM, "256")
+  field(PINI, "1")
+}
+
+# # TriggerA attribute name readback
+record(waveform, "$(P)$(R)TriggerA_RBV") {
+  field(DTYP, "asynOctetRead")
+  field(INP,  "@asyn($(PORT) 0)CIRCULAR_BUFF_TRIGGER_A")
+  field(FTVL, "CHAR")
+  field(NELM, "256")
+  field(SCAN, "I/O Intr")
+}
+
+# # TriggerB attribute name
+record(waveform, "$(P)$(R)TriggerB") {
+  field(DTYP, "asynOctetWrite")
+  field(INP,  "@asyn($(PORT) 0)CIRCULAR_BUFF_TRIGGER_B")
+  field(FTVL, "CHAR")
+  field(NELM, "256")
+  field(PINI, "1")
+}
+
+# # TriggerB attribute name readback
+record(waveform, "$(P)$(R)TriggerB_RBV") {
+  field(DTYP, "asynOctetRead")
+  field(INP,  "@asyn($(PORT) 0)CIRCULAR_BUFF_TRIGGER_B")
+  field(FTVL, "CHAR")
+  field(NELM, "256")
+  field(SCAN, "I/O Intr")
+}
+
+# # TriggerA attribute value
+record(ai, "$(P)$(R)TriggerAVal") {
+  field(DTYP, "asynFloat64")
+  field(INP,  "@asyn($(PORT) 0)CIRCULAR_BUFF_TRIGGER_A_VAL")
+  field(SCAN, "I/O Intr")
+}
+
+# # TriggerB attribute value
+record(ai, "$(P)$(R)TriggerBVal") {
+  field(DTYP, "asynFloat64")
+  field(INP,  "@asyn($(PORT) 0)CIRCULAR_BUFF_TRIGGER_B_VAL")
+  field(SCAN, "I/O Intr")
+}
+
+# # Trigger calculation string
+record(waveform, "$(P)$(R)TriggerCalc") {
+  field(DTYP, "asynOctetWrite")
+  field(INP,  "@asyn($(PORT) 0)CIRCULAR_BUFF_TRIGGER_CALC")
+  field(FTVL, "CHAR")
+  field(NELM, "256")
+  field(PINI, "1")
+}
+
+# # Trigger calculation readback
+record(waveform, "$(P)$(R)TriggerCalc_RBV") {
+  field(DTYP, "asynOctetRead")
+  field(INP,  "@asyn($(PORT) 0)CIRCULAR_BUFF_TRIGGER_CALC")
+  field(FTVL, "CHAR")
+  field(NELM, "256")
+  field(SCAN, "I/O Intr")
+}
+
+# # Trigger calculation value
+record(ai, "$(P)$(R)TriggerCalcVal") {
+  field(DTYP, "asynFloat64")
+  field(INP,  "@asyn($(PORT) 0)CIRCULAR_BUFF_TRIGGER_CALC_VAL")
+  field(SCAN, "I/O Intr")
+}
+
+# # Number of pre-count frames readback from driver
+record(longin, "$(P)$(R)PRECOUNT_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) 0)CIRCULAR_BUFF_PRE_TRIGGER")
+}
+
 # # Number of pre-count frames
 record(longout, "$(P)$(R)PRECOUNT") {
   field(DTYP, "asynInt32")
