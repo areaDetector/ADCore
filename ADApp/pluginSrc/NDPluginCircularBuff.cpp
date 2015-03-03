@@ -415,6 +415,10 @@ NDPluginCircularBuff::NDPluginCircularBuff(const char *portName, int queueSize, 
     setIntegerParam(NDPluginCircularBuffPreTrigger, 100);
     setIntegerParam(NDPluginCircularBuffPostTrigger, 100);
 
+    // Enable ArrayCallbacks.  
+    // This plugin currently ignores this setting and always does callbacks, so make the setting reflect the behavior
+    setIntegerParam(NDArrayCallbacks, 1);
+
     // Try to connect to the array port
     connectToArrayPort();
 }

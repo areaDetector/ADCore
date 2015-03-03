@@ -207,6 +207,10 @@ NDPluginAttribute::NDPluginAttribute(const char *portName, int queueSize, int bl
     setDoubleParam(NDPluginAttributeVal, 0.0);
     setDoubleParam(NDPluginAttributeValSum, 0.0);
 
+    // Disable ArrayCallbacks.  
+    // This plugin currently does not do array callbacks, so make the setting reflect the behavior
+    setIntegerParam(NDArrayCallbacks, 0);
+
     /* Try to connect to the array port */
     connectToArrayPort();
 

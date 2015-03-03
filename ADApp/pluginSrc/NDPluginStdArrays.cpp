@@ -287,6 +287,10 @@ NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int bl
     /* Set the plugin type string */    
     setStringParam(NDPluginDriverPluginType, "NDPluginStdArrays");
 
+    // Disable ArrayCallbacks.  
+    // This plugin currently does not do array callbacks, so make the setting reflect the behavior
+    setIntegerParam(NDArrayCallbacks, 0);
+
     /* Try to connect to the NDArray port */
     connectToArrayPort();
 }
