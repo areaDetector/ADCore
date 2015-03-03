@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDROIStat.adl"
+	name="/home/epics/devel/areaDetector-2-1/ADCore/ADApp/op/adl/NDROIStat.adl"
 	version=030107
 }
 display {
@@ -275,7 +275,7 @@ menu {
 		height=20
 	}
 	control {
-		chan="$(P)$(R)NDArrayCallbacks"
+		chan="$(P)$(R)ArrayCallbacks"
 		clr=14
 		bclr=51
 	}
@@ -288,7 +288,7 @@ menu {
 		height=18
 	}
 	monitor {
-		chan="$(P)$(R)NDArrayCallbacks_RBV"
+		chan="$(P)$(R)ArrayCallbacks_RBV"
 		clr=54
 		bclr=4
 	}
