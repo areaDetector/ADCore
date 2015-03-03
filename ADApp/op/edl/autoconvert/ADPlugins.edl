@@ -201,13 +201,13 @@ menuLabel {
   6 Null file #1
 }
 symbols {
-  0 "P=$(P),R=netCDF1:"
-  1 "P=$(P),R=TIFF1:"
-  2 "P=$(P),R=JPEG1:"
-  3 "P=$(P),R=Nexus1:"
-  4 "P=$(P),R=Magick1:"
-  5 "P=$(P),R=HDF1:"
-  6 "P=$(P),R=Null1:"
+  0 "P=$(P),R=netCDF1:,EXT=nc"
+  1 "P=$(P),R=TIFF1:,EXT=tif"
+  2 "P=$(P),R=JPEG1:,EXT=jpg"
+  3 "P=$(P),R=Nexus1:,EXT=h5"
+  4 "P=$(P),R=Magick1:,EXT=tif"
+  5 "P=$(P),R=HDF1:,EXT=h5"
+  6 "P=$(P),R=Null1:,EXT=null"
 }
 endObjectProperties
 
@@ -312,8 +312,8 @@ topShadowColor index 2
 botShadowColor index 12
 font "helvetica-medium-r-10.0"
 icon
-numPvs 18
-numDsps 9
+numPvs 22
+numDsps 11
 displayFileName {
   0 /home/oxygen/MOONEY/epics/git/areaDetector/ADCore/ADApp/op/adl/NDStdArrays.edl
   1 /home/oxygen/MOONEY/epics/git/areaDetector/ADCore/ADApp/op/adl/NDProcess.edl
@@ -322,8 +322,10 @@ displayFileName {
   4 /home/oxygen/MOONEY/epics/git/areaDetector/ADCore/ADApp/op/adl/NDColorConvert.edl
   5 /home/oxygen/MOONEY/epics/git/areaDetector/ADCore/ADApp/op/adl/NDOverlay.edl
   6 /home/oxygen/MOONEY/epics/git/areaDetector/ADCore/ADApp/op/adl/NDOverlay8.edl
-  7 scan_more.adl
-  8 yySseq.adl
+  7 /home/oxygen/MOONEY/epics/git/areaDetector/ADCore/ADApp/op/adl/NDCircularBuff.edl
+  8 /home/oxygen/MOONEY/epics/git/areaDetector/ADCore/ADApp/op/adl/NDROIStat.edl
+  9 scan_more.adl
+  10 yySseq.adl
 }
 menuLabel {
   0 Image #1
@@ -333,8 +335,10 @@ menuLabel {
   4 Color convert #2
   5 Overlay #1
   6 Overlays 1-8
-  7 Scan #1
-  8 Acquire Sequence
+  7 Circular buffer #1
+  8 ROI Statistics #1
+  9 Scan #1
+  10 Acquire Sequence
 }
 symbols {
   0 "P=$(P),R=image1:"
@@ -344,8 +348,10 @@ symbols {
   4 "P=$(P),R=CC2:"
   5 "P=$(P),R=Over1:"
   6 "P=$(P),R=Over1:,O1=Over1:1:,O2=Over1:2:,O3=Over1:3:,O4=Over1:4:,O5=Over1:5:,O6=Over1:6:,O7=Over1:7:,O8=Over1:8:"
-  7 "P=$(P),S=scan1,N=1"
-  8 "P=$(P),S=AcquireSequence"
+  7 "P=$(P),R=CB1:"
+  8 "P=$(P),R=ROIStat1:"
+  9 "P=$(P),S=scan1,N=1"
+  10 "P=$(P),S=AcquireSequence"
 }
 endObjectProperties
 
