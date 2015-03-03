@@ -49,6 +49,38 @@
     until the post-count is reached. The plugin will then stop buffering or outputting
     NDArrays until it is reset via NDPluginCircularBuffControl</p>
   <p>
+    Triggering using NDArray attributes is quite powerful. Two NDArray attributes can
+    be used for triggering. The names of these attributes are defined with the TriggerNameA
+    and TriggerNameB records. The values of these attributes must be numeric, not string.
+    The TriggerCalc record defines a calculation expression that uses that same syntax
+    as the EPICS calc record. If the expression evaluates to a non-zero value then the
+    plugin will be triggered. The variables in the expression are defined as follows:</p>
+  <ul>
+    <li>A The current value of the NDAttribute defined by TriggerA.</li>
+    <li>B The current value of the NDAttribute defined by TriggerA.</li>
+    <li>C The value of the PRECOUNT record</li>
+    <li>D The value of the POSTCOUNT record</li>
+    <li>E The value of the CurrentQty_RBV record</li>
+    <li>F The value of the PostTriggerQty_RBV record</li>
+    <li>G The value of the Trigger_RBV record</li>
+  </ul>
+  <p>
+    The following are some example expressions. They assume that the NDPluginCircularBuff
+    plugin is getting its data from the NDPluginStats plugin. Assume the NDPluginStats
+    plugin is using an attributes XML file containing the following lines:</p>
+  <pre>
+    &lt;Attribute name="MaxIntensity" type="PARAM" source="MAX_VALUE"       datatype="DOUBLE" description="Maximum intensity"/&gt;
+    &lt;Attribute name="CentroidX"    type="PARAM" source="CENTROIDX_VALUE" datatype="DOUBLE" description="Centroid X position"/&gt;
+    </pre>
+  <p>
+    The following expressions can then be used for triggering:</p>
+  <pre>
+    "A<200"               Intensity of brightest pixel is less than 200
+    "A>0.5*C && H>50;H=A" Intensity of brightest pixel is more than 50% greater than in the previous image 
+                            and there are at least 50 images in the circular buffer.  Set H to A after evaluation.
+    "B<300 || A>100"      X centroid is less than pixel 300 or the maximum intensity is greater than 100
+    </pre>
+  <p>
     NDPluginCircularBuff inherits from NDPluginDriver. The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_circular_buff.html">
       NDPluginCircularBuff class documentation</a> describes this class in detail.
   </p>
