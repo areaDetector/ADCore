@@ -402,6 +402,28 @@ record(longin, "$(P)$(R)EpicsTSNsec_RBV")
 }
 
 ###################################################################
+#  These records control NDArray callacks                         # 
+###################################################################
+record(bo, "$(P)$(R)ArrayCallbacks")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_CALLBACKS")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+    info(autosaveFields, "VAL")
+}
+
+record(bi, "$(P)$(R)ArrayCallbacks_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_CALLBACKS")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+    field(SCAN, "I/O Intr")
+}
+
+###################################################################
 #  This record is the name of a file defining attributes        # 
 ###################################################################
 
