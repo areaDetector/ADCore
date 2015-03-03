@@ -482,6 +482,7 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
     setDoubleParam (roi , NDPluginROIStatMaxValue,          0.0);
     setDoubleParam (roi , NDPluginROIStatMeanValue,         0.0);
     setDoubleParam (roi , NDPluginROIStatTotal,             0.0);
+    setDoubleParam (roi , NDPluginROIStatNet,               0.0);
     callParamCallbacks(roi);
   }
 
