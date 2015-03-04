@@ -1960,13 +1960,6 @@ asynStatus NDFileHDF5::writePerformanceDataset()
     hdf5::Group* perf_group = root->find_ndattr_default_group(); // Generally use the default ndattribute dataset for 'timestamp'
     hdf5::Dataset *tsDset = NULL;
 
-    if(perf_group == NULL)
-    {
-      asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING, "%s::writePerformanceDataset No default attribute group defined.\n",
-                driverName);
-      return asynError;
-    }
-
     // Look if a "performance/timestamp" dataset can be found.
     // If so, use that dataset to store performance timestamps.
     // This is a slight HACK to retain backwards compatibility
@@ -1980,6 +1973,13 @@ asynStatus NDFileHDF5::writePerformanceDataset()
           !tsDset->data_source().is_src_ndattribute() ) {
           perf_group = grp;
       }
+    }
+
+    if(perf_group == NULL)
+    {
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING, "%s::writePerformanceDataset No default attribute group defined.\n",
+                driverName);
+      return asynError;
     }
 
     getIntegerParam(NDFileNumCaptured, &numCaptured);
@@ -2028,7 +2028,7 @@ asynStatus NDFileHDF5::createAttributeDataset()
   int extraDims;
   hsize_t hdfdims=1;
   int numCaptures = 1;
-  hid_t hdfgroup;
+  hid_t groupDefault = -1;
   const char *attrNames[5] = {"NDAttrName", "NDAttrDescription", "NDAttrSourceType", "NDAttrSource", NULL};
   const char *attrStrings[5] = {NULL,NULL,NULL,NULL,NULL};
   int i;
@@ -2046,22 +2046,20 @@ asynStatus NDFileHDF5::createAttributeDataset()
   hdf5::Root *root = this->layout.get_hdftree();
   hdf5::Group* def_group = root->find_ndattr_default_group();
   //check for NULL
-  if(def_group == NULL)
-  {
+  if(def_group != NULL) {
+    groupDefault = H5Gopen(this->file, def_group->get_full_name().c_str(), H5P_DEFAULT);
+    if (strlen(this->hostname) > 0) {
+      this->writeStringAttribute(groupDefault, "hostname", this->hostname);
+    }
+  }
+  else {
     asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING, "%s::%s No default attribute group defined.\n",
               driverName, functionName);
-
-    return asynError;
-  }
-  hid_t groupDefault = H5Gopen(this->file, def_group->get_full_name().c_str(), H5P_DEFAULT);
-  if (strlen(this->hostname) > 0) {
-    this->writeStringAttribute(groupDefault, "hostname", this->hostname);
   }
 
   ndAttr = this->pFileAttributes->next(ndAttr); // get the first NDAttribute
   while(ndAttr != NULL)
   {
-    hdfgroup = groupDefault;
 
     if (ndAttr->getDataType() < NDAttrString)
     {
@@ -2122,37 +2120,38 @@ asynStatus NDFileHDF5::createAttributeDataset()
           this->writeStringAttribute(hdfAttrNode->hdfdataset, attrNames[i], attrStrings[i]);
         }
 
+        // Add the attribute to the list
+        attrList.push_back(hdfAttrNode);
 
       } else {
-        hdfAttrNode->hdfdataspace = H5Screate_simple(hdfAttrNode->hdfrank, &hdfAttrNode->hdfdims, NULL);
-        // In here we need to create the dataset
-        hdfAttrNode->hdfdataset   = H5Dcreate2(hdfgroup, hdfAttrNode->attrName,
-                                               hdfAttrNode->hdfdatatype, hdfAttrNode->hdfdataspace,
-                                               H5P_DEFAULT, hdfAttrNode->hdfcparm, H5P_DEFAULT);
-
-
-        // create a memory space of exactly one element dimension to use for writing slabs
-        hdfAttrNode->elementSize  = 1;
-        hdfAttrNode->hdfmemspace  = H5Screate_simple(hdfAttrNode->hdfrank, &hdfAttrNode->elementSize, NULL);
-
-        // Write some description of the NDAttribute as a HDF attribute to the dataset
-        for (i=0; attrNames[i] != NULL; i++)
-        {
-          size = strlen(attrStrings[i]);
-          if (size <= 0) continue;
-          this->writeStringAttribute(hdfAttrNode->hdfdataset, attrNames[i], attrStrings[i]);
+        if(groupDefault > -1) {
+          hdfAttrNode->hdfdataspace = H5Screate_simple(hdfAttrNode->hdfrank, &hdfAttrNode->hdfdims, NULL);
+          // In here we need to create the dataset
+          hdfAttrNode->hdfdataset   = H5Dcreate2(groupDefault, hdfAttrNode->attrName,
+                                                 hdfAttrNode->hdfdatatype, hdfAttrNode->hdfdataspace,
+                                                 H5P_DEFAULT, hdfAttrNode->hdfcparm, H5P_DEFAULT);
+  
+  
+          // create a memory space of exactly one element dimension to use for writing slabs
+          hdfAttrNode->elementSize  = 1;
+          hdfAttrNode->hdfmemspace  = H5Screate_simple(hdfAttrNode->hdfrank, &hdfAttrNode->elementSize, NULL);
+  
+          // Write some description of the NDAttribute as a HDF attribute to the dataset
+          for (i=0; attrNames[i] != NULL; i++)
+          {
+            size = strlen(attrStrings[i]);
+            if (size <= 0) continue;
+            this->writeStringAttribute(hdfAttrNode->hdfdataset, attrNames[i], attrStrings[i]);
+          }
+          // Add the attribute to the list
+          attrList.push_back(hdfAttrNode);
         }
-
       }
-
-      // Add the attribute to the list
-      attrList.push_back(hdfAttrNode);
-
     }
      // if the NDArray attribute is a string we attach it as an HDF attribute to the meta data group.
     else if (ndAttr->getDataType() == NDAttrString)
     {
-      hid_t dsetgroup;
+      hid_t dsetgroup = -1;
       hdf5::Dataset *dset = NULL;
       int closeGroup = 0;
       // Search for the dataset of the NDAttribute.  If it exists then we use it
@@ -2163,16 +2162,19 @@ asynStatus NDFileHDF5::createAttributeDataset()
         // Here we must close the group after writing the attribute
         closeGroup = 1;
       } else {
-        dsetgroup = hdfgroup;
+        if(groupDefault > -1)
+          dsetgroup = groupDefault;
       }
-      // Write some description of the NDAttribute as a HDF attribute to the dataset
-      ndAttr->getValueInfo(&ndAttrDataType, &size);
-      char * attrDataTypeStr = (char*)calloc(size, sizeof(char));
-      ndAttr->getValue(ndAttrDataType, attrDataTypeStr, size);
-      if (size > 0) this->writeStringAttribute(dsetgroup, ndAttr->getName(), attrDataTypeStr);
-      free(attrDataTypeStr);
-      if (closeGroup == 1){
-        H5Gclose(dsetgroup);
+      if(dsetgroup > -1) {
+        // Write some description of the NDAttribute as a HDF attribute to the dataset
+        ndAttr->getValueInfo(&ndAttrDataType, &size);
+        char * attrDataTypeStr = (char*)calloc(size, sizeof(char));
+        ndAttr->getValue(ndAttrDataType, attrDataTypeStr, size);
+        if (size > 0) this->writeStringAttribute(dsetgroup, ndAttr->getName(), attrDataTypeStr);
+        free(attrDataTypeStr);
+        if (closeGroup == 1){
+          H5Gclose(dsetgroup);
+        }
       }
     }
     ndAttr = this->pFileAttributes->next(ndAttr);
