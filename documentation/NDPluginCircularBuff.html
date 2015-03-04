@@ -72,7 +72,7 @@
    &lt;attribute name="CentroidX" type="PARAM" source="CENTROIDX_VALUE" datatype="DOUBLE" description="Centroid X position" /&gt;
   </pre>
   <p>
-    The following expressions can then be used for triggering:</p>
+    The following are examples of some expressions that can be used for triggering:</p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
       <tr>
@@ -89,11 +89,11 @@
       </tr>
       <tr>
         <td>
-          A&gt;0.5*H &amp;&amp; E&gt;50;H:=A</td>
+          A&gt;1.5*H &amp;&amp; E&gt;50;H:=A</td>
         <td>
-          Intensity of brightest pixel is more than 50% greater than in the previous image
-          and there are at least 50 images in the circular buffer. Set H to A after evaluation.
-        </td>
+          Intensity of brightest pixel (A) is more than 150% of the value in the previous
+          image (H) and there are at least 50 images in the circular buffer. Set H to A after
+          evaluation. </td>
       </tr>
       <tr>
         <td>
@@ -104,6 +104,15 @@
       </tr>
     </tbody>
   </table>
+  <p>
+    If the TriggerA or TriggerB attrbutes do not exist, or if they are non-numeric datatype
+    then the TriggerAVal or TriggerBVal is set to NaN (Not a Number). If that value
+    is used in the calculation expression then in some cases the TriggerCalcVal will
+    also be NaN (for example A+B will be NaN). If the trigger value is Nan or Infinity
+    then the expression is treated as 0 and the trigger will not occur. However, some
+    expressions involving NaN arguments do not result in a NaN result and could result
+    in false triggers. For example (A&&B) evaluates as 1 when both A and B are NaN.
+    To avoid this problem the isnan() and isinf() functions can be used in the expression</p>
   <p>
     NDPluginCircularBuff inherits from NDPluginDriver. The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_circular_buff.html">
       NDPluginCircularBuff class documentation</a> describes this class in detail.
@@ -212,6 +221,121 @@
           longout
           <br />
           longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginCircularBuffTriggerA</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Name of the NDAttribute for trigger A.</td>
+        <td>
+          CIRCULAR_BUFF_TRIGGER_A</td>
+        <td>
+          $(P)$(R)TriggerA
+          <br />
+          $(P)$(R)TriggerA_RBV</td>
+        <td>
+          stringout
+          <br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginCircularBuffTriggerB</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Name of the NDAttribute for trigger B</td>
+        <td>
+          CIRCULAR_BUFF_TRIGGER_B</td>
+        <td>
+          $(P)$(R)TriggerB
+          <br />
+          $(P)$(R)TriggerB_RBV</td>
+        <td>
+          stringout
+          <br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginCircularBuffTriggerAVal</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Value of the NDAttribute for trigger A. The attribute defined by TriggerA must have
+          a numeric datatype, not string. This value field only updates when the plugin is
+          capturing (Capture=1).</td>
+        <td>
+          CIRCULAR_BUFF_TRIGGER_A_VAL</td>
+        <td>
+          $(P)$(R)TriggerAVal</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginCircularBuffTriggerBVal</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Value of the NDAttribute for trigger B. The attribute defined by TriggerB must have
+          a numeric datatype, not string. This value field only updates when the plugin is
+          capturing (Capture=1).</td>
+        <td>
+          CIRCULAR_BUFF_TRIGGER_B_VAL</td>
+        <td>
+          $(P)$(R)TriggerBVal</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginCircularBuffTriggerCalc</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          The calculation expression for the trigger. This can be any valid expression accepted
+          by the EPICS calc routines in libCom, and used for example in the EPICS calc record.
+          The maximum length of the expression is currently set to MAX_INFIX_SIZE (100) defined
+          in postfix.h in EPICS base.</td>
+        <td>
+          CIRCULAR_BUFF_TRIGGER_CALC</td>
+        <td>
+          $(P)$(R)TriggerCalc<br />
+          $(P)$(R)TriggerCalc_RBV</td>
+        <td>
+          waveform
+          <br />
+          waveform</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginCircularBuffTriggerCalcVal</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Value of the calculated expression. This value field only updates when the plugin
+          is capturing (Capture=1).</td>
+        <td>
+          CIRCULAR_BUFF_TRIGGER_CALC_VAL</td>
+        <td>
+          $(P)$(R)TriggerCalcVal</td>
+        <td>
+          ai</td>
       </tr>
       <tr>
         <td>
