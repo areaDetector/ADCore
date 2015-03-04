@@ -394,21 +394,25 @@ asynStatus NDFileHDF5::createTree(hdf5::Group* root, hid_t h5handle)
     // Write contant datasets to file
 //    this->writeHdfConstDatasets(new_group, root);
 
-    getIntegerParam(NDFileHDF5_storeAttributes, &storeAttributes);
-    if (storeAttributes == 1){
-      // Set some attributes on the group
-      this->writeHdfAttributes(new_group,  root);
-    }
-
     // Create all the datasets in this group
     hdf5::Group::MapDatasets_t::iterator it_dsets;
     hdf5::Group::MapDatasets_t& datasets = root->get_datasets();
     for (it_dsets = datasets.begin(); it_dsets != datasets.end(); ++it_dsets){
       hid_t new_dset = this->createDataset(new_group, it_dsets->second);
-      if (new_dset <= 0) continue; // failure to create the datasets so move on to next
+      if (new_dset <= 0) {
+//hdf5::Dataset *dset = it_dsets->second;
+//asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s Failed to create dataset: %s\n",  driverName, functionName, dset->get_name().c_str());
+        continue; // failure to create the datasets so move on to next
+      }
       // Write the hdf attributes to the dataset
       this->writeHdfAttributes( new_dset,  it_dsets->second);
       // Datasets are closed after data has been written
+    }
+
+    getIntegerParam(NDFileHDF5_storeAttributes, &storeAttributes);
+    if (storeAttributes == 1){
+      // Set some attributes on the group
+      this->writeHdfAttributes(new_group,  root);
     }
 
     hdf5::Group::MapGroups_t::const_iterator it_group;
@@ -2206,8 +2210,10 @@ asynStatus NDFileHDF5::writeAttributeDataset(hdf5::When_t whenToSave)
       continue;
     }
     //check if when to save matches.
-    if (hdfAttrNode->whenToSave != whenToSave) 
+    if (hdfAttrNode->whenToSave != whenToSave) {
+      //asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,  "%s::%s WARNING: NDAttribute named \'%s\' when to save miss match\n",  driverName, functionName, hdfAttrNode->attrName);
       continue;
+    }
 
     // find the data based on datatype
     ret = ndAttr->getValue(ndAttr->getDataType(), datavalue, 8);
