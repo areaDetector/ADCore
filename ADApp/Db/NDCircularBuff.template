@@ -106,13 +106,6 @@ record(ai, "$(P)$(R)TriggerCalcVal") {
   field(SCAN, "I/O Intr")
 }
 
-# # Number of pre-count frames readback from driver
-record(longin, "$(P)$(R)PRECOUNT_RBV") {
-  field(SCAN, "I/O Intr")
-  field(DTYP, "asynInt32")
-  field(INP, "@asyn($(PORT) 0)CIRCULAR_BUFF_PRE_TRIGGER")
-}
-
 # # Number of pre-count frames
 record(longout, "$(P)$(R)PRECOUNT") {
   field(DTYP, "asynInt32")
