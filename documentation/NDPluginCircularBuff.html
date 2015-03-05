@@ -368,7 +368,7 @@
     plugin will be triggered. The variables in the expression are defined as follows:</p>
   <ul>
     <li>A The current value of the NDAttribute defined by TriggerA.</li>
-    <li>B The current value of the NDAttribute defined by TriggerA.</li>
+    <li>B The current value of the NDAttribute defined by TriggerB.</li>
     <li>C The value of the PRECOUNT record</li>
     <li>D The value of the POSTCOUNT record</li>
     <li>E The value of the CurrentQty_RBV record</li>
@@ -377,14 +377,15 @@
   </ul>
   <p>
     The following are some example expressions. They assume that the NDPluginCircularBuff
-    plugin is getting its data from the NDPluginStats plugin. Assume the NDPluginStats
+    plugin is getting its data from the NDPluginStats plugin and that the NDPluginStats
     plugin is using an attributes XML file containing the following lines:</p>
   <pre>
    &lt;attribute name="MaxValue"  type="PARAM" source="MAX_VALUE"       datatype="DOUBLE" description="Maximum value" /&gt;
    &lt;attribute name="CentroidX" type="PARAM" source="CENTROIDX_VALUE" datatype="DOUBLE" description="Centroid X position" /&gt;
   </pre>
+  <p>Assume that TriggerA is set to MaxValue and TriggerB is set to CentroidX.</p>
   <p>
-    The following are examples of some expressions that can be used for triggering:</p>
+    The following are examples of some expressions that can then be used for triggering:</p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
       <tr>
@@ -420,11 +421,11 @@
     If the TriggerA or TriggerB attrbutes do not exist, or if they are non-numeric datatype
     then the TriggerAVal or TriggerBVal is set to NaN (Not a Number). If that value
     is used in the calculation expression then in some cases the TriggerCalcVal will
-    also be NaN (for example A+B will be NaN). If the trigger value is Nan or Infinity
+    also be NaN (for example A+B will be NaN). If TriggerCalcVal is NaN or Infinity
     then the expression is treated as 0 and the trigger will not occur. However, some
     expressions involving NaN arguments do not result in a NaN result and could result
     in false triggers. For example (A&&B) evaluates as 1 when both A and B are NaN.
-    To avoid this problem the isnan() and isinf() functions can be used in the expression</p>
+    To avoid this problem the isnan() and isinf() functions can be used in the expression.</p>
   <p>
     It is possible to only output individual NDArrays that match the trigger condition.
     To do this set PRECOUNT=0, POSTCOUNT=1, and ReArm=1.
