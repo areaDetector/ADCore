@@ -96,7 +96,7 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
      * It is called with the mutex already locked.  It unlocks it during long calculations when private
      * structures don't need to be protected.
      */
-    int scopeControl, preCount, postCount, currentImage, currentPostCount, softTrigger, reTrigger;
+    int scopeControl, preCount, postCount, currentImage, currentPostCount, softTrigger, reArm;
     NDArray *pArrayCpy = NULL;
     NDArrayInfo arrayInfo;
     int triggered = 0;
@@ -115,7 +115,7 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
     getIntegerParam(NDPluginCircularBuffCurrentImage, &currentImage);
     getIntegerParam(NDPluginCircularBuffPostCount,    &currentPostCount);
     getIntegerParam(NDPluginCircularBuffSoftTrigger,  &softTrigger);
-    getIntegerParam(NDPluginCircularBuffRetrigger,    &reTrigger);
+    getIntegerParam(NDPluginCircularBuffReArm,        &reArm);
 
     // Are we running?
     if (scopeControl) {
@@ -187,7 +187,7 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
 
         // Stop recording once we have reached the post-trigger count, wait for a restart
         if (currentPostCount >= postCount){
-          if (reTrigger) {
+          if (reArm) {
             previousTrigger_ = 0;
             // Set the status to buffer filling
             setIntegerParam(NDPluginCircularBuffControl, 1);
@@ -402,7 +402,7 @@ NDPluginCircularBuff::NDPluginCircularBuff(const char *portName, int queueSize, 
     createParam(NDPluginCircularBuffTriggerBValString,    asynParamFloat64,    &NDPluginCircularBuffTriggerBVal);
     createParam(NDPluginCircularBuffTriggerCalcString,    asynParamOctet,      &NDPluginCircularBuffTriggerCalc);
     createParam(NDPluginCircularBuffTriggerCalcValString, asynParamFloat64,    &NDPluginCircularBuffTriggerCalcVal);
-    createParam(NDPluginCircularBuffRetriggerString,      asynParamInt32,      &NDPluginCircularBuffRetrigger);
+    createParam(NDPluginCircularBuffReArmString,          asynParamInt32,      &NDPluginCircularBuffReArm);
     createParam(NDPluginCircularBuffPreTriggerString,     asynParamInt32,      &NDPluginCircularBuffPreTrigger);
     createParam(NDPluginCircularBuffPostTriggerString,    asynParamInt32,      &NDPluginCircularBuffPostTrigger);
     createParam(NDPluginCircularBuffCurrentImageString,   asynParamInt32,      &NDPluginCircularBuffCurrentImage);
