@@ -172,3 +172,23 @@ record(bi, "$(P)$(R)Trigger_RBV") {
   field(OSV,  "MINOR")
 }
 
+# # Retrigger when done
+record(bo, "$(P)$(R)Retrigger") {
+  field(DTYP, "asynInt32")
+  field(OUT, "@asyn($(PORT) 0)CIRCULAR_BUFF_RETRIGGER")
+  field(ZNAM, "Disable")
+  field(ONAM, "Enable")
+  field(PINI, "1")
+}
+
+# # Retrigger when done
+record(bi, "$(P)$(R)Retrigger_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) 0)CIRCULAR_BUFF_RETRIGGER")
+  field(ZNAM, "Disable")
+  field(ZSV,  "NO_ALARM")
+  field(ONAM, "Enable")
+  field(OSV,  "MINOR")
+}
+
