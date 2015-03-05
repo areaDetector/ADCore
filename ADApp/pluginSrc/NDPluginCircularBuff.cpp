@@ -96,7 +96,7 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
      * It is called with the mutex already locked.  It unlocks it during long calculations when private
      * structures don't need to be protected.
      */
-    int scopeControl, preCount, postCount, currentImage, currentPostCount, softTrigger;
+    int scopeControl, preCount, postCount, currentImage, currentPostCount, softTrigger, reTrigger;
     NDArray *pArrayCpy = NULL;
     NDArrayInfo arrayInfo;
     int triggered = 0;
@@ -115,6 +115,7 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
     getIntegerParam(NDPluginCircularBuffCurrentImage, &currentImage);
     getIntegerParam(NDPluginCircularBuffPostCount,    &currentPostCount);
     getIntegerParam(NDPluginCircularBuffSoftTrigger,  &softTrigger);
+    getIntegerParam(NDPluginCircularBuffRetrigger,    &reTrigger);
 
     // Are we running?
     if (scopeControl) {
@@ -186,9 +187,19 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
 
         // Stop recording once we have reached the post-trigger count, wait for a restart
         if (currentPostCount >= postCount){
-          setIntegerParam(NDPluginCircularBuffControl, 0);
-          setIntegerParam(NDPluginCircularBuffTriggered, 0);
-          setStringParam(NDPluginCircularBuffStatus, "Acquisition Completed");
+          if (reTrigger) {
+            previousTrigger_ = 0;
+            // Set the status to buffer filling
+            setIntegerParam(NDPluginCircularBuffControl, 1);
+            setIntegerParam(NDPluginCircularBuffSoftTrigger, 0);
+            setIntegerParam(NDPluginCircularBuffTriggered, 0);
+            setIntegerParam(NDPluginCircularBuffPostCount, 0);
+            setStringParam(NDPluginCircularBuffStatus, "Buffer filling");
+          } else {
+            setIntegerParam(NDPluginCircularBuffTriggered, 0);
+            setIntegerParam(NDPluginCircularBuffControl, 0);
+            setStringParam(NDPluginCircularBuffStatus, "Acquisition Completed");
+          }
         }
       } else {
         //printf("pArray NULL, failed to copy the data\n");
@@ -391,6 +402,7 @@ NDPluginCircularBuff::NDPluginCircularBuff(const char *portName, int queueSize, 
     createParam(NDPluginCircularBuffTriggerBValString,    asynParamFloat64,    &NDPluginCircularBuffTriggerBVal);
     createParam(NDPluginCircularBuffTriggerCalcString,    asynParamOctet,      &NDPluginCircularBuffTriggerCalc);
     createParam(NDPluginCircularBuffTriggerCalcValString, asynParamFloat64,    &NDPluginCircularBuffTriggerCalcVal);
+    createParam(NDPluginCircularBuffRetriggerString,      asynParamInt32,      &NDPluginCircularBuffRetrigger);
     createParam(NDPluginCircularBuffPreTriggerString,     asynParamInt32,      &NDPluginCircularBuffPreTrigger);
     createParam(NDPluginCircularBuffPostTriggerString,    asynParamInt32,      &NDPluginCircularBuffPostTrigger);
     createParam(NDPluginCircularBuffCurrentImageString,   asynParamInt32,      &NDPluginCircularBuffCurrentImage);
