@@ -508,7 +508,7 @@ void NDFileHDF5::writeHdfAttributes( hid_t h5_handle, hdf5::Element* element)
           break;
         default:
             asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::writeHdfAttributes unknown type: unable to create attribute: %s\n",
-              driverName, attr.get_name());
+              driverName, attr.get_name().c_str());
           break;
       }
     }
@@ -574,6 +574,7 @@ hid_t NDFileHDF5::writeHdfConstDataset( hid_t h5_handle, hdf5::Dataset* dset)
         break;
     }
   }
+  return -1;
 }
 
 /** 
