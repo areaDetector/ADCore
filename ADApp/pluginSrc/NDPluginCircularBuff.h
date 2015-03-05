@@ -22,6 +22,7 @@ typedef struct NDCircularBuff {
 #define NDPluginCircularBuffTriggerBValString        "CIRCULAR_BUFF_TRIGGER_B_VAL" /* (asynFloat64,      r/o) Trigger B value */
 #define NDPluginCircularBuffTriggerCalcString        "CIRCULAR_BUFF_TRIGGER_CALC"  /* (asynOctetWrite,   r/w) Trigger calculation expression */
 #define NDPluginCircularBuffTriggerCalcValString     "CIRCULAR_BUFF_TRIGGER_CALC_VAL" /* (asynFloat64,   r/o) Trigger calculation value */
+#define NDPluginCircularBuffRetriggerString          "CIRCULAR_BUFF_RETRIGGER"     /* (asynInt32,        r/w) Retrigger */
 #define NDPluginCircularBuffPreTriggerString         "CIRCULAR_BUFF_PRE_TRIGGER"   /* (asynInt32,        r/w) Number of pre-trigger images */
 #define NDPluginCircularBuffPostTriggerString        "CIRCULAR_BUFF_POST_TRIGGER"  /* (asynInt32,        r/w) Number of post-trigger images */
 #define NDPluginCircularBuffCurrentImageString       "CIRCULAR_BUFF_CURRENT_IMAGE" /* (asynInt32,        r/o) Number of the current image */
@@ -58,6 +59,7 @@ protected:
     int NDPluginCircularBuffTriggerBVal;
     int NDPluginCircularBuffTriggerCalc;
     int NDPluginCircularBuffTriggerCalcVal;
+    int NDPluginCircularBuffRetrigger;
     int NDPluginCircularBuffPreTrigger;
     int NDPluginCircularBuffPostTrigger;
     int NDPluginCircularBuffCurrentImage;
