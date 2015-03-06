@@ -14,7 +14,6 @@
 #define NDPluginROIStatLastString               "ROISTAT_LAST"
 #define NDPluginROIStatNameString               "ROISTAT_NAME"              /* (asynOctet, r/w) Name of this ROI */
 #define NDPluginROIStatResetAllString           "ROISTAT_RESETALL"          /* (asynInt32, r/w) Reset ROI data for all ROIs. */
-#define NDPluginROIStatNDArrayCallbacksString   "ROISTAT_NDARRAY_CALLBACKS" /* (asynInt32, r/w) Do NDArray callbacks. */
 
 /* ROI definition */
 #define NDPluginROIStatUseString                "ROISTAT_USE"               /* (asynInt32, r/w) Use this ROI? */
@@ -73,7 +72,6 @@ protected:
     int NDPluginROIStatReset;
     int NDPluginROIStatBgdWidth;
     int NDPluginROIStatResetAll;
-    int NDPluginROIStatNDArrayCallbacks;
 
     //ROI definition
     int NDPluginROIStatDim0Min;
