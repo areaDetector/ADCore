@@ -14,6 +14,19 @@
 
 #include "NDAttribute.h"
 
+/** Strings corresponding to the above enums */
+static const char *NDAttrSourceStrings[] = {
+    "DRIVER",
+    "PARAM",
+    "EPICS_PV",
+    "FUNCTION"
+};
+
+const char *NDAttribute::attrSourceString(NDAttrSource_t type)
+{
+  return NDAttrSourceStrings[type];
+}
+
 /** NDAttribute constructor
   * \param[in] pName The name of the attribute to be created. 
   * \param[in] sourceType The source type of the attribute (NDAttrSource_t).
