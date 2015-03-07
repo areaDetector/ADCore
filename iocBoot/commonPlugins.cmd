@@ -114,6 +114,11 @@ NDCircularBuffConfigure("CB1", $(QSIZE), 0, "$(PORT)", 0, $(CBUFFS), 0)
 dbLoadRecords("$(ADCORE)/db/NDPluginBase.template",   "P=$(PREFIX),R=CB1:,  PORT=CB1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT),NDARRAY_ADDR=0")
 dbLoadRecords("$(ADCORE)/db/NDCircularBuff.template", "P=$(PREFIX),R=CB1:,  PORT=CB1,ADDR=0,TIMEOUT=1")
 
+# Create an NDAttribute plugin
+NDAttrConfigure("ATTR1", $(QSIZE), 0, "$(PORT)", 0, 0, 0, 0, 0, $(NCHANS), "NDArrayUniqueId")
+dbLoadRecords("$(ADCORE)/db/NDPluginBase.template", "P=$(PREFIX),R=Attr1:,  PORT=ATTR1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT),NDARRAY_ADDR=0")
+dbLoadRecords("$(ADCORE)/db/NDAttribute.template",  "P=$(PREFIX),R=Attr1:,  PORT=ATTR1,ADDR=0,TIMEOUT=1, NCHANS=$(NCHANS)")
+
 # Load scan records
 dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=$(PREFIX),MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
 
