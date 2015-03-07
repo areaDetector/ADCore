@@ -781,15 +781,17 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
             setIntegerParam(NDReadFile, 0);
         }
     } else if (function == NDFileCapture) {
-        /* Latch the NDFileLazyOpen parameter so that we don't need to care
-         * if the user modifies this parameter before first frame has arrived. */
-        int paramFileLazyOpen = 0;
-        getIntegerParam(NDFileLazyOpen, &paramFileLazyOpen);
-        this->lazyOpen = (paramFileLazyOpen != 0);
-        /* So far everything is OK, so we just clear the FileWriteStatus parameters */
-        setIntegerParam(NDFileWriteStatus, NDFileWriteOK);
-        setStringParam(NDFileWriteMessage, "");
-        setStringParam(NDFullFileName, "");
+        if (value) {  // Started capture or stream
+            /* Latch the NDFileLazyOpen parameter so that we don't need to care
+             * if the user modifies this parameter before first frame has arrived. */
+            int paramFileLazyOpen = 0;
+            getIntegerParam(NDFileLazyOpen, &paramFileLazyOpen);
+            this->lazyOpen = (paramFileLazyOpen != 0);
+            /* So far everything is OK, so we just clear the FileWriteStatus parameters */
+            setIntegerParam(NDFileWriteStatus, NDFileWriteOK);
+            setStringParam(NDFileWriteMessage, "");
+            setStringParam(NDFullFileName, "");
+        }
         /* Must call doCapture if capturing was just started or stopped */
         status = doCapture(value);
         if (status == asynSuccess) {
