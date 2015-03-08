@@ -227,6 +227,7 @@ asynStatus NDPluginFile::writeFileBase()
                 status = this->writeFile(pArrayOut);
                 epicsMutexUnlock(this->fileMutexId);
                 this->lock();
+                doNDArrayCallbacks(pArrayOut);
                 if (status) {
                     epicsSnprintf(errorMessage, sizeof(errorMessage)-1, 
                         "Error writing file, status=%d", status);
@@ -269,6 +270,7 @@ asynStatus NDPluginFile::writeFileBase()
                         status = this->writeFile(pArray);
                         epicsMutexUnlock(this->fileMutexId);
                         this->lock();
+                        doNDArrayCallbacks(pArray);
                         if (status) {
                             epicsSnprintf(errorMessage, sizeof(errorMessage)-1, 
                                 "Error writing file, status=%d", status);
@@ -310,6 +312,7 @@ asynStatus NDPluginFile::writeFileBase()
                 status = this->writeFile(pArrayOut);
                 epicsMutexUnlock(this->fileMutexId);
                 this->lock();
+                doNDArrayCallbacks(pArrayOut);
                 if (status) {
                     epicsSnprintf(errorMessage, sizeof(errorMessage)-1,
                             "Error writing file, status=%d", status);
@@ -352,7 +355,7 @@ asynStatus NDPluginFile::writeFileBase()
             }
         }
     }
-    
+
     return((asynStatus)status);
 }
 
@@ -736,10 +739,33 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
             }
             break;
     }
-
+    
     /* Update the parameters.  */
     setIntegerParam(NDArrayCounter, arrayCounter);
     callParamCallbacks();
+}
+
+void NDPluginFile::doNDArrayCallbacks(NDArray *pArray)
+{
+  int arrayCallbacks = 0;
+  static const char *functionName = "doNDArrayCallbacks";
+
+  getIntegerParam(NDArrayCallbacks, &arrayCallbacks);
+  if (arrayCallbacks == 1) {
+    NDArray *pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 1);
+    if (pArrayOut != NULL) {
+      this->getAttributes(pArrayOut->pAttributeList);
+      this->unlock();
+      doCallbacksGenericPointer(pArrayOut, NDArrayData, 0);
+      this->lock();
+      pArrayOut->release();
+    }
+    else {
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+        "%s: Couldn't allocate output array. Callbacks failed.\n", 
+        functionName);
+    }
+  }
 }
 
 /** Called when asyn clients call pasynInt32->write().
