@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-1/ADCore/ADApp/op/adl/commonPlugins.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/commonPlugins.adl"
 	version=030107
 }
 display {
@@ -3951,6 +3951,11 @@ menu {
 		label="Attr1:"
 		name="NDPluginAttribute.adl"
 		args="P=$(P),R=Attr1:"
+	}
+	display[1] {
+		label="Attributes 1-8"
+		name="NDPluginAttribute8.adl"
+		args="P=$(P),R=Attr1:,A1=1:,A2=2:,A3=3:,A4=4:,A5=5:,A6=6:,A7=7:,A8=8:"
 	}
 	clr=14
 	bclr=51
