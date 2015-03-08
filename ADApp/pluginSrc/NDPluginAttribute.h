@@ -21,10 +21,9 @@
 class epicsShareClass NDPluginAttribute : public NDPluginDriver {
 public:
     NDPluginAttribute(const char *portName, int queueSize, int blockingCallbacks, 
-                      const char *NDArrayPort, int NDArrayAddr,
+                      const char *NDArrayPort, int NDArrayAddr, int maxAttributes,
                       int maxBuffers, size_t maxMemory,
-                      int priority, int stackSize, 
-                      int maxTimeSeries, const char *attrName);
+                      int priority, int stackSize);
     /* These methods override the virtual methods in the base class */
     void processCallbacks(NDArray *pArray);
     asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
@@ -51,7 +50,8 @@ private:
     static const char*      EPICS_TS_SEC_NAME_;
     static const char*      EPICS_TS_NSEC_NAME_;
 
-    double *pTSArray_;
+    int maxAttributes_;
+    epicsFloat64 **pTSArray_;
 
 };
 #define NUM_NDPLUGIN_ATTR_PARAMS ((int)(&LAST_NDPLUGIN_ATTR_PARAM - &FIRST_NDPLUGIN_ATTR_PARAM + 1))
