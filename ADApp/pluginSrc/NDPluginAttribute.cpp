@@ -22,7 +22,18 @@
 #include "NDPluginDriver.h"
 #include "NDPluginAttribute.h"
 
-const epicsInt32 NDPluginAttribute::MAX_ATTR_NAME_ = 256;
+const epicsInt32 NDPluginAttribute::MAX_ATTR_NAME_      = 256;
+const char*      NDPluginAttribute::UNIQUE_ID_NAME_     = "NDArrayUniqueId";
+const char*      NDPluginAttribute::TIMESTAMP_NAME_     = "NDArrayTimeStamp";
+const char*      NDPluginAttribute::EPICS_TS_SEC_NAME_  = "NDArrayEpicsTSSec";
+const char*      NDPluginAttribute::EPICS_TS_NSEC_NAME_ = "NDArrayEpicsTSnSec";
+
+typedef enum {
+    TSEraseStart,
+    TSStart,
+    TSStop,
+    TSRead
+} NDAttributeTSControl_t;
 
 
 /** 
@@ -36,32 +47,17 @@ void NDPluginAttribute::processCallbacks(NDArray *pArray)
      */
 
   int status = 0;
-  int dataType;
+  int currentTSPoint;
+  int numTSPoints;
+  int TSAcquiring;
+  double valueSum;
   char attrName[MAX_ATTR_NAME_] = {0};
   NDAttribute *pAttribute = NULL;
   NDAttributeList *pAttrList = NULL;
   epicsFloat64 attrValue = 0.0;
-  epicsFloat64 updatePeriod = 0.0;
 
   static const char *functionName = "NDPluginAttribute::processCallbacks";
   
-  asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
-      "Starting %s. currentPoint_: %d\n", functionName, currentPoint_);
-
-  /* Get the time and decide if we update the array.*/
-  getDoubleParam(NDPluginAttributeUpdatePeriod, &updatePeriod);
-  epicsTimeGetCurrent(&nowTime_);
-  nowTimeSecs_ = nowTime_.secPastEpoch + (nowTime_.nsec / 1.e9);
-  if ((nowTimeSecs_ - lastTimeSecs_) < (updatePeriod / 1000.0)) {
-    arrayUpdate_ = 0;
-  } else {
-    arrayUpdate_ = 1;
-    lastTimeSecs_ = nowTimeSecs_;
-  }
- 
-  /* Get all parameters while we have the mutex */
-  getIntegerParam(NDPluginAttributeDataType,    &dataType);
-
   /* Call the base class method */
   NDPluginDriver::processCallbacks(pArray);
   
@@ -70,37 +66,64 @@ void NDPluginAttribute::processCallbacks(NDArray *pArray)
   getStringParam(NDPluginAttributeAttrName, MAX_ATTR_NAME_, attrName);
   
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "Finding the attribute %s\n", attrName);
-  pAttribute = pAttrList->find(attrName);
-  if (pAttribute) {
-    status = pAttribute->getValue(NDAttrFloat64, &attrValue);
-    asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "Attribute %s is %f\n", attrName, attrValue);
-    if (status == asynSuccess) {
-      setDoubleParam(NDPluginAttributeVal, attrValue);
-      valueSum_ = valueSum_ + attrValue;
-      setDoubleParam(NDPluginAttributeValSum, valueSum_);
-      if (currentPoint_ < maxTimeSeries_) {
-          pTimeSeries_[currentPoint_] = attrValue;
-          ++currentPoint_;
-      }
-    }
-
-    callParamCallbacks();
-    if (arrayUpdate_) {
-      doCallbacksFloat64Array(this->pTimeSeries_, currentPoint_, NDPluginAttributeArray, 0);
-    }
-
+  
+  if (strcmp(attrName, UNIQUE_ID_NAME_) == 0) {
+    attrValue = (epicsFloat64) pArray->uniqueId;
+  } else if (strcmp(attrName, TIMESTAMP_NAME_) == 0) {
+    attrValue = pArray->timeStamp;
+  } else if (strcmp(attrName, EPICS_TS_SEC_NAME_) == 0) {
+    attrValue = (epicsFloat64)pArray->epicsTS.secPastEpoch;
+  } else if (strcmp(attrName, EPICS_TS_NSEC_NAME_) == 0) {
+    attrValue = (epicsFloat64)pArray->epicsTS.nsec;
   } else {
-    asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s: Error reading NDAttribute %s. \n", functionName, attrName);
+    pAttribute = pAttrList->find(attrName);
+    if (pAttribute) {
+      status = pAttribute->getValue(NDAttrFloat64, &attrValue);
+      if (status != asynSuccess) {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s: Error reading value for NDAttribute %s. \n", functionName, attrName);
+        return;
+      }
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "Attribute %s value is %f\n", attrName, attrValue);
+    } else {
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s: Error finding NDAttribute %s. \n", functionName, attrName);
+      return;
+    }
+  }
+  setDoubleParam(NDPluginAttributeVal, attrValue);
+  getDoubleParam(NDPluginAttributeValSum, &valueSum);
+  valueSum += attrValue;
+  setDoubleParam(NDPluginAttributeValSum, valueSum);
+  getIntegerParam(NDPluginAttributeTSCurrentPoint, &currentTSPoint);
+  getIntegerParam(NDPluginAttributeTSNumPoints,    &numTSPoints);
+  getIntegerParam(NDPluginAttributeTSAcquiring,    &TSAcquiring);
+  if (TSAcquiring) {
+      pTSArray_[currentTSPoint] = attrValue;
+      currentTSPoint++;
+      setIntegerParam(NDPluginAttributeTSCurrentPoint, currentTSPoint);
+      if (currentTSPoint >= numTSPoints) {
+          doTimeSeriesCallbacks();
+          setIntegerParam(NDPluginAttributeTSAcquiring, 0);
+      }
   }
 
-  
+  callParamCallbacks();
 
 }
+
+void NDPluginAttribute::doTimeSeriesCallbacks()
+{
+    int currentTSPoint;
+    
+    getIntegerParam(NDPluginAttributeTSCurrentPoint, &currentTSPoint);
+    doCallbacksFloat64Array(pTSArray_,   currentTSPoint, NDPluginAttributeTSArrayValue, 0);
+}
+
 
 asynStatus NDPluginAttribute::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
+    int numTSPoints, currentTSPoint;
     static const char *functionName = "NDPluginAttribute::writeInt32";
 
     /* Set the parameter in the parameter library. */
@@ -109,15 +132,40 @@ asynStatus NDPluginAttribute::writeInt32(asynUser *pasynUser, epicsInt32 value)
     if (function == NDPluginAttributeReset) {
       setDoubleParam(NDPluginAttributeVal, 0.0);
       setDoubleParam(NDPluginAttributeValSum, 0.0);
-      //Clear the time series array
-      memset(pTimeSeries_, 0, maxTimeSeries_*sizeof(epicsFloat64));
-      doCallbacksFloat64Array(this->pTimeSeries_, maxTimeSeries_, NDPluginAttributeArray, 0);
-      currentPoint_ = 0;
-      valueSum_ = 0.0;
-    }
-    else if (function == NDPluginAttributeUpdate) {
-      //Update the data array by hand.
-      doCallbacksFloat64Array(this->pTimeSeries_, maxTimeSeries_, NDPluginAttributeArray, 0);
+      // Clear the time series array
+      getIntegerParam(NDPluginAttributeTSNumPoints, &numTSPoints);
+      memset(pTSArray_, 0,numTSPoints*sizeof(epicsFloat64));
+      doCallbacksFloat64Array(this->pTSArray_, numTSPoints, NDPluginAttributeTSArrayValue, 0);
+      setIntegerParam(NDPluginAttributeTSCurrentPoint, 0);
+      setDoubleParam(NDPluginAttributeValSum, 0.0);
+    } 
+    else if (function == NDPluginAttributeTSNumPoints) {
+      free(pTSArray_);
+      pTSArray_ = (double *)calloc(value, sizeof(double));
+    } 
+    else if (function == NDPluginAttributeTSControl) {
+        switch (value) {
+            case TSEraseStart:
+                setIntegerParam(NDPluginAttributeTSCurrentPoint, 0);
+                setIntegerParam(NDPluginAttributeTSAcquiring, 1);
+                getIntegerParam(NDPluginAttributeTSNumPoints, &numTSPoints);
+                memset(pTSArray_, 0, numTSPoints*sizeof(double));
+                break;
+            case TSStart:
+                getIntegerParam(NDPluginAttributeTSNumPoints, &numTSPoints);
+                getIntegerParam(NDPluginAttributeTSCurrentPoint, &currentTSPoint);
+                if (currentTSPoint < numTSPoints) {
+                    setIntegerParam(NDPluginAttributeTSAcquiring, 1);
+                }
+                break;
+            case TSStop:
+                setIntegerParam(NDPluginAttributeTSAcquiring, 0);
+                doTimeSeriesCallbacks();
+                break;
+            case TSRead:
+                doTimeSeriesCallbacks();
+                break;
+        }
     }
     else {
       /* If this parameter belongs to a base class call its method */
@@ -175,37 +223,41 @@ NDPluginAttribute::NDPluginAttribute(const char *portName, int queueSize, int bl
     static const char *functionName = "NDPluginAttribute::NDPluginAttribute";
 
     /* parameters */
-    createParam(NDPluginAttributeNameString,              asynParamOctet, &NDPluginAttributeName);
-    createParam(NDPluginAttributeAttrNameString, asynParamOctet, &NDPluginAttributeAttrName);
-    createParam(NDPluginAttributeResetString,          asynParamInt32, &NDPluginAttributeReset);
-    createParam(NDPluginAttributeUpdateString,          asynParamInt32, &NDPluginAttributeUpdate);
-    createParam(NDPluginAttributeValString,          asynParamFloat64, &NDPluginAttributeVal);
-    createParam(NDPluginAttributeValSumString,          asynParamFloat64, &NDPluginAttributeValSum);
-    createParam(NDPluginAttributeArrayString,          asynParamFloat64Array, &NDPluginAttributeArray);
-    createParam(NDPluginAttributeDataTypeString,          asynParamInt32, &NDPluginAttributeDataType);
-    createParam(NDPluginAttributeUpdatePeriodString,          asynParamFloat64, &NDPluginAttributeUpdatePeriod);
+    createParam(NDPluginAttributeAttrNameString,       asynParamOctet,        &NDPluginAttributeAttrName);
+    createParam(NDPluginAttributeResetString,          asynParamInt32,        &NDPluginAttributeReset);
+    createParam(NDPluginAttributeValString,            asynParamFloat64,      &NDPluginAttributeVal);
+    createParam(NDPluginAttributeValSumString,         asynParamFloat64,      &NDPluginAttributeValSum);
+    createParam(NDPluginAttributeTSControlString,      asynParamInt32,        &NDPluginAttributeTSControl);
+    createParam(NDPluginAttributeTSNumPointsString,    asynParamInt32,        &NDPluginAttributeTSNumPoints);
+    createParam(NDPluginAttributeTSCurrentPointString, asynParamInt32,        &NDPluginAttributeTSCurrentPoint);
+    createParam(NDPluginAttributeTSAcquiringString,    asynParamInt32,        &NDPluginAttributeTSAcquiring);
+    createParam(NDPluginAttributeTSArrayValueString,   asynParamFloat64Array, &NDPluginAttributeTSArrayValue);
     
-   
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginAttribute");
 
-    maxTimeSeries_ = maxTimeSeries;
-    pTimeSeries_ = static_cast<epicsFloat64*>(calloc(maxTimeSeries_, sizeof(epicsFloat64)));
-    if (pTimeSeries_ == NULL) {
+    if (maxTimeSeries <= 0) maxTimeSeries = 1000;
+    setIntegerParam(NDPluginAttributeTSNumPoints, maxTimeSeries);
+    pTSArray_ = static_cast<epicsFloat64*>(calloc(maxTimeSeries, sizeof(epicsFloat64)));
+    if (pTSArray_ == NULL) {
       perror(functionName);
-      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s: Error from calloc for pTimeSeries_.\n", functionName);
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s: Error from calloc for pTSArray_.\n", functionName);
     }
 
-    currentPoint_ = 0;
-    arrayUpdate_ = 1;
-    valueSum_ = 0.0;
+    setDoubleParam(NDPluginAttributeValSum, 0.0);
 
     /* Set the attribute name */
     /* This can be set at runtime too.*/
-    setStringParam(NDPluginAttributeAttrName, attrName);
+    if (attrName != NULL) {
+      setStringParam(NDPluginAttributeAttrName, attrName);
+    }
 
     setDoubleParam(NDPluginAttributeVal, 0.0);
     setDoubleParam(NDPluginAttributeValSum, 0.0);
+
+    // Disable ArrayCallbacks.  
+    // This plugin currently does not do array callbacks, so make the setting reflect the behavior
+    setIntegerParam(NDArrayCallbacks, 0);
 
     /* Try to connect to the array port */
     connectToArrayPort();

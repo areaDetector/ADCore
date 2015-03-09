@@ -106,6 +106,12 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
   // First clear the list
   this->pFileAttributes->clear();
 
+  // Add attributes for some NDArray properties.  This makes it easy to save them in the file.
+  this->pFileAttributes->add("NDArrayUniqueId",    "Unique ID",            NDAttrInt32,   &pArray->uniqueId);
+  this->pFileAttributes->add("NDArrayTimeStamp",   "Timestamp",            NDAttrFloat64, &pArray->timeStamp);
+  this->pFileAttributes->add("NDArrayEpicsTSSec",  "EPICS timestamp sec",  NDAttrInt32,   &pArray->epicsTS.secPastEpoch);
+  this->pFileAttributes->add("NDArrayEpicsTSnSec", "EPICS timestamp nsec", NDAttrInt32,   &pArray->epicsTS.nsec);
+
   // Now get the current values of the attributes for this plugin
   this->getAttributes(this->pFileAttributes);
 
@@ -537,6 +543,7 @@ hid_t NDFileHDF5::writeHdfConstDataset( hid_t h5_handle, hdf5::Dataset* dset)
         break;
     }
   }
+  return -1;
 }
 
 /** 
@@ -1093,6 +1100,16 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
                 driverName, functionName);
       return asynError;
     }
+    // Update the values for some NDArray properties.
+    NDAttribute *pAttribute;
+    pAttribute = this->pFileAttributes->find("NDArrayUniqueId");
+    pAttribute->setValue(&pArray->uniqueId);
+    pAttribute = this->pFileAttributes->find("NDArrayTimeStamp");
+    pAttribute->setValue(&pArray->timeStamp);
+    pAttribute = this->pFileAttributes->find("NDArrayEpicsTSSec");
+    pAttribute->setValue(&pArray->epicsTS.secPastEpoch);
+    pAttribute = this->pFileAttributes->find("NDArrayEpicsTSnSec");
+    pAttribute->setValue(&pArray->epicsTS.nsec);
     // Now append the attributes from the array which are already up to date from
     // the driver and prior plugins
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 

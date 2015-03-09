@@ -618,6 +618,10 @@ NDPluginColorConvert::NDPluginColorConvert(const char *portName, int queueSize, 
     
     setIntegerParam(NDPluginColorConvertColorModeOut, NDColorModeMono);
 
+    // Enable ArrayCallbacks.  
+    // This plugin currently ignores this setting and always does callbacks, so make the setting reflect the behavior
+    setIntegerParam(NDArrayCallbacks, 1);
+
     /* Try to connect to the array port */
     connectToArrayPort();
 }

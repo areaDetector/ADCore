@@ -108,6 +108,7 @@ public:
 
 
 private:
+    template <typename epicsType> int getValueT(void *pValue, size_t dataSize);
     char *pName;                   /**< Name string */
     char *pDescription;            /**< Description string */
     NDAttrDataType_t dataType;     /**< Data type of attribute */

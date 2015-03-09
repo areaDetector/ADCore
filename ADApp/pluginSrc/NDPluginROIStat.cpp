@@ -285,7 +285,7 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
   }
 
   int arrayCallbacks = 0;
-  getIntegerParam(NDPluginROIStatNDArrayCallbacks, &arrayCallbacks);
+  getIntegerParam(NDArrayCallbacks, &arrayCallbacks);
   if (arrayCallbacks == 1) {
     NDArray *pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 1);
     if (pArrayOut != NULL) {
@@ -433,7 +433,6 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
   createParam(NDPluginROIStatUseString,               asynParamInt32, &NDPluginROIStatUse);
   createParam(NDPluginROIStatResetString,             asynParamInt32, &NDPluginROIStatReset);
   createParam(NDPluginROIStatResetAllString,          asynParamInt32, &NDPluginROIStatResetAll);
-  createParam(NDPluginROIStatNDArrayCallbacksString,  asynParamInt32, &NDPluginROIStatNDArrayCallbacks);
   createParam(NDPluginROIStatBgdWidthString,          asynParamInt32, &NDPluginROIStatBgdWidth);
   
   /* ROI definition */
@@ -483,6 +482,7 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
     setDoubleParam (roi , NDPluginROIStatMaxValue,          0.0);
     setDoubleParam (roi , NDPluginROIStatMeanValue,         0.0);
     setDoubleParam (roi , NDPluginROIStatTotal,             0.0);
+    setDoubleParam (roi , NDPluginROIStatNet,               0.0);
     callParamCallbacks(roi);
   }
 
