@@ -6,6 +6,8 @@
 # % macro, POSTCOUNT, Post-trigger frame count
 # % gui, $(PORT), edmtab, NDCircularBuff.edl, P=$(P),R=$(R)
 
+include "NDPluginBase.template"
+
 # # Control record, are we running
 record(busy, "$(P)$(R)Capture") {
   field(DTYP, "asynInt32")
