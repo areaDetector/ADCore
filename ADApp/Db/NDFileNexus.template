@@ -1,5 +1,8 @@
 # Database for NDFileNexus driver, which saves files for NDArray data.
 
+include "NDFile.template"
+include "NDPluginBase.template"
+
 # We replace some fields in records defined in NDFile.template
 # File data format 
 record(mbbo, "$(P)$(R)FileFormat")

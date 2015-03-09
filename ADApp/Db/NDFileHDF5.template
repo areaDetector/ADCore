@@ -10,6 +10,9 @@
 # This associates the template with an edm screen
 # % gui, $(PORT), edmtab, NDFileHDF5.edl, P=$(P),R=$(R)
 
+include "NDFile.template"
+include "NDPluginBase.template"
+
 # We replace some fields in records defined in NDFile.template
 # File data format 
 record(mbbo, "$(P)$(R)FileFormat")
