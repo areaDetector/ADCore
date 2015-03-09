@@ -1137,16 +1137,10 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
                 driverName, functionName);
       return asynError;
     }
-    // Update the values for some NDArray properties.
-    NDAttribute *pAttribute;
-    pAttribute = this->pFileAttributes->find("NDArrayUniqueId");
-    pAttribute->setValue(&pArray->uniqueId);
-    pAttribute = this->pFileAttributes->find("NDArrayTimeStamp");
-    pAttribute->setValue(&pArray->timeStamp);
-    pAttribute = this->pFileAttributes->find("NDArrayEpicsTSSec");
-    pAttribute->setValue(&pArray->epicsTS.secPastEpoch);
-    pAttribute = this->pFileAttributes->find("NDArrayEpicsTSnSec");
-    pAttribute->setValue(&pArray->epicsTS.nsec);
+
+    // Insert default NDAttribute from the NDArray object (timestamps etc)
+    this->addDefaultAttributes(pArray);
+
     // Now append the attributes from the array which are already up to date from
     // the driver and prior plugins
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
@@ -2669,6 +2663,28 @@ void NDFileHDF5::checkForOpenFile()
     this->closeFile();
   }
 }
+
+/** Add the default attributes from NDArrays into the local NDAttribute list.
+ *
+ * The relevant attributes are: uniqueId, timeStamp, epicsTS.secPastEpoch and
+ * epicsTS.nsec.
+ */
+void NDFileHDF5::addDefaultAttributes(NDArray *pArray)
+{
+  this->pFileAttributes->add("NDArrayUniqueId",
+                             "The unique ID of the NDArray",
+                             NDAttrInt32, (void*)&(pArray->uniqueId));
+  this->pFileAttributes->add("NDArrayTimeStamp",
+                             "The timestamp of the NDArray",
+                             NDAttrFloat64, (void*)&(pArray->timeStamp));
+  this->pFileAttributes->add("NDArrayEpicsTSSec",
+                             "The NDArray EPICS timestamp in seconds past epoch",
+                             NDAttrUInt32, (void*)&(pArray->epicsTS.secPastEpoch));
+  this->pFileAttributes->add("NDArrayEpicsTSNSec",
+                             "The NDArray EPICS timestamp in nanoseconds",
+                             NDAttrUInt32, (void*)&(pArray->epicsTS.nsec));
+}
+
 
 asynStatus NDFileHDF5::createNewFile(const char *fileName)
 {

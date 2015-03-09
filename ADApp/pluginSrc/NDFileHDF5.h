@@ -160,9 +160,11 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     hsize_t calcChunkCacheSlots();
 
     void checkForOpenFile();
+    void addDefaultAttributes(NDArray *pArray);
     asynStatus createNewFile(const char *fileName);
     asynStatus createFileLayout(NDArray *pArray);
     asynStatus createAttributeDataset();
+
 
     hdf5::LayoutXML layout;
 
