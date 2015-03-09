@@ -16,6 +16,7 @@ class NDFileHDF5Dataset
     void extendDataSet(int extradims);
     asynStatus writeFile(NDArray *pArray, hid_t datatype, hid_t dataspace, hsize_t *framesize);
     hid_t getHandle();
+    asynStatus flushDataset();
 
   private:
 

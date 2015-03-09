@@ -459,4 +459,33 @@ record(waveform, "$(P)$(R)XMLFileName_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(bo, "$(P)$(R)SWMRMode")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_SWMRMode")
+    field(PINI, "NO")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+record(bi, "$(P)$(R)SWMRMode_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_SWMRMode")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+record(bi, "$(P)$(R)SWMRActive_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_SWMRRunning")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+    field(ZNAM, "Off")
+    field(ONAM, "Active")
+}
+
 

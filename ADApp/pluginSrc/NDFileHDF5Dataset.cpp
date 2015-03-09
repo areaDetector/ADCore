@@ -212,3 +212,19 @@ hid_t NDFileHDF5Dataset::getHandle()
   return this->dataset_;
 }
 
+asynStatus NDFileHDF5Dataset::flushDataset()
+{
+  herr_t hdfstatus;
+  static const char *functionName = "flushDataset";
+
+  // Flush the dataset
+  hdfstatus = H5Dflush(this->dataset_);
+  if (hdfstatus){
+    asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR, 
+              "%s::%s ERROR Unable to flush the dataset [%s]\n", 
+              fileName, functionName, this->name_.c_str());
+    return asynError;
+  }
+  return asynSuccess;  
+}
+
