@@ -84,7 +84,6 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     asynStatus createTree(hdf5::Group* root, hid_t h5handle);
     asynStatus createHardLinks(hdf5::Group* root);
 
-    void writeHdfConstDatasets( hid_t h5_handle, hdf5::Group* group);
     hid_t writeHdfConstDataset( hid_t h5_handle, hdf5::Dataset* dset);
     hid_t writeH5dsetStr(hid_t element, const std::string &name, const std::string &str_value) const;
     hid_t writeH5dsetInt32(hid_t element, const std::string &name, const std::string &str_value) const;

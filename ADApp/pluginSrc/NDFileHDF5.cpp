@@ -159,6 +159,10 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
 
   getIntegerParam(NDFileHDF5_storeAttributes, &storeAttributes);
   if (storeAttributes == 1){
+    this->createAttributeDataset();
+    this->writeAttributeDataset(hdf5::OnFileOpen);
+
+
     // Store any attributes that have been marked as onOpen
     if (this->storeOnOpenAttributes()){
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
@@ -167,8 +171,6 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
       return asynError;
     }
 
-    this->createAttributeDataset();
-    this->writeAttributeDataset(hdf5::OnFileOpen);
   }
 
   getIntegerParam(NDFileHDF5_storePerformance, &storePerformance);
@@ -397,9 +399,6 @@ asynStatus NDFileHDF5::createTree(hdf5::Group* root, hid_t h5handle)
       return asynError;
     }
 
-    // Write contant datasets to file
-//    this->writeHdfConstDatasets(new_group, root);
-
     // Create all the datasets in this group
     hdf5::Group::MapDatasets_t::iterator it_dsets;
     hdf5::Group::MapDatasets_t& datasets = root->get_datasets();
@@ -515,42 +514,6 @@ void NDFileHDF5::writeHdfAttributes( hid_t h5_handle, hdf5::Element* element)
         default:
             asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::writeHdfAttributes unknown type: unable to create attribute: %s\n",
               driverName, attr.get_name().c_str());
-          break;
-      }
-    }
-  }
-}
-
-/** Check this group for any constant dataset and write them out.
- *  Supported types are 'string', 'int' and 'float'.
- *
- *  The types 'int' and 'float' can contain 1D arrays, where each element is separated
- *  by a ','
- *
- */
-void NDFileHDF5::writeHdfConstDatasets( hid_t h5_handle, hdf5::Group* group)
-{
-  hdf5::Group::MapDatasets_t::iterator it_dsets;
-  hdf5::DataType_t dtype = hdf5::string;
-
-  for (it_dsets=group->get_datasets().begin(); it_dsets != group->get_datasets().end(); ++it_dsets)
-  {
-    hdf5::Dataset* dset = it_dsets->second;
-    if(dset != NULL && dset->data_source().is_src_constant())
-    {
-      dtype = dset->data_source().get_datatype();
-      switch ( dtype )
-      {
-        case hdf5::string:
-          this->writeH5dsetStr(h5_handle, dset->get_name(), dset->data_source().get_src_def());
-          break;
-        case hdf5::float64:
-          this->writeH5dsetFloat64(h5_handle, dset->get_name(), dset->data_source().get_src_def());
-          break;
-        case hdf5::int32:
-          this->writeH5dsetInt32(h5_handle, dset->get_name(), dset->data_source().get_src_def());
-          break;
-        default:
           break;
       }
     }
@@ -1340,8 +1303,8 @@ asynStatus NDFileHDF5::closeFile()
   getIntegerParam(NDFileHDF5_storeAttributes, &storeAttributes);
   getIntegerParam(NDFileHDF5_storePerformance, &storePerformance);
   if (storeAttributes == 1) {
-     this->storeOnCloseAttributes();
      this->writeAttributeDataset(hdf5::OnFileClose);
+     this->storeOnCloseAttributes();
      this->closeAttributeDataset();
   }
   if (storePerformance == 1) this->writePerformanceDataset();
@@ -2119,6 +2082,9 @@ asynStatus NDFileHDF5::createAttributeDataset()
         hdfAttrNode->hdfdataset   = H5Dcreate2(dsetgroup, dset->get_name().c_str(),
                                                hdfAttrNode->hdfdatatype, hdfAttrNode->hdfdataspace,
                                                H5P_DEFAULT, hdfAttrNode->hdfcparm, H5P_DEFAULT);
+
+        //save xml tags attributes
+        writeHdfAttributes( hdfAttrNode->hdfdataset, dset);
 
         H5Gclose(dsetgroup);
 
