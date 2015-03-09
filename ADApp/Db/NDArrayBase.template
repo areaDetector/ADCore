@@ -3,6 +3,18 @@
 # March 9, 2008
 
 ###################################################################
+#  This record contains the version of ADCore                     #
+###################################################################
+
+record(stringin, "$(P)$(R)ADCoreVersion_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ADCORE_VERSION")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
 #  This record contains the asyn port name of this detector       #
 ###################################################################
 
