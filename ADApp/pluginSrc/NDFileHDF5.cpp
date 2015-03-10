@@ -106,12 +106,6 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
   // First clear the list
   this->pFileAttributes->clear();
 
-  // Add attributes for some NDArray properties.  This makes it easy to save them in the file.
-  this->pFileAttributes->add("NDArrayUniqueId",    "Unique ID",            NDAttrInt32,   &pArray->uniqueId);
-  this->pFileAttributes->add("NDArrayTimeStamp",   "Timestamp",            NDAttrFloat64, &pArray->timeStamp);
-  this->pFileAttributes->add("NDArrayEpicsTSSec",  "EPICS timestamp sec",  NDAttrInt32,   &pArray->epicsTS.secPastEpoch);
-  this->pFileAttributes->add("NDArrayEpicsTSnSec", "EPICS timestamp nsec", NDAttrInt32,   &pArray->epicsTS.nsec);
-
   // Now get the current values of the attributes for this plugin
   this->getAttributes(this->pFileAttributes);
 
@@ -2680,7 +2674,7 @@ void NDFileHDF5::addDefaultAttributes(NDArray *pArray)
   this->pFileAttributes->add("NDArrayEpicsTSSec",
                              "The NDArray EPICS timestamp in seconds past epoch",
                              NDAttrUInt32, (void*)&(pArray->epicsTS.secPastEpoch));
-  this->pFileAttributes->add("NDArrayEpicsTSNSec",
+  this->pFileAttributes->add("NDArrayEpicsTSnSec",
                              "The NDArray EPICS timestamp in nanoseconds",
                              NDAttrUInt32, (void*)&(pArray->epicsTS.nsec));
 }
