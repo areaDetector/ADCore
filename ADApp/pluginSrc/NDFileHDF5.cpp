@@ -2807,18 +2807,18 @@ asynStatus NDFileHDF5::createFileLayout(NDArray *pArray)
         return asynError;
       }
     } else {
-      // The file does not exist, raise a warning and use the default
+      // The file does not exist, raise an error
+      // Note that we should never get here as the file is verified prior to this
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                "%s%s Warning: specified XML file does not exist, using default\n",
+                "%s%s Warning: specified XML file does not exist\n",
                 driverName, functionName);
-      this->layout.load_xml();
-      this->createXMLFileLayout();
       delete[] layoutFile;
       return asynError;
     }
   }
   delete [] layoutFile;
-  return this->createXMLFileLayout();
+  asynStatus ret = this->createXMLFileLayout();
+  return ret;
 }
 
 
