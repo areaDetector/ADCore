@@ -119,6 +119,11 @@ R2-2 (March XXX, 2015)
   and NDPluginBase.template into this new file.  Made all template files "include" the files from the
   parent class, rather than calling dbLoadRecords for each template file.  This simplifies commonPlugins.cmd.
   A similar include mechanism was applied to the *_settings.req files, which simplifies commonPlugin_settings.req.
+* Added the info tag "autosaveFields" to allow automatic creation of autosave files.
+* ADBase.template
+  - Added optional macro parameter RATE_SMOOTH to smooth the calculated array rate.
+    The default value is 0.0, which does no smoothing.  Range 0.0-1.0, larger values 
+    result in more smoothing.
   
 ### ImageJ Viewer
 * Bug fixes from Lewis Muir.
@@ -133,13 +138,7 @@ R2-2 (March XXX, 2015)
 * Changes to support the EPICS_LIBCOM_ONLY flag to build applications that depend only
   on libCom and asyn.
     
-### Template files
-* Added the info tag "autosaveFields" to allow automatic creation of autosave files.
-* ADBase.template
-  - Added optional macro parameter RATE_SMOOTH to smooth the calculated array rate.
-    The default value is 0.0, which does no smoothing.  Range 0.0-1.0, larger values 
-    result in more smoothing.
-
+    
 R2-1 (October 17, 2014)
 =======================
 ### NDPluginFile
