@@ -47,9 +47,11 @@ dbLoadRecords("simDetector.template","P=$(PREFIX),R=cam1:,PORT=$(PORT),ADDR=0,TI
 simDetectorConfig("SIM2", 300, 200, 1, 50, 50000000)
 dbLoadRecords("simDetector.template","P=$(PREFIX),R=cam2:,PORT=SIM2,ADDR=0,TIMEOUT=1")
 
+# Load an NDFile database.  This is not supported for the simDetector which does not write files.
+#dbLoadRecords("NDFile.template","P=$(PREFIX),R=cam1:,PORT=SIM1,ADDR=0,TIMEOUT=1")
+
 # Create a standard arrays plugin, set it to get data from first simDetector driver.
 NDStdArraysConfigure("Image1", 3, 0, "$(PORT)", 0)
-dbLoadRecords("NDPluginBase.template","P=$(PREFIX),R=image1:,PORT=Image1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT),NDARRAY_ADDR=0")
 
 # This creates a waveform large enough for 1024x1024x3 (e.g. RGB color) arrays.
 # This waveform only allows transporting 8-bit images
