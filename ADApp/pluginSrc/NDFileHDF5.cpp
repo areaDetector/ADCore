@@ -2679,6 +2679,36 @@ void NDFileHDF5::addDefaultAttributes(NDArray *pArray)
                              NDAttrUInt32, (void*)&(pArray->epicsTS.nsec));
 }
 
+/** Add the default attributes from NDArrays as HDF5 attributes on the detector datasets
+ *
+ */
+asynStatus NDFileHDF5::writeDefaultDatasetAttributes(NDArray *pArray)
+{
+  asynStatus ret = asynSuccess;
+
+  // First create some HDF5 attribute descriptions (constants) for each of the
+  // NDArray data elements of interest
+  hdf5::Attribute attr("NDArrayNumDims");
+  attr.setOnFileOpen(true);
+  attr.source = hdf5::DataSource(hdf5::constant);
+  attr.source.set_when_to_save(hdf5::OnFileOpen);
+  attr.source.set_const_datatype_value(hdf5::int32, "2");
+  assert (attr.source.get_datatype() == hdf5::int32 );
+
+  // Find a map of all detector datasets
+  // (string name, Dataset object)
+  hdf5::Group::MapDatasets_t det_dsets;
+  this->layout.get_hdftree()->find_dsets(hdf5::detector, det_dsets);
+
+  // Iterate over all detector datasets and attach the attributes
+  hdf5::Group::MapDatasets_t::iterator it_det_dsets;
+  for (it_det_dsets = det_dsets.begin(); it_det_dsets!=det_dsets.end(); ++it_det_dsets)
+  {
+    it_det_dsets->second->add_attribute(attr);
+  }
+
+  return ret;
+}
 
 asynStatus NDFileHDF5::createNewFile(const char *fileName)
 {
@@ -2811,6 +2841,15 @@ asynStatus NDFileHDF5::createFileLayout(NDArray *pArray)
     }
   }
   delete [] layoutFile;
+
+  // Append the default NDArray attributes to the detector datasets
+  if (this->writeDefaultDatasetAttributes(pArray)) {
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING,
+                "%s::%s WARNING Failed write default NDArray attributes to detector datasets\n",
+                driverName, functionName);
+      return asynError;
+  }
+
   asynStatus ret = this->createXMLFileLayout();
   return ret;
 }

@@ -161,6 +161,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
 
     void checkForOpenFile();
     void addDefaultAttributes(NDArray *pArray);
+    asynStatus writeDefaultDatasetAttributes(NDArray *pArray);
     asynStatus createNewFile(const char *fileName);
     asynStatus createFileLayout(NDArray *pArray);
     asynStatus createAttributeDataset();
