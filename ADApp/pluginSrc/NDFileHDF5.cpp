@@ -1992,27 +1992,35 @@ asynStatus NDFileHDF5::writePerformanceDataset()
       }
     }
 
-    if(perf_group == NULL)
-    {
-      asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING, "%s::writePerformanceDataset No default attribute group defined.\n",
-                driverName);
-      return asynError;
-    }
-
     getIntegerParam(NDFileNumCaptured, &numCaptured);
     dims[1] = 5;
     if (numCaptured < this->numPerformancePoints) dims[0] = numCaptured;
     else dims[0] = this->numPerformancePoints;
 
+    if(perf_group == NULL)
+    {
+      // Check if the auto_ndattr_default tag is true, if it is then the root group is the file
+      if (this->layout.getAutoNDAttrDefault()){
+        group_performance = this->file;
+      } else {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING, "%s::writePerformanceDataset No default attribute group defined.\n",
+                  driverName);
+        return asynError;
+      }
+    } else {
+      group_performance = H5Gopen(this->file, perf_group->get_full_name().c_str(), H5P_DEFAULT);
+    }
+
     /* Create the "timestamp" dataset */
     dataspace_id = H5Screate_simple(2, dims, NULL);
-    group_performance = H5Gopen(this->file, perf_group->get_full_name().c_str(), H5P_DEFAULT);
     dataset_id = H5Dcreate2(group_performance, "timestamp", H5T_NATIVE_DOUBLE, dataspace_id,
                             H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
     if (!H5Iis_valid(dataset_id)) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING, "NDFileHDF5::writePerformanceDataset: unable to create \'timestamp\' dataset.");
         H5Sclose(dataspace_id);
-        H5Gclose(group_performance);
+        if(perf_group != NULL){
+          H5Gclose(group_performance);
+        }
         return asynError;
     }
     /* Write the second dataset. */
@@ -2027,7 +2035,9 @@ asynStatus NDFileHDF5::writePerformanceDataset()
     H5Dclose(dataset_id);
 
     /* Close the group. */
-    H5Gclose(group_performance);
+    if(perf_group != NULL){
+      H5Gclose(group_performance);
+    }
   } else {
     return asynError;
   }
@@ -2069,8 +2079,13 @@ asynStatus NDFileHDF5::createAttributeDataset()
     }
   }
   else {
-    asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING, "%s::%s No default attribute group defined.\n",
-              driverName, functionName);
+    // Check if the auto_ndattr_default tag is true, if it is then the root group is the file
+    if (this->layout.getAutoNDAttrDefault()){
+      groupDefault = this->file;
+    } else {
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING, "%s::%s No default attribute group defined.\n",
+                driverName, functionName);
+    }
   }
 
   ndAttr = this->pFileAttributes->next(ndAttr); // get the first NDAttribute
@@ -2184,7 +2199,9 @@ asynStatus NDFileHDF5::createAttributeDataset()
     }
     ndAttr = this->pFileAttributes->next(ndAttr);
   }
-  H5Gclose(groupDefault);
+  if(def_group != NULL){
+    H5Gclose(groupDefault);
+  }
 
   return asynSuccess;
 }
