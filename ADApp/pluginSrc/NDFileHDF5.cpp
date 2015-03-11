@@ -106,12 +106,6 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
   // First clear the list
   this->pFileAttributes->clear();
 
-  // Add attributes for some NDArray properties.  This makes it easy to save them in the file.
-  this->pFileAttributes->add("NDArrayUniqueId",    "Unique ID",            NDAttrInt32,   &pArray->uniqueId);
-  this->pFileAttributes->add("NDArrayTimeStamp",   "Timestamp",            NDAttrFloat64, &pArray->timeStamp);
-  this->pFileAttributes->add("NDArrayEpicsTSSec",  "EPICS timestamp sec",  NDAttrInt32,   &pArray->epicsTS.secPastEpoch);
-  this->pFileAttributes->add("NDArrayEpicsTSnSec", "EPICS timestamp nsec", NDAttrInt32,   &pArray->epicsTS.nsec);
-
   // Now get the current values of the attributes for this plugin
   this->getAttributes(this->pFileAttributes);
 
@@ -1137,16 +1131,10 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
                 driverName, functionName);
       return asynError;
     }
-    // Update the values for some NDArray properties.
-    NDAttribute *pAttribute;
-    pAttribute = this->pFileAttributes->find("NDArrayUniqueId");
-    pAttribute->setValue(&pArray->uniqueId);
-    pAttribute = this->pFileAttributes->find("NDArrayTimeStamp");
-    pAttribute->setValue(&pArray->timeStamp);
-    pAttribute = this->pFileAttributes->find("NDArrayEpicsTSSec");
-    pAttribute->setValue(&pArray->epicsTS.secPastEpoch);
-    pAttribute = this->pFileAttributes->find("NDArrayEpicsTSnSec");
-    pAttribute->setValue(&pArray->epicsTS.nsec);
+
+    // Insert default NDAttribute from the NDArray object (timestamps etc)
+    this->addDefaultAttributes(pArray);
+
     // Now append the attributes from the array which are already up to date from
     // the driver and prior plugins
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
@@ -2674,6 +2662,104 @@ void NDFileHDF5::checkForOpenFile()
   }
 }
 
+/** Add the default attributes from NDArrays into the local NDAttribute list.
+ *
+ * The relevant attributes are: uniqueId, timeStamp, epicsTS.secPastEpoch and
+ * epicsTS.nsec.
+ */
+void NDFileHDF5::addDefaultAttributes(NDArray *pArray)
+{
+  this->pFileAttributes->add("NDArrayUniqueId",
+                             "The unique ID of the NDArray",
+                             NDAttrInt32, (void*)&(pArray->uniqueId));
+  this->pFileAttributes->add("NDArrayTimeStamp",
+                             "The timestamp of the NDArray",
+                             NDAttrFloat64, (void*)&(pArray->timeStamp));
+  this->pFileAttributes->add("NDArrayEpicsTSSec",
+                             "The NDArray EPICS timestamp in seconds past epoch",
+                             NDAttrUInt32, (void*)&(pArray->epicsTS.secPastEpoch));
+  this->pFileAttributes->add("NDArrayEpicsTSnSec",
+                             "The NDArray EPICS timestamp in nanoseconds",
+                             NDAttrUInt32, (void*)&(pArray->epicsTS.nsec));
+}
+
+/** Helper function to create a comma separated list of integers in a string
+ *
+ */
+std::string comma_separated_list(int nelements, size_t *data)
+{
+  std::ostringstream num_str_convert;
+
+  for (int i = 0; i < nelements; i++)
+  {
+    num_str_convert << data[i] << ",";
+  }
+
+  return num_str_convert.str();
+}
+
+/** Add the default attributes from NDArrays as HDF5 attributes on the detector datasets
+ *
+ */
+asynStatus NDFileHDF5::writeDefaultDatasetAttributes(NDArray *pArray)
+{
+  asynStatus ret = asynSuccess;
+  std::ostringstream num_str_convert;
+  hdf5::DataSource const_src(hdf5::constant);
+  const_src.set_when_to_save(hdf5::OnFileOpen);
+
+  // First create some HDF5 attribute descriptions (constants) for each of the
+  // NDArray data elements of interest
+  std::vector<hdf5::Attribute> default_ndarray_attributes;
+
+  hdf5::Attribute attr_numdims("NDArrayNumDims", const_src);
+  attr_numdims.setOnFileOpen(true);
+  num_str_convert << pArray->ndims;
+  attr_numdims.source.set_const_datatype_value(hdf5::int32, num_str_convert.str());
+  default_ndarray_attributes.push_back(attr_numdims);
+  num_str_convert.str("");
+
+  // Create the attributes which has one element for each dimension
+  hdf5::Attribute attr_dim_offset("NDArrayDimOffset", const_src);
+  for (int i = 0; i<pArray->ndims; i++) num_str_convert << pArray->dims[i].offset << ","; // Create comma separated string
+  attr_dim_offset.source.set_const_datatype_value(hdf5::int32, num_str_convert.str());
+  num_str_convert.str("");
+  default_ndarray_attributes.push_back(attr_dim_offset);
+
+  hdf5::Attribute attr_dim_binning("NDArrayDimBinning", const_src);
+  for (int i = 0; i<pArray->ndims; i++) num_str_convert << pArray->dims[i].binning << ","; // Create comma separated string
+  attr_dim_binning.source.set_const_datatype_value(hdf5::int32, num_str_convert.str());
+  num_str_convert.str("");
+  default_ndarray_attributes.push_back(attr_dim_binning);
+
+  hdf5::Attribute attr_dim_reverse("NDArrayDimReverse", const_src);
+  for (int i = 0; i<pArray->ndims; i++) num_str_convert << pArray->dims[i].reverse << ","; // Create comma separated string
+  attr_dim_reverse.source.set_const_datatype_value(hdf5::int32, num_str_convert.str());
+  num_str_convert.str("");
+  default_ndarray_attributes.push_back(attr_dim_reverse);
+
+  // Find a map of all detector datasets
+  // (string name, Dataset object)
+  hdf5::Group::MapDatasets_t det_dsets;
+  this->layout.get_hdftree()->find_dsets(hdf5::detector, det_dsets);
+
+  // Iterate over all detector datasets to attach the attributes
+  hdf5::Group::MapDatasets_t::iterator it_det_dsets;
+  std::vector<hdf5::Attribute>::iterator it_default_ndarray_attributes;
+  for (it_det_dsets = det_dsets.begin(); it_det_dsets!=det_dsets.end(); ++it_det_dsets)
+  {
+    // Attach all the default attributes
+    for (it_default_ndarray_attributes = default_ndarray_attributes.begin();
+         it_default_ndarray_attributes != default_ndarray_attributes.end();
+         ++it_default_ndarray_attributes)
+    {
+      it_det_dsets->second->add_attribute(*it_default_ndarray_attributes);
+    }
+  }
+
+  return ret;
+}
+
 asynStatus NDFileHDF5::createNewFile(const char *fileName)
 {
   herr_t hdfstatus;
@@ -2795,18 +2881,27 @@ asynStatus NDFileHDF5::createFileLayout(NDArray *pArray)
         return asynError;
       }
     } else {
-      // The file does not exist, raise a warning and use the default
+      // The file does not exist, raise an error
+      // Note that we should never get here as the file is verified prior to this
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                "%s%s Warning: specified XML file does not exist, using default\n",
+                "%s%s Warning: specified XML file does not exist\n",
                 driverName, functionName);
-      this->layout.load_xml();
-      this->createXMLFileLayout();
       delete[] layoutFile;
       return asynError;
     }
   }
   delete [] layoutFile;
-  return this->createXMLFileLayout();
+
+  // Append the default NDArray attributes to the detector datasets
+  if (this->writeDefaultDatasetAttributes(pArray)) {
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING,
+                "%s::%s WARNING Failed write default NDArray attributes to detector datasets\n",
+                driverName, functionName);
+      return asynError;
+  }
+
+  asynStatus ret = this->createXMLFileLayout();
+  return ret;
 }
 
 
