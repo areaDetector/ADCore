@@ -56,7 +56,6 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
     
     pArray->getInfo(&arrayInfo);
 
-    printf("First param: %d", FIRST_NDPLUGIN_CIRCULAR_BUFF_PARAM);
     // Retrieve the running state
     getIntegerParam(NDPluginCircularBuffControl,  &scopeControl);
     getIntegerParam(NDPluginCircularBuffPreTrigger,  &preCount);
