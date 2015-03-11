@@ -4,7 +4,6 @@ include $(TOP)/configure/CONFIG
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 #=============================
 
-#ifdef 
 
 BOOSTDIR=/dls_sw/prod/tools/RHEL6-x86_64/boost/1-48-0/prefix
 
@@ -13,7 +12,6 @@ boost_unit_test_framework_DIR=$(BOOSTDIR)/lib
 
 PROD_IOC += NDPluginCircularBuff_test
 NDPluginCircularBuff_test_SRCS += test_NDPluginCircularBuff.cpp
-NDPluginCircularBuff_test_OBJS += ../../pluginSrc/O.linux-x86_64/NDPluginCircularBuff
 NDPluginCircularBuff_test_LIBS += asyn ADBase NDPlugin Com simDetector
 NDPluginCircularBuff_test_LIBS += boost_unit_test_framework
 
