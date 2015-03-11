@@ -2679,32 +2679,78 @@ void NDFileHDF5::addDefaultAttributes(NDArray *pArray)
                              NDAttrUInt32, (void*)&(pArray->epicsTS.nsec));
 }
 
+/** Helper function to create a comma separated list of integers in a string
+ *
+ */
+std::string comma_separated_list(int nelements, size_t *data)
+{
+  std::ostringstream num_str_convert;
+
+  for (int i = 0; i < nelements; i++)
+  {
+    num_str_convert << data[i] << ",";
+  }
+
+  return num_str_convert.str();
+}
+
 /** Add the default attributes from NDArrays as HDF5 attributes on the detector datasets
  *
  */
 asynStatus NDFileHDF5::writeDefaultDatasetAttributes(NDArray *pArray)
 {
   asynStatus ret = asynSuccess;
+  std::ostringstream num_str_convert;
+  hdf5::DataSource const_src(hdf5::constant);
+  const_src.set_when_to_save(hdf5::OnFileOpen);
 
   // First create some HDF5 attribute descriptions (constants) for each of the
   // NDArray data elements of interest
-  hdf5::Attribute attr("NDArrayNumDims");
-  attr.setOnFileOpen(true);
-  attr.source = hdf5::DataSource(hdf5::constant);
-  attr.source.set_when_to_save(hdf5::OnFileOpen);
-  attr.source.set_const_datatype_value(hdf5::int32, "2");
-  assert (attr.source.get_datatype() == hdf5::int32 );
+  std::vector<hdf5::Attribute> default_ndarray_attributes;
+
+  hdf5::Attribute attr_numdims("NDArrayNumDims", const_src);
+  attr_numdims.setOnFileOpen(true);
+  num_str_convert << pArray->ndims;
+  attr_numdims.source.set_const_datatype_value(hdf5::int32, num_str_convert.str());
+  default_ndarray_attributes.push_back(attr_numdims);
+  num_str_convert.str("");
+
+  // Create the attributes which has one element for each dimension
+  hdf5::Attribute attr_dim_offset("NDArrayDimOffset", const_src);
+  for (int i = 0; i<pArray->ndims; i++) num_str_convert << pArray->dims[i].offset << ","; // Create comma separated string
+  attr_dim_offset.source.set_const_datatype_value(hdf5::int32, num_str_convert.str());
+  num_str_convert.str("");
+  default_ndarray_attributes.push_back(attr_dim_offset);
+
+  hdf5::Attribute attr_dim_binning("NDArrayDimBinning", const_src);
+  for (int i = 0; i<pArray->ndims; i++) num_str_convert << pArray->dims[i].binning << ","; // Create comma separated string
+  attr_dim_binning.source.set_const_datatype_value(hdf5::int32, num_str_convert.str());
+  num_str_convert.str("");
+  default_ndarray_attributes.push_back(attr_dim_binning);
+
+  hdf5::Attribute attr_dim_reverse("NDArrayDimReverse", const_src);
+  for (int i = 0; i<pArray->ndims; i++) num_str_convert << pArray->dims[i].reverse << ","; // Create comma separated string
+  attr_dim_reverse.source.set_const_datatype_value(hdf5::int32, num_str_convert.str());
+  num_str_convert.str("");
+  default_ndarray_attributes.push_back(attr_dim_reverse);
 
   // Find a map of all detector datasets
   // (string name, Dataset object)
   hdf5::Group::MapDatasets_t det_dsets;
   this->layout.get_hdftree()->find_dsets(hdf5::detector, det_dsets);
 
-  // Iterate over all detector datasets and attach the attributes
+  // Iterate over all detector datasets to attach the attributes
   hdf5::Group::MapDatasets_t::iterator it_det_dsets;
+  std::vector<hdf5::Attribute>::iterator it_default_ndarray_attributes;
   for (it_det_dsets = det_dsets.begin(); it_det_dsets!=det_dsets.end(); ++it_det_dsets)
   {
-    it_det_dsets->second->add_attribute(attr);
+    // Attach all the default attributes
+    for (it_default_ndarray_attributes = default_ndarray_attributes.begin();
+         it_default_ndarray_attributes != default_ndarray_attributes.end();
+         ++it_default_ndarray_attributes)
+    {
+      it_det_dsets->second->add_attribute(*it_default_ndarray_attributes);
+    }
   }
 
   return ret;
