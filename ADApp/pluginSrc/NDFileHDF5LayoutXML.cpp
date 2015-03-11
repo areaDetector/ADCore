@@ -91,6 +91,7 @@ namespace hdf5
   int LayoutXML::load_xml()
   {
     int ret = 0;
+    auto_ndattr_default = true;
     this->xmlreader = xmlReaderForMemory(DEFAULT_LAYOUT.c_str(),
                                          (int)DEFAULT_LAYOUT.size(),
                                          "noname.xml",
@@ -125,6 +126,7 @@ namespace hdf5
   int LayoutXML::load_xml(const std::string& filename)
   {
     int ret = 0;
+    auto_ndattr_default = true;
     // if the file name contains <?xml then load it as an xml string from memory
     if (filename.find("<?xml") != std::string::npos){
       this->xmlreader = xmlReaderForMemory(filename.c_str(), (int)filename.length(), NULL, NULL, 0);
@@ -161,6 +163,7 @@ namespace hdf5
   {
     int ret = 0;
     int status = 0;
+    auto_ndattr_default = true;
 
     // if the file name contains <?xml then load it as an xml string from memory
     if (filename.find("<?xml") != std::string::npos){
