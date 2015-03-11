@@ -6,11 +6,11 @@
 #include "boost/test/unit_test.hpp"
 
 // AD dependencies
-#include "NDPluginCircularBuff.h"
-#include "simDetector.h"
-#include "NDPluginROI.h"
-#include "NDArray.h"
-#include "asynDriver.h"
+#include <NDPluginCircularBuff.h>
+#include <simDetector.h>
+#include <NDArray.h>
+#include <asynDriver.h>
+#include <asynPortClient.h>
 
 #include <string.h>
 #include <stdint.h>
@@ -74,16 +74,21 @@ void TestingPlugin::processCallbacks(NDArray *pArray)
 }
 
 
-
 struct PluginFixture
 {
     NDArrayPool *arrayPool;
-    // simDetectorConfig(portName, maxSizeX, maxSizeY, dataType, maxBuffers, maxMemory)
     simDetector *driver;
     NDPluginCircularBuff *cb;
     TestingPlugin *ds;
-    asynUser *user;
-    static int count;
+    asynInt32Client *enableCallbacks;
+    asynInt32Client *blockingCallbacks;
+    asynInt32Client *cbControl;
+    asynInt32Client *cbPreTrigger;
+    asynInt32Client *cbPostTrigger;
+    asynInt32Client *cbSoftTrigger;
+    asynOctetClient *cbStatus;
+    asynInt32Client *cbCount;
+    static int testCase;
 
     PluginFixture()
     {
@@ -92,40 +97,46 @@ struct PluginFixture
         // Asyn manager doesn't like it if we try to reuse the same port name for multiple drivers (even if only one is ever instantiated at once), so
         // change it slightly for each test case.
         char simport[50], testport[50], dsport[50];
-        sprintf(simport, "simPort%d", count);
+        sprintf(simport, "simPort%d", testCase);
         // We need some upstream driver for our test plugin so that calls to connectArrayPort don't fail, but we can then ignore it and send
         // arrays by calling processCallbacks directly.
         driver = new simDetector(simport, 800, 500, NDFloat64, 50, 0, 0, 2000000);
 
         // This is the plugin under test
-        sprintf(testport, "testPort%d", count);
+        sprintf(testport, "testPort%d", testCase);
         cb = new NDPluginCircularBuff(testport, 50, 0, simport, 0, 1000, -1, 0, 2000000);
 
         // This is the mock downstream plugin
-        sprintf(dsport, "dsPort%d", count);
+        sprintf(dsport, "dsPort%d", testCase);
         ds = new TestingPlugin(dsport, 16, 1, testport, 0, 50, -1, 0, 2000000);
 
-        // We need a valid asynUser to pass to writeInt32, as otherwise it segfaults in calls to epicsSnprintf, so get one from the global asynManager.
-        user = pasynManager->createAsynUser(0,0);
+        enableCallbacks = new asynInt32Client(dsport, 0, NDPluginDriverEnableCallbacksString);
+        blockingCallbacks = new asynInt32Client(dsport, 0, NDPluginDriverBlockingCallbacksString);
+        cbControl = new asynInt32Client(testport, 0, NDPluginCircularBuffControlString);
+        cbPreTrigger = new asynInt32Client(testport, 0, NDPluginCircularBuffPreTriggerString);
+        cbPostTrigger = new asynInt32Client(testport, 0, NDPluginCircularBuffPostTriggerString);
+        cbSoftTrigger = new asynInt32Client(testport, 0, NDPluginCircularBuffSoftTriggerString);
+        cbStatus = new asynOctetClient(testport, 0, NDPluginCircularBuffStatusString);
+        cbCount = new asynInt32Client(testport, 0, NDPluginCircularBuffCurrentImageString);
 
         // Set the downstream plugin to receive callbacks from the test plugin and to run in blocking mode, so we don't need to worry about synchronisation
         // with the downstream plugin.
-        // Would be nice if we could use the actual paramater names rather than having to look up the numbers, but they are private members.
-        user->reason = 53 - 3; // NDPluginDriverEnableCallbacks
-        ds->lock();
-        ds->writeInt32(user, 1);
-        ds->unlock();
-        user->reason = 53 - 2; //NDPluginDriverBlockingCallbacks
-        ds->lock();
-        ds->writeInt32(user, 1);
-        ds->unlock();
+        enableCallbacks->write(1);
+        blockingCallbacks->write(1);
 
-        count++;
+        testCase++;
 
     }
     ~PluginFixture()
     {
-        pasynManager->freeAsynUser(user);
+        delete cbCount;
+        delete cbStatus;
+        delete cbSoftTrigger;
+        delete cbPostTrigger;
+        delete cbPreTrigger;
+        delete cbControl;
+        delete blockingCallbacks;
+        delete enableCallbacks;
         delete ds;
         delete cb;
         delete driver;
@@ -139,7 +150,7 @@ struct PluginFixture
     }
 };
 
-int PluginFixture::count = 0;
+int PluginFixture::testCase = 0;
 
 BOOST_FIXTURE_TEST_SUITE(CircularBuffTests, PluginFixture)
 
@@ -149,22 +160,16 @@ BOOST_AUTO_TEST_CASE(test_BufferWrappingAndStatusMessages)
   size_t gotbytes;
   int eom;
 
-  // To store values read back from driver
   int storedImages;
   char status[50] = {0};
 
-  user->reason = 53 + 1; // NDPluginCircularBuffStatus
-  cb->readOctet(user, status, 50, &gotbytes, &eom);
+  cbStatus->read(status, 50, &gotbytes, &eom);
   BOOST_REQUIRE_EQUAL(strcmp(status, "Idle"), 0);
 
-  user->reason = 53 + 2; // NDPluginCircularBuffPreTrigger
-  cb->writeInt32(user, 10);
+  cbPreTrigger->write(10);
+  cbControl->write(1);
 
-  user->reason = 53 + 0; // NDPluginCircularBuffControl
-  cb->writeInt32(user, 1);
-
-  user->reason = 53 + 1; // NDPluginCircularBuffStatus
-  cb->readOctet(user, status, 50, &gotbytes, &eom);
+  cbStatus->read(status, 50, &gotbytes, &eom);
   BOOST_REQUIRE_EQUAL(strcmp(status, "Buffer filling"), 0);
 
   size_t dims[2] = {2,5};
@@ -174,25 +179,16 @@ BOOST_AUTO_TEST_CASE(test_BufferWrappingAndStatusMessages)
   for (int i = 0; i < 30; i++)
       cbProcess(testArray);
 
-  user->reason = 53 + 4; // NDPluginCircularBuffCurrentImage
-
-  cb->readInt32(user, &storedImages);
-  user->reason = 53 + 1; // NDPluginCircularBuffStatus
-
-  cb->readOctet(user, status, 50, &gotbytes, &eom);
-
+  cbCount->read(&storedImages);
+  cbStatus->read(status, 50, &gotbytes, &eom);
   BOOST_REQUIRE_EQUAL(storedImages, 10);
   BOOST_REQUIRE_EQUAL(strcmp(status, "Buffer Wrapping"), 0);
-
 }
 
 BOOST_AUTO_TEST_CASE(test_OutputCount)
 {
-    user->reason = 53 + 2; // NDPluginCircularBuffPreTrigger
-    cb->writeInt32(user, 10);
-
-    user->reason = 53 + 0; // NDPluginCircularBuffControl
-    cb->writeInt32(user, 1);
+    cbPreTrigger->write(10);
+    cbControl->write(1);
 
     size_t dims[2] = {2,5};
     NDArray *testArray = arrayPool->alloc(2,dims,NDFloat64,0,NULL);
@@ -201,8 +197,7 @@ BOOST_AUTO_TEST_CASE(test_OutputCount)
         cbProcess(testArray);
 
     // Trigger the buffer flush
-    user->reason = 53 + 6; // NDPluginCircularBuffSoftTrigger
-    cb->writeInt32(user, 1);
+    cbSoftTrigger->write(1);
 
     cbProcess(testArray);
 
@@ -213,11 +208,8 @@ BOOST_AUTO_TEST_CASE(test_OutputCount)
 
 BOOST_AUTO_TEST_CASE(test_PreBufferOrder)
 {
-    user->reason = 53 + 2; // NDPluginCircularBuffPreTrigger
-    cb->writeInt32(user, 3);
-
-    user->reason = 53 + 0; // NDPluginCircularBuffControl
-    cb->writeInt32(user, 1);
+    cbPreTrigger->write(3);
+    cbControl->write(1);
 
     size_t dims = 3;
     NDArray *testArrays[10];
@@ -232,8 +224,7 @@ BOOST_AUTO_TEST_CASE(test_PreBufferOrder)
     }
 
     // Trigger the buffer flush
-    user->reason = 53 + 6; // NDPluginCircularBuffSoftTrigger
-    cb->writeInt32(user, 1);
+    cbSoftTrigger->write(1);
 
     // Really we should unlock around every call to processCallbacks since it expects the lock to be taken, but in practice this is only necessary if the
     // call will trigger output to the downstream plugin (i.e. if cb will actually call unlock() at some point).

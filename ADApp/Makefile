@@ -19,7 +19,10 @@ DIRS += nexusSrc
 
 DIRS += tiffSupport
 
-DIRS += pluginTests
+ifeq ($(USE_BOOST_UTF),YES)
+  DIRS += pluginTests
+  pluginTests_DEPEND_DIRS += ADSrc pluginSrc simDetectorSrc
+endif
 
 include $(TOP)/configure/RULES_DIRS
 
