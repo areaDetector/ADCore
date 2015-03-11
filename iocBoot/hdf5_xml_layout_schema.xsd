@@ -48,6 +48,7 @@
     </xs:sequence>
     <xs:attribute name="name" type="xs:string" use="required" />
     <xs:attribute name="source" type="dsetSourceEnum" use="required" />
+    <xs:attribute name="type" type="attrSourceTypeEnum" use="optional" default="string" />
     <xs:attribute name="value" type="xs:string" use="optional" default="" />
     <xs:attribute name="ndattribute" type="xs:string" use="optional" default="" />
     <xs:attribute name="det_default" type="xs:boolean" use="optional" default="false" />
@@ -85,7 +86,7 @@
   </xs:complexType>
 
   <!-- The actual definition of the elements -->
-  <xs:element name="xml">
+  <xs:element name="hdf5_layout">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element name="global" type="globalType" />

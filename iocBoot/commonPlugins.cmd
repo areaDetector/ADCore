@@ -114,6 +114,19 @@ NDCircularBuffConfigure("CB1", $(QSIZE), 0, "$(PORT)", 0, $(CBUFFS), 0)
 dbLoadRecords("$(ADCORE)/db/NDPluginBase.template",   "P=$(PREFIX),R=CB1:,  PORT=CB1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT),NDARRAY_ADDR=0")
 dbLoadRecords("$(ADCORE)/db/NDCircularBuff.template", "P=$(PREFIX),R=CB1:,  PORT=CB1,ADDR=0,TIMEOUT=1")
 
+# Create an NDAttribute plugin with 8 attributes
+NDAttrConfigure("ATTR1", $(QSIZE), 0, "$(PORT)", 0, 8, 0, 0, 0)
+dbLoadRecords("$(ADCORE)/db/NDPluginBase.template", "P=$(PREFIX),R=Attr1:,    PORT=ATTR1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT),NDARRAY_ADDR=0")
+dbLoadRecords("$(ADCORE)/db/NDAttribute.template",  "P=$(PREFIX),R=Attr1:,    PORT=ATTR1,ADDR=0,TIMEOUT=1,NCHANS=$(NCHANS)")
+dbLoadRecords("$(ADCORE)/db/NDAttributeN.template", "P=$(PREFIX),R=Attr1:1:,  PORT=ATTR1,ADDR=0,TIMEOUT=1,NCHANS=$(NCHANS)")
+dbLoadRecords("$(ADCORE)/db/NDAttributeN.template", "P=$(PREFIX),R=Attr1:2:,  PORT=ATTR1,ADDR=1,TIMEOUT=1,NCHANS=$(NCHANS)")
+dbLoadRecords("$(ADCORE)/db/NDAttributeN.template", "P=$(PREFIX),R=Attr1:3:,  PORT=ATTR1,ADDR=2,TIMEOUT=1,NCHANS=$(NCHANS)")
+dbLoadRecords("$(ADCORE)/db/NDAttributeN.template", "P=$(PREFIX),R=Attr1:4:,  PORT=ATTR1,ADDR=3,TIMEOUT=1,NCHANS=$(NCHANS)")
+dbLoadRecords("$(ADCORE)/db/NDAttributeN.template", "P=$(PREFIX),R=Attr1:5:,  PORT=ATTR1,ADDR=4,TIMEOUT=1,NCHANS=$(NCHANS)")
+dbLoadRecords("$(ADCORE)/db/NDAttributeN.template", "P=$(PREFIX),R=Attr1:6:,  PORT=ATTR1,ADDR=5,TIMEOUT=1,NCHANS=$(NCHANS)")
+dbLoadRecords("$(ADCORE)/db/NDAttributeN.template", "P=$(PREFIX),R=Attr1:7:,  PORT=ATTR1,ADDR=6,TIMEOUT=1,NCHANS=$(NCHANS)")
+dbLoadRecords("$(ADCORE)/db/NDAttributeN.template", "P=$(PREFIX),R=Attr1:8:,  PORT=ATTR1,ADDR=7,TIMEOUT=1,NCHANS=$(NCHANS)")
+
 # Load scan records
 dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=$(PREFIX),MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
 

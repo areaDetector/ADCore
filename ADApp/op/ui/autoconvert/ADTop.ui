@@ -7,13 +7,102 @@
             <x>171</x>
             <y>78</y>
             <width>225</width>
-            <height>490</height>
+            <height>540</height>
         </rect>
     </property>
     <property name="styleSheet">
         <string>
 
 QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
+QPushButton::menu-indicator {image: url(none.png); width: 0}
+
+caTable {
+       font: 10pt;
+       background: cornsilk;
+       alternate-background-color: wheat;
+}
+
+caLineEdit {
+     border-radius: 1px;
+     background: lightyellow;
+     color: black;
+ }
+
+caTextEntry {
+    color: rgb(127, 0, 63);
+    background-color: cornsilk;
+    selection-color: #0a214c;
+    selection-background-color: wheat;
+    border: 1px groove black;
+    border-radius: 1px;
+    padding: 1px;
+}
+
+caTextEntry:focus {
+    padding: 0px;
+    border: 2px groove darkred;
+    border-radius: 1px;
+}
+
+QPushButton {
+      border-color: #00b;
+      border-radius: 2px;
+      padding: 3px;
+      border-width: 1px;
+
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+						   stop:0   rgba(224, 239, 255, 255),
+						   stop:0.5 rgba(199, 215, 230, 255),
+						   stop:1   rgba(184, 214, 236, 255));
+}
+QPushButton:hover {
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+						stop:0   rgba(201, 226, 255, 255),
+						stop:0.5 rgba(177, 204, 230, 255),
+						stop:1   rgba(163, 205, 236, 255));
+}
+QPushButton:pressed {
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+						stop:0   rgba(174, 219, 255, 255),
+						stop:0.5 rgba(165, 199, 230, 255),
+						stop:1   rgba(134, 188, 236, 255));
+}
+
+QPushButton:disabled {
+	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
+						stop:0   rgba(174, 219, 255, 255),
+						stop:0.5 rgba(165, 199, 230, 255),
+						stop:1   rgba(134, 188, 236, 255));
+}
+
+caChoice {
+      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                  stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
+                                  stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
+}
+
+caChoice &gt; QPushButton {
+      text-align: left;
+      padding: 1px;
+}
+
+caSlider::groove:horizontal {
+border: 1px solid #bbb;
+background: lightgrey;
+height: 20px;
+border-radius: 4px;
+}
+
+caSlider::handle:horizontal {
+background: red;
+border: 1px solid #777;
+width: 13px;
+margin-top: -2px;
+margin-bottom: -2px;
+border-radius: 2px;
+}
+
+
 
 </string>
     </property>
@@ -58,156 +147,6 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
             <property name="geometry">
                 <rect>
                     <x>135</x>
-                    <y>435</y>
-                    <width>64</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="255">
-                    <red>115</red>
-                    <green>223</green>
-                    <blue>255</blue>
-                </color>
-            </property>
-            <property name="stackingMode">
-                <enum>Menu</enum>
-            </property>
-            <property name="labels">
-                <string>Simulator #1 General;Simulator #1 Specific;Simulator #2 General;Simulator #2 Specific</string>
-            </property>
-            <property name="files">
-                <string>ADBase.ui;simDetector.ui;ADBase.ui;simDetector.ui</string>
-            </property>
-            <property name="args">
-                <string>P=13SIM1:, R=cam1:;P=13SIM1:, R=cam1:;P=13SIM1:, R=cam2:;P=13SIM1:, R=cam2:</string>
-            </property>
-            <property name="removeParent">
-                <string>false;false;false;false</string>
-            </property>
-        </widget>
-        <widget class="caLabel" name="caLabel_1">
-            <property name="frameShape">
-                <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="0">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>Simulator</string>
-            </property>
-            <property name="fontScaleMode">
-                <enum>ESimpleLabel::WidthAndHeight</enum>
-            </property>
-            <property name="alignment">
-                <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>40</x>
-                    <y>435</y>
-                    <width>108</width>
-                    <height>20</height>
-                </rect>
-            </property>
-        </widget>
-        <widget class="caRelatedDisplay" name="caRelatedDisplay_1">
-            <property name="geometry">
-                <rect>
-                    <x>135</x>
-                    <y>335</y>
-                    <width>64</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="255">
-                    <red>115</red>
-                    <green>223</green>
-                    <blue>255</blue>
-                </color>
-            </property>
-            <property name="stackingMode">
-                <enum>Menu</enum>
-            </property>
-            <property name="labels">
-                <string>Prosilica #1 general;Prosilica #1 specific;Prosilica #2 general;Prosilica #2 specific</string>
-            </property>
-            <property name="files">
-                <string>ADBase.ui;prosilica.ui;ADBase.ui;prosilica.ui</string>
-            </property>
-            <property name="args">
-                <string>P=13PS1:, R=cam1:;P=13PS1:, R=cam1:;P=13PS1:, R=cam2:;P=13PS1:, R=cam2:</string>
-            </property>
-            <property name="removeParent">
-                <string>false;false;false;false</string>
-            </property>
-        </widget>
-        <widget class="caLabel" name="caLabel_2">
-            <property name="frameShape">
-                <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="0">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>Prosilica</string>
-            </property>
-            <property name="fontScaleMode">
-                <enum>ESimpleLabel::WidthAndHeight</enum>
-            </property>
-            <property name="alignment">
-                <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>40</x>
-                    <y>335</y>
-                    <width>108</width>
-                    <height>20</height>
-                </rect>
-            </property>
-        </widget>
-        <widget class="caRelatedDisplay" name="caRelatedDisplay_2">
-            <property name="geometry">
-                <rect>
-                    <x>135</x>
                     <y>60</y>
                     <width>64</width>
                     <height>20</height>
@@ -243,7 +182,7 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
                 <string>false;false</string>
             </property>
         </widget>
-        <widget class="caLabel" name="caLabel_3">
+        <widget class="caLabel" name="caLabel_1">
             <property name="frameShape">
                 <enum>QFrame::NoFrame</enum>
             </property>
@@ -279,682 +218,7 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
                 </rect>
             </property>
         </widget>
-        <widget class="caRelatedDisplay" name="caRelatedDisplay_3">
-            <property name="geometry">
-                <rect>
-                    <x>135</x>
-                    <y>260</y>
-                    <width>64</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="255">
-                    <red>115</red>
-                    <green>223</green>
-                    <blue>255</blue>
-                </color>
-            </property>
-            <property name="stackingMode">
-                <enum>Menu</enum>
-            </property>
-            <property name="labels">
-                <string>Pilatus #1 general;Pilatus #1 specific</string>
-            </property>
-            <property name="files">
-                <string>ADBase.ui;pilatusDetector.ui</string>
-            </property>
-            <property name="args">
-                <string>P=13PIL1:, R=cam1: ;P=13PIL1:, R=cam1:</string>
-            </property>
-            <property name="removeParent">
-                <string>false;false</string>
-            </property>
-        </widget>
-        <widget class="caLabel" name="caLabel_4">
-            <property name="frameShape">
-                <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="0">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>Pilatus</string>
-            </property>
-            <property name="fontScaleMode">
-                <enum>ESimpleLabel::WidthAndHeight</enum>
-            </property>
-            <property name="alignment">
-                <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>60</x>
-                    <y>260</y>
-                    <width>84</width>
-                    <height>20</height>
-                </rect>
-            </property>
-        </widget>
-        <widget class="caRelatedDisplay" name="caRelatedDisplay_4">
-            <property name="geometry">
-                <rect>
-                    <x>135</x>
-                    <y>210</y>
-                    <width>64</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="255">
-                    <red>115</red>
-                    <green>223</green>
-                    <blue>255</blue>
-                </color>
-            </property>
-            <property name="stackingMode">
-                <enum>Menu</enum>
-            </property>
-            <property name="labels">
-                <string>marCCD #1 general;marCCD #1 specific</string>
-            </property>
-            <property name="files">
-                <string>ADBase.ui;marCCD.ui</string>
-            </property>
-            <property name="args">
-                <string>P=13MARCCD1:, R=cam1: ;P=13MARCCD1:, R=cam1:</string>
-            </property>
-            <property name="removeParent">
-                <string>false;false</string>
-            </property>
-        </widget>
-        <widget class="caLabel" name="caLabel_5">
-            <property name="frameShape">
-                <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="0">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>MarCCD</string>
-            </property>
-            <property name="fontScaleMode">
-                <enum>ESimpleLabel::WidthAndHeight</enum>
-            </property>
-            <property name="alignment">
-                <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>70</x>
-                    <y>210</y>
-                    <width>72</width>
-                    <height>20</height>
-                </rect>
-            </property>
-        </widget>
-        <widget class="caRelatedDisplay" name="caRelatedDisplay_5">
-            <property name="geometry">
-                <rect>
-                    <x>135</x>
-                    <y>410</y>
-                    <width>64</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="255">
-                    <red>115</red>
-                    <green>223</green>
-                    <blue>255</blue>
-                </color>
-            </property>
-            <property name="stackingMode">
-                <enum>Menu</enum>
-            </property>
-            <property name="labels">
-                <string>Roper #1 general;Roper #1 specific</string>
-            </property>
-            <property name="files">
-                <string>ADBase.ui;Roper.ui</string>
-            </property>
-            <property name="args">
-                <string>P=13ROPER1:, R=cam1: ;P=13ROPER1:, R=cam1:</string>
-            </property>
-            <property name="removeParent">
-                <string>false;false</string>
-            </property>
-        </widget>
-        <widget class="caLabel" name="caLabel_6">
-            <property name="frameShape">
-                <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="0">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>Roper</string>
-            </property>
-            <property name="fontScaleMode">
-                <enum>ESimpleLabel::WidthAndHeight</enum>
-            </property>
-            <property name="alignment">
-                <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>80</x>
-                    <y>410</y>
-                    <width>60</width>
-                    <height>20</height>
-                </rect>
-            </property>
-        </widget>
-        <widget class="caRelatedDisplay" name="caRelatedDisplay_6">
-            <property name="geometry">
-                <rect>
-                    <x>135</x>
-                    <y>135</y>
-                    <width>64</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="255">
-                    <red>115</red>
-                    <green>223</green>
-                    <blue>255</blue>
-                </color>
-            </property>
-            <property name="stackingMode">
-                <enum>Menu</enum>
-            </property>
-            <property name="labels">
-                <string>Firewire #1 general;Firewire #1 specific</string>
-            </property>
-            <property name="files">
-                <string>ADBase.ui;firewire.ui</string>
-            </property>
-            <property name="args">
-                <string>P=13FW1:, R=cam1: ;P=13FW1:, R=cam1:</string>
-            </property>
-            <property name="removeParent">
-                <string>false;false</string>
-            </property>
-        </widget>
-        <widget class="caLabel" name="caLabel_7">
-            <property name="frameShape">
-                <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="0">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>Firewire</string>
-            </property>
-            <property name="fontScaleMode">
-                <enum>ESimpleLabel::WidthAndHeight</enum>
-            </property>
-            <property name="alignment">
-                <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>50</x>
-                    <y>135</y>
-                    <width>96</width>
-                    <height>20</height>
-                </rect>
-            </property>
-        </widget>
-        <widget class="caRelatedDisplay" name="caRelatedDisplay_7">
-            <property name="geometry">
-                <rect>
-                    <x>135</x>
-                    <y>185</y>
-                    <width>64</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="255">
-                    <red>115</red>
-                    <green>223</green>
-                    <blue>255</blue>
-                </color>
-            </property>
-            <property name="stackingMode">
-                <enum>Menu</enum>
-            </property>
-            <property name="labels">
-                <string>mar345 #1 general;mar345 #1 specific</string>
-            </property>
-            <property name="files">
-                <string>ADBase.ui;mar345.ui</string>
-            </property>
-            <property name="args">
-                <string>P=13MAR345_1:, R=cam1: ;P=13MAR345_1:, R=cam1:</string>
-            </property>
-            <property name="removeParent">
-                <string>false;false</string>
-            </property>
-        </widget>
-        <widget class="caLabel" name="caLabel_8">
-            <property name="frameShape">
-                <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="0">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>Mar345</string>
-            </property>
-            <property name="fontScaleMode">
-                <enum>ESimpleLabel::WidthAndHeight</enum>
-            </property>
-            <property name="alignment">
-                <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>70</x>
-                    <y>185</y>
-                    <width>72</width>
-                    <height>20</height>
-                </rect>
-            </property>
-        </widget>
-        <widget class="caRelatedDisplay" name="caRelatedDisplay_8">
-            <property name="geometry">
-                <rect>
-                    <x>135</x>
-                    <y>235</y>
-                    <width>64</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="255">
-                    <red>115</red>
-                    <green>223</green>
-                    <blue>255</blue>
-                </color>
-            </property>
-            <property name="stackingMode">
-                <enum>Menu</enum>
-            </property>
-            <property name="labels">
-                <string>Perkin Elmer #1 general;Perkin Elmer #1 specific</string>
-            </property>
-            <property name="files">
-                <string>ADBase.ui;PerkinElmer.ui</string>
-            </property>
-            <property name="args">
-                <string>P=13PE1:, R=cam1: ;P=13PE1:, R=cam1:</string>
-            </property>
-            <property name="removeParent">
-                <string>false;false</string>
-            </property>
-        </widget>
-        <widget class="caLabel" name="caLabel_9">
-            <property name="frameShape">
-                <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="0">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>Perkin Elmer</string>
-            </property>
-            <property name="fontScaleMode">
-                <enum>ESimpleLabel::WidthAndHeight</enum>
-            </property>
-            <property name="alignment">
-                <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>10</x>
-                    <y>235</y>
-                    <width>144</width>
-                    <height>20</height>
-                </rect>
-            </property>
-        </widget>
-        <widget class="caRelatedDisplay" name="caRelatedDisplay_9">
-            <property name="geometry">
-                <rect>
-                    <x>135</x>
-                    <y>360</y>
-                    <width>64</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="255">
-                    <red>115</red>
-                    <green>223</green>
-                    <blue>255</blue>
-                </color>
-            </property>
-            <property name="stackingMode">
-                <enum>Menu</enum>
-            </property>
-            <property name="labels">
-                <string>PVCAM #1 general;PVCAM #1 specific</string>
-            </property>
-            <property name="files">
-                <string>ADBase.ui;pvCam.ui</string>
-            </property>
-            <property name="args">
-                <string>P=13PVCAM1:, R=cam1: ;P=13PVCAM1:, R=cam1:</string>
-            </property>
-            <property name="removeParent">
-                <string>false;false</string>
-            </property>
-        </widget>
-        <widget class="caLabel" name="caLabel_10">
-            <property name="frameShape">
-                <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="0">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>PVCAM</string>
-            </property>
-            <property name="fontScaleMode">
-                <enum>ESimpleLabel::WidthAndHeight</enum>
-            </property>
-            <property name="alignment">
-                <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>80</x>
-                    <y>360</y>
-                    <width>60</width>
-                    <height>20</height>
-                </rect>
-            </property>
-        </widget>
-        <widget class="caRelatedDisplay" name="caRelatedDisplay_10">
-            <property name="geometry">
-                <rect>
-                    <x>135</x>
-                    <y>110</y>
-                    <width>64</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="255">
-                    <red>115</red>
-                    <green>223</green>
-                    <blue>255</blue>
-                </color>
-            </property>
-            <property name="stackingMode">
-                <enum>Menu</enum>
-            </property>
-            <property name="labels">
-                <string>BIS #1 general;BIS #1 specific</string>
-            </property>
-            <property name="files">
-                <string>ADBase.ui;BIS.ui</string>
-            </property>
-            <property name="args">
-                <string>P=BIS:, R=cam1: ;P=BIS:, R=cam1:</string>
-            </property>
-            <property name="removeParent">
-                <string>false;false</string>
-            </property>
-        </widget>
-        <widget class="caLabel" name="caLabel_11">
-            <property name="frameShape">
-                <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="0">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>BIS</string>
-            </property>
-            <property name="fontScaleMode">
-                <enum>ESimpleLabel::WidthAndHeight</enum>
-            </property>
-            <property name="alignment">
-                <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>100</x>
-                    <y>110</y>
-                    <width>36</width>
-                    <height>20</height>
-                </rect>
-            </property>
-        </widget>
-        <widget class="caRelatedDisplay" name="caRelatedDisplay_11">
-            <property name="geometry">
-                <rect>
-                    <x>135</x>
-                    <y>460</y>
-                    <width>64</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="255">
-                    <red>115</red>
-                    <green>223</green>
-                    <blue>255</blue>
-                </color>
-            </property>
-            <property name="stackingMode">
-                <enum>Menu</enum>
-            </property>
-            <property name="labels">
-                <string>URL #1 general;URL #1 specific</string>
-            </property>
-            <property name="files">
-                <string>ADBase.ui;URLDriver.ui</string>
-            </property>
-            <property name="args">
-                <string>P=13URL1:, R=cam1: ;P=13URL1:, R=cam1:</string>
-            </property>
-            <property name="removeParent">
-                <string>false;false</string>
-            </property>
-        </widget>
-        <widget class="caLabel" name="caLabel_12">
-            <property name="frameShape">
-                <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="0">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>URL</string>
-            </property>
-            <property name="fontScaleMode">
-                <enum>ESimpleLabel::WidthAndHeight</enum>
-            </property>
-            <property name="alignment">
-                <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>100</x>
-                    <y>460</y>
-                    <width>36</width>
-                    <height>20</height>
-                </rect>
-            </property>
-        </widget>
-        <widget class="caRelatedDisplay" name="caRelatedDisplay_12">
+        <widget class="caRelatedDisplay" name="caRelatedDisplay_1">
             <property name="geometry">
                 <rect>
                     <x>135</x>
@@ -993,7 +257,7 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
                 <string>false;false;false;false;false</string>
             </property>
         </widget>
-        <widget class="caLabel" name="caLabel_13">
+        <widget class="caLabel" name="caLabel_2">
             <property name="frameShape">
                 <enum>QFrame::NoFrame</enum>
             </property>
@@ -1029,11 +293,11 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
                 </rect>
             </property>
         </widget>
-        <widget class="caRelatedDisplay" name="caRelatedDisplay_13">
+        <widget class="caRelatedDisplay" name="caRelatedDisplay_2">
             <property name="geometry">
                 <rect>
                     <x>135</x>
-                    <y>160</y>
+                    <y>110</y>
                     <width>64</width>
                     <height>20</height>
                 </rect>
@@ -1056,19 +320,19 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
                 <enum>Menu</enum>
             </property>
             <property name="labels">
-                <string>LightField #1 general;LightField #1 specific;LightField #2 specific</string>
+                <string>aravisGigE #1 general;aravisGigE #1 specific</string>
             </property>
             <property name="files">
-                <string>ADBase.ui;LightField.ui;LightField.ui</string>
+                <string>ADBase.ui;ADBase.ui</string>
             </property>
             <property name="args">
-                <string>P=13LF1:, R=cam1: ;P=13LF1:, R=cam1:;P=13LF2:, R=cam1:</string>
+                <string>P=13ARV1:, R=cam1: ;P=13ARV1:, R=cam1:</string>
             </property>
             <property name="removeParent">
-                <string>false;false;false</string>
+                <string>false;false</string>
             </property>
         </widget>
-        <widget class="caLabel" name="caLabel_14">
+        <widget class="caLabel" name="caLabel_3">
             <property name="frameShape">
                 <enum>QFrame::NoFrame</enum>
             </property>
@@ -1087,7 +351,7 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
                 </color>
             </property>
             <property name="text">
-                <string>LightField</string>
+                <string>aravisGigE</string>
             </property>
             <property name="fontScaleMode">
                 <enum>ESimpleLabel::WidthAndHeight</enum>
@@ -1097,18 +361,1163 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
             </property>
             <property name="geometry">
                 <rect>
-                    <x>29</x>
-                    <y>160</y>
+                    <x>30</x>
+                    <y>110</y>
                     <width>120</width>
                     <height>20</height>
                 </rect>
             </property>
         </widget>
-        <widget class="caRelatedDisplay" name="caRelatedDisplay_14">
+        <widget class="caFrame" name="caFrame_0">
+            <property name="geometry">
+                <rect>
+                    <x>10</x>
+                    <y>185</y>
+                    <width>191</width>
+                    <height>347</height>
+                </rect>
+            </property>
+            <widget class="caRelatedDisplay" name="caRelatedDisplay_3">
+                <property name="geometry">
+                    <rect>
+                        <x>125</x>
+                        <y>300</y>
+                        <width>64</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="stackingMode">
+                    <enum>Menu</enum>
+                </property>
+                <property name="labels">
+                    <string>Simulator #1 General;Simulator #1 Specific;Simulator #2 General;Simulator #2 Specific</string>
+                </property>
+                <property name="files">
+                    <string>ADBase.ui;simDetector.ui;ADBase.ui;simDetector.ui</string>
+                </property>
+                <property name="args">
+                    <string>P=13SIM1:, R=cam1:;P=13SIM1:, R=cam1:;P=13SIM1:, R=cam2:;P=13SIM1:, R=cam2:</string>
+                </property>
+                <property name="removeParent">
+                    <string>false;false;false;false</string>
+                </property>
+            </widget>
+            <widget class="caLabel" name="caLabel_4">
+                <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="0">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="text">
+                    <string>Simulator</string>
+                </property>
+                <property name="fontScaleMode">
+                    <enum>ESimpleLabel::WidthAndHeight</enum>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>30</x>
+                        <y>300</y>
+                        <width>108</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget class="caRelatedDisplay" name="caRelatedDisplay_4">
+                <property name="geometry">
+                    <rect>
+                        <x>125</x>
+                        <y>200</y>
+                        <width>64</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="stackingMode">
+                    <enum>Menu</enum>
+                </property>
+                <property name="labels">
+                    <string>Prosilica #1 general;Prosilica #1 specific;Prosilica #2 general;Prosilica #2 specific</string>
+                </property>
+                <property name="files">
+                    <string>ADBase.ui;prosilica.ui;ADBase.ui;prosilica.ui</string>
+                </property>
+                <property name="args">
+                    <string>P=13PS1:, R=cam1:;P=13PS1:, R=cam1:;P=13PS1:, R=cam2:;P=13PS1:, R=cam2:</string>
+                </property>
+                <property name="removeParent">
+                    <string>false;false;false;false</string>
+                </property>
+            </widget>
+            <widget class="caLabel" name="caLabel_5">
+                <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="0">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="text">
+                    <string>Prosilica</string>
+                </property>
+                <property name="fontScaleMode">
+                    <enum>ESimpleLabel::WidthAndHeight</enum>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>30</x>
+                        <y>200</y>
+                        <width>108</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget class="caRelatedDisplay" name="caRelatedDisplay_5">
+                <property name="geometry">
+                    <rect>
+                        <x>125</x>
+                        <y>125</y>
+                        <width>64</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="stackingMode">
+                    <enum>Menu</enum>
+                </property>
+                <property name="labels">
+                    <string>Pilatus #1 general;Pilatus #1 specific</string>
+                </property>
+                <property name="files">
+                    <string>ADBase.ui;pilatusDetector.ui</string>
+                </property>
+                <property name="args">
+                    <string>P=13PIL1:, R=cam1: ;P=13PIL1:, R=cam1:</string>
+                </property>
+                <property name="removeParent">
+                    <string>false;false</string>
+                </property>
+            </widget>
+            <widget class="caLabel" name="caLabel_6">
+                <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="0">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="text">
+                    <string>Pilatus</string>
+                </property>
+                <property name="fontScaleMode">
+                    <enum>ESimpleLabel::WidthAndHeight</enum>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>50</x>
+                        <y>125</y>
+                        <width>84</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget class="caRelatedDisplay" name="caRelatedDisplay_6">
+                <property name="geometry">
+                    <rect>
+                        <x>125</x>
+                        <y>75</y>
+                        <width>64</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="stackingMode">
+                    <enum>Menu</enum>
+                </property>
+                <property name="labels">
+                    <string>marCCD #1 general;marCCD #1 specific</string>
+                </property>
+                <property name="files">
+                    <string>ADBase.ui;marCCD.ui</string>
+                </property>
+                <property name="args">
+                    <string>P=13MARCCD1:, R=cam1: ;P=13MARCCD1:, R=cam1:</string>
+                </property>
+                <property name="removeParent">
+                    <string>false;false</string>
+                </property>
+            </widget>
+            <widget class="caLabel" name="caLabel_7">
+                <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="0">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="text">
+                    <string>MarCCD</string>
+                </property>
+                <property name="fontScaleMode">
+                    <enum>ESimpleLabel::WidthAndHeight</enum>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>60</x>
+                        <y>75</y>
+                        <width>72</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget class="caRelatedDisplay" name="caRelatedDisplay_7">
+                <property name="geometry">
+                    <rect>
+                        <x>125</x>
+                        <y>275</y>
+                        <width>64</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="stackingMode">
+                    <enum>Menu</enum>
+                </property>
+                <property name="labels">
+                    <string>Roper #1 general;Roper #1 specific</string>
+                </property>
+                <property name="files">
+                    <string>ADBase.ui;Roper.ui</string>
+                </property>
+                <property name="args">
+                    <string>P=13ROPER1:, R=cam1: ;P=13ROPER1:, R=cam1:</string>
+                </property>
+                <property name="removeParent">
+                    <string>false;false</string>
+                </property>
+            </widget>
+            <widget class="caLabel" name="caLabel_8">
+                <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="0">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="text">
+                    <string>Roper</string>
+                </property>
+                <property name="fontScaleMode">
+                    <enum>ESimpleLabel::WidthAndHeight</enum>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>70</x>
+                        <y>275</y>
+                        <width>60</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget class="caRelatedDisplay" name="caRelatedDisplay_8">
+                <property name="geometry">
+                    <rect>
+                        <x>125</x>
+                        <y>0</y>
+                        <width>64</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="stackingMode">
+                    <enum>Menu</enum>
+                </property>
+                <property name="labels">
+                    <string>Firewire #1 general;Firewire #1 specific</string>
+                </property>
+                <property name="files">
+                    <string>ADBase.ui;firewire.ui</string>
+                </property>
+                <property name="args">
+                    <string>P=13FW1:, R=cam1: ;P=13FW1:, R=cam1:</string>
+                </property>
+                <property name="removeParent">
+                    <string>false;false</string>
+                </property>
+            </widget>
+            <widget class="caLabel" name="caLabel_9">
+                <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="0">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="text">
+                    <string>Firewire</string>
+                </property>
+                <property name="fontScaleMode">
+                    <enum>ESimpleLabel::WidthAndHeight</enum>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>40</x>
+                        <y>0</y>
+                        <width>96</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget class="caRelatedDisplay" name="caRelatedDisplay_9">
+                <property name="geometry">
+                    <rect>
+                        <x>125</x>
+                        <y>50</y>
+                        <width>64</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="stackingMode">
+                    <enum>Menu</enum>
+                </property>
+                <property name="labels">
+                    <string>mar345 #1 general;mar345 #1 specific</string>
+                </property>
+                <property name="files">
+                    <string>ADBase.ui;mar345.ui</string>
+                </property>
+                <property name="args">
+                    <string>P=13MAR345_1:, R=cam1: ;P=13MAR345_1:, R=cam1:</string>
+                </property>
+                <property name="removeParent">
+                    <string>false;false</string>
+                </property>
+            </widget>
+            <widget class="caLabel" name="caLabel_10">
+                <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="0">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="text">
+                    <string>Mar345</string>
+                </property>
+                <property name="fontScaleMode">
+                    <enum>ESimpleLabel::WidthAndHeight</enum>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>60</x>
+                        <y>50</y>
+                        <width>72</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget class="caRelatedDisplay" name="caRelatedDisplay_10">
+                <property name="geometry">
+                    <rect>
+                        <x>125</x>
+                        <y>100</y>
+                        <width>64</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="stackingMode">
+                    <enum>Menu</enum>
+                </property>
+                <property name="labels">
+                    <string>Perkin Elmer #1 general;Perkin Elmer #1 specific</string>
+                </property>
+                <property name="files">
+                    <string>ADBase.ui;PerkinElmer.ui</string>
+                </property>
+                <property name="args">
+                    <string>P=13PE1:, R=cam1: ;P=13PE1:, R=cam1:</string>
+                </property>
+                <property name="removeParent">
+                    <string>false;false</string>
+                </property>
+            </widget>
+            <widget class="caLabel" name="caLabel_11">
+                <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="0">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="text">
+                    <string>Perkin Elmer</string>
+                </property>
+                <property name="fontScaleMode">
+                    <enum>ESimpleLabel::WidthAndHeight</enum>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>0</x>
+                        <y>100</y>
+                        <width>144</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget class="caRelatedDisplay" name="caRelatedDisplay_11">
+                <property name="geometry">
+                    <rect>
+                        <x>125</x>
+                        <y>225</y>
+                        <width>64</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="stackingMode">
+                    <enum>Menu</enum>
+                </property>
+                <property name="labels">
+                    <string>PVCAM #1 general;PVCAM #1 specific</string>
+                </property>
+                <property name="files">
+                    <string>ADBase.ui;pvCam.ui</string>
+                </property>
+                <property name="args">
+                    <string>P=13PVCAM1:, R=cam1: ;P=13PVCAM1:, R=cam1:</string>
+                </property>
+                <property name="removeParent">
+                    <string>false;false</string>
+                </property>
+            </widget>
+            <widget class="caLabel" name="caLabel_12">
+                <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="0">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="text">
+                    <string>PVCAM</string>
+                </property>
+                <property name="fontScaleMode">
+                    <enum>ESimpleLabel::WidthAndHeight</enum>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>70</x>
+                        <y>225</y>
+                        <width>60</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget class="caRelatedDisplay" name="caRelatedDisplay_12">
+                <property name="geometry">
+                    <rect>
+                        <x>125</x>
+                        <y>325</y>
+                        <width>64</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="stackingMode">
+                    <enum>Menu</enum>
+                </property>
+                <property name="labels">
+                    <string>URL #1 general;URL #1 specific</string>
+                </property>
+                <property name="files">
+                    <string>ADBase.ui;URLDriver.ui</string>
+                </property>
+                <property name="args">
+                    <string>P=13URL1:, R=cam1: ;P=13URL1:, R=cam1:</string>
+                </property>
+                <property name="removeParent">
+                    <string>false;false</string>
+                </property>
+            </widget>
+            <widget class="caLabel" name="caLabel_13">
+                <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="0">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="text">
+                    <string>URL</string>
+                </property>
+                <property name="fontScaleMode">
+                    <enum>ESimpleLabel::WidthAndHeight</enum>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>90</x>
+                        <y>325</y>
+                        <width>36</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget class="caRelatedDisplay" name="caRelatedDisplay_13">
+                <property name="geometry">
+                    <rect>
+                        <x>125</x>
+                        <y>25</y>
+                        <width>64</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="stackingMode">
+                    <enum>Menu</enum>
+                </property>
+                <property name="labels">
+                    <string>LightField #1 general;LightField #1 specific;LightField #2 specific</string>
+                </property>
+                <property name="files">
+                    <string>ADBase.ui;LightField.ui;LightField.ui</string>
+                </property>
+                <property name="args">
+                    <string>P=13LF1:, R=cam1: ;P=13LF1:, R=cam1:;P=13LF2:, R=cam1:</string>
+                </property>
+                <property name="removeParent">
+                    <string>false;false;false</string>
+                </property>
+            </widget>
+            <widget class="caLabel" name="caLabel_14">
+                <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="0">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="text">
+                    <string>LightField</string>
+                </property>
+                <property name="fontScaleMode">
+                    <enum>ESimpleLabel::WidthAndHeight</enum>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>19</x>
+                        <y>25</y>
+                        <width>120</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget class="caRelatedDisplay" name="caRelatedDisplay_14">
+                <property name="geometry">
+                    <rect>
+                        <x>125</x>
+                        <y>150</y>
+                        <width>64</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="stackingMode">
+                    <enum>Menu</enum>
+                </property>
+                <property name="labels">
+                    <string>Pixirad #1 general;Pixirad #1 specific</string>
+                </property>
+                <property name="files">
+                    <string>ADBase.ui;pixirad.ui</string>
+                </property>
+                <property name="args">
+                    <string>P=13PR1:, R=cam1: ;P=13PR1:, R=cam1:</string>
+                </property>
+                <property name="removeParent">
+                    <string>false;false</string>
+                </property>
+            </widget>
+            <widget class="caLabel" name="caLabel_15">
+                <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="0">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="text">
+                    <string>Pixirad</string>
+                </property>
+                <property name="fontScaleMode">
+                    <enum>ESimpleLabel::WidthAndHeight</enum>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>49</x>
+                        <y>150</y>
+                        <width>84</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget class="caRelatedDisplay" name="caRelatedDisplay_15">
+                <property name="geometry">
+                    <rect>
+                        <x>125</x>
+                        <y>175</y>
+                        <width>64</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="stackingMode">
+                    <enum>Menu</enum>
+                </property>
+                <property name="labels">
+                    <string>Point Grey #1 general;Point Grey #1 specific</string>
+                </property>
+                <property name="files">
+                    <string>ADBase.ui;pointGrey.ui</string>
+                </property>
+                <property name="args">
+                    <string>P=13PG1:, R=cam1: ;P=13PG1:, R=cam1:</string>
+                </property>
+                <property name="removeParent">
+                    <string>false;false</string>
+                </property>
+            </widget>
+            <widget class="caLabel" name="caLabel_16">
+                <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="0">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="text">
+                    <string>Point Grey</string>
+                </property>
+                <property name="fontScaleMode">
+                    <enum>ESimpleLabel::WidthAndHeight</enum>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>19</x>
+                        <y>175</y>
+                        <width>120</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget class="caRelatedDisplay" name="caRelatedDisplay_16">
+                <property name="geometry">
+                    <rect>
+                        <x>125</x>
+                        <y>250</y>
+                        <width>64</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="stackingMode">
+                    <enum>Menu</enum>
+                </property>
+                <property name="labels">
+                    <string>PSL #1 general;PSL #1 specific</string>
+                </property>
+                <property name="files">
+                    <string>ADBase.ui;PSL.ui</string>
+                </property>
+                <property name="args">
+                    <string>P=13PSL1:, R=cam1: ;P=13PSL1:, R=cam1:</string>
+                </property>
+                <property name="removeParent">
+                    <string>false;false</string>
+                </property>
+            </widget>
+            <widget class="caLabel" name="caLabel_17">
+                <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="0">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="text">
+                    <string>PSL</string>
+                </property>
+                <property name="fontScaleMode">
+                    <enum>ESimpleLabel::WidthAndHeight</enum>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>89</x>
+                        <y>250</y>
+                        <width>36</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+            </widget>
+        </widget>
+        <widget class="caFrame" name="caFrame_1">
+            <property name="geometry">
+                <rect>
+                    <x>100</x>
+                    <y>135</y>
+                    <width>101</width>
+                    <height>22</height>
+                </rect>
+            </property>
+            <widget class="caRelatedDisplay" name="caRelatedDisplay_17">
+                <property name="geometry">
+                    <rect>
+                        <x>35</x>
+                        <y>0</y>
+                        <width>64</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="stackingMode">
+                    <enum>Menu</enum>
+                </property>
+                <property name="labels">
+                    <string>BIS #1 general;BIS #1 specific</string>
+                </property>
+                <property name="files">
+                    <string>ADBase.ui;BIS.ui</string>
+                </property>
+                <property name="args">
+                    <string>P=BIS:, R=cam1: ;P=BIS:, R=cam1:</string>
+                </property>
+                <property name="removeParent">
+                    <string>false;false</string>
+                </property>
+            </widget>
+            <widget class="caLabel" name="caLabel_18">
+                <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="0">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="text">
+                    <string>BIS</string>
+                </property>
+                <property name="fontScaleMode">
+                    <enum>ESimpleLabel::WidthAndHeight</enum>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>0</x>
+                        <y>0</y>
+                        <width>36</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+            </widget>
+        </widget>
+        <widget class="caRelatedDisplay" name="caRelatedDisplay_18">
             <property name="geometry">
                 <rect>
                     <x>135</x>
-                    <y>285</y>
+                    <y>159</y>
                     <width>64</width>
                     <height>20</height>
                 </rect>
@@ -1131,19 +1540,19 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
                 <enum>Menu</enum>
             </property>
             <property name="labels">
-                <string>Pixirad #1 general;Pixirad #1 specific</string>
+                <string>Dexela #1 general;Dexela #1 specific</string>
             </property>
             <property name="files">
-                <string>ADBase.ui;pixirad.ui</string>
+                <string>ADBase.ui;Dexela.ui</string>
             </property>
             <property name="args">
-                <string>P=13PR1:, R=cam1: ;P=13PR1:, R=cam1:</string>
+                <string>P=13DEX1:, R=cam1: ;P=13DEX1:, R=cam1:</string>
             </property>
             <property name="removeParent">
                 <string>false;false</string>
             </property>
         </widget>
-        <widget class="caLabel" name="caLabel_15">
+        <widget class="caLabel" name="caLabel_19">
             <property name="frameShape">
                 <enum>QFrame::NoFrame</enum>
             </property>
@@ -1162,7 +1571,7 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
                 </color>
             </property>
             <property name="text">
-                <string>Pixirad</string>
+                <string>Dexela</string>
             </property>
             <property name="fontScaleMode">
                 <enum>ESimpleLabel::WidthAndHeight</enum>
@@ -1172,159 +1581,9 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
             </property>
             <property name="geometry">
                 <rect>
-                    <x>59</x>
-                    <y>285</y>
-                    <width>84</width>
-                    <height>20</height>
-                </rect>
-            </property>
-        </widget>
-        <widget class="caRelatedDisplay" name="caRelatedDisplay_15">
-            <property name="geometry">
-                <rect>
-                    <x>135</x>
-                    <y>310</y>
-                    <width>64</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="255">
-                    <red>115</red>
-                    <green>223</green>
-                    <blue>255</blue>
-                </color>
-            </property>
-            <property name="stackingMode">
-                <enum>Menu</enum>
-            </property>
-            <property name="labels">
-                <string>Point Grey #1 general;Point Grey #1 specific</string>
-            </property>
-            <property name="files">
-                <string>ADBase.ui;pointGrey.ui</string>
-            </property>
-            <property name="args">
-                <string>P=13PG1:, R=cam1: ;P=13PG1:, R=cam1:</string>
-            </property>
-            <property name="removeParent">
-                <string>false;false</string>
-            </property>
-        </widget>
-        <widget class="caLabel" name="caLabel_16">
-            <property name="frameShape">
-                <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="0">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>Point Grey</string>
-            </property>
-            <property name="fontScaleMode">
-                <enum>ESimpleLabel::WidthAndHeight</enum>
-            </property>
-            <property name="alignment">
-                <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>29</x>
-                    <y>310</y>
-                    <width>120</width>
-                    <height>20</height>
-                </rect>
-            </property>
-        </widget>
-        <widget class="caRelatedDisplay" name="caRelatedDisplay_16">
-            <property name="geometry">
-                <rect>
-                    <x>135</x>
-                    <y>385</y>
-                    <width>64</width>
-                    <height>20</height>
-                </rect>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="255">
-                    <red>115</red>
-                    <green>223</green>
-                    <blue>255</blue>
-                </color>
-            </property>
-            <property name="stackingMode">
-                <enum>Menu</enum>
-            </property>
-            <property name="labels">
-                <string>PSL #1 general;PSL #1 specific</string>
-            </property>
-            <property name="files">
-                <string>ADBase.ui;PSL.ui</string>
-            </property>
-            <property name="args">
-                <string>P=13PSL1:, R=cam1: ;P=13PSL1:, R=cam1:</string>
-            </property>
-            <property name="removeParent">
-                <string>false;false</string>
-            </property>
-        </widget>
-        <widget class="caLabel" name="caLabel_17">
-            <property name="frameShape">
-                <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="foreground">
-                <color alpha="255">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="background">
-                <color alpha="0">
-                    <red>0</red>
-                    <green>0</green>
-                    <blue>0</blue>
-                </color>
-            </property>
-            <property name="text">
-                <string>PSL</string>
-            </property>
-            <property name="fontScaleMode">
-                <enum>ESimpleLabel::WidthAndHeight</enum>
-            </property>
-            <property name="alignment">
-                <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
-            </property>
-            <property name="geometry">
-                <rect>
-                    <x>99</x>
-                    <y>385</y>
-                    <width>36</width>
+                    <x>70</x>
+                    <y>159</y>
+                    <width>72</width>
                     <height>20</height>
                 </rect>
             </property>
@@ -1347,6 +1606,10 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
         <zorder>caLabel_15</zorder>
         <zorder>caLabel_16</zorder>
         <zorder>caLabel_17</zorder>
+        <zorder>caFrame_0</zorder>
+        <zorder>caLabel_18</zorder>
+        <zorder>caFrame_1</zorder>
+        <zorder>caLabel_19</zorder>
         <zorder>caRelatedDisplay_0</zorder>
         <zorder>caRelatedDisplay_1</zorder>
         <zorder>caRelatedDisplay_2</zorder>
@@ -1364,6 +1627,8 @@ QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
         <zorder>caRelatedDisplay_14</zorder>
         <zorder>caRelatedDisplay_15</zorder>
         <zorder>caRelatedDisplay_16</zorder>
+        <zorder>caRelatedDisplay_17</zorder>
+        <zorder>caRelatedDisplay_18</zorder>
     </widget>
 </widget>
 </ui>

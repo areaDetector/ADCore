@@ -520,6 +520,7 @@ void NDPluginTransform::processCallbacks(NDArray *pArray){
   }
   this->lock();
 
+  this->getAttributes(transformedArray->pAttributeList);
   doCallbacksGenericPointer(transformedArray, NDArrayData,0);
   callParamCallbacks();
 }
@@ -608,6 +609,10 @@ NDPluginTransform::NDPluginTransform(const char *portName, int queueSize, int bl
   /* Set the plugin type string */
   setStringParam(NDPluginDriverPluginType, "NDPluginTransform");
   setIntegerParam(NDPluginTransformType_, TransformNone);
+
+  // Enable ArrayCallbacks.  
+  // This plugin currently ignores this setting and always does callbacks, so make the setting reflect the behavior
+  setIntegerParam(NDArrayCallbacks, 1);
 
   /* Try to connect to the array port */
   connectToArrayPort();

@@ -111,190 +111,15 @@ text {
 	textix="$(P)$(R)"
 	align="horiz. centered"
 }
-rectangle {
-	object {
-		x=5
-		y=545
-		width=380
-		height=85
-	}
-	"basic attribute" {
-		clr=14
-		fill="outline"
-	}
-}
 composite {
 	object {
 		x=5
 		y=35
 		width=380
-		height=505
+		height=530
 	}
 	"composite name"=""
 	"composite file"="NDPluginBase.adl"
-}
-"related display" {
-	object {
-		x=172
-		y=575
-		width=130
-		height=20
-	}
-	display[0] {
-		label="ROI 0"
-		name="NDROIStatN.adl"
-		args="P=$(P), R=$(R)1:"
-	}
-	display[1] {
-		label="ROI 1"
-		name="NDROIStatN.adl"
-		args="P=$(P), R=$(R)2:"
-	}
-	display[2] {
-		label="ROI 2"
-		name="NDROIStatN.adl"
-		args="P=$(P), R=$(R)3:"
-	}
-	display[3] {
-		label="ROI 3"
-		name="NDROIStatN.adl"
-		args="P=$(P), R=$(R)4:"
-	}
-	display[4] {
-		label="ROI 4"
-		name="NDROIStatN.adl"
-		args="P=$(P), R=$(R)5:"
-	}
-	display[5] {
-		label="ROI 5"
-		name="NDROIStatN.adl"
-		args="P=$(P), R=$(R)6:"
-	}
-	display[6] {
-		label="ROI 6"
-		name="NDROIStatN.adl"
-		args="P=$(P), R=$(R)7:"
-	}
-	display[7] {
-		label="ROI 7"
-		name="NDROIStatN.adl"
-		args="P=$(P), R=$(R)8:"
-	}
-	clr=14
-	bclr=51
-	label="Individual ROIs"
-}
-text {
-	object {
-		x=22
-		y=575
-		width=140
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Individual 0-7"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=172
-		y=602
-		width=130
-		height=20
-	}
-	display[0] {
-		label="ROIS 1-8"
-		name="NDROIStat8.adl"
-		args="P=$(P),ROI1=$(R)1:,ROI2=$(R)2:,ROI3=$(R)3:,ROI4=$(R)4:,ROI5=$(R)5:,ROI6=$(R)6:,ROI7=$(R)7:,ROI8=$(R)8:"
-	}
-	display[1] {
-		label="ROIS 9-16"
-		name="NDROIStat8.adl"
-		args="P=$(P),ROI1=$(R)8:,ROI2=$(R)9:,ROI3=$(R)10:,ROI4=$(R)11:,ROI5=$(R)12:,ROI6=$(R)13:,ROI7=$(R)14:,ROI8=$(R)15:,"
-	}
-	display[2] {
-		label="ROIS 17-24"
-		name="NDROIStat8.adl"
-		args="P=$(P),ROI1=$(R)16:,ROI2=$(R)17:,ROI3=$(R)18:,ROI4=$(R)19:,ROI5=$(R)20:,ROI6=$(R)21:,ROI7=$(R)22:,ROI8=$(R)23:,"
-	}
-	display[3] {
-		label="ROIS 25-32"
-		name="NDROIStat8.adl"
-		args="P=$(P),ROI1=$(R)24:,ROI2=$(R)25:,ROI3=$(R)26:,ROI4=$(R)27:,ROI5=$(R)28:,ROI6=$(R)29:,ROI7=$(R)30:,ROI8=$(R)31:,"
-	}
-	clr=14
-	bclr=51
-	label="Combined ROIs"
-}
-text {
-	object {
-		x=138
-		y=550
-		width=150
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="ROI definitions"
-	align="horiz. right"
-}
-text {
-	object {
-		x=82
-		y=603
-		width=80
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Combined"
-	align="horiz. right"
-}
-text {
-	object {
-		x=12
-		y=635
-		width=150
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Array callbacks"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=172
-		y=635
-		width=90
-		height=20
-	}
-	control {
-		chan="$(P)$(R)NDArrayCallbacks"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=267
-		y=637
-		width=79
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)NDArrayCallbacks_RBV"
-		clr=54
-		bclr=4
-	}
-	format="string"
-	limits {
-	}
 }
 "message button" {
 	object {
@@ -310,4 +135,148 @@ menu {
 	}
 	label="Reset All"
 	press_msg="1"
+}
+composite {
+	object {
+		x=5
+		y=570
+		width=380
+		height=85
+	}
+	"composite name"=""
+	children {
+		rectangle {
+			object {
+				x=5
+				y=570
+				width=380
+				height=85
+			}
+			"basic attribute" {
+				clr=14
+				fill="outline"
+			}
+		}
+		"related display" {
+			object {
+				x=172
+				y=600
+				width=130
+				height=20
+			}
+			display[0] {
+				label="ROI 0"
+				name="NDROIStatN.adl"
+				args="P=$(P), R=$(R)1:"
+			}
+			display[1] {
+				label="ROI 1"
+				name="NDROIStatN.adl"
+				args="P=$(P), R=$(R)2:"
+			}
+			display[2] {
+				label="ROI 2"
+				name="NDROIStatN.adl"
+				args="P=$(P), R=$(R)3:"
+			}
+			display[3] {
+				label="ROI 3"
+				name="NDROIStatN.adl"
+				args="P=$(P), R=$(R)4:"
+			}
+			display[4] {
+				label="ROI 4"
+				name="NDROIStatN.adl"
+				args="P=$(P), R=$(R)5:"
+			}
+			display[5] {
+				label="ROI 5"
+				name="NDROIStatN.adl"
+				args="P=$(P), R=$(R)6:"
+			}
+			display[6] {
+				label="ROI 6"
+				name="NDROIStatN.adl"
+				args="P=$(P), R=$(R)7:"
+			}
+			display[7] {
+				label="ROI 7"
+				name="NDROIStatN.adl"
+				args="P=$(P), R=$(R)8:"
+			}
+			clr=14
+			bclr=51
+			label="Individual ROIs"
+		}
+		text {
+			object {
+				x=22
+				y=600
+				width=140
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Individual 0-7"
+			align="horiz. right"
+		}
+		"related display" {
+			object {
+				x=172
+				y=627
+				width=130
+				height=20
+			}
+			display[0] {
+				label="ROIS 1-8"
+				name="NDROIStat8.adl"
+				args="P=$(P),ROI1=$(R)1:,ROI2=$(R)2:,ROI3=$(R)3:,ROI4=$(R)4:,ROI5=$(R)5:,ROI6=$(R)6:,ROI7=$(R)7:,ROI8=$(R)8:"
+			}
+			display[1] {
+				label="ROIS 9-16"
+				name="NDROIStat8.adl"
+				args="P=$(P),ROI1=$(R)8:,ROI2=$(R)9:,ROI3=$(R)10:,ROI4=$(R)11:,ROI5=$(R)12:,ROI6=$(R)13:,ROI7=$(R)14:,ROI8=$(R)15:,"
+			}
+			display[2] {
+				label="ROIS 17-24"
+				name="NDROIStat8.adl"
+				args="P=$(P),ROI1=$(R)16:,ROI2=$(R)17:,ROI3=$(R)18:,ROI4=$(R)19:,ROI5=$(R)20:,ROI6=$(R)21:,ROI7=$(R)22:,ROI8=$(R)23:,"
+			}
+			display[3] {
+				label="ROIS 25-32"
+				name="NDROIStat8.adl"
+				args="P=$(P),ROI1=$(R)24:,ROI2=$(R)25:,ROI3=$(R)26:,ROI4=$(R)27:,ROI5=$(R)28:,ROI6=$(R)29:,ROI7=$(R)30:,ROI8=$(R)31:,"
+			}
+			clr=14
+			bclr=51
+			label="Combined ROIs"
+		}
+		text {
+			object {
+				x=138
+				y=575
+				width=150
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="ROI definitions"
+			align="horiz. right"
+		}
+		text {
+			object {
+				x=82
+				y=628
+				width=80
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Combined"
+			align="horiz. right"
+		}
+	}
 }

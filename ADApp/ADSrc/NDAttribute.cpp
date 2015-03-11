@@ -14,6 +14,19 @@
 
 #include "NDAttribute.h"
 
+/** Strings corresponding to the above enums */
+static const char *NDAttrSourceStrings[] = {
+    "DRIVER",
+    "PARAM",
+    "EPICS_PV",
+    "FUNCTION"
+};
+
+const char *NDAttribute::attrSourceString(NDAttrSource_t type)
+{
+  return NDAttrSourceStrings[type];
+}
+
 /** NDAttribute constructor
   * \param[in] pName The name of the attribute to be created. 
   * \param[in] sourceType The source type of the attribute (NDAttrSource_t).
@@ -270,50 +283,84 @@ int NDAttribute::getValueInfo(NDAttrDataType_t *pDataType, size_t *pSize)
   return ND_SUCCESS;
 }
 
+template <typename epicsType>
+int NDAttribute::getValueT(void *pValueIn, size_t dataSize)
+{
+  epicsType *pValue = (epicsType *)pValueIn;
+
+  switch (this->dataType) {
+    case NDAttrInt8:
+      *pValue = (epicsType) this->value.i8;
+      break;
+    case NDAttrUInt8:
+       *pValue = (epicsType) this->value.ui8;
+      break;
+    case NDAttrInt16:
+      *pValue = (epicsType) this->value.i16;
+      break;
+    case NDAttrUInt16:
+      *pValue = (epicsType) this->value.ui16;
+      break;
+    case NDAttrInt32:
+      *pValue = (epicsType) this->value.i32;
+      break;
+    case NDAttrUInt32:
+      *pValue = (epicsType) this->value.ui32;
+      break;
+    case NDAttrFloat32:
+      *pValue = (epicsType) this->value.f32;
+      break;
+    case NDAttrFloat64:
+      *pValue = (epicsType) this->value.f64;
+      break;
+    default:
+      return ND_ERROR;
+  }
+  return ND_SUCCESS ;
+}
+
+
 /** Returns the value of this attribute.
   * \param[in] dataType Data type for the value.
   * \param[out] pValue Pointer to location to return the value.
   * \param[in] dataSize Size of the input data location; only used when dataType is NDAttrString.
   *
-  * Currently the dataType parameter is only used to check that it matches the actual data type,
-  * and ND_ERROR is returned if it does not.  In the future data type conversion may be added. */
+  * Does data type conversions between numeric data types */
 int NDAttribute::getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSize)
 {
-  if (dataType != this->dataType) return ND_ERROR;
   switch (this->dataType) {
-    case NDAttrInt8:
-      *(epicsInt8 *)pValue = this->value.i8;
-      break;
-    case NDAttrUInt8:
-       *(epicsUInt8 *)pValue = this->value.ui8;
-      break;
-    case NDAttrInt16:
-      *(epicsInt16 *)pValue = this->value.i16;
-      break;
-    case NDAttrUInt16:
-      *(epicsUInt16 *)pValue = this->value.ui16;
-      break;
-    case NDAttrInt32:
-      *(epicsInt32*)pValue = this->value.i32;
-      break;
-    case NDAttrUInt32:
-      *(epicsUInt32 *)pValue = this->value.ui32;
-      break;
-    case NDAttrFloat32:
-      *(epicsFloat32 *)pValue = this->value.f32;
-      break;
-    case NDAttrFloat64:
-      *(epicsFloat64 *)pValue = this->value.f64;
-      break;
     case NDAttrString:
-      if (!this->pString) return (ND_ERROR);
+      if (dataType != NDAttrString) return ND_ERROR;
+      if (!this->pString) return ND_ERROR;
       if (dataSize == 0) dataSize = strlen(this->pString)+1;
       strncpy((char *)pValue, this->pString, dataSize);
-      break;
+      return ND_SUCCESS;
     case NDAttrUndefined:
+      return ND_ERROR;
+    default:
+      break;
+  }
+  
+  switch (dataType) {
+    case NDAttrInt8:
+      return getValueT<epicsInt8>(pValue, dataSize);
+    case NDAttrUInt8:
+      return getValueT<epicsUInt8>(pValue, dataSize);
+    case NDAttrInt16:
+      return getValueT<epicsInt16>(pValue, dataSize);
+      break;
+    case NDAttrUInt16:
+      return getValueT<epicsUInt16>(pValue, dataSize);
+    case NDAttrInt32:
+      return getValueT<epicsInt32>(pValue, dataSize);
+    case NDAttrUInt32:
+      return getValueT<epicsUInt32>(pValue, dataSize);
+    case NDAttrFloat32:
+      return getValueT<epicsFloat32>(pValue, dataSize);
+    case NDAttrFloat64:
+      return getValueT<epicsFloat64>(pValue, dataSize);
     default:
       return ND_ERROR;
-      break;
   }
   return ND_SUCCESS ;
 }

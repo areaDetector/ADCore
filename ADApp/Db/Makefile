@@ -39,6 +39,7 @@ DB += NDStats.template
 DB += NDStdArrays.template
 DB += NDTransform.template
 DB += NDAttribute.template
+DB += NDAttributeN.template
 DB += NDCircularBuff.template
 
 #----------------------------------------------------
