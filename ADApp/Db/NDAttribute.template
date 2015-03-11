@@ -3,35 +3,9 @@
 # % macro, PORT, Asyn Port name
 # The asyn port name should match what you have
 # written in your startup script
-# % macro, NELEMENTS, Number of elements in attribute waveform
+# % macro, NCHANS, Number of elements in attribute waveform
 # % macro, ADDR, Asyn Port address
 # % macro, TIMEOUT, Timeout
-
-record(waveform, "$(P)$(R)ArrayData_RBV")
-{
-    field(DTYP, "asynFloat64ArrayIn")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_ARRAY")
-    field(FTVL, "DOUBLE")
-    field(NELM, "$(NELEMENTS)")
-    field(SCAN, "I/O Intr")
-}
-
-record(ai, "$(P)$(R)Value_RBV")
-{
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_VAL")
-   field(PREC, "4")
-   field(SCAN, "I/O Intr")
-}
-
-record(ai, "$(P)$(R)ValueSum_RBV")
-{
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_VAL_SUM")
-   field(PREC, "4")
-   field(SCAN, "I/O Intr")
-}
-
 
 record(bo, "$(P)$(R)Reset")
 {
@@ -40,58 +14,62 @@ record(bo, "$(P)$(R)Reset")
    field(ZNAM, "Done Reset")
    field(ONAM, "Reset")
    field(VAL,  "0")
-   field(FLNK, "$(P)$(R)ResetArrayCounter.PROC")
 }
 
-record(bo, "$(P)$(R)Update")
+###################################################################
+#  These records control time series                              #
+###################################################################
+record(mbbo, "$(P)$(R)TSControl")
 {
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_UPDATE")
-   field(ZNAM, "Done Update Array")
-   field(ONAM, "Update Array")
-   field(VAL,  "0")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_TS_CONTROL")
+   field(ZRVL, "0")
+   field(ZRST, "Erase/Start")
+   field(ONVL, "1")
+   field(ONST, "Start")
+   field(TWVL, "2")
+   field(TWST, "Stop")
+   field(THVL, "3")
+   field(THST, "Read") 
 }
 
-record(dfanout, "$(P)$(R)ResetArrayCounter")
+# This record periodically pokes the TSControl record with 3 to read the time series
+# but only when TSAcquiring = Acquiring
+record(longout, "$(P)$(R)TSRead")
 {
-   field(VAL, "0")
-   field(OUTA, "$(P)$(R)ArrayCounter PP")
+   field(SDIS, "$(P)$(R)TSAcquiring NPP NMS")
+   field(DISV, "0")
+   field(OUT,  "$(P)$(R)TSControl PP MS")
+   field(VAL,  "3")
+   field(SCAN, "1 second")
+   info(autosaveFields, "SCAN")
 }
 
-record(waveform, "$(P)$(R)AttrName")
+record(longout, "$(P)$(R)TSNumPoints")
 {
-    field(DTYP, "asynOctetWrite")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_ATTRNAME")
-    field(FTVL, "CHAR")
-    field(NELM, "256")
-}
-
-record(waveform, "$(P)$(R)AttrName_RBV")
-{
-    field(DTYP, "asynOctetRead")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_ATTRNAME")
-    field(FTVL, "CHAR")
-    field(NELM, "256")
-    field(SCAN, "I/O Intr")
-}
-
-record(ao, "$(P)$(R)UpdatePeriod")
-{
-   field(DESC, "Array Update Period")
-   field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_UPDATE_PERIOD")
-   field(PREC, "0")
-   field(VAL, "100")
    field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_TS_NUM_POINTS")
+   field(VAL,  "$(NCHANS)")
+   field(DRVH, "$(NCHANS)")
+   info(autosaveFields, "VAL")
 }
 
-record(ai, "$(P)$(R)UpdatePeriod_RBV")
+record(longin, "$(P)$(R)TSCurrentPoint")
 {
-   field(DESC, "Array Update Period")
-   field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_UPDATE_PERIOD")
-   field(PREC, "0")
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_TS_CURRENT_POINT")
    field(SCAN, "I/O Intr")
-   field(EGU, "ms")	
+}
+
+record(bi, "$(P)$(R)TSAcquiring")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_TS_ACQUIRING")
+   field(ZNAM, "Done")
+   field(ONAM, "Acquiring")
+   field(ZSV,  "NO_ALARM")
+   field(OSV,  "MINOR")
+   field(SCAN, "I/O Intr")
 }
 

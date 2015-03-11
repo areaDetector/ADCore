@@ -88,6 +88,9 @@ struct PluginFixture
     asynInt32Client *cbSoftTrigger;
     asynOctetClient *cbStatus;
     asynInt32Client *cbCount;
+    asynOctetClient *cbTrigA;
+    asynOctetClient *cbTrigB;
+    asynOctetClient *cbCalc;
     static int testCase;
 
     PluginFixture()
@@ -112,23 +115,31 @@ struct PluginFixture
 
         enableCallbacks = new asynInt32Client(dsport, 0, NDPluginDriverEnableCallbacksString);
         blockingCallbacks = new asynInt32Client(dsport, 0, NDPluginDriverBlockingCallbacksString);
-        cbControl = new asynInt32Client(testport, 0, NDPluginCircularBuffControlString);
-        cbPreTrigger = new asynInt32Client(testport, 0, NDPluginCircularBuffPreTriggerString);
-        cbPostTrigger = new asynInt32Client(testport, 0, NDPluginCircularBuffPostTriggerString);
-        cbSoftTrigger = new asynInt32Client(testport, 0, NDPluginCircularBuffSoftTriggerString);
-        cbStatus = new asynOctetClient(testport, 0, NDPluginCircularBuffStatusString);
-        cbCount = new asynInt32Client(testport, 0, NDPluginCircularBuffCurrentImageString);
+        cbControl = new asynInt32Client(testport, 0, NDCircBuffControlString);
+        cbPreTrigger = new asynInt32Client(testport, 0, NDCircBuffPreTriggerString);
+        cbPostTrigger = new asynInt32Client(testport, 0, NDCircBuffPostTriggerString);
+        cbSoftTrigger = new asynInt32Client(testport, 0, NDCircBuffSoftTriggerString);
+        cbStatus = new asynOctetClient(testport, 0, NDCircBuffStatusString);
+        cbCount = new asynInt32Client(testport, 0, NDCircBuffCurrentImageString);
+        cbTrigA = new asynOctetClient(testport, 0, NDCircBuffTriggerAString);
+        cbTrigB = new asynOctetClient(testport, 0, NDCircBuffTriggerBString);
+        cbCalc = new asynOctetClient(testport, 0, NDCircBuffTriggerCalcString);
 
         // Set the downstream plugin to receive callbacks from the test plugin and to run in blocking mode, so we don't need to worry about synchronisation
         // with the downstream plugin.
         enableCallbacks->write(1);
         blockingCallbacks->write(1);
 
+
+
         testCase++;
 
     }
     ~PluginFixture()
     {
+        delete cbCalc;
+        delete cbTrigB;
+        delete cbTrigA;
         delete cbCount;
         delete cbStatus;
         delete cbSoftTrigger;
@@ -160,6 +171,9 @@ BOOST_AUTO_TEST_CASE(test_BufferWrappingAndStatusMessages)
   size_t gotbytes;
   int eom;
 
+  // Disable the attribute based triggering.
+  cbCalc->write("0", 2, &gotbytes);
+
   int storedImages;
   char status[50] = {0};
 
@@ -187,6 +201,9 @@ BOOST_AUTO_TEST_CASE(test_BufferWrappingAndStatusMessages)
 
 BOOST_AUTO_TEST_CASE(test_OutputCount)
 {
+    size_t gotbytes;
+    cbCalc->write("0", 2, &gotbytes);
+
     cbPreTrigger->write(10);
     cbControl->write(1);
 
@@ -208,6 +225,9 @@ BOOST_AUTO_TEST_CASE(test_OutputCount)
 
 BOOST_AUTO_TEST_CASE(test_PreBufferOrder)
 {
+    size_t gotbytes;
+    cbCalc->write("0", 2, &gotbytes);
+
     cbPreTrigger->write(3);
     cbControl->write(1);
 

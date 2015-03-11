@@ -23,8 +23,12 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
-R2-2 (January XXX, 2015)
+R2-2 (March XXX, 2015)
 ========================
+###
+* NOTE: This release requires at least R4-26 of asyn because it uses the info(asyn:READOUT,"1") tag
+  in databases to have output records update on driver callbacks.
+
 ### iocs/simDetectorNoIOC
 * New application that demonstrates how to instantiate a simDetector driver
   and a number of plugins in a standalone C++ application, without running an EPICS IOC.
@@ -81,6 +85,10 @@ R2-2 (January XXX, 2015)
 ### netCDFSupport
 * Fixes to work on vxWorks 6.9 from Tim Mooney.
 
+### NDAttribute class
+* Changed the getValue() method to do type conversion if the requested datatype does not match the
+  datatype of the attribute.
+  
 ### ImageJ Viewer
 * Bug fixes from Lewis Muir.
 
