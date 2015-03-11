@@ -52,9 +52,9 @@ typedef struct HDFAttributeNode {
   hid_t hdfdatatype;
   hid_t hdfcparm;
   hid_t hdffilespace;
-  hsize_t hdfdims;
-  hsize_t offset;
-  hsize_t elementSize;
+  hsize_t hdfdims[2];
+  hsize_t offset[2];
+  hsize_t elementSize[2];
   int hdfrank;
   hdf5::When_t whenToSave;
 } HDFAttributeNode;
