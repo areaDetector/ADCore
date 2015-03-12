@@ -20,6 +20,7 @@
 #define str_NDFileHDF5_nFramesChunks     "HDF5_nFramesChunks"
 #define str_NDFileHDF5_chunkBoundaryAlign "HDF5_chunkBoundaryAlign"
 #define str_NDFileHDF5_chunkBoundaryThreshold "HDF5_chunkBoundaryThreshold"
+#define str_NDFileHDF5_NDAttributeChunk  "HDF5_NDAttributeChunk"
 #define str_NDFileHDF5_extraDimNameN     "HDF5_extraDimNameN"
 #define str_NDFileHDF5_nExtraDims        "HDF5_nExtraDims"
 #define str_NDFileHDF5_extraDimSizeX     "HDF5_extraDimSizeX"
@@ -54,6 +55,7 @@ typedef struct HDFAttributeNode {
   hid_t hdffilespace;
   hsize_t hdfdims[2];
   hsize_t offset[2];
+  hsize_t chunk[2];
   hsize_t elementSize[2];
   int hdfrank;
   hdf5::When_t whenToSave;
@@ -119,6 +121,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     int NDFileHDF5_nFramesChunks;
     int NDFileHDF5_chunkBoundaryAlign;
     int NDFileHDF5_chunkBoundaryThreshold;
+    int NDFileHDF5_NDAttributeChunk;
     int NDFileHDF5_nExtraDims;
     int NDFileHDF5_extraDimNameN;
     int NDFileHDF5_extraDimSizeX;

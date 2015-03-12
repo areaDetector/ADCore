@@ -1737,6 +1737,7 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   this->createParam(str_NDFileHDF5_nFramesChunks,   asynParamInt32,   &NDFileHDF5_nFramesChunks);
   this->createParam(str_NDFileHDF5_chunkBoundaryAlign, asynParamInt32,&NDFileHDF5_chunkBoundaryAlign);
   this->createParam(str_NDFileHDF5_chunkBoundaryThreshold, asynParamInt32,&NDFileHDF5_chunkBoundaryThreshold);
+  this->createParam(str_NDFileHDF5_NDAttributeChunk,asynParamInt32,   &NDFileHDF5_NDAttributeChunk);
   this->createParam(str_NDFileHDF5_extraDimNameN,   asynParamOctet,   &NDFileHDF5_extraDimNameN);
   this->createParam(str_NDFileHDF5_nExtraDims,      asynParamInt32,   &NDFileHDF5_nExtraDims);
   this->createParam(str_NDFileHDF5_extraDimSizeX,   asynParamInt32,   &NDFileHDF5_extraDimSizeX);
@@ -1762,6 +1763,7 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   setIntegerParam(NDFileHDF5_nRowChunks,      0);
   setIntegerParam(NDFileHDF5_nColChunks,      0);
   setIntegerParam(NDFileHDF5_nFramesChunks,   0);
+  setIntegerParam(NDFileHDF5_NDAttributeChunk,0);
   setIntegerParam(NDFileHDF5_extraDimSizeN,   1);
   setIntegerParam(NDFileHDF5_chunkBoundaryAlign, 0);
   setIntegerParam(NDFileHDF5_chunkBoundaryThreshold, 65536);
@@ -2041,7 +2043,9 @@ asynStatus NDFileHDF5::createAttributeDataset()
   NDAttribute *ndAttr = NULL;
   NDAttrSource_t ndAttrSourceType;
   int extraDims;
+  int chunking = 0;
   hsize_t hdfdims=1;
+  hsize_t maxdims[2] = {H5S_UNLIMITED, H5S_UNLIMITED};
   int numCaptures = 1;
   hid_t groupDefault = -1;
   const char *attrNames[5] = {"NDAttrName", "NDAttrDescription", "NDAttrSourceType", "NDAttrSource", NULL};
@@ -2076,6 +2080,14 @@ asynStatus NDFileHDF5::createAttributeDataset()
     }
   }
 
+  // Check the chunking value
+  getIntegerParam(NDFileHDF5_NDAttributeChunk, &chunking);
+  // If the chunking is zero then use the number of frames
+  if (chunking == 0){
+    // In this case we want to read back the number of frames and use this for chunking
+    getIntegerParam(NDFileNumCapture, &chunking);
+  }
+
   ndAttr = this->pFileAttributes->next(ndAttr); // get the first NDAttribute
   while(ndAttr != NULL)
   {
@@ -2094,19 +2106,23 @@ asynStatus NDFileHDF5::createAttributeDataset()
     //set the default save frequence to be every frame
     hdfAttrNode->whenToSave = hdf5::OnFrame;
 
-
+    // Creating extendible data sets
+    hdfAttrNode->hdfdims[0] = 1;
     if (ndAttr->getDataType() < NDAttrString){
       hdfAttrNode->hdfdatatype  = this->typeNd2Hdf((NDDataType_t)ndAttr->getDataType());
-      hdfAttrNode->hdfdims[0] = hdfdims;
+      hdfAttrNode->chunk[0]   = chunking;
       hdfAttrNode->hdfrank    = 1;
     } else {
       // String dataset required, use type N5T_NATIVE_CHAR
       hdfAttrNode->hdfdatatype = H5T_NATIVE_CHAR;
       hdfAttrNode->hdfdims[1] = MAX_ATTRIBUTE_STRING_SIZE;
-      hdfAttrNode->hdfdims[0] = hdfdims;
+      hdfAttrNode->chunk[0]   = chunking;
+      hdfAttrNode->chunk[1]   = MAX_ATTRIBUTE_STRING_SIZE;
       hdfAttrNode->hdfrank    = 2;
     }
     H5Pset_fill_value (hdfAttrNode->hdfcparm, hdfAttrNode->hdfdatatype, this->ptrFillValue );
+
+    H5Pset_chunk(hdfAttrNode->hdfcparm, hdfAttrNode->hdfrank, hdfAttrNode->chunk);
 
     hdf5::Dataset *dset = NULL;
     // Search for the dataset of the NDAttribute.  If it exists then we use it
@@ -2120,7 +2136,7 @@ asynStatus NDFileHDF5::createAttributeDataset()
           hdfAttrNode->hdfdims[0] = 1;
       }
 
-      hdfAttrNode->hdfdataspace = H5Screate_simple(hdfAttrNode->hdfrank, hdfAttrNode->hdfdims, NULL);
+      hdfAttrNode->hdfdataspace = H5Screate_simple(hdfAttrNode->hdfrank, hdfAttrNode->hdfdims, maxdims);
       // Get the group from the dataset
       hid_t dsetgroup = H5Gopen(this->file, dset->get_parent()->get_full_name().c_str(), H5P_DEFAULT);
 
@@ -2157,7 +2173,7 @@ asynStatus NDFileHDF5::createAttributeDataset()
 
     } else {
       if(groupDefault > -1) {
-        hdfAttrNode->hdfdataspace = H5Screate_simple(hdfAttrNode->hdfrank, hdfAttrNode->hdfdims, NULL);
+        hdfAttrNode->hdfdataspace = H5Screate_simple(hdfAttrNode->hdfrank, hdfAttrNode->hdfdims, maxdims);
         // In here we need to create the dataset
         hdfAttrNode->hdfdataset   = H5Dcreate2(groupDefault, hdfAttrNode->attrName,
                                                hdfAttrNode->hdfdatatype, hdfAttrNode->hdfdataspace,
@@ -2236,6 +2252,7 @@ asynStatus NDFileHDF5::writeAttributeDataset(hdf5::When_t whenToSave)
       memset(datavalue, 0, 8);
     }
     // Work with HDF5 library to select a suitable hyperslab (one element) and write the new data to it
+    H5Dset_extent(hdfAttrNode->hdfdataset, hdfAttrNode->hdfdims);
     hdfAttrNode->hdffilespace = H5Dget_space(hdfAttrNode->hdfdataset);
     H5Sselect_hyperslab(hdfAttrNode->hdffilespace, H5S_SELECT_SET,
                                     hdfAttrNode->offset, NULL,
@@ -2247,6 +2264,7 @@ asynStatus NDFileHDF5::writeAttributeDataset(hdf5::When_t whenToSave)
                          H5P_DEFAULT, datavalue);
 
     H5Sclose(hdfAttrNode->hdffilespace);
+    hdfAttrNode->hdfdims[0]++;
     hdfAttrNode->offset[0]++;
   }
   return status;
