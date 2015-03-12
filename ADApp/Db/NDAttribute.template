@@ -1,3 +1,5 @@
+#=================================================================#
+# Template file: NDAttribute.template
 # % macro, P, Device Prefix
 # % macro, R, Device Suffix
 # % macro, PORT, Asyn Port name
@@ -6,6 +8,8 @@
 # % macro, NCHANS, Number of elements in attribute waveform
 # % macro, ADDR, Asyn Port address
 # % macro, TIMEOUT, Timeout
+
+include "NDPluginBase.template"
 
 record(bo, "$(P)$(R)Reset")
 {

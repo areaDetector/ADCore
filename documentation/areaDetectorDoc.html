@@ -10,9 +10,9 @@
     <h1>
       areaDetector: EPICS Area Detector Support</h1>
     <h2>
-      Release 2-1</h2>
+      Release 2-2</h2>
     <h2>
-      October 17, 2014</h2>
+      March 10, 2015</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -99,7 +99,7 @@
     in <a href="http://www.aps.anl.gov/epics/">EPICS</a>. It is intended to be used
     with a wide variety of detectors and cameras, ranging from high frame rate CCD and
     CMOS cameras, pixel-array detectors such as the Pilatus, and large format detectors
-    like the MAR-345 online imaging plate.</p>
+    like the Perkin Elmer flat panels.</p>
   <p>
     The goals of this module are:
   </p>
@@ -147,12 +147,13 @@
     <li>Layer 3. Code running at this level is called a "plug-in". This code registers
       with a driver for a callback whenever there is a new data array. The existing plugins
       implement file saving (NDPluginFile), region-of-interest (ROI) calculations (NDPluginROI),
-      statistics calculations (NDPluginStats), image processing (NDPluginProcess), geometric
-      transformations (NDPluginTransform), color mode conversion (NDPluginColorConvert),
-      graphics and text overlays (NDPluginOverlay), and conversion of detector data to
-      standard EPICS array types for use by Channel Access clients (NDPluginStdArrays).
-      Plugins are normally written in C++ and inherit from NDPluginDriver. Existing plugins
-      range from about 300 to 3000 lines of code.</li>
+      statistics calculations (NDPluginStats, DNPluginROIStat), image processing (NDPluginProcess),
+      geometric transformations (NDPluginTransform), buffering and triggering (NDPluginCircularBuff),
+      color mode conversion (NDPluginColorConvert), graphics and text overlays (NDPluginOverlay),
+      exporting NDArray attributes as scalar and waveform records (NDPluginAttribute),
+      and conversion of detector data to standard EPICS array types for use by Channel
+      Access clients (NDPluginStdArrays). Plugins are written in C++ and inherit from
+      NDPluginDriver. Existing plugins range from about 300 to 3000 lines of code.</li>
     <li>Layer 4. This is standard asyn device support that comes with the EPICS asyn module.</li>
     <li>Layer 5. These are standard EPICS records, and EPICS database (template) files
       that define records to communicate with drivers at Layer 2 and plugins at Layer
@@ -176,9 +177,9 @@
   </ol>
   <p>
     In particular it should be possible to eliminate layers 4-6 in the architecture
-    shown in Figure 1. This means that in principle it is not necessary to run an EPICS
-    IOC or to use EPICS Channel Access when using the drivers and plugins at Layers
-    2 and 3. In practice this has not yet been demonstrated.
+    shown in Figure 1. This means that it is not necessary to run an EPICS IOC or to
+    use EPICS Channel Access when using the drivers and plugins at Layers 2 and 3. This
+    is demonstrated in the simDetectorNoIOC application in ADCore.
   </p>
   <p>
     The plugin architecture is very powerful, because new plugins can be written for
@@ -223,14 +224,14 @@
     Detector drivers and plugins are asyn port drivers, meaning that they implement
     one or more of the standard asyn interfaces. They register themselves as interrupt
     sources, so that they do callbacks to registered asyn clients when values change.
-    They inherit from the <a href="http://www.aps.anl.gov/epics/modules/soft/asyn/R4-22/asynPortDriver.html">
+    They inherit from the <a href="http://www.aps.anl.gov/epics/modules/soft/asyn/R4-26/asynPortDriver.html">
       asynPortDriver base C++ class</a> that is provided in the asyn module. That base
     class handles all of the details of registering the port driver, registering the
     supported interfaces, and registering the required interrupt sources. It also provides
     a parameter library for int, double, and string parameters indexed by the integer
     index values defined in the driver. The parameter library provides methods to write
     and read the parameter values, and to perform callbacks to registered clients when
-    a parameter value has changed. The <a href="http://www.aps.anl.gov/epics/modules/soft/asyn/R4-22/asynDoxygenHTML/classasyn_port_driver.html">
+    a parameter value has changed. The <a href="http://www.aps.anl.gov/epics/modules/soft/asyn/R4-26/asynDoxygenHTML/classasyn_port_driver.html">
       asynPortDriver class documentation</a> describes this class in detail.
   </p>
   <h3 id="NDArray">
@@ -319,7 +320,7 @@
     The NDAttributeList implements a linked list of NDAttribute objects. NDArray objects
     contain an NDAttributeList which is how attributes are associated with an NDArray.
     There are methods to add, delete and search for NDAttribute objects in an NDAttributeList.
-    Each attribute in the list must have a unique name, which is case-insensitive.
+    Each attribute in the list must have a unique name, which is case-sensitive.
   </p>
   <p>
     When NDArrays are copied with the NDArrayPool methods the attribute list is also
@@ -388,7 +389,7 @@
     if possible. These parameters are defined by strings (drvInfo strings in asyn) with
     an associated asyn interface, and access (read-only or read-write). There is also
     an integer index to the parameter which is assigned by asynPortDriver when the parameter
-    is created in the parameter library. The EPICS database ADBase.template provides
+    is created in the parameter library. The EPICS database NDArrayBase.template provides
     access to these standard driver parameters. The following table lists the standard
     driver parameters. The columns are defined as follows:
   </p>
@@ -443,7 +444,7 @@
     <tbody>
       <tr>
         <td align="center" colspan="7">
-          <b>Parameter Definitions in asynNDArrayDriver.h and EPICS Record Definitions in ADBase.template
+          <b>Parameter Definitions in asynNDArrayDriver.h and EPICS Record Definitions in NDArrayBase.template
             (file-related records are in NDFile.template)</b></td>
       </tr>
       <tr>
@@ -461,6 +462,28 @@
           EPICS record name</th>
         <th>
           EPICS record type</th>
+      </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Information about the version of ADCore</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDADCoreVersion</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/o</td>
+        <td>
+          ADCore version number. This can be used by Channel Access clients to alter their
+          behavior depending on the version of ADCore that was used to build this driver or
+          plugin.</td>
+        <td>
+          ADCORE_VERSION</td>
+        <td>
+          $(P)$(R)ADCoreVersion_RBV</td>
+        <td>
+          stringin</td>
       </tr>
       <tr>
         <td align="center" colspan="7">
@@ -527,8 +550,107 @@
           mbbi</td>
       </tr>
       <tr>
+        <td>
+          NDBayerPattern</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Bayer pattern (NDBayerPattern_t) of NDArray data.</td>
+        <td>
+          BAYER_PATTERN</td>
+        <td>
+          $(P)$(R)BayerPattern_RBV</td>
+        <td>
+          mbbi</td>
+      </tr>
+      <tr>
         <td align="center" colspan="7">
           <b>Actual dimensions of array data</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDNDimensions</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Number of dimensions in the array</td>
+        <td>
+          ARRAY_NDIMENSIONS</td>
+        <td>
+          $(P)$(R)NDimensions_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDDimensions</td>
+        <td>
+          asynInt32Array</td>
+        <td>
+          r/o</td>
+        <td>
+          Size of each dimension in the array</td>
+        <td>
+          ARRAY_DIMENSIONS</td>
+        <td>
+          $(P)$(R)Dimensions_RBV</td>
+        <td>
+          waveform</td>
+      </tr>
+      <tr>
+        <td>
+          N.A.</td>
+        <td>
+          N.A</td>
+        <td>
+          r/o</td>
+        <td>
+          Size of the first array dimension, extracted from the Dimensions_RBV waveform record.
+        </td>
+        <td>
+          N.A.</td>
+        <td>
+          $(P)$(R)ArraySize0_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          N.A.</td>
+        <td>
+          N.A</td>
+        <td>
+          r/o</td>
+        <td>
+          Size of the second array dimension, extracted from the Dimensions_RBV waveform record.
+        </td>
+        <td>
+          N.A.</td>
+        <td>
+          $(P)$(R)ArraySize1_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          N.A.</td>
+        <td>
+          N.A</td>
+        <td>
+          r/o</td>
+        <td>
+          Size of the third array dimension, extracted from the Dimensions_RBV waveform record.
+        </td>
+        <td>
+          N.A.</td>
+        <td>
+          $(P)$(R)ArraySize2_RBV</td>
+        <td>
+          longin</td>
       </tr>
       <tr>
         <td>
@@ -593,6 +715,232 @@
           $(P)$(R)ArraySize_RBV</td>
         <td>
           longin</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Array data</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDArrayCallbacks</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Controls whether the driver or plugin does callbacks with the array data to registered
+          plugins. 0=No, 1=Yes. Setting this to 0 in a driver can reduce overhead in the case
+          that the driver is being used only to control the device, and not to make the data
+          available to plugins or to EPICS clients. Setting this to 0 in a plugin can reduce
+          overhead by eliminating the need to copy the NDArray if that plugin is not being
+          used as a source of NDArrays to other plugins.</td>
+        <td>
+          ARRAY_CALLBACKS</td>
+        <td>
+          $(P)$(R)ArrayCallbacks<br />
+          $(P)$(R)ArrayCallbacks_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDArrayData</td>
+        <td>
+          asynGenericPointer</td>
+        <td>
+          r/w</td>
+        <td>
+          The array data as an NDArray object</td>
+        <td>
+          NDARRAY_DATA</td>
+        <td>
+          N/A. EPICS access to array data is through NDStdArrays plugin.</td>
+        <td>
+          N/A</td>
+      </tr>
+      <tr>
+        <td>
+          NDArrayCounter</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Counter that increments by 1 each time an array is acquired. Can be reset by writing
+          a value to it.</td>
+        <td>
+          ARRAY_COUNTER</td>
+        <td>
+          $(P)$(R)ArrayCounter<br />
+          $(P)$(R)ArrayCounter_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          N/A</td>
+        <td>
+          N/A</td>
+        <td>
+          r/o</td>
+        <td>
+          Rate at which arrays are being acquired. Computed in the ADBase.template database.
+        </td>
+        <td>
+          N/A</td>
+        <td>
+          $(P)$(R)ArrayRate_RBV</td>
+        <td>
+          calc</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Array attributes</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDAttributesFile</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          The name of an XML file defining the PVAttributes and paramAttributes to be added
+          to each NDArray by this driver or plugin. The format of the XML file is described
+          in the documentation for <a href="areaDetectorDoxygenHTML/classasyn_n_d_array_driver.html">
+            asynNDArrayDriver::readNDAttributesFile().</a></td>
+        <td>
+          ND_ATTRIBUTES_FILE</td>
+        <td>
+          $(P)$(R)NDAttributesFile</td>
+        <td>
+          waveform</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Array pool status</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDPoolMaxMemory</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          The maximum number of NDArrayPool memory bytes that can be allocated. 0=unlimited.
+        </td>
+        <td>
+          POOL_MAX_MEMORY</td>
+        <td>
+          $(P)$(R)PoolMaxMem</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPoolUsedMemory</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          The number of NDArrayPool memory bytes currently allocated. The SCAN rate of this
+          record controls the scanning of all of the dynamic NDArrayPool status records.
+        </td>
+        <td>
+          POOL_USED_MEMORY</td>
+        <td>
+          $(P)$(R)PoolUsedMem</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPoolMaxBuffers</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The maximum number of NDArrayPool buffers that can be allocated. 0=unlimited.</td>
+        <td>
+          POOL_MAX_BUFFERS</td>
+        <td>
+          $(P)$(R)PoolMaxBuffers</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPoolAllocBuffers</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The number of NDArrayPool buffers currently allocated.</td>
+        <td>
+          POOL_ALLOC_BUFFERS</td>
+        <td>
+          $(P)$(R)PoolAllocBuffers</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPoolFreeBuffers</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The number of NDArrayPool buffers currently allocated but free.</td>
+        <td>
+          POOL_FREE_BUFFERS</td>
+        <td>
+          $(P)$(R)PoolFreeBuffers</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          N.A.</td>
+        <td>
+          N.A.</td>
+        <td>
+          r/o</td>
+        <td>
+          The number of NDArrayPool buffers currently in use. This is calculated as NDPoolAllocBuffers
+          - NDPoolFreeBuffers.</td>
+        <td>
+          N.A.</td>
+        <td>
+          $(P)$(R)PoolUsedBuffers</td>
+        <td>
+          calc</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Debugging control</b></td>
+      </tr>
+      <tr>
+        <td>
+          N/A</td>
+        <td>
+          N/A</td>
+        <td>
+          N/A</td>
+        <td>
+          asyn record to control debugging (asynTrace)</td>
+        <td>
+          N/A</td>
+        <td>
+          $(P)$(R)AsynIO</td>
+        <td>
+          asyn</td>
       </tr>
       <tr>
         <td align="center" colspan="7">
@@ -1010,230 +1358,6 @@
         <td>
           stringout<br />
           stringin</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7">
-          <b>Array data</b></td>
-      </tr>
-      <tr>
-        <td>
-          NDArrayCallbacks</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Controls whether the driver does callbacks with the array data to registered plugins.
-          0=No, 1=Yes. Setting this to 0 can reduce overhead in the case that the driver is
-          being used only to control the device, and not to make the data available to plugins
-          or to EPICS clients.</td>
-        <td>
-          ARRAY_CALLBACKS</td>
-        <td>
-          $(P)$(R)ArrayCallbacks<br />
-          $(P)$(R)ArrayCallbacks_RBV</td>
-        <td>
-          bo<br />
-          bi</td>
-      </tr>
-      <tr>
-        <td>
-          NDArrayData</td>
-        <td>
-          asynGenericPointer</td>
-        <td>
-          r/w</td>
-        <td>
-          The array data as an NDArray object</td>
-        <td>
-          NDARRAY_DATA</td>
-        <td>
-          N/A. EPICS access to array data is through NDStdArrays plugin.</td>
-        <td>
-          N/A</td>
-      </tr>
-      <tr>
-        <td>
-          NDArrayCounter</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Counter that increments by 1 each time an array is acquired. Can be reset by writing
-          a value to it.</td>
-        <td>
-          ARRAY_COUNTER</td>
-        <td>
-          $(P)$(R)ArrayCounter<br />
-          $(P)$(R)ArrayCounter_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          N/A</td>
-        <td>
-          N/A</td>
-        <td>
-          r/o</td>
-        <td>
-          Rate at which arrays are being acquired. Computed in the ADBase.template database.
-        </td>
-        <td>
-          N/A</td>
-        <td>
-          $(P)$(R)ArrayRate_RBV</td>
-        <td>
-          calc</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7">
-          <b>Array attributes</b></td>
-      </tr>
-      <tr>
-        <td>
-          NDAttributesFile</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          The name of an XML file defining the PVAttributes and paramAttributes to be added
-          to each NDArray by this driver or plugin. The format of the XML file is described
-          in the documentation for <a href="areaDetectorDoxygenHTML/classasyn_n_d_array_driver.html">
-            asynNDArrayDriver::readNDAttributesFile().</a></td>
-        <td>
-          ND_ATTRIBUTES_FILE</td>
-        <td>
-          $(P)$(R)NDAttributesFile</td>
-        <td>
-          waveform</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7">
-          <b>Array pool status</b></td>
-      </tr>
-      <tr>
-        <td>
-          NDPoolMaxMemory</td>
-        <td>
-          asynFloat64</td>
-        <td>
-          r/o</td>
-        <td>
-          The maximum number of NDArrayPool memory bytes that can be allocated. 0=unlimited.
-        </td>
-        <td>
-          POOL_MAX_MEMORY</td>
-        <td>
-          $(P)$(R)PoolMaxMem</td>
-        <td>
-          ai</td>
-      </tr>
-      <tr>
-        <td>
-          NDPoolUsedMemory</td>
-        <td>
-          asynFloat64</td>
-        <td>
-          r/o</td>
-        <td>
-          The number of NDArrayPool memory bytes currently allocated. The SCAN rate of this
-          record controls the scanning of all of the dynamic NDArrayPool status records.
-        </td>
-        <td>
-          POOL_USED_MEMORY</td>
-        <td>
-          $(P)$(R)PoolUsedMem</td>
-        <td>
-          ai</td>
-      </tr>
-      <tr>
-        <td>
-          NDPoolMaxBuffers</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          The maximum number of NDArrayPool buffers that can be allocated. 0=unlimited.</td>
-        <td>
-          POOL_MAX_BUFFERS</td>
-        <td>
-          $(P)$(R)PoolMaxBuffers</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPoolAllocBuffers</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          The number of NDArrayPool buffers currently allocated.</td>
-        <td>
-          POOL_ALLOC_BUFFERS</td>
-        <td>
-          $(P)$(R)PoolAllocBuffers</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPoolFreeBuffers</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          The number of NDArrayPool buffers currently allocated but free.</td>
-        <td>
-          POOL_FREE_BUFFERS</td>
-        <td>
-          $(P)$(R)PoolFreeBuffers</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          N.A.</td>
-        <td>
-          N.A.</td>
-        <td>
-          r/o</td>
-        <td>
-          The number of NDArrayPool buffers currently in use. This is calculated as NDPoolAllocBuffers
-          - NDPoolFreeBuffers.</td>
-        <td>
-          N.A.</td>
-        <td>
-          $(P)$(R)PoolUsedBuffers</td>
-        <td>
-          calc</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7">
-          <b>Debugging control</b></td>
-      </tr>
-      <tr>
-        <td>
-          N/A</td>
-        <td>
-          N/A</td>
-        <td>
-          N/A</td>
-        <td>
-          asyn record to control debugging (asynTrace)</td>
-        <td>
-          N/A</td>
-        <td>
-          $(P)$(R)AsynIO</td>
-        <td>
-          asyn</td>
       </tr>
     </tbody>
   </table>
