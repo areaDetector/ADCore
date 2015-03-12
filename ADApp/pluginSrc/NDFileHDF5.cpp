@@ -77,6 +77,16 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
     return asynError;
   }
 
+  // Check if an invalid (<1) number of frames has been configured for capture
+  int numCapture;
+  getIntegerParam(NDFileNumCapture, &numCapture);
+  if (numCapture < 1) {
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+              "%s::%s Invalid number of frames to capture: %d. Please specify a number > 0\n",
+              driverName, functionName, numCapture);
+    return asynError;
+  }
+
   // Verify the XML path and filename
   if (this->verifyLayoutXMLFile()){
     return asynError;
@@ -1447,10 +1457,15 @@ asynStatus NDFileHDF5::writeInt32(asynUser *pasynUser, epicsInt32 value)
     }
   } else if (function == NDFileNumCapture)
   {
+    if (value <= 0) {
+      // It is not allowed to specify 0 or negative number of frames to capture
+      setIntegerParam(NDFileNumCapture, oldvalue);
+      status = asynError;
+    }
     // if we are using the virtual dimensions we cannot allow setting a number of
     // frames to acquire which is larger than the product of all virtual dimension (n,X,Y) sizes
     // as there will not be a suitable location in the file to store the additional frames.
-    if (numExtraDims > 0)
+    else if (numExtraDims > 0)
     {
       this->calcNumFrames();
       getIntegerParam(NDFileNumCapture, &tmp);
