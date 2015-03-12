@@ -41,6 +41,8 @@ enum HDF5Compression_t {HDF5CompressNone=0, HDF5CompressNumBits, HDF5CompressSZi
 #define DIMNAMESIZE 40
 #define MAXEXTRADIMS 3
 #define ALIGNMENT_BOUNDARY 1048576
+#define INFINITE_FRAMES_CAPTURE 10000 /* Used to calculate istorek (the size of the chunk index binar search tree) when capturing infinite number of frames */
+
 
 static const char *driverName = "NDFileHDF5";
 
@@ -77,12 +79,12 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
     return asynError;
   }
 
-  // Check if an invalid (<1) number of frames has been configured for capture
+  // Check if an invalid (<0) number of frames has been configured for capture
   int numCapture;
   getIntegerParam(NDFileNumCapture, &numCapture);
-  if (numCapture < 1) {
+  if (numCapture < 0) {
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-              "%s::%s Invalid number of frames to capture: %d. Please specify a number > 0\n",
+              "%s::%s Invalid number of frames to capture: %d. Please specify a number >= 0\n",
               driverName, functionName, numCapture);
     return asynError;
   }
@@ -1196,10 +1198,6 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
   getIntegerParam(NDFileHDF5_nExtraDims, &extradims);
   if (this->multiFrameFile) this->detDataMap[destination]->extendDataSet(extradims);
 
-  asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
-            "%s::%s: set_extent dims={%d,%d,%d}\n",
-            driverName, functionName, (int)this->dims[0], (int)this->dims[1], (int)this->dims[2]);
-
   status = this->detDataMap[destination]->writeFile(pArray, this->datatype, this->dataspace, this->framesize);
   if (status != asynSuccess){
     // If dataset creation fails then close file and abort as all following writes will fail as well
@@ -1242,7 +1240,7 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
       return status;
     }
   }
-  if (storePerformance == 1){
+  if (storePerformance == 1 && numCaptured <= this->numPerformancePoints){
     epicsTimeGetCurrent(&endts);
     dt = epicsTimeDiffInSeconds(&endts, &startts);
     *this->performancePtr = dt;
@@ -1457,10 +1455,15 @@ asynStatus NDFileHDF5::writeInt32(asynUser *pasynUser, epicsInt32 value)
     }
   } else if (function == NDFileNumCapture)
   {
-    if (value <= 0) {
-      // It is not allowed to specify 0 or negative number of frames to capture
+    if (value < 0) {
+      // It is not allowed to specify a negative number of frames to capture
       setIntegerParam(NDFileNumCapture, oldvalue);
       status = asynError;
+    }
+    else if (value == 0) {
+      // Special case: allow writing infinite number of frames
+      //setIntegerParam(NDFileHDF5_storePerformance, 0); // performance dataset does not support infinite length acquisition
+      setIntegerParam(NDFileHDF5_nExtraDims, 0); // The extra virtual dimensions do not support infinite length acquisition
     }
     // if we are using the virtual dimensions we cannot allow setting a number of
     // frames to acquire which is larger than the product of all virtual dimension (n,X,Y) sizes
@@ -1493,8 +1496,10 @@ asynStatus NDFileHDF5::writeInt32(asynUser *pasynUser, epicsInt32 value)
     if (this->file != 0) {
       status = asynError;
       setIntegerParam(function, oldvalue);
-    } else
-    {
+    } else if (value <= 0) {
+      status = asynError;
+      setIntegerParam(function, oldvalue);
+    } else {
       // work out how many frames to capture in total
       this->calcNumFrames();
     }
@@ -1881,7 +1886,15 @@ unsigned int NDFileHDF5::calcIstorek()
   getIntegerParam(NDFileHDF5_extraDimSizeY, &extradimsizes[0]);
   hsize_t maxdim = 0;
   int extradim = MAXEXTRADIMS - numExtraDims-1;
-  if (numExtraDims == 0) getIntegerParam(NDFileNumCapture, &extradimsizes[2]);
+  if (numExtraDims == 0) {
+    int fileNumCapture=0;
+    getIntegerParam(NDFileNumCapture, &fileNumCapture);
+    if (fileNumCapture == 0) {
+      extradimsizes[2] = INFINITE_FRAMES_CAPTURE;
+    } else {
+      extradimsizes[2] = fileNumCapture;
+    }
+  }
   for (int i = 0; i<this->rank; i++){
     maxdim = this->maxdims[i];
     if (maxdim == H5S_UNLIMITED){
@@ -1955,6 +1968,10 @@ asynStatus NDFileHDF5::configurePerformanceDataset()
 {
   int numCaptureFrames;
   getIntegerParam(NDFileNumCapture, &numCaptureFrames);
+  if (numCaptureFrames == 0) {
+    // Special case: acquiring an infinite number of frames
+    numCaptureFrames = 1000000;
+  }
 
   // only allocate new memory if we need more points than we've used before
   if (numCaptureFrames > this->numPerformancePoints)
@@ -2059,9 +2076,7 @@ asynStatus NDFileHDF5::createAttributeDataset()
   NDAttrSource_t ndAttrSourceType;
   int extraDims;
   int chunking = 0;
-  hsize_t hdfdims=1;
   hsize_t maxdims[2] = {H5S_UNLIMITED, H5S_UNLIMITED};
-  int numCaptures = 1;
   hid_t groupDefault = -1;
   const char *attrNames[5] = {"NDAttrName", "NDAttrDescription", "NDAttrSourceType", "NDAttrSource", NULL};
   const char *attrStrings[5] = {NULL,NULL,NULL,NULL,NULL};
@@ -2070,8 +2085,6 @@ asynStatus NDFileHDF5::createAttributeDataset()
   static const char *functionName = "createAttributeDataset";
 
   getIntegerParam(NDFileHDF5_nExtraDims, &extraDims);
-  getIntegerParam(NDFileNumCapture, &numCaptures);
-  hdfdims = (hsize_t)numCaptures;
 
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s Creating attribute datasets. extradims=%d attribute count=%d\n",
             driverName, functionName, extraDims, this->pFileAttributes->count());
@@ -2101,6 +2114,10 @@ asynStatus NDFileHDF5::createAttributeDataset()
   if (chunking == 0){
     // In this case we want to read back the number of frames and use this for chunking
     getIntegerParam(NDFileNumCapture, &chunking);
+    if (chunking <= 0) {
+      // Special case: writing infinite number of frames, so we guess a good(ish) chunk number
+      chunking = 16*1024;
+    }
   }
 
   ndAttr = this->pFileAttributes->next(ndAttr); // get the first NDAttribute
