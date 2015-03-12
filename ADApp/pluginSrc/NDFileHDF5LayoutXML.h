@@ -60,12 +60,14 @@ namespace hdf5
   {
     public:
       static const std::string ATTR_ELEMENT_NAME;
+      static const std::string ATTR_ROOT;
       static const std::string ATTR_GROUP;
       static const std::string ATTR_DATASET;
       static const std::string ATTR_ATTRIBUTE;
       static const std::string ATTR_GLOBAL;
       static const std::string ATTR_HARDLINK;
 
+      static const std::string ATTR_ROOT_NDATTR_DEFAULT;
       static const std::string ATTR_SOURCE;
       static const std::string ATTR_SRC_DETECTOR;
       static const std::string ATTR_SRC_DET_DEFAULT;
@@ -92,6 +94,7 @@ namespace hdf5
 
       Root* get_hdftree();
       std::string get_global(const std::string& name);
+      bool getAutoNDAttrDefault();
 
     private:
       int process_node();
@@ -99,12 +102,14 @@ namespace hdf5
       int process_dset_xml_attribute(DataSource& out);
       int process_attribute_xml_attribute(Attribute& out);
 
+      int parse_root();
       int new_group();
       int new_dataset();
       int new_attribute();
       int new_global();
       int new_hardlink();
 
+      bool auto_ndattr_default;
       log4cxx::LoggerPtr log;
       Root* ptr_tree;
       Element *ptr_curr_element;

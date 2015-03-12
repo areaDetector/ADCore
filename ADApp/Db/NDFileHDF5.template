@@ -82,6 +82,22 @@ record(longin, "$(P)$(R)NumFramesChunks_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(longout, "$(P)$(R)NDAttributeChunk")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_NDAttributeChunk")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)NDAttributeChunk_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_NDAttributeChunk")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
 record(longout, "$(P)$(R)BoundaryAlign")
 {
     field(DTYP, "asynInt32")
