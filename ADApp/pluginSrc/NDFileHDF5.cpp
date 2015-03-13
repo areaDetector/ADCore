@@ -407,11 +407,18 @@ asynStatus NDFileHDF5::createTree(hdf5::Group* root, hid_t h5handle)
     hdf5::Group::MapDatasets_t::iterator it_dsets;
     hdf5::Group::MapDatasets_t& datasets = root->get_datasets();
     for (it_dsets = datasets.begin(); it_dsets != datasets.end(); ++it_dsets){
+      if (it_dsets->second->data_source().is_src_ndattribute()) {
+        // Creation of NDAttribute datasets are deferred to later
+        // in createAttributeDataset()
+        continue;
+      }
       hid_t new_dset = this->createDataset(new_group, it_dsets->second);
       if (new_dset <= 0) {
-//hdf5::Dataset *dset = it_dsets->second;
-//asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s Failed to create dataset: %s\n",  driverName, functionName, dset->get_name().c_str());
-        continue; // failure to create the datasets so move on to next
+        hdf5::Dataset *dset = it_dsets->second;
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING,
+                  "%s::%s Failed to create dataset: %s. Continuing to next.\n",
+                  driverName, functionName, dset->get_name().c_str());
+        continue; // failure to create the datasets so move on to next. Should we delete the dset entry from the tree here?
       }
       // Write the hdf attributes to the dataset
       this->writeHdfAttributes( new_dset,  it_dsets->second);
@@ -762,9 +769,9 @@ hid_t NDFileHDF5::writeH5dsetFloat64(hid_t element, const std::string &name, con
 /**
  * Create the dataset and write it out.
  *
- * Only detector datasets are written out at this time.  If the dataset is for an ndattribute
- * then the type is not yet known and the dataset will be created when the ndattribute is first
- * read.
+ * Only detector and constant datasets are created in the file out at this time.
+ *
+ * NDAttribute datasets are created elsewhere in createAttributeDatasets()
  */
 hid_t NDFileHDF5::createDataset(hid_t group, hdf5::Dataset *dset)
 {
@@ -772,15 +779,13 @@ hid_t NDFileHDF5::createDataset(hid_t group, hdf5::Dataset *dset)
   if (dset == NULL) return -1; // sanity check
 
   if (dset->data_source().is_src_detector()) {
-    return this->createDatasetDetector(group, dset);
+      retcode = this->createDatasetDetector(group, dset);
   }
-  if(dset->data_source().is_src_constant()) {
-    return this->writeHdfConstDataset(group,  dset);
+  else if(dset->data_source().is_src_constant()) {
+      retcode = this->writeHdfConstDataset(group,  dset);
   }
-  if (dset->data_source().is_src_ndattribute()) {
-    // At this time we cannot create the dataset as we do not know its type yet
-    return -1;
-    // return this->create_dataset_metadata(group, dset);
+  else {
+    retcode = -1;
   }
   return retcode;
 }
@@ -2212,15 +2217,17 @@ asynStatus NDFileHDF5::writeAttributeDataset(hdf5::When_t whenToSave)
     if (ndAttr == NULL)
     {
       hdfAttrNode = (HDFAttributeNode*)ellNext((ELLNODE*)hdfAttrNode);
-      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING,
         "%s::%s WARNING: NDAttribute named \'%s\' not found\n",
         driverName, functionName, hdfAttrNode->attrName);
       continue;
     }
-    //check if when to save matches.
+    //check if the attribute is meant to be saved at this time
     if (hdfAttrNode->whenToSave != whenToSave) {
-      //asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,  "%s::%s WARNING: NDAttribute named \'%s\' when to save miss match\n",  driverName, functionName, hdfAttrNode->attrName);
-      continue;
+      //asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
+      //          "%s::%s NDAttribute named \'%s\' when to save miss match\n",
+      //          driverName, functionName, hdfAttrNode->attrName);
+      continue; // Not saving at this time, and that is OK...
     }
 
     // find the data based on datatype
