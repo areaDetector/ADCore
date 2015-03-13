@@ -2348,6 +2348,8 @@ asynStatus NDFileHDF5::configureDatasetDims(NDArray *pArray)
     for (i=0; i<extradims; i++){
       getIntegerParam(extradimdefs[MAXEXTRADIMS - extradims + i].sizeParamId, &numCapture[i]);
     }
+  } else {
+    numCapture = (int *)calloc(1, sizeof(int));
   }
   int user_chunking[3] = {1,1,1};
   getIntegerParam(NDFileHDF5_nFramesChunks, &user_chunking[2]);
@@ -2360,6 +2362,7 @@ asynStatus NDFileHDF5::configureDatasetDims(NDArray *pArray)
     it_dset->second->configureDims(pArray, this->multiFrameFile, extradims, numCapture, user_chunking);
   }
   
+  if (numCapture != NULL) free( numCapture );
   return status;
 }
 
