@@ -2233,7 +2233,6 @@ asynStatus NDFileHDF5::writeAttributeDataset(hdf5::When_t whenToSave)
     ndAttr = this->pFileAttributes->find(hdfAttrNode->attrName);
     if (ndAttr == NULL)
     {
-      hdfAttrNode = (HDFAttributeNode*)ellNext((ELLNODE*)hdfAttrNode);
       asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING,
         "%s::%s WARNING: NDAttribute named \'%s\' not found\n",
         driverName, functionName, hdfAttrNode->attrName);
