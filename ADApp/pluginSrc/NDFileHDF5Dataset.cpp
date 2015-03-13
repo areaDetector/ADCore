@@ -160,6 +160,10 @@ asynStatus NDFileHDF5Dataset::writeFile(NDArray *pArray, hid_t datatype, hid_t d
   static const char *functionName = "writeFile";
 
   // Increase the size of the dataset
+  asynPrint(this->pAsynUser_, ASYN_TRACE_FLOW,
+            "%s::%s: set_extent dims={%d,%d,%d}\n",
+            fileName, functionName, (int)this->dims_[0], (int)this->dims_[1], (int)this->dims_[2]);
+
   hdfstatus = H5Dset_extent(this->dataset_, this->dims_);
   if (hdfstatus){
     asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR, 
