@@ -118,6 +118,9 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
   // First clear the list
   this->pFileAttributes->clear();
 
+  // Insert default NDAttribute from the NDArray object (timestamps etc)
+  this->addDefaultAttributes(pArray);
+
   // Now get the current values of the attributes for this plugin
   this->getAttributes(this->pFileAttributes);
 
@@ -2695,13 +2698,13 @@ void NDFileHDF5::addDefaultAttributes(NDArray *pArray)
                              "The unique ID of the NDArray",
                              NDAttrInt32, (void*)&(pArray->uniqueId));
   this->pFileAttributes->add("NDArrayTimeStamp",
-                             "The timestamp of the NDArray",
+                             "The timestamp of the NDArray as float64",
                              NDAttrFloat64, (void*)&(pArray->timeStamp));
   this->pFileAttributes->add("NDArrayEpicsTSSec",
-                             "The NDArray EPICS timestamp in seconds past epoch",
+                             "The NDArray EPICS timestamp seconds past epoch",
                              NDAttrUInt32, (void*)&(pArray->epicsTS.secPastEpoch));
   this->pFileAttributes->add("NDArrayEpicsTSnSec",
-                             "The NDArray EPICS timestamp in nanoseconds",
+                             "The NDArray EPICS timestamp nanoseconds",
                              NDAttrUInt32, (void*)&(pArray->epicsTS.nsec));
 }
 
