@@ -2224,11 +2224,10 @@ asynStatus NDFileHDF5::writeAttributeDataset(hdf5::When_t whenToSave)
   HDFAttributeNode *hdfAttrNode = NULL;
   NDAttribute *ndAttr = NULL;
   //hsize_t elementSize = 1;
-  void* datavalue;
+  char * stackbuf[MAX_ATTRIBUTE_STRING_SIZE];
+  void* pDatavalue = stackbuf;
   int ret;
   static const char *functionName = "writeAttributeDataset";
-
-  datavalue = calloc(MAX_ATTRIBUTE_STRING_SIZE, sizeof(char));
 
   for (std::list<HDFAttributeNode *>::iterator it_node = attrList.begin(); it_node != attrList.end(); ++it_node){
     hdfAttrNode = *it_node;
@@ -2236,7 +2235,6 @@ asynStatus NDFileHDF5::writeAttributeDataset(hdf5::When_t whenToSave)
     ndAttr = this->pFileAttributes->find(hdfAttrNode->attrName);
     if (ndAttr == NULL)
     {
-      hdfAttrNode = (HDFAttributeNode*)ellNext((ELLNODE*)hdfAttrNode);
       asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING,
         "%s::%s WARNING: NDAttribute named \'%s\' not found\n",
         driverName, functionName, hdfAttrNode->attrName);
@@ -2251,12 +2249,12 @@ asynStatus NDFileHDF5::writeAttributeDataset(hdf5::When_t whenToSave)
     }
 
     // find the data based on datatype
-    ret = ndAttr->getValue(ndAttr->getDataType(), datavalue, MAX_ATTRIBUTE_STRING_SIZE);
+    ret = ndAttr->getValue(ndAttr->getDataType(), pDatavalue, MAX_ATTRIBUTE_STRING_SIZE);
     if (ret == ND_ERROR) {
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
         "%s::%s: ERROR did not get data from NDAttribute \'%s\'\n",
         driverName, functionName, ndAttr->getName());
-      memset(datavalue, 0, 8);
+      memset(pDatavalue, 0, MAX_ATTRIBUTE_STRING_SIZE);
     }
     // Work with HDF5 library to select a suitable hyperslab (one element) and write the new data to it
     H5Dset_extent(hdfAttrNode->hdfdataset, hdfAttrNode->hdfdims);
@@ -2268,7 +2266,7 @@ asynStatus NDFileHDF5::writeAttributeDataset(hdf5::When_t whenToSave)
     // Write the data to the hyperslab.
     H5Dwrite(hdfAttrNode->hdfdataset, hdfAttrNode->hdfdatatype,
                          hdfAttrNode->hdfmemspace, hdfAttrNode->hdffilespace,
-                         H5P_DEFAULT, datavalue);
+                         H5P_DEFAULT, pDatavalue);
 
     H5Sclose(hdfAttrNode->hdffilespace);
     hdfAttrNode->hdfdims[0]++;
@@ -2353,6 +2351,8 @@ asynStatus NDFileHDF5::configureDatasetDims(NDArray *pArray)
     for (i=0; i<extradims; i++){
       getIntegerParam(extradimdefs[MAXEXTRADIMS - extradims + i].sizeParamId, &numCapture[i]);
     }
+  } else {
+    numCapture = (int *)calloc(1, sizeof(int));
   }
   int user_chunking[3] = {1,1,1};
   getIntegerParam(NDFileHDF5_nFramesChunks, &user_chunking[2]);
@@ -2365,6 +2365,7 @@ asynStatus NDFileHDF5::configureDatasetDims(NDArray *pArray)
     it_dset->second->configureDims(pArray, this->multiFrameFile, extradims, numCapture, user_chunking);
   }
   
+  if (numCapture != NULL) free( numCapture );
   return status;
 }
 
