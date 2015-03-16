@@ -1,0 +1,128 @@
+<?xml version="1.0" standalone="no" ?>
+
+<Attributes
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://epics.aps.anl.gov/areaDetector/attributes ../attributes.xsd"
+    >
+    
+    <!-- 
+        Important Note
+        ==============
+        
+        Order of the "type" of attributes matters.
+        Required order is:
+        * PARAM
+        * PARAM
+        * FUNCTION
+     -->
+
+    <!-- TODO: add EGU to all float PVs once ADCore bug is fixed -->
+    
+    <Attribute name="UserName"              type="PARAM"     source="MANUFACTURER"                  datatype="STRING"     description="user name listed as GUP PI"/>
+    <Attribute name="SampleTitle"           type="PARAM"     source="MANUFACTURER"                  datatype="STRING"     description="sample name"/>
+    <Attribute name="sthick"                type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="sample thickness"/>
+    <Attribute name="ScanMacro"             type="PARAM"     source="MANUFACTURER"                  datatype="STRING"     description="name of SPEC macro file"/>
+
+    <Attribute name="EmptyFileName"         type="PARAM"     source="MANUFACTURER"                  datatype="STRING"     description="Name of file to use as empty scan"/>
+    <Attribute name="USAXS_Q"               type="PARAM"     source="MANUFACTURER"                  datatype="STRING"     description="Q"/>
+    <Attribute name="is_2D_USAXS_scan"      type="PARAM"     source="MANUFACTURER"                  datatype="STRING"     description="does this scan use 2D collimated geometry"/>
+
+    <Attribute name="GUPNumber"             type="PARAM"     source="MANUFACTURER"                  datatype="STRING"     description="GUP proposal number"/>
+
+    <Attribute name="StartTime"             type="PARAM"     source="MANUFACTURER"                  datatype="STRING"     description="image starting time"/>
+    <Attribute name="EndTime"               type="PARAM"     source="MANUFACTURER"                  datatype="STRING"     description="image ending time"/>
+    <Attribute name="SDD"                   type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="SDD: distance between sample and detector, mm"/>
+    <Attribute name="PresetTime"            type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="specified time for this exposure, s"/>
+    <Attribute name="APS_run_cycle"         type="PARAM"     source="MANUFACTURER"                  datatype="STRING"     description="APS operating cycle"/>
+
+    <Attribute name="USAXSslitVap"          type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="USAXS slit, vertical aperture, mm"/>
+    <Attribute name="USAXSslitHap"          type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="USAXS slit, horizontal aperture, mm"/>
+    <Attribute name="USAXSslitVpos"         type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="USAXS slit, vertical position, mm"/>
+    <Attribute name="USAXSslitHpos"         type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="USAXS slit, horizontal position, mm"/>
+
+    <Attribute name="wavelength"            type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="monochromator wavelength, A"/>
+    <Attribute name="wavelength_spread"     type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="delta-lambda / lambda"/>
+ 
+    <Attribute name="monoE"                 type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="monochromator energy, keV"/>
+    <Attribute name="monoE_EGU"             type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="monochromator energy units"/>
+    <Attribute name="idE"                   type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="ID energy, keV"/>
+
+    <Attribute name="SRcurrent"             type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="Storage Ring Current, mA"/>
+
+    <Attribute name="filterAl"              type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="Al filter, mm"/>
+    <Attribute name="filterTi"              type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="Ti filter, mm"/>
+    <Attribute name="filterGlass"           type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="Glass filter, mm"/>
+    <Attribute name="filterTrans"           type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="filter transmission"/>
+
+    <Attribute name="I0_V"                  type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="I0 voltage, V"/>
+    <Attribute name="I00_V"                 type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="I00 voltage, V"/>
+
+    <Attribute name="I000_cts"              type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="I000 counts"/>
+    <Attribute name="I0_cts"                type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="I0 counts"/>
+    <Attribute name="I0_cts_gated"          type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="I0 counts gated"/>
+    <Attribute name="I00_cts"               type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="I00 counts"/>
+    <Attribute name="scaler_freq"           type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="scaler frequency, Hz"/>
+    <Attribute name="I0_gain"               type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="I0 V/A gain"/>
+    <Attribute name="I00_gain"              type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="I00 V/A gain"/>
+    
+    <Attribute name="GuardslitVap"          type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="Guard slit, vertical aperture, mm"/>
+    <Attribute name="GuardslitHap"          type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="Guard slit, horizontal aperture, mm"/>
+    <Attribute name="GuardslitVpos"         type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="Guard slit, vertical position, mm"/>
+    <Attribute name="GuardslitHpos"         type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="Guard slit, horizontal position, mm"/>
+
+    <Attribute name="PIN_Y"                 type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="pinhole y stage position, mm"/>
+    <Attribute name="PIN_Z"                 type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="pinhole z stage position, mm"/>
+    <Attribute name="WAXS_X"                type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="waxs x stage position, mm"/>
+    
+    <Attribute name="mr_enc"                type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="mr readback, deg"/>
+
+    <Attribute name="mx"                    type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="mx stage position, mm"/>
+    <Attribute name="my"                    type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="my stage position, mm"/>
+    <Attribute name="m2rp"                  type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="m2rp voltage, V"/>
+    <Attribute name="msrp"                  type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="msrp voltage, V"/>
+
+    <Attribute name="sx"                    type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="sample x stage position, mm"/>
+    <Attribute name="sy"                    type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="sample y stage position, mm"/>
+    <Attribute name="sa"                    type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="sample azimuthal rotation, degrees"/>
+ 
+    <Attribute name="pin_ccd_center_x"      type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="horizontal position of beam center on CCD, mm"/>
+    <Attribute name="pin_ccd_center_y"      type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="vertical position of beam center on CCD, mm"/>
+    <Attribute name="pin_ccd_center_x_pixel" type="PARAM"    source="ACQ_TIME"                      datatype="DOUBLE"     description="horizontal position of beam center on CCD, pixels"/>
+    <Attribute name="pin_ccd_center_y_pixel" type="PARAM"    source="ACQ_TIME"                      datatype="DOUBLE"     description="vertical position of beam center on CCD, pixels"/>
+    <Attribute name="pin_ccd_pixel_size_x"  type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="CCD pixel size, horizontal, mm"/>
+    <Attribute name="pin_ccd_pixel_size_y"  type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="CCD pixel size, vertical, mm"/>
+    <Attribute name="pin_ccd_tilt_x"        type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="CCD tilt, x direction, degrees"/>
+    <Attribute name="pin_ccd_tilt_y"        type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="CCD tilt, y direction, degrees"/>
+ 
+    <Attribute name="ccdProtection"         type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="CCD protection bit"/>
+
+    <Attribute name="Pin_TrPD"              type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="Pin_TrPD"/>
+    <Attribute name="Pin_TrI0"              type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="Pin_TrI0"/>
+    <Attribute name="Pin_TrPDgain"          type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="Pin_TrPDgain"/>
+    <Attribute name="Pin_TrI0gain"          type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="Pin_TrI0gain"/>
+ 
+    <!-- Linkam temperature controller -->
+    <Attribute name="Linkam_ci94_temp"      type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="Linkam_ci94_temp"/>
+    <Attribute name="Linkam_ci94_temp2"     type="PARAM"     source="ACQ_TIME"                      datatype="DOUBLE"     description="Linkam_ci94_temp2"/>
+
+    <Attribute name="Manufacturer"          type="PARAM"     source="MANUFACTURER"                  datatype="STRING"     description="Camera manufacturer"/>
+    <Attribute name="Model"                 type="PARAM"     source="MODEL"                         datatype="STRING"     description="Camera model"/>
+    <Attribute name="MaxSizeX"              type="PARAM"     source="MANUFACTURER"                  datatype="STRING"     description="Detector X size"/>
+    <Attribute name="MaxSizeY"              type="PARAM"     source="MAX_SIZE_Y"                    datatype="INT"        description="Detector Y size"/>
+    <Attribute name="ImageCounter"          type="PARAM"     source="ARRAY_COUNTER"                 datatype="INT"        description="Image counter"/>
+<!--    <Attribute name="DriverFileName"        type="PARAM"     source="FULL_FILE_NAME"                datatype="STRING"     description="Driver file name"/> -->
+    <Attribute name="FileName"              type="PARAM"     source="FILE_NAME"                     datatype="STRING"     description="Driver file name"/>
+    <Attribute name="AttributesFile"        type="PARAM"     source="ND_ATTRIBUTES_FILE"            datatype="STRING"     description="Driver file name"/>
+
+</Attributes>
+
+
+<!--
+########### SVN repository information ###################
+# $Date: 2015-02-24 12:26:30 -0600 (Tue, 24 Feb 2015) $
+# $Author: jemian $
+# $Revision: 8014 $
+# $HeadURL: https://subversion.xray.aps.anl.gov/bcdaioc/9idc_AD/area_detector/SAXS_config/attributes.xml $
+# $Id: attributes.xml 8014 2015-02-24 18:26:30Z jemian $
+########### SVN repository information ###################
+-->
