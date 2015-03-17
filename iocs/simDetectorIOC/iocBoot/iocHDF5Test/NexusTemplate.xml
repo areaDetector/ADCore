@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<NXroot name="top">
+    <Facility type="UserGroup">
+        <facility_name type="CONST" outtype="NX_CHAR" > APS </facility_name>
+        <facility_sector type="CONST" outtype="NX_CHAR">Xor/UNI</facility_sector>
+        <facility_beamline type="CONST" outtype="NX_CHAR">34ID-E</facility_beamline>
+        <facility_station type="CONST" outtype="NX_CHAR">E</facility_station>
+        <facility_float type="CONST" outtype="NX_FLOAT32">3.1415</facility_float>
+        <facility_int type="CONST" outtype="NX_INT32">12</facility_int>
+    </Facility>
+    <NXentry name = "Collected_Data" >
+        <!-- see:
+        http://download.nexusformat.org/doc/html/ClassDefinitions-Base.html#NXentry
+        -->
+        <title>My title</title>
+        <experiment_identifier ></experiment_identifier>
+        <experiment_description>Describe here</experiment_description>
+        <experiment_documentation>Add here</experiment_documentation>
+        <collection_identifier></collection_identifier>
+        <collection_description></collection_description>
+        <entry_identifier></entry_identifier>
+        <definition>
+            <Attr name="version" type="CONST" outtype="NX_CHAR">1.0</Attr>
+            <Attr name="URL" type="CONST" outtype="NX_CHAR">https://svn.nexusformat.org/definitions/trunk/base_classes/NXentry.nxdl.xml</Attr>
+        </definition>
+        <start_time> </start_time>
+        <end_time> </end_time>
+        <duration> </duration>
+        <collection_time> </collection_time>
+        <run_cycle>2009-02</run_cycle>
+        <program_name>EPICS areaDetector</program_name>
+        <revision> </revision>
+        <notes> </notes>
+        
+        <NXuser name="user1">
+            <!-- see:
+            http://download.nexusformat.org/doc/html/ClassDefinitions-Base.html#NXuser
+            -->
+            <!-- all of these items are optional -->
+            <name source="UserName">Joe User</name>
+            <role>principal_investigator</role>
+            <affiliation>Okiboji U</affiliation>
+            <address>123 Sesame Street</address>
+            <telephone_number>(999)555-1212</telephone_number>
+            <fax_number>(999)555-1213</fax_number>
+            <email>joeUser@okiboji.edu</email>
+            <facility_user_id>12345</facility_user_id>
+        </NXuser>
+        <NXdata  name = "rawData">
+            <!-- 
+            areaDetector will store the image here
+            see:
+            http://download.nexusformat.org/doc/html/ClassDefinitions-Base.html#NXdata
+            -->
+            <maxSizeX type="ND_ATTR" source="maxSizeX" /> 
+            <maxSizeY type="ND_ATTR" source="maxSizeY" /> 
+            <make type="ND_ATTR" source="CameraManufacturer" /> 
+            <model type="ND_ATTR" source="CameraModel" /> 
+            <ImageCounter type="ND_ATTR" source="ImageCounter" /> 
+            <AcquireTime type="ND_ATTR" source="AcquireTime" /> 
+            <data type = "pArray">
+                <Attr name="signal" type="CONST" outtype="NX_CHAR">1</Attr>
+                <Attr name="make" type="ND_ATTR" source="CameraManufacturer" /> 
+                <Attr name="model" type="ND_ATTR" source="CameraModel" /> 
+                <Attr name="float" type="CONST" outtype="NX_FLOAT32" > 1.0</Attr>
+                <Attr name="double" type="CONST" outtype="NX_FLOAT64" >2.0</Attr> 
+                <Attr name="randomText" type="CONST" outtype="NX_CHAR">Hello world</Attr>
+                <Attr name="randomText2" type="CONST" >goodbye world</Attr>
+                <Attr name="acquire time" type="ND_ATTR" source="AcquireTime" /> 
+            </data>
+        </NXdata>
+        <NXinstrument name="microDiffraction">
+            <!-- see:
+            http://download.nexusformat.org/doc/html/ClassDefinitions-Base.html#NXinstrument
+            -->
+            <!-- This entire group is optional -->
+            <NXinsertion_device name="insertion_device">
+                <!-- see:
+                http://download.nexusformat.org/doc/html/ClassDefinitions-Base.html#NXinsertion_device
+                -->
+                <type>undulator</type>
+                <energy type="ND_ATTR" source="ID_Energy">
+                    <Attr name="units" type="ND_ATTR" source="ID_Energy_EGU"/>
+                </energy>
+            </NXinsertion_device>
+            <NXsource name="source">
+                <!-- see:
+                http://download.nexusformat.org/doc/html/ClassDefinitions-Base.html#NXsource
+                -->
+                <name> 
+                    <Attr name="short_name" type="CONST" outtype="NX_CHAR">APS</Attr>
+                    Advanced Photon Source 
+                </name>
+                <type>Synchrotron X-ray Source</type>
+                <probe>x-ray</probe>
+                <current type="ND_ATTR" source="RingCurrent">
+                    <Attr name="units" type="ND_ATTR" source="RingCurrent_EGU"/>
+                </current>
+                <top_up>True</top_up>
+            </NXsource>
+        </NXinstrument>
+        <NXcollection name="metadata">
+            <!-- see:
+            http://download.nexusformat.org/doc/html/ClassDefinitions-Base.html#NXcollection
+            -->
+            <!-- This entire group is optional -->
+            <beamline>34ID-E</beamline>
+        </NXcollection>
+    </NXentry>
+</NXroot>

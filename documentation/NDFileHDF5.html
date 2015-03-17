@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugin NDFileHDF5</h1>
     <h2>
-      October 7, 2014</h2>
+      March 16, 2015</h2>
     <h2>
       Ulrik Pedersen (Diamond Light Source), Arthur Glowacki (Argonne National Laboratory),
       Alan Greer (Observatory Sciences), (Mark Rivers (University of Chicago)</h2>
@@ -171,7 +171,20 @@
           optional</td>
         <td>
           This attribute flags a group as being a 'default' container for NDAttributes which
-          have not been defined to be stored elsewhere</td>
+          have not been defined to be stored elsewhere. If there is no group defined with
+          ndaddr_default=true, and if the root group does not have auto_ndattr_default=false,
+          then the 'default' container will be the root group.</td>
+        <td>
+          boolean (default=false)</td>
+      </tr>
+      <tr>
+        <td>
+          auto_ndattr_default</td>
+        <td>
+          optional</td>
+        <td>
+          If this attribute is present for the root group and is set to false then NDAttributes
+          which have not been defined to be stored elsewhere will not be stored at all</td>
         <td>
           boolean (default=false)</td>
       </tr>
@@ -322,24 +335,26 @@
   </p>
   <p>
     The type of attribute is used to determine where in the file structure the attribute
-    data will end up. All attribute datasets will be named by the NDArray attribute
-    name. They will also have metadata (known as HDF &quot;attributes&quot;) to indicate
-    their source type and origin.</p>
+    data will end up. If the dataset is defined in the XML layout file then the user-specified
+    name is used for the dataset. If the dataset is not defined in the XML layout file
+    then the dataset name will be the the NDArray attribute name. The NDArray attribute
+    datasets automatically have 4 HDF &quot;attributes&quot;) to indicate their source
+    type and origin. These are:</p>
   <ul>
-    <li>Attributes from EPICS PVs (type=&quot;EPICS_PV&quot;) will be stored as 1D datasets
-      in the group &quot;/entry/instrument/NDAttributes/&quot;
-      <ul>
-        <li>Special case is attributes of datatype string, which will be stored as HDF5 metadata
-          attributes to the same group.</li>
-      </ul>
-    </li>
-    <li>All other attributes (type=&quot;PARAM&quot;) will be stored as 1D datasets in
-      the group &quot;/entry/instrument/detector/NDAttributes/&quot;
-      <ul>
-        <li>Special case is attributes of datatype string, which will be stored as HDF5 metadata
-          attributes to the same group.</li>
-      </ul>
-    </li>
+    <li>NDAttrName: The name of the NDArray attribute.</li>
+    <li>NDAttrDescrption: The description of the NDArray attribute.</li>
+    <li>NDAttrSourceType: The source type of the NDArray attribute: NDAttrSourceDriver,
+      NDAttrSourceParam, NDAttrSourceEPICSPV, or NDAttrSourceFunct.</li>
+    <li>NDAttrSource: The source of the NDArray attribute data, i.e. the name of the EPICS
+      PV, the drvInfo string for the parameter, or the name of the attribute function.</li>
+  </ul>
+  <ul>
+    <li>NDArray attributes will be stored as 1D datasets. If the location of an NDArray
+      attribute dataset is not defined in the XML layout file then the dataset will appear
+      in the group that has the property ndattr_default="true". If there is no group with
+      that property then the dataset will appear in the root group. If the root group
+      has the property auto_ndattr_default="false" then datasets that are not explicitly
+      defined in the XML layout file will not appear in the HDF5 file at all. </li>
   </ul>
   <p>
     It is possible to validate the syntax of an NDArray attributes XML file. For example,
@@ -354,11 +369,9 @@
 |
 +--instrument           &lt;-- NX_class=NXinstrument
    |
-   +--NDAttributes
+   +--NDAttributes      &lt;-- NX_class=NXCollection, ndattr_default="true"
    |  |
-   |  +---              &lt;-- Any number of EPICS PV based NDAttributes as individual 1D datasets
-   |  +---                  The PV attributes are in the 'instrument' group as they are expected 
-   |                        to originate from the beamline/instrument rather than the detector itself
+   |  +---              &lt;-- Any number of NDAttributes from the NDArrays as individual 1D datasets
    |
    +--detector          &lt;-- NX_class=NXdetector
    |  |
@@ -366,9 +379,7 @@
    |  |
    |  +--NDAttributes
    |     |
-   |     +---           &lt;-- Any number of PARAM type NDAttributes as individual 1D datasets
-   |     +---               These type of parameters are in the 'detector' group as they
-   |                        originate from the areaDetector system
+   |     +--ColorMode
    |
    +--performance       &lt;-- Performance of the file writing
       |

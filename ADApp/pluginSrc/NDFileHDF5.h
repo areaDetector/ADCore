@@ -20,6 +20,7 @@
 #define str_NDFileHDF5_nFramesChunks     "HDF5_nFramesChunks"
 #define str_NDFileHDF5_chunkBoundaryAlign "HDF5_chunkBoundaryAlign"
 #define str_NDFileHDF5_chunkBoundaryThreshold "HDF5_chunkBoundaryThreshold"
+#define str_NDFileHDF5_NDAttributeChunk  "HDF5_NDAttributeChunk"
 #define str_NDFileHDF5_extraDimNameN     "HDF5_extraDimNameN"
 #define str_NDFileHDF5_nExtraDims        "HDF5_nExtraDims"
 #define str_NDFileHDF5_extraDimSizeX     "HDF5_extraDimSizeX"
@@ -52,9 +53,10 @@ typedef struct HDFAttributeNode {
   hid_t hdfdatatype;
   hid_t hdfcparm;
   hid_t hdffilespace;
-  hsize_t hdfdims;
-  hsize_t offset;
-  hsize_t elementSize;
+  hsize_t hdfdims[2];
+  hsize_t offset[2];
+  hsize_t chunk[2];
+  hsize_t elementSize[2];
   int hdfrank;
   hdf5::When_t whenToSave;
 } HDFAttributeNode;
@@ -84,10 +86,10 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     asynStatus createTree(hdf5::Group* root, hid_t h5handle);
     asynStatus createHardLinks(hdf5::Group* root);
 
-    void writeHdfConstDatasets( hid_t h5_handle, hdf5::Group* group);
-    void writeH5dsetStr(hid_t element, const std::string &name, const std::string &str_value) const;
-    void writeH5dsetInt32(hid_t element, const std::string &name, const std::string &str_value) const;
-    void writeH5dsetFloat64(hid_t element, const std::string &name, const std::string &str_value) const;
+    hid_t writeHdfConstDataset( hid_t h5_handle, hdf5::Dataset* dset);
+    hid_t writeH5dsetStr(hid_t element, const std::string &name, const std::string &str_value) const;
+    hid_t writeH5dsetInt32(hid_t element, const std::string &name, const std::string &str_value) const;
+    hid_t writeH5dsetFloat64(hid_t element, const std::string &name, const std::string &str_value) const;
 
     void writeHdfAttributes( hid_t h5_handle, hdf5::Element* element);
     hid_t createDataset(hid_t group, hdf5::Dataset *dset);
@@ -118,6 +120,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     int NDFileHDF5_nFramesChunks;
     int NDFileHDF5_chunkBoundaryAlign;
     int NDFileHDF5_chunkBoundaryThreshold;
+    int NDFileHDF5_NDAttributeChunk;
     int NDFileHDF5_nExtraDims;
     int NDFileHDF5_extraDimNameN;
     int NDFileHDF5_extraDimSizeX;
@@ -159,9 +162,12 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     hsize_t calcChunkCacheSlots();
 
     void checkForOpenFile();
+    void addDefaultAttributes(NDArray *pArray);
+    asynStatus writeDefaultDatasetAttributes(NDArray *pArray);
     asynStatus createNewFile(const char *fileName);
     asynStatus createFileLayout(NDArray *pArray);
     asynStatus createAttributeDataset();
+
 
     hdf5::LayoutXML layout;
 

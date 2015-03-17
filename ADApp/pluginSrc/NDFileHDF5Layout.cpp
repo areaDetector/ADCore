@@ -30,6 +30,11 @@ namespace hdf5
   {
   }
 
+  Attribute::Attribute(const char* name, DataSource& src) : source(src), name(name), onFileOpen(true)
+  {
+  }
+
+
   Attribute& Attribute::operator=(const Attribute& src)
   {
     this->_copy(src);
