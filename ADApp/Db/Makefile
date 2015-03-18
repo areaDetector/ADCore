@@ -12,6 +12,7 @@ include $(TOP)/configure/CONFIG
 # databases, templates, substitutions like this
 
 # General
+DB += NDArrayBase.template
 DB += ADBase.template
 DB += ADPrefixes.template
 

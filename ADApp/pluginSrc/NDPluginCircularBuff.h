@@ -7,28 +7,23 @@
 #include "NDPluginDriver.h"
 #include "NDArrayRing.h"
 
-typedef struct NDCircularBuff {
-    size_t  nElements;
-    size_t  preTrigger;
-    size_t  postTrigger;
-} NDCircularBuff_t;
-
 /* Param definitions */
-#define NDPluginCircularBuffControlString            "CIRCULAR_BUFF_CONTROL"       /* (asynInt32,        r/w) Run scope? */
-#define NDPluginCircularBuffStatusString             "CIRCULAR_BUFF_STATUS"        /* (asynOctetRead,    r/o) Scope status */
-#define NDPluginCircularBuffTriggerAString           "CIRCULAR_BUFF_TRIGGER_A"     /* (asynOctetWrite,   r/w) Trigger A attribute name */
-#define NDPluginCircularBuffTriggerBString           "CIRCULAR_BUFF_TRIGGER_B"     /* (asynOctetWrite,   r/w) Trigger B attribute name */
-#define NDPluginCircularBuffTriggerAValString        "CIRCULAR_BUFF_TRIGGER_A_VAL" /* (asynFloat64,      r/o) Trigger A value */
-#define NDPluginCircularBuffTriggerBValString        "CIRCULAR_BUFF_TRIGGER_B_VAL" /* (asynFloat64,      r/o) Trigger B value */
-#define NDPluginCircularBuffTriggerCalcString        "CIRCULAR_BUFF_TRIGGER_CALC"  /* (asynOctetWrite,   r/w) Trigger calculation expression */
-#define NDPluginCircularBuffTriggerCalcValString     "CIRCULAR_BUFF_TRIGGER_CALC_VAL" /* (asynFloat64,   r/o) Trigger calculation value */
-#define NDPluginCircularBuffReArmString              "CIRCULAR_BUFF_REARM"         /* (asynInt32,        r/w) Re-arm when complete  */
-#define NDPluginCircularBuffPreTriggerString         "CIRCULAR_BUFF_PRE_TRIGGER"   /* (asynInt32,        r/w) Number of pre-trigger images */
-#define NDPluginCircularBuffPostTriggerString        "CIRCULAR_BUFF_POST_TRIGGER"  /* (asynInt32,        r/w) Number of post-trigger images */
-#define NDPluginCircularBuffCurrentImageString       "CIRCULAR_BUFF_CURRENT_IMAGE" /* (asynInt32,        r/o) Number of the current image */
-#define NDPluginCircularBuffPostCountString          "CIRCULAR_BUFF_POST_COUNT"    /* (asynInt32,        r/o) Number of the current post count image */
-#define NDPluginCircularBuffSoftTriggerString        "CIRCULAR_BUFF_SOFT_TRIGGER"  /* (asynInt32,        r/w) Force a soft trigger */
-#define NDPluginCircularBuffTriggeredString          "CIRCULAR_BUFF_TRIGGERED"     /* (asynInt32,        r/o) Have we had a trigger event */
+#define NDCircBuffControlString             "CIRC_BUFF_CONTROL"               /* (asynInt32,        r/w) Run scope? */
+#define NDCircBuffStatusString              "CIRC_BUFF_STATUS"                /* (asynOctetRead,    r/o) Scope status */
+#define NDCircBuffTriggerAString            "CIRC_BUFF_TRIGGER_A"             /* (asynOctetWrite,   r/w) Trigger A attribute name */
+#define NDCircBuffTriggerBString            "CIRC_BUFF_TRIGGER_B"             /* (asynOctetWrite,   r/w) Trigger B attribute name */
+#define NDCircBuffTriggerAValString         "CIRC_BUFF_TRIGGER_A_VAL"         /* (asynFloat64,      r/o) Trigger A value */
+#define NDCircBuffTriggerBValString         "CIRC_BUFF_TRIGGER_B_VAL"         /* (asynFloat64,      r/o) Trigger B value */
+#define NDCircBuffTriggerCalcString         "CIRC_BUFF_TRIGGER_CALC"          /* (asynOctetWrite,   r/w) Trigger calculation expression */
+#define NDCircBuffTriggerCalcValString      "CIRC_BUFF_TRIGGER_CALC_VAL"      /* (asynFloat64,   r/o) Trigger calculation value */
+#define NDCircBuffPresetTriggerCountString  "CIRC_BUFF_PRESET_TRIGGER_COUNT"  /* (asynInt32,        r/w) Preset number of triggers 0=infinite*/
+#define NDCircBuffActualTriggerCountString  "CIRC_BUFF_ACTUAL_TRIGGER_COUNT"  /* (asynInt32,        r/w) Actual number of triggers so far */
+#define NDCircBuffPreTriggerString          "CIRC_BUFF_PRE_TRIGGER"           /* (asynInt32,        r/w) Number of pre-trigger images */
+#define NDCircBuffPostTriggerString         "CIRC_BUFF_POST_TRIGGER"          /* (asynInt32,        r/w) Number of post-trigger images */
+#define NDCircBuffCurrentImageString        "CIRC_BUFF_CURRENT_IMAGE"         /* (asynInt32,        r/o) Number of the current image */
+#define NDCircBuffPostCountString           "CIRC_BUFF_POST_COUNT"            /* (asynInt32,        r/o) Number of the current post count image */
+#define NDCircBuffSoftTriggerString         "CIRC_BUFF_SOFT_TRIGGER"          /* (asynInt32,        r/w) Force a soft trigger */
+#define NDCircBuffTriggeredString           "CIRC_BUFF_TRIGGERED"             /* (asynInt32,        r/o) Have we had a trigger event */
 
 
 /** Performs a scope like capture.  Records a quantity
@@ -49,25 +44,26 @@ public:
     //asynStatus doProcessCircularBuff(NDArray *pArray);
    
 protected:
-    int NDPluginCircularBuffControl;
-    #define FIRST_NDPLUGIN_CIRCULAR_BUFF_PARAM NDPluginCircularBuffControl
+    int NDCircBuffControl;
+    #define FIRST_NDPLUGIN_CIRC_BUFF_PARAM NDCircBuffControl
     /* Scope */
-    int NDPluginCircularBuffStatus;
-    int NDPluginCircularBuffTriggerA;
-    int NDPluginCircularBuffTriggerB;
-    int NDPluginCircularBuffTriggerAVal;
-    int NDPluginCircularBuffTriggerBVal;
-    int NDPluginCircularBuffTriggerCalc;
-    int NDPluginCircularBuffTriggerCalcVal;
-    int NDPluginCircularBuffReArm;
-    int NDPluginCircularBuffPreTrigger;
-    int NDPluginCircularBuffPostTrigger;
-    int NDPluginCircularBuffCurrentImage;
-    int NDPluginCircularBuffPostCount;
-    int NDPluginCircularBuffSoftTrigger;
-    int NDPluginCircularBuffTriggered;
+    int NDCircBuffStatus;
+    int NDCircBuffTriggerA;
+    int NDCircBuffTriggerB;
+    int NDCircBuffTriggerAVal;
+    int NDCircBuffTriggerBVal;
+    int NDCircBuffTriggerCalc;
+    int NDCircBuffTriggerCalcVal;
+    int NDCircBuffPresetTriggerCount;
+    int NDCircBuffActualTriggerCount;
+    int NDCircBuffPreTrigger;
+    int NDCircBuffPostTrigger;
+    int NDCircBuffCurrentImage;
+    int NDCircBuffPostCount;
+    int NDCircBuffSoftTrigger;
+    int NDCircBuffTriggered;
 
-    #define LAST_NDPLUGIN_CIRCULAR_BUFF_PARAM NDPluginCircularBuffTriggered
+    #define LAST_NDPLUGIN_CIRC_BUFF_PARAM NDCircBuffTriggered
                                 
 private:
 
@@ -80,7 +76,7 @@ private:
     char triggerCalcPostfix_[MAX_POSTFIX_SIZE];
     double triggerCalcArgs_[CALCPERFORM_NARGS];
 };
-#define NUM_NDPLUGIN_CIRCULAR_BUFF_PARAMS ((int)(&LAST_NDPLUGIN_CIRCULAR_BUFF_PARAM - &FIRST_NDPLUGIN_CIRCULAR_BUFF_PARAM + 1))
+#define NUM_NDPLUGIN_CIRC_BUFF_PARAMS ((int)(&LAST_NDPLUGIN_CIRC_BUFF_PARAM - &FIRST_NDPLUGIN_CIRC_BUFF_PARAM + 1))
     
 #endif
 
