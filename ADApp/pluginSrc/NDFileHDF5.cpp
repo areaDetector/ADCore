@@ -2479,7 +2479,8 @@ asynStatus NDFileHDF5::configureDims(NDArray *pArray)
   getIntegerParam(NDFileHDF5_nColChunks,    &user_chunking[0]);
   int max_items = 0;
   int hdfdim = 0;
-  for (i = 0; i<ndims; i++)
+  // Loop over the number of user_chunking array elements (3 elements here)
+  for (i = 0; i<3; i++)
   {
       hdfdim = ndims - i - 1;
       max_items = (int)this->maxdims[hdfdim];
