@@ -2479,8 +2479,17 @@ asynStatus NDFileHDF5::configureDims(NDArray *pArray)
   getIntegerParam(NDFileHDF5_nColChunks,    &user_chunking[0]);
   int max_items = 0;
   int hdfdim = 0;
-  // Loop over the number of user_chunking array elements (3 elements here)
-  for (i = 0; i<3; i++)
+  int fileWriteMode = 0;
+  // Work out the number of chunking dims we are going to work with (number of array dims)
+  int numDimsForChunking = pArray->ndims;
+  getIntegerParam(NDFileWriteMode, &fileWriteMode);    
+  // Check that we are not in single mode
+  if (fileWriteMode != NDFileModeSingle){
+    // There is another dimension (frame number)
+    numDimsForChunking++;
+  }
+  // Loop over the number of user_chunking array elements
+  for (i = 0; i<numDimsForChunking; i++)
   {
       hdfdim = ndims - i - 1;
       max_items = (int)this->maxdims[hdfdim];
