@@ -531,16 +531,16 @@ border-radius: 2px;
                 <enum>Menu</enum>
             </property>
             <property name="labels">
-                <string>Image #1;Process #1;Transform #1;Color convert #1;Color convert #2;Overlay #1;Overlays 1-8;Circular buffer #1;ROI Statistics #1;Scan #1;Acquire Sequence</string>
+                <string>Image #1;Process #1;Transform #1;Color convert #1;Color convert #2;Overlay #1;Overlays 1-8;Circular buffer #1;ROI Statistics #1;Attribute #1;Scan #1;Acquire Sequence</string>
             </property>
             <property name="files">
-                <string>NDStdArrays.ui;NDProcess.ui;NDTransform.ui;NDColorConvert.ui;NDColorConvert.ui;NDOverlay.ui;NDOverlay8.ui;NDCircularBuff.ui;NDROIStat.ui;scan_more.ui;yySseq.ui</string>
+                <string>NDStdArrays.ui;NDProcess.ui;NDTransform.ui;NDColorConvert.ui;NDColorConvert.ui;NDOverlay.ui;NDOverlay8.ui;NDCircularBuff.ui;NDROIStat.ui;NDPluginAttribute.ui;scan_more.ui;yySseq.ui</string>
             </property>
             <property name="args">
-                <string>P=$(P), R=image1:;P=$(P), R=Proc1:;P=$(P), R=Trans1:;P=$(P), R=CC1:;P=$(P), R=CC2:;P=$(P), R=Over1:;P=$(P), R=Over1:,O1=Over1:1:,O2=Over1:2:,O3=Over1:3:,O4=Over1:4:,O5=Over1:5:,O6=Over1:6:,O7=Over1:7:,O8=Over1:8:;P=$(P), R=CB1:;P=$(P), R=ROIStat1:;P=$(P), S=scan1, N=1;P=$(P), S=AcquireSequence</string>
+                <string>P=$(P), R=image1:;P=$(P), R=Proc1:;P=$(P), R=Trans1:;P=$(P), R=CC1:;P=$(P), R=CC2:;P=$(P), R=Over1:;P=$(P), R=Over1:,O1=Over1:1:,O2=Over1:2:,O3=Over1:3:,O4=Over1:4:,O5=Over1:5:,O6=Over1:6:,O7=Over1:7:,O8=Over1:8:;P=$(P), R=CB1:;P=$(P), R=ROIStat1:;P=$(P), R=Attr1:;P=$(P), S=scan1, N=1;P=$(P), S=AcquireSequence</string>
             </property>
             <property name="removeParent">
-                <string>false;false;false;false;false;false;false;false;false;false;false</string>
+                <string>false;false;false;false;false;false;false;false;false;false;false;false</string>
             </property>
         </widget>
         <widget class="caRelatedDisplay" name="caRelatedDisplay_4">
