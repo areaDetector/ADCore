@@ -2,20 +2,28 @@ language: cpp
 compiler: gcc
 # command to install dependencies
 install: 
+
+  # Enabling the NSLS-II EPICS debian package repositories
   - curl http://epics.nsls2.bnl.gov/debian/repo-key.pub | sudo apt-key add -
   - echo "deb http://epics.nsls2.bnl.gov/debian/ wheezy main contrib" | sudo tee -a /etc/apt/sources.list
   - echo "deb-src http://epics.nsls2.bnl.gov/debian/ wheezy main contrib" | sudo tee -a /etc/apt/sources.list
+
+  # Installing the latest 3rd party packages: EPICS, hdf5, tiff, etc.
   - sudo apt-get update -qq
   - sudo apt-get install epics-dev epics-synapps-dev libhdf5-serial-dev libtiff-dev libxml2-dev
-  - grep "define ASYN_[RV]E[RV]" /usr/lib/epics/include/asynDriver.h
-  - cat /usr/lib/libhdf5.settings
-  - echo "EPICS_BASE=/usr/lib/epics" >> configure/RELEASE.local
-  - echo "HDF5=/usr" >> configure/CONFIG_SITE.linux-x86_64.Common
-  - echo "HDF5_LIB=/usr/lib" >> configure/CONFIG_SITE.linux-x86_64.Common
-  - echo "HDF5_INCLUDE=-I/usr/include" >> configure/CONFIG_SITE.linux-x86_64.Common
+
+  # Generate the configure/RELEASE.local and configure/CONFIG_SITE.linux-x86_64.Common
+  # with the details of where to find various external libraries.
+  - echo "EPICS_BASE=/usr/lib/epics" >>           configure/RELEASE.local
+  - echo "HDF5=/usr" >>                           configure/CONFIG_SITE.linux-x86_64.Common
+  - echo "HDF5_LIB=/usr/lib" >>                   configure/CONFIG_SITE.linux-x86_64.Common
+  - echo "HDF5_INCLUDE=-I/usr/include" >>         configure/CONFIG_SITE.linux-x86_64.Common
   - echo "XML2_INCLUDE=-I/usr/include/libxml2" >> configure/CONFIG_SITE.linux-x86_64.Common
+
+  # Run the build
   - EPICS_BASE=/usr/lib/epics EPICS_CA_HOST_ARCH=linux-x86_64 make
-# command to run tests
+
+# Finally run the tests
 script:
   - ls -al lib/*
   - ls -al bin/*
