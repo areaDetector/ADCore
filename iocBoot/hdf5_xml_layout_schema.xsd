@@ -48,16 +48,24 @@
     </xs:sequence>
     <xs:attribute name="name" type="xs:string" use="required" />
     <xs:attribute name="source" type="dsetSourceEnum" use="required" />
+    <xs:attribute name="type" type="attrSourceTypeEnum" use="optional" default="string" />
     <xs:attribute name="value" type="xs:string" use="optional" default="" />
     <xs:attribute name="ndattribute" type="xs:string" use="optional" default="" />
     <xs:attribute name="det_default" type="xs:boolean" use="optional" default="false" />
   </xs:complexType>
 
-  <!-- The group element can contain other elements: datasets, attributes and other groups -->
+  <!-- The hardlink element -->
+  <xs:complexType name="hardlinkType">
+    <xs:attribute name="name" type="xs:string" use="required" />
+    <xs:attribute name="target" type="xs:string" use="required" />
+  </xs:complexType>
+
+  <!-- The group element can contain other elements: datasets, attributes, hardlinks, and other groups -->
   <xs:complexType name="groupType">
     <xs:choice minOccurs="0" maxOccurs="unbounded">
       <xs:element name="dataset" type="datasetType" />
       <xs:element name="attribute" type="attributeType" />
+      <xs:element name="hardlink" type="hardlinkType" />
       <xs:element name="group" type="groupType" />
     </xs:choice>
     <xs:attribute name="name" type="xs:string" use="required" />
@@ -78,7 +86,7 @@
   </xs:complexType>
 
   <!-- The actual definition of the elements -->
-  <xs:element name="xml">
+  <xs:element name="hdf5_layout">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
         <xs:element name="global" type="globalType" />

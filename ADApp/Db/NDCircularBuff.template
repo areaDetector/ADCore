@@ -1,0 +1,200 @@
+#=================================================================#
+# Template file: NDCircularBuff.template
+# Macros:
+# % macro, P,         Device Prefix
+# % macro, R,         Device Suffix
+# % macro, PORT,      Asyn Port name
+# % macro, PRECOUNT,  Pre-trigger frame count
+# % macro, POSTCOUNT, Post-trigger frame count
+# % gui, $(PORT), edmtab, NDCircularBuff.edl, P=$(P),R=$(R)
+
+include "NDPluginBase.template"
+
+# # Control record, are we running
+record(busy, "$(P)$(R)Capture") {
+  field(DTYP, "asynInt32")
+  field(OUT, "@asyn($(PORT) 0)CIRC_BUFF_CONTROL")
+  field(ZNAM, "Done")
+  field(ZSV,  "NO_ALARM")
+  field(ONAM, "Capture")
+  field(OSV,  "MINOR")
+}
+
+# # Control readback record
+record(bi, "$(P)$(R)Capture_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) 0)CIRC_BUFF_CONTROL")
+  field(ZNAM, "Done")
+  field(ZSV,  "NO_ALARM")
+  field(ONAM, "Capturing")
+  field(OSV,  "MINOR")
+}
+
+# # Status message
+record(stringin, "$(P)$(R)StatusMessage")
+{
+    field(PINI, "1")
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT) 0)CIRC_BUFF_STATUS")
+    field(SCAN, "I/O Intr")
+}
+
+# # TriggerA attribute name
+record(stringout, "$(P)$(R)TriggerA") {
+  field(DTYP, "asynOctetWrite")
+  field(OUT,  "@asyn($(PORT) 0)CIRC_BUFF_TRIGGER_A")
+  field(PINI, "1")
+}
+
+# # TriggerA attribute name readback
+record(stringin, "$(P)$(R)TriggerA_RBV") {
+  field(DTYP, "asynOctetRead")
+  field(INP,  "@asyn($(PORT) 0)CIRC_BUFF_TRIGGER_A")
+  field(SCAN, "I/O Intr")
+}
+
+# # TriggerB attribute name
+record(stringout, "$(P)$(R)TriggerB") {
+  field(DTYP, "asynOctetWrite")
+  field(OUT,  "@asyn($(PORT) 0)CIRC_BUFF_TRIGGER_B")
+  field(PINI, "1")
+}
+
+# # TriggerB attribute name readback
+record(stringin, "$(P)$(R)TriggerB_RBV") {
+  field(DTYP, "asynOctetRead")
+  field(INP,  "@asyn($(PORT) 0)CIRC_BUFF_TRIGGER_B")
+  field(SCAN, "I/O Intr")
+}
+
+# # TriggerA attribute value
+record(ai, "$(P)$(R)TriggerAVal") {
+  field(DTYP, "asynFloat64")
+  field(INP,  "@asyn($(PORT) 0)CIRC_BUFF_TRIGGER_A_VAL")
+  field(PREC, "3")
+  field(SCAN, "I/O Intr")
+}
+
+# # TriggerB attribute value
+record(ai, "$(P)$(R)TriggerBVal") {
+  field(DTYP, "asynFloat64")
+  field(INP,  "@asyn($(PORT) 0)CIRC_BUFF_TRIGGER_B_VAL")
+  field(PREC, "3")
+  field(SCAN, "I/O Intr")
+}
+
+# # Trigger calculation string
+record(waveform, "$(P)$(R)TriggerCalc") {
+  field(DTYP, "asynOctetWrite")
+  field(INP,  "@asyn($(PORT) 0)CIRC_BUFF_TRIGGER_CALC")
+  field(FTVL, "CHAR")
+  field(NELM, "256")
+  field(PINI, "1")
+}
+
+# # Trigger calculation readback
+record(waveform, "$(P)$(R)TriggerCalc_RBV") {
+  field(DTYP, "asynOctetRead")
+  field(INP,  "@asyn($(PORT) 0)CIRC_BUFF_TRIGGER_CALC")
+  field(FTVL, "CHAR")
+  field(NELM, "256")
+  field(SCAN, "I/O Intr")
+}
+
+# # Trigger calculation value
+record(ai, "$(P)$(R)TriggerCalcVal") {
+  field(DTYP, "asynFloat64")
+  field(INP,  "@asyn($(PORT) 0)CIRC_BUFF_TRIGGER_CALC_VAL")
+  field(PREC, "3")
+  field(SCAN, "I/O Intr")
+}
+
+# # Number of pre-count frames
+record(longout, "$(P)$(R)PreCount") {
+  field(DTYP, "asynInt32")
+  field(OUT, "@asyn($(PORT) 0)CIRC_BUFF_PRE_TRIGGER")
+  field(VAL, "$(PRECOUNT=100)")
+  field(PINI, "1")
+}
+
+# # Number of pre-count frames readback from driver
+record(longin, "$(P)$(R)PreCount_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) 0)CIRC_BUFF_PRE_TRIGGER")
+}
+
+# # Number of post-count frames
+record(longout, "$(P)$(R)PostCount") {
+  field(DTYP, "asynInt32")
+  field(OUT, "@asyn($(PORT) 0)CIRC_BUFF_POST_TRIGGER")
+  field(VAL, "$(POSTCOUNT=100)")
+  field(PINI, "1")
+}
+
+# # Number of post-count frames readback from driver
+record(longin, "$(P)$(R)PostCount_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) 0)CIRC_BUFF_POST_TRIGGER")
+}
+
+# # Size of pre count buffer
+record(longin, "$(P)$(R)CurrentQty_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) 0)CIRC_BUFF_CURRENT_IMAGE")
+}
+
+# # Size of post trigger frames made available
+record(longin, "$(P)$(R)PostTriggerQty_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) 0)CIRC_BUFF_POST_COUNT")
+}
+
+# # Force a soft trigger
+record(busy, "$(P)$(R)Trigger") {
+  field(DTYP, "asynInt32")
+  field(OUT, "@asyn($(PORT) 0)CIRC_BUFF_SOFT_TRIGGER")
+  field(ZNAM, "Done")
+  field(ZSV,  "NO_ALARM")
+  field(ONAM, "Trigger")
+  field(OSV,  "MINOR")
+  field(VAL, "1")
+}
+
+# # Has a trigger been received
+record(bi, "$(P)$(R)Trigger_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) 0)CIRC_BUFF_TRIGGERED")
+  field(ZNAM, "Done")
+  field(ZSV,  "NO_ALARM")
+  field(ONAM, "Triggered")
+  field(OSV,  "MINOR")
+}
+
+# # Preset trigger count, 0=infinite
+record(longout, "$(P)$(R)PresetTriggerCount") {
+  field(DTYP, "asynInt32")
+  field(OUT, "@asyn($(PORT) 0)CIRC_BUFF_PRESET_TRIGGER_COUNT")
+  field(VAL, "1")
+  field(PINI, "1")
+}
+
+# # Preset trigger count read back from driver
+record(longin, "$(P)$(R)PresetTriggerCount_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) 0)CIRC_BUFF_PRESET_TRIGGER_COUNT")
+}
+
+# # Actual trigger count
+record(longin, "$(P)$(R)ActualTriggerCount_RBV") {
+  field(SCAN, "I/O Intr")
+  field(DTYP, "asynInt32")
+  field(INP, "@asyn($(PORT) 0)CIRC_BUFF_ACTUAL_TRIGGER_COUNT")
+}
+

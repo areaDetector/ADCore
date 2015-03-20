@@ -1,6 +1,10 @@
-# Database forNDPluginColorConvert
+#=================================================================#
+# Template file: NDColorConvert.template
+# Database for the ColorConvert plugin
 # Mark Rivers
 # December 23, 2008
+
+include "NDPluginBase.template"
 
 ###################################################################
 #  These records control the color mode                           #
@@ -28,6 +32,7 @@ record(mbbo, "$(P)$(R)ColorModeOut")
    field(SXVL, "6")
    field(SVST, "YUV421")
    field(SVVL, "7")
+   info(autosaveFields, "VAL")
 }
 
 record(mbbi, "$(P)$(R)ColorModeOut_RBV")
@@ -64,6 +69,7 @@ record(mbbo, "$(P)$(R)FalseColor")
    field(ONVL, "1")
    field(TWST, "Iron")
    field(TWVL, "2")
+   info(autosaveFields, "VAL")
 }
 
 record(mbbi, "$(P)$(R)FalseColor_RBV")

@@ -169,8 +169,9 @@ public class EPICS_AD_Viewer implements PlugIn
 
     public void makeImageCopy()
     {
-        ImageProcessor dipcopy = img.getProcessor().duplicate();
-        ImagePlus imgcopy = new ImagePlus(PVPrefix + ":" + UniqueId, dipcopy);
+        ImageProcessor ip = img.getProcessor();
+        if (ip == null) return;
+        ImagePlus imgcopy = new ImagePlus(PVPrefix + ":" + UniqueId, ip.duplicate());
         imgcopy.show();
     }
 
@@ -291,16 +292,9 @@ public class EPICS_AD_Viewer implements PlugIn
             isNewImageAvailable = true;
             DBR_Int x = (DBR_Int)ev.getDBR();
             UniqueId = (x.getIntValue())[0];
-            // I'd like to just do the synchronized notify here, but how do I get "this"?
-            newUniqueId(ev);
-        }
-    }
-
-    public void newUniqueId(MonitorEvent ev)
-    {
-        synchronized (this)
-        {
-            notify();
+            synchronized (EPICS_AD_Viewer.this) {
+                EPICS_AD_Viewer.this.notify();
+            }
         }
     }
 
@@ -315,7 +309,7 @@ public class EPICS_AD_Viewer implements PlugIn
                          ch_colorMode != null && ch_colorMode.getConnectionState() == Channel.ConnectionState.CONNECTED &&
                          ch_image != null && ch_image.getConnectionState() == Channel.ConnectionState.CONNECTED &&
                          ch_image_id != null && ch_image_id.getConnectionState() == Channel.ConnectionState.CONNECTED);
-            if (connected & !isConnected)
+            if (connected && !isConnected)
             {
                 isConnected = true;
                 logMessage("Connected to EPICS PVs OK", true, true);
@@ -442,20 +436,17 @@ public class EPICS_AD_Viewer implements PlugIn
             {
                 if (dataType.isBYTE())
                 {
-                    byte[] pixels = (byte[])img.getProcessor().getPixels();
-                    pixels = epicsGetByteArray(ch_image, getsize);
+                    byte[] pixels = epicsGetByteArray(ch_image, getsize);
                     img.getProcessor().setPixels(pixels);
                 }
                 else if (dataType.isSHORT())
                 {
-                    short[] pixels = (short[])img.getProcessor().getPixels();
-                    pixels = epicsGetShortArray(ch_image, getsize);
+                    short[] pixels = epicsGetShortArray(ch_image, getsize);
                     img.getProcessor().setPixels(pixels);
                 }
                 else if (dataType.isINT() || dataType.isFLOAT() || dataType.isDOUBLE())
                 {
-                    float[] pixels = (float[])img.getProcessor().getPixels();
-                    pixels = epicsGetFloatArray(ch_image, getsize);
+                    float[] pixels = epicsGetFloatArray(ch_image, getsize);
                     img.getProcessor().setPixels(pixels);
                 }
             }
@@ -768,7 +759,6 @@ public class EPICS_AD_Viewer implements PlugIn
         {
             String fileSep = System.getProperty("file.separator");
             path = System.getProperty("user.home") + fileSep + propertyFile;
-            if (path == null) throw new Exception("No such file: " + path);
             FileInputStream file = new FileInputStream(path);
             properties.load(file);
             file.close();

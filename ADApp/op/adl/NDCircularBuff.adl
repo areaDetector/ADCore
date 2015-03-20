@@ -1,0 +1,785 @@
+
+file {
+	name="/home/epics/devel/areaDetector-2-1/ADCore/ADApp/op/adl/NDCircularBuff.adl"
+	version=030107
+}
+display {
+	object {
+		x=264
+		y=92
+		width=775
+		height=580
+	}
+	clr=14
+	bclr=4
+	cmap=""
+	gridSpacing=5
+	gridOn=0
+	snapToGrid=0
+}
+"color map" {
+	ncolors=65
+	colors {
+		ffffff,
+		ececec,
+		dadada,
+		c8c8c8,
+		bbbbbb,
+		aeaeae,
+		9e9e9e,
+		919191,
+		858585,
+		787878,
+		696969,
+		5a5a5a,
+		464646,
+		2d2d2d,
+		000000,
+		00d800,
+		1ebb00,
+		339900,
+		2d7f00,
+		216c00,
+		fd0000,
+		de1309,
+		be190b,
+		a01207,
+		820400,
+		5893ff,
+		597ee1,
+		4b6ec7,
+		3a5eab,
+		27548d,
+		fbf34a,
+		f9da3c,
+		eeb62b,
+		e19015,
+		cd6100,
+		ffb0ff,
+		d67fe2,
+		ae4ebc,
+		8b1a96,
+		610a75,
+		a4aaff,
+		8793e2,
+		6a73c1,
+		4d52a4,
+		343386,
+		c7bb6d,
+		b79d5c,
+		a47e3c,
+		7d5627,
+		58340f,
+		99ffff,
+		73dfff,
+		4ea5f9,
+		2a63e4,
+		0a00b8,
+		ebf1b5,
+		d4db9d,
+		bbc187,
+		a6a462,
+		8b8239,
+		73ff6b,
+		52da3b,
+		3cb420,
+		289315,
+		1a7309,
+	}
+}
+rectangle {
+	object {
+		x=197
+		y=5
+		width=380
+		height=25
+	}
+	"basic attribute" {
+		clr=2
+	}
+}
+text {
+	object {
+		x=202
+		y=6
+		width=370
+		height=25
+	}
+	"basic attribute" {
+		clr=43
+	}
+	textix="$(P)$(R)"
+	align="horiz. centered"
+}
+composite {
+	object {
+		x=5
+		y=40
+		width=380
+		height=530
+	}
+	"composite name"=""
+	"composite file"="NDPluginBase.adl"
+}
+rectangle {
+	object {
+		x=390
+		y=40
+		width=380
+		height=345
+	}
+	"basic attribute" {
+		clr=13
+		fill="outline"
+	}
+}
+text {
+	object {
+		x=490
+		y=45
+		width=180
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Trigger definition"
+	align="horiz. right"
+}
+rectangle {
+	object {
+		x=390
+		y=390
+		width=380
+		height=180
+	}
+	"basic attribute" {
+		clr=13
+		fill="outline"
+	}
+}
+"text update" {
+	object {
+		x=700
+		y=421
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)PostTriggerQty_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=445
+		y=395
+		width=110
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Pre-count #"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=560
+		y=395
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)PreCount"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=625
+		y=396
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)PreCount_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=700
+		y=396
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)CurrentQty_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=535
+		y=75
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Trigger A"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=495
+		y=119
+		width=265
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TriggerA"
+		clr=14
+		bclr=51
+	}
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=495
+		y=97
+		width=265
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TriggerA_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=400
+		y=119
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Attribute"
+	align="horiz. right"
+}
+text {
+	object {
+		x=440
+		y=144
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Value"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=495
+		y=145
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TriggerAVal"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+rectangle {
+	object {
+		x=395
+		y=70
+		width=370
+		height=100
+	}
+	"basic attribute" {
+		clr=13
+		fill="outline"
+	}
+}
+text {
+	object {
+		x=535
+		y=180
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Trigger B"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=495
+		y=224
+		width=265
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TriggerB"
+		clr=14
+		bclr=51
+	}
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=495
+		y=202
+		width=265
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TriggerB_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=400
+		y=224
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Attribute"
+	align="horiz. right"
+}
+text {
+	object {
+		x=440
+		y=249
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Value"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=495
+		y=250
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TriggerBVal"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+rectangle {
+	object {
+		x=395
+		y=175
+		width=370
+		height=100
+	}
+	"basic attribute" {
+		clr=13
+		fill="outline"
+	}
+}
+text {
+	object {
+		x=525
+		y=285
+		width=110
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Calculation"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=495
+		y=329
+		width=265
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TriggerCalc"
+		clr=14
+		bclr=51
+	}
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=495
+		y=307
+		width=265
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TriggerCalc_RBV"
+		clr=54
+		bclr=4
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=400
+		y=329
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Calc"
+	align="horiz. right"
+}
+text {
+	object {
+		x=440
+		y=354
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Value"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=495
+		y=355
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TriggerCalcVal"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+rectangle {
+	object {
+		x=395
+		y=280
+		width=370
+		height=100
+	}
+	"basic attribute" {
+		clr=13
+		fill="outline"
+	}
+}
+text {
+	object {
+		x=435
+		y=420
+		width=120
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Post-count #"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=560
+		y=420
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)PostCount"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=625
+		y=421
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)PostCount_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=495
+		y=445
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Preset triggers"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=685
+		y=285
+		width=69
+		height=20
+	}
+	display[0] {
+		label="Help"
+		name="NDCircularBuffHelp.adl"
+	}
+	clr=14
+	bclr=51
+	label="Help"
+}
+composite {
+	object {
+		x=415
+		y=470
+		width=345
+		height=95
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=415
+				y=470
+				width=140
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Capture status"
+			align="horiz. right"
+		}
+		text {
+			object {
+				x=415
+				y=495
+				width=140
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Trigger status"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=560
+				y=521
+				width=200
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)StatusMessage"
+				clr=54
+				bclr=2
+			}
+			limits {
+			}
+		}
+		"message button" {
+			object {
+				x=565
+				y=545
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)Capture"
+				clr=14
+				bclr=51
+			}
+			label="Stop"
+			press_msg="0"
+		}
+		"message button" {
+			object {
+				x=465
+				y=545
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)Capture"
+				clr=14
+				bclr=51
+			}
+			label="Start"
+			press_msg="1"
+		}
+		"message button" {
+			object {
+				x=665
+				y=545
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)Trigger"
+				clr=14
+				bclr=51
+			}
+			label="Trigger"
+			press_msg="1"
+		}
+		"text update" {
+			object {
+				x=560
+				y=496
+				width=120
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)Trigger_RBV"
+				clr=54
+				bclr=13
+			}
+			clrmod="alarm"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=560
+				y=471
+				width=120
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)Capture_RBV"
+				clr=54
+				bclr=13
+			}
+			clrmod="alarm"
+			limits {
+			}
+		}
+		text {
+			object {
+				x=495
+				y=520
+				width=60
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Status"
+			align="horiz. right"
+		}
+	}
+}
+"text entry" {
+	object {
+		x=560
+		y=445
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)$(R)PresetTriggerCount"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=625
+		y=446
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)PresetTriggerCount_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=700
+		y=446
+		width=60
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ActualTriggerCount_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}

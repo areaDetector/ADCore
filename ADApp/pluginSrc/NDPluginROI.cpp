@@ -27,6 +27,8 @@
 #define MAX(A,B) (A)>(B)?(A):(B)
 #define MIN(A,B) (A)<(B)?(A):(B)
 
+static const char *driverName="NDPluginROI";
+
 
 /** Callback function that is called by the NDArray driver with new NDArray data.
   * Extracts the NthrDArray data into each of the ROIs that are being used.
@@ -43,7 +45,6 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
 
     int dataType;
     int dim;
-    int itemp;
     NDDimension_t dims[ND_ARRAY_MAX_DIMS], tempDim, *pDim;
     size_t userDims[ND_ARRAY_MAX_DIMS];
     NDArrayInfo arrayInfo, scratchInfo;
@@ -58,12 +59,6 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     memset(dims, 0, sizeof(NDDimension_t) * ND_ARRAY_MAX_DIMS);
 
     /* Get all parameters while we have the mutex */
-    getIntegerParam(NDPluginROIDim0Min,      &itemp); dims[0].offset = itemp;
-    getIntegerParam(NDPluginROIDim1Min,      &itemp); dims[1].offset = itemp;
-    getIntegerParam(NDPluginROIDim2Min,      &itemp); dims[2].offset = itemp;
-    getIntegerParam(NDPluginROIDim0Size,     &itemp); dims[0].size = itemp;
-    getIntegerParam(NDPluginROIDim1Size,     &itemp); dims[1].size = itemp;
-    getIntegerParam(NDPluginROIDim2Size,     &itemp); dims[2].size = itemp;
     getIntegerParam(NDPluginROIDim0Bin,      &dims[0].binning);
     getIntegerParam(NDPluginROIDim1Bin,      &dims[1].binning);
     getIntegerParam(NDPluginROIDim2Bin,      &dims[2].binning);
@@ -101,11 +96,14 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     for (dim=0; dim<pArray->ndims; dim++) {
         pDim = &dims[dim];
         if (enableDim[dim]) {
+            size_t newDimSize = pArray->dims[userDims[dim]].size;
+            pDim->offset  = requestedOffset_[dim];
+            pDim->size    = requestedSize_[dim];
             pDim->offset  = MAX(pDim->offset,  0);
-            pDim->offset  = MIN(pDim->offset,  pArray->dims[userDims[dim]].size-1);
-            if (autoSize[dim]) pDim->size = pArray->dims[userDims[dim]].size;
+            pDim->offset  = MIN(pDim->offset,  newDimSize-1);
+            if (autoSize[dim]) pDim->size = newDimSize;
             pDim->size    = MAX(pDim->size,    1);
-            pDim->size    = MIN(pDim->size,    pArray->dims[userDims[dim]].size - pDim->offset);
+            pDim->size    = MIN(pDim->size,    newDimSize - pDim->offset);
             pDim->binning = MAX(pDim->binning, 1);
             pDim->binning = MIN(pDim->binning, (int)pDim->size);
         } else {
@@ -235,6 +233,53 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
 
 }
 
+/** Called when asyn clients call pasynInt32->write().
+  * This function performs actions for some parameters, including NDPluginDriverEnableCallbacks and
+  * NDPluginDriverArrayAddr.
+  * For all parameters it sets the value in the parameter library and calls any registered callbacks..
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Value to write. */
+asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
+{
+    int function = pasynUser->reason;
+    asynStatus status = asynSuccess;
+    static const char* functionName = "writeInt32";
+
+    /* Set the parameter in the parameter library. */
+    status = (asynStatus) setIntegerParam(function, value);
+
+    if        (function == NDPluginROIDim0Min) {
+        requestedOffset_[0] = value;
+    } else if (function == NDPluginROIDim1Min) {
+        requestedOffset_[1] = value;
+    } else if (function == NDPluginROIDim2Min) {
+        requestedOffset_[2] = value;
+    } else if (function == NDPluginROIDim0Size) {
+        requestedSize_[0] = value;
+    } else if (function == NDPluginROIDim1Size) {
+        requestedSize_[1] = value;
+    } else if (function == NDPluginROIDim2Size) {
+        requestedSize_[2] = value;
+    } else {
+        /* If this parameter belongs to a base class call its method */
+        if (function < FIRST_NDPLUGIN_ROI_PARAM) 
+            status = NDPluginDriver::writeInt32(pasynUser, value);
+    }
+    
+    /* Do callbacks so higher layers see any changes */
+    callParamCallbacks();
+    
+    if (status) 
+        asynPrint(pasynUser, ASYN_TRACE_ERROR, 
+              "%s:%s: function=%d, value=%d\n", 
+              driverName, functionName, function, value);
+    else        
+        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
+              "%s:%s: function=%d, value=%d\n", 
+              driverName, functionName, function, value);
+    return status;
+}
+
 
 /** Constructor for NDPluginROI; most parameters are simply passed to NDPluginDriver::NDPluginDriver.
   * After calling the base class constructor this method sets reasonable default values for all of the
@@ -299,6 +344,10 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginROI");
+
+    // Enable ArrayCallbacks.  
+    // This plugin currently ignores this setting and always does callbacks, so make the setting reflect the behavior
+    setIntegerParam(NDArrayCallbacks, 1);
 
     /* Try to connect to the array port */
     connectToArrayPort();

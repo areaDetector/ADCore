@@ -1,0 +1,30 @@
+#=================================================================#
+# Template file: NDROIStat.template
+###################################################################
+#
+# Database template for ROI Stat plugin. This only provides
+# the Name records. To add in ROIs use the NDROIStatN.template,
+# or alternatively use a single NDROIStat8.template to get up to 8
+# ROIs.
+# 
+# Macros:
+# P,R - Base PV name
+# PORT - Asyn port name
+# ADDR - The Asyn address
+# TIMEOUT - Asyn port timeout
+#
+# Matt Pearson
+# Nov 2014
+#
+###################################################################
+
+include "NDPluginBase.template"
+
+# ///
+# /// Reset the data for all the ROIs
+# ///
+record(bo, "$(P)$(R)ResetAll")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_RESETALL")
+}

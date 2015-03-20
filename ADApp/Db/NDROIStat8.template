@@ -1,0 +1,60 @@
+#=================================================================#
+# Template file: NDROIStat8.template
+###################################################################
+#
+# Database template for ROI Stat plugin. This provides up to 
+# 8 simple ROIs and associated statistics calculations (min, max
+# mean and total counts). The asyn address is used to 
+# identify the different ROI and stats records, so this template
+# includes another ROI specific template, specifying the address
+# to use for each one.
+# 
+# Macros:
+# P,R - Base PV name
+# PORT - Asyn port name
+# ADDR - The Asyn address
+# TIMEOUT - Asyn port timeout
+#
+# Matt Pearson
+# Nov 2014
+#
+###################################################################
+
+include "NDROIStat.template"
+
+###################################################################
+# Instantiate the ROI specific records
+###################################################################
+
+substitute  "ROI=1:"
+substitute "ADDR=0"
+include "NDROIStatN.template"
+
+substitute  "ROI=2:"
+substitute "ADDR=1"
+include "NDROIStatN.template"
+
+substitute  "ROI=3:"
+substitute "ADDR=2"
+include "NDROIStatN.template"
+
+substitute  "ROI=4:"
+substitute "ADDR=3"
+include "NDROIStatN.template"
+
+substitute  "ROI=5:"
+substitute "ADDR=4"
+include "NDROIStatN.template"
+
+substitute  "ROI=6:"
+substitute "ADDR=5"
+include "NDROIStatN.template"
+
+substitute  "ROI=7:"
+substitute "ADDR=6"
+include "NDROIStatN.template"
+
+substitute  "ROI=8:"
+substitute "ADDR=7"
+include "NDROIStatN.template"
+

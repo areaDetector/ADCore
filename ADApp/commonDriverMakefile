@@ -36,15 +36,23 @@ else
   endif
   PROD_LIBS_WIN32       += tiff jpeg
 endif
-ifeq (win32-x86-debug, $(findstring win32-x86-debug, $(T_A)))
+
+ifeq ($(OS_CLASS), WIN32)
+  ifeq (debug, $(findstring debug, $(T_A)))
   USR_LDFLAGS_WIN32     += /NODEFAULTLIB:LIBCMT.lib
+  endif
 endif
 
-ifeq ($(STATIC_BUILD), NO)
-  PROD_LIBS_WIN32       += hdf5dll szip zlib1 libxml2
+ifeq ($(HDF5_STATIC_BUILD), NO)
+  USR_CXXFLAGS_WIN32    += -DH5_BUILT_AS_DYNAMIC_LIB
+  USR_CFLAGS_WIN32      += -DH5_BUILT_AS_DYNAMIC_LIB
+  PROD_LIBS_WIN32       += hdf5 szip zlib
 else
-  PROD_LIBS_WIN32       += hdf5 libszip zlib libxml2
+  USR_CXXFLAGS_WIN32    += -DH5_BUILT_AS_STATIC_LIB
+  USR_CFLAGS_WIN32      += -DH5_BUILT_AS_STATIC_LIB
+  PROD_LIBS_WIN32       += libhdf5 libszip libzlib
 endif
+PROD_LIBS_WIN32         += libxml2
 
 PROD_SYS_LIBS_WIN32     += Gdi32 Oleaut32
 
@@ -60,11 +68,11 @@ PROD_LIBS_Linux         += hdf5
 PROD_SYS_LIBS_Linux     += tiff jpeg xml2 z m
 
 PROD_LIBS_solaris       += hdf5 sz
-PROD_SYS_LIBS_solaris   += tiff jpeg z
+PROD_SYS_LIBS_solaris   += tiff jpeg xml2 z
 
 USR_LDFLAGS_Darwin      += -framework CoreFoundation
 PROD_LIBS_Darwin        += hdf5 sz
-PROD_SYS_LIBS_Darwin    += tiff jpeg z
+PROD_SYS_LIBS_Darwin    += tiff jpeg xml2 z
 
 hdf5_DIR               = $(HDF5_LIB)
 sz_DIR                 = $(SZIP_LIB)

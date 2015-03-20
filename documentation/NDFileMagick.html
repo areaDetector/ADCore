@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>areaDetector Plugin NDFileMagick</title>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+</head>
+<body>
+  <div style="text-align: center">
+    <h1>
+      areaDetector Plugin NDFileMagick</h1>
+    <h2>
+      October 7, 2014</h2>
+    <h2>
+      Mark Rivers</h2>
+    <h2>
+      University of Chicago</h2>
+  </div>
+  <p>
+    NDFileMagick inherits from NDPluginFile. This plugin saves data in any of the formats
+    supported by the <a href="http://www.graphicsmagick.org/">GraphicsMagick</a> package.
+    GraphicsMagick supports dozens of file formats, including TIFF, JPEG, PNG, PDF,
+    and many others. GraphicsMagick automatically selects the output file format based
+    on the extension of the file (.jpg=JPEG, .tif=TIFF, etc. The GraphicsMagick plugin
+    should be able to write files in any format in the <a href="http://www.graphicsmagick.org/formats.html">
+      list of GraphicsMagick supported file formats&quot;</a> that has a &quot;W&quot;
+    or &quot;RW&quot; in the Mode column.
+  </p>
+  <p>
+    The GraphicsMagick plugin is limited to 8 and 16-bit integer arrays. It supports
+    color modes Mono and RGB1. NDFileMagick is limited to a single array per file, but
+    capture and stream mode are supported by writing multiple files.
+  </p>
+  <p>
+    The GraphicsMagick plugin supports the Int32 parameter NDFileMagickCompressType
+    to control the compression mode of the file. NDFileMagick.template defines 2 records
+    to support this: $(P)$(R)CompressType (longout) and $(P)$(R)CompressType_RBV (longin).
+    The following are the supported compression types:</p>
+  <ul>
+    <li>&quot;None&quot;</li>
+    <li>&quot;BZip&quot;</li>
+    <li>&quot;FAX&quot;</li>
+    <li>&quot;Group 4&quot;</li>
+    <li>&quot;JPEG&quot;</li>
+    <li>&quot;LZW&quot;</li>
+    <li>&quot;RLE&quot;&quot;</li>
+    <li>&quot;Zip&quot;</li>
+  </ul>
+  <p>
+    No formats support all of these compression types. Many support only one, or have
+    an implicit compression mode and so ignore the CompressType parameter. For example,
+    the JPEG and PNG formats support only their respective implicit compression modes.
+    I have determined empirically that the TIFF format supports "None", "JPEG", "LZW",
+    and "ZIP", while the PDF format supports "None", "BZip", "FAX", and "JPEG".</p>
+  <p>
+    The <a href="areaDetectorDoxygenHTML/class_n_d_file_magick.html">NDFileMagick class
+      documentation </a>describes this class in detail.
+  </p>
+  <p>
+    The NDFileMagick plugin is created with the NDFileMagickConfigure command, either
+    from C/C++ or from the EPICS IOC shell.</p>
+  <pre>NDFileMagickConfigure(const char *portName, int queueSize, int blockingCallbacks, 
+                      const char *NDArrayPort, int NDArrayAddr, size_t maxMemory, 
+                      int priority, int stackSize)
+  </pre>
+  <p>
+    For details on the meaning of the parameters to this function refer to the detailed
+    documentation on the NDFileMagickConfigure function in the <a href="areaDetectorDoxygenHTML/_n_d_file_magick_8cpp.html">
+      NDFileMagick.cpp documentation</a> and in the documentation for the constructor
+    for the <a href="areaDetectorDoxygenHTML/class_n_d_file_magick.html">NDFileMagick
+      class</a>.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDFileMagick.adl</h3>
+    <p>
+      <img alt="NDFileMagick.png" src="NDFileMagick.png" /></p>
+  </div>
+</body>
+</html>

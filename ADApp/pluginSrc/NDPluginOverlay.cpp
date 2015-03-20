@@ -102,10 +102,10 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
                         setPixel(&pRow[ix*this->arrayInfo.xStride], pOverlay);
                     }
                 } else {
-                    xwidemin_line = (pOverlay->PositionX - xwide)*this->arrayInfo.xStride;
-                    xwidemax_line = (pOverlay->PositionX + xwide)*this->arrayInfo.xStride;
+                    xwidemin_line = pOverlay->PositionX - xwide;
+                    xwidemax_line = pOverlay->PositionX + xwide;
                     for (size_t line=xwidemin_line; line<=xwidemax_line; ++line) {
-                        setPixel<epicsType>(&pRow[line], pOverlay);
+                        setPixel(&pRow[line*this->arrayInfo.xStride], pOverlay);
                     }
                 }
             }
@@ -384,6 +384,10 @@ NDPluginOverlay::NDPluginOverlay(const char *portName, int queueSize, int blocki
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginOverlay");
+
+    // Enable ArrayCallbacks.  
+    // This plugin currently ignores this setting and always does callbacks, so make the setting reflect the behavior
+    setIntegerParam(NDArrayCallbacks, 1);
 
     /* Try to connect to the array port */
     connectToArrayPort();

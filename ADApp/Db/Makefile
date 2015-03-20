@@ -12,6 +12,7 @@ include $(TOP)/configure/CONFIG
 # databases, templates, substitutions like this
 
 # General
+DB += NDArrayBase.template
 DB += ADBase.template
 DB += ADPrefixes.template
 
@@ -32,10 +33,15 @@ DB += NDOverlayN.template
 DB += NDPluginBase.template
 DB += NDProcess.template
 DB += NDROI.template
+DB += NDROIStat.template
+DB += NDROIStatN.template
+DB += NDROIStat8.template
 DB += NDStats.template
 DB += NDStdArrays.template
 DB += NDTransform.template
 DB += NDAttribute.template
+DB += NDAttributeN.template
+DB += NDCircularBuff.template
 
 #----------------------------------------------------
 # If <anyname>.db template is not named <anyname>*.template add

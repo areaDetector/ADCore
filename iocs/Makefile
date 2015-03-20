@@ -1,7 +1,10 @@
 TOP = ..
 include $(TOP)/configure/CONFIG
 
-DIRS := $(wildcard *IOC)
+DIRS += simDetectorNoIOC
+ifneq ($(EPICS_LIBCOM_ONLY),YES)
+  DIRS += simDetectorIOC
+endif
 
 include $(TOP)/configure/RULES_TOP
 

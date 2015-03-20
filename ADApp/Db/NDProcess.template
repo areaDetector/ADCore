@@ -1,6 +1,10 @@
+#=================================================================#
+# Template file: NDProcess.template
 # Database for ND PluginProcess
 # Mark Rivers
 # March 14, 2010
+
+include "NDPluginBase.template"
 
 ###################################################################
 #  These records control the data type of the array data          # 
@@ -32,6 +36,7 @@ record(mbbo, "$(P)$(R)DataTypeOut")
     field(EIST, "Automatic")
     field(EIVL, "-1")
     field(VAL,  "8")
+    info(autosaveFields, "VAL")
 }
 
 record(mbbi, "$(P)$(R)DataTypeOut_RBV")
@@ -87,6 +92,7 @@ record(bo, "$(P)$(R)EnableBackground")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_BACKGROUND")
     field(ZNAM, "Disable")
     field(ONAM, "Enable")
+    info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)EnableBackground_RBV")
@@ -137,6 +143,7 @@ record(bo, "$(P)$(R)EnableFlatField")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_FLAT_FIELD")
     field(ZNAM, "Disable")
     field(ONAM, "Enable")
+    info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)EnableFlatField_RBV")
@@ -165,6 +172,7 @@ record(ao, "$(P)$(R)ScaleFlatField")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SCALE_FLAT_FIELD")
     field(VAL,  "255.")
+    info(autosaveFields, "VAL")
 }
 
 record(ai, "$(P)$(R)ScaleFlatField_RBV")
@@ -184,6 +192,7 @@ record(bo, "$(P)$(R)EnableOffsetScale")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_OFFSET_SCALE")
     field(ZNAM, "Disable")
     field(ONAM, "Enable")
+    info(autosaveFields, "VAL")
 }
 
 # Oneshot record for calculating scale and offset
@@ -213,6 +222,7 @@ record(ao, "$(P)$(R)Offset")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OFFSET")
     field(PREC, "2")
     field(VAL,  "0.0")
+    info(autosaveFields, "VAL")
 }
 
 record(ai, "$(P)$(R)Offset_RBV")
@@ -230,6 +240,7 @@ record(ao, "$(P)$(R)Scale")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SCALE")
     field(PREC, "2")
     field(VAL,  "1.0")
+    info(autosaveFields, "VAL")
 }
 
 record(ai, "$(P)$(R)Scale_RBV")
@@ -250,6 +261,7 @@ record(bo, "$(P)$(R)EnableLowClip")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_LOW_CLIP")
     field(ZNAM, "Disable")
     field(ONAM, "Enable")
+    info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)EnableLowClip_RBV")
@@ -269,6 +281,7 @@ record(ao, "$(P)$(R)LowClip")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))LOW_CLIP")
     field(VAL,  "0.0")
+    info(autosaveFields, "VAL")
 }
 
 record(ai, "$(P)$(R)LowClip_RBV")
@@ -285,6 +298,7 @@ record(bo, "$(P)$(R)EnableHighClip")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_HIGH_CLIP")
     field(ZNAM, "Disable")
     field(ONAM, "Enable")
+    info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)EnableHighClip_RBV")
@@ -304,6 +318,7 @@ record(ao, "$(P)$(R)HighClip")
     field(DTYP, "asynFloat64")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIGH_CLIP")
     field(VAL,  "100.0")
+    info(autosaveFields, "VAL")
 }
 
 record(ai, "$(P)$(R)HighClip_RBV")
@@ -323,6 +338,7 @@ record(bo, "$(P)$(R)EnableFilter")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_FILTER")
     field(ZNAM, "Disable")
     field(ONAM, "Enable")
+    info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)EnableFilter_RBV")
@@ -361,6 +377,7 @@ record(bo, "$(P)$(R)AutoResetFilter")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_RESET_FILTER")
     field(ZNAM, "No")
     field(ONAM, "Yes")
+    info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)AutoResetFilter_RBV")
@@ -379,6 +396,7 @@ record(bo, "$(P)$(R)FilterCallbacks")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_CALLBACKS")
     field(ZNAM, "Every array")
     field(ONAM, "Array N only")
+    info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)FilterCallbacks_RBV")
@@ -397,6 +415,7 @@ record(longout, "$(P)$(R)NumFilter")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_FILTER")
     field(VAL,  "1")
     field(FLNK, "$(P)$(R)NumFilterRecip.PROC PP")
+    info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)NumFilter_RBV")
@@ -429,6 +448,7 @@ record(ao, "$(P)$(R)OOffset")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_OOFFSET")
     field(VAL,  "0.0")
     field(PREC, "2")
+    info(autosaveFields, "VAL")
 }
 record(ai, "$(P)$(R)OOffset_RBV")
 {
@@ -445,6 +465,7 @@ record(ao, "$(P)$(R)OScale")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_OSCALE")
     field(VAL,  "1.0")
     field(PREC, "2")
+    info(autosaveFields, "VAL")
 }
 record(ai, "$(P)$(R)OScale_RBV")
 {
@@ -461,6 +482,7 @@ record(ao, "$(P)$(R)OC1")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_OC1")
     field(VAL,  "1.0")
     field(PREC, "2")
+    info(autosaveFields, "VAL")
 }
 record(ai, "$(P)$(R)OC1_RBV")
 {
@@ -477,6 +499,7 @@ record(ao, "$(P)$(R)OC2")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_OC2")
     field(VAL,  "-1.0")
     field(PREC, "2")
+    info(autosaveFields, "VAL")
 }
 record(ai, "$(P)$(R)OC2_RBV")
 {
@@ -493,6 +516,7 @@ record(ao, "$(P)$(R)OC3")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_OC3")
     field(VAL,  "0.0")
     field(PREC, "2")
+    info(autosaveFields, "VAL")
 }
 record(ai, "$(P)$(R)OC3_RBV")
 {
@@ -509,6 +533,7 @@ record(ao, "$(P)$(R)OC4")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_OC4")
     field(VAL,  "1.0")
     field(PREC, "2")
+    info(autosaveFields, "VAL")
 }
 record(ai, "$(P)$(R)OC4_RBV")
 {
@@ -525,6 +550,7 @@ record(ao, "$(P)$(R)FOffset")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_FOFFSET")
     field(VAL,  "0.0")
     field(PREC, "2")
+    info(autosaveFields, "VAL")
 }
 record(ai, "$(P)$(R)FOffset_RBV")
 {
@@ -541,6 +567,7 @@ record(ao, "$(P)$(R)FScale")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_FSCALE")
     field(VAL,  "1.0")
     field(PREC, "2")
+    info(autosaveFields, "VAL")
 }
 record(ai, "$(P)$(R)FScale_RBV")
 {
@@ -557,6 +584,7 @@ record(ao, "$(P)$(R)FC1")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_FC1")
     field(VAL,  "1.0")
     field(PREC, "2")
+    info(autosaveFields, "VAL")
 }
 record(ai, "$(P)$(R)FC1_RBV")
 {
@@ -573,6 +601,7 @@ record(ao, "$(P)$(R)FC2")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_FC2")
     field(VAL,  "-1.0")
     field(PREC, "2")
+    info(autosaveFields, "VAL")
 }
 record(ai, "$(P)$(R)FC2_RBV")
 {
@@ -588,6 +617,7 @@ record(ao, "$(P)$(R)FC3")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_FC3")
     field(VAL,  "0.0")
     field(PREC, "2")
+    info(autosaveFields, "VAL")
 }
 record(ai, "$(P)$(R)FC3_RBV")
 {
@@ -604,6 +634,7 @@ record(ao, "$(P)$(R)FC4")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_FC4")
     field(VAL,  "1.0")
     field(PREC, "2")
+    info(autosaveFields, "VAL")
 }
 record(ai, "$(P)$(R)FC4_RBV")
 {
@@ -619,6 +650,7 @@ record(ao, "$(P)$(R)ROffset")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_ROFFSET")
     field(VAL,  "0.0")
     field(PREC, "2")
+    info(autosaveFields, "VAL")
 }
 record(ai, "$(P)$(R)ROffset_RBV")
 {
@@ -635,6 +667,7 @@ record(ao, "$(P)$(R)RC1")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_RC1")
     field(VAL,  "1.0")
     field(PREC, "2")
+    info(autosaveFields, "VAL")
 }
 record(ai, "$(P)$(R)RC1_RBV")
 {
@@ -651,6 +684,7 @@ record(ao, "$(P)$(R)RC2")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILTER_RC2")
     field(VAL,  "1.0")
     field(PREC, "2")
+    info(autosaveFields, "VAL")
 }
 record(ai, "$(P)$(R)RC2_RBV")
 {
@@ -677,6 +711,7 @@ record(mbbo, "$(P)$(R)FilterType")
     field(FVST, "CopyToFilter")
     field(FVVL, "6")
     field(FLNK, "$(P)$(R)FilterTypeSeq PP MS")
+    info(autosaveFields, "VAL")
 }
 
 record(seq, "$(P)$(R)FilterTypeSeq")

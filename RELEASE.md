@@ -23,23 +23,151 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
-R2-1 (September XXX, 2014)
---------------------
-* NDPluginOverlay
-    - Added support for text overlays. Thanks to Keith Brister for this.
-    - Added support for line width in rectangle and cross overlays.  Thanks to Matt Pearson for this.
-    - Fixed problem with DrawMode=XOR. This stopped working back in 2010 when color support was added.
-* NDPluginTransform
-    - Complete rewrite to greatly improve simplicity and efficiency.  It now supports 8 transformations
-      including the null transformation.  Performance improved by a factor of 13 to 85 depending
-      on the transformation.  Thanks to Chris Roehrig for this.
-* NDPluginFile
-    - Added new optional feature "LazyOpen" which, when enabled and in "Stream" mode, will defer 
-      file creation until the first frame arrives in the plugin. This removes the need to initialise
-      the plugin with a dummy frame before starting capture.  
-* NDFileTiff
-    - All NDArray attributes are now written as TIFF ASCII file tags, up to a maximum of 490 tags.
-      Thanks to Matt Pearson for this.
+R2-2 (March XXX, 2015)
+========================
+###
+* NOTE: This release requires at least R4-26 of asyn because it uses the info(asyn:READOUT,"1") tag
+  in databases to have output records update on driver callbacks.
+
+### iocs/simDetectorNoIOC
+* New application that demonstrates how to instantiate a simDetector driver
+  and a number of plugins in a standalone C++ application, without running an EPICS IOC.
+  If asyn and ADCore are built with the EPICS_LIBCOM_ONLY flag then this application only
+  needs the libCom library from EPICS base and the asyn library.  It does not need any other
+  libraries from EPICS base or synApps.
+
+### NDPluginROIStat
+* New plugin that supports multiple regions-of-interest with simple statistics on each.
+  It is more efficient and convenient than the existing NDPluginROI and NDPluginStats when many 
+  regions of interest with simple statistics are needed.  Written by Matthew Pearson.
+  
+### NDPluginCircularBuff
+* New plugin that implements a circular buffer.  NDArrays are stored in the buffer until a trigger
+  is received.  When a trigger is received it outputs a configurable number of pre-trigger and post-trigger
+  NDArrays.  The trigger is based on NDArray attributes using a user-defined calculation.  Written by Edmund Warrick.
+  
+### NDPluginAttribute
+* New plugin that exports attributes of NDArrays as EPICS PVs.  Both scalar (ai records) and time-series
+  arrays (waveform records) are exported.  Written by Matthew Pearson.
+  
+### NDPluginStats
+* Added capability to reset the statistics to 0 (or other user-defined values) with a new
+  $(P)$(R)Reset sseq records in NDStats.template.  The reset behavior can be changed by 
+  configuring these records.
+
+### NDPluginROI
+* Remember the requested ROI size and offset.  If the requested values cannot be satisfied due
+  to constraints such as binning or the input array size, then use the requested values when the
+  constraints no longer apply.
+
+### NDPluginOverlay
+* Bug fix: the vertical line in the cross overlay was not drawn correctly if WidthX was greater than 1.
+
+### NDPluginFile
+* Created the NDFileCreateDir parameter. This allows file writers to create a controlled number
+  of directories in the path of the output file.
+* Added the NDFileTempSuffix string parameter. When this string is not empty it will be
+  used as a temporary suffix on the output filename while the file is being written. When writing
+  is complete, the file is closed and then renamed to have the suffix removed. The rename operation 
+  is atomic from a filesystem view and can be used by monitoring applications like rsync or inotify
+  to kick off processing applications. 
+  
+### NDFileHDF5
+* Created a separate NDFileHDF5.h file so the class can be exported to other applications.
+* Updated the HDF5 library for Windows in ADBinaries from 1.8.7 to 1.8.14.  The names of the libraries has changed,
+  so Makefiles in ADCore needed to be changed.  There is a new flag, HDF5_STATIC_BUILD which can be set to
+  NO or YES depending on which version of the HDF5 library should be used.  This symbol is now defined in
+  areaDetector/configure/EXAMPLE_CONFIG_SITE.local to be YES for static builds and NO for dynamic builds.
+  In principle one can use the dynamic version of the HDF5 library when doing a static build, and vice-versa.
+  In practice this has not been tested.
+* Bug fixes: 
+  * The NDArrayPort could not be changed after iocInit.
+  * Hardlinks did not work for NDAttribute datasets.
+  * Failing to specify a group with "ndattr_default=true" would crash the IOC.
+  * NDAttribute datasets of datatype NDAttrString would actually be HDF5 attributes,
+    not datasets.  They would only store a single string value, not an array of string values which they 
+    should if the file contains multiple NDArrays.
+  * NDAttribute datasets were pre-allocated to the size of NumCapture, rather than 
+    growing with the number of NDArrays in the file.  This meant that there was no way to specify that the HDF5 file 
+    in Stream mode should continue to grow forever until Capture was set to 0.  Specifying NumCapture=0 did not work, 
+    it crashed the IOC.  Setting NumCapture to a very large number resulted in wasted file space, 
+    because all datasets except the detector dataset were pre-allocated to this large size.
+  * HDF5 attributes defined in the XML layout file for NDAttribute datasets and constant datasets
+    did not get written to the HDF5 file.
+  * The important NDArray properties uniqueID, timeStamp, and epicsTS did not get written to the HDF5 file.
+  * NDAttribute datasets had two "automatic" HDF5 attributes, "description" and "name".  These do not provide
+    a complete description of the source of the NDAttribute data, and the HDF5 attribute names are prone
+    to name conflicts with user-defined attributes.  "description" and "source" have been renamed to 
+    NDAttrDescription and NDAttrSource. Two additional automatic attributes have been added, 
+    NDAttrSourceType and NDAttrName, which now completely define the source of the NDAttribute data.
+
+
+### Plugins general
+* Added epicsShareClass to class definitions so classes are exported with Windows DLLs.
+* Install all plugin header files so the classes can be used from other applications.
+
+### netCDFSupport
+* Fixes to work on vxWorks 6.9 from Tim Mooney.
+
+### NDAttribute class
+* Changed the getValue() method to do type conversion if the requested datatype does not match the
+  datatype of the attribute.
+
+### Template files
+* Added a new template file NDArrayBase.template which contains records for all of the 
+  asynNDArrayDriver parameters except those in NDFile.template.  Moved records from ADBase.template
+  and NDPluginBase.template into this new file.  Made all template files "include" the files from the
+  parent class, rather than calling dbLoadRecords for each template file.  This simplifies commonPlugins.cmd.
+  A similar include mechanism was applied to the *_settings.req files, which simplifies commonPlugin_settings.req.
+* Added the info tag "autosaveFields" to allow automatic creation of autosave files.
+* ADBase.template
+  - Added optional macro parameter RATE_SMOOTH to smooth the calculated array rate.
+    The default value is 0.0, which does no smoothing.  Range 0.0-1.0, larger values 
+    result in more smoothing.
+  
+### ImageJ Viewer
+* Bug fixes from Lewis Muir.
+
+### simDetector driver
+* Created separate simDetector.h file so class can be exported to other applications.
+      
+### Makefiles
+* Added new build variable $(XML2_INCLUDE), which replaces hardcoded /usr/include/libxml2 in
+  several Makefiles.  $(XML2_INCLUDE) is normally defined in 
+  $(AREA_DETECTOR)/configure/CONFIG_SITE.local, typically to be /usr/include/libxml2.
+* Changes to support the EPICS_LIBCOM_ONLY flag to build applications that depend only
+  on libCom and asyn.
+    
+    
+R2-1 (October 17, 2014)
+=======================
+### NDPluginFile
+* Added new optional feature "LazyOpen" which, when enabled and in "Stream" mode, will defer 
+  file creation until the first frame arrives in the plugin. This removes the need to initialise
+  the plugin with a dummy frame before starting capture.  
+
+### NDFileHDF5
+* Added support for defining the layout of the HDF5 file groups, dataset and attributes in an XML
+  definition file. This was a collaboration between DLS and APS: Ulrik Pedersen, Alan Greer, 
+  Nicholas Schwarz, and Arthur Glowacki. See project pages: 
+  [AreaDetector HDF5 XML Layout](http://confluence.diamond.ac.uk/x/epF-AQ)
+  [HDF5 Writer Plugin](https://confluence.aps.anl.gov/x/d4GG)
+
+### NDFileTiff
+* All NDArray attributes are now written as TIFF ASCII file tags, up to a maximum of 490 tags.
+  Thanks to Matt Pearson for this.
+
+### NDPluginOverlay
+* Added support for text overlays. Thanks to Keith Brister for this.
+* Added support for line width in rectangle and cross overlays.  Thanks to Matt Pearson for this.
+* Fixed problem with DrawMode=XOR. This stopped working back in 2010 when color support was added.
+
+### NDPluginTransform
+* Complete rewrite to greatly improve simplicity and efficiency.  It now supports 8 transformations
+  including the null transformation.  Performance improved by a factor of 13 to 85 depending
+  on the transformation.  Thanks to Chris Roehrig for this.
+
+### Miscellaneous
 * Added a new table to the 
   [top-level documentation] (http://cars.uchicago.edu/software/epics/areaDetector.html).
   This contains for each module, links to:
@@ -48,16 +176,10 @@ R2-1 (September XXX, 2014)
   - Release Notes
   - Directory containing pre-built binary files
 * Added support for cygwin32 architecture.  This did not work in R2-0.
-* NDFileHDF5
-    - Added support for defining the layout of the HDF5 file groups, dataset and attributes in an XML
-      definition file. This was a collaboration between DLS and APS: Ulrik Pedersen, Alan Greer, 
-      Nicholas Schwarz, and Arthur Glowacki. See project pages: 
-      [AreaDetector HDF5 XML Layout](http://confluence.diamond.ac.uk/x/epF-AQ)
-      [HDF5 Writer Plugin](https://confluence.aps.anl.gov/x/d4GG)
 
 
 R2-0 (April 4, 2014)
-----
+====================
 * Moved the repository to [Github](https://github.com/areaDetector/ADCore).
 * Re-organized the directory structure to separate the driver library from the example 
   simDetector IOC application.
@@ -66,7 +188,7 @@ R2-0 (April 4, 2014)
   must now be present on the build system computer.
 * Added support for dynamic builds on win32-x86 and windows-x64. 
 
-###NDArray and asynNDArrayDriver
+### NDArray and asynNDArrayDriver
 * Split NDArray.h and NDArray.cpp into separate files for each class: 
   NDArray, NDAttribute, NDAttributeList, and NDArrayPool.
 * Changed all report() methods to have a FILE *fp argument so output can go to a file. 
@@ -90,7 +212,7 @@ epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
 * The changes in R2-0 for enhanced timestamp support are described in 
 [areaDetectorTimeStampSupport](http://cars.uchicago.edu/software/epics/areaDetectorTimeStampSupport.html).
 
-###NDAttribute
+### NDAttribute
 * Added new attribute type, NDAttrSourceFunct. 
   This type of attribute gets its value from a user-defined C++ function. 
   It can thus be used to get any type of metadata. Previously only EPICS PVs 
@@ -112,8 +234,8 @@ epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
   only copied it to the value field when updateValue() is called.
 * Changed constructor to have 6 required paramters, added sourceType and pSource.
 
-###Plugins
-* NDPluginDriver (the base class from which all plugins derive) added the following calls
+### NDPluginDriver 
+* This is the base class from which all plugins derive. Added the following calls
   to the NDPluginDriver::processCallbacks() method:
     - setTimeStamp(&pArray->epicsTS);
     - setIntegerParam(NDEpicsTSSec, pArray->epicsTS.secPastEpoch);
@@ -127,33 +249,44 @@ epicsTimeStamp epicsTS;  /**< The epicsTimeStamp; this is set with
   NDEpicsTSSec and NDEpicsTSNsec parameters to the fields from the NDArray.epicsTS.
   These records can then be used to monitor the EPICS timestamp in the NDArray even
   if TSE is not -2.
-* NDPluginOverlay. Fixed bug in the cross overlay that caused lines not to display if the cross was 
+
+### NDPluginOverlay. 
+* Fixed bug in the cross overlay that caused lines not to display if the cross was 
   clipped to the image boundaries. The problem was attempting to store a signed value in a size_t variable. 
-* NDPluginROI. Make 3-D [X, Y, 1] arrays be converted to 2-D even if they are not RGB3. 
-* NDPluginStats. Fixed bug if a dimension was 1; this bug was introduced when changing dimensions to size_t. 
-* NDFileNetCDF. 
-    - Changes to work on vxWorks 6.8 and above.
-    - Writes 2 new variables to every netCDF file for each NDArray. 
-        - epicsTSSec contains NDArray.epicsTS.secPastEpoch. 
-        - epicsTSNsec contains NDArray.epicsTS.nsec. 
+
+### NDPluginROI. 
+* Make 3-D [X, Y, 1] arrays be converted to 2-D even if they are not RGB3. 
+
+###NDPluginStats. 
+* Fixed bug if a dimension was 1; this bug was introduced when changing dimensions to size_t. 
+
+### NDFileNetCDF. 
+* Changes to work on vxWorks 6.8 and above.
+* Writes 2 new variables to every netCDF file for each NDArray. 
+  - epicsTSSec contains NDArray.epicsTS.secPastEpoch. 
+  - epicsTSNsec contains NDArray.epicsTS.nsec. 
     
   Note that these variables are arrays of length numArrays,
   where numArrays is the number of NDArrays (images) in the file. It was not possible
   to write the timestamp as a single 64-bit value because the classic netCDF file
   format does not support 64-bit integers.
-* NDFileTIFF. Added 3 new TIFF tags to each TIFF file:</p>
-    - Tag=65001, field name=NDUniqueId, field_type=TIFF_LONG, value=NDArray.uniqueId.
-    - Tag=65002, field name=EPICSTSSec, field_type=TIFF_LONG, value=NDArray.epicsTS.secPastEpoch.
-    - Tag=65003, field name=EPICSTSNsec, field_type=TIFF_LONG, value=NDArray.epicsTS.nsec.
+
+### NDFileTIFF. 
+* Added 3 new TIFF tags to each TIFF file:</p>
+  - Tag=65001, field name=NDUniqueId, field_type=TIFF_LONG, value=NDArray.uniqueId.
+  - Tag=65002, field name=EPICSTSSec, field_type=TIFF_LONG, value=NDArray.epicsTS.secPastEpoch.
+  - Tag=65003, field name=EPICSTSNsec, field_type=TIFF_LONG, value=NDArray.epicsTS.nsec.
 
   It was not possible to write the timestamp as a single 64-bit value because TIFF
   does not support 64-bit integer tags. It does have a type called TIFF_RATIONAL which
   is a pair of 32-bit integers. However, when reading such a tag what is returned
   is the quotient of the two numbers, which is not what is desired.
-* NDPluginAttribute. New plugin that allows trending and publishing an NDArray attribute over channel access.
+
+### NDPluginAttribute. 
+* New plugin that allows trending and publishing an NDArray attribute over channel access.
 
 
 R1-9-1 and earlier
-------------------
+==================
 Release notes are part of the
 [areaDetector Release Notes](http://cars.uchicago.edu/software/epics/areaDetectorReleaseNotes.html).

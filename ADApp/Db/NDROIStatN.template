@@ -1,0 +1,209 @@
+#=================================================================#
+# Template file: NDROIStatN.template
+###################################################################
+#
+# Database template for ROI Stat plugin. These are the ROI
+# specific records. Multiple instances of this template can be
+# loaded, each with a different ADDR (which specifies the ROI).
+# Much of this was copied from the original ROI and Stats plugins.
+#
+# Macros:
+# P,R - Base PV name
+# PORT - Asyn port name
+# ROI - The address to use for this ROI (start at 0, up to maxROIs)
+#       This ROI number is appended on to the end of the R macro base PV name.
+# TIMEOUT - Asyn port timeout
+#
+# Matt Pearson
+# Nov 2014
+#
+###################################################################
+
+
+###################################################################
+#  These records control whether this ROI is used                 #
+###################################################################
+record(bo, "$(P)$(R)Use")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_USE")
+   field(VAL,  "0")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   info(autosaveFields, "VAL")
+}
+
+record(bi, "$(P)$(R)Use_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_USE")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  The name of this ROI                                           #
+###################################################################
+record(stringout, "$(P)$(R)Name")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynOctetWrite")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_NAME")
+   info(autosaveFields, "VAL")
+}
+
+###################################################################
+#  Only reset the data for this ROI                               #
+###################################################################
+record(bo, "$(P)$(R)Reset")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_RESET")
+}
+
+###################################################################
+#  These records control the background width                     #
+###################################################################
+
+record(longout, "$(P)$(R)BgdWidth")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_BGD_WIDTH")
+   field(VAL,  "0")
+   info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)BgdWidth_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_BGD_WIDTH")
+   field(SCAN, "I/O Intr")
+   info(autosaveFields, "VAL")
+}
+
+###################################################################
+#  These records control the ROI definition                       #
+#  including region start and size                                # 
+###################################################################
+
+record(longout, "$(P)$(R)MinX")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_DIM0_MIN")
+   field(VAL,  "0")
+   info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)MinX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_DIM0_MIN")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)MinY")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_DIM1_MIN")
+   field(VAL,  "0")
+   info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)MinY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_DIM1_MIN")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)SizeX")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_DIM0_SIZE")
+   field(VAL,  "1")
+   info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)SizeX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_DIM0_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)SizeY")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_DIM1_SIZE")
+   field(VAL,  "1")
+   info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)SizeY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_DIM1_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)MaxSizeX_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_DIM0_MAX_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)MaxSizeY_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_DIM1_MAX_SIZE")
+   field(SCAN, "I/O Intr")
+}
+
+
+###################################################################
+#  These records contain the statistics for the ROI               #
+###################################################################
+
+record(ai, "$(P)$(R)MinValue_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_MIN_VALUE")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)MaxValue_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_MAX_VALUE")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)MeanValue_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_MEAN_VALUE")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)Total_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_TOTAL")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)Net_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_NET")
+   field(SCAN, "I/O Intr")
+}
+

@@ -4,7 +4,11 @@ ifneq (vxWorks, $(findstring vxWorks, $(T_A)))
   LIB_LIBS              += NeXus
 endif
 LIB_LIBS                += asyn
-LIB_LIBS                += $(EPICS_BASE_IOC_LIBS)
+ifeq ($(EPICS_LIBCOM_ONLY),YES)
+  LIB_LIBS              += Com
+else
+  LIB_LIBS              += $(EPICS_BASE_IOC_LIBS)
+endif
 
 # The following libraries are only needed for GraphicsMagick
 ifeq ($(USE_GRAPHICSMAGICK), YES)
@@ -32,15 +36,22 @@ else
   LIB_LIBS_WIN32        += tiff jpeg
 endif
 
-ifeq (win32-x86-debug, $(findstring win32-x86-debug, $(T_A)))
+ifeq ($(OS_CLASS), WIN32)
+  ifeq (debug, $(findstring debug, $(T_A)))
   USR_LDFLAGS_WIN32     += /NODEFAULTLIB:LIBCMT.lib
+  endif
 endif
 
-ifeq ($(STATIC_BUILD), NO)
-  LIB_LIBS_WIN32        += hdf5dll szip zlib1 libxml2
+ifeq ($(HDF5_STATIC_BUILD), NO)
+  USR_CXXFLAGS_WIN32    += -DH5_BUILT_AS_DYNAMIC_LIB
+  USR_CFLAGS_WIN32      += -DH5_BUILT_AS_DYNAMIC_LIB
+  LIB_LIBS_WIN32        += hdf5 szip zlib
 else
-  LIB_LIBS_WIN32        += hdf5 libszip zlib libxml2
+  USR_CXXFLAGS_WIN32    += -DH5_BUILT_AS_STATIC_LIB
+  USR_CFLAGS_WIN32      += -DH5_BUILT_AS_STATIC_LIB
+  LIB_LIBS_WIN32        += libhdf5 libszip libzlib
 endif
+LIB_LIBS_WIN32          += libxml2
 LIB_SYS_LIBS_WIN32      += Gdi32 Oleaut32 
 
 LIB_SYS_LIBS_cygwin32   += libhdf5
@@ -52,14 +63,14 @@ ifdef SZIP
   LIB_LIBS_Linux          += sz
 endif
 LIB_LIBS_Linux      += hdf5
-LIB_SYS_LIBS_Linux      += tiff jpeg z
+LIB_SYS_LIBS_Linux      += tiff jpeg xml2 z
 
 LIB_LIBS_solaris        += hdf5 sz
-LIB_SYS_LIBS_solaris    += tiff jpeg z
+LIB_SYS_LIBS_solaris    += tiff jpeg xml2 z
 
 USR_LDFLAGS_Darwin      += -framework CoreFoundation
 LIB_LIBS_Darwin         += hdf5 sz
-LIB_SYS_LIBS_Darwin     += tiff jpeg z
+LIB_SYS_LIBS_Darwin     += tiff jpeg xml2 z
 
 hdf5_DIR               = $(HDF5_LIB)
 sz_DIR                 = $(SZIP_LIB)

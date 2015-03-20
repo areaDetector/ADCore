@@ -17,23 +17,28 @@
 namespace hdf5
 {
 
-  const std::string LayoutXML::ATTR_ELEMENT_NAME       = "name";
-  const std::string LayoutXML::ATTR_GROUP              = "group";
-  const std::string LayoutXML::ATTR_DATASET            = "dataset";
-  const std::string LayoutXML::ATTR_ATTRIBUTE          = "attribute";
-  const std::string LayoutXML::ATTR_GLOBAL             = "global";
+  const std::string LayoutXML::ATTR_ELEMENT_NAME           = "name";
+  const std::string LayoutXML::ATTR_ROOT                   = "hdf5_layout";
+  const std::string LayoutXML::ATTR_GROUP                  = "group";
+  const std::string LayoutXML::ATTR_DATASET                = "dataset";
+  const std::string LayoutXML::ATTR_ATTRIBUTE              = "attribute";
+  const std::string LayoutXML::ATTR_GLOBAL                 = "global";
+  const std::string LayoutXML::ATTR_HARDLINK               = "hardlink";
 
-  const std::string LayoutXML::ATTR_SOURCE             = "source";
-  const std::string LayoutXML::ATTR_SRC_DETECTOR       = "detector";
-  const std::string LayoutXML::ATTR_SRC_DET_DEFAULT    = "det_default";
-  const std::string LayoutXML::ATTR_SRC_NDATTR         = "ndattribute";
-  const std::string LayoutXML::ATTR_SRC_CONST          = "constant";
-  const std::string LayoutXML::ATTR_SRC_CONST_VALUE    = "value";
-  const std::string LayoutXML::ATTR_SRC_CONST_TYPE     = "type";
-  const std::string LayoutXML::ATTR_GRP_NDATTR_DEFAULT = "ndattr_default";
-  const std::string LayoutXML::ATTR_SRC_WHEN           = "when";
-  const std::string LayoutXML::ATTR_GLOBAL_NAME        = "name";
-  const std::string LayoutXML::ATTR_GLOBAL_VALUE       = "ndattribute";
+  const std::string LayoutXML::ATTR_ROOT_NDATTR_DEFAULT    = "auto_ndattr_default";
+  const std::string LayoutXML::ATTR_SOURCE                 = "source";
+  const std::string LayoutXML::ATTR_SRC_DETECTOR           = "detector";
+  const std::string LayoutXML::ATTR_SRC_DET_DEFAULT        = "det_default";
+  const std::string LayoutXML::ATTR_SRC_NDATTR             = "ndattribute";
+  const std::string LayoutXML::ATTR_SRC_CONST              = "constant";
+  const std::string LayoutXML::ATTR_SRC_CONST_VALUE        = "value";
+  const std::string LayoutXML::ATTR_SRC_CONST_TYPE         = "type";
+  const std::string LayoutXML::ATTR_GRP_NDATTR_DEFAULT     = "ndattr_default";
+  const std::string LayoutXML::ATTR_SRC_WHEN               = "when";
+  const std::string LayoutXML::ATTR_GLOBAL_NAME            = "name";
+  const std::string LayoutXML::ATTR_GLOBAL_VALUE           = "ndattribute";
+  const std::string LayoutXML::ATTR_HARDLINK_NAME          = "name";
+  const std::string LayoutXML::ATTR_HARDLINK_TARGET        = "target";
 
   const std::string LayoutXML::DEFAULT_LAYOUT = " \
   <group name=\"entry\"> \
@@ -61,11 +66,11 @@ namespace hdf5
     </group>              <!-- end group instrument --> \
     <group name=\"data\"> \
       <attribute name=\"NX_class\" source=\"constant\" value=\"NXdata\" type=\"string\"></attribute> \
-      <!-- needs a hard link from /entry/instrument/detector/data to /entry/data/data --> \
+      <hardlink name=\"data\" target=\"/entry/instrument/detector/data\"></hardlink> \
     </group>              <!-- end group data --> \
   </group>                <!-- end group entry --> ";
 
-  LayoutXML::LayoutXML() : ptr_tree(NULL), ptr_curr_element(NULL)
+  LayoutXML::LayoutXML() : auto_ndattr_default(true), ptr_tree(NULL), ptr_curr_element(NULL)
   {
     log = log4cxx::Logger::getLogger("LayoutXML");
 
@@ -86,6 +91,7 @@ namespace hdf5
   int LayoutXML::load_xml()
   {
     int ret = 0;
+    auto_ndattr_default = true;
     this->xmlreader = xmlReaderForMemory(DEFAULT_LAYOUT.c_str(),
                                          (int)DEFAULT_LAYOUT.size(),
                                          "noname.xml",
@@ -120,6 +126,7 @@ namespace hdf5
   int LayoutXML::load_xml(const std::string& filename)
   {
     int ret = 0;
+    auto_ndattr_default = true;
     // if the file name contains <?xml then load it as an xml string from memory
     if (filename.find("<?xml") != std::string::npos){
       this->xmlreader = xmlReaderForMemory(filename.c_str(), (int)filename.length(), NULL, NULL, 0);
@@ -156,6 +163,7 @@ namespace hdf5
   {
     int ret = 0;
     int status = 0;
+    auto_ndattr_default = true;
 
     // if the file name contains <?xml then load it as an xml string from memory
     if (filename.find("<?xml") != std::string::npos){
@@ -229,6 +237,11 @@ namespace hdf5
     return this->globals[name];
   }
 
+  bool LayoutXML::getAutoNDAttrDefault()
+  {
+    return auto_ndattr_default;
+  }
+
   /** Process one XML node and create the necessary HDF5 element if necessary
    *
    */
@@ -244,13 +257,14 @@ namespace hdf5
     }
 
     std::string name((const char*)xmlname);
-
     switch( type )
     {
       // Elements can be either 'group', 'dataset' or 'attribute'
       case XML_READER_TYPE_ELEMENT:
         //LOG4CXX_DEBUG(log, "process_node: \'" << name << "\' (" << xmlname << ")" );
-        if (name == LayoutXML::ATTR_GROUP){
+        if (name == LayoutXML::ATTR_ROOT){
+          ret = this->parse_root();
+        } else if (name == LayoutXML::ATTR_GROUP){
           ret = this->new_group();
         } else if (name == LayoutXML::ATTR_DATASET){
           ret = this->new_dataset();
@@ -258,6 +272,8 @@ namespace hdf5
           ret = this->new_attribute();
         } else if (name == LayoutXML::ATTR_GLOBAL){
           ret = this->new_global();
+        } else if (name == LayoutXML::ATTR_HARDLINK){
+          ret = this->new_hardlink();
         }
         if (ret != 0){
           LOG4CXX_WARN(log, "adding new node: " << name << " failed..." );
@@ -385,6 +401,35 @@ namespace hdf5
     }
     ret = 0;
     return ret;
+  }
+
+  int LayoutXML::parse_root()
+  {
+    // First check the basics, no attributes is not an error but we should return
+    if (! xmlTextReaderHasAttributes(this->xmlreader) ) return 0;
+
+    // Check for the auto_ndattr_default tag
+    xmlChar * root_auto = NULL;
+    root_auto = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar *)LayoutXML::ATTR_ROOT_NDATTR_DEFAULT.c_str());
+
+    // A tag has been added but it's not the one we expect, return an error
+    if (root_auto == NULL) return -1;
+
+    // Get the standard string representation of the tag
+    std::string str_root_auto((char*)root_auto);
+    xmlFree(root_auto);
+
+    // Now check if we have the correct string
+    if (str_root_auto == "false"){
+      // Set our flag to false and return success
+      auto_ndattr_default = false;
+      return 0;
+    } else if (str_root_auto == "true"){
+      // Do nothing but return success
+      return 0;
+    }
+    // Any strings other than false (or true) are not understood, return an error
+    return -1;
   }
 
   int LayoutXML::new_group()
@@ -550,6 +595,27 @@ namespace hdf5
 
     this->globals[str_global_name] = str_global_value;
     return ret;
+  }
+
+  int LayoutXML::new_hardlink()
+  {
+    // First check the basics
+    if (! xmlTextReaderHasAttributes(this->xmlreader) ) return -1;
+    xmlChar *hardlink_name = NULL;
+    hardlink_name = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_ELEMENT_NAME.c_str());
+    if (hardlink_name == NULL) return -1;
+    xmlChar *hardlink_target = NULL;
+    hardlink_target = xmlTextReaderGetAttribute(this->xmlreader, (const xmlChar*)LayoutXML::ATTR_HARDLINK_TARGET.c_str());
+    if (hardlink_target == NULL) return -1;
+
+    std::string str_hardlink_name((char*)hardlink_name);
+    Group *parent = (Group *)this->ptr_curr_element;
+    HardLink *hardlink = NULL;
+    hardlink = parent->new_hardlink(str_hardlink_name);
+    if (hardlink == NULL) return -1;
+    const std::string str_hardlink_target((char*)hardlink_target);
+    hardlink->set_target(str_hardlink_target);
+    return 0;
   }
 
 } // hdf5

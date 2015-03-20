@@ -1,3 +1,5 @@
+#=================================================================#
+# Template file: NDFile.template
 # Database for NDFile driver, which saves files for NDArray data.
 # Mark Rivers
 # April 7, 2008
@@ -14,6 +16,7 @@ record(waveform, "$(P)$(R)FilePath")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_PATH")
     field(FTVL, "CHAR")
     field(NELM, "256")
+    info(autosaveFields, "VAL")
 }
 
 record(waveform, "$(P)$(R)FilePath_RBV")
@@ -36,6 +39,23 @@ record(bi, "$(P)$(R)FilePathExists_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(longout, "$(P)$(R)CreateDirectory")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CREATE_DIR")
+    field(VAL,  "0" )
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)CreateDirectory_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CREATE_DIR")
+    field(VAL,  "")
+    field(SCAN, "I/O Intr")
+}
+
 # Filename
 record(waveform, "$(P)$(R)FileName")
 {
@@ -44,6 +64,7 @@ record(waveform, "$(P)$(R)FileName")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NAME")
     field(FTVL, "CHAR")
     field(NELM, "256")
+    info(autosaveFields, "VAL")
 }
 
 record(waveform, "$(P)$(R)FileName_RBV")
@@ -58,16 +79,11 @@ record(waveform, "$(P)$(R)FileName_RBV")
 record(longout, "$(P)$(R)FileNumber")
 {
     field(PINI, "YES")
-    field(OUT, "$(P)$(R)FileNumber_write PP")
-    field(VAL, "1")
-}
-
-record(longout, "$(P)$(R)FileNumber_write")
-{
-    field(SDIS, "$(P)$(R)FileNumber_Sync.PACT")
-    field(DISV, "1")
     field(DTYP, "asynInt32")
-    field(OUT, "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NUMBER")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NUMBER")
+    field(VAL,  "1")
+    info(asyn:READBACK, "1")
+    info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)FileNumber_RBV")
@@ -75,14 +91,6 @@ record(longin, "$(P)$(R)FileNumber_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_NUMBER")
     field(SCAN, "I/O Intr")
-    field(FLNK, "$(P)$(R)FileNumber_Sync")
-}
-
-record(longout, "$(P)$(R)FileNumber_Sync")
-{
-    field(DOL,  "$(P)$(R)FileNumber_RBV NPP")
-    field(OMSL, "closed_loop")
-    field(OUT,  "$(P)$(R)FileNumber PP")
 }
 
 # Autoincrement flag
@@ -94,6 +102,7 @@ record(bo, "$(P)$(R)AutoIncrement")
     field(VAL,  "1")
     field(ZNAM, "No")
     field(ONAM, "Yes")
+    info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)AutoIncrement_RBV")
@@ -113,6 +122,7 @@ record(waveform, "$(P)$(R)FileTemplate")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_TEMPLATE")
     field(FTVL, "CHAR")
     field(NELM, "256")
+    info(autosaveFields, "VAL")
 }
 
 record(waveform, "$(P)$(R)FileTemplate_RBV")
@@ -142,6 +152,7 @@ record(bo, "$(P)$(R)AutoSave")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))AUTO_SAVE")
     field(ZNAM, "No")
     field(ONAM, "Yes")
+    info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)AutoSave_RBV")
@@ -205,6 +216,7 @@ record(mbbo, "$(P)$(R)FileFormat")
     field(ZRVL, "0")
     field(ONST, "Invalid")
     field(ONVL, "1")
+    info(autosaveFields, "VAL")
 }
 
 record(mbbi, "$(P)$(R)FileFormat_RBV")
@@ -231,6 +243,7 @@ record(mbbo, "$(P)$(R)FileWriteMode")
     field(ONVL, "1")
     field(TWST, "Stream")
     field(TWVL, "2")
+    info(autosaveFields, "VAL")
 }
 
 record(mbbi, "$(P)$(R)FileWriteMode_RBV")
@@ -272,6 +285,7 @@ record(longout, "$(P)$(R)NumCapture")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_CAPTURE")
     field(VAL,  "1")
+    info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)NumCapture_RBV")
@@ -297,6 +311,7 @@ record(bo, "$(P)$(R)DeleteDriverFile")
     field(VAL,  "0")
     field(ZNAM, "No")
     field(ONAM, "Yes")
+    info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)DeleteDriverFile_RBV")
@@ -336,6 +351,7 @@ record(bo, "$(P)$(R)LazyOpen")
     field(VAL,  "0")
     field(ZNAM, "No")
     field(ONAM, "Yes")
+    info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)LazyOpen_RBV")
@@ -347,3 +363,18 @@ record(bi, "$(P)$(R)LazyOpen_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(stringout, "$(P)$(R)TempSuffix")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynOctetWrite")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_TEMP_SUFFIX")
+    field(VAL,  "")
+}
+
+record(stringin, "$(P)$(R)TempSuffix_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FILE_TEMP_SUFFIX")
+    field(VAL,  "")
+    field(SCAN, "I/O Intr")
+}

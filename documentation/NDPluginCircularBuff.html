@@ -1,0 +1,488 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>areaDetector Plugin NDPluginCircularBuff</title>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+</head>
+<body>
+  <div style="text-align: center">
+    <h1>
+      areaDetector Plugin NDPluginCircularBuff</h1>
+    <h2>
+      March 9, 2015</h2>
+    <h2>
+      Edmund Warrick, Diamond Light Source</h2>
+    <h2>
+      Mark Rivers, University of Chicago</h2>
+  </div>
+  <h2>
+    Contents</h2>
+  <ul>
+    <li><a href="#Overview">Overview</a></li>
+    <li><a href="#Configuration">Configuration</a></li>
+    <li><a href="#Screens">Screen shots</a></li>
+    <li><a href="#Restrictions">Restrictions</a></li>
+  </ul>
+  <h2 id="Overview">
+    Overview
+  </h2>
+  <p>
+    NDPluginCircularBuff is a triggering plugin. It receives NDArrays from a plugin
+    or driver and checks whether a user-defined trigger condition has been met. The
+    trigger condition is based on the values of up to two NDAttributes attached to the
+    NDArray. The attribute values are used in a general calculation expression that
+    defines the trigger condition. Once the trigger condition is detected the plugin
+    outputs the triggering NDArray, along with a configurable number of pre- and post-trigger
+    NDArrays. Triggering can also be performed using a soft trigger, controlled from
+    the "Trigger" database record.</p>
+  <p>
+    Acquisition is started by setting the "NDCircBuffControl" parameter to non-zero
+    (via the "Capture" record in the associated database). The plugin then copies all
+    received NDArrays to its ring buffer, wrapping once the specified pre-count is reached.</p>
+  <p>
+    Once the trigger is detected, the plugin will immediately output all the NDArrays
+    stored in the ring buffer in order from oldest to newest (by calling doCallbacksGenericPointer).
+    After the trigger is set, new NDArrays will then be output as soon as they arrive,
+    until the post-count is reached. The plugin will then stop buffering or outputting
+    NDArrays until it is retarted via NDCircBuffControl. The plugin will also automatically
+    restart if the following condition is true:</p>
+  <pre>
+     (PresetTriggerCount == 0) || ((PresetTriggerCount > 0) && (ActualTriggerCount < PresetTriggerCount)))
+    </pre>
+  <p>
+    NDPluginCircularBuff inherits from NDPluginDriver. The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_circular_buff.html">
+      NDPluginCircularBuff class documentation</a> describes this class in detail.
+  </p>
+  <p>
+    NDPluginCircularBuff defines the following parameters. It also implements all of
+    the standard plugin parameters from <a href="pluginDoc.html#NDPluginDriver">NDPluginDriver</a>
+    . The EPICS database NDCircularBuff.template provides access to these parameters,
+    listed in the following table.
+  </p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>Parameter Definitions in NDPluginCircularBuff.h and EPICS Record Definitions in
+            NDCircularBuff.template</b></td>
+      </tr>
+      <tr>
+        <th>
+          Parameter index variable</th>
+        <th>
+          asyn interface</th>
+        <th>
+          Access</th>
+        <th>
+          Description</th>
+        <th>
+          drvInfo string</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          EPICS record type</th>
+      </tr>
+      <tr>
+        <td>
+          NDCircBuffControl</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Toggle triggering & buffering on/off</td>
+        <td>
+          CIRC_BUFF_CONTROL</td>
+        <td>
+          $(P)$(R)Capture
+          <br />
+          $(P)$(R)Capture_RBV </td>
+        <td>
+          busy
+          <br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          NDCircBuffStatus</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/o</td>
+        <td>
+          Plugin status feedback string</td>
+        <td>
+          CIRC_BUFF_STATUS</td>
+        <td>
+          $(P)$(R)StatusMessage</td>
+        <td>
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          NDCircBuffPreTrigger</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Number of pre-trigger NDArrays to store</td>
+        <td>
+          CIRC_BUFF_PRE_TRIGGER</td>
+        <td>
+          $(P)$(R)PreCount
+          <br />
+          $(P)$(R)PreCount_RBV</td>
+        <td>
+          longout
+          <br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDCircBuffPostTrigger</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Number of post-trigger NDArrays to output</td>
+        <td>
+          CIRC_BUFF_POST_TRIGGER</td>
+        <td>
+          $(P)$(R)PostCount
+          <br />
+          $(P)$(R)PostCount_RBV</td>
+        <td>
+          longout
+          <br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDCircBuffTriggerA</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Name of the NDAttribute for trigger A.</td>
+        <td>
+          CIRC_BUFF_TRIGGER_A</td>
+        <td>
+          $(P)$(R)TriggerA
+          <br />
+          $(P)$(R)TriggerA_RBV</td>
+        <td>
+          stringout
+          <br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          NDCircBuffTriggerB</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Name of the NDAttribute for trigger B</td>
+        <td>
+          CIRC_BUFF_TRIGGER_B</td>
+        <td>
+          $(P)$(R)TriggerB
+          <br />
+          $(P)$(R)TriggerB_RBV</td>
+        <td>
+          stringout
+          <br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          NDCircBuffTriggerAVal</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Value of the NDAttribute for trigger A. The attribute defined by TriggerA must have
+          a numeric datatype, not string. This value field only updates when the plugin is
+          capturing (Capture=1).</td>
+        <td>
+          CIRC_BUFF_TRIGGER_A_VAL</td>
+        <td>
+          $(P)$(R)TriggerAVal</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDCircBuffTriggerBVal</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Value of the NDAttribute for trigger B. The attribute defined by TriggerB must have
+          a numeric datatype, not string. This value field only updates when the plugin is
+          capturing (Capture=1).</td>
+        <td>
+          CIRC_BUFF_TRIGGER_B_VAL</td>
+        <td>
+          $(P)$(R)TriggerBVal</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDCircBuffTriggerCalc</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          The calculation expression for the trigger. This can be any valid expression accepted
+          by the EPICS calc routines in libCom, and used for example in the EPICS calc record.
+          The maximum length of the expression is currently set to MAX_INFIX_SIZE (100) defined
+          in postfix.h in EPICS base.</td>
+        <td>
+          CIRC_BUFF_TRIGGER_CALC</td>
+        <td>
+          $(P)$(R)TriggerCalc<br />
+          $(P)$(R)TriggerCalc_RBV</td>
+        <td>
+          waveform
+          <br />
+          waveform</td>
+      </tr>
+      <tr>
+        <td>
+          NDCircBuffTriggerCalcVal</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Value of the calculated expression. This value field only updates when the plugin
+          is capturing (Capture=1).</td>
+        <td>
+          CIRC_BUFF_TRIGGER_CALC_VAL</td>
+        <td>
+          $(P)$(R)TriggerCalcVal</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDCircBuffPresetTriggerCount</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Controls how many times the plugin can be triggered before capture stops. The default
+          is 1, so the plugin will only trigger once and then stop capturing. If this is 0
+          then the plugin will continue to retrigger forever until it is stopped by setting
+          Capture=0.</td>
+        <td>
+          CIRC_BUFF_PRESET_TRIGGER_COUNT</td>
+        <td>
+          $(P)$(R)PresetTriggerCount<br />
+          $(P)$(R)PresetTriggerCount_RBV</td>
+        <td>
+          longout
+          <br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDCircBuffActualTriggerCount</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The number of triggers that have occurred since capture was last started.</td>
+        <td>
+          CIRC_BUFF_ACTUAL_TRIGGER_COUNT</td>
+        <td>
+          $(P)$(R)ActualTriggerCount_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDCircBuffCurrentImage</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Number of NDArrays currently stored in ring buffer</td>
+        <td>
+          CIRC_BUFF_CURRENT_IMAGE</td>
+        <td>
+          $(P)$(R)CurrentQty_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDCircBuffPostCount</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Number of post-trigger NDArrays emitted so far</td>
+        <td>
+          CIRC_BUFF_POST_COUNT</td>
+        <td>
+          $(P)$(R)PostTriggerQty_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDCircBuffSoftTrigger</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Set to non-zero to force a trigger on next NDArray</td>
+        <td>
+          CIRC_BUFF_SOFT_TRIGGER</td>
+        <td>
+          $(P)$(R)Trigger</td>
+        <td>
+          busy</td>
+      </tr>
+      <tr>
+        <td>
+          NDCircBuffTriggered</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Current trigger status</td>
+        <td>
+          CIRC_BUFF_TRIGGERED</td>
+        <td>
+          $(P)$(R)Trigger_RBV</td>
+        <td>
+          bi</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    Triggering using NDArray attributes is quite powerful. Two NDArray attributes can
+    be used for triggering. The names of these attributes are defined with the TriggerA
+    and TriggerB records. The values of these attributes must be numeric, not string.
+    The TriggerCalc record defines a calculation expression that uses that same syntax
+    as the EPICS calc record. If the expression evaluates to a non-zero value then the
+    plugin will be triggered. The variables in the expression are defined as follows:</p>
+  <ul>
+    <li>A The current value of the NDAttribute defined by TriggerA.</li>
+    <li>B The current value of the NDAttribute defined by TriggerB.</li>
+    <li>C The value of the PreCount record</li>
+    <li>D The value of the PostCount record</li>
+    <li>E The value of the CurrentQty_RBV record</li>
+    <li>F The value of the PostTriggerQty_RBV record</li>
+    <li>G The value of the Trigger_RBV record</li>
+  </ul>
+  <p>
+    The following are some example expressions. They assume that the NDPluginCircularBuff
+    plugin is getting its data from the NDPluginStats plugin and that the NDPluginStats
+    plugin is using an attributes XML file containing the following lines:</p>
+  <pre>
+   &lt;attribute name="MaxValue"  type="PARAM" source="MAX_VALUE"       datatype="DOUBLE" description="Maximum value" /&gt;
+   &lt;attribute name="CentroidX" type="PARAM" source="CENTROIDX_VALUE" datatype="DOUBLE" description="Centroid X position" /&gt;
+  </pre>
+  <p>
+    Assume that TriggerA is set to MaxValue and TriggerB is set to CentroidX.</p>
+  <p>
+    The following are examples of some expressions that can then be used for triggering:</p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <th>
+          Expression</th>
+        <th>
+          Description</th>
+      </tr>
+      <tr>
+        <td>
+          A&lt;200</td>
+        <td>
+          Intensity of brightest pixel is less than 200</td>
+      </tr>
+      <tr>
+        <td>
+          A&gt;1.5*H &amp;&amp; E&gt;50;H:=A</td>
+        <td>
+          Intensity of brightest pixel (A) is more than 150% of the value in the previous
+          image (H) and there are at least 50 images in the circular buffer. Set H to A after
+          evaluation. </td>
+      </tr>
+      <tr>
+        <td>
+          B&lt;300 || A&gt;100</td>
+        <td>
+          X centroid is less than pixel 300 or the maximum intensity is greater than 100.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    If the TriggerA or TriggerB attrbutes do not exist, or if they are non-numeric datatype
+    then the TriggerAVal or TriggerBVal is set to NaN (Not a Number). If that value
+    is used in the calculation expression then in some cases the TriggerCalcVal will
+    also be NaN (for example A+B will be NaN). If TriggerCalcVal is NaN or Infinity
+    then the expression is treated as 0 and the trigger will not occur. However, some
+    expressions involving NaN arguments do not result in a NaN result and could result
+    in false triggers. For example (A&&B) evaluates as 1 when both A and B are NaN.
+    To avoid this problem the isnan() and isinf() functions can be used in the expression.</p>
+  <p>
+    It is possible to continuously output individual NDArrays that match the trigger
+    condition. To do this set PreCount=0, PostCount=1, and PresetTriggerCount=0.
+  </p>
+  <h2 id="Screens">
+    Screen shots</h2>
+  <p>
+    The following is the MEDM screen that provides access to the parameters in NDPluginDriver.h
+    and NDPluginCircularBuff.h through records in NDPluginBase.template and NDCircularBuff.template.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDCircularBuff.adl</h3>
+    <p>
+      <img alt="NDCircularBuff.png" src="NDCircularBuff.png" /></p>
+  </div>
+  <h2 id="Configuration">
+    Configuration</h2>
+  <p>
+    The NDPluginCircularBuff plugin is created with the NDCircularBuffConfigure command,
+    either from C/C++ or from the EPICS IOC shell.</p>
+  <pre>
+NDCircularBuffConfigure(const char *portName, int queueSize, int blockingCallbacks,
+                        const char *NDArrayPort, int NDArrayAddr,
+                        int maxBuffers, size_t maxMemory)
+  </pre>
+  <p>
+    For details on the meaning of the parameters to this function refer to the detailed
+    documentation on the NDCircularBuffConfigure function in the <a href="areaDetectorDoxygenHTML/_n_d_plugin_circular_buff_cpp.html">
+      NDPluginCircularBuff.cpp documentation</a> and in the documentation for the constructor
+    for the <a href="areaDetectorDoxygenHTML/class_n_d_plugin_circular_buff.html">NDPluginCircularBuff
+      class</a>.
+  </p>
+  <p>
+    In particular, note that maxBuffers constrains the size of the ring buffer - the
+    plugin will discard any changes to the pre- or post count if this would result in
+    (pre-count + post-count) exceeding maxBuffers.
+  </p>
+</body>
+</html>

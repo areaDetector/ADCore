@@ -1,6 +1,10 @@
+#=================================================================#
+# Template file: simDetector.template
 # Database for the records specific to the simulated detector driver
 # Mark Rivers
 # March 23, 2008
+
+include "ADBase.template"
 
 # Redefine the color mode choices from ADBase.template to only have those that the simDetector
 # driver supports.  Keep the same values (xxVL), but change the menu numbers.
@@ -47,6 +51,7 @@ record(ao, "$(P)$(R)GainX")
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAIN_X")
    field(PREC, "2")
+   info(autosaveFields, "VAL")
 }
 
 record(ai, "$(P)$(R)GainX_RBV")
@@ -63,6 +68,7 @@ record(ao, "$(P)$(R)GainY")
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAIN_Y")
    field(PREC, "2")
+   info(autosaveFields, "VAL")
 }
 
 record(ai, "$(P)$(R)GainY_RBV")
@@ -79,6 +85,7 @@ record(ao, "$(P)$(R)GainRed")
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAIN_RED")
    field(PREC, "2")
+   info(autosaveFields, "VAL")
 }
 
 record(ai, "$(P)$(R)GainRed_RBV")
@@ -95,6 +102,7 @@ record(ao, "$(P)$(R)GainGreen")
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAIN_GREEN")
    field(PREC, "2")
+   info(autosaveFields, "VAL")
 }
 
 record(ai, "$(P)$(R)GainGreen_RBV")
@@ -111,6 +119,7 @@ record(ao, "$(P)$(R)GainBlue")
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_GAIN_BLUE")
    field(PREC, "2")
+   info(autosaveFields, "VAL")
 }
 
 record(ai, "$(P)$(R)GainBlue_RBV")
@@ -139,6 +148,7 @@ record(longout, "$(P)$(R)Noise")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_NOISE")
+   info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)Noise_RBV")
@@ -157,6 +167,7 @@ record(mbbo, "$(P)$(R)SimMode")
    field(ZRVL, "0")
    field(ONST, "Peaks")
    field(ONVL, "1")
+   info(autosaveFields, "VAL")
 }
 
 record(mbbi, "$(P)$(R)SimMode_RBV")
@@ -176,6 +187,7 @@ record(longout, "$(P)$(R)PeakStartX")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_START_X")
+   info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)PeakStartX_RBV")
@@ -190,6 +202,7 @@ record(longout, "$(P)$(R)PeakStartY")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_START_Y")
+   info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)PeakStartY_RBV")
@@ -204,6 +217,7 @@ record(longout, "$(P)$(R)PeakNumX")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_NUM_X")
+   info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)PeakNumX_RBV")
@@ -218,6 +232,7 @@ record(longout, "$(P)$(R)PeakNumY")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_NUM_Y")
+   info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)PeakNumY_RBV")
@@ -232,6 +247,7 @@ record(longout, "$(P)$(R)PeakStepX")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_STEP_X")
+   info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)PeakStepX_RBV")
@@ -246,6 +262,7 @@ record(longout, "$(P)$(R)PeakStepY")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_STEP_Y")
+   info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)PeakStepY_RBV")
@@ -260,6 +277,7 @@ record(longout, "$(P)$(R)PeakWidthX")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_WIDTH_X")
+   info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)PeakWidthX_RBV")
@@ -274,6 +292,7 @@ record(longout, "$(P)$(R)PeakWidthY")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_WIDTH_Y")
+   info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)PeakWidthY_RBV")
@@ -288,6 +307,7 @@ record(longout, "$(P)$(R)PeakVariation")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIM_PEAK_HEIGHT_VARIATION")
+   info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)PeakVariation_RBV")

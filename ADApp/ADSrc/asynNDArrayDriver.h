@@ -27,9 +27,12 @@ typedef enum {
  /*                               String                 asyn interface  access   Description  */
 #define NDPortNameSelfString    "PORT_NAME_SELF"    /**< (asynOctet,    r/o) Asyn port name of this driver instance */
 
-    /* Parameters defining characteristics of the array data from the detector.
-     * NDArraySizeX and NDArraySizeY are the actual dimensions of the array data,
-     * including effects of the region definition and binning */
+/** ADCore version string */
+#define NDADCoreVersionString   "ADCORE_VERSION"    /**< (asynOctet,    r/o) Version of ADCore */
+
+/* Parameters defining characteristics of the array data from the detector.
+ * NDArraySizeX and NDArraySizeY are the actual dimensions of the array data,
+ * including effects of the region definition and binning */
 #define NDArraySizeXString      "ARRAY_SIZE_X"      /**< (asynInt32,    r/o) Size of the array data in the X direction */
 #define NDArraySizeYString      "ARRAY_SIZE_Y"      /**< (asynInt32,    r/o) Size of the array data in the Y direction */
 #define NDArraySizeZString      "ARRAY_SIZE_Z"      /**< (asynInt32,    r/o) Size of the array data in the Z direction */
@@ -44,15 +47,15 @@ typedef enum {
 #define NDEpicsTSNsecString     "EPICS_TS_NSEC"     /**< (asynInt32,    r/o) EPOCS time stamp nsec of array */
 #define NDBayerPatternString    "BAYER_PATTERN"     /**< (asynInt32,    r/o) Bayer pattern of array  (from bayerPattern array attribute if present) */
 
-    /* Statistics on number of arrays collected */
+/* Statistics on number of arrays collected */
 #define NDArrayCounterString    "ARRAY_COUNTER"     /**< (asynInt32,    r/w) Number of arrays since last reset */
 
-    /* File name related parameters for saving data.
-     * Drivers are not required to implement file saving, but if they do these parameters
-     * should be used.
-     * The driver will normally combine NDFilePath, NDFileName, and NDFileNumber into
-     * a file name that order using the format specification in NDFileTemplate.
-     * For example NDFileTemplate might be "%s%s_%d.tif" */
+/* File name related parameters for saving data.
+ * Drivers are not required to implement file saving, but if they do these parameters
+ * should be used.
+ * The driver will normally combine NDFilePath, NDFileName, and NDFileNumber into
+ * a file name that order using the format specification in NDFileTemplate.
+ * For example NDFileTemplate might be "%s%s_%d.tif" */
 #define NDFilePathString        "FILE_PATH"         /**< (asynOctet,    r/w) The file path */
 #define NDFilePathExistsString  "FILE_PATH_EXISTS"  /**< (asynInt32,    r/w) File path exists? */
 #define NDFileNameString        "FILE_NAME"         /**< (asynOctet,    r/w) The file name */
@@ -72,15 +75,16 @@ typedef enum {
 #define NDFileCaptureString     "CAPTURE"           /**< (asynInt32,    r/w) Start or stop capturing arrays */
 #define NDFileDeleteDriverFileString  "DELETE_DRIVER_FILE"  /**< (asynInt32,    r/w) Delete driver file */
 #define NDFileLazyOpenString    "FILE_LAZY_OPEN"    /**< (asynInt32,    r/w) Don't open file until first frame arrives in Stream mode */
-
+#define NDFileCreateDirString   "CREATE_DIR"        /**< (asynInt32,    r/w) Create the target directory up to this depth */
+#define NDFileTempSuffixString  "FILE_TEMP_SUFFIX"  /**< (asynOctet,    r/w) Temporary filename suffix while writing data to file. The file will be renamed (suffix removed) upon closing the file. */
 
 #define NDAttributesFileString  "ND_ATTRIBUTES_FILE" /**< (asynOctet,    r/w) Attributes file name */
 
-    /* The detector array data */
+/* The detector array data */
 #define NDArrayDataString       "ARRAY_DATA"        /**< (asynGenericPointer,   r/w) NDArray data */
 #define NDArrayCallbacksString  "ARRAY_CALLBACKS"   /**< (asynInt32,    r/w) Do callbacks with array data (0=No, 1=Yes) */
 
-    /* NDArray Pool status */
+/* NDArray Pool status */
 #define NDPoolMaxBuffersString      "POOL_MAX_BUFFERS"
 #define NDPoolAllocBuffersString    "POOL_ALLOC_BUFFERS"
 #define NDPoolFreeBuffersString     "POOL_FREE_BUFFERS"
@@ -108,15 +112,17 @@ public:
     virtual void report(FILE *fp, int details);
 
     /* These are the methods that are new to this class */
-    virtual int checkPath();
-    virtual int createFileName(int maxChars, char *fullFileName);
-    virtual int createFileName(int maxChars, char *filePath, char *fileName);
-    virtual int readNDAttributesFile(const char *fileName);
-    virtual int getAttributes(NDAttributeList *pAttributeList);
+    virtual asynStatus createFilePath(const char *path, int pathDepth);
+    virtual asynStatus checkPath();
+    virtual asynStatus createFileName(int maxChars, char *fullFileName);
+    virtual asynStatus createFileName(int maxChars, char *filePath, char *fileName);
+    virtual asynStatus readNDAttributesFile(const char *fileName);
+    virtual asynStatus getAttributes(NDAttributeList *pAttributeList);
 
 protected:
     int NDPortNameSelf;
     #define FIRST_NDARRAY_PARAM NDPortNameSelf
+    int NDADCoreVersion;
     int NDArraySizeX;
     int NDArraySizeY;
     int NDArraySizeZ;
@@ -150,6 +156,8 @@ protected:
     int NDFileCapture;   
     int NDFileDeleteDriverFile;
     int NDFileLazyOpen;
+    int NDFileCreateDir;
+    int NDFileTempSuffix;
     int NDAttributesFile;
     int NDArrayData;
     int NDArrayCallbacks;

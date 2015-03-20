@@ -1,0 +1,183 @@
+<?xml version="1.0" standalone="no" ?>
+
+<hdf5_layout>
+    <group name="entry"> 
+        <attribute name="NX_class" source="constant" value="NXentry" type="string" />
+        <attribute name="signal"   source="constant" value="data" type="string" />  <!-- TODO: check this with NeXus -->
+
+        <dataset name="definition"    value="NXsas"       source="constant" type="string" >
+                <attribute name="version" source="constant" value="1.0" type="string" />
+                <attribute name="URL" source="constant" type="string" 
+                    value="http://download.nexusformat.org/doc/html/classes/applications/NXsas.html" />
+        </dataset>
+
+        <dataset name="start_time"     ndattribute="StartTime"      source="ndattribute" />
+        <dataset name="end_time"       ndattribute="EndTime"        source="ndattribute" />
+        <dataset name="title"          ndattribute="SampleTitle"    source="ndattribute" />
+        <dataset name="run_cycle"      ndattribute="APS_run_cycle"  source="ndattribute" />
+        <dataset name="program_name"   value="NeXus areaDetector"   source="constant"    type="string"  />
+        <dataset name="AD_template_ID" source="constant"  type="string"  
+            value="$Id: pilatus_layout.xml 8015 2015-02-24 18:28:27Z jemian $"  />
+
+        <group name="instrument"> 
+            <attribute name="NX_class" source="constant"    value="NXinstrument" type="string" />
+            
+            <dataset name="name"               value="USAXS"   source="constant"    type="string" />
+            <dataset name="facility_name"      value="APS"     source="constant"    type="string" />
+            <dataset name="facility_sector"    value="XSD/9ID" source="constant"    type="string" />
+            <dataset name="facility_beamline"  value="9ID"     source="constant"    type="string" />
+            <dataset name="facility_station"   value="C"       source="constant"    type="string" />
+
+            <group name="aperture">
+                <attribute name="NX_class" source="constant" value="NXaperture" type="string" />
+
+                <dataset name="description"  value="USAXSslit"           source="constant"   type="string" />
+                <dataset name="shape"        value="nxbox"               source="constant"   type="string" />
+                <dataset name="hsize"        ndattribute="USAXSslitHap"  source="ndattribute" />  <!-- TODO: units? -->
+                <dataset name="vsize"        ndattribute="USAXSslitVap"  source="ndattribute" />  <!-- TODO: units? -->
+                <dataset name="hcenter"      ndattribute="USAXSslitHpos" source="ndattribute"  />  <!-- TODO: units? -->
+                <dataset name="vcenter"      ndattribute="USAXSslitVpos" source="ndattribute"  />  <!-- TODO: units? -->
+            </group>              <!-- NXaperture -->
+
+            <group name="attenuator">
+                <attribute name="NX_class" source="constant" value="NXattenuator" type="string" />
+
+                <dataset name="name"      value="XIA filter boxes"  source="constant"    type="string" />
+                <dataset name="type"      value="Al, Ti, and/or glass"  source="constant"    type="string" />
+                <dataset name="filterAl"   ndattribute="filterAl"  source="ndattribute">
+                    <attribute name="units"   value="mm"   source="constant" type="string" />
+                    <attribute name="target"  value="/entry/instrument/attenuator/filterAl"  source="constant"  type="string" />
+                </dataset>
+                <dataset name="filterTi"   ndattribute="filterTi"  source="ndattribute">
+                    <attribute name="units"   value="mm"   source="constant" type="string" />
+                    <attribute name="target"  value="/entry/instrument/attenuator/filterTi"  source="constant"  type="string" />
+                </dataset>
+                <dataset name="filterGlass"   ndattribute="filterGlass"  source="ndattribute">
+                    <attribute name="units"   value="mm"   source="constant" type="string" />
+                    <attribute name="target"  value="/entry/instrument/attenuator/filterGlass"  source="constant"  type="string" />
+                </dataset>
+                <dataset name="filterTrans"   ndattribute="filterTrans"  source="ndattribute">
+                    <attribute name="target"  value="/entry/instrument/attenuator/filterTrans"  source="constant"  type="string" />
+                </dataset>
+                <hardlink name="attenuator_transmission"   target="/entry/instrument/attenuator/filterTrans" />
+                <hardlink name="thickness_Al"              target="/entry/instrument/attenuator/filterAl" />
+                <hardlink name="thickness_Ti"              target="/entry/instrument/attenuator/filterTi" />
+                <hardlink name="thickness_glass"           target="/entry/instrument/attenuator/filterGlass" />
+            </group>              <!-- NXattenuator -->
+
+            <group name="detector"> 
+                <attribute name="NX_class" source="constant" value="NXdetector" type="string" /> 
+
+                <dataset name="data" source="detector" det_default="true"> 
+                    <attribute name="target"         value="/entry/instrument/detector/data" source="constant"    type="string" />
+                    <attribute name="ImageCounter"   ndattribute="ImageCounter"  source="ndattribute" />
+                    <attribute name="make"           ndattribute="Manufacturer"  source="ndattribute" />
+                    <!-- <attribute name="model"          ndattribute="Model"         source="ndattribute" /> -->
+                    <attribute name="maxSizeX"       ndattribute="MaxSizeX"      source="ndattribute" />
+                    <attribute name="maxSizeY"       ndattribute="MaxSizeY"      source="ndattribute" />
+                    <attribute name="USAXSmode"      ndattribute="ScanMacro"     source="ndattribute" />
+                </dataset>
+                <!-- <dataset name="model"     ndattribute="Model"    source="ndattribute" /> -->
+                <dataset name="model"     value="Pilatus"  source="constant"     type="string"  />
+
+                <dataset name="distance"    ndattribute="SDD"  source="ndattribute" >
+                    <attribute name="target"      value="/entry/instrument/detector/distance"    source="constant"    type="string" />
+                </dataset>
+                <hardlink name="SDD"       target="/entry/instrument/detector/distance" />
+                <dataset name="layout"  value="area"  source="constant"     type="string" />
+                <dataset name="beam_center_x"  ndattribute="pin_ccd_center_x"    source="ndattribute">
+                     <attribute name="units"   value="mm"   source="constant" type="string" />
+                </dataset>
+                <dataset name="beam_center_y"  ndattribute="pin_ccd_center_y"    source="ndattribute">
+                     <attribute name="units"   value="mm"   source="constant" type="string" />
+                </dataset>
+                <dataset name="x_pixel_size"   ndattribute="pin_ccd_pixel_size_x"    source="ndattribute">
+                     <attribute name="units"   value="mm"   source="constant" type="string" />
+                </dataset>
+                <dataset name="y_pixel_size"   ndattribute="pin_ccd_pixel_size_y"    source="ndattribute">
+                     <attribute name="units"   value="mm"   source="constant" type="string" />
+                </dataset>
+                
+                <!-- duplication, could be better names, ensure these get into the NXdetector group -->
+                <dataset name="pin_ccd_center_x"         ndattribute="pin_ccd_center_x"        source="ndattribute" />
+                <dataset name="pin_ccd_center_y"         ndattribute="pin_ccd_center_y"        source="ndattribute" />
+                <dataset name="pin_ccd_center_x_pixel"   ndattribute="pin_ccd_center_x_pixel"  source="ndattribute" />
+                <dataset name="pin_ccd_center_y_pixel"   ndattribute="pin_ccd_center_y_pixel"  source="ndattribute" />
+                <dataset name="pin_ccd_pixel_size_x"     ndattribute="pin_ccd_pixel_size_x"    source="ndattribute" />
+                <dataset name="pin_ccd_pixel_size_y"     ndattribute="pin_ccd_pixel_size_y"    source="ndattribute" />
+                <dataset name="pin_ccd_tilt_x"           ndattribute="pin_ccd_tilt_x"          source="ndattribute" />
+                <dataset name="pin_ccd_tilt_y"           ndattribute="pin_ccd_tilt_y"          source="ndattribute" />
+
+            </group>            <!-- NXdetector -->
+            
+            <group name="NDattributes" ndattr_default="true"> 
+                <attribute name="NX_class" source="constant" value="NXcollection" type="string" />
+                <!-- contains any attributes not described elsewhere-->
+            </group>              <!-- NXcollection -->
+
+            <group name="monochromator"> 
+                <attribute name="NX_class" value="NXmonochromator" source="constant" type="string" />
+
+                <dataset name="energy"      ndattribute="monoE"       source="ndattribute">
+                    <attribute name="units" ndattribute="monoE_EGU"   source="ndattribute" />
+                </dataset>
+                <dataset name="wavelength"  ndattribute="wavelength"   source="ndattribute" >
+                    <attribute name="units" value="A"   source="constant" type="string" />
+                </dataset>
+                <dataset name="wavelength_spread" ndattribute="wavelength_spread"  source="ndattribute" />
+            </group>            <!-- NXmonochromator -->
+            
+            <group name="source"> 
+                <attribute name="NX_class"   source="constant" value="NXsource"  type="string" />
+                <attribute name="short_name" source="constant" value="APS-9ID-C" type="string" />
+                
+                <dataset name="name"      value="Advanced Photon Source Undulator A, sector 9ID-C"  source="constant"    type="string" />
+                <dataset name="probe"     value="x-ray"                                             source="constant"    type="string" />
+                <dataset name="type"      value="Synchrotron X-ray Source"                           source="constant"    type="string" />
+            </group>            <!-- NXsource -->
+
+            </group>              <!-- NXinstrument -->
+
+        <group name="control"> 
+            <attribute name="NX_class" source="constant" value="NXmonitor" type="string" />
+            
+            <dataset name="integral"    source="ndattribute" ndattribute="I0_cts" />
+            <dataset name="mode"        source="constant"    value="timer"   type="string" />
+            <dataset name="preset"      source="ndattribute" ndattribute="PresetTime" />
+        </group>              <!-- NXmonitor -->
+
+        <group name="data"> 
+            <attribute name="NX_class" source="constant" value="NXdata" type="string" />
+            <attribute name="signal"   source="constant" value="data" type="string" />
+            
+            <hardlink name="data"       target="/entry/instrument/detector/data" />  <!-- *the data* -->
+
+            <dataset name="local_name"  source="constant"    value="Pilatus 100K"  type="string" />
+            <dataset name="make"        source="ndattribute" ndattribute="Manufacturer"  />
+            <dataset name="model"       source="ndattribute" ndattribute="Model"   />
+            <dataset name="description" source="ndattribute" ndattribute="Model"  >
+                <attribute name="make"  source="ndattribute" ndattribute="Manufacturer" /> 
+            </dataset>
+        </group>              <!-- NXdata -->
+
+        <group name="sample"> 
+            <attribute name="NX_class" source="constant" value="NXsample" type="string" />
+            
+            <dataset name="name"              source="ndattribute" ndattribute="SampleTitle" />
+            <dataset name="aequatorial_angle" source="ndattribute" ndattribute="sa">
+                <attribute name="units"       source="constant"    value="degrees" type="string" />
+            </dataset>
+            <dataset name="thickness"         source="ndattribute" ndattribute="sthick">
+                <attribute name="units"       source="constant"    value="mm" type="string" />
+            </dataset>
+        </group>              <!-- NXsample -->
+
+        <group name="user1"> 
+            <attribute name="NX_class" source="constant" value="NXuser" type="string" />
+            
+            <dataset name="name"              source="ndattribute" ndattribute="UserName" />
+            <dataset name="proposal_number"   source="ndattribute" ndattribute="GUPNumber" />
+        </group>              <!-- NXuser -->
+
+    </group>                <!-- NXentry -->
+</hdf5_layout>

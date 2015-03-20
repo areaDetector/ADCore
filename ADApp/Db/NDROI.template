@@ -1,6 +1,10 @@
+#=================================================================#
+# Template file: NDROI.template
 # Database for ND ROIs
 # Mark Rivers
 # April 22, 2008
+
+include "NDPluginBase.template"
 
 ###################################################################
 #  These records control the label for the ROI                    #
@@ -10,6 +14,7 @@ record(stringout, "$(P)$(R)Name")
    field(PINI, "YES")
    field(DTYP, "asynOctetWrite")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NAME")
+   info(autosaveFields, "VAL")
 }
 
 record(stringin, "$(P)$(R)Name_RBV")
@@ -30,6 +35,7 @@ record(longout, "$(P)$(R)BinX")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_BIN")
    field(VAL,  "1")
+   info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)BinX_RBV")
@@ -45,6 +51,7 @@ record(longout, "$(P)$(R)BinY")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_BIN")
    field(VAL,  "1")
+   info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)BinY_RBV")
@@ -60,6 +67,7 @@ record(longout, "$(P)$(R)BinZ")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_BIN")
    field(VAL,  "1")
+   info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)BinZ_RBV")
@@ -76,6 +84,7 @@ record(longout, "$(P)$(R)MinX")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_MIN")
    field(LOPR, "0")
    field(VAL,  "0")
+   info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)MinX_RBV")
@@ -92,6 +101,7 @@ record(longout, "$(P)$(R)MinY")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_MIN")
    field(LOPR, "0")
    field(VAL,  "0")
+   info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)MinY_RBV")
@@ -108,6 +118,7 @@ record(longout, "$(P)$(R)MinZ")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_MIN")
    field(LOPR, "1")
    field(VAL,  "0")
+   info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)MinZ_RBV")
@@ -123,6 +134,7 @@ record(longout, "$(P)$(R)SizeX")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM0_SIZE")
    field(VAL,  "1000000")
+   info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)SizeX_RBV")
@@ -138,6 +150,7 @@ record(longout, "$(P)$(R)SizeY")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM1_SIZE")
    field(VAL,  "1000000")
+   info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)SizeY_RBV")
@@ -153,6 +166,7 @@ record(longout, "$(P)$(R)SizeZ")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DIM2_SIZE")
    field(VAL,  "1000000")
+   info(autosaveFields, "VAL")
 }
 
 record(longin, "$(P)$(R)SizeZ_RBV")
@@ -170,6 +184,7 @@ record(bo, "$(P)$(R)AutoSizeX")
    field(VAL,  "0")
    field(ZNAM, "No")
    field(ONAM, "Yes")
+   info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)AutoSizeX_RBV")
@@ -189,6 +204,7 @@ record(bo, "$(P)$(R)AutoSizeY")
    field(VAL,  "0")
    field(ZNAM, "No")
    field(ONAM, "Yes")
+   info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)AutoSizeY_RBV")
@@ -208,6 +224,7 @@ record(bo, "$(P)$(R)AutoSizeZ")
    field(VAL,  "0")
    field(ZNAM, "No")
    field(ONAM, "Yes")
+   info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)AutoSizeZ_RBV")
@@ -248,6 +265,7 @@ record(bo, "$(P)$(R)ReverseX")
    field(VAL,  "0")
    field(ZNAM, "No")
    field(ONAM, "Yes")
+   info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)ReverseX_RBV")
@@ -267,6 +285,7 @@ record(bo, "$(P)$(R)ReverseY")
    field(VAL,  "0")
    field(ZNAM, "No")
    field(ONAM, "Yes")
+   info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)ReverseY_RBV")
@@ -286,6 +305,7 @@ record(bo, "$(P)$(R)ReverseZ")
    field(VAL,  "0")
    field(ZNAM, "No")
    field(ONAM, "Yes")
+   info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)ReverseZ_RBV")
@@ -326,6 +346,7 @@ record(bo, "$(P)$(R)EnableX")
    field(VAL,  "1")
    field(ZNAM, "Disable")
    field(ONAM, "Enable")
+   info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)EnableX_RBV")
@@ -347,6 +368,7 @@ record(bo, "$(P)$(R)EnableY")
    field(VAL,  "1")
    field(ZNAM, "Disable")
    field(ONAM, "Enable")
+   info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)EnableY_RBV")
@@ -368,6 +390,7 @@ record(bo, "$(P)$(R)EnableZ")
    field(VAL,  "1")
    field(ZNAM, "Disable")
    field(ONAM, "Enable")
+   info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)EnableZ_RBV")
@@ -395,6 +418,7 @@ record(bo, "$(P)$(R)EnableScale")
    field(VAL,  "0")
    field(ZNAM, "Disable")
    field(ONAM, "Enable")
+   info(autosaveFields, "VAL")
 }
 
 record(bi, "$(P)$(R)EnableScale_RBV")
@@ -412,9 +436,9 @@ record(ao, "$(P)$(R)Scale")
 {
    field(PINI, "YES")
    field(DTYP, "asynFloat64")
-   field(VAL,  "1")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SCALE_VALUE")
    field(VAL,  "1")
+   info(autosaveFields, "VAL")
 }
 
 record(ai, "$(P)$(R)Scale_RBV")
@@ -455,6 +479,7 @@ record(mbbo, "$(P)$(R)DataTypeOut")
    field(EIST, "Automatic")
    field(EIVL, "-1")
    field(VAL,  "8")
+   info(autosaveFields, "VAL")
 }
 
 record(mbbi, "$(P)$(R)DataTypeOut_RBV")
