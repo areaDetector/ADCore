@@ -15,6 +15,9 @@ endif
 USR_CXXFLAGS_Linux += -D_LINUX -D_x86 -O0
 USR_CXXFLAGS_Darwin += -D_OSX -D_x86
 
+# Persuade travis (ubuntu 12.04) to use HDF5 API V2 (1.8 rather than default 1.6)
+USR_CXXFLAGS_Linux += -DH5_NO_DEPRECATED_SYMBOLS -DH5Gopen_vers=2
+
 # We no longer set the -DHAVE_PVAPI flag to build the Bayer conversion in NDPluginColorConvert
 # because PvAPI binary is no longer included.  This can be done in CONFIG_SITE if the library is available.
 #USR_CXXFLAGS_Linux += -DHAVE_PVAPI
