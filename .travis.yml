@@ -20,8 +20,21 @@ install:
   - echo "HDF5_INCLUDE=-I/usr/include" >>         configure/CONFIG_SITE.linux-x86_64.Common
   - echo "XML2_INCLUDE=-I/usr/include/libxml2" >> configure/CONFIG_SITE.linux-x86_64.Common
 
+  # Configure the example IOCs in preparation for build
+  #- echo "BUILD_IOCS=YES" >> configure/CONFIG_SITE.linux-x86_64.Common
+  - cp configure/RELEASE.local                    iocs/simDetectorIOC/configure/
+  - cp configure/CONFIG_SITE.linux-x86_64.Common  iocs/simDetectorIOC/configure/
+  - echo "ADCORE=`pwd`">>                         iocs/simDetectorIOC/configure/RELEASE.local
+  - cp configure/RELEASE.local                    iocs/simDetectorNoIOC/configure/
+  - cp configure/CONFIG_SITE.linux-x86_64.Common  iocs/simDetectorNoIOC/configure/
+  - echo "ADCORE=`pwd`">>                         iocs/simDetectorNoIOC/configure/RELEASE.local
+
   # Run the build
   - EPICS_BASE=/usr/lib/epics EPICS_CA_HOST_ARCH=linux-x86_64 make
+
+  # Build the simDetectorIOC only. The new simDetectorNoIOC cannot be built as asyn 4-23
+  # from the NSLS-II repo does not have the asynPortClient class.
+  - EPICS_BASE=/usr/lib/epics EPICS_CA_HOST_ARCH=linux-x86_64 make -C iocs/simDetectorIOC
 
 # Finally run the tests
 script:
