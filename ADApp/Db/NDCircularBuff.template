@@ -1,3 +1,5 @@
+#=================================================================#
+# Template file: NDCircularBuff.template
 # Macros:
 # % macro, P,         Device Prefix
 # % macro, R,         Device Suffix
@@ -5,6 +7,8 @@
 # % macro, PRECOUNT,  Pre-trigger frame count
 # % macro, POSTCOUNT, Post-trigger frame count
 # % gui, $(PORT), edmtab, NDCircularBuff.edl, P=$(P),R=$(R)
+
+include "NDPluginBase.template"
 
 # # Control record, are we running
 record(busy, "$(P)$(R)Capture") {

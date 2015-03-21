@@ -89,6 +89,7 @@ namespace hdf5
       Attribute(const Attribute& src); // Copy constructor
       Attribute(std::string& name);
       Attribute(const char* name);
+      Attribute(const char* name, DataSource& src);
       ~Attribute(){};
       Attribute& operator=(const Attribute& src);
       std::string get_name();

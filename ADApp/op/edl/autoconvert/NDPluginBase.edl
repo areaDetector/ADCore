@@ -3,10 +3,10 @@ beginScreenProperties
 major 4
 minor 0
 release 0
-x 679
-y 87
+x 213
+y 51
 w 380
-h 505
+h 530
 font "helvetica-medium-r-18.0"
 ctlFont "helvetica-medium-r-8.0"
 btnFont "helvetica-medium-r-18.0"
@@ -23,21 +23,6 @@ snapToGrid
 gridSize 5
 endScreenProperties
 
-
-# (Rectangle)
-object activeRectangleClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 0
-y 0
-w 380
-h 505
-lineColor index 14
-fillColor index 14
-lineWidth 0
-endObjectProperties
 
 # (Text Control)
 object activeXTextDspClass
@@ -175,25 +160,6 @@ nullColor index 32
 useHexPrefix
 objType "controls"
 newPos
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 97
-y 104
-w 60
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "Enable"
-}
 endObjectProperties
 
 # (Static Text)
@@ -394,31 +360,6 @@ value {
 }
 endObjectProperties
 
-# (Text Control)
-object activeXTextDspClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 273
-y 105
-w 100
-h 18
-controlPv "$(P)$(R)EnableCallbacks_RBV"
-font "helvetica-medium-r-8.0"
-smartRefresh
-fastUpdate
-fgColor index 54
-fgAlarm
-bgColor index 12
-autoHeight
-format decimal
-nullColor index 32
-useHexPrefix
-objType "controls"
-newPos
-endObjectProperties
-
 # (Static Text)
 object activeXTextClass
 beginObjectProperties
@@ -461,20 +402,6 @@ useHexPrefix
 objType "controls"
 newPos
 endObjectProperties
-
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 7
-y 204
-w 370
-h 295
-
-beginGroup
-
 
 # (Text Control)
 object activeXTextDspClass
@@ -929,25 +856,6 @@ beginObjectProperties
 major 4
 minor 0
 release 0
-x 47
-y 479
-w 110
-h 20
-font "helvetica-medium-r-8.0"
-fontAlign "right"
-fgColor index 14
-useDisplayBg
-value {
- "asyn record"
-}
-endObjectProperties
-
-# (Static Text)
-object activeXTextClass
-beginObjectProperties
-major 4
-minor 0
-release 0
 x 7
 y 454
 w 150
@@ -1111,11 +1019,6 @@ endGroup
 endObjectProperties
 
 
-endGroup
-
-endObjectProperties
-
-
 # (Text Control)
 object activeXTextDspClass
 beginObjectProperties
@@ -1141,24 +1044,164 @@ objType "controls"
 newPos
 endObjectProperties
 
-# (Menu Button)
-object activeMenuButtonClass
+# (Group)
+object activeGroupClass
 beginObjectProperties
 major 4
 minor 0
 release 0
-x 167
-y 104
-w 100
+x 47
+y 504
+w 220
 h 20
+
+beginGroup
+
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 47
+y 504
+w 110
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
 fgColor index 14
-bgColor index 51
-inconsistentColor index 12
-topShadowColor index 2
-botShadowColor index 12
-controlPv "$(P)$(R)EnableCallbacks"
-indicatorPv "$(P)$(R)EnableCallbacks"
-font "helvetica-medium-r-10.0"
+useDisplayBg
+value {
+ "asyn record"
+}
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 0
+y 0
+w 380
+h 530
+lineColor index 14
+fillColor index 14
+lineWidth 0
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 97
+y 104
+w 276
+h 20
+
+beginGroup
+
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 97
+y 104
+w 60
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Enable"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 273
+y 105
+w 100
+h 18
+controlPv "$(P)$(R)EnableCallbacks_RBV"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 54
+fgAlarm
+bgColor index 12
+autoHeight
+format decimal
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 7
+y 479
+w 150
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Array callbacks"
+}
+endObjectProperties
+
+# (Text Control)
+object activeXTextDspClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 273
+y 480
+w 100
+h 18
+controlPv "$(P)$(R)ArrayCallbacks_RBV"
+font "helvetica-medium-r-8.0"
+smartRefresh
+fastUpdate
+fgColor index 54
+fgAlarm
+bgColor index 12
+autoHeight
+format decimal
+nullColor index 32
+useHexPrefix
+objType "controls"
+newPos
 endObjectProperties
 
 # (Menu Button)
@@ -1179,48 +1222,6 @@ botShadowColor index 12
 controlPv "$(P)$(R)BlockingCallbacks"
 indicatorPv "$(P)$(R)BlockingCallbacks"
 font "helvetica-medium-r-10.0"
-endObjectProperties
-# (Group)
-object activeGroupClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 7
-y 204
-w 370
-h 295
-
-beginGroup
-
-
-# (Related Display)
-object relatedDisplayClass
-beginObjectProperties
-major 4
-minor 0
-release 0
-x 167
-y 479
-w 100
-h 20
-fgColor index 14
-bgColor index 51
-topShadowColor index 2
-botShadowColor index 12
-font "helvetica-medium-r-10.0"
-icon
-numPvs 2
-numDsps 1
-displayFileName {
-  0 asynRecord.adl
-}
-menuLabel {
-  0 asynRecord
-}
-symbols {
-  0 "P=$(P),R=$(R)AsynIO"
-}
 endObjectProperties
 # (Group)
 object activeGroupClass
@@ -1258,9 +1259,109 @@ endGroup
 
 endObjectProperties
 
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 47
+y 504
+w 220
+h 20
+
+beginGroup
+
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 167
+y 504
+w 100
+h 20
+fgColor index 14
+bgColor index 51
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-10.0"
+icon
+numPvs 2
+numDsps 1
+displayFileName {
+  0 asynRecord.adl
+}
+menuLabel {
+  0 asynRecord
+}
+symbols {
+  0 "P=$(P),R=$(R)AsynIO"
+}
+endObjectProperties
 
 endGroup
 
 endObjectProperties
 
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 97
+y 104
+w 276
+h 20
+
+beginGroup
+
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 167
+y 104
+w 100
+h 20
+fgColor index 14
+bgColor index 51
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)EnableCallbacks"
+indicatorPv "$(P)$(R)EnableCallbacks"
+font "helvetica-medium-r-10.0"
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 167
+y 479
+w 100
+h 20
+fgColor index 14
+bgColor index 51
+inconsistentColor index 12
+topShadowColor index 2
+botShadowColor index 12
+controlPv "$(P)$(R)ArrayCallbacks"
+indicatorPv "$(P)$(R)ArrayCallbacks"
+font "helvetica-medium-r-10.0"
+endObjectProperties
 

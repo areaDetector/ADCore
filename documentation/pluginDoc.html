@@ -80,11 +80,13 @@
   <p>
     NDPluginDriver inherits from <a href="areaDetectorDoc.html#asynNDArrayDriver">asynNDArrayDriver</a>.
     NDPluginDriver is the class from which actual plugins are directly derived. The
-    NDPluginDriver class handles most of the details of processing NDArray callbacks
-    from the driver. Plugins derived from this class typically need to implement the
-    processCallbacks method, and one or more of the write(Int32, Float64, Octet) methods.
-    The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_driver.html">NDPluginDriver
-      class documentation </a>describes this class in detail.
+    EPICS database NDArrayBase.template provides access to each of the parameters defined
+    in asynNDArrayDriver, and the <a href="areaDetectorDoc.html#asynNDArrayDriver">asynNDArrayDriver</a>
+    documentation describes that database. The NDPluginDriver class handles most of
+    the details of processing NDArray callbacks from the driver. Plugins derived from
+    this class typically need to implement the processCallbacks method, and one or more
+    of the write(Int32, Float64, Octet) methods. The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_driver.html">
+      NDPluginDriver class documentation </a>describes this class in detail.
   </p>
   <p>
     NDPluginDriver defines parameters that all plugin drivers should implement if possible.
@@ -120,22 +122,6 @@
       <tr>
         <td align="center" colspan="7,">
           <b>Information about this plugin</b></td>
-      </tr>
-      <tr>
-        <td>
-          NDPortNameSelf</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/o</td>
-        <td>
-          asyn port name</td>
-        <td>
-          PORT_NAME_SELF</td>
-        <td>
-          $(P)$(R)PortName_RBV</td>
-        <td>
-          stringin</td>
       </tr>
       <tr>
         <td>
@@ -257,113 +243,6 @@
       </tr>
       <tr>
         <td align="center" colspan="7,">
-          <b>NDArray pool size and status (only for plugins that generate NDArrays for use by
-            other plugins)</b></td>
-      </tr>
-      <tr>
-        <td>
-          NDPool<br />
-          MaxMemory</td>
-        <td>
-          asynFloat64</td>
-        <td>
-          r/o</td>
-        <td>
-          The maximum amount of NDArrayPool memory this plugin is allowed to allocate.</td>
-        <td>
-          POOL_MAX_MEMORY</td>
-        <td>
-          $(P)$(R)PoolMaxMem</td>
-        <td>
-          ai</td>
-      </tr>
-      <tr>
-        <td>
-          NDPool<br />
-          UsedMemory</td>
-        <td>
-          asynFloat64</td>
-        <td>
-          r/o</td>
-        <td>
-          The actual amount of NDArrayPool memory this plugin is currently using.</td>
-        <td>
-          POOL_USED_MEMORY</td>
-        <td>
-          $(P)$(R)PoolUsedMem</td>
-        <td>
-          ai</td>
-      </tr>
-      <tr>
-        <td>
-          NDPool<br />
-          MaxBuffers</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          The maximum number of NDArrays this plugin is allowed to allocate.</td>
-        <td>
-          POOL_MAX_BUFFERS</td>
-        <td>
-          $(P)$(R)PoolMaxBuffers</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPool<br />
-          AllocBuffers</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          The number of NDArrays this plugin has currently allocated.</td>
-        <td>
-          POOL_ALLOC_BUFFERS</td>
-        <td>
-          $(P)$(R)PoolAllocBuffers</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPool<br />
-          FreeBuffers</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          The number of free NDArrays this plugin has in its NDArrayPool.</td>
-        <td>
-          POOL_FREE_BUFFERS</td>
-        <td>
-          $(P)$(R)PoolFreeBuffers</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          N/A</td>
-        <td>
-          N.A</td>
-        <td>
-          N/A</td>
-        <td>
-          The number of used NDArrays this plugin has in its NDArrayPool. Calculated from
-          PoolAllocBuffers and PoolFreeBuffers.</td>
-        <td>
-          N/A</td>
-        <td>
-          $(P)$(R)PoolUsedBuffers</td>
-        <td>
-          calc</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
           <b>Callback enable, minimum time, and statistics</b></td>
       </tr>
       <tr>
@@ -434,41 +313,6 @@
       <tr>
         <td>
           NDPluginDriver<br />
-          ArrayCounter</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Counter that increments by 1 each time an NDArray callback is processed</td>
-        <td>
-          ARRAY_COUNTER</td>
-        <td>
-          $(P)$(R)ArrayCounter<br />
-          $(P)$(R)ArrayCounter_RBV</td>
-        <td>
-          longout<br />
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          N/A</td>
-        <td>
-          N/A</td>
-        <td>
-          r/o</td>
-        <td>
-          Rate (Hz) at which ArrayCounter is incrementing. Computed in database.</td>
-        <td>
-          N/A</td>
-        <td>
-          $(P)$(R)ArrayRate_RBV</td>
-        <td>
-          calc</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginDriver<br />
           DroppedArrays</td>
         <td>
           asynInt32</td>
@@ -488,200 +332,6 @@
       </tr>
       <tr>
         <td align="center" colspan="7,">
-          <b>Information about last NDArray callback data</b></td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginDriver<br />
-          NDimensions</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Number of dimensions in last NDArray callback data</td>
-        <td>
-          ARRAY_NDIMENSIONS</td>
-        <td>
-          $(P)$(R)NDimensions_RBV</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginDriver<br />
-          Dimensions</td>
-        <td>
-          asynInt32Array</td>
-        <td>
-          r/o</td>
-        <td>
-          Dimensions in last NDArray callback data</td>
-        <td>
-          ARRAY_DIMENSIONS</td>
-        <td>
-          $(P)$(R)Dimensions_RBV</td>
-        <td>
-          waveform</td>
-      </tr>
-      <tr>
-        <td>
-          N/A</td>
-        <td>
-          N/A</td>
-        <td>
-          r/o</td>
-        <td>
-          First dimension of NDArray callback data</td>
-        <td>
-          N/A</td>
-        <td>
-          $(P)$(R)ArraySize0_RBV</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          N/A</td>
-        <td>
-          N/A</td>
-        <td>
-          r/o</td>
-        <td>
-          Second dimension of NDArray callback data</td>
-        <td>
-          N/A</td>
-        <td>
-          $(P)$(R)ArraySize1_RBV</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          N/A</td>
-        <td>
-          N/A</td>
-        <td>
-          r/o</td>
-        <td>
-          Third dimension of NDArray callback data</td>
-        <td>
-          N/A</td>
-        <td>
-          $(P)$(R)ArraySize2_RBV</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginDriver<br />
-          DataType</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Data type of last NDArray callback data (NDDataType_t).</td>
-        <td>
-          DATA_TYPE</td>
-        <td>
-          $(P)$(R)DataType_RBV</td>
-        <td>
-          mbbi</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginDriver<br />
-          ColorMode</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Color mode of last NDArray callback data (NDColorMode_t).</td>
-        <td>
-          COLOR_MODE</td>
-        <td>
-          $(P)$(R)ColorMode_RBV</td>
-        <td>
-          mbbi</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginDriver<br />
-          BayerPattern</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          BayerPattern of last NDArray callback data (NDBayerPattern_t).</td>
-        <td>
-          BAYER_PATTERN</td>
-        <td>
-          $(P)$(R)BayerPattern_RBV</td>
-        <td>
-          mbbi</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginDriver<br />
-          UniqueId</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/o</td>
-        <td>
-          Unique ID number of last NDArray callback data</td>
-        <td>
-          UNIQUE_ID</td>
-        <td>
-          $(P)$(R)UniqueId_RBV</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          NDPluginDriver<br />
-          TimeStamp</td>
-        <td>
-          asynFloat64</td>
-        <td>
-          r/o</td>
-        <td>
-          Time stamp number of last NDArray callback data</td>
-        <td>
-          TIME_STAMP</td>
-        <td>
-          $(P)$(R)TimeStamp_RBV</td>
-        <td>
-          ai</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7">
-          <b>Array attributes</b></td>
-      </tr>
-      <tr>
-        <td>
-          NDAttributesFile</td>
-        <td>
-          asynOctet</td>
-        <td>
-          r/w</td>
-        <td>
-          The name of an XML file defining the PVAttributes and paramAttributes to be added
-          to each NDArray by this plugin. The format of the XML file is described in the documentation
-          for <a href="areaDetectorDoxygenHTML/classasyn_n_d_array_driver.html">asynNDArrayDriver::readNDAttributesFile().</a>
-        </td>
-        <td>
-          ND_ATTRIBUTES_FILE</td>
-        <td>
-          $(P)$(R)NDAttributesFile</td>
-        <td>
-          waveform</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7,">
           <b>Debugging control</b></td>
       </tr>
       <tr>
@@ -692,13 +342,12 @@
         <td>
           N/A</td>
         <td>
-          asyn record to control debugging (asynTrace)</td>
-        <td>
-          N/A</td>
-        <td>
-          $(P)$(R)AsynIO</td>
-        <td>
-          asyn</td>
+          <td>
+            N/A</td>
+          <td>
+            $(P)$(R)AsynIO</td>
+          <td>
+            asyn</td>
       </tr>
     </tbody>
   </table>
