@@ -5,15 +5,16 @@ export EPICS_HOST_ARCH=linux-x86_64
 
 mkdir external
 cd external
-wget -nv http://www.aps.anl.gov/bcda/synApps/tar/calc_R3-4-2.tar.gz
-tar -zxf calc_R3-4-2.tar.gz
-echo "EPICS_BASE=/usr/lib/epics" > calc-3-4-2/configure/RELEASE
-make -C calc-3-4-2/
-
 wget -nv http://www.aps.anl.gov/bcda/synApps/tar/sscan_R2-10.tar.gz
 tar -zxf sscan_R2-10.tar.gz
 echo "EPICS_BASE=/usr/lib/epics" > sscan-2-10/configure/RELEASE
 make -C sscan-2-10/
+
+wget -nv http://www.aps.anl.gov/bcda/synApps/tar/calc_R3-4-2.tar.gz
+tar -zxf calc_R3-4-2.tar.gz
+echo "SSCAN=`pwd`/sscan-2-10" > calc-3-4-2/configure/RELEASE
+echo "EPICS_BASE=/usr/lib/epics" >> calc-3-4-2/configure/RELEASE
+make -C calc-3-4-2/
 
 wget -nv http://www.aps.anl.gov/epics/download/modules/asyn4-26.tar.gz
 tar -zxf asyn4-26.tar.gz

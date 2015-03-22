@@ -30,17 +30,16 @@ install:
   - echo "BUSY=`pwd`/external/busy-1-6-1"      >> configure/RELEASE.local
   - echo "CALC=`pwd`/external/calc-3-4-2"      >> configure/RELEASE.local
   - echo "SSCAN=`pwd`/external/sscan-2-10"     >> configure/RELEASE.local
+  - echo "AUTOSAVE=`pwd`/external/autosave-5-5" >> configure/RELEASE.local
 
   # Configure the example IOCs in preparation for build
   - echo "BUILD_IOCS=YES" >> configure/CONFIG_SITE.linux-x86_64.Common
   - cp configure/RELEASE.local                    iocs/simDetectorIOC/configure/
   - cp configure/CONFIG_SITE.linux-x86_64.Common  iocs/simDetectorIOC/configure/
   - echo "ADCORE=`pwd`">>                         iocs/simDetectorIOC/configure/RELEASE.local
-  - echo "AUTOSAVE=`pwd`/external/autosave-5-5" >> iocs/simDetectorIOC/configure/RELEASE.local
   - cp configure/RELEASE.local                    iocs/simDetectorNoIOC/configure/
   - cp configure/CONFIG_SITE.linux-x86_64.Common  iocs/simDetectorNoIOC/configure/
   - echo "ADCORE=`pwd`">>                         iocs/simDetectorNoIOC/configure/RELEASE.local
-  - echo "AUTOSAVE=`pwd`/external/autosave-5-5">> iocs/simDetectorNoIOC/configure/RELEASE.local
 
   # Run the build
   - EPICS_BASE=/usr/lib/epics EPICS_CA_HOST_ARCH=linux-x86_64 make
@@ -54,5 +53,5 @@ script:
   - ls -al lib/*
   - ls -al bin/*
   #- ./bin/linux-x86_64/test_big_classic testbigclassic.cdf
-  - ./bin/linux-x86_64/NDPluginCircularBuff_test
+  - ./bin/linux-x86_64/plugin-test --log_level=test_suite
 
