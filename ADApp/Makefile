@@ -19,7 +19,7 @@ DIRS += nexusSrc
 
 DIRS += tiffSupport
 
-ifeq ($(USE_BOOST_UTF),YES)
+ifdef BOOST
   DIRS += pluginTests
   pluginTests_DEPEND_DIRS += ADSrc pluginSrc simDetectorSrc
 endif

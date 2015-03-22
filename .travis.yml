@@ -22,6 +22,10 @@ install:
   - echo "HDF5_LIB=/usr/lib" >>                   configure/CONFIG_SITE.linux-x86_64.Common
   - echo "HDF5_INCLUDE=-I/usr/include" >>         configure/CONFIG_SITE.linux-x86_64.Common
   - echo "XML2_INCLUDE=-I/usr/include/libxml2" >> configure/CONFIG_SITE.linux-x86_64.Common
+  - echo "BOOST=/usr" >>                          configure/CONFIG_SITE.linux-x86_64.Common
+  - echo "BOOST_LIB=/usr/lib" >>                  configure/CONFIG_SITE.linux-x86_64.Common
+  - echo "BOOST_INCLUDE=/usr/include" >>          configure/CONFIG_SITE.linux-x86_64.Common
+
   - echo "ASYN=`pwd`/external/asyn4-26"        >> configure/RELEASE.local
   - echo "BUSY=`pwd`/external/busy-1-6-1"      >> configure/RELEASE.local
   - echo "CALC=`pwd`/external/calc-3-4-2"      >> configure/RELEASE.local
@@ -50,4 +54,5 @@ script:
   - ls -al lib/*
   - ls -al bin/*
   #- ./bin/linux-x86_64/test_big_classic testbigclassic.cdf
+  - ./bin/linux-x86_64/NDPluginCircularBuff_test
 
