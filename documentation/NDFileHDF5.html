@@ -403,6 +403,16 @@
     HDF5 File Viewers
   </h3>
   <p>
+    Note that with the current (1.8) release series of the HDF5 libraries it is
+    not possible to do a live "monitoring" of a file which is being written by 
+    another process. The file writers mentioned in this section can only be used
+    to open, browse and read the HDF5 files <b>after</b> the NDFileHDF5 plugin 
+    has completed writing and closed the file. This limitation will be lifted in
+    the 1.10 release of the HDF5 library which will include the 
+    <a href="http://www.hdfgroup.org/HDF5/docNewFeatures/NewFeaturesSwmrDocs.html">
+    Single Writer Multiple Reader (SWMR) feature.</a>
+  </p>
+  <p>
     <a href="http://www.hdfgroup.org/hdf-java-html/hdfview/index.html">HDFView</a> is
     a simple GUI tool for viewing and browsing HDF files. It has some limited support
     for viewing images, plotting graphs and displaying data tables.
