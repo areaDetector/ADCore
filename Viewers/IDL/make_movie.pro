@@ -1,6 +1,7 @@
 pro make_movie, vol, min=min, max=max, wait=wait, scale=scale, index=index, $
-                start=start, stop=stop, step=step, mpeg_file=mpeg_file, $
+                start=start, stop=stop, step=step, mpeg_file=mpeg_file, mp4_file=mp4_file, $
                 jpeg_file=jpeg_file, tiff_file=tiff_file, label=label, quality=quality, $
+                fps=fps, bps=bps, unscaled_tiff=unscaled_tiff, $
                 color=color, file=file, buffer_size=buffer_size, window=window, $
                 abort_widget=abort_widget, status_widget=status_widget
 
@@ -11,10 +12,11 @@ pro make_movie, vol, min=min, max=max, wait=wait, scale=scale, index=index, $
 ;
 ; PURPOSE:
 ;   This procedure plays a 3-D array as a movie either:
-;       1) On the screen
-;       2) To an MPEG file on disk
-;       3) To a series of JPEG files on disk
-;       4) To a series of TIFF files on disk
+;       - On the screen
+;       - To an MPEG file on disk (deprecated)
+;       - To an MP4 file on disk
+;       - To a series of JPEG files on disk
+;       - To a series of TIFF files on disk
 ;
 ; CATEGORY:
 ;   Image display.
@@ -23,7 +25,7 @@ pro make_movie, vol, min=min, max=max, wait=wait, scale=scale, index=index, $
 ;   MAKE_MOVIE, Volume
 ;
 ; INPUTS:
-;   Volume: A 3-D array of any numeric data type.  This input is ignorred if the FILE
+;   Volume: A 3-D array of any numeric data type.  This input is ignored if the FILE
 ;           keyword is used.
 ;
 ; KEYWORD PARAMETERS:
@@ -93,8 +95,15 @@ pro make_movie, vol, min=min, max=max, wait=wait, scale=scale, index=index, $
 ;       The name of an MPEG file to which the output should be written.  If
 ;       this keyword is used then this procedure does not display its output on
 ;       the screen but rather creates an MPEG file.
-;       NOTE: IDL 5.4 requires a special (free) license upgrade to write MPEG
-;       files.  See the RSI Web site for details.
+;       NOTE: IDL requires a special (free) license upgrade to write MPEG
+;       files.  See the IDL Web site for details.
+;
+;   MP4_FILE:
+;       The name of an MP4 file to which the output should be written.  If
+;       this keyword is used then this procedure does not display its output on
+;       the screen but rather creates an MP4 file.
+;       MP4 files are written using the IDL WRITE_VIDEO procedure which was added
+;       in IDL 8.2.3.
 ;
 ;   JPEG_FILE:
 ;       The base name of an JPEG file to which the output should be written.  If
@@ -113,6 +122,12 @@ pro make_movie, vol, min=min, max=max, wait=wait, scale=scale, index=index, $
 ;       of the form 'my_jpeg_name_0001.tif', 'my_jpeg_name_0002.tif', etc.  The system
 ;       variable !order is used to determine whether the files are written bottom to
 ;       top or top to bottom.
+;       
+;   UNSCALED_TIFF
+;       Set this flag to write unscaled TIFF files.
+;       If this flag is not set then the TIFF files are scaled to 8-bits using the MIN and MAX.
+;       If this flag is set then the TIFF files are unscaled, and their data type will be the same
+;       as the input VOL array, for example 16-bit signed integers.
 ;
 ;   QUALITY:
 ;       The quality factor for JPEG and MPEG files.
@@ -121,11 +136,22 @@ pro make_movie, vol, min=min, max=max, wait=wait, scale=scale, index=index, $
 ;       See the help for MPEG_OPEN for more information on using this
 ;       keyword for MPEG files.  For MPEG files this keyword is only allowed
 ;       for IDL 5.4 and higher.
-;
 ;       Default=90.
+;       
+;   FPS
+;       The Frames Per Second for MP4 files.  This is passed as the VIDEO_FPS keyword to WRITE_VIDEO.
+;       The default is 30.
+;       
+;   BPS
+;       The bits per second MP4 files.  This is passed as the BIT_RATE keyword to WRITE_VIDEO.
+;       This keyword controls the quality and size of the MP4 file.  Larger values (e.g. 1e6) produce
+;       larger files with higher quality, while smaller values (e.g. 1e4) produce smaller files with lower
+;       quality.
+;       Default=1e4. For typical 16-bit tomography data this produces a file which is about 0.7% of the size of the original
+;       with reasonably good quality.  BPS=1e5 produces a file that is about 7% of the original size with excellent quality.
 ;
 ;   COLOR
-;       A flag which indicates that the JPEG or MPEG output files should be in color,
+;       A flag which indicates that the JPEG, MPEG, or MP4 output files should be in color,
 ;       using the current color table, rather than black and white.
 ;
 ;   LABEL:
@@ -147,17 +173,17 @@ pro make_movie, vol, min=min, max=max, wait=wait, scale=scale, index=index, $
 ;
 ; OUTPUTS:
 ;   This procedure does not return any output to IDL.  It displays images on
-;   the screen using the IDL TV procedure, or writes output to disk if MPEG_FILE
-;   or JPEG_FILE is used.
+;   the screen using the IDL TV procedure, or writes output to disk if JPEG_FILE, MPEG_FILE
+;   or MP4_FILE is used.
 ;
 ; SIDE EFFECTS:
 ;   Displays images on the screen using the IDL TV procedure, or writes output
-;   to disk if MPEG_FILE or JPEG_FILE is used.
+;   to disk if JPEG_FILE, JPEG_FILE, or MP4_FILE is used.
 ;
 ; PROCEDURE:
 ;   This procedure converts each frame to an 8-bit array using the IDL BYTSCL
 ;   function and then either displays it on the screen using the TV procedure,
-;   writes it to an MPEG file, or write it to a series of JPEG files.
+;   writes it to an MPEG file, an MP4 file, or to a series of JPEG or TIFF files.
 ;
 ; EXAMPLE:
 ;   ; Display an array as a movie scanning through the first dimension of the
@@ -201,6 +227,9 @@ if (n_elements(scale) eq 0) then scale=1
 if (n_elements(index) eq 0) then index=3
 if (n_elements(status_widget) eq 0) then status_widget = -1L
 if (n_elements(abort_widget) eq 0) then abort_widget = -1L
+if (n_elements(fps) eq 0) then fps = 30
+if (n_elements(bps) eq 0) then bps = 1e4
+if (n_elements(unscaled_tiff) eq 0) then unscaled_tiff = 0
 
 if (keyword_set(file)) then begin
     file_mode = 1
@@ -284,15 +313,27 @@ if (n_elements(quality) eq 0) then quality=90
 if (n_elements(order) eq 0) then order=0
 if (n_elements(window) eq 0) then window=0
 
-if (n_elements(mpeg_file) ne 0) then begin
-    if (!version.release lt '5.4') then begin
-        mpegid = mpeg_open([ncols, nrows], file=mpeg_file)
+if (n_elements(mp4_file) ne 0) then begin
+    if (!version.release lt '8.2') then begin
+        message, 'MP4_FILE only supported in IDL 8.2.3 and later'
     endif else begin
-        mpegid = mpeg_open([ncols, nrows], file=mpeg_file, quality=quality)
+        mp4_mode = 1
+        ; WRITE_VIDEO requires color input, so set the color keyword even if it was not set
+        color = 1
     endelse
-    mpeg_mode = 1
 endif else begin
-    mpeg_mode = 0
+    mp4_mode = 0
+endelse
+
+if (n_elements(mpeg_file) ne 0) then begin
+  if (!version.release lt '5.4') then begin
+    mpegid = mpeg_open([ncols, nrows], file=mpeg_file)
+  endif else begin
+    mpegid = mpeg_open([ncols, nrows], file=mpeg_file, quality=quality)
+  endelse
+  mpeg_mode = 1
+endif else begin
+  mpeg_mode = 0
 endelse
 
 if (n_elements(jpeg_file) ne 0) then begin
@@ -307,7 +348,7 @@ endif else begin
     tiff_mode = 0
 endelse
 
-if ((jpeg_mode eq 0) and (tiff_mode eq 0) and (mpeg_mode eq 0)) then begin
+if ((jpeg_mode eq 0) and (tiff_mode eq 0) and (mp4_mode eq 0) and (mpeg_mode eq 0)) then begin
    window, window, xsize=(ncols>100), ysize=(nrows>100)
 endif
 
@@ -332,11 +373,11 @@ for frame=start, stop, step do begin
     endcase
     frame_index = frame_index+step
     temp = reform(temp, /overwrite)
-    temp = bytscl(temp, min=min, max=max)
+    if ((tiff_mode eq 0) or (unscaled_tiff eq 0)) then temp = bytscl(temp, min=min, max=max)
     if (scale ne 1) then temp = rebin(temp[0:last_col, 0:last_row], $
                                       ncols, nrows)
     ; The code for handling color was lifted out of the IDL procedure MPEG_PUT.
-    if (jpeg_mode or mpeg_mode) then begin
+    if (jpeg_mode or mpeg_mode or mp4_mode) then begin
         tvlct, red, green, blue, /get
         if (keyword_set(color)) then begin
             ; Apply color tables and create an (ncols, 3 * nrows) array:
@@ -353,7 +394,10 @@ for frame=start, stop, step do begin
         endelse
     endif
     str = 'Frame = ' + strtrim(frame,2) + '/' + strtrim(stop,2)
-    if (mpeg_mode) then begin
+    if (mp4_mode) then begin
+      print, str
+      write_video, mp4_file, temp, handle=handle, video_fps=fps, bit_rate=bps
+    endif else if (mpeg_mode) then begin
         print, str
         ; Note, there appears to be a bug in mpeg_put, the order keyword
         ; is the opposite of the documentation, and the behaviour of TV and WRITE_JPEG.
@@ -370,7 +414,38 @@ for frame=start, stop, step do begin
         tfile = tiff_file + '_' + num + '.tif'
         str = str + ' (TIFF file=' + tfile + ')'
         print, str
-        write_tiff, tfile, temp, orientation=1-!order
+        if (unscaled_tiff) then begin
+            tname = size(temp, /tname)
+            short = 0
+            long = 0
+            float = 0
+            double = 0
+            complex = 0
+            dcomplex = 0
+            signed = 1
+            case tname of
+                'BYTE':     signed = 0
+                'INT':      short = 1
+                'UINT':     begin
+                                int = 1
+                                signed = 0
+                            end
+                'LONG':     long = 1
+                'ULONG':    begin
+                                long = 1
+                                signed = 0
+                            end
+                'FLOAT':    float = 1
+                'DOUBLE':   double = 1
+                'COMPLEX':  complex = 1
+                'DCOMPLEX': dcomplex = 1
+                ELSE: message, 'Unsupported TIFF data type = ', tname
+            endcase
+            write_tiff, tfile, temp, orientation=1-!order, $
+                        short=short, long=long, float=float, double=double, complex=complex, dcomplex=dcomplex, signed=signed
+        endif else begin
+            write_tiff, tfile, temp, orientation=1-!order
+        endelse
     endif else begin
         tv, temp
         if (keyword_set(label)) then begin
@@ -397,6 +472,12 @@ if (mpeg_mode) then begin
         widget_control, status_widget, set_value='Closing MPEG file ...'
     mpeg_save, mpegid, file=mpeg_file
     mpeg_close, mpegid
+endif
+
+if (mp4_mode) then begin
+    if (widget_info(status_widget, /valid_id)) then $
+        widget_control, status_widget, set_value='Closing MP4 file ...'
+    write_video, file, handle=handle, /close
 endif
 
 if (widget_info(status_widget, /valid_id)) then $
