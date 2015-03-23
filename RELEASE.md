@@ -28,6 +28,8 @@ R2-2 (March 23, 2015)
 ### Compatibility
 * This release requires at least R4-26 of asyn because it uses the info(asyn:READOUT,"1") tag
   in databases to have output records update on driver callbacks.
+* This release requires R2-2 of areaDetector/ADBinaries
+* This release requires R2-2 of areaDetector/areaDetector because of changes to EXAMPLE_CONFIG_SITE.local.
 * Detector IOC startup scripts will need a few minor changes to work with this release of ADCore.
   iocBoot/iocSimDetector/st.cmd should be used as an example.
   - The environment variable EPICS_DB_INCLUDE_PATH must be defined and must include $(ADCORE)/db
