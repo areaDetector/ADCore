@@ -1,3 +1,5 @@
+#=================================================================#
+# Template file: NDFileHDF5.template
 # Database for NDFileHDF5 driver, which saves files for NDArray data.
 
 # Macros:
@@ -9,6 +11,9 @@
 
 # This associates the template with an edm screen
 # % gui, $(PORT), edmtab, NDFileHDF5.edl, P=$(P),R=$(R)
+
+include "NDFile.template"
+include "NDPluginBase.template"
 
 # We replace some fields in records defined in NDFile.template
 # File data format 
@@ -78,6 +83,22 @@ record(longin, "$(P)$(R)NumFramesChunks_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP, "@asyn($(PORT),0)HDF5_nFramesChunks")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)NDAttributeChunk")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_NDAttributeChunk")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)NDAttributeChunk_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_NDAttributeChunk")
     field(PINI, "NO")
     field(SCAN, "I/O Intr")
 }

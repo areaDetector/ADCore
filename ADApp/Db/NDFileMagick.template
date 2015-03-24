@@ -1,8 +1,13 @@
+#=================================================================#
+# Template file: NDFileMagick.template
 # Database for NDFileMagick driver, which saves NDArray data 
 # in any file format supported by Magick.
 # The file format is determined by the file extension
 # Mark Rivers
 # May 10, 2009
+
+include "NDFile.template"
+include "NDPluginBase.template"
 
 # We replace some fields in records defined in NDFile.template
 # File data format 

@@ -21,8 +21,10 @@
 
 #include <asynDriver.h>
 
+
 #define epicsExportSharedSymbols
 #include <shareLib.h>
+#include "ADCoreVersion.h"
 #include "tinyxml.h"
 #include "PVAttribute.h"
 #include "paramAttribute.h"
@@ -323,8 +325,8 @@ asynStatus asynNDArrayDriver::readNDAttributesFile(const char *fileName)
         pDescription = Attr->Attribute("description");
         pSource = Attr->Attribute("source");
         pAttrType = Attr->Attribute("type");
-        if (!pAttrType) pAttrType = "EPICS_PV";
-        if (strcmp(pAttrType, "EPICS_PV") == 0) {
+        if (!pAttrType) pAttrType = NDAttribute::attrSourceString(NDAttrSourceEPICSPV);
+        if (strcmp(pAttrType, NDAttribute::attrSourceString(NDAttrSourceEPICSPV)) == 0) {
             const char *pDBRType = Attr->Attribute("dbrtype");
             int dbrType = DBR_NATIVE;
             if (pDBRType) {
@@ -351,7 +353,7 @@ asynStatus asynNDArrayDriver::readNDAttributesFile(const char *fileName)
             PVAttribute *pPVAttribute = new PVAttribute(pName, pDescription, pSource, dbrType);
             this->pAttributeList->add(pPVAttribute);
 #endif
-        } else if (strcmp(pAttrType, "PARAM") == 0) {
+        } else if (strcmp(pAttrType, NDAttribute::attrSourceString(NDAttrSourceParam)) == 0) {
             const char *pDataType = Attr->Attribute("datatype");
             if (!pDataType) pDataType = "int";
             const char *pAddr = Attr->Attribute("addr");
@@ -362,7 +364,7 @@ asynStatus asynNDArrayDriver::readNDAttributesFile(const char *fileName)
                 driverName, functionName, pName, pSource, pDataType, pDescription); 
             paramAttribute *pParamAttribute = new paramAttribute(pName, pDescription, pSource, addr, this, pDataType);
             this->pAttributeList->add(pParamAttribute);
-        } else if (strcmp(pAttrType, "FUNCTION") == 0) {
+        } else if (strcmp(pAttrType, NDAttribute::attrSourceString(NDAttrSourceFunct)) == 0) {
             const char *pParam = Attr->Attribute("param");
             if (!pParam) pParam = epicsStrDup("");
             asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
@@ -593,11 +595,12 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
                                      size_t maxMemory, int interfaceMask, int interruptMask,
                                      int asynFlags, int autoConnect, int priority, int stackSize)
     : asynPortDriver(portName, maxAddr, numParams+NUM_NDARRAY_PARAMS, 
-                     interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynGenericPointerMask, 
-                     interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask,
+                     interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynGenericPointerMask, 
+                     interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask,
                      asynFlags, autoConnect, priority, stackSize),
       pNDArrayPool(NULL)
 {
+    char versionString[20];
     this->pNDArrayPool = new NDArrayPool(maxBuffers, maxMemory);
 
     /* Allocate pArray pointer array */
@@ -605,6 +608,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     this->pAttributeList = new NDAttributeList();
     
     createParam(NDPortNameSelfString,         asynParamOctet,           &NDPortNameSelf);
+    createParam(NDADCoreVersionString,        asynParamOctet,           &NDADCoreVersion);
     createParam(NDArraySizeXString,           asynParamInt32,           &NDArraySizeX);
     createParam(NDArraySizeYString,           asynParamInt32,           &NDArraySizeY);
     createParam(NDArraySizeZString,           asynParamInt32,           &NDArraySizeZ);
@@ -656,6 +660,9 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
      * If a value is not set here then the read request will return an error (uninitialized).
      * Values set here will be overridden by values from save/restore if they exist. */
     setStringParam (NDPortNameSelf, portName);
+    epicsSnprintf(versionString, sizeof(versionString), "%d.%d.%d", 
+                  ADCORE_VERSION, ADCORE_REVISION, ADCORE_MODIFICATION);
+    setStringParam(NDADCoreVersion, versionString);
     setIntegerParam(NDArraySizeX,   0);
     setIntegerParam(NDArraySizeY,   0);
     setIntegerParam(NDArraySizeZ,   0);

@@ -1,0 +1,58 @@
+#=================================================================#
+# Template file: NDAttributeN.template
+# % macro, P, Device Prefix
+# % macro, R, Device Suffix
+# % macro, PORT, Asyn Port name
+# The asyn port name should match what you have
+# written in your startup script
+# % macro, NCHANS, Number of elements in attribute waveform
+# % macro, ADDR, Asyn Port address
+# % macro, TIMEOUT, Timeout
+
+record(ai, "$(P)$(R)Value_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_VAL")
+   field(PREC, "4")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)ValueSum_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_VAL_SUM")
+   field(PREC, "4")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)AttrName")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_ATTRNAME")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
+}
+
+record(waveform, "$(P)$(R)AttrName_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_ATTRNAME")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records control time series                              #
+###################################################################
+record(waveform, "$(P)$(R)TSArrayValue")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ATTR_TS_ARRAY_VALUE")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
+
+

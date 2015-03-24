@@ -71,6 +71,7 @@ private:
     asynStatus closeFileBase();
     asynStatus doCapture(int capture);
     void       freeCaptureBuffer(int numCapture);
+    void       doNDArrayCallbacks(NDArray *pArray);
     asynStatus attrFileNameCheck();
     asynStatus attrFileNameSet();
     bool attrIsProcessingRequired(NDAttributeList* pAttrList);

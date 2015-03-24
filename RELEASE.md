@@ -23,8 +23,12 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
-R2-2 (January XXX, 2015)
+R2-2 (March XXX, 2015)
 ========================
+###
+* NOTE: This release requires at least R4-26 of asyn because it uses the info(asyn:READOUT,"1") tag
+  in databases to have output records update on driver callbacks.
+
 ### iocs/simDetectorNoIOC
 * New application that demonstrates how to instantiate a simDetector driver
   and a number of plugins in a standalone C++ application, without running an EPICS IOC.
@@ -40,7 +44,11 @@ R2-2 (January XXX, 2015)
 ### NDPluginCircularBuff
 * New plugin that implements a circular buffer.  NDArrays are stored in the buffer until a trigger
   is received.  When a trigger is received it outputs a configurable number of pre-trigger and post-trigger
-  NDArrays.  Written by Edmund Warrick.
+  NDArrays.  The trigger is based on NDArray attributes using a user-defined calculation.  Written by Edmund Warrick.
+  
+### NDPluginAttribute
+* New plugin that exports attributes of NDArrays as EPICS PVs.  Both scalar (ai records) and time-series
+  arrays (waveform records) are exported.  Written by Matthew Pearson.
   
 ### NDPluginStats
 * Added capability to reset the statistics to 0 (or other user-defined values) with a new
@@ -65,14 +73,34 @@ R2-2 (January XXX, 2015)
   to kick off processing applications. 
   
 ### NDFileHDF5
-* Created separated NDFileHDF5.h so class can be exported to other applications.
-* Bug fix: The NDArrayPort could not be changed after iocInit.
+* Created a separate NDFileHDF5.h file so the class can be exported to other applications.
 * Updated the HDF5 library for Windows in ADBinaries from 1.8.7 to 1.8.14.  The names of the libraries has changed,
   so Makefiles in ADCore needed to be changed.  There is a new flag, HDF5_STATIC_BUILD which can be set to
   NO or YES depending on which version of the HDF5 library should be used.  This symbol is now defined in
   areaDetector/configure/EXAMPLE_CONFIG_SITE.local to be YES for static builds and NO for dynamic builds.
   In principle one can use the dynamic version of the HDF5 library when doing a static build, and vice-versa.
   In practice this has not been tested.
+* Bug fixes: 
+  * The NDArrayPort could not be changed after iocInit.
+  * Hardlinks did not work for NDAttribute datasets.
+  * Failing to specify a group with "ndattr_default=true" would crash the IOC.
+  * NDAttribute datasets of datatype NDAttrString would actually be HDF5 attributes,
+    not datasets.  They would only store a single string value, not an array of string values which they 
+    should if the file contains multiple NDArrays.
+  * NDAttribute datasets were pre-allocated to the size of NumCapture, rather than 
+    growing with the number of NDArrays in the file.  This meant that there was no way to specify that the HDF5 file 
+    in Stream mode should continue to grow forever until Capture was set to 0.  Specifying NumCapture=0 did not work, 
+    it crashed the IOC.  Setting NumCapture to a very large number resulted in wasted file space, 
+    because all datasets except the detector dataset were pre-allocated to this large size.
+  * HDF5 attributes defined in the XML layout file for NDAttribute datasets and constant datasets
+    did not get written to the HDF5 file.
+  * The important NDArray properties uniqueID, timeStamp, and epicsTS did not get written to the HDF5 file.
+  * NDAttribute datasets had two "automatic" HDF5 attributes, "description" and "name".  These do not provide
+    a complete description of the source of the NDAttribute data, and the HDF5 attribute names are prone
+    to name conflicts with user-defined attributes.  "description" and "source" have been renamed to 
+    NDAttrDescription and NDAttrSource. Two additional automatic attributes have been added, 
+    NDAttrSourceType and NDAttrName, which now completely define the source of the NDAttribute data.
+
 
 ### Plugins general
 * Added epicsShareClass to class definitions so classes are exported with Windows DLLs.
@@ -81,6 +109,22 @@ R2-2 (January XXX, 2015)
 ### netCDFSupport
 * Fixes to work on vxWorks 6.9 from Tim Mooney.
 
+### NDAttribute class
+* Changed the getValue() method to do type conversion if the requested datatype does not match the
+  datatype of the attribute.
+
+### Template files
+* Added a new template file NDArrayBase.template which contains records for all of the 
+  asynNDArrayDriver parameters except those in NDFile.template.  Moved records from ADBase.template
+  and NDPluginBase.template into this new file.  Made all template files "include" the files from the
+  parent class, rather than calling dbLoadRecords for each template file.  This simplifies commonPlugins.cmd.
+  A similar include mechanism was applied to the *_settings.req files, which simplifies commonPlugin_settings.req.
+* Added the info tag "autosaveFields" to allow automatic creation of autosave files.
+* ADBase.template
+  - Added optional macro parameter RATE_SMOOTH to smooth the calculated array rate.
+    The default value is 0.0, which does no smoothing.  Range 0.0-1.0, larger values 
+    result in more smoothing.
+  
 ### ImageJ Viewer
 * Bug fixes from Lewis Muir.
 
@@ -94,13 +138,7 @@ R2-2 (January XXX, 2015)
 * Changes to support the EPICS_LIBCOM_ONLY flag to build applications that depend only
   on libCom and asyn.
     
-### Template files
-* Added the info tag "autosaveFields" to allow automatic creation of autosave files.
-* ADBase.template
-  - Added optional macro parameter RATE_SMOOTH to smooth the calculated array rate.
-    The default value is 0.0, which does no smoothing.  Range 0.0-1.0, larger values 
-    result in more smoothing.
-
+    
 R2-1 (October 17, 2014)
 =======================
 ### NDPluginFile
