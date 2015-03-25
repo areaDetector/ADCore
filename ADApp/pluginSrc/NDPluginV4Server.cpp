@@ -258,8 +258,6 @@ NDPluginV4Server::NDPluginV4Server(const char *portName, int queueSize, int bloc
                    0, 1, priority, stackSize),
                    m_image(ImageRecord::create(pvName))
 {
-    fprintf(stderr, "DEBUG: NDPluginV4Server constructor for pvName %s\n", pvName);
-
     if(!m_image.get())
         throw runtime_error("failed to create ImageRecord");
 
