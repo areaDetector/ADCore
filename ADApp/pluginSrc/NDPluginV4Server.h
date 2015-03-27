@@ -11,8 +11,8 @@
 #include <pv/pvData.h>
 #include <vector>
 
-class ImageRecord;
-typedef std::tr1::shared_ptr<ImageRecord> ImageRecordPtr;
+class NTNDArrayRecord;
+typedef std::tr1::shared_ptr<NTNDArrayRecord> NTNDArrayRecordPtr;
 
 /** Converts NDArray callback data into EPICS V4 NTNDArray data and exposes it
   * as an EPICS V4 PV  */
@@ -30,7 +30,7 @@ public:
 
 private:
     epics::pvAccess::ServerContext::shared_pointer m_server;
-    ImageRecordPtr m_image;
+    NTNDArrayRecordPtr m_image;
 };
 
 #endif
