@@ -43,6 +43,32 @@ static void copyToNTNDArray(PVUnionPtr dest, void *src, size_t count,
     dest->postPut();
 }
 
+template <typename pvAttrType, typename valueType>
+static void updateValueField(PVStructurePtr pvAttr, NDAttribute *attr)
+{
+    valueType value;
+    attr->getValue(attr->getDataType(), (void*)&value);
+
+    PVUnionPtr valueFieldUnion = pvAttr->getSubField<PVUnion>("value");
+    static_pointer_cast<pvAttrType>(valueFieldUnion->get())->put(value);
+}
+
+static PVDataCreatePtr PVDC = getPVDataCreate();
+
+static void updateValueFieldString(PVStructurePtr pvAttr, NDAttribute *attr)
+{
+    NDAttrDataType_t attrDataType;
+    size_t attrDataSize;
+
+    attr->getValueInfo(&attrDataType, &attrDataSize);
+
+    char value[attrDataSize];
+    attr->getValue(attrDataType, value, attrDataSize);
+
+    PVUnionPtr valueFieldUnion = pvAttr->getSubField<PVUnion>("value");
+    static_pointer_cast<PVString>(valueFieldUnion->get())->put(value);
+}
+
 class epicsShareClass ImageRecord :
     public PVRecord
 {
@@ -58,7 +84,7 @@ private:
     PVAlarm m_pvAlarm;
     PVTimeStamp m_pvTimestamp;
     PVIntPtr m_pvUniqueId;
-    PVIntPtr m_pvColorMode;
+    PVStructureArrayPtr m_pvAttrs;
 
 public:
     POINTER_DEFINITIONS(ImageRecord);
@@ -99,6 +125,7 @@ public:
         GET_FIELD(m_pvCompressedSize,   "compressedSize",   PVLong);
         GET_FIELD(m_pvUncompressedSize, "uncompressedSize", PVLong);
         GET_FIELD(m_pvUniqueId,         "uniqueId",         PVInt);
+        GET_FIELD(m_pvAttrs,            "attribute",        PVStructureArray);
 
 #undef GET_FIELD
 
@@ -122,32 +149,52 @@ public:
             return false;
         codecName->put("");
 
-        // Add color attribute
-
-        PVStructureArrayPtr pvAttrs = pvStructure->getSubField<PVStructureArray>("attribute");
-        if(!pvAttrs)
-            return false;
-
-        PVStructureArray::svector attrs(pvAttrs->reuse());
-        PVStructurePtr attr = getPVDataCreate()->createPVStructure(pvAttrs->getStructureArray()->getStructure());
-
-        m_pvColorMode = getPVDataCreate()->createPVScalar<PVInt>();
-
-        attr->getSubField<PVUnion>("value")->set(m_pvColorMode);
-        attr->getSubField<PVString>("name")->put("ColorMode");
-        attr->getSubField<PVString>("descriptor")->put("Color mode");
-        attr->getSubField<PVInt>("sourceType")->put(0);
-        attr->getSubField<PVString>("source")->put("");
-
-        attrs.push_back(attr);
-        pvAttrs->replace(freeze(attrs));
-
         return true;
     }
 
     virtual void process ()
     {
         cout << "process" << endl;
+    }
+
+    void createAttributes (NDAttributeList *attrs, PVStructureArray::svector& pvAttrsVector)
+    {
+        NDAttribute *attr = attrs->next(NULL);
+
+        while(attr)
+        {
+            PVStructurePtr pvAttr;
+            pvAttr = PVDC->createPVStructure(m_pvAttrs->getStructureArray()->getStructure());
+
+            pvAttr->getSubField<PVString>("name")->put(attr->getName());
+            pvAttr->getSubField<PVString>("descriptor")->put(attr->getDescription());
+            pvAttr->getSubField<PVString>("source")->put(attr->getSource());
+
+            NDAttrSource_t sourceType;
+            attr->getSourceInfo(&sourceType);
+            pvAttr->getSubField<PVInt>("sourceType")->put(sourceType);
+
+            PVUnionPtr valueField = pvAttr->getSubField<PVUnion>("value");
+            switch(attr->getDataType())
+            {
+
+            case NDAttrInt8:    valueField->set(PVDC->createPVScalar<PVByte>());   break;
+            case NDAttrUInt8:   valueField->set(PVDC->createPVScalar<PVUByte>());  break;
+            case NDAttrInt16:   valueField->set(PVDC->createPVScalar<PVShort>());  break;
+            case NDAttrUInt16:  valueField->set(PVDC->createPVScalar<PVUShort>()); break;
+            case NDAttrInt32:   valueField->set(PVDC->createPVScalar<PVInt>());    break;
+            case NDAttrUInt32:  valueField->set(PVDC->createPVScalar<PVUInt>());   break;
+            case NDAttrFloat32: valueField->set(PVDC->createPVScalar<PVFloat>());  break;
+            case NDAttrFloat64: valueField->set(PVDC->createPVScalar<PVDouble>()); break;
+            case NDAttrString:  valueField->set(PVDC->createPVScalar<PVString>()); break;
+            case NDAttrUndefined:
+            default:
+                throw std::runtime_error("invalid attribute data type");
+            }
+
+            pvAttrsVector.push_back(pvAttr);
+            attr = attrs->next(attr);
+        }
     }
 
     void update(NDArray *pArray)
@@ -202,7 +249,7 @@ public:
             {
                 PVStructurePtr d = dimVector[i];
                 if (!d)
-                    d = dimVector[i] = getPVDataCreate()->createPVStructure(m_pvDimension->getStructureArray()->getStructure());
+                    d = dimVector[i] = PVDC->createPVStructure(m_pvDimension->getStructureArray()->getStructure());
                 d->getSubField<PVInt>("size")->put(pArray->dims[i].size);
                 d->getSubField<PVInt>("offset")->put(pArray->dims[i].offset);
                 d->getSubField<PVInt>("fullSize")->put(pArray->dims[i].size);
@@ -214,7 +261,38 @@ public:
             m_pvCompressedSize->put(static_cast<int64>(pArray->dataSize));
             m_pvUncompressedSize->put(static_cast<int64>(pArray->dataSize));
             m_pvUniqueId->put(pArray->uniqueId);
-            m_pvColorMode->put(arrayInfo.colorMode);
+
+            NDAttributeList *attrs = pArray->pAttributeList;
+            PVStructureArray::svector pvAttrsVector(m_pvAttrs->reuse());
+
+            if(!pvAttrsVector.dataCount() && attrs->count())
+                createAttributes(attrs, pvAttrsVector);
+
+            NDAttribute *attr = attrs->next(NULL);
+
+            for(PVStructureArray::svector::iterator it = pvAttrsVector.begin();
+                    it != pvAttrsVector.end(); ++it)
+            {
+                PVStructurePtr pvAttr = *it;
+                switch(attr->getDataType())
+                {
+                case NDAttrInt8:    updateValueField<PVByte,   int8_t>  (pvAttr, attr); break;
+                case NDAttrUInt8:   updateValueField<PVUByte,  uint8_t> (pvAttr, attr); break;
+                case NDAttrInt16:   updateValueField<PVShort,  int16_t> (pvAttr, attr); break;
+                case NDAttrUInt16:  updateValueField<PVUShort, uint16_t>(pvAttr, attr); break;
+                case NDAttrInt32:   updateValueField<PVInt,    int32_t> (pvAttr, attr); break;
+                case NDAttrUInt32:  updateValueField<PVUInt,   uint32_t>(pvAttr, attr); break;
+                case NDAttrFloat32: updateValueField<PVFloat,  float>   (pvAttr, attr); break;
+                case NDAttrFloat64: updateValueField<PVDouble, double>  (pvAttr, attr); break;
+                case NDAttrString:  updateValueFieldString(pvAttr, attr); break;
+                case NDAttrUndefined:
+                default:
+                    throw std::runtime_error("invalid attribute data type");
+                }
+                attr = attrs->next(attr);
+            }
+
+            m_pvAttrs->replace(freeze(pvAttrsVector));
 
             TimeStamp ts(pArray->epicsTS.secPastEpoch, pArray->epicsTS.nsec);
             m_pvTimestamp.set(ts);
