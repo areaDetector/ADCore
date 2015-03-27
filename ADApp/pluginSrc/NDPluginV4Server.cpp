@@ -160,26 +160,40 @@ public:
         try
         {
             beginGroupPut();
-            switch(arrayInfo.bytesPerElement)
+            switch(pArray->dataType)
             {
-            case 1:
+            case NDInt8:
                 copyToNTNDArray<PVByteArrayPtr,PVByteArray,PVByteArray::svector,int8_t>
                 (m_pvValue, pArray->pData, arrayInfo.nElements, "byteValue");
                 break;
-            case 2:
+            case NDUInt8:
+                copyToNTNDArray<PVUByteArrayPtr,PVUByteArray,PVUByteArray::svector,uint8_t>
+                (m_pvValue, pArray->pData, arrayInfo.nElements, "ubyteValue");
+                break;
+            case NDInt16:
                 copyToNTNDArray<PVShortArrayPtr,PVShortArray,PVShortArray::svector,int16_t>
                 (m_pvValue, pArray->pData, arrayInfo.nElements, "shortValue");
                 break;
-            case 4:
+            case NDUInt16:
+                copyToNTNDArray<PVUShortArrayPtr,PVUShortArray,PVUShortArray::svector,uint16_t>
+                (m_pvValue, pArray->pData, arrayInfo.nElements, "ushortValue");
+                break;
+            case NDInt32:
                 copyToNTNDArray<PVIntArrayPtr,PVIntArray,PVIntArray::svector,int32_t>
                 (m_pvValue, pArray->pData, arrayInfo.nElements, "intValue");
                 break;
-            case 8:
-                copyToNTNDArray<PVLongArrayPtr,PVLongArray,PVLongArray::svector,int64_t>
-                (m_pvValue, pArray->pData, arrayInfo.nElements, "longValue");
+            case NDUInt32:
+                copyToNTNDArray<PVUIntArrayPtr,PVUIntArray,PVUIntArray::svector,uint32_t>
+                (m_pvValue, pArray->pData, arrayInfo.nElements, "uintValue");
                 break;
-            default:
-                throw runtime_error("invalid bytesPerElement");
+            case NDFloat32:
+                copyToNTNDArray<PVFloatArrayPtr,PVFloatArray,PVFloatArray::svector,float>
+                (m_pvValue, pArray->pData, arrayInfo.nElements, "floatValue");
+                break;
+            case NDFloat64:
+                copyToNTNDArray<PVDoubleArrayPtr,PVDoubleArray,PVDoubleArray::svector,double>
+                (m_pvValue, pArray->pData, arrayInfo.nElements, "doubleValue");
+                break;
             }
 
             PVStructureArray::svector dimVector(m_pvDimension->reuse());
