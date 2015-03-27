@@ -13,6 +13,8 @@
 #include <string.h>
 #include <stdio.h>
 
+#include <math.h>
+
 #include "NDPluginDriver.h"
 #include "NDPluginV4Server.h"
 
@@ -83,6 +85,7 @@ private:
     PVLongPtr m_pvUncompressedSize;
     PVAlarm m_pvAlarm;
     PVTimeStamp m_pvTimestamp;
+    PVTimeStamp m_pvDataTimeStamp;
     PVIntPtr m_pvUniqueId;
     PVStructureArrayPtr m_pvAttrs;
 
@@ -136,6 +139,7 @@ bool NTNDArrayRecord::init ()
 
     m_pvAlarm.attach(ntndArray->getAlarm());
     m_pvTimestamp.attach(ntndArray->getTimeStamp());
+    m_pvDataTimeStamp.attach(ntndArray->getDataTimeStamp());
 
     // Set codec name to empty
     ntndArray->getCodec()->getSubField<PVString>("name")->put("");
@@ -279,6 +283,11 @@ void NTNDArrayRecord::update(NDArray *pArray)
         }
 
         m_pvAttrs->replace(freeze(pvAttrsVector));
+
+        double seconds = floor(pArray->timeStamp);
+        double nanoseconds = (pArray->timeStamp - seconds)*1e9;
+        TimeStamp dataTs((int64_t)seconds, (int32)nanoseconds);
+        m_pvDataTimeStamp.set(dataTs);
 
         TimeStamp ts(pArray->epicsTS.secPastEpoch, pArray->epicsTS.nsec);
         m_pvTimestamp.set(ts);
