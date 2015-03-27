@@ -125,40 +125,20 @@ bool NTNDArrayRecord::init ()
 {
     initPVRecord();
     PVStructurePtr pvStructure = getPVStructure();
+    NTNDArrayPtr ntndArray = NTNDArray::wrap(pvStructure);
 
-#define GET_FIELD(field,fieldstr,type)\
-    field = pvStructure->getSubField<type>(fieldstr);\
-    if(!field)\
-        return false
+    m_pvValue            = ntndArray->getValue();
+    m_pvDimension        = ntndArray->getDimension();
+    m_pvCompressedSize   = ntndArray->getCompressedDataSize();
+    m_pvUncompressedSize = ntndArray->getUncompressedDataSize();
+    m_pvUniqueId         = ntndArray->getUniqueId();
+    m_pvAttrs            = ntndArray->getAttribute();
 
-    GET_FIELD(m_pvValue,            "value",            PVUnion);
-    GET_FIELD(m_pvDimension,        "dimension",        PVStructureArray);
-    GET_FIELD(m_pvCompressedSize,   "compressedSize",   PVLong);
-    GET_FIELD(m_pvUncompressedSize, "uncompressedSize", PVLong);
-    GET_FIELD(m_pvUniqueId,         "uniqueId",         PVInt);
-    GET_FIELD(m_pvAttrs,            "attribute",        PVStructureArray);
-
-#undef GET_FIELD
-
-    PVFieldPtr pvField;
-
-#define ATTACH_FIELD(field, fieldstr)\
-    pvField = pvStructure->getSubField(fieldstr);\
-    if(!pvField || !field.attach(pvField))\
-        return false
-
-    ATTACH_FIELD(m_pvAlarm, "alarm");
-    ATTACH_FIELD(m_pvTimestamp, "timeStamp");
-
-
-#undef ATTACH_FIELD
+    m_pvAlarm.attach(ntndArray->getAlarm());
+    m_pvTimestamp.attach(ntndArray->getTimeStamp());
 
     // Set codec name to empty
-
-    PVStringPtr codecName = pvStructure->getSubField<PVString>("codec.name");
-    if(!codecName)
-        return false;
-    codecName->put("");
+    ntndArray->getCodec()->getSubField<PVString>("name")->put("");
 
     return true;
 }
