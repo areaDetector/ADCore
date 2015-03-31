@@ -185,6 +185,7 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
   getIntegerParam(NDFileHDF5_storePerformance, &storePerformance);
   if (storePerformance == 1){
     this->configurePerformanceDataset();
+    this->createPerformanceDataset();
   }
 
   // Create all of the hardlinks in the file
@@ -2019,13 +2020,14 @@ asynStatus NDFileHDF5::configurePerformanceDataset()
   return asynSuccess;
 }
 
-/** Write out the performance dataset
+/**
+ * Create the dataset required for performance data
  */
-asynStatus NDFileHDF5::writePerformanceDataset()
+asynStatus NDFileHDF5::createPerformanceDataset()
 {
   hsize_t dims[2];
-  hid_t dataspace_id, dataset_id, group_performance;
-  epicsInt32 numCaptured;
+  hid_t dataspace_id, group_performance;
+  hsize_t maxdims[2] = {H5S_UNLIMITED, H5S_UNLIMITED};
 
   hdf5::Root *root = this->layout.get_hdftree();
   if (root){
@@ -2046,11 +2048,8 @@ asynStatus NDFileHDF5::writePerformanceDataset()
           perf_group = grp;
       }
     }
-
-    getIntegerParam(NDFileNumCaptured, &numCaptured);
+    dims[0] = 1;
     dims[1] = 5;
-    if (numCaptured < this->numPerformancePoints) dims[0] = numCaptured;
-    else dims[0] = this->numPerformancePoints;
 
     if(perf_group == NULL)
     {
@@ -2066,11 +2065,28 @@ asynStatus NDFileHDF5::writePerformanceDataset()
       group_performance = H5Gopen(this->file, perf_group->get_full_name().c_str(), H5P_DEFAULT);
     }
 
+    int chunking = 0;
+    // Check the chunking value
+    getIntegerParam(NDFileHDF5_NDAttributeChunk, &chunking);
+    // If the chunking is zero then use the number of frames
+    if (chunking == 0){
+      // In this case we want to read back the number of frames and use this for chunking
+      getIntegerParam(NDFileNumCapture, &chunking);
+      if (chunking <= 0) {
+        // Special case: writing infinite number of frames, so we guess a good(ish) chunk number
+        chunking = 16*1024;
+      }
+    }
+    hid_t hdfcparm   = H5Pcreate(H5P_DATASET_CREATE);
+    hsize_t chunk[2] = {chunking, 5};
+    int hdfrank  = 2;
+    H5Pset_chunk(hdfcparm, hdfrank, chunk);
+
     /* Create the "timestamp" dataset */
-    dataspace_id = H5Screate_simple(2, dims, NULL);
-    dataset_id = H5Dcreate2(group_performance, "timestamp", H5T_NATIVE_DOUBLE, dataspace_id,
-                            H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
-    if (!H5Iis_valid(dataset_id)) {
+    dataspace_id = H5Screate_simple(2, dims, maxdims);
+    this->perf_dataset_id = H5Dcreate2(group_performance, "timestamp", H5T_NATIVE_DOUBLE, dataspace_id,
+                            H5P_DEFAULT, hdfcparm, H5P_DEFAULT);
+    if (!H5Iis_valid(this->perf_dataset_id)) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING, "NDFileHDF5::writePerformanceDataset: unable to create \'timestamp\' dataset.");
         H5Sclose(dataspace_id);
         if(perf_group != NULL){
@@ -2078,24 +2094,39 @@ asynStatus NDFileHDF5::writePerformanceDataset()
         }
         return asynError;
     }
-    /* Write the second dataset. */
-    H5Dwrite(dataset_id, H5T_NATIVE_DOUBLE,
-             H5S_ALL, H5S_ALL,
-             H5P_DEFAULT, this->performanceBuf);
-
-    /* Close the data space for the second dataset. */
     H5Sclose(dataspace_id);
-
-    /* Close the second dataset */
-    H5Dclose(dataset_id);
-
-    /* Close the group. */
     if(perf_group != NULL){
       H5Gclose(group_performance);
     }
   } else {
     return asynError;
   }
+  return asynSuccess;
+}
+
+/** Write out the performance dataset
+ */
+asynStatus NDFileHDF5::writePerformanceDataset()
+{
+  hsize_t dims[2];
+  epicsInt32 numCaptured;
+
+  getIntegerParam(NDFileNumCaptured, &numCaptured);
+  dims[1] = 5;
+  if (numCaptured < this->numPerformancePoints) dims[0] = numCaptured;
+  else dims[0] = this->numPerformancePoints;
+
+  // Work with HDF5 library to select a suitable hyperslab (one element) and write the new data to it
+  H5Dset_extent(this->perf_dataset_id, dims);
+
+  /* Write the second dataset. */
+  H5Dwrite(this->perf_dataset_id, H5T_NATIVE_DOUBLE,
+           H5S_ALL, H5S_ALL,
+           H5P_DEFAULT, this->performanceBuf);
+
+  /* Close the second dataset */
+  H5Dclose(this->perf_dataset_id);
+
   return asynSuccess;
 }
 
@@ -2329,6 +2360,9 @@ asynStatus NDFileHDF5::writeAttributeDataset(hdf5::When_t whenToSave)
     H5Dwrite(hdfAttrNode->hdfdataset, hdfAttrNode->hdfdatatype,
                          hdfAttrNode->hdfmemspace, hdfAttrNode->hdffilespace,
                          H5P_DEFAULT, pDatavalue);
+
+    // Flush the dataset
+    H5Dflush(hdfAttrNode->hdfdataset);
 
     H5Sclose(hdfAttrNode->hdffilespace);
     hdfAttrNode->hdfdims[0]++;

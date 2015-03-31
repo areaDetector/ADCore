@@ -160,6 +160,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     asynStatus writeAttributeDataset(hdf5::When_t whenToSave);
     asynStatus closeAttributeDataset();
     asynStatus configurePerformanceDataset();
+    asynStatus createPerformanceDataset();
     asynStatus writePerformanceDataset();
     void calcNumFrames();
     unsigned int calcIstorek();
@@ -206,6 +207,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     hid_t datatype;
     hid_t cparms;
     void *ptrFillValue;
+    hid_t perf_dataset_id;
 
     /* dimension descriptors */
     int rank;               /** < number of dimensions */
