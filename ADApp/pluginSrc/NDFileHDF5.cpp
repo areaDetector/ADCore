@@ -2067,16 +2067,7 @@ asynStatus NDFileHDF5::createPerformanceDataset()
 
     int chunking = 0;
     // Check the chunking value
-    getIntegerParam(NDFileHDF5_NDAttributeChunk, &chunking);
-    // If the chunking is zero then use the number of frames
-    if (chunking == 0){
-      // In this case we want to read back the number of frames and use this for chunking
-      getIntegerParam(NDFileNumCapture, &chunking);
-      if (chunking <= 0) {
-        // Special case: writing infinite number of frames, so we guess a good(ish) chunk number
-        chunking = 16*1024;
-      }
-    }
+    calculateAttributeChunking(&chunking);
     hid_t hdfcparm   = H5Pcreate(H5P_DATASET_CREATE);
     hsize_t chunk[2] = {chunking, 5};
     int hdfrank  = 2;
@@ -2173,16 +2164,7 @@ asynStatus NDFileHDF5::createAttributeDataset()
   }
 
   // Check the chunking value
-  getIntegerParam(NDFileHDF5_NDAttributeChunk, &chunking);
-  // If the chunking is zero then use the number of frames
-  if (chunking == 0){
-    // In this case we want to read back the number of frames and use this for chunking
-    getIntegerParam(NDFileNumCapture, &chunking);
-    if (chunking <= 0) {
-      // Special case: writing infinite number of frames, so we guess a good(ish) chunk number
-      chunking = 16*1024;
-    }
-  }
+  calculateAttributeChunking(&chunking);
 
   ndAttr = this->pFileAttributes->next(ndAttr); // get the first NDAttribute
   while(ndAttr != NULL)
@@ -2308,6 +2290,22 @@ asynStatus NDFileHDF5::createAttributeDataset()
   return asynSuccess;
 }
 
+asynStatus NDFileHDF5::calculateAttributeChunking(int *chunking)
+{
+  // Check the chunking value
+  getIntegerParam(NDFileHDF5_NDAttributeChunk, chunking);
+  // If the chunking is zero then use the number of frames
+  if (*chunking == 0){
+    // In this case we want to read back the number of frames and use this for chunking
+    getIntegerParam(NDFileNumCapture, chunking);
+    if (*chunking <= 0) {
+      // Special case: writing infinite number of frames, so we guess a good(ish) chunk number
+      *chunking = 16*1024;
+    }
+  }
+  return asynSuccess;
+}
+
 /** Write the NDArray attributes to the file
  *
  */
@@ -2361,8 +2359,21 @@ asynStatus NDFileHDF5::writeAttributeDataset(hdf5::When_t whenToSave)
                          hdfAttrNode->hdfmemspace, hdfAttrNode->hdffilespace,
                          H5P_DEFAULT, pDatavalue);
 
-    // Flush the dataset
-    H5Dflush(hdfAttrNode->hdfdataset);
+    // Check if we are in SWMR mode
+    int SWMRMode = 0;
+    getIntegerParam(NDFileHDF5_SWMRMode, &SWMRMode);
+    if (SWMRMode == 1){
+      int numCaptured = 0;
+      getIntegerParam(NDFileNumCaptured, &numCaptured);
+      int chunking = 0;
+      // Check the chunking value
+      calculateAttributeChunking(&chunking);
+      // Check if we should flush
+      if ((numCaptured+1) % chunking == 0){
+        // Flush the dataset
+        H5Dflush(hdfAttrNode->hdfdataset);
+      }
+    }
 
     H5Sclose(hdfAttrNode->hdffilespace);
     hdfAttrNode->hdfdims[0]++;
