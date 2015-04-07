@@ -218,6 +218,9 @@ hid_t NDFileHDF5Dataset::getHandle()
 
 asynStatus NDFileHDF5Dataset::flushDataset()
 {
+// flushDataset is a no-op if the HDF version doesn't support it
+#if H5_VERSION_GE(1,9,178)
+
   herr_t hdfstatus;
   static const char *functionName = "flushDataset";
 
@@ -229,6 +232,9 @@ asynStatus NDFileHDF5Dataset::flushDataset()
               fileName, functionName, this->name_.c_str());
     return asynError;
   }
+
+#endif
+
   return asynSuccess;  
 }
 

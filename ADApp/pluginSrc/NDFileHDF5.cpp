@@ -194,6 +194,10 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
 
   // Check if we are in SWMR mode
   getIntegerParam(NDFileHDF5_SWMRMode, &SWMRMode);
+
+  // The following section is not required if SWMR is not supported
+  #if H5_VERSION_GE(1,9,178)
+
   if (SWMRMode == 1){
     // Call the method to place the file into SWMR  
     if (startSWMR() == asynError){
@@ -207,12 +211,17 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
     }
   }
 
+  #endif
+
   return asynSuccess;
 }
 
 
 asynStatus NDFileHDF5::startSWMR()
 {
+  // startSWMR is a no-op if the HDF version doesn't support it
+  #if H5_VERSION_GE(1,9,178)
+
   const char* functionName = "startSWMR";
   if (!this->file) {
     return asynError;
@@ -226,6 +235,9 @@ asynStatus NDFileHDF5::startSWMR()
               driverName, functionName, hdfstatus);
     return asynError;
   }
+
+  #endif
+
   return asynSuccess;
 }
 
@@ -1268,6 +1280,10 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
   getIntegerParam(NDFileHDF5_SWMRMode, &SWMRMode);
   if (flush > 0){
     if (numCaptured % flush == 0) {
+
+      // No flushing if SWMR is not supported
+      #if H5_VERSION_GE(1,9,178)
+
       if (SWMRMode == 1){
         // We are in SWMR mode so flush the dataset for any readers
         status = this->detDataMap[destination]->flushDataset();
@@ -1275,6 +1291,8 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
           return asynError;
         }
       }
+
+      #endif
   
       asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
         "%s::%s flushing metadata (%d)\n", 
@@ -1316,6 +1334,9 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
       }
     }
   } else {
+    // No flushing if SWMR is not supported
+    #if H5_VERSION_GE(1,9,178)
+
     // Here although the flush parameter is zero we still need to flush the
     // dataset if we are in SWMR mode so that any readers get the updates
     if (SWMRMode == 1){
@@ -1325,6 +1346,9 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
         return asynError;
       }
     }
+
+    #endif
+
   }
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
             "%s::%s wrote frame. dt=%.5fs (T=%.5fs)\n", 
@@ -1632,6 +1656,16 @@ asynStatus NDFileHDF5::writeInt32(asynUser *pasynUser, epicsInt32 value)
       status = asynError;
       setIntegerParam(function, oldvalue);
     }
+  } else if (function == NDFileHDF5_SWMRMode){
+
+    // Reject SWMR mode if the HDF version doesn't support it
+    #if H5_VERSION_GE(1,9,178)
+    // Nothing to do here, we are all OK as SWMR is supported
+    #else
+    status = asynError;
+    setIntegerParam(function, oldvalue);
+    #endif
+
   } else
   {
     if (function < FIRST_NDFILE_HDF5_PARAM)
@@ -2359,6 +2393,10 @@ asynStatus NDFileHDF5::writeAttributeDataset(hdf5::When_t whenToSave)
                          hdfAttrNode->hdfmemspace, hdfAttrNode->hdffilespace,
                          H5P_DEFAULT, pDatavalue);
 
+
+// There is no SWMR mode if the HDF version doesn't support it
+#if H5_VERSION_GE(1,9,178)
+
     // Check if we are in SWMR mode
     int SWMRMode = 0;
     getIntegerParam(NDFileHDF5_SWMRMode, &SWMRMode);
@@ -2374,6 +2412,8 @@ asynStatus NDFileHDF5::writeAttributeDataset(hdf5::When_t whenToSave)
         H5Dflush(hdfAttrNode->hdfdataset);
       }
     }
+
+#endif
 
     H5Sclose(hdfAttrNode->hdffilespace);
     hdfAttrNode->hdfdims[0]++;
@@ -2941,10 +2981,16 @@ asynStatus NDFileHDF5::createNewFile(const char *fileName)
   
   // Check if we are in SWMR mode
   getIntegerParam(NDFileHDF5_SWMRMode, &SWMRMode);
+
+  // Not required if SWMR is not supported
+  #if H5_VERSION_GE(1,9,178)
+
   if (SWMRMode == 1){
     // Set to use the latest library format
     H5Pset_libver_bounds(access_plist, H5F_LIBVER_LATEST, H5F_LIBVER_LATEST);
   }
+
+  #endif
   
   hid_t create_plist = H5Pcreate(H5P_FILE_CREATE);
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
