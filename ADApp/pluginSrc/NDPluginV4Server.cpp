@@ -27,15 +27,15 @@ using namespace std;
 using tr1::static_pointer_cast;
 using tr1::dynamic_pointer_cast;
 
-template <typename arrayPtrType, typename arrayType, typename svectorType,
-          typename srcDataType>
-
-static void copyToNTNDArray(PVUnionPtr dest, void *src, size_t count,
-                            const string unionSelection)
+template <typename arrayType, typename srcDataType>
+static void copyToNTNDArray(PVUnionPtr dest, void *src, size_t count)
 {
-    arrayPtrType pvField = dest->select<arrayType>(unionSelection);
+    string unionField = ScalarTypeFunc::name(arrayType::typeCode);
+    unionField += "Value";
 
-    svectorType temp(pvField->reuse());
+    tr1::shared_ptr<arrayType> pvField = dest->select<arrayType>(unionField);
+
+    shared_vector<typename arrayType::value_type> temp(pvField->reuse());
     temp.resize(count);
 
     srcDataType *data = (srcDataType*)src;
@@ -200,36 +200,36 @@ void NTNDArrayRecord::update(NDArray *pArray)
         switch(pArray->dataType)
         {
         case NDInt8:
-            copyToNTNDArray<PVByteArrayPtr,PVByteArray,PVByteArray::svector,int8_t>
-            (m_pvValue, pArray->pData, arrayInfo.nElements, "byteValue");
+            copyToNTNDArray<PVByteArray, int8_t>
+            (m_pvValue, pArray->pData, arrayInfo.nElements);
             break;
         case NDUInt8:
-            copyToNTNDArray<PVUByteArrayPtr,PVUByteArray,PVUByteArray::svector,uint8_t>
-            (m_pvValue, pArray->pData, arrayInfo.nElements, "ubyteValue");
+            copyToNTNDArray<PVUByteArray, uint8_t>
+            (m_pvValue, pArray->pData, arrayInfo.nElements);
             break;
         case NDInt16:
-            copyToNTNDArray<PVShortArrayPtr,PVShortArray,PVShortArray::svector,int16_t>
-            (m_pvValue, pArray->pData, arrayInfo.nElements, "shortValue");
+            copyToNTNDArray<PVShortArray, int16_t>
+            (m_pvValue, pArray->pData, arrayInfo.nElements);
             break;
         case NDUInt16:
-            copyToNTNDArray<PVUShortArrayPtr,PVUShortArray,PVUShortArray::svector,uint16_t>
-            (m_pvValue, pArray->pData, arrayInfo.nElements, "ushortValue");
+            copyToNTNDArray<PVUShortArray, uint16_t>
+            (m_pvValue, pArray->pData, arrayInfo.nElements);
             break;
         case NDInt32:
-            copyToNTNDArray<PVIntArrayPtr,PVIntArray,PVIntArray::svector,int32_t>
-            (m_pvValue, pArray->pData, arrayInfo.nElements, "intValue");
+            copyToNTNDArray<PVIntArray, int32_t>
+            (m_pvValue, pArray->pData, arrayInfo.nElements);
             break;
         case NDUInt32:
-            copyToNTNDArray<PVUIntArrayPtr,PVUIntArray,PVUIntArray::svector,uint32_t>
-            (m_pvValue, pArray->pData, arrayInfo.nElements, "uintValue");
+            copyToNTNDArray<PVUIntArray, uint32_t>
+            (m_pvValue, pArray->pData, arrayInfo.nElements);
             break;
         case NDFloat32:
-            copyToNTNDArray<PVFloatArrayPtr,PVFloatArray,PVFloatArray::svector,float>
-            (m_pvValue, pArray->pData, arrayInfo.nElements, "floatValue");
+            copyToNTNDArray<PVFloatArray, float>
+            (m_pvValue, pArray->pData, arrayInfo.nElements);
             break;
         case NDFloat64:
-            copyToNTNDArray<PVDoubleArrayPtr,PVDoubleArray,PVDoubleArray::svector,double>
-            (m_pvValue, pArray->pData, arrayInfo.nElements, "doubleValue");
+            copyToNTNDArray<PVDoubleArray, double>
+            (m_pvValue, pArray->pData, arrayInfo.nElements);
             break;
         }
 
