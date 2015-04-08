@@ -134,6 +134,8 @@ function read_nd_netcdf, file, range=range, attributes=attributes, dimInfo=dimIn
         ncdf_attget, file_id, /global, 'NDNetCDFFileVersion', fileVersion
     endif
 
+    ; Array data type (NDDataType_t enumeration)
+    ncdf_attget, file_id, /global, 'dataType', dataType
     ; Array dimension information
     ncdf_attget, file_id, /global, 'numArrayDims', ndims
     dimInfo = replicate(dimInfo, ndims)
@@ -243,6 +245,10 @@ function read_nd_netcdf, file, range=range, attributes=attributes, dimInfo=dimIn
             attributes[i].pValue = ptr_new(temp, /no_copy)
         endfor
     endelse
+    
+    ; If the datatype is unsigned convert to signed
+    if (dataType eq 3) then data = uint(data)
+    if (dataType eq 5) then data = ulong(data)
 
     ; Close the netCDF file
     ncdf_close, file_id

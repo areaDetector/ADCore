@@ -216,14 +216,13 @@ asynStatus NDPluginAttribute::writeInt32(asynUser *pasynUser, epicsInt32 value)
   *            of the driver doing the callbacks.
   * \param[in] NDArrayPort Name of asyn port driver for initial source of NDArray callbacks.
   * \param[in] NDArrayAddr asyn port driver address for initial source of NDArray callbacks.
+  * \param[in] maxAttributes The maximum number of attributes that this plugin will support
   * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is
   *            allowed to allocate. Set this to -1 to allow an unlimited number of buffers.
   * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is
   *            allowed to allocate. Set this to -1 to allow an unlimited amount of memory.
   * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
-  * \param[in] maxTimeSeries The max size of the time series array
-  * \param[in] attrName The name of the NDArray attribute
   */
 NDPluginAttribute::NDPluginAttribute(const char *portName, int queueSize, int blockingCallbacks,
                                      const char *NDArrayPort, int NDArrayAddr, int maxAttributes,

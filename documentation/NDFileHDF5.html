@@ -317,10 +317,10 @@
   <p>
     This default layout is compatible with the Nexus file format. This is achieved by
     defining a specific hierachial structure of groups and datasets and by tagging elements
-    in the hierachi with certain &quot;NX_class=nnn&quot; attributes. Although Nexus
-    libraries are not used to write the data to disk, this file structure allow Nexus-aware
-    readers to open and read the content of these HDF5 files. This has been tested with
-    the Nexus reader in the <a href="http://opengda.org/">GDA application</a>. Hardlinks
+    in the hierachy with certain "NX_class=nnn" attributes. Although Nexus libraries
+    are not used to write the data to disk, this file structure allow Nexus-aware readers
+    to open and read the content of these HDF5 files. This has been tested with the
+    Nexus reader in the <a href="http://opengda.org/">GDA application</a>. Hardlinks
     in the HDF5 file can be used to make the same dataset appear in more than one location.
     This can be useful for defining a layout that is Nexus compatible, as well as conforming
     to some other desired layout.
@@ -330,16 +330,15 @@
   </h5>
   <p>
     The attributes from NDArrays are stored in the HDF5 files. The list of attributes
-    is loaded when a file is opened so XML attributes files should not be reloaded during
-    an acquisition run.
+    is loaded when a file is opened so XML attributes files should not be reloaded while
+    writing a file in stream mode.
   </p>
   <p>
-    The type of attribute is used to determine where in the file structure the attribute
-    data will end up. If the dataset is defined in the XML layout file then the user-specified
-    name is used for the dataset. If the dataset is not defined in the XML layout file
-    then the dataset name will be the the NDArray attribute name. The NDArray attribute
-    datasets automatically have 4 HDF &quot;attributes&quot;) to indicate their source
-    type and origin. These are:</p>
+    If the dataset is defined in the XML layout file then the user-specified name is
+    used for the dataset. If the dataset is not defined in the XML layout file then
+    the dataset name will be the the NDArray attribute name. The NDArray attribute datasets
+    automatically have 4 HDF "attributes") to indicate their source type and origin.
+    These are:</p>
   <ul>
     <li>NDAttrName: The name of the NDArray attribute.</li>
     <li>NDAttrDescrption: The description of the NDArray attribute.</li>
@@ -348,14 +347,26 @@
     <li>NDAttrSource: The source of the NDArray attribute data, i.e. the name of the EPICS
       PV, the drvInfo string for the parameter, or the name of the attribute function.</li>
   </ul>
+  <p>
+    NDArray attributes will be stored as 1D datasets. If the location of an NDArray
+    attribute dataset is not defined in the XML layout file then the dataset will appear
+    in the group that has the property ndattr_default="true". If there is no group with
+    that property then the dataset will appear in the root group. If the root group
+    has the property auto_ndattr_default="false" then datasets that are not explicitly
+    defined in the XML layout file will not appear in the HDF5 file at all.
+  </p>
+  <p>
+    There are 4 "virtual" attributes that are automatically created. These are:</p>
   <ul>
-    <li>NDArray attributes will be stored as 1D datasets. If the location of an NDArray
-      attribute dataset is not defined in the XML layout file then the dataset will appear
-      in the group that has the property ndattr_default="true". If there is no group with
-      that property then the dataset will appear in the root group. If the root group
-      has the property auto_ndattr_default="false" then datasets that are not explicitly
-      defined in the XML layout file will not appear in the HDF5 file at all. </li>
+    <li>NDArrayUniqueId: The NDArray.uniqueId value.</li>
+    <li>NDArrayTimeStamp: The NDArray.timeStamp value.</li>
+    <li>NDArrayEpicsTSSec: The NDArray.epicsTS.secPastEpoch value.</li>
+    <li>NDArrayEpicsTSnSec: The NDArray.epicsTS.nsec value.</li>
   </ul>
+  <p>
+    These properties are added to the property list and will be written to the HDF5
+    file following the same rules as the actual NDArray ndAttributes described above.
+  </p>
   <p>
     It is possible to validate the syntax of an NDArray attributes XML file. For example,
     the command (starting from the <tt>iocBoot</tt> directory) to validate the syntax
@@ -369,10 +380,6 @@
 |
 +--instrument           &lt;-- NX_class=NXinstrument
    |
-   +--NDAttributes      &lt;-- NX_class=NXCollection, ndattr_default="true"
-   |  |
-   |  +---              &lt;-- Any number of NDAttributes from the NDArrays as individual 1D datasets
-   |
    +--detector          &lt;-- NX_class=NXdetector
    |  |
    |  +--data           &lt;-- NX_class=SDS, signal=1
@@ -380,6 +387,10 @@
    |  +--NDAttributes
    |     |
    |     +--ColorMode
+   |
+   +--NDAttributes      &lt;-- NX_class=NXCollection, ndattr_default="true"
+   |  |
+   |  +---              &lt;-- Any number of NDAttributes from the NDArrays as individual 1D datasets
    |
    +--performance       &lt;-- Performance of the file writing
       |
@@ -391,6 +402,15 @@
   <h3>
     HDF5 File Viewers
   </h3>
+  <p>
+    Note that with the current (1.8) release series of the HDF5 libraries it is not
+    possible to do a live "monitoring" of a file which is being written by another process.
+    The file writers mentioned in this section can only be used to open, browse and
+    read the HDF5 files <b>after</b> the NDFileHDF5 plugin has completed writing and
+    closed the file. This limitation will be lifted in the 1.10 release of the HDF5
+    library which will include the <a href="http://www.hdfgroup.org/HDF5/docNewFeatures/NewFeaturesSwmrDocs.html">
+      Single Writer Multiple Reader (SWMR) feature.</a>
+  </p>
   <p>
     <a href="http://www.hdfgroup.org/hdf-java-html/hdfview/index.html">HDFView</a> is
     a simple GUI tool for viewing and browsing HDF files. It has some limited support
@@ -404,12 +424,10 @@
     The screenshot below shows the hdfview application with a datafile open. The datafile
     is generated by the plugin and a number of elements are visible:</p>
   <ul>
-    <li>A number of NDAttributes sourced from EPICS PVs during detector acquisition appear
-      as 1D datasets in the group &quot;/entry/instrument/NDAttributes/&quot;</li>
-    <li>Several NDAttributes from the areaDetector show up as datasets in the group &quot;/entry/instrument/detector/NDAttributes/&quot;</li>
-    <li>The image data is in the dataset &quot;/entry/instrument/detector/data&quot;.
-      The metadata (in HDF known as &quot;attributes&quot;) for that dataset indicate
-      8bit unsigned char data, 10 frames of 60x40 pixels</li>
+    <li>The NDArray NDAttributes appear as 1D datasets in the group "/entry/instrument/NDAttributes/"</li>
+    <li>The image data is in the dataset "/entry/instrument/detector/data". The metadata
+      (in HDF known as "attributes") for that dataset indicate 8bit unsigned char data,
+      10 frames of 60x40 pixels</li>
     <li>Image and table view of the first frame data is open</li>
   </ul>
   <div style="text-align: center">
@@ -425,12 +443,12 @@
   </p>
   <p>
     In addition to the dimensions of the NDArray it is also possible to specify up to
-    2 extra &quot;virtual&quot; dimensions to store datasets in the file. This is to
-    support applications where a sample is scanned in up to two dimensions, say X and
-    Y. For each scan point a dataset comprising of multiple frames can be stored. The
-    length of (i.e. number of points in) each of the two virtual dimensions have to
-    be specified before the plugin opens the file for writing. This feature is only
-    supported in the Stream and Capture modes.
+    2 extra "virtual" dimensions to store datasets in the file. This is to support applications
+    where a sample is scanned in up to two dimensions, say X and Y. For each scan point
+    a dataset comprising of multiple frames can be stored. The length of (i.e. number
+    of points in) each of the two virtual dimensions have to be specified before the
+    plugin opens the file for writing. This feature is only supported in the Stream
+    and Capture modes.
   </p>
   <p>
     This feature allow for creating very large sets of scan data which matches the dimensions
@@ -438,8 +456,8 @@
     a benefit in post processing.
   </p>
   <p>
-    The figure below illustrate the use of the two extra &quot;virtual&quot; dimensions
-    in a 2D (X,Y) raster scan with N frames per point:</p>
+    The figure below illustrate the use of the two extra "virtual" dimensions in a 2D
+    (X,Y) raster scan with N frames per point:</p>
   <div style="text-align: center">
     <img alt="HDFmultiple-dimensions.png" src="HDFmultiple-dimensions.png" /></div>
   <p>
@@ -452,12 +470,12 @@
     For 2D image (greyscale) formats the dimensions in the multiframe HDF5 file are
     organised as follows:</p>
   <ul>
-    <li>For a multiframe file with no use of &quot;virtual&quot; dimension the order is:
-      {Nth frame, width, height}</li>
-    <li>For a multiframe file using 1 &quot;virtual&quot; dimension (X) the order is:
-      {X, Nth frame, width, height}</li>
-    <li>For a multiframe file using 2 &quot;virtual&quot; dimension (X,Y) the order is:
-      {Y, X, Nth frame, width, height}</li>
+    <li>For a multiframe file with no use of "virtual" dimension the order is: {Nth frame,
+      width, height}</li>
+    <li>For a multiframe file using 1 "virtual" dimension (X) the order is: {X, Nth frame,
+      width, height}</li>
+    <li>For a multiframe file using 2 "virtual" dimension (X,Y) the order is: {Y, X, Nth
+      frame, width, height}</li>
   </ul>
   <h3>
     Chunking
@@ -603,8 +621,8 @@
         <td>
           r/w</td>
         <td>
-          Configure HDF5 &quot;chunking&quot; to approriate size for the filesystem: sets
-          number of rows to use per chunk</td>
+          Configure HDF5 "chunking" to approriate size for the filesystem: sets number of
+          rows to use per chunk</td>
         <td>
           HDF5_nRowChunks</td>
         <td>
@@ -622,8 +640,8 @@
         <td>
           r/w</td>
         <td>
-          Configure HDF5 &quot;chunking&quot; to approriate size for the filesystem: sets
-          number of columns to use per chunk</td>
+          Configure HDF5 "chunking" to approriate size for the filesystem: sets number of
+          columns to use per chunk</td>
         <td>
           HDF5_nColChunks</td>
         <td>
@@ -641,8 +659,8 @@
         <td>
           r/w</td>
         <td>
-          Configure HDF5 &quot;chunking&quot; to approriate size for the filesystem: sets
-          number of frames to use per chunk. For a 2D image, setting this parameter > 1 essentially
+          Configure HDF5 "chunking" to approriate size for the filesystem: sets number of
+          frames to use per chunk. For a 2D image, setting this parameter > 1 essentially
           implies using in-memory cache as HDF5 only writes full chunks to disk.</td>
         <td>
           HDF5_nFramesChunks</td>

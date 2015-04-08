@@ -23,19 +23,28 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
-R2-2 (March XXX, 2015)
+R2-2 (March 23, 2015)
 ========================
-###
-* NOTE: This release requires at least R4-26 of asyn because it uses the info(asyn:READOUT,"1") tag
+### Compatibility
+* This release requires at least R4-26 of asyn because it uses the info(asyn:READOUT,"1") tag
   in databases to have output records update on driver callbacks.
-
-### iocs/simDetectorNoIOC
-* New application that demonstrates how to instantiate a simDetector driver
-  and a number of plugins in a standalone C++ application, without running an EPICS IOC.
-  If asyn and ADCore are built with the EPICS_LIBCOM_ONLY flag then this application only
-  needs the libCom library from EPICS base and the asyn library.  It does not need any other
-  libraries from EPICS base or synApps.
-
+* This release requires R2-2 of areaDetector/ADBinaries
+* This release requires R2-2 of areaDetector/areaDetector because of changes to EXAMPLE_CONFIG_SITE.local.
+* Detector IOC startup scripts will need a few minor changes to work with this release of ADCore.
+  iocBoot/iocSimDetector/st.cmd should be used as an example.
+  - The environment variable EPICS_DB_INCLUDE_PATH must be defined and must include $(ADCORE)/db
+  - The environment variable CBUFFS must be defined to specify the number of frames buffered in the
+    NDPluginCircularBuff plugin, which is loaded by commonPlugins.cmd.
+  - When loading NDStdArrays.template NDARRAY_PORT must be specified.  NDPluginBase should no longer be loaded, 
+    this is now done automatically via an include in NDStdArrays.template.
+  - Example lines:
+  ```
+   epicsEnvSet("CBUFFS", "500")
+   epicsEnvSet("EPICS_DB_INCLUDE_PATH", "$(ADCORE)/db")
+   dbLoadRecords("NDStdArrays.template", "P=$(PREFIX),R=image1:,PORT=Image1,ADDR=0,
+                 TIMEOUT=1,NDARRAY_PORT=$(PORT),TYPE=Int8,FTVL=UCHAR,NELEMENTS=3145728")
+  ```
+  
 ### NDPluginROIStat
 * New plugin that supports multiple regions-of-interest with simple statistics on each.
   It is more efficient and convenient than the existing NDPluginROI and NDPluginStats when many 
@@ -101,6 +110,10 @@ R2-2 (March XXX, 2015)
     NDAttrDescription and NDAttrSource. Two additional automatic attributes have been added, 
     NDAttrSourceType and NDAttrName, which now completely define the source of the NDAttribute data.
 
+### Version information
+* Added a new include file, ADCoreVersion.h that defines the macros ADCORE_VERION, ADCORE_REVISION, and
+  ADCORE_MODIFICATION.  The release number is ADCORE_VERSION.ADCORE_REVISION.ADCORE_MODIFICATION.
+  This can be used by drivers and plugins to allow them to be used with different releases of ADCore.
 
 ### Plugins general
 * Added epicsShareClass to class definitions so classes are exported with Windows DLLs.
@@ -119,6 +132,11 @@ R2-2 (March XXX, 2015)
   and NDPluginBase.template into this new file.  Made all template files "include" the files from the
   parent class, rather than calling dbLoadRecords for each template file.  This simplifies commonPlugins.cmd.
   A similar include mechanism was applied to the *_settings.req files, which simplifies commonPlugin_settings.req.
+* Added a new record, $(P)$(R)ADCoreVersion_RBV, that is loaded for all drivers and plugins. 
+  This record contains the ADCore version number. This can be used by Channel Access clients to alter their
+  behavior depending on the version of ADCore that was used to build this driver or plugin.
+  The record contains the string ADCORE_VERSION.ADCORE_REVISION.ADCORE_MODIFICATION, i.e. 2.2.0 for this release.
+
 * Added the info tag "autosaveFields" to allow automatic creation of autosave files.
 * ADBase.template
   - Added optional macro parameter RATE_SMOOTH to smooth the calculated array rate.
@@ -131,6 +149,13 @@ R2-2 (March XXX, 2015)
 ### simDetector driver
 * Created separate simDetector.h file so class can be exported to other applications.
       
+### iocs/simDetectorNoIOC
+* New application that demonstrates how to instantiate a simDetector driver
+  and a number of plugins in a standalone C++ application, without running an EPICS IOC.
+  If asyn and ADCore are built with the EPICS_LIBCOM_ONLY flag then this application only
+  needs the libCom library from EPICS base and the asyn library.  It does not need any other
+  libraries from EPICS base or synApps.
+
 ### Makefiles
 * Added new build variable $(XML2_INCLUDE), which replaces hardcoded /usr/include/libxml2 in
   several Makefiles.  $(XML2_INCLUDE) is normally defined in 
