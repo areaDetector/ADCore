@@ -29,44 +29,49 @@ using tr1::dynamic_pointer_cast;
 
 static const PVDataCreatePtr PVDC = getPVDataCreate();
 
+template <typename dataType>
+struct freeNDArray {
+    NDArray *array;
+    freeNDArray(NDArray *array) : array(array) {};
+    void operator()(dataType *data) { array->release(); }
+};
+
 template <typename arrayType, typename srcDataType>
-static void copyValue (PVUnionPtr dest, void *src, size_t count)
+static void copyValue (PVUnionPtr dest, NDArray *src)
 {
-    string unionField = ScalarTypeFunc::name(arrayType::typeCode);
-    unionField += "Value";
+    typedef typename arrayType::value_type arrayValType;
 
-    tr1::shared_ptr<arrayType> pvField = dest->select<arrayType>(unionField);
+    string unionField;
+    NDArrayInfo_t arrayInfo;
+    size_t count;
 
-    shared_vector<typename arrayType::value_type> temp(pvField->reuse());
-    temp.resize(count);
+    unionField = string(ScalarTypeFunc::name(arrayType::typeCode))+string("Value");
 
-    srcDataType *data = (srcDataType*)src;
-    std::copy(data, data + count, temp.begin());
-    pvField->replace(freeze(temp));
+    src->getInfo(&arrayInfo);
+    count = arrayInfo.nElements;
 
+    src->reserve();
+    shared_vector<arrayValType> temp((srcDataType*)src->pData,
+            freeNDArray<srcDataType>(src), 0, count);
+
+    dest->select<arrayType>(unionField)->replace(freeze(temp));
     dest->postPut();
 }
 
 static void copyValue (NTNDArrayPtr dest, NDArray *src)
 {
-    NDArrayInfo_t arrayInfo;
-    size_t count;
     PVUnionPtr destData = dest->getValue();
-    void *srcData = src->pData;
-
-    src->getInfo(&arrayInfo);
-    count = arrayInfo.nElements;
 
     switch(src->dataType)
     {
-    case NDInt8:    copyValue<PVByteArray, int8_t> (destData, srcData, count);     break;
-    case NDUInt8:   copyValue<PVUByteArray, uint8_t> (destData, srcData, count);   break;
-    case NDInt16:   copyValue<PVShortArray, int16_t> (destData, srcData, count);   break;
-    case NDUInt16:  copyValue<PVUShortArray, uint16_t> (destData, srcData, count); break;
-    case NDInt32:   copyValue<PVIntArray, int32_t> (destData, srcData, count);     break;
-    case NDUInt32:  copyValue<PVUIntArray, uint32_t> (destData, srcData, count);   break;
-    case NDFloat32: copyValue<PVFloatArray, float> (destData, srcData, count);     break;
-    case NDFloat64: copyValue<PVDoubleArray, double> (destData, srcData, count);   break;
+    case NDInt8:    copyValue<PVByteArray, int8_t> (destData, src);     break;
+    case NDUInt8:   copyValue<PVUByteArray, uint8_t> (destData, src);   break;
+    case NDInt16:   copyValue<PVShortArray, int16_t> (destData, src);   break;
+    case NDUInt16:  copyValue<PVUShortArray, uint16_t> (destData, src); break;
+    case NDInt32:   copyValue<PVIntArray, int32_t> (destData, src);     break;
+    case NDUInt32:  copyValue<PVUIntArray, uint32_t> (destData, src);   break;
+    case NDFloat32: copyValue<PVFloatArray, float> (destData, src);     break;
+    case NDFloat64: copyValue<PVDoubleArray, double> (destData, src);   break;
     }
 }
 
