@@ -27,8 +27,10 @@ using namespace std;
 using tr1::static_pointer_cast;
 using tr1::dynamic_pointer_cast;
 
+static const PVDataCreatePtr PVDC = getPVDataCreate();
+
 template <typename arrayType, typename srcDataType>
-static void copyToNTNDArray(PVUnionPtr dest, void *src, size_t count)
+static void copyValue (PVUnionPtr dest, void *src, size_t count)
 {
     string unionField = ScalarTypeFunc::name(arrayType::typeCode);
     unionField += "Value";
@@ -45,116 +47,62 @@ static void copyToNTNDArray(PVUnionPtr dest, void *src, size_t count)
     dest->postPut();
 }
 
+static void copyValue (NTNDArrayPtr dest, NDArray *src)
+{
+    NDArrayInfo_t arrayInfo;
+    size_t count;
+    PVUnionPtr destData = dest->getValue();
+    void *srcData = src->pData;
+
+    src->getInfo(&arrayInfo);
+    count = arrayInfo.nElements;
+
+    switch(src->dataType)
+    {
+    case NDInt8:    copyValue<PVByteArray, int8_t> (destData, srcData, count);     break;
+    case NDUInt8:   copyValue<PVUByteArray, uint8_t> (destData, srcData, count);   break;
+    case NDInt16:   copyValue<PVShortArray, int16_t> (destData, srcData, count);   break;
+    case NDUInt16:  copyValue<PVUShortArray, uint16_t> (destData, srcData, count); break;
+    case NDInt32:   copyValue<PVIntArray, int32_t> (destData, srcData, count);     break;
+    case NDUInt32:  copyValue<PVUIntArray, uint32_t> (destData, srcData, count);   break;
+    case NDFloat32: copyValue<PVFloatArray, float> (destData, srcData, count);     break;
+    case NDFloat64: copyValue<PVDoubleArray, double> (destData, srcData, count);   break;
+    }
+}
+
 template <typename pvAttrType, typename valueType>
-static void updateValueField(PVStructurePtr pvAttr, NDAttribute *attr)
+static void copyAttribute (PVStructurePtr dest, NDAttribute *src)
 {
     valueType value;
-    attr->getValue(attr->getDataType(), (void*)&value);
+    src->getValue(src->getDataType(), (void*)&value);
 
-    PVUnionPtr valueFieldUnion = pvAttr->getSubField<PVUnion>("value");
+    PVUnionPtr valueFieldUnion = dest->getSubField<PVUnion>("value");
     static_pointer_cast<pvAttrType>(valueFieldUnion->get())->put(value);
 }
 
-static PVDataCreatePtr PVDC = getPVDataCreate();
-
-static void updateValueFieldString(PVStructurePtr pvAttr, NDAttribute *attr)
+static void copyStringAttribute (PVStructurePtr dest, NDAttribute *src)
 {
     NDAttrDataType_t attrDataType;
     size_t attrDataSize;
 
-    attr->getValueInfo(&attrDataType, &attrDataSize);
+    src->getValueInfo(&attrDataType, &attrDataSize);
 
     char value[attrDataSize];
-    attr->getValue(attrDataType, value, attrDataSize);
+    src->getValue(attrDataType, value, attrDataSize);
 
-    PVUnionPtr valueFieldUnion = pvAttr->getSubField<PVUnion>("value");
+    PVUnionPtr valueFieldUnion = dest->getSubField<PVUnion>("value");
     static_pointer_cast<PVString>(valueFieldUnion->get())->put(value);
 }
 
-class epicsShareClass NTNDArrayRecord :
-    public PVRecord
+static void createAttributes (PVStructureArrayPtr dest, NDAttributeList *src)
 {
-
-private:
-    NTNDArrayRecord(string const & name, PVStructurePtr const & pvStructure)
-    :PVRecord(name, pvStructure) {}
-
-    PVUnionPtr m_pvValue;
-    PVStructureArrayPtr m_pvDimension;
-    PVLongPtr m_pvCompressedSize;
-    PVLongPtr m_pvUncompressedSize;
-    PVAlarm m_pvAlarm;
-    PVTimeStamp m_pvTimestamp;
-    PVTimeStamp m_pvDataTimeStamp;
-    PVIntPtr m_pvUniqueId;
-    PVStructureArrayPtr m_pvAttrs;
-
-public:
-    POINTER_DEFINITIONS(NTNDArrayRecord);
-
-    virtual ~NTNDArrayRecord () {}
-    static NTNDArrayRecordPtr create (string const & name);
-    virtual bool init ();
-
-    virtual void destroy ()
-    {
-        PVRecord::destroy();
-    }
-
-    virtual void process ()
-    {
-        cout << "process" << endl;
-    }
-
-    void update (NDArray *pArray);
-    void createAttributes (NDAttributeList *attrs, PVStructureArray::svector& pvAttrsVector);
-};
-
-NTNDArrayRecordPtr NTNDArrayRecord::create (string const & name)
-{
-    NTNDArrayBuilderPtr builder = NTNDArray::createBuilder();
-    builder->addDescriptor()->addTimeStamp()->addAlarm()->addDisplay();
-
-    NTNDArrayRecordPtr pvRecord(new NTNDArrayRecord(name,
-            builder->createPVStructure()));
-
-    if(!pvRecord->init())
-        pvRecord.reset();
-
-    return pvRecord;
-}
-
-bool NTNDArrayRecord::init ()
-{
-    initPVRecord();
-    PVStructurePtr pvStructure = getPVStructure();
-    NTNDArrayPtr ntndArray = NTNDArray::wrap(pvStructure);
-
-    m_pvValue            = ntndArray->getValue();
-    m_pvDimension        = ntndArray->getDimension();
-    m_pvCompressedSize   = ntndArray->getCompressedDataSize();
-    m_pvUncompressedSize = ntndArray->getUncompressedDataSize();
-    m_pvUniqueId         = ntndArray->getUniqueId();
-    m_pvAttrs            = ntndArray->getAttribute();
-
-    m_pvAlarm.attach(ntndArray->getAlarm());
-    m_pvTimestamp.attach(ntndArray->getTimeStamp());
-    m_pvDataTimeStamp.attach(ntndArray->getDataTimeStamp());
-
-    // Set codec name to empty
-    ntndArray->getCodec()->getSubField<PVString>("name")->put("");
-
-    return true;
-}
-
-void NTNDArrayRecord::createAttributes (NDAttributeList *attrs, PVStructureArray::svector& pvAttrsVector)
-{
-    NDAttribute *attr = attrs->next(NULL);
+    NDAttribute *attr = src->next(NULL);
+    PVStructureArray::svector destVec(dest->reuse());
 
     while(attr)
     {
         PVStructurePtr pvAttr;
-        pvAttr = PVDC->createPVStructure(m_pvAttrs->getStructureArray()->getStructure());
+        pvAttr = PVDC->createPVStructure(dest->getStructureArray()->getStructure());
 
         pvAttr->getSubField<PVString>("name")->put(attr->getName());
         pvAttr->getSubField<PVString>("descriptor")->put(attr->getDescription());
@@ -182,119 +130,166 @@ void NTNDArrayRecord::createAttributes (NDAttributeList *attrs, PVStructureArray
             throw std::runtime_error("invalid attribute data type");
         }
 
-        pvAttrsVector.push_back(pvAttr);
-        attr = attrs->next(attr);
+        destVec.push_back(pvAttr);
+        attr = src->next(attr);
     }
+
+    dest->replace(freeze(destVec));
+}
+
+static void copyAttributes (PVStructureArrayPtr dest, NDAttributeList *src)
+{
+    if(dest->view().dataCount() != (size_t)src->count())
+        createAttributes(dest, src);
+
+    PVStructureArray::svector destVec(dest->reuse());
+    NDAttribute *attr = src->next(NULL);
+
+    for(PVStructureArray::svector::iterator it = destVec.begin();
+            it != destVec.end(); ++it)
+    {
+        PVStructurePtr pvAttr = *it;
+        switch(attr->getDataType())
+        {
+        case NDAttrInt8:    copyAttribute <PVByte,   int8_t>  (pvAttr, attr); break;
+        case NDAttrUInt8:   copyAttribute <PVUByte,  uint8_t> (pvAttr, attr); break;
+        case NDAttrInt16:   copyAttribute <PVShort,  int16_t> (pvAttr, attr); break;
+        case NDAttrUInt16:  copyAttribute <PVUShort, uint16_t>(pvAttr, attr); break;
+        case NDAttrInt32:   copyAttribute <PVInt,    int32_t> (pvAttr, attr); break;
+        case NDAttrUInt32:  copyAttribute <PVUInt,   uint32_t>(pvAttr, attr); break;
+        case NDAttrFloat32: copyAttribute <PVFloat,  float>   (pvAttr, attr); break;
+        case NDAttrFloat64: copyAttribute <PVDouble, double>  (pvAttr, attr); break;
+        case NDAttrString:  copyStringAttribute(pvAttr, attr); break;
+        case NDAttrUndefined:
+        default:
+            throw std::runtime_error("invalid attribute data type");
+        }
+        attr = src->next(attr);
+    }
+
+    dest->replace(freeze(destVec));
+}
+
+static void copyDimension (PVStructureArrayPtr dest, NDDimension_t src[], int ndims)
+{
+    PVStructureArray::svector destVec(dest->reuse());
+    destVec.resize(ndims);
+    for (int i = 0; i < ndims; i++)
+    {
+        if (!destVec[i])
+        {
+            StructureConstPtr dimStructure = dest->getStructureArray()->getStructure();
+            destVec[i] = PVDC->createPVStructure(dimStructure);
+        }
+
+        destVec[i]->getSubField<PVInt>("size")->put(src[i].size);
+        destVec[i]->getSubField<PVInt>("offset")->put(src[i].offset);
+        destVec[i]->getSubField<PVInt>("fullSize")->put(src[i].size);
+        destVec[i]->getSubField<PVInt>("binning")->put(src[i].binning);
+        destVec[i]->getSubField<PVBoolean>("reverse")->put(src[i].reverse);
+    }
+    dest->replace(freeze(destVec));
+}
+
+static void copyTimeStamp (PVStructurePtr dest, double src)
+{
+    double seconds = floor(src);
+    double nanoseconds = (src - seconds)*1e9;
+
+    PVTimeStamp pvDest;
+    pvDest.attach(dest);
+
+    TimeStamp ts((int64_t)seconds, (int32_t)nanoseconds);
+    pvDest.set(ts);
+}
+
+static void copyTimeStamp (PVStructurePtr dest, epicsTimeStamp src)
+{
+    PVTimeStamp pvDest;
+    pvDest.attach(dest);
+
+    TimeStamp ts(src.secPastEpoch, src.nsec);
+    pvDest.set(ts);
+}
+
+static void copyToNTNDArray(NTNDArrayPtr ntndarray, NDArray *ndarray)
+{
+    copyValue(ntndarray, ndarray);
+
+    ntndarray->getCodec()->getSubField<PVString>("name")->put("");
+
+    copyDimension(ntndarray->getDimension(), ndarray->dims, ndarray->ndims);
+
+    ntndarray->getCompressedDataSize()->put(static_cast<int64>(ndarray->dataSize));
+    ntndarray->getUncompressedDataSize()->put(static_cast<int64>(ndarray->dataSize));
+    ntndarray->getUniqueId()->put(ndarray->uniqueId);
+
+    copyAttributes(ntndarray->getAttribute(), ndarray->pAttributeList);
+
+    copyTimeStamp(ntndarray->getTimeStamp(), ndarray->epicsTS);
+    copyTimeStamp(ntndarray->getDataTimeStamp(), ndarray->timeStamp);
+}
+
+class epicsShareClass NTNDArrayRecord :
+    public PVRecord
+{
+
+private:
+    NTNDArrayRecord(string const & name, PVStructurePtr const & pvStructure)
+    :PVRecord(name, pvStructure) {}
+
+    NTNDArrayPtr m_ntndArray;
+
+public:
+    POINTER_DEFINITIONS(NTNDArrayRecord);
+
+    virtual ~NTNDArrayRecord () {}
+    static NTNDArrayRecordPtr create (string const & name);
+    virtual bool init ();
+    virtual void destroy ();
+    virtual void process () {}
+    void update (NDArray *pArray);
+};
+
+NTNDArrayRecordPtr NTNDArrayRecord::create (string const & name)
+{
+    NTNDArrayBuilderPtr builder = NTNDArray::createBuilder();
+    builder->addDescriptor()->addTimeStamp()->addAlarm()->addDisplay();
+
+    NTNDArrayRecordPtr pvRecord(new NTNDArrayRecord(name,
+            builder->createPVStructure()));
+
+    if(!pvRecord->init())
+        pvRecord.reset();
+
+    return pvRecord;
+}
+
+bool NTNDArrayRecord::init ()
+{
+    initPVRecord();
+    m_ntndArray = NTNDArray::wrap(getPVStructure());
+    return true;
+}
+
+void NTNDArrayRecord::destroy()
+{
+    PVRecord::destroy();
 }
 
 void NTNDArrayRecord::update(NDArray *pArray)
 {
     lock();
 
-    NDArrayInfo_t arrayInfo;
-    pArray->getInfo(&arrayInfo);
-
     try
     {
         beginGroupPut();
-        switch(pArray->dataType)
-        {
-        case NDInt8:
-            copyToNTNDArray<PVByteArray, int8_t>
-            (m_pvValue, pArray->pData, arrayInfo.nElements);
-            break;
-        case NDUInt8:
-            copyToNTNDArray<PVUByteArray, uint8_t>
-            (m_pvValue, pArray->pData, arrayInfo.nElements);
-            break;
-        case NDInt16:
-            copyToNTNDArray<PVShortArray, int16_t>
-            (m_pvValue, pArray->pData, arrayInfo.nElements);
-            break;
-        case NDUInt16:
-            copyToNTNDArray<PVUShortArray, uint16_t>
-            (m_pvValue, pArray->pData, arrayInfo.nElements);
-            break;
-        case NDInt32:
-            copyToNTNDArray<PVIntArray, int32_t>
-            (m_pvValue, pArray->pData, arrayInfo.nElements);
-            break;
-        case NDUInt32:
-            copyToNTNDArray<PVUIntArray, uint32_t>
-            (m_pvValue, pArray->pData, arrayInfo.nElements);
-            break;
-        case NDFloat32:
-            copyToNTNDArray<PVFloatArray, float>
-            (m_pvValue, pArray->pData, arrayInfo.nElements);
-            break;
-        case NDFloat64:
-            copyToNTNDArray<PVDoubleArray, double>
-            (m_pvValue, pArray->pData, arrayInfo.nElements);
-            break;
-        }
-
-        PVStructureArray::svector dimVector(m_pvDimension->reuse());
-        dimVector.resize(pArray->ndims);
-        for (int i = 0; i < pArray->ndims; i++)
-        {
-            PVStructurePtr d = dimVector[i];
-            if (!d)
-                d = dimVector[i] = PVDC->createPVStructure(m_pvDimension->getStructureArray()->getStructure());
-            d->getSubField<PVInt>("size")->put(pArray->dims[i].size);
-            d->getSubField<PVInt>("offset")->put(pArray->dims[i].offset);
-            d->getSubField<PVInt>("fullSize")->put(pArray->dims[i].size);
-            d->getSubField<PVInt>("binning")->put(pArray->dims[i].binning);
-            d->getSubField<PVBoolean>("reverse")->put(pArray->dims[i].reverse);
-        }
-        m_pvDimension->replace(freeze(dimVector));
-
-        m_pvCompressedSize->put(static_cast<int64>(pArray->dataSize));
-        m_pvUncompressedSize->put(static_cast<int64>(pArray->dataSize));
-        m_pvUniqueId->put(pArray->uniqueId);
-
-        NDAttributeList *attrs = pArray->pAttributeList;
-        PVStructureArray::svector pvAttrsVector(m_pvAttrs->reuse());
-
-        if(!pvAttrsVector.dataCount() && attrs->count())
-            createAttributes(attrs, pvAttrsVector);
-
-        NDAttribute *attr = attrs->next(NULL);
-
-        for(PVStructureArray::svector::iterator it = pvAttrsVector.begin();
-                it != pvAttrsVector.end(); ++it)
-        {
-            PVStructurePtr pvAttr = *it;
-            switch(attr->getDataType())
-            {
-            case NDAttrInt8:    updateValueField<PVByte,   int8_t>  (pvAttr, attr); break;
-            case NDAttrUInt8:   updateValueField<PVUByte,  uint8_t> (pvAttr, attr); break;
-            case NDAttrInt16:   updateValueField<PVShort,  int16_t> (pvAttr, attr); break;
-            case NDAttrUInt16:  updateValueField<PVUShort, uint16_t>(pvAttr, attr); break;
-            case NDAttrInt32:   updateValueField<PVInt,    int32_t> (pvAttr, attr); break;
-            case NDAttrUInt32:  updateValueField<PVUInt,   uint32_t>(pvAttr, attr); break;
-            case NDAttrFloat32: updateValueField<PVFloat,  float>   (pvAttr, attr); break;
-            case NDAttrFloat64: updateValueField<PVDouble, double>  (pvAttr, attr); break;
-            case NDAttrString:  updateValueFieldString(pvAttr, attr); break;
-            case NDAttrUndefined:
-            default:
-                throw std::runtime_error("invalid attribute data type");
-            }
-            attr = attrs->next(attr);
-        }
-
-        m_pvAttrs->replace(freeze(pvAttrsVector));
-
-        double seconds = floor(pArray->timeStamp);
-        double nanoseconds = (pArray->timeStamp - seconds)*1e9;
-        TimeStamp dataTs((int64_t)seconds, (int32)nanoseconds);
-        m_pvDataTimeStamp.set(dataTs);
-
-        TimeStamp ts(pArray->epicsTS.secPastEpoch, pArray->epicsTS.nsec);
-        m_pvTimestamp.set(ts);
+        copyToNTNDArray(m_ntndArray, pArray);
         endGroupPut();
     }
     catch(...)
     {
+        endGroupPut();
         unlock();
         throw;
     }
@@ -310,7 +305,7 @@ void NDPluginV4Server::processCallbacks(NDArray *pArray)
     NDPluginDriver::processCallbacks(pArray);   // Base class method
 
     this->unlock();             // Function called with the lock taken
-    m_image->update(pArray);
+    m_record->update(pArray);
     this->lock();               // Must return locked
 
     callParamCallbacks();
@@ -344,10 +339,10 @@ NDPluginV4Server::NDPluginV4Server(const char *portName, int queueSize, int bloc
                    /* asynFlags is set to 0, because this plugin cannot block and is not multi-device.
                     * It does autoconnect */
                    0, 1, priority, stackSize),
-                   m_image(NTNDArrayRecord::create(pvName))
+                   m_record(NTNDArrayRecord::create(pvName))
 {
-    if(!m_image.get())
-        throw runtime_error("failed to create ImageRecord");
+    if(!m_record.get())
+        throw runtime_error("failed to create NTNDArrayRecord");
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginV4Server");
@@ -358,7 +353,7 @@ NDPluginV4Server::NDPluginV4Server(const char *portName, int queueSize, int bloc
     PVDatabasePtr master = PVDatabase::getMaster();
     ChannelProviderLocalPtr channelProvider = getChannelProviderLocal();
 
-    if(!master->addRecord(m_image))
+    if(!master->addRecord(m_record))
         throw runtime_error("couldn't add record to master database");
 
     m_server = startPVAServer(PVACCESS_ALL_PROVIDERS, 0, true, true);

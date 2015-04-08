@@ -30,7 +30,7 @@ public:
 
 private:
     epics::pvAccess::ServerContext::shared_pointer m_server;
-    NTNDArrayRecordPtr m_image;
+    NTNDArrayRecordPtr m_record;
 };
 
 #endif
