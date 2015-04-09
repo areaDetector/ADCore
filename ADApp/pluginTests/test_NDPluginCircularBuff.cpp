@@ -118,13 +118,13 @@ BOOST_AUTO_TEST_CASE(test_BufferWrappingAndStatusMessages)
   char status[50] = {0};
 
   cbStatus->read(status, 50, &gotbytes, &eom);
-  BOOST_REQUIRE_EQUAL(strcmp(status, "Idle"), 0);
+  BOOST_REQUIRE_EQUAL(status, "Idle");
 
   cbPreTrigger->write(10);
   cbControl->write(1);
 
   cbStatus->read(status, 50, &gotbytes, &eom);
-  BOOST_REQUIRE_EQUAL(strcmp(status, "Buffer filling"), 0);
+  BOOST_CHECK_EQUAL(status, "Buffer filling");
 
   size_t dims[2] = {2,5};
   NDArray *testArray = arrayPool->alloc(2,dims,NDFloat64,0,NULL);
@@ -135,8 +135,8 @@ BOOST_AUTO_TEST_CASE(test_BufferWrappingAndStatusMessages)
 
   cbCount->read(&storedImages);
   cbStatus->read(status, 50, &gotbytes, &eom);
-  BOOST_REQUIRE_EQUAL(storedImages, 10);
-  BOOST_REQUIRE_EQUAL(strcmp(status, "Buffer Wrapping"), 0);
+  BOOST_CHECK_EQUAL(storedImages, 10);
+  BOOST_CHECK_EQUAL(status, "Buffer Wrapping");
 }
 
 BOOST_AUTO_TEST_CASE(test_OutputCount)
@@ -193,10 +193,10 @@ BOOST_AUTO_TEST_CASE(test_PreBufferOrder)
     deque<NDArray *> *resultArrays = ds->arrays();
 
     // Check that the arrays have been received in the correct order
-    BOOST_REQUIRE_EQUAL(0, ((uint8_t *)(*resultArrays)[0]->pData)[0]);
-    BOOST_REQUIRE_EQUAL(1, ((uint8_t *)(*resultArrays)[1]->pData)[0]);
-    BOOST_REQUIRE_EQUAL(2, ((uint8_t *)(*resultArrays)[2]->pData)[0]);
-    BOOST_REQUIRE_EQUAL(3, ((uint8_t *)(*resultArrays)[3]->pData)[0]);
+    BOOST_CHECK_EQUAL(0, ((uint8_t *)(*resultArrays)[0]->pData)[0]);
+    BOOST_CHECK_EQUAL(1, ((uint8_t *)(*resultArrays)[1]->pData)[0]);
+    BOOST_CHECK_EQUAL(2, ((uint8_t *)(*resultArrays)[2]->pData)[0]);
+    BOOST_CHECK_EQUAL(3, ((uint8_t *)(*resultArrays)[3]->pData)[0]);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
