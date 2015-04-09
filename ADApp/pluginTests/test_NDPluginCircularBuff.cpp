@@ -14,63 +14,9 @@
 #include <string.h>
 #include <stdint.h>
 
-#include <deque>
+#include "testingutilities.h"
+
 using namespace std;
-
-
-
-// Mock NDPlugin; simply stores all received NDArrays and provides them to a client on request.
-class TestingPlugin : public NDPluginDriver {
-public:
-    TestingPlugin (const char *portName, int queueSize, int blockingCallbacks,
-                                  const char *NDArrayPort, int NDArrayAddr,
-                                  int maxBuffers, size_t maxMemory,
-                                  int priority, int stackSize);
-    ~TestingPlugin();
-    void processCallbacks(NDArray *pArray);
-    deque<NDArray *> *arrays();
-private:
-    deque<NDArray *> *arrays_;
-};
-
-TestingPlugin::TestingPlugin (const char *portName, int queueSize, int blockingCallbacks,
-                              const char *NDArrayPort, int NDArrayAddr,
-                              int maxBuffers, size_t maxMemory,
-                              int priority, int stackSize)
-         /* Invoke the base class constructor */
-         : NDPluginDriver(portName, queueSize, blockingCallbacks,
-                        NDArrayPort, NDArrayAddr, 1, 0, maxBuffers, maxMemory,
-                        asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
-                        asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
-                        0, 1, priority, stackSize)
-{
-    arrays_ = new deque<NDArray *>();
-
-    connectToArrayPort();
-}
-
-TestingPlugin::~TestingPlugin()
-{
-    while(arrays_->front()) {
-        arrays_->front()->release();
-        arrays_->pop_front();
-    }
-    delete arrays_;
-}
-
-std::deque<NDArray *> *TestingPlugin::arrays()
-{
-    return arrays_;
-}
-
-void TestingPlugin::processCallbacks(NDArray *pArray)
-{
-    NDPluginDriver::processCallbacks(pArray);
-    NDArray *pArrayCpy = this->pNDArrayPool->copy(pArray, NULL, 1);
-    if (pArrayCpy) {
-        arrays_->push_back(pArrayCpy);
-    }
-}
 
 
 struct PluginFixture
@@ -90,48 +36,45 @@ struct PluginFixture
     asynOctetClient *cbTrigA;
     asynOctetClient *cbTrigB;
     asynOctetClient *cbCalc;
-    static int testCase;
 
     PluginFixture()
     {
         arrayPool = new NDArrayPool(100, 0);
 
+        std::string simport("simPort"), testport("testPort"), dsport("dsPort");
+
         // Asyn manager doesn't like it if we try to reuse the same port name for multiple drivers (even if only one is ever instantiated at once), so
         // change it slightly for each test case.
-        char simport[50], testport[50], dsport[50];
-        sprintf(simport, "simPort%d", testCase);
+        uniqueAsynPortName(simport);
+        uniqueAsynPortName(testport);
+        uniqueAsynPortName(dsport);
+
         // We need some upstream driver for our test plugin so that calls to connectArrayPort don't fail, but we can then ignore it and send
         // arrays by calling processCallbacks directly.
-        driver = new simDetector(simport, 800, 500, NDFloat64, 50, 0, 0, 2000000);
+        driver = new simDetector(simport.c_str(), 800, 500, NDFloat64, 50, 0, 0, 2000000);
 
         // This is the plugin under test
-        sprintf(testport, "testPort%d", testCase);
-        cb = new NDPluginCircularBuff(testport, 50, 0, simport, 0, 1000, -1, 0, 2000000);
+        cb = new NDPluginCircularBuff(testport.c_str(), 50, 0, simport.c_str(), 0, 1000, -1, 0, 2000000);
 
         // This is the mock downstream plugin
-        sprintf(dsport, "dsPort%d", testCase);
-        ds = new TestingPlugin(dsport, 16, 1, testport, 0, 50, -1, 0, 2000000);
+        ds = new TestingPlugin(dsport.c_str(), 16, 1, testport.c_str(), 0, 50, -1, 0, 2000000);
 
-        enableCallbacks = new asynInt32Client(dsport, 0, NDPluginDriverEnableCallbacksString);
-        blockingCallbacks = new asynInt32Client(dsport, 0, NDPluginDriverBlockingCallbacksString);
-        cbControl = new asynInt32Client(testport, 0, NDCircBuffControlString);
-        cbPreTrigger = new asynInt32Client(testport, 0, NDCircBuffPreTriggerString);
-        cbPostTrigger = new asynInt32Client(testport, 0, NDCircBuffPostTriggerString);
-        cbSoftTrigger = new asynInt32Client(testport, 0, NDCircBuffSoftTriggerString);
-        cbStatus = new asynOctetClient(testport, 0, NDCircBuffStatusString);
-        cbCount = new asynInt32Client(testport, 0, NDCircBuffCurrentImageString);
-        cbTrigA = new asynOctetClient(testport, 0, NDCircBuffTriggerAString);
-        cbTrigB = new asynOctetClient(testport, 0, NDCircBuffTriggerBString);
-        cbCalc = new asynOctetClient(testport, 0, NDCircBuffTriggerCalcString);
+        enableCallbacks = new asynInt32Client(dsport.c_str(), 0, NDPluginDriverEnableCallbacksString);
+        blockingCallbacks = new asynInt32Client(dsport.c_str(), 0, NDPluginDriverBlockingCallbacksString);
+        cbControl = new asynInt32Client(testport.c_str(), 0, NDCircBuffControlString);
+        cbPreTrigger = new asynInt32Client(testport.c_str(), 0, NDCircBuffPreTriggerString);
+        cbPostTrigger = new asynInt32Client(testport.c_str(), 0, NDCircBuffPostTriggerString);
+        cbSoftTrigger = new asynInt32Client(testport.c_str(), 0, NDCircBuffSoftTriggerString);
+        cbStatus = new asynOctetClient(testport.c_str(), 0, NDCircBuffStatusString);
+        cbCount = new asynInt32Client(testport.c_str(), 0, NDCircBuffCurrentImageString);
+        cbTrigA = new asynOctetClient(testport.c_str(), 0, NDCircBuffTriggerAString);
+        cbTrigB = new asynOctetClient(testport.c_str(), 0, NDCircBuffTriggerBString);
+        cbCalc = new asynOctetClient(testport.c_str(), 0, NDCircBuffTriggerCalcString);
 
         // Set the downstream plugin to receive callbacks from the test plugin and to run in blocking mode, so we don't need to worry about synchronisation
         // with the downstream plugin.
         enableCallbacks->write(1);
         blockingCallbacks->write(1);
-
-
-
-        testCase++;
 
     }
     ~PluginFixture()
@@ -159,8 +102,6 @@ struct PluginFixture
         cb->unlock();
     }
 };
-
-int PluginFixture::testCase = 0;
 
 BOOST_FIXTURE_TEST_SUITE(CircularBuffTests, PluginFixture)
 
