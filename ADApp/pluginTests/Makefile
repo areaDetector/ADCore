@@ -6,6 +6,7 @@ include $(TOP)/configure/CONFIG
 
 PROD_IOC += plugin-test
 plugin-test_SRCS += plugin-test.cpp
+plugin-test_SRCS += testingutilities.cpp
 plugin-test_SRCS += test_NDPluginCircularBuff.cpp
 
 plugin-test_SRCS += test_NDFileHDF5.cpp
