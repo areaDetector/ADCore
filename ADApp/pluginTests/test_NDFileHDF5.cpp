@@ -21,48 +21,48 @@ using namespace std;
 
 struct NDFileHDF5TestFixture
 {
-    NDArrayPool *arrayPool;
-    simDetector *driver;
-    NDFileHDF5 *hdf5;
-    asynInt32Client *enableCallbacks;
-    asynInt32Client *blockingCallbacks;
-    static int testCase;
+  NDArrayPool *arrayPool;
+  simDetector *driver;
+  NDFileHDF5 *hdf5;
+  asynInt32Client *enableCallbacks;
+  asynInt32Client *blockingCallbacks;
+  static int testCase;
 
-    NDFileHDF5TestFixture()
-    {
-        arrayPool = new NDArrayPool(100, 0);
+  NDFileHDF5TestFixture()
+  {
+    arrayPool = new NDArrayPool(100, 0);
 
-        // Asyn manager doesn't like it if we try to reuse the same port name for multiple drivers (even if only one is ever instantiated at once), so
-        // change it slightly for each test case.
-        std::string simport("simHDF5test"), testport("HDF5");
-        uniqueAsynPortName(simport);
-        uniqueAsynPortName(testport);
+    // Asyn manager doesn't like it if we try to reuse the same port name for multiple drivers (even if only one is ever instantiated at once), so
+    // change it slightly for each test case.
+    std::string simport("simHDF5test"), testport("HDF5");
+    uniqueAsynPortName(simport);
+    uniqueAsynPortName(testport);
 
-        // We need some upstream driver for our test plugin so that calls to connectArrayPort don't fail, but we can then ignore it and send
-        // arrays by calling processCallbacks directly.
-        driver = new simDetector(simport.c_str(), 800, 500, NDFloat64, 50, 0, 0, 2000000);
+    // We need some upstream driver for our test plugin so that calls to connectArrayPort don't fail, but we can then ignore it and send
+    // arrays by calling processCallbacks directly.
+    driver = new simDetector(simport.c_str(), 800, 500, NDFloat64, 50, 0, 0, 2000000);
 
-        // This is the plugin under test
-        hdf5 = new NDFileHDF5(testport.c_str(), 50, 1, simport.c_str(), 0, 0, 2000000);
+    // This is the plugin under test
+    hdf5 = new NDFileHDF5(testport.c_str(), 50, 1, simport.c_str(), 0, 0, 2000000);
 
-        enableCallbacks = new asynInt32Client(testport.c_str(), 0, NDPluginDriverEnableCallbacksString);
-        blockingCallbacks = new asynInt32Client(testport.c_str(), 0, NDPluginDriverBlockingCallbacksString);
+    enableCallbacks = new asynInt32Client(testport.c_str(), 0, NDPluginDriverEnableCallbacksString);
+    blockingCallbacks = new asynInt32Client(testport.c_str(), 0, NDPluginDriverBlockingCallbacksString);
 
 
-        // Set the downstream plugin to receive callbacks from the test plugin and to run in blocking mode, so we don't need to worry about synchronisation
-        // with the downstream plugin.
-        enableCallbacks->write(1);
-        blockingCallbacks->write(1);
+    // Set the downstream plugin to receive callbacks from the test plugin and to run in blocking mode, so we don't need to worry about synchronisation
+    // with the downstream plugin.
+    enableCallbacks->write(1);
+    blockingCallbacks->write(1);
 
-    }
-    ~NDFileHDF5TestFixture()
-    {
-        delete blockingCallbacks;
-        delete enableCallbacks;
-        delete driver;
-        delete hdf5;
-        delete arrayPool;
-    }
+  }
+  ~NDFileHDF5TestFixture()
+  {
+    delete blockingCallbacks;
+    delete enableCallbacks;
+    delete driver;
+    delete hdf5;
+    delete arrayPool;
+  }
 };
 
 BOOST_FIXTURE_TEST_SUITE(NDFileHDF5Tests, NDFileHDF5TestFixture)
