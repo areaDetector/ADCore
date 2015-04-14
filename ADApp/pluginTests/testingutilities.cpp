@@ -5,8 +5,43 @@
  *      Author: Ulrik Kofoed Pedersen, Diamond Light Source
  */
 #include <sstream>
+#include <iostream>
 #include <NDPluginDriver.h>
 #include "testingutilities.h"
+
+
+void fillNDArrays(const std::vector<size_t>& dimensions,
+                        NDDataType_t dataType,
+                        std::vector<NDArray*>& arrays)
+{
+  NDArrayInfo_t arrinfo;
+  std::vector<NDArray*>::iterator ait;
+  unsigned int array_num = 0;
+  for (ait=arrays.begin(); ait != arrays.end(); ++ait)
+  {
+    *ait = new NDArray();
+    NDArray* parr = *ait;
+    parr->dataType = dataType;
+    parr->ndims = dimensions.size();
+    parr->pNDArrayPool = NULL;
+    std::cout << parr->pAttributeList->count() << std::endl;
+    parr->getInfo(&arrinfo);
+    parr->dataSize = arrinfo.bytesPerElement;
+    unsigned int i=0;
+    for (std::vector<size_t>::const_iterator it = dimensions.begin(); it != dimensions.end(); ++it)
+    {
+      parr->dataSize *= *it;
+      parr->dims[i].size = *it;
+      i++;
+    }
+
+    parr->pData = calloc(parr->dataSize, sizeof(char));
+    memset(parr->pData, array_num, parr->dataSize);
+
+    parr->uniqueId = array_num;
+  }
+}
+
 
 /** Append a unique code at the end of the string name
  * To be used to generate unique asyn port names. Currently only
@@ -22,43 +57,30 @@ void uniqueAsynPortName(std::string& name)
   counter++;
 }
 
-TestingPlugin::TestingPlugin (const char *portName, int queueSize, int blockingCallbacks,
-                              const char *NDArrayPort, int NDArrayAddr,
-                              int maxBuffers, size_t maxMemory,
-                              int priority, int stackSize)
-/* Invoke the base class constructor */
-: NDPluginDriver(portName, queueSize, blockingCallbacks,
-                 NDArrayPort, NDArrayAddr, 1, 0, maxBuffers, maxMemory,
-                 asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
-                 asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
-                 0, 1, priority, stackSize)
+void TestingPluginCallback(void *drvPvt, asynUser *pasynUser, void *ptr)
 {
-  arrays_ = new std::deque<NDArray *>();
+  TestingPlugin* self = drvPvt;
+  self->callback((NDArray*)ptr);
+}
 
-  connectToArrayPort();
+TestingPlugin::TestingPlugin (const char *portName, int addr)
+/* Invoke the base class constructor */
+: asynGenericPointerClient(portName, addr, "DATA")
+{
+
 }
 
 TestingPlugin::~TestingPlugin()
 {
-  while(arrays_->front()) {
-    arrays_->front()->release();
-    arrays_->pop_front();
+  while(arrays.front()) {
+    arrays.front()->release();
+    arrays.pop_front();
   }
-  delete arrays_;
 }
 
-std::deque<NDArray *> *TestingPlugin::arrays()
+void TestingPlugin::callback(NDArray *pArray)
 {
-  return arrays_;
-}
-
-void TestingPlugin::processCallbacks(NDArray *pArray)
-{
-  NDPluginDriver::processCallbacks(pArray);
-  NDArray *pArrayCpy = this->pNDArrayPool->copy(pArray, NULL, 1);
-  if (pArrayCpy) {
-    arrays_->push_back(pArrayCpy);
-  }
+  arrays.push_back(pArray);
 }
 
 

@@ -10,21 +10,21 @@
 
 #include <deque>
 #include <string>
+#include <vector>
 
+#include <NDArray.h>
+#include <asynPortClient.h>
+
+void fillNDArrays(const std::vector<size_t>& dimensions, NDDataType_t dataType, std::vector<NDArray*>& arrays);
 void uniqueAsynPortName(std::string& name);
 
-// Mock NDPlugin; simply stores all received NDArrays and provides them to a client on request.
-class TestingPlugin : public NDPluginDriver {
+// Mock simply stores all received NDArrays and provides them to a client on request.
+class TestingPlugin : public asynGenericPointerClient {
 public:
-  TestingPlugin (const char *portName, int queueSize, int blockingCallbacks,
-                 const char *NDArrayPort, int NDArrayAddr,
-                 int maxBuffers, size_t maxMemory,
-                 int priority, int stackSize);
+  TestingPlugin (const char *portName, int addr);
   ~TestingPlugin();
-  void processCallbacks(NDArray *pArray);
-  std::deque<NDArray *> *arrays();
-private:
-  std::deque<NDArray *> *arrays_;
+  void callback(NDArray *pArray);
+  std::deque<NDArray *> arrays;
 };
 
 

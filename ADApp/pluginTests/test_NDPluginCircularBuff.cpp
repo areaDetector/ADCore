@@ -158,9 +158,7 @@ BOOST_AUTO_TEST_CASE(test_OutputCount)
 
     cbProcess(testArray);
 
-    deque<NDArray *> *arrays = ds->arrays();
-
-    BOOST_REQUIRE_EQUAL(11, arrays->size());
+    BOOST_REQUIRE_EQUAL(11, ds->arrays.size());
 }
 
 BOOST_AUTO_TEST_CASE(test_PreBufferOrder)
@@ -190,13 +188,11 @@ BOOST_AUTO_TEST_CASE(test_PreBufferOrder)
     // call will trigger output to the downstream plugin (i.e. if cb will actually call unlock() at some point).
     cbProcess(testArrays[3]);
 
-    deque<NDArray *> *resultArrays = ds->arrays();
-
     // Check that the arrays have been received in the correct order
-    BOOST_CHECK_EQUAL(0, ((uint8_t *)(*resultArrays)[0]->pData)[0]);
-    BOOST_CHECK_EQUAL(1, ((uint8_t *)(*resultArrays)[1]->pData)[0]);
-    BOOST_CHECK_EQUAL(2, ((uint8_t *)(*resultArrays)[2]->pData)[0]);
-    BOOST_CHECK_EQUAL(3, ((uint8_t *)(*resultArrays)[3]->pData)[0]);
+    BOOST_CHECK_EQUAL(0, ((uint8_t *)ds->arrays[0]->pData)[0]);
+    BOOST_CHECK_EQUAL(1, ((uint8_t *)ds->arrays[1]->pData)[0]);
+    BOOST_CHECK_EQUAL(2, ((uint8_t *)ds->arrays[2]->pData)[0]);
+    BOOST_CHECK_EQUAL(3, ((uint8_t *)ds->arrays[3]->pData)[0]);
 }
 
 BOOST_AUTO_TEST_SUITE_END()
