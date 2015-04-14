@@ -7,6 +7,8 @@ include $(TOP)/configure/CONFIG
 LIBRARY_IOC += ntndArrayConverter
 INC += ntndArrayConverter.h
 LIB_SRCS += ntndArrayConverter.cpp
+USR_INCLUDES += -I$(EV4_BASE)/pvDataCPP/include
+USR_INCLUDES += -I$(EV4_BASE)/normativeTypesCPP/include
 
 #=============================
 
