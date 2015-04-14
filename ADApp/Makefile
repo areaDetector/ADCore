@@ -7,6 +7,10 @@ DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *Db*))
 DIRS += simDetectorSrc
 simDetectorSrc_DEPEND_DIRS = pluginSrc
 
+ifeq ($(EPICS_V4_PLUGIN), YES)
+  DIRS += pvaDriverSrc
+endif
+
 DIRS += ADSrc
 
 DIRS += pluginSrc

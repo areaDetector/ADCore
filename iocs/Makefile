@@ -8,6 +8,7 @@ endif
 
 ifeq ($(EPICS_V4_PLUGIN),YES)
   DIRS += simDetectorIOCV4
+  DIRS += pvaDriverIOC
 endif
 
 include $(TOP)/configure/RULES_TOP
