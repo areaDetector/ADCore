@@ -57,7 +57,11 @@ void NTNDArrayConverter::toArray (NDArray *dest)
     toDataTimeStamp(dest);
     toAttributes(dest);
 
-    dest->uniqueId = m_array->getUniqueId()->get();
+    // getUniqueId not implemented yet
+    // dest->uniqueId = m_array->getUniqueId()->get();
+    PVIntPtr uniqueId;
+    uniqueId = m_array->getPVStructure()->getSubField<PVInt>("uniqueId");
+    dest->uniqueId = uniqueId->get();
 }
 
 void NTNDArrayConverter::fromArray (NDArray *src)
@@ -71,7 +75,12 @@ void NTNDArrayConverter::fromArray (NDArray *src)
     m_array->getCodec()->getSubField<PVString>("name")->put("");
     m_array->getCompressedDataSize()->put(static_cast<int64>(src->dataSize));
     m_array->getUncompressedDataSize()->put(static_cast<int64>(src->dataSize));
-    m_array->getUniqueId()->put(src->uniqueId);
+
+    // getUniqueId not implemented yet
+    // m_array->getUniqueId()->put(src->uniqueId);
+    PVIntPtr uniqueId;
+    uniqueId = m_array->getPVStructure()->getSubField<PVInt>("uniqueId");
+    uniqueId->put(src->uniqueId);
 }
 
 template <typename arrayType>
