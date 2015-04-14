@@ -16,6 +16,8 @@
 #include <pv/pvAccess.h>
 #include <pv/ntndarray.h>
 
+#include <ntndArrayConverter.h>
+
 #include <ADDriver.h>
 #include "pvaDriver.h"
 
@@ -37,38 +39,6 @@ typedef tr1::shared_ptr<PVAChannelRequester> PVAChannelRequesterPtr;
 typedef tr1::shared_ptr<pvaDriver> pvaDriverPtr;
 
 static const char *driverName = "pvaDriver";
-
-// Maps the selected index of the value field to its type.
-static const NDDataType_t scalarToNDDataType[pvString+1] = {
-        NDInt8,     // 0:  pvBoolean (not supported)
-        NDInt8,     // 1:  pvByte
-        NDInt16,    // 2:  pvShort
-        NDInt32,    // 3:  pvInt
-        NDInt8,     // 4:  pvLong (not supported)
-        NDUInt8,    // 5:  pvUByte
-        NDUInt16,   // 6:  pvUShort
-        NDUInt32,   // 7:  pvUInt
-        NDInt8,     // 8:  pvULong (not supported)
-        NDFloat32,  // 9:  pvFloat
-        NDFloat64,  // 10: pvDouble
-        NDInt8,     // 11: pvString (notSupported)
-};
-
-// Maps ScalarType to NDAttrDataType_t
-static const NDAttrDataType_t scalarToNDAttrDataType[pvString+1] = {
-        NDAttrInt8,     // 0:  pvBoolean (not supported)
-        NDAttrInt8,     // 1:  pvByte
-        NDAttrInt16,    // 2:  pvShort
-        NDAttrInt32,    // 3:  pvInt
-        NDAttrInt8,     // 4:  pvLong (not supported)
-        NDAttrUInt8,    // 5:  pvUByte
-        NDAttrUInt16,   // 6:  pvUShort
-        NDAttrUInt32,   // 7:  pvUInt
-        NDAttrInt8,     // 8:  pvULong (not supported)
-        NDAttrFloat32,  // 9:  pvFloat
-        NDAttrFloat64,  // 10: pvDouble
-        NDAttrString,   // 11: pvString
-};
 
 class PVARequester : public virtual Requester
 {
@@ -268,159 +238,6 @@ void pvaDriver::monitorConnect(Status const & status,
     }
 }
 
-template <typename arrayType>
-static void copyValue (NDArray *dest, PVUnionPtr src)
-{
-    typedef typename arrayType::const_svector arrayVecType;
-
-    arrayVecType srcVec = src->get<arrayType>()->view();
-
-    dest->pData = (void*) srcVec.data();
-    dest->dataSize = srcVec.size()*sizeof(srcVec[0]);
-    dest->dataType = scalarToNDDataType[src->getSelectedIndex()];
-}
-
-static void copyDimension (NDArray *dest, PVStructureArrayPtr src)
-{
-    PVStructureArray::const_svector srcVec(src->view());
-
-    dest->ndims = srcVec.size();
-
-    for(size_t i = 0; i < srcVec.size(); ++i)
-    {
-        NDDimension_t *d = &dest->dims[i];
-        d->size    = srcVec[i]->getSubField<PVInt>("size")->get();
-        d->offset  = srcVec[i]->getSubField<PVInt>("offset")->get();
-        d->binning = srcVec[i]->getSubField<PVInt>("binning")->get();
-        d->reverse = srcVec[i]->getSubField<PVBoolean>("reverse")->get();
-    }
-}
-
-static void copyValue (NDArray *dest, PVUnionPtr src)
-{
-    string fieldName = src->getSelectedFieldName();
-
-    /*
-     * Check if union field selected. It happens when the driver is run before
-     * the producer. There is a monitor update that is sent on the
-     * initialization of a PVRecord with no real data.
-     */
-    if(fieldName.empty())
-        return;
-
-    string typeName     = fieldName.substr(0,fieldName.find("Value"));
-    ScalarType typeCode = ScalarTypeFunc::getScalarType(typeName);
-
-    switch(typeCode)
-    {
-    case pvByte:    copyValue<PVByteArray>  (dest, src); break;
-    case pvUByte:   copyValue<PVUByteArray> (dest, src); break;
-    case pvShort:   copyValue<PVShortArray> (dest, src); break;
-    case pvUShort:  copyValue<PVUShortArray>(dest, src); break;
-    case pvInt:     copyValue<PVIntArray>   (dest, src); break;
-    case pvUInt:    copyValue<PVUIntArray>  (dest, src); break;
-    case pvFloat:   copyValue<PVFloatArray> (dest, src); break;
-    case pvDouble:  copyValue<PVDoubleArray>(dest, src); break;
-    case pvBoolean:
-    case pvLong:
-    case pvULong:
-    case pvString:
-    default:
-        throw std::runtime_error("invalid value data type");
-        break;
-    }
-}
-
-static void copyTimeStamp (double *dest, PVStructurePtr src)
-{
-    PVTimeStamp pvSrc;
-    pvSrc.attach(src);
-
-    TimeStamp ts;
-    pvSrc.get(ts);
-
-    *dest = ts.toSeconds();
-}
-
-static void copyTimeStamp (epicsTimeStamp *dest, PVStructurePtr src)
-{
-    if(!src.get())
-        return;
-
-    PVTimeStamp pvSrc;
-    pvSrc.attach(src);
-
-    TimeStamp ts;
-    pvSrc.get(ts);
-
-    dest->secPastEpoch = ts.getSecondsPastEpoch();
-    dest->nsec = ts.getNanoseconds();
-}
-
-template <typename pvAttrType, typename valueType>
-static void copyAttribute (NDAttributeList *dest, PVStructurePtr src)
-{
-    NDAttrDataType_t destType = scalarToNDAttrDataType[pvAttrType::typeCode];
-    PVUnionPtr valueUnion = src->getSubField<PVUnion>("value");
-    valueType value = valueUnion->get<pvAttrType>()->get();
-    const char *name = src->getSubField<PVString>("name")->get().c_str();
-    const char *desc = src->getSubField<PVString>("descriptor")->get().c_str();
-    // sourceType and source are lost
-
-    dest->add(name, desc, destType, (void*)&value);
-}
-
-static void copyStringAttribute (NDAttributeList *dest, PVStructurePtr src)
-{
-    PVUnionPtr valueUnion = src->getSubField<PVUnion>("value");
-    string value = valueUnion->get<PVString>()->get();
-    const char *name = src->getSubField<PVString>("name")->get().c_str();
-    const char *desc = src->getSubField<PVString>("descriptor")->get().c_str();
-    // sourceType and source are lost
-
-    dest->add(name, desc, NDAttrString, (void*)value.c_str());
-}
-
-static void copyAttributes (NDAttributeList *dest, PVStructureArrayPtr src)
-{
-    typedef typename PVStructureArray::const_svector::const_iterator VecIt;
-    PVStructureArray::const_svector srcVec(src->view());
-
-    for(VecIt it = srcVec.cbegin(); it != srcVec.cend(); ++it)
-    {
-        PVUnionPtr srcUnion = (*it)->getSubField<PVUnion>("value");
-        ScalarConstPtr srcScalar = srcUnion->get<PVScalar>()->getScalar();
-
-        switch(srcScalar->getScalarType())
-        {
-        case pvByte:   copyAttribute<PVByte,   int8_t>  (dest, *it); break;
-        case pvUByte:  copyAttribute<PVUByte,  uint8_t> (dest, *it); break;
-        case pvShort:  copyAttribute<PVShort,  int16_t> (dest, *it); break;
-        case pvUShort: copyAttribute<PVUShort, uint16_t>(dest, *it); break;
-        case pvInt:    copyAttribute<PVInt,    int32_t> (dest, *it); break;
-        case pvUInt:   copyAttribute<PVUInt,   uint32_t>(dest, *it); break;
-        case pvFloat:  copyAttribute<PVFloat,  float>   (dest, *it); break;
-        case pvDouble: copyAttribute<PVDouble, double>  (dest, *it); break;
-        case pvString: copyStringAttribute (dest, *it); break;
-        case pvBoolean:
-        case pvLong:
-        case pvULong:
-        default:
-            break;   // ignore invalid types
-        }
-    }
-}
-
-static void copyToNDArray (NDArray *dest, NTNDArrayPtr src)
-{
-    copyValue(dest, src->getValue());
-    copyDimension(dest, src->getDimension());
-    copyTimeStamp(&dest->timeStamp, src->getDataTimeStamp());
-    copyTimeStamp(&dest->epicsTS, src->getTimeStamp());
-    copyAttributes(dest->pAttributeList, src->getAttribute());
-    dest->uniqueId = src->getUniqueId()->get();
-}
-
 void pvaDriver::monitorEvent(MonitorPtr const & monitor)
 {
     lock();
@@ -428,7 +245,8 @@ void pvaDriver::monitorEvent(MonitorPtr const & monitor)
     MonitorElementPtr update;
     while ((update = monitor->poll()))
     {
-        copyToNDArray(m_pImage, NTNDArray::wrap(update->pvStructurePtr));
+        NTNDArrayConverter converter(NTNDArray::wrap(update->pvStructurePtr));
+        converter.toArray(m_pImage);
 
         int imageCounter;
         getIntegerParam(NDArrayCounter, &imageCounter);

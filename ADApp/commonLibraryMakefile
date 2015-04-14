@@ -15,6 +15,7 @@ ifeq ($(EPICS_V4_PLUGIN),YES)
   LIB_LIBS              += pvDatabase
   LIB_LIBS              += nt
   LIB_LIBS              += pvAccess
+  LIB_LIBS              += ntndArrayConverter
 
   pvData_DIR             = $(EV4_BASE)/pvDataCPP/lib/$(EPICS_HOST_ARCH)/
   pvDatabase_DIR         = $(EV4_BASE)/pvDatabaseCPP/lib/$(EPICS_HOST_ARCH)/

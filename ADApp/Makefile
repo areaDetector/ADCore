@@ -7,14 +7,18 @@ DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *Db*))
 DIRS += simDetectorSrc
 simDetectorSrc_DEPEND_DIRS = pluginSrc
 
-ifeq ($(EPICS_V4_PLUGIN), YES)
-  DIRS += pvaDriverSrc
-endif
-
 DIRS += ADSrc
 
 DIRS += pluginSrc
 pluginSrc_DEPEND_DIRS += ADSrc netCDFSrc nexusSrc tiffSupport
+
+ifeq ($(EPICS_V4_PLUGIN), YES)
+  DIRS += ntndArrayConverterSrc
+  DIRS += pvaDriverSrc
+  pvaDriverSrc_DEPEND_DIRS += pluginSrc
+  pvaDriverSrc_DEPEND_DIRS += ntndArrayConverterSrc
+  pluginSrc_DEPEND_DIRS += ntndArrayConverterSrc
+endif
 
 DIRS += netCDFSrc
 
