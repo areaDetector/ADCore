@@ -25,8 +25,6 @@ struct PluginFixture
     simDetector *driver;
     NDPluginCircularBuff *cb;
     TestingPlugin *ds;
-    asynInt32Client *enableCallbacks;
-    asynInt32Client *blockingCallbacks;
     asynInt32Client *cbControl;
     asynInt32Client *cbPreTrigger;
     asynInt32Client *cbPostTrigger;
@@ -41,13 +39,12 @@ struct PluginFixture
     {
         arrayPool = new NDArrayPool(100, 0);
 
-        std::string simport("simPort"), testport("testPort"), dsport("dsPort");
+        std::string simport("simPort"), testport("testPort");
 
         // Asyn manager doesn't like it if we try to reuse the same port name for multiple drivers (even if only one is ever instantiated at once), so
         // change it slightly for each test case.
         uniqueAsynPortName(simport);
         uniqueAsynPortName(testport);
-        uniqueAsynPortName(dsport);
 
         // We need some upstream driver for our test plugin so that calls to connectArrayPort don't fail, but we can then ignore it and send
         // arrays by calling processCallbacks directly.
@@ -57,10 +54,8 @@ struct PluginFixture
         cb = new NDPluginCircularBuff(testport.c_str(), 50, 0, simport.c_str(), 0, 1000, -1, 0, 2000000);
 
         // This is the mock downstream plugin
-        ds = new TestingPlugin(dsport.c_str(), 16, 1, testport.c_str(), 0, 50, -1, 0, 2000000);
+        ds = new TestingPlugin(testport.c_str(), 0);
 
-        enableCallbacks = new asynInt32Client(dsport.c_str(), 0, NDPluginDriverEnableCallbacksString);
-        blockingCallbacks = new asynInt32Client(dsport.c_str(), 0, NDPluginDriverBlockingCallbacksString);
         cbControl = new asynInt32Client(testport.c_str(), 0, NDCircBuffControlString);
         cbPreTrigger = new asynInt32Client(testport.c_str(), 0, NDCircBuffPreTriggerString);
         cbPostTrigger = new asynInt32Client(testport.c_str(), 0, NDCircBuffPostTriggerString);
@@ -70,11 +65,6 @@ struct PluginFixture
         cbTrigA = new asynOctetClient(testport.c_str(), 0, NDCircBuffTriggerAString);
         cbTrigB = new asynOctetClient(testport.c_str(), 0, NDCircBuffTriggerBString);
         cbCalc = new asynOctetClient(testport.c_str(), 0, NDCircBuffTriggerCalcString);
-
-        // Set the downstream plugin to receive callbacks from the test plugin and to run in blocking mode, so we don't need to worry about synchronisation
-        // with the downstream plugin.
-        enableCallbacks->write(1);
-        blockingCallbacks->write(1);
 
     }
     ~PluginFixture()
@@ -88,9 +78,7 @@ struct PluginFixture
         delete cbPostTrigger;
         delete cbPreTrigger;
         delete cbControl;
-        delete blockingCallbacks;
-        delete enableCallbacks;
-        delete ds;
+        //delete ds; // TODO: something is wrong here - if we delete ds we get a memory corruption error (in a loop!?!?)
         delete cb;
         delete driver;
         delete arrayPool;

@@ -59,15 +59,15 @@ void uniqueAsynPortName(std::string& name)
 
 void TestingPluginCallback(void *drvPvt, asynUser *pasynUser, void *ptr)
 {
-  TestingPlugin* self = drvPvt;
+  TestingPlugin* self = (TestingPlugin*)drvPvt;
   self->callback((NDArray*)ptr);
 }
 
 TestingPlugin::TestingPlugin (const char *portName, int addr)
 /* Invoke the base class constructor */
-: asynGenericPointerClient(portName, addr, "DATA")
+: asynGenericPointerClient(portName, addr, NDArrayDataString)
 {
-
+  this->registerInterruptUser(TestingPluginCallback);
 }
 
 TestingPlugin::~TestingPlugin()
