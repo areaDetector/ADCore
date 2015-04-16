@@ -139,3 +139,9 @@ contain the following:
     BOOST_AUTO_TEST_SUITE_END()
     
  
+Unit testing of external plugins
+-------------------------------- 
+
+For "external" plugins (i.e. plugins that do not reside directly in the ADCore
+repository) there are some utilities to help in the ADTestUtility library.
+ 

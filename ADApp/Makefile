@@ -19,10 +19,8 @@ DIRS += nexusSrc
 
 DIRS += tiffSupport
 
-ifdef BOOST
-  DIRS += pluginTests
-  pluginTests_DEPEND_DIRS += ADSrc pluginSrc simDetectorSrc
-endif
+DIRS += pluginTests
+pluginTests_DEPEND_DIRS += ADSrc pluginSrc simDetectorSrc
 
 include $(TOP)/configure/RULES_DIRS
 
