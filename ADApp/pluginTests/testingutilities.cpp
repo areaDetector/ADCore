@@ -24,7 +24,6 @@ void fillNDArrays(const std::vector<size_t>& dimensions,
     parr->dataType = dataType;
     parr->ndims = dimensions.size();
     parr->pNDArrayPool = NULL;
-    std::cout << parr->pAttributeList->count() << std::endl;
     parr->getInfo(&arrinfo);
     parr->dataSize = arrinfo.bytesPerElement;
     unsigned int i=0;
