@@ -1,8 +1,5 @@
 #!/bin/bash
 
-export EPICS_BASE=/usr/lib/epics
-export EPICS_HOST_ARCH=linux-x86_64
-
 mkdir external
 cd external
 wget -nv http://www.aps.anl.gov/bcda/synApps/tar/sscan_R2-10.tar.gz
