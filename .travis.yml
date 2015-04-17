@@ -12,7 +12,12 @@ before_install:
 install: 
   - make
 
-# Finally run the tests
+# Run the tests
 script:
   - ./bin/linux-x86_64/plugin-test --log_level=test_suite
 
+# If all worked then work out the coverage and update coveralls.io
+after_success:
+  - sh ci/coverage.sh
+  - coveralls-lcov --source-encoding=ISO-8859-1 ci/coverage.info
+  
