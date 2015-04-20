@@ -480,6 +480,16 @@ record(waveform, "$(P)$(R)XMLFileName_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(bi, "$(P)$(R)SWMRSupported_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_SWMRSupported")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+    field(ZNAM, "Not Supported")
+    field(ONAM, "Supported")
+}
+
 record(bo, "$(P)$(R)SWMRMode")
 {
     field(DTYP, "asynInt32")

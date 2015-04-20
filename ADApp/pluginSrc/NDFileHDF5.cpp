@@ -60,7 +60,7 @@ static const char *driverName = "NDFileHDF5";
  */
 asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode, NDArray *pArray)
 {
-  int storeAttributes, storePerformance, SWMRMode;
+  int storeAttributes, storePerformance;
   static const char *functionName = "openFile";
 
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s Filename: %s\n", driverName, functionName, fileName);
@@ -193,12 +193,7 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
   this->createHardLinks(root);
 
   // Check if we are in SWMR mode
-  getIntegerParam(NDFileHDF5_SWMRMode, &SWMRMode);
-
-  // The following section is not required if SWMR is not supported
-  #if H5_VERSION_GE(1,9,178)
-
-  if (SWMRMode == 1){
+  if (checkForSWMRMode()){
     // Call the method to place the file into SWMR  
     if (startSWMR() == asynError){
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
@@ -211,18 +206,17 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
     }
   }
 
-  #endif
-
   return asynSuccess;
 }
 
 
 asynStatus NDFileHDF5::startSWMR()
 {
+  const char* functionName = "startSWMR";
+
   // startSWMR is a no-op if the HDF version doesn't support it
   #if H5_VERSION_GE(1,9,178)
 
-  const char* functionName = "startSWMR";
   if (!this->file) {
     return asynError;
   }
@@ -235,10 +229,16 @@ asynStatus NDFileHDF5::startSWMR()
               driverName, functionName, hdfstatus);
     return asynError;
   }
-
-  #endif
-
   return asynSuccess;
+
+  #else
+  // If this is called when we do not support SWMR then someone has done something
+  // bad, so return an asynError
+  asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s::%s SWMR write attempted but the library compiled against doesn't support it.\n",
+            driverName, functionName);
+  return asynError;
+  #endif
 }
 
 /** Create the groups and datasets in the HDF5 file.
@@ -1127,7 +1127,7 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
 {
   herr_t hdfstatus = 0;
   asynStatus status = asynSuccess;
-  int storeAttributes, storePerformance, flush, SWMRMode;
+  int storeAttributes, storePerformance, flush;
   epicsTimeStamp startts, endts;
   epicsInt32 numCaptured;
   double dt=0.0, period=0.0, runtime = 0.0;
@@ -1276,79 +1276,26 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
     this->performancePtr++;
   }
 
-  // Check if we are in SWMR mode
-  getIntegerParam(NDFileHDF5_SWMRMode, &SWMRMode);
   if (flush > 0){
     if (numCaptured % flush == 0) {
-
-      // No flushing if SWMR is not supported
-      #if H5_VERSION_GE(1,9,178)
-
-      if (SWMRMode == 1){
+      if (checkForSWMRMode()){
         // We are in SWMR mode so flush the dataset for any readers
         status = this->detDataMap[destination]->flushDataset();
         if (status != asynSuccess){
           return asynError;
         }
       }
-
-      #endif
-  
-      asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
-        "%s::%s flushing metadata (%d)\n", 
-        driverName, functionName, numCaptured);
-      hdfstatus = H5Fflush( this->file, H5F_SCOPE_GLOBAL );
-      if (hdfstatus < 0) {
-        // If flushing fails then close file and abort as all following writes will fail as well
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                  "%s::%s ERROR: could not flush file. Aborting\n",
-                  driverName, functionName);
-        hdfstatus = H5Sclose(this->dataspace);
-        if (hdfstatus){
-          asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                    "%s::%s ERROR: Dataspace did not close cleanly.\n",
-                    driverName, functionName);
-        }
-        hdfstatus = H5Pclose(this->cparms);
-        if (hdfstatus){
-          asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                    "%s::%s ERROR: Cparms did not close cleanly.\n",
-                    driverName, functionName);
-        }
-        hdfstatus = H5Tclose(this->datatype);
-        if (hdfstatus){
-          asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                    "%s::%s ERROR: Datatype did not close cleanly.\n",
-                    driverName, functionName);
-        }
-        hdfstatus = H5Fclose(this->file);
-        if (hdfstatus){
-          asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                    "%s::%s ERROR: File did not close cleanly.\n",
-                    driverName, functionName);
-        }
-        this->file = 0;
-        setIntegerParam(NDFileCapture, 0);
-        setIntegerParam(NDWriteFile, 0);
-        return asynError;
-      }
     }
   } else {
-    // No flushing if SWMR is not supported
-    #if H5_VERSION_GE(1,9,178)
-
     // Here although the flush parameter is zero we still need to flush the
     // dataset if we are in SWMR mode so that any readers get the updates
-    if (SWMRMode == 1){
+    if (checkForSWMRMode()){
       // We are in SWMR mode so flush the dataset for any readers
       status = this->detDataMap[destination]->flushDataset();
       if (status != asynSuccess){
         return asynError;
       }
     }
-
-    #endif
-
   }
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
             "%s::%s wrote frame. dt=%.5fs (T=%.5fs)\n", 
@@ -1663,9 +1610,17 @@ asynStatus NDFileHDF5::writeInt32(asynUser *pasynUser, epicsInt32 value)
     // Nothing to do here, we are all OK as SWMR is supported
     #else
     status = asynError;
-    setIntegerParam(function, oldvalue);
+    // Ensure SWMR mode is set to 0
+    setIntegerParam(function, 0);
     #endif
-
+  } else if (function == NDFileHDF5_SWMRSupported){
+    // This parameter is read only
+    if (checkForSWMRSupported()){
+      setIntegerParam(NDFileHDF5_SWMRSupported, 1);
+    } else {
+      setIntegerParam(NDFileHDF5_SWMRSupported, 0);
+    }
+    status = asynError;
   } else
   {
     if (function < FIRST_NDFILE_HDF5_PARAM)
@@ -1843,6 +1798,7 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   this->createParam(str_NDFileHDF5_layoutErrorMsg,  asynParamOctet,   &NDFileHDF5_layoutErrorMsg);
   this->createParam(str_NDFileHDF5_layoutValid,     asynParamInt32,   &NDFileHDF5_layoutValid);
   this->createParam(str_NDFileHDF5_layoutFilename,  asynParamOctet,   &NDFileHDF5_layoutFilename);
+  this->createParam(str_NDFileHDF5_SWMRSupported,   asynParamInt32,   &NDFileHDF5_SWMRSupported);
   this->createParam(str_NDFileHDF5_SWMRMode,        asynParamInt32,   &NDFileHDF5_SWMRMode);
   this->createParam(str_NDFileHDF5_SWMRRunning,     asynParamInt32,   &NDFileHDF5_SWMRRunning);
 
@@ -1873,7 +1829,11 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   setStringParam (NDFileHDF5_layoutFilename,  "");
   setIntegerParam(NDFileHDF5_SWMRMode,        0);
   setIntegerParam(NDFileHDF5_SWMRRunning,     0);
-
+  if (checkForSWMRSupported()){
+    setIntegerParam(NDFileHDF5_SWMRSupported, 1);
+  } else {
+    setIntegerParam(NDFileHDF5_SWMRSupported, 0);
+  }
 
   /* Give the virtual dimensions some human readable names */
   this->extraDimNameN = (char*)calloc(DIMNAMESIZE, sizeof(char));
@@ -2843,6 +2803,36 @@ void NDFileHDF5::checkForOpenFile()
               driverName, functionName);
     this->closeFile();
   }
+}
+
+bool NDFileHDF5::checkForSWMRMode()
+{
+  int SWMRMode = 0;
+  bool SWMRAvailable = false;
+  // Check if we are in SWMR mode
+  getIntegerParam(NDFileHDF5_SWMRMode, &SWMRMode);
+  // The following section is only available if SWMR is supported
+  if (checkForSWMRSupported()){
+    if (SWMRMode == 1){
+      SWMRAvailable = true;
+    }
+  } else {
+    // SMWR Support is not available due to the HDF5 library version compiled against
+    SWMRAvailable = false;
+  }
+
+  return SWMRAvailable;
+}
+
+bool NDFileHDF5::checkForSWMRSupported()
+{
+  bool SWMRSupported = false;
+  #if H5_VERSION_GE(1,9,178)
+  SWMRSupported = true;
+  #else
+  SWMRSupported = false;
+  #endif
+  return SWMRSupported;
 }
 
 /** Add the default attributes from NDArrays into the local NDAttribute list.
