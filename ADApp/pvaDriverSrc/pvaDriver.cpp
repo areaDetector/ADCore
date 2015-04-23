@@ -253,9 +253,15 @@ void pvaDriver::monitorEvent(MonitorPtr const & monitor)
         setIntegerParam(NDColorMode,  (int) info.colorMode);
         callParamCallbacks();
 
-        unlock();
-        doCallbacksGenericPointer(pImage, NDArrayData, 0);
-        lock();
+        int arrayCallbacks;
+        getIntegerParam(NDArrayCallbacks, &arrayCallbacks);
+
+        if(arrayCallbacks)
+        {
+            unlock();
+            doCallbacksGenericPointer(pImage, NDArrayData, 0);
+            lock();
+        }
 
         pImage->release();
         monitor->release(update);
