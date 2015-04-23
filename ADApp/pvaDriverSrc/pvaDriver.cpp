@@ -92,7 +92,7 @@ void PVAChannelRequester::channelStateChange (ChannelPtr const & channel,
 pvaDriver::pvaDriver(const char *portName, const char *pvName,
         int maxBuffers, size_t maxMemory, int priority, int stackSize)
 
-    : ADDriver(portName, 1, 0, maxBuffers, maxMemory, 0, 0, ASYN_CANBLOCK, 1,
+    : ADDriver(portName, 1, 1, maxBuffers, maxMemory, 0, 0, ASYN_CANBLOCK, 1,
             priority, stackSize),
       PVARequester("pvaDriver", pasynUserSelf),
       m_pvName(pvName), m_request(DEFAULT_REQUEST),
@@ -102,6 +102,8 @@ pvaDriver::pvaDriver(const char *portName, const char *pvName,
     int status = asynSuccess;
     const char *functionName = "pvaDriver";
     pvaDriverPtr monitorRequester(this);
+
+    createParam(PVAOverrunCounterString, asynParamInt32, &PVAOverrunCounter);
 
     /* Set some default values for parameters */
     status =  setStringParam (ADManufacturer, "PVAccess driver");
@@ -120,6 +122,7 @@ pvaDriver::pvaDriver(const char *portName, const char *pvName,
     status |= setIntegerParam(NDArraySizeY, 0);
     status |= setIntegerParam(NDArraySize, 0);
     status |= setIntegerParam(NDDataType, 0);
+    status |= setIntegerParam(PVAOverrunCounter, 0);
 
     if(status)
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
@@ -190,6 +193,14 @@ void pvaDriver::monitorEvent(MonitorPtr const & monitor)
     MonitorElementPtr update;
     while ((update = monitor->poll()))
     {
+        if(!update->overrunBitSet->isEmpty())
+        {
+            int overrunCounter;
+            getIntegerParam(PVAOverrunCounter, &overrunCounter);
+            setIntegerParam(PVAOverrunCounter, overrunCounter + 1);
+            callParamCallbacks();
+        }
+
         NTNDArrayConverter converter(NTNDArray::wrap(update->pvStructurePtr));
         NTNDArrayInfo_t info;
 
@@ -215,6 +226,7 @@ void pvaDriver::monitorEvent(MonitorPtr const & monitor)
             continue;
         }
 
+        unlock();
         try
         {
             converter.toArray(pImage);
@@ -226,8 +238,10 @@ void pvaDriver::monitorEvent(MonitorPtr const & monitor)
                     driverName, functionName);
             pImage->release();
             monitor->release(update);
+            lock();
             continue;
         }
+        lock();
 
         int imageCounter;
         getIntegerParam(NDArrayCounter, &imageCounter);

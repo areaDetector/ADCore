@@ -2,6 +2,8 @@
 #include <pv/pvAccess.h>
 #include <pv/ntndarray.h>
 
+#define PVAOverrunCounterString   "OVERRUN_COUNTER"
+
 class PVAChannelRequester;
 class pvaDriver;
 
@@ -54,6 +56,9 @@ public:
 
     // Overriden from ADDriver:
     virtual void report(FILE *fp, int details);
+
+protected:
+    int PVAOverrunCounter;
 
 private:
     std::string m_pvName;
