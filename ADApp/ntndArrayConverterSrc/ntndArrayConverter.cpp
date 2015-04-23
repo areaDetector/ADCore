@@ -49,6 +49,145 @@ struct freeNDArray {
 
 NTNDArrayConverter::NTNDArrayConverter (NTNDArrayPtr array) : m_array(array) {}
 
+ScalarType NTNDArrayConverter::getValueType (void)
+{
+    string fieldName = m_array->getValue()->getSelectedFieldName();
+
+    /*
+     * Check if union field selected. It happens when the driver is run before
+     * the producer. There is a monitor update that is sent on the
+     * initialization of a PVRecord with no real data.
+     */
+    if(fieldName.empty())
+        throw std::runtime_error("no union field selected");
+
+    string typeName = fieldName.substr(0,fieldName.find("Value"));
+    return ScalarTypeFunc::getScalarType(typeName);
+}
+
+NDColorMode_t NTNDArrayConverter::getColorMode (void)
+{
+    NDColorMode_t colorMode = NDColorModeMono;
+    PVStructureArray::const_svector attrs = m_array->getAttribute()->view();
+
+    for(PVStructureArray::const_svector::iterator it = attrs.cbegin();
+            it != attrs.cend(); ++it)
+    {
+        if((*it)->getSubField<PVString>("name")->get() == "ColorMode")
+        {
+            PVUnionPtr field = (*it)->getSubField<PVUnion>("value");
+            int cm = static_pointer_cast<PVInt>(field->get())->get();
+            colorMode = (NDColorMode_t) cm;
+        }
+    }
+
+    return colorMode;
+}
+
+NTNDArrayInfo_t NTNDArrayConverter::getInfo (void)
+{
+    NTNDArrayInfo_t info = {0};
+
+    PVStructureArray::const_svector dims = m_array->getDimension()->view();
+
+    info.ndims     = (int) dims.size();
+    info.nElements = 1;
+
+    for(int i = 0; i < info.ndims; ++i)
+    {
+        info.dims[i]    = (size_t) dims[i]->getSubField<PVInt>("size")->get();
+        info.nElements *= info.dims[i];
+    }
+
+    NDDataType_t dt;
+    int bpe;
+    switch(getValueType())
+    {
+    case pvByte:    dt = NDInt8;     bpe = sizeof(epicsInt8);    break;
+    case pvUByte:   dt = NDUInt8;    bpe = sizeof(epicsUInt8);   break;
+    case pvShort:   dt = NDInt16;    bpe = sizeof(epicsInt16);   break;
+    case pvUShort:  dt = NDUInt16;   bpe = sizeof(epicsUInt16);  break;
+    case pvInt:     dt = NDInt32;    bpe = sizeof(epicsInt32);   break;
+    case pvUInt:    dt = NDUInt32;   bpe = sizeof(epicsUInt32);  break;
+    case pvFloat:   dt = NDFloat32;  bpe = sizeof(epicsFloat32); break;
+    case pvDouble:  dt = NDFloat64;  bpe = sizeof(epicsFloat64); break;
+    case pvBoolean:
+    case pvLong:
+    case pvULong:
+    case pvString:
+    default:
+        throw std::runtime_error("invalid value data type");
+        break;
+    }
+
+    info.dataType        = dt;
+    info.bytesPerElement = bpe;
+    info.totalBytes      = info.nElements*info.bytesPerElement;
+    info.colorMode       = getColorMode();
+
+    if(info.ndims > 0)
+    {
+        info.x.dim    = 0;
+        info.x.stride = 1;
+        info.x.size   = info.dims[0];
+    }
+
+    if(info.ndims > 1)
+    {
+        info.y.dim    = 1;
+        info.y.stride = 1;
+        info.y.size   = info.dims[1];
+    }
+
+    if(info.ndims == 3)
+    {
+        switch(info.colorMode)
+        {
+        case NDColorModeRGB1:
+            info.x.dim        = 1;
+            info.y.dim        = 2;
+            info.color.dim    = 0;
+            info.x.stride     = info.dims[0];
+            info.y.stride     = info.dims[0]*info.dims[1];
+            info.color.stride = 1;
+            break;
+
+        case NDColorModeRGB2:
+            info.x.dim        = 0;
+            info.y.dim        = 2;
+            info.color.dim    = 1;
+            info.x.stride     = 1;
+            info.y.stride     = info.dims[0]*info.dims[1];
+            info.color.stride = info.dims[0];
+            break;
+
+        case NDColorModeRGB3:
+            info.x.dim        = 1;
+            info.y.dim        = 2;
+            info.color.dim    = 0;
+            info.x.stride     = info.dims[0];
+            info.y.stride     = info.dims[0]*info.dims[1];
+            info.color.stride = 1;
+            break;
+
+        default:
+            info.x.dim        = 0;
+            info.y.dim        = 1;
+            info.color.dim    = 2;
+            info.x.stride     = 1;
+            info.y.stride     = info.dims[0];
+            info.color.stride = info.dims[0]*info.dims[1];
+            break;
+        }
+
+        info.x.size     = info.dims[info.x.dim];
+        info.y.size     = info.dims[info.y.dim];
+        info.color.size = info.dims[info.color.dim];
+    }
+
+    return info;
+}
+
 void NTNDArrayConverter::toArray (NDArray *dest)
 {
     toValue(dest);
@@ -87,32 +226,12 @@ template <typename arrayType>
 void NTNDArrayConverter::toValue (NDArray *dest)
 {
     PVUnionPtr src = m_array->getValue();
-    typedef typename arrayType::const_svector arrayVecType;
-
-    arrayVecType srcVec = src->get<arrayType>()->view();
-
-    dest->pData = (void*) srcVec.data();
-    dest->dataSize = srcVec.size()*sizeof(srcVec[0]);
-    dest->dataType = scalarToNDDataType[src->getSelectedIndex()];
+    memcpy(dest->pData, src->get<arrayType>()->view().data(), dest->dataSize);
 }
 
 void NTNDArrayConverter::toValue (NDArray *dest)
 {
-    PVUnionPtr src = m_array->getValue();
-    string fieldName = src->getSelectedFieldName();
-
-    /*
-     * Check if union field selected. It happens when the driver is run before
-     * the producer. There is a monitor update that is sent on the
-     * initialization of a PVRecord with no real data.
-     */
-    if(fieldName.empty())
-        return;
-
-    string typeName     = fieldName.substr(0,fieldName.find("Value"));
-    ScalarType typeCode = ScalarTypeFunc::getScalarType(typeName);
-
-    switch(typeCode)
+    switch(getValueType())
     {
     case pvByte:    toValue<PVByteArray>  (dest); break;
     case pvUByte:   toValue<PVUByteArray> (dest); break;

@@ -29,107 +29,46 @@ using namespace epics::pvData;
 using namespace epics::pvAccess;
 using namespace epics::nt;
 
-class PVAChannelRequester;
-class pvaDriver;
-
-typedef Channel::shared_pointer ChannelPtr;
-typedef ChannelProvider::shared_pointer ChannelProviderPtr;
-typedef tr1::shared_ptr<MonitorElement> MonitorElementPtr;
-typedef tr1::shared_ptr<PVAChannelRequester> PVAChannelRequesterPtr;
-typedef tr1::shared_ptr<pvaDriver> pvaDriverPtr;
-
 static const char *driverName = "pvaDriver";
 
-class PVARequester : public virtual Requester
+PVARequester::PVARequester(const char *name, asynUser *user) :
+        m_name(name), m_asynUser(user) {}
+
+string PVARequester::getRequesterName (void)
 {
-private:
-    asynUser *m_asynUser;
+    return string(m_name);
+}
 
-protected:
-    const char *m_name;
-
-public:
-    PVARequester(const char *name, asynUser *user) :
-        m_name(name), m_asynUser(user){}
-
-    string getRequesterName (void)
-    {
-        return string(m_name);
-    }
-
-    void message(string const & message, MessageType messageType)
-    {
-        asynPrint(m_asynUser, ASYN_TRACE_FLOW,
-                "%s::%s: [type=%s] %s\n",
-                m_name, "message", getMessageTypeName(messageType).c_str(),
-                message.c_str());
-    }
-};
-
-class PVAChannelRequester : public virtual PVARequester,
-        public virtual ChannelRequester
+void PVARequester::message(string const & message, MessageType messageType)
 {
-private:
-    asynUser *m_asynUser;
+    asynPrint(m_asynUser, ASYN_TRACE_FLOW,
+            "%s::%s: [type=%s] %s\n",
+            m_name, "message", getMessageTypeName(messageType).c_str(),
+            message.c_str());
+}
 
-public:
-    PVAChannelRequester(asynUser *user) :
+PVAChannelRequester::PVAChannelRequester(asynUser *user) :
         PVARequester("PVAChannelRequester", user),
         m_asynUser(user)
     {}
 
-    void channelCreated (const Status& status, ChannelPtr const & channel)
-    {
-        asynPrint(m_asynUser, ASYN_TRACE_FLOW,
-                "%s::%s: %s created\n",
-                m_name, "channelCreated", channel->getChannelName().c_str());
-    }
-
-    void channelStateChange (ChannelPtr const & channel,
-            Channel::ConnectionState state)
-    {
-        asynPrint(m_asynUser,
-                Channel::CONNECTED ? ASYN_TRACE_FLOW : ASYN_TRACE_ERROR,
-                "%s::%s %s: %s\n",
-                m_name, "channelStateChange", channel->getChannelName().c_str(),
-                Channel::ConnectionStateNames[state]);
-    }
-};
-
-class epicsShareClass pvaDriver : public ADDriver,
-        public virtual PVARequester, public virtual MonitorRequester
+void PVAChannelRequester::channelCreated (const Status& status,
+        ChannelPtr const & channel)
 {
+    asynPrint(m_asynUser, ASYN_TRACE_FLOW,
+            "%s::%s: %s created\n",
+            m_name, "channelCreated", channel->getChannelName().c_str());
+}
 
-public:
-    pvaDriver(const char *portName, const char *pvName, int maxBuffers,
-            size_t maxMemory, int priority, int stackSize);
-
-    // Overriden from ADDriver:
-    virtual void report(FILE *fp, int details);
-
-private:
-    string m_pvName;
-    string m_request;
-    short m_priority;
-    ChannelProviderPtr m_provider;
-    PVAChannelRequesterPtr m_requester;
-    ChannelPtr m_channel;
-    PVStructurePtr m_pvRequest;
-    MonitorPtr m_monitor;
-    NDArray *m_pImage;
-
-    // Implemented for MonitorRequester
-    void monitorConnect (Status const & status, MonitorPtr const & monitor,
-            StructureConstPtr const & structure);
-    void monitorEvent (MonitorPtr const & monitor);
-
-    void unlisten (MonitorPtr const & monitor)
-    {
-        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-                "%s::%s monitor unlistens\n",
-                driverName, "unlisten");
-    }
-};
+void PVAChannelRequester::channelStateChange (ChannelPtr const & channel,
+        Channel::ConnectionState state)
+{
+    asynPrint(m_asynUser,
+            Channel::CONNECTED ? ASYN_TRACE_FLOW : ASYN_TRACE_ERROR,
+            "%s::%s %s: %s\n",
+            m_name, "channelStateChange", channel->getChannelName().c_str(),
+            Channel::ConnectionStateNames[state]);
+}
 
 /* Constructor for pvaDriver; most parameters are simply passed to
  * ADDriver::ADDriver. Sets reasonable default values for parameters defined in
@@ -158,8 +97,7 @@ pvaDriver::pvaDriver(const char *portName, const char *pvName,
       PVARequester("pvaDriver", pasynUserSelf),
       m_pvName(pvName), m_request(DEFAULT_REQUEST),
       m_priority(ChannelProvider::PRIORITY_DEFAULT),
-      m_requester(new PVAChannelRequester(pasynUserSelf)),
-      m_pImage(pNDArrayPool->alloc(0, NULL, NDInt8, 0, NULL))
+      m_requester(new PVAChannelRequester(pasynUserSelf))
 {
     int status = asynSuccess;
     const char *functionName = "pvaDriver";
@@ -213,6 +151,13 @@ pvaDriver::pvaDriver(const char *portName, const char *pvName,
     }
 }
 
+void pvaDriver::unlisten(MonitorPtr const & monitor)
+{
+    asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s::%s monitor unlistens\n",
+            driverName, "unlisten");
+}
+
 void pvaDriver::monitorConnect(Status const & status,
         MonitorPtr const & monitor, StructureConstPtr const & structure)
 {
@@ -240,49 +185,79 @@ void pvaDriver::monitorConnect(Status const & status,
 
 void pvaDriver::monitorEvent(MonitorPtr const & monitor)
 {
+    const char *functionName = "monitorEvent";
     lock();
-
     MonitorElementPtr update;
     while ((update = monitor->poll()))
     {
         NTNDArrayConverter converter(NTNDArray::wrap(update->pvStructurePtr));
-        converter.toArray(m_pImage);
+        NTNDArrayInfo_t info;
+
+        try
+        {
+            info = converter.getInfo();
+        }
+        catch(...)
+        {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                    "%s::%s failed to get info from NTNDArray\n",
+                    driverName, functionName);
+            monitor->release(update);
+            continue;
+        }
+
+        NDArray *pImage = pNDArrayPool->alloc(info.ndims, (size_t*) &info.dims,
+                info.dataType, info.totalBytes, NULL);
+
+        if(!pImage)
+        {
+            monitor->release(update);
+            continue;
+        }
+
+        try
+        {
+            converter.toArray(pImage);
+        }
+        catch(...)
+        {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                    "%s::%s failed to convert NTNDArray into NDArray\n",
+                    driverName, functionName);
+            pImage->release();
+            monitor->release(update);
+            continue;
+        }
 
         int imageCounter;
         getIntegerParam(NDArrayCounter, &imageCounter);
-        imageCounter++;
-        setIntegerParam(NDArrayCounter, imageCounter);
-        callParamCallbacks();
+        setIntegerParam(NDArrayCounter, imageCounter+1);
 
-        int xSize    = m_pImage->dims[0].size;
-        int ySize    = m_pImage->dims[1].size;
-        int xOffset  = m_pImage->dims[0].offset;
-        int yOffset  = m_pImage->dims[1].offset;
-        int xBinning = m_pImage->dims[0].binning;
-        int yBinning = m_pImage->dims[1].binning;
-        int xReverse = m_pImage->dims[0].reverse;
-        int yReverse = m_pImage->dims[1].reverse;
-        int dataType = (int) m_pImage->dataType;
-
-        setIntegerParam(ADMaxSizeX, xSize);
-        setIntegerParam(ADMaxSizeY, ySize);
-        setIntegerParam(ADMinX, xOffset);
-        setIntegerParam(ADMinY, yOffset);
-        setIntegerParam(ADBinX, xBinning);
-        setIntegerParam(ADBinY, yBinning);
-        setIntegerParam(ADReverseX, xReverse);
-        setIntegerParam(ADReverseY, yReverse);
-        setIntegerParam(ADSizeX, xSize);
-        setIntegerParam(ADSizeY, ySize);
+        int xSize     = pImage->dims[info.x.dim].size;
+        int ySize     = pImage->dims[info.y.dim].size;
+        setIntegerParam(ADMaxSizeX,   xSize);
+        setIntegerParam(ADMaxSizeY,   ySize);
+        setIntegerParam(ADSizeX,      xSize);
+        setIntegerParam(ADSizeY,      ySize);
         setIntegerParam(NDArraySizeX, xSize);
         setIntegerParam(NDArraySizeY, ySize);
-        setIntegerParam(NDArraySize, xSize*ySize);
-        setIntegerParam(NDDataType, dataType);
+        setIntegerParam(NDArraySizeZ, pImage->dims[info.color.dim].size);
+        setIntegerParam(ADMinX,       pImage->dims[info.x.dim].offset);
+        setIntegerParam(ADMinY,       pImage->dims[info.y.dim].offset);
+        setIntegerParam(ADBinX,       pImage->dims[info.x.dim].binning);
+        setIntegerParam(ADBinY,       pImage->dims[info.y.dim].binning);
+        setIntegerParam(ADReverseX,   pImage->dims[info.x.dim].reverse);
+        setIntegerParam(ADReverseY,   pImage->dims[info.y.dim].reverse);
+        setIntegerParam(NDArraySize,  (int) info.totalBytes);
+        setIntegerParam(NDDataType,   (int) info.dataType);
+        setIntegerParam(NDColorMode,  (int) info.colorMode);
         callParamCallbacks();
 
         unlock();
-        doCallbacksGenericPointer(m_pImage, NDArrayData, 0);
+        doCallbacksGenericPointer(pImage, NDArrayData, 0);
         lock();
+
+        pImage->release();
         monitor->release(update);
     }
     unlock();
