@@ -23,6 +23,20 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
+
+R2-3 (April XXX, 2015)
+========================
+### NDPluginFile
+* Fixed a serious performance problem.  The calls to openFile() and closeFile() in the derived file 
+  writing classes were being done with the asynPortDriver mutex locked.
+  This meant that driver callbacks were blocked from putting entries on the queue during this time, 
+  slowing down the drivers and potentially causing them to drop frames.  
+  Changed openFileBase() and closeFileBase() to unlock the mutex during these operations.  
+  Testing with the simDetector and ADDexela shows that the new version no longer slows
+  down the driver or drops frames at the driver level when saving TIFF files or netCDF files 
+  in Single mode.
+
+
 R2-2 (March 23, 2015)
 ========================
 ### Compatibility
