@@ -99,7 +99,10 @@ asynStatus NDFileJPEG::openFile(const char *fileName, NDFileOpenMode_t openMode,
     jpeg_set_defaults(&this->jpegInfo);
 
     /* Set the file quality */
+    /* Must lock when accessing parameter library */
+    this->lock();
     getIntegerParam(NDFileJPEGQuality, &quality);
+    this->unlock();
     jpeg_set_quality(&this->jpegInfo, quality, TRUE);
     
     jpeg_start_compress(&this->jpegInfo, TRUE);
