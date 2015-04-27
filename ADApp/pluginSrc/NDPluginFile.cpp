@@ -67,8 +67,6 @@ asynStatus NDPluginFile::openFileBase(NDFileOpenMode_t openMode, NDArray *pArray
     }
 
     /* Call the openFile method in the derived class */
-    /* Do this with the main lock released since it is slow */
-    this->unlock();
     epicsMutexLock(this->fileMutexId);
     this->registerInitFrameInfo(pArray);
     status = this->openFile(fullFileName, openMode, pArray);
@@ -82,7 +80,6 @@ asynStatus NDPluginFile::openFileBase(NDFileOpenMode_t openMode, NDArray *pArray
         setStringParam(NDFileWriteMessage, errorMessage);
     }
     epicsMutexUnlock(this->fileMutexId);
-    this->lock();
     
     return(status);
 }
@@ -105,14 +102,17 @@ asynStatus NDPluginFile::closeFileBase()
     getStringParam(NDFullFileName, sizeof(fullFileName), fullFileName);
     getStringParam(NDFileTempSuffix, sizeof(tempSuffix), tempSuffix);
 
-    /* Call the closeFile method in the derived class */
-    /* Do this with the main lock released since it is slow */
-    this->unlock();
+     /* Call the closeFile method in the derived class */
     epicsMutexLock(this->fileMutexId);
     status = this->closeFile();
     if (status) {
         epicsSnprintf(errorMessage, sizeof(errorMessage)-1, 
             "Error closing file, status=%d", status);
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+              "%s:%s %s\n", 
+              driverName, functionName, errorMessage);
+        setIntegerParam(NDFileWriteStatus, NDFileWriteError);
+        setStringParam(NDFileWriteMessage, errorMessage);
     }
 
     if ( *tempSuffix != 0 && 
@@ -122,20 +122,15 @@ asynStatus NDPluginFile::closeFileBase()
         if ( rename( tempFileName, fullFileName ) != 0 ) {
             epicsSnprintf(errorMessage, sizeof(errorMessage)-1, 
                           "Error renaming temporary file %s to %s", tempFileName, fullFileName );
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+                      "%s:%s %s\n", 
+                      driverName, functionName, errorMessage);
             status=asynError;
         }
     }
 
     epicsMutexUnlock(this->fileMutexId);
-    this->lock();
-    if (status) {
-        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-              "%s:%s %s\n", 
-              driverName, functionName, errorMessage);
-        setIntegerParam(NDFileWriteStatus, NDFileWriteError);
-        setStringParam(NDFileWriteMessage, errorMessage);
-    }
-
+    
     return(status);
 }
 
