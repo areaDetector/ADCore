@@ -2047,6 +2047,7 @@ asynStatus NDFileHDF5::createAttributeDataset()
   NDAttrSource_t ndAttrSourceType;
   int extraDims;
   int chunking = 0;
+  int fileWriteMode = 0;
   hsize_t maxdims[2] = {H5S_UNLIMITED, H5S_UNLIMITED};
   hid_t groupDefault = -1;
   const char *attrNames[5] = {"NDAttrName", "NDAttrDescription", "NDAttrSourceType", "NDAttrSource", NULL};
@@ -2084,10 +2085,19 @@ asynStatus NDFileHDF5::createAttributeDataset()
   // If the chunking is zero then use the number of frames
   if (chunking == 0){
     // In this case we want to read back the number of frames and use this for chunking
-    getIntegerParam(NDFileNumCapture, &chunking);
-    if (chunking <= 0) {
-      // Special case: writing infinite number of frames, so we guess a good(ish) chunk number
-      chunking = 16*1024;
+    // First check in case we are in single mode.
+    getIntegerParam(NDFileWriteMode, &fileWriteMode);
+    // Check that we are not in single mode
+    if (fileWriteMode == NDFileModeSingle){
+      // We are in single mode so chunk size should be set to 1 no matter the frame count
+      chunking = 1;
+    } else {
+      // We aren't in single mode so read the number of frames
+      getIntegerParam(NDFileNumCapture, &chunking);
+      if (chunking <= 0) {
+        // Special case: writing infinite number of frames, so we guess a good(ish) chunk number
+        chunking = 16*1024;
+      }
     }
   }
 
