@@ -1,0 +1,23 @@
+#=================================================================#
+# Template file: pvaDriver.template
+# Database for the records specific to the pvAccess Driver
+# Bruno Martins
+# April 11, 2015
+
+include "ADBase.template"
+
+# New records for pvaDriver
+
+record(ao, "$(P)$(R)OverrunCounter")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERRUN_COUNTER")
+}
+
+record(ai, "$(P)$(R)OverrunCounter_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERRUN_COUNTER")
+    field(SCAN, "I/O Intr")
+}
+

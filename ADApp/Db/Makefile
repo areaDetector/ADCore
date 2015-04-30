@@ -18,6 +18,7 @@ DB += ADPrefixes.template
 
 # Drivers
 DB += simDetector.template
+DB += pvaDriver.template
 
 # Plugins
 DB += NDColorConvert.template
