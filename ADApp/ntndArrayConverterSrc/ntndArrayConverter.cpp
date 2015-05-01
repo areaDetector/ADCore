@@ -326,7 +326,7 @@ void NTNDArrayConverter::toStringAttribute (NDArray *dest, PVStructurePtr src)
 
 void NTNDArrayConverter::toAttributes (NDArray *dest)
 {
-    typedef typename PVStructureArray::const_svector::const_iterator VecIt;
+    typedef PVStructureArray::const_svector::const_iterator VecIt;
 
     PVStructureArray::const_svector srcVec(m_array->getAttribute()->view());
 

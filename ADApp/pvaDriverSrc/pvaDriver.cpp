@@ -32,7 +32,7 @@ using namespace epics::nt;
 static const char *driverName = "pvaDriver";
 
 PVARequester::PVARequester(const char *name, asynUser *user) :
-        m_name(name), m_asynUser(user) {}
+        m_asynUser(user), m_name(name) {}
 
 string PVARequester::getRequesterName (void)
 {
@@ -92,7 +92,7 @@ void PVAChannelRequester::channelStateChange (ChannelPtr const & channel,
 pvaDriver::pvaDriver(const char *portName, const char *pvName,
         int maxBuffers, size_t maxMemory, int priority, int stackSize)
 
-    : ADDriver(portName, 1, 1, maxBuffers, maxMemory, 0, 0, ASYN_CANBLOCK, 1,
+    : ADDriver(portName, 1, 3, maxBuffers, maxMemory, 0, 0, ASYN_CANBLOCK, 1,
             priority, stackSize),
       PVARequester("pvaDriver", pasynUserSelf),
       m_pvName(pvName), m_request(DEFAULT_REQUEST),
@@ -103,7 +103,9 @@ pvaDriver::pvaDriver(const char *portName, const char *pvName,
     const char *functionName = "pvaDriver";
     pvaDriverPtr monitorRequester(this);
 
-    createParam(PVAOverrunCounterString, asynParamInt32, &PVAOverrunCounter);
+    createParam(PVAOverrunCounterString,     asynParamInt32, &PVAOverrunCounter);
+    createParam(PVAPvNameString,             asynParamOctet, &PVAPvName);
+    createParam(PVAPvConnectionStatusString, asynParamInt32, &PVAPvConnectionStatus);
 
     /* Set some default values for parameters */
     status =  setStringParam (ADManufacturer, "PVAccess driver");
@@ -123,6 +125,8 @@ pvaDriver::pvaDriver(const char *portName, const char *pvName,
     status |= setIntegerParam(NDArraySize, 0);
     status |= setIntegerParam(NDDataType, 0);
     status |= setIntegerParam(PVAOverrunCounter, 0);
+    status |= setStringParam (PVAPvName, pvName);
+    status |= setIntegerParam(PVAPvConnectionStatus, 0);
 
     if(status)
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
@@ -159,6 +163,13 @@ void pvaDriver::unlisten(MonitorPtr const & monitor)
     asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
             "%s::%s monitor unlistens\n",
             driverName, "unlisten");
+    lock();
+    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+            "%s::%s set connection status down\n",
+            driverName, "unlisten");
+    setIntegerParam(PVAPvConnectionStatus, 0);
+    callParamCallbacks();
+    unlock();
 }
 
 void pvaDriver::monitorConnect(Status const & status,
@@ -182,17 +193,35 @@ void pvaDriver::monitorConnect(Status const & status,
             return;
         }
 
+        asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+                "%s::%s starting monitor\n",
+                driverName, functionName);
         monitor->start();
+
+        lock();
+        asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+                "%s::%s set connection status up\n",
+                driverName, functionName);
+        setIntegerParam(PVAPvConnectionStatus, 1);
+        callParamCallbacks();
+        unlock();
     }
 }
 
 void pvaDriver::monitorEvent(MonitorPtr const & monitor)
 {
     const char *functionName = "monitorEvent";
+    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+            "%s::%s Event!\n",
+            driverName, functionName);
     lock();
     MonitorElementPtr update;
     while ((update = monitor->poll()))
     {
+        asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+                 "%s::%s update!\n",
+                 driverName, functionName);
+
         if(!update->overrunBitSet->isEmpty())
         {
             int overrunCounter;
@@ -222,6 +251,9 @@ void pvaDriver::monitorEvent(MonitorPtr const & monitor)
 
         if(!pImage)
         {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                     "%s::%s failed to alloc new NDArray - memory pool exhausted? (free: %d)\n",
+                     driverName, functionName, pNDArrayPool->numFree());
             monitor->release(update);
             continue;
         }
@@ -229,6 +261,9 @@ void pvaDriver::monitorEvent(MonitorPtr const & monitor)
         unlock();
         try
         {
+            asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+                      "%s::%s Converting to NDArray\n",
+                      driverName, functionName);
             converter.toArray(pImage);
         }
         catch(...)
@@ -242,10 +277,6 @@ void pvaDriver::monitorEvent(MonitorPtr const & monitor)
             continue;
         }
         lock();
-
-        int imageCounter;
-        getIntegerParam(NDArrayCounter, &imageCounter);
-        setIntegerParam(NDArrayCounter, imageCounter+1);
 
         int xSize     = pImage->dims[info.x.dim].size;
         int ySize     = pImage->dims[info.y.dim].size;
@@ -269,13 +300,23 @@ void pvaDriver::monitorEvent(MonitorPtr const & monitor)
 
         int arrayCallbacks;
         getIntegerParam(NDArrayCallbacks, &arrayCallbacks);
-
         if(arrayCallbacks)
         {
+            asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+                      "%s::%s Callback with NDArray (%p)\n",
+                      driverName, functionName, pImage);
             unlock();
             doCallbacksGenericPointer(pImage, NDArrayData, 0);
             lock();
         }
+
+        // Update the counters as per convention: after doCallbacksGenericPointer()
+        int imageCounter;
+        getIntegerParam(NDArrayCounter, &imageCounter);
+        setIntegerParam(NDArrayCounter, imageCounter+1);
+        getIntegerParam(ADNumImagesCounter, &imageCounter);
+        setIntegerParam(ADNumImagesCounter, imageCounter+1);
+        callParamCallbacks();
 
         pImage->release();
         monitor->release(update);

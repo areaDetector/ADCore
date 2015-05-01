@@ -2,14 +2,15 @@
 #include <pv/pvAccess.h>
 #include <pv/ntndarray.h>
 
-#define PVAOverrunCounterString   "OVERRUN_COUNTER"
+#define PVAOverrunCounterString     "OVERRUN_COUNTER"
+#define PVAPvNameString             "PV_NAME"
+#define PVAPvConnectionStatusString "PV_CONNECTION"
 
 class PVAChannelRequester;
 class pvaDriver;
 
 typedef epics::pvAccess::Channel::shared_pointer ChannelPtr;
 typedef epics::pvAccess::ChannelProvider::shared_pointer ChannelProviderPtr;
-typedef std::tr1::shared_ptr<epics::pvData::MonitorElement> MonitorElementPtr;
 typedef std::tr1::shared_ptr<PVAChannelRequester> PVAChannelRequesterPtr;
 typedef std::tr1::shared_ptr<pvaDriver> pvaDriverPtr;
 
@@ -59,6 +60,8 @@ public:
 
 protected:
     int PVAOverrunCounter;
+    int PVAPvName;
+    int PVAPvConnectionStatus;
 
 private:
     std::string m_pvName;
