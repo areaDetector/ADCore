@@ -265,10 +265,6 @@ void pvaDriver::monitorEvent(MonitorPtr const & monitor)
         }
         lock();
 
-        int imageCounter;
-        getIntegerParam(NDArrayCounter, &imageCounter);
-        setIntegerParam(NDArrayCounter, imageCounter+1);
-
         int xSize     = pImage->dims[info.x.dim].size;
         int ySize     = pImage->dims[info.y.dim].size;
         setIntegerParam(ADMaxSizeX,   xSize);
@@ -298,6 +294,14 @@ void pvaDriver::monitorEvent(MonitorPtr const & monitor)
             doCallbacksGenericPointer(pImage, NDArrayData, 0);
             lock();
         }
+
+        // Update the counters as per convention: after doCallbacksGenericPointer()
+        int imageCounter;
+        getIntegerParam(NDArrayCounter, &imageCounter);
+        setIntegerParam(NDArrayCounter, imageCounter+1);
+        getIntegerParam(ADNumImagesCounter, &imageCounter);
+        setIntegerParam(ADNumImagesCounter, imageCounter+1);
+        callParamCallbacks();
 
         pImage->release();
         monitor->release(update);
