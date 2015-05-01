@@ -17,10 +17,6 @@ INC += pvaDriver.h
 LIBRARY_IOC = pvaDriver
 LIB_SRCS += pvaDriver.cpp
 
-USR_INCLUDES += -I$(EV4_BASE)/pvDataCPP/include
-USR_INCLUDES += -I$(EV4_BASE)/pvAccessCPP/include
-USR_INCLUDES += -I$(EV4_BASE)/normativeTypesCPP/include
-
 DBD += pvaDriverSupport.dbd
 
 include $(TOP)/ADApp/commonLibraryMakefile

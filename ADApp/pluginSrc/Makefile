@@ -89,10 +89,6 @@ endif
 ifeq ($(EPICS_V4_PLUGIN), YES)
   DBD += NDPluginV4Server.dbd
   INC += NDPluginV4Server.h
-  USR_INCLUDES += -I$(EV4_BASE)/pvDataCPP/include
-  USR_INCLUDES += -I$(EV4_BASE)/pvDatabaseCPP/include
-  USR_INCLUDES += -I$(EV4_BASE)/pvAccessCPP/include
-  USR_INCLUDES += -I$(EV4_BASE)/normativeTypesCPP/include
   NDPlugin_SRCS += NDPluginV4Server.cpp
 endif
 
