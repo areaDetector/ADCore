@@ -92,7 +92,7 @@ void PVAChannelRequester::channelStateChange (ChannelPtr const & channel,
 pvaDriver::pvaDriver(const char *portName, const char *pvName,
         int maxBuffers, size_t maxMemory, int priority, int stackSize)
 
-    : ADDriver(portName, 1, 1, maxBuffers, maxMemory, 0, 0, ASYN_CANBLOCK, 1,
+    : ADDriver(portName, 1, 3, maxBuffers, maxMemory, 0, 0, ASYN_CANBLOCK, 1,
             priority, stackSize),
       PVARequester("pvaDriver", pasynUserSelf),
       m_pvName(pvName), m_request(DEFAULT_REQUEST),
@@ -103,7 +103,9 @@ pvaDriver::pvaDriver(const char *portName, const char *pvName,
     const char *functionName = "pvaDriver";
     pvaDriverPtr monitorRequester(this);
 
-    createParam(PVAOverrunCounterString, asynParamInt32, &PVAOverrunCounter);
+    createParam(PVAOverrunCounterString,     asynParamInt32, &PVAOverrunCounter);
+    createParam(PVAPvNameString,             asynParamOctet, &PVAPvName);
+    createParam(PVAPvConnectionStatusString, asynParamInt32, &PVAPvConnectionStatus);
 
     /* Set some default values for parameters */
     status =  setStringParam (ADManufacturer, "PVAccess driver");
@@ -123,6 +125,8 @@ pvaDriver::pvaDriver(const char *portName, const char *pvName,
     status |= setIntegerParam(NDArraySize, 0);
     status |= setIntegerParam(NDDataType, 0);
     status |= setIntegerParam(PVAOverrunCounter, 0);
+    status |= setStringParam (PVAPvName, pvName);
+    status |= setIntegerParam(PVAPvConnectionStatus, 0);
 
     if(status)
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
@@ -159,6 +163,13 @@ void pvaDriver::unlisten(MonitorPtr const & monitor)
     asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
             "%s::%s monitor unlistens\n",
             driverName, "unlisten");
+    lock();
+    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+            "%s::%s set connection status down\n",
+            driverName, "unlisten");
+    setIntegerParam(PVAPvConnectionStatus, 0);
+    callParamCallbacks();
+    unlock();
 }
 
 void pvaDriver::monitorConnect(Status const & status,
@@ -182,7 +193,18 @@ void pvaDriver::monitorConnect(Status const & status,
             return;
         }
 
+        asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+                "%s::%s starting monitor\n",
+                driverName, functionName);
         monitor->start();
+
+        lock();
+        asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+                "%s::%s set connection status up\n",
+                driverName, functionName);
+        setIntegerParam(PVAPvConnectionStatus, 1);
+        callParamCallbacks();
+        unlock();
     }
 }
 

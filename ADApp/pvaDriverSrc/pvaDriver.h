@@ -2,7 +2,9 @@
 #include <pv/pvAccess.h>
 #include <pv/ntndarray.h>
 
-#define PVAOverrunCounterString   "OVERRUN_COUNTER"
+#define PVAOverrunCounterString     "OVERRUN_COUNTER"
+#define PVAPvNameString             "PV_NAME"
+#define PVAPvConnectionStatusString "PV_CONNECTION"
 
 class PVAChannelRequester;
 class pvaDriver;
@@ -58,6 +60,8 @@ public:
 
 protected:
     int PVAOverrunCounter;
+    int PVAPvName;
+    int PVAPvConnectionStatus;
 
 private:
     std::string m_pvName;
