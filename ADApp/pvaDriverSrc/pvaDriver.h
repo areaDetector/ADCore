@@ -9,7 +9,6 @@ class pvaDriver;
 
 typedef epics::pvAccess::Channel::shared_pointer ChannelPtr;
 typedef epics::pvAccess::ChannelProvider::shared_pointer ChannelProviderPtr;
-typedef std::tr1::shared_ptr<epics::pvData::MonitorElement> MonitorElementPtr;
 typedef std::tr1::shared_ptr<PVAChannelRequester> PVAChannelRequesterPtr;
 typedef std::tr1::shared_ptr<pvaDriver> pvaDriverPtr;
 
