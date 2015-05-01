@@ -32,7 +32,7 @@ using namespace epics::nt;
 static const char *driverName = "pvaDriver";
 
 PVARequester::PVARequester(const char *name, asynUser *user) :
-        m_name(name), m_asynUser(user) {}
+        m_asynUser(user), m_name(name) {}
 
 string PVARequester::getRequesterName (void)
 {
