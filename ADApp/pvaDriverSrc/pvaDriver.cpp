@@ -211,10 +211,17 @@ void pvaDriver::monitorConnect(Status const & status,
 void pvaDriver::monitorEvent(MonitorPtr const & monitor)
 {
     const char *functionName = "monitorEvent";
+    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+            "%s::%s Event!\n",
+            driverName, functionName);
     lock();
     MonitorElementPtr update;
     while ((update = monitor->poll()))
     {
+        asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+                 "%s::%s update!\n",
+                 driverName, functionName);
+
         if(!update->overrunBitSet->isEmpty())
         {
             int overrunCounter;
@@ -244,6 +251,9 @@ void pvaDriver::monitorEvent(MonitorPtr const & monitor)
 
         if(!pImage)
         {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                     "%s::%s failed to alloc new NDArray - memory pool exhausted? (free: %d)\n",
+                     driverName, functionName, pNDArrayPool->numFree());
             monitor->release(update);
             continue;
         }
@@ -251,6 +261,9 @@ void pvaDriver::monitorEvent(MonitorPtr const & monitor)
         unlock();
         try
         {
+            asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+                      "%s::%s Converting to NDArray\n",
+                      driverName, functionName);
             converter.toArray(pImage);
         }
         catch(...)
@@ -287,9 +300,11 @@ void pvaDriver::monitorEvent(MonitorPtr const & monitor)
 
         int arrayCallbacks;
         getIntegerParam(NDArrayCallbacks, &arrayCallbacks);
-
         if(arrayCallbacks)
         {
+            asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+                      "%s::%s Callback with NDArray (%p)\n",
+                      driverName, functionName, pImage);
             unlock();
             doCallbacksGenericPointer(pImage, NDArrayData, 0);
             lock();
