@@ -47,9 +47,9 @@ void PVARequester::message(string const & message, MessageType messageType)
             message.c_str());
 }
 
-PVAChannelRequester::PVAChannelRequester(asynUser *user) :
+PVAChannelRequester::PVAChannelRequester(asynUser *user, pvaDriver *driver) :
         PVARequester("PVAChannelRequester", user),
-        m_asynUser(user)
+        m_asynUser(user), m_driver(driver)
     {}
 
 void PVAChannelRequester::channelCreated (const Status& status,
@@ -63,11 +63,19 @@ void PVAChannelRequester::channelCreated (const Status& status,
 void PVAChannelRequester::channelStateChange (ChannelPtr const & channel,
         Channel::ConnectionState state)
 {
-    asynPrint(m_asynUser,
-            Channel::CONNECTED ? ASYN_TRACE_FLOW : ASYN_TRACE_ERROR,
+    const char *functionName = "channelStateChange";
+
+    int parameter = m_driver->PVAPvConnectionStatus;
+    int value     = state == Channel::CONNECTED;
+
+    m_driver->lock();
+    asynPrint(m_asynUser, ASYN_TRACE_FLOW,
             "%s::%s %s: %s\n",
-            m_name, "channelStateChange", channel->getChannelName().c_str(),
+            m_name, functionName, channel->getChannelName().c_str(),
             Channel::ConnectionStateNames[state]);
+    m_driver->setIntegerParam(parameter, value);
+    m_driver->callParamCallbacks();
+    m_driver->unlock();
 }
 
 /* Constructor for pvaDriver; most parameters are simply passed to
@@ -97,7 +105,7 @@ pvaDriver::pvaDriver(const char *portName, const char *pvName,
       PVARequester("pvaDriver", pasynUserSelf),
       m_pvName(pvName), m_request(DEFAULT_REQUEST),
       m_priority(ChannelProvider::PRIORITY_DEFAULT),
-      m_requester(new PVAChannelRequester(pasynUserSelf))
+      m_requester(new PVAChannelRequester(pasynUserSelf, this))
 {
     int status = asynSuccess;
     const char *functionName = "pvaDriver";
@@ -163,13 +171,6 @@ void pvaDriver::unlisten(MonitorPtr const & monitor)
     asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
             "%s::%s monitor unlistens\n",
             driverName, "unlisten");
-    lock();
-    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
-            "%s::%s set connection status down\n",
-            driverName, "unlisten");
-    setIntegerParam(PVAPvConnectionStatus, 0);
-    callParamCallbacks();
-    unlock();
 }
 
 void pvaDriver::monitorConnect(Status const & status,
@@ -197,14 +198,6 @@ void pvaDriver::monitorConnect(Status const & status,
                 "%s::%s starting monitor\n",
                 driverName, functionName);
         monitor->start();
-
-        lock();
-        asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
-                "%s::%s set connection status up\n",
-                driverName, functionName);
-        setIntegerParam(PVAPvConnectionStatus, 1);
-        callParamCallbacks();
-        unlock();
     }
 }
 

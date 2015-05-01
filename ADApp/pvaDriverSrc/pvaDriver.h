@@ -35,9 +35,10 @@ class PVAChannelRequester : public virtual PVARequester,
 {
 private:
     asynUser *m_asynUser;
+    pvaDriver *m_driver;
 
 public:
-    PVAChannelRequester(asynUser *user);
+    PVAChannelRequester(asynUser *user, pvaDriver *driver);
 
     void channelCreated (const epics::pvData::Status& status,
             ChannelPtr const & channel);
@@ -72,6 +73,11 @@ private:
     ChannelPtr m_channel;
     epics::pvData::PVStructurePtr m_pvRequest;
     epics::pvData::MonitorPtr m_monitor;
+
+    // Needs access to private members and methods
+    friend void PVAChannelRequester::channelStateChange
+            (ChannelPtr const & channel,
+             epics::pvAccess::Channel::ConnectionState state);
 
     // Implemented for MonitorRequester
     void monitorConnect (epics::pvData::Status const & status,
