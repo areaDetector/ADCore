@@ -24,8 +24,16 @@ Release Notes
 =============
 
 
-R2-3 (April XXX, 2015)
+R2-3 (May XXX, 2015)
 ========================
+### devIocStats
+* The example iocs in ADCore and other drivers are now built with the devIocStats module,  
+  which provides very useful resource utilization information for the IOC. 
+  This module must now be installed if building the example IOCs in areaDetector.  
+  devIocStats runs on all supported architectures.
+  areaDetector/configure/EXAMPLE_PROD_LIBS.local has been modified to include the definition of
+  DEVIOCSTATS.  The OPI screen can be loaded from Plugins/Other/devIocStats.
+
 ### NDPluginFile
 * Fixed a serious performance problem.  The calls to openFile() and closeFile() in the derived file 
   writing classes were being done with the asynPortDriver mutex locked.
@@ -34,7 +42,14 @@ R2-3 (April XXX, 2015)
   Changed openFileBase() and closeFileBase() to unlock the mutex during these operations.  
   Testing with the simDetector and ADDexela shows that the new version no longer slows
   down the driver or drops frames at the driver level when saving TIFF files or netCDF files 
-  in Single mode.
+  in Single mode.  This required locking the mutex in the derived file writing classes when
+  they access the parameter library.
+
+### NDFileHDF5
+* Bug fix: 
+  * When writing files in Single mode if NumCapture was 0 then the chunking was computed 
+    incorrectly and the files could be much larger than they should be.
+
 
 
 R2-2 (March 23, 2015)
