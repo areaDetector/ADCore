@@ -51,7 +51,7 @@ NTNDArrayConverter::NTNDArrayConverter (NTNDArrayPtr array) : m_array(array) {}
 
 ScalarType NTNDArrayConverter::getValueType (void)
 {
-    string fieldName = m_array->getValue()->getSelectedFieldName();
+    string fieldName(m_array->getValue()->getSelectedFieldName());
 
     /*
      * Check if union field selected. It happens when the driver is run before
@@ -61,21 +61,21 @@ ScalarType NTNDArrayConverter::getValueType (void)
     if(fieldName.empty())
         throw std::runtime_error("no union field selected");
 
-    string typeName = fieldName.substr(0,fieldName.find("Value"));
+    string typeName(fieldName.substr(0,fieldName.find("Value")));
     return ScalarTypeFunc::getScalarType(typeName);
 }
 
 NDColorMode_t NTNDArrayConverter::getColorMode (void)
 {
     NDColorMode_t colorMode = NDColorModeMono;
-    PVStructureArray::const_svector attrs = m_array->getAttribute()->view();
+    PVStructureArray::const_svector attrs(m_array->getAttribute()->view());
 
-    for(PVStructureArray::const_svector::iterator it = attrs.cbegin();
+    for(PVStructureArray::const_svector::iterator it(attrs.cbegin());
             it != attrs.cend(); ++it)
     {
         if((*it)->getSubField<PVString>("name")->get() == "ColorMode")
         {
-            PVUnionPtr field = (*it)->getSubField<PVUnion>("value");
+            PVUnionPtr field((*it)->getSubField<PVUnion>("value"));
             int cm = static_pointer_cast<PVInt>(field->get())->get();
             colorMode = (NDColorMode_t) cm;
         }
@@ -88,7 +88,7 @@ NTNDArrayInfo_t NTNDArrayConverter::getInfo (void)
 {
     NTNDArrayInfo_t info = {0};
 
-    PVStructureArray::const_svector dims = m_array->getDimension()->view();
+    PVStructureArray::const_svector dims(m_array->getDimension()->view());
 
     info.ndims     = (int) dims.size();
     info.nElements = 1;
@@ -198,8 +198,7 @@ void NTNDArrayConverter::toArray (NDArray *dest)
 
     // getUniqueId not implemented yet
     // dest->uniqueId = m_array->getUniqueId()->get();
-    PVIntPtr uniqueId;
-    uniqueId = m_array->getPVStructure()->getSubField<PVInt>("uniqueId");
+    PVIntPtr uniqueId(m_array->getPVStructure()->getSubField<PVInt>("uniqueId"));
     dest->uniqueId = uniqueId->get();
 }
 
@@ -217,15 +216,14 @@ void NTNDArrayConverter::fromArray (NDArray *src)
 
     // getUniqueId not implemented yet
     // m_array->getUniqueId()->put(src->uniqueId);
-    PVIntPtr uniqueId;
-    uniqueId = m_array->getPVStructure()->getSubField<PVInt>("uniqueId");
+    PVIntPtr uniqueId(m_array->getPVStructure()->getSubField<PVInt>("uniqueId"));
     uniqueId->put(src->uniqueId);
 }
 
 template <typename arrayType>
 void NTNDArrayConverter::toValue (NDArray *dest)
 {
-    PVUnionPtr src = m_array->getValue();
+    PVUnionPtr src(m_array->getValue());
     memcpy(dest->pData, src->get<arrayType>()->view().data(), dest->dataSize);
 }
 
@@ -253,7 +251,7 @@ void NTNDArrayConverter::toValue (NDArray *dest)
 
 void NTNDArrayConverter::toDimensions (NDArray *dest)
 {
-    PVStructureArrayPtr src = m_array->getDimension();
+    PVStructureArrayPtr src(m_array->getDimension());
     PVStructureArray::const_svector srcVec(src->view());
 
     dest->ndims = srcVec.size();
@@ -270,7 +268,7 @@ void NTNDArrayConverter::toDimensions (NDArray *dest)
 
 void NTNDArrayConverter::toTimeStamp (NDArray *dest)
 {
-    PVStructurePtr src = m_array->getTimeStamp();
+    PVStructurePtr src(m_array->getTimeStamp());
 
     if(!src.get())
         return;
@@ -287,7 +285,7 @@ void NTNDArrayConverter::toTimeStamp (NDArray *dest)
 
 void NTNDArrayConverter::toDataTimeStamp (NDArray *dest)
 {
-    PVStructurePtr src = m_array->getDataTimeStamp();
+    PVStructurePtr src(m_array->getDataTimeStamp());
     PVTimeStamp pvSrc;
     pvSrc.attach(src);
 
@@ -303,7 +301,7 @@ void NTNDArrayConverter::toAttribute (NDArray *dest, PVStructurePtr src)
 {
     NDAttributeList *destList = dest->pAttributeList;
     NDAttrDataType_t destType = scalarToNDAttrDataType[pvAttrType::typeCode];
-    PVUnionPtr valueUnion = src->getSubField<PVUnion>("value");
+    PVUnionPtr valueUnion(src->getSubField<PVUnion>("value"));
     valueType value = valueUnion->get<pvAttrType>()->get();
     const char *name = src->getSubField<PVString>("name")->get().c_str();
     const char *desc = src->getSubField<PVString>("descriptor")->get().c_str();
@@ -315,8 +313,8 @@ void NTNDArrayConverter::toAttribute (NDArray *dest, PVStructurePtr src)
 void NTNDArrayConverter::toStringAttribute (NDArray *dest, PVStructurePtr src)
 {
     NDAttributeList *destList = dest->pAttributeList;
-    PVUnionPtr valueUnion = src->getSubField<PVUnion>("value");
-    string value = valueUnion->get<PVString>()->get();
+    PVUnionPtr valueUnion(src->getSubField<PVUnion>("value"));
+    string value(valueUnion->get<PVString>()->get());
     const char *name = src->getSubField<PVString>("name")->get().c_str();
     const char *desc = src->getSubField<PVString>("descriptor")->get().c_str();
     // sourceType and source are lost
@@ -332,8 +330,8 @@ void NTNDArrayConverter::toAttributes (NDArray *dest)
 
     for(VecIt it = srcVec.cbegin(); it != srcVec.cend(); ++it)
     {
-        PVUnionPtr srcUnion = (*it)->getSubField<PVUnion>("value");
-        ScalarConstPtr srcScalar = srcUnion->get<PVScalar>()->getScalar();
+        PVUnionPtr srcUnion((*it)->getSubField<PVUnion>("value"));
+        ScalarConstPtr srcScalar(srcUnion->get<PVScalar>()->getScalar());
 
         switch(srcScalar->getScalarType())
         {
@@ -360,12 +358,11 @@ void NTNDArrayConverter::fromValue (NDArray *src)
 {
     typedef typename arrayType::value_type arrayValType;
 
-    string unionField;
     NDArrayInfo_t arrayInfo;
     size_t count;
 
-    unionField = string(ScalarTypeFunc::name(arrayType::typeCode)) +
-            string("Value");
+    string unionField(string(ScalarTypeFunc::name(arrayType::typeCode)) +
+            string("Value"));
 
     src->getInfo(&arrayInfo);
     count = arrayInfo.nElements;
@@ -396,9 +393,9 @@ void NTNDArrayConverter::fromValue (NDArray *src)
 
 void NTNDArrayConverter::fromDimensions (NDArray *src)
 {
-    PVStructureArrayPtr dest = m_array->getDimension();
+    PVStructureArrayPtr dest(m_array->getDimension());
     PVStructureArray::svector destVec(dest->reuse());
-    StructureConstPtr dimStructure = dest->getStructureArray()->getStructure();
+    StructureConstPtr dimStructure(dest->getStructureArray()->getStructure());
 
     destVec.resize(src->ndims);
     for (int i = 0; i < src->ndims; i++)
@@ -417,7 +414,7 @@ void NTNDArrayConverter::fromDimensions (NDArray *src)
 
 void NTNDArrayConverter::fromDataTimeStamp (NDArray *src)
 {
-    PVStructurePtr dest = m_array->getDataTimeStamp();
+    PVStructurePtr dest(m_array->getDataTimeStamp());
 
     double seconds = floor(src->timeStamp);
     double nanoseconds = (src->timeStamp - seconds)*1e9;
@@ -431,7 +428,7 @@ void NTNDArrayConverter::fromDataTimeStamp (NDArray *src)
 
 void NTNDArrayConverter::fromTimeStamp (NDArray *src)
 {
-    PVStructurePtr dest = m_array->getTimeStamp();
+    PVStructurePtr dest(m_array->getTimeStamp());
 
     PVTimeStamp pvDest;
     pvDest.attach(dest);
@@ -469,14 +466,13 @@ void NTNDArrayConverter::createAttributes (NDArray *src)
 {
     NDAttributeList *srcList = src->pAttributeList;
     NDAttribute *attr = srcList->next(NULL);
-    PVStructureArrayPtr dest = m_array->getAttribute();
+    PVStructureArrayPtr dest(m_array->getAttribute());
     PVStructureArray::svector destVec(dest->reuse());
-    StructureConstPtr structure = dest->getStructureArray()->getStructure();
+    StructureConstPtr structure(dest->getStructureArray()->getStructure());
 
     while(attr)
     {
-        PVStructurePtr pvAttr;
-        pvAttr = PVDC->createPVStructure(structure);
+        PVStructurePtr pvAttr(PVDC->createPVStructure(structure));
 
         pvAttr->getSubField<PVString>("name")->put(attr->getName());
         pvAttr->getSubField<PVString>("descriptor")->put(attr->getDescription());
@@ -513,7 +509,7 @@ void NTNDArrayConverter::createAttributes (NDArray *src)
 
 void NTNDArrayConverter::fromAttributes (NDArray *src)
 {
-    PVStructureArrayPtr dest = m_array->getAttribute();
+    PVStructureArrayPtr dest(m_array->getAttribute());
     NDAttributeList *srcList = src->pAttributeList;
 
     if(dest->view().dataCount() != (size_t)srcList->count())
@@ -525,7 +521,7 @@ void NTNDArrayConverter::fromAttributes (NDArray *src)
     for(PVStructureArray::svector::iterator it = destVec.begin();
             it != destVec.end(); ++it)
     {
-        PVStructurePtr pvAttr = *it;
+        PVStructurePtr pvAttr(*it);
         switch(attr->getDataType())
         {
         case NDAttrInt8:    fromAttribute <PVByte,   int8_t>  (pvAttr, attr); break;
