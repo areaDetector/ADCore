@@ -4,7 +4,7 @@
 $(PROD_NAME)_DBD += commonDriverSupport.dbd
 
 ifeq ($(EPICS_V4_PLUGIN),YES)
-  $(PROD_NAME)_DBD += NDPluginV4Server.dbd
+  $(PROD_NAME)_DBD += NDPluginPva.dbd
 endif
 
 PROD_LIBS               += NDPlugin ADBase netCDF
