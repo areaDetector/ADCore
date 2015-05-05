@@ -816,6 +816,12 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
         }
     } else if (function == NDFileCapture) {
         if (value) {  // Started capture or stream
+            // Reset the value temporarily until the doCapture() has called the
+            // inherited openFile() method and the writer is in a good state to
+            // start writing frames.
+            // See comments on: https://github.com/areaDetector/ADCore/pull/100
+            setIntegerParam(NDFileCapture, 0);
+
             /* Latch the NDFileLazyOpen parameter so that we don't need to care
              * if the user modifies this parameter before first frame has arrived. */
             int paramFileLazyOpen = 0;
@@ -830,6 +836,7 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
         status = doCapture(value);
         if (status == asynSuccess) {
             if (this->lazyOpen) setStringParam(NDFileWriteMessage, "Lazy Open...");
+            setIntegerParam(NDFileCapture, value);
         } else {
             setIntegerParam(NDFileCapture, 0);
         }
