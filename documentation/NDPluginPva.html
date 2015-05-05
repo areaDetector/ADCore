@@ -20,7 +20,6 @@
     Contents</h2>
   <ul>
     <li><a href="#Overview">Overview</a></li>
-    <li><a href="#Compilation">Compilation</a></li>
     <li><a href="#Configuration">Configuration</a></li>
   </ul>
   <h2 id="Overview">
@@ -34,30 +33,35 @@
     description</a> of the structure of the NTNDArray normative type is available.
   </p>
   <p>
-    NDPluginPva defines no parameters.
+    NDPluginPva defines the following parameters.
   </p>
-
-  <h2 id="Compilation">
-    Compilation</h2>
-  <p>
-    The NDPluginPva plugin requires the following EPICSv4 modules in order to be compiled:
-    <ul>
-      <li>pvDataCPP</li>
-      <li>pvAccessCPP (requires pvCommonCPP)</li>
-      <li>pvDatabaseCPP</li>
-      <li>normativeTypesCPP</li>
-    </ul>
-  </p>
-  <p>
-    The <code>EV4_BASE</code> definition must be set to the folder that contains all of the
-    aforementioned EPICSv4 modules. This is typically set in the <code>RELEASE_PATHS.local</code>
-    configuration file.
-  </p>
-  <p>
-    The compilation is also currently dependent on the <code>EPICS_V4_PLUGIN</code> definition
-    being equal to <code>YES</code>. This can be done in the <code>CONFIG_SITE.local</code> configuration
-    file.
-  </p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>Parameter Definitions in NDPluginPva.h and EPICS Record Definitions in NDPva.template</b>
+        </td>
+      </tr>
+      <tr>
+        <th>Parameter index variable</th>
+        <th>asyn interface</th>
+        <th>Access</th>
+        <th>Description</th>
+        <th>drvInfo string</th>
+        <th>EPICS record name</th>
+        <th>EPICS record type</th>
+      </tr>
+      <tr>
+        <td>NDPluginPvaPvName</td>
+        <td>asynOctet</td>
+        <td>r/o</td>
+        <td>Name of the EPICSv4 PV being served</td>
+        <td>PV_NAME</td>
+        <td>$(P)$(R)PvName</td>
+        <td>waveform</td>
+      </tr>
+    </tbody>
+  </table>
 
   <h2 id="Configuration">
     Configuration</h2>
