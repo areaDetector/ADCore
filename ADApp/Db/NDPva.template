@@ -8,7 +8,7 @@ include "NDPluginBase.template"
 
 # New records for NDPluginPva
 
-record(waveform, "$(P)$(R)PvName")
+record(waveform, "$(P)$(R)PvName_RBV")
 {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PV_NAME")
