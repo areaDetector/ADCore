@@ -26,7 +26,7 @@ dbLoadRecords("simDetector.template","P=$(PREFIX),R=cam1:,PORT=$(PORT),ADDR=0,TI
 # NDPvaConfigure(portName, maxBuffers, maxMemory, ndarrayPort, ndarrayAddr, pvName,
 #                     maxMemory, priority, stackSize)
 NDPvaConfigure("Pva1", 3, 0, "$(PORT)", 0, "testMP")
-dbLoadRecords("NDPluginBase.template","P=$(PREFIX),R=pva1:,PORT=Pva1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT),NDARRAY_ADDR=0")
+dbLoadRecords("NDPva.template","P=$(PREFIX),R=pva1:,PORT=Pva1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT),NDARRAY_ADDR=0")
 
 NDStdArraysConfigure("Image1", 3, 0, "$(PORT)", 0)
 dbLoadRecords("NDPluginBase.template","P=$(PREFIX),R=image1:,PORT=Image1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT),NDARRAY_ADDR=0")

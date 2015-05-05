@@ -11,6 +11,8 @@
 #include <pv/pvData.h>
 #include <vector>
 
+#define NDPluginPvaPvNameString "PV_NAME"
+
 class NTNDArrayRecord;
 typedef std::tr1::shared_ptr<NTNDArrayRecord> NTNDArrayRecordPtr;
 
@@ -27,6 +29,9 @@ public:
 
     /* These methods override the virtual methods in the base class */
     void processCallbacks(NDArray *pArray);
+
+protected:
+    int NDPluginPvaPvName;
 
 private:
     epics::pvAccess::ServerContext::shared_pointer m_server;

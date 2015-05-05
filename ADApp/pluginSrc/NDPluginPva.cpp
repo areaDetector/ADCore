@@ -111,7 +111,7 @@ void NDPluginPva::processCallbacks(NDArray *pArray)
   * NDPluginDriver::NDPluginDriver.
   * This plugin cannot block (ASYN_CANBLOCK=0) and is not multi-device
   * (ASYN_MULTIDEVICE=0).
-  * It has 0 parameters (0)
+  * It has 1 parameter (1)
   * It allocates a maximum of 2 NDArray buffers for internal use.
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] queueSize The number of NDArrays that the input queue for this
@@ -141,15 +141,20 @@ NDPluginPva::NDPluginPva(const char *portName, int queueSize,
         const char *pvName, size_t maxMemory, int priority, int stackSize)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
-            NDArrayPort, NDArrayAddr, 1, 0, 2, maxMemory, 0, 0,
+            NDArrayPort, NDArrayAddr, 1, 1, 2, maxMemory, 0, 0,
             0, 1, priority, stackSize),
             m_record(NTNDArrayRecord::create(pvName))
 {
+    createParam(NDPluginPvaPvNameString, asynParamOctet, &NDPluginPvaPvName);
+
     if(!m_record.get())
         throw runtime_error("failed to create NTNDArrayRecord");
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginPva");
+
+    /* Set PvName */
+    setStringParam(NDPluginPvaPvName, pvName);
 
     /* Try to connect to the NDArray port */
     connectToArrayPort();
