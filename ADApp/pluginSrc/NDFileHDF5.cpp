@@ -2175,27 +2175,9 @@ asynStatus NDFileHDF5::createAttributeDataset()
 
   this->lock();
   getIntegerParam(NDFileHDF5_nExtraDims, &extraDims);
-  // Check the chunking value
-  getIntegerParam(NDFileHDF5_NDAttributeChunk, &chunking);
-  // If the chunking is zero then use the number of frames
-  if (chunking == 0){
-    // In this case we want to read back the number of frames and use this for chunking
-    // First check in case we are in single mode.
-    getIntegerParam(NDFileWriteMode, &fileWriteMode);
-    // Check that we are not in single mode
-    if (fileWriteMode == NDFileModeSingle){
-      // We are in single mode so chunk size should be set to 1 no matter the frame count
-      chunking = 1;
-    } else {
-      // We aren't in single mode so read the number of frames
-      getIntegerParam(NDFileNumCapture, &chunking);
-      if (chunking <= 0) {
-        // Special case: writing infinite number of frames, so we guess a good(ish) chunk number
-        chunking = 16*1024;
-      }
-    }
-  }
   this->unlock();
+  // Check the chunking value
+  calculateAttributeChunking(&chunking);
 
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s Creating attribute datasets. extradims=%d attribute count=%d\n",
             driverName, functionName, extraDims, this->pFileAttributes->count());
@@ -2218,9 +2200,6 @@ asynStatus NDFileHDF5::createAttributeDataset()
                 driverName, functionName);
     }
   }
-
-  // Check the chunking value
-  calculateAttributeChunking(&chunking);
 
   ndAttr = this->pFileAttributes->next(ndAttr); // get the first NDAttribute
   while(ndAttr != NULL)
@@ -2347,17 +2326,29 @@ asynStatus NDFileHDF5::createAttributeDataset()
 
 asynStatus NDFileHDF5::calculateAttributeChunking(int *chunking)
 {
+  int fileWriteMode = 0;
+  this->lock();
   // Check the chunking value
   getIntegerParam(NDFileHDF5_NDAttributeChunk, chunking);
   // If the chunking is zero then use the number of frames
   if (*chunking == 0){
     // In this case we want to read back the number of frames and use this for chunking
-    getIntegerParam(NDFileNumCapture, chunking);
-    if (*chunking <= 0) {
-      // Special case: writing infinite number of frames, so we guess a good(ish) chunk number
-      *chunking = 16*1024;
+    // First check in case we are in single mode.
+    getIntegerParam(NDFileWriteMode, &fileWriteMode);
+    // Check that we are not in single mode
+    if (fileWriteMode == NDFileModeSingle){
+      // We are in single mode so chunk size should be set to 1 no matter the frame count
+      *chunking = 1;
+    } else {
+      // We aren't in single mode so read the number of frames
+      getIntegerParam(NDFileNumCapture, chunking);
+      if (*chunking <= 0) {
+        // Special case: writing infinite number of frames, so we guess a good(ish) chunk number
+        *chunking = 16*1024;
+      }
     }
   }
+  this->unlock();
   return asynSuccess;
 }
 
