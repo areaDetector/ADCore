@@ -278,7 +278,7 @@ function ezcaType, value
 ;       June 28, 1995
 
     type= size(value)
-    type = type(type(0)+1)
+    type = type[type[0]+1]
     case type of
         1:  ezca_type = 0   ; Byte
         2:  ezca_type = 2   ; Short
@@ -320,9 +320,9 @@ function caGetCountAndType, pvname, count, type
 ;
 ;       type:   This is a 3 element array containing information about the data
 ;               type of the process variable.
-;               type(0) = Channel access data type as defined in "cadef.h"
-;               type(1) = EZCA data type as defined in "ezca.h"
-;               type(2) = IDL/PV-WAVE data type as defined in size()
+;               type[0] = Channel access data type as defined in "cadef.h"
+;               type[1] = EZCA data type as defined in "ezca.h"
+;               type[2] = IDL/PV-WAVE data type as defined in size()
 ;               These data types are as follows:
 ;
 ;               Name    Channel Access      EZCA        IDL/PVWAVE
@@ -529,7 +529,7 @@ function caGet, pvname, val, string=string, maximum_elements=max
 
     status = caGetCountAndType(pvname, nelem, type)
     if (status ne 0) then return, status
-    type = type(2)  ; The EZCA data type
+    type = type[2]  ; The EZCA data type
     if (n_elements(max) gt 0) then nelem = nelem < max
     if (nelem eq 1) then begin
         if (keyword_set(string)) then begin
@@ -944,7 +944,7 @@ function caEndGroup, status
         nvals = 1024L
         status = lonarr(nvals)
         stat = call_ezca('ezcaIDLEndGroupWithReport', nvals, status)
-        status = status(0:nvals-1)
+        status = status[0:nvals-1]
         return, stat
     endelse
 end
@@ -994,7 +994,7 @@ function caSetMonitor, pvname, count
     if (n_elements(count) eq 0) then count = 0
     if (status ne 0) then return, status
     status = call_ezca('ezcaIDLSetMonitor', ezcaPVNameToByte(pvname), $
-                        byte(type(2)), long(count))
+                        byte(type[2]), long(count))
     return, status
 end
 
@@ -1038,7 +1038,7 @@ function caClearMonitor, pvname
     status = caGetCountAndType(pvname, count, type)
     if (status ne 0) then return, status
     status = call_ezca('ezcaIDLClearMonitor', ezcaPVNameToByte(pvname), $
-                        byte(type(2)))
+                        byte(type[2]))
     return, status
 end
 
@@ -1083,7 +1083,7 @@ function caCheckMonitor, pvname
     status = caGetCountAndType(pvname, count, type)
     if (status ne 0) then return, status
     status = call_ezca('ezcaIDLNewMonitorValue', ezcaPVNameToByte(pvname), $
-                        byte(type(2)))
+                        byte(type[2]))
     return, status
 end
 
@@ -1258,13 +1258,13 @@ function caGetEnumStrings, pvname, strings
     ; Make sure the data type is DBF_ENUM
     status = caGetCountAndType(pvname, count, type)
     if (status ne 0) then return, status
-    if (type(0) ne 3) then return, -1
+    if (type[0] ne 3) then return, -1
     array = bytarr(MAX_STRING_SIZE, MAX_ENUM_STATES)
     n = 0L
     status = call_ezca('ezcaIDLGetEnumStrings', ezcaPVNameToByte(pvname), $
                         n, array)
     if (status ne 0) then return, status
-    strings = string(array(*, 0:n-1))
+    strings = string(array[*, 0:n-1])
 end
 
 
@@ -1653,8 +1653,8 @@ PRO caInit,flag, help=help , print=print
 ;
 ; PURPOSE:
 ;       This routine sets the channel access timeout used by list array
-;       functions defined in EzcaScan library.  It also sets the values of two
-;       constants, MAX_STRING_SIZE and MAX_ENUM_STATES used in other functions.
+;       functions defined in EzcaScan library.  It also sets the values of three
+;       constants, MAX_STRING_SIZE=40, MAX_ENUM_STATES=16, and MAX_PVNAME_SIZE=128 used in other functions.
 ;       This routine MUST be called before any other routines in this file.
 ;
 ; CATEGORY:
@@ -1674,7 +1674,7 @@ PRO caInit,flag, help=help , print=print
 ;       None.
 ;
 ; COMMON BLOCKS:
-;       ezca_common is used to hold the values of MAX_STRING_SIZE and MAX_ENUM_STATES
+;       ezca_common is used to hold the values of MAX_STRING_SIZE, MAX_ENUM_STATES, and MAX_PVNAME_SIZE
 ;
 ; SIDE EFFECTS:
 ;       This routine set the channel access timeout values used in the
@@ -2132,17 +2132,17 @@ FUNCTION caGetTypeCount, name,type,count,wave_type
     count= lonarr(no)
     ln = call_ezca('EzcaGetArrayTypeCount', no, type, count, nms)
     for i=0,no-1 do begin
-        ca_type = type(i)
+        ca_type = type[i]
         case ca_type of
-            0: wave_type(i) = 7
-;           0: wave_type(i) = 1
-            1: wave_type(i) = 3
-            2: wave_type(i) = 4
-            3: wave_type(i) = 2
-            4: wave_type(i) = 1
-            5: wave_type(i) = 3
-            6: wave_type(i) = 5
-            else: print,'Warning: PV name "', name(i), '" not found!'
+            0: wave_type[i] = 7
+;           0: wave_type[i] = 1
+            1: wave_type[i] = 3
+            2: wave_type[i] = 4
+            3: wave_type[i] = 2
+            4: wave_type[i] = 1
+            5: wave_type[i] = 3
+            6: wave_type[i] = 5
+            else: print,'Warning: PV name "', name[i], '" not found!'
         endcase
     endfor
     return,ln
@@ -2323,9 +2323,9 @@ FUNCTION caGetArray,names,pdata,max_no=max_no,type=type, $
         if st eq -1 then begin
             return,-1
         endif
-        num = ct(0)
-        ca_type = ty(0)
-        wave_type = wty(0)
+        num = ct[0]
+        ca_type = ty[0]
+        wave_type = wty[0]
     endif
 
     if n_elements(type) gt 0 then wave_type = type
@@ -2382,7 +2382,7 @@ FUNCTION caGetArray,names,pdata,max_no=max_no,type=type, $
         if keyword_set(print) then begin
             ln = caGetError(names,p1)
             for i=0,no-1 do begin
-                if p1(i) ne 0 then print,'Error: caGetArray failed on ',names(i)
+                if p1[i] ne 0 then print,'Error: caGetArray failed on ',names[i]
             endfor
         endif else print,'Warning: some PV not found in caGetArray'
     endif
@@ -2495,24 +2495,24 @@ FUNCTION caPutArray,names,pdata,event=event
     nms = ezcaPVNameToByte(names, no)
     if no eq 1 then begin
         st = caGetTypeCount(names, ty, ct, wty)
-        num = ct(0)
-        wave_type = wty(0)
+        num = ct[0]
+        wave_type = wty[0]
     endif
 
     ; check name and pdata consistance
 
     s = size(pdata)
     ns = n_elements(s)
-    wave_type = s(ns-2)
-    if s(0) eq 2  and no eq 1 then begin
+    wave_type = s[ns-2]
+    if s[0] eq 2  and no eq 1 then begin
         print,'Error: caPutArray(names,pdata)  multiple name expected'
         return,-1
     endif
-    if s(0) eq 2  and s(2) ne no then begin
+    if s[0] eq 2  and s[2] ne no then begin
         print,'Error: caPutArray(names,pdata)  names and pdata dimension error'
         return,-1
     endif
-    if s(ns-1) gt 1 then num = s(1) $ ; array detected
+    if s[ns-1] gt 1 then num = s[1] $ ; array detected
     else num = 1
 
     case wave_type of             ; wave_type
@@ -2536,7 +2536,7 @@ FUNCTION caPutArray,names,pdata,event=event
             pd= bytarr(MAX_STRING_SIZE,num,no)
             for i=0,no-1 do begin
                 for j=0,num-1 do begin
-                    pd(0,j,i)=byte(pdata(j+i*num))
+                    pd[0,j,i]=byte(pdata[j+i*num])
                 endfor
             endfor
             ca_type = 0L ; String

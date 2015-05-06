@@ -42,7 +42,7 @@ asynStatus NDFileNexus::openFile( const char *fileName, NDFileOpenMode_t openMod
 
   /* Print trace information if level is set correctly */
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
-  "Entering %s:%s\n", driverName, functionName );
+            "Entering %s:%s\n", driverName, functionName );
 
   /* We don't support reading yet */
   if (openMode & NDFileModeRead) return(asynError);
@@ -62,13 +62,12 @@ asynStatus NDFileNexus::openFile( const char *fileName, NDFileOpenMode_t openMod
    * the driver and prior plugins */
   pArray->pAttributeList->copy(this->pFileAttributes);
 
-
   /* Open the NeXus file */
   nxstat = NXopen(fileName, NXACC_CREATE5, &nxFileHandle);
   if (nxstat == NX_ERROR) {
-  asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-            "Error %s:%s cannot open file %s\n", driverName, functionName, fileName );
-  return (asynError);
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+              "Error %s:%s cannot open file %s\n", driverName, functionName, fileName );
+    return (asynError);
   }
   nxstat = NXputattr( this->nxFileHandle, "creator", programName, (int)strlen(programName), NX_CHAR);
 
@@ -104,7 +103,6 @@ asynStatus NDFileNexus::writeFile(NDArray *pArray) {
    * the driver and prior plugins */
   pArray->pAttributeList->copy(this->pFileAttributes);
 
-
   processStreamData(pArray);
 
   /* Print trace information if level is set correctly */
@@ -138,18 +136,11 @@ asynStatus NDFileNexus::readFile(NDArray **pArray) {
 asynStatus NDFileNexus::closeFile() {
   asynStatus status = asynSuccess;
   NXstatus nxstat;
-  int numCapture, numCaptured;
-  int fileWriteMode;
-  int addr =0;
   static const char *functionName = "closeFile";
 
   /*Print trace information if level is set correctly */
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
             "Entering %s:%s\n", driverName, functionName );
-
-  getIntegerParam(addr, NDFileWriteMode, &fileWriteMode);
-  getIntegerParam(addr, NDFileNumCapture, &numCapture);
-  getIntegerParam(addr, NDFileNumCaptured, &numCaptured);
 
   /* close the nexus file */
   nxstat = NXclose(&nxFileHandle);
@@ -179,7 +170,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
   NDDataType_t type;
   int ii;
   int dims[ND_ARRAY_MAX_DIMS];
-  int numCapture, numCaptured;
+  int numCapture;
   int fileWriteMode;
   NDAttrDataType_t attrDataType;
   NDAttribute *pAttr;
@@ -199,9 +190,11 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
             "Entering %s:%s\n", driverName, functionName );
 
+  /* Must lock when accessing parameter library */
+  this->lock();
   getIntegerParam(addr, NDFileWriteMode, &fileWriteMode);
   getIntegerParam(addr, NDFileNumCapture, &numCapture);
-  getIntegerParam(addr, NDFileNumCaptured, &numCaptured);
+  this->unlock();
 
   nodeValue = curNode->Value();
   asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
@@ -477,7 +470,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
     }
   }
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
-    "Leaving %s:%s\n", driverName, functionName );
+            "Leaving %s:%s\n", driverName, functionName );
   return (status);
 }
 
@@ -491,9 +484,12 @@ int NDFileNexus::processStreamData(NDArray *pArray) {
   int addr = 0;
   //static const char *functionName = "processNode";
 
+  /* Must lock when accessing parameter library */
+  this->lock();
   getIntegerParam(addr, NDFileWriteMode, &fileWriteMode);
   getIntegerParam(addr, NDFileNumCapture, &numCapture);
-
+  this->unlock();
+  
   rank = pArray->ndims;
   for (ii=0; ii<rank; ii++) {
     switch(fileWriteMode) {
@@ -642,7 +638,7 @@ void * NDFileNexus::allocConstValue(int dataType, size_t length ) {
       break;
     case NX_FLOAT32:
       pValue = calloc( length, sizeof(float) );
-       break;
+      break;
     case NX_FLOAT64:
       pValue = calloc( length, sizeof(double) );
       break;
@@ -651,7 +647,7 @@ void * NDFileNexus::allocConstValue(int dataType, size_t length ) {
       break;
     case NDAttrUndefined:
     default:
-            pValue = NULL;
+      pValue = NULL;
       break;
   }
   return pValue;

@@ -7,7 +7,7 @@ PROD_LIBS               += NDPlugin ADBase netCDF
 ifneq (vxWorks, $(findstring vxWorks, $(T_A)))
   PROD_LIBS             += NeXus
 endif
-PROD_LIBS               += calc busy sscan autosave
+PROD_LIBS               += calc busy sscan autosave devIocStats
 PROD_LIBS               += asyn
 PROD_LIBS               += $(EPICS_BASE_IOC_LIBS)
 

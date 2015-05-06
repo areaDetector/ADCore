@@ -19,6 +19,7 @@ endif
 DBD += ADSupport.dbd
 DBD += commonDriverSupport.dbd
 
+INC += ADCoreVersion.h
 INC += NDAttribute.h
 INC += NDAttributeList.h
 INC += NDArray.h

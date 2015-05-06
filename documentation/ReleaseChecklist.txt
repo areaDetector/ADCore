@@ -1,17 +1,16 @@
-Release checklist for areaDetector
+Release checklist for ADCore
 
 - Make sure the epics_ad_display.sav file in /usr/local/idl_user/imaging is
 up-to-date
 
 - Run "update_files" from the Viewers/IDL directory
 
-- Make sure that documentation/areaDetectorDoc.html and
-areaDetectorReleaseNotes.html have everything for this release, including the
-date.
+- Make sure that RELEASE.md and documentation/areaDetectorDoc.html have everything 
+  for this release, including the date.
 
-- Check in everything to BCDA SVN repository
+- Check in everything to git repository
 
-- Make the SVN repository tag with "make_release areaDetector RX-Y" from the devel directory
+- Make the git repository tag with "git tag RX-Y", "git push --tags"
 
 - Do "make clean uninstall", "make" on the following platforms:
   win32-x86:          rivers-mobile2
@@ -23,10 +22,6 @@ date.
   linux-x86_64-gcc42: gse-pilatus1
   darwin-x86:         chemmatmac1
 
-- Run "make clean", "make" in the documentation directory
+- Run "make" in the areaDetector/documentation directory
 
-- Run "makeADStandaloneTar from the top-level areaDetector directory
-
-- Run "make_tar_file areaDetector RX-Y" from the devel directory
-
-- Run "install_documentation areaDetector" from the devel directory
+- Build any standalone versions required
