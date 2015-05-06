@@ -20,6 +20,7 @@ echo "BUSY=`pwd`/external/busy-1-6-1"        >> configure/RELEASE.local
 echo "CALC=`pwd`/external/calc-3-4-2"        >> configure/RELEASE.local
 echo "SSCAN=`pwd`/external/sscan-2-10"       >> configure/RELEASE.local
 echo "AUTOSAVE=`pwd`/external/autosave-5-5"  >> configure/RELEASE.local
+echo "DEVIOCSTATS=`pwd`/external/iocStats-3.1.14"  >> configure/RELEASE.local
 
 # Configure the example IOCs in preparation for build
 echo "BUILD_IOCS=YES"                        >> configure/CONFIG_SITE.linux-x86_64.Common

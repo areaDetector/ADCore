@@ -31,5 +31,10 @@ tar -zxf autosave_R5-5.tar.gz
 echo "EPICS_BASE=/usr/lib/epics" > autosave-5-5/configure/RELEASE
 make -C autosave-5-5/
 
+wget -nv https://github.com/epics-modules/iocStats/archive/3.1.14.tar.gz
+tar -zxf 3.1.14.tar.gz
+echo "EPICS_BASE=/usr/lib/epics" > iocStats-3.1.14/configure/RELEASE
+make -C iocStats-3.1.14
+
 cd ..
 
