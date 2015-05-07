@@ -10,14 +10,19 @@ include $(TOP)/configure/CONFIG
 # It depends on asyn, and areaDetector libs - but we dont
 # need to do the linking here as long as the final test executable binary links.
 # The ADTestUtility does not depend on boost!
-LIBRARY_IOC += ADTestUtility
+LIBRARY_IOC_WIN32 += ADTestUtility
+LIBRARY_IOC_Linux += ADTestUtility
 ADTestUtility_SRCS += testingutilities.cpp
+ADTestUtility_SRCS += AsynPortTestWrapper.cpp
+ADTestUtility_SRCS += SimulatedDetectorWrapper.cpp
+ADTestUtility_SRCS += HDF5PluginWrapper.cpp
 
 
 # The plugin-test executable with the actual unittests depend on the boost 
 # unittest framework so we can only build it if boost has been configured
 ifdef BOOST
-  PROD_IOC += plugin-test
+  PROD_IOC_WIN32 += plugin-test
+  PROD_IOC_Linux += plugin-test
   plugin-test_SRCS += plugin-test.cpp
   plugin-test_SRCS += test_NDPluginCircularBuff.cpp
   

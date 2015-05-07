@@ -5,34 +5,39 @@
 #include "boost/test/unit_test.hpp"
 
 // AD dependencies
-#include <NDFileHDF5.h>
-#include <simDetector.h>
+//#include <NDFileHDF5.h>
+//#include <simDetector.h>
 #include <NDArray.h>
 #include <asynDriver.h>
-#include <asynPortClient.h>
+//#include <asynPortClient.h>
 
 #include <string.h>
 #include <stdint.h>
 
 #include <deque>
+#include <tr1/memory>
 using namespace std;
 
 #include "testingutilities.h"
+#include "SimulatedDetectorWrapper.h"
+#include "HDF5PluginWrapper.h"
 
 struct NDFileHDF5TestFixture
 {
   NDArrayPool *arrayPool;
-  simDetector *driver;
-  NDFileHDF5 *hdf5;
-  asynInt32Client *enableCallbacks;
-  asynInt32Client *blockingCallbacks;
-  asynOctetClient *file_format;
-  asynOctetClient *file_path;
-  asynOctetClient *file_name;
-  asynInt32Client *file_write_mode;
-  asynInt32Client *file_num_capture;
-  asynInt32Client *file_capture;
-  asynInt32Client *file_num_captured;
+//  simDetector *driver;
+  std::tr1::shared_ptr<SimulatedDetectorWrapper> driver;
+//  NDFileHDF5 *hdf5;
+  std::tr1::shared_ptr<HDF5PluginWrapper> hdf5;
+//  asynInt32Client *enableCallbacks;
+//  asynInt32Client *blockingCallbacks;
+//  asynOctetClient *file_format;
+//  asynOctetClient *file_path;
+//  asynOctetClient *file_name;
+//  asynInt32Client *file_write_mode;
+//  asynInt32Client *file_num_capture;
+//  asynInt32Client *file_capture;
+//  asynInt32Client *file_num_captured;
 
   static int testCase;
 
@@ -48,55 +53,78 @@ struct NDFileHDF5TestFixture
 
     // We need some upstream driver for our test plugin so that calls to connectArrayPort don't fail, but we can then ignore it and send
     // arrays by calling processCallbacks directly.
-    driver = new simDetector(simport.c_str(), 800, 500, NDFloat64, 50, 0, 0, 2000000);
+    driver = std::tr1::shared_ptr<SimulatedDetectorWrapper>(new SimulatedDetectorWrapper(simport.c_str(),
+                                                                                         800,
+                                                                                         500,
+                                                                                         NDFloat64,
+                                                                                         50,
+                                                                                         0,
+                                                                                         0,
+                                                                                         2000000));
 
     // This is the plugin under test
-    hdf5 = new NDFileHDF5(testport.c_str(), 50, 1, simport.c_str(), 0, 0, 2000000);
+    hdf5 = std::tr1::shared_ptr<HDF5PluginWrapper>(new HDF5PluginWrapper(testport.c_str(),
+                                                                         50,
+                                                                         1,
+                                                                         simport.c_str(),
+                                                                         0,
+                                                                         0,
+                                                                         2000000));
 
 
-    file_format = new asynOctetClient(testport.c_str(), 0, NDFileTemplateString);
-    file_path = new asynOctetClient(testport.c_str(), 0, NDFilePathString);
-    file_name = new asynOctetClient(testport.c_str(), 0, NDFileNameString);
-    file_write_mode = new asynInt32Client(testport.c_str(), 0, NDFileWriteModeString);
-    file_num_capture = new asynInt32Client(testport.c_str(), 0, NDFileNumCaptureString);
-    file_capture = new asynInt32Client(testport.c_str(), 0, NDFileCaptureString);
-    file_num_captured = new asynInt32Client(testport.c_str(), 0, NDFileNumCapturedString);
+//    file_format = new asynOctetClient(testport.c_str(), 0, NDFileTemplateString);
+//    file_path = new asynOctetClient(testport.c_str(), 0, NDFilePathString);
+//    file_name = new asynOctetClient(testport.c_str(), 0, NDFileNameString);
+//    file_write_mode = new asynInt32Client(testport.c_str(), 0, NDFileWriteModeString);
+//    file_num_capture = new asynInt32Client(testport.c_str(), 0, NDFileNumCaptureString);
+//    file_capture = new asynInt32Client(testport.c_str(), 0, NDFileCaptureString);
+//    file_num_captured = new asynInt32Client(testport.c_str(), 0, NDFileNumCapturedString);
+
+    // Ensure the driver will notify plugins of available NDArrays
+    driver->write(NDArrayCallbacksString, 1);
 
     // Enable the plugin
-    enableCallbacks = new asynInt32Client(testport.c_str(), 0, NDPluginDriverEnableCallbacksString);
-    blockingCallbacks = new asynInt32Client(testport.c_str(), 0, NDPluginDriverBlockingCallbacksString);
-    enableCallbacks->write(1);
-    blockingCallbacks->write(1);
+//    enableCallbacks = new asynInt32Client(testport.c_str(), 0, NDPluginDriverEnableCallbacksString);
+//    blockingCallbacks = new asynInt32Client(testport.c_str(), 0, NDPluginDriverBlockingCallbacksString);
+//    enableCallbacks->write(1);
+//    blockingCallbacks->write(1);
+
+    hdf5->write(NDPluginDriverEnableCallbacksString, 1);
+    hdf5->write(NDPluginDriverBlockingCallbacksString, 1);
 
   }
   ~NDFileHDF5TestFixture()
   {
-    delete blockingCallbacks;
-    delete enableCallbacks;
-    delete file_format;
-    delete file_path;
-    delete file_name;
-    delete file_write_mode;
-    delete file_num_capture;
-    delete file_capture;
-    delete file_num_captured;
-    delete driver;
-    delete hdf5;
+//    delete blockingCallbacks;
+//    delete enableCallbacks;
+//    delete file_format;
+//    delete file_path;
+//    delete file_name;
+//    delete file_write_mode;
+//    delete file_num_capture;
+//    delete file_capture;
+//    delete file_num_captured;
+//    delete driver;
+//    delete hdf5;
     delete arrayPool;
   }
 
   void setup_hdf_stream()
   {
     size_t nactual;
-    file_write_mode->write(NDFileModeStream);
+//    file_write_mode->write(NDFileModeStream);
+    hdf5->write(NDFileWriteModeString, NDFileModeStream);
     std::string str("/tmp");
-    file_path->write(str.c_str(), str.length(), &nactual);
+//    file_path->write(str.c_str(), str.length(), &nactual);
+    hdf5->write(NDFilePathString, str.c_str(), str.length(), &nactual);
 
     str = "testing";
-    file_name->write(str.c_str(), str.length(), &nactual);
+//    file_name->write(str.c_str(), str.length(), &nactual);
+    hdf5->write(NDFileNameString, str.c_str(), str.length(), &nactual);
 
     str = "%s%s_%d.5";
-    file_format->write(str.c_str(), str.length(), &nactual);
+//    file_format->write(str.c_str(), str.length(), &nactual);
+    hdf5->write(NDFileTemplateString, str.c_str(), str.length(), &nactual);
 
   }
 };
@@ -119,16 +147,20 @@ BOOST_AUTO_TEST_CASE(test_Capture)
   hdf5->processCallbacks(arrays[0]);
 
   // Start capture to disk
-  file_num_capture->write(10);
-  file_capture->write(1);
+//  file_num_capture->write(10);
+//  file_capture->write(1);
+  hdf5->write(NDFileNumCaptureString, 10);
+  hdf5->write(NDFileCaptureString, 1);
 
+  // Now start capturing frames
   epicsInt32 num_captured=0;
   for (int i = 0; i < 10; i++)
   {
     hdf5->lock();
     BOOST_CHECK_NO_THROW(hdf5->processCallbacks(arrays[i]));
     hdf5->unlock();
-    file_num_captured->read(&num_captured);
+//    file_num_captured->read(&num_captured);
+    hdf5->read(NDFileNumCapturedString, &num_captured);
     BOOST_CHECK_EQUAL(num_captured, i+1);
   }
 
