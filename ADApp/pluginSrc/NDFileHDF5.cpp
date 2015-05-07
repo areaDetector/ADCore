@@ -514,7 +514,6 @@ void NDFileHDF5::writeHdfAttributes( hid_t h5_handle, hdf5::Element* element)
 {
   hdf5::Element::MapAttributes_t::iterator it_attr;
   hdf5::DataType_t attr_dtype = hdf5::string;
-
   for (it_attr=element->get_attributes().begin(); it_attr != element->get_attributes().end(); ++it_attr){
     hdf5::Attribute &attr = it_attr->second; // Take a reference - i.e. *not* a copy!
     if (attr.source.is_src_ndattribute()){
@@ -2075,13 +2074,11 @@ asynStatus NDFileHDF5::writePerformanceDataset()
  */
 asynStatus NDFileHDF5::createAttributeDataset()
 {
-  HDFAttributeNode *hdfAttrNode;
   NDAttribute *ndAttr = NULL;
   NDAttrSource_t ndAttrSourceType;
   int extraDims;
   int chunking = 0;
   int fileWriteMode = 0;
-  hsize_t maxdims[2] = {H5S_UNLIMITED, H5S_UNLIMITED};
   hid_t groupDefault = -1;
   const char *attrNames[5] = {"NDAttrName", "NDAttrDescription", "NDAttrSourceType", "NDAttrSource", NULL};
   const char *attrStrings[5] = {NULL,NULL,NULL,NULL,NULL};
@@ -2142,111 +2139,50 @@ asynStatus NDFileHDF5::createAttributeDataset()
     attrStrings[1] = ndAttr->getDescription();
     attrStrings[2] = ndAttr->getSourceInfo(&ndAttrSourceType);
     attrStrings[3] = ndAttr->getSource();
-    // allocate another name-nodes
-    hdfAttrNode = (HDFAttributeNode*)calloc(1, sizeof(HDFAttributeNode));
-    hdfAttrNode->attrName = epicsStrDup(ndAttr->getName()); // copy the attribute name
-
-    hdfAttrNode->offset[0]     = 0;
-    hdfAttrNode->offset[1]     = 0;
-    hdfAttrNode->hdfcparm   = H5Pcreate(H5P_DATASET_CREATE);
-    //set the default save frequence to be every frame
-    hdfAttrNode->whenToSave = hdf5::OnFrame;
-
-    // Creating extendible data sets
-    hdfAttrNode->hdfdims[0] = 1;
-    if (ndAttr->getDataType() < NDAttrString){
-      hdfAttrNode->hdfdatatype  = this->typeNd2Hdf((NDDataType_t)ndAttr->getDataType());
-      hdfAttrNode->chunk[0]   = chunking;
-      hdfAttrNode->hdfrank    = 1;
-    } else {
-      // String dataset required, use type N5T_NATIVE_CHAR
-      hdfAttrNode->hdfdatatype = H5T_NATIVE_CHAR;
-      hdfAttrNode->hdfdims[1] = MAX_ATTRIBUTE_STRING_SIZE;
-      hdfAttrNode->chunk[0]   = chunking;
-      hdfAttrNode->chunk[1]   = MAX_ATTRIBUTE_STRING_SIZE;
-      hdfAttrNode->hdfrank    = 2;
-    }
-    H5Pset_fill_value (hdfAttrNode->hdfcparm, hdfAttrNode->hdfdatatype, this->ptrFillValue );
-
-    H5Pset_chunk(hdfAttrNode->hdfcparm, hdfAttrNode->hdfrank, hdfAttrNode->chunk);
 
     hdf5::Dataset *dset = NULL;
     // Search for the dataset of the NDAttribute.  If it exists then we use it
-    if (root->find_dset_ndattr(hdfAttrNode->attrName, &dset) == 0){
+    if (root->find_dset_ndattr(ndAttr->getName(), &dset) == 0){
       // In here we need to open the dataset for writing
 
       hdf5::DataSource dsource = dset->data_source();
-      hdfAttrNode->whenToSave = dsource.get_when_to_save();
-      if(hdfAttrNode->whenToSave != hdf5::OnFrame) {
-          //set dim size to 1 for OnFileOpen and OnFileClose
-          hdfAttrNode->hdfdims[0] = 1;
-      }
-
-      hdfAttrNode->hdfdataspace = H5Screate_simple(hdfAttrNode->hdfrank, hdfAttrNode->hdfdims, maxdims);
-      // Get the group from the dataset
-      hid_t dsetgroup = H5Gopen(this->file, dset->get_parent()->get_full_name().c_str(), H5P_DEFAULT);
-
-      // Now create the dataset
-      hdfAttrNode->hdfdataset   = H5Dcreate2(dsetgroup, dset->get_name().c_str(),
-                                             hdfAttrNode->hdfdatatype, hdfAttrNode->hdfdataspace,
-                                             H5P_DEFAULT, hdfAttrNode->hdfcparm, H5P_DEFAULT);
+      std::string atName = std::string(epicsStrDup(ndAttr->getName()));
+      std::tr1::shared_ptr<NDFileHDF5AttributeDataset> attDset = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(this->pasynUserSelf, this->file, atName, ndAttr->getDataType()));
+      attDset->setDsetName(dset->get_name());
+      attDset->setWhenToSave(dsource.get_when_to_save());
+      attDset->setParentGroupName(dset->get_parent()->get_full_name());
+      attDset->createDataset(chunking);
 
       //save xml tags attributes
-      writeHdfAttributes( hdfAttrNode->hdfdataset, dset);
-      H5Gclose(dsetgroup);
-
-      // If the dataset exists within the XML layout then the values will be cached and we should not 
-      // add the attribute to this list
-
-      // create a memory space of exactly one element dimension to use for writing slabs
-      if (ndAttr->getDataType() < NDAttrString){
-        hdfAttrNode->elementSize[0]  = 1;
-        hdfAttrNode->elementSize[1]  = 1;
-      } else {
-        hdfAttrNode->elementSize[0]  = 1;
-        hdfAttrNode->elementSize[1]  = MAX_ATTRIBUTE_STRING_SIZE;
-      }
-      hdfAttrNode->hdfmemspace  = H5Screate_simple(hdfAttrNode->hdfrank, hdfAttrNode->elementSize, NULL);
+      writeHdfAttributes(attDset->getHandle(), dset);
 
       // Write some description of the NDAttribute as a HDF attribute to the dataset
       for (i=0; attrNames[i] != NULL; i++)
       {
         size = strlen(attrStrings[i]);
         if (size <= 0) continue;
-        this->writeStringAttribute(hdfAttrNode->hdfdataset, attrNames[i], attrStrings[i]);
+        this->writeStringAttribute(attDset->getHandle(), attrNames[i], attrStrings[i]);
       }
 
       // Add the attribute to the list
-      attrList.push_back(hdfAttrNode);
+      attrList.push_back(attDset);
 
     } else {
       if(groupDefault > -1) {
-        hdfAttrNode->hdfdataspace = H5Screate_simple(hdfAttrNode->hdfrank, hdfAttrNode->hdfdims, maxdims);
-        // In here we need to create the dataset
-        hdfAttrNode->hdfdataset   = H5Dcreate2(groupDefault, hdfAttrNode->attrName,
-                                               hdfAttrNode->hdfdatatype, hdfAttrNode->hdfdataspace,
-                                               H5P_DEFAULT, hdfAttrNode->hdfcparm, H5P_DEFAULT);
-  
-  
-        // create a memory space of exactly one element dimension to use for writing slabs
-        if (ndAttr->getDataType() < NDAttrString){
-          hdfAttrNode->elementSize[0]  = 1;
-          hdfAttrNode->elementSize[1]  = 1;
-        } else {
-          hdfAttrNode->elementSize[0]  = 1;
-          hdfAttrNode->elementSize[1]  = MAX_ATTRIBUTE_STRING_SIZE;
-        }
-        hdfAttrNode->hdfmemspace  = H5Screate_simple(hdfAttrNode->hdfrank, hdfAttrNode->elementSize, NULL);
+        std::string atName = std::string(epicsStrDup(ndAttr->getName()));
+        std::tr1::shared_ptr<NDFileHDF5AttributeDataset> attDset = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(this->pasynUserSelf, this->file, atName, ndAttr->getDataType()));
+        attDset->setParentGroupName(def_group->get_full_name().c_str());
+        attDset->createDataset(chunking);
   
         // Write some description of the NDAttribute as a HDF attribute to the dataset
         for (i=0; attrNames[i] != NULL; i++)
         {
           size = strlen(attrStrings[i]);
           if (size <= 0) continue;
-          this->writeStringAttribute(hdfAttrNode->hdfdataset, attrNames[i], attrStrings[i]);
+          this->writeStringAttribute(attDset->getHandle(), attrNames[i], attrStrings[i]);
         }
         // Add the attribute to the list
-        attrList.push_back(hdfAttrNode);
+        attrList.push_back(attDset);
       }
     }
     ndAttr = this->pFileAttributes->next(ndAttr);
@@ -2264,56 +2200,21 @@ asynStatus NDFileHDF5::createAttributeDataset()
 asynStatus NDFileHDF5::writeAttributeDataset(hdf5::When_t whenToSave)
 {
   asynStatus status = asynSuccess;
-  HDFAttributeNode *hdfAttrNode = NULL;
   NDAttribute *ndAttr = NULL;
-  //hsize_t elementSize = 1;
-  char * stackbuf[MAX_ATTRIBUTE_STRING_SIZE];
-  void* pDatavalue = stackbuf;
-  int ret;
   static const char *functionName = "writeAttributeDataset";
 
-  for (std::list<HDFAttributeNode *>::iterator it_node = attrList.begin(); it_node != attrList.end(); ++it_node){
-    hdfAttrNode = *it_node;
+  for (std::list<std::tr1::shared_ptr<NDFileHDF5AttributeDataset> >::iterator it_node = attrList.begin(); it_node != attrList.end(); ++it_node){
+    std::tr1::shared_ptr<NDFileHDF5AttributeDataset> hdfAttrNode = *it_node;
     // find the named attribute in the NDAttributeList
-    ndAttr = this->pFileAttributes->find(hdfAttrNode->attrName);
+    ndAttr = this->pFileAttributes->find(hdfAttrNode->getName().c_str());
     if (ndAttr == NULL)
     {
       asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING,
         "%s::%s WARNING: NDAttribute named \'%s\' not found\n",
-        driverName, functionName, hdfAttrNode->attrName);
+        driverName, functionName, hdfAttrNode->getName().c_str());
       continue;
     }
-    //check if the attribute is meant to be saved at this time
-    if (hdfAttrNode->whenToSave != whenToSave) {
-      //asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
-      //          "%s::%s NDAttribute named \'%s\' when to save miss match\n",
-      //          driverName, functionName, hdfAttrNode->attrName);
-      continue; // Not saving at this time, and that is OK...
-    }
-
-    // find the data based on datatype
-    ret = ndAttr->getValue(ndAttr->getDataType(), pDatavalue, MAX_ATTRIBUTE_STRING_SIZE);
-    if (ret == ND_ERROR) {
-      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-        "%s::%s: ERROR did not get data from NDAttribute \'%s\'\n",
-        driverName, functionName, ndAttr->getName());
-      memset(pDatavalue, 0, MAX_ATTRIBUTE_STRING_SIZE);
-    }
-    // Work with HDF5 library to select a suitable hyperslab (one element) and write the new data to it
-    H5Dset_extent(hdfAttrNode->hdfdataset, hdfAttrNode->hdfdims);
-    hdfAttrNode->hdffilespace = H5Dget_space(hdfAttrNode->hdfdataset);
-    H5Sselect_hyperslab(hdfAttrNode->hdffilespace, H5S_SELECT_SET,
-                                    hdfAttrNode->offset, NULL,
-                                    hdfAttrNode->elementSize, NULL);
-
-    // Write the data to the hyperslab.
-    H5Dwrite(hdfAttrNode->hdfdataset, hdfAttrNode->hdfdatatype,
-                         hdfAttrNode->hdfmemspace, hdfAttrNode->hdffilespace,
-                         H5P_DEFAULT, pDatavalue);
-
-    H5Sclose(hdfAttrNode->hdffilespace);
-    hdfAttrNode->hdfdims[0]++;
-    hdfAttrNode->offset[0]++;
+    hdfAttrNode->writeAttributeDataset(whenToSave, ndAttr, 0);
   }
   return status;
 }
@@ -2323,21 +2224,17 @@ asynStatus NDFileHDF5::writeAttributeDataset(hdf5::When_t whenToSave)
 asynStatus NDFileHDF5::closeAttributeDataset()
 {
   asynStatus status = asynSuccess;
-  HDFAttributeNode *hdfAttrNode;
+  std::tr1::shared_ptr<NDFileHDF5AttributeDataset> dsetPtr;
   static const char *functionName = "closeAttributeDataset";
 
   while (attrList.size() > 0){
-    hdfAttrNode = attrList.front();
+    dsetPtr = attrList.front();
     attrList.pop_front();
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s: closing attribute dataset \'%s\'\n",
-              driverName, functionName, hdfAttrNode->attrName);
-    H5Dclose(hdfAttrNode->hdfdataset);
-    H5Sclose(hdfAttrNode->hdfmemspace);
-    H5Sclose(hdfAttrNode->hdfdataspace);
-    H5Pclose(hdfAttrNode->hdfcparm);
-    free(hdfAttrNode->attrName);
-    free(hdfAttrNode);
+              driverName, functionName, dsetPtr->getName().c_str());
+    dsetPtr->closeAttributeDataset();
   }
+
   return status;
 }
 
