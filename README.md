@@ -1,3 +1,7 @@
+
+[![Build Status](https://travis-ci.org/areaDetector/ADCore.png)](https://travis-ci.org/areaDetector/ADCore)
+[![Coverage Status](https://coveralls.io/repos/areaDetector/ADCore/badge.svg?branch=unittest-framework)](https://coveralls.io/r/areaDetector/ADCore?branch=unittest-framework)
+
 ADCore
 ======
 The home of the core components of the 
