@@ -13,7 +13,7 @@ include $(TOP)/configure/CONFIG
 LIBRARY_IOC_WIN32 += ADTestUtility
 LIBRARY_IOC_Linux += ADTestUtility
 ADTestUtility_SRCS += testingutilities.cpp
-ADTestUtility_SRCS += AsynPortTestWrapper.cpp
+ADTestUtility_SRCS += AsynPortClientContainer.cpp
 ADTestUtility_SRCS += SimulatedDetectorWrapper.cpp
 ADTestUtility_SRCS += HDF5PluginWrapper.cpp
 

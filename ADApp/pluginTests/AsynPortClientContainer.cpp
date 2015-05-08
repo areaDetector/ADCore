@@ -1,18 +1,18 @@
 /*
- * AsynPortTestWrapper.cpp
+ * AsynPortClientContainer.cpp
  *
  *  Created on: 10 Mar 2015
  *      Author: gnx91527
  */
 
-#include "AsynPortTestWrapper.h"
+#include "AsynPortClientContainer.h"
 
-AsynPortTestWrapper::AsynPortTestWrapper(const std::string& port)
+AsynPortClientContainer::AsynPortClientContainer(const std::string& port)
 {
 	portName = port;
 }
 
-void AsynPortTestWrapper::write(const std::string& paramName, int value)
+void AsynPortClientContainer::write(const std::string& paramName, int value)
 {
 	// Check for the client
 	if (int32Clients.count(paramName) == 0){
@@ -22,7 +22,7 @@ void AsynPortTestWrapper::write(const std::string& paramName, int value)
 	int32Clients[paramName]->write(value);
 }
 
-void AsynPortTestWrapper::write(const std::string& paramName, double value)
+void AsynPortClientContainer::write(const std::string& paramName, double value)
 {
 	// Check for the client
 	if (float64Clients.count(paramName) == 0){
@@ -32,7 +32,7 @@ void AsynPortTestWrapper::write(const std::string& paramName, double value)
 	float64Clients[paramName]->write(value);
 }
 
-void AsynPortTestWrapper::write(const std::string& paramName, const std::string& value, unsigned long int length, unsigned long int *numWritten)
+void AsynPortClientContainer::write(const std::string& paramName, const std::string& value, unsigned long int length, unsigned long int *numWritten)
 {
 	// Check for the client
 	if (octetClients.count(paramName) == 0){
@@ -42,7 +42,7 @@ void AsynPortTestWrapper::write(const std::string& paramName, const std::string&
 	octetClients[paramName]->write(value.c_str(), length, numWritten);
 }
 
-void AsynPortTestWrapper::read(const std::string& paramName, int *value)
+void AsynPortClientContainer::read(const std::string& paramName, int *value)
 {
   // Check for the client
   if (int32Clients.count(paramName) == 0){
@@ -52,7 +52,7 @@ void AsynPortTestWrapper::read(const std::string& paramName, int *value)
   int32Clients[paramName]->read(value);
 }
 
-void AsynPortTestWrapper::read(const std::string& paramName, double *value)
+void AsynPortClientContainer::read(const std::string& paramName, double *value)
 {
   // Check for the client
   if (float64Clients.count(paramName) == 0){
@@ -62,7 +62,7 @@ void AsynPortTestWrapper::read(const std::string& paramName, double *value)
   float64Clients[paramName]->read(value);
 }
 
-void AsynPortTestWrapper::read(const std::string& paramName, char *value, int maxlen, size_t *nRead)
+void AsynPortClientContainer::read(const std::string& paramName, char *value, int maxlen, size_t *nRead)
 {
   int reason = 0;
   // Check for the client
@@ -73,7 +73,7 @@ void AsynPortTestWrapper::read(const std::string& paramName, char *value, int ma
   octetClients[paramName]->read(value, maxlen, nRead, &reason);
 }
 
-void AsynPortTestWrapper::cleanup()
+void AsynPortClientContainer::cleanup()
 {
   // Empty all of the maps
   int32Clients.clear();
@@ -81,7 +81,7 @@ void AsynPortTestWrapper::cleanup()
   octetClients.clear();
 }
 
-AsynPortTestWrapper::~AsynPortTestWrapper()
+AsynPortClientContainer::~AsynPortClientContainer()
 {
 }
 

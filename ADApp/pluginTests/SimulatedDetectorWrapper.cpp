@@ -7,26 +7,27 @@
 
 #include "SimulatedDetectorWrapper.h"
 
-SimulatedDetectorWrapper::SimulatedDetectorWrapper(const std::string& port) : AsynPortTestWrapper(port)
+SimulatedDetectorWrapper::SimulatedDetectorWrapper(const std::string& port)
+  : simDetector(port.c_str(), 1024, 1024, NDUInt8, 0, 0, 0, 0),
+    AsynPortClientContainer(port)
 {
-	// Create the simulated detector class with default size and type
-	init(port, 1024, 1024, NDUInt8, 0, 0, 0, 0);
 }
 
 SimulatedDetectorWrapper::SimulatedDetectorWrapper(const std::string& port,
                                                    int maxSizeX,
-                                                   int maxSizeY) : AsynPortTestWrapper(port)
+                                                   int maxSizeY)
+  : simDetector(port.c_str(), maxSizeX, maxSizeY, NDUInt8, 0, 0, 0, 0),
+    AsynPortClientContainer(port)
 {
-	// Create the simulated detector class with default type
-	init(port, maxSizeX, maxSizeY, NDUInt8, 0, 0, 0, 0);
 }
 
 SimulatedDetectorWrapper::SimulatedDetectorWrapper(const std::string& port,
                                                    int maxSizeX,
                                                    int maxSizeY,
-                                                   NDDataType_t dataType) : AsynPortTestWrapper(port)
+                                                   NDDataType_t dataType)
+  : simDetector(port.c_str(), maxSizeX, maxSizeY, dataType, 0, 0, 0, 0),
+    AsynPortClientContainer(port)
 {
-	init(port, maxSizeX, maxSizeY, dataType, 0, 0, 0, 0);
 }
 
 SimulatedDetectorWrapper::SimulatedDetectorWrapper(const std::string& port,
@@ -36,29 +37,10 @@ SimulatedDetectorWrapper::SimulatedDetectorWrapper(const std::string& port,
                                                    int maxBuffers,
                                                    int maxMemory,
                                                    int priority,
-                                                   int stackSize) : AsynPortTestWrapper(port)
+                                                   int stackSize)
+  : simDetector(port.c_str(), maxSizeX, maxSizeY, dataType, maxBuffers, maxMemory, priority, stackSize),
+    AsynPortClientContainer(port)
 {
-  init(port, maxSizeX, maxSizeY, dataType, maxBuffers, maxMemory, priority, stackSize);
-}
-
-void SimulatedDetectorWrapper::init(const std::string& port,
-                                    int maxSizeX,
-                                    int maxSizeY,
-                                    NDDataType_t dataType,
-                                    int maxBuffers,
-                                    int maxMemory,
-                                    int priority,
-                                    int stackSize)
-{
-	// Create the simulated detector class
-	detector = std::tr1::shared_ptr<simDetector>(new simDetector(port.c_str(),
-	                                                             maxSizeX,
-	                                                             maxSizeY,
-	                                                             dataType,
-	                                                             maxBuffers,
-	                                                             maxMemory,
-	                                                             priority,
-	                                                             stackSize));
 }
 
 void SimulatedDetectorWrapper::acquireSync(int numFrames)
@@ -80,6 +62,5 @@ void SimulatedDetectorWrapper::acquireSync(int numFrames)
 SimulatedDetectorWrapper::~SimulatedDetectorWrapper()
 {
   cleanup();
-	detector.reset();
 }
 

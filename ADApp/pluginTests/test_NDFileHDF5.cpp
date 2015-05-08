@@ -81,7 +81,7 @@ struct NDFileHDF5TestFixture
 //    file_num_captured = new asynInt32Client(testport.c_str(), 0, NDFileNumCapturedString);
 
     // Ensure the driver will notify plugins of available NDArrays
-    driver->write(NDArrayCallbacksString, 1);
+//    driver->write(NDArrayCallbacksString, 1);
 
     // Enable the plugin
 //    enableCallbacks = new asynInt32Client(testport.c_str(), 0, NDPluginDriverEnableCallbacksString);
@@ -107,6 +107,8 @@ struct NDFileHDF5TestFixture
 //    delete driver;
 //    delete hdf5;
     delete arrayPool;
+    hdf5.reset();
+    driver.reset();
   }
 
   void setup_hdf_stream()
