@@ -54,7 +54,7 @@ void SimulatedDetectorWrapper::acquireSync(int numFrames)
 	}
 	this->write(ADAcquireString, 1);
 	do {
-		this->read(ADAcquireString, &acquiring);
+		acquiring = this->readInt(ADAcquireString);
 		epicsThreadSleep(0.1);
 	} while (acquiring);
 }
