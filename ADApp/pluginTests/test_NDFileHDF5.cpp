@@ -75,15 +75,9 @@ struct NDFileHDF5TestFixture
   {
     size_t nactual;
     hdf5->write(NDFileWriteModeString, NDFileModeStream);
-    std::string str("/tmp");
-    hdf5->write(NDFilePathString, str.c_str(), str.length(), &nactual);
-
-    str = "testing";
-    hdf5->write(NDFileNameString, str.c_str(), str.length(), &nactual);
-
-    str = "%s%s_%d.5";
-    hdf5->write(NDFileTemplateString, str.c_str(), str.length(), &nactual);
-
+    hdf5->write(NDFilePathString, "/tmp");
+    hdf5->write(NDFileNameString, "testing");
+    hdf5->write(NDFileTemplateString, "%s%s_%d.5");
   }
 };
 

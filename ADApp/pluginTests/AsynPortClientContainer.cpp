@@ -32,14 +32,18 @@ void AsynPortClientContainer::write(const std::string& paramName, double value)
 	float64Clients[paramName]->write(value);
 }
 
-void AsynPortClientContainer::write(const std::string& paramName, const std::string& value, unsigned long int length, unsigned long int *numWritten)
+unsigned long int AsynPortClientContainer::write(const std::string& paramName, const std::string& value)
 {
+  unsigned long int length = 0;
+  unsigned long int numWritten = 0;
 	// Check for the client
 	if (octetClients.count(paramName) == 0){
 		// We need to create the client as it isn't stored
 		octetClients[paramName] = std::tr1::shared_ptr<asynOctetClient>(new asynOctetClient(portName.c_str(), 0, paramName.c_str()));
 	}
-	octetClients[paramName]->write(value.c_str(), length, numWritten);
+	length = value.size();
+	octetClients[paramName]->write(value.c_str(), length, &numWritten);
+	return numWritten;
 }
 
 int AsynPortClientContainer::readInt(const std::string& paramName)
