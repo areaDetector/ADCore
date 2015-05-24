@@ -9,6 +9,9 @@ ifneq (vxWorks, $(findstring vxWorks, $(T_A)))
 endif
 PROD_LIBS               += calc busy sscan autosave devIocStats
 PROD_LIBS               += asyn
+ifdef SNCSEQ
+  PROD_LIBS             += seq pv
+endif
 PROD_LIBS               += $(EPICS_BASE_IOC_LIBS)
 
 # The following libraries are only needed for GraphicsMagick
