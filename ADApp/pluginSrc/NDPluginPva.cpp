@@ -15,7 +15,7 @@
 #include <stdio.h>
 
 #include "NDPluginDriver.h"
-#include "NDPluginV4Server.h"
+#include "NDPluginPva.h"
 
 using namespace epics;
 using namespace epics::pvData;
@@ -92,11 +92,11 @@ void NTNDArrayRecord::update(NDArray *pArray)
     unlock();
 }
 
-
-/** Callback function that is called by the NDArray driver with new NDArray data.
+/** Callback function that is called by the NDArray driver with new NDArray
+  * data.
   * \param[in] pArray  The NDArray from the callback.
   */
-void NDPluginV4Server::processCallbacks(NDArray *pArray)
+void NDPluginPva::processCallbacks(NDArray *pArray)
 {
     NDPluginDriver::processCallbacks(pArray);   // Base class method
 
@@ -107,41 +107,54 @@ void NDPluginV4Server::processCallbacks(NDArray *pArray)
     callParamCallbacks();
 }
 
-/** Constructor for NDPluginV4Server; all parameters are simply passed to NDPluginDriver::NDPluginDriver.
-  * This plugin cannot block (ASYN_CANBLOCK=0) and is not multi-device (ASYN_MULTIDEVICE=0).
-  * It has no parameters (0)
+/** Constructor for NDPluginPva; all parameters are simply passed to
+  * NDPluginDriver::NDPluginDriver.
+  * This plugin cannot block (ASYN_CANBLOCK=0) and is not multi-device
+  * (ASYN_MULTIDEVICE=0).
+  * It has 1 parameter (1)
   * It allocates a maximum of 2 NDArray buffers for internal use.
   * \param[in] portName The name of the asyn port driver to be created.
-  * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when
-  *            NDPluginDriverBlockingCallbacks=0.  Larger queues can decrease the number of dropped arrays,
-  *            at the expense of more NDArray buffers being allocated from the underlying driver's NDArrayPool.
-  * \param[in] blockingCallbacks Initial setting for the NDPluginDriverBlockingCallbacks flag.
-  *            0=callbacks are queued and executed by the callback thread; 1 callbacks execute in the thread
-  *            of the driver doing the callbacks.
-  * \param[in] NDArrayPort Name of asyn port driver for initial source of NDArray callbacks.
-  * \param[in] NDArrayAddr asyn port driver address for initial source of NDArray callbacks.
+  * \param[in] queueSize The number of NDArrays that the input queue for this
+  *            plugin can hold when NDPluginDriverBlockingCallbacks=0.
+  *            Larger queues can decrease the number of dropped arrays, at the
+  *            expense of more NDArray buffers being allocated from the
+  *            underlying driver's NDArrayPool.
+  * \param[in] blockingCallbacks Initial setting for the
+  *            NDPluginDriverBlockingCallbacks flag. 0=callbacks are queued and
+  *            executed by the callback thread; 1 callbacks execute in the
+  *            thread of the driver doing the callbacks.
+  * \param[in] NDArrayPort Name of asyn port driver for initial source of
+  *            NDArray callbacks.
+  * \param[in] NDArrayAddr asyn port driver address for initial source of
+  *            NDArray callbacks.
   * \param[in] pvName Name of the PV that will be served by the EPICSv4 server.
-  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is
-  *            allowed to allocate. Set this to -1 to allow an unlimited amount of memory.
-  * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
-  * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for
+  *            this driver is allowed to allocate. Set this to -1 to allow an
+  *            unlimited amount of memory.
+  * \param[in] priority The thread priority for the asyn port driver thread if
+  *            ASYN_CANBLOCK is set in asynFlags.
+  * \param[in] stackSize The stack size for the asyn port driver thread if
+  *            ASYN_CANBLOCK is set in asynFlags.
   */
-NDPluginV4Server::NDPluginV4Server(const char *portName, int queueSize, int blockingCallbacks,
-                                     const char *NDArrayPort, int NDArrayAddr, const char *pvName,
-                                     size_t maxMemory, int priority, int stackSize)
+NDPluginPva::NDPluginPva(const char *portName, int queueSize,
+        int blockingCallbacks, const char *NDArrayPort, int NDArrayAddr,
+        const char *pvName, size_t maxMemory, int priority, int stackSize)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
-                   NDArrayPort, NDArrayAddr, 1, 0, 2, maxMemory, 0, 0,
-                   /* asynFlags is set to 0, because this plugin cannot block and is not multi-device.
-                    * It does autoconnect */
-                   0, 1, priority, stackSize),
-                   m_record(NTNDArrayRecord::create(pvName))
+            NDArrayPort, NDArrayAddr, 1, 1, 2, maxMemory, 0, 0,
+            0, 1, priority, stackSize),
+            m_record(NTNDArrayRecord::create(pvName))
 {
+    createParam(NDPluginPvaPvNameString, asynParamOctet, &NDPluginPvaPvName);
+
     if(!m_record.get())
         throw runtime_error("failed to create NTNDArrayRecord");
 
     /* Set the plugin type string */
-    setStringParam(NDPluginDriverPluginType, "NDPluginV4Server");
+    setStringParam(NDPluginDriverPluginType, "NDPluginPva");
+
+    /* Set PvName */
+    setStringParam(NDPluginPvaPvName, pvName);
 
     /* Try to connect to the NDArray port */
     connectToArrayPort();
@@ -156,12 +169,12 @@ NDPluginV4Server::NDPluginV4Server(const char *portName, int queueSize, int bloc
 }
 
 /* Configuration routine.  Called directly, or from the iocsh function */
-extern "C" int NDV4ServerConfigure(const char *portName, int queueSize, int blockingCallbacks,
-                                    const char *NDArrayPort, int NDArrayAddr, const char *pvName,
-                                    size_t maxMemory, int priority, int stackSize)
+extern "C" int NDPvaConfigure(const char *portName, int queueSize,
+        int blockingCallbacks, const char *NDArrayPort, int NDArrayAddr,
+        const char *pvName, size_t maxMemory, int priority, int stackSize)
 {
-    new NDPluginV4Server(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, pvName,
-                          maxMemory, priority, stackSize);
+    new NDPluginPva(portName, queueSize, blockingCallbacks, NDArrayPort,
+            NDArrayAddr, pvName, maxMemory, priority, stackSize);
     return(asynSuccess);
 }
 
@@ -184,19 +197,19 @@ static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg6,
                                             &initArg7,
                                             &initArg8,};
-static const iocshFuncDef initFuncDef = {"NDV4ServerConfigure",9,initArgs};
+static const iocshFuncDef initFuncDef = {"NDPvaConfigure",9,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
-    NDV4ServerConfigure(args[0].sval, args[1].ival, args[2].ival,
-                         args[3].sval, args[4].ival, args[5].sval,
-                         args[6].ival, args[7].ival, args[8].ival);
+    NDPvaConfigure(args[0].sval, args[1].ival, args[2].ival, args[3].sval,
+            args[4].ival, args[5].sval, args[6].ival, args[7].ival,
+            args[8].ival);
 }
 
-extern "C" void NDV4ServerRegister(void)
+extern "C" void NDPvaRegister(void)
 {
     iocshRegister(&initFuncDef,initCallFunc);
 }
 
 extern "C" {
-epicsExportRegistrar(NDV4ServerRegister);
+epicsExportRegistrar(NDPvaRegister);
 }

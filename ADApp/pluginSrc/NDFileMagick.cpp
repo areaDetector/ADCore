@@ -113,9 +113,12 @@ asynStatus NDFileMagick::writeFile(NDArray *pArray)
               "%s:%s: size=[%lu, %lu]\n", 
               driverName, functionName, (unsigned long)this->sizeX, (unsigned long)this->sizeY);
               
+    /* Must lock when accessing parameter library */
+    this->lock();
     getIntegerParam(NDFileMagickQuality, &quality);
     getIntegerParam(NDFileMagickBitDepth, &depth);
     getIntegerParam(NDFileMagickCompressType, &compressIndex);
+    this->unlock();
     compressType = compressionTypes[compressIndex];
 
     switch (this->colorMode) {

@@ -21,7 +21,7 @@ record(ai, "$(P)$(R)OverrunCounter_RBV")
     field(SCAN, "I/O Intr")
 }
 
-record(waveform, "$(P)$(R)PvName")
+record(waveform, "$(P)$(R)PvName_RBV")
 {
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PV_NAME")
@@ -30,7 +30,7 @@ record(waveform, "$(P)$(R)PvName")
     field(SCAN, "I/O Intr")
 }
 
-record(bi, "$(P)$(R)PvConnection")
+record(bi, "$(P)$(R)PvConnection_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PV_CONNECTION")

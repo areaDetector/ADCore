@@ -87,9 +87,9 @@ else
 endif
 
 ifeq ($(EPICS_V4_PLUGIN), YES)
-  DBD += NDPluginV4Server.dbd
-  INC += NDPluginV4Server.h
-  NDPlugin_SRCS += NDPluginV4Server.cpp
+  DBD += NDPluginPva.dbd
+  INC += NDPluginPva.h
+  NDPlugin_SRCS += NDPluginPva.cpp
 endif
 
 USR_INCLUDES += $(HDF5_INCLUDE)

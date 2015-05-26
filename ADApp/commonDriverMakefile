@@ -4,15 +4,18 @@
 $(PROD_NAME)_DBD += commonDriverSupport.dbd
 
 ifeq ($(EPICS_V4_PLUGIN),YES)
-  $(PROD_NAME)_DBD += NDPluginV4Server.dbd
+  $(PROD_NAME)_DBD += NDPluginPva.dbd
 endif
 
 PROD_LIBS               += NDPlugin ADBase netCDF
 ifneq (vxWorks, $(findstring vxWorks, $(T_A)))
   PROD_LIBS             += NeXus
 endif
-PROD_LIBS               += calc busy sscan autosave
+PROD_LIBS               += calc busy sscan autosave devIocStats
 PROD_LIBS               += asyn
+ifdef SNCSEQ
+  PROD_LIBS             += seq pv
+endif
 PROD_LIBS               += $(EPICS_BASE_IOC_LIBS)
 
 # The following libraries are only needed for GraphicsMagick

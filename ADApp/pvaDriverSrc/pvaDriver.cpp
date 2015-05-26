@@ -31,45 +31,6 @@ using namespace epics::nt;
 
 static const char *driverName = "pvaDriver";
 
-PVARequester::PVARequester(const char *name, asynUser *user) :
-        m_asynUser(user), m_name(name) {}
-
-string PVARequester::getRequesterName (void)
-{
-    return string(m_name);
-}
-
-void PVARequester::message(string const & message, MessageType messageType)
-{
-    asynPrint(m_asynUser, ASYN_TRACE_FLOW,
-            "%s::%s: [type=%s] %s\n",
-            m_name, "message", getMessageTypeName(messageType).c_str(),
-            message.c_str());
-}
-
-PVAChannelRequester::PVAChannelRequester(asynUser *user) :
-        PVARequester("PVAChannelRequester", user),
-        m_asynUser(user)
-    {}
-
-void PVAChannelRequester::channelCreated (const Status& status,
-        ChannelPtr const & channel)
-{
-    asynPrint(m_asynUser, ASYN_TRACE_FLOW,
-            "%s::%s: %s created\n",
-            m_name, "channelCreated", channel->getChannelName().c_str());
-}
-
-void PVAChannelRequester::channelStateChange (ChannelPtr const & channel,
-        Channel::ConnectionState state)
-{
-    asynPrint(m_asynUser,
-            Channel::CONNECTED ? ASYN_TRACE_FLOW : ASYN_TRACE_ERROR,
-            "%s::%s %s: %s\n",
-            m_name, "channelStateChange", channel->getChannelName().c_str(),
-            Channel::ConnectionStateNames[state]);
-}
-
 /* Constructor for pvaDriver; most parameters are simply passed to
  * ADDriver::ADDriver. Sets reasonable default values for parameters defined in
  * asynNDArrayDriver and ADDriver.
@@ -89,19 +50,17 @@ void PVAChannelRequester::channelStateChange (ChannelPtr const & channel,
  * \param[in] stackSize The stack size for the asyn port driver thread if
  *            ASYN_CANBLOCK is set in asynFlags.
  */
-pvaDriver::pvaDriver(const char *portName, const char *pvName,
+pvaDriver::pvaDriver (const char *portName, const char *pvName,
         int maxBuffers, size_t maxMemory, int priority, int stackSize)
 
     : ADDriver(portName, 1, 3, maxBuffers, maxMemory, 0, 0, ASYN_CANBLOCK, 1,
             priority, stackSize),
-      PVARequester("pvaDriver", pasynUserSelf),
       m_pvName(pvName), m_request(DEFAULT_REQUEST),
       m_priority(ChannelProvider::PRIORITY_DEFAULT),
-      m_requester(new PVAChannelRequester(pasynUserSelf))
+      m_thisPtr(tr1::shared_ptr<pvaDriver>(this))
 {
     int status = asynSuccess;
     const char *functionName = "pvaDriver";
-    pvaDriverPtr monitorRequester(this);
 
     createParam(PVAOverrunCounterString,     asynParamInt32, &PVAOverrunCounter);
     createParam(PVAPvNameString,             asynParamOctet, &PVAPvName);
@@ -137,18 +96,9 @@ pvaDriver::pvaDriver(const char *portName, const char *pvName,
     {
         ClientFactory::start();
         m_provider = getChannelProviderRegistry()->getProvider("pva");
-
-        if (!m_provider)
-        {
-            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-                    "%s::%s failed to stop monitor\n",
-                    driverName, functionName);
-            return;
-        }
-
-        m_channel = m_provider->createChannel(m_pvName, m_requester,m_priority);
+        m_channel = m_provider->createChannel(m_pvName, m_thisPtr, m_priority);
         m_pvRequest = CreateRequest::create()->createRequest(m_request);
-        m_monitor = m_channel->createMonitor(monitorRequester, m_pvRequest);
+        m_monitor = m_channel->createMonitor(m_thisPtr, m_pvRequest);
     }
     catch (exception &ex)
     {
@@ -158,21 +108,50 @@ pvaDriver::pvaDriver(const char *portName, const char *pvName,
     }
 }
 
-void pvaDriver::unlisten(MonitorPtr const & monitor)
+string pvaDriver::getRequesterName (void)
 {
-    asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-            "%s::%s monitor unlistens\n",
-            driverName, "unlisten");
+    return string(driverName);
+}
+
+void pvaDriver::message (string const & message, MessageType messageType)
+{
+    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+            "%s::%s: [type=%s] %s\n",
+            driverName, "message", getMessageTypeName(messageType).c_str(),
+            message.c_str());
+}
+
+void pvaDriver::channelCreated (const Status& status,
+        ChannelPtr const & channel)
+{
+    asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
+            "%s::%s: %s created\n",
+            driverName, "channelCreated", channel->getChannelName().c_str());
+}
+
+void pvaDriver::channelStateChange (ChannelPtr const & channel,
+        Channel::ConnectionState state)
+{
+    const char *functionName = "channelStateChange";
+
     lock();
     asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
-            "%s::%s set connection status down\n",
-            driverName, "unlisten");
-    setIntegerParam(PVAPvConnectionStatus, 0);
+            "%s::%s %s: %s\n",
+            driverName, functionName, channel->getChannelName().c_str(),
+            Channel::ConnectionStateNames[state]);
+    setIntegerParam(PVAPvConnectionStatus, state == Channel::CONNECTED);
     callParamCallbacks();
     unlock();
 }
 
-void pvaDriver::monitorConnect(Status const & status,
+void pvaDriver::unlisten (MonitorPtr const & monitor)
+{
+    asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s::%s monitor unlistens\n",
+            driverName, "unlisten");
+}
+
+void pvaDriver::monitorConnect (Status const & status,
         MonitorPtr const & monitor, StructureConstPtr const & structure)
 {
     const char *functionName = "monitorConnect";
@@ -197,18 +176,10 @@ void pvaDriver::monitorConnect(Status const & status,
                 "%s::%s starting monitor\n",
                 driverName, functionName);
         monitor->start();
-
-        lock();
-        asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
-                "%s::%s set connection status up\n",
-                driverName, functionName);
-        setIntegerParam(PVAPvConnectionStatus, 1);
-        callParamCallbacks();
-        unlock();
     }
 }
 
-void pvaDriver::monitorEvent(MonitorPtr const & monitor)
+void pvaDriver::monitorEvent (MonitorPtr const & monitor)
 {
     const char *functionName = "monitorEvent";
     asynPrint(pasynUserSelf, ASYN_TRACE_FLOW,
@@ -252,8 +223,9 @@ void pvaDriver::monitorEvent(MonitorPtr const & monitor)
         if(!pImage)
         {
             asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-                     "%s::%s failed to alloc new NDArray - memory pool exhausted? (free: %d)\n",
-                     driverName, functionName, pNDArrayPool->numFree());
+                    "%s::%s failed to alloc new NDArray"
+                    " - memory pool exhausted? (free: %d)\n",
+                    driverName, functionName, pNDArrayPool->numFree());
             monitor->release(update);
             continue;
         }
@@ -310,7 +282,7 @@ void pvaDriver::monitorEvent(MonitorPtr const & monitor)
             lock();
         }
 
-        // Update the counters as per convention: after doCallbacksGenericPointer()
+        // Update the counters after doCallbacksGenericPointer()
         int imageCounter;
         getIntegerParam(NDArrayCounter, &imageCounter);
         setIntegerParam(NDArrayCounter, imageCounter+1);
@@ -324,7 +296,7 @@ void pvaDriver::monitorEvent(MonitorPtr const & monitor)
     unlock();
 }
 
-void pvaDriver::report(FILE *fp, int details)
+void pvaDriver::report (FILE *fp, int details)
 {
     fprintf(fp, "PVAccess detector %s\n", this->portName);
     if (details > 0)
@@ -334,7 +306,7 @@ void pvaDriver::report(FILE *fp, int details)
 }
 
 /** Configuration command, called directly or from iocsh */
-extern "C" int pvaDriverConfig(const char *portName, char *pvName,
+extern "C" int pvaDriverConfig (const char *portName, char *pvName,
         int maxBuffers, int maxMemory, int priority, int stackSize)
 {
     new pvaDriver(portName, pvName, maxBuffers, maxMemory, priority, stackSize);
@@ -355,13 +327,13 @@ static const iocshArg * const pvaDriverConfigArgs[] = {
 static const iocshFuncDef configpvaDriver = {"pvaDriverConfig", 6,
         pvaDriverConfigArgs};
 
-static void configpvaDriverCallFunc(const iocshArgBuf *args)
+static void configpvaDriverCallFunc (const iocshArgBuf *args)
 {
     pvaDriverConfig(args[0].sval, args[1].sval, args[2].ival, args[3].ival,
             args[4].ival, args[5].ival);
 }
 
-static void pvaDriverRegister(void)
+static void pvaDriverRegister (void)
 {
     iocshRegister(&configpvaDriver, configpvaDriverCallFunc);
 }
