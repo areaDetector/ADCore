@@ -16,6 +16,7 @@ ADTestUtility_SRCS += testingutilities.cpp
 ADTestUtility_SRCS += AsynPortClientContainer.cpp
 ADTestUtility_SRCS += SimulatedDetectorWrapper.cpp
 ADTestUtility_SRCS += HDF5PluginWrapper.cpp
+ADTestUtility_SRCS += HDF5FileReader.cpp
 
 
 # The plugin-test executable with the actual unittests depend on the boost 
@@ -27,6 +28,7 @@ ifdef BOOST
   plugin-test_SRCS += test_NDPluginCircularBuff.cpp
   
   plugin-test_SRCS += test_NDFileHDF5.cpp
+  plugin-test_SRCS += test_NDFileHDF5AttributeDataset.cpp
   USR_INCLUDES += $(HDF5_INCLUDE)
   USR_INCLUDES += $(SZ_INCLUDE)
   USR_INCLUDES += $(XML2_INCLUDE)
