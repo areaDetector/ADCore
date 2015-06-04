@@ -16,6 +16,7 @@ ADTestUtility_SRCS += testingutilities.cpp
 ADTestUtility_SRCS += AsynPortClientContainer.cpp
 ADTestUtility_SRCS += SimulatedDetectorWrapper.cpp
 ADTestUtility_SRCS += HDF5PluginWrapper.cpp
+ADTestUtility_SRCS += HDF5FileReader.cpp
 
 
 # The plugin-test executable with the actual unittests depend on the boost 
