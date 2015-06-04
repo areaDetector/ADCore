@@ -18,13 +18,14 @@
 class NDFileHDF5AttributeDataset
 {
 public:
-  NDFileHDF5AttributeDataset(asynUser *pAsynUser, hid_t file, const std::string& name, NDAttrDataType_t type);
+  NDFileHDF5AttributeDataset(hid_t file, const std::string& name, NDAttrDataType_t type);
   virtual ~NDFileHDF5AttributeDataset();
 
   void setDsetName(const std::string& dsetName);
   void setWhenToSave(hdf5::When_t whenToSave);
   void setParentGroupName(const std::string& group);
   asynStatus createDataset(int user_chunking);
+  asynStatus createDataset(bool multiframe, int extradimensions, int *extra_dims, int *user_chunking);
   asynStatus writeAttributeDataset(hdf5::When_t whenToSave, NDAttribute *ndAttr, int flush);
   asynStatus closeAttributeDataset();
   asynStatus flushDataset();
@@ -32,11 +33,13 @@ public:
   hid_t getHandle();
 
 private:
+  asynStatus createHDF5Dataset();
   asynStatus configureDims(int user_chunking);
+  asynStatus configureDimsFromDataset(bool multiframe, int extradimensions, int *extra_dims, int *user_chunking);
   asynStatus typeAsHdf();
-  void extendDataSet(int extradims);
+  void extendDataSet();
+  void extendDataSet(hid_t *dims, hid_t *offsets);
 
-  asynUser         *pAsynUser_;      // Pointer to the asynUser structure
   std::string      name_;            // Name of the attribute
   std::string      dsetName_;        // Name of the dataset to store
   hid_t            file_;            // File handle
@@ -49,12 +52,15 @@ private:
   hid_t            cparm_;
   hid_t            filespace_;
   void             *ptrFillValue_;
-  hsize_t          dims_[2];
-  hsize_t          offset_[2];
-  hsize_t          chunk_[2];
-  hsize_t          maxdims_[2];
-  hsize_t          elementSize_[2];
+  hsize_t          *dims_;
+  hsize_t          *offset_;
+  hsize_t          *chunk_;
+  hsize_t          *maxdims_;
+  hsize_t          *virtualdims_;
+  hsize_t          *elementSize_;
   int              rank_;            // number of dimensions
+  int              nextRecord_;
+  int              extraDimensions_;
   hdf5::When_t     whenToSave_;
 
 };

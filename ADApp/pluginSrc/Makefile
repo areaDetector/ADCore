@@ -38,6 +38,7 @@ DBD += NDPluginCircularBuff.dbd
 
 INC += NDFileHDF5.h
 INC += NDFileHDF5Dataset.h
+INC += NDFileHDF5AttributeDataset.h
 INC += NDFileHDF5Layout.h
 INC += NDFileHDF5LayoutXML.h
 INC += NDFileJPEG.h

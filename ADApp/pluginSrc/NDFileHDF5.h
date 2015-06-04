@@ -41,6 +41,7 @@
 #define str_NDFileHDF5_nbitsOffset       "HDF5_nbitsOffset"
 #define str_NDFileHDF5_szipNumPixels     "HDF5_szipNumPixels"
 #define str_NDFileHDF5_zCompressLevel    "HDF5_zCompressLevel"
+#define str_NDFileHDF5_dimAttDatasets    "HDF5_dimAttDatasets"
 #define str_NDFileHDF5_layoutErrorMsg    "HDF5_layoutErrorMsg"
 #define str_NDFileHDF5_layoutValid       "HDF5_layoutValid"
 #define str_NDFileHDF5_layoutFilename    "HDF5_layoutFilename"
@@ -123,6 +124,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     int NDFileHDF5_nbitsOffset;
     int NDFileHDF5_szipNumPixels;
     int NDFileHDF5_zCompressLevel;
+    int NDFileHDF5_dimAttDatasets;
     int NDFileHDF5_layoutErrorMsg;
     int NDFileHDF5_layoutValid;
     int NDFileHDF5_layoutFilename;
@@ -150,7 +152,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     asynStatus writeDefaultDatasetAttributes(NDArray *pArray);
     asynStatus createNewFile(const char *fileName);
     asynStatus createFileLayout(NDArray *pArray);
-    asynStatus createAttributeDataset();
+    asynStatus createAttributeDataset(NDArray *pArray);
 
 
     hdf5::LayoutXML layout;

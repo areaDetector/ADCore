@@ -177,7 +177,7 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
   }
 
   if (storeAttributes == 1){
-    this->createAttributeDataset();
+    this->createAttributeDataset(pArray);
     this->writeAttributeDataset(hdf5::OnFileOpen);
 
 
@@ -1090,6 +1090,7 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
   herr_t hdfstatus = 0;
   asynStatus status = asynSuccess;
   int storeAttributes, storePerformance, flush;
+  int dimAttDataset = 0;
   epicsTimeStamp startts, endts;
   epicsInt32 numCaptured;
   double dt=0.0, period=0.0, runtime = 0.0;
@@ -1104,6 +1105,7 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
   }
 
   this->lock();
+  getIntegerParam(NDFileHDF5_dimAttDatasets, &dimAttDataset);
   getIntegerParam(NDFileNumCaptured, &numCaptured);
   getIntegerParam(NDFileHDF5_storeAttributes, &storeAttributes);
   getIntegerParam(NDFileHDF5_storePerformance, &storePerformance);
@@ -1218,7 +1220,17 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
   }
 
   if (storeAttributes == 1){
-    status = this->writeAttributeDataset(hdf5::OnFrame);
+    if (dimAttDataset == 1){
+      // If attribute datasets are following dimensions of the main dataset
+      // check to ensure this NDArray is destined for the default dataset
+      if (destination == this->defDsetName){
+        status = this->writeAttributeDataset(hdf5::OnFrame);
+      }
+    } else {
+      // Normal attribute datasets required (linear 1D)
+      // so save on every occasion
+      status = this->writeAttributeDataset(hdf5::OnFrame);
+    }
     if (status != asynSuccess){
       return status;
     }
@@ -1766,6 +1778,7 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   this->createParam(str_NDFileHDF5_nbitsOffset,     asynParamInt32,   &NDFileHDF5_nbitsOffset);
   this->createParam(str_NDFileHDF5_szipNumPixels,   asynParamInt32,   &NDFileHDF5_szipNumPixels);
   this->createParam(str_NDFileHDF5_zCompressLevel,  asynParamInt32,   &NDFileHDF5_zCompressLevel);
+  this->createParam(str_NDFileHDF5_dimAttDatasets,  asynParamInt32,   &NDFileHDF5_dimAttDatasets);
   this->createParam(str_NDFileHDF5_layoutErrorMsg,  asynParamOctet,   &NDFileHDF5_layoutErrorMsg);
   this->createParam(str_NDFileHDF5_layoutValid,     asynParamInt32,   &NDFileHDF5_layoutValid);
   this->createParam(str_NDFileHDF5_layoutFilename,  asynParamOctet,   &NDFileHDF5_layoutFilename);
@@ -1792,6 +1805,7 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   setIntegerParam(NDFileHDF5_nbitsOffset,     0);
   setIntegerParam(NDFileHDF5_szipNumPixels,   16);
   setIntegerParam(NDFileHDF5_zCompressLevel,  6);
+  setIntegerParam(NDFileHDF5_dimAttDatasets,  0);
   setStringParam (NDFileHDF5_layoutErrorMsg,  "");
   setIntegerParam(NDFileHDF5_layoutValid,     1);
   setStringParam (NDFileHDF5_layoutFilename,  "");
@@ -2072,21 +2086,24 @@ asynStatus NDFileHDF5::writePerformanceDataset()
 /** Create the group of datasets to hold the NDArray attributes
  *
  */
-asynStatus NDFileHDF5::createAttributeDataset()
+asynStatus NDFileHDF5::createAttributeDataset(NDArray *pArray)
 {
   NDAttribute *ndAttr = NULL;
   NDAttrSource_t ndAttrSourceType;
   int extraDims;
   int chunking = 0;
   int fileWriteMode = 0;
+  int dimAttDataset = 0;
   hid_t groupDefault = -1;
   const char *attrNames[5] = {"NDAttrName", "NDAttrDescription", "NDAttrSourceType", "NDAttrSource", NULL};
   const char *attrStrings[5] = {NULL,NULL,NULL,NULL,NULL};
   int i;
   size_t size;
   static const char *functionName = "createAttributeDataset";
+  int *numCapture=NULL;
 
   this->lock();
+  getIntegerParam(NDFileHDF5_dimAttDatasets, &dimAttDataset);
   getIntegerParam(NDFileHDF5_nExtraDims, &extraDims);
   // Check the chunking value
   getIntegerParam(NDFileHDF5_NDAttributeChunk, &chunking);
@@ -2108,7 +2125,30 @@ asynStatus NDFileHDF5::createAttributeDataset()
       }
     }
   }
+
+  if (this->multiFrameFile){
+    struct extradimdefs_t {
+      int sizeParamId;
+      char* dimName;
+    } extradimdefs[MAXEXTRADIMS] = {
+        {NDFileHDF5_extraDimSizeY, this->extraDimNameY},
+        {NDFileHDF5_extraDimSizeX, this->extraDimNameX},
+        {NDFileHDF5_extraDimSizeN, this->extraDimNameN},
+    };
+    extraDims += 1;
+    numCapture = (int *)calloc(extraDims, sizeof(int));
+    for (i=0; i<extraDims; i++){
+      getIntegerParam(extradimdefs[MAXEXTRADIMS - extraDims + i].sizeParamId, &numCapture[i]);
+    }
+  } else {
+    numCapture = (int *)calloc(1, sizeof(int));
+  }
+
   this->unlock();
+
+  int user_chunking[3] = {chunking,chunking,chunking};
+
+
 
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s Creating attribute datasets. extradims=%d attribute count=%d\n",
             driverName, functionName, extraDims, this->pFileAttributes->count());
@@ -2147,11 +2187,15 @@ asynStatus NDFileHDF5::createAttributeDataset()
 
       hdf5::DataSource dsource = dset->data_source();
       std::string atName = std::string(epicsStrDup(ndAttr->getName()));
-      std::tr1::shared_ptr<NDFileHDF5AttributeDataset> attDset = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(this->pasynUserSelf, this->file, atName, ndAttr->getDataType()));
+      std::tr1::shared_ptr<NDFileHDF5AttributeDataset> attDset = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(this->file, atName, ndAttr->getDataType()));
       attDset->setDsetName(dset->get_name());
       attDset->setWhenToSave(dsource.get_when_to_save());
       attDset->setParentGroupName(dset->get_parent()->get_full_name());
-      attDset->createDataset(chunking);
+      if (dimAttDataset == 1){
+        attDset->createDataset(this->multiFrameFile, extraDims, numCapture, user_chunking);
+      } else {
+        attDset->createDataset(chunking);
+      }
 
       //save xml tags attributes
       writeHdfAttributes(attDset->getHandle(), dset);
@@ -2170,9 +2214,13 @@ asynStatus NDFileHDF5::createAttributeDataset()
     } else {
       if(groupDefault > -1) {
         std::string atName = std::string(epicsStrDup(ndAttr->getName()));
-        std::tr1::shared_ptr<NDFileHDF5AttributeDataset> attDset = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(this->pasynUserSelf, this->file, atName, ndAttr->getDataType()));
+        std::tr1::shared_ptr<NDFileHDF5AttributeDataset> attDset = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(this->file, atName, ndAttr->getDataType()));
         attDset->setParentGroupName(def_group->get_full_name().c_str());
-        attDset->createDataset(chunking);
+        if (dimAttDataset == 1){
+          attDset->createDataset(this->multiFrameFile, extraDims, numCapture, user_chunking);
+        } else {
+          attDset->createDataset(chunking);
+        }
   
         // Write some description of the NDAttribute as a HDF attribute to the dataset
         for (i=0; attrNames[i] != NULL; i++)
