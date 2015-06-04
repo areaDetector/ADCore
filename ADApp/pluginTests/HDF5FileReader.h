@@ -32,7 +32,7 @@ class HDF5FileReader
 public:
   HDF5FileReader(const std::string& filename);
   void report();
-  void processGroup(hid_t loc_id, const char *name, H5G_obj_t type);
+  void processGroup(hid_t loc_id, const char *name, H5O_type_t type);
   bool checkGroupExists(const std::string& name);
   bool checkDatasetExists(const std::string& name);
   std::vector<hsize_t> getDatasetDimensions(const std::string& name);
@@ -44,7 +44,7 @@ private:
   class HDF5Object
   {
   public:
-    HDF5Object(const std::string& name, H5G_obj_t type)
+    HDF5Object(const std::string& name, H5O_type_t type)
     {
       this->name = name;
       this->type = type;
@@ -55,13 +55,13 @@ private:
       std::string response;
       switch (this->type)
       {
-        case H5G_GROUP:
+        case H5O_TYPE_GROUP:
           response = "group";
           break;
-        case H5G_DATASET:
+        case H5O_TYPE_DATASET:
           response = "dataset";
           break;
-        case H5G_TYPE:
+        case H5O_TYPE_NAMED_DATATYPE:
           response = "datatype";
           break;
         default:
@@ -74,7 +74,7 @@ private:
 
   private:
     std::string name;
-    H5G_obj_t type;
+    H5O_type_t type;
   };
 
   std::string cname;

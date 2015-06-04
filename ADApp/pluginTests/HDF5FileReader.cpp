@@ -7,20 +7,21 @@
 
 #include "HDF5FileReader.h"
 
-herr_t file_info(hid_t loc_id, const char *name, void *opdata)
+herr_t file_info(hid_t loc_id, const char *name, const H5L_info_t *info, void *opdata)
 {
-    H5G_stat_t statbuf;
+    H5O_info_t infobuf;
     HDF5FileReader *ptr = (HDF5FileReader *)opdata;
 
-    H5Gget_objinfo(loc_id, name, false, &statbuf);
-    ptr->processGroup(loc_id, name, statbuf.type);
+    H5Oget_info_by_name (loc_id, name, &infobuf, H5P_DEFAULT);
+    ptr->processGroup(loc_id, name, infobuf.type);
     return 0;
  }
 
 HDF5FileReader::HDF5FileReader(const std::string& filename)
 {
+  hsize_t idx = 0;
   file = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, NULL);
-  H5Giterate(file, "/", NULL, file_info, this);
+  H5Literate_by_name(file, "/", H5_INDEX_NAME, H5_ITER_NATIVE, &idx, file_info, this, H5P_DEFAULT);
 }
 
 void HDF5FileReader::report()
@@ -31,14 +32,15 @@ void HDF5FileReader::report()
   }
 }
 
-void HDF5FileReader::processGroup(hid_t loc_id, const char *name, H5G_obj_t type)
+void HDF5FileReader::processGroup(hid_t loc_id, const char *name, H5O_type_t type)
 {
   std::string sname(name);
   std::string oldname = cname;
   cname = cname + "/" + sname;
   objects[cname] = std::tr1::shared_ptr<HDF5Object>(new HDF5Object(name, type));
-  if (type == H5G_GROUP){
-    H5Giterate(loc_id, name, NULL, file_info, this);
+  if (type == H5O_TYPE_GROUP){
+    hsize_t idx = 0;
+    H5Literate_by_name(loc_id, name, H5_INDEX_NAME, H5_ITER_NATIVE, &idx, file_info, this, H5P_DEFAULT);
   }
   cname = oldname;
 }

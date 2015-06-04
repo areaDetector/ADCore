@@ -18,6 +18,8 @@ ADTestUtility_SRCS += SimulatedDetectorWrapper.cpp
 ADTestUtility_SRCS += HDF5PluginWrapper.cpp
 ADTestUtility_SRCS += HDF5FileReader.cpp
 
+# Persuade travis (ubuntu 12.04) to use HDF5 API V2 (1.8 rather than default 1.6)
+USR_CXXFLAGS_Linux += -DH5_NO_DEPRECATED_SYMBOLS -DH5Dopen_vers=2
 
 # The plugin-test executable with the actual unittests depend on the boost 
 # unittest framework so we can only build it if boost has been configured
