@@ -428,6 +428,22 @@ record(longin, "$(P)$(R)ZLevel_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(longout, "$(P)$(R)DimAttDatasets")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_dimAttDatasets")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)DimAttDatasets_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_dimAttDatasets")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
 # File path.
 # % autosave 2 
 #record(waveform, "$(P)$(R)XMLPath")

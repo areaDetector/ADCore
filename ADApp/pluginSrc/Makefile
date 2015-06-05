@@ -11,6 +11,9 @@ ifeq (vxWorks,$(findstring vxWorks, $(T_A)))
 CODE_CXXFLAGS=
 endif
 
+# Persuade travis (ubuntu 12.04) to use HDF5 API V2 (1.8 rather than default 1.6)
+USR_CXXFLAGS_Linux += -DH5_NO_DEPRECATED_SYMBOLS -DH5Gopen_vers=2
+
 # This flag is used to indicate that the TIFF library was built statically
 USR_CXXFLAGS_WIN32 += -DLIBTIFF_STATIC
 
@@ -35,6 +38,7 @@ DBD += NDPluginCircularBuff.dbd
 
 INC += NDFileHDF5.h
 INC += NDFileHDF5Dataset.h
+INC += NDFileHDF5AttributeDataset.h
 INC += NDFileHDF5Layout.h
 INC += NDFileHDF5LayoutXML.h
 INC += NDFileJPEG.h
@@ -74,7 +78,9 @@ NDPlugin_SRCS += NDPluginOverlayTextFont.cpp
 NDPlugin_SRCS += NDPluginColorConvert.cpp
 NDPlugin_SRCS += NDPluginCircularBuff.cpp
 NDPlugin_SRCS += NDArrayRing.cpp
-NDPlugin_SRCS_DEFAULT += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNexus.cpp NDFileHDF5.cpp NDFileHDF5Dataset.cpp NDFileHDF5LayoutXML.cpp NDFileHDF5Layout.cpp NDFileNull.cpp
+NDPlugin_SRCS_DEFAULT += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNexus.cpp 
+NDPlugin_SRCS_DEFAULT += NDFileHDF5.cpp NDFileHDF5Dataset.cpp NDFileHDF5AttributeDataset.cpp
+NDPlugin_SRCS_DEFAULT += NDFileHDF5LayoutXML.cpp NDFileHDF5Layout.cpp NDFileNull.cpp
 NDPlugin_SRCS_vxWorks += NDFileDummy.cpp
 NDPlugin_SYS_LIBS_WIN32 += Ws2_32
 NDPlugin_SYS_LIBS_WIN32 += User32
