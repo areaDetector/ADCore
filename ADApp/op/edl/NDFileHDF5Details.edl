@@ -3,10 +3,10 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 681
+x 768
 y 77
 w 417
-h 841
+h 901
 font "arial-bold-r-12.0"
 ctlFont "arial-bold-r-12.0"
 btnFont "arial-bold-r-12.0"
@@ -304,7 +304,7 @@ major 4
 minor 1
 release 0
 x 325
-y 810
+y 870
 w 85
 h 25
 fgColor index 46
@@ -1328,7 +1328,7 @@ major 4
 minor 4
 release 0
 x 215
-y 810
+y 870
 w 100
 h 25
 fgColor index 43
@@ -1342,5 +1342,98 @@ numDsps 1
 displayFileName {
   0 "NDFileHDF5SWMRDetails"
 }
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 5
+y 815
+w 405
+h 40
+lineColor index 14
+fill
+fillColor index 3
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 5
+y 805
+w 231
+h 13
+font "arial-medium-r-12.0"
+fgColor index 14
+bgColor index 5
+value {
+  "  Store attributes with correct dimensions  "
+}
+autoSize
+border
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 20
+y 825
+w 200
+h 20
+font "arial-bold-r-12.0"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Store attributes by dimensions:"
+}
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 245
+y 825
+w 75
+h 20
+fgColor index 25
+bgColor index 3
+inconsistentColor index 0
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(P)$(R)DimAttDatasets"
+indicatorPv "$(P)$(R)DimAttDatasets_RBV"
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 325
+y 825
+w 75
+h 20
+controlPv "$(P)$(R)DimAttDatasets_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-medium-r-12.0"
+fontAlign "center"
 endObjectProperties
 
