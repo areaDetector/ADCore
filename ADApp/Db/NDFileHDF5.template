@@ -539,4 +539,12 @@ record(bi, "$(P)$(R)SWMRActive_RBV")
     field(ONAM, "Active")
 }
 
+record(longin, "$(P)$(R)SWMRCbCounter_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_SWMRCbCounter")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
 

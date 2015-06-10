@@ -46,6 +46,15 @@ enum HDF5Compression_t {HDF5CompressNone=0, HDF5CompressNumBits, HDF5CompressSZi
 
 static const char *driverName = "NDFileHDF5";
 
+// This is a callback function for object flushing when in SWMR mode
+static herr_t cFlushCallback(hid_t objectID, void *data)
+{
+  // The user data contains the pointer to our object
+  NDFileHDF5 *ptr = (NDFileHDF5 *)data;
+  // Call into the object to notify of a flush callback
+  ptr->flushCallback();
+  return 0;
+}
 
 /** Opens a HDF5 file.  
  * In write mode if NDFileModeMultiple is set then the first dataspace dimension is set to H5S_UNLIMITED to allow 
@@ -69,6 +78,8 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
 
   /* These operations are accessing parameter library, must take lock */
   this->lock();
+  // Reset flush counter
+  setIntegerParam(NDFileHDF5_SWMRCbCounter, 0);
   getIntegerParam(NDFileNumCapture, &numCapture);
   getIntegerParam(NDFileHDF5_storeAttributes, &storeAttributes);
   getIntegerParam(NDFileHDF5_storePerformance, &storePerformance);
@@ -247,6 +258,18 @@ asynStatus NDFileHDF5::startSWMR()
             driverName, functionName);
   return asynError;
   #endif
+}
+
+asynStatus NDFileHDF5::flushCallback()
+{
+  int counter = 0;
+  this->lock();
+  getIntegerParam(NDFileHDF5_SWMRCbCounter, &counter);
+  counter++;
+  setIntegerParam(NDFileHDF5_SWMRCbCounter, counter);
+  callParamCallbacks();
+  this->unlock();
+  return asynSuccess;
 }
 
 /** Create the groups and datasets in the HDF5 file.
@@ -1836,6 +1859,7 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   this->createParam(str_NDFileHDF5_layoutErrorMsg,  asynParamOctet,   &NDFileHDF5_layoutErrorMsg);
   this->createParam(str_NDFileHDF5_layoutValid,     asynParamInt32,   &NDFileHDF5_layoutValid);
   this->createParam(str_NDFileHDF5_layoutFilename,  asynParamOctet,   &NDFileHDF5_layoutFilename);
+  this->createParam(str_NDFileHDF5_SWMRCbCounter,   asynParamInt32,   &NDFileHDF5_SWMRCbCounter);
   this->createParam(str_NDFileHDF5_SWMRSupported,   asynParamInt32,   &NDFileHDF5_SWMRSupported);
   this->createParam(str_NDFileHDF5_SWMRMode,        asynParamInt32,   &NDFileHDF5_SWMRMode);
   this->createParam(str_NDFileHDF5_SWMRRunning,     asynParamInt32,   &NDFileHDF5_SWMRRunning);
@@ -1866,6 +1890,7 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   setStringParam (NDFileHDF5_layoutErrorMsg,  "");
   setIntegerParam(NDFileHDF5_layoutValid,     1);
   setStringParam (NDFileHDF5_layoutFilename,  "");
+  setIntegerParam(NDFileHDF5_SWMRCbCounter,   0);
   setIntegerParam(NDFileHDF5_SWMRMode,        0);
   setIntegerParam(NDFileHDF5_SWMRRunning,     0);
   if (checkForSWMRSupported()){
@@ -2984,6 +3009,9 @@ asynStatus NDFileHDF5::createNewFile(const char *fileName)
   #if H5_VERSION_GE(1,9,178)
 
   if (SWMRMode == 1){
+    // Setup the flushing callback
+    H5Pset_object_flush_cb(access_plist, cFlushCallback, this);
+
     // Set to use the latest library format
     H5Pset_libver_bounds(access_plist, H5F_LIBVER_LATEST, H5F_LIBVER_LATEST);
   }

@@ -45,6 +45,7 @@
 #define str_NDFileHDF5_layoutErrorMsg    "HDF5_layoutErrorMsg"
 #define str_NDFileHDF5_layoutValid       "HDF5_layoutValid"
 #define str_NDFileHDF5_layoutFilename    "HDF5_layoutFilename"
+#define str_NDFileHDF5_SWMRCbCounter     "HDF5_SWMRCbCounter"
 #define str_NDFileHDF5_SWMRSupported     "HDF5_SWMRSupported"
 #define str_NDFileHDF5_SWMRMode          "HDF5_SWMRMode"
 #define str_NDFileHDF5_SWMRRunning       "HDF5_SWMRRunning"
@@ -68,6 +69,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     virtual asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t nChars, size_t *nActual);
 
     asynStatus startSWMR();
+    asynStatus flushCallback();
     asynStatus createXMLFileLayout();
     asynStatus storeOnOpenAttributes();
     asynStatus storeOnCloseAttributes();
@@ -132,6 +134,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     int NDFileHDF5_layoutErrorMsg;
     int NDFileHDF5_layoutValid;
     int NDFileHDF5_layoutFilename;
+    int NDFileHDF5_SWMRCbCounter;
     int NDFileHDF5_SWMRSupported;
     int NDFileHDF5_SWMRMode;
     int NDFileHDF5_SWMRRunning;
