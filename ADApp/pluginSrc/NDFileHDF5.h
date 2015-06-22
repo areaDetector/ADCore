@@ -142,6 +142,20 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
 
   private:
     /* private helper functions */
+    inline bool IsPrime(int number)
+    {
+      if (((!(number & 1)) && number != 2) || (number < 2) || (number % 3 == 0 && number != 3)){
+        return false;
+      }
+
+      for(int k = 1; 36*k*k-12*k < number;++k){
+        if ((number % (6*k+1) == 0) || (number % (6*k-1) == 0)){
+          return false;
+        }
+      }
+      return true;
+    };
+
     hid_t typeNd2Hdf(NDDataType_t datatype);
     asynStatus configureDatasetDims(NDArray *pArray);
     asynStatus configureDims(NDArray *pArray);

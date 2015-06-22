@@ -2019,7 +2019,7 @@ hsize_t NDFileHDF5::calcChunkCacheBytes()
 /** find out whether or not the input is a prime number.
  * Returns true if number is a prime. False if not.
  */
-bool is_prime(unsigned int long number)
+/*bool is_prime(unsigned int long number)
 {
   //0 and 1 are prime numbers
   if(number == 0 || number == 1) return true;
@@ -2030,7 +2030,7 @@ bool is_prime(unsigned int long number)
 
   //if no divisor greater than 1 is found, it is a prime number
   return divisor == 1;
-}
+}*/
 
 hsize_t NDFileHDF5::calcChunkCacheSlots()
 {
@@ -2051,14 +2051,11 @@ hsize_t NDFileHDF5::calcChunkCacheSlots()
   num_chunks *= (unsigned int long)ceil(div_result);
   div_result = (double)n_frames_capture / (double)n_frames_chunk;
   num_chunks *= (unsigned int long)ceil(div_result);
-  for(int i=0; i < n_extra_dims; i++){
-    num_chunks *= (unsigned int long)this->virtualdims[i];
-  }
 
   // number of slots have to be a prime number which is between 10 and 50 times
   // larger than the numer of chunks that can fit in the file/dataset.
   nslots = num_chunks * 50;
-  while( !is_prime( nslots) )
+  while( !IsPrime( nslots) )
     nslots++;
   return nslots;
 }
