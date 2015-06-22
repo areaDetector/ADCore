@@ -42,6 +42,7 @@ DB += NDTransform.template
 DB += NDAttribute.template
 DB += NDAttributeN.template
 DB += NDCircularBuff.template
+DB += NDPosPlugin.template
 
 #----------------------------------------------------
 # If <anyname>.db template is not named <anyname>*.template add

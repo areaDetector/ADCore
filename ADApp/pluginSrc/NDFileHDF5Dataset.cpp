@@ -147,6 +147,24 @@ void NDFileHDF5Dataset::extendDataSet(int extradims)
   return;
 }
 
+void NDFileHDF5Dataset::extendDataSet(int extradims, int *offsets)
+{
+  // If this method has been called then we are being asked to extend to a particular index
+  for (int index = 0; index <= extradims; index++){
+    printf("this->dims_[%d] : %d\n", index, this->dims_[index]);
+    printf("offsets[%d] : %d\n", index, offsets[index]);
+    // Check the requested offset is not outside the dimension maximum
+    if (offsets[index]+1 < this->virtualdims_[index]){
+      if (this->dims_[index] < offsets[index]+1){
+        // Increase the dimension to accomodate the new position
+        this->dims_[index] = offsets[index]+1;
+      }
+      // Always set the offset position even if we don't increase the dims
+      this->offset_[index] = offsets[index];
+    }
+  }
+}
+
 /** writeFile.
  * Write the data using the HDF5 library calls.
  * \param[in] pArray - The NDArray containing the data to write.
@@ -163,6 +181,9 @@ asynStatus NDFileHDF5Dataset::writeFile(NDArray *pArray, hid_t datatype, hid_t d
   asynPrint(this->pAsynUser_, ASYN_TRACE_FLOW,
             "%s::%s: set_extent dims={%d,%d,%d}\n",
             fileName, functionName, (int)this->dims_[0], (int)this->dims_[1], (int)this->dims_[2]);
+
+  printf("%s::%s: set_extent dims={%d,%d,%d}\n", fileName, functionName, (int)this->dims_[0], (int)this->dims_[1], (int)this->dims_[2]);
+  printf("%s::%s: offsets={%d,%d,%d}\n", fileName, functionName, (int)this->offset_[0], (int)this->offset_[1], (int)this->offset_[2]);
 
   hdfstatus = H5Dset_extent(this->dataset_, this->dims_);
   if (hdfstatus){

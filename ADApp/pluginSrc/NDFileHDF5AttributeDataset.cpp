@@ -152,6 +152,45 @@ asynStatus NDFileHDF5AttributeDataset::writeAttributeDataset(hdf5::When_t whenTo
   return status;
 }
 
+asynStatus NDFileHDF5AttributeDataset::writeAttributeDataset(hdf5::When_t whenToSave, hid_t *offsets, NDAttribute *ndAttr, int flush)
+{
+  asynStatus status = asynSuccess;
+  char * stackbuf[MAX_ATTRIBUTE_STRING_SIZE];
+  void* pDatavalue = stackbuf;
+  int ret;
+  //check if the attribute is meant to be saved at this time
+  if (whenToSave_ == whenToSave) {
+    // Extend the dataset as required to store the data
+    extendDataSet(offsets);
+
+    // find the data based on datatype
+    ret = ndAttr->getValue(ndAttr->getDataType(), pDatavalue, MAX_ATTRIBUTE_STRING_SIZE);
+    if (ret == ND_ERROR) {
+      memset(pDatavalue, 0, MAX_ATTRIBUTE_STRING_SIZE);
+    }
+    // Work with HDF5 library to select a suitable hyperslab (one element) and write the new data to it
+    H5Dset_extent(dataset_, dims_);
+    filespace_ = H5Dget_space(dataset_);
+
+    // Select the hyperslab
+    H5Sselect_hyperslab(filespace_, H5S_SELECT_SET, offset_, NULL, elementSize_, NULL);
+
+    // Write the data to the hyperslab.
+    H5Dwrite(dataset_, datatype_, memspace_, filespace_, H5P_DEFAULT, pDatavalue);
+
+
+    // Check if we are being asked to flush
+    if (flush == 1){
+      status = this->flushDataset();
+    }
+
+    H5Sclose(filespace_);
+    nextRecord_++;
+  }
+
+  return status;
+}
+
 asynStatus NDFileHDF5AttributeDataset::closeAttributeDataset()
 {
   //printf("close called for %s\n", name_.c_str());
@@ -336,8 +375,6 @@ void NDFileHDF5AttributeDataset::extendDataSet()
   int extradims = extraDimensions_;
 
   // Add the n'th frame dimension (for multiple frames per scan point)
-  //extradims += 1;
-//printf("Extradims: %d\n", extraDimensions_);
   // first frame already has the offsets and dimensions preconfigured so
   // we dont need to increment anything here
   if (this->nextRecord_ == 0) return;
@@ -376,13 +413,19 @@ void NDFileHDF5AttributeDataset::extendDataSet()
   return;
 }
 
-void NDFileHDF5AttributeDataset::extendDataSet(hid_t *dims, hid_t *offsets)
+void NDFileHDF5AttributeDataset::extendDataSet(hid_t *offsets)
 {
   // In this case the dimensions and offsets have been supplied to us so simply
   // use these values.
-  for (int index = 0; index < this->rank_; index++){
-    this->dims_[index] = dims[index];
-    this->offset_[index] = offsets[index];
+  for (int index = 0; index < this->extraDimensions_; index++){
+    if (offsets[index]+1 < this->virtualdims_[index]+1){
+      if (this->dims_[index] < offsets[index]+1){
+        // Increase the dimension to accomodate the new position
+        this->dims_[index] = offsets[index]+1;
+      }
+      // Always set the offset position even if we don't increase the dims
+      this->offset_[index] = offsets[index];
+    }
   }
   return;
 }

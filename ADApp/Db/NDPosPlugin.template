@@ -1,0 +1,104 @@
+#% macro, P, Device Prefix
+#% macro, R, Device Suffix
+#% macro, PORT, Asyn Port name
+#% macro, ADDR, Asyn Port address
+#% macro, TIMEOUT, Asyn timeout
+
+# This associates the template with an edm screen
+# % gui, $(PORT), edmtab, NDPosPlugin.edl, P=$(P),R=$(R)
+
+# File path.
+record(waveform, "$(P)$(R)Filename")
+{
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDPos_Filename")
+    field(FTVL, "CHAR")
+    field(NELM, "2048")
+}
+
+record(waveform, "$(P)$(R)Filename_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),0)NDPos_Filename")
+    field(FTVL, "CHAR")
+    field(NELM, "2048")
+    field(SCAN, "I/O Intr")
+}
+
+record(bi, "$(P)$(R)FileValid_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),0)NDPos_FileValid")
+    field(ZNAM, "No")
+    field(ZSV,  "MAJOR")
+    field(ONAM, "Yes")
+    field(OSV,  "NO_ALARM")
+    field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)LoadFile")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),0)NDPos_Load")
+}
+
+record(bo, "$(P)$(R)Running")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),0)NDPos_Running")
+    field(ZNAM, "Idle")
+    field(ONAM, "Running")
+}
+
+record(bi, "$(P)$(R)Running_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),0)NDPos_Running")
+    field(ZNAM, "Idle")
+    field(ONAM, "Running")
+    field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)Reset")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),0)NDPos_Restart")
+}
+
+record(bo, "$(P)$(R)Mode")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),0)NDPos_Mode")
+    field(ZNAM, "Discard")
+    field(ONAM, "Keep")
+}
+
+record(bi, "$(P)$(R)Mode_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),0)NDPos_Mode")
+    field(ZNAM, "Discard")
+    field(ONAM, "Keep")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)Qty_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),0)NDPos_CurrentQty")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)Index_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),0)NDPos_CurrentIndex")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)Position_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),0)NDPos_CurrentPos")
+    field(SCAN, "I/O Intr")
+}

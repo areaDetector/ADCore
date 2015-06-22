@@ -45,6 +45,10 @@
 #define str_NDFileHDF5_layoutErrorMsg    "HDF5_layoutErrorMsg"
 #define str_NDFileHDF5_layoutValid       "HDF5_layoutValid"
 #define str_NDFileHDF5_layoutFilename    "HDF5_layoutFilename"
+#define str_NDFileHDF5_posRunning        "HDF5_posRunning"
+#define str_NDFileHDF5_posNameDimN       "HDF5_posNameDimN"
+#define str_NDFileHDF5_posNameDimX       "HDF5_posNameDimX"
+#define str_NDFileHDF5_posNameDimY       "HDF5_posNameDimY"
 #define str_NDFileHDF5_SWMRCbCounter     "HDF5_SWMRCbCounter"
 #define str_NDFileHDF5_SWMRSupported     "HDF5_SWMRSupported"
 #define str_NDFileHDF5_SWMRMode          "HDF5_SWMRMode"
@@ -134,6 +138,10 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     int NDFileHDF5_layoutErrorMsg;
     int NDFileHDF5_layoutValid;
     int NDFileHDF5_layoutFilename;
+    int NDFileHDF5_posRunning;
+    int NDFileHDF5_posNameDimN;
+    int NDFileHDF5_posNameDimX;
+    int NDFileHDF5_posNameDimY;
     int NDFileHDF5_SWMRCbCounter;
     int NDFileHDF5_SWMRSupported;
     int NDFileHDF5_SWMRMode;
@@ -149,7 +157,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     char* getDimsReport();
     asynStatus writeStringAttribute(hid_t element, const char* attrName, const char* attrStrValue);
     asynStatus calculateAttributeChunking(int *chunking);
-    asynStatus writeAttributeDataset(hdf5::When_t whenToSave);
+    asynStatus writeAttributeDataset(hdf5::When_t whenToSave, int positionMode, int *offsets);
     asynStatus closeAttributeDataset();
     asynStatus configurePerformanceDataset();
     asynStatus createPerformanceDataset();
