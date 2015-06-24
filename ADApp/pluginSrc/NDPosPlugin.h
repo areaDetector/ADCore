@@ -43,6 +43,7 @@
 #define str_NDPos_Clear           "NDPos_Clear"
 #define str_NDPos_Running         "NDPos_Running"
 #define str_NDPos_Restart         "NDPos_Restart"
+#define str_NDPos_Delete          "NDPos_Delete"
 #define str_NDPos_Mode            "NDPos_Mode"
 #define str_NDPos_Append          "NDPos_Append"
 #define str_NDPos_CurrentQty      "NDPos_CurrentQty"
@@ -52,7 +53,7 @@
 #define MODE_DISCARD 0
 #define MODE_KEEP    1
 
-#define MAX_POS_STRING_LEN 2048
+#define MAX_POS_STRING_LEN 1000000
 
 class NDPosPlugin : public NDPluginDriver
 {
@@ -71,7 +72,6 @@ public:
   void processCallbacks(NDArray *pArray);
   asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
   asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t nChars, size_t *nActual);
-  int fileExists(const std::string& filename);
   asynStatus loadFile();
 
 protected:
@@ -83,6 +83,7 @@ protected:
   int NDPos_Clear;
   int NDPos_Running;
   int NDPos_Restart;
+  int NDPos_Delete;
   int NDPos_Mode;
   int NDPos_Append;
   int NDPos_CurrentQty;

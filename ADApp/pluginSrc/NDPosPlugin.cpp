@@ -46,7 +46,6 @@ void NDPosPlugin::processCallbacks(NDArray *pArray)
           sspos << ",";
         }
         sspos << iter->first << "=" << iter->second;
-        printf("Setting index %s to %d\n", iter->first.c_str(), iter->second);
         NDAttribute *pAtt = new NDAttribute(iter->first.c_str(), "Position of NDArray", NDAttrSourceDriver, driverName, NDAttrInt32, &(iter->second));
         pArray->pAttributeList->add(pAtt);
       }
@@ -102,6 +101,14 @@ asynStatus NDPosPlugin::writeInt32(asynUser *pasynUser, epicsInt32 value)
       setIntegerParam(NDPos_CurrentIndex, 0);
       // Reset the last sent position
       setStringParam(NDPos_CurrentPos, "");
+    } else if (function == NDPos_Delete){
+      // Reset the position index to 0
+      setIntegerParam(NDPos_CurrentIndex, 0);
+      // Reset the last sent position
+      setStringParam(NDPos_CurrentPos, "");
+      // Clear out the position array
+      positionArray.clear();
+      setIntegerParam(NDPos_CurrentQty, positionArray.size());
     } else {
       // If this parameter belongs to a base class call its method
       if (function < FIRST_NDPOS_PARAM){
@@ -143,8 +150,9 @@ asynStatus NDPosPlugin::writeOctet(asynUser *pasynUser, const char *value, size_
   if (function == NDPos_Filename){
     // Read the filename parameter
     getStringParam(NDPos_Filename, MAX_POS_STRING_LEN-1, fileName);
-    // Now validate the filename
-    if (fileExists(fileName)){
+    // Now validate the XML
+    NDPosPluginFileReader fr;
+    if (fr.validateXML(fileName) == asynSuccess){
       setIntegerParam(NDPos_FileValid, 1);
     } else {
       setIntegerParam(NDPos_FileValid, 0);
@@ -168,34 +176,28 @@ asynStatus NDPosPlugin::writeOctet(asynUser *pasynUser, const char *value, size_
   return status;
 }
 
-int NDPosPlugin::fileExists(const std::string& filename)
-{
-  struct stat buffer;
-  return (stat (filename.c_str(), &buffer) == 0);
-}
-
 asynStatus NDPosPlugin::loadFile()
 {
   asynStatus status = asynSuccess;
-  char *fileName = new char[2048];
-  fileName[2048 - 1] = '\0';
+  char *fileName = new char[MAX_POS_STRING_LEN];
+  fileName[MAX_POS_STRING_LEN - 1] = '\0';
   int fileValid = 1;
 
   // Read the current filename and validity
-  getStringParam(NDPos_Filename, 2047, fileName);
+  getStringParam(NDPos_Filename, MAX_POS_STRING_LEN, fileName);
   getIntegerParam(NDPos_FileValid, &fileValid);
 
   // If the file is valid then read in the file
-  //if (fileValid == 1){
+  if (fileValid == 1){
     NDPosPluginFileReader fr;
     fr.loadXML(fileName);
     std::vector<std::map<std::string, int> > positions = fr.readPositions();
     positionArray.insert(positionArray.end(), positions.begin(), positions.end());
     setIntegerParam(NDPos_CurrentQty, positionArray.size());
     callParamCallbacks();
-  //} else {
-  //  status = asynError;
-  //}
+  } else {
+    status = asynError;
+  }
 
   return status;
 }
@@ -233,6 +235,7 @@ NDPosPlugin::NDPosPlugin(const char *portName,
   createParam(str_NDPos_Clear,          asynParamInt32,        &NDPos_Clear);
   createParam(str_NDPos_Running,        asynParamInt32,        &NDPos_Running);
   createParam(str_NDPos_Restart,        asynParamInt32,        &NDPos_Restart);
+  createParam(str_NDPos_Delete,         asynParamInt32,        &NDPos_Delete);
   createParam(str_NDPos_Mode,           asynParamInt32,        &NDPos_Mode);
   createParam(str_NDPos_Append,         asynParamInt32,        &NDPos_Append);
   createParam(str_NDPos_CurrentQty,     asynParamInt32,        &NDPos_CurrentQty);
@@ -254,7 +257,6 @@ NDPosPlugin::NDPosPlugin(const char *portName,
 
 NDPosPlugin::~NDPosPlugin ()
 {
-  // TODO Auto-generated destructor stub
 }
 
 // Configuration command

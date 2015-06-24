@@ -13,7 +13,7 @@ record(waveform, "$(P)$(R)Filename")
     field(DTYP, "asynOctetWrite")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDPos_Filename")
     field(FTVL, "CHAR")
-    field(NELM, "2048")
+    field(NELM, "1000000")
 }
 
 record(waveform, "$(P)$(R)Filename_RBV")
@@ -21,7 +21,7 @@ record(waveform, "$(P)$(R)Filename_RBV")
     field(DTYP, "asynOctetRead")
     field(INP,  "@asyn($(PORT),0)NDPos_Filename")
     field(FTVL, "CHAR")
-    field(NELM, "2048")
+    field(NELM, "1000000")
     field(SCAN, "I/O Intr")
 }
 
@@ -63,6 +63,12 @@ record(bo, "$(P)$(R)Reset")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),0)NDPos_Restart")
+}
+
+record(bo, "$(P)$(R)Delete")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),0)NDPos_Delete")
 }
 
 record(bo, "$(P)$(R)Mode")

@@ -27,6 +27,7 @@ public:
 
   NDPosPluginFileReader();
   virtual ~NDPosPluginFileReader();
+  asynStatus validateXML(const std::string& filename);
   asynStatus loadXML(const std::string& filename);
   std::vector<std::string> readDimensions();
   std::vector<std::map<std::string, int> > readPositions();
