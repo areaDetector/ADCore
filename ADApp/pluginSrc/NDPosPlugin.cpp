@@ -21,11 +21,10 @@ void NDPosPlugin::processCallbacks(NDArray *pArray)
   int index = 0;
   int running = 0;
   int mode = 0;
-  static const char *functionName = "NDPosPlugin::processCallbacks";
+  //static const char *functionName = "NDPosPlugin::processCallbacks";
 
   // Call the base class method
   NDPluginDriver::processCallbacks(pArray);
-
   getIntegerParam(NDPos_Running, &running);
   // Only attach the position data to the array if we are running
   if (running == 1){
@@ -226,7 +225,7 @@ NDPosPlugin::NDPosPlugin(const char *portName,
                    priority,
                    stackSize)
 {
-  static const char *functionName = "NDPluginAttribute::NDPluginAttribute";
+  //static const char *functionName = "NDPluginAttribute::NDPluginAttribute";
 
   // Create parameters for controlling the plugin
   createParam(str_NDPos_Filename,       asynParamOctet,        &NDPos_Filename);

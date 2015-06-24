@@ -1284,18 +1284,26 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
   if (destination == this->defDsetName){
     // Check to see if we are positional placement mode
     if (posRunning == 1){
-      if (this->multiFrameFile) this->detDataMap[destination]->extendDataSet(extradims, offsets);
+      if (this->multiFrameFile){
+        status = this->detDataMap[destination]->extendDataSet(extradims, offsets);
+      }
     } else {
       // Not in positional placement mode, perform standard extension
       // For multi frame files we now extend the HDF dataset to fit an additional frame
-      if (this->multiFrameFile) this->detDataMap[destination]->extendDataSet(extradims);
+      if (this->multiFrameFile){
+        status = this->detDataMap[destination]->extendDataSet(extradims);
+      }
     }
   } else {
     // For multi frame files we now extend the HDF dataset to fit an additional frame
-    if (this->multiFrameFile) this->detDataMap[destination]->extendDataSet(extradims);
+    if (this->multiFrameFile){
+      status = this->detDataMap[destination]->extendDataSet(extradims);
+    }
   }
 
-  status = this->detDataMap[destination]->writeFile(pArray, this->datatype, this->dataspace, this->framesize);
+  if (status == asynSuccess){
+    status = this->detDataMap[destination]->writeFile(pArray, this->datatype, this->dataspace, this->framesize);
+  }
   if (status != asynSuccess){
     // If dataset creation fails then close file and abort as all following writes will fail as well
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
