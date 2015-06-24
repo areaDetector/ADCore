@@ -2250,7 +2250,7 @@ asynStatus NDFileHDF5::createAttributeDataset(NDArray *pArray)
   NDAttrSource_t ndAttrSourceType;
   int extraDims;
   int chunking = 0;
-  int fileWriteMode = 0;
+  //int fileWriteMode = 0;
   int dimAttDataset = 0;
   hid_t groupDefault = -1;
   const char *attrNames[5] = {"NDAttrName", "NDAttrDescription", "NDAttrSourceType", "NDAttrSource", NULL};

@@ -418,8 +418,8 @@ void NDFileHDF5AttributeDataset::extendDataSet(hid_t *offsets)
   // In this case the dimensions and offsets have been supplied to us so simply
   // use these values.
   for (int index = 0; index < this->extraDimensions_; index++){
-    if (offsets[index]+1 < this->virtualdims_[index]+1){
-      if (this->dims_[index] < offsets[index]+1){
+    if (offsets[index]+1 < (int)this->virtualdims_[index]+1){
+      if ((int)this->dims_[index] < offsets[index]+1){
         // Increase the dimension to accomodate the new position
         this->dims_[index] = offsets[index]+1;
       }
