@@ -14,6 +14,7 @@ LIBRARY_IOC_WIN32 += ADTestUtility
 LIBRARY_IOC_Linux += ADTestUtility
 ADTestUtility_SRCS += testingutilities.cpp
 ADTestUtility_SRCS += AsynPortClientContainer.cpp
+ADTestUtility_SRCS += AsynException.cpp
 ADTestUtility_SRCS += SimulatedDetectorWrapper.cpp
 ADTestUtility_SRCS += HDF5PluginWrapper.cpp
 ADTestUtility_SRCS += HDF5FileReader.cpp
@@ -28,7 +29,6 @@ ifdef BOOST
   PROD_IOC_Linux += plugin-test
   plugin-test_SRCS += plugin-test.cpp
   plugin-test_SRCS += test_NDPluginCircularBuff.cpp
-  
   plugin-test_SRCS += test_NDFileHDF5.cpp
   USR_INCLUDES += $(HDF5_INCLUDE)
   USR_INCLUDES += $(SZ_INCLUDE)
