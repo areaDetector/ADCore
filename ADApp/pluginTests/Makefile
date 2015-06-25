@@ -17,6 +17,7 @@ ADTestUtility_SRCS += AsynPortClientContainer.cpp
 ADTestUtility_SRCS += AsynException.cpp
 ADTestUtility_SRCS += SimulatedDetectorWrapper.cpp
 ADTestUtility_SRCS += HDF5PluginWrapper.cpp
+ADTestUtility_SRCS += PosPluginWrapper.cpp
 ADTestUtility_SRCS += HDF5FileReader.cpp
 
 # Persuade travis (ubuntu 12.04) to use HDF5 API V2 (1.8 rather than default 1.6)
@@ -31,6 +32,8 @@ ifdef BOOST
   plugin-test_SRCS += test_NDPluginCircularBuff.cpp
   plugin-test_SRCS += test_NDFileHDF5.cpp
   plugin-test_SRCS += test_NDFileHDF5AttributeDataset.cpp
+  plugin-test_SRCS += test_NDPosPlugin.cpp
+
   USR_INCLUDES += $(HDF5_INCLUDE)
   USR_INCLUDES += $(SZ_INCLUDE)
   USR_INCLUDES += $(XML2_INCLUDE)

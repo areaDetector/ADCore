@@ -245,8 +245,16 @@ NDPosPlugin::NDPosPlugin(const char *portName,
   setStringParam(NDPluginDriverPluginType, "NDPositionPlugin");
   // Set the mode to 0 - Discard after use
   setIntegerParam(NDPos_Mode,              MODE_DISCARD);
+  // Set the file valid to 0
+  setIntegerParam(NDPos_FileValid,         0);
   // Set the position index to 0
-  setIntegerParam(NDPos_CurrentIndex, 0);
+  setIntegerParam(NDPos_CurrentIndex,      0);
+  // Set the qty to 0
+  setIntegerParam(NDPos_CurrentQty,        0);
+  // Set the position string to empty
+  setStringParam(NDPos_CurrentPos,         "");
+  // Set running to 0
+  setIntegerParam(NDPos_Running,           0);
 
 
   // Try to connect to the array port
