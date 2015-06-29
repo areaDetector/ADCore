@@ -1,0 +1,326 @@
+4 0 0
+beginScreenProperties
+major 4
+minor 0
+release 0
+x 482
+y 109
+w 390
+h 685
+font "helvetica-medium-r-18.0"
+ctlFont "helvetica-medium-r-8.0"
+btnFont "helvetica-medium-r-18.0"
+fgColor index 14
+bgColor index 4
+textColor index 14
+ctlFgColor1 index 30
+ctlFgColor2 index 32
+ctlBgColor1 index 34
+ctlBgColor2 index 35
+topShadowColor index 37
+botShadowColor index 44
+snapToGrid
+gridSize 5
+endScreenProperties
+
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 0
+y 5
+w 389
+h 24
+lineColor index 2
+fill
+fillColor index 2
+lineWidth 0
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 87
+y 6
+w 216
+h 25
+font "helvetica-medium-r-8.0"
+fontAlign "center"
+fgColor index 54
+useDisplayBg
+value {
+ "$(P)$(R)"
+}
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 5
+y 35
+w 380
+h 530
+
+beginGroup
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 5
+y 35
+w 380
+h 530
+fgColor index 14
+bgColor index 0
+topShadowColor index 0
+botShadowColor index 14
+noScroll
+displaySource "file"
+file "	composite file NDPluginBase.edl"
+sizeOfs 5
+numDsps 0
+endObjectProperties
+
+endGroup
+
+visPv ""
+visMin "A"
+visMax "1"
+endObjectProperties
+
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 5
+y 570
+w 380
+h 85
+
+beginGroup
+
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 5
+y 570
+w 380
+h 85
+lineColor index 14
+fillColor index 14
+lineWidth 0
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 22
+y 600
+w 140
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Individual 0-7"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 138
+y 575
+w 150
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "ROI definitions"
+}
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 82
+y 628
+w 80
+h 20
+font "helvetica-medium-r-8.0"
+fontAlign "right"
+fgColor index 14
+useDisplayBg
+value {
+ "Combined"
+}
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 172
+y 660
+w 100
+h 20
+fgColor index 14
+onColor index 51
+offColor index 51
+topShadowColor index 0
+botShadowColor index 14
+controlPv "$(P)$(R)ResetAll"
+pressValue "1"
+releaseValue 
+onLabel "Reset All"
+offLabel "Reset All"
+3d
+useEnumNumeric
+font "helvetica-medium-r-10.0"
+endObjectProperties
+# (Group)
+object activeGroupClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 5
+y 570
+w 380
+h 85
+
+beginGroup
+
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 172
+y 600
+w 130
+h 20
+fgColor index 14
+bgColor index 51
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-10.0"
+icon
+buttonLabel "Individual ROIs"
+numPvs 16
+numDsps 8
+displayFileName {
+  0 /home/oxygen/MOONEY/epics/git/areaDetector/ADCore/ADApp/op/adl/NDROIStatN.edl
+  1 /home/oxygen/MOONEY/epics/git/areaDetector/ADCore/ADApp/op/adl/NDROIStatN.edl
+  2 /home/oxygen/MOONEY/epics/git/areaDetector/ADCore/ADApp/op/adl/NDROIStatN.edl
+  3 /home/oxygen/MOONEY/epics/git/areaDetector/ADCore/ADApp/op/adl/NDROIStatN.edl
+  4 /home/oxygen/MOONEY/epics/git/areaDetector/ADCore/ADApp/op/adl/NDROIStatN.edl
+  5 /home/oxygen/MOONEY/epics/git/areaDetector/ADCore/ADApp/op/adl/NDROIStatN.edl
+  6 /home/oxygen/MOONEY/epics/git/areaDetector/ADCore/ADApp/op/adl/NDROIStatN.edl
+  7 /home/oxygen/MOONEY/epics/git/areaDetector/ADCore/ADApp/op/adl/NDROIStatN.edl
+}
+menuLabel {
+  0 ROI 0
+  1 ROI 1
+  2 ROI 2
+  3 ROI 3
+  4 ROI 4
+  5 ROI 5
+  6 ROI 6
+  7 ROI 7
+}
+symbols {
+  0 "P=$(P),R=$(R)1:"
+  1 "P=$(P),R=$(R)2:"
+  2 "P=$(P),R=$(R)3:"
+  3 "P=$(P),R=$(R)4:"
+  4 "P=$(P),R=$(R)5:"
+  5 "P=$(P),R=$(R)6:"
+  6 "P=$(P),R=$(R)7:"
+  7 "P=$(P),R=$(R)8:"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 172
+y 627
+w 130
+h 20
+fgColor index 14
+bgColor index 51
+topShadowColor index 2
+botShadowColor index 12
+font "helvetica-medium-r-10.0"
+icon
+buttonLabel "Combined ROIs"
+numPvs 8
+numDsps 4
+displayFileName {
+  0 /home/oxygen/MOONEY/epics/git/areaDetector/ADCore/ADApp/op/adl/NDROIStat8.edl
+  1 /home/oxygen/MOONEY/epics/git/areaDetector/ADCore/ADApp/op/adl/NDROIStat8.edl
+  2 /home/oxygen/MOONEY/epics/git/areaDetector/ADCore/ADApp/op/adl/NDROIStat8.edl
+  3 /home/oxygen/MOONEY/epics/git/areaDetector/ADCore/ADApp/op/adl/NDROIStat8.edl
+}
+menuLabel {
+  0 ROIS 1-8
+  1 ROIS 9-16
+  2 ROIS 17-24
+  3 ROIS 25-32
+}
+symbols {
+  0 "P=$(P),ROI1=$(R)1:,ROI2=$(R)2:,ROI3=$(R)3:,ROI4=$(R)4:,ROI5=$(R)5:,ROI6=$(R)6:,ROI7=$(R)7:,ROI8=$(R)8:"
+  1 "P=$(P),ROI1=$(R)8:,ROI2=$(R)9:,ROI3=$(R)10:,ROI4=$(R)11:,ROI5=$(R)12:,ROI6=$(R)13:,ROI7=$(R)14:,ROI8=$(R)15:,"
+  2 "P=$(P),ROI1=$(R)16:,ROI2=$(R)17:,ROI3=$(R)18:,ROI4=$(R)19:,ROI5=$(R)20:,ROI6=$(R)21:,ROI7=$(R)22:,ROI8=$(R)23:,"
+  3 "P=$(P),ROI1=$(R)24:,ROI2=$(R)25:,ROI3=$(R)26:,ROI4=$(R)27:,ROI5=$(R)28:,ROI6=$(R)29:,ROI7=$(R)30:,ROI8=$(R)31:,"
+}
+endObjectProperties
+
+endGroup
+
+endObjectProperties
+
+
