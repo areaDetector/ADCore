@@ -32,6 +32,7 @@ void NDPosPlugin::processCallbacks(NDArray *pArray)
     if (index >= (int)positionArray.size()){
       // We've reached the end of our positions, stop to make sure we don't oveflow
       setIntegerParam(NDPos_Running, 0);
+      running = 0;
     } else {
       std::map<std::string, int> pos = positionArray[index];
       std::stringstream sspos;
@@ -63,10 +64,12 @@ void NDPosPlugin::processCallbacks(NDArray *pArray)
       }
     }
     callParamCallbacks();
+    if (running == 1){
+      this->unlock();
+      doCallbacksGenericPointer(pArray, NDArrayData, 0);
+      this->lock();
+    }
   }
-  this->unlock();
-  doCallbacksGenericPointer(pArray, NDArrayData, 0);
-  this->lock();
 }
 
 asynStatus NDPosPlugin::writeInt32(asynUser *pasynUser, epicsInt32 value)
