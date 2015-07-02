@@ -36,12 +36,13 @@ record(bi, "$(P)$(R)FileValid_RBV")
     field(SCAN, "I/O Intr")
 }
 
-record(bo, "$(P)$(R)Running")
+record(busy, "$(P)$(R)Running")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),0)NDPos_Running")
     field(ZNAM, "Idle")
     field(ONAM, "Running")
+    field(VAL,  "0")
 }
 
 record(bi, "$(P)$(R)Running_RBV")
