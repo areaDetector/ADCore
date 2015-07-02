@@ -175,7 +175,6 @@ asynStatus NDPosPluginFileReader::addPosition()
   asynStatus status = asynSuccess;
   xmlChar *pos_val = NULL;
   std::string pos_str;
-  bool first = true;
   std::map<std::string, int> pos;
 
   // First check the basics

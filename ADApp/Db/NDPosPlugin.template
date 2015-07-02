@@ -36,12 +36,6 @@ record(bi, "$(P)$(R)FileValid_RBV")
     field(SCAN, "I/O Intr")
 }
 
-record(bo, "$(P)$(R)LoadFile")
-{
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),0)NDPos_Load")
-}
-
 record(bo, "$(P)$(R)Running")
 {
     field(DTYP, "asynInt32")

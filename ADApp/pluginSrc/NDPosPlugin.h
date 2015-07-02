@@ -39,7 +39,6 @@
 
 #define str_NDPos_Filename        "NDPos_Filename"
 #define str_NDPos_FileValid       "NDPos_FileValid"
-#define str_NDPos_Load            "NDPos_Load"
 #define str_NDPos_Clear           "NDPos_Clear"
 #define str_NDPos_Running         "NDPos_Running"
 #define str_NDPos_Restart         "NDPos_Restart"
@@ -79,7 +78,6 @@ protected:
   int NDPos_Filename;
   #define FIRST_NDPOS_PARAM NDPos_Filename
   int NDPos_FileValid;
-  int NDPos_Load;
   int NDPos_Clear;
   int NDPos_Running;
   int NDPos_Restart;

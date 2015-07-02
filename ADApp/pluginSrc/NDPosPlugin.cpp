@@ -85,14 +85,7 @@ asynStatus NDPosPlugin::writeInt32(asynUser *pasynUser, epicsInt32 value)
     // By default we set the value in the parameter library. If problems occur we set the old value back.
     setIntegerParam(function, value);
 
-    if (function == NDPos_Load){
-      // Call the loadFile function
-      status = loadFile();
-      if (status == asynError){
-        // If a bad value is set then revert it to the original
-        setIntegerParam(function, oldvalue);
-      }
-    } else if (function == NDPos_Mode){
+    if (function == NDPos_Mode){
       // Reset the position index to 0 if the mode is changed
       setIntegerParam(NDPos_CurrentIndex, 0);
     } else if (function == NDPos_Restart){
@@ -156,6 +149,11 @@ asynStatus NDPosPlugin::writeOctet(asynUser *pasynUser, const char *value, size_
     } else {
       setIntegerParam(NDPos_FileValid, 0);
       status = asynError;
+    }
+    // If the status of validation is OK then load the file
+    if (status == asynSuccess){
+      // Call the loadFile function
+      status = loadFile();
     }
   }
 
@@ -230,7 +228,6 @@ NDPosPlugin::NDPosPlugin(const char *portName,
   // Create parameters for controlling the plugin
   createParam(str_NDPos_Filename,       asynParamOctet,        &NDPos_Filename);
   createParam(str_NDPos_FileValid,      asynParamInt32,        &NDPos_FileValid);
-  createParam(str_NDPos_Load,           asynParamInt32,        &NDPos_Load);
   createParam(str_NDPos_Clear,          asynParamInt32,        &NDPos_Clear);
   createParam(str_NDPos_Running,        asynParamInt32,        &NDPos_Running);
   createParam(str_NDPos_Restart,        asynParamInt32,        &NDPos_Restart);

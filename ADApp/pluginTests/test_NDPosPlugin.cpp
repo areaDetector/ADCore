@@ -92,7 +92,6 @@ BOOST_AUTO_TEST_CASE(test_LoadingDataPoints)
   BOOST_CHECK_THROW(pos->write(str_NDPos_Filename, "<pos_layout><bad xml string</position>"), AsynException);
   BOOST_CHECK_EQUAL(pos->readInt(str_NDPos_FileValid), 0);
   // Verify load does not load points, qty is zero
-  pos->write(str_NDPos_Load, 1);
   BOOST_CHECK_EQUAL(pos->readInt(str_NDPos_CurrentQty), 0);
 
   // Set a valid load string, verify no error
@@ -115,7 +114,6 @@ BOOST_AUTO_TEST_CASE(test_LoadingDataPoints)
   </pos_layout>");
   BOOST_CHECK_EQUAL(pos->readInt(str_NDPos_FileValid), 1);
   // Verify points are loaded, qty is 8
-  pos->write(str_NDPos_Load, 1);
   BOOST_CHECK_EQUAL(pos->readInt(str_NDPos_CurrentQty), 8);
 
   // Verify deleting points will reset to zero qty
@@ -153,28 +151,25 @@ BOOST_AUTO_TEST_CASE(test_LoadingDataPoints)
   BOOST_CHECK_THROW(pos->write(str_NDPos_Filename, "/tmp/incorrect_file.xml"), AsynException);
   BOOST_CHECK_EQUAL(pos->readInt(str_NDPos_FileValid), 0);
   // Verify load does not load points, qty is 0
-  pos->write(str_NDPos_Load, 1);
   BOOST_CHECK_EQUAL(pos->readInt(str_NDPos_CurrentQty), 0);
   // Try to set a valid filename but with bad XML, verify error
   BOOST_CHECK_THROW(pos->write(str_NDPos_Filename, "/tmp/invalid_points.xml"), AsynException);
   BOOST_CHECK_EQUAL(pos->readInt(str_NDPos_FileValid), 0);
   // Verify load does not load points, qty is 0
-  pos->write(str_NDPos_Load, 1);
   BOOST_CHECK_EQUAL(pos->readInt(str_NDPos_CurrentQty), 0);
 
   // Set a valid load string, verify no error
   pos->write(str_NDPos_Filename, "/tmp/valid_points.xml");
   BOOST_CHECK_EQUAL(pos->readInt(str_NDPos_FileValid), 1);
   // Verify points are loaded, qty is 8
-  pos->write(str_NDPos_Load, 1);
   BOOST_CHECK_EQUAL(pos->readInt(str_NDPos_CurrentQty), 8);
 
   // Load the file again, verify qty increases to 16
-  pos->write(str_NDPos_Load, 1);
+  pos->write(str_NDPos_Filename, "/tmp/valid_points.xml");
   BOOST_CHECK_EQUAL(pos->readInt(str_NDPos_CurrentQty), 16);
 
   // Load the file again, verify qty increases to 24
-  pos->write(str_NDPos_Load, 1);
+  pos->write(str_NDPos_Filename, "/tmp/valid_points.xml");
   BOOST_CHECK_EQUAL(pos->readInt(str_NDPos_CurrentQty), 24);
 
 
