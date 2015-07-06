@@ -50,6 +50,9 @@ R2-3 (May XXX, 2015)
   * When writing files in Single mode if NumCapture was 0 then the chunking was computed 
     incorrectly and the files could be much larger than they should be.
 
+### commonDriverMakefile
+* Include SNCSEQ libraries if SNCSEQ is defined.  This must be defined if the CALC module
+  was built with SNCSEQ support.
 
 
 R2-2 (March 23, 2015)
