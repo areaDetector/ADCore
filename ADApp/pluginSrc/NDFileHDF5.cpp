@@ -1973,7 +1973,7 @@ unsigned int NDFileHDF5::calcIstorek()
   int extradimsizes[MAXEXTRADIMS] = {0,0,0};
   int numExtraDims = 0;
   hsize_t maxdim = 0;
-  int extradim = MAXEXTRADIMS - numExtraDims-1;
+  int extradim = 0;
   int fileNumCapture=0;
   
   this->lock();
@@ -1983,6 +1983,7 @@ unsigned int NDFileHDF5::calcIstorek()
   getIntegerParam(NDFileHDF5_extraDimSizeY, &extradimsizes[0]);
   getIntegerParam(NDFileNumCapture, &fileNumCapture);
   this->unlock();
+  extradim = MAXEXTRADIMS - numExtraDims-1;
   if (numExtraDims == 0) {
     if (fileNumCapture == 0) {
       extradimsizes[2] = INFINITE_FRAMES_CAPTURE;
