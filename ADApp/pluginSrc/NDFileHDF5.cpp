@@ -43,6 +43,11 @@ enum HDF5Compression_t {HDF5CompressNone=0, HDF5CompressNumBits, HDF5CompressSZi
 #define ALIGNMENT_BOUNDARY 1048576
 #define INFINITE_FRAMES_CAPTURE 10000 /* Used to calculate istorek (the size of the chunk index binar search tree) when capturing infinite number of frames */
 
+#ifdef HDF5_BTREE_IK_MAX_ENTRIES
+  #define  MAX_ISTOREK ((HDF5_BTREE_IK_MAX_ENTRIES/2)-1)
+#else
+  #define MAX_ISTOREK 32767  /* HDF5 Binary Search tree max. */
+#endif
 
 static const char *driverName = "NDFileHDF5";
 
@@ -2002,7 +2007,6 @@ unsigned int NDFileHDF5::calcIstorek()
     num_chunks *= (unsigned int)div_result;
   }
   retval = num_chunks/2;
-  if (retval <= 0) retval = 1;
   return retval;
 }
 
@@ -3017,10 +3021,33 @@ asynStatus NDFileHDF5::createNewFile(const char *fileName)
   #endif
   
   hid_t create_plist = H5Pcreate(H5P_FILE_CREATE);
+  unsigned int istorek = this->calcIstorek();
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
-            "%s::%s Setting istorek=%d\n",
-            driverName, functionName, this->calcIstorek());
-  hdfstatus = H5Pset_istore_k(create_plist, this->calcIstorek());
+            "%s::%s Setting istorek=%u\n",
+            driverName, functionName, istorek);
+  // Check if the calculated value of istorek is greater than the maximum allowed
+  if (istorek > MAX_ISTOREK){
+    // Cap the value at the maximum and notify of this
+    istorek = MAX_ISTOREK;
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING,
+              "%s::%s Istorek was greater than %u, using %u\n",
+              driverName, functionName, istorek, istorek);
+  }
+  // Only set the istorek value if it is valid
+  if (istorek <= 1){
+    // Do not set this value as istorek, simply raise a warning
+    asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING,
+              "%s::%s Istorek is %u, using default\n",
+              driverName, functionName, istorek);
+  } else {
+    // We should have a valid istorek value, submit it and check the result
+    hdfstatus = H5Pset_istore_k(create_plist, istorek);
+    if (hdfstatus < 0){
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s%s Warning: failed to set istorek parameter = %u\n",
+                driverName, functionName, istorek);
+    }
+  }
 
   this->file = H5Fcreate(fileName, H5F_ACC_TRUNC, create_plist, access_plist);
   if (this->file <= 0){
