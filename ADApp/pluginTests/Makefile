@@ -34,10 +34,6 @@ ifdef BOOST
   plugin-test_SRCS += test_NDFileHDF5AttributeDataset.cpp
   plugin-test_SRCS += test_NDPosPlugin.cpp
 
-  USR_INCLUDES += $(HDF5_INCLUDE)
-  USR_INCLUDES += $(SZ_INCLUDE)
-  USR_INCLUDES += $(XML2_INCLUDE)
-
   # Add tests for new plugins like this:
   #plugin-test_SRCS += test_<plugin name>.cpp
   
@@ -45,6 +41,10 @@ ifdef BOOST
   boost_unit_test_framework_DIR=$(BOOST_LIB)
 endif
 
-include $(TOP)/ADApp/commonDriverMakefile
+USR_INCLUDES += $(HDF5_INCLUDE)
+USR_INCLUDES += $(SZ_INCLUDE)
+USR_INCLUDES += $(XML2_INCLUDE)
+
+PROD_LIBS += NDPlugin ADBase asyn
 
 include $(TOP)/configure/RULES
