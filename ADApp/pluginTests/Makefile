@@ -41,6 +41,6 @@ USR_INCLUDES += $(HDF5_INCLUDE)
 USR_INCLUDES += $(SZ_INCLUDE)
 USR_INCLUDES += $(XML2_INCLUDE)
 
-include $(TOP)/ADApp/commonDriverMakefile
+PROD_LIBS += NDPlugin ADBase asyn
 
 include $(TOP)/configure/RULES
