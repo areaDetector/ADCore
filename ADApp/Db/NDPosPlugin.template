@@ -7,6 +7,8 @@
 # This associates the template with an edm screen
 # % gui, $(PORT), edmtab, NDPosPlugin.edl, P=$(P),R=$(R)
 
+include "NDPluginBase.template"
+
 # File path.
 record(waveform, "$(P)$(R)Filename")
 {
