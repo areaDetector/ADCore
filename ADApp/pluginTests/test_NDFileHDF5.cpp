@@ -73,7 +73,6 @@ struct NDFileHDF5TestFixture
 
   void setup_hdf_stream()
   {
-    size_t nactual;
     hdf5->write(NDFileWriteModeString, NDFileModeStream);
     hdf5->write(NDFilePathString, "/tmp");
     hdf5->write(NDFileNameString, "testing");
