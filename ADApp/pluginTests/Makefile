@@ -30,16 +30,16 @@ ifdef BOOST
   plugin-test_SRCS += plugin-test.cpp
   plugin-test_SRCS += test_NDPluginCircularBuff.cpp
   plugin-test_SRCS += test_NDFileHDF5.cpp
-  USR_INCLUDES += $(HDF5_INCLUDE)
-  USR_INCLUDES += $(SZ_INCLUDE)
-  USR_INCLUDES += $(XML2_INCLUDE)
-
   # Add tests for new plugins like this:
   #plugin-test_SRCS += test_<plugin name>.cpp
   
   plugin-test_LIBS += boost_unit_test_framework simDetector ADTestUtility
   boost_unit_test_framework_DIR=$(BOOST_LIB)
 endif
+
+USR_INCLUDES += $(HDF5_INCLUDE)
+USR_INCLUDES += $(SZ_INCLUDE)
+USR_INCLUDES += $(XML2_INCLUDE)
 
 include $(TOP)/ADApp/commonDriverMakefile
 
