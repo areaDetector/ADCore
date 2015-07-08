@@ -13,6 +13,7 @@
 
 #include <epicsThread.h>
 #include <asynPortClient.h>
+#include "AsynException.h"
 
 #define MAX_PARAMETER_STRING_LENGTH 1024
 

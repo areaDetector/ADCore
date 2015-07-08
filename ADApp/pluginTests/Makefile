@@ -14,6 +14,7 @@ LIBRARY_IOC_WIN32 += ADTestUtility
 LIBRARY_IOC_Linux += ADTestUtility
 ADTestUtility_SRCS += testingutilities.cpp
 ADTestUtility_SRCS += AsynPortClientContainer.cpp
+ADTestUtility_SRCS += AsynException.cpp
 ADTestUtility_SRCS += SimulatedDetectorWrapper.cpp
 ADTestUtility_SRCS += HDF5PluginWrapper.cpp
 ADTestUtility_SRCS += HDF5FileReader.cpp
@@ -28,12 +29,8 @@ ifdef BOOST
   PROD_IOC_Linux += plugin-test
   plugin-test_SRCS += plugin-test.cpp
   plugin-test_SRCS += test_NDPluginCircularBuff.cpp
-  
   plugin-test_SRCS += test_NDFileHDF5.cpp
   plugin-test_SRCS += test_NDFileHDF5AttributeDataset.cpp
-  USR_INCLUDES += $(HDF5_INCLUDE)
-  USR_INCLUDES += $(SZ_INCLUDE)
-  USR_INCLUDES += $(XML2_INCLUDE)
 
   # Add tests for new plugins like this:
   #plugin-test_SRCS += test_<plugin name>.cpp
@@ -42,6 +39,10 @@ ifdef BOOST
   boost_unit_test_framework_DIR=$(BOOST_LIB)
 endif
 
-include $(TOP)/ADApp/commonDriverMakefile
+USR_INCLUDES += $(HDF5_INCLUDE)
+USR_INCLUDES += $(SZ_INCLUDE)
+USR_INCLUDES += $(XML2_INCLUDE)
+
+PROD_LIBS += NDPlugin ADBase asyn
 
 include $(TOP)/configure/RULES
