@@ -16,6 +16,12 @@
 
 static const char *driverName = "NDPosPlugin";
 
+/** Callback function that is called by the NDArray driver with new NDArray data.
+  * If the plugin is running then it attaches position data to the NDArray as NDAttributes
+  * and then passes the array on.  If the plugin is not running then NDArrays are not
+  * passed through to the next plugin(s) in the chain.
+  * \param[in] pArray  The NDArray from the callback.
+  */ 
 void NDPosPlugin::processCallbacks(NDArray *pArray)
 {
   int index = 0;
@@ -46,7 +52,9 @@ void NDPosPlugin::processCallbacks(NDArray *pArray)
           sspos << ",";
         }
         sspos << iter->first << "=" << iter->second;
+        // Create the NDAttribute with the position data
         NDAttribute *pAtt = new NDAttribute(iter->first.c_str(), "Position of NDArray", NDAttrSourceDriver, driverName, NDAttrInt32, &(iter->second));
+        // Add the NDAttribute to the NDArray
         pArray->pAttributeList->add(pAtt);
       }
       sspos << "]";
@@ -72,6 +80,12 @@ void NDPosPlugin::processCallbacks(NDArray *pArray)
   }
 }
 
+/** Sets an int32 parameter.
+  * \param[in] pasynUser asynUser structure that contains the function code in pasynUser->reason. 
+  * \param[in] value The value for this parameter 
+  *
+  * Takes action if the function code requires it.
+  */
 asynStatus NDPosPlugin::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
   int function = pasynUser->reason;
@@ -128,6 +142,14 @@ asynStatus NDPosPlugin::writeInt32(asynUser *pasynUser, epicsInt32 value)
   return status;
 }
 
+/** Called when asyn clients call pasynOctet->write().
+  * This function performs actions for some parameters, including AttributesFile.
+  * For all parameters it sets the value in the parameter library and calls any registered callbacks..
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value Address of the string to write.
+  * \param[in] nChars Number of characters to write.
+  * \param[out] nActual Number of characters actually written.
+  */
 asynStatus NDPosPlugin::writeOctet(asynUser *pasynUser, const char *value, size_t nChars, size_t *nActual)
 {
   int addr=0;
@@ -176,6 +198,10 @@ asynStatus NDPosPlugin::writeOctet(asynUser *pasynUser, const char *value, size_
   return status;
 }
 
+/** Loads an XML position definition file.
+  * This function reads the filename and valid parameters and if the file is considered valid
+  * then the positions are loaded and appended to the position set.
+  */
 asynStatus NDPosPlugin::loadFile()
 {
   asynStatus status = asynSuccess;
@@ -202,6 +228,21 @@ asynStatus NDPosPlugin::loadFile()
   return status;
 }
 
+/** Constructor for the NDPosPlugin class.
+  * \param[in] portName The name of the asyn port driver to be created.
+  * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when 
+  *            NDPluginDriverBlockingCallbacks=0.  Larger queues can decrease the number of dropped arrays,
+  *            at the expense of more NDArray buffers being allocated from the underlying driver's NDArrayPool.
+  * \param[in] blockingCallbacks Initial setting for the NDPluginDriverBlockingCallbacks flag.
+  *            0=callbacks are queued and executed by the callback thread; 1 callbacks execute in the thread
+  *            of the driver doing the callbacks.
+  * \param[in] NDArrayPort Name of asyn port driver for initial source of NDArray callbacks.
+  * \param[in] NDArrayAddr asyn port driver address for initial source of NDArray callbacks.
+  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
+  *            allowed to allocate. Set this to -1 to allow an unlimited amount of memory.
+  * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  */
 NDPosPlugin::NDPosPlugin(const char *portName,
                          int queueSize,
                          int blockingCallbacks,
