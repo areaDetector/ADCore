@@ -10,12 +10,12 @@ endif
 
 # Optionally include useful modules
 ifdef DEVIOCSTATS
-	$(PROD_NAME)_DBD += devIocStats.dbd
-	PROD_LIBS += devIocStats
+  $(PROD_NAME)_DBD += devIocStats.dbd
+  PROD_LIBS += devIocStats
 endif
 ifdef ALIVE
-	$(PROD_NAME)_DBD += aliveSupport.dbd
-	PROD_LIBS += alive
+  $(PROD_NAME)_DBD += aliveSupport.dbd
+  PROD_LIBS += alive
 endif
 
 PROD_LIBS               += calc busy sscan autosave
