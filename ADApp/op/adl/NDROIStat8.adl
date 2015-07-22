@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-3/ADCore/ADApp/op/adl/NDROIStat8.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDROIStat8.adl"
 	version=030107
 }
 display {
@@ -1970,148 +1970,137 @@ text {
 	limits {
 	}
 }
-composite {
+text {
+	object {
+		x=1016
+		y=60
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="More"
+}
+"related display" {
 	object {
 		x=1006
-		y=60
+		y=84
 		width=60
-		height=219
+		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=1016
-				y=60
-				width=40
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="More"
-		}
-		"related display" {
-			object {
-				x=1006
-				y=84
-				width=60
-				height=20
-			}
-			display[0] {
-				label="ROIStat full"
-				name="NDROIStatN.adl"
-				args="P=$(P),R=$(R)$(ROI1)"
-			}
-			clr=53
-			bclr=4
-		}
-		"related display" {
-			object {
-				x=1006
-				y=109
-				width=60
-				height=20
-			}
-			display[0] {
-				label="ROIStat full"
-				name="NDROIStatN.adl"
-				args="P=$(P),R=$(R)$(ROI2)"
-			}
-			clr=53
-			bclr=4
-		}
-		"related display" {
-			object {
-				x=1006
-				y=134
-				width=60
-				height=20
-			}
-			display[0] {
-				label="ROIStat full"
-				name="NDROIStatN.adl"
-				args="P=$(P),R=$(R)$(ROI3)"
-			}
-			clr=53
-			bclr=4
-		}
-		"related display" {
-			object {
-				x=1006
-				y=159
-				width=60
-				height=20
-			}
-			display[0] {
-				label="ROIStat full"
-				name="NDROIStatN.adl"
-				args="P=$(P),R=$(R)$(ROI4)"
-			}
-			clr=53
-			bclr=4
-		}
-		"related display" {
-			object {
-				x=1006
-				y=184
-				width=60
-				height=20
-			}
-			display[0] {
-				label="ROIStat full"
-				name="NDROIStatN.adl"
-				args="P=$(P),R=$(R)$(ROI5)"
-			}
-			clr=53
-			bclr=4
-		}
-		"related display" {
-			object {
-				x=1006
-				y=209
-				width=60
-				height=20
-			}
-			display[0] {
-				label="ROIStat full"
-				name="NDROIStatN.adl"
-				args="P=$(P),R=$(R)$(ROI6)"
-			}
-			clr=53
-			bclr=4
-		}
-		"related display" {
-			object {
-				x=1006
-				y=234
-				width=60
-				height=20
-			}
-			display[0] {
-				label="ROIStat full"
-				name="NDROIStatN.adl"
-				args="P=$(P),R=$(R)$(ROI7)"
-			}
-			clr=53
-			bclr=4
-		}
-		"related display" {
-			object {
-				x=1006
-				y=259
-				width=60
-				height=20
-			}
-			display[0] {
-				label="ROIStat full"
-				name="NDROIStatN.adl"
-				args="P=$(P),R=$(R)$(ROI8)"
-			}
-			clr=53
-			bclr=4
-		}
+	display[0] {
+		label="ROIStat full"
+		name="NDROIStatN.adl"
+		args="P=$(P),R=$(R),ROI=$(ROI1)"
 	}
+	clr=53
+	bclr=4
+}
+"related display" {
+	object {
+		x=1006
+		y=109
+		width=60
+		height=20
+	}
+	display[0] {
+		label="ROIStat full"
+		name="NDROIStatN.adl"
+		args="P=$(P),R=$(R),ROI=$(ROI2)"
+	}
+	clr=53
+	bclr=4
+}
+"related display" {
+	object {
+		x=1006
+		y=134
+		width=60
+		height=20
+	}
+	display[0] {
+		label="ROIStat full"
+		name="NDROIStatN.adl"
+		args="P=$(P),R=$(R),ROI=$(ROI3)"
+	}
+	clr=53
+	bclr=4
+}
+"related display" {
+	object {
+		x=1006
+		y=159
+		width=60
+		height=20
+	}
+	display[0] {
+		label="ROIStat full"
+		name="NDROIStatN.adl"
+		args="P=$(P),R=$(R),ROI=$(ROI4)"
+	}
+	clr=53
+	bclr=4
+}
+"related display" {
+	object {
+		x=1006
+		y=184
+		width=60
+		height=20
+	}
+	display[0] {
+		label="ROIStat full"
+		name="NDROIStatN.adl"
+		args="P=$(P),R=$(R),ROI=$(ROI5)"
+	}
+	clr=53
+	bclr=4
+}
+"related display" {
+	object {
+		x=1006
+		y=209
+		width=60
+		height=20
+	}
+	display[0] {
+		label="ROIStat full"
+		name="NDROIStatN.adl"
+		args="P=$(P),R=$(R),ROI=$(ROI6)"
+	}
+	clr=53
+	bclr=4
+}
+"related display" {
+	object {
+		x=1006
+		y=234
+		width=60
+		height=20
+	}
+	display[0] {
+		label="ROIStat full"
+		name="NDROIStatN.adl"
+		args="P=$(P),R=$(R),ROI=$(ROI7)"
+	}
+	clr=53
+	bclr=4
+}
+"related display" {
+	object {
+		x=1006
+		y=259
+		width=60
+		height=20
+	}
+	display[0] {
+		label="ROIStat full"
+		name="NDROIStatN.adl"
+		args="P=$(P),R=$(R),ROI=$(ROI8)"
+	}
+	clr=53
+	bclr=4
 }
 composite {
 	object {
