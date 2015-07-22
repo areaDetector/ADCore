@@ -12,9 +12,9 @@ epicsEnvSet("PORT",   "SIM1")
 # The queue size for all plugins
 epicsEnvSet("QSIZE",  "20")
 # The maximim image width; used for row profiles in the NDPluginStats plugin
-epicsEnvSet("XSIZE",  "1024")
+epicsEnvSet("XSIZE",  "2000")
 # The maximim image height; used for column profiles in the NDPluginStats plugin
-epicsEnvSet("YSIZE",  "1024")
+epicsEnvSet("YSIZE",  "1500")
 # The maximum number of time series points in the NDPluginStats plugin
 epicsEnvSet("NCHANS", "2048")
 # The maximum number of frames buffered in the NDPluginCircularBuff plugin
@@ -53,13 +53,13 @@ dbLoadRecords("simDetector.template","P=$(PREFIX),R=cam2:,PORT=SIM2,ADDR=0,TIMEO
 # Create a standard arrays plugin, set it to get data from first simDetector driver.
 NDStdArraysConfigure("Image1", 3, 0, "$(PORT)", 0)
 
-# This creates a waveform large enough for 1024x1024x3 (e.g. RGB color) arrays.
+# This creates a waveform large enough for 2000x2000x3 (e.g. RGB color) arrays.
 # This waveform only allows transporting 8-bit images
-dbLoadRecords("NDStdArrays.template", "P=$(PREFIX),R=image1:,PORT=Image1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT),TYPE=Int8,FTVL=UCHAR,NELEMENTS=3145728")
+dbLoadRecords("NDStdArrays.template", "P=$(PREFIX),R=image1:,PORT=Image1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT),TYPE=Int8,FTVL=UCHAR,NELEMENTS=12000000")
 # This waveform only allows transporting 16-bit images
-#dbLoadRecords("NDStdArrays.template", "P=$(PREFIX),R=image1:,PORT=Image1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT),TYPE=Int16,FTVL=USHORT,NELEMENTS=3145728")
+#dbLoadRecords("NDStdArrays.template", "P=$(PREFIX),R=image1:,PORT=Image1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT),TYPE=Int16,FTVL=USHORT,NELEMENTS=12000000")
 # This waveform allows transporting 32-bit images
-#dbLoadRecords("NDStdArrays.template", "P=$(PREFIX),R=image1:,PORT=Image1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT),TYPE=Int32,FTVL=LONG,NELEMENTS=3145728")
+#dbLoadRecords("NDStdArrays.template", "P=$(PREFIX),R=image1:,PORT=Image1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT),TYPE=Int32,FTVL=LONG,NELEMENTS=12000000")
 
 # Create a standard arrays plugin, set it to get data from second simDetector driver.
 NDStdArraysConfigure("Image2", 1, 0, "SIM2", 0)
