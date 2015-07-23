@@ -24,15 +24,18 @@ Release Notes
 =============
 
 
-R2-3 (May XXX, 2015)
+R2-3 (July 23, 2015)
 ========================
-### devIocStats
-* The example iocs in ADCore and other drivers are now built with the devIocStats module,  
-  which provides very useful resource utilization information for the IOC. 
-  This module must now be installed if building the example IOCs in areaDetector.  
+### devIocStats and alive modules
+* The example iocs in ADCore and other drivers can now optionally be built with the 
+  devIocStats module, which provides very useful resource utilization information for the IOC.
   devIocStats runs on all supported architectures.
-  areaDetector/configure/EXAMPLE_PROD_LIBS.local has been modified to include the definition of
-  DEVIOCSTATS.  The OPI screen can be loaded from Plugins/Other/devIocStats.
+  The OPI screen can be loaded from Plugins/Other/devIocStats.
+  It is enabled by default in areaDetector/configure/EXAMPLE_RELEASE_PRODS.local. 
+  The synApps alive module can also be built into detector IOCs.  It provdes status information
+  about the IOC to a centeral server.  It is disabled by default in 
+  areaDetector/configure/EXAMPLE_RELEASE_PRODS.local.  areaDetector/INSTALL_GUIDE.md has been
+  updated to describe what needs to be done to enable or disable these optional modules.
 
 ### NDPluginFile
 * Fixed a serious performance problem.  The calls to openFile() and closeFile() in the derived file 
@@ -45,14 +48,20 @@ R2-3 (May XXX, 2015)
   in Single mode.  This required locking the mutex in the derived file writing classes when
   they access the parameter library.
 
+### NDPluginROIStat
+* Added time-series support for each of the statistics in each ROI.  This is the same as the
+  time-series support in the NDPluginStats and NDPluginAttribute plugins.
+
 ### NDFileHDF5
-* Bug fix: 
+* Bug fixes: 
   * When writing files in Single mode if NumCapture was 0 then the chunking was computed 
     incorrectly and the files could be much larger than they should be.
+  * There was a problem with the HDF5 istorek parameter not being set correctly.
 
 ### commonDriverMakefile
 * Include SNCSEQ libraries if SNCSEQ is defined.  This must be defined if the CALC module
   was built with SNCSEQ support.
+* Optionally include DEVIOCSTATS and ALIVE libraries and dbd files if these are defined.
 
 
 R2-2 (March 23, 2015)
