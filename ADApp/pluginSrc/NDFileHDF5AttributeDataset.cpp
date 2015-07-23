@@ -152,7 +152,7 @@ asynStatus NDFileHDF5AttributeDataset::writeAttributeDataset(hdf5::When_t whenTo
   return status;
 }
 
-asynStatus NDFileHDF5AttributeDataset::writeAttributeDataset(hdf5::When_t whenToSave, hid_t *offsets, NDAttribute *ndAttr, int flush)
+asynStatus NDFileHDF5AttributeDataset::writeAttributeDataset(hdf5::When_t whenToSave, hsize_t *offsets, NDAttribute *ndAttr, int flush)
 {
   asynStatus status = asynSuccess;
   char * stackbuf[MAX_ATTRIBUTE_STRING_SIZE];
@@ -413,13 +413,13 @@ void NDFileHDF5AttributeDataset::extendDataSet()
   return;
 }
 
-void NDFileHDF5AttributeDataset::extendDataSet(hid_t *offsets)
+void NDFileHDF5AttributeDataset::extendDataSet(hsize_t *offsets)
 {
   // In this case the dimensions and offsets have been supplied to us so simply
   // use these values.
   for (int index = 0; index < this->extraDimensions_; index++){
-    if (offsets[index]+1 < (int)this->virtualdims_[index]+1){
-      if ((int)this->dims_[index] < offsets[index]+1){
+    if (offsets[index]+1 < this->virtualdims_[index]+1){
+      if (this->dims_[index] < offsets[index]+1){
         // Increase the dimension to accomodate the new position
         this->dims_[index] = offsets[index]+1;
       }

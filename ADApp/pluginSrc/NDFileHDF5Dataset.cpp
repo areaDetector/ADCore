@@ -147,7 +147,7 @@ asynStatus NDFileHDF5Dataset::extendDataSet(int extradims)
   return asynSuccess;
 }
 
-asynStatus NDFileHDF5Dataset::extendDataSet(int extradims, int *offsets)
+asynStatus NDFileHDF5Dataset::extendDataSet(int extradims, hsize_t *offsets)
 {
   asynStatus status = asynSuccess;
   static const char *functionName = "extendDataSet";
@@ -155,8 +155,8 @@ asynStatus NDFileHDF5Dataset::extendDataSet(int extradims, int *offsets)
   // If this method has been called then we are being asked to extend to a particular index
   for (int index = 0; index <= extradims; index++){
     // Check the requested offset is not outside the dimension maximum
-    if (offsets[index] < (int)this->virtualdims_[index]){
-      if ((int)this->dims_[index] < offsets[index]+1){
+    if (offsets[index] < this->virtualdims_[index]){
+      if (this->dims_[index] < offsets[index]+1){
         // Increase the dimension to accomodate the new position
         this->dims_[index] = offsets[index]+1;
       }

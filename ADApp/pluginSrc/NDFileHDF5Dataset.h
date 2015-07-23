@@ -14,7 +14,7 @@ class NDFileHDF5Dataset
 
     asynStatus configureDims(NDArray *pArray, bool multiframe, int extradimensions, int *extra_dims, int *user_chunking);
     asynStatus extendDataSet(int extradims);
-    asynStatus extendDataSet(int extradims, int *offsets);
+    asynStatus extendDataSet(int extradims, hsize_t *offsets);
     asynStatus writeFile(NDArray *pArray, hid_t datatype, hid_t dataspace, hsize_t *framesize);
     hid_t getHandle();
     asynStatus flushDataset();

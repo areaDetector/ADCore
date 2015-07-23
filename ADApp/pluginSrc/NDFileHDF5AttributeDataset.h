@@ -27,7 +27,7 @@ public:
   asynStatus createDataset(int user_chunking);
   asynStatus createDataset(bool multiframe, int extradimensions, int *extra_dims, int *user_chunking);
   asynStatus writeAttributeDataset(hdf5::When_t whenToSave, NDAttribute *ndAttr, int flush);
-  asynStatus writeAttributeDataset(hdf5::When_t whenToSave, hid_t *offsets, NDAttribute *ndAttr, int flush);
+  asynStatus writeAttributeDataset(hdf5::When_t whenToSave, hsize_t *offsets, NDAttribute *ndAttr, int flush);
   asynStatus closeAttributeDataset();
   asynStatus flushDataset();
   std::string getName();
@@ -39,7 +39,7 @@ private:
   asynStatus configureDimsFromDataset(bool multiframe, int extradimensions, int *extra_dims, int *user_chunking);
   asynStatus typeAsHdf();
   void extendDataSet();
-  void extendDataSet(hid_t *offsets);
+  void extendDataSet(hsize_t *offsets);
 
   std::string      name_;            // Name of the attribute
   std::string      dsetName_;        // Name of the dataset to store

@@ -249,8 +249,8 @@ asynStatus NDFileHDF5::startSWMR()
   hid_t hdfstatus = H5Fstart_swmr_write(this->file);
   if (hdfstatus < 0) {
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-              "%s::%s unable start SWMR write operation. ERRORCODE=%u\n",
-              driverName, functionName, hdfstatus);
+              "%s::%s unable start SWMR write operation. ERRORCODE=%d\n",
+              driverName, functionName, (int)hdfstatus);
     return asynError;
   }
   return asynSuccess;
@@ -1174,7 +1174,7 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
   epicsInt32 numCaptured;
   double dt=0.0, period=0.0, runtime = 0.0;
   int extradims = 0;
-  int offsets[3] = {0, 0, 0};
+  hsize_t offsets[3] = {0, 0, 0};
   static const char *functionName = "writeFile";
 
   if (this->file == 0) {
@@ -1267,22 +1267,25 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
     // We are in positional placement so retrieve the positions
     // and store them into the offsets variable
     if (extradims == 0){
-      int *iPtr = offsets;
-      pArray->pAttributeList->find(posNameDimN)->getValue(NDAttrInt32, iPtr, NULL);
+      epicsInt32 ival = 0;
+      pArray->pAttributeList->find(posNameDimN)->getValue(NDAttrInt32, &ival, NULL);
+      offsets[0] = ival;
     }
     if (extradims == 1){
-      int *iPtr = offsets;
-      pArray->pAttributeList->find(posNameDimX)->getValue(NDAttrInt32, iPtr, NULL);
-      iPtr++;
-      pArray->pAttributeList->find(posNameDimN)->getValue(NDAttrInt32, iPtr, NULL);
+      epicsInt32 ival = 0;
+      pArray->pAttributeList->find(posNameDimX)->getValue(NDAttrInt32, &ival, NULL);
+      offsets[0] = ival;
+      pArray->pAttributeList->find(posNameDimN)->getValue(NDAttrInt32, &ival, NULL);
+      offsets[1] = ival;
     }
     if (extradims == 2){
-      int *iPtr = offsets;
-      pArray->pAttributeList->find(posNameDimY)->getValue(NDAttrInt32, iPtr, NULL);
-      iPtr++;
-      pArray->pAttributeList->find(posNameDimX)->getValue(NDAttrInt32, iPtr, NULL);
-      iPtr++;
-      pArray->pAttributeList->find(posNameDimN)->getValue(NDAttrInt32, iPtr, NULL);
+      epicsInt32 ival = 0;
+      pArray->pAttributeList->find(posNameDimY)->getValue(NDAttrInt32, &ival, NULL);
+      offsets[0] = ival;
+      pArray->pAttributeList->find(posNameDimX)->getValue(NDAttrInt32, &ival, NULL);
+      offsets[1] = ival;
+      pArray->pAttributeList->find(posNameDimN)->getValue(NDAttrInt32, &ival, NULL);
+      offsets[2] = ival;
     }
   }
 
@@ -1455,13 +1458,13 @@ asynStatus NDFileHDF5::closeFile()
 
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
             "%s::%s closing HDF cparms %d\n", 
-            driverName, functionName, this->cparms);
+            driverName, functionName, (int)this->cparms);
 
   H5Pclose(this->cparms);
 
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
             "%s::%s closing HDF datatype %d\n", 
-            driverName, functionName, this->datatype);
+            driverName, functionName, (int)this->datatype);
 
   H5Tclose(this->datatype);
 
@@ -2426,7 +2429,7 @@ asynStatus NDFileHDF5::calculateAttributeChunking(int *chunking)
 /** Write the NDArray attributes to the file
  *
  */
-asynStatus NDFileHDF5::writeAttributeDataset(hdf5::When_t whenToSave, int positionMode, int *offsets)
+asynStatus NDFileHDF5::writeAttributeDataset(hdf5::When_t whenToSave, int positionMode, hsize_t *offsets)
 {
   asynStatus status = asynSuccess;
   NDAttribute *ndAttr = NULL;
