@@ -2343,7 +2343,7 @@ asynStatus NDFileHDF5::createAttributeDataset(NDArray *pArray)
 
       hdf5::DataSource dsource = dset->data_source();
       std::string atName = std::string(epicsStrDup(ndAttr->getName()));
-      std::tr1::shared_ptr<NDFileHDF5AttributeDataset> attDset = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(this->file, atName, ndAttr->getDataType()));
+      NDFileHDF5AttributeDataset *attDset = new NDFileHDF5AttributeDataset(this->file, atName, ndAttr->getDataType());
       attDset->setDsetName(dset->get_name());
       attDset->setWhenToSave(dsource.get_when_to_save());
       attDset->setParentGroupName(dset->get_parent()->get_full_name());
@@ -2370,7 +2370,7 @@ asynStatus NDFileHDF5::createAttributeDataset(NDArray *pArray)
     } else {
       if(groupDefault > -1) {
         std::string atName = std::string(epicsStrDup(ndAttr->getName()));
-        std::tr1::shared_ptr<NDFileHDF5AttributeDataset> attDset = std::tr1::shared_ptr<NDFileHDF5AttributeDataset>(new NDFileHDF5AttributeDataset(this->file, atName, ndAttr->getDataType()));
+        NDFileHDF5AttributeDataset *attDset = new NDFileHDF5AttributeDataset(this->file, atName, ndAttr->getDataType());
         attDset->setParentGroupName(def_group->get_full_name().c_str());
         if (dimAttDataset == 1){
           attDset->createDataset(this->multiFrameFile, extraDims, numCapture, user_chunking);
@@ -2436,8 +2436,8 @@ asynStatus NDFileHDF5::writeAttributeDataset(hdf5::When_t whenToSave, int positi
   int flush = 0;
   static const char *functionName = "writeAttributeDataset";
 
-  for (std::list<std::tr1::shared_ptr<NDFileHDF5AttributeDataset> >::iterator it_node = attrList.begin(); it_node != attrList.end(); ++it_node){
-    std::tr1::shared_ptr<NDFileHDF5AttributeDataset> hdfAttrNode = *it_node;
+  for (std::list<NDFileHDF5AttributeDataset*>::iterator it_node = attrList.begin(); it_node != attrList.end(); ++it_node){
+    NDFileHDF5AttributeDataset *hdfAttrNode = *it_node;
     // find the named attribute in the NDAttributeList
     ndAttr = this->pFileAttributes->find(hdfAttrNode->getName().c_str());
     if (ndAttr == NULL){
@@ -2476,7 +2476,7 @@ asynStatus NDFileHDF5::writeAttributeDataset(hdf5::When_t whenToSave, int positi
 asynStatus NDFileHDF5::closeAttributeDataset()
 {
   asynStatus status = asynSuccess;
-  std::tr1::shared_ptr<NDFileHDF5AttributeDataset> dsetPtr;
+  NDFileHDF5AttributeDataset *dsetPtr;
   static const char *functionName = "closeAttributeDataset";
 
   while (attrList.size() > 0){
@@ -2485,6 +2485,7 @@ asynStatus NDFileHDF5::closeAttributeDataset()
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, "%s::%s: closing attribute dataset \'%s\'\n",
               driverName, functionName, dsetPtr->getName().c_str());
     dsetPtr->closeAttributeDataset();
+    delete(dsetPtr);
   }
 
   return status;

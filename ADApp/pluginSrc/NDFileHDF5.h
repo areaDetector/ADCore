@@ -6,7 +6,6 @@
  */
 
 #include <list>
-#include <tr1/memory>
 #include <hdf5.h>
 #include <asynDriver.h>
 #include <NDPluginFile.h>
@@ -215,7 +214,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     int bytesPerElement;
     char *hostname;
 
-    std::list<std::tr1::shared_ptr<NDFileHDF5AttributeDataset> > attrList;
+    std::list<NDFileHDF5AttributeDataset*> attrList;
 
     /* HDF5 handles and references */
     hid_t file;
