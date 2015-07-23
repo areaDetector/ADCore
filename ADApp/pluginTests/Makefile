@@ -4,29 +4,23 @@ include $(TOP)/configure/CONFIG
 #  ADD MACRO DEFINITIONS AFTER THIS LINE
 #=============================
 
-# The ADTestUtility library contain a number of helper functions to generate test
-# data, asyn port names, record output NDArrays etc etc.
-# This utility library can be used by external modules that provides unittests.
-# It depends on asyn, and areaDetector libs - but we dont
-# need to do the linking here as long as the final test executable binary links.
-# The ADTestUtility does not depend on boost!
-LIBRARY_IOC_WIN32 += ADTestUtility
-LIBRARY_IOC_Linux += ADTestUtility
-ADTestUtility_SRCS += testingutilities.cpp
-ADTestUtility_SRCS += AsynPortClientContainer.cpp
-ADTestUtility_SRCS += AsynException.cpp
-ADTestUtility_SRCS += SimulatedDetectorWrapper.cpp
-ADTestUtility_SRCS += HDF5PluginWrapper.cpp
-ADTestUtility_SRCS += PosPluginWrapper.cpp
-ADTestUtility_SRCS += HDF5FileReader.cpp
-
 # Persuade travis (ubuntu 12.04) to use HDF5 API V2 (1.8 rather than default 1.6)
 USR_CXXFLAGS_Linux += -DH5_NO_DEPRECATED_SYMBOLS -DH5Dopen_vers=2
 
 # The plugin-test executable with the actual unittests depend on the boost 
 # unittest framework so we can only build it if boost has been configured
 ifdef BOOST
-  PROD_IOC_WIN32 += plugin-test
+  # The ADTestUtility library contain a number of helper functions to generate test
+  # data, asyn port names, record output NDArrays etc etc.
+  # This utility library can be used by external modules that provides unittests.
+  LIBRARY_IOC_Linux += ADTestUtility
+  ADTestUtility_SRCS += testingutilities.cpp
+  ADTestUtility_SRCS += AsynPortClientContainer.cpp
+  ADTestUtility_SRCS += AsynException.cpp
+  ADTestUtility_SRCS += SimulatedDetectorWrapper.cpp
+  ADTestUtility_SRCS += HDF5PluginWrapper.cpp
+  ADTestUtility_SRCS += HDF5FileReader.cpp
+
   PROD_IOC_Linux += plugin-test
   plugin-test_SRCS += plugin-test.cpp
   plugin-test_SRCS += test_NDPluginCircularBuff.cpp
