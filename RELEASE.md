@@ -32,8 +32,8 @@ R2-3 (July 23, 2015)
   devIocStats runs on all supported architectures.
   The OPI screen can be loaded from Plugins/Other/devIocStats.
   It is enabled by default in areaDetector/configure/EXAMPLE_RELEASE_PRODS.local. 
-  The synApps alive module can also be built into detector IOCs.  It provdes status information
-  about the IOC to a centeral server.  It is disabled by default in 
+* The synApps alive module can also be built into detector IOCs.  It provdes status information
+  about the IOC to a central server.  It is disabled by default in 
   areaDetector/configure/EXAMPLE_RELEASE_PRODS.local.  areaDetector/INSTALL_GUIDE.md has been
   updated to describe what needs to be done to enable or disable these optional modules.
 
