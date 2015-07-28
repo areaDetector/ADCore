@@ -59,7 +59,10 @@ LIB_SYS_LIBS_cygwin32   += libtiff libjpeg libjbig libz libxml2
 LIB_SYS_LIBS_cygwin32   += $(CYGWIN_RPC_LIB)
 LIB_SYS_LIBS_cygwin32   += Gdi32
 
-LIB_LIBS_Linux          += hdf5 sz
+ifdef SZIP
+  LIB_LIBS_Linux          += sz
+endif
+LIB_LIBS_Linux      += hdf5
 LIB_SYS_LIBS_Linux      += tiff jpeg xml2 z
 
 LIB_LIBS_solaris        += hdf5 sz
