@@ -19,6 +19,7 @@ using namespace std;
 #include "testingutilities.h"
 #include "SimulatedDetectorWrapper.h"
 #include "HDF5PluginWrapper.h"
+#include "HDF5FileReader.h"
 
 struct NDFileHDF5TestFixture
 {
@@ -81,6 +82,40 @@ struct NDFileHDF5TestFixture
 };
 
 BOOST_FIXTURE_TEST_SUITE(NDFileHDF5Tests, NDFileHDF5TestFixture)
+
+BOOST_AUTO_TEST_CASE(test_createDatasetType)
+{
+  // Verify that dataset is created using hid_t type as return value.
+  // From hdf5 version 1-9-222 if the dataset type was not returned correctly
+  // then attributes were not attached to the dataset.  This test checks
+  // that attributes are attached to the test dataset
+  size_t tmpdims[] = {4,6};
+  std::vector<size_t>dims(tmpdims, tmpdims + sizeof(tmpdims)/sizeof(tmpdims[0]));
+
+  // Create a test array
+  std::vector<NDArray*>arrays(1);
+  fillNDArrays(dims, NDUInt32, arrays);
+
+  // Configure the HDF5 plugin
+  setup_hdf_stream();
+
+  // Initialise the HDF5 plugin with a dummy frame
+  hdf5->processCallbacks(arrays[0]);
+
+  // Start capture to disk (1 frame only)
+  hdf5->write(NDFileNumCaptureString, 1);
+  hdf5->write(NDFileCaptureString, 1);
+
+  // Now capture the frame
+  hdf5->lock();
+  BOOST_CHECK_NO_THROW(hdf5->processCallbacks(arrays[0]));
+  hdf5->unlock();
+
+  // File has been written, open for reading
+  HDF5FileReader fr("/tmp/testing_0.5");
+  // Verify there are attributes attached to the dataset
+  BOOST_CHECK_GT(fr.getDatasetAttributeCount("/entry/data/data"), 0);
+}
 
 BOOST_AUTO_TEST_CASE(test_Capture)
 {
