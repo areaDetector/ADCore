@@ -95,13 +95,13 @@ void NDPosPlugin::processCallbacks(NDArray *pArray)
             }
             setIntegerParam(NDPos_CurrentQty, positionArray.size());
           } else if (mode == MODE_KEEP){
-            while (expectedID < IDValue && (index < positionArray.size())){
+            while (expectedID < IDValue && (index < (int)positionArray.size())){
               index++;
               expectedID += IDDifference;
               dropped++;
             }
             // If the index has reached the size of the array then we've run out of positions, abort
-            if (index == positionArray.size()){
+            if (index == (int)positionArray.size()){
               setIntegerParam(NDPos_Running, NDPOS_IDLE);
               running = NDPOS_IDLE;
             }
