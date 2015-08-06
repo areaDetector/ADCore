@@ -25,62 +25,146 @@ static const char *driverName = "NDPosPlugin";
 void NDPosPlugin::processCallbacks(NDArray *pArray)
 {
   int index = 0;
-  int running = 0;
+  int running = NDPOS_IDLE;
+  int skip = 0;
   int mode = 0;
-  //static const char *functionName = "NDPosPlugin::processCallbacks";
+  int duplicates = 0;
+  int dropped = 0;
+  int expectedID = 0;
+  int IDDifference = 0;
+  epicsInt32 IDValue = 0;
+  char IDName[MAX_STRING_SIZE];
+  static const char *functionName = "NDPosPlugin::processCallbacks";
 
   // Call the base class method
   NDPluginDriver::processCallbacks(pArray);
   getIntegerParam(NDPos_Running, &running);
   // Only attach the position data to the array if we are running
-  if (running == 1){
+  if (running == NDPOS_RUNNING){
     getIntegerParam(NDPos_CurrentIndex, &index);
     if (index >= (int)positionArray.size()){
-      // We've reached the end of our positions, stop to make sure we don't oveflow
-      setIntegerParam(NDPos_Running, 0);
-      running = 0;
+      // We've reached the end of our positions, stop to make sure we don't overflow
+      setIntegerParam(NDPos_Running, NDPOS_IDLE);
+      running = NDPOS_IDLE;
     } else {
-      // We always keep the last array so read() can use it.
-      // Release previous one. Reserve new one below during the copy.
-      if (this->pArrays[0]){
-        this->pArrays[0]->release();
-        this->pArrays[0] = NULL;
-      }
-      // We must make a copy of the array as we are going to alter it
-      this->pArrays[0] = this->pNDArrayPool->copy(pArray, this->pArrays[0], 1);
-      std::map<std::string, int> pos = positionArray[index];
-      std::stringstream sspos;
-      sspos << "[";
-      bool firstTime = true;
-      std::map<std::string, int>::iterator iter;
-      for (iter = pos.begin(); iter != pos.end(); iter++){
-        if (firstTime){
-          firstTime = false;
+      // Read the ID parameter from the NDArray.  If it cannot be found then abort
+      getStringParam(NDPos_IDName, MAX_STRING_SIZE, IDName);
+      // Check for IDName, if it is empty the we use the unique ID of the array
+      if (strcmp(IDName, "") == 0){
+        IDValue = pArray->uniqueId;
+      } else {
+        NDAttribute *IDAtt = pArray->pAttributeList->find(IDName);
+        if (IDAtt){
+          epicsInt32 IDValue;
+          if (IDAtt->getValue(NDAttrInt32, &IDValue, sizeof(epicsInt32)) == ND_ERROR){
+            // Error, unable to get the value from the ID attribute
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                      "%s::%s ERROR: could not retrieve expected ID from attribute [%s]\n",
+                      driverName, functionName, IDName);
+            setIntegerParam(NDPos_Running, NDPOS_IDLE);
+            running = NDPOS_IDLE;
+          }
         } else {
-          sspos << ",";
+          // Error, unable to find the named ID attribute
+          asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                    "%s::%s ERROR: could not find attribute [%s]\n",
+                    driverName, functionName, IDName);
+          setIntegerParam(NDPos_Running, NDPOS_IDLE);
+          running = NDPOS_IDLE;
         }
-        sspos << iter->first << "=" << iter->second;
-        // Create the NDAttribute with the position data
-        NDAttribute *pAtt = new NDAttribute(iter->first.c_str(), "Position of NDArray", NDAttrSourceDriver, driverName, NDAttrInt32, &(iter->second));
-        // Add the NDAttribute to the NDArray
-        this->pArrays[0]->pAttributeList->add(pAtt);
       }
-      sspos << "]";
-      setStringParam(NDPos_CurrentPos, sspos.str().c_str());
+      if (running == NDPOS_RUNNING){
+        // Check the ID is the same as the expected index
+        getIntegerParam(NDPos_IDDifference, &IDDifference);
+        getIntegerParam(NDPos_ExpectedID, &expectedID);
+        if (expectedID < IDValue){
+          // If expected is less than ID throw away positions and record dropped events
+          getIntegerParam(NDPos_MissingFrames, &dropped);
+          getIntegerParam(NDPos_Mode, &mode);
+          if (mode == MODE_DISCARD){
+            while ((expectedID < IDValue) && (positionArray.size() > 0)){
+              // The index will stay the same, and we need to pop the value out of the position array
+              positionArray.erase(positionArray.begin());
+              expectedID += IDDifference;
+              dropped++;
+            }
+            // If the size has dropped to zero then we've run out of positions, abort
+            if (positionArray.size() == 0){
+              setIntegerParam(NDPos_Running, NDPOS_IDLE);
+              running = NDPOS_IDLE;
+            }
+            setIntegerParam(NDPos_CurrentQty, positionArray.size());
+          } else if (mode == MODE_KEEP){
+            while (expectedID < IDValue && (index < positionArray.size())){
+              index++;
+              expectedID += IDDifference;
+              dropped++;
+            }
+            // If the index has reached the size of the array then we've run out of positions, abort
+            if (index == positionArray.size()){
+              setIntegerParam(NDPos_Running, NDPOS_IDLE);
+              running = NDPOS_IDLE;
+            }
+            setIntegerParam(NDPos_CurrentIndex, index);
+          }
+          setIntegerParam(NDPos_ExpectedID, expectedID);
+          setIntegerParam(NDPos_MissingFrames, dropped);
+        } else if (expectedID > IDValue){
+          // If expected is greater than ID then ignore the frame and record duplicate event
+          getIntegerParam(NDPos_DuplicateFrames, &duplicates);
+          duplicates++;
+          setIntegerParam(NDPos_DuplicateFrames, duplicates);
+          skip = 1;
+        }
+      }
 
-      // Check the mode
-      getIntegerParam(NDPos_Mode, &mode);
-      if (mode == MODE_DISCARD){
-        // The index will stay the same, and we need to pop the value out of the position array
-        positionArray.erase(positionArray.begin());
-        setIntegerParam(NDPos_CurrentQty, positionArray.size());
-      } else if (mode == MODE_KEEP){
-        index++;
-        setIntegerParam(NDPos_CurrentIndex, index);
+      // Only perform the actual setting of positions if we aren't skipping
+      if (skip == 0 && running == NDPOS_RUNNING){
+        // We always keep the last array so read() can use it.
+        // Release previous one. Reserve new one below during the copy.
+        if (this->pArrays[0]){
+          this->pArrays[0]->release();
+          this->pArrays[0] = NULL;
+        }
+        // We must make a copy of the array as we are going to alter it
+        this->pArrays[0] = this->pNDArrayPool->copy(pArray, this->pArrays[0], 1);
+        std::map<std::string, int> pos = positionArray[index];
+        std::stringstream sspos;
+        sspos << "[";
+        bool firstTime = true;
+        std::map<std::string, int>::iterator iter;
+        for (iter = pos.begin(); iter != pos.end(); iter++){
+          if (firstTime){
+            firstTime = false;
+          } else {
+            sspos << ",";
+          }
+          sspos << iter->first << "=" << iter->second;
+          // Create the NDAttribute with the position data
+          NDAttribute *pAtt = new NDAttribute(iter->first.c_str(), "Position of NDArray", NDAttrSourceDriver, driverName, NDAttrInt32, &(iter->second));
+          // Add the NDAttribute to the NDArray
+          this->pArrays[0]->pAttributeList->add(pAtt);
+        }
+        sspos << "]";
+        setStringParam(NDPos_CurrentPos, sspos.str().c_str());
+
+        // Check the mode
+        getIntegerParam(NDPos_Mode, &mode);
+        if (mode == MODE_DISCARD){
+          // The index will stay the same, and we need to pop the value out of the position array
+          positionArray.erase(positionArray.begin());
+          setIntegerParam(NDPos_CurrentQty, positionArray.size());
+        } else if (mode == MODE_KEEP){
+          index++;
+          setIntegerParam(NDPos_CurrentIndex, index);
+        }
+        // Increment the expectedID by the difference
+        expectedID += IDDifference;
+        setIntegerParam(NDPos_ExpectedID, expectedID);
       }
     }
     callParamCallbacks();
-    if (running == 1){
+    if (skip == 0 && running == NDPOS_RUNNING){
       this->unlock();
       doCallbacksGenericPointer(this->pArrays[0], NDArrayData, 0);
       this->lock();
@@ -110,7 +194,12 @@ asynStatus NDPosPlugin::writeInt32(asynUser *pasynUser, epicsInt32 value)
     // By default we set the value in the parameter library. If problems occur we set the old value back.
     setIntegerParam(function, value);
 
-    if (function == NDPos_Mode){
+    if (function == NDPos_Running){
+      // Reset the expected ID to the starting value
+      int expected = 0;
+      getIntegerParam(NDPos_IDStart, &expected);
+      setIntegerParam(NDPos_ExpectedID, expected);
+    } else if (function == NDPos_Mode){
       // Reset the position index to 0 if the mode is changed
       setIntegerParam(NDPos_CurrentIndex, 0);
     } else if (function == NDPos_Restart){
@@ -278,17 +367,23 @@ NDPosPlugin::NDPosPlugin(const char *portName,
   //static const char *functionName = "NDPluginAttribute::NDPluginAttribute";
 
   // Create parameters for controlling the plugin
-  createParam(str_NDPos_Filename,       asynParamOctet,        &NDPos_Filename);
-  createParam(str_NDPos_FileValid,      asynParamInt32,        &NDPos_FileValid);
-  createParam(str_NDPos_Clear,          asynParamInt32,        &NDPos_Clear);
-  createParam(str_NDPos_Running,        asynParamInt32,        &NDPos_Running);
-  createParam(str_NDPos_Restart,        asynParamInt32,        &NDPos_Restart);
-  createParam(str_NDPos_Delete,         asynParamInt32,        &NDPos_Delete);
-  createParam(str_NDPos_Mode,           asynParamInt32,        &NDPos_Mode);
-  createParam(str_NDPos_Append,         asynParamInt32,        &NDPos_Append);
-  createParam(str_NDPos_CurrentQty,     asynParamInt32,        &NDPos_CurrentQty);
-  createParam(str_NDPos_CurrentIndex,   asynParamInt32,        &NDPos_CurrentIndex);
-  createParam(str_NDPos_CurrentPos,     asynParamOctet,        &NDPos_CurrentPos);
+  createParam(str_NDPos_Filename,        asynParamOctet,        &NDPos_Filename);
+  createParam(str_NDPos_FileValid,       asynParamInt32,        &NDPos_FileValid);
+  createParam(str_NDPos_Clear,           asynParamInt32,        &NDPos_Clear);
+  createParam(str_NDPos_Running,         asynParamInt32,        &NDPos_Running);
+  createParam(str_NDPos_Restart,         asynParamInt32,        &NDPos_Restart);
+  createParam(str_NDPos_Delete,          asynParamInt32,        &NDPos_Delete);
+  createParam(str_NDPos_Mode,            asynParamInt32,        &NDPos_Mode);
+  createParam(str_NDPos_Append,          asynParamInt32,        &NDPos_Append);
+  createParam(str_NDPos_CurrentQty,      asynParamInt32,        &NDPos_CurrentQty);
+  createParam(str_NDPos_CurrentIndex,    asynParamInt32,        &NDPos_CurrentIndex);
+  createParam(str_NDPos_CurrentPos,      asynParamOctet,        &NDPos_CurrentPos);
+  createParam(str_NDPos_MissingFrames,   asynParamInt32,        &NDPos_MissingFrames);
+  createParam(str_NDPos_DuplicateFrames, asynParamInt32,        &NDPos_DuplicateFrames);
+  createParam(str_NDPos_ExpectedID,      asynParamInt32,        &NDPos_ExpectedID);
+  createParam(str_NDPos_IDName,          asynParamOctet,        &NDPos_IDName);
+  createParam(str_NDPos_IDDifference,    asynParamInt32,        &NDPos_IDDifference);
+  createParam(str_NDPos_IDStart,         asynParamInt32,        &NDPos_IDStart);
 
   // Set the plugin type string
   setStringParam(NDPluginDriverPluginType, "NDPositionPlugin");
@@ -303,8 +398,19 @@ NDPosPlugin::NDPosPlugin(const char *portName,
   // Set the position string to empty
   setStringParam(NDPos_CurrentPos,         "");
   // Set running to 0
-  setIntegerParam(NDPos_Running,           0);
-
+  setIntegerParam(NDPos_Running,           NDPOS_IDLE);
+  // Set the ID Name to the default UniqueID
+  setStringParam(NDPos_IDName,             "");
+  // Set the ID Difference to a default of 1
+  setIntegerParam(NDPos_IDDifference,      1);
+  // Set the ID Start value to a default of 1
+  setIntegerParam(NDPos_IDStart,           1);
+  // Set the Expected next ID value to 1
+  setIntegerParam(NDPos_ExpectedID,        1);
+  // Set the duplicate frames to 0
+  setIntegerParam(NDPos_MissingFrames,     0);
+  // Set the missing frames to 0
+  setIntegerParam(NDPos_DuplicateFrames,   0);
 
   // Try to connect to the array port
   connectToArrayPort();

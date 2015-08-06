@@ -48,9 +48,18 @@
 #define str_NDPos_CurrentQty      "NDPos_CurrentQty"
 #define str_NDPos_CurrentIndex    "NDPos_CurrentIndex"
 #define str_NDPos_CurrentPos      "NDPos_CurrentPos"
+#define str_NDPos_MissingFrames   "NDPos_MissingFrames"
+#define str_NDPos_DuplicateFrames "NDPos_DuplicateFrames"
+#define str_NDPos_ExpectedID      "NDPos_ExpectedID"
+#define str_NDPos_IDName          "NDPos_IDName"
+#define str_NDPos_IDDifference    "NDPos_IDDifference"
+#define str_NDPos_IDStart         "NDPos_IDStart"
 
 #define MODE_DISCARD 0
 #define MODE_KEEP    1
+
+#define NDPOS_IDLE    0
+#define NDPOS_RUNNING 1
 
 #define MAX_POS_STRING_LEN 1000000
 
@@ -87,7 +96,13 @@ protected:
   int NDPos_CurrentQty;
   int NDPos_CurrentIndex;
   int NDPos_CurrentPos;
-  #define LAST_NDPOS_PARAM NDPos_CurrentPos
+  int NDPos_DuplicateFrames;
+  int NDPos_MissingFrames;
+  int NDPos_ExpectedID;
+  int NDPos_IDName;
+  int NDPos_IDDifference;
+  int NDPos_IDStart;
+  #define LAST_NDPOS_PARAM NDPos_IDStart
 
 private:
   // Plugin member variables
