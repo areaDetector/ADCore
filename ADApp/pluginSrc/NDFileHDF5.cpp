@@ -1359,7 +1359,7 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
     } else {
       // Normal attribute datasets required (linear 1D)
       // so save on every occasion
-      status = this->writeAttributeDataset(hdf5::OnFrame, posRunning, offsets);
+      status = this->writeAttributeDataset(hdf5::OnFrame, 0, offsets);
     }
     if (status != asynSuccess){
       return status;
