@@ -2200,8 +2200,10 @@ asynStatus NDFileHDF5::createPerformanceDataset()
     }
 
     int chunking = 0;
+    // Not used for this dataset but needed for the calculation routine
+    int mdchunking[3] = {0, 0, 0};
     // Check the chunking value
-    calculateAttributeChunking(&chunking);
+    calculateAttributeChunking(&chunking, mdchunking);
     hid_t hdfcparm   = H5Pcreate(H5P_DATASET_CREATE);
     hsize_t chunk[2] = {chunking, 5};
     int hdfrank  = 2;
@@ -2300,9 +2302,9 @@ asynStatus NDFileHDF5::createAttributeDataset(NDArray *pArray)
 
   this->unlock();
   // Check the chunking value
-  calculateAttributeChunking(&chunking);
+  int user_chunking[3] = {0, 0, 0};
+  calculateAttributeChunking(&chunking, user_chunking);
 
-  int user_chunking[3] = {chunking,chunking,chunking};
 
 
 
@@ -2398,9 +2400,12 @@ asynStatus NDFileHDF5::createAttributeDataset(NDArray *pArray)
   return asynSuccess;
 }
 
-asynStatus NDFileHDF5::calculateAttributeChunking(int *chunking)
+asynStatus NDFileHDF5::calculateAttributeChunking(int *chunking, int *mdim_chunking)
 {
   int fileWriteMode = 0;
+  int dim1Size = 0;
+  int dim2Size = 0;
+  int dim3Size = 0;
   this->lock();
   // Check the chunking value
   getIntegerParam(NDFileHDF5_NDAttributeChunk, chunking);
@@ -2413,14 +2418,48 @@ asynStatus NDFileHDF5::calculateAttributeChunking(int *chunking)
     if (fileWriteMode == NDFileModeSingle){
       // We are in single mode so chunk size should be set to 1 no matter the frame count
       *chunking = 1;
+      mdim_chunking[0] = 1;
+      mdim_chunking[1] = 1;
+      mdim_chunking[2] = 1;
     } else {
       // We aren't in single mode so read the number of frames
       getIntegerParam(NDFileNumCapture, chunking);
       if (*chunking <= 0) {
         // Special case: writing infinite number of frames, so we guess a good(ish) chunk number
         *chunking = 16*1024;
+        // This should be impossible for multi-dimensional datasets, but we still need to return
+        // some values that wouldn't kill us later on
+        mdim_chunking[0] = 32;
+        mdim_chunking[1] = 32;
+        mdim_chunking[2] = 32;
+      } else {
+        // We can't use the number of frames for each dimension here as we would quickly run out
+        // of resources.  Go back to the original dimensions...
+        getIntegerParam(NDFileHDF5_extraDimSizeY, &dim1Size);
+        if (dim1Size <= 0){
+          mdim_chunking[0] = 32;
+        } else {
+          mdim_chunking[0] = dim1Size;
+        }
+        getIntegerParam(NDFileHDF5_extraDimSizeX, &dim2Size);
+        if (dim2Size <= 0){
+          mdim_chunking[1] = 32;
+        } else {
+          mdim_chunking[1] = dim2Size;
+        }
+        getIntegerParam(NDFileHDF5_extraDimSizeN, &dim3Size);
+        if (dim3Size <= 0){
+          mdim_chunking[2] = 32;
+        } else {
+          mdim_chunking[2] = dim3Size;
+        }
       }
     }
+  } else {
+    // Set the multi-dim chunking to the same values
+    mdim_chunking[0] = *chunking;
+    mdim_chunking[1] = *chunking;
+    mdim_chunking[2] = *chunking;
   }
   this->unlock();
   return asynSuccess;
@@ -2454,8 +2493,9 @@ asynStatus NDFileHDF5::writeAttributeDataset(hdf5::When_t whenToSave, int positi
       getIntegerParam(NDFileNumCaptured, &numCaptured);
       this->unlock();
       int chunking = 0;
+      int mdchunking[3] = {0, 0, 0};
       // Check the chunking value
-      calculateAttributeChunking(&chunking);
+      calculateAttributeChunking(&chunking, mdchunking);
       // Check if we should flush
       if ((numCaptured+1) % chunking == 0){
         // Mark the dataset for flushing

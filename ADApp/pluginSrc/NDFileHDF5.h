@@ -169,7 +169,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     asynStatus configureCompression();
     char* getDimsReport();
     asynStatus writeStringAttribute(hid_t element, const char* attrName, const char* attrStrValue);
-    asynStatus calculateAttributeChunking(int *chunking);
+    asynStatus calculateAttributeChunking(int *chunking, int *mdim_chunking);
     asynStatus writeAttributeDataset(hdf5::When_t whenToSave, int positionMode, hsize_t *offsets);
     asynStatus closeAttributeDataset();
     asynStatus configurePerformanceDataset();
