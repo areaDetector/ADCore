@@ -4,10 +4,10 @@
 <widget class="QMainWindow" name="MainWindow">
     <property name="geometry">
         <rect>
-            <x>328</x>
-            <y>55</y>
-            <width>1075</width>
-            <height>290</height>
+            <x>121</x>
+            <y>104</y>
+            <width>1140</width>
+            <height>425</height>
         </rect>
     </property>
     <property name="styleSheet">
@@ -15,94 +15,6 @@
 
 QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
 QPushButton::menu-indicator {image: url(none.png); width: 0}
-
-caTable {
-       font: 10pt;
-       background: cornsilk;
-       alternate-background-color: wheat;
-}
-
-caLineEdit {
-     border-radius: 1px;
-     background: lightyellow;
-     color: black;
- }
-
-caTextEntry {
-    color: rgb(127, 0, 63);
-    background-color: cornsilk;
-    selection-color: #0a214c;
-    selection-background-color: wheat;
-    border: 1px groove black;
-    border-radius: 1px;
-    padding: 1px;
-}
-
-caTextEntry:focus {
-    padding: 0px;
-    border: 2px groove darkred;
-    border-radius: 1px;
-}
-
-QPushButton {
-      border-color: #00b;
-      border-radius: 2px;
-      padding: 3px;
-      border-width: 1px;
-
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
-						   stop:0   rgba(224, 239, 255, 255),
-						   stop:0.5 rgba(199, 215, 230, 255),
-						   stop:1   rgba(184, 214, 236, 255));
-}
-QPushButton:hover {
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
-						stop:0   rgba(201, 226, 255, 255),
-						stop:0.5 rgba(177, 204, 230, 255),
-						stop:1   rgba(163, 205, 236, 255));
-}
-QPushButton:pressed {
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
-						stop:0   rgba(174, 219, 255, 255),
-						stop:0.5 rgba(165, 199, 230, 255),
-						stop:1   rgba(134, 188, 236, 255));
-}
-
-QPushButton:disabled {
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
-						stop:0   rgba(174, 219, 255, 255),
-						stop:0.5 rgba(165, 199, 230, 255),
-						stop:1   rgba(134, 188, 236, 255));
-}
-
-caChoice {
-      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                  stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
-                                  stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
-}
-
-caChoice &gt; QPushButton {
-      text-align: left;
-      padding: 1px;
-}
-
-caSlider::groove:horizontal {
-border: 1px solid #bbb;
-background: lightgrey;
-height: 20px;
-border-radius: 4px;
-}
-
-caSlider::handle:horizontal {
-background: red;
-border: 1px solid #777;
-width: 13px;
-margin-top: -2px;
-margin-bottom: -2px;
-border-radius: 2px;
-}
-
-
 
 </string>
     </property>
@@ -126,7 +38,7 @@ border-radius: 2px;
                 </color>
             </property>
             <property name="text">
-                <string>$(P) $(ROI1)-$(ROI8)</string>
+                <string>$(P) $(R)$(ROI1)-$(R)$(ROI8)</string>
             </property>
             <property name="fontScaleMode">
                 <enum>ESimpleLabel::WidthAndHeight</enum>
@@ -136,7 +48,7 @@ border-radius: 2px;
             </property>
             <property name="geometry">
                 <rect>
-                    <x>236</x>
+                    <x>336</x>
                     <y>8</y>
                     <width>468</width>
                     <height>25</height>
@@ -207,7 +119,7 @@ border-radius: 2px;
                     </color>
                 </property>
                 <property name="text">
-                    <string>$(ROI1)</string>
+                    <string>$(R)$(ROI1)</string>
                 </property>
                 <property name="fontScaleMode">
                     <enum>ESimpleLabel::WidthAndHeight</enum>
@@ -243,7 +155,7 @@ border-radius: 2px;
                     </color>
                 </property>
                 <property name="text">
-                    <string>$(ROI2)</string>
+                    <string>$(R)$(ROI2)</string>
                 </property>
                 <property name="fontScaleMode">
                     <enum>ESimpleLabel::WidthAndHeight</enum>
@@ -279,7 +191,7 @@ border-radius: 2px;
                     </color>
                 </property>
                 <property name="text">
-                    <string>$(ROI3)</string>
+                    <string>$(R)$(ROI3)</string>
                 </property>
                 <property name="fontScaleMode">
                     <enum>ESimpleLabel::WidthAndHeight</enum>
@@ -315,7 +227,7 @@ border-radius: 2px;
                     </color>
                 </property>
                 <property name="text">
-                    <string>$(ROI4)</string>
+                    <string>$(R)$(ROI4)</string>
                 </property>
                 <property name="fontScaleMode">
                     <enum>ESimpleLabel::WidthAndHeight</enum>
@@ -351,7 +263,7 @@ border-radius: 2px;
                     </color>
                 </property>
                 <property name="text">
-                    <string>$(ROI5)</string>
+                    <string>$(R)$(ROI5)</string>
                 </property>
                 <property name="fontScaleMode">
                     <enum>ESimpleLabel::WidthAndHeight</enum>
@@ -387,7 +299,7 @@ border-radius: 2px;
                     </color>
                 </property>
                 <property name="text">
-                    <string>$(ROI6)</string>
+                    <string>$(R)$(ROI6)</string>
                 </property>
                 <property name="fontScaleMode">
                     <enum>ESimpleLabel::WidthAndHeight</enum>
@@ -423,7 +335,7 @@ border-radius: 2px;
                     </color>
                 </property>
                 <property name="text">
-                    <string>$(ROI7)</string>
+                    <string>$(R)$(ROI7)</string>
                 </property>
                 <property name="fontScaleMode">
                     <enum>ESimpleLabel::WidthAndHeight</enum>
@@ -459,7 +371,7 @@ border-radius: 2px;
                     </color>
                 </property>
                 <property name="text">
-                    <string>$(ROI8)</string>
+                    <string>$(R)$(ROI8)</string>
                 </property>
                 <property name="fontScaleMode">
                     <enum>ESimpleLabel::WidthAndHeight</enum>
@@ -571,7 +483,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI1)Net_RBV</string>
+                    <string>$(P)$(R)$(ROI1)Net_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -625,7 +537,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI2)Net_RBV</string>
+                    <string>$(P)$(R)$(ROI2)Net_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -679,7 +591,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI3)Net_RBV</string>
+                    <string>$(P)$(R)$(ROI3)Net_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -733,7 +645,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI4)Net_RBV</string>
+                    <string>$(P)$(R)$(ROI4)Net_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -787,7 +699,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI5)Net_RBV</string>
+                    <string>$(P)$(R)$(ROI5)Net_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -841,7 +753,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI6)Net_RBV</string>
+                    <string>$(P)$(R)$(ROI6)Net_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -895,7 +807,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI7)Net_RBV</string>
+                    <string>$(P)$(R)$(ROI7)Net_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -949,7 +861,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI8)Net_RBV</string>
+                    <string>$(P)$(R)$(ROI8)Net_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -1049,7 +961,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI1)Total_RBV</string>
+                    <string>$(P)$(R)$(ROI1)Total_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -1103,7 +1015,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI2)Total_RBV</string>
+                    <string>$(P)$(R)$(ROI2)Total_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -1157,7 +1069,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI3)Total_RBV</string>
+                    <string>$(P)$(R)$(ROI3)Total_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -1211,7 +1123,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI4)Total_RBV</string>
+                    <string>$(P)$(R)$(ROI4)Total_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -1265,7 +1177,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI5)Total_RBV</string>
+                    <string>$(P)$(R)$(ROI5)Total_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -1319,7 +1231,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI6)Total_RBV</string>
+                    <string>$(P)$(R)$(ROI6)Total_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -1373,7 +1285,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI7)Total_RBV</string>
+                    <string>$(P)$(R)$(ROI7)Total_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -1427,7 +1339,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI8)Total_RBV</string>
+                    <string>$(P)$(R)$(ROI8)Total_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -1527,7 +1439,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI1)MinValue_RBV</string>
+                    <string>$(P)$(R)$(ROI1)MinValue_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -1581,7 +1493,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI2)MinValue_RBV</string>
+                    <string>$(P)$(R)$(ROI2)MinValue_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -1635,7 +1547,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI3)MinValue_RBV</string>
+                    <string>$(P)$(R)$(ROI3)MinValue_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -1689,7 +1601,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI4)MinValue_RBV</string>
+                    <string>$(P)$(R)$(ROI4)MinValue_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -1743,7 +1655,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI5)MinValue_RBV</string>
+                    <string>$(P)$(R)$(ROI5)MinValue_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -1797,7 +1709,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI6)MinValue_RBV</string>
+                    <string>$(P)$(R)$(ROI6)MinValue_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -1851,7 +1763,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI7)MinValue_RBV</string>
+                    <string>$(P)$(R)$(ROI7)MinValue_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -1905,7 +1817,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI8)MinValue_RBV</string>
+                    <string>$(P)$(R)$(ROI8)MinValue_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -2005,7 +1917,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI1)BgdWidth</string>
+                    <string>$(P)$(R)$(ROI1)BgdWidth</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -2056,7 +1968,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI2)BgdWidth</string>
+                    <string>$(P)$(R)$(ROI2)BgdWidth</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -2107,7 +2019,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI3)BgdWidth</string>
+                    <string>$(P)$(R)$(ROI3)BgdWidth</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -2158,7 +2070,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI4)BgdWidth</string>
+                    <string>$(P)$(R)$(ROI4)BgdWidth</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -2209,7 +2121,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI5)BgdWidth</string>
+                    <string>$(P)$(R)$(ROI5)BgdWidth</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -2260,7 +2172,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI6)BgdWidth</string>
+                    <string>$(P)$(R)$(ROI6)BgdWidth</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -2311,7 +2223,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI7)BgdWidth</string>
+                    <string>$(P)$(R)$(ROI7)BgdWidth</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -2362,7 +2274,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI8)BgdWidth</string>
+                    <string>$(P)$(R)$(ROI8)BgdWidth</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -2459,7 +2371,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI1)SizeY</string>
+                    <string>$(P)$(R)$(ROI1)SizeY</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -2510,7 +2422,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI2)SizeY</string>
+                    <string>$(P)$(R)$(ROI2)SizeY</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -2561,7 +2473,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI3)SizeY</string>
+                    <string>$(P)$(R)$(ROI3)SizeY</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -2612,7 +2524,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI4)SizeY</string>
+                    <string>$(P)$(R)$(ROI4)SizeY</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -2663,7 +2575,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI5)SizeY</string>
+                    <string>$(P)$(R)$(ROI5)SizeY</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -2714,7 +2626,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI6)SizeY</string>
+                    <string>$(P)$(R)$(ROI6)SizeY</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -2765,7 +2677,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI7)SizeY</string>
+                    <string>$(P)$(R)$(ROI7)SizeY</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -2816,7 +2728,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI8)SizeY</string>
+                    <string>$(P)$(R)$(ROI8)SizeY</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -2913,7 +2825,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI1)MinY</string>
+                    <string>$(P)$(R)$(ROI1)MinY</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -2964,7 +2876,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI2)MinY</string>
+                    <string>$(P)$(R)$(ROI2)MinY</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -3015,7 +2927,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI3)MinY</string>
+                    <string>$(P)$(R)$(ROI3)MinY</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -3066,7 +2978,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI4)MinY</string>
+                    <string>$(P)$(R)$(ROI4)MinY</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -3117,7 +3029,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI5)MinY</string>
+                    <string>$(P)$(R)$(ROI5)MinY</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -3168,7 +3080,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI6)MinY</string>
+                    <string>$(P)$(R)$(ROI6)MinY</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -3219,7 +3131,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI7)MinY</string>
+                    <string>$(P)$(R)$(ROI7)MinY</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -3270,7 +3182,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI8)MinY</string>
+                    <string>$(P)$(R)$(ROI8)MinY</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -3367,7 +3279,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI1)SizeX</string>
+                    <string>$(P)$(R)$(ROI1)SizeX</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -3418,7 +3330,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI2)SizeX</string>
+                    <string>$(P)$(R)$(ROI2)SizeX</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -3469,7 +3381,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI3)SizeX</string>
+                    <string>$(P)$(R)$(ROI3)SizeX</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -3520,7 +3432,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI4)SizeX</string>
+                    <string>$(P)$(R)$(ROI4)SizeX</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -3571,7 +3483,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI5)SizeX</string>
+                    <string>$(P)$(R)$(ROI5)SizeX</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -3622,7 +3534,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI6)SizeX</string>
+                    <string>$(P)$(R)$(ROI6)SizeX</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -3673,7 +3585,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI7)SizeX</string>
+                    <string>$(P)$(R)$(ROI7)SizeX</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -3724,7 +3636,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI8)SizeX</string>
+                    <string>$(P)$(R)$(ROI8)SizeX</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -3821,7 +3733,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI1)MinX</string>
+                    <string>$(P)$(R)$(ROI1)MinX</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -3872,7 +3784,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI2)MinX</string>
+                    <string>$(P)$(R)$(ROI2)MinX</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -3923,7 +3835,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI3)MinX</string>
+                    <string>$(P)$(R)$(ROI3)MinX</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -3974,7 +3886,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI4)MinX</string>
+                    <string>$(P)$(R)$(ROI4)MinX</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -4025,7 +3937,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI5)MinX</string>
+                    <string>$(P)$(R)$(ROI5)MinX</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -4076,7 +3988,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI6)MinX</string>
+                    <string>$(P)$(R)$(ROI6)MinX</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -4127,7 +4039,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI7)MinX</string>
+                    <string>$(P)$(R)$(ROI7)MinX</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -4178,7 +4090,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI8)MinX</string>
+                    <string>$(P)$(R)$(ROI8)MinX</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -4272,7 +4184,7 @@ border-radius: 2px;
                     </rect>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI1)Use</string>
+                    <string>$(P)$(R)$(ROI1)Use</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -4302,7 +4214,7 @@ border-radius: 2px;
                     </rect>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI2)Use</string>
+                    <string>$(P)$(R)$(ROI2)Use</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -4332,7 +4244,7 @@ border-radius: 2px;
                     </rect>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI3)Use</string>
+                    <string>$(P)$(R)$(ROI3)Use</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -4362,7 +4274,7 @@ border-radius: 2px;
                     </rect>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI4)Use</string>
+                    <string>$(P)$(R)$(ROI4)Use</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -4392,7 +4304,7 @@ border-radius: 2px;
                     </rect>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI5)Use</string>
+                    <string>$(P)$(R)$(ROI5)Use</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -4422,7 +4334,7 @@ border-radius: 2px;
                     </rect>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI6)Use</string>
+                    <string>$(P)$(R)$(ROI6)Use</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -4452,7 +4364,7 @@ border-radius: 2px;
                     </rect>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI7)Use</string>
+                    <string>$(P)$(R)$(ROI7)Use</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -4482,7 +4394,7 @@ border-radius: 2px;
                     </rect>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI8)Use</string>
+                    <string>$(P)$(R)$(ROI8)Use</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -4561,7 +4473,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI1)Name</string>
+                    <string>$(P)$(R)$(ROI1)Name</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -4612,7 +4524,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI2)Name</string>
+                    <string>$(P)$(R)$(ROI2)Name</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -4663,7 +4575,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI3)Name</string>
+                    <string>$(P)$(R)$(ROI3)Name</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -4714,7 +4626,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI4)Name</string>
+                    <string>$(P)$(R)$(ROI4)Name</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -4765,7 +4677,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI5)Name</string>
+                    <string>$(P)$(R)$(ROI5)Name</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -4816,7 +4728,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI6)Name</string>
+                    <string>$(P)$(R)$(ROI6)Name</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -4867,7 +4779,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI7)Name</string>
+                    <string>$(P)$(R)$(ROI7)Name</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -4918,7 +4830,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI8)Name</string>
+                    <string>$(P)$(R)$(ROI8)Name</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -4960,371 +4872,13 @@ border-radius: 2px;
         <widget class="caFrame" name="caFrame_11">
             <property name="geometry">
                 <rect>
-                    <x>1006</x>
-                    <y>60</y>
-                    <width>62</width>
-                    <height>221</height>
-                </rect>
-            </property>
-            <widget class="caLabel" name="caLabel_21">
-                <property name="frameShape">
-                    <enum>QFrame::NoFrame</enum>
-                </property>
-                <property name="foreground">
-                    <color alpha="255">
-                        <red>0</red>
-                        <green>0</green>
-                        <blue>0</blue>
-                    </color>
-                </property>
-                <property name="background">
-                    <color alpha="0">
-                        <red>0</red>
-                        <green>0</green>
-                        <blue>0</blue>
-                    </color>
-                </property>
-                <property name="text">
-                    <string>More</string>
-                </property>
-                <property name="fontScaleMode">
-                    <enum>ESimpleLabel::WidthAndHeight</enum>
-                </property>
-                <property name="geometry">
-                    <rect>
-                        <x>10</x>
-                        <y>0</y>
-                        <width>48</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property name="alignment">
-                    <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
-                </property>
-            </widget>
-            <widget class="caRelatedDisplay" name="caRelatedDisplay_0">
-                <property name="geometry">
-                    <rect>
-                        <x>0</x>
-                        <y>24</y>
-                        <width>60</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property name="foreground">
-                    <color alpha="255">
-                        <red>42</red>
-                        <green>99</green>
-                        <blue>228</blue>
-                    </color>
-                </property>
-                <property name="background">
-                    <color alpha="255">
-                        <red>187</red>
-                        <green>187</green>
-                        <blue>187</blue>
-                    </color>
-                </property>
-                <property name="stackingMode">
-                    <enum>Menu</enum>
-                </property>
-                <property name="labels">
-                    <string>ROIStat full</string>
-                </property>
-                <property name="files">
-                    <string>NDROIStatN.ui</string>
-                </property>
-                <property name="args">
-                    <string>P=$(P),R=$(ROI1)</string>
-                </property>
-                <property name="removeParent">
-                    <string>false</string>
-                </property>
-            </widget>
-            <widget class="caRelatedDisplay" name="caRelatedDisplay_1">
-                <property name="geometry">
-                    <rect>
-                        <x>0</x>
-                        <y>49</y>
-                        <width>60</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property name="foreground">
-                    <color alpha="255">
-                        <red>42</red>
-                        <green>99</green>
-                        <blue>228</blue>
-                    </color>
-                </property>
-                <property name="background">
-                    <color alpha="255">
-                        <red>187</red>
-                        <green>187</green>
-                        <blue>187</blue>
-                    </color>
-                </property>
-                <property name="stackingMode">
-                    <enum>Menu</enum>
-                </property>
-                <property name="labels">
-                    <string>ROIStat full</string>
-                </property>
-                <property name="files">
-                    <string>NDROIStatN.ui</string>
-                </property>
-                <property name="args">
-                    <string>P=$(P),R=$(ROI2)</string>
-                </property>
-                <property name="removeParent">
-                    <string>false</string>
-                </property>
-            </widget>
-            <widget class="caRelatedDisplay" name="caRelatedDisplay_2">
-                <property name="geometry">
-                    <rect>
-                        <x>0</x>
-                        <y>74</y>
-                        <width>60</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property name="foreground">
-                    <color alpha="255">
-                        <red>42</red>
-                        <green>99</green>
-                        <blue>228</blue>
-                    </color>
-                </property>
-                <property name="background">
-                    <color alpha="255">
-                        <red>187</red>
-                        <green>187</green>
-                        <blue>187</blue>
-                    </color>
-                </property>
-                <property name="stackingMode">
-                    <enum>Menu</enum>
-                </property>
-                <property name="labels">
-                    <string>ROIStat full</string>
-                </property>
-                <property name="files">
-                    <string>NDROIStatN.ui</string>
-                </property>
-                <property name="args">
-                    <string>P=$(P),R=$(ROI3)</string>
-                </property>
-                <property name="removeParent">
-                    <string>false</string>
-                </property>
-            </widget>
-            <widget class="caRelatedDisplay" name="caRelatedDisplay_3">
-                <property name="geometry">
-                    <rect>
-                        <x>0</x>
-                        <y>99</y>
-                        <width>60</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property name="foreground">
-                    <color alpha="255">
-                        <red>42</red>
-                        <green>99</green>
-                        <blue>228</blue>
-                    </color>
-                </property>
-                <property name="background">
-                    <color alpha="255">
-                        <red>187</red>
-                        <green>187</green>
-                        <blue>187</blue>
-                    </color>
-                </property>
-                <property name="stackingMode">
-                    <enum>Menu</enum>
-                </property>
-                <property name="labels">
-                    <string>ROIStat full</string>
-                </property>
-                <property name="files">
-                    <string>NDROIStatN.ui</string>
-                </property>
-                <property name="args">
-                    <string>P=$(P),R=$(ROI4)</string>
-                </property>
-                <property name="removeParent">
-                    <string>false</string>
-                </property>
-            </widget>
-            <widget class="caRelatedDisplay" name="caRelatedDisplay_4">
-                <property name="geometry">
-                    <rect>
-                        <x>0</x>
-                        <y>124</y>
-                        <width>60</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property name="foreground">
-                    <color alpha="255">
-                        <red>42</red>
-                        <green>99</green>
-                        <blue>228</blue>
-                    </color>
-                </property>
-                <property name="background">
-                    <color alpha="255">
-                        <red>187</red>
-                        <green>187</green>
-                        <blue>187</blue>
-                    </color>
-                </property>
-                <property name="stackingMode">
-                    <enum>Menu</enum>
-                </property>
-                <property name="labels">
-                    <string>ROIStat full</string>
-                </property>
-                <property name="files">
-                    <string>NDROIStatN.ui</string>
-                </property>
-                <property name="args">
-                    <string>P=$(P),R=$(ROI5)</string>
-                </property>
-                <property name="removeParent">
-                    <string>false</string>
-                </property>
-            </widget>
-            <widget class="caRelatedDisplay" name="caRelatedDisplay_5">
-                <property name="geometry">
-                    <rect>
-                        <x>0</x>
-                        <y>149</y>
-                        <width>60</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property name="foreground">
-                    <color alpha="255">
-                        <red>42</red>
-                        <green>99</green>
-                        <blue>228</blue>
-                    </color>
-                </property>
-                <property name="background">
-                    <color alpha="255">
-                        <red>187</red>
-                        <green>187</green>
-                        <blue>187</blue>
-                    </color>
-                </property>
-                <property name="stackingMode">
-                    <enum>Menu</enum>
-                </property>
-                <property name="labels">
-                    <string>ROIStat full</string>
-                </property>
-                <property name="files">
-                    <string>NDROIStatN.ui</string>
-                </property>
-                <property name="args">
-                    <string>P=$(P),R=$(ROI6)</string>
-                </property>
-                <property name="removeParent">
-                    <string>false</string>
-                </property>
-            </widget>
-            <widget class="caRelatedDisplay" name="caRelatedDisplay_6">
-                <property name="geometry">
-                    <rect>
-                        <x>0</x>
-                        <y>174</y>
-                        <width>60</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property name="foreground">
-                    <color alpha="255">
-                        <red>42</red>
-                        <green>99</green>
-                        <blue>228</blue>
-                    </color>
-                </property>
-                <property name="background">
-                    <color alpha="255">
-                        <red>187</red>
-                        <green>187</green>
-                        <blue>187</blue>
-                    </color>
-                </property>
-                <property name="stackingMode">
-                    <enum>Menu</enum>
-                </property>
-                <property name="labels">
-                    <string>ROIStat full</string>
-                </property>
-                <property name="files">
-                    <string>NDROIStatN.ui</string>
-                </property>
-                <property name="args">
-                    <string>P=$(P),R=$(ROI7)</string>
-                </property>
-                <property name="removeParent">
-                    <string>false</string>
-                </property>
-            </widget>
-            <widget class="caRelatedDisplay" name="caRelatedDisplay_7">
-                <property name="geometry">
-                    <rect>
-                        <x>0</x>
-                        <y>199</y>
-                        <width>60</width>
-                        <height>20</height>
-                    </rect>
-                </property>
-                <property name="foreground">
-                    <color alpha="255">
-                        <red>42</red>
-                        <green>99</green>
-                        <blue>228</blue>
-                    </color>
-                </property>
-                <property name="background">
-                    <color alpha="255">
-                        <red>187</red>
-                        <green>187</green>
-                        <blue>187</blue>
-                    </color>
-                </property>
-                <property name="stackingMode">
-                    <enum>Menu</enum>
-                </property>
-                <property name="labels">
-                    <string>ROIStat full</string>
-                </property>
-                <property name="files">
-                    <string>NDROIStatN.ui</string>
-                </property>
-                <property name="args">
-                    <string>P=$(P),R=$(ROI8)</string>
-                </property>
-                <property name="removeParent">
-                    <string>false</string>
-                </property>
-            </widget>
-        </widget>
-        <widget class="caFrame" name="caFrame_12">
-            <property name="geometry">
-                <rect>
                     <x>851</x>
                     <y>60</y>
                     <width>77</width>
                     <height>221</height>
                 </rect>
             </property>
-            <widget class="caLabel" name="caLabel_22">
+            <widget class="caLabel" name="caLabel_21">
                 <property name="frameShape">
                     <enum>QFrame::NoFrame</enum>
                 </property>
@@ -5373,7 +4927,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI1)MaxValue_RBV</string>
+                    <string>$(P)$(R)$(ROI1)MaxValue_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -5427,7 +4981,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI2)MaxValue_RBV</string>
+                    <string>$(P)$(R)$(ROI2)MaxValue_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -5481,7 +5035,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI3)MaxValue_RBV</string>
+                    <string>$(P)$(R)$(ROI3)MaxValue_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -5535,7 +5089,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI4)MaxValue_RBV</string>
+                    <string>$(P)$(R)$(ROI4)MaxValue_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -5589,7 +5143,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI5)MaxValue_RBV</string>
+                    <string>$(P)$(R)$(ROI5)MaxValue_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -5643,7 +5197,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI6)MaxValue_RBV</string>
+                    <string>$(P)$(R)$(ROI6)MaxValue_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -5697,7 +5251,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI7)MaxValue_RBV</string>
+                    <string>$(P)$(R)$(ROI7)MaxValue_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -5751,7 +5305,7 @@ border-radius: 2px;
                     <enum>caLineEdit::WidthAndHeight</enum>
                 </property>
                 <property name="channel">
-                    <string>$(P)$(ROI8)MaxValue_RBV</string>
+                    <string>$(P)$(R)$(ROI8)MaxValue_RBV</string>
                 </property>
                 <property name="foreground">
                     <color alpha="255">
@@ -5793,7 +5347,7 @@ border-radius: 2px;
                 </property>
             </widget>
         </widget>
-        <widget class="caLabel" name="caLabel_23">
+        <widget class="caLabel" name="caLabel_22">
             <property name="frameShape">
                 <enum>QFrame::NoFrame</enum>
             </property>
@@ -5842,7 +5396,7 @@ border-radius: 2px;
                 <enum>caLineEdit::WidthAndHeight</enum>
             </property>
             <property name="channel">
-                <string>$(P)$(ROI1)MeanValue_RBV</string>
+                <string>$(P)$(R)$(ROI1)MeanValue_RBV</string>
             </property>
             <property name="foreground">
                 <color alpha="255">
@@ -5896,7 +5450,7 @@ border-radius: 2px;
                 <enum>caLineEdit::WidthAndHeight</enum>
             </property>
             <property name="channel">
-                <string>$(P)$(ROI2)MeanValue_RBV</string>
+                <string>$(P)$(R)$(ROI2)MeanValue_RBV</string>
             </property>
             <property name="foreground">
                 <color alpha="255">
@@ -5950,7 +5504,7 @@ border-radius: 2px;
                 <enum>caLineEdit::WidthAndHeight</enum>
             </property>
             <property name="channel">
-                <string>$(P)$(ROI3)MeanValue_RBV</string>
+                <string>$(P)$(R)$(ROI3)MeanValue_RBV</string>
             </property>
             <property name="foreground">
                 <color alpha="255">
@@ -6004,7 +5558,7 @@ border-radius: 2px;
                 <enum>caLineEdit::WidthAndHeight</enum>
             </property>
             <property name="channel">
-                <string>$(P)$(ROI4)MeanValue_RBV</string>
+                <string>$(P)$(R)$(ROI4)MeanValue_RBV</string>
             </property>
             <property name="foreground">
                 <color alpha="255">
@@ -6058,7 +5612,7 @@ border-radius: 2px;
                 <enum>caLineEdit::WidthAndHeight</enum>
             </property>
             <property name="channel">
-                <string>$(P)$(ROI5)MeanValue_RBV</string>
+                <string>$(P)$(R)$(ROI5)MeanValue_RBV</string>
             </property>
             <property name="foreground">
                 <color alpha="255">
@@ -6112,7 +5666,7 @@ border-radius: 2px;
                 <enum>caLineEdit::WidthAndHeight</enum>
             </property>
             <property name="channel">
-                <string>$(P)$(ROI6)MeanValue_RBV</string>
+                <string>$(P)$(R)$(ROI6)MeanValue_RBV</string>
             </property>
             <property name="foreground">
                 <color alpha="255">
@@ -6166,7 +5720,7 @@ border-radius: 2px;
                 <enum>caLineEdit::WidthAndHeight</enum>
             </property>
             <property name="channel">
-                <string>$(P)$(ROI7)MeanValue_RBV</string>
+                <string>$(P)$(R)$(ROI7)MeanValue_RBV</string>
             </property>
             <property name="foreground">
                 <color alpha="255">
@@ -6220,7 +5774,7 @@ border-radius: 2px;
                 <enum>caLineEdit::WidthAndHeight</enum>
             </property>
             <property name="channel">
-                <string>$(P)$(ROI8)MeanValue_RBV</string>
+                <string>$(P)$(R)$(ROI8)MeanValue_RBV</string>
             </property>
             <property name="foreground">
                 <color alpha="255">
@@ -6261,6 +5815,1311 @@ border-radius: 2px;
                 <enum>caLineEdit::Static</enum>
             </property>
         </widget>
+        <widget class="caLabel" name="caLabel_23">
+            <property name="frameShape">
+                <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="0">
+                    <red>0</red>
+                    <green>0</green>
+                    <blue>0</blue>
+                </color>
+            </property>
+            <property name="text">
+                <string>More</string>
+            </property>
+            <property name="fontScaleMode">
+                <enum>ESimpleLabel::WidthAndHeight</enum>
+            </property>
+            <property name="geometry">
+                <rect>
+                    <x>1016</x>
+                    <y>60</y>
+                    <width>48</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="alignment">
+                <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+        </widget>
+        <widget class="caRelatedDisplay" name="caRelatedDisplay_0">
+            <property name="geometry">
+                <rect>
+                    <x>1006</x>
+                    <y>84</y>
+                    <width>60</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>42</red>
+                    <green>99</green>
+                    <blue>228</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>187</red>
+                    <green>187</green>
+                    <blue>187</blue>
+                </color>
+            </property>
+            <property name="stackingMode">
+                <enum>Menu</enum>
+            </property>
+            <property name="labels">
+                <string>ROIStat full</string>
+            </property>
+            <property name="files">
+                <string>NDROIStatN.ui</string>
+            </property>
+            <property name="args">
+                <string>P=$(P),R=$(R),ROI=$(ROI1)</string>
+            </property>
+            <property name="removeParent">
+                <string>false</string>
+            </property>
+        </widget>
+        <widget class="caRelatedDisplay" name="caRelatedDisplay_1">
+            <property name="geometry">
+                <rect>
+                    <x>1006</x>
+                    <y>109</y>
+                    <width>60</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>42</red>
+                    <green>99</green>
+                    <blue>228</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>187</red>
+                    <green>187</green>
+                    <blue>187</blue>
+                </color>
+            </property>
+            <property name="stackingMode">
+                <enum>Menu</enum>
+            </property>
+            <property name="labels">
+                <string>ROIStat full</string>
+            </property>
+            <property name="files">
+                <string>NDROIStatN.ui</string>
+            </property>
+            <property name="args">
+                <string>P=$(P),R=$(R),ROI=$(ROI2)</string>
+            </property>
+            <property name="removeParent">
+                <string>false</string>
+            </property>
+        </widget>
+        <widget class="caRelatedDisplay" name="caRelatedDisplay_2">
+            <property name="geometry">
+                <rect>
+                    <x>1006</x>
+                    <y>134</y>
+                    <width>60</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>42</red>
+                    <green>99</green>
+                    <blue>228</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>187</red>
+                    <green>187</green>
+                    <blue>187</blue>
+                </color>
+            </property>
+            <property name="stackingMode">
+                <enum>Menu</enum>
+            </property>
+            <property name="labels">
+                <string>ROIStat full</string>
+            </property>
+            <property name="files">
+                <string>NDROIStatN.ui</string>
+            </property>
+            <property name="args">
+                <string>P=$(P),R=$(R),ROI=$(ROI3)</string>
+            </property>
+            <property name="removeParent">
+                <string>false</string>
+            </property>
+        </widget>
+        <widget class="caRelatedDisplay" name="caRelatedDisplay_3">
+            <property name="geometry">
+                <rect>
+                    <x>1006</x>
+                    <y>159</y>
+                    <width>60</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>42</red>
+                    <green>99</green>
+                    <blue>228</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>187</red>
+                    <green>187</green>
+                    <blue>187</blue>
+                </color>
+            </property>
+            <property name="stackingMode">
+                <enum>Menu</enum>
+            </property>
+            <property name="labels">
+                <string>ROIStat full</string>
+            </property>
+            <property name="files">
+                <string>NDROIStatN.ui</string>
+            </property>
+            <property name="args">
+                <string>P=$(P),R=$(R),ROI=$(ROI4)</string>
+            </property>
+            <property name="removeParent">
+                <string>false</string>
+            </property>
+        </widget>
+        <widget class="caRelatedDisplay" name="caRelatedDisplay_4">
+            <property name="geometry">
+                <rect>
+                    <x>1006</x>
+                    <y>184</y>
+                    <width>60</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>42</red>
+                    <green>99</green>
+                    <blue>228</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>187</red>
+                    <green>187</green>
+                    <blue>187</blue>
+                </color>
+            </property>
+            <property name="stackingMode">
+                <enum>Menu</enum>
+            </property>
+            <property name="labels">
+                <string>ROIStat full</string>
+            </property>
+            <property name="files">
+                <string>NDROIStatN.ui</string>
+            </property>
+            <property name="args">
+                <string>P=$(P),R=$(R),ROI=$(ROI5)</string>
+            </property>
+            <property name="removeParent">
+                <string>false</string>
+            </property>
+        </widget>
+        <widget class="caRelatedDisplay" name="caRelatedDisplay_5">
+            <property name="geometry">
+                <rect>
+                    <x>1006</x>
+                    <y>209</y>
+                    <width>60</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>42</red>
+                    <green>99</green>
+                    <blue>228</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>187</red>
+                    <green>187</green>
+                    <blue>187</blue>
+                </color>
+            </property>
+            <property name="stackingMode">
+                <enum>Menu</enum>
+            </property>
+            <property name="labels">
+                <string>ROIStat full</string>
+            </property>
+            <property name="files">
+                <string>NDROIStatN.ui</string>
+            </property>
+            <property name="args">
+                <string>P=$(P),R=$(R),ROI=$(ROI6)</string>
+            </property>
+            <property name="removeParent">
+                <string>false</string>
+            </property>
+        </widget>
+        <widget class="caRelatedDisplay" name="caRelatedDisplay_6">
+            <property name="geometry">
+                <rect>
+                    <x>1006</x>
+                    <y>234</y>
+                    <width>60</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>42</red>
+                    <green>99</green>
+                    <blue>228</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>187</red>
+                    <green>187</green>
+                    <blue>187</blue>
+                </color>
+            </property>
+            <property name="stackingMode">
+                <enum>Menu</enum>
+            </property>
+            <property name="labels">
+                <string>ROIStat full</string>
+            </property>
+            <property name="files">
+                <string>NDROIStatN.ui</string>
+            </property>
+            <property name="args">
+                <string>P=$(P),R=$(R),ROI=$(ROI7)</string>
+            </property>
+            <property name="removeParent">
+                <string>false</string>
+            </property>
+        </widget>
+        <widget class="caRelatedDisplay" name="caRelatedDisplay_7">
+            <property name="geometry">
+                <rect>
+                    <x>1006</x>
+                    <y>259</y>
+                    <width>60</width>
+                    <height>20</height>
+                </rect>
+            </property>
+            <property name="foreground">
+                <color alpha="255">
+                    <red>42</red>
+                    <green>99</green>
+                    <blue>228</blue>
+                </color>
+            </property>
+            <property name="background">
+                <color alpha="255">
+                    <red>187</red>
+                    <green>187</green>
+                    <blue>187</blue>
+                </color>
+            </property>
+            <property name="stackingMode">
+                <enum>Menu</enum>
+            </property>
+            <property name="labels">
+                <string>ROIStat full</string>
+            </property>
+            <property name="files">
+                <string>NDROIStatN.ui</string>
+            </property>
+            <property name="args">
+                <string>P=$(P),R=$(R),ROI=$(ROI8)</string>
+            </property>
+            <property name="removeParent">
+                <string>false</string>
+            </property>
+        </widget>
+        <widget class="caFrame" name="caFrame_12">
+            <property name="geometry">
+                <rect>
+                    <x>1071</x>
+                    <y>60</y>
+                    <width>62</width>
+                    <height>221</height>
+                </rect>
+            </property>
+            <widget class="caLabel" name="caLabel_24">
+                <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="0">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="text">
+                    <string>Plot</string>
+                </property>
+                <property name="fontScaleMode">
+                    <enum>ESimpleLabel::WidthAndHeight</enum>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>10</x>
+                        <y>0</y>
+                        <width>48</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget class="caRelatedDisplay" name="caRelatedDisplay_8">
+                <property name="geometry">
+                    <rect>
+                        <x>0</x>
+                        <y>24</y>
+                        <width>60</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="stackingMode">
+                    <enum>Menu</enum>
+                </property>
+                <property name="labels">
+                    <string>Time series minimum;Time series maximum;Time series mean;Time series total;Time series net</string>
+                </property>
+                <property name="files">
+                    <string>NDTimeSeries.ui;NDTimeSeries.ui;NDTimeSeries.ui;NDTimeSeries.ui;NDTimeSeries.ui</string>
+                </property>
+                <property name="args">
+                    <string>P=$(P),R=$(R),PLT=$(ROI1)TSMinValue;P=$(P),R=$(R),PLT=$(ROI1)TSMaxValue;P=$(P),R=$(R),PLT=$(ROI1)TSMeanValue;P=$(P),R=$(R),PLT=$(ROI1)TSTotal;P=$(P),R=$(R),PLT=$(ROI1)TSNet</string>
+                </property>
+                <property name="removeParent">
+                    <string>false;false;false;false;false</string>
+                </property>
+            </widget>
+            <widget class="caRelatedDisplay" name="caRelatedDisplay_9">
+                <property name="geometry">
+                    <rect>
+                        <x>0</x>
+                        <y>49</y>
+                        <width>60</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="stackingMode">
+                    <enum>Menu</enum>
+                </property>
+                <property name="labels">
+                    <string>Time series minimum;Time series maximum;Time series mean;Time series total;Time series net</string>
+                </property>
+                <property name="files">
+                    <string>NDTimeSeries.ui;NDTimeSeries.ui;NDTimeSeries.ui;NDTimeSeries.ui;NDTimeSeries.ui</string>
+                </property>
+                <property name="args">
+                    <string>P=$(P),R=$(R),PLT=$(ROI2)TSMinValue;P=$(P),R=$(R),PLT=$(ROI2)TSMaxValue;P=$(P),R=$(R),PLT=$(ROI2)TSMeanValue;P=$(P),R=$(R),PLT=$(ROI2)TSTotal;P=$(P),R=$(R),PLT=$(ROI2)TSNet</string>
+                </property>
+                <property name="removeParent">
+                    <string>false;false;false;false;false</string>
+                </property>
+            </widget>
+            <widget class="caRelatedDisplay" name="caRelatedDisplay_10">
+                <property name="geometry">
+                    <rect>
+                        <x>0</x>
+                        <y>74</y>
+                        <width>60</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="stackingMode">
+                    <enum>Menu</enum>
+                </property>
+                <property name="labels">
+                    <string>Time series minimum;Time series maximum;Time series mean;Time series total;Time series net</string>
+                </property>
+                <property name="files">
+                    <string>NDTimeSeries.ui;NDTimeSeries.ui;NDTimeSeries.ui;NDTimeSeries.ui;NDTimeSeries.ui</string>
+                </property>
+                <property name="args">
+                    <string>P=$(P),R=$(R),PLT=$(ROI3)TSMinValue;P=$(P),R=$(R),PLT=$(ROI3)TSMaxValue;P=$(P),R=$(R),PLT=$(ROI3)TSMeanValue;P=$(P),R=$(R),PLT=$(ROI3)TSTotal;P=$(P),R=$(R),PLT=$(ROI3)TSNet</string>
+                </property>
+                <property name="removeParent">
+                    <string>false;false;false;false;false</string>
+                </property>
+            </widget>
+            <widget class="caRelatedDisplay" name="caRelatedDisplay_11">
+                <property name="geometry">
+                    <rect>
+                        <x>0</x>
+                        <y>99</y>
+                        <width>60</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="stackingMode">
+                    <enum>Menu</enum>
+                </property>
+                <property name="labels">
+                    <string>Time series minimum;Time series maximum;Time series mean;Time series total;Time series net</string>
+                </property>
+                <property name="files">
+                    <string>NDTimeSeries.ui;NDTimeSeries.ui;NDTimeSeries.ui;NDTimeSeries.ui;NDTimeSeries.ui</string>
+                </property>
+                <property name="args">
+                    <string>P=$(P),R=$(R),PLT=$(ROI4)TSMinValue;P=$(P),R=$(R),PLT=$(ROI4)TSMaxValue;P=$(P),R=$(R),PLT=$(ROI4)TSMeanValue;P=$(P),R=$(R),PLT=$(ROI4)TSTotal;P=$(P),R=$(R),PLT=$(ROI4)TSNet</string>
+                </property>
+                <property name="removeParent">
+                    <string>false;false;false;false;false</string>
+                </property>
+            </widget>
+            <widget class="caRelatedDisplay" name="caRelatedDisplay_12">
+                <property name="geometry">
+                    <rect>
+                        <x>0</x>
+                        <y>124</y>
+                        <width>60</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="stackingMode">
+                    <enum>Menu</enum>
+                </property>
+                <property name="labels">
+                    <string>Time series minimum;Time series maximum;Time series mean;Time series total;Time series net</string>
+                </property>
+                <property name="files">
+                    <string>NDTimeSeries.ui;NDTimeSeries.ui;NDTimeSeries.ui;NDTimeSeries.ui;NDTimeSeries.ui</string>
+                </property>
+                <property name="args">
+                    <string>P=$(P),R=$(R),PLT=$(ROI5)TSMinValue;P=$(P),R=$(R),PLT=$(ROI5)TSMaxValue;P=$(P),R=$(R),PLT=$(ROI5)TSMeanValue;P=$(P),R=$(R),PLT=$(ROI5)TSTotal;P=$(P),R=$(R),PLT=$(ROI5)TSNet</string>
+                </property>
+                <property name="removeParent">
+                    <string>false;false;false;false;false</string>
+                </property>
+            </widget>
+            <widget class="caRelatedDisplay" name="caRelatedDisplay_13">
+                <property name="geometry">
+                    <rect>
+                        <x>0</x>
+                        <y>149</y>
+                        <width>60</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="stackingMode">
+                    <enum>Menu</enum>
+                </property>
+                <property name="labels">
+                    <string>Time series minimum;Time series maximum;Time series mean;Time series total;Time series net</string>
+                </property>
+                <property name="files">
+                    <string>NDTimeSeries.ui;NDTimeSeries.ui;NDTimeSeries.ui;NDTimeSeries.ui;NDTimeSeries.ui</string>
+                </property>
+                <property name="args">
+                    <string>P=$(P),R=$(R),PLT=$(ROI6)TSMinValue;P=$(P),R=$(R),PLT=$(ROI6)TSMaxValue;P=$(P),R=$(R),PLT=$(ROI6)TSMeanValue;P=$(P),R=$(R),PLT=$(ROI6)TSTotal;P=$(P),R=$(R),PLT=$(ROI6)TSNet</string>
+                </property>
+                <property name="removeParent">
+                    <string>false;false;false;false;false</string>
+                </property>
+            </widget>
+            <widget class="caRelatedDisplay" name="caRelatedDisplay_14">
+                <property name="geometry">
+                    <rect>
+                        <x>0</x>
+                        <y>174</y>
+                        <width>60</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="stackingMode">
+                    <enum>Menu</enum>
+                </property>
+                <property name="labels">
+                    <string>Time series minimum;Time series maximum;Time series mean;Time series total;Time series net</string>
+                </property>
+                <property name="files">
+                    <string>NDTimeSeries.ui;NDTimeSeries.ui;NDTimeSeries.ui;NDTimeSeries.ui;NDTimeSeries.ui</string>
+                </property>
+                <property name="args">
+                    <string>P=$(P),R=$(R),PLT=$(ROI7)TSMinValue;P=$(P),R=$(R),PLT=$(ROI7)TSMaxValue;P=$(P),R=$(R),PLT=$(ROI7)TSMeanValue;P=$(P),R=$(R),PLT=$(ROI7)TSTotal;P=$(P),R=$(R),PLT=$(ROI7)TSNet</string>
+                </property>
+                <property name="removeParent">
+                    <string>false;false;false;false;false</string>
+                </property>
+            </widget>
+            <widget class="caRelatedDisplay" name="caRelatedDisplay_15">
+                <property name="geometry">
+                    <rect>
+                        <x>0</x>
+                        <y>199</y>
+                        <width>60</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="stackingMode">
+                    <enum>Menu</enum>
+                </property>
+                <property name="labels">
+                    <string>Time series minimum;Time series maximum;Time series mean;Time series total;Time series net</string>
+                </property>
+                <property name="files">
+                    <string>NDTimeSeries.ui;NDTimeSeries.ui;NDTimeSeries.ui;NDTimeSeries.ui;NDTimeSeries.ui</string>
+                </property>
+                <property name="args">
+                    <string>P=$(P),R=$(R),PLT=$(ROI8)TSMinValue;P=$(P),R=$(R),PLT=$(ROI8)TSMaxValue;P=$(P),R=$(R),PLT=$(ROI8)TSMeanValue;P=$(P),R=$(R),PLT=$(ROI8)TSTotal;P=$(P),R=$(R),PLT=$(ROI8)TSNet</string>
+                </property>
+                <property name="removeParent">
+                    <string>false;false;false;false;false</string>
+                </property>
+            </widget>
+        </widget>
+        <widget class="caFrame" name="caFrame_13">
+            <property name="geometry">
+                <rect>
+                    <x>380</x>
+                    <y>286</y>
+                    <width>382</width>
+                    <height>132</height>
+                </rect>
+            </property>
+            <widget class="caGraphics" name="caRectangle_0">
+                <property name="form">
+                    <enum>caGraphics::Rectangle</enum>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>130</x>
+                        <y>5</y>
+                        <width>120</width>
+                        <height>21</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>218</red>
+                        <green>218</green>
+                        <blue>218</blue>
+                    </color>
+                </property>
+                <property name="fillstyle">
+                    <enum>Filled</enum>
+                </property>
+                <property name="lineColor">
+                    <color alpha="255">
+                        <red>218</red>
+                        <green>218</green>
+                        <blue>218</blue>
+                    </color>
+                </property>
+                <property name="linestyle">
+                    <enum>Solid</enum>
+                </property>
+            </widget>
+            <widget class="caGraphics" name="caRectangle_1">
+                <property name="form">
+                    <enum>caGraphics::Rectangle</enum>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>0</x>
+                        <y>0</y>
+                        <width>380</width>
+                        <height>130</height>
+                    </rect>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="0">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="lineColor">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="linestyle">
+                    <enum>Solid</enum>
+                </property>
+            </widget>
+            <widget class="caLabel" name="caLabel_25">
+                <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>10</red>
+                        <green>0</green>
+                        <blue>184</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="0">
+                        <red>10</red>
+                        <green>0</green>
+                        <blue>184</blue>
+                    </color>
+                </property>
+                <property name="text">
+                    <string>Time Series</string>
+                </property>
+                <property name="fontScaleMode">
+                    <enum>ESimpleLabel::WidthAndHeight</enum>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignAbsolute|Qt::AlignHCenter|Qt::AlignVCenter</set>
+                </property>
+                <property name="geometry">
+                    <rect>
+                        <x>135</x>
+                        <y>5</y>
+                        <width>132</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+            </widget>
+            <widget class="caFrame" name="caFrame_14">
+                <property name="geometry">
+                    <rect>
+                        <x>71</x>
+                        <y>82</y>
+                        <width>227</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <widget class="caLabel" name="caLabel_26">
+                    <property name="frameShape">
+                        <enum>QFrame::NoFrame</enum>
+                    </property>
+                    <property name="foreground">
+                        <color alpha="255">
+                            <red>0</red>
+                            <green>0</green>
+                            <blue>0</blue>
+                        </color>
+                    </property>
+                    <property name="background">
+                        <color alpha="0">
+                            <red>0</red>
+                            <green>0</green>
+                            <blue>0</blue>
+                        </color>
+                    </property>
+                    <property name="text">
+                        <string>Current point</string>
+                    </property>
+                    <property name="fontScaleMode">
+                        <enum>ESimpleLabel::WidthAndHeight</enum>
+                    </property>
+                    <property name="alignment">
+                        <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>0</x>
+                            <y>0</y>
+                            <width>156</width>
+                            <height>20</height>
+                        </rect>
+                    </property>
+                </widget>
+                <widget class="caLineEdit" name="caLineEdit_40">
+                    <property name="geometry">
+                        <rect>
+                            <x>135</x>
+                            <y>1</y>
+                            <width>90</width>
+                            <height>18</height>
+                        </rect>
+                    </property>
+                    <property name="fontScaleMode">
+                        <enum>caLineEdit::WidthAndHeight</enum>
+                    </property>
+                    <property name="channel">
+                        <string>$(P)$(R)TSCurrentPoint</string>
+                    </property>
+                    <property name="foreground">
+                        <color alpha="255">
+                            <red>10</red>
+                            <green>0</green>
+                            <blue>184</blue>
+                        </color>
+                    </property>
+                    <property name="background">
+                        <color alpha="255">
+                            <red>187</red>
+                            <green>187</green>
+                            <blue>187</blue>
+                        </color>
+                    </property>
+                    <property name="limitsMode">
+                        <enum>caLineEdit::Channel</enum>
+                    </property>
+                    <property name="limitsMode">
+                        <enum>caLineEdit::Channel</enum>
+                    </property>
+                    <property name="precisionMode">
+                        <enum>caLineEdit::Channel</enum>
+                    </property>
+                    <property name="minValue">
+                        <double>0.0</double>
+                    </property>
+                    <property name="maxValue">
+                        <double>1.0</double>
+                    </property>
+                    <property name="alignment">
+                        <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="formatType">
+                        <enum>decimal</enum>
+                    </property>
+                    <property name="colorMode">
+                        <enum>caLineEdit::Static</enum>
+                    </property>
+                </widget>
+            </widget>
+            <widget class="caFrame" name="caFrame_15">
+                <property name="geometry">
+                    <rect>
+                        <x>111</x>
+                        <y>107</y>
+                        <width>242</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <widget class="caMenu" name="caMenu_8">
+                    <property name="geometry">
+                        <rect>
+                            <x>95</x>
+                            <y>1</y>
+                            <width>80</width>
+                            <height>18</height>
+                        </rect>
+                    </property>
+                    <property name="channel">
+                        <string>$(P)$(R)TSRead.SCAN</string>
+                    </property>
+                    <property name="foreground">
+                        <color alpha="255">
+                            <red>0</red>
+                            <green>0</green>
+                            <blue>0</blue>
+                        </color>
+                    </property>
+                    <property name="background">
+                        <color alpha="255">
+                            <red>115</red>
+                            <green>223</green>
+                            <blue>255</blue>
+                        </color>
+                    </property>
+                    <property name="colorMode">
+                        <enum>caMenu::Static</enum>
+                    </property>
+                </widget>
+                <widget class="caMessageButton" name="caMessageButton_0">
+                    <property name="geometry">
+                        <rect>
+                            <x>180</x>
+                            <y>0</y>
+                            <width>60</width>
+                            <height>20</height>
+                        </rect>
+                    </property>
+                    <property name="fontScaleMode">
+                        <enum>EPushButton::WidthAndHeight</enum>
+                    </property>
+                    <property name="channel">
+                        <string>$(P)$(R)TSControl</string>
+                    </property>
+                    <property name="foreground">
+                        <color alpha="255">
+                            <red>0</red>
+                            <green>0</green>
+                            <blue>0</blue>
+                        </color>
+                    </property>
+                    <property name="background">
+                        <color alpha="255">
+                            <red>115</red>
+                            <green>223</green>
+                            <blue>255</blue>
+                        </color>
+                    </property>
+                    <property name="label">
+                        <string>Read</string>
+                    </property>
+                    <property name="pressMessage">
+                        <string>3</string>
+                    </property>
+                    <property name="colorMode">
+                        <enum>caMessageButton::Static</enum>
+                    </property>
+                </widget>
+                <widget class="caLabel" name="caLabel_27">
+                    <property name="frameShape">
+                        <enum>QFrame::NoFrame</enum>
+                    </property>
+                    <property name="foreground">
+                        <color alpha="255">
+                            <red>0</red>
+                            <green>0</green>
+                            <blue>0</blue>
+                        </color>
+                    </property>
+                    <property name="background">
+                        <color alpha="0">
+                            <red>0</red>
+                            <green>0</green>
+                            <blue>0</blue>
+                        </color>
+                    </property>
+                    <property name="text">
+                        <string>Read rate</string>
+                    </property>
+                    <property name="fontScaleMode">
+                        <enum>ESimpleLabel::WidthAndHeight</enum>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>0</x>
+                            <y>0</y>
+                            <width>108</width>
+                            <height>20</height>
+                        </rect>
+                    </property>
+                    <property name="alignment">
+                        <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+                    </property>
+                </widget>
+            </widget>
+            <widget class="caMessageButton" name="caMessageButton_1">
+                <property name="geometry">
+                    <rect>
+                        <x>33</x>
+                        <y>32</y>
+                        <width>90</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="fontScaleMode">
+                    <enum>EPushButton::WidthAndHeight</enum>
+                </property>
+                <property name="channel">
+                    <string>$(P)$(R)TSControl</string>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="label">
+                    <string>Erase/Start</string>
+                </property>
+                <property name="pressMessage">
+                    <string>0</string>
+                </property>
+                <property name="colorMode">
+                    <enum>caMessageButton::Static</enum>
+                </property>
+            </widget>
+            <widget class="caMessageButton" name="caMessageButton_2">
+                <property name="geometry">
+                    <rect>
+                        <x>128</x>
+                        <y>32</y>
+                        <width>60</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="fontScaleMode">
+                    <enum>EPushButton::WidthAndHeight</enum>
+                </property>
+                <property name="channel">
+                    <string>$(P)$(R)TSControl</string>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="label">
+                    <string>Stop</string>
+                </property>
+                <property name="pressMessage">
+                    <string>2</string>
+                </property>
+                <property name="colorMode">
+                    <enum>caMessageButton::Static</enum>
+                </property>
+            </widget>
+            <widget class="caMessageButton" name="caMessageButton_3">
+                <property name="geometry">
+                    <rect>
+                        <x>193</x>
+                        <y>32</y>
+                        <width>60</width>
+                        <height>20</height>
+                    </rect>
+                </property>
+                <property name="fontScaleMode">
+                    <enum>EPushButton::WidthAndHeight</enum>
+                </property>
+                <property name="channel">
+                    <string>$(P)$(R)TSControl</string>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>0</red>
+                        <green>0</green>
+                        <blue>0</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>115</red>
+                        <green>223</green>
+                        <blue>255</blue>
+                    </color>
+                </property>
+                <property name="label">
+                    <string>Start</string>
+                </property>
+                <property name="pressMessage">
+                    <string>1</string>
+                </property>
+                <property name="colorMode">
+                    <enum>caMessageButton::Static</enum>
+                </property>
+            </widget>
+            <widget class="caLineEdit" name="caLineEdit_41">
+                <property name="geometry">
+                    <rect>
+                        <x>258</x>
+                        <y>33</y>
+                        <width>90</width>
+                        <height>18</height>
+                    </rect>
+                </property>
+                <property name="fontScaleMode">
+                    <enum>caLineEdit::WidthAndHeight</enum>
+                </property>
+                <property name="channel">
+                    <string>$(P)$(R)TSAcquiring</string>
+                </property>
+                <property name="foreground">
+                    <color alpha="255">
+                        <red>10</red>
+                        <green>0</green>
+                        <blue>184</blue>
+                    </color>
+                </property>
+                <property name="background">
+                    <color alpha="255">
+                        <red>70</red>
+                        <green>70</green>
+                        <blue>70</blue>
+                    </color>
+                </property>
+                <property name="limitsMode">
+                    <enum>caLineEdit::Channel</enum>
+                </property>
+                <property name="limitsMode">
+                    <enum>caLineEdit::Channel</enum>
+                </property>
+                <property name="precisionMode">
+                    <enum>caLineEdit::Channel</enum>
+                </property>
+                <property name="minValue">
+                    <double>0.0</double>
+                </property>
+                <property name="maxValue">
+                    <double>1.0</double>
+                </property>
+                <property name="alignment">
+                    <set>Qt::AlignAbsolute|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+                <property name="formatType">
+                    <enum>decimal</enum>
+                </property>
+                <property name="colorMode">
+                    <enum>caLineEdit::Alarm_Static</enum>
+                </property>
+            </widget>
+            <widget class="caFrame" name="caFrame_16">
+                <property name="geometry">
+                    <rect>
+                        <x>41</x>
+                        <y>57</y>
+                        <width>227</width>
+                        <height>22</height>
+                    </rect>
+                </property>
+                <widget class="caTextEntry" name="caTextEntry_48">
+                    <property name="geometry">
+                        <rect>
+                            <x>165</x>
+                            <y>1</y>
+                            <width>60</width>
+                            <height>19</height>
+                        </rect>
+                    </property>
+                    <property name="fontScaleMode">
+                        <enum>caLineEdit::WidthAndHeight</enum>
+                    </property>
+                    <property name="channel">
+                        <string>$(P)$(R)TSNumPoints</string>
+                    </property>
+                    <property name="foreground">
+                        <color alpha="255">
+                            <red>0</red>
+                            <green>0</green>
+                            <blue>0</blue>
+                        </color>
+                    </property>
+                    <property name="background">
+                        <color alpha="255">
+                            <red>115</red>
+                            <green>223</green>
+                            <blue>255</blue>
+                        </color>
+                    </property>
+                    <property name="limitsMode">
+                        <enum>caLineEdit::Channel</enum>
+                    </property>
+                    <property name="limitsMode">
+                        <enum>caLineEdit::Channel</enum>
+                    </property>
+                    <property name="precisionMode">
+                        <enum>caLineEdit::Channel</enum>
+                    </property>
+                    <property name="minValue">
+                        <double>0.0</double>
+                    </property>
+                    <property name="maxValue">
+                        <double>1.0</double>
+                    </property>
+                    <property name="colorMode">
+                        <enum>caLineEdit::Static</enum>
+                    </property>
+                    <property name="formatType">
+                        <enum>decimal</enum>
+                    </property>
+                </widget>
+                <widget class="caLabel" name="caLabel_28">
+                    <property name="frameShape">
+                        <enum>QFrame::NoFrame</enum>
+                    </property>
+                    <property name="foreground">
+                        <color alpha="255">
+                            <red>0</red>
+                            <green>0</green>
+                            <blue>0</blue>
+                        </color>
+                    </property>
+                    <property name="background">
+                        <color alpha="0">
+                            <red>0</red>
+                            <green>0</green>
+                            <blue>0</blue>
+                        </color>
+                    </property>
+                    <property name="text">
+                        <string>Number of points</string>
+                    </property>
+                    <property name="fontScaleMode">
+                        <enum>ESimpleLabel::WidthAndHeight</enum>
+                    </property>
+                    <property name="alignment">
+                        <set>Qt::AlignAbsolute|Qt::AlignRight|Qt::AlignVCenter</set>
+                    </property>
+                    <property name="geometry">
+                        <rect>
+                            <x>0</x>
+                            <y>0</y>
+                            <width>192</width>
+                            <height>20</height>
+                        </rect>
+                    </property>
+                </widget>
+            </widget>
+        </widget>
         <zorder>caLabel_0</zorder>
         <zorder>caLabel_1</zorder>
         <zorder>caLabel_2</zorder>
@@ -6296,8 +7155,19 @@ border-radius: 2px;
         <zorder>caLabel_21</zorder>
         <zorder>caFrame_11</zorder>
         <zorder>caLabel_22</zorder>
-        <zorder>caFrame_12</zorder>
         <zorder>caLabel_23</zorder>
+        <zorder>caLabel_24</zorder>
+        <zorder>caFrame_12</zorder>
+        <zorder>caRectangle_0</zorder>
+        <zorder>caRectangle_1</zorder>
+        <zorder>caLabel_25</zorder>
+        <zorder>caLabel_26</zorder>
+        <zorder>caFrame_14</zorder>
+        <zorder>caLabel_27</zorder>
+        <zorder>caFrame_15</zorder>
+        <zorder>caLabel_28</zorder>
+        <zorder>caFrame_16</zorder>
+        <zorder>caFrame_13</zorder>
         <zorder>caLineEdit_0</zorder>
         <zorder>caLineEdit_1</zorder>
         <zorder>caLineEdit_2</zorder>
@@ -6378,14 +7248,6 @@ border-radius: 2px;
         <zorder>caTextEntry_45</zorder>
         <zorder>caTextEntry_46</zorder>
         <zorder>caTextEntry_47</zorder>
-        <zorder>caRelatedDisplay_0</zorder>
-        <zorder>caRelatedDisplay_1</zorder>
-        <zorder>caRelatedDisplay_2</zorder>
-        <zorder>caRelatedDisplay_3</zorder>
-        <zorder>caRelatedDisplay_4</zorder>
-        <zorder>caRelatedDisplay_5</zorder>
-        <zorder>caRelatedDisplay_6</zorder>
-        <zorder>caRelatedDisplay_7</zorder>
         <zorder>caLineEdit_24</zorder>
         <zorder>caLineEdit_25</zorder>
         <zorder>caLineEdit_26</zorder>
@@ -6402,6 +7264,30 @@ border-radius: 2px;
         <zorder>caLineEdit_37</zorder>
         <zorder>caLineEdit_38</zorder>
         <zorder>caLineEdit_39</zorder>
+        <zorder>caRelatedDisplay_0</zorder>
+        <zorder>caRelatedDisplay_1</zorder>
+        <zorder>caRelatedDisplay_2</zorder>
+        <zorder>caRelatedDisplay_3</zorder>
+        <zorder>caRelatedDisplay_4</zorder>
+        <zorder>caRelatedDisplay_5</zorder>
+        <zorder>caRelatedDisplay_6</zorder>
+        <zorder>caRelatedDisplay_7</zorder>
+        <zorder>caRelatedDisplay_8</zorder>
+        <zorder>caRelatedDisplay_9</zorder>
+        <zorder>caRelatedDisplay_10</zorder>
+        <zorder>caRelatedDisplay_11</zorder>
+        <zorder>caRelatedDisplay_12</zorder>
+        <zorder>caRelatedDisplay_13</zorder>
+        <zorder>caRelatedDisplay_14</zorder>
+        <zorder>caRelatedDisplay_15</zorder>
+        <zorder>caLineEdit_40</zorder>
+        <zorder>caMenu_8</zorder>
+        <zorder>caMessageButton_0</zorder>
+        <zorder>caMessageButton_1</zorder>
+        <zorder>caMessageButton_2</zorder>
+        <zorder>caMessageButton_3</zorder>
+        <zorder>caLineEdit_41</zorder>
+        <zorder>caTextEntry_48</zorder>
     </widget>
 </widget>
 </ui>

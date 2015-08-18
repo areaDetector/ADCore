@@ -1,14 +1,14 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDROIStat.adl"
+	name="/home/epics/devel/areaDetector-2-3/ADCore/ADApp/op/adl/NDROIStat.adl"
 	version=030107
 }
 display {
 	object {
-		x=482
-		y=109
+		x=989
+		y=92
 		width=390
-		height=685
+		height=820
 	}
 	clr=14
 	bclr=4
@@ -123,8 +123,8 @@ composite {
 }
 "message button" {
 	object {
-		x=172
-		y=660
+		x=145
+		y=795
 		width=100
 		height=20
 	}
@@ -136,147 +136,373 @@ composite {
 	label="Reset All"
 	press_msg="1"
 }
-composite {
+rectangle {
 	object {
 		x=5
 		y=570
 		width=380
 		height=85
 	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+"related display" {
+	object {
+		x=172
+		y=600
+		width=130
+		height=20
+	}
+	display[0] {
+		label="ROI 0"
+		name="NDROIStatN.adl"
+		args="P=$(P), R=$(R),ROI=1:"
+	}
+	display[1] {
+		label="ROI 1"
+		name="NDROIStatN.adl"
+		args="P=$(P), R=$(R),ROI=2:"
+	}
+	display[2] {
+		label="ROI 2"
+		name="NDROIStatN.adl"
+		args="P=$(P), R=$(R),ROI=3:"
+	}
+	display[3] {
+		label="ROI 3"
+		name="NDROIStatN.adl"
+		args="P=$(P), R=$(R),ROI=4:"
+	}
+	display[4] {
+		label="ROI 4"
+		name="NDROIStatN.adl"
+		args="P=$(P), R=$(R),ROI=5:"
+	}
+	display[5] {
+		label="ROI 5"
+		name="NDROIStatN.adl"
+		args="P=$(P), R=$(R),ROI=6:"
+	}
+	display[6] {
+		label="ROI 6"
+		name="NDROIStatN.adl"
+		args="P=$(P), R=$(R),ROI=7:"
+	}
+	display[7] {
+		label="ROI 7"
+		name="NDROIStatN.adl"
+		args="P=$(P), R=$(R),ROI=8:"
+	}
+	clr=14
+	bclr=51
+	label="Individual ROIs"
+}
+text {
+	object {
+		x=22
+		y=600
+		width=140
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Individual 0-7"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=172
+		y=627
+		width=130
+		height=20
+	}
+	display[0] {
+		label="ROIS 1-8"
+		name="NDROIStat8.adl"
+		args="P=$(P),R=$(R),ROI1=1:,ROI2=2:,ROI3=3:,ROI4=4:,ROI5=5:,ROI6=6:,ROI7=7:,ROI8=8:"
+	}
+	display[1] {
+		label="ROIS 9-16"
+		name="NDROIStat8.adl"
+		args="P=$(P),R=$(R),ROI1=8:,ROI2=9:,ROI3=10:,ROI4=11:,ROI5=12:,ROI6=13:,ROI7=14:,ROI8=15:,"
+	}
+	display[2] {
+		label="ROIS 17-24"
+		name="NDROIStat8.adl"
+		args="P=$(P),R=$(R),ROI1=16:,ROI2=17:,ROI3=18:,ROI4=19:,ROI5=20:,ROI6=21:,ROI7=22:,ROI8=23:,"
+	}
+	display[3] {
+		label="ROIS 25-32"
+		name="NDROIStat8.adl"
+		args="P=$(P),R=$(R),ROI1=24:,ROI2=25:,ROI3=26:,ROI4=27:,ROI5=28:,ROI6=29:,ROI7=30:,ROI8=31:,"
+	}
+	clr=14
+	bclr=51
+	label="Combined ROIs"
+}
+text {
+	object {
+		x=138
+		y=575
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="ROI definitions"
+	align="horiz. right"
+}
+text {
+	object {
+		x=82
+		y=628
+		width=80
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Combined"
+	align="horiz. right"
+}
+composite {
+	object {
+		x=5
+		y=660
+		width=380
+		height=130
+	}
 	"composite name"=""
 	children {
 		rectangle {
 			object {
+				x=135
+				y=665
+				width=120
+				height=21
+			}
+			"basic attribute" {
+				clr=2
+			}
+		}
+		rectangle {
+			object {
 				x=5
-				y=570
+				y=660
 				width=380
-				height=85
+				height=130
 			}
 			"basic attribute" {
 				clr=14
 				fill="outline"
 			}
 		}
-		"related display" {
-			object {
-				x=172
-				y=600
-				width=130
-				height=20
-			}
-			display[0] {
-				label="ROI 0"
-				name="NDROIStatN.adl"
-				args="P=$(P), R=$(R)1:"
-			}
-			display[1] {
-				label="ROI 1"
-				name="NDROIStatN.adl"
-				args="P=$(P), R=$(R)2:"
-			}
-			display[2] {
-				label="ROI 2"
-				name="NDROIStatN.adl"
-				args="P=$(P), R=$(R)3:"
-			}
-			display[3] {
-				label="ROI 3"
-				name="NDROIStatN.adl"
-				args="P=$(P), R=$(R)4:"
-			}
-			display[4] {
-				label="ROI 4"
-				name="NDROIStatN.adl"
-				args="P=$(P), R=$(R)5:"
-			}
-			display[5] {
-				label="ROI 5"
-				name="NDROIStatN.adl"
-				args="P=$(P), R=$(R)6:"
-			}
-			display[6] {
-				label="ROI 6"
-				name="NDROIStatN.adl"
-				args="P=$(P), R=$(R)7:"
-			}
-			display[7] {
-				label="ROI 7"
-				name="NDROIStatN.adl"
-				args="P=$(P), R=$(R)8:"
-			}
-			clr=14
-			bclr=51
-			label="Individual ROIs"
-		}
 		text {
 			object {
-				x=22
-				y=600
-				width=140
+				x=140
+				y=665
+				width=110
 				height=20
 			}
 			"basic attribute" {
-				clr=14
+				clr=54
 			}
-			textix="Individual 0-7"
-			align="horiz. right"
+			textix="Time Series"
+			align="horiz. centered"
 		}
-		"related display" {
+		composite {
 			object {
-				x=172
-				y=627
-				width=130
+				x=76
+				y=742
+				width=225
 				height=20
 			}
-			display[0] {
-				label="ROIS 1-8"
-				name="NDROIStat8.adl"
-				args="P=$(P),ROI1=$(R)1:,ROI2=$(R)2:,ROI3=$(R)3:,ROI4=$(R)4:,ROI5=$(R)5:,ROI6=$(R)6:,ROI7=$(R)7:,ROI8=$(R)8:"
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=76
+						y=742
+						width=130
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Current point"
+					align="horiz. right"
+				}
+				"text update" {
+					object {
+						x=211
+						y=743
+						width=90
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)TSCurrentPoint"
+						clr=54
+						bclr=4
+					}
+					limits {
+					}
+				}
 			}
-			display[1] {
-				label="ROIS 9-16"
-				name="NDROIStat8.adl"
-				args="P=$(P),ROI1=$(R)8:,ROI2=$(R)9:,ROI3=$(R)10:,ROI4=$(R)11:,ROI5=$(R)12:,ROI6=$(R)13:,ROI7=$(R)14:,ROI8=$(R)15:,"
-			}
-			display[2] {
-				label="ROIS 17-24"
-				name="NDROIStat8.adl"
-				args="P=$(P),ROI1=$(R)16:,ROI2=$(R)17:,ROI3=$(R)18:,ROI4=$(R)19:,ROI5=$(R)20:,ROI6=$(R)21:,ROI7=$(R)22:,ROI8=$(R)23:,"
-			}
-			display[3] {
-				label="ROIS 25-32"
-				name="NDROIStat8.adl"
-				args="P=$(P),ROI1=$(R)24:,ROI2=$(R)25:,ROI3=$(R)26:,ROI4=$(R)27:,ROI5=$(R)28:,ROI6=$(R)29:,ROI7=$(R)30:,ROI8=$(R)31:,"
-			}
-			clr=14
-			bclr=51
-			label="Combined ROIs"
 		}
-		text {
+		composite {
 			object {
-				x=138
-				y=575
-				width=150
+				x=116
+				y=767
+				width=240
 				height=20
 			}
-			"basic attribute" {
-				clr=14
+			"composite name"=""
+			children {
+				menu {
+					object {
+						x=211
+						y=768
+						width=80
+						height=18
+					}
+					control {
+						chan="$(P)$(R)TSRead.SCAN"
+						clr=14
+						bclr=51
+					}
+				}
+				"message button" {
+					object {
+						x=296
+						y=767
+						width=60
+						height=20
+					}
+					control {
+						chan="$(P)$(R)TSControl"
+						clr=14
+						bclr=51
+					}
+					label="Read"
+					press_msg="3"
+				}
+				text {
+					object {
+						x=116
+						y=767
+						width=90
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Read rate"
+				}
 			}
-			textix="ROI definitions"
-			align="horiz. right"
 		}
-		text {
+		"message button" {
 			object {
-				x=82
-				y=628
-				width=80
+				x=38
+				y=692
+				width=90
 				height=20
 			}
-			"basic attribute" {
+			control {
+				chan="$(P)$(R)TSControl"
 				clr=14
+				bclr=51
 			}
-			textix="Combined"
-			align="horiz. right"
+			label="Erase/Start"
+			press_msg="0"
+		}
+		"message button" {
+			object {
+				x=133
+				y=692
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)TSControl"
+				clr=14
+				bclr=51
+			}
+			label="Stop"
+			press_msg="2"
+		}
+		"message button" {
+			object {
+				x=198
+				y=692
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)TSControl"
+				clr=14
+				bclr=51
+			}
+			label="Start"
+			press_msg="1"
+		}
+		"text update" {
+			object {
+				x=263
+				y=693
+				width=90
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)TSAcquiring"
+				clr=54
+				bclr=12
+			}
+			clrmod="alarm"
+			limits {
+			}
+		}
+		composite {
+			object {
+				x=46
+				y=717
+				width=225
+				height=20
+			}
+			"composite name"=""
+			children {
+				"text entry" {
+					object {
+						x=211
+						y=718
+						width=60
+						height=19
+					}
+					control {
+						chan="$(P)$(R)TSNumPoints"
+						clr=14
+						bclr=51
+					}
+					limits {
+					}
+				}
+				text {
+					object {
+						x=46
+						y=717
+						width=160
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Number of points"
+					align="horiz. right"
+				}
+			}
 		}
 	}
 }
