@@ -1352,16 +1352,10 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
         }
       }
     } else {
-      // Not in positional placement mode, perform standard extension
       // For multi frame files we now extend the HDF dataset to fit an additional frame
       if (this->multiFrameFile){
         status = this->detDataMap[destination]->extendDataSet(extradims);
       }
-    }
-  } else {
-    // For multi frame files we now extend the HDF dataset to fit an additional frame
-    if (this->multiFrameFile){
-      status = this->detDataMap[destination]->extendDataSet(extradims);
     }
   }
 
