@@ -169,6 +169,23 @@
     current index and a string representation of the last position sent are provided through the parameter interface.
   </p>
   <h3>
+    Frame Identification tracking
+  </h3>
+  <p>
+    The plugin tracks frame information to ensure that the incoming frames are in the correct order and there are no missing
+    or duplicated frames.  This is achieved using three parameters, <b>IDName</b>, <b>IDStart</b> and <b>IDDifference</b>.  The
+    IDName tells the plugin which incoming attribute to use as the ID to track, or if it is left empty then the uniqueId member
+    variable of the NDArray is used.  The IDStart value informs this plugin of the first expected ID when the acquisition is 
+    started, and the IDDifference informs this plugin of the expected delta ID between each frame.  An IDStart of 5 and IDDifference
+    of 10 would result in the plugin expecting the following sequence of ID values attached to the incoming frames: 5,15,25,35...
+    If incoming frames contain IDs that are greater than the expected ID then the plugin will print a warning and throw away any
+    position information up until the expected ID matches the frame ID; this is a case where the frames are assumed to have been 
+    dropped.  If incoming frames contain IDs that are less than the exptected ID then the plugin will print an error and drop the
+    frames until the incoming frame ID matches the expected ID.  This is a more serious case of the plugin dropping frames and this
+    is why the error is printed.  In both of these error situations the plugin will record the event into the corresponding counter
+    and continue to process frames.
+  </p>
+  <h3>
     Parameters and Records
   </h3>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
@@ -311,6 +328,63 @@
           bi</td>
       </tr>
       <tr>
+        <td>
+          NDPos_IDName</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Use this attribute name for the incoming frame IDs.  If this parameter is left empty then
+          the incoming frame's uniqueId is used for the index count.
+        <td>
+          NDPos_IDName</td>
+        <td>
+          $(P)$(R)IDName<br/>
+          $(P)$(R)IDName_RBV</td>
+        <td>
+          stringout<br/>
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPos_IDStart</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          When a new acquisition is started this value is the expected ID for the first processed frame.
+        <td>
+          NDPos_IDName</td>
+        <td>
+          $(P)$(R)IDStart<br/>
+          $(P)$(R)IDStart_RBV</td>
+        <td>
+          longout<br/>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPos_IDDifference</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          This value represents the delta ID between each processed frame, and is useful is frames are processed
+          by plugins before reaching this plugin (eg integration of several frames into one).  If the start ID is
+          set to 1 and this parameter is set to 2 then the expected IDs would be 1,3,5,7,9....
+        <td>
+          NDPos_IDDifference</td>
+        <td>
+          $(P)$(R)IDDifference<br/>
+          $(P)$(R)IDDifference_RBV</td>
+        <td>
+          longout<br/>
+          longin</td>
+      </tr>
+      <tr>
         <td align="center" colspan="7,">
           <b>Information</b></td>
       </tr>
@@ -361,6 +435,42 @@
           $(P)$(R)Position_RBV</td>
         <td>
           stringin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPos_MissingFrames</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Counter of the number of missed/dropped frames.  Write a 0 to the parameter to reset.</td>
+        <td>
+          NDPos_MissingFrames</td>
+        <td>
+          $(P)$(R)Missing<br>
+          $(P)$(R)Missing_RBV</td>
+        <td>
+          longout<br>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPos_DuplicateFrames</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Counter of the number of duplicated frames.  Write a 0 to the parameter to reset.</td>
+        <td>
+          NDPos_DuplicateFrames</td>
+        <td>
+          $(P)$(R)Duplicate<br>
+          $(P)$(R)Duplicate_RBV</td>
+        <td>
+          longout<br>
+          longin</td>
       </tr>
     </tbody>
   </table>
