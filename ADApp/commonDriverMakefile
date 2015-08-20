@@ -4,6 +4,14 @@
 $(PROD_NAME)_DBD += commonDriverSupport.dbd
 
 PROD_LIBS               += NDPlugin ADBase netCDF
+
+
+ifdef ADPLUGINEDGE
+  PROD_LIBS             += NDPluginEdge
+  PROD_SYS_LIBS_Linux   += opencv_core opencv_imgproc opencv_imgcodecs
+  $(PROD_NAME)_DBD      += NDPluginEdge.dbd
+endif
+
 ifneq (vxWorks, $(findstring vxWorks, $(T_A)))
   PROD_LIBS             += NeXus
 endif
