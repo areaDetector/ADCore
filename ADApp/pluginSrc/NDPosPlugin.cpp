@@ -78,6 +78,9 @@ void NDPosPlugin::processCallbacks(NDArray *pArray)
         getIntegerParam(NDPos_IDDifference, &IDDifference);
         getIntegerParam(NDPos_ExpectedID, &expectedID);
         if (expectedID < IDValue){
+          asynPrint(this->pasynUserSelf, ASYN_TRACE_WARNING,
+                    "%s::%s WARNING: possible frame drop detected: expected ID [%d] received ID [%d]\n",
+                    driverName, functionName, expectedID, IDValue);
           // If expected is less than ID throw away positions and record dropped events
           getIntegerParam(NDPos_MissingFrames, &dropped);
           getIntegerParam(NDPos_Mode, &mode);
@@ -110,6 +113,9 @@ void NDPosPlugin::processCallbacks(NDArray *pArray)
           setIntegerParam(NDPos_ExpectedID, expectedID);
           setIntegerParam(NDPos_MissingFrames, dropped);
         } else if (expectedID > IDValue){
+          asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                    "%s::%s ERROR: dropping frame! possible duplicate detected: expected ID [%d] received ID [%d]\n",
+                    driverName, functionName, expectedID, IDValue);
           // If expected is greater than ID then ignore the frame and record duplicate event
           getIntegerParam(NDPos_DuplicateFrames, &duplicates);
           duplicates++;
