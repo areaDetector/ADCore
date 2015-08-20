@@ -1433,21 +1433,13 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
     this->performancePtr++;
   }
 
-  if (flush > 0){
-    if (numCaptured % flush == 0) {
-      if (checkForSWMRMode()){
-        // We are in SWMR mode so flush the dataset for any readers
-        status = this->detDataMap[destination]->flushDataset();
-      }
-    }
-  } else {
-    // Here although the flush parameter is zero we still need to flush the
-    // dataset if we are in SWMR mode so that any readers get the updates
-    if (checkForSWMRMode()){
-      // We are in SWMR mode so flush the dataset for any readers
+  if (checkForSWMRMode()){
+    if ((numCaptured+1) % flush == 0) {
+      // We are in SWMR mode so flush the dataset on every <flush> frames
       status = this->detDataMap[destination]->flushDataset();
     }
   }
+
   if (status != asynSuccess){
     hdfstatus = H5Fclose(this->file);
     if (hdfstatus){
