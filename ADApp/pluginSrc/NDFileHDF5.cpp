@@ -1268,32 +1268,88 @@ asynStatus NDFileHDF5::writeFile(NDArray *pArray)
     // and store them into the offsets variable
     if (extradims == 0){
       epicsInt32 ival = 0;
-      pArray->pAttributeList->find(posNameDimN)->getValue(NDAttrInt32, &ival, NULL);
-      offsets[0] = ival;
+      NDAttribute *att1 = pArray->pAttributeList->find(posNameDimN);
+      if (att1 != NULL){
+        att1->getValue(NDAttrInt32, &ival, NULL);
+        offsets[0] = ival;
+      } else {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                  "%s::%s ERROR: could not find position attribute %s in list. Aborting\n",
+                  driverName, functionName, posNameDimN);
+        status = asynError;
+      }
     }
     if (extradims == 1){
       epicsInt32 ival = 0;
-      pArray->pAttributeList->find(posNameDimX)->getValue(NDAttrInt32, &ival, NULL);
-      offsets[0] = ival;
-      pArray->pAttributeList->find(posNameDimN)->getValue(NDAttrInt32, &ival, NULL);
-      offsets[1] = ival;
+      NDAttribute *att1 = pArray->pAttributeList->find(posNameDimX);
+      if (att1 != NULL){
+        att1->getValue(NDAttrInt32, &ival, NULL);
+        offsets[0] = ival;
+      } else {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                  "%s::%s ERROR: could not find position attribute %s in list. Aborting\n",
+                  driverName, functionName, posNameDimX);
+        status = asynError;
+      }
+      NDAttribute *att2 = pArray->pAttributeList->find(posNameDimN);
+      if (att2 != NULL){
+        att2->getValue(NDAttrInt32, &ival, NULL);
+        offsets[1] = ival;
+      } else {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                  "%s::%s ERROR: could not find position attribute %s in list. Aborting\n",
+                  driverName, functionName, posNameDimN);
+        status = asynError;
+      }
     }
     if (extradims == 2){
       epicsInt32 ival = 0;
-      pArray->pAttributeList->find(posNameDimY)->getValue(NDAttrInt32, &ival, NULL);
-      offsets[0] = ival;
-      pArray->pAttributeList->find(posNameDimX)->getValue(NDAttrInt32, &ival, NULL);
-      offsets[1] = ival;
-      pArray->pAttributeList->find(posNameDimN)->getValue(NDAttrInt32, &ival, NULL);
-      offsets[2] = ival;
+      NDAttribute *att1 = pArray->pAttributeList->find(posNameDimY);
+      if (att1 != NULL){
+        att1->getValue(NDAttrInt32, &ival, NULL);
+        offsets[0] = ival;
+      } else {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                  "%s::%s ERROR: could not find position attribute %s in list. Aborting\n",
+                  driverName, functionName, posNameDimY);
+        status = asynError;
+      }
+      NDAttribute *att2 = pArray->pAttributeList->find(posNameDimX);
+      if (att2 != NULL){
+        att2->getValue(NDAttrInt32, &ival, NULL);
+        offsets[1] = ival;
+      } else {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                  "%s::%s ERROR: could not find position attribute %s in list. Aborting\n",
+                  driverName, functionName, posNameDimX);
+        status = asynError;
+      }
+      NDAttribute *att3 = pArray->pAttributeList->find(posNameDimN);
+      if (att3 != NULL){
+        att3->getValue(NDAttrInt32, &ival, NULL);
+        offsets[2] = ival;
+      } else {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                  "%s::%s ERROR: could not find position attribute %s in list. Aborting\n",
+                  driverName, functionName, posNameDimN);
+        status = asynError;
+      }
     }
   }
 
-  if (destination == this->defDsetName){
-    // Check to see if we are positional placement mode
-    if (posRunning == 1){
-      if (this->multiFrameFile){
-        status = this->detDataMap[destination]->extendDataSet(extradims, offsets);
+  if (status == asynSuccess){
+    if (destination == this->defDsetName){
+      // Check to see if we are positional placement mode
+      if (posRunning == 1){
+        if (this->multiFrameFile){
+          status = this->detDataMap[destination]->extendDataSet(extradims, offsets);
+        }
+      } else {
+        // Not in positional placement mode, perform standard extension
+        // For multi frame files we now extend the HDF dataset to fit an additional frame
+        if (this->multiFrameFile){
+          status = this->detDataMap[destination]->extendDataSet(extradims);
+        }
       }
     } else {
       // Not in positional placement mode, perform standard extension
