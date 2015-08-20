@@ -1650,6 +1650,14 @@ asynStatus NDFileHDF5::writeInt32(asynUser *pasynUser, epicsInt32 value)
     }
   }
 
+  else if (function == NDFileHDF5_flushNthFrame){
+    // You cannot set the flush parameter to less than nFramesChunks
+    getIntegerParam(NDFileHDF5_nFramesChunks, &tmp);
+    if (value < tmp){
+      status = asynError;
+      setIntegerParam(function, oldvalue);
+    }
+  }
   else if (function == NDFileHDF5_extraDimSizeN ||
              function == NDFileHDF5_extraDimSizeX ||
              function == NDFileHDF5_extraDimSizeY)
@@ -2655,6 +2663,7 @@ asynStatus NDFileHDF5::configureDims(NDArray *pArray)
 {
   int i=0,j=0, extradims = 0, ndims=0;
   int numCapture;
+  int numFlush = 0;
   asynStatus status = asynSuccess;
   char strdims[DIMSREPORTSIZE];
   static const char *functionName = "configureDims";
@@ -2783,6 +2792,12 @@ asynStatus NDFileHDF5::configureDims(NDArray *pArray)
   setIntegerParam(NDFileHDF5_nFramesChunks, user_chunking[2]);
   setIntegerParam(NDFileHDF5_nRowChunks,    user_chunking[1]);
   setIntegerParam(NDFileHDF5_nColChunks,    user_chunking[0]);
+  // Check flushing parameter, if it is less than nFramesChunks then make them match
+  getIntegerParam(NDFileHDF5_flushNthFrame, &numFlush);
+  if (numFlush < user_chunking[2]){
+    numFlush = user_chunking[2];
+    setIntegerParam(NDFileHDF5_flushNthFrame, numFlush);
+  }
   this->unlock();
 
   for(i=0; i<pArray->ndims; i++) sprintf(strdims+(i*6), "%5d,", (int)pArray->dims[i].size);
