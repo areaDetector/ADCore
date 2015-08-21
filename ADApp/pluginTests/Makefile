@@ -28,7 +28,7 @@ ifdef BOOST
   # Add tests for new plugins like this:
   #plugin-test_SRCS += test_<plugin name>.cpp
   
-  plugin-test_LIBS += boost_unit_test_framework simDetector ADTestUtility
+  plugin-test_LIBS += boost_unit_test_framework ADTestUtility
   boost_unit_test_framework_DIR=$(BOOST_LIB)
 endif
 
