@@ -98,11 +98,16 @@ dbLoadRecords("NDAttributeN.template", "P=$(PREFIX),R=Attr1:6:,  PORT=ATTR1,ADDR
 dbLoadRecords("NDAttributeN.template", "P=$(PREFIX),R=Attr1:7:,  PORT=ATTR1,ADDR=6,TIMEOUT=1,NCHANS=$(NCHANS)")
 dbLoadRecords("NDAttributeN.template", "P=$(PREFIX),R=Attr1:8:,  PORT=ATTR1,ADDR=7,TIMEOUT=1,NCHANS=$(NCHANS)")
 
-# Optional: load scan records
-dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=$(PREFIX),MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
+# Optional: load scan records and saveData
+dbLoadRecords("$(SSCAN)/sscanApp/Db/standardScans.db","P=$(PREFIX),MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
+dbLoadRecords("$(SSCAN)/sscanApp/Db/saveData.db","P=$(PREFIX)")
+# To use saveData, you must run the following command after iocInit.  (There is a sample copy of saveData.req in sscan/documentation.):
+# saveData_Init(saveData.req, "P=$(PREFIX)")
 
-# Optional: load sseq record for acquisition sequence
+# Optional: load sseq record for acquisition sequence (calc R3-4 and earlier)
 dbLoadRecords("$(CALC)/calcApp/Db/yySseq.db", "P=$(PREFIX), S=AcquireSequence")
+# Optional: load sseq record for acquisition sequence (calc R3-5 and later)
+#dbLoadRecords("$(CALC)/calcApp/Db/sseqRecord.db", "P=$(PREFIX), S=AcquireSequence")
 
 # Optional: load devIocStats records (requires DEVIOCSTATS module)
 dbLoadRecords("$(DEVIOCSTATS)/db/iocAdminSoft.db", "IOC=$(PREFIX)")
