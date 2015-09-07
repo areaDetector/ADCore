@@ -54,15 +54,15 @@ This requires editing 2 files in the iocs directory for every detector xxx:
 In the file   
 `ADxxx/iocs/xxxIOC/xxxApp/src/Makefile`  
 Replace the line  
-`include ADCore/ADApp/commonDriverMakefile`  
+`include $(ADCORE)/ADApp/commonDriverMakefile`  
 with  
-`include ADExample/exampleApp/commonDriverMakefile`  
+`include $(ADEXAMPLE)/exampleApp/commonDriverMakefile`  
 In the file:  
 `ADxxx/iocs/xxxIOC/iocBoot/iocxxx/st.cmd`  
 Replace the line  
-`include ADCore/iocBoot/commonPlugins.cmd`  
+`< $(ADCORE)/iocBoot/commonPlugins.cmd`  
 with  
-`include ADExample/iocBoot/commonPlugins.cmd`  
+`< $(ADEXAMPLE)/iocBoot/commonPlugins.cmd`  
 
 ### NDRoiStat[.adl, .edl, ui, .opi]
 * Fixed problem with ROI numbers in related display
