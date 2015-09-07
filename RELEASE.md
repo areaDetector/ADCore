@@ -27,7 +27,7 @@ Release Notes
 R2-4 (September XXX, 2015)
 ========================
 ### Removed simDetector, iocs directory, and iocBoot directory
-  Previously the simDetector was part of ADCore, and there was iocs directory that built the
+*  Previously the simDetector was part of ADCore, and there was iocs directory that built the
   simDetector application both as part of an IOC and independent of an IOC.
   This had 2 disadvantages:
 
