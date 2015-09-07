@@ -49,17 +49,17 @@ R2-4 (September XXX, 2015)
   
   This requires editing 2 files in the iocs directory for every detector xxx:  
   In the file   
-  `ADxxx/iocs/xxxIOC/xxxApp/src/Makefile`
+  `ADxxx/iocs/xxxIOC/xxxApp/src/Makefile`  
   Replace the line  
-  `include ADCore/ADApp/commonDriverMakefile`
+  `include ADCore/ADApp/commonDriverMakefile`  
   with  
-  `include ADExample/exampleApp/commonDriverMakefile`
+  `include ADExample/exampleApp/commonDriverMakefile`  
   In the file:  
   ` ADxxx/iocs/xxxIOC/iocBoot/iocxxx/st.cmd` 
   Replace the line  
-  `include ADCore/iocBoot/commonPlugins.cmd`
+  `include ADCore/iocBoot/commonPlugins.cmd`  
   with  
-  `include ADExample/iocBoot/commonPlugins.cmd`
+  `include ADExample/iocBoot/commonPlugins.cmd`  
 
 ### NDRoiStat[.adl, .edl, ui, .opi]
 * Fixed problem with ROI numbers in related display
