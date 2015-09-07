@@ -30,11 +30,11 @@ R2-4 (September XXX, 2015)
 * Previously the simDetector was part of ADCore, and there was iocs directory that built the
   simDetector application both as part of an IOC and independent of an IOC.
   This had 2 disadvantages:
-  1) It prevented building the simDetector IOC with optional plugins that reside in separate
+  1. It prevented building the simDetector IOC with optional plugins that reside in separate
      repositories, such as ffmpegServer and ADPluginEdge.  This was because ADCore needs to
      be built before the optional plugins, but by then the simDetector IOC is already built
      and cannot use the optional plugins
-  2) It made ADCore depend on the synApps modules required to build an IOC, not just the
+  2. It made ADCore depend on the synApps modules required to build an IOC, not just the
      EPICS base and asyn that are required to build the base classes and plugins.
   For these reasons the simDetector driver and IOC code have been moved to a new repository
   called ADExample.  This repository is essentially just like any other detector repository.
