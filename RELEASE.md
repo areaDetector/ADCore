@@ -27,41 +27,42 @@ Release Notes
 R2-4 (September XXX, 2015)
 ========================
 ### Removed simDetector, iocs directory, and iocBoot directory
-*  Previously the simDetector was part of ADCore, and there was iocs directory that built the
-  simDetector application both as part of an IOC and independent of an IOC.
-  This had 2 disadvantages:
+Previously the simDetector was part of ADCore, and there was iocs directory that built the
+simDetector application both as part of an IOC and independent of an IOC.
+This had 2 disadvantages:
 
-  1. It prevented building the simDetector IOC with optional plugins that reside in separate
-     repositories, such as ffmpegServer and ADPluginEdge.  This was because ADCore needs to
-     be built before the optional plugins, but by then the simDetector IOC is already built
-     and cannot use the optional plugins
-  2. It made ADCore depend on the synApps modules required to build an IOC, not just the
-     EPICS base and asyn that are required to build the base classes and plugins.
+1. It prevented building the simDetector IOC with optional plugins that reside in separate
+   repositories, such as ffmpegServer and ADPluginEdge.  This was because ADCore needs to
+   be built before the optional plugins, but by then the simDetector IOC is already built
+   and cannot use the optional plugins
+2. It made ADCore depend on the synApps modules required to build an IOC, not just the
+   EPICS base and asyn that are required to build the base classes and plugins.
   
-  For these reasons the simDetector driver and IOC code have been moved to a new repository
-  called ADExample.  This repository is essentially just like any other detector repository.
-  This solves problem 1) above because the optional plugins can now be built after ADCore
-  but before ADExample.
-  The only thing special about the ADExample repository is that it now contains the following
-  files that are referenced from each of the detector IOC directories.  These files were
-  previously contained in ADCore.
-  `ADExample/exampleApp/commonDriverMakefile`  
-  `ADExample/iocBoot/commonPlugins.cmd`  
-  `ADExample/iocBoot/commonPlugin_settings.req`  
+For these reasons the simDetector driver and IOC code have been moved to a new repository
+called ADExample.  This repository is essentially just like any other detector repository.
+This solves problem 1) above because the optional plugins can now be built after ADCore
+but before ADExample. 
+The only thing special about the ADExample repository is that it now contains the following
+files that are referenced from each of the detector IOC directories.  These files were
+previously contained in ADCore.
+
+* `ADExample/exampleApp/commonDriverMakefile`  
+* `ADExample/iocBoot/commonPlugins.cmd`  
+* `ADExample/iocBoot/commonPlugin_settings.req`  
   
-  This requires editing 2 files in the iocs directory for every detector xxx:  
-  In the file   
-  `ADxxx/iocs/xxxIOC/xxxApp/src/Makefile`  
-  Replace the line  
-  `include ADCore/ADApp/commonDriverMakefile`  
-  with  
-  `include ADExample/exampleApp/commonDriverMakefile`  
-  In the file:  
-  `ADxxx/iocs/xxxIOC/iocBoot/iocxxx/st.cmd`  
-  Replace the line  
-  `include ADCore/iocBoot/commonPlugins.cmd`  
-  with  
-  `include ADExample/iocBoot/commonPlugins.cmd`  
+This requires editing 2 files in the iocs directory for every detector xxx:  
+In the file   
+`ADxxx/iocs/xxxIOC/xxxApp/src/Makefile`  
+Replace the line  
+`include ADCore/ADApp/commonDriverMakefile`  
+with  
+`include ADExample/exampleApp/commonDriverMakefile`  
+In the file:  
+`ADxxx/iocs/xxxIOC/iocBoot/iocxxx/st.cmd`  
+Replace the line  
+`include ADCore/iocBoot/commonPlugins.cmd`  
+with  
+`include ADExample/iocBoot/commonPlugins.cmd`  
 
 ### NDRoiStat[.adl, .edl, ui, .opi]
 * Fixed problem with ROI numbers in related display
