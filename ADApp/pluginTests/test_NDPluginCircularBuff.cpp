@@ -4,9 +4,9 @@
 
 #include "boost/test/unit_test.hpp"
 
-// AD dependencies
+// AD and asyn dependencies
 #include <NDPluginCircularBuff.h>
-#include <simDetector.h>
+#include <asynPortDriver.h>
 #include <NDArray.h>
 #include <asynDriver.h>
 #include <asynPortClient.h>
@@ -22,7 +22,7 @@ using namespace std;
 struct PluginFixture
 {
     NDArrayPool *arrayPool;
-    simDetector *driver;
+    asynPortDriver *dummy_driver;
     NDPluginCircularBuff *cb;
     TestingPlugin *ds;
     asynInt32Client *cbControl;
@@ -39,19 +39,20 @@ struct PluginFixture
     {
         arrayPool = new NDArrayPool(100, 0);
 
-        std::string simport("simPort"), testport("testPort");
+        std::string dummy_port("simPort"), testport("testPort");
 
         // Asyn manager doesn't like it if we try to reuse the same port name for multiple drivers (even if only one is ever instantiated at once), so
         // change it slightly for each test case.
-        uniqueAsynPortName(simport);
+        uniqueAsynPortName(dummy_port);
         uniqueAsynPortName(testport);
 
-        // We need some upstream driver for our test plugin so that calls to connectArrayPort don't fail, but we can then ignore it and send
+        // We need some upstream driver for our test plugin so that calls to connectToArrayPort don't fail, but we can then ignore it and send
         // arrays by calling processCallbacks directly.
-        driver = new simDetector(simport.c_str(), 800, 500, NDFloat64, 50, 0, 0, 2000000);
+        // Thus we instansiate a basic asynPortDriver object which is never used.
+        dummy_driver = new asynPortDriver(dummy_port.c_str(), 0, 1, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 2000000);
 
         // This is the plugin under test
-        cb = new NDPluginCircularBuff(testport.c_str(), 50, 0, simport.c_str(), 0, 1000, -1, 0, 2000000);
+        cb = new NDPluginCircularBuff(testport.c_str(), 50, 0, dummy_port.c_str(), 0, 1000, -1, 0, 2000000);
 
         // This is the mock downstream plugin
         ds = new TestingPlugin(testport.c_str(), 0);
@@ -80,7 +81,7 @@ struct PluginFixture
         delete cbControl;
         //delete ds; // TODO: something is wrong here - if we delete ds we get a memory corruption error (in a loop!?!?)
         delete cb;
-        delete driver;
+        delete dummy_driver;
         delete arrayPool;
     }
     void cbProcess(NDArray *pArray)
