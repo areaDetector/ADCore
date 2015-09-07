@@ -13,7 +13,6 @@ env | grep GCOV
 lcov --no-external --capture \
                    --directory ${ADCORE_DIR}/ADApp/ADSrc/ \
                    --directory ${ADCORE_DIR}/ADApp/pluginSrc/ \
-                   --directory ${ADCORE_DIR}/ADApp/simDetectorSrc/ \
                    --output-file ${COVERAGE_DIR}/coverage.info \
                    || { echo "Running lcov failed" && exit 2; }
 
