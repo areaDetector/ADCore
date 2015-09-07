@@ -46,18 +46,19 @@ R2-4 (September XXX, 2015)
   * ADExample/exampleApp/commonDriverMakefile
   * ADExample/iocBoot/commonPlugins.cmd
   * ADExample/iocBoot/commonPlugin_settings.req
-  This requires editing 2 files in the iocs directory for every detector xxx:
-  In the file
+  
+  This requires editing 2 files in the iocs directory for every detector xxx:  
+  In the file   
   `ADxxx/iocs/xxxIOC/xxxApp/src/Makefile`
-  Replace the line
+  Replace the line  
   `include ADCore/ADApp/commonDriverMakefile`
-  with
+  with  
   `include ADExample/exampleApp/commonDriverMakefile`
-  In the file:
+  In the file:  
   ` ADxxx/iocs/xxxIOC/iocBoot/iocxxx/st.cmd` 
-  Replace the line
+  Replace the line  
   `include ADCore/iocBoot/commonPlugins.cmd`
-  with
+  with  
   `include ADExample/iocBoot/commonPlugins.cmd`
 
 ### NDRoiStat[.adl, .edl, ui, .opi]
