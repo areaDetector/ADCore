@@ -36,6 +36,7 @@ R2-4 (September XXX, 2015)
        and cannot use the optional plugins
     2. It made ADCore depend on the synApps modules required to build an IOC, not just the
        EPICS base and asyn that are required to build the base classes and plugins.
+  
   For these reasons the simDetector driver and IOC code have been moved to a new repository
   called ADExample.  This repository is essentially just like any other detector repository.
   This solves problem 1) above because the optional plugins can now be built after ADCore
