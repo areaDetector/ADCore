@@ -17,7 +17,6 @@ ifdef BOOST
   ADTestUtility_SRCS += testingutilities.cpp
   ADTestUtility_SRCS += AsynPortClientContainer.cpp
   ADTestUtility_SRCS += AsynException.cpp
-  ADTestUtility_SRCS += SimulatedDetectorWrapper.cpp
   ADTestUtility_SRCS += HDF5PluginWrapper.cpp
   ADTestUtility_SRCS += HDF5FileReader.cpp
 
@@ -28,7 +27,7 @@ ifdef BOOST
   # Add tests for new plugins like this:
   #plugin-test_SRCS += test_<plugin name>.cpp
   
-  plugin-test_LIBS += boost_unit_test_framework simDetector ADTestUtility
+  plugin-test_LIBS += boost_unit_test_framework ADTestUtility
   boost_unit_test_framework_DIR=$(BOOST_LIB)
 endif
 
