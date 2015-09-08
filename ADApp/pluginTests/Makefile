@@ -27,7 +27,8 @@ ifdef BOOST
   # Add tests for new plugins like this:
   #plugin-test_SRCS += test_<plugin name>.cpp
   
-  plugin-test_LIBS += boost_unit_test_framework ADTestUtility
+  plugin-test_LIBS += ADTestUtility
+  plugin-test_SYS_LIBS += boost_unit_test_framework
   boost_unit_test_framework_DIR=$(BOOST_LIB)
 endif
 
@@ -36,6 +37,9 @@ USR_INCLUDES += $(SZ_INCLUDE)
 USR_INCLUDES += $(XML2_INCLUDE)
 USR_INCLUDES += $(BOOST_INCLUDE)
 
-PROD_LIBS += NDPlugin ADBase asyn
+PROD_LIBS += NDPlugin ADBase asyn hdf5 sz $(EPICS_BASE_IOC_LIBS)
+PROD_SYS_LIBS += xml2
+hdf5_DIR = $(HDF5_LIB)
+sz_DIR = $(SZIP_LIB)
 
 include $(TOP)/configure/RULES
