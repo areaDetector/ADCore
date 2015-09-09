@@ -147,7 +147,7 @@ BOOST_AUTO_TEST_CASE(test_OutputCount)
 
     cbProcess(testArray);
 
-    BOOST_REQUIRE_EQUAL(11, ds->arrays.size());
+    BOOST_REQUIRE_EQUAL((size_t)11, ds->arrays.size());
 }
 
 BOOST_AUTO_TEST_CASE(test_PreBufferOrder)
