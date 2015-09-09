@@ -1,4 +1,6 @@
 #!/bin/bash
+# Make sure we exit on any error
+set -e
 
 mkdir external
 cd external

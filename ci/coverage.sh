@@ -1,14 +1,13 @@
 #!/bin/bash
 # Run this script from the ADCore root directory
+# Make sure we exit on any error
+set -e
 
 export ADCORE_DIR=`pwd`
 export COVERAGE_DIR=${ADCORE_DIR}/ci
 
 #export GCOV_PREFIX=${COVERAGE_DIR}
 #export GCOV_PREFIX_STRIP=5
-
-env | grep ADCORE
-env | grep GCOV
 
 lcov --no-external --capture \
                    --directory ${ADCORE_DIR}/ADApp/ADSrc/ \

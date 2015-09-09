@@ -1,5 +1,7 @@
 #!/bin/bash
 # Configure ADCore in preparation for build
+# Make sure we exit on any error
+set -e
 
 # Generate the configure/RELEASE.local and configure/CONFIG_SITE.linux-x86_64.Common
 # with the details of where to find various external libraries.
