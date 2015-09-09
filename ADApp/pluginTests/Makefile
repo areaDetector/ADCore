@@ -37,9 +37,13 @@ USR_INCLUDES += $(SZ_INCLUDE)
 USR_INCLUDES += $(XML2_INCLUDE)
 USR_INCLUDES += $(BOOST_INCLUDE)
 
-PROD_LIBS += NDPlugin ADBase asyn hdf5 sz $(EPICS_BASE_IOC_LIBS)
+PROD_LIBS += NDPlugin ADBase asyn hdf5
+ifdef SZIP
+  sz_DIR = $(SZIP_LIB)
+  PROD_LIBS += sz
+endif
+PROD_LIBS += $(EPICS_BASE_IOC_LIBS)
 PROD_SYS_LIBS += xml2
 hdf5_DIR = $(HDF5_LIB)
-sz_DIR = $(SZIP_LIB)
 
 include $(TOP)/configure/RULES
