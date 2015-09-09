@@ -15,5 +15,5 @@ echo "HOST_OPT=NO"                           >> configure/CONFIG_SITE.linux-x86_
 echo "USR_CXXFLAGS_Linux=--coverage"         >> configure/CONFIG_SITE.linux-x86_64.Common 
 echo "USR_LDFLAGS_Linux=--coverage"          >> configure/CONFIG_SITE.linux-x86_64.Common 
 
-echo "ASYN=`pwd`/external/asyn4-26"          >> configure/RELEASE.local
+echo "ASYN=`pwd`/external/asyn-R4-26"        >> configure/RELEASE.local
 
