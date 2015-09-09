@@ -17,3 +17,9 @@ echo "USR_LDFLAGS_Linux=--coverage"          >> configure/CONFIG_SITE.linux-x86_
 
 echo "ASYN=`pwd`/external/asyn-R4-26"        >> configure/RELEASE.local
 
+echo "======= configure/RELEASE.local ========================================="
+cat configure/RELEASE.local
+
+echo "======= configure/CONFIG_SITE.linux-x86_64.Common ======================="
+cat configure/CONFIG_SITE.linux-x86_64.Common
+
