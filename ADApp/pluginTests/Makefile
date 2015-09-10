@@ -61,6 +61,6 @@ endif
 
 PROD_LIBS += $(EPICS_BASE_IOC_LIBS)
 
-PROD_SYS_LIBS += xml2
+PROD_SYS_LIBS += xml2 z
 
 include $(TOP)/configure/RULES
