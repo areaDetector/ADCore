@@ -45,6 +45,7 @@ const char *NDAttribute::attrSourceString(NDAttrSource_t type)
 
   this->pName = pName? epicsStrDup(pName): epicsStrDup("");
   this->pDescription = pDescription? epicsStrDup(pDescription): epicsStrDup("");
+  this->sourceType = sourceType;
   switch (sourceType) {
     case NDAttrSourceDriver:
       this->pSourceTypeString = epicsStrDup("NDAttrSourceDriver");
@@ -59,6 +60,7 @@ const char *NDAttribute::attrSourceString(NDAttrSource_t type)
       this->pSourceTypeString = epicsStrDup("NDAttrSourceFunct");
       break;
     default:
+      this->sourceType = NDAttrSourceUndefined;
       this->pSourceTypeString = epicsStrDup("Undefined");
   }
   this->pSource = pSource? epicsStrDup(pSource): epicsStrDup("");
@@ -385,7 +387,8 @@ int NDAttribute::report(FILE *fp, int details)
   fprintf(fp, "NDAttribute, address=%p:\n", this);
   fprintf(fp, "  name=%s\n", this->pName);
   fprintf(fp, "  description=%s\n", this->pDescription);
-  fprintf(fp, "  source type=%s\n", this->pSourceTypeString);
+  fprintf(fp, "  source type=%d\n", this->sourceType);
+  fprintf(fp, "  source type string=%s\n", this->pSourceTypeString);
   fprintf(fp, "  source=%s\n", this->pSource);
   switch (this->dataType) {
     case NDAttrInt8:
