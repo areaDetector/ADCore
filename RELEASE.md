@@ -24,7 +24,7 @@ Release Notes
 =============
 
 
-R2-4 (September XXX, 2015)
+R2-4 (September 11, 2015)
 ========================
 ### Removed simDetector, iocs directory, and iocBoot directory.
 Previously the simDetector was part of ADCore, and there was an iocs directory that built the
@@ -67,6 +67,9 @@ with
 `< $(ADEXAMPLE)/iocBoot/commonPlugins.cmd`  
 
 These changes have already been made for all of the detectors included in the areaDetector project on github.
+
+### NDAttribute
+* Fixed problem that the sourceType property was never set.
 
 ### NDRoiStat[.adl, .edl, ui, .opi]
 * Fixed problem with ROI numbers when calling related displays.
