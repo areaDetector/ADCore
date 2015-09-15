@@ -486,18 +486,17 @@ void NTNDArrayConverter::createAttributes (NDArray *src)
         switch(attr->getDataType())
         {
 
-        case NDAttrInt8:    value->set(PVDC->createPVScalar<PVByte>());   break;
-        case NDAttrUInt8:   value->set(PVDC->createPVScalar<PVUByte>());  break;
-        case NDAttrInt16:   value->set(PVDC->createPVScalar<PVShort>());  break;
-        case NDAttrUInt16:  value->set(PVDC->createPVScalar<PVUShort>()); break;
-        case NDAttrInt32:   value->set(PVDC->createPVScalar<PVInt>());    break;
-        case NDAttrUInt32:  value->set(PVDC->createPVScalar<PVUInt>());   break;
-        case NDAttrFloat32: value->set(PVDC->createPVScalar<PVFloat>());  break;
-        case NDAttrFloat64: value->set(PVDC->createPVScalar<PVDouble>()); break;
-        case NDAttrString:  value->set(PVDC->createPVScalar<PVString>()); break;
-        case NDAttrUndefined:
-        default:
-            throw std::runtime_error("invalid attribute data type");
+        case NDAttrInt8:      value->set(PVDC->createPVScalar<PVByte>());   break;
+        case NDAttrUInt8:     value->set(PVDC->createPVScalar<PVUByte>());  break;
+        case NDAttrInt16:     value->set(PVDC->createPVScalar<PVShort>());  break;
+        case NDAttrUInt16:    value->set(PVDC->createPVScalar<PVUShort>()); break;
+        case NDAttrInt32:     value->set(PVDC->createPVScalar<PVInt>());    break;
+        case NDAttrUInt32:    value->set(PVDC->createPVScalar<PVUInt>());   break;
+        case NDAttrFloat32:   value->set(PVDC->createPVScalar<PVFloat>());  break;
+        case NDAttrFloat64:   value->set(PVDC->createPVScalar<PVDouble>()); break;
+        case NDAttrString:    value->set(PVDC->createPVScalar<PVString>()); break;
+        case NDAttrUndefined: value->get().reset(); break;
+        default:              throw std::runtime_error("invalid attribute data type");
         }
 
         destVec.push_back(pvAttr);
@@ -524,18 +523,17 @@ void NTNDArrayConverter::fromAttributes (NDArray *src)
         PVStructurePtr pvAttr(*it);
         switch(attr->getDataType())
         {
-        case NDAttrInt8:    fromAttribute <PVByte,   int8_t>  (pvAttr, attr); break;
-        case NDAttrUInt8:   fromAttribute <PVUByte,  uint8_t> (pvAttr, attr); break;
-        case NDAttrInt16:   fromAttribute <PVShort,  int16_t> (pvAttr, attr); break;
-        case NDAttrUInt16:  fromAttribute <PVUShort, uint16_t>(pvAttr, attr); break;
-        case NDAttrInt32:   fromAttribute <PVInt,    int32_t> (pvAttr, attr); break;
-        case NDAttrUInt32:  fromAttribute <PVUInt,   uint32_t>(pvAttr, attr); break;
-        case NDAttrFloat32: fromAttribute <PVFloat,  float>   (pvAttr, attr); break;
-        case NDAttrFloat64: fromAttribute <PVDouble, double>  (pvAttr, attr); break;
-        case NDAttrString:  fromStringAttribute(pvAttr, attr); break;
-        case NDAttrUndefined:
-        default:
-            throw std::runtime_error("invalid attribute data type");
+        case NDAttrInt8:      fromAttribute <PVByte,   int8_t>  (pvAttr, attr); break;
+        case NDAttrUInt8:     fromAttribute <PVUByte,  uint8_t> (pvAttr, attr); break;
+        case NDAttrInt16:     fromAttribute <PVShort,  int16_t> (pvAttr, attr); break;
+        case NDAttrUInt16:    fromAttribute <PVUShort, uint16_t>(pvAttr, attr); break;
+        case NDAttrInt32:     fromAttribute <PVInt,    int32_t> (pvAttr, attr); break;
+        case NDAttrUInt32:    fromAttribute <PVUInt,   uint32_t>(pvAttr, attr); break;
+        case NDAttrFloat32:   fromAttribute <PVFloat,  float>   (pvAttr, attr); break;
+        case NDAttrFloat64:   fromAttribute <PVDouble, double>  (pvAttr, attr); break;
+        case NDAttrString:    fromStringAttribute(pvAttr, attr); break;
+        case NDAttrUndefined: break;
+        default:              throw std::runtime_error("invalid attribute data type");
         }
         attr = srcList->next(attr);
     }
