@@ -322,6 +322,16 @@ void NTNDArrayConverter::toStringAttribute (NDArray *dest, PVStructurePtr src)
     destList->add(name, desc, NDAttrString, (void*)value.c_str());
 }
 
+void NTNDArrayConverter::toUndefinedAttribute (NDArray *dest, PVStructurePtr src)
+{
+    NDAttributeList *destList = dest->pAttributeList;
+    const char *name = src->getSubField<PVString>("name")->get().c_str();
+    const char *desc = src->getSubField<PVString>("descriptor")->get().c_str();
+    // sourceType and source are lost
+
+    destList->add(name, desc, NDAttrUndefined, NULL);
+}
+
 void NTNDArrayConverter::toAttributes (NDArray *dest)
 {
     typedef PVStructureArray::const_svector::const_iterator VecIt;
@@ -330,25 +340,29 @@ void NTNDArrayConverter::toAttributes (NDArray *dest)
 
     for(VecIt it = srcVec.cbegin(); it != srcVec.cend(); ++it)
     {
-        PVUnionPtr srcUnion((*it)->getSubField<PVUnion>("value"));
-        ScalarConstPtr srcScalar(srcUnion->get<PVScalar>()->getScalar());
+        PVScalarPtr srcScalar((*it)->getSubField<PVUnion>("value")->get<PVScalar>());
 
-        switch(srcScalar->getScalarType())
+        if(!srcScalar)
+            toUndefinedAttribute(dest, *it);
+        else
         {
-        case pvByte:   toAttribute<PVByte,   int8_t>  (dest, *it); break;
-        case pvUByte:  toAttribute<PVUByte,  uint8_t> (dest, *it); break;
-        case pvShort:  toAttribute<PVShort,  int16_t> (dest, *it); break;
-        case pvUShort: toAttribute<PVUShort, uint16_t>(dest, *it); break;
-        case pvInt:    toAttribute<PVInt,    int32_t> (dest, *it); break;
-        case pvUInt:   toAttribute<PVUInt,   uint32_t>(dest, *it); break;
-        case pvFloat:  toAttribute<PVFloat,  float>   (dest, *it); break;
-        case pvDouble: toAttribute<PVDouble, double>  (dest, *it); break;
-        case pvString: toStringAttribute (dest, *it); break;
-        case pvBoolean:
-        case pvLong:
-        case pvULong:
-        default:
-            break;   // ignore invalid types
+            switch(srcScalar->getScalar()->getScalarType())
+            {
+            case pvByte:   toAttribute<PVByte,   int8_t>  (dest, *it); break;
+            case pvUByte:  toAttribute<PVUByte,  uint8_t> (dest, *it); break;
+            case pvShort:  toAttribute<PVShort,  int16_t> (dest, *it); break;
+            case pvUShort: toAttribute<PVUShort, uint16_t>(dest, *it); break;
+            case pvInt:    toAttribute<PVInt,    int32_t> (dest, *it); break;
+            case pvUInt:   toAttribute<PVUInt,   uint32_t>(dest, *it); break;
+            case pvFloat:  toAttribute<PVFloat,  float>   (dest, *it); break;
+            case pvDouble: toAttribute<PVDouble, double>  (dest, *it); break;
+            case pvString: toStringAttribute (dest, *it); break;
+            case pvBoolean:
+            case pvLong:
+            case pvULong:
+            default:
+                break;   // ignore invalid types
+            }
         }
     }
 }
