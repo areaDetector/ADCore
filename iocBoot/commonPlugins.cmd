@@ -99,6 +99,7 @@ dbLoadRecords("NDAttributeN.template", "P=$(PREFIX),R=Attr1:7:,  PORT=ATTR1,ADDR
 dbLoadRecords("NDAttributeN.template", "P=$(PREFIX),R=Attr1:8:,  PORT=ATTR1,ADDR=7,TIMEOUT=1,NCHANS=$(NCHANS)")
 
 set_requestfile_path("./")
+set_requestfile_path("$(ADCORE)/ADApp/Db")
 set_requestfile_path("$(ADCORE)/iocBoot")
 set_savefile_path("./autosave")
 set_pass0_restoreFile("auto_settings.sav")
