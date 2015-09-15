@@ -26,10 +26,9 @@ Release Notes
 
 R2-4 (September 11, 2015)
 ========================
-### Removed simDetector, iocs directory, and iocBoot directory.
-Previously the simDetector was part of ADCore, and there was an iocs directory that built the
-simDetector application both as part of an IOC and independent of an IOC.
-This had 2 disadvantages:
+### Removed simDetector and iocs directory. Previously the simDetector was part of ADCore, 
+and there was an iocs directory that built the simDetector application both as part of 
+an IOC and independent of an IOC. This had 2 disadvantages:
 
 1. It prevented building the simDetector IOC with optional plugins that reside in separate
    repositories, such as ffmpegServer and ADPluginEdge.  This is because ADCore needs to
@@ -40,33 +39,9 @@ This had 2 disadvantages:
    It was desirable to minimize such dependencies in ADCore.
   
 For these reasons the simDetector driver and IOC code have been moved to a new repository
-called ADExample.  This repository is essentially just like any other detector repository.
+called ADExample.  This repository is just like any other detector repository.
 This solves problem 1 above because the optional plugins can now be built after ADCore
 but before ADExample. 
-
-The only thing special about the ADExample repository is that it now contains the following
-files that are referenced from each of the detector IOC directories.  These files were
-previously contained in ADCore.
-
-* `ADExample/exampleApp/commonDriverMakefile`  
-* `ADExample/iocBoot/commonPlugins.cmd`  
-* `ADExample/iocBoot/commonPlugin_settings.req`  
-  
-This requires editing 2 files in the iocs directory for every detector xxx:  
-In the file   
-`ADxxx/iocs/xxxIOC/xxxApp/src/Makefile`  
-Replace the line  
-`include $(ADCORE)/ADApp/commonDriverMakefile`  
-with  
-`include $(ADEXAMPLE)/exampleApp/commonDriverMakefile`  
-In the file:  
-`ADxxx/iocs/xxxIOC/iocBoot/iocxxx/st.cmd`  
-Replace the line  
-`< $(ADCORE)/iocBoot/commonPlugins.cmd`  
-with  
-`< $(ADEXAMPLE)/iocBoot/commonPlugins.cmd`  
-
-These changes have already been made for all of the detectors included in the areaDetector project on github.
 
 ### NDAttribute
 * Fixed problem that the sourceType property was never set.
@@ -76,6 +51,21 @@ These changes have already been made for all of the detectors included in the ar
 
 ### ADApp/pluginTests/
 * New directory with unit tests.
+
+### XML schema
+* Moved the XML schema files from the iocBoot directory to a new XML_schema directory.
+
+### iocBoot
+* Moved commonPlugin_settings.req from ADApp/Db to iocBoot, which now only contains commonPlugins.cmd
+  and commonPlugins_settings.req.  commonPlugins.cmd adds ADCore/iocBoot to the autosave search path.
+  
+### ADApp
+* commonLibraryMakefile has been changed to define xxx_DIR and set LIB_LIBS+ = xxx if xxx_LIB is defined.  
+  If xxx_LIB is not defined then xxx_DIR is not defined and it sets LIB_SYS_LIBS += xxx.  
+  xxx includes HDF5, SZIP, and OPENCV. 
+  commonDriverMakefile has been changed similarly for PROD_LIBS and PROD_SYS_LIBS.
+  This allows optional libraries to either searched in the system location or a user-defined location 
+  without some conflicts that could previously occur.
 
 
 R2-3 (July 23, 2015)
