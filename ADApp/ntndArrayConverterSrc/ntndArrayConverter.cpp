@@ -295,41 +295,41 @@ void NTNDArrayConverter::toDataTimeStamp (NDArray *dest)
     dest->timeStamp = ts.toSeconds();
 }
 
-
 template <typename pvAttrType, typename valueType>
 void NTNDArrayConverter::toAttribute (NDArray *dest, PVStructurePtr src)
 {
-    NDAttributeList *destList = dest->pAttributeList;
-    NDAttrDataType_t destType = scalarToNDAttrDataType[pvAttrType::typeCode];
-    PVUnionPtr valueUnion(src->getSubField<PVUnion>("value"));
-    valueType value = valueUnion->get<pvAttrType>()->get();
-    const char *name = src->getSubField<PVString>("name")->get().c_str();
-    const char *desc = src->getSubField<PVString>("descriptor")->get().c_str();
-    // sourceType and source are lost
+    const char *name          = src->getSubField<PVString>("name")->get().c_str();
+    const char *desc          = src->getSubField<PVString>("descriptor")->get().c_str();
+    NDAttrSource_t sourceType = (NDAttrSource_t)src->getSubField<PVInt>("sourceType")->get();
+    const char *source        = src->getSubField<PVString>("source")->get().c_str();
+    NDAttrDataType_t dataType = scalarToNDAttrDataType[pvAttrType::typeCode];
+    valueType value           = src->getSubField<PVUnion>("value")->get<pvAttrType>()->get();
 
-    destList->add(name, desc, destType, (void*)&value);
+    NDAttribute *attr = new NDAttribute(name, desc, sourceType, source, dataType, (void*)&value);
+    dest->pAttributeList->add(attr);
 }
 
 void NTNDArrayConverter::toStringAttribute (NDArray *dest, PVStructurePtr src)
 {
-    NDAttributeList *destList = dest->pAttributeList;
-    PVUnionPtr valueUnion(src->getSubField<PVUnion>("value"));
-    string value(valueUnion->get<PVString>()->get());
-    const char *name = src->getSubField<PVString>("name")->get().c_str();
-    const char *desc = src->getSubField<PVString>("descriptor")->get().c_str();
-    // sourceType and source are lost
+    const char *name          = src->getSubField<PVString>("name")->get().c_str();
+    const char *desc          = src->getSubField<PVString>("descriptor")->get().c_str();
+    NDAttrSource_t sourceType = (NDAttrSource_t)src->getSubField<PVInt>("sourceType")->get();
+    const char *source        = src->getSubField<PVString>("source")->get().c_str();
+    const char *value         = src->getSubField<PVUnion>("value")->get<PVString>()->get().c_str();
 
-    destList->add(name, desc, NDAttrString, (void*)value.c_str());
+    NDAttribute *attr = new NDAttribute(name, desc, sourceType, source, NDAttrString, (void*)value);
+    dest->pAttributeList->add(attr);
 }
 
 void NTNDArrayConverter::toUndefinedAttribute (NDArray *dest, PVStructurePtr src)
 {
-    NDAttributeList *destList = dest->pAttributeList;
-    const char *name = src->getSubField<PVString>("name")->get().c_str();
-    const char *desc = src->getSubField<PVString>("descriptor")->get().c_str();
-    // sourceType and source are lost
+    const char *name          = src->getSubField<PVString>("name")->get().c_str();
+    const char *desc          = src->getSubField<PVString>("descriptor")->get().c_str();
+    NDAttrSource_t sourceType = (NDAttrSource_t)src->getSubField<PVInt>("sourceType")->get();
+    const char *source        = src->getSubField<PVString>("source")->get().c_str();
 
-    destList->add(name, desc, NDAttrUndefined, NULL);
+    NDAttribute *attr = new NDAttribute(name, desc, sourceType, source, NDAttrUndefined, NULL);
+    dest->pAttributeList->add(attr);
 }
 
 void NTNDArrayConverter::toAttributes (NDArray *dest)
