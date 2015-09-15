@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--  usage:
+   xmllint - -noout - -schema /path1/NDattributes.xsd /path2/attributes.xml
+   (put the two minus signs together for the actual command, 
+   XML can't have them together in an XML file, even in a comment!
+   
+   see ADApp/ADSrc/asynNDArrayDriver.cpp for the rules implemented here
+-->
+
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+  <xs:element name="Attributes">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="Attribute"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="Attribute">
+    <xs:annotation>
+      <xs:documentation>
+        Each NDAttribute (currently PVAttribute, functAttribute, or paramAttribute, other types may be added in the future) 
+        is defined with an <b>Attribute</b> tag. 
+        (N.B.: Unfortunately there are 2 meanings of attribute here: the NDAttribute and the XML attribute)
+        For each Attribute declaration, there are a number of XML attributes.
+        XML attributes have the syntax name="value".  
+        <!-- This next is a choice for our XML files, not a general rule for all XML files. -->
+        The XML attribute names are case-sensitive and must be lower case, i.e. name="xxx", not NAME="xxx".  
+        The XML attribute values are specified by the XML Schema and are always
+        uppercase for datatype and dbrtype attributes.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:attributeGroup ref="common_attributes"/>
+      <!-- three types here: PARAM, EPICS_PV, or FUNCTION each requires a different attribute -->
+      <xs:attribute name="type" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:enumeration value="PARAM"/>
+            <xs:enumeration value="EPICS_PV"/>
+            <xs:enumeration value="FUNCTION"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <!-- see ADApp/ADSrc/asynNDArrayDriver.cpp for the rules -->
+      <xs:attribute name="datatype" type="allowed_datatypes" default="INT">
+        <!-- only for type="PARAM" -->
+        <xs:annotation>
+          <xs:documentation>
+            Declares the parameter data type for type="PARAM".
+      	    It must match the actual data type in the driver 
+      	    or plugin parameter library.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="addr" type="xs:string" default="0">
+        <!-- only for type="PARAM" -->
+        <xs:annotation>
+          <xs:documentation>
+            Declares the asyn addr (address) for type="PARAM".
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="dbrtype" type="allowed_dbrtypes" default="DBR_NATIVE">
+        <!-- only for type="EPICS_PV" -->
+        <xs:annotation>
+          <xs:documentation>
+            Declares the data type that will be used to read an 
+            EPICS Process Variable value with Channel Access.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="param" type="xs:string" default="">
+        <!-- only for type="FUNCTION" -->
+        <xs:annotation>
+          <xs:documentation>
+            Declares the string parameter that will be passed to the function.
+          </xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:attributeGroup name="common_attributes">
+    <xs:attribute name="description" default="">
+      <xs:annotation>
+        <xs:documentation>
+          words to explain this information
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="name" use="required">
+      <!-- must match rule for "source" attribute in NeXus_templates.xsd -->
+      <xs:annotation>
+        <xs:documentation>
+          One-word mnemonic reference that determines the name of the NDAttribute.  
+          It is required, must be unique, is case-insensitive, and must start with a letter.
+          It can include only letters, numbers and underscore. (No whitespace or other punctuation.)
+        </xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:pattern value="[A-Za-z_][\w_]*" />
+        </xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+    <xs:attribute name="source" use="required" type="type_source">
+      <xs:annotation>
+        <xs:documentation>
+          Declares the source of the NDAttribute.  It is required. 
+          If type="EPICS_PV" then this is the name of the EPICS PV, 
+          which is case-sensitive. 
+          If type="PARAM" then this is the drvInfo string that is 
+          used in EPICS database files (e.g. ADBase.template) 
+          to identify this parameter.  This must be identical with
+		  the declaration in the source code.  
+		  Use uppercase letters or numbers or underline.
+		  Must start with an uppercase letter.
+          <!-- 
+            This could be restricted to an enumeration of allowed PARAM parameters (too many .h files to search)
+			   xs:pattern value="[A-Z][A-Z0-9_]*" 
+            or a regular expression for EPICS PV names (if that is possible).
+			xs:pattern value="+++ what is the pattern? +++"
+            Either way, it _should_ be restricted to not allow whitespace.
+          --> 
+        </xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="when" use="optional">
+      <xs:annotation>
+        <xs:documentation>
+          Event when the attribute data is updated.
+        </xs:documentation>
+      </xs:annotation>
+      <xs:simpleType>
+ 	<xs:restriction base="xs:token">
+ 	  <xs:enumeration value="OnFileOpen" />
+ 	  <xs:enumeration value="OnFileClose" />
+ 	  <xs:enumeration value="OnFileWrite" />
+ 	</xs:restriction>
+      </xs:simpleType>
+    </xs:attribute>
+  </xs:attributeGroup>
+  
+  <xs:simpleType name="allowed_datatypes">
+    <xs:annotation>
+      <xs:documentation>
+        Data type that will be used to read an EPICS_PV value with channel access
+        Data types allowed in the driver or plugin parameter library, 
+        and must be "INT", "DOUBLE", or "STRING" (uppercase only). 
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="DOUBLE" />
+      <xs:enumeration value="STRING" />
+      <xs:enumeration value="INT">
+        <xs:annotation>
+          <xs:documentation>
+            (default) use integer data type
+          </xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="allowed_dbrtypes">
+    <xs:annotation>
+      <xs:documentation>
+        Data type that will be used to read an EPICS_PV value with channel access.
+        The allowed values are all uppercase only.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="DBR_CHAR" />
+      <xs:enumeration value="DBR_DOUBLE" />
+      <xs:enumeration value="DBR_ENUM" />
+      <xs:enumeration value="DBR_FLOAT" />
+      <xs:enumeration value="DBR_INT" />
+      <xs:enumeration value="DBR_LONG" />
+      <xs:enumeration value="DBR_SHORT" />
+      <xs:enumeration value="DBR_STRING" />
+      <xs:enumeration value="DBR_NATIVE">
+        <xs:annotation>
+          <xs:documentation>
+            (default) use native Channel Access data type
+          </xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="type_source">
+    <!-- EPICS PV name rules
+      see: http://www.aps.anl.gov/epics/wiki/index.php/RRM_3-14_Concepts#Database_Addresses
+      The record name can be a mix of the following: 
+      a-z A-Z 0-9 _ - : . [ ] < > ;
+      The field name is always upper case. 
+      
+      full regular expression: [\w_\-:.[\]<>;]+([.][A-Z0-9]+)?
+      BUT, cannot express "<" in XML, must use &lt; but that won't parse!
+      So, use use a reduced (but very likely) subset of rules.  
+      Do not allow these symbols: []<>
+    -->
+    <xs:union memberTypes="type_EPICS_PV_source type_PARAM_source"/>
+  </xs:simpleType>
+  
+  <xs:simpleType name="type_EPICS_PV_source">
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:pattern value="[\w_\-:.;]+([.][A-Z0-9]+)?"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="type_PARAM_source">
+    <!-- All the ND parameters listed in the various .h files in the source code
+      appear to follow the pattern of all uppercase plus numbers and the underline.
+      This may not be a rule but it seems to be common practice.  Here, we make it a rule.
+    -->
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:pattern value="[A-Z0-9_]+"/>
+    </xs:restriction>
+  </xs:simpleType>
+  
+</xs:schema>

@@ -1,0 +1,43 @@
+<hdf5_layout>
+  <global name="detector_data_destination" ndattribute="Images"></global>
+  <group name="exchange">
+    <dataset name="data" source="detector">
+      <attribute name="description" source="constant" value="ImageData" type="string"></attribute>
+      <attribute name="axes" source="constant" value="theta:y:x" type="string"></attribute>
+      <attribute name="units" source="constant" value="counts" type="string"></attribute>
+    </dataset>
+    <dataset name="data_white" source="detector">
+      <attribute name="description" source="constant" value="WhiteData" type="string"></attribute>
+      <attribute name="axes" source="constant" value="theta:y:x" type="string"></attribute>
+      <attribute name="units" source="constant" value="counts" type="string"></attribute>
+    </dataset>
+    <dataset name="data_dark" source="detector">
+      <attribute name="description" source="constant" value="DarkData" type="string"></attribute>
+      <attribute name="axes" source="constant" value="theta:y:x" type="string"></attribute>
+      <attribute name="units" source="constant" value="counts" type="string"></attribute>
+    </dataset>
+  </group><!-- /exchange -->
+  <group name="measurement" ndattr_default="true">
+    <group name="instrument">
+      <group name="detector">
+        <dataset name="manufacturer" source="ndattribute" ndattribute="CameraManufacturer"></dataset>
+        <dataset name="model" source="ndattribute" ndattribute="CameraModel"></dataset>
+        <dataset name="x_dimension" source="ndattribute" ndattribute="MaxSizeX"></dataset>
+        <dataset name="y_dimension" source="ndattribute" ndattribute="MaxSizeY"></dataset>
+        <dataset name="x_binning" source="ndattribute" ndattribute="BinX"></dataset>
+        <dataset name="y_binning" source="ndattribute" ndattribute="BinY"></dataset>
+        <dataset name="exposure_time" source="ndattribute" ndattribute="AcqTime"></dataset>
+        <dataset name="exposure_period" source="ndattribute" ndattribute="AcqPeriod"></dataset>
+        <dataset name="gain" source="ndattribute" ndattribute="Gain"></dataset>
+        <group name="roi">
+          <dataset name="x1" source="ndattribute" ndattribute="MinX"></dataset>
+          <dataset name="x2" source="ndattribute" ndattribute="SizeX"></dataset>
+          <dataset name="y1" source="ndattribute" ndattribute="MinY"></dataset>
+          <dataset name="y2" source="ndattribute" ndattribute="SizeY"></dataset>
+        </group><!-- /roi -->
+      </group><!-- /detector -->
+    </group><!-- /instrument -->
+  </group><!-- /measurement -->
+</hdf5_layout>
+
+
