@@ -1,0 +1,111 @@
+# This file contains the commands to build driver applications using the common set of plugins
+# The variable PROD_NAME must be defined
+
+$(PROD_NAME)_DBD += commonDriverSupport.dbd
+
+PROD_LIBS               += NDPlugin ADBase netCDF
+
+ifdef ADPLUGINEDGE
+  PROD_LIBS             += NDPluginEdge
+  $(PROD_NAME)_DBD      += NDPluginEdge.dbd
+  ifdef OPENCV_LIB
+    opencv_core_DIR     += $(OPENCV_LIB)
+    PROD_LIBS           += opencv_core opencv_imgproc
+  else
+    PROD_SYS_LIBS       += opencv_core opencv_imgproc
+  endif
+endif
+
+ifneq (vxWorks, $(findstring vxWorks, $(T_A)))
+  PROD_LIBS             += NeXus
+endif
+PROD_LIBS               += calc busy sscan autosave
+
+# Optionally include useful modules
+ifdef DEVIOCSTATS
+  $(PROD_NAME)_DBD += devIocStats.dbd
+  PROD_LIBS += devIocStats
+endif
+ifdef ALIVE
+  $(PROD_NAME)_DBD += aliveSupport.dbd
+  PROD_LIBS += alive
+endif
+
+PROD_LIBS               += asyn
+ifdef SNCSEQ
+  PROD_LIBS             += seq pv
+endif
+PROD_LIBS               += $(EPICS_BASE_IOC_LIBS)
+
+# The following libraries are only needed for GraphicsMagick
+ifeq ($(USE_GRAPHICSMAGICK), YES)
+  PROD_LIBS_WIN32       += CORE_RL_Magick++_ CORE_RL_wand_ CORE_RL_magick_ 
+  PROD_LIBS_WIN32       += CORE_RL_coders_ CORE_RL_filters_
+  PROD_LIBS_WIN32       += CORE_RL_bzlib_ CORE_RL_jbig_ CORE_RL_jp2_ CORE_RL_jpeg_ CORE_RL_lcms_
+  PROD_LIBS_WIN32       += CORE_RL_libxml_ CORE_RL_png_ CORE_RL_tiff_ CORE_RL_ttf_ CORE_RL_wmf_
+  PROD_LIBS_WIN32       += CORE_RL_xlib_ CORE_RL_zlib_
+
+  PROD_LIBS_cygwin32    += libGraphicsMagick++ libGraphicsMagickWand libGraphicsMagick
+  PROD_LIBS_cygwin32    += liblcms libpng14 libbz2 libfreetype
+
+  PROD_LIBS_Linux       += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
+  # The following system libraries must be installed to use GraphicsMagick
+  PROD_SYS_LIBS_Linux   += gomp X11 png12 bz2 Xext freetype 
+
+  PROD_LIBS_Darwin      += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
+  # The following system libraries must be installed to use GraphicsMagick
+  PROD_SYS_LIBS_Darwin  += png bz2
+  GraphicsMagick_DIR     = $(GRAPHICS_MAGICK_LIB)
+  GraphicsMagick++_DIR   = $(GRAPHICS_MAGICK_LIB)
+  GraphicsMagickWand_DIR = $(GRAPHICS_MAGICK_LIB)
+else
+  # I don't understand why we need to set this when building statically and not using GraphicsMagick
+  ifeq ($(STATIC_BUILD), YES)
+    USR_LDFLAGS_WIN32   += /NODEFAULTLIB:MSVCRT.lib
+  endif
+  PROD_LIBS_WIN32       += tiff jpeg
+endif
+
+ifeq ($(OS_CLASS), WIN32)
+  ifeq (debug, $(findstring debug, $(T_A)))
+  USR_LDFLAGS_WIN32     += /NODEFAULTLIB:LIBCMT.lib
+  endif
+endif
+
+ifeq ($(HDF5_STATIC_BUILD), NO)
+  USR_CXXFLAGS_WIN32    += -DH5_BUILT_AS_DYNAMIC_LIB
+  USR_CFLAGS_WIN32      += -DH5_BUILT_AS_DYNAMIC_LIB
+  PROD_LIBS_WIN32       += hdf5 szip zlib
+else
+  USR_CXXFLAGS_WIN32    += -DH5_BUILT_AS_STATIC_LIB
+  USR_CFLAGS_WIN32      += -DH5_BUILT_AS_STATIC_LIB
+  PROD_LIBS_WIN32       += libhdf5 libszip libzlib
+endif
+PROD_LIBS_WIN32         += libxml2
+
+PROD_SYS_LIBS_WIN32     += Gdi32 Oleaut32
+
+PROD_SYS_LIBS_cygwin32  += libhdf5
+PROD_SYS_LIBS_cygwin32  += libtiff libjpeg libjbig libz libxml2
+PROD_SYS_LIBS_cygwin32  += $(CYGWIN_RPC_LIB)
+PROD_SYS_LIBS_cygwin32  += Gdi32
+
+ifeq ($(OS_CLASS), $(filter $(OS_CLASS), Linux Darwin solaris))
+  ifdef HDF5_LIB
+    hdf5_DIR             = $(HDF5_LIB)
+    PROD_LIBS           += hdf5
+  else
+    PROD_SYS_LIBS       += hdf5
+  endif
+  ifdef SZIP
+    ifdef SZIP_LIB
+      sz_DIR             = $(SZIP_LIB)
+      PROD_LIBS         += sz
+    else
+      PROD_SYS_LIBS     += sz
+    endif
+  endif
+  PROD_SYS_LIBS         += tiff jpeg xml2 z
+endif
+
+USR_LDFLAGS_Darwin      += -framework CoreFoundation
