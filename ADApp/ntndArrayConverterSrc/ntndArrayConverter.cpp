@@ -472,7 +472,7 @@ void NTNDArrayConverter::fromStringAttribute (PVStructurePtr dest, NDAttribute *
 
     src->getValueInfo(&attrDataType, &attrDataSize);
 
-    char value[attrDataSize];
+    char *value = (char *)malloc(sizeof(char) * attrDataSize);
     src->getValue(attrDataType, value, attrDataSize);
 
     PVUnionPtr destUnion(dest->getSubField<PVUnion>("value"));
@@ -481,6 +481,7 @@ void NTNDArrayConverter::fromStringAttribute (PVStructurePtr dest, NDAttribute *
         destUnion->set(PVDC->createPVScalar<PVString>());
 
     static_pointer_cast<PVString>(destUnion->get())->put(value);
+    free(value);
 }
 
 void NTNDArrayConverter::fromUndefinedAttribute (PVStructurePtr dest)
