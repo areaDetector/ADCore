@@ -24,7 +24,7 @@ Release Notes
 =============
 
 
-R2-4 (September 11, 2015)
+R2-4 (September 16, 2015)
 ========================
 ### Removed simDetector and iocs directory. Previously the simDetector was part of ADCore, 
 and there was an iocs directory that built the simDetector application both as part of 
@@ -56,8 +56,13 @@ but before ADExample.
 * Moved the XML schema files from the iocBoot directory to a new XML_schema directory.
 
 ### iocBoot
-* Moved commonPlugin_settings.req from ADApp/Db to iocBoot, which now only contains commonPlugins.cmd
-  and commonPlugins_settings.req.  commonPlugins.cmd adds ADCore/iocBoot to the autosave search path.
+* Moved commonPlugin_settings.req from ADApp/Db to iocBoot.  
+  Renamed commonPlugins.cmd to EXAMPLE_commonPlugins.cmd and commonPlugin_settings.req to
+  EXAMPLE_commonPlugin_settings.req.  These files must be copied to commonPlugins.cmd and
+  commonPlugin_settings.req respectively.  This was done because these files are typically
+  edited locally, and so should not be in git. 
+  iocBoot now only contains EXAMPLE_commonPlugins.cmd and EXAMPLE_commonPlugin_settings.req.  
+  EXAMPLE_commonPlugins.cmd adds ADCore/iocBoot to the autosave search path.
   
 ### ADApp
 * commonLibraryMakefile has been changed to define xxx_DIR and set LIB_LIBS+ = xxx if xxx_LIB is defined.  
