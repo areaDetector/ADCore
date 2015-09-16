@@ -457,12 +457,15 @@ void NTNDArrayConverter::fromAttribute (PVStructurePtr dest, NDAttribute *src)
     valueType value;
     src->getValue(src->getDataType(), (void*)&value);
 
-    PVUnionPtr valueFieldUnion = dest->getSubField<PVUnion>("value");
-    static_pointer_cast<pvAttrType>(valueFieldUnion->get())->put(value);
+    PVUnionPtr destUnion(dest->getSubField<PVUnion>("value"));
+
+    if(!destUnion->get())
+        destUnion->set(PVDC->createPVScalar<pvAttrType>());
+
+    static_pointer_cast<pvAttrType>(destUnion->get())->put(value);
 }
 
-void NTNDArrayConverter::fromStringAttribute (PVStructurePtr dest,
-        NDAttribute *src)
+void NTNDArrayConverter::fromStringAttribute (PVStructurePtr dest, NDAttribute *src)
 {
     NDAttrDataType_t attrDataType;
     size_t attrDataSize;
@@ -472,21 +475,36 @@ void NTNDArrayConverter::fromStringAttribute (PVStructurePtr dest,
     char value[attrDataSize];
     src->getValue(attrDataType, value, attrDataSize);
 
-    PVUnionPtr valueFieldUnion = dest->getSubField<PVUnion>("value");
-    static_pointer_cast<PVString>(valueFieldUnion->get())->put(value);
+    PVUnionPtr destUnion(dest->getSubField<PVUnion>("value"));
+
+    if(!destUnion->get())
+        destUnion->set(PVDC->createPVScalar<PVString>());
+
+    static_pointer_cast<PVString>(destUnion->get())->put(value);
 }
 
-void NTNDArrayConverter::createAttributes (NDArray *src)
+void NTNDArrayConverter::fromUndefinedAttribute (PVStructurePtr dest)
 {
-    NDAttributeList *srcList = src->pAttributeList;
-    NDAttribute *attr = srcList->next(NULL);
-    PVStructureArrayPtr dest(m_array->getAttribute());
-    PVStructureArray::svector destVec(0);
-    StructureConstPtr structure(dest->getStructureArray()->getStructure());
+    dest->getSubField<PVUnion>("value")->get().reset();
+}
 
-    while(attr)
+void NTNDArrayConverter::fromAttributes (NDArray *src)
+{
+    PVStructureArrayPtr dest(m_array->getAttribute());
+    NDAttributeList *srcList = src->pAttributeList;
+    NDAttribute *attr = NULL;
+    StructureConstPtr structure(dest->getStructureArray()->getStructure());
+    PVStructureArray::svector destVec(dest->reuse());
+
+    destVec.resize(srcList->count());
+
+    size_t i = 0;
+    while((attr = srcList->next(attr)))
     {
-        PVStructurePtr pvAttr(PVDC->createPVStructure(structure));
+        if(!destVec[i].get())
+            destVec[i] = PVDC->createPVStructure(structure);
+
+        PVStructurePtr pvAttr(destVec[i]);
 
         pvAttr->getSubField<PVString>("name")->put(attr->getName());
         pvAttr->getSubField<PVString>("descriptor")->put(attr->getDescription());
@@ -496,45 +514,6 @@ void NTNDArrayConverter::createAttributes (NDArray *src)
         attr->getSourceInfo(&sourceType);
         pvAttr->getSubField<PVInt>("sourceType")->put(sourceType);
 
-        PVUnionPtr value = pvAttr->getSubField<PVUnion>("value");
-        switch(attr->getDataType())
-        {
-
-        case NDAttrInt8:      value->set(PVDC->createPVScalar<PVByte>());   break;
-        case NDAttrUInt8:     value->set(PVDC->createPVScalar<PVUByte>());  break;
-        case NDAttrInt16:     value->set(PVDC->createPVScalar<PVShort>());  break;
-        case NDAttrUInt16:    value->set(PVDC->createPVScalar<PVUShort>()); break;
-        case NDAttrInt32:     value->set(PVDC->createPVScalar<PVInt>());    break;
-        case NDAttrUInt32:    value->set(PVDC->createPVScalar<PVUInt>());   break;
-        case NDAttrFloat32:   value->set(PVDC->createPVScalar<PVFloat>());  break;
-        case NDAttrFloat64:   value->set(PVDC->createPVScalar<PVDouble>()); break;
-        case NDAttrString:    value->set(PVDC->createPVScalar<PVString>()); break;
-        case NDAttrUndefined: value->get().reset(); break;
-        default:              throw std::runtime_error("invalid attribute data type");
-        }
-
-        destVec.push_back(pvAttr);
-        attr = srcList->next(attr);
-    }
-
-    m_array->getAttribute()->replace(freeze(destVec));
-}
-
-void NTNDArrayConverter::fromAttributes (NDArray *src)
-{
-    PVStructureArrayPtr dest(m_array->getAttribute());
-    NDAttributeList *srcList = src->pAttributeList;
-
-    if(dest->view().dataCount() != (size_t)srcList->count())
-        createAttributes (src);
-
-    PVStructureArray::svector destVec(dest->reuse());
-    NDAttribute *attr = srcList->next(NULL);
-
-    for(PVStructureArray::svector::iterator it = destVec.begin();
-            it != destVec.end(); ++it)
-    {
-        PVStructurePtr pvAttr(*it);
         switch(attr->getDataType())
         {
         case NDAttrInt8:      fromAttribute <PVByte,   int8_t>  (pvAttr, attr); break;
@@ -546,10 +525,11 @@ void NTNDArrayConverter::fromAttributes (NDArray *src)
         case NDAttrFloat32:   fromAttribute <PVFloat,  float>   (pvAttr, attr); break;
         case NDAttrFloat64:   fromAttribute <PVDouble, double>  (pvAttr, attr); break;
         case NDAttrString:    fromStringAttribute(pvAttr, attr); break;
-        case NDAttrUndefined: break;
+        case NDAttrUndefined: fromUndefinedAttribute(pvAttr); break;
         default:              throw std::runtime_error("invalid attribute data type");
         }
-        attr = srcList->next(attr);
+
+        ++i;
     }
 
     dest->replace(freeze(destVec));

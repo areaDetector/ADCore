@@ -57,7 +57,7 @@ private:
     template <typename pvAttrType, typename valueType>
     void fromAttribute (epics::pvData::PVStructurePtr dest, NDAttribute *src);
     void fromStringAttribute (epics::pvData::PVStructurePtr dest, NDAttribute *src);
-    void createAttributes (NDArray *src);
+    void fromUndefinedAttribute (epics::pvData::PVStructurePtr dest);
     void fromAttributes (NDArray *src);
 };
 
