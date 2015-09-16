@@ -481,7 +481,7 @@ void NTNDArrayConverter::createAttributes (NDArray *src)
     NDAttributeList *srcList = src->pAttributeList;
     NDAttribute *attr = srcList->next(NULL);
     PVStructureArrayPtr dest(m_array->getAttribute());
-    PVStructureArray::svector destVec(dest->reuse());
+    PVStructureArray::svector destVec(0);
     StructureConstPtr structure(dest->getStructureArray()->getStructure());
 
     while(attr)
