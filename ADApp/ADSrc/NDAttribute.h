@@ -57,7 +57,8 @@ typedef enum
     NDAttrSourceDriver,    /**< Attribute is obtained directly from driver */
     NDAttrSourceParam,     /**< Attribute is obtained from parameter library */
     NDAttrSourceEPICSPV,   /**< Attribute is obtained from an EPICS PV */
-    NDAttrSourceFunct      /**< Attribute is obtained from a user-specified function */
+    NDAttrSourceFunct,     /**< Attribute is obtained from a user-specified function */
+    NDAttrSourceUndefined  /**< Attribute source is undefined */
 } NDAttrSource_t;
 
 /** Union defining the values in an NDAttribute object */

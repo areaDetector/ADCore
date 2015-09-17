@@ -43,6 +43,7 @@ private:
     template <typename pvAttrType, typename valueType>
     void toAttribute (NDArray *dest, epics::pvData::PVStructurePtr src);
     void toStringAttribute (NDArray *dest, epics::pvData::PVStructurePtr src);
+    void toUndefinedAttribute (NDArray *dest, epics::pvData::PVStructurePtr src);
     void toAttributes (NDArray *dest);
 
     template <typename arrayType, typename srcDataType>
@@ -56,7 +57,7 @@ private:
     template <typename pvAttrType, typename valueType>
     void fromAttribute (epics::pvData::PVStructurePtr dest, NDAttribute *src);
     void fromStringAttribute (epics::pvData::PVStructurePtr dest, NDAttribute *src);
-    void createAttributes (NDArray *src);
+    void fromUndefinedAttribute (epics::pvData::PVStructurePtr dest);
     void fromAttributes (NDArray *src);
 };
 
