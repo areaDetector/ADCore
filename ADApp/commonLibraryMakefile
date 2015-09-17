@@ -23,11 +23,14 @@ ifeq ($(USE_GRAPHICSMAGICK), YES)
 
   LIB_LIBS_Linux        += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
   # The following system libraries must be installed to use GraphicsMagick
-  LIB_SYS_LIBS_Linux    += gomp X11 xml2 png12 bz2 Xext freetype 
+  LIB_SYS_LIBS_Linux    += gomp X11 png12 bz2 Xext freetype 
 
   LIB_LIBS_Darwin       += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
   # The following system libraries must be installed to use GraphicsMagick
-  LIB_SYS_LIBS_Darwin   += png xml2 bz2
+  LIB_SYS_LIBS_Darwin   += png bz2
+  GraphicsMagick_DIR     = $(GRAPHICS_MAGICK_LIB)
+  GraphicsMagick++_DIR   = $(GRAPHICS_MAGICK_LIB)
+  GraphicsMagickWand_DIR = $(GRAPHICS_MAGICK_LIB)
 else
   # I don't understand why we need to set this when building statically and not using GraphicsMagick
   ifeq ($(STATIC_BUILD), YES)
@@ -59,21 +62,22 @@ LIB_SYS_LIBS_cygwin32   += libtiff libjpeg libjbig libz libxml2
 LIB_SYS_LIBS_cygwin32   += $(CYGWIN_RPC_LIB)
 LIB_SYS_LIBS_cygwin32   += Gdi32
 
-LIB_LIBS_Linux          += hdf5
-ifdef SZIP
-  LIB_LIBS_Linux        += sz
+ifeq ($(OS_CLASS), $(filter $(OS_CLASS), Linux Darwin solaris))
+  ifdef HDF5_LIB
+    hdf5_DIR            = $(HDF5_LIB)
+    LIB_LIBS            += hdf5
+  else
+    LIB_SYS_LIBS        += hdf5
+  endif
+  ifdef SZIP
+    ifdef SZIP_LIB
+      sz_DIR             = $(SZIP_LIB)
+      LIB_LIBS          += sz
+    else
+      LIB_SYS_LIBS      += sz
+    endif
+  endif
+  LIB_SYS_LIBS          += tiff jpeg xml2 z
 endif
-LIB_SYS_LIBS_Linux      += tiff jpeg xml2 z
-
-LIB_LIBS_solaris        += hdf5 sz
-LIB_SYS_LIBS_solaris    += tiff jpeg xml2 z
 
 USR_LDFLAGS_Darwin      += -framework CoreFoundation
-LIB_LIBS_Darwin         += hdf5 sz
-LIB_SYS_LIBS_Darwin     += tiff jpeg xml2 z
-
-hdf5_DIR               = $(HDF5_LIB)
-sz_DIR                 = $(SZIP_LIB)
-GraphicsMagick_DIR     = $(GRAPHICS_MAGICK_LIB)
-GraphicsMagick++_DIR   = $(GRAPHICS_MAGICK_LIB)
-GraphicsMagickWand_DIR = $(GRAPHICS_MAGICK_LIB)

@@ -38,8 +38,8 @@ void AsynPortClientContainer::write(const std::string& paramName, double value)
 
 unsigned long int AsynPortClientContainer::write(const std::string& paramName, const std::string& value)
 {
-  unsigned long int length = 0;
-  unsigned long int numWritten = 0;
+  size_t length = 0;
+  size_t numWritten = 0;
 	// Check for the client
 	if (octetClients.count(paramName) == 0){
 		// We need to create the client as it isn't stored

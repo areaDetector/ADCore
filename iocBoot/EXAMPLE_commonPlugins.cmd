@@ -113,15 +113,15 @@ dbLoadRecords("$(AUTOSAVE)/asApp/Db/save_restoreStatus.db", "P=$(PREFIX)")
 #set_requestfile_path("$(ADPLUGINEDGE)/edgeApp/Db")
 
 # Optional: load scan records
-dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=$(PREFIX),MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
-set_requestfile_path("$(SSCAN)/sscanApp/Db")
+#dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=$(PREFIX),MAXPTS1=2000,MAXPTS2=200,MAXPTS3=20,MAXPTS4=10,MAXPTSH=10")
+#set_requestfile_path("$(SSCAN)/sscanApp/Db")
 
 # Optional: load sseq record for acquisition sequence
-dbLoadRecords("$(CALC)/calcApp/Db/yySseq.db", "P=$(PREFIX), S=AcquireSequence")
-set_requestfile_path("$(CALC)/calcApp/Db")
+#dbLoadRecords("$(CALC)/calcApp/Db/yySseq.db", "P=$(PREFIX), S=AcquireSequence")
+#set_requestfile_path("$(CALC)/calcApp/Db")
 
 # Optional: load devIocStats records (requires DEVIOCSTATS module)
-dbLoadRecords("$(DEVIOCSTATS)/db/iocAdminSoft.db", "IOC=$(PREFIX)")
+#dbLoadRecords("$(DEVIOCSTATS)/db/iocAdminSoft.db", "IOC=$(PREFIX)")
 
 # Optional: load alive record (requires ALIVE module)
 #dbLoadRecords("$(ALIVE)/aliveApp/Db/alive.db", "P=$(PREFIX),RHOST=192.168.1.254")
