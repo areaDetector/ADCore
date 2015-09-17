@@ -14,95 +14,6 @@
         <string>
 
 QWidget#centralWidget {background: rgba(187, 187, 187, 255);}
-QPushButton::menu-indicator {image: url(none.png); width: 0}
-
-caTable {
-       font: 10pt;
-       background: cornsilk;
-       alternate-background-color: wheat;
-}
-
-caLineEdit {
-     border-radius: 1px;
-     background: lightyellow;
-     color: black;
- }
-
-caTextEntry {
-    color: rgb(127, 0, 63);
-    background-color: cornsilk;
-    selection-color: #0a214c;
-    selection-background-color: wheat;
-    border: 1px groove black;
-    border-radius: 1px;
-    padding: 1px;
-}
-
-caTextEntry:focus {
-    padding: 0px;
-    border: 2px groove darkred;
-    border-radius: 1px;
-}
-
-QPushButton {
-      border-color: #00b;
-      border-radius: 2px;
-      padding: 3px;
-      border-width: 1px;
-
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
-						   stop:0   rgba(224, 239, 255, 255),
-						   stop:0.5 rgba(199, 215, 230, 255),
-						   stop:1   rgba(184, 214, 236, 255));
-}
-QPushButton:hover {
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
-						stop:0   rgba(201, 226, 255, 255),
-						stop:0.5 rgba(177, 204, 230, 255),
-						stop:1   rgba(163, 205, 236, 255));
-}
-QPushButton:pressed {
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
-						stop:0   rgba(174, 219, 255, 255),
-						stop:0.5 rgba(165, 199, 230, 255),
-						stop:1   rgba(134, 188, 236, 255));
-}
-
-QPushButton:disabled {
-	background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1,
-						stop:0   rgba(174, 219, 255, 255),
-						stop:0.5 rgba(165, 199, 230, 255),
-						stop:1   rgba(134, 188, 236, 255));
-}
-
-caChoice {
-      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                  stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
-                                  stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
-}
-
-caChoice &gt; QPushButton {
-      text-align: left;
-      padding: 1px;
-}
-
-caSlider::groove:horizontal {
-border: 1px solid #bbb;
-background: lightgrey;
-height: 20px;
-border-radius: 4px;
-}
-
-caSlider::handle:horizontal {
-background: red;
-border: 1px solid #777;
-width: 13px;
-margin-top: -2px;
-margin-bottom: -2px;
-border-radius: 2px;
-}
-
-
 
 </string>
     </property>
@@ -135,7 +46,7 @@ border-radius: 2px;
                 <rect>
                     <x>12</x>
                     <y>6</y>
-                    <width>241</width>
+                    <width>201</width>
                     <height>31</height>
                 </rect>
             </property>
@@ -213,7 +124,7 @@ border-radius: 2px;
                 <rect>
                     <x>90</x>
                     <y>60</y>
-                    <width>48</width>
+                    <width>40</width>
                     <height>20</height>
                 </rect>
             </property>
@@ -248,7 +159,7 @@ border-radius: 2px;
                 <string>Andor #1 general;Andor #1 specific;Andor3 #1 general;Andor3 #1 specific;Shamrock #1</string>
             </property>
             <property name="files">
-                <string>ADBase.ui;Andor.ui;ADBase.ui;Andor3.ui;Shamrock.ui</string>
+                <string>ADBase.ui;Andor.ui;ADBase.ui;Andor3.ui;Shamrock.adl</string>
             </property>
             <property name="args">
                 <string>P=13ANDOR1:, R=cam1: ;P=13ANDOR1:, R=cam1:;P=13ANDOR3:, R=cam1: ;P=13ANDOR3:, R=cam1: ;P=13ANDOR1:, R=sham1:</string>
@@ -288,7 +199,7 @@ border-radius: 2px;
                 <rect>
                     <x>80</x>
                     <y>85</y>
-                    <width>60</width>
+                    <width>50</width>
                     <height>20</height>
                 </rect>
             </property>
@@ -363,7 +274,7 @@ border-radius: 2px;
                 <rect>
                     <x>30</x>
                     <y>110</y>
-                    <width>120</width>
+                    <width>100</width>
                     <height>20</height>
                 </rect>
             </property>
@@ -447,7 +358,7 @@ border-radius: 2px;
                     <rect>
                         <x>30</x>
                         <y>300</y>
-                        <width>108</width>
+                        <width>90</width>
                         <height>20</height>
                     </rect>
                 </property>
@@ -522,7 +433,7 @@ border-radius: 2px;
                     <rect>
                         <x>30</x>
                         <y>200</y>
-                        <width>108</width>
+                        <width>90</width>
                         <height>20</height>
                     </rect>
                 </property>
@@ -597,7 +508,7 @@ border-radius: 2px;
                     <rect>
                         <x>50</x>
                         <y>125</y>
-                        <width>84</width>
+                        <width>70</width>
                         <height>20</height>
                     </rect>
                 </property>
@@ -672,7 +583,7 @@ border-radius: 2px;
                     <rect>
                         <x>60</x>
                         <y>75</y>
-                        <width>72</width>
+                        <width>60</width>
                         <height>20</height>
                     </rect>
                 </property>
@@ -747,7 +658,7 @@ border-radius: 2px;
                     <rect>
                         <x>70</x>
                         <y>275</y>
-                        <width>60</width>
+                        <width>50</width>
                         <height>20</height>
                     </rect>
                 </property>
@@ -822,7 +733,7 @@ border-radius: 2px;
                     <rect>
                         <x>40</x>
                         <y>0</y>
-                        <width>96</width>
+                        <width>80</width>
                         <height>20</height>
                     </rect>
                 </property>
@@ -897,7 +808,7 @@ border-radius: 2px;
                     <rect>
                         <x>60</x>
                         <y>50</y>
-                        <width>72</width>
+                        <width>60</width>
                         <height>20</height>
                     </rect>
                 </property>
@@ -972,7 +883,7 @@ border-radius: 2px;
                     <rect>
                         <x>0</x>
                         <y>100</y>
-                        <width>144</width>
+                        <width>120</width>
                         <height>20</height>
                     </rect>
                 </property>
@@ -1047,7 +958,7 @@ border-radius: 2px;
                     <rect>
                         <x>70</x>
                         <y>225</y>
-                        <width>60</width>
+                        <width>50</width>
                         <height>20</height>
                     </rect>
                 </property>
@@ -1122,7 +1033,7 @@ border-radius: 2px;
                     <rect>
                         <x>90</x>
                         <y>325</y>
-                        <width>36</width>
+                        <width>30</width>
                         <height>20</height>
                     </rect>
                 </property>
@@ -1197,7 +1108,7 @@ border-radius: 2px;
                     <rect>
                         <x>19</x>
                         <y>25</y>
-                        <width>120</width>
+                        <width>100</width>
                         <height>20</height>
                     </rect>
                 </property>
@@ -1272,7 +1183,7 @@ border-radius: 2px;
                     <rect>
                         <x>49</x>
                         <y>150</y>
-                        <width>84</width>
+                        <width>70</width>
                         <height>20</height>
                     </rect>
                 </property>
@@ -1347,7 +1258,7 @@ border-radius: 2px;
                     <rect>
                         <x>19</x>
                         <y>175</y>
-                        <width>120</width>
+                        <width>100</width>
                         <height>20</height>
                     </rect>
                 </property>
@@ -1422,7 +1333,7 @@ border-radius: 2px;
                     <rect>
                         <x>89</x>
                         <y>250</y>
-                        <width>36</width>
+                        <width>30</width>
                         <height>20</height>
                     </rect>
                 </property>
@@ -1507,7 +1418,7 @@ border-radius: 2px;
                     <rect>
                         <x>0</x>
                         <y>0</y>
-                        <width>36</width>
+                        <width>30</width>
                         <height>20</height>
                     </rect>
                 </property>
@@ -1583,7 +1494,7 @@ border-radius: 2px;
                 <rect>
                     <x>70</x>
                     <y>159</y>
-                    <width>72</width>
+                    <width>60</width>
                     <height>20</height>
                 </rect>
             </property>
