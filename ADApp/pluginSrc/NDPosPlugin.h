@@ -72,6 +72,7 @@ public:
               int blockingCallbacks,     // Initial setting for the NDPluginDriverBlockingCallbacks flag.
               const char *NDArrayPort,   // Name of asyn port driver for initial source of NDArray callbacks.
               int NDArrayAddr,           // asyn port driver address for initial source of NDArray callbacks.
+              int maxBuffers,            // The maximum number of buffers that this driver can allocate.
               size_t maxMemory,          // The maximum amount of memory that this driver can allocate.
               int priority,              // The thread priority for the asyn port driver thread.
               int stackSize);            // The stack size for the asyn port driver thread.
