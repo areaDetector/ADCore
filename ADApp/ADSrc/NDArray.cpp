@@ -169,7 +169,7 @@ int NDArray::reserve()
   const char *functionName = "NDArray::reserve";
 
   if (!pNDArrayPool) {
-    printf("%s: ERROR, no owner\n", functionName);
+    printf("%s: WARNING, no owner\n", functionName);
     return(ND_ERROR);
   }
   return(pNDArrayPool->reserve(this));
@@ -181,7 +181,7 @@ int NDArray::release()
   const char *functionName = "NDArray::release";
 
   if (!pNDArrayPool) {
-    printf("%s: ERROR, no owner\n", functionName);
+    printf("%s: WARNING, no owner\n", functionName);
     return(ND_ERROR);
   }
   return(pNDArrayPool->release(this));

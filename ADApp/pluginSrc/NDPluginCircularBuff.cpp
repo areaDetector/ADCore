@@ -382,7 +382,7 @@ NDPluginCircularBuff::NDPluginCircularBuff(const char *portName, int queueSize, 
                    NDArrayPort, NDArrayAddr, 1, NUM_NDPLUGIN_CIRC_BUFF_PARAMS, maxBuffers, maxMemory,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
-                   0, 1, priority, stackSize)
+                   0, 1, priority, stackSize), pOldArray_(NULL)
 {
     //const char *functionName = "NDPluginCircularBuff";
     preBuffer_ = NULL;

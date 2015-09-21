@@ -11,6 +11,9 @@ ifeq (vxWorks,$(findstring vxWorks, $(T_A)))
 CODE_CXXFLAGS=
 endif
 
+# Persuade travis (ubuntu 12.04) to use HDF5 API V2 (1.8 rather than default 1.6)
+USR_CXXFLAGS_Linux += -DH5_NO_DEPRECATED_SYMBOLS -DH5Gopen_vers=2
+
 # This flag is used to indicate that the TIFF library was built statically
 USR_CXXFLAGS_WIN32 += -DLIBTIFF_STATIC
 
