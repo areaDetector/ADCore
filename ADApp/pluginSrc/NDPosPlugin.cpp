@@ -134,25 +134,39 @@ void NDPosPlugin::processCallbacks(NDArray *pArray)
         }
         // We must make a copy of the array as we are going to alter it
         this->pArrays[0] = this->pNDArrayPool->copy(pArray, this->pArrays[0], 1);
-        std::map<std::string, int> pos = positionArray[index];
-        std::stringstream sspos;
-        sspos << "[";
-        bool firstTime = true;
-        std::map<std::string, int>::iterator iter;
-        for (iter = pos.begin(); iter != pos.end(); iter++){
-          if (firstTime){
-            firstTime = false;
-          } else {
-            sspos << ",";
+        if (this->pArrays[0]){
+          std::map<std::string, int> pos = positionArray[index];
+          std::stringstream sspos;
+          sspos << "[";
+          bool firstTime = true;
+          std::map<std::string, int>::iterator iter;
+          for (iter = pos.begin(); iter != pos.end(); iter++){
+            if (firstTime){
+              firstTime = false;
+            } else {
+              sspos << ",";
+            }
+            sspos << iter->first << "=" << iter->second;
+            // Create the NDAttribute with the position data
+            NDAttribute *pAtt = new NDAttribute(iter->first.c_str(), "Position of NDArray", NDAttrSourceDriver, driverName, NDAttrInt32, &(iter->second));
+            // Add the NDAttribute to the NDArray
+            this->pArrays[0]->pAttributeList->add(pAtt);
           }
-          sspos << iter->first << "=" << iter->second;
-          // Create the NDAttribute with the position data
-          NDAttribute *pAtt = new NDAttribute(iter->first.c_str(), "Position of NDArray", NDAttrSourceDriver, driverName, NDAttrInt32, &(iter->second));
-          // Add the NDAttribute to the NDArray
-          this->pArrays[0]->pAttributeList->add(pAtt);
+          sspos << "]";
+          setStringParam(NDPos_CurrentPos, sspos.str().c_str());
+
+        } else {
+          // We were unable to allocate the required buffer (memory or qty exceeded).
+          // This results in us dropping a frame, note it and print an error
+          asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                    "%s::%s ERROR: dropped frame! Could not allocate the required buffer\n",
+                    driverName, functionName);
+          // Note the frame drop
+          getIntegerParam(NDPluginDriverDroppedArrays, &dropped);
+          dropped++;
+          setIntegerParam(NDPluginDriverDroppedArrays, dropped);
+          skip = 1;
         }
-        sspos << "]";
-        setStringParam(NDPos_CurrentPos, sspos.str().c_str());
 
         // Check the mode
         getIntegerParam(NDPos_Mode, &mode);
