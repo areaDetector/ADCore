@@ -89,7 +89,7 @@ else
   NDPlugin_SRCS += NDFileMagickStub.cpp
 endif
 
-ifeq ($(EPICS_V4_PLUGIN), YES)
+ifeq ($(EPICS_V4), YES)
   DBD += NDPluginPva.dbd
   INC += NDPluginPva.h
   NDPlugin_SRCS += NDPluginPva.cpp

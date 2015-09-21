@@ -10,7 +10,7 @@ else
   LIB_LIBS              += $(EPICS_BASE_IOC_LIBS)
 endif
 
-ifeq ($(EPICS_V4_PLUGIN),YES)
+ifeq ($(EPICS_V4),YES)
   LIB_LIBS              += pvData
   LIB_LIBS              += pvDatabase
   LIB_LIBS              += nt

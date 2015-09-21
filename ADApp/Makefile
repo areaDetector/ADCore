@@ -18,7 +18,7 @@ pluginSrc_DEPEND_DIRS += ADSrc netCDFSrc nexusSrc tiffSupport
 DIRS += pluginTests
 pluginTests_DEPEND_DIRS += ADSrc pluginSrc
 
-ifeq ($(EPICS_V4_PLUGIN), YES)
+ifeq ($(EPICS_V4), YES)
   DIRS += ntndArrayConverterSrc
   DIRS += pvaDriverSrc
   pvaDriverSrc_DEPEND_DIRS += pluginSrc
