@@ -611,3 +611,20 @@ record(stringin, "$(P)$(R)PosNameDimY_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(ai, "$(P)$(R)FillValue_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),0)HDF5_fillValue")
+    field(PINI, "YES")
+    field(SCAN, "I/O Intr")
+    field(PREC, "1")
+}
+
+record(ao, "$(P)$(R)FillValue")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),0)HDF5_fillValue")
+    field(PINI, "NO")
+    field(PREC, "1")
+}
+

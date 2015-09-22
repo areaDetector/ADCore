@@ -3,10 +3,10 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 768
-y 77
+x 566
+y 75
 w 417
-h 901
+h 951
 font "arial-bold-r-12.0"
 ctlFont "arial-bold-r-12.0"
 btnFont "arial-bold-r-12.0"
@@ -304,7 +304,7 @@ major 4
 minor 1
 release 0
 x 325
-y 870
+y 920
 w 85
 h 25
 fgColor index 46
@@ -1328,7 +1328,7 @@ major 4
 minor 4
 release 0
 x 215
-y 870
+y 920
 w 100
 h 25
 fgColor index 43
@@ -1429,6 +1429,99 @@ y 825
 w 75
 h 20
 controlPv "$(P)$(R)DimAttDatasets_RBV"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-medium-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 5
+y 870
+w 405
+h 45
+lineColor index 14
+fill
+fillColor index 3
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 5
+y 860
+w 64
+h 13
+font "arial-medium-r-12.0"
+fgColor index 14
+bgColor index 5
+value {
+  "  Fill Value  "
+}
+autoSize
+border
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 20
+y 885
+w 185
+h 20
+font "arial-bold-r-12.0"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "HDF5 Fill Value"
+}
+endObjectProperties
+
+# (Textentry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 245
+y 885
+w 75
+h 20
+controlPv "$(P)$(R)FillValue"
+precision 1
+fgColor index 25
+fgAlarm
+bgColor index 3
+fill
+font "arial-medium-r-12.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 325
+y 885
+w 75
+h 20
+controlPv "$(P)$(R)FillValue_RBV"
+precision 1
 fgColor index 16
 fgAlarm
 bgColor index 10

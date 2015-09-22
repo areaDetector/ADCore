@@ -1973,6 +1973,7 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   this->createParam(str_NDFileHDF5_posNameDimN,     asynParamOctet,   &NDFileHDF5_posNameDimN);
   this->createParam(str_NDFileHDF5_posNameDimX,     asynParamOctet,   &NDFileHDF5_posNameDimX);
   this->createParam(str_NDFileHDF5_posNameDimY,     asynParamOctet,   &NDFileHDF5_posNameDimY);
+  this->createParam(str_NDFileHDF5_fillValue,       asynParamFloat64, &NDFileHDF5_fillValue);
   this->createParam(str_NDFileHDF5_SWMRCbCounter,   asynParamInt32,   &NDFileHDF5_SWMRCbCounter);
   this->createParam(str_NDFileHDF5_SWMRSupported,   asynParamInt32,   &NDFileHDF5_SWMRSupported);
   this->createParam(str_NDFileHDF5_SWMRMode,        asynParamInt32,   &NDFileHDF5_SWMRMode);
@@ -2008,6 +2009,7 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   setStringParam (NDFileHDF5_posNameDimN,     "");
   setStringParam (NDFileHDF5_posNameDimX,     "");
   setStringParam (NDFileHDF5_posNameDimY,     "");
+  setDoubleParam (NDFileHDF5_fillValue,       0.0);
   setIntegerParam(NDFileHDF5_SWMRCbCounter,   0);
   setIntegerParam(NDFileHDF5_SWMRMode,        0);
   setIntegerParam(NDFileHDF5_SWMRRunning,     0);
@@ -2875,7 +2877,8 @@ asynStatus NDFileHDF5::configureCompression()
 hid_t NDFileHDF5::typeNd2Hdf(NDDataType_t datatype)
 {
   hid_t result;
-  int fillvalue = 0;
+  epicsFloat64 fillvalue = 0.0;
+  getDoubleParam(NDFileHDF5_fillValue, &fillvalue);
 
   switch (datatype) 
   {
