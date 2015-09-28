@@ -24,11 +24,11 @@ Release Notes
 =============
 
 
-R2-4 (September 16, 2015)
+R2-4 (September 21, 2015)
 ========================
-### Removed simDetector and iocs directory. Previously the simDetector was part of ADCore, 
-and there was an iocs directory that built the simDetector application both as part of 
-an IOC and independent of an IOC. This had 2 disadvantages:
+### Removed simDetector and iocs directory. 
+Previously the simDetector was part of ADCore, and there was an iocs directory that built the simDetector 
+application both as part of an IOC and independent of an IOC. This had 2 disadvantages:
 
 1. It prevented building the simDetector IOC with optional plugins that reside in separate
    repositories, such as ffmpegServer and ADPluginEdge.  This is because ADCore needs to
