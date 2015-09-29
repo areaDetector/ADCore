@@ -1,5 +1,8 @@
 Release checklist for ADCore
 
+- Make new version of areaDetector, change areaDetector-RXXX directory name, 
+and change version number in areaDetector/configure/EXAMPLE_RELEASE_PATHS.local*.
+
 - Make sure the epics_ad_display.sav file in /usr/local/idl_user/imaging is
 up-to-date
 
@@ -14,13 +17,16 @@ up-to-date
 
 - Do "make clean uninstall", "make" on the following platforms:
   win32-x86:          rivers-mobile2
+  win32-x86-static:   rivers-mobile2
   windows-x64:        rivers-mobile2
-  cygwin-x86:         rivers-mobile2
+  windows-x64-static: rivers-mobile2
   linux-x86:          corvette
   linux-x86_64:       corvette
   linux-x86-gcc43:    idea
   linux-x86_64-gcc42: gse-pilatus1
+  Optional:
   darwin-x86:         chemmatmac1
+  cygwin-x86:         rivers-mobile2
 
 - Run "make" in the areaDetector/documentation directory
 

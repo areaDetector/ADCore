@@ -1,14 +1,14 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-1/ADCore/ADApp/op/adl/NDROIStat8.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDROIStat8.adl"
 	version=030107
 }
 display {
 	object {
-		x=328
-		y=55
-		width=1075
-		height=290
+		x=121
+		y=104
+		width=1140
+		height=425
 	}
 	clr=14
 	bclr=4
@@ -89,7 +89,7 @@ display {
 }
 text {
 	object {
-		x=236
+		x=336
 		y=8
 		width=468
 		height=25
@@ -97,7 +97,7 @@ text {
 	"basic attribute" {
 		clr=14
 	}
-	textix="$(P) $(ROI1)-$(ROI8)"
+	textix="$(P) $(R)$(ROI1)-$(R)$(ROI8)"
 	align="horiz. centered"
 }
 composite {
@@ -132,7 +132,7 @@ composite {
 			"basic attribute" {
 				clr=14
 			}
-			textix="$(ROI1)"
+			textix="$(R)$(ROI1)"
 			align="horiz. centered"
 		}
 		text {
@@ -145,7 +145,7 @@ composite {
 			"basic attribute" {
 				clr=14
 			}
-			textix="$(ROI2)"
+			textix="$(R)$(ROI2)"
 			align="horiz. centered"
 		}
 		text {
@@ -158,7 +158,7 @@ composite {
 			"basic attribute" {
 				clr=14
 			}
-			textix="$(ROI3)"
+			textix="$(R)$(ROI3)"
 			align="horiz. centered"
 		}
 		text {
@@ -171,7 +171,7 @@ composite {
 			"basic attribute" {
 				clr=14
 			}
-			textix="$(ROI4)"
+			textix="$(R)$(ROI4)"
 			align="horiz. centered"
 		}
 		text {
@@ -184,7 +184,7 @@ composite {
 			"basic attribute" {
 				clr=14
 			}
-			textix="$(ROI5)"
+			textix="$(R)$(ROI5)"
 			align="horiz. centered"
 		}
 		text {
@@ -197,7 +197,7 @@ composite {
 			"basic attribute" {
 				clr=14
 			}
-			textix="$(ROI6)"
+			textix="$(R)$(ROI6)"
 			align="horiz. centered"
 		}
 		text {
@@ -210,7 +210,7 @@ composite {
 			"basic attribute" {
 				clr=14
 			}
-			textix="$(ROI7)"
+			textix="$(R)$(ROI7)"
 			align="horiz. centered"
 		}
 		text {
@@ -223,7 +223,7 @@ composite {
 			"basic attribute" {
 				clr=14
 			}
-			textix="$(ROI8)"
+			textix="$(R)$(ROI8)"
 			align="horiz. centered"
 		}
 	}
@@ -269,7 +269,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI1)Net_RBV"
+				chan="$(P)$(R)$(ROI1)Net_RBV"
 				clr=53
 				bclr=4
 			}
@@ -285,7 +285,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI2)Net_RBV"
+				chan="$(P)$(R)$(ROI2)Net_RBV"
 				clr=53
 				bclr=4
 			}
@@ -301,7 +301,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI3)Net_RBV"
+				chan="$(P)$(R)$(ROI3)Net_RBV"
 				clr=53
 				bclr=4
 			}
@@ -317,7 +317,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI4)Net_RBV"
+				chan="$(P)$(R)$(ROI4)Net_RBV"
 				clr=53
 				bclr=4
 			}
@@ -333,7 +333,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI5)Net_RBV"
+				chan="$(P)$(R)$(ROI5)Net_RBV"
 				clr=53
 				bclr=4
 			}
@@ -349,7 +349,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI6)Net_RBV"
+				chan="$(P)$(R)$(ROI6)Net_RBV"
 				clr=53
 				bclr=4
 			}
@@ -365,7 +365,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI7)Net_RBV"
+				chan="$(P)$(R)$(ROI7)Net_RBV"
 				clr=53
 				bclr=4
 			}
@@ -381,7 +381,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI8)Net_RBV"
+				chan="$(P)$(R)$(ROI8)Net_RBV"
 				clr=53
 				bclr=4
 			}
@@ -420,7 +420,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI1)Total_RBV"
+				chan="$(P)$(R)$(ROI1)Total_RBV"
 				clr=53
 				bclr=4
 			}
@@ -436,7 +436,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI2)Total_RBV"
+				chan="$(P)$(R)$(ROI2)Total_RBV"
 				clr=53
 				bclr=4
 			}
@@ -452,7 +452,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI3)Total_RBV"
+				chan="$(P)$(R)$(ROI3)Total_RBV"
 				clr=53
 				bclr=4
 			}
@@ -468,7 +468,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI4)Total_RBV"
+				chan="$(P)$(R)$(ROI4)Total_RBV"
 				clr=53
 				bclr=4
 			}
@@ -484,7 +484,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI5)Total_RBV"
+				chan="$(P)$(R)$(ROI5)Total_RBV"
 				clr=53
 				bclr=4
 			}
@@ -500,7 +500,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI6)Total_RBV"
+				chan="$(P)$(R)$(ROI6)Total_RBV"
 				clr=53
 				bclr=4
 			}
@@ -516,7 +516,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI7)Total_RBV"
+				chan="$(P)$(R)$(ROI7)Total_RBV"
 				clr=53
 				bclr=4
 			}
@@ -532,7 +532,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI8)Total_RBV"
+				chan="$(P)$(R)$(ROI8)Total_RBV"
 				clr=53
 				bclr=4
 			}
@@ -571,7 +571,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI1)MinValue_RBV"
+				chan="$(P)$(R)$(ROI1)MinValue_RBV"
 				clr=53
 				bclr=4
 			}
@@ -587,7 +587,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI2)MinValue_RBV"
+				chan="$(P)$(R)$(ROI2)MinValue_RBV"
 				clr=53
 				bclr=4
 			}
@@ -603,7 +603,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI3)MinValue_RBV"
+				chan="$(P)$(R)$(ROI3)MinValue_RBV"
 				clr=53
 				bclr=4
 			}
@@ -619,7 +619,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI4)MinValue_RBV"
+				chan="$(P)$(R)$(ROI4)MinValue_RBV"
 				clr=53
 				bclr=4
 			}
@@ -635,7 +635,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI5)MinValue_RBV"
+				chan="$(P)$(R)$(ROI5)MinValue_RBV"
 				clr=53
 				bclr=4
 			}
@@ -651,7 +651,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI6)MinValue_RBV"
+				chan="$(P)$(R)$(ROI6)MinValue_RBV"
 				clr=53
 				bclr=4
 			}
@@ -667,7 +667,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI7)MinValue_RBV"
+				chan="$(P)$(R)$(ROI7)MinValue_RBV"
 				clr=53
 				bclr=4
 			}
@@ -683,7 +683,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI8)MinValue_RBV"
+				chan="$(P)$(R)$(ROI8)MinValue_RBV"
 				clr=53
 				bclr=4
 			}
@@ -722,7 +722,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI1)BgdWidth"
+				chan="$(P)$(R)$(ROI1)BgdWidth"
 				clr=14
 				bclr=51
 			}
@@ -737,7 +737,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI2)BgdWidth"
+				chan="$(P)$(R)$(ROI2)BgdWidth"
 				clr=14
 				bclr=51
 			}
@@ -752,7 +752,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI3)BgdWidth"
+				chan="$(P)$(R)$(ROI3)BgdWidth"
 				clr=14
 				bclr=51
 			}
@@ -767,7 +767,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI4)BgdWidth"
+				chan="$(P)$(R)$(ROI4)BgdWidth"
 				clr=14
 				bclr=51
 			}
@@ -782,7 +782,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI5)BgdWidth"
+				chan="$(P)$(R)$(ROI5)BgdWidth"
 				clr=14
 				bclr=51
 			}
@@ -797,7 +797,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI6)BgdWidth"
+				chan="$(P)$(R)$(ROI6)BgdWidth"
 				clr=14
 				bclr=51
 			}
@@ -812,7 +812,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI7)BgdWidth"
+				chan="$(P)$(R)$(ROI7)BgdWidth"
 				clr=14
 				bclr=51
 			}
@@ -827,7 +827,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI8)BgdWidth"
+				chan="$(P)$(R)$(ROI8)BgdWidth"
 				clr=14
 				bclr=51
 			}
@@ -865,7 +865,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI1)SizeY"
+				chan="$(P)$(R)$(ROI1)SizeY"
 				clr=14
 				bclr=51
 			}
@@ -880,7 +880,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI2)SizeY"
+				chan="$(P)$(R)$(ROI2)SizeY"
 				clr=14
 				bclr=51
 			}
@@ -895,7 +895,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI3)SizeY"
+				chan="$(P)$(R)$(ROI3)SizeY"
 				clr=14
 				bclr=51
 			}
@@ -910,7 +910,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI4)SizeY"
+				chan="$(P)$(R)$(ROI4)SizeY"
 				clr=14
 				bclr=51
 			}
@@ -925,7 +925,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI5)SizeY"
+				chan="$(P)$(R)$(ROI5)SizeY"
 				clr=14
 				bclr=51
 			}
@@ -940,7 +940,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI6)SizeY"
+				chan="$(P)$(R)$(ROI6)SizeY"
 				clr=14
 				bclr=51
 			}
@@ -955,7 +955,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI7)SizeY"
+				chan="$(P)$(R)$(ROI7)SizeY"
 				clr=14
 				bclr=51
 			}
@@ -970,7 +970,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI8)SizeY"
+				chan="$(P)$(R)$(ROI8)SizeY"
 				clr=14
 				bclr=51
 			}
@@ -1008,7 +1008,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI1)MinY"
+				chan="$(P)$(R)$(ROI1)MinY"
 				clr=14
 				bclr=51
 			}
@@ -1023,7 +1023,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI2)MinY"
+				chan="$(P)$(R)$(ROI2)MinY"
 				clr=14
 				bclr=51
 			}
@@ -1038,7 +1038,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI3)MinY"
+				chan="$(P)$(R)$(ROI3)MinY"
 				clr=14
 				bclr=51
 			}
@@ -1053,7 +1053,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI4)MinY"
+				chan="$(P)$(R)$(ROI4)MinY"
 				clr=14
 				bclr=51
 			}
@@ -1068,7 +1068,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI5)MinY"
+				chan="$(P)$(R)$(ROI5)MinY"
 				clr=14
 				bclr=51
 			}
@@ -1083,7 +1083,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI6)MinY"
+				chan="$(P)$(R)$(ROI6)MinY"
 				clr=14
 				bclr=51
 			}
@@ -1098,7 +1098,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI7)MinY"
+				chan="$(P)$(R)$(ROI7)MinY"
 				clr=14
 				bclr=51
 			}
@@ -1113,7 +1113,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI8)MinY"
+				chan="$(P)$(R)$(ROI8)MinY"
 				clr=14
 				bclr=51
 			}
@@ -1151,7 +1151,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI1)SizeX"
+				chan="$(P)$(R)$(ROI1)SizeX"
 				clr=14
 				bclr=51
 			}
@@ -1166,7 +1166,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI2)SizeX"
+				chan="$(P)$(R)$(ROI2)SizeX"
 				clr=14
 				bclr=51
 			}
@@ -1181,7 +1181,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI3)SizeX"
+				chan="$(P)$(R)$(ROI3)SizeX"
 				clr=14
 				bclr=51
 			}
@@ -1196,7 +1196,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI4)SizeX"
+				chan="$(P)$(R)$(ROI4)SizeX"
 				clr=14
 				bclr=51
 			}
@@ -1211,7 +1211,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI5)SizeX"
+				chan="$(P)$(R)$(ROI5)SizeX"
 				clr=14
 				bclr=51
 			}
@@ -1226,7 +1226,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI6)SizeX"
+				chan="$(P)$(R)$(ROI6)SizeX"
 				clr=14
 				bclr=51
 			}
@@ -1241,7 +1241,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI7)SizeX"
+				chan="$(P)$(R)$(ROI7)SizeX"
 				clr=14
 				bclr=51
 			}
@@ -1256,7 +1256,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI8)SizeX"
+				chan="$(P)$(R)$(ROI8)SizeX"
 				clr=14
 				bclr=51
 			}
@@ -1294,7 +1294,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI1)MinX"
+				chan="$(P)$(R)$(ROI1)MinX"
 				clr=14
 				bclr=51
 			}
@@ -1309,7 +1309,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI2)MinX"
+				chan="$(P)$(R)$(ROI2)MinX"
 				clr=14
 				bclr=51
 			}
@@ -1324,7 +1324,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI3)MinX"
+				chan="$(P)$(R)$(ROI3)MinX"
 				clr=14
 				bclr=51
 			}
@@ -1339,7 +1339,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI4)MinX"
+				chan="$(P)$(R)$(ROI4)MinX"
 				clr=14
 				bclr=51
 			}
@@ -1354,7 +1354,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI5)MinX"
+				chan="$(P)$(R)$(ROI5)MinX"
 				clr=14
 				bclr=51
 			}
@@ -1369,7 +1369,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI6)MinX"
+				chan="$(P)$(R)$(ROI6)MinX"
 				clr=14
 				bclr=51
 			}
@@ -1384,7 +1384,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI7)MinX"
+				chan="$(P)$(R)$(ROI7)MinX"
 				clr=14
 				bclr=51
 			}
@@ -1399,7 +1399,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI8)MinX"
+				chan="$(P)$(R)$(ROI8)MinX"
 				clr=14
 				bclr=51
 			}
@@ -1437,7 +1437,7 @@ composite {
 				height=18
 			}
 			control {
-				chan="$(P)$(ROI1)Use"
+				chan="$(P)$(R)$(ROI1)Use"
 				clr=14
 				bclr=51
 			}
@@ -1450,7 +1450,7 @@ composite {
 				height=18
 			}
 			control {
-				chan="$(P)$(ROI2)Use"
+				chan="$(P)$(R)$(ROI2)Use"
 				clr=14
 				bclr=51
 			}
@@ -1463,7 +1463,7 @@ composite {
 				height=18
 			}
 			control {
-				chan="$(P)$(ROI3)Use"
+				chan="$(P)$(R)$(ROI3)Use"
 				clr=14
 				bclr=51
 			}
@@ -1476,7 +1476,7 @@ composite {
 				height=18
 			}
 			control {
-				chan="$(P)$(ROI4)Use"
+				chan="$(P)$(R)$(ROI4)Use"
 				clr=14
 				bclr=51
 			}
@@ -1489,7 +1489,7 @@ composite {
 				height=18
 			}
 			control {
-				chan="$(P)$(ROI5)Use"
+				chan="$(P)$(R)$(ROI5)Use"
 				clr=14
 				bclr=51
 			}
@@ -1502,7 +1502,7 @@ composite {
 				height=18
 			}
 			control {
-				chan="$(P)$(ROI6)Use"
+				chan="$(P)$(R)$(ROI6)Use"
 				clr=14
 				bclr=51
 			}
@@ -1515,7 +1515,7 @@ composite {
 				height=18
 			}
 			control {
-				chan="$(P)$(ROI7)Use"
+				chan="$(P)$(R)$(ROI7)Use"
 				clr=14
 				bclr=51
 			}
@@ -1528,7 +1528,7 @@ composite {
 				height=18
 			}
 			control {
-				chan="$(P)$(ROI8)Use"
+				chan="$(P)$(R)$(ROI8)Use"
 				clr=14
 				bclr=51
 			}
@@ -1564,7 +1564,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI1)Name"
+				chan="$(P)$(R)$(ROI1)Name"
 				clr=14
 				bclr=51
 			}
@@ -1579,7 +1579,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI2)Name"
+				chan="$(P)$(R)$(ROI2)Name"
 				clr=14
 				bclr=51
 			}
@@ -1594,7 +1594,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI3)Name"
+				chan="$(P)$(R)$(ROI3)Name"
 				clr=14
 				bclr=51
 			}
@@ -1609,7 +1609,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI4)Name"
+				chan="$(P)$(R)$(ROI4)Name"
 				clr=14
 				bclr=51
 			}
@@ -1624,7 +1624,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI5)Name"
+				chan="$(P)$(R)$(ROI5)Name"
 				clr=14
 				bclr=51
 			}
@@ -1639,7 +1639,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI6)Name"
+				chan="$(P)$(R)$(ROI6)Name"
 				clr=14
 				bclr=51
 			}
@@ -1654,7 +1654,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI7)Name"
+				chan="$(P)$(R)$(ROI7)Name"
 				clr=14
 				bclr=51
 			}
@@ -1669,155 +1669,12 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(ROI8)Name"
+				chan="$(P)$(R)$(ROI8)Name"
 				clr=14
 				bclr=51
 			}
 			limits {
 			}
-		}
-	}
-}
-composite {
-	object {
-		x=1006
-		y=60
-		width=60
-		height=219
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=1016
-				y=60
-				width=40
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="More"
-		}
-		"related display" {
-			object {
-				x=1006
-				y=84
-				width=60
-				height=20
-			}
-			display[0] {
-				label="ROIStat full"
-				name="NDROIStatN.adl"
-				args="P=$(P),R=$(ROI1)"
-			}
-			clr=53
-			bclr=4
-		}
-		"related display" {
-			object {
-				x=1006
-				y=109
-				width=60
-				height=20
-			}
-			display[0] {
-				label="ROIStat full"
-				name="NDROIStatN.adl"
-				args="P=$(P),R=$(ROI2)"
-			}
-			clr=53
-			bclr=4
-		}
-		"related display" {
-			object {
-				x=1006
-				y=134
-				width=60
-				height=20
-			}
-			display[0] {
-				label="ROIStat full"
-				name="NDROIStatN.adl"
-				args="P=$(P),R=$(ROI3)"
-			}
-			clr=53
-			bclr=4
-		}
-		"related display" {
-			object {
-				x=1006
-				y=159
-				width=60
-				height=20
-			}
-			display[0] {
-				label="ROIStat full"
-				name="NDROIStatN.adl"
-				args="P=$(P),R=$(ROI4)"
-			}
-			clr=53
-			bclr=4
-		}
-		"related display" {
-			object {
-				x=1006
-				y=184
-				width=60
-				height=20
-			}
-			display[0] {
-				label="ROIStat full"
-				name="NDROIStatN.adl"
-				args="P=$(P),R=$(ROI5)"
-			}
-			clr=53
-			bclr=4
-		}
-		"related display" {
-			object {
-				x=1006
-				y=209
-				width=60
-				height=20
-			}
-			display[0] {
-				label="ROIStat full"
-				name="NDROIStatN.adl"
-				args="P=$(P),R=$(ROI6)"
-			}
-			clr=53
-			bclr=4
-		}
-		"related display" {
-			object {
-				x=1006
-				y=234
-				width=60
-				height=20
-			}
-			display[0] {
-				label="ROIStat full"
-				name="NDROIStatN.adl"
-				args="P=$(P),R=$(ROI7)"
-			}
-			clr=53
-			bclr=4
-		}
-		"related display" {
-			object {
-				x=1006
-				y=259
-				width=60
-				height=20
-			}
-			display[0] {
-				label="ROIStat full"
-				name="NDROIStatN.adl"
-				args="P=$(P),R=$(ROI8)"
-			}
-			clr=53
-			bclr=4
 		}
 	}
 }
@@ -1850,7 +1707,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI1)MaxValue_RBV"
+				chan="$(P)$(R)$(ROI1)MaxValue_RBV"
 				clr=53
 				bclr=4
 			}
@@ -1866,7 +1723,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI2)MaxValue_RBV"
+				chan="$(P)$(R)$(ROI2)MaxValue_RBV"
 				clr=53
 				bclr=4
 			}
@@ -1882,7 +1739,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI3)MaxValue_RBV"
+				chan="$(P)$(R)$(ROI3)MaxValue_RBV"
 				clr=53
 				bclr=4
 			}
@@ -1898,7 +1755,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI4)MaxValue_RBV"
+				chan="$(P)$(R)$(ROI4)MaxValue_RBV"
 				clr=53
 				bclr=4
 			}
@@ -1914,7 +1771,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI5)MaxValue_RBV"
+				chan="$(P)$(R)$(ROI5)MaxValue_RBV"
 				clr=53
 				bclr=4
 			}
@@ -1930,7 +1787,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI6)MaxValue_RBV"
+				chan="$(P)$(R)$(ROI6)MaxValue_RBV"
 				clr=53
 				bclr=4
 			}
@@ -1946,7 +1803,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI7)MaxValue_RBV"
+				chan="$(P)$(R)$(ROI7)MaxValue_RBV"
 				clr=53
 				bclr=4
 			}
@@ -1962,7 +1819,7 @@ composite {
 				height=20
 			}
 			monitor {
-				chan="$(P)$(ROI8)MaxValue_RBV"
+				chan="$(P)$(R)$(ROI8)MaxValue_RBV"
 				clr=53
 				bclr=4
 			}
@@ -1993,7 +1850,7 @@ text {
 		height=20
 	}
 	monitor {
-		chan="$(P)$(ROI1)MeanValue_RBV"
+		chan="$(P)$(R)$(ROI1)MeanValue_RBV"
 		clr=53
 		bclr=4
 	}
@@ -2009,7 +1866,7 @@ text {
 		height=20
 	}
 	monitor {
-		chan="$(P)$(ROI2)MeanValue_RBV"
+		chan="$(P)$(R)$(ROI2)MeanValue_RBV"
 		clr=53
 		bclr=4
 	}
@@ -2025,7 +1882,7 @@ text {
 		height=20
 	}
 	monitor {
-		chan="$(P)$(ROI3)MeanValue_RBV"
+		chan="$(P)$(R)$(ROI3)MeanValue_RBV"
 		clr=53
 		bclr=4
 	}
@@ -2041,7 +1898,7 @@ text {
 		height=20
 	}
 	monitor {
-		chan="$(P)$(ROI4)MeanValue_RBV"
+		chan="$(P)$(R)$(ROI4)MeanValue_RBV"
 		clr=53
 		bclr=4
 	}
@@ -2057,7 +1914,7 @@ text {
 		height=20
 	}
 	monitor {
-		chan="$(P)$(ROI5)MeanValue_RBV"
+		chan="$(P)$(R)$(ROI5)MeanValue_RBV"
 		clr=53
 		bclr=4
 	}
@@ -2073,7 +1930,7 @@ text {
 		height=20
 	}
 	monitor {
-		chan="$(P)$(ROI6)MeanValue_RBV"
+		chan="$(P)$(R)$(ROI6)MeanValue_RBV"
 		clr=53
 		bclr=4
 	}
@@ -2089,7 +1946,7 @@ text {
 		height=20
 	}
 	monitor {
-		chan="$(P)$(ROI7)MeanValue_RBV"
+		chan="$(P)$(R)$(ROI7)MeanValue_RBV"
 		clr=53
 		bclr=4
 	}
@@ -2105,11 +1962,684 @@ text {
 		height=20
 	}
 	monitor {
-		chan="$(P)$(ROI8)MeanValue_RBV"
+		chan="$(P)$(R)$(ROI8)MeanValue_RBV"
 		clr=53
 		bclr=4
 	}
 	align="horiz. right"
 	limits {
+	}
+}
+text {
+	object {
+		x=1016
+		y=60
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="More"
+}
+"related display" {
+	object {
+		x=1006
+		y=84
+		width=60
+		height=20
+	}
+	display[0] {
+		label="ROIStat full"
+		name="NDROIStatN.adl"
+		args="P=$(P),R=$(R),ROI=$(ROI1)"
+	}
+	clr=53
+	bclr=4
+}
+"related display" {
+	object {
+		x=1006
+		y=109
+		width=60
+		height=20
+	}
+	display[0] {
+		label="ROIStat full"
+		name="NDROIStatN.adl"
+		args="P=$(P),R=$(R),ROI=$(ROI2)"
+	}
+	clr=53
+	bclr=4
+}
+"related display" {
+	object {
+		x=1006
+		y=134
+		width=60
+		height=20
+	}
+	display[0] {
+		label="ROIStat full"
+		name="NDROIStatN.adl"
+		args="P=$(P),R=$(R),ROI=$(ROI3)"
+	}
+	clr=53
+	bclr=4
+}
+"related display" {
+	object {
+		x=1006
+		y=159
+		width=60
+		height=20
+	}
+	display[0] {
+		label="ROIStat full"
+		name="NDROIStatN.adl"
+		args="P=$(P),R=$(R),ROI=$(ROI4)"
+	}
+	clr=53
+	bclr=4
+}
+"related display" {
+	object {
+		x=1006
+		y=184
+		width=60
+		height=20
+	}
+	display[0] {
+		label="ROIStat full"
+		name="NDROIStatN.adl"
+		args="P=$(P),R=$(R),ROI=$(ROI5)"
+	}
+	clr=53
+	bclr=4
+}
+"related display" {
+	object {
+		x=1006
+		y=209
+		width=60
+		height=20
+	}
+	display[0] {
+		label="ROIStat full"
+		name="NDROIStatN.adl"
+		args="P=$(P),R=$(R),ROI=$(ROI6)"
+	}
+	clr=53
+	bclr=4
+}
+"related display" {
+	object {
+		x=1006
+		y=234
+		width=60
+		height=20
+	}
+	display[0] {
+		label="ROIStat full"
+		name="NDROIStatN.adl"
+		args="P=$(P),R=$(R),ROI=$(ROI7)"
+	}
+	clr=53
+	bclr=4
+}
+"related display" {
+	object {
+		x=1006
+		y=259
+		width=60
+		height=20
+	}
+	display[0] {
+		label="ROIStat full"
+		name="NDROIStatN.adl"
+		args="P=$(P),R=$(R),ROI=$(ROI8)"
+	}
+	clr=53
+	bclr=4
+}
+composite {
+	object {
+		x=1071
+		y=60
+		width=60
+		height=219
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=1081
+				y=60
+				width=40
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Plot"
+			align="horiz. right"
+		}
+		"related display" {
+			object {
+				x=1071
+				y=84
+				width=60
+				height=20
+			}
+			display[0] {
+				label="Time series minimum"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI1)TSMinValue"
+			}
+			display[1] {
+				label="Time series maximum"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI1)TSMaxValue"
+			}
+			display[2] {
+				label="Time series mean"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI1)TSMeanValue"
+			}
+			display[3] {
+				label="Time series total"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI1)TSTotal"
+			}
+			display[4] {
+				label="Time series net"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI1)TSNet"
+			}
+			clr=14
+			bclr=51
+		}
+		"related display" {
+			object {
+				x=1071
+				y=109
+				width=60
+				height=20
+			}
+			display[0] {
+				label="Time series minimum"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI2)TSMinValue"
+			}
+			display[1] {
+				label="Time series maximum"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI2)TSMaxValue"
+			}
+			display[2] {
+				label="Time series mean"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI2)TSMeanValue"
+			}
+			display[3] {
+				label="Time series total"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI2)TSTotal"
+			}
+			display[4] {
+				label="Time series net"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI2)TSNet"
+			}
+			clr=14
+			bclr=51
+		}
+		"related display" {
+			object {
+				x=1071
+				y=134
+				width=60
+				height=20
+			}
+			display[0] {
+				label="Time series minimum"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI3)TSMinValue"
+			}
+			display[1] {
+				label="Time series maximum"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI3)TSMaxValue"
+			}
+			display[2] {
+				label="Time series mean"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI3)TSMeanValue"
+			}
+			display[3] {
+				label="Time series total"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI3)TSTotal"
+			}
+			display[4] {
+				label="Time series net"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI3)TSNet"
+			}
+			clr=14
+			bclr=51
+		}
+		"related display" {
+			object {
+				x=1071
+				y=159
+				width=60
+				height=20
+			}
+			display[0] {
+				label="Time series minimum"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI4)TSMinValue"
+			}
+			display[1] {
+				label="Time series maximum"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI4)TSMaxValue"
+			}
+			display[2] {
+				label="Time series mean"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI4)TSMeanValue"
+			}
+			display[3] {
+				label="Time series total"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI4)TSTotal"
+			}
+			display[4] {
+				label="Time series net"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI4)TSNet"
+			}
+			clr=14
+			bclr=51
+		}
+		"related display" {
+			object {
+				x=1071
+				y=184
+				width=60
+				height=20
+			}
+			display[0] {
+				label="Time series minimum"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI5)TSMinValue"
+			}
+			display[1] {
+				label="Time series maximum"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI5)TSMaxValue"
+			}
+			display[2] {
+				label="Time series mean"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI5)TSMeanValue"
+			}
+			display[3] {
+				label="Time series total"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI5)TSTotal"
+			}
+			display[4] {
+				label="Time series net"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI5)TSNet"
+			}
+			clr=14
+			bclr=51
+		}
+		"related display" {
+			object {
+				x=1071
+				y=209
+				width=60
+				height=20
+			}
+			display[0] {
+				label="Time series minimum"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI6)TSMinValue"
+			}
+			display[1] {
+				label="Time series maximum"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI6)TSMaxValue"
+			}
+			display[2] {
+				label="Time series mean"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI6)TSMeanValue"
+			}
+			display[3] {
+				label="Time series total"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI6)TSTotal"
+			}
+			display[4] {
+				label="Time series net"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI6)TSNet"
+			}
+			clr=14
+			bclr=51
+		}
+		"related display" {
+			object {
+				x=1071
+				y=234
+				width=60
+				height=20
+			}
+			display[0] {
+				label="Time series minimum"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI7)TSMinValue"
+			}
+			display[1] {
+				label="Time series maximum"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI7)TSMaxValue"
+			}
+			display[2] {
+				label="Time series mean"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI7)TSMeanValue"
+			}
+			display[3] {
+				label="Time series total"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI7)TSTotal"
+			}
+			display[4] {
+				label="Time series net"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI7)TSNet"
+			}
+			clr=14
+			bclr=51
+		}
+		"related display" {
+			object {
+				x=1071
+				y=259
+				width=60
+				height=20
+			}
+			display[0] {
+				label="Time series minimum"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI8)TSMinValue"
+			}
+			display[1] {
+				label="Time series maximum"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI8)TSMaxValue"
+			}
+			display[2] {
+				label="Time series mean"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI8)TSMeanValue"
+			}
+			display[3] {
+				label="Time series total"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI8)TSTotal"
+			}
+			display[4] {
+				label="Time series net"
+				name="NDTimeSeries.adl"
+				args="P=$(P),R=$(R),PLT=$(ROI8)TSNet"
+			}
+			clr=14
+			bclr=51
+		}
+	}
+}
+composite {
+	object {
+		x=380
+		y=286
+		width=380
+		height=130
+	}
+	"composite name"=""
+	children {
+		rectangle {
+			object {
+				x=510
+				y=291
+				width=120
+				height=21
+			}
+			"basic attribute" {
+				clr=2
+			}
+		}
+		rectangle {
+			object {
+				x=380
+				y=286
+				width=380
+				height=130
+			}
+			"basic attribute" {
+				clr=14
+				fill="outline"
+			}
+		}
+		text {
+			object {
+				x=515
+				y=291
+				width=110
+				height=20
+			}
+			"basic attribute" {
+				clr=54
+			}
+			textix="Time Series"
+			align="horiz. centered"
+		}
+		composite {
+			object {
+				x=451
+				y=368
+				width=225
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=451
+						y=368
+						width=130
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Current point"
+					align="horiz. right"
+				}
+				"text update" {
+					object {
+						x=586
+						y=369
+						width=90
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)TSCurrentPoint"
+						clr=54
+						bclr=4
+					}
+					limits {
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=491
+				y=393
+				width=240
+				height=20
+			}
+			"composite name"=""
+			children {
+				menu {
+					object {
+						x=586
+						y=394
+						width=80
+						height=18
+					}
+					control {
+						chan="$(P)$(R)TSRead.SCAN"
+						clr=14
+						bclr=51
+					}
+				}
+				"message button" {
+					object {
+						x=671
+						y=393
+						width=60
+						height=20
+					}
+					control {
+						chan="$(P)$(R)TSControl"
+						clr=14
+						bclr=51
+					}
+					label="Read"
+					press_msg="3"
+				}
+				text {
+					object {
+						x=491
+						y=393
+						width=90
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Read rate"
+				}
+			}
+		}
+		"message button" {
+			object {
+				x=413
+				y=318
+				width=90
+				height=20
+			}
+			control {
+				chan="$(P)$(R)TSControl"
+				clr=14
+				bclr=51
+			}
+			label="Erase/Start"
+			press_msg="0"
+		}
+		"message button" {
+			object {
+				x=508
+				y=318
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)TSControl"
+				clr=14
+				bclr=51
+			}
+			label="Stop"
+			press_msg="2"
+		}
+		"message button" {
+			object {
+				x=573
+				y=318
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)TSControl"
+				clr=14
+				bclr=51
+			}
+			label="Start"
+			press_msg="1"
+		}
+		"text update" {
+			object {
+				x=638
+				y=319
+				width=90
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)TSAcquiring"
+				clr=54
+				bclr=12
+			}
+			clrmod="alarm"
+			limits {
+			}
+		}
+		composite {
+			object {
+				x=421
+				y=343
+				width=225
+				height=20
+			}
+			"composite name"=""
+			children {
+				"text entry" {
+					object {
+						x=586
+						y=344
+						width=60
+						height=19
+					}
+					control {
+						chan="$(P)$(R)TSNumPoints"
+						clr=14
+						bclr=51
+					}
+					limits {
+					}
+				}
+				text {
+					object {
+						x=421
+						y=343
+						width=160
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Number of points"
+					align="horiz. right"
+				}
+			}
+		}
 	}
 }

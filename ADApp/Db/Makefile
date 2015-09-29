@@ -17,7 +17,6 @@ DB += ADBase.template
 DB += ADPrefixes.template
 
 # Drivers
-DB += simDetector.template
 DB += pvaDriver.template
 
 # Plugins
