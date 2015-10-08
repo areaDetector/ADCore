@@ -329,7 +329,7 @@ asynStatus NDPluginFile::writeFileBase()
                     setIntegerParam(NDFileWriteStatus, NDFileWriteError);
                     setStringParam(NDFileWriteMessage, errorMessage);
                 } else {
-                    this->attrFileCloseCheck();
+                    status = this->attrFileCloseCheck();
                     if (!this->supportsMultipleArrays)
                         status = this->closeFileBase();
                 }
@@ -495,14 +495,22 @@ asynStatus NDPluginFile::attrFileCloseCheck()
 {
     asynStatus status = asynSuccess;
     NDAttribute *NDattrFileClose;
+    int getStatus = 0;
     int closeFile = 0;
     NDattrFileClose = this->pArrays[0]->pAttributeList->find(FILEPLUGIN_CLOSE);
+    // Check for the existence of the parameter
     if (NDattrFileClose != NULL) {
-        status = NDattrFileClose->getValue(NDAttrInt32, &closeFile);
-        if (status == asynSuccess){
+        // Check NDAttribute value (0 = continue, anything else = close file)
+        getStatus = NDattrFileClose->getValue(NDAttrInt32, &closeFile);
+        if (getStatus == 0){
             if (closeFile != 0){
+                // Force a file close
                 this->closeFileBase();
+                // We must also set the parameter to notify we have stopped capturing
+                setIntegerParam(NDFileCapture, 0);
             }
+        } else {
+            status = asynError;
         }
     }
     return status;
