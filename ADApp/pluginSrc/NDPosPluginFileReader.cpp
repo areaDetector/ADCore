@@ -93,7 +93,7 @@ std::vector<std::string> NDPosPluginFileReader::readDimensions()
   return dimensions;
 }
 
-std::vector<std::map<std::string, int> > NDPosPluginFileReader::readPositions()
+std::vector<std::map<std::string, double> > NDPosPluginFileReader::readPositions()
 {
   return positions;
 }
@@ -175,14 +175,14 @@ asynStatus NDPosPluginFileReader::addPosition()
   asynStatus status = asynSuccess;
   xmlChar *pos_val = NULL;
   std::string pos_str;
-  std::map<std::string, int> pos;
+  std::map<std::string, double> pos;
 
   // First check the basics
   if (!xmlTextReaderHasAttributes(this->xmlreader)){
     status = asynError;
   }
 
-  int index;
+  double index;
 
   // Loop over the dimensions looking for each
   for (std::vector<std::string>::iterator iter = dimensions.begin(); iter != dimensions.end(); iter++){

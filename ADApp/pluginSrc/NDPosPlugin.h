@@ -107,7 +107,7 @@ protected:
 
 private:
   // Plugin member variables
-  std::vector<std::map<std::string, int> > positionArray;
+  std::vector<std::map<std::string, double> > positionArray;
 };
 
 #define NUM_NDPOS_PARAMS ((int)(&LAST_NDPOS_PARAM - &FIRST_NDPOS_PARAM + 1))

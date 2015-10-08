@@ -30,7 +30,7 @@ public:
   asynStatus validateXML(const std::string& filename);
   asynStatus loadXML(const std::string& filename);
   std::vector<std::string> readDimensions();
-  std::vector<std::map<std::string, int> > readPositions();
+  std::vector<std::map<std::string, double> > readPositions();
   asynStatus clearPositions();
   asynStatus processNode();
   asynStatus addDimension();
@@ -43,7 +43,7 @@ protected:
 private:
   xmlTextReaderPtr xmlreader;
   std::vector<std::string> dimensions;
-  std::vector<std::map<std::string, int> > positions;
+  std::vector<std::map<std::string, double> > positions;
   std::string errorMessage;
 };
 

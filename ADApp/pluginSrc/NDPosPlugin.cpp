@@ -135,11 +135,11 @@ void NDPosPlugin::processCallbacks(NDArray *pArray)
         // We must make a copy of the array as we are going to alter it
         this->pArrays[0] = this->pNDArrayPool->copy(pArray, this->pArrays[0], 1);
         if (this->pArrays[0]){
-          std::map<std::string, int> pos = positionArray[index];
+          std::map<std::string, double> pos = positionArray[index];
           std::stringstream sspos;
           sspos << "[";
           bool firstTime = true;
-          std::map<std::string, int>::iterator iter;
+          std::map<std::string, double>::iterator iter;
           for (iter = pos.begin(); iter != pos.end(); iter++){
             if (firstTime){
               firstTime = false;
@@ -148,7 +148,7 @@ void NDPosPlugin::processCallbacks(NDArray *pArray)
             }
             sspos << iter->first << "=" << iter->second;
             // Create the NDAttribute with the position data
-            NDAttribute *pAtt = new NDAttribute(iter->first.c_str(), "Position of NDArray", NDAttrSourceDriver, driverName, NDAttrInt32, &(iter->second));
+            NDAttribute *pAtt = new NDAttribute(iter->first.c_str(), "Position of NDArray", NDAttrSourceDriver, driverName, NDAttrFloat64, &(iter->second));
             // Add the NDAttribute to the NDArray
             this->pArrays[0]->pAttributeList->add(pAtt);
           }
@@ -334,7 +334,7 @@ asynStatus NDPosPlugin::loadFile()
   if (fileValid == 1){
     NDPosPluginFileReader fr;
     fr.loadXML(fileName);
-    std::vector<std::map<std::string, int> > positions = fr.readPositions();
+    std::vector<std::map<std::string, double> > positions = fr.readPositions();
     positionArray.insert(positionArray.end(), positions.begin(), positions.end());
     setIntegerParam(NDPos_CurrentQty, positionArray.size());
     callParamCallbacks();
