@@ -183,6 +183,10 @@ void NDPosPlugin::processCallbacks(NDArray *pArray)
         setIntegerParam(NDPos_ExpectedID, expectedID);
       }
     }
+    // If the size has dropped to zero then we've run out of positions, abort
+    if (positionArray.size() == 0){
+      setIntegerParam(NDPos_Running, NDPOS_IDLE);
+    }
     callParamCallbacks();
     if (skip == 0 && running == NDPOS_RUNNING){
       this->unlock();
