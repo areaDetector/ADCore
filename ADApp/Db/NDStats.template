@@ -481,6 +481,14 @@ record(waveform, "$(P)$(R)TSSigmaXY")
    field(SCAN, "I/O Intr")
 }
 
+record(waveform, "$(P)$(R)TSTimestamp")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_TIMESTAMP_VALUE")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
 
 ###################################################################
 #  These records control profiles                                 #
