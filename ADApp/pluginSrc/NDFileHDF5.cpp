@@ -2438,7 +2438,9 @@ asynStatus NDFileHDF5::createAttributeDataset(NDArray *pArray)
       if(groupDefault > -1) {
         std::string atName = std::string(epicsStrDup(ndAttr->getName()));
         NDFileHDF5AttributeDataset *attDset = new NDFileHDF5AttributeDataset(this->file, atName, ndAttr->getDataType());
-        attDset->setParentGroupName(def_group->get_full_name().c_str());
+        if(def_group != NULL) {
+          attDset->setParentGroupName(def_group->get_full_name().c_str());
+        }
         if (dimAttDataset == 1){
           attDset->createDataset(this->multiFrameFile, extraDims, numCapture, user_chunking);
         } else {

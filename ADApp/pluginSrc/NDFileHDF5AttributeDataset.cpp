@@ -99,14 +99,22 @@ asynStatus NDFileHDF5AttributeDataset::createHDF5Dataset()
   dataspace_ = H5Screate_simple(rank_, dims_, maxdims_);
 
   // Open the group by its name
-  hid_t dsetgroup = H5Gopen(file_, groupName_.c_str(), H5P_DEFAULT);
+  hid_t dsetgroup;
+
+  if (groupName_ != ""){
+    dsetgroup = H5Gopen(file_, groupName_.c_str(), H5P_DEFAULT);
+  } else {
+    dsetgroup = file_;
+  }
 
   // Now create the dataset
   dataset_ = H5Dcreate2(dsetgroup, dsetName_.c_str(),
                         datatype_, dataspace_,
                         H5P_DEFAULT, cparm_, H5P_DEFAULT);
 
-  H5Gclose(dsetgroup);
+  if (groupName_ != ""){
+    H5Gclose(dsetgroup);
+  }
 
   memspace_ = H5Screate_simple(rank_, elementSize_, NULL);
 
