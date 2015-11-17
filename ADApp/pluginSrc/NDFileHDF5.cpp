@@ -3026,7 +3026,7 @@ asynStatus NDFileHDF5::createNewFile(const char *fileName)
   if (checkForSWMRMode() == false){ 
     unsigned int istorek = this->calcIstorek();
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
-              "%s::%s Setting istorek=%u\n",
+              "%s::%s Calculated istorek=%u\n",
               driverName, functionName, istorek);
     // Check if the calculated value of istorek is greater than the maximum allowed
     if (istorek > MAX_ISTOREK){

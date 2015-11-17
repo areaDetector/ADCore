@@ -36,6 +36,33 @@
 #define NDPluginROIStatTotalString              "ROISTAT_TOTAL"             /* (asynFloat64, r/o) Sum of all elements */
 #define NDPluginROIStatNetString                "ROISTAT_NET"               /* (asynFloat64, r/o) Sum of all elements minus background */
 
+/* Time series of statistics */
+#define NDPluginROIStatTSControlString          "ROISTAT_TS_CONTROL"        /* (asynInt32,        r/w) Erase/start, stop, start */
+#define NDPluginROIStatTSNumPointsString        "ROISTAT_TS_NUM_POINTS"     /* (asynInt32,        r/w) Number of time series points to use */
+#define NDPluginROIStatTSCurrentPointString     "ROISTAT_TS_CURRENT_POINT"  /* (asynInt32,        r/o) Current point in time series */
+#define NDPluginROIStatTSAcquiringString        "ROISTAT_TS_ACQUIRING"      /* (asynInt32,        r/o) Acquiring time series */
+#define NDPluginROIStatTSMinValueString         "ROISTAT_TS_MIN_VALUE"      /* (asynFloat64Array, r/o) Series of minimum counts */
+#define NDPluginROIStatTSMaxValueString         "ROISTAT_TS_MAX_VALUE"      /* (asynFloat64Array, r/o) Series of maximum counts */
+#define NDPluginROIStatTSMeanValueString        "ROISTAT_TS_MEAN_VALUE"     /* (asynFloat64Array, r/o) Series of mean counts */
+#define NDPluginROIStatTSTotalString            "ROISTAT_TS_TOTAL"          /* (asynFloat64Array, r/o) Series of total */
+#define NDPluginROIStatTSNetString              "ROISTAT_TS_NET"            /* (asynFloat64Array, r/o) Series of net */
+
+typedef enum {
+    TSMinValue,
+    TSMaxValue,
+    TSMeanValue,
+    TSTotal,
+    TSNet,
+    MAX_TIME_SERIES_TYPES
+} NDPluginROIStatTSType;
+
+typedef enum {
+    TSEraseStart,
+    TSStart,
+    TSStop,
+    TSRead
+} NDPluginROIStatsTSControl_t;
+
 /** Structure defining a Region-Of-Interest and Stats */
 typedef struct NDROI {
     size_t offset[2];
@@ -91,6 +118,17 @@ protected:
     int NDPluginROIStatTotal;
     int NDPluginROIStatNet;
 
+    // Time Series
+    int NDPluginROIStatTSControl;
+    int NDPluginROIStatTSNumPoints;
+    int NDPluginROIStatTSCurrentPoint;
+    int NDPluginROIStatTSAcquiring;
+    int NDPluginROIStatTSMinValue;
+    int NDPluginROIStatTSMaxValue;
+    int NDPluginROIStatTSMeanValue;
+    int NDPluginROIStatTSTotal;
+    int NDPluginROIStatTSNet;
+    
     int NDPluginROIStatLast;
     #define LAST_NDPLUGIN_ROISTAT_PARAM NDPluginROIStatLast
                                 
@@ -99,9 +137,13 @@ private:
     template <typename epicsType> asynStatus doComputeStatisticsT(NDArray *pArray, NDROI_t *pROI);
     asynStatus doComputeStatistics(NDArray *pArray, NDROI_t *pStats);
     asynStatus clear(epicsUInt32 roi);
+    void doTimeSeriesCallbacks();
 
-    int maxROIs;
-    NDROI_t *pROIs;    /* Array of NDROI structures */
+    NDROI_t *pROIs_;    /* Array of NDROI structures */
+    int maxROIs_;
+    int numTSPoints_;
+    int currentTSPoint_;
+    double  *timeSeries_;
 };
 
 #define NUM_NDPLUGIN_ROISTAT_PARAMS (int)(&LAST_NDPLUGIN_ROISTAT_PARAM - &FIRST_NDPLUGIN_ROISTAT_PARAM + 1)

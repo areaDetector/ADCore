@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugin NDPluginROIStat</h1>
     <h2>
-      February 19, 2015</h2>
+      July 23, 2015</h2>
     <h2>
       Matt Pearson, Mark Rivers</h2>
     <h2>
@@ -30,13 +30,14 @@
   </h2>
   <p>
     This plugin provides multiple regions-of-interest (ROIs) on 1-D and 2-D data and
-    calculates basic statistics (min, max, mean, total, and net counts). The asyn address
-    parameter is used to identify the ROIs, and so a very high number of ROIs can be
-    dealt with in a single thread. The purpose of this plugin is to make it easy for
-    IOC application developers to do simple ROI calculations, without having to use
-    multiple traditional ROI and separate statistics plugins. The plugin can optionally
-    do callbacks on an NDArray object, appending an attribute list. This makes it possible
-    to append the ROI statistic data to the output NDArray.
+    calculates basic statistics (min, max, mean, total, and net counts). It also can
+    accumulate time-series arrays of these statistics. The asyn address parameter is
+    used to identify the ROIs, and so a large number of ROIs can be dealt with in a
+    single thread. The purpose of this plugin is to make it easy for IOC application
+    developers to do simple ROI calculations, without having to use multiple traditional
+    ROI and separate statistics plugins. The plugin can optionally do callbacks on an
+    NDArray object, appending an attribute list. This makes it possible to append the
+    ROI statistic data to the output NDArray.
   </p>
   <p>
     Several database template files are provided:
@@ -84,7 +85,7 @@
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
       <tr>
-        <td align="center" colspan="7,">
+        <td align="center" colspan="7">
           <b>Parameter Definitions in NDPluginROIStat.h and EPICS Record Definitions in NDROIStat.template</b>
         </td>
       </tr>
@@ -120,12 +121,122 @@
         <td>
           bo </td>
       </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Time-Series data</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIStat<br />
+          TSControl</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Controls time-series data collection. The enum choices are:
+          <ul>
+            <li>Erase/Start: Clears all time-series arrays, sets ROISTAT_TS_CURRENT_POINT=0, and
+              starts time-series data collection.</li>
+            <li>Start: Starts time-series data collection without clearing arrays or modifying
+              ROISTAT_TS_CURRENT_POINT. Used to restart collection after a Stop operation.</li>
+            <li>Stop: Stops times-series data collection. Performs callbacks on all time-series
+              waveform records.</li>
+            <li>Read: Performs callbacks on all time-series waveform records, updating the values.</li>
+          </ul>
+        </td>
+        <td>
+          ROISTAT_TS_CONTROL</td>
+        <td>
+          $(P)$(R)TSControl</td>
+        <td>
+          mbbo</td>
+      </tr>
+      <tr>
+        <td>
+          N.A.</td>
+        <td>
+          N.A.</td>
+        <td>
+          r/w</td>
+        <td>
+          Sends the "Read" command to the TSControl record above. This record can be periodically
+          processed to update the time-series waveform records. It is scan disabled if TSAcquiring=Done,
+          so that updates are only performed when time-series acquisition is in progress.
+        </td>
+        <td>
+          N.A.</td>
+        <td>
+          $(P)$(R)TSRead</td>
+        <td>
+          longout</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIStat<br />
+          TSNumPoints</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Controls the number of time-series points to collect. There is no maximum value,
+          the time-series arrays in the plugin are freed and reallocated each time this value
+          is changed. However, the size of the waveform records is fixed when the IOC is started,
+          so NELM in those records must be large enough for the largest time-series needed.
+        </td>
+        <td>
+          ROISTAT_TS_NUM_POINTS</td>
+        <td>
+          $(P)$(R)TSNumPoints</td>
+        <td>
+          longout</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIStat<br />
+          TSCurrentPoint</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The current time-series point. If TSCurrentPoint reaches TSNumPoints then time-series
+          acquisition is automatically stopped, and callbacks are done on all time-series
+          waveform records, updating the values. This means that even if TSRead has SCAN=Passive
+          that the waveform records will update when time-series acquisition is complete.
+        </td>
+        <td>
+          ROISTAT_TS_CURRENT_POINT</td>
+        <td>
+          $(P)$(R)TSCurrentPoint</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIStat<br />
+          TSAcquiring</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Indicates status of time-series data acquisition. Values are 0=Done and 1=Acquiring.
+        </td>
+        <td>
+          ROISTAT_TS_ACQUIRING</td>
+        <td>
+          $(P)$(R)TSAcquiring</td>
+        <td>
+          bi</td>
+      </tr>
     </tbody>
   </table>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
       <tr>
-        <td align="center" colspan="7,">
+        <td align="center" colspan="7">
           <b>ROI Specific Parameters.
             <br />
             Parameter Definitions in NDPluginROIStat.h and EPICS Record Definitions in NDROIStatN.template</b>
@@ -406,6 +517,43 @@
         <td>
           ai </td>
       </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Time-Series data</b></td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROIStat<br />
+          TSXXX</td>
+        <td>
+          asynFloat64Array</td>
+        <td>
+          r/o</td>
+        <td>
+          The time series data arrays. XXX is one of the following, corresponding to each
+          of the basic statistics and centroid and sigma statistics described above:
+          <ul>
+            <li>MinValue</li>
+            <li>MaxValue</li>
+            <li>MeanValue</li>
+            <li>Total</li>
+            <li>Net</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>ROISTAT_TS_MIN_VALUE</li>
+            <li>ROISTAT_TS_MAX_VALUE</li>
+            <li>ROISTAT_TS_MEAN_VALUE</li>
+            <li>ROISTAT_TS_TOTAL</li>
+            <li>ROISTAT_TS_NET</li>
+          </ul>
+        </td>
+        <td>
+          $(P)$(R)TSXXX</td>
+        <td>
+          waveform</td>
+      </tr>
     </tbody>
   </table>
   <h2 id="Configuration">
@@ -451,6 +599,11 @@
     <h3>
       NDROIStat8.adl</h3>
     <img alt="NDROIStat8.png" src="NDROIStat8.png" />
+  </div>
+  <div style="text-align: center">
+    <h3>
+      NDTimeSeries.adl</h3>
+    <img alt="NDROIStatTimeSeriesMean.png" src="NDROIStatTimeSeriesMean.png" />
   </div>
   <h2 id="Notes">
     Notes</h2>
