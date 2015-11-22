@@ -117,7 +117,7 @@ dbLoadRecords("$(SSCAN)/sscanApp/Db/scan.db", "P=$(PREFIX),MAXPTS1=2000,MAXPTS2=
 set_requestfile_path("$(SSCAN)/sscanApp/Db")
 
 # Optional: load sseq record for acquisition sequence
-dbLoadRecords("$(CALC)/calcApp/Db/yySseq.db", "P=$(PREFIX), S=AcquireSequence")
+dbLoadRecords("$(CALC)/calcApp/Db/sseqRecord.db", "P=$(PREFIX), S=AcquireSequence")
 set_requestfile_path("$(CALC)/calcApp/Db")
 
 # Optional: load devIocStats records (requires DEVIOCSTATS module)
