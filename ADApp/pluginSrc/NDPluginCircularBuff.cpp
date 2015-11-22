@@ -427,6 +427,9 @@ NDPluginCircularBuff::NDPluginCircularBuff(const char *portName, int queueSize, 
     // Init the preset trigger count to 1
     setIntegerParam(NDCircBuffPresetTriggerCount, 1);
     setIntegerParam(NDCircBuffActualTriggerCount, 0);
+    
+    // Set the trigger calculation to "0" which will not trigger
+    setStringParam(NDCircBuffTriggerCalc, "0");
 
     // Enable ArrayCallbacks.  
     // This plugin currently ignores this setting and always does callbacks, so make the setting reflect the behavior
