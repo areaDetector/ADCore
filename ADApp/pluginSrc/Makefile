@@ -89,9 +89,11 @@ else
   NDPlugin_SRCS += NDFileMagickStub.cpp
 endif
 
-USR_INCLUDES += $(HDF5_INCLUDE)
-USR_INCLUDES += $(SZ_INCLUDE)
-USR_INCLUDES += $(XML2_INCLUDE)
+ifneq (vxWorks, $(findstring vxWorks, $(T_A)))
+  USR_INCLUDES += $(HDF5_INCLUDE)
+  USR_INCLUDES += $(SZ_INCLUDE)
+  USR_INCLUDES += $(XML2_INCLUDE)
+endif
 
 include $(TOP)/ADApp/commonLibraryMakefile
 
