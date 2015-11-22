@@ -23,6 +23,21 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
+R2-5 (November XXX, 2015)
+========================
+
+### NDPluginStats and NDPluginROIStat
+* Added waveform record containing NDArray timetstamps to time series data arrays. Thanks to
+  Stuart Wilkins for this.
+
+### NDPluginCircularBuff
+* Initialize the TriggerCalc string to "0" in the constructor to avoid error messages during iocInit
+  if the string has not been set to a valid value that is stored with autosave.
+
+### iocBoot
+* Deleted commonPlugins.cmd and commonPlugin_settings.req.  These were accidentally restored before the R2-4
+  release after renaming them to EXAMPLE_commonPlugins.cmd and EXAMPLE_commonPlugin_settings.req.
+
 
 R2-4 (September 21, 2015)
 ========================
