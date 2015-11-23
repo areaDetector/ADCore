@@ -301,6 +301,9 @@ asynStatus NDPosPlugin::writeOctet(asynUser *pasynUser, const char *value, size_
       // Call the loadFile function
       status = loadFile();
     }
+  } else if (function < FIRST_NDPOS_PARAM){
+    // If this parameter belongs to a base class call its method
+    status = NDPluginDriver::writeOctet(pasynUser, value, nChars, nActual);
   }
 
   // Do callbacks so higher layers see any changes
