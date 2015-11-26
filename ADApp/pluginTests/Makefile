@@ -25,11 +25,13 @@ ifdef BOOST
   plugin-test_SRCS += plugin-test.cpp
   plugin-test_SRCS += test_NDPluginCircularBuff.cpp
   plugin-test_SRCS += test_NDFileHDF5.cpp
+  plugin-test_SRCS += test_NDFileHDF5ExtraDimensions.cpp
   # Add tests for new plugins like this:
   #plugin-test_SRCS += test_<plugin name>.cpp
   
-  plugin-test_LIBS += boost_unit_test_framework simDetector ADTestUtility
+  plugin-test_LIBS += boost_unit_test_framework simDetector ADTestUtility hdf5
   boost_unit_test_framework_DIR=$(BOOST_LIB)
+  hdf5_DIR=$(HDF5_LIB)
 endif
 
 USR_INCLUDES += $(HDF5_INCLUDE)
