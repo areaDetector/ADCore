@@ -250,7 +250,7 @@ asynStatus NDFileHDF5::startSWMR()
   if (hdfstatus < 0) {
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
               "%s::%s unable start SWMR write operation. ERRORCODE=%u\n",
-              driverName, functionName, hdfstatus);
+              driverName, functionName, (int)hdfstatus);
     return asynError;
   }
   return asynSuccess;
@@ -2203,7 +2203,7 @@ asynStatus NDFileHDF5::createAttributeDataset(NDArray *pArray)
   NDAttrSource_t ndAttrSourceType;
   int extraDims;
   int chunking = 0;
-  int fileWriteMode = 0;
+  //int fileWriteMode = 0;
   int dimAttDataset = 0;
   hid_t groupDefault = -1;
   const char *attrNames[5] = {"NDAttrName", "NDAttrDescription", "NDAttrSourceType", "NDAttrSource", NULL};
