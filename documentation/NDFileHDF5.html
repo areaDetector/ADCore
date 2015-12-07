@@ -13,7 +13,7 @@
       March 16, 2015</h2>
     <h2>
       Ulrik Pedersen (Diamond Light Source), Arthur Glowacki (Argonne National Laboratory),
-      Alan Greer (Observatory Sciences), (Mark Rivers (University of Chicago)</h2>
+      Alan Greer (Observatory Sciences), Mark Rivers (University of Chicago)</h2>
   </div>
   <p>
     NDFileHDF5 inherits from NDPluginFile. This plugin uses the HDF5 libraries to store
@@ -527,6 +527,36 @@
       than standard 8,16,32 bit words. Data width and offset in the word is user configurable</li>
   </ul>
   <h3>
+    Single Writer Multiple Reader (SWMR)
+  </h3>
+  <p>
+  From version 1-10 of the HDF5 library, reader applications shall be able to access the file whilst
+  it is being written.  The plugin has been updated to support the additional SWMR feature when
+  writing a file.  The plugin will know if SWMR mode is supported depending on the version of the
+  HDF5 library that the plugin has been compiled against, and SWMR mode can be enabled or 
+  disabled by setting the appropriate parameter (disabled by default).  Once placed into SWMR mode
+  the plugin accepts parameters to control how often frames are flushed, how often NDAttributes are
+  flushed and the current SWMR status and number of flushes that have taken place are reported for
+  an acquisition.  The SWMR active status parameter can be used to signify that it is safe for readers
+  to open the file (the file has been placed into SWMR mode).
+  </p>
+  <h3>
+    Storing Attributes with Dataset Dimensions
+  </h3>
+  <p>
+  The plugin has the option of storing all NDAttribute datasets as a single array of data values,
+  or else these NDAttribute datasets can be stored with the same dimensionality as the main dataset.<BR>
+  As an example, consider a multi-dimensional dataset of images width=800 and height=600.<BR>
+  <ul>
+  <li>If two "virtual" dimensions are selected with N=3, X=4 and Y=5 then the main dataset will have the
+  dimensions 5x4x3x600x800.</li>
+  <li>If the NDAttribute datasets are stored in the standard way then the dataset would be a single
+  dimension array of 60 items.</li>
+  <li>If however, the NDAttribute dataset is stored with the same dimensionality as the main dataset then
+  the NDAttribute dataset will have the dimensions of 5x4x3x1x1.</li>
+  </ul>
+  </p>
+  <h3>
     Parameters and Records
   </h3>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
@@ -766,15 +796,90 @@
       </tr>
       <tr>
         <td>
+          dimAttDatasets</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Turn on or off NDAttribute dataset dimensions (1 = On, 0 = Off).  When 
+          switched on NDAttribute datasets are forced to have the same dimensionality 
+          as the main dataset.</td>
+        <td>
+          HDF5_dimAttDatasets</td>
+        <td>
+          $(P)$(R)DimAttDatasets<br />
+          $(P)$(R)DimAttDatasets_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>SWMR</b></td>
+      </tr>
+      <tr>
+        <td>
+          SWMRSupported</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Does the HDF5 library version support SWMR mode of operation (1 = Supported, 
+          0 = Not Supported).</td>
+        <td>
+          HDF5_SWMRSupported</td>
+        <td>
+          $(P)$(R)SWMRSupported_RBV</td>
+        <td>
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          SWMRMode</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Turn on or off SWMR mode for the next acquisition (1 = On, 0 = Off).  Turning on will
+          only work if SWMR mode is supported.</td>
+        <td>
+          HDF5_SWMRMode</td>
+        <td>
+          $(P)$(R)SWMRMode<br />
+          $(P)$(R)SMWRMode_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          SWMRRunning</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          This value is set to 1 once a file has been opened and placed into SWMR mode.
+          It returns to 0 once the acquisition has completed.</td>
+        <td>
+          HDF5_SWMRRunning</td>
+        <td>
+          $(P)$(R)SWMRActive_RBV</td>
+        <td>
+          bi</td>
+      </tr>
+      <tr>
+        <td>
           flushNthFrame</td>
         <td>
           asynInt32</td>
         <td>
           r/w</td>
         <td>
-          Flush the file metadata to disk every N'th frame. Image data is written to disk
-          on every write operation, but HDF5 internal metadata to describe the data layout
-          and indices is normally only written at close time. </td>
+          Flush the image to disk every N'th frame.</td>
         <td>
           HDF5_flushNthFrame</td>
         <td>
@@ -782,6 +887,46 @@
           $(P)$(R)NumFramesFlush_RBV</td>
         <td>
           longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDAttributeChunk</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          This value is used to determine when to flush NDAttribute datasets to disk,
+          and the corresponding datasets chunk size.  A value of zero will default where
+          possible to the size of the dataset for a one dimensional dataset.</td>
+        <td>
+          HDF5_NDAttributeChunk</td>
+        <td>
+          $(P)$(R)NDAttributeChunk<br />
+          $(P)$(R)NDAttributeChunk_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          SWMRCbCounter</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The number of flushes that have taken place for the current acquisition.  In the
+          case where flushing occurs for every frame and no flushing is set for NDAttribute
+          datasets then this value will increment by one for each frame, and once the
+          acquisition has completed it will jump by the number of flushes required for the
+          NDAttribute datasets, one flush for each dataset.</td>
+        <td>
+          HDF5_SWMRCbCounter</td>
+        <td>
+          $(P)$(R)SWMRCbCounter_RBV</td>
+        <td>
           longin</td>
       </tr>
       <tr>

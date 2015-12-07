@@ -249,8 +249,8 @@ asynStatus NDFileHDF5::startSWMR()
   hid_t hdfstatus = H5Fstart_swmr_write(this->file);
   if (hdfstatus < 0) {
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-              "%s::%s unable start SWMR write operation. ERRORCODE=%d\n",
-              driverName, functionName, (int)hdfstatus);
+              "%s::%s unable start SWMR write operation. ERRORCODE=%ld\n",
+              driverName, functionName, (long int)hdfstatus);
     return asynError;
   }
   return asynSuccess;
@@ -864,7 +864,7 @@ hid_t NDFileHDF5::writeH5dsetFloat64(hid_t element, const std::string &name, con
  */
 hid_t NDFileHDF5::createDataset(hid_t group, hdf5::Dataset *dset)
 {
-  int retcode = -1;
+  hid_t retcode = -1;
   if (dset == NULL) return -1; // sanity check
 
   if (dset->data_source().is_src_detector()) {
@@ -1499,14 +1499,14 @@ asynStatus NDFileHDF5::closeFile()
   if (storePerformance == 1) this->writePerformanceDataset();
 
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
-            "%s::%s closing HDF cparms %d\n", 
-            driverName, functionName, (int)this->cparms);
+            "%s::%s closing HDF cparms %ld\n", 
+            driverName, functionName, (long int)this->cparms);
 
   H5Pclose(this->cparms);
 
   asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
-            "%s::%s closing HDF datatype %d\n", 
-            driverName, functionName, (int)this->datatype);
+            "%s::%s closing HDF datatype %ld\n", 
+            driverName, functionName, (long int)this->datatype);
 
   H5Tclose(this->datatype);
 
