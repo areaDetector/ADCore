@@ -1986,6 +1986,9 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   this->createParam(str_NDFileHDF5_posNameDimN,     asynParamOctet,   &NDFileHDF5_posNameDimN);
   this->createParam(str_NDFileHDF5_posNameDimX,     asynParamOctet,   &NDFileHDF5_posNameDimX);
   this->createParam(str_NDFileHDF5_posNameDimY,     asynParamOctet,   &NDFileHDF5_posNameDimY);
+  this->createParam(str_NDFileHDF5_posIndexDimN,    asynParamOctet,   &NDFileHDF5_posIndexDimN);
+  this->createParam(str_NDFileHDF5_posIndexDimX,    asynParamOctet,   &NDFileHDF5_posIndexDimX);
+  this->createParam(str_NDFileHDF5_posIndexDimY,    asynParamOctet,   &NDFileHDF5_posIndexDimY);
   this->createParam(str_NDFileHDF5_fillValue,       asynParamFloat64, &NDFileHDF5_fillValue);
   this->createParam(str_NDFileHDF5_SWMRCbCounter,   asynParamInt32,   &NDFileHDF5_SWMRCbCounter);
   this->createParam(str_NDFileHDF5_SWMRSupported,   asynParamInt32,   &NDFileHDF5_SWMRSupported);
@@ -2022,6 +2025,9 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   setStringParam (NDFileHDF5_posNameDimN,     "");
   setStringParam (NDFileHDF5_posNameDimX,     "");
   setStringParam (NDFileHDF5_posNameDimY,     "");
+  setStringParam (NDFileHDF5_posIndexDimN,    "");
+  setStringParam (NDFileHDF5_posIndexDimX,    "");
+  setStringParam (NDFileHDF5_posIndexDimY,    "");
   setDoubleParam (NDFileHDF5_fillValue,       0.0);
   setIntegerParam(NDFileHDF5_SWMRCbCounter,   0);
   setIntegerParam(NDFileHDF5_SWMRMode,        0);
@@ -2335,6 +2341,7 @@ asynStatus NDFileHDF5::createAttributeDataset(NDArray *pArray)
   int chunking = 0;
   //int fileWriteMode = 0;
   int dimAttDataset = 0;
+  int posRunning = 0;
   hid_t groupDefault = -1;
   const char *attrNames[5] = {"NDAttrName", "NDAttrDescription", "NDAttrSourceType", "NDAttrSource", NULL};
   const char *attrStrings[5] = {NULL,NULL,NULL,NULL,NULL};
@@ -2346,6 +2353,7 @@ asynStatus NDFileHDF5::createAttributeDataset(NDArray *pArray)
   this->lock();
   getIntegerParam(NDFileHDF5_dimAttDatasets, &dimAttDataset);
   getIntegerParam(NDFileHDF5_nExtraDims, &extraDims);
+  getIntegerParam(NDFileHDF5_posRunning, &posRunning);
 
   if (this->multiFrameFile){
     struct extradimdefs_t {
@@ -2415,7 +2423,13 @@ asynStatus NDFileHDF5::createAttributeDataset(NDArray *pArray)
       attDset->setWhenToSave(dsource.get_when_to_save());
       attDset->setParentGroupName(dset->get_parent()->get_full_name());
       if (dimAttDataset == 1){
-        attDset->createDataset(this->multiFrameFile, extraDims, numCapture, user_chunking);
+        if (isAttributeIndex(atName) > -1 && posRunning == 1){
+          // This dataset is specified as an index dataset
+          attDset->createDataset(chunking);
+        } else {
+          // This dataset is a standard multi-dimensional dataset
+          attDset->createDataset(this->multiFrameFile, extraDims, numCapture, user_chunking);
+        }
       } else {
         attDset->createDataset(chunking);
       }
@@ -2442,7 +2456,13 @@ asynStatus NDFileHDF5::createAttributeDataset(NDArray *pArray)
           attDset->setParentGroupName(def_group->get_full_name().c_str());
         }
         if (dimAttDataset == 1){
-          attDset->createDataset(this->multiFrameFile, extraDims, numCapture, user_chunking);
+          if (isAttributeIndex(atName) > -1 && posRunning == 1){
+            // This dataset is specified as an index dataset
+            attDset->createDataset(chunking);
+          } else {
+            // This dataset is a standard multi-dimensional dataset
+            attDset->createDataset(this->multiFrameFile, extraDims, numCapture, user_chunking);
+          }
         } else {
           attDset->createDataset(chunking);
         }
@@ -2570,7 +2590,8 @@ asynStatus NDFileHDF5::writeAttributeDataset(hdf5::When_t whenToSave, int positi
       }
     }
     if (positionMode == 1){
-      hdfAttrNode->writeAttributeDataset(whenToSave, offsets, ndAttr, flush);
+      int indexValue = isAttributeIndex(hdfAttrNode->getName());
+      hdfAttrNode->writeAttributeDataset(whenToSave, offsets, ndAttr, flush, indexValue);
     } else {
       hdfAttrNode->writeAttributeDataset(whenToSave, ndAttr, flush);
     }
@@ -3342,6 +3363,45 @@ asynStatus NDFileHDF5::createFileLayout(NDArray *pArray)
   return ret;
 }
 
+int NDFileHDF5::isAttributeIndex(const std::string& attName)
+{
+  int index = -1;
+  int extraDims = 0;
+  char indexName[MAX_STRING_SIZE];
+  // Search through each index, check if the specified name matches
+  this->lock();
+  getStringParam(NDFileHDF5_posIndexDimN, MAX_STRING_SIZE, indexName);
+  this->unlock();
+  if (attName == std::string(indexName)){
+    this->lock();
+    getIntegerParam(NDFileHDF5_nExtraDims, &extraDims);
+    this->unlock();
+    index = extraDims;
+  }
+  if (index < 0){
+    this->lock();
+    getStringParam(NDFileHDF5_posIndexDimX, MAX_STRING_SIZE, indexName);
+    this->unlock();
+    if (attName == std::string(indexName)){
+      this->lock();
+      getIntegerParam(NDFileHDF5_nExtraDims, &extraDims);
+      this->unlock();
+      index = extraDims - 1;
+    }
+  }
+  if (index < 0){
+    this->lock();
+    getStringParam(NDFileHDF5_posIndexDimY, MAX_STRING_SIZE, indexName);
+    this->unlock();
+    if (attName == std::string(indexName)){
+      this->lock();
+      getIntegerParam(NDFileHDF5_nExtraDims, &extraDims);
+      this->unlock();
+      index = extraDims - 2;
+    }
+  }
+  return index;
+}
 
 /** EPICS iocsh shell commands */
 static const iocshArg initArg0 = { "portName",iocshArgString};

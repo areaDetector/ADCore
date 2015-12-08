@@ -611,6 +611,51 @@ record(stringin, "$(P)$(R)PosNameDimY_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(stringout, "$(P)$(R)PosIndexDimN")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT, "@asyn($(PORT),0)HDF5_posIndexDimN")
+    field(PINI, "NO")
+}
+
+record(stringin, "$(P)$(R)PosIndexDimN_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_posIndexDimN")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)PosIndexDimX")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT, "@asyn($(PORT),0)HDF5_posIndexDimX")
+    field(PINI, "NO")
+}
+
+record(stringin, "$(P)$(R)PosIndexDimX_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_posIndexDimX")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)PosIndexDimY")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT, "@asyn($(PORT),0)HDF5_posIndexDimY")
+    field(PINI, "NO")
+}
+
+record(stringin, "$(P)$(R)PosIndexDimY_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_posIndexDimY")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
 record(ai, "$(P)$(R)FillValue_RBV")
 {
     field(DTYP, "asynFloat64")

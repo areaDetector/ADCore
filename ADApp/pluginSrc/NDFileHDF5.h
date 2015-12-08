@@ -48,6 +48,9 @@
 #define str_NDFileHDF5_posNameDimN       "HDF5_posNameDimN"
 #define str_NDFileHDF5_posNameDimX       "HDF5_posNameDimX"
 #define str_NDFileHDF5_posNameDimY       "HDF5_posNameDimY"
+#define str_NDFileHDF5_posIndexDimN      "HDF5_posIndexDimN"
+#define str_NDFileHDF5_posIndexDimX      "HDF5_posIndexDimX"
+#define str_NDFileHDF5_posIndexDimY      "HDF5_posIndexDimY"
 #define str_NDFileHDF5_fillValue         "HDF5_fillValue"
 #define str_NDFileHDF5_SWMRCbCounter     "HDF5_SWMRCbCounter"
 #define str_NDFileHDF5_SWMRSupported     "HDF5_SWMRSupported"
@@ -142,6 +145,9 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     int NDFileHDF5_posNameDimN;
     int NDFileHDF5_posNameDimX;
     int NDFileHDF5_posNameDimY;
+    int NDFileHDF5_posIndexDimN;
+    int NDFileHDF5_posIndexDimX;
+    int NDFileHDF5_posIndexDimY;
     int NDFileHDF5_fillValue;
     int NDFileHDF5_SWMRCbCounter;
     int NDFileHDF5_SWMRSupported;
@@ -190,6 +196,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     asynStatus createNewFile(const char *fileName);
     asynStatus createFileLayout(NDArray *pArray);
     asynStatus createAttributeDataset(NDArray *pArray);
+    int isAttributeIndex(const std::string& attName);
 
 
     hdf5::LayoutXML layout;
