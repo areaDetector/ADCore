@@ -20,6 +20,7 @@ public:
                    int blocking,
                    const std::string& detectorPort,
                    int address,
+                   size_t maxMemory,
                    int priority,
                    int stackSize);
   virtual ~PosPluginWrapper ();
