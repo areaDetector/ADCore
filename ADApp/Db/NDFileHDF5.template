@@ -237,6 +237,188 @@ record(stringin, "$(P)$(R)ExtraDimNameY_RBV")
     field(SCAN, "I/O Intr")
 }
 
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, ExtraDimSize4, Size of extra dimension 4
+record(longout, "$(P)$(R)ExtraDimSize4")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimSize4")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, ExtraDimSizeN_RBV, Readback size of extra dimension 4
+record(longin, "$(P)$(R)ExtraDimSize4_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimSize4")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)ExtraDimName4_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimName4")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, ExtraDimSize5, Size of extra dimension 5
+record(longout, "$(P)$(R)ExtraDimSize5")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimSize5")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, ExtraDimSizeN_RBV, Readback size of extra dimension 5
+record(longin, "$(P)$(R)ExtraDimSize5_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimSize5")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)ExtraDimName5_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimName5")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, ExtraDimSize6, Size of extra dimension 6
+record(longout, "$(P)$(R)ExtraDimSize6")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimSize6")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, ExtraDimSizeN_RBV, Readback size of extra dimension 6
+record(longin, "$(P)$(R)ExtraDimSize6_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimSize6")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)ExtraDimName6_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimName6")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, ExtraDimSize5, Size of extra dimension 7
+record(longout, "$(P)$(R)ExtraDimSize7")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimSize7")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, ExtraDimSizeN_RBV, Readback size of extra dimension 7
+record(longin, "$(P)$(R)ExtraDimSize7_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimSize7")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)ExtraDimName7_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimName7")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, ExtraDimSize8, Size of extra dimension 8
+record(longout, "$(P)$(R)ExtraDimSize8")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimSize8")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, ExtraDimSizeN_RBV, Readback size of extra dimension 8
+record(longin, "$(P)$(R)ExtraDimSize8_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimSize8")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)ExtraDimName8_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimName8")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, ExtraDimSize9, Size of extra dimension 9
+record(longout, "$(P)$(R)ExtraDimSize9")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimSize9")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, ExtraDimSizeN_RBV, Readback size of extra dimension 9
+record(longin, "$(P)$(R)ExtraDimSize9_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimSize9")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)ExtraDimName9_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimName9")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+# % gdatag, pv, rw, $(PORT)_NDFileHDF5, ExtraDimSize10, Size of extra dimension 10
+record(longout, "$(P)$(R)ExtraDimSize10")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimSize10")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+# % gdatag, pv, ro, $(PORT)_NDFileHDF5, ExtraDimSizeN_RBV, Readback size of extra dimension 10
+record(longin, "$(P)$(R)ExtraDimSize10_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimSize10")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)ExtraDimName10_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimName10")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
 record(bo, "$(P)$(R)StoreAttr")
 {
     field(DTYP, "asynInt32")
