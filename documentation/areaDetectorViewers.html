@@ -10,7 +10,7 @@
     <h1>
       areaDetector Viewers</h1>
     <h2>
-      October 1, 2012</h2>
+      January 7, 2016</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -55,9 +55,8 @@
     <li>Install ImageJ from <a href="http://rsbweb.nih.gov/ij/download.html">ImageJ download
       site</a>. If installing on Windows I recommend installing the version bundled with
       Java.</li>
-    <li>Copy the entire directory Viewers/ImageJ/EPICS_areaDetector to the plugins/
-      directory in the ImageJ installation location. On OS X this can be done with the
-      command:<br />
+    <li>Copy the entire directory Viewers/ImageJ/EPICS_areaDetector to the plugins/ directory
+      in the ImageJ installation location. On OS X this can be done with the command:<br />
       <pre>    cp -r Viewers/ImageJ/EPICS_areaDetector /Applications/ImageJ/plugins
       </pre>
     </li>
@@ -71,16 +70,17 @@
       the EPICS Channel Access settings using a JCALibrary.properties file. This was often
       confusing because it uses a different mechanism than all C-based Channel Access
       clients, and because multiple JCALibrary.Properties files might be found in the
-      Java search path, making it hard to figure out where a setting was coming from. Starting
-      with areaDetector R1-9 the ImageJ plugin uses the same EPICS environment variables
-      as Channel Access clients that use the C Channel Access library. Note that the environment
-      variable EPICS_CA_MAX_ARRAY_BYTES almost always needs to be set, because the default
-      value of 16KB is rarely large enough for images. EPICS_CA_MAX_ARRAY_BYTES must be
-      at least as large as the largest image size in bytes that you want to display. However,
-      it is important not to set EPICS_CA_MAX_ARRAY_BYTES to an unnecessarily large value
-      like 100 MB, because the EPICS CA library allocates buffers of size EPICS_CA_MAX_ARRAY_BYTES
-      whenever the required buffer size is larger than 16KB. Remember also that EPICS_CA_MAX_ARRAY_BYTES
-      must be set for both the IOC process and for the ImageJ client process.</li>
+      Java search path, making it hard to figure out where a setting was coming from.
+      Starting with areaDetector R1-9 the ImageJ plugin uses the same EPICS environment
+      variables as Channel Access clients that use the C Channel Access library. Note
+      that the environment variable EPICS_CA_MAX_ARRAY_BYTES almost always needs to be
+      set, because the default value of 16KB is rarely large enough for images. EPICS_CA_MAX_ARRAY_BYTES
+      must be at least as large as the largest image size in bytes that you want to display.
+      However, it is important not to set EPICS_CA_MAX_ARRAY_BYTES to an unnecessarily
+      large value like 100 MB, because the EPICS CA library allocates buffers of size
+      EPICS_CA_MAX_ARRAY_BYTES whenever the required buffer size is larger than 16KB.
+      Remember also that EPICS_CA_MAX_ARRAY_BYTES must be set for both the IOC process
+      and for the ImageJ client process.</li>
     <li>Start ImageJ and go to the Plugins/EPICS_areaDetector/EPICS_AD_Viewer to run the
       plugin</li>
     <li>Type in the prefix for the NDStdArrays plugin for the detector to be viewed (e.g.
@@ -102,6 +102,16 @@
     The image sequence will be stored in the ImageJ buffer and a scroll bar will appear
     to allow you to scroll through the images. The stack can be saved to disk in a large
     number of formats, including AVI.</p>
+  <p>
+    Note that default image brightness and contrast when displaying 8-bit images is
+    normally sufficient to at least see something in the image. However, when displaying
+    16-bit, 32-bit, or floating point images the default brightness and contrast when
+    first opening the display is usually poor, either completely white or completely
+    black. This is easily fixed using the Image/Adjust/Brightness/Control menu in ImageJ.
+    The keyboard shortcut for this is Control+Shift+C, which is worth remembering. Opening
+    the Brightness and Contrast window will first do an autoscaling, which is often
+    quite good. Pressing the Auto button repeatedly will step through several brightness/contrast
+    settings.</p>
   <p>
     The following is the main ImageJ window.
   </p>
@@ -274,8 +284,8 @@
         <li>The environment variable EPICS_CA_MAX_ARRAY_BYTES is set to a value at least as
           large as the size of the arrays to be sent to the viewer. This environment variable
           must be set on the machine that the IOC is running on before the IOC is started.
-          It must also be set on the machine that the ImageJ or IDL viewer is running on
-          before ImageJ or IDL is started.</li>
+          It must also be set on the machine that the ImageJ or IDL viewer is running on before
+          ImageJ or IDL is started.</li>
       </ul>
     </li>
   </ul>
