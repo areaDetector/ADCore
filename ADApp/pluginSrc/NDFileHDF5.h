@@ -62,6 +62,8 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
   public:
     static const char *str_NDFileHDF5_extraDimSize[MAXEXTRADIMS];
     static const char *str_NDFileHDF5_extraDimName[MAXEXTRADIMS];
+    static const char *str_NDFileHDF5_posName[MAXEXTRADIMS];
+    static const char *str_NDFileHDF5_posIndex[MAXEXTRADIMS];
 
     NDFileHDF5(const char *portName, int queueSize, int blockingCallbacks, 
                const char *NDArrayPort, int NDArrayAddr,
@@ -141,12 +143,8 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     int NDFileHDF5_layoutValid;
     int NDFileHDF5_layoutFilename;
     int NDFileHDF5_posRunning;
-    int NDFileHDF5_posNameDimN;
-    int NDFileHDF5_posNameDimX;
-    int NDFileHDF5_posNameDimY;
-    int NDFileHDF5_posIndexDimN;
-    int NDFileHDF5_posIndexDimX;
-    int NDFileHDF5_posIndexDimY;
+    int NDFileHDF5_posName[MAXEXTRADIMS];
+    int NDFileHDF5_posIndex[MAXEXTRADIMS];
     int NDFileHDF5_fillValue;
     int NDFileHDF5_SWMRCbCounter;
     int NDFileHDF5_SWMRSupported;
@@ -198,6 +196,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     asynStatus createFileLayout(NDArray *pArray);
     asynStatus createAttributeDataset(NDArray *pArray);
     int isAttributeIndex(const std::string& attName);
+    epicsInt32 findPositionIndex(NDArray *pArray, char *posName);
 
 
     hdf5::LayoutXML layout;
