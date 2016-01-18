@@ -32,7 +32,7 @@
 
 #include <epicsTypes.h>
 #include <string>
-#include <vector>
+#include <list>
 #include <map>
 
 #include "NDPluginDriver.h"
@@ -107,7 +107,7 @@ protected:
 
 private:
   // Plugin member variables
-  std::vector<std::map<std::string, double> > positionArray;
+  std::list<std::map<std::string, double> > positionArray;
 };
 
 #define NUM_NDPOS_PARAMS ((int)(&LAST_NDPOS_PARAM - &FIRST_NDPOS_PARAM + 1))

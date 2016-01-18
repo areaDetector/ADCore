@@ -28,6 +28,7 @@ void NDPosPlugin::processCallbacks(NDArray *pArray)
   int running = NDPOS_IDLE;
   int skip = 0;
   int mode = 0;
+  int size = 0;
   int duplicates = 0;
   int dropped = 0;
   int expectedID = 0;
@@ -39,10 +40,14 @@ void NDPosPlugin::processCallbacks(NDArray *pArray)
   // Call the base class method
   NDPluginDriver::processCallbacks(pArray);
   getIntegerParam(NDPos_Running, &running);
+  // We must maintain the size of the list ourselves, as calling
+  // size() on the list has a complexity of O(n) which causes a problem
+  // once we get into tens of thousands of items.
+  getIntegerParam(NDPos_CurrentQty, &size);
   // Only attach the position data to the array if we are running
   if (running == NDPOS_RUNNING){
     getIntegerParam(NDPos_CurrentIndex, &index);
-    if (index >= (int)positionArray.size()){
+    if (index >= size){
       // We've reached the end of our positions, stop to make sure we don't overflow
       setIntegerParam(NDPos_Running, NDPOS_IDLE);
       running = NDPOS_IDLE;
@@ -85,26 +90,27 @@ void NDPosPlugin::processCallbacks(NDArray *pArray)
           getIntegerParam(NDPos_MissingFrames, &dropped);
           getIntegerParam(NDPos_Mode, &mode);
           if (mode == MODE_DISCARD){
-            while ((expectedID < IDValue) && (positionArray.size() > 0)){
+            while ((expectedID < IDValue) && (size > 0)){
               // The index will stay the same, and we need to pop the value out of the position array
               positionArray.erase(positionArray.begin());
+              size--;
               expectedID += IDDifference;
               dropped++;
             }
             // If the size has dropped to zero then we've run out of positions, abort
-            if (positionArray.size() == 0){
+            if (size == 0){
               setIntegerParam(NDPos_Running, NDPOS_IDLE);
               running = NDPOS_IDLE;
             }
-            setIntegerParam(NDPos_CurrentQty, positionArray.size());
+            setIntegerParam(NDPos_CurrentQty, size);
           } else if (mode == MODE_KEEP){
-            while (expectedID < IDValue && (index < (int)positionArray.size())){
+            while (expectedID < IDValue && (index < size)){
               index++;
               expectedID += IDDifference;
               dropped++;
             }
             // If the index has reached the size of the array then we've run out of positions, abort
-            if (index == (int)positionArray.size()){
+            if (index == size){
               setIntegerParam(NDPos_Running, NDPOS_IDLE);
               running = NDPOS_IDLE;
             }
@@ -135,7 +141,10 @@ void NDPosPlugin::processCallbacks(NDArray *pArray)
         // We must make a copy of the array as we are going to alter it
         this->pArrays[0] = this->pNDArrayPool->copy(pArray, this->pArrays[0], 1);
         if (this->pArrays[0]){
-          std::map<std::string, double> pos = positionArray[index];
+          std::list<std::map<std::string, double> >::iterator it = positionArray.begin();
+          std::advance(it, index);
+          //std::map<std::string, double> pos = positionArray[index];
+          std::map<std::string, double> pos = *it;
           std::stringstream sspos;
           sspos << "[";
           bool firstTime = true;
@@ -173,7 +182,8 @@ void NDPosPlugin::processCallbacks(NDArray *pArray)
         if (mode == MODE_DISCARD){
           // The index will stay the same, and we need to pop the value out of the position array
           positionArray.erase(positionArray.begin());
-          setIntegerParam(NDPos_CurrentQty, positionArray.size());
+          size--;
+          setIntegerParam(NDPos_CurrentQty, size);
         } else if (mode == MODE_KEEP){
           index++;
           setIntegerParam(NDPos_CurrentIndex, index);
@@ -184,7 +194,7 @@ void NDPosPlugin::processCallbacks(NDArray *pArray)
       }
     }
     // If the size has dropped to zero then we've run out of positions, abort
-    if (positionArray.size() == 0){
+    if (size == 0){
       setIntegerParam(NDPos_Running, NDPOS_IDLE);
     }
     callParamCallbacks();
