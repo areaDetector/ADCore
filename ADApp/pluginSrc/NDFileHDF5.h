@@ -62,6 +62,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
   public:
     static const char *str_NDFileHDF5_extraDimSize[MAXEXTRADIMS];
     static const char *str_NDFileHDF5_extraDimName[MAXEXTRADIMS];
+    static const char *str_NDFileHDF5_extraDimChunk[MAXEXTRADIMS];
     static const char *str_NDFileHDF5_posName[MAXEXTRADIMS];
     static const char *str_NDFileHDF5_posIndex[MAXEXTRADIMS];
 
@@ -128,6 +129,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     int NDFileHDF5_extraDimOffsetY;
     int NDFileHDF5_extraDimSize[MAXEXTRADIMS];
     int NDFileHDF5_extraDimName[MAXEXTRADIMS];
+    int NDFileHDF5_extraDimChunk[MAXEXTRADIMS];
     int NDFileHDF5_storeAttributes;
     int NDFileHDF5_storePerformance;
     int NDFileHDF5_totalRuntime;

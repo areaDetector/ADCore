@@ -64,49 +64,61 @@ const char *NDFileHDF5::str_NDFileHDF5_extraDimSize[MAXEXTRADIMS] = {
     "HDF5_extraDimSizeN",
     "HDF5_extraDimSizeX",
     "HDF5_extraDimSizeY",
+    "HDF5_extraDimSize3",
     "HDF5_extraDimSize4",
     "HDF5_extraDimSize5",
     "HDF5_extraDimSize6",
     "HDF5_extraDimSize7",
     "HDF5_extraDimSize8",
-    "HDF5_extraDimSize9",
-    "HDF5_extraDimSize10"
+    "HDF5_extraDimSize9"
 };
 const char *NDFileHDF5::str_NDFileHDF5_extraDimName[MAXEXTRADIMS] = {
     "HDF5_extraDimNameN",
     "HDF5_extraDimNameX",
     "HDF5_extraDimNameY",
+    "HDF5_extraDimName3",
     "HDF5_extraDimName4",
     "HDF5_extraDimName5",
     "HDF5_extraDimName6",
     "HDF5_extraDimName7",
     "HDF5_extraDimName8",
-    "HDF5_extraDimName9",
-    "HDF5_extraDimName10"
+    "HDF5_extraDimName9"
+};
+const char *NDFileHDF5::str_NDFileHDF5_extraDimChunk[MAXEXTRADIMS] = {
+    "HDF5_extraDimChunkN",
+    "HDF5_extraDimChunkX",
+    "HDF5_extraDimChunkY",
+    "HDF5_extraDimChunk3",
+    "HDF5_extraDimChunk4",
+    "HDF5_extraDimChunk5",
+    "HDF5_extraDimChunk6",
+    "HDF5_extraDimChunk7",
+    "HDF5_extraDimChunk8",
+    "HDF5_extraDimChunk9"
 };
 const char *NDFileHDF5::str_NDFileHDF5_posName[MAXEXTRADIMS] = {
     "HDF5_posNameDimN",
     "HDF5_posNameDimX",
     "HDF5_posNameDimY",
+    "HDF5_posNameDim3",
     "HDF5_posNameDim4",
     "HDF5_posNameDim5",
     "HDF5_posNameDim6",
     "HDF5_posNameDim7",
     "HDF5_posNameDim8",
-    "HDF5_posNameDim9",
-    "HDF5_posNameDim10"
+    "HDF5_posNameDim9"
 };
 const char *NDFileHDF5::str_NDFileHDF5_posIndex[MAXEXTRADIMS] = {
     "HDF5_posIndexDimN",
     "HDF5_posIndexDimX",
     "HDF5_posIndexDimY",
+    "HDF5_posIndexDim3",
     "HDF5_posIndexDim4",
     "HDF5_posIndexDim5",
     "HDF5_posIndexDim6",
     "HDF5_posIndexDim7",
     "HDF5_posIndexDim8",
-    "HDF5_posIndexDim9",
-    "HDF5_posIndexDim10"
+    "HDF5_posIndexDim9"
 };
 
 /** Opens a HDF5 file.  
@@ -1688,6 +1700,25 @@ asynStatus NDFileHDF5::writeInt32(asynUser *pasynUser, epicsInt32 value)
       // work out how many frames to capture in total
       this->calcNumFrames();
     }
+  } else if (function == NDFileHDF5_extraDimChunk[0] ||
+        function == NDFileHDF5_extraDimChunk[1] ||
+        function == NDFileHDF5_extraDimChunk[2] ||
+        function == NDFileHDF5_extraDimChunk[3] ||
+        function == NDFileHDF5_extraDimChunk[4] ||
+        function == NDFileHDF5_extraDimChunk[5] ||
+        function == NDFileHDF5_extraDimChunk[6] ||
+        function == NDFileHDF5_extraDimChunk[7] ||
+        function == NDFileHDF5_extraDimChunk[8] ||
+        function == NDFileHDF5_extraDimChunk[9])
+      {
+      // Not allowed to change chunking sizes once the file is opened
+      if (this->file != 0) {
+        status = asynError;
+        setIntegerParam(function, oldvalue);
+      } else if (value <= 0) {
+        status = asynError;
+        setIntegerParam(function, oldvalue);
+      }
   } else if (function == NDFileHDF5_storeAttributes ||
          function == NDFileHDF5_storePerformance) {
     if (this->file != 0) {
@@ -1967,6 +1998,7 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   for (int extraDimIndex = 0; extraDimIndex < MAXEXTRADIMS; extraDimIndex++){
     this->createParam(str_NDFileHDF5_extraDimSize[extraDimIndex],   asynParamInt32,   &NDFileHDF5_extraDimSize[extraDimIndex]);
     this->createParam(str_NDFileHDF5_extraDimName[extraDimIndex],   asynParamOctet,   &NDFileHDF5_extraDimName[extraDimIndex]);
+    this->createParam(str_NDFileHDF5_extraDimChunk[extraDimIndex],  asynParamInt32,   &NDFileHDF5_extraDimChunk[extraDimIndex]);
   }
   this->createParam(str_NDFileHDF5_storeAttributes, asynParamInt32,   &NDFileHDF5_storeAttributes);
   this->createParam(str_NDFileHDF5_storePerformance,asynParamInt32,   &NDFileHDF5_storePerformance);
@@ -2004,6 +2036,7 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   setIntegerParam(NDFileHDF5_extraDimOffsetY, 0);
   for (int extraDimIndex = 0; extraDimIndex < MAXEXTRADIMS; extraDimIndex++){
     setIntegerParam(NDFileHDF5_extraDimSize[extraDimIndex],   1);
+    setIntegerParam(NDFileHDF5_extraDimChunk[extraDimIndex],  1);
   }
   setIntegerParam(NDFileHDF5_storeAttributes, 1);
   setIntegerParam(NDFileHDF5_storePerformance,1);
@@ -2713,6 +2746,7 @@ asynStatus NDFileHDF5::configureDims(NDArray *pArray)
 {
   int i=0,j=0, extradims = 0, ndims=0;
   int numCapture;
+  int chunkSize;
   int numFlush = 0;
   asynStatus status = asynSuccess;
   char strdims[DIMSREPORTSIZE];
@@ -2763,18 +2797,19 @@ asynStatus NDFileHDF5::configureDims(NDArray *pArray)
     //  driverName, functionName, MAXEXTRADIMS);
     struct extradimdefs_t {
       int sizeParamId;
+      int sizeChunkId;
       char* dimName;
     } extradimdefs[MAXEXTRADIMS] = {
-        {NDFileHDF5_extraDimSize[9], this->extraDimName[9]},
-        {NDFileHDF5_extraDimSize[8], this->extraDimName[8]},
-        {NDFileHDF5_extraDimSize[7], this->extraDimName[7]},
-        {NDFileHDF5_extraDimSize[6], this->extraDimName[6]},
-        {NDFileHDF5_extraDimSize[5], this->extraDimName[5]},
-        {NDFileHDF5_extraDimSize[4], this->extraDimName[4]},
-        {NDFileHDF5_extraDimSize[3], this->extraDimName[3]},
-        {NDFileHDF5_extraDimSize[2], this->extraDimName[2]},
-        {NDFileHDF5_extraDimSize[1], this->extraDimName[1]},
-        {NDFileHDF5_extraDimSize[0], this->extraDimName[0]},
+        {NDFileHDF5_extraDimSize[9], NDFileHDF5_extraDimChunk[9], this->extraDimName[9]},
+        {NDFileHDF5_extraDimSize[8], NDFileHDF5_extraDimChunk[8], this->extraDimName[8]},
+        {NDFileHDF5_extraDimSize[7], NDFileHDF5_extraDimChunk[7], this->extraDimName[7]},
+        {NDFileHDF5_extraDimSize[6], NDFileHDF5_extraDimChunk[6], this->extraDimName[6]},
+        {NDFileHDF5_extraDimSize[5], NDFileHDF5_extraDimChunk[5], this->extraDimName[5]},
+        {NDFileHDF5_extraDimSize[4], NDFileHDF5_extraDimChunk[4], this->extraDimName[4]},
+        {NDFileHDF5_extraDimSize[3], NDFileHDF5_extraDimChunk[3], this->extraDimName[3]},
+        {NDFileHDF5_extraDimSize[2], NDFileHDF5_extraDimChunk[2], this->extraDimName[2]},
+        {NDFileHDF5_extraDimSize[1], NDFileHDF5_extraDimChunk[1], this->extraDimName[1]},
+        {NDFileHDF5_extraDimSize[0], NDFileHDF5_extraDimChunk[0], this->extraDimName[0]},
     };
 
     //asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
@@ -2782,12 +2817,19 @@ asynStatus NDFileHDF5::configureDims(NDArray *pArray)
     //  driverName, functionName, extradims);
     for (i=0; i<extradims; i++)
     {
+      getIntegerParam(extradimdefs[MAXEXTRADIMS - extradims + i].sizeChunkId, &chunkSize);
+      getIntegerParam(extradimdefs[MAXEXTRADIMS - extradims + i].sizeParamId, &numCapture);
       this->framesize[i] = (hsize_t)1;
-      this->chunkdims[i]   = 1;
+      // Check the chunk size.  If set to 0 or greater than dim size then set chunking
+      // equal to the dimension size.  Otherwise set the chunking as specified.
+      if (chunkSize < 1 || chunkSize > numCapture){
+        this->chunkdims[i]   = numCapture;
+      } else {
+        this->chunkdims[i]   = chunkSize;
+      }
       this->maxdims[i]     = H5S_UNLIMITED;
       this->dims[i]        = 1;
       this->offset[i]      = 0; // because we increment offset *before* each write we need to start at -1
-      getIntegerParam(extradimdefs[MAXEXTRADIMS - extradims + i].sizeParamId, &numCapture);
       this->virtualdims[i] = numCapture;
       //asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
       //  "%s::%s extradim=%d ncapture=%d\n",
