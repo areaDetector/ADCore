@@ -443,11 +443,11 @@
   </p>
   <p>
     In addition to the dimensions of the NDArray it is also possible to specify up to
-    2 extra "virtual" dimensions to store datasets in the file. This is to support applications
-    where a sample is scanned in up to two dimensions, say X and Y. For each scan point
-    a dataset comprising of multiple frames can be stored. The length of (i.e. number
-    of points in) each of the two virtual dimensions have to be specified before the
-    plugin opens the file for writing. This feature is only supported in the Stream
+    9 extra "virtual" dimensions to store datasets in the file. This is to support applications
+    where a sample is scanned in up to nine dimensions.  For two extra dimensions, say X and Y 
+    each scan point contains a dataset comprising of multiple frames which can be stored. The 
+    length of (i.e. number of points in) each of the virtual dimensions have to be specified 
+    before the plugin opens the file for writing. This feature is only supported in the Stream
     and Capture modes.
   </p>
   <p>
@@ -462,20 +462,29 @@
     <img alt="HDFmultiple-dimensions.png" src="HDFmultiple-dimensions.png" /></div>
   <p>
     Prior to starting a scan like this the user will need to configure the number of
-    virtual dimensions to use (none, 1 or 2); the number of frames per point; and the
+    virtual dimensions to use (from 0 up to 9); the number of frames per point; and the
     length of each of the virtual dimensions (4 x 2 in the example figure). It is not
     possible to change the number or size of dimensions while the file is open.
   </p>
   <p>
     For 2D image (greyscale) formats the dimensions in the multiframe HDF5 file are
-    organised as follows:</p>
+    organised as follows.  Note that for backwards compatibility (previously only 2 
+    extra dimensions were available) when extra dimensions 
+    are specified they are in reverse order 9th,8th,7th,6th,5th,4th,3rd,Yth,Xth and
+    dimensions 2 and 1 are named Y and X:</p>
   <ul>
     <li>For a multiframe file with no use of "virtual" dimension the order is: {Nth frame,
       width, height}</li>
     <li>For a multiframe file using 1 "virtual" dimension (X) the order is: {X, Nth frame,
       width, height}</li>
-    <li>For a multiframe file using 2 "virtual" dimension (X,Y) the order is: {Y, X, Nth
+    <li>For a multiframe file using 2 "virtual" dimensions (X,Y) the order is: {Y, X, Nth
       frame, width, height}</li>
+    <li>For a multiframe file using 3 "virtual" dimensions (X,Y,3rd) the order is: {3rd, Y, X, Nth
+      frame, width, height}</li>
+    <li>For a multiframe file using 4 "virtual" dimensions (X,Y,3rd,4th) the order is: {4th, 3rd, 
+      Y, X, Nth frame, width, height}</li>
+    <li>For a multiframe file using 5 "virtual" dimensions (X,Y,3rd,4th,5th) the order is: {5th, 
+      4th, 3rd, Y, X, Nth frame, width, height}</li>
   </ul>
   <h3>
     Chunking
@@ -1000,6 +1009,132 @@
         <td>
           $(P)$(R)ExtraDimSizeY<br />
           $(P)$(R)ExtraDimSizeY_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          extraDimSize3</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Size of extra dimension 3</td>
+        <td>
+          HDF5_extraDimSize3</td>
+        <td>
+          $(P)$(R)ExtraDimSize3<br />
+          $(P)$(R)ExtraDimSize3_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          extraDimSize4</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Size of extra dimension 4</td>
+        <td>
+          HDF5_extraDimSize4</td>
+        <td>
+          $(P)$(R)ExtraDimSize4<br />
+          $(P)$(R)ExtraDimSize4_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          extraDimSize5</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Size of extra dimension 5</td>
+        <td>
+          HDF5_extraDimSize5</td>
+        <td>
+          $(P)$(R)ExtraDimSize5<br />
+          $(P)$(R)ExtraDimSize5_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          extraDimSize6</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Size of extra dimension 6</td>
+        <td>
+          HDF5_extraDimSize6</td>
+        <td>
+          $(P)$(R)ExtraDimSize6<br />
+          $(P)$(R)ExtraDimSize6_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          extraDimSize7</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Size of extra dimension 7</td>
+        <td>
+          HDF5_extraDimSize7</td>
+        <td>
+          $(P)$(R)ExtraDimSize7<br />
+          $(P)$(R)ExtraDimSize7_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          extraDimSize8</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Size of extra dimension 8</td>
+        <td>
+          HDF5_extraDimSize8</td>
+        <td>
+          $(P)$(R)ExtraDimSize8<br />
+          $(P)$(R)ExtraDimSize8_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          extraDimSize9</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Size of extra dimension 9</td>
+        <td>
+          HDF5_extraDimSize9</td>
+        <td>
+          $(P)$(R)ExtraDimSize9<br />
+          $(P)$(R)ExtraDimSize9_RBV</td>
         <td>
           longout<br />
           longin</td>
