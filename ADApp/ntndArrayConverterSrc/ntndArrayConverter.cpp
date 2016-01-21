@@ -504,7 +504,7 @@ void NTNDArrayConverter::fromAttributes (NDArray *src)
     size_t i = 0;
     while((attr = srcList->next(attr)))
     {
-        if(!destVec[i].get())
+        if(!destVec[i].get() || !destVec[i].unique())
             destVec[i] = PVDC->createPVStructure(structure);
 
         PVStructurePtr pvAttr(destVec[i]);
