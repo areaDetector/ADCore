@@ -1715,7 +1715,7 @@ asynStatus NDFileHDF5::writeInt32(asynUser *pasynUser, epicsInt32 value)
       if (this->file != 0) {
         status = asynError;
         setIntegerParam(function, oldvalue);
-      } else if (value <= 0) {
+      } else if (value < 0) {
         status = asynError;
         setIntegerParam(function, oldvalue);
       }
@@ -2036,7 +2036,7 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   setIntegerParam(NDFileHDF5_extraDimOffsetY, 0);
   for (int extraDimIndex = 0; extraDimIndex < MAXEXTRADIMS; extraDimIndex++){
     setIntegerParam(NDFileHDF5_extraDimSize[extraDimIndex],   1);
-    setIntegerParam(NDFileHDF5_extraDimChunk[extraDimIndex],  1);
+    setIntegerParam(NDFileHDF5_extraDimChunk[extraDimIndex],  0);
   }
   setIntegerParam(NDFileHDF5_storeAttributes, 1);
   setIntegerParam(NDFileHDF5_storePerformance,1);
@@ -2818,16 +2818,29 @@ asynStatus NDFileHDF5::configureDims(NDArray *pArray)
     for (i=0; i<extradims; i++)
     {
       getIntegerParam(extradimdefs[MAXEXTRADIMS - extradims + i].sizeChunkId, &chunkSize);
-      getIntegerParam(extradimdefs[MAXEXTRADIMS - extradims + i].sizeParamId, &numCapture);
+      if (extradims == 1 && i == 0){
+        // Special case, no extra dims so numCapture is equal to specified number of frames
+        getIntegerParam(NDFileNumCapture, &numCapture);
+      } else {
+        getIntegerParam(extradimdefs[MAXEXTRADIMS - extradims + i].sizeParamId, &numCapture);
+      }
       this->framesize[i] = (hsize_t)1;
-      // Check the chunk size.  If set to 0 or greater than dim size then set chunking
+      // Check the chunk size.  If set to greater than dim size then set chunking
       // equal to the dimension size.  Otherwise set the chunking as specified.
-      if (chunkSize < 1 || chunkSize > numCapture){
+      // Value of zero results in chunking of 1
+      if (chunkSize < 1){
+        this->chunkdims[i]   = 1;
+      } else if (chunkSize > numCapture){
         this->chunkdims[i]   = numCapture;
       } else {
         this->chunkdims[i]   = chunkSize;
       }
-      this->maxdims[i]     = H5S_UNLIMITED;
+
+      if (numCapture == 0){
+        this->maxdims[i]     = H5S_UNLIMITED;
+      } else {
+        this->maxdims[i]     = numCapture;
+      }
       this->dims[i]        = 1;
       this->offset[i]      = 0; // because we increment offset *before* each write we need to start at -1
       this->virtualdims[i] = numCapture;
@@ -2884,7 +2897,12 @@ asynStatus NDFileHDF5::configureDims(NDArray *pArray)
       } else {
         if (user_chunking[i] > max_items) user_chunking[i] = max_items;
       }
-      if (user_chunking[i] < 1) user_chunking[i] = max_items;
+      if (i == 2){
+        // Special case unfortunately.  For N chunks should be 1 if not specified
+        if (user_chunking[i] < 1) user_chunking[i] = 1;
+      } else {
+        if (user_chunking[i] < 1) user_chunking[i] = max_items;
+      }
       assert(hdfdim >= 0); this->chunkdims[hdfdim] = user_chunking[i];
   }
   setIntegerParam(NDFileHDF5_nFramesChunks, user_chunking[2]);

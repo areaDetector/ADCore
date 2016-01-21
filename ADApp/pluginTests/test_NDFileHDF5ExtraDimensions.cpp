@@ -564,9 +564,9 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   BOOST_REQUIRE_EQUAL(hdf5->dims[3], 512);
   BOOST_REQUIRE_EQUAL(hdf5->dims[4], 1024);
   // Verify the maximum dimensions
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[0], -1);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[1], -1);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[2], -1);
+  BOOST_REQUIRE_EQUAL(hdf5->maxdims[0], 4);
+  BOOST_REQUIRE_EQUAL(hdf5->maxdims[1], 3);
+  BOOST_REQUIRE_EQUAL(hdf5->maxdims[2], 2);
   BOOST_REQUIRE_EQUAL(hdf5->maxdims[3], 512);
   BOOST_REQUIRE_EQUAL(hdf5->maxdims[4], 1024);
   // Verify the chunk dimensions
@@ -626,16 +626,16 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   BOOST_REQUIRE_EQUAL(hdf5->dims[10], 512);
   BOOST_REQUIRE_EQUAL(hdf5->dims[11], 1024);
   // Verify the maximum dimensions
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[0], -1);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[1], -1);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[2], -1);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[3], -1);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[4], -1);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[5], -1);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[6], -1);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[7], -1);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[8], -1);
-  BOOST_REQUIRE_EQUAL(hdf5->maxdims[9], -1);
+  BOOST_REQUIRE_EQUAL(hdf5->maxdims[0],  11);
+  BOOST_REQUIRE_EQUAL(hdf5->maxdims[1],  10);
+  BOOST_REQUIRE_EQUAL(hdf5->maxdims[2],  9);
+  BOOST_REQUIRE_EQUAL(hdf5->maxdims[3],  8);
+  BOOST_REQUIRE_EQUAL(hdf5->maxdims[4],  7);
+  BOOST_REQUIRE_EQUAL(hdf5->maxdims[5],  6);
+  BOOST_REQUIRE_EQUAL(hdf5->maxdims[6],  5);
+  BOOST_REQUIRE_EQUAL(hdf5->maxdims[7],  4);
+  BOOST_REQUIRE_EQUAL(hdf5->maxdims[8],  3);
+  BOOST_REQUIRE_EQUAL(hdf5->maxdims[9],  2);
   BOOST_REQUIRE_EQUAL(hdf5->maxdims[10], 512);
   BOOST_REQUIRE_EQUAL(hdf5->maxdims[11], 1024);
   // Verify the chunk dimensions
