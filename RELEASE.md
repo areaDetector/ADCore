@@ -34,6 +34,10 @@ R2-5 (November XXX, 2015)
 * Initialize the TriggerCalc string to "0" in the constructor to avoid error messages during iocInit
   if the string has not been set to a valid value that is stored with autosave.
 
+### asynNDArrayDriver
+* Fixed bug in FilePath handling on Windows. If the file path ended in "/" then it would incorrectly
+  report that the directory did not exist when it did.
+
 ### iocBoot
 * Deleted commonPlugins.cmd and commonPlugin_settings.req.  These were accidentally restored before the R2-4
   release after renaming them to EXAMPLE_commonPlugins.cmd and EXAMPLE_commonPlugin_settings.req.
