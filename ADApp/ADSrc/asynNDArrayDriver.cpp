@@ -63,6 +63,7 @@ asynStatus asynNDArrayDriver::checkPath()
     /* Formats a complete file name from the components defined in NDStdDriverParams */
     asynStatus status = asynError;
     char filePath[MAX_FILENAME_LEN];
+    char lastChar;
     int hasTerminator=0;
     struct stat buff;
     int istat;
@@ -75,7 +76,13 @@ asynStatus asynNDArrayDriver::checkPath()
     if (len == 0) return(asynSuccess);
     /* If the path contains a trailing '/' or '\' remove it, because Windows won't find
      * the directory if it has that trailing character */
-    if (strncmp(&filePath[len-1], delim, 1) == 0) {
+    lastChar = filePath[len-1];
+#ifdef _WIN32
+    if ((lastChar == '/') || (lastChar == '\\'))
+#else
+    if (lastChar == '/') 
+#endif
+    {
         filePath[len-1] = 0;
         len--;
         hasTerminator=1;
