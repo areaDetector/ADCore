@@ -566,6 +566,59 @@
   </ul>
   </p>
   <h3>
+    Selective Positional Placement of Individual Frames
+  </h3>
+  <p>
+  The plugin can now store frames at specified positions within a dataset.  Each individual dimension index
+  can be specified with NDAttributes that are attached to the frame.  The names of the NDAttributes that 
+  will be used as the index values for each dimension are specified using parameters (see parameter table
+  below).  The NDAttribute values themselves must be integer type zero based index values; if values are 
+  specified that are outside the maximum size of the dataset in any dimension then the acquisition will fail.  
+  A named attribute must be specified for each additional dimension if position placement mode is to be used,
+  if attributes are not specified or not named correctly then the acquisition will fail.
+  </p>
+  <p>
+  The position placement mode of operation is enabled by setting the PositionMode parameter to "On" and can
+  be used with or without SWMR mode enabled.
+  </p>
+  <h3>
+    Writing Index Datasets
+  </h3>
+  <p>
+  The plugin will write out an index dataset for an extra dimension multidimensional dataset if requested.
+  This writing out of index values can only take place when running in selective positional placement mode 
+  and when storing attributes with dataset dimensions (see above). The index parameters take the name of 
+  the NDAttribute that contains the index values for the particular dimensions that you are interested in.
+  </p>
+  <p>
+  For example, extra X and Y dimensions specified along with positional placement mode looking for NDAttributes 
+  called "x" and "y".  If the index dataset for the X dimension is set to "x" also then an additional dataset
+  will be written that contains only the index values for the X dimension.  The dataset will be a 1 dimensional
+  dataset.  Consider the following index values
+  </p>
+  <p>
+  x=0, y=0
+  </p>
+  <p>
+  x=1, y=0
+  </p>
+  <p>
+  x=0, y=1
+  </p>
+  <p>
+  x=1, y=1
+  </p>
+  <p>
+  x=0, y=2
+  </p>
+  <p>
+  x=1, y=2
+  </p>
+  <p>
+  If the X index parameter is set to x then a 1D dataset will be produced containing the values (0, 1).
+  If the Y index parameter is set to y then a 1D dataset will be produced containing the values (0, 1, 2).
+  </p>
+  <h3>
     Parameters and Records
   </h3>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
@@ -950,7 +1003,7 @@
         <td>
           r/w</td>
         <td>
-          Number of extra dimensions [0..2]</td>
+          Number of extra dimensions [0..9]</td>
         <td>
           HDF5_nExtraDims</td>
         <td>
@@ -1138,6 +1191,392 @@
         <td>
           longout<br />
           longin</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>Positional Placement</b></td>
+      </tr>
+      <tr>
+        <td>
+          posRunning</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Turn on/off positional placement mode</td>
+        <td>
+          HDF5_posRunning</td>
+        <td>
+          $(P)$(R)PositionMode<br />
+          $(P)$(R)PositionMode_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          posName[0]</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Specify the NDAttribute name for the N index</td>
+        <td>
+          HDF5_posNameDimN</td>
+        <td>
+          $(P)$(R)PosNameDimN<br />
+          $(P)$(R)PosNameDimN_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          posName[1]</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Specify the NDAttribute name for the X index</td>
+        <td>
+          HDF5_posNameDimX</td>
+        <td>
+          $(P)$(R)PosNameDimX<br />
+          $(P)$(R)PosNameDimX_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          posName[2]</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Specify the NDAttribute name for the Y index</td>
+        <td>
+          HDF5_posNameDimY</td>
+        <td>
+          $(P)$(R)PosNameDimY<br />
+          $(P)$(R)PosNameDimY_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          posName[3]</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Specify the NDAttribute name for the 3rd index</td>
+        <td>
+          HDF5_posNameDim3</td>
+        <td>
+          $(P)$(R)PosNameDim3<br />
+          $(P)$(R)PosNameDim3_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          posName[4]</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Specify the NDAttribute name for the 4th index</td>
+        <td>
+          HDF5_posNameDim4</td>
+        <td>
+          $(P)$(R)PosNameDim4<br />
+          $(P)$(R)PosNameDim4_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          posName[5]</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Specify the NDAttribute name for the 5th index</td>
+        <td>
+          HDF5_posNameDim5</td>
+        <td>
+          $(P)$(R)PosNameDim5<br />
+          $(P)$(R)PosNameDim5_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          posName[6]</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Specify the NDAttribute name for the 6th index</td>
+        <td>
+          HDF5_posNameDim6</td>
+        <td>
+          $(P)$(R)PosNameDim6<br />
+          $(P)$(R)PosNameDim6_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          posName[7]</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Specify the NDAttribute name for the 7th index</td>
+        <td>
+          HDF5_posNameDim7</td>
+        <td>
+          $(P)$(R)PosNameDim7<br />
+          $(P)$(R)PosNameDim7_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          posName[8]</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Specify the NDAttribute name for the 8th index</td>
+        <td>
+          HDF5_posNameDim8</td>
+        <td>
+          $(P)$(R)PosNameDim8<br />
+          $(P)$(R)PosNameDim8_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          posName[9]</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Specify the NDAttribute name for the 9th index</td>
+        <td>
+          HDF5_posNameDim9</td>
+        <td>
+          $(P)$(R)PosNameDim9<br />
+          $(P)$(R)PosNameDim9_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>Index Datasets</b></td>
+      </tr>
+      <tr>
+        <td>
+          posIndex[0]</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Specify the NDAttribute index for the N dimension</td>
+        <td>
+          HDF5_posIndexDimN</td>
+        <td>
+          $(P)$(R)PosIndexDimN<br />
+          $(P)$(R)PosIndexDimN_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          posIndex[1]</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Specify the NDAttribute index for the X dimension</td>
+        <td>
+          HDF5_posIndexDimX</td>
+        <td>
+          $(P)$(R)posIndexDimX<br />
+          $(P)$(R)posIndexDimX_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          posIndex[2]</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Specify the NDAttribute index for the Y dimension</td>
+        <td>
+          HDF5_posIndexDimY</td>
+        <td>
+          $(P)$(R)posIndexDimY<br />
+          $(P)$(R)posIndexDimY_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          posIndex[3]</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Specify the NDAttribute index for the 3rd dimension</td>
+        <td>
+          HDF5_posIndexDim3</td>
+        <td>
+          $(P)$(R)posIndexDim3<br />
+          $(P)$(R)posIndexDim3_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          posIndex[4]</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Specify the NDAttribute index for the 4th dimension</td>
+        <td>
+          HDF5_posIndexDim4</td>
+        <td>
+          $(P)$(R)posIndexDim4<br />
+          $(P)$(R)posIndexDim4_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          posIndex[5]</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Specify the NDAttribute index for the 5th dimension</td>
+        <td>
+          HDF5_posIndexDim5</td>
+        <td>
+          $(P)$(R)posIndexDim5<br />
+          $(P)$(R)posIndexDim5_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          posIndex[6]</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Specify the NDAttribute index for the 6th dimension</td>
+        <td>
+          HDF5_posIndexDim6</td>
+        <td>
+          $(P)$(R)posIndexDim6<br />
+          $(P)$(R)posIndexDim6_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          posIndex[7]</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Specify the NDAttribute index for the 7th dimension</td>
+        <td>
+          HDF5_posIndexDim7</td>
+        <td>
+          $(P)$(R)posIndexDim7<br />
+          $(P)$(R)posIndexDim7_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          posIndex[8]</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Specify the NDAttribute index for the 8th dimension</td>
+        <td>
+          HDF5_posIndexDim8</td>
+        <td>
+          $(P)$(R)posIndexDim8<br />
+          $(P)$(R)posIndexDim8_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          posIndex[9]</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          Specify the NDAttribute index for the 9th dimension</td>
+        <td>
+          HDF5_posIndexDim9</td>
+        <td>
+          $(P)$(R)posIndexDim9<br />
+          $(P)$(R)posIndexDim9_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
       </tr>
       <tr>
         <td align="center" colspan="7,">
