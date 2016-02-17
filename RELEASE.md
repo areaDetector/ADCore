@@ -23,6 +23,74 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
+R2-5 (November XXX, 2015)
+========================
+
+### NDPluginStats and NDPluginROIStat
+* Added waveform record containing NDArray timetstamps to time series data arrays. Thanks to
+  Stuart Wilkins for this.
+
+### NDPluginCircularBuff
+* Initialize the TriggerCalc string to "0" in the constructor to avoid error messages during iocInit
+  if the string has not been set to a valid value that is stored with autosave.
+
+### asynNDArrayDriver
+* Fixed bug in FilePath handling on Windows. If the file path ended in "/" then it would incorrectly
+  report that the directory did not exist when it did.
+
+### iocBoot
+* Deleted commonPlugins.cmd and commonPlugin_settings.req.  These were accidentally restored before the R2-4
+  release after renaming them to EXAMPLE_commonPlugins.cmd and EXAMPLE_commonPlugin_settings.req.
+
+
+R2-4 (September 21, 2015)
+========================
+### Removed simDetector and iocs directory. 
+Previously the simDetector was part of ADCore, and there was an iocs directory that built the simDetector 
+application both as part of an IOC and independent of an IOC. This had 2 disadvantages:
+
+1. It prevented building the simDetector IOC with optional plugins that reside in separate
+   repositories, such as ffmpegServer and ADPluginEdge.  This is because ADCore needs to
+   be built before the optional plugins, but by then the simDetector IOC is already built
+   and cannot use the optional plugins.
+2. It made ADCore depend on the synApps modules required to build an IOC, not just the
+   EPICS base and asyn that are required to build the base classes and plugins.
+   It was desirable to minimize such dependencies in ADCore.
+  
+For these reasons the simDetector driver and IOC code have been moved to a new repository
+called ADExample.  This repository is just like any other detector repository.
+This solves problem 1 above because the optional plugins can now be built after ADCore
+but before ADExample. 
+
+### NDAttribute
+* Fixed problem that the sourceType property was never set.
+
+### NDRoiStat[.adl, .edl, ui, .opi]
+* Fixed problem with ROI numbers when calling related displays.
+
+### ADApp/pluginTests/
+* New directory with unit tests.
+
+### XML schema
+* Moved the XML schema files from the iocBoot directory to a new XML_schema directory.
+
+### iocBoot
+* Moved commonPlugin_settings.req from ADApp/Db to iocBoot.  
+  Renamed commonPlugins.cmd to EXAMPLE_commonPlugins.cmd and commonPlugin_settings.req to
+  EXAMPLE_commonPlugin_settings.req.  These files must be copied to commonPlugins.cmd and
+  commonPlugin_settings.req respectively.  This was done because these files are typically
+  edited locally, and so should not be in git. 
+  iocBoot now only contains EXAMPLE_commonPlugins.cmd and EXAMPLE_commonPlugin_settings.req.  
+  EXAMPLE_commonPlugins.cmd adds ADCore/iocBoot to the autosave search path.
+  
+### ADApp
+* commonLibraryMakefile has been changed to define xxx_DIR and set LIB_LIBS+ = xxx if xxx_LIB is defined.  
+  If xxx_LIB is not defined then xxx_DIR is not defined and it sets LIB_SYS_LIBS += xxx.  
+  xxx includes HDF5, SZIP, and OPENCV. 
+  commonDriverMakefile has been changed similarly for PROD_LIBS and PROD_SYS_LIBS.
+  This allows optional libraries to either searched in the system location or a user-defined location 
+  without some conflicts that could previously occur.
+
 
 R2-3 (July 23, 2015)
 ========================

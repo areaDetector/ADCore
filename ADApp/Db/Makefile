@@ -16,9 +16,6 @@ DB += NDArrayBase.template
 DB += ADBase.template
 DB += ADPrefixes.template
 
-# Drivers
-DB += simDetector.template
-
 # Plugins
 DB += NDColorConvert.template
 DB += NDFile.template

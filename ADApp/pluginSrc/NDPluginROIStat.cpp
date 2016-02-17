@@ -282,6 +282,7 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
       pData[TSMeanValue*numTSPoints_ + currentTSPoint_] = pROI->mean;
       pData[TSTotal*numTSPoints_ + currentTSPoint_]     = pROI->total;
       pData[TSNet*numTSPoints_ + currentTSPoint_]       = pROI->net;
+      pData[TSTimestamp*numTSPoints_ + currentTSPoint_] = pArray->timeStamp;
     }
 
     /* We must enter the loop and exit with the mutex locked */
@@ -446,6 +447,7 @@ void NDPluginROIStat::doTimeSeriesCallbacks()
     doCallbacksFloat64Array(pData + TSMeanValue*numTSPoints_,  currentTSPoint_, NDPluginROIStatTSMeanValue, roi);
     doCallbacksFloat64Array(pData + TSTotal*numTSPoints_,      currentTSPoint_, NDPluginROIStatTSTotal, roi);
     doCallbacksFloat64Array(pData + TSNet*numTSPoints_,        currentTSPoint_, NDPluginROIStatTSNet, roi);
+    doCallbacksFloat64Array(pData + TSTimestamp*numTSPoints_,  currentTSPoint_, NDPluginROIStatTSTimestamp, roi);
   }
 }
 
@@ -527,6 +529,7 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
   createParam(NDPluginROIStatTSMeanValueString,  asynParamFloat64Array, &NDPluginROIStatTSMeanValue);
   createParam(NDPluginROIStatTSTotalString,      asynParamFloat64Array, &NDPluginROIStatTSTotal);
   createParam(NDPluginROIStatTSNetString,        asynParamFloat64Array, &NDPluginROIStatTSNet);
+  createParam(NDPluginROIStatTSTimestampString,  asynParamFloat64Array, &NDPluginROIStatTSTimestamp);
 
   createParam(NDPluginROIStatLastString,              asynParamInt32, &NDPluginROIStatLast);
   

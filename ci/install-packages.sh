@@ -1,4 +1,6 @@
 #!/bin/bash
+# Make sure we exit on any error
+set -e
 
 # Enabling the NSLS-II EPICS debian package repositories
 curl http://epics.nsls2.bnl.gov/debian/repo-key.pub | sudo apt-key add -

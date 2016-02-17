@@ -26,6 +26,8 @@
 
 static const char *driverName="NDPluginCircularBuff";
 
+#define DEFAULT_TRIGGER_CALC "0"
+
 asynStatus NDPluginCircularBuff::calculateTrigger(NDArray *pArray, int *trig)
 {
     NDAttribute *trigger;
@@ -324,7 +326,13 @@ asynStatus NDPluginCircularBuff::writeOctet(asynUser *pasynUser, const char *val
 
   if (function == NDCircBuffTriggerCalc){
     if (nChars > sizeof(triggerCalcInfix_)) nChars = sizeof(triggerCalcInfix_);
-    strncpy(triggerCalcInfix_, value, nChars);
+    // If the input string is empty then use a value of "0", otherwise there is an error
+    if ((value == 0) || (strlen(value) == 0)) {
+      strcpy(triggerCalcInfix_, DEFAULT_TRIGGER_CALC);
+      setStringParam(NDCircBuffTriggerCalc, DEFAULT_TRIGGER_CALC);
+    } else {
+      strncpy(triggerCalcInfix_, value, nChars);
+    }
     status = (asynStatus)postfix(triggerCalcInfix_, triggerCalcPostfix_, &postfixError);
     if (status) {
       asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
@@ -382,7 +390,7 @@ NDPluginCircularBuff::NDPluginCircularBuff(const char *portName, int queueSize, 
                    NDArrayPort, NDArrayAddr, 1, NUM_NDPLUGIN_CIRC_BUFF_PARAMS, maxBuffers, maxMemory,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
-                   0, 1, priority, stackSize)
+                   0, 1, priority, stackSize), pOldArray_(NULL)
 {
     //const char *functionName = "NDPluginCircularBuff";
     preBuffer_ = NULL;
@@ -427,7 +435,7 @@ NDPluginCircularBuff::NDPluginCircularBuff(const char *portName, int queueSize, 
     // Init the preset trigger count to 1
     setIntegerParam(NDCircBuffPresetTriggerCount, 1);
     setIntegerParam(NDCircBuffActualTriggerCount, 0);
-
+    
     // Enable ArrayCallbacks.  
     // This plugin currently ignores this setting and always does callbacks, so make the setting reflect the behavior
     setIntegerParam(NDArrayCallbacks, 1);

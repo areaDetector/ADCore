@@ -23,14 +23,14 @@
 using namespace std;
 
 #include "testingutilities.h"
-#include "SimulatedDetectorWrapper.h"
+#include "asynPortDriver.h"
 #include "HDF5PluginWrapper.h"
 #include "HDF5FileReader.h"
 
 struct NDFileHDF5TestFixture
 {
   NDArrayPool *arrayPool;
-  std::tr1::shared_ptr<SimulatedDetectorWrapper> driver;
+  asynPortDriver* dummy_driver;
   std::tr1::shared_ptr<HDF5PluginWrapper> hdf5;
 
   static int testCase;
@@ -41,26 +41,20 @@ struct NDFileHDF5TestFixture
 
     // Asyn manager doesn't like it if we try to reuse the same port name for multiple drivers (even if only one is ever instantiated at once), so
     // change it slightly for each test case.
-    std::string simport("simHDF5test"), testport("HDF5");
-    uniqueAsynPortName(simport);
+    std::string dummy_port("simHDF5test"), testport("HDF5");
+    uniqueAsynPortName(dummy_port);
     uniqueAsynPortName(testport);
 
-    // We need some upstream driver for our test plugin so that calls to connectArrayPort don't fail, but we can then ignore it and send
+    // We need some upstream driver for our test plugin so that calls to connectToArrayPort don't fail, but we can then ignore it and send
     // arrays by calling processCallbacks directly.
-    driver = std::tr1::shared_ptr<SimulatedDetectorWrapper>(new SimulatedDetectorWrapper(simport.c_str(),
-                                                                                         800,
-                                                                                         500,
-                                                                                         NDFloat64,
-                                                                                         50,
-                                                                                         0,
-                                                                                         0,
-                                                                                         2000000));
+    // Thus we instansiate a basic asynPortDriver object which is never used.
+    dummy_driver = new asynPortDriver(dummy_port.c_str(), 0, 1, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 2000000);
 
     // This is the plugin under test
     hdf5 = std::tr1::shared_ptr<HDF5PluginWrapper>(new HDF5PluginWrapper(testport.c_str(),
                                                                          50,
                                                                          1,
-                                                                         simport.c_str(),
+                                                                         dummy_port.c_str(),
                                                                          0,
                                                                          0,
                                                                          2000000));
@@ -75,7 +69,7 @@ struct NDFileHDF5TestFixture
   {
     delete arrayPool;
     hdf5.reset();
-    driver.reset();
+    delete dummy_driver;
   }
 
   void setup_hdf_stream()

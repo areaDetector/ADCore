@@ -29,7 +29,6 @@
 
 #include "hdf5.h"
 #include "testingutilities.h"
-#include "SimulatedDetectorWrapper.h"
 #include "HDF5PluginWrapper.h"
 #include "HDF5FileReader.h"
 #include "NDFileHDF5Dataset.h"
@@ -373,7 +372,7 @@ BOOST_AUTO_TEST_CASE(test_TenExtraDimensions)
 BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
 {
   NDArrayPool *arrayPool;
-  std::tr1::shared_ptr<SimulatedDetectorWrapper> driver;
+  std::tr1::shared_ptr<asynPortDriver> driver;
   std::tr1::shared_ptr<HDF5PluginWrapper> hdf5;
 
   arrayPool = new NDArrayPool(100, 0);
@@ -386,14 +385,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
 
   // We need some upstream driver for our test plugin so that calls to connectArrayPort don't fail, but we can then ignore it and send
   // arrays by calling processCallbacks directly.
-  driver = std::tr1::shared_ptr<SimulatedDetectorWrapper>(new SimulatedDetectorWrapper(simport.c_str(),
-                                                                                       800,
-                                                                                       500,
-                                                                                       NDFloat64,
-                                                                                       50,
-                                                                                       0,
-                                                                                       0,
-                                                                                       2000000));
+  driver = std::tr1::shared_ptr<asynPortDriver>(new asynPortDriver(simport.c_str(), 0, 1, asynGenericPointerMask, asynGenericPointerMask, 0, 0, 0, 2000000));
 
   // This is the plugin under test
   hdf5 = std::tr1::shared_ptr<HDF5PluginWrapper>(new HDF5PluginWrapper(testport.c_str(),
