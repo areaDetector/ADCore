@@ -269,7 +269,9 @@ asynStatus NDFileHDF5::openFile(const char *fileName, NDFileOpenMode_t openMode,
 
   if (storePerformance == 1){
     this->configurePerformanceDataset();
-    this->createPerformanceDataset();
+    if (this->createPerformanceDataset() != asynSuccess){
+      this->perf_dataset_id = -1;
+    }
   }
 
   // Create all of the hardlinks in the file
@@ -2353,17 +2355,18 @@ asynStatus NDFileHDF5::writePerformanceDataset()
   if (numCaptured < this->numPerformancePoints) dims[0] = numCaptured;
   else dims[0] = this->numPerformancePoints;
 
-  // Work with HDF5 library to select a suitable hyperslab (one element) and write the new data to it
-  H5Dset_extent(this->perf_dataset_id, dims);
+  if (this->perf_dataset_id != -1){
+    // Work with HDF5 library to select a suitable hyperslab (one element) and write the new data to it
+    H5Dset_extent(this->perf_dataset_id, dims);
 
-  /* Write the second dataset. */
-  H5Dwrite(this->perf_dataset_id, H5T_NATIVE_DOUBLE,
-           H5S_ALL, H5S_ALL,
-           H5P_DEFAULT, this->performanceBuf);
+    /* Write the second dataset. */
+    H5Dwrite(this->perf_dataset_id, H5T_NATIVE_DOUBLE,
+             H5S_ALL, H5S_ALL,
+             H5P_DEFAULT, this->performanceBuf);
 
-  /* Close the second dataset */
-  H5Dclose(this->perf_dataset_id);
-
+    /* Close the second dataset */
+    H5Dclose(this->perf_dataset_id);
+  }
   return asynSuccess;
 }
 
