@@ -42,6 +42,7 @@ INC += NDFileHDF5Dataset.h
 INC += NDFileHDF5AttributeDataset.h
 INC += NDFileHDF5Layout.h
 INC += NDFileHDF5LayoutXML.h
+INC += NDFileHDF5VersionCheck.h
 INC += NDFileJPEG.h
 INC += NDFileMagick.h
 INC += NDFileNetCDF.h
