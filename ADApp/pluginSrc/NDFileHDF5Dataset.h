@@ -4,6 +4,7 @@
 #include <string>
 #include <hdf5.h>
 #include "NDPluginFile.h"
+#include "NDFileHDF5VersionCheck.h"
 
 /** Class used for writing a Dataset with the NDFileHDF5 plugin.
   */

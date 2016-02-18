@@ -16,6 +16,7 @@
 #include "NDFileHDF5Dataset.h"
 #include "NDFileHDF5LayoutXML.h"
 #include "NDFileHDF5AttributeDataset.h"
+#include "NDFileHDF5VersionCheck.h"
 
 #define MAXEXTRADIMS 10
 

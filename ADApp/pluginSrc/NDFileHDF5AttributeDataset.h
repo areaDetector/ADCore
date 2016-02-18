@@ -14,6 +14,7 @@
 #include <NDPluginFile.h>
 #include <NDArray.h>
 #include "NDFileHDF5Layout.h"
+#include "NDFileHDF5VersionCheck.h"
 
 class NDFileHDF5AttributeDataset
 {
