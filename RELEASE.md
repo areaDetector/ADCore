@@ -23,7 +23,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
-R2-5 (November XXX, 2015)
+R2-5 (February XXX, 2016)
 ========================
 
 ### NDPluginStats and NDPluginROIStat
@@ -37,6 +37,17 @@ R2-5 (November XXX, 2015)
 ### asynNDArrayDriver
 * Fixed bug in FilePath handling on Windows. If the file path ended in "/" then it would incorrectly
   report that the directory did not exist when it did.
+
+### NDArrayBase.template, NDPluginDriver.cpp
+* Set ArrayCallbacks.VAL to 1 so array callbacks are enabled by default.
+
+### NDPluginBase.template
+* Changed EnableCallbacks.VAL to $(ENABLED=0), allowing enabling callbacks when loading database,
+  but default remains Disable.
+  
+### ADApp/op/adl
+* Fixed many medm adl files so text fields have correct string/decimal, width and aligmnent attributes to
+  improve autoconversion to other display managers.
 
 ### iocBoot
 * Deleted commonPlugins.cmd and commonPlugin_settings.req.  These were accidentally restored before the R2-4
