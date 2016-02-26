@@ -1,0 +1,458 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>areaDetector Plugin NDPluginROIStat</title>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+</head>
+<body>
+  <div style="text-align: center">
+    <h1>
+      areaDetector Plugin NDPluginTimeSeries</h1>
+    <h2>
+      February 25, 2016</h2>
+    <h2>
+      Mark Rivers</h2>
+    <h2>
+      University of Chicago</h2>
+  </div>
+  <h2>
+    Contents</h2>
+  <ul>
+    <li><a href="#Overview">Overview</a></li>
+    <li><a href="#Configuration">Configuration</a></li>
+    <li><a href="#Screens">Screen shots</a></li>
+    <li><a href="#Notes">Notes</a></li>
+  </ul>
+  <h2 id="Overview">
+    Overview
+  </h2>
+  <p>
+    This plugin provides accepts 2-D arrays of dimension [NewTimePoints, NumSignals].
+    NewTimePoints is frequently 1, but can be &gt;1. The plugin creates NumSignals 1-D
+    arrays of dimension [NumTimePoints], each of which is the time-series for one signal.
+    On each callback the new time points are appended to the existing time series arrays.
+    The plugin can operate either two modes. In fixed time mode the time-series arrays
+    are cleared, and new time points are appended until NumTimePoints points have been
+    received, at which point acquisition stops and further callbacks are ignorred. In
+    circular buffer mode once NumTimePoints samples are received then acquisition continues
+    with the new time points replacing the oldest ones in the circular buffer.</p>
+  <p>
+    The plugin also exports a 1-D array containing the relative time values of each
+    sample, which can be used for the horizontal axis in an OPI display. The time interval
+    information can either come from the asynFloat64 interface to the detector driver,
+    or from an NDAttribute from the first array received after acquisition is started.
+  </p>
+  <p>
+    The plugin can also perform 1-D FFTs of the time-series data, and exports arrays
+    containing the real part, imaginary part, and absolute value of the FFT.&nbsp; It
+    also exports an array containing the frequency of each point in the FFT arrays,
+    which can be used for the horizontal axis in an OPI display.</p>
+  <p>
+    Several database template files are provided:
+  </p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <th>
+          Template File Name</th>
+        <th>
+          Description</th>
+      </tr>
+      <tr>
+        <td>
+          NDTimeSeries.template</td>
+        <td>
+          This needs to be instantiated once for each instance of the plugin. It provides
+          records that apply to the whole plugin or to all signals.</td>
+      </tr>
+      <tr>
+        <td>
+          NDTimeSeriesN.template</td>
+        <td>
+          This needs to be instantiated once for each signal in the plugin (the number must
+          equal the number of signals specified in the IOC shell function). The template provides
+          records that apply to each signal.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    NDPluginTimeSeries inherits from NDPluginDriver.</p>
+  <p>
+    NDPluginTimeSeries defines the following parameters. It also implements all of the
+    standard plugin parameters from <a href="pluginDoc.html#NDPluginDriver">NDPluginDriver</a>.
+    The template files listed above provide access to these parameters, listed in the
+    following tables.
+  </p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Parameter Definitions in NDPluginTimeSeries.h and EPICS Record Definitions in NDTimeSeries.template</b>
+        </td>
+      </tr>
+      <tr>
+        <th>
+          Parameter index variable</th>
+        <th>
+          asyn interface</th>
+        <th>
+          Access</th>
+        <th>
+          Description</th>
+        <th>
+          drvInfo string</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          EPICS record type</th>
+      </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Time-Series data</b></td>
+      </tr>
+      <tr>
+        <td>
+          TSControl</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Controls time-series data collection. The enum choices are:
+          <ul>
+            <li>Erase/Start: Clears all time-series arrays, sets TS_CURRENT_POINT=0, and starts
+              time-series data collection.</li>
+            <li>Start: Starts time-series data collection without clearing arrays or modifying
+              TS_CURRENT_POINT. Used to restart collection after a Stop operation.</li>
+            <li>Stop: Stops times-series data collection. Performs callbacks on all time-series
+              waveform records.</li>
+            <li>Read: Performs callbacks on all time-series waveform records, updating the values.</li>
+          </ul>
+        </td>
+        <td>
+          TS_CONTROL</td>
+        <td>
+          $(P)$(R)TSControl</td>
+        <td>
+          mbbo</td>
+      </tr>
+      <tr>
+        <td>
+          N.A.</td>
+        <td>
+          N.A.</td>
+        <td>
+          r/w</td>
+        <td>
+          Sends the "Read" command to the TSControl record above. This record can be periodically
+          processed to update the time-series waveform records. It is scan disabled if TSAcquiring=Done,
+          so that updates are only performed when time-series acquisition is in progress.
+        </td>
+        <td>
+          N.A.</td>
+        <td>
+          $(P)$(R)TSRead</td>
+        <td>
+          bo</td>
+      </tr>
+      <tr>
+        <td>
+          TSNumPoints</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Controls the number of time-series points to collect. There is no maximum value,
+          the time-series arrays in the plugin are freed and reallocated each time this value
+          is changed. However, the size of the waveform records is fixed when the IOC is started,
+          so NELM in those records must be large enough for the largest time-series needed.
+        </td>
+        <td>
+          TS_NUM_POINTS</td>
+        <td>
+          $(P)$(R)TSNumPoints</td>
+        <td>
+          longout</td>
+      </tr>
+      <tr>
+        <td>
+          TSCurrentPoint</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The current time-series point. If TSCurrentPoint reaches TSNumPoints then time-series
+          acquisition is automatically stopped, and callbacks are done on all time-series
+          waveform records, updating the values. This means that even if TSRead has SCAN=Passive
+          that the waveform records will update when time-series acquisition is complete.
+        </td>
+        <td>
+          TS_CURRENT_POINT</td>
+        <td>
+          $(P)$(R)TSCurrentPoint</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          TSAcquiring</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Indicates status of time-series data acquisition. Values are 0=Done and 1=Acquiring.
+        </td>
+        <td>
+          TS_ACQUIRING</td>
+        <td>
+          $(P)$(R)TSAcquiring</td>
+        <td>
+          bi</td>
+      </tr>
+      <tr>
+        <td>
+          TSAcquireMode</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          The time series acquisition mode. Choices are:<br />
+          0: "Fixed length"
+          <br />
+          1: "Circular buffer" </td>
+        <td>
+          TS_ACQUIRE_MODE</td>
+        <td>
+          $(P)$(R)TSAcquireMode<br />
+          $(P)$(R)TSAcquireMode_RBV</td>
+        <td>
+          mbbo
+          <br />
+          mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          TSComputeFFT</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Controls whether FFTs are computed each time the time series arrays are read.</td>
+        <td>
+          TS_COMPUTE_FFT</td>
+        <td>
+          $(P)$(R)TSComputeFFT</td>
+        <td>
+          bo</td>
+      </tr>
+    </tbody>
+  </table>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Signal Specific Parameters.
+            <br />
+            Parameter Definitions in NDPluginTimeSeries.h and EPICS Record Definitions in NDTimeSeriesN.template</b>
+        </td>
+      </tr>
+      <tr>
+        <th>
+          Parameter index variable</th>
+        <th>
+          asyn interface</th>
+        <th>
+          Access</th>
+        <th>
+          Description</th>
+        <th>
+          drvInfo string</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          EPICS record type</th>
+      </tr>
+      <tr>
+        <td>
+          TSSignalName</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          The name for this signal.</td>
+        <td>
+          TS_SIGNAL_NAME</td>
+        <td>
+          $(P)$(R)SignalName<br />
+          $(P)$(R)SignalName_RBV</td>
+        <td>
+          stringout</td>
+      </tr>
+      <tr>
+        <td>
+          TSSignalUse</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Set this to 1 to use this signal, which will mean the time series and FFT will be
+          calculated for this signal.</td>
+        <td>
+          TS_SIGNAL_USE</td>
+        <td>
+          $(P)$(R)SignalUse<br />
+          $(P)$(R)SignalUse_RBV</td>
+        <td>
+          bo<br />
+          bi </td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>Time-Series data</b></td>
+      </tr>
+      <tr>
+        <td>
+          TSTimeSeries</td>
+        <td>
+          asynFloat64Array</td>
+        <td>
+          r/o</td>
+        <td>
+          The time series data arrays. </td>
+        <td>
+          TS_TIME_SERIES </td>
+        <td>
+          $(P)$(R)TimeSeries</td>
+        <td>
+          waveform</td>
+      </tr>
+      <tr>
+        <td align="center" colspan="7">
+          <b>FFT data</b></td>
+      </tr>
+      <tr>
+        <td>
+          TSFFTReal</td>
+        <td>
+          asynFloat64Array</td>
+        <td>
+          r/o</td>
+        <td>
+          The real part of the FFT. </td>
+        <td>
+          TS_FFT_REAL </td>
+        <td>
+          $(P)$(R)FFTReal</td>
+        <td>
+          waveform</td>
+      </tr>
+      <tr>
+        <td>
+          TS FFTImaginary</td>
+        <td>
+          asynFloat64Array</td>
+        <td>
+          r/o</td>
+        <td>
+          The imaginary part of the FFT. </td>
+        <td>
+          TS_FFT_IMAGINARY </td>
+        <td>
+          $(P)$(R)FFTImaginary</td>
+        <td>
+          waveform</td>
+      </tr>
+      <tr>
+        <td>
+          TSFFTAbsValue</td>
+        <td>
+          asynFloat64Array</td>
+        <td>
+          r/o</td>
+        <td>
+          The absolute value of the FFT.</td>
+        <td>
+          TS_FFT_ABS_VALUE</td>
+        <td>
+          $(P)$(R)FFTAbsValue</td>
+        <td>
+          waveform</td>
+      </tr>
+    </tbody>
+  </table>
+  <h2 id="Configuration">
+    Configuration</h2>
+  <p>
+    The NDPluginTimeSeries plugin is created with the NDTimeSeriesConfigure function,
+    either from C/C++ or from the EPICS IOC shell.</p>
+  <pre>NDTimeSeriesConfigure(const char *portName, int queueSize, int blockingCallbacks, 
+                          const char *NDArrayPort, int NDArrayAddr, int maxSignals, const char* drvInfoTime,
+                          int maxBuffers,  size_t maxMemory, int priority, int stackSize)
+  </pre>
+  <p>
+    All but the <code>maxSignals</code> and drvInfoTime parameters are common to all
+    plugins.</p>
+  <p>
+    maxSignals defines how many signals this plugin will deal with. Usually this will
+    match the number of NDTimeSeriesN templates have been loaded.</p>
+  <p>
+    drvInfoTime is the drvInfo string to access the asynFloat64 parameter in the driver
+    to access the time interval between samples. The driver must do callbacks on the
+    asynFloat64 interface when this value changes. If this string is empty then the
+    driver will look for an attribute called TimeInterval in the first array after data
+    acquisition starts. If neither mechanism is implemented then the driver will assume
+    a sample interval of 1.0.</p>
+  <p>
+    For example:
+    <br />
+    <code>NDTimeSeriesConfigure("TS1", 100, 0, "DET1", 0, 8, -1, -1, 0, 0)</code>
+  </p>
+  <h2 id="Screens">
+    Screen shots</h2>
+  <p>
+    The following MEDM screen provides access to the parameters in NDPluginDriver.h
+    and NDPluginTimeSeries.h through records in NDPluginBase.template, and NDTimeSeries.template.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDROIStat.adl</h3>
+    <img alt="NDROIStat.png" src="NDROIStat.png" />
+  </div>
+  <p>
+    The following MEDM screen provides access to the parameters in NDPluginROIStat.h
+    through records in NDROIStatN.template.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDROIStatN.adl</h3>
+    <img alt="NDROIStatN.png" src="NDROIStatN.png" />
+  </div>
+  <p>
+    The following MEDM screen provides access to 8 ROIs at once.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDROIStat8.adl</h3>
+    <img alt="NDROIStat8.png" src="NDROIStat8.png" />
+  </div>
+  <div style="text-align: center">
+    <h3>
+      NDTimeSeries.adl</h3>
+    <img alt="NDROIStatTimeSeriesMean.png" src="NDROIStatTimeSeriesMean.png" />
+  </div>
+  <h2 id="Notes">
+    Notes</h2>
+  <p>
+    This plugin only supports 1-D and 2-D arrays. The NDPluginStats plugin can compute
+    statistics on N-dimensional arrays, but it is less efficient for these simple statistics
+    on 1-D and 2-D arrays.</p>
+</body>
+</html>
