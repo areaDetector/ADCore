@@ -39,6 +39,8 @@ DB += NDTransform.template
 DB += NDAttribute.template
 DB += NDAttributeN.template
 DB += NDCircularBuff.template
+DB += NDTimeSeries.template
+DB += NDTimeSeriesN.template
 
 #----------------------------------------------------
 # If <anyname>.db template is not named <anyname>*.template add
