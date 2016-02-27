@@ -25,7 +25,7 @@ record(bo, "$(P)$(R)Use")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_USE")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_SIGNAL_USE")
    field(VAL,  "0")
    field(ZNAM, "No")
    field(ONAM, "Yes")
@@ -35,7 +35,7 @@ record(bo, "$(P)$(R)Use")
 record(bi, "$(P)$(R)Use_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_USE")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_SIGNAL_USE")
    field(ZNAM, "No")
    field(ONAM, "Yes")
    field(SCAN, "I/O Intr")
@@ -48,7 +48,7 @@ record(stringout, "$(P)$(R)Name")
 {
    field(PINI, "YES")
    field(DTYP, "asynOctetWrite")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_NAME")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_SIGNAL_NAME")
    info(autosaveFields, "VAL")
 }
 
