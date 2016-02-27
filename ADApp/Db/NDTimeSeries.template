@@ -100,19 +100,19 @@ record(waveform, "$(P)$(R)TSTimestamp")
    field(SCAN, "I/O Intr")
 }
 
-record(waveform, "$(P)$(R)TSTimeArray")
+record(waveform, "$(P)$(R)TSTimeAxis")
 {
    field(DTYP, "asynFloat64ArrayIn")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_TIME_ARRAY")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_TIME_AXIS")
    field(NELM, "$(NCHANS)")
    field(FTVL, "DOUBLE")
    field(SCAN, "I/O Intr")
 }
 
-record(waveform, "$(P)$(R)TSFreqArray")
+record(waveform, "$(P)$(R)TSFreqAxis")
 {
    field(DTYP, "asynFloat64ArrayIn")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_FREQ_ARRAY")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_FREQ_AXIS")
    field(NELM, "$(NCHANS)")
    field(FTVL, "DOUBLE")
    field(SCAN, "I/O Intr")
