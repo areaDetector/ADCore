@@ -62,6 +62,39 @@ record(longin, "$(P)$(R)TSCurrentPoint")
    field(SCAN, "I/O Intr")
 }
 
+record(ao, "$(P)$(R)TSTimePerPoint")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_TIME_PER_POINT")
+   field(PREC, "3")
+   field(VAL,  "0.1")
+   info(autosaveFields, "VAL")
+}
+
+record(ai, "$(P)$(R)TSTimePerPoint_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_TIME_PER_POINT")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)TSNumAverage")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_NUM_AVERAGE")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)TSElapsedTime")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_ELAPSED_TIME")
+   field(PREC, "2")
+   field(SCAN, "I/O Intr")
+}
+
 record(bi, "$(P)$(R)TSAcquiring")
 {
    field(DTYP, "asynInt32")
@@ -75,20 +108,24 @@ record(bi, "$(P)$(R)TSAcquiring")
 
 record(mbbo, "$(P)$(R)TSAcquireMode")
 {
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_CONTROL")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_ACQUIRE_MODE")
    field(ZRVL, "0")
    field(ZRST, "Fixed length")
    field(ONVL, "1")
-   field(ONST, "Circular buffer")
+   field(ONST, "Circ. buffer")
+   info(autosaveFields, "VAL")
 }
 
 record(bo, "$(P)$(R)TSComputeFFT")
 {
+   field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_COMPUTE_FFT")
-   field(ZNAM, "Done")
-   field(ONAM, "Compute")
+   field(ZNAM, "No")
+   field(ONAM, "Yes")
+   info(autosaveFields, "VAL")
 }
 
 record(waveform, "$(P)$(R)TSTimestamp")
