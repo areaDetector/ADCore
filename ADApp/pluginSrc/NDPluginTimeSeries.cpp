@@ -15,17 +15,27 @@
 
 #include <epicsString.h>
 #include <epicsMutex.h>
+#include <epicsTime.h>
 #include <iocsh.h>
 
 #include <asynDriver.h>
+#include <asynFloat64SyncIO.h>
 
 #include <NDArray.h>
 
 #include <epicsExport.h>
 
 #include "NDPluginTimeSeries.h"
+#include "fft_1d.h"
 
 #define DEFAULT_NUM_TSPOINTS 2048
+
+static void timePerPointCallbackC(void *drvPvt, asynUser *pasynUser, double seconds)
+{
+    NDPluginTimeSeries *pPvt = (NDPluginTimeSeries *)drvPvt;
+    
+    pPvt->timePerPointCallback(seconds);
+}
 
 /** Constructor for NDPluginTimeSeries; most parameters are simply passed to NDPluginDriver::NDPluginDriver.
   * \param[in] portName The name of the asyn port driver to be created.
@@ -38,7 +48,7 @@
   * \param[in] NDArrayPort Name of asyn port driver for initial source of NDArray callbacks.
   * \param[in] NDArrayAddr asyn port driver address for initial source of NDArray callbacks.
   * \param[in] maxSignals The maximum number of signals this plugin supports. 1 is minimum.
-  * \param[in] drvInfoTime The drvInfo string to access the time interval parameter in the driver.
+  * \param[in] drvInfoTimePerPoint The drvInfo string to access the time interval parameter in the driver.
   * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is
   *            allowed to allocate. Set this to -1 to allow an unlimited number of buffers.
   * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is
@@ -48,7 +58,7 @@
   */
 NDPluginTimeSeries::NDPluginTimeSeries(const char *portName, int queueSize, int blockingCallbacks,
                          const char *NDArrayPort, int NDArrayAddr, 
-                         int maxSignals, const char *drvInfoTime,
+                         int maxSignals, const char *drvInfoTimePerPoint,
                          int maxBuffers, size_t maxMemory,
                          int priority, int stackSize)
     /* Invoke the base class constructor */
@@ -57,25 +67,39 @@ NDPluginTimeSeries::NDPluginTimeSeries(const char *portName, int queueSize, int 
              asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
              asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
              ASYN_MULTIDEVICE, 1, priority, stackSize),
-    timeArray_(0), freqArray_(0), timeStamp_(0), 
+    numAverage_(1), timePerPointInput_(0),
+    timeAxis_(0), freqAxis_(0), timeStamp_(0), 
     timeSeries_(0), FFTReal_(0), FFTImaginary_(0), FFTAbsValue_(0)
 {
-  //const char *functionName = "NDPluginTimeSeries::NDPluginTimeSeries";
+  const char *functionName = "NDPluginTimeSeries::NDPluginTimeSeries";
+
+  asynStatus status;
+  asynInterface *pasynInterface;
+  asynFloat64 *pfloat64;
+  void *float64Pvt;
+  asynDrvUser *pdrvUser;
+  void *drvUserPvt;
+  const char *ptypeName;
+  size_t psize;
 
   if (maxSignals < 1) {
     maxSignals = 1;
   }
   maxSignals_ = maxSignals;
+  averageStore_ = (double *)calloc(maxSignals_, sizeof(double));
   
   /* Per-plugin parameters */
   createParam(TSControlString,                 asynParamInt32, &P_TSControl);
   createParam(TSNumPointsString,               asynParamInt32, &P_TSNumPoints);
   createParam(TSCurrentPointString,            asynParamInt32, &P_TSCurrentPoint);
+  createParam(TSTimePerPointString,          asynParamFloat64, &P_TSTimePerPoint);
+  createParam(TSNumAverageString,              asynParamInt32, &P_TSNumAverage);
+  createParam(TSElapsedTimeString,           asynParamFloat64, &P_TSElapsedTime);
   createParam(TSAcquiringString,               asynParamInt32, &P_TSAcquiring);
   createParam(TSAcquireModeString,             asynParamInt32, &P_TSAcquireMode);
   createParam(TSComputeFFTString,              asynParamInt32, &P_TSComputeFFT);
-  createParam(TSTimeArrayString,        asynParamFloat64Array, &P_TSTimeArray);
-  createParam(TSFreqArrayString,        asynParamFloat64Array, &P_TSFreqArray);
+  createParam(TSTimeAxisString,         asynParamFloat64Array, &P_TSTimeAxis);
+  createParam(TSFreqAxisString,         asynParamFloat64Array, &P_TSFreqAxis);
   createParam(TSTimestampString,        asynParamFloat64Array, &P_TSTimestamp);
   
   /* Per-signal parameters */
@@ -86,8 +110,6 @@ NDPluginTimeSeries::NDPluginTimeSeries(const char *portName, int queueSize, int 
   createParam(TSFFTImaginaryString,     asynParamFloat64Array, &P_TSFFTImaginary);
   createParam(TSFFTAbsValueString,      asynParamFloat64Array, &P_TSFFTAbsValue);
  
-  //Note: params set to a default value here will overwrite a default database value
-
   /* Set the plugin type string */
   setStringParam(NDPluginDriverPluginType, "NDPluginTimeSeries");
   
@@ -98,35 +120,168 @@ NDPluginTimeSeries::NDPluginTimeSeries(const char *portName, int queueSize, int 
   /* Try to connect to the array port */
   connectToArrayPort();
 
+  if (strlen(drvInfoTimePerPoint) > 0) {
+    /* Connect to our input driver */
+    pasynUserInput_ = pasynManager->createAsynUser(0,0);
+    status = pasynManager->connectDevice(pasynUserInput_, NDArrayPort, 0);
+    if (status != asynSuccess) {
+      asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s:, connectDevice failed\n",
+                functionName);
+      goto error;
+    }
+
+    /* Get the asynDrvUser interface */
+    pasynInterface = pasynManager->findInterface(pasynUserInput_, asynDrvUserType, 1);
+    if (!pasynInterface) {
+      asynPrint(pasynUserInput_, ASYN_TRACE_ERROR,
+                "%s:, cannot find asynDrvUser interface for input %s\n",
+                functionName, NDArrayPort);
+      goto error;
+    }
+
+    pdrvUser = (asynDrvUser *)pasynInterface->pinterface;
+    drvUserPvt = pasynInterface->drvPvt;
+
+    /* Get the asynFloat64 interface */
+    pasynInterface = pasynManager->findInterface(pasynUserInput_, asynFloat64Type, 1);
+    if (!pasynInterface) {
+      asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s:, cannot find asynFloat64 interface for input %s\n",
+                 functionName, NDArrayPort);
+      goto error;
+    }
+    pfloat64 = (asynFloat64 *)pasynInterface->pinterface;
+    float64Pvt = pasynInterface->drvPvt;
+    status = pasynFloat64SyncIO->connect(NDArrayPort, 0, &pasynUserFloat64SyncIO_, drvInfoTimePerPoint);
+    if (status) {
+      asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s:, cannot connect to asynFloat64SyncIO for input %s\n",
+                functionName, NDArrayPort);
+      goto error;
+    }
+
+    /* Configure the asynUser for callback interval command */
+    status = pdrvUser->create(drvUserPvt, pasynUserInput_, drvInfoTimePerPoint, &ptypeName, &psize);
+    if (status) {
+      asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s:, error calling drvUser->create() for input %s, drvInfoTimePerPoint=%s\n",
+                functionName, NDArrayPort, drvInfoTimePerPoint);
+      goto error;
+    }
+
+    pfloat64->registerInterruptUser(float64Pvt, pasynUserInput_, 
+                                    timePerPointCallbackC, this, &float64RegistrarPvt_);
+    status = pasynFloat64SyncIO->read(pasynUserFloat64SyncIO_, &timePerPointInput_, 1.0);
+  }
+  error:
   callParamCallbacks();
   
 }
 
+void NDPluginTimeSeries::timePerPointCallback(double seconds)
+{
+    lock();
+    timePerPointInput_ = seconds;
+    computeNumAverage();
+    unlock();
+}
+
+void NDPluginTimeSeries::computeNumAverage()
+{
+    if (timePerPointInput_ == 0) {
+      // The driver must not support getting the time per point on the asynFloat64 interface
+      numAverage_ = 1;
+      timePerPointActual_ = timePerPointRequested_;
+    }
+    else {
+      numAverage_ = (int) (timePerPointRequested_/timePerPointInput_ + 0.5);
+      if (numAverage_ < 1) numAverage_ = 1;
+      timePerPointActual_ = timePerPointInput_ * numAverage_;
+    }
+    numAveraged_ = 0;
+    setDoubleParam(P_TSTimePerPoint, timePerPointActual_);
+    setIntegerParam(P_TSNumAverage, numAverage_);
+    createAxisArrays();
+    callParamCallbacks();
+}
+
 void NDPluginTimeSeries::allocateArrays()
 {
-  if (timeArray_)     free(timeArray_);
   if (timeStamp_)     free(timeStamp_);
   if (timeSeries_)    free(timeSeries_);
-  if (freqArray_)     free(freqArray_);
+  if (timeCircular_)  free(timeCircular_);
   if (FFTReal_)       free(FFTReal_);
   if (FFTImaginary_)  free(FFTImaginary_);
   if (FFTAbsValue_)   free(FFTAbsValue_);
 
-  timeArray_    = (double *)calloc(maxSignals_*numTimePoints_, sizeof(double));
+  numFreqPoints_ = numTimePoints_ / 2;
+
   timeStamp_    = (double *)calloc(maxSignals_*numTimePoints_, sizeof(double));
   timeSeries_   = (double *)calloc(maxSignals_*numTimePoints_, sizeof(double));
-  freqArray_    = (double *)calloc(maxSignals_*numFreqPoints_, sizeof(double));
+  timeCircular_ = (double *)calloc(maxSignals_*numTimePoints_, sizeof(double));
+  FFTComplex_   = (double *)calloc(maxSignals_*numFreqPoints_, sizeof(double)*2);
   FFTReal_      = (double *)calloc(maxSignals_*numFreqPoints_, sizeof(double));
   FFTImaginary_ = (double *)calloc(maxSignals_*numFreqPoints_, sizeof(double));
   FFTAbsValue_  = (double *)calloc(maxSignals_*numFreqPoints_, sizeof(double));
+  createAxisArrays();
 }
 
 void NDPluginTimeSeries::zeroArrays()
 {
-  memset(timeSeries_,   0, numTimePoints_*sizeof(double));
-  memset(FFTReal_,      0, numFreqPoints_*sizeof(double));
-  memset(FFTImaginary_, 0, numFreqPoints_*sizeof(double));
-  memset(FFTAbsValue_,  0, numFreqPoints_*sizeof(double));
+  size_t timeSize = maxSignals_ * numTimePoints_ * sizeof(double);
+  size_t freqSize = maxSignals_ * numFreqPoints_ * sizeof(double);
+
+  memset(timeStamp_,    0, numTimePoints_*sizeof(double));
+  memset(timeSeries_,   0, timeSize);
+  memset(timeCircular_, 0, timeSize);
+  memset(FFTComplex_,   0, freqSize * 2); // Complex data
+  memset(FFTReal_,      0, freqSize);
+  memset(FFTImaginary_, 0, freqSize);
+  memset(FFTAbsValue_,  0, freqSize);
+}
+
+void NDPluginTimeSeries::computeFFTs()
+{
+  int i, j;
+  
+  /* Compute the FFTs of each array */
+  for (i=0; i<maxSignals_; i++) {
+    for (j=0; j<numTimePoints_; j++) {
+      FFTComplex_[2*j] = timeSeries_[i*numTimePoints_ + j];
+      FFTComplex_[2*j+1] = 0.;
+    }
+    fft_1d(FFTComplex_-1, numTimePoints_, 1);
+    /* Start at 1 so we don't copy DC offset which messes up scaling of plots */
+    for (j=1; j<numFreqPoints_; j++) {
+      FFTReal_     [i*numFreqPoints_ + j] = FFTComplex_[2*j]; 
+      FFTImaginary_[i*numFreqPoints_ + j] = FFTComplex_[2*j+1]; 
+      FFTAbsValue_ [i*numFreqPoints_ + j] = sqrt((FFTComplex_[2*j]   * FFTComplex_[2*j] + 
+                                                  FFTComplex_[2*j+1] * FFTComplex_[2*j+1])
+                                                 / (numTimePoints_ * numTimePoints_));
+    }
+  }
+}         
+
+void NDPluginTimeSeries::createAxisArrays()
+{
+  double freqStep;
+  int i;
+  
+  if (timeAxis_) free(timeAxis_);
+  if (freqAxis_) free(freqAxis_);
+  timeAxis_ = (double *)calloc(numTimePoints_, sizeof(double));
+  freqAxis_ = (double *)calloc(numFreqPoints_, sizeof(double));
+  for (i=0; i<numTimePoints_; i++) {
+    timeAxis_[i] = i*timePerPointActual_;
+  }
+  // Check this - are the frequencies correct, or off-by-one?
+  freqStep = 0.5 / timePerPointActual_ / (numFreqPoints_ - 2);
+  for (i=0; i<numFreqPoints_; i++) {
+    freqAxis_[i] = i * freqStep;
+  }
+  doCallbacksFloat64Array(timeAxis_, numTimePoints_, P_TSTimeAxis, 0);
+  doCallbacksFloat64Array(freqAxis_, numFreqPoints_, P_TSFreqAxis, 0);
 }
 
 /**
@@ -142,22 +297,48 @@ asynStatus NDPluginTimeSeries::doAddToTimeSeriesT(NDArray *pArray)
   int signal;
   int i;
   int numTimes = 1;
+  epicsTimeStamp timeNow;
+  double elapsedTime;
   
   if (pArray->ndims == 2) numTimes = pArray->dims[1].size;
   
   for (i=0; i<numTimes; i++) {
     for (signal=0; signal<maxSignals_; signal++) {
-      timeSeries_[signal*numTimePoints_ + currentTimePoint_] = (epicsFloat64)*pData++;
+      averageStore_[signal] += (epicsFloat64)*pData++;
     }
+    numAveraged_++;
+    if (numAveraged_ < numAverage_) continue;
+    /* We have now collected the desired number of points to average */
+    if (acquireMode_ == TSAcquireModeFixed) {
+      for (signal=0; signal<maxSignals_; signal++) {
+        timeSeries_[signal*numTimePoints_ + currentTimePoint_] = averageStore_[signal]/numAveraged_;
+        averageStore_[signal] = 0;
+      }
+    }
+    else { // Circular buffer mode
+      for (signal=0; signal<maxSignals_; signal++) {
+        timeCircular_[signal*numTimePoints_ + currentTimePoint_] = averageStore_[signal]/numAveraged_;
+        averageStore_[signal] = 0;
+      }
+    }
+    numAveraged_ = 0;
     timeStamp_[currentTimePoint_] = pArray->timeStamp;
     currentTimePoint_++;
-    setIntegerParam(P_TSCurrentPoint, currentTimePoint_);
     if (currentTimePoint_ >= numTimePoints_) {
-      setIntegerParam(P_TSAcquiring, 0);
-      doTimeSeriesCallbacks();
-      break;
+      if (acquireMode_ == TSAcquireModeFixed) {
+        setIntegerParam(P_TSAcquiring, 0);
+        doTimeSeriesCallbacks();
+        break;
+      }
+      else { // Circular buffer mode
+          currentTimePoint_ = 0;
+      }
     }
-  }
+  }  // for (i=0; ...)
+  setIntegerParam(P_TSCurrentPoint, currentTimePoint_);     
+  epicsTimeGetCurrent(&timeNow);
+  elapsedTime = epicsTimeDiffInSeconds(&timeNow, &startTime_);
+  setDoubleParam(P_TSElapsedTime, elapsedTime);
   return asynSuccess;
 }
 
@@ -250,7 +431,7 @@ asynStatus NDPluginTimeSeries::writeInt32(asynUser *pasynUser, epicsInt32 value)
     asynStatus status = asynSuccess;
     bool stat = true;
     int signal = 0;
-    const char* functionName = "NDPluginTimeSeries::writeInt32";
+    static const char* functionName = "NDPluginTimeSeries::writeInt32";
 
     status = getAddress(pasynUser, &signal); 
     if (status != asynSuccess) {
@@ -262,6 +443,8 @@ asynStatus NDPluginTimeSeries::writeInt32(asynUser *pasynUser, epicsInt32 value)
     
     if (function == P_TSNumPoints) {
       allocateArrays();
+    } else if (function == P_TSAcquireMode) {
+      acquireMode_ = value;
     } else if (function == P_TSControl) {
         switch (value) {
           case TSEraseStart:
@@ -269,6 +452,7 @@ asynStatus NDPluginTimeSeries::writeInt32(asynUser *pasynUser, epicsInt32 value)
             setIntegerParam(P_TSCurrentPoint, currentTimePoint_);
             setIntegerParam(P_TSAcquiring, 1);
             zeroArrays();
+            epicsTimeGetCurrent(&startTime_);
             break;
           case TSStart:
             if (currentTimePoint_ < numTimePoints_) {
@@ -295,7 +479,7 @@ asynStatus NDPluginTimeSeries::writeInt32(asynUser *pasynUser, epicsInt32 value)
         epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
               "%s: status=%d, function=%d, value=%d",
               functionName, status, function, value);
-    status = asynError;
+        status = asynError;
     } else {
       asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
         "%s: function=%d, signal=%d, value=%d\n",
@@ -305,13 +489,84 @@ asynStatus NDPluginTimeSeries::writeInt32(asynUser *pasynUser, epicsInt32 value)
     return status;
 }
 
+asynStatus NDPluginTimeSeries::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
+{
+    int function = pasynUser->reason;
+    int signal;
+    asynStatus status=asynSuccess;
+    bool stat = true;
+    static const char* functionName = "NDPluginTimeSeries::writeInt32";
+
+    status = getAddress(pasynUser, &signal); 
+    if (status != asynSuccess) {
+      return status;
+    }
+
+    /* Set the parameter in the parameter library. */
+    stat = (setDoubleParam(signal, function, value) == asynSuccess) && stat;
+    if (function == P_TSTimePerPoint) {
+        timePerPointRequested_ = value;
+        computeNumAverage();
+    } else if (function < FIRST_NDPLUGIN_TIME_SERIES_PARAM) {
+      stat = (NDPluginDriver::writeFloat64(pasynUser, value) == asynSuccess) && stat;
+    }
+
+    /* Do callbacks so higher layers see any changes */
+    stat = (callParamCallbacks(signal) == asynSuccess) && stat;
+    stat = (callParamCallbacks() == asynSuccess) && stat;
+
+    if (!stat) {
+        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+             "%s: status=%d, function=%d, value=%f",
+              functionName, status, function, value);
+        status = asynError;
+    } else {
+      asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+         "%s: function=%d, signal=%d, value=%f\n",
+        functionName, function, signal, value);
+    }
+    return(status);
+}
+
+
 void NDPluginTimeSeries::doTimeSeriesCallbacks()
 {
   int signal;
+  size_t numCopy;
+  double *src, *dst;
+  int computeFFT;
+  
+  getIntegerParam(P_TSComputeFFT, &computeFFT);
+  
+  // If we are in circular buffer mode then copy data from timeCircular_ to timeSeries_
+  if (acquireMode_ == TSAcquireModeCircular) {
+    for (signal=0; signal<maxSignals_; signal++) {
+      numCopy = numTimePoints_ - currentTimePoint_;
+      src = timeCircular_ + (currentTimePoint_ * signal * numTimePoints_);
+      dst = timeSeries_;
+printf("numCopy #1 =%d\n", (int)numCopy);
+      memcpy(dst, src, numCopy*sizeof(double));
+      numCopy = currentTimePoint_;
+      src = timeCircular_;
+      dst = timeSeries_ + (currentTimePoint_ * signal * numTimePoints_);
+printf("numCopy #2 =%d\n", (int)numCopy);
+      memcpy(dst, src, numCopy*sizeof(double));
+    }
+  }
     
-  /* Loop over the signals in this driver */
+  /* Do time series array callbacks */
   for (signal=0; signal<maxSignals_; signal++) {
     doCallbacksFloat64Array(timeSeries_ + signal*numTimePoints_, currentTimePoint_, P_TSTimeSeries, signal);
+  }
+  
+  if (computeFFT) {
+    computeFFTs();
+    /* Do FFT array callbacks */
+    for (signal=0; signal<maxSignals_; signal++) {
+      doCallbacksFloat64Array(FFTReal_      + signal*numFreqPoints_, numFreqPoints_, P_TSFFTReal,      signal);
+      doCallbacksFloat64Array(FFTImaginary_ + signal*numFreqPoints_, numFreqPoints_, P_TSFFTImaginary, signal);
+      doCallbacksFloat64Array(FFTAbsValue_  + signal*numFreqPoints_, numFreqPoints_, P_TSFFTAbsValue,  signal);
+    }
   }
 }
 
@@ -320,12 +575,12 @@ void NDPluginTimeSeries::doTimeSeriesCallbacks()
 /** Configuration command */
 extern "C" int NDTimeSeriesConfigure(const char *portName, int queueSize, int blockingCallbacks,
                                  const char *NDArrayPort, int NDArrayAddr, 
-                                 int maxSignals, const char *drvInfoTime, 
+                                 int maxSignals, const char *drvInfoTimePerPoint, 
                                  int maxBuffers, size_t maxMemory,
                                  int priority, int stackSize)
 {
     new NDPluginTimeSeries(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, 
-                           maxSignals, drvInfoTime,
+                           maxSignals, drvInfoTimePerPoint,
                            maxBuffers, maxMemory, priority, stackSize);
     return(asynSuccess);
 }
@@ -357,9 +612,9 @@ static const iocshFuncDef initFuncDef = {"NDTimeSeriesConfigure",11,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
     NDTimeSeriesConfigure(args[0].sval, args[1].ival, args[2].ival,
-                   args[3].sval, args[4].ival, args[5].ival,
-                   args[6].sval, args[7].ival, args[8].ival, 
-                   args[9].ival, args[10].ival);
+                          args[3].sval, args[4].ival, args[5].ival,
+                          args[6].sval, args[7].ival, args[8].ival, 
+                          args[9].ival, args[10].ival);
 }
 
 extern "C" void NDTimeSeriesRegister(void)
