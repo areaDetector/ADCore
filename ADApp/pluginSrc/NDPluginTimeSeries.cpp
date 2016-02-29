@@ -69,7 +69,7 @@ NDPluginTimeSeries::NDPluginTimeSeries(const char *portName, int queueSize, int 
              ASYN_MULTIDEVICE, 1, priority, stackSize),
     numAverage_(1), timePerPointInput_(0),
     timeAxis_(0), freqAxis_(0), timeStamp_(0), 
-    timeSeries_(0), FFTReal_(0), FFTImaginary_(0), FFTAbsValue_(0)
+    timeSeries_(0), timeCircular_(0), FFTReal_(0), FFTImaginary_(0), FFTAbsValue_(0)
 {
   const char *functionName = "NDPluginTimeSeries::NDPluginTimeSeries";
 
