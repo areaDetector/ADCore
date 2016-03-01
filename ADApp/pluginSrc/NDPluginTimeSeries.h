@@ -18,7 +18,8 @@
 
 
 /* Per-plugin parameters */
-#define TSControlString         "TS_CONTROL"          /* (asynInt32,        r/w) Erase/start, stop, start, read */
+#define TSAcquireString         "TS_ACQUIRE"          /* (asynInt32,        r/w) Acquire on/off */
+#define TSReadString            "TS_READ"             /* (asynInt32,        r/w) Read data */
 #define TSNumPointsString       "TS_NUM_POINTS"       /* (asynInt32,        r/w) Number of time series points to use */
 #define TSCurrentPointString    "TS_CURRENT_POINT"    /* (asynInt32,        r/o) Current point in time series */
 #define TSTimePerPointString    "TS_TIME_PER_POINT"   /* (asynFloat64,      r/o) Time per time point */
@@ -72,8 +73,9 @@ public:
 protected:
 
     // Per-plugin parameters
-    int P_TSControl;
-    #define FIRST_NDPLUGIN_TIME_SERIES_PARAM P_TSControl
+    int P_TSAcquire;
+    #define FIRST_NDPLUGIN_TIME_SERIES_PARAM P_TSAcquire
+    int P_TSRead;
     int P_TSNumPoints;
     int P_TSCurrentPoint;
     int P_TSTimePerPoint;
