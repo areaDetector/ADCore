@@ -5,6 +5,11 @@
 
 #include "fft_1d.h"
 
+/* vxWorks does not have M_PI */
+#ifdef vxWorks
+  #define M_PI 3.14159265358979323846
+#endif
+ 
 void fft_1d(double data[], unsigned long nn, int isign)
 {
 	unsigned long n,mmax,m,j,istep,i;
