@@ -5,8 +5,8 @@ file {
 }
 display {
 	object {
-		x=10
-		y=332
+		x=41
+		y=171
 		width=695
 		height=570
 	}
@@ -453,42 +453,31 @@ composite {
 		}
 	}
 }
-composite {
+text {
 	object {
 		x=410
 		y=300
-		width=235
+		width=130
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=410
-				y=300
-				width=130
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="# Time points"
-		}
-		"text entry" {
-			object {
-				x=545
-				y=300
-				width=100
-				height=20
-			}
-			control {
-				chan="$(P)$(R)TSNumPoints"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="# Time points"
+}
+"text entry" {
+	object {
+		x=545
+		y=300
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)TSNumPoints"
+		clr=14
+		bclr=51
+	}
+	limits {
 	}
 }
 text {
@@ -545,5 +534,591 @@ text {
 	}
 	format="exponential"
 	limits {
+	}
+}
+composite {
+	object {
+		x=417
+		y=400
+		width=243
+		height=120
+	}
+	"composite name"=""
+	children {
+		composite {
+			object {
+				x=417
+				y=400
+				width=243
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=417
+						y=400
+						width=140
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Time series"
+					align="horiz. right"
+				}
+				"related display" {
+					object {
+						x=560
+						y=400
+						width=100
+						height=20
+					}
+					display[0] {
+						label="Signal 1"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R1),TITLE=$(TITLE1),XAXIS=TSTimeAxis,YAXIS=TimeSeries"
+					}
+					display[1] {
+						label="Signal 2"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R2),TITLE=$(TITLE2),XAXIS=TSTimeAxis,YAXIS=TimeSeries"
+					}
+					display[2] {
+						label="Signal 3"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R3),TITLE=$(TITLE3),XAXIS=TSTimeAxis,YAXIS=TimeSeries"
+					}
+					display[3] {
+						label="Signal 4"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R4),TITLE=$(TITLE4),XAXIS=TSTimeAxis,YAXIS=TimeSeries"
+					}
+					display[4] {
+						label="Signal 5"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R5),TITLE=$(TITLE5),XAXIS=TSTimeAxis,YAXIS=TimeSeries"
+					}
+					display[5] {
+						label="Signal 6"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R6),TITLE=$(TITLE6),XAXIS=TSTimeAxis,YAXIS=TimeSeries"
+					}
+					display[6] {
+						label="Signal 7"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R7),TITLE=$(TITLE7),XAXIS=TSTimeAxis,YAXIS=TimeSeries"
+					}
+					display[7] {
+						label="Signal 8"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R8),TITLE=$(TITLE8),XAXIS=TSTimeAxis,YAXIS=TimeSeries"
+					}
+					display[8] {
+						label="Signal 9"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R9),TITLE=$(TITLE9),XAXIS=TSTimeAxis,YAXIS=TimeSeries"
+					}
+					display[9] {
+						label="Signal 10"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R10),TITLE=$(TITLE10),XAXIS=TSTimeAxis,YAXIS=TimeSeries"
+					}
+					display[10] {
+						label="Signal 11"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R11),TITLE=$(TITLE11),XAXIS=TSTimeAxis,YAXIS=TimeSeries"
+					}
+					display[11] {
+						label="Signal 12"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R12),TITLE=$(TITLE12),XAXIS=TSTimeAxis,YAXIS=TimeSeries"
+					}
+					display[12] {
+						label="Signal 13"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R13),TITLE=$(TITLE13),XAXIS=TSTimeAxis,YAXIS=TimeSeries"
+					}
+					display[13] {
+						label="Signal 14"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R14),TITLE=$(TITLE14),XAXIS=TSTimeAxis,YAXIS=TimeSeries"
+					}
+					display[14] {
+						label="Signal 15"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R15),TITLE=$(TITLE15),XAXIS=TSTimeAxis,YAXIS=TimeSeries"
+					}
+					display[15] {
+						label="Signal 16"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R16),TITLE=$(TITLE16),XAXIS=TSTimeAxis,YAXIS=TimeSeries"
+					}
+					clr=14
+					bclr=51
+					label="Plots"
+				}
+			}
+		}
+		composite {
+			object {
+				x=417
+				y=425
+				width=243
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=417
+						y=425
+						width=140
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="FFT abs. value"
+					align="horiz. right"
+				}
+				"related display" {
+					object {
+						x=560
+						y=425
+						width=100
+						height=20
+					}
+					display[0] {
+						label="Signal 1"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R1),TITLE=$(TITLE1),XAXIS=TSFreqAxis,YAXIS=FFTAbsValue"
+					}
+					display[1] {
+						label="Signal 2"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R2),TITLE=$(TITLE2),XAXIS=TSFreqAxis,YAXIS=FFTAbsValue"
+					}
+					display[2] {
+						label="Signal 3"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R3),TITLE=$(TITLE3),XAXIS=TSFreqAxis,YAXIS=FFTAbsValue"
+					}
+					display[3] {
+						label="Signal 4"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R4),TITLE=$(TITLE4),XAXIS=TSFreqAxis,YAXIS=FFTAbsValue"
+					}
+					display[4] {
+						label="Signal 5"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R5),TITLE=$(TITLE5),XAXIS=TSFreqAxis,YAXIS=FFTAbsValue"
+					}
+					display[5] {
+						label="Signal 6"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R6),TITLE=$(TITLE6),XAXIS=TSFreqAxis,YAXIS=FFTAbsValue"
+					}
+					display[6] {
+						label="Signal 7"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R7),TITLE=$(TITLE7),XAXIS=TSFreqAxis,YAXIS=FFTAbsValue"
+					}
+					display[7] {
+						label="Signal 8"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R8),TITLE=$(TITLE8),XAXIS=TSFreqAxis,YAXIS=FFTAbsValue"
+					}
+					display[8] {
+						label="Signal 9"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R9),TITLE=$(TITLE9),XAXIS=TSFreqAxis,YAXIS=FFTAbsValue"
+					}
+					display[9] {
+						label="Signal 10"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R10),TITLE=$(TITLE10),XAXIS=TSFreqAxis,YAXIS=FFTAbsValue"
+					}
+					display[10] {
+						label="Signal 11"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R11),TITLE=$(TITLE11),XAXIS=TSFreqAxis,YAXIS=FFTAbsValue"
+					}
+					display[11] {
+						label="Signal 12"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R12),TITLE=$(TITLE12),XAXIS=TSFreqAxis,YAXIS=FFTAbsValue"
+					}
+					display[12] {
+						label="Signal 13"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R13),TITLE=$(TITLE13),XAXIS=TSFreqAxis,YAXIS=FFTAbsValue"
+					}
+					display[13] {
+						label="Signal 14"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R14),TITLE=$(TITLE14),XAXIS=TSFreqAxis,YAXIS=FFTAbsValue"
+					}
+					display[14] {
+						label="Signal 15"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R15),TITLE=$(TITLE15),XAXIS=TSFreqAxis,YAXIS=FFTAbsValue"
+					}
+					display[15] {
+						label="Signal 16"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R16),TITLE=$(TITLE16),XAXIS=TSFreqAxis,YAXIS=FFTAbsValue"
+					}
+					clr=14
+					bclr=51
+					label="Plots"
+				}
+			}
+		}
+		composite {
+			object {
+				x=417
+				y=450
+				width=243
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=417
+						y=450
+						width=140
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="FFT real"
+					align="horiz. right"
+				}
+				"related display" {
+					object {
+						x=560
+						y=450
+						width=100
+						height=20
+					}
+					display[0] {
+						label="Signal 1"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R1),TITLE=$(TITLE1),XAXIS=TSFreqAxis,YAXIS=FFTReal"
+					}
+					display[1] {
+						label="Signal 2"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R2),TITLE=$(TITLE2),XAXIS=TSFreqAxis,YAXIS=FFTReal"
+					}
+					display[2] {
+						label="Signal 3"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R3),TITLE=$(TITLE3),XAXIS=TSFreqAxis,YAXIS=FFTReal"
+					}
+					display[3] {
+						label="Signal 4"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R4),TITLE=$(TITLE4),XAXIS=TSFreqAxis,YAXIS=FFTReal"
+					}
+					display[4] {
+						label="Signal 5"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R5),TITLE=$(TITLE5),XAXIS=TSFreqAxis,YAXIS=FFTReal"
+					}
+					display[5] {
+						label="Signal 6"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R6),TITLE=$(TITLE6),XAXIS=TSFreqAxis,YAXIS=FFTReal"
+					}
+					display[6] {
+						label="Signal 7"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R7),TITLE=$(TITLE7),XAXIS=TSFreqAxis,YAXIS=FFTReal"
+					}
+					display[7] {
+						label="Signal 8"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R8),TITLE=$(TITLE8),XAXIS=TSFreqAxis,YAXIS=FFTReal"
+					}
+					display[8] {
+						label="Signal 9"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R9),TITLE=$(TITLE9),XAXIS=TSFreqAxis,YAXIS=FFTReal"
+					}
+					display[9] {
+						label="Signal 10"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R10),TITLE=$(TITLE10),XAXIS=TSFreqAxis,YAXIS=FFTReal"
+					}
+					display[10] {
+						label="Signal 11"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R11),TITLE=$(TITLE11),XAXIS=TSFreqAxis,YAXIS=FFTReal"
+					}
+					display[11] {
+						label="Signal 12"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R12),TITLE=$(TITLE12),XAXIS=TSFreqAxis,YAXIS=FFTReal"
+					}
+					display[12] {
+						label="Signal 13"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R13),TITLE=$(TITLE13),XAXIS=TSFreqAxis,YAXIS=FFTReal"
+					}
+					display[13] {
+						label="Signal 14"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R14),TITLE=$(TITLE14),XAXIS=TSFreqAxis,YAXIS=FFTReal"
+					}
+					display[14] {
+						label="Signal 15"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R15),TITLE=$(TITLE15),XAXIS=TSFreqAxis,YAXIS=FFTReal"
+					}
+					display[15] {
+						label="Signal 16"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R16),TITLE=$(TITLE16),XAXIS=TSFreqAxis,YAXIS=FFTReal"
+					}
+					clr=14
+					bclr=51
+					label="Plots"
+				}
+			}
+		}
+		composite {
+			object {
+				x=417
+				y=475
+				width=243
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=417
+						y=475
+						width=140
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="FFT imaginary"
+					align="horiz. right"
+				}
+				"related display" {
+					object {
+						x=560
+						y=475
+						width=100
+						height=20
+					}
+					display[0] {
+						label="Signal 1"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R1),TITLE=$(TITLE1),XAXIS=TSFreqAxis,YAXIS=FFTImaginary"
+					}
+					display[1] {
+						label="Signal 2"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R2),TITLE=$(TITLE2),XAXIS=TSFreqAxis,YAXIS=FFTImaginary"
+					}
+					display[2] {
+						label="Signal 3"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R3),TITLE=$(TITLE3),XAXIS=TSFreqAxis,YAXIS=FFTImaginary"
+					}
+					display[3] {
+						label="Signal 4"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R4),TITLE=$(TITLE4),XAXIS=TSFreqAxis,YAXIS=FFTImaginary"
+					}
+					display[4] {
+						label="Signal 5"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R5),TITLE=$(TITLE5),XAXIS=TSFreqAxis,YAXIS=FFTImaginary"
+					}
+					display[5] {
+						label="Signal 6"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R6),TITLE=$(TITLE6),XAXIS=TSFreqAxis,YAXIS=FFTImaginary"
+					}
+					display[6] {
+						label="Signal 7"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R7),TITLE=$(TITLE7),XAXIS=TSFreqAxis,YAXIS=FFTImaginary"
+					}
+					display[7] {
+						label="Signal 8"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R8),TITLE=$(TITLE8),XAXIS=TSFreqAxis,YAXIS=FFTImaginary"
+					}
+					display[8] {
+						label="Signal 9"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R9),TITLE=$(TITLE9),XAXIS=TSFreqAxis,YAXIS=FFTImaginary"
+					}
+					display[9] {
+						label="Signal 10"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R10),TITLE=$(TITLE10),XAXIS=TSFreqAxis,YAXIS=FFTImaginary"
+					}
+					display[10] {
+						label="Signal 11"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R11),TITLE=$(TITLE11),XAXIS=TSFreqAxis,YAXIS=FFTImaginary"
+					}
+					display[11] {
+						label="Signal 12"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R12),TITLE=$(TITLE12),XAXIS=TSFreqAxis,YAXIS=FFTImaginary"
+					}
+					display[12] {
+						label="Signal 13"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R13),TITLE=$(TITLE13),XAXIS=TSFreqAxis,YAXIS=FFTImaginary"
+					}
+					display[13] {
+						label="Signal 14"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R14),TITLE=$(TITLE14),XAXIS=TSFreqAxis,YAXIS=FFTImaginary"
+					}
+					display[14] {
+						label="Signal 15"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R15),TITLE=$(TITLE15),XAXIS=TSFreqAxis,YAXIS=FFTImaginary"
+					}
+					display[15] {
+						label="Signal 16"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R16),TITLE=$(TITLE16),XAXIS=TSFreqAxis,YAXIS=FFTImaginary"
+					}
+					clr=14
+					bclr=51
+					label="Plots"
+				}
+			}
+		}
+		composite {
+			object {
+				x=417
+				y=500
+				width=243
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=417
+						y=500
+						width=140
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Combined plots"
+					align="horiz. right"
+				}
+				"related display" {
+					object {
+						x=560
+						y=500
+						width=100
+						height=20
+					}
+					display[0] {
+						label="Signal 1"
+						name="NDPluginTimeSeriesPlotAll.adl"
+						args="P=$(P),R=$(R),RN=$(R1),TITLE=$(TITLE1),YTITLE=$(YTITLE1)"
+					}
+					display[1] {
+						label="Signal 2"
+						name="NDPluginTimeSeriesPlotAll.adl"
+						args="P=$(P),R=$(R),RN=$(R2),TITLE=$(TITLE2),YTITLE=$(YTITLE2)"
+					}
+					display[2] {
+						label="Signal 3"
+						name="NDPluginTimeSeriesPlotAll.adl"
+						args="P=$(P),R=$(R),RN=$(R3),TITLE=$(TITLE3),YTITLE=$(YTITLE3)"
+					}
+					display[3] {
+						label="Signal 4"
+						name="NDPluginTimeSeriesPlotAll.adl"
+						args="P=$(P),R=$(R),RN=$(R4),TITLE=$(TITLE4),YTITLE=$(YTITLE4)"
+					}
+					display[4] {
+						label="Signal 5"
+						name="NDPluginTimeSeriesPlotAll.adl"
+						args="P=$(P),R=$(R),RN=$(R5),TITLE=$(TITLE5),YTITLE=$(YTITLE5)"
+					}
+					display[5] {
+						label="Signal 6"
+						name="NDPluginTimeSeriesPlotAll.adl"
+						args="P=$(P),R=$(R),RN=$(R6),TITLE=$(TITLE6),YTITLE=$(YTITLE6)"
+					}
+					display[6] {
+						label="Signal 7"
+						name="NDPluginTimeSeriesPlotAll.adl"
+						args="P=$(P),R=$(R),RN=$(R7),TITLE=$(TITLE7),YTITLE=$(YTITLE7)"
+					}
+					display[7] {
+						label="Signal 8"
+						name="NDPluginTimeSeriesPlotAll.adl"
+						args="P=$(P),R=$(R),RN=$(R8),TITLE=$(TITLE8),YTITLE=$(YTITLE8)"
+					}
+					display[8] {
+						label="Signal 9"
+						name="NDPluginTimeSeriesPlotAll.adl"
+						args="P=$(P),R=$(R),RN=$(R9),TITLE=$(TITLE9),YTITLE=$(YTITLE9)"
+					}
+					display[9] {
+						label="Signal 10"
+						name="NDPluginTimeSeriesPlotAll.adl"
+						args="P=$(P),R=$(R),RN=$(R10),TITLE=$(TITLE10),YTITLE=$(YTITLE10)"
+					}
+					display[10] {
+						label="Signal 11"
+						name="NDPluginTimeSeriesPlotAll.adl"
+						args="P=$(P),R=$(R),RN=$(R11),TITLE=$(TITLE11),YTITLE=$(YTITLE11)"
+					}
+					display[11] {
+						label="Signal 12"
+						name="NDPluginTimeSeriesPlotAll.adl"
+						args="P=$(P),R=$(R),RN=$(R12),TITLE=$(TITLE12),YTITLE=$(YTITLE12)"
+					}
+					display[12] {
+						label="Signal 13"
+						name="NDPluginTimeSeriesPlotAll.adl"
+						args="P=$(P),R=$(R),RN=$(R13),TITLE=$(TITLE13),YTITLE=$(YTITLE13)"
+					}
+					display[13] {
+						label="Signal 14"
+						name="NDPluginTimeSeriesPlotAll.adl"
+						args="P=$(P),R=$(R),RN=$(R14),TITLE=$(TITLE14),YTITLE=$(YTITLE14)"
+					}
+					display[14] {
+						label="Signal 15"
+						name="NDPluginTimeSeriesPlotAll.adl"
+						args="P=$(P),R=$(R),RN=$(R15),TITLE=$(TITLE15),YTITLE=$(YTITLE15)"
+					}
+					display[15] {
+						label="Signal 16"
+						name="NDPluginTimeSeriesPlotAll.adl"
+						args="P=$(P),R=$(R),RN=$(R16),TITLE=$(TITLE16),YTITLE=$(YTITLE16)"
+					}
+					clr=14
+					bclr=51
+					label="Plots"
+				}
+			}
+		}
 	}
 }
