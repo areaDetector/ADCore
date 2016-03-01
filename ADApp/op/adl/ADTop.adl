@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-4/ADCore/ADApp/op/adl/ADTop.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/ADTop.adl"
 	version=030107
 }
 display {
@@ -796,12 +796,7 @@ composite {
 		height=20
 	}
 	display[0] {
-		label="ADC Simulator general"
-		name="ADBase.adl"
-		args="P=13ADCSIM1:, R=det1:"
-	}
-	display[1] {
-		label="ADC simulator specific"
+		label="ADC simulator"
 		name="ADCSimDetector.adl"
 		args="P=13ADCSIM1:, R=det1:"
 	}
