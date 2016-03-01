@@ -29,11 +29,13 @@ record(bi, "$(P)$(R)TSAcquiring")
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_ACQUIRE")
    field(ZNAM, "Done")
-   field(ONAM, "Acquire")
+   field(ONAM, "Acquiring")
+   field(ZSV,  "NO_ALARM")
+   field(OSV,  "MINOR")
    field(SCAN, "I/O Intr")
 }
 
-# This record periodically pokes the TSControl record with 3 to read the time series
+# This record periodically processes to read the time series
 # but only when TSAcquiring = Acquiring
 record(bo, "$(P)$(R)TSRead")
 {
@@ -65,20 +67,43 @@ record(longin, "$(P)$(R)TSCurrentPoint")
    field(SCAN, "I/O Intr")
 }
 
-record(ao, "$(P)$(R)TSTimePerPoint")
+record(ao, "$(P)$(R)TSTimePerPointLink")
 {
    field(PINI, "YES")
+   field(DOL,  "$(TIME_LINK=0.1)")
+   field(OMSL, "closed_loop")
+   field(OUT, "$(P)$(R)TSTimePerPoint PP MS")
+}
+
+record(ao, "$(P)$(R)TSTimePerPoint")
+{
    field(DTYP, "asynFloat64")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_TIME_PER_POINT")
    field(PREC, "3")
-   field(VAL,  "0.1")
-   info(autosaveFields, "VAL")
 }
 
 record(ai, "$(P)$(R)TSTimePerPoint_RBV")
 {
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_TIME_PER_POINT")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)TSAveragingTime")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_AVERAGING_TIME")
+   field(PREC, "3")
+   field(VAL,  "0.1")
+   info(autosaveFields, "VAL")
+}
+
+record(ai, "$(P)$(R)TSAveragingTime_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_AVERAGING_TIME")
    field(PREC, "3")
    field(SCAN, "I/O Intr")
 }
@@ -94,18 +119,7 @@ record(ai, "$(P)$(R)TSElapsedTime")
 {
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_ELAPSED_TIME")
-   field(PREC, "2")
-   field(SCAN, "I/O Intr")
-}
-
-record(bi, "$(P)$(R)TSAcquiring")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_ACQUIRING")
-   field(ZNAM, "Done")
-   field(ONAM, "Acquiring")
-   field(ZSV,  "NO_ALARM")
-   field(OSV,  "MINOR")
+   field(PREC, "3")
    field(SCAN, "I/O Intr")
 }
 
