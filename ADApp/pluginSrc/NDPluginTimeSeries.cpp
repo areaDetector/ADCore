@@ -89,7 +89,8 @@ NDPluginTimeSeries::NDPluginTimeSeries(const char *portName, int queueSize, int 
   averageStore_ = (double *)calloc(maxSignals_, sizeof(double));
   
   /* Per-plugin parameters */
-  createParam(TSControlString,                 asynParamInt32, &P_TSControl);
+  createParam(TSAcquireString,                 asynParamInt32, &P_TSAcquire);
+  createParam(TSReadString,                    asynParamInt32, &P_TSRead);
   createParam(TSNumPointsString,               asynParamInt32, &P_TSNumPoints);
   createParam(TSCurrentPointString,            asynParamInt32, &P_TSCurrentPoint);
   createParam(TSTimePerPointString,          asynParamFloat64, &P_TSTimePerPoint);
@@ -208,6 +209,10 @@ void NDPluginTimeSeries::computeNumAverage()
 
 void NDPluginTimeSeries::allocateArrays()
 {
+  int numPoints;
+  
+  getIntegerParam(P_TSNumPoints, &numPoints);
+  numTimePoints_ = numPoints;
   if (timeStamp_)     free(timeStamp_);
   if (timeSeries_)    free(timeSeries_);
   if (timeCircular_)  free(timeCircular_);
@@ -445,28 +450,20 @@ asynStatus NDPluginTimeSeries::writeInt32(asynUser *pasynUser, epicsInt32 value)
       allocateArrays();
     } else if (function == P_TSAcquireMode) {
       acquireMode_ = value;
-    } else if (function == P_TSControl) {
-        switch (value) {
-          case TSEraseStart:
-            currentTimePoint_ = 0;
-            setIntegerParam(P_TSCurrentPoint, currentTimePoint_);
-            setIntegerParam(P_TSAcquiring, 1);
-            zeroArrays();
-            epicsTimeGetCurrent(&startTime_);
-            break;
-          case TSStart:
-            if (currentTimePoint_ < numTimePoints_) {
-                setIntegerParam(P_TSAcquiring, 1);
-            }
-            break;
-          case TSStop:
-            setIntegerParam(P_TSAcquiring, 0);
-            doTimeSeriesCallbacks();
-            break;
-          case TSRead:
-            doTimeSeriesCallbacks();
-            break;
-        }
+    } else if (function == P_TSAcquire) {
+      if (value) {
+        currentTimePoint_ = 0;
+        setIntegerParam(P_TSCurrentPoint, currentTimePoint_);
+        setIntegerParam(P_TSAcquiring, 1);
+        zeroArrays();
+        epicsTimeGetCurrent(&startTime_);
+      }
+      else {
+        setIntegerParam(P_TSAcquiring, 0);
+        doTimeSeriesCallbacks();
+      }
+    } else if (function == P_TSRead) {
+      doTimeSeriesCallbacks();
     } else if (function < FIRST_NDPLUGIN_TIME_SERIES_PARAM) {
       stat = (NDPluginDriver::writeInt32(pasynUser, value) == asynSuccess) && stat;
     }
@@ -537,26 +534,26 @@ void NDPluginTimeSeries::doTimeSeriesCallbacks()
   int computeFFT;
   
   getIntegerParam(P_TSComputeFFT, &computeFFT);
-  
+
   // If we are in circular buffer mode then copy data from timeCircular_ to timeSeries_
   if (acquireMode_ == TSAcquireModeCircular) {
     for (signal=0; signal<maxSignals_; signal++) {
       numCopy = numTimePoints_ - currentTimePoint_;
-      src = timeCircular_ + (currentTimePoint_ * signal * numTimePoints_);
-      dst = timeSeries_;
-printf("numCopy #1 =%d\n", (int)numCopy);
+      src = timeCircular_ + (signal * numTimePoints_) + currentTimePoint_;
+      dst = timeSeries_   + (signal * numTimePoints_);
       memcpy(dst, src, numCopy*sizeof(double));
       numCopy = currentTimePoint_;
-      src = timeCircular_;
-      dst = timeSeries_ + (currentTimePoint_ * signal * numTimePoints_);
-printf("numCopy #2 =%d\n", (int)numCopy);
-      memcpy(dst, src, numCopy*sizeof(double));
+      src = timeCircular_ + (signal * numTimePoints_);
+      dst = timeSeries_   + (signal * numTimePoints_) + numTimePoints_ - currentTimePoint_;
+      if (numCopy > 0) memcpy(dst, src, numCopy*sizeof(double));
+      doCallbacksFloat64Array(timeSeries_ + signal*numTimePoints_, numTimePoints_, P_TSTimeSeries, signal);
     }
   }
-    
-  /* Do time series array callbacks */
-  for (signal=0; signal<maxSignals_; signal++) {
-    doCallbacksFloat64Array(timeSeries_ + signal*numTimePoints_, currentTimePoint_, P_TSTimeSeries, signal);
+  else {  
+    /* Do time series array callbacks */
+    for (signal=0; signal<maxSignals_; signal++) {
+      doCallbacksFloat64Array(timeSeries_ + signal*numTimePoints_, currentTimePoint_, P_TSTimeSeries, signal);
+    }
   }
   
   if (computeFFT) {
