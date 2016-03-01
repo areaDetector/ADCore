@@ -22,10 +22,10 @@
 #define TSReadString            "TS_READ"             /* (asynInt32,        r/w) Read data */
 #define TSNumPointsString       "TS_NUM_POINTS"       /* (asynInt32,        r/w) Number of time series points to use */
 #define TSCurrentPointString    "TS_CURRENT_POINT"    /* (asynInt32,        r/o) Current point in time series */
-#define TSTimePerPointString    "TS_TIME_PER_POINT"   /* (asynFloat64,      r/o) Time per time point */
+#define TSTimePerPointString    "TS_TIME_PER_POINT"   /* (asynFloat64,      r/o) Time per time point from driver */
+#define TSAveragingTimeString   "TS_AVERAGING_TIME"   /* (asynFloat64,      r/o) Averaging time in plugin */
 #define TSNumAverageString      "TS_NUM_AVERAGE"      /* (asynInt32,        r/o) Time points to average */
 #define TSElapsedTimeString     "TS_ELAPSED_TIME"     /* (asynFloat64,      r/o) Elapsed acquisition time */
-#define TSAcquiringString       "TS_ACQUIRING"        /* (asynInt32,        r/o) Acquiring time series */
 #define TSAcquireModeString     "TS_ACQUIRE_MODE"     /* (asynInt32,        r/w) Acquire mode */
 #define TSComputeFFTString      "TS_COMPUTE_FFT"      /* (asynInt32,        r/w) Compute FFTs */
 #define TSTimeAxisString        "TS_TIME_AXIS"        /* (asynFloat64Array, r/o) Time axis array */
@@ -59,7 +59,7 @@ class epicsShareClass NDPluginTimeSeries : public NDPluginDriver {
 public:
     NDPluginTimeSeries(const char *portName, int queueSize, int blockingCallbacks, 
                        const char *NDArrayPort, int NDArrayAddr, 
-                       int maxSignals, const char *drvInfoTimePerPoint,
+                       int maxSignals,
                        int maxBuffers, size_t maxMemory,
                        int priority, int stackSize);
     
@@ -67,8 +67,6 @@ public:
     void processCallbacks(NDArray *pArray);
     asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
-    // Need to be public because called from C
-    void timePerPointCallback(double seconds);
 
 protected:
 
@@ -79,9 +77,9 @@ protected:
     int P_TSNumPoints;
     int P_TSCurrentPoint;
     int P_TSTimePerPoint;
+    int P_TSAveragingTime;
     int P_TSNumAverage;
     int P_TSElapsedTime;
-    int P_TSAcquiring;
     int P_TSAcquireMode;
     int P_TSComputeFFT;
     int P_TSTimeAxis;
@@ -117,9 +115,9 @@ private:
     int numAverage_;
     int numAveraged_;
     int acquireMode_;
-    double timePerPointRequested_;
-    double timePerPointActual_;
-    double timePerPointInput_; /* Actual time between points in callbacks */
+    double averagingTimeRequested_;
+    double averagingTimeActual_;
+    double timePerPoint_; /* Actual time between points in input arrays */
     epicsTimeStamp startTime_;
     double *averageStore_;
     double *timeAxis_;
@@ -131,7 +129,6 @@ private:
     double *FFTReal_;
     double *FFTImaginary_;
     double *FFTAbsValue_;
-    void *float64RegistrarPvt_;
 };
 
 #define NUM_NDPLUGIN_TIME_SERIES_PARAMS (int)(&LAST_NDPLUGIN_TIME_SERIES_PARAM - &FIRST_NDPLUGIN_TIME_SERIES_PARAM + 1)
