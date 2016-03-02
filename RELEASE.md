@@ -27,7 +27,7 @@ R2-5 (March XXX, 2016)
 ========================
 ### NDPluginTimeSeries
 * New plugin to for time-series data.  The plugin accepts input arrays of dimensions
-  [NumSignals] or [NumSignals, NumTimePoints].  The plugin creates NumSignals 1-D
+  [NumSignals] or [NumSignals, NewTimePoints].  The plugin creates NumSignals 1-D
   arrays of dimension [NumTimPoints], each of which is the time-series for one signal.
   On each callback the new time points are appended to the existing time series arrays.
   The plugin can operate in one of two mdes.  In Fixed Length mode the time-series arrays
