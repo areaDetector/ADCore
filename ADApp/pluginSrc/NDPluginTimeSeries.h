@@ -41,15 +41,15 @@
 #define TSFFTAbsValueString     "TS_FFT_ABS_VALUE"    /* (asynFloat64Array, r/o) Absolute value of FFT */
 
 enum {
-    TSEraseStart,
-    TSStart,
-    TSStop,
-    TSRead
+  TSEraseStart,
+  TSStart,
+  TSStop,
+  TSRead
 };
 
 enum {
-    TSAcquireModeFixed,
-    TSAcquireModeCircular
+  TSAcquireModeFixed,
+  TSAcquireModeCircular
 };
 
 
@@ -57,78 +57,77 @@ enum {
 /** Compute time series and FFTs on signals */
 class epicsShareClass NDPluginTimeSeries : public NDPluginDriver {
 public:
-    NDPluginTimeSeries(const char *portName, int queueSize, int blockingCallbacks, 
-                       const char *NDArrayPort, int NDArrayAddr, 
-                       int maxSignals,
-                       int maxBuffers, size_t maxMemory,
-                       int priority, int stackSize);
-    
-    //These methods override the virtual methods in the base class
-    void processCallbacks(NDArray *pArray);
-    asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
-    asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
+  NDPluginTimeSeries(const char *portName, int queueSize, int blockingCallbacks, 
+                     const char *NDArrayPort, int NDArrayAddr, 
+                     int maxSignals, int maxBuffers, size_t maxMemory,
+                     int priority, int stackSize);
+
+  //These methods override the virtual methods in the base class
+  void processCallbacks(NDArray *pArray);
+  asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
+  asynStatus writeFloat64(asynUser *pasynUser, epicsFloat64 value);
 
 protected:
 
-    // Per-plugin parameters
-    int P_TSAcquire;
-    #define FIRST_NDPLUGIN_TIME_SERIES_PARAM P_TSAcquire
-    int P_TSRead;
-    int P_TSNumPoints;
-    int P_TSCurrentPoint;
-    int P_TSTimePerPoint;
-    int P_TSAveragingTime;
-    int P_TSNumAverage;
-    int P_TSElapsedTime;
-    int P_TSAcquireMode;
-    int P_TSComputeFFT;
-    int P_TSTimeAxis;
-    int P_TSFreqAxis;
-    int P_TSTimestamp;
+  // Per-plugin parameters
+  int P_TSAcquire;
+  #define FIRST_NDPLUGIN_TIME_SERIES_PARAM P_TSAcquire
+  int P_TSRead;
+  int P_TSNumPoints;
+  int P_TSCurrentPoint;
+  int P_TSTimePerPoint;
+  int P_TSAveragingTime;
+  int P_TSNumAverage;
+  int P_TSElapsedTime;
+  int P_TSAcquireMode;
+  int P_TSComputeFFT;
+  int P_TSTimeAxis;
+  int P_TSFreqAxis;
+  int P_TSTimestamp;
 
-    // Per-signal parameters
-    int P_TSSignalName;
-    int P_TSSignalUse;
-    int P_TSTimeSeries;
-    int P_TSFFTReal;
-    int P_TSFFTImaginary;
-    int P_TSFFTAbsValue;
-    #define LAST_NDPLUGIN_TIME_SERIES_PARAM P_TSFFTAbsValue
+  // Per-signal parameters
+  int P_TSSignalName;
+  int P_TSSignalUse;
+  int P_TSTimeSeries;
+  int P_TSFFTReal;
+  int P_TSFFTImaginary;
+  int P_TSFFTAbsValue;
+  #define LAST_NDPLUGIN_TIME_SERIES_PARAM P_TSFFTAbsValue
                                 
 private:
-    template <typename epicsType> asynStatus doAddToTimeSeriesT(NDArray *pArray);
-    asynStatus addToTimeSeries(NDArray *pArray);
-    asynStatus clear(epicsUInt32 roi);
-    void doTimeSeriesCallbacks();
-    void allocateArrays();
-    void zeroArrays();
-    void createAxisArrays();
-    void computeFFTs();
-    void computeNumAverage();
+  template <typename epicsType> asynStatus doAddToTimeSeriesT(NDArray *pArray);
+  asynStatus addToTimeSeries(NDArray *pArray);
+  asynStatus clear(epicsUInt32 roi);
+  void doTimeSeriesCallbacks();
+  void allocateArrays();
+  void zeroArrays();
+  void createAxisArrays();
+  void computeFFTs();
+  void computeNumAverage();
 
-    asynUser *pasynUserInput_;
-    asynUser *pasynUserFloat64SyncIO_;
-    int maxSignals_;
-    int numTimePoints_;
-    int numFreqPoints_;
-    int currentTimePoint_;
-    int numAverage_;
-    int numAveraged_;
-    int acquireMode_;
-    double averagingTimeRequested_;
-    double averagingTimeActual_;
-    double timePerPoint_; /* Actual time between points in input arrays */
-    epicsTimeStamp startTime_;
-    double *averageStore_;
-    double *timeAxis_;
-    double *freqAxis_;
-    double *timeStamp_;
-    double *timeSeries_;
-    double *timeCircular_;
-    double *FFTComplex_;
-    double *FFTReal_;
-    double *FFTImaginary_;
-    double *FFTAbsValue_;
+  asynUser *pasynUserInput_;
+  asynUser *pasynUserFloat64SyncIO_;
+  int maxSignals_;
+  int numTimePoints_;
+  int numFreqPoints_;
+  int currentTimePoint_;
+  int numAverage_;
+  int numAveraged_;
+  int acquireMode_;
+  double averagingTimeRequested_;
+  double averagingTimeActual_;
+  double timePerPoint_; /* Actual time between points in input arrays */
+  epicsTimeStamp startTime_;
+  double *averageStore_;
+  double *timeAxis_;
+  double *freqAxis_;
+  double *timeStamp_;
+  double *timeSeries_;
+  double *timeCircular_;
+  double *FFTComplex_;
+  double *FFTReal_;
+  double *FFTImaginary_;
+  double *FFTAbsValue_;
 };
 
 #define NUM_NDPLUGIN_TIME_SERIES_PARAMS (int)(&LAST_NDPLUGIN_TIME_SERIES_PARAM - &FIRST_NDPLUGIN_TIME_SERIES_PARAM + 1)
