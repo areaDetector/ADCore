@@ -50,8 +50,7 @@
   */
 NDPluginTimeSeries::NDPluginTimeSeries(const char *portName, int queueSize, int blockingCallbacks,
                          const char *NDArrayPort, int NDArrayAddr, 
-                         int maxSignals,
-                         int maxBuffers, size_t maxMemory,
+                         int maxSignals, int maxBuffers, size_t maxMemory,
                          int priority, int stackSize)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
@@ -110,21 +109,21 @@ NDPluginTimeSeries::NDPluginTimeSeries(const char *portName, int queueSize, int 
 
 void NDPluginTimeSeries::computeNumAverage()
 {
-    if (timePerPoint_ == 0) {
-      // The driver must not support getting the time per point on the asynFloat64 interface
-      numAverage_ = 1;
-      averagingTimeActual_ = averagingTimeRequested_;
-    }
-    else {
-      numAverage_ = (int) (averagingTimeRequested_/timePerPoint_ + 0.5);
-      if (numAverage_ < 1) numAverage_ = 1;
-      averagingTimeActual_ = timePerPoint_ * numAverage_;
-    }
-    numAveraged_ = 0;
-    setDoubleParam(P_TSAveragingTime, averagingTimeActual_);
-    setIntegerParam(P_TSNumAverage, numAverage_);
-    createAxisArrays();
-    callParamCallbacks();
+  if (timePerPoint_ == 0) {
+    // The driver must not support getting the time per point on the asynFloat64 interface
+    numAverage_ = 1;
+    averagingTimeActual_ = averagingTimeRequested_;
+  }
+  else {
+    numAverage_ = (int) (averagingTimeRequested_/timePerPoint_ + 0.5);
+    if (numAverage_ < 1) numAverage_ = 1;
+    averagingTimeActual_ = timePerPoint_ * numAverage_;
+  }
+  numAveraged_ = 0;
+  setDoubleParam(P_TSAveragingTime, averagingTimeActual_);
+  setIntegerParam(P_TSNumAverage, numAverage_);
+  createAxisArrays();
+  callParamCallbacks();
 }
 
 void NDPluginTimeSeries::allocateArrays()
@@ -329,15 +328,15 @@ void NDPluginTimeSeries::processCallbacks(NDArray *pArray)
 
   // This plugin only works with 1-D or 2-D arrays
   if ((pArray->ndims < 1) || (pArray->ndims > 2)) {
-      asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-        "%s: error, number of array dimensions must be 1 or 2\n",
-        functionName);
+    asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+      "%s: error, number of array dimensions must be 1 or 2\n",
+      functionName);
   }
 
   getIntegerParam(P_TSAcquire, &acquiring);
   
   if (acquiring) {
-      addToTimeSeries(pArray);
+    addToTimeSeries(pArray);
   }
 
   callParamCallbacks();
@@ -352,98 +351,98 @@ void NDPluginTimeSeries::processCallbacks(NDArray *pArray)
   */
 asynStatus NDPluginTimeSeries::writeInt32(asynUser *pasynUser, epicsInt32 value)
 {
-    int function = pasynUser->reason;
-    asynStatus status = asynSuccess;
-    bool stat = true;
-    int signal = 0;
-    static const char* functionName = "NDPluginTimeSeries::writeInt32";
+  int function = pasynUser->reason;
+  asynStatus status = asynSuccess;
+  bool stat = true;
+  int signal = 0;
+  static const char* functionName = "NDPluginTimeSeries::writeInt32";
 
-    status = getAddress(pasynUser, &signal); 
-    if (status != asynSuccess) {
-      return status;
-    }
-
-    /* Set parameter and readback in parameter library */
-    stat = (setIntegerParam(signal, function, value) == asynSuccess) && stat;
-    
-    if (function == P_TSNumPoints) {
-      allocateArrays();
-    } else if (function == P_TSAcquireMode) {
-      acquireMode_ = value;
-    } else if (function == P_TSAcquire) {
-      if (value) {
-        currentTimePoint_ = 0;
-        setIntegerParam(P_TSCurrentPoint, currentTimePoint_);
-        zeroArrays();
-        epicsTimeGetCurrent(&startTime_);
-      }
-      else {
-        doTimeSeriesCallbacks();
-      }
-    } else if (function == P_TSRead) {
-      doTimeSeriesCallbacks();
-    } else if (function < FIRST_NDPLUGIN_TIME_SERIES_PARAM) {
-      stat = (NDPluginDriver::writeInt32(pasynUser, value) == asynSuccess) && stat;
-    }
-    
-    /* Do callbacks so higher layers see any changes */
-    stat = (callParamCallbacks(signal) == asynSuccess) && stat;
-    stat = (callParamCallbacks() == asynSuccess) && stat;
-
-    if (!stat) {
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-              "%s: status=%d, function=%d, value=%d",
-              functionName, status, function, value);
-        status = asynError;
-    } else {
-      asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
-        "%s: function=%d, signal=%d, value=%d\n",
-        functionName, function, signal, value);
-    }
-    
+  status = getAddress(pasynUser, &signal); 
+  if (status != asynSuccess) {
     return status;
+  }
+
+  /* Set parameter and readback in parameter library */
+  stat = (setIntegerParam(signal, function, value) == asynSuccess) && stat;
+
+  if (function == P_TSNumPoints) {
+    allocateArrays();
+  } else if (function == P_TSAcquireMode) {
+    acquireMode_ = value;
+  } else if (function == P_TSAcquire) {
+    if (value) {
+      currentTimePoint_ = 0;
+      setIntegerParam(P_TSCurrentPoint, currentTimePoint_);
+      zeroArrays();
+      epicsTimeGetCurrent(&startTime_);
+    }
+    else {
+      doTimeSeriesCallbacks();
+    }
+  } else if (function == P_TSRead) {
+    doTimeSeriesCallbacks();
+  } else if (function < FIRST_NDPLUGIN_TIME_SERIES_PARAM) {
+    stat = (NDPluginDriver::writeInt32(pasynUser, value) == asynSuccess) && stat;
+  }
+
+  /* Do callbacks so higher layers see any changes */
+  stat = (callParamCallbacks(signal) == asynSuccess) && stat;
+  stat = (callParamCallbacks() == asynSuccess) && stat;
+
+  if (!stat) {
+    epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+          "%s: status=%d, function=%d, value=%d",
+          functionName, status, function, value);
+    status = asynError;
+  } else {
+    asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+      "%s: function=%d, signal=%d, value=%d\n",
+      functionName, function, signal, value);
+  }
+
+  return status;
 }
 
 asynStatus NDPluginTimeSeries::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 {
-    int function = pasynUser->reason;
-    int signal;
-    asynStatus status=asynSuccess;
-    bool stat = true;
-    static const char* functionName = "NDPluginTimeSeries::writeInt32";
+  int function = pasynUser->reason;
+  int signal;
+  asynStatus status=asynSuccess;
+  bool stat = true;
+  static const char* functionName = "NDPluginTimeSeries::writeInt32";
 
-    status = getAddress(pasynUser, &signal); 
-    if (status != asynSuccess) {
-      return status;
-    }
+  status = getAddress(pasynUser, &signal); 
+  if (status != asynSuccess) {
+    return status;
+  }
 
-    /* Set the parameter in the parameter library. */
-    stat = (setDoubleParam(signal, function, value) == asynSuccess) && stat;
-    if (function == P_TSTimePerPoint) {
-        timePerPoint_ = value;
-        computeNumAverage();
-    } else if (function == P_TSAveragingTime) {
-        averagingTimeRequested_ = value;
-        computeNumAverage();
-    } else if (function < FIRST_NDPLUGIN_TIME_SERIES_PARAM) {
-      stat = (NDPluginDriver::writeFloat64(pasynUser, value) == asynSuccess) && stat;
-    }
+  /* Set the parameter in the parameter library. */
+  stat = (setDoubleParam(signal, function, value) == asynSuccess) && stat;
+  if (function == P_TSTimePerPoint) {
+    timePerPoint_ = value;
+    computeNumAverage();
+  } else if (function == P_TSAveragingTime) {
+    averagingTimeRequested_ = value;
+    computeNumAverage();
+  } else if (function < FIRST_NDPLUGIN_TIME_SERIES_PARAM) {
+    stat = (NDPluginDriver::writeFloat64(pasynUser, value) == asynSuccess) && stat;
+  }
 
-    /* Do callbacks so higher layers see any changes */
-    stat = (callParamCallbacks(signal) == asynSuccess) && stat;
-    stat = (callParamCallbacks() == asynSuccess) && stat;
+  /* Do callbacks so higher layers see any changes */
+  stat = (callParamCallbacks(signal) == asynSuccess) && stat;
+  stat = (callParamCallbacks() == asynSuccess) && stat;
 
-    if (!stat) {
-        epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
-             "%s: status=%d, function=%d, value=%f",
-              functionName, status, function, value);
-        status = asynError;
-    } else {
-      asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
-         "%s: function=%d, signal=%d, value=%f\n",
-        functionName, function, signal, value);
-    }
-    return(status);
+  if (!stat) {
+    epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize,
+      "%s: status=%d, function=%d, value=%f",
+      functionName, status, function, value);
+    status = asynError;
+  } else {
+    asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+      "%s: function=%d, signal=%d, value=%f\n",
+      functionName, function, signal, value);
+  }
+  return(status);
 }
 
 
@@ -462,11 +461,13 @@ void NDPluginTimeSeries::doTimeSeriesCallbacks()
       numCopy = numTimePoints_ - currentTimePoint_;
       src = timeCircular_ + (signal * numTimePoints_) + currentTimePoint_;
       dst = timeSeries_   + (signal * numTimePoints_);
+//printf("memcpy #1, src=%p, dst=%p, num=%d\n", src, dst, (int)(numCopy*sizeof(double)));
       memcpy(dst, src, numCopy*sizeof(double));
       numCopy = currentTimePoint_;
       src = timeCircular_ + (signal * numTimePoints_);
       dst = timeSeries_   + (signal * numTimePoints_) + numTimePoints_ - currentTimePoint_;
-      if (numCopy > 0) memcpy(dst, src, numCopy*sizeof(double));
+//printf("memcpy #1, src=%p, dst=%p, num=%d\n", src, dst, (int)(numCopy*sizeof(double)));
+      memcpy(dst, src, numCopy*sizeof(double));
       doCallbacksFloat64Array(timeSeries_ + signal*numTimePoints_, numTimePoints_, P_TSTimeSeries, signal);
     }
   }
@@ -492,14 +493,13 @@ void NDPluginTimeSeries::doTimeSeriesCallbacks()
 
 /** Configuration command */
 extern "C" int NDTimeSeriesConfigure(const char *portName, int queueSize, int blockingCallbacks,
-                                 const char *NDArrayPort, int NDArrayAddr, 
-                                 int maxSignals,
-                                 int maxBuffers, size_t maxMemory,
-                                 int priority, int stackSize)
+                                     const char *NDArrayPort, int NDArrayAddr, 
+                                     int maxSignals,
+                                     int maxBuffers, size_t maxMemory,
+                                     int priority, int stackSize)
 {
     new NDPluginTimeSeries(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, 
-                           maxSignals,
-                           maxBuffers, maxMemory, priority, stackSize);
+                           maxSignals, maxBuffers, maxMemory, priority, stackSize);
     return(asynSuccess);
 }
 
@@ -527,15 +527,15 @@ static const iocshArg * const initArgs[] = {&initArg0,
 static const iocshFuncDef initFuncDef = {"NDTimeSeriesConfigure",10,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
-    NDTimeSeriesConfigure(args[0].sval, args[1].ival, args[2].ival,
-                          args[3].sval, args[4].ival, args[5].ival,
-                          args[6].ival, args[7].ival, args[8].ival, 
-                          args[9].ival);
+  NDTimeSeriesConfigure(args[0].sval, args[1].ival, args[2].ival,
+                        args[3].sval, args[4].ival, args[5].ival,
+                        args[6].ival, args[7].ival, args[8].ival, 
+                        args[9].ival);
 }
 
 extern "C" void NDTimeSeriesRegister(void)
 {
-    iocshRegister(&initFuncDef,initCallFunc);
+  iocshRegister(&initFuncDef,initCallFunc);
 }
 
 extern "C" {
