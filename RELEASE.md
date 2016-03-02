@@ -23,8 +23,30 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
-R2-5 (February XXX, 2016)
+R2-5 (March XXX, 2016)
 ========================
+### NDPluginTimeSeries
+* New plugin to for time-series data.  The plugin accepts input arrays of dimensions
+  [NumSignals] or [NumSignals, NumTimePoints].  The plugin creates NumSignals 1-D
+  arrays of dimension [NumTimPoints], each of which is the time-series for one signal.
+  On each callback the new time points are appended to the existing time series arrays.
+  The plugin can operate in one of two mdes.  In Fixed Length mode the time-series arrays
+  are cleared when acquisition starts, and new time points are appended until 
+  NumTimePoints points have been received, at which point acquisition stops and further
+  callbacks are ignorred.  In Circular Buffer mode on NumTimePoints samples are received
+  then acquisition continues with the new time points replacing the oldest ones in the
+  circular buffer.  In this mode the OPI displays always show the latest NumTimePoints
+  samples, with the most recent point on the right.  The plugin can also optionally
+  compute 1-D FFTs of the time-series data, and exports the real part, imaginary part, 
+  and absolute value of the FFT for each signal.  
+  This plugin is used by R7-0 and later of the 
+  [quadEM module](https://github.com/epics-modules/quadEM).
+  It should also be useful for devices like ADCs, transient digitizers, and other devices
+  that produce time-series data on one or more input signals.  
+  There is a new ADCSimDetector test application in 
+  [areaDetector/ADExample](https://github.com/areaDetector/ADExample) 
+  that tests and demonstrates this plugin.  This test application simulates a buffered 
+  ADC with 8 input waveform signals.
 
 ### NDPluginStats and NDPluginROIStat
 * Added waveform record containing NDArray timetstamps to time series data arrays. Thanks to
@@ -37,6 +59,8 @@ R2-5 (February XXX, 2016)
 ### asynNDArrayDriver
 * Fixed bug in FilePath handling on Windows. If the file path ended in "/" then it would incorrectly
   report that the directory did not exist when it did.
+* Added asynGenericPointerMask to interrupt mask in constructor.  Should always have been there.
+* Added asynDrvUserMask to interface mask in constructor.  Should always have been there.
 
 ### NDArrayBase.template, NDPluginDriver.cpp
 * Set ArrayCallbacks.VAL to 1 so array callbacks are enabled by default.
