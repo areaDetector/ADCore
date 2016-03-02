@@ -50,13 +50,18 @@ record(bo, "$(P)$(R)TSRead")
    info(autosaveFields, "SCAN")
 }
 
+# Set DRVL to prevent 0 or negative values.  
+# Means we need to set DRVH too.  
+# The waveform records are of length $(NCHANS) but that is just for display.  
+# We allow a very large value so FFTs can have smaller truncation error.
 record(longout, "$(P)$(R)TSNumPoints")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_NUM_POINTS")
    field(VAL,  "$(NCHANS)")
-   field(DRVH, "$(NCHANS)")
+   field(DRVL, "1")
+   field(DRVH, "100000000")
    info(autosaveFields, "VAL")
 }
 
