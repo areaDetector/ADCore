@@ -132,6 +132,7 @@ void NDPluginTimeSeries::allocateArrays()
   
   getIntegerParam(P_TSNumPoints, &numPoints);
   numTimePoints_ = numPoints;
+  currentTimePoint_ = 0;
   if (timeStamp_)     free(timeStamp_);
   if (timeSeries_)    free(timeSeries_);
   if (timeCircular_)  free(timeCircular_);
