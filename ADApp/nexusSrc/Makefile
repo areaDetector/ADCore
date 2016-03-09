@@ -27,12 +27,23 @@ USR_INCLUDES += $(HDF5_INCLUDE)
 
 LIB_SYS_LIBS_cygwin32 += libhdf5
 LIB_SYS_LIBS_cygwin32 += libz
-LIB_LIBS_Linux        += hdf5
-LIB_LIBS_Darwin       += hdf5
-ifdef SZIP
-  LIB_LIBS_Linux        += sz
-  LIB_LIBS_Darwin       += sz
-endif  
+
+ifeq ($(OS_CLASS), $(filter $(OS_CLASS), Linux Darwin solaris))
+  ifdef HDF5_LIB
+    hdf5_DIR             = $(HDF5_LIB)
+    PROD_LIBS           += hdf5
+  else
+    PROD_SYS_LIBS       += hdf5
+  endif
+  ifdef SZIP
+    ifdef SZIP_LIB
+      sz_DIR             = $(SZIP_LIB)
+      PROD_LIBS         += sz
+    else
+      PROD_SYS_LIBS     += sz
+    endif
+  endif
+endif
 
 LIBRARY_IOC_WIN32    += NeXus
 LIBRARY_IOC_cygwin32 += NeXus
@@ -47,9 +58,6 @@ LIB_SRCS += nxio.c
 LIB_SRCS += nxstack.c
 LIB_SRCS += nxxml.c
 LIB_SRCS += stptok.c
-
-hdf5_DIR = $(HDF5_LIB)
-sz_DIR   = $(SZIP_LIB)
 
 #=============================
 
