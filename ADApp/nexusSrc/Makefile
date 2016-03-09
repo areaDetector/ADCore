@@ -31,16 +31,16 @@ LIB_SYS_LIBS_cygwin32 += libz
 ifeq ($(OS_CLASS), $(filter $(OS_CLASS), Linux Darwin solaris))
   ifdef HDF5_LIB
     hdf5_DIR             = $(HDF5_LIB)
-    PROD_LIBS           += hdf5
+    LIB_LIBS            += hdf5
   else
-    PROD_SYS_LIBS       += hdf5
+    LIB_SYS_LIBS        += hdf5
   endif
   ifdef SZIP
     ifdef SZIP_LIB
       sz_DIR             = $(SZIP_LIB)
-      PROD_LIBS         += sz
+      LIB_LIBS          += sz
     else
-      PROD_SYS_LIBS     += sz
+      LIB_SYS_LIBS      += sz
     endif
   endif
 endif
