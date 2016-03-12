@@ -1,5 +1,5 @@
 #=================================================================#
-# Template file: NDROIStatN.template
+# Template file: NDTimeSeriesN.template
 ###################################################################
 #
 # Database template for TimeSeries plugin. These are the signal
@@ -63,31 +63,3 @@ record(waveform, "$(P)$(R)TimeSeries")
    field(FTVL, "DOUBLE")
    field(SCAN, "I/O Intr")
 }
-
-record(waveform, "$(P)$(R)FFTReal")
-{
-   field(DTYP, "asynFloat64ArrayIn")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_FFT_REAL")
-   field(NELM, "$(NCHANS)")
-   field(FTVL, "DOUBLE")
-   field(SCAN, "I/O Intr")
-}
-
-record(waveform, "$(P)$(R)FFTImaginary")
-{
-   field(DTYP, "asynFloat64ArrayIn")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_FFT_IMAGINARY")
-   field(NELM, "$(NCHANS)")
-   field(FTVL, "DOUBLE")
-   field(SCAN, "I/O Intr")
-}
-
-record(waveform, "$(P)$(R)FFTAbsValue")
-{
-   field(DTYP, "asynFloat64ArrayIn")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_FFT_ABS_VALUE")
-   field(NELM, "$(NCHANS)")
-   field(FTVL, "DOUBLE")
-   field(SCAN, "I/O Intr")
-}
-
