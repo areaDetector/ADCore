@@ -140,16 +140,6 @@ record(mbbo, "$(P)$(R)TSAcquireMode")
    info(autosaveFields, "VAL")
 }
 
-record(bo, "$(P)$(R)TSComputeFFT")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_COMPUTE_FFT")
-   field(ZNAM, "No")
-   field(ONAM, "Yes")
-   info(autosaveFields, "VAL")
-}
-
 record(waveform, "$(P)$(R)TSTimestamp")
 {
    field(DTYP, "asynFloat64ArrayIn")
@@ -163,15 +153,6 @@ record(waveform, "$(P)$(R)TSTimeAxis")
 {
    field(DTYP, "asynFloat64ArrayIn")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_TIME_AXIS")
-   field(NELM, "$(NCHANS)")
-   field(FTVL, "DOUBLE")
-   field(SCAN, "I/O Intr")
-}
-
-record(waveform, "$(P)$(R)TSFreqAxis")
-{
-   field(DTYP, "asynFloat64ArrayIn")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_FREQ_AXIS")
    field(NELM, "$(NCHANS)")
    field(FTVL, "DOUBLE")
    field(SCAN, "I/O Intr")
