@@ -63,9 +63,10 @@ NDPluginFFT::NDPluginFFT(const char *portName, int queueSize, int blockingCallba
   
   /* Per-plugin parameters */
   createParam(FFTReadString,                    asynParamInt32, &P_FFTRead);
-  createParam(FFTTimePerPointString,          asynParamFloat64, &P_FFTTimePerPoint);
   createParam(FFTTimeAxisString,         asynParamFloat64Array, &P_FFTTimeAxis);
   createParam(FFTFreqAxisString,         asynParamFloat64Array, &P_FFTFreqAxis);
+  createParam(FFTTimePerPointString,          asynParamFloat64, &P_FFTTimePerPoint);
+  createParam(FFTRankString,                    asynParamInt32, &P_FFTRank);
   
   /* Per-signal parameters */
   createParam(FFTTimeSeriesString,       asynParamFloat64Array, &P_FFTTimeSeries);
