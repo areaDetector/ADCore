@@ -20,6 +20,7 @@
 #define FFTTimeAxisString        "FFT_TIME_AXIS"        /* (asynFloat64Array, r/o) Time axis array */
 #define FFTFreqAxisString        "FFT_FREQ_AXIS"        /* (asynFloat64Array, r/o) Frequency axis array */
 #define FFTTimePerPointString    "FFT_TIME_PER_POINT"   /* (asynFloat64,      r/o) Time per time point from driver */
+#define FFTRankString            "FFT_RANK"             /* (asynInt32,        r/w) FFT rank (N*1-D or 2-D) for 2-D input */
 
 /* Per-signal parameters */
 #define FFTTimeSeriesString      "FFT_TIME_SERIES"      /* (asynFloat64Array, r/o) Time series data */
@@ -43,9 +44,10 @@ protected:
   // Per-plugin parameters
   int P_FFTRead;
   #define FIRST_NDPLUGIN_FFT_PARAM P_FFTRead
-  int P_FFTTimePerPoint;
   int P_FFTTimeAxis;
   int P_FFTFreqAxis;
+  int P_FFTTimePerPoint;
+  int P_FFTRank;
 
   // Per-signal parameters
   int P_FFTTimeSeries;
