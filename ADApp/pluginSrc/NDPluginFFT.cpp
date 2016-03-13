@@ -147,7 +147,7 @@ void NDPluginFFT::createAxisArrays()
     timeAxis_[i] = i * timePerPoint_;
   }
   // Check this - are the frequencies correct, or off-by-one?
-  freqStep = 0.5 / timePerPoint_ / (numFreqPoints_ - 2);
+  freqStep = 0.5 / timePerPoint_ / (numFreqPoints_ - 1);
   for (i=0; i<numFreqPoints_; i++) {
     freqAxis_[i] = i * freqStep;
   }
