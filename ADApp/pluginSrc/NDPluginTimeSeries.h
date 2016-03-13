@@ -74,13 +74,17 @@ private:
   template <typename epicsType> asynStatus doAddToTimeSeriesT(NDArray *pArray);
   asynStatus addToTimeSeries(NDArray *pArray);
   asynStatus clear(epicsUInt32 roi);
-  void doTimeSeriesCallbacks();
+  template <typename epicsType> void doTimeSeriesCallbacksT();
+  asynStatus doTimeSeriesCallbacks();
   void allocateArrays();
-  void zeroArrays();
-  void createAxisArrays();
+  void acquireReset();
+  void createAxisArray();
   void computeNumAverage();
 
   int maxSignals_;
+  int numSignals_;
+  int dataSize_;
+  NDDataType_t dataType_;
   int numTimePoints_;
   int currentTimePoint_;
   int numAverage_;
@@ -91,10 +95,10 @@ private:
   double timePerPoint_; /* Actual time between points in input arrays */
   epicsTimeStamp startTime_;
   double *averageStore_;
+  double *signalData_;
   double *timeAxis_;
   double *timeStamp_;
-  double *timeSeries_;
-  double *timeCircular_;
+  NDArray *pTimeCircular_;
 };
 
 #define NUM_NDPLUGIN_TIME_SERIES_PARAMS (int)(&LAST_NDPLUGIN_TIME_SERIES_PARAM - &FIRST_NDPLUGIN_TIME_SERIES_PARAM + 1)
