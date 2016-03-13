@@ -52,7 +52,7 @@ NDPluginFFT::NDPluginFFT(const char *portName, int queueSize, int blockingCallba
              asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
              asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
              ASYN_MULTIDEVICE, 1, priority, stackSize),
-    timePerPoint_(0), freqAxis_(0), timeSeries_(0), FFTReal_(0), FFTImaginary_(0), FFTAbsValue_(0)
+    timePerPoint_(0), timeAxis_(0), freqAxis_(0), timeSeries_(0), FFTReal_(0), FFTImaginary_(0), FFTAbsValue_(0)
 {
   //const char *functionName = "NDPluginFFT::NDPluginFFT";
 
@@ -64,9 +64,11 @@ NDPluginFFT::NDPluginFFT(const char *portName, int queueSize, int blockingCallba
   /* Per-plugin parameters */
   createParam(FFTReadString,                    asynParamInt32, &P_FFTRead);
   createParam(FFTTimePerPointString,          asynParamFloat64, &P_FFTTimePerPoint);
+  createParam(FFTTimeAxisString,         asynParamFloat64Array, &P_FFTTimeAxis);
   createParam(FFTFreqAxisString,         asynParamFloat64Array, &P_FFTFreqAxis);
   
   /* Per-signal parameters */
+  createParam(FFTTimeSeriesString,       asynParamFloat64Array, &P_FFTTimeSeries);
   createParam(FFTRealString,             asynParamFloat64Array, &P_FFTReal);
   createParam(FFTImaginaryString,        asynParamFloat64Array, &P_FFTImaginary);
   createParam(FFTAbsValueString,         asynParamFloat64Array, &P_FFTAbsValue);
@@ -136,21 +138,26 @@ void NDPluginFFT::createAxisArrays()
   double freqStep;
   int i;
   
+  if (timeAxis_) free(timeAxis_);
   if (freqAxis_) free(freqAxis_);
+  timeAxis_ = (double *)calloc(numTimePoints_, sizeof(double));
   freqAxis_ = (double *)calloc(numFreqPoints_, sizeof(double));
 
+  for (i=0; i<numTimePoints_; i++) {
+    timeAxis_[i] = i * timePerPoint_;
+  }
   // Check this - are the frequencies correct, or off-by-one?
   freqStep = 0.5 / timePerPoint_ / (numFreqPoints_ - 2);
   for (i=0; i<numFreqPoints_; i++) {
     freqAxis_[i] = i * freqStep;
   }
+  doCallbacksFloat64Array(timeAxis_, numTimePoints_, P_FFTTimeAxis, 0);
   doCallbacksFloat64Array(freqAxis_, numFreqPoints_, P_FFTFreqAxis, 0);
 }
 
 /**
- * Templated function to calculate statistics on different NDArray data types.
+ * Templated function to copy the data from the NDArray into double arrays.
  * \param[in] NDArray The pointer to the NDArray object
- * \param[in] NDROI The pointer to the NDROI object
  * \return asynStatus
  */
 template <typename epicsType>
@@ -158,14 +165,11 @@ asynStatus NDPluginFFT::convertToDoubleT(NDArray *pArray)
 {
   epicsType *pData = (epicsType *)pArray->pData;
   int signal;
-  size_t numTimes=1;
-  size_t i;
-  
-  if (pArray->ndims == 2) numTimes = pArray->dims[1].size;
-  
-  for (i=0; i<numTimes; i++) {
-    for (signal=0; signal<maxSignals_; signal++) {
-      timeSeries_[signal] += (epicsFloat64)*pData++;
+  int i;
+    
+  for (signal=0; signal<maxSignals_; signal++) {
+    for (i=0; i<numTimePoints_; i++) {
+      timeSeries_[signal*numTimePoints_ + i] = (epicsFloat64)*pData++;
     }
   }
   return asynSuccess;
@@ -181,6 +185,8 @@ asynStatus NDPluginFFT::computeFFTs(NDArray *pArray)
 {
   asynStatus status = asynSuccess;
   int signal;
+
+  
   
   switch(pArray->dataType) {
   case NDInt8:
@@ -215,9 +221,10 @@ asynStatus NDPluginFFT::computeFFTs(NDArray *pArray)
 
   /* Do array callbacks */
   for (signal=0; signal<maxSignals_; signal++) {
-    doCallbacksFloat64Array(FFTReal_      + signal*numFreqPoints_, numFreqPoints_, P_FFTReal,      signal);
-    doCallbacksFloat64Array(FFTImaginary_ + signal*numFreqPoints_, numFreqPoints_, P_FFTImaginary, signal);
-    doCallbacksFloat64Array(FFTAbsValue_  + signal*numFreqPoints_, numFreqPoints_, P_FFTAbsValue,  signal);
+    doCallbacksFloat64Array(timeSeries_   + signal*numTimePoints_, numTimePoints_, P_FFTTimeSeries, signal);
+    doCallbacksFloat64Array(FFTReal_      + signal*numFreqPoints_, numFreqPoints_, P_FFTReal,       signal);
+    doCallbacksFloat64Array(FFTImaginary_ + signal*numFreqPoints_, numFreqPoints_, P_FFTImaginary,  signal);
+    doCallbacksFloat64Array(FFTAbsValue_  + signal*numFreqPoints_, numFreqPoints_, P_FFTAbsValue,   signal);
   }
 
   return status;
@@ -231,10 +238,12 @@ asynStatus NDPluginFFT::computeFFTs(NDArray *pArray)
  */
 void NDPluginFFT::processCallbacks(NDArray *pArray)
 {
-
   //This function is called with the mutex already locked.  
   //It unlocks it during long calculations when private structures don't need to be protected.
-  
+
+  int numTimePoints;
+  int numSignals;
+  double timePerPoint;  
   const char* functionName = "NDPluginFFT::processCallbacks";
 
   /* Call the base class method */
@@ -245,6 +254,33 @@ void NDPluginFFT::processCallbacks(NDArray *pArray)
     asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
       "%s: error, number of array dimensions must be 1 or 2\n",
       functionName);
+    return;
+  }
+
+  numTimePoints = pArray->dims[0].size;
+  if (pArray->ndims == 1) 
+    numSignals = 1;
+  else
+    numSignals=pArray->dims[1].size;
+
+  if (numSignals > maxSignals_) {
+    asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+      "%s: warning, input array has %d signals, greater than maxSignals=%d\n",
+      functionName, numSignals, maxSignals_);
+    numSignals = maxSignals_;
+  }
+  
+  if ((numTimePoints != numTimePoints_) ||
+      (numSignals    != numSignals_)) {
+    numTimePoints_ = numTimePoints;
+    numSignals_ = numSignals;
+    allocateArrays();
+  }
+
+  getDoubleParam(P_FFTTimePerPoint, &timePerPoint);
+  if (timePerPoint != timePerPoint_) {
+    timePerPoint_ = timePerPoint;
+    createAxisArrays();
   }
 
   computeFFTs(pArray);
