@@ -29,6 +29,15 @@ record(stringout, "$(P)$(R)Name")
 ###################################################################
 #  Time series records for this signal                            #
 ###################################################################
+record(waveform, "$(P)$(R)TimeSeries")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_TIME_SERIES")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
+
 record(waveform, "$(P)$(R)FFTReal")
 {
    field(DTYP, "asynFloat64ArrayIn")
