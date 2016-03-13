@@ -59,7 +59,7 @@ NDPluginTimeSeries::NDPluginTimeSeries(const char *portName, int queueSize, int 
              asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
              asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
              ASYN_MULTIDEVICE, 1, priority, stackSize),
-    numAverage_(1), timePerPoint_(0), timeAxis_(0), timeStamp_(0), timeSeries_(0), timeCircular_(0)
+    numAverage_(1), timePerPoint_(0), signalData_(0), timeAxis_(0), timeStamp_(0), pTimeCircular_(0)
 {
   //const char *functionName = "NDPluginTimeSeries::NDPluginTimeSeries";
 
@@ -67,6 +67,7 @@ NDPluginTimeSeries::NDPluginTimeSeries(const char *portName, int queueSize, int 
     maxSignals = 1;
   }
   maxSignals_ = maxSignals;
+  numSignals_ = maxSignals;
   averageStore_ = (double *)calloc(maxSignals_, sizeof(double));
   
   /* Per-plugin parameters */
@@ -115,37 +116,43 @@ void NDPluginTimeSeries::computeNumAverage()
   numAveraged_ = 0;
   setDoubleParam(P_TSAveragingTime, averagingTimeActual_);
   setIntegerParam(P_TSNumAverage, numAverage_);
-  createAxisArrays();
+  createAxisArray();
   callParamCallbacks();
 }
 
 void NDPluginTimeSeries::allocateArrays()
 {
   int numPoints;
+  int nDims=2;
+  size_t dims[2];
   
   getIntegerParam(P_TSNumPoints, &numPoints);
   numTimePoints_ = numPoints;
-  currentTimePoint_ = 0;
-  if (timeStamp_)     free(timeStamp_);
-  if (timeSeries_)    free(timeSeries_);
-  if (timeCircular_)  free(timeCircular_);
+  if (timeStamp_)  free(timeStamp_);
+  if (signalData_) free (signalData_);
+  if (pTimeCircular_) pTimeCircular_->release();
 
-  timeStamp_    = (double *)calloc(maxSignals_*numTimePoints_, sizeof(double));
-  timeSeries_   = (double *)calloc(maxSignals_*numTimePoints_, sizeof(double));
-  timeCircular_ = (double *)calloc(maxSignals_*numTimePoints_, sizeof(double));
-  createAxisArrays();
+  timeStamp_  = (double *)calloc(numSignals_*numTimePoints_, sizeof(double));
+  signalData_ = (double *)calloc(numSignals_*numTimePoints_, sizeof(double));
+  nDims = 2;
+  dims[0] = numSignals_;
+  dims[1] = numTimePoints_;
+  pTimeCircular_ = pNDArrayPool->alloc(nDims, dims, dataType_, 0, 0);
+  createAxisArray();
+  acquireReset();
 }
 
-void NDPluginTimeSeries::zeroArrays()
+void NDPluginTimeSeries::acquireReset()
 {
-  size_t timeSize = maxSignals_ * numTimePoints_ * sizeof(double);
-
-  memset(timeStamp_,    0, numTimePoints_*sizeof(double));
-  memset(timeSeries_,   0, timeSize);
-  memset(timeCircular_, 0, timeSize);
+  memset(signalData_,           0, numSignals_ * numTimePoints_ * sizeof(double));
+  memset(timeStamp_,            0, numTimePoints_ * sizeof(double));
+  memset(pTimeCircular_->pData, 0, numSignals_ * numTimePoints_ * dataSize_);
+  currentTimePoint_ = 0;
+  setIntegerParam(P_TSCurrentPoint, currentTimePoint_);
+  epicsTimeGetCurrent(&startTime_);
 }
 
-void NDPluginTimeSeries::createAxisArrays()
+void NDPluginTimeSeries::createAxisArray()
 {
   int i;
   
@@ -165,7 +172,8 @@ void NDPluginTimeSeries::createAxisArrays()
 template <typename epicsType>
 asynStatus NDPluginTimeSeries::doAddToTimeSeriesT(NDArray *pArray)
 {
-  epicsType *pData = (epicsType *)pArray->pData;
+  epicsType *pData         = (epicsType *)pArray->pData;
+  epicsType *pTimeCircular = (epicsType *)pTimeCircular_->pData;
   int signal;
   int i;
   int numTimes = 1;
@@ -181,17 +189,9 @@ asynStatus NDPluginTimeSeries::doAddToTimeSeriesT(NDArray *pArray)
     numAveraged_++;
     if (numAveraged_ < numAverage_) continue;
     /* We have now collected the desired number of points to average */
-    if (acquireMode_ == TSAcquireModeFixed) {
-      for (signal=0; signal<maxSignals_; signal++) {
-        timeSeries_[signal*numTimePoints_ + currentTimePoint_] = averageStore_[signal]/numAveraged_;
-        averageStore_[signal] = 0;
-      }
-    }
-    else { // Circular buffer mode
-      for (signal=0; signal<maxSignals_; signal++) {
-        timeCircular_[signal*numTimePoints_ + currentTimePoint_] = averageStore_[signal]/numAveraged_;
-        averageStore_[signal] = 0;
-      }
+    for (signal=0; signal<maxSignals_; signal++) {
+      pTimeCircular[numSignals_*currentTimePoint_ + signal] = averageStore_[signal]/numAveraged_;
+      averageStore_[signal] = 0;
     }
     numAveraged_ = 0;
     timeStamp_[currentTimePoint_] = pArray->timeStamp;
@@ -256,6 +256,94 @@ asynStatus NDPluginTimeSeries::addToTimeSeries(NDArray *pArray)
   return status;
 }
 
+template <typename epicsType>
+void NDPluginTimeSeries::doTimeSeriesCallbacksT()
+{
+  int signal;
+  int timeOut;
+  int timeIn=0;
+  epicsType *timeCircular = (epicsType *)pTimeCircular_->pData;
+
+
+  if (acquireMode_ == TSAcquireModeFixed) {
+    for (signal=0; signal<maxSignals_; signal++) {
+      for (timeOut=0; timeOut<currentTimePoint_; timeOut++) {
+        signalData_[timeOut] = timeCircular[timeOut*numSignals_ + signal];
+      }
+      doCallbacksFloat64Array(signalData_, numTimePoints_, P_TSTimeSeries, signal);
+    }
+  }
+  else {
+    timeIn = currentTimePoint_;
+    for (signal=0; signal<maxSignals_; signal++) {
+      for (timeOut=0; timeOut<numTimePoints_; timeOut++) {
+        signalData_[timeOut] = timeCircular[timeIn*numSignals_ + signal];
+        if (++timeIn >= numTimePoints_) timeIn = 0;
+      }
+      doCallbacksFloat64Array(signalData_, numTimePoints_, P_TSTimeSeries, signal);
+    }
+  }
+}
+
+/**
+ * Call the templated doTimeSeriesCallbacks so we can cast correctly. 
+ * \return asynStatus
+ */
+asynStatus NDPluginTimeSeries::doTimeSeriesCallbacks()
+{
+  int arrayCallbacks;
+  asynStatus status = asynSuccess;
+  
+  switch(dataType_) {
+  case NDInt8:
+    doTimeSeriesCallbacksT<epicsInt8>();
+    break;
+  case NDUInt8:
+    doTimeSeriesCallbacksT<epicsUInt8>();
+    break;
+  case NDInt16:
+    doTimeSeriesCallbacksT<epicsInt16>();
+    break;
+  case NDUInt16:
+    doTimeSeriesCallbacksT<epicsUInt16>();
+    break;
+  case NDInt32:
+    doTimeSeriesCallbacksT<epicsInt32>();
+    break;
+  case NDUInt32:
+    doTimeSeriesCallbacksT<epicsUInt32>();
+    break;
+  case NDFloat32:
+    doTimeSeriesCallbacksT<epicsFloat32>();
+    break;
+  case NDFloat64:
+    doTimeSeriesCallbacksT<epicsFloat64>();
+    break;
+  default:
+    return asynError;
+    break;
+  }
+
+  getIntegerParam(NDArrayCallbacks, &arrayCallbacks);
+  if (arrayCallbacks) {
+    NDArray *pArrayOut = this->pArrays[0];
+    if (pArrayOut) pArrayOut->release();
+    if (acquireMode_ == TSAcquireModeFixed) {
+      pArrayOut = pNDArrayPool->copy(pTimeCircular_, NULL, 1);    
+    }
+    else {
+      // Work needed here, we need to shift the data
+      pArrayOut = pNDArrayPool->copy(pTimeCircular_, NULL, 1);
+    }
+    this->getAttributes(pArrayOut->pAttributeList);
+    this->unlock();
+    doCallbacksGenericPointer(pArrayOut, NDArrayData, 0);
+    this->lock();
+    this->pArrays[0] = pArrayOut;
+  }
+  return status;
+}
+
 
 /** 
  * Callback function that is called by the NDArray driver with new NDArray data.
@@ -264,11 +352,8 @@ asynStatus NDPluginTimeSeries::addToTimeSeries(NDArray *pArray)
  */
 void NDPluginTimeSeries::processCallbacks(NDArray *pArray)
 {
-
-  //This function is called with the mutex already locked.  
-  //It unlocks it during long calculations when private structures don't need to be protected.
-  
   int acquiring;
+  NDArrayInfo_t arrayInfo;
   const char* functionName = "NDPluginTimeSeries::processCallbacks";
 
   /* Call the base class method */
@@ -279,8 +364,20 @@ void NDPluginTimeSeries::processCallbacks(NDArray *pArray)
     asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
       "%s: error, number of array dimensions must be 1 or 2\n",
       functionName);
+    return;
   }
 
+  // If the number of signals or the data type has changed from the last callback
+  // then we need to allocate arrays
+  if ((pArray->dataType          != dataType_) || 
+      ((int)pArray->dims[0].size != numSignals_)) {
+    dataType_   = pArray->dataType;
+    numSignals_ = pArray->dims[0].size;
+    pArray->getInfo(&arrayInfo);
+    dataSize_ = arrayInfo.bytesPerElement;
+    allocateArrays();
+  }
+  
   getIntegerParam(P_TSAcquire, &acquiring);
   
   if (acquiring) {
@@ -319,10 +416,7 @@ asynStatus NDPluginTimeSeries::writeInt32(asynUser *pasynUser, epicsInt32 value)
     acquireMode_ = value;
   } else if (function == P_TSAcquire) {
     if (value) {
-      currentTimePoint_ = 0;
-      setIntegerParam(P_TSCurrentPoint, currentTimePoint_);
-      zeroArrays();
-      epicsTimeGetCurrent(&startTime_);
+      acquireReset();
     }
     else {
       doTimeSeriesCallbacks();
@@ -392,36 +486,6 @@ asynStatus NDPluginTimeSeries::writeFloat64(asynUser *pasynUser, epicsFloat64 va
   }
   return(status);
 }
-
-
-void NDPluginTimeSeries::doTimeSeriesCallbacks()
-{
-  int signal;
-  size_t numCopy;
-  double *src, *dst;
-  // If we are in circular buffer mode then copy data from timeCircular_ to timeSeries_
-  if (acquireMode_ == TSAcquireModeCircular) {
-    for (signal=0; signal<maxSignals_; signal++) {
-      numCopy = numTimePoints_ - currentTimePoint_;
-      src = timeCircular_ + (signal * numTimePoints_) + currentTimePoint_;
-      dst = timeSeries_   + (signal * numTimePoints_);
-      memcpy(dst, src, numCopy*sizeof(double));
-      numCopy = currentTimePoint_;
-      src = timeCircular_ + (signal * numTimePoints_);
-      dst = timeSeries_   + (signal * numTimePoints_) + numTimePoints_ - currentTimePoint_;
-      memcpy(dst, src, numCopy*sizeof(double));
-      doCallbacksFloat64Array(timeSeries_ + signal*numTimePoints_, numTimePoints_, P_TSTimeSeries, signal);
-    }
-  }
-  else {  
-    /* Do time series array callbacks */
-    for (signal=0; signal<maxSignals_; signal++) {
-      doCallbacksFloat64Array(timeSeries_ + signal*numTimePoints_, currentTimePoint_, P_TSTimeSeries, signal);
-    }
-  }
-}
-
-
 
 /** Configuration command */
 extern "C" int NDTimeSeriesConfigure(const char *portName, int queueSize, int blockingCallbacks,
