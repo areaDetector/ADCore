@@ -21,7 +21,7 @@ record(ao, "$(P)$(R)FFTTimePerPointLink")
    field(PINI, "YES")
    field(DOL,  "$(TIME_LINK=0.1)")
    field(OMSL, "closed_loop")
-   field(OUT, "$(P)$(R)TSTimePerPoint PP MS")
+   field(OUT, "$(P)$(R)FFTTimePerPoint PP MS")
 }
 
 record(ao, "$(P)$(R)FFTTimePerPoint")
@@ -39,10 +39,19 @@ record(ai, "$(P)$(R)FFTTimePerPoint_RBV")
    field(SCAN, "I/O Intr")
 }
 
-=record(waveform, "$(P)$(R)TSFreqAxis")
+record(waveform, "$(P)$(R)FFTTimeAxis")
 {
    field(DTYP, "asynFloat64ArrayIn")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_FREQ_AXIS")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_TIME_AXIS")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)FFTFreqAxis")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_FREQ_AXIS")
    field(NELM, "$(NCHANS)")
    field(FTVL, "DOUBLE")
    field(SCAN, "I/O Intr")
