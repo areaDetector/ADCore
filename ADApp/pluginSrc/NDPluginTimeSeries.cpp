@@ -333,8 +333,21 @@ asynStatus NDPluginTimeSeries::doTimeSeriesCallbacks()
       pArrayOut = pNDArrayPool->copy(pTimeCircular_, NULL, 1);    
     }
     else {
-      // Work needed here, we need to shift the data
-      pArrayOut = pNDArrayPool->copy(pTimeCircular_, NULL, 1);
+      // Shift the data so the oldest time point is the first point in the array
+      char *src, *dst;
+      int signal;
+      int numCopy;
+      pArrayOut = pNDArrayPool->copy(pTimeCircular_, NULL, 0);
+      for (signal=0; signal<numSignals_; signal++) {
+        numCopy = numTimePoints_ - currentTimePoint_;
+        src = (char *)pTimeCircular_->pData + ((signal * numTimePoints_) + currentTimePoint_)*dataSize_;
+        dst = (char *)pArrayOut->pData      +  (signal * numTimePoints_)*dataSize_;
+        memcpy(dst, src, numCopy*dataSize_);
+        numCopy = currentTimePoint_;
+        src = (char *)pTimeCircular_->pData +  (signal * numTimePoints_)*dataSize_;
+        dst = (char *)pArrayOut->pData      + ((signal * numTimePoints_) + numTimePoints_ - currentTimePoint_)*dataSize_;
+        memcpy(dst, src, numCopy*dataSize_);
+      }
     }
     this->getAttributes(pArrayOut->pAttributeList);
     getTimeStamp(&pArrayOut->epicsTS);
