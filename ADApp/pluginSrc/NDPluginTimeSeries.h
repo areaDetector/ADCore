@@ -87,6 +87,7 @@ private:
   NDDataType_t dataType_;
   int numTimePoints_;
   int currentTimePoint_;
+  int uniqueId_;
   int numAverage_;
   int numAveraged_;
   int acquireMode_;
