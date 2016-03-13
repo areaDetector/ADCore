@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-4/ADCore/ADApp/op/adl/NDTimeSeriesPlot.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDTimeSeriesPlot.adl"
 	version=030107
 }
 display {
@@ -104,7 +104,7 @@ display {
 	style="line"
 	erase_oldest="plot last n pts"
 	trace[0] {
-		xdata="$(P)$(R)$(XAXIS)"
+		xdata="$(P)$(RP)$(XAXIS)"
 		ydata="$(P)$(RN)$(YAXIS)"
 		data_clr=27
 		yaxis=0
