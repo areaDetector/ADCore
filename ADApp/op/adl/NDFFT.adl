@@ -689,63 +689,52 @@ composite {
 		}
 	}
 }
-composite {
+rectangle {
 	object {
 		x=390
 		y=35
 		width=300
 		height=30
 	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+		width=1
+	}
+}
+composite {
+	object {
+		x=405
+		y=40
+		width=265
+		height=20
+	}
 	"composite name"=""
 	children {
-		rectangle {
+		text {
 			object {
-				x=390
-				y=35
-				width=300
-				height=30
+				x=405
+				y=40
+				width=160
+				height=20
 			}
 			"basic attribute" {
 				clr=14
-				fill="outline"
-				width=1
 			}
+			textix="FFT rank for 2-D"
+			align="horiz. right"
 		}
-		composite {
+		menu {
 			object {
-				x=450
+				x=570
 				y=40
-				width=185
+				width=100
 				height=20
 			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=450
-						y=40
-						width=80
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="FFT type"
-					align="horiz. right"
-				}
-				menu {
-					object {
-						x=535
-						y=40
-						width=100
-						height=20
-					}
-					control {
-						chan="$(P)$(R)TSComputeFFT"
-						clr=14
-						bclr=51
-					}
-				}
+			control {
+				chan="$(P)$(R)FFTRank"
+				clr=14
+				bclr=51
 			}
 		}
 	}
