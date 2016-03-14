@@ -22,7 +22,7 @@
 #include <epicsExport.h>
 
 #include "NDPluginFFT.h"
-#include "fft_1d.h"
+#include "fft.h"
 
 /** Constructor for NDPluginFFT; most parameters are simply passed to NDPluginDriver::NDPluginDriver.
   * \param[in] portName The name of the asyn port driver to be created.
@@ -67,6 +67,8 @@ NDPluginFFT::NDPluginFFT(const char *portName, int queueSize, int blockingCallba
   createParam(FFTFreqAxisString,         asynParamFloat64Array, &P_FFTFreqAxis);
   createParam(FFTTimePerPointString,          asynParamFloat64, &P_FFTTimePerPoint);
   createParam(FFTRankString,                    asynParamInt32, &P_FFTRank);
+  createParam(FFTDirectionString,               asynParamInt32, &P_FFTDirection);
+  createParam(FFTSuppressDCString,              asynParamInt32, &P_FFTSuppressDC);
   
   /* Per-signal parameters */
   createParam(FFTTimeSeriesString,       asynParamFloat64Array, &P_FFTTimeSeries);
@@ -115,6 +117,9 @@ void NDPluginFFT::zeroArrays()
 void NDPluginFFT::computeFFT_1D()
 {
   int i, j;
+  int suppressDC;
+
+  getIntegerParam(P_FFTSuppressDC, &suppressDC);
   
   /* Compute the FFTs of each array */
   for (i=0; i<maxSignals_; i++) {
@@ -122,14 +127,18 @@ void NDPluginFFT::computeFFT_1D()
       FFTComplex_[2*j] = timeSeries_[i*numTimePoints_ + j];
       FFTComplex_[2*j+1] = 0.;
     }
-    fft_1d(FFTComplex_-1, numTimePoints_, 1);
-    /* Start at 1 so we don't copy DC offset which messes up scaling of plots */
-    for (j=1; j<numFreqPoints_; j++) {
+    fft_1D(FFTComplex_-1, numTimePoints_, 1);
+    for (j=0; j<numFreqPoints_; j++) {
       FFTReal_     [i*numFreqPoints_ + j] = FFTComplex_[2*j]; 
       FFTImaginary_[i*numFreqPoints_ + j] = FFTComplex_[2*j+1]; 
       FFTAbsValue_ [i*numFreqPoints_ + j] = sqrt((FFTComplex_[2*j]   * FFTComplex_[2*j] + 
                                                   FFTComplex_[2*j+1] * FFTComplex_[2*j+1])
                                                  / (numTimePoints_ * numTimePoints_));
+    }
+    if (suppressDC) {
+      FFTReal_      [i*numFreqPoints_] = 0;
+      FFTImaginary_ [i*numFreqPoints_] = 0;
+      FFTAbsValue_  [i*numFreqPoints_] = 0;
     }
   }
 }         

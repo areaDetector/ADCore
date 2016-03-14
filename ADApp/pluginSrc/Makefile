@@ -66,7 +66,7 @@ INC += NDPluginTimeSeries.h
 INC += NDPluginTransform.h
 
 LIBRARY_IOC += NDPlugin
-NDPlugin_SRCS += fft_1d.c
+NDPlugin_SRCS += fft.c
 NDPlugin_SRCS += NDArrayRing.cpp
 NDPlugin_SRCS_DEFAULT += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNexus.cpp NDFileHDF5.cpp NDFileHDF5Dataset.cpp NDFileHDF5LayoutXML.cpp NDFileHDF5Layout.cpp NDFileNull.cpp
 NDPlugin_SRCS_vxWorks += NDFileDummy.cpp
