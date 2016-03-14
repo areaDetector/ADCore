@@ -124,7 +124,7 @@ composite {
 composite {
 	object {
 		x=390
-		y=70
+		y=120
 		width=300
 		height=160
 	}
@@ -133,7 +133,7 @@ composite {
 		composite {
 			object {
 				x=413
-				y=101
+				y=151
 				width=243
 				height=120
 			}
@@ -142,7 +142,7 @@ composite {
 				text {
 					object {
 						x=413
-						y=126
+						y=176
 						width=140
 						height=20
 					}
@@ -155,7 +155,7 @@ composite {
 				"related display" {
 					object {
 						x=556
-						y=126
+						y=176
 						width=100
 						height=20
 					}
@@ -246,7 +246,7 @@ composite {
 				text {
 					object {
 						x=473
-						y=151
+						y=201
 						width=80
 						height=20
 					}
@@ -259,7 +259,7 @@ composite {
 				"related display" {
 					object {
 						x=556
-						y=151
+						y=201
 						width=100
 						height=20
 					}
@@ -350,7 +350,7 @@ composite {
 				text {
 					object {
 						x=423
-						y=176
+						y=226
 						width=130
 						height=20
 					}
@@ -363,7 +363,7 @@ composite {
 				"related display" {
 					object {
 						x=556
-						y=176
+						y=226
 						width=100
 						height=20
 					}
@@ -454,7 +454,7 @@ composite {
 				text {
 					object {
 						x=413
-						y=201
+						y=251
 						width=140
 						height=20
 					}
@@ -467,7 +467,7 @@ composite {
 				"related display" {
 					object {
 						x=556
-						y=201
+						y=251
 						width=100
 						height=20
 					}
@@ -558,7 +558,7 @@ composite {
 				text {
 					object {
 						x=443
-						y=101
+						y=151
 						width=110
 						height=20
 					}
@@ -571,7 +571,7 @@ composite {
 				"related display" {
 					object {
 						x=556
-						y=101
+						y=151
 						width=100
 						height=20
 					}
@@ -664,7 +664,7 @@ composite {
 		text {
 			object {
 				x=440
-				y=76
+				y=126
 				width=210
 				height=20
 			}
@@ -677,7 +677,7 @@ composite {
 		rectangle {
 			object {
 				x=390
-				y=70
+				y=120
 				width=300
 				height=160
 			}
@@ -694,7 +694,7 @@ rectangle {
 		x=390
 		y=35
 		width=300
-		height=30
+		height=80
 	}
 	"basic attribute" {
 		clr=14
@@ -702,40 +702,81 @@ rectangle {
 		width=1
 	}
 }
-composite {
+text {
 	object {
-		x=405
-		y=40
-		width=265
+		x=450
+		y=65
+		width=130
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=405
-				y=40
-				width=160
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="FFT rank for 2-D"
-			align="horiz. right"
-		}
-		menu {
-			object {
-				x=570
-				y=40
-				width=100
-				height=20
-			}
-			control {
-				chan="$(P)$(R)FFTRank"
-				clr=14
-				bclr=51
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="FFT direction"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=585
+		y=65
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)FFTDirection"
+		clr=14
+		bclr=51
+	}
+}
+text {
+	object {
+		x=400
+		y=90
+		width=180
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Suppress DC offset"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=585
+		y=90
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)FFTSuppressDC"
+		clr=14
+		bclr=51
+	}
+}
+text {
+	object {
+		x=420
+		y=40
+		width=160
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="FFT rank for 2-D"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=585
+		y=40
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)FFTRank"
+		clr=14
+		bclr=51
 	}
 }
