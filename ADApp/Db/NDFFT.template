@@ -80,3 +80,41 @@ record(mbbi, "$(P)$(R)FFTRank_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(bo, "$(P)$(R)FFTDirection")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_DIRECTION")
+   field(ZNAM, "Time to freq.")
+   field(ONAM, "Freq. to time")
+   info(autosaveFields, "VAL")
+}
+
+record(bi, "$(P)$(R)FFTDirection_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_DIRECTION")
+   field(ZNAM, "Time to freq.")
+   field(ONAM, "Freq. to time")
+   field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)FFTSuppressDC")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_SUPPRESS_DC")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
+   info(autosaveFields, "VAL")
+}
+
+record(bi, "$(P)$(R)FFTSuppressDC_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_SUPPRESS_DC")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
+   field(SCAN, "I/O Intr")
+}
+
