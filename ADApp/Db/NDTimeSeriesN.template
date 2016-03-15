@@ -49,6 +49,7 @@ record(stringout, "$(P)$(R)Name")
    field(PINI, "YES")
    field(DTYP, "asynOctetWrite")
    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_SIGNAL_NAME")
+   field(VAL,  "$(NAME)")
    info(autosaveFields, "VAL")
 }
 
