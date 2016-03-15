@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDPluginTimeSeriesPlotAll.adl"
+	name="/home/epics/devel/areaDetector-2-4/ADCore/ADApp/op/adl/NDFFTPlotAll.adl"
 	version=030107
 }
 display {
@@ -87,40 +87,18 @@ display {
 		1a7309,
 	}
 }
-composite {
+text {
 	object {
-		x=334
-		y=9
-		width=333
-		height=41
+		x=207
+		y=10
+		width=500
+		height=30
 	}
-	"composite name"=""
-	children {
-		rectangle {
-			object {
-				x=334
-				y=9
-				width=333
-				height=40
-			}
-			"basic attribute" {
-				clr=54
-			}
-		}
-		text {
-			object {
-				x=349
-				y=10
-				width=302
-				height=40
-			}
-			"basic attribute" {
-				clr=0
-			}
-			textix="$(TITLE)"
-			align="horiz. centered"
-		}
+	"basic attribute" {
+		clr=54
 	}
+	textix="$(P)$(R)    ($(P)$(R)Name)"
+	align="horiz. centered"
 }
 "cartesian plot" {
 	object {
@@ -130,9 +108,9 @@ composite {
 		height=250
 	}
 	plotcom {
-		title="$(P)$(RN)TimeSeries"
+		title="$(P)$(R)TimeSeries"
 		xlabel="Time (s)"
-		ylabel="$(YTITLE)"
+		ylabel="$(P)$(R)TimeSeries"
 		clr=14
 		bclr=2
 	}
@@ -140,7 +118,7 @@ composite {
 	erase_oldest="plot last n pts"
 	trace[0] {
 		xdata="$(P)$(R)FFTTimeAxis"
-		ydata="$(P)$(RN)TimeSeries"
+		ydata="$(P)$(R)FFTTimeSeries"
 		data_clr=27
 		yaxis=0
 	}
@@ -177,7 +155,7 @@ text {
 	plotcom {
 		title="$(P)$(R)FFTAbsValue"
 		xlabel="Frequency (Hz)"
-		ylabel="$(YTITLE)"
+		ylabel="$(P)$(R)FFTAbsValue"
 		clr=14
 		bclr=2
 	}
@@ -185,7 +163,7 @@ text {
 	erase_oldest="plot last n pts"
 	trace[0] {
 		xdata="$(P)$(R)FFTFreqAxis"
-		ydata="$(P)$(RN)FFTAbsValue"
+		ydata="$(P)$(R)FFTAbsValue"
 		data_clr=27
 		yaxis=0
 	}
@@ -220,9 +198,9 @@ text {
 		height=250
 	}
 	plotcom {
-		title="$(P)$(RN)FFTReal"
+		title="$(P)$(R)FFTReal"
 		xlabel="Frequency (Hz)"
-		ylabel="$(YTITLE)"
+		ylabel="$(P)$(R)FFTReal"
 		clr=14
 		bclr=2
 	}
@@ -230,7 +208,7 @@ text {
 	erase_oldest="plot last n pts"
 	trace[0] {
 		xdata="$(P)$(R)FFTFreqAxis"
-		ydata="$(P)$(RN)FFTReal"
+		ydata="$(P)$(R)FFTReal"
 		data_clr=27
 		yaxis=0
 	}
@@ -265,9 +243,9 @@ text {
 		height=250
 	}
 	plotcom {
-		title="$(P)$(RNF)FFTImaginary"
+		title="$(P)$(R)FFTImaginary"
 		xlabel="Frequency (Hz)"
-		ylabel="$(YTITLE)"
+		ylabel="$(P)$(R)FFTImaginary"
 		clr=14
 		bclr=2
 	}
@@ -275,7 +253,7 @@ text {
 	erase_oldest="plot last n pts"
 	trace[0] {
 		xdata="$(P)$(R)FFTFreqAxis"
-		ydata="$(P)$(RN)FFTImaginary"
+		ydata="$(P)$(R)FFTImaginary"
 		data_clr=27
 		yaxis=0
 	}
