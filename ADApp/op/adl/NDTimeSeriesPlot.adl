@@ -1,12 +1,12 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDTimeSeriesPlot.adl"
+	name="/home/epics/devel/areaDetector-2-4/ADCore/ADApp/op/adl/NDTimeSeriesPlot.adl"
 	version=030107
 }
 display {
 	object {
-		x=753
-		y=138
+		x=949
+		y=290
 		width=500
 		height=355
 	}
@@ -95,17 +95,17 @@ display {
 		height=230
 	}
 	plotcom {
-		title="$(P)$(RN)$(YAXIS)"
+		title="$(YAXIS)"
 		xlabel="$(XTITLE)"
-		ylabel="$(P)$(RN)$(YAXIS)"
+		ylabel="$(YAXIS)"
 		clr=14
 		bclr=2
 	}
 	style="line"
 	erase_oldest="plot last n pts"
 	trace[0] {
-		xdata="$(P)$(RP)$(XAXIS)"
-		ydata="$(P)$(RN)$(YAXIS)"
+		xdata="$(XAXIS)"
+		ydata="$(YAXIS)"
 		data_clr=27
 		yaxis=0
 	}
@@ -215,28 +215,17 @@ text {
 	textix="Number of points"
 	align="horiz. right"
 }
-rectangle {
+text {
 	object {
 		x=0
 		y=5
-		width=500
+		width=250
 		height=25
 	}
 	"basic attribute" {
 		clr=54
 	}
-}
-text {
-	object {
-		x=202
-		y=5
-		width=96
-		height=25
-	}
-	"basic attribute" {
-		clr=0
-	}
-	textix="$(TITLE)"
+	textix="$(P)$(RN)"
 	align="horiz. centered"
 }
 composite {
@@ -306,6 +295,22 @@ composite {
 	}
 	clrmod="alarm"
 	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=250
+		y=7
+		width=250
+		height=25
+	}
+	monitor {
+		chan="$(P)$(RN)Name"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
 	limits {
 	}
 }
