@@ -89,15 +89,15 @@ display {
 }
 text {
 	object {
-		x=207
+		x=0
 		y=10
-		width=500
+		width=450
 		height=30
 	}
 	"basic attribute" {
 		clr=54
 	}
-	textix="$(P)$(R)    ($(P)$(R)Name)"
+	textix="$(P)$(R)"
 	align="horiz. centered"
 }
 "cartesian plot" {
@@ -279,4 +279,20 @@ text {
 	}
 	textix="FFT Imaginary"
 	align="horiz. centered"
+}
+"text update" {
+	object {
+		x=450
+		y=10
+		width=450
+		height=30
+	}
+	monitor {
+		chan="$(P)$(R)Name"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
 }
