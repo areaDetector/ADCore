@@ -294,6 +294,10 @@ asynStatus NDPluginTimeSeries::doTimeSeriesCallbacks()
   int arrayCallbacks;
   epicsTimeStamp now;
   asynStatus status = asynSuccess;
+  char *src, *dst;
+  int signal;
+  size_t dims[1]; 
+  int numCopy;
   
   switch(dataType_) {
   case NDInt8:
@@ -334,9 +338,6 @@ asynStatus NDPluginTimeSeries::doTimeSeriesCallbacks()
     }
     else {
       // Shift the data so the oldest time point is the first point in the array
-      char *src, *dst;
-      int signal;
-      int numCopy;
       pArrayOut = pNDArrayPool->copy(pTimeCircular_, NULL, 0);
       for (signal=0; signal<numSignals_; signal++) {
         numCopy = numTimePoints_ - currentTimePoint_;
@@ -358,6 +359,23 @@ asynStatus NDPluginTimeSeries::doTimeSeriesCallbacks()
     doCallbacksGenericPointer(pArrayOut, NDArrayData, 0);
     this->lock();
     this->pArrays[0] = pArrayOut;
+    // Now do NDArray callbacks on 1-D arrays for each signal
+    numCopy = pArrayOut->dims[0].size;
+    dims[0] = numCopy;
+    for (signal=0; signal<numSignals_; signal++) {
+      NDArray *pArray = pNDArrayPool->alloc(1, dims, pArrayOut->dataType, 0, 0);
+      src = (char *)pArrayOut->pData + (signal * numTimePoints_)*dataSize_;
+      dst = (char *)pArray->pData;
+      memcpy(dst, src, numCopy*dataSize_); 
+      this->getAttributes(pArray->pAttributeList);
+      pArray->epicsTS   = pArrayOut->epicsTS;
+      pArray->timeStamp = pArrayOut->timeStamp;
+      pArray->uniqueId  = pArrayOut->uniqueId;
+      this->unlock();
+      doCallbacksGenericPointer(pArray, NDArrayData, signal);
+      this->lock();
+      pArray->release();
+    }
   }
   return status;
 }
