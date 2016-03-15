@@ -1,14 +1,14 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-4/ADCore/ADApp/op/adl/NDFFT.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDFFT.adl"
 	version=030107
 }
 display {
 	object {
-		x=41
-		y=171
-		width=695
-		height=570
+		x=899
+		y=108
+		width=390
+		height=680
 	}
 	clr=14
 	bclr=4
@@ -91,7 +91,7 @@ rectangle {
 	object {
 		x=0
 		y=5
-		width=695
+		width=390
 		height=25
 	}
 	"basic attribute" {
@@ -100,7 +100,7 @@ rectangle {
 }
 text {
 	object {
-		x=239
+		x=87
 		y=6
 		width=216
 		height=25
@@ -121,580 +121,12 @@ composite {
 	"composite name"=""
 	"composite file"="NDPluginBase.adl"
 }
-composite {
-	object {
-		x=390
-		y=120
-		width=300
-		height=160
-	}
-	"composite name"=""
-	children {
-		composite {
-			object {
-				x=413
-				y=151
-				width=243
-				height=120
-			}
-			"composite name"=""
-			children {
-				text {
-					object {
-						x=413
-						y=176
-						width=140
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="FFT abs. value"
-					align="horiz. right"
-				}
-				"related display" {
-					object {
-						x=556
-						y=176
-						width=100
-						height=20
-					}
-					display[0] {
-						label="$(T1)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R1),TITLE=$(T1),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTAbsValue"
-					}
-					display[1] {
-						label="$(T2)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R2),TITLE=$(T2),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTAbsValue"
-					}
-					display[2] {
-						label="$(T3)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R3),TITLE=$(T3),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTAbsValue"
-					}
-					display[3] {
-						label="$(T4)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R4),TITLE=$(T4),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTAbsValue"
-					}
-					display[4] {
-						label="$(T5)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R5),TITLE=$(T5),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTAbsValue"
-					}
-					display[5] {
-						label="$(T6)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R6),TITLE=$(T6),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTAbsValue"
-					}
-					display[6] {
-						label="$(T7)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R7),TITLE=$(T7),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTAbsValue"
-					}
-					display[7] {
-						label="$(T8)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R8),TITLE=$(T8),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTAbsValue"
-					}
-					display[8] {
-						label="$(T9)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R9),TITLE=$(T9),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTAbsValue"
-					}
-					display[9] {
-						label="$(T10)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R10),TITLE=$(T10),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTAbsValue"
-					}
-					display[10] {
-						label="$(T11)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R11),TITLE=$(T11),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTAbsValue"
-					}
-					display[11] {
-						label="$(T12)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R12),TITLE=$(T12),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTAbsValue"
-					}
-					display[12] {
-						label="$(T13)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R13),TITLE=$(T13),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTAbsValue"
-					}
-					display[13] {
-						label="$(T14)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R14),TITLE=$(T14),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTAbsValue"
-					}
-					display[14] {
-						label="$(T15)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R15),TITLE=$(T15),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTAbsValue"
-					}
-					display[15] {
-						label="$(T16)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R16),TITLE=$(T16),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTAbsValue"
-					}
-					clr=14
-					bclr=51
-					label="Plots"
-				}
-				text {
-					object {
-						x=473
-						y=201
-						width=80
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="FFT real"
-					align="horiz. right"
-				}
-				"related display" {
-					object {
-						x=556
-						y=201
-						width=100
-						height=20
-					}
-					display[0] {
-						label="$(T1)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R1),TITLE=$(T1),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTReal"
-					}
-					display[1] {
-						label="$(T2)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R2),TITLE=$(T2),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTReal"
-					}
-					display[2] {
-						label="$(T3)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R3),TITLE=$(T3),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTReal"
-					}
-					display[3] {
-						label="$(T4)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R4),TITLE=$(T4),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTReal"
-					}
-					display[4] {
-						label="$(T5)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R5),TITLE=$(T5),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTReal"
-					}
-					display[5] {
-						label="$(T6)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R6),TITLE=$(T6),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTReal"
-					}
-					display[6] {
-						label="$(T7)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R7),TITLE=$(T7),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTReal"
-					}
-					display[7] {
-						label="$(T8)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R8),TITLE=$(T8),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTReal"
-					}
-					display[8] {
-						label="$(T9)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R9),TITLE=$(T9),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTReal"
-					}
-					display[9] {
-						label="$(T10)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R10),TITLE=$(T10),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTReal"
-					}
-					display[10] {
-						label="$(T11)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R11),TITLE=$(T11),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTReal"
-					}
-					display[11] {
-						label="$(T12)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R12),TITLE=$(T12),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTReal"
-					}
-					display[12] {
-						label="$(T13)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R13),TITLE=$(T13),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTReal"
-					}
-					display[13] {
-						label="$(T14)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R14),TITLE=$(T14),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTReal"
-					}
-					display[14] {
-						label="$(T15)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R15),TITLE=$(T15),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTReal"
-					}
-					display[15] {
-						label="$(T16)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R16),TITLE=$(T16),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTReal"
-					}
-					clr=14
-					bclr=51
-					label="Plots"
-				}
-				text {
-					object {
-						x=423
-						y=226
-						width=130
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="FFT imaginary"
-					align="horiz. right"
-				}
-				"related display" {
-					object {
-						x=556
-						y=226
-						width=100
-						height=20
-					}
-					display[0] {
-						label="$(T1)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R1),TITLE=$(T1),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTImaginary"
-					}
-					display[1] {
-						label="$(T2)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R2),TITLE=$(T2),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTImaginary"
-					}
-					display[2] {
-						label="$(T3)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R3),TITLE=$(T3),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTImaginary"
-					}
-					display[3] {
-						label="$(T4)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R4),TITLE=$(T4),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTImaginary"
-					}
-					display[4] {
-						label="$(T5)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R5),TITLE=$(T5),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTImaginary"
-					}
-					display[5] {
-						label="$(T6)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R6),TITLE=$(T6),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTImaginary"
-					}
-					display[6] {
-						label="$(T7)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R7),TITLE=$(T7),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTImaginary"
-					}
-					display[7] {
-						label="$(T8)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R8),TITLE=$(T8),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTImaginary"
-					}
-					display[8] {
-						label="$(T9)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R9),TITLE=$(T9),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTImaginary"
-					}
-					display[9] {
-						label="$(T10)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R10),TITLE=$(T10),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTImaginary"
-					}
-					display[10] {
-						label="$(T11)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R11),TITLE=$(T11),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTImaginary"
-					}
-					display[11] {
-						label="$(T12)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R12),TITLE=$(T12),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTImaginary"
-					}
-					display[12] {
-						label="$(T13)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R13),TITLE=$(T13),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTImaginary"
-					}
-					display[13] {
-						label="$(T14)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R14),TITLE=$(T14),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTImaginary"
-					}
-					display[14] {
-						label="$(T15)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R15),TITLE=$(T15),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTImaginary"
-					}
-					display[15] {
-						label="$(T16)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R16),TITLE=$(T16),XAXIS=FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=FFTImaginary"
-					}
-					clr=14
-					bclr=51
-					label="Plots"
-				}
-				text {
-					object {
-						x=413
-						y=251
-						width=140
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Combined plots"
-					align="horiz. right"
-				}
-				"related display" {
-					object {
-						x=556
-						y=251
-						width=100
-						height=20
-					}
-					display[0] {
-						label="$(T1)"
-						name="NDFFTPlotAll.adl"
-						args="P=$(P),R=$(R),RN=$(R1),TITLE=$(T1)"
-					}
-					display[1] {
-						label="$(T2)"
-						name="NDFFTPlotAll.adl"
-						args="P=$(P),R=$(R),RN=$(R2),TITLE=$(T2)"
-					}
-					display[2] {
-						label="$(T3)"
-						name="NDFFTPlotAll.adl"
-						args="P=$(P),R=$(R),RN=$(R3),TITLE=$(T3)"
-					}
-					display[3] {
-						label="$(T4)"
-						name="NDFFTPlotAll.adl"
-						args="P=$(P),R=$(R),RN=$(R4),TITLE=$(T4)"
-					}
-					display[4] {
-						label="$(T5)"
-						name="NDFFTPlotAll.adl"
-						args="P=$(P),R=$(R),RN=$(R5),TITLE=$(T5)"
-					}
-					display[5] {
-						label="$(T6)"
-						name="NDFFTPlotAll.adl"
-						args="P=$(P),R=$(R),RN=$(R6),TITLE=$(T6)"
-					}
-					display[6] {
-						label="$(T7)"
-						name="NDFFTPlotAll.adl"
-						args="P=$(P),R=$(R),RN=$(R7),TITLE=$(T7)"
-					}
-					display[7] {
-						label="$(T8)"
-						name="NDFFTPlotAll.adl"
-						args="P=$(P),R=$(R),RN=$(R8),TITLE=$(T8)"
-					}
-					display[8] {
-						label="$(T9)"
-						name="NDFFTPlotAll.adl"
-						args="P=$(P),R=$(R),RN=$(R9),TITLE=$(T9)"
-					}
-					display[9] {
-						label="$(T10)"
-						name="NDFFTPlotAll.adl"
-						args="P=$(P),R=$(R),RN=$(R10),TITLE=$(T10)"
-					}
-					display[10] {
-						label="$(T11)"
-						name="NDFFTPlotAll.adl"
-						args="P=$(P),R=$(R),RN=$(R11),TITLE=$(T11)"
-					}
-					display[11] {
-						label="$(T12)"
-						name="NDFFTPlotAll.adl"
-						args="P=$(P),R=$(R),RN=$(R12),TITLE=$(T12)"
-					}
-					display[12] {
-						label="$(T13)"
-						name="NDFFTPlotAll.adl"
-						args="P=$(P),R=$(R),RN=$(R13),TITLE=$(T13)"
-					}
-					display[13] {
-						label="$(T14)"
-						name="NDFFTPlotAll.adl"
-						args="P=$(P),R=$(R),RN=$(R14),TITLE=$(T14)"
-					}
-					display[14] {
-						label="$(T15)"
-						name="NDFFTPlotAll.adl"
-						args="P=$(P),R=$(R),RN=$(R15),TITLE=$(T15)"
-					}
-					display[15] {
-						label="$(T16)"
-						name="NDFFTPlotAll.adl"
-						args="P=$(P),R=$(R),RN=$(R16),TITLE=$(T16)"
-					}
-					clr=14
-					bclr=51
-					label="Plots"
-				}
-				text {
-					object {
-						x=443
-						y=151
-						width=110
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Time series"
-					align="horiz. right"
-				}
-				"related display" {
-					object {
-						x=556
-						y=151
-						width=100
-						height=20
-					}
-					display[0] {
-						label="$(T1)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R1),TITLE=$(T1),XAXIS=FFTTimeAxis,XTITLE=Time (sec),YAXIS=TimeSeries"
-					}
-					display[1] {
-						label="$(T2)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R2),TITLE=$(T2),XAXIS=FFTTimeAxis,XTITLE=Time (sec),YAXIS=TimeSeries"
-					}
-					display[2] {
-						label="$(T3)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R3),TITLE=$(T3),XAXIS=FFTTimeAxis,XTITLE=Time (sec),YAXIS=TimeSeries"
-					}
-					display[3] {
-						label="$(T4)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R4),TITLE=$(T4),XAXIS=FFTTimeAxis,XTITLE=Time (sec),YAXIS=TimeSeries"
-					}
-					display[4] {
-						label="$(T5)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R5),TITLE=$(T5),XAXIS=FFTTimeAxis,XTITLE=Time (sec),YAXIS=TimeSeries"
-					}
-					display[5] {
-						label="$(T6)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R6),TITLE=$(T6),XAXIS=FFTTimeAxis,XTITLE=Time (sec),YAXIS=TimeSeries"
-					}
-					display[6] {
-						label="$(T7)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R7),TITLE=$(T7),XAXIS=FFTTimeAxis,XTITLE=Time (sec),YAXIS=TimeSeries"
-					}
-					display[7] {
-						label="$(T8)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R8),TITLE=$(T8),XAXIS=FFTTimeAxis,XTITLE=Time (sec),YAXIS=TimeSeries"
-					}
-					display[8] {
-						label="$(T9)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R9),TITLE=$(T9),XAXIS=FFTTimeAxis,XTITLE=Time (sec),YAXIS=TimeSeries"
-					}
-					display[9] {
-						label="$(T10)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R10),TITLE=$(T10),XAXIS=FFTTimeAxis,XTITLE=Time (sec),YAXIS=TimeSeries"
-					}
-					display[10] {
-						label="$(T11)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R11),TITLE=$(T11),XAXIS=FFTTimeAxis,XTITLE=Time (sec),YAXIS=TimeSeries"
-					}
-					display[11] {
-						label="$(T12)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R12),TITLE=$(T12),XAXIS=FFTTimeAxis,XTITLE=Time (sec),YAXIS=TimeSeries"
-					}
-					display[12] {
-						label="$(T13)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R13),TITLE=$(T13),XAXIS=FFTTimeAxis,XTITLE=Time (sec),YAXIS=TimeSeries"
-					}
-					display[13] {
-						label="$(T14)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R14),TITLE=$(T14),XAXIS=FFTTimeAxis,XTITLE=Time (sec),YAXIS=TimeSeries"
-					}
-					display[14] {
-						label="$(T15)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R15),TITLE=$(T15),XAXIS=FFTTimeAxis,XTITLE=Time (sec),YAXIS=TimeSeries"
-					}
-					display[15] {
-						label="$(T16)"
-						name="NDTimeSeriesPlot.adl"
-						args="P=$(P),R=$(RTS),RP=$(R),RN=$(R16),TITLE=$(T16),XAXIS=FFTTimeAxis,XTITLE=Time (sec),YAXIS=TimeSeries"
-					}
-					clr=14
-					bclr=51
-					label="Plots"
-				}
-			}
-		}
-		text {
-			object {
-				x=440
-				y=126
-				width=210
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="1-D Time Series Plots"
-			align="horiz. right"
-		}
-		rectangle {
-			object {
-				x=390
-				y=120
-				width=300
-				height=160
-			}
-			"basic attribute" {
-				clr=14
-				fill="outline"
-				width=1
-			}
-		}
-	}
-}
 rectangle {
 	object {
-		x=390
-		y=35
-		width=300
-		height=80
+		x=5
+		y=570
+		width=380
+		height=105
 	}
 	"basic attribute" {
 		clr=14
@@ -704,34 +136,8 @@ rectangle {
 }
 text {
 	object {
-		x=450
-		y=65
-		width=130
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="FFT direction"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=585
-		y=65
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(R)FFTDirection"
-		clr=14
-		bclr=51
-	}
-}
-text {
-	object {
-		x=400
-		y=90
+		x=15
+		y=625
 		width=180
 		height=20
 	}
@@ -743,9 +149,9 @@ text {
 }
 menu {
 	object {
-		x=585
-		y=90
-		width=100
+		x=200
+		y=625
+		width=120
 		height=20
 	}
 	control {
@@ -754,29 +160,147 @@ menu {
 		bclr=51
 	}
 }
+"related display" {
+	object {
+		x=200
+		y=650
+		width=120
+		height=20
+	}
+	display[0] {
+		label="Time series"
+		name="NDTimeSeriesPlot.adl"
+		args="P=$(P),R=$(RTS),RN=$(R),XAXIS=$(P)$(R)FFTTimeAxis,XTITLE=Time (sec),YAXIS=$(P)$(R)FFTTimeSeries"
+	}
+	display[1] {
+		label="FFT abs. value"
+		name="NDTimeSeriesPlot.adl"
+		args="P=$(P),R=$(RTS),RN=$(R),XAXIS=$(P)$(R)FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=$(P)$(R)FFTAbsValue"
+	}
+	display[2] {
+		label="FFT real"
+		name="NDTimeSeriesPlot.adl"
+		args="P=$(P),R=$(RTS),RN=$(R),XAXIS=$(P)$(R)FFTFreqAxis,XTITLE=Frequency (Hz),$(P)$(R)YAXIS=FFTReal"
+	}
+	display[3] {
+		label="FFT Imaginary"
+		name="NDTimeSeriesPlot.adl"
+		args="P=$(P),R=$(RTS),RN=$(R),XAXIS=$(P)$(R)FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=$(P)$(R)FFTImaginary"
+	}
+	display[4] {
+		label="Combined"
+		name="NDFFTPlotAll.adl"
+		args="P=$(P),R=$(R)"
+	}
+	display[6] {
+		args=" "
+	}
+	display[7] {
+		args=" "
+	}
+	display[8] {
+		args=" "
+	}
+	display[9] {
+		args=" "
+	}
+	display[10] {
+		args=" "
+	}
+	display[11] {
+		args=" "
+	}
+	display[12] {
+		args=" "
+	}
+	display[13] {
+		name="l"
+	}
+	display[14] {
+		args=" "
+	}
+	display[15] {
+		args=" "
+	}
+	clr=14
+	bclr=51
+	label="Plots"
+}
 text {
 	object {
-		x=420
-		y=40
-		width=160
+		x=105
+		y=650
+		width=90
 		height=20
 	}
 	"basic attribute" {
 		clr=14
 	}
-	textix="FFT rank for 2-D"
+	textix="1-D plots"
 	align="horiz. right"
 }
-menu {
+composite {
 	object {
-		x=585
-		y=40
-		width=100
+		x=65
+		y=600
+		width=255
 		height=20
 	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=65
+				y=600
+				width=130
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="FFT direction"
+			align="horiz. right"
+		}
+		menu {
+			object {
+				x=200
+				y=600
+				width=120
+				height=20
+			}
+			control {
+				chan="$(P)$(R)FFTDirection"
+				clr=14
+				bclr=51
+			}
+		}
+	}
+}
+text {
+	object {
+		x=155
+		y=575
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Name"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=200
+		y=577
+		width=120
+		height=18
+	}
 	control {
-		chan="$(P)$(R)FFTRank"
+		chan="$(P)$(R)Name"
 		clr=14
 		bclr=51
+	}
+	limits {
 	}
 }
