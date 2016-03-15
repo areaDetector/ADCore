@@ -34,7 +34,6 @@
   *            of the driver doing the callbacks.
   * \param[in] NDArrayPort Name of asyn port driver for initial source of NDArray callbacks.
   * \param[in] NDArrayAddr asyn port driver address for initial source of NDArray callbacks.
-  * \param[in] maxSignals The maximum number of signals this plugin supports. 1 is minimum.
   * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is
   *            allowed to allocate. Set this to -1 to allow an unlimited number of buffers.
   * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is
@@ -44,33 +43,26 @@
   */
 NDPluginFFT::NDPluginFFT(const char *portName, int queueSize, int blockingCallbacks,
                          const char *NDArrayPort, int NDArrayAddr, 
-                         int maxSignals, int maxBuffers, size_t maxMemory,
+                         int maxBuffers, size_t maxMemory,
                          int priority, int stackSize)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
-             NDArrayPort, NDArrayAddr, maxSignals, NUM_NDPLUGIN_FFT_PARAMS, maxBuffers, maxMemory,
+             NDArrayPort, NDArrayAddr, 1, NUM_NDPLUGIN_FFT_PARAMS, maxBuffers, maxMemory,
              asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
              asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
-             ASYN_MULTIDEVICE, 1, priority, stackSize),
+             0, 1, priority, stackSize),
     timePerPoint_(0), timeAxis_(0), freqAxis_(0), timeSeries_(0), FFTReal_(0), FFTImaginary_(0), FFTAbsValue_(0)
 {
   //const char *functionName = "NDPluginFFT::NDPluginFFT";
 
-  if (maxSignals < 1) {
-    maxSignals = 1;
-  }
-  maxSignals_ = maxSignals;
-  
   /* Per-plugin parameters */
   createParam(FFTReadString,                    asynParamInt32, &P_FFTRead);
   createParam(FFTTimeAxisString,         asynParamFloat64Array, &P_FFTTimeAxis);
   createParam(FFTFreqAxisString,         asynParamFloat64Array, &P_FFTFreqAxis);
   createParam(FFTTimePerPointString,          asynParamFloat64, &P_FFTTimePerPoint);
-  createParam(FFTRankString,                    asynParamInt32, &P_FFTRank);
   createParam(FFTDirectionString,               asynParamInt32, &P_FFTDirection);
   createParam(FFTSuppressDCString,              asynParamInt32, &P_FFTSuppressDC);
   
-  /* Per-signal parameters */
   createParam(FFTTimeSeriesString,       asynParamFloat64Array, &P_FFTTimeSeries);
   createParam(FFTRealString,             asynParamFloat64Array, &P_FFTReal);
   createParam(FFTImaginaryString,        asynParamFloat64Array, &P_FFTImaginary);
@@ -96,17 +88,17 @@ void NDPluginFFT::allocateArrays()
 
   numFreqPoints_ = numTimePoints_ / 2;
 
-  timeSeries_   = (double *)calloc(maxSignals_*numTimePoints_, sizeof(double));
-  FFTComplex_   = (double *)calloc(maxSignals_*numFreqPoints_, sizeof(double)*2);
-  FFTReal_      = (double *)calloc(maxSignals_*numFreqPoints_, sizeof(double));
-  FFTImaginary_ = (double *)calloc(maxSignals_*numFreqPoints_, sizeof(double));
-  FFTAbsValue_  = (double *)calloc(maxSignals_*numFreqPoints_, sizeof(double));
+  timeSeries_   = (double *)calloc(numTimePoints_, sizeof(double));
+  FFTComplex_   = (double *)calloc(numFreqPoints_, sizeof(double)*2);
+  FFTReal_      = (double *)calloc(numFreqPoints_, sizeof(double));
+  FFTImaginary_ = (double *)calloc(numFreqPoints_, sizeof(double));
+  FFTAbsValue_  = (double *)calloc(numFreqPoints_, sizeof(double));
   createAxisArrays();
 }
 
 void NDPluginFFT::zeroArrays()
 {
-  size_t freqSize = maxSignals_ * numFreqPoints_ * sizeof(double);
+  size_t freqSize = numFreqPoints_ * sizeof(double);
 
   memset(FFTComplex_,   0, freqSize * 2); // Complex data
   memset(FFTReal_,      0, freqSize);
@@ -116,30 +108,27 @@ void NDPluginFFT::zeroArrays()
 
 void NDPluginFFT::computeFFT_1D()
 {
-  int i, j;
+  int j;
   int suppressDC;
 
   getIntegerParam(P_FFTSuppressDC, &suppressDC);
   
-  /* Compute the FFTs of each array */
-  for (i=0; i<maxSignals_; i++) {
-    for (j=0; j<numTimePoints_; j++) {
-      FFTComplex_[2*j] = timeSeries_[i*numTimePoints_ + j];
-      FFTComplex_[2*j+1] = 0.;
-    }
-    fft_1D(FFTComplex_-1, numTimePoints_, 1);
-    for (j=0; j<numFreqPoints_; j++) {
-      FFTReal_     [i*numFreqPoints_ + j] = FFTComplex_[2*j]; 
-      FFTImaginary_[i*numFreqPoints_ + j] = FFTComplex_[2*j+1]; 
-      FFTAbsValue_ [i*numFreqPoints_ + j] = sqrt((FFTComplex_[2*j]   * FFTComplex_[2*j] + 
-                                                  FFTComplex_[2*j+1] * FFTComplex_[2*j+1])
-                                                 / (numTimePoints_ * numTimePoints_));
-    }
-    if (suppressDC) {
-      FFTReal_      [i*numFreqPoints_] = 0;
-      FFTImaginary_ [i*numFreqPoints_] = 0;
-      FFTAbsValue_  [i*numFreqPoints_] = 0;
-    }
+  for (j=0; j<numTimePoints_; j++) {
+    FFTComplex_[2*j] = timeSeries_[j];
+    FFTComplex_[2*j+1] = 0.;
+  }
+  fft_1D(FFTComplex_-1, numTimePoints_, 1);
+  for (j=0; j<numFreqPoints_; j++) {
+    FFTReal_     [j] = FFTComplex_[2*j]; 
+    FFTImaginary_[j] = FFTComplex_[2*j+1]; 
+    FFTAbsValue_ [j] = sqrt((FFTComplex_[2*j] * FFTComplex_[2*j] + 
+                                                FFTComplex_[2*j+1] * FFTComplex_[2*j+1])
+                                                / (numTimePoints_ * numTimePoints_));
+  }
+  if (suppressDC) {
+    FFTReal_      [0] = 0;
+    FFTImaginary_ [0] = 0;
+    FFTAbsValue_  [0] = 0;
   }
 }         
 
@@ -174,13 +163,10 @@ template <typename epicsType>
 asynStatus NDPluginFFT::convertToDoubleT(NDArray *pArray)
 {
   epicsType *pData = (epicsType *)pArray->pData;
-  int signal;
   int i;
     
-  for (signal=0; signal<maxSignals_; signal++) {
-    for (i=0; i<numTimePoints_; i++) {
-      timeSeries_[signal*numTimePoints_ + i] = (epicsFloat64)*pData++;
-    }
+  for (i=0; i<numTimePoints_; i++) {
+    timeSeries_[i] = (epicsFloat64)*pData++;
   }
   return asynSuccess;
 }
@@ -194,9 +180,6 @@ asynStatus NDPluginFFT::convertToDoubleT(NDArray *pArray)
 asynStatus NDPluginFFT::computeFFTs(NDArray *pArray)
 {
   asynStatus status = asynSuccess;
-  int signal;
-
-  
   
   switch(pArray->dataType) {
   case NDInt8:
@@ -230,12 +213,10 @@ asynStatus NDPluginFFT::computeFFTs(NDArray *pArray)
   computeFFT_1D();
 
   /* Do array callbacks */
-  for (signal=0; signal<maxSignals_; signal++) {
-    doCallbacksFloat64Array(timeSeries_   + signal*numTimePoints_, numTimePoints_, P_FFTTimeSeries, signal);
-    doCallbacksFloat64Array(FFTReal_      + signal*numFreqPoints_, numFreqPoints_, P_FFTReal,       signal);
-    doCallbacksFloat64Array(FFTImaginary_ + signal*numFreqPoints_, numFreqPoints_, P_FFTImaginary,  signal);
-    doCallbacksFloat64Array(FFTAbsValue_  + signal*numFreqPoints_, numFreqPoints_, P_FFTAbsValue,   signal);
-  }
+  doCallbacksFloat64Array(timeSeries_,   numTimePoints_, P_FFTTimeSeries, 0);
+  doCallbacksFloat64Array(FFTReal_,      numFreqPoints_, P_FFTReal,       0);
+  doCallbacksFloat64Array(FFTImaginary_, numFreqPoints_, P_FFTImaginary,  0);
+  doCallbacksFloat64Array(FFTAbsValue_,  numFreqPoints_, P_FFTAbsValue,   0);
 
   return status;
 }
@@ -252,7 +233,6 @@ void NDPluginFFT::processCallbacks(NDArray *pArray)
   //It unlocks it during long calculations when private structures don't need to be protected.
 
   int numTimePoints;
-  int numSignals;
   double timePerPoint;  
   const char* functionName = "NDPluginFFT::processCallbacks";
 
@@ -268,22 +248,8 @@ void NDPluginFFT::processCallbacks(NDArray *pArray)
   }
 
   numTimePoints = pArray->dims[0].size;
-  if (pArray->ndims == 1) 
-    numSignals = 1;
-  else
-    numSignals=pArray->dims[1].size;
-
-  if (numSignals > maxSignals_) {
-    asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-      "%s: warning, input array has %d signals, greater than maxSignals=%d\n",
-      functionName, numSignals, maxSignals_);
-    numSignals = maxSignals_;
-  }
-  
-  if ((numTimePoints != numTimePoints_) ||
-      (numSignals    != numSignals_)) {
+  if (numTimePoints != numTimePoints_) {
     numTimePoints_ = numTimePoints;
-    numSignals_ = numSignals;
     allocateArrays();
   }
 
@@ -301,12 +267,11 @@ void NDPluginFFT::processCallbacks(NDArray *pArray)
 /** Configuration command */
 extern "C" int NDFFTConfigure(const char *portName, int queueSize, int blockingCallbacks,
                                      const char *NDArrayPort, int NDArrayAddr, 
-                                     int maxSignals,
                                      int maxBuffers, size_t maxMemory,
                                      int priority, int stackSize)
 {
     new NDPluginFFT(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, 
-                           maxSignals, maxBuffers, maxMemory, priority, stackSize);
+                    maxBuffers, maxMemory, priority, stackSize);
     return(asynSuccess);
 }
 
@@ -316,11 +281,10 @@ static const iocshArg initArg1 = { "frame queue size",iocshArgInt};
 static const iocshArg initArg2 = { "blocking callbacks",iocshArgInt};
 static const iocshArg initArg3 = { "NDArrayPort",iocshArgString};
 static const iocshArg initArg4 = { "NDArrayAddr",iocshArgInt};
-static const iocshArg initArg5 = { "maxSignals",iocshArgInt};
-static const iocshArg initArg6 = { "maxBuffers",iocshArgInt};
-static const iocshArg initArg7 = { "maxMemory",iocshArgInt};
-static const iocshArg initArg8 = { "priority",iocshArgInt};
-static const iocshArg initArg9 = { "stackSize",iocshArgInt};
+static const iocshArg initArg5 = { "maxBuffers",iocshArgInt};
+static const iocshArg initArg6 = { "maxMemory",iocshArgInt};
+static const iocshArg initArg7 = { "priority",iocshArgInt};
+static const iocshArg initArg8 = { "stackSize",iocshArgInt};
 static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg1,
                                             &initArg2,
@@ -329,15 +293,13 @@ static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg5,
                                             &initArg6,
                                             &initArg7,
-                                            &initArg8,
-                                            &initArg9};
-static const iocshFuncDef initFuncDef = {"NDFFTConfigure",10,initArgs};
+                                            &initArg8};
+static const iocshFuncDef initFuncDef = {"NDFFTConfigure", 9, initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
   NDFFTConfigure(args[0].sval, args[1].ival, args[2].ival,
                         args[3].sval, args[4].ival, args[5].ival,
-                        args[6].ival, args[7].ival, args[8].ival, 
-                        args[9].ival);
+                        args[6].ival, args[7].ival, args[8].ival);
 }
 
 extern "C" void NDFFTRegister(void)
