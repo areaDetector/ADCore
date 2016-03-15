@@ -57,29 +57,6 @@ record(waveform, "$(P)$(R)FFTFreqAxis")
    field(SCAN, "I/O Intr")
 }
 
-record(mbbo, "$(P)$(R)FFTRank")
-{
-   field(PINI, "YES")
-   field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_RANK")
-   field(ZRVL, "0")
-   field(ZRST, "N x 1-D")
-   field(ONVL, "1")
-   field(ONST, "2-D")
-   info(autosaveFields, "VAL")
-}
-
-record(mbbi, "$(P)$(R)FFTRank_RBV")
-{
-   field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_RANK")
-   field(ZRVL, "0")
-   field(ZRST, "N x 1-D")
-   field(ONVL, "1")
-   field(ONST, "2-D")
-   field(SCAN, "I/O Intr")
-}
-
 record(bo, "$(P)$(R)FFTDirection")
 {
    field(PINI, "YES")
@@ -115,6 +92,48 @@ record(bi, "$(P)$(R)FFTSuppressDC_RBV")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_SUPPRESS_DC")
    field(ZNAM, "Disable")
    field(ONAM, "Enable")
+   field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)Name")
+{
+   field(VAL,  "$(NAME)")
+   info(autosaveFields, "VAL")
+}
+
+record(waveform, "$(P)$(R)FFTTimeSeries")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_TIME_SERIES")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)FFTReal")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_REAL")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)FFTImaginary")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_IMAGINARY")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)FFTAbsValue")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_ABS_VALUE")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
    field(SCAN, "I/O Intr")
 }
 
