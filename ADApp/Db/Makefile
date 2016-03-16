@@ -22,7 +22,6 @@ DB += NDAttributeN.template
 DB += NDCircularBuff.template
 DB += NDColorConvert.template
 DB += NDFFT.template
-DB += NDFFTN.template
 DB += NDFile.template
 DB += NDFileHDF5.template
 DB += NDFileJPEG.template
