@@ -4,6 +4,8 @@
  * Ulrik Kofoed Pedersen
  * March 20. 2011
  */
+#ifndef NDFileHDF5_H
+#define NDFileHDF5_H
 
 #include <list>
 #include <hdf5.h>
@@ -13,21 +15,19 @@
 #include "NDFileHDF5Layout.h"
 #include "NDFileHDF5Dataset.h"
 #include "NDFileHDF5LayoutXML.h"
+#include "NDFileHDF5AttributeDataset.h"
+#include "NDFileHDF5VersionCheck.h"
+
+#define MAXEXTRADIMS 10
 
 #define str_NDFileHDF5_nRowChunks        "HDF5_nRowChunks"
 #define str_NDFileHDF5_nColChunks        "HDF5_nColChunks"
-#define str_NDFileHDF5_extraDimSizeN     "HDF5_extraDimSizeN"
 #define str_NDFileHDF5_nFramesChunks     "HDF5_nFramesChunks"
 #define str_NDFileHDF5_chunkBoundaryAlign "HDF5_chunkBoundaryAlign"
 #define str_NDFileHDF5_chunkBoundaryThreshold "HDF5_chunkBoundaryThreshold"
 #define str_NDFileHDF5_NDAttributeChunk  "HDF5_NDAttributeChunk"
-#define str_NDFileHDF5_extraDimNameN     "HDF5_extraDimNameN"
 #define str_NDFileHDF5_nExtraDims        "HDF5_nExtraDims"
-#define str_NDFileHDF5_extraDimSizeX     "HDF5_extraDimSizeX"
-#define str_NDFileHDF5_extraDimNameX     "HDF5_extraDimNameX"
 #define str_NDFileHDF5_extraDimOffsetX   "HDF5_extraDimOffsetX"
-#define str_NDFileHDF5_extraDimSizeY     "HDF5_extraDimSizeY"
-#define str_NDFileHDF5_extraDimNameY     "HDF5_extraDimNameY"
 #define str_NDFileHDF5_extraDimOffsetY   "HDF5_extraDimOffsetY"
 #define str_NDFileHDF5_storeAttributes   "HDF5_storeAttributes"
 #define str_NDFileHDF5_storePerformance  "HDF5_storePerformance"
@@ -39,33 +39,34 @@
 #define str_NDFileHDF5_nbitsOffset       "HDF5_nbitsOffset"
 #define str_NDFileHDF5_szipNumPixels     "HDF5_szipNumPixels"
 #define str_NDFileHDF5_zCompressLevel    "HDF5_zCompressLevel"
+#define str_NDFileHDF5_dimAttDatasets    "HDF5_dimAttDatasets"
 #define str_NDFileHDF5_layoutErrorMsg    "HDF5_layoutErrorMsg"
 #define str_NDFileHDF5_layoutValid       "HDF5_layoutValid"
 #define str_NDFileHDF5_layoutFilename    "HDF5_layoutFilename"
-
-/** Defines an attribute node with the NDFileHDF5 plugin.
-  */
-typedef struct HDFAttributeNode {
-  char *attrName;
-  hid_t hdfdataset;
-  hid_t hdfdataspace;
-  hid_t hdfmemspace;
-  hid_t hdfdatatype;
-  hid_t hdfcparm;
-  hid_t hdffilespace;
-  hsize_t hdfdims[2];
-  hsize_t offset[2];
-  hsize_t chunk[2];
-  hsize_t elementSize[2];
-  int hdfrank;
-  hdf5::When_t whenToSave;
-} HDFAttributeNode;
+#define str_NDFileHDF5_posRunning        "HDF5_posRunning"
+#define str_NDFileHDF5_posNameDimN       "HDF5_posNameDimN"
+#define str_NDFileHDF5_posNameDimX       "HDF5_posNameDimX"
+#define str_NDFileHDF5_posNameDimY       "HDF5_posNameDimY"
+#define str_NDFileHDF5_posIndexDimN      "HDF5_posIndexDimN"
+#define str_NDFileHDF5_posIndexDimX      "HDF5_posIndexDimX"
+#define str_NDFileHDF5_posIndexDimY      "HDF5_posIndexDimY"
+#define str_NDFileHDF5_fillValue         "HDF5_fillValue"
+#define str_NDFileHDF5_SWMRCbCounter     "HDF5_SWMRCbCounter"
+#define str_NDFileHDF5_SWMRSupported     "HDF5_SWMRSupported"
+#define str_NDFileHDF5_SWMRMode          "HDF5_SWMRMode"
+#define str_NDFileHDF5_SWMRRunning       "HDF5_SWMRRunning"
 
 /** Writes NDArrays in the HDF5 file format; an XML file can control the structure of the HDF5 file.
   */
 class epicsShareClass NDFileHDF5 : public NDPluginFile
 {
   public:
+    static const char *str_NDFileHDF5_extraDimSize[MAXEXTRADIMS];
+    static const char *str_NDFileHDF5_extraDimName[MAXEXTRADIMS];
+    static const char *str_NDFileHDF5_extraDimChunk[MAXEXTRADIMS];
+    static const char *str_NDFileHDF5_posName[MAXEXTRADIMS];
+    static const char *str_NDFileHDF5_posIndex[MAXEXTRADIMS];
+
     NDFileHDF5(const char *portName, int queueSize, int blockingCallbacks, 
                const char *NDArrayPort, int NDArrayAddr,
                int priority, int stackSize);
@@ -79,6 +80,8 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     virtual asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t nChars, size_t *nActual);
 
+    asynStatus startSWMR();
+    asynStatus flushCallback();
     asynStatus createXMLFileLayout();
     asynStatus storeOnOpenAttributes();
     asynStatus storeOnCloseAttributes();
@@ -111,24 +114,23 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     std::map<std::string, hdf5::Element *>     onOpenMap;   // Map of handles to elements with onOpen ndattributes, indexed by fullname
     std::map<std::string, hdf5::Element *>     onCloseMap;  // Map of handles to elements with onClose ndattributes, indexed by fullname
 
+#ifndef _UNITTEST_HDF5_
   protected:
+#endif
     /* plugin parameters */
     int NDFileHDF5_nRowChunks;
     #define FIRST_NDFILE_HDF5_PARAM NDFileHDF5_nRowChunks
     int NDFileHDF5_nColChunks;
-    int NDFileHDF5_extraDimSizeN;
     int NDFileHDF5_nFramesChunks;
     int NDFileHDF5_chunkBoundaryAlign;
     int NDFileHDF5_chunkBoundaryThreshold;
     int NDFileHDF5_NDAttributeChunk;
     int NDFileHDF5_nExtraDims;
-    int NDFileHDF5_extraDimNameN;
-    int NDFileHDF5_extraDimSizeX;
-    int NDFileHDF5_extraDimNameX;
     int NDFileHDF5_extraDimOffsetX;
-    int NDFileHDF5_extraDimSizeY;
-    int NDFileHDF5_extraDimNameY;
     int NDFileHDF5_extraDimOffsetY;
+    int NDFileHDF5_extraDimSize[MAXEXTRADIMS];
+    int NDFileHDF5_extraDimName[MAXEXTRADIMS];
+    int NDFileHDF5_extraDimChunk[MAXEXTRADIMS];
     int NDFileHDF5_storeAttributes;
     int NDFileHDF5_storePerformance;
     int NDFileHDF5_totalRuntime;
@@ -139,22 +141,49 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     int NDFileHDF5_nbitsOffset;
     int NDFileHDF5_szipNumPixels;
     int NDFileHDF5_zCompressLevel;
+    int NDFileHDF5_dimAttDatasets;
     int NDFileHDF5_layoutErrorMsg;
     int NDFileHDF5_layoutValid;
     int NDFileHDF5_layoutFilename;
-    #define LAST_NDFILE_HDF5_PARAM NDFileHDF5_layoutFilename
+    int NDFileHDF5_posRunning;
+    int NDFileHDF5_posName[MAXEXTRADIMS];
+    int NDFileHDF5_posIndex[MAXEXTRADIMS];
+    int NDFileHDF5_fillValue;
+    int NDFileHDF5_SWMRCbCounter;
+    int NDFileHDF5_SWMRSupported;
+    int NDFileHDF5_SWMRMode;
+    int NDFileHDF5_SWMRRunning;
+    #define LAST_NDFILE_HDF5_PARAM NDFileHDF5_SWMRRunning
 
+#ifndef _UNITTEST_HDF5_
   private:
+#endif
     /* private helper functions */
+    inline bool IsPrime(int number)
+    {
+      if (((!(number & 1)) && number != 2) || (number < 2) || (number % 3 == 0 && number != 3)){
+        return false;
+      }
+
+      for(int k = 1; 36*k*k-12*k < number;++k){
+        if ((number % (6*k+1) == 0) || (number % (6*k-1) == 0)){
+          return false;
+        }
+      }
+      return true;
+    };
+
     hid_t typeNd2Hdf(NDDataType_t datatype);
     asynStatus configureDatasetDims(NDArray *pArray);
     asynStatus configureDims(NDArray *pArray);
     asynStatus configureCompression();
     char* getDimsReport();
     asynStatus writeStringAttribute(hid_t element, const char* attrName, const char* attrStrValue);
-    asynStatus writeAttributeDataset(hdf5::When_t whenToSave);
+    asynStatus calculateAttributeChunking(int *chunking, int *mdim_chunking);
+    asynStatus writeAttributeDataset(hdf5::When_t whenToSave, int positionMode, hsize_t *offsets);
     asynStatus closeAttributeDataset();
     asynStatus configurePerformanceDataset();
+    asynStatus createPerformanceDataset();
     asynStatus writePerformanceDataset();
     void calcNumFrames();
     unsigned int calcIstorek();
@@ -162,11 +191,15 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     hsize_t calcChunkCacheSlots();
 
     void checkForOpenFile();
+    bool checkForSWMRMode();
+    bool checkForSWMRSupported();
     void addDefaultAttributes(NDArray *pArray);
     asynStatus writeDefaultDatasetAttributes(NDArray *pArray);
     asynStatus createNewFile(const char *fileName);
     asynStatus createFileLayout(NDArray *pArray);
-    asynStatus createAttributeDataset();
+    asynStatus createAttributeDataset(NDArray *pArray);
+    int isAttributeIndex(const std::string& attName);
+    epicsInt32 findPositionIndex(NDArray *pArray, char *posName);
 
 
     hdf5::LayoutXML layout;
@@ -183,6 +216,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     char *extraDimNameN;
     char *extraDimNameX;
     char *extraDimNameY;
+    char *extraDimName[MAXEXTRADIMS];
     double *performanceBuf;
     double *performancePtr;
     epicsInt32 numPerformancePoints;
@@ -193,7 +227,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     int bytesPerElement;
     char *hostname;
 
-    std::list<HDFAttributeNode *> attrList;
+    std::list<NDFileHDF5AttributeDataset*> attrList;
 
     /* HDF5 handles and references */
     hid_t file;
@@ -201,6 +235,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     hid_t datatype;
     hid_t cparms;
     void *ptrFillValue;
+    hid_t perf_dataset_id;
 
     /* dimension descriptors */
     int rank;               /** < number of dimensions */
@@ -210,8 +245,11 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     hsize_t *offset;        /** < Array of current offset in each dimension. The frame dimensions always have 0 offset but additional dimensions may grow as new frames are added. */
     hsize_t *framesize;     /** < The frame size in each dimension. Frame width, height and possibly depth (RGB) have real values -all other dimensions set to 1. */
     hsize_t *virtualdims;   /** < The desired sizes of the extra (virtual) dimensions: {Y, X, n} */
-    char *ptrDimensionNames[ND_ARRAY_MAX_DIMS]; /** Array of strings with human readable names for each dimension */
+    char *ptrDimensionNames[ND_ARRAY_MAX_DIMS + MAXEXTRADIMS]; /** Array of strings with human readable names for each dimension */
 
     char *dimsreport;       /** < A string which contain a verbose report of all dimension sizes. The method getDimsReport fill in this */
 };
 #define NUM_NDFILE_HDF5_PARAMS ((int)(&LAST_NDFILE_HDF5_PARAM - &FIRST_NDFILE_HDF5_PARAM + 1))
+
+#endif
+

@@ -6,7 +6,7 @@
  */
 
 #include "HDF5FileReader.h"
-
+ 
 herr_t file_info(hid_t loc_id, const char *name, const H5L_info_t *info, void *opdata)
 {
     H5O_info_t infobuf;
@@ -17,8 +17,16 @@ herr_t file_info(hid_t loc_id, const char *name, const H5L_info_t *info, void *o
     return 0;
  }
 
+herr_t attribute_info(hid_t loc_id, const char *name, const H5A_info_t *info, void *opdata)
+{
+    HDF5FileReader *ptr = (HDF5FileReader *)opdata;
+    ptr->processAttribute(loc_id, name);
+    return 0;
+ }
+
 HDF5FileReader::HDF5FileReader(const std::string& filename)
 {
+  attributeCount = 0;
   hsize_t idx = 0;
   file = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, NULL);
   H5Literate_by_name(file, "/", H5_INDEX_NAME, H5_ITER_NATIVE, &idx, file_info, this, H5P_DEFAULT);
@@ -43,6 +51,11 @@ void HDF5FileReader::processGroup(hid_t loc_id, const char *name, H5O_type_t typ
     H5Literate_by_name(loc_id, name, H5_INDEX_NAME, H5_ITER_NATIVE, &idx, file_info, this, H5P_DEFAULT);
   }
   cname = oldname;
+}
+
+void HDF5FileReader::processAttribute(hid_t loc_id, const char *name)
+{
+  attributeCount++;
 }
 
 bool HDF5FileReader::checkGroupExists(const std::string& name)
@@ -95,6 +108,31 @@ std::vector<hsize_t> HDF5FileReader::getDatasetDimensions(const std::string& nam
     }
   }
   return vdims;
+}
+
+int HDF5FileReader::getDatasetAttributeCount(const std::string& name)
+{
+  hid_t       dataset_id;
+  hsize_t     idx = 0;
+  
+  // Zero the attribute count
+  attributeCount = 0;
+      
+  // Check the name given is present in the file
+  if (objects.count(name) == 1){
+    // Check the name given is a dataset
+    if (objects[name]->getTypeString() == "dataset"){
+
+      // Open the dataset.
+      dataset_id = H5Dopen(file, name.c_str(), H5P_DEFAULT);
+
+      H5Aiterate_by_name(dataset_id, name.c_str(), H5_INDEX_NAME, H5_ITER_NATIVE, &idx, attribute_info, this, H5P_DEFAULT);
+
+      // Close the dataset
+      H5Dclose(dataset_id);
+    }
+  }
+  return attributeCount;
 }
 
 TestFileDataType_t HDF5FileReader::getDatasetType(const std::string& name)

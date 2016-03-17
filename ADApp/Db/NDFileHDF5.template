@@ -7,8 +7,6 @@
 # % macro, R, Device Suffix
 # % macro, PORT, Asyn Port name
 
-# % gdatag, template, NDFileHDF5, $(PORT)_NDFileHDF5, $(PORT) NDFileHDF5 class instance
-
 # This associates the template with an edm screen
 # % gui, $(PORT), edmtab, NDFileHDF5.edl, P=$(P),R=$(R)
 
@@ -33,7 +31,6 @@ record(mbbi, "$(P)$(R)FileFormat_RBV")
     field(ONVL, "1")
 }
 
-# % gdatag, pv, rw, $(PORT)_NDFileHDF5, NumRowChunks, Number of rows to use per chunk
 record(longout, "$(P)$(R)NumRowChunks")
 {
     field(DTYP, "asynInt32")
@@ -42,7 +39,6 @@ record(longout, "$(P)$(R)NumRowChunks")
     info(autosaveFields, "VAL")
 }
 
-# % gdatag, pv, ro, $(PORT)_NDFileHDF5, NumRowChunks_RBV, Readback of number of rows to use per chunk
 record(longin, "$(P)$(R)NumRowChunks_RBV")
 {
     field(DTYP, "asynInt32")
@@ -51,7 +47,6 @@ record(longin, "$(P)$(R)NumRowChunks_RBV")
     field(SCAN, "I/O Intr")
 }
 
-# % gdatag, pv, rw, $(PORT)_NDFileHDF5, NumColChunks, Number of columns to use per chunk
 record(longout, "$(P)$(R)NumColChunks")
 {
     field(DTYP, "asynInt32")
@@ -60,7 +55,6 @@ record(longout, "$(P)$(R)NumColChunks")
     info(autosaveFields, "VAL")
 }
 
-# % gdatag, pv, ro, $(PORT)_NDFileHDF5, NumColChunks_RBV, Readback of number of columns to use per chunk
 record(longin, "$(P)$(R)NumColChunks_RBV")
 {
     field(DTYP, "asynInt32")
@@ -69,7 +63,6 @@ record(longin, "$(P)$(R)NumColChunks_RBV")
     field(SCAN, "I/O Intr")
 }
 
-# % gdatag, pv, rw, $(PORT)_NDFileHDF5, NumFramesChunks, Number of frames to cache and use per chunk
 record(longout, "$(P)$(R)NumFramesChunks")
 {
     field(DTYP, "asynInt32")
@@ -78,7 +71,6 @@ record(longout, "$(P)$(R)NumFramesChunks")
     info(autosaveFields, "VAL")
 }
 
-# % gdatag, pv, ro, $(PORT)_NDFileHDF5, NumFramesChunks_RBV, Readback of number of frames to use and cache per chunk
 record(longin, "$(P)$(R)NumFramesChunks_RBV")
 {
     field(DTYP, "asynInt32")
@@ -141,7 +133,6 @@ record(longin, "$(P)$(R)BoundaryThreshold_RBV")
     field(EGU, "bytes")
 }
 
-# % gdatag, pv, rw, $(PORT)_NDFileHDF5, NumExtraDims, Number of extra dimensions [0..2]
 record(longout, "$(P)$(R)NumExtraDims")
 {
     field(DTYP, "asynInt32")
@@ -150,7 +141,6 @@ record(longout, "$(P)$(R)NumExtraDims")
     info(autosaveFields, "VAL")
 }
 
-# % gdatag, pv, ro, $(PORT)_NDFileHDF5, NumExtraDims_RBV, Readback number of extra dimensions
 record(longin, "$(P)$(R)NumExtraDims_RBV")
 {
     field(DTYP, "asynInt32")
@@ -159,7 +149,6 @@ record(longin, "$(P)$(R)NumExtraDims_RBV")
     field(SCAN, "I/O Intr")
 }
 
-# % gdatag, pv, rw, $(PORT)_NDFileHDF5, ExtraDimSizeN, Size of extra dimension N (no. of frames per point)
 record(longout, "$(P)$(R)ExtraDimSizeN")
 {
     field(DTYP, "asynInt32")
@@ -168,7 +157,6 @@ record(longout, "$(P)$(R)ExtraDimSizeN")
     info(autosaveFields, "VAL")
 }
 
-# % gdatag, pv, ro, $(PORT)_NDFileHDF5, ExtraDimSizeN_RBV, Readback size of extra dimension N (no. of frames per point)
 record(longin, "$(P)$(R)ExtraDimSizeN_RBV")
 {
     field(DTYP, "asynInt32")
@@ -185,7 +173,6 @@ record(stringin, "$(P)$(R)ExtraDimNameN_RBV")
     field(SCAN, "I/O Intr")
 }
 
-# % gdatag, pv, rw, $(PORT)_NDFileHDF5, ExtraDimSizeX, Size of extra dimension X
 record(longout, "$(P)$(R)ExtraDimSizeX")
 {
     field(DTYP, "asynInt32")
@@ -194,7 +181,6 @@ record(longout, "$(P)$(R)ExtraDimSizeX")
     info(autosaveFields, "VAL")
 }
 
-# % gdatag, pv, ro, $(PORT)_NDFileHDF5, ExtraDimSizeX_RBV, Readback size of extra dimension X
 record(longin, "$(P)$(R)ExtraDimSizeX_RBV")
 {
     field(DTYP, "asynInt32")
@@ -211,7 +197,6 @@ record(stringin, "$(P)$(R)ExtraDimNameX_RBV")
     field(SCAN, "I/O Intr")
 }
 
-# % gdatag, pv, rw, $(PORT)_NDFileHDF5, ExtraDimSizeY, Size of extra dimension Y
 record(longout, "$(P)$(R)ExtraDimSizeY")
 {
     field(DTYP, "asynInt32")
@@ -220,7 +205,6 @@ record(longout, "$(P)$(R)ExtraDimSizeY")
     info(autosaveFields, "VAL")
 }
 
-# % gdatag, pv, ro, $(PORT)_NDFileHDF5, ExtraDimSizeY_RBV, Readback size of extra dimension Y
 record(longin, "$(P)$(R)ExtraDimSizeY_RBV")
 {
     field(DTYP, "asynInt32")
@@ -233,6 +217,174 @@ record(stringin, "$(P)$(R)ExtraDimNameY_RBV")
 {
     field(DTYP, "asynOctetRead")
     field(INP, "@asyn($(PORT),0)HDF5_extraDimNameY")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ExtraDimSize3")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimSize3")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ExtraDimSize3_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimSize3")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)ExtraDimName3_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimName3")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ExtraDimSize4")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimSize4")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ExtraDimSize4_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimSize4")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)ExtraDimName4_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimName4")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ExtraDimSize5")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimSize5")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ExtraDimSize5_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimSize5")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)ExtraDimName5_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimName5")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ExtraDimSize6")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimSize6")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ExtraDimSize6_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimSize6")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)ExtraDimName6_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimName6")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ExtraDimSize7")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimSize7")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ExtraDimSize7_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimSize7")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)ExtraDimName7_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimName7")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ExtraDimSize8")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimSize8")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ExtraDimSize8_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimSize8")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)ExtraDimName8_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimName8")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ExtraDimSize9")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimSize9")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ExtraDimSize9_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimSize9")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)ExtraDimName9_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimName9")
     field(PINI, "NO")
     field(SCAN, "I/O Intr")
 }
@@ -277,7 +429,6 @@ record(bi, "$(P)$(R)StorePerform_RBV")
     field(ONAM, "Yes")
 }
 
-# % gdatag, pv, ro, $(PORT)_NDFileHDF5, runtime, Total runtime from first frame to file closed
 record(ai, "$(P)$(R)RunTime")
 {
     field(DTYP, "asynFloat64")
@@ -288,7 +439,6 @@ record(ai, "$(P)$(R)RunTime")
     field(EGU,  "s")
 }
 
-# % gdatag, pv, ro, $(PORT)_NDFileHDF5, IOSpeed, Overall IO speed from first frame to file closed
 record(ai, "$(P)$(R)IOSpeed")
 {
     field(DTYP, "asynFloat64")
@@ -299,7 +449,6 @@ record(ai, "$(P)$(R)IOSpeed")
     field(EGU,  "Mbit/s")
 }
 
-# % gdatag, pv, rw, $(PORT)_NDFileHDF5, NumFramesFlush, Flush to file every Nth frame
 record(longout, "$(P)$(R)NumFramesFlush")
 {
     field(DTYP, "asynInt32")
@@ -308,7 +457,6 @@ record(longout, "$(P)$(R)NumFramesFlush")
     info(autosaveFields, "VAL")
 }
 
-# % gdatag, pv, rw, $(PORT)_NDFileHDF5, NumFramesFlush_RBV, Readback the number of frames between file flush
 record(longin, "$(P)$(R)NumFramesFlush_RBV")
 {
     field(DTYP, "asynInt32")
@@ -317,7 +465,6 @@ record(longin, "$(P)$(R)NumFramesFlush_RBV")
     field(SCAN, "I/O Intr")
 }
 
-# % gdatag, mbbinary, rw, $(PORT)_NDFileHDF5, Compression, Select or switch off compression filter
 record(mbbo, "$(P)$(R)Compression")
 {
     field(DTYP, "asynInt32")
@@ -333,7 +480,6 @@ record(mbbo, "$(P)$(R)Compression")
     info(autosaveFields, "VAL")
 }
 
-# % gdatag, mbbinary, ro, $(PORT)_NDFileHDF5, Compression_RBV, Readback selected compression filter
 record(mbbi, "$(P)$(R)Compression_RBV")
 {
     field(DTYP, "asynInt32")
@@ -350,7 +496,6 @@ record(mbbi, "$(P)$(R)Compression_RBV")
     field(THVL, "3")
 }
 
-# % gdatag, pv, rw, $(PORT)_NDFileHDF5, NumBitPrecision, N-bit compression filter: number of data bits per pixel
 record(longout, "$(P)$(R)NumDataBits")
 {
     field(DTYP, "asynInt32")
@@ -360,7 +505,6 @@ record(longout, "$(P)$(R)NumDataBits")
     info(autosaveFields, "VAL")
 }
 
-# % gdatag, pv, ro, $(PORT)_NDFileHDF5, NumBitPrecision_RBV, Readback N-bit compression filter: number of data bits per pixel
 record(longin, "$(P)$(R)NumDataBits_RBV")
 {
     field(DTYP, "asynInt32")
@@ -370,7 +514,6 @@ record(longin, "$(P)$(R)NumDataBits_RBV")
     field(EGU,  "bit")
 }
 
-# % gdatag, pv, rw, $(PORT)_NDFileHDF5, NumBitOffset, N-bit compression filter: dataword bit-offset in pixel
 record(longout, "$(P)$(R)DataBitsOffset")
 {
     field(DTYP, "asynInt32")
@@ -380,7 +523,6 @@ record(longout, "$(P)$(R)DataBitsOffset")
     info(autosaveFields, "VAL")
 }
 
-# % gdatag, pv, ro, $(PORT)_NDFileHDF5, NumBitOffset_RBV, Readback N-bit compression filter: dataword bit-offset in pixel
 record(longin, "$(P)$(R)DataBitsOffset_RBV")
 {
     field(DTYP, "asynInt32")
@@ -390,7 +532,6 @@ record(longin, "$(P)$(R)DataBitsOffset_RBV")
     field(EGU,  "bit")
 }
 
-# % gdatag, pv, rw, $(PORT)_NDFileHDF5, szipNumPixels, szip compression filter: number of pixels in filter
 record(longout, "$(P)$(R)SZipNumPixels")
 {
     field(DTYP, "asynInt32")
@@ -400,7 +541,6 @@ record(longout, "$(P)$(R)SZipNumPixels")
     info(autosaveFields, "VAL")
 }
 
-# % gdatag, pv, ro, $(PORT)_NDFileHDF5, szipNumPixels_RBV, Readback szip compression filter: number of pixels in filter
 record(longin, "$(P)$(R)SZipNumPixels_RBV")
 {
     field(DTYP, "asynInt32")
@@ -410,7 +550,6 @@ record(longin, "$(P)$(R)SZipNumPixels_RBV")
     field(EGU,  "bit")
 }
 
-# % gdatag, pv, rw, $(PORT)_NDFileHDF5, ZCompressLevel, zlib compression filter: compression level
 record(longout, "$(P)$(R)ZLevel")
 {
     field(DTYP, "asynInt32")
@@ -419,12 +558,31 @@ record(longout, "$(P)$(R)ZLevel")
     info(autosaveFields, "VAL")
 }
 
-# % gdatag, pv, ro, $(PORT)_NDFileHDF5, ZCompressLevel_RBV, Readback zlib compression filter: compression level
 record(longin, "$(P)$(R)ZLevel_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP, "@asyn($(PORT),0)HDF5_zCompressLevel")
     field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)DimAttDatasets")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_dimAttDatasets")
+    field(PINI, "YES")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
+    info(autosaveFields, "VAL")
+}
+
+record(bi, "$(P)$(R)DimAttDatasets_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_dimAttDatasets")
+    field(PINI, "NO")
+    field(ZNAM, "No")
+    field(ONAM, "Yes")
     field(SCAN, "I/O Intr")
 }
 
@@ -480,4 +638,529 @@ record(waveform, "$(P)$(R)XMLFileName_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(bi, "$(P)$(R)SWMRSupported_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_SWMRSupported")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+    field(ZNAM, "Not Supported")
+    field(ONAM, "Supported")
+}
 
+record(bo, "$(P)$(R)SWMRMode")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_SWMRMode")
+    field(PINI, "NO")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+record(bi, "$(P)$(R)SWMRMode_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_SWMRMode")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+record(bi, "$(P)$(R)SWMRActive_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_SWMRRunning")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+    field(ZNAM, "Off")
+    field(ONAM, "Active")
+}
+
+record(longin, "$(P)$(R)SWMRCbCounter_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_SWMRCbCounter")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)PositionMode")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_posRunning")
+    field(PINI, "NO")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+record(bi, "$(P)$(R)PositionMode_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_posRunning")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+    field(ZNAM, "Off")
+    field(ONAM, "On")
+}
+
+record(stringout, "$(P)$(R)PosNameDimN")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT, "@asyn($(PORT),0)HDF5_posNameDimN")
+    field(PINI, "NO")
+}
+
+record(stringin, "$(P)$(R)PosNameDimN_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_posNameDimN")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)PosNameDimX")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT, "@asyn($(PORT),0)HDF5_posNameDimX")
+    field(PINI, "NO")
+}
+
+record(stringin, "$(P)$(R)PosNameDimX_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_posNameDimX")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)PosNameDimY")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT, "@asyn($(PORT),0)HDF5_posNameDimY")
+    field(PINI, "NO")
+}
+
+record(stringin, "$(P)$(R)PosNameDimY_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_posNameDimY")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)PosNameDim3")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT, "@asyn($(PORT),0)HDF5_posNameDim3")
+    field(PINI, "NO")
+}
+
+record(stringin, "$(P)$(R)PosNameDim3_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_posNameDim3")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)PosNameDim4")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT, "@asyn($(PORT),0)HDF5_posNameDim4")
+    field(PINI, "NO")
+}
+
+record(stringin, "$(P)$(R)PosNameDim4_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_posNameDim4")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)PosNameDim5")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT, "@asyn($(PORT),0)HDF5_posNameDim5")
+    field(PINI, "NO")
+}
+
+record(stringin, "$(P)$(R)PosNameDim5_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_posNameDim5")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)PosNameDim6")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT, "@asyn($(PORT),0)HDF5_posNameDim6")
+    field(PINI, "NO")
+}
+
+record(stringin, "$(P)$(R)PosNameDim6_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_posNameDim6")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)PosNameDim7")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT, "@asyn($(PORT),0)HDF5_posNameDim7")
+    field(PINI, "NO")
+}
+
+record(stringin, "$(P)$(R)PosNameDim7_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_posNameDim7")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)PosNameDim8")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT, "@asyn($(PORT),0)HDF5_posNameDim8")
+    field(PINI, "NO")
+}
+
+record(stringin, "$(P)$(R)PosNameDim8_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_posNameDim8")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)PosNameDim9")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT, "@asyn($(PORT),0)HDF5_posNameDim9")
+    field(PINI, "NO")
+}
+
+record(stringin, "$(P)$(R)PosNameDim9_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_posNameDim9")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)PosIndexDimN")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT, "@asyn($(PORT),0)HDF5_posIndexDimN")
+    field(PINI, "NO")
+}
+
+record(stringin, "$(P)$(R)PosIndexDimN_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_posIndexDimN")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)PosIndexDimX")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT, "@asyn($(PORT),0)HDF5_posIndexDimX")
+    field(PINI, "NO")
+}
+
+record(stringin, "$(P)$(R)PosIndexDimX_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_posIndexDimX")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)PosIndexDimY")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT, "@asyn($(PORT),0)HDF5_posIndexDimY")
+    field(PINI, "NO")
+}
+
+record(stringin, "$(P)$(R)PosIndexDimY_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_posIndexDimY")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)PosIndexDim3")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT, "@asyn($(PORT),0)HDF5_posIndexDim3")
+    field(PINI, "NO")
+}
+
+record(stringin, "$(P)$(R)PosIndexDim3_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_posIndexDim3")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)PosIndexDim4")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT, "@asyn($(PORT),0)HDF5_posIndexDim4")
+    field(PINI, "NO")
+}
+
+record(stringin, "$(P)$(R)PosIndexDim4_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_posIndexDim4")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)PosIndexDim5")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT, "@asyn($(PORT),0)HDF5_posIndexDim5")
+    field(PINI, "NO")
+}
+
+record(stringin, "$(P)$(R)PosIndexDim5_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_posIndexDim5")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)PosIndexDim6")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT, "@asyn($(PORT),0)HDF5_posIndexDim6")
+    field(PINI, "NO")
+}
+
+record(stringin, "$(P)$(R)PosIndexDim6_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_posIndexDim6")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)PosIndexDim7")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT, "@asyn($(PORT),0)HDF5_posIndexDim7")
+    field(PINI, "NO")
+}
+
+record(stringin, "$(P)$(R)PosIndexDim7_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_posIndexDim7")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)PosIndexDim8")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT, "@asyn($(PORT),0)HDF5_posIndexDim8")
+    field(PINI, "NO")
+}
+
+record(stringin, "$(P)$(R)PosIndexDim8_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_posIndexDim8")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)PosIndexDim9")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT, "@asyn($(PORT),0)HDF5_posIndexDim9")
+    field(PINI, "NO")
+}
+
+record(stringin, "$(P)$(R)PosIndexDim9_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP, "@asyn($(PORT),0)HDF5_posIndexDim9")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)FillValue_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),0)HDF5_fillValue")
+    field(PINI, "YES")
+    field(SCAN, "I/O Intr")
+    field(PREC, "1")
+}
+
+record(ao, "$(P)$(R)FillValue")
+{
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),0)HDF5_fillValue")
+    field(PINI, "NO")
+    field(PREC, "1")
+}
+
+record(longout, "$(P)$(R)ExtraDimChunkX")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimChunkX")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ExtraDimChunkX_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimChunkX")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ExtraDimChunkY")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimChunkY")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ExtraDimChunkY_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimChunkY")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ExtraDimChunk3")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimChunk3")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ExtraDimChunk3_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimChunk3")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ExtraDimChunk4")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimChunk4")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ExtraDimChunk4_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimChunk4")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ExtraDimChunk5")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimChunk5")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ExtraDimChunk5_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimChunk5")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ExtraDimChunk6")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimChunk6")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ExtraDimChunk6_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimChunk6")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ExtraDimChunk7")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimChunk7")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ExtraDimChunk7_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimChunk7")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ExtraDimChunk8")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimChunk8")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ExtraDimChunk8_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimChunk8")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)ExtraDimChunk9")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_extraDimChunk9")
+    field(PINI, "YES")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)ExtraDimChunk9_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_extraDimChunk9")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+}
