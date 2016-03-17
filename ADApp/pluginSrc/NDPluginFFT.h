@@ -59,15 +59,18 @@ protected:
   #define LAST_NDPLUGIN_FFT_PARAM P_FFTAbsValue
                                 
 private:
-  template <typename epicsType> asynStatus convertToDoubleT(NDArray *pArray);
+  template <typename epicsType> void convertToDoubleT(NDArray *pArray);
   void allocateArrays();
   void zeroArrays();
   void createAxisArrays();
-  asynStatus computeFFTs(NDArray *pArray);
   void computeFFT_1D();
+  void computeFFT_2D();
 
-  int numTimePoints_;
-  int numFreqPoints_;
+  int rank_;
+  int nTimeX_;
+  int nTimeY_;
+  int nFreqX_;
+  int nFreqY_;
   double timePerPoint_; /* Actual time between points in input arrays */
   double *timeAxis_;
   double *freqAxis_;
