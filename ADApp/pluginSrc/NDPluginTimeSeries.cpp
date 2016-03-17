@@ -356,7 +356,7 @@ asynStatus NDPluginTimeSeries::doTimeSeriesCallbacks()
     pArrayOut->timeStamp = now.secPastEpoch + now.nsec / 1.e9;
     pArrayOut->uniqueId = uniqueId_++;
     this->unlock();
-    doCallbacksGenericPointer(pArrayOut, NDArrayData, 0);
+    doCallbacksGenericPointer(pArrayOut, NDArrayData, numSignals_);
     this->lock();
     this->pArrays[0] = pArrayOut;
     // Now do NDArray callbacks on 1-D arrays for each signal
