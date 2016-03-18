@@ -315,61 +315,71 @@ text {
 		args="P=$(P), R=image1:"
 	}
 	display[1] {
+		label="Image #2"
+		name="NDStdArrays.adl"
+		args="P=$(P), R=image2:"
+	}
+	display[2] {
 		label="Process #1"
 		name="NDProcess.adl"
 		args="P=$(P), R=Proc1:"
 	}
-	display[2] {
+	display[3] {
 		label="Transform #1"
 		name="NDTransform.adl"
 		args="P=$(P), R=Trans1:"
 	}
-	display[3] {
+	display[4] {
 		label="Color convert #1"
 		name="NDColorConvert.adl"
 		args="P=$(P), R=CC1:"
 	}
-	display[4] {
+	display[5] {
 		label="Color convert #2"
 		name="NDColorConvert.adl"
 		args="P=$(P), R=CC2:"
 	}
-	display[5] {
+	display[6] {
 		label="Overlay #1"
 		name="NDOverlay.adl"
 		args="P=$(P), R=Over1:"
 	}
-	display[6] {
+	display[7] {
 		label="Overlays 1-8"
 		name="NDOverlay8.adl"
 		args="P=$(P), R=Over1:,O1=Over1:1:,O2=Over1:2:,O3=Over1:3:,O4=Over1:4:,O5=Over1:5:,O6=Over1:6:,O7=Over1:7:,O8=Over1:8:"
 	}
-	display[7] {
+	display[8] {
 		label="Circular buffer #1"
 		name="NDCircularBuff.adl"
 		args="P=$(P), R=CB1:"
 	}
-	display[8] {
+	display[9] {
 		label="ROI Statistics #1"
 		name="NDROIStat.adl"
 		args="P=$(P), R=ROIStat1:"
 	}
-	display[9] {
+	display[10] {
 		label="Attribute #1"
 		name="NDPluginAttribute.adl"
 		args="P=$(P), R=Attr1:"
 	}
-	display[10] {
+	display[11] {
+		label="FFT #1"
+		name="NDFFT.adl"
+		args="P=$(P), R=FFT1:"
+	}
+	display[12] {
 		label="Scan #1"
 		name="scan_more.adl"
 		args="P=$(P), S=scan1, N=1"
 	}
-	display[11] {
+	display[13] {
 		label="Acquire Sequence"
 		name="yySseq.adl"
 		args="P=$(P), S=AcquireSequence"
 	}
-	display[12] {
+	display[14] {
 		label="devIocStats"
 		name="ioc_stats_soft.adl"
 		args="ioc=$(P)"
