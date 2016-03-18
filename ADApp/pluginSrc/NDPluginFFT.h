@@ -61,12 +61,13 @@ protected:
 private:
   template <typename epicsType> void convertToDoubleT(NDArray *pArray);
   void allocateArrays();
-  void zeroArrays();
   void createAxisArrays();
   void computeFFT_1D();
   void computeFFT_2D();
+  void doArrayCallbacks();
 
   int rank_;
+  int uniqueId_;
   int nTimeX_;
   int nTimeY_;
   int nFreqX_;
