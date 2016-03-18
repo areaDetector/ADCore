@@ -30,8 +30,6 @@
 #define TSTimestampString       "TS_TIMESTAMP"        /* (asynFloat64Array, r/o) Series of timestamps */
 
 /* Per-signal parameters */
-#define TSSignalNameString      "TS_SIGNAL_NAME"      /* (asynOctet,        r/w) Name of this signal */
-#define TSSignalUseString       "TS_SIGNAL_USE"       /* (asynInt32,        r/w) Use this signal? */
 #define TSTimeSeriesString      "TS_TIME_SERIES"      /* (asynFloat64Array, r/o) Time series array */
 
 
@@ -65,8 +63,6 @@ protected:
   int P_TSTimestamp;
 
   // Per-signal parameters
-  int P_TSSignalName;
-  int P_TSSignalUse;
   int P_TSTimeSeries;
   #define LAST_NDPLUGIN_TIME_SERIES_PARAM P_TSTimeSeries
                                 
