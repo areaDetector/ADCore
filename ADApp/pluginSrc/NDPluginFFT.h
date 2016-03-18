@@ -65,9 +65,12 @@ private:
   void computeFFT_1D();
   void computeFFT_2D();
   void doArrayCallbacks();
+  int nextPow2(int v);
 
   int rank_;
   int uniqueId_;
+  int nTimeXIn_;
+  int nTimeYIn_;
   int nTimeX_;
   int nTimeY_;
   int nFreqX_;
