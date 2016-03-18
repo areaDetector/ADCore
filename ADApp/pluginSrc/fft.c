@@ -16,6 +16,10 @@ void fft_1D(double data[], unsigned long nn, int isign)
   double wtemp,wr,wpr,wpi,wi,theta;
   double tempr,tempi;
 
+  /* This algorithm uses 1-based array indices.  To be cleanly callable from C
+     we subtract 1 here */
+  data--;
+
   n=nn << 1;
   j=1;
   for (i=1;i<n;i+=2) {
@@ -63,6 +67,11 @@ void fft_ND(double data[], unsigned long nn[], int ndim, int isign)
   unsigned long ibit,k1,k2,n,nprev,nrem,ntot;
   double tempi,tempr;
   double theta,wi,wpi,wpr,wr,wtemp;
+
+  /* This algorithm uses 1-based array indices.  To be cleanly callable from C
+     we subtract 1 here */
+  data--;
+  nn--;
 
   for (ntot=1,idim=1;idim<=ndim;idim++)
     ntot *= nn[idim];
