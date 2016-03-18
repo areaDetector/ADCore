@@ -79,12 +79,28 @@ NDPluginFFT::NDPluginFFT(const char *portName, int queueSize, int blockingCallba
   
 }
 
+int NDPluginFFT::nextPow2(int v)
+{
+  v--;
+  v |= v >> 1;
+  v |= v >> 2;
+  v |= v >> 4;
+  v |= v >> 8;
+  v |= v >> 16;
+  v++;
+  return v;
+}
+
 void NDPluginFFT::allocateArrays()
 {
   if (timeSeries_)    free(timeSeries_);
   if (FFTReal_)       free(FFTReal_);
   if (FFTImaginary_)  free(FFTImaginary_);
   if (FFTAbsValue_)   free(FFTAbsValue_);
+
+  // Round dimensions up to next power of 2
+  nTimeX_ = nextPow2(nTimeXIn_);
+  nTimeY_ = nextPow2(nTimeYIn_);
 
   nFreqX_ = nTimeX_ / 2;
   nFreqY_ = nTimeY_ / 2;
@@ -111,7 +127,7 @@ void NDPluginFFT::computeFFT_1D()
     FFTComplex_[2*j] = timeSeries_[j];
     FFTComplex_[2*j+1] = 0.;
   }
-  fft_1D(FFTComplex_-1, nTimeX_, 1);
+  fft_1D(FFTComplex_, nTimeX_, 1);
   for (j=0; j<nFreqX_; j++) {
     FFTReal_     [j] = FFTComplex_[2*j]; 
     FFTImaginary_[j] = FFTComplex_[2*j+1]; 
@@ -141,7 +157,7 @@ void NDPluginFFT::computeFFT_2D()
   dims[0] = nTimeX_;
   dims[1] = nTimeY_;
   unlock();
-  fft_ND(FFTComplex_-1, dims-1, 2, 1);
+  fft_ND(FFTComplex_, dims, 2, 1);
   lock();
   for (i=0, k=0, pIn=FFTComplex_; 
        i<nFreqY_; 
@@ -221,18 +237,22 @@ void NDPluginFFT::createAxisArrays()
 }
 
 /**
- * Templated function to copy the data from the NDArray into double arrays.
+ * Templated function to copy the data from the NDArray into double arrays with padding.
  * \param[in] NDArray The pointer to the NDArray object
- * \return asynStatus
  */
 template <typename epicsType>
 void NDPluginFFT::convertToDoubleT(NDArray *pArray)
 {
-  epicsType *pData = (epicsType *)pArray->pData;
-  int i;
+  epicsType *pIn;
+  double *pOut;
+  int i, j;
     
-  for (i=0; i<nTimeX_*nTimeY_; i++) {
-    timeSeries_[i] = (epicsFloat64)*pData++;
+  for (i=0, pIn=(epicsType *)pArray->pData, pOut=timeSeries_;
+       i<nTimeYIn_; 
+       i++, pOut+=nTimeX_) {
+    for (j=0; j<nTimeXIn_; j++) {
+      pOut[j] = (epicsFloat64)*pIn++;
+    }
   }
 }
 
@@ -273,10 +293,10 @@ void NDPluginFFT::processCallbacks(NDArray *pArray)
       return;
       break;
   }
-  if ((nTimeX != nTimeX_) ||
-      (nTimeY != nTimeY_)) {
-    nTimeX_ = nTimeX;
-    nTimeY_ = nTimeY;
+  if ((nTimeX != nTimeXIn_) ||
+      (nTimeY != nTimeYIn_)) {
+    nTimeXIn_ = nTimeX;
+    nTimeYIn_ = nTimeY;
     allocateArrays();
   }
 
