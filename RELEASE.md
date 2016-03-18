@@ -30,15 +30,13 @@ R2-5 (March XXX, 2016)
   [NumSignals] or [NumSignals, NewTimePoints].  The plugin creates NumSignals 1-D
   arrays of dimension [NumTimPoints], each of which is the time-series for one signal.
   On each callback the new time points are appended to the existing time series arrays.
-  The plugin can operate in one of two mdes.  In Fixed Length mode the time-series arrays
+  The plugin can operate in one of two modes.  In Fixed Length mode the time-series arrays
   are cleared when acquisition starts, and new time points are appended until 
   NumTimePoints points have been received, at which point acquisition stops and further
   callbacks are ignorred.  In Circular Buffer mode on NumTimePoints samples are received
   then acquisition continues with the new time points replacing the oldest ones in the
   circular buffer.  In this mode the OPI displays always show the latest NumTimePoints
-  samples, with the most recent point on the right.  The plugin can also optionally
-  compute 1-D FFTs of the time-series data, and exports the real part, imaginary part, 
-  and absolute value of the FFT for each signal.  
+  samples, with the most recent point on the right.    
   This plugin is used by R7-0 and later of the 
   [quadEM module](https://github.com/epics-modules/quadEM).
   It should also be useful for devices like ADCs, transient digitizers, and other devices
@@ -47,6 +45,20 @@ R2-5 (March XXX, 2016)
   [areaDetector/ADExample](https://github.com/areaDetector/ADExample) 
   that tests and demonstrates this plugin.  This test application simulates a buffered 
   ADC with 8 input waveform signals.
+
+### NDPluginFFT
+* New plugin to compute 1-D or 2-D Fast Fourrier transforms.  It exports 1-D or 2-D
+  NDArrays containing the absolute value of the FFT.  It creates 1-D waveform
+  records of the input, and the real, imaginary, and absolute values of the first row of the FFT.  
+  It also creates 1-D waveform records of the time and frequency axes, which are useful if the 1-D
+  input represents a time-series. The waveform records are convenient for plotting in OPI screens. 
+  The FFT algorithm requires that the input array dimensions be a power of 2, but the plugin
+  will pad the array to the next larger power of 2 if the input array does not meet this
+  requirement.  
+  The simDetector test application in 
+  [areaDetector/ADExample](https://github.com/areaDetector/ADExample) 
+  has a new simulation mode that generates images based on the sum or product of 4 sine waves.
+  This application is useful for testing and demonstrating the NDPluginFFT plugin.
 
 ### NDPluginStats and NDPluginROIStat
 * Added waveform record containing NDArray timetstamps to time series data arrays. Thanks to
