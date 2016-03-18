@@ -33,10 +33,11 @@ R2-5 (March XXX, 2016)
   The plugin can operate in one of two modes.  In Fixed Length mode the time-series arrays
   are cleared when acquisition starts, and new time points are appended until 
   NumTimePoints points have been received, at which point acquisition stops and further
-  callbacks are ignorred.  In Circular Buffer mode on NumTimePoints samples are received
+  callbacks are ignorred.  In Circular Buffer mode when NumTimePoints samples are received
   then acquisition continues with the new time points replacing the oldest ones in the
-  circular buffer.  In this mode the OPI displays always show the latest NumTimePoints
-  samples, with the most recent point on the right.    
+  circular buffer.  In this mode the export NDArrays and waveforms always contain the latest 
+  NumTimePoints samples, with the first element of the array containing the oldest time
+  point and the last element containing the most recent time point.    
 * This plugin is used by R7-0 and later of the 
   [quadEM module](https://github.com/epics-modules/quadEM).
   It should also be useful for devices like ADCs, transient digitizers, and other devices
