@@ -53,7 +53,6 @@ record(bo, "$(P)$(R)TSRead")
 # Set DRVL to prevent 0 or negative values.  
 # Means we need to set DRVH too.  
 # The waveform records are of length $(NCHANS) but that is just for display.  
-# We allow a very large value so FFTs can have smaller truncation error.
 record(longout, "$(P)$(R)TSNumPoints")
 {
    field(PINI, "YES")
@@ -138,6 +137,17 @@ record(mbbo, "$(P)$(R)TSAcquireMode")
    field(ONVL, "1")
    field(ONST, "Circ. buffer")
    info(autosaveFields, "VAL")
+}
+
+record(mbbi, "$(P)$(R)TSAcquireMode_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_ACQUIRE_MODE")
+   field(ZRVL, "0")
+   field(ZRST, "Fixed length")
+   field(ONVL, "1")
+   field(ONST, "Circ. buffer")
+   field(SCAN, "I/O Intr")
 }
 
 record(waveform, "$(P)$(R)TSTimestamp")
