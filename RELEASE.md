@@ -37,11 +37,11 @@ R2-5 (March XXX, 2016)
   then acquisition continues with the new time points replacing the oldest ones in the
   circular buffer.  In this mode the OPI displays always show the latest NumTimePoints
   samples, with the most recent point on the right.    
-  This plugin is used by R7-0 and later of the 
+* This plugin is used by R7-0 and later of the 
   [quadEM module](https://github.com/epics-modules/quadEM).
   It should also be useful for devices like ADCs, transient digitizers, and other devices
   that produce time-series data on one or more input signals.  
-  There is a new ADCSimDetector test application in 
+* There is a new ADCSimDetector test application in 
   [areaDetector/ADExample](https://github.com/areaDetector/ADExample) 
   that tests and demonstrates this plugin.  This test application simulates a buffered 
   ADC with 8 input waveform signals.
@@ -52,10 +52,10 @@ R2-5 (March XXX, 2016)
   records of the input, and the real, imaginary, and absolute values of the first row of the FFT.  
   It also creates 1-D waveform records of the time and frequency axes, which are useful if the 1-D
   input represents a time-series. The waveform records are convenient for plotting in OPI screens. 
-  The FFT algorithm requires that the input array dimensions be a power of 2, but the plugin
+* The FFT algorithm requires that the input array dimensions be a power of 2, but the plugin
   will pad the array to the next larger power of 2 if the input array does not meet this
   requirement.  
-  The simDetector test application in 
+*  The simDetector test application in 
   [areaDetector/ADExample](https://github.com/areaDetector/ADExample) 
   has a new simulation mode that generates images based on the sum or product of 4 sine waves.
   This application is useful for testing and demonstrating the NDPluginFFT plugin.
