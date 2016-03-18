@@ -50,7 +50,7 @@ R2-5 (March XXX, 2016)
 ### NDPluginFFT
 * New plugin to compute 1-D or 2-D Fast Fourrier transforms.  It exports 1-D or 2-D
   NDArrays containing the absolute value of the FFT.  It creates 1-D waveform
-  records of the input, and the real, imaginary, and absolute values of the first row of the FFT.  
+  records of the input, and the real, imaginary, and absolute values of the first row of the FFT.
   It also creates 1-D waveform records of the time and frequency axes, which are useful if the 1-D
   input represents a time-series. The waveform records are convenient for plotting in OPI screens. 
 * The FFT algorithm requires that the input array dimensions be a power of 2, but the plugin
@@ -58,7 +58,7 @@ R2-5 (March XXX, 2016)
   requirement.  
 *  The simDetector test application in 
   [areaDetector/ADExample](https://github.com/areaDetector/ADExample) 
-  has a new simulation mode that generates images based on the sum or product of 4 sine waves.
+  has a new simulation mode that generates images based on the sums and/or products of 4 sine waves.
   This application is useful for testing and demonstrating the NDPluginFFT plugin.
 
 ### NDPluginStats and NDPluginROIStat
