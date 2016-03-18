@@ -84,8 +84,6 @@ NDPluginTimeSeries::NDPluginTimeSeries(const char *portName, int queueSize, int 
   createParam(TSTimestampString,        asynParamFloat64Array, &P_TSTimestamp);
   
   /* Per-signal parameters */
-  createParam(TSSignalNameString,              asynParamOctet, &P_TSSignalName);
-  createParam(TSSignalUseString,               asynParamInt32, &P_TSSignalUse);
   createParam(TSTimeSeriesString,       asynParamFloat64Array, &P_TSTimeSeries);
  
   /* Set the plugin type string */
