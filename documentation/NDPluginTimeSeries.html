@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugin NDPluginTimeSeries</h1>
     <h2>
-      March 2, 2016</h2>
+      March 18, 2016</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -22,37 +22,40 @@
     <li><a href="#Overview">Overview</a></li>
     <li><a href="#Configuration">Configuration</a></li>
     <li><a href="#Screens">Screen shots</a></li>
-    <li><a href="#Notes">Notes</a></li>
   </ul>
   <h2 id="Overview">
     Overview
   </h2>
   <p>
-    This plugin provides accepts 2-D arrays of dimension [NewTimePoints, NumSignals].
-    NewTimePoints is frequently 1, but can be &gt;1. The plugin creates NumSignals 1-D
-    arrays of dimension [NumTimePoints], each of which is the time-series for one signal.
+    This plugin accepts 1-D arrays of dimension [NumSignals] or 2-D arrays of dimension
+    [NumSignals, NewTimePoints]. The plugin creates NumSignals NDArrays of dimension
+    [NumTimePoints], each of which is the time-series for one signal. It also creates
+    an NDArray of dimension [NumTimePoints, NumSignals] containing the data for all
+    of the signals. It also exports waveform records containing the time-series data
+    for each signal, and a time-axis array containing the relative times of each point
+    in the time-series. These waveform records are useful for plotting in OPI screens.</p>
+  <p>
     On each callback the new time points are appended to the existing time series arrays.
     The plugin can operate either two modes. In fixed time mode the time-series arrays
-    are cleared, and new time points are appended until NumTimePoints points have been
-    received, at which point acquisition stops and further callbacks are ignorred. In
-    circular buffer mode once NumTimePoints samples are received then acquisition continues
-    with the new time points replacing the oldest ones in the circular buffer.</p>
+    are cleared when acquisition is started, and new time points are appended until
+    NumTimePoints points have been received, at which point acquisition stops and further
+    callbacks are ignored. In circular buffer mode once NumTimePoints samples are received
+    then acquisition continues with the new time points replacing the oldest ones in
+    the circular buffer.</p>
   <p>
     The plugin requires knowing the time interval between samples from the driver (TimePerPoint).
     This information normally comes from a database link to a record in the detector
-    driver, but it can be manually specified as well. The plugin exports a 1-D array
-    containing the relative time values of each sample, which can be used for the horizontal
-    axis in an OPI display.
+    driver, but it can be manually specified as well. The plugin exports a 1-D waveform
+    record containing the relative time values of each sample, which can be used for
+    the horizontal axis in an OPI display.
   </p>
   <p>
     The plugin optionally does time averaging of the input signal. It can average any
     integer number of input samples(NumAverage), so that the time between points in
     the output waveforms is NumAverage*TimePerPoint = AveragingTime.</p>
   <p>
-    The plugin can also perform 1-D FFTs of the time-series data, and exports arrays
-    containing the real part, imaginary part, and absolute value of the FFT. It also
-    exports an array containing the frequency of each point in the FFT arrays, which
-    can be used for the horizontal axis in an OPI display.</p>
+    NDPluginTimeSeries inherits from NDPluginDriver. The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_time_series.html">
+      NDPluginTimeSeries class documentation</a> describes this class in detail.</p>
   <p>
     Several database template files are provided:
   </p>
@@ -146,10 +149,10 @@
         <td>
           r/w</td>
         <td>
-          Forces the waveform records with the time-series and optionally the FFTs to update.
-          This record SCAN field can be set to periodically update the waveforms. The waveform
-          records are automatically processed when TSAcquire goes to done at the end of acquisition
-          in Fixed Length mode. </td>
+          Forces the plugin to do callbacks with the time series NDArrays and waveform records.
+          This record SCAN field can be set to periodically update the waveforms. The callbacks
+          are automatically done when TSAcquire goes to done at the end of acquisition in
+          Fixed Length mode. </td>
         <td>
           TS_READ</td>
         <td>
@@ -169,9 +172,7 @@
           the time-series arrays in the plugin are freed and reallocated each time this value
           is changed. However, the size of the waveform records is fixed when the IOC is started,
           so NELM in those records must be large enough for the largest time-series needed.
-          If FFTs are being computed then NumTimePoints should be a power of 2. The FFT algorithm
-          being used only works when the input array length is a power of 2, and the FFT output
-          is incorrect if it is not. </td>
+        </td>
         <td>
           TS_NUM_POINTS</td>
         <td>
@@ -189,9 +190,9 @@
         <td>
           The current time-series point. In Fixed Length mode when TSCurrentPoint reaches
           TSNumPoints then time-series acquisition is automatically stopped, and callbacks
-          are done on all time-series waveform records, updating the values. This means that
-          even if TSRead has SCAN=Passive that the waveform records will update when time-series
-          acquisition is complete. </td>
+          are done on all time-series NDArrays and waveform records, updating the values.
+          This means that even if TSRead.SCAN is Passive that the NDArrays and waveform records
+          will update when time-series acquisition is complete. </td>
         <td>
           TS_CURRENT_POINT</td>
         <td>
@@ -223,22 +224,6 @@
       </tr>
       <tr>
         <td>
-          TSComputeFFT</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Controls whether FFTs are computed each time the time series arrays are read.</td>
-        <td>
-          TS_COMPUTE_FFT</td>
-        <td>
-          $(P)$(R)TSComputeFFT</td>
-        <td>
-          bo</td>
-      </tr>
-      <tr>
-        <td>
           TSTimePerPoint</td>
         <td>
           asynFloat64</td>
@@ -248,9 +233,10 @@
           The time interval between samples in the waveforms from the driver. This value is
           normally updated automatically using the TSTimePerPointLink record described below.
           It can also be manually changed if there is no EPICS record available to provide
-          this value automatically.</td>
+          this value automatically. This value is used to compute NumAverage, and to construct
+          the TSTimeAxis array.</td>
         <td>
-          TS_TIME_POINT</td>
+          TS_TIME_PER_POINT</td>
         <td>
           $(P)$(R)TSTimePerPoint<br />
           $(P)$(R)TSTimePerPoint_RBV</td>
@@ -260,13 +246,13 @@
       </tr>
       <tr>
         <td>
-          TSTimePerPointLink</td>
+          N.A</td>
         <td>
           N.A.</td>
         <td>
           r/w</td>
         <td>
-          This record has OMSL="closed_loop" and DOL set to an record that contains the time
+          This record has OMSL="closed_loop" and DOL set to a record that contains the time
           between points from the driver. The link will normally have the CP attribute, so
           this record processes whenever the input record changes. The OUT field of this record
           is TSTimePerPoint.</td>
@@ -352,24 +338,6 @@
       </tr>
       <tr>
         <td>
-          TSFreqAxis</td>
-        <td>
-          asynFloat64ArrayIn</td>
-        <td>
-          r/o</td>
-        <td>
-          A waveform record containing the frequency value of each point in the FFT waveform
-          records. TSFreqAxis[i] = FrequencyStep * i, where FrequencyStep is controlled by
-          TSAveragingTime and TSNumPoints.</td>
-        <td>
-          TS_FREQ_AXIS</td>
-        <td>
-          $(P)$(R)TSFreqAxis</td>
-        <td>
-          waveform</td>
-      </tr>
-      <tr>
-        <td>
           TSTimeStamp</td>
         <td>
           asynFloat64ArrayIn</td>
@@ -391,6 +359,9 @@
       </tr>
     </tbody>
   </table>
+  <p>
+    <br />
+  </p>
   <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
     <tbody>
       <tr>
@@ -420,41 +391,17 @@
         <td>
           TSSignalName</td>
         <td>
-          asynOctet</td>
+          N.A.</td>
         <td>
           r/w</td>
         <td>
           The name for this signal.</td>
         <td>
-          TS_SIGNAL_NAME</td>
+          N.A.</td>
         <td>
-          $(P)$(R)SignalName<br />
-          $(P)$(R)SignalName_RBV</td>
+          $(P)$(R)SignalName</td>
         <td>
           stringout</td>
-      </tr>
-      <tr>
-        <td>
-          TSSignalUse</td>
-        <td>
-          asynInt32</td>
-        <td>
-          r/w</td>
-        <td>
-          Set this to 1 to use this signal, which will mean the time series and FFT will be
-          calculated for this signal.</td>
-        <td>
-          TS_SIGNAL_USE</td>
-        <td>
-          $(P)$(R)SignalUse<br />
-          $(P)$(R)SignalUse_RBV</td>
-        <td>
-          bo<br />
-          bi </td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7">
-          <b>Time-Series data</b></td>
       </tr>
       <tr>
         <td>
@@ -469,58 +416,6 @@
           TS_TIME_SERIES </td>
         <td>
           $(P)$(R)TimeSeries</td>
-        <td>
-          waveform</td>
-      </tr>
-      <tr>
-        <td align="center" colspan="7">
-          <b>FFT data</b></td>
-      </tr>
-      <tr>
-        <td>
-          TSFFTReal</td>
-        <td>
-          asynFloat64ArrayIn</td>
-        <td>
-          r/o</td>
-        <td>
-          The real part of the FFT. </td>
-        <td>
-          TS_FFT_REAL </td>
-        <td>
-          $(P)$(R)FFTReal</td>
-        <td>
-          waveform</td>
-      </tr>
-      <tr>
-        <td>
-          TS FFTImaginary</td>
-        <td>
-          asynFloat64ArrayIn</td>
-        <td>
-          r/o</td>
-        <td>
-          The imaginary part of the FFT. </td>
-        <td>
-          TS_FFT_IMAGINARY </td>
-        <td>
-          $(P)$(R)FFTImaginary</td>
-        <td>
-          waveform</td>
-      </tr>
-      <tr>
-        <td>
-          TSFFTAbsValue</td>
-        <td>
-          asynFloat64ArrayIn</td>
-        <td>
-          r/o</td>
-        <td>
-          The absolute value of the FFT.</td>
-        <td>
-          TS_FFT_ABS_VALUE</td>
-        <td>
-          $(P)$(R)FFTAbsValue</td>
         <td>
           waveform</td>
       </tr>
@@ -557,32 +452,12 @@
     <img alt="NDPluginTimeSeries.png" src="NDPluginTimeSeries.png" />
   </div>
   <p>
-    The following MEDM screens show the time series and FFT plots for arrays in NDPluginTimeSeriesN.template.
+    The following MEDM screen shows the time series plot for an array in NDPluginTimeSeriesN.template.
   </p>
   <div style="text-align: center">
     <h3>
       Time-series plot</h3>
     <img alt="NDTimeSeriesPlot.png" src="NDTimeSeriesPlot.png" />
-  </div>
-  <div style="text-align: center">
-    <h3>
-      Real part of FFT</h3>
-    <img alt="NDTimeSeriesPlotFFTReal.png" src="NDTimeSeriesPlotFFTReal.png" />
-  </div>
-  <div style="text-align: center">
-    <h3>
-      Imaginary part of FFT</h3>
-    <img alt="NDTimeSeriesPlotFFTImaginary.png" src="NDTimeSeriesPlotFFTImaginary.png" />
-  </div>
-  <div style="text-align: center">
-    <h3>
-      Absolute value of FFT</h3>
-    <img alt="NDTimeSeriesPlotFFTAbsValue.png" src="NDTimeSeriesPlotFFTAbsValue.png" />
-  </div>
-  <div style="text-align: center">
-    <h3>
-      Combined plot with time-series, FFT absolute value,FFT real, and FFT imaginary</h3>
-    <img alt="NDTimeSeriesPlotAll.png" src="NDTimeSeriesPlotAll.png" />
   </div>
 </body>
 </html>
