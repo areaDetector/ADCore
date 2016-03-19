@@ -81,10 +81,15 @@ R2-5 (March XXX, 2016)
 ### NDPluginBase.template
 * Changed EnableCallbacks.VAL to $(ENABLED=0), allowing enabling callbacks when loading database,
   but default remains Disable.
+* Set the default value of the MDARRAY_ADDR macro to 0 so it does not need to be defined in most cases.
   
 ### ADApp/op/adl
 * Fixed many medm adl files so text fields have correct string/decimal, width and aligmnent attributes to
   improve autoconversion to other display managers.
+
+### nexusSrc/Makefile
+* Fixed so it will work when hdf5 and sz libraries are system libraries.
+  Used same logic as commonDriverMakefile
 
 ### iocBoot
 * Deleted commonPlugins.cmd and commonPlugin_settings.req.  These were accidentally restored before the R2-4
