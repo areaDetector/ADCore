@@ -15,15 +15,11 @@
 
 #include "NDPluginDriver.h"
 
-/* Per-plugin parameters */
-#define FFTReadString            "FFT_READ"             /* (asynInt32,        r/w) Read data */
 #define FFTTimeAxisString        "FFT_TIME_AXIS"        /* (asynFloat64Array, r/o) Time axis array */
 #define FFTFreqAxisString        "FFT_FREQ_AXIS"        /* (asynFloat64Array, r/o) Frequency axis array */
 #define FFTTimePerPointString    "FFT_TIME_PER_POINT"   /* (asynFloat64,      r/o) Time per time point from driver */
 #define FFTDirectionString       "FFT_DIRECTION"        /* (asynInt32,        r/w) FFT direction */
 #define FFTSuppressDCString      "FFT_SUPPRESS_DC"      /* (asynInt32,        r/w) FFT DC offset suppression */
-
-/* Per-signal parameters */
 #define FFTTimeSeriesString      "FFT_TIME_SERIES"      /* (asynFloat64Array, r/o) Time series data */
 #define FFTRealString            "FFT_REAL"             /* (asynFloat64Array, r/o) Real part of FFT */
 #define FFTImaginaryString       "FFT_IMAGINARY"        /* (asynFloat64Array, r/o) Imaginary part of FFT */
@@ -42,16 +38,13 @@ public:
 
 protected:
 
-  // Per-plugin parameters
-  int P_FFTRead;
-  #define FIRST_NDPLUGIN_FFT_PARAM P_FFTRead
   int P_FFTTimeAxis;
+  #define FIRST_NDPLUGIN_FFT_PARAM P_FFTTimeAxis
   int P_FFTFreqAxis;
   int P_FFTTimePerPoint;
   int P_FFTDirection;
   int P_FFTSuppressDC;
 
-  // Per-signal parameters
   int P_FFTTimeSeries;
   int P_FFTReal;
   int P_FFTImaginary;
