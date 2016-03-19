@@ -27,24 +27,26 @@
     Overview
   </h2>
   <p>
-    This plugin computes 1-D or 2-D Fast Fourrier transforms. It exports 1-D or 2-D
-    NDArrays containing the absolute value of the FFT. It creates 1-D waveform records
+    This plugin computes 1-D or 2-D Fast Fourier Transforms (FFTs). It exports 1-D or
+    2-D NDArrays containing the absolute value of the FFT. It creates 1-D waveform records
     of the input, and the real, imaginary, and absolute values of the first row of the
     FFT. It also creates 1-D waveform records of the time and frequency axes, which
     are useful for plotting if the 1-D input represents a time-series.</p>
   <p>
-    The FFT algorithm used requires that the input array dimensions be a power of 2,
-    but the plugin will pad the array to the next larger power of 2 if the input array
-    does not meet this requirement.</p>
+    The FFT algorithm used requires that the input array dimensions be a power of 2.
+    The plugin will pad the array to the next larger power of 2 if the input array does
+    not meet this requirement.</p>
   <p>
     The <a href="ADCSimDetectorDoc.html">ADCSimDetector</a> application simulates an
     8-channel ADC with different waveforms. This application is useful for testing and
     demonstrating the NDPluginFFT plugin with 1-D NDArray input.</p>
   <p>
     The <a href="simDetectorDoc.html">simDetector</a> application has a Sine simulation
-    mode that generates images based on the sums and/or products of 4 sine waves. The
+    mode that generates images based on the sums and/or products of 4 sine waves. This
+    can be used to generate images with well-defined frequency components in X and Y
+    to test and demonstrate the NDPluginFFT plugin, as shown in the images below. The
     Peaks simulation mode can also be used to generate interesting frequency patterns,
-    as show in the images below. This application is useful for testing and demonstrating
+    as shown in the images below. This application is thus useful for testing and demonstrating
     the NDPluginFFT plugin with 2-D NDArray input.</p>
   <p>
     For 1-D FFTs the plugin exports a 1-D array containing the frequency values for
@@ -292,9 +294,9 @@
         <td>
           The absolute value of the FFT.
           <br />
-          NOTE: It is exported as an NDArray, either 1-D or 2-D depending on the rank of the
-          input NDArray. However, for 2-D arrays the waveform record contains only the first
-          row of the FFT.</td>
+          NOTE: this is exported as an NDArray, either 1-D or 2-D depending on the rank of
+          the input NDArray. However, for 2-D arrays the waveform record contains only the
+          first row of the FFT.</td>
         <td>
           FFT_ABS_VALUE</td>
         <td>
@@ -326,9 +328,9 @@
     The following MEDM screen provides access to the parameters in NDPluginDriver.h
     and NDPluginFFT.h through records in NDPluginBase.template, and NDTimeSeries.template.
   </p>
-  <div style="text-align: center">
-    <h3>
-      NDPluginFFT.adl</h3>
+  <div style="text-align: center; margin-top: 2em; margin-bottom: 2em">
+    <h4>
+      NDPluginFFT.adl</h4>
     <img alt="NDPluginFFT.png" src="NDPluginFFT.png" />
   </div>
   <p>
@@ -336,22 +338,74 @@
     and NDPluginTimeSeriesN.template. These 1-D time-series produced using the ADCSimDetector
     driver in ADExample.
   </p>
-  <div style="text-align: center">
-    <h3>
+  <div style="text-align: center; margin-top: 2em; margin-bottom: 2em">
+    <h4>
       Time-series plot. This is the Sawtooth waveform with 10 Hz frequency.
-    </h3>
+    </h4>
     <img alt="NDFFTTimeSeriesPlot.png" src="NDFFTTimeSeriesPlot.png" />
   </div>
-  <div style="text-align: center">
-    <h3>
-      Absolute value of FFT. Note that the sawtooth has the 10 Hz fundamental frequency
-      plus all even and odd harmonics.</h3>
+  <div style="text-align: center; margin-top: 2em; margin-bottom: 2em">
+    <h4>
+      Absolute value of FFT. Note that the FFT of a sawtooth has the 10 Hz fundamental
+      frequency plus all even and odd harmonics.</h4>
     <img alt="NDFFTPlotAbsValue.png" src="NDFFTPlotAbsValue.png" />
   </div>
-  <div style="text-align: center">
-    <h3>
-      Combined plot with time-series, FFT absolute value, FFT real, and FFT imaginary</h3>
+  <div style="text-align: center; margin-top: 2em; margin-bottom: 2em">
+    <h4>
+      Combined plot with time-series, FFT absolute value, FFT real, and FFT imaginary.
+      This is the sin(x)*cos(x) waveform, with the sine frequency=20 Hz and the cosine
+      frequency=1 Hz.
+    </h4>
     <img alt="NDFFTPlotAll.png" src="NDFFTPlotAll.png" />
   </div>
+  <p>
+    The following MEDM screens show the real-space images and 2-D FFT plots for arrays
+    in NDFFT.template and NDPluginTimeSeriesN.template. These 2-D images are produced
+    using the simDetector driver in ADExample using the settings show in the screen
+    shot below.
+  </p>
+  <div style="text-align: center; margin-top: 2em; margin-bottom: 2em">
+    <h4>
+      Setup screen for the simDetector driver showing the values that were used to generate
+      the images and FFTs shown below.
+    </h4>
+    <img alt="NDFFTSimDetectorSetup.png" src="NDFFTSimDetectorSetup.png" />
+  </div>
+  <div style="text-align: center; margin-top: 2em; margin-bottom: 2em">
+    <h4>
+      Real space image. This is generated using the Peaks mode in the simDetector driver.
+    </h4>
+    <img alt="NDFFTPeaksImage.png" src="NDFFTPeaksImage.png" />
+  </div>
+  <div style="text-align: center; margin-top: 2em; margin-bottom: 2em">
+    <h4>
+      2-D FFT absolute value of the above image.
+    </h4>
+    <img alt="NDFFTPeaksAbsVal.png" src="NDFFTPeaksAbsVal.png" />
+  </div>
+  <div style="text-align: center; margin-top: 2em; margin-bottom: 2em">
+    <h4>
+      Real space image. This is generated using the Sine mode in the simDetector driver.
+    </h4>
+    <img alt="NDFFTSineImage.png" src="NDFFTSineImage.png" />
+  </div>
+  <div style="text-align: center; margin-top: 2em; margin-bottom: 2em">
+    <h4>
+      2-D FFT absolute value of the above image.
+    </h4>
+    <img alt="NDFFTSineAbsVal.png" src="NDFFTSineAbsVal.png" />
+  </div>
+  <p>
+    Note in the above image that the two X freqencies are 2 and 50 Hz, which are the
+    values in the SimDetectorSetup screen shown above, because these two sine waves
+    are added together. Note, however, that the two Y frequencies, 1 Hz and 20 Hz do
+    not appear in the FFT because these two sine waves are multiplied together. The
+    frequencies in the FFT are the sum and difference of sine wave frequencies, 19 and
+    21 Hz.</p>
+  <p>
+    The FFT images above were captured by setting the NDStdArrays plugin to get its
+    data from the NDPluginFFT plugin, which is port FFT1 in the simDetector example
+    IOC in the ADExample module. The ImageJ viewer was then used to view the EPICS waveform
+    record from the NDStdArrays plugin.</p>
 </body>
 </html>
