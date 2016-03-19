@@ -178,7 +178,7 @@ asynStatus NDPluginTimeSeries::doAddToTimeSeriesT(NDArray *pArray)
   epicsTimeStamp timeNow;
   double elapsedTime;
   
-  if (pArray->ndims == 2) numTimes = pArray->dims[1].size;
+  if (pArray->ndims == 2) numTimes = (int)pArray->dims[1].size;
   
   for (i=0; i<numTimes; i++) {
     for (signal=0; signal<maxSignals_; signal++) {
@@ -188,7 +188,7 @@ asynStatus NDPluginTimeSeries::doAddToTimeSeriesT(NDArray *pArray)
     if (numAveraged_ < numAverage_) continue;
     /* We have now collected the desired number of points to average */
     for (signal=0; signal<maxSignals_; signal++) {
-      pTimeCircular[signal * numTimePoints_ + currentTimePoint_] = averageStore_[signal]/numAveraged_;
+      pTimeCircular[signal * numTimePoints_ + currentTimePoint_] = (epicsType)averageStore_[signal]/numAveraged_;
       averageStore_[signal] = 0;
     }
     numAveraged_ = 0;
@@ -358,7 +358,7 @@ asynStatus NDPluginTimeSeries::doTimeSeriesCallbacks()
     this->lock();
     this->pArrays[0] = pArrayOut;
     // Now do NDArray callbacks on 1-D arrays for each signal
-    numCopy = pArrayOut->dims[0].size;
+    numCopy = (int)pArrayOut->dims[0].size;
     dims[0] = numCopy;
     for (signal=0; signal<numSignals_; signal++) {
       NDArray *pArray = pNDArrayPool->alloc(1, dims, pArrayOut->dataType, 0, 0);
@@ -406,7 +406,7 @@ void NDPluginTimeSeries::processCallbacks(NDArray *pArray)
   if ((pArray->dataType          != dataType_) || 
       ((int)pArray->dims[0].size != numSignals_)) {
     dataType_   = pArray->dataType;
-    numSignals_ = pArray->dims[0].size;
+    numSignals_ = (int)pArray->dims[0].size;
     pArray->getInfo(&arrayInfo);
     dataSize_ = arrayInfo.bytesPerElement;
     allocateArrays();
