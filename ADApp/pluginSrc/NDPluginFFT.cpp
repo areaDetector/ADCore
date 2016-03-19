@@ -276,13 +276,13 @@ void NDPluginFFT::processCallbacks(NDArray *pArray)
   switch (pArray->ndims) {
     case 1:
       rank_ = 1;
-      nTimeX = pArray->dims[0].size;
+      nTimeX = (int)pArray->dims[0].size;
       nTimeY = 1;
       break;
     case 2:
       rank_ = 2;
-      nTimeX = pArray->dims[0].size;
-      nTimeY = pArray->dims[1].size;
+      nTimeX = (int)pArray->dims[0].size;
+      nTimeY = (int)pArray->dims[1].size;
       break;
     default:
       asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
