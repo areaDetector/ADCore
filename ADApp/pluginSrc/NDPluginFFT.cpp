@@ -56,8 +56,6 @@ NDPluginFFT::NDPluginFFT(const char *portName, int queueSize, int blockingCallba
 {
   //const char *functionName = "NDPluginFFT::NDPluginFFT";
 
-  /* Per-plugin parameters */
-  createParam(FFTReadString,                    asynParamInt32, &P_FFTRead);
   createParam(FFTTimeAxisString,         asynParamFloat64Array, &P_FFTTimeAxis);
   createParam(FFTFreqAxisString,         asynParamFloat64Array, &P_FFTFreqAxis);
   createParam(FFTTimePerPointString,          asynParamFloat64, &P_FFTTimePerPoint);
