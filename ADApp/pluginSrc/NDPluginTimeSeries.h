@@ -79,8 +79,8 @@ private:
 
   int maxSignals_;
   int numSignals_;
-  int dataSize_;
   NDDataType_t dataType_;
+  int dataSize_;
   int numTimePoints_;
   int currentTimePoint_;
   int uniqueId_;
