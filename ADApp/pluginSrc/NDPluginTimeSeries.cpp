@@ -59,6 +59,7 @@ NDPluginTimeSeries::NDPluginTimeSeries(const char *portName, int queueSize, int 
              asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
              asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
              ASYN_MULTIDEVICE, 1, priority, stackSize),
+    dataType_(NDFloat64), dataSize_(sizeof(epicsFloat64)), numTimePoints_(DEFAULT_NUM_TSPOINTS), currentTimePoint_(0),
     uniqueId_(0), numAverage_(1), timePerPoint_(0), signalData_(0), timeAxis_(0), timeStamp_(0), pTimeCircular_(0)
 {
   //const char *functionName = "NDPluginTimeSeries::NDPluginTimeSeries";
@@ -89,7 +90,6 @@ NDPluginTimeSeries::NDPluginTimeSeries(const char *portName, int queueSize, int 
   /* Set the plugin type string */
   setStringParam(NDPluginDriverPluginType, "NDPluginTimeSeries");
   
-  numTimePoints_ = DEFAULT_NUM_TSPOINTS;
   setIntegerParam(P_TSNumPoints, numTimePoints_);
   allocateArrays();
   
