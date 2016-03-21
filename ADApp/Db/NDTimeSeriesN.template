@@ -1,0 +1,41 @@
+#=================================================================#
+# Template file: NDTimeSeriesN.template
+###################################################################
+#
+# Database template for TimeSeries plugin. These are the signal
+# specific records. Multiple instances of this template can be
+# loaded, each with a different ADDR (which specifies the signal).
+#
+# Macros:
+# P,R - Base PV name
+# PORT - Asyn port name
+# SIGNAL - The address to use for this signal (start at 0, up tomaxSignals-1)
+# TIMEOUT - Asyn port timeout
+#
+# Mark Rivers
+# February 26, 2016
+#
+###################################################################
+
+
+###################################################################
+#  The name of this signal                                        #
+###################################################################
+record(stringout, "$(P)$(R)Name")
+{
+   field(PINI, "YES")
+   field(VAL,  "$(NAME)")
+   info(autosaveFields, "VAL")
+}
+
+###################################################################
+#  Time series records for this signal                            #
+###################################################################
+record(waveform, "$(P)$(R)TimeSeries")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_TIME_SERIES")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}

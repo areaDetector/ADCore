@@ -44,7 +44,7 @@ record(longout, "$(P)$(R)NDArrayAddress")
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_ADDR")
-    field(VAL,  "0")
+    field(VAL,  "$(NDARRAY_ADDR=0)")
     info(autosaveFields, "VAL")
 }
 

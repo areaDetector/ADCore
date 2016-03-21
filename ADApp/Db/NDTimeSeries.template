@@ -1,0 +1,169 @@
+#=================================================================#
+# Template file: NDTimeSeries.template
+###################################################################
+#
+# Database template for TimeSeries plugin. 
+# Macros:
+# P,R - Base PV name
+# PORT - Asyn port name
+# ADDR - The Asyn address
+# TIMEOUT - Asyn port timeout
+#
+# Matt Pearson
+# Nov 2014
+#
+###################################################################
+
+include "NDPluginBase.template"
+
+record(busy, "$(P)$(R)TSAcquire")
+{
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_ACQUIRE")
+   field(ZNAM, "Done")
+   field(ONAM, "Acquire")
+}
+
+record(bi, "$(P)$(R)TSAcquiring")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_ACQUIRE")
+   field(ZNAM, "Done")
+   field(ONAM, "Acquiring")
+   field(ZSV,  "NO_ALARM")
+   field(OSV,  "MINOR")
+   field(SCAN, "I/O Intr")
+}
+
+# This record periodically processes to read the time series
+# but only when TSAcquiring = Acquiring
+record(bo, "$(P)$(R)TSRead")
+{
+   field(SDIS, "$(P)$(R)TSAcquiring NPP NMS")
+   field(DISV, "0")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_READ")
+   field(ZNAM, "Done")
+   field(ONAM, "Read")
+   field(VAL,  "1")
+   field(SCAN, "1 second")
+   info(autosaveFields, "SCAN")
+}
+
+# Set DRVL to prevent 0 or negative values.  
+# Means we need to set DRVH too.  
+# The waveform records are of length $(NCHANS) but that is just for display.  
+record(longout, "$(P)$(R)TSNumPoints")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_NUM_POINTS")
+   field(VAL,  "$(NCHANS)")
+   field(DRVL, "1")
+   field(DRVH, "100000000")
+   info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)TSCurrentPoint")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_CURRENT_POINT")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)TSTimePerPointLink")
+{
+   field(PINI, "YES")
+   field(DOL,  "$(TIME_LINK=0.1)")
+   field(OMSL, "closed_loop")
+   field(OUT, "$(P)$(R)TSTimePerPoint PP MS")
+}
+
+record(ao, "$(P)$(R)TSTimePerPoint")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_TIME_PER_POINT")
+   field(PREC, "3")
+}
+
+record(ai, "$(P)$(R)TSTimePerPoint_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_TIME_PER_POINT")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)TSAveragingTime")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_AVERAGING_TIME")
+   field(PREC, "3")
+   field(VAL,  "0.1")
+   info(autosaveFields, "VAL")
+}
+
+record(ai, "$(P)$(R)TSAveragingTime_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_AVERAGING_TIME")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)TSNumAverage")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_NUM_AVERAGE")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)TSElapsedTime")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_ELAPSED_TIME")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)TSAcquireMode")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_ACQUIRE_MODE")
+   field(ZRVL, "0")
+   field(ZRST, "Fixed length")
+   field(ONVL, "1")
+   field(ONST, "Circ. buffer")
+   info(autosaveFields, "VAL")
+}
+
+record(mbbi, "$(P)$(R)TSAcquireMode_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_ACQUIRE_MODE")
+   field(ZRVL, "0")
+   field(ZRST, "Fixed length")
+   field(ONVL, "1")
+   field(ONST, "Circ. buffer")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)TSTimestamp")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_TIMESTAMP")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)TSTimeAxis")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_TIME_AXIS")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
