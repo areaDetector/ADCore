@@ -169,23 +169,23 @@ menu {
 	}
 	display[0] {
 		label="Time series"
-		name="NDTimeSeriesPlot.adl"
-		args="P=$(P),R=$(RTS),RN=$(R),XAXIS=$(P)$(R)FFTTimeAxis,XTITLE=Time (sec),YAXIS=$(P)$(R)FFTTimeSeries"
+		name="NDFFTTimeSeriesPlot.adl"
+		args="P=$(P),RTS=$(RTS),R=$(R)"
 	}
 	display[1] {
 		label="FFT abs. value"
-		name="NDTimeSeriesPlot.adl"
-		args="P=$(P),R=$(RTS),RN=$(R),XAXIS=$(P)$(R)FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=$(P)$(R)FFTAbsValue"
+		name="NDFFTFreqSpectrumPlot.adl"
+		args="P=$(P),RTS=$(RTS),R=$(R),S=FFTAbsValue"
 	}
 	display[2] {
 		label="FFT real"
-		name="NDTimeSeriesPlot.adl"
-		args="P=$(P),R=$(RTS),RN=$(R),XAXIS=$(P)$(R)FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=$(P)$(R)FFTReal"
+		name="NDFFTFreqSpectrumPlot.adl"
+		args="P=$(P),RTS=$(RTS),R=$(R),S=FFTReal"
 	}
 	display[3] {
 		label="FFT Imaginary"
-		name="NDTimeSeriesPlot.adl"
-		args="P=$(P),R=$(RTS),RN=$(R),XAXIS=$(P)$(R)FFTFreqAxis,XTITLE=Frequency (Hz),YAXIS=$(P)$(R)FFTImaginary"
+		name="NDFFTFreqSpectrumPlot.adl"
+		args="P=$(P),RTS=$(RTS),R=$(R),S=FFTImaginary"
 	}
 	display[4] {
 		label="Combined"
