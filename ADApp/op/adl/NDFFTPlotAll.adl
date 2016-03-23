@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-4/ADCore/ADApp/op/adl/NDFFTPlotAll.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDFFTPlotAll.adl"
 	version=030107
 }
 display {
@@ -92,13 +92,13 @@ text {
 		x=0
 		y=10
 		width=450
-		height=30
+		height=25
 	}
 	"basic attribute" {
 		clr=54
 	}
 	textix="$(P)$(R)"
-	align="horiz. centered"
+	align="horiz. right"
 }
 "cartesian plot" {
 	object {
@@ -285,7 +285,7 @@ text {
 		x=450
 		y=10
 		width=450
-		height=30
+		height=25
 	}
 	monitor {
 		chan="$(P)$(R)Name"
