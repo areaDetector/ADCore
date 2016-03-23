@@ -97,7 +97,7 @@ display {
 	plotcom {
 		title="$(P)$(R)"
 		xlabel="Time (s)"
-		ylabel="$(P)$(R)$(S)"
+		ylabel="$(P)$(R)FFTTimeSeries"
 		clr=14
 		bclr=2
 	}
@@ -105,7 +105,7 @@ display {
 	erase_oldest="plot last n pts"
 	trace[0] {
 		xdata="$(P)$(R)FFTTimeAxis"
-		ydata="$(P)$(R)$(S)"
+		ydata="$(P)$(R)FFTTimeSeries"
 		data_clr=27
 		yaxis=0
 	}
@@ -225,7 +225,7 @@ text {
 	"basic attribute" {
 		clr=54
 	}
-	textix="$(P)$(R)$(S)"
+	textix="$(P)$(R)FFTTimeSeries"
 	align="horiz. right"
 }
 composite {
