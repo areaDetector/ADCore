@@ -327,8 +327,16 @@
         <td>
           r/o</td>
         <td>
-          A waveform record containing the time value of each point in the TimeSeries waveforms.
-          TSTimeAxis[i] = TSAveragingTime_RBV * i.</td>
+          A waveform record containing the time value of each point in the TimeSeries waveforms.<br />
+          When AcquireMode=&quot;Fixed length&quot; then time=0 is the time when acquisition
+          started and
+          <br />
+          <code>TSTimeAxis[i] = TSAveragingTime_RBV * i.</code>
+          <br />
+          When AcquireMode=&quot;Circ. buffer&quot; then time=0 is the most recent time and
+          <br />
+          <code>TSTimeAxis[i] = -TSAveragingTime_RBV * (NumTimePoints-1-i)</code><br />
+          so the oldest time point is the most negative.</td>
         <td>
           TS_TIME_AXIS</td>
         <td>
