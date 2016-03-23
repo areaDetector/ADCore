@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-4/ADCore/ADApp/op/adl/NDTimeSeriesPlot.adl"
+	name="/home/epics/devel/areaDetector-2-5/ADCore/ADApp/op/adl/NDTimeSeriesPlot.adl"
 	version=030107
 }
 display {
@@ -220,13 +220,13 @@ text {
 		x=0
 		y=5
 		width=250
-		height=25
+		height=20
 	}
 	"basic attribute" {
 		clr=54
 	}
 	textix="$(P)$(RN)"
-	align="horiz. centered"
+	align="horiz. right"
 }
 composite {
 	object {
@@ -303,7 +303,7 @@ composite {
 		x=250
 		y=7
 		width=250
-		height=25
+		height=20
 	}
 	monitor {
 		chan="$(P)$(RN)Name"
