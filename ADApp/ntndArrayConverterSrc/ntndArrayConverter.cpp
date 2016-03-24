@@ -211,8 +211,6 @@ void NTNDArrayConverter::fromArray (NDArray *src)
     fromAttributes(src);
 
     m_array->getCodec()->getSubField<PVString>("name")->put("");
-    m_array->getCompressedDataSize()->put(static_cast<int64>(src->dataSize));
-    m_array->getUncompressedDataSize()->put(static_cast<int64>(src->dataSize));
 
     // getUniqueId not implemented yet
     // m_array->getUniqueId()->put(src->uniqueId);
@@ -373,13 +371,17 @@ void NTNDArrayConverter::fromValue (NDArray *src)
     typedef typename arrayType::value_type arrayValType;
 
     NDArrayInfo_t arrayInfo;
-    size_t count;
+    size_t count, nBytes;
 
     string unionField(string(ScalarTypeFunc::name(arrayType::typeCode)) +
             string("Value"));
 
     src->getInfo(&arrayInfo);
     count = arrayInfo.nElements;
+    nBytes = arrayInfo.totalBytes;
+
+    m_array->getCompressedDataSize()->put(static_cast<int64>(nBytes));
+    m_array->getUncompressedDataSize()->put(static_cast<int64>(nBytes));
 
     src->reserve();
     shared_vector<arrayValType> temp((srcDataType*)src->pData,
@@ -414,7 +416,7 @@ void NTNDArrayConverter::fromDimensions (NDArray *src)
     destVec.resize(src->ndims);
     for (int i = 0; i < src->ndims; i++)
     {
-        if (!destVec[i])
+        if (!destVec[i] || !destVec[i].unique())
             destVec[i] = PVDC->createPVStructure(dimStructure);
 
         destVec[i]->getSubField<PVInt>("size")->put(src->dims[i].size);
@@ -502,7 +504,7 @@ void NTNDArrayConverter::fromAttributes (NDArray *src)
     size_t i = 0;
     while((attr = srcList->next(attr)))
     {
-        if(!destVec[i].get())
+        if(!destVec[i].get() || !destVec[i].unique())
             destVec[i] = PVDC->createPVStructure(structure);
 
         PVStructurePtr pvAttr(destVec[i]);
