@@ -1,0 +1,774 @@
+
+file {
+	name="/home/epics/devel/areaDetector-2-4/ADCore/ADApp/op/adl/NDFFT16.adl"
+	version=030107
+}
+display {
+	object {
+		x=559
+		y=207
+		width=310
+		height=225
+	}
+	clr=14
+	bclr=4
+	cmap=""
+	gridSpacing=5
+	gridOn=0
+	snapToGrid=0
+}
+"color map" {
+	ncolors=65
+	colors {
+		ffffff,
+		ececec,
+		dadada,
+		c8c8c8,
+		bbbbbb,
+		aeaeae,
+		9e9e9e,
+		919191,
+		858585,
+		787878,
+		696969,
+		5a5a5a,
+		464646,
+		2d2d2d,
+		000000,
+		00d800,
+		1ebb00,
+		339900,
+		2d7f00,
+		216c00,
+		fd0000,
+		de1309,
+		be190b,
+		a01207,
+		820400,
+		5893ff,
+		597ee1,
+		4b6ec7,
+		3a5eab,
+		27548d,
+		fbf34a,
+		f9da3c,
+		eeb62b,
+		e19015,
+		cd6100,
+		ffb0ff,
+		d67fe2,
+		ae4ebc,
+		8b1a96,
+		610a75,
+		a4aaff,
+		8793e2,
+		6a73c1,
+		4d52a4,
+		343386,
+		c7bb6d,
+		b79d5c,
+		a47e3c,
+		7d5627,
+		58340f,
+		99ffff,
+		73dfff,
+		4ea5f9,
+		2a63e4,
+		0a00b8,
+		ebf1b5,
+		d4db9d,
+		bbc187,
+		a6a462,
+		8b8239,
+		73ff6b,
+		52da3b,
+		3cb420,
+		289315,
+		1a7309,
+	}
+}
+rectangle {
+	object {
+		x=0
+		y=5
+		width=310
+		height=25
+	}
+	"basic attribute" {
+		clr=2
+	}
+}
+text {
+	object {
+		x=47
+		y=6
+		width=216
+		height=25
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="$(P) FFTs"
+	align="horiz. centered"
+}
+composite {
+	object {
+		x=5
+		y=35
+		width=300
+		height=185
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=28
+				y=91
+				width=140
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="FFT abs. value"
+			align="horiz. right"
+		}
+		text {
+			object {
+				x=88
+				y=116
+				width=80
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="FFT real"
+			align="horiz. right"
+		}
+		text {
+			object {
+				x=38
+				y=141
+				width=130
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="FFT imaginary"
+			align="horiz. right"
+		}
+		text {
+			object {
+				x=28
+				y=166
+				width=140
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Combined plots"
+			align="horiz. right"
+		}
+		text {
+			object {
+				x=58
+				y=66
+				width=110
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Time series"
+			align="horiz. right"
+		}
+		text {
+			object {
+				x=55
+				y=41
+				width=210
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="1-D Time Series Plots"
+			align="horiz. right"
+		}
+		rectangle {
+			object {
+				x=5
+				y=35
+				width=300
+				height=185
+			}
+			"basic attribute" {
+				clr=14
+				fill="outline"
+				width=1
+			}
+		}
+		text {
+			object {
+				x=28
+				y=190
+				width=140
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="More"
+			align="horiz. right"
+		}
+		"related display" {
+			object {
+				x=171
+				y=91
+				width=120
+				height=20
+			}
+			display[0] {
+				label="$(T1)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R1),S=FFTAbsValue"
+			}
+			display[1] {
+				label="$(T2)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R2),S=FFTAbsValue"
+			}
+			display[2] {
+				label="$(T3)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R3),S=FFTAbsValue"
+			}
+			display[3] {
+				label="$(T4)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R4),S=FFTAbsValue"
+			}
+			display[4] {
+				label="$(T5)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R5),S=FFTAbsValue"
+			}
+			display[5] {
+				label="$(T6)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R6),S=FFTAbsValue"
+			}
+			display[6] {
+				label="$(T7)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R7),S=FFTAbsValue"
+			}
+			display[7] {
+				label="$(T8)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R8),S=FFTAbsValue"
+			}
+			display[8] {
+				label="$(T9)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R9),S=FFTAbsValue"
+			}
+			display[9] {
+				label="$(T10)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R10),S=FFTAbsValue"
+			}
+			display[10] {
+				label="$(T11)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R11),S=FFTAbsValue"
+			}
+			display[11] {
+				label="$(T12)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R12),S=FFTAbsValue"
+			}
+			display[12] {
+				label="$(T13)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R13),S=FFTAbsValue"
+			}
+			display[13] {
+				label="$(T14)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R14),S=FFTAbsValue"
+			}
+			display[14] {
+				label="$(T15)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R15),S=FFTAbsValue"
+			}
+			display[15] {
+				label="$(T16)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R16),S=FFTAbsValue"
+			}
+			clr=14
+			bclr=51
+			label="FFT abs. value"
+		}
+		"related display" {
+			object {
+				x=171
+				y=116
+				width=120
+				height=20
+			}
+			display[0] {
+				label="$(T1)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R1),S=FFTReal"
+			}
+			display[1] {
+				label="$(T2)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R2),S=FFTReal"
+			}
+			display[2] {
+				label="$(T3)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R3),S=FFTReal"
+			}
+			display[3] {
+				label="$(T4)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R4),S=FFTReal"
+			}
+			display[4] {
+				label="$(T5)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R5),S=FFTReal"
+			}
+			display[5] {
+				label="$(T6)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R6),S=FFTReal"
+			}
+			display[6] {
+				label="$(T7)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R7),S=FFTReal"
+			}
+			display[7] {
+				label="$(T8)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R8),S=FFTReal"
+			}
+			display[8] {
+				label="$(T9)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R9),S=FFTReal"
+			}
+			display[9] {
+				label="$(T10)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R10),S=FFTReal"
+			}
+			display[10] {
+				label="$(T11)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R11),S=FFTReal"
+			}
+			display[11] {
+				label="$(T12)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R12),S=FFTReal"
+			}
+			display[12] {
+				label="$(T13)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R13),S=FFTReal"
+			}
+			display[13] {
+				label="$(T14)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R14),S=FFTReal"
+			}
+			display[14] {
+				label="$(T15)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R15),S=FFTReal"
+			}
+			display[15] {
+				label="$(T16)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R16),S=FFTReal"
+			}
+      clr=14
+			bclr=51
+			label="FFT real"
+		}
+		"related display" {
+			object {
+				x=171
+				y=141
+				width=120
+				height=20
+			}
+			display[0] {
+				label="$(T1)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R1),S=FFTImaginary"
+			}
+			display[1] {
+				label="$(T2)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R2),S=FFTImaginary"
+			}
+			display[2] {
+				label="$(T3)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R3),S=FFTImaginary"
+			}
+			display[3] {
+				label="$(T4)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R4),S=FFTImaginary"
+			}
+			display[4] {
+				label="$(T5)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R5),S=FFTImaginary"
+			}
+			display[5] {
+				label="$(T6)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R6),S=FFTImaginary"
+			}
+			display[6] {
+				label="$(T7)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R7),S=FFTImaginary"
+			}
+			display[7] {
+				label="$(T8)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R8),S=FFTImaginary"
+			}
+			display[8] {
+				label="$(T9)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R9),S=FFTImaginary"
+			}
+			display[9] {
+				label="$(T10)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R10),S=FFTImaginary"
+			}
+			display[10] {
+				label="$(T11)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R11),S=FFTImaginary"
+			}
+			display[11] {
+				label="$(T12)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R12),S=FFTImaginary"
+			}
+			display[12] {
+				label="$(T13)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R13),S=FFTImaginary"
+			}
+			display[13] {
+				label="$(T14)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R14),S=FFTImaginary"
+			}
+			display[14] {
+				label="$(T15)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R15),S=FFTImaginary"
+			}
+			display[15] {
+				label="$(T16)"
+				name="NDFFTFreqSpectrumPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R16),S=FFTImaginary"
+			}
+			clr=14
+			bclr=51
+			label="FFT imaginary"
+		}
+		"related display" {
+			object {
+				x=171
+				y=166
+				width=120
+				height=20
+			}
+			display[0] {
+				label="$(T1)"
+				name="NDFFTPlotAll.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R1)"
+			}
+			display[1] {
+				label="$(T2)"
+				name="NDFFTPlotAll.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R2)"
+			}
+			display[2] {
+				label="$(T3)"
+				name="NDFFTPlotAll.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R3)"
+			}
+			display[3] {
+				label="$(T4)"
+				name="NDFFTPlotAll.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R4)"
+			}
+			display[4] {
+				label="$(T5)"
+				name="NDFFTPlotAll.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R5)"
+			}
+			display[5] {
+				label="$(T6)"
+				name="NDFFTPlotAll.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R6)"
+			}
+			display[6] {
+				label="$(T7)"
+				name="NDFFTPlotAll.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R7)"
+			}
+			display[7] {
+				label="$(T8)"
+				name="NDFFTPlotAll.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R8)"
+			}
+			display[8] {
+				label="$(T9)"
+				name="NDFFTPlotAll.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R9)"
+			}
+			display[9] {
+				label="$(T10)"
+				name="NDFFTPlotAll.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R10)"
+			}
+			display[10] {
+				label="$(T11)"
+				name="NDFFTPlotAll.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R11)"
+			}
+			display[11] {
+				label="$(T12)"
+				name="NDFFTPlotAll.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R12)"
+			}
+			display[12] {
+				label="$(T13)"
+				name="NDFFTPlotAll.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R13)"
+			}
+			display[13] {
+				label="$(T14)"
+				name="NDFFTPlotAll.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R14)"
+			}
+			display[14] {
+				label="$(T15)"
+				name="NDFFTPlotAll.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R15)"
+			}
+			display[15] {
+				label="$(T16)"
+				name="NDFFTPlotAll.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R16)"
+			}
+			clr=14
+			bclr=51
+			label="Combined"
+		}
+		"related display" {
+			object {
+				x=171
+				y=66
+				width=120
+				height=20
+			}
+			display[0] {
+				label="$(T1)"
+				name="NDFFTTimeSeriesPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R1)"
+			}
+			display[1] {
+				label="$(T2)"
+				name="NDFFTTimeSeriesPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R2)"
+			}
+			display[2] {
+				label="$(T3)"
+				name="NDFFTTimeSeriesPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R3)"
+			}
+			display[3] {
+				label="$(T4)"
+				name="NDFFTTimeSeriesPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R4)"
+			}
+			display[4] {
+				label="$(T5)"
+				name="NDFFTTimeSeriesPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R5)"
+			}
+			display[5] {
+				label="$(T6)"
+				name="NDFFTTimeSeriesPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R6)"
+			}
+			display[6] {
+				label="$(T7)"
+				name="NDFFTTimeSeriesPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R7)"
+			}
+			display[7] {
+				label="$(T8)"
+				name="NDFFTTimeSeriesPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R8)"
+			}
+			display[8] {
+				label="$(T9)"
+				name="NDFFTTimeSeriesPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R9)"
+			}
+			display[9] {
+				label="$(T10)"
+				name="NDFFTTimeSeriesPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R10)"
+			}
+			display[10] {
+				label="$(T11)"
+				name="NDFFTTimeSeriesPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R11)"
+			}
+			display[11] {
+				label="$(T12)"
+				name="NDFFTTimeSeriesPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R12)"
+			}
+			display[12] {
+				label="$(T13)"
+				name="NDFFTTimeSeriesPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R13)"
+			}
+			display[13] {
+				label="$(T14)"
+				name="NDFFTTimeSeriesPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R14)"
+			}
+			display[14] {
+				label="$(T15)"
+				name="NDFFTTimeSeriesPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R15)"
+			}
+			display[15] {
+				label="$(T16)"
+				name="NDFFTTimeSeriesPlot.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R16)"
+			}
+			clr=14
+			bclr=51
+			label="Time series"
+		}
+		"related display" {
+			object {
+				x=171
+				y=191
+				width=120
+				height=20
+			}
+			display[0] {
+				label="$(T1)"
+				name="NDFFT.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R1),TITLE=$(T1)"
+			}
+			display[1] {
+				label="$(T2)"
+				name="NDFFT.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R2),TITLE=$(T2)"
+			}
+			display[2] {
+				label="$(T3)"
+				name="NDFFT.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R3),TITLE=$(T3)"
+			}
+			display[3] {
+				label="$(T4)"
+				name="NDFFT.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R4),TITLE=$(T4)"
+			}
+			display[4] {
+				label="$(T5)"
+				name="NDFFT.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R5),TITLE=$(T5)"
+			}
+			display[5] {
+				label="$(T6)"
+				name="NDFFT.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R6),TITLE=$(T6)"
+			}
+			display[6] {
+				label="$(T7)"
+				name="NDFFT.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R7),TITLE=$(T7)"
+			}
+			display[7] {
+				label="$(T8)"
+				name="NDFFT.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R8),TITLE=$(T8)"
+			}
+			display[8] {
+				label="$(T9)"
+				name="NDFFT.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R9),TITLE=$(T9)"
+			}
+			display[9] {
+				label="$(T10)"
+				name="NDFFT.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R10),TITLE=$(T10)"
+			}
+			display[10] {
+				label="$(T11)"
+				name="NDFFT.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R11),TITLE=$(T11)"
+			}
+			display[11] {
+				label="$(T12)"
+				name="NDFFT.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R12),TITLE=$(T12)"
+			}
+			display[12] {
+				label="$(T13)"
+				name="NDFFT.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R13),TITLE=$(T13)"
+			}
+			display[13] {
+				label="$(T14)"
+				name="NDFFT.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R14),TITLE=$(T14)"
+			}
+			display[14] {
+				label="$(T15)"
+				name="lNDFFT.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R15),TITLE=$(T15)"
+			}
+			display[15] {
+				label="$(T16)"
+				name="NDFFT.adl"
+				args="P=$(P),RTS=$(RTS),R=$(R16),TITLE=$(T16)"
+			}
+			clr=14
+			bclr=51
+			label="More"
+		}
+	}
+}

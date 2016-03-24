@@ -1,0 +1,298 @@
+
+file {
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDFFTPlotAll.adl"
+	version=030107
+}
+display {
+	object {
+		x=560
+		y=223
+		width=915
+		height=630
+	}
+	clr=14
+	bclr=4
+	cmap=""
+	gridSpacing=5
+	gridOn=0
+	snapToGrid=0
+}
+"color map" {
+	ncolors=65
+	colors {
+		ffffff,
+		ececec,
+		dadada,
+		c8c8c8,
+		bbbbbb,
+		aeaeae,
+		9e9e9e,
+		919191,
+		858585,
+		787878,
+		696969,
+		5a5a5a,
+		464646,
+		2d2d2d,
+		000000,
+		00d800,
+		1ebb00,
+		339900,
+		2d7f00,
+		216c00,
+		fd0000,
+		de1309,
+		be190b,
+		a01207,
+		820400,
+		5893ff,
+		597ee1,
+		4b6ec7,
+		3a5eab,
+		27548d,
+		fbf34a,
+		f9da3c,
+		eeb62b,
+		e19015,
+		cd6100,
+		ffb0ff,
+		d67fe2,
+		ae4ebc,
+		8b1a96,
+		610a75,
+		a4aaff,
+		8793e2,
+		6a73c1,
+		4d52a4,
+		343386,
+		c7bb6d,
+		b79d5c,
+		a47e3c,
+		7d5627,
+		58340f,
+		99ffff,
+		73dfff,
+		4ea5f9,
+		2a63e4,
+		0a00b8,
+		ebf1b5,
+		d4db9d,
+		bbc187,
+		a6a462,
+		8b8239,
+		73ff6b,
+		52da3b,
+		3cb420,
+		289315,
+		1a7309,
+	}
+}
+text {
+	object {
+		x=0
+		y=10
+		width=450
+		height=25
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="$(P)$(R)"
+	align="horiz. right"
+}
+"cartesian plot" {
+	object {
+		x=5
+		y=90
+		width=450
+		height=250
+	}
+	plotcom {
+		title="$(P)$(R)TimeSeries"
+		xlabel="Time (s)"
+		ylabel="$(P)$(R)TimeSeries"
+		clr=14
+		bclr=2
+	}
+	style="line"
+	erase_oldest="plot last n pts"
+	trace[0] {
+		xdata="$(P)$(RTS)TSTimeAxis"
+		ydata="$(P)$(R)FFTTimeSeries"
+		data_clr=27
+		yaxis=0
+	}
+	x_axis {
+		rangeStyle="auto-scale"
+	}
+	y1_axis {
+		rangeStyle="auto-scale"
+	}
+	y2_axis {
+		rangeStyle="auto-scale"
+	}
+}
+text {
+	object {
+		x=210
+		y=65
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="Time"
+	align="horiz. centered"
+}
+"cartesian plot" {
+	object {
+		x=460
+		y=90
+		width=450
+		height=250
+	}
+	plotcom {
+		title="$(P)$(R)FFTAbsValue"
+		xlabel="Frequency (Hz)"
+		ylabel="$(P)$(R)FFTAbsValue"
+		clr=14
+		bclr=2
+	}
+	style="line"
+	erase_oldest="plot last n pts"
+	trace[0] {
+		xdata="$(P)$(R)FFTFreqAxis"
+		ydata="$(P)$(R)FFTAbsValue"
+		data_clr=27
+		yaxis=0
+	}
+	x_axis {
+		rangeStyle="auto-scale"
+	}
+	y1_axis {
+		rangeStyle="auto-scale"
+	}
+	y2_axis {
+		rangeStyle="auto-scale"
+	}
+}
+text {
+	object {
+		x=605
+		y=65
+		width=160
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="FFT Power Spectrum"
+	align="horiz. centered"
+}
+"cartesian plot" {
+	object {
+		x=5
+		y=375
+		width=450
+		height=250
+	}
+	plotcom {
+		title="$(P)$(R)FFTReal"
+		xlabel="Frequency (Hz)"
+		ylabel="$(P)$(R)FFTReal"
+		clr=14
+		bclr=2
+	}
+	style="line"
+	erase_oldest="plot last n pts"
+	trace[0] {
+		xdata="$(P)$(R)FFTFreqAxis"
+		ydata="$(P)$(R)FFTReal"
+		data_clr=27
+		yaxis=0
+	}
+	x_axis {
+		rangeStyle="auto-scale"
+	}
+	y1_axis {
+		rangeStyle="auto-scale"
+	}
+	y2_axis {
+		rangeStyle="auto-scale"
+	}
+}
+text {
+	object {
+		x=190
+		y=350
+		width=80
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="FFT Real"
+	align="horiz. centered"
+}
+"cartesian plot" {
+	object {
+		x=460
+		y=375
+		width=450
+		height=250
+	}
+	plotcom {
+		title="$(P)$(R)FFTImaginary"
+		xlabel="Frequency (Hz)"
+		ylabel="$(P)$(R)FFTImaginary"
+		clr=14
+		bclr=2
+	}
+	style="line"
+	erase_oldest="plot last n pts"
+	trace[0] {
+		xdata="$(P)$(R)FFTFreqAxis"
+		ydata="$(P)$(R)FFTImaginary"
+		data_clr=27
+		yaxis=0
+	}
+	x_axis {
+		rangeStyle="auto-scale"
+	}
+	y1_axis {
+		rangeStyle="auto-scale"
+	}
+	y2_axis {
+		rangeStyle="auto-scale"
+	}
+}
+text {
+	object {
+		x=620
+		y=350
+		width=130
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="FFT Imaginary"
+	align="horiz. centered"
+}
+"text update" {
+	object {
+		x=450
+		y=10
+		width=450
+		height=25
+	}
+	monitor {
+		chan="$(P)$(R)Name"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}

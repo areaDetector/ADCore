@@ -516,7 +516,6 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
      * Values set here will be overridden by values from save/restore if they exist. */
     setStringParam (NDPluginDriverArrayPort, NDArrayPort);
     setIntegerParam(NDPluginDriverArrayAddr, NDArrayAddr);
-    setIntegerParam(NDPluginDriverEnableCallbacks, 0);
     setIntegerParam(NDPluginDriverDroppedArrays, 0);
     setIntegerParam(NDPluginDriverQueueSize, queueSize);
     setIntegerParam(NDPluginDriverQueueFree, queueSize);

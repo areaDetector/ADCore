@@ -395,6 +395,7 @@ void NDPluginStats::doTimeSeriesCallbacks()
     doCallbacksFloat64Array(this->timeSeries[TSSigmaX],     currentPoint, NDPluginStatsTSSigmaX, 0);
     doCallbacksFloat64Array(this->timeSeries[TSSigmaY],     currentPoint, NDPluginStatsTSSigmaY, 0);
     doCallbacksFloat64Array(this->timeSeries[TSSigmaXY],    currentPoint, NDPluginStatsTSSigmaXY, 0);
+    doCallbacksFloat64Array(this->timeSeries[TSTimestamp],  currentPoint, NDPluginStatsTSTimestamp, 0);
 }
 
 
@@ -556,11 +557,12 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
         timeSeries[TSSigmaValue][currentTSPoint]  = pStats->sigma;
         timeSeries[TSTotal][currentTSPoint]       = pStats->total;
         timeSeries[TSNet][currentTSPoint]         = pStats->net;
-        timeSeries[TSCentroidX][currentTSPoint] = this->centroidX;
-        timeSeries[TSCentroidY][currentTSPoint] = this->centroidY;
-        timeSeries[TSSigmaX][currentTSPoint]    = this->sigmaX;
-        timeSeries[TSSigmaY][currentTSPoint]    = this->sigmaY;
-        timeSeries[TSSigmaXY][currentTSPoint]   = this->sigmaXY;
+        timeSeries[TSCentroidX][currentTSPoint]   = this->centroidX;
+        timeSeries[TSCentroidY][currentTSPoint]   = this->centroidY;
+        timeSeries[TSSigmaX][currentTSPoint]      = this->sigmaX;
+        timeSeries[TSSigmaY][currentTSPoint]      = this->sigmaY;
+        timeSeries[TSSigmaXY][currentTSPoint]     = this->sigmaXY;
+        timeSeries[TSTimestamp][currentTSPoint]   = pArray->timeStamp;
         currentTSPoint++;
         setIntegerParam(NDPluginStatsTSCurrentPoint, currentTSPoint);
         if (currentTSPoint >= numTSPoints) {
@@ -790,6 +792,7 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
     createParam(NDPluginStatsTSSigmaXString,          asynParamFloat64Array, &NDPluginStatsTSSigmaX);
     createParam(NDPluginStatsTSSigmaYString,          asynParamFloat64Array, &NDPluginStatsTSSigmaY);
     createParam(NDPluginStatsTSSigmaXYString,         asynParamFloat64Array, &NDPluginStatsTSSigmaXY);
+    createParam(NDPluginStatsTSTimestampString,       asynParamFloat64Array, &NDPluginStatsTSTimestamp);
 
     /* Profiles */
     createParam(NDPluginStatsComputeProfilesString,   asynParamInt32,         &NDPluginStatsComputeProfiles);
