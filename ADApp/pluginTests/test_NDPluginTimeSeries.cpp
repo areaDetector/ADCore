@@ -58,8 +58,8 @@ struct TimeSeriesPluginTestFixture
   {
     arrayPool = new NDArrayPool(100, 0);
 
-    // Asyn manager doesn't like it if we try to reuse the same port name for multiple drivers (even if only one is ever instantiated at once), so
-    // change it slightly for each test case.
+    // Asyn manager doesn't like it if we try to reuse the same port name for multiple drivers
+    // (even if only one is ever instantiated at once), so we change it slightly for each test case.
     std::string simport("simTimeSeriesTest"), testport("TS");
     uniqueAsynPortName(simport);
     uniqueAsynPortName(testport);
@@ -90,19 +90,19 @@ struct TimeSeriesPluginTestFixture
     client = std::tr1::shared_ptr<asynGenericPointerClient>(new asynGenericPointerClient(testport.c_str(), 0, NDArrayDataString));
     client->registerInterruptUser(&TS_callback);
 
-    // 1D: A single channel with 20 time series elements
-    size_t tmpdims_1d[] = {20};
+    // 1D: 8 channels with a single scalar sample element in each one
+    size_t tmpdims_1d[] = {8};
     dims_1d.assign(tmpdims_1d, tmpdims_1d + sizeof(tmpdims_1d)/sizeof(tmpdims_1d[0]));
-    arrays_1d.resize(24);
+    arrays_1d.resize(200); // We create 200 samples
 
-    // 2D: two time series channels, each with 20 elements
-    size_t tmpdims_2d[] = {2,20};
+    // 2D: three time series channels, each with 20 elements
+    size_t tmpdims_2d[] = {3,20};
     dims_2d.assign(tmpdims_2d, tmpdims_2d + sizeof(tmpdims_2d)/sizeof(tmpdims_2d[0]));
     arrays_2d.resize(24);
 
-    // 3D: three channels with 2D images of 4x5 pixel (like an RGB image)
+    // 3D: four channels with 2D images of 5x6 pixel (like an RGB image)
     // Not valid input for the Time Series plugin
-    size_t tmpdims_3d[] = {3,4,5};
+    size_t tmpdims_3d[] = {4,5,6};
     dims_3d.assign(tmpdims_3d, tmpdims_3d + sizeof(tmpdims_3d)/sizeof(tmpdims_3d[0]));
     arrays_3d.resize(24);
 }
@@ -142,11 +142,11 @@ BOOST_AUTO_TEST_CASE(basic_1D_operation)
   fillNDArrays(dims_1d, NDFloat32, arrays_1d);
 
   BOOST_MESSAGE("Testing 1D input arrays: " << arrays_1d[0]->dims[0].size
-                << " elements. Averaging=" << 10 << " Time series length=" << 20);
+                << " Channels with a single scalar value. Averaging=" << 10 << " samples. Time series length=" << 20);
 
   // Double check one of the NDArrays dimensions and datatype
   BOOST_REQUIRE_EQUAL(arrays_1d[0]->ndims, 1);
-  BOOST_CHECK_EQUAL(arrays_1d[0]->dims[0].size, 20);
+  BOOST_CHECK_EQUAL(arrays_1d[0]->dims[0].size, 8);
   BOOST_CHECK_EQUAL(arrays_1d[0]->dataType, NDFloat32);
 
   // Plugin setup
@@ -162,15 +162,15 @@ BOOST_AUTO_TEST_CASE(basic_1D_operation)
   BOOST_CHECK_NO_THROW(ts->write(TSAcquireString, 1));
   BOOST_CHECK_EQUAL(ts->readInt(TSAcquireString), 1);
 
-  // Process 10 arrays through the TS plugin. As we have averaged by 10 TimePoints
-  // (see TSNumAverage) we should then have a new 20 point Time Series output.
-  for (int i = 0; i < 10; i++)
+  // Process 200 arrays through the TS plugin. As we have averaged by 10 TimePoints
+  // (see TSNumAverage) we should then have a new 10 point Time Series output.
+  for (int i = 0; i < 200; i++)
   {
     ts->lock();
     BOOST_CHECK_NO_THROW(ts->processCallbacks(arrays_1d[i]));
     ts->unlock();
-    BOOST_CHECK_EQUAL(ts->readInt(TSCurrentPointString), (i+1)*2); // num points in NDArray timeseries / NumAverage
   }
+  BOOST_CHECK_EQUAL(ts->readInt(TSCurrentPointString), 20);
   // As we are using Fixed Lenght mode, acqusition should now have stopped
   BOOST_REQUIRE_EQUAL(ts->readInt(TSAcquireString), 0);
 }
@@ -186,7 +186,7 @@ BOOST_AUTO_TEST_CASE(basic_2D_operation)
 
   // Double check one of the NDArrays dimensions and datatype
   BOOST_REQUIRE_EQUAL(arrays_2d[0]->ndims, 2);
-  BOOST_CHECK_EQUAL(arrays_2d[0]->dims[0].size, 2);
+  BOOST_CHECK_EQUAL(arrays_2d[0]->dims[0].size, 3);
   BOOST_CHECK_EQUAL(arrays_2d[0]->dims[1].size, 20);
   BOOST_CHECK_EQUAL(arrays_2d[0]->dataType, NDFloat32);
 
@@ -233,7 +233,7 @@ BOOST_AUTO_TEST_CASE(circular_2D_operation)
 
   // Double check one of the NDArrays dimensions and datatype
   BOOST_REQUIRE_EQUAL(arrays_2d[0]->ndims, 2);
-  BOOST_CHECK_EQUAL(arrays_2d[0]->dims[0].size, 2);
+  BOOST_CHECK_EQUAL(arrays_2d[0]->dims[0].size, 3);
   BOOST_CHECK_EQUAL(arrays_2d[0]->dims[1].size, 20);
   BOOST_CHECK_EQUAL(arrays_2d[0]->dataType, NDFloat32);
 
