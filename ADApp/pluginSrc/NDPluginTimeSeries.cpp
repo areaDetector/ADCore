@@ -157,7 +157,11 @@ void NDPluginTimeSeries::createAxisArray()
   if (timeAxis_) free(timeAxis_);
   timeAxis_ = (double *)calloc(numTimePoints_, sizeof(double));
   for (i=0; i<numTimePoints_; i++) {
-    timeAxis_[i] = i*averagingTimeActual_;
+    if (acquireMode_ == TSAcquireModeFixed) {
+      timeAxis_[i] = i*averagingTimeActual_;
+    } else {
+      timeAxis_[i] = -(numTimePoints_-1-i)*averagingTimeActual_;
+    }
   }
   doCallbacksFloat64Array(timeAxis_, numTimePoints_, P_TSTimeAxis, 0);
 }
@@ -448,6 +452,8 @@ asynStatus NDPluginTimeSeries::writeInt32(asynUser *pasynUser, epicsInt32 value)
     allocateArrays();
   } else if (function == P_TSAcquireMode) {
     acquireMode_ = value;
+    acquireReset();
+    createAxisArray();
   } else if (function == P_TSAcquire) {
     if (value) {
       acquireReset();

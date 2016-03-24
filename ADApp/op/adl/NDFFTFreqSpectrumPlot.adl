@@ -1,12 +1,12 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-5/ADCore/ADApp/op/adl/NDTimeSeriesPlot.adl"
+	name="/home/epics/devel/areaDetector-2-5/ADCore/ADApp/op/adl/NDFFTFreqSpectrumPlot.adl"
 	version=030107
 }
 display {
 	object {
-		x=370
-		y=223
+		x=81
+		y=135
 		width=500
 		height=415
 	}
@@ -95,13 +95,26 @@ display {
 		height=20
 	}
 	monitor {
-		chan="$(P)$(RN)Name"
+		chan="$(P)$(R)Name"
 		clr=54
 		bclr=4
 	}
 	align="horiz. centered"
 	limits {
 	}
+}
+text {
+	object {
+		x=0
+		y=30
+		width=500
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="$(P)$(R)$(S)"
+	align="horiz. centered"
 }
 "cartesian plot" {
 	object {
@@ -111,17 +124,17 @@ display {
 		height=230
 	}
 	plotcom {
-		title="$(P)$(RN)TimeSeries"
-		xlabel="Time (s)"
-		ylabel="$(P)$(RN)TimeSeries"
+		title="$(P)$(R)$(S)"
+		xlabel="Frequency (Hz)"
+		ylabel="$(P)$(R)$(S)"
 		clr=14
 		bclr=2
 	}
 	style="line"
 	erase_oldest="plot last n pts"
 	trace[0] {
-		xdata="$(P)$(R)TSTimeAxis"
-		ydata="$(P)$(RN)TimeSeries"
+		xdata="$(P)$(R)FFTFreqAxis"
+		ydata="$(P)$(R)$(S)"
 		data_clr=27
 		yaxis=0
 	}
@@ -155,7 +168,7 @@ text {
 		height=20
 	}
 	control {
-		chan="$(P)$(R)TSAcquire"
+		chan="$(P)$(RTS)TSAcquire"
 		clr=14
 		bclr=51
 	}
@@ -170,42 +183,12 @@ text {
 		height=20
 	}
 	control {
-		chan="$(P)$(R)TSAcquire"
+		chan="$(P)$(RTS)TSAcquire"
 		clr=14
 		bclr=51
 	}
 	label="Stop"
 	press_msg="0"
-}
-"text update" {
-	object {
-		x=282
-		y=56
-		width=100
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)TSAcquiring"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
-		x=0
-		y=30
-		width=500
-		height=20
-	}
-	"basic attribute" {
-		clr=54
-	}
-	textix="$(P)$(RN)"
-	align="horiz. centered"
 }
 composite {
 	object {
@@ -237,7 +220,7 @@ composite {
 				height=19
 			}
 			control {
-				chan="$(P)$(RN)Name"
+				chan="$(P)$(R)Name"
 				clr=14
 				bclr=51
 			}
@@ -264,7 +247,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(R)TSAveragingTime"
+				chan="$(P)$(RTS)TSAveragingTime"
 				clr=14
 				bclr=51
 			}
@@ -280,7 +263,7 @@ composite {
 				height=18
 			}
 			monitor {
-				chan="$(P)$(R)TSAveragingTime_RBV"
+				chan="$(P)$(RTS)TSAveragingTime_RBV"
 				clr=54
 				bclr=4
 			}
@@ -296,7 +279,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(R)TSAcquireMode"
+				chan="$(P)$(RTS)TSAcquireMode"
 				clr=14
 				bclr=51
 			}
@@ -321,7 +304,7 @@ composite {
 				height=20
 			}
 			control {
-				chan="$(P)$(R)TSRead"
+				chan="$(P)$(RTS)TSRead"
 				clr=14
 				bclr=51
 			}
@@ -336,7 +319,7 @@ composite {
 				height=18
 			}
 			control {
-				chan="$(P)$(R)TSRead.SCAN"
+				chan="$(P)$(RTS)TSRead.SCAN"
 				clr=14
 				bclr=51
 			}
@@ -374,7 +357,7 @@ composite {
 				height=19
 			}
 			control {
-				chan="$(P)$(R)TSNumPoints"
+				chan="$(P)$(RTS)TSNumPoints"
 				clr=14
 				bclr=51
 			}
@@ -402,11 +385,65 @@ composite {
 				height=18
 			}
 			monitor {
-				chan="$(P)$(R)TSCurrentPoint"
+				chan="$(P)$(RTS)TSCurrentPoint"
 				clr=54
 				bclr=4
 			}
 			limits {
+			}
+		}
+	}
+}
+"text update" {
+	object {
+		x=282
+		y=56
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(RTS)TSAcquiring"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	format="string"
+	limits {
+	}
+}
+composite {
+	object {
+		x=190
+		y=390
+		width=305
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=190
+				y=390
+				width=180
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Suppress DC offset"
+			align="horiz. right"
+		}
+		menu {
+			object {
+				x=375
+				y=390
+				width=120
+				height=20
+			}
+			control {
+				chan="$(P)$(R)FFTSuppressDC"
+				clr=14
+				bclr=51
 			}
 		}
 	}
@@ -421,6 +458,11 @@ composite {
 	display[0] {
 		label="Time series plugin"
 		name="NDPluginTimeSeries.adl"
+		args="P=$(P),R=$(RTS)"
+	}
+	display[1] {
+		label="FFT plugin"
+		name="NDFFT.adl"
 		args="P=$(P),R=$(R)"
 	}
 	clr=14
