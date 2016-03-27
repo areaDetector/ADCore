@@ -48,7 +48,7 @@ R2-5 (March XXX, 2016)
   ADC with 8 input waveform signals.
 
 ### NDPluginFFT
-* New plugin to compute 1-D or 2-D Fast Fourrier transforms.  It exports 1-D or 2-D
+* New plugin to compute 1-D or 2-D Fast Fourier transforms.  It exports 1-D or 2-D
   NDArrays containing the absolute value of the FFT.  It creates 1-D waveform
   records of the input, and the real, imaginary, and absolute values of the first row of the FFT.
   It also creates 1-D waveform records of the time and frequency axes, which are useful if the 1-D
