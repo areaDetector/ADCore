@@ -19,11 +19,13 @@ ifdef BOOST
   ADTestUtility_SRCS += AsynException.cpp
   ADTestUtility_SRCS += HDF5PluginWrapper.cpp
   ADTestUtility_SRCS += HDF5FileReader.cpp
+  ADTestUtility_SRCS += TimeSeriesPluginWrapper.cpp
 
   PROD_IOC_Linux += plugin-test
   plugin-test_SRCS += plugin-test.cpp
   plugin-test_SRCS += test_NDPluginCircularBuff.cpp
   plugin-test_SRCS += test_NDFileHDF5.cpp
+  plugin-test_SRCS += test_NDPluginTimeSeries.cpp
   # Add tests for new plugins like this:
   #plugin-test_SRCS += test_<plugin name>.cpp
   
