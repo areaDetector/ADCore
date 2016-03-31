@@ -101,6 +101,8 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
     int arrayCounter, droppedArrays, queueSize, queueFree;
     static const char *functionName = "driverCallback";
 
+printf("NDPluginDriver::driverCallback, taking lock\n");
+
     this->lock();
 
     status |= getDoubleParam(NDPluginDriverMinCallbackTime, &minCallbackTime);
@@ -129,6 +131,7 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
             pArray->reserve();
             /* Try to put this array on the message queue.  If there is no room then return
              * immediately. */
+printf("NDPluginDriver::driverCallback, sending message\n");
             status = epicsMessageQueueTrySend(this->msgQId, &pArray, sizeof(&pArray));
             queueFree = queueSize - epicsMessageQueuePending(this->msgQId);
             setIntegerParam(NDPluginDriverQueueFree, queueFree);
@@ -170,13 +173,19 @@ void NDPluginDriver::processTask(void)
 
     /* Loop forever */
     NDArray *pArray;
+
+printf("NDPluginDriver::processTask, entry, taking lock\n");
+//    this->lock();
     
     while (1) {
-        /* Wait for an array to arrive from the queue */    
+        /* Wait for an array to arrive from the queue. Release the lock while  waiting. */    
+//        this->unlock();
+printf("NDPluginDriver::processTask, in loop, waiting for message\n");
         epicsMessageQueueReceive(this->msgQId, &pArray, sizeof(&pArray));
         
         /* Take the lock.  The function we are calling must release the lock
          * during time-consuming operations when it does not need it. */
+printf("NDPluginDriver::processTask, in loop, taking lock, calling processCallbacks\n");
         this->lock();
         getIntegerParam(NDPluginDriverQueueSize, &queueSize);
         queueFree = queueSize - epicsMessageQueuePending(this->msgQId);
@@ -184,8 +193,8 @@ void NDPluginDriver::processTask(void)
 
         /* Call the function that does the business of this callback */
         processCallbacks(pArray); 
-        this->unlock();
         
+        this->unlock();
         /* We are done with this array buffer */
         pArray->release();
     }
@@ -495,6 +504,9 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
 
     strcpy(taskName, portName);
     strcat(taskName, "_Plugin");
+    
+    /* Take the lock so the task thread does not access our data structures till end of constructor */
+//    lock();
     /* Create the thread that handles the NDArray callbacks */
     status = (asynStatus)(epicsThreadCreate(taskName,
                           epicsThreadPriorityMedium,
@@ -503,7 +515,6 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
                           this) == NULL);
     if (status) {
         printf("%s:%s: epicsThreadCreate failure\n", driverName, functionName);
-        return;
     }
     createParam(NDPluginDriverArrayPortString,         asynParamOctet, &NDPluginDriverArrayPort);
     createParam(NDPluginDriverArrayAddrString,         asynParamInt32, &NDPluginDriverArrayAddr);
@@ -526,5 +537,6 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     setIntegerParam(NDPluginDriverDroppedArrays, 0);
     setIntegerParam(NDPluginDriverQueueSize, queueSize);
     setIntegerParam(NDPluginDriverQueueFree, queueSize);
+//    unlock();
 }
 
