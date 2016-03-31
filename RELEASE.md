@@ -25,6 +25,18 @@ Release Notes
 
 R2-5 (March XXX, 2016)
 ========================
+### NDPluginBase
+* Added the ability to change the QueueSize of a plugin at run-time. This can be very useful,
+  particularly for file plugins where an acquisition of N frames is overflowing the queue,
+  but increasing the queue can fix the problem. This will be even more useful in ADCore R3-0
+  where we plan to eliminate Capture mode in NDPluginFile. Being able to increase the queue does
+  everything that Capture mode did, but has the additional advantage that in Capture mode the
+  NDArray memory is not allocated from the NDArrayPool, so there is no check on allocating too
+  many arrays or too much memory. Using the queue means that arrays are allocated from the pool,
+  so the limits on total number of arrays and total memory defined in the constructor will be obeyed.
+  This is very important in preventing system freezes if the user accidentally tries allocate all the
+  system memory, which can effectively crash the computer.
+
 ### NDPluginTimeSeries
 * New plugin to for time-series data.  The plugin accepts input arrays of dimensions
   [NumSignals] or [NumSignals, NewTimePoints].  The plugin creates NumSignals 1-D
@@ -79,6 +91,8 @@ R2-5 (March XXX, 2016)
 * Set ArrayCallbacks.VAL to 1 so array callbacks are enabled by default.
 
 ### NDPluginBase.template
+* Changed QueueSize from longin to longout, because the plugin queue size can now be changed at runtime.
+  Added longin QueueSize_RBV.
 * Changed EnableCallbacks.VAL to $(ENABLED=0), allowing enabling callbacks when loading database,
   but default remains Disable.
 * Set the default value of the MDARRAY_ADDR macro to 0 so it does not need to be defined in most cases.

@@ -318,6 +318,13 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
         this->unlock();
         status = connectToArrayPort();
         this->lock();
+    } else if (function == NDPluginDriverQueueSize) {
+        if (this->msgQId) epicsMessageQueueDestroy(this->msgQId);
+        this->msgQId = epicsMessageQueueCreate(value, sizeof(NDArray*));
+        if (!this->msgQId) {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, "%s::%s epicsMessageQueueCreate failure\n", driverName, functionName);
+            status = asynError;
+        }
     } else {
         /* If this parameter belongs to a base class call its method */
         if (function < FIRST_NDPLUGIN_PARAM) 
