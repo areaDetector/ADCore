@@ -175,11 +175,11 @@ void NDPluginDriver::processTask(void)
     NDArray *pArray;
 
 printf("NDPluginDriver::processTask, entry, taking lock\n");
-//    this->lock();
+    this->lock();
     
     while (1) {
         /* Wait for an array to arrive from the queue. Release the lock while  waiting. */    
-//        this->unlock();
+        this->unlock();
 printf("NDPluginDriver::processTask, in loop, waiting for message\n");
         epicsMessageQueueReceive(this->msgQId, &pArray, sizeof(&pArray));
         
@@ -194,7 +194,6 @@ printf("NDPluginDriver::processTask, in loop, taking lock, calling processCallba
         /* Call the function that does the business of this callback */
         processCallbacks(pArray); 
         
-        this->unlock();
         /* We are done with this array buffer */
         pArray->release();
     }
@@ -328,6 +327,7 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
         status = connectToArrayPort();
         this->lock();
     } else if (function == NDPluginDriverQueueSize) {
+printf("NDPluginDriver::writeInt32, msqId=%p, new size=%d\n", this->msgQId, value);
         if (this->msgQId) epicsMessageQueueDestroy(this->msgQId);
         this->msgQId = epicsMessageQueueCreate(value, sizeof(NDArray*));
         if (!this->msgQId) {
@@ -506,7 +506,7 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     strcat(taskName, "_Plugin");
     
     /* Take the lock so the task thread does not access our data structures till end of constructor */
-//    lock();
+    lock();
     /* Create the thread that handles the NDArray callbacks */
     status = (asynStatus)(epicsThreadCreate(taskName,
                           epicsThreadPriorityMedium,
@@ -537,6 +537,6 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     setIntegerParam(NDPluginDriverDroppedArrays, 0);
     setIntegerParam(NDPluginDriverQueueSize, queueSize);
     setIntegerParam(NDPluginDriverQueueFree, queueSize);
-//    unlock();
+    unlock();
 }
 
