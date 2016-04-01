@@ -464,6 +464,8 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     char taskName[256];
     asynUser *pasynUser;
 
+    lock();
+    
     /* Initialize some members to 0 */
     memset(&this->lastProcessTime, 0, sizeof(this->lastProcessTime));
     memset(&this->dimsPrev, 0, sizeof(this->dimsPrev));
@@ -491,14 +493,15 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     strcpy(taskName, portName);
     strcat(taskName, "_Plugin");
     
-    /* Take the lock so the task thread does not access our data structures till end of constructor */
-    lock();
+    /* Release the lock which is a write barrier? */
+    unlock();
     /* Create the thread that handles the NDArray callbacks */
     status = (asynStatus)(epicsThreadCreate(taskName,
                           epicsThreadPriorityMedium,
                           stackSize,
                           (EPICSTHREADFUNC)::processTask,
                           this) == NULL);
+    lock();
     if (status) {
         printf("%s:%s: epicsThreadCreate failure\n", driverName, functionName);
     }
