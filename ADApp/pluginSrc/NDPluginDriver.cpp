@@ -155,6 +155,8 @@ void processTask(void *drvPvt)
 {
     NDPluginDriver *pPvt = (NDPluginDriver *)drvPvt;
     
+printf("processTask: entry pPvt=%p, pPvt->processTask=%p, pPvt->msgQId=%d\n", 
+pPvt, pPvt->processTask, pPvt->msgQId);
     pPvt->processTask();
 }
 
@@ -173,6 +175,7 @@ void NDPluginDriver::processTask(void)
     NDArray *pArray;
     int nwait=0;
 
+printf("NDPluginDriver::processTask: entry taking lock\n");
     this->lock();
     
     while(this->msgQId == 0) {
