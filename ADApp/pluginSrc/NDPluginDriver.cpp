@@ -154,9 +154,13 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
 void processTask(void *drvPvt)
 {
     NDPluginDriver *pPvt = (NDPluginDriver *)drvPvt;
-    
-    epicsThreadSleep(0.1);
-printf("processTask: entry pPvt=%p, slept for 0.1 seconds, calling NDPluginDriver::processTask\n", pPvt);
+    int ntries=0;
+
+    while(pPvt->msgQId == 0) {
+        epicsThreadSleep(0.01);
+        ntries++;
+    }
+printf("processTask, ntries=%d\n", ntries);
     pPvt->processTask();
 }
 
