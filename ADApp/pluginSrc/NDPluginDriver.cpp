@@ -155,7 +155,8 @@ void processTask(void *drvPvt)
 {
     NDPluginDriver *pPvt = (NDPluginDriver *)drvPvt;
     
-printf("processTask: entry pPvt=%p\n", pPvt);
+    epicsThreadSleep(0.1);
+printf("processTask: entry pPvt=%p, slept for 0.1 seconds, calling NDPluginDriver::processTask\n", pPvt);
     pPvt->processTask();
 }
 
@@ -168,25 +169,13 @@ void NDPluginDriver::processTask(void)
 {
     /* This thread processes a new array when it arrives */
     int queueSize, queueFree;
-    static const char *functionName = "processTask";
 
     /* Loop forever */
     NDArray *pArray;
-    int nwait=0;
-
+ 
 printf("NDPluginDriver::processTask: entry, msgQId=%p taking lock\n", this->msgQId);
     this->lock();
-    
-    while(this->msgQId == 0) {
-        epicsThreadSleep(0.01);
-        nwait++;
-    }
-    if (nwait > 0) {
-        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-            "%s::%s, wait %d times for msgQId to be non-zero\n",
-            driverName, functionName, nwait);
-    }
-    
+        
     while (1) {
         /* Wait for an array to arrive from the queue. Release the lock while  waiting. */    
         this->unlock();
