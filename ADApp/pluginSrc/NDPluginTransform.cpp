@@ -624,9 +624,9 @@ extern "C" int NDTransformConfigure(const char *portName, int queueSize, int blo
                                     int maxBuffers, size_t maxMemory,
                                     int priority, int stackSize)
 {
-  new NDPluginTransform(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-              maxBuffers, maxMemory, priority, stackSize);
-  return(asynSuccess);
+  NDPluginTransform *pPlugin = new NDPluginTransform(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                                                      maxBuffers, maxMemory, priority, stackSize);
+  return pPlugin->run();
 }
 
 /* EPICS iocsh shell commands */

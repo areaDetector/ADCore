@@ -520,9 +520,9 @@ extern "C" int NDFileNetCDFConfigure(const char *portName, int queueSize, int bl
                                      const char *NDArrayPort, int NDArrayAddr,
                                      int priority, int stackSize)
 {
-    new NDFileNetCDF(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                     priority, stackSize);
-    return(asynSuccess);
+    NDFileNetCDF *pPlugin = new NDFileNetCDF(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                                             priority, stackSize);
+    return pPlugin->run();
 }
 
 

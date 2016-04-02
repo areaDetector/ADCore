@@ -113,9 +113,9 @@ extern "C" int NDFileMagickConfigure(const char *portName, int queueSize, int bl
                                    const char *NDArrayPort, int NDArrayAddr,
                                    int priority, int stackSize)
 {
-    new NDFileMagick(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                     priority, stackSize);
-    return(asynSuccess);
+    NDFileMagick *pPlugin = new NDFileMagick(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                                             priority, stackSize);
+    return pPlugin->run();
 }
 
 

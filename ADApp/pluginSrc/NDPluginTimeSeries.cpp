@@ -534,9 +534,9 @@ extern "C" int NDTimeSeriesConfigure(const char *portName, int queueSize, int bl
                                      int maxBuffers, size_t maxMemory,
                                      int priority, int stackSize)
 {
-    new NDPluginTimeSeries(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, 
-                           maxSignals, maxBuffers, maxMemory, priority, stackSize);
-    return(asynSuccess);
+    NDPluginTimeSeries *pPlugin = new NDPluginTimeSeries(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, 
+                                                         maxSignals, maxBuffers, maxMemory, priority, stackSize);
+    return pPlugin->run();
 }
 
 /* EPICS iocsh shell commands */
