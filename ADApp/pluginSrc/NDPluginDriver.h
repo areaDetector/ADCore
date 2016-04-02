@@ -36,11 +36,11 @@ public:
     /* These are the methods that are new to this class */
     virtual void driverCallback(asynUser *pasynUser, void *genericPointer);
     virtual void processTask(void);
-    epicsMessageQueueId msgQId;
+    virtual asynStatus run(void);
 
 protected:
     virtual void processCallbacks(NDArray *pArray);
-    virtual asynStatus connectToArrayPort(void);    
+    virtual asynStatus connectToArrayPort(void);
 
 protected:
     int NDPluginDriverArrayPort;
@@ -66,6 +66,7 @@ private:
     void *asynGenericPointerPvt;                /**< Handle for connecting to NDArray driver */
     asynGenericPointer *pasynGenericPointer;    /**< asyn interface for connecting to NDArray driver */
     bool connectedToArrayPort;
+    epicsMessageQueueId msgQId;
     epicsTimeStamp lastProcessTime;
     int dimsPrev[ND_ARRAY_MAX_DIMS];
 };
