@@ -156,6 +156,7 @@ void processTask(void *drvPvt)
     NDPluginDriver *pPvt = (NDPluginDriver *)drvPvt;
     int ntries=0;
 
+rintf("processTask, entry\n");
     while(pPvt->msgQId == 0) {
         epicsThreadSleep(0.01);
         ntries++;
