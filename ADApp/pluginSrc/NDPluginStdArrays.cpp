@@ -300,9 +300,9 @@ extern "C" int NDStdArraysConfigure(const char *portName, int queueSize, int blo
                                     const char *NDArrayPort, int NDArrayAddr, size_t maxMemory,
                                     int priority, int stackSize)
 {
-    new NDPluginStdArrays(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxMemory,
-                          priority, stackSize);
-    return(asynSuccess);
+    NDPluginStdArrays *pPlugin = new NDPluginStdArrays(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxMemory,
+                                                       priority, stackSize);
+    return pPlugin->run();
 }
 
 
