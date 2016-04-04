@@ -21,7 +21,7 @@
                                                                          *  to execute plugin code */
 
 /** Class from which actual plugin drivers are derived; derived from asynNDArrayDriver */
-class epicsShareClass NDPluginDriver : public asynNDArrayDriver {
+class epicsShareClass NDPluginDriver : public asynNDArrayDriver, public epicsThreadRunable {
 public:
     NDPluginDriver(const char *portName, int queueSize, int blockingCallbacks, 
                    const char *NDArrayPort, int NDArrayAddr, int maxAddr, int numParams,
@@ -39,6 +39,8 @@ public:
     /* These are the methods that are new to this class */
     virtual void driverCallback(asynUser *pasynUser, void *genericPointer);
     virtual void processTask(void);
+    virtual void run(void);
+    virtual asynStatus start(void);
 
 protected:
     virtual void processCallbacks(NDArray *pArray);
@@ -69,7 +71,7 @@ private:
     asynGenericPointer *pasynGenericPointer;    /**< asyn interface for connecting to NDArray driver */
     bool connectedToArrayPort;
     epicsMessageQueueId msgQId;
-    epicsThreadId threadId;
+    epicsThread * pThread;
     epicsEvent *pThreadStartedEvent;
     epicsTimeStamp lastProcessTime;
     int dimsPrev[ND_ARRAY_MAX_DIMS];
