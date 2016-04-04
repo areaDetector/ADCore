@@ -87,6 +87,7 @@ struct TimeSeriesPluginTestFixture
     downstream_plugin = new TestingPlugin(testport.c_str(), 0);
 
     // Enable the plugin
+    ts->start(); // start the plugin thread although not required for this unittesting
     ts->write(NDPluginDriverEnableCallbacksString, 1);
     ts->write(NDPluginDriverBlockingCallbacksString, 1);
 

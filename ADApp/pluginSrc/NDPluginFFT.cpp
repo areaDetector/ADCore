@@ -344,9 +344,9 @@ extern "C" int NDFFTConfigure(const char *portName, int queueSize, int blockingC
                                      int maxBuffers, size_t maxMemory,
                                      int priority, int stackSize)
 {
-    new NDPluginFFT(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, 
-                    maxBuffers, maxMemory, priority, stackSize);
-    return(asynSuccess);
+    NDPluginFFT *pPlugin = new NDPluginFFT(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, 
+                                           maxBuffers, maxMemory, priority, stackSize);
+    return pPlugin->start();
 }
 
 /* EPICS iocsh shell commands */

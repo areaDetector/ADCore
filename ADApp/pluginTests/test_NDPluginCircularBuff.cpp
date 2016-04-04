@@ -53,6 +53,7 @@ struct PluginFixture
 
         // This is the plugin under test
         cb = new NDPluginCircularBuff(testport.c_str(), 50, 0, dummy_port.c_str(), 0, 1000, -1, 0, 2000000);
+        cb->start(); // start the plugin thread although not required for this unittesting
 
         // This is the mock downstream plugin
         ds = new TestingPlugin(testport.c_str(), 0);

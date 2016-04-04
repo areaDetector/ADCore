@@ -542,7 +542,7 @@ NDPluginDriver::~NDPluginDriver()
     NDArray *parr = new NDArray();
     parr->pData = NULL;
     epicsMessageQueueSendWithTimeout(this->msgQId, parr, sizeof(parr), 2.0);
-    delete this->pThread;
+    delete this->pThread; // The epicsThread destructor waits for the thread to return
     delete this->pThreadStartedEvent;
     delete parr;
   }

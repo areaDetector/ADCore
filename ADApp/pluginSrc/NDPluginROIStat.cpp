@@ -581,14 +581,9 @@ extern "C" int NDROIStatConfigure(const char *portName, int queueSize, int block
                                  int maxBuffers, size_t maxMemory,
                                  int priority, int stackSize)
 {
-    NDPluginROIStat *pPlugin =
-        new NDPluginROIStat(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxROIs,
-                        maxBuffers, maxMemory, priority, stackSize);
-    //To take care of compiler warnings
-    if (pPlugin) {
-      pPlugin = NULL;  
-    }
-    return(asynSuccess);
+    NDPluginROIStat *pPlugin = new NDPluginROIStat(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxROIs,
+                                                   maxBuffers, maxMemory, priority, stackSize);
+    return pPlugin->start();
 }
 
 /* EPICS iocsh shell commands */
