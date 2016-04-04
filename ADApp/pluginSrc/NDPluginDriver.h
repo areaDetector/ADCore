@@ -3,6 +3,8 @@
 
 #include <epicsTypes.h>
 #include <epicsMessageQueue.h>
+#include <epicsThread.h>
+#include <epicsEvent.h>
 #include <epicsTime.h>
 
 #include "asynNDArrayDriver.h"
@@ -25,6 +27,7 @@ public:
                    const char *NDArrayPort, int NDArrayAddr, int maxAddr, int numParams,
                    int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
                    int asynFlags, int autoConnect, int priority, int stackSize);
+    ~NDPluginDriver();
                  
     /* These are the methods that we override from asynNDArrayDriver */
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
@@ -66,6 +69,8 @@ private:
     asynGenericPointer *pasynGenericPointer;    /**< asyn interface for connecting to NDArray driver */
     bool connectedToArrayPort;
     epicsMessageQueueId msgQId;
+    epicsThreadId threadId;
+    epicsEvent *pThreadStartedEvent;
     epicsTimeStamp lastProcessTime;
     int dimsPrev[ND_ARRAY_MAX_DIMS];
 };

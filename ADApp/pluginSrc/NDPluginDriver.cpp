@@ -172,11 +172,14 @@ void NDPluginDriver::processTask(void)
     NDArray *pArray;
 
     this->lock();
-    
+    this->pThreadStartedEvent->signal();
     while (1) {
         /* Wait for an array to arrive from the queue. Release the lock while  waiting. */    
         this->unlock();
         epicsMessageQueueReceive(this->msgQId, &pArray, sizeof(&pArray));
+        if (pArray == NULL || pArray->pData == NULL) {
+          return; // shutdown thread if special NULL pData received
+        }
         
         /* Take the lock.  The function we are calling must release the lock
          * during time-consuming operations when it does not need it. */
@@ -463,6 +466,8 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     static const char *functionName = "NDPluginDriver";
     char taskName[256];
     asynUser *pasynUser;
+    this->threadId = 0;
+    this->pThreadStartedEvent = new epicsEvent;
 
     lock();
     
@@ -529,3 +534,14 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     unlock();
 }
 
+NDPluginDriver::~NDPluginDriver()
+{
+  if (this->threadId != 0 && this->msgQId != 0)
+  {
+    // Send a kill message to the thread.
+    NDArray *parr = new NDArray();
+    parr->pData = NULL;
+    epicsMessageQueueSendWithTimeout(this->msgQId, parr, sizeof(parr), 2.0);
+    delete parr;
+  }
+}
