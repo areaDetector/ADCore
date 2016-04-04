@@ -172,11 +172,15 @@ void NDPluginDriver::processTask(void)
     NDArray *pArray;
  
     this->lock();
-        
+
+    this->pThreadStartedEvent->signal();
     while (1) {
         /* Wait for an array to arrive from the queue. Release the lock while  waiting. */    
         this->unlock();
         epicsMessageQueueReceive(this->msgQId, &pArray, sizeof(&pArray));
+        if (pArray == NULL || pArray->pData == NULL) {
+          return; // shutdown thread if special NULL pData received
+        }
         
         /* Take the lock.  The function we are calling must release the lock
          * during time-consuming operations when it does not need it. */
@@ -432,15 +436,26 @@ asynStatus NDPluginDriver::run()
     strcat(taskName, "_Plugin");
     
     /* Create the thread that handles the NDArray callbacks */
-    status = (asynStatus)(epicsThreadCreate(taskName,
+    this->threadId = epicsThreadCreate(taskName,
                           epicsThreadPriorityMedium,
                           epicsThreadGetStackSize(epicsThreadStackMedium),
                           (EPICSTHREADFUNC)::processTask,
-                          this) == NULL);
-    if (status) {
+                          this);
+    if (this->threadId == 0) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-        "%s::%s epicsThreadCreate failure\n", driverName, functionName);
+        "%s::%s epicsThreadCreate failure (%s)\n",
+        driverName, functionName, taskName);
+        status = asynError;
     }
+
+    // Wait for the thread to say its running
+    if (not this->pThreadStartedEvent->wait(2.0)) {
+      asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+      "%s::%s timeout waiting for plugin thread start event (%s)\n",
+      driverName, functionName, taskName);
+      status = asynError;
+    }
+
     return status;
 }
 
@@ -483,6 +498,8 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     static const char *functionName = "NDPluginDriver";
     char taskName[256];
     asynUser *pasynUser;
+    this->threadId = 0;
+    this->pThreadStartedEvent = new epicsEvent;
 
     lock();
     
@@ -531,3 +548,14 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     unlock();
 }
 
+NDPluginDriver::~NDPluginDriver()
+{
+  if (this->threadId != 0 && this->msgQId != 0)
+  {
+    // Send a kill message to the thread.
+    NDArray *parr = new NDArray();
+    parr->pData = NULL;
+    epicsMessageQueueSendWithTimeout(this->msgQId, parr, sizeof(parr), 2.0);
+    delete parr;
+  }
+}
