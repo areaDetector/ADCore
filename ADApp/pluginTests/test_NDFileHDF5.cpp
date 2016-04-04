@@ -54,6 +54,7 @@ struct NDFileHDF5TestFixture
 
 
     // Enable the plugin
+    hdf5->run(); // start the plugin thread although not required for this unittesting
     hdf5->write(NDPluginDriverEnableCallbacksString, 1);
     hdf5->write(NDPluginDriverBlockingCallbacksString, 1);
 
