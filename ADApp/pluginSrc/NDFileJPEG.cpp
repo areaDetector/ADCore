@@ -337,9 +337,9 @@ extern "C" int NDFileJPEGConfigure(const char *portName, int queueSize, int bloc
                                    const char *NDArrayPort, int NDArrayAddr,
                                    int priority, int stackSize)
 {
-    new NDFileJPEG(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                   priority, stackSize);
-    return(asynSuccess);
+    NDFileJPEG *pPlugin = new NDFileJPEG(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                                         priority, stackSize);
+    return pPlugin->run();
 }
 
 

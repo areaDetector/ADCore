@@ -359,9 +359,9 @@ extern "C" int NDROIConfigure(const char *portName, int queueSize, int blockingC
                                  int maxBuffers, size_t maxMemory,
                                  int priority, int stackSize)
 {
-    new NDPluginROI(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                    maxBuffers, maxMemory, priority, stackSize);
-    return(asynSuccess);
+    NDPluginROI *pPlugin = new NDPluginROI(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                                           maxBuffers, maxMemory, priority, stackSize);
+    return pPlugin->run();
 }
 
 /* EPICS iocsh shell commands */

@@ -446,9 +446,9 @@ extern "C" int NDProcessConfigure(const char *portName, int queueSize, int block
                                  int maxBuffers, size_t maxMemory,
                                  int priority, int stackSize)
 {
-    new NDPluginProcess(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                        maxBuffers, maxMemory, priority, stackSize);
-    return(asynSuccess);
+    NDPluginProcess *pPlugin = new NDPluginProcess(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                                                   maxBuffers, maxMemory, priority, stackSize);
+    return pPlugin->run();
 }
 
 /* EPICS iocsh shell commands */

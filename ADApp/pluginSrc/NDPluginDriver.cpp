@@ -154,7 +154,7 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
 void processTask(void *drvPvt)
 {
     NDPluginDriver *pPvt = (NDPluginDriver *)drvPvt;
-    
+
     pPvt->processTask();
 }
 
@@ -170,10 +170,17 @@ void NDPluginDriver::processTask(void)
 
     /* Loop forever */
     NDArray *pArray;
-    
+ 
+    this->lock();
+
+    this->pThreadStartedEvent->signal();
     while (1) {
-        /* Wait for an array to arrive from the queue */    
+        /* Wait for an array to arrive from the queue. Release the lock while  waiting. */    
+        this->unlock();
         epicsMessageQueueReceive(this->msgQId, &pArray, sizeof(&pArray));
+        if (pArray == NULL || pArray->pData == NULL) {
+          return; // shutdown thread if special NULL pData received
+        }
         
         /* Take the lock.  The function we are calling must release the lock
          * during time-consuming operations when it does not need it. */
@@ -184,7 +191,6 @@ void NDPluginDriver::processTask(void)
 
         /* Call the function that does the business of this callback */
         processCallbacks(pArray); 
-        this->unlock();
         
         /* We are done with this array buffer */
         pArray->release();
@@ -420,7 +426,38 @@ asynStatus NDPluginDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *value
     return status;
 }
     
+asynStatus NDPluginDriver::run()
+{
+    asynStatus status;
+    char taskName[256];
+    static const char *functionName = "run";
 
+    strcpy(taskName, this->portName);
+    strcat(taskName, "_Plugin");
+    
+    /* Create the thread that handles the NDArray callbacks */
+    this->threadId = epicsThreadCreate(taskName,
+                          epicsThreadPriorityMedium,
+                          epicsThreadGetStackSize(epicsThreadStackMedium),
+                          (EPICSTHREADFUNC)::processTask,
+                          this);
+    if (this->threadId == 0) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+        "%s::%s epicsThreadCreate failure (%s)\n",
+        driverName, functionName, taskName);
+        status = asynError;
+    }
+
+    // Wait for the thread to say its running
+    if (not this->pThreadStartedEvent->wait(2.0)) {
+      asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+      "%s::%s timeout waiting for plugin thread start event (%s)\n",
+      driverName, functionName, taskName);
+      status = asynError;
+    }
+
+    return status;
+}
 
 /** Constructor for NDPluginDriver; most parameters are simply passed to asynNDArrayDriver::asynNDArrayDriver.
   * After calling the base class constructor this method creates a thread to execute the NDArray callbacks, 
@@ -461,7 +498,11 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     static const char *functionName = "NDPluginDriver";
     char taskName[256];
     asynUser *pasynUser;
+    this->threadId = 0;
+    this->pThreadStartedEvent = new epicsEvent;
 
+    lock();
+    
     /* Initialize some members to 0 */
     memset(&this->lastProcessTime, 0, sizeof(this->lastProcessTime));
     memset(&this->dimsPrev, 0, sizeof(this->dimsPrev));
@@ -483,21 +524,6 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
         return;
     }
     
-    /* We use the same stack size for our callback thread as for the port thread */
-    if (stackSize <= 0) stackSize = epicsThreadGetStackSize(epicsThreadStackMedium);
-
-    strcpy(taskName, portName);
-    strcat(taskName, "_Plugin");
-    /* Create the thread that handles the NDArray callbacks */
-    status = (asynStatus)(epicsThreadCreate(taskName,
-                          epicsThreadPriorityMedium,
-                          stackSize,
-                          (EPICSTHREADFUNC)::processTask,
-                          this) == NULL);
-    if (status) {
-        printf("%s:%s: epicsThreadCreate failure\n", driverName, functionName);
-        return;
-    }
     createParam(NDPluginDriverArrayPortString,         asynParamOctet, &NDPluginDriverArrayPort);
     createParam(NDPluginDriverArrayAddrString,         asynParamInt32, &NDPluginDriverArrayAddr);
     createParam(NDPluginDriverPluginTypeString,        asynParamOctet, &NDPluginDriverPluginType);
@@ -519,5 +545,17 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     setIntegerParam(NDPluginDriverDroppedArrays, 0);
     setIntegerParam(NDPluginDriverQueueSize, queueSize);
     setIntegerParam(NDPluginDriverQueueFree, queueSize);
+    unlock();
 }
 
+NDPluginDriver::~NDPluginDriver()
+{
+  if (this->threadId != 0 && this->msgQId != 0)
+  {
+    // Send a kill message to the thread.
+    NDArray *parr = new NDArray();
+    parr->pData = NULL;
+    epicsMessageQueueSendWithTimeout(this->msgQId, parr, sizeof(parr), 2.0);
+    delete parr;
+  }
+}

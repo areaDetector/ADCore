@@ -93,9 +93,9 @@ extern "C" int NDFileNullConfigure(const char *portName, int queueSize, int bloc
                                    const char *NDArrayPort, int NDArrayAddr,
                                    int priority, int stackSize)
 {
-    new NDFileNull(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                   priority, stackSize);
-    return(asynSuccess);
+    NDFileNull *pPlugin = new NDFileNull(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                                         priority, stackSize);
+    return pPlugin->run();
 }
 
 
