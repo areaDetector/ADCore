@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDFFT.adl"
+	name="/home/epics/devel/areaDetector-2-5/ADCore/ADApp/op/adl/NDFFT.adl"
 	version=030107
 }
 display {
@@ -8,7 +8,7 @@ display {
 		x=899
 		y=108
 		width=390
-		height=680
+		height=755
 	}
 	clr=14
 	bclr=4
@@ -126,7 +126,7 @@ rectangle {
 		x=5
 		y=570
 		width=380
-		height=105
+		height=180
 	}
 	"basic attribute" {
 		clr=14
@@ -292,9 +292,9 @@ text {
 "text entry" {
 	object {
 		x=200
-		y=577
+		y=575
 		width=120
-		height=18
+		height=20
 	}
 	control {
 		chan="$(P)$(R)Name"
@@ -302,5 +302,122 @@ text {
 		bclr=51
 	}
 	limits {
+	}
+}
+composite {
+	object {
+		x=25
+		y=675
+		width=295
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=25
+				y=675
+				width=170
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Number to average"
+			align="horiz. right"
+		}
+		"text entry" {
+			object {
+				x=200
+				y=675
+				width=120
+				height=20
+			}
+			control {
+				chan="$(P)$(R)FFTNumAverage"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=45
+		y=700
+		width=275
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=45
+				y=700
+				width=150
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Number averaged"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=200
+				y=701
+				width=120
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)FFTNumAveraged"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=65
+		y=725
+		width=253
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=65
+				y=725
+				width=130
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Reset average"
+			align="horiz. right"
+		}
+		"message button" {
+			object {
+				x=200
+				y=725
+				width=118
+				height=20
+			}
+			control {
+				chan="$(P)$(R)FFTResetAverage"
+				clr=14
+				bclr=51
+			}
+			label="Reset average"
+			press_msg="1"
+		}
 	}
 }

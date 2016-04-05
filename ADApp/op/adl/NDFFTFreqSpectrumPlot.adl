@@ -8,7 +8,7 @@ display {
 		x=81
 		y=135
 		width=500
-		height=415
+		height=465
 	}
 	clr=14
 	bclr=4
@@ -413,7 +413,7 @@ composite {
 }
 composite {
 	object {
-		x=190
+		x=10
 		y=390
 		width=305
 		height=20
@@ -422,7 +422,7 @@ composite {
 	children {
 		text {
 			object {
-				x=190
+				x=10
 				y=390
 				width=180
 				height=20
@@ -435,7 +435,7 @@ composite {
 		}
 		menu {
 			object {
-				x=375
+				x=195
 				y=390
 				width=120
 				height=20
@@ -450,8 +450,8 @@ composite {
 }
 "related display" {
 	object {
-		x=10
-		y=390
+		x=395
+		y=439
 		width=100
 		height=20
 	}
@@ -468,4 +468,110 @@ composite {
 	clr=14
 	bclr=51
 	label="More"
+}
+text {
+	object {
+		x=10
+		y=415
+		width=120
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="# to average"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=135
+		y=415
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)$(R)FFTNumAverage"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+composite {
+	object {
+		x=10
+		y=440
+		width=255
+		height=20
+	}
+	"composite name"=""
+	children {
+		"message button" {
+			object {
+				x=145
+				y=440
+				width=120
+				height=20
+			}
+			control {
+				chan="$(P)$(R)FFTResetAverage"
+				clr=14
+				bclr=51
+			}
+			label="Reset average"
+			press_msg="1"
+		}
+		text {
+			object {
+				x=10
+				y=440
+				width=130
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Reset average"
+			align="horiz. right"
+		}
+	}
+}
+composite {
+	object {
+		x=225
+		y=415
+		width=175
+		height=20
+	}
+	"composite name"=""
+	children {
+		"text update" {
+			object {
+				x=320
+				y=416
+				width=80
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)FFTNumAveraged"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+		text {
+			object {
+				x=225
+				y=415
+				width=90
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="#averaged"
+			align="horiz. right"
+		}
+	}
 }
