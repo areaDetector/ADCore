@@ -631,9 +631,9 @@ extern "C" int NDColorConvertConfigure(const char *portName, int queueSize, int 
                                           int maxBuffers, size_t maxMemory,
                                           int priority, int stackSize)
 {
-    new NDPluginColorConvert(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, 
-                             maxBuffers, maxMemory, priority, stackSize);
-    return(asynSuccess);
+    NDPluginColorConvert *pPlugin = new NDPluginColorConvert(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, 
+                                                             maxBuffers, maxMemory, priority, stackSize);
+    return pPlugin->start();
 }
 
 /** EPICS iocsh shell commands */

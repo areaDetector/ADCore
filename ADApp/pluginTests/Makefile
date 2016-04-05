@@ -14,6 +14,7 @@ ifdef BOOST
   # data, asyn port names, record output NDArrays etc etc.
   # This utility library can be used by external modules that provides unittests.
   LIBRARY_IOC_Linux += ADTestUtility
+  LIBRARY_IOC_Darwin += ADTestUtility
   ADTestUtility_SRCS += testingutilities.cpp
   ADTestUtility_SRCS += AsynPortClientContainer.cpp
   ADTestUtility_SRCS += AsynException.cpp
@@ -22,6 +23,7 @@ ifdef BOOST
   ADTestUtility_SRCS += TimeSeriesPluginWrapper.cpp
 
   PROD_IOC_Linux += plugin-test
+  PROD_IOC_Darwin += plugin-test
   plugin-test_SRCS += plugin-test.cpp
   plugin-test_SRCS += test_NDPluginCircularBuff.cpp
   plugin-test_SRCS += test_NDFileHDF5.cpp

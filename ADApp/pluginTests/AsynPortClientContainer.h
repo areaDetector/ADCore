@@ -8,7 +8,7 @@
 #ifndef IOCS_SIMDETECTORNOIOC_SIMDETECTORNOIOCAPP_SRC_AsynPortClientContainer_H_
 #define IOCS_SIMDETECTORNOIOC_SIMDETECTORNOIOCAPP_SRC_AsynPortClientContainer_H_
 
-#include <tr1/memory>
+#include <boost/shared_ptr.hpp>
 #include <map>
 
 #include <epicsThread.h>
@@ -34,9 +34,9 @@ protected:
 	std::string portName;
 
 private:
-	std::map<std::string, std::tr1::shared_ptr<asynInt32Client> > int32Clients;
-	std::map<std::string, std::tr1::shared_ptr<asynFloat64Client> > float64Clients;
-	std::map<std::string, std::tr1::shared_ptr<asynOctetClient> > octetClients;
+	std::map<std::string, boost::shared_ptr<asynInt32Client> > int32Clients;
+	std::map<std::string, boost::shared_ptr<asynFloat64Client> > float64Clients;
+	std::map<std::string, boost::shared_ptr<asynOctetClient> > octetClients;
 };
 
 #endif /* IOCS_SIMDETECTORNOIOC_SIMDETECTORNOIOCAPP_SRC_AsynPortClientContainer_H_ */

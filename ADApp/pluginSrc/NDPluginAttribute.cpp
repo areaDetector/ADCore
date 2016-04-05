@@ -287,9 +287,9 @@ extern "C" int NDAttrConfigure(const char *portName, int queueSize, int blocking
                                int maxAttributes, int maxBuffers, size_t maxMemory,
                                int priority, int stackSize)
 {
-    new NDPluginAttribute(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                          maxAttributes, maxBuffers, maxMemory, priority, stackSize);
-    return(asynSuccess);
+    NDPluginAttribute *pPlugin = new NDPluginAttribute(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                                                       maxAttributes, maxBuffers, maxMemory, priority, stackSize);
+    return pPlugin->start();
 }
 
 /* EPICS iocsh shell commands */
