@@ -864,9 +864,9 @@ extern "C" int NDFileNexusConfigure(const char *portName, int queueSize, int blo
                                     const char *NDArrayPort, int NDArrayAddr,
                                     int priority, int stackSize)
 {
-  new NDFileNexus(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                  priority, stackSize);
-  return(asynSuccess);
+  NDFileNexus *pPlugin = new NDFileNexus(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                                         priority, stackSize);
+  return pPlugin->start();
 }
 
 

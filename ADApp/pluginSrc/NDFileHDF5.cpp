@@ -2738,9 +2738,9 @@ extern "C" int NDFileHDF5Configure(const char *portName, int queueSize, int bloc
 {
   // Stack Size must be a minimum of 2MB
   if (stackSize < 2097152) stackSize = 2097152;
-  new NDFileHDF5(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                 priority, stackSize);
-  return(asynSuccess);
+  NDFileHDF5 *pPlugin = new NDFileHDF5(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                                       priority, stackSize);
+  return pPlugin->start();
 }
 
 void NDFileHDF5::checkForOpenFile()
