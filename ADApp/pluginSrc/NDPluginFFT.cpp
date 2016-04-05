@@ -61,6 +61,9 @@ NDPluginFFT::NDPluginFFT(const char *portName, int queueSize, int blockingCallba
   createParam(FFTTimePerPointString,          asynParamFloat64, &P_FFTTimePerPoint);
   createParam(FFTDirectionString,               asynParamInt32, &P_FFTDirection);
   createParam(FFTSuppressDCString,              asynParamInt32, &P_FFTSuppressDC);
+  createParam(FFTNumAverageString,              asynParamInt32, &P_FFTNumAverage);
+  createParam(FFTNumAveragedString,             asynParamInt32, &P_FFTNumAveraged);
+  createParam(FFTResetAverageString,            asynParamInt32, &P_FFTResetAverage);
   
   createParam(FFTTimeSeriesString,       asynParamFloat64Array, &P_FFTTimeSeries);
   createParam(FFTRealString,             asynParamFloat64Array, &P_FFTReal);
@@ -117,10 +120,8 @@ void NDPluginFFT::allocateArrays()
 void NDPluginFFT::computeFFT_1D()
 {
   int j;
-  int suppressDC;
+  double newAbsValue;
 
-  getIntegerParam(P_FFTSuppressDC, &suppressDC);
-  
   for (j=0; j<nTimeX_; j++) {
     FFTComplex_[2*j] = timeSeries_[j];
     FFTComplex_[2*j+1] = 0.;
@@ -129,10 +130,11 @@ void NDPluginFFT::computeFFT_1D()
   for (j=0; j<nFreqX_; j++) {
     FFTReal_     [j] = FFTComplex_[2*j]; 
     FFTImaginary_[j] = FFTComplex_[2*j+1]; 
-    FFTAbsValue_ [j] = sqrt((FFTComplex_[2*j] * FFTComplex_[2*j] + 
-                                                FFTComplex_[2*j+1] * FFTComplex_[2*j+1])) / nTimeX_;
+    newAbsValue      = sqrt((FFTComplex_[2*j]   * FFTComplex_[2*j] + 
+                             FFTComplex_[2*j+1] * FFTComplex_[2*j+1])) / nTimeX_;
+    FFTAbsValue_ [j] = FFTAbsValue_[j] * oldFraction_ + newAbsValue * newFraction_;
   }
-  if (suppressDC) {
+  if (suppressDC_) {
     FFTReal_      [0] = 0;
     FFTImaginary_ [0] = 0;
     FFTAbsValue_  [0] = 0;
@@ -145,9 +147,8 @@ void NDPluginFFT::computeFFT_2D()
   int i,j, k;
   double *pIn;
   unsigned long dims[2];
-  int suppressDC;
+  double newAbsValue;
  
-  getIntegerParam(P_FFTSuppressDC, &suppressDC);
   for (j=0; j<nTimeX_*nTimeY_; j++) {
     FFTComplex_[2*j] = timeSeries_[j];
     FFTComplex_[2*j+1] = 0.;
@@ -163,10 +164,11 @@ void NDPluginFFT::computeFFT_2D()
     for (j=0; j<nFreqX_; j++, k++) {
       FFTReal_     [k] = pIn[j*2]; 
       FFTImaginary_[k] = pIn[j*2+1]; 
-      FFTAbsValue_ [k] = sqrt((FFTReal_[k] * FFTReal_[k]) + (FFTImaginary_[k] * FFTImaginary_[k])) / (nTimeX_ * nTimeY_);
+      newAbsValue      = sqrt((FFTReal_[k] * FFTReal_[k]) + (FFTImaginary_[k] * FFTImaginary_[k])) / (nTimeX_ * nTimeY_);
+      FFTAbsValue_ [k] = FFTAbsValue_[k] * oldFraction_ + newAbsValue * newFraction_;
     }
   }
-  if (suppressDC) {
+  if (suppressDC_) {
     FFTReal_      [0] = 0;
     FFTImaginary_ [0] = 0;
     FFTAbsValue_  [0] = 0;
@@ -266,6 +268,9 @@ void NDPluginFFT::processCallbacks(NDArray *pArray)
   //It unlocks it during long calculations when private structures don't need to be protected.
 
   int nTimeX, nTimeY;
+  int numAverage;
+  int numAveraged;
+  int resetAverage;
   double timePerPoint;  
   const char* functionName = "NDPluginFFT::processCallbacks";
 
@@ -303,6 +308,24 @@ void NDPluginFFT::processCallbacks(NDArray *pArray)
     timePerPoint_ = timePerPoint;
     createAxisArrays();
   }
+
+  getIntegerParam(P_FFTSuppressDC,   &suppressDC_);
+  getIntegerParam(P_FFTResetAverage, &resetAverage);
+  getIntegerParam(P_FFTNumAverage,   &numAverage);
+  getIntegerParam(P_FFTNumAveraged,  &numAveraged);
+  if (resetAverage) {
+    setIntegerParam(P_FFTResetAverage, 0);
+    numAveraged = 1;
+  }
+  if (numAverage != numAverage_) {
+    numAverage_ = numAverage;
+    numAveraged = 1;
+  }
+  
+  oldFraction_ = 1. - 1./numAveraged;
+  newFraction_ = 1./numAveraged;
+  if (numAveraged < numAverage) numAveraged++;
+  setIntegerParam(P_FFTNumAveraged, numAveraged);
 
   switch(pArray->dataType) {
   case NDInt8:
