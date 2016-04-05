@@ -158,6 +158,7 @@ void NDPluginDriver::processTask(void)
 {
     /* This thread processes a new array when it arrives */
     int queueSize, queueFree;
+    static const char *functionName = "processTask";
 
     /* Loop forever */
     NDArray *pArray;
@@ -175,6 +176,16 @@ void NDPluginDriver::processTask(void)
         /* Take the lock.  The function we are calling must release the lock
          * during time-consuming operations when it does not need it. */
         this->lock();
+        /* If the queue size has been changed in the writeInt32 method then create a new one */
+        if (newQueueSize_ > 0) {
+            if (this->msgQId) epicsMessageQueueDestroy(this->msgQId);
+            this->msgQId = epicsMessageQueueCreate(newQueueSize_, sizeof(NDArray*));
+            if (!this->msgQId) {
+                asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+                          "%s::%s epicsMessageQueueCreate failure\n", driverName, functionName);
+            }
+            newQueueSize_ = 0;
+        }
         getIntegerParam(NDPluginDriverQueueSize, &queueSize);
         queueFree = queueSize - epicsMessageQueuePending(this->msgQId);
         setIntegerParam(NDPluginDriverQueueFree, queueFree);
@@ -314,7 +325,9 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
         this->unlock();
         status = connectToArrayPort();
         this->lock();
-    } else {
+    } else if (function == NDPluginDriverQueueSize) {
+        newQueueSize_ = value;
+     } else {
         /* If this parameter belongs to a base class call its method */
         if (function < FIRST_NDPLUGIN_PARAM) 
             status = asynNDArrayDriver::writeInt32(pasynUser, value);
@@ -473,7 +486,8 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     : asynNDArrayDriver(portName, maxAddr, numParams+NUM_NDPLUGIN_PARAMS, maxBuffers, maxMemory,
           interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynDrvUserMask,
           interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask,
-          asynFlags, autoConnect, priority, stackSize)    
+          asynFlags, autoConnect, priority, stackSize),
+    newQueueSize_(0)    
 {
     static const char *functionName = "NDPluginDriver";
     char taskName[256];

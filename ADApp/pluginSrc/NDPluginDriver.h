@@ -75,6 +75,7 @@ private:
     epicsEvent *pThreadStartedEvent;
     epicsTimeStamp lastProcessTime;
     int dimsPrev[ND_ARRAY_MAX_DIMS];
+    int newQueueSize_;
 };
 #define NUM_NDPLUGIN_PARAMS ((int)(&LAST_NDPLUGIN_PARAM - &FIRST_NDPLUGIN_PARAM + 1))
 
