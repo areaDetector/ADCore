@@ -109,6 +109,10 @@ R2-5 (March XXX, 2016)
 * Deleted commonPlugins.cmd and commonPlugin_settings.req.  These were accidentally restored before the R2-4
   release after renaming them to EXAMPLE_commonPlugins.cmd and EXAMPLE_commonPlugin_settings.req.
 
+### ImageJ EPICS_ADViewer
+* Changed to work with 1-D arrays, i.e. nx>0, ny=0, nz=0.  Previously it did not work if ny=0.  This
+  is a useful enhancement because the ImageJ Dynamic Profiler can then be used to plot the 1-D array.
+
 
 R2-4 (September 21, 2015)
 ========================
