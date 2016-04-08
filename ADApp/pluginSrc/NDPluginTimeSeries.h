@@ -79,6 +79,7 @@ private:
 
   int maxSignals_;
   int numSignals_;
+  int numSignalsIn_;
   NDDataType_t dataType_;
   int dataSize_;
   int numTimePoints_;

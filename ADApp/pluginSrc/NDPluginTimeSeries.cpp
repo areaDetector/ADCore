@@ -175,6 +175,7 @@ template <typename epicsType>
 asynStatus NDPluginTimeSeries::doAddToTimeSeriesT(NDArray *pArray)
 {
   epicsType *pData         = (epicsType *)pArray->pData;
+  epicsType *pIn; 
   epicsType *pTimeCircular = (epicsType *)pTimeCircular_->pData;
   int signal;
   int i;
@@ -185,13 +186,14 @@ asynStatus NDPluginTimeSeries::doAddToTimeSeriesT(NDArray *pArray)
   if (pArray->ndims == 2) numTimes = (int)pArray->dims[1].size;
   
   for (i=0; i<numTimes; i++) {
-    for (signal=0; signal<maxSignals_; signal++) {
-      averageStore_[signal] += (epicsFloat64)*pData++;
+    pIn = pData + i*numSignalsIn_;
+    for (signal=0; signal<numSignals_; signal++) {
+      averageStore_[signal] += (epicsFloat64)*pIn++;
     }
     numAveraged_++;
     if (numAveraged_ < numAverage_) continue;
     /* We have now collected the desired number of points to average */
-    for (signal=0; signal<maxSignals_; signal++) {
+    for (signal=0; signal<numSignals_; signal++) {
       pTimeCircular[signal * numTimePoints_ + currentTimePoint_] = (epicsType)averageStore_[signal]/numAveraged_;
       averageStore_[signal] = 0;
     }
@@ -268,7 +270,7 @@ void NDPluginTimeSeries::doTimeSeriesCallbacksT()
 
 
   if (acquireMode_ == TSAcquireModeFixed) {
-    for (signal=0; signal<maxSignals_; signal++) {
+    for (signal=0; signal<numSignals_; signal++) {
       for (timeOut=0; timeOut<currentTimePoint_; timeOut++) {
         signalData_[timeOut] = timeCircular[signal*numTimePoints_ + timeOut];
       }
@@ -277,7 +279,7 @@ void NDPluginTimeSeries::doTimeSeriesCallbacksT()
   }
   else {
     timeIn = currentTimePoint_;
-    for (signal=0; signal<maxSignals_; signal++) {
+    for (signal=0; signal<numSignals_; signal++) {
       for (timeOut=0; timeOut<numTimePoints_; timeOut++) {
         signalData_[timeOut] = timeCircular[signal*numTimePoints_ + timeIn];
         if (++timeIn >= numTimePoints_) timeIn = 0;
@@ -408,9 +410,11 @@ void NDPluginTimeSeries::processCallbacks(NDArray *pArray)
   // If the number of signals or the data type has changed from the last callback
   // then we need to allocate arrays
   if ((pArray->dataType          != dataType_) || 
-      ((int)pArray->dims[0].size != numSignals_)) {
+      ((int)pArray->dims[0].size != numSignalsIn_)) {
     dataType_   = pArray->dataType;
-    numSignals_ = (int)pArray->dims[0].size;
+    numSignalsIn_ = (int)pArray->dims[0].size;
+    numSignals_ = numSignalsIn_;
+    if (numSignals_ > maxSignals_) numSignals_ = maxSignals_;
     pArray->getInfo(&arrayInfo);
     dataSize_ = arrayInfo.bytesPerElement;
     allocateArrays();
