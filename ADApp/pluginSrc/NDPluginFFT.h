@@ -20,6 +20,9 @@
 #define FFTTimePerPointString    "FFT_TIME_PER_POINT"   /* (asynFloat64,      r/o) Time per time point from driver */
 #define FFTDirectionString       "FFT_DIRECTION"        /* (asynInt32,        r/w) FFT direction */
 #define FFTSuppressDCString      "FFT_SUPPRESS_DC"      /* (asynInt32,        r/w) FFT DC offset suppression */
+#define FFTNumAverageString      "FFT_NUM_AVERAGE"      /* (asynInt32,        r/w) # of FFTs to average */
+#define FFTNumAveragedString     "FFT_NUM_AVERAGED"     /* (asynInt32,        r/o) # of FFTs averaged */
+#define FFTResetAverageString    "FFT_RESET_AVERAGE"    /* (asynInt32,        r/w) Reset FFT average */
 #define FFTTimeSeriesString      "FFT_TIME_SERIES"      /* (asynFloat64Array, r/o) Time series data */
 #define FFTRealString            "FFT_REAL"             /* (asynFloat64Array, r/o) Real part of FFT */
 #define FFTImaginaryString       "FFT_IMAGINARY"        /* (asynFloat64Array, r/o) Imaginary part of FFT */
@@ -44,6 +47,9 @@ protected:
   int P_FFTTimePerPoint;
   int P_FFTDirection;
   int P_FFTSuppressDC;
+  int P_FFTNumAverage;
+  int P_FFTNumAveraged;
+  int P_FFTResetAverage;
 
   int P_FFTTimeSeries;
   int P_FFTReal;
@@ -68,6 +74,10 @@ private:
   int nTimeY_;
   int nFreqX_;
   int nFreqY_;
+  int suppressDC_;
+  int numAverage_;
+  double oldFraction_;
+  double newFraction_;
   double timePerPoint_; /* Actual time between points in input arrays */
   double *timeAxis_;
   double *freqAxis_;

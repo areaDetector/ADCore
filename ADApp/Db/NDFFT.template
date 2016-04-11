@@ -95,6 +95,39 @@ record(bi, "$(P)$(R)FFTSuppressDC_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(longout, "$(P)$(R)FFTNumAverage")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_NUM_AVERAGE")
+   field(VAL,  "1")
+   info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)FFTNumAverage_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_NUM_AVERAGE")
+   field(SCAN,  "I/O Intr")
+}
+
+record(longin, "$(P)$(R)FFTNumAveraged")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_NUM_AVERAGED")
+   field(SCAN,  "I/O Intr")
+}
+
+record(bo, "$(P)$(R)FFTResetAverage")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_RESET_AVERAGE")
+   field(ZNAM, "Done")
+   field(ONAM, "Reset")
+   field(VAL,  "1")
+}
+
 record(stringout, "$(P)$(R)Name")
 {
    field(VAL,  "$(NAME)")

@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugin NDPluginFFT</h1>
     <h2>
-      March 18, 2016</h2>
+      April 10, 2016</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -31,7 +31,8 @@
     2-D NDArrays containing the absolute value of the FFT. It creates 1-D waveform records
     of the input, and the real, imaginary, and absolute values of the first row of the
     FFT. It also creates 1-D waveform records of the time and frequency axes, which
-    are useful for plotting if the 1-D input represents a time-series.</p>
+    are useful for plotting if the 1-D input represents a time-series. The plugin optionally
+    does recursive averaging of the computed FFTs to increase the signal to noise.</p>
   <p>
     The FFT algorithm used requires that the input array dimensions be a power of 2.
     The plugin will pad the array to the next larger power of 2 if the input array does
@@ -216,6 +217,66 @@
       </tr>
       <tr>
         <td>
+          FFTNumAverage</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          The characteristic number of FFTs in the recursive average. The equations for the
+          FFT averaging are:<br />
+          <code>Out = ((1-1/NumAveraged) * Old) + (1/NumAveraged * New)<br />
+            Old = Out
+            <br />
+            if (NumAveraged < NumAverage) NumAveraged = NumAveraged + 1
+            <br />
+          </code>when Old is the previous output and New is the latest FFT calculation. If
+          NumAverage=1 then there is no averaging. </td>
+        <td>
+          FFT_NUM_AVERAGE</td>
+        <td>
+          $(P)$(R)FFTNumAverage<br />
+          $(P)$(R)FFTNumAverage_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          FFTNumAveraged</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The number of FFTs averaged in the current output. This value increases until it
+          reaches the value of NumAverage. See the equations for NumAverage above. </td>
+        <td>
+          FFT_NUM_AVERAGED</td>
+        <td>
+          $(P)$(R)FFTNumAveraged</td>
+        <td>
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          FFTResetAverage</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          Setting this record to 1 resets NumAveraged to 0, so the averaging process starts
+          over. </td>
+        <td>
+          FFT_RESET_AVERAGE</td>
+        <td>
+          $(P)$(R)FFTResetAverage</td>
+        <td>
+          bo</td>
+      </tr>
+      <tr>
+        <td>
           N.A.</td>
         <td>
           N.A.</td>
@@ -344,7 +405,7 @@
   </div>
   <p>
     The following MEDM screens show the time series and FFT plots for arrays in NDFFT.template
-    and NDPluginTimeSeriesN.template. These 1-D time-series produced using the ADCSimDetector
+    and NDPluginTimeSeriesN.template. These 1-D time-series are produced using the ADCSimDetector
     driver in ADExample.
   </p>
   <div style="text-align: center; margin-top: 2em; margin-bottom: 2em">
@@ -358,6 +419,25 @@
       Absolute value of FFT. Note that the FFT of a sawtooth has the 10 Hz fundamental
       frequency plus all even and odd harmonics.</h4>
     <img alt="NDFFTPlotAbsValue.png" src="NDFFTPlotAbsValue.png" />
+  </div>
+  <div style="text-align: center; margin-top: 2em; margin-bottom: 2em">
+    <h4>
+      Time-series plot. This is the Sawtooth waveform with 10 Hz frequency with addition
+      of noise.
+    </h4>
+    <img alt="NDFFTTimeSeriesPlotNoisy.png" src="NDFFTTimeSeriesPlotNoisy.png" />
+  </div>
+  <div style="text-align: center; margin-top: 2em; margin-bottom: 2em">
+    <h4>
+      Absolute value of FFT of noisy waveform above with NumAverage=1 (no averaging).
+      Only the first peak in the power spectrum is clearly visible.</h4>
+    <img alt="NDFFTTimeSeriesPlotFFTAbsValueNoisyAvg1.png" src="NDFFTTimeSeriesPlotFFTAbsValueNoisyAvg1.png" />
+  </div>
+  <div style="text-align: center; margin-top: 2em; margin-bottom: 2em">
+    <h4>
+      Absolute value of FFT of noisy waveform above with NumAverage=100. The first 7 peaks
+      in the power spectrum are now clearly visible.</h4>
+    <img alt="NDFFTTimeSeriesPlotFFTAbsValueNoisyAvg100.png" src="NDFFTTimeSeriesPlotFFTAbsValueNoisyAvg100.png" />
   </div>
   <div style="text-align: center; margin-top: 2em; margin-bottom: 2em">
     <h4>
