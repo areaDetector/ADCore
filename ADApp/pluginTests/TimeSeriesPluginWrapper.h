@@ -5,8 +5,8 @@
  *      Author: Ulrik Pedersen
  */
 
-#ifndef ADAPP_PLUGINTESTS_POSPLUGINWRAPPER_H_
-#define ADAPP_PLUGINTESTS_POSPLUGINWRAPPER_H_
+#ifndef ADAPP_PLUGINTESTS_TIMESERIESPLUGINWRAPPER_H_
+#define ADAPP_PLUGINTESTS_TIMESERIESPLUGINWRAPPER_H_
 
 #include <NDPluginTimeSeries.h>
 #include "AsynPortClientContainer.h"
@@ -27,4 +27,4 @@ public:
   virtual ~TimeSeriesPluginWrapper ();
 };
 
-#endif /* ADAPP_PLUGINTESTS_POSPLUGINWRAPPER_H_ */
+#endif /* ADAPP_PLUGINTESTS_TIMESERIESPLUGINWRAPPER_H_ */
