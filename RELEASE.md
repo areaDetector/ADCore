@@ -95,7 +95,7 @@ R2-5 (March XXX, 2016)
   Added longin QueueSize_RBV.
 * Changed EnableCallbacks.VAL to $(ENABLED=0), allowing enabling callbacks when loading database,
   but default remains Disable.
-* Set the default value of the MDARRAY_ADDR macro to 0 so it does not need to be defined in most cases.
+* Set the default value of the NDARRAY_ADDR macro to 0 so it does not need to be defined in most cases.
   
 ### ADApp/op/adl
 * Fixed many medm adl files so text fields have correct string/decimal, width and aligmnent attributes to
