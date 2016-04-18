@@ -437,7 +437,7 @@ asynStatus NDPluginDriver::start(void)
   this->pThread->start();
 
   // Wait for the thread to say its running
-  if (not this->pThreadStartedEvent->wait(2.0)) {
+  if (!this->pThreadStartedEvent->wait(2.0)) {
     asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
     "%s::%s timeout waiting for plugin thread start event\n",
     driverName, functionName);
