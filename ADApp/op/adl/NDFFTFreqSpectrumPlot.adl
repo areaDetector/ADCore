@@ -1,0 +1,577 @@
+
+file {
+	name="/home/epics/devel/areaDetector-2-5/ADCore/ADApp/op/adl/NDFFTFreqSpectrumPlot.adl"
+	version=030107
+}
+display {
+	object {
+		x=81
+		y=135
+		width=500
+		height=465
+	}
+	clr=14
+	bclr=4
+	cmap=""
+	gridSpacing=5
+	gridOn=0
+	snapToGrid=0
+}
+"color map" {
+	ncolors=65
+	colors {
+		ffffff,
+		ececec,
+		dadada,
+		c8c8c8,
+		bbbbbb,
+		aeaeae,
+		9e9e9e,
+		919191,
+		858585,
+		787878,
+		696969,
+		5a5a5a,
+		464646,
+		2d2d2d,
+		000000,
+		00d800,
+		1ebb00,
+		339900,
+		2d7f00,
+		216c00,
+		fd0000,
+		de1309,
+		be190b,
+		a01207,
+		820400,
+		5893ff,
+		597ee1,
+		4b6ec7,
+		3a5eab,
+		27548d,
+		fbf34a,
+		f9da3c,
+		eeb62b,
+		e19015,
+		cd6100,
+		ffb0ff,
+		d67fe2,
+		ae4ebc,
+		8b1a96,
+		610a75,
+		a4aaff,
+		8793e2,
+		6a73c1,
+		4d52a4,
+		343386,
+		c7bb6d,
+		b79d5c,
+		a47e3c,
+		7d5627,
+		58340f,
+		99ffff,
+		73dfff,
+		4ea5f9,
+		2a63e4,
+		0a00b8,
+		ebf1b5,
+		d4db9d,
+		bbc187,
+		a6a462,
+		8b8239,
+		73ff6b,
+		52da3b,
+		3cb420,
+		289315,
+		1a7309,
+	}
+}
+"text update" {
+	object {
+		x=0
+		y=5
+		width=500
+		height=20
+	}
+	monitor {
+		chan="$(P)$(R)Name"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=0
+		y=30
+		width=500
+		height=20
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="$(P)$(R)$(S)"
+	align="horiz. centered"
+}
+"cartesian plot" {
+	object {
+		x=5
+		y=80
+		width=490
+		height=230
+	}
+	plotcom {
+		title="$(P)$(R)$(S)"
+		xlabel="Frequency (Hz)"
+		ylabel="$(P)$(R)$(S)"
+		clr=14
+		bclr=2
+	}
+	style="line"
+	erase_oldest="plot last n pts"
+	trace[0] {
+		xdata="$(P)$(R)FFTFreqAxis"
+		ydata="$(P)$(R)$(S)"
+		data_clr=27
+		yaxis=0
+	}
+	x_axis {
+		rangeStyle="auto-scale"
+	}
+	y1_axis {
+		rangeStyle="auto-scale"
+	}
+	y2_axis {
+		rangeStyle="auto-scale"
+	}
+}
+text {
+	object {
+		x=26
+		y=55
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Acquire"
+}
+"message button" {
+	object {
+		x=101
+		y=55
+		width=85
+		height=20
+	}
+	control {
+		chan="$(P)$(RTS)TSAcquire"
+		clr=14
+		bclr=51
+	}
+	label="Erase/Start"
+	press_msg="1"
+}
+"message button" {
+	object {
+		x=191
+		y=55
+		width=85
+		height=20
+	}
+	control {
+		chan="$(P)$(RTS)TSAcquire"
+		clr=14
+		bclr=51
+	}
+	label="Stop"
+	press_msg="0"
+}
+composite {
+	object {
+		x=10
+		y=315
+		width=485
+		height=70
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=320
+				y=365
+				width=110
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Signal name"
+			align="horiz. right"
+		}
+		"text entry" {
+			object {
+				x=435
+				y=366
+				width=60
+				height=19
+			}
+			control {
+				chan="$(P)$(R)Name"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		text {
+			object {
+				x=10
+				y=365
+				width=80
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Avg.time"
+		}
+		"text entry" {
+			object {
+				x=95
+				y=365
+				width=100
+				height=20
+			}
+			control {
+				chan="$(P)$(RTS)TSAveragingTime"
+				clr=14
+				bclr=51
+			}
+			format="exponential"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=200
+				y=366
+				width=100
+				height=18
+			}
+			monitor {
+				chan="$(P)$(RTS)TSAveragingTime_RBV"
+				clr=54
+				bclr=4
+			}
+			format="exponential"
+			limits {
+			}
+		}
+		menu {
+			object {
+				x=395
+				y=315
+				width=100
+				height=20
+			}
+			control {
+				chan="$(P)$(RTS)TSAcquireMode"
+				clr=14
+				bclr=51
+			}
+		}
+		text {
+			object {
+				x=280
+				y=315
+				width=110
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="AcquireMode"
+		}
+		"message button" {
+			object {
+				x=190
+				y=315
+				width=67
+				height=20
+			}
+			control {
+				chan="$(P)$(RTS)TSRead"
+				clr=14
+				bclr=51
+			}
+			label="Read"
+			press_msg="1"
+		}
+		menu {
+			object {
+				x=105
+				y=316
+				width=80
+				height=18
+			}
+			control {
+				chan="$(P)$(RTS)TSRead.SCAN"
+				clr=14
+				bclr=51
+			}
+		}
+		text {
+			object {
+				x=10
+				y=315
+				width=90
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Read rate"
+		}
+		text {
+			object {
+				x=10
+				y=340
+				width=160
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Number of points"
+			align="horiz. right"
+		}
+		"text entry" {
+			object {
+				x=175
+				y=341
+				width=60
+				height=19
+			}
+			control {
+				chan="$(P)$(RTS)TSNumPoints"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		text {
+			object {
+				x=270
+				y=340
+				width=130
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Current point"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=405
+				y=341
+				width=90
+				height=18
+			}
+			monitor {
+				chan="$(P)$(RTS)TSCurrentPoint"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+	}
+}
+"text update" {
+	object {
+		x=282
+		y=56
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(RTS)TSAcquiring"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	format="string"
+	limits {
+	}
+}
+composite {
+	object {
+		x=10
+		y=390
+		width=305
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=10
+				y=390
+				width=180
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Suppress DC offset"
+			align="horiz. right"
+		}
+		menu {
+			object {
+				x=195
+				y=390
+				width=120
+				height=20
+			}
+			control {
+				chan="$(P)$(R)FFTSuppressDC"
+				clr=14
+				bclr=51
+			}
+		}
+	}
+}
+"related display" {
+	object {
+		x=395
+		y=439
+		width=100
+		height=20
+	}
+	display[0] {
+		label="Time series plugin"
+		name="NDPluginTimeSeries.adl"
+		args="P=$(P),R=$(RTS)"
+	}
+	display[1] {
+		label="FFT plugin"
+		name="NDFFT.adl"
+		args="P=$(P),R=$(R)"
+	}
+	clr=14
+	bclr=51
+	label="More"
+}
+text {
+	object {
+		x=10
+		y=415
+		width=120
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="# to average"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=135
+		y=415
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)$(R)FFTNumAverage"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+composite {
+	object {
+		x=10
+		y=440
+		width=255
+		height=20
+	}
+	"composite name"=""
+	children {
+		"message button" {
+			object {
+				x=145
+				y=440
+				width=120
+				height=20
+			}
+			control {
+				chan="$(P)$(R)FFTResetAverage"
+				clr=14
+				bclr=51
+			}
+			label="Reset average"
+			press_msg="1"
+		}
+		text {
+			object {
+				x=10
+				y=440
+				width=130
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Reset average"
+			align="horiz. right"
+		}
+	}
+}
+composite {
+	object {
+		x=225
+		y=415
+		width=175
+		height=20
+	}
+	"composite name"=""
+	children {
+		"text update" {
+			object {
+				x=320
+				y=416
+				width=80
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)FFTNumAveraged"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+		text {
+			object {
+				x=225
+				y=415
+				width=90
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="#averaged"
+			align="horiz. right"
+		}
+	}
+}

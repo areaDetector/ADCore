@@ -1,0 +1,423 @@
+
+file {
+	name="/home/epics/devel/areaDetector-2-5/ADCore/ADApp/op/adl/NDFFT.adl"
+	version=030107
+}
+display {
+	object {
+		x=899
+		y=108
+		width=390
+		height=755
+	}
+	clr=14
+	bclr=4
+	cmap=""
+	gridSpacing=5
+	gridOn=0
+	snapToGrid=0
+}
+"color map" {
+	ncolors=65
+	colors {
+		ffffff,
+		ececec,
+		dadada,
+		c8c8c8,
+		bbbbbb,
+		aeaeae,
+		9e9e9e,
+		919191,
+		858585,
+		787878,
+		696969,
+		5a5a5a,
+		464646,
+		2d2d2d,
+		000000,
+		00d800,
+		1ebb00,
+		339900,
+		2d7f00,
+		216c00,
+		fd0000,
+		de1309,
+		be190b,
+		a01207,
+		820400,
+		5893ff,
+		597ee1,
+		4b6ec7,
+		3a5eab,
+		27548d,
+		fbf34a,
+		f9da3c,
+		eeb62b,
+		e19015,
+		cd6100,
+		ffb0ff,
+		d67fe2,
+		ae4ebc,
+		8b1a96,
+		610a75,
+		a4aaff,
+		8793e2,
+		6a73c1,
+		4d52a4,
+		343386,
+		c7bb6d,
+		b79d5c,
+		a47e3c,
+		7d5627,
+		58340f,
+		99ffff,
+		73dfff,
+		4ea5f9,
+		2a63e4,
+		0a00b8,
+		ebf1b5,
+		d4db9d,
+		bbc187,
+		a6a462,
+		8b8239,
+		73ff6b,
+		52da3b,
+		3cb420,
+		289315,
+		1a7309,
+	}
+}
+rectangle {
+	object {
+		x=0
+		y=5
+		width=390
+		height=25
+	}
+	"basic attribute" {
+		clr=2
+	}
+}
+text {
+	object {
+		x=87
+		y=6
+		width=216
+		height=25
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="$(P)$(R)"
+	align="horiz. centered"
+}
+composite {
+	object {
+		x=5
+		y=35
+		width=380
+		height=530
+	}
+	"composite name"=""
+	"composite file"="NDPluginBase.adl"
+}
+rectangle {
+	object {
+		x=5
+		y=570
+		width=380
+		height=180
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+		width=1
+	}
+}
+text {
+	object {
+		x=15
+		y=625
+		width=180
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Suppress DC offset"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=200
+		y=625
+		width=120
+		height=20
+	}
+	control {
+		chan="$(P)$(R)FFTSuppressDC"
+		clr=14
+		bclr=51
+	}
+}
+"related display" {
+	object {
+		x=200
+		y=650
+		width=120
+		height=20
+	}
+	display[0] {
+		label="Time series"
+		name="NDFFTTimeSeriesPlot.adl"
+		args="P=$(P),RTS=$(RTS),R=$(R)"
+	}
+	display[1] {
+		label="FFT abs. value"
+		name="NDFFTFreqSpectrumPlot.adl"
+		args="P=$(P),RTS=$(RTS),R=$(R),S=FFTAbsValue"
+	}
+	display[2] {
+		label="FFT real"
+		name="NDFFTFreqSpectrumPlot.adl"
+		args="P=$(P),RTS=$(RTS),R=$(R),S=FFTReal"
+	}
+	display[3] {
+		label="FFT Imaginary"
+		name="NDFFTFreqSpectrumPlot.adl"
+		args="P=$(P),RTS=$(RTS),R=$(R),S=FFTImaginary"
+	}
+	display[4] {
+		label="Combined"
+		name="NDFFTPlotAll.adl"
+		args="P=$(P),RTS=$(RTS),R=$(R)"
+	}
+	display[6] {
+		args=" "
+	}
+	display[7] {
+		args=" "
+	}
+	display[8] {
+		args=" "
+	}
+	display[9] {
+		args=" "
+	}
+	display[10] {
+		args=" "
+	}
+	display[11] {
+		args=" "
+	}
+	display[12] {
+		args=" "
+	}
+	display[13] {
+		name="l"
+	}
+	display[14] {
+		args=" "
+	}
+	display[15] {
+		args=" "
+	}
+	clr=14
+	bclr=51
+	label="Plots"
+}
+text {
+	object {
+		x=105
+		y=650
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="1-D plots"
+	align="horiz. right"
+}
+composite {
+	object {
+		x=65
+		y=600
+		width=255
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=65
+				y=600
+				width=130
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="FFT direction"
+			align="horiz. right"
+		}
+		menu {
+			object {
+				x=200
+				y=600
+				width=120
+				height=20
+			}
+			control {
+				chan="$(P)$(R)FFTDirection"
+				clr=14
+				bclr=51
+			}
+		}
+	}
+}
+text {
+	object {
+		x=155
+		y=575
+		width=40
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Name"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=200
+		y=575
+		width=120
+		height=20
+	}
+	control {
+		chan="$(P)$(R)Name"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+composite {
+	object {
+		x=25
+		y=675
+		width=295
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=25
+				y=675
+				width=170
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Number to average"
+			align="horiz. right"
+		}
+		"text entry" {
+			object {
+				x=200
+				y=675
+				width=120
+				height=20
+			}
+			control {
+				chan="$(P)$(R)FFTNumAverage"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=45
+		y=700
+		width=275
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=45
+				y=700
+				width=150
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Number averaged"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=200
+				y=701
+				width=120
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)FFTNumAveraged"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=65
+		y=725
+		width=253
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=65
+				y=725
+				width=130
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Reset average"
+			align="horiz. right"
+		}
+		"message button" {
+			object {
+				x=200
+				y=725
+				width=118
+				height=20
+			}
+			control {
+				chan="$(P)$(R)FFTResetAverage"
+				clr=14
+				bclr=51
+			}
+			label="Reset average"
+			press_msg="1"
+		}
+	}
+}

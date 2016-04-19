@@ -42,9 +42,10 @@ typedef enum {
     TSCentroidY,
     TSSigmaX,
     TSSigmaY,
-    TSSigmaXY
+    TSSigmaXY,
+    TSTimestamp
 } NDStatTSType;
-#define MAX_TIME_SERIES_TYPES TSSigmaXY+1
+#define MAX_TIME_SERIES_TYPES TSTimestamp+1
 
 typedef enum {
     TSEraseStart,
@@ -97,6 +98,7 @@ typedef enum {
 #define NDPluginStatsTSSigmaXString           "TS_SIGMAX_VALUE"     /* (asynFloat64Array, r/o) Series of sigma X */
 #define NDPluginStatsTSSigmaYString           "TS_SIGMAY_VALUE"     /* (asynFloat64Array, r/o) Series of sigma Y */
 #define NDPluginStatsTSSigmaXYString          "TS_SIGMAXY_VALUE"    /* (asynFloat64Array, r/o) Series of sigma XY */
+#define NDPluginStatsTSTimestampString        "TS_TIMESTAMP_VALUE"  /* (asynFloat64Array, r/o) Series of timestamps */
 
 /* Profiles*/   
 #define NDPluginStatsComputeProfilesString    "COMPUTE_PROFILES"    /* (asynInt32,        r/w) Compute profiles? */
@@ -195,6 +197,7 @@ protected:
     int NDPluginStatsTSSigmaX;
     int NDPluginStatsTSSigmaY;
     int NDPluginStatsTSSigmaXY;
+    int NDPluginStatsTSTimestamp;
     
     /* Profiles */
     int NDPluginStatsComputeProfiles;

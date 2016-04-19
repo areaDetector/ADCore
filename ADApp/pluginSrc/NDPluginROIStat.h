@@ -46,6 +46,7 @@
 #define NDPluginROIStatTSMeanValueString        "ROISTAT_TS_MEAN_VALUE"     /* (asynFloat64Array, r/o) Series of mean counts */
 #define NDPluginROIStatTSTotalString            "ROISTAT_TS_TOTAL"          /* (asynFloat64Array, r/o) Series of total */
 #define NDPluginROIStatTSNetString              "ROISTAT_TS_NET"            /* (asynFloat64Array, r/o) Series of net */
+#define NDPluginROIStatTSTimestampString        "ROISTAT_TS_TIMESTAMP"      /* (asynFloat64Array, r/o) Series of timestamps */
 
 typedef enum {
     TSMinValue,
@@ -53,6 +54,7 @@ typedef enum {
     TSMeanValue,
     TSTotal,
     TSNet,
+    TSTimestamp,
     MAX_TIME_SERIES_TYPES
 } NDPluginROIStatTSType;
 
@@ -128,6 +130,7 @@ protected:
     int NDPluginROIStatTSMeanValue;
     int NDPluginROIStatTSTotal;
     int NDPluginROIStatTSNet;
+    int NDPluginROIStatTSTimestamp;
     
     int NDPluginROIStatLast;
     #define LAST_NDPLUGIN_ROISTAT_PARAM NDPluginROIStatLast

@@ -257,3 +257,11 @@ record(waveform, "$(P)$(R)TSNet")
    field(SCAN, "I/O Intr")
 }
 
+record(waveform, "$(P)$(R)TSTimestamp")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_TS_TIMESTAMP")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}

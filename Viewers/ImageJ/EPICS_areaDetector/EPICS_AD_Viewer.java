@@ -347,12 +347,13 @@ public class EPICS_AD_Viewer implements PlugIn
             int cm = epicsGetInt(ch_colorMode);
             DBRType dt = ch_image.getFieldType();
 
-            if (nz == 0) nz = 1;
+            if (nz == 0) nz = 1;  // 2-D images without color
+            if (ny == 0) ny = 1;  // 1-D images which are OK, useful with dynamic profiler
+            if (isDebugMessages)
+                IJ.log("got image, sizes: " + nx + " " + ny + " " + nz);
             int getsize = nx * ny * nz;
             if (getsize == 0) return;  // Not valid dimensions
 
-            if (isDebugMessages)
-                IJ.log("got image, sizes: " + nx + " " + ny + " " + nz);
 
             // if image size changes we must close window and make a new one.
             boolean makeNewWindow = false;

@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel-AD2.0/areaDetector/ADCore/ADApp/op/adl/ADBuffers.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/ADBuffers.adl"
 	version=030107
 }
 display {
@@ -154,60 +154,49 @@ text {
 	limits {
 	}
 }
-composite {
+text {
 	object {
 		x=50
 		y=30
-		width=270
+		width=160
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=50
-				y=30
-				width=160
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Buffers max/used"
-			align="horiz. right"
-		}
-		"text update" {
-			object {
-				x=215
-				y=31
-				width=50
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)PoolMaxBuffers"
-				clr=54
-				bclr=4
-			}
-			align="horiz. right"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=270
-				y=31
-				width=50
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)PoolUsedBuffers"
-				clr=54
-				bclr=4
-			}
-			align="horiz. right"
-			limits {
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Buffers max/used"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=215
+		y=31
+		width=50
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)PoolMaxBuffers"
+		clr=54
+		bclr=4
+	}
+	align="horiz. right"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=270
+		y=31
+		width=50
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)PoolUsedBuffers"
+		clr=54
+		bclr=4
+	}
+	align="horiz. right"
+	limits {
 	}
 }
 text {

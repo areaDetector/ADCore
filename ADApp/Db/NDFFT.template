@@ -1,0 +1,172 @@
+#=================================================================#
+# Template file: NDFFT.template
+###################################################################
+#
+# Database template for FFT plugin. 
+# Macros:
+# P,R - Base PV name
+# PORT - Asyn port name
+# ADDR - The Asyn address
+# TIMEOUT - Asyn port timeout
+#
+# Mark Rivers
+# March 2016
+#
+###################################################################
+
+include "NDPluginBase.template"
+
+record(ao, "$(P)$(R)FFTTimePerPointLink")
+{
+   field(PINI, "YES")
+   field(DOL,  "$(TIME_LINK=0.1)")
+   field(OMSL, "closed_loop")
+   field(OUT, "$(P)$(R)FFTTimePerPoint PP MS")
+}
+
+record(ao, "$(P)$(R)FFTTimePerPoint")
+{
+   field(DTYP, "asynFloat64")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_TIME_PER_POINT")
+   field(PREC, "3")
+}
+
+record(ai, "$(P)$(R)FFTTimePerPoint_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_TIME_PER_POINT")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)FFTTimeAxis")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_TIME_AXIS")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)FFTFreqAxis")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_FREQ_AXIS")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)FFTDirection")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_DIRECTION")
+   field(ZNAM, "Time to freq.")
+   field(ONAM, "Freq. to time")
+   info(autosaveFields, "VAL")
+}
+
+record(bi, "$(P)$(R)FFTDirection_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_DIRECTION")
+   field(ZNAM, "Time to freq.")
+   field(ONAM, "Freq. to time")
+   field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)FFTSuppressDC")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_SUPPRESS_DC")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
+   info(autosaveFields, "VAL")
+}
+
+record(bi, "$(P)$(R)FFTSuppressDC_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_SUPPRESS_DC")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)FFTNumAverage")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_NUM_AVERAGE")
+   field(VAL,  "1")
+   info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)FFTNumAverage_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_NUM_AVERAGE")
+   field(SCAN,  "I/O Intr")
+}
+
+record(longin, "$(P)$(R)FFTNumAveraged")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_NUM_AVERAGED")
+   field(SCAN,  "I/O Intr")
+}
+
+record(bo, "$(P)$(R)FFTResetAverage")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_RESET_AVERAGE")
+   field(ZNAM, "Done")
+   field(ONAM, "Reset")
+   field(VAL,  "1")
+}
+
+record(stringout, "$(P)$(R)Name")
+{
+   field(VAL,  "$(NAME)")
+   info(autosaveFields, "VAL")
+}
+
+record(waveform, "$(P)$(R)FFTTimeSeries")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_TIME_SERIES")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)FFTReal")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_REAL")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)FFTImaginary")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_IMAGINARY")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)FFTAbsValue")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))FFT_ABS_VALUE")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
+

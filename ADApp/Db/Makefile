@@ -20,7 +20,11 @@ DB += ADPrefixes.template
 DB += pvaDriver.template
 
 # Plugins
+DB += NDAttribute.template
+DB += NDAttributeN.template
+DB += NDCircularBuff.template
 DB += NDColorConvert.template
+DB += NDFFT.template
 DB += NDFile.template
 DB += NDFileHDF5.template
 DB += NDFileJPEG.template
@@ -32,17 +36,16 @@ DB += NDOverlay.template
 DB += NDOverlayN.template
 DB += NDPluginBase.template
 DB += NDProcess.template
+DB += NDPva.template
 DB += NDROI.template
 DB += NDROIStat.template
 DB += NDROIStatN.template
 DB += NDROIStat8.template
 DB += NDStats.template
 DB += NDStdArrays.template
+DB += NDTimeSeries.template
+DB += NDTimeSeriesN.template
 DB += NDTransform.template
-DB += NDAttribute.template
-DB += NDAttributeN.template
-DB += NDCircularBuff.template
-DB += NDPva.template
 
 #----------------------------------------------------
 # If <anyname>.db template is not named <anyname>*.template add

@@ -23,6 +23,96 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
+R2-5 (March XXX, 2016)
+========================
+### NDPluginBase
+* Added the ability to change the QueueSize of a plugin at run-time. This can be very useful,
+  particularly for file plugins where an acquisition of N frames is overflowing the queue,
+  but increasing the queue can fix the problem. This will be even more useful in ADCore R3-0
+  where we plan to eliminate Capture mode in NDPluginFile. Being able to increase the queue does
+  everything that Capture mode did, but has the additional advantage that in Capture mode the
+  NDArray memory is not allocated from the NDArrayPool, so there is no check on allocating too
+  many arrays or too much memory. Using the queue means that arrays are allocated from the pool,
+  so the limits on total number of arrays and total memory defined in the constructor will be obeyed.
+  This is very important in preventing system freezes if the user accidentally tries allocate all the
+  system memory, which can effectively crash the computer.
+
+### NDPluginTimeSeries
+* New plugin to for time-series data.  The plugin accepts input arrays of dimensions
+  [NumSignals] or [NumSignals, NewTimePoints].  The plugin creates NumSignals 1-D
+  arrays of dimension [NumTimPoints], each of which is the time-series for one signal.
+  On each callback the new time points are appended to the existing time series arrays.
+  The plugin can operate in one of two modes.  In Fixed Length mode the time-series arrays
+  are cleared when acquisition starts, and new time points are appended until 
+  NumTimePoints points have been received, at which point acquisition stops and further
+  callbacks are ignorred.  In Circular Buffer mode when NumTimePoints samples are received
+  then acquisition continues with the new time points replacing the oldest ones in the
+  circular buffer.  In this mode the export NDArrays and waveforms always contain the latest 
+  NumTimePoints samples, with the first element of the array containing the oldest time
+  point and the last element containing the most recent time point.    
+* This plugin is used by R7-0 and later of the 
+  [quadEM module](https://github.com/epics-modules/quadEM).
+  It should also be useful for devices like ADCs, transient digitizers, and other devices
+  that produce time-series data on one or more input signals.  
+* There is a new ADCSimDetector test application in 
+  [areaDetector/ADExample](https://github.com/areaDetector/ADExample) 
+  that tests and demonstrates this plugin.  This test application simulates a buffered 
+  ADC with 8 input waveform signals.
+
+### NDPluginFFT
+* New plugin to compute 1-D or 2-D Fast Fourier transforms.  It exports 1-D or 2-D
+  NDArrays containing the absolute value of the FFT.  It creates 1-D waveform
+  records of the input, and the real, imaginary, and absolute values of the first row of the FFT.
+  It also creates 1-D waveform records of the time and frequency axes, which are useful if the 1-D
+  input represents a time-series. The waveform records are convenient for plotting in OPI screens. 
+* The FFT algorithm requires that the input array dimensions be a power of 2, but the plugin
+  will pad the array to the next larger power of 2 if the input array does not meet this
+  requirement.  
+*  The simDetector test application in 
+  [areaDetector/ADExample](https://github.com/areaDetector/ADExample) 
+  has a new simulation mode that generates images based on the sums and/or products of 4 sine waves.
+  This application is useful for testing and demonstrating the NDPluginFFT plugin.
+
+### NDPluginStats and NDPluginROIStat
+* Added waveform record containing NDArray timetstamps to time series data arrays. Thanks to
+  Stuart Wilkins for this.
+
+### NDPluginCircularBuff
+* Initialize the TriggerCalc string to "0" in the constructor to avoid error messages during iocInit
+  if the string has not been set to a valid value that is stored with autosave.
+
+### asynNDArrayDriver
+* Fixed bug in FilePath handling on Windows. If the file path ended in "/" then it would incorrectly
+  report that the directory did not exist when it did.
+* Added asynGenericPointerMask to interrupt mask in constructor.  Should always have been there.
+* Added asynDrvUserMask to interface mask in constructor.  Should always have been there.
+
+### NDArrayBase.template, NDPluginDriver.cpp
+* Set ArrayCallbacks.VAL to 1 so array callbacks are enabled by default.
+
+### NDPluginBase.template
+* Changed QueueSize from longin to longout, because the plugin queue size can now be changed at runtime.
+  Added longin QueueSize_RBV.
+* Changed EnableCallbacks.VAL to $(ENABLED=0), allowing enabling callbacks when loading database,
+  but default remains Disable.
+* Set the default value of the NDARRAY_ADDR macro to 0 so it does not need to be defined in most cases.
+  
+### ADApp/op/adl
+* Fixed many medm adl files so text fields have correct string/decimal, width and aligmnent attributes to
+  improve autoconversion to other display managers.
+
+### nexusSrc/Makefile
+* Fixed so it will work when hdf5 and sz libraries are system libraries.
+  Used same logic as commonDriverMakefile
+
+### iocBoot
+* Deleted commonPlugins.cmd and commonPlugin_settings.req.  These were accidentally restored before the R2-4
+  release after renaming them to EXAMPLE_commonPlugins.cmd and EXAMPLE_commonPlugin_settings.req.
+
+### ImageJ EPICS_ADViewer
+* Changed to work with 1-D arrays, i.e. nx>0, ny=0, nz=0.  Previously it did not work if ny=0.  This
+  is a useful enhancement because the ImageJ Dynamic Profiler can then be used to plot the 1-D array.
+
 
 R2-4 (September 21, 2015)
 ========================

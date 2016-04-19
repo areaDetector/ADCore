@@ -22,7 +22,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <netcdf.h>
 
 #include <epicsStdio.h>
 #include <iocsh.h>
@@ -478,9 +477,9 @@ extern "C" int NDFileTIFFConfigure(const char *portName, int queueSize, int bloc
                                    const char *NDArrayPort, int NDArrayAddr,
                                    int priority, int stackSize)
 {
-    new NDFileTIFF(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                   priority, stackSize);
-    return(asynSuccess);
+    NDFileTIFF *pPlugin = new NDFileTIFF(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
+                                         priority, stackSize);
+    return pPlugin->start();
 }
 
 
