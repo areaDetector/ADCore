@@ -10,6 +10,14 @@ else
   LIB_LIBS              += $(EPICS_BASE_IOC_LIBS)
 endif
 
+ifeq ($(EPICS_V4),YES)
+  LIB_LIBS              += pvData
+  LIB_LIBS              += pvDatabase
+  LIB_LIBS              += nt
+  LIB_LIBS              += pvAccess
+  LIB_LIBS              += ntndArrayConverter
+endif
+
 # The following libraries are only needed for GraphicsMagick
 ifeq ($(USE_GRAPHICSMAGICK), YES)
   LIB_LIBS_WIN32        += CORE_RL_Magick++_ CORE_RL_wand_ CORE_RL_magick_ 

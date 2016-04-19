@@ -3,6 +3,10 @@
 
 $(PROD_NAME)_DBD += commonDriverSupport.dbd
 
+ifeq ($(EPICS_V4),YES)
+  $(PROD_NAME)_DBD += NDPluginPva.dbd
+endif
+
 PROD_LIBS               += NDPlugin ADBase netCDF
 
 ifdef ADPLUGINEDGE

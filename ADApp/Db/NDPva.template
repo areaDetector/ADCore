@@ -1,0 +1,18 @@
+#=================================================================#
+# Template file: NDPva.template
+# Database for the records specific to the pvAccess plugin
+# Bruno Martins
+# May 5, 2015
+
+include "NDPluginBase.template"
+
+# New records for NDPluginPva
+
+record(waveform, "$(P)$(R)PvName_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PV_NAME")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
+    field(SCAN, "I/O Intr")
+}
