@@ -19,9 +19,12 @@
 #include <sys/stat.h>
 // #include <hdf5_hl.h> // high level HDF5 API not currently used (requires use of library hdf5_hl)
 
-#include <epicsStdio.h>
-#include <epicsString.h>
+#include <epicsTypes.h>
+#include <epicsMessageQueue.h>
+#include <epicsThread.h>
+#include <epicsEvent.h>
 #include <epicsTime.h>
+#include <epicsString.h>
 #include <iocsh.h>
 #define epicsAssertAuthor "the EPICS areaDetector collaboration (https://github.com/areaDetector/ADCore/issues)"
 #include <epicsAssert.h>
