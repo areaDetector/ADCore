@@ -13,13 +13,11 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <epicsThread.h>
-#include <epicsString.h>
-#include <epicsTimer.h>
-#include <epicsMutex.h>
-#include <epicsEvent.h>
+#include <epicsTypes.h>
 #include <epicsMessageQueue.h>
-#include <cantProceed.h>
+#include <epicsThread.h>
+#include <epicsEvent.h>
+#include <epicsTime.h>
 #include <iocsh.h>
 
 #include <asynDriver.h>

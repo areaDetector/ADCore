@@ -11,7 +11,11 @@
 
 #include <stdio.h>
 
-#include <epicsString.h>
+#include <epicsTypes.h>
+#include <epicsMessageQueue.h>
+#include <epicsThread.h>
+#include <epicsEvent.h>
+#include <epicsTime.h>
 #include <iocsh.h>
 #include <tinyxml.h>
 #include <napi.h>

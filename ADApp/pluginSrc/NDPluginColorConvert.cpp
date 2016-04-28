@@ -13,8 +13,11 @@
 #include <stdio.h>
 #include <math.h>
 
-#include <epicsMutex.h>
-#include <epicsString.h>
+#include <epicsTypes.h>
+#include <epicsMessageQueue.h>
+#include <epicsThread.h>
+#include <epicsEvent.h>
+#include <epicsTime.h>
 #include <iocsh.h>
 
 #include <asynDriver.h>

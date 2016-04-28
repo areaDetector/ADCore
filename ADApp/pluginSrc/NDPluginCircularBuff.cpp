@@ -12,8 +12,11 @@
 #include <stdio.h>
 #include <math.h>
 
-#include <epicsString.h>
-#include <epicsMutex.h>
+#include <epicsTypes.h>
+#include <epicsMessageQueue.h>
+#include <epicsThread.h>
+#include <epicsEvent.h>
+#include <epicsTime.h>
 #include <epicsMath.h>
 #include <iocsh.h>
 #include <postfix.h>
