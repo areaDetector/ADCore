@@ -1,0 +1,466 @@
+4 0 1
+beginScreenProperties
+major 4
+minor 0
+release 1
+x 1476
+y 476
+w 390
+h 820
+font "arial-bold-r-12.0"
+ctlFont "arial-bold-r-12.0"
+btnFont "arial-bold-r-12.0"
+fgColor index 14
+bgColor index 3
+textColor index 14
+ctlFgColor1 index 25
+ctlFgColor2 index 25
+ctlBgColor1 index 3
+ctlBgColor2 index 3
+topShadowColor index 1
+botShadowColor index 11
+showGrid
+snapToGrid
+gridSize 5
+endScreenProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 0
+y 385
+w 390
+h 435
+lineColor index 5
+fill
+fillColor index 5
+endObjectProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 0
+y 0
+w 390
+h 385
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+displaySource "file"
+file "NDPluginBase"
+sizeOfs 5
+numDsps 2
+displayFileName {
+  0 "NDPluginBase"
+  1 "NDPluginBase"
+}
+noScroll
+endObjectProperties
+
+# (Choice Button)
+object activeChoiceButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 5
+y 390
+w 380
+h 25
+fgColor index 14
+bgColor index 3
+selectColor index 4
+inconsistentColor index 0
+topShadowColor index 1
+botShadowColor index 11
+controlPv "LOC\\$(!W)tab=e:0,O1,O2,O3,O4,O5,O6,O7,O8"
+font "arial-bold-r-12.0"
+orientation "horizontal"
+endObjectProperties
+
+# (Embedded Window)
+object activePipClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 5
+y 415
+w 380
+h 275
+fgColor index 14
+bgColor index 3
+topShadowColor index 0
+botShadowColor index 0
+displaySource "menu"
+filePv "LOC\\$(!W)tab"
+sizeOfs 5
+numDsps 8
+displayFileName {
+  0 "NDAttributeN"
+  1 "NDAttributeN"
+  2 "NDAttributeN"
+  3 "NDAttributeN"
+  4 "NDAttributeN"
+  5 "NDAttributeN"
+  6 "NDAttributeN"
+  7 "NDAttributeN"
+}
+symbols {
+  0 "O=1:"
+  1 "O=2:"
+  2 "O=3:"
+  3 "O=4:"
+  4 "O=5:"
+  5 "O=6:"
+  6 "O=7:"
+  7 "O=8:"
+}
+noScroll
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 5
+y 415
+w 380
+h 275
+lineColor index 1
+fillColor index 0
+numPoints 3
+xPoints {
+  0 5
+  1 385
+  2 385
+}
+yPoints {
+  0 690
+  1 690
+  2 415
+}
+endObjectProperties
+
+# (Lines)
+object activeLineClass
+beginObjectProperties
+major 4
+minor 0
+release 1
+x 5
+y 415
+w 380
+h 275
+lineColor index 11
+fillColor index 0
+numPoints 3
+xPoints {
+  0 5
+  1 5
+  2 385
+}
+yPoints {
+  0 690
+  1 415
+  2 415
+}
+endObjectProperties
+
+# (Shell Command)
+object shellCmdClass
+beginObjectProperties
+major 4
+minor 3
+release 0
+x 5
+y 790
+w 185
+h 25
+fgColor index 14
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "arial-bold-r-12.0"
+buttonLabel "HTML Documentation"
+numCmds 1
+command {
+  0 "firefox \"file://$(which ADBase.edl | sed \"s|data/ADBase.edl|documentation/NDPluginAttribute.html|\")\" &"
+}
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 200
+y 790
+w 185
+h 25
+fgColor index 43
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "arial-bold-r-12.0"
+xPosOffset 200
+yPosOffset -200
+buttonLabel "Advanced..."
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "NDPluginDriverAdvanced.edl"
+}
+setPosition {
+  0 "button"
+}
+endObjectProperties
+
+# (Rectangle)
+object activeRectangleClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 5
+y 705
+w 185
+h 80
+lineColor index 14
+fill
+fillColor index 3
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 5
+y 695
+w 146
+h 13
+font "arial-medium-r-12.0"
+fgColor index 14
+bgColor index 5
+value {
+  "  Time Series (e.g. Mean)  "
+}
+autoSize
+border
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 735
+w 55
+h 20
+font "arial-bold-r-12.0"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "NPoints"
+}
+endObjectProperties
+
+# (Textentry)
+object TextentryClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 130
+y 735
+w 55
+h 20
+controlPv "$(P)$(R)TSNumPoints"
+fgColor index 25
+fgAlarm
+bgColor index 3
+fill
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Textupdate)
+object TextupdateClass
+beginObjectProperties
+major 10
+minor 0
+release 0
+x 70
+y 735
+w 55
+h 20
+controlPv "$(P)$(R)TSCurrentPoint"
+fgColor index 16
+fgAlarm
+bgColor index 10
+fill
+font "arial-bold-r-12.0"
+fontAlign "center"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 125
+y 735
+w 5
+h 20
+font "arial-bold-r-12.0"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "/"
+}
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 125
+y 710
+w 35
+h 20
+fgColor index 21
+onColor index 4
+offColor index 3
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(P)$(R)TSControl"
+pressValue "2"
+onLabel "Stop"
+offLabel "Stop"
+3d
+useEnumNumeric
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 85
+y 710
+w 35
+h 20
+fgColor index 19
+onColor index 4
+offColor index 3
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(P)$(R)TSControl"
+pressValue "1"
+onLabel "Start"
+offLabel "Start"
+3d
+useEnumNumeric
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Byte)
+object ByteClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 165
+y 710
+w 18
+h 18
+controlPv "$(P)$(R)TSAcquiring"
+lineColor index 14
+onColor index 15
+offColor index 19
+lineWidth 2
+numBits 1
+endObjectProperties
+
+# (Message Button)
+object activeMessageButtonClass
+beginObjectProperties
+major 4
+minor 1
+release 0
+x 10
+y 710
+w 70
+h 20
+fgColor index 19
+onColor index 4
+offColor index 3
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(P)$(R)TSControl"
+pressValue "0"
+onLabel "Erase/Start"
+offLabel "Erase/Start"
+3d
+useEnumNumeric
+font "arial-bold-r-12.0"
+endObjectProperties
+
+# (Static Text)
+object activeXTextClass
+beginObjectProperties
+major 4
+minor 1
+release 1
+x 10
+y 760
+w 55
+h 20
+font "arial-bold-r-12.0"
+fgColor index 14
+bgColor index 3
+useDisplayBg
+value {
+  "Update"
+}
+endObjectProperties
+
+# (Menu Button)
+object activeMenuButtonClass
+beginObjectProperties
+major 4
+minor 0
+release 0
+x 70
+y 760
+w 115
+h 20
+fgColor index 25
+bgColor index 3
+inconsistentColor index 0
+topShadowColor index 1
+botShadowColor index 11
+controlPv "$(P)$(R)TSRead.SCAN"
+font "arial-bold-r-12.0"
+endObjectProperties
+
