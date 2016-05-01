@@ -26,6 +26,9 @@
 #include <epicsTime.h>
 #include <epicsString.h>
 #include <iocsh.h>
+#ifdef epicsAssertAuthor
+  #undef epicsAssertAuthor
+#endif
 #define epicsAssertAuthor "the EPICS areaDetector collaboration (https://github.com/areaDetector/ADCore/issues)"
 #include <epicsAssert.h>
 #include <osiSock.h>
@@ -2168,7 +2171,7 @@ asynStatus NDFileHDF5::createAttributeDataset()
       hdfAttrNode->hdfrank    = 1;
     } else {
       // String dataset required, use type N5T_NATIVE_CHAR
-      hdfAttrNode->hdfdatatype = H5T_NATIVE_CHAR;
+      hdfAttrNode->hdfdatatype = H5T_C_S1;
       hdfAttrNode->hdfdims[1] = MAX_ATTRIBUTE_STRING_SIZE;
       hdfAttrNode->chunk[0]   = chunking;
       hdfAttrNode->chunk[1]   = MAX_ATTRIBUTE_STRING_SIZE;
