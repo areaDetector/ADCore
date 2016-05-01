@@ -1850,6 +1850,7 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   this->performanceBuf       = NULL;
   this->performancePtr       = NULL;
   this->numPerformancePoints = 0;
+
   this->hostname = (char*)calloc(MAXHOSTNAMELEN, sizeof(char));
   gethostname(this->hostname, MAXHOSTNAMELEN);
 }
@@ -2180,7 +2181,7 @@ asynStatus NDFileHDF5::createAttributeDataset()
           hdfAttrNode->chunk[1]   = MAX_ATTRIBUTE_STRING_SIZE;
           hdfAttrNode->hdfrank    = 2;
           break;
-        
+
         case hdf5::CString:
           hdfAttrNode->hdfdatatype = H5Tcopy(H5T_C_S1);
           H5Tset_size(hdfAttrNode->hdfdatatype, MAX_ATTRIBUTE_STRING_SIZE);
