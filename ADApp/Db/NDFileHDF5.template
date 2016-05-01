@@ -257,6 +257,26 @@ record(bi, "$(P)$(R)StoreAttr_RBV")
     field(ONAM, "Yes")
 }
 
+record(bo, "$(P)$(R)StrAttrDataType")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),0)HDF5_stringAttributeDataType")
+    field(PINI, "YES")
+    field(ZNAM, "Char")
+    field(ONAM, "String")
+    info(autosaveFields, "VAL")
+}
+
+record(bi, "$(P)$(R)StrAttrDataType_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),0)HDF5_stringAttributeDataType")
+    field(PINI, "NO")
+    field(SCAN, "I/O Intr")
+    field(ZNAM, "Char")
+    field(ONAM, "String")
+}
+
 record(bo, "$(P)$(R)StorePerform")
 {
     field(DTYP, "asynInt32")
