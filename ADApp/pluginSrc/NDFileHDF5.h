@@ -30,6 +30,7 @@
 #define str_NDFileHDF5_extraDimNameY     "HDF5_extraDimNameY"
 #define str_NDFileHDF5_extraDimOffsetY   "HDF5_extraDimOffsetY"
 #define str_NDFileHDF5_storeAttributes   "HDF5_storeAttributes"
+#define str_NDFileHDF5_stringAttributeDataType "HDF5_stringAttributeDataType"
 #define str_NDFileHDF5_storePerformance  "HDF5_storePerformance"
 #define str_NDFileHDF5_totalRuntime      "HDF5_totalRuntime"
 #define str_NDFileHDF5_totalIoSpeed      "HDF5_totalIoSpeed"
@@ -130,6 +131,7 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     int NDFileHDF5_extraDimNameY;
     int NDFileHDF5_extraDimOffsetY;
     int NDFileHDF5_storeAttributes;
+    int NDFileHDF5_stringAttributeDataType;
     int NDFileHDF5_storePerformance;
     int NDFileHDF5_totalRuntime;
     int NDFileHDF5_totalIoSpeed;

@@ -26,6 +26,9 @@
 #include <epicsTime.h>
 #include <epicsString.h>
 #include <iocsh.h>
+#ifdef epicsAssertAuthor
+  #undef epicsAssertAuthor
+#endif
 #define epicsAssertAuthor "the EPICS areaDetector collaboration (https://github.com/areaDetector/ADCore/issues)"
 #include <epicsAssert.h>
 #include <osiSock.h>
@@ -1766,6 +1769,7 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   this->createParam(str_NDFileHDF5_extraDimNameY,   asynParamOctet,   &NDFileHDF5_extraDimNameY);
   this->createParam(str_NDFileHDF5_extraDimOffsetY, asynParamInt32,   &NDFileHDF5_extraDimOffsetY);
   this->createParam(str_NDFileHDF5_storeAttributes, asynParamInt32,   &NDFileHDF5_storeAttributes);
+  this->createParam(str_NDFileHDF5_stringAttributeDataType, asynParamInt32, &NDFileHDF5_stringAttributeDataType);
   this->createParam(str_NDFileHDF5_storePerformance,asynParamInt32,   &NDFileHDF5_storePerformance);
   this->createParam(str_NDFileHDF5_totalRuntime,    asynParamFloat64, &NDFileHDF5_totalRuntime);
   this->createParam(str_NDFileHDF5_totalIoSpeed,    asynParamFloat64, &NDFileHDF5_totalIoSpeed);
@@ -1792,6 +1796,7 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
   setIntegerParam(NDFileHDF5_extraDimSizeY,   1);
   setIntegerParam(NDFileHDF5_extraDimOffsetY, 0);
   setIntegerParam(NDFileHDF5_storeAttributes, 1);
+  setIntegerParam(NDFileHDF5_stringAttributeDataType, hdf5::nativeChar);
   setIntegerParam(NDFileHDF5_storePerformance,1);
   setDoubleParam (NDFileHDF5_totalRuntime,    0.0);
   setDoubleParam (NDFileHDF5_totalIoSpeed,    0.0);
@@ -2086,6 +2091,7 @@ asynStatus NDFileHDF5::createAttributeDataset()
   HDFAttributeNode *hdfAttrNode;
   NDAttribute *ndAttr = NULL;
   NDAttrSource_t ndAttrSourceType;
+  int stringAttributeDataType;
   int extraDims;
   int chunking = 0;
   int fileWriteMode = 0;
@@ -2099,6 +2105,7 @@ asynStatus NDFileHDF5::createAttributeDataset()
 
   this->lock();
   getIntegerParam(NDFileHDF5_nExtraDims, &extraDims);
+  getIntegerParam(NDFileHDF5_stringAttributeDataType, &stringAttributeDataType);
   // Check the chunking value
   getIntegerParam(NDFileHDF5_NDAttributeChunk, &chunking);
   // If the chunking is zero then use the number of frames
@@ -2162,17 +2169,24 @@ asynStatus NDFileHDF5::createAttributeDataset()
 
     // Creating extendible data sets
     hdfAttrNode->hdfdims[0] = 1;
+    hdfAttrNode->chunk[0]   = chunking;
+    hdfAttrNode->hdfrank    = 1;
     if (ndAttr->getDataType() < NDAttrString){
       hdfAttrNode->hdfdatatype  = this->typeNd2Hdf((NDDataType_t)ndAttr->getDataType());
-      hdfAttrNode->chunk[0]   = chunking;
-      hdfAttrNode->hdfrank    = 1;
     } else {
-      // String dataset required, use type N5T_NATIVE_CHAR
-      hdfAttrNode->hdfdatatype = H5T_NATIVE_CHAR;
-      hdfAttrNode->hdfdims[1] = MAX_ATTRIBUTE_STRING_SIZE;
-      hdfAttrNode->chunk[0]   = chunking;
-      hdfAttrNode->chunk[1]   = MAX_ATTRIBUTE_STRING_SIZE;
-      hdfAttrNode->hdfrank    = 2;
+      switch (stringAttributeDataType) {
+        case hdf5::nativeChar:
+          hdfAttrNode->hdfdatatype = H5T_NATIVE_CHAR;
+          hdfAttrNode->hdfdims[1] = MAX_ATTRIBUTE_STRING_SIZE;
+          hdfAttrNode->chunk[1]   = MAX_ATTRIBUTE_STRING_SIZE;
+          hdfAttrNode->hdfrank    = 2;
+          break;
+
+        case hdf5::CString:
+          hdfAttrNode->hdfdatatype = H5Tcopy(H5T_C_S1);
+          H5Tset_size(hdfAttrNode->hdfdatatype, MAX_ATTRIBUTE_STRING_SIZE);
+          break;
+      }
     }
     H5Pset_fill_value (hdfAttrNode->hdfcparm, hdfAttrNode->hdfdatatype, this->ptrFillValue );
 
@@ -2207,11 +2221,9 @@ asynStatus NDFileHDF5::createAttributeDataset()
       // add the attribute to this list
 
       // create a memory space of exactly one element dimension to use for writing slabs
-      if (ndAttr->getDataType() < NDAttrString){
-        hdfAttrNode->elementSize[0]  = 1;
-        hdfAttrNode->elementSize[1]  = 1;
-      } else {
-        hdfAttrNode->elementSize[0]  = 1;
+      hdfAttrNode->elementSize[0]  = 1;
+      hdfAttrNode->elementSize[1]  = 1;
+      if ((ndAttr->getDataType() == NDAttrString) && (stringAttributeDataType == hdf5::nativeChar)) {
         hdfAttrNode->elementSize[1]  = MAX_ATTRIBUTE_STRING_SIZE;
       }
       hdfAttrNode->hdfmemspace  = H5Screate_simple(hdfAttrNode->hdfrank, hdfAttrNode->elementSize, NULL);
@@ -2237,11 +2249,9 @@ asynStatus NDFileHDF5::createAttributeDataset()
   
   
         // create a memory space of exactly one element dimension to use for writing slabs
-        if (ndAttr->getDataType() < NDAttrString){
-          hdfAttrNode->elementSize[0]  = 1;
-          hdfAttrNode->elementSize[1]  = 1;
-        } else {
-          hdfAttrNode->elementSize[0]  = 1;
+        hdfAttrNode->elementSize[0]  = 1;
+        hdfAttrNode->elementSize[1]  = 1;
+        if ((ndAttr->getDataType() == NDAttrString) && (stringAttributeDataType == hdf5::nativeChar)) {
           hdfAttrNode->elementSize[1]  = MAX_ATTRIBUTE_STRING_SIZE;
         }
         hdfAttrNode->hdfmemspace  = H5Screate_simple(hdfAttrNode->hdfrank, hdfAttrNode->elementSize, NULL);
