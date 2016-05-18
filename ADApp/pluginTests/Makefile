@@ -5,7 +5,7 @@ include $(TOP)/configure/CONFIG
 #=============================
 
 # Persuade travis (ubuntu 12.04) to use HDF5 API V2 (1.8 rather than default 1.6)
-USR_CXXFLAGS_Linux += -DH5_NO_DEPRECATED_SYMBOLS -DH5Dopen_vers=2
+USR_CXXFLAGS_Linux += -DH5_NO_DEPRECATED_SYMBOLS -DH5Dopen_vers=2 -DH5Gcreate_vers=2
 
 # The plugin-test executable with the actual unittests depend on the boost 
 # unittest framework so we can only build it if boost has been configured
@@ -19,6 +19,7 @@ ifdef BOOST
   ADTestUtility_SRCS += AsynPortClientContainer.cpp
   ADTestUtility_SRCS += AsynException.cpp
   ADTestUtility_SRCS += HDF5PluginWrapper.cpp
+  ADTestUtility_SRCS += PosPluginWrapper.cpp
   ADTestUtility_SRCS += HDF5FileReader.cpp
   ADTestUtility_SRCS += TimeSeriesPluginWrapper.cpp
   ADTestUtility_SRCS += FFTPluginWrapper.cpp
@@ -28,8 +29,12 @@ ifdef BOOST
   plugin-test_SRCS += plugin-test.cpp
   plugin-test_SRCS += test_NDPluginCircularBuff.cpp
   plugin-test_SRCS += test_NDFileHDF5.cpp
+  plugin-test_SRCS += test_NDFileHDF5AttributeDataset.cpp
+  plugin-test_SRCS += test_NDPosPlugin.cpp
+  plugin-test_SRCS += test_NDFileHDF5ExtraDimensions.cpp
   plugin-test_SRCS += test_NDPluginTimeSeries.cpp
   plugin-test_SRCS += test_NDPluginFFT.cpp
+
   # Add tests for new plugins like this:
   #plugin-test_SRCS += test_<plugin name>.cpp
   

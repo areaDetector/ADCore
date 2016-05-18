@@ -37,12 +37,15 @@ DBD += NDPluginStats.dbd
 DBD += NDPluginStdArrays.dbd
 DBD += NDPluginTimeSeries.dbd
 DBD += NDPluginTransform.dbd
+DBD += NDPosPlugin.dbd
 
 INC += NDArrayRing.h
 INC += NDFileHDF5.h
 INC += NDFileHDF5Dataset.h
+INC += NDFileHDF5AttributeDataset.h
 INC += NDFileHDF5Layout.h
 INC += NDFileHDF5LayoutXML.h
+INC += NDFileHDF5VersionCheck.h
 INC += NDFileJPEG.h
 INC += NDFileMagick.h
 INC += NDFileNetCDF.h
@@ -64,11 +67,15 @@ INC += NDPluginStats.h
 INC += NDPluginStdArrays.h
 INC += NDPluginTimeSeries.h
 INC += NDPluginTransform.h
+INC += NDPosPlugin.h
+INC += NDPosPluginFileReader.h
 
 LIBRARY_IOC += NDPlugin
 NDPlugin_SRCS += fft.c
 NDPlugin_SRCS += NDArrayRing.cpp
-NDPlugin_SRCS_DEFAULT += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNexus.cpp NDFileHDF5.cpp NDFileHDF5Dataset.cpp NDFileHDF5LayoutXML.cpp NDFileHDF5Layout.cpp NDFileNull.cpp
+NDPlugin_SRCS_DEFAULT += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNexus.cpp NDFileHDF5.cpp NDFileHDF5Dataset.cpp 
+NDPlugin_SRCS_DEFAULT += NDFileHDF5AttributeDataset.cpp NDFileHDF5LayoutXML.cpp NDFileHDF5Layout.cpp NDFileNull.cpp
+NDPlugin_SRCS_DEFAULT += NDPosPlugin.cpp NDPosPluginFileReader.cpp
 NDPlugin_SRCS_vxWorks += NDFileDummy.cpp
 NDPlugin_SRCS += NDFileNetCDF.cpp
 NDPlugin_SRCS += NDPluginAttribute.cpp
@@ -86,6 +93,7 @@ NDPlugin_SRCS += NDPluginStats.cpp
 NDPlugin_SRCS += NDPluginStdArrays.cpp
 NDPlugin_SRCS += NDPluginTimeSeries.cpp
 NDPlugin_SRCS += NDPluginTransform.cpp
+
 NDPlugin_SYS_LIBS_WIN32 += Ws2_32
 NDPlugin_SYS_LIBS_WIN32 += User32
 

@@ -1,0 +1,185 @@
+#% macro, P, Device Prefix
+#% macro, R, Device Suffix
+#% macro, PORT, Asyn Port name
+#% macro, ADDR, Asyn Port address
+#% macro, TIMEOUT, Asyn timeout
+
+# This associates the template with an edm screen
+# % gui, $(PORT), edmtab, NDPosPlugin.edl, P=$(P),R=$(R)
+
+include "NDPluginBase.template"
+
+# File path.
+record(waveform, "$(P)$(R)Filename")
+{
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDPos_Filename")
+    field(FTVL, "CHAR")
+    field(NELM, "1000000")
+}
+
+record(waveform, "$(P)$(R)Filename_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),0)NDPos_Filename")
+    field(FTVL, "CHAR")
+    field(NELM, "1000000")
+    field(SCAN, "I/O Intr")
+}
+
+record(bi, "$(P)$(R)FileValid_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),0)NDPos_FileValid")
+    field(ZNAM, "No")
+    field(ZSV,  "MAJOR")
+    field(ONAM, "Yes")
+    field(OSV,  "NO_ALARM")
+    field(SCAN, "I/O Intr")
+}
+
+record(busy, "$(P)$(R)Running")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),0)NDPos_Running")
+    field(ZNAM, "Idle")
+    field(ONAM, "Running")
+    field(VAL,  "0")
+}
+
+record(bi, "$(P)$(R)Running_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),0)NDPos_Running")
+    field(ZNAM, "Idle")
+    field(ONAM, "Running")
+    field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)Reset")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),0)NDPos_Restart")
+}
+
+record(bo, "$(P)$(R)Delete")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),0)NDPos_Delete")
+}
+
+record(bo, "$(P)$(R)Mode")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),0)NDPos_Mode")
+    field(ZNAM, "Discard")
+    field(ONAM, "Keep")
+}
+
+record(bi, "$(P)$(R)Mode_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),0)NDPos_Mode")
+    field(ZNAM, "Discard")
+    field(ONAM, "Keep")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)Qty_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),0)NDPos_CurrentQty")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)Index_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),0)NDPos_CurrentIndex")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)Position_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),0)NDPos_CurrentPos")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)Missing")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),0)NDPos_MissingFrames")
+    field(PINI, "NO")
+}
+
+record(longin, "$(P)$(R)Missing_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),0)NDPos_MissingFrames")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)Duplicate")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),0)NDPos_DuplicateFrames")
+    field(PINI, "NO")
+}
+
+record(longin, "$(P)$(R)Duplicate_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),0)NDPos_DuplicateFrames")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)ExpectedID_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),0)NDPos_ExpectedID")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringout, "$(P)$(R)IDName")
+{
+    field(DTYP, "asynOctetWrite")
+    field(OUT,  "@asyn($(PORT),0)NDPos_IDName")
+    field(PINI, "NO")
+}
+
+record(stringin, "$(P)$(R)IDName_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),0)NDPos_IDName")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)IDStart")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),0)NDPos_IDStart")
+    field(PINI, "NO")
+}
+
+record(longin, "$(P)$(R)IDStart_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),0)NDPos_IDStart")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)IDDifference")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),0)NDPos_IDDifference")
+    field(PINI, "NO")
+}
+
+record(longin, "$(P)$(R)IDDifference_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),0)NDPos_IDDifference")
+    field(SCAN, "I/O Intr")
+}
+
