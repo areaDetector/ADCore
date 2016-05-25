@@ -2012,7 +2012,6 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
     this->createParam(str_NDFileHDF5_extraDimChunk[extraDimIndex],  asynParamInt32,   &NDFileHDF5_extraDimChunk[extraDimIndex]);
   }
   this->createParam(str_NDFileHDF5_storeAttributes, asynParamInt32,   &NDFileHDF5_storeAttributes);
-  this->createParam(str_NDFileHDF5_stringAttributeDataType, asynParamInt32, &NDFileHDF5_stringAttributeDataType);
   this->createParam(str_NDFileHDF5_storePerformance,asynParamInt32,   &NDFileHDF5_storePerformance);
   this->createParam(str_NDFileHDF5_totalRuntime,    asynParamFloat64, &NDFileHDF5_totalRuntime);
   this->createParam(str_NDFileHDF5_totalIoSpeed,    asynParamFloat64, &NDFileHDF5_totalIoSpeed);
@@ -2051,7 +2050,6 @@ NDFileHDF5::NDFileHDF5(const char *portName, int queueSize, int blockingCallback
     setIntegerParam(NDFileHDF5_extraDimChunk[extraDimIndex],  0);
   }
   setIntegerParam(NDFileHDF5_storeAttributes, 1);
-  setIntegerParam(NDFileHDF5_stringAttributeDataType, hdf5::nativeChar);
   setIntegerParam(NDFileHDF5_storePerformance,1);
   setDoubleParam (NDFileHDF5_totalRuntime,    0.0);
   setDoubleParam (NDFileHDF5_totalIoSpeed,    0.0);
@@ -2388,7 +2386,6 @@ asynStatus NDFileHDF5::createAttributeDataset(NDArray *pArray)
 {
   NDAttribute *ndAttr = NULL;
   NDAttrSource_t ndAttrSourceType;
-  int stringAttributeDataType;
   int extraDims;
   int chunking = 0;
   //int fileWriteMode = 0;
@@ -2405,7 +2402,6 @@ asynStatus NDFileHDF5::createAttributeDataset(NDArray *pArray)
   this->lock();
   getIntegerParam(NDFileHDF5_dimAttDatasets, &dimAttDataset);
   getIntegerParam(NDFileHDF5_nExtraDims, &extraDims);
-  getIntegerParam(NDFileHDF5_stringAttributeDataType, &stringAttributeDataType);
   getIntegerParam(NDFileHDF5_posRunning, &posRunning);
 
   if (this->multiFrameFile){
@@ -2478,8 +2474,7 @@ asynStatus NDFileHDF5::createAttributeDataset(NDArray *pArray)
 
       hdf5::DataSource dsource = dset->data_source();
       std::string atName = std::string(epicsStrDup(ndAttr->getName()));
-      NDFileHDF5AttributeDataset *attDset = new NDFileHDF5AttributeDataset(this->file, atName, ndAttr->getDataType(),
-                                                                           (hdf5::StringAttributeDataType_t)stringAttributeDataType);
+      NDFileHDF5AttributeDataset *attDset = new NDFileHDF5AttributeDataset(this->file, atName, ndAttr->getDataType());
       attDset->setDsetName(dset->get_name());
       attDset->setWhenToSave(dsource.get_when_to_save());
       attDset->setParentGroupName(dset->get_parent()->get_full_name());
@@ -2512,8 +2507,7 @@ asynStatus NDFileHDF5::createAttributeDataset(NDArray *pArray)
     } else {
       if(groupDefault > -1) {
         std::string atName = std::string(epicsStrDup(ndAttr->getName()));
-        NDFileHDF5AttributeDataset *attDset = new NDFileHDF5AttributeDataset(this->file, atName, ndAttr->getDataType(),
-                                                                            (hdf5::StringAttributeDataType_t)stringAttributeDataType);
+        NDFileHDF5AttributeDataset *attDset = new NDFileHDF5AttributeDataset(this->file, atName, ndAttr->getDataType());
         if(def_group != NULL) {
           attDset->setParentGroupName(def_group->get_full_name().c_str());
         }
