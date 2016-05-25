@@ -9,13 +9,11 @@
 #include <epicsString.h>
 #include <iostream>
 
-NDFileHDF5AttributeDataset::NDFileHDF5AttributeDataset(hid_t file, const std::string& name, 
-                                                       NDAttrDataType_t type, hdf5::StringAttributeDataType_t stringType) :
+NDFileHDF5AttributeDataset::NDFileHDF5AttributeDataset(hid_t file, const std::string& name, NDAttrDataType_t type) :
   name_(name),
   dsetName_(name),
   file_(file),
   type_(type),
-  stringType_(stringType),
   groupName_(""),
   dataset_(-1),
   dataspace_(-1),
@@ -241,25 +239,10 @@ asynStatus NDFileHDF5AttributeDataset::configureDims(int user_chunking)
   dims_[0] = 1;
   chunk_[0] = user_chunking;
   rank_ = 1;
-  if (type_ < NDAttrString){
-    dims_[1] = 1;
-    chunk_[1] = 1;
-    elementSize_[0] = 1;
-    elementSize_[1] = 1;
-  } else {
-    // String dataset required, switch dimensions depending on string type
-    switch (stringType_) {
-      case hdf5::nativeChar:
-        dims_[1] = MAX_ATTRIBUTE_STRING_SIZE;
-        chunk_[1] = MAX_ATTRIBUTE_STRING_SIZE;
-        elementSize_[1] = MAX_ATTRIBUTE_STRING_SIZE;
-        rank_ = 2;
-        break;
-
-      case hdf5::CString:
-        break;
-    }
-  }
+  dims_[1] = 1;
+  chunk_[1] = 1;
+  elementSize_[0] = 1;
+  elementSize_[1] = 1;
 
   return status;
 }
@@ -344,15 +327,8 @@ asynStatus NDFileHDF5AttributeDataset::typeAsHdf()
   switch (type_)
   {
     case NDAttrString:
-      switch (stringType_) {
-        case hdf5::nativeChar:
-          datatype_ = H5T_NATIVE_CHAR;
-          break;
-        case hdf5::CString:
-          datatype_ = H5Tcopy(H5T_C_S1);
-          H5Tset_size(datatype_, MAX_ATTRIBUTE_STRING_SIZE);
-          break;
-      }
+      datatype_ = H5Tcopy(H5T_C_S1);
+      H5Tset_size(datatype_, MAX_ATTRIBUTE_STRING_SIZE);
       *(epicsUInt8*)this->ptrFillValue_ = (epicsUInt8)fillvalue;
       break;
     case NDInt8:
