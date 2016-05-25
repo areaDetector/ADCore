@@ -335,11 +335,10 @@ BOOST_AUTO_TEST_CASE(test_AttributeOriginalDataset)
 
   // Verify the att2 dataset exists
   BOOST_CHECK_EQUAL(fr.checkDatasetExists("/group/dset9"), true);
-  // Verify the att2 dataset has a two dimensions [256, 1] as it is a string type (array of chars)
+  // Verify the att2 dataset has a single dimension of size 1
   dims = fr.getDatasetDimensions("/group/dset9");
-  BOOST_CHECK_EQUAL(dims.size(), 2);
+  BOOST_CHECK_EQUAL(dims.size(), 1);
   BOOST_CHECK_EQUAL(dims[0], 48);
-  BOOST_CHECK_EQUAL(dims[1], 256);
   BOOST_CHECK_EQUAL(fr.getDatasetType("/group/dset9"), Int8);
 
   // Verify the att10 dataset exists
