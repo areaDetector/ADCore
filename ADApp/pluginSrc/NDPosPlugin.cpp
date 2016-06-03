@@ -472,7 +472,7 @@ extern "C" int NDPosPluginConfigure(const char *portName,
                                     int priority,
                                     int stackSize)
 {
-  new NDPosPlugin(portName,
+  NDPosPlugin *plugin = new NDPosPlugin(portName,
                   queueSize,
                   blockingCallbacks,
                   NDArrayPort,
@@ -481,6 +481,7 @@ extern "C" int NDPosPluginConfigure(const char *portName,
                   maxMemory,
                   priority,
                   stackSize);
+  plugin->start();
   return(asynSuccess);
 }
 
