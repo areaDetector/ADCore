@@ -242,7 +242,7 @@ BOOST_AUTO_TEST_CASE(test_ExtraDatasetDimensions)
 
   // Open an HDF5 file for testing
   std::string filename = "/tmp/test_dim1.h5";
-  hid_t file = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, NULL, NULL);
+  hid_t file = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, 0, 0);
   BOOST_REQUIRE_GT(file, -1);
 
   // Add a test group.
@@ -308,7 +308,7 @@ BOOST_AUTO_TEST_CASE(test_TenExtraDimensions)
 
   // Open an HDF5 file for testing
   std::string filename = "/tmp/test_dim2.h5";
-  hid_t file = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, NULL, NULL);
+  hid_t file = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, 0, 0);
   BOOST_REQUIRE_GT(file, -1);
 
   // Add a test group.
@@ -371,11 +371,10 @@ BOOST_AUTO_TEST_CASE(test_TenExtraDimensions)
 
 BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
 {
-  NDArrayPool *arrayPool;
   std::tr1::shared_ptr<asynPortDriver> driver;
   std::tr1::shared_ptr<HDF5PluginWrapper> hdf5;
 
-  arrayPool = new NDArrayPool(100, 0);
+  new NDArrayPool(100, 0);
 
   // Asyn manager doesn't like it if we try to reuse the same port name for multiple drivers (even if only one is ever instantiated at once), so
   // change it slightly for each test case.
