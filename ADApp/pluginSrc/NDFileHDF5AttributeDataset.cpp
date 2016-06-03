@@ -291,30 +291,16 @@ asynStatus NDFileHDF5AttributeDataset::configureDimsFromDataset(bool multiframe,
 
   this->rank_ = ndims;
 
-  if (type_ < NDAttrString){
-    elementSize_[extradims]   = 1;
-    elementSize_[extradims+1] = 1;
-    chunk_[extradims]         = 1;
-    chunk_[extradims+1]       = 1;
-    maxdims_[extradims]       = 1;
-    maxdims_[extradims+1]     = 1;
-    dims_[extradims]          = 1;
-    dims_[extradims+1]        = 1;
-    offset_[extradims]        = 0;
-    offset_[extradims+1]      = 0;
-  } else {
-    // String dataset required, use type N5T_NATIVE_CHAR
-    elementSize_[extradims]   = 1;
-    elementSize_[extradims+1] = MAX_ATTRIBUTE_STRING_SIZE;
-    chunk_[extradims]         = 1;
-    chunk_[extradims+1]       = MAX_ATTRIBUTE_STRING_SIZE;
-    maxdims_[extradims]       = 1;
-    maxdims_[extradims+1]     = MAX_ATTRIBUTE_STRING_SIZE;
-    dims_[extradims]          = 1;
-    dims_[extradims+1]        = MAX_ATTRIBUTE_STRING_SIZE;
-    offset_[extradims]        = 0;
-    offset_[extradims+1]      = 0;
-  }
+  elementSize_[extradims]   = 1;
+  elementSize_[extradims+1] = 1;
+  chunk_[extradims]         = 1;
+  chunk_[extradims+1]       = 1;
+  maxdims_[extradims]       = 1;
+  maxdims_[extradims+1]     = 1;
+  dims_[extradims]          = 1;
+  dims_[extradims+1]        = 1;
+  offset_[extradims]        = 0;
+  offset_[extradims+1]      = 0;
 
   return status;
 }
