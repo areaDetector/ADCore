@@ -30,7 +30,7 @@ BOOST_AUTO_TEST_CASE(test_AttributeOriginalDataset)
 {
   // Open an HDF5 file for testing
   std::string filename = "/tmp/test_att.h5";
-  hid_t file = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, NULL, NULL);
+  hid_t file = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, 0, 0);
   BOOST_REQUIRE_GT(file, -1);
 
   // Add a test group.
@@ -363,7 +363,7 @@ BOOST_AUTO_TEST_CASE(test_AttributeDimensionalDataset)
 {
   // Open an HDF5 file for testing
   std::string filename = "/tmp/test_att.h5";
-  hid_t file = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, NULL, NULL);
+  hid_t file = H5Fcreate(filename.c_str(), H5F_ACC_TRUNC, 0, 0);
   BOOST_REQUIRE_GT(file, -1);
 
   // Add a test group.
