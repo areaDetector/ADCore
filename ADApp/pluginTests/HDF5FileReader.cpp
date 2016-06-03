@@ -28,7 +28,7 @@ HDF5FileReader::HDF5FileReader(const std::string& filename)
 {
   attributeCount = 0;
   hsize_t idx = 0;
-  file = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, NULL);
+  file = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, 0);
   H5Literate_by_name(file, "/", H5_INDEX_NAME, H5_ITER_NATIVE, &idx, file_info, this, H5P_DEFAULT);
 }
 
@@ -140,6 +140,7 @@ TestFileDataType_t HDF5FileReader::getDatasetType(const std::string& name)
   hid_t        dataset_id;
   hid_t        dtype_id;
   hid_t        ntype_id;
+  H5T_class_t  class_id;
   TestFileDataType_t type = NoType;
   // Check the name given is present in the file
   if (objects.count(name) == 1){
@@ -151,6 +152,9 @@ TestFileDataType_t HDF5FileReader::getDatasetType(const std::string& name)
 
       // Get the datatype
       dtype_id = H5Dget_type(dataset_id);
+
+      // Get the datatype class
+      class_id = H5Tget_class(dtype_id);
 
       ntype_id = H5Tget_native_type(dtype_id, H5T_DIR_ASCEND);
       if (H5Tequal(ntype_id, H5T_NATIVE_INT8)){
@@ -176,6 +180,9 @@ TestFileDataType_t HDF5FileReader::getDatasetType(const std::string& name)
       }
       if (H5Tequal(ntype_id, H5T_NATIVE_DOUBLE)){
         type = Float64;
+      }
+      if (class_id == H5T_STRING){
+        type = String;
       }
       H5Tclose(ntype_id);
       H5Tclose(dtype_id);
