@@ -24,7 +24,8 @@ typedef enum
   Int32,    // Signed 32-bit integer
   UInt32,   // Unsigned 32-bit integer
   Float32,  // 32-bit float
-  Float64   // 64-bit float
+  Float64,  // 64-bit float
+  String    // String
 } TestFileDataType_t;
 
 class HDF5FileReader
