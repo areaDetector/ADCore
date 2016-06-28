@@ -20,7 +20,7 @@ herr_t file_info(hid_t loc_id, const char *name, const H5L_info_t *info, void *o
 HDF5FileReader::HDF5FileReader(const std::string& filename)
 {
   hsize_t idx = 0;
-  file = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, NULL);
+  file = H5Fopen(filename.c_str(), H5F_ACC_RDONLY, 0);
   H5Literate_by_name(file, "/", H5_INDEX_NAME, H5_ITER_NATIVE, &idx, file_info, this, H5P_DEFAULT);
 }
 
