@@ -104,6 +104,12 @@ else
   NDPlugin_SRCS += NDFileMagickStub.cpp
 endif
 
+ifeq ($(EPICS_V4), YES)
+  DBD += NDPluginPva.dbd
+  INC += NDPluginPva.h
+  NDPlugin_SRCS += NDPluginPva.cpp
+endif
+
 USR_INCLUDES += $(HDF5_INCLUDE)
 USR_INCLUDES += $(SZ_INCLUDE)
 USR_INCLUDES += $(XML2_INCLUDE)

@@ -5,6 +5,15 @@ $(PROD_NAME)_DBD += commonDriverSupport.dbd
 
 PROD_LIBS               += NDPlugin ADBase netCDF
 
+ifeq ($(EPICS_V4),YES)
+  $(PROD_NAME)_DBD      += NDPluginPva.dbd
+  PROD_LIBS             += nt
+  PROD_LIBS             += ntndArrayConverter
+  PROD_LIBS             += pvDatabase
+  PROD_LIBS             += pvAccess
+  PROD_LIBS             += pvData
+endif
+
 ifdef ADPLUGINEDGE
   PROD_LIBS             += NDPluginEdge
   $(PROD_NAME)_DBD      += NDPluginEdge.dbd
@@ -23,12 +32,12 @@ PROD_LIBS               += calc busy sscan autosave
 
 # Optionally include useful modules
 ifdef DEVIOCSTATS
-  $(PROD_NAME)_DBD += devIocStats.dbd
-  PROD_LIBS += devIocStats
+  $(PROD_NAME)_DBD      += devIocStats.dbd
+  PROD_LIBS             += devIocStats
 endif
 ifdef ALIVE
-  $(PROD_NAME)_DBD += aliveSupport.dbd
-  PROD_LIBS += alive
+  $(PROD_NAME)_DBD      += aliveSupport.dbd
+  PROD_LIBS             += alive
 endif
 
 PROD_LIBS               += asyn
