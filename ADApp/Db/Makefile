@@ -32,6 +32,7 @@ DB += NDFileTIFF.template
 DB += NDOverlay.template
 DB += NDOverlayN.template
 DB += NDPluginBase.template
+DB += NDPosPlugin.template
 DB += NDProcess.template
 DB += NDROI.template
 DB += NDROIStat.template

@@ -41,11 +41,6 @@ namespace hdf5
     float64,
     string
   } DataType_t;
-  
-  typedef enum {
-    nativeChar,
-    CString
-  } StringAttributeDataType_t;
 
   /** Class used for writing a DataSource with the NDFileHDF5 plugin.
     */

@@ -12,7 +12,6 @@ NDFileHDF5Dataset::NDFileHDF5Dataset(asynUser *pAsynUser, const std::string& nam
                                      pAsynUser_(pAsynUser), name_(name), dataset_(dataset), nextRecord_(0)
 {
   this->maxdims_     = NULL;
-  this->chunkdims_   = NULL;
   this->dims_        = NULL;
   this->offset_      = NULL;
   this->virtualdims_ = NULL;
@@ -40,13 +39,11 @@ asynStatus NDFileHDF5Dataset::configureDims(NDArray *pArray, bool multiframe, in
   // If necessary free and reallocate new memory.
   if (this->maxdims_ == NULL || this->rank_ != ndims){
     if (this->maxdims_     != NULL) free(this->maxdims_);
-    if (this->chunkdims_   != NULL) free(this->chunkdims_);
     if (this->dims_        != NULL) free(this->dims_);
     if (this->offset_      != NULL) free(this->offset_);
     if (this->virtualdims_ != NULL) free(this->virtualdims_);
 
     this->maxdims_       = (hsize_t*)calloc(ndims,     sizeof(hsize_t));
-    this->chunkdims_     = (hsize_t*)calloc(ndims,     sizeof(hsize_t));
     this->dims_          = (hsize_t*)calloc(ndims,     sizeof(hsize_t));
     this->offset_        = (hsize_t*)calloc(ndims,     sizeof(hsize_t));
     this->virtualdims_   = (hsize_t*)calloc(extradims, sizeof(hsize_t));
@@ -56,7 +53,6 @@ asynStatus NDFileHDF5Dataset::configureDims(NDArray *pArray, bool multiframe, in
     // Configure the virtual dimensions -i.e. dimensions in addition to the frame format.
     // Normally set to just 1 by default or -1 unlimited (in HDF5 terms)
     for (i=0; i<extradims; i++){
-      this->chunkdims_[i]   = 1;
       this->maxdims_[i]     = H5S_UNLIMITED;
       this->dims_[i]        = 1;
       this->offset_[i]      = 0; // because we increment offset *before* each write we need to start at -1
@@ -67,30 +63,9 @@ asynStatus NDFileHDF5Dataset::configureDims(NDArray *pArray, bool multiframe, in
   this->rank_ = ndims;
 
   for (j=pArray->ndims-1,i=extradims; i<this->rank_; i++,j--){
-    this->chunkdims_[i]  = pArray->dims[j].size;
     this->maxdims_[i]    = pArray->dims[j].size;
     this->dims_[i]       = pArray->dims[j].size;
     this->offset_[i]     = 0;
-  }
-
-  // Collect the user defined chunking dimensions and check if they're valid
-  //
-  // A check is made to see if the user has input 0 or negative value (which is invalid)
-  // in which case the size of the chunking is set to the maximum size of that dimension (full frame)
-  // If the maximum of a particular dimension is set to a negative value -which is the case for
-  // infinite lenght dimensions (-1); the chunking value is set to 1.
-  int max_items = 0;
-  int hdfdim = 0;
-  for (i = 0; i<ndims; i++){
-    hdfdim = ndims - i - 1;
-    max_items = (int)this->maxdims_[hdfdim];
-    if (max_items <= 0){
-      max_items = 1; // For infinite length dimensions
-    } else {
-      if (user_chunking[i] > max_items) user_chunking[i] = max_items;
-    }
-    if (user_chunking[i] < 1) user_chunking[i] = max_items;
-    this->chunkdims_[hdfdim] = user_chunking[i];
   }
   return status;
 }
@@ -100,7 +75,7 @@ asynStatus NDFileHDF5Dataset::configureDims(NDArray *pArray, bool multiframe, in
  * then the dataset is simply increased in the frame number direction.
  * \param[in] extradims - The number of extra dimensions.
  */
-void NDFileHDF5Dataset::extendDataSet(int extradims)
+asynStatus NDFileHDF5Dataset::extendDataSet(int extradims)
 {
   int i=0;
   bool growdims = true;
@@ -111,14 +86,14 @@ void NDFileHDF5Dataset::extendDataSet(int extradims)
 
   // first frame already has the offsets and dimensions preconfigured so
   // we dont need to increment anything here
-  if (this->nextRecord_ == 0) return;
+  if (this->nextRecord_ == 0) return asynSuccess;
 
   // in the simple case where dont use the extra X,Y dimensions we
   // just increment the n'th frame number
   if (extradims == 1){
     this->dims_[0]++;
     this->offset_[0]++;
-    return;
+    return asynSuccess;
   }
 
   // run through the virtual dimensions in reverse order: n,X,Y
@@ -144,7 +119,33 @@ void NDFileHDF5Dataset::extendDataSet(int extradims)
       growdims = true;
     }
   }
-  return;
+  return asynSuccess;
+}
+
+asynStatus NDFileHDF5Dataset::extendDataSet(int extradims, hsize_t *offsets)
+{
+  asynStatus status = asynSuccess;
+  static const char *functionName = "extendDataSet";
+
+  // If this method has been called then we are being asked to extend to a particular index
+  for (int index = 0; index <= extradims; index++){
+    // Check the requested offset is not outside the dimension maximum
+    if (offsets[index] < this->virtualdims_[index]){
+      if (this->dims_[index] < offsets[index]+1){
+        // Increase the dimension to accomodate the new position
+        this->dims_[index] = offsets[index]+1;
+      }
+      // Always set the offset position even if we don't increase the dims
+      this->offset_[index] = offsets[index];
+    } else {
+      // We have been unable to extend, this is a bad position request
+      asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR,
+                "%s::%s ERROR extending the dataset [%s] failed\n",
+                fileName, functionName, this->name_.c_str());
+      status = asynError;
+    }
+  }
+  return status;
 }
 
 /** writeFile.
@@ -214,5 +215,33 @@ asynStatus NDFileHDF5Dataset::writeFile(NDArray *pArray, hid_t datatype, hid_t d
 hid_t NDFileHDF5Dataset::getHandle()
 {
   return this->dataset_;
+}
+
+asynStatus NDFileHDF5Dataset::flushDataset()
+{
+  static const char *functionName = "flushDataset";
+  // flushDataset is a no-op if the HDF version doesn't support it
+  #if H5_VERSION_GE(1,9,178)
+
+  herr_t hdfstatus;
+
+  // Flush the dataset
+  hdfstatus = H5Dflush(this->dataset_);
+  if (hdfstatus){
+    asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR, 
+              "%s::%s ERROR Unable to flush the dataset [%s]\n", 
+              fileName, functionName, this->name_.c_str());
+    return asynError;
+  }
+  #else
+  // If this is called when we do not support SWMR then someone has done something
+  // bad, so return an asynError
+  asynPrint(this->pAsynUser_, ASYN_TRACE_ERROR,
+            "%s::%s SWMR dataset flush attempted but the library compiled against doesn't support it.\n",
+            fileName, functionName);
+  return asynError;
+  #endif
+
+  return asynSuccess;  
 }
 

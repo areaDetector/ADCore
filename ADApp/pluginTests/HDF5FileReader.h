@@ -24,7 +24,8 @@ typedef enum
   Int32,    // Signed 32-bit integer
   UInt32,   // Unsigned 32-bit integer
   Float32,  // 32-bit float
-  Float64   // 64-bit float
+  Float64,  // 64-bit float
+  String    // String
 } TestFileDataType_t;
 
 class HDF5FileReader
@@ -33,13 +34,16 @@ public:
   HDF5FileReader(const std::string& filename);
   void report();
   void processGroup(hid_t loc_id, const char *name, H5O_type_t type);
+  void processAttribute(hid_t loc_id, const char *name);
   bool checkGroupExists(const std::string& name);
   bool checkDatasetExists(const std::string& name);
   std::vector<hsize_t> getDatasetDimensions(const std::string& name);
+  int getDatasetAttributeCount(const std::string& name);
   TestFileDataType_t getDatasetType(const std::string& name);
   virtual ~HDF5FileReader();
 private:
   hid_t file;
+  int attributeCount;
 
   class HDF5Object
   {
