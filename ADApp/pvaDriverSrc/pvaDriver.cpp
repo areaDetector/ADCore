@@ -8,7 +8,6 @@
  * Created:  April 10, 2015
  *
  */
-#include <epicsExport.h>
 #include <epicsThread.h>
 #include <iocsh.h>
 
@@ -19,6 +18,8 @@
 #include <ntndArrayConverter.h>
 
 #include <ADDriver.h>
+
+#include <epicsExport.h>
 #include "pvaDriver.h"
 
 //#define DEFAULT_REQUEST "record[queueSize=100]field()"
