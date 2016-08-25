@@ -3,8 +3,8 @@ beginScreenProperties
 major 4
 minor 0
 release 1
-x 23
-y 272
+x 318
+y 883
 w 390
 h 280
 font "arial-bold-r-12.0"
@@ -104,7 +104,7 @@ x 140
 y 125
 w 45
 h 20
-controlPv "$(P)$(R)FileNumber"
+controlPv "$(P)$(R)FileNumber_RBV"
 fgColor index 16
 fgAlarm
 bgColor index 10
@@ -293,8 +293,8 @@ minor 6
 release 0
 x 10
 y 255
-w 370
-h 18
+w 285
+h 20
 controlPv "$(P)$(R)FullFileName_RBV"
 font "helvetica-medium-r-10.0"
 fgColor index 16
@@ -799,5 +799,33 @@ smartRefresh
 useHexPrefix
 newPos
 objType "controls"
+endObjectProperties
+
+# (Related Display)
+object relatedDisplayClass
+beginObjectProperties
+major 4
+minor 4
+release 0
+x 300
+y 255
+w 80
+h 20
+fgColor index 43
+bgColor index 3
+topShadowColor index 1
+botShadowColor index 11
+font "arial-medium-r-12.0"
+xPosOffset 120
+yPosOffset -500
+buttonLabel "more..."
+numPvs 4
+numDsps 1
+displayFileName {
+  0 "NDFileDetails"
+}
+setPosition {
+  0 "button"
+}
 endObjectProperties
 
