@@ -8,6 +8,8 @@ LIBRARY_IOC += ntndArrayConverter
 INC += ntndArrayConverter.h
 LIB_SRCS += ntndArrayConverter.cpp
 
+include $(TOP)/ADApp/commonLibraryMakefile
+
 #=============================
 
 include $(TOP)/configure/RULES
