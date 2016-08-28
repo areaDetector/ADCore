@@ -306,6 +306,9 @@
 #if !defined(vxWorks) && !defined(_WIN32)
 #define HAVE__BOOL 1
 #endif
+#if defined(_MINGW)
+#define HAVE__BOOL 1
+#endif
 
 /* do large file tests */
 /* #undef LARGE_FILE_TESTS */
