@@ -70,7 +70,9 @@ ifeq ($(USE_GRAPHICSMAGICK), YES)
 else
   # I don't understand why we need to set this when building statically and not using GraphicsMagick
   ifeq ($(STATIC_BUILD), YES)
-    USR_LDFLAGS_WIN32   += /NODEFAULTLIB:MSVCRT.lib
+    ifneq (mingw, $(findstring mingw, $(T_A)))
+      USR_LDFLAGS_WIN32   += /NODEFAULTLIB:msvcrt.lib
+    endif
   endif
   PROD_LIBS_WIN32       += tiff jpeg
 endif
@@ -92,7 +94,7 @@ else
 endif
 PROD_LIBS_WIN32         += libxml2
 
-PROD_SYS_LIBS_WIN32     += Gdi32 Oleaut32
+PROD_SYS_LIBS_WIN32     += gdi32 oleaut32
 
 PROD_SYS_LIBS_cygwin32  += libhdf5
 PROD_SYS_LIBS_cygwin32  += libtiff libjpeg libjbig libz libxml2
