@@ -17,7 +17,7 @@ typedef struct NTNDArrayInfo
     }x, y, color;
 }NTNDArrayInfo_t;
 
-class NTNDArrayConverter
+class epicsShareClass NTNDArrayConverter
 {
 public:
     NTNDArrayConverter(epics::nt::NTNDArrayPtr array);
