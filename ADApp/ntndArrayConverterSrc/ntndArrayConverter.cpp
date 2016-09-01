@@ -1,5 +1,7 @@
-#include "ntndArrayConverter.h"
 #include <math.h>
+
+#include <epicsExport.h>
+#include "ntndArrayConverter.h"
 
 using namespace std;
 using namespace epics::nt;
