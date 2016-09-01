@@ -14,6 +14,11 @@ USR_CFLAGS += -DHDF5 -D_FILE_OFFSET_BITS=64
 # Travis/ubuntu 12.04 tweak: persuade the hdf5 library build to use API v18 over v16
 USR_CFLAGS += -DH5_NO_DEPRECATED_SYMBOLS -DH5Gopen_vers=2
 
+ifeq ($(SHARED_LIBRARIES),YES)
+  USR_CFLAGS_WIN32 += -DDLL_NEXUS
+  NeXus.dll: USR_CFLAGS_WIN32 += -DDLL_EXPORT
+endif
+
 ifeq ($(HDF5_STATIC_BUILD), NO)
   USR_CXXFLAGS_WIN32    += -DH5_BUILT_AS_DYNAMIC_LIB
   USR_CFLAGS_WIN32      += -DH5_BUILT_AS_DYNAMIC_LIB
@@ -50,14 +55,14 @@ LIBRARY_IOC_cygwin32 += NeXus
 LIBRARY_IOC_Linux    += NeXus
 LIBRARY_IOC_Darwin   += NeXus
 
-LIB_SRCS += napi.c
-LIB_SRCS += napi5.c
-LIB_SRCS += napiu.c
-LIB_SRCS += nxdataset.c
-LIB_SRCS += nxio.c
-LIB_SRCS += nxstack.c
-LIB_SRCS += nxxml.c
-LIB_SRCS += stptok.c
+NeXus_SRCS += napi.c
+NeXus_SRCS += napi5.c
+NeXus_SRCS += napiu.c
+NeXus_SRCS += nxdataset.c
+NeXus_SRCS += nxio.c
+NeXus_SRCS += nxstack.c
+NeXus_SRCS += nxxml.c
+NeXus_SRCS += stptok.c
 
 #=============================
 
