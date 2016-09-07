@@ -56,9 +56,10 @@ NDPluginTimeSeries::NDPluginTimeSeries(const char *portName, int queueSize, int 
                          const char *NDArrayPort, int NDArrayAddr, 
                          int maxSignals, int maxBuffers, size_t maxMemory,
                          int priority, int stackSize)
-    /* Invoke the base class constructor */
+    /* Invoke the base class constructor 
+     * Note: maxAddr is maxSignals+1 because we do callbacks on the 2-D array on address maxSignals */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
-             NDArrayPort, NDArrayAddr, maxSignals, NUM_NDPLUGIN_TIME_SERIES_PARAMS, maxBuffers, maxMemory,
+             NDArrayPort, NDArrayAddr, maxSignals+1, NUM_NDPLUGIN_TIME_SERIES_PARAMS, maxBuffers, maxMemory,
              asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
              asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
              ASYN_MULTIDEVICE, 1, priority, stackSize),
