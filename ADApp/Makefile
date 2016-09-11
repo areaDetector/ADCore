@@ -8,9 +8,11 @@ DIRS += ADSrc
 
 DIRS += netCDFSrc
 
-DIRS += nexusSrc
-
 DIRS += tiffSupport
+
+DIRS += xml2Src
+
+DIRS += nexusSrc
 
 DIRS += pluginSrc
 pluginSrc_DEPEND_DIRS += ADSrc netCDFSrc nexusSrc tiffSupport
