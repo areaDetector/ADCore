@@ -7,8 +7,6 @@ include $(TOP)/configure/CONFIG
 
 
 LIBRARY_IOC_WIN32 = libxml2
-NETCDF = $(TOP)/ADApp/netCDFSrc
-USR_CFLAGS += -DHAVE_CONFIG_H
 
 ifeq ($(SHARED_LIBRARIES),NO)
 #  USR_CFLAGS_WIN32 += -DLIBXML_STATIC
@@ -108,7 +106,7 @@ LIB_SRCS += xmlunicode.c
 LIB_SRCS += xmlwriter.c
 LIB_SRCS += xpath.c
 LIB_SRCS += xpointer.c
-LIB_SRCS += xmlstring.obj
+LIB_SRCS += xmlstring.c
 
 
 include $(TOP)/configure/RULES
