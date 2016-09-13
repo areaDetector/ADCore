@@ -11,7 +11,7 @@
 #undef HAVE_ERRNO_H
 #include <windows.h>
 #include "wincecompat.h"
-#else
+#elif defined(_WIN32)
 #define HAVE_SYS_STAT_H
 #define HAVE__STAT
 #define HAVE_STAT
@@ -20,6 +20,15 @@
 #define HAVE_FCNTL_H
 #include <io.h>
 #include <direct.h>
+#elif defined(vxWorks)
+#define HAVE_SYS_STAT_H
+#define HAVE__STAT
+#define HAVE_STAT
+#define HAVE_STDLIB_H
+#define HAVE_TIME_H
+#define HAVE_FCNTL_H
+#define HAVE_UNISTD_H
+#define VA_LIST_IS_ARRAY
 #endif
 
 #include <libxml/xmlversion.h>
@@ -29,8 +38,11 @@
 #endif
 
 #ifdef NEED_SOCKETS
+#ifdef _WIN32
 #include <wsockcompat.h>
 #endif
+#endif
+
 
 /*
  * Windows platforms may define except 
