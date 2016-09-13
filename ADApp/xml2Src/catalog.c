@@ -976,7 +976,7 @@ xmlLoadFileContent(const char *filename)
 #endif
 
 #ifdef HAVE_STAT
-    if ((fd = open(filename, O_RDONLY)) < 0)
+    if ((fd = open(filename, O_RDONLY, 0644)) < 0)
 #else
     if ((fd = fopen(filename, "rb")) == NULL)
 #endif
