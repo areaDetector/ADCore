@@ -51,8 +51,7 @@ INC_WIN32 += H5pubconf.h
 #INC_WIN32 += H5pubconf_32_shared.h H5pubconf_32_static.h 
 #INC_WIN32 += H5pubconf_64_shared.h H5pubconf_64_static.h
 
-
-LIB_SRCS += src/H5.c
+LIB_SRCS += H5.c
 
 
 include $(TOP)/configure/RULES
