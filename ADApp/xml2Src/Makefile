@@ -7,6 +7,7 @@ include $(TOP)/configure/CONFIG
 
 
 LIBRARY_IOC_WIN32 = libxml2
+LIBRARY_IOC_vxWorks = libxml2
 
 ifeq ($(SHARED_LIBRARIES),NO)
 #  USR_CFLAGS_WIN32 += -DLIBXML_STATIC
@@ -62,6 +63,54 @@ INC_WIN32 += libxml/xmlwriter.h
 INC_WIN32 += libxml/xpath.h
 INC_WIN32 += libxml/xpathInternals.h
 INC_WIN32 += libxml/xmlmodule.h
+
+INC_vxWorks += libxml/DOCBparser.h
+INC_vxWorks += libxml/globals.h 
+INC_vxWorks += libxml/tree.h
+INC_vxWorks += libxml/xmlregexp.h
+INC_vxWorks += libxml/HTMLparser.h
+INC_vxWorks += libxml/HTMLtree.h
+INC_vxWorks += libxml/SAX.h
+INC_vxWorks += libxml/SAX2.h
+INC_vxWorks += libxml/c14n.h
+INC_vxWorks += libxml/catalog.h
+INC_vxWorks += libxml/chvalid.h
+INC_vxWorks += libxml/debugXML.h
+INC_vxWorks += libxml/dict.h
+INC_vxWorks += libxml/encoding.h
+INC_vxWorks += libxml/entities.h
+INC_vxWorks += libxml/hash.h
+INC_vxWorks += libxml/list.h
+INC_vxWorks += libxml/nanoftp.h
+INC_vxWorks += libxml/nanohttp.h
+INC_vxWorks += libxml/parser.h
+INC_vxWorks += libxml/parserInternals.h
+INC_vxWorks += libxml/pattern.h
+INC_vxWorks += libxml/relaxng.h
+INC_vxWorks += libxml/schemasInternals.h
+INC_vxWorks += libxml/schematron.h
+INC_vxWorks += libxml/threads.h
+INC_vxWorks += libxml/uri.h
+INC_vxWorks += libxml/valid.h
+INC_vxWorks += libxml/xinclude.h
+INC_vxWorks += libxml/xlink.h
+INC_vxWorks += libxml/xmlIO.h
+INC_vxWorks += libxml/xmlautomata.h
+INC_vxWorks += libxml/xmlerror.h
+INC_vxWorks += libxml/xmlexports.h
+INC_vxWorks += libxml/xmlmemory.h
+INC_vxWorks += libxml/xmlreader.h
+INC_vxWorks += libxml/xmlsave.h
+INC_vxWorks += libxml/xmlschemas.h
+INC_vxWorks += libxml/xmlschemastypes.h
+INC_vxWorks += libxml/xpointer.h
+INC_vxWorks += libxml/xmlstring.h
+INC_vxWorks += libxml/xmlunicode.h
+INC_vxWorks += libxml/xmlversion.h
+INC_vxWorks += libxml/xmlwriter.h
+INC_vxWorks += libxml/xpath.h
+INC_vxWorks += libxml/xpathInternals.h
+INC_vxWorks += libxml/xmlmodule.h
 
 LIB_SRCS += buf.c
 LIB_SRCS += c14n.c
