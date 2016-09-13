@@ -7,6 +7,7 @@ include $(TOP)/configure/CONFIG
 
 
 LIBRARY_IOC_WIN32 = zlib
+LIBRARY_IOC_vxWorks = zlib
 
 ifeq ($(SHARED_LIBRARIES),YES)
   USR_CFLAGS_WIN32 += -DZLIB_DLL
@@ -15,6 +16,8 @@ endif
 # OS-specific files in os/ARCH
 INC_WIN32 += zlib.h
 INC_WIN32 += zconf.h
+INC_vxWorks += zlib.h
+INC_vxWorks += zconf.h
 
 LIB_SRCS += adler32.c
 LIB_SRCS += compress.c
