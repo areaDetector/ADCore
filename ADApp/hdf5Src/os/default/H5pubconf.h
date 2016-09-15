@@ -4,13 +4,20 @@
 #define H5_CONFIG_H_
 
 /* Define if the Windows virtual file driver should be compiled */
-#define H5_HAVE_WINDOWS 1
+#ifdef _WIN32
+  #define H5_HAVE_WINDOWS 1
+#endif
 
 /* Define if using MinGW */
-/* #undef H5_HAVE_MINGW */
+#ifdef __MINGW32__
+#define H5_HAVE_MINGW
+typedef int errno_t;
+#endif
 
 /* Define if on the Windows platform and default WIN32 API */
-#define H5_HAVE_WIN32_API 1
+#ifdef _WIN32
+  #define H5_HAVE_WIN32_API 1
+#endif
 
 /* Define if using a Windows compiler (i.e. Visual Studio) */
 #define H5_HAVE_VISUAL_STUDIO 1
@@ -173,7 +180,9 @@
 /* #undef H5_HAVE_IOCTL */
 
 /* Define to 1 if you have the <io.h> header file. */
-#define H5_HAVE_IO_H 1
+#ifndef vxWorks
+  #define H5_HAVE_IO_H 1
+#endif
 
 /* Define to 1 if you have the `dl' library (-ldl). */
 /* #undef H5_HAVE_LIBDL */
@@ -233,7 +242,9 @@
 /* #undef H5_HAVE_PTHREAD_H */
 
 /* Define to 1 if you have the 'InitOnceExecuteOnce' function. */
-#define H5_HAVE_WIN_THREADS 1
+#ifdef H5_BUILD_AS_DYNAMIC_LIB
+  #define H5_HAVE_WIN_THREADS 1
+#endif
 
 /* Define to 1 if you have the `random' function. */
 /* #undef H5_HAVE_RANDOM */
@@ -323,7 +334,9 @@
 #define H5_HAVE_SYS_TIMEB_H 1
 
 /* Define to 1 if you have the <sys/time.h> header file. */
-/* #undef H5_HAVE_SYS_TIME_H */
+#ifdef vxWorks
+  #define H5_HAVE_SYS_TIME_H 1
+#endif
 
 /* Define to 1 if you have the <sys/types.h> header file. */
 #define H5_HAVE_SYS_TYPES_H 1
@@ -335,7 +348,9 @@
 /* #undef H5_HAVE_THREADSAFE */
 
 /* Define if `timezone' is a global variable */
-#define H5_HAVE_TIMEZONE 1
+#ifndef vxWorks
+  #define H5_HAVE_TIMEZONE 1
+#endif
 
 /* Define if the ioctl TIOCGETD is defined */
 /* #undef H5_HAVE_TIOCGETD */
@@ -488,10 +503,22 @@
 
 #if !defined(__APPLE__)
 /* The size of `size_t', as computed by sizeof. */
-#define H5_SIZEOF_SIZE_T 8
+#ifdef __MSC_VER
+  #ifdef _M_X64
+    #define H5_SIZEOF_SIZE_T 8
+  #else
+    #define H5_SIZEOF_SIZE_T 4
+  #endif
+#endif
 
+#ifdef vxWorks
 /* The size of `ssize_t', as computed by sizeof. */
+  #define H5_SIZEOF_SSIZE_T 4
+#endif
+
+#ifdef __MINGW32__
 #define H5_SIZEOF_SSIZE_T 4
+#endif
 
 /* The size of `long', as computed by sizeof. */
 #define H5_SIZEOF_LONG 4
@@ -591,7 +618,9 @@
 /* #undef H5_SYSTEM_SCOPE_THREADS */
 
 /* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
-/* #undef H5_TIME_WITH_SYS_TIME */
+#ifdef vxWorks 
+  #define H5_TIME_WITH_SYS_TIME 1
+#endif
 
 /* Define using v1.6 public API symbols by default */
 /* #undef H5_USE_16_API_DEFAULT */
