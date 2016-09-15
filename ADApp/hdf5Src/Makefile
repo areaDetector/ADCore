@@ -325,7 +325,8 @@ LIB_SRCS += H5Zscaleoffset.c
 LIB_SRCS += H5Zszip.c
 LIB_SRCS += H5Ztrans.c
 
-LIB_LIBS += szip zlib
+LIB_LIBS += szip zlib 
+LIB_SYS_LIBS_WIN32 += ws2_32
 
 include $(TOP)/configure/RULES
 #----------------------------------------
