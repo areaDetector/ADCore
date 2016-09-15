@@ -9,6 +9,10 @@ include $(TOP)/configure/CONFIG
 LIBRARY_IOC_WIN32 = szip
 LIBRARY_IOC_vxWorks = szip
 
+ifeq ($(SHARED_LIBRARIES),YES)
+  USR_CFLAGS += -DSZ_BUILT_AS_DYNAMIC_LIB -Dszip_EXPORTS
+endif
+  
 # OS-specific files in os/ARCH
 INC_WIN32 += SZconfig.h
 INC_WIN32 += rice.h
