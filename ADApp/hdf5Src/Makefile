@@ -10,7 +10,7 @@ LIBRARY_IOC_WIN32 = hdf5
 LIBRARY_IOC_vxWorks = hdf5
 
 ifeq ($(SHARED_LIBRARIES), YES)
-  USR_CFLAGS += -DH5_BUILT_AS_DYNAMIC_LIB
+  USR_CFLAGS += -DH5_BUILT_AS_DYNAMIC_LIB -Dhdf5_shared_EXPORTS
 endif
 
 # OS-specific files in os/ARCH
