@@ -502,37 +502,37 @@ typedef int errno_t;
 #define H5_SIZEOF_INT_LEAST8_T 1
 
 #if !defined(__APPLE__)
-/* The size of `size_t', as computed by sizeof. */
-#ifdef __MSC_VER
-  #ifdef _M_X64
-    #define H5_SIZEOF_SIZE_T 8
-  #else
-    #define H5_SIZEOF_SIZE_T 4
+  /* The size of `size_t', as computed by sizeof. */
+  #ifdef _MSC_VER
+    #ifdef _M_X64
+      #define H5_SIZEOF_SIZE_T 8
+    #else
+      #define H5_SIZEOF_SIZE_T 4
+    #endif
   #endif
-#endif
 
-#ifdef vxWorks
-/* The size of `ssize_t', as computed by sizeof. */
-  #define H5_SIZEOF_SSIZE_T 4
-#endif
+  #ifdef vxWorks
+  /* The size of `ssize_t', as computed by sizeof. */
+    #define H5_SIZEOF_SSIZE_T 4
+  #endif
 
-#ifdef __MINGW32__
-#define H5_SIZEOF_SSIZE_T 4
-#endif
+  #ifdef __MINGW32__
+    #define H5_SIZEOF_SSIZE_T 4
+  #endif
 
-/* The size of `long', as computed by sizeof. */
-#define H5_SIZEOF_LONG 4
+  /* The size of `long', as computed by sizeof. */
+  #define H5_SIZEOF_LONG 4
 
 #else
-   # if defined(__LP64__) && __LP64__
-  #define H5_SIZEOF_LONG 8
-  #define H5_SIZEOF_SIZE_T 8
-  #define H5_SIZEOF_SSIZE_T 8
-  # else
-  #define H5_SIZEOF_LONG 4
-  #define H5_SIZEOF_SIZE_T 4
-  #define H5_SIZEOF_SSIZE_T 4
-  # endif
+  #if defined(__LP64__) && __LP64__
+    #define H5_SIZEOF_LONG 8
+    #define H5_SIZEOF_SIZE_T 8
+    #define H5_SIZEOF_SSIZE_T 8
+  #else
+    #define H5_SIZEOF_LONG 4
+    #define H5_SIZEOF_SIZE_T 4
+    #define H5_SIZEOF_SSIZE_T 4
+  #endif
 
 #endif
 
