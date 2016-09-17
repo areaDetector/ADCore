@@ -8,6 +8,7 @@ include $(TOP)/configure/CONFIG
 
 LIBRARY_IOC_WIN32 = hdf5
 LIBRARY_IOC_vxWorks = hdf5
+PROD_IOC_WIN32 = H5detect
 
 ifeq ($(SHARED_LIBRARIES), YES)
   USR_CFLAGS += -DH5_BUILT_AS_DYNAMIC_LIB -Dhdf5_shared_EXPORTS
@@ -301,7 +302,6 @@ LIB_SRCS += H5Tenum.c
 LIB_SRCS += H5Tfields.c
 LIB_SRCS += H5Tfixed.c
 LIB_SRCS += H5Tfloat.c
-LIB_SRCS += H5detect.o
 LIB_SRCS += H5Tinit.c
 LIB_SRCS += H5Tnative.c
 LIB_SRCS += H5Toffset.c
@@ -327,6 +327,9 @@ LIB_SRCS += H5Ztrans.c
 
 LIB_LIBS += szip zlib 
 LIB_SYS_LIBS_WIN32 += ws2_32
+
+H5detect_SRCS += H5detect.c
+PROD_SYS_LIBS += ws2_32
 
 include $(TOP)/configure/RULES
 #----------------------------------------
