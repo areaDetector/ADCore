@@ -302,7 +302,6 @@ LIB_SRCS += H5Tenum.c
 LIB_SRCS += H5Tfields.c
 LIB_SRCS += H5Tfixed.c
 LIB_SRCS += H5Tfloat.c
-LIB_SRCS += H5Tinit.c
 LIB_SRCS += H5Tnative.c
 LIB_SRCS += H5Toffset.c
 LIB_SRCS += H5Toh.c
@@ -324,6 +323,13 @@ LIB_SRCS += H5Zshuffle.c
 LIB_SRCS += H5Zscaleoffset.c
 LIB_SRCS += H5Zszip.c
 LIB_SRCS += H5Ztrans.c
+
+ifeq (windows-x64, $(findstring windows-x64, $(T_A)))
+  LIB_SRCS += H5Tinit_win64.c
+endif
+ifeq (win32-x86, $(findstring win32-x86, $(T_A)))
+  LIB_SRCS += H5Tinit_win32.c
+endif
 
 LIB_LIBS += szip zlib 
 LIB_SYS_LIBS_WIN32 += ws2_32
