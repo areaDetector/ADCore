@@ -89,7 +89,6 @@ LIB_SRCS += H5Ddeprec.c
 LIB_SRCS += H5Dearray.c
 LIB_SRCS += H5Defl.c
 LIB_SRCS += H5Dfarray.c
-LIB_SRCS += H5Dsingle.c
 LIB_SRCS += H5Dfill.c
 LIB_SRCS += H5Dint.c
 LIB_SRCS += H5Dio.c
@@ -98,6 +97,7 @@ LIB_SRCS += H5Dnone.c
 LIB_SRCS += H5Doh.c
 LIB_SRCS += H5Dscatgath.c
 LIB_SRCS += H5Dselect.c
+LIB_SRCS += H5Dsingle.c
 LIB_SRCS += H5Dtest.c
 LIB_SRCS += H5Dvirtual.c
 LIB_SRCS += H5E.c
@@ -115,13 +115,13 @@ LIB_SRCS += H5EAsblock.c
 LIB_SRCS += H5EAstat.c
 LIB_SRCS += H5EAtest.c
 LIB_SRCS += H5F.c
-LIB_SRCS += H5Fint.c
 LIB_SRCS += H5Faccum.c
 LIB_SRCS += H5Fcwfs.c
 LIB_SRCS += H5Fdbg.c
 LIB_SRCS += H5Fdeprec.c
 LIB_SRCS += H5Fefc.c
 LIB_SRCS += H5Ffake.c
+LIB_SRCS += H5Fint.c
 LIB_SRCS += H5Fio.c
 LIB_SRCS += H5Fmount.c
 LIB_SRCS += H5Fquery.c
@@ -207,8 +207,6 @@ LIB_SRCS += H5I.c
 LIB_SRCS += H5Itest.c
 LIB_SRCS += H5L.c
 LIB_SRCS += H5Lexternal.c
-#LIB_SRCS += H5make_libsettings.o
-LIB_SRCS += H5lib_settings.c
 LIB_SRCS += H5MF.c
 LIB_SRCS += H5MFaggr.c
 LIB_SRCS += H5MFdbg.c
@@ -319,8 +317,8 @@ LIB_SRCS += H5Z.c
 LIB_SRCS += H5Zdeflate.c
 LIB_SRCS += H5Zfletcher32.c
 LIB_SRCS += H5Znbit.c
-LIB_SRCS += H5Zshuffle.c
 LIB_SRCS += H5Zscaleoffset.c
+LIB_SRCS += H5Zshuffle.c
 LIB_SRCS += H5Zszip.c
 LIB_SRCS += H5Ztrans.c
 
@@ -330,6 +328,7 @@ endif
 ifeq (win32-x86, $(findstring win32-x86, $(T_A)))
   LIB_SRCS += H5Tinit_win32.c
 endif
+LIB_SRCS += H5lib_settings.c
 
 LIB_LIBS += szip zlib 
 LIB_SYS_LIBS_WIN32 += ws2_32
