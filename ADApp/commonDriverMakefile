@@ -25,7 +25,9 @@ ifdef ADPLUGINEDGE
   endif
 endif
 
-ifneq (vxWorks, $(findstring vxWorks, $(T_A)))
+ifeq (vxWorks, $(findstring vxWorks, $(T_A)))
+else ifeq (mingw, $(findstring mingw, $(T_A)))
+else
   PROD_LIBS             += NeXus
 endif
 PROD_LIBS               += calc busy sscan autosave
@@ -90,10 +92,12 @@ else
   USR_CXXFLAGS_WIN32    += -DH5_BUILT_AS_STATIC_LIB
   USR_CFLAGS_WIN32      += -DH5_BUILT_AS_STATIC_LIB
 endif
-PROD_LIBS_WIN32         += hdf5 szip zlib
-PROD_LIBS_WIN32         += libxml2
-
-PROD_SYS_LIBS_WIN32     += gdi32 oleaut32
+ifneq (mingw,$(findstring mingw, $(T_A)))
+  PROD_LIBS_WIN32        += hdf5 
+endif
+PROD_LIBS_WIN32          += szip zlib
+PROD_LIBS_WIN32          += libxml2
+PROD_SYS_LIBS_WIN32      += gdi32 oleaut32 psapi 
 
 PROD_SYS_LIBS_cygwin32  += libhdf5
 PROD_SYS_LIBS_cygwin32  += libtiff libjpeg libjbig libz libxml2
