@@ -73,10 +73,18 @@ INC += NDPosPluginFileReader.h
 LIBRARY_IOC += NDPlugin
 NDPlugin_SRCS += fft.c
 NDPlugin_SRCS += NDArrayRing.cpp
-NDPlugin_SRCS_DEFAULT += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNexus.cpp NDFileHDF5.cpp NDFileHDF5Dataset.cpp 
-NDPlugin_SRCS_DEFAULT += NDFileHDF5AttributeDataset.cpp NDFileHDF5LayoutXML.cpp NDFileHDF5Layout.cpp NDFileNull.cpp
-NDPlugin_SRCS_DEFAULT += NDPosPlugin.cpp NDPosPluginFileReader.cpp
-NDPlugin_SRCS_vxWorks += NDFileDummy.cpp
+NDPlugin_SRCS += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNull.cpp
+NDPlugin_SRCS += NDPosPlugin.cpp NDPosPluginFileReader.cpp
+# HDF5 does not yet work on vxWorks or mingw
+ifeq (vxWorks,$(findstring vxWorks, $(T_A)))
+  NDPlugin_SRCS += NDFileDummy.cpp
+else ifeq (mingw,$(findstring mingw, $(T_A)))
+  NDPlugin_SRCS += NDFileDummy.cpp
+else
+  NDPlugin_SRCS += NDFileNexus.cpp NDFileHDF5.cpp NDFileHDF5Dataset.cpp 
+  NDPlugin_SRCS += NDFileHDF5AttributeDataset.cpp NDFileHDF5LayoutXML.cpp NDFileHDF5Layout.cpp 
+endif
+
 NDPlugin_SRCS += NDFileNetCDF.cpp
 NDPlugin_SRCS += NDPluginAttribute.cpp
 NDPlugin_SRCS += NDPluginCircularBuff.cpp
@@ -94,8 +102,8 @@ NDPlugin_SRCS += NDPluginStdArrays.cpp
 NDPlugin_SRCS += NDPluginTimeSeries.cpp
 NDPlugin_SRCS += NDPluginTransform.cpp
 
-NDPlugin_SYS_LIBS_WIN32 += Ws2_32
-NDPlugin_SYS_LIBS_WIN32 += User32
+NDPlugin_SYS_LIBS_WIN32 += ws2_32
+NDPlugin_SYS_LIBS_WIN32 += user32
 
 ifeq ($(USE_GRAPHICSMAGICK), YES)
   USR_INCLUDES += $(GRAPHICS_MAGICK_INCLUDE)
