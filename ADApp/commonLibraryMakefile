@@ -1,6 +1,8 @@
 # This file contains the commands to build libraries using the common set of plugins
 LIB_LIBS                += ADBase netCDF
-ifneq (vxWorks, $(findstring vxWorks, $(T_A)))
+ifeq (vxWorks, $(findstring vxWorks, $(T_A)))
+else ifeq (mingw, $(findstring mingw, $(T_A)))
+else
   LIB_LIBS              += NeXus
 endif
 LIB_LIBS                += asyn
@@ -42,7 +44,7 @@ ifeq ($(USE_GRAPHICSMAGICK), YES)
 else
   # I don't understand why we need to set this when building statically and not using GraphicsMagick
   ifeq ($(STATIC_BUILD), YES)
-    USR_LDFLAGS_WIN32   += /NODEFAULTLIB:msvcrt.lib
+#    USR_LDFLAGS_WIN32   += /NODEFAULTLIB:msvcrt.lib
   endif
   LIB_LIBS_WIN32        += tiff jpeg
 endif
@@ -60,14 +62,17 @@ else
   USR_CXXFLAGS_WIN32    += -DH5_BUILT_AS_STATIC_LIB
   USR_CFLAGS_WIN32      += -DH5_BUILT_AS_STATIC_LIB
 endif
-LIB_LIBS_WIN32          += hdf5 szip zlib
+ifneq (mingw,$(findstring mingw, $(T_A)))
+  LIB_LIBS_WIN32        += hdf5 
+endif
+LIB_LIBS_WIN32          += szip zlib
 LIB_LIBS_WIN32          += libxml2
-LIB_SYS_LIBS_WIN32      += Gdi32 Oleaut32 
+LIB_SYS_LIBS_WIN32      += gdi32 oleaut32 
 
 LIB_SYS_LIBS_cygwin32   += libhdf5
 LIB_SYS_LIBS_cygwin32   += libtiff libjpeg libjbig libz libxml2
 LIB_SYS_LIBS_cygwin32   += $(CYGWIN_RPC_LIB)
-LIB_SYS_LIBS_cygwin32   += Gdi32
+LIB_SYS_LIBS_cygwin32   += gdi32
 
 ifeq ($(OS_CLASS), $(filter $(OS_CLASS), Linux Darwin solaris))
   ifdef HDF5_LIB
