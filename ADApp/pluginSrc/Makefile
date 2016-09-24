@@ -15,7 +15,9 @@ endif
 USR_CXXFLAGS_Linux += -DH5_NO_DEPRECATED_SYMBOLS -DH5Gopen_vers=2
 
 # This flag is used to indicate that the TIFF library was built statically
-USR_CXXFLAGS_WIN32 += -DLIBTIFF_STATIC
+ifeq ($(SHARED_LIBRARIES),NO)
+  USR_CXXFLAGS_WIN32 += -DLIBTIFF_STATIC
+endif
 
 DBD += NDPluginSupport.dbd
 DBD += NDFileHDF5.dbd
@@ -75,10 +77,8 @@ NDPlugin_SRCS += fft.c
 NDPlugin_SRCS += NDArrayRing.cpp
 NDPlugin_SRCS += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNull.cpp
 NDPlugin_SRCS += NDPosPlugin.cpp NDPosPluginFileReader.cpp
-# HDF5 does not yet work on vxWorks or mingw
+# HDF5 does not yet work on vxWorks
 ifeq (vxWorks,$(findstring vxWorks, $(T_A)))
-  NDPlugin_SRCS += NDFileDummy.cpp
-else ifeq (mingw,$(findstring mingw, $(T_A)))
   NDPlugin_SRCS += NDFileDummy.cpp
 else
   NDPlugin_SRCS += NDFileNexus.cpp NDFileHDF5.cpp NDFileHDF5Dataset.cpp 
