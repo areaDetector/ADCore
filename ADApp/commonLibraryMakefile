@@ -1,8 +1,6 @@
 # This file contains the commands to build libraries using the common set of plugins
 LIB_LIBS                += ADBase netCDF
-ifeq (vxWorks, $(findstring vxWorks, $(T_A)))
-else ifeq (mingw, $(findstring mingw, $(T_A)))
-else
+ifneq (vxWorks, $(findstring vxWorks, $(T_A)))
   LIB_LIBS              += NeXus
 endif
 LIB_LIBS                += asyn
@@ -41,18 +39,6 @@ ifeq ($(USE_GRAPHICSMAGICK), YES)
   GraphicsMagick_DIR     = $(GRAPHICS_MAGICK_LIB)
   GraphicsMagick++_DIR   = $(GRAPHICS_MAGICK_LIB)
   GraphicsMagickWand_DIR = $(GRAPHICS_MAGICK_LIB)
-else
-  # I don't understand why we need to set this when building statically and not using GraphicsMagick
-  ifeq ($(STATIC_BUILD), YES)
-#    USR_LDFLAGS_WIN32   += /NODEFAULTLIB:msvcrt.lib
-  endif
-  LIB_LIBS_WIN32        += tiff jpeg
-endif
-
-ifeq ($(OS_CLASS), WIN32)
-  ifeq (debug, $(findstring debug, $(T_A)))
-  USR_LDFLAGS_WIN32     += /NODEFAULTLIB:LIBCMT.lib
-  endif
 endif
 
 ifeq ($(HDF5_STATIC_BUILD), NO)
@@ -62,11 +48,8 @@ else
   USR_CXXFLAGS_WIN32    += -DH5_BUILT_AS_STATIC_LIB
   USR_CFLAGS_WIN32      += -DH5_BUILT_AS_STATIC_LIB
 endif
-ifneq (mingw,$(findstring mingw, $(T_A)))
-  LIB_LIBS_WIN32        += hdf5 
-endif
-LIB_LIBS_WIN32          += szip zlib
-LIB_LIBS_WIN32          += libxml2
+LIB_LIBS_WIN32          += hdf5 
+LIB_LIBS_WIN32          += tiff jpeg szip zlib xml2
 LIB_SYS_LIBS_WIN32      += gdi32 oleaut32 
 
 LIB_SYS_LIBS_cygwin32   += libhdf5
