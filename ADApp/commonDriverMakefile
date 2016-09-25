@@ -3,7 +3,7 @@
 
 $(PROD_NAME)_DBD += commonDriverSupport.dbd
 
-PROD_LIBS               += NDPlugin ADBase netCDF
+PROD_LIBS               += NDPlugin ADBase netCDF NeXus
 
 ifeq ($(EPICS_V4),YES)
   $(PROD_NAME)_DBD      += NDPluginPva.dbd
@@ -25,10 +25,6 @@ ifdef ADPLUGINEDGE
   endif
 endif
 
-ifeq (vxWorks, $(findstring vxWorks, $(T_A)))
-else
-  PROD_LIBS             += NeXus
-endif
 PROD_LIBS               += calc busy sscan autosave
 
 # Optionally include useful modules
@@ -80,6 +76,7 @@ PROD_SYS_LIBS_cygwin32  += libtiff libjpeg libjbig libz libxml2
 PROD_SYS_LIBS_cygwin32  += $(CYGWIN_RPC_LIB)
 PROD_SYS_LIBS_cygwin32  += Gdi32
 
+PROD_LIBS_vxWorks       += hdf5
 PROD_LIBS_vxWorks       += tiff jpeg szip zlib xml2 
 ifeq ($(OS_CLASS), $(filter $(OS_CLASS), Linux Darwin solaris))
   ifdef HDF5_LIB
