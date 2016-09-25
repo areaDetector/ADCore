@@ -1,8 +1,5 @@
 # This file contains the commands to build libraries using the common set of plugins
-LIB_LIBS                += ADBase netCDF
-ifneq (vxWorks, $(findstring vxWorks, $(T_A)))
-  LIB_LIBS              += NeXus
-endif
+LIB_LIBS                += ADBase netCDF NeXus
 LIB_LIBS                += asyn
 ifeq ($(EPICS_LIBCOM_ONLY),YES)
   LIB_LIBS              += Com
@@ -56,6 +53,9 @@ LIB_SYS_LIBS_cygwin32   += libhdf5
 LIB_SYS_LIBS_cygwin32   += libtiff libjpeg libjbig libz libxml2
 LIB_SYS_LIBS_cygwin32   += $(CYGWIN_RPC_LIB)
 LIB_SYS_LIBS_cygwin32   += gdi32
+
+LIB_LIBS_vxWorks        += hdf5
+LIB_LIBS_vxWorks        += tiff jpeg szip zlib xml2 
 
 ifeq ($(OS_CLASS), $(filter $(OS_CLASS), Linux Darwin solaris))
   ifdef HDF5_LIB
