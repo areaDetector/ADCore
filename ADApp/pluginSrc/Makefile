@@ -77,13 +77,8 @@ NDPlugin_SRCS += fft.c
 NDPlugin_SRCS += NDArrayRing.cpp
 NDPlugin_SRCS += NDFileTIFF.cpp NDFileJPEG.cpp NDFileNull.cpp
 NDPlugin_SRCS += NDPosPlugin.cpp NDPosPluginFileReader.cpp
-# HDF5 does not yet work on vxWorks
-ifeq (vxWorks,$(findstring vxWorks, $(T_A)))
-  NDPlugin_SRCS += NDFileDummy.cpp
-else
-  NDPlugin_SRCS += NDFileNexus.cpp NDFileHDF5.cpp NDFileHDF5Dataset.cpp 
-  NDPlugin_SRCS += NDFileHDF5AttributeDataset.cpp NDFileHDF5LayoutXML.cpp NDFileHDF5Layout.cpp 
-endif
+NDPlugin_SRCS += NDFileNexus.cpp NDFileHDF5.cpp NDFileHDF5Dataset.cpp 
+NDPlugin_SRCS += NDFileHDF5AttributeDataset.cpp NDFileHDF5LayoutXML.cpp NDFileHDF5Layout.cpp 
 
 NDPlugin_SRCS += NDFileNetCDF.cpp
 NDPlugin_SRCS += NDPluginAttribute.cpp
