@@ -9,6 +9,13 @@
 #include <sstream>
 #include <iocsh.h>
 #include <sys/stat.h>
+#include <string>
+#include <list>
+#include <map>
+
+#include <epicsTypes.h>
+
+#include "NDPluginDriver.h"
 
 #include <epicsExport.h>
 #include "NDPosPlugin.h"
