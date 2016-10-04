@@ -8,11 +8,11 @@ else
 endif
 
 ifeq ($(WITH_EPICS_V4),YES)
-  LIB_LIBS += pvData
-  LIB_LIBS += pvDatabase
-  LIB_LIBS += nt
-  LIB_LIBS += pvAccess
   LIB_LIBS += ntndArrayConverter
+  LIB_LIBS += nt
+  LIB_LIBS += pvDatabase
+  LIB_LIBS += pvAccess
+  LIB_LIBS += pvData
 endif
 
 ifeq ($(WITH_NETCDF),YES)
@@ -67,6 +67,39 @@ ifeq ($(WITH_XML2),YES)
   endif
 endif
 
+ifeq ($(WITH_NEXUS),YES)
+  ifeq ($(NEXUS_EXTERNAL),NO)
+    LIB_LIBS += NeXus
+  else
+    ifdef NEXUS_LIB
+      nexus_DIR    = $(NEXUS_LIB)
+      LIB_LIBS     += NeXus
+    else
+      LIB_SYS_LIBS += NeXus
+    endif
+  endif
+endif
+
+ifeq ($(WITH_HDF5),YES)
+  ifeq ($(HDF5_EXTERNAL),NO)
+    LIB_LIBS += hdf5
+  else
+    ifdef HDF5_LIB
+      hdf5_DIR     = $(HDF5_LIB)
+      LIB_LIBS     += hdf5
+    else
+      LIB_SYS_LIBS += hdf5
+    endif
+  endif
+  ifeq ($(HDF5_STATIC_BUILD), NO)
+    USR_CXXFLAGS_WIN32    += -DH5_BUILT_AS_DYNAMIC_LIB
+    USR_CFLAGS_WIN32      += -DH5_BUILT_AS_DYNAMIC_LIB
+  else
+    USR_CXXFLAGS_WIN32    += -DH5_BUILT_AS_STATIC_LIB
+    USR_CFLAGS_WIN32      += -DH5_BUILT_AS_STATIC_LIB
+  endif
+endif
+
 ifeq ($(WITH_SZIP),YES)
   ifeq ($(SZIP_EXTERNAL),NO)
     LIB_LIBS += szip
@@ -93,38 +126,6 @@ ifeq ($(WITH_ZLIB),YES)
   endif
 endif
 
-ifeq ($(WITH_HDF5),YES)
-  ifeq ($(HDF5_EXTERNAL),NO)
-    LIB_LIBS += hdf5
-  else
-    ifdef HDF5_LIB
-      hdf5_DIR     = $(HDF5_LIB)
-      LIB_LIBS     += hdf5
-    else
-      LIB_SYS_LIBS += hdf5
-    endif
-  endif
-  ifeq ($(HDF5_STATIC_BUILD), NO)
-    USR_CXXFLAGS_WIN32    += -DH5_BUILT_AS_DYNAMIC_LIB
-    USR_CFLAGS_WIN32      += -DH5_BUILT_AS_DYNAMIC_LIB
-  else
-    USR_CXXFLAGS_WIN32    += -DH5_BUILT_AS_STATIC_LIB
-    USR_CFLAGS_WIN32      += -DH5_BUILT_AS_STATIC_LIB
-  endif
-endif
-
-ifeq ($(WITH_NEXUS),YES)
-  ifeq ($(NEXUS_EXTERNAL),NO)
-    LIB_LIBS += NeXus
-  else
-    ifdef NEXUS_LIB
-      nexus_DIR    = $(NEXUS_LIB)
-      LIB_LIBS     += NeXus
-    else
-      LIB_SYS_LIBS += NeXus
-    endif
-  endif
-endif
 
 # The following libraries are only needed for GraphicsMagick
 ifeq ($(WITH_GRAPHICSMAGICK), YES)
