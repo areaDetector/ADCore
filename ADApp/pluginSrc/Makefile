@@ -88,7 +88,7 @@ ifeq ($(WITH_GRAPHICSMAGICK),YES)
   endif
 endif
 
-ifeq ($WITH_HDF5),YES)
+ifeq ($(WITH_HDF5),YES)
   DBD      += NDFileHDF5.dbd
   INC      += NDFileHDF5.h
   INC      += NDFileHDF5Dataset.h
@@ -103,26 +103,25 @@ ifeq ($WITH_HDF5),YES)
   LIB_SRCS += NDFileHDF5Layout.cpp 
 endif
 
-ifeq ($WITH_JPEG),YES)
+ifeq ($(WITH_JPEG),YES)
   DBD      += NDFileJPEG.dbd
   INC      += NDFileJPEG.h
   LIB_SRCS += NDFileJPEG.cpp 
 endif
 
-ifeq ($WITH_NETCDF),YES)
+ifeq ($(WITH_NETCDF),YES)
   DBD      += NDFileNetCDF.dbd
   INC      += NDFileNetCDF.h
   LIB_SRCS += NDFileNetCDF.cpp
 endif
 
-ifeq ($WITH_NEXUS),YES)
+ifeq ($(WITH_NEXUS),YES)
   DBD      += NDFileNexus.dbd
   INC      += NDFileNexus.h
-  LIB_SRCS += NDFileNetCDF.cpp
   LIB_SRCS += NDFileNexus.cpp 
 endif
 
-ifeq ($WITH_TIFF),YES)
+ifeq ($(WITH_TIFF),YES)
   DBD      += NDFileTIFF.dbd
   INC      += NDFileTIFF.h
   LIB_SRCS += NDFileTIFF.cpp 
