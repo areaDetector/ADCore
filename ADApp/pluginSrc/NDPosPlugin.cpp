@@ -15,9 +15,9 @@
 
 #include <epicsTypes.h>
 
+#include <epicsExport.h>
 #include "NDPluginDriver.h"
 
-#include <epicsExport.h>
 #include "NDPosPlugin.h"
 #include "NDPosPluginFileReader.h"
 
