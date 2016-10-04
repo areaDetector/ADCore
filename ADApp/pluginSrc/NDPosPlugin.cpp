@@ -14,6 +14,7 @@
 #include <map>
 
 #include <epicsTypes.h>
+#include <epicsThread.h>
 
 #include <asynDriver.h>
 
