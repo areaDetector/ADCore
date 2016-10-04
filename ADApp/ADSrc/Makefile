@@ -17,7 +17,6 @@ ifeq ($(GNU),NO)
 endif
 
 DBD += ADSupport.dbd
-DBD += commonDriverSupport.dbd
 
 INC += ADCoreVersion.h
 INC += NDAttribute.h
