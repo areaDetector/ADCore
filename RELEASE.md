@@ -23,7 +23,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
-R2-5 (May XXX, 2016)
+R2-5 (October XXX, 2016)
 ========================
 ### NDPluginDriver
 * Added the ability to change the QueueSize of a plugin at run-time. This can be very useful,
