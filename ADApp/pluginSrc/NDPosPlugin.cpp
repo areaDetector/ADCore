@@ -15,6 +15,8 @@
 
 #include <epicsTypes.h>
 
+#include <asynDriver.h>
+
 #include <epicsExport.h>
 #include "NDPluginDriver.h"
 
