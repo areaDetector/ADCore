@@ -34,16 +34,3 @@ planned for a specific release then this is indicated.
 
 * NDAttribute
     - Support macro substitution in attributes files
-    
-* simDetector
-    - Remove iocsh commands from driver
-    - See if driver can be built with only libCom and asynDriver core
-    - Make an example C++ main program that acquires data with statistics plugin using nothing
-      from base except libCom.  asyn needs to build a "core" library with only libCom
-    - If this is successful then do this for all real drivers so areaDetector drivers can be used
-      outside EPICS IOC
-
-
-
-
-
