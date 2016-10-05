@@ -33,20 +33,6 @@ ifeq ($(WITH_NETCDF),YES)
   endif
 endif
 
-ifeq ($(WITH_JPEG),YES)
-  $(PROD_NAME)_DBD += NDFileJPEG.dbd
-  ifeq ($(JPEG_EXTERNAL),NO)
-    PROD_LIBS += jpeg
-  else
-    ifdef JPEG_LIB
-      hdf5_DIR     = $(jpeg_LIB)
-      PROD_LIBS     += jpeg
-    else
-      PROD_SYS_LIBS += jpeg
-    endif
-  endif
-endif
-
 ifeq ($(WITH_TIFF),YES)
   $(PROD_NAME)_DBD += NDFileTIFF.dbd
   ifeq ($(TIFF_EXTERNAL),NO)
@@ -57,6 +43,20 @@ ifeq ($(WITH_TIFF),YES)
       PROD_LIBS     += tiff
     else
       PROD_SYS_LIBS += tiff
+    endif
+  endif
+endif
+
+ifeq ($(WITH_JPEG),YES)
+  $(PROD_NAME)_DBD += NDFileJPEG.dbd
+  ifeq ($(JPEG_EXTERNAL),NO)
+    PROD_LIBS += jpeg
+  else
+    ifdef JPEG_LIB
+      hdf5_DIR     = $(jpeg_LIB)
+      PROD_LIBS     += jpeg
+    else
+      PROD_SYS_LIBS += jpeg
     endif
   endif
 endif
