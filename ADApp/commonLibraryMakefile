@@ -28,19 +28,6 @@ ifeq ($(WITH_NETCDF),YES)
   endif
 endif
 
-ifeq ($(WITH_JPEG),YES)
-  ifeq ($(JPEG_EXTERNAL),NO)
-    LIB_LIBS += jpeg
-  else
-    ifdef JPEG_LIB
-      hdf5_DIR     = $(jpeg_LIB)
-      LIB_LIBS     += jpeg
-    else
-      LIB_SYS_LIBS += jpeg
-    endif
-  endif
-endif
-
 ifeq ($(WITH_TIFF),YES)
   ifeq ($(TIFF_EXTERNAL),NO)
     LIB_LIBS += tiff
@@ -50,6 +37,19 @@ ifeq ($(WITH_TIFF),YES)
       LIB_LIBS     += tiff
     else
       LIB_SYS_LIBS += tiff
+    endif
+  endif
+endif
+
+ifeq ($(WITH_JPEG),YES)
+  ifeq ($(JPEG_EXTERNAL),NO)
+    LIB_LIBS += jpeg
+  else
+    ifdef JPEG_LIB
+      hdf5_DIR     = $(jpeg_LIB)
+      LIB_LIBS     += jpeg
+    else
+      LIB_SYS_LIBS += jpeg
     endif
   endif
 endif
