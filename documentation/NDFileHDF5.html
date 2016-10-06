@@ -403,14 +403,19 @@
     HDF5 File Viewers
   </h3>
   <p>
-    Note that with the current (1.8) release series of the HDF5 libraries it is not
-    possible to do a live "monitoring" of a file which is being written by another process.
-    The file writers mentioned in this section can only be used to open, browse and
-    read the HDF5 files <b>after</b> the NDFileHDF5 plugin has completed writing and
-    closed the file. This limitation will be lifted in the 1.10 release of the HDF5
-    library which will include the <a href="http://www.hdfgroup.org/HDF5/docNewFeatures/NewFeaturesSwmrDocs.html">
-      Single Writer Multiple Reader (SWMR) feature.</a>
+    Note that if the Single Writer Multiple Reader (SWMR) feature is disabled then it
+    is not possible to do a live "monitoring" of a file which is being written by another
+    process. The file writers mentioned in this section can only be used to open, browse
+    and read the HDF5 files <b>after</b> the NDFileHDF5 plugin has completed writing
+    and closed the file. It is possible to view files while they are being written if
+    the following are all true:
   </p>
+  <ul>
+    <li>SWMR support is enabled in the plugin.</li>
+    <li>The viewer client is built using HDF5 1.10 or later.</li>
+    <li>The file is being accessed using either a local, GPFS, or Lustre file system by
+      both the client and the IOC.</li>
+  </ul>
   <p>
     <a href="http://www.hdfgroup.org/hdf-java-html/hdfview/index.html">HDFView</a> is
     a simple GUI tool for viewing and browsing HDF files. It has some limited support
@@ -444,11 +449,11 @@
   <p>
     In addition to the dimensions of the NDArray it is also possible to specify up to
     9 extra "virtual" dimensions to store datasets in the file. This is to support applications
-    where a sample is scanned in up to nine dimensions.  For two extra dimensions, say X and Y 
-    each scan point contains a dataset comprising of multiple frames which can be stored. The 
-    length of (i.e. number of points in) each of the virtual dimensions have to be specified 
-    before the plugin opens the file for writing. This feature is only supported in the Stream
-    and Capture modes.
+    where a sample is scanned in up to nine dimensions. For two extra dimensions, say
+    X and Y each scan point contains a dataset comprising of multiple frames which can
+    be stored. The length of (i.e. number of points in) each of the virtual dimensions
+    have to be specified before the plugin opens the file for writing. This feature
+    is only supported in the Stream and Capture modes.
   </p>
   <p>
     This feature allow for creating very large sets of scan data which matches the dimensions
@@ -462,29 +467,29 @@
     <img alt="HDFmultiple-dimensions.png" src="HDFmultiple-dimensions.png" /></div>
   <p>
     Prior to starting a scan like this the user will need to configure the number of
-    virtual dimensions to use (from 0 up to 9); the number of frames per point; and the
-    length of each of the virtual dimensions (4 x 2 in the example figure). It is not
-    possible to change the number or size of dimensions while the file is open.
+    virtual dimensions to use (from 0 up to 9); the number of frames per point; and
+    the length of each of the virtual dimensions (4 x 2 in the example figure). It is
+    not possible to change the number or size of dimensions while the file is open.
   </p>
   <p>
     For 2D image (greyscale) formats the dimensions in the multiframe HDF5 file are
-    organised as follows.  Note that for backwards compatibility (previously only 2 
-    extra dimensions were available) when extra dimensions 
-    are specified they are in reverse order 9th,8th,7th,6th,5th,4th,3rd,Yth,Xth and
-    dimensions 2 and 1 are named Y and X:</p>
+    organised as follows. Note that for backwards compatibility (previously only 2 extra
+    dimensions were available) when extra dimensions are specified they are in reverse
+    order 9th,8th,7th,6th,5th,4th,3rd,Yth,Xth and dimensions 2 and 1 are named Y and
+    X:</p>
   <ul>
     <li>For a multiframe file with no use of "virtual" dimension the order is: {Nth frame,
       width, height}</li>
     <li>For a multiframe file using 1 "virtual" dimension (X) the order is: {X, Nth frame,
       width, height}</li>
-    <li>For a multiframe file using 2 "virtual" dimensions (X,Y) the order is: {Y, X, Nth
-      frame, width, height}</li>
-    <li>For a multiframe file using 3 "virtual" dimensions (X,Y,3rd) the order is: {3rd, Y, X, Nth
-      frame, width, height}</li>
-    <li>For a multiframe file using 4 "virtual" dimensions (X,Y,3rd,4th) the order is: {4th, 3rd, 
+    <li>For a multiframe file using 2 "virtual" dimensions (X,Y) the order is: {Y, X,
+      Nth frame, width, height}</li>
+    <li>For a multiframe file using 3 "virtual" dimensions (X,Y,3rd) the order is: {3rd,
       Y, X, Nth frame, width, height}</li>
-    <li>For a multiframe file using 5 "virtual" dimensions (X,Y,3rd,4th,5th) the order is: {5th, 
-      4th, 3rd, Y, X, Nth frame, width, height}</li>
+    <li>For a multiframe file using 4 "virtual" dimensions (X,Y,3rd,4th) the order is:
+      {4th, 3rd, Y, X, Nth frame, width, height}</li>
+    <li>For a multiframe file using 5 "virtual" dimensions (X,Y,3rd,4th,5th) the order
+      is: {5th, 4th, 3rd, Y, X, Nth frame, width, height}</li>
   </ul>
   <h3>
     Chunking
@@ -539,84 +544,92 @@
     Single Writer Multiple Reader (SWMR)
   </h3>
   <p>
-  From version 1-10 of the HDF5 library, reader applications shall be able to access the file whilst
-  it is being written.  The plugin has been updated to support the additional SWMR feature when
-  writing a file.  The plugin will know if SWMR mode is supported depending on the version of the
-  HDF5 library that the plugin has been compiled against, and SWMR mode can be enabled or 
-  disabled by setting the appropriate parameter (disabled by default).  Once placed into SWMR mode
-  the plugin accepts parameters to control how often frames are flushed, how often NDAttributes are
-  flushed and the current SWMR status and number of flushes that have taken place are reported for
-  an acquisition.  The SWMR active status parameter can be used to signify that it is safe for readers
-  to open the file (the file has been placed into SWMR mode).
+    From version 1-10 of the HDF5 library, reader applications shall be able to access
+    the file whilst it is being written. The plugin has been updated to support the
+    additional SWMR feature when writing a file. The plugin will know if SWMR mode is
+    supported depending on the version of the HDF5 library that the plugin has been
+    compiled against, and SWMR mode can be enabled or disabled by setting the appropriate
+    parameter (disabled by default). Once placed into SWMR mode the plugin accepts parameters
+    to control how often frames are flushed, how often NDAttributes are flushed and
+    the current SWMR status and number of flushes that have taken place are reported
+    for an acquisition. The SWMR active status parameter can be used to signify that
+    it is safe for readers to open the file (the file has been placed into SWMR mode).
   </p>
   <h3>
     Storing Attributes with Dataset Dimensions
   </h3>
   <p>
-  The plugin has the option of storing all NDAttribute datasets as a single array of data values,
-  or else these NDAttribute datasets can be stored with the same dimensionality as the main dataset.<BR>
-  As an example, consider a multi-dimensional dataset of images width=800 and height=600.<BR>
-  <ul>
-  <li>If two "virtual" dimensions are selected with N=3, X=4 and Y=5 then the main dataset will have the
-  dimensions 5x4x3x600x800.</li>
-  <li>If the NDAttribute datasets are stored in the standard way then the dataset would be a single
-  dimension array of 60 items.</li>
-  <li>If however, the NDAttribute dataset is stored with the same dimensionality as the main dataset then
-  the NDAttribute dataset will have the dimensions of 5x4x3x1x1.</li>
-  </ul>
+    The plugin has the option of storing all NDAttribute datasets as a single array
+    of data values, or else these NDAttribute datasets can be stored with the same dimensionality
+    as the main dataset.<br />
+    As an example, consider a multi-dimensional dataset of images width=800 and height=600.
   </p>
+  <ul>
+    <li>If two "virtual" dimensions are selected with N=3, X=4 and Y=5 then the main dataset
+      will have the dimensions 5x4x3x600x800.</li>
+    <li>If the NDAttribute datasets are stored in the standard way then the dataset would
+      be a single dimension array of 60 items.</li>
+    <li>If however, the NDAttribute dataset is stored with the same dimensionality as
+      the main dataset then the NDAttribute dataset will have the dimensions of 5x4x3x1x1.</li>
+  </ul>
   <h3>
     Selective Positional Placement of Individual Frames
   </h3>
   <p>
-  The plugin can now store frames at specified positions within a dataset.  Each individual dimension index
-  can be specified with NDAttributes that are attached to the frame.  The names of the NDAttributes that 
-  will be used as the index values for each dimension are specified using parameters (see parameter table
-  below).  The NDAttribute values themselves must be integer type zero based index values; if values are 
-  specified that are outside the maximum size of the dataset in any dimension then the acquisition will fail.  
-  A named attribute must be specified for each additional dimension if position placement mode is to be used,
-  if attributes are not specified or not named correctly then the acquisition will fail.
+    The plugin can now store frames at specified positions within a dataset. Each individual
+    dimension index can be specified with NDAttributes that are attached to the frame.
+    The names of the NDAttributes that will be used as the index values for each dimension
+    are specified using parameters (see parameter table below). The NDAttribute values
+    themselves must be integer type zero based index values; if values are specified
+    that are outside the maximum size of the dataset in any dimension then the acquisition
+    will fail. A named attribute must be specified for each additional dimension if
+    position placement mode is to be used, if attributes are not specified or not named
+    correctly then the acquisition will fail.
   </p>
   <p>
-  The position placement mode of operation is enabled by setting the PositionMode parameter to "On" and can
-  be used with or without SWMR mode enabled.
+    The position placement mode of operation is enabled by setting the PositionMode
+    parameter to "On" and can be used with or without SWMR mode enabled.
   </p>
   <h3>
     Writing Index Datasets
   </h3>
   <p>
-  The plugin will write out an index dataset for an extra dimension multidimensional dataset if requested.
-  This writing out of index values can only take place when running in selective positional placement mode 
-  and when storing attributes with dataset dimensions (see above). The index parameters take the name of 
-  the NDAttribute that contains the index values for the particular dimensions that you are interested in.
+    The plugin will write out an index dataset for an extra dimension multidimensional
+    dataset if requested. This writing out of index values can only take place when
+    running in selective positional placement mode and when storing attributes with
+    dataset dimensions (see above). The index parameters take the name of the NDAttribute
+    that contains the index values for the particular dimensions that you are interested
+    in.
   </p>
   <p>
-  For example, extra X and Y dimensions specified along with positional placement mode looking for NDAttributes 
-  called "x" and "y".  If the index dataset for the X dimension is set to "x" also then an additional dataset
-  will be written that contains only the index values for the X dimension.  The dataset will be a 1 dimensional
-  dataset.  Consider the following index values
+    For example, extra X and Y dimensions specified along with positional placement
+    mode looking for NDAttributes called "x" and "y". If the index dataset for the X
+    dimension is set to "x" also then an additional dataset will be written that contains
+    only the index values for the X dimension. The dataset will be a 1 dimensional dataset.
+    Consider the following index values
   </p>
   <p>
-  x=0, y=0
+    x=0, y=0
   </p>
   <p>
-  x=1, y=0
+    x=1, y=0
   </p>
   <p>
-  x=0, y=1
+    x=0, y=1
   </p>
   <p>
-  x=1, y=1
+    x=1, y=1
   </p>
   <p>
-  x=0, y=2
+    x=0, y=2
   </p>
   <p>
-  x=1, y=2
+    x=1, y=2
   </p>
   <p>
-  If the X index parameter is set to x then a 1D dataset will be produced containing the values (0, 1).
-  If the Y index parameter is set to y then a 1D dataset will be produced containing the values (0, 1, 2).
+    If the X index parameter is set to x then a 1D dataset will be produced containing
+    the values (0, 1). If the Y index parameter is set to y then a 1D dataset will be
+    produced containing the values (0, 1, 2).
   </p>
   <h3>
     Parameters and Records
@@ -864,9 +877,9 @@
         <td>
           r/w</td>
         <td>
-          Turn on or off NDAttribute dataset dimensions (1 = On, 0 = Off).  When 
-          switched on NDAttribute datasets are forced to have the same dimensionality 
-          as the main dataset.</td>
+          Turn on or off NDAttribute dataset dimensions (1 = On, 0 = Off). When switched on
+          NDAttribute datasets are forced to have the same dimensionality as the main dataset.
+        </td>
         <td>
           HDF5_dimAttDatasets</td>
         <td>
@@ -888,8 +901,8 @@
         <td>
           r/o</td>
         <td>
-          Does the HDF5 library version support SWMR mode of operation (1 = Supported, 
-          0 = Not Supported).</td>
+          Does the HDF5 library version support SWMR mode of operation (1 = Supported, 0 =
+          Not Supported).</td>
         <td>
           HDF5_SWMRSupported</td>
         <td>
@@ -905,8 +918,8 @@
         <td>
           r/w</td>
         <td>
-          Turn on or off SWMR mode for the next acquisition (1 = On, 0 = Off).  Turning on will
-          only work if SWMR mode is supported.</td>
+          Turn on or off SWMR mode for the next acquisition (1 = On, 0 = Off). Turning on
+          will only work if SWMR mode is supported.</td>
         <td>
           HDF5_SWMRMode</td>
         <td>
@@ -924,8 +937,8 @@
         <td>
           r/o</td>
         <td>
-          This value is set to 1 once a file has been opened and placed into SWMR mode.
-          It returns to 0 once the acquisition has completed.</td>
+          This value is set to 1 once a file has been opened and placed into SWMR mode. It
+          returns to 0 once the acquisition has completed.</td>
         <td>
           HDF5_SWMRRunning</td>
         <td>
@@ -959,9 +972,9 @@
         <td>
           r/w</td>
         <td>
-          This value is used to determine when to flush NDAttribute datasets to disk,
-          and the corresponding datasets chunk size.  A value of zero will default where
-          possible to the size of the dataset for a one dimensional dataset.</td>
+          This value is used to determine when to flush NDAttribute datasets to disk, and
+          the corresponding datasets chunk size. A value of zero will default where possible
+          to the size of the dataset for a one dimensional dataset.</td>
         <td>
           HDF5_NDAttributeChunk</td>
         <td>
@@ -979,11 +992,11 @@
         <td>
           r/o</td>
         <td>
-          The number of flushes that have taken place for the current acquisition.  In the
+          The number of flushes that have taken place for the current acquisition. In the
           case where flushing occurs for every frame and no flushing is set for NDAttribute
-          datasets then this value will increment by one for each frame, and once the
-          acquisition has completed it will jump by the number of flushes required for the
-          NDAttribute datasets, one flush for each dataset.</td>
+          datasets then this value will increment by one for each frame, and once the acquisition
+          has completed it will jump by the number of flushes required for the NDAttribute
+          datasets, one flush for each dataset.</td>
         <td>
           HDF5_SWMRCbCounter</td>
         <td>
