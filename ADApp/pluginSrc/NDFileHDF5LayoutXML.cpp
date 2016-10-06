@@ -14,6 +14,12 @@
 #include "NDFileHDF5Layout.h"
 #include "NDFileHDF5LayoutXML.h"
 
+// There is a problem with the export of the xmlFree symbol in the xml library on mingw.
+// It is just defined to be free() anyway, so work around the problem here.
+#ifdef __MINGW32__
+  #define xmlFree free
+#endif
+
 namespace hdf5
 {
 

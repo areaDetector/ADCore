@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/ADTop.adl"
+	name="/home/epics/devel/areaDetector-2-5/ADCore/ADApp/op/adl/ADTop.adl"
 	version=030107
 }
 display {
@@ -8,7 +8,7 @@ display {
 		x=171
 		y=78
 		width=225
-		height=565
+		height=590
 	}
 	clr=14
 	bclr=4
@@ -183,49 +183,6 @@ text {
 "related display" {
 	object {
 		x=145
-		y=510
-		width=64
-		height=20
-	}
-	display[0] {
-		label="Simulator #1 General"
-		name="ADBase.adl"
-		args="P=13SIM1:, R=cam1:"
-	}
-	display[1] {
-		label="Simulator #1 Specific"
-		name="simDetector.adl"
-		args="P=13SIM1:, R=cam1:"
-	}
-	display[2] {
-		label="Simulator #2 General"
-		name="ADBase.adl"
-		args="P=13SIM1:, R=cam2:"
-	}
-	display[3] {
-		label="Simulator #2 Specific"
-		name="simDetector.adl"
-		args="P=13SIM1:, R=cam2:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=50
-		y=510
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Simulator"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
 		y=410
 		width=64
 		height=20
@@ -335,39 +292,6 @@ text {
 "related display" {
 	object {
 		x=145
-		y=485
-		width=64
-		height=20
-	}
-	display[0] {
-		label="Roper #1 general"
-		name="ADBase.adl"
-		args="P=13ROPER1:, R=cam1: "
-	}
-	display[1] {
-		label="Roper #1 specific"
-		name="Roper.adl"
-		args="P=13ROPER1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=90
-		y=485
-		width=50
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Roper"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
 		y=210
 		width=64
 		height=20
@@ -462,72 +386,6 @@ text {
 		clr=14
 	}
 	textix="Perkin Elmer"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
-		y=435
-		width=64
-		height=20
-	}
-	display[0] {
-		label="PVCAM #1 general"
-		name="ADBase.adl"
-		args="P=13PVCAM1:, R=cam1: "
-	}
-	display[1] {
-		label="PVCAM #1 specific"
-		name="pvCam.adl"
-		args="P=13PVCAM1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=90
-		y=435
-		width=50
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="PVCAM"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
-		y=535
-		width=64
-		height=20
-	}
-	display[0] {
-		label="URL #1 general"
-		name="ADBase.adl"
-		args="P=13URL1:, R=cam1: "
-	}
-	display[1] {
-		label="URL #1 specific"
-		name="URLDriver.adl"
-		args="P=13URL1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=110
-		y=535
-		width=30
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="URL"
 	align="horiz. right"
 }
 "related display" {
@@ -632,39 +490,6 @@ text {
 		clr=14
 	}
 	textix="Point Grey"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
-		y=460
-		width=64
-		height=20
-	}
-	display[0] {
-		label="PSL #1 general"
-		name="ADBase.adl"
-		args="P=13PSL1:, R=cam1: "
-	}
-	display[1] {
-		label="PSL #1 specific"
-		name="PSL.adl"
-		args="P=13PSL1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=109
-		y=460
-		width=30
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="PSL"
 	align="horiz. right"
 }
 composite {
@@ -814,5 +639,213 @@ text {
 		clr=14
 	}
 	textix="ADC Simulator"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=535
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Simulator #1 General"
+		name="ADBase.adl"
+		args="P=13SIM1:, R=cam1:"
+	}
+	display[1] {
+		label="Simulator #1 Specific"
+		name="simDetector.adl"
+		args="P=13SIM1:, R=cam1:"
+	}
+	display[2] {
+		label="Simulator #2 General"
+		name="ADBase.adl"
+		args="P=13SIM1:, R=cam2:"
+	}
+	display[3] {
+		label="Simulator #2 Specific"
+		name="simDetector.adl"
+		args="P=13SIM1:, R=cam2:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=50
+		y=535
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Simulator"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=510
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Roper #1 general"
+		name="ADBase.adl"
+		args="P=13ROPER1:, R=cam1: "
+	}
+	display[1] {
+		label="Roper #1 specific"
+		name="Roper.adl"
+		args="P=13ROPER1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=90
+		y=510
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Roper"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=560
+		width=64
+		height=20
+	}
+	display[0] {
+		label="URL #1 general"
+		name="ADBase.adl"
+		args="P=13URL1:, R=cam1: "
+	}
+	display[1] {
+		label="URL #1 specific"
+		name="URLDriver.adl"
+		args="P=13URL1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=110
+		y=560
+		width=30
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="URL"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=485
+		width=64
+		height=20
+	}
+	display[0] {
+		label="PSL #1 general"
+		name="ADBase.adl"
+		args="P=13PSL1:, R=cam1: "
+	}
+	display[1] {
+		label="PSL #1 specific"
+		name="PSL.adl"
+		args="P=13PSL1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=109
+		y=485
+		width=30
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="PSL"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=460
+		width=64
+		height=20
+	}
+	display[0] {
+		label="PVCAM #1 general"
+		name="ADBase.adl"
+		args="P=13PVCAM1:, R=cam1: "
+	}
+	display[1] {
+		label="PVCAM #1 specific"
+		name="pvCam.adl"
+		args="P=13PVCAM1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=90
+		y=460
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="PVCAM"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=435
+		width=64
+		height=20
+	}
+	display[0] {
+		label="PvaDriver #1 general"
+		name="ADBase.adl"
+		args="P=13PVA1:, R=cam1: "
+	}
+	display[1] {
+		label="PvaDriver #1 specific"
+		name="ADPvaDriver.adl"
+		args="P=13PVA1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=90
+		y=435
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="PvaDriver"
 	align="horiz. right"
 }

@@ -5,14 +5,24 @@
  *      Author: gnx91527
  */
 
-#include "NDPosPlugin.h"
-#include "NDPosPluginFileReader.h"
-
-#include <epicsExport.h>
 #include <string.h>
 #include <sstream>
 #include <iocsh.h>
 #include <sys/stat.h>
+#include <string>
+#include <list>
+#include <map>
+
+#include <epicsTypes.h>
+#include <epicsThread.h>
+
+#include <asynDriver.h>
+
+#include <epicsExport.h>
+#include "NDPluginDriver.h"
+
+#include "NDPosPlugin.h"
+#include "NDPosPluginFileReader.h"
 
 static const char *driverName = "NDPosPlugin";
 

@@ -173,9 +173,9 @@ extern "C" int NDPvaConfigure(const char *portName, int queueSize,
         int blockingCallbacks, const char *NDArrayPort, int NDArrayAddr,
         const char *pvName, size_t maxMemory, int priority, int stackSize)
 {
-    new NDPluginPva(portName, queueSize, blockingCallbacks, NDArrayPort,
-            NDArrayAddr, pvName, maxMemory, priority, stackSize);
-    return(asynSuccess);
+    NDPluginPva *pPlugin = new NDPluginPva(portName, queueSize, blockingCallbacks, NDArrayPort,
+                                           NDArrayAddr, pvName, maxMemory, priority, stackSize);
+    return pPlugin->start();
 }
 
 /* EPICS iocsh shell commands */

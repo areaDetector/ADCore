@@ -1,91 +1,147 @@
 # This file contains the commands to build libraries using the common set of plugins
-LIB_LIBS                += ADBase netCDF
-ifneq (vxWorks, $(findstring vxWorks, $(T_A)))
-  LIB_LIBS              += NeXus
-endif
-LIB_LIBS                += asyn
+LIB_LIBS += ADBase
+LIB_LIBS += asyn
 ifeq ($(EPICS_LIBCOM_ONLY),YES)
-  LIB_LIBS              += Com
+  LIB_LIBS += Com
 else
-  LIB_LIBS              += $(EPICS_BASE_IOC_LIBS)
+  LIB_LIBS += $(EPICS_BASE_IOC_LIBS)
 endif
 
-ifeq ($(EPICS_V4),YES)
-  LIB_LIBS              += pvData
-  LIB_LIBS              += pvDatabase
-  LIB_LIBS              += nt
-  LIB_LIBS              += pvAccess
-  LIB_LIBS              += ntndArrayConverter
+ifeq ($(WITH_EPICS_V4),YES)
+  LIB_LIBS += ntndArrayConverter
+  LIB_LIBS += nt
+  LIB_LIBS += pvDatabase
+  LIB_LIBS += pvAccess
+  LIB_LIBS += pvData
 endif
 
-# The following libraries are only needed for GraphicsMagick
-ifeq ($(USE_GRAPHICSMAGICK), YES)
-  LIB_LIBS_WIN32        += CORE_RL_Magick++_ CORE_RL_wand_ CORE_RL_magick_ 
-  LIB_LIBS_WIN32        += CORE_RL_coders_ CORE_RL_filters_
-  LIB_LIBS_WIN32        += CORE_RL_bzlib_ CORE_RL_jbig_ CORE_RL_jp2_ CORE_RL_jpeg_ CORE_RL_lcms_
-  LIB_LIBS_WIN32        += CORE_RL_libxml_ CORE_RL_png_ CORE_RL_tiff_ CORE_RL_ttf_ CORE_RL_wmf_
-  LIB_LIBS_WIN32        += CORE_RL_xlib_ CORE_RL_zlib_
-
-  LIB_LIBS_cygwin32     += libGraphicsMagick++ libGraphicsMagickWand libGraphicsMagick
-  LIB_LIBS_cygwin32     += liblcms libpng14 libbz2 libfreetype
-
-  LIB_LIBS_Linux        += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
-  # The following system libraries must be installed to use GraphicsMagick
-  LIB_SYS_LIBS_Linux    += gomp X11 png12 bz2 Xext freetype 
-
-  LIB_LIBS_Darwin       += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
-  # The following system libraries must be installed to use GraphicsMagick
-  LIB_SYS_LIBS_Darwin   += png bz2
-  GraphicsMagick_DIR     = $(GRAPHICS_MAGICK_LIB)
-  GraphicsMagick++_DIR   = $(GRAPHICS_MAGICK_LIB)
-  GraphicsMagickWand_DIR = $(GRAPHICS_MAGICK_LIB)
-else
-  # I don't understand why we need to set this when building statically and not using GraphicsMagick
-  ifeq ($(STATIC_BUILD), YES)
-    USR_LDFLAGS_WIN32   += /NODEFAULTLIB:msvcrt.lib
-  endif
-  LIB_LIBS_WIN32        += tiff jpeg
-endif
-
-ifeq ($(OS_CLASS), WIN32)
-  ifeq (debug, $(findstring debug, $(T_A)))
-  USR_LDFLAGS_WIN32     += /NODEFAULTLIB:LIBCMT.lib
-  endif
-endif
-
-ifeq ($(HDF5_STATIC_BUILD), NO)
-  USR_CXXFLAGS_WIN32    += -DH5_BUILT_AS_DYNAMIC_LIB
-  USR_CFLAGS_WIN32      += -DH5_BUILT_AS_DYNAMIC_LIB
-  LIB_LIBS_WIN32        += hdf5 szip zlib
-else
-  USR_CXXFLAGS_WIN32    += -DH5_BUILT_AS_STATIC_LIB
-  USR_CFLAGS_WIN32      += -DH5_BUILT_AS_STATIC_LIB
-  LIB_LIBS_WIN32        += libhdf5 libszip libzlib
-endif
-LIB_LIBS_WIN32          += libxml2
-LIB_SYS_LIBS_WIN32      += Gdi32 Oleaut32 
-
-LIB_SYS_LIBS_cygwin32   += libhdf5
-LIB_SYS_LIBS_cygwin32   += libtiff libjpeg libjbig libz libxml2
-LIB_SYS_LIBS_cygwin32   += $(CYGWIN_RPC_LIB)
-LIB_SYS_LIBS_cygwin32   += Gdi32
-
-ifeq ($(OS_CLASS), $(filter $(OS_CLASS), Linux Darwin solaris))
-  ifdef HDF5_LIB
-    hdf5_DIR            = $(HDF5_LIB)
-    LIB_LIBS            += hdf5
+ifeq ($(WITH_NETCDF),YES)
+  ifeq ($(NETCDF_EXTERNAL),NO)
+    LIB_LIBS += netCDF
   else
-    LIB_SYS_LIBS        += hdf5
-  endif
-  ifdef SZIP
-    ifdef SZIP_LIB
-      sz_DIR             = $(SZIP_LIB)
-      LIB_LIBS          += sz
+    ifdef NETCDF_LIB
+      netCDF_DIR   = $(NETCDF_LIB)
+      LIB_LIBS     += netCDF
     else
-      LIB_SYS_LIBS      += sz
+      LIB_SYS_LIBS += netCDF
     endif
   endif
-  LIB_SYS_LIBS          += tiff jpeg xml2 z
 endif
+
+ifeq ($(WITH_TIFF),YES)
+  ifeq ($(TIFF_EXTERNAL),NO)
+    LIB_LIBS += tiff
+  else
+    ifdef TIFF_LIB
+      tiff_DIR     = $(TIFF_LIB)
+      LIB_LIBS     += tiff
+    else
+      LIB_SYS_LIBS += tiff
+    endif
+  endif
+endif
+
+ifeq ($(WITH_JPEG),YES)
+  ifeq ($(JPEG_EXTERNAL),NO)
+    LIB_LIBS += jpeg
+  else
+    ifdef JPEG_LIB
+      hdf5_DIR     = $(jpeg_LIB)
+      LIB_LIBS     += jpeg
+    else
+      LIB_SYS_LIBS += jpeg
+    endif
+  endif
+endif
+
+ifeq ($(WITH_XML2),YES)
+  ifeq ($(XML2_EXTERNAL),NO)
+    LIB_LIBS += xml2
+  else
+    ifdef XML2_LIB
+      xml2_DIR     = $(XML2_LIB)
+      LIB_LIBS     += xml2
+    else
+      LIB_SYS_LIBS += xml2
+    endif
+  endif
+endif
+
+ifeq ($(WITH_NEXUS),YES)
+  ifeq ($(NEXUS_EXTERNAL),NO)
+    LIB_LIBS += NeXus
+  else
+    ifdef NEXUS_LIB
+      nexus_DIR    = $(NEXUS_LIB)
+      LIB_LIBS     += NeXus
+    else
+      LIB_SYS_LIBS += NeXus
+    endif
+  endif
+endif
+
+ifeq ($(WITH_HDF5),YES)
+  ifeq ($(HDF5_EXTERNAL),NO)
+    LIB_LIBS += hdf5
+  else
+    ifdef HDF5_LIB
+      hdf5_DIR     = $(HDF5_LIB)
+      LIB_LIBS     += hdf5
+    else
+      LIB_SYS_LIBS += hdf5
+    endif
+  endif
+  ifeq ($(HDF5_STATIC_BUILD), NO)
+    USR_CXXFLAGS_WIN32    += -DH5_BUILT_AS_DYNAMIC_LIB
+    USR_CFLAGS_WIN32      += -DH5_BUILT_AS_DYNAMIC_LIB
+  else
+    USR_CXXFLAGS_WIN32    += -DH5_BUILT_AS_STATIC_LIB
+    USR_CFLAGS_WIN32      += -DH5_BUILT_AS_STATIC_LIB
+  endif
+endif
+
+ifeq ($(WITH_SZIP),YES)
+  ifeq ($(SZIP_EXTERNAL),NO)
+    LIB_LIBS += szip
+  else
+    ifdef SZIP_LIB
+      sz_DIR       = $(SZIP_LIB)
+      LIB_LIBS     += sz
+    else
+      LIB_SYS_LIBS += sz
+    endif
+  endif
+endif
+
+ifeq ($(WITH_ZLIB),YES)
+  ifeq ($(ZLIB_EXTERNAL),NO)
+    LIB_LIBS += zlib
+  else
+    ifdef ZLIB_LIB
+      z_DIR        = $(ZLIB_LIB)
+      LIB_LIBS     += z
+    else
+      LIB_SYS_LIBS += z
+    endif
+  endif
+endif
+
+
+# The following libraries are only needed for GraphicsMagick
+ifeq ($(WITH_GRAPHICSMAGICK), YES)
+  ifdef GRAPHICS_MAGICK_LIB
+    GraphicsMagick_DIR     = $(GRAPHICS_MAGICK_LIB)
+    GraphicsMagick++_DIR   = $(GRAPHICS_MAGICK_LIB)
+    GraphicsMagickWand_DIR = $(GRAPHICS_MAGICK_LIB)
+    LIB_LIBS               += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
+  else
+    LIB_SYS_LIBS           += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
+  endif
+  # The following system libraries must be installed to use GraphicsMagick
+  LIB_SYS_LIBS_Linux    += gomp X11 png12 bz2 Xext freetype 
+  LIB_SYS_LIBS_Darwin   += png bz2
+endif
+
+LIB_SYS_LIBS_WIN32      += gdi32 oleaut32 
 
 USR_LDFLAGS_Darwin      += -framework CoreFoundation
