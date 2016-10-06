@@ -8,7 +8,7 @@ display {
 		x=337
 		y=62
 		width=935
-		height=675
+		height=700
 	}
 	clr=14
 	bclr=4
@@ -2727,957 +2727,789 @@ menu {
 	limits {
 	}
 }
-composite {
+"text update" {
 	object {
 		x=10
-		y=520
-		width=915
-		height=145
+		y=521
+		width=110
+		height=18
 	}
-	"composite name"=""
-	children {
-		"text update" {
-			object {
-				x=10
-				y=521
-				width=110
-				height=18
-			}
-			monitor {
-				chan="$(P)netCDF1:PortName_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			format="string"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=125
-				y=521
-				width=160
-				height=18
-			}
-			monitor {
-				chan="$(P)netCDF1:PluginType_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			format="string"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=10
-				y=546
-				width=110
-				height=18
-			}
-			monitor {
-				chan="$(P)TIFF1:PortName_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			format="string"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=125
-				y=546
-				width=160
-				height=18
-			}
-			monitor {
-				chan="$(P)TIFF1:PluginType_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			format="string"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=10
-				y=571
-				width=110
-				height=18
-			}
-			monitor {
-				chan="$(P)JPEG1:PortName_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			format="string"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=125
-				y=571
-				width=160
-				height=18
-			}
-			monitor {
-				chan="$(P)JPEG1:PluginType_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			format="string"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=10
-				y=596
-				width=110
-				height=18
-			}
-			monitor {
-				chan="$(P)Nexus1:PortName_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			format="string"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=125
-				y=596
-				width=160
-				height=18
-			}
-			monitor {
-				chan="$(P)Nexus1:PluginType_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			format="string"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=10
-				y=621
-				width=110
-				height=18
-			}
-			monitor {
-				chan="$(P)Magick1:PortName_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			format="string"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=125
-				y=621
-				width=160
-				height=18
-			}
-			monitor {
-				chan="$(P)Magick1:PluginType_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			format="string"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=10
-				y=646
-				width=110
-				height=18
-			}
-			monitor {
-				chan="$(P)HDF1:PortName_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			format="string"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=125
-				y=646
-				width=160
-				height=18
-			}
-			monitor {
-				chan="$(P)HDF1:PluginType_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			format="string"
-			limits {
-			}
-		}
-		"text entry" {
-			object {
-				x=290
-				y=520
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)netCDF1:NDArrayPort"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		menu {
-			object {
-				x=355
-				y=520
-				width=80
-				height=20
-			}
-			control {
-				chan="$(P)netCDF1:EnableCallbacks"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=440
-				y=521
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)netCDF1:EnableCallbacks_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		menu {
-			object {
-				x=525
-				y=520
-				width=80
-				height=20
-			}
-			control {
-				chan="$(P)netCDF1:BlockingCallbacks"
-				clr=14
-				bclr=51
-			}
-		}
-		"text entry" {
-			object {
-				x=290
-				y=545
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)TIFF1:NDArrayPort"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		menu {
-			object {
-				x=355
-				y=545
-				width=80
-				height=20
-			}
-			control {
-				chan="$(P)TIFF1:EnableCallbacks"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=440
-				y=546
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)TIFF1:EnableCallbacks_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		menu {
-			object {
-				x=525
-				y=545
-				width=80
-				height=20
-			}
-			control {
-				chan="$(P)TIFF1:BlockingCallbacks"
-				clr=14
-				bclr=51
-			}
-		}
-		"text entry" {
-			object {
-				x=290
-				y=570
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)JPEG1:NDArrayPort"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		menu {
-			object {
-				x=355
-				y=570
-				width=80
-				height=20
-			}
-			control {
-				chan="$(P)JPEG1:EnableCallbacks"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=440
-				y=571
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)JPEG1:EnableCallbacks_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		menu {
-			object {
-				x=525
-				y=570
-				width=80
-				height=20
-			}
-			control {
-				chan="$(P)JPEG1:BlockingCallbacks"
-				clr=14
-				bclr=51
-			}
-		}
-		"text entry" {
-			object {
-				x=290
-				y=595
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)Nexus1:NDArrayPort"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		menu {
-			object {
-				x=355
-				y=595
-				width=80
-				height=20
-			}
-			control {
-				chan="$(P)Nexus1:EnableCallbacks"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=440
-				y=596
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)Nexus1:EnableCallbacks_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		menu {
-			object {
-				x=525
-				y=595
-				width=80
-				height=20
-			}
-			control {
-				chan="$(P)Nexus1:BlockingCallbacks"
-				clr=14
-				bclr=51
-			}
-		}
-		"text entry" {
-			object {
-				x=290
-				y=620
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)Magick1:NDArrayPort"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		menu {
-			object {
-				x=355
-				y=620
-				width=80
-				height=20
-			}
-			control {
-				chan="$(P)Magick1:EnableCallbacks"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=440
-				y=621
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)Magick1:EnableCallbacks_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		menu {
-			object {
-				x=525
-				y=620
-				width=80
-				height=20
-			}
-			control {
-				chan="$(P)Magick1:BlockingCallbacks"
-				clr=14
-				bclr=51
-			}
-		}
-		"text entry" {
-			object {
-				x=290
-				y=645
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)HDF1:NDArrayPort"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		menu {
-			object {
-				x=355
-				y=645
-				width=80
-				height=20
-			}
-			control {
-				chan="$(P)HDF1:EnableCallbacks"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=440
-				y=646
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)HDF1:EnableCallbacks_RBV"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		menu {
-			object {
-				x=525
-				y=645
-				width=80
-				height=20
-			}
-			control {
-				chan="$(P)HDF1:BlockingCallbacks"
-				clr=14
-				bclr=51
-			}
-		}
-		"related display" {
-			object {
-				x=865
-				y=520
-				width=60
-				height=20
-			}
-			display[0] {
-				label="netCDF1:"
-				name="NDFileNetCDF.adl"
-				args="P=$(P),R=netCDF1:"
-			}
-			clr=14
-			bclr=51
-			label="More"
-		}
-		"text update" {
-			object {
-				x=780
-				y=521
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)netCDF1:ArrayRate_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"related display" {
-			object {
-				x=865
-				y=545
-				width=60
-				height=20
-			}
-			display[0] {
-				label="TIFF1:"
-				name="NDFileTIFF.adl"
-				args="P=$(P),R=TIFF1:"
-			}
-			clr=14
-			bclr=51
-			label="More"
-		}
-		"text update" {
-			object {
-				x=780
-				y=546
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)TIFF1:ArrayRate_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"related display" {
-			object {
-				x=865
-				y=570
-				width=60
-				height=20
-			}
-			display[0] {
-				label="JPEG1:"
-				name="NDFileJPEG.adl"
-				args="P=$(P),R=JPEG1:"
-			}
-			clr=14
-			bclr=51
-			label="More"
-		}
-		"text update" {
-			object {
-				x=780
-				y=571
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)JPEG1:ArrayRate_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"related display" {
-			object {
-				x=865
-				y=595
-				width=60
-				height=20
-			}
-			display[0] {
-				label="Nexus1:"
-				name="NDFileNexus.adl"
-				args="P=$(P),R=Nexus1:"
-			}
-			clr=14
-			bclr=51
-			label="More"
-		}
-		"text update" {
-			object {
-				x=780
-				y=596
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)Nexus1:ArrayRate_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"related display" {
-			object {
-				x=865
-				y=620
-				width=60
-				height=20
-			}
-			display[0] {
-				label="Magick1:"
-				name="NDFileMagick.adl"
-				args="P=$(P),R=Magick1:"
-			}
-			clr=14
-			bclr=51
-			label="More"
-		}
-		"text update" {
-			object {
-				x=780
-				y=621
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)Magick1:ArrayRate_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"related display" {
-			object {
-				x=865
-				y=645
-				width=60
-				height=20
-			}
-			display[0] {
-				label="HDF1:"
-				name="NDFileHDF5.adl"
-				args="P=$(P),R=HDF1:"
-			}
-			clr=14
-			bclr=51
-			label="More"
-		}
-		"text update" {
-			object {
-				x=780
-				y=646
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)HDF1:ArrayRate_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=695
-				y=521
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)netCDF1:QueueFree"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=695
-				y=546
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)TIFF1:QueueFree"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=695
-				y=571
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)JPEG1:QueueFree"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=695
-				y=596
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)Nexus1:QueueFree"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=695
-				y=621
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)Magick1:QueueFree"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=695
-				y=646
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)HDF1:QueueFree"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=610
-				y=521
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)netCDF1:DroppedArrays_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=610
-				y=546
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)TIFF1:DroppedArrays_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=610
-				y=571
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)JPEG1:DroppedArrays_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=610
-				y=596
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)Nexus1:DroppedArrays_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=610
-				y=621
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)Magick1:DroppedArrays_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=610
-				y=646
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)HDF1:DroppedArrays_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
+	monitor {
+		chan="$(P)netCDF1:PortName_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=125
+		y=521
+		width=160
+		height=18
+	}
+	monitor {
+		chan="$(P)netCDF1:PluginType_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=10
+		y=546
+		width=110
+		height=18
+	}
+	monitor {
+		chan="$(P)TIFF1:PortName_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=125
+		y=546
+		width=160
+		height=18
+	}
+	monitor {
+		chan="$(P)TIFF1:PluginType_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=10
+		y=571
+		width=110
+		height=18
+	}
+	monitor {
+		chan="$(P)JPEG1:PortName_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=125
+		y=571
+		width=160
+		height=18
+	}
+	monitor {
+		chan="$(P)JPEG1:PluginType_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=10
+		y=596
+		width=110
+		height=18
+	}
+	monitor {
+		chan="$(P)Nexus1:PortName_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=125
+		y=596
+		width=160
+		height=18
+	}
+	monitor {
+		chan="$(P)Nexus1:PluginType_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=10
+		y=621
+		width=110
+		height=18
+	}
+	monitor {
+		chan="$(P)Magick1:PortName_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=125
+		y=621
+		width=160
+		height=18
+	}
+	monitor {
+		chan="$(P)Magick1:PluginType_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=290
+		y=520
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)netCDF1:NDArrayPort"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=355
+		y=520
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)netCDF1:EnableCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=440
+		y=521
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)netCDF1:EnableCallbacks_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+menu {
+	object {
+		x=525
+		y=520
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)netCDF1:BlockingCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text entry" {
+	object {
+		x=290
+		y=545
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)TIFF1:NDArrayPort"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=355
+		y=545
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)TIFF1:EnableCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=440
+		y=546
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)TIFF1:EnableCallbacks_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+menu {
+	object {
+		x=525
+		y=545
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)TIFF1:BlockingCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text entry" {
+	object {
+		x=290
+		y=570
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)JPEG1:NDArrayPort"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=355
+		y=570
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)JPEG1:EnableCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=440
+		y=571
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)JPEG1:EnableCallbacks_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+menu {
+	object {
+		x=525
+		y=570
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)JPEG1:BlockingCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text entry" {
+	object {
+		x=290
+		y=595
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)Nexus1:NDArrayPort"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=355
+		y=595
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)Nexus1:EnableCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=440
+		y=596
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)Nexus1:EnableCallbacks_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+menu {
+	object {
+		x=525
+		y=595
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)Nexus1:BlockingCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text entry" {
+	object {
+		x=290
+		y=620
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)Magick1:NDArrayPort"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=355
+		y=620
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)Magick1:EnableCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=440
+		y=621
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)Magick1:EnableCallbacks_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+menu {
+	object {
+		x=525
+		y=620
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)Magick1:BlockingCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"related display" {
+	object {
+		x=865
+		y=520
+		width=60
+		height=20
+	}
+	display[0] {
+		label="netCDF1:"
+		name="NDFileNetCDF.adl"
+		args="P=$(P),R=netCDF1:"
+	}
+	clr=14
+	bclr=51
+	label="More"
+}
+"text update" {
+	object {
+		x=780
+		y=521
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)netCDF1:ArrayRate_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"related display" {
+	object {
+		x=865
+		y=545
+		width=60
+		height=20
+	}
+	display[0] {
+		label="TIFF1:"
+		name="NDFileTIFF.adl"
+		args="P=$(P),R=TIFF1:"
+	}
+	clr=14
+	bclr=51
+	label="More"
+}
+"text update" {
+	object {
+		x=780
+		y=546
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)TIFF1:ArrayRate_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"related display" {
+	object {
+		x=865
+		y=570
+		width=60
+		height=20
+	}
+	display[0] {
+		label="JPEG1:"
+		name="NDFileJPEG.adl"
+		args="P=$(P),R=JPEG1:"
+	}
+	clr=14
+	bclr=51
+	label="More"
+}
+"text update" {
+	object {
+		x=780
+		y=571
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)JPEG1:ArrayRate_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"related display" {
+	object {
+		x=865
+		y=595
+		width=60
+		height=20
+	}
+	display[0] {
+		label="Nexus1:"
+		name="NDFileNexus.adl"
+		args="P=$(P),R=Nexus1:"
+	}
+	clr=14
+	bclr=51
+	label="More"
+}
+"text update" {
+	object {
+		x=780
+		y=596
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)Nexus1:ArrayRate_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"related display" {
+	object {
+		x=865
+		y=620
+		width=60
+		height=20
+	}
+	display[0] {
+		label="Magick1:"
+		name="NDFileMagick.adl"
+		args="P=$(P),R=Magick1:"
+	}
+	clr=14
+	bclr=51
+	label="More"
+}
+"text update" {
+	object {
+		x=780
+		y=621
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)Magick1:ArrayRate_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=695
+		y=521
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)netCDF1:QueueFree"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=695
+		y=546
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)TIFF1:QueueFree"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=695
+		y=571
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)JPEG1:QueueFree"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=695
+		y=596
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)Nexus1:QueueFree"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=695
+		y=621
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)Magick1:QueueFree"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=610
+		y=521
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)netCDF1:DroppedArrays_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=610
+		y=546
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)TIFF1:DroppedArrays_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=610
+		y=571
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)JPEG1:DroppedArrays_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=610
+		y=596
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)Nexus1:DroppedArrays_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=610
+		y=621
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)Magick1:DroppedArrays_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
 	}
 }
 composite {
@@ -4003,6 +3835,331 @@ menu {
 	}
 	monitor {
 		chan="$(P)Attr1:DroppedArrays_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+composite {
+	object {
+		x=10
+		y=645
+		width=915
+		height=20
+	}
+	"composite name"=""
+	children {
+		"text update" {
+			object {
+				x=10
+				y=646
+				width=110
+				height=18
+			}
+			monitor {
+				chan="$(P)HDF1:PortName_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			format="string"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=125
+				y=646
+				width=160
+				height=18
+			}
+			monitor {
+				chan="$(P)HDF1:PluginType_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			format="string"
+			limits {
+			}
+		}
+		"text entry" {
+			object {
+				x=290
+				y=645
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)HDF1:NDArrayPort"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		menu {
+			object {
+				x=355
+				y=645
+				width=80
+				height=20
+			}
+			control {
+				chan="$(P)HDF1:EnableCallbacks"
+				clr=14
+				bclr=51
+			}
+		}
+		"text update" {
+			object {
+				x=440
+				y=646
+				width=80
+				height=18
+			}
+			monitor {
+				chan="$(P)HDF1:EnableCallbacks_RBV"
+				clr=54
+				bclr=12
+			}
+			clrmod="alarm"
+			align="horiz. centered"
+			limits {
+			}
+		}
+		menu {
+			object {
+				x=525
+				y=645
+				width=80
+				height=20
+			}
+			control {
+				chan="$(P)HDF1:BlockingCallbacks"
+				clr=14
+				bclr=51
+			}
+		}
+		"related display" {
+			object {
+				x=865
+				y=645
+				width=60
+				height=20
+			}
+			display[0] {
+				label="HDF1:"
+				name="NDFileHDF5.adl"
+				args="P=$(P),R=HDF1:"
+			}
+			clr=14
+			bclr=51
+			label="More"
+		}
+		"text update" {
+			object {
+				x=780
+				y=646
+				width=80
+				height=18
+			}
+			monitor {
+				chan="$(P)HDF1:ArrayRate_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=695
+				y=646
+				width=80
+				height=18
+			}
+			monitor {
+				chan="$(P)HDF1:QueueFree"
+				clr=54
+				bclr=12
+			}
+			clrmod="alarm"
+			align="horiz. centered"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=610
+				y=646
+				width=80
+				height=18
+			}
+			monitor {
+				chan="$(P)HDF1:DroppedArrays_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+	}
+}
+"text update" {
+	object {
+		x=10
+		y=671
+		width=110
+		height=18
+	}
+	monitor {
+		chan="$(P)Pva1:PortName_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=125
+		y=671
+		width=160
+		height=18
+	}
+	monitor {
+		chan="$(P)Pva1:PluginType_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	format="string"
+	limits {
+	}
+}
+"text entry" {
+	object {
+		x=290
+		y=670
+		width=60
+		height=20
+	}
+	control {
+		chan="$(P)Pva1:NDArrayPort"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=355
+		y=670
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)Pva1:EnableCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=440
+		y=671
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)Pva1:EnableCallbacks_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+menu {
+	object {
+		x=525
+		y=670
+		width=80
+		height=20
+	}
+	control {
+		chan="$(P)Pva1:BlockingCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"related display" {
+	object {
+		x=865
+		y=670
+		width=60
+		height=20
+	}
+	display[0] {
+		label="Pva1:"
+		name="NDPva.adl"
+		args="P=$(P),R=Pva1:"
+	}
+	clr=14
+	bclr=51
+	label="More"
+}
+"text update" {
+	object {
+		x=780
+		y=671
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)Pva1:ArrayRate_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=695
+		y=671
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)Pva1:QueueFree"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=610
+		y=671
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)Pva1:DroppedArrays_RBV"
 		clr=54
 		bclr=4
 	}
