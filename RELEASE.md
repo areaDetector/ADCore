@@ -27,11 +27,13 @@ R2-5 (October XXX, 2016)
 ========================
 ### TO DO
 * HDF5
-  - Add new SWMR fields to HDF5 plugin
+  - Add new SWMR fields to HDF5 adl file
   - Test SWMR fields with HDF5 plugin
-* EPICS_V4
-  - Make adl file for pvaDriver
-  - Make adl file for NDPluginPva
+* Build documentation in with doxygen
+* Add new plugins and drivers to areaDetectorDoc.html
+* Change NDPluginPva.html and pvaDriver.html to add medm screen shots
+* Write to HDF5 group with question about vxWorks and mingw
+* Solve Kevin's problem in ADSupport
 
 ### ADSupport
 * Added a new repository ADSupport to areaDetector.  This module contains the source code for all 3rd party
