@@ -176,7 +176,7 @@ ifdef ALIVE
 endif
 
 ifdef AUTOSAVE
-  $(PROD_NAME)_DBD += as.dbd
+  $(PROD_NAME)_DBD += asSupport.dbd
   PROD_LIBS        += autosave
 endif
 
@@ -186,7 +186,7 @@ ifdef BUSY
 endif
 
 ifdef CALC
-  $(PROD_NAME)_DBD += calc.dbd
+  $(PROD_NAME)_DBD += calcSupport.dbd
   PROD_LIBS        += calc
 endif
 
@@ -196,13 +196,13 @@ ifdef DEVIOCSTATS
 endif
 
 ifdef SSCAN
-  $(PROD_NAME)_DBD += sscan.dbd
+  $(PROD_NAME)_DBD += sscanSupport.dbd
   PROD_LIBS        += sscan
 endif
 
 # Required modules
-PROD_LIBS        += asyn
-$(PROD_NAME)_DBD += asyn.dbd
+$(PROD_NAME)_DBD   += asyn.dbd
+PROD_LIBS          += asyn
 
 ifeq ($(EPICS_LIBCOM_ONLY),YES)
   PROD_LIBS        += Com
