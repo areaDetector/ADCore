@@ -1,6 +1,10 @@
 # This file contains the commands to build driver applications using the common set of plugins
 # The variable PROD_NAME must be defined
 
+ifneq ($(EPICS_LIBCOM_ONLY),YES)
+  $(PROD_NAME)_DBD += base.dbd
+endif
+
 PROD_LIBS        += ADBase
 $(PROD_NAME)_DBD += ADSupport.dbd
 
@@ -203,7 +207,6 @@ $(PROD_NAME)_DBD += asyn.dbd
 ifeq ($(EPICS_LIBCOM_ONLY),YES)
   PROD_LIBS        += Com
 else
-  $(PROD_NAME)_DBD += base.dbd
   PROD_LIBS        += $(EPICS_BASE_IOC_LIBS)
 endif
 
