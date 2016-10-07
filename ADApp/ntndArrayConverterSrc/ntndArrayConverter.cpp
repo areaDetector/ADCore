@@ -223,8 +223,12 @@ void NTNDArrayConverter::fromArray (NDArray *src)
 template <typename arrayType>
 void NTNDArrayConverter::toValue (NDArray *dest)
 {
+    typedef typename arrayType::value_type arrayValType;
+    typedef typename arrayType::const_svector arrayVecType;
+
     PVUnionPtr src(m_array->getValue());
-    memcpy(dest->pData, src->get<arrayType>()->view().data(), dest->dataSize);
+    arrayVecType srcVec(src->get<arrayType>()->view());
+    memcpy(dest->pData, srcVec.data(), srcVec.size()*sizeof(arrayValType));
 }
 
 void NTNDArrayConverter::toValue (NDArray *dest)
