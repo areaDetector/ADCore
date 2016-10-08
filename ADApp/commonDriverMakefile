@@ -26,13 +26,13 @@ endif
 ifeq ($(WITH_NETCDF),YES)
   $(PROD_NAME)_DBD += NDFileNetCDF.dbd
   ifeq ($(NETCDF_EXTERNAL),NO)
-    PROD_LIBS += netCDF
+    PROD_LIBS += netcdf
   else
     ifdef NETCDF_LIB
-      netCDF_DIR   = $(NETCDF_LIB)
-      PROD_LIBS     += netCDF
+      netcdf_DIR   = $(NETCDF_LIB)
+      PROD_LIBS     += netcdf
     else
-      PROD_SYS_LIBS += netCDF
+      PROD_SYS_LIBS += netcdf
     endif
   endif
 endif
