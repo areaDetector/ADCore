@@ -28,9 +28,8 @@
   <p>
     This plugin converts NDArray data produced by asynNDArrayDrivers into the EPICSv4
     normative type NTNDArray. An embedded EPICSv4 server is created to serve the new
-    NTNDArray structure as an EPICSv4 PV. A
-    <a href="http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypesNDArray.html">
-    description</a> of the structure of the NTNDArray normative type is available.
+    NTNDArray structure as an EPICSv4 PV. A <a href="http://epics-pvdata.sourceforge.net/alpha/normativeTypes/normativeTypesNDArray.html">
+      description</a> of the structure of the NTNDArray normative type is available.
   </p>
   <p>
     NDPluginPva defines the following parameters.
@@ -43,31 +42,44 @@
         </td>
       </tr>
       <tr>
-        <th>Parameter index variable</th>
-        <th>asyn interface</th>
-        <th>Access</th>
-        <th>Description</th>
-        <th>drvInfo string</th>
-        <th>EPICS record name</th>
-        <th>EPICS record type</th>
+        <th>
+          Parameter index variable</th>
+        <th>
+          asyn interface</th>
+        <th>
+          Access</th>
+        <th>
+          Description</th>
+        <th>
+          drvInfo string</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          EPICS record type</th>
       </tr>
       <tr>
-        <td>NDPluginPvaPvName</td>
-        <td>asynOctet</td>
-        <td>r/o</td>
-        <td>Name of the EPICSv4 PV being served</td>
-        <td>PV_NAME</td>
-        <td>$(P)$(R)PvName_RBV</td>
-        <td>waveform</td>
+        <td>
+          NDPluginPvaPvName</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/o</td>
+        <td>
+          Name of the EPICSv4 PV being served</td>
+        <td>
+          PV_NAME</td>
+        <td>
+          $(P)$(R)PvName_RBV</td>
+        <td>
+          waveform</td>
       </tr>
     </tbody>
   </table>
-
   <h2 id="Configuration">
     Configuration</h2>
   <p>
-    The NDPluginPva plugin is created with the NDPvaConfigure command, either
-    from C/C++ or from the EPICS IOC shell.</p>
+    The NDPluginPva plugin is created with the NDPvaConfigure command, either from C/C++
+    or from the EPICS IOC shell.</p>
   <pre>NDPvaConfigure (const char *portName, int queueSize, int blockingCallbacks,
                       const char *NDArrayPort, int NDArrayAddr, const char *pvName,
                       size_t maxMemory, int priority, int stackSize)
@@ -76,8 +88,14 @@
     For details on the meaning of the parameters to this function refer to the detailed
     documentation on the NDPvaConfigure function in the <a href="areaDetectorDoxygenHTML/_n_d_plugin_pva_8cpp.html">
       NDPluginPva.cpp documentation</a> and in the documentation for the constructor
-    for the <a href="areaDetectorDoxygenHTML/class_n_d_plugin_pva.html">NDPluginPva
-      class</a>.
+    for the <a href="areaDetectorDoxygenHTML/class_n_d_plugin_pva.html">NDPluginPva class</a>.
   </p>
+  <p>
+    The following MEDM screen for the NDPluginPva. The only item not in the base class
+    screen is the readback of the EPICS V4 PV name.
+  </p>
+  <div style="text-align: center; margin-top: 2em; margin-bottom: 2em">
+    <img alt="NDPva.png" src="NDPva.png" />
+  </div>
 </body>
 </html>
