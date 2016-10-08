@@ -29,10 +29,10 @@ ifeq ($(WITH_NETCDF),YES)
     PROD_LIBS += netCDF
   else
     ifdef NETCDF_LIB
-      netCDF_DIR   = $(NETCDF_LIB)
-      PROD_LIBS     += netCDF
+      netcdf_DIR   = $(NETCDF_LIB)
+      PROD_LIBS     += netcdf
     else
-      PROD_SYS_LIBS += netCDF
+      PROD_SYS_LIBS += netcdf
     endif
   endif
 endif
