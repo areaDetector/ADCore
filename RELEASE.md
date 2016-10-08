@@ -32,8 +32,10 @@ R2-5 (October XXX, 2016)
 * Build documentation in with doxygen
 * Add new plugins and drivers to areaDetectorDoc.html
 * Change NDPluginPva.html and pvaDriver.html to add medm screen shots
-* Write to HDF5 group with question about vxWorks and mingw
+* Wait for response from HDF group with question about vxWorks
+* Write to HDF group with question about mingw
 * Solve Kevin's problem in ADSupport
+* Modify areaDetector/INSTALL_GUIDE.md
 
 ### ADSupport
 * Added a new repository ADSupport to areaDetector.  This module contains the source code for all 3rd party
