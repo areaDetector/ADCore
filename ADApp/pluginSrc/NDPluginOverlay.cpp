@@ -13,6 +13,7 @@
 #include <math.h>
 #include <time.h>
 
+#include <cantProceed.h>
 #include <epicsTypes.h>
 #include <epicsMessageQueue.h>
 #include <epicsThread.h>
