@@ -15,15 +15,18 @@
       Alan Greer (Observatory Sciences)</h2>
   </div>
   <p>
-    NDPosPlugin can be used to attach positional information to NDArrays in the form of NDAttributes. This plugin accepts an XML
-    description of the position data and then attaches each position to NDArrays as they are passed through the plugin.  Each position
-    can contain a set of index values and each index is attached as a separate NDAttribute.  The plugin operates using a FIFO and new
-    positions can be added to the queue while the plugin is actively attaching position data.  When used in conjunction with the HDF5
-    writer (<a href="NDFileHDF5.html">NDFileHDF5</a>) it is possible to store NDArrays in an arbitrary pattern within a multi-dimensional dataset.
+    NDPosPlugin can be used to attach positional information to NDArrays in the form
+    of NDAttributes. This plugin accepts an XML description of the position data and
+    then attaches each position to NDArrays as they are passed through the plugin. Each
+    position can contain a set of index values and each index is attached as a separate
+    NDAttribute. The plugin operates using a FIFO and new positions can be added to
+    the queue while the plugin is actively attaching position data. When used in conjunction
+    with the HDF5 writer (<a href="NDFileHDF5.html">NDFileHDF5</a>) it is possible to
+    store NDArrays in an arbitrary pattern within a multi-dimensional dataset.
   </p>
   <p>
-    The NDPosPlugin plugin is created with the NDPosPluginConfigure command, either from
-    C/C++ or from the EPICS IOC shell.</p>
+    The NDPosPlugin plugin is created with the NDPosPluginConfigure command, either
+    from C/C++ or from the EPICS IOC shell.</p>
   <pre>NDPosPluginConfigure (const char *portName, int queueSize, int blockingCallbacks, 
                      const char *NDArrayPort, int NDArrayAddr, size_t maxMemory, 
                      int priority, int stackSize)
@@ -37,117 +40,57 @@
     XML Defined Positions
   </h4>
   <p>
-    The position data is supplied to the plugin as an XML description.  The parameter <b>NDPos_Filename</b> 
-    can either accept the full path to an XML file with the position data description, or the XML can be
-    injected directly into the parameter.  There is a 1,000,000 byte limit on the parameter, but multiple
-    injections can take place in sequence with each set of points appended to the FIFO.
+    The position data is supplied to the plugin as an XML description. The parameter
+    <b>NDPos_Filename</b> can either accept the full path to an XML file with the position
+    data description, or the XML can be injected directly into the parameter. There
+    is a 1,000,000 byte limit on the parameter, but multiple injections can take place
+    in sequence with each set of points appended to the FIFO.
   </p>
   <p>
-    The XML definition contains the following 4 main elements: dimensions, dimension, positions,
-    and position.
+    The XML definition contains the following 4 main elements: dimensions, dimension,
+    positions, and position.
   </p>
   <ul>
-    <li><b>dimensions:</b> Contains the dimension elements that provide the dimension name definitions</li>
-    <li><b>dimension:</b> The name of a dimension.  This name is used for the NDAttribute name that is attached to
-    the NDArray with position information.</li>
+    <li><b>dimensions:</b> Contains the dimension elements that provide the dimension
+      name definitions</li>
+    <li><b>dimension:</b> The name of a dimension. This name is used for the NDAttribute
+      name that is attached to the NDArray with position information.</li>
     <li><b>positions:</b> Contains the position elements.</li>
     <li><b>position:</b> Represent a single position to be added to the FIFO.</li>
   </ul>
   <p>
-    The XML can contain any number of dimension elements (grouped within the dimensions element), and each dimension must
-    contain a single attribute <b>name</b> that names the particular dimension.  Once the dimensions have been defined,
-    the position elements are added.  The XML can contain any number of position elements (grouped within the positions
-    element).  Each position element should have an attribute for each of the named dimensions with the value of the position
-    for that dimension.  An example of a simple XML description is presented below:
-  </p>
-  <pre>
-  <table border="0" cellpadding="2" cellspacing="2" style="text-align: left">
-    <tbody>
-      <tr>
-        <td colspan="3">&lt;pos_layout&gt;</td>
-      </tr>
-      <tr>
-        <td width="20px"></td>
-        <td colspan="2">&lt;dimensions&gt;</td>
-      </tr>
-      <tr>
-        <td width="20px"></td>
-        <td width="20px"></td>
-        <td>&lt;dimension name="x"&gt;&lt;/dimension&gt;</td>
-      </tr>
-      <tr>
-        <td width="20px"></td>
-        <td width="20px"></td>
-        <td>&lt;dimension name="y"&gt;&lt;/dimension&gt;</td>
-      </tr>
-      <tr>
-        <td width="20px"></td>
-        <td width="20px"></td>
-        <td>&lt;dimension name="z"&gt;&lt;/dimension&gt;</td>
-      </tr>
-      <tr>
-        <td width="20px"></td>
-        <td colspan="2">&lt;/dimensions&gt;</td>
-      </tr>
-      <tr>
-        <td width="20px"></td>
-        <td colspan="2">&lt;positions&gt;</td>
-      </tr>
-      <tr>
-        <td width="20px"></td>
-        <td width="20px"></td>
-        <td>&lt;position x="0" y="0" z="0"&gt;&lt;/position&gt;</td>
-      </tr>
-      <tr>
-        <td width="20px"></td>
-        <td width="20px"></td>
-        <td>&lt;position x="0" y="0" z="1"&gt;&lt;/position&gt;</td>
-      </tr>
-      <tr>
-        <td width="20px"></td>
-        <td width="20px"></td>
-        <td>&lt;position x="0" y="1" z="0"&gt;&lt;/position&gt;</td>
-      </tr>
-      <tr>
-        <td width="20px"></td>
-        <td width="20px"></td>
-        <td>&lt;position x="0" y="1" z="1"&gt;&lt;/position&gt;</td>
-      </tr>
-      <tr>
-        <td width="20px"></td>
-        <td width="20px"></td>
-        <td>&lt;position x="1" y="0" z="0"&gt;&lt;/position&gt;</td>
-      </tr>
-      <tr>
-        <td width="20px"></td>
-        <td width="20px"></td>
-        <td>&lt;position x="1" y="0" z="1"&gt;&lt;/position&gt;</td>
-      </tr>
-      <tr>
-        <td width="20px"></td>
-        <td width="20px"></td>
-        <td>&lt;position x="1" y="1" z="0"&gt;&lt;/position&gt;</td>
-      </tr>
-      <tr>
-        <td width="20px"></td>
-        <td width="20px"></td>
-        <td>&lt;position x="1" y="1" z="1"&gt;&lt;/position&gt;</td>
-      </tr>
-      <tr>
-        <td width="20px"></td>
-        <td colspan="2">&lt;/positions&gt;</td>
-      </tr>
-      <tr>
-        <td colspan="3">&lt;/pos_layout&gt;</td>
-      </tr>
-    </tbody>
-  </table>
-  </pre>
+    The XML can contain any number of dimension elements (grouped within the dimensions
+    element), and each dimension must contain a single attribute <b>name</b> that names
+    the particular dimension. Once the dimensions have been defined, the position elements
+    are added. The XML can contain any number of position elements (grouped within the
+    positions element). Each position element should have an attribute for each of the
+    named dimensions with the value of the position for that dimension. An example of
+    a simple XML description is presented below:</p>
+  <pre>      
+&lt;pos_layout&gt;
+    &lt;dimensions&gt;
+        &lt;dimension name="x"&gt;&lt;/dimension&gt;
+        &lt;dimension name="y"&gt;&lt;/dimension&gt;
+        &lt;dimension name="z"&gt;&lt;/dimension&gt;
+    &lt;/dimensions&gt;
+    &lt;positions&gt;
+        &lt;position x="0" y="0" z="0"&gt;&lt;/position&gt;
+        &lt;position x="0" y="0" z="1"&gt;&lt;/position&gt;
+        &lt;position x="0" y="1" z="0"&gt;&lt;/position&gt;
+        &lt;position x="0" y="1" z="1"&gt;&lt;/position&gt;
+        &lt;position x="1" y="0" z="0"&gt;&lt;/position&gt;
+        &lt;position x="1" y="0" z="1"&gt;&lt;/position&gt;
+        &lt;position x="1" y="1" z="0"&gt;&lt;/position&gt;
+        &lt;position x="1" y="1" z="1"&gt;&lt;/position&gt;
+    &lt;/positions&gt;
+&lt;/pos_layout&gt;
+</pre>
   <p>
-    In the example above, three dimensions have been defined (x, y and z).  The positions are then defined with value for
-    each dimension provided.  This XML description will result in three NDAttriubtes being attached to each NDArray, with the
-    names x, y and z respectively.  The value of each of the NDAttributes will be set according to the position that is 
-    currently at the front of the FIFO.
+    In the example above, three dimensions have been defined (x, y and z). The positions
+    are then defined with value for each dimension provided. This XML description will
+    result in three NDAttriubtes being attached to each NDArray, with the names x, y
+    and z respectively. The value of each of the NDAttributes will be set according
+    to the position that is currently at the front of the FIFO.
   </p>
   <p>
     A complete example XML layout file is provided in "ADCore/iocBoot/pos_plugin_demo.xml".</p>
@@ -161,29 +104,37 @@
     Using the plugin
   </h3>
   <p>
-    The plugin offers two modes of operation: <b>Discard</b> and <b>Keep</b>.  When executed in discard mode the plugin will
-    throw away a position every time it is attached to an NDArray, and the FIFO will continue to decrease in size until it 
-    reaches zero.  When executed in Keep mode the positions will still be sent in order but they will not be discarded.  A 
-    parameter can be used to reset the current position to the start and then the same set can be reused.  The position
-    attachment can be started and stopped, and the FIFO can be cleared.  A record of the number of positions in the FIFO, the
-    current index and a string representation of the last position sent are provided through the parameter interface.
+    The plugin offers two modes of operation: <b>Discard</b> and <b>Keep</b>. When executed
+    in discard mode the plugin will throw away a position every time it is attached
+    to an NDArray, and the FIFO will continue to decrease in size until it reaches zero.
+    When executed in Keep mode the positions will still be sent in order but they will
+    not be discarded. A parameter can be used to reset the current position to the start
+    and then the same set can be reused. The position attachment can be started and
+    stopped, and the FIFO can be cleared. A record of the number of positions in the
+    FIFO, the current index and a string representation of the last position sent are
+    provided through the parameter interface.
   </p>
   <h3>
     Frame Identification tracking
   </h3>
   <p>
-    The plugin tracks frame information to ensure that the incoming frames are in the correct order and there are no missing
-    or duplicated frames.  This is achieved using three parameters, <b>IDName</b>, <b>IDStart</b> and <b>IDDifference</b>.  The
-    IDName tells the plugin which incoming attribute to use as the ID to track, or if it is left empty then the uniqueId member
-    variable of the NDArray is used.  The IDStart value informs this plugin of the first expected ID when the acquisition is 
-    started, and the IDDifference informs this plugin of the expected delta ID between each frame.  An IDStart of 5 and IDDifference
-    of 10 would result in the plugin expecting the following sequence of ID values attached to the incoming frames: 5,15,25,35...
-    If incoming frames contain IDs that are greater than the expected ID then the plugin will print a warning and throw away any
-    position information up until the expected ID matches the frame ID; this is a case where the frames are assumed to have been 
-    dropped.  If incoming frames contain IDs that are less than the exptected ID then the plugin will print an error and drop the
-    frames until the incoming frame ID matches the expected ID.  This is a more serious case of the plugin dropping frames and this
-    is why the error is printed.  In both of these error situations the plugin will record the event into the corresponding counter
-    and continue to process frames.
+    The plugin tracks frame information to ensure that the incoming frames are in the
+    correct order and there are no missing or duplicated frames. This is achieved using
+    three parameters, <b>IDName</b>, <b>IDStart</b> and <b>IDDifference</b>. The IDName
+    tells the plugin which incoming attribute to use as the ID to track, or if it is
+    left empty then the uniqueId member variable of the NDArray is used. The IDStart
+    value informs this plugin of the first expected ID when the acquisition is started,
+    and the IDDifference informs this plugin of the expected delta ID between each frame.
+    An IDStart of 5 and IDDifference of 10 would result in the plugin expecting the
+    following sequence of ID values attached to the incoming frames: 5,15,25,35... If
+    incoming frames contain IDs that are greater than the expected ID then the plugin
+    will print a warning and throw away any position information up until the expected
+    ID matches the frame ID; this is a case where the frames are assumed to have been
+    dropped. If incoming frames contain IDs that are less than the exptected ID then
+    the plugin will print an error and drop the frames until the incoming frame ID matches
+    the expected ID. This is a more serious case of the plugin dropping frames and this
+    is why the error is printed. In both of these error situations the plugin will record
+    the event into the corresponding counter and continue to process frames.
   </p>
   <h3>
     Parameters and Records
@@ -224,8 +175,8 @@
           r/w</td>
         <td>
           XML filename, pointing to an XML position set description<br />
-          This waveform also supports loading raw XML code directly; up to a maximum of 1,000,000 Bytes
-          long (NELM=1,000,000).</td>
+          This waveform also supports loading raw XML code directly; up to a maximum of 1,000,000
+          Bytes long (NELM=1,000,000).</td>
         <td>
           NDPos_Filename</td>
         <td>
@@ -282,7 +233,7 @@
           r/w</td>
         <td>
           Reset the current position index to zero (front of FIFO) when executing in <b>Keep</b>
-          mode.  Has no effect if executing in <b>Discard</b> mode.</td>
+          mode. Has no effect if executing in <b>Discard</b> mode.</td>
         <td>
           NDPos_Restart</td>
         <td>
@@ -298,8 +249,8 @@
         <td>
           r/w</td>
         <td>
-          Delete any position data in the FIFO.  If the plugin is running then this will stop
-          the plugin.  The size and current index will both be set to zero.</td>
+          Delete any position data in the FIFO. If the plugin is running then this will stop
+          the plugin. The size and current index will both be set to zero.</td>
         <td>
           NDPos_Delete</td>
         <td>
@@ -315,16 +266,16 @@
         <td>
           r/w</td>
         <td>
-          Select the mode of operation, <b>Discard</b> or <b>Keep</b>.  Discard mode throws away
-          each position once it has been attached to an NDArray, whereas Keep mode keeps the value
-          and traverses through the FIFO, reatining all position data.</td>
+          Select the mode of operation, <b>Discard</b> or <b>Keep</b>. Discard mode throws
+          away each position once it has been attached to an NDArray, whereas Keep mode keeps
+          the value and traverses through the FIFO, reatining all position data.</td>
         <td>
           NDPos_Mode</td>
         <td>
-          $(P)$(R)Mode<br/>
+          $(P)$(R)Mode<br />
           $(P)$(R)Mode_RBV</td>
         <td>
-          bo<br/>
+          bo<br />
           bi</td>
       </tr>
       <tr>
@@ -335,15 +286,15 @@
         <td>
           r/w</td>
         <td>
-          Use this attribute name for the incoming frame IDs.  If this parameter is left empty then
-          the incoming frame's uniqueId is used for the index count.
+          Use this attribute name for the incoming frame IDs. If this parameter is left empty
+          then the incoming frame's uniqueId is used for the index count.</td>
         <td>
           NDPos_IDName</td>
         <td>
-          $(P)$(R)IDName<br/>
+          $(P)$(R)IDName<br />
           $(P)$(R)IDName_RBV</td>
         <td>
-          stringout<br/>
+          stringout<br />
           stringin</td>
       </tr>
       <tr>
@@ -354,14 +305,15 @@
         <td>
           r/w</td>
         <td>
-          When a new acquisition is started this value is the expected ID for the first processed frame.
+          When a new acquisition is started this value is the expected ID for the first processed
+          frame.</td>
         <td>
           NDPos_IDName</td>
         <td>
-          $(P)$(R)IDStart<br/>
+          $(P)$(R)IDStart<br />
           $(P)$(R)IDStart_RBV</td>
         <td>
-          longout<br/>
+          longout<br />
           longin</td>
       </tr>
       <tr>
@@ -372,16 +324,17 @@
         <td>
           r/w</td>
         <td>
-          This value represents the delta ID between each processed frame, and is useful is frames are processed
-          by plugins before reaching this plugin (eg integration of several frames into one).  If the start ID is
-          set to 1 and this parameter is set to 2 then the expected IDs would be 1,3,5,7,9....
+          This value represents the delta ID between each processed frame, and is useful is
+          frames are processed by plugins before reaching this plugin (eg integration of several
+          frames into one). If the start ID is set to 1 and this parameter is set to 2 then
+          the expected IDs would be 1,3,5,7,9....</td>
         <td>
           NDPos_IDDifference</td>
         <td>
-          $(P)$(R)IDDifference<br/>
+          $(P)$(R)IDDifference<br />
           $(P)$(R)IDDifference_RBV</td>
         <td>
-          longout<br/>
+          longout<br />
           longin</td>
       </tr>
       <tr>
@@ -444,14 +397,15 @@
         <td>
           r/w</td>
         <td>
-          Counter of the number of missed/dropped frames.  Write a 0 to the parameter to reset.</td>
+          Counter of the number of missed/dropped frames. Write a 0 to the parameter to reset.
+        </td>
         <td>
           NDPos_MissingFrames</td>
         <td>
-          $(P)$(R)Missing<br>
+          $(P)$(R)Missing<br />
           $(P)$(R)Missing_RBV</td>
         <td>
-          longout<br>
+          longout<br />
           longin</td>
       </tr>
       <tr>
@@ -462,14 +416,15 @@
         <td>
           r/w</td>
         <td>
-          Counter of the number of duplicated frames.  Write a 0 to the parameter to reset.</td>
+          Counter of the number of duplicated frames. Write a 0 to the parameter to reset.
+        </td>
         <td>
           NDPos_DuplicateFrames</td>
         <td>
-          $(P)$(R)Duplicate<br>
+          $(P)$(R)Duplicate<br />
           $(P)$(R)Duplicate_RBV</td>
         <td>
-          longout<br>
+          longout<br />
           longin</td>
       </tr>
     </tbody>
