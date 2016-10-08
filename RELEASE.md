@@ -28,10 +28,13 @@ R2-5 (October XXX, 2016)
 ### TO DO
 * HDF5
   - Add new SWMR fields to HDF5 adl file
+  - Add new extra dimensions, etc. fields to adl file
   - Test SWMR fields with HDF5 plugin
-* Build documentation in with doxygen
 * Add new plugins and drivers to areaDetectorDoc.html
-* Change NDPluginPva.html and pvaDriver.html to add medm screen shots
+* Modify pvaDriver to use Acquire, AcquireMode, NumImages
+  - Add to medm screen
+  - Add to documentation
+* Create medm screen for NDPluginPos
 * Wait for response from HDF group with question about vxWorks
 * Write to HDF group with question about mingw
 * Solve Kevin's problem in ADSupport
