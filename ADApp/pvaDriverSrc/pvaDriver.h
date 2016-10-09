@@ -22,12 +22,16 @@ public:
             size_t maxMemory, int priority, int stackSize);
 
     // Overriden from ADDriver:
+    asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
+    asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t nChars, size_t *nActual);
     virtual void report (FILE *fp, int details);
 
 protected:
     int PVAOverrunCounter;
+    #define FIRST_PVA_DRIVER_PARAM PVAOverrunCounter   
     int PVAPvName;
     int PVAPvConnectionStatus;
+    #define LAST_PVA_DRIVER_PARAM PVAPvConnectionStatus   
 
 private:
     std::string m_pvName;
@@ -38,6 +42,7 @@ private:
     epics::pvData::PVStructurePtr m_pvRequest;
     epics::pvData::MonitorPtr m_monitor;
     pvaDriverPtr m_thisPtr;
+    asynStatus connectPv();
 
     // Implemented for pvData::Requester
     std::string getRequesterName (void);
@@ -57,3 +62,5 @@ private:
     void monitorEvent (epics::pvData::MonitorPtr const & monitor);
     void unlisten (epics::pvData::MonitorPtr const & monitor);
 };
+
+#define NUM_PVA_DRIVER_PARAMS ((int)(&LAST_PVA_DRIVER_PARAM - &FIRST_PVA_DRIVER_PARAM + 1))
