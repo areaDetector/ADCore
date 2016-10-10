@@ -58,11 +58,13 @@ pvaDriver::pvaDriver (const char *portName, const char *pvName,
             priority, stackSize),
       m_pvName(pvName), m_request(DEFAULT_REQUEST),
       m_priority(ChannelProvider::PRIORITY_DEFAULT),
+      m_channel(),
       m_thisPtr(tr1::shared_ptr<pvaDriver>(this))
 {
     int status = asynSuccess;
     const char *functionName = "pvaDriver";
 
+    lock();
     createParam(PVAOverrunCounterString,     asynParamInt32, &PVAOverrunCounter);
     createParam(PVAPvNameString,             asynParamOctet, &PVAPvName);
     createParam(PVAPvConnectionStatusString, asynParamInt32, &PVAPvConnectionStatus);
@@ -97,6 +99,7 @@ pvaDriver::pvaDriver (const char *portName, const char *pvName,
     {
         ClientFactory::start();
         m_provider = getChannelProviderRegistry()->getProvider("pva");
+        m_pvRequest = CreateRequest::create()->createRequest(m_request);
         connectPv();
     }
     catch (exception &ex)
@@ -105,6 +108,7 @@ pvaDriver::pvaDriver (const char *portName, const char *pvName,
                 "%s::%s exception initializing monitor: %s\n",
                 driverName, functionName, ex.what());
     }
+    unlock();
 }
 
 asynStatus pvaDriver::connectPv()
@@ -112,8 +116,8 @@ asynStatus pvaDriver::connectPv()
     static const char *functionName = "connectPv";
     try
     {
+        if (m_channel) m_channel->destroy();
         m_channel = m_provider->createChannel(m_pvName, m_thisPtr, m_priority);
-        m_pvRequest = CreateRequest::create()->createRequest(m_request);
         m_monitor = m_channel->createMonitor(m_thisPtr, m_pvRequest);
     }
     catch (exception &ex)
