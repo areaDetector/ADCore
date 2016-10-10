@@ -34,13 +34,16 @@
   </p>
   <p>
     This driver inherits from <a href="areaDetectorDoc.html#ADDriver">ADDriver</a>.
-    It implements just a handful of the parameters in <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">
+    It implements some of the parameters in <a href="areaDetectorDoxygenHTML/asyn_n_d_array_driver_8h.html">
       asynNDArrayDriver.h</a> and in <a href="areaDetectorDoxygenHTML/_a_d_driver_8h.html">
         ADArrayDriver.h</a>, namely:
   </p>
   <ul>
     <li>ADManufacturer</li>
     <li>ADModel</li>
+    <li>ADAcquire</li>
+    <li>ADImageMode</li>
+    <li>ADNumImages</li>
     <li>ADMaxSizeX and ADMaxSizeY</li>
     <li>ADMinX and ADMinY</li>
     <li>ADBinX and ADBinY</li>
@@ -96,8 +99,8 @@
           $(P)$(R)OverrunCounter<br />
           $(P)$(R)OverrunCounter_RBV</td>
         <td>
-          ao<br />
-          ai</td>
+          longout<br />
+          longin</td>
       </tr>
       <tr>
         <td>
@@ -105,14 +108,16 @@
         <td>
           asynOctet</td>
         <td>
-          r/o</td>
+          r/w</td>
         <td>
-          Name of the PV being monitored</td>
+          Name of the PV to monitor. This can be changed a run-time.</td>
         <td>
           PV_NAME</td>
         <td>
+          $(P)$(R)PvName<br />
           $(P)$(R)PvName_RBV</td>
         <td>
+          waveform<br />
           waveform</td>
       </tr>
       <tr>
@@ -138,7 +143,7 @@
   <p>
     The pvaDriver driver is created with the pvaDriverConfig command, either from C/C++
     or from the EPICS IOC shell.</p>
-  <pre>int pvaDriverConfig(const char *portName,
+  <pre>int pvaDriverConfig(const char *portName, const char *pvName,
                       int maxSizeX, int maxSizeY, int dataType,
                       int maxBuffers, size_t maxMemory,
                       int priority, int stackSize)
