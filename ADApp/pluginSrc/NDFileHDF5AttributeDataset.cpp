@@ -8,6 +8,7 @@
 #include "NDFileHDF5AttributeDataset.h"
 #include <epicsString.h>
 #include <iostream>
+#include <stdlib.h>
 
 NDFileHDF5AttributeDataset::NDFileHDF5AttributeDataset(hid_t file, const std::string& name, NDAttrDataType_t type) :
   name_(name),

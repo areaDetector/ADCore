@@ -17,13 +17,13 @@ endif
 
 ifeq ($(WITH_NETCDF),YES)
   ifeq ($(NETCDF_EXTERNAL),NO)
-    LIB_LIBS += netCDF
+    LIB_LIBS += netcdf
   else
     ifdef NETCDF_LIB
-      netCDF_DIR   = $(NETCDF_LIB)
-      LIB_LIBS     += netCDF
+      netcdf_DIR   = $(NETCDF_LIB)
+      LIB_LIBS     += netcdf
     else
-      LIB_SYS_LIBS += netCDF
+      LIB_SYS_LIBS += netcdf
     endif
   endif
 endif
