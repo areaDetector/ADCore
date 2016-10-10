@@ -24,7 +24,7 @@ record(ai, "$(P)$(R)OverrunCounter_RBV")
 
 record(waveform, "$(P)$(R)PvName")
 {
-#    field(PINI, "YES")
+    field(PINI, "YES")
     field(DTYP, "asynOctetWrite")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PV_NAME")
     field(FTVL, "CHAR")
