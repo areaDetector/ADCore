@@ -16,10 +16,10 @@ ifeq ($(WITH_NETCDF),YES)
     LIB_LIBS += netCDF
   else
     ifdef NETCDF_LIB
-      netCDF_DIR   = $(NETCDF_LIB)
-      LIB_LIBS     += netCDF
+      netcdf_DIR   = $(NETCDF_LIB)
+      LIB_LIBS     += netcdf
     else
-      LIB_SYS_LIBS += netCDF
+      LIB_SYS_LIBS += netcf
     endif
   endif
 endif
