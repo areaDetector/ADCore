@@ -1,5 +1,6 @@
 #include "NDFileHDF5Dataset.h"
 #include <iostream>
+#include <stdlib.h>
 
 static const char *fileName = "NDFileHDF5Dataset";
 
