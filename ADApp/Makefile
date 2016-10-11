@@ -9,6 +9,7 @@ DIRS += ADSrc
 DIRS += pluginSrc
 
 DIRS += pluginTests
+pluginSrc_DEPEND_DIRS += ADSrc
 pluginTests_DEPEND_DIRS += ADSrc pluginSrc
 
 ifeq ($(WITH_EPICS_V4), YES)
