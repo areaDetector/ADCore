@@ -7,9 +7,10 @@ DIRS := $(DIRS) $(filter-out $(DIRS), $(wildcard *Db*))
 DIRS += ADSrc
 
 DIRS += pluginSrc
+pluginSrc_DEPEND_DIRS += ADSrc
 
 DIRS += pluginTests
-pluginTests_DEPEND_DIRS += ADSrc pluginSrc
+pluginTests_DEPEND_DIRS += pluginSrc
 
 ifeq ($(WITH_EPICS_V4), YES)
   DIRS += ntndArrayConverterSrc
