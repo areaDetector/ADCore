@@ -1,11 +1,7 @@
-# This file contains the commands to build libraries using the common set of plugins
+# This file contains the commands to build driver and plugin libraries
+
 LIB_LIBS += ADBase
 LIB_LIBS += asyn
-ifeq ($(EPICS_LIBCOM_ONLY),YES)
-  LIB_LIBS += Com
-else
-  LIB_LIBS += $(EPICS_BASE_IOC_LIBS)
-endif
 
 ifeq ($(WITH_EPICS_V4),YES)
   LIB_LIBS += ntndArrayConverter
@@ -126,7 +122,6 @@ ifeq ($(WITH_ZLIB),YES)
   endif
 endif
 
-
 # The following libraries are only needed for GraphicsMagick
 ifeq ($(WITH_GRAPHICSMAGICK), YES)
   ifdef GRAPHICS_MAGICK_LIB
@@ -140,6 +135,12 @@ ifeq ($(WITH_GRAPHICSMAGICK), YES)
   # The following system libraries must be installed to use GraphicsMagick
   LIB_SYS_LIBS_Linux    += gomp X11 png12 bz2 Xext freetype 
   LIB_SYS_LIBS_Darwin   += png bz2
+endif
+
+ifeq ($(EPICS_LIBCOM_ONLY),YES)
+  LIB_LIBS += Com
+else
+  LIB_LIBS += $(EPICS_BASE_IOC_LIBS)
 endif
 
 LIB_SYS_LIBS_WIN32      += gdi32 oleaut32 
