@@ -32,7 +32,6 @@ R2-5 (October XXX, 2016)
 * Create medm screen for NDPluginPos
 * Wait for response from HDF group with question about vxWorks
 * Write to HDF group with question about mingw
-* Solve Kevin's problem in ADSupport
 * Modify areaDetector/INSTALL_GUIDE.md
 
 ### ADSupport
