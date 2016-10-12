@@ -50,39 +50,14 @@ ifeq ($(WITH_BOOST),YES)
   else
     plugin-test_SYS_LIBS += boost_unit_test_framework
   endif
-endif
 
-USR_INCLUDES += $(HDF5_INCLUDE)
-USR_INCLUDES += $(SZ_INCLUDE)
-USR_INCLUDES += $(XML2_INCLUDE)
-USR_INCLUDES += $(BOOST_INCLUDE)
-
-PROD_LIBS += NDPlugin ADBase asyn
-
-ifeq ($(WITH_HDF5),YES)
-  ifdef HDF5_LIB
-    hdf5_DIR = $(HDF5_LIB)
-    PROD_LIBS += hdf5
-  else
-    PROD_SYS_LIBS += hdf5
-  endif
-endif
-
-ifeq ($(WITH_SZIP),YES)
-  ifdef SZIP_LIB
-    sz_DIR = $(SZIP_LIB)
-    PROD_LIBS += sz
-  else
-    PROD_SYS_LIBS += sz
-  endif
-endif
-
-ifdef XML2_INCLUDE
+  USR_INCLUDES += $(HDF5_INCLUDE)
+  USR_INCLUDES += $(SZ_INCLUDE)
   USR_INCLUDES += $(XML2_INCLUDE)
+  USR_INCLUDES += $(BOOST_INCLUDE)
+
+  include $(ADCORE)/ADApp/commonDriverMakefile
+
 endif
-
-PROD_LIBS += $(EPICS_BASE_IOC_LIBS)
-
-PROD_SYS_LIBS += xml2 z
 
 include $(TOP)/configure/RULES
