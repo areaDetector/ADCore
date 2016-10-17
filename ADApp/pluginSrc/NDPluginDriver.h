@@ -61,18 +61,21 @@ protected:
 
 private:
     virtual asynStatus setArrayInterrupt(int connect);
+    void createCallbackThread();
     
     /* The asyn interfaces we access as a client */
     void *asynGenericPointerInterruptPvt;
 
     /* Our data */
+    bool pluginStarted;
+    int threadStackSize;
     asynUser *pasynUserGenericPointer;          /**< asynUser for connecting to NDArray driver */
     void *asynGenericPointerPvt;                /**< Handle for connecting to NDArray driver */
     asynGenericPointer *pasynGenericPointer;    /**< asyn interface for connecting to NDArray driver */
     bool connectedToArrayPort;
-    epicsMessageQueueId msgQId;
-    epicsThread * pThread;
     epicsEvent *pThreadStartedEvent;
+    epicsThread *pThread;
+    epicsMessageQueueId msgQId;
     epicsTimeStamp lastProcessTime;
     int dimsPrev[ND_ARRAY_MAX_DIMS];
     int newQueueSize_;
