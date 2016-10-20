@@ -56,8 +56,13 @@ ifeq ($(WITH_BOOST),YES)
   USR_INCLUDES += $(XML2_INCLUDE)
   USR_INCLUDES += $(BOOST_INCLUDE)
 
-  include $(ADCORE)/ADApp/commonDriverMakefile
-
 endif
+
+ifeq ($(WITH_HDF5),YES)
+  PROD += test_SWMR
+  test_SWMR_SRCS += test_SWMR.c
+endif
+
+include $(ADCORE)/ADApp/commonDriverMakefile
 
 include $(TOP)/configure/RULES
