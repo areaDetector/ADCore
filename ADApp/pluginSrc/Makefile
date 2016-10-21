@@ -66,11 +66,13 @@ DBD      += NDPluginTransform.dbd
 INC      += NDPluginTransform.h
 LIB_SRCS += NDPluginTransform.cpp
 
+ifeq ($(WITH_XML2),YES)
 DBD      += NDPosPlugin.dbd
 INC      += NDPosPlugin.h
 INC      += NDPosPluginFileReader.h
 LIB_SRCS += NDPosPlugin.cpp 
 LIB_SRCS += NDPosPluginFileReader.cpp
+endif
 
 INC      += NDPluginFile.h
 LIB_SRCS += NDPluginFile.cpp
