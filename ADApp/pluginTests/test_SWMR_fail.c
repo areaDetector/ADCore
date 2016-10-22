@@ -2,7 +2,8 @@
 
 #include <hdf5.h>
 
-
+/* This program is only to test SWMR which is not supported on older versions of HDF5 library */
+#if H5_VERSION_GE(1,9,178)
 
 static herr_t cFlushCallback(hid_t objectID, void *data)
 {
@@ -226,3 +227,4 @@ int main(int argc, char *argv[])
 
 } /* end main */
 
+#endif /* H5_VERSION_GE(1,9,178) */
