@@ -2,10 +2,6 @@
 
 #include <hdf5.h>
 
-
-/* This program is only to test SWMR which is not supported on older versions of HDF5 library */
-#if H5_VERSION_GE(1,9,178)
-
 static herr_t cFlushCallback(hid_t objectID, void *data)
 {
   // Do nothing
@@ -77,7 +73,10 @@ int main(int argc, char *argv[])
   /* All SWMR files need to use the latest file format */
   access_plist = H5Pcreate(H5P_FILE_ACCESS);
   H5Pset_fclose_degree(access_plist, H5F_CLOSE_STRONG);
+/* This program is only to test SWMR which is not supported on older versions of HDF5 library */
+#if H5_VERSION_GE(1,9,178)
   H5Pset_object_flush_cb(access_plist, cFlushCallback, NULL);
+#endif
   H5Pset_libver_bounds(access_plist, H5F_LIBVER_LATEST, H5F_LIBVER_LATEST);
   create_plist = H5Pcreate(H5P_FILE_CREATE);
   fid = H5Fcreate("test_string_swmr.h5", H5F_ACC_TRUNC, create_plist, access_plist);
@@ -214,12 +213,12 @@ int main(int argc, char *argv[])
   writeStringAttribute(dataset, "NDAttrSourceType",  "NDAttrSourceDriver");
 
 
+#if H5_VERSION_GE(1,9,178)
   H5Fstart_swmr_write(fid);
+#endif
   
   H5Fclose(fid);
 
   return 0;
 
 } /* end main */
-
-#endif /* H5_VERSION_GE(1,9,178) */

@@ -2,9 +2,6 @@
 
 #include <hdf5.h>
 
-/* This program is only to test SWMR which is not supported on older versions of HDF5 library */
-#if H5_VERSION_GE(1,9,178)
-
 void writeStringAttribute(hid_t element, const char *attr_name, const char *attr_value)
 {
   herr_t hdfstatus = -1;
@@ -105,12 +102,12 @@ int main(int argc, char *argv[])
   H5Screate_simple(rank, elementSize, NULL);
   writeStringAttribute(dataset, "NDAttrSourceType",  "NDAttrSourceParam");
 
+#if H5_VERSION_GE(1,9,178)
   H5Fstart_swmr_write(fid);
+#endif
   
   H5Fclose(fid);
 
   return 0;
 
 } /* end main */
-
-#endif /* H5_VERSION_GE(1,9,178) */
