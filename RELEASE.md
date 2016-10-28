@@ -47,6 +47,9 @@ R2-5 (October 28, 2016)
     XXX library.
   - XXX_INCLUDE If this is defined then the build system will search this directory for the include files for
     the XXX library.
+* ADSupport does not currently include support for GraphicsMagick.  This means that GraphicsMagick is not
+  currently supported on Windows.  It can be used on Linux and Darwin if it is installed external to areaDetector
+  and GRAPHICSMAGICK_EXTERNAL=YES.
 * All EPICS modules except base and asyn are now optional.  Previously 
   commonDriverSupport.dbd included "calcSupport.dbd", "sscanSupport.dbd", etc.
   These dbd and libraries are now only included if they are defined in a RELEASE
