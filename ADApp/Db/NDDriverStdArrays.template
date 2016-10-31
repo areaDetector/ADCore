@@ -72,29 +72,27 @@ record(longin, "$(P)$(R)CurrentPixel_RBV")
     field(SCAN, "I/O Intr")
 }
 
-record(longout, "$(P)$(R)SizeZ")
+record(longout, "$(P)$(R)NDimensions")
 {
+    field(PINI, "YES")
     field(DTYP, "asynInt32")
-    field(OUT, "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIZE_Z")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_NDIMENSIONS")
 }
 
-record(longin, "$(P)$(R)SizeZ_RBV")
+# The array dimensions waveform record
+record(waveform, "$(P)$(R)Dimensions")
 {
-    field(DTYP, "asynInt32")
-    field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIZE_Z_RBV")
-    field(SCAN, "I/O Intr")
+    field(PINI, "YES")
+    field(DTYP, "asynInt32ArrayOut")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_DIMENSIONS")
+    field(FTVL, "LONG")
+    field(NELM, "10")
 }
 
-record(longin, "$(P)$(R)MaxSizeZ_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_SIZE_Z_RBV")
-    field(SCAN, "I/O Intr")
-}
 record(waveform, "$(P)$(R)ArrayIn")
 {
     field(DTYP, "asynFloat64ArrayOut")
     field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_IN")
     field(NELM, "$(NELEMENTS)")
-    field(FTVL, "DOUBLE")
+    field(FTVL, "$(FTVL)")
 }
