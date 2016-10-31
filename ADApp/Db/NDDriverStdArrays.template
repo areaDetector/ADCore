@@ -1,0 +1,100 @@
+#===================================================
+# Template file: softDetector.template
+# Database for the records specific to the soft detector driver
+# David Vine
+# September 28, 2016
+
+include ADBase.template
+
+record(bo, "$(P)$(R)ArrayMode")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_MODE")
+    field(ZNAM, "Overwrite")
+    field(ONAM, "Append")
+    field(ZSV,  "NO_ALARM") # AND_NO_SURPRISES
+    field(OSV,  "MINOR")
+    field(VAL,  0)
+}
+
+record(bi, "$(P)$(R)ArrayMode_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_MODE_RBV")
+    field(SCAN, "I/O Intr")
+    field(ZNAM, "Overwrite")
+    field(ONAM, "Append")
+}
+
+record(bo, "$(P)$(R)PartialArrayCallbacks")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PARTIAL_ARRAY_CALLBACKS")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+    field(ZSV,  "NO_ALARM") 
+    field(OSV,  "MINOR")
+    field(VAL,  1)
+}
+
+record(bi, "$(P)$(R)PartialArrayCallbacks_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))PARTIAL_ARRAY_CALLBACKS_RBV")
+    field(SCAN, "I/O Intr")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+}
+
+record(longout, "$(P)$(R)NumElements")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_ELEMENTS")
+}
+
+record(longin, "$(P)$(R)NumElements_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_ELEMENTS")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)CurrentPixel")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR),$(TIMEOUT))CURRENT_PIXEL")
+}
+
+record(longin, "$(P)$(R)CurrentPixel_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))CURRENT_PIXEL_RBV")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)SizeZ")
+{
+    field(DTYP, "asynInt32")
+    field(OUT, "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIZE_Z")
+}
+
+record(longin, "$(P)$(R)SizeZ_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIZE_Z_RBV")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)MaxSizeZ_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_SIZE_Z_RBV")
+    field(SCAN, "I/O Intr")
+}
+record(waveform, "$(P)$(R)ArrayIn")
+{
+    field(DTYP, "asynFloat64ArrayOut")
+    field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_IN")
+    field(NELM, "$(NELEMENTS)")
+    field(FTVL, "DOUBLE")
+}
