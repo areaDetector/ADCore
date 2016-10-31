@@ -32,15 +32,18 @@ public:
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
 
 protected:
-    int NDSAArrayMode;                 /* 0: Overwrite, 1: Append                */
-#define FIRST_NDSA_DETECTOR_PARAM NDSAArrayMode
-    int NDSAPartialArrayCallbacks;     /* 0: Disable, 1: Enable                  */
-    int NDSANumElements;               /* Num elements to append in Append mode. */
-    int NDSACurrentPixel;              /* Append beginning at this pixel.        */
-#define LAST_NDSA_DETECTOR_PARAM NDSACurrentPixel
+    int NDSAArrayMode_;                 /* 0: Overwrite, 1: Append                */
+#define FIRST_NDSA_DETECTOR_PARAM NDSAArrayMode_
+    int NDSAPartialArrayCallbacks_;     /* 0: Disable, 1: Enable                  */
+    int NDSANumElements_;               /* Num elements to append in Append mode. */
+    int NDSACurrentPixel_;              /* Append beginning at this pixel.        */
+#define LAST_NDSA_DETECTOR_PARAM NDSACurrentPixel_
 
 private:
-    template <typename epicsType> int writeXXXArray();
+    template <typename epicsType> asynStatus writeXXXArray(asynUser *pasynUser, void *pValue, size_t nElements);
+    template <typename epicsType, typename NDArrayType> asynStatus copyBuffer(NDArray *pArray, void *pValue, size_t nElements);
+    size_t arrayDimensions_[ND_ARRAY_MAX_DIMS];
+    void *pNewData_;
 };
 
 #define arrayModeString                "ARRAY_MODE"                  /* (asynInt32,        r/w) Overwrite or append         */
