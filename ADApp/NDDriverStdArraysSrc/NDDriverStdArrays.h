@@ -30,14 +30,18 @@ public:
     virtual asynStatus writeFloat32Array(asynUser *pasynUser, epicsFloat32 *value, size_t nElements);
     virtual asynStatus writeFloat64Array(asynUser *pasynUser, epicsFloat64 *value, size_t nElements);
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
+    virtual void report (FILE *fp, int details);
 
 protected:
-    int NDSAArrayMode_;                 /* 0: Overwrite, 1: Append                */
-#define FIRST_NDSA_DETECTOR_PARAM NDSAArrayMode_
-    int NDSAPartialArrayCallbacks_;     /* 0: Disable, 1: Enable                  */
-    int NDSANumElements_;               /* Num elements to append in Append mode. */
-    int NDSACurrentPixel_;              /* Append beginning at this pixel.        */
-#define LAST_NDSA_DETECTOR_PARAM NDSACurrentPixel_
+    int NDSA_ArrayMode_;                 /* 0: Overwrite, 1: Append                */
+#define FIRST_NDSA_DRIVER_PARAM NDSA_ArrayMode_
+    int NDSA_PartialArrayCallbacks_;     /* 0: Disable, 1: Enable                  */
+    int NDSA_NumElements_;               /* Num elements to append in Append mode. */
+    int NDSA_CurrentPixel_;              /* Append beginning at this pixel.        */
+    int NDSA_NDimensions_;               /* Number of dimensions                   */
+    int NDSA_Dimensions_;                /* Array of dimensions                    */
+    int NDSA_ArrayData_;                 /* Array data                             */
+#define LAST_NDSA_DRIVER_PARAM NDSA_ArrayData_
 
 private:
     template <typename epicsType> asynStatus writeXXXArray(asynUser *pasynUser, void *pValue, size_t nElements);
@@ -46,9 +50,12 @@ private:
     void *pNewData_;
 };
 
-#define arrayModeString                "ARRAY_MODE"                  /* (asynInt32,        r/w) Overwrite or append         */
-#define partialArrayCallbacksString    "PARTIAL_ARRAY_CALLBACKS"     /* (asynInt32,        r/w) Disable or Enable           */
-#define numElementsString              "NUM_ELEMENTS"                /* (asynInt32,        r/w) Number of pixels to append  */
-#define currentPixelString             "CURRENT_PIXEL"               /* (asynInt32,        r/w) Append beginning this pixel */
+#define NDSA_ArrayModeString                "NDSA_ARRAY_MODE"                  /* (asynInt32,        r/w) Overwrite or append         */
+#define NDSA_PartialArrayCallbacksString    "NDSA_PARTIAL_ARRAY_CALLBACKS"     /* (asynInt32,        r/w) Disable or Enable           */
+#define NDSA_NumElementsString              "NDSA_NUM_ELEMENTS"                /* (asynInt32,        r/w) Number of pixels to append  */
+#define NDSA_CurrentPixelString             "NDSA_CURRENT_PIXEL"               /* (asynInt32,        r/w) Append beginning this pixel */
+#define NDSA_NDimensionsString              "NDSA_NDIMENSIONS"                 /* (asynInt32,        r/o) Number of dimensions */
+#define NDSA_DimensionsString               "NDSA_DIMENSIONS"                  /* (asynInt32,        r/o) Array dimensions */
+#define NDSA_ArrayDataString                "NDSA_ARRAY_DATA"                  /* (asynXXXArray,     r/o) Array data */
 
-#define NUM_NDSA_DETECTOR_PARAMS ((int)(&LAST_NDSA_DETECTOR_PARAM - &FIRST_NDSA_DETECTOR_PARAM + 1))
+#define NUM_NDSA_DRIVER_PARAMS ((int)(&LAST_NDSA_DRIVER_PARAM - &FIRST_NDSA_DRIVER_PARAM + 1))
