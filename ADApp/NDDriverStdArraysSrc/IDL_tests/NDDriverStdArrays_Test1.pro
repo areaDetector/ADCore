@@ -12,12 +12,15 @@ xSize = 512
 ySize = 512
 dimensions[0] = xSize
 dimensions[1] = ySize
-dataType = 'Int16'
+dataType = 'Float32'
+colorMode = 'Mono'
+arrayMode = 'Overwrite'
 
 t = caput(prefix + 'NDimensions', nDimensions)
 t = caput(prefix + 'Dimensions', dimensions)
 t = caput(prefix + 'DataType', dataType)
-t = caput(prefix + 'ArrayMode', 'Overwrite')
+t = caput(prefix + 'ColorMode', colorMode)
+t = caput(prefix + 'ArrayMode', arrayMode)
 t = caput(prefix + 'Acquire', 1)
 
 for i=1, 100 do begin
