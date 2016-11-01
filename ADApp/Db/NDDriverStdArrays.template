@@ -91,8 +91,8 @@ record(waveform, "$(P)$(R)Dimensions")
 
 record(waveform, "$(P)$(R)ArrayIn")
 {
-    field(DTYP, "asynFloat64ArrayOut")
+    field(DTYP, "asyn$(TYPE)ArrayOut")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_ARRAY_DATA")
-    field(NELM, "$(NELEMENTS)")
     field(FTVL, "$(FTVL)")
+    field(NELM, "$(NELEMENTS)")
 }
