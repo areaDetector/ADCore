@@ -34,9 +34,6 @@ static const char *driverName = "NDDriverStdArrays";
 
 /** Constructor for NDDriverStdArrays; most parameters are passed to ADDriver::ADDriver.
   * \param[in] portName The name of the asyn port to be created
-  * \param[in] maxSizeX Maximum number of elements in x dimension
-  * \param[in] maxSizeY Maximum number of elements in y dimension
-  * \param[in] maxSizeZ Maximum number of elements in z dimension
   * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver
   *            is allowed to allocate. Set this to -1 to allow an unlimited number of buffers.
   * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
@@ -52,8 +49,8 @@ NDDriverStdArrays::NDDriverStdArrays(const char *portName, int maxBuffers, size_
 
     : ADDriver(portName, 1, NUM_NDSA_DRIVER_PARAMS,
                maxBuffers, maxMemory,
-               asynFloat64ArrayMask | asynDrvUserMask, 
-               asynFloat64ArrayMask, 
+               asynFloat64ArrayMask | asynFloat32ArrayMask | asynInt32ArrayMask | asynInt16ArrayMask | asynInt8ArrayMask, 
+               0, 
                0, 1, /* ASYN_CANBLOCK=0, ASYN_MULTIDEVICE=0, autoConnect=1 */
                priority, stackSize)
 {
