@@ -26,49 +26,30 @@ record(bi, "$(P)$(R)ArrayMode_RBV")
     field(ONAM, "Append")
 }
 
-record(bo, "$(P)$(R)PartialArrayCallbacks")
+record(bo, "$(P)$(R)CallbackMode")
 {
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_PARTIAL_ARRAY_CALLBACKS")
-    field(ZNAM, "Disable")
-    field(ONAM, "Enable")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_CALLBACK_MODE")
+    field(ZNAM, "Every update")
+    field(ONAM, "When complete")
     field(ZSV,  "NO_ALARM") 
     field(OSV,  "MINOR")
     field(VAL,  1)
 }
 
-record(bi, "$(P)$(R)PartialArrayCallbacks_RBV")
+record(bi, "$(P)$(R)CallbackMode_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_PARTIAL_ARRAY_CALLBACKS")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_CALLBACK_MODE")
     field(SCAN, "I/O Intr")
-    field(ZNAM, "Disable")
-    field(ONAM, "Enable")
-}
-
-record(longout, "$(P)$(R)NumElements")
-{
-    field(DTYP, "asynInt32")
-    field(OUT, "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_NUM_ELEMENTS")
+    field(ZNAM, "Every update")
+    field(ONAM, "When complete")
 }
 
 record(longin, "$(P)$(R)NumElements_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_NUM_ELEMENTS")
-    field(SCAN, "I/O Intr")
-}
-
-record(longout, "$(P)$(R)CurrentPixel")
-{
-    field(DTYP, "asynInt32")
-    field(OUT, "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_CURRENT_PIXEL")
-}
-
-record(longin, "$(P)$(R)CurrentPixel_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_CURRENT_PIXEL")
     field(SCAN, "I/O Intr")
 }
 
@@ -79,7 +60,6 @@ record(longout, "$(P)$(R)NDimensions")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_NDIMENSIONS")
 }
 
-# The array dimensions waveform record
 record(waveform, "$(P)$(R)Dimensions")
 {
     field(PINI, "YES")
