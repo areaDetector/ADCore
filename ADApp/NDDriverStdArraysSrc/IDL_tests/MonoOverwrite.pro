@@ -15,12 +15,14 @@ dimensions[1] = ySize
 dataType = 'Float32'
 colorMode = 'Mono'
 arrayMode = 'Overwrite'
+imageMode = 'Continuous'
 
 t = caput(prefix + 'NDimensions', nDimensions)
 t = caput(prefix + 'Dimensions', dimensions)
 t = caput(prefix + 'DataType', dataType)
 t = caput(prefix + 'ColorMode', colorMode)
 t = caput(prefix + 'ArrayMode', arrayMode)
+t = caput(prefix + 'ImageMode', imageMode)
 t = caput(prefix + 'Acquire', 1)
 
 for i=1, 100 do begin

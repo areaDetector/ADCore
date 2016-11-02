@@ -16,12 +16,14 @@ dimensions[2] = ySize
 dataType = 'UInt8'
 colorMode = 'RGB1'
 arrayMode = 'Overwrite'
+imageMode = 'Continuous'
 
 t = caput(prefix + 'NDimensions', nDimensions)
 t = caput(prefix + 'Dimensions', dimensions)
 t = caput(prefix + 'DataType', dataType)
 t = caput(prefix + 'ColorMode', colorMode)
 t = caput(prefix + 'ArrayMode', arrayMode)
+t = caput(prefix + 'ImageMode', imageMode)
 t = caput(prefix + 'Acquire', 1)
 
 data = dblarr(3, xSize, ySize)
