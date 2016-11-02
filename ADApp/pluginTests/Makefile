@@ -67,6 +67,6 @@ ifeq ($(WITH_HDF5),YES)
   test_SWMR_fail_min_SRCS  += test_SWMR_fail_min.c
 endif
 
-include $(ADCORE)/ADApp/commonDriverMakefile
+include $(TOP)/ADApp/commonDriverMakefile
 
 include $(TOP)/configure/RULES
