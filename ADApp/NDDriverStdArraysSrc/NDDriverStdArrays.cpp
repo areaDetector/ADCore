@@ -52,51 +52,40 @@ NDDriverStdArrays::NDDriverStdArrays(const char *portName, int maxBuffers, size_
                asynFloat64ArrayMask | asynFloat32ArrayMask | asynInt32ArrayMask | asynInt16ArrayMask | asynInt8ArrayMask, 
                0, 
                0, 1, /* ASYN_CANBLOCK=0, ASYN_MULTIDEVICE=0, autoConnect=1 */
-               priority, stackSize)
+               priority, stackSize),
+      pNewData_(0), pArray_(0)
 {
 
     int status = asynSuccess;
     const char *functionName = "NDDriverStdArrays";
 
-    createParam(NDSA_ArrayModeString,                asynParamInt32,        &NDSA_ArrayMode_);
-    createParam(NDSA_PartialArrayCallbacksString,    asynParamInt32,        &NDSA_PartialArrayCallbacks_);
+    createParam(NDSA_CallbackModeString,             asynParamInt32,        &NDSA_CallbackMode_);
     createParam(NDSA_NumElementsString,              asynParamInt32,        &NDSA_NumElements_);
-    createParam(NDSA_CurrentPixelString,             asynParamInt32,        &NDSA_CurrentPixel_);
+    createParam(NDSA_NextElementString,              asynParamInt32,        &NDSA_NextElement_);
     createParam(NDSA_NDimensionsString,              asynParamInt32,        &NDSA_NDimensions_);
     createParam(NDSA_DimensionsString,               asynParamInt32,        &NDSA_Dimensions_);
     createParam(NDSA_ArrayDataString,                asynParamInt32,        &NDSA_ArrayData_);
 
     status  = setStringParam (ADManufacturer, "NDDriverStdArrays");
     status |= setStringParam (ADModel, "Software Detector");
-    status |= setIntegerParam(ADMaxSizeX, 256);
-    status |= setIntegerParam(ADMaxSizeY, 256);
-    status |= setIntegerParam(ADSizeX, 256);
-    status |= setIntegerParam(ADSizeY, 256);
-    status |= setIntegerParam(NDArraySizeX, 256);
-    status |= setIntegerParam(NDArraySizeY, 256);
-    status |= setIntegerParam(NDArraySize, 65536); 
     status |= setIntegerParam(ADImageMode, ADImageSingle);
     status |= setIntegerParam(ADNumImages, 100);
-    status |= setIntegerParam(NDSA_ArrayMode_, 0);
-    status |= setIntegerParam(NDSA_PartialArrayCallbacks_, 1);
-    status |= setIntegerParam(NDSA_NumElements_, 1);
-    status |= setIntegerParam(NDSA_CurrentPixel_, 0);
-
+    status |= setIntegerParam(NDSA_CallbackMode_, (int)NDSA_EveryUpdate);
+    status |= setIntegerParam(NDSA_NumElements_, 0);
+    status |= setIntegerParam(NDSA_NextElement_, 0);
 
     if (status) {
         printf("%s: Unable to set camera prameters.", functionName);
         return;
     }
-
 }
 
-template <typename epicsType, typename NDArrayType> asynStatus NDDriverStdArrays::copyBuffer(NDArray *pArray, void *pValue, size_t nElements)
+template <typename epicsType, typename NDArrayType> void NDDriverStdArrays::copyBuffer(NDArray *pArray, void *pValue, size_t nElements)
 {
     epicsType *pIn = (epicsType *)pValue;
     NDArrayType *pOut = (NDArrayType *)pArray->pData;
 
     for (size_t i=0; i<nElements; i++) pOut[i] = (NDArrayType) pIn[i];
-    return asynSuccess;
 }
 
 template <typename epicsType> asynStatus NDDriverStdArrays::writeXXXArray(asynUser *pasynUser, void *pValue, size_t nElements)
@@ -106,66 +95,68 @@ template <typename epicsType> asynStatus NDDriverStdArrays::writeXXXArray(asynUs
     asynStatus status = asynSuccess;
     NDDataType_t dataType;
     NDColorMode_t colorMode;
+    ADImageMode_t imageMode;
     NDArrayInfo arrayInfo;
-    size_t maxElements=1;
+    NDSA_CallbackMode_t callbackMode;
+    int numElements;
+    int nextElement;
     int numDimensions;
-    int partialArrayCallbacks;
     int numImages;
-    int imageMode;
     int numImagesCounter;
     int arrayCallbacks;
-    int currentPixel;
     epicsTimeStamp startTime;
     int imageCounter;
     int itemp;
-    int arrayMode; /* Overwrite (0) or append (1) */
-    NDArray *pArray=0;
     static const char *functionName = "writeXXXArray";
 
     getIntegerParam(ADAcquire, &acquire);
     if (!acquire) return asynSuccess;
 
-
-    getIntegerParam(NDDataType,   &itemp); dataType = (NDDataType_t) itemp;
-    getIntegerParam(NDColorMode,  &itemp); colorMode = (NDColorMode_t) itemp;
-    getIntegerParam(NDSA_ArrayMode_, &arrayMode);
+    getIntegerParam(NDDataType,         &itemp);  dataType     = (NDDataType_t) itemp;
+    getIntegerParam(NDColorMode,        &itemp);  colorMode    = (NDColorMode_t) itemp;
+    getIntegerParam(ADImageMode,        &itemp);  imageMode    = (ADImageMode_t) itemp;
+    getIntegerParam(NDSA_CallbackMode_, &itemp);  callbackMode = (NDSA_CallbackMode_t) itemp;
     getIntegerParam(NDSA_NDimensions_, &numDimensions);
+    getIntegerParam(NDSA_NumElements_, &numElements);
+    getIntegerParam(NDArrayCounter, &imageCounter);
+    getIntegerParam(ADNumImages, &numImages);
+    getIntegerParam(ADNumImagesCounter, &numImagesCounter);
+    getIntegerParam(NDArrayCallbacks, &arrayCallbacks);
 
-
-    if (arrayMode==0 || pNewData_==0) { /* Overwrite */
+    if (pArray_==0) {
         if (this->pArrays[0]) this->pArrays[0]->release();
 
         /* Allocate the raw buffer we use to compute images. */
         this->pArrays[0] = this->pNDArrayPool->alloc(numDimensions, arrayDimensions_, dataType, 0, NULL);
-        pArray = this->pArrays[0];
+        pArray_ = this->pArrays[0];
 
-        if (!pArray) {
+        if (!pArray_) {
             asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                       "%s:%s: error allocating raw buffer\n",
                       driverName, functionName);
             return asynError;
         }
-        pArray->pAttributeList->add("ColorMode", "Color Mode", NDAttrInt32, &colorMode);
+        pArray_->pAttributeList->add("ColorMode", "Color Mode", NDAttrInt32, &colorMode);
+        setIntegerParam(NDSA_NumElements_, 0);
+        setIntegerParam(NDSA_NextElement_, 0);
+        pArray_->getInfo(&arrayInfo);
+        setIntegerParam(NDArraySize,  (int)arrayInfo.totalBytes);
+        setIntegerParam(ADMaxSizeX,   arrayDimensions_[0]);
+        setIntegerParam(ADMaxSizeY,   arrayDimensions_[1]);
+        setIntegerParam(NDArraySizeX, 0);
+        setIntegerParam(NDArraySizeY, 0);
+        setIntegerParam(NDArraySizeZ, 0);
     }
 
-    /* Make sure size is valid */
-    nElements = 1;
-    for (i=0; i<numDimensions; i++) {
-        nElements *= arrayDimensions_[i];
-    }
-
-    pArray->getInfo(&arrayInfo);
-    setIntegerParam(NDArraySize,  (int)arrayInfo.totalBytes);
-    setIntegerParam(NDArraySizeX, (int)pArray->dims[0].size);
-    setIntegerParam(NDArraySizeY, (int)pArray->dims[1].size);
-    setIntegerParam(NDArraySizeZ, (int)pArray->dims[2].size);
-
-    if (nElements > arrayInfo.nElements) {
+    getIntegerParam(NDSA_NextElement_, &nextElement);
+    if (current_nElements > arrayInfo.nElements) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                   "%s::%s invalid dimensions, nElements=%d, arrayInfo.nElements=%d\n",
                   driverName, functionName, (int)nElements, (int)arrayInfo.nElements);
         return asynError;
     }
+    
+    // Compute and update actual array dimensions?
 
     switch (dataType){
         case NDInt8:
@@ -194,19 +185,10 @@ template <typename epicsType> asynStatus NDDriverStdArrays::writeXXXArray(asynUs
             break;
     }
     
-    getIntegerParam(NDSA_PartialArrayCallbacks_, &partialArrayCallbacks);
-    if ((partialArrayCallbacks==1) ||
-        (arrayMode==0) || 
-        ((arrayMode==1) && 
-         (arrayInfo.nElements >=maxElements)))
+    if ((callbackMode == NDSA_EveryUpdate) ||
+        (arrayInfo.nElements >=maxElements)))
     {
         pArray = this->pArrays[0];
-        /* Get current parameters. */
-        getIntegerParam(NDArrayCounter, &imageCounter);
-        getIntegerParam(ADNumImages, &numImages);
-        getIntegerParam(ADNumImagesCounter, &numImagesCounter);
-        getIntegerParam(ADImageMode, &imageMode);
-        getIntegerParam(NDArrayCallbacks, &arrayCallbacks);
         imageCounter++;
         numImagesCounter++;
         setIntegerParam(NDArrayCounter, imageCounter);
@@ -225,8 +207,6 @@ template <typename epicsType> asynStatus NDDriverStdArrays::writeXXXArray(asynUs
         }
     }
 
-    getIntegerParam(NDSA_ArrayMode_, &arrayMode);
-    getIntegerParam(NDSA_CurrentPixel_, &currentPixel);
     /* Check if acquisition is done. */
     if ((imageMode==ADImageSingle) ||
         ((imageMode==ADImageMultiple) &&
@@ -240,7 +220,6 @@ template <typename epicsType> asynStatus NDDriverStdArrays::writeXXXArray(asynUs
         {
             setIntegerParam(ADAcquire, 0);
             setIntegerParam(ADStatus, ADStatusIdle);
-            setIntegerParam(NDSA_CurrentPixel_, 0);
             asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW,
             "%s:%s: acquisition completes\n", driverName, functionName);
         }
