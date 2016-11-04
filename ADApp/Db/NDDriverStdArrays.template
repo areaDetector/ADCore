@@ -1,49 +1,62 @@
 #===================================================
-# Template file: softDetector.template
-# Database for the records specific to the soft detector driver
+# Template file: NDDriverStdArrays.template
+# Database for the records specific to the NDDriverStdArrays driver
 # David Vine
 # September 28, 2016
 
 include ADBase.template
 
-record(bo, "$(P)$(R)ArrayMode")
-{
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_ARRAY_MODE")
-    field(ZNAM, "Overwrite")
-    field(ONAM, "Append")
-    field(ZSV,  "NO_ALARM") # AND_NO_SURPRISES
-    field(OSV,  "MINOR")
-    field(VAL,  0)
-}
-
-record(bi, "$(P)$(R)ArrayMode_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP, "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_ARRAY_MODE")
-    field(SCAN, "I/O Intr")
-    field(ZNAM, "Overwrite")
-    field(ONAM, "Append")
-}
-
-record(bo, "$(P)$(R)CallbackMode")
+record(mbbo, "$(P)$(R)CallbackMode")
 {
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_CALLBACK_MODE")
-    field(ZNAM, "Every update")
-    field(ONAM, "When complete")
-    field(ZSV,  "NO_ALARM") 
-    field(OSV,  "MINOR")
+    field(ZRVL, "0")
+    field(ZRST, "On update")
+    field(ONVL, "1")
+    field(ONST, "On complete")
+    field(TWVL, "2")
+    field(TWST, "On command")
     field(VAL,  1)
 }
 
-record(bi, "$(P)$(R)CallbackMode_RBV")
+record(mbbi, "$(P)$(R)CallbackMode_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_CALLBACK_MODE")
     field(SCAN, "I/O Intr")
-    field(ZNAM, "Every update")
-    field(ONAM, "When complete")
+    field(ZRVL, "0")
+    field(ZRST, "On update")
+    field(ONVL, "1")
+    field(ONST, "On complete")
+    field(TWVL, "2")
+    field(TWST, "On command")
+    field(SCAN, "I/O Intr")
+}
+
+record(bo, "$(P)$(R)DoCallbacks")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_DO_CALLBACKS")
+    field(ZNAM, "Done")
+    field(ONAM, "Do")
+    field(VAL,  1)
+}
+record(bo, "$(P)$(R)AppendMode")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_APPEND_MODE")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
+    field(VAL,  1)
+}
+
+record(bi, "$(P)$(R)AppendMode_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_APPEND_MODE")
+    field(SCAN, "I/O Intr")
+    field(ZNAM, "Disable")
+    field(ONAM, "Enable")
 }
 
 record(longin, "$(P)$(R)NumElements_RBV")
@@ -53,11 +66,32 @@ record(longin, "$(P)$(R)NumElements_RBV")
     field(SCAN, "I/O Intr")
 }
 
+record(longout, "$(P)$(R)NextElement")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_NEXT_ELEMENT")
+}
+
+record(longin, "$(P)$(R)NextElement_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_NEXT_ELEMENT")
+    field(SCAN, "I/O Intr")
+}
+
 record(longout, "$(P)$(R)NDimensions")
 {
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_NDIMENSIONS")
+}
+
+record(longin, "$(P)$(R)NDimensions_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_NDIMENSIONS")
+    field(SCAN, "I/O Intr")
 }
 
 record(waveform, "$(P)$(R)Dimensions")
