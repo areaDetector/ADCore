@@ -20,7 +20,8 @@
 
 typedef enum {
   NDSA_EveryUpdate,
-  NDSA_WhenComplete
+  NDSA_WhenComplete,
+  NSDA_CommandOnly
 } NDSA_CallbackMode_t;
 
 class epicsShareClass NDDriverStdArrays : public ADDriver {
@@ -38,25 +39,30 @@ public:
     virtual void report (FILE *fp, int details);
 
 protected:
-    int NDSA_CallbackMode_;              /* 0: Every update, 1: When complete      */
+    int NDSA_CallbackMode_;
 #define FIRST_NDSA_DRIVER_PARAM NDSA_CallbackMode_
-    int NDSA_NumElements_;               /* Number of elements currently in array  */
-    int NDSA_NextElement_;               /* Next element to write to in array  */
-    int NDSA_NDimensions_;               /* Number of dimensions                   */
-    int NDSA_Dimensions_;                /* Array of dimensions                    */
-    int NDSA_ArrayData_;                 /* Array data                             */
+    int NDSA_DoCallbacks_;
+    int NDSA_AppendMode_;
+    int NDSA_NumElements_;
+    int NDSA_NextElement_;
+    int NDSA_NDimensions_;
+    int NDSA_Dimensions_;
+    int NDSA_ArrayData_;
 #define LAST_NDSA_DRIVER_PARAM NDSA_ArrayData_
 
 private:
     template <typename epicsType> asynStatus writeXXXArray(asynUser *pasynUser, void *pValue, size_t nElements);
-    template <typename epicsType, typename NDArrayType> void copyBuffer(NDArray *pArray, void *pValue, size_t nElements);
+    template <typename epicsType, typename NDArrayType> void copyBuffer(size_t nextElement, void *pValue, size_t nElements);
+    void doCallbacks();
     size_t arrayDimensions_[ND_ARRAY_MAX_DIMS];
     void *pNewData_;
     size_t maxElements_;
     NDArray *pArray_;
 };
 
-#define NDSA_CallbackModeString             "NDSA_CALLBACK_MODE"               /* (asynInt32,        r/w) Every update or when complete         */
+#define NDSA_CallbackModeString             "NDSA_CALLBACK_MODE"               /* (asynInt32,        r/w) Every update, when complete           */
+#define NDSA_DoCallbacksString              "NDSA_DO_CALLBACKS"                /* (asynInt32,        r/w) Force callbacks                       */
+#define NDSA_AppendModeString               "NDSA_APPEND_MODE"                 /* (asynInt32,        r/w) Enable or disable                     */
 #define NDSA_NumElementsString              "NDSA_NUM_ELEMENTS"                /* (asynInt32,        r/o) Number of elements currently in array */
 #define NDSA_NextElementString              "NDSA_NEXT_ELEMENT"                /* (asynInt32,        r/w) Next element to write to in array */
 #define NDSA_NDimensionsString              "NDSA_NDIMENSIONS"                 /* (asynInt32,        r/o) Number of dimensions                  */
