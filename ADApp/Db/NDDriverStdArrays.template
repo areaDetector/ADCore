@@ -38,9 +38,28 @@ record(bo, "$(P)$(R)DoCallbacks")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_DO_CALLBACKS")
     field(ZNAM, "Done")
-    field(ONAM, "Do")
+    field(ONAM, "Set")
     field(VAL,  1)
 }
+
+record(bo, "$(P)$(R)NewArray")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_NEW_ARRAY")
+    field(ZNAM, "Done")
+    field(ONAM, "Set")
+    field(VAL,  1)
+}
+
+record(bo, "$(P)$(R)ArrayComplete")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_ARRAY_COMPLETE")
+    field(ZNAM, "Done")
+    field(ONAM, "Set")
+    field(VAL,  1)
+}
+
 record(bo, "$(P)$(R)AppendMode")
 {
     field(DTYP, "asynInt32")
