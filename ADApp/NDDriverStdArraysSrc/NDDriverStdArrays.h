@@ -19,9 +19,9 @@
 #include "ADDriver.h"
 
 typedef enum {
-  NDSA_EveryUpdate,
-  NDSA_WhenComplete,
-  NSDA_CommandOnly
+  NDSA_OnUpdate,
+  NDSA_OnComplete,
+  NDSA_OnCommand
 } NDSA_CallbackMode_t;
 
 class epicsShareClass NDDriverStdArrays : public ADDriver {
@@ -45,6 +45,8 @@ protected:
     int NDSA_AppendMode_;
     int NDSA_NumElements_;
     int NDSA_NextElement_;
+    int NDSA_NewArray_;
+    int NDSA_ArrayComplete_;
     int NDSA_NDimensions_;
     int NDSA_Dimensions_;
     int NDSA_ArrayData_;
@@ -54,17 +56,17 @@ private:
     template <typename epicsType> asynStatus writeXXXArray(asynUser *pasynUser, void *pValue, size_t nElements);
     template <typename epicsType, typename NDArrayType> void copyBuffer(size_t nextElement, void *pValue, size_t nElements);
     void doCallbacks();
+    void setArrayComplete();
     size_t arrayDimensions_[ND_ARRAY_MAX_DIMS];
-    void *pNewData_;
-    size_t maxElements_;
-    NDArray *pArray_;
 };
 
 #define NDSA_CallbackModeString             "NDSA_CALLBACK_MODE"               /* (asynInt32,        r/w) Every update, when complete           */
 #define NDSA_DoCallbacksString              "NDSA_DO_CALLBACKS"                /* (asynInt32,        r/w) Force callbacks                       */
 #define NDSA_AppendModeString               "NDSA_APPEND_MODE"                 /* (asynInt32,        r/w) Enable or disable                     */
 #define NDSA_NumElementsString              "NDSA_NUM_ELEMENTS"                /* (asynInt32,        r/o) Number of elements currently in array */
-#define NDSA_NextElementString              "NDSA_NEXT_ELEMENT"                /* (asynInt32,        r/w) Next element to write to in array */
+#define NDSA_NextElementString              "NDSA_NEXT_ELEMENT"                /* (asynInt32,        r/w) Next element to write to in array     */
+#define NDSA_NewArrayString                 "NDSA_NEW_ARRAY"                   /* (asynInt32,        r/o) Start a new array in append mode      */
+#define NDSA_ArrayCompleteString            "NDSA_ARRAY_COMPLETE"              /* (asynInt32,        r/o) Array is complete in append mode      */
 #define NDSA_NDimensionsString              "NDSA_NDIMENSIONS"                 /* (asynInt32,        r/o) Number of dimensions                  */
 #define NDSA_DimensionsString               "NDSA_DIMENSIONS"                  /* (asynInt32,        r/o) Array dimensions                      */
 #define NDSA_ArrayDataString                "NDSA_ARRAY_DATA"                  /* (asynXXXArray,     r/o) Array data                            */
