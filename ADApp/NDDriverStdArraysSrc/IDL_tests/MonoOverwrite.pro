@@ -14,14 +14,14 @@ dimensions[0] = xSize
 dimensions[1] = ySize
 dataType = 'Float32'
 colorMode = 'Mono'
-arrayMode = 'Overwrite'
+appendMode = 'Disable'
 imageMode = 'Continuous'
 
 t = caput(prefix + 'NDimensions', nDimensions)
 t = caput(prefix + 'Dimensions', dimensions)
 t = caput(prefix + 'DataType', dataType)
 t = caput(prefix + 'ColorMode', colorMode)
-t = caput(prefix + 'ArrayMode', arrayMode)
+t = caput(prefix + 'AppendMode', appendMode)
 t = caput(prefix + 'ImageMode', imageMode)
 t = caput(prefix + 'Acquire', 1)
 

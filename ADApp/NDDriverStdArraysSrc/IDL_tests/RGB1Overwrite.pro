@@ -15,14 +15,14 @@ dimensions[1] = xSize
 dimensions[2] = ySize
 dataType = 'UInt8'
 colorMode = 'RGB1'
-arrayMode = 'Overwrite'
+appendMode = 'Disable'
 imageMode = 'Continuous'
 
 t = caput(prefix + 'NDimensions', nDimensions)
 t = caput(prefix + 'Dimensions', dimensions)
 t = caput(prefix + 'DataType', dataType)
 t = caput(prefix + 'ColorMode', colorMode)
-t = caput(prefix + 'ArrayMode', arrayMode)
+t = caput(prefix + 'AppendMode', appendMode)
 t = caput(prefix + 'ImageMode', imageMode)
 t = caput(prefix + 'Acquire', 1)
 
