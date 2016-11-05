@@ -32,6 +32,12 @@ record(stringin, "$(P)$(R)PortName_RBV")
 #  These records are the array size and data type                 #
 ###################################################################
 # The number of dimensions
+record(longout, "$(P)$(R)NDimensions")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_NDIMENSIONS")
+}
+
 record(longin, "$(P)$(R)NDimensions_RBV")
 {
     field(DTYP, "asynInt32")
@@ -39,20 +45,187 @@ record(longin, "$(P)$(R)NDimensions_RBV")
     field(SCAN, "I/O Intr")
 }
 
-# The array dimensions waveform record
+# The array dimensions waveform records
+record(waveform, "$(P)$(R)Dimensions")
+{
+    field(DTYP, "asynInt32ArrayOut")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_DIMENSIONS")
+    field(FTVL, "LONG")
+    field(NELM, "10")
+    field(FLNK, "$(P)$(R)Dim0SA")
+}
+
+record(subArray, "$(P)$(R)Dim0SA")
+{
+    field(INP,  "$(P)$(R)Dimensions NPP NMS")
+    field(FTVL, "LONG")
+    field(MALM, "10")
+    field(NELM, "1")
+    field(INDX, "0")
+    field(FLNK, "$(P)$(R)ArraySize0")
+}
+
+record(longin, "$(P)$(R)ArraySize0")
+{
+    field(INP,  "$(P)$(R)Dim0SA")
+    field(FLNK, "$(P)$(R)Dim1SA")
+}
+
+record(subArray, "$(P)$(R)Dim1SA")
+{
+    field(INP,  "$(P)$(R)Dimensions NPP NMS")
+    field(FTVL, "LONG")
+    field(MALM, "10")
+    field(NELM, "1")
+    field(INDX, "1")
+    field(FLNK, "$(P)$(R)ArraySize1")
+}
+
+record(longin, "$(P)$(R)ArraySize1")
+{
+    field(INP,  "$(P)$(R)Dim1SA")
+    field(FLNK, "$(P)$(R)Dim2SA")
+}
+
+record(subArray, "$(P)$(R)Dim2SA")
+{
+    field(INP,  "$(P)$(R)Dimensions NPP NMS")
+    field(FTVL, "LONG")
+    field(MALM, "10")
+    field(NELM, "1")
+    field(INDX, "2")
+    field(FLNK, "$(P)$(R)ArraySize2")
+}
+
+record(longin, "$(P)$(R)ArraySize2")
+{
+    field(INP,  "$(P)$(R)Dim2SA")
+    field(FLNK, "$(P)$(R)Dim3SA")
+}
+
+record(subArray, "$(P)$(R)Dim3SA")
+{
+    field(INP,  "$(P)$(R)Dimensions NPP NMS")
+    field(FTVL, "LONG")
+    field(MALM, "10")
+    field(NELM, "1")
+    field(INDX, "3")
+    field(FLNK, "$(P)$(R)ArraySize3")
+}
+
+record(longin, "$(P)$(R)ArraySize3")
+{
+    field(INP,  "$(P)$(R)Dim3SA")
+    field(FLNK, "$(P)$(R)Dim4SA")
+}
+
+record(subArray, "$(P)$(R)Dim4SA")
+{
+    field(INP,  "$(P)$(R)Dimensions NPP NMS")
+    field(FTVL, "LONG")
+    field(MALM, "10")
+    field(NELM, "1")
+    field(INDX, "4")
+    field(FLNK, "$(P)$(R)ArraySize4")
+}
+
+record(longin, "$(P)$(R)ArraySize4")
+{
+    field(INP,  "$(P)$(R)Dim4SA")
+    field(FLNK, "$(P)$(R)Dim5SA")
+}
+
+record(subArray, "$(P)$(R)Dim5SA")
+{
+    field(INP,  "$(P)$(R)Dimensions NPP NMS")
+    field(FTVL, "LONG")
+    field(MALM, "10")
+    field(NELM, "1")
+    field(INDX, "5")
+    field(FLNK, "$(P)$(R)ArraySize5")
+}
+
+record(longin, "$(P)$(R)ArraySize5")
+{
+    field(INP,  "$(P)$(R)Dim5SA")
+    field(FLNK, "$(P)$(R)Dim6SA")
+}
+
+record(subArray, "$(P)$(R)Dim6SA")
+{
+    field(INP,  "$(P)$(R)Dimensions NPP NMS")
+    field(FTVL, "LONG")
+    field(MALM, "10")
+    field(NELM, "1")
+    field(INDX, "6")
+    field(FLNK, "$(P)$(R)ArraySize6")
+}
+
+record(longin, "$(P)$(R)ArraySize6")
+{
+    field(INP,  "$(P)$(R)Dim6SA")
+    field(FLNK, "$(P)$(R)Dim7SA")
+}
+
+record(subArray, "$(P)$(R)Dim7SA")
+{
+    field(INP,  "$(P)$(R)Dimensions NPP NMS")
+    field(FTVL, "LONG")
+    field(MALM, "10")
+    field(NELM, "1")
+    field(INDX, "7")
+    field(FLNK, "$(P)$(R)ArraySize7")
+}
+
+record(longin, "$(P)$(R)ArraySize7")
+{
+    field(INP,  "$(P)$(R)Dim7SA")
+    field(FLNK, "$(P)$(R)Dim8SA")
+}
+
+record(subArray, "$(P)$(R)Dim8SA")
+{
+    field(INP,  "$(P)$(R)Dimensions NPP NMS")
+    field(FTVL, "LONG")
+    field(MALM, "10")
+    field(NELM, "1")
+    field(INDX, "8")
+    field(FLNK, "$(P)$(R)ArraySize8")
+}
+
+record(longin, "$(P)$(R)ArraySize8")
+{
+    field(INP,  "$(P)$(R)Dim8SA")
+    field(FLNK, "$(P)$(R)Dim9SA")
+}
+
+record(subArray, "$(P)$(R)Dim9SA")
+{
+    field(INP,  "$(P)$(R)Dimensions NPP NMS")
+    field(FTVL, "LONG")
+    field(MALM, "10")
+    field(NELM, "1")
+    field(INDX, "9")
+    field(FLNK, "$(P)$(R)ArraySize9")
+}
+
+record(longin, "$(P)$(R)ArraySize9")
+{
+    field(INP,  "$(P)$(R)Dim9SA")
+}
+
+
 record(waveform, "$(P)$(R)Dimensions_RBV")
 {
     field(DTYP, "asynInt32ArrayIn")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ARRAY_DIMENSIONS")
     field(FTVL, "LONG")
     field(NELM, "10")
-    field(FLNK, "$(P)$(R)Dim0SA")
+    field(FLNK, "$(P)$(R)Dim0SA_RBV")
     field(SCAN, "I/O Intr")
 }
 
-# Note, we only extract the first 3 dimensions here, but this
-# can easily be extended up to the maximum of 10 dimensions
-record(subArray, "$(P)$(R)Dim0SA")
+record(subArray, "$(P)$(R)Dim0SA_RBV")
 {
     field(INP,  "$(P)$(R)Dimensions_RBV NPP NMS")
     field(FTVL, "LONG")
@@ -64,11 +237,11 @@ record(subArray, "$(P)$(R)Dim0SA")
 
 record(longin, "$(P)$(R)ArraySize0_RBV")
 {
-    field(INP,  "$(P)$(R)Dim0SA")
-    field(FLNK, "$(P)$(R)Dim1SA")
+    field(INP,  "$(P)$(R)Dim0SA_RBV")
+    field(FLNK, "$(P)$(R)Dim1SA_RBV")
 }
 
-record(subArray, "$(P)$(R)Dim1SA")
+record(subArray, "$(P)$(R)Dim1SA_RBV")
 {
     field(INP,  "$(P)$(R)Dimensions_RBV NPP NMS")
     field(FTVL, "LONG")
@@ -80,11 +253,11 @@ record(subArray, "$(P)$(R)Dim1SA")
 
 record(longin, "$(P)$(R)ArraySize1_RBV")
 {
-    field(INP,  "$(P)$(R)Dim1SA")
-    field(FLNK, "$(P)$(R)Dim2SA")
+    field(INP,  "$(P)$(R)Dim1SA_RBV")
+    field(FLNK, "$(P)$(R)Dim2SA_RBV")
 }
 
-record(subArray, "$(P)$(R)Dim2SA")
+record(subArray, "$(P)$(R)Dim2SA_RBV")
 {
     field(INP,  "$(P)$(R)Dimensions_RBV NPP NMS")
     field(FTVL, "LONG")
@@ -96,9 +269,121 @@ record(subArray, "$(P)$(R)Dim2SA")
 
 record(longin, "$(P)$(R)ArraySize2_RBV")
 {
-    field(INP,  "$(P)$(R)Dim2SA")
-#    field(FLNK, "$(P)$(R)Dim3SA")
+    field(INP,  "$(P)$(R)Dim2SA_RBV")
+    field(FLNK, "$(P)$(R)Dim3SA_RBV")
 }
+
+record(subArray, "$(P)$(R)Dim3SA_RBV")
+{
+    field(INP,  "$(P)$(R)Dimensions_RBV NPP NMS")
+    field(FTVL, "LONG")
+    field(MALM, "10")
+    field(NELM, "1")
+    field(INDX, "3")
+    field(FLNK, "$(P)$(R)ArraySize3_RBV")
+}
+
+record(longin, "$(P)$(R)ArraySize3_RBV")
+{
+    field(INP,  "$(P)$(R)Dim3SA_RBV")
+    field(FLNK, "$(P)$(R)Dim4SA_RBV")
+}
+
+record(subArray, "$(P)$(R)Dim4SA_RBV")
+{
+    field(INP,  "$(P)$(R)Dimensions_RBV NPP NMS")
+    field(FTVL, "LONG")
+    field(MALM, "10")
+    field(NELM, "1")
+    field(INDX, "4")
+    field(FLNK, "$(P)$(R)ArraySize4_RBV")
+}
+
+record(longin, "$(P)$(R)ArraySize4_RBV")
+{
+    field(INP,  "$(P)$(R)Dim4SA_RBV")
+    field(FLNK, "$(P)$(R)Dim5SA_RBV")
+}
+
+record(subArray, "$(P)$(R)Dim5SA_RBV")
+{
+    field(INP,  "$(P)$(R)Dimensions_RBV NPP NMS")
+    field(FTVL, "LONG")
+    field(MALM, "10")
+    field(NELM, "1")
+    field(INDX, "5")
+    field(FLNK, "$(P)$(R)ArraySize5_RBV")
+}
+
+record(longin, "$(P)$(R)ArraySize5_RBV")
+{
+    field(INP,  "$(P)$(R)Dim5SA_RBV")
+    field(FLNK, "$(P)$(R)Dim6SA_RBV")
+}
+
+record(subArray, "$(P)$(R)Dim6SA_RBV")
+{
+    field(INP,  "$(P)$(R)Dimensions_RBV NPP NMS")
+    field(FTVL, "LONG")
+    field(MALM, "10")
+    field(NELM, "1")
+    field(INDX, "6")
+    field(FLNK, "$(P)$(R)ArraySize6_RBV")
+}
+
+record(longin, "$(P)$(R)ArraySize6_RBV")
+{
+    field(INP,  "$(P)$(R)Dim6SA_RBV")
+    field(FLNK, "$(P)$(R)Dim7SA_RBV")
+}
+
+record(subArray, "$(P)$(R)Dim7SA_RBV")
+{
+    field(INP,  "$(P)$(R)Dimensions_RBV NPP NMS")
+    field(FTVL, "LONG")
+    field(MALM, "10")
+    field(NELM, "1")
+    field(INDX, "7")
+    field(FLNK, "$(P)$(R)ArraySize7_RBV")
+}
+
+record(longin, "$(P)$(R)ArraySize7_RBV")
+{
+    field(INP,  "$(P)$(R)Dim7SA_RBV")
+    field(FLNK, "$(P)$(R)Dim8SA_RBV")
+}
+
+record(subArray, "$(P)$(R)Dim8SA_RBV")
+{
+    field(INP,  "$(P)$(R)Dimensions_RBV NPP NMS")
+    field(FTVL, "LONG")
+    field(MALM, "10")
+    field(NELM, "1")
+    field(INDX, "8")
+    field(FLNK, "$(P)$(R)ArraySize8_RBV")
+}
+
+record(longin, "$(P)$(R)ArraySize8_RBV")
+{
+    field(INP,  "$(P)$(R)Dim8SA_RBV")
+    field(FLNK, "$(P)$(R)Dim9SA_RBV")
+}
+
+record(subArray, "$(P)$(R)Dim9SA_RBV")
+{
+    field(INP,  "$(P)$(R)Dimensions_RBV NPP NMS")
+    field(FTVL, "LONG")
+    field(MALM, "10")
+    field(NELM, "1")
+    field(INDX, "9")
+    field(FLNK, "$(P)$(R)ArraySize9_RBV")
+}
+
+record(longin, "$(P)$(R)ArraySize9_RBV")
+{
+    field(INP,  "$(P)$(R)Dim9SA_RBV")
+}
+
 
 record(mbbi, "$(P)$(R)BayerPattern_RBV")
 {
