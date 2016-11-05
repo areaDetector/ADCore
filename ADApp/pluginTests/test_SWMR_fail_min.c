@@ -1,6 +1,7 @@
 #include <string.h>
 
 #include <hdf5.h>
+#include <NDFileHDF5VersionCheck.h>
 
 void writeStringAttribute(hid_t element, const char *attr_name, const char *attr_value)
 {

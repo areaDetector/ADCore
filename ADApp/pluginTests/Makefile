@@ -6,6 +6,7 @@ include $(TOP)/configure/CONFIG
 
 # Persuade travis (ubuntu 12.04) to use HDF5 API V2 (1.8 rather than default 1.6)
 USR_CXXFLAGS_Linux += -DH5_NO_DEPRECATED_SYMBOLS -DH5Dopen_vers=2 -DH5Gcreate_vers=2
+USR_CFLAGS_Linux   += -DH5_NO_DEPRECATED_SYMBOLS -DH5Dopen_vers=2 -DH5Gcreate_vers=2
 
 # The plugin-test executable with the actual unittests depend on the boost 
 # unittest framework so we can only build it if boost has been configured
@@ -67,6 +68,6 @@ ifeq ($(WITH_HDF5),YES)
   test_SWMR_fail_min_SRCS  += test_SWMR_fail_min.c
 endif
 
-include $(ADCORE)/ADApp/commonDriverMakefile
+include $(TOP)/ADApp/commonDriverMakefile
 
 include $(TOP)/configure/RULES

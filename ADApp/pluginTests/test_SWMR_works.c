@@ -1,6 +1,7 @@
 #include <string.h>
 
 #include <hdf5.h>
+#include <NDFileHDF5VersionCheck.h>
 
 static herr_t cFlushCallback(hid_t objectID, void *data)
 {
