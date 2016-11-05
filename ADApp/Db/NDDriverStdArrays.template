@@ -99,29 +99,6 @@ record(longin, "$(P)$(R)NextElement_RBV")
     field(SCAN, "I/O Intr")
 }
 
-record(longout, "$(P)$(R)NDimensions")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_NDIMENSIONS")
-}
-
-record(longin, "$(P)$(R)NDimensions_RBV")
-{
-    field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_NDIMENSIONS")
-    field(SCAN, "I/O Intr")
-}
-
-record(waveform, "$(P)$(R)Dimensions")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynInt32ArrayOut")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDSA_DIMENSIONS")
-    field(FTVL, "LONG")
-    field(NELM, "10")
-}
-
 record(waveform, "$(P)$(R)ArrayIn")
 {
     field(DTYP, "asyn$(TYPE)ArrayOut")
