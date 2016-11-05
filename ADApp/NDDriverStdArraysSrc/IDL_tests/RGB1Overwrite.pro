@@ -6,7 +6,8 @@ prefix = '13NDSA1:cam1:'
 ; Start acquire
 
 nDimensions = 3
-dimensions = intarr(nDimensions)
+maxDimensions = 10
+dimensions = intarr(maxDimensions)
 
 xSize = 512
 ySize = 512
