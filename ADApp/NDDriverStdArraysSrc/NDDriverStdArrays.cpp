@@ -65,8 +65,6 @@ NDDriverStdArrays::NDDriverStdArrays(const char *portName, int maxBuffers, size_
     createParam(NDSA_NextElementString,              asynParamInt32,        &NDSA_NextElement_);
     createParam(NDSA_NewArrayString,                 asynParamInt32,        &NDSA_NewArray_);
     createParam(NDSA_ArrayCompleteString,            asynParamInt32,        &NDSA_ArrayComplete_);
-    createParam(NDSA_NDimensionsString,              asynParamInt32,        &NDSA_NDimensions_);
-    createParam(NDSA_DimensionsString,               asynParamInt32,        &NDSA_Dimensions_);
     createParam(NDSA_ArrayDataString,                asynParamInt32,        &NDSA_ArrayData_);
 
     status  = setStringParam (ADManufacturer, "NDDriverStdArrays");
@@ -106,7 +104,11 @@ template <typename epicsType> asynStatus NDDriverStdArrays::writeXXXArray(asynUs
     int nextElement;
     int numDimensions;
     int arrayCallbacks;
+    int i;
+    int itemp;
     int newArray;
+    epicsInt32 currentIndex[ND_ARRAY_MAX_DIMS];
+    size_t dimProd[ND_ARRAY_MAX_DIMS];
     NDArray *pArray;
     static const char *functionName = "writeXXXArray";
 
@@ -117,7 +119,7 @@ template <typename epicsType> asynStatus NDDriverStdArrays::writeXXXArray(asynUs
     getIntegerParam(NDColorMode,        &colorMode);
     getIntegerParam(NDSA_CallbackMode_, &callbackMode);
     getIntegerParam(NDSA_AppendMode_,   &appendMode);
-    getIntegerParam(NDSA_NDimensions_,  &numDimensions);
+    getIntegerParam(NDNDimensions,      &numDimensions);
     getIntegerParam(NDSA_NumElements_,  &numElements);
     getIntegerParam(NDSA_NewArray_,     &newArray);
     getIntegerParam(NDArrayCallbacks,   &arrayCallbacks);
@@ -137,7 +139,6 @@ template <typename epicsType> asynStatus NDDriverStdArrays::writeXXXArray(asynUs
             return asynError;
         }
         pArray->pAttributeList->add("ColorMode", "Color Mode", NDAttrInt32, &colorMode);
-        setIntegerParam(NDSA_NextElement_, 0);
         pArray->getInfo(&arrayInfo);
         setIntegerParam(NDArraySize,  (int)arrayInfo.totalBytes);
         setIntegerParam(NDSA_NumElements_, arrayInfo.nElements);
@@ -146,9 +147,21 @@ template <typename epicsType> asynStatus NDDriverStdArrays::writeXXXArray(asynUs
         setIntegerParam(NDArraySizeX, 0);
         setIntegerParam(NDArraySizeY, 0);
         setIntegerParam(NDArraySizeZ, 0);
+
+        memset(currentIndex, 0, ND_ARRAY_MAX_DIMS*sizeof(currentIndex[0]));
+        memset(dimProd, 0, ND_ARRAY_MAX_DIMS*sizeof(dimProd[0]));
+        dimProd[0] = arrayDimensions_[0];
+        for (i=1; i<numDimensions; i++) {
+            dimProd[i] = arrayDimensions_[i] * dimProd[i-1];
+        }
+
         // In append mode zero-fill the array
-        if (appendMode == 1) {
+        if (appendMode == 1 || 
+          ((appendMode == 0) && (arrayInfo.nElements < nElements))) {
             memset(pArray->pData, 0, arrayInfo.totalBytes);
+        }
+        if (appendMode == 0) {
+            setIntegerParam(NDSA_NextElement_, 0);
         }
     }
 
@@ -186,6 +199,17 @@ template <typename epicsType> asynStatus NDDriverStdArrays::writeXXXArray(asynUs
     
     nextElement += nElements;
     setIntegerParam(NDSA_NextElement_, nextElement);
+
+    //  Convert nextElement into multi-array dimensions which is more user-friendly
+    itemp = nextElement-1;
+    for (i=numDimensions-1; i>0; i--) {
+        if (i < (numDimensions-1)) {
+            itemp %= dimProd[i];
+        }
+        currentIndex[i] = 1 + (itemp / dimProd[i-1]);
+    }
+    currentIndex[0] = 1 + (itemp % arrayDimensions_[0]);
+    doCallbacksInt32Array(currentIndex, ND_ARRAY_MAX_DIMS, NDDimensions, 0);
 
     if (appendMode == 0) {
         setArrayComplete();
@@ -243,6 +267,7 @@ void NDDriverStdArrays::doCallbacks()
 
     /* Put the frame number and timestamp into the NDArray */
     pArray->uniqueId = imageCounter;
+    epicsTimeGetCurrent(&startTime);
     pArray->timeStamp = startTime.secPastEpoch+startTime.nsec/1.e9;
     updateTimeStamp(&pArray->epicsTS);
     this->getAttributes(pArray->pAttributeList);
@@ -277,6 +302,9 @@ asynStatus NDDriverStdArrays::writeInt32(asynUser *pasynUser, epicsInt32 value)
     } 
     else if (function == NDSA_DoCallbacks_) {
         doCallbacks();
+    }
+    else if (function == NDSA_NewArray_) {
+        setIntegerParam(NDSA_NextElement_, 0);
     }
     else if (function == NDSA_ArrayComplete_) {
         int appendMode;
@@ -319,10 +347,10 @@ asynStatus NDDriverStdArrays::writeInt32Array(asynUser *pasynUser, epicsInt32 *v
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
     
-    if (function == NDSA_Dimensions_) {
+    if (function == NDDimensions) {
         for (size_t i=0; i<nElements && i<ND_ARRAY_MAX_DIMS; i++) {
             arrayDimensions_[i] = (size_t)value[i];
-        } 
+        }
     }
     else if (function == NDSA_ArrayData_) {
             status = writeXXXArray<epicsInt32>(pasynUser, (void *)value, nElements);
@@ -355,7 +383,7 @@ void NDDriverStdArrays::report (FILE *fp, int details)
     fprintf(fp, "NDDriverStdArrays %s\n", this->portName);
     if (details > 0) {
         int nDimensions;
-        getIntegerParam(NDSA_NDimensions_, &nDimensions);
+        getIntegerParam(NDNDimensions, &nDimensions);
         fprintf(fp, "  nDimensions:      %d\n", nDimensions);
         fprintf(fp, "  array dimensions:  [");
         for (int i=0; i<nDimensions; i++) fprintf(fp, "%d ", (int)arrayDimensions_[i]);
