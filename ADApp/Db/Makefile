@@ -24,7 +24,6 @@ DB += NDAttribute.template
 DB += NDAttributeN.template
 DB += NDCircularBuff.template
 DB += NDColorConvert.template
-DB += NDDriverStdArrays.template
 DB += NDFFT.template
 DB += NDFile.template
 DB += NDFileHDF5.template

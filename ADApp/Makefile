@@ -9,9 +9,6 @@ DIRS += ADSrc
 DIRS += pluginSrc
 pluginSrc_DEPEND_DIRS += ADSrc
 
-DIRS += NDDriverStdArraysSrc
-NDDriverStdArraysSrc_DEPEND_DIR += ADSrc
-
 DIRS += pluginTests
 pluginTests_DEPEND_DIRS += pluginSrc
 
