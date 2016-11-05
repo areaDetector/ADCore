@@ -47,8 +47,6 @@ protected:
     int NDSA_NextElement_;
     int NDSA_NewArray_;
     int NDSA_ArrayComplete_;
-    int NDSA_NDimensions_;
-    int NDSA_Dimensions_;
     int NDSA_ArrayData_;
 #define LAST_NDSA_DRIVER_PARAM NDSA_ArrayData_
 
@@ -67,8 +65,6 @@ private:
 #define NDSA_NextElementString              "NDSA_NEXT_ELEMENT"                /* (asynInt32,        r/w) Next element to write to in array     */
 #define NDSA_NewArrayString                 "NDSA_NEW_ARRAY"                   /* (asynInt32,        r/o) Start a new array in append mode      */
 #define NDSA_ArrayCompleteString            "NDSA_ARRAY_COMPLETE"              /* (asynInt32,        r/o) Array is complete in append mode      */
-#define NDSA_NDimensionsString              "NDSA_NDIMENSIONS"                 /* (asynInt32,        r/o) Number of dimensions                  */
-#define NDSA_DimensionsString               "NDSA_DIMENSIONS"                  /* (asynInt32,        r/o) Array dimensions                      */
 #define NDSA_ArrayDataString                "NDSA_ARRAY_DATA"                  /* (asynXXXArray,     r/o) Array data                            */
 
 #define NUM_NDSA_DRIVER_PARAMS ((int)(&LAST_NDSA_DRIVER_PARAM - &FIRST_NDSA_DRIVER_PARAM + 1))
