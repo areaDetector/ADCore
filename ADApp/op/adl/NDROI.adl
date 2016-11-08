@@ -1,14 +1,14 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADApp/op/adl/NDROI.adl"
-	version=030105
+	name="/home/epics/devel/areaDetector-2-5/ADCore/ADApp/op/adl/NDROI.adl"
+	version=030107
 }
 display {
 	object {
 		x=452
 		y=60
 		width=755
-		height=580
+		height=605
 	}
 	clr=14
 	bclr=4
@@ -140,19 +140,7 @@ rectangle {
 		x=390
 		y=40
 		width=360
-		height=535
-	}
-	"basic attribute" {
-		clr=14
-		fill="outline"
-	}
-}
-rectangle {
-	object {
-		x=395
-		y=175
-		width=350
-		height=395
+		height=560
 	}
 	"basic attribute" {
 		clr=14
@@ -160,95 +148,45 @@ rectangle {
 	}
 }
 text {
-	object {
-		x=620
-		y=181
-		width=10
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Y"
-	align="horiz. right"
-}
-text {
-	object {
-		x=700
-		y=181
-		width=10
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Z"
-	align="horiz. right"
-}
-text {
-	object {
-		x=540
-		y=181
-		width=10
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="X"
-	align="horiz. right"
-}
-composite {
 	object {
 		x=452
 		y=95
-		width=273
+		width=90
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=452
-				y=95
-				width=90
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Data type"
-			align="horiz. right"
-		}
-		menu {
-			object {
-				x=555
-				y=96
-				width=80
-				height=18
-			}
-			control {
-				chan="$(P)$(R)DataTypeOut"
-				clr=14
-				bclr=51
-			}
-		}
-		"text update" {
-			object {
-				x=645
-				y=96
-				width=80
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)DataTypeOut_RBV"
-				clr=54
-				bclr=4
-			}
-			align="horiz. centered"
-			limits {
-			}
-		}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Data type"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=555
+		y=96
+		width=80
+		height=18
+	}
+	control {
+		chan="$(P)$(R)DataTypeOut"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=645
+		y=96
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)DataTypeOut_RBV"
+		clr=54
+		bclr=4
+	}
+	align="horiz. centered"
+	limits {
 	}
 }
 text {
@@ -281,52 +219,9 @@ text {
 }
 text {
 	object {
-		x=452
-		y=120
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Enable scaling"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=555
-		y=121
-		width=80
-		height=18
-	}
-	control {
-		chan="$(P)$(R)EnableScale"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=645
-		y=121
-		width=80
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)EnableScale_RBV"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	align="horiz. centered"
-	limits {
-	}
-}
-text {
-	object {
-		x=452
+		x=412
 		y=145
-		width=90
+		width=130
 		height=20
 	}
 	"basic attribute" {
@@ -371,15 +266,66 @@ composite {
 		x=5
 		y=40
 		width=380
-		height=505
+		height=530
 	}
 	"composite name"=""
 	"composite file"="NDPluginBase.adl"
 }
+rectangle {
+	object {
+		x=395
+		y=200
+		width=350
+		height=395
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+text {
+	object {
+		x=620
+		y=206
+		width=10
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Y"
+	align="horiz. right"
+}
+text {
+	object {
+		x=700
+		y=206
+		width=10
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Z"
+	align="horiz. right"
+}
+text {
+	object {
+		x=540
+		y=206
+		width=10
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="X"
+	align="horiz. right"
+}
 text {
 	object {
 		x=432
-		y=475
+		y=500
 		width=70
 		height=20
 	}
@@ -392,7 +338,7 @@ text {
 "text update" {
 	object {
 		x=595
-		y=455
+		y=480
 		width=61
 		height=18
 	}
@@ -408,7 +354,7 @@ text {
 menu {
 	object {
 		x=595
-		y=475
+		y=500
 		width=60
 		height=18
 	}
@@ -421,7 +367,7 @@ menu {
 "text update" {
 	object {
 		x=675
-		y=455
+		y=480
 		width=61
 		height=18
 	}
@@ -437,7 +383,7 @@ menu {
 menu {
 	object {
 		x=675
-		y=475
+		y=500
 		width=60
 		height=18
 	}
@@ -450,7 +396,7 @@ menu {
 menu {
 	object {
 		x=515
-		y=475
+		y=500
 		width=60
 		height=18
 	}
@@ -463,7 +409,7 @@ menu {
 "text update" {
 	object {
 		x=515
-		y=455
+		y=480
 		width=61
 		height=18
 	}
@@ -479,7 +425,7 @@ menu {
 composite {
 	object {
 		x=402
-		y=202
+		y=227
 		width=334
 		height=20
 	}
@@ -488,7 +434,7 @@ composite {
 		text {
 			object {
 				x=402
-				y=202
+				y=227
 				width=100
 				height=20
 			}
@@ -501,7 +447,7 @@ composite {
 		"text update" {
 			object {
 				x=515
-				y=203
+				y=228
 				width=61
 				height=18
 			}
@@ -517,7 +463,7 @@ composite {
 		"text update" {
 			object {
 				x=595
-				y=203
+				y=228
 				width=61
 				height=18
 			}
@@ -533,7 +479,7 @@ composite {
 		"text update" {
 			object {
 				x=675
-				y=203
+				y=228
 				width=61
 				height=18
 			}
@@ -551,7 +497,7 @@ composite {
 text {
 	object {
 		x=432
-		y=247
+		y=272
 		width=70
 		height=20
 	}
@@ -564,7 +510,7 @@ text {
 "text update" {
 	object {
 		x=596
-		y=227
+		y=252
 		width=61
 		height=18
 	}
@@ -581,7 +527,7 @@ text {
 menu {
 	object {
 		x=591
-		y=247
+		y=272
 		width=70
 		height=18
 	}
@@ -594,7 +540,7 @@ menu {
 "text update" {
 	object {
 		x=676
-		y=227
+		y=252
 		width=61
 		height=18
 	}
@@ -611,7 +557,7 @@ menu {
 menu {
 	object {
 		x=671
-		y=247
+		y=272
 		width=70
 		height=18
 	}
@@ -624,7 +570,7 @@ menu {
 menu {
 	object {
 		x=510
-		y=247
+		y=272
 		width=70
 		height=18
 	}
@@ -637,7 +583,7 @@ menu {
 "text update" {
 	object {
 		x=515
-		y=227
+		y=252
 		width=61
 		height=18
 	}
@@ -654,7 +600,7 @@ menu {
 composite {
 	object {
 		x=432
-		y=272
+		y=297
 		width=304
 		height=40
 	}
@@ -663,7 +609,7 @@ composite {
 		text {
 			object {
 				x=432
-				y=292
+				y=317
 				width=70
 				height=20
 			}
@@ -676,7 +622,7 @@ composite {
 		"text entry" {
 			object {
 				x=595
-				y=292
+				y=317
 				width=60
 				height=20
 			}
@@ -691,7 +637,7 @@ composite {
 		"text update" {
 			object {
 				x=595
-				y=272
+				y=297
 				width=61
 				height=18
 			}
@@ -707,7 +653,7 @@ composite {
 		"text entry" {
 			object {
 				x=675
-				y=292
+				y=317
 				width=60
 				height=20
 			}
@@ -722,7 +668,7 @@ composite {
 		"text update" {
 			object {
 				x=675
-				y=272
+				y=297
 				width=61
 				height=18
 			}
@@ -738,7 +684,7 @@ composite {
 		"text entry" {
 			object {
 				x=515
-				y=292
+				y=317
 				width=60
 				height=20
 			}
@@ -753,7 +699,7 @@ composite {
 		"text update" {
 			object {
 				x=515
-				y=272
+				y=297
 				width=61
 				height=18
 			}
@@ -771,7 +717,7 @@ composite {
 composite {
 	object {
 		x=452
-		y=317
+		y=342
 		width=284
 		height=63
 	}
@@ -780,7 +726,7 @@ composite {
 		text {
 			object {
 				x=452
-				y=337
+				y=362
 				width=50
 				height=20
 			}
@@ -793,7 +739,7 @@ composite {
 		"text entry" {
 			object {
 				x=595
-				y=337
+				y=362
 				width=60
 				height=20
 			}
@@ -808,7 +754,7 @@ composite {
 		"text update" {
 			object {
 				x=595
-				y=317
+				y=342
 				width=61
 				height=18
 			}
@@ -824,7 +770,7 @@ composite {
 		"text entry" {
 			object {
 				x=675
-				y=337
+				y=362
 				width=60
 				height=20
 			}
@@ -839,7 +785,7 @@ composite {
 		"text update" {
 			object {
 				x=675
-				y=317
+				y=342
 				width=61
 				height=18
 			}
@@ -855,7 +801,7 @@ composite {
 		"text update" {
 			object {
 				x=515
-				y=317
+				y=342
 				width=61
 				height=18
 			}
@@ -871,7 +817,7 @@ composite {
 		"text entry" {
 			object {
 				x=515
-				y=337
+				y=362
 				width=60
 				height=20
 			}
@@ -886,7 +832,7 @@ composite {
 		valuator {
 			object {
 				x=514
-				y=360
+				y=385
 				width=60
 				height=20
 			}
@@ -902,7 +848,7 @@ composite {
 		valuator {
 			object {
 				x=594
-				y=360
+				y=385
 				width=60
 				height=20
 			}
@@ -918,7 +864,7 @@ composite {
 		valuator {
 			object {
 				x=674
-				y=360
+				y=385
 				width=60
 				height=20
 			}
@@ -936,7 +882,7 @@ composite {
 composite {
 	object {
 		x=462
-		y=385
+		y=410
 		width=274
 		height=65
 	}
@@ -945,7 +891,7 @@ composite {
 		text {
 			object {
 				x=462
-				y=405
+				y=430
 				width=40
 				height=20
 			}
@@ -958,7 +904,7 @@ composite {
 		"text entry" {
 			object {
 				x=595
-				y=405
+				y=430
 				width=60
 				height=20
 			}
@@ -973,7 +919,7 @@ composite {
 		"text update" {
 			object {
 				x=595
-				y=385
+				y=410
 				width=61
 				height=18
 			}
@@ -989,7 +935,7 @@ composite {
 		"text entry" {
 			object {
 				x=675
-				y=405
+				y=430
 				width=60
 				height=20
 			}
@@ -1004,7 +950,7 @@ composite {
 		"text update" {
 			object {
 				x=675
-				y=385
+				y=410
 				width=61
 				height=18
 			}
@@ -1020,7 +966,7 @@ composite {
 		"text entry" {
 			object {
 				x=515
-				y=405
+				y=430
 				width=60
 				height=20
 			}
@@ -1035,7 +981,7 @@ composite {
 		"text update" {
 			object {
 				x=515
-				y=385
+				y=410
 				width=61
 				height=18
 			}
@@ -1051,7 +997,7 @@ composite {
 		composite {
 			object {
 				x=515
-				y=430
+				y=455
 				width=220
 				height=20
 			}
@@ -1060,7 +1006,7 @@ composite {
 				valuator {
 					object {
 						x=515
-						y=430
+						y=455
 						width=60
 						height=20
 					}
@@ -1076,7 +1022,7 @@ composite {
 				valuator {
 					object {
 						x=595
-						y=430
+						y=455
 						width=60
 						height=20
 					}
@@ -1092,7 +1038,7 @@ composite {
 				valuator {
 					object {
 						x=675
-						y=430
+						y=455
 						width=60
 						height=20
 					}
@@ -1112,7 +1058,7 @@ composite {
 composite {
 	object {
 		x=402
-		y=545
+		y=570
 		width=334
 		height=20
 	}
@@ -1121,7 +1067,7 @@ composite {
 		text {
 			object {
 				x=402
-				y=545
+				y=570
 				width=100
 				height=20
 			}
@@ -1134,7 +1080,7 @@ composite {
 		"text update" {
 			object {
 				x=595
-				y=546
+				y=571
 				width=61
 				height=18
 			}
@@ -1150,7 +1096,7 @@ composite {
 		"text update" {
 			object {
 				x=675
-				y=546
+				y=571
 				width=61
 				height=18
 			}
@@ -1166,7 +1112,7 @@ composite {
 		"text update" {
 			object {
 				x=515
-				y=546
+				y=571
 				width=61
 				height=18
 			}
@@ -1184,7 +1130,7 @@ composite {
 composite {
 	object {
 		x=432
-		y=500
+		y=525
 		width=304
 		height=40
 	}
@@ -1193,7 +1139,7 @@ composite {
 		text {
 			object {
 				x=432
-				y=520
+				y=545
 				width=70
 				height=20
 			}
@@ -1206,7 +1152,7 @@ composite {
 		"text update" {
 			object {
 				x=595
-				y=500
+				y=525
 				width=61
 				height=18
 			}
@@ -1222,7 +1168,7 @@ composite {
 		menu {
 			object {
 				x=595
-				y=520
+				y=545
 				width=60
 				height=18
 			}
@@ -1235,7 +1181,7 @@ composite {
 		"text update" {
 			object {
 				x=675
-				y=500
+				y=525
 				width=61
 				height=18
 			}
@@ -1251,7 +1197,7 @@ composite {
 		menu {
 			object {
 				x=675
-				y=520
+				y=545
 				width=60
 				height=18
 			}
@@ -1264,7 +1210,7 @@ composite {
 		menu {
 			object {
 				x=515
-				y=520
+				y=545
 				width=60
 				height=18
 			}
@@ -1277,7 +1223,7 @@ composite {
 		"text update" {
 			object {
 				x=515
-				y=500
+				y=525
 				width=61
 				height=18
 			}
@@ -1290,5 +1236,91 @@ composite {
 			limits {
 			}
 		}
+	}
+}
+text {
+	object {
+		x=402
+		y=120
+		width=140
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Enable scaling"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=555
+		y=121
+		width=80
+		height=18
+	}
+	control {
+		chan="$(P)$(R)EnableScale"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=645
+		y=121
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)EnableScale_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
+	}
+}
+text {
+	object {
+		x=404
+		y=170
+		width=140
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Collapse dims"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=557
+		y=171
+		width=80
+		height=18
+	}
+	control {
+		chan="$(P)$(R)CollapseDims"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=647
+		y=171
+		width=80
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)CollapseDims_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	align="horiz. centered"
+	limits {
 	}
 }
