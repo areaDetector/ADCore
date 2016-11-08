@@ -12,7 +12,7 @@
     <h2>
       Release 2-5</h2>
     <h2>
-      October 28, 2016</h2>
+      November 8, 2016</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -43,11 +43,13 @@
         <li><a href="adscDoc.html">ADSC driver</a></li>
         <li><a href="andorDoc.html">Andor driver (Andor CCD cameras)</a></li>
         <li><a href="andor3Doc.html">Andor3 driver (Andor sCMOS cameras)</a></li>
-        <li><a href="https://github.com/areaDetector/aravisGigE/blob/master/README.md">aravisGigE driver</a></li>
+        <li><a href="https://github.com/areaDetector/aravisGigE/blob/master/README.md">aravisGigE
+          driver</a></li>
         <li><a href="BrukerDoc.html">Bruker driver</a></li>
         <li><a href="ADCameraLinkDriver.html">CameraLink driver</a></li>
         <li><a href="DexelaDoc.html">Dexela driver</a></li>
-        <li><a href="https://github.com/areaDetector/ADFastCCD/blob/master/README.md">FastCCD driver</a></li>
+        <li><a href="https://github.com/areaDetector/ADFastCCD/blob/master/README.md">FastCCD
+          driver</a></li>
         <li><a href="http://controls.diamond.ac.uk/downloads/support/firewireDCAM/index.html">
           Firewire Linux driver</a></li>
         <li><a href="FirewireWinDoc.html">Firewire Windows driver</a></li>
@@ -55,9 +57,12 @@
         <li><a href="LightFieldDoc.html">LightField driver</a></li>
         <li><a href="Mar345Doc.html">mar345 driver</a></li>
         <li><a href="MarCCDDoc.html">MarCCD driver</a></li>
-        <li><a href="https://github.com/areaDetector/ADMerlin/blob/master/README.md">Merlin driver</a></li>
-        <li><a href="https://github.com/areaDetector/ADMythen/blob/master/README.md">Mythen driver</a></li>
-        <li><a href="https://github.com/areaDetector/ADnED/blob/master/README.md">Neutron event data driver</a></li>
+        <li><a href="https://github.com/areaDetector/ADMerlin/blob/master/README.md">Merlin
+          driver</a></li>
+        <li><a href="https://github.com/areaDetector/ADMythen/blob/master/README.md">Mythen
+          driver</a></li>
+        <li><a href="https://github.com/areaDetector/ADnED/blob/master/README.md">Neutron
+          event data driver</a></li>
         <li><a href="PCODriver.html">PCO driver</a></li>
         <li><a href="PerkinElmerDoc.html">Perkin-Elmer flat panel driver</a></li>
         <li><a href="PSLDoc.html">Photonic Science Limited (PSL) driver</a></li>
@@ -93,7 +98,8 @@
         <li><a href="NDPluginTimeSeries.html">NDPluginTimeSeries</a></li>
         <li><a href="NDPluginTransform.html">NDPluginTransform</a></li>
         <li><a href="NDPosPlugin.html">NDPosPlugin</a></li>
-        <li><a href="https://github.com/areaDetector/ffmpegServer/blob/master/README.md">ffmpegServer plugin</a></li>
+        <li><a href="https://github.com/areaDetector/ffmpegServer/blob/master/README.md">ffmpegServer
+          plugin</a></li>
       </ul>
     </li>
     <li><a href="#MEDM_screens">MEDM screens</a></li>
@@ -591,14 +597,17 @@
         <td>
           asynInt32</td>
         <td>
-          r/o</td>
+          r/w</td>
         <td>
           Number of dimensions in the array</td>
         <td>
           ARRAY_NDIMENSIONS</td>
         <td>
+          $(P)$(R)NDimensions<br />
           $(P)$(R)NDimensions_RBV</td>
         <td>
+          longout
+          <br />
           longin</td>
       </tr>
       <tr>
@@ -607,15 +616,17 @@
         <td>
           asynInt32Array</td>
         <td>
-          r/o</td>
+          r/w</td>
         <td>
           Size of each dimension in the array</td>
         <td>
           ARRAY_DIMENSIONS</td>
         <td>
+          $(P)$(R)Dimensions<br />
           $(P)$(R)Dimensions_RBV</td>
         <td>
-          waveform</td>
+          waveform (out)<br>
+          waveform (in)</td>
       </tr>
       <tr>
         <td>
@@ -625,47 +636,19 @@
         <td>
           r/o</td>
         <td>
-          Size of the first array dimension, extracted from the Dimensions_RBV waveform record.
-        </td>
+          Size of each array dimension, extracted from the $(P)$(R)Dimensions and $(P)$(R)Dimensions_RBV
+          waveform records. Note that these are both longin record, i.e. readonly values using
+          subarray records. In the future longout records may be added to write to the individual
+          values in $(P)$(R)Dimensions. </td>
         <td>
           N.A.</td>
         <td>
-          $(P)$(R)ArraySize0_RBV</td>
+          $(P)$(R)ArraySize[N] N=0-9
+          <br />
+          (P)$(R)ArraySize[N]_RBV</td>
         <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          N.A.</td>
-        <td>
-          N.A</td>
-        <td>
-          r/o</td>
-        <td>
-          Size of the second array dimension, extracted from the Dimensions_RBV waveform record.
-        </td>
-        <td>
-          N.A.</td>
-        <td>
-          $(P)$(R)ArraySize1_RBV</td>
-        <td>
-          longin</td>
-      </tr>
-      <tr>
-        <td>
-          N.A.</td>
-        <td>
-          N.A</td>
-        <td>
-          r/o</td>
-        <td>
-          Size of the third array dimension, extracted from the Dimensions_RBV waveform record.
-        </td>
-        <td>
-          N.A.</td>
-        <td>
-          $(P)$(R)ArraySize2_RBV</td>
-        <td>
+          longin
+          <br />
           longin</td>
       </tr>
       <tr>
