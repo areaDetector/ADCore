@@ -57,6 +57,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     int enableScale, enableDim[3], autoSize[3];
     size_t i;
     double scale;
+    int collapseDims;
     //static const char* functionName = "processCallbacks";
     
     memset(dims, 0, sizeof(NDDimension_t) * ND_ARRAY_MAX_DIMS);
@@ -77,6 +78,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     getIntegerParam(NDPluginROIDataType,     &dataType);
     getIntegerParam(NDPluginROIEnableScale,  &enableScale);
     getDoubleParam(NDPluginROIScale, &scale);
+    getIntegerParam(NDPluginROICollapseDims, &collapseDims);
 
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
@@ -215,6 +217,19 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         pOutput->ndims = 2;
         pOutput->pAttributeList->add("ColorMode", "Color mode", NDAttrInt32, &colorMode);
     }
+    
+    /* If collapseDims is set then collapse any dimensions of size 1*/
+    if (collapseDims) {
+        int i, j;
+        for (i=0; i<pOutput->ndims; i++) {
+           if (pOutput->dims[i].size == 1) {
+               for (j=i+1; j<pOutput->ndims; j++) {
+                   pOutput->dims[j-1] = pOutput->dims[j];
+               }
+               pOutput->ndims--;
+           }
+        }
+    }
     this->lock();
 
     /* Set the image size of the ROI image data */
@@ -344,6 +359,7 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
     createParam(NDPluginROIDataTypeString,          asynParamInt32, &NDPluginROIDataType);
     createParam(NDPluginROIEnableScaleString,       asynParamInt32, &NDPluginROIEnableScale);
     createParam(NDPluginROIScaleString,             asynParamFloat64, &NDPluginROIScale);
+    createParam(NDPluginROICollapseDimsString,      asynParamInt32, &NDPluginROICollapseDims);
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginROI");
