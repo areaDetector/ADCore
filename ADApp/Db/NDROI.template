@@ -540,4 +540,30 @@ record(dfanout, "$(P)$(R)SetYHOPR")
     field(OUTB, "$(P)$(R)SizeY.HOPR NPP")
 }
 
+###################################################################
+#  These records whether dimensions of 1 are collapsed (removed)  #                               # 
+###################################################################
+
+record(bo, "$(P)$(R)CollapseDims")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COLLAPSE_DIMS")
+   field(VAL,  "0")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
+   info(autosaveFields, "VAL")
+}
+
+record(bi, "$(P)$(R)CollapseDims_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))COLLAPSE_DIMS")
+   field(ZNAM, "Disable")
+   field(ONAM, "Enable")
+   field(ZSV,  "NO_ALARM")
+   field(OSV,  "MINOR")
+   field(SCAN, "I/O Intr")
+}
+
 
