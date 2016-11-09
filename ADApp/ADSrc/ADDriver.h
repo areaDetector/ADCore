@@ -131,6 +131,7 @@ typedef enum
 #define ADStatusMessageString       "STATUS_MESSAGE"        /**< (asynOctet,    r/o) Status message */
 #define ADStringToServerString      "STRING_TO_SERVER"      /**< (asynOctet,    r/o) String sent to server for message-based drivers */
 #define ADStringFromServerString    "STRING_FROM_SERVER"    /**< (asynOctet,    r/o) String received from server for message-based drivers */
+#define ADSerialNumberString        "SERIAL_NUMBER"         /**< (asynOctet,    r/o) Detector serial number (if any) */
 
 /** Class from which areaDetector drivers are directly derived. */
 class epicsShareClass ADDriver : public asynNDArrayDriver {
@@ -185,7 +186,8 @@ protected:
     int ADStatusMessage;
     int ADStringToServer;
     int ADStringFromServer; 
-    #define LAST_AD_PARAM ADStringFromServer   
+    int ADSerialNumber;
+    #define LAST_AD_PARAM ADSerialNumber
 };
 #define NUM_AD_PARAMS ((int)(&LAST_AD_PARAM - &FIRST_AD_PARAM + 1))
 

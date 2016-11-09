@@ -143,6 +143,7 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int numParams, int maxBuff
     createParam(ADStatusMessageString,       asynParamOctet, &ADStatusMessage);
     createParam(ADStringToServerString,      asynParamOctet, &ADStringToServer);
     createParam(ADStringFromServerString,    asynParamOctet, &ADStringFromServer);    
+    createParam(ADSerialNumberString,        asynParamOctet, &ADSerialNumber);
 
     /* Here we set the values of read-only parameters and of read/write parameters that cannot
      * or should not get their values from the database.  Note that values set here will override
