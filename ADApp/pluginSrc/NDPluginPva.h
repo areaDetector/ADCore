@@ -34,7 +34,6 @@ protected:
     int NDPluginPvaPvName;
 
 private:
-    epics::pvAccess::ServerContext::shared_pointer m_server;
     NTNDArrayRecordPtr m_record;
 };
 
