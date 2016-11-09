@@ -36,6 +36,7 @@ protected:
 private:
     epics::pvAccess::ServerContext::shared_pointer m_server;
     NTNDArrayRecordPtr m_record;
+    static bool m_pvaServerStarted;
 };
 
 #endif
