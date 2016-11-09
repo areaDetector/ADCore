@@ -191,43 +191,43 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     }
     pOutput = this->pArrays[0];
 
-    /* If we selected just one color from the array, then we need to change the
-     * dimensions and the color mode */
+    /* If we selected just one color from the array, then we need to collapse the
+     * dimensions and se the color mode to mono */
     colorMode = NDColorModeMono;
     if ((pOutput->ndims == 3) && 
         (arrayInfo.colorMode == NDColorModeRGB1) && 
         (pOutput->dims[0].size == 1)) 
     {
-        pOutput->ndims = 2;
-        pOutput->dims[0] = pOutput->dims[1];
-        pOutput->dims[1] = pOutput->dims[2];
+        collapseDims = 1;
         pOutput->pAttributeList->add("ColorMode", "Color mode", NDAttrInt32, &colorMode);
     }
     else if ((pOutput->ndims == 3) && 
         (arrayInfo.colorMode == NDColorModeRGB2) && 
         (pOutput->dims[1].size == 1)) 
     {
-        pOutput->ndims = 2;
-        pOutput->dims[1] = pOutput->dims[2];
+        collapseDims = 1;
         pOutput->pAttributeList->add("ColorMode", "Color mode", NDAttrInt32, &colorMode);
     }
     else if ((pOutput->ndims == 3) && 
+        (arrayInfo.colorMode == NDColorModeRGB3) && 
         (pOutput->dims[2].size == 1)) 
     {
-        pOutput->ndims = 2;
+        collapseDims = 1;
         pOutput->pAttributeList->add("ColorMode", "Color mode", NDAttrInt32, &colorMode);
     }
     
-    /* If collapseDims is set then collapse any dimensions of size 1*/
+    /* If collapseDims is set then collapse any dimensions of size 1 */
     if (collapseDims) {
-        int i, j;
-        for (i=0; i<pOutput->ndims; i++) {
-           if (pOutput->dims[i].size == 1) {
-               for (j=i+1; j<pOutput->ndims; j++) {
-                   pOutput->dims[j-1] = pOutput->dims[j];
-               }
-               pOutput->ndims--;
-           }
+        int i=0, j;
+        while ((i < pOutput->ndims) && (pOutput->ndims > 1)) {
+            if (pOutput->dims[i].size == 1) {
+                for (j=i+1; j<pOutput->ndims; j++) {
+                    pOutput->dims[j-1] = pOutput->dims[j];
+                }
+                if (pOutput->ndims > 1) pOutput->ndims--;
+            } else {
+               i++;
+            }
         }
     }
     this->lock();
