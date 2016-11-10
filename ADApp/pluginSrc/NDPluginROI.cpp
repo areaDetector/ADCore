@@ -192,7 +192,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     pOutput = this->pArrays[0];
 
     /* If we selected just one color from the array, then we need to collapse the
-     * dimensions and se the color mode to mono */
+     * dimensions and set the color mode to mono */
     colorMode = NDColorModeMono;
     if ((pOutput->ndims == 3) && 
         (arrayInfo.colorMode == NDColorModeRGB1) && 
