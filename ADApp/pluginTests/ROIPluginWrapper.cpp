@@ -1,5 +1,5 @@
 /*
- * TROIPluginWrapper.cpp
+ * ROIPluginWrapper.cpp
  *
  *  Created on: 9 Nov 2016
  *      Author: Mark Rivers
