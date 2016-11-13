@@ -57,6 +57,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     int enableScale, enableDim[3], autoSize[3];
     size_t i;
     double scale;
+    int collapseDims;
     //static const char* functionName = "processCallbacks";
     
     memset(dims, 0, sizeof(NDDimension_t) * ND_ARRAY_MAX_DIMS);
@@ -77,6 +78,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     getIntegerParam(NDPluginROIDataType,     &dataType);
     getIntegerParam(NDPluginROIEnableScale,  &enableScale);
     getDoubleParam(NDPluginROIScale, &scale);
+    getIntegerParam(NDPluginROICollapseDims, &collapseDims);
 
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
@@ -189,31 +191,44 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     }
     pOutput = this->pArrays[0];
 
-    /* If we selected just one color from the array, then we need to change the
-     * dimensions and the color mode */
+    /* If we selected just one color from the array, then we need to collapse the
+     * dimensions and set the color mode to mono */
     colorMode = NDColorModeMono;
     if ((pOutput->ndims == 3) && 
         (arrayInfo.colorMode == NDColorModeRGB1) && 
         (pOutput->dims[0].size == 1)) 
     {
-        pOutput->ndims = 2;
-        pOutput->dims[0] = pOutput->dims[1];
-        pOutput->dims[1] = pOutput->dims[2];
+        collapseDims = 1;
         pOutput->pAttributeList->add("ColorMode", "Color mode", NDAttrInt32, &colorMode);
     }
     else if ((pOutput->ndims == 3) && 
         (arrayInfo.colorMode == NDColorModeRGB2) && 
         (pOutput->dims[1].size == 1)) 
     {
-        pOutput->ndims = 2;
-        pOutput->dims[1] = pOutput->dims[2];
+        collapseDims = 1;
         pOutput->pAttributeList->add("ColorMode", "Color mode", NDAttrInt32, &colorMode);
     }
     else if ((pOutput->ndims == 3) && 
+        (arrayInfo.colorMode == NDColorModeRGB3) && 
         (pOutput->dims[2].size == 1)) 
     {
-        pOutput->ndims = 2;
+        collapseDims = 1;
         pOutput->pAttributeList->add("ColorMode", "Color mode", NDAttrInt32, &colorMode);
+    }
+    
+    /* If collapseDims is set then collapse any dimensions of size 1 */
+    if (collapseDims) {
+        int i=0, j;
+        while ((i < pOutput->ndims) && (pOutput->ndims > 1)) {
+            if (pOutput->dims[i].size == 1) {
+                for (j=i+1; j<pOutput->ndims; j++) {
+                    pOutput->dims[j-1] = pOutput->dims[j];
+                }
+                if (pOutput->ndims > 1) pOutput->ndims--;
+            } else {
+               i++;
+            }
+        }
     }
     this->lock();
 
@@ -344,6 +359,7 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
     createParam(NDPluginROIDataTypeString,          asynParamInt32, &NDPluginROIDataType);
     createParam(NDPluginROIEnableScaleString,       asynParamInt32, &NDPluginROIEnableScale);
     createParam(NDPluginROIScaleString,             asynParamFloat64, &NDPluginROIScale);
+    createParam(NDPluginROICollapseDimsString,      asynParamInt32, &NDPluginROICollapseDims);
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginROI");

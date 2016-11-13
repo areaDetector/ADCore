@@ -31,6 +31,7 @@
 #define NDPluginROIDataTypeString           "ROI_DATA_TYPE"     /* (asynInt32,   r/w) Data type for ROI.  -1 means automatic. */
 #define NDPluginROIEnableScaleString        "ENABLE_SCALE"      /* (asynInt32,   r/w) Disable/Enable scaling */
 #define NDPluginROIScaleString              "SCALE_VALUE"       /* (asynFloat64, r/w) Scaling value, used as divisor */
+#define NDPluginROICollapseDimsString       "COLLAPSE_DIMS"     /* (asynInt32,   r/w) Collapse dimensions of size 1 */
 
 /** Extract Regions-Of-Interest (ROI) from NDArray data; the plugin can be a source of NDArray callbacks for
   * other plugins, passing these sub-arrays. 
@@ -75,8 +76,9 @@ protected:
     int NDPluginROIDataType;
     int NDPluginROIEnableScale;
     int NDPluginROIScale;
+    int NDPluginROICollapseDims;
 
-    #define LAST_NDPLUGIN_ROI_PARAM NDPluginROIScale
+    #define LAST_NDPLUGIN_ROI_PARAM NDPluginROICollapseDims
                                 
 private:
     int requestedSize_[3];

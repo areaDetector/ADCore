@@ -19,6 +19,20 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
+R2-6 (December XXX, 2016)
+========================
+
+### NDPluginROI
+* Added CollapseDims to optionally collapse (remove) output array dimensions whose value is
+  1.  For example an output array that would normally be dimensions [1, 256, 256] would be
+  [256, 256] if CollapseDims=Enable.
+
+### NDArrayBase.template
+* Added new longout record NDimensions and new waveform record Dimensions to control the NDArray
+  dimensions.  These were needed for NDDriverStdArrays, and may be useful for other drivers.
+  Previously there were only input records (NDimensions_RBV and Dimensions_RBV) 
+  for these parameters.
+
 
 R2-5 (October 28, 2016)
 ========================

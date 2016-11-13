@@ -38,6 +38,7 @@
     <li>Optional orientation reversal (mirroring) in any dimension.</li>
     <li>Optional scaling (dividing) by a scale factor.</li>
     <li>Optional conversion to a new data type.</li>
+    <li>Optional collapsing (removing) of dimensions whose value is 1.</li>
     <li>Export the ROI as a new NDArray object. The NDPluginROI is both a <b>recipient</b>
       of callbacks and a <b>source</b> of NDArray callbacks, as a driver is. This means
       that other plugins like NDPluginStdArrays and NDPluginFile can be connected to an
@@ -625,6 +626,33 @@
         <td>
           ao<br />
           ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginROI<br />
+          CollapseDims</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Collapse (remove) output array dimensions whose value is 1. Consider the case when
+          the input array to the ROI plugin has dimensions [4, 256, 256] and the plugin is
+          configured with MinX=1, SizeX=1, MinY=0, SizeY=256, MinZ=0, SizeZ=256. If CollapseDims=Disable
+          then the output arrays will be of size [1, 256, 256]. If CollapseDims=Enable then
+          the output array will be [256, 256]. This is convenient for some purposes. For example
+          file plugins like JPEG or TIFF will not work with arrays of [1, 256, 256], nor will
+          the ImageJ display plugin. They all require that the array have only 2 dimensions
+          unless it is the special case of 3-D color arrays (RGB1, RGB2, RGB3) where one of
+          the dimensons is 3.</td>
+        <td>
+          COLLAPSE_DIMS</td>
+        <td>
+          $(P)$(R)CollapseDims<br />
+          $(P)$(R)CollapseDims_RBV</td>
+        <td>
+          bo<br />
+          bi</td>
       </tr>
     </tbody>
   </table>
