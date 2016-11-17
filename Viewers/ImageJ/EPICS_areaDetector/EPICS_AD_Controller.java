@@ -23,14 +23,14 @@ import gov.aps.jca.event.*;
 
 public class EPICS_AD_Viewer implements PlugIn, MouseListener {
     
-    private static final int MAX_TRANSFORMS = 4;
+//    private static final int MAX_TRANSFORMS = 4;
 
-    private static final short LOWER_LEFT = 0;
+//    private static final short LOWER_LEFT = 0;
     private static final short UPPER_LEFT = 1;
-    private static final short LOWER_RIGHT = 2;
-    private static final short UPPER_RIGHT = 3;
+//    private static final short LOWER_RIGHT = 2;
+//    private static final short UPPER_RIGHT = 3;
 
-    private static final short NONE = 0;
+/*    private static final short NONE = 0;
     private static final short ROTATE_90_CW = 1;
     private static final short ROTATE_90_CCW = 2;
     private static final short ROTATE_180 = 3;
@@ -38,6 +38,15 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
     private static final short FLIP_0110 = 5;
     private static final short FLIP_X = 6;
     private static final short FLIP_Y = 7;
+*/    
+    private static final short NONE = 0;
+    private static final short ROTATE_90 = 1;
+    private static final short ROTATE_180 = 2;
+    private static final short ROTATE_270 = 3;
+    private static final short MIRROR= 4;
+    private static final short ROTATE_90_MIRROR = 5;
+    private static final short ROTATE_180_MIRROR = 6;
+    private static final short ROTATE_270_MIRROR = 7;
 
     ImagePlus img;
     ImageStack imageStack;
@@ -95,10 +104,11 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
     Channel ch_sizeRoiArrayY_RBV; //This is the size of the image array for the ROI in Y
     Channel ch_roiBinX_RBV;       //This is the amount of binning for the ROI in X
     Channel ch_roiBinY_RBV;       //This is the amount of binning for the ROI in Y
-    Channel ch_origin;            //This represents the location of the origin
+//    Channel ch_origin;            //This represents the location of the origin
     Channel ch_maxSizeCamX;       //This is the maximum dimension of X
     Channel ch_maxSizeCamY;       //This is the maximum dimension of Y
-    Channel[] ch_transType = new Channel[MAX_TRANSFORMS];//This represents the way the image is flipped or rotated.
+//    Channel[] ch_transType = new Channel[MAX_TRANSFORMS];//This represents the way the image is flipped or rotated.
+    Channel ch_transType;//This represents the way the image is flipped or rotated.
 
     JFrame frame;
 
@@ -112,6 +122,7 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
     JTextField cameraPrefixText;
     JTextField transformPrefixText;
     JTextField roiPrefixText;
+    JTextField tweakAmountText;
     JButton startButton;
     JButton stopButton;
     JButton snapButton;
@@ -144,16 +155,21 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
 
     int cameraOriginX;
     int cameraOriginY;
+    int cameraSizeX;
+    int cameraSizeY;
     int cameraArraySizeX;
     int cameraArraySizeY;
     int cameraBinX;
     int cameraBinY;
     int roiOriginX;
     int roiOriginY;
+    int roiSizeX;
+    int roiSizeY;
     int roiArraySizeX;
     int roiArraySizeY;
     int roiBinX;
     int roiBinY;
+    int tweakAmountPixels;
     String cameraPrefix;
     String transformPrefix;
     String roiPrefix;
@@ -171,7 +187,7 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         IJ.showStatus("epics running");
         try {
             isDebugFile = false;
-            isDebugMessages = false;
+            isDebugMessages = true;
             isDisplayImages = false;
             isPluginRunning = true;
             isNewImageAvailable = false;
@@ -185,10 +201,11 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
             Date date = new Date();
             prevTime = date.getTime();
             numImageUpdates = 0;
-            imagePrefix = "13SIM1:image1:";
-            cameraPrefix = "13SIM1:cam1:";
-            transformPrefix = "13SIM1:Trans1:";
-            roiPrefix = "13SIM1:ROI1:";
+            imagePrefix = "2dev:image1:";
+            cameraPrefix = "2dev:SIM1:cam1:";
+            transformPrefix = "2dev:Trans1:";
+            roiPrefix = "2dev:ROI1:";
+            tweakAmountPixels = 1;
             readProperties();
 
             if (isDebugFile) {
@@ -210,9 +227,15 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
             img.close();
 
             startEPICSCA();
+            // Connect to PVs from the image plugin.
             connectImagePVs();
+            // Connect to PVs from the camera.
             connectCameraPVs();
+            // Connect to PVs from the transform plugin.
+            // This do not need to succeed.
             connectTransformPVs();
+            // Connect to PVs from the ROI plugin.
+            // This does not need to succeed.
             connectRoiPVs();
 
             /* This simply polls for new data and updates the image if new data
@@ -289,12 +312,17 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
 
         if ((setCCD_Readout || (setROI && isRoiConnected)) && isCameraConnected) {
             try {
+                // Get the position of the top right corner of the drawn ROI, as
+                // well as the height and width.
                 imageRoi = this.img.getProcessor().getRoi();
                 tempRoiX = (int) imageRoi.getX();
                 tempRoiY = (int) imageRoi.getY();
                 tempRoiWidth = (int) imageRoi.getWidth();
                 tempRoiHeight = (int) imageRoi.getHeight();
 
+                // If the user is using the ROI plugin, save the current ROI 
+                // width and height.  Otherwise, save the current width and
+                // height of the image from the camera.
                 if (setROI) {
                     tempMaxSizeX = roiArraySizeX;
                     tempMaxSizeY = roiArraySizeY;
@@ -444,11 +472,12 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
                 jca.listProperties(debugPrintStream);
             }
             
-            ch_transType[0] = createEPICSChannel(transformPrefix + "Type1");
-            ch_transType[1] = createEPICSChannel(transformPrefix + "Type2");
-            ch_transType[2] = createEPICSChannel(transformPrefix + "Type3");
-            ch_transType[3] = createEPICSChannel(transformPrefix + "Type4");
-            ch_origin = createEPICSChannel(transformPrefix + "OriginLocation");
+//            ch_transType[0] = createEPICSChannel(transformPrefix + "Type1");
+//            ch_transType[1] = createEPICSChannel(transformPrefix + "Type2");
+//            ch_transType[2] = createEPICSChannel(transformPrefix + "Type3");
+//            ch_transType[3] = createEPICSChannel(transformPrefix + "Type4");
+//            ch_origin = createEPICSChannel(transformPrefix + "OriginLocation");
+            ch_transType = createEPICSChannel(transformPrefix + "Type");
 
             ctxt.flushIO();
             checkTransformPVConnections();
@@ -559,11 +588,12 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
      */
     public void disconnectTransformPVs() {
         try {
-            ch_transType[0].destroy();
-            ch_transType[1].destroy();
-            ch_transType[2].destroy();
-            ch_transType[3].destroy();
-            ch_origin.destroy();
+//            ch_transType[0].destroy();
+//            ch_transType[1].destroy();
+//            ch_transType[2].destroy();
+//            ch_transType[3].destroy();
+//            ch_origin.destroy();
+            ch_transType.destroy();
             isTransformConnected = false;
             
             logMessage("Disconnected from EPICS transform PVs OK", true, true);
@@ -661,8 +691,9 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
     }
 
     /**
-     * This method is called when ever the  image plugin UniqueId_RBV process
-     * variable changes value.
+     * This method is called when ever the image plugin UniqueId_RBV process
+     * variable changes value.  This happens every time the plugin receives a
+     * new NDArray.
      */
     public class newUniqueIdCallback implements MonitorListener {
 
@@ -711,7 +742,7 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
             } catch (IllegalStateException ex) {
                 logMessage("newCameraArraySizeX IllegalStateException: Cannot read " + cameraPrefix + "MinX_RBV:" + ex.getMessage(), true, true);
             }
-            
+                        
             try {
                 ch_camBinX_RBV.get(DBRType.INT, 1, new GetListener() {
                 
@@ -762,7 +793,7 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
             } catch (IllegalStateException ex) {
                 logMessage("newCameraArraySizeY IllegalStateException: Cannot read " + cameraPrefix + "MinY_RBV:" + ex.getMessage(), true, true);
             }
-            
+                        
             try {
                 ch_camBinY_RBV.get(DBRType.INT, 1, new GetListener() {
                 
@@ -813,7 +844,7 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
             } catch (IllegalStateException ex) {
                 logMessage("newRoiArraySizeX IllegalStateException: Cannot read " + roiPrefix + "MinX_RBV:" + ex.getMessage(), true, true);
             }
-            
+                        
             try {
                 ch_roiBinX_RBV.get(DBRType.INT, 1, new GetListener() {
                 
@@ -864,7 +895,7 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
             } catch (IllegalStateException ex) {
                 logMessage("newRoiArraySizeY IllegalStateException: Cannot read " + roiPrefix + "MinY_RBV:" + ex.getMessage(), true, true);
             }
-            
+                        
             try {
                 ch_roiBinY_RBV.get(DBRType.INT, 1, new GetListener() {
                 
@@ -1008,12 +1039,13 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         boolean transformConnected;
         
         try {
-            transformConnected = (ch_transType[0] != null && ch_transType[0].getConnectionState() == Channel.ConnectionState.CONNECTED
+/*            transformConnected = (ch_transType[0] != null && ch_transType[0].getConnectionState() == Channel.ConnectionState.CONNECTED
                     && ch_transType[1] != null && ch_transType[1].getConnectionState() == Channel.ConnectionState.CONNECTED
                     && ch_transType[2] != null && ch_transType[2].getConnectionState() == Channel.ConnectionState.CONNECTED
                     && ch_transType[3] != null && ch_transType[3].getConnectionState() == Channel.ConnectionState.CONNECTED
                     && ch_origin != null && ch_origin.getConnectionState() == Channel.ConnectionState.CONNECTED);
-
+*/
+            transformConnected = (ch_transType != null && ch_transType.getConnectionState() == Channel.ConnectionState.CONNECTED);
             if (transformConnected & !isTransformConnected) {
                 isTransformConnected = true;
                 logMessage("Connection to EPICS transform PVs OK", true, true);
@@ -1393,7 +1425,7 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
 
     /**
      * This method writes the values for the user drawn rectangle to either the
-     * camera of the ROI plugin.
+     * camera or the ROI plugin.
      * 
      * @param chX      This is the PV for the X value of the rectangle's origin.
      * @param chY      This is the PV for the Y value of the rectangle's origin.
@@ -1427,7 +1459,8 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
     private class OriginParameters {
 
         private short origin;
-        private short[] transformType = new short[4];
+        //private short[] transformType = new short[4];
+        private short transformType;
         private boolean flipAxes;
         private int ii;
 
@@ -1437,9 +1470,10 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
                 origin = UPPER_LEFT;
                 flipAxes = false;
 
-                for (ii = 0; ii < MAX_TRANSFORMS; ii++) {
-                    transformType[ii] = epicsGetEnum(ch_transType[ii]);
-                }
+                transformType = epicsGetEnum(ch_transType);
+//                for (ii = 0; ii < MAX_TRANSFORMS; ii++) {
+//                    transformType[ii] = epicsGetEnum(ch_transType[ii]);
+//                }
             } catch (CAException ex) {
                 IJ.log("OriginParameters CAException: Could not get parameters from " + transformPrefix + ": " + ex.getMessage());
             } catch (TimeoutException ex) {
@@ -1464,17 +1498,19 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
          * @see isFlippedAxes()
          */
         public void findOriginLocation() {
-            for (ii = 0; ii < MAX_TRANSFORMS; ii++) {
-                switch (transformType[ii]) {
+//            for (ii = 0; ii < MAX_TRANSFORMS; ii++) {
+//                switch (transformType[ii]) {
+                switch (transformType) {
                     
                     // This image is not altered by the transform.
                     case NONE:
                         break;
 
                     // Rotate the image 90 degrees clockwise.
-                    case ROTATE_90_CW:
-
-                        switch (origin) {
+//                    case ROTATE_90_CW:
+                    case ROTATE_90:
+                        
+/*                        switch (origin) {
                             case LOWER_LEFT:
                                 origin = UPPER_LEFT;
                                 break;
@@ -1491,14 +1527,15 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
                                 logMessage("findOriginLocation: found no matching origin location", true, true);
                                 break;
                         }
-
+*/
                         flipAxes = !flipAxes;
                         break;
 
                     // Rotate the image 90 degrees counter clockwise.
-                    case ROTATE_90_CCW:
+//                    case ROTATE_90_CCW:
+                    case ROTATE_270:
 
-                        switch (origin) {
+/*                        switch (origin) {
                             case LOWER_LEFT:
                                 origin = LOWER_RIGHT;
                                 break;
@@ -1515,14 +1552,14 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
                                 logMessage("findOriginLocation: found no matching origin location", true, true);
                                 break;
                         }
-
+*/
                         flipAxes = !flipAxes;
                         break;
 
                     // Rotate the image 180 degrees.
                     case ROTATE_180:
 
-                        switch (origin) {
+/*                        switch (origin) {
                             case LOWER_LEFT:
                                 origin = UPPER_RIGHT;
                                 break;
@@ -1539,21 +1576,24 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
                                 logMessage("findOriginLocation: found no matching origin location", true, true);
                                 break;
                         }
+*/
                         break;
 
                     // Flip the image along the diagonal that goes from 0,0 to
                     // maxX, maxY.  This does not cause the origin location to
                     // change.
-                    case FLIP_0011:
+//                    case FLIP_0011:
+                    case ROTATE_90_MIRROR:
 
                         flipAxes = !flipAxes;
                         break;
 
                     // Flip the image along the diagonal that goes from 0, maxY
                     // to maxX, 0.
-                    case FLIP_0110:
+//                    case FLIP_0110:
+                    case ROTATE_270_MIRROR:
 
-                        switch (origin) {
+/*                        switch (origin) {
                             case LOWER_LEFT:
                                 origin = UPPER_RIGHT;
                                 break;
@@ -1570,14 +1610,15 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
                                 logMessage("findOriginLocation: found no matching origin location", true, true);
                                 break;
                         }
-
+*/
                         flipAxes = !flipAxes;
                         break;
 
                     // Flip x values of the image pixels.
-                    case FLIP_X:
+//                    case FLIP_X:
+                    case MIRROR:
 
-                        switch (origin) {
+/*                        switch (origin) {
                             case LOWER_LEFT:
                                 origin = LOWER_RIGHT;
                                 break;
@@ -1594,12 +1635,14 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
                                 logMessage("findOriginLocation: found no matching origin location", true, true);
                                 break;
                         }
+*/
                         break;
 
                     // Flip the y values of the image pixels.
-                    case FLIP_Y:
+//                    case FLIP_Y:
+                    case ROTATE_180_MIRROR:
 
-                        switch (origin) {
+/*                        switch (origin) {
                             case LOWER_LEFT:
                                 origin = UPPER_LEFT;
                                 break;
@@ -1616,15 +1659,16 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
                                 logMessage("findOriginLocation: found no matching origin location", true, true);
                                 break;
                         }
+*/
                         break;
 
                     default:
                         logMessage("findOriginLocation: found no matching transform type", true, true);
                         break;
                 }
-            }
+//            }
             if (isDebugMessages)
-                IJ.log("findOriginLocation: origin location is " + origin);
+                logMessage("findOriginLocation: origin location is " + origin, true, true);
         }
 
         public short getOrigin() {
@@ -1663,8 +1707,8 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         int tempY = 0;
         int tempSizeX = 0;
         int tempSizeY = 0;
-
-        if (useTransformPlugin  && !((setROI) && (isPostTransform)))
+        
+        if (useTransformPlugin  && (!isPostTransform))
         {
             params = this.new OriginParameters();
             params.findOriginLocation();
@@ -1688,7 +1732,7 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         
         switch (origin)
         {
-            case LOWER_LEFT:
+/*            case LOWER_LEFT:
                 if (flipAxes)
                 {
                     tempX = maxSizeX - (startY + sizeY);
@@ -1704,7 +1748,7 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
                     tempSizeY = sizeY;
                 }
                 break;
-                
+*/                
             case UPPER_LEFT:
                 if (flipAxes)
                 {
@@ -1722,7 +1766,7 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
                 }
                 break;
                 
-            case LOWER_RIGHT:
+/*            case LOWER_RIGHT:
                 if (flipAxes)
                 {
                     tempX = maxSizeX - (startY + sizeY);
@@ -1756,7 +1800,7 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
                     tempSizeY = sizeY;
                 }
                 break;
-                            
+*/                            
             default:
                 break;
         }
@@ -1856,16 +1900,27 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         FPSText.setHorizontalAlignment(JTextField.CENTER);
         StatusText = new JTextField(40);
         StatusText.setEditable(false);
+        
+        JButton increaseWidthButton = new JButton("W +");
+        JButton decreaseWidthButton = new JButton("W -");
+        JButton increaseHeightButton = new JButton("H +");
+        JButton decreaseHeightButton = new JButton("H -");
+        JButton increaseXButton = new JButton("X +");
+        JButton decreaseXButton = new JButton("X -");
+        JButton increaseYButton = new JButton("Y +");
+        JButton decreaseYButton = new JButton("Y -");
+        
 
         imagePrefixText = new JTextField(imagePrefix, 15);
         cameraPrefixText = new JTextField(cameraPrefix, 15);
         transformPrefixText = new JTextField(transformPrefix, 15);
         roiPrefixText = new JTextField(roiPrefix, 15);
+        tweakAmountText = new JTextField(String.valueOf(tweakAmountPixels), 5);
         startButton = new JButton("Start");
         stopButton = new JButton("Stop");
         stopButton.setEnabled(false);
         snapButton = new JButton("Snap");
-        resetRoiButton = new JButton("Reset CCD");
+        resetRoiButton = new JButton("Reset ROI");
         JCheckBox captureCheckBox = new JCheckBox("");
         setNoneRadioButton = new JRadioButton("Set None",true);
         setCCDReadoutRadioButton = new JRadioButton("Set CCD Readout", false);
@@ -1896,6 +1951,7 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         groupBPanel.add(preTransformRadioButton);
         groupBPanel.add(postTransformRadioButton);
         
+
         frame = new JFrame("Image J EPICS_AD_Viewer Plugin");
         JPanel panel = new JPanel(new BorderLayout());
         panel.setLayout(new GridBagLayout());
@@ -1954,6 +2010,10 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         panel.add(new JLabel("ROI PV Prefix"), c);
         c.gridx = 2;
         panel.add(new JLabel("Transform PV Prefix"), c);
+        c.gridx = 4;
+        panel.add(new JLabel("Tweak Amount"), c);
+        c.gridx = 5;
+        panel.add(tweakAmountText, c);
 
         // Fourth row
         c.anchor = GridBagConstraints.CENTER;
@@ -1966,6 +2026,15 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         panel.add(transformPrefixText, c);
         c.gridx = 3;
         panel.add(resetRoiButton, c);
+        c.gridx = 5;
+        panel.add(increaseWidthButton, c);
+        c.gridx = 6;
+        panel.add(decreaseWidthButton, c);
+        c.gridx = 7;
+        panel.add(increaseHeightButton, c);
+        c.gridx = 8;
+        panel.add(decreaseHeightButton, c);
+        //panel.add(new JLabel("Width"), c);
 
         // Fifth row
         c.anchor = GridBagConstraints.CENTER;
@@ -1976,6 +2045,15 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         panel.add(groupBPanel, c);
         c.gridx = 2;
         panel.add(useTransformCheckBox, c);
+        c.gridx = 5;
+        panel.add(increaseXButton, c);
+        c.gridx = 6;
+        panel.add(decreaseXButton, c);
+        c.gridx = 7;
+        panel.add(increaseYButton, c);
+        c.gridx = 8;
+        panel.add(decreaseYButton, c);
+        //panel.add(new JLabel("X Pos"), c);
 
         // Bottom row
         c.gridy = 5;
@@ -2050,6 +2128,14 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
                 connectRoiPVs();
             }
         });
+        
+        tweakAmountText.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                tweakAmountPixels = Integer.parseInt(tweakAmountText.getText());
+                logMessage("Tweak amount is " + tweakAmountPixels, true, true);
+            }
+        });
 
         startButton.addActionListener(new ActionListener() {
             @Override
@@ -2070,6 +2156,271 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
                 snapButton.setEnabled(false);
                 isDisplayImages = false;
                 logMessage("Image display stopped", true, true);
+            }
+        });
+        
+        increaseWidthButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                
+                int size;
+                
+                if (setCCD_Readout) {
+                    try {
+                        size = epicsGetInt(ch_sizeCamX);
+                        epicsSetInt(ch_sizeCamX, (size + tweakAmountPixels));
+                    } catch (CAException ex) {
+                        logMessage("increaseWidthButton got CAException: " + ex.getMessage(), true, true);
+                    } catch (TimeoutException ex) {
+                        logMessage("increaseWidthButton got TimeoutException: " + ex.getMessage(), true, true);
+                    } catch (IllegalStateException ex) {
+                        logMessage("increaseWidthButton got IllegalStateException: " + ex.getMessage(), true, true);
+                    }
+                }
+                else {
+                    try {
+                        size = epicsGetInt(ch_sizeRoiX);
+                        epicsSetInt(ch_sizeRoiX, size + tweakAmountPixels);           
+                    } catch (CAException ex) {
+                        logMessage("increaseWidthButton got CAException: " + ex.getMessage(), true, true);
+                    } catch (TimeoutException ex) {
+                        logMessage("increaseWidthButton got TimeoutException: " + ex.getMessage(), true, true);
+                    } catch (IllegalStateException ex) {
+                        logMessage("increaseWidthButton got IllegalStateException: " + ex.getMessage(), true, true);
+                    }
+                }
+            }
+        });
+        
+        decreaseWidthButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                
+                int size;
+                
+                if (setCCD_Readout) {
+                    try {
+                        size = epicsGetInt(ch_sizeCamX);
+                        epicsSetInt(ch_sizeCamX, size - tweakAmountPixels);           
+                    } catch (CAException ex) {
+                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
+                    } catch (TimeoutException ex) {
+                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
+                    } catch (IllegalStateException ex) {
+                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
+                    }
+                }
+                else {
+                    try {
+                        size = epicsGetInt(ch_sizeRoiX);
+                        epicsSetInt(ch_sizeRoiX, size - tweakAmountPixels);           
+                    } catch (CAException ex) {
+                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
+                    } catch (TimeoutException ex) {
+                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
+                    } catch (IllegalStateException ex) {
+                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
+                    }
+                }                
+            }
+        });
+        
+        increaseHeightButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                
+                int size;
+                
+                if (setCCD_Readout) {
+                    try {
+                        size = epicsGetInt(ch_sizeCamY);
+                        epicsSetInt(ch_sizeCamY, size + tweakAmountPixels);           
+                    } catch (CAException ex) {
+                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
+                    } catch (TimeoutException ex) {
+                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
+                    } catch (IllegalStateException ex) {
+                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
+                    }
+                }
+                else {
+                    try {
+                        size = epicsGetInt(ch_sizeRoiY);
+                        epicsSetInt(ch_sizeRoiY, size + tweakAmountPixels);           
+                    } catch (CAException ex) {
+                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
+                    } catch (TimeoutException ex) {
+                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
+                    } catch (IllegalStateException ex) {
+                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
+                    }
+                }
+                
+            }
+        });
+        
+        decreaseHeightButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                
+                int size;
+                
+                if (setCCD_Readout) {
+                    try {
+                        size = epicsGetInt(ch_sizeCamY);
+                        epicsSetInt(ch_sizeCamY, size - tweakAmountPixels);           
+                    } catch (CAException ex) {
+                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
+                    } catch (TimeoutException ex) {
+                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
+                    } catch (IllegalStateException ex) {
+                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
+                    }
+                }
+                else {
+                    try {
+                        size = epicsGetInt(ch_sizeRoiY);
+                        epicsSetInt(ch_sizeRoiY, size - tweakAmountPixels);           
+                    } catch (CAException ex) {
+                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
+                    } catch (TimeoutException ex) {
+                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
+                    } catch (IllegalStateException ex) {
+                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
+                    }
+                }
+            }
+        });
+        
+        increaseXButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                
+                int origin;
+               
+                if (setCCD_Readout) {
+                    try {
+                        origin = epicsGetInt(ch_minCamX);
+                        epicsSetInt(ch_minCamX, origin + tweakAmountPixels);           
+                    } catch (CAException ex) {
+                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
+                    } catch (TimeoutException ex) {
+                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
+                    } catch (IllegalStateException ex) {
+                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
+                    }
+                }
+                else {
+                    try {
+                        origin = epicsGetInt(ch_minRoiX);
+                        epicsSetInt(ch_minRoiX, origin + tweakAmountPixels);           
+                    } catch (CAException ex) {
+                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
+                    } catch (TimeoutException ex) {
+                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
+                    } catch (IllegalStateException ex) {
+                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
+                    }
+                }
+            }
+        });
+        
+        decreaseXButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                
+                int origin;
+                
+                if (setCCD_Readout) {
+                    try {
+                        origin = epicsGetInt(ch_minCamX);
+                        epicsSetInt(ch_minCamX, origin - tweakAmountPixels);           
+                    } catch (CAException ex) {
+                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
+                    } catch (TimeoutException ex) {
+                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
+                    } catch (IllegalStateException ex) {
+                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
+                    }
+                }
+                else {
+                    try {
+                        origin = epicsGetInt(ch_minRoiX);
+                        epicsSetInt(ch_minRoiX, origin - tweakAmountPixels);           
+                    } catch (CAException ex) {
+                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
+                    } catch (TimeoutException ex) {
+                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
+                    } catch (IllegalStateException ex) {
+                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
+                    }
+                }
+            }
+        });
+        
+        increaseYButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                
+                int origin;
+                
+                if (setCCD_Readout) {
+                    try {
+                        origin = epicsGetInt(ch_minCamY);
+                        epicsSetInt(ch_minCamY, origin + tweakAmountPixels);           
+                    } catch (CAException ex) {
+                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
+                    } catch (TimeoutException ex) {
+                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
+                    } catch (IllegalStateException ex) {
+                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
+                    }
+                }
+                else {
+                    try {
+                        origin = epicsGetInt(ch_minRoiY);
+                        epicsSetInt(ch_minRoiY, origin + tweakAmountPixels);           
+                    } catch (CAException ex) {
+                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
+                    } catch (TimeoutException ex) {
+                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
+                    } catch (IllegalStateException ex) {
+                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
+                    }
+                }
+            }
+        });
+        
+        decreaseYButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                
+                int origin;
+                
+                if (setCCD_Readout) {
+                    try {
+                        origin = epicsGetInt(ch_minCamY);
+                        epicsSetInt(ch_minCamY, origin - tweakAmountPixels);           
+                    } catch (CAException ex) {
+                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
+                    } catch (TimeoutException ex) {
+                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
+                    } catch (IllegalStateException ex) {
+                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
+                    }
+                }
+                else {
+                    try {
+                        origin = epicsGetInt(ch_minRoiY);
+                        epicsSetInt(ch_minRoiY, origin - tweakAmountPixels);           
+                    } catch (CAException ex) {
+                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
+                    } catch (TimeoutException ex) {
+                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
+                    } catch (IllegalStateException ex) {
+                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
+                    }
+                }
             }
         });
 
@@ -2135,7 +2486,6 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
             @Override
             public void itemStateChanged(ItemEvent e) {
                 setCCD_Readout = e.getStateChange() == ItemEvent.SELECTED;
-                resetRoiButton.setText("Reset CCD");
             }
         });
         
@@ -2145,7 +2495,6 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
                 setROI = e.getStateChange() == ItemEvent.SELECTED;
                 preTransformRadioButton.setEnabled(setROI);
                 postTransformRadioButton.setEnabled(setROI);
-                resetRoiButton.setText("Reset ROI");
             }
         });
                 
