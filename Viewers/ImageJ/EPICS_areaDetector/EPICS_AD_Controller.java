@@ -1,7 +1,8 @@
-// EPICS_AD_Viewer.java
+// EPICS_AD_Controller.java
 // Original authors
 //      Tim Madden, APS
 //      Mark Rivers, University of Chicago
+//      Chris Roehrig, APS
 
 import ij.*;
 import ij.process.*;
@@ -23,22 +24,7 @@ import gov.aps.jca.event.*;
 
 public class EPICS_AD_Viewer implements PlugIn, MouseListener {
     
-//    private static final int MAX_TRANSFORMS = 4;
-
-//    private static final short LOWER_LEFT = 0;
     private static final short UPPER_LEFT = 1;
-//    private static final short LOWER_RIGHT = 2;
-//    private static final short UPPER_RIGHT = 3;
-
-/*    private static final short NONE = 0;
-    private static final short ROTATE_90_CW = 1;
-    private static final short ROTATE_90_CCW = 2;
-    private static final short ROTATE_180 = 3;
-    private static final short FLIP_0011 = 4;
-    private static final short FLIP_0110 = 5;
-    private static final short FLIP_X = 6;
-    private static final short FLIP_Y = 7;
-*/    
     private static final short NONE = 0;
     private static final short ROTATE_90 = 1;
     private static final short ROTATE_180 = 2;
@@ -49,37 +35,19 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
     private static final short ROTATE_270_MIRROR = 7;
 
     ImagePlus img;
-    ImageStack imageStack;
 
     int imageSizeX = 0;
     int imageSizeY = 0;
     int imageSizeZ = 0;
-    int colorMode;
-    DBRType dataType;
 
     FileOutputStream debugFile;
     PrintStream debugPrintStream;
     Properties properties = new Properties();
-    String propertyFile = "EPICS_AD_Viewer.properties";
-
-    // These are used for the frames/second calculation
-    long prevTime;
-    int numImageUpdates;
+    String propertyFile = "EPICS_AD_Controller.properties";
 
     JCALibrary jca;
     DefaultConfiguration conf;
     Context ctxt;
-
-    /**
-     * these are EPICS channel objects to get images...
-     */
-    Channel ch_nx;
-    Channel ch_ny;
-    Channel ch_nz;
-    Channel ch_colorMode;
-    Channel ch_image;
-    Channel ch_image_id;
-    volatile int UniqueId;
 
     /* These are EPICS channel objects to write the ROI
      * back to the areaDetector software.
@@ -104,28 +72,17 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
     Channel ch_sizeRoiArrayY_RBV; //This is the size of the image array for the ROI in Y
     Channel ch_roiBinX_RBV;       //This is the amount of binning for the ROI in X
     Channel ch_roiBinY_RBV;       //This is the amount of binning for the ROI in Y
-//    Channel ch_origin;            //This represents the location of the origin
     Channel ch_maxSizeCamX;       //This is the maximum dimension of X
     Channel ch_maxSizeCamY;       //This is the maximum dimension of Y
-//    Channel[] ch_transType = new Channel[MAX_TRANSFORMS];//This represents the way the image is flipped or rotated.
-    Channel ch_transType;//This represents the way the image is flipped or rotated.
+    Channel ch_transType;         //This represents the way the image is flipped or rotated.
 
     JFrame frame;
 
-    String imagePrefix;
-    JTextField imagePrefixText;
-    JTextField NXText;
-    JTextField NYText;
-    JTextField NZText;
-    JTextField FPSText;
     JTextField StatusText;
     JTextField cameraPrefixText;
     JTextField transformPrefixText;
     JTextField roiPrefixText;
     JTextField tweakAmountText;
-    JButton startButton;
-    JButton stopButton;
-    JButton snapButton;
     JButton resetRoiButton;
     JRadioButton setNoneRadioButton;
     JRadioButton setCCDReadoutRadioButton;
@@ -136,11 +93,7 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
 
     boolean isDebugMessages;
     boolean isDebugFile;
-    boolean isDisplayImages;
     boolean isPluginRunning;
-    boolean isSaveToStack;
-    boolean isNewStack;
-    boolean isImageConnected;
     boolean isTransformConnected;
     boolean isCameraConnected;
     boolean isRoiConnected;
@@ -149,7 +102,6 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
     boolean useTransformPlugin;
     boolean isPreTransform;
     boolean isPostTransform;
-    volatile boolean isNewImageAvailable;
 
     javax.swing.Timer timer;
 
@@ -188,11 +140,7 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         try {
             isDebugFile = false;
             isDebugMessages = true;
-            isDisplayImages = false;
             isPluginRunning = true;
-            isNewImageAvailable = false;
-            isSaveToStack = false;
-            isNewStack = false;
             setCCD_Readout = false;
             setROI = false;
             useTransformPlugin = false;
@@ -200,8 +148,6 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
             isPostTransform = false;
             Date date = new Date();
             prevTime = date.getTime();
-            numImageUpdates = 0;
-            imagePrefix = "2dev:image1:";
             cameraPrefix = "2dev:SIM1:cam1:";
             transformPrefix = "2dev:Trans1:";
             roiPrefix = "2dev:ROI1:";
@@ -227,8 +173,6 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
             img.close();
 
             startEPICSCA();
-            // Connect to PVs from the image plugin.
-            connectImagePVs();
             // Connect to PVs from the camera.
             connectCameraPVs();
             // Connect to PVs from the transform plugin.
@@ -245,13 +189,6 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
                 synchronized (this) {
                     wait(1000);
                 }
-                if (isDisplayImages && isNewImageAvailable) {
-                    if (isDebugMessages) {
-                        IJ.log("calling updateImage");
-                    }
-                    updateImage();
-                    isNewImageAvailable = false;
-                }
             }
 
             if (isDebugFile) {
@@ -262,21 +199,16 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
 
             timer.stop();
             writeProperties();
-            disconnectImagePVs();
             disconnectCameraPVs();
             disconnectTransformPVs();
             disconnectRoiPVs();
             closeEPICSCA();
-            img.close();
-
-            frame.setVisible(false);
-
             IJ.showStatus("Exiting Server");
 
         } catch (Exception e) {
             IJ.log("Got exception: " + e.getMessage());
             e.printStackTrace();
-            IJ.log("Close epics CA window, and reopen, try again");
+            IJ.log("Close window, and reopen, try again");
 
             IJ.showStatus(e.toString());
 
@@ -299,8 +231,7 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
      * 
      * @param e     An event object.  It is not actually used.
      */
-    @Override
-    public void mouseReleased(MouseEvent e) {
+    public void setROI() {
         Rectangle imageRoi;
 
         int tempRoiX;
@@ -345,67 +276,12 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         }
     }
 
-    @Override
-    public void mouseExited(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-    }
-
     public void makeImageCopy() {
         ImageProcessor dipcopy = img.getProcessor().duplicate();
         ImagePlus imgcopy = new ImagePlus(imagePrefix + ":" + UniqueId, dipcopy);
         imgcopy.show();
     }
 
-    /**
-     * This method creates the PV objects for the image plugin.
-     */
-    public void connectImagePVs() {
-        try {
-            imagePrefix = imagePrefixText.getText();
-            logMessage("Trying to connect to EPICS PVs: " + imagePrefix, true, true);
-            if (isDebugFile) {
-                debugPrintStream.println("Trying to connect to EPICS PVs: " + imagePrefix);
-                debugPrintStream.println("context.printfInfo  ****************************");
-                debugPrintStream.println();
-                ctxt.printInfo(debugPrintStream);
-
-                debugPrintStream.print("jca.printInfo  ****************************");
-                debugPrintStream.println();
-                jca.printInfo(debugPrintStream);
-                debugPrintStream.print("jca.listProperties  ****************************");
-                debugPrintStream.println();
-                jca.listProperties(debugPrintStream);
-            }
-            ch_nx = createEPICSChannel(imagePrefix + "ArraySize0_RBV");
-            ch_ny = createEPICSChannel(imagePrefix + "ArraySize1_RBV");
-            ch_nz = createEPICSChannel(imagePrefix + "ArraySize2_RBV");
-            ch_colorMode = createEPICSChannel(imagePrefix + "ColorMode_RBV");
-            ch_image = createEPICSChannel(imagePrefix + "ArrayData");
-            ch_image_id = createEPICSChannel(imagePrefix + "UniqueId_RBV");
-            ch_image_id.addMonitor(
-                    Monitor.VALUE,
-                    new newUniqueIdCallback()
-            );
-            
-            ctxt.flushIO();
-            checkImagePVConnections();
-        } catch (Exception ex) {
-            logMessage("CAException: Cannot connect to EPICS image PV:" + ex.getMessage(), true, true);
-            checkImagePVConnections();
-        }
-    }
-    
     /**
      * This method creates the PV objects for the camera.
      */
@@ -472,11 +348,6 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
                 jca.listProperties(debugPrintStream);
             }
             
-//            ch_transType[0] = createEPICSChannel(transformPrefix + "Type1");
-//            ch_transType[1] = createEPICSChannel(transformPrefix + "Type2");
-//            ch_transType[2] = createEPICSChannel(transformPrefix + "Type3");
-//            ch_transType[3] = createEPICSChannel(transformPrefix + "Type4");
-//            ch_origin = createEPICSChannel(transformPrefix + "OriginLocation");
             ch_transType = createEPICSChannel(transformPrefix + "Type");
 
             ctxt.flushIO();
@@ -532,29 +403,6 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
     }
 
     /**
-     * This method destroys the PV objects for the image plugin.
-     */
-    public void disconnectImagePVs() {
-        try {
-            ch_nx.destroy();
-            ch_ny.destroy();
-            ch_nz.destroy();
-            ch_colorMode.destroy();
-            ch_image.destroy();
-            ch_image_id.destroy();
-            isImageConnected = false;
-            
-            logMessage("Disconnected from EPICS image PVs OK", true, true);
-        } catch (CAException ex) {
-            logMessage("CAException: Cannot disconnect from EPICS image PV:" + ex.getMessage(), true, true);
-        } catch (IllegalStateException ex) {
-            logMessage("IllegalStateException: Cannot disconnect from EPICS image PV:" + ex.getMessage(), true, true);
-        } catch (NullPointerException ex) {
-            logMessage("NullPointerException: Cannot disconnect from EPICS image PV:" + ex.getMessage(), true, true);
-        }
-    }
-    
-    /**
      * This method destroys the PV objects for the camera.
      */
     public void disconnectCameraPVs() {
@@ -588,11 +436,6 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
      */
     public void disconnectTransformPVs() {
         try {
-//            ch_transType[0].destroy();
-//            ch_transType[1].destroy();
-//            ch_transType[2].destroy();
-//            ch_transType[3].destroy();
-//            ch_origin.destroy();
             ch_transType.destroy();
             isTransformConnected = false;
             
@@ -690,27 +533,6 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         return (ch);
     }
 
-    /**
-     * This method is called when ever the image plugin UniqueId_RBV process
-     * variable changes value.  This happens every time the plugin receives a
-     * new NDArray.
-     */
-    public class newUniqueIdCallback implements MonitorListener {
-
-        @Override
-        public void monitorChanged(MonitorEvent ev) {
-            if (isDebugMessages) {
-                IJ.log("Monitor callback");
-            }
-            isNewImageAvailable = true;
-            DBR_Int x = (DBR_Int) ev.getDBR();
-            UniqueId = (x.getIntValue())[0];
-            // I'd like to just do the synchronized notify here, but how do I get "this"?
-            newUniqueId(ev);
-        }
-    }
-
-    
     /**
      * This method is called whenever the size of the data array in the X
      * dimension changes.  It reads the X value of the start of the camera's
@@ -916,57 +738,6 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
     }
 
     /**
-     * This method wakes up the main thread to get a new image.
-     * 
-     * @param ev    An event object that represents the the source of the event.
-     */
-    public void newUniqueId(MonitorEvent ev) {
-        synchronized (this) {
-            notify();
-        }
-    }
-
-    /**
-     * This method checks that the PV objects for the image plugin both exist
-     * and are connected to the underlying PVs.
-     */
-    public void checkImagePVConnections() {
-        boolean imageConnected;
-        
-        try {
-            imageConnected = (ch_nx != null && ch_nx.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_ny != null && ch_ny.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_nz != null && ch_nz.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_colorMode != null && ch_colorMode.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_image != null && ch_image.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_image_id != null && ch_image_id.getConnectionState() == Channel.ConnectionState.CONNECTED);
-
-            if (imageConnected & !isImageConnected) {
-                isImageConnected = true;
-                logMessage("Connection to EPICS image PVs OK", true, true);
-                imagePrefixText.setBackground(Color.green);
-                startButton.setEnabled(!isDisplayImages);
-                stopButton.setEnabled(isDisplayImages);
-                snapButton.setEnabled(isDisplayImages);
-            }
-            if (!imageConnected) {
-                isImageConnected = false;
-                logMessage("Cannot connect to EPICS image PVs", true, true);
-                imagePrefixText.setBackground(Color.red);
-                startButton.setEnabled(false);
-                stopButton.setEnabled(false);
-                snapButton.setEnabled(false);
-            }
-            
-        } catch (IllegalStateException ex) {
-            IJ.log("checkImagePVConnections: got exception= " + ex.getMessage());
-            if (isDebugFile) {
-                ex.printStackTrace(debugPrintStream);
-            }
-        }
-    }
-    
-    /**
      * This method checks that the PV objects for the camera both exist
      * and are connected to the underlying PVs.
      */
@@ -1134,186 +905,6 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
     }
 
     /**
-     * This method reads new data from the area detector's NDarrays.  If the
-     * size of the arrays have changed, it closes the image window and creates
-     * a new one.
-     */
-    public void updateImage() {
-        try {
-            checkImagePVConnections();
-            if (!isImageConnected) {
-                return;
-            }
-            int nx = epicsGetInt(ch_nx);
-            int ny = epicsGetInt(ch_ny);
-            int nz = epicsGetInt(ch_nz);
-            int cm = epicsGetInt(ch_colorMode);
-            DBRType dt = ch_image.getFieldType();
-
-            if (nz == 0) {
-                nz = 1;
-            }
-            int getsize = nx * ny * nz;
-            if (getsize == 0) {
-                return;  // Not valid dimensions
-            }
-            if (isDebugMessages) {
-                IJ.log("got image, sizes: " + nx + " " + ny + " " + nz);
-            }
-
-            // if image size changes we must close window and make a new one.
-            boolean makeNewWindow = false;
-            if (nx != imageSizeX || ny != imageSizeY || nz != imageSizeZ || cm != colorMode || dt != dataType) {
-                makeNewWindow = true;
-                imageSizeX = nx;
-                imageSizeY = ny;
-                imageSizeZ = nz;
-                colorMode = cm;
-                dataType = dt;
-                NXText.setText("" + imageSizeX);
-                NYText.setText("" + imageSizeY);
-                NZText.setText("" + imageSizeZ);
-            }
-
-            // If we are making a new stack close the window
-            if (isNewStack) {
-                makeNewWindow = true;
-            }
-
-            // If we need to make a new window then close the current one if it exists
-            if (makeNewWindow) {
-                try {
-                    if (img.getWindow() == null || !img.getWindow().isClosed()) {
-                        img.close();
-                        canvas.removeMouseListener(this);
-                    }
-                } catch (Exception ex) {
-                }
-                makeNewWindow = false;
-            }
-            // If the window does not exist or is closed make a new one
-            if (img.getWindow() == null || img.getWindow().isClosed()) {
-                switch (colorMode) {
-                    case 0:
-                    case 1:
-                        if (dataType.isBYTE()) {
-                            img = new ImagePlus(imagePrefix, new ByteProcessor(imageSizeX, imageSizeY));
-                        } else if (dataType.isSHORT()) {
-                            img = new ImagePlus(imagePrefix, new ShortProcessor(imageSizeX, imageSizeY));
-                        } else if (dataType.isINT() || dataType.isFLOAT() || dataType.isDOUBLE()) {
-                            img = new ImagePlus(imagePrefix, new FloatProcessor(imageSizeX, imageSizeY));
-                        }
-                        break;
-                    case 2:
-                        img = new ImagePlus(imagePrefix, new ColorProcessor(imageSizeY, imageSizeZ));
-                        break;
-                    case 3:
-                        img = new ImagePlus(imagePrefix, new ColorProcessor(imageSizeX, imageSizeZ));
-                        break;
-                    case 4:
-                        img = new ImagePlus(imagePrefix, new ColorProcessor(imageSizeX, imageSizeY));
-                        break;
-                }
-                img.show();
-
-                win = img.getWindow();
-                canvas = win.getCanvas();
-                canvas.addMouseListener(this);
-            }
-
-            if (isNewStack) {
-                imageStack = new ImageStack(img.getWidth(), img.getHeight());
-                imageStack.addSlice(imagePrefix + UniqueId, img.getProcessor());
-                // Note: we need to add this first slice twice in order to get the slider bar 
-                // on the window - ImageJ won't put it there if there is only 1 slice.
-                imageStack.addSlice(imagePrefix + UniqueId, img.getProcessor());
-                img.close();
-                img = new ImagePlus(imagePrefix, imageStack);
-                img.show();
-                isNewStack = false;
-            }
-
-            if (isDebugMessages) {
-                IJ.log("about to get pixels");
-            }
-            if (colorMode == 0 || colorMode == 1) {
-                if (dataType.isBYTE()) {
-                    byte[] pixels = (byte[]) img.getProcessor().getPixels();
-                    pixels = epicsGetByteArray(ch_image, getsize);
-                    img.getProcessor().setPixels(pixels);
-                } else if (dataType.isSHORT()) {
-                    short[] pixels = (short[]) img.getProcessor().getPixels();
-                    pixels = epicsGetShortArray(ch_image, getsize);
-                    img.getProcessor().setPixels(pixels);
-                } else if (dataType.isINT() || dataType.isFLOAT() || dataType.isDOUBLE()) {
-                    float[] pixels = (float[]) img.getProcessor().getPixels();
-                    pixels = epicsGetFloatArray(ch_image, getsize);
-                    img.getProcessor().setPixels(pixels);
-                }
-            } else if (colorMode >= 2 && colorMode <= 4) {
-                int[] pixels = (int[]) img.getProcessor().getPixels();
-                byte inpixels[] = epicsGetByteArray(ch_image, getsize);
-                switch (colorMode) {
-                    case 2: {
-                        int in = 0, out = 0;
-                        while (in < getsize) {
-                            pixels[out++] = (inpixels[in++] & 0xFF) << 16 | (inpixels[in++] & 0xFF) << 8 | (inpixels[in++] & 0xFF);
-                        }
-                    }
-                    break;
-                    case 3: {
-                        int nCols = imageSizeX, nRows = imageSizeZ, row, col;
-                        int redIn, greenIn, blueIn, out = 0;
-                        for (row = 0; row < nRows; row++) {
-                            redIn = row * nCols * 3;
-                            greenIn = redIn + nCols;
-                            blueIn = greenIn + nCols;
-                            for (col = 0; col < nCols; col++) {
-                                pixels[out++] = (inpixels[redIn++] & 0xFF) << 16 | (inpixels[greenIn++] & 0xFF) << 8 | (inpixels[blueIn++] & 0xFF);
-                            }
-                        }
-                    }
-                    break;
-                    case 4: {
-                        int imageSize = imageSizeX * imageSizeY;
-                        int redIn = 0, greenIn = imageSize, blueIn = 2 * imageSize, out = 0;
-                        while (redIn < imageSize) {
-                            pixels[out++] = (inpixels[redIn++] & 0xFF) << 16 | (inpixels[greenIn++] & 0xFF) << 8 | (inpixels[blueIn++] & 0xFF);
-                        }
-                    }
-                    break;
-                }
-                img.getProcessor().setPixels(pixels);
-            }
-
-            if (isSaveToStack) {
-                img.getStack().addSlice(imagePrefix + UniqueId, img.getProcessor().duplicate());
-            }
-            img.setSlice(img.getNSlices());
-            img.show();
-            img.updateAndDraw();
-            img.updateStatusbarValue();
-            numImageUpdates++;
-
-        } catch (CAException ex) {
-            IJ.log("UpdateImage got CAException: " + ex.getMessage());
-            if (isDebugFile) {
-                ex.printStackTrace(debugPrintStream);
-            }
-        } catch (TimeoutException ex) {
-            IJ.log("UpdateImage got TimeoutException: " + ex.getMessage());
-            if (isDebugFile) {
-                ex.printStackTrace(debugPrintStream);
-            }
-        } catch (IllegalStateException ex) {
-            IJ.log("UpdateImage got IllegalStatexception: " + ex.getMessage());
-            if (isDebugFile) {
-                ex.printStackTrace(debugPrintStream);
-            }
-        }
-    }
-
-    /**
      * Read an integer value from a PV and return it.
      * 
      * @param ch    A channel object that is used to read the PV.
@@ -1347,60 +938,6 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         DBR_Enum x = (DBR_Enum) ch.get(DBRType.ENUM, 1);
         ctxt.pendIO(5.0);
         return (x.getEnumValue()[0]);
-    }
-
-    /**
-     * Read an array of byte values from a PV and return it.
-     * 
-     * @param ch    A channel object that is used to read the PV.
-     * @param num   The number of bytes to read.
-     * @return
-     * @throws gov.aps.jca.TimeoutException
-     * @throws gov.aps.jca.CAException
-     * @throws IllegalStateException 
-     */
-    public byte[] epicsGetByteArray(Channel ch, int num) throws TimeoutException, CAException, IllegalStateException {
-        DBR x = ch.get(DBRType.BYTE, num);
-        ctxt.pendIO(10.0);
-        DBR_Byte xi = (DBR_Byte) x;
-        byte zz[] = xi.getByteValue();
-        return (zz);
-    }
-
-    /**
-     * Read an array of short integers from a PV and return it.
-     * 
-     * @param ch    A channel object that is used to read the PV.
-     * @param num   The number of short integers to read.
-     * @return
-     * @throws gov.aps.jca.TimeoutException
-     * @throws gov.aps.jca.CAException
-     * @throws IllegalStateException 
-     */
-    public short[] epicsGetShortArray(Channel ch, int num) throws TimeoutException, CAException, IllegalStateException {
-        DBR x = ch.get(DBRType.SHORT, num);
-        ctxt.pendIO(10.0);
-        DBR_Short xi = (DBR_Short) x;
-        short zz[] = xi.getShortValue();
-        return (zz);
-    }
-
-    /**
-     * Read an array of float values from a PV and return it.
-     * 
-     * @param ch    A channel object used to read the PV.
-     * @param num   The number of float values to read.
-     * @return
-     * @throws gov.aps.jca.TimeoutException
-     * @throws gov.aps.jca.CAException
-     * @throws IllegalStateException 
-     */
-    public float[] epicsGetFloatArray(Channel ch, int num) throws TimeoutException, CAException, IllegalStateException {
-        DBR x = ch.get(DBRType.FLOAT, num);
-        ctxt.pendIO(10.0);
-        DBR_Float xi = (DBR_Float) x;
-        float zz[] = xi.getFloatValue();
-        return (zz);
     }
 
     /**
@@ -1466,14 +1003,10 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
 
         public OriginParameters() {
             try {
-                //origin = epicsGetEnum(ch_origin);
                 origin = UPPER_LEFT;
                 flipAxes = false;
 
                 transformType = epicsGetEnum(ch_transType);
-//                for (ii = 0; ii < MAX_TRANSFORMS; ii++) {
-//                    transformType[ii] = epicsGetEnum(ch_transType[ii]);
-//                }
             } catch (CAException ex) {
                 IJ.log("OriginParameters CAException: Could not get parameters from " + transformPrefix + ": " + ex.getMessage());
             } catch (TimeoutException ex) {
@@ -1498,8 +1031,6 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
          * @see isFlippedAxes()
          */
         public void findOriginLocation() {
-//            for (ii = 0; ii < MAX_TRANSFORMS; ii++) {
-//                switch (transformType[ii]) {
                 switch (transformType) {
                     
                     // This image is not altered by the transform.
@@ -1507,166 +1038,44 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
                         break;
 
                     // Rotate the image 90 degrees clockwise.
-//                    case ROTATE_90_CW:
                     case ROTATE_90:
-                        
-/*                        switch (origin) {
-                            case LOWER_LEFT:
-                                origin = UPPER_LEFT;
-                                break;
-                            case UPPER_LEFT:
-                                origin = UPPER_RIGHT;
-                                break;
-                            case UPPER_RIGHT:
-                                origin = LOWER_RIGHT;
-                                break;
-                            case LOWER_RIGHT:
-                                origin = LOWER_LEFT;
-                                break;
-                            default:
-                                logMessage("findOriginLocation: found no matching origin location", true, true);
-                                break;
-                        }
-*/
                         flipAxes = !flipAxes;
                         break;
 
                     // Rotate the image 90 degrees counter clockwise.
-//                    case ROTATE_90_CCW:
                     case ROTATE_270:
-
-/*                        switch (origin) {
-                            case LOWER_LEFT:
-                                origin = LOWER_RIGHT;
-                                break;
-                            case UPPER_LEFT:
-                                origin = LOWER_LEFT;
-                                break;
-                            case UPPER_RIGHT:
-                                origin = UPPER_LEFT;
-                                break;
-                            case LOWER_RIGHT:
-                                origin = UPPER_RIGHT;
-                                break;
-                            default:
-                                logMessage("findOriginLocation: found no matching origin location", true, true);
-                                break;
-                        }
-*/
                         flipAxes = !flipAxes;
                         break;
 
                     // Rotate the image 180 degrees.
                     case ROTATE_180:
-
-/*                        switch (origin) {
-                            case LOWER_LEFT:
-                                origin = UPPER_RIGHT;
-                                break;
-                            case UPPER_LEFT:
-                                origin = LOWER_RIGHT;
-                                break;
-                            case UPPER_RIGHT:
-                                origin = LOWER_LEFT;
-                                break;
-                            case LOWER_RIGHT:
-                                origin = UPPER_LEFT;
-                                break;
-                            default:
-                                logMessage("findOriginLocation: found no matching origin location", true, true);
-                                break;
-                        }
-*/
                         break;
 
                     // Flip the image along the diagonal that goes from 0,0 to
                     // maxX, maxY.  This does not cause the origin location to
                     // change.
-//                    case FLIP_0011:
                     case ROTATE_90_MIRROR:
-
                         flipAxes = !flipAxes;
                         break;
 
                     // Flip the image along the diagonal that goes from 0, maxY
                     // to maxX, 0.
-//                    case FLIP_0110:
-                    case ROTATE_270_MIRROR:
-
-/*                        switch (origin) {
-                            case LOWER_LEFT:
-                                origin = UPPER_RIGHT;
-                                break;
-                            case UPPER_LEFT:
-                                origin = LOWER_RIGHT;
-                                break;
-                            case UPPER_RIGHT:
-                                origin = LOWER_LEFT;
-                                break;
-                            case LOWER_RIGHT:
-                                origin = UPPER_LEFT;
-                                break;
-                            default:
-                                logMessage("findOriginLocation: found no matching origin location", true, true);
-                                break;
-                        }
-*/
+                   case ROTATE_270_MIRROR:
                         flipAxes = !flipAxes;
                         break;
 
                     // Flip x values of the image pixels.
-//                    case FLIP_X:
-                    case MIRROR:
-
-/*                        switch (origin) {
-                            case LOWER_LEFT:
-                                origin = LOWER_RIGHT;
-                                break;
-                            case UPPER_LEFT:
-                                origin = UPPER_RIGHT;
-                                break;
-                            case UPPER_RIGHT:
-                                origin = UPPER_LEFT;
-                                break;
-                            case LOWER_RIGHT:
-                                origin = LOWER_LEFT;
-                                break;
-                            default:
-                                logMessage("findOriginLocation: found no matching origin location", true, true);
-                                break;
-                        }
-*/
+                   case MIRROR:
                         break;
 
                     // Flip the y values of the image pixels.
-//                    case FLIP_Y:
-                    case ROTATE_180_MIRROR:
-
-/*                        switch (origin) {
-                            case LOWER_LEFT:
-                                origin = UPPER_LEFT;
-                                break;
-                            case UPPER_LEFT:
-                                origin = LOWER_LEFT;
-                                break;
-                            case UPPER_RIGHT:
-                                origin = LOWER_RIGHT;
-                                break;
-                            case LOWER_RIGHT:
-                                origin = UPPER_RIGHT;
-                                break;
-                            default:
-                                logMessage("findOriginLocation: found no matching origin location", true, true);
-                                break;
-                        }
-*/
+                   case ROTATE_180_MIRROR:
                         break;
 
                     default:
                         logMessage("findOriginLocation: found no matching transform type", true, true);
                         break;
                 }
-//            }
             if (isDebugMessages)
                 logMessage("findOriginLocation: origin location is " + origin, true, true);
         }
@@ -1732,23 +1141,6 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         
         switch (origin)
         {
-/*            case LOWER_LEFT:
-                if (flipAxes)
-                {
-                    tempX = maxSizeX - (startY + sizeY);
-                    tempY = startX;
-                    tempSizeX = sizeY;
-                    tempSizeY = sizeX;
-                }
-                else
-                {
-                    tempX = startX;
-                    tempY = maxSizeY - (startY + sizeY);
-                    tempSizeX = sizeX;
-                    tempSizeY = sizeY;
-                }
-                break;
-*/                
             case UPPER_LEFT:
                 if (flipAxes)
                 {
@@ -1765,42 +1157,6 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
                     tempSizeY = sizeY;
                 }
                 break;
-                
-/*            case LOWER_RIGHT:
-                if (flipAxes)
-                {
-                    tempX = maxSizeX - (startY + sizeY);
-                    tempY = maxSizeY - (startX + sizeX);
-                    tempSizeX = sizeY;
-                    tempSizeY = sizeX;
-                }
-                else
-                {
-                    tempX = maxSizeX - (startX + sizeX);
-                    tempY = maxSizeY - (startY + sizeY);
-                    tempSizeX = sizeX;
-                    tempSizeY = sizeY;
-                }
-                break;
-
-                
-            case UPPER_RIGHT:
-                if (flipAxes)
-                {
-                    tempX = startY;
-                    tempY = maxSizeY - (startX + sizeX);
-                    tempSizeX = sizeY;
-                    tempSizeY = sizeX;
-                }
-                else
-                {
-                    tempX = maxSizeX - (startX + sizeX);
-                    tempY = startY;
-                    tempSizeX = sizeX;
-                    tempSizeY = sizeY;
-                }
-                break;
-*/                            
             default:
                 break;
         }
@@ -1911,17 +1267,11 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         JButton decreaseYButton = new JButton("Y -");
         
 
-        imagePrefixText = new JTextField(imagePrefix, 15);
         cameraPrefixText = new JTextField(cameraPrefix, 15);
         transformPrefixText = new JTextField(transformPrefix, 15);
         roiPrefixText = new JTextField(roiPrefix, 15);
         tweakAmountText = new JTextField(String.valueOf(tweakAmountPixels), 5);
-        startButton = new JButton("Start");
-        stopButton = new JButton("Stop");
-        stopButton.setEnabled(false);
-        snapButton = new JButton("Snap");
         resetRoiButton = new JButton("Reset ROI");
-        JCheckBox captureCheckBox = new JCheckBox("");
         setNoneRadioButton = new JRadioButton("Set None",true);
         setCCDReadoutRadioButton = new JRadioButton("Set CCD Readout", false);
         setROIRadioButton = new JRadioButton("Set ROI Plugin", false);
@@ -1962,49 +1312,10 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         c.insets = new Insets(2, 2, 2, 2);
 
         // Top row
-        // Anchor all components CENTER
+        // These widgets should be centered
         c.anchor = GridBagConstraints.CENTER;
         c.gridx = 0;
         c.gridy = 0;
-        panel.add(new JLabel("Image PV Prefix"), c);
-        c.gridx = 1;
-        panel.add(new JLabel("NX"), c);
-        c.gridx = 2;
-        panel.add(new JLabel("NY"), c);
-        c.gridx = 3;
-        panel.add(new JLabel("NZ"), c);
-        c.gridx = 4;
-        panel.add(new JLabel("Frames/s"), c);
-        c.gridx = 5;
-        panel.add(new JLabel("Capture to Stack"), c);
-
-        // Second row
-        // These widgets should be centered
-        c.anchor = GridBagConstraints.CENTER;
-        c.gridy = 1;
-        c.gridx = 0;
-        panel.add(imagePrefixText, c);
-        c.gridx = 1;
-        panel.add(NXText, c);
-        c.gridx = 2;
-        panel.add(NYText, c);
-        c.gridx = 3;
-        panel.add(NZText, c);
-        c.gridx = 4;
-        panel.add(FPSText, c);
-        c.gridx = 5;
-        panel.add(captureCheckBox, c);
-        c.gridx = 6;
-        panel.add(snapButton, c);
-        c.gridx = 7;
-        panel.add(startButton, c);
-        c.gridx = 8;
-        panel.add(stopButton, c);
-
-        // Third row
-        c.anchor = GridBagConstraints.CENTER;
-        c.gridy = 2;
-        c.gridx = 0;
         panel.add(new JLabel("Camera PV Prefix"), c);
         c.gridx = 1;
         panel.add(new JLabel("ROI PV Prefix"), c);
@@ -2015,9 +1326,9 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         c.gridx = 5;
         panel.add(tweakAmountText, c);
 
-        // Fourth row
+        // Second row
         c.anchor = GridBagConstraints.CENTER;
-        c.gridy = 3;
+        c.gridy = 1;
         c.gridx = 0;
         panel.add(cameraPrefixText, c);
         c.gridx = 1;
@@ -2034,11 +1345,10 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         panel.add(increaseHeightButton, c);
         c.gridx = 8;
         panel.add(decreaseHeightButton, c);
-        //panel.add(new JLabel("Width"), c);
 
-        // Fifth row
+        // Third row
         c.anchor = GridBagConstraints.CENTER;
-        c.gridy = 4;
+        c.gridy = 2;
         c.gridx = 0;
         panel.add(groupAPanel, c);
         c.gridx = 1;
@@ -2070,36 +1380,7 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         frame.addWindowListener(new FrameExitListener());
         frame.setVisible(true);
 
-        int timerDelay = 2000;  // 2 seconds 
-        timer = new javax.swing.Timer(timerDelay, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                checkImagePVConnections();
-                long time = new Date().getTime();
-                double fps = 1000. * numImageUpdates / (double) (time - prevTime);
-                NumberFormat form = DecimalFormat.getInstance();
-                ((DecimalFormat) form).applyPattern("0.0");
-                FPSText.setText("" + form.format(fps));
-                if (isDisplayImages && numImageUpdates > 0) {
-                    logMessage("New images=" + numImageUpdates, true, false);
-                }
-                prevTime = time;
-                numImageUpdates = 0;
-            }
-        });
-        timer.start();
-
-        imagePrefixText.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                if (isDebugMessages)
-                    IJ.log("Image prefix changed");
-                disconnectImagePVs();
-                connectImagePVs();
-            }
-        });
-
-        cameraPrefixText.addActionListener(new ActionListener() {
+       cameraPrefixText.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
                 if (isDebugMessages)
@@ -2137,28 +1418,6 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
             }
         });
 
-        startButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                startButton.setEnabled(false);
-                stopButton.setEnabled(true);
-                snapButton.setEnabled(true);
-                isDisplayImages = true;
-                logMessage("Image display started", true, true);
-            }
-        });
-
-        stopButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                startButton.setEnabled(true);
-                stopButton.setEnabled(false);
-                snapButton.setEnabled(false);
-                isDisplayImages = false;
-                logMessage("Image display stopped", true, true);
-            }
-        });
-        
         increaseWidthButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
@@ -2424,13 +1683,6 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
             }
         });
 
-        snapButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                makeImageCopy();
-            }
-        });
-
         resetRoiButton.addActionListener(new ActionListener() {
             /**
              * This method resets both the camera readout region and the
@@ -2466,22 +1718,6 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
             }
         });
 
-        captureCheckBox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                if (e.getStateChange() == ItemEvent.SELECTED) {
-                    isSaveToStack = true;
-                    isNewStack = true;
-                    IJ.log("record on");
-                } else {
-                    isSaveToStack = false;
-                    IJ.log("record off");
-                }
-
-            }
-        }
-        );
-        
         setCCDReadoutRadioButton.addItemListener(new ItemListener () {
             @Override
             public void itemStateChanged(ItemEvent e) {
@@ -2581,10 +1817,6 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
             FileInputStream file = new FileInputStream(path);
             properties.load(file);
             file.close();
-            temp = properties.getProperty("imagePrefix");
-            if (temp != null) {
-                imagePrefix = temp;
-            }
             temp = properties.getProperty("cameraPrefix");
             if (temp != null) {
                 cameraPrefix = temp;
@@ -2611,7 +1843,6 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         try {
             String fileSep = System.getProperty("file.separator");
             path = System.getProperty("user.home") + fileSep + propertyFile;
-            properties.setProperty("imagePrefix", imagePrefix);
             properties.setProperty("cameraPrefix", cameraPrefix);
             properties.setProperty("transformPrefix", transformPrefix);
             properties.setProperty("roiPrefix", roiPrefix);
