@@ -164,8 +164,6 @@ NDPluginPva::NDPluginPva(const char *portName, int queueSize,
 
     if(!master->addRecord(m_record))
         throw runtime_error("couldn't add record to master database");
-
-    m_server = startPVAServer(PVACCESS_ALL_PROVIDERS, 0, true, true);
 }
 
 /* Configuration routine.  Called directly, or from the iocsh function */
