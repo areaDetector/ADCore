@@ -11,6 +11,7 @@
 #include <iostream>
 
 #include <libxml/xmlreader.h>
+#include <epicsExport.h>
 #include "NDFileHDF5Layout.h"
 #include "NDFileHDF5LayoutXML.h"
 

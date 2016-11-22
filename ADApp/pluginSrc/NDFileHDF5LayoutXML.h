@@ -56,7 +56,7 @@ namespace hdf5
 
   /**  Used to define layout of HDF5 file with NDFileHDF5 plugin 
     */ 
-  class LayoutXML
+  class epicsShareClass LayoutXML
   {
     public:
       static const std::string ATTR_ELEMENT_NAME;
