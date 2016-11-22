@@ -13,6 +13,7 @@ $(PROD_NAME)_DBD += NDFileNull.dbd
 
 ifeq ($(WITH_EPICS_V4),YES)
   $(PROD_NAME)_DBD += NDPluginPva.dbd
+  $(PROD_NAME)_DBD += PVAServerRegister.dbd
   PROD_LIBS += ntndArrayConverter
   PROD_LIBS += nt
   PROD_LIBS += pvDatabase
