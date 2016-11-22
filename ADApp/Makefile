@@ -15,8 +15,6 @@ pluginTests_DEPEND_DIRS += pluginSrc
 ifeq ($(WITH_EPICS_V4), YES)
   DIRS += ntndArrayConverterSrc
   ntndArrayConverterSrc_DEPEND_DIRS += ADSrc
-  DIRS += pvaDriverSrc
-  pvaDriverSrc_DEPEND_DIRS += ntndArrayConverterSrc
   pluginSrc_DEPEND_DIRS += ntndArrayConverterSrc
 endif
 
