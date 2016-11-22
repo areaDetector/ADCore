@@ -36,6 +36,20 @@ R2-6 (December XXX, 2016)
 ### pvaDriver
 * Moved the driver into its own repository areaDetector/pvaDriver.  The new repository contains
   both the driver library from ADCore and the example IOC that was previously in ADExample.
+  
+### NDArray.cpp
+* Print the reference count in the report() method.
+
+### iocBoot/EXAMPLE_commonPlugins.cmd
+* Add commented out line to call startPVAServer if the EPICS V4 NDPva plugin is loaded.
+  Previously the plugin itself called startPVAServer, but this can result in the function 
+  being called multiple times, which is not allowed.
+
+### NDPliginPos
+* Added NDPos.adl medm file.
+
+### pluginTests
+* Added ROIPluginWrapper.cpp to test the CollapseDims behavior in NDPluginROI.
 
 
 R2-5 (October 28, 2016)
