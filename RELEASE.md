@@ -33,6 +33,10 @@ R2-6 (December XXX, 2016)
   Previously there were only input records (NDimensions_RBV and Dimensions_RBV) 
   for these parameters.
 
+### pvaDriver
+* Moved the driver into its own repository areaDetector/pvaDriver.  The new repository contains
+  both the driver library from ADCore and the example IOC that was previously in ADExample.
+
 
 R2-5 (October 28, 2016)
 ========================
