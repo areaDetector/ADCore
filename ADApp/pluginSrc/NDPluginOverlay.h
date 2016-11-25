@@ -1,12 +1,14 @@
 #ifndef NDPluginOverlay_H
 #define NDPluginOverlay_H
 
+#include <vector>
 #include "NDPluginDriver.h"
 
 typedef enum {
     NDOverlayCross,
     NDOverlayRectangle,
-    NDOverlayText
+    NDOverlayText,
+    NDOverlayEllipse,
 } NDOverlayShape_t;
 
 typedef enum {
@@ -16,12 +18,13 @@ typedef enum {
 
 /** Structure defining an overlay */
 typedef struct NDOverlay {
-    size_t PositionX;
-    size_t PositionY;
-    size_t SizeX;
-    size_t SizeY;
-    size_t WidthX;
-    size_t WidthY;
+    bool changed;
+    int PositionX;
+    int PositionY;
+    int SizeX;
+    int SizeY;
+    int WidthX;
+    int WidthY;
     NDOverlayShape_t shape;
     NDOverlayDrawMode_t drawMode;
     int red;
@@ -30,6 +33,7 @@ typedef struct NDOverlay {
     char TimeStampFormat[64];
     int Font;
     char DisplayText[256];
+    std::vector<long> addressOffset;
 } NDOverlay_t;
 
 
@@ -92,6 +96,7 @@ private:
     NDArrayInfo arrayInfo;
     NDOverlay_t *pOverlays;    /* Array of NDOverlay structures */
     NDOverlay_t *pOverlay;
+
 };
 #define NUM_NDPLUGIN_OVERLAY_PARAMS ((int)(&LAST_NDPLUGIN_OVERLAY_PARAM - &FIRST_NDPLUGIN_OVERLAY_PARAM + 1))
     
