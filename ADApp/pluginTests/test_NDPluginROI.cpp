@@ -67,7 +67,7 @@ typedef struct {
   std::vector<NDArray*> pArrays;
 } testCaseStr ;
 
-void appendTestCase(std::vector<testCaseStr> *pOut, tempCaseStr *pIn)
+static void appendTestCase(std::vector<testCaseStr> *pOut, tempCaseStr *pIn)
 {
   testCaseStr tmp;
   tmp.inputRank          = pIn->inputRank;
