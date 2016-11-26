@@ -27,6 +27,26 @@ R2-6 (December XXX, 2016)
   1.  For example an output array that would normally be dimensions [1, 256, 256] would be
   [256, 256] if CollapseDims=Enable.
 
+### NDPluginOverlay
+* Added new Ellipse shape to draw elliptical or circular overlays.
+* Improved efficiency by only computing the coordinates of the overlay pixels when the overlay
+  definition changes or the image format changes.  The pixel coordinates are saved in a list.
+  This is particularly important for the new Ellipse shape because it uses trigonometric functions 
+  to compute the pixel coordinates. When neither the overlay definition or the image format changes 
+  it now just sets the pixel values for each pixel in the list.
+* Added CenterX and CenterY parameter for each overlay.  One can now specify the overlay location
+  either by PositionX and PositionY, which defines the position of the upper left corner of the
+  overlay, or by CenterX and CenterY, which define the location of the center of the overlay.
+  If CenterX/Y is changed then PositionX/Y will automatically update, and vice-versa.
+* Changed the meaning of SizeX and SizeY for the Cross overlay shape.  Previously the total size
+  of a Cross overlay was SizeX*2 and SizeY*2.  It is now SizeX and SizeY.  This makes it consistent
+  with the Rectangle and Overlay shapes, i.e. drawing each of these shapes with the same PositionX
+  and SizeX/Y will result in shapes that overlap in the expected manner.
+* Slightly changed the meaning of SizeX/Y for the Cross and Rectangle shapes.  Previously the total
+  size of the overlay was SizeX and SizeY.  Now it is SizeX+1 and SizeY+1, i.e. the overlay extends
+  +-SizeX/2 and +-SizeY/2 pixels from the center pixel.  This preserves symmetry when WidthX/Y is 1,
+  and the previous behavior is difficult to duplicate for the Ellipse shape.
+
 ### NDArrayBase.template
 * Added new longout record NDimensions and new waveform record Dimensions to control the NDArray
   dimensions.  These were needed for NDDriverStdArrays, and may be useful for other drivers.
@@ -45,7 +65,7 @@ R2-6 (December XXX, 2016)
   Previously the plugin itself called startPVAServer, but this can result in the function 
   being called multiple times, which is not allowed.
 
-### NDPliginPos
+### NDPluginPos
 * Added NDPos.adl medm file.
 
 ### pluginTests
