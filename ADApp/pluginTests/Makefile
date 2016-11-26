@@ -28,6 +28,7 @@ ifeq ($(WITH_BOOST),YES)
   ADTestUtility_SRCS += TimeSeriesPluginWrapper.cpp
   ADTestUtility_SRCS += FFTPluginWrapper.cpp
   ADTestUtility_SRCS += ROIPluginWrapper.cpp
+  ADTestUtility_SRCS += OverlayPluginWrapper.cpp
 
   PROD_IOC_Linux += plugin-test
   PROD_IOC_Darwin += plugin-test
@@ -42,6 +43,7 @@ ifeq ($(WITH_BOOST),YES)
   plugin-test_SRCS += test_NDPluginTimeSeries.cpp
   plugin-test_SRCS += test_NDPluginFFT.cpp
   plugin-test_SRCS += test_NDPluginROI.cpp
+  plugin-test_SRCS += test_NDPluginOverlay.cpp
 
   # Add tests for new plugins like this:
   #plugin-test_SRCS += test_<plugin name>.cpp
