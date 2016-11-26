@@ -41,8 +41,10 @@ typedef struct NDOverlay {
 #define NDPluginOverlayMaxSizeYString           "MAX_SIZE_Y"            /* (asynInt32,   r/o) Maximum size of overlay in Y dimension */
 #define NDPluginOverlayNameString               "NAME"                  /* (asynOctet,   r/w) Name of this overlay */
 #define NDPluginOverlayUseString                "USE"                   /* (asynInt32,   r/w) Use this overlay? */
-#define NDPluginOverlayPositionXString          "OVERLAY_POSITION_X"    /* (asynInt32,   r/o) X position of overlay */
-#define NDPluginOverlayPositionYString          "OVERLAY_POSITION_Y"    /* (asynInt32,   r/w) Y position of overlay */
+#define NDPluginOverlayPositionXString          "OVERLAY_POSITION_X"    /* (asynInt32,   r/w) X position (upper left) of overlay */
+#define NDPluginOverlayPositionYString          "OVERLAY_POSITION_Y"    /* (asynInt32,   r/w) Y position (upper left) of overlay */
+#define NDPluginOverlayCenterXString            "OVERLAY_CENTER_X"      /* (asynInt32,   r/w) X center of overlay */
+#define NDPluginOverlayCenterYString            "OVERLAY_CENTER_Y"      /* (asynInt32,   r/w) Y center of overlay */
 #define NDPluginOverlaySizeXString              "OVERLAY_SIZE_X"        /* (asynInt32,   r/o) X size of overlay */
 #define NDPluginOverlaySizeYString              "OVERLAY_SIZE_Y"        /* (asynInt32,   r/w) Y size of overlay */
 #define NDPluginOverlayWidthXString             "OVERLAY_WIDTH_X"       /* (asynInt32,   r/o) X width of overlay */
@@ -65,6 +67,9 @@ public:
                  int priority, int stackSize);
     /* These methods override the virtual methods in the base class */
     void processCallbacks(NDArray *pArray);
+    asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
+
+    /* These methods are new to this class */
     template <typename epicsType> void doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay);
     int doOverlay(NDArray *pArray, NDOverlay_t *pOverlay);
     template <typename epicsType> void setPixel(epicsType *pValue, NDOverlay_t *pOverlay);
@@ -77,6 +82,8 @@ protected:
     int NDPluginOverlayUse;
     int NDPluginOverlayPositionX;
     int NDPluginOverlayPositionY;
+    int NDPluginOverlayCenterX;
+    int NDPluginOverlayCenterY;
     int NDPluginOverlaySizeX;
     int NDPluginOverlaySizeY;
     int NDPluginOverlayWidthX;
