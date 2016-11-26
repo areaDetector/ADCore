@@ -31,6 +31,8 @@
 #define MAX(A,B) (A)>(B)?(A):(B)
 #define MIN(A,B) (A)<(B)?(A):(B)
 
+#define CLIPX(a) (MIN(MAX(a,0), (int)this->arrayInfo.xSize-1))
+#define CLIPY(a) (MIN(MAX(a,0), (int)this->arrayInfo.ySize-1))
 #ifndef M_PI
 #  define M_PI 3.14159265358979323846
 #endif
@@ -41,8 +43,8 @@ template <typename epicsType>
 void NDPluginOverlay::setPixel(epicsType *pValue, NDOverlay_t *pOverlay)
 {
   if ((this->arrayInfo.colorMode == NDColorModeRGB1) ||
-    (this->arrayInfo.colorMode == NDColorModeRGB2) ||
-    (this->arrayInfo.colorMode == NDColorModeRGB3)) {
+      (this->arrayInfo.colorMode == NDColorModeRGB2) ||
+      (this->arrayInfo.colorMode == NDColorModeRGB3)) {
     if (pOverlay->drawMode == NDOverlaySet) {
       *pValue = (epicsType)pOverlay->red;
       pValue += this->arrayInfo.colorStride;
@@ -65,6 +67,7 @@ void NDPluginOverlay::setPixel(epicsType *pValue, NDOverlay_t *pOverlay)
   }
 }
 
+
 
 template <typename epicsType>
 void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
@@ -83,7 +86,7 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
   NDPluginOverlayTextFontBitmapType *bmp;  // pointer to our font information (bitmap pointer, perhaps misnamed)
   int bpc;                                 // bytes per char, ie, 1 for 6x13 font, 2 for 9x15 font
   int sbc;                                 // "sub" byte counter to keep track of which byte we are looking at for multi byte fonts
-  static const char *functionName = "doOverlayT";
+  //static const char *functionName = "doOverlayT";
 
   asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
     "NDPluginOverlay::DoOverlayT, shape=%d, Xpos=%ld, Ypos=%ld, Xsize=%ld, Ysize=%ld\n",
@@ -95,30 +98,24 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
 
     switch(pOverlay->shape) {
       case NDOverlayCross:
-        xmin = 0;
-        if (pOverlay->PositionX > pOverlay->SizeX)
-          xmin = pOverlay->PositionX - pOverlay->SizeX;
-        xmax = pOverlay->PositionX + pOverlay->SizeX;
-        xmax = MIN(xmax, (int)this->arrayInfo.xSize-1);
-        ymin = 0;
-        if (pOverlay->PositionY > pOverlay->SizeY)
-          ymin = pOverlay->PositionY - pOverlay->SizeY;
-        ymax = pOverlay->PositionY + pOverlay->SizeY;
-        ymax = MIN(ymax, (int)this->arrayInfo.ySize-1);
-        xwide = (pOverlay->WidthX == 1) ? 0 : pOverlay->WidthX / 2;
-        ywide = (pOverlay->WidthY == 1) ? 0 : pOverlay->WidthY / 2;
-        xwide = MIN(xwide, pOverlay->SizeX-1);
-        ywide = MIN(ywide, pOverlay->SizeY);
+        xcent = pOverlay->PositionX + pOverlay->SizeX/2. + 0.5;
+        ycent = pOverlay->PositionY + pOverlay->SizeY/2. + 0.5;
+        xmin = CLIPX(xcent - pOverlay->SizeX/2. + 0.5);
+        xmax = CLIPX(xcent + pOverlay->SizeX/2. + 0.5);
+        ymin = CLIPY(ycent - pOverlay->SizeY/2. + 0.5);
+        ymax = CLIPY(ycent + pOverlay->SizeY/2. + 0.5);
+        xwide = pOverlay->WidthX / 2;
+        ywide = pOverlay->WidthY / 2;
 
-        for (iy=ymin; iy<ymax; iy++) {
+        for (iy=ymin; iy<=ymax; iy++) {
           rowOffset = iy*this->arrayInfo.yStride;
-          if ((iy >= (pOverlay->PositionY - ywide)) && (iy <= (pOverlay->PositionY + ywide))) {
-            for (ix=xmin; ix<xmax; ++ix) {
+          if ((iy >= (ycent - ywide)) && (iy <= ycent + ywide)) {
+            for (ix=xmin; ix<=xmax; ++ix) {
               pOverlay->addressOffset.push_back(rowOffset + ix*this->arrayInfo.xStride);
             }
           } else {
-            xwidemin_line = pOverlay->PositionX - xwide;
-            xwidemax_line = pOverlay->PositionX + xwide;
+            xwidemin_line = xcent - xwide;
+            xwidemax_line = xcent + xwide;
             for (int line=xwidemin_line; line<=xwidemax_line; ++line) {
               pOverlay->addressOffset.push_back(rowOffset + line*this->arrayInfo.xStride);
             }
@@ -127,70 +124,72 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
         break;
 
       case NDOverlayRectangle:
-        xmin = pOverlay->PositionX;
-        xmin = MAX(xmin, 0);
-        xmax = pOverlay->PositionX + pOverlay->SizeX;
-        xmax = MIN(xmax, (int)this->arrayInfo.xSize);
-        ymin = pOverlay->PositionY;
-        ymin = MAX(ymin, 0);
-        ymax = pOverlay->PositionY + pOverlay->SizeY;
-        ymax = MIN(ymax, (int)this->arrayInfo.ySize);
+        xmin = CLIPX(pOverlay->PositionX);
+        xmax = CLIPX(pOverlay->PositionX + pOverlay->SizeX);
+        ymin = CLIPY(pOverlay->PositionY);
+        ymax = CLIPY(pOverlay->PositionY + pOverlay->SizeY);
         xwide = pOverlay->WidthX;
         ywide = pOverlay->WidthY;
         xwide = MIN(xwide, (int)pOverlay->SizeX-1);
-        ywide = MIN(ywide, (int)pOverlay->SizeY);
+        ywide = MIN(ywide, (int)pOverlay->SizeY-1);
 
         //For non-zero width, grow the rectangle towards the center.
-        for (iy=ymin; iy<ymax; iy++) {
+        for (iy=ymin; iy<=ymax; iy++) {
           rowOffset = iy*arrayInfo.yStride;
           if (iy < (ymin + ywide)) {
-            for (ix=xmin; ix<xmax; ix++) pOverlay->addressOffset.push_back(rowOffset + ix*this->arrayInfo.xStride);
-          } else if ((iy >= (ymax-1 - ywide)) && (iy <= ymax-1)) {
-            for (ix=xmin; ix<xmax; ix++) pOverlay->addressOffset.push_back(rowOffset + ix*this->arrayInfo.xStride);
+            for (ix=xmin; ix<=xmax; ix++) pOverlay->addressOffset.push_back(rowOffset + ix*this->arrayInfo.xStride);
+          } else if (iy > (ymax - ywide)) {
+            for (ix=xmin; ix<=xmax; ix++) pOverlay->addressOffset.push_back(rowOffset + ix*this->arrayInfo.xStride);
           } else {
-            for (int line=xmin; line<xmin+xwide; ++line) {
+            for (int line=xmin; line<CLIPX(xmin+xwide); ++line) {
               pOverlay->addressOffset.push_back(rowOffset + line*this->arrayInfo.xStride);
             }
-            for (int line=(xmax-xwide); line<=xmax; ++line) {
-              pOverlay->addressOffset.push_back(rowOffset + (line-1)*this->arrayInfo.xStride);
+            for (int line=CLIPX(xmax-xwide+1); line<=xmax; ++line) {
+              pOverlay->addressOffset.push_back(rowOffset + line*this->arrayInfo.xStride);
             }
           }
         }
         break;
 
       case NDOverlayEllipse:
-        xmin = pOverlay->PositionX;
-        xmin = MAX(xmin, 0);
-        xmax = pOverlay->PositionX + pOverlay->SizeX;
-        xmax = MIN(xmax, (int)this->arrayInfo.xSize);
-        ymin = pOverlay->PositionY;
-        ymin = MAX(ymin, 0);
-        ymax = pOverlay->PositionY + pOverlay->SizeY;
-        ymax = MIN(ymax, (int)this->arrayInfo.ySize);
         xwide = pOverlay->WidthX;
         ywide = pOverlay->WidthY;
         xwide = MIN(xwide, (int)pOverlay->SizeX-1);
-        ywide = MIN(ywide, (int)pOverlay->SizeY);
-        xsize = (xmax - xmin)/2;
-        ysize = (ymax - ymin)/2;
-        xcent = xmax - xsize;
-        ycent = ymax - ysize;
+        ywide = MIN(ywide, (int)pOverlay->SizeY-1);
+        xcent = pOverlay->PositionX + pOverlay->SizeX/2. + 0.5;
+        ycent = pOverlay->PositionY + pOverlay->SizeY/2. + 0.5;
+        xsize = pOverlay->SizeX/2;
+        ysize = pOverlay->SizeY/2;
+        xmax = this->arrayInfo.xSize-1;
+        ymax = this->arrayInfo.ySize-1;
 
         // Use the parametric equation for an ellipse.  
         // Only need to compute 0 to pi/2, other quadrants by symmetry
         // Make 2*(xsize + ysize) angle points
-        nSteps = 2 * (xsize + ysize);
+        nSteps = 2*(xsize + ysize);
         thetaStep = M_PI / 2. / nSteps;
         for (ii=0, theta=0.; ii<=nSteps; ii++, theta+=thetaStep) {
           for (jj=0; jj<xwide; jj++) {
             ix = (xsize-jj) * cos(theta) + 0.5;
             iy = (ysize-jj) * sin(theta) + 0.5;
-            rowOffset = (ycent + iy)*arrayInfo.yStride; 
-            pOverlay->addressOffset.push_back(rowOffset + (xcent + ix)*this->arrayInfo.xStride);
-            pOverlay->addressOffset.push_back(rowOffset + (xcent - ix)*this->arrayInfo.xStride);
-            rowOffset = (ycent - iy)*arrayInfo.yStride; 
-            pOverlay->addressOffset.push_back(rowOffset + (xcent + ix)*this->arrayInfo.xStride);
-            pOverlay->addressOffset.push_back(rowOffset + (xcent - ix)*this->arrayInfo.xStride);
+            if (((ycent + iy - 1) >= 0) && ((ycent + iy) <= ymax)) {
+              rowOffset = (ycent + iy)*arrayInfo.yStride;
+              if (((xcent + ix) >= 0) && ((xcent + ix) <= xmax)) {
+                pOverlay->addressOffset.push_back(rowOffset + (xcent + ix)*this->arrayInfo.xStride);
+              }
+              if (((xcent - ix) >= 0) && ((xcent - ix) <= xmax)) {
+                pOverlay->addressOffset.push_back(rowOffset + (xcent - ix)*this->arrayInfo.xStride);
+              }
+            }
+            if (((ycent - iy) >= 0) && ((ycent - iy) <= ymax)) {
+              rowOffset = (ycent - iy)*arrayInfo.yStride; 
+              if (((xcent + ix) >= 0) && ((xcent + ix) <= xmax)) {
+                pOverlay->addressOffset.push_back(rowOffset + (xcent + ix)*this->arrayInfo.xStride);
+              }
+              if (((xcent - ix) >= 0) && ((xcent - ix) <= xmax)) {
+                pOverlay->addressOffset.push_back(rowOffset + (xcent - ix)*this->arrayInfo.xStride);
+              }
+            }
           }
         }
         break;
@@ -214,15 +213,12 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
         textOutStr[sizeof(textOutStr)-1] = 0;
 
         cp   = textOutStr;
-        xmin = pOverlay->PositionX;
-        xmin = MAX(xmin, 0);
-        xmax = pOverlay->PositionX + pOverlay->SizeX;
-        xmax = MAX(xmax, (int)this->arrayInfo.xSize);
-        ymin = pOverlay->PositionY;
-        ymin = MAX(ymin, 0);
+        xmin = CLIPX(pOverlay->PositionX);
+        xmax = CLIPX(pOverlay->PositionX + pOverlay->SizeX);
+        ymin = CLIPY(pOverlay->PositionY);
         ymax = pOverlay->PositionY + pOverlay->SizeY;
         ymax = MIN(ymax, pOverlay->PositionY + bmp->height);
-        ymax = MIN(ymax, (int)this->arrayInfo.ySize);
+        ymax = CLIPY(ymax);
 
         // Loop over vertical lines
         for (jj=0, iy=ymin; iy<ymax; jj++, iy++) {
@@ -440,6 +436,8 @@ NDPluginOverlay::NDPluginOverlay(const char *portName, int queueSize, int blocki
   createParam(NDPluginOverlayUseString,             asynParamInt32, &NDPluginOverlayUse);
   createParam(NDPluginOverlayPositionXString,       asynParamInt32, &NDPluginOverlayPositionX);
   createParam(NDPluginOverlayPositionYString,       asynParamInt32, &NDPluginOverlayPositionY);
+  createParam(NDPluginOverlayCenterXString,         asynParamInt32, &NDPluginOverlayCenterX);
+  createParam(NDPluginOverlayCenterYString,         asynParamInt32, &NDPluginOverlayCenterY);
   createParam(NDPluginOverlaySizeXString,           asynParamInt32, &NDPluginOverlaySizeX);
   createParam(NDPluginOverlaySizeYString,           asynParamInt32, &NDPluginOverlaySizeY);
   createParam(NDPluginOverlayWidthXString,          asynParamInt32, &NDPluginOverlayWidthX);
@@ -463,6 +461,64 @@ NDPluginOverlay::NDPluginOverlay(const char *portName, int queueSize, int blocki
   /* Try to connect to the array port */
   connectToArrayPort();
 }
+
+/** Called when asyn clients call pasynInt32->write().
+  * For other parameters it calls NDPluginDriver::writeInt32 to see if that method understands the parameter.
+  * For all parameters it sets the value in the parameter library and calls any registered callbacks.
+  * \param[in] pasynUser pasynUser structure that encodes the reason and address.
+  * \param[in] value The value to write. 
+  * \return asynStatus
+  */
+asynStatus NDPluginOverlay::writeInt32(asynUser *pasynUser, epicsInt32 value)
+{
+  int function = pasynUser->reason;
+  asynStatus status = asynSuccess;
+  int addr = 0;
+  int positionX, positionY, sizeX, sizeY, centerX, centerY;
+  static const char* functionName = "writeInt32";
+
+  getAddress(pasynUser, &addr); 
+
+  /* Set parameter and readback in parameter library */
+  setIntegerParam(addr, function, value);
+  
+  getIntegerParam(addr, NDPluginOverlayPositionX, &positionX);
+  getIntegerParam(addr, NDPluginOverlayPositionY, &positionY);
+  getIntegerParam(addr, NDPluginOverlaySizeX,     &sizeX);
+  getIntegerParam(addr, NDPluginOverlaySizeY,     &sizeY);
+
+  if (function == NDPluginOverlayCenterX) {
+    positionX = (int)(value - sizeX/2. + 0.5);
+    setIntegerParam(addr, NDPluginOverlayPositionX, positionX);
+  } else if (function == NDPluginOverlayCenterY) {
+    positionY = (int)(value - sizeY/2. + 0.5);
+    setIntegerParam(addr, NDPluginOverlayPositionY, positionY);
+  } else if (function == NDPluginOverlayPositionX) {
+    centerX = (int)(value + sizeX/2. + 0.5);
+    setIntegerParam(addr, NDPluginOverlayCenterX, centerX);
+  } else if (function == NDPluginOverlayPositionY) {
+    centerY = (int)(value + sizeY/2. + 0.5);
+    setIntegerParam(addr, NDPluginOverlayCenterY, centerY);
+  } else if (function == NDPluginOverlaySizeX) {
+    centerX = (int)(positionX + value/2. + 0.5);
+    setIntegerParam(addr, NDPluginOverlayCenterX, centerX);
+  } else if (function == NDPluginOverlaySizeY) {
+    centerY = (int)(positionY + value/2. + 0.5);
+    setIntegerParam(addr, NDPluginOverlayCenterY, centerY);
+  } else if (function < FIRST_NDPLUGIN_OVERLAY_PARAM) {
+    NDPluginDriver::writeInt32(pasynUser, value);
+  }
+
+  /* Do callbacks so higher layers see any changes */
+  callParamCallbacks(addr);
+
+  asynPrint(pasynUser, ASYN_TRACEIO_DRIVER,
+    "%s::%s function=%d, addr=%d, value=%d\n",
+    driverName, functionName, function, addr, value);
+
+  return status;
+}
+
 
 /** Configuration command */
 extern "C" int NDOverlayConfigure(const char *portName, int queueSize, int blockingCallbacks,
