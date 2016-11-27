@@ -1,7 +1,7 @@
 /*
  * OverlayPluginWrapper.h
  *
- *  Created on: 9 Nov 2016
+ *  Created on: 26 Nov 2016
  *      Author: Mark Rivers
  */
 
@@ -14,9 +14,8 @@
 class OverlayPluginWrapper : public NDPluginOverlay, public AsynPortClientContainer
 {
 public:
-  OverlayPluginWrapper(const std::string& port, int addr, const std::string& detectorPort, int maxOverlays);
+  OverlayPluginWrapper(const std::string& port, const std::string& detectorPort, int maxOverlays);
   OverlayPluginWrapper(const std::string& port,
-                   int addr,
                    int queueSize,
                    int blocking,
                    const std::string& detectorPort,
