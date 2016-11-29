@@ -6,6 +6,7 @@
  */
 #include <sstream>
 #include <iostream>
+#include <stdlib.h>
 #include <NDPluginDriver.h>
 #include "testingutilities.h"
 
