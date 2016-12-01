@@ -21,7 +21,7 @@ import java.util.*;
  * By Wayne Rasband and Michael Schmid
  * Version 2009-Jun-09: obeys 'fixed y axis scale' in Edit>Options>Profile Plot Options
  */
-public class Profiler_
+public class Gaussian_Profiler
         implements PlugIn, MouseListener, MouseMotionListener, KeyListener, ImageListener, Runnable {
     //MouseListener, MouseMotionListener, KeyListener: to detect changes to the selection of an ImagePlus
     //ImageListener: listens to changes (updateAndDraw) and closing of an image
