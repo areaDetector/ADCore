@@ -60,17 +60,19 @@ R2-6 (December XXX, 2016)
 * Improvements to EPICS_AD_Viewer.java 
   * Automatically set the contrast when a new window is created. This eliminates the need to 
     manually set the contrast when changing image size, data type, and color mode in many cases.
-  * When the image window is automatically closed and reopened because the size or color mode changes
-    the new window is now positioned in the same location as the window that was closed.
+  * When the image window is automatically closed and reopened because the size, data type, 
+    or color mode changes the new window is now positioned in the same location as the window 
+    that was closed.
 * New ImageJ plugin called GaussianProfiler.java.  It was written by Noumane Laanait when he
   was at the APS (currently at ORNL).  This is similar to the standard ImageJ Plot Profile tool in Live
-  mode, but it also fits a Gaussian peak to the profile, and prints the fit parameters (centroid, FWHM,
+  mode, but it also fits a Gaussian peak to the profile, and prints the fit parameters centroid, FWHM,
   amplitude, and background.  It is very useful for focusing x-ray beams, etc.
 * New ImageJ plugin called EPICS_AD_Controller.java.  This plugin allows using the ImageJ ROI tools
-  (rectangle and oval) to define the following:
+  (rectangle and oval) to graphically define the following:
   * The readout region of the detector/camera
   * The position and size of an ROI (NDPluginROI)
   * The position and size of an overlay (NDPluginOverlay)
+
   The plugin chain can include an NDPluginTransform plugin which changes the image orientation and an
   NDPluginROI plugin that changes the binning, size, and X/Y axes directions.  The plugin corrects
   for these transformations when defining the target object.  Chris Roehrig from the APS wrote an
