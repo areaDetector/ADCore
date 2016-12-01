@@ -1,6 +1,7 @@
 // EPICS_AD_Viewer.java
 // Original authors
 //      Tim Madden, APS
+// Current author
 //      Mark Rivers, University of Chicago
 import ij.*;
 import ij.process.*;
@@ -345,6 +346,7 @@ public class EPICS_AD_Viewer implements PlugIn
             int ny = epicsGetInt(ch_ny);
             int nz = epicsGetInt(ch_nz);
             int cm = epicsGetInt(ch_colorMode);
+            boolean madeNewWindow = false;
             DBRType dt = ch_image.getFieldType();
 
             if (nz == 0) nz = 1;  // 2-D images without color
@@ -417,6 +419,7 @@ public class EPICS_AD_Viewer implements PlugIn
                         break;
                 }
                 img.show();
+                madeNewWindow = true;
             }
 
             if (isNewStack)
@@ -505,6 +508,8 @@ public class EPICS_AD_Viewer implements PlugIn
             img.updateAndDraw();
             img.updateStatusbarValue();
             numImageUpdates++;
+            // Automatically set brightness and contrast if we made a new window
+            if (madeNewWindow) new ContrastEnhancer().stretchHistogram(img, 0.5);
         }
         catch (Exception ex)
         {
