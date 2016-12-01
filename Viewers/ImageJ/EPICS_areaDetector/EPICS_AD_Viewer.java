@@ -5,6 +5,7 @@
 //      Mark Rivers, University of Chicago
 import ij.*;
 import ij.process.*;
+import ij.gui.*;
 import java.awt.*;
 import ij.plugin.*;
 import java.io.*;
@@ -346,6 +347,7 @@ public class EPICS_AD_Viewer implements PlugIn
             int ny = epicsGetInt(ch_ny);
             int nz = epicsGetInt(ch_nz);
             int cm = epicsGetInt(ch_colorMode);
+            Point oldWindowLocation=null;
             boolean madeNewWindow = false;
             DBRType dt = ch_image.getFieldType();
 
@@ -382,10 +384,16 @@ public class EPICS_AD_Viewer implements PlugIn
                 {
                     if (img.getWindow() == null || !img.getWindow().isClosed())
                     {
+                        ImageWindow win = img.getWindow();
+                        if (win != null) {
+                            oldWindowLocation = win.getLocationOnScreen();
+                        }
                         img.close();
                     }
                 }
-                catch (Exception ex) { }
+                catch (Exception ex) {
+                    IJ.log("updateImage got exception: " + ex.getMessage()); 
+                }
                 makeNewWindow = false;
             }
             // If the window does not exist or is closed make a new one
@@ -419,6 +427,7 @@ public class EPICS_AD_Viewer implements PlugIn
                         break;
                 }
                 img.show();
+                if (oldWindowLocation != null) img.getWindow().setLocation(oldWindowLocation);
                 madeNewWindow = true;
             }
 
