@@ -24,7 +24,7 @@ R2-6 (December XXX, 2016)
 
 ### NDPluginROI
 * Added CollapseDims to optionally collapse (remove) output array dimensions whose value is
-  1.  For example an output array that would normally be dimensions [1, 256, 256] would be
+  1.  For example an output array that would normally have dimensions [1, 256, 256] would be
   [256, 256] if CollapseDims=Enable.
 
 ### NDPluginOverlay
