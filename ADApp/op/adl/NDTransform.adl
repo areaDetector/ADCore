@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDTransform.adl"
+	name="/home/epics/devel/areaDetector-2-5/ADCore/ADApp/op/adl/NDTransform.adl"
 	version=030107
 }
 display {
@@ -8,7 +8,7 @@ display {
 		x=512
 		y=111
 		width=390
-		height=715
+		height=745
 	}
 	clr=14
 	bclr=4
@@ -765,6 +765,77 @@ composite {
 						(110,689)
 					}
 				}
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=5
+		y=720
+		width=368
+		height=20
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=5
+				y=720
+				width=170
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Output array size"
+		}
+		"text update" {
+			object {
+				x=246
+				y=721
+				width=61
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)ArraySizeY_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=312
+				y=721
+				width=61
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)ArraySizeZ_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=180
+				y=721
+				width=61
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)ArraySizeX_RBV"
+				clr=54
+				bclr=4
+			}
+			align="horiz. centered"
+			limits {
 			}
 		}
 	}

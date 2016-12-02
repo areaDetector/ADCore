@@ -566,6 +566,11 @@ void NDPluginTransform::transformImage(NDArray *inArray, NDArray *outArray, NDAr
       transformNDArray<epicsFloat64>(inArray, outArray, transformType, colorMode, arrayInfo);
       break;
   }
+  // Set NDArraySizeX and NDArraySizeY appropriately
+  setIntegerParam(NDArraySizeX, outArray->dims[arrayInfo->xDim].size);
+  setIntegerParam(NDArraySizeY, outArray->dims[arrayInfo->yDim].size);
+  if (outArray->ndims < 3) setIntegerParam(NDArraySizeZ, 0);
+  else setIntegerParam(NDArraySizeZ, 3);
 
   return;
 }

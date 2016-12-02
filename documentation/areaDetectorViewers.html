@@ -10,7 +10,7 @@
     <h1>
       areaDetector Viewers</h1>
     <h2>
-      January 7, 2016</h2>
+      December 1, 2016</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -20,7 +20,9 @@
     Contents</h2>
   <ul>
     <li><a href="#Overview">Overview</a></li>
-    <li><a href="#ImageJViewer">ImageJ Viewer</a></li>
+    <li><a href="#ImageJViewer">ImageJ EPICS_AD_Viewer</a></li>
+    <li><a href="#ImageJController">ImageJ EPICS_AD_Controller</a></li>
+    <li><a href="#ImageJGaussianProfiler">ImageJ GaussianProfiler</a></li>
     <li><a href="#IDLViewer">IDL Viewer</a></li>
     <li><a href="#Troubleshooting">Troubleshooting</a></li>
   </ul>
@@ -32,13 +34,18 @@
     display clients that obtain their data via EPICS Channel Access and work with any
     detector. There are currently two such generic clients provided with the areaDetector
     distribution. The first is a plugin for the popular ImageJ Java-based image processing
-    program. The second is an IDL-based viewer which can be run without an IDL license
-    under the IDL Virtual Machine. Because ImageJ is free and more widely available
-    and used than IDL, future enhancements are more likely to be done on the ImageJ
-    plugin rather than the IDL viewer.
+    program (EPICS_AD_Viewer.java). The second is an IDL-based viewer which can be run
+    without an IDL license under the IDL Virtual Machine. Because ImageJ is free and
+    more widely available and used than IDL, future enhancements are more likely to
+    be done on the ImageJ plugin rather than the IDL viewer.
   </p>
+  <p>
+    In addition to the ImageJ viewer plugin, there is an ImageJ plugin to graphically
+    define the detector/camera readout region, ROIs, and overlays (EPICS_AD_Controller.java).
+    Another ImageJ plugin provided with areaDetector does realtime line profiles with
+    Gaussian peak fitting (GaussianProfile.java).</p>
   <h2 id="ImageJViewer">
-    ImageJ Viewer</h2>
+    ImageJ Viewer (EPICS_AD_Viewer.java)</h2>
   <p>
     This is a plugin for the popular <a href="http://rsbweb.nih.gov/ij/">ImageJ</a>
     program that can be used to display 2-dimensional array data that the <a href="NDPluginStdArrays.html">
@@ -103,15 +110,13 @@
     to allow you to scroll through the images. The stack can be saved to disk in a large
     number of formats, including AVI.</p>
   <p>
-    Note that default image brightness and contrast when displaying 8-bit images is
-    normally sufficient to at least see something in the image. However, when displaying
-    16-bit, 32-bit, or floating point images the default brightness and contrast when
-    first opening the display is usually poor, either completely white or completely
-    black. This is easily fixed using the Image/Adjust/Brightness/Control menu in ImageJ.
-    The keyboard shortcut for this is Control+Shift+C, which is worth remembering. Opening
-    the Brightness and Contrast window will first do an autoscaling, which is often
-    quite good. Pressing the Auto button repeatedly will step through several brightness/contrast
-    settings.</p>
+    Note that beginning with ADCore R2-6 the plugin automatically resets the image image
+    brightness and contrast when creating a new window. This will often provide a reasonable
+    values. To optimize the brightness and contrast use the Image/Adjust/Brightness/Control
+    menu in ImageJ. The keyboard shortcut for this is Control+Shift+C, which is worth
+    remembering. Opening the Brightness and Contrast window will first do an autoscaling,
+    which is often quite good. Pressing the Auto button repeatedly will step through
+    several brightness/contrast settings.</p>
   <p>
     The following is the main ImageJ window.
   </p>
@@ -139,22 +144,114 @@
     <p>
       <img alt=")mageJ_EPICS_AD_Viewer_display.jpg" src="ImageJ_EPICS_AD_Viewer_display.jpg" /></p>
   </div>
-  <p>
-    Recent versions of ImageJ come with a Dynamic Line Profile tool in the Graphics
-    plugin menu. This tool can be used to plot a live line profile through an image
-    which updates as new images are displayed. It also updates when the line position
-    is changed. The version of this plugin that is supplied with the version of ImageJ
-    current as of this writing (1.42q) does not obey the "Fixed Y-axis scale" property
-    on the Edit/Options/Profile Plot Options menu in ImageJ. There is a newer version
-    of this plugin available on the Web and also in the EPICS_areaDetector plugin folder
-    that does obey the "Fixed Y-axis scale" property. Compile this version and replace
-    the Dynamic_Profiler.class file in the ImageJ Graphics/ plugin folder to use the
-    newer version.</p>
   <div style="text-align: center">
     <h3>
       ImageJ EPICS_AD_Viewer dynamic line profile of the above image</h3>
     <p>
       <img alt="ImageJ_EPICS_AD_Viewer_DynamicProfile.png" src="ImageJ_EPICS_AD_Viewer_DynamicProfile.png" /></p>
+  </div>
+  <h2 id="ImageJController">
+    ImageJ Controller (EPICS_AD_Controller.java)</h2>
+  <p>
+    This is an ImageJ plugin which can be used to graphically control the following:</p>
+  <ul>
+    <li>The readout region of the detector or camera.</li>
+    <li>The size and position of an ROI (NDPluginROI).</li>
+    <li>The size and position of an overlay (NDPluginOverlay).</li>
+  </ul>
+  <p>
+    Normally this plugin will be used together with the EPICS_AD_Viewer plugin described
+    above. However, that is not required. For example, the ImageJ window used with EPICS_AD_Controller
+    could be a window read from a TIFF file that the detector previously wrote.</p>
+  <p>
+    The detector and plugin chain can include any of the following elements and settings:</p>
+  <ul>
+    <li>Camera/detector (MinX, MinY, SizeX, SizeY, BinX, BinY, ReverseX, ReverseY)</li>
+    <li>Transform plugin (NDPluginTransform) (Type, i.e. the transform operation None,
+      Rot90, Mirror, etc.)</li>
+    <li>ROI plugin (NDPluginROI) (MinX, MinY, SizeX, SizeY, BinX, BinY, ReverseX, ReverseY))</li>
+    <li>Overlay plugin (NDPluginOverlay)</li>
+    <li>NDPluginStdArrays plugin (used by EPICS_AD_Viewer to get images)</li>
+  </ul>
+  <p>
+    All of the above components are optional, they do not need to be present. However,
+    the components that are present must be in the above order in the "viewing" plugin
+    chain. In other words the Transform plugin must come before the ROI and Overlay
+    plugins, and the ROI plugin must come before the Overlay plugin. For the Transform
+    and ROI plugins there is a flag that allows selecting whether or not this plugin
+    is included the plugin chain. Note that this flag does not control the plugin chain,
+    rather it must be set to correctly reflect the actual setting of the plugin chain.
+    It is possible to use EPICS_AD_Control to control the ROI without the ROI plugin
+    being in the plugin chain. In fact this is a common use case.</p>
+  <p>
+    The following is the EPICS_AD_Controller plugin control, located in the ImageJ "Plugins/EPICS_areaDetector/EPICS
+    AD Controller" menu.</p>
+  <div style="text-align: center">
+    <h3>
+      ImageJ EPICS_AD_Controller plugin control window</h3>
+    <p>
+      <img alt="ImageJ_EPICS_AD_Controller.png" src="ImageJ_EPICS_AD_Controller.png" /></p>
+  </div>
+  <p>
+    The following are the controls on the EPICS_AD_Controller screen:</p>
+  <ul>
+    <li>String input controls for the EPICS PV prefixes for the Camera, Transform plugin,
+      ROI plugin, and Overlay plugin.</li>
+    <li>"Output PVs" combo box control that selects which component will be defined when
+      the Set button is pushed. Choices are "Camera", "ROI", and "Overlay".</li>
+    <li>"Set" control button. Pressing this button calculates the coordinates of the component
+      to be defined and writes the values to the desired PVs.</li>
+    <li>"Reset camera region" control button. Pressing this button resets the MinX and
+      MinY of the camera to 0 and sets SizeX and SizeY to the maximum image size (MaxSizeX,
+      MaxSizeY). Note that it does not modify the camera BinX, BinY, ReverseX, or ReverseY.</li>
+    <li>"Reset ROI" control button. Pressing this button resets the MinX and MinY of the
+      ROI to 0 and sets SizeX and SizeY to the maximum camera image size (MaxSizeX, MaxSizeY).
+      Note that it does not modify the ROI BinX, BinY, ReverseX, or ReverseY.</li>
+    <li>"Transform Plugin In Chain" checkbox. Check this box if the Transform plugin is
+      part of the viewing plugin chain.</li>
+    <li>"ROI Plugin In Chain" checkbox. Check this box if the ROI plugin is part of the
+      viewing plugin chain. Note that EPICS_AD_Controller can define the ROI even if it
+      is not part of the viewing plugin chain, and in fact this is a common use case.</li>
+    <li>Status text box. Errors and informational messages are displayed here.</li>
+  </ul>
+  <p>
+    When using EPICS_AD_Controller to define the camera readout region then the following
+    rule must be followed. If the ROI plugin is in the viewing chain then it must first
+    be set to pass the entire image, i.e. MinX and MinY must be 0, and SizeX and SizeY
+    must be at least as large as the image from the camera. This can be conveniently
+    done by pressing the "Reset ROI" button before defining the ImageJ ROI to select
+    the camera readout region. This is not required if the ROI is not in the viewing
+    plugin chain.</p>
+  <p>
+    The following is the EPICS_AD_Viewer image display window with an ellipse overlay
+    that was defined using an ImageJ rectangular ROI and EPICS_AD_Controller.</p>
+  <div style="text-align: center">
+    <h3>
+      ImageJ EPICS_AD_Viewer plugin display window with rectangular Image ROI defining
+      an elliptical overlay NDPluginOverlay</h3>
+    <p>
+      <img alt=")mageJ_EPICS_AD_Controller_Overlay.png" src="ImageJ_EPICS_AD_Controller_Overlay.png" /></p>
+  </div>
+  <p>
+    The EPICS_AD_Control plugin must be compiled in the same manner described for EPICS_AD_Viewer
+    above.</p>
+  <h2 id="ImagejGaussianProfiler">
+    ImageJ Gaussian Profiler (GaussianProfiler.java)</h2>
+  <p>
+    This is an ImageJ plugin which can be used to dynamically plot a line profile, fit
+    the profile to a Gaussian peak, and print the fit parameters (centroid, amplitude,
+    full-width half-maximum (FWHM), and background. It should be compiled in the same
+    manner as EPICS_AD_Viewer described above. It is used by drawing a line or rectangle
+    in ImageJ and then starting Plugins/EPICS_areaDetector/Gaussian Profiler.</p>
+  <p>
+    The following is the GaussianProfiler window plotting the profile of the peak shown
+    above in the EPICS_AD_Controller image.</p>
+  <div style="text-align: center">
+    <h3>
+      ImageJ GaussianProfiler plotting a line through the peak shown above in the EPICS_AD_Controller
+      image</h3>
+    <p>
+      <img alt="ImageJ_GaussianProfiler.png" src="ImageJ_GaussianProfiler.png" /></p>
   </div>
   <h2 id="IDLViewer">
     IDL Viewer</h2>
@@ -252,12 +349,6 @@
     The Viewers/IDL directory also contains an IDL function to read the areaDetector
     netCDF files. This is described in the <a href="NDPluginFile.html#netCDF">NDPluginFile
       netCDF</a> documentation.</p>
-  <p>
-    Stephen Mudie at the Australian Synchrotron has written a very nice IDL client to
-    display the EPICS images from the Flea Firewire cameras. This client is being converted
-    to display the data from this areaDetector plugin, and will be provided in a future
-    release of areaDetector.
-  </p>
   <h2 id="Troubleshooting">
     Troubleshooting</h2>
   <p>

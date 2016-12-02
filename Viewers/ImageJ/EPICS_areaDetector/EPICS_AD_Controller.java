@@ -1,15 +1,16 @@
 // EPICS_AD_Controller.java
 // Original authors
 //      Tim Madden, APS
-//      Mark Rivers, University of Chicago
 //      Chris Roehrig, APS
+// Current author
+//      Mark Rivers, University of Chicago
 
 import ij.*;
 import ij.process.*;
 import java.awt.*;
 import ij.plugin.*;
-import ij.gui.ImageCanvas;
 import ij.gui.ImageWindow;
+import ij.gui.Roi;
 import java.io.*;
 import java.text.*;
 import java.awt.event.*;
@@ -22,23 +23,18 @@ import gov.aps.jca.dbr.*;
 import gov.aps.jca.configuration.*;
 import gov.aps.jca.event.*;
 
-public class EPICS_AD_Viewer implements PlugIn, MouseListener {
+public class EPICS_AD_Controller implements PlugIn {
     
-    private static final short UPPER_LEFT = 1;
     private static final short NONE = 0;
     private static final short ROTATE_90 = 1;
     private static final short ROTATE_180 = 2;
     private static final short ROTATE_270 = 3;
-    private static final short MIRROR= 4;
+    private static final short MIRROR = 4;
     private static final short ROTATE_90_MIRROR = 5;
     private static final short ROTATE_180_MIRROR = 6;
     private static final short ROTATE_270_MIRROR = 7;
-
-    ImagePlus img;
-
-    int imageSizeX = 0;
-    int imageSizeY = 0;
-    int imageSizeZ = 0;
+    private ImagePlus imgPlus;
+    private ImageProcessor imgProc;
 
     FileOutputStream debugFile;
     PrintStream debugPrintStream;
@@ -49,9 +45,9 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
     DefaultConfiguration conf;
     Context ctxt;
 
-    /* These are EPICS channel objects to write the ROI
-     * back to the areaDetector software.
-     */
+    /* These are EPICS channel objects for the camera */
+    Channel ch_maxSizeCamX;       //This is the maximum dimension of X
+    Channel ch_maxSizeCamY;       //This is the maximum dimension of Y
     Channel ch_minCamX;           //This is the start of the CCD readout in X
     Channel ch_minCamY;           //This is the start of the CCD readout in Y
     Channel ch_minCamX_RBV;       //This is the readback value of X of the CCD readout
@@ -60,73 +56,62 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
     Channel ch_sizeCamY;          //This is the size of the CCD readout in the Y dimension
     Channel ch_sizeCamArrayX_RBV; //This is the size of the image array of the CCD in X
     Channel ch_sizeCamArrayY_RBV; //This is the size of the image array of the CCD in Y
-    Channel ch_camBinX_RBV;       //This is the amount of binning for the CCD readout in X
-    Channel ch_camBinY_RBV;       //This is the amount of binning for the CCD readout in Y
+    Channel ch_binCamX_RBV;       //This is the amount of binning for the CCD readout in X
+    Channel ch_binCamY_RBV;       //This is the amount of binning for the CCD readout in Y
+    Channel ch_reverseCamX_RBV;
+    Channel ch_reverseCamY_RBV;
+    /* These are EPICS channel objects for the ROI plugin */
     Channel ch_minRoiX;           //This is the start of the ROI in X
     Channel ch_minRoiY;           //This is the start of the ROI in Y
     Channel ch_minRoiX_RBV;       //This is the readback value of X in the ROI
     Channel ch_minRoiY_RBV;       //This is the readback value of Y in the ROI
+    Channel ch_binRoiX;           //This is the binning of the ROI in the X dimension
+    Channel ch_binRoiY;           //This is the binning of the ROI in the Y dimension
     Channel ch_sizeRoiX;          //This is the size of the ROI in the X dimension
     Channel ch_sizeRoiY;          //This is the size of the ROI in the Y dimension
     Channel ch_sizeRoiArrayX_RBV; //This is the size of the image array for the ROI in X
     Channel ch_sizeRoiArrayY_RBV; //This is the size of the image array for the ROI in Y
-    Channel ch_roiBinX_RBV;       //This is the amount of binning for the ROI in X
-    Channel ch_roiBinY_RBV;       //This is the amount of binning for the ROI in Y
-    Channel ch_maxSizeCamX;       //This is the maximum dimension of X
-    Channel ch_maxSizeCamY;       //This is the maximum dimension of Y
+    Channel ch_reverseRoiX_RBV;       //This is reverse flag for the ROI in X
+    Channel ch_reverseRoiY_RBV;       //This is reverse flag for the ROI in Y
+    /* These are EPICS channel objects for the Transform plugin */
     Channel ch_transType;         //This represents the way the image is flipped or rotated.
+    Channel ch_transArrayX_RBV;
+    Channel ch_transArrayY_RBV;
+    /* These are EPICS channel objects for the Overlay plugin */
+    Channel ch_minOverlayX;       //This is the position of the overlay in X
+    Channel ch_minOverlayY;       //This is the position of the overlay in Y
+    Channel ch_sizeOverlayX;      //This is the size of the overlay in X 
+    Channel ch_sizeOverlayY;      //This is the size of the overlay in Y
 
     JFrame frame;
-
     JTextField StatusText;
     JTextField cameraPrefixText;
     JTextField transformPrefixText;
     JTextField roiPrefixText;
-    JTextField tweakAmountText;
-    JButton resetRoiButton;
-    JRadioButton setNoneRadioButton;
-    JRadioButton setCCDReadoutRadioButton;
-    JRadioButton setROIRadioButton;
-    JRadioButton preTransformRadioButton;
-    JRadioButton postTransformRadioButton;
-    JCheckBox useTransformCheckBox;
+    JTextField overlayPrefixText;
+    JButton resetCameraReadoutButton;
+    JButton resetROIButton;
+    JComboBox outputSelectComboBox;
+    String[] outputSelectChoices = {"Camera", "ROI", "Overlay"};
+    JButton setControlItemButton;
+    JCheckBox transformInChainCheckBox;
+    JCheckBox ROIInChainCheckBox;
 
     boolean isDebugMessages;
     boolean isDebugFile;
     boolean isPluginRunning;
-    boolean isTransformConnected;
     boolean isCameraConnected;
     boolean isRoiConnected;
-    boolean setCCD_Readout;
-    boolean setROI;
-    boolean useTransformPlugin;
-    boolean isPreTransform;
-    boolean isPostTransform;
+    boolean isTransformConnected;
+    boolean isOverlayConnected;
+    boolean isTransformInChain;
+    boolean isROIInChain;
+    String outputSelect;
 
-    javax.swing.Timer timer;
-
-    int cameraOriginX;
-    int cameraOriginY;
-    int cameraSizeX;
-    int cameraSizeY;
-    int cameraArraySizeX;
-    int cameraArraySizeY;
-    int cameraBinX;
-    int cameraBinY;
-    int roiOriginX;
-    int roiOriginY;
-    int roiSizeX;
-    int roiSizeY;
-    int roiArraySizeX;
-    int roiArraySizeY;
-    int roiBinX;
-    int roiBinY;
-    int tweakAmountPixels;
     String cameraPrefix;
-    String transformPrefix;
     String roiPrefix;
-    ImageWindow win;
-    ImageCanvas canvas;
+    String transformPrefix;
+    String overlayPrefix;
 
     /**
      * This method is called by ImageJ when the user starts the from the menu.
@@ -138,20 +123,18 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
     public void run(String arg) {
         IJ.showStatus("epics running");
         try {
-            isDebugFile = false;
+            isDebugFile = true;
             isDebugMessages = true;
             isPluginRunning = true;
-            setCCD_Readout = false;
-            setROI = false;
-            useTransformPlugin = false;
-            isPreTransform = false;
-            isPostTransform = false;
+            isTransformInChain = false;
             Date date = new Date();
-            prevTime = date.getTime();
-            cameraPrefix = "2dev:SIM1:cam1:";
-            transformPrefix = "2dev:Trans1:";
-            roiPrefix = "2dev:ROI1:";
-            tweakAmountPixels = 1;
+            cameraPrefix = "13SIM1:cam1:";
+            transformPrefix = "13SIM1:Trans1:";
+            roiPrefix = "13SIM1:ROI1:";
+            overlayPrefix = "13SIM1:Over1:1:";
+            isTransformInChain = false;
+            isROIInChain = false;
+            outputSelect = "Camera";
             readProperties();
 
             if (isDebugFile) {
@@ -160,27 +143,27 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
                 debugPrintStream = new PrintStream(debugFile);
             }
             javax.swing.SwingUtilities.invokeLater(
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            createAndShowGUI();
-                        }
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        createAndShowGUI();
                     }
+                }
             );
-
-            img = new ImagePlus(imagePrefix, new ByteProcessor(100, 100));
-            img.show();
-            img.close();
-
+            
             startEPICSCA();
             // Connect to PVs from the camera.
+            // This does not need to succeed.
             connectCameraPVs();
-            // Connect to PVs from the transform plugin.
-            // This do not need to succeed.
-            connectTransformPVs();
             // Connect to PVs from the ROI plugin.
             // This does not need to succeed.
             connectRoiPVs();
+            // Connect to PVs from the transform plugin.
+            // This do not need to succeed.
+            connectTransformPVs();
+            // Connect to PVs from the overlay plugin.
+            // This do not need to succeed.
+            connectOverlayPVs();
 
             /* This simply polls for new data and updates the image if new data
              * is found.
@@ -197,11 +180,11 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
                 logMessage("Closed debug file", true, true);
             }
 
-            timer.stop();
             writeProperties();
             disconnectCameraPVs();
-            disconnectTransformPVs();
             disconnectRoiPVs();
+            disconnectTransformPVs();
+            disconnectOverlayPVs();
             closeEPICSCA();
             IJ.showStatus("Exiting Server");
 
@@ -221,65 +204,207 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
             }
         }
     }
-    
-    /**
-     * This method overrides the standard mouseReleased method for the image
-     * window.  When the use releases the mouse, it gets the rectangle drawn
-     * by the user and uses that to write an ROI to either the camera or the
-     * ROI plugin.  If no rectangle is drawn, the values retrieved are 0,0 and
-     * the full dimensions in X and Y.
-     * 
-     * @param e     An event object.  It is not actually used.
-     */
-    public void setROI() {
-        Rectangle imageRoi;
 
-        int tempRoiX;
-        int tempRoiY;
-        int tempRoiWidth;
-        int tempRoiHeight;
-        int tempMaxSizeX;
-        int tempMaxSizeY;
-
-        if ((setCCD_Readout || (setROI && isRoiConnected)) && isCameraConnected) {
+    public void setROI(int minX, int minY, int sizeX, int sizeY) {
+        if (isRoiConnected) {
             try {
-                // Get the position of the top right corner of the drawn ROI, as
-                // well as the height and width.
-                imageRoi = this.img.getProcessor().getRoi();
-                tempRoiX = (int) imageRoi.getX();
-                tempRoiY = (int) imageRoi.getY();
-                tempRoiWidth = (int) imageRoi.getWidth();
-                tempRoiHeight = (int) imageRoi.getHeight();
-
-                // If the user is using the ROI plugin, save the current ROI 
-                // width and height.  Otherwise, save the current width and
-                // height of the image from the camera.
-                if (setROI) {
-                    tempMaxSizeX = roiArraySizeX;
-                    tempMaxSizeY = roiArraySizeY;
+                epicsSetInt(ch_minRoiX, minX);
+                epicsSetInt(ch_minRoiY, minY);
+                epicsSetInt(ch_sizeRoiX, sizeX);
+                epicsSetInt(ch_sizeRoiY, sizeY);
+                if (isDebugMessages) {
+                    logMessage("Set ROI to " + minX + "," + minY + "," + sizeX + "," + sizeY, true, true);
                 }
-                else {
-                    tempMaxSizeX = cameraArraySizeX;
-                    tempMaxSizeY = cameraArraySizeY;
-                }
-                
-                if(isDebugMessages)
-                    IJ.log("ROI values: X=" + tempRoiX + ", Y=" + tempRoiY + ", W="
-                                + tempRoiWidth + ", H=" + tempRoiHeight + ", MaxX="
-                                + tempMaxSizeX + ", MaxY=" + tempMaxSizeY);
-
-                calculateROI(tempRoiX, tempRoiY, tempRoiWidth, tempRoiHeight, tempMaxSizeX, tempMaxSizeY);
-                
-            } catch (Exception ex) {
-                logMessage("Cannot set ROI:" + ex.getMessage(), true, true);
+            } catch (CAException ex) {
+                IJ.log("CAException: Could not set ROI: " + ex.getMessage());
+            } catch (TimeoutException ex) {
+                IJ.log("TimeoutException: Could not set ROI: " + ex.getMessage());
+            } catch (IllegalStateException ex) {
+                IJ.log("IllegalStateException: Could not set ROI: " + ex.getMessage());
             }
+        } else {
+            logMessage("setROI: ROI not connected", true, true);
         }
     }
 
-    public void makeImageCopy() {
-        ImageProcessor dipcopy = img.getProcessor().duplicate();
-        ImagePlus imgcopy = new ImagePlus(imagePrefix + ":" + UniqueId, dipcopy);
-        imgcopy.show();
+    public void resetROI() {
+        int sizeX;
+        int sizeY;
+
+        try {
+            // Get the maximum size of the CCD
+            sizeX = epicsGetInt(ch_maxSizeCamX);
+            sizeY = epicsGetInt(ch_maxSizeCamY);           
+            setROI(0, 0, sizeX, sizeY);
+        } catch (CAException ex) {
+            IJ.log("CAException: Could not reset ROI: " + ex.getMessage());
+        } catch (TimeoutException ex) {
+            IJ.log("TimeoutException: Could not reset ROI: " + ex.getMessage());
+        } catch (IllegalStateException ex) {
+            IJ.log("IllegalStateException: Could not reset ROI: " + ex.getMessage());
+        }
+    }
+    
+    public void setOverlay(int minX, int minY, int sizeX, int sizeY) {
+        if (isOverlayConnected) {
+            try {
+                epicsSetInt(ch_minOverlayX, minX);
+                epicsSetInt(ch_minOverlayY, minY);
+                epicsSetInt(ch_sizeOverlayX, sizeX);
+                epicsSetInt(ch_sizeOverlayY, sizeY);
+                if (isDebugMessages) {
+                    logMessage("Set overlay to " + minX + "," + minY + "," + sizeX + "," + sizeY, true, true);
+                }
+            } catch (CAException ex) {
+                IJ.log("CAException: Could not set overlay: " + ex.getMessage());
+            } catch (TimeoutException ex) {
+                IJ.log("TimeoutException: Could not set overlay: " + ex.getMessage());
+            } catch (IllegalStateException ex) {
+                IJ.log("IllegalStateException: Could not set overlay: " + ex.getMessage());
+            }
+        } else {
+            logMessage("setOverlay: overlay not connected", true, true);
+        }
+    }
+
+    public void setCameraRegion(int minX, int minY, int sizeX, int sizeY) {
+        if (isCameraConnected) {
+            try {
+                epicsSetInt(ch_minCamX, minX);
+                epicsSetInt(ch_minCamY, minY);
+                epicsSetInt(ch_sizeCamX, sizeX);
+                epicsSetInt(ch_sizeCamY, sizeY);
+                if (isDebugMessages) {
+                    logMessage("Set camera region to " + minX + "," + minY + "," + sizeX + "," + sizeY, true, true);
+                }
+            } catch (CAException ex) {
+                IJ.log("CAException: Could not set camera region: " + ex.getMessage());
+            } catch (TimeoutException ex) {
+                IJ.log("TimeoutException: Could not set camera region: " + ex.getMessage());
+            } catch (IllegalStateException ex) {
+                IJ.log("IllegalStateException: Could not set camera region: " + ex.getMessage());
+            }
+        } else {
+            logMessage("setCameraRegion: camera not connected", true, true);
+        }
+    }
+      
+    public void resetCameraRegion() {
+        int sizeX;
+        int sizeY;
+
+        try {
+            // Get the maximum size of the CCD
+            sizeX = epicsGetInt(ch_maxSizeCamX);
+            sizeY = epicsGetInt(ch_maxSizeCamY);           
+            epicsSetInt(ch_minCamX, 0);
+            epicsSetInt(ch_minCamY, 0);
+            epicsSetInt(ch_sizeCamX, sizeX);
+            epicsSetInt(ch_sizeCamY, sizeY);
+        } catch (CAException ex) {
+            IJ.log("CAException: Could not reset camera region to full: " + ex.getMessage());
+        } catch (TimeoutException ex) {
+            IJ.log("TimeoutException: Could not reset camera region to full: " + ex.getMessage());
+        } catch (IllegalStateException ex) {
+            IJ.log("IllegalStateException: Could not reset camera region to full: " + ex.getMessage());
+        }
+    }
+    
+    public Roi getROI() {
+        Roi roi;
+
+        imgPlus = WindowManager.getCurrentImage();
+        if (imgPlus == null) {
+            logMessage("No active image", true, true);
+            return(null);
+        }
+        imgProc = imgPlus.getProcessor();
+        roi = imgPlus.getRoi();
+        if (roi == null) {
+            logMessage("No ImageJ ROI found", true, true);
+        }
+        return roi;
+    }
+
+    public void setSelectedItem() {
+        Roi roi;
+        Rectangle rect;
+        int minX, minY, sizeX, sizeY, binX, binY, itemp;
+        CameraParameters cp=null;   
+        TransformParameters tp=null;   
+        ROIParameters rp=null;   
+
+        roi = getROI();
+        if (roi == null) return;
+        rect = roi.getBounds();
+        minX = (int) rect.getX();
+        minY = (int) rect.getY();
+        sizeX = (int) rect.getWidth();
+        sizeY = (int) rect.getHeight();
+        logMessage("Input ROI: minX="+String.valueOf(minX)+" minY="+String.valueOf(minY)+
+                        " sizeX="+String.valueOf(sizeX)+" sizeY="+String.valueOf(sizeX), true, true);
+        // Compute the coordinates based on transformations in the camera, transform plugin, and roi plugin
+        if (isCameraConnected) {
+            cp = new CameraParameters();
+        }    
+        if (isTransformConnected && isTransformInChain) {
+            tp = new TransformParameters();
+        }
+        if (isRoiConnected && isROIInChain) {
+            rp = new ROIParameters();
+        }    
+
+        if (outputSelect.equals("Camera") && isCameraConnected) {
+            if (rp != null) {
+                // The ROI is in the chain, so we need to undo its effect on image
+                // We require that the ROI is showing the entire image, only need to consider bin and reverse
+                if (rp.reverseX) minX = rp.imageSizeX - sizeX - minX - 1;
+                if (rp.reverseY) minY = rp.imageSizeY - sizeY - minY - 1;
+                minX *= rp.binX;
+                minY *= rp.binY;
+                sizeX *= rp.binX;
+                sizeY *= rp.binY;
+            }
+            if (tp != null) {
+                // The transform plugin is in the chain, so we need to undo its effect on image
+                if (tp.reverseX) minX = tp.imageSizeX - sizeX - minX - 1;
+                if (tp.reverseY) minY = tp.imageSizeY - sizeY - minY - 1;
+                if (tp.swapAxes) {
+                    itemp = minX;
+                    minX = minY;
+                    minY = itemp;
+                    itemp = sizeX;
+                    sizeX = sizeY;
+                    sizeY = itemp;
+                }
+            }            
+            if (cp != null) {
+                // Correct for the current camera settings on the image
+                if (cp.reverseX) minX = cp.imageSizeX - sizeX - minX - 1;
+                if (cp.reverseY) minY = cp.imageSizeY - sizeY - minY - 1;
+                minX = minX*cp.binX + cp.minX;
+                minY = minY*cp.binY + cp.minY;
+                sizeX *= cp.binX;
+                sizeY *= cp.binY;
+            }
+
+            setCameraRegion(minX, minY, sizeX, sizeY);
+        } else if (outputSelect.equals("ROI") && isRoiConnected) {
+            if (rp != null) {
+                // The ROI is in the chain, so we need to undo its effect on image
+                if (rp.reverseX) minX = rp.imageSizeX - sizeX - minX - 1;
+                if (rp.reverseY) minY = rp.imageSizeY - sizeY - minY - 1;
+                minX *= rp.binX;
+                minY *= rp.binY;
+                sizeX *= rp.binX;
+                sizeY *= rp.binY;
+            }
+            setROI(minX, minY, sizeX, sizeY);
+        } else if (outputSelect.equals("Overlay") && isOverlayConnected) {
+            // Since the overlay comes after the transform and the ROI we don't need to
+            // correct for them in computing coordinates
+            setOverlay(minX, minY, sizeX, sizeY);
+        }
     }
 
     /**
@@ -313,10 +438,10 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
             ch_sizeCamArrayY_RBV = createEPICSChannel(cameraPrefix + "ArraySizeY_RBV");
             ch_maxSizeCamX = createEPICSChannel(cameraPrefix + "MaxSizeX_RBV");
             ch_maxSizeCamY = createEPICSChannel(cameraPrefix + "MaxSizeY_RBV");
-            ch_camBinX_RBV = createEPICSChannel(cameraPrefix + "BinX_RBV");
-            ch_camBinY_RBV = createEPICSChannel(cameraPrefix + "BinY_RBV");
-            ch_sizeCamArrayX_RBV.addMonitor(Monitor.VALUE, new newCameraArraySizeX());
-            ch_sizeCamArrayY_RBV.addMonitor(Monitor.VALUE, new newCameraArraySizeY());
+            ch_binCamX_RBV = createEPICSChannel(cameraPrefix + "BinX_RBV");
+            ch_binCamY_RBV = createEPICSChannel(cameraPrefix + "BinY_RBV");
+            ch_reverseCamX_RBV = createEPICSChannel(cameraPrefix + "ReverseX_RBV");
+            ch_reverseCamY_RBV = createEPICSChannel(cameraPrefix + "ReverseY_RBV");
             
             ctxt.flushIO();
             checkCameraPVConnections();
@@ -334,25 +459,11 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         try {
             transformPrefix = transformPrefixText.getText();
             logMessage("Trying to connect to EPICS PVs: " + transformPrefix, true, true);
-            if (isDebugFile) {
-                debugPrintStream.println("Trying to connect to EPICS PVs: " + transformPrefix);
-                debugPrintStream.println("context.printfInfo  ****************************");
-                debugPrintStream.println();
-                ctxt.printInfo(debugPrintStream);
-
-                debugPrintStream.print("jca.printInfo  ****************************");
-                debugPrintStream.println();
-                jca.printInfo(debugPrintStream);
-                debugPrintStream.print("jca.listProperties  ****************************");
-                debugPrintStream.println();
-                jca.listProperties(debugPrintStream);
-            }
-            
             ch_transType = createEPICSChannel(transformPrefix + "Type");
-
+            ch_transArrayX_RBV = createEPICSChannel(transformPrefix + "ArraySizeX_RBV");
+            ch_transArrayY_RBV = createEPICSChannel(transformPrefix + "ArraySizeY_RBV");
             ctxt.flushIO();
-            checkTransformPVConnections();
-            
+            checkTransformPVConnections();         
         } catch (Exception ex) {
             logMessage("CAException: Cannot connect to EPICS transform PV:" + ex.getMessage(), true, true);
             checkTransformPVConnections();
@@ -365,40 +476,43 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
     public void connectRoiPVs() {
         try {
             roiPrefix = roiPrefixText.getText();
-            logMessage("Trying to connect to EPICS PVs: " + roiPrefix, true, true);
-            if (isDebugFile) {
-                debugPrintStream.println("Trying to connect to EPICS PVs: " + roiPrefix);
-                debugPrintStream.println("context.printfInfo  ****************************");
-                debugPrintStream.println();
-                ctxt.printInfo(debugPrintStream);
-
-                debugPrintStream.print("jca.printInfo  ****************************");
-                debugPrintStream.println();
-                jca.printInfo(debugPrintStream);
-                debugPrintStream.print("jca.listProperties  ****************************");
-                debugPrintStream.println();
-                jca.listProperties(debugPrintStream);
-            }
-            
+            logMessage("Trying to connect to EPICS PVs: " + roiPrefix, true, true);           
             ch_minRoiX = createEPICSChannel(roiPrefix + "MinX");
             ch_minRoiY = createEPICSChannel(roiPrefix + "MinY");
             ch_minRoiX_RBV = createEPICSChannel(roiPrefix + "MinX_RBV");
             ch_minRoiY_RBV = createEPICSChannel(roiPrefix + "MinY_RBV");
+            ch_binRoiX = createEPICSChannel(roiPrefix + "BinX");
+            ch_binRoiY = createEPICSChannel(roiPrefix + "BinY");
+            ch_reverseRoiX_RBV = createEPICSChannel(roiPrefix + "ReverseX_RBV");
+            ch_reverseRoiY_RBV = createEPICSChannel(roiPrefix + "ReverseY_RBV");
             ch_sizeRoiX = createEPICSChannel(roiPrefix + "SizeX");
             ch_sizeRoiY = createEPICSChannel(roiPrefix + "SizeY");
-            ch_roiBinX_RBV = createEPICSChannel(roiPrefix + "BinX_RBV");
-            ch_roiBinY_RBV = createEPICSChannel(roiPrefix + "BinY_RBV");
             ch_sizeRoiArrayX_RBV = createEPICSChannel(roiPrefix + "ArraySizeX_RBV");
-            ch_sizeRoiArrayY_RBV = createEPICSChannel(roiPrefix + "ArraySizeY_RBV");
-            ch_sizeRoiArrayX_RBV.addMonitor(Monitor.VALUE, new newRoiArraySizeX());
-            ch_sizeRoiArrayY_RBV.addMonitor(Monitor.VALUE, new newRoiArraySizeY());
-            
+            ch_sizeRoiArrayY_RBV = createEPICSChannel(roiPrefix + "ArraySizeY_RBV");            
             ctxt.flushIO();
-            checkRoiPVConnections();
-            
+            checkRoiPVConnections();            
         } catch (Exception ex) {
             logMessage("CAException: Cannot connect to EPICS ROI PV:" + ex.getMessage(), true, true);
             checkRoiPVConnections();
+        }  
+    }
+
+    /**
+     * This method creates the PV objects for the Overlay plugin.
+     */
+    public void connectOverlayPVs() {
+        try {
+            overlayPrefix = overlayPrefixText.getText();
+            logMessage("Trying to connect to EPICS PVs: " + overlayPrefix, true, true);            
+            ch_minOverlayX = createEPICSChannel(overlayPrefix + "PositionX");
+            ch_minOverlayY = createEPICSChannel(overlayPrefix + "PositionY");
+            ch_sizeOverlayX = createEPICSChannel(overlayPrefix + "SizeX");
+            ch_sizeOverlayY = createEPICSChannel(overlayPrefix + "SizeY");            
+            ctxt.flushIO();
+            checkOverlayPVConnections();            
+        } catch (Exception ex) {
+            logMessage("CAException: Cannot connect to EPICS Overlay PV:" + ex.getMessage(), true, true);
+            checkOverlayPVConnections();
         }  
     }
 
@@ -417,12 +531,13 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
             ch_sizeCamArrayY_RBV.destroy();
             ch_maxSizeCamX.destroy();
             ch_maxSizeCamY.destroy();
-            ch_camBinX_RBV.destroy();
-            ch_camBinY_RBV.destroy();
-            isCameraConnected = false;
-            
+            ch_binCamX_RBV.destroy();
+            ch_binCamY_RBV.destroy();
+            ch_reverseCamX_RBV.destroy();
+            ch_reverseCamY_RBV.destroy();
+            isCameraConnected = false;            
             logMessage("Disconnected from EPICS camera PVs OK", true, true);
-        }catch (CAException ex) {
+        } catch (CAException ex) {
             logMessage("CAException: Cannot disconnect from EPICS camera PV:" + ex.getMessage(), true, true);
         } catch (IllegalStateException ex) {
             logMessage("IllegalStateException: Cannot disconnect from EPICS camera PV:" + ex.getMessage(), true, true);
@@ -437,8 +552,9 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
     public void disconnectTransformPVs() {
         try {
             ch_transType.destroy();
-            isTransformConnected = false;
-            
+            ch_transArrayX_RBV.destroy();
+            ch_transArrayY_RBV.destroy();
+            isTransformConnected = false;            
             logMessage("Disconnected from EPICS transform PVs OK", true, true);
         } catch (CAException ex) {
             logMessage("CAException: Cannot disconnect from EPICS transform PV:" + ex.getMessage(), true, true);
@@ -458,14 +574,15 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
             ch_minRoiY.destroy();
             ch_minRoiX_RBV.destroy();
             ch_minRoiY_RBV.destroy();
+            ch_binRoiX.destroy();
+            ch_binRoiY.destroy();
+            ch_reverseRoiX_RBV.destroy();
+            ch_reverseRoiY_RBV.destroy();
             ch_sizeRoiX.destroy();
             ch_sizeRoiY.destroy();
             ch_sizeRoiArrayX_RBV.destroy();
             ch_sizeRoiArrayY_RBV.destroy();
-            ch_roiBinX_RBV.destroy();
-            ch_roiBinY_RBV.destroy();
-            isRoiConnected = false;
-            
+            isRoiConnected = false;            
             logMessage("Disconnected from EPICS ROI PVs OK", true, true);
         } catch (CAException ex) {
             logMessage("CAException: Cannot disconnect from EPICS ROI PV:" + ex.getMessage(), true, true);
@@ -476,12 +593,31 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         }
     }
 
+        /**
+     * This method destroys the PV objects for the Overlay plugin.
+     */
+    public void disconnectOverlayPVs() {
+        try {
+            ch_minOverlayX.destroy();
+            ch_minOverlayY.destroy();
+            ch_sizeOverlayX.destroy();
+            ch_sizeOverlayY.destroy();
+            isOverlayConnected = false;            
+            logMessage("Disconnected from EPICS Overlay PVs OK", true, true);
+        } catch (CAException ex) {
+            logMessage("CAException: Cannot disconnect from EPICS Overlay PV:" + ex.getMessage(), true, true);
+        } catch (IllegalStateException ex) {
+            logMessage("IllegalStateException: Cannot disconnect from EPICS Overlay PV:" + ex.getMessage(), true, true);
+        } catch (NullPointerException ex) {
+            logMessage("NullPointerException: Cannot disconnect from EPICS Overlay PV:" + ex.getMessage(), true, true);
+        }
+    }
+
     /**
      * This method creates the channel access context and initializes it.
      */
     public void startEPICSCA() {
         logMessage("Initializing EPICS", true, true);
-
         try {
             System.setProperty("jca.use_env", "true");
             // Get the JCALibrary instance.
@@ -491,7 +627,6 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         } catch (CAException ex) {
             logMessage("startEPICSCA exception: " + ex.getMessage(), true, true);
         }
-
     }
 
     /**
@@ -533,209 +668,6 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         return (ch);
     }
 
-    /**
-     * This method is called whenever the size of the data array in the X
-     * dimension changes.  It reads the X value of the start of the camera's
-     * readout and the size of the data array and saves those values.
-     */
-    public class newCameraArraySizeX implements MonitorListener {
-        
-        @Override
-        public void monitorChanged(MonitorEvent ev) {
-            if (isDebugMessages)
-                IJ.log("New size for " + cameraPrefix + "ArraySizeX_RBV");
-            
-            DBR_Int sizeX = (DBR_Int) ev.getDBR();
-            cameraArraySizeX = (sizeX.getIntValue())[0];
-            
-            try {
-                ch_minCamX_RBV.get(DBRType.INT, 1, new GetListener() {
-                
-                    @Override
-                    public void getCompleted (GetEvent ev) {
-                        DBR_Int x = (DBR_Int) ev.getDBR();
-                        cameraOriginX = (x.getIntValue())[0];
-                        if (isDebugMessages)
-                           IJ.log("Camera X origin at " + cameraOriginX);
-                    }
-                });
-            } catch (CAException ex) {
-                logMessage("newCameraArraySizeX CAException: Cannot read " + cameraPrefix + "MinX_RBV:" + ex.getMessage(), true, true);
-            } catch (IllegalStateException ex) {
-                logMessage("newCameraArraySizeX IllegalStateException: Cannot read " + cameraPrefix + "MinX_RBV:" + ex.getMessage(), true, true);
-            }
-                        
-            try {
-                ch_camBinX_RBV.get(DBRType.INT, 1, new GetListener() {
-                
-                    @Override
-                    public void getCompleted (GetEvent ev) {
-                        DBR_Int x = (DBR_Int) ev.getDBR();
-                        cameraBinX = (x.getIntValue())[0];
-                        if (isDebugMessages)
-                           IJ.log("Camera X bin value =  " + cameraBinX);
-                    }
-                });
-            } catch (CAException ex) {
-                logMessage("newCameraArraySizeX CAException: Cannot read " + cameraPrefix + "BinX_RBV:" + ex.getMessage(), true, true);
-            } catch (IllegalStateException ex) {
-                logMessage("newCameraArraySizeX IllegalStateException: Cannot read " + cameraPrefix + "BinX_RBV:" + ex.getMessage(), true, true);
-            }
-        }
-    }
-    
-    /**
-     * This method is called whenever the size of the data array in the Y
-     * dimension changes.  It reads the Y value of the start of the camera's
-     * readout and the size of the data array and saves those values.
-     */
-    public class newCameraArraySizeY implements MonitorListener {
-        
-        @Override
-        public void monitorChanged(MonitorEvent ev) {
-            if (isDebugMessages)
-                IJ.log("New size for " + cameraPrefix + "ArraySizeY_RBV");
-            
-            DBR_Int sizeY = (DBR_Int) ev.getDBR();
-            cameraArraySizeY = (sizeY.getIntValue())[0];
-            
-            try {
-                ch_minCamY_RBV.get(DBRType.INT, 1, new GetListener() {
-                
-                    @Override
-                    public void getCompleted (GetEvent ev) {
-                        DBR_Int y = (DBR_Int) ev.getDBR();
-                        cameraOriginY = (y.getIntValue())[0];
-                        if (isDebugMessages)
-                            IJ.log("Camera Y origin at " + cameraOriginY);
-                    }
-                });
-            } catch (CAException ex) {
-                logMessage("newCameraArraySizeY CAException: Cannot read " + cameraPrefix + "MinY_RBV:" + ex.getMessage(), true, true);
-            } catch (IllegalStateException ex) {
-                logMessage("newCameraArraySizeY IllegalStateException: Cannot read " + cameraPrefix + "MinY_RBV:" + ex.getMessage(), true, true);
-            }
-                        
-            try {
-                ch_camBinY_RBV.get(DBRType.INT, 1, new GetListener() {
-                
-                    @Override
-                    public void getCompleted (GetEvent ev) {
-                        DBR_Int y = (DBR_Int) ev.getDBR();
-                        cameraBinY = (y.getIntValue())[0];
-                        if (isDebugMessages)
-                            IJ.log("Camera Y bin value = " + cameraBinY);
-                    }
-                });
-            } catch (CAException ex) {
-                logMessage("newCameraArraySizeY CAException: Cannot read " + cameraPrefix + "BinY_RBV:" + ex.getMessage(), true, true);
-            } catch (IllegalStateException ex) {
-                logMessage("newCameraArraySizeY IllegalStateException: Cannot read " + cameraPrefix + "BinY_RBV:" + ex.getMessage(), true, true);
-            }
-        }
-    }
-    
-    /**
-     * This method is called whenever the size of the data array for the ROI
-     * plugin in the X dimension changes.  It reads the X value of the start
-     * of the ROI and the size of the data array and saves those values.
-     */
-    public class newRoiArraySizeX implements MonitorListener {
-        
-        @Override
-        public void monitorChanged(MonitorEvent ev) {
-            if (isDebugMessages)
-                IJ.log("New size for " + roiPrefix + "ArraySizeX_RBV");
-            
-            DBR_Int sizeX = (DBR_Int) ev.getDBR();
-            roiArraySizeX = (sizeX.getIntValue())[0];
-            
-            try {
-                ch_minRoiX_RBV.get(DBRType.INT, 1, new GetListener() {
-                
-                    @Override
-                    public void getCompleted (GetEvent ev) {
-                        DBR_Int x = (DBR_Int) ev.getDBR();
-                        roiOriginX = (x.getIntValue())[0];
-                        if (isDebugMessages)
-                           IJ.log("ROI X origin at " + roiOriginX);
-                    }
-                });
-            } catch (CAException ex) {
-                logMessage("newRoiArraySizeX CAException: Cannot read " + roiPrefix + "MinX_RBV:" + ex.getMessage(), true, true);
-            } catch (IllegalStateException ex) {
-                logMessage("newRoiArraySizeX IllegalStateException: Cannot read " + roiPrefix + "MinX_RBV:" + ex.getMessage(), true, true);
-            }
-                        
-            try {
-                ch_roiBinX_RBV.get(DBRType.INT, 1, new GetListener() {
-                
-                    @Override
-                    public void getCompleted (GetEvent ev) {
-                        DBR_Int x = (DBR_Int) ev.getDBR();
-                        roiBinX = (x.getIntValue())[0];
-                        if (isDebugMessages)
-                           IJ.log("ROI X bin value = " + roiBinX);
-                    }
-                });
-            } catch (CAException ex) {
-                logMessage("newRoiArraySizeX CAException: Cannot read " + roiPrefix + "BinX_RBV:" + ex.getMessage(), true, true);
-            } catch (IllegalStateException ex) {
-                logMessage("newRoiArraySizeX IllegalStateException: Cannot read " + roiPrefix + "BinX_RBV:" + ex.getMessage(), true, true);
-            }
-        }
-    }
-    
-    /**
-     * This method is called whenever the size of the data array for the ROI
-     * plugin in the Y dimension changes.  It reads the Y value of the start
-     * of the ROI and the size of the data array and saves those values.
-     */
-    public class newRoiArraySizeY implements MonitorListener {
-        
-        @Override
-        public void monitorChanged(MonitorEvent ev) {
-            if (isDebugMessages)
-                IJ.log("New size for " + roiPrefix + "ArraySizeY_RBV");
-            
-            DBR_Int sizeY = (DBR_Int) ev.getDBR();
-            roiArraySizeY = (sizeY.getIntValue())[0];
-            
-            try {
-                ch_minRoiY_RBV.get(DBRType.INT, 1, new GetListener() {
-                
-                    @Override
-                    public void getCompleted (GetEvent ev) {
-                        DBR_Int y = (DBR_Int) ev.getDBR();
-                        roiOriginY = (y.getIntValue())[0];
-                        if (isDebugMessages)
-                           IJ.log("ROI Y origin at " + roiOriginY);
-                    }
-                });
-            } catch (CAException ex) {
-                logMessage("newRoiArraySizeY CAException: Cannot read " + roiPrefix + "MinY_RBV:" + ex.getMessage(), true, true);
-            } catch (IllegalStateException ex) {
-                logMessage("newRoiArraySizeY IllegalStateException: Cannot read " + roiPrefix + "MinY_RBV:" + ex.getMessage(), true, true);
-            }
-                        
-            try {
-                ch_roiBinY_RBV.get(DBRType.INT, 1, new GetListener() {
-                
-                    @Override
-                    public void getCompleted (GetEvent ev) {
-                        DBR_Int x = (DBR_Int) ev.getDBR();
-                        roiBinY = (x.getIntValue())[0];
-                        if (isDebugMessages)
-                           IJ.log("ROI Y bin value = " + roiBinX);
-                    }
-                });
-            } catch (CAException ex) {
-                logMessage("newRoiArraySizeY CAException: Cannot read " + roiPrefix + "BinY_RBV:" + ex.getMessage(), true, true);
-            } catch (IllegalStateException ex) {
-                logMessage("newRoiArraySizeY IllegalStateException: Cannot read " + roiPrefix + "BinY_RBV:" + ex.getMessage(), true, true);
-            }
-        }
-    }
 
     /**
      * This method checks that the PV objects for the camera both exist
@@ -743,62 +675,31 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
      */
     public void checkCameraPVConnections() {
         boolean cameraConnected;
-        try {
-            cameraConnected = (ch_minCamX != null && ch_minCamX.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_minCamY != null && ch_minCamY.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_minCamX_RBV != null && ch_minCamX_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_minCamY_RBV != null && ch_minCamY_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_sizeCamX != null && ch_sizeCamX.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_sizeCamY != null && ch_sizeCamY.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_maxSizeCamX != null && ch_maxSizeCamX.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_maxSizeCamY != null && ch_maxSizeCamY.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_camBinX_RBV != null && ch_camBinX_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_camBinY_RBV != null && ch_camBinY_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_sizeCamArrayX_RBV != null && ch_sizeCamArrayX_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_sizeCamArrayY_RBV != null && ch_sizeCamArrayY_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED);
+        cameraConnected = 
+              (ch_minCamX != null && ch_minCamX.getConnectionState() == Channel.ConnectionState.CONNECTED
+            && ch_minCamY != null && ch_minCamY.getConnectionState() == Channel.ConnectionState.CONNECTED
+            && ch_minCamX_RBV != null && ch_minCamX_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED
+            && ch_minCamY_RBV != null && ch_minCamY_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED
+            && ch_sizeCamX != null && ch_sizeCamX.getConnectionState() == Channel.ConnectionState.CONNECTED
+            && ch_sizeCamY != null && ch_sizeCamY.getConnectionState() == Channel.ConnectionState.CONNECTED
+            && ch_maxSizeCamX != null && ch_maxSizeCamX.getConnectionState() == Channel.ConnectionState.CONNECTED
+            && ch_maxSizeCamY != null && ch_maxSizeCamY.getConnectionState() == Channel.ConnectionState.CONNECTED
+            && ch_binCamX_RBV != null && ch_binCamX_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED
+            && ch_binCamY_RBV != null && ch_binCamY_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED
+            && ch_reverseCamX_RBV != null && ch_reverseCamX_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED
+            && ch_reverseCamY_RBV != null && ch_reverseCamY_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED
+            && ch_sizeCamArrayX_RBV != null && ch_sizeCamArrayX_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED
+            && ch_sizeCamArrayY_RBV != null && ch_sizeCamArrayY_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED);
 
-            if (cameraConnected & !isCameraConnected) {
-                isCameraConnected = true;
-                logMessage("Connection to EPICS camera PVs OK", true, true);
-                cameraPrefixText.setBackground(Color.green);
-                setCCDReadoutRadioButton.setEnabled(true);
-                resetRoiButton.setEnabled(true);
-                
-                cameraOriginX = epicsGetInt(ch_minCamX_RBV);
-                cameraOriginY = epicsGetInt(ch_minCamY_RBV);
-                cameraArraySizeX = epicsGetInt(ch_sizeCamArrayX_RBV);
-                cameraArraySizeY = epicsGetInt(ch_sizeCamArrayY_RBV);
-                cameraBinX = epicsGetInt(ch_camBinX_RBV);
-                cameraBinY = epicsGetInt(ch_camBinY_RBV);
-                
-            }
-
-            if (!cameraConnected) {
-                isCameraConnected = false;
-                logMessage("Cannot connect to EPICS camera PVs", true, true);
-                cameraPrefixText.setBackground(Color.red);
-                setCCDReadoutRadioButton.setSelected(false);
-                setCCDReadoutRadioButton.setEnabled(false);
-                resetRoiButton.setEnabled(false);
-                setCCD_Readout = false;
-            }
-
-
-        } catch (IllegalStateException ex) {
-            IJ.log("checkCameraPVConnections: got IllegalStateException= " + ex.getMessage());
-            if (isDebugFile) {
-                ex.printStackTrace(debugPrintStream);
-            }
-        } catch (TimeoutException ex) {
-            IJ.log("checkCameraPVConnections: got TimeoutException= " + ex.getMessage());
-            if (isDebugFile) {
-                ex.printStackTrace(debugPrintStream);
-            }
-        } catch (CAException ex) {
-            IJ.log("checkCameraPVConnections: got CAException= " + ex.getMessage());
-            if (isDebugFile) {
-                ex.printStackTrace(debugPrintStream);
-            }
+        if (cameraConnected & !isCameraConnected) {
+            isCameraConnected = true;
+            logMessage("Connection to EPICS camera PVs OK", true, true);
+            cameraPrefixText.setBackground(Color.green);               
+        }
+        if (!cameraConnected) {
+            isCameraConnected = false;
+            logMessage("Cannot connect to EPICS camera PVs", true, true);
+            cameraPrefixText.setBackground(Color.red);
         }
     }
     
@@ -810,29 +711,23 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         boolean transformConnected;
         
         try {
-/*            transformConnected = (ch_transType[0] != null && ch_transType[0].getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_transType[1] != null && ch_transType[1].getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_transType[2] != null && ch_transType[2].getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_transType[3] != null && ch_transType[3].getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_origin != null && ch_origin.getConnectionState() == Channel.ConnectionState.CONNECTED);
-*/
-            transformConnected = (ch_transType != null && ch_transType.getConnectionState() == Channel.ConnectionState.CONNECTED);
+            transformConnected = (ch_transType != null && ch_transType.getConnectionState() == Channel.ConnectionState.CONNECTED
+                               && ch_transArrayX_RBV != null && ch_transArrayX_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED
+                               && ch_transArrayY_RBV != null && ch_transArrayY_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED);
             if (transformConnected & !isTransformConnected) {
                 isTransformConnected = true;
                 logMessage("Connection to EPICS transform PVs OK", true, true);
                 transformPrefixText.setBackground(Color.green);
-                useTransformCheckBox.setEnabled(true);
+                transformInChainCheckBox.setEnabled(true);
             }
-
             if (!transformConnected) {
                 isTransformConnected = false;
                 logMessage("Cannot connect to EPICS transform PVs", true, true);
                 transformPrefixText.setBackground(Color.red);
-                useTransformCheckBox.setSelected(false);
-                useTransformCheckBox.setEnabled(false);
-                useTransformPlugin = false;
+                transformInChainCheckBox.setSelected(false);
+                transformInChainCheckBox.setEnabled(false);
+                isTransformInChain = false;
             }
-
         } catch (IllegalStateException ex) {
             IJ.log("checkTransformPVConnections: got exception= " + ex.getMessage());
             if (isDebugFile) {
@@ -848,56 +743,68 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
     public void checkRoiPVConnections() {
         boolean roiConnected;
 
+        roiConnected = 
+                  (ch_minRoiX != null && ch_minRoiX.getConnectionState() == Channel.ConnectionState.CONNECTED
+                && ch_minRoiY != null && ch_minRoiY.getConnectionState() == Channel.ConnectionState.CONNECTED
+                && ch_minRoiX_RBV != null && ch_minRoiX_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED
+                && ch_minRoiY_RBV != null && ch_minRoiY_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED
+                && ch_binRoiX != null && ch_binRoiX.getConnectionState() == Channel.ConnectionState.CONNECTED
+                && ch_binRoiY != null && ch_binRoiY.getConnectionState() == Channel.ConnectionState.CONNECTED
+                && ch_reverseRoiX_RBV != null && ch_reverseRoiX_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED
+                && ch_reverseRoiY_RBV != null && ch_reverseRoiY_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED
+                && ch_sizeRoiX != null && ch_sizeRoiX.getConnectionState() == Channel.ConnectionState.CONNECTED
+                && ch_sizeRoiY != null && ch_sizeRoiY.getConnectionState() == Channel.ConnectionState.CONNECTED
+                && ch_sizeRoiArrayX_RBV != null && ch_sizeRoiArrayX_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED
+                && ch_sizeRoiArrayY_RBV != null && ch_sizeRoiArrayY_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED);
+        if (roiConnected & !isRoiConnected) {
+            isRoiConnected = true;
+            logMessage("Connection to EPICS ROI PVs OK", true, true);
+            roiPrefixText.setBackground(Color.green);
+        }
+        if (!roiConnected) {
+            isRoiConnected = false;
+            logMessage("Cannot connect to EPICS ROI PVs", true, true);
+            roiPrefixText.setBackground(Color.red);
+        }            
+    }
+
+     /**
+     * This method checks that the PV objects for the Overlay plugin both exist
+     * and are connected to the underlying PVs.
+     */
+    public void checkOverlayPVConnections() {
+        boolean overlayConnected;
+
         try {
-            roiConnected = (ch_minRoiX != null && ch_minRoiX.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_minRoiY != null && ch_minRoiY.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_minRoiX_RBV != null && ch_minRoiX_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_minRoiY_RBV != null && ch_minRoiY_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_sizeRoiX != null && ch_sizeRoiX.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_sizeRoiY != null && ch_sizeRoiY.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_roiBinX_RBV != null && ch_roiBinX_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_roiBinY_RBV != null && ch_roiBinY_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_sizeRoiArrayX_RBV != null && ch_sizeRoiArrayX_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED
-                    && ch_sizeRoiArrayY_RBV != null && ch_sizeRoiArrayY_RBV.getConnectionState() == Channel.ConnectionState.CONNECTED);
-
-            if (roiConnected & !isRoiConnected) {
-                isRoiConnected = true;
-                logMessage("Connection to EPICS ROI PVs OK", true, true);
-                roiPrefixText.setBackground(Color.green);
-                setROIRadioButton.setEnabled(true);
-                preTransformRadioButton.setEnabled(true);
-                postTransformRadioButton.setEnabled(true);
-                
-                roiOriginX = epicsGetInt(ch_minRoiX_RBV);
-                roiOriginY = epicsGetInt(ch_minRoiY_RBV);
-                roiArraySizeX = epicsGetInt(ch_sizeRoiArrayX_RBV);
-                roiArraySizeY = epicsGetInt(ch_sizeRoiArrayY_RBV);
-                roiBinX = epicsGetInt(ch_roiBinX_RBV);
-                roiBinY = epicsGetInt(ch_roiBinY_RBV);
+            overlayConnected = 
+                      (ch_minOverlayX != null && ch_minOverlayX.getConnectionState() == Channel.ConnectionState.CONNECTED
+                    && ch_minOverlayY != null && ch_minOverlayY.getConnectionState() == Channel.ConnectionState.CONNECTED
+                    && ch_sizeOverlayX != null && ch_sizeOverlayX.getConnectionState() == Channel.ConnectionState.CONNECTED
+                    && ch_sizeOverlayY != null && ch_sizeOverlayY.getConnectionState() == Channel.ConnectionState.CONNECTED);
+            if (overlayConnected & !isOverlayConnected) {
+                epicsGetInt(ch_minOverlayX);
+                epicsGetInt(ch_minOverlayY);
+                isOverlayConnected = true;
+                logMessage("Connection to EPICS Overlay PVs OK", true, true);
+                overlayPrefixText.setBackground(Color.green);
             }
-
-            if (!roiConnected) {
-                isRoiConnected = false;
-                logMessage("Cannot connect to EPICS ROI PVs", true, true);
-                roiPrefixText.setBackground(Color.red);
-                setROIRadioButton.setSelected(false);
-                setROIRadioButton.setEnabled(false);
-                preTransformRadioButton.setEnabled(false);
-                postTransformRadioButton.setEnabled(false);
-            }
-            
+            if (!overlayConnected) {
+                isOverlayConnected = false;
+                logMessage("Cannot connect to EPICS Overlay PVs", true, true);
+                overlayPrefixText.setBackground(Color.red);
+            }            
         } catch (IllegalStateException ex) {
-            IJ.log("checkROIPVConnections: got exception= " + ex.getMessage());
+            IJ.log("checkOverlayPVConnections: got exception= " + ex.getMessage());
             if (isDebugFile) {
                 ex.printStackTrace(debugPrintStream);
             }
         } catch (TimeoutException ex) {
-            IJ.log("checkROIPVConnections: got exception= " + ex.getMessage());
+           IJ.log("checkOverlayPVConnections: got exception= " + ex.getMessage());
             if (isDebugFile) {
                 ex.printStackTrace(debugPrintStream);
             }
         } catch (CAException ex) {
-            IJ.log("checkROIPVConnections: got exception= " + ex.getMessage());
+            IJ.log("checkOverlayPVConnections: got exception= " + ex.getMessage());
             if (isDebugFile) {
                 ex.printStackTrace(debugPrintStream);
             }
@@ -960,279 +867,150 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         ctxt.pendIO(5.0);
     }
 
+
     /**
-     * This method writes the values for the user drawn rectangle to either the
-     * camera or the ROI plugin.
-     * 
-     * @param chX      This is the PV for the X value of the rectangle's origin.
-     * @param chY      This is the PV for the Y value of the rectangle's origin.
-     * @param chSizeX  This is the PV for the size of the rectangle in X.
-     * @param chSizeY  This is the PV for the size of the rectangle in Y.
-     * @param x        This is the value to write to chX.
-     * @param y        This is the value to write to chY.
-     * @param sizeX    This is the value to write to chSizeX.
-     * @param sizeY    This is the value to write to chSizeY.
+     * This class is used to determine the effect of the transform plugin
      */
-    public void setROI(Channel chX, Channel chY, Channel chSizeX, Channel chSizeY,
-            int x, int y, int sizeX, int sizeY) {
-        try {
-            epicsSetInt(chX, x);           
-            epicsSetInt(chY, y);
-            epicsSetInt(chSizeX, sizeX);
-            epicsSetInt(chSizeY, sizeY);
-        } catch (CAException ex) {
-            logMessage("setROI got CAException: " + ex.getMessage(), true, true);
-        } catch (TimeoutException ex) {
-            logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
-        } catch (IllegalStateException ex) {
-            logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
+    private class TransformParameters {
+        private int imageSizeX;
+        private int imageSizeY;
+        private boolean swapAxes;
+        private boolean reverseX;
+        private boolean reverseY;
+        public TransformParameters() {
+            this.read();
         }
-    }
-
-    /**
-     * This class is used to determine the location of the origin point
-     * and the orientation of the X and Y axes.
-     */
-    private class OriginParameters {
-
-        private short origin;
-        //private short[] transformType = new short[4];
-        private short transformType;
-        private boolean flipAxes;
-        private int ii;
-
-        public OriginParameters() {
+  
+        public void read() {
+            int transformType = NONE;
             try {
-                origin = UPPER_LEFT;
-                flipAxes = false;
-
                 transformType = epicsGetEnum(ch_transType);
+                imageSizeX = epicsGetInt(ch_transArrayX_RBV);
+                imageSizeY = epicsGetInt(ch_transArrayY_RBV);
             } catch (CAException ex) {
-                IJ.log("OriginParameters CAException: Could not get parameters from " + transformPrefix + ": " + ex.getMessage());
+                IJ.log("TransformParameters CAException: Could not get parameters from " + transformPrefix + ": " + ex.getMessage());
             } catch (TimeoutException ex) {
-                IJ.log("OriginParameters TimeoutException: Could not get parameters from " + transformPrefix + ": " + ex.getMessage());
+                IJ.log("TransformParameters TimeoutException: Could not get parameters from " + transformPrefix + ": " + ex.getMessage());
             } catch (IllegalStateException ex) {
-                IJ.log("OriginParameters IllegalStateException: Could not get parameters from " + transformPrefix + ": " + ex.getMessage());
+                IJ.log("TransformParameters IllegalStateException: Could not get parameters from " + transformPrefix + ": " + ex.getMessage());
             }
-        }
 
-        /**
-         * This method determines where the origin of the image is with respect to
-         * what is displayed by this plugin.  It also determines whether or not the
-         * X and Y axes have been flipped so that the X axis is now vertical and the
-         * Y axis is now horizontal.
-         * <p>
-         * It iterates through all of the transforms types that the area detector
-         * Transform plugin performs and moves the origin location and axis
-         * orientation accordingly.  The results can then be obtained through two
-         * get methods.
-         * 
-         * @see getOrigin()
-         * @see isFlippedAxes()
-         */
-        public void findOriginLocation() {
-                switch (transformType) {
-                    
-                    // This image is not altered by the transform.
-                    case NONE:
-                        break;
-
-                    // Rotate the image 90 degrees clockwise.
-                    case ROTATE_90:
-                        flipAxes = !flipAxes;
-                        break;
-
-                    // Rotate the image 90 degrees counter clockwise.
-                    case ROTATE_270:
-                        flipAxes = !flipAxes;
-                        break;
-
-                    // Rotate the image 180 degrees.
-                    case ROTATE_180:
-                        break;
-
-                    // Flip the image along the diagonal that goes from 0,0 to
-                    // maxX, maxY.  This does not cause the origin location to
-                    // change.
-                    case ROTATE_90_MIRROR:
-                        flipAxes = !flipAxes;
-                        break;
-
-                    // Flip the image along the diagonal that goes from 0, maxY
-                    // to maxX, 0.
-                   case ROTATE_270_MIRROR:
-                        flipAxes = !flipAxes;
-                        break;
-
-                    // Flip x values of the image pixels.
-                   case MIRROR:
-                        break;
-
-                    // Flip the y values of the image pixels.
-                   case ROTATE_180_MIRROR:
-                        break;
-
-                    default:
-                        logMessage("findOriginLocation: found no matching transform type", true, true);
-                        break;
-                }
+            switch (transformType) {                    
+                case NONE:
+                    swapAxes = false;
+                    reverseX = false;
+                    reverseY = false;
+                    break;
+                case ROTATE_90:
+                    swapAxes = true;
+                    reverseX = true;
+                    reverseY = false;
+                    break;
+                case ROTATE_270:
+                    swapAxes = true;
+                    reverseX = false;
+                    reverseY = true;
+                    break;
+                case ROTATE_180:
+                    swapAxes = false;
+                    reverseX = true;
+                    reverseY = true;
+                    break;
+                case ROTATE_90_MIRROR:
+                    swapAxes = true;
+                    reverseX = false;
+                    reverseY = false;
+                    break;
+               case ROTATE_270_MIRROR:
+                    swapAxes = true;
+                    reverseX = true;
+                    reverseY = true;
+                    break;
+               case MIRROR:
+                    swapAxes = false;
+                    reverseX = true;
+                    reverseY = false;
+                    break;
+               case ROTATE_180_MIRROR:
+                    swapAxes = false;
+                    reverseX = false;
+                    reverseY = true;
+                    break;
+                default:
+                    logMessage("TransformParameters: found no matching transform type", true, true);
+                    break;
+            }
             if (isDebugMessages)
-                logMessage("findOriginLocation: origin location is " + origin, true, true);
-        }
-
-        public short getOrigin() {
-            return origin;
-        }
-
-        public boolean isFlippedAxes() {
-            return flipAxes;
+                logMessage("TransformParameters swapAxes="+String.valueOf(swapAxes)+
+                                              " reverseX="+String.valueOf(reverseX)+
+                                              " reverseY="+String.valueOf(reverseY), true, true);
         }
     }
 
     /**
-     * This method calculates the values that will be written to the area detector
-     * software.  It calculates a starting point for the X and Y coordinates based
-     * on the location of the origin point with respect to the image.  If the user
-     * has checked the use Transform Plugin checkbox, then it calculates the origin
-     * based on the AD array transforms performed.  It will also determine if the X
-     * and Y axes have been flipped.  Otherwise, it assumes that the origin is at
-     * the upper right corner of the image and the axes have not been flipped.  It
-     * will write its values to either the cameras readout regions PVs, or to a ROI
-     * plugin, depending on the user's choice.
-     * 
-     * @param startX    the starting point in X of the rectangle drawn on the image
-     * @param startY    the starting point in X of the rectangle drawn on the image
-     * @param sizeX     the size of the rectangle in the X dimension
-     * @param sizeY     the size of the rectangle in the Y dimension
-     * @param maxSizeX  the maximum size of the current image in the X dimension
-     * @param maxSizeY  the maximum size of the current image in the Y dimension
+     * This class is used to determine the effect of the ROI plugin
      */
-    public void calculateROI(int startX, int startY, int sizeX, int sizeY, int maxSizeX, int maxSizeY) {
-        short origin = UPPER_LEFT;
-        boolean flipAxes = false;
-        OriginParameters params;
-        
-        int tempX = 0;
-        int tempY = 0;
-        int tempSizeX = 0;
-        int tempSizeY = 0;
-        
-        if (useTransformPlugin  && (!isPostTransform))
-        {
-            params = this.new OriginParameters();
-            params.findOriginLocation();
-            origin = params.getOrigin();
-            flipAxes = params.isFlippedAxes();
-            
-            if (isDebugMessages) {
-                IJ.log("The origin=" + origin);
-                IJ.log("Axes are flipped=" + flipAxes);
+    private class ROIParameters {
+        public int minX;
+        public int minY;
+        public int binX;
+        public int binY;
+        public boolean reverseX;
+        public boolean reverseY;
+        public int imageSizeX;
+        public int imageSizeY;
+        public ROIParameters() {
+            this.read();
+        }
+        public void read() {
+            try {
+                minX = epicsGetInt(ch_minRoiX_RBV);
+                minY = epicsGetInt(ch_minRoiY_RBV);
+                binX = epicsGetInt(ch_binRoiX);
+                binY = epicsGetInt(ch_binRoiY);
+                reverseX = epicsGetInt(ch_reverseRoiX_RBV) != 0;
+                reverseY = epicsGetInt(ch_reverseRoiY_RBV) != 0;
+                imageSizeX = epicsGetInt(ch_sizeRoiArrayX_RBV);
+                imageSizeY = epicsGetInt(ch_sizeRoiArrayY_RBV);
+            } catch (CAException ex) {
+                IJ.log("ROIParameters CAException: Could not get parameters from " + roiPrefix + ": " + ex.getMessage());
+            } catch (TimeoutException ex) {
+                IJ.log("ROIParameters TimeoutException: Could not get parameters from " + roiPrefix + ": " + ex.getMessage());
+            } catch (IllegalStateException ex) {
+                IJ.log("ROIParameters IllegalStateException: Could not get parameters from " + roiPrefix + ": " + ex.getMessage());
             }
         }
-        
-        
-        
-        /* If the user wanted to set the ROI plugin and
-         * the ROI gets its data from the transform
-         * plugin, then the axes should not be flipped.
-         */
-        /*if (setROI && isPostTransform)
-            flipAxes = false;*/
-        
-        switch (origin)
-        {
-            case UPPER_LEFT:
-                if (flipAxes)
-                {
-                    tempX = startY;
-                    tempY = startX;
-                    tempSizeX = sizeY;
-                    tempSizeY = sizeX;
-                }
-                else
-                {
-                    tempX = startX;
-                    tempY = startY;
-                    tempSizeX = sizeX;
-                    tempSizeY = sizeY;
-                }
-                break;
-            default:
-                break;
-        }
-        
-        if (isDebugMessages) {
-            IJ.log("The new calculated value of tempX is " + tempX);
-            IJ.log("The new calculated value of tempY is " + tempY);
-        }
-                
-        // Check to make sure that the sizes are not less than zero.
-        if (tempSizeX < 0)
-            tempSizeX = 0;
-        
-        if (tempSizeY < 0)
-            tempSizeY = 0;
-        
-        try {
-            if (setCCD_Readout) {
-                if (isDebugMessages) {
-                    IJ.log("The value of cameraOriginX is " + cameraOriginX);
-                    IJ.log("The value of cameraOriginY is " + cameraOriginY);
-                }
-                
-                // The user may have entered a value for binning.
-                // Calulate the new value of tempX  and tempSizeX with binning.
-                tempX = ((tempX - 1) * cameraBinX) + 1;
-                tempSizeX = tempSizeX * cameraBinX;
-                tempY = ((tempY - 1) * cameraBinY) + 1;
-                tempSizeY = tempSizeY * cameraBinY;
-                
-                // Check to make sure that the values are not less than zero.
-                if (tempX < 0)
-                    tempX = 0;
-        
-                if (tempY < 0)
-                    tempY = 0;
+    }
 
-                tempX = tempX + cameraOriginX;
-                tempY = tempY + cameraOriginY;
-                
-                setROI(ch_minCamX, ch_minCamY, ch_sizeCamX, ch_sizeCamY, tempX,
-                            tempY, tempSizeX, tempSizeY);
-            }
-            
-            if (setROI) {
-                if (isDebugMessages) {
-                    IJ.log("The value of roiOriginX is " + roiOriginX);
-                    IJ.log("The value of roiOriginY is " + roiOriginY);
-                }
-                
-                // The user may have entered a value for binning.
-                // Calulate the new value of tempX  and tempSizeX with binning.
-                tempX = ((tempX - 1) * roiBinX) + 1;
-                tempSizeX = tempSizeX * roiBinX;
-                tempY = ((tempY - 1) * roiBinY) + 1;
-                tempSizeY = tempSizeY * roiBinY;
-                
-                // Check to make sure that the values are not less than zero.
-                if (tempX < 0)
-                    tempX = 0;
-        
-                if (tempY < 0)
-                    tempY = 0;
-
-                tempX = tempX + roiOriginX;
-                tempY = tempY + roiOriginY;
-                
-                setROI(ch_minRoiX, ch_minRoiY, ch_sizeRoiX, ch_sizeRoiY, tempX,
-                            tempY, tempSizeX, tempSizeY);
-            }
-        } catch (Exception ex) {
-            logMessage("calculateROI: cannot get origin X and Y " + origin, true, true);
+    private class CameraParameters {
+        public int minX;
+        public int minY;
+        public int imageSizeX;
+        public int imageSizeY;
+        public int binX;
+        public int binY;
+        public boolean reverseX;
+        public boolean reverseY;
+        public CameraParameters() {
+            this.read();
         }
-        if (isDebugMessages) {
-            IJ.log("The final calculated value of tempX is " + tempX);
-            IJ.log("The final calculated value of tempY is " + tempY);
+        public void read() {
+            try {
+                minX = epicsGetInt(ch_minCamX_RBV);
+                minY = epicsGetInt(ch_minCamY_RBV);
+                binX = epicsGetInt(ch_binCamX_RBV);
+                binY = epicsGetInt(ch_binCamY_RBV);
+                imageSizeX = epicsGetInt(ch_sizeCamArrayX_RBV);
+                imageSizeY = epicsGetInt(ch_sizeCamArrayY_RBV);
+                reverseX = epicsGetInt(ch_reverseCamX_RBV) != 0;
+                reverseY = epicsGetInt(ch_reverseCamY_RBV) != 0;
+            } catch (CAException ex) {
+                IJ.log("ROIParameters CAException: Could not get parameters from " + cameraPrefix + ": " + ex.getMessage());
+            } catch (TimeoutException ex) {
+                IJ.log("ROIParameters TimeoutException: Could not get parameters from " + cameraPrefix + ": " + ex.getMessage());
+            } catch (IllegalStateException ex) {
+                IJ.log("ROIParameters IllegalStateException: Could not get parameters from " + cameraPrefix + ": " + ex.getMessage());
+            }
         }
     }
 
@@ -1242,67 +1020,22 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
      */
     public void createAndShowGUI() {
         //Create and set up the window.
-        NXText = new JTextField(6);
-        NXText.setEditable(false);
-        NXText.setHorizontalAlignment(JTextField.CENTER);
-        NYText = new JTextField(6);
-        NYText.setEditable(false);
-        NYText.setHorizontalAlignment(JTextField.CENTER);
-        NZText = new JTextField(6);
-        NZText.setEditable(false);
-        NZText.setHorizontalAlignment(JTextField.CENTER);
-        FPSText = new JTextField(6);
-        FPSText.setEditable(false);
-        FPSText.setHorizontalAlignment(JTextField.CENTER);
-        StatusText = new JTextField(40);
+        StatusText = new JTextField(50);
         StatusText.setEditable(false);
         
-        JButton increaseWidthButton = new JButton("W +");
-        JButton decreaseWidthButton = new JButton("W -");
-        JButton increaseHeightButton = new JButton("H +");
-        JButton decreaseHeightButton = new JButton("H -");
-        JButton increaseXButton = new JButton("X +");
-        JButton decreaseXButton = new JButton("X -");
-        JButton increaseYButton = new JButton("Y +");
-        JButton decreaseYButton = new JButton("Y -");
-        
-
         cameraPrefixText = new JTextField(cameraPrefix, 15);
         transformPrefixText = new JTextField(transformPrefix, 15);
         roiPrefixText = new JTextField(roiPrefix, 15);
-        tweakAmountText = new JTextField(String.valueOf(tweakAmountPixels), 5);
-        resetRoiButton = new JButton("Reset ROI");
-        setNoneRadioButton = new JRadioButton("Set None",true);
-        setCCDReadoutRadioButton = new JRadioButton("Set CCD Readout", false);
-        setROIRadioButton = new JRadioButton("Set ROI Plugin", false);
-        preTransformRadioButton = new JRadioButton("ROI Pre-Transform", false);
-        preTransformRadioButton.setEnabled(false);
-        postTransformRadioButton = new JRadioButton("ROI Post-Transform", false);
-        postTransformRadioButton.setEnabled(false);
-        useTransformCheckBox = new JCheckBox("Use Transform Plugin?", false);
-        ButtonGroup groupA = new ButtonGroup();
-        ButtonGroup groupB = new ButtonGroup();
+        overlayPrefixText = new JTextField(overlayPrefix, 15);
+        resetCameraReadoutButton = new JButton("Reset camera region");
+        resetROIButton = new JButton("Reset ROI");
+        transformInChainCheckBox = new JCheckBox("Transform Plugin In Chain", isTransformInChain);
+        ROIInChainCheckBox = new JCheckBox("ROI Plugin In Chain", isROIInChain);
+        outputSelectComboBox = new JComboBox(outputSelectChoices);
+        outputSelectComboBox.setSelectedItem(outputSelect);
+        setControlItemButton = new JButton("Set");
         
-        groupA.add(setNoneRadioButton);
-        groupA.add(setCCDReadoutRadioButton);
-        groupA.add(setROIRadioButton);
-        
-        groupB.add(preTransformRadioButton);
-        groupB.add(postTransformRadioButton);
-        
-        JPanel groupAPanel = new JPanel();
-        groupAPanel.setLayout(new BoxLayout(groupAPanel, BoxLayout.Y_AXIS));
-        groupAPanel.add(setNoneRadioButton);
-        groupAPanel.add(setCCDReadoutRadioButton);
-        groupAPanel.add(setROIRadioButton);
-        
-        JPanel groupBPanel = new JPanel();
-        groupBPanel.setLayout(new BoxLayout(groupBPanel, BoxLayout.Y_AXIS));
-        groupBPanel.add(preTransformRadioButton);
-        groupBPanel.add(postTransformRadioButton);
-        
-
-        frame = new JFrame("Image J EPICS_AD_Viewer Plugin");
+        frame = new JFrame("Image J EPICS_AD_Controller Plugin");
         JPanel panel = new JPanel(new BorderLayout());
         panel.setLayout(new GridBagLayout());
         panel.setBorder(new EmptyBorder(new Insets(5, 5, 5, 5)));
@@ -1317,60 +1050,52 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         c.gridx = 0;
         c.gridy = 0;
         panel.add(new JLabel("Camera PV Prefix"), c);
-        c.gridx = 1;
-        panel.add(new JLabel("ROI PV Prefix"), c);
-        c.gridx = 2;
+        c.gridx++;
         panel.add(new JLabel("Transform PV Prefix"), c);
-        c.gridx = 4;
-        panel.add(new JLabel("Tweak Amount"), c);
-        c.gridx = 5;
-        panel.add(tweakAmountText, c);
+        c.gridx++;
+        panel.add(new JLabel("ROI PV Prefix"), c);
+        c.gridx++;
+        panel.add(new JLabel("Overlay PV Prefix"), c);
+        c.gridx++;
+        panel.add(new JLabel("Output PVs"), c);
 
         // Second row
         c.anchor = GridBagConstraints.CENTER;
         c.gridy = 1;
         c.gridx = 0;
         panel.add(cameraPrefixText, c);
-        c.gridx = 1;
-        panel.add(roiPrefixText, c);
-        c.gridx = 2;
+        c.gridx++;
         panel.add(transformPrefixText, c);
-        c.gridx = 3;
-        panel.add(resetRoiButton, c);
-        c.gridx = 5;
-        panel.add(increaseWidthButton, c);
-        c.gridx = 6;
-        panel.add(decreaseWidthButton, c);
-        c.gridx = 7;
-        panel.add(increaseHeightButton, c);
-        c.gridx = 8;
-        panel.add(decreaseHeightButton, c);
+        c.gridx++;
+        panel.add(roiPrefixText, c);
+        c.gridx++;
+        panel.add(overlayPrefixText, c);
+        c.gridx++;
+        c.anchor = GridBagConstraints.WEST;
+        panel.add(outputSelectComboBox, c);
+        c.gridx++;
+        c.anchor = GridBagConstraints.WEST;
+        panel.add(setControlItemButton, c);
 
         // Third row
         c.anchor = GridBagConstraints.CENTER;
         c.gridy = 2;
         c.gridx = 0;
-        panel.add(groupAPanel, c);
-        c.gridx = 1;
-        panel.add(groupBPanel, c);
-        c.gridx = 2;
-        panel.add(useTransformCheckBox, c);
-        c.gridx = 5;
-        panel.add(increaseXButton, c);
-        c.gridx = 6;
-        panel.add(decreaseXButton, c);
-        c.gridx = 7;
-        panel.add(increaseYButton, c);
-        c.gridx = 8;
-        panel.add(decreaseYButton, c);
-        //panel.add(new JLabel("X Pos"), c);
+        panel.add(resetCameraReadoutButton, c);
+        c.gridx++;
+        panel.add(transformInChainCheckBox, c);
+        c.gridx++;
+        panel.add(resetROIButton, c);
+        c.gridx++;
+        panel.add(ROIInChainCheckBox, c);
+        c.gridx++;
 
-        // Bottom row
-        c.gridy = 5;
+        // Fifth row
+        c.gridy = 4;
         c.gridx = 0;
         c.anchor = GridBagConstraints.EAST;
         panel.add(new JLabel("Status: "), c);
-        c.gridx = 1;
+        c.gridx++;
         c.gridwidth = 7;
         c.anchor = GridBagConstraints.WEST;
         panel.add(StatusText, c);
@@ -1410,358 +1135,57 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
             }
         });
         
-        tweakAmountText.addActionListener(new ActionListener() {
+        overlayPrefixText.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
-                tweakAmountPixels = Integer.parseInt(tweakAmountText.getText());
-                logMessage("Tweak amount is " + tweakAmountPixels, true, true);
+                if (isDebugMessages)
+                    IJ.log("Overlay prefix changed");
+                disconnectOverlayPVs();
+                connectOverlayPVs();
             }
         });
 
-        increaseWidthButton.addActionListener(new ActionListener() {
+        resetCameraReadoutButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
-                
-                int size;
-                
-                if (setCCD_Readout) {
-                    try {
-                        size = epicsGetInt(ch_sizeCamX);
-                        epicsSetInt(ch_sizeCamX, (size + tweakAmountPixels));
-                    } catch (CAException ex) {
-                        logMessage("increaseWidthButton got CAException: " + ex.getMessage(), true, true);
-                    } catch (TimeoutException ex) {
-                        logMessage("increaseWidthButton got TimeoutException: " + ex.getMessage(), true, true);
-                    } catch (IllegalStateException ex) {
-                        logMessage("increaseWidthButton got IllegalStateException: " + ex.getMessage(), true, true);
-                    }
-                }
-                else {
-                    try {
-                        size = epicsGetInt(ch_sizeRoiX);
-                        epicsSetInt(ch_sizeRoiX, size + tweakAmountPixels);           
-                    } catch (CAException ex) {
-                        logMessage("increaseWidthButton got CAException: " + ex.getMessage(), true, true);
-                    } catch (TimeoutException ex) {
-                        logMessage("increaseWidthButton got TimeoutException: " + ex.getMessage(), true, true);
-                    } catch (IllegalStateException ex) {
-                        logMessage("increaseWidthButton got IllegalStateException: " + ex.getMessage(), true, true);
-                    }
-                }
-            }
-        });
-        
-        decreaseWidthButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                
-                int size;
-                
-                if (setCCD_Readout) {
-                    try {
-                        size = epicsGetInt(ch_sizeCamX);
-                        epicsSetInt(ch_sizeCamX, size - tweakAmountPixels);           
-                    } catch (CAException ex) {
-                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
-                    } catch (TimeoutException ex) {
-                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
-                    } catch (IllegalStateException ex) {
-                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
-                    }
-                }
-                else {
-                    try {
-                        size = epicsGetInt(ch_sizeRoiX);
-                        epicsSetInt(ch_sizeRoiX, size - tweakAmountPixels);           
-                    } catch (CAException ex) {
-                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
-                    } catch (TimeoutException ex) {
-                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
-                    } catch (IllegalStateException ex) {
-                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
-                    }
-                }                
-            }
-        });
-        
-        increaseHeightButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                
-                int size;
-                
-                if (setCCD_Readout) {
-                    try {
-                        size = epicsGetInt(ch_sizeCamY);
-                        epicsSetInt(ch_sizeCamY, size + tweakAmountPixels);           
-                    } catch (CAException ex) {
-                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
-                    } catch (TimeoutException ex) {
-                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
-                    } catch (IllegalStateException ex) {
-                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
-                    }
-                }
-                else {
-                    try {
-                        size = epicsGetInt(ch_sizeRoiY);
-                        epicsSetInt(ch_sizeRoiY, size + tweakAmountPixels);           
-                    } catch (CAException ex) {
-                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
-                    } catch (TimeoutException ex) {
-                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
-                    } catch (IllegalStateException ex) {
-                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
-                    }
-                }
-                
-            }
-        });
-        
-        decreaseHeightButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                
-                int size;
-                
-                if (setCCD_Readout) {
-                    try {
-                        size = epicsGetInt(ch_sizeCamY);
-                        epicsSetInt(ch_sizeCamY, size - tweakAmountPixels);           
-                    } catch (CAException ex) {
-                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
-                    } catch (TimeoutException ex) {
-                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
-                    } catch (IllegalStateException ex) {
-                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
-                    }
-                }
-                else {
-                    try {
-                        size = epicsGetInt(ch_sizeRoiY);
-                        epicsSetInt(ch_sizeRoiY, size - tweakAmountPixels);           
-                    } catch (CAException ex) {
-                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
-                    } catch (TimeoutException ex) {
-                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
-                    } catch (IllegalStateException ex) {
-                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
-                    }
-                }
-            }
-        });
-        
-        increaseXButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                
-                int origin;
-               
-                if (setCCD_Readout) {
-                    try {
-                        origin = epicsGetInt(ch_minCamX);
-                        epicsSetInt(ch_minCamX, origin + tweakAmountPixels);           
-                    } catch (CAException ex) {
-                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
-                    } catch (TimeoutException ex) {
-                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
-                    } catch (IllegalStateException ex) {
-                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
-                    }
-                }
-                else {
-                    try {
-                        origin = epicsGetInt(ch_minRoiX);
-                        epicsSetInt(ch_minRoiX, origin + tweakAmountPixels);           
-                    } catch (CAException ex) {
-                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
-                    } catch (TimeoutException ex) {
-                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
-                    } catch (IllegalStateException ex) {
-                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
-                    }
-                }
-            }
-        });
-        
-        decreaseXButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                
-                int origin;
-                
-                if (setCCD_Readout) {
-                    try {
-                        origin = epicsGetInt(ch_minCamX);
-                        epicsSetInt(ch_minCamX, origin - tweakAmountPixels);           
-                    } catch (CAException ex) {
-                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
-                    } catch (TimeoutException ex) {
-                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
-                    } catch (IllegalStateException ex) {
-                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
-                    }
-                }
-                else {
-                    try {
-                        origin = epicsGetInt(ch_minRoiX);
-                        epicsSetInt(ch_minRoiX, origin - tweakAmountPixels);           
-                    } catch (CAException ex) {
-                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
-                    } catch (TimeoutException ex) {
-                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
-                    } catch (IllegalStateException ex) {
-                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
-                    }
-                }
-            }
-        });
-        
-        increaseYButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                
-                int origin;
-                
-                if (setCCD_Readout) {
-                    try {
-                        origin = epicsGetInt(ch_minCamY);
-                        epicsSetInt(ch_minCamY, origin + tweakAmountPixels);           
-                    } catch (CAException ex) {
-                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
-                    } catch (TimeoutException ex) {
-                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
-                    } catch (IllegalStateException ex) {
-                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
-                    }
-                }
-                else {
-                    try {
-                        origin = epicsGetInt(ch_minRoiY);
-                        epicsSetInt(ch_minRoiY, origin + tweakAmountPixels);           
-                    } catch (CAException ex) {
-                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
-                    } catch (TimeoutException ex) {
-                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
-                    } catch (IllegalStateException ex) {
-                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
-                    }
-                }
-            }
-        });
-        
-        decreaseYButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent event) {
-                
-                int origin;
-                
-                if (setCCD_Readout) {
-                    try {
-                        origin = epicsGetInt(ch_minCamY);
-                        epicsSetInt(ch_minCamY, origin - tweakAmountPixels);           
-                    } catch (CAException ex) {
-                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
-                    } catch (TimeoutException ex) {
-                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
-                    } catch (IllegalStateException ex) {
-                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
-                    }
-                }
-                else {
-                    try {
-                        origin = epicsGetInt(ch_minRoiY);
-                        epicsSetInt(ch_minRoiY, origin - tweakAmountPixels);           
-                    } catch (CAException ex) {
-                        logMessage("setROI got CAException: " + ex.getMessage(), true, true);
-                    } catch (TimeoutException ex) {
-                        logMessage("setROI got TimeoutException: " + ex.getMessage(), true, true);
-                    } catch (IllegalStateException ex) {
-                        logMessage("setROI got IllegalStateException: " + ex.getMessage(), true, true);
-                    }
-                }
+                resetCameraRegion();
             }
         });
 
-        resetRoiButton.addActionListener(new ActionListener() {
-            /**
-             * This method resets both the camera readout region and the
-             * plugin ROI to be the full size of the CCD.
-             * 
-             * @param event 
-             */
+        resetROIButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent event) {
-                int sizeX;
-                int sizeY;
-
-                try {
-                    //Get the maximum size of the CCD
-                    sizeX = epicsGetInt(ch_maxSizeCamX);
-                    sizeY = epicsGetInt(ch_maxSizeCamY);
-                    
-                    //Reset the camera.
-                    if (isCameraConnected)
-                        setROI(ch_minCamX, ch_minCamY, ch_sizeCamX, ch_sizeCamY, 0, 0, sizeX, sizeY);
-                    //Reset the ROI plugin.
-                    if (isRoiConnected)
-                        setROI(ch_minRoiX, ch_minRoiY, ch_sizeRoiX, ch_sizeRoiY, 0, 0, sizeX, sizeY);
-                    
-                } catch (CAException ex) {
-                    IJ.log("CAException: Could not reset image ROI to full: " + ex.getMessage());
-                } catch (TimeoutException ex) {
-                    IJ.log("TimeoutException: Could not reset image ROI to full: " + ex.getMessage());
-                } catch (IllegalStateException ex) {
-                    IJ.log("IllegalStateException: Could not reset image ROI to full: " + ex.getMessage());
-                }
-                
+                resetROI();
             }
         });
 
-        setCCDReadoutRadioButton.addItemListener(new ItemListener () {
+        transformInChainCheckBox.addItemListener(new ItemListener () {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                setCCD_Readout = e.getStateChange() == ItemEvent.SELECTED;
-            }
-        });
-        
-        setROIRadioButton.addItemListener(new ItemListener () {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                setROI = e.getStateChange() == ItemEvent.SELECTED;
-                preTransformRadioButton.setEnabled(setROI);
-                postTransformRadioButton.setEnabled(setROI);
-            }
-        });
-                
-        preTransformRadioButton.addItemListener(new ItemListener () {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                isPreTransform = e.getStateChange() == ItemEvent.SELECTED;
-            }
-        });
-        
-        postTransformRadioButton.addItemListener(new ItemListener () {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                isPostTransform = (e.getStateChange() == ItemEvent.SELECTED);
-            }
-        });
-        
-        useTransformCheckBox.addItemListener(new ItemListener () {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-                useTransformPlugin = (e.getStateChange() == ItemEvent.SELECTED);
+                isTransformInChain = (e.getStateChange() == ItemEvent.SELECTED);
             }
         });
 
-        useTransformCheckBox.addItemListener(new ItemListener() {
+        ROIInChainCheckBox.addItemListener(new ItemListener () {
             @Override
             public void itemStateChanged(ItemEvent e) {
-                useTransformPlugin = (e.getStateChange() == ItemEvent.SELECTED);
+                isROIInChain = (e.getStateChange() == ItemEvent.SELECTED);
             }
-        }
-        );
+        });
+
+        outputSelectComboBox.addActionListener(new ActionListener () {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                outputSelect = String.valueOf(outputSelectComboBox.getSelectedItem());
+            }
+        });                
+
+        setControlItemButton.addActionListener(new ActionListener () {
+            @Override
+            public void actionPerformed(ActionEvent event) {
+                setSelectedItem();
+            }
+        });
 
     }
 
@@ -1770,7 +1194,6 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
         @Override
         public void windowClosing(WindowEvent event) {
             isPluginRunning = false;
-            isNewImageAvailable = false;
             // We need to wake up the main thread so it shuts down cleanly
             synchronized (this) {
                 notify();
@@ -1794,7 +1217,8 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
 
         completeMessage = simpleDate.format(date) + ": " + message;
         if (logDisplay) {
-            StatusText.setText(completeMessage);
+            // StatusText won't exist until the GUI is created, so early logMessage calls won't have it
+            if (StatusText != null) StatusText.setText(completeMessage);
         }
         if (logFile) {
             IJ.log(completeMessage);
@@ -1829,7 +1253,23 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
             if (temp != null) {
                 roiPrefix = temp;
             }
-            IJ.log("Read properties file: " + path + "  imagePrefix= " + imagePrefix);
+            temp = properties.getProperty("overlayPrefix");
+            if (temp != null) {
+                overlayPrefix = temp;
+            }
+            temp = properties.getProperty("isTransformInChain");
+            if (temp != null) {
+                isTransformInChain = Boolean.parseBoolean(temp);
+            }
+            temp = properties.getProperty("isROIInChain");
+            if (temp != null) {
+                isROIInChain = Boolean.parseBoolean(temp);
+            }
+            temp = properties.getProperty("outputSelect");
+            if (temp != null) {
+                outputSelect = temp;
+            }
+            IJ.log("Read properties file: " + path );
         } catch (Exception ex) {
             IJ.log("readProperties:exception: " + ex.getMessage());
         }
@@ -1846,6 +1286,10 @@ public class EPICS_AD_Viewer implements PlugIn, MouseListener {
             properties.setProperty("cameraPrefix", cameraPrefix);
             properties.setProperty("transformPrefix", transformPrefix);
             properties.setProperty("roiPrefix", roiPrefix);
+            properties.setProperty("overlayPrefix", overlayPrefix);
+            properties.setProperty("isTransformInChain", String.valueOf(isTransformInChain));
+            properties.setProperty("isROIInChain", String.valueOf(isROIInChain));
+            properties.setProperty("outputSelect", outputSelect);
             FileOutputStream file = new FileOutputStream(path);
             properties.store(file, "EPICS_AD_Viewer Properties");
             file.close();
