@@ -40,9 +40,9 @@ void ROI_callback(void *userPvt, asynUser *pasynUser, void *pointer)
 }
 
 // We define 2 structures here.  
-// tempCaseStr uses fixed length arrays so it can be easily initialized
+// ROITempCaseStr uses fixed length arrays so it can be easily initialized
 // and we need to initialize many cases
-// testCaseStr used std::vector because that is what the test harness wants
+// ROITestCaseStr used std::vector because that is what the test harness wants
  
 typedef struct {
   int inputRank;
@@ -53,7 +53,7 @@ typedef struct {
   size_t outputDimsNormal[ND_ARRAY_MAX_DIMS];
   int outputRankCollapse;
   size_t outputDimsCollapse[ND_ARRAY_MAX_DIMS];
-} tempCaseStr ;
+} ROITempCaseStr ;
 
 typedef struct {
   int inputRank;
@@ -65,11 +65,11 @@ typedef struct {
   std::vector<size_t> outputDimsNormal;
   std::vector<size_t> outputDimsCollapse;
   std::vector<NDArray*> pArrays;
-} testCaseStr ;
+} ROITestCaseStr ;
 
-void appendTestCase(std::vector<testCaseStr> *pOut, tempCaseStr *pIn)
+static void appendTestCase(std::vector<ROITestCaseStr> *pOut, ROITempCaseStr *pIn)
 {
-  testCaseStr tmp;
+  ROITestCaseStr tmp;
   tmp.inputRank          = pIn->inputRank;
   tmp.outputRankNormal   = pIn->outputRankNormal;
   tmp.outputRankCollapse = pIn->outputRankCollapse;
@@ -91,7 +91,7 @@ struct ROIPluginTestFixture
   boost::shared_ptr<ROIPluginWrapper> roi;
   boost::shared_ptr<asynGenericPointerClient> client;
   TestingPlugin* downstream_plugin; // TODO: we don't put this in a shared_ptr and purposefully leak memory because asyn ports cannot be deleted
-  std::vector<testCaseStr> testCaseStrs;
+  std::vector<ROITestCaseStr> ROITestCaseStrs;
   int expectedArrayCounter;
   
 
@@ -136,16 +136,16 @@ struct ROIPluginTestFixture
     client = boost::shared_ptr<asynGenericPointerClient>(new asynGenericPointerClient(testport.c_str(), 0, NDArrayDataString));
     client->registerInterruptUser(&ROI_callback);
 
-    tempCaseStr test1 = {2, {10,10},    {0,0},   {1, 10},   2, {1, 10},   1, {10}};
-    appendTestCase(&testCaseStrs, &test1); 
-    tempCaseStr test2 = {3, {10,10,10}, {0,0,0}, {10,1,10}, 3, {10,1,10}, 2, {10,10}};
-    appendTestCase(&testCaseStrs, &test2); 
-    tempCaseStr test3 = {3, {10,10,10}, {0,0,0}, {1,1,10},  3, {1,1,10},  1, {10}};
-    appendTestCase(&testCaseStrs, &test3); 
-    tempCaseStr test4 = {1, {1},        {0},     {1},       1, {1},       1, {1}};
-    appendTestCase(&testCaseStrs, &test4); 
-    tempCaseStr test5 = {3, {10,20,30}, {0,0,0}, {5,1,1},   3, {5,1,1},   1, {5}};
-    appendTestCase(&testCaseStrs, &test5); 
+    ROITempCaseStr test1 = {2, {10,10},    {0,0},   {1, 10},   2, {1, 10},   1, {10}};
+    appendTestCase(&ROITestCaseStrs, &test1); 
+    ROITempCaseStr test2 = {3, {10,10,10}, {0,0,0}, {10,1,10}, 3, {10,1,10}, 2, {10,10}};
+    appendTestCase(&ROITestCaseStrs, &test2); 
+    ROITempCaseStr test3 = {3, {10,10,10}, {0,0,0}, {1,1,10},  3, {1,1,10},  1, {10}};
+    appendTestCase(&ROITestCaseStrs, &test3); 
+    ROITempCaseStr test4 = {1, {1},        {0},     {1},       1, {1},       1, {1}};
+    appendTestCase(&ROITestCaseStrs, &test4); 
+    ROITempCaseStr test5 = {3, {10,20,30}, {0,0,0}, {5,1,1},   3, {5,1,1},   1, {5}};
+    appendTestCase(&ROITestCaseStrs, &test5); 
 
 }
 
@@ -168,8 +168,8 @@ BOOST_AUTO_TEST_CASE(validate_input_NDArrays)
   BOOST_MESSAGE("Validating the input NDArrays " <<
                 "- if any of these fail the test-cases are also likely to fail");
 
-  testCaseStr *pStr = &testCaseStrs[0];
-  for (size_t i=0; i<testCaseStrs.size(); i++, pStr++)  {
+  ROITestCaseStr *pStr = &ROITestCaseStrs[0];
+  for (size_t i=0; i<ROITestCaseStrs.size(); i++, pStr++)  {
     for (size_t dim=0; dim<pStr->inputDims.size(); dim++) {
        BOOST_REQUIRE_EQUAL(pStr->inputDims[dim], pStr->pArrays[0]->dims[dim].size);
     }
@@ -182,8 +182,8 @@ BOOST_AUTO_TEST_CASE(validate_input_NDArrays)
 BOOST_AUTO_TEST_CASE(basic_roi_operation)
 {
 
-  testCaseStr *pStr = &testCaseStrs[0];
-  for (size_t i=0; i<testCaseStrs.size(); i++, pStr++)  {
+  ROITestCaseStr *pStr = &ROITestCaseStrs[0];
+  for (size_t i=0; i<ROITestCaseStrs.size(); i++, pStr++)  {
   
     BOOST_MESSAGE("Test " << (i+1) << " input rank: " << pStr->inputRank);
 

@@ -66,9 +66,7 @@ record(longout, "$(P)$(R)PositionX")
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_POSITION_X")
-    field(LOPR, "1")
-    field(HOPR, "1024")
-    field(VAL,  "1")
+    info(asyn:READBACK, "1")
     info(autosaveFields, "VAL")
 }
 
@@ -92,9 +90,7 @@ record(longout, "$(P)$(R)PositionY")
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_POSITION_Y")
-    field(LOPR, "1")
-    field(HOPR, "1024")
-    field(VAL,  "1")
+    info(asyn:READBACK, "1")
     info(autosaveFields, "VAL")
 }
 
@@ -102,6 +98,54 @@ record(longin, "$(P)$(R)PositionY_RBV")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_POSITION_Y")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)CenterXLink")
+{
+    field(DOL,  "$(XCENT="") CP MS")
+    field(OMSL, "closed_loop")
+    field(OUT, "$(P)$(R)CenterX PP")
+    info(autosaveFields, "DOL")
+}
+
+record(longout, "$(P)$(R)CenterX")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_CENTER_X")
+    info(asyn:READBACK, "1")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)CenterX_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_CENTER_X")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)CenterYLink")
+{
+    field(DOL,  "$(YCENT="") CP MS")
+    field(OMSL, "closed_loop")
+    field(OUT, "$(P)$(R)CenterY PP")
+    info(autosaveFields, "DOL")
+}
+
+record(longout, "$(P)$(R)CenterY")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_CENTER_Y")
+    info(asyn:READBACK, "1")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)CenterY_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_CENTER_Y")
     field(SCAN, "I/O Intr")
 }
 
@@ -144,9 +188,6 @@ record(longout, "$(P)$(R)SizeY")
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_SIZE_Y")
-    field(LOPR, "1")
-    field(HOPR, "1024")
-    field(VAL,  "1")
     info(autosaveFields, "VAL")
 }
 
@@ -170,9 +211,6 @@ record(longout, "$(P)$(R)WidthX")
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_WIDTH_X")
-    field(LOPR, "1")
-    field(HOPR, "1024")
-    field(VAL,  "1")
     info(autosaveFields, "VAL")
 }
 
@@ -196,9 +234,6 @@ record(longout, "$(P)$(R)WidthY")
     field(PINI, "YES")
     field(DTYP, "asynInt32")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))OVERLAY_WIDTH_Y")
-    field(LOPR, "1")
-    field(HOPR, "1024")
-    field(VAL,  "1")
     info(autosaveFields, "VAL")
 }
 
@@ -218,8 +253,10 @@ record(mbbo, "$(P)$(R)Shape")
     field(ZRVL, "0")
     field(ONST, "Rectangle")
     field(ONVL, "1")
-    field(TWST, "Text")
-    field(TWVL, "2")
+    field(TWST, "Ellipse")
+    field(TWVL, "3")
+    field(THST, "Text")
+    field(THVL, "2")
     field(VAL,  "$(SHAPE)")
     info(autosaveFields, "VAL")
 }
@@ -232,8 +269,10 @@ record(mbbi, "$(P)$(R)Shape_RBV")
     field(ZRVL, "0")
     field(ONST, "Rectangle")
     field(ONVL, "1")
-    field(TWST, "Text")
-    field(TWVL, "2")
+    field(TWST, "Ellipse")
+    field(TWVL, "3")
+    field(THST, "Text")
+    field(THVL, "2")
     field(SCAN, "I/O Intr")
 }
 
@@ -324,7 +363,8 @@ record(dfanout, "$(P)$(R)SetXHOPR")
     field(DOL,  "$(P)$(R)MaxSizeX NPP")
     field(OMSL, "closed_loop")
     field(OUTA, "$(P)$(R)PositionX.HOPR NPP")
-    field(OUTB, "$(P)$(R)SizeX.HOPR NPP")
+    field(OUTB, "$(P)$(R)CenterX.HOPR NPP")
+    field(OUTC, "$(P)$(R)SizeX.HOPR NPP")
 }
 
 record(longin, "$(P)$(R)MaxSizeY")
@@ -338,7 +378,8 @@ record(dfanout, "$(P)$(R)SetYHOPR")
     field(DOL,  "$(P)$(R)MaxSizeY NPP")
     field(OMSL, "closed_loop")
     field(OUTA, "$(P)$(R)PositionY.HOPR NPP")
-    field(OUTB, "$(P)$(R)SizeY.HOPR NPP")
+    field(OUTB, "$(P)$(R)CenterY.HOPR NPP")
+    field(OUTC, "$(P)$(R)SizeY.HOPR NPP")
 }
 
 ###################################################################

@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugin NDPluginOverlay</h1>
     <h2>
-      September 1, 2014</h2>
+      November 25, 2016</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -28,13 +28,13 @@
   </h2>
   <p>
     NDPluginOverlay adds graphics overlays to an NDArray image. It can be used to highlight
-    ROIs on an image, to implement cursors, and other similar operations. It supports
-    any number of overlay objects. For each object there is control of the location,
-    size, line width, color, and drawing mode. The size, line width and location can
-    be directly controlled, or links can be used to control the position and size from
-    other PVs. For example, links to the PVs definining an ROI in the NDPluginROI plugin
-    can be used to define a rectangular overlay in thus plugin. Similarly links to the
-    PVs defining the X and Y centroid and sigma of an image computed in the NDPluginStats
+    ROIs on an image, to implement cursors, add text annotation, and other similar operations.
+    It supports any number of overlay objects. For each object there is control of the
+    location, size, line width, color, and drawing mode. The size, line width and location
+    can be directly controlled, or links can be used to control the position and size
+    from other PVs. For example, links to the PVs definining an ROI in the NDPluginROI
+    plugin can be used to define a rectangular overlay in thus plugin. Similarly links
+    to the PVs defining the X and Y centroid and sigma of an image computed in the NDPluginStats
     plugin can be used to control the location and size of a crosshair overlay in this
     plugin. The cursor will then follow the location of a "beam" in the image. Putting
     such graphics overlays into an areaDetector plugin allows the use of simple image
@@ -63,7 +63,7 @@
   <p>
     NDPluginOverlay.h defines the following parameters. It also implements all of the
     standard plugin parameters from <a href="pluginDoc.html#NDPluginDriver">NDPluginDriver</a>.
-    There are 2 EPICS databases for the NDPluginOverlay plugin. NDOverlay.template provide
+    There are 2 EPICS databases for the NDPluginOverlay plugin. NDOverlay.template provides
     access to global parameters that are not specific to each overlay object. There
     are currently no records in this database, because it currently needs nothing beyond
     what is contained in NDPluginBase.template, but there may be records added to this
@@ -142,7 +142,8 @@
         <td>
           r/w</td>
         <td>
-          The X position of this overlay.</td>
+          The X position of this overlay. This is the left edge of the overlay. This will
+          automatically update if CenterX is changed.</td>
         <td>
           OVERLAY_POSITION_X</td>
         <td>
@@ -186,7 +187,8 @@
         <td>
           r/w</td>
         <td>
-          The Y position of this overlay.</td>
+          The Y position of this overlay. This is the top edge of the overlay. This will automatically
+          update if CenterY is changed.</td>
         <td>
           OVERLAY_POSITION_Y</td>
         <td>
@@ -216,13 +218,89 @@
       <tr>
         <td>
           NDPluginOverlay<br />
+          OverlayCenterX</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          The X position of the center of this overlay. Sometimes it is more convenient to
+          specify the center of the overlay rather than the left edge. This will automatically
+          update if CenterX or SizeX is changed.</td>
+        <td>
+          OVERLAY_CENTER_X</td>
+        <td>
+          $(P)$(R)CenterX<br />
+          $(P)$(R)CenterX_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          N.A.</td>
+        <td>
+          N.A.</td>
+        <td>
+          r/w</td>
+        <td>
+          Link to fetch the desired X center of this overlay. See the notes for PositionXLink
+          above.</td>
+        <td>
+          N.A.</td>
+        <td>
+          $(P)$(R)CenterXLink</td>
+        <td>
+          longout</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginOverlay<br />
+          OverlayCenterY</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          The Y position of the center of this overlay. Sometimes it is more convenient to
+          specify the center of the overlay rather than the top edge. This will automatically
+          update if CenterY or SizeY is changed.</td>
+        <td>
+          OVERLAY_CENTER_Y</td>
+        <td>
+          $(P)$(R)CenterY<br />
+          $(P)$(R)CenterY_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          N.A.</td>
+        <td>
+          N.A.</td>
+        <td>
+          r/w</td>
+        <td>
+          Link to fetch the desired Y center of this overlay. See the notes for PositionXLink
+          above.</td>
+        <td>
+          N.A.</td>
+        <td>
+          $(P)$(R)CenterYLink</td>
+        <td>
+          longout</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginOverlay<br />
           OverlaySizeX</td>
         <td>
           asynInt32</td>
         <td>
           r/w</td>
         <td>
-          The X size of this overlay.</td>
+          The X size of this overlay. This does not apply to Text overlay shapes.</td>
         <td>
           OVERLAY_SIZE_X</td>
         <td>
@@ -258,7 +336,7 @@
         <td>
           r/w</td>
         <td>
-          The Y size of this overlay.</td>
+          The Y size of this overlay. This does not apply to Text overlay shapes.</td>
         <td>
           OVERLAY_SIZE_Y</td>
         <td>
@@ -296,9 +374,9 @@
         <td>
           The X line width of this overlay. For the cross overlay this will increase the width
           of the line on both sides at the same time, to maintain the central point of the
-          cross. For the rectangle overlay the line thickness will grow inwards to the center.
-          For both overlay types widths &gt;1 are restricted to even numbers; odd widths &gt;1
-          are decreased by 1.</td>
+          cross. For the rectangle and ellipse overlays the line thickness will grow inwards
+          to the center. For cross overlay shapes the widths &gt;1 are restricted to even
+          numbers; odd widths &gt;1 are decreased by 1.</td>
         <td>
           OVERLAY_WIDTH_X</td>
         <td>
@@ -376,18 +454,9 @@
             <li>0="Cross"</li>
             <li>1="Rectangle"</li>
             <li>2="Text"</li>
+            <li>3="Ellipse"</li>
           </ul>
-          Other shapes may be added in the future. The PositionX and PositionY position of
-          a cross defines the location of the center of the cross. The SizeX and SizeY of
-          a cross is the size on either side of the center, i.e. the total width = 2*OverlaySizeX.
-          This is done so when HOPR for the SizeX and SizeY records is set to the total image
-          size, the cross can be the total size of the image no matter where it is positioned.
-          The PositionX and PositionY of a rectangle defines the lower left corner of the
-          rectangle. SizeX and SizeY of a rectangle define total width and height. These definitions
-          are consistent with the way ROIs are defined in the NDPluginROI plugin. The XPosition
-          and YPosition of the text overlay defines the lower left corner of the text. The
-          SizeX and SizeY are ignored for the text overlay, the size is defined by the text
-          string and the font.</td>
+          Other shapes may be added in the future. </td>
         <td>
           OVERLAY_SHAPE</td>
         <td>
@@ -615,9 +684,8 @@ NDOverlayConfigure(const char *portName, int queueSize, int blockingCallbacks,
     <img alt="NDOverlay8.png" src="NDOverlay8.png" />
   </div>
   <p>
-    Image display from ImageJ for the overlay settings in the screen above. Note that
-    the cursor is set to track the centroid of a laser pointer via its X and Y position
-    input links.</p>
+    Image display from ImageJ where the cursor is set to track the centroid of a laser
+    pointer via its X and Y center input links from the NDPluginStats plugin.</p>
   <div style="text-align: center">
     <img alt="NDOverlay_image.jpg" src="NDOverlay_image.jpg" />
   </div>
