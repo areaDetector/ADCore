@@ -92,7 +92,7 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
 {
      
     NDArray *pArray = (NDArray *)genericPointer;
-    epicsTimeStamp tNow;
+    epicsTimeStamp tNow, tEnd;
     double minCallbackTime, deltaTime;
     int status=0;
     int blockingCallbacks;
@@ -121,6 +121,8 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
         memcpy(&this->lastProcessTime, &tNow, sizeof(tNow));
         if (blockingCallbacks) {
             processCallbacks(pArray);
+            epicsTimeGetCurrent(&tEnd);
+            setDoubleParam(NDPluginDriverExecutionTime, epicsTimeDiffInSeconds(&tEnd, &tNow)*1e3);
         } else {
             /* Increase the reference count again on this array
              * It will be released in the background task when processing is done */
@@ -156,6 +158,7 @@ void NDPluginDriver::processTask(void)
 {
     /* This thread processes a new array when it arrives */
     int queueSize, queueFree;
+    epicsTimeStamp tStart, tEnd;
     static const char *functionName = "processTask";
 
     /* Loop forever */
@@ -186,6 +189,7 @@ void NDPluginDriver::processTask(void)
           return; // shutdown thread if special NULL pData received
         }
         
+        epicsTimeGetCurrent(&tStart);
         /* Take the lock.  The function we are calling must release the lock
          * during time-consuming operations when it does not need it. */
         this->lock();
@@ -198,6 +202,9 @@ void NDPluginDriver::processTask(void)
         
         /* We are done with this array buffer */
         pArray->release();
+        epicsTimeGetCurrent(&tEnd);
+        setDoubleParam(NDPluginDriverExecutionTime, epicsTimeDiffInSeconds(&tEnd, &tStart)*1e3);
+        callParamCallbacks();
     }
 }
 
@@ -535,6 +542,7 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     createParam(NDPluginDriverQueueFreeString,         asynParamInt32, &NDPluginDriverQueueFree);
     createParam(NDPluginDriverEnableCallbacksString,   asynParamInt32, &NDPluginDriverEnableCallbacks);
     createParam(NDPluginDriverBlockingCallbacksString, asynParamInt32, &NDPluginDriverBlockingCallbacks);
+    createParam(NDPluginDriverExecutionTimeString,     asynParamFloat64, &NDPluginDriverExecutionTime);
     createParam(NDPluginDriverMinCallbackTimeString,   asynParamFloat64, &NDPluginDriverMinCallbackTime);
 
     /* Here we set the values of read-only parameters and of read/write parameters that cannot
