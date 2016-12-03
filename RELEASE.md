@@ -58,6 +58,25 @@ R2-6 (December XXX, 2016)
   Previously there were only input records (NDimensions_RBV and Dimensions_RBV) 
   for these parameters.
 
+### NDPluginDriver, NDPluginBase.template, NDPluginBase.adl
+* Added new parameter NDPluginExecutionTime and new ai record ExecutionTime_RBV.  This gives the execution
+  in ms the last time the plugin ran.  It works both with BlockingCallbacks=Yes and No.  It is very
+  convenient for measuring the performance of the plugin without having to run the detector at high
+  frame rates.
+
+### asynNDArrayDriver, NDArrayBase.template, NDPluginBase.adl, ADSetup.adl, all plugin adl files
+* Added 2 new parameters: NDADCoreVersion, NDDriverVersion and new stringin records ADCoreVersion_RBV and
+  DriverVersion_RBV.  These show the version of ADCore and of the driver or plugin that the IOC was
+  built with.  Because NDPluginBase.adl grew larger all of the other plugin adl files have changed
+  their layouts.
+
+### ADDriver, ADBase.template, ADSetup.adl
+* Added 3 new parameters: ADSerialNumber, ADFirmwareVersion, and ADSDKVersion and new stringin records 
+  SerialNumber_RBV, FirmwareVersion_RBV, and SDKVersion_RBV. These show the serial number and firmware
+  version of the detector, and the version of the vendor SDK library that the IOC was built with.
+  Because ADSetup.adl grew larger all driver adl files need to change their layouts.  This has been done
+  for ADBase.adl in ADCore.  New releases of driver modules will have the changed layouts.
+
 ### pvaDriver
 * Moved the driver into its own repository areaDetector/pvaDriver.  The new repository contains
   both the driver library from ADCore and the example IOC that was previously in ADExample.
