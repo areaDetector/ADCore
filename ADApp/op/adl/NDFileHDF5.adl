@@ -8,7 +8,7 @@ display {
 		x=256
 		y=75
 		width=1070
-		height=775
+		height=840
 	}
 	clr=14
 	bclr=4
@@ -87,47 +87,36 @@ display {
 		1a7309,
 	}
 }
-composite {
+rectangle {
 	object {
-		x=360
+		x=0
 		y=5
-		width=360
+		width=1070
 		height=26
 	}
-	"composite name"=""
-	children {
-		rectangle {
-			object {
-				x=360
-				y=5
-				width=360
-				height=26
-			}
-			"basic attribute" {
-				clr=2
-			}
-		}
-		text {
-			object {
-				x=432
-				y=6
-				width=216
-				height=25
-			}
-			"basic attribute" {
-				clr=54
-			}
-			textix="$(P)$(R)"
-			align="horiz. centered"
-		}
+	"basic attribute" {
+		clr=2
 	}
+}
+text {
+	object {
+		x=35
+		y=6
+		width=1000
+		height=25
+	}
+	"basic attribute" {
+		clr=54
+	}
+	textix="$(P)$(R)"
+	align="horiz. centered"
 }
 composite {
 	object {
 		x=5
 		y=40
 		width=380
-		height=530
+		height=605
 	}
 	"composite name"=""
 	"composite file"="NDPluginBase.adl"
@@ -275,359 +264,6 @@ composite {
 	}
 	"composite name"=""
 	"composite file"="NDFileBase.adl"
-}
-rectangle {
-	object {
-		x=5
-		y=575
-		width=380
-		height=185
-	}
-	"basic attribute" {
-		clr=14
-		fill="outline"
-	}
-}
-composite {
-	object {
-		x=105
-		y=580
-		width=270
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=105
-				y=580
-				width=140
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Rows per chunk"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=250
-				y=580
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)NumRowChunks"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=315
-				y=581
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)NumRowChunks_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-	}
-}
-composite {
-	object {
-		x=75
-		y=605
-		width=300
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=75
-				y=605
-				width=170
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Columns per chunk"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=250
-				y=605
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)NumColChunks"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=315
-				y=606
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)NumColChunks_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-	}
-}
-composite {
-	object {
-		x=15
-		y=630
-		width=360
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=15
-				y=630
-				width=230
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Frames cached per chunk"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=250
-				y=630
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)NumFramesChunks"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=315
-				y=631
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)NumFramesChunks_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-	}
-}
-composite {
-	object {
-		x=15
-		y=655
-		width=360
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=15
-				y=655
-				width=230
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Boundary alignment"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=250
-				y=655
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)BoundaryAlign"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=315
-				y=656
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)BoundaryAlign_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-	}
-}
-composite {
-	object {
-		x=15
-		y=680
-		width=360
-		height=20
-	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=15
-				y=680
-				width=230
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Boundary threshold"
-			align="horiz. right"
-		}
-		"text entry" {
-			object {
-				x=250
-				y=680
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)BoundaryThreshold"
-				clr=14
-				bclr=51
-			}
-			limits {
-			}
-		}
-		"text update" {
-			object {
-				x=315
-				y=681
-				width=60
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)BoundaryThreshold_RBV"
-				clr=54
-				bclr=4
-			}
-			limits {
-			}
-		}
-	}
-}
-text {
-	object {
-		x=35
-		y=730
-		width=210
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Fill value"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=315
-		y=731
-		width=60
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)FillValue_RBV"
-		clr=54
-		bclr=4
-	}
-	limits {
-	}
-}
-text {
-	object {
-		x=55
-		y=705
-		width=190
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Flush on N'th frame"
-	align="horiz. right"
-}
-"text entry" {
-	object {
-		x=250
-		y=705
-		width=60
-		height=20
-	}
-	control {
-		chan="$(P)$(R)NumFramesFlush"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=315
-		y=706
-		width=60
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)NumFramesFlush_RBV"
-		clr=54
-		bclr=4
-	}
-	limits {
-	}
 }
 composite {
 	object {
@@ -1282,18 +918,382 @@ composite {
 		}
 	}
 }
-"text entry" {
+composite {
 	object {
-		x=250
-		y=730
-		width=60
-		height=20
+		x=5
+		y=650
+		width=380
+		height=185
 	}
-	control {
-		chan="$(P)$(R)FillValue"
-		clr=14
-		bclr=51
-	}
-	limits {
+	"composite name"=""
+	children {
+		rectangle {
+			object {
+				x=5
+				y=650
+				width=380
+				height=185
+			}
+			"basic attribute" {
+				clr=14
+				fill="outline"
+			}
+		}
+		composite {
+			object {
+				x=105
+				y=655
+				width=270
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=105
+						y=655
+						width=140
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Rows per chunk"
+					align="horiz. right"
+				}
+				"text entry" {
+					object {
+						x=250
+						y=655
+						width=60
+						height=20
+					}
+					control {
+						chan="$(P)$(R)NumRowChunks"
+						clr=14
+						bclr=51
+					}
+					limits {
+					}
+				}
+				"text update" {
+					object {
+						x=315
+						y=656
+						width=60
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)NumRowChunks_RBV"
+						clr=54
+						bclr=4
+					}
+					limits {
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=75
+				y=680
+				width=300
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=75
+						y=680
+						width=170
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Columns per chunk"
+					align="horiz. right"
+				}
+				"text entry" {
+					object {
+						x=250
+						y=680
+						width=60
+						height=20
+					}
+					control {
+						chan="$(P)$(R)NumColChunks"
+						clr=14
+						bclr=51
+					}
+					limits {
+					}
+				}
+				"text update" {
+					object {
+						x=315
+						y=681
+						width=60
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)NumColChunks_RBV"
+						clr=54
+						bclr=4
+					}
+					limits {
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=15
+				y=705
+				width=360
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=15
+						y=705
+						width=230
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Frames cached per chunk"
+					align="horiz. right"
+				}
+				"text entry" {
+					object {
+						x=250
+						y=705
+						width=60
+						height=20
+					}
+					control {
+						chan="$(P)$(R)NumFramesChunks"
+						clr=14
+						bclr=51
+					}
+					limits {
+					}
+				}
+				"text update" {
+					object {
+						x=315
+						y=706
+						width=60
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)NumFramesChunks_RBV"
+						clr=54
+						bclr=4
+					}
+					limits {
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=15
+				y=730
+				width=360
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=15
+						y=730
+						width=230
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Boundary alignment"
+					align="horiz. right"
+				}
+				"text entry" {
+					object {
+						x=250
+						y=730
+						width=60
+						height=20
+					}
+					control {
+						chan="$(P)$(R)BoundaryAlign"
+						clr=14
+						bclr=51
+					}
+					limits {
+					}
+				}
+				"text update" {
+					object {
+						x=315
+						y=731
+						width=60
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)BoundaryAlign_RBV"
+						clr=54
+						bclr=4
+					}
+					limits {
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=15
+				y=755
+				width=360
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=15
+						y=755
+						width=230
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Boundary threshold"
+					align="horiz. right"
+				}
+				"text entry" {
+					object {
+						x=250
+						y=755
+						width=60
+						height=20
+					}
+					control {
+						chan="$(P)$(R)BoundaryThreshold"
+						clr=14
+						bclr=51
+					}
+					limits {
+					}
+				}
+				"text update" {
+					object {
+						x=315
+						y=756
+						width=60
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)BoundaryThreshold_RBV"
+						clr=54
+						bclr=4
+					}
+					limits {
+					}
+				}
+			}
+		}
+		text {
+			object {
+				x=35
+				y=805
+				width=210
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Fill value"
+			align="horiz. right"
+		}
+		"text update" {
+			object {
+				x=315
+				y=806
+				width=60
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)FillValue_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+		text {
+			object {
+				x=55
+				y=780
+				width=190
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Flush on N'th frame"
+			align="horiz. right"
+		}
+		"text entry" {
+			object {
+				x=250
+				y=780
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)NumFramesFlush"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
+		"text update" {
+			object {
+				x=315
+				y=781
+				width=60
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)NumFramesFlush_RBV"
+				clr=54
+				bclr=4
+			}
+			limits {
+			}
+		}
+		"text entry" {
+			object {
+				x=250
+				y=805
+				width=60
+				height=20
+			}
+			control {
+				chan="$(P)$(R)FillValue"
+				clr=14
+				bclr=51
+			}
+			limits {
+			}
+		}
 	}
 }

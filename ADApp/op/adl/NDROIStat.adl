@@ -1,14 +1,14 @@
 
 file {
-	name="/local/DPbin/epics/epics_2015-08-31/synApps_5_8/support/areaDetector-2-3/ADCore-R2-3/ADApp/op/adl/NDROIStat.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDROIStat.adl"
 	version=030107
 }
 display {
 	object {
-		x=989
-		y=92
-		width=390
-		height=820
+		x=391
+		y=67
+		width=775
+		height=650
 	}
 	clr=14
 	bclr=4
@@ -91,7 +91,7 @@ rectangle {
 	object {
 		x=0
 		y=5
-		width=390
+		width=775
 		height=25
 	}
 	"basic attribute" {
@@ -100,9 +100,9 @@ rectangle {
 }
 text {
 	object {
-		x=87
+		x=37
 		y=6
-		width=216
+		width=700
 		height=25
 	}
 	"basic attribute" {
@@ -114,392 +114,425 @@ text {
 composite {
 	object {
 		x=5
-		y=35
+		y=40
 		width=380
-		height=530
+		height=605
 	}
 	"composite name"=""
 	"composite file"="NDPluginBase.adl"
 }
-"message button" {
-	object {
-		x=145
-		y=795
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(R)ResetAll"
-		clr=14
-		bclr=51
-	}
-	label="Reset All"
-	press_msg="1"
-}
-rectangle {
-	object {
-		x=5
-		y=570
-		width=380
-		height=85
-	}
-	"basic attribute" {
-		clr=14
-		fill="outline"
-	}
-}
-"related display" {
-	object {
-		x=172
-		y=600
-		width=130
-		height=20
-	}
-	display[0] {
-		label="ROI 0"
-		name="NDROIStatN.adl"
-		args="P=$(P), R=$(R),ROI=1:"
-	}
-	display[1] {
-		label="ROI 1"
-		name="NDROIStatN.adl"
-		args="P=$(P), R=$(R),ROI=2:"
-	}
-	display[2] {
-		label="ROI 2"
-		name="NDROIStatN.adl"
-		args="P=$(P), R=$(R),ROI=3:"
-	}
-	display[3] {
-		label="ROI 3"
-		name="NDROIStatN.adl"
-		args="P=$(P), R=$(R),ROI=4:"
-	}
-	display[4] {
-		label="ROI 4"
-		name="NDROIStatN.adl"
-		args="P=$(P), R=$(R),ROI=5:"
-	}
-	display[5] {
-		label="ROI 5"
-		name="NDROIStatN.adl"
-		args="P=$(P), R=$(R),ROI=6:"
-	}
-	display[6] {
-		label="ROI 6"
-		name="NDROIStatN.adl"
-		args="P=$(P), R=$(R),ROI=7:"
-	}
-	display[7] {
-		label="ROI 7"
-		name="NDROIStatN.adl"
-		args="P=$(P), R=$(R),ROI=8:"
-	}
-	clr=14
-	bclr=51
-	label="Individual ROIs"
-}
-text {
-	object {
-		x=22
-		y=600
-		width=140
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Individual 0-7"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=172
-		y=627
-		width=130
-		height=20
-	}
-	display[0] {
-		label="ROIS 1-8"
-		name="NDROIStat8.adl"
-		args="P=$(P),R=$(R),ROI1=1:,ROI2=2:,ROI3=3:,ROI4=4:,ROI5=5:,ROI6=6:,ROI7=7:,ROI8=8:"
-	}
-	display[1] {
-		label="ROIS 9-16"
-		name="NDROIStat8.adl"
-		args="P=$(P),R=$(R),ROI1=9:,ROI2=10:,ROI3=11:,ROI4=12:,ROI5=13:,ROI6=14:,ROI7=15:,ROI8=16:,"
-	}
-	display[2] {
-		label="ROIS 17-24"
-		name="NDROIStat8.adl"
-		args="P=$(P),R=$(R),ROI1=17:,ROI2=18:,ROI3=19:,ROI4=20:,ROI5=21:,ROI6=22:,ROI7=23:,ROI8=24:,"
-	}
-	display[3] {
-		label="ROIS 25-32"
-		name="NDROIStat8.adl"
-		args="P=$(P),R=$(R),ROI1=25:,ROI2=26:,ROI3=27:,ROI4=28:,ROI5=29:,ROI6=30:,ROI7=31:,ROI8=32:,"
-	}
-	clr=14
-	bclr=51
-	label="Combined ROIs"
-}
-text {
-	object {
-		x=138
-		y=575
-		width=150
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="ROI definitions"
-	align="horiz. right"
-}
-text {
-	object {
-		x=82
-		y=628
-		width=80
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Combined"
-	align="horiz. right"
-}
 composite {
 	object {
-		x=5
-		y=660
+		x=390
+		y=41
 		width=380
-		height=130
+		height=245
 	}
 	"composite name"=""
 	children {
-		rectangle {
-			object {
-				x=135
-				y=665
-				width=120
-				height=21
-			}
-			"basic attribute" {
-				clr=2
-			}
-		}
-		rectangle {
-			object {
-				x=5
-				y=660
-				width=380
-				height=130
-			}
-			"basic attribute" {
-				clr=14
-				fill="outline"
-			}
-		}
-		text {
-			object {
-				x=140
-				y=665
-				width=110
-				height=20
-			}
-			"basic attribute" {
-				clr=54
-			}
-			textix="Time Series"
-			align="horiz. centered"
-		}
 		composite {
 			object {
-				x=76
-				y=742
-				width=225
-				height=20
+				x=390
+				y=131
+				width=380
+				height=155
 			}
 			"composite name"=""
 			children {
-				text {
+				"message button" {
 					object {
-						x=76
-						y=742
+						x=530
+						y=266
+						width=100
+						height=20
+					}
+					control {
+						chan="$(P)$(R)ResetAll"
+						clr=14
+						bclr=51
+					}
+					label="Reset All"
+					press_msg="1"
+				}
+				composite {
+					object {
+						x=390
+						y=131
+						width=380
+						height=130
+					}
+					"composite name"=""
+					children {
+						rectangle {
+							object {
+								x=520
+								y=136
+								width=120
+								height=21
+							}
+							"basic attribute" {
+								clr=2
+							}
+						}
+						rectangle {
+							object {
+								x=390
+								y=131
+								width=380
+								height=130
+							}
+							"basic attribute" {
+								clr=14
+								fill="outline"
+							}
+						}
+						text {
+							object {
+								x=525
+								y=136
+								width=110
+								height=20
+							}
+							"basic attribute" {
+								clr=54
+							}
+							textix="Time Series"
+							align="horiz. centered"
+						}
+						composite {
+							object {
+								x=461
+								y=213
+								width=225
+								height=20
+							}
+							"composite name"=""
+							children {
+								text {
+									object {
+										x=461
+										y=213
+										width=130
+										height=20
+									}
+									"basic attribute" {
+										clr=14
+									}
+									textix="Current point"
+									align="horiz. right"
+								}
+								"text update" {
+									object {
+										x=596
+										y=214
+										width=90
+										height=18
+									}
+									monitor {
+										chan="$(P)$(R)TSCurrentPoint"
+										clr=54
+										bclr=4
+									}
+									limits {
+									}
+								}
+							}
+						}
+						composite {
+							object {
+								x=501
+								y=238
+								width=240
+								height=20
+							}
+							"composite name"=""
+							children {
+								menu {
+									object {
+										x=596
+										y=239
+										width=80
+										height=18
+									}
+									control {
+										chan="$(P)$(R)TSRead.SCAN"
+										clr=14
+										bclr=51
+									}
+								}
+								"message button" {
+									object {
+										x=681
+										y=238
+										width=60
+										height=20
+									}
+									control {
+										chan="$(P)$(R)TSControl"
+										clr=14
+										bclr=51
+									}
+									label="Read"
+									press_msg="3"
+								}
+								text {
+									object {
+										x=501
+										y=238
+										width=90
+										height=20
+									}
+									"basic attribute" {
+										clr=14
+									}
+									textix="Read rate"
+								}
+							}
+						}
+						"message button" {
+							object {
+								x=423
+								y=163
+								width=90
+								height=20
+							}
+							control {
+								chan="$(P)$(R)TSControl"
+								clr=14
+								bclr=51
+							}
+							label="Erase/Start"
+							press_msg="0"
+						}
+						"message button" {
+							object {
+								x=518
+								y=163
+								width=60
+								height=20
+							}
+							control {
+								chan="$(P)$(R)TSControl"
+								clr=14
+								bclr=51
+							}
+							label="Stop"
+							press_msg="2"
+						}
+						"message button" {
+							object {
+								x=583
+								y=163
+								width=60
+								height=20
+							}
+							control {
+								chan="$(P)$(R)TSControl"
+								clr=14
+								bclr=51
+							}
+							label="Start"
+							press_msg="1"
+						}
+						"text update" {
+							object {
+								x=648
+								y=164
+								width=90
+								height=18
+							}
+							monitor {
+								chan="$(P)$(R)TSAcquiring"
+								clr=54
+								bclr=12
+							}
+							clrmod="alarm"
+							limits {
+							}
+						}
+						composite {
+							object {
+								x=431
+								y=188
+								width=225
+								height=20
+							}
+							"composite name"=""
+							children {
+								"text entry" {
+									object {
+										x=596
+										y=189
+										width=60
+										height=19
+									}
+									control {
+										chan="$(P)$(R)TSNumPoints"
+										clr=14
+										bclr=51
+									}
+									limits {
+									}
+								}
+								text {
+									object {
+										x=431
+										y=188
+										width=160
+										height=20
+									}
+									"basic attribute" {
+										clr=14
+									}
+									textix="Number of points"
+									align="horiz. right"
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		composite {
+			object {
+				x=390
+				y=41
+				width=380
+				height=85
+			}
+			"composite name"=""
+			children {
+				rectangle {
+					object {
+						x=390
+						y=41
+						width=380
+						height=85
+					}
+					"basic attribute" {
+						clr=14
+						fill="outline"
+					}
+				}
+				"related display" {
+					object {
+						x=557
+						y=71
 						width=130
 						height=20
 					}
+					display[0] {
+						label="ROI 0"
+						name="NDROIStatN.adl"
+						args="P=$(P), R=$(R),ROI=1:"
+					}
+					display[1] {
+						label="ROI 1"
+						name="NDROIStatN.adl"
+						args="P=$(P), R=$(R),ROI=2:"
+					}
+					display[2] {
+						label="ROI 2"
+						name="NDROIStatN.adl"
+						args="P=$(P), R=$(R),ROI=3:"
+					}
+					display[3] {
+						label="ROI 3"
+						name="NDROIStatN.adl"
+						args="P=$(P), R=$(R),ROI=4:"
+					}
+					display[4] {
+						label="ROI 4"
+						name="NDROIStatN.adl"
+						args="P=$(P), R=$(R),ROI=5:"
+					}
+					display[5] {
+						label="ROI 5"
+						name="NDROIStatN.adl"
+						args="P=$(P), R=$(R),ROI=6:"
+					}
+					display[6] {
+						label="ROI 6"
+						name="NDROIStatN.adl"
+						args="P=$(P), R=$(R),ROI=7:"
+					}
+					display[7] {
+						label="ROI 7"
+						name="NDROIStatN.adl"
+						args="P=$(P), R=$(R),ROI=8:"
+					}
+					clr=14
+					bclr=51
+					label="Individual ROIs"
+				}
+				text {
+					object {
+						x=407
+						y=71
+						width=140
+						height=20
+					}
 					"basic attribute" {
 						clr=14
 					}
-					textix="Current point"
+					textix="Individual 0-7"
 					align="horiz. right"
 				}
-				"text update" {
+				"related display" {
 					object {
-						x=211
-						y=743
-						width=90
-						height=18
+						x=557
+						y=98
+						width=130
+						height=20
 					}
-					monitor {
-						chan="$(P)$(R)TSCurrentPoint"
-						clr=54
-						bclr=4
+					display[0] {
+						label="ROIS 1-8"
+						name="NDROIStat8.adl"
+						args="P=$(P),R=$(R),ROI1=1:,ROI2=2:,ROI3=3:,ROI4=4:,ROI5=5:,ROI6=6:,ROI7=7:,ROI8=8:"
 					}
-					limits {
+					display[1] {
+						label="ROIS 9-16"
+						name="NDROIStat8.adl"
+						args="P=$(P),R=$(R),ROI1=9:,ROI2=10:,ROI3=11:,ROI4=12:,ROI5=13:,ROI6=14:,ROI7=15:,ROI8=16:,"
 					}
+					display[2] {
+						label="ROIS 17-24"
+						name="NDROIStat8.adl"
+						args="P=$(P),R=$(R),ROI1=17:,ROI2=18:,ROI3=19:,ROI4=20:,ROI5=21:,ROI6=22:,ROI7=23:,ROI8=24:,"
+					}
+					display[3] {
+						label="ROIS 25-32"
+						name="NDROIStat8.adl"
+						args="P=$(P),R=$(R),ROI1=25:,ROI2=26:,ROI3=27:,ROI4=28:,ROI5=29:,ROI6=30:,ROI7=31:,ROI8=32:,"
+					}
+					clr=14
+					bclr=51
+					label="Combined ROIs"
 				}
-			}
-		}
-		composite {
-			object {
-				x=116
-				y=767
-				width=240
-				height=20
-			}
-			"composite name"=""
-			children {
-				menu {
+				text {
 					object {
-						x=211
-						y=768
+						x=523
+						y=46
+						width=150
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="ROI definitions"
+					align="horiz. right"
+				}
+				text {
+					object {
+						x=467
+						y=99
 						width=80
-						height=18
-					}
-					control {
-						chan="$(P)$(R)TSRead.SCAN"
-						clr=14
-						bclr=51
-					}
-				}
-				"message button" {
-					object {
-						x=296
-						y=767
-						width=60
-						height=20
-					}
-					control {
-						chan="$(P)$(R)TSControl"
-						clr=14
-						bclr=51
-					}
-					label="Read"
-					press_msg="3"
-				}
-				text {
-					object {
-						x=116
-						y=767
-						width=90
 						height=20
 					}
 					"basic attribute" {
 						clr=14
 					}
-					textix="Read rate"
-				}
-			}
-		}
-		"message button" {
-			object {
-				x=38
-				y=692
-				width=90
-				height=20
-			}
-			control {
-				chan="$(P)$(R)TSControl"
-				clr=14
-				bclr=51
-			}
-			label="Erase/Start"
-			press_msg="0"
-		}
-		"message button" {
-			object {
-				x=133
-				y=692
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)TSControl"
-				clr=14
-				bclr=51
-			}
-			label="Stop"
-			press_msg="2"
-		}
-		"message button" {
-			object {
-				x=198
-				y=692
-				width=60
-				height=20
-			}
-			control {
-				chan="$(P)$(R)TSControl"
-				clr=14
-				bclr=51
-			}
-			label="Start"
-			press_msg="1"
-		}
-		"text update" {
-			object {
-				x=263
-				y=693
-				width=90
-				height=18
-			}
-			monitor {
-				chan="$(P)$(R)TSAcquiring"
-				clr=54
-				bclr=12
-			}
-			clrmod="alarm"
-			limits {
-			}
-		}
-		composite {
-			object {
-				x=46
-				y=717
-				width=225
-				height=20
-			}
-			"composite name"=""
-			children {
-				"text entry" {
-					object {
-						x=211
-						y=718
-						width=60
-						height=19
-					}
-					control {
-						chan="$(P)$(R)TSNumPoints"
-						clr=14
-						bclr=51
-					}
-					limits {
-					}
-				}
-				text {
-					object {
-						x=46
-						y=717
-						width=160
-						height=20
-					}
-					"basic attribute" {
-						clr=14
-					}
-					textix="Number of points"
+					textix="Combined"
 					align="horiz. right"
 				}
 			}

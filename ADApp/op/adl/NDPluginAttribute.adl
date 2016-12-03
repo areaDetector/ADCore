@@ -1,14 +1,14 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-1/ADCore/ADApp/op/adl/NDPluginAttribute.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDPluginAttribute.adl"
 	version=030107
 }
 display {
 	object {
-		x=172
+		x=208
 		y=85
 		width=775
-		height=580
+		height=650
 	}
 	clr=14
 	bclr=4
@@ -89,34 +89,21 @@ display {
 }
 rectangle {
 	object {
-		x=197
+		x=0
 		y=5
-		width=380
+		width=775
 		height=25
 	}
 	"basic attribute" {
 		clr=2
 	}
 }
-text {
-	object {
-		x=202
-		y=6
-		width=370
-		height=25
-	}
-	"basic attribute" {
-		clr=43
-	}
-	textix="$(P)$(R)"
-	align="horiz. centered"
-}
 composite {
 	object {
 		x=5
 		y=40
 		width=380
-		height=530
+		height=605
 	}
 	"composite name"=""
 	"composite file"="NDPluginBase.adl"
@@ -441,4 +428,28 @@ text {
 	}
 	textix="Attributes"
 	align="horiz. right"
+}
+composite {
+	object {
+		x=12
+		y=6
+		width=750
+		height=25
+	}
+	"composite name"=""
+	children {
+		text {
+			object {
+				x=12
+				y=6
+				width=750
+				height=25
+			}
+			"basic attribute" {
+				clr=43
+			}
+			textix="$(P)$(R)"
+			align="horiz. centered"
+		}
+	}
 }

@@ -1,14 +1,14 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-4/ADCore/ADApp/op/adl/NDPluginTimeSeries.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDPluginTimeSeries.adl"
 	version=030107
 }
 display {
 	object {
-		x=41
-		y=171
+		x=581
+		y=191
 		width=695
-		height=570
+		height=650
 	}
 	clr=14
 	bclr=4
@@ -100,9 +100,9 @@ rectangle {
 }
 text {
 	object {
-		x=239
+		x=22
 		y=6
-		width=216
+		width=650
 		height=25
 	}
 	"basic attribute" {
@@ -114,525 +114,536 @@ text {
 composite {
 	object {
 		x=5
-		y=35
+		y=40
 		width=380
-		height=530
+		height=605
 	}
 	"composite name"=""
 	"composite file"="NDPluginBase.adl"
 }
-rectangle {
+composite {
 	object {
 		x=390
-		y=35
+		y=40
 		width=300
-		height=320
-	}
-	"basic attribute" {
-		clr=14
-		fill="outline"
-		width=1
-	}
-}
-composite {
-	object {
-		x=408
-		y=50
-		width=250
-		height=20
+		height=345
 	}
 	"composite name"=""
 	children {
-		text {
+		rectangle {
+			object {
+				x=390
+				y=40
+				width=300
+				height=320
+			}
+			"basic attribute" {
+				clr=14
+				fill="outline"
+				width=1
+			}
+		}
+		composite {
 			object {
 				x=408
-				y=50
-				width=70
+				y=55
+				width=250
 				height=20
 			}
-			"basic attribute" {
-				clr=14
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=408
+						y=55
+						width=70
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Acquire"
+				}
+				"message button" {
+					object {
+						x=483
+						y=55
+						width=85
+						height=20
+					}
+					control {
+						chan="$(P)$(R)TSAcquire"
+						clr=14
+						bclr=51
+					}
+					label="Erase/Start"
+					press_msg="1"
+				}
+				"message button" {
+					object {
+						x=573
+						y=55
+						width=85
+						height=20
+					}
+					control {
+						chan="$(P)$(R)TSAcquire"
+						clr=14
+						bclr=51
+					}
+					label="Stop"
+					press_msg="0"
+				}
 			}
-			textix="Acquire"
 		}
-		"message button" {
-			object {
-				x=483
-				y=50
-				width=85
-				height=20
-			}
-			control {
-				chan="$(P)$(R)TSAcquire"
-				clr=14
-				bclr=51
-			}
-			label="Erase/Start"
-			press_msg="1"
-		}
-		"message button" {
-			object {
-				x=573
-				y=50
-				width=85
-				height=20
-			}
-			control {
-				chan="$(P)$(R)TSAcquire"
-				clr=14
-				bclr=51
-			}
-			label="Stop"
-			press_msg="0"
-		}
-	}
-}
-text {
-	object {
-		x=420
-		y=100
-		width=120
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Elapsed time"
-}
-text {
-	object {
-		x=480
-		y=75
-		width=60
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Status"
-}
-"text update" {
-	object {
-		x=545
-		y=101
-		width=100
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)TSElapsedTime"
-		clr=54
-		bclr=4
-	}
-	limits {
-	}
-}
-"text update" {
-	object {
-		x=545
-		y=76
-		width=100
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)TSAcquiring"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
-		x=430
-		y=250
-		width=110
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="AcquireMode"
-}
-menu {
-	object {
-		x=545
-		y=250
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TSAcquireMode"
-		clr=14
-		bclr=51
-	}
-}
-text {
-	object {
-		x=400
-		y=199
-		width=140
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Averaging time"
-}
-"text update" {
-	object {
-		x=545
-		y=175
-		width=100
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)TSAveragingTime_RBV"
-		clr=54
-		bclr=4
-	}
-	format="exponential"
-	limits {
-	}
-}
-"text entry" {
-	object {
-		x=545
-		y=199
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TSAveragingTime"
-		clr=14
-		bclr=51
-	}
-	format="exponential"
-	limits {
-	}
-}
-composite {
-	object {
-		x=450
-		y=225
-		width=195
-		height=20
-	}
-	"composite name"=""
-	children {
 		text {
 			object {
-				x=450
-				y=225
-				width=90
+				x=420
+				y=105
+				width=120
 				height=20
 			}
 			"basic attribute" {
 				clr=14
 			}
-			textix="# Average"
+			textix="Elapsed time"
+		}
+		text {
+			object {
+				x=480
+				y=80
+				width=60
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Status"
 		}
 		"text update" {
 			object {
 				x=545
-				y=226
+				y=106
 				width=100
 				height=18
 			}
 			monitor {
-				chan="$(P)$(R)TSNumAverage"
+				chan="$(P)$(R)TSElapsedTime"
 				clr=54
 				bclr=4
 			}
 			limits {
 			}
 		}
-	}
-}
-text {
-	object {
-		x=450
-		y=125
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Time link"
-}
-"text entry" {
-	object {
-		x=545
-		y=125
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(R)TSTimePerPointLink.DOL"
-		clr=14
-		bclr=51
-	}
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
-		x=440
-		y=150
-		width=100
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Time/point"
-}
-"text update" {
-	object {
-		x=545
-		y=151
-		width=100
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)TSTimePerPoint"
-		clr=54
-		bclr=4
-	}
-	format="exponential"
-	limits {
-	}
-}
-composite {
-	object {
-		x=417
-		y=360
-		width=243
-		height=20
-	}
-	"composite name"=""
-	children {
+		"text update" {
+			object {
+				x=545
+				y=81
+				width=100
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)TSAcquiring"
+				clr=54
+				bclr=12
+			}
+			clrmod="alarm"
+			format="string"
+			limits {
+			}
+		}
 		text {
 			object {
-				x=417
-				y=360
+				x=430
+				y=255
+				width=110
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="AcquireMode"
+		}
+		menu {
+			object {
+				x=545
+				y=255
+				width=100
+				height=20
+			}
+			control {
+				chan="$(P)$(R)TSAcquireMode"
+				clr=14
+				bclr=51
+			}
+		}
+		text {
+			object {
+				x=400
+				y=204
 				width=140
 				height=20
 			}
 			"basic attribute" {
 				clr=14
 			}
-			textix="Time series"
-			align="horiz. right"
+			textix="Averaging time"
 		}
-		"related display" {
+		"text update" {
 			object {
-				x=560
-				y=360
+				x=545
+				y=180
+				width=100
+				height=18
+			}
+			monitor {
+				chan="$(P)$(R)TSAveragingTime_RBV"
+				clr=54
+				bclr=4
+			}
+			format="exponential"
+			limits {
+			}
+		}
+		"text entry" {
+			object {
+				x=545
+				y=204
 				width=100
 				height=20
 			}
-			display[0] {
-				label="$(T1)"
-				name="NDTimeSeriesPlot.adl"
-				args="P=$(P),R=$(R),RN=$(R1)"
+			control {
+				chan="$(P)$(R)TSAveragingTime"
+				clr=14
+				bclr=51
 			}
-			display[1] {
-				label="$(T2)"
-				name="NDTimeSeriesPlot.adl"
-				args="P=$(P),R=$(R),RN=$(R2)"
+			format="exponential"
+			limits {
 			}
-			display[2] {
-				label="$(T3)"
-				name="NDTimeSeriesPlot.adl"
-				args="P=$(P),R=$(R),RN=$(R3)"
-			}
-			display[3] {
-				label="$(T4)"
-				name="NDTimeSeriesPlot.adl"
-				args="P=$(P),R=$(R),RN=$(R4)"
-			}
-			display[4] {
-				label="$(T5)"
-				name="NDTimeSeriesPlot.adl"
-				args="P=$(P),R=$(R),RN=$(R5)"
-			}
-			display[5] {
-				label="$(T6)"
-				name="NDTimeSeriesPlot.adl"
-				args="P=$(P),R=$(R),RN=$(R6)"
-			}
-			display[6] {
-				label="$(T7)"
-				name="NDTimeSeriesPlot.adl"
-				args="P=$(P),R=$(R),RN=$(R7)"
-			}
-			display[7] {
-				label="$(T8)"
-				name="NDTimeSeriesPlot.adl"
-				args="P=$(P),R=$(R),RN=$(R8)"
-			}
-			display[8] {
-				label="$(T9)"
-				name="NDTimeSeriesPlot.adl"
-				args="P=$(P),R=$(R),RN=$(R9)"
-			}
-			display[9] {
-				label="$(T10)"
-				name="NDTimeSeriesPlot.adl"
-				args="P=$(P),R=$(R),RN=$(R10)"
-			}
-			display[10] {
-				label="$(T11)"
-				name="NDTimeSeriesPlot.adl"
-				args="P=$(P),R=$(R),RN=$(R11)"
-			}
-			display[11] {
-				label="$(T12)"
-				name="NDTimeSeriesPlot.adl"
-				args="P=$(P),R=$(R),RN=$(R12)"
-			}
-			display[12] {
-				label="$(T13)"
-				name="NDTimeSeriesPlot.adl"
-				args="P=$(P),R=$(R),RN=$(R13)"
-			}
-			display[13] {
-				label="$(T14)"
-				name="NDTimeSeriesPlot.adl"
-				args="P=$(P),R=$(R),RN=$(R14)"
-			}
-			display[14] {
-				label="$(T15)"
-				name="NDTimeSeriesPlot.adl"
-				args="P=$(P),R=$(R),RN=$(R15)"
-			}
-			display[15] {
-				label="$(T16)"
-				name="NDTimeSeriesPlot.adl"
-				args="P=$(P),R=$(R),RN=$(R16)"
-			}
-			clr=14
-			bclr=51
-			label="Plots"
 		}
-	}
-}
-composite {
-	object {
-		x=410
-		y=275
-		width=270
-		height=70
-	}
-	"composite name"=""
-	children {
+		composite {
+			object {
+				x=450
+				y=230
+				width=195
+				height=20
+			}
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=450
+						y=230
+						width=90
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="# Average"
+				}
+				"text update" {
+					object {
+						x=545
+						y=231
+						width=100
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)TSNumAverage"
+						clr=54
+						bclr=4
+					}
+					limits {
+					}
+				}
+			}
+		}
 		text {
 			object {
 				x=450
-				y=325
+				y=130
 				width=90
 				height=20
 			}
 			"basic attribute" {
 				clr=14
 			}
-			textix="Read rate"
+			textix="Time link"
+		}
+		"text entry" {
+			object {
+				x=545
+				y=130
+				width=100
+				height=20
+			}
+			control {
+				chan="$(P)$(R)TSTimePerPointLink.DOL"
+				clr=14
+				bclr=51
+			}
+			format="string"
+			limits {
+			}
 		}
 		text {
 			object {
-				x=410
-				y=300
-				width=130
+				x=440
+				y=155
+				width=100
 				height=20
 			}
 			"basic attribute" {
 				clr=14
 			}
-			textix="Current point"
+			textix="Time/point"
 		}
 		"text update" {
 			object {
 				x=545
-				y=301
+				y=156
 				width=100
 				height=18
 			}
 			monitor {
-				chan="$(P)$(R)TSCurrentPoint"
+				chan="$(P)$(R)TSTimePerPoint"
 				clr=54
 				bclr=4
 			}
+			format="exponential"
 			limits {
 			}
 		}
 		composite {
 			object {
-				x=545
-				y=325
-				width=135
+				x=417
+				y=365
+				width=243
 				height=20
 			}
 			"composite name"=""
 			children {
-				"message button" {
+				text {
 					object {
-						x=630
-						y=325
-						width=50
+						x=417
+						y=365
+						width=140
 						height=20
 					}
-					control {
-						chan="$(P)$(R)TSRead.PROC"
+					"basic attribute" {
 						clr=14
-						bclr=51
 					}
-					label="Read"
-					press_msg="1"
+					textix="Time series"
+					align="horiz. right"
 				}
-				menu {
+				"related display" {
 					object {
-						x=545
-						y=325
-						width=80
+						x=560
+						y=365
+						width=100
 						height=20
 					}
-					control {
-						chan="$(P)$(R)TSRead.SCAN"
-						clr=14
-						bclr=51
+					display[0] {
+						label="$(T1)"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R1)"
 					}
+					display[1] {
+						label="$(T2)"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R2)"
+					}
+					display[2] {
+						label="$(T3)"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R3)"
+					}
+					display[3] {
+						label="$(T4)"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R4)"
+					}
+					display[4] {
+						label="$(T5)"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R5)"
+					}
+					display[5] {
+						label="$(T6)"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R6)"
+					}
+					display[6] {
+						label="$(T7)"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R7)"
+					}
+					display[7] {
+						label="$(T8)"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R8)"
+					}
+					display[8] {
+						label="$(T9)"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R9)"
+					}
+					display[9] {
+						label="$(T10)"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R10)"
+					}
+					display[10] {
+						label="$(T11)"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R11)"
+					}
+					display[11] {
+						label="$(T12)"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R12)"
+					}
+					display[12] {
+						label="$(T13)"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R13)"
+					}
+					display[13] {
+						label="$(T14)"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R14)"
+					}
+					display[14] {
+						label="$(T15)"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R15)"
+					}
+					display[15] {
+						label="$(T16)"
+						name="NDTimeSeriesPlot.adl"
+						args="P=$(P),R=$(R),RN=$(R16)"
+					}
+					clr=14
+					bclr=51
+					label="Plots"
 				}
 			}
 		}
-		text {
+		composite {
 			object {
 				x=410
-				y=275
-				width=130
-				height=20
+				y=280
+				width=270
+				height=70
 			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="# Time points"
-		}
-		"text entry" {
-			object {
-				x=545
-				y=275
-				width=100
-				height=20
-			}
-			control {
-				chan="$(P)$(R)TSNumPoints"
-				clr=14
-				bclr=51
-			}
-			limits {
+			"composite name"=""
+			children {
+				text {
+					object {
+						x=450
+						y=330
+						width=90
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Read rate"
+				}
+				text {
+					object {
+						x=410
+						y=305
+						width=130
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="Current point"
+				}
+				"text update" {
+					object {
+						x=545
+						y=306
+						width=100
+						height=18
+					}
+					monitor {
+						chan="$(P)$(R)TSCurrentPoint"
+						clr=54
+						bclr=4
+					}
+					limits {
+					}
+				}
+				composite {
+					object {
+						x=545
+						y=330
+						width=135
+						height=20
+					}
+					"composite name"=""
+					children {
+						"message button" {
+							object {
+								x=630
+								y=330
+								width=50
+								height=20
+							}
+							control {
+								chan="$(P)$(R)TSRead.PROC"
+								clr=14
+								bclr=51
+							}
+							label="Read"
+							press_msg="1"
+						}
+						menu {
+							object {
+								x=545
+								y=330
+								width=80
+								height=20
+							}
+							control {
+								chan="$(P)$(R)TSRead.SCAN"
+								clr=14
+								bclr=51
+							}
+						}
+					}
+				}
+				text {
+					object {
+						x=410
+						y=280
+						width=130
+						height=20
+					}
+					"basic attribute" {
+						clr=14
+					}
+					textix="# Time points"
+				}
+				"text entry" {
+					object {
+						x=545
+						y=280
+						width=100
+						height=20
+					}
+					control {
+						chan="$(P)$(R)TSNumPoints"
+						clr=14
+						bclr=51
+					}
+					limits {
+					}
+				}
 			}
 		}
 	}

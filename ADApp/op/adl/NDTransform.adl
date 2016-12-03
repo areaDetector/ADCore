@@ -1,14 +1,14 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-5/ADCore/ADApp/op/adl/NDTransform.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDTransform.adl"
 	version=030107
 }
 display {
 	object {
-		x=512
-		y=111
+		x=598
+		y=73
 		width=390
-		height=745
+		height=815
 	}
 	clr=14
 	bclr=4
@@ -89,9 +89,9 @@ display {
 }
 rectangle {
 	object {
-		x=5
+		x=0
 		y=5
-		width=380
+		width=390
 		height=25
 	}
 	"basic attribute" {
@@ -116,663 +116,652 @@ composite {
 		x=5
 		y=40
 		width=380
-		height=530
+		height=605
 	}
 	"composite name"=""
 	"composite file"="NDPluginBase.adl"
 }
-composite {
+rectangle {
 	object {
 		x=5
-		y=575
+		y=650
 		width=380
-		height=135
+		height=160
+	}
+	"basic attribute" {
+		clr=13
+		fill="outline"
+	}
+}
+text {
+	object {
+		x=15
+		y=657
+		width=140
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Transform Type"
+}
+menu {
+	object {
+		x=160
+		y=657
+		width=120
+		height=20
+	}
+	control {
+		chan="$(P)$(R)Type"
+		clr=14
+		bclr=51
+	}
+}
+composite {
+	object {
+		x=282
+		y=686
+		width=13
+		height=19
 	}
 	"composite name"=""
 	children {
-		rectangle {
+		polyline {
 			object {
-				x=5
-				y=575
-				width=380
-				height=135
+				x=293
+				y=686
+				width=2
+				height=19
 			}
 			"basic attribute" {
-				clr=13
+				clr=53
 				fill="outline"
+				width=2
+			}
+			points {
+				(294,687)
+				(294,704)
 			}
 		}
-		text {
-			object {
-				x=15
-				y=582
-				width=140
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Transform Type"
-		}
-		menu {
-			object {
-				x=160
-				y=582
-				width=120
-				height=20
-			}
-			control {
-				chan="$(P)$(R)Type"
-				clr=14
-				bclr=51
-			}
-		}
-		composite {
+		polyline {
 			object {
 				x=282
-				y=611
+				y=686
 				width=13
-				height=19
-			}
-			"composite name"=""
-			children {
-				polyline {
-					object {
-						x=293
-						y=611
-						width=2
-						height=19
-					}
-					"basic attribute" {
-						clr=53
-						fill="outline"
-						width=2
-					}
-					points {
-						(294,612)
-						(294,629)
-					}
-				}
-				polyline {
-					object {
-						x=282
-						y=611
-						width=13
-						height=2
-					}
-					"basic attribute" {
-						clr=53
-						fill="outline"
-						width=2
-					}
-					points {
-						(294,612)
-						(283,612)
-					}
-				}
-				polyline {
-					object {
-						x=283
-						y=618
-						width=12
-						height=2
-					}
-					"basic attribute" {
-						clr=53
-						fill="outline"
-						width=2
-					}
-					points {
-						(294,619)
-						(284,619)
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=282
-				y=638
-				width=19
-				height=13
-			}
-			"composite name"=""
-			children {
-				polyline {
-					object {
-						x=282
-						y=638
-						width=19
-						height=2
-					}
-					"basic attribute" {
-						clr=53
-						fill="outline"
-						width=2
-					}
-					points {
-						(283,639)
-						(300,639)
-					}
-				}
-				polyline {
-					object {
-						x=282
-						y=638
-						width=2
-						height=13
-					}
-					"basic attribute" {
-						clr=53
-						fill="outline"
-						width=2
-					}
-					points {
-						(283,639)
-						(283,650)
-					}
-				}
-				polyline {
-					object {
-						x=289
-						y=638
-						width=2
-						height=12
-					}
-					"basic attribute" {
-						clr=53
-						fill="outline"
-						width=2
-					}
-					points {
-						(290,639)
-						(290,649)
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=282
-				y=659
-				width=13
-				height=19
-			}
-			"composite name"=""
-			children {
-				polyline {
-					object {
-						x=282
-						y=659
-						width=2
-						height=19
-					}
-					"basic attribute" {
-						clr=53
-						fill="outline"
-						width=2
-					}
-					points {
-						(283,677)
-						(283,660)
-					}
-				}
-				polyline {
-					object {
-						x=282
-						y=676
-						width=13
-						height=2
-					}
-					"basic attribute" {
-						clr=53
-						fill="outline"
-						width=2
-					}
-					points {
-						(283,677)
-						(294,677)
-					}
-				}
-				polyline {
-					object {
-						x=282
-						y=669
-						width=12
-						height=2
-					}
-					"basic attribute" {
-						clr=53
-						fill="outline"
-						width=2
-					}
-					points {
-						(283,670)
-						(293,670)
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=282
-				y=687
-				width=19
-				height=13
-			}
-			"composite name"=""
-			children {
-				polyline {
-					object {
-						x=282
-						y=698
-						width=19
-						height=2
-					}
-					"basic attribute" {
-						clr=53
-						fill="outline"
-						width=2
-					}
-					points {
-						(300,699)
-						(283,699)
-					}
-				}
-				polyline {
-					object {
-						x=299
-						y=687
-						width=2
-						height=13
-					}
-					"basic attribute" {
-						clr=53
-						fill="outline"
-						width=2
-					}
-					points {
-						(300,699)
-						(300,688)
-					}
-				}
-				polyline {
-					object {
-						x=292
-						y=688
-						width=2
-						height=12
-					}
-					"basic attribute" {
-						clr=53
-						fill="outline"
-						width=2
-					}
-					points {
-						(293,699)
-						(293,689)
-					}
-				}
-			}
-		}
-		text {
-			object {
-				x=200
-				y=610
-				width=77
-				height=20
+				height=2
 			}
 			"basic attribute" {
-				clr=13
+				clr=53
+				fill="outline"
+				width=2
 			}
-			textix="Mirror"
-			align="horiz. right"
+			points {
+				(294,687)
+				(283,687)
+			}
 		}
-		text {
+		polyline {
 			object {
-				x=200
-				y=635
-				width=77
-				height=20
+				x=283
+				y=693
+				width=12
+				height=2
 			}
 			"basic attribute" {
-				clr=13
+				clr=53
+				fill="outline"
+				width=2
 			}
-			textix="Rot90Mirror"
-			align="horiz. right"
-		}
-		text {
-			object {
-				x=200
-				y=660
-				width=77
-				height=20
-			}
-			"basic attribute" {
-				clr=13
-			}
-			textix="Rot180Mirror"
-			align="horiz. right"
-		}
-		text {
-			object {
-				x=200
-				y=685
-				width=77
-				height=20
-			}
-			"basic attribute" {
-				clr=13
-			}
-			textix="Rot270Mirror"
-			align="horiz. right"
-		}
-		text {
-			object {
-				x=20
-				y=610
-				width=77
-				height=20
-			}
-			"basic attribute" {
-				clr=13
-			}
-			textix="None"
-			align="horiz. right"
-		}
-		text {
-			object {
-				x=20
-				y=635
-				width=77
-				height=20
-			}
-			"basic attribute" {
-				clr=13
-			}
-			textix="Rot90"
-			align="horiz. right"
-		}
-		text {
-			object {
-				x=20
-				y=660
-				width=77
-				height=20
-			}
-			"basic attribute" {
-				clr=13
-			}
-			textix="Rot180"
-			align="horiz. right"
-		}
-		text {
-			object {
-				x=20
-				y=685
-				width=77
-				height=20
-			}
-			"basic attribute" {
-				clr=13
-			}
-			textix="Rot270"
-			align="horiz. right"
-		}
-		composite {
-			object {
-				x=102
-				y=611
-				width=13
-				height=19
-			}
-			"composite name"=""
-			children {
-				polyline {
-					object {
-						x=102
-						y=611
-						width=2
-						height=19
-					}
-					"basic attribute" {
-						clr=53
-						fill="outline"
-						width=2
-					}
-					points {
-						(103,612)
-						(103,629)
-					}
-				}
-				polyline {
-					object {
-						x=102
-						y=611
-						width=13
-						height=2
-					}
-					"basic attribute" {
-						clr=53
-						fill="outline"
-						width=2
-					}
-					points {
-						(103,612)
-						(114,612)
-					}
-				}
-				polyline {
-					object {
-						x=102
-						y=618
-						width=12
-						height=2
-					}
-					"basic attribute" {
-						clr=53
-						fill="outline"
-						width=2
-					}
-					points {
-						(103,619)
-						(113,619)
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=102
-				y=638
-				width=19
-				height=13
-			}
-			"composite name"=""
-			children {
-				polyline {
-					object {
-						x=102
-						y=638
-						width=19
-						height=2
-					}
-					"basic attribute" {
-						clr=53
-						fill="outline"
-						width=2
-					}
-					points {
-						(120,639)
-						(103,639)
-					}
-				}
-				polyline {
-					object {
-						x=119
-						y=638
-						width=2
-						height=13
-					}
-					"basic attribute" {
-						clr=53
-						fill="outline"
-						width=2
-					}
-					points {
-						(120,639)
-						(120,650)
-					}
-				}
-				polyline {
-					object {
-						x=112
-						y=638
-						width=2
-						height=12
-					}
-					"basic attribute" {
-						clr=53
-						fill="outline"
-						width=2
-					}
-					points {
-						(113,639)
-						(113,649)
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=102
-				y=659
-				width=13
-				height=19
-			}
-			"composite name"=""
-			children {
-				polyline {
-					object {
-						x=113
-						y=659
-						width=2
-						height=19
-					}
-					"basic attribute" {
-						clr=53
-						fill="outline"
-						width=2
-					}
-					points {
-						(114,677)
-						(114,660)
-					}
-				}
-				polyline {
-					object {
-						x=102
-						y=676
-						width=13
-						height=2
-					}
-					"basic attribute" {
-						clr=53
-						fill="outline"
-						width=2
-					}
-					points {
-						(114,677)
-						(103,677)
-					}
-				}
-				polyline {
-					object {
-						x=103
-						y=669
-						width=12
-						height=2
-					}
-					"basic attribute" {
-						clr=53
-						fill="outline"
-						width=2
-					}
-					points {
-						(114,670)
-						(104,670)
-					}
-				}
-			}
-		}
-		composite {
-			object {
-				x=102
-				y=687
-				width=19
-				height=13
-			}
-			"composite name"=""
-			children {
-				polyline {
-					object {
-						x=102
-						y=698
-						width=19
-						height=2
-					}
-					"basic attribute" {
-						clr=53
-						fill="outline"
-						width=2
-					}
-					points {
-						(103,699)
-						(120,699)
-					}
-				}
-				polyline {
-					object {
-						x=102
-						y=687
-						width=2
-						height=13
-					}
-					"basic attribute" {
-						clr=53
-						fill="outline"
-						width=2
-					}
-					points {
-						(103,699)
-						(103,688)
-					}
-				}
-				polyline {
-					object {
-						x=109
-						y=688
-						width=2
-						height=12
-					}
-					"basic attribute" {
-						clr=53
-						fill="outline"
-						width=2
-					}
-					points {
-						(110,699)
-						(110,689)
-					}
-				}
+			points {
+				(294,694)
+				(284,694)
 			}
 		}
 	}
 }
 composite {
 	object {
-		x=5
-		y=720
+		x=282
+		y=713
+		width=19
+		height=13
+	}
+	"composite name"=""
+	children {
+		polyline {
+			object {
+				x=282
+				y=713
+				width=19
+				height=2
+			}
+			"basic attribute" {
+				clr=53
+				fill="outline"
+				width=2
+			}
+			points {
+				(283,714)
+				(300,714)
+			}
+		}
+		polyline {
+			object {
+				x=282
+				y=713
+				width=2
+				height=13
+			}
+			"basic attribute" {
+				clr=53
+				fill="outline"
+				width=2
+			}
+			points {
+				(283,714)
+				(283,725)
+			}
+		}
+		polyline {
+			object {
+				x=289
+				y=713
+				width=2
+				height=12
+			}
+			"basic attribute" {
+				clr=53
+				fill="outline"
+				width=2
+			}
+			points {
+				(290,714)
+				(290,724)
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=282
+		y=734
+		width=13
+		height=19
+	}
+	"composite name"=""
+	children {
+		polyline {
+			object {
+				x=282
+				y=734
+				width=2
+				height=19
+			}
+			"basic attribute" {
+				clr=53
+				fill="outline"
+				width=2
+			}
+			points {
+				(283,752)
+				(283,735)
+			}
+		}
+		polyline {
+			object {
+				x=282
+				y=751
+				width=13
+				height=2
+			}
+			"basic attribute" {
+				clr=53
+				fill="outline"
+				width=2
+			}
+			points {
+				(283,752)
+				(294,752)
+			}
+		}
+		polyline {
+			object {
+				x=282
+				y=744
+				width=12
+				height=2
+			}
+			"basic attribute" {
+				clr=53
+				fill="outline"
+				width=2
+			}
+			points {
+				(283,745)
+				(293,745)
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=282
+		y=762
+		width=19
+		height=13
+	}
+	"composite name"=""
+	children {
+		polyline {
+			object {
+				x=282
+				y=773
+				width=19
+				height=2
+			}
+			"basic attribute" {
+				clr=53
+				fill="outline"
+				width=2
+			}
+			points {
+				(300,774)
+				(283,774)
+			}
+		}
+		polyline {
+			object {
+				x=299
+				y=762
+				width=2
+				height=13
+			}
+			"basic attribute" {
+				clr=53
+				fill="outline"
+				width=2
+			}
+			points {
+				(300,774)
+				(300,763)
+			}
+		}
+		polyline {
+			object {
+				x=292
+				y=763
+				width=2
+				height=12
+			}
+			"basic attribute" {
+				clr=53
+				fill="outline"
+				width=2
+			}
+			points {
+				(293,774)
+				(293,764)
+			}
+		}
+	}
+}
+text {
+	object {
+		x=200
+		y=685
+		width=77
+		height=20
+	}
+	"basic attribute" {
+		clr=13
+	}
+	textix="Mirror"
+	align="horiz. right"
+}
+text {
+	object {
+		x=200
+		y=710
+		width=77
+		height=20
+	}
+	"basic attribute" {
+		clr=13
+	}
+	textix="Rot90Mirror"
+	align="horiz. right"
+}
+text {
+	object {
+		x=200
+		y=735
+		width=77
+		height=20
+	}
+	"basic attribute" {
+		clr=13
+	}
+	textix="Rot180Mirror"
+	align="horiz. right"
+}
+text {
+	object {
+		x=200
+		y=760
+		width=77
+		height=20
+	}
+	"basic attribute" {
+		clr=13
+	}
+	textix="Rot270Mirror"
+	align="horiz. right"
+}
+text {
+	object {
+		x=20
+		y=685
+		width=77
+		height=20
+	}
+	"basic attribute" {
+		clr=13
+	}
+	textix="None"
+	align="horiz. right"
+}
+text {
+	object {
+		x=20
+		y=710
+		width=77
+		height=20
+	}
+	"basic attribute" {
+		clr=13
+	}
+	textix="Rot90"
+	align="horiz. right"
+}
+text {
+	object {
+		x=20
+		y=735
+		width=77
+		height=20
+	}
+	"basic attribute" {
+		clr=13
+	}
+	textix="Rot180"
+	align="horiz. right"
+}
+text {
+	object {
+		x=20
+		y=760
+		width=77
+		height=20
+	}
+	"basic attribute" {
+		clr=13
+	}
+	textix="Rot270"
+	align="horiz. right"
+}
+composite {
+	object {
+		x=102
+		y=686
+		width=13
+		height=19
+	}
+	"composite name"=""
+	children {
+		polyline {
+			object {
+				x=102
+				y=686
+				width=2
+				height=19
+			}
+			"basic attribute" {
+				clr=53
+				fill="outline"
+				width=2
+			}
+			points {
+				(103,687)
+				(103,704)
+			}
+		}
+		polyline {
+			object {
+				x=102
+				y=686
+				width=13
+				height=2
+			}
+			"basic attribute" {
+				clr=53
+				fill="outline"
+				width=2
+			}
+			points {
+				(103,687)
+				(114,687)
+			}
+		}
+		polyline {
+			object {
+				x=102
+				y=693
+				width=12
+				height=2
+			}
+			"basic attribute" {
+				clr=53
+				fill="outline"
+				width=2
+			}
+			points {
+				(103,694)
+				(113,694)
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=102
+		y=713
+		width=19
+		height=13
+	}
+	"composite name"=""
+	children {
+		polyline {
+			object {
+				x=102
+				y=713
+				width=19
+				height=2
+			}
+			"basic attribute" {
+				clr=53
+				fill="outline"
+				width=2
+			}
+			points {
+				(120,714)
+				(103,714)
+			}
+		}
+		polyline {
+			object {
+				x=119
+				y=713
+				width=2
+				height=13
+			}
+			"basic attribute" {
+				clr=53
+				fill="outline"
+				width=2
+			}
+			points {
+				(120,714)
+				(120,725)
+			}
+		}
+		polyline {
+			object {
+				x=112
+				y=713
+				width=2
+				height=12
+			}
+			"basic attribute" {
+				clr=53
+				fill="outline"
+				width=2
+			}
+			points {
+				(113,714)
+				(113,724)
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=102
+		y=734
+		width=13
+		height=19
+	}
+	"composite name"=""
+	children {
+		polyline {
+			object {
+				x=113
+				y=734
+				width=2
+				height=19
+			}
+			"basic attribute" {
+				clr=53
+				fill="outline"
+				width=2
+			}
+			points {
+				(114,752)
+				(114,735)
+			}
+		}
+		polyline {
+			object {
+				x=102
+				y=751
+				width=13
+				height=2
+			}
+			"basic attribute" {
+				clr=53
+				fill="outline"
+				width=2
+			}
+			points {
+				(114,752)
+				(103,752)
+			}
+		}
+		polyline {
+			object {
+				x=103
+				y=744
+				width=12
+				height=2
+			}
+			"basic attribute" {
+				clr=53
+				fill="outline"
+				width=2
+			}
+			points {
+				(114,745)
+				(104,745)
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=102
+		y=762
+		width=19
+		height=13
+	}
+	"composite name"=""
+	children {
+		polyline {
+			object {
+				x=102
+				y=773
+				width=19
+				height=2
+			}
+			"basic attribute" {
+				clr=53
+				fill="outline"
+				width=2
+			}
+			points {
+				(103,774)
+				(120,774)
+			}
+		}
+		polyline {
+			object {
+				x=102
+				y=762
+				width=2
+				height=13
+			}
+			"basic attribute" {
+				clr=53
+				fill="outline"
+				width=2
+			}
+			points {
+				(103,774)
+				(103,763)
+			}
+		}
+		polyline {
+			object {
+				x=109
+				y=763
+				width=2
+				height=12
+			}
+			"basic attribute" {
+				clr=53
+				fill="outline"
+				width=2
+			}
+			points {
+				(110,774)
+				(110,764)
+			}
+		}
+	}
+}
+composite {
+	object {
+		x=10
+		y=785
 		width=368
 		height=20
 	}
@@ -780,8 +769,8 @@ composite {
 	children {
 		text {
 			object {
-				x=5
-				y=720
+				x=10
+				y=785
 				width=170
 				height=20
 			}
@@ -792,8 +781,8 @@ composite {
 		}
 		"text update" {
 			object {
-				x=246
-				y=721
+				x=251
+				y=786
 				width=61
 				height=18
 			}
@@ -808,8 +797,8 @@ composite {
 		}
 		"text update" {
 			object {
-				x=312
-				y=721
+				x=317
+				y=786
 				width=61
 				height=18
 			}
@@ -824,8 +813,8 @@ composite {
 		}
 		"text update" {
 			object {
-				x=180
-				y=721
+				x=185
+				y=786
 				width=61
 				height=18
 			}
