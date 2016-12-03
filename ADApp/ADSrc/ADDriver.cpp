@@ -108,6 +108,9 @@ ADDriver::ADDriver(const char *portName, int maxAddr, int numParams, int maxBuff
 
     createParam(ADManufacturerString,        asynParamOctet, &ADManufacturer);
     createParam(ADModelString,               asynParamOctet, &ADModel);
+    createParam(ADSerialNumberString,        asynParamOctet, &ADSerialNumber);
+    createParam(ADSDKVersionString,          asynParamOctet, &ADSDKVersion);
+    createParam(ADFirmwareVersionString,     asynParamOctet, &ADFirmwareVersion);
     createParam(ADGainString,                asynParamFloat64, &ADGain);
     createParam(ADBinXString,                asynParamInt32, &ADBinX);
     createParam(ADBinYString,                asynParamInt32, &ADBinY);

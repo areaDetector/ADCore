@@ -76,6 +76,9 @@ typedef enum
  /*                               String                 asyn interface  access   Description  */
 #define ADManufacturerString        "MANUFACTURER"          /**< (asynOctet,    r/o) Detector manufacturer name */
 #define ADModelString               "MODEL"                 /**< (asynOctet,    r/o) Detector model name */
+#define ADSerialNumberString        "SERIAL_NUMBER"         /**< (asynOctet,    r/o) Detector serial number */
+#define ADSDKVersionString          "SDK_VERSION"           /**< (asynOctet,    r/o) Vendor SDK version */
+#define ADFirmwareVersionString     "FIRMWARE_VERSION"      /**< (asynOctet,    r/o) Detector firmware version */
 
 #define ADGainString                "GAIN"                  /**< (asynFloat64,  r/w) Gain */
 
@@ -150,6 +153,9 @@ protected:
     int ADManufacturer;
     #define FIRST_AD_PARAM ADManufacturer
     int ADModel;
+    int ADSerialNumber;
+    int ADSDKVersion;
+    int ADFirmwareVersion;
     int ADGain;
     int ADBinX;
     int ADBinY;
