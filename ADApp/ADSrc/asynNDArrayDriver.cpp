@@ -616,6 +616,7 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     
     createParam(NDPortNameSelfString,         asynParamOctet,           &NDPortNameSelf);
     createParam(NDADCoreVersionString,        asynParamOctet,           &NDADCoreVersion);
+    createParam(NDDriverVersionString,        asynParamOctet,           &NDDriverVersion);
     createParam(NDArraySizeXString,           asynParamInt32,           &NDArraySizeX);
     createParam(NDArraySizeYString,           asynParamInt32,           &NDArraySizeY);
     createParam(NDArraySizeZString,           asynParamInt32,           &NDArraySizeZ);
@@ -670,6 +671,9 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     epicsSnprintf(versionString, sizeof(versionString), "%d.%d.%d", 
                   ADCORE_VERSION, ADCORE_REVISION, ADCORE_MODIFICATION);
     setStringParam(NDADCoreVersion, versionString);
+    // We set the driver version to the same thing, which is appropriate for plugins in ADCore
+    // Other drivers need to set this after this constructor
+    setStringParam(NDDriverVersion, versionString);
     setIntegerParam(NDArraySizeX,   0);
     setIntegerParam(NDArraySizeY,   0);
     setIntegerParam(NDArraySizeZ,   0);
