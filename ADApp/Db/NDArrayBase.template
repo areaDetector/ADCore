@@ -17,6 +17,18 @@ record(stringin, "$(P)$(R)ADCoreVersion_RBV")
 }
 
 ###################################################################
+#  This record contains the version of the driver or plugin       #
+###################################################################
+
+record(stringin, "$(P)$(R)DriverVersion_RBV")
+{
+   field(DTYP, "asynOctetRead")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DRIVER_VERSION")
+   field(VAL,  "Unknown")
+   field(SCAN, "I/O Intr")
+}
+
+###################################################################
 #  This record contains the asyn port name of this detector       #
 ###################################################################
 
