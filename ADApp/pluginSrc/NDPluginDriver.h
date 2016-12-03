@@ -17,6 +17,7 @@
 #define NDPluginDriverQueueFreeString           "QUEUE_FREE"            /**< (asynInt32,    r/w) Free queue elements */
 #define NDPluginDriverEnableCallbacksString     "ENABLE_CALLBACKS"      /**< (asynInt32,    r/w) Enable callbacks from driver (1=Yes, 0=No) */
 #define NDPluginDriverBlockingCallbacksString   "BLOCKING_CALLBACKS"    /**< (asynInt32,    r/w) Callbacks block (1=Yes, 0=No) */
+#define NDPluginDriverExecutionTimeString       "EXECUTION_TIME"        /**< (asynFloat64,  r/o) The last execution time (milliseconds) */
 #define NDPluginDriverMinCallbackTimeString     "MIN_CALLBACK_TIME"     /**< (asynFloat64,  r/w) Minimum time between calling processCallbacks 
                                                                          *  to execute plugin code */
 
@@ -56,6 +57,7 @@ protected:
     int NDPluginDriverQueueFree;
     int NDPluginDriverEnableCallbacks;
     int NDPluginDriverBlockingCallbacks;
+    int NDPluginDriverExecutionTime;
     int NDPluginDriverMinCallbackTime;
     #define LAST_NDPLUGIN_PARAM NDPluginDriverMinCallbackTime
 
