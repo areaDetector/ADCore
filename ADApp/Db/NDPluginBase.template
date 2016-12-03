@@ -102,6 +102,18 @@ record(ai, "$(P)$(R)MinCallbackTime_RBV")
 }
 
 ###################################################################
+#  This record contains the last execution time of the plugin     #
+###################################################################
+record(ai, "$(P)$(R)ExecutionTime_RBV")
+{
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))EXECUTION_TIME")
+    field(EGU,  "ms")
+    field(PREC, "3")
+    field(SCAN, "I/O Intr")
+}
+
+###################################################################
 #  These records control whether callbacks block or not           #
 ###################################################################
 record(bo, "$(P)$(R)BlockingCallbacks")
