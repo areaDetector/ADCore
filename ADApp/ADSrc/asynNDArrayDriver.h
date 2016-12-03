@@ -29,6 +29,7 @@ typedef enum {
 
 /** ADCore version string */
 #define NDADCoreVersionString   "ADCORE_VERSION"    /**< (asynOctet,    r/o) Version of ADCore */
+#define NDDriverVersionString   "DRIVER_VERSION"    /**< (asynOctet,    r/o) Version of this driver or plugin */
 
 /* Parameters defining characteristics of the array data from the detector.
  * NDArraySizeX and NDArraySizeY are the actual dimensions of the array data,
@@ -123,6 +124,7 @@ protected:
     int NDPortNameSelf;
     #define FIRST_NDARRAY_PARAM NDPortNameSelf
     int NDADCoreVersion;
+    int NDDriverVersion;
     int NDArraySizeX;
     int NDArraySizeY;
     int NDArraySizeZ;
