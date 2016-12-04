@@ -4,15 +4,21 @@
 <head>
   <title>areaDetector: EPICS software for area detectors</title>
   <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+  <style type="text/css">
+    .style1
+    {
+      height: 27px;
+    }
+  </style>
 </head>
 <body>
   <div style="text-align: center">
     <h1>
       areaDetector: EPICS Area Detector Support</h1>
     <h2>
-      Release 2-5</h2>
+      Release 2-6</h2>
     <h2>
-      November 8, 2016</h2>
+      December XXX, 2016</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -487,7 +493,7 @@
       </tr>
       <tr>
         <td align="center" colspan="7">
-          <b>Information about the version of ADCore</b></td>
+          <b>Information about the version of ADCore and the plugin or driver</b></td>
       </tr>
       <tr>
         <td>
@@ -504,6 +510,23 @@
           ADCORE_VERSION</td>
         <td>
           $(P)$(R)ADCoreVersion_RBV</td>
+        <td>
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          NDDriverVersion</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/o</td>
+        <td>
+          Driver or plugin version number. This can be used by Channel Access clients to alter
+          their behavior depending on the version of the plugin or driver.</td>
+        <td>
+          DRIVER_VERSION</td>
+        <td>
+          $(P)$(R)DriverVersion_RBV</td>
         <td>
           stringin</td>
       </tr>
@@ -1400,19 +1423,19 @@
           <b>Information about the detector</b></td>
       </tr>
       <tr>
-        <td>
+        <td class="style1">
           ADManufacturer</td>
-        <td>
+        <td class="style1">
           asynOctet</td>
-        <td>
+        <td class="style1">
           r/o</td>
-        <td>
+        <td class="style1">
           Detector manufacturer name</td>
-        <td>
+        <td class="style1">
           MANUFACTURER</td>
-        <td>
+        <td class="style1">
           $(P)$(R)Manufacturer_RBV</td>
-        <td>
+        <td class="style1">
           stringin</td>
       </tr>
       <tr>
@@ -1428,6 +1451,54 @@
           MODEL</td>
         <td>
           $(P)$(R)Model_RBV</td>
+        <td>
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          ADSerialNumber</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/o</td>
+        <td>
+          Detector serial number</td>
+        <td>
+          SERIAL_NUMBER</td>
+        <td>
+          $(P)$(R)SerialNumber_RBV</td>
+        <td>
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          ADFirmwareVersion</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/o</td>
+        <td>
+          Detector firmware version</td>
+        <td>
+          FIRMWARE_VERSION</td>
+        <td>
+          $(P)$(R)FirmwareVersion_RBV</td>
+        <td>
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          ADSDKVersion</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/o</td>
+        <td>
+          Detector vendor's Software Development Kit (SDK) version number.</td>
+        <td>
+          SDK_VERSION</td>
+        <td>
+          $(P)$(R)SDKVersion_RBV</td>
         <td>
           stringin</td>
       </tr>
