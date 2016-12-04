@@ -60,7 +60,7 @@ R2-6 (December XXX, 2016)
 
 ### NDPluginDriver, NDPluginBase.template, NDPluginBase.adl
 * Added new parameter NDPluginExecutionTime and new ai record ExecutionTime_RBV.  This gives the execution
-  in ms the last time the plugin ran.  It works both with BlockingCallbacks=Yes and No.  It is very
+  time in ms the last time the plugin ran.  It works both with BlockingCallbacks=Yes and No.  It is very
   convenient for measuring the performance of the plugin without having to run the detector at high
   frame rates.
 
