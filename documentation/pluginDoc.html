@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugins</h1>
     <h2>
-      October 1, 2012</h2>
+      December 3, 2016</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -38,7 +38,8 @@
     <li><a href="NDPluginTimeSeries.html">NDPluginTimeSeries</a></li>
     <li><a href="NDPluginTransform.html">NDPluginTransform</a></li>
     <li><a href="NDPosPlugin.html">NDPosPlugin</a></li>
-    <li><a href="https://github.com/areaDetector/ffmpegServer/blob/master/README.md">ffmpegServer plugin</a></li>
+    <li><a href="https://github.com/areaDetector/ffmpegServer/blob/master/README.md">ffmpegServer
+      plugin</a></li>
   </ul>
   <h2 id="Overview">
     Overview</h2>
@@ -299,6 +300,24 @@
       <tr>
         <td>
           NDPluginDriver<br />
+          ExecutionTime</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          The execution time when the plugin processes. This is useful for measuring the performance
+          of the plugin</td>
+        <td>
+          EXECUTION_TIME</td>
+        <td>
+          $(P)$(R)ExecutionTime_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriver<br />
           MinCallbackTime</td>
         <td>
           asynFloat64</td>
@@ -404,13 +423,13 @@
   <h2 id="commonPlugins">
     commonPlugins.cmd</h2>
   <p>
-    The ADCore/iocBoot directory contains a file called commonPlugins.cmd. This
-    file is loaded by all of the example driver IOC startup scripts. It loads a set
-    of plugins which are typically useful for detectors IOCs. Each detector medm screen
-    has links to related displays for each of the common plugins. While this set of
-    plugins is often useful and sufficient, users are free to add or remove plugins
-    from this set for their own IOCs. New medm displays will typically need to be created
-    if that is done, to have the required links to related displays.</p>
+    The ADCore/iocBoot directory contains a file called commonPlugins.cmd. This file
+    is loaded by all of the example driver IOC startup scripts. It loads a set of plugins
+    which are typically useful for detectors IOCs. Each detector medm screen has links
+    to related displays for each of the common plugins. While this set of plugins is
+    often useful and sufficient, users are free to add or remove plugins from this set
+    for their own IOCs. New medm displays will typically need to be created if that
+    is done, to have the required links to related displays.</p>
   <p>
     The following medm screen shows the status of all of the common plugins at a glance,
     with links to bring up the detailed screen for each.</p>
