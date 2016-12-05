@@ -23,6 +23,8 @@
 #include "NDPluginFile.h"
 #include "NDFileNetCDF.h"
 
+#define MAX_ATTRIBUTE_STRING_SIZE 256
+
 static const char *driverName = "NDFileNetCDF";
 
 /* Handle errors by printing an error message and exiting with a

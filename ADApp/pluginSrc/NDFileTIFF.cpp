@@ -37,12 +37,12 @@
 #include "tiffio.h"
 #include "NDFileTIFF.h"
 
+#define STRING_BUFFER_SIZE 2048
+ 
 static const char *driverName = "NDFileTIFF";
 
 const int NDFileTIFF::TIFFTAG_START_ = 65010;
 const int NDFileTIFF::TIFFTAG_END_ = 65500;
-
-#define MAX_ATTRIBUTE_STRING_SIZE 256
 
 /** Opens a TIFF file.
   * \param[in] fileName The name of the file to open.
@@ -59,8 +59,8 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
     int bitsPerSample=8, sampleFormat=SAMPLEFORMAT_INT, samplesPerPixel, photoMetric, planarConfig;
     int colorMode=NDColorModeMono;
     NDAttribute *pAttribute = NULL;
-    char tagString[MAX_ATTRIBUTE_STRING_SIZE] = {0};
-    char attrString[MAX_ATTRIBUTE_STRING_SIZE] = {0};
+    char tagString[STRING_BUFFER_SIZE] = {0};
+    char attrString[STRING_BUFFER_SIZE] = {0};
 
     /* We don't support reading yet */
     if (openMode & NDFileModeRead) return(asynError);
@@ -75,6 +75,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
         driverName, functionName, fileName);
         return(asynError);
     }
+    
     /* We do some special treatment based on colorMode */
     pAttribute = pArray->pAttributeList->find("ColorMode");
     if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
@@ -184,7 +185,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
     TIFFSetField(this->output, TIFFTAG_PLANARCONFIG, planarConfig);
     TIFFSetField(this->output, TIFFTAG_IMAGEWIDTH, (epicsUInt32)sizeX);
     TIFFSetField(this->output, TIFFTAG_IMAGELENGTH, (epicsUInt32)sizeY);
-    TIFFSetField(this->output, TIFFTAG_ROWSPERSTRIP, (epicsUInt32)rowsPerStrip);
+    TIFFSetField(this->output, TIFFTAG_ROWSPERSTRIP, (epicsUInt32)rowsPerStrip);   
     
     this->pFileAttributes->clear();
     this->getAttributes(this->pFileAttributes);
@@ -192,7 +193,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
  
     pAttribute = this->pFileAttributes->find("Model");
     if (pAttribute) {
-        pAttribute->getValue(NDAttrString, tagString);
+        pAttribute->getValue(NDAttrString, tagString, sizeof(tagString)-1);
         TIFFSetField(this->output, TIFFTAG_MODEL, tagString);
     } else {
         TIFFSetField(this->output, TIFFTAG_MODEL, "Unknown");
@@ -201,12 +202,19 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
     pAttribute = this->pFileAttributes->find("Manufacturer");
     if (pAttribute) {
         pAttribute->getValue(NDAttrString, tagString);
-        TIFFSetField(this->output, TIFFTAG_MAKE, tagString);
+        TIFFSetField(this->output, TIFFTAG_MAKE, tagString, sizeof(tagString)-1);
     } else {
         TIFFSetField(this->output, TIFFTAG_MAKE, "Unknown");
     }
 
     TIFFSetField(this->output, TIFFTAG_SOFTWARE, "EPICS areaDetector");
+
+    // If the attribute TIFFImageDescription exists use it to set the TIFFTAG_IMAGEDESCRIPTION
+    pAttribute = this->pFileAttributes->find("TIFFImageDescription");
+    if (pAttribute) {
+        pAttribute->getValue(NDAttrString, tagString, sizeof(tagString)-1);
+        TIFFSetField(this->output, TIFFTAG_IMAGEDESCRIPTION, tagString);
+    }
 
     int count = 0;
     int tagId = TIFFTAG_START_;
@@ -248,7 +256,7 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
         size_t attrSize;
         NDAttrValue value;
         pAttribute->getValueInfo(&attrDataType, &attrSize);
-        memset(tagString, 0, MAX_ATTRIBUTE_STRING_SIZE);
+        memset(tagString, 0, sizeof(tagString));
 
         switch (attrDataType) {
             case NDAttrInt8:
@@ -258,23 +266,23 @@ asynStatus NDFileTIFF::openFile(const char *fileName, NDFileOpenMode_t openMode,
             case NDAttrInt32:
             case NDAttrUInt32: {
                 pAttribute->getValue(attrDataType, &value.i32);
-                epicsSnprintf(tagString, MAX_ATTRIBUTE_STRING_SIZE, "%s:%d", attributeName, value.i32);
+                epicsSnprintf(tagString, sizeof(tagString)-1, "%s:%d", attributeName, value.i32);
                 break;
             }
             case NDAttrFloat32: {
                 pAttribute->getValue(attrDataType, &value.f32);
-                epicsSnprintf(tagString, MAX_ATTRIBUTE_STRING_SIZE, "%s:%f", attributeName, value.f32);
+                epicsSnprintf(tagString, sizeof(tagString)-1, "%s:%f", attributeName, value.f32);
                 break;
             }
             case NDAttrFloat64: {
                 pAttribute->getValue(attrDataType, &value.f64);
-                epicsSnprintf(tagString, MAX_ATTRIBUTE_STRING_SIZE, "%s:%f", attributeName, value.f64);
+                epicsSnprintf(tagString, sizeof(tagString)-1, "%s:%f", attributeName, value.f64);
                 break;
             }
             case NDAttrString: {
-                memset(attrString, 0, MAX_ATTRIBUTE_STRING_SIZE);
-                pAttribute->getValue(attrDataType, attrString, MAX_ATTRIBUTE_STRING_SIZE);
-                epicsSnprintf(tagString, MAX_ATTRIBUTE_STRING_SIZE, "%s:%s", attributeName, attrString);
+                memset(attrString, 0, sizeof(tagString)-1);
+                pAttribute->getValue(attrDataType, attrString, sizeof(attrString)-1);
+                epicsSnprintf(tagString, sizeof(tagString)-1, "%s:%s", attributeName, attrString);
                 break;
             }
             case NDAttrUndefined:
