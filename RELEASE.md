@@ -52,6 +52,24 @@ R2-6 (December XXX, 2016)
   +-SizeX/2 and +-SizeY/2 pixels from the center pixel.  This preserves symmetry when WidthX/Y is 1,
   and the previous behavior is difficult to duplicate for the Ellipse shape.
 
+### NDAttribute.h
+* Removed the line `#define MAX_ATTRIBUTE_STRING_SIZE 256` because it creates the false impression that
+  there is a limit on the size of string attributes.  There is not.  However, some drivers and plugins
+  may limit the size, but they should do this with local definitions.  The following code was changed
+  to use local definitions, with these symbolic names and values:
+  | File                           | Symbolic name             | Value |
+  | ------------------------------ | ------------------------- | ----- |
+  | paramAttribute.cpp             | MAX_ATTRIBUTE_STRING_SIZE | 2048  |
+  | NDFileHDF5AttributeDataset.cpp | MAX_ATTRIBUTE_STRING_SIZE | 256   |
+  | NDFileNetCDF.cpp               | MAX_ATTRIBUTE_STRING_SIZE | 256   |
+  | NDFileTIFF.cpp                 | STRING_BUFFER_SIZE        | 2048  |
+
+### NDFileTIFF
+* If there is an NDAttribute of type NDAttrString named TIFFImageDescription then this attribute is written 
+  to the TIFFTAG_IMAGEDESCRIPTION tag in the TIFF file.  Note that it will also be written to a user
+  tag in the TIFF file, as with all other NDAttributes.  This is OK because some data processing code
+  may expect to find the information in one location or the other.
+
 ### NDArrayBase.template
 * Added new longout record NDimensions and new waveform record Dimensions to control the NDArray
   dimensions.  These were needed for NDDriverStdArrays, and may be useful for other drivers.
