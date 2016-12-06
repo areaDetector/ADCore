@@ -57,6 +57,7 @@ R2-6 (December XXX, 2016)
   there is a limit on the size of string attributes.  There is not.  However, some drivers and plugins
   may limit the size, but they should do this with local definitions.  The following code was changed
   to use local definitions, with these symbolic names and values:
+
   | File                           | Symbolic name             | Value |
   | ------------------------------ | ------------------------- | ----- |
   | paramAttribute.cpp             | MAX_ATTRIBUTE_STRING_SIZE | 2048  |
