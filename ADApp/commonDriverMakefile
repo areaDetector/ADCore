@@ -56,7 +56,7 @@ ifeq ($(WITH_JPEG),YES)
     PROD_LIBS += jpeg
   else
     ifdef JPEG_LIB
-      hdf5_DIR     = $(jpeg_LIB)
+      jpeg_DIR     = $(JPEG_LIB)
       PROD_LIBS     += jpeg
     else
       PROD_SYS_LIBS += jpeg

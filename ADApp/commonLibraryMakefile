@@ -42,7 +42,7 @@ ifeq ($(WITH_JPEG),YES)
     LIB_LIBS += jpeg
   else
     ifdef JPEG_LIB
-      hdf5_DIR     = $(jpeg_LIB)
+      jpeg_DIR     = $(JPEG_LIB)
       LIB_LIBS     += jpeg
     else
       LIB_SYS_LIBS += jpeg
