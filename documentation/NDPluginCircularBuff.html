@@ -45,7 +45,7 @@
     stored in the ring buffer in order from oldest to newest (by calling doCallbacksGenericPointer).
     After the trigger is set, new NDArrays will then be output as soon as they arrive,
     until the post-count is reached. The plugin will then stop buffering or outputting
-    NDArrays until it is retarted via NDCircBuffControl. The plugin will also automatically
+    NDArrays until it is restarted via NDCircBuffControl. The plugin will also automatically
     restart if the following condition is true:</p>
   <pre>
      (PresetTriggerCount == 0) || ((PresetTriggerCount > 0) && (ActualTriggerCount < PresetTriggerCount)))
