@@ -24,6 +24,9 @@
 #include "NDArray.h"
 #include "paramAttribute.h"
 
+// Unfortunately we need to use a maximum string size to read from the asynPortDriver parameter library
+#define MAX_ATTRIBUTE_STRING_SIZE 2048
+
 static const char *driverName = "paramAttribute";
 
 /* This asynUser is not attached to any device.  

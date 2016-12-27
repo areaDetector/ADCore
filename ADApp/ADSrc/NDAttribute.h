@@ -15,8 +15,6 @@
 #include <ellLib.h>
 #include <epicsTypes.h>
 
-#define MAX_ATTRIBUTE_STRING_SIZE 256
-
 /** Success return code  */
 #define ND_SUCCESS 0
 /** Failure return code  */
