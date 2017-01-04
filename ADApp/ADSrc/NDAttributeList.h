@@ -35,8 +35,8 @@ public:
     int          report(FILE *fp, int details);
     
 private:
-    ELLLIST      list;   /**< The EPICS ELLLIST  */
-    epicsMutexId lock;  /**< Mutex to protect the ELLLIST */
+    ELLLIST      list_;   /**< The EPICS ELLLIST  */
+    epicsMutexId lock_;  /**< Mutex to protect the ELLLIST */
 };
 
 #endif
