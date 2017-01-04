@@ -9,6 +9,8 @@
 #ifndef NDAttribute_H
 #define NDAttribute_H
 
+#include <string>
+
 #include <stdio.h>
 #include <string.h>
 
@@ -98,8 +100,10 @@ public:
     virtual NDAttrDataType_t getDataType();
     virtual int getValueInfo(NDAttrDataType_t *pDataType, size_t *pDataSize);
     virtual int getValue(NDAttrDataType_t dataType, void *pValue, size_t dataSize=0);
+    virtual int getValue(std::string& value);
     virtual int setDataType(NDAttrDataType_t dataType);
-    virtual int setValue(void *pValue);
+    virtual int setValue(const void *pValue);
+    virtual int setValue(const std::string&);
     virtual int updateValue();
     virtual int report(FILE *fp, int details);
     friend class NDArray;
@@ -108,15 +112,15 @@ public:
 
 private:
     template <typename epicsType> int getValueT(void *pValue, size_t dataSize);
-    char *pName;                   /**< Name string */
-    char *pDescription;            /**< Description string */
-    NDAttrDataType_t dataType;     /**< Data type of attribute */
-    NDAttrValue value;             /**< Value of attribute except for strings */
-    char *pString;                 /**< Value of attribute for strings */
-    char *pSource;                 /**< Source string - EPICS PV name or DRV_INFO string */
-    NDAttrSource_t sourceType;     /**< Source type */
-    char *pSourceTypeString;       /**< Source type string */
-    NDAttributeListNode listNode;  /**< Used for NDAttributeList */
+    std::string name_;              /**< Name string */
+    std::string description_;       /**< Description string */
+    NDAttrDataType_t dataType_;     /**< Data type of attribute */
+    NDAttrValue value_;             /**< Value of attribute except for strings */
+    std::string string_;            /**< Value of attribute for strings */
+    std::string source_;            /**< Source string - EPICS PV name or DRV_INFO string */
+    NDAttrSource_t sourceType_;     /**< Source type */
+    std::string sourceTypeString_;  /**< Source type string */
+    NDAttributeListNode listNode_;  /**< Used for NDAttributeList */
 };
 
 #endif
