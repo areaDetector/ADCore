@@ -8,7 +8,7 @@ cd external
 #wget -nv https://github.com/epics-modules/asyn/archive/R4-26.tar.gz
 #tar -zxf R4-26.tar.gz
 git clone https://github.com/epics-modules/asyn asyn-R4-31
-cd asyn
+cd asyn-R4-31
 git checkout asynPortDriver_std_string
 cd ..
 echo "EPICS_BASE=/usr/lib/epics" > asyn-R4-31/configure/RELEASE
