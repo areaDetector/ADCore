@@ -19,7 +19,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
-R2-6 (December XXX, 2016)
+R2-6 (January XXX, 2017)
 ========================
 
 ### NDPluginROI
@@ -28,7 +28,7 @@ R2-6 (December XXX, 2016)
   [256, 256] if CollapseDims=Enable.
   
 ### NDPluginTransform
-* Set the NDArraySize[X,Y,Z] parameters appropriately after the transformation.  This is done
+* Set the NDArraySize[X,Y,Z] parameters appropriately after the transformation.  This is also done
   by the ROI plugin, and is convenient for clients to see the sizes, since the transform can
   swap the X and Y dimensions. 
 
@@ -52,19 +52,23 @@ R2-6 (December XXX, 2016)
   +-SizeX/2 and +-SizeY/2 pixels from the center pixel.  This preserves symmetry when WidthX/Y is 1,
   and the previous behavior is difficult to duplicate for the Ellipse shape.
 
-### NDAttribute.h
-* Removed the line `#define MAX_ATTRIBUTE_STRING_SIZE 256` because it creates the false impression that
-  there is a limit on the size of string attributes.  There is not.  Some drivers and plugins
-  may need to limit the size, but they should do this with local definitions.
+### NDAttribute
+* Removed the line `#define MAX_ATTRIBUTE_STRING_SIZE 256` from NDAttribute.h because it creates the
+  false impression that there is a limit on the size of string attributes.  There is not.
+  Some drivers and plugins may need to limit the size, but they should do this with local definitions.
   The following files were changed to use local definitions, with these symbolic names and values:
 
   | File                           | Symbolic name             | Value |
   | ------------------------------ | ------------------------- | ----- |
-  | paramAttribute.cpp             | MAX_ATTRIBUTE_STRING_SIZE | 2048  |
   | NDFileHDF5AttributeDataset.cpp | MAX_ATTRIBUTE_STRING_SIZE | 256   |
   | NDFileNetCDF.cpp               | MAX_ATTRIBUTE_STRING_SIZE | 256   |
   | NDFileTIFF.cpp                 | STRING_BUFFER_SIZE        | 2048  |
 
+### paramAttribute
+* Changed to read string parameters using the asynPortDriver::getStringParam(int index, std::string&amp;) 
+  method that was added in asyn R4-31.  This removes the requirement that paramAttribute specify a maximum
+  string parameters size, there is now no limit.
+  
 ### NDFileTIFF
 * If there is an NDAttribute of type NDAttrString named TIFFImageDescription then this attribute is written 
   to the TIFFTAG_IMAGEDESCRIPTION tag in the TIFF file.  Note that it will also be written to a user
