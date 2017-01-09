@@ -16,8 +16,8 @@
   */
 NDAttributeList::NDAttributeList()
 {
-  ellInit(&this->list);
-  this->lock = epicsMutexCreate();
+  ellInit(&this->list_);
+  this->lock_ = epicsMutexCreate();
 }
 
 /** NDAttributeList destructor
@@ -25,8 +25,8 @@ NDAttributeList::NDAttributeList()
 NDAttributeList::~NDAttributeList()
 {
   this->clear();
-  ellFree(&this->list);
-  epicsMutexDestroy(this->lock);
+  ellFree(&this->list_);
+  epicsMutexDestroy(this->lock_);
 }
 
 /** Adds an attribute to the list.
@@ -38,11 +38,11 @@ int NDAttributeList::add(NDAttribute *pAttribute)
 {
   //const char *functionName = "NDAttributeList::add";
 
-  epicsMutexLock(this->lock);
+  epicsMutexLock(this->lock_);
   /* Remove any existing attribute with this name */
-  this->remove(pAttribute->pName);
-  ellAdd(&this->list, &pAttribute->listNode.node);
-  epicsMutexUnlock(this->lock);
+  this->remove(pAttribute->name_.c_str());
+  ellAdd(&this->list_, &pAttribute->listNode_.node);
+  epicsMutexUnlock(this->lock_);
   return(ND_SUCCESS);
 }
 
@@ -67,15 +67,15 @@ NDAttribute* NDAttributeList::add(const char *pName, const char *pDescription, N
   //const char *functionName = "NDAttributeList::add";
   NDAttribute *pAttribute;
 
-  epicsMutexLock(this->lock);
+  epicsMutexLock(this->lock_);
   pAttribute = this->find(pName);
   if (pAttribute) {
     pAttribute->setValue(pValue);
   } else {
     pAttribute = new NDAttribute(pName, pDescription, NDAttrSourceDriver, "Driver", dataType, pValue);
-    ellAdd(&this->list, &pAttribute->listNode.node);
+    ellAdd(&this->list_, &pAttribute->listNode_.node);
   }
-  epicsMutexUnlock(this->lock);
+  epicsMutexUnlock(this->lock_);
   return(pAttribute);
 }
 
@@ -91,17 +91,17 @@ NDAttribute* NDAttributeList::find(const char *pName)
   NDAttributeListNode *pListNode;
   //const char *functionName = "NDAttributeList::find";
 
-  epicsMutexLock(this->lock);
-  pListNode = (NDAttributeListNode *)ellFirst(&this->list);
+  epicsMutexLock(this->lock_);
+  pListNode = (NDAttributeListNode *)ellFirst(&this->list_);
   while (pListNode) {
     pAttribute = pListNode->pNDAttribute;
-    if (strcmp(pAttribute->pName, pName) == 0) goto done;
+    if (pAttribute->name_ == pName) goto done;
     pListNode = (NDAttributeListNode *)ellNext(&pListNode->node);
   }
   pAttribute = NULL;
 
   done:
-  epicsMutexUnlock(this->lock);
+  epicsMutexUnlock(this->lock_);
   return(pAttribute);
 }
 
@@ -116,15 +116,15 @@ NDAttribute* NDAttributeList::next(NDAttribute *pAttributeIn)
   NDAttributeListNode *pListNode;
   //const char *functionName = "NDAttributeList::next";
 
-  epicsMutexLock(this->lock);
+  epicsMutexLock(this->lock_);
   if (!pAttributeIn) {
-    pListNode = (NDAttributeListNode *)ellFirst(&this->list);
+    pListNode = (NDAttributeListNode *)ellFirst(&this->list_);
    }
   else {
-    pListNode = (NDAttributeListNode *)ellNext(&pAttributeIn->listNode.node);
+    pListNode = (NDAttributeListNode *)ellNext(&pAttributeIn->listNode_.node);
   }
   if (pListNode) pAttribute = pListNode->pNDAttribute;
-  epicsMutexUnlock(this->lock);
+  epicsMutexUnlock(this->lock_);
   return(pAttribute);
 }
 
@@ -134,7 +134,7 @@ int NDAttributeList::count()
 {
   //const char *functionName = "NDAttributeList::count";
 
-  return ellCount(&this->list);
+  return ellCount(&this->list_);
 }
 
 /** Removes an attribute from the list.
@@ -147,15 +147,15 @@ int NDAttributeList::remove(const char *pName)
   int status = ND_ERROR;
   //const char *functionName = "NDAttributeList::remove";
 
-  epicsMutexLock(this->lock);
+  epicsMutexLock(this->lock_);
   pAttribute = this->find(pName);
   if (!pAttribute) goto done;
-  ellDelete(&this->list, &pAttribute->listNode.node);
+  ellDelete(&this->list_, &pAttribute->listNode_.node);
   delete pAttribute;
   status = ND_SUCCESS;
 
   done:
-  epicsMutexUnlock(this->lock);
+  epicsMutexUnlock(this->lock_);
   return(status);
 }
 
@@ -166,15 +166,15 @@ int NDAttributeList::clear()
   NDAttributeListNode *pListNode;
   //const char *functionName = "NDAttributeList::clear";
 
-  epicsMutexLock(this->lock);
-  pListNode = (NDAttributeListNode *)ellFirst(&this->list);
+  epicsMutexLock(this->lock_);
+  pListNode = (NDAttributeListNode *)ellFirst(&this->list_);
   while (pListNode) {
     pAttribute = pListNode->pNDAttribute;
-    ellDelete(&this->list, &pListNode->node);
+    ellDelete(&this->list_, &pListNode->node);
     delete pAttribute;
-    pListNode = (NDAttributeListNode *)ellFirst(&this->list);
+    pListNode = (NDAttributeListNode *)ellFirst(&this->list_);
   }
-  epicsMutexUnlock(this->lock);
+  epicsMutexUnlock(this->lock_);
   return(ND_SUCCESS);
 }
 
@@ -190,19 +190,19 @@ int NDAttributeList::copy(NDAttributeList *pListOut)
   NDAttributeListNode *pListNode;
   //const char *functionName = "NDAttributeList::copy";
 
-  epicsMutexLock(this->lock);
-  pListNode = (NDAttributeListNode *)ellFirst(&this->list);
+  epicsMutexLock(this->lock_);
+  pListNode = (NDAttributeListNode *)ellFirst(&this->list_);
   while (pListNode) {
     pAttrIn = pListNode->pNDAttribute;
     /* See if there is already an attribute of this name in the output list */
-    pFound = pListOut->find(pAttrIn->pName);
+    pFound = pListOut->find(pAttrIn->name_.c_str());
     /* The copy function will copy the properties, and will create the attribute if pFound is NULL */
     pAttrOut = pAttrIn->copy(pFound);
     /* If pFound is NULL, then a copy created a new attribute, need to add it to the list */
     if (!pFound) pListOut->add(pAttrOut);
     pListNode = (NDAttributeListNode *)ellNext(&pListNode->node);
   }
-  epicsMutexUnlock(this->lock);
+  epicsMutexUnlock(this->lock_);
   return(ND_SUCCESS);
 }
 
@@ -214,14 +214,14 @@ int NDAttributeList::updateValues()
   NDAttributeListNode *pListNode;
   //const char *functionName = "NDAttributeList::updateValues";
 
-  epicsMutexLock(this->lock);
-  pListNode = (NDAttributeListNode *)ellFirst(&this->list);
+  epicsMutexLock(this->lock_);
+  pListNode = (NDAttributeListNode *)ellFirst(&this->list_);
   while (pListNode) {
     pAttribute = pListNode->pNDAttribute;
     pAttribute->updateValue();
     pListNode = (NDAttributeListNode *)ellNext(&pListNode->node);
   }
-  epicsMutexUnlock(this->lock);
+  epicsMutexUnlock(this->lock_);
   return(ND_SUCCESS);
 }
 
@@ -234,19 +234,19 @@ int NDAttributeList::report(FILE *fp, int details)
   NDAttribute *pAttribute;
   NDAttributeListNode *pListNode;
   
-  epicsMutexLock(this->lock);
+  epicsMutexLock(this->lock_);
   fprintf(fp, "\n");
   fprintf(fp, "NDAttributeList: address=%p:\n", this);
   fprintf(fp, "  number of attributes=%d\n", this->count());
   if (details > 10) {
-    pListNode = (NDAttributeListNode *) ellFirst(&this->list);
+    pListNode = (NDAttributeListNode *) ellFirst(&this->list_);
     while (pListNode) {
       pAttribute = (NDAttribute *)pListNode->pNDAttribute;
       pAttribute->report(fp, details);
       pListNode = (NDAttributeListNode *) ellNext(&pListNode->node);
     }
   }
-  epicsMutexUnlock(this->lock);
+  epicsMutexUnlock(this->lock_);
   return ND_SUCCESS;
 }
 
