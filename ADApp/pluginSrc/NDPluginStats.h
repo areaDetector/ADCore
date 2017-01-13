@@ -71,11 +71,18 @@ typedef enum {
 /* Centroid */
 #define NDPluginStatsComputeCentroidString    "COMPUTE_CENTROID"    /* (asynInt32,        r/w) Compute centroid? */
 #define NDPluginStatsCentroidThresholdString  "CENTROID_THRESHOLD"  /* (asynFloat64,      r/w) Threshold when computing centroids */
+#define NDPluginStatsCentroidTotalString      "CENTROID_TOTAL"      /* (asynFloat64,      r/o) Total centroid */
 #define NDPluginStatsCentroidXString          "CENTROIDX_VALUE"     /* (asynFloat64,      r/o) X centroid */
 #define NDPluginStatsCentroidYString          "CENTROIDY_VALUE"     /* (asynFloat64,      r/o) Y centroid */
 #define NDPluginStatsSigmaXString             "SIGMAX_VALUE"        /* (asynFloat64,      r/o) Sigma X */
 #define NDPluginStatsSigmaYString             "SIGMAY_VALUE"        /* (asynFloat64,      r/o) Sigma Y */
 #define NDPluginStatsSigmaXYString            "SIGMAXY_VALUE"       /* (asynFloat64,      r/o) Sigma XY */
+#define NDPluginStatsSkewXString              "SKEWX_VALUE"         /* (asynFloat64,      r/o) Skew X */
+#define NDPluginStatsSkewYString              "SKEWY_VALUE"         /* (asynFloat64,      r/o) Skew Y */
+#define NDPluginStatsKurtosisXString          "KURTOSISX_VALUE"     /* (asynFloat64,      r/o) Kurtosis X */
+#define NDPluginStatsKurtosisYString          "KURTOSISY_VALUE"     /* (asynFloat64,      r/o) Kurtosis Y */
+#define NDPluginStatsEccentricityString       "ECCENTRICITY_VALUE"  /* (asynFloat64,      r/o) Eccentricity */
+#define NDPluginStatsOrientationString        "ORIENTATION_VALUE"   /* (asynFloat64,      r/o) Orientation */
     
 /* Time series of basic statistics and centroid statistics */
 #define NDPluginStatsTSControlString          "TS_CONTROL"          /* (asynInt32,        r/w) Erase/start, stop, start */
@@ -171,11 +178,18 @@ protected:
     /* Centroid */
     int NDPluginStatsComputeCentroid;
     int NDPluginStatsCentroidThreshold;
+    int NDPluginStatsCentroidTotal;
     int NDPluginStatsCentroidX;
     int NDPluginStatsCentroidY;
     int NDPluginStatsSigmaX;
     int NDPluginStatsSigmaY;
     int NDPluginStatsSigmaXY;
+    int NDPluginStatsSkewX;
+    int NDPluginStatsSkewY;
+    int NDPluginStatsKurtosisX;
+    int NDPluginStatsKurtosisY;
+    int NDPluginStatsEccentricity;
+    int NDPluginStatsOrientation;
 
     /* Time Series */
     int NDPluginStatsTSControl;
@@ -226,11 +240,18 @@ protected:
                                 
 private:
     double  centroidThreshold;
+    double  centroidTotal;
     double  centroidX;
     double  centroidY;
     double  sigmaX;
     double  sigmaY;
     double  sigmaXY;
+    double  skewX;
+    double  skewY;
+    double  kurtosisX;
+    double  kurtosisY;
+    double  eccentricity;
+    double  orientation;
     double  *profileX[MAX_PROFILE_TYPES];
     double  *profileY[MAX_PROFILE_TYPES];
     double  *timeSeries[MAX_TIME_SERIES_TYPES];

@@ -186,18 +186,21 @@ template <typename epicsType>
 asynStatus NDPluginStats::doComputeCentroidT(NDArray *pArray)
 {
     epicsType *pData = (epicsType *)pArray->pData;
-    double value, *pValue, *pThresh, centroidTotal;
+    double value, *pValue, *pThresh, varX, varY, varXY;
     size_t ix, iy;
+    /*Raw moments */
+    double M00 = 0.0;
+    double M10 = 0.0, M01 = 0.0;
+    double M20 = 0.0, M02 = 0.0, M11 = 0.0;
+    double M30 = 0.0, M03 = 0.0;
+    double M40 = 0.0, M04 = 0.0;
+    /*Central moments */
+    double mu20, mu02, mu11, mu30, mu03, mu40, mu04;
 
     if (pArray->ndims > 2) return(asynError);
     
     getDoubleParam (NDPluginStatsCentroidThreshold,  &this->centroidThreshold);
     this->unlock();
-    this->centroidX = 0;
-    this->centroidY = 0;
-    this->sigmaX = 0;
-    this->sigmaY = 0;
-    this->sigmaXY = 0;
     memset(this->profileX[profAverage], 0, this->profileSizeX*sizeof(double));  
     memset(this->profileY[profAverage], 0, this->profileSizeY*sizeof(double));
     memset(this->profileX[profThreshold], 0, this->profileSizeX*sizeof(double));  
@@ -211,42 +214,68 @@ asynStatus NDPluginStats::doComputeCentroidT(NDArray *pArray)
             if (value >= this->centroidThreshold) {
                 this->profileX[profThreshold][ix] += value;
                 this->profileY[profThreshold][iy] += value;
-                this->sigmaXY += value * ix * iy;
+                M11 += value * ix * iy;
             }
         }
     }
 
     /* Normalize the average profiles and compute the centroid from them */
-    this->centroidX = 0;
-    this->sigmaX = 0;
-    centroidTotal = 0;
     pValue  = this->profileX[profAverage];
     pThresh = this->profileX[profThreshold];
     for (ix=0; ix<this->profileSizeX; ix++, pValue++, pThresh++) {
-        this->centroidX += *pThresh * ix;
-        this->sigmaX    += *pThresh * ix * ix;
-        centroidTotal   += *pThresh;
+        M00 += *pThresh;
+        M10 += *pThresh * ix;
+        M20 += *pThresh * ix * ix;
+        M30 += *pThresh * ix * ix * ix;
+        M40 += *pThresh * ix * ix * ix * ix;
         *pValue  /= this->profileSizeY;
         *pThresh /= this->profileSizeY;
     }
-    this->centroidY = 0;
-    this->sigmaY = 0;
     pValue  = this->profileY[profAverage];
     pThresh = this->profileY[profThreshold];
     for (iy=0; iy<this->profileSizeY; iy++, pValue++, pThresh++) {
-        this->centroidY += *pThresh * iy;
-        this->sigmaY    += *pThresh * iy * iy;
+        M01 += *pThresh * iy;
+        M02 += *pThresh * iy * iy;
+        M03 += *pThresh * iy * iy * iy;
+        M04 += *pThresh * iy * iy * iy * iy;
         *pValue  /= this->profileSizeX;
         *pThresh /= this->profileSizeX;
-   }
-   if (centroidTotal > 0.) {
-        this->centroidX /= centroidTotal;
-        this->centroidY /= centroidTotal;
-        this->sigmaX  = sqrt((this->sigmaX  / centroidTotal) - (this->centroidX * this->centroidX));
-        this->sigmaY  = sqrt((this->sigmaY  / centroidTotal) - (this->centroidY * this->centroidY));
-        this->sigmaXY =      (this->sigmaXY / centroidTotal) - (this->centroidX * this->centroidY);
-        if ((this->sigmaX !=0) && (this->sigmaY != 0)) 
-            this->sigmaXY /= (this->sigmaX * this->sigmaY);
+    }
+
+    if (M00 > 0.) {
+        /* Calculate central moments */
+        mu20 = M20 - (M10 * M10) / M00;
+        mu02 = M02 - (M01 * M01) / M00;
+        mu11 = M11 - (M10 * M01) / M00;
+        mu30 = M30 - ((3 * M10 * M20) / M00) + ((2 * M10 * M10 * M10) / (M00 * M00));
+        mu03 = M03 - ((3 * M01 * M02) / M00) + ((2 * M01 * M01 * M01) / (M00 * M00));
+        mu40 = M40 - ((4 * M30 * M10) / M00) + ((6 * M20 * M10 * M10) / (M00 * M00)) -
+             (3 * M10 * M10 * M10 * M10) / (M00 * M00 * M00);
+        mu04 = M04 - ((4 * M03 * M01) / M00) + ((6 * M02 * M01 * M01) / (M00 * M00)) -
+             (3 * M01 * M01 * M01 * M01) / (M00 * M00 * M00);
+        /* Calculate variances */
+        varX  = mu20 / M00;
+        varY  = mu02 / M00;
+        varXY = mu11 / M00;
+        /* Scientific output parameters */
+        this->centroidTotal = M00;
+        this->centroidX = M10 / M00;
+        this->centroidY = M01 / M00;
+        /* Calculate sigmas */
+        this->sigmaX = sqrt(varX);
+        this->sigmaY = sqrt(varY);
+        if ((this->sigmaX != 0) && (this->sigmaY != 0)){
+            this->sigmaXY = varXY / (this->sigmaX * this->sigmaY);
+            this->skewX = mu30  / (M00 * pow(varX, 3.0/2.0));
+            this->skewY = mu03  / (M00 * pow(varY, 3.0/2.0));
+            this->kurtosisX = (mu40 / (M00 * pow(varX, 2.0))) - 3.0;
+            this->kurtosisY = (mu04 / (M00 * pow(varY, 2.0))) - 3.0;
+        }
+        /* Calculate orientation and eccentricity */
+        this->orientation = 0.5 * atan2((2.0 * mu11), (mu20 - mu02));
+        /* Orientation in degrees*/
+        this->orientation = orientation * 180 / M_PI;
+        this->eccentricity = (pow(mu20 - mu02, 2.0) + 4.0 * mu11 * mu11 ) / M00;
     }
     this->lock();
     return(asynSuccess);
@@ -526,11 +555,18 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
 
     if (computeCentroid) {
         doComputeCentroid(pArray);
-        setDoubleParam(NDPluginStatsCentroidX,   this->centroidX);
-        setDoubleParam(NDPluginStatsCentroidY,   this->centroidY);
-        setDoubleParam(NDPluginStatsSigmaX,      this->sigmaX);
-        setDoubleParam(NDPluginStatsSigmaY,      this->sigmaY);
-        setDoubleParam(NDPluginStatsSigmaXY,     this->sigmaXY);
+        setDoubleParam(NDPluginStatsCentroidTotal, this->centroidTotal);
+        setDoubleParam(NDPluginStatsCentroidX,     this->centroidX);
+        setDoubleParam(NDPluginStatsCentroidY,     this->centroidY);
+        setDoubleParam(NDPluginStatsSigmaX,        this->sigmaX);
+        setDoubleParam(NDPluginStatsSigmaY,        this->sigmaY);
+        setDoubleParam(NDPluginStatsSigmaXY,       this->sigmaXY);
+        setDoubleParam(NDPluginStatsSkewX,         this->skewX);
+        setDoubleParam(NDPluginStatsSkewY,         this->skewY);
+        setDoubleParam(NDPluginStatsKurtosisX,     this->kurtosisX);
+        setDoubleParam(NDPluginStatsKurtosisY,     this->kurtosisY);
+        setDoubleParam(NDPluginStatsEccentricity,  this->eccentricity);
+        setDoubleParam(NDPluginStatsOrientation,   this->orientation);
     }
          
     if (computeProfiles) {
@@ -769,11 +805,18 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
     /* Centroid */
     createParam(NDPluginStatsComputeCentroidString,   asynParamInt32,      &NDPluginStatsComputeCentroid);
     createParam(NDPluginStatsCentroidThresholdString, asynParamFloat64,    &NDPluginStatsCentroidThreshold);
+    createParam(NDPluginStatsCentroidTotalString,     asynParamFloat64,    &NDPluginStatsCentroidTotal);
     createParam(NDPluginStatsCentroidXString,         asynParamFloat64,    &NDPluginStatsCentroidX);
     createParam(NDPluginStatsCentroidYString,         asynParamFloat64,    &NDPluginStatsCentroidY);
     createParam(NDPluginStatsSigmaXString,            asynParamFloat64,    &NDPluginStatsSigmaX);
     createParam(NDPluginStatsSigmaYString,            asynParamFloat64,    &NDPluginStatsSigmaY);
     createParam(NDPluginStatsSigmaXYString,           asynParamFloat64,    &NDPluginStatsSigmaXY);
+    createParam(NDPluginStatsSkewXString,             asynParamFloat64,    &NDPluginStatsSkewX);
+    createParam(NDPluginStatsSkewYString,             asynParamFloat64,    &NDPluginStatsSkewY);
+    createParam(NDPluginStatsKurtosisXString,         asynParamFloat64,    &NDPluginStatsKurtosisX);
+    createParam(NDPluginStatsKurtosisYString,         asynParamFloat64,    &NDPluginStatsKurtosisY);
+    createParam(NDPluginStatsEccentricityString,      asynParamFloat64,    &NDPluginStatsEccentricity);
+    createParam(NDPluginStatsOrientationString,       asynParamFloat64,    &NDPluginStatsOrientation);
 
     /* Time series */
     createParam(NDPluginStatsTSControlString,         asynParamInt32,        &NDPluginStatsTSControl);
