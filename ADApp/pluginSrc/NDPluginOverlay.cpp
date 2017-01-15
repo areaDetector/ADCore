@@ -351,10 +351,10 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
     /* Need to fetch all of these parameters while we still have the mutex */
     getIntegerParam(overlay, NDPluginOverlayPositionX,  &pOverlay->PositionX);
     pOverlay->PositionX = MAX(pOverlay->PositionX, 0);
-    pOverlay->PositionX = MIN(pOverlay->PositionX, this->arrayInfo.xSize-1);
+    pOverlay->PositionX = MIN(pOverlay->PositionX, (int)this->arrayInfo.xSize-1);
     getIntegerParam(overlay, NDPluginOverlayPositionY,  &pOverlay->PositionY);
     pOverlay->PositionY = MAX(pOverlay->PositionY, 0);
-    pOverlay->PositionY = MIN(pOverlay->PositionY, this->arrayInfo.ySize-1);
+    pOverlay->PositionY = MIN(pOverlay->PositionY, (int)this->arrayInfo.ySize-1);
     getIntegerParam(overlay, NDPluginOverlaySizeX,      &pOverlay->SizeX);
     getIntegerParam(overlay, NDPluginOverlaySizeY,      &pOverlay->SizeY);
     getIntegerParam(overlay, NDPluginOverlayWidthX,     &pOverlay->WidthX);
@@ -375,6 +375,10 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
     prevOverlay.changed = false;
     pOverlay->changed = (memcmp(&prevOverlay, pOverlay, overlayUserLen) != 0);
     if (arrayInfoChanged) pOverlay->changed = true;
+    /* If this is a text overlay with a non-blank time stamp format then it always needs to be updated */
+    if ((pOverlay->shape == NDOverlayText) && (strlen(pOverlay->TimeStampFormat) > 0)) {
+        pOverlay->changed = true;
+    }
     /* This function is called with the lock taken, and it must be set when we exit.
      * The following code can be exected without the mutex because we are not accessing memory
      * that other threads can access. */
