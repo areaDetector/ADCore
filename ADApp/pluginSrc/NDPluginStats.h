@@ -38,11 +38,18 @@ typedef enum {
     TSSigmaValue,
     TSTotal,
     TSNet,
+    TSCentroidTotal,
     TSCentroidX,
     TSCentroidY,
     TSSigmaX,
     TSSigmaY,
     TSSigmaXY,
+    TSSkewX,
+    TSSkewY,
+    TSKurtosisX,
+    TSKurtosisY,
+    TSEccentricity,
+    TSOrientation,
     TSTimestamp
 } NDStatTSType;
 #define MAX_TIME_SERIES_TYPES TSTimestamp+1
@@ -100,11 +107,18 @@ typedef enum {
 #define NDPluginStatsTSTotalString            "TS_TOTAL"            /* (asynFloat64Array, r/o) Series of total */
 #define NDPluginStatsTSNetString              "TS_NET"              /* (asynFloat64Array, r/o) Series of net */
 #define NDPluginStatsTSSeriesMaxString        "TS_MAX_SUM"          /* (asynFloat64Array, r/o) Series of max elements sum */
+#define NDPluginStatsTSCentroidTotalString    "TS_CENTROIDTOTAL_VALUE"  /* (asynFloat64Array, r/o) Series of Total mass */
 #define NDPluginStatsTSCentroidXString        "TS_CENTROIDX_VALUE"  /* (asynFloat64Array, r/o) Series of X centroid */
 #define NDPluginStatsTSCentroidYString        "TS_CENTROIDY_VALUE"  /* (asynFloat64Array, r/o) Series of Y centroid */
 #define NDPluginStatsTSSigmaXString           "TS_SIGMAX_VALUE"     /* (asynFloat64Array, r/o) Series of sigma X */
 #define NDPluginStatsTSSigmaYString           "TS_SIGMAY_VALUE"     /* (asynFloat64Array, r/o) Series of sigma Y */
 #define NDPluginStatsTSSigmaXYString          "TS_SIGMAXY_VALUE"    /* (asynFloat64Array, r/o) Series of sigma XY */
+#define NDPluginStatsTSSkewXString            "TS_SKEWX_VALUE"      /* (asynFloat64Array, r/o) Series of skew X */
+#define NDPluginStatsTSSkewYString            "TS_SKEWY_VALUE"      /* (asynFloat64Array, r/o) Series of skew Y */
+#define NDPluginStatsTSKurtosisXString        "TS_KURTOSISX_VALUE"  /* (asynFloat64Array, r/o) Series of kurtosis X */
+#define NDPluginStatsTSKurtosisYString        "TS_KURTOSISY_VALUE"  /* (asynFloat64Array, r/o) Series of kurtosis Y */
+#define NDPluginStatsTSEccentricityString     "TS_ECCENTRICITY_VALUE"/* (asynFloat64Array, r/o) Series of eccentricity */
+#define NDPluginStatsTSOrientationString      "TS_ORIENTATION_VALUE"     /* (asynFloat64Array, r/o) Series of orientation */
 #define NDPluginStatsTSTimestampString        "TS_TIMESTAMP_VALUE"  /* (asynFloat64Array, r/o) Series of timestamps */
 
 /* Profiles*/   
@@ -206,11 +220,18 @@ protected:
     int NDPluginStatsTSSigmaValue;
     int NDPluginStatsTSTotal;
     int NDPluginStatsTSNet;
+    int NDPluginStatsTSCentroidTotal;
     int NDPluginStatsTSCentroidX;
     int NDPluginStatsTSCentroidY;
     int NDPluginStatsTSSigmaX;
     int NDPluginStatsTSSigmaY;
     int NDPluginStatsTSSigmaXY;
+    int NDPluginStatsTSSkewX;
+    int NDPluginStatsTSSkewY;
+    int NDPluginStatsTSKurtosisX;
+    int NDPluginStatsTSKurtosisY;
+    int NDPluginStatsTSEccentricity;
+    int NDPluginStatsTSOrientation;
     int NDPluginStatsTSTimestamp;
     
     /* Profiles */

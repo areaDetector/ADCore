@@ -422,12 +422,19 @@ void NDPluginStats::doTimeSeriesCallbacks()
     doCallbacksFloat64Array(this->timeSeries[TSSigmaValue], currentPoint, NDPluginStatsTSSigmaValue, 0);
     doCallbacksFloat64Array(this->timeSeries[TSTotal],      currentPoint, NDPluginStatsTSTotal, 0);
     doCallbacksFloat64Array(this->timeSeries[TSNet],        currentPoint, NDPluginStatsTSNet, 0);
-    doCallbacksFloat64Array(this->timeSeries[TSCentroidX],  currentPoint, NDPluginStatsTSCentroidX, 0);
-    doCallbacksFloat64Array(this->timeSeries[TSCentroidY],  currentPoint, NDPluginStatsTSCentroidY, 0);
-    doCallbacksFloat64Array(this->timeSeries[TSSigmaX],     currentPoint, NDPluginStatsTSSigmaX, 0);
-    doCallbacksFloat64Array(this->timeSeries[TSSigmaY],     currentPoint, NDPluginStatsTSSigmaY, 0);
-    doCallbacksFloat64Array(this->timeSeries[TSSigmaXY],    currentPoint, NDPluginStatsTSSigmaXY, 0);
-    doCallbacksFloat64Array(this->timeSeries[TSTimestamp],  currentPoint, NDPluginStatsTSTimestamp, 0);
+    doCallbacksFloat64Array(this->timeSeries[TSCentroidTotal],  currentPoint, NDPluginStatsTSCentroidTotal, 0);
+    doCallbacksFloat64Array(this->timeSeries[TSCentroidX],      currentPoint, NDPluginStatsTSCentroidX, 0);
+    doCallbacksFloat64Array(this->timeSeries[TSCentroidY],      currentPoint, NDPluginStatsTSCentroidY, 0);
+    doCallbacksFloat64Array(this->timeSeries[TSSigmaX],         currentPoint, NDPluginStatsTSSigmaX, 0);
+    doCallbacksFloat64Array(this->timeSeries[TSSigmaY],         currentPoint, NDPluginStatsTSSigmaY, 0);
+    doCallbacksFloat64Array(this->timeSeries[TSSigmaXY],        currentPoint, NDPluginStatsTSSigmaXY, 0);
+    doCallbacksFloat64Array(this->timeSeries[TSSkewX],          currentPoint, NDPluginStatsTSSkewX, 0);
+    doCallbacksFloat64Array(this->timeSeries[TSSkewY],          currentPoint, NDPluginStatsTSSkewY, 0);
+    doCallbacksFloat64Array(this->timeSeries[TSKurtosisX],      currentPoint, NDPluginStatsTSKurtosisX, 0);
+    doCallbacksFloat64Array(this->timeSeries[TSKurtosisY],      currentPoint, NDPluginStatsTSKurtosisY, 0);
+    doCallbacksFloat64Array(this->timeSeries[TSEccentricity],   currentPoint, NDPluginStatsTSEccentricity, 0);
+    doCallbacksFloat64Array(this->timeSeries[TSOrientation],    currentPoint, NDPluginStatsTSOrientation, 0);
+    doCallbacksFloat64Array(this->timeSeries[TSTimestamp],      currentPoint, NDPluginStatsTSTimestamp, 0);
 }
 
 
@@ -596,12 +603,19 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
         timeSeries[TSSigmaValue][currentTSPoint]  = pStats->sigma;
         timeSeries[TSTotal][currentTSPoint]       = pStats->total;
         timeSeries[TSNet][currentTSPoint]         = pStats->net;
-        timeSeries[TSCentroidX][currentTSPoint]   = this->centroidX;
-        timeSeries[TSCentroidY][currentTSPoint]   = this->centroidY;
-        timeSeries[TSSigmaX][currentTSPoint]      = this->sigmaX;
-        timeSeries[TSSigmaY][currentTSPoint]      = this->sigmaY;
-        timeSeries[TSSigmaXY][currentTSPoint]     = this->sigmaXY;
-        timeSeries[TSTimestamp][currentTSPoint]   = pArray->timeStamp;
+        timeSeries[TSCentroidTotal][currentTSPoint]   = this->centroidTotal;
+        timeSeries[TSCentroidX][currentTSPoint]       = this->centroidX;
+        timeSeries[TSCentroidY][currentTSPoint]       = this->centroidY;
+        timeSeries[TSSigmaX][currentTSPoint]          = this->sigmaX;
+        timeSeries[TSSigmaY][currentTSPoint]          = this->sigmaY;
+        timeSeries[TSSigmaXY][currentTSPoint]         = this->sigmaXY;
+        timeSeries[TSSkewX][currentTSPoint]           = this->skewX;
+        timeSeries[TSSkewY][currentTSPoint]           = this->skewY;
+        timeSeries[TSKurtosisX][currentTSPoint]       = this->kurtosisX;
+        timeSeries[TSKurtosisY][currentTSPoint]       = this->kurtosisY;
+        timeSeries[TSEccentricity][currentTSPoint]    = this->eccentricity;
+        timeSeries[TSOrientation][currentTSPoint]     = this->orientation;
+        timeSeries[TSTimestamp][currentTSPoint]       = pArray->timeStamp;
         currentTSPoint++;
         setIntegerParam(NDPluginStatsTSCurrentPoint, currentTSPoint);
         if (currentTSPoint >= numTSPoints) {
@@ -833,11 +847,18 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
     createParam(NDPluginStatsTSSigmaValueString,      asynParamFloat64Array, &NDPluginStatsTSSigmaValue);
     createParam(NDPluginStatsTSTotalString,           asynParamFloat64Array, &NDPluginStatsTSTotal);
     createParam(NDPluginStatsTSNetString,             asynParamFloat64Array, &NDPluginStatsTSNet);
+    createParam(NDPluginStatsTSCentroidTotalString,   asynParamFloat64Array, &NDPluginStatsTSCentroidTotal);
     createParam(NDPluginStatsTSCentroidXString,       asynParamFloat64Array, &NDPluginStatsTSCentroidX);
     createParam(NDPluginStatsTSCentroidYString,       asynParamFloat64Array, &NDPluginStatsTSCentroidY);
     createParam(NDPluginStatsTSSigmaXString,          asynParamFloat64Array, &NDPluginStatsTSSigmaX);
     createParam(NDPluginStatsTSSigmaYString,          asynParamFloat64Array, &NDPluginStatsTSSigmaY);
     createParam(NDPluginStatsTSSigmaXYString,         asynParamFloat64Array, &NDPluginStatsTSSigmaXY);
+    createParam(NDPluginStatsTSSkewXString,           asynParamFloat64Array, &NDPluginStatsTSSkewX);
+    createParam(NDPluginStatsTSSkewYString,           asynParamFloat64Array, &NDPluginStatsTSSkewY);
+    createParam(NDPluginStatsTSKurtosisXString,       asynParamFloat64Array, &NDPluginStatsTSKurtosisX);
+    createParam(NDPluginStatsTSKurtosisYString,       asynParamFloat64Array, &NDPluginStatsTSKurtosisY);
+    createParam(NDPluginStatsTSEccentricityString,    asynParamFloat64Array, &NDPluginStatsTSEccentricity);
+    createParam(NDPluginStatsTSOrientationString,     asynParamFloat64Array, &NDPluginStatsTSOrientation);
     createParam(NDPluginStatsTSTimestampString,       asynParamFloat64Array, &NDPluginStatsTSTimestamp);
 
     /* Profiles */
