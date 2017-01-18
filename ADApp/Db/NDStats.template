@@ -227,24 +227,12 @@ record(ai, "$(P)$(R)CentroidTotal_RBV")
     field(SCAN, "I/O Intr")
 }
 
-record(ao, "$(P)$(R)CentroidX")
-{
-   field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CENTROIDX_VALUE")
-}
-
 record(ai, "$(P)$(R)CentroidX_RBV")
 {
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CENTROIDX_VALUE")
    field(PREC, "1")
    field(SCAN, "I/O Intr")
-}
-
-record(ao, "$(P)$(R)CentroidY")
-{
-   field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CENTROIDY_VALUE")
 }
 
 record(ai, "$(P)$(R)CentroidY_RBV")
@@ -255,12 +243,6 @@ record(ai, "$(P)$(R)CentroidY_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(ao, "$(P)$(R)SigmaX")
-{
-   field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIGMAX_VALUE")
-}
-
 record(ai, "$(P)$(R)SigmaX_RBV")
 {
    field(DTYP, "asynFloat64")
@@ -269,24 +251,12 @@ record(ai, "$(P)$(R)SigmaX_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(ao, "$(P)$(R)SigmaY")
-{
-   field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIGMAY_VALUE")
-}
-
 record(ai, "$(P)$(R)SigmaY_RBV")
 {
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIGMAY_VALUE")
    field(PREC, "1")
    field(SCAN, "I/O Intr")
-}
-
-record(ao, "$(P)$(R)SigmaXY")
-{
-   field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIGMAXY_VALUE")
 }
 
 record(ai, "$(P)$(R)SigmaXY_RBV")
