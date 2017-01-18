@@ -140,6 +140,10 @@ R2-6 (January XXX, 2017)
   for these transformations when defining the target object.  Chris Roehrig from the APS wrote an
   earlier version of this plugin.
 
+### NDPluginStats
+* Extensions to compute Centroid
+    * Added calucations of 3rd and 4th order image moments, this provides skewness and kurtosis.
+    * Added eccentricity and orientation calculations.
 
 R2-5 (October 28, 2016)
 ========================
