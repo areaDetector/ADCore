@@ -63,7 +63,7 @@ typedef struct {
 } overlayTempCaseStr ;
 
 typedef struct {
-  int overlayNum; // This is not useful yet because the AsynPortClientContained class does not support addr.
+  int overlayNum;
   int positionX;
   int positionY;
   int sizeX;
@@ -183,8 +183,11 @@ struct OverlayPluginTestFixture
     appendTestCase(&overlayTestCaseStrs, &test7); 
     // Test an case with zero width
     overlayTempCaseStr test8 = {0, 500, 500, 50, 50, 0, 0, 0, 255, 0, NDOverlayCross, NDOverlaySet, 2, {1024, 1024}, NDColorModeMono};
-    appendTestCase(&overlayTestCaseStrs, &test8); 
-}
+    appendTestCase(&overlayTestCaseStrs, &test8);
+    // Test a "normal" case using address 1
+    overlayTempCaseStr test9 = {1, 500, 500, 50, 50, 1, 1, 0, 255, 0, NDOverlayCross, NDOverlaySet, 2, {1024, 1024}, NDColorModeMono};
+    appendTestCase(&overlayTestCaseStrs, &test9);
+  }
 
   ~OverlayPluginTestFixture()
   {
@@ -224,18 +227,18 @@ BOOST_AUTO_TEST_CASE(basic_overlay_operation)
   
     BOOST_MESSAGE("Test " << (i+1) << " rank: " << pStr->rank);
 
-    BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlayUseString,       1));
-    BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlayPositionXString, pStr->positionX));
-    BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlayPositionYString, pStr->positionY));
-    BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlaySizeXString,     pStr->sizeX));
-    BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlaySizeYString,     pStr->sizeY));
-    BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlayWidthXString,    pStr->widthX));
-    BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlayWidthYString,    pStr->widthY));
-    BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlayShapeString,     pStr->shape));
-    BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlayDrawModeString,  pStr->drawMode));
-    BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlayRedString,       pStr->red));
-    BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlayGreenString,     pStr->green));
-    BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlayBlueString,      pStr->blue));
+    BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlayUseString,       1,               pStr->overlayNum));
+    BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlayPositionXString, pStr->positionX, pStr->overlayNum));
+    BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlayPositionYString, pStr->positionY, pStr->overlayNum));
+    BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlaySizeXString,     pStr->sizeX,     pStr->overlayNum));
+    BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlaySizeYString,     pStr->sizeY,     pStr->overlayNum));
+    BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlayWidthXString,    pStr->widthX,    pStr->overlayNum));
+    BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlayWidthYString,    pStr->widthY,    pStr->overlayNum));
+    BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlayShapeString,     pStr->shape,     pStr->overlayNum));
+    BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlayDrawModeString,  pStr->drawMode,  pStr->overlayNum));
+    BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlayRedString,       pStr->red,       pStr->overlayNum));
+    BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlayGreenString,     pStr->green,     pStr->overlayNum));
+    BOOST_CHECK_NO_THROW(Overlay->write(NDPluginOverlayBlueString,      pStr->blue,      pStr->overlayNum));
 
     BOOST_CHECK_NO_THROW(Overlay->write(NDArrayCallbacksString, 1));
     BOOST_CHECK_EQUAL(Overlay->readInt(NDArrayCallbacksString), 1);
