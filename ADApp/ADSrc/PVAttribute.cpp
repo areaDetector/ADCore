@@ -73,6 +73,9 @@ PVAttribute::PVAttribute(const char *pName, const char *pDescription,
     /* Set connection callback on this PV */
     SEVCHK(ca_create_channel(pSource, connectCallbackC, this, 10 ,&this->chanId),
            "ca_create_channel");
+
+    connectedOnce = false;
+
 }
 
 /** Copy constructor for an EPICS PV attribute
@@ -220,6 +223,10 @@ void PVAttribute::connectCallback(struct connection_handler_args cha)
     epicsMutexLock(this->lock);
     if (chanId && (ca_state(chanId) == cs_conn)) {
         dbfType = ca_field_type(chanId);
+        if (connectedOnce) {
+          goto done;
+        }
+        connectedOnce = true;
         elementCount = ca_element_count(chanId);
         asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
             "%s:%s: Connect event, PV=%s, chanId=%p, dbfType=%ld, elementCount=%d, dbrType=%ld\n", 

@@ -40,6 +40,7 @@ private:
     chtype      dbrType;
     NDAttrValue callbackValue;
     char        *callbackString;
+    bool        connectedOnce;
     epicsMutexId lock;
 };
 
