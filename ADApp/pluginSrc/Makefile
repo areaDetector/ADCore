@@ -5,48 +5,48 @@ include $(TOP)/configure/CONFIG
 #=============================
 
 LIBRARY_IOC += NDPlugin
+DBD         += NDPluginSupport.dbd
 
 # Persuade travis (ubuntu 12.04) to use HDF5 API V2 (1.8 rather than default 1.6)
 USR_CXXFLAGS_Linux += -DH5_NO_DEPRECATED_SYMBOLS -DH5Gopen_vers=2
 
-DBD      += NDPluginSupport.dbd
 INC      += NDPluginDriver.h
 LIB_SRCS += NDPluginDriver.cpp
 
-DBD      += NDPluginCircularBuff.dbd
+NDPluginSupport_DBD += NDPluginAttribute.dbd
+INC      += NDPluginAttribute.h
+LIB_SRCS += NDPluginAttribute.cpp
+
+NDPluginSupport_DBD += NDPluginCircularBuff.dbd
 INC      += NDArrayRing.h
 INC      += NDPluginCircularBuff.h
 LIB_SRCS += NDPluginCircularBuff.cpp
 LIB_SRCS += NDArrayRing.cpp
 
-DBD      += NDPluginAttribute.dbd
-INC      += NDPluginAttribute.h
-LIB_SRCS += NDPluginAttribute.cpp
-
-DBD      += NDPluginColorConvert.dbd
+NDPluginSupport_DBD += NDPluginColorConvert.dbd
 INC      += NDPluginColorConvert.h
 LIB_SRCS += NDPluginColorConvert.cpp
 
-DBD      += NDPluginFFT.dbd
+NDPluginSupport_DBD += NDPluginFFT.dbd
 INC      += NDPluginFFT.h
 LIB_SRCS += NDPluginFFT.cpp
 LIB_SRCS += fft.c
 
-DBD      += NDPluginOverlay.dbd
+NDPluginSupport_DBD += NDPluginOverlay.dbd
 INC      += NDPluginOverlay.h
 INC      += NDPluginOverlayTextFont.h
 LIB_SRCS += NDPluginOverlay.cpp
 LIB_SRCS += NDPluginOverlayTextFont.cpp
 
-DBD      += NDPluginProcess.dbd
+NDPluginSupport_DBD += NDPluginProcess.dbd
 INC      += NDPluginProcess.h
 LIB_SRCS += NDPluginProcess.cpp
 
-DBD      += NDPluginROI.dbd
+NDPluginSupport_DBD += NDPluginROI.dbd
 INC      += NDPluginROI.h
 LIB_SRCS += NDPluginROI.cpp
 
-DBD      += NDPluginROIStat.dbd
+NDPluginSupport_DBD += NDPluginROIStat.dbd
 INC      += NDPluginROIStat.h
 LIB_SRCS += NDPluginROIStat.cpp
 
@@ -54,7 +54,7 @@ DBD      += NDPluginStats.dbd
 INC      += NDPluginStats.h
 LIB_SRCS += NDPluginStats.cpp
 
-DBD      += NDPluginStdArrays.dbd
+NDPluginSupport_DBD += NDPluginStdArrays.dbd
 INC      += NDPluginStdArrays.h
 LIB_SRCS += NDPluginStdArrays.cpp
 
@@ -62,16 +62,16 @@ DBD      += NDPluginTimeSeries.dbd
 INC      += NDPluginTimeSeries.h
 LIB_SRCS += NDPluginTimeSeries.cpp
 
-DBD      += NDPluginTransform.dbd
+NDPluginSupport_DBD += NDPluginTransform.dbd
 INC      += NDPluginTransform.h
 LIB_SRCS += NDPluginTransform.cpp
 
 ifeq ($(WITH_XML2),YES)
-DBD      += NDPosPlugin.dbd
-INC      += NDPosPlugin.h
-INC      += NDPosPluginFileReader.h
-LIB_SRCS += NDPosPlugin.cpp 
-LIB_SRCS += NDPosPluginFileReader.cpp
+  DBD      += NDPosPlugin.dbd
+  INC      += NDPosPlugin.h
+  INC      += NDPosPluginFileReader.h
+  LIB_SRCS += NDPosPlugin.cpp 
+  LIB_SRCS += NDPosPluginFileReader.cpp
 endif
 
 INC      += NDPluginFile.h
