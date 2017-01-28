@@ -22,11 +22,29 @@ Release Notes
 R2-6 (January XXX, 2017)
 ========================
 
+### NDPluginDriver, NDPluginBase.template, NDPluginBase.adl
+* Added new parameter NDPluginExecutionTime and new ai record ExecutionTime_RBV.  This gives the execution
+  time in ms the last time the plugin ran.  It works both with BlockingCallbacks=Yes and No.  It is very
+  convenient for measuring the performance of the plugin without having to run the detector at high
+  frame rates.
+
+### NDArrayBase.template
+* Added new longout record NDimensions and new waveform record Dimensions to control the NDArray
+  dimensions.  These were needed for NDDriverStdArrays, and may be useful for other drivers.
+  Previously there were only input records (NDimensions_RBV and Dimensions_RBV) 
+  for these parameters.
+
+### NDPluginSupport.dbd
+* Build this file in Makefile, remove from source so it is easier to maintain correctly.
+
 ### NDPluginROI
 * Added CollapseDims to optionally collapse (remove) output array dimensions whose value is
   1.  For example an output array that would normally have dimensions [1, 256, 256] would be
   [256, 256] if CollapseDims=Enable.
   
+### pluginTests
+* Added ROIPluginWrapper.cpp to test the CollapseDims behavior in NDPluginROI.
+
 ### NDPluginTransform
 * Set the NDArraySize[X,Y,Z] parameters appropriately after the transformation.  This is also done
   by the ROI plugin, and is convenient for clients to see the sizes, since the transform can
@@ -52,6 +70,30 @@ R2-6 (January XXX, 2017)
   +-SizeX/2 and +-SizeY/2 pixels from the center pixel.  This preserves symmetry when WidthX/Y is 1,
   and the previous behavior is difficult to duplicate for the Ellipse shape.
 
+### NDPluginStats
+* Extensions to compute Centroid
+    * Added calucations of 3rd and 4th order image moments, this provides skewness and kurtosis.
+    * Added eccentricity and orientation calculations.
+
+### NDPluginPos
+* Added NDPos.adl medm file.
+* Removed NDPosPlugin.dbd from NDPluginSupport.dbd because it can only be built if WITH_XML2 is set.
+
+### NDPluginPva
+* The pvaServer is no longer started in the plugin code, because that would result in running multiple servers
+  if multiple NDPluginPva plugins were loaded.  Now the command "startPVAServer" must be added to the IOC startup
+  script if any NDPluginPva plugins are being used.
+
+### NDPluginFile
+* If the NDArray contains an attribute named FilePluginClose and the attribute value is non-zero then
+  the current file will be closed.
+
+### NDFileTIFF
+* If there is an NDAttribute of type NDAttrString named TIFFImageDescription then this attribute is written 
+  to the TIFFTAG_IMAGEDESCRIPTION tag in the TIFF file.  Note that it will also be written to a user
+  tag in the TIFF file, as with all other NDAttributes.  This is OK because some data processing code
+  may expect to find the information in one location or the other.
+
 ### NDAttribute
 * Removed the line `#define MAX_ATTRIBUTE_STRING_SIZE 256` from NDAttribute.h because it creates the
   false impression that there is a limit on the size of string attributes.  There is not.
@@ -69,24 +111,12 @@ R2-6 (January XXX, 2017)
   method that was added in asyn R4-31.  This removes the requirement that paramAttribute specify a maximum
   string parameters size, there is now no limit.
   
-### NDFileTIFF
-* If there is an NDAttribute of type NDAttrString named TIFFImageDescription then this attribute is written 
-  to the TIFFTAG_IMAGEDESCRIPTION tag in the TIFF file.  Note that it will also be written to a user
-  tag in the TIFF file, as with all other NDAttributes.  This is OK because some data processing code
-  may expect to find the information in one location or the other.
-
-### NDArrayBase.template
-* Added new longout record NDimensions and new waveform record Dimensions to control the NDArray
-  dimensions.  These were needed for NDDriverStdArrays, and may be useful for other drivers.
-  Previously there were only input records (NDimensions_RBV and Dimensions_RBV) 
-  for these parameters.
-
-### NDPluginDriver, NDPluginBase.template, NDPluginBase.adl
-* Added new parameter NDPluginExecutionTime and new ai record ExecutionTime_RBV.  This gives the execution
-  time in ms the last time the plugin ran.  It works both with BlockingCallbacks=Yes and No.  It is very
-  convenient for measuring the performance of the plugin without having to run the detector at high
-  frame rates.
-
+### PVAttribute
+* Fixed problem where a PV that disconnected and reconnected would cause multiple CA subscriptions.
+  Note that if the data type of the PV changes on reconnect that the data may not be correct because
+  the data type of a PVAttribute is not allowed to change.  The application must be restarted in this
+  case.
+  
 ### asynNDArrayDriver, NDArrayBase.template, NDPluginBase.adl, ADSetup.adl, all plugin adl files
 * Added 2 new parameters: NDADCoreVersion, NDDriverVersion and new stringin records ADCoreVersion_RBV and
   DriverVersion_RBV.  These show the version of ADCore and of the driver or plugin that the IOC was
@@ -112,12 +142,6 @@ R2-6 (January XXX, 2017)
   Previously the plugin itself called startPVAServer, but this can result in the function 
   being called multiple times, which is not allowed.
 
-### NDPluginPos
-* Added NDPos.adl medm file.
-
-### pluginTests
-* Added ROIPluginWrapper.cpp to test the CollapseDims behavior in NDPluginROI.
-
 ### Viewers/ImageJ
 * Improvements to EPICS_AD_Viewer.java 
   * Automatically set the contrast when a new window is created. This eliminates the need to 
@@ -140,10 +164,6 @@ R2-6 (January XXX, 2017)
   for these transformations when defining the target object.  Chris Roehrig from the APS wrote an
   earlier version of this plugin.
 
-### NDPluginStats
-* Extensions to compute Centroid
-    * Added calucations of 3rd and 4th order image moments, this provides skewness and kurtosis.
-    * Added eccentricity and orientation calculations.
 
 R2-5 (October 28, 2016)
 ========================
