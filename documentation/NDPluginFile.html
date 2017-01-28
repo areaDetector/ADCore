@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugin NDPluginFile</h1>
     <h2>
-      October 7, 2014</h2>
+      January 28, 2017</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -123,6 +123,12 @@
     and adds the appropriate attributes to control which plugin saves each array. This
     would not be possible using a single plugin and EPICS PVs to switch the file, because
     of the problem of frames being buffered in the plugin queue.</p>
+  <p>
+    Normally files in Stream and Capture mode are automatically closed when the requested
+    number of frames have been collected, or when the Capture record is set back to
+    0. It is also possible to use an NDArray attribute to close the file. If the NDArray
+    contains an attribute named FilePluginClose and the attribute value is non-zero
+    then the current file will be closed.</p>
   <h2 id="Null">
     Null file plugin
   </h2>
