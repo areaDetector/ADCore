@@ -35,8 +35,20 @@
     NDFloat64. PIL cannot read NDInt8, NDUInt32, or NDFloat64.</p>
   <p>
     The TIFF plugin writes all NDAttributes attached to the NDArray as TIFF ASCII file
-    tags, up to a maximum of 490 tags. This information can be displayed, for example,
-    with the tiffinfo program:</p>
+    tags, up to a maximum of 490 tags. These tags start with number 65000. For historical
+    first 4 tags do not have labels. These are the following NDArray class members converted
+    to ASCII:
+  </p>
+  <ul>
+    <li>65000: timeStamp</li>
+    <li>65001: uniqueID</li>
+    <li>65002: epicsTS (seconds)</li>
+    <li>65003: epicsTS (nano-seconds)</li>
+  </ul>
+  <p>
+    Tags starting with 65004 are the NDAttributes in the NDArray converted to ASCII
+    with attribute name, followed by a colon and the attribute value. This information
+    can be displayed, for example, with the tiffinfo program:</p>
   <pre>
   >tiffinfo ~/scratch/test_001.tif
   TIFF Directory at offset 0x400008 (4194312)
