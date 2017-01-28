@@ -50,7 +50,7 @@ NDPluginSupport_DBD += NDPluginROIStat.dbd
 INC      += NDPluginROIStat.h
 LIB_SRCS += NDPluginROIStat.cpp
 
-DBD      += NDPluginStats.dbd
+NDPluginSupport_DBD += NDPluginStats.dbd
 INC      += NDPluginStats.h
 LIB_SRCS += NDPluginStats.cpp
 
@@ -58,7 +58,7 @@ NDPluginSupport_DBD += NDPluginStdArrays.dbd
 INC      += NDPluginStdArrays.h
 LIB_SRCS += NDPluginStdArrays.cpp
 
-DBD      += NDPluginTimeSeries.dbd
+NDPluginSupport_DBD += NDPluginTimeSeries.dbd
 INC      += NDPluginTimeSeries.h
 LIB_SRCS += NDPluginTimeSeries.cpp
 
