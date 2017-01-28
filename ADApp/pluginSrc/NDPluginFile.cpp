@@ -329,6 +329,7 @@ asynStatus NDPluginFile::writeFileBase()
                     setIntegerParam(NDFileWriteStatus, NDFileWriteError);
                     setStringParam(NDFileWriteMessage, errorMessage);
                 } else {
+                    status = this->attrFileCloseCheck();
                     if (!this->supportsMultipleArrays)
                         status = this->closeFileBase();
                 }
@@ -487,6 +488,33 @@ asynStatus NDPluginFile::doCapture(int capture)
     return(status);
 }
 
+/** Check whether an attribute asking the file to be closed has been set.
+ *  if the value of FILEPLUGIN_CLOSE attribute is set to 1 then close the file.
+ */
+asynStatus NDPluginFile::attrFileCloseCheck()
+{
+    asynStatus status = asynSuccess;
+    NDAttribute *NDattrFileClose;
+    int getStatus = 0;
+    int closeFile = 0;
+    NDattrFileClose = this->pArrays[0]->pAttributeList->find(FILEPLUGIN_CLOSE);
+    // Check for the existence of the parameter
+    if (NDattrFileClose != NULL) {
+        // Check NDAttribute value (0 = continue, anything else = close file)
+        getStatus = NDattrFileClose->getValue(NDAttrInt32, &closeFile);
+        if (getStatus == 0){
+            if (closeFile != 0){
+                // Force a file close
+                this->closeFileBase();
+                // We must also set the parameter to notify we have stopped capturing
+                setIntegerParam(NDFileCapture, 0);
+            }
+        } else {
+            status = asynError;
+        }
+    }
+    return status;
+}
 
 /** Check whether the attributes defining the filename has changed since last write.
  * If this is the first frame (NDFileNumCaptured == 1) then the file is opened.
