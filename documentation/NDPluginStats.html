@@ -10,7 +10,7 @@
     <h1>
       areaDetector Plugin NDPluginStats</h1>
     <h2>
-      October 1, 2012</h2>
+      January 28, 2017</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -484,12 +484,12 @@
         <td>
           r/o</td>
         <td>
-          Skewness X (symmetry) of the distribution above the centroid threshold, in
-          relation to the center of mass.
+          Skewness X (symmetry) of the distribution above the centroid threshold, in relation
+          to the center of mass.
           <ul>
-            <li> == 0, symmetric distribution </li>
-            <li> < 0, distribution assymetric to the left </li>
-            <li> > 0, distribution assymetric to the right </li>
+            <li>== 0, symmetric distribution </li>
+            <li>< 0, distribution assymetric to the left </li>
+            <li>> 0, distribution assymetric to the right </li>
           </ul>
         </td>
         <td>
@@ -508,12 +508,12 @@
         <td>
           r/o</td>
         <td>
-          Skewness Y (symmetry) of the distribution above the centroid threshold, in
-          relation to the center of mass.
+          Skewness Y (symmetry) of the distribution above the centroid threshold, in relation
+          to the center of mass.
           <ul>
-            <li> == 0, symmetric distribution </li>
-            <li> < 0, distribution assymetric to the top </li>
-            <li> > 0, distribution assymetric to the bottom </li>
+            <li>== 0, symmetric distribution </li>
+            <li>< 0, distribution assymetric to the top </li>
+            <li>> 0, distribution assymetric to the bottom </li>
           </ul>
         </td>
         <td>
@@ -534,9 +534,9 @@
         <td>
           Kurtosis X (flatness) of the distribution above the centroid threshold.
           <ul>
-            <li> == 0, Gaussian (normal) distribution </li>
-            <li> < 0, distribution flatter than normal  </li>
-            <li> > 0, distribution more peaky than normal </li>
+            <li>== 0, Gaussian (normal) distribution </li>
+            <li>< 0, distribution flatter than normal </li>
+            <li>> 0, distribution more peaky than normal </li>
           </ul>
         </td>
         <td>
@@ -557,9 +557,9 @@
         <td>
           Kurtosis Y (flatness) of the distribution above the centroid threshold.
           <ul>
-            <li> == 0, Gaussian (normal) distribution </li>
-            <li> < 0, distribution flatter than normal </li>
-            <li> > 0, distribution more peaky than normal </li>
+            <li>== 0, Gaussian (normal) distribution </li>
+            <li>< 0, distribution flatter than normal </li>
+            <li>> 0, distribution more peaky than normal </li>
           </ul>
         </td>
         <td>
@@ -568,7 +568,7 @@
           $(P)$(R)KurtosisY_RBV</td>
         <td>
           ai</td>
-      </tr> 
+      </tr>
       <tr>
         <td>
           NDPluginStats<br />
@@ -578,9 +578,8 @@
         <td>
           r/o</td>
         <td>
-          Eccentricity (Elongation), ratio of longest to shortest distance vectors from the objects centroid to its
-          boundaries.
-        </td>
+          Eccentricity (Elongation), ratio of longest to shortest distance vectors from the
+          objects centroid to its boundaries. </td>
         <td>
           ECCENTRICITY_VALUE</td>
         <td>
@@ -597,8 +596,8 @@
         <td>
           r/o</td>
         <td>
-          Orientation for elongated objects, orientation of the "long" direction with respext to horizontal (x axis).
-        </td>
+          Orientation for elongated objects, orientation of the "long" direction with respext
+          to horizontal (x axis). </td>
         <td>
           ORIENTATION_VALUE</td>
         <td>
@@ -1220,13 +1219,22 @@
     <img alt="NDTimeSeriesCentroidY.png" src="NDTimeSeriesCentroidY.png" />
   </div>
   <p>
-    The following MEDM screen shows all statistics as a function of time from the Stats5
-    plugin.
+    The following MEDM screen shows all of the basic statistics as a function of time
+    from the Stats5 plugin.
   </p>
   <div style="text-align: center">
     <h3>
-      NDTimeSeriesAll.adl</h3>
-    <img alt="NDTimeSeriesAll.png" src="NDTimeSeriesAll.png" />
+      NDStatsTimeSeriesBasicAll.adl</h3>
+    <img alt="NDStatsTimeSeriesBasicAll.png" src="NDStatsTimeSeriesBasicAll.png" />
+  </div>
+  <p>
+    The following MEDM screen shows all of the centroid statistics as a function of
+    time from the Stats5 plugin.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDStatsTimeSeriesCentroidAll.adl</h3>
+    <img alt="NDStatsTimeSeriesCentroidAll.png" src="NDStatsTimeSeriesCentroidAll.png" />
   </div>
 </body>
 </html>
