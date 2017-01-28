@@ -31,7 +31,7 @@
   </p>
   <ol>
     <li>Basic statistics: minimum, maximum, mean, sigma, total, and net (background subtracted).</li>
-    <li>Centroid and sigma values in the X and Y dimensions.</li>
+    <li>Centroid, sigma, skewness and kurtosis values in the X and Y dimensions.</li>
     <li>Profiles of the array in the X and Y dimensions. A total of 8 profiles are calculated:
       <ul>
         <li>The average profiles in the X and Y directions. </li>
@@ -373,6 +373,23 @@
       <tr>
         <td>
           NDPluginStats<br />
+          CentroidTotal</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Total mass, sum of all elements above the threshold.</td>
+        <td>
+          CENTROID_TOTAL</td>
+        <td>
+          $(P)$(R)CentroidTotal_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
           CentroidX</td>
         <td>
           asynFloat64</td>
@@ -455,6 +472,137 @@
           SIGMAXY_VALUE</td>
         <td>
           $(P)$(R)SigmaXY_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          SkewX</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Skewness X (symmetry) of the distribution above the centroid threshold, in
+          relation to the center of mass.
+          <ul>
+            <li> == 0, symmetric distribution </li>
+            <li> < 0, distribution assymetric to the left </li>
+            <li> > 0, distribution assymetric to the right </li>
+          </ul>
+        </td>
+        <td>
+          SKEWX_VALUE</td>
+        <td>
+          $(P)$(R)SkewX_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          SkewY</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Skewness Y (symmetry) of the distribution above the centroid threshold, in
+          relation to the center of mass.
+          <ul>
+            <li> == 0, symmetric distribution </li>
+            <li> < 0, distribution assymetric to the top </li>
+            <li> > 0, distribution assymetric to the bottom </li>
+          </ul>
+        </td>
+        <td>
+          SKEWY_VALUE</td>
+        <td>
+          $(P)$(R)SkewY_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          KurtosisX</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Kurtosis X (flatness) of the distribution above the centroid threshold.
+          <ul>
+            <li> == 0, Gaussian (normal) distribution </li>
+            <li> < 0, distribution flatter than normal  </li>
+            <li> > 0, distribution more peaky than normal </li>
+          </ul>
+        </td>
+        <td>
+          KURTOSISX_VALUE</td>
+        <td>
+          $(P)$(R)KurtosisX_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          KurtosisY</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Kurtosis Y (flatness) of the distribution above the centroid threshold.
+          <ul>
+            <li> == 0, Gaussian (normal) distribution </li>
+            <li> < 0, distribution flatter than normal </li>
+            <li> > 0, distribution more peaky than normal </li>
+          </ul>
+        </td>
+        <td>
+          KURTOSISY_VALUE</td>
+        <td>
+          $(P)$(R)KurtosisY_RBV</td>
+        <td>
+          ai</td>
+      </tr> 
+      <tr>
+        <td>
+          NDPluginStats<br />
+          Eccentricity</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Eccentricity (Elongation), ratio of longest to shortest distance vectors from the objects centroid to its
+          boundaries.
+        </td>
+        <td>
+          ECCENTRICITY_VALUE</td>
+        <td>
+          $(P)$(R)Eccentricity_RBV</td>
+        <td>
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginStats<br />
+          Orientation</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/o</td>
+        <td>
+          Orientation for elongated objects, orientation of the "long" direction with respext to horizontal (x axis).
+        </td>
+        <td>
+          ORIENTATION_VALUE</td>
+        <td>
+          $(P)$(R)Orientation_RBV</td>
         <td>
           ai</td>
       </tr>
@@ -609,11 +757,18 @@
             <li>TS_SIGMA_VALUE</li>
             <li>TS_TOTAL</li>
             <li>TS_NET</li>
+            <li>TS_CENTROIDTOTAL_VALUE</li>
             <li>TS_CENTROIDX_VALUE</li>
             <li>TS_CENTROIDY_VALUE</li>
             <li>TS_SIGMAX_VALUE</li>
             <li>TS_SIGMAY_VALUE</li>
             <li>TS_SIGMAXY_VALUE</li>
+            <li>TS_SKEWX_VALUE</li>
+            <li>TS_SKEWY_VALUE</li>
+            <li>TS_KURTOSISX_VALUE</li>
+            <li>TS_KURTOSISY_VALUE</li>
+            <li>TS_ECCENTRICITY_VALUE</li>
+            <li>TS_ORIENTATION_VALUE</li>
           </ul>
         </td>
         <td>

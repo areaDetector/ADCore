@@ -211,6 +211,7 @@ record(ao, "$(P)$(R)CentroidThreshold")
     field(VAL,  "1")
     info(autosaveFields, "VAL")
 }
+
 record(ai, "$(P)$(R)CentroidThreshold_RBV")
 {
     field(DTYP, "asynFloat64")
@@ -219,10 +220,11 @@ record(ai, "$(P)$(R)CentroidThreshold_RBV")
     field(SCAN, "I/O Intr")
 }
 
-record(ao, "$(P)$(R)CentroidX")
+record(ai, "$(P)$(R)CentroidTotal_RBV")
 {
-   field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CENTROIDX_VALUE")
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CENTROID_TOTAL")
+    field(SCAN, "I/O Intr")
 }
 
 record(ai, "$(P)$(R)CentroidX_RBV")
@@ -233,24 +235,12 @@ record(ai, "$(P)$(R)CentroidX_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(ao, "$(P)$(R)CentroidY")
-{
-   field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CENTROIDY_VALUE")
-}
-
 record(ai, "$(P)$(R)CentroidY_RBV")
 {
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CENTROIDY_VALUE")
    field(PREC, "1")
    field(SCAN, "I/O Intr")
-}
-
-record(ao, "$(P)$(R)SigmaX")
-{
-   field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIGMAX_VALUE")
 }
 
 record(ai, "$(P)$(R)SigmaX_RBV")
@@ -261,12 +251,6 @@ record(ai, "$(P)$(R)SigmaX_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(ao, "$(P)$(R)SigmaY")
-{
-   field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIGMAY_VALUE")
-}
-
 record(ai, "$(P)$(R)SigmaY_RBV")
 {
    field(DTYP, "asynFloat64")
@@ -275,16 +259,58 @@ record(ai, "$(P)$(R)SigmaY_RBV")
    field(SCAN, "I/O Intr")
 }
 
-record(ao, "$(P)$(R)SigmaXY")
-{
-   field(DTYP, "asynFloat64")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIGMAXY_VALUE")
-}
-
 record(ai, "$(P)$(R)SigmaXY_RBV")
 {
    field(DTYP, "asynFloat64")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SIGMAXY_VALUE")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)SkewX_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SKEWX_VALUE")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)SkewY_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SKEWY_VALUE")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)KurtosisX_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KURTOSISX_VALUE")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)KurtosisY_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))KURTOSISY_VALUE")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)Eccentricity_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ECCENTRICITY_VALUE")
+   field(PREC, "3")
+   field(SCAN, "I/O Intr")
+}
+
+record(ai, "$(P)$(R)Orientation_RBV")
+{
+   field(DTYP, "asynFloat64")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ORIENTATION_VALUE")
    field(PREC, "3")
    field(SCAN, "I/O Intr")
 }
@@ -436,6 +462,15 @@ record(waveform, "$(P)$(R)TSNet")
    field(SCAN, "I/O Intr")
 }
 
+record(waveform, "$(P)$(R)TSCentroidTotal")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_CENTROIDTOTAL_VALUE")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
+
 record(waveform, "$(P)$(R)TSCentroidX")
 {
    field(DTYP, "asynFloat64ArrayIn")
@@ -476,6 +511,60 @@ record(waveform, "$(P)$(R)TSSigmaXY")
 {
    field(DTYP, "asynFloat64ArrayIn")
    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_SIGMAXY_VALUE")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)TSSkewX")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_SKEWX_VALUE")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)TSSkewY")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_SKEWY_VALUE")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)TSKurtosisX")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_KURTOSISX_VALUE")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)TSKurtosisY")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_KURTOSISY_VALUE")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)TSEccentricity")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_ECCENTRICITY_VALUE")
+   field(NELM, "$(NCHANS)")
+   field(FTVL, "DOUBLE")
+   field(SCAN, "I/O Intr")
+}
+
+record(waveform, "$(P)$(R)TSOrientation")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_ORIENTATION_VALUE")
    field(NELM, "$(NCHANS)")
    field(FTVL, "DOUBLE")
    field(SCAN, "I/O Intr")
