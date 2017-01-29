@@ -62,7 +62,7 @@ R2-6 (January XXX, 2017)
   overlay, or by CenterX and CenterY, which define the location of the center of the overlay.
   If CenterX/Y is changed then PositionX/Y will automatically update, and vice-versa.
 * Changed the meaning of SizeX and SizeY for the Cross overlay shape.  Previously the total size
-  of a Cross overlay was SizeX*2 and SizeY*2.  It is now SizeX and SizeY.  This makes it consistent
+  of a Cross overlay was SizeX\*2 and SizeY\*2.  It is now SizeX and SizeY.  This makes it consistent
   with the Rectangle and Overlay shapes, i.e. drawing each of these shapes with the same PositionX
   and SizeX/Y will result in shapes that overlap in the expected manner.
 * Slightly changed the meaning of SizeX/Y for the Cross and Rectangle shapes.  Previously the total
