@@ -38,8 +38,8 @@ R2-6 (January XXX, 2017)
 * Build this file in Makefile, remove from source so it is easier to maintain correctly.
 
 ### NDPluginROI
-* Added CollapseDims to optionally collapse (remove) output array dimensions whose value is
-  1.  For example an output array that would normally have dimensions [1, 256, 256] would be
+* Added CollapseDims to optionally collapse (remove) output array dimensions whose value is 1.
+  For example an output array that would normally have dimensions [1, 256, 256] would be
   [256, 256] if CollapseDims=Enable.
   
 ### pluginTests
