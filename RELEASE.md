@@ -93,6 +93,7 @@ R2-6 (January XXX, 2017)
   to the TIFFTAG_IMAGEDESCRIPTION tag in the TIFF file.  Note that it will also be written to a user
   tag in the TIFF file, as with all other NDAttributes.  This is OK because some data processing code
   may expect to find the information in one location or the other.
+* Added documentation on how the plugin writes NDAttributes to the TIFF file.
 
 ### NDAttribute
 * Removed the line `#define MAX_ATTRIBUTE_STRING_SIZE 256` from NDAttribute.h because it creates the
