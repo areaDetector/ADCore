@@ -28,6 +28,11 @@
 #define MAX(A,B) (A)>(B)?(A):(B)
 #define MIN(A,B) (A)<(B)?(A):(B)
 
+/* Some systems do not define M_PI in math.h */
+#ifndef M_PI
+  #define M_PI 3.14159265358979323846
+#endif
+
 static const char *driverName="NDPluginStats";
 
 template <typename epicsType>
