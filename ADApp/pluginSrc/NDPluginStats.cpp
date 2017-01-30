@@ -279,8 +279,9 @@ asynStatus NDPluginStats::doComputeCentroidT(NDArray *pArray)
         /* Calculate orientation and eccentricity */
         this->orientation = 0.5 * atan2((2.0 * mu11), (mu20 - mu02));
         /* Orientation in degrees*/
-        this->orientation = orientation * 180 / M_PI;
-        this->eccentricity = (pow(mu20 - mu02, 2.0) + 4.0 * mu11 * mu11 ) / M00;
+        this->orientation  = orientation * 180 / M_PI;
+        this->eccentricity = ((mu20 - mu02) * (mu20 - mu02) - 4 * mu11 * mu11) /
+                             ((mu20 + mu02) * (mu20 + mu02));
     }
     this->lock();
     return(asynSuccess);
