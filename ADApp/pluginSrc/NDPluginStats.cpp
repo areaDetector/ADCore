@@ -277,9 +277,9 @@ asynStatus NDPluginStats::doComputeCentroidT(NDArray *pArray)
             this->kurtosisY = (mu04 / (M00 * pow(varY, 2.0))) - 3.0;
         }
         /* Calculate orientation and eccentricity */
-        this->orientation = 0.5 * atan2((2.0 * mu11), (mu20 - mu02));
+        this->orientation = 0.5 * atan2((2.0 * varXY), (varX - varY));
         /* Orientation in degrees*/
-        this->orientation  = orientation * 180 / M_PI;
+        this->orientation  = this->orientation * 180 / M_PI;
         this->eccentricity = ((mu20 - mu02) * (mu20 - mu02) - 4 * mu11 * mu11) /
                              ((mu20 + mu02) * (mu20 + mu02));
     }
