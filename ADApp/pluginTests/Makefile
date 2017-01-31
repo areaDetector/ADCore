@@ -64,6 +64,7 @@ ifeq ($(WITH_BOOST),YES)
 endif
 
 ifeq ($(WITH_HDF5),YES)
+  USR_INCLUDES += $(HDF5_INCLUDE)
   PROD += test_SWMR_works
   PROD += test_SWMR_fail
   PROD += test_SWMR_fail_min
