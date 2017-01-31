@@ -165,6 +165,9 @@ R2-6 (January XXX, 2017)
   for these transformations when defining the target object.  Chris Roehrig from the APS wrote an
   earlier version of this plugin.
 
+### Dependencies
+* This release requires asyn R4-31 or later because it uses new features in asynPortDriver.
+
 
 R2-5 (October 28, 2016)
 ========================
