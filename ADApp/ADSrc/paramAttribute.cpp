@@ -146,7 +146,7 @@ int paramAttribute::updateValue()
         default:
             break;
     }
-    if (status) {
+    if (status && status != asynParamUndefined) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s: ERROR reading parameter attribute value, name=%s, source=%s, type=%d\n",
             driverName, functionName, this->getName(), this->getSource(), this->paramType);
