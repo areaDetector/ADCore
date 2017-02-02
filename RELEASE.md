@@ -23,6 +23,9 @@ R2-6 (January XXX, 2017)
 ========================
 
 ### NDPluginDriver, NDPluginBase.template, NDPluginBase.adl
+* If blockCallbacks is non-zero in constructor then it no longer creates a processing thread.
+  This saves resources if the plugin will only be used in blocking mode.  If the plugin is changed
+  to non-blocking mode at runtime then the thread will be created then.
 * Added new parameter NDPluginExecutionTime and new ai record ExecutionTime_RBV.  This gives the execution
   time in ms the last time the plugin ran.  It works both with BlockingCallbacks=Yes and No.  It is very
   convenient for measuring the performance of the plugin without having to run the detector at high
