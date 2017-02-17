@@ -2,6 +2,7 @@
 #define NDPluginOverlay_H
 
 #include <vector>
+#include <algorithm>
 #include "NDPluginDriver.h"
 
 typedef enum {
