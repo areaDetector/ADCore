@@ -796,6 +796,34 @@ record(ai, "$(P)$(R)HistMax_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(longout, "$(P)$(R)HistBelow")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_BELOW")
+}
+
+record(longin, "$(P)$(R)HistBelow_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_BELOW")
+   field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)HistAbove")
+{
+   field(PINI, "YES")
+   field(DTYP, "asynInt32")
+   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_ABOVE")
+}
+
+record(longin, "$(P)$(R)HistAbove_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_ABOVE")
+   field(SCAN, "I/O Intr")
+}
+
 record(ao, "$(P)$(R)HistEntropy")
 {
    field(DTYP, "asynFloat64")
