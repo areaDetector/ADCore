@@ -78,14 +78,14 @@ R2-6 (February XXX, 2017)
   * Added calculations of 3rd and 4th order image moments, this provides skewness and kurtosis.
   * Added eccentricity and orientation calculations.
 * Changed Histogram.
-  * Previously the documentation stated that all pixels with values less than or equal to HistMin will 
+  * Previously the documentation stated that all values less than or equal to HistMin will 
     be in the first bin of the histogram, and all values greater than or equal to histMax will 
-    be in last bin of the histogram.  This was never actually implemented; pixels outside the range
+    be in last bin of the histogram.  This was never actually implemented; values outside the range
     HistMin:HistMax were not included in the histogram at all.
   * Rather than change the code to be consistent with the documentation two new records were added,
-    HistBelow and HistAbove.  HistBelow contains the number of pixels with values less than HistMin,
-    while HistAbove contains the number of pixels with values greater than HistMax.  This was done
-    because adding a large number of pixels to the first and last bins of the histogram would change
+    HistBelow and HistAbove.  HistBelow contains the number of values less than HistMin,
+    while HistAbove contains the number of values greater than HistMax.  This was done
+    because adding a large number of values to the first and last bins of the histogram would change
     the entropy calculation, and also make histogram plots hard to scale nicely.
 
 ### NDPluginPos
