@@ -57,10 +57,17 @@ asynStatus NDPluginStats::doComputeHistogramT(NDArray *pArray)
     nElements = arrayInfo.nElements;
     scale = this->histogramSize / (histMax - histMin);
 
+    this->histBelow = 0;
+    this->histAbove = 0;
     for (i=0; i<nElements; i++) {
         value = (double)pData[i];
         bin = (int)(((value - histMin) * scale) + 0.5);
-        if ((bin >= 0) && (bin < (int)this->histogramSize)) this->histogram[bin]++;
+        if ((bin < 0) || (value < histMin))
+            this->histBelow++;
+        else if ((bin > this->histogramSize-1) || (value > histMax))
+            this->histAbove++;
+        else 
+            this->histogram[bin]++;
     }
 
     entropy = 0;
@@ -592,6 +599,8 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
         getDoubleParam (NDPluginStatsHistMax,  &this->histMax);
         doComputeHistogram(pArray);
         setDoubleParam(NDPluginStatsHistEntropy, this->histEntropy);
+        setIntegerParam(NDPluginStatsHistBelow, this->histBelow);
+        setIntegerParam(NDPluginStatsHistAbove, this->histAbove);
         doCallbacksFloat64Array(this->histogram, this->histogramSize, NDPluginStatsHistArray, 0);
     }
     
@@ -887,6 +896,8 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
     createParam(NDPluginStatsHistSizeString,          asynParamInt32,         &NDPluginStatsHistSize);
     createParam(NDPluginStatsHistMinString,           asynParamFloat64,       &NDPluginStatsHistMin);
     createParam(NDPluginStatsHistMaxString,           asynParamFloat64,       &NDPluginStatsHistMax);
+    createParam(NDPluginStatsHistBelowString,         asynParamInt32,         &NDPluginStatsHistBelow);
+    createParam(NDPluginStatsHistAboveString,         asynParamInt32,         &NDPluginStatsHistAbove);
     createParam(NDPluginStatsHistEntropyString,       asynParamFloat64,       &NDPluginStatsHistEntropy);
     createParam(NDPluginStatsHistArrayString,         asynParamFloat64Array,  &NDPluginStatsHistArray);
 
