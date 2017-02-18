@@ -24,7 +24,9 @@ ifeq ($(WITH_BOOST),YES)
     ADTestUtility_SRCS += HDF5PluginWrapper.cpp
     ADTestUtility_SRCS += HDF5FileReader.cpp
   endif
-  ADTestUtility_SRCS += PosPluginWrapper.cpp
+  ifeq ($(WITH_XML2),YES)
+    ADTestUtility_SRCS += PosPluginWrapper.cpp
+  endif
   ADTestUtility_SRCS += TimeSeriesPluginWrapper.cpp
   ADTestUtility_SRCS += FFTPluginWrapper.cpp
   ADTestUtility_SRCS += ROIPluginWrapper.cpp
@@ -39,7 +41,9 @@ ifeq ($(WITH_BOOST),YES)
     plugin-test_SRCS += test_NDFileHDF5AttributeDataset.cpp
     plugin-test_SRCS += test_NDFileHDF5ExtraDimensions.cpp
   endif
-  plugin-test_SRCS += test_NDPosPlugin.cpp
+  ifeq ($(WITH_XML2),YES)
+    plugin-test_SRCS += test_NDPosPlugin.cpp
+  endif
   plugin-test_SRCS += test_NDPluginTimeSeries.cpp
   plugin-test_SRCS += test_NDPluginFFT.cpp
   plugin-test_SRCS += test_NDPluginROI.cpp
