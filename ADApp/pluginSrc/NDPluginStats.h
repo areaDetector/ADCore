@@ -141,6 +141,8 @@ typedef enum {
 #define NDPluginStatsHistSizeString           "HIST_SIZE"           /* (asynInt32,        r/w) Number of elements in histogram */
 #define NDPluginStatsHistMinString            "HIST_MIN"            /* (asynFloat64,      r/w) Minimum value for histogram */
 #define NDPluginStatsHistMaxString            "HIST_MAX"            /* (asynFloat64,      r/w) Maximum value for histogram */
+#define NDPluginStatsHistBelowString          "HIST_BELOW"          /* (asynInt32,        r/o) Number of pixels below minimum */
+#define NDPluginStatsHistAboveString          "HIST_ABOVE"          /* (asynInt32,        r/o) Number of pixels above maximum */
 #define NDPluginStatsHistEntropyString        "HIST_ENTROPY"        /* (asynFloat64,      r/o) Image entropy calculcated from histogram */
 #define NDPluginStatsHistArrayString          "HIST_ARRAY"          /* (asynFloat64Array, r/o) Histogram array */
 
@@ -254,6 +256,8 @@ protected:
     int NDPluginStatsHistSize;
     int NDPluginStatsHistMin;
     int NDPluginStatsHistMax;
+    int NDPluginStatsHistBelow;
+    int NDPluginStatsHistAbove;
     int NDPluginStatsHistEntropy;
     int NDPluginStatsHistArray;
 
@@ -287,6 +291,8 @@ private:
     double *histogram;
     double histMin;
     double histMax;
+    epicsInt32 histBelow;
+    epicsInt32 histAbove;
     double histEntropy;
     void doTimeSeriesCallbacks();
 };
