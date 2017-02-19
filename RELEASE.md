@@ -19,7 +19,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
-R2-6 (February XXX, 2017)
+R2-6 (February 19, 2017)
 ========================
 
 ### NDPluginDriver, NDPluginBase.template, NDPluginBase.adl
