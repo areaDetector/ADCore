@@ -66,6 +66,10 @@ NDPluginSupport_DBD += NDPluginTransform.dbd
 INC      += NDPluginTransform.h
 LIB_SRCS += NDPluginTransform.cpp
 
+NDPluginSupport_DBD += NDPluginAttrPlot.dbd
+INC      += NDPluginAttrPlot.h
+LIB_SRCS += NDPluginAttrPlot.cpp
+
 ifeq ($(WITH_XML2),YES)
   DBD      += NDPosPlugin.dbd
   INC      += NDPosPlugin.h

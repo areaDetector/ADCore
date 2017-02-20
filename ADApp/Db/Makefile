@@ -44,6 +44,9 @@ DB += NDStdArrays.template
 DB += NDTimeSeries.template
 DB += NDTimeSeriesN.template
 DB += NDTransform.template
+DB += NDAttrPlotAttr.template
+DB += NDAttrPlotData.template
+DB += NDAttrPlot.template
 
 #----------------------------------------------------
 # If <anyname>.db template is not named <anyname>*.template add
