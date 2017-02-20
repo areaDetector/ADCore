@@ -19,10 +19,13 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
-R2-6 (January XXX, 2017)
+R2-6 (February 19, 2017)
 ========================
 
 ### NDPluginDriver, NDPluginBase.template, NDPluginBase.adl
+* If blockCallbacks is non-zero in constructor then it no longer creates a processing thread.
+  This saves resources if the plugin will only be used in blocking mode.  If the plugin is changed
+  to non-blocking mode at runtime then the thread will be created then.
 * Added new parameter NDPluginExecutionTime and new ai record ExecutionTime_RBV.  This gives the execution
   time in ms the last time the plugin ran.  It works both with BlockingCallbacks=Yes and No.  It is very
   convenient for measuring the performance of the plugin without having to run the detector at high
@@ -38,8 +41,8 @@ R2-6 (January XXX, 2017)
 * Build this file in Makefile, remove from source so it is easier to maintain correctly.
 
 ### NDPluginROI
-* Added CollapseDims to optionally collapse (remove) output array dimensions whose value is
-  1.  For example an output array that would normally have dimensions [1, 256, 256] would be
+* Added CollapseDims to optionally collapse (remove) output array dimensions whose value is 1.
+  For example an output array that would normally have dimensions [1, 256, 256] would be
   [256, 256] if CollapseDims=Enable.
   
 ### pluginTests
@@ -62,7 +65,7 @@ R2-6 (January XXX, 2017)
   overlay, or by CenterX and CenterY, which define the location of the center of the overlay.
   If CenterX/Y is changed then PositionX/Y will automatically update, and vice-versa.
 * Changed the meaning of SizeX and SizeY for the Cross overlay shape.  Previously the total size
-  of a Cross overlay was SizeX*2 and SizeY*2.  It is now SizeX and SizeY.  This makes it consistent
+  of a Cross overlay was SizeX\*2 and SizeY\*2.  It is now SizeX and SizeY.  This makes it consistent
   with the Rectangle and Overlay shapes, i.e. drawing each of these shapes with the same PositionX
   and SizeX/Y will result in shapes that overlap in the expected manner.
 * Slightly changed the meaning of SizeX/Y for the Cross and Rectangle shapes.  Previously the total
@@ -72,8 +75,18 @@ R2-6 (January XXX, 2017)
 
 ### NDPluginStats
 * Extensions to compute Centroid
-    * Added calucations of 3rd and 4th order image moments, this provides skewness and kurtosis.
-    * Added eccentricity and orientation calculations.
+  * Added calculations of 3rd and 4th order image moments, this provides skewness and kurtosis.
+  * Added eccentricity and orientation calculations.
+* Changed Histogram.
+  * Previously the documentation stated that all values less than or equal to HistMin will 
+    be in the first bin of the histogram, and all values greater than or equal to histMax will 
+    be in last bin of the histogram.  This was never actually implemented; values outside the range
+    HistMin:HistMax were not included in the histogram at all.
+  * Rather than change the code to be consistent with the documentation two new records were added,
+    HistBelow and HistAbove.  HistBelow contains the number of values less than HistMin,
+    while HistAbove contains the number of values greater than HistMax.  This was done
+    because adding a large number of values to the first and last bins of the histogram would change
+    the entropy calculation, and also make histogram plots hard to scale nicely.
 
 ### NDPluginPos
 * Added NDPos.adl medm file.
@@ -93,6 +106,7 @@ R2-6 (January XXX, 2017)
   to the TIFFTAG_IMAGEDESCRIPTION tag in the TIFF file.  Note that it will also be written to a user
   tag in the TIFF file, as with all other NDAttributes.  This is OK because some data processing code
   may expect to find the information in one location or the other.
+* Added documentation on how the plugin writes NDAttributes to the TIFF file.
 
 ### NDAttribute
 * Removed the line `#define MAX_ATTRIBUTE_STRING_SIZE 256` from NDAttribute.h because it creates the
@@ -163,6 +177,9 @@ R2-6 (January XXX, 2017)
   NDPluginROI plugin that changes the binning, size, and X/Y axes directions.  The plugin corrects
   for these transformations when defining the target object.  Chris Roehrig from the APS wrote an
   earlier version of this plugin.
+
+### Dependencies
+* This release requires asyn R4-31 or later because it uses new features in asynPortDriver.
 
 
 R2-5 (October 28, 2016)

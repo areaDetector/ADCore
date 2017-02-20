@@ -74,6 +74,7 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
 {
   int xmin, xmax, ymin, ymax, xcent, ycent, xsize, ysize, ix, iy, ii, jj, ib;
   int xwide, ywide, xwidemax_line, xwidemin_line;
+  std::vector<long>::iterator it;
   int nSteps;
   double theta, thetaStep;
   int rowOffset;
@@ -192,6 +193,11 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay)
             }
           }
         }
+        // There may be duplicate pixels in the address list.  
+        // We must remove them or the XOR draw mode won't work because the pixel will be set and then unset
+        std::sort(pOverlay->addressOffset.begin(), pOverlay->addressOffset.end());
+        it = std::unique(pOverlay->addressOffset.begin(), pOverlay->addressOffset.end());
+        pOverlay->addressOffset.resize(std::distance(pOverlay->addressOffset.begin(), it));
         break;
 
       case NDOverlayText:

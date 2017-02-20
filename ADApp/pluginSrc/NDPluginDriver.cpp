@@ -18,6 +18,7 @@
 #include <epicsThread.h>
 #include <epicsEvent.h>
 #include <epicsTime.h>
+#include <cantProceed.h>
 
 #include <asynDriver.h>
 
@@ -312,6 +313,25 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
     status = getAddress(pasynUser, &addr); if (status != asynSuccess) return(status);
 
+    /* If blocking callbacks are being disabled but the callback thread has
+     * not been created yet, create it here. */
+    if (function == NDPluginDriverBlockingCallbacks && !value && this->pThread == NULL) {
+        createCallbackThread();
+        /* If start() was already run, we also need to start the thread. */
+        if (this->pluginStarted) {
+            this->pThread->start();
+            this->unlock();
+            bool waited = this->pThreadStartedEvent->wait(2.0);
+            this->lock();
+            if (!waited) {
+                asynPrint(pasynUser, ASYN_TRACE_ERROR,
+                            "%s::%s timeout waiting for plugin thread start event\n",
+                            driverName, functionName);
+                return asynError;
+            }
+        }
+    }
+    
     /* Set the parameter in the parameter library. */
     status = (asynStatus) setIntegerParam(addr, function, value);
 
@@ -441,17 +461,23 @@ asynStatus NDPluginDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *value
 
 asynStatus NDPluginDriver::start(void)
 {
+  assert(!this->pluginStarted);
+  
   static const char *functionName = "start";
   asynStatus status = asynSuccess;
+  
+  this->pluginStarted = true;
 
-  this->pThread->start();
+  if (this->pThread != NULL) {
+    this->pThread->start();
 
-  // Wait for the thread to say its running
-  if (!this->pThreadStartedEvent->wait(2.0)) {
-    asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-    "%s::%s timeout waiting for plugin thread start event\n",
-    driverName, functionName);
-    status = asynError;
+    // Wait for the thread to say its running
+    if (!this->pThreadStartedEvent->wait(2.0)) {
+      asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+      "%s::%s timeout waiting for plugin thread start event\n",
+      driverName, functionName);
+      status = asynError;
+    }
   }
 
   return status;
@@ -460,6 +486,32 @@ asynStatus NDPluginDriver::start(void)
 void NDPluginDriver::run()
 {
   this->processTask();
+}
+
+void NDPluginDriver::createCallbackThread()
+{
+    assert(this->pThreadStartedEvent == NULL);
+    assert(this->pThread == NULL);
+    assert(this->msgQId == NULL);
+    
+    int queueSize;
+    getIntegerParam(NDPluginDriverQueueSize, &queueSize);
+    
+    /* Create the event. */
+    this->pThreadStartedEvent = new epicsEvent;
+    
+    /* Create the thread (but not start). */
+    char taskName[256];
+    strcpy(taskName, portName);
+    strcat(taskName, "_Plugin");
+    this->pThread = new epicsThread(*this, taskName, this->threadStackSize, epicsThreadPriorityMedium);
+    
+    /* Create the message queue for the input arrays */
+    this->msgQId = epicsMessageQueueCreate(queueSize, sizeof(NDArray*));
+    if (!this->msgQId) {
+        /* We don't handle memory errors above, so no point in handling this. */
+        cantProceed("NDPluginDriver::NDPluginDriver epicsMessageQueueCreate failure\n");
+    }
 }
 
 
@@ -497,20 +549,18 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
           interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynDrvUserMask,
           interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask,
           asynFlags, autoConnect, priority, stackSize),
+    pluginStarted(false),
+    pThreadStartedEvent(NULL),
+    pThread(NULL),
+    msgQId(NULL),
     newQueueSize_(0)    
 {
-    static const char *functionName = "NDPluginDriver";
-    char taskName[256];
     asynUser *pasynUser;
-    this->pThreadStartedEvent = new epicsEvent;
-
-    strcpy(taskName, portName);
-    strcat(taskName, "_Plugin");
+    
     /* We use the same stack size for our callback thread as for the port thread */
     if (stackSize <= 0) stackSize = epicsThreadGetStackSize(epicsThreadStackMedium);
-    this->pThread = new epicsThread(*this, taskName,
-                                    stackSize, epicsThreadPriorityMedium);
-
+    threadStackSize = stackSize;
+    
     lock();
     
     /* Initialize some members to 0 */
@@ -527,13 +577,6 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     this->pasynUserGenericPointer = pasynUser;
     this->pasynUserGenericPointer->reason = NDArrayData;
 
-    /* Create the message queue for the input arrays */
-    this->msgQId = epicsMessageQueueCreate(queueSize, sizeof(NDArray*));
-    if (!this->msgQId) {
-        printf("%s:%s: epicsMessageQueueCreate failure\n", driverName, functionName);
-        return;
-    }
-    
     createParam(NDPluginDriverArrayPortString,         asynParamOctet, &NDPluginDriverArrayPort);
     createParam(NDPluginDriverArrayAddrString,         asynParamInt32, &NDPluginDriverArrayAddr);
     createParam(NDPluginDriverPluginTypeString,        asynParamOctet, &NDPluginDriverPluginType);
@@ -556,6 +599,14 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     setIntegerParam(NDPluginDriverDroppedArrays, 0);
     setIntegerParam(NDPluginDriverQueueSize, queueSize);
     setIntegerParam(NDPluginDriverBlockingCallbacks, blockingCallbacks);
+    
+    /* Create the callback thread, unless blocking callbacks are disabled with
+     * the blockingCallbacks argument here. Even then, if they are enabled
+     * subsequently, we will create the thread then. */
+    if (!blockingCallbacks) {
+        createCallbackThread();
+    }
+    
     unlock();
 }
 
@@ -569,6 +620,7 @@ NDPluginDriver::~NDPluginDriver()
     epicsMessageQueueSendWithTimeout(this->msgQId, parr, sizeof(parr), 2.0);
     delete this->pThread; // The epicsThread destructor waits for the thread to return
     delete this->pThreadStartedEvent;
+    epicsMessageQueueDestroy(this->msgQId);
     delete parr;
   }
 }
