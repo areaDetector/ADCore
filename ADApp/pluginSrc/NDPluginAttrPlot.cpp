@@ -20,8 +20,10 @@ void ExposeDataTask::start() {
 }
 
 void ExposeDataTask::run() {
-    while(not stop_) {
+    while (not stop_) {
+        plugin_.lock();
         plugin_.callback_data();
+        plugin_.unlock();
         epicsThreadSleep(1.);
     }
 }
@@ -31,14 +33,14 @@ void ExposeDataTask::stop() {
 }
 
 NDPluginAttrPlot::NDPluginAttrPlot(const char * port, int n_attributes,
-        int cache_size, int n_data_blocks, const char * inPort, int inAddr,
-        int priority, int stackSize)
+        int cache_size, int n_data_blocks, const char * in_port, int in_addr,
+        int queue_size, int blocking_callbacks, int priority, int stackSize)
     : NDPluginDriver (
                 port,  // The name of the asyn port driver to be created
-                10000, // The number of NDArrays that the input queue
-                0,     // NDPluginDriverBlockingCallbacks flag
-                inPort,     // Source of NDArray callbacks - port
-                inAddr,     // Source of NDArray callbacks - address
+                queue_size, // The number of NDArrays that the input queue
+                blocking_callbacks, // NDPluginDriverBlockingCallbacks flag
+                in_port,     // Source of NDArray callbacks - port
+                in_addr,     // Source of NDArray callbacks - address
                 std::max(n_attributes, n_data_blocks), // Max number of addresses
                 NUM_NDATTRPLOT_PARAMS, /* The number of parameters that
                                         * the class supports */
@@ -89,7 +91,6 @@ void NDPluginAttrPlot::start_expose() {
 }
 
 void NDPluginAttrPlot::callback_data() {
-    lock();
 
     size_t size = uids_.size();
     size_t cache_size = uids_.max_size();
@@ -117,7 +118,6 @@ void NDPluginAttrPlot::callback_data() {
     }
 
     delete[] tmp_arr;
-    unlock();
 }
 
 void NDPluginAttrPlot::processCallbacks(NDArray *pArray) {
@@ -274,21 +274,15 @@ asynStatus NDPluginAttrPlot::writeInt32(asynUser * pasynUser, epicsInt32 value)
         if (addr < 0 or static_cast<unsigned>(addr) >= n_data_blocks_) {
             return asynError;
         }
-        lock();
         if (value > 0 and static_cast<unsigned>(value) >= attributes_.size()) {
-            unlock();
             return asynError;
         }
         data_selections_[addr] = value;
         callback_selected();
-        unlock();
-
         callback_data();
         return asynSuccess;
     } else if (reason == NDAttrPlotReset) {
-        lock();
         reset_data();
-        unlock();
         return asynSuccess;
     }
 
@@ -306,10 +300,11 @@ static void initHooks(initHookState state) {
 }
 
 int NDAttrPlotConfig(const char * port, int n_attributes, int cache_size,
-        int n_selected_blocks, const char * inPort, int inAddr, int priority,
-        int stackSize) {
-    plugin = new NDPluginAttrPlot(port, n_attributes, cache_size, n_selected_blocks,
-            inPort, inAddr, priority, stackSize);
+        int n_selected_blocks, const char * in_port, int in_addr,
+        int queue_size, int blocking_callbacks, int priority, int stackSize) {
+    plugin = new NDPluginAttrPlot(port, n_attributes, cache_size,
+            n_selected_blocks, in_port, in_addr, queue_size, blocking_callbacks,
+            priority, stackSize);
     initHookRegister(initHooks);
 
     return asynSuccess;
@@ -321,6 +316,9 @@ static const iocshArg cacheSizeArg = {"Cache size", iocshArgInt};
 static const iocshArg nBlocksArg = {"Number of array blocks", iocshArgInt};
 static const iocshArg inPortArg = {"Input Port name", iocshArgString};
 static const iocshArg inAddrArg = {"Input address", iocshArgInt};
+static const iocshArg queueSizeArg = {"Queue size", iocshArgInt};
+static const iocshArg blockingCallbacksArg =
+        {"Uses blocking callbacks", iocshArgInt};
 static const iocshArg priorityArg = {"Thread priority", iocshArgInt};
 static const iocshArg stackSizeArg = {"Thread stack size", iocshArgInt};
 
@@ -330,16 +328,19 @@ static const iocshArg * const NDAttrPlotArgs[] = {&portArg,
                                                  &nBlocksArg,
                                                  &inPortArg,
                                                  &inAddrArg,
+                                                 &queueSizeArg,
+                                                 &blockingCallbacksArg,
                                                  &priorityArg,
                                                  &stackSizeArg};
 
 static const iocshFuncDef NDAttrPlotCallConfig =
-        {"NDAttrPlotConfig", 8, NDAttrPlotArgs};
+        {"NDAttrPlotConfig", 10, NDAttrPlotArgs};
 
 static void NDAttrPlotCallFunc(const iocshArgBuf * args)
 {
     NDAttrPlotConfig(args[0].sval, args[1].ival, args[2].ival, args[3].ival,
-            args[4].sval, args[5].ival, args[6].ival, args[7].ival);
+            args[4].sval, args[5].ival, args[6].ival, args[7].ival,
+            args[8].ival, args[9].ival);
 }
 
 static void NDAttrPlotRegister() {

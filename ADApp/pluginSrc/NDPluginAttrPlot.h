@@ -104,12 +104,14 @@ public:
      * \param max_selected Maximum number of selected Y1 attributes.
      * \param in_port Port from where the NDArrays are recieved.
      * \param in_addr Address from where the NDArrays are recieved.
+     * \param queue_size Size of the NDArray callback queue.
+     * \param blocking_callbacks Should blocking callbacks be used.
      * \param priority Priority of the internal thread.
      * \param stackSize Stack size for the internal thread.
      */
     NDPluginAttrPlot(const char * port, int max_attributes, int cache_size,
-            int max_selected, const char * in_port, int in_addr,
-            int priority, int stackSize);
+            int max_selected, const char * in_port, int in_addr, int queue_size,
+            int blocking_callbacks, int priority, int stackSize);
 
     /**
      * \brief Starts the data exposure task.
