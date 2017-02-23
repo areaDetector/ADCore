@@ -51,7 +51,7 @@ public class EPICS_AD_Viewer implements PlugIn
     Channel ch_colorMode;
     Channel ch_image;
     Channel ch_image_id;
-    volatile int UniqueId;
+    volatile int ArrayCounter;
 
     JFrame frame;
 
@@ -173,7 +173,7 @@ public class EPICS_AD_Viewer implements PlugIn
     {
         ImageProcessor ip = img.getProcessor();
         if (ip == null) return;
-        ImagePlus imgcopy = new ImagePlus(PVPrefix + ":" + UniqueId, ip.duplicate());
+        ImagePlus imgcopy = new ImagePlus(PVPrefix + ":" + ArrayCounter, ip.duplicate());
         imgcopy.show();
     }
 
@@ -202,10 +202,10 @@ public class EPICS_AD_Viewer implements PlugIn
             ch_nz = createEPICSChannel(PVPrefix + "ArraySize2_RBV");
             ch_colorMode = createEPICSChannel(PVPrefix + "ColorMode_RBV");
             ch_image = createEPICSChannel(PVPrefix + "ArrayData");
-            ch_image_id = createEPICSChannel(PVPrefix + "UniqueId_RBV");
+            ch_image_id = createEPICSChannel(PVPrefix + "ArrayCounter_RBV");
             ch_image_id.addMonitor(
                 Monitor.VALUE,
-                new newUniqueIdCallback()
+                new newArrayCounterCallback()
                 );
             ctxt.flushIO();
             checkConnections();
@@ -285,7 +285,7 @@ public class EPICS_AD_Viewer implements PlugIn
         return (ch);
     }
 
-    public class newUniqueIdCallback implements MonitorListener
+    public class newArrayCounterCallback implements MonitorListener
     {
         public void monitorChanged(MonitorEvent ev)
         {
@@ -293,7 +293,7 @@ public class EPICS_AD_Viewer implements PlugIn
                 IJ.log("Monitor callback");
             isNewImageAvailable = true;
             DBR_Int x = (DBR_Int)ev.getDBR();
-            UniqueId = (x.getIntValue())[0];
+            ArrayCounter = (x.getIntValue())[0];
             synchronized (EPICS_AD_Viewer.this) {
                 EPICS_AD_Viewer.this.notify();
             }
@@ -434,10 +434,10 @@ public class EPICS_AD_Viewer implements PlugIn
             if (isNewStack)
             {
                 imageStack = new ImageStack(img.getWidth(), img.getHeight());
-                imageStack.addSlice(PVPrefix + UniqueId, img.getProcessor());
+                imageStack.addSlice(PVPrefix + ArrayCounter, img.getProcessor());
                 // Note: we need to add this first slice twice in order to get the slider bar 
                 // on the window - ImageJ won't put it there if there is only 1 slice.
-                imageStack.addSlice(PVPrefix + UniqueId, img.getProcessor());
+                imageStack.addSlice(PVPrefix + ArrayCounter, img.getProcessor());
                 img.close();
                 img = new ImagePlus(PVPrefix, imageStack);
                 img.show();
@@ -510,7 +510,7 @@ public class EPICS_AD_Viewer implements PlugIn
 
             if (isSaveToStack)
             {
-                img.getStack().addSlice(PVPrefix + UniqueId, img.getProcessor().duplicate());
+                img.getStack().addSlice(PVPrefix + ArrayCounter, img.getProcessor().duplicate());
             }
             img.setSlice(img.getNSlices());
             img.show();
