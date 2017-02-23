@@ -89,6 +89,4 @@ private:
                                       *  Used to check against changes in incoming frames dimensions or datatype */
 };
 
-#define NUM_NDPLUGIN_FILE_PARAMS 0
-    
 #endif
