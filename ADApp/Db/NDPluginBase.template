@@ -114,6 +114,17 @@ record(ai, "$(P)$(R)ExecutionTime_RBV")
 }
 
 ###################################################################
+#  This record requests that the plugin execute again with the    #
+#  same NDArray                                                   #
+###################################################################
+record(bo, "$(P)$(R)ProcessPlugin")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PROCESS_PLUGIN")
+    field(VAL,  "1")
+}
+
+###################################################################
 #  These records control whether callbacks block or not           #
 ###################################################################
 record(bo, "$(P)$(R)BlockingCallbacks")
