@@ -74,8 +74,8 @@ static const char *driverName="NDPluginDriver";
     }
     // Save a pointer to the input array for use by ProcessPlugin
     if (pInputArray_) pInputArray_->release();
-    pInputArray_ = pArray;
     pArray->reserve();
+    pInputArray_ = pArray;
 }
 
 extern "C" {static void driverCallback(void *drvPvt, asynUser *pasynUser, void *genericPointer)
@@ -315,7 +315,8 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
     asynStatus status = asynSuccess;
     static const char* functionName = "writeInt32";
 
-    status = getAddress(pasynUser, &addr); if (status != asynSuccess) return(status);
+    status = getAddress(pasynUser, &addr); 
+    if (status != asynSuccess) goto done;
 
     /* If blocking callbacks are being disabled but the callback thread has
      * not been created yet, create it here. */
@@ -331,13 +332,14 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
                 asynPrint(pasynUser, ASYN_TRACE_ERROR,
                             "%s::%s timeout waiting for plugin thread start event\n",
                             driverName, functionName);
-                return asynError;
+                goto done;
             }
         }
     }
     
     /* Set the parameter in the parameter library. */
     status = (asynStatus) setIntegerParam(addr, function, value);
+    if (status != asynSuccess) goto done;
 
     if (function == NDPluginDriverEnableCallbacks) {
         if (value) {  
@@ -347,23 +349,37 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
                 this->unlock();
                 status = setArrayInterrupt(1);
                 this->lock();
+                if (status != asynSuccess) goto done;
             }
         } else {
             if (this->connectedToArrayPort) {
                 this->unlock();
                 status = setArrayInterrupt(0);
                 this->lock();
+                if (status != asynSuccess) goto done;
+            }
+            // Release the input NDArray
+            if (pInputArray_) {
+                pInputArray_->release();
+                pInputArray_ = 0;
             }
         }
     } else if (function == NDPluginDriverArrayAddr) {
         this->unlock();
         status = connectToArrayPort();
         this->lock();
+        if (status != asynSuccess) goto done;
     } else if (function == NDPluginDriverQueueSize) {
         newQueueSize_ = value;
     } else if (function == NDPluginDriverProcessPlugin) {
         if (pInputArray_) {
             driverCallback(pasynUserSelf, pInputArray_);
+        } else {
+            asynPrint(pasynUser, ASYN_TRACE_ERROR, 
+                "%s::%s cannot do ProcessPlugin, no input array cached\n", 
+                driverName, functionName);
+            status = asynError;
+            goto done;
         }
     } else {
         /* If this parameter belongs to a base class call its method */
@@ -371,16 +387,17 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
             status = asynNDArrayDriver::writeInt32(pasynUser, value);
     }
     
+    done:
     /* Do callbacks so higher layers see any changes */
     callParamCallbacks(addr);
     
     if (status) 
         asynPrint(pasynUser, ASYN_TRACE_ERROR, 
-              "%s:%s: function=%d, value=%d, connectedToArrayPort=%d\n", 
-              driverName, functionName, function, value, this->connectedToArrayPort);
+              "%s::%s ERROR, status=%d, function=%d, value=%d, connectedToArrayPort=%d\n", 
+              driverName, functionName, status, function, value, this->connectedToArrayPort);
     else        
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, value=%d, connectedToArrayPort=%d\n", 
+              "%s::%s function=%d, value=%d, connectedToArrayPort=%d\n", 
               driverName, functionName, function, value, connectedToArrayPort);
     return status;
 }
