@@ -72,6 +72,10 @@ static const char *driverName="NDPluginDriver";
     if (dimsChanged) {
         doCallbacksInt32Array(this->dimsPrev, ND_ARRAY_MAX_DIMS, NDDimensions, 0);
     }
+    // Save a pointer to the input array for use by ProcessPlugin
+    if (pInputArray_) pInputArray_->release();
+    pInputArray_ = pArray;
+    pArray->reserve();
 }
 
 extern "C" {static void driverCallback(void *drvPvt, asynUser *pasynUser, void *genericPointer)
@@ -357,7 +361,11 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
         this->lock();
     } else if (function == NDPluginDriverQueueSize) {
         newQueueSize_ = value;
-     } else {
+    } else if (function == NDPluginDriverProcessPlugin) {
+        if (pInputArray_) {
+            driverCallback(pasynUserSelf, pInputArray_);
+        }
+    } else {
         /* If this parameter belongs to a base class call its method */
         if (function < FIRST_NDPLUGIN_PARAM) 
             status = asynNDArrayDriver::writeInt32(pasynUser, value);
@@ -528,7 +536,7 @@ void NDPluginDriver::createCallbackThread()
   * \param[in] NDArrayPort Name of asyn port driver for initial source of NDArray callbacks.
   * \param[in] NDArrayAddr asyn port driver address for initial source of NDArray callbacks.
   * \param[in] maxAddr The maximum  number of asyn addr addresses this driver supports. 1 is minimum.
-  * \param[in] numParams The number of parameters that the derived class supports.
+  * \param[in] numParams The number of parameters that the derived class supports. No longer used.
   * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is 
   *            allowed to allocate. Set this to -1 to allow an unlimited number of buffers.
   * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
@@ -545,7 +553,7 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
                                int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
                                int asynFlags, int autoConnect, int priority, int stackSize)
 
-    : asynNDArrayDriver(portName, maxAddr, numParams+NUM_NDPLUGIN_PARAMS, maxBuffers, maxMemory,
+    : asynNDArrayDriver(portName, maxAddr, 0, maxBuffers, maxMemory,
           interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynDrvUserMask,
           interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask,
           asynFlags, autoConnect, priority, stackSize),
@@ -553,7 +561,8 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     pThreadStartedEvent(NULL),
     pThread(NULL),
     msgQId(NULL),
-    newQueueSize_(0)    
+    newQueueSize_(0),
+    pInputArray_(0)    
 {
     asynUser *pasynUser;
     
@@ -585,6 +594,7 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     createParam(NDPluginDriverQueueFreeString,         asynParamInt32, &NDPluginDriverQueueFree);
     createParam(NDPluginDriverEnableCallbacksString,   asynParamInt32, &NDPluginDriverEnableCallbacks);
     createParam(NDPluginDriverBlockingCallbacksString, asynParamInt32, &NDPluginDriverBlockingCallbacks);
+    createParam(NDPluginDriverProcessPluginString,     asynParamInt32, &NDPluginDriverProcessPlugin);
     createParam(NDPluginDriverExecutionTimeString,     asynParamFloat64, &NDPluginDriverExecutionTime);
     createParam(NDPluginDriverMinCallbackTimeString,   asynParamFloat64, &NDPluginDriverMinCallbackTime);
 
