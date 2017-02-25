@@ -874,7 +874,7 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
         }
     } else {
         /* This was not a parameter that this driver understands, try the base class */
-        if (function <= LAST_NDPLUGIN_PARAM) status = NDPluginDriver::writeInt32(pasynUser, value);
+        status = NDPluginDriver::writeInt32(pasynUser, value);
     }
     
     /* Do callbacks so higher layers see any changes */
@@ -921,6 +921,7 @@ asynStatus NDPluginFile::writeNDArray(asynUser *pasynUser, void *genericPointer)
   * \param[in] NDArrayAddr asyn port driver address for initial source of NDArray callbacks.
   * \param[in] maxAddr The maximum  number of asyn addr addresses this driver supports. 1 is minimum.
   * \param[in] numParams The number of parameters supported by the derived class calling this constructor.
+  *            No longer used.
   * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is 
   *            allowed to allocate. Set this to -1 to allow an unlimited number of buffers.
   * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
@@ -942,7 +943,7 @@ NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCall
      * This driver can block (because writing a file can be slow), and it is not multi-device.  
      * Set autoconnect to 1.  priority and stacksize can be 0, which will use defaults. */
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
-                     NDArrayPort, NDArrayAddr, maxAddr, numParams+NUM_NDPLUGIN_FILE_PARAMS, maxBuffers, maxMemory, 
+                     NDArrayPort, NDArrayAddr, maxAddr, 0, maxBuffers, maxMemory, 
                      asynGenericPointerMask, asynGenericPointerMask,
                      asynFlags, autoConnect, priority, stackSize),
     pCapture(NULL), captureBufferSize(0)

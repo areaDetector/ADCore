@@ -300,6 +300,28 @@
       <tr>
         <td>
           NDPluginDriver<br />
+          ProcessPlugin</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          NDPluginDriver maintains a pointer to the last NDArray that the plugin received.
+          If the ProcessPlugin record is processed then the plugin runs again using this same
+          NDArray. This can be used to change the plugin parameters and observe the effects
+          on downstream plugins and image viewers without requiring the underlying detector
+          to collect another NDArray. When the plugin is disabled the cached NDArray is released
+          back to the NDArrayPool.</td>
+        <td>
+          PROCESS_PLUGIN</td>
+        <td>
+          $(P)$(R)ProcessPlugin</td>
+        <td>
+          bo</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriver<br />
           ExecutionTime</td>
         <td>
           asynFloat64</td>
@@ -368,12 +390,11 @@
         <td>
           N/A</td>
         <td>
-          <td>
-            N/A</td>
-          <td>
-            $(P)$(R)AsynIO</td>
-          <td>
-            asyn</td>
+          N/A</td>
+        <td>
+          $(P)$(R)AsynIO</td>
+        <td>
+          asyn</td>
       </tr>
     </tbody>
   </table>

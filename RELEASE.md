@@ -19,6 +19,29 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
+R2-7 (March XXX, 2017)
+======================
+
+### NDPluginDriver, NDPluginBase.template, NDPluginBase.adl
+* Added new parameter NDPluginProcessPlugin and new bo record ProcessPlugin.  NDPlugDriver now stores
+  the last NDArray it receives.  If the ProcessPlugin record is processed then the plugin will execute
+  again with this last NDArray.  This allows modifying plugin behaviour and observing the results
+  without required the underlying detector to collect another NDArray.  If the plugin is disabled then
+  the NDArray is released and returned to the pool.
+
+### Viewers/ImageJ/EPICS_AD_Viewer.java 
+* Previously this ImageJ plugin monitored the UniqueId_RBV PV in the NDPluginStdArrays plugin, 
+  and read the new image from this plugin when UniqueId_RBV changed.  
+  However, this does not work correctly with the new ProcessPlugin feature in NDPluginDriver, 
+  because that does not increment the UniqueId.
+  EPICS_AD_Viewer.java was changed so that it now monitors the ArrayCounter_RBV PV in NDPluginStdArrays
+  rather than UniqueId_RBV.  ArrayCounter_RBV will increment every time the plugin receives 
+  a new NDArray, which fixes the problem.  
+  Note that ArrayCounter_RBV will also change if the user manually changes ArrayCounter, for example by
+  setting it back to 0.  This will also cause ImageJ to display the image, when it would not have done 
+  so previously.  This should not be a problem.
+
+
 R2-6 (February 19, 2017)
 ========================
 
