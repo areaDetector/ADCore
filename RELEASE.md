@@ -23,10 +23,10 @@ R2-7 (March XXX, 2017)
 ======================
 
 ### NDPluginDriver, NDPluginBase.template, NDPluginBase.adl
-* Added new parameter NDPluginProcessPlugin and new bo record ProcessPlugin.  NDPlugDriver now stores
+* Added new parameter NDPluginProcessPlugin and new bo record ProcessPlugin.  NDPluginDriver now stores
   the last NDArray it receives.  If the ProcessPlugin record is processed then the plugin will execute
   again with this last NDArray.  This allows modifying plugin behaviour and observing the results
-  without required the underlying detector to collect another NDArray.  If the plugin is disabled then
+  without requiring the underlying detector to collect another NDArray.  If the plugin is disabled then
   the NDArray is released and returned to the pool.
 
 ### Viewers/ImageJ/EPICS_AD_Viewer.java 
