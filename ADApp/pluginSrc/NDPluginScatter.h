@@ -6,7 +6,7 @@
 /* General parameters */
 #define NDPluginScatterMethodString          "SCATTER_METHOD"            /* (asynInt32,        r/w) Algorithm for scatter */
 
-/** Extract an Attribute from an NDArray and publish the value (and array of values) over channel access.  */
+/** A plugin that does callbacks in round-robin fashion rather than passing every NDArray to every callback client  */
 class epicsShareClass NDPluginScatter : public NDPluginDriver {
 public:
     NDPluginScatter(const char *portName, int queueSize, int blockingCallbacks, 
