@@ -322,7 +322,16 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
     asynStatus status = asynSuccess;
     static const char* functionName = "writeInt32";
 
+    /* If this parameter belongs to a base class call its method */
+    if (function < FIRST_NDPLUGIN_PARAM) {
+        return asynNDArrayDriver::writeInt32(pasynUser, value);
+    }
+
     status = getAddress(pasynUser, &addr); 
+    if (status != asynSuccess) goto done;
+
+    /* Set the parameter in the parameter library. */
+    status = (asynStatus) setIntegerParam(addr, function, value);
     if (status != asynSuccess) goto done;
 
     /* If blocking callbacks are being disabled but the callback thread has
@@ -344,10 +353,6 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
         }
     }
     
-    /* Set the parameter in the parameter library. */
-    status = (asynStatus) setIntegerParam(addr, function, value);
-    if (status != asynSuccess) goto done;
-
     if (function == NDPluginDriverEnableCallbacks) {
         if (value) {  
             if (this->connectedToArrayPort) {
@@ -371,13 +376,16 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
                 pInputArray_ = 0;
             }
         }
+
     } else if (function == NDPluginDriverArrayAddr) {
         this->unlock();
         status = connectToArrayPort();
         this->lock();
         if (status != asynSuccess) goto done;
+
     } else if (function == NDPluginDriverQueueSize) {
         newQueueSize_ = value;
+
     } else if (function == NDPluginDriverProcessPlugin) {
         if (pInputArray_) {
             driverCallback(pasynUserSelf, pInputArray_);
@@ -388,10 +396,6 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
             status = asynError;
             goto done;
         }
-    } else {
-        /* If this parameter belongs to a base class call its method */
-        if (function < FIRST_NDPLUGIN_PARAM) 
-            status = asynNDArrayDriver::writeInt32(pasynUser, value);
     }
     
     done:
