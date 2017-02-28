@@ -39,6 +39,7 @@ DB += NDROI.template
 DB += NDROIStat.template
 DB += NDROIStatN.template
 DB += NDROIStat8.template
+DB += NDScatter.template
 DB += NDStats.template
 DB += NDStdArrays.template
 DB += NDTimeSeries.template
