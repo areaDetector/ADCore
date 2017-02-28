@@ -32,6 +32,10 @@ INC      += NDPluginFFT.h
 LIB_SRCS += NDPluginFFT.cpp
 LIB_SRCS += fft.c
 
+NDPluginSupport_DBD += NDPluginGather.dbd
+INC      += NDPluginGather.h
+LIB_SRCS += NDPluginGather.cpp
+
 NDPluginSupport_DBD += NDPluginOverlay.dbd
 INC      += NDPluginOverlay.h
 INC      += NDPluginOverlayTextFont.h
