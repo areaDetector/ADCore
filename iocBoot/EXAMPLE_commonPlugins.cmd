@@ -48,6 +48,10 @@ dbLoadRecords("NDROIStatN.template",  "P=$(PREFIX),R=ROIStat1:8:,PORT=ROISTAT1,A
 NDProcessConfigure("PROC1", $(QSIZE), 0, "$(PORT)", 0, 0, 0)
 dbLoadRecords("NDProcess.template",   "P=$(PREFIX),R=Proc1:,  PORT=PROC1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
 
+# Create a scatter plugin
+NDScatterConfigure("SCATTER1", $(QSIZE), 0, "$(PORT)", 0, 0, 0)
+dbLoadRecords("NDScatter.template",   "P=$(PREFIX),R=Scatter1:,  PORT=SCATTER1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
+
 # Create 5 statistics plugins
 NDStatsConfigure("STATS1", $(QSIZE), 0, "$(PORT)", 0, 0, 0)
 dbLoadRecords("NDStats.template",     "P=$(PREFIX),R=Stats1:,  PORT=STATS1,ADDR=0,TIMEOUT=1,HIST_SIZE=256,XSIZE=$(XSIZE),YSIZE=$(YSIZE),NCHANS=$(NCHANS),NDARRAY_PORT=$(PORT)")
