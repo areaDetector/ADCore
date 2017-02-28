@@ -50,6 +50,10 @@ NDPluginSupport_DBD += NDPluginROIStat.dbd
 INC      += NDPluginROIStat.h
 LIB_SRCS += NDPluginROIStat.cpp
 
+NDPluginSupport_DBD += NDPluginScatter.dbd
+INC      += NDPluginScatter.h
+LIB_SRCS += NDPluginScatter.cpp
+
 NDPluginSupport_DBD += NDPluginStats.dbd
 INC      += NDPluginStats.h
 LIB_SRCS += NDPluginStats.cpp
