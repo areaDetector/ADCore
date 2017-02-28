@@ -102,6 +102,7 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
     int status=0;
     int blockingCallbacks;
     int arrayCounter, droppedArrays, queueSize, queueFree;
+    bool ignoreQueueFull = false;
     static const char *functionName = "driverCallback";
 
     this->lock();
@@ -113,7 +114,10 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
     epicsTimeGetCurrent(&tNow);
     deltaTime = epicsTimeDiffInSeconds(&tNow, &this->lastProcessTime);
 
-    if ((minCallbackTime == 0.) || (deltaTime > minCallbackTime)) {  
+    if ((minCallbackTime == 0.) || (deltaTime > minCallbackTime)) {
+        if (pasynUser->auxStatus == asynOverflow) ignoreQueueFull = true;
+        pasynUser->auxStatus = asynSuccess;
+        
         /* Time to process the next array */
         
         /* The callbacks can operate in 2 modes: blocking or non-blocking.
@@ -138,13 +142,16 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
             queueFree = queueSize - epicsMessageQueuePending(this->msgQId);
             setIntegerParam(NDPluginDriverQueueFree, queueFree);
             if (status) {
-                status |= getIntegerParam(NDArrayCounter, &arrayCounter);
-                status |= getIntegerParam(NDPluginDriverDroppedArrays, &droppedArrays);
-                asynPrint(pasynUser, ASYN_TRACE_FLOW, 
-                    "%s:%s message queue full, dropped array %d\n",
-                    driverName, functionName, arrayCounter);
-                droppedArrays++;
-                status |= setIntegerParam(NDPluginDriverDroppedArrays, droppedArrays);
+                pasynUser->auxStatus = asynOverflow;
+                if (!ignoreQueueFull) {
+                    status |= getIntegerParam(NDArrayCounter, &arrayCounter);
+                    status |= getIntegerParam(NDPluginDriverDroppedArrays, &droppedArrays);
+                    asynPrint(pasynUser, ASYN_TRACE_FLOW, 
+                        "%s:%s message queue full, dropped array %d\n",
+                        driverName, functionName, arrayCounter);
+                    droppedArrays++;
+                    status |= setIntegerParam(NDPluginDriverDroppedArrays, droppedArrays);
+                }
                 /* This buffer needs to be released */
                 pArray->release();
             }
