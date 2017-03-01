@@ -12,6 +12,7 @@
 #include <string>
 #include <list>
 #include <map>
+#include <vector>
 
 #include <epicsTypes.h>
 #include <epicsThread.h>
@@ -296,8 +297,6 @@ asynStatus NDPosPlugin::writeOctet(asynUser *pasynUser, const char *value, size_
   int addr=0;
   int function = pasynUser->reason;
   asynStatus status = asynSuccess;
-  char *fileName = new char[MAX_POS_STRING_LEN];
-  fileName[MAX_POS_STRING_LEN - 1] = '\0';
   const char *functionName = "writeOctet";
 
   status = getAddress(pasynUser, &addr); if (status != asynSuccess) return(status);
@@ -307,15 +306,18 @@ asynStatus NDPosPlugin::writeOctet(asynUser *pasynUser, const char *value, size_
 
   if (function == NDPos_Filename){
     // Read the filename parameter
-    getStringParam(NDPos_Filename, MAX_POS_STRING_LEN-1, fileName);
+    std::vector<char> fileName(MAX_POS_STRING_LEN);
+    getStringParam(NDPos_Filename, MAX_POS_STRING_LEN-1, &fileName[0]);
+    fileName[MAX_POS_STRING_LEN - 1] = '\0';
     // Now validate the XML
     NDPosPluginFileReader fr;
-    if (fr.validateXML(fileName) == asynSuccess){
+    if (fr.validateXML(&fileName[0]) == asynSuccess){
       setIntegerParam(NDPos_FileValid, 1);
     } else {
       setIntegerParam(NDPos_FileValid, 0);
       status = asynError;
     }
+
     // If the status of validation is OK then load the file
     if (status == asynSuccess){
       // Call the loadFile function
@@ -349,18 +351,18 @@ asynStatus NDPosPlugin::writeOctet(asynUser *pasynUser, const char *value, size_
 asynStatus NDPosPlugin::loadFile()
 {
   asynStatus status = asynSuccess;
-  char *fileName = new char[MAX_POS_STRING_LEN];
+  std::vector<char> fileName(MAX_POS_STRING_LEN);
   fileName[MAX_POS_STRING_LEN - 1] = '\0';
   int fileValid = 1;
 
   // Read the current filename and validity
-  getStringParam(NDPos_Filename, MAX_POS_STRING_LEN, fileName);
+  getStringParam(NDPos_Filename, MAX_POS_STRING_LEN, &fileName[0]);
   getIntegerParam(NDPos_FileValid, &fileValid);
 
   // If the file is valid then read in the file
   if (fileValid == 1){
     NDPosPluginFileReader fr;
-    fr.loadXML(fileName);
+    fr.loadXML(&fileName[0]);
     std::vector<std::map<std::string, double> > positions = fr.readPositions();
     positionArray.insert(positionArray.end(), positions.begin(), positions.end());
     setIntegerParam(NDPos_CurrentQty, positionArray.size());
