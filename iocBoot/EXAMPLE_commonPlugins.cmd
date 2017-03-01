@@ -52,6 +52,18 @@ dbLoadRecords("NDProcess.template",   "P=$(PREFIX),R=Proc1:,  PORT=PROC1,ADDR=0,
 NDScatterConfigure("SCATTER1", $(QSIZE), 0, "$(PORT)", 0, 0, 0)
 dbLoadRecords("NDScatter.template",   "P=$(PREFIX),R=Scatter1:,  PORT=SCATTER1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
 
+# Create a gather plugin with 8 ports
+NDGatherConfigure("GATHER1", $(QSIZE), 0, 8, 0, 0)
+dbLoadRecords("NDGather.template",   "P=$(PREFIX),R=Gather1:, PORT=GATHER1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
+dbLoadRecords("NDGatherN.template",   "P=$(PREFIX),R=Gather1:, N=1, PORT=GATHER1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
+dbLoadRecords("NDGatherN.template",   "P=$(PREFIX),R=Gather1:, N=2, PORT=GATHER1,ADDR=1,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
+dbLoadRecords("NDGatherN.template",   "P=$(PREFIX),R=Gather1:, N=3, PORT=GATHER1,ADDR=2,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
+dbLoadRecords("NDGatherN.template",   "P=$(PREFIX),R=Gather1:, N=4, PORT=GATHER1,ADDR=3,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
+dbLoadRecords("NDGatherN.template",   "P=$(PREFIX),R=Gather1:, N=5, PORT=GATHER1,ADDR=4,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
+dbLoadRecords("NDGatherN.template",   "P=$(PREFIX),R=Gather1:, N=6, PORT=GATHER1,ADDR=5,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
+dbLoadRecords("NDGatherN.template",   "P=$(PREFIX),R=Gather1:, N=7, PORT=GATHER1,ADDR=6,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
+dbLoadRecords("NDGatherN.template",   "P=$(PREFIX),R=Gather1:, N=8, PORT=GATHER1,ADDR=7,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
+
 # Create 5 statistics plugins
 NDStatsConfigure("STATS1", $(QSIZE), 0, "$(PORT)", 0, 0, 0)
 dbLoadRecords("NDStats.template",     "P=$(PREFIX),R=Stats1:,  PORT=STATS1,ADDR=0,TIMEOUT=1,HIST_SIZE=256,XSIZE=$(XSIZE),YSIZE=$(YSIZE),NCHANS=$(NCHANS),NDARRAY_PORT=$(PORT)")
