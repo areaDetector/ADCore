@@ -286,8 +286,8 @@ private:
     size_t cursorY;
     epicsInt32 *totalArray;
     epicsInt32 *netArray;
-    size_t histogramSize;
-    size_t histSizeNew;
+    int histogramSize;
+    int histSizeNew;
     double *histogram;
     double histMin;
     double histMax;
