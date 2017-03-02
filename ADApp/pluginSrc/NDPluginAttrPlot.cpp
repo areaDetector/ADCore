@@ -24,7 +24,7 @@ void ExposeDataTask::run() {
         plugin_.lock();
         plugin_.callback_data();
         plugin_.unlock();
-        epicsThreadSleep(1.);
+        epicsThreadSleep(ND_ATTRPLOT_DATA_EXPOSURE_PERIOD);
     }
 }
 
@@ -63,7 +63,7 @@ NDPluginAttrPlot::NDPluginAttrPlot(const char * port, int n_attributes,
       n_attributes_(n_attributes),
       attributes_(),
       n_data_blocks_(n_data_blocks),
-      data_selections_(n_data_blocks, NONE_INDEX),
+      data_selections_(n_data_blocks, ND_ATTRPLOT_NONE_INDEX),
       expose_task_(*this)
 {
     data_.reserve(n_attributes_);
@@ -99,14 +99,14 @@ void NDPluginAttrPlot::callback_data() {
     size_t n_copied;
     for (size_t i = 0; i < n_data_blocks_; ++i) {
         int selected = data_selections_[i];
-        if (selected == UID_INDEX) {
+        if (selected == ND_ATTRPLOT_UID_INDEX) {
             n_copied = uids_.copy_to_array(tmp_arr, size);
         } else if (selected >= 0 and
                 static_cast<unsigned>(selected) < data_.size()) {
             n_copied = data_[selected].copy_to_array(tmp_arr,
                     size);
         } else {
-            std::fill(tmp_arr, tmp_arr + size, 0);
+            std::fill(tmp_arr, tmp_arr + size, NAN);
             n_copied = size;
         }
         // To remove visual artifacts on EDM plots fill
@@ -147,8 +147,8 @@ void NDPluginAttrPlot::rebuild_attributes(NDAttributeList& attr_list) {
     std::vector<std::string> selections(n_data_blocks_);
     for (unsigned i = 0; i < n_data_blocks_; ++i) {
         int selection = data_selections_[i];
-        if (selection == UID_INDEX) {
-            selections[i] = UID_LABEL;
+        if (selection == ND_ATTRPLOT_UID_INDEX) {
+            selections[i] = ND_ATTRPLOT_UID_LABEL;
         } else if (selection >= 0 and
                 static_cast<unsigned>(selection) < attributes_.size()) {
             selections[i] = attributes_[selection];
@@ -178,8 +178,8 @@ void NDPluginAttrPlot::rebuild_attributes(NDAttributeList& attr_list) {
     std::sort(attributes_.begin(), attributes_.end());
 
     for (unsigned i = 0; i < n_data_blocks_; ++i) {
-        if (selections[i] == UID_LABEL) {
-            data_selections_[i] = UID_INDEX;
+        if (selections[i] == ND_ATTRPLOT_UID_LABEL) {
+            data_selections_[i] = ND_ATTRPLOT_UID_INDEX;
         } else {
             std::vector<std::string>::const_iterator attr_it =
                 std::find(attributes_.begin(), attributes_.end(),
@@ -187,7 +187,7 @@ void NDPluginAttrPlot::rebuild_attributes(NDAttributeList& attr_list) {
             if (attr_it != attributes_.end()) {
                 data_selections_[i] = attr_it - attributes_.begin();
             } else {
-                data_selections_[i] = NONE_INDEX;
+                data_selections_[i] = ND_ATTRPLOT_NONE_INDEX;
             }
         }
     }
@@ -220,14 +220,14 @@ void NDPluginAttrPlot::callback_attributes() {
 void NDPluginAttrPlot::callback_selected() {
     for (size_t i = 0; i < n_data_blocks_; i++) {
         int selected = data_selections_[i];
-        std::string attr = NONE_LABEL;
-        if (selected == UID_INDEX) {
-            attr = UID_LABEL;
+        std::string attr = ND_ATTRPLOT_NONE_LABEL;
+        if (selected == ND_ATTRPLOT_UID_INDEX) {
+            attr = ND_ATTRPLOT_UID_LABEL;
         } else if (selected >= 0 and
                 static_cast<size_t>(selected) < attributes_.size()) {
             attr = attributes_[selected];
         } else {
-            selected = NONE_INDEX;
+            selected = ND_ATTRPLOT_NONE_INDEX;
         }
         setStringParam(i, NDAttrPlotDataLabel, attr.c_str());
         setIntegerParam(i, NDAttrPlotDataSelect, selected);

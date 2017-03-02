@@ -102,8 +102,8 @@ double AsynPortClientContainer::readDouble(const std::string& paramName, int add
 
 std::string AsynPortClientContainer::readString(const std::string& paramName, int address)
 {
-  char value[MAX_PARAMETER_STRING_LENGTH];
-  int maxlen = MAX_PARAMETER_STRING_LENGTH;
+  const int maxlen = max_string_parameter_len;
+  char value[maxlen];
   size_t nRead = 0;
   int reason = 0;
   boost::shared_ptr<octetClientMap> mapPtr = getOctetMap(address);

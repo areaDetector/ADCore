@@ -67,7 +67,7 @@ INC      += NDPluginTransform.h
 LIB_SRCS += NDPluginTransform.cpp
 
 NDPluginSupport_DBD += NDPluginAttrPlot.dbd
-INC      += NDPluginAttrPlot.h
+INC      += NDPluginAttrPlot.h CircularBuffer.h
 LIB_SRCS += NDPluginAttrPlot.cpp
 
 ifeq ($(WITH_XML2),YES)

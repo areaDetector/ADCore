@@ -30,12 +30,12 @@
 #define NDAttrPlotResetString       "AP_Reset"
 #define NDAttrPlotNPtsString        "AP_NPts"
 
-#define UID_INDEX        -1
-#define UID_LABEL        "UID"
-#define NONE_INDEX       -2
-#define NONE_LABEL       "None"
+#define ND_ATTRPLOT_UID_INDEX        -1
+#define ND_ATTRPLOT_UID_LABEL        "UID"
+#define ND_ATTRPLOT_NONE_INDEX       -2
+#define ND_ATTRPLOT_NONE_LABEL       "None"
 
-#define DATA_EXPOSURE_PERIOD 1. // Data callback period in seconds
+#define ND_ATTRPLOT_DATA_EXPOSURE_PERIOD 1. // Data callback period in seconds
 
 class NDPluginAttrPlot;
 

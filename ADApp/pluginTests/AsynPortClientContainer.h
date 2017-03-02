@@ -16,14 +16,14 @@
 #include <asynPortClient.h>
 #include "AsynException.h"
 
-#define MAX_PARAMETER_STRING_LENGTH 1024
-
 typedef std::map<std::string, boost::shared_ptr<asynInt32Client> > int32ClientMap;
 typedef std::map<std::string, boost::shared_ptr<asynFloat64Client> > float64ClientMap;
 typedef std::map<std::string, boost::shared_ptr<asynOctetClient> > octetClientMap;
 
 class AsynPortClientContainer {
 public:
+    static const int max_string_parameter_len = 1024;
+
 	AsynPortClientContainer(const std::string& port);
 
 	virtual void write(const std::string& paramName, int value, int address=0);
@@ -49,7 +49,7 @@ private:
     boost::shared_ptr<float64ClientMap> getFloat64Map(int address);
     boost::shared_ptr<octetClientMap> getOctetMap(int address);
 
-    template<class T> boost::shared_ptr<T> processMap(std::vector<boost::shared_ptr<T> > Maps, int address)
+    template<class T> boost::shared_ptr<T> processMap(std::vector<boost::shared_ptr<T> >& Maps, int address)
     {
         boost::shared_ptr<T> mapPtr;
         // Check vector entry
