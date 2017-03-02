@@ -306,23 +306,26 @@ asynStatus NDPosPlugin::writeOctet(asynUser *pasynUser, const char *value, size_
 
   if (function == NDPos_Filename){
     // Read the filename parameter
-    std::vector<char> fileName(MAX_POS_STRING_LEN);
-    getStringParam(NDPos_Filename, MAX_POS_STRING_LEN-1, &fileName[0]);
-    fileName[MAX_POS_STRING_LEN - 1] = '\0';
+    std::string xml;
+    getStringParam(NDPos_Filename, xml);
     // Now validate the XML
     NDPosPluginFileReader fr;
-    if (fr.validateXML(&fileName[0]) == asynSuccess){
+    if (fr.validateXML(xml) == asynSuccess){
       setIntegerParam(NDPos_FileValid, 1);
+      NDPosPluginFileReader fr;
+       /* Read the filename and valid parameters
+       * then the positions are loaded and appended to the position set.
+       */
+      fr.loadXML(xml);
+      std::vector<std::map<std::string, double> > positions = fr.readPositions();
+      positionArray.insert(positionArray.end(), positions.begin(), positions.end());
+      setIntegerParam(NDPos_CurrentQty, positionArray.size());
+      callParamCallbacks();
     } else {
       setIntegerParam(NDPos_FileValid, 0);
       status = asynError;
     }
 
-    // If the status of validation is OK then load the file
-    if (status == asynSuccess){
-      // Call the loadFile function
-      status = loadFile();
-    }
   } else if (function < FIRST_NDPOS_PARAM){
     // If this parameter belongs to a base class call its method
     status = NDPluginDriver::writeOctet(pasynUser, value, nChars, nActual);
@@ -341,36 +344,6 @@ asynStatus NDPosPlugin::writeOctet(asynUser *pasynUser, const char *value, size_
               driverName, functionName, function, value);
   }
   *nActual = nChars;
-  return status;
-}
-
-/** Loads an XML position definition file.
-  * This function reads the filename and valid parameters and if the file is considered valid
-  * then the positions are loaded and appended to the position set.
-  */
-asynStatus NDPosPlugin::loadFile()
-{
-  asynStatus status = asynSuccess;
-  std::vector<char> fileName(MAX_POS_STRING_LEN);
-  fileName[MAX_POS_STRING_LEN - 1] = '\0';
-  int fileValid = 1;
-
-  // Read the current filename and validity
-  getStringParam(NDPos_Filename, MAX_POS_STRING_LEN, &fileName[0]);
-  getIntegerParam(NDPos_FileValid, &fileValid);
-
-  // If the file is valid then read in the file
-  if (fileValid == 1){
-    NDPosPluginFileReader fr;
-    fr.loadXML(&fileName[0]);
-    std::vector<std::map<std::string, double> > positions = fr.readPositions();
-    positionArray.insert(positionArray.end(), positions.begin(), positions.end());
-    setIntegerParam(NDPos_CurrentQty, positionArray.size());
-    callParamCallbacks();
-  } else {
-    status = asynError;
-  }
-
   return status;
 }
 
