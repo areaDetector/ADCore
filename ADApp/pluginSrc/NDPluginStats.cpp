@@ -276,13 +276,21 @@ asynStatus NDPluginStats::doComputeCentroidT(NDArray *pArray)
         /* Calculate sigmas */
         this->sigmaX = sqrt(varX);
         this->sigmaY = sqrt(varY);
+      
         if ((this->sigmaX != 0) && (this->sigmaY != 0)){
             this->sigmaXY = varXY / (this->sigmaX * this->sigmaY);
+        }
+       
+        if (varX != 0){
             this->skewX = mu30  / (M00 * pow(varX, 3.0/2.0));
-            this->skewY = mu03  / (M00 * pow(varY, 3.0/2.0));
             this->kurtosisX = (mu40 / (M00 * pow(varX, 2.0))) - 3.0;
+        }
+        
+        if (varY != 0){
+            this->skewY = mu03  / (M00 * pow(varY, 3.0/2.0));
             this->kurtosisY = (mu04 / (M00 * pow(varY, 2.0))) - 3.0;
         }
+        
         /* Calculate orientation and eccentricity */
         this->orientation = 0.5 * atan2((2.0 * varXY), (varX - varY));
         /* Orientation in degrees*/
