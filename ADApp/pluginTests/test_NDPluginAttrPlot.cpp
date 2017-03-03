@@ -10,9 +10,10 @@
 #include "NDPluginAttrPlot.h"
 #include "AttrPlotPluginWrapper.h"
 
+#include "epicsMutex.h"
+
 #include "boost/test/unit_test.hpp"
 
-// AD dependencies
 #include <NDPluginDriver.h>
 #include <NDArray.h>
 #include <NDAttribute.h>
@@ -27,10 +28,10 @@
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
+#include <cmath>
 
 #include "testingutilities.h"
 #include "AsynException.h"
-
 
 class NDArrayWrapper {
     public:
@@ -75,28 +76,77 @@ class NDArrayWrapper {
         NDArray* array_;
 };
 
+// Trying to read asynFloat64Array params fails if I try to get it directly via
+// asynFloat64ArrayClient::read. I'm not sure why but I'm now using this
+// interrupt setup as a workaround.
+class SynchronizedData {
+public:
+    SynchronizedData()
+        : mutex(),
+          is_ready(false),
+          data()
+    { }
+
+    std::vector<double> get_data()
+    {
+        double t_sleep = 0;
+        while (t_sleep < 1) {
+            mutex.lock();
+            if (is_ready) {
+                std::vector<double> result(data);
+                mutex.unlock();
+                return result;
+            }
+            mutex.unlock();
+            t_sleep += .1;
+            epicsThreadSleep(.1);
+        }
+        throw AsynException();
+    }
+
+    void set_data(const std::vector<double>& new_data)
+    {
+        mutex.lock();
+        data = new_data;
+        is_ready = true;
+        mutex.unlock();
+    }
+
+    void reset() {
+        mutex.lock();
+        is_ready = false;
+        mutex.unlock();
+    }
+
+private:
+    epicsMutex mutex;
+    bool is_ready;
+    std::vector<double> data;
+};
+
 struct AttrPlotPluginTestFixture
 {
     static const int cache_size = 10;
     static const int n_attributes = 3;
     static const int n_selected = 2;
     AttrPlotPluginWrapper* attrPlot;
+    std::string port;
 
     AttrPlotPluginTestFixture()
+        : port("TS")
     {
 
         // Asyn manager doesn't like it if we try to reuse the same port name for multiple drivers
         // (even if only one is ever instantiated at once), so we change it slightly for each test case.
-        std::string testport("TS");
-        uniqueAsynPortName(testport);
+        uniqueAsynPortName(port);
 
         // This is the plugin under test
         attrPlot = new AttrPlotPluginWrapper(
-                    testport, n_attributes, cache_size, n_selected,
+                    port, n_attributes, cache_size, n_selected,
                     "", 0);
 
         // Enable the plugin
-        attrPlot->start(); // start the plugin thread
+        attrPlot->start();
         attrPlot->write(NDPluginDriverEnableCallbacksString, 1);
         attrPlot->write(NDPluginDriverBlockingCallbacksString, 1);
     }
@@ -110,9 +160,22 @@ struct AttrPlotPluginTestFixture
 
 BOOST_FIXTURE_TEST_SUITE(AttrPlotPluginTests, AttrPlotPluginTestFixture)
 
+// Parts of workaround for not working asynFloat64ArrayClient::read
+SynchronizedData addr0Data;
+void addr0DataInterrupt(void *userPvt, asynUser *pasynUser, epicsFloat64* data, size_t nelms) {
+    std::vector<double> value;
+    for (size_t i = 0; i < nelms; ++i) {
+        value.push_back(data[i]);
+    }
+    addr0Data.set_data(value);
+}
+
 BOOST_AUTO_TEST_CASE(attrplot_attribute_data)
 {
     const std::string attr_name = "attribute";
+    // Register the callback to get the data
+    asynFloat64ArrayClient client = asynFloat64ArrayClient(port.c_str(), 0, NDAttrPlotDataString);
+    client.registerInterruptUser(addr0DataInterrupt);
 
     // Enable plugin
     BOOST_CHECK_NO_THROW(attrPlot->write(NDArrayCallbacksString, 1));
@@ -122,6 +185,10 @@ BOOST_AUTO_TEST_CASE(attrplot_attribute_data)
     std::vector<double> values;
     // Fill the cache with arrays with a single attribute
     for (int i = 0; i < cache_size * 2; ++i) {
+        // Reset the data container
+        addr0Data.reset();
+
+        // Send new NDArray
         double value = i*i;
         NDArrayWrapper wrap;
         wrap.set_uid(i).add_attr(attr_name, value);
@@ -141,8 +208,20 @@ BOOST_AUTO_TEST_CASE(attrplot_attribute_data)
         BOOST_CHECK_EQUAL(attrPlot->readInt("ARRAY_COUNTER"), array_count);
         BOOST_CHECK_EQUAL(attrPlot->readInt(NDAttrPlotNPtsString),
                 nPts);
+
         // Check that the data is OK
-        // TODO Need to extend the functionality of the AsynPortClientContainer
+        try {
+            std::vector<double> data = addr0Data.get_data();
+            BOOST_CHECK(data.size() <= static_cast<size_t>(cache_size));
+            for (int i = 0,
+                    j = array_count < cache_size ? 0 : array_count - cache_size;
+                    i < nPts; i++, j++) {
+                const double eps = 0.001;
+                BOOST_CHECK(fabs(data[i] - values[j]) < eps);
+            }
+        } catch (const AsynException& e) {
+            BOOST_FAIL("Exception thrown while trying to get data");
+        }
     }
 }
 
@@ -267,9 +346,10 @@ BOOST_AUTO_TEST_CASE(attrplot_reset_pv_write)
                 nPts);
     }
 
-    { // Send command to reset the plugin which must reset the plugin on next write
-        BOOST_CHECK_NO_THROW(attrPlot->write(NDAttrPlotResetString, 1));
+    // Send command to reset the plugin which must reset the plugin on next write
+    BOOST_CHECK_NO_THROW(attrPlot->write(NDAttrPlotResetString, 1));
 
+    {
         NDArrayWrapper wrap;
         wrap.set_uid(n_arrays);
 
@@ -277,8 +357,9 @@ BOOST_AUTO_TEST_CASE(attrplot_reset_pv_write)
         BOOST_CHECK_NO_THROW(attrPlot->processCallbacks(wrap.get()));
         attrPlot->unlock();
 
-        BOOST_CHECK_EQUAL(attrPlot->readInt(NDAttrPlotNPtsString), 1);
     }
+    // Ensure that only one array is recieved
+    BOOST_CHECK_EQUAL(attrPlot->readInt(NDAttrPlotNPtsString), 1);
 }
 
 BOOST_AUTO_TEST_CASE(attrplot_multiple_attributes)
