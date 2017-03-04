@@ -5,3 +5,55 @@
 # February 26, 2017
 
 include "NDPluginBase.template"
+
+record(ao, "$(P)$(R)SortTime") {
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GATHER_SORT_TIME")
+    field(PREC, "3")
+    field(VAL, "0.1")
+}
+
+record(ai, "$(P)$(R)SortTime_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GATHER_SORT_TIME")
+    field(PREC, "3")
+    field(SCAN, "I/O Intr")
+}
+
+record(mbbo, "$(P)$(R)SortMode") {
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GATHER_SORT_MODE")
+    field(ZRVL, "0")
+    field(ZRST, "Unsorted")
+    field(ONVL, "1")
+    field(ONST, "Sorted")
+}
+
+record(mbbi, "$(P)$(R)SortMode_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GATHER_SORT_MODE")
+    field(ZRVL, "0")
+    field(ZRST, "Unsorted")
+    field(ONVL, "1")
+    field(ONST, "Sorted")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)ListFree_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))GATHER_LIST_FREE")
+    field(LLSV, "MAJOR")
+    field(LSV,  "MINOR")
+    field(LOLO, "0")
+    field(HYST, "1")
+    field(SCAN, "I/O Intr")
+}
+
+record(calcout, "$(P)$(R)ListFreeLow") {
+    field(CALC, "A*0.25")
+    field(INPA, "$(P)$(R)QueueSize")
+    field(OUT,  "$(P)$(R)ListFree_RBV.LOW")
+}
+
