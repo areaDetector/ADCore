@@ -101,7 +101,7 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
     double minCallbackTime, deltaTime;
     int status=0;
     int blockingCallbacks;
-    int arrayCounter, droppedArrays, queueSize, queueFree;
+    int droppedArrays, queueSize, queueFree;
     bool ignoreQueueFull = false;
     static const char *functionName = "driverCallback";
 
@@ -144,11 +144,10 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
             if (status) {
                 pasynUser->auxStatus = asynOverflow;
                 if (!ignoreQueueFull) {
-                    status |= getIntegerParam(NDArrayCounter, &arrayCounter);
                     status |= getIntegerParam(NDPluginDriverDroppedArrays, &droppedArrays);
                     asynPrint(pasynUser, ASYN_TRACE_FLOW, 
-                        "%s:%s message queue full, dropped array %d\n",
-                        driverName, functionName, arrayCounter);
+                        "%s:%s message queue full, dropped array uniqueId=%d\n",
+                        driverName, functionName, pArray->uniqueId);
                     droppedArrays++;
                     status |= setIntegerParam(NDPluginDriverDroppedArrays, droppedArrays);
                 }
