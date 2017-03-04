@@ -8,6 +8,7 @@
  */
 
 #include <stdlib.h>
+#include <stdio.h>
 
 #include <epicsTypes.h>
 #include <iocsh.h>
@@ -18,7 +19,31 @@
 #include "NDPluginDriver.h"
 #include "NDPluginGather.h"
 
+// This class defines the object that is contained in the std::multilist for sorting output NDArrays
+// It contains a pointer to the NDArray and the time that the object was added to the list
+// It defines the < operator to use the NDArray::uniqueId field as the sort key
+class sortedListElement {
+    public:
+        sortedListElement(NDArray *pArray, epicsTimeStamp time);
+        friend bool operator<(const sortedListElement& lhs, const sortedListElement& rhs) {
+            return (lhs.pArray_->uniqueId < rhs.pArray_->uniqueId);
+        }
+        NDArray *pArray_;
+        epicsTimeStamp insertionTime_;
+};
+
+sortedListElement::sortedListElement(NDArray *pArray, epicsTimeStamp time)
+    : pArray_(pArray), insertionTime_(time) {}
+
+
 static const char *driverName="NDPluginGather";
+
+static void sortingTaskC(void *drvPvt)
+{
+    NDPluginGather *pPvt = (NDPluginGather *)drvPvt;
+
+    pPvt->sortingTask();
+}
 
 /** Constructor for NDPluginGather; most parameters are simply passed to NDPluginDriver::NDPluginDriver.
   *
@@ -44,17 +69,19 @@ NDPluginGather::NDPluginGather(const char *portName, int queueSize, int blocking
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
                    "", 0, maxPorts, 0, maxBuffers, maxMemory,
-                   asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
-                   asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
+                   asynInt32Mask | asynFloat64Mask | asynGenericPointerMask,
+                   asynInt32Mask | asynFloat64Mask | asynGenericPointerMask,
                    ASYN_MULTIDEVICE, 1, priority, stackSize),
     maxPorts_(maxPorts)
 {
     int i;
+    int status;
     NDGatherNDArraySource_t *pArraySrc;
+    static const char *functionName = "NDPluginGather";
 
-    //static const char *functionName = "NDPluginGather::NDPluginGather";
-
-    createParam(NDPluginGatherDummyString,         asynParamInt32,        &NDPluginGatherDummy);
+    createParam(NDPluginGatherSortModeString,   asynParamInt32,   &NDPluginGatherSortMode);
+    createParam(NDPluginGatherSortTimeString,   asynParamFloat64, &NDPluginGatherSortTime);
+    createParam(NDPluginGatherListFreeString,   asynParamInt32,   &NDPluginGatherListFree);
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginGather");
@@ -67,6 +94,17 @@ NDPluginGather::NDPluginGather(const char *portName, int queueSize, int blocking
         pArraySrc->pasynUserGenericPointer = pasynManager->createAsynUser(0, 0);
         pArraySrc->pasynUserGenericPointer->userPvt = this;
         pArraySrc->pasynUserGenericPointer->reason = NDArrayData;
+    }
+    /* Create the thread that outputs sorted NDArrays */
+    status = (epicsThreadCreate("NDGatherSortingTask",
+              epicsThreadPriorityMedium,
+              epicsThreadGetStackSize(epicsThreadStackMedium),
+              (EPICSTHREADFUNC)sortingTaskC,
+              this) == NULL);
+    if (status) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s::%s error creating sortingTask thread\n", 
+            driverName, functionName);
     }
 }
 
@@ -87,19 +125,18 @@ void NDPluginGather::processCallbacks(NDArray *pArray)
     * structures don't need to be protected. 
     */
     int arrayCallbacks;
-    static const char *functionName = "NDPluginGather::processCallbacks";
+    static const char *functionName = "processCallbacks";
 
     /* Call the base class method */
     NDPluginDriver::processCallbacks(pArray);
 
     getIntegerParam(NDArrayCallbacks, &arrayCallbacks);
     if (arrayCallbacks == 1) {
+        int callbacksSorted;
+        getIntegerParam(NDPluginGatherSortMode, &callbacksSorted);
         NDArray *pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 1);
         if (NULL != pArrayOut) {
             this->getAttributes(pArrayOut->pAttributeList);
-            this->unlock();
-            doCallbacksGenericPointer(pArrayOut, NDArrayData, 0);
-            this->lock();
             if (this->pArrays[0]) this->pArrays[0]->release();
             this->pArrays[0] = pArrayOut;
         }
@@ -107,8 +144,78 @@ void NDPluginGather::processCallbacks(NDArray *pArray)
             asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
                 "%s::%s: Couldn't allocate output array. Further processing terminated.\n", 
                 driverName, functionName);
+            return;
+        }
+        if (callbacksSorted) {
+            int queueSize;
+            int listSize = (int)sortedNDArrayList_.size();
+            getIntegerParam(NDPluginDriverQueueSize, &queueSize);
+            setIntegerParam(NDPluginGatherListFree, queueSize-listSize);
+            if ( listSize >= queueSize) {
+                int droppedArrays;
+                getIntegerParam(NDPluginDriverDroppedArrays, &droppedArrays);
+                asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
+                    "%s::%s std::multilist size exceeded, dropped array uniqueId=%d\n",
+                    driverName, functionName, pArray->uniqueId);
+                droppedArrays++;
+                setIntegerParam(NDPluginDriverDroppedArrays, droppedArrays);
+            } else {
+                epicsTimeStamp now;
+                epicsTimeGetCurrent(&now);
+                pArrayOut->reserve();
+                sortedListElement *pListElement = new sortedListElement(pArrayOut, now);
+                sortedNDArrayList_.insert(*pListElement);
+            }
+        } else {
+            this->unlock();
+            doCallbacksGenericPointer(pArrayOut, NDArrayData, 0);
+            this->lock();
         }
     }
+}
+
+void NDPluginGather::sortingTask()
+{
+    double sortTime;
+    epicsTimeStamp now;
+    int queueSize;
+    double deltaTime;
+    int prevUniqueId = -1000;
+    int listSize;
+    std::multiset<sortedListElement>::iterator pListElement;
+    static const char *functionName = "sortingTask";
+
+    lock();
+    while (1) {
+        getDoubleParam(NDPluginGatherSortTime, &sortTime);
+        unlock();
+        epicsThreadSleep(sortTime);
+        lock();
+        epicsTimeGetCurrent(&now);
+        getIntegerParam(NDPluginDriverQueueSize, &queueSize);
+        while ((listSize=(int)sortedNDArrayList_.size()) > 0) {
+            pListElement=sortedNDArrayList_.begin();
+            deltaTime = epicsTimeDiffInSeconds(&now, &pListElement->insertionTime_);
+            asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER, 
+                "%s::%s, deltaTime=%f, list size=%d, uniqueId=%d\n", 
+                driverName, functionName, deltaTime, listSize, pListElement->pArray_->uniqueId);
+            if ((pListElement->pArray_->uniqueId == prevUniqueId)   ||
+                (pListElement->pArray_->uniqueId == prevUniqueId+1) ||
+                (deltaTime > sortTime)) {
+                this->unlock();
+                doCallbacksGenericPointer(pListElement->pArray_, NDArrayData, 0);
+                this->lock();
+                prevUniqueId = pListElement->pArray_->uniqueId;
+                pListElement->pArray_->release();
+                sortedNDArrayList_.erase(pListElement);
+            } else  {
+                break;
+            }
+        }
+        listSize=(int)sortedNDArrayList_.size();
+        setIntegerParam(NDPluginGatherListFree, queueSize-listSize);
+        callParamCallbacks();
+    }    
 }
 
 
