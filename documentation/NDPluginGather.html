@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>areaDetector Plugin NDPluginGather</title>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+</head>
+<body>
+  <div style="text-align: center">
+    <h1>
+      areaDetector Plugin NDPluginGather</h1>
+    <h2>
+      March 4, 2017</h2>
+    <h2>
+      Mark Rivers</h2>
+    <h2>
+      University of Chicago</h2>
+  </div>
+  <h2>
+    Contents</h2>
+  <ul>
+    <li><a href="#Overview">Overview</a></li>
+    <li><a href="#Configuration">Configuration</a></li>
+    <li><a href="#Screens">Screen shots</a></li>
+    <li><a href="#Example">Detailed example</a></li>
+  </ul>
+  <h2 id="Overview">
+    Overview
+  </h2>
+  <p>
+    This plugin is used to gather NDArrays from multiple upstream plugins and merge
+    them into a single stream. When used together with <a href="NDPluginScatter.html">
+      NDPluginScatter</a> it allows multiple intances of a plugin to process NDArrays
+    in parallel, utilizing multiple cores to increase throughput.
+  </p>
+  <p>
+    This plugin works differently from other plugins that receive callbacks from upstream
+    plugins. Other plugins subscribe to NDArray callbacks from a single upstream plugin
+    or driver. NDPluginGather allows subscribing to callbacks from any number of upstream
+    plugins. It combines the NDArrays it receives into a single stream which it passes
+    to all downstream plugins. The example commonPlugins.cmd and medm files in ADCore
+    allow up to 8 upstream plugins, but this number can easily be changed by editing
+    the startup script and operator display file.</p>
+  <p>
+    When using NDPluginGather together with NDPluginScatter it is likely that the NDArrays
+    will be received slightly out of order, i.e. NDArray::uniqueId fields will not be
+    monotonically increasing. This is because the upstream plugin threads are running
+    asynchronously and at slightly different speeds.&nbsp; As a consequence a file plugin
+    downstream of NDPluginGather would write NDArrays to the file in the "wrong" order.
+    NDPluginGather has an option to sort the NDArrays by uniqueId to attempt to output
+    them in the correct order. This sorting option is enabled by setting SortMode=Sorted,
+    and works using the following algorithm:</p>
+  <ul>
+    <li>An std::multilist object is created to store the NDArray pointers as they are
+      received. It also stores the time at which each NDArray was received. This multilist
+      is automatically sorted by the uniqueId of each NDArray.</li>
+    <li>A worker thread is created which processes at the time interval specified by SortTime.
+      This thread outputs the next array (NDArray[N]) in the multilist if any of the following
+      are true:
+      <ul>
+        <li>NDArray[N].uniqueId = NDArray[N-1].uniqueId. This allows for the case where multiple
+          upstream plugins are processing the same NDArray, i.e. they did not all come from
+          NDPluginScatter.</li>
+        <li>NDArray[N].uniqueId = NDArray[N-1].uniqueId + 1. This is the normal case.</li>
+        <li>NDArray[N] has been in the multilist for longer than SortTime. This will be the
+          case if the next array that should have been output has not arrived, perhaps because
+          it has been dropped by some upstream plugin and will never arrive.&nbsp; Increasing
+          the SortTime will allow longer for out of order arrays to arrive, at the price of
+          more memory because the multilist will grow larger before outputting the arrays.</li>
+      </ul>
+    </li>
+  </ul>
+  <p>
+    When NDArrays are added to the multilist they have their reference count increased,
+    and so will still be consuming memory. The multilist is limited in size to the same
+    QueueSize that is specified for the normal plugin input queue. If the multilist
+    would grow larger than this because arrays are arriving faster than they are being
+    removed with the specified SortTime, then they will be dropped in the same manner
+    as when NDArrays are dropped from the normal input queue. Note that because NDArrays
+    can be stored in both the normal input queue and the multilist NDPluginGather can
+    consume twice as much memory as other plugins with the same QueueSize.</p>
+  <p>
+    NDPluginGather inherits from NDPluginDriver. NDPluginGather does not do any modification
+    to the NDArrays that it receives except for possibly adding new NDAttributes if
+    an attribute file is specified. The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_gather.html">
+      NDPluginGather class documentation</a> describes this class in detail.</p>
+  <h2 id="Configuration">
+    Configuration</h2>
+  <p>
+    The NDPluginGather plugin is created with the NDGatherConfigure command, either
+    from C/C++ or from the EPICS IOC shell.</p>
+  <pre>NDGatherConfigure (const char *portName, int queueSize, int blockingCallbacks, 
+                      const char *NDArrayPort, int NDArrayAddr, size_t maxMemory, 
+                      int priority, int stackSize)
+  </pre>
+  <p>
+    For details on the meaning of the parameters to this function refer to the detailed
+    documentation on the NDGatherConfigure function in the <a href="areaDetectorDoxygenHTML/_n_d_plugin_gather_8cpp.html">
+      NDPluginGather.cpp documentation</a> and in the documentation for the constructor
+    for the <a href="areaDetectorDoxygenHTML/class_n_d_plugin_gather.html">NDPluginGather
+      class</a>.
+  </p>
+  <h2 id="Screens">
+    Screen shots</h2>
+  <p>
+    The following is the MEDM screen that provides control of the NDNDPluginGather plugin.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDGather.adl</h3>
+    <p>
+      <img alt="NDGather.png" src="NDGather.png" /></p>
+  </div>
+</body>
+</html>
