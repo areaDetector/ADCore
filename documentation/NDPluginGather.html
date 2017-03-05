@@ -51,47 +51,187 @@
     them in the correct order. This sorting option is enabled by setting SortMode=Sorted,
     and works using the following algorithm:</p>
   <ul>
-    <li>An std::multilist object is created to store the NDArray pointers as they are
-      received. It also stores the time at which each NDArray was received. This multilist
-      is automatically sorted by the uniqueId of each NDArray.</li>
+    <li>An std::multiset object is created to store the NDArray pointers as they are received.
+      It also stores the time at which each NDArray was received. This multiset is automatically
+      sorted by the uniqueId of each NDArray.</li>
     <li>A worker thread is created which processes at the time interval specified by SortTime.
-      This thread outputs the next array (NDArray[N]) in the multilist if any of the following
+      This thread outputs the next array (NDArray[N]) in the multiset if any of the following
       are true:
       <ul>
         <li>NDArray[N].uniqueId = NDArray[N-1].uniqueId. This allows for the case where multiple
           upstream plugins are processing the same NDArray, i.e. they did not all come from
           NDPluginScatter.</li>
         <li>NDArray[N].uniqueId = NDArray[N-1].uniqueId + 1. This is the normal case.</li>
-        <li>NDArray[N] has been in the multilist for longer than SortTime. This will be the
+        <li>NDArray[N] has been in the multiset for longer than SortTime. This will be the
           case if the next array that should have been output has not arrived, perhaps because
           it has been dropped by some upstream plugin and will never arrive.&nbsp; Increasing
-          the SortTime will allow longer for out of order arrays to arrive, at the price of
-          more memory because the multilist will grow larger before outputting the arrays.</li>
+          the SortTime will allow longer for out of order arrays to arrive, at the expense
+          of more memory because the multiset will grow larger before outputting the arrays.</li>
       </ul>
     </li>
   </ul>
   <p>
-    When NDArrays are added to the multilist they have their reference count increased,
-    and so will still be consuming memory. The multilist is limited in size to the same
-    QueueSize that is specified for the normal plugin input queue. If the multilist
-    would grow larger than this because arrays are arriving faster than they are being
-    removed with the specified SortTime, then they will be dropped in the same manner
-    as when NDArrays are dropped from the normal input queue. Note that because NDArrays
-    can be stored in both the normal input queue and the multilist NDPluginGather can
-    consume twice as much memory as other plugins with the same QueueSize.</p>
+    When NDArrays are added to the multiset they have their reference count increased,
+    and so will still be consuming memory. The multiset is limited in size to the same
+    QueueSize that is specified for the normal plugin input queue. If the multiset would
+    grow larger than this because arrays are arriving faster than they are being removed
+    with the specified SortTime, then they will be dropped in the same manner as when
+    NDArrays are dropped from the normal input queue. Note that because NDArrays can
+    be stored in both the normal input queue and the multiset, NDPluginGather can consume
+    twice as much memory as other plugins with the same QueueSize.</p>
   <p>
     NDPluginGather inherits from NDPluginDriver. NDPluginGather does not do any modification
     to the NDArrays that it receives except for possibly adding new NDAttributes if
     an attribute file is specified. The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_gather.html">
       NDPluginGather class documentation</a> describes this class in detail.</p>
+  <p>
+    NDPluginGather.h defines the following parameters. It also implements all of the
+    standard plugin parameters from <a href="pluginDoc.html#NDPluginDriver">NDPluginDriver</a>.
+    It extends the standard NDPluginDriverArrayPort and NDPluginDriverArrayAddr parameters
+    by supporting more than one asyn address field for each, i.e. there can be multiple
+    NDArrayPort and NDArrayAddr records, each specifying a different upstream plugin.
+    There are 2 EPICS databases for the NDPluginGather plugin. NDGather.template provides
+    access to global parameters that are not specific to each input source. NDGatherN.template
+    provides access to the parameters for individual NDArray input source. Note that
+    to reduce the width of this table the parameter index variable names have been split
+    into 2 lines, but these are just a single name, for example <code>NDPluginGatherSortMode</code>.
+  </p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>Parameter Definitions in NDPluginDriver.h and NDPluginGather.h and EPICS Record
+            Definitions in NDGather.template and NDGatherN.template</b> </td>
+      </tr>
+      <tr>
+        <th>
+          Parameter index variable</th>
+        <th>
+          asyn interface</th>
+        <th>
+          Access</th>
+        <th>
+          Description</th>
+        <th>
+          drvInfo string</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          EPICS record type</th>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriver<br />
+          ArrayPort</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          asyn port name for NDArray driver that will make callbacks to this plugin. This
+          port can be changed at run time, connecting the plugin to a different NDArray driver.
+          There can be more than one such input port. The maximum is number is specified in
+          the NDGatherConfigure command in the startup script. </td>
+        <td>
+          NDARRAY_PORT</td>
+        <td>
+          $(P)$(R)NDArrayPort_[N]<br />
+          (P)$(R)NDArrayPort_[N]_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriver<br />
+          ArrayAddr</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          asyn port address for NDArray driver that will make callbacks to this plugin. This
+          address can be changed at run time, connecting the plugin to a different address
+          in the NDArray driver. There can be more than one such input port. The maximum is
+          number is specified in the NDGatherConfigure command in the startup script.</td>
+        <td>
+          NDARRAY_ADDR</td>
+        <td>
+          $(P)$(R)NDArrayAddress_[N]<br />
+          $(P)$(R)NDArrayAddress_[N]_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginGather<br />
+          SortMode</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Selects whether the plugin outputs NDArrays in the order in which they arrive (Unsorted)
+          or sorted by UniqueId (Sorted).</td>
+        <td>
+          GATHER_SORT_MODE</td>
+        <td>
+          $(P)$(R)SortMode<br />
+          $(P)$(R)SortMode_RBV</td>
+        <td>
+          mbbo<br />
+          mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginGather<br />
+          SortTime</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          Sets the minimum time that the plugin will wait for preceeding arrays to arrive
+          before outputting array N when SortMode=Sorted.</td>
+        <td>
+          GATHER_SORT_TIME</td>
+        <td>
+          $(P)$(R)SortTime<br />
+          $(P)$(R)SortTime_RBV</td>
+        <td>
+          ao<br />
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginGather<br />
+          ListFree</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The number of NDArrays remaining before the std::multiset will not be allowed to
+          grow larger and the plugin may begin to drop frames.</td>
+        <td>
+          GATHER_LIST_FREE</td>
+        <td>
+          $(P)$(R)ListFree_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+    </tbody>
+  </table>
   <h2 id="Configuration">
     Configuration</h2>
   <p>
     The NDPluginGather plugin is created with the NDGatherConfigure command, either
     from C/C++ or from the EPICS IOC shell.</p>
-  <pre>NDGatherConfigure (const char *portName, int queueSize, int blockingCallbacks, 
-                      const char *NDArrayPort, int NDArrayAddr, size_t maxMemory, 
-                      int priority, int stackSize)
+  <pre>
+NDGatherConfigure (const char *portName, int queueSize, int blockingCallbacks, 
+                   maxPorts, size_t maxMemory, 
+                   int priority, int stackSize)
   </pre>
   <p>
     For details on the meaning of the parameters to this function refer to the detailed
@@ -132,8 +272,8 @@
     set to 100 to provide a safety margin that prevented dropped arrays.</p>
   <p>
     The output of the NDPluginGather plugin was sent to the NDFileNetCDF plugin which
-    saved images to disk. For this test the simDetector was set to MultipleMode with
-    NumImages=1000 and the NDFileNetCDF plugin was set to StreamMode with NumCapture=1000.
+    saved images to disk. For this test the simDetector was set to ImageMode=Multiple
+    with NumImages=1000 and the NDFileNetCDF plugin was set to StreamMode with NumCapture=1000.
     Two files were saved, one with NDPluginGather set to Unsorted and the other with
     NDPluginGather set to Sorted. The files were read into IDL and the value of UniqueId
     for each array was printed to test that the sorting worked correctly.</p>
@@ -191,7 +331,7 @@
   </div>
   <p>
     The following shows the setup of the NDFileNetCDF plugin. It is getting its input
-    from the NDPluginGather plugins and is running in Stream mode, saving 1000 arrays.
+    from the NDPluginGather plugin and is running in Stream mode, saving 1000 arrays.
     Note that it is only able to save 140 frames/s, while it is receiving about 470
     frames/s, so it needs a large input queue to avoid losing frames. The input queue
     is currently set to 5000 frames, which is larger than needed to save only 1000 frames.
@@ -202,9 +342,10 @@
   </div>
   <p>
     The following shows the output when reading the netCDF file that was written when
-    NDPluginGather was set to SortMode=Unsorted. attr[0].pvalue is the value of the
-    UniqueId attribute for all 1000 NDArrays. Note that the arrays are not in the correct
-    UniqueId order.
+    NDPluginGather was set to SortMode=Unsorted.</p>
+  <p>
+    attr[0].pvalue is the value of the UniqueId attribute for all 1000 NDArrays. Note
+    that the arrays are not in the correct UniqueId order.
   </p>
   <pre>
 IDL> t = read_nd_netcdf('gather_test_sorted_001.nc', attr=attr) 
@@ -313,9 +454,10 @@ IDL> print, u
 </pre>
   <p>
     The following shows the output when reading the netCDF file that was written when
-    NDPluginGather was set to SortMode=Sorted. attr[0].pvalue is the value of the UniqueId
-    attribute for all 1000 NDArrays. Note that the arrays are now in the correct UniqueId
-    order.
+    NDPluginGather was set to SortMode=Sorted.</p>
+  <p>
+    attr[0].pvalue is the value of the UniqueId attribute for all 1000 NDArrays. Note
+    that the arrays are now in the correct UniqueId order.
   </p>
   <pre>
 IDL> t = read_nd_netcdf('gather_test_sorted_001.nc', attr=attr)
