@@ -31,7 +31,9 @@
     downstream plugins. It allows multiple intances of a plugin to process NDArrays
     in parallel, utilizing multiple cores to increase throughput. It is commonly used
     in together with <a href="NDPluginGather.html">NDPluginGather</a>, which gathers
-    the outputs from multiple plugins back into a single stream.
+    the outputs from multiple plugins back into a single stream. The <a href="NDPluginGather.html">
+      documentation for NDPluginGather</a> provides a detailed example of using NDPluginScatter
+    and NDPluginGather to do parallel processing of 5 statistics plugins.
   </p>
   <p>
     This plugin works differently from other plugins that do callbacks to downstream
