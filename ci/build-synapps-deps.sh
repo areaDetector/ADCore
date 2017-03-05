@@ -5,9 +5,9 @@ set -e
 mkdir external
 cd external
 
-#wget -nv https://github.com/epics-modules/asyn/archive/R4-26.tar.gz
-#tar -zxf R4-26.tar.gz
-git clone https://github.com/epics-modules/asyn asyn-R4-31
+wget -nv https://github.com/epics-modules/asyn/archive/R4-31.tar.gz
+tar -zxf R4-31.tar.gz
+#git clone https://github.com/epics-modules/asyn asyn-R4-31
 echo "EPICS_BASE=/usr/lib/epics" > asyn-R4-31/configure/RELEASE
 #echo "EPICS_LIBCOM_ONLY=YES" >> asyn-R4-31/configure/CONFIG_SITE
 make -C asyn-R4-31/
