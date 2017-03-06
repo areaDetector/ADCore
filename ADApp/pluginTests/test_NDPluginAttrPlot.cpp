@@ -36,13 +36,13 @@
 class NDArrayWrapper {
     public:
         ~NDArrayWrapper() {
-            delete array_;
+            array_->release();
         }
         NDArray* get() {
             return array_;
         }
-        NDArrayWrapper()
-            : array_(new NDArray())
+        NDArrayWrapper(NDArrayPool* arrPool)
+            : array_(arrPool->alloc(0,NULL,NDFloat64,0,NULL))
         { }
         NDArrayWrapper& set_uid(int uid) {
             array_->uniqueId = uid;
@@ -130,10 +130,12 @@ struct AttrPlotPluginTestFixture
     static const int n_attributes = 3;
     static const int n_selected = 2;
     AttrPlotPluginWrapper* attrPlot;
+    NDArrayPool * arrPool;
     std::string port;
 
     AttrPlotPluginTestFixture()
-        : port("TS")
+        : port("TS"),
+          arrPool(new NDArrayPool(100,0))
     {
 
         // Asyn manager doesn't like it if we try to reuse the same port name for multiple drivers
@@ -154,6 +156,7 @@ struct AttrPlotPluginTestFixture
     ~AttrPlotPluginTestFixture()
     {
         delete attrPlot;
+        delete arrPool;
     }
 
 };
@@ -190,7 +193,7 @@ BOOST_AUTO_TEST_CASE(attrplot_attribute_data)
 
         // Send new NDArray
         double value = i*i;
-        NDArrayWrapper wrap;
+        NDArrayWrapper wrap(arrPool);
         wrap.set_uid(i).add_attr(attr_name, value);
 
         attrPlot->lock();
@@ -234,7 +237,7 @@ BOOST_AUTO_TEST_CASE(attrplot_attribute_select)
     BOOST_CHECK_EQUAL(attrPlot->readInt(NDArrayCallbacksString), 1);
 
     // Fill the cache with array with a single attribute
-    NDArrayWrapper wrap;
+    NDArrayWrapper wrap(arrPool);
     wrap.set_uid(1).add_attr(attr_name, 0);
 
     attrPlot->lock();
@@ -277,7 +280,7 @@ BOOST_AUTO_TEST_CASE(attrplot_string_attribute)
     BOOST_CHECK_NO_THROW(attrPlot->write(NDArrayCallbacksString, 1));
     BOOST_CHECK_EQUAL(attrPlot->readInt(NDArrayCallbacksString), 1);
 
-    NDArrayWrapper wrap;
+    NDArrayWrapper wrap(arrPool);
     wrap.set_uid(1).add_attr("string", "string");
 
     attrPlot->lock();
@@ -299,7 +302,7 @@ BOOST_AUTO_TEST_CASE(attrplot_reset_uid)
     BOOST_CHECK_NO_THROW(attrPlot->write(NDArrayCallbacksString, 1));
     BOOST_CHECK_EQUAL(attrPlot->readInt(NDArrayCallbacksString), 1);
 
-    NDArrayWrapper wrap;
+    NDArrayWrapper wrap(arrPool);
     for (int i = 0; i < cache_size/2; ++i) {
         wrap.set_uid(i);
 
@@ -329,7 +332,7 @@ BOOST_AUTO_TEST_CASE(attrplot_reset_pv_write)
     BOOST_CHECK_NO_THROW(attrPlot->write(NDArrayCallbacksString, 1));
     BOOST_CHECK_EQUAL(attrPlot->readInt(NDArrayCallbacksString), 1);
 
-    NDArrayWrapper wrap;
+    NDArrayWrapper wrap(arrPool);
     int n_arrays = cache_size/2;
     for (int i = 0; i < n_arrays; ++i) {
         wrap.set_uid(i);
@@ -368,7 +371,7 @@ BOOST_AUTO_TEST_CASE(attrplot_multiple_attributes)
     attributes.push_back("attribute2");
     attributes.push_back("attribute3");
 
-    NDArrayWrapper wrap;
+    NDArrayWrapper wrap(arrPool);
     wrap.set_uid(0)
         .add_attr(attributes[0], 0)
         .add_attr(attributes[1], 0)
@@ -396,7 +399,7 @@ BOOST_AUTO_TEST_CASE(attrplot_multiple_attributes)
     BOOST_CHECK_EQUAL(attrPlot->readInt(NDAttrPlotDataSelectString, 1), 2);
 
     // Send a new array with just attr2
-    NDArrayWrapper wrap_attr2;
+    NDArrayWrapper wrap_attr2(arrPool);
     wrap_attr2.set_uid(0) // We want reset to occur
         .add_attr(attr2, 0);
 
