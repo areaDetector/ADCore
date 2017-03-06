@@ -42,7 +42,7 @@ class NDArrayWrapper {
             return array_;
         }
         NDArrayWrapper()
-            : array_(new NDArray)
+            : array_(new NDArray())
         { }
         NDArrayWrapper& set_uid(int uid) {
             array_->uniqueId = uid;
@@ -299,8 +299,8 @@ BOOST_AUTO_TEST_CASE(attrplot_reset_uid)
     BOOST_CHECK_NO_THROW(attrPlot->write(NDArrayCallbacksString, 1));
     BOOST_CHECK_EQUAL(attrPlot->readInt(NDArrayCallbacksString), 1);
 
+    NDArrayWrapper wrap;
     for (int i = 0; i < cache_size/2; ++i) {
-        NDArrayWrapper wrap;
         wrap.set_uid(i);
 
         attrPlot->lock();
@@ -313,16 +313,14 @@ BOOST_AUTO_TEST_CASE(attrplot_reset_uid)
                 nPts);
     }
 
-    { // Send another array but with a uid 0 which must reset the plugin
-        NDArrayWrapper wrap;
-        wrap.set_uid(0);
+    // Send another array but with a uid 0 which must reset the plugin
+    wrap.set_uid(0);
 
-        attrPlot->lock();
-        BOOST_CHECK_NO_THROW(attrPlot->processCallbacks(wrap.get()));
-        attrPlot->unlock();
+    attrPlot->lock();
+    BOOST_CHECK_NO_THROW(attrPlot->processCallbacks(wrap.get()));
+    attrPlot->unlock();
 
-        BOOST_CHECK_EQUAL(attrPlot->readInt(NDAttrPlotNPtsString), 1);
-    }
+    BOOST_CHECK_EQUAL(attrPlot->readInt(NDAttrPlotNPtsString), 1);
 }
 
 BOOST_AUTO_TEST_CASE(attrplot_reset_pv_write)
@@ -331,9 +329,9 @@ BOOST_AUTO_TEST_CASE(attrplot_reset_pv_write)
     BOOST_CHECK_NO_THROW(attrPlot->write(NDArrayCallbacksString, 1));
     BOOST_CHECK_EQUAL(attrPlot->readInt(NDArrayCallbacksString), 1);
 
+    NDArrayWrapper wrap;
     int n_arrays = cache_size/2;
     for (int i = 0; i < n_arrays; ++i) {
-        NDArrayWrapper wrap;
         wrap.set_uid(i);
 
         attrPlot->lock();
@@ -349,15 +347,11 @@ BOOST_AUTO_TEST_CASE(attrplot_reset_pv_write)
     // Send command to reset the plugin which must reset the plugin on next write
     BOOST_CHECK_NO_THROW(attrPlot->write(NDAttrPlotResetString, 1));
 
-    {
-        NDArrayWrapper wrap;
-        wrap.set_uid(n_arrays);
+    wrap.set_uid(n_arrays);
+    attrPlot->lock();
+    BOOST_CHECK_NO_THROW(attrPlot->processCallbacks(wrap.get()));
+    attrPlot->unlock();
 
-        attrPlot->lock();
-        BOOST_CHECK_NO_THROW(attrPlot->processCallbacks(wrap.get()));
-        attrPlot->unlock();
-
-    }
     // Ensure that only one array is recieved
     BOOST_CHECK_EQUAL(attrPlot->readInt(NDAttrPlotNPtsString), 1);
 }
@@ -373,17 +367,17 @@ BOOST_AUTO_TEST_CASE(attrplot_multiple_attributes)
     attributes.push_back("attribute1");
     attributes.push_back("attribute2");
     attributes.push_back("attribute3");
-    {
-        NDArrayWrapper wrap;
-        wrap.set_uid(0)
-            .add_attr(attributes[0], 0)
-            .add_attr(attributes[1], 0)
-            .add_attr(attributes[2], 0);
 
-        attrPlot->lock();
-        BOOST_CHECK_NO_THROW(attrPlot->processCallbacks(wrap.get()));
-        attrPlot->unlock();
-    }
+    NDArrayWrapper wrap;
+    wrap.set_uid(0)
+        .add_attr(attributes[0], 0)
+        .add_attr(attributes[1], 0)
+        .add_attr(attributes[2], 0);
+
+    attrPlot->lock();
+    BOOST_CHECK_NO_THROW(attrPlot->processCallbacks(wrap.get()));
+    attrPlot->unlock();
+
 
     BOOST_CHECK_EQUAL(attrPlot->readInt(NDAttrPlotNPtsString), 1);
     // Check that all attributes are read by the driver
@@ -401,15 +395,14 @@ BOOST_AUTO_TEST_CASE(attrplot_multiple_attributes)
     BOOST_CHECK_NO_THROW(attrPlot->write(NDAttrPlotDataSelectString, 2, 1));
     BOOST_CHECK_EQUAL(attrPlot->readInt(NDAttrPlotDataSelectString, 1), 2);
 
-    { // Send a new array with just attr2
-        NDArrayWrapper wrap;
-        wrap.set_uid(0) // We want reset to occur
-            .add_attr(attr2, 0);
+    // Send a new array with just attr2
+    NDArrayWrapper wrap_attr2;
+    wrap_attr2.set_uid(0) // We want reset to occur
+        .add_attr(attr2, 0);
 
-        attrPlot->lock();
-        BOOST_CHECK_NO_THROW(attrPlot->processCallbacks(wrap.get()));
-        attrPlot->unlock();
-    }
+    attrPlot->lock();
+    BOOST_CHECK_NO_THROW(attrPlot->processCallbacks(wrap_attr2.get()));
+    attrPlot->unlock();
 
     // Check that only attr2 is read
     BOOST_CHECK_EQUAL(attrPlot->readInt(NDAttrPlotNPtsString), 1);

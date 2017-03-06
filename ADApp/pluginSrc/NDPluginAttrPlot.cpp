@@ -128,7 +128,7 @@ void NDPluginAttrPlot::processCallbacks(NDArray *pArray) {
 
     epicsInt32 uid;
     getIntegerParam(NDUniqueId, &uid);
-    if (uid <= uids_.last()) {
+    if (uids_.size() != 0 and uid <= uids_.last()) {
         reset_data();
     }
 
