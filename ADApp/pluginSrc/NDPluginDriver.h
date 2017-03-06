@@ -28,9 +28,9 @@ public:
     NDPluginDriver(const char *portName, int queueSize, int blockingCallbacks, 
                    const char *NDArrayPort, int NDArrayAddr, int maxAddr, int numParams,
                    int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
-                   int asynFlags, int autoConnect, int priority, int stackSize);
+                   int asynFlags, int autoConnect, int priority, int stackSize, int numThreads=1);
     ~NDPluginDriver();
-                 
+
     /* These are the methods that we override from asynNDArrayDriver */
     virtual asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
     virtual asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t maxChars,
@@ -40,7 +40,6 @@ public:
                                      
     /* These are the methods that are new to this class */
     virtual void driverCallback(asynUser *pasynUser, void *genericPointer);
-    virtual void processTask(void);
     virtual void run(void);
     virtual asynStatus start(void);
 
@@ -64,23 +63,25 @@ protected:
     int NDPluginDriverMinCallbackTime;
 
 private:
-    void createCallbackThread();
+    virtual void processTask(epicsEvent* pEvent);
+    void createCallbackThreads();
     
     /* The asyn interfaces we access as a client */
-    void *asynGenericPointerInterruptPvt;
+    void *asynGenericPointerInterruptPvt_;
 
     /* Our data */
-    bool pluginStarted;
-    int threadStackSize;
-    asynUser *pasynUserGenericPointer;          /**< asynUser for connecting to NDArray driver */
-    void *asynGenericPointerPvt;                /**< Handle for connecting to NDArray driver */
-    asynGenericPointer *pasynGenericPointer;    /**< asyn interface for connecting to NDArray driver */
-    bool connectedToArrayPort;
-    epicsEvent *pThreadStartedEvent;
-    epicsThread *pThread;
-    epicsMessageQueueId msgQId;
-    epicsTimeStamp lastProcessTime;
-    int dimsPrev[ND_ARRAY_MAX_DIMS];
+    int numThreads_;
+    bool pluginStarted_;
+    int threadStackSize_;
+    asynUser *pasynUserGenericPointer_;          /**< asynUser for connecting to NDArray driver */
+    void *asynGenericPointerPvt_;                /**< Handle for connecting to NDArray driver */
+    asynGenericPointer *pasynGenericPointer_;    /**< asyn interface for connecting to NDArray driver */
+    bool connectedToArrayPort_;
+    std::vector<epicsEvent*>pThreadStartedEvents_;
+    std::vector<epicsThread*>pThreads_;
+    epicsMessageQueue *pMsgQ_;
+    epicsTimeStamp lastProcessTime_;
+    int dimsPrev_[ND_ARRAY_MAX_DIMS];
     int newQueueSize_;
     NDArray *pInputArray_;
 };
