@@ -295,8 +295,10 @@ asynStatus NDPluginStats::doComputeCentroidT(NDArray *pArray)
         this->orientation = 0.5 * atan2((2.0 * varXY), (varX - varY));
         /* Orientation in degrees*/
         this->orientation  = this->orientation * 180 / M_PI;
-        this->eccentricity = ((mu20 - mu02) * (mu20 - mu02) - 4 * mu11 * mu11) /
-                             ((mu20 + mu02) * (mu20 + mu02));
+        if ((mu20 + mu02) != 0){
+            this->eccentricity = ((mu20 - mu02) * (mu20 - mu02) - 4 * mu11 * mu11) /
+                                 ((mu20 + mu02) * (mu20 + mu02));
+        }
     }
     this->lock();
     return(asynSuccess);
