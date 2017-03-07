@@ -228,7 +228,7 @@ asynStatus NDPluginDriver::setArrayInterrupt(int enableCallbacks)
     asynStatus status = asynSuccess;
     static const char *functionName = "setArrayInterrupt";
     
-    if (enableCallbacks && !this->asynGenericPointerInterruptPvt_) {
+    if (enableCallbacks && connectedToArrayPort_ && !this->asynGenericPointerInterruptPvt_) {
         status = this->pasynGenericPointer_->registerInterruptUser(
                     this->asynGenericPointerPvt_, this->pasynUserGenericPointer_,
                     ::driverCallback, this, &this->asynGenericPointerInterruptPvt_);
@@ -239,17 +239,15 @@ asynStatus NDPluginDriver::setArrayInterrupt(int enableCallbacks)
             return(status);
         }
     } 
-    if (!enableCallbacks && this->asynGenericPointerInterruptPvt_) {
-        if (this->asynGenericPointerInterruptPvt_) {
-            status = this->pasynGenericPointer_->cancelInterruptUser(this->asynGenericPointerPvt_, 
-                            this->pasynUserGenericPointer_, this->asynGenericPointerInterruptPvt_);
-            this->asynGenericPointerInterruptPvt_ = NULL;
-            if (status != asynSuccess) {
-                asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                    "%s::%s ERROR: Can't unregister for interrupt callbacks on detector port: %s\n",
-                    driverName, functionName, this->pasynUserGenericPointer_->errorMessage);
-                return(status);
-            }
+    if (!enableCallbacks && connectedToArrayPort_ && this->asynGenericPointerInterruptPvt_) {
+        status = this->pasynGenericPointer_->cancelInterruptUser(this->asynGenericPointerPvt_, 
+                        this->pasynUserGenericPointer_, this->asynGenericPointerInterruptPvt_);
+        this->asynGenericPointerInterruptPvt_ = NULL;
+        if (status != asynSuccess) {
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s::%s ERROR: Can't unregister for interrupt callbacks on detector port: %s\n",
+                driverName, functionName, this->pasynUserGenericPointer_->errorMessage);
+            return(status);
         }
     }
     return(asynSuccess);
@@ -357,21 +355,17 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
     
     if (function == NDPluginDriverEnableCallbacks) {
         if (value) {  
-            if (this->connectedToArrayPort_) {
-                /* We need to register to be called with interrupts from the detector driver on 
-                 * the asynGenericPointer interface. Must do this with the lock released. */
-                this->unlock();
-                status = setArrayInterrupt(1);
-                this->lock();
-                if (status != asynSuccess) goto done;
-            }
+            /* We need to register to be called with interrupts from the detector driver on 
+             * the asynGenericPointer interface. Must do this with the lock released. */
+            this->unlock();
+            status = setArrayInterrupt(1);
+            this->lock();
+            if (status != asynSuccess) goto done;
         } else {
-            if (this->connectedToArrayPort_) {
-                this->unlock();
-                status = setArrayInterrupt(0);
-                this->lock();
-                if (status != asynSuccess) goto done;
-            }
+            this->unlock();
+            status = setArrayInterrupt(0);
+            this->lock();
+            if (status != asynSuccess) goto done;
             // Release the input NDArray
             if (pInputArray_) {
                 pInputArray_->release();
