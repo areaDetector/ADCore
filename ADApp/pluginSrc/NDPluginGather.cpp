@@ -243,16 +243,14 @@ asynStatus NDPluginGather::setArrayInterrupt(int enableCallbacks)
             }
         } 
         if (!enableCallbacks && pArraySrc->connectedToArrayPort && pArraySrc->asynGenericPointerInterruptPvt) {
-            if (pArraySrc->asynGenericPointerInterruptPvt) {
-                status = pArraySrc->pasynGenericPointer->cancelInterruptUser(pArraySrc->asynGenericPointerPvt, 
-                                pArraySrc->pasynUserGenericPointer, pArraySrc->asynGenericPointerInterruptPvt);
-                pArraySrc->asynGenericPointerInterruptPvt = NULL;
-                if (status != asynSuccess) {
-                    asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                        "%s::%s ERROR: Can't unregister for interrupt callbacks on detector port: %s\n",
-                        driverName, functionName, pArraySrc->pasynUserGenericPointer->errorMessage);
-                    return(status);
-                }
+            status = pArraySrc->pasynGenericPointer->cancelInterruptUser(pArraySrc->asynGenericPointerPvt, 
+                            pArraySrc->pasynUserGenericPointer, pArraySrc->asynGenericPointerInterruptPvt);
+            pArraySrc->asynGenericPointerInterruptPvt = NULL;
+            if (status != asynSuccess) {
+                asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
+                    "%s::%s ERROR: Can't unregister for interrupt callbacks on detector port: %s\n",
+                    driverName, functionName, pArraySrc->pasynUserGenericPointer->errorMessage);
+                return(status);
             }
         }
     }
