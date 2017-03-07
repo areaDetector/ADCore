@@ -42,7 +42,7 @@ static const char *driverName="NDPluginDriver";
     int size;
     NDAttribute *pAttribute;
     int colorMode=NDColorModeMono, bayerPattern=NDBayerRGGB;
-    
+
     pAttribute = pArray->pAttributeList->find("ColorMode");
     if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
     pAttribute = pArray->pAttributeList->find("BayerPattern");
@@ -195,7 +195,7 @@ void NDPluginDriver::processTask(epicsEvent *pThreadStartedEvent)
 
         /* Wait for an array to arrive from the queue. Release the lock while  waiting. */    
         this->unlock();
-        pMsgQ_->receive(pArray, sizeof(&pArray));
+        pMsgQ_->receive(&pArray, sizeof(&pArray));
         if (pArray == NULL || pArray->pData == NULL) {
           return; // shutdown thread if special NULL pData received
         }
