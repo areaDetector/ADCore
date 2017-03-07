@@ -228,7 +228,7 @@ asynStatus NDPluginDriver::setArrayInterrupt(int enableCallbacks)
     asynStatus status = asynSuccess;
     static const char *functionName = "setArrayInterrupt";
     
-    if (enableCallbacks && !this->asynGenericPointerInterruptPvt) {
+    if (enableCallbacks && connectedToArrayPort && !this->asynGenericPointerInterruptPvt) {
         status = this->pasynGenericPointer->registerInterruptUser(
                     this->asynGenericPointerPvt, this->pasynUserGenericPointer,
                     ::driverCallback, this, &this->asynGenericPointerInterruptPvt);
@@ -239,7 +239,7 @@ asynStatus NDPluginDriver::setArrayInterrupt(int enableCallbacks)
             return(status);
         }
     } 
-    if (!enableCallbacks && this->asynGenericPointerInterruptPvt) {
+    if (!enableCallbacks && connectedToArrayPort && this->asynGenericPointerInterruptPvt) {
         if (this->asynGenericPointerInterruptPvt) {
             status = this->pasynGenericPointer->cancelInterruptUser(this->asynGenericPointerPvt, 
                             this->pasynUserGenericPointer, this->asynGenericPointerInterruptPvt);
@@ -354,21 +354,17 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
     
     if (function == NDPluginDriverEnableCallbacks) {
         if (value) {  
-            if (this->connectedToArrayPort) {
-                /* We need to register to be called with interrupts from the detector driver on 
-                 * the asynGenericPointer interface. Must do this with the lock released. */
-                this->unlock();
-                status = setArrayInterrupt(1);
-                this->lock();
-                if (status != asynSuccess) goto done;
-            }
+            /* We need to register to be called with interrupts from the detector driver on 
+             * the asynGenericPointer interface. Must do this with the lock released. */
+            this->unlock();
+            status = setArrayInterrupt(1);
+            this->lock();
+            if (status != asynSuccess) goto done;
         } else {
-            if (this->connectedToArrayPort) {
-                this->unlock();
-                status = setArrayInterrupt(0);
-                this->lock();
-                if (status != asynSuccess) goto done;
-            }
+            this->unlock();
+            status = setArrayInterrupt(0);
+            this->lock();
+            if (status != asynSuccess) goto done;
             // Release the input NDArray
             if (pInputArray_) {
                 pInputArray_->release();
