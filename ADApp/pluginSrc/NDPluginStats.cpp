@@ -805,13 +805,13 @@ asynStatus  NDPluginStats::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCallbacks,
                          const char *NDArrayPort, int NDArrayAddr,
                          int maxBuffers, size_t maxMemory,
-                         int priority, int stackSize)
+                         int priority, int stackSize, int numThreads)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
                    NDArrayPort, NDArrayAddr, 1, NUM_NDPLUGIN_STATS_PARAMS, maxBuffers, maxMemory,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
-                   0, 1, priority, stackSize)
+                   0, 1, priority, stackSize, numThreads)
 {
     int numTSPoints=256;  // Initial size of time series
     int i;
@@ -923,10 +923,10 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
 extern "C" int NDStatsConfigure(const char *portName, int queueSize, int blockingCallbacks,
                                  const char *NDArrayPort, int NDArrayAddr,
                                  int maxBuffers, size_t maxMemory,
-                                 int priority, int stackSize)
+                                 int priority, int stackSize, int numThreads)
 {
     NDPluginStats *pPlugin = new NDPluginStats(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                                              maxBuffers, maxMemory, priority, stackSize);
+                                              maxBuffers, maxMemory, priority, stackSize, numThreads);
     return pPlugin->start();
 }
 
@@ -940,6 +940,7 @@ static const iocshArg initArg5 = { "maxBuffers",iocshArgInt};
 static const iocshArg initArg6 = { "maxMemory",iocshArgInt};
 static const iocshArg initArg7 = { "priority",iocshArgInt};
 static const iocshArg initArg8 = { "stackSize",iocshArgInt};
+static const iocshArg initArg9 = { "# threads",iocshArgInt};
 static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg1,
                                             &initArg2,
@@ -948,13 +949,15 @@ static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg5,
                                             &initArg6,
                                             &initArg7,
-                                            &initArg8};
-static const iocshFuncDef initFuncDef = {"NDStatsConfigure",9,initArgs};
+                                            &initArg8,
+                                            &initArg9};
+static const iocshFuncDef initFuncDef = {"NDStatsConfigure",10,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
     NDStatsConfigure(args[0].sval, args[1].ival, args[2].ival,
                      args[3].sval, args[4].ival, args[5].ival,
-                     args[6].ival, args[7].ival, args[8].ival);
+                     args[6].ival, args[7].ival, args[8].ival,
+                     args[9].ival);
 }
 
 extern "C" void NDStatsRegister(void)
