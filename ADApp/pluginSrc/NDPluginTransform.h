@@ -18,7 +18,7 @@ public:
     NDPluginTransform(const char *portName, int queueSize, int blockingCallbacks,
                  const char *NDArrayPort, int NDArrayAddr,
                  int maxBuffers, size_t maxMemory,
-                 int priority, int stackSize);
+                 int priority, int stackSize, int numThreads=1);
     /* These methods override the virtual methods in the base class */
     void processCallbacks(NDArray *pArray);
 
