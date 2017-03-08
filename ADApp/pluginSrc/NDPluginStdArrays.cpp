@@ -262,11 +262,11 @@ asynStatus NDPluginStdArrays::readFloat64Array(asynUser *pasynUser, epicsFloat64
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   */
 NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int blockingCallbacks, 
-                                     const char *NDArrayPort, int NDArrayAddr, size_t maxMemory,
-                                     int priority, int stackSize)
+                                     const char *NDArrayPort, int NDArrayAddr, int maxBuffers, size_t maxMemory,
+                                     int priority, int stackSize, int numThreads)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
-                   NDArrayPort, NDArrayAddr, 1, NUM_NDPLUGIN_STDARRAYS_PARAMS, 2, maxMemory,
+                   NDArrayPort, NDArrayAddr, 1, NUM_NDPLUGIN_STDARRAYS_PARAMS, maxBuffers, maxMemory,
                    
                    asynInt8ArrayMask | asynInt16ArrayMask | asynInt32ArrayMask | 
                    asynFloat32ArrayMask | asynFloat64ArrayMask,
@@ -276,7 +276,7 @@ NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int bl
                    
                    /* asynFlags is set to 0, because this plugin cannot block and is not multi-device.
                     * It does autoconnect */
-                   0, 1, priority, stackSize)
+                   0, 1, priority, stackSize, numThreads)
 {
     //static const char *functionName = "NDPluginStdArrays";
     
@@ -295,11 +295,11 @@ NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int bl
 
 /* Configuration routine.  Called directly, or from the iocsh function */
 extern "C" int NDStdArraysConfigure(const char *portName, int queueSize, int blockingCallbacks, 
-                                    const char *NDArrayPort, int NDArrayAddr, size_t maxMemory,
-                                    int priority, int stackSize)
+                                    const char *NDArrayPort, int NDArrayAddr, int maxBuffers, size_t maxMemory,
+                                    int priority, int stackSize, int numThreads)
 {
-    NDPluginStdArrays *pPlugin = new NDPluginStdArrays(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxMemory,
-                                                       priority, stackSize);
+    NDPluginStdArrays *pPlugin = new NDPluginStdArrays(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, 
+                                                       maxBuffers, maxMemory, priority, stackSize, numThreads);
     return pPlugin->start();
 }
 
@@ -310,9 +310,11 @@ static const iocshArg initArg1 = { "frame queue size",iocshArgInt};
 static const iocshArg initArg2 = { "blocking callbacks",iocshArgInt};
 static const iocshArg initArg3 = { "NDArrayPort",iocshArgString};
 static const iocshArg initArg4 = { "NDArrayAddr",iocshArgInt};
-static const iocshArg initArg5 = { "maxMemory",iocshArgInt};
-static const iocshArg initArg6 = { "priority",iocshArgInt};
-static const iocshArg initArg7 = { "stack size",iocshArgInt};
+static const iocshArg initArg5 = { "maxBuffers",iocshArgInt};
+static const iocshArg initArg6 = { "maxMemory",iocshArgInt};
+static const iocshArg initArg7 = { "priority",iocshArgInt};
+static const iocshArg initArg8 = { "stack size",iocshArgInt};
+static const iocshArg initArg9 = { "# threads",iocshArgInt};
 static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg1,
                                             &initArg2,
@@ -320,13 +322,16 @@ static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg4,
                                             &initArg5,
                                             &initArg6,
-                                            &initArg7};
-static const iocshFuncDef initFuncDef = {"NDStdArraysConfigure",8,initArgs};
+                                            &initArg7,
+                                            &initArg8,
+                                            &initArg9};
+static const iocshFuncDef initFuncDef = {"NDStdArraysConfigure",10,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
     NDStdArraysConfigure(args[0].sval, args[1].ival, args[2].ival, 
                             args[3].sval, args[4].ival, args[5].ival,
-                            args[6].ival, args[7].ival);
+                            args[6].ival, args[7].ival, args[8].ival,
+                            args[9].ival);
 }
 
 extern "C" void NDStdArraysRegister(void)
