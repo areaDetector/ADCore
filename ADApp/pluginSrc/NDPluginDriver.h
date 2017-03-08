@@ -63,7 +63,7 @@ protected:
     int NDPluginDriverMinCallbackTime;
 
 private:
-    virtual void processTask(epicsEvent* pEvent);
+    void processTask(epicsEvent* pEvent);
     void createCallbackThreads();
     
     /* The asyn interfaces we access as a client */
@@ -77,7 +77,7 @@ private:
     void *asynGenericPointerPvt_;                /**< Handle for connecting to NDArray driver */
     asynGenericPointer *pasynGenericPointer_;    /**< asyn interface for connecting to NDArray driver */
     bool connectedToArrayPort_;
-    std::vector<epicsEvent*>pThreadStartedEvents_;
+    epicsEvent *pThreadStartedEvent_;
     std::vector<epicsThread*>pThreads_;
     epicsMessageQueue *pMsgQ_;
     epicsTimeStamp lastProcessTime_;
