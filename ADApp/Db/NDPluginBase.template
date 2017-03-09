@@ -224,6 +224,28 @@ record(calc, "$(P)$(R)QueueUse") {
     field(HYST, "1")
 }
 
+record(longout, "$(P)$(R)NumThreads")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_THREADS")
+    field(VAL,  "1")
+    field(PINI, "YES")
+}
+
+record(longin, "$(P)$(R)NumThreads_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_THREADS")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)MaxThreads_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_THREADS")
+    field(SCAN, "I/O Intr")
+}
+
 
 ###################################################################
 #  The asynRecord is used for mainly for trace mask               # 
