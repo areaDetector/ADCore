@@ -115,7 +115,6 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
 
     /* Release the lock now that we are only doing things that don't involve memory other thread
      * cannot access */
-    this->unlock();
     /* Special case for automatic data type */
     if (dataType == -1) dataType = (int)pArray->dataType;
     
@@ -141,6 +140,7 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
                    enableHighClip                       || 
                    enableLowClip                        ||
                    enableFilter);
+    this->unlock();
     /* If no processing is to be done just convert the input array and do callbacks */
     if (!anyProcess) {
         /* Convert the array to the desired output data type */
