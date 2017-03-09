@@ -15,6 +15,7 @@
 #define NDPluginDriverDroppedArraysString       "DROPPED_ARRAYS"        /**< (asynInt32,    r/w) Number of dropped arrays */
 #define NDPluginDriverQueueSizeString           "QUEUE_SIZE"            /**< (asynInt32,    r/w) Total queue elements */ 
 #define NDPluginDriverQueueFreeString           "QUEUE_FREE"            /**< (asynInt32,    r/w) Free queue elements */
+#define NDPluginDriverNumThreadsString          "NUM_THREADS"           /**< (asynInt32,    r/w) Number of threads */ 
 #define NDPluginDriverEnableCallbacksString     "ENABLE_CALLBACKS"      /**< (asynInt32,    r/w) Enable callbacks from driver (1=Yes, 0=No) */
 #define NDPluginDriverBlockingCallbacksString   "BLOCKING_CALLBACKS"    /**< (asynInt32,    r/w) Callbacks block (1=Yes, 0=No) */
 #define NDPluginDriverProcessPluginString       "PROCESS_PLUGIN"        /**< (asynInt32,    r/w) Process plugin with last callback array */
@@ -28,7 +29,7 @@ public:
     NDPluginDriver(const char *portName, int queueSize, int blockingCallbacks, 
                    const char *NDArrayPort, int NDArrayAddr, int maxAddr, int numParams,
                    int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
-                   int asynFlags, int autoConnect, int priority, int stackSize, int numThreads=1);
+                   int asynFlags, int autoConnect, int priority, int stackSize, int maxThreads=1);
     ~NDPluginDriver();
 
     /* These are the methods that we override from asynNDArrayDriver */
@@ -56,6 +57,7 @@ protected:
     int NDPluginDriverDroppedArrays;
     int NDPluginDriverQueueSize;
     int NDPluginDriverQueueFree;
+    int NDPluginDriverNumThreads;
     int NDPluginDriverEnableCallbacks;
     int NDPluginDriverBlockingCallbacks;
     int NDPluginDriverProcessPlugin;
@@ -63,13 +65,16 @@ protected:
     int NDPluginDriverMinCallbackTime;
 
 private:
-    void processTask(epicsEvent* pEvent);
-    void createCallbackThreads();
-    
+    void processTask();
+    asynStatus createCallbackThreads();
+    asynStatus startCallbackThreads();
+    asynStatus deleteCallbackThreads();
+     
     /* The asyn interfaces we access as a client */
     void *asynGenericPointerInterruptPvt_;
 
     /* Our data */
+    int maxThreads_;
     int numThreads_;
     bool pluginStarted_;
     int threadStackSize_;
@@ -77,12 +82,11 @@ private:
     void *asynGenericPointerPvt_;                /**< Handle for connecting to NDArray driver */
     asynGenericPointer *pasynGenericPointer_;    /**< asyn interface for connecting to NDArray driver */
     bool connectedToArrayPort_;
-    epicsEvent *pThreadStartedEvent_;
     std::vector<epicsThread*>pThreads_;
-    epicsMessageQueue *pMsgQ_;
+    epicsMessageQueue *pToThreadMsgQ_;
+    epicsMessageQueue *pFromThreadMsgQ_;
     epicsTimeStamp lastProcessTime_;
     int dimsPrev_[ND_ARRAY_MAX_DIMS];
-    int newQueueSize_;
     NDArray *pInputArray_;
 };
 
