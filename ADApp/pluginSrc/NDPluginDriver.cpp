@@ -168,7 +168,7 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
                 if (!ignoreQueueFull) {
                     status |= getIntegerParam(NDPluginDriverDroppedArrays, &droppedArrays);
                     asynPrint(pasynUser, ASYN_TRACE_FLOW, 
-                        "%s:%s message queue full, dropped array uniqueId=%d\n",
+                        "%s::%s message queue full, dropped array uniqueId=%d\n",
                         driverName, functionName, pArray->uniqueId);
                     droppedArrays++;
                     status |= setIntegerParam(NDPluginDriverDroppedArrays, droppedArrays);
@@ -220,7 +220,9 @@ void NDPluginDriver::processTask()
         }
         switch (toMsg.messageType) {
             case ToThreadMessageExit:
- printf("NDPluginDriver::processTask received exit message, thread=%s\n", epicsThreadGetNameSelf());
+                asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
+                    "%s::%s received exit message, thread=%s\n", 
+                    driverName, functionName, epicsThreadGetNameSelf());
                 fromMsg.messageType = FromThreadMessageExit;
                 pFromThreadMsgQ_->send(&fromMsg, sizeof(fromMsg));
                 return; // shutdown thread if special message
@@ -465,11 +467,11 @@ asynStatus NDPluginDriver::writeOctet(asynUser *pasynUser, const char *value,
 
     if (status) 
         epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                  "%s:%s: status=%d, function=%d, value=%s", 
+                  "%s::%s: status=%d, function=%d, value=%s", 
                   driverName, functionName, status, function, value);
     else        
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, value=%s\n", 
+              "%s::%s: function=%d, value=%s\n", 
               driverName, functionName, function, value);
     *nActual = nChars;
     return status;
@@ -503,11 +505,11 @@ asynStatus NDPluginDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *value
     }
     if (status) 
         epicsSnprintf(pasynUser->errorMessage, pasynUser->errorMessageSize, 
-                  "%s:%s: status=%d, function=%d", 
+                  "%s::%s: status=%d, function=%d", 
                   driverName, functionName, status, function);
     else        
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d\n", 
+              "%s::%s: function=%d\n", 
               driverName, functionName, function);
     return status;
 }
@@ -571,19 +573,21 @@ asynStatus NDPluginDriver::createCallbackThreads()
     
     int queueSize;
     int numThreads;
+    int maxThreads;
     int enableCallbacks;
     int i;
     asynStatus status = asynSuccess;
 
+    getIntegerParam(NDPluginDriverMaxThreads, &maxThreads);
     getIntegerParam(NDPluginDriverNumThreads, &numThreads);
     getIntegerParam(NDPluginDriverQueueSize, &queueSize);
-    if (numThreads > maxThreads_) {
-        numThreads = maxThreads_;
+    if (numThreads > maxThreads) {
+        numThreads = maxThreads;
         setIntegerParam(NDPluginDriverNumThreads, numThreads);
     }
     numThreads_ = numThreads;
- 
-    pThreads_.resize(numThreads_);
+  
+    pThreads_.resize(numThreads);
 
     /* Create the message queue for the input arrays */
     pToThreadMsgQ_ = new epicsMessageQueue(queueSize, sizeof(ToThreadMessage_t));
@@ -591,13 +595,13 @@ asynStatus NDPluginDriver::createCallbackThreads()
         /* We don't handle memory errors above, so no point in handling this. */
         cantProceed("NDPluginDriver::createCallbackThreads epicsMessageQueueCreate failure\n");
     }
-    pFromThreadMsgQ_ = new epicsMessageQueue(numThreads_, sizeof(FromThreadMessage_t));
+    pFromThreadMsgQ_ = new epicsMessageQueue(numThreads, sizeof(FromThreadMessage_t));
     if (!pFromThreadMsgQ_) {
         /* We don't handle memory errors above, so no point in handling this. */
         cantProceed("NDPluginDriver::createCallbackThreads epicsMessageQueueCreate failure\n");
     }
 
-    for (i=0; i<numThreads_; i++) {
+    for (i=0; i<numThreads; i++) {
         /* Create the thread (but not start). */
         char taskName[256];
         epicsSnprintf(taskName, sizeof(taskName)-1, "%s_Plugin_%d", portName, i+1);
@@ -619,23 +623,22 @@ asynStatus NDPluginDriver::deleteCallbackThreads()
     FromThreadMessage_t fromMsg;
     asynStatus status = asynSuccess;
     int i;
+    int pending;
     int numBytes;
     static const char *functionName = "deleteCallbackThreads";
     
-    //  Disable callbacks from driver so we can empty message queue
-printf("NDPluginDriver::deleteCallbackThreads calling setArrayInterrupt(0)\n");
-    this->unlock();
-    this->setArrayInterrupt(0);
-    this->lock();
+    //  Disable callbacks from driver so the threads will empty the message queue
     if (pToThreadMsgQ_ != 0) {
-        /* Need to empty the queue and decrease reference count on arrays that were in the queue */
-        while (pToThreadMsgQ_->tryReceive(&toMsg, sizeof(toMsg)) == sizeof(toMsg)) {
-printf("NDPluginDriver::deleteCallbackThreads tryReceive returned pArray=%p\n", toMsg.pArray);
-            toMsg.pArray->release();
+        this->unlock();
+        this->setArrayInterrupt(0);
+        while ((pending=pToThreadMsgQ_->pending()) > 0) {
+            asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
+                "%s::%s waiting for queue to empty, pending=%d\n", 
+                driverName, functionName, pending);
+            epicsThreadSleep(0.05);
         }
         // Send a kill message to the threads and wait for reply.
         // Must do this with lock released else the threads may not be able to receive the message
-        this->unlock();
         for (i=0; i<numThreads_; i++) {
             if (pToThreadMsgQ_->send(&toMsg, sizeof(toMsg)) != 0) {
                 asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
@@ -643,7 +646,9 @@ printf("NDPluginDriver::deleteCallbackThreads tryReceive returned pArray=%p\n", 
                     driverName, functionName, i);
                 status = asynError;
             }
-printf("NDPluginDriver::deleteCallbackThreads sent exit message %d\n", i);
+            asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
+                "%s::%s sent exit message %d\n", 
+                driverName, functionName, i);
             numBytes = pFromThreadMsgQ_->receive(&fromMsg, sizeof(fromMsg), 2.0);
             if (numBytes != sizeof(fromMsg)) {
                 asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
@@ -708,8 +713,6 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
           interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynDrvUserMask,
           interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask,
           asynFlags, autoConnect, priority, stackSize),
-    maxThreads_(maxThreads),
-    numThreads_(1),
     pluginStarted_(false),
     pToThreadMsgQ_(NULL),
     pFromThreadMsgQ_(NULL),
@@ -731,7 +734,7 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     this->asynGenericPointerInterruptPvt_ = NULL;
     this->connectedToArrayPort_ = false;
     
-    if (maxThreads < 1) maxThreads_ = 1;
+    if (maxThreads < 1) maxThreads = 1;
     
     /* Create asynUser for communicating with NDArray port */
     pasynUser = pasynManager->createAsynUser(0, 0);
@@ -745,6 +748,7 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     createParam(NDPluginDriverDroppedArraysString,     asynParamInt32, &NDPluginDriverDroppedArrays);
     createParam(NDPluginDriverQueueSizeString,         asynParamInt32, &NDPluginDriverQueueSize);
     createParam(NDPluginDriverQueueFreeString,         asynParamInt32, &NDPluginDriverQueueFree);
+    createParam(NDPluginDriverMaxThreadsString,        asynParamInt32, &NDPluginDriverMaxThreads);
     createParam(NDPluginDriverNumThreadsString,        asynParamInt32, &NDPluginDriverNumThreads);
     createParam(NDPluginDriverEnableCallbacksString,   asynParamInt32, &NDPluginDriverEnableCallbacks);
     createParam(NDPluginDriverBlockingCallbacksString, asynParamInt32, &NDPluginDriverBlockingCallbacks);
@@ -762,7 +766,8 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     setIntegerParam(NDPluginDriverArrayAddr, NDArrayAddr);
     setIntegerParam(NDPluginDriverDroppedArrays, 0);
     setIntegerParam(NDPluginDriverQueueSize, queueSize);
-    setIntegerParam(NDPluginDriverNumThreads, maxThreads_);
+    setIntegerParam(NDPluginDriverMaxThreads, maxThreads);
+    setIntegerParam(NDPluginDriverNumThreads, maxThreads);
     setIntegerParam(NDPluginDriverBlockingCallbacks, blockingCallbacks);
     
     /* Create the callback threads, unless blocking callbacks are disabled with
