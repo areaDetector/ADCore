@@ -15,6 +15,7 @@
 #define NDPluginDriverDroppedArraysString       "DROPPED_ARRAYS"        /**< (asynInt32,    r/w) Number of dropped arrays */
 #define NDPluginDriverQueueSizeString           "QUEUE_SIZE"            /**< (asynInt32,    r/w) Total queue elements */ 
 #define NDPluginDriverQueueFreeString           "QUEUE_FREE"            /**< (asynInt32,    r/w) Free queue elements */
+#define NDPluginDriverMaxThreadsString          "MAX_THREADS"           /**< (asynInt32,    r/w) Maximum number of threads */ 
 #define NDPluginDriverNumThreadsString          "NUM_THREADS"           /**< (asynInt32,    r/w) Number of threads */ 
 #define NDPluginDriverEnableCallbacksString     "ENABLE_CALLBACKS"      /**< (asynInt32,    r/w) Enable callbacks from driver (1=Yes, 0=No) */
 #define NDPluginDriverBlockingCallbacksString   "BLOCKING_CALLBACKS"    /**< (asynInt32,    r/w) Callbacks block (1=Yes, 0=No) */
@@ -57,6 +58,7 @@ protected:
     int NDPluginDriverDroppedArrays;
     int NDPluginDriverQueueSize;
     int NDPluginDriverQueueFree;
+    int NDPluginDriverMaxThreads;
     int NDPluginDriverNumThreads;
     int NDPluginDriverEnableCallbacks;
     int NDPluginDriverBlockingCallbacks;
@@ -74,7 +76,6 @@ private:
     void *asynGenericPointerInterruptPvt_;
 
     /* Our data */
-    int maxThreads_;
     int numThreads_;
     bool pluginStarted_;
     int threadStackSize_;
