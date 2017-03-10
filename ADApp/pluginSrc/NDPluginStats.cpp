@@ -36,7 +36,7 @@
 static const char *driverName="NDPluginStats";
 
 template <typename epicsType>
-asynStatus NDPluginStats::doComputeHistogramT(NDArray *pArray)
+asynStatus NDPluginStats::doComputeHistogramT(NDArray *pArray, NDStats_t *pStats)
 {
     epicsType *pData = (epicsType *)pArray->pData;
     size_t i;
@@ -46,71 +46,63 @@ asynStatus NDPluginStats::doComputeHistogramT(NDArray *pArray)
     double value, counts;
     NDArrayInfo arrayInfo;
 
-    this->unlock();
-    if (this->histSizeNew != this->histogramSize) {
-        free(this->histogram);
-        this->histogramSize = this->histSizeNew;
-        this->histogram = (double *)calloc(this->histogramSize, sizeof(double));
-    }
-    memset(this->histogram, 0, this->histogramSize*sizeof(double));
     pArray->getInfo(&arrayInfo);
     nElements = arrayInfo.nElements;
-    scale = this->histogramSize / (histMax - histMin);
+    scale = pStats->histSize / (pStats->histMax - pStats->histMin);
 
-    this->histBelow = 0;
-    this->histAbove = 0;
+    pStats->histBelow = 0;
+    pStats->histAbove = 0;
     for (i=0; i<nElements; i++) {
         value = (double)pData[i];
-        bin = (int)(((value - histMin) * scale) + 0.5);
-        if ((bin < 0) || (value < histMin))
-            this->histBelow++;
-        else if ((bin > (int)this->histogramSize-1) || (value > histMax))
-            this->histAbove++;
+        bin = (int)(((value - pStats->histMin) * scale) + 0.5);
+        if ((bin < 0) || (value < pStats->histMin))
+            pStats->histBelow++;
+        else if ((bin > (int)pStats->histSize-1) || (value > pStats->histMax))
+            pStats->histAbove++;
         else 
-            this->histogram[bin]++;
+            pStats->histogram[bin]++;
     }
 
     entropy = 0;
-    for (i=0; (int)i<this->histogramSize; i++) {
-        counts = this->histogram[i];
+    for (i=0; (int)i<pStats->histSize; i++) {
+        counts = pStats->histogram[i];
         if (counts <= 0) counts = 1;
         entropy += counts * log(counts);
     }
     entropy = -entropy / nElements;
-    this->histEntropy = entropy;
+    pStats->histEntropy = entropy;
     
-    this->lock();
     return(asynSuccess);
 }
 
-asynStatus NDPluginStats::doComputeHistogram(NDArray *pArray)
+asynStatus NDPluginStats::doComputeHistogram(NDArray *pArray, NDStats_t *pStats)
 {
     asynStatus status;
     
     switch(pArray->dataType) {
         case NDInt8:
-            status = doComputeHistogramT<epicsInt8>(pArray);
+            status = doComputeHistogramT<epicsInt8>(pArray, pStats);
             break;
         case NDUInt8:
-            status = doComputeHistogramT<epicsUInt8>(pArray);
+            status = doComputeHistogramT<epicsUInt8>(pArray, pStats);
             break;
         case NDInt16:
-            status = doComputeHistogramT<epicsInt16>(pArray);
+            status = doComputeHistogramT<epicsInt16>(pArray, pStats);
             break;
         case NDUInt16:
-            status = doComputeHistogramT<epicsUInt16>(pArray);
+            status = doComputeHistogramT<epicsUInt16>(pArray, pStats);
             break;
         case NDInt32:
-            status = doComputeHistogramT<epicsInt32>(pArray);
+            status = doComputeHistogramT<epicsInt32>(pArray, pStats);
             break;
         case NDUInt32:
-            status = doComputeHistogramT<epicsUInt32>(pArray);
+            status = doComputeHistogramT<epicsUInt32>(pArray, pStats);
             break;
         case NDFloat32:
-            status = doComputeHistogramT<epicsFloat32>(pArray);
+            status = doComputeHistogramT<epicsFloat32>(pArray, pStats);
             break;
         case NDFloat64:
-            status = doComputeHistogramT<epicsFloat64>(pArray);
+            status = doComputeHistogramT<epicsFloat64>(pArray, pStats);
             break;
         default:
             status = asynError;
@@ -127,7 +119,6 @@ void NDPluginStats::doComputeStatisticsT(NDArray *pArray, NDStats_t *pStats)
     NDArrayInfo arrayInfo;
     double value;
 
-    this->unlock();
     pArray->getInfo(&arrayInfo);
     pStats->nElements = arrayInfo.nElements;
     pStats->min = (double) pData[0];
@@ -156,7 +147,6 @@ void NDPluginStats::doComputeStatisticsT(NDArray *pArray, NDStats_t *pStats)
     pStats->net = pStats->total;
     pStats->mean = pStats->total / pStats->nElements;
     pStats->sigma = sqrt((pStats->sigma / pStats->nElements) - (pStats->mean * pStats->mean));
-    this->lock();
 }
 
 int NDPluginStats::doComputeStatistics(NDArray *pArray, NDStats_t *pStats)
@@ -195,7 +185,7 @@ int NDPluginStats::doComputeStatistics(NDArray *pArray, NDStats_t *pStats)
 }
 
 template <typename epicsType>
-asynStatus NDPluginStats::doComputeCentroidT(NDArray *pArray)
+asynStatus NDPluginStats::doComputeCentroidT(NDArray *pArray, NDStats_t *pStats)
 {
     epicsType *pData = (epicsType *)pArray->pData;
     double value, *pValue, *pThresh, varX, varY, varXY;
@@ -211,47 +201,40 @@ asynStatus NDPluginStats::doComputeCentroidT(NDArray *pArray)
 
     if (pArray->ndims > 2) return(asynError);
     
-    getDoubleParam (NDPluginStatsCentroidThreshold,  &this->centroidThreshold);
-    this->unlock();
-    memset(this->profileX[profAverage], 0, this->profileSizeX*sizeof(double));  
-    memset(this->profileY[profAverage], 0, this->profileSizeY*sizeof(double));
-    memset(this->profileX[profThreshold], 0, this->profileSizeX*sizeof(double));  
-    memset(this->profileY[profThreshold], 0, this->profileSizeY*sizeof(double));
-
-    for (iy=0; iy<this->profileSizeY; iy++) {
-        for (ix=0; ix<this->profileSizeX; ix++) {
+    for (iy=0; iy<pStats->profileSizeY; iy++) {
+        for (ix=0; ix<pStats->profileSizeX; ix++) {
             value = (double)*pData++;
-            this->profileX[profAverage][ix] += value;
-            this->profileY[profAverage][iy] += value;
-            if (value >= this->centroidThreshold) {
-                this->profileX[profThreshold][ix] += value;
-                this->profileY[profThreshold][iy] += value;
+            pStats->profileX[profAverage][ix] += value;
+            pStats->profileY[profAverage][iy] += value;
+            if (value >= pStats->centroidThreshold) {
+                pStats->profileX[profThreshold][ix] += value;
+                pStats->profileY[profThreshold][iy] += value;
                 M11 += value * ix * iy;
             }
         }
     }
 
     /* Normalize the average profiles and compute the centroid from them */
-    pValue  = this->profileX[profAverage];
-    pThresh = this->profileX[profThreshold];
-    for (ix=0; ix<this->profileSizeX; ix++, pValue++, pThresh++) {
+    pValue  = pStats->profileX[profAverage];
+    pThresh = pStats->profileX[profThreshold];
+    for (ix=0; ix<pStats->profileSizeX; ix++, pValue++, pThresh++) {
         M00 += *pThresh;
         M10 += *pThresh * ix;
         M20 += *pThresh * ix * ix;
         M30 += *pThresh * ix * ix * ix;
         M40 += *pThresh * ix * ix * ix * ix;
-        *pValue  /= this->profileSizeY;
-        *pThresh /= this->profileSizeY;
+        *pValue  /= pStats->profileSizeY;
+        *pThresh /= pStats->profileSizeY;
     }
-    pValue  = this->profileY[profAverage];
-    pThresh = this->profileY[profThreshold];
-    for (iy=0; iy<this->profileSizeY; iy++, pValue++, pThresh++) {
+    pValue  = pStats->profileY[profAverage];
+    pThresh = pStats->profileY[profThreshold];
+    for (iy=0; iy<pStats->profileSizeY; iy++, pValue++, pThresh++) {
         M01 += *pThresh * iy;
         M02 += *pThresh * iy * iy;
         M03 += *pThresh * iy * iy * iy;
         M04 += *pThresh * iy * iy * iy * iy;
-        *pValue  /= this->profileSizeX;
-        *pThresh /= this->profileSizeX;
+        *pValue  /= pStats->profileSizeX;
+        *pThresh /= pStats->profileSizeX;
     }
 
     if (M00 > 0.) {
@@ -270,58 +253,61 @@ asynStatus NDPluginStats::doComputeCentroidT(NDArray *pArray)
         varY  = mu02 / M00;
         varXY = mu11 / M00;
         /* Scientific output parameters */
-        this->centroidTotal = M00;
-        this->centroidX = M10 / M00;
-        this->centroidY = M01 / M00;
+        pStats->centroidTotal = M00;
+        pStats->centroidX = M10 / M00;
+        pStats->centroidY = M01 / M00;
         /* Calculate sigmas */
-        this->sigmaX = sqrt(varX);
-        this->sigmaY = sqrt(varY);
-        if ((this->sigmaX != 0) && (this->sigmaY != 0)){
-            this->sigmaXY = varXY / (this->sigmaX * this->sigmaY);
-            this->skewX = mu30  / (M00 * pow(varX, 3.0/2.0));
-            this->skewY = mu03  / (M00 * pow(varY, 3.0/2.0));
-            this->kurtosisX = (mu40 / (M00 * pow(varX, 2.0))) - 3.0;
-            this->kurtosisY = (mu04 / (M00 * pow(varY, 2.0))) - 3.0;
+        pStats->sigmaX = sqrt(varX);
+        pStats->sigmaY = sqrt(varY);
+        if ((pStats->sigmaX != 0) && (pStats->sigmaY != 0)){
+            pStats->sigmaXY = varXY / (pStats->sigmaX * pStats->sigmaY);
+            if (varX != 0) {
+                pStats->skewX = mu30  / (M00 * pow(varX, 3.0/2.0));
+                pStats->kurtosisX = (mu40 / (M00 * pow(varX, 2.0))) - 3.0;
+            }
+            if (varY != 0) {
+                pStats->skewY = mu03  / (M00 * pow(varY, 3.0/2.0));
+                pStats->kurtosisY = (mu04 / (M00 * pow(varY, 2.0))) - 3.0;            
+            }
         }
         /* Calculate orientation and eccentricity */
-        this->orientation = 0.5 * atan2((2.0 * varXY), (varX - varY));
+        pStats->orientation = 0.5 * atan2((2.0 * varXY), (varX - varY));
         /* Orientation in degrees*/
-        this->orientation  = this->orientation * 180 / M_PI;
-        this->eccentricity = ((mu20 - mu02) * (mu20 - mu02) - 4 * mu11 * mu11) /
+        pStats->orientation  = pStats->orientation * 180 / M_PI;
+        pStats->eccentricity = ((mu20 - mu02) * (mu20 - mu02) - 4 * mu11 * mu11) /
                              ((mu20 + mu02) * (mu20 + mu02));
     }
-    this->lock();
     return(asynSuccess);
 }
 
-asynStatus NDPluginStats::doComputeCentroid(NDArray *pArray)
+asynStatus NDPluginStats::doComputeCentroid(NDArray *pArray, NDStats_t *pStats)
 {
     asynStatus status;
 
     switch(pArray->dataType) {
         case NDInt8:
-            status = doComputeCentroidT<epicsInt8>(pArray);
+            status = doComputeCentroidT<epicsInt8>(pArray, pStats);
             break;
         case NDUInt8:
-            status = doComputeCentroidT<epicsUInt8>(pArray);
+            status = doComputeCentroidT<epicsUInt8>(pArray, pStats);
             break;
         case NDInt16:
-            status = doComputeCentroidT<epicsInt16>(pArray);
+            status = doComputeCentroidT<epicsInt16>(pArray, pStats);
             break;
         case NDUInt16:
-            status = doComputeCentroidT<epicsUInt16>(pArray);
+            status = doComputeCentroidT<epicsUInt16>(pArray, pStats);
             break;
         case NDInt32:
-            status = doComputeCentroidT<epicsInt32>(pArray);
+            status = doComputeCentroidT<epicsInt32>(pArray, pStats);
             break;
         case NDUInt32:
-            status = doComputeCentroidT<epicsUInt32>(pArray);
+            status = doComputeCentroidT<epicsUInt32>(pArray, pStats);
             break;
         case NDFloat32:
-            status = doComputeCentroidT<epicsFloat32>(pArray);
+            status = doComputeCentroidT<epicsFloat32>(pArray, pStats);
             break;
         case NDFloat64:
-            status = doComputeCentroidT<epicsFloat64>(pArray);
+            status = doComputeCentroidT<epicsFloat64>(pArray, pStats);
             break;
         default:
             status = asynError;
@@ -331,86 +317,73 @@ asynStatus NDPluginStats::doComputeCentroid(NDArray *pArray)
 }
 
 template <typename epicsType>
-asynStatus NDPluginStats::doComputeProfilesT(NDArray *pArray)
+asynStatus NDPluginStats::doComputeProfilesT(NDArray *pArray, NDStats_t *pStats)
 {
     epicsType *pData = (epicsType *)pArray->pData;
     epicsType *pCentroid, *pCursor;
     size_t ix, iy;
-    int itemp;
 
     if (pArray->ndims > 2) return(asynError);
 
     /* Compute the X and Y profiles at the centroid and cursor positions */
-    getIntegerParam (NDPluginStatsCursorX, &itemp); this->cursorX = itemp;
-    getIntegerParam (NDPluginStatsCursorY, &itemp); this->cursorY = itemp;
-    this->unlock();
-    iy = (size_t) (this->centroidY + 0.5);
+    iy = (size_t) (pStats->centroidY + 0.5);
     iy = MAX(iy, 0);
-    iy = MIN(iy, this->profileSizeY-1);
-    pCentroid = pData + iy*this->profileSizeX;
-    iy = this->cursorY;
+    iy = MIN(iy, pStats->profileSizeY-1);
+    pCentroid = pData + iy*pStats->profileSizeX;
+    iy = pStats->cursorY;
     iy = MAX(iy, 0);
-    iy = MIN(iy, this->profileSizeY-1);
-    pCursor = pData + iy*this->profileSizeX;
-    for (ix=0; ix<this->profileSizeX; ix++) {
-        this->profileX[profCentroid][ix] = *pCentroid++;
-        this->profileX[profCursor][ix]   = *pCursor++;
+    iy = MIN(iy, pStats->profileSizeY-1);
+    pCursor = pData + iy*pStats->profileSizeX;
+    for (ix=0; ix<pStats->profileSizeX; ix++) {
+        pStats->profileX[profCentroid][ix] = *pCentroid++;
+        pStats->profileX[profCursor][ix]   = *pCursor++;
     }
-    ix = (size_t) (this->centroidX + 0.5);
+    ix = (size_t) (pStats->centroidX + 0.5);
     ix = MAX(ix, 0);
-    ix = MIN(ix, this->profileSizeX-1);
+    ix = MIN(ix, pStats->profileSizeX-1);
     pCentroid = pData + ix;
-    ix = this->cursorX;
+    ix = pStats->cursorX;
     ix = MAX(ix, 0);
-    ix = MIN(ix, this->profileSizeX-1);
+    ix = MIN(ix, pStats->profileSizeX-1);
     pCursor = pData + ix;
-    for (iy=0; iy<this->profileSizeY; iy++) {
-        this->profileY[profCentroid][iy] = *pCentroid;
-        this->profileY[profCursor][iy]   = *pCursor;
-        pCentroid += this->profileSizeX;
-        pCursor   += this->profileSizeX;
+    for (iy=0; iy<pStats->profileSizeY; iy++) {
+        pStats->profileY[profCentroid][iy] = *pCentroid;
+        pStats->profileY[profCursor][iy]   = *pCursor;
+        pCentroid += pStats->profileSizeX;
+        pCursor   += pStats->profileSizeX;
     }
-    this->lock();
-    doCallbacksFloat64Array(this->profileX[profAverage],   this->profileSizeX, NDPluginStatsProfileAverageX, 0);
-    doCallbacksFloat64Array(this->profileY[profAverage],   this->profileSizeY, NDPluginStatsProfileAverageY, 0);
-    doCallbacksFloat64Array(this->profileX[profThreshold], this->profileSizeX, NDPluginStatsProfileThresholdX, 0);
-    doCallbacksFloat64Array(this->profileY[profThreshold], this->profileSizeY, NDPluginStatsProfileThresholdY, 0);
-    doCallbacksFloat64Array(this->profileX[profCentroid],  this->profileSizeX, NDPluginStatsProfileCentroidX, 0);
-    doCallbacksFloat64Array(this->profileY[profCentroid],  this->profileSizeY, NDPluginStatsProfileCentroidY, 0);
-    doCallbacksFloat64Array(this->profileX[profCursor],    this->profileSizeX, NDPluginStatsProfileCursorX, 0);
-    doCallbacksFloat64Array(this->profileY[profCursor],    this->profileSizeY, NDPluginStatsProfileCursorY, 0);
     
     return(asynSuccess);
 }
 
-asynStatus NDPluginStats::doComputeProfiles(NDArray *pArray)
+asynStatus NDPluginStats::doComputeProfiles(NDArray *pArray, NDStats_t *pStats)
 {
     asynStatus status;
 
     switch(pArray->dataType) {
         case NDInt8:
-            status = doComputeProfilesT<epicsInt8>(pArray);
+            status = doComputeProfilesT<epicsInt8>(pArray, pStats);
             break;
         case NDUInt8:
-            status = doComputeProfilesT<epicsUInt8>(pArray);
+            status = doComputeProfilesT<epicsUInt8>(pArray, pStats);
             break;
         case NDInt16:
-            status = doComputeProfilesT<epicsInt16>(pArray);
+            status = doComputeProfilesT<epicsInt16>(pArray, pStats);
             break;
         case NDUInt16:
-            status = doComputeProfilesT<epicsUInt16>(pArray);
+            status = doComputeProfilesT<epicsUInt16>(pArray, pStats);
             break;
         case NDInt32:
-            status = doComputeProfilesT<epicsInt32>(pArray);
+            status = doComputeProfilesT<epicsInt32>(pArray, pStats);
             break;
         case NDUInt32:
-            status = doComputeProfilesT<epicsUInt32>(pArray);
+            status = doComputeProfilesT<epicsUInt32>(pArray, pStats);
             break;
         case NDFloat32:
-            status = doComputeProfilesT<epicsFloat32>(pArray);
+            status = doComputeProfilesT<epicsFloat32>(pArray, pStats);
             break;
         case NDFloat64:
-            status = doComputeProfilesT<epicsFloat64>(pArray);
+            status = doComputeProfilesT<epicsFloat64>(pArray, pStats);
             break;
         default:
             status = asynError;
@@ -471,8 +444,9 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     int computeStatistics, computeCentroid, computeProfiles, computeHistogram;
     size_t sizeX=0, sizeY=0;
     int i;
-    int itemp;
     int numTSPoints, currentTSPoint, TSAcquiring;
+    int arrayCallbacks = 0;
+    int itemp;
     NDArrayInfo arrayInfo;
     static const char* functionName = "processCallbacks";
 
@@ -484,30 +458,40 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     getIntegerParam(NDPluginStatsComputeCentroid,    &computeCentroid);
     getIntegerParam(NDPluginStatsComputeProfiles,    &computeProfiles);
     getIntegerParam(NDPluginStatsComputeHistogram,   &computeHistogram);
-    
+    getIntegerParam(NDPluginStatsBgdWidth, &bgdWidth);
+    getIntegerParam(NDPluginStatsCursorX, &itemp); pStats->cursorX = itemp;
+    getIntegerParam(NDPluginStatsCursorY, &itemp); pStats->cursorY = itemp;
+    getIntegerParam(NDPluginStatsHistSize, &pStats->histSize);
+    getDoubleParam (NDPluginStatsHistMin,  &pStats->histMin);
+    getDoubleParam (NDPluginStatsHistMax,  &pStats->histMax);
+    getDoubleParam (NDPluginStatsCentroidThreshold,  &pStats->centroidThreshold);
+  
     if (pArray->ndims > 0) sizeX = pArray->dims[0].size;
     if (pArray->ndims == 1) sizeY = 1;
     if (pArray->ndims > 1)  sizeY = pArray->dims[1].size;
 
-    if (sizeX != this->profileSizeX) {
-        this->profileSizeX = sizeX;
-        setIntegerParam(NDPluginStatsProfileSizeX,  (int)this->profileSizeX);
+    
+    if (computeCentroid || computeProfiles) {
+        pStats->profileSizeX = sizeX;
+        setIntegerParam(NDPluginStatsProfileSizeX,  (int)pStats->profileSizeX);
         for (i=0; i<MAX_PROFILE_TYPES; i++) {
-            if (this->profileX[i]) free(this->profileX[i]);
-            this->profileX[i] = (double *)malloc(this->profileSizeX * sizeof(double));
+            pStats->profileX[i] = (double *)malloc(pStats->profileSizeX * sizeof(double));
         }
-    }
-    if (sizeY != this->profileSizeY) {
-        this->profileSizeY = sizeY;
-        setIntegerParam(NDPluginStatsProfileSizeY, (int)this->profileSizeY);
+        pStats->profileSizeY = sizeY;
+        setIntegerParam(NDPluginStatsProfileSizeY, (int)pStats->profileSizeY);
         for (i=0; i<MAX_PROFILE_TYPES; i++) {
-            if (this->profileY[i]) free(this->profileY[i]);
-            this->profileY[i] = (double *)malloc(this->profileSizeY * sizeof(double));
+            pStats->profileY[i] = (double *)malloc(pStats->profileSizeY * sizeof(double));
         }
     }
 
+    if (computeHistogram) {
+        pStats->histogram = (double *)calloc(pStats->histSize, sizeof(double));
+    }
+
+    // Release the lock.  While it is released we cannot access the parameter library or class member data.
+    this->unlock();
+ 
     if (computeStatistics) {
-        getIntegerParam(NDPluginStatsBgdWidth, &bgdWidth);
         doComputeStatistics(pArray, pStats);
         /* If there is a non-zero background width then compute the background counts */
         // Note that the following algorithm is general in N-dimensions but does have a slight inaccuracy.
@@ -557,53 +541,23 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
             avgBgd = bgdCounts / bgdPixels;
             pStats->net = pStats->total - avgBgd*pStats->nElements;
         }
-        setDoubleParam(NDPluginStatsMinValue,    pStats->min);
-        setDoubleParam(NDPluginStatsMinX,        (double)pStats->minX);
-        setDoubleParam(NDPluginStatsMinY,        (double)pStats->minY);                        
-        setDoubleParam(NDPluginStatsMaxValue,    pStats->max);
-        setDoubleParam(NDPluginStatsMaxX,        (double)pStats->maxX);
-        setDoubleParam(NDPluginStatsMaxY,        (double)pStats->maxY);                                
-        setDoubleParam(NDPluginStatsMeanValue,   pStats->mean);
-        setDoubleParam(NDPluginStatsSigmaValue,  pStats->sigma);
-        setDoubleParam(NDPluginStatsTotal,       pStats->total);
-        setDoubleParam(NDPluginStatsNet,         pStats->net);
-        asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
-            (char *)pArray->pData, arrayInfo.totalBytes,
-            "%s:%s min=%f, max=%f, mean=%f, total=%f, net=%f",
-            driverName, functionName, pStats->min, pStats->max, pStats->mean, pStats->total, pStats->net);
     }
 
     if (computeCentroid) {
-        doComputeCentroid(pArray);
-        setDoubleParam(NDPluginStatsCentroidTotal, this->centroidTotal);
-        setDoubleParam(NDPluginStatsCentroidX,     this->centroidX);
-        setDoubleParam(NDPluginStatsCentroidY,     this->centroidY);
-        setDoubleParam(NDPluginStatsSigmaX,        this->sigmaX);
-        setDoubleParam(NDPluginStatsSigmaY,        this->sigmaY);
-        setDoubleParam(NDPluginStatsSigmaXY,       this->sigmaXY);
-        setDoubleParam(NDPluginStatsSkewX,         this->skewX);
-        setDoubleParam(NDPluginStatsSkewY,         this->skewY);
-        setDoubleParam(NDPluginStatsKurtosisX,     this->kurtosisX);
-        setDoubleParam(NDPluginStatsKurtosisY,     this->kurtosisY);
-        setDoubleParam(NDPluginStatsEccentricity,  this->eccentricity);
-        setDoubleParam(NDPluginStatsOrientation,   this->orientation);
+         doComputeCentroid(pArray, pStats);
     }
          
     if (computeProfiles) {
-        doComputeProfiles(pArray);
+        doComputeProfiles(pArray, pStats);
     }
     
     if (computeHistogram) {
-        getIntegerParam(NDPluginStatsHistSize, &itemp); this->histSizeNew = itemp;
-        getDoubleParam (NDPluginStatsHistMin,  &this->histMin);
-        getDoubleParam (NDPluginStatsHistMax,  &this->histMax);
-        doComputeHistogram(pArray);
-        setDoubleParam(NDPluginStatsHistEntropy, this->histEntropy);
-        setIntegerParam(NDPluginStatsHistBelow, this->histBelow);
-        setIntegerParam(NDPluginStatsHistAbove, this->histAbove);
-        doCallbacksFloat64Array(this->histogram, this->histogramSize, NDPluginStatsHistArray, 0);
+        doComputeHistogram(pArray, pStats);
     }
     
+    // Take the lock again.  The time-series data need to be protected.
+    this->lock();
+
     getIntegerParam(NDPluginStatsTSCurrentPoint,     &currentTSPoint);
     getIntegerParam(NDPluginStatsTSNumPoints,        &numTSPoints);
     getIntegerParam(NDPluginStatsTSAcquiring,        &TSAcquiring);
@@ -618,18 +572,18 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
         timeSeries[TSSigmaValue][currentTSPoint]  = pStats->sigma;
         timeSeries[TSTotal][currentTSPoint]       = pStats->total;
         timeSeries[TSNet][currentTSPoint]         = pStats->net;
-        timeSeries[TSCentroidTotal][currentTSPoint]   = this->centroidTotal;
-        timeSeries[TSCentroidX][currentTSPoint]       = this->centroidX;
-        timeSeries[TSCentroidY][currentTSPoint]       = this->centroidY;
-        timeSeries[TSSigmaX][currentTSPoint]          = this->sigmaX;
-        timeSeries[TSSigmaY][currentTSPoint]          = this->sigmaY;
-        timeSeries[TSSigmaXY][currentTSPoint]         = this->sigmaXY;
-        timeSeries[TSSkewX][currentTSPoint]           = this->skewX;
-        timeSeries[TSSkewY][currentTSPoint]           = this->skewY;
-        timeSeries[TSKurtosisX][currentTSPoint]       = this->kurtosisX;
-        timeSeries[TSKurtosisY][currentTSPoint]       = this->kurtosisY;
-        timeSeries[TSEccentricity][currentTSPoint]    = this->eccentricity;
-        timeSeries[TSOrientation][currentTSPoint]     = this->orientation;
+        timeSeries[TSCentroidTotal][currentTSPoint]   = pStats->centroidTotal;
+        timeSeries[TSCentroidX][currentTSPoint]       = pStats->centroidX;
+        timeSeries[TSCentroidY][currentTSPoint]       = pStats->centroidY;
+        timeSeries[TSSigmaX][currentTSPoint]          = pStats->sigmaX;
+        timeSeries[TSSigmaY][currentTSPoint]          = pStats->sigmaY;
+        timeSeries[TSSigmaXY][currentTSPoint]         = pStats->sigmaXY;
+        timeSeries[TSSkewX][currentTSPoint]           = pStats->skewX;
+        timeSeries[TSSkewY][currentTSPoint]           = pStats->skewY;
+        timeSeries[TSKurtosisX][currentTSPoint]       = pStats->kurtosisX;
+        timeSeries[TSKurtosisY][currentTSPoint]       = pStats->kurtosisY;
+        timeSeries[TSEccentricity][currentTSPoint]    = pStats->eccentricity;
+        timeSeries[TSOrientation][currentTSPoint]     = pStats->orientation;
         timeSeries[TSTimestamp][currentTSPoint]       = pArray->timeStamp;
         currentTSPoint++;
         setIntegerParam(NDPluginStatsTSCurrentPoint, currentTSPoint);
@@ -639,8 +593,67 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
         }
     }
 
+    if (computeStatistics) {
+        setDoubleParam(NDPluginStatsMinValue,    pStats->min);
+        setDoubleParam(NDPluginStatsMinX,        (double)pStats->minX);
+        setDoubleParam(NDPluginStatsMinY,        (double)pStats->minY);                        
+        setDoubleParam(NDPluginStatsMaxValue,    pStats->max);
+        setDoubleParam(NDPluginStatsMaxX,        (double)pStats->maxX);
+        setDoubleParam(NDPluginStatsMaxY,        (double)pStats->maxY);                                
+        setDoubleParam(NDPluginStatsMeanValue,   pStats->mean);
+        setDoubleParam(NDPluginStatsSigmaValue,  pStats->sigma);
+        setDoubleParam(NDPluginStatsTotal,       pStats->total);
+        setDoubleParam(NDPluginStatsNet,         pStats->net);
+        asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
+            (char *)pArray->pData, arrayInfo.totalBytes,
+            "%s:%s min=%f, max=%f, mean=%f, total=%f, net=%f",
+            driverName, functionName, pStats->min, pStats->max, pStats->mean, pStats->total, pStats->net);
+    } 
 
-    int arrayCallbacks = 0;
+    if (computeCentroid) {
+        setDoubleParam(NDPluginStatsCentroidTotal, pStats->centroidTotal);
+        setDoubleParam(NDPluginStatsCentroidX,     pStats->centroidX);
+        setDoubleParam(NDPluginStatsCentroidY,     pStats->centroidY);
+        setDoubleParam(NDPluginStatsSigmaX,        pStats->sigmaX);
+        setDoubleParam(NDPluginStatsSigmaY,        pStats->sigmaY);
+        setDoubleParam(NDPluginStatsSigmaXY,       pStats->sigmaXY);
+        setDoubleParam(NDPluginStatsSkewX,         pStats->skewX);
+        setDoubleParam(NDPluginStatsSkewY,         pStats->skewY);
+        setDoubleParam(NDPluginStatsKurtosisX,     pStats->kurtosisX);
+        setDoubleParam(NDPluginStatsKurtosisY,     pStats->kurtosisY);
+        setDoubleParam(NDPluginStatsEccentricity,  pStats->eccentricity);
+        setDoubleParam(NDPluginStatsOrientation,   pStats->orientation);
+    }
+
+    if (computeProfiles) {
+        doCallbacksFloat64Array(pStats->profileX[profAverage],   pStats->profileSizeX, NDPluginStatsProfileAverageX, 0);
+        doCallbacksFloat64Array(pStats->profileY[profAverage],   pStats->profileSizeY, NDPluginStatsProfileAverageY, 0);
+        doCallbacksFloat64Array(pStats->profileX[profThreshold], pStats->profileSizeX, NDPluginStatsProfileThresholdX, 0);
+        doCallbacksFloat64Array(pStats->profileY[profThreshold], pStats->profileSizeY, NDPluginStatsProfileThresholdY, 0);
+        doCallbacksFloat64Array(pStats->profileX[profCentroid],  pStats->profileSizeX, NDPluginStatsProfileCentroidX, 0);
+        doCallbacksFloat64Array(pStats->profileY[profCentroid],  pStats->profileSizeY, NDPluginStatsProfileCentroidY, 0);
+        doCallbacksFloat64Array(pStats->profileX[profCursor],    pStats->profileSizeX, NDPluginStatsProfileCursorX, 0);
+        doCallbacksFloat64Array(pStats->profileY[profCursor],    pStats->profileSizeY, NDPluginStatsProfileCursorY, 0);
+    }
+
+    if (computeHistogram) {
+        setDoubleParam(NDPluginStatsHistEntropy, pStats->histEntropy);
+        setIntegerParam(NDPluginStatsHistBelow, pStats->histBelow);
+        setIntegerParam(NDPluginStatsHistAbove, pStats->histAbove);
+        doCallbacksFloat64Array(pStats->histogram, pStats->histSize, NDPluginStatsHistArray, 0);
+    }
+
+    if (computeCentroid || computeProfiles) {
+        for (i=0; i<MAX_PROFILE_TYPES; i++) {
+            free(pStats->profileX[i]);
+            free(pStats->profileY[i]);
+        }
+    }
+
+    if (computeHistogram) {
+        free(pStats->histogram);
+    }
+
     getIntegerParam(NDArrayCallbacks, &arrayCallbacks);
     if (arrayCallbacks == 1) {
         NDArray *pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 1);
@@ -681,14 +694,12 @@ asynStatus NDPluginStats::writeInt32(asynUser *pasynUser, epicsInt32 value)
     status = (asynStatus) setIntegerParam(function, value);
 
     if (function == NDPluginStatsCursorX) {
-        this->cursorX = value;
         if (this->pArrays[0]) {
-            doComputeProfiles(this->pArrays[0]);
+            processCallbacks(this->pArrays[0]);
         }
     } else if (function == NDPluginStatsCursorY) {
-        this->cursorY = value;
         if (this->pArrays[0]) {
-            doComputeProfiles(this->pArrays[0]);
+            processCallbacks(this->pArrays[0]);
         }
     } else if (function == NDPluginStatsTSNumPoints) {
         for (i=0; i<MAX_TIME_SERIES_TYPES; i++) {
@@ -749,7 +760,7 @@ asynStatus  NDPluginStats::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 {
     int function = pasynUser->reason;
     asynStatus status = asynSuccess;
-    int computeCentroid, computeProfiles;
+    int computeCentroid;
     static const char *functionName = "writeFloat64";
 
     /* Set the parameter and readback in the parameter library.  This may be overwritten when we read back the
@@ -759,9 +770,7 @@ asynStatus  NDPluginStats::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
     if (function == NDPluginStatsCentroidThreshold) {
         getIntegerParam(NDPluginStatsComputeCentroid, &computeCentroid);
         if (computeCentroid && this->pArrays[0]) {
-            doComputeCentroid(this->pArrays[0]);
-            getIntegerParam(NDPluginStatsComputeProfiles, &computeProfiles);
-            if (computeProfiles) doComputeProfiles(this->pArrays[0]);
+            processCallbacks(this->pArrays[0]);
         }
     } else {
         /* If this parameter belongs to a base class call its method */
@@ -901,8 +910,6 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
     createParam(NDPluginStatsHistEntropyString,       asynParamFloat64,       &NDPluginStatsHistEntropy);
     createParam(NDPluginStatsHistArrayString,         asynParamFloat64Array,  &NDPluginStatsHistArray);
 
-    memset(this->profileX, 0, sizeof(this->profileX));
-    memset(this->profileY, 0, sizeof(this->profileY));
     // If we uncomment the following line then we can't set numTSPoints from database at initialisation
     //setIntegerParam(NDPluginStatsTSNumPoints, numTSPoints);
     setIntegerParam(NDPluginStatsTSAcquiring, 0);
@@ -910,7 +917,6 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
     for (i=0; i<MAX_TIME_SERIES_TYPES; i++) {
         timeSeries[i] = (double *)calloc(numTSPoints, sizeof(double));
     }
-    this->histogram = NULL;
 
     /* Set the plugin type string */
     setStringParam(NDPluginDriverPluginType, "NDPluginStats");
