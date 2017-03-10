@@ -475,12 +475,12 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
         pStats->profileSizeX = sizeX;
         setIntegerParam(NDPluginStatsProfileSizeX,  (int)pStats->profileSizeX);
         for (i=0; i<MAX_PROFILE_TYPES; i++) {
-            pStats->profileX[i] = (double *)malloc(pStats->profileSizeX * sizeof(double));
+            pStats->profileX[i] = (double *)calloc(pStats->profileSizeX, sizeof(double));
         }
         pStats->profileSizeY = sizeY;
         setIntegerParam(NDPluginStatsProfileSizeY, (int)pStats->profileSizeY);
         for (i=0; i<MAX_PROFILE_TYPES; i++) {
-            pStats->profileY[i] = (double *)malloc(pStats->profileSizeY * sizeof(double));
+            pStats->profileY[i] = (double *)calloc(pStats->profileSizeY, sizeof(double));
         }
     }
 
