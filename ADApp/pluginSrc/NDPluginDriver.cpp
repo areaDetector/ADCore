@@ -581,10 +581,9 @@ asynStatus NDPluginDriver::createCallbackThreads()
     getIntegerParam(NDPluginDriverMaxThreads, &maxThreads);
     getIntegerParam(NDPluginDriverNumThreads, &numThreads);
     getIntegerParam(NDPluginDriverQueueSize, &queueSize);
-    if (numThreads > maxThreads) {
-        numThreads = maxThreads;
-        setIntegerParam(NDPluginDriverNumThreads, numThreads);
-    }
+    if (numThreads > maxThreads) numThreads = maxThreads;
+    if (numThreads < 1) numThreads = 1;
+    setIntegerParam(NDPluginDriverNumThreads, numThreads);
     numThreads_ = numThreads;
   
     pThreads_.resize(numThreads);
