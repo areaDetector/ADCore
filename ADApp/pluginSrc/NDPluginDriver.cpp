@@ -782,5 +782,12 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
 
 NDPluginDriver::~NDPluginDriver()
 {
+  // Most methods in NDPluginDriver expect to be called with the asynPortDriver mutex locked.
+  // The destructor does not, the mutex should be unlocked before calling the destructor.
+  // We lock the mutex because deleteCallbackThreads expects it to be held, but then
+  // unlocked it because the mutex is deleted in the asynPortDriver destructor and the
+  // mutex must be unlocked before deleting it.
+  this->lock();
   deleteCallbackThreads();
+  this->unlock();
 }
