@@ -45,9 +45,164 @@ typedef struct {
     epicsThreadId threadId;
 } FromThreadMessage_t;
 
-
-
 static const char *driverName="NDPluginDriver";
+
+// This class defines the object that is contained in the std::multilist for sorting output NDArrays
+// It contains a pointer to the NDArray and the time that the object was added to the list
+// It defines the < operator to use the NDArray::uniqueId field as the sort key
+class sortedListElement {
+    public:
+        sortedListElement(NDArray *pArray, epicsTimeStamp time);
+        friend bool operator<(const sortedListElement& lhs, const sortedListElement& rhs) {
+            return (lhs.pArray_->uniqueId < rhs.pArray_->uniqueId);
+        }
+        NDArray *pArray_;
+        epicsTimeStamp insertionTime_;
+};
+
+sortedListElement::sortedListElement(NDArray *pArray, epicsTimeStamp time)
+    : pArray_(pArray), insertionTime_(time) {}
+
+static void sortingTaskC(void *drvPvt)
+{
+    NDPluginDriver *pPvt = (NDPluginDriver *)drvPvt;
+
+    pPvt->sortingTask();
+}
+
+/** Constructor for NDPluginDriver; most parameters are simply passed to asynNDArrayDriver::asynNDArrayDriver.
+  * After calling the base class constructor this method creates a thread to execute the NDArray callbacks, 
+  * and sets reasonable default values for all of the parameters defined in NDPluginDriver.h.
+  * \param[in] portName The name of the asyn port driver to be created.
+  * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when 
+  *            NDPluginDriverBlockingCallbacks=0.  Larger queues can decrease the number of dropped arrays,
+  *            at the expense of more NDArray buffers being allocated from the underlying driver's NDArrayPool.
+  * \param[in] blockingCallbacks Initial setting for the NDPluginDriverBlockingCallbacks flag.
+  *            0=callbacks are queued and executed by the callback thread; 1 callbacks execute in the thread
+  *            of the driver doing the callbacks.
+  * \param[in] NDArrayPort Name of asyn port driver for initial source of NDArray callbacks.
+  * \param[in] NDArrayAddr asyn port driver address for initial source of NDArray callbacks.
+  * \param[in] maxAddr The maximum  number of asyn addr addresses this driver supports. 1 is minimum.
+  * \param[in] numParams The number of parameters that the derived class supports. No longer used.
+  * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is 
+  *            allowed to allocate. Set this to -1 to allow an unlimited number of buffers.
+  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
+  *            allowed to allocate. Set this to -1 to allow an unlimited amount of memory.
+  * \param[in] interfaceMask Bit mask defining the asyn interfaces that this driver supports.
+  * \param[in] interruptMask Bit mask definining the asyn interfaces that can generate interrupts (callbacks)
+  * \param[in] asynFlags Flags when creating the asyn port driver; includes ASYN_CANBLOCK and ASYN_MULTIDEVICE.
+  * \param[in] autoConnect The autoConnect flag for the asyn port driver.
+  * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  */
+NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blockingCallbacks, 
+                               const char *NDArrayPort, int NDArrayAddr, int maxAddr, int numParams,
+                               int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
+                               int asynFlags, int autoConnect, int priority, int stackSize, int maxThreads)
+
+    : asynNDArrayDriver(portName, maxAddr, 0, maxBuffers, maxMemory,
+          interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynDrvUserMask,
+          interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask,
+          asynFlags, autoConnect, priority, stackSize),
+    pluginStarted_(false),
+    pToThreadMsgQ_(NULL),
+    pFromThreadMsgQ_(NULL),
+    pInputArray_(0)    
+{
+    asynUser *pasynUser;
+    int status;
+    static const char *functionName = "NDPluginDriver";
+    
+    /* We use the same stack size for our callback thread as for the port thread */
+    if (stackSize <= 0) stackSize = epicsThreadGetStackSize(epicsThreadStackMedium);
+    threadStackSize_ = stackSize;
+    
+    lock();
+    
+    /* Initialize some members to 0 */
+    memset(&this->lastProcessTime_, 0, sizeof(this->lastProcessTime_));
+    memset(&this->dimsPrev_, 0, sizeof(this->dimsPrev_));
+    this->pasynGenericPointer_ = NULL;
+    this->asynGenericPointerPvt_ = NULL;
+    this->asynGenericPointerInterruptPvt_ = NULL;
+    this->connectedToArrayPort_ = false;
+    
+    if (maxThreads < 1) maxThreads = 1;
+    
+    /* Create asynUser for communicating with NDArray port */
+    pasynUser = pasynManager->createAsynUser(0, 0);
+    pasynUser->userPvt = this;
+    this->pasynUserGenericPointer_ = pasynUser;
+    this->pasynUserGenericPointer_->reason = NDArrayData;
+
+    createParam(NDPluginDriverArrayPortString,         asynParamOctet, &NDPluginDriverArrayPort);
+    createParam(NDPluginDriverArrayAddrString,         asynParamInt32, &NDPluginDriverArrayAddr);
+    createParam(NDPluginDriverPluginTypeString,        asynParamOctet, &NDPluginDriverPluginType);
+    createParam(NDPluginDriverDroppedArraysString,     asynParamInt32, &NDPluginDriverDroppedArrays);
+    createParam(NDPluginDriverQueueSizeString,         asynParamInt32, &NDPluginDriverQueueSize);
+    createParam(NDPluginDriverQueueFreeString,         asynParamInt32, &NDPluginDriverQueueFree);
+    createParam(NDPluginDriverMaxThreadsString,        asynParamInt32, &NDPluginDriverMaxThreads);
+    createParam(NDPluginDriverNumThreadsString,        asynParamInt32, &NDPluginDriverNumThreads);
+    createParam(NDPluginDriverSortModeString,          asynParamInt32, &NDPluginDriverSortMode);
+    createParam(NDPluginDriverSortTimeString,          asynParamFloat64, &NDPluginDriverSortTime);
+    createParam(NDPluginDriverSortSizeString,          asynParamInt32, &NDPluginDriverSortSize);
+    createParam(NDPluginDriverSortFreeString,          asynParamInt32, &NDPluginDriverSortFree);
+    createParam(NDPluginDriverUnsortedArraysString,    asynParamInt32, &NDPluginDriverUnsortedArrays);
+    createParam(NDPluginDriverEnableCallbacksString,   asynParamInt32, &NDPluginDriverEnableCallbacks);
+    createParam(NDPluginDriverBlockingCallbacksString, asynParamInt32, &NDPluginDriverBlockingCallbacks);
+    createParam(NDPluginDriverProcessPluginString,     asynParamInt32, &NDPluginDriverProcessPlugin);
+    createParam(NDPluginDriverExecutionTimeString,     asynParamFloat64, &NDPluginDriverExecutionTime);
+    createParam(NDPluginDriverMinCallbackTimeString,   asynParamFloat64, &NDPluginDriverMinCallbackTime);
+
+    /* Here we set the values of read-only parameters and of read/write parameters that cannot
+     * or should not get their values from the database.  Note that values set here will override
+     * those in the database for output records because if asyn device support reads a value from 
+     * the driver with no error during initialization then it sets the output record to that value.  
+     * If a value is not set here then the read request will return an error (uninitialized).
+     * Values set here will be overridden by values from save/restore if they exist. */
+    setStringParam (NDPluginDriverArrayPort, NDArrayPort);
+    setIntegerParam(NDPluginDriverArrayAddr, NDArrayAddr);
+    setIntegerParam(NDPluginDriverDroppedArrays, 0);
+    setIntegerParam(NDPluginDriverQueueSize, queueSize);
+    setIntegerParam(NDPluginDriverMaxThreads, maxThreads);
+    setIntegerParam(NDPluginDriverNumThreads, maxThreads);
+    setIntegerParam(NDPluginDriverBlockingCallbacks, blockingCallbacks);
+    
+    /* Create the callback threads, unless blocking callbacks are disabled with
+     * the blockingCallbacks argument here. Even then, if they are enabled
+     * subsequently, we will create the threads then. */
+    if (!blockingCallbacks) {
+        createCallbackThreads();
+    }
+
+    /* Create the thread that outputs sorted NDArrays */
+    char taskName[256];
+    epicsSnprintf(taskName, sizeof(taskName)-1, "%s_Plugin_Sort", portName);
+    status = (epicsThreadCreate(taskName,
+              epicsThreadPriorityMedium,
+              epicsThreadGetStackSize(epicsThreadStackMedium),
+              (EPICSTHREADFUNC)sortingTaskC,
+              this) == NULL);
+    if (status) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s::%s error creating sortingTask thread\n", 
+            driverName, functionName);
+    }
+    
+    unlock();
+}
+
+NDPluginDriver::~NDPluginDriver()
+{
+  // Most methods in NDPluginDriver expect to be called with the asynPortDriver mutex locked.
+  // The destructor does not, the mutex should be unlocked before calling the destructor.
+  // We lock the mutex because deleteCallbackThreads expects it to be held, but then
+  // unlocked it because the mutex is deleted in the asynPortDriver destructor and the
+  // mutex must be unlocked before deleting it.
+  this->lock();
+  deleteCallbackThreads();
+  this->unlock();
+}
 
 /** Method that is normally called at the beginning of the processCallbacks
   * method in derived classes.
@@ -342,6 +497,99 @@ asynStatus NDPluginDriver::connectToArrayPort(void)
     return(status);
 }   
 
+void NDPluginDriver::sortingTask()
+{
+    double sortTime;
+    epicsTimeStamp now;
+    int queueSize;
+    double deltaTime;
+    int prevUniqueId = -1000;
+    int listSize;
+    std::multiset<sortedListElement>::iterator pListElement;
+    static const char *functionName = "sortingTask";
+
+    lock();
+    while (1) {
+        getDoubleParam(NDPluginDriverSortTime, &sortTime);
+        unlock();
+        epicsThreadSleep(sortTime);
+        lock();
+        epicsTimeGetCurrent(&now);
+        getIntegerParam(NDPluginDriverQueueSize, &queueSize);
+        while ((listSize=(int)sortedNDArrayList_.size()) > 0) {
+            pListElement=sortedNDArrayList_.begin();
+            deltaTime = epicsTimeDiffInSeconds(&now, &pListElement->insertionTime_);
+            asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER, 
+                "%s::%s, deltaTime=%f, list size=%d, uniqueId=%d\n", 
+                driverName, functionName, deltaTime, listSize, pListElement->pArray_->uniqueId);
+            if ((pListElement->pArray_->uniqueId == prevUniqueId)   ||
+                (pListElement->pArray_->uniqueId == prevUniqueId+1) ||
+                (deltaTime > sortTime)) {
+                this->unlock();
+                doCallbacksGenericPointer(pListElement->pArray_, NDArrayData, 0);
+                this->lock();
+                prevUniqueId = pListElement->pArray_->uniqueId;
+                pListElement->pArray_->release();
+                sortedNDArrayList_.erase(pListElement);
+            } else  {
+                break;
+            }
+        }
+        listSize=(int)sortedNDArrayList_.size();
+        setIntegerParam(NDPluginDriverSortFree, queueSize-listSize);
+        callParamCallbacks();
+    }    
+}
+
+asynStatus NDPluginDriver::doNDArrayCallbacks(NDArray *pArray)
+{
+    int arrayCallbacks;
+    static const char *functionName = "doNDArrayCallbacks";
+
+    getIntegerParam(NDArrayCallbacks, &arrayCallbacks);
+    if (arrayCallbacks == 1) {
+        int callbacksSorted;
+        getIntegerParam(NDPluginDriverSortMode, &callbacksSorted);
+        NDArray *pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 1);
+        if (NULL != pArrayOut) {
+            this->getAttributes(pArrayOut->pAttributeList);
+            if (this->pArrays[0]) this->pArrays[0]->release();
+            this->pArrays[0] = pArrayOut;
+        }
+        else {
+            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+                "%s::%s: Couldn't allocate output array. Further processing terminated.\n", 
+                driverName, functionName);
+            return asynError;
+        }
+        if (callbacksSorted) {
+            int sortSize;
+            int listSize = (int)sortedNDArrayList_.size();
+            getIntegerParam(NDPluginDriverSortSize, &sortSize);
+            setIntegerParam(NDPluginDriverSortFree, sortSize-listSize);
+            if ( listSize >= sortSize) {
+                int droppedArrays;
+                getIntegerParam(NDPluginDriverDroppedArrays, &droppedArrays);
+                asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
+                    "%s::%s std::multilist size exceeded, dropped array uniqueId=%d\n",
+                    driverName, functionName, pArrayOut->uniqueId);
+                droppedArrays++;
+                setIntegerParam(NDPluginDriverDroppedArrays, droppedArrays);
+            } else {
+                epicsTimeStamp now;
+                epicsTimeGetCurrent(&now);
+                pArrayOut->reserve();
+                sortedListElement *pListElement = new sortedListElement(pArrayOut, now);
+                sortedNDArrayList_.insert(*pListElement);
+            }
+        } else {
+            this->unlock();
+            doCallbacksGenericPointer(pArrayOut, NDArrayData, 0);
+            this->lock();
+        }
+    }
+    return asynSuccess;
+}
 
 /** Called when asyn clients call pasynInt32->write().
   * This function performs actions for some parameters, including NDPluginDriverEnableCallbacks and
@@ -678,115 +926,3 @@ asynStatus NDPluginDriver::deleteCallbackThreads()
     return status;
 }
 
-/** Constructor for NDPluginDriver; most parameters are simply passed to asynNDArrayDriver::asynNDArrayDriver.
-  * After calling the base class constructor this method creates a thread to execute the NDArray callbacks, 
-  * and sets reasonable default values for all of the parameters defined in NDPluginDriver.h.
-  * \param[in] portName The name of the asyn port driver to be created.
-  * \param[in] queueSize The number of NDArrays that the input queue for this plugin can hold when 
-  *            NDPluginDriverBlockingCallbacks=0.  Larger queues can decrease the number of dropped arrays,
-  *            at the expense of more NDArray buffers being allocated from the underlying driver's NDArrayPool.
-  * \param[in] blockingCallbacks Initial setting for the NDPluginDriverBlockingCallbacks flag.
-  *            0=callbacks are queued and executed by the callback thread; 1 callbacks execute in the thread
-  *            of the driver doing the callbacks.
-  * \param[in] NDArrayPort Name of asyn port driver for initial source of NDArray callbacks.
-  * \param[in] NDArrayAddr asyn port driver address for initial source of NDArray callbacks.
-  * \param[in] maxAddr The maximum  number of asyn addr addresses this driver supports. 1 is minimum.
-  * \param[in] numParams The number of parameters that the derived class supports. No longer used.
-  * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is 
-  *            allowed to allocate. Set this to -1 to allow an unlimited number of buffers.
-  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
-  *            allowed to allocate. Set this to -1 to allow an unlimited amount of memory.
-  * \param[in] interfaceMask Bit mask defining the asyn interfaces that this driver supports.
-  * \param[in] interruptMask Bit mask definining the asyn interfaces that can generate interrupts (callbacks)
-  * \param[in] asynFlags Flags when creating the asyn port driver; includes ASYN_CANBLOCK and ASYN_MULTIDEVICE.
-  * \param[in] autoConnect The autoConnect flag for the asyn port driver.
-  * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
-  * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
-  */
-NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blockingCallbacks, 
-                               const char *NDArrayPort, int NDArrayAddr, int maxAddr, int numParams,
-                               int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
-                               int asynFlags, int autoConnect, int priority, int stackSize, int maxThreads)
-
-    : asynNDArrayDriver(portName, maxAddr, 0, maxBuffers, maxMemory,
-          interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynDrvUserMask,
-          interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask,
-          asynFlags, autoConnect, priority, stackSize),
-    pluginStarted_(false),
-    pToThreadMsgQ_(NULL),
-    pFromThreadMsgQ_(NULL),
-    pInputArray_(0)    
-{
-    asynUser *pasynUser;
-    
-    /* We use the same stack size for our callback thread as for the port thread */
-    if (stackSize <= 0) stackSize = epicsThreadGetStackSize(epicsThreadStackMedium);
-    threadStackSize_ = stackSize;
-    
-    lock();
-    
-    /* Initialize some members to 0 */
-    memset(&this->lastProcessTime_, 0, sizeof(this->lastProcessTime_));
-    memset(&this->dimsPrev_, 0, sizeof(this->dimsPrev_));
-    this->pasynGenericPointer_ = NULL;
-    this->asynGenericPointerPvt_ = NULL;
-    this->asynGenericPointerInterruptPvt_ = NULL;
-    this->connectedToArrayPort_ = false;
-    
-    if (maxThreads < 1) maxThreads = 1;
-    
-    /* Create asynUser for communicating with NDArray port */
-    pasynUser = pasynManager->createAsynUser(0, 0);
-    pasynUser->userPvt = this;
-    this->pasynUserGenericPointer_ = pasynUser;
-    this->pasynUserGenericPointer_->reason = NDArrayData;
-
-    createParam(NDPluginDriverArrayPortString,         asynParamOctet, &NDPluginDriverArrayPort);
-    createParam(NDPluginDriverArrayAddrString,         asynParamInt32, &NDPluginDriverArrayAddr);
-    createParam(NDPluginDriverPluginTypeString,        asynParamOctet, &NDPluginDriverPluginType);
-    createParam(NDPluginDriverDroppedArraysString,     asynParamInt32, &NDPluginDriverDroppedArrays);
-    createParam(NDPluginDriverQueueSizeString,         asynParamInt32, &NDPluginDriverQueueSize);
-    createParam(NDPluginDriverQueueFreeString,         asynParamInt32, &NDPluginDriverQueueFree);
-    createParam(NDPluginDriverMaxThreadsString,        asynParamInt32, &NDPluginDriverMaxThreads);
-    createParam(NDPluginDriverNumThreadsString,        asynParamInt32, &NDPluginDriverNumThreads);
-    createParam(NDPluginDriverEnableCallbacksString,   asynParamInt32, &NDPluginDriverEnableCallbacks);
-    createParam(NDPluginDriverBlockingCallbacksString, asynParamInt32, &NDPluginDriverBlockingCallbacks);
-    createParam(NDPluginDriverProcessPluginString,     asynParamInt32, &NDPluginDriverProcessPlugin);
-    createParam(NDPluginDriverExecutionTimeString,     asynParamFloat64, &NDPluginDriverExecutionTime);
-    createParam(NDPluginDriverMinCallbackTimeString,   asynParamFloat64, &NDPluginDriverMinCallbackTime);
-
-    /* Here we set the values of read-only parameters and of read/write parameters that cannot
-     * or should not get their values from the database.  Note that values set here will override
-     * those in the database for output records because if asyn device support reads a value from 
-     * the driver with no error during initialization then it sets the output record to that value.  
-     * If a value is not set here then the read request will return an error (uninitialized).
-     * Values set here will be overridden by values from save/restore if they exist. */
-    setStringParam (NDPluginDriverArrayPort, NDArrayPort);
-    setIntegerParam(NDPluginDriverArrayAddr, NDArrayAddr);
-    setIntegerParam(NDPluginDriverDroppedArrays, 0);
-    setIntegerParam(NDPluginDriverQueueSize, queueSize);
-    setIntegerParam(NDPluginDriverMaxThreads, maxThreads);
-    setIntegerParam(NDPluginDriverNumThreads, maxThreads);
-    setIntegerParam(NDPluginDriverBlockingCallbacks, blockingCallbacks);
-    
-    /* Create the callback threads, unless blocking callbacks are disabled with
-     * the blockingCallbacks argument here. Even then, if they are enabled
-     * subsequently, we will create the threads then. */
-    if (!blockingCallbacks) {
-        createCallbackThreads();
-    }
-    
-    unlock();
-}
-
-NDPluginDriver::~NDPluginDriver()
-{
-  // Most methods in NDPluginDriver expect to be called with the asynPortDriver mutex locked.
-  // The destructor does not, the mutex should be unlocked before calling the destructor.
-  // We lock the mutex because deleteCallbackThreads expects it to be held, but then
-  // unlocked it because the mutex is deleted in the asynPortDriver destructor and the
-  // mutex must be unlocked before deleting it.
-  this->lock();
-  deleteCallbackThreads();
-  this->unlock();
-}
