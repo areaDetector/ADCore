@@ -1,6 +1,7 @@
 #ifndef NDPluginDriver_H
 #define NDPluginDriver_H
 
+#include <set>
 #include <epicsTypes.h>
 #include <epicsMessageQueue.h>
 #include <epicsThread.h>
@@ -9,6 +10,12 @@
 
 #include "asynNDArrayDriver.h"
 
+typedef enum {
+    NDPluginDriverCallbacksUnsorted,
+    NDPluginDriverrCallbacksSorted
+} NDPluginDriverCallbacksSorted_t;
+
+
 #define NDPluginDriverArrayPortString           "NDARRAY_PORT"          /**< (asynOctet,    r/w) The port for the NDArray interface */
 #define NDPluginDriverArrayAddrString           "NDARRAY_ADDR"          /**< (asynInt32,    r/w) The address on the port */
 #define NDPluginDriverPluginTypeString          "PLUGIN_TYPE"           /**< (asynOctet,    r/o) The type of plugin */
@@ -16,7 +23,12 @@
 #define NDPluginDriverQueueSizeString           "QUEUE_SIZE"            /**< (asynInt32,    r/w) Total queue elements */ 
 #define NDPluginDriverQueueFreeString           "QUEUE_FREE"            /**< (asynInt32,    r/w) Free queue elements */
 #define NDPluginDriverMaxThreadsString          "MAX_THREADS"           /**< (asynInt32,    r/w) Maximum number of threads */ 
-#define NDPluginDriverNumThreadsString          "NUM_THREADS"           /**< (asynInt32,    r/w) Number of threads */ 
+#define NDPluginDriverNumThreadsString          "NUM_THREADS"           /**< (asynInt32,    r/w) Number of threads */
+#define NDPluginDriverSortModeString            "SORT_MODE"             /**< (asynInt32,    r/w) sorted callback mode */
+#define NDPluginDriverSortTimeString            "SORT_TIME"             /**< (asynFloat64,  r/w) sorted callback time */
+#define NDPluginDriverSortSizeString            "SORT_SIZE"             /**< (asynInt32,    r/o) std::multiset maximum # elements */
+#define NDPluginDriverSortFreeString            "SORT_FREE"             /**< (asynInt32,    r/o) std::multiset free elements */
+#define NDPluginDriverUnsortedArraysString      "UNSORTED_ARRAYS"       /**< (asynInt32,    r/o) Number of out of order output arrays */
 #define NDPluginDriverEnableCallbacksString     "ENABLE_CALLBACKS"      /**< (asynInt32,    r/w) Enable callbacks from driver (1=Yes, 0=No) */
 #define NDPluginDriverBlockingCallbacksString   "BLOCKING_CALLBACKS"    /**< (asynInt32,    r/w) Callbacks block (1=Yes, 0=No) */
 #define NDPluginDriverProcessPluginString       "PROCESS_PLUGIN"        /**< (asynInt32,    r/w) Process plugin with last callback array */
@@ -41,9 +53,11 @@ public:
                                         size_t nElements, size_t *nIn);
                                      
     /* These are the methods that are new to this class */
+    virtual asynStatus doNDArrayCallbacks(NDArray *pArray);
     virtual void driverCallback(asynUser *pasynUser, void *genericPointer);
     virtual void run(void);
     virtual asynStatus start(void);
+    void sortingTask();
 
 protected:
     virtual void processCallbacks(NDArray *pArray);
@@ -60,6 +74,11 @@ protected:
     int NDPluginDriverQueueFree;
     int NDPluginDriverMaxThreads;
     int NDPluginDriverNumThreads;
+    int NDPluginDriverSortMode;
+    int NDPluginDriverSortTime;
+    int NDPluginDriverSortSize;
+    int NDPluginDriverSortFree;
+    int NDPluginDriverUnsortedArrays;
     int NDPluginDriverEnableCallbacks;
     int NDPluginDriverBlockingCallbacks;
     int NDPluginDriverProcessPlugin;
@@ -86,6 +105,7 @@ private:
     std::vector<epicsThread*>pThreads_;
     epicsMessageQueue *pToThreadMsgQ_;
     epicsMessageQueue *pFromThreadMsgQ_;
+    std::multiset<class sortedListElement> sortedNDArrayList_;
     epicsTimeStamp lastProcessTime_;
     int dimsPrev_[ND_ARRAY_MAX_DIMS];
     NDArray *pInputArray_;
