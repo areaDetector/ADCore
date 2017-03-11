@@ -785,29 +785,6 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
     callParamCallbacks();
 }
 
-void NDPluginFile::doNDArrayCallbacks(NDArray *pArray)
-{
-  int arrayCallbacks = 0;
-  static const char *functionName = "doNDArrayCallbacks";
-
-  getIntegerParam(NDArrayCallbacks, &arrayCallbacks);
-  if (arrayCallbacks == 1) {
-    NDArray *pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 1);
-    if (pArrayOut != NULL) {
-      this->getAttributes(pArrayOut->pAttributeList);
-      this->unlock();
-      doCallbacksGenericPointer(pArrayOut, NDArrayData, 0);
-      this->lock();
-      pArrayOut->release();
-    }
-    else {
-      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-        "%s: Couldn't allocate output array. Callbacks failed.\n", 
-        functionName);
-    }
-  }
-}
-
 /** Called when asyn clients call pasynInt32->write().
   * This function performs actions for some parameters, including NDReadFile, NDWriteFile and NDFileCapture.
   * For other parameters it calls NDPluginDriver::writeInt32 to see if that method understands the parameter. 
