@@ -316,17 +316,17 @@ record(calcout, "$(P)$(R)SortFreeLow") {
     field(OUT,  "$(P)$(R)SortFree_RBV.LOW")
 }
 
-record(longout, "$(P)$(R)UnsortedArrays")
+record(longout, "$(P)$(R)DisorderedArrays")
 {
     field(DTYP, "asynInt32")
-    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))UNSORTED_ARRAYS")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DISORDERED_ARRAYS")
     field(PINI, "YES")
 }
 
-record(longin, "$(P)$(R)UnsortedArrays_RBV")
+record(longin, "$(P)$(R)DisorderedArrays_RBV")
 {
     field(DTYP, "asynInt32")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))UNSORTED_ARRAYS")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DISORDERED_ARRAYS")
     field(SCAN, "I/O Intr")
 }
 
