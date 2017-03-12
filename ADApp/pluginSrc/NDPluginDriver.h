@@ -19,7 +19,7 @@ typedef enum {
 #define NDPluginDriverArrayPortString           "NDARRAY_PORT"          /**< (asynOctet,    r/w) The port for the NDArray interface */
 #define NDPluginDriverArrayAddrString           "NDARRAY_ADDR"          /**< (asynInt32,    r/w) The address on the port */
 #define NDPluginDriverPluginTypeString          "PLUGIN_TYPE"           /**< (asynOctet,    r/o) The type of plugin */
-#define NDPluginDriverDroppedArraysString       "DROPPED_ARRAYS"        /**< (asynInt32,    r/w) Number of dropped arrays */
+#define NDPluginDriverDroppedArraysString       "DROPPED_ARRAYS"        /**< (asynInt32,    r/w) Number of dropped input arrays */
 #define NDPluginDriverQueueSizeString           "QUEUE_SIZE"            /**< (asynInt32,    r/w) Total queue elements */ 
 #define NDPluginDriverQueueFreeString           "QUEUE_FREE"            /**< (asynInt32,    r/w) Free queue elements */
 #define NDPluginDriverMaxThreadsString          "MAX_THREADS"           /**< (asynInt32,    r/w) Maximum number of threads */ 
@@ -29,13 +29,13 @@ typedef enum {
 #define NDPluginDriverSortSizeString            "SORT_SIZE"             /**< (asynInt32,    r/o) std::multiset maximum # elements */
 #define NDPluginDriverSortFreeString            "SORT_FREE"             /**< (asynInt32,    r/o) std::multiset free elements */
 #define NDPluginDriverDisorderedArraysString    "DISORDERED_ARRAYS"     /**< (asynInt32,    r/o) Number of out of order output arrays */
+#define NDPluginDriverDroppedOutputArraysString "DROPPED_OUTPUT_ARRAYS" /**< (asynInt32,    r/o) Number of dropped output arrays */
 #define NDPluginDriverEnableCallbacksString     "ENABLE_CALLBACKS"      /**< (asynInt32,    r/w) Enable callbacks from driver (1=Yes, 0=No) */
 #define NDPluginDriverBlockingCallbacksString   "BLOCKING_CALLBACKS"    /**< (asynInt32,    r/w) Callbacks block (1=Yes, 0=No) */
 #define NDPluginDriverProcessPluginString       "PROCESS_PLUGIN"        /**< (asynInt32,    r/w) Process plugin with last callback array */
 #define NDPluginDriverExecutionTimeString       "EXECUTION_TIME"        /**< (asynFloat64,  r/o) The last execution time (milliseconds) */
 #define NDPluginDriverMinCallbackTimeString     "MIN_CALLBACK_TIME"     /**< (asynFloat64,  r/w) Minimum time between calling processCallbacks 
                                                                          *  to execute plugin code */
-
 /** Class from which actual plugin drivers are derived; derived from asynNDArrayDriver */
 class epicsShareClass NDPluginDriver : public asynNDArrayDriver, public epicsThreadRunable {
 public:
@@ -79,6 +79,7 @@ protected:
     int NDPluginDriverSortSize;
     int NDPluginDriverSortFree;
     int NDPluginDriverDisorderedArrays;
+    int NDPluginDriverDroppedOutputArrays;
     int NDPluginDriverEnableCallbacks;
     int NDPluginDriverBlockingCallbacks;
     int NDPluginDriverProcessPlugin;
@@ -98,6 +99,7 @@ private:
     /* Our data */
     int numThreads_;
     bool pluginStarted_;
+    bool firstOutputArray_;
     int threadStackSize_;
     asynUser *pasynUserGenericPointer_;          /**< asynUser for connecting to NDArray driver */
     void *asynGenericPointerPvt_;                /**< Handle for connecting to NDArray driver */
