@@ -23,11 +23,32 @@ R2-7 (March XXX, 2017)
 ======================
 
 ### NDPluginDriver, NDPluginBase.template, NDPluginBase.adl
+* Added support for multiple threads doing the processCallbacks() in each plugin.  This can improve
+  the performance of the plugin by a large factor.  Linear scaling with up to 5 threads (the largest
+  value tested) was observed for NDPluginTransform and NDPluginStats.  The maximum number of threads
+  that can be used for the plugin is set in the constructor and thus in the IOC startup script.  The actual
+  number of threads to use can be controlled via an EPICS PV at run time, up to the maximum value passed
+  to the constructor.  Note that plugins need to be modified to be thread-safe for multiple threads running
+  in a single plugin object.  Currently the NDPluginStdArrays, NDPluginStats, and NDPluginTranform plugins
+  have had these changes.  More plugins will be changed.  However, not all plugins can be made thread safe,
+  for example NDPluginProcess needs to store process results in the object itself to support the recursive filter
+  processing, and this is intrinsically not thread-safe.
+* Added a new doNDArrayCallbacks method so derived classes do not need to each implement the logic to call 
+  downstream plugins.  This method supports optionally sorting the output callbacks by the NDArray::UniqueId
+  value.  This is very useful when running multiple threads in the plugin, because these are likely to do
+  their output callbacks in the wrong order.  The base class will sort the output NDArrays to be in the correct
+  order when possible.  The sorting capability is also useful for the new NDPluginGather plugin, even when it
+  is running only a single thread.
 * Added new parameter NDPluginProcessPlugin and new bo record ProcessPlugin.  NDPluginDriver now stores
   the last NDArray it receives.  If the ProcessPlugin record is processed then the plugin will execute
   again with this last NDArray.  This allows modifying plugin behaviour and observing the results
   without requiring the underlying detector to collect another NDArray.  If the plugin is disabled then
   the NDArray is released and returned to the pool.
+
+### NDPluginScatter, NDPluginGather
+* Added new plugin NDPluginScatter.
+* Added new plugin NDPluginGather.
+
 
 ### Viewers/ImageJ/EPICS_AD_Viewer.java 
 * Previously this ImageJ plugin monitored the UniqueId_RBV PV in the NDPluginStdArrays plugin, 
