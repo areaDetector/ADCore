@@ -107,11 +107,12 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     pluginStarted_(false),
     pToThreadMsgQ_(NULL),
     pFromThreadMsgQ_(NULL),
+    prevUniqueId_(-1000),
+    sortingThreadId_(0),
     pInputArray_(0)    
 {
     asynUser *pasynUser;
-    int status;
-    static const char *functionName = "NDPluginDriver";
+    //static const char *functionName = "NDPluginDriver";
     
     /* We use the same stack size for our callback thread as for the port thread */
     if (stackSize <= 0) stackSize = epicsThreadGetStackSize(epicsThreadStackMedium);
@@ -147,7 +148,7 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     createParam(NDPluginDriverSortTimeString,          asynParamFloat64, &NDPluginDriverSortTime);
     createParam(NDPluginDriverSortSizeString,          asynParamInt32, &NDPluginDriverSortSize);
     createParam(NDPluginDriverSortFreeString,          asynParamInt32, &NDPluginDriverSortFree);
-    createParam(NDPluginDriverUnsortedArraysString,    asynParamInt32, &NDPluginDriverUnsortedArrays);
+    createParam(NDPluginDriverDisorderedArraysString,  asynParamInt32, &NDPluginDriverDisorderedArrays);
     createParam(NDPluginDriverEnableCallbacksString,   asynParamInt32, &NDPluginDriverEnableCallbacks);
     createParam(NDPluginDriverBlockingCallbacksString, asynParamInt32, &NDPluginDriverBlockingCallbacks);
     createParam(NDPluginDriverProcessPluginString,     asynParamInt32, &NDPluginDriverProcessPlugin);
@@ -173,20 +174,6 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
      * subsequently, we will create the threads then. */
     if (!blockingCallbacks) {
         createCallbackThreads();
-    }
-
-    /* Create the thread that outputs sorted NDArrays */
-    char taskName[256];
-    epicsSnprintf(taskName, sizeof(taskName)-1, "%s_Plugin_Sort", portName);
-    status = (epicsThreadCreate(taskName,
-              epicsThreadPriorityMedium,
-              epicsThreadGetStackSize(epicsThreadStackMedium),
-              (EPICSTHREADFUNC)sortingTaskC,
-              this) == NULL);
-    if (status) {
-        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-            "%s::%s error creating sortingTask thread\n", 
-            driverName, functionName);
     }
     
     unlock();
@@ -501,9 +488,8 @@ void NDPluginDriver::sortingTask()
 {
     double sortTime;
     epicsTimeStamp now;
-    int queueSize;
+    int sortSize;
     double deltaTime;
-    int prevUniqueId = -1000;
     int listSize;
     std::multiset<sortedListElement>::iterator pListElement;
     static const char *functionName = "sortingTask";
@@ -515,28 +501,34 @@ void NDPluginDriver::sortingTask()
         epicsThreadSleep(sortTime);
         lock();
         epicsTimeGetCurrent(&now);
-        getIntegerParam(NDPluginDriverQueueSize, &queueSize);
+        getIntegerParam(NDPluginDriverSortSize, &sortSize);
         while ((listSize=(int)sortedNDArrayList_.size()) > 0) {
-            pListElement=sortedNDArrayList_.begin();
+            pListElement = sortedNDArrayList_.begin();
             deltaTime = epicsTimeDiffInSeconds(&now, &pListElement->insertionTime_);
             asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER, 
                 "%s::%s, deltaTime=%f, list size=%d, uniqueId=%d\n", 
                 driverName, functionName, deltaTime, listSize, pListElement->pArray_->uniqueId);
-            if ((pListElement->pArray_->uniqueId == prevUniqueId)   ||
-                (pListElement->pArray_->uniqueId == prevUniqueId+1) ||
-                (deltaTime > sortTime)) {
+            bool orderOK = (pListElement->pArray_->uniqueId == prevUniqueId_)   ||
+                           (pListElement->pArray_->uniqueId == prevUniqueId_+1);
+            if (orderOK || (deltaTime > sortTime)) {
                 this->unlock();
                 doCallbacksGenericPointer(pListElement->pArray_, NDArrayData, 0);
                 this->lock();
-                prevUniqueId = pListElement->pArray_->uniqueId;
+                prevUniqueId_ = pListElement->pArray_->uniqueId;
                 pListElement->pArray_->release();
                 sortedNDArrayList_.erase(pListElement);
+                if (!orderOK) {
+                    int disorderedArrays;
+                    getIntegerParam(NDPluginDriverDisorderedArrays, &disorderedArrays);
+                    disorderedArrays++;
+                    setIntegerParam(NDPluginDriverDisorderedArrays, disorderedArrays);
+                }
             } else  {
                 break;
             }
         }
         listSize=(int)sortedNDArrayList_.size();
-        setIntegerParam(NDPluginDriverSortFree, queueSize-listSize);
+        setIntegerParam(NDPluginDriverSortFree, sortSize-listSize);
         callParamCallbacks();
     }    
 }
@@ -547,46 +539,55 @@ asynStatus NDPluginDriver::doNDArrayCallbacks(NDArray *pArray)
     static const char *functionName = "doNDArrayCallbacks";
 
     getIntegerParam(NDArrayCallbacks, &arrayCallbacks);
-    if (arrayCallbacks == 1) {
-        int callbacksSorted;
-        getIntegerParam(NDPluginDriverSortMode, &callbacksSorted);
-        NDArray *pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 1);
-        if (NULL != pArrayOut) {
-            this->getAttributes(pArrayOut->pAttributeList);
-            if (this->pArrays[0]) this->pArrays[0]->release();
-            this->pArrays[0] = pArrayOut;
-        }
-        else {
-            asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-                "%s::%s: Couldn't allocate output array. Further processing terminated.\n", 
-                driverName, functionName);
-            return asynError;
-        }
-        if (callbacksSorted) {
-            int sortSize;
-            int listSize = (int)sortedNDArrayList_.size();
-            getIntegerParam(NDPluginDriverSortSize, &sortSize);
-            setIntegerParam(NDPluginDriverSortFree, sortSize-listSize);
-            if ( listSize >= sortSize) {
-                int droppedArrays;
-                getIntegerParam(NDPluginDriverDroppedArrays, &droppedArrays);
-                asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
-                    "%s::%s std::multilist size exceeded, dropped array uniqueId=%d\n",
-                    driverName, functionName, pArrayOut->uniqueId);
-                droppedArrays++;
-                setIntegerParam(NDPluginDriverDroppedArrays, droppedArrays);
-            } else {
-                epicsTimeStamp now;
-                epicsTimeGetCurrent(&now);
-                pArrayOut->reserve();
-                sortedListElement *pListElement = new sortedListElement(pArrayOut, now);
-                sortedNDArrayList_.insert(*pListElement);
-            }
+    if (arrayCallbacks != 1) return asynSuccess;
+
+    int callbacksSorted;
+    getIntegerParam(NDPluginDriverSortMode, &callbacksSorted);
+    NDArray *pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 1);
+    if (NULL != pArrayOut) {
+        this->getAttributes(pArrayOut->pAttributeList);
+        if (this->pArrays[0]) this->pArrays[0]->release();
+        this->pArrays[0] = pArrayOut;
+    }
+    else {
+        asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
+            "%s::%s: Couldn't allocate output array. Further processing terminated.\n", 
+            driverName, functionName);
+        return asynError;
+    }
+    if (callbacksSorted) {
+        int sortSize;
+        int listSize = (int)sortedNDArrayList_.size();
+        getIntegerParam(NDPluginDriverSortSize, &sortSize);
+        setIntegerParam(NDPluginDriverSortFree, sortSize-listSize);
+        if (listSize >= sortSize) {
+            int droppedArrays;
+            getIntegerParam(NDPluginDriverDroppedArrays, &droppedArrays);
+            asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
+                "%s::%s std::multilist size exceeded, dropped array uniqueId=%d\n",
+                driverName, functionName, pArrayOut->uniqueId);
+            droppedArrays++;
+            setIntegerParam(NDPluginDriverDroppedArrays, droppedArrays);
         } else {
-            this->unlock();
-            doCallbacksGenericPointer(pArrayOut, NDArrayData, 0);
-            this->lock();
+            epicsTimeStamp now;
+            epicsTimeGetCurrent(&now);
+            pArrayOut->reserve();
+            sortedListElement *pListElement = new sortedListElement(pArrayOut, now);
+            sortedNDArrayList_.insert(*pListElement);
         }
+    } else {
+        this->unlock();
+        doCallbacksGenericPointer(pArrayOut, NDArrayData, 0);
+        this->lock();
+        bool orderOK = (pArrayOut->uniqueId == prevUniqueId_)   ||
+                       (pArrayOut->uniqueId == prevUniqueId_+1);
+        if (!orderOK) {
+            int disorderedArrays;
+            getIntegerParam(NDPluginDriverDisorderedArrays, &disorderedArrays);
+            disorderedArrays++;
+            setIntegerParam(NDPluginDriverDisorderedArrays, disorderedArrays);
+        }
+        prevUniqueId_ = pArrayOut->uniqueId;
     }
     return asynSuccess;
 }
@@ -652,6 +653,10 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
                (function == NDPluginDriverNumThreads)) {
         deleteCallbackThreads();
         createCallbackThreads();
+
+    } else if ((function == NDPluginDriverSortMode) && 
+               (value == 1)) {
+        status = createSortingThread();
 
     } else if (function == NDPluginDriverProcessPlugin) {
         if (pInputArray_) {
@@ -925,4 +930,28 @@ asynStatus NDPluginDriver::deleteCallbackThreads()
     
     return status;
 }
+
+asynStatus NDPluginDriver::createSortingThread()
+{
+    char taskName[256];
+    static const char *functionName = "createSortingThread";
+   
+    // If the thread already exists return
+    if (sortingThreadId_ != 0) return asynSuccess;
+    
+    /* Create the thread that outputs sorted NDArrays */
+    epicsSnprintf(taskName, sizeof(taskName)-1, "%s_Plugin_Sort", portName);
+    sortingThreadId_ = epicsThreadCreate(taskName,
+                                         epicsThreadPriorityMedium,
+                                         epicsThreadGetStackSize(epicsThreadStackMedium),
+                                         (EPICSTHREADFUNC)sortingTaskC, this);
+    if (sortingThreadId_ == 0) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s::%s error creating sortingTask thread\n", 
+            driverName, functionName);
+        return asynError;
+    }
+    return asynSuccess;
+}
+
 
