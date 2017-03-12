@@ -60,6 +60,7 @@ class sortedListElement {
         epicsTimeStamp insertionTime_;
 };
 
+
 sortedListElement::sortedListElement(NDArray *pArray, epicsTimeStamp time)
     : pArray_(pArray), insertionTime_(time) {}
 
@@ -105,6 +106,7 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
           interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask,
           asynFlags, autoConnect, priority, stackSize),
     pluginStarted_(false),
+    firstOutputArray_(true),
     pToThreadMsgQ_(NULL),
     pFromThreadMsgQ_(NULL),
     prevUniqueId_(-1000),
@@ -149,6 +151,7 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     createParam(NDPluginDriverSortSizeString,          asynParamInt32, &NDPluginDriverSortSize);
     createParam(NDPluginDriverSortFreeString,          asynParamInt32, &NDPluginDriverSortFree);
     createParam(NDPluginDriverDisorderedArraysString,  asynParamInt32, &NDPluginDriverDisorderedArrays);
+    createParam(NDPluginDriverDroppedOutputArraysString,  asynParamInt32, &NDPluginDriverDroppedOutputArrays);
     createParam(NDPluginDriverEnableCallbacksString,   asynParamInt32, &NDPluginDriverEnableCallbacks);
     createParam(NDPluginDriverBlockingCallbacksString, asynParamInt32, &NDPluginDriverBlockingCallbacks);
     createParam(NDPluginDriverProcessPluginString,     asynParamInt32, &NDPluginDriverProcessPlugin);
@@ -164,6 +167,7 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     setStringParam (NDPluginDriverArrayPort, NDArrayPort);
     setIntegerParam(NDPluginDriverArrayAddr, NDArrayAddr);
     setIntegerParam(NDPluginDriverDroppedArrays, 0);
+    setIntegerParam(NDPluginDriverDroppedOutputArrays, 0);
     setIntegerParam(NDPluginDriverQueueSize, queueSize);
     setIntegerParam(NDPluginDriverMaxThreads, maxThreads);
     setIntegerParam(NDPluginDriverNumThreads, maxThreads);
@@ -503,26 +507,28 @@ void NDPluginDriver::sortingTask()
         epicsTimeGetCurrent(&now);
         getIntegerParam(NDPluginDriverSortSize, &sortSize);
         while ((listSize=(int)sortedNDArrayList_.size()) > 0) {
+            bool orderOK;
             pListElement = sortedNDArrayList_.begin();
             deltaTime = epicsTimeDiffInSeconds(&now, &pListElement->insertionTime_);
             asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER, 
                 "%s::%s, deltaTime=%f, list size=%d, uniqueId=%d\n", 
-                driverName, functionName, deltaTime, listSize, pListElement->pArray_->uniqueId);
-            bool orderOK = (pListElement->pArray_->uniqueId == prevUniqueId_)   ||
-                           (pListElement->pArray_->uniqueId == prevUniqueId_+1);
-            if (orderOK || (deltaTime > sortTime)) {
+                driverName, functionName, deltaTime, listSize, pListElement->pArray_->uniqueId);            
+            orderOK = (pListElement->pArray_->uniqueId == prevUniqueId_)   ||
+                      (pListElement->pArray_->uniqueId == prevUniqueId_+1);
+            if ((!firstOutputArray_ && orderOK) || (deltaTime > sortTime)) {
                 this->unlock();
                 doCallbacksGenericPointer(pListElement->pArray_, NDArrayData, 0);
                 this->lock();
                 prevUniqueId_ = pListElement->pArray_->uniqueId;
                 pListElement->pArray_->release();
                 sortedNDArrayList_.erase(pListElement);
-                if (!orderOK) {
+                if (!firstOutputArray_ && !orderOK) {
                     int disorderedArrays;
                     getIntegerParam(NDPluginDriverDisorderedArrays, &disorderedArrays);
                     disorderedArrays++;
                     setIntegerParam(NDPluginDriverDisorderedArrays, disorderedArrays);
                 }
+                firstOutputArray_ = false;
             } else  {
                 break;
             }
@@ -561,13 +567,13 @@ asynStatus NDPluginDriver::doNDArrayCallbacks(NDArray *pArray)
         getIntegerParam(NDPluginDriverSortSize, &sortSize);
         setIntegerParam(NDPluginDriverSortFree, sortSize-listSize);
         if (listSize >= sortSize) {
-            int droppedArrays;
-            getIntegerParam(NDPluginDriverDroppedArrays, &droppedArrays);
+            int droppedOutputArrays;
+            getIntegerParam(NDPluginDriverDroppedOutputArrays, &droppedOutputArrays);
             asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
                 "%s::%s std::multilist size exceeded, dropped array uniqueId=%d\n",
                 driverName, functionName, pArrayOut->uniqueId);
-            droppedArrays++;
-            setIntegerParam(NDPluginDriverDroppedArrays, droppedArrays);
+            droppedOutputArrays++;
+            setIntegerParam(NDPluginDriverDroppedOutputArrays, droppedOutputArrays);
         } else {
             epicsTimeStamp now;
             epicsTimeGetCurrent(&now);
@@ -581,12 +587,13 @@ asynStatus NDPluginDriver::doNDArrayCallbacks(NDArray *pArray)
         this->lock();
         bool orderOK = (pArrayOut->uniqueId == prevUniqueId_)   ||
                        (pArrayOut->uniqueId == prevUniqueId_+1);
-        if (!orderOK) {
+        if (!firstOutputArray_ && !orderOK) {
             int disorderedArrays;
             getIntegerParam(NDPluginDriverDisorderedArrays, &disorderedArrays);
             disorderedArrays++;
             setIntegerParam(NDPluginDriverDisorderedArrays, disorderedArrays);
         }
+        firstOutputArray_ = false;
         prevUniqueId_ = pArrayOut->uniqueId;
     }
     return asynSuccess;
