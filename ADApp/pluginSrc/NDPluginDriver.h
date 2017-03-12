@@ -28,7 +28,7 @@ typedef enum {
 #define NDPluginDriverSortTimeString            "SORT_TIME"             /**< (asynFloat64,  r/w) sorted callback time */
 #define NDPluginDriverSortSizeString            "SORT_SIZE"             /**< (asynInt32,    r/o) std::multiset maximum # elements */
 #define NDPluginDriverSortFreeString            "SORT_FREE"             /**< (asynInt32,    r/o) std::multiset free elements */
-#define NDPluginDriverUnsortedArraysString      "UNSORTED_ARRAYS"       /**< (asynInt32,    r/o) Number of out of order output arrays */
+#define NDPluginDriverDisorderedArraysString    "DISORDERED_ARRAYS"     /**< (asynInt32,    r/o) Number of out of order output arrays */
 #define NDPluginDriverEnableCallbacksString     "ENABLE_CALLBACKS"      /**< (asynInt32,    r/w) Enable callbacks from driver (1=Yes, 0=No) */
 #define NDPluginDriverBlockingCallbacksString   "BLOCKING_CALLBACKS"    /**< (asynInt32,    r/w) Callbacks block (1=Yes, 0=No) */
 #define NDPluginDriverProcessPluginString       "PROCESS_PLUGIN"        /**< (asynInt32,    r/w) Process plugin with last callback array */
@@ -78,7 +78,7 @@ protected:
     int NDPluginDriverSortTime;
     int NDPluginDriverSortSize;
     int NDPluginDriverSortFree;
-    int NDPluginDriverUnsortedArrays;
+    int NDPluginDriverDisorderedArrays;
     int NDPluginDriverEnableCallbacks;
     int NDPluginDriverBlockingCallbacks;
     int NDPluginDriverProcessPlugin;
@@ -90,6 +90,7 @@ private:
     asynStatus createCallbackThreads();
     asynStatus startCallbackThreads();
     asynStatus deleteCallbackThreads();
+    asynStatus createSortingThread();
      
     /* The asyn interfaces we access as a client */
     void *asynGenericPointerInterruptPvt_;
@@ -106,6 +107,8 @@ private:
     epicsMessageQueue *pToThreadMsgQ_;
     epicsMessageQueue *pFromThreadMsgQ_;
     std::multiset<class sortedListElement> sortedNDArrayList_;
+    int prevUniqueId_;
+    epicsThreadId sortingThreadId_;
     epicsTimeStamp lastProcessTime_;
     int dimsPrev_[ND_ARRAY_MAX_DIMS];
     NDArray *pInputArray_;
