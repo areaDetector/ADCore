@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-6/ADCore/ADApp/op/adl/NDPluginBase.adl"
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/NDPluginBase.adl"
 	version=030109
 }
 display {
@@ -433,21 +433,6 @@ menu {
 	limits {
 	}
 }
-"text entry" {
-	object {
-		x=167
-		y=304
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(R)DroppedArrays"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
-}
 "text update" {
 	object {
 		x=273
@@ -663,21 +648,6 @@ text {
 	}
 	textix="msec"
 	align="horiz. right"
-}
-"text entry" {
-	object {
-		x=167
-		y=229
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(R)ArrayCounter"
-		clr=14
-		bclr=51
-	}
-	limits {
-	}
 }
 "text update" {
 	object {
@@ -934,4 +904,34 @@ text {
 	}
 	label="Process"
 	press_msg="1"
+}
+"message button" {
+	object {
+		x=167
+		y=229
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ArrayCounter"
+		clr=14
+		bclr=51
+	}
+	label="Reset to 0"
+	press_msg="0"
+}
+"message button" {
+	object {
+		x=167
+		y=304
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)DroppedArrays"
+		clr=14
+		bclr=51
+	}
+	label="Reset to 0"
+	press_msg="0"
 }
