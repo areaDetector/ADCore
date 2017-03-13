@@ -316,6 +316,21 @@ record(calcout, "$(P)$(R)SortFreeLow") {
     field(OUT,  "$(P)$(R)SortFree_RBV.LOW")
 }
 
+record(longout, "$(P)$(R)DroppedOutputArrays")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DROPPED_OUTPUT_ARRAYS")
+    field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)DroppedOutputArrays_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DROPPED_OUTPUT_ARRAYS")
+    field(SCAN, "I/O Intr")
+}
+
 record(longout, "$(P)$(R)DisorderedArrays")
 {
     field(DTYP, "asynInt32")
