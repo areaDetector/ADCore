@@ -160,6 +160,11 @@ endif
 NDPlugin_SYS_LIBS_WIN32 += ws2_32
 NDPlugin_SYS_LIBS_WIN32 += user32
 
+PROD += test_forward_reference
+PROD_SRCS += test_forward_reference.cpp
+PROD_LIBS += NDPlugin ADBase  asyn $(EPICS_BASE_IOC_LIBS)
+
+
 # The following gets rid of the -fno-implicit-templates flag on vxWorks, 
 # so we get automatic template instantiation.
 # This is what we want for the source files that define template functions.
