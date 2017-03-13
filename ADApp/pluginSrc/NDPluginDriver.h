@@ -15,6 +15,7 @@ typedef enum {
     NDPluginDriverrCallbacksSorted
 } NDPluginDriverCallbacksSorted_t;
 
+class sortedListElement;
 
 #define NDPluginDriverArrayPortString           "NDARRAY_PORT"          /**< (asynOctet,    r/w) The port for the NDArray interface */
 #define NDPluginDriverArrayAddrString           "NDARRAY_ADDR"          /**< (asynInt32,    r/w) The address on the port */
@@ -108,7 +109,7 @@ private:
     std::vector<epicsThread*>pThreads_;
     epicsMessageQueue *pToThreadMsgQ_;
     epicsMessageQueue *pFromThreadMsgQ_;
-    std::multiset<class sortedListElement> sortedNDArrayList_;
+    std::multiset<sortedListElement> sortedNDArrayList_;
     int prevUniqueId_;
     epicsThreadId sortingThreadId_;
     epicsTimeStamp lastProcessTime_;
