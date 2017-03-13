@@ -95,6 +95,7 @@ static void sortingTaskC(void *drvPvt)
   * \param[in] autoConnect The autoConnect flag for the asyn port driver.
   * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  * \param[in] maxThreads The maximum number of threads this plugin is allowed to use.
   */
 NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blockingCallbacks, 
                                const char *NDArrayPort, int NDArrayAddr, int maxAddr, int numParams,
