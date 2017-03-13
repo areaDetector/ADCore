@@ -792,17 +792,18 @@ asynStatus  NDPluginStats::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
   *            allowed to allocate. Set this to -1 to allow an unlimited amount of memory.
   * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  * \param[in] maxThreads The maximum number of threads this plugin is allowed to use.
   */
 NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCallbacks,
                          const char *NDArrayPort, int NDArrayAddr,
                          int maxBuffers, size_t maxMemory,
-                         int priority, int stackSize, int numThreads)
+                         int priority, int stackSize, int maxThreads)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
                    NDArrayPort, NDArrayAddr, 1, NUM_NDPLUGIN_STATS_PARAMS, maxBuffers, maxMemory,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
-                   0, 1, priority, stackSize, numThreads)
+                   0, 1, priority, stackSize, maxThreads)
 {
     int numTSPoints=256;  // Initial size of time series
     int i;
@@ -911,10 +912,10 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
 extern "C" int NDStatsConfigure(const char *portName, int queueSize, int blockingCallbacks,
                                  const char *NDArrayPort, int NDArrayAddr,
                                  int maxBuffers, size_t maxMemory,
-                                 int priority, int stackSize, int numThreads)
+                                 int priority, int stackSize, int maxThreads)
 {
     NDPluginStats *pPlugin = new NDPluginStats(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                                              maxBuffers, maxMemory, priority, stackSize, numThreads);
+                                              maxBuffers, maxMemory, priority, stackSize, maxThreads);
     return pPlugin->start();
 }
 

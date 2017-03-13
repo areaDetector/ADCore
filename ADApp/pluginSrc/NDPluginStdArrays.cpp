@@ -260,10 +260,11 @@ asynStatus NDPluginStdArrays::readFloat64Array(asynUser *pasynUser, epicsFloat64
   *            allowed to allocate. Set this to -1 to allow an unlimited amount of memory.
   * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  * \param[in] maxThreads The maximum number of threads this plugin is allowed to use.
   */
 NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int blockingCallbacks, 
                                      const char *NDArrayPort, int NDArrayAddr, int maxBuffers, size_t maxMemory,
-                                     int priority, int stackSize, int numThreads)
+                                     int priority, int stackSize, int maxThreads)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
                    NDArrayPort, NDArrayAddr, 1, NUM_NDPLUGIN_STDARRAYS_PARAMS, maxBuffers, maxMemory,
@@ -276,7 +277,7 @@ NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int bl
                    
                    /* asynFlags is set to 0, because this plugin cannot block and is not multi-device.
                     * It does autoconnect */
-                   0, 1, priority, stackSize, numThreads)
+                   0, 1, priority, stackSize, maxThreads)
 {
     //static const char *functionName = "NDPluginStdArrays";
     
@@ -296,10 +297,10 @@ NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int bl
 /* Configuration routine.  Called directly, or from the iocsh function */
 extern "C" int NDStdArraysConfigure(const char *portName, int queueSize, int blockingCallbacks, 
                                     const char *NDArrayPort, int NDArrayAddr, int maxBuffers, size_t maxMemory,
-                                    int priority, int stackSize, int numThreads)
+                                    int priority, int stackSize, int maxThreads)
 {
     NDPluginStdArrays *pPlugin = new NDPluginStdArrays(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, 
-                                                       maxBuffers, maxMemory, priority, stackSize, numThreads);
+                                                       maxBuffers, maxMemory, priority, stackSize, maxThreads);
     return pPlugin->start();
 }
 
