@@ -256,8 +256,10 @@ asynStatus NDPluginStdArrays::readFloat64Array(asynUser *pasynUser, epicsFloat64
   *            of the driver doing the callbacks.
   * \param[in] NDArrayPort Name of asyn port driver for initial source of NDArray callbacks.
   * \param[in] NDArrayAddr asyn port driver address for initial source of NDArray callbacks.
+  * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is
+  *      allowed to allocate. Set this to 0 to allow an unlimited number of buffers.
   * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
-  *            allowed to allocate. Set this to -1 to allow an unlimited amount of memory.
+  *            allowed to allocate. Set this to 0 to allow an unlimited amount of memory.
   * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   * \param[in] maxThreads The maximum number of threads this plugin is allowed to use.
