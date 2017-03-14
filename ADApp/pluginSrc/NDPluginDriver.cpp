@@ -47,20 +47,6 @@ typedef struct {
 
 static const char *driverName="NDPluginDriver";
 
-// This class defines the object that is contained in the std::multilist for sorting output NDArrays
-// It contains a pointer to the NDArray and the time that the object was added to the list
-// It defines the < operator to use the NDArray::uniqueId field as the sort key
-class sortedListElement {
-    public:
-        sortedListElement(NDArray *pArray, epicsTimeStamp time);
-        friend bool operator<(const sortedListElement& lhs, const sortedListElement& rhs) {
-            return (lhs.pArray_->uniqueId < rhs.pArray_->uniqueId);
-        }
-        NDArray *pArray_;
-        epicsTimeStamp insertionTime_;
-};
-
-
 sortedListElement::sortedListElement(NDArray *pArray, epicsTimeStamp time)
     : pArray_(pArray), insertionTime_(time) {}
 
