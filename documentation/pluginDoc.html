@@ -23,6 +23,7 @@
     <li><a href="#NDPluginDriver">NDPluginDriver</a></li>
     <li><a href="#Guidelines">Guidelines and rules for plugins</a></li>
     <li><a href="#commonPlugins">commonPlugins.cmd</a></li>
+    <li><a href="#Performance">Performance example</a></li>
     <li><a href="NDPluginAttribute.html">NDPluginAttribute</a></li>
     <li><a href="NDPluginCircularBuff.html">NDPluginCircularBuff</a></li>
     <li><a href="NDPluginColorConvert.html">NDPluginColorConvert</a></li>
@@ -318,44 +319,49 @@
       <tr>
         <td colspan="7,">
           When using a plugin with multiple threads, or when the input plugin is NDPluginGather
-          it is likely that the NDArray output will be slightly out of order, i.e. NDArray::uniqueId fields 
-          will not be monotonically increasing. This is because the threads are running
+          it is likely that the NDArray output will be slightly out of order, i.e. NDArray::uniqueId
+          fields will not be monotonically increasing. This is because the threads are running
           asynchronously and at slightly different speeds.&nbsp; As a consequence a file plugin
           downstream of this plugin would write NDArrays to the file in the "wrong" order.
-          Plugins have an option to sort the NDArrays by uniqueId to attempt to output
-          them in the correct order. This sorting option is enabled by setting SortMode=Sorted,
+          Plugins have an option to sort the NDArrays by uniqueId to attempt to output them
+          in the correct order. This sorting option is enabled by setting SortMode=Sorted,
           and works using the following algorithm:
           <ul>
-            <li>An std::multiset object is created to store the NDArray output pointers as they are received
-            in NDArrayDriver::doNDArrayCallbacks.  This is the method that all derived classes must call
-            to output NDArrays to downstream plugins. This std::multiset also stores the time at which each 
-            NDArray was received by the NDArrayDriver::doNDArrayCallbacks method. This multiset is automatically
-              sorted by the uniqueId of each NDArray.</li>
+            <li>An std::multiset object is created to store the NDArray output pointers as they
+              are received in NDArrayDriver::doNDArrayCallbacks. This is the method that all derived
+              classes must call to output NDArrays to downstream plugins. This std::multiset also
+              stores the time at which each NDArray was received by the NDArrayDriver::doNDArrayCallbacks
+              method. This multiset is automatically sorted by the uniqueId of each NDArray.</li>
             <li>A worker thread is created which processes at the time interval specified by SortTime.
               This thread outputs the next array (NDArray[N]) in the multiset if any of the following
               are true:
               <ul>
                 <li>NDArray[N].uniqueId = NDArray[N-1].uniqueId. This allows for the case where multiple
-                  upstream plugins are processing the same NDArray.  This may happen, for example, if
-                  NDPluginGather is being used and not
-                  all of its inputs are getting their NDArrays from from NDPluginScatter.</li>
+                  upstream plugins are processing the same NDArray. This may happen, for example,
+                  if NDPluginGather is being used and not all of its inputs are getting their NDArrays
+                  from from NDPluginScatter.</li>
                 <li>NDArray[N].uniqueId = NDArray[N-1].uniqueId + 1. This is the normal case.</li>
                 <li>NDArray[N] has been in the multiset for longer than SortTime. This will be the
-                  case if the next array that <i>should</i> have been output has not arrived, perhaps because
-                  it has been dropped by some upstream plugin and will never arrive. Increasing
+                  case if the next array that <i>should</i> have been output has not arrived, perhaps
+                  because it has been dropped by some upstream plugin and will never arrive. Increasing
                   the SortTime will allow longer for out of order arrays to arrive, at the expense
                   of more memory because the multiset will grow larger before outputting the arrays.</li>
               </ul>
             </li>
           </ul>
           When NDArrays are added to the multiset they have their reference count increased,
-          and so will still be consuming memory. The multiset is limited in size to SortSize 
-          If the multiset would grow larger than this because arrays are arriving faster than they are being removed
-          with the specified SortTime, then they will be dropped in the same manner as when
-          NDArrays are dropped from the normal input queue.  In this case DroppedOutputArrays will be
-          incremented.  Note that because NDArrays can
-          be stored in both the normal input queue and the multiset, so the total memory potentially used
-          by the plugin is determined by both QueueSize and SortSize.</td>
+          and so will still be consuming memory. The multiset is limited in size to SortSize.
+          If the multiset would grow larger than this because arrays are arriving faster than
+          they are being removed with the specified SortTime, then they will be dropped in
+          the same manner as when NDArrays are dropped from the normal input queue. In this
+          case DroppedOutputArrays will be incremented. Note that because NDArrays can be
+          stored in both the normal input queue and the multiset the total memory potentially
+          used by the plugin is determined by both QueueSize and SortSize.<br />
+          If the plugin is receiving 500 NDArrays/s (2 ms period), and the maximum time the
+          plugin threads require to execute is 20 msec, then the minimum value of SortTime
+          should be 0.02 sec, and the minimum value of SortSize would be 10. It is a good
+          idea to add a safety margin to these values, so perhaps SortSize=50 and SortTime=0.04
+          sec.</td>
       </tr>
       <tr>
         <td>
@@ -428,7 +434,7 @@
           r/o</td>
         <td>
           The number of NDArrays remaining before the std::multiset will not be allowed to
-          grow larger and the plugin may begin to drop frames.</td>
+          grow larger and the plugin may begin to drop output frames.</td>
         <td>
           SORT_FREE</td>
         <td>
@@ -447,13 +453,34 @@
         <td>
           The number of NDArrays that have been output in the "wrong" order. The definition
           of the wrong order for NDArray[N] is that NDArray[N].uniqueId=NDArray[N-1].uniqueId
-          or NDArray[N].uniqueId=NDArray[N-1].uniqueId+1.  The reason for the equality test is explained
-          above.</td>
+          or NDArray[N].uniqueId=NDArray[N-1].uniqueId+1. The reason for the equality test
+          is explained above.</td>
         <td>
           DISORDERED_ARRAYS</td>
         <td>
           $(P)$(R)DisorderedArrays<br />
           $(P)$(R)DisorderedArrays_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriver<br />
+          DroppedOutputArrays</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Counter that increments by 1 each time an NDArray callback occurs when SortMode=1
+          and the std::multiset is full (SortFree=0), so the NDArray cannot be added to the
+          std::multiset.</td>
+        <td>
+          DROPPED_OUTPUT_ARRAYS</td>
+        <td>
+          $(P)$(R)DroppedOutputArrays<br />
+          $(P)$(R)DroppedOutputArrays_RBV</td>
         <td>
           longout<br />
           longin</td>
@@ -640,33 +667,184 @@
       operating on. Plugins such as NDPluginROI and NDPluginColorConvert create new NDArrays
       via NDArrayPool::copy() or NDArrayPool::convert() (which copy the attributes to
       the new array) and then call getAttributes(pArray->pAttributeList) with the new
-      array. The NDPluginFile makes a copy of the attribute list from the original NDArray
-      before calling getAttributes(), but does not need to make a copy of the NDArray
-      because it does not modify it.</li>
+      array.</li>
     <li>Plugins must release their mutex by calling this->unlock() when they do time-consuming
       operations. If they do not then they will not be able to queue new NDArrays callbacks
       or obtain new parameter values. Obviously they must not access memory locations
       that other threads could modify during this time, so they should only access local
       variables, not class variables (which includes the parameter library).</li>
-    <li>If plugins generate new or modified NDArrays then they must call doCallbacksGenericPointer()
+    <li>If plugins generate new or modified NDArrays then they must call NDPluginDriver::doNDArrayCallbacks()
       so that registered clients can get the values of the new arrays.</li>
   </ul>
   <h2 id="commonPlugins">
     commonPlugins.cmd</h2>
   <p>
-    The ADCore/iocBoot directory contains a file called commonPlugins.cmd. This file
-    is loaded by all of the example driver IOC startup scripts. It loads a set of plugins
-    which are typically useful for detectors IOCs. Each detector medm screen has links
-    to related displays for each of the common plugins. While this set of plugins is
-    often useful and sufficient, users are free to add or remove plugins from this set
-    for their own IOCs. New medm displays will typically need to be created if that
-    is done, to have the required links to related displays.</p>
+    The ADCore/iocBoot directory contains a file called EXAMPLE_commonPlugins.cmd. This
+    file should be copied to commonPlugins.cmd and edited for site-specific requirements.
+    commonPlugins.cmd is loaded by all of the example driver IOC startup scripts. It
+    loads a set of plugins which are typically useful for detectors IOCs. Each detector
+    medm screen has links to related displays for each of the common plugins. While
+    this set of plugins is often useful and sufficient, users are free to add or remove
+    plugins from this set for their own IOCs. New medm displays will typically need
+    to be created if that is done, to have the required links to related displays.</p>
   <p>
     The following medm screen shows the status of all of the common plugins at a glance,
     with links to bring up the detailed screen for each.</p>
   <div style="text-align: center">
     <h3 style="text-align: center">
       commonPlugins.adl</h3>
-    <img alt="commonPlugins.png" src="commomPlugins.png" /></div>
+    <img alt="commonPlugins.png" src="commonPlugins.png" /></div>
+  <h2 id="Performance">
+    Performance example</h2>
+  <p>
+    The following example shows how increasing the number of threads from 1 to 5 in
+    the NDPluginStats statistics plugins allows it to keep up with the simDetector running
+    at about 485 frames/s. It also demonstrates the effect of changing SortMode=Sorted
+    and SortMode=Unsorted.</p>
+  <p>
+    The images were generated by simDetector generating 1024x1024 Float32 images at
+    about 485 frames/s as shown in the following 2 medm screens.</p>
+  <div style="text-align: center">
+    <p>
+      <img alt="NDPluginDriverExample_simDetector.png" src="NDPluginDriverExample_simDetector.png" /></p>
+    <p>
+      <img alt="NDPluginDriverExample_simDetectorSetup.png" src="NDPluginDriverExample_simDetectorSetup.png" /></p>
+  </div>
+  <p>
+    The NDPluginStats plugin was configured to perform all of the statistics calculations
+    (centroid, histogram, etc.) to maximize the time required to process each array,
+    as shown in the following medm screen.</p>
+  <div style="text-align: center">
+    <p>
+      <img alt="NDPluginDriverExample_NDStats.png" src="NDPluginDriverExample_NDStats.png" /></p>
+  </div>
+  <p>
+    The statistics plugin was first run with just one thread, as shown in the NDPluginBaseFull.adl
+    screen. This screen can be opened with the More related display from the NDPluginBase.adl
+    screen, which is embedded on the left hand side of all plugin medm screens. Note
+    the following on this screen:</p>
+  <ul>
+    <li>The execution time is 8 ms.</li>
+    <li>The frame rate is 120 frames/s, which is consistent with the execution time.</li>
+    <li>The queue free size is 0, and the number of dropped frames is large because the
+      plugin cannot keep up with the rate at which the simDetector is sending frames (485
+      frames/s).</li>
+    <li>SortedMode=Sorted is selected. Because there is only 1 thread SortMode does not
+      really matter, the order of the output NDArrays will be the same whether SortMode
+      is Sorted or Unsorted.</li>
+  </ul>
+  <div style="text-align: center">
+    <p>
+      <img alt="NDPluginDriverExample_StatsFull_1thread.png" src="NDPluginDriverExample_StatsFull_1thread.png" /></p>
+  </div>
+  <p>
+    The following show the Linux "top" program when the plugin is running with 1 thread
+    as above. Note that the STATS5_Plugin_1 thread is using almost 100% of a core. The
+    simDetector is using about 58% of a core.</p>
+  <div style="text-align: center">
+    <p>
+      <img alt="NDPluginDriverExample_top_1thread.png" src="NDPluginDriverExample_top_1thread.png" /></p>
+  </div>
+  <p>
+    The NumThreads PV in the statistics plugin was then changed from 1 to 3, as shown
+    in the following NDPluginBaseFull.adl screen. Note the following:</p>
+  <ul>
+    <li>The execution time is still 8 ms.</li>
+    <li>The frame rate is now 384 frames/s, which is just over 3 times the value with
+      1 thread above.</li>
+    <li>The queue free size is 0, and the number of dropped frames is large because the
+      plugin still cannot keep up with the rate at which the simDetector is sending frames
+      (485 frames/s).</li>
+    <li>SortedMode=Sorted is selected. Because there are now 3 threads SortMode does matter,
+      because the 3 threads could be producing output NDArrays in the wrong order. However,
+      the number of disordered frames is still large, because dropped input frames will
+      lead to missing values of NDArray::uniqueId on the output arrays, which is counted
+      in the Disordered arrays.</li>
+  </ul>
+  <div style="text-align: center">
+    <p>
+      <img alt="NDPluginDriverExample_StatsFull_3thread.png" src="NDPluginDriverExample_StatsFull_3thread.png" /></p>
+  </div>
+  <p>
+    The following show the Linux "top" program when the plugin is running with 3 threads
+    as above. Note that there are now 3 STATS5_Plugin_N threads, each using almost 100%
+    of a core.</p>
+  <div style="text-align: center">
+    <p>
+      <img alt="NDPluginDriverExample_top_3thread.png" src="NDPluginDriverExample_top_3thread.png" /></p>
+  </div>
+  <p>
+    The NumThreads PV in the statistics plugin was then changed from 3 to 5, as shown
+    in the following NDPluginBaseFull.adl screen. Note the following:</p>
+  <ul>
+    <li>The execution time is still about 8 ms.</li>
+    <li>The frame rate is now 482 frames/s, which is just over 4 times the value with
+      1 thread above.</li>
+    <li>The queue free size is 200, and the number of dropped frames is 0 because the
+      plugin can now keep up with the rate at which the simDetector is sending frames
+      (482 frames/s).</li>
+    <li>SortedMode=Sorted is selected. Because there are now 5 threads SortMode does matter,
+      because the 5 threads could be producing output NDArrays in the wrong order. Now
+      the number of disordered frames is 0, because there are no dropped input frames
+      and the SortSize (50) and SortTime (0.05 sec) are sufficient to allow the output
+      frames to be sorted without dropping any output frames (DroppedOutputArrays=0).</li>
+  </ul>
+  <div style="text-align: center">
+    <p>
+      <img alt="NDPluginDriverExample_StatsFull_5thread.png" src="NDPluginDriverExample_StatsFull_5thread.png" /></p>
+  </div>
+  <p>
+    The following show the Linux "top" program when the plugin is running with 5 threads
+    as above. Note that there are now 5 STATS5_Plugin_N threads, each using about 87%
+    of a core.</p>
+  <div style="text-align: center">
+    <p>
+      <img alt="NDPluginDriverExample_top_5thread.png" src="NDPluginDriverExample_top_5thread.png" /></p>
+  </div>
+  <p>
+    To test sorting of output NDArrays the simDetector was configured to generate 100
+    arrays in Multiple mode, and the NDFileNetCDF plugin was configured to save 100
+    arrays in Stream mode. The netCDF plugin received its NDArrays from the STATS5 plugin
+    running with 5 threads as shown above. The test was done 2 times, once with SortMode=Sorted,
+    and then with SortMode=Unsorted. The files are were then read into IDL, using the
+    read_nd_netcdf.pro file that can be found in ADCore/Viewers/IDL.</p>
+  <p>
+    The following shows the output when reading the file that was written when SortMode=Sorted.
+    attr[0].pvalue is the value of the UniqueId attribute for all 100 NDArrays. Note
+    that the arrays are all in the correct UniqueId order.
+  </p>
+  <pre>
+IDL> t = read_nd_netcdf('thread_test_5_sorted_001.nc', attr=attr) 
+IDL> u=*attr[0].pvalue
+IDL> print, u 
+      479298      479299      479300      479301      479302      479303      479304      479305      479306      479307
+      479308      479309      479310      479311      479312      479313      479314      479315      479316      479317
+      479318      479319      479320      479321      479322      479323      479324      479325      479326      479327
+      479328      479329      479330      479331      479332      479333      479334      479335      479336      479337
+      479338      479339      479340      479341      479342      479343      479344      479345      479346      479347
+      479348      479349      479350      479351      479352      479353      479354      479355      479356      479357
+      479358      479359      479360      479361      479362      479363      479364      479365      479366      479367
+      479368      479369      479370      479371      479372      479373      479374      479375      479376      479377
+      479378      479379      479380      479381      479382      479383      479384      479385      479386      479387
+      479388      479389      479390      479391      479392      479393      479394      479395      479396      479397
+</pre>
+  <p>
+    The following shows the output when reading the file that was written when SortMode=Unsorted.
+    Note that the arrays are not in the correct UniqueId order.</p>
+  <pre>
+IDL> t = read_nd_netcdf('thread_test_5_unsorted_001.nc', attr=attr) 
+IDL> u=*attr[0].pvalue
+IDL> print, u 
+      479398      479399      479400      479401      479402      479403      479404      479405      479406      479407
+      479408      479409      479410      479411      479412      479414      479413      479415      479416      479417
+      479418      479419      479420      479421      479423      479422      479424      479425      479426      479427
+      479429      479428      479430      479432      479431      479435      479433      479434      479436      479437
+      479438      479440      479439      479441      479443      479442      479446      479445      479444      479447
+      479448      479449      479450      479452      479451      479453      479454      479456      479455      479457
+      479459      479458      479460      479461      479463      479462      479464      479465      479466      479467
+      479469      479468      479470      479471      479472      479473      479475      479474      479476      479477
+      479478      479479      479480      479481      479482      479483      479484      479485      479486      479487
+      479488      479489      479490      479491      479492      479493      479494      479495      479496      479497
+</pre>
 </body>
 </html>
