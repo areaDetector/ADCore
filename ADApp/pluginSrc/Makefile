@@ -160,7 +160,9 @@ endif
 NDPlugin_SYS_LIBS_WIN32 += ws2_32
 NDPlugin_SYS_LIBS_WIN32 += user32
 
-LIB_SRCS += test_forward_reference.cpp
+# This tests the problem with forward referencing class sortedListElement if it is
+# forwarded referenced in NDPluginDriver.h and defined in NDPluginDriver.cpp
+#LIB_SRCS += test_forward_reference.cpp
 
 
 # The following gets rid of the -fno-implicit-templates flag on vxWorks, 
