@@ -10,12 +10,25 @@
 
 #include "asynNDArrayDriver.h"
 
-typedef enum {
-    NDPluginDriverCallbacksUnsorted,
-    NDPluginDriverrCallbacksSorted
-} NDPluginDriverCallbacksSorted_t;
 
-class sortedListElement;
+// This class defines the object that is contained in the std::multilist for sorting output NDArrays
+// It contains a pointer to the NDArray and the time that the object was added to the list
+// It defines the < operator to use the NDArray::uniqueId field as the sort key
+
+// We would like to hide this class definition in NDPluginDriver.cpp and just forward reference it here.
+// That works on Visual Studio, and on gcc if instantiating plugins as heap variables with "new", but fails on gcc
+// if instantiating plugins as automatic variables.
+//class sortedListElement;
+
+class sortedListElement {
+    public:
+        sortedListElement(NDArray *pArray, epicsTimeStamp time);
+        friend bool operator<(const sortedListElement& lhs, const sortedListElement& rhs) {
+            return (lhs.pArray_->uniqueId < rhs.pArray_->uniqueId);
+        }
+        NDArray *pArray_;
+        epicsTimeStamp insertionTime_;
+};
 
 #define NDPluginDriverArrayPortString           "NDARRAY_PORT"          /**< (asynOctet,    r/w) The port for the NDArray interface */
 #define NDPluginDriverArrayAddrString           "NDARRAY_ADDR"          /**< (asynInt32,    r/w) The address on the port */
