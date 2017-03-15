@@ -196,6 +196,7 @@ NDPluginDriver::~NDPluginDriver()
     int size;
     NDAttribute *pAttribute;
     int colorMode=NDColorModeMono, bayerPattern=NDBayerRGGB;
+    //static const char *functionName="processCallbacks";
 
     pAttribute = pArray->pAttributeList->find("ColorMode");
     if (pAttribute) pAttribute->getValue(NDAttrInt32, &colorMode);
@@ -503,9 +504,14 @@ void NDPluginDriver::sortingTask()
             orderOK = (pListElement->pArray_->uniqueId == prevUniqueId_)   ||
                       (pListElement->pArray_->uniqueId == prevUniqueId_+1);
             if ((!firstOutputArray_ && orderOK) || (deltaTime > sortTime)) {
-                this->unlock();
+                // NOTE: we have been releasing the lock before calling doCallbacksGenericPointer because
+                // sometime in the distant past I thought I was getting deadlocks without doing so.
+                // However, releasing the lock here does not work when NumThreads>1 because other threads
+                // can get access to pArrays[0] when the lock is released and cause problems with the NDArrayPool.
+                // Keep the lock for now unless we find deadlock problems.
+                //this->unlock();
                 doCallbacksGenericPointer(pListElement->pArray_, NDArrayData, 0);
-                this->lock();
+                //this->lock();
                 prevUniqueId_ = pListElement->pArray_->uniqueId;
                 pListElement->pArray_->release();
                 sortedNDArrayList_.erase(pListElement);
@@ -569,9 +575,10 @@ asynStatus NDPluginDriver::doNDArrayCallbacks(NDArray *pArray)
             sortedNDArrayList_.insert(*pListElement);
         }
     } else {
-        this->unlock();
+        // See the comments about releasing the lock when calling doCallbacksGenericPointer above
+        //this->unlock();
         doCallbacksGenericPointer(pArrayOut, NDArrayData, 0);
-        this->lock();
+        //this->lock();
         bool orderOK = (pArrayOut->uniqueId == prevUniqueId_)   ||
                        (pArrayOut->uniqueId == prevUniqueId_+1);
         if (!firstOutputArray_ && !orderOK) {
