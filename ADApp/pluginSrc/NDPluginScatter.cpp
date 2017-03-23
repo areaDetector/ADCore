@@ -34,7 +34,7 @@ void NDPluginScatter::processCallbacks(NDArray *pArray)
     static const char *functionName = "NDPluginScatter::processCallbacks";
 
     /* Call the base class method */
-    NDPluginDriver::processCallbacks(pArray);
+    NDPluginDriver::beginProcessCallbacks(pArray);
 
     getIntegerParam(NDArrayCallbacks, &arrayCallbacks);
     if (arrayCallbacks == 1) {
@@ -116,10 +116,10 @@ NDPluginScatter::NDPluginScatter(const char *portName, int queueSize, int blocki
                                      int priority, int stackSize)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
-                   NDArrayPort, NDArrayAddr, 1, 0, maxBuffers, maxMemory,
+                   NDArrayPort, NDArrayAddr, 1, maxBuffers, maxMemory,
                    asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
                    asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
-                   ASYN_MULTIDEVICE, 1, priority, stackSize),
+                   ASYN_MULTIDEVICE, 1, priority, stackSize, 1),
     nextClient_(1)
 {
     //static const char *functionName = "NDPluginScatter::NDPluginScatter";
