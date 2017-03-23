@@ -489,11 +489,10 @@ void transformNDArray(NDArray *inArray, NDArray *outArray, int transformType, in
 void NDPluginTransform::processCallbacks(NDArray *pArray){
   NDArray *transformedArray;
   NDArrayInfo_t arrayInfo;
-  int arrayCallbacks;
   static const char* functionName = "processCallbacks";
 
   /* Call the base class method */
-  NDPluginDriver::processCallbacks(pArray);
+  NDPluginDriver::beginProcessCallbacks(pArray);
 
   /** Create a pointer to a structure of type NDArrayInfo_t and use it to get information about
     the input array.
@@ -523,18 +522,7 @@ void NDPluginTransform::processCallbacks(NDArray *pArray){
   if (transformedArray->ndims < 3) setIntegerParam(NDArraySizeZ, 0);
   else setIntegerParam(NDArraySizeZ, 3);
 
- /* Set pArrays[0] to the new array */
-  if (this->pArrays[0]) {
-    this->pArrays[0]->release();
-    this->pArrays[0] = NULL;
-  }
-  this->pArrays[0] = transformedArray;
-
-  getIntegerParam(NDArrayCallbacks, &arrayCallbacks);
-  if (arrayCallbacks == 1) {
-    this->getAttributes(transformedArray->pAttributeList);
-    doCallbacksGenericPointer(transformedArray, NDArrayData,0);
-  }
+  NDPluginDriver::endProcessCallbacks(transformedArray, false, true);
   callParamCallbacks();
 }
 
@@ -606,7 +594,7 @@ NDPluginTransform::NDPluginTransform(const char *portName, int queueSize, int bl
              int priority, int stackSize, int maxThreads)
   /* Invoke the base class constructor */
   : NDPluginDriver(portName, queueSize, blockingCallbacks,
-                   NDArrayPort, NDArrayAddr, 1, NUM_TRANSFORM_PARAMS, maxBuffers, maxMemory,
+                   NDArrayPort, NDArrayAddr, 1, maxBuffers, maxMemory,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    ASYN_MULTIDEVICE, 1, priority, stackSize, maxThreads)
