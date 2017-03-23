@@ -214,7 +214,7 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
   const char* functionName = "NDPluginROIStat::processCallbacks";
 
   /* Call the base class method */
-  NDPluginDriver::processCallbacks(pArray);
+  NDPluginDriver::beginProcessCallbacks(pArray);
 
   // This plugin only works with 1-D or 2-D arrays
   if ((pArray->ndims < 1) || (pArray->ndims > 2)) {
@@ -312,23 +312,7 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
     }
   }
 
-  int arrayCallbacks = 0;
-  getIntegerParam(NDArrayCallbacks, &arrayCallbacks);
-  if (arrayCallbacks == 1) {
-    NDArray *pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 1);
-    if (pArrayOut != NULL) {
-      this->getAttributes(pArrayOut->pAttributeList);
-      this->unlock();
-      doCallbacksGenericPointer(pArrayOut, NDArrayData, 0);
-      this->lock();
-      pArrayOut->release();
-    }
-    else {
-      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-        "%s: Couldn't allocate output array. Callbacks failed.\n", 
-        functionName);
-    }
-  }
+  NDPluginDriver::endProcessCallbacks(pArray, true, true);
   callParamCallbacks();
 }
 
@@ -483,10 +467,10 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
                          int priority, int stackSize)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
-             NDArrayPort, NDArrayAddr, maxROIs, NUM_NDPLUGIN_ROISTAT_PARAMS, maxBuffers, maxMemory,
+             NDArrayPort, NDArrayAddr, maxROIs, maxBuffers, maxMemory,
              asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
              asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
-             ASYN_MULTIDEVICE, 1, priority, stackSize)
+             ASYN_MULTIDEVICE, 1, priority, stackSize, 1)
 {
   const char *functionName = "NDPluginROIStat::NDPluginROIStat";
 
