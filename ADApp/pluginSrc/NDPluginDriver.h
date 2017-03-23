@@ -54,9 +54,9 @@ class sortedListElement {
 class epicsShareClass NDPluginDriver : public asynNDArrayDriver, public epicsThreadRunable {
 public:
     NDPluginDriver(const char *portName, int queueSize, int blockingCallbacks, 
-                   const char *NDArrayPort, int NDArrayAddr, int maxAddr, int numParams,
+                   const char *NDArrayPort, int NDArrayAddr, int maxAddr,
                    int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
-                   int asynFlags, int autoConnect, int priority, int stackSize, int maxThreads=1);
+                   int asynFlags, int autoConnect, int priority, int stackSize, int maxThreads);
     ~NDPluginDriver();
 
     /* These are the methods that we override from asynNDArrayDriver */
@@ -67,14 +67,15 @@ public:
                                         size_t nElements, size_t *nIn);
                                      
     /* These are the methods that are new to this class */
-    virtual asynStatus doNDArrayCallbacks(NDArray *pArray);
     virtual void driverCallback(asynUser *pasynUser, void *genericPointer);
     virtual void run(void);
     virtual asynStatus start(void);
     void sortingTask();
 
 protected:
-    virtual void processCallbacks(NDArray *pArray);
+    virtual void processCallbacks(NDArray *pArray) = 0;
+    virtual void beginProcessCallbacks(NDArray *pArray);
+    virtual asynStatus endProcessCallbacks(NDArray *pArray, bool copyArray=false, bool readAttributes=true);
     virtual asynStatus connectToArrayPort(void);    
     virtual asynStatus setArrayInterrupt(int connect);
 
@@ -99,6 +100,8 @@ protected:
     int NDPluginDriverProcessPlugin;
     int NDPluginDriverExecutionTime;
     int NDPluginDriverMinCallbackTime;
+
+    NDArray *pPrevInputArray_;
 
 private:
     void processTask();
@@ -127,7 +130,6 @@ private:
     epicsThreadId sortingThreadId_;
     epicsTimeStamp lastProcessTime_;
     int dimsPrev_[ND_ARRAY_MAX_DIMS];
-    NDArray *pInputArray_;
 };
 
     
