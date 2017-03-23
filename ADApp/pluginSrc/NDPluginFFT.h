@@ -55,7 +55,6 @@ protected:
   int P_FFTReal;
   int P_FFTImaginary;
   int P_FFTAbsValue;
-  #define LAST_NDPLUGIN_FFT_PARAM P_FFTAbsValue
                                 
 private:
   template <typename epicsType> void convertToDoubleT(NDArray *pArray);
@@ -87,7 +86,5 @@ private:
   double *FFTImaginary_;
   double *FFTAbsValue_;
 };
-
-#define NUM_NDPLUGIN_FFT_PARAMS (int)(&LAST_NDPLUGIN_FFT_PARAM - &FIRST_NDPLUGIN_FFT_PARAM + 1)
     
 #endif //NDPluginFFT_H
