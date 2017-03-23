@@ -97,7 +97,6 @@ protected:
     int NDPluginOverlayTimeStampFormat;
     int NDPluginOverlayFont;
     int NDPluginOverlayDisplayText;
-    #define LAST_NDPLUGIN_OVERLAY_PARAM NDPluginOverlayDisplayText
                                 
 private:
     int maxOverlays;
@@ -106,6 +105,5 @@ private:
     NDOverlay_t *pOverlay;
 
 };
-#define NUM_NDPLUGIN_OVERLAY_PARAMS ((int)(&LAST_NDPLUGIN_OVERLAY_PARAM - &FIRST_NDPLUGIN_OVERLAY_PARAM + 1))
     
 #endif

@@ -121,8 +121,6 @@ protected:
     /* Output data type */
     int NDPluginProcessDataType;
 
-    #define LAST_NDPLUGIN_PROCESS_PARAM NDPluginProcessDataType
-                                
 private:
     NDArray *pBackground;
     size_t  nBackgroundElements;
@@ -131,6 +129,5 @@ private:
     NDArray *pFilter;
     int  numFiltered;
 };
-#define NUM_NDPLUGIN_PROCESS_PARAMS ((int)(&LAST_NDPLUGIN_PROCESS_PARAM - &FIRST_NDPLUGIN_PROCESS_PARAM + 1))
     
 #endif
