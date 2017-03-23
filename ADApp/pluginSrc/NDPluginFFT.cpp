@@ -51,10 +51,10 @@ NDPluginFFT::NDPluginFFT(const char *portName, int queueSize, int blockingCallba
                          int priority, int stackSize)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
-             NDArrayPort, NDArrayAddr, 1, NUM_NDPLUGIN_FFT_PARAMS, maxBuffers, maxMemory,
+             NDArrayPort, NDArrayAddr, 1, maxBuffers, maxMemory,
              asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
              asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
-             0, 1, priority, stackSize),
+             0, 1, priority, stackSize, 1),
     uniqueId_(0), timePerPoint_(0), timeAxis_(0), freqAxis_(0), timeSeries_(0), 
     FFTReal_(0), FFTImaginary_(0), FFTAbsValue_(0)
 {
@@ -187,11 +187,10 @@ void NDPluginFFT::doArrayCallbacks()
   epicsTimeStamp now;
   double *pIn, *pOut;
   int arrayCallbacks;
-  NDArray *pArrayOut = this->pArrays[0];
+  NDArray *pArrayOut;
 
   getIntegerParam(NDArrayCallbacks, &arrayCallbacks);
   if (arrayCallbacks) {
-    if (pArrayOut) pArrayOut->release();
     dims[0] = nFreqX_;
     dims[1] = nFreqY_;
     pArrayOut = pNDArrayPool->alloc(rank_, dims, NDFloat64, 0, 0);
@@ -205,10 +204,7 @@ void NDPluginFFT::doArrayCallbacks()
     epicsTimeGetCurrent(&now);
     pArrayOut->timeStamp = now.secPastEpoch + now.nsec / 1.e9;
     pArrayOut->uniqueId = uniqueId_++;
-    this->unlock();
-    doCallbacksGenericPointer(pArrayOut, NDArrayData, 0);
-    this->lock();
-    this->pArrays[0] = pArrayOut;
+    NDPluginDriver::endProcessCallbacks(pArrayOut, false, false);
   }
 
   /* Do waveform callbacks.  This only does the first row for 2-D FFTs. */
@@ -279,7 +275,7 @@ void NDPluginFFT::processCallbacks(NDArray *pArray)
   const char* functionName = "NDPluginFFT::processCallbacks";
 
   /* Call the base class method */
-  NDPluginDriver::processCallbacks(pArray);
+  NDPluginDriver::beginProcessCallbacks(pArray);
 
   // This plugin only works with 1-D or 2-D arrays
   switch (pArray->ndims) {
