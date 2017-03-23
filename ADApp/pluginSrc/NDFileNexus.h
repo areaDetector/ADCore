@@ -46,7 +46,6 @@ protected:
     #define FIRST_NDFILE_NEXUS_PARAM NDFileNexusTemplatePath
     int NDFileNexusTemplateFile;
     int NDFileNexusTemplateValid;
-    #define LAST_NDFILE_NEXUS_PARAM NDFileNexusTemplateValid
 
 private:
     NXhandle nxFileHandle;
@@ -70,7 +69,6 @@ private:
     void loadTemplateFile();
 
 };
-#define NUM_NDFILE_NEXUS_PARAMS ((int)(&LAST_NDFILE_NEXUS_PARAM - &FIRST_NDFILE_NEXUS_PARAM + 1))
 
 #endif
 

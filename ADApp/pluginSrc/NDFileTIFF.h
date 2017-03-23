@@ -47,5 +47,5 @@ private:
     asynStatus populateAsciiFieldInfo(TIFFFieldInfo *fieldInfo, int fieldTag, const char *tagName);
 
 };
-#define NUM_NDFILE_TIFF_PARAMS 0
+
 #endif
