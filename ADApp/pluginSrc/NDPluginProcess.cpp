@@ -66,7 +66,7 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     static const char* functionName = "processCallbacks";
 
     /* Call the base class method */
-    NDPluginDriver::processCallbacks(pArray);
+    NDPluginDriver::beginProcessCallbacks(pArray);
 
     /* Need to fetch all of these parameters while we still have the mutex */
     getIntegerParam(NDPluginProcessDataType,            &dataType);
@@ -259,25 +259,18 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
     doCallbacks:    
     /* We must exit with the mutex locked */
     this->lock();
+
     if (doCallbacks && (NULL != pArrayOut)) {
-        /* Get the attributes from this driver */
-        this->getAttributes(pArrayOut->pAttributeList);
-        /* Call any clients who have registered for NDArray callbacks */
-        this->unlock();
-        doCallbacksGenericPointer( pArrayOut, NDArrayData, 0);
-        this->lock();
-        if (NULL != this->pArrays[0]) this->pArrays[0]->release();
-        this->pArrays[0] = pArrayOut;
+        NDPluginDriver::endProcessCallbacks(pArrayOut, false, true);
     }
 
     if (NULL != pScratch) pScratch->release();
 
     setIntegerParam(NDPluginProcessNumFiltered, this->numFiltered);
-    callParamCallbacks();
     if (autoOffsetScale && this->pArrays[0] != NULL) {
         setIntegerParam(NDPluginProcessAutoOffsetScale, 0);
-        callParamCallbacks();
     }
+    callParamCallbacks();
 }
 
 /** Called when asyn clients call pasynInt32->write().
@@ -369,10 +362,10 @@ NDPluginProcess::NDPluginProcess(const char *portName, int queueSize, int blocki
                          int priority, int stackSize)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
-                   NDArrayPort, NDArrayAddr, 1, NUM_NDPLUGIN_PROCESS_PARAMS, maxBuffers, maxMemory,
+                   NDArrayPort, NDArrayAddr, 1, maxBuffers, maxMemory,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
-                   ASYN_MULTIDEVICE, 1, priority, stackSize)
+                   ASYN_MULTIDEVICE, 1, priority, stackSize, 1)
 {
     //static const char *functionName = "NDPluginProcess";
 
