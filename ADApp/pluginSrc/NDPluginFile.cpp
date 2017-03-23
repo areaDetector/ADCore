@@ -51,7 +51,7 @@ asynStatus NDPluginFile::openFileBase(NDFileOpenMode_t openMode, NDArray *pArray
     status = (asynStatus)createFileName(MAX_FILENAME_LEN, fullFileName);
     if (status) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-              "%s:%s error creating full file name, fullFileName=%s, status=%d\n", 
+              "%s::%s error creating full file name, fullFileName=%s, status=%d\n", 
               driverName, functionName, fullFileName, status);
         setIntegerParam(NDFileWriteStatus, NDFileWriteError);
         setStringParam(NDFileWriteMessage, "Error creating full file name");
@@ -75,7 +75,7 @@ asynStatus NDPluginFile::openFileBase(NDFileOpenMode_t openMode, NDArray *pArray
         epicsSnprintf(errorMessage, sizeof(errorMessage)-1, 
             "Error opening file %s, status=%d", fullFileName, status);
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-              "%s:%s %s\n", 
+              "%s::%s %s\n", 
               driverName, functionName, errorMessage);
         setIntegerParam(NDFileWriteStatus, NDFileWriteError);
         setStringParam(NDFileWriteMessage, errorMessage);
@@ -129,7 +129,7 @@ asynStatus NDPluginFile::closeFileBase()
     this->lock();
     if (status) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-              "%s:%s %s\n", 
+              "%s::%s %s\n", 
               driverName, functionName, errorMessage);
         setIntegerParam(NDFileWriteStatus, NDFileWriteError);
         setStringParam(NDFileWriteMessage, errorMessage);
@@ -152,9 +152,9 @@ asynStatus NDPluginFile::readFileBase(void)
     status = (asynStatus)createFileName(MAX_FILENAME_LEN, fullFileName);
     if (status) { 
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-              "%s:%s error creating full file name, fullFileName=%s, status=%d\n", 
+              "%s::%s error creating full file name, fullFileName=%s, status=%d\n", 
               driverName, functionName, fullFileName, status);
-        return(status);
+        return status;
     }
     
     /* Call the readFile method in the derived class */
@@ -174,13 +174,9 @@ asynStatus NDPluginFile::readFileBase(void)
     setIntegerParam(NDDataType, dataType);
     
     /* Call any registered clients */
-    doCallbacksGenericPointer(pArray, NDArrayData, 0);
+    NDPluginDriver::endProcessCallbacks(pArray, false, true);
 
-    /* Set the last array to be this one */
-    this->pArrays[0]->release();
-    this->pArrays[0] = pArray;    
-    
-    return(status);
+    return status;
 }
 
 /** Base method for writing a file
@@ -203,7 +199,7 @@ asynStatus NDPluginFile::writeFileBase()
     /* Make sure there is a valid array */
     if (!this->pArrays[0]) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-            "%s:%s: ERROR, must collect an array to get dimensions first\n",
+            "%s::%s: ERROR, must collect an array to get dimensions first\n",
             driverName, functionName);
         return(asynError);
     }
@@ -234,12 +230,12 @@ asynStatus NDPluginFile::writeFileBase()
                 status = this->writeFile(pArrayOut);
                 epicsMutexUnlock(this->fileMutexId);
                 this->lock();
-                doNDArrayCallbacks(pArrayOut);
+                NDPluginDriver::endProcessCallbacks(pArrayOut, true, true);
                 if (status) {
                     epicsSnprintf(errorMessage, sizeof(errorMessage)-1, 
                         "Error writing file, status=%d", status);
                     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-                          "%s:%s %s\n", 
+                          "%s::%s %s\n", 
                           driverName, functionName, errorMessage);
                     setIntegerParam(NDFileWriteStatus, NDFileWriteError);
                     setStringParam(NDFileWriteMessage, errorMessage);
@@ -254,7 +250,7 @@ asynStatus NDPluginFile::writeFileBase()
             /* Write the file */
             if (!this->pCapture) {
                 asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                    "%s:%s: ERROR, no capture buffer present\n", 
+                    "%s::%s: ERROR, no capture buffer present\n", 
                     driverName, functionName);
                 setIntegerParam(NDFileWriteStatus, NDFileWriteError);
                 setStringParam(NDFileWriteMessage, "ERROR, no capture buffer present");
@@ -277,12 +273,12 @@ asynStatus NDPluginFile::writeFileBase()
                         status = this->writeFile(pArray);
                         epicsMutexUnlock(this->fileMutexId);
                         this->lock();
-                        doNDArrayCallbacks(pArray);
+                        NDPluginDriver::endProcessCallbacks(pArray, true, true);
                         if (status) {
                             epicsSnprintf(errorMessage, sizeof(errorMessage)-1, 
                                 "Error writing file, status=%d", status);
                             asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-                                  "%s:%s %s\n", 
+                                  "%s::%s %s\n", 
                                   driverName, functionName, errorMessage);
                             setIntegerParam(NDFileWriteStatus, NDFileWriteError);
                             setStringParam(NDFileWriteMessage, errorMessage);
@@ -319,12 +315,12 @@ asynStatus NDPluginFile::writeFileBase()
                 status = this->writeFile(pArrayOut);
                 epicsMutexUnlock(this->fileMutexId);
                 this->lock();
-                doNDArrayCallbacks(pArrayOut);
+                NDPluginDriver::endProcessCallbacks(pArrayOut, true, true);
                 if (status) {
                     epicsSnprintf(errorMessage, sizeof(errorMessage)-1,
                             "Error writing file, status=%d", status);
                     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                            "%s:%s %s\n",
+                            "%s::%s %s\n",
                             driverName, functionName, errorMessage);
                     setIntegerParam(NDFileWriteStatus, NDFileWriteError);
                     setStringParam(NDFileWriteMessage, errorMessage);
@@ -337,7 +333,7 @@ asynStatus NDPluginFile::writeFileBase()
             break;
         default:
             asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                "%s:%s: ERROR, unknown fileWriteMode %d\n", 
+                "%s::%s: ERROR, unknown fileWriteMode %d\n", 
                 driverName, functionName, fileWriteMode);
             break;
     }
@@ -357,7 +353,7 @@ asynStatus NDPluginFile::writeFileBase()
                 status = remove(driverFileName);
                 if (status != 0) {
                     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-                              "%s:%s: error deleting file %s, error=%s\n",
+                              "%s::%s: error deleting file %s, error=%s\n",
                               driverName, functionName, driverFileName, strerror(errno));
                 }
             }
@@ -404,7 +400,7 @@ asynStatus NDPluginFile::doCapture(int capture)
             return(asynSuccess);
         } else {
             asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                "%s:%s: ERROR, must collect an array to get dimensions first\n",
+                "%s::%s: ERROR, must collect an array to get dimensions first\n",
                 driverName, functionName);
             return(asynError);
         }
@@ -430,7 +426,7 @@ asynStatus NDPluginFile::doCapture(int capture)
                 setIntegerParam(NDFileNumCaptured, 0);
                 if (!pArray) {
                     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                        "%s:%s ERROR: No arrays collected: cannot allocate capture buffer\n",
+                        "%s::%s ERROR: No arrays collected: cannot allocate capture buffer\n",
                         driverName, functionName);
                     return(asynError);
                 }
@@ -439,7 +435,7 @@ asynStatus NDPluginFile::doCapture(int capture)
                 this->pCapture = (NDArray **)calloc(numCapture, sizeof(NDArray *));
                 if (!this->pCapture) {
                     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                        "%s:%s ERROR: cannot allocate capture buffer\n",
+                        "%s::%s ERROR: cannot allocate capture buffer\n",
                         driverName, functionName);
                     setIntegerParam(NDFileCapture, 0);
                     return(asynError);
@@ -448,7 +444,7 @@ asynStatus NDPluginFile::doCapture(int capture)
                     pCapture[i] = new NDArray;
                     if (!this->pCapture[i]) {
                         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                            "%s:%s ERROR: cannot allocate capture buffer %d\n",
+                            "%s::%s ERROR: cannot allocate capture buffer %d\n",
                             driverName, functionName, i);
                         setIntegerParam(NDFileCapture, 0);
                         freeCaptureBuffer(numCapture);
@@ -459,7 +455,7 @@ asynStatus NDPluginFile::doCapture(int capture)
                     this->pCapture[i]->ndims = pArray->ndims;
                     if (!this->pCapture[i]->pData) {
                         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
-                            "%s:%s ERROR: cannot allocate capture array for buffer %d\n",
+                            "%s::%s ERROR: cannot allocate capture array for buffer %d\n",
                             driverName, functionName, i);
                         setIntegerParam(NDFileCapture, 0);
                         freeCaptureBuffer(numCapture);
@@ -728,7 +724,7 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
     getIntegerParam(NDArrayCounter, &arrayCounter);
 
     /* Call the base class method */
-    NDPluginDriver::processCallbacks(pArray);
+    NDPluginDriver::beginProcessCallbacks(pArray);
     
     getIntegerParam(NDAutoSave, &autoSave);
     getIntegerParam(NDFileCapture, &capture);    
@@ -785,6 +781,7 @@ void NDPluginFile::processCallbacks(NDArray *pArray)
     callParamCallbacks();
 }
 
+
 /** Called when asyn clients call pasynInt32->write().
   * This function performs actions for some parameters, including NDReadFile, NDWriteFile and NDFileCapture.
   * For other parameters it calls NDPluginDriver::writeInt32 to see if that method understands the parameter. 
@@ -808,7 +805,7 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
                 status = writeFileBase();
             } else {
                 asynPrint(pasynUser, ASYN_TRACE_ERROR,
-                    "%s:%s: ERROR, no valid array to write",
+                    "%s::%s: ERROR, no valid array to write",
                     driverName, functionName);
                 status = asynError;
             }
@@ -859,11 +856,11 @@ asynStatus NDPluginFile::writeInt32(asynUser *pasynUser, epicsInt32 value)
     
     if (status) 
         asynPrint(pasynUser, ASYN_TRACE_ERROR, 
-              "%s:%s error, status=%d function=%d, value=%d\n", 
+              "%s::%s error, status=%d function=%d, value=%d\n", 
               driverName, functionName, status, function, value);
     else        
         asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, value=%d\n", 
+              "%s::%s: function=%d, value=%d\n", 
               driverName, functionName, function, value);
     return status;
 }
@@ -911,18 +908,18 @@ asynStatus NDPluginFile::writeNDArray(asynUser *pasynUser, void *genericPointer)
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   */
 NDPluginFile::NDPluginFile(const char *portName, int queueSize, int blockingCallbacks, 
-                           const char *NDArrayPort, int NDArrayAddr, int maxAddr, int numParams,
+                           const char *NDArrayPort, int NDArrayAddr, int maxAddr,
                            int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
-                           int asynFlags, int autoConnect, int priority, int stackSize)
+                           int asynFlags, int autoConnect, int priority, int stackSize, int maxThreads)
 
     /* Invoke the base class constructor.
      * We allocate 1 NDArray of unlimited size in the NDArray pool.
      * This driver can block (because writing a file can be slow), and it is not multi-device.  
      * Set autoconnect to 1.  priority and stacksize can be 0, which will use defaults. */
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
-                     NDArrayPort, NDArrayAddr, maxAddr, 0, maxBuffers, maxMemory, 
+                     NDArrayPort, NDArrayAddr, maxAddr, maxBuffers, maxMemory, 
                      asynGenericPointerMask, asynGenericPointerMask,
-                     asynFlags, autoConnect, priority, stackSize),
+                     asynFlags, autoConnect, priority, stackSize, maxThreads),
     pCapture(NULL), captureBufferSize(0)
 {
     //static const char *functionName = "NDPluginFile";
