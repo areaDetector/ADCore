@@ -32,7 +32,6 @@ public:
 protected:
     int NDPluginStdArraysData;
     #define FIRST_NDPLUGIN_STDARRAYS_PARAM NDPluginStdArraysData
-    #define LAST_NDPLUGIN_STDARRAYS_PARAM NDPluginStdArraysData
 private:
     /* These methods are just for this class */
     template <typename epicsType> asynStatus readArray(asynUser *pasynUser, epicsType *value, 
@@ -43,6 +42,4 @@ private:
                                         
 };
 
-#define NUM_NDPLUGIN_STDARRAYS_PARAMS ((int)(&LAST_NDPLUGIN_STDARRAYS_PARAM - &FIRST_NDPLUGIN_STDARRAYS_PARAM + 1))
-    
 #endif

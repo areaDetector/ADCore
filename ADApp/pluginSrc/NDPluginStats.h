@@ -289,12 +289,9 @@ protected:
     int NDPluginStatsHistEntropy;
     int NDPluginStatsHistArray;
 
-    #define LAST_NDPLUGIN_STATS_PARAM NDPluginStatsHistArray
-                                
 private:
     double  *timeSeries[MAX_TIME_SERIES_TYPES];
     void doTimeSeriesCallbacks();
 };
-#define NUM_NDPLUGIN_STATS_PARAMS ((int)(&LAST_NDPLUGIN_STATS_PARAM - &FIRST_NDPLUGIN_STATS_PARAM + 1))
-    
+
 #endif
