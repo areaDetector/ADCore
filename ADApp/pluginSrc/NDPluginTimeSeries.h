@@ -64,7 +64,6 @@ protected:
 
   // Per-signal parameters
   int P_TSTimeSeries;
-  #define LAST_NDPLUGIN_TIME_SERIES_PARAM P_TSTimeSeries
                                 
 private:
   template <typename epicsType> asynStatus doAddToTimeSeriesT(NDArray *pArray);
@@ -98,7 +97,5 @@ private:
   double *timeStamp_;
   NDArray *pTimeCircular_;
 };
-
-#define NUM_NDPLUGIN_TIME_SERIES_PARAMS (int)(&LAST_NDPLUGIN_TIME_SERIES_PARAM - &FIRST_NDPLUGIN_TIME_SERIES_PARAM + 1)
     
 #endif //NDPluginTimeSeries_H

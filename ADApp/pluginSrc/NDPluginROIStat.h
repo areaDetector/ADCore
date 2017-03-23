@@ -133,7 +133,6 @@ protected:
     int NDPluginROIStatTSTimestamp;
     
     int NDPluginROIStatLast;
-    #define LAST_NDPLUGIN_ROISTAT_PARAM NDPluginROIStatLast
                                 
 private:
 
@@ -149,6 +148,4 @@ private:
     double  *timeSeries_;
 };
 
-#define NUM_NDPLUGIN_ROISTAT_PARAMS (int)(&LAST_NDPLUGIN_ROISTAT_PARAM - &FIRST_NDPLUGIN_ROISTAT_PARAM + 1)
-    
 #endif //NDPluginROIStat_H
