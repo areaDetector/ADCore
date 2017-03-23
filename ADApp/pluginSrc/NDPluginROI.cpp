@@ -81,14 +81,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     getIntegerParam(NDPluginROICollapseDims, &collapseDims);
 
     /* Call the base class method */
-    NDPluginDriver::processCallbacks(pArray);
-
-    /* We always keep the last array so read() can use it.
-     * Release previous one. Reserve new one below. */
-    if (this->pArrays[0]) {
-        this->pArrays[0]->release();
-        this->pArrays[0] = NULL;
-    }
+    NDPluginDriver::beginProcessCallbacks(pArray);
     
     /* Get information about the array */
     pArray->getInfo(&arrayInfo);
@@ -183,13 +176,12 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         pScratch->getInfo(&scratchInfo);
         pData = (double *)pScratch->pData;
         for (i=0; i<scratchInfo.nElements; i++) pData[i] = pData[i]/scale;
-        this->pNDArrayPool->convert(pScratch, &this->pArrays[0], (NDDataType_t)dataType);
+        this->pNDArrayPool->convert(pScratch, &pOutput, (NDDataType_t)dataType);
         pScratch->release();
     } 
     else {        
-        this->pNDArrayPool->convert(pArray, &this->pArrays[0], (NDDataType_t)dataType, dims);
+        this->pNDArrayPool->convert(pArray, &pOutput, (NDDataType_t)dataType, dims);
     }
-    pOutput = this->pArrays[0];
 
     /* If we selected just one color from the array, then we need to collapse the
      * dimensions and set the color mode to mono */
@@ -236,17 +228,12 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     setIntegerParam(NDArraySizeX, 0);
     setIntegerParam(NDArraySizeY, 0);
     setIntegerParam(NDArraySizeZ, 0);
-    if (pOutput->ndims > 0) setIntegerParam(NDArraySizeX, (int)this->pArrays[0]->dims[userDims[0]].size);
-    if (pOutput->ndims > 1) setIntegerParam(NDArraySizeY, (int)this->pArrays[0]->dims[userDims[1]].size);
-    if (pOutput->ndims > 2) setIntegerParam(NDArraySizeZ, (int)this->pArrays[0]->dims[userDims[2]].size);
+    if (pOutput->ndims > 0) setIntegerParam(NDArraySizeX, (int)pOutput->dims[userDims[0]].size);
+    if (pOutput->ndims > 1) setIntegerParam(NDArraySizeY, (int)pOutput->dims[userDims[1]].size);
+    if (pOutput->ndims > 2) setIntegerParam(NDArraySizeZ, (int)pOutput->dims[userDims[2]].size);
 
-    /* Get the attributes for this driver */
-    this->getAttributes(this->pArrays[0]->pAttributeList);
-    /* Call any clients who have registered for NDArray callbacks */
-    this->unlock();
-    doCallbacksGenericPointer(this->pArrays[0], NDArrayData, 0);
-    /* We must enter the loop and exit with the mutex locked */
-    this->lock();
+    NDPluginDriver::endProcessCallbacks(pOutput, false, true);
+
     callParamCallbacks();
 
 }
@@ -321,13 +308,13 @@ asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
 NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallbacks,
                          const char *NDArrayPort, int NDArrayAddr,
                          int maxBuffers, size_t maxMemory,
-                         int priority, int stackSize)
+                         int priority, int stackSize, int maxThreads)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
-                   NDArrayPort, NDArrayAddr, 1, NUM_NDPLUGIN_ROI_PARAMS, maxBuffers, maxMemory,
+                   NDArrayPort, NDArrayAddr, 1, maxBuffers, maxMemory,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
-                   ASYN_MULTIDEVICE, 1, priority, stackSize)
+                   ASYN_MULTIDEVICE, 1, priority, stackSize, maxThreads)
 {
     //static const char *functionName = "NDPluginROI";
 
@@ -376,10 +363,10 @@ NDPluginROI::NDPluginROI(const char *portName, int queueSize, int blockingCallba
 extern "C" int NDROIConfigure(const char *portName, int queueSize, int blockingCallbacks,
                                  const char *NDArrayPort, int NDArrayAddr,
                                  int maxBuffers, size_t maxMemory,
-                                 int priority, int stackSize)
+                                 int priority, int stackSize, int maxThreads)
 {
     NDPluginROI *pPlugin = new NDPluginROI(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                                           maxBuffers, maxMemory, priority, stackSize);
+                                           maxBuffers, maxMemory, priority, stackSize, maxThreads);
     return pPlugin->start();
 }
 
@@ -393,6 +380,7 @@ static const iocshArg initArg5 = { "maxBuffers",iocshArgInt};
 static const iocshArg initArg6 = { "maxMemory",iocshArgInt};
 static const iocshArg initArg7 = { "priority",iocshArgInt};
 static const iocshArg initArg8 = { "stackSize",iocshArgInt};
+static const iocshArg initArg9 = { "maxThreads",iocshArgInt};
 static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg1,
                                             &initArg2,
@@ -401,13 +389,15 @@ static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg5,
                                             &initArg6,
                                             &initArg7,
-                                            &initArg8};
-static const iocshFuncDef initFuncDef = {"NDROIConfigure",9,initArgs};
+                                            &initArg8,
+                                            &initArg9};
+static const iocshFuncDef initFuncDef = {"NDROIConfigure",10,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
     NDROIConfigure(args[0].sval, args[1].ival, args[2].ival,
                    args[3].sval, args[4].ival, args[5].ival,
-                   args[6].ival, args[7].ival, args[8].ival);
+                   args[6].ival, args[7].ival, args[8].ival,
+                   args[9].ival);
 }
 
 extern "C" void NDROIRegister(void)
