@@ -44,10 +44,10 @@ NDPluginGather::NDPluginGather(const char *portName, int queueSize, int blocking
                                      int priority, int stackSize)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
-                   "", 0, maxPorts, 0, maxBuffers, maxMemory,
+                   "", 0, maxPorts, maxBuffers, maxMemory,
                    asynInt32Mask | asynFloat64Mask | asynGenericPointerMask,
                    asynInt32Mask | asynFloat64Mask | asynGenericPointerMask,
-                   ASYN_MULTIDEVICE, 1, priority, stackSize),
+                   ASYN_MULTIDEVICE, 1, priority, stackSize, 1),
     maxPorts_(maxPorts)
 {
     int i;
@@ -87,9 +87,9 @@ void NDPluginGather::processCallbacks(NDArray *pArray)
     //static const char *functionName = "processCallbacks";
 
     /* Call the base class method */
-    NDPluginDriver::processCallbacks(pArray);
+    NDPluginDriver::beginProcessCallbacks(pArray);
 
-    NDPluginDriver::doNDArrayCallbacks(pArray);
+    NDPluginDriver::endProcessCallbacks(pArray, true, true);
 }
 
 /** Register or unregister to receive asynGenericPointer (NDArray) callbacks from the driver.
