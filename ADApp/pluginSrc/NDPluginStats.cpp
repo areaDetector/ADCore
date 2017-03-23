@@ -450,7 +450,7 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     static const char* functionName = "processCallbacks";
 
     /* Call the base class method */
-    NDPluginDriver::processCallbacks(pArray);
+    NDPluginDriver::beginProcessCallbacks(pArray);
     
     pArray->getInfo(&arrayInfo);
     getIntegerParam(NDPluginStatsComputeStatistics,  &computeStatistics);
@@ -653,7 +653,7 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
         free(pStats->histogram);
     }
 
-    doNDArrayCallbacks(pArray);
+    NDPluginDriver::endProcessCallbacks(pArray, true, true);
     
     callParamCallbacks();
 }
@@ -676,12 +676,12 @@ asynStatus NDPluginStats::writeInt32(asynUser *pasynUser, epicsInt32 value)
     status = (asynStatus) setIntegerParam(function, value);
 
     if (function == NDPluginStatsCursorX) {
-        if (this->pArrays[0]) {
-            processCallbacks(this->pArrays[0]);
+        if (pPrevInputArray_) {
+            processCallbacks(pPrevInputArray_);
         }
     } else if (function == NDPluginStatsCursorY) {
-        if (this->pArrays[0]) {
-            processCallbacks(this->pArrays[0]);
+        if (pPrevInputArray_) {
+            processCallbacks(pPrevInputArray_);
         }
     } else if (function == NDPluginStatsTSNumPoints) {
         for (i=0; i<MAX_TIME_SERIES_TYPES; i++) {
@@ -751,8 +751,8 @@ asynStatus  NDPluginStats::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
 
     if (function == NDPluginStatsCentroidThreshold) {
         getIntegerParam(NDPluginStatsComputeCentroid, &computeCentroid);
-        if (computeCentroid && this->pArrays[0]) {
-            processCallbacks(this->pArrays[0]);
+        if (computeCentroid && pPrevInputArray_) {
+            processCallbacks(pPrevInputArray_);
         }
     } else {
         /* If this parameter belongs to a base class call its method */
@@ -800,7 +800,7 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
                          int priority, int stackSize, int maxThreads)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
-                   NDArrayPort, NDArrayAddr, 1, NUM_NDPLUGIN_STATS_PARAMS, maxBuffers, maxMemory,
+                   NDArrayPort, NDArrayAddr, 1, maxBuffers, maxMemory,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    0, 1, priority, stackSize, maxThreads)
@@ -929,7 +929,7 @@ static const iocshArg initArg5 = { "maxBuffers",iocshArgInt};
 static const iocshArg initArg6 = { "maxMemory",iocshArgInt};
 static const iocshArg initArg7 = { "priority",iocshArgInt};
 static const iocshArg initArg8 = { "stackSize",iocshArgInt};
-static const iocshArg initArg9 = { "# threads",iocshArgInt};
+static const iocshArg initArg9 = { "maxThreads",iocshArgInt};
 static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg1,
                                             &initArg2,
