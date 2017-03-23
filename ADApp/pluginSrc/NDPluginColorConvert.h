@@ -28,19 +28,19 @@ public:
     NDPluginColorConvert(const char *portName, int queueSize, int blockingCallbacks, 
                          const char *NDArrayPort, int NDArrayAddr,
                          int maxBuffers, size_t maxMemory,
-                         int priority, int stackSize);
+                         int priority, int stackSize, int maxThreads);
 
     /* These methods override the virtual methods in the base class */
     void processCallbacks(NDArray *pArray);
+
 protected:
     int NDPluginColorConvertColorModeOut;
     #define FIRST_NDPLUGIN_COLOR_CONVERT_PARAM NDPluginColorConvertColorModeOut
     int NDPluginColorConvertFalseColor;    
-    #define LAST_NDPLUGIN_COLOR_CONVERT_PARAM NDPluginColorConvertFalseColor
+
 private:
     /* These methods are just for this class */
     template <typename epicsType> void convertColor(NDArray *pArray);
 };
-#define NUM_NDPLUGIN_COLOR_CONVERT_PARAMS ((int)(&LAST_NDPLUGIN_COLOR_CONVERT_PARAM - &FIRST_NDPLUGIN_COLOR_CONVERT_PARAM + 1))
  
 #endif
