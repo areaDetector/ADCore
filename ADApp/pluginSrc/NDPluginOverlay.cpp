@@ -326,16 +326,10 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
   //static const char* functionName = "processCallbacks";
 
   /* Call the base class method */
-  NDPluginDriver::processCallbacks(pArray);
+  NDPluginDriver::beginProcessCallbacks(pArray);
 
-  /* We always keep the last array so read() can use it.
-   * Release previous one. */
-  if (this->pArrays[0]) {
-    this->pArrays[0]->release();
-  }
   /* Copy the input array so we can modify it. */
-  this->pArrays[0] = this->pNDArrayPool->copy(pArray, NULL, 1);
-  pOutput = this->pArrays[0];
+  pOutput = this->pNDArrayPool->copy(pArray, NULL, 1);
   
   /* Get information about the array needed later */
   memcpy(&prevInfo, &this->arrayInfo, sizeof(prevInfo));
@@ -392,12 +386,7 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
     this->doOverlay(pOutput, pOverlay);
     this->lock();
   }
-  /* Get the attributes for this driver */
-  this->getAttributes(this->pArrays[0]->pAttributeList);
-  /* Call any clients who have registered for NDArray callbacks */
-  this->unlock();
-  doCallbacksGenericPointer(this->pArrays[0], NDArrayData, 0);
-  this->lock();
+  NDPluginDriver::endProcessCallbacks(pOutput, false, true);
   callParamCallbacks();
 }
 
@@ -429,10 +418,10 @@ NDPluginOverlay::NDPluginOverlay(const char *portName, int queueSize, int blocki
              int priority, int stackSize)
   /* Invoke the base class constructor */
   : NDPluginDriver(portName, queueSize, blockingCallbacks,
-           NDArrayPort, NDArrayAddr, maxOverlays, NUM_NDPLUGIN_OVERLAY_PARAMS, maxBuffers, maxMemory,
+           NDArrayPort, NDArrayAddr, maxOverlays, maxBuffers, maxMemory,
            asynGenericPointerMask,
            asynGenericPointerMask,
-           ASYN_MULTIDEVICE, 1, priority, stackSize)
+           ASYN_MULTIDEVICE, 1, priority, stackSize, 1)
 {
   static const char *functionName = "NDPluginOverlay";
 
