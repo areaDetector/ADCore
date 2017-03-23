@@ -137,7 +137,7 @@ void NDPluginStdArrays::processCallbacks(NDArray *pArray)
     /* static const char* functionName = "processCallbacks"; */
 
     /* Call the base class method */
-    NDPluginDriver::processCallbacks(pArray);
+    NDPluginDriver::beginProcessCallbacks(pArray);
     
     pArray->getInfo(&arrayInfo);
  
@@ -269,7 +269,7 @@ NDPluginStdArrays::NDPluginStdArrays(const char *portName, int queueSize, int bl
                                      int priority, int stackSize, int maxThreads)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
-                   NDArrayPort, NDArrayAddr, 1, NUM_NDPLUGIN_STDARRAYS_PARAMS, maxBuffers, maxMemory,
+                   NDArrayPort, NDArrayAddr, 1, maxBuffers, maxMemory,
                    
                    asynInt8ArrayMask | asynInt16ArrayMask | asynInt32ArrayMask | 
                    asynFloat32ArrayMask | asynFloat64ArrayMask,
