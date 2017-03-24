@@ -40,9 +40,10 @@ void callback(void *userPvt, asynUser *pasynUser, void *pointer)
   callbackCount++;
 }
 
+static NDArrayPool *arrayPool;
+
 struct PosPluginTestFixture
 {
-  NDArrayPool *arrayPool;
   std::tr1::shared_ptr<asynPortDriver> driver;
   std::tr1::shared_ptr<PosPluginWrapper> pos;
   std::tr1::shared_ptr<asynGenericPointerClient> client;
@@ -69,13 +70,15 @@ struct PosPluginTestFixture
                                                                       1,
                                                                       simport.c_str(),
                                                                       0,
-                                                                      -1,
                                                                       0,
-                                                                      2000000));
+                                                                      0,
+                                                                      0,
+                                                                      0));
 
     // Enable the plugin
     pos->write(NDPluginDriverEnableCallbacksString, 1);
     pos->write(NDPluginDriverBlockingCallbacksString, 1);
+    pos->write(NDArrayCallbacksString, 1);
 
     client = std::tr1::shared_ptr<asynGenericPointerClient>(new asynGenericPointerClient(testport.c_str(), 0, NDArrayDataString));
     client->registerInterruptUser(&callback);
@@ -185,7 +188,7 @@ BOOST_AUTO_TEST_CASE(test_LoadingDataPoints)
   std::vector<size_t>dims(tmpdims, tmpdims + sizeof(tmpdims)/sizeof(tmpdims[0]));
   // Create some test arrays
   std::vector<NDArray*>arrays(24);
-  fillNDArrays(dims, NDUInt32, arrays);
+  fillNDArraysFromPool(dims, NDUInt32, arrays, arrayPool);
 
   // Send some arrays to the plugin, verify they pass through with no position data appended
   for (int i = 0; i < 10; i++)
