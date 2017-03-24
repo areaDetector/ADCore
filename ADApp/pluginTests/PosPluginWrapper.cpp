@@ -18,10 +18,11 @@ PosPluginWrapper::PosPluginWrapper(const std::string& port,
                                    int blocking,
                                    const std::string& detectorPort,
                                    int address,
+                                   int maxBuffers,
                                    size_t maxMemory,
                                    int priority,
                                    int stackSize)
-  :  NDPosPlugin(port.c_str(), queueSize, blocking, detectorPort.c_str(), address, -1, maxMemory, priority, stackSize),
+  :  NDPosPlugin(port.c_str(), queueSize, blocking, detectorPort.c_str(), address, maxBuffers, maxMemory, priority, stackSize),
      AsynPortClientContainer(port)
 {
 }
