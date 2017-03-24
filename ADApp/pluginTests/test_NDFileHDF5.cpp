@@ -27,9 +27,10 @@ using namespace std;
 #include "HDF5PluginWrapper.h"
 #include "HDF5FileReader.h"
 
+static  NDArrayPool *arrayPool;
+
 struct NDFileHDF5TestFixture
 {
-  NDArrayPool *arrayPool;
   asynPortDriver* dummy_driver;
   boost::shared_ptr<HDF5PluginWrapper> hdf5;
 
@@ -127,7 +128,7 @@ BOOST_AUTO_TEST_CASE(test_createDatasetType)
 
   // Create a test array
   std::vector<NDArray*>arrays(1);
-  fillNDArrays(dims, NDUInt32, arrays);
+  fillNDArraysFromPool(dims, NDUInt32, arrays, arrayPool);
 
   // Configure the HDF5 plugin
   setup_hdf_stream();
@@ -157,7 +158,7 @@ BOOST_AUTO_TEST_CASE(test_Capture)
 
   // Create some test arrays
   std::vector<NDArray*>arrays(10);
-  fillNDArrays(dims, NDUInt32, arrays);
+  fillNDArraysFromPool(dims, NDUInt32, arrays, arrayPool);
 
   // Configure the HDF5 plugin
   setup_hdf_stream();
@@ -189,7 +190,7 @@ BOOST_AUTO_TEST_CASE(test_DatasetLayout1)
 
   // Create some test arrays
   std::vector<NDArray*>arrays(10);
-  fillNDArrays(dims, NDUInt32, arrays);
+  fillNDArraysFromPool(dims, NDUInt32, arrays, arrayPool);
 
   hdf5->write(NDFileWriteModeString, NDFileModeStream);
   hdf5->write(str_NDFileHDF5_storeAttributes, 1);

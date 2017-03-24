@@ -374,7 +374,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
   std::tr1::shared_ptr<asynPortDriver> driver;
   std::tr1::shared_ptr<HDF5PluginWrapper> hdf5;
 
-  new NDArrayPool(100, 0);
+  NDArrayPool *arrayPool = new NDArrayPool(100, 0);
 
   // Asyn manager doesn't like it if we try to reuse the same port name for multiple drivers (even if only one is ever instantiated at once), so
   // change it slightly for each test case.
@@ -406,7 +406,7 @@ BOOST_AUTO_TEST_CASE(test_PluginExtraDimensions)
 
   // Create some test arrays
   std::vector<NDArray*>arrays(10);
-  fillNDArrays(dims, NDUInt32, arrays);
+  fillNDArraysFromPool(dims, NDUInt32, arrays, arrayPool);
 
 
   // Test method: NDFileHDF5::calcNumFrames()
