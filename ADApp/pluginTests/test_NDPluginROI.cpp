@@ -67,7 +67,7 @@ typedef struct {
   std::vector<NDArray*> pArrays;
 } ROITestCaseStr ;
 
-static void appendTestCase(std::vector<ROITestCaseStr> *pOut, ROITempCaseStr *pIn)
+static void appendTestCase(std::vector<ROITestCaseStr> *pOut, ROITempCaseStr *pIn, NDArrayPool *pNDArrayPool)
 {
   ROITestCaseStr tmp;
   tmp.inputRank          = pIn->inputRank;
@@ -80,7 +80,7 @@ static void appendTestCase(std::vector<ROITestCaseStr> *pOut, ROITempCaseStr *pI
   tmp.outputDimsCollapse.assign(pIn->outputDimsCollapse, pIn->outputDimsCollapse + pIn->outputRankCollapse);
 
   tmp.pArrays.resize(1);
-  fillNDArrays(tmp.inputDims, NDFloat32, tmp.pArrays);
+  fillNDArraysFromPool(tmp.inputDims, NDFloat32, tmp.pArrays, pNDArrayPool);
   pOut->push_back(tmp);
 }
 
@@ -137,15 +137,15 @@ struct ROIPluginTestFixture
     client->registerInterruptUser(&ROI_callback);
 
     ROITempCaseStr test1 = {2, {10,10},    {0,0},   {1, 10},   2, {1, 10},   1, {10}};
-    appendTestCase(&ROITestCaseStrs, &test1); 
+    appendTestCase(&ROITestCaseStrs, &test1, arrayPool); 
     ROITempCaseStr test2 = {3, {10,10,10}, {0,0,0}, {10,1,10}, 3, {10,1,10}, 2, {10,10}};
-    appendTestCase(&ROITestCaseStrs, &test2); 
+    appendTestCase(&ROITestCaseStrs, &test2, arrayPool); 
     ROITempCaseStr test3 = {3, {10,10,10}, {0,0,0}, {1,1,10},  3, {1,1,10},  1, {10}};
-    appendTestCase(&ROITestCaseStrs, &test3); 
+    appendTestCase(&ROITestCaseStrs, &test3, arrayPool); 
     ROITempCaseStr test4 = {1, {1},        {0},     {1},       1, {1},       1, {1}};
-    appendTestCase(&ROITestCaseStrs, &test4); 
+    appendTestCase(&ROITestCaseStrs, &test4, arrayPool); 
     ROITempCaseStr test5 = {3, {10,20,30}, {0,0,0}, {5,1,1},   3, {5,1,1},   1, {5}};
-    appendTestCase(&ROITestCaseStrs, &test5); 
+    appendTestCase(&ROITestCaseStrs, &test5, arrayPool); 
 
 }
 
@@ -224,15 +224,15 @@ BOOST_AUTO_TEST_CASE(basic_roi_operation)
 
     // Check the downstream receiver of the ROI array
     BOOST_MESSAGE("  expected normal output rank: " << pStr->outputRankNormal
-                  << " actual: " << downstream_plugin->arrays[0]->ndims);
+                  << " actual: " << downstream_plugin->arrays.back()->ndims);
 
     BOOST_REQUIRE_EQUAL(downstream_plugin->arrays.size(), expectedArrayCounter);
-//    BOOST_REQUIRE_EQUAL(downstream_plugin->arrays[0]->ndims, pStr->outputRankNormal);
+    BOOST_REQUIRE_EQUAL(downstream_plugin->arrays.back()->ndims, pStr->outputRankNormal);
     for (int j=0; j<pStr->outputRankNormal; j++) {
       BOOST_MESSAGE("    expected normal dimension " << j 
                     << " size:"   <<  pStr->outputDimsNormal[j]
-                    << " actual:" << downstream_plugin->arrays[0]->dims[j].size);
-//      BOOST_REQUIRE_EQUAL(downstream_plugin->arrays[0]->dims[j].size, pStr->outputDimsNormal[j]);
+                    << " actual:" << downstream_plugin->arrays.back()->dims[j].size);
+      BOOST_REQUIRE_EQUAL(downstream_plugin->arrays.back()->dims[j].size, pStr->outputDimsNormal[j]);
     }
 
     // Process array through the ROI plugin with CollapseDims enabled.
@@ -245,14 +245,14 @@ BOOST_AUTO_TEST_CASE(basic_roi_operation)
 
     // Check the downstream receiver of the ROI array
     BOOST_MESSAGE("  expected collapsed output rank: " << pStr->outputRankCollapse
-                  << " actual: " << downstream_plugin->arrays[0]->ndims);
+                  << " actual: " << downstream_plugin->arrays.back()->ndims);
     BOOST_REQUIRE_EQUAL(downstream_plugin->arrays.size(), expectedArrayCounter);
-    BOOST_REQUIRE_EQUAL(downstream_plugin->arrays[0]->ndims, pStr->outputRankCollapse);
+    BOOST_REQUIRE_EQUAL(downstream_plugin->arrays.back()->ndims, pStr->outputRankCollapse);
     for (int j=0; j<pStr->outputRankCollapse; j++) {
       BOOST_MESSAGE("    expected collapsed dimension " << j 
                     << " size:"   <<  pStr->outputDimsCollapse[j]
-                    << " actual:" << downstream_plugin->arrays[0]->dims[j].size);
-      BOOST_REQUIRE_EQUAL(downstream_plugin->arrays[0]->dims[j].size, pStr->outputDimsCollapse[j]);
+                    << " actual:" << downstream_plugin->arrays.back()->dims[j].size);
+      BOOST_REQUIRE_EQUAL(downstream_plugin->arrays.back()->dims[j].size, pStr->outputDimsCollapse[j]);
     }
   }
 }
