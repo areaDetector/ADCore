@@ -82,7 +82,7 @@ typedef struct {
 } overlayTestCaseStr ;
 
 
-static void appendTestCase(std::vector<overlayTestCaseStr> *pOut, overlayTempCaseStr *pIn)
+static void appendTestCase(std::vector<overlayTestCaseStr> *pOut, overlayTempCaseStr *pIn, NDArrayPool *pNDArrayPool)
 {
   overlayTestCaseStr tmp;
 
@@ -103,7 +103,7 @@ static void appendTestCase(std::vector<overlayTestCaseStr> *pOut, overlayTempCas
   tmp.colorMode  = pIn->colorMode;
 
   tmp.pArrays.resize(1);
-  fillNDArrays(tmp.arrayDims, NDFloat32, tmp.pArrays);
+  fillNDArraysFromPool(tmp.arrayDims, NDFloat32, tmp.pArrays, pNDArrayPool);
   pOut->push_back(tmp);
 }
 
@@ -162,31 +162,31 @@ struct OverlayPluginTestFixture
 
     // Test a "normal" case
     overlayTempCaseStr test1 = {0, 500, 500, 50, 50, 1, 1, 0, 255, 0, NDOverlayCross, NDOverlaySet, 2, {1024, 1024}, NDColorModeMono};
-    appendTestCase(&overlayTestCaseStrs, &test1); 
+    appendTestCase(&overlayTestCaseStrs, &test1, arrayPool); 
     // Test a case with size larger than array
     overlayTempCaseStr test2 = {0, 500, 500, 5000, 5000, 1, 1, 0, 255, 0, NDOverlayEllipse, NDOverlaySet, 2, {1024, 1024}, NDColorModeMono};
-    appendTestCase(&overlayTestCaseStrs, &test2); 
+    appendTestCase(&overlayTestCaseStrs, &test2, arrayPool); 
     // Test a case with zero size
     overlayTempCaseStr test3 = {0, 500, 500, 0, 0, 1, 1, 0, 255, 0, NDOverlayRectangle, NDOverlaySet, 2, {1024, 1024}, NDColorModeMono};
-    appendTestCase(&overlayTestCaseStrs, &test3); 
+    appendTestCase(&overlayTestCaseStrs, &test3, arrayPool); 
     // Test a case with negative position
     overlayTempCaseStr test4 = {0, -500, -500, 50, 50, 1, 1, 0, 255, 0, NDOverlayCross, NDOverlaySet, 2, {1024, 1024}, NDColorModeMono};
-    appendTestCase(&overlayTestCaseStrs, &test4); 
+    appendTestCase(&overlayTestCaseStrs, &test4, arrayPool); 
     // Test a case with position larger than array size
     overlayTempCaseStr test5 = {0, 1500, 1500, 50, 50, 1, 1, 0, 255, 0, NDOverlayEllipse, NDOverlaySet, 2, {1024, 1024}, NDColorModeMono};
-    appendTestCase(&overlayTestCaseStrs, &test5); 
+    appendTestCase(&overlayTestCaseStrs, &test5, arrayPool); 
     // Test an RGB1 case 
     overlayTempCaseStr test6 = {0, 500, 500, 50, 50, 1, 1, 0, 255, 0, NDOverlayRectangle, NDOverlaySet, 3, {3, 1024, 1024}, NDColorModeRGB1};
-    appendTestCase(&overlayTestCaseStrs, &test6); 
+    appendTestCase(&overlayTestCaseStrs, &test6, arrayPool); 
     // Test an case with very large width
     overlayTempCaseStr test7 = {0, 500, 500, 50, 50, 5000, 5000, 0, 255, 0, NDOverlayCross, NDOverlaySet, 2, {1024, 1024}, NDColorModeMono};
-    appendTestCase(&overlayTestCaseStrs, &test7); 
+    appendTestCase(&overlayTestCaseStrs, &test7, arrayPool); 
     // Test an case with zero width
     overlayTempCaseStr test8 = {0, 500, 500, 50, 50, 0, 0, 0, 255, 0, NDOverlayCross, NDOverlaySet, 2, {1024, 1024}, NDColorModeMono};
-    appendTestCase(&overlayTestCaseStrs, &test8);
+    appendTestCase(&overlayTestCaseStrs, &test8, arrayPool);
     // Test a "normal" case using address 1
     overlayTempCaseStr test9 = {1, 500, 500, 50, 50, 1, 1, 0, 255, 0, NDOverlayCross, NDOverlaySet, 2, {1024, 1024}, NDColorModeMono};
-    appendTestCase(&overlayTestCaseStrs, &test9);
+    appendTestCase(&overlayTestCaseStrs, &test9, arrayPool);
   }
 
   ~OverlayPluginTestFixture()

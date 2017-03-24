@@ -16,6 +16,7 @@
 #include <asynPortClient.h>
 
 void fillNDArrays(const std::vector<size_t>& dimensions, NDDataType_t dataType, std::vector<NDArray*>& arrays);
+void fillNDArraysFromPool(const std::vector<size_t>& dimensions, NDDataType_t dataType, std::vector<NDArray*>& arrays, NDArrayPool *pNDArrayPool);
 void uniqueAsynPortName(std::string& name);
 
 // Mock simply stores all received NDArrays and provides them to a client on request.
