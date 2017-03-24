@@ -20,6 +20,7 @@ public:
                    int blocking,
                    const std::string& detectorPort,
                    int address,
+                   int maxBuffers,
                    size_t maxMemory,
                    int priority,
                    int stackSize);
