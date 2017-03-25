@@ -67,7 +67,9 @@ typedef struct {
   std::vector<NDArray*> pArrays;
 } ROITestCaseStr ;
 
-static void appendTestCase(std::vector<ROITestCaseStr> *pOut, ROITempCaseStr *pIn, NDArrayPool *pNDArrayPool)
+static NDArrayPool *arrayPool;
+
+static void appendTestCase(std::vector<ROITestCaseStr> *pOut, ROITempCaseStr *pIn)
 {
   ROITestCaseStr tmp;
   tmp.inputRank          = pIn->inputRank;
@@ -80,13 +82,12 @@ static void appendTestCase(std::vector<ROITestCaseStr> *pOut, ROITempCaseStr *pI
   tmp.outputDimsCollapse.assign(pIn->outputDimsCollapse, pIn->outputDimsCollapse + pIn->outputRankCollapse);
 
   tmp.pArrays.resize(1);
-  fillNDArraysFromPool(tmp.inputDims, NDFloat32, tmp.pArrays, pNDArrayPool);
+  fillNDArraysFromPool(tmp.inputDims, NDFloat32, tmp.pArrays, arrayPool);
   pOut->push_back(tmp);
 }
 
 struct ROIPluginTestFixture
 {
-  NDArrayPool *arrayPool;
   boost::shared_ptr<asynPortDriver> driver;
   boost::shared_ptr<ROIPluginWrapper> roi;
   boost::shared_ptr<asynGenericPointerClient> client;
@@ -138,15 +139,15 @@ struct ROIPluginTestFixture
     client->registerInterruptUser(&ROI_callback);
 
     ROITempCaseStr test1 = {2, {10,10},    {0,0},   {1, 10},   2, {1, 10},   1, {10}};
-    appendTestCase(&ROITestCaseStrs, &test1, arrayPool); 
+    appendTestCase(&ROITestCaseStrs, &test1); 
     ROITempCaseStr test2 = {3, {10,10,10}, {0,0,0}, {10,1,10}, 3, {10,1,10}, 2, {10,10}};
-    appendTestCase(&ROITestCaseStrs, &test2, arrayPool); 
+    appendTestCase(&ROITestCaseStrs, &test2); 
     ROITempCaseStr test3 = {3, {10,10,10}, {0,0,0}, {1,1,10},  3, {1,1,10},  1, {10}};
-    appendTestCase(&ROITestCaseStrs, &test3, arrayPool); 
+    appendTestCase(&ROITestCaseStrs, &test3); 
     ROITempCaseStr test4 = {1, {1},        {0},     {1},       1, {1},       1, {1}};
-    appendTestCase(&ROITestCaseStrs, &test4, arrayPool); 
+    appendTestCase(&ROITestCaseStrs, &test4); 
     ROITempCaseStr test5 = {3, {10,20,30}, {0,0,0}, {5,1,1},   3, {5,1,1},   1, {5}};
-    appendTestCase(&ROITestCaseStrs, &test5, arrayPool); 
+    appendTestCase(&ROITestCaseStrs, &test5); 
 
 }
 
