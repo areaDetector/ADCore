@@ -243,7 +243,7 @@ asynStatus NDPluginDriver::endProcessCallbacks(NDArray *pArray, bool copyArray, 
     if (arrayCallbacks == 0) {
         // We don't do array callbacks but still want to cache the last array in pArrays[0]
         // If this array has not been copied then we need to increase the reference count
-        if (!copyArray) pArray->reserve();
+        if (copyArray) pArray->reserve();
         if (this->pArrays[0]) this->pArrays[0]->release();
         this->pArrays[0] = pArray;
         return asynSuccess;
