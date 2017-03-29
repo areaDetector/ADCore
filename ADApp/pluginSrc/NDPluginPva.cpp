@@ -128,9 +128,10 @@ void NDPluginPva::processCallbacks(NDArray *pArray)
   * \param[in] NDArrayAddr asyn port driver address for initial source of
   *            NDArray callbacks.
   * \param[in] pvName Name of the PV that will be served by the EPICSv4 server.
-  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for
-  *            this driver is allowed to allocate. Set this to -1 to allow an
-  *            unlimited amount of memory.
+  * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is 
+  *            allowed to allocate. Set this to 0 to allow an unlimited number of buffers.
+  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
+  *            allowed to allocate. Set this to 0 to allow an unlimited amount of memory.
   * \param[in] priority The thread priority for the asyn port driver thread if
   *            ASYN_CANBLOCK is set in asynFlags.
   * \param[in] stackSize The stack size for the asyn port driver thread if
