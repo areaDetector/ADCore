@@ -149,7 +149,8 @@ struct OverlayPluginTestFixture
                                                                       8,
                                                                       0,
                                                                       0,
-                                                                      2000000));
+                                                                      0,
+                                                                      1));
     // This is the mock downstream plugin
     downstream_plugin = new TestingPlugin(testport.c_str(), 0);
 
