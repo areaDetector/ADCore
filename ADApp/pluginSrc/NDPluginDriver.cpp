@@ -232,6 +232,17 @@ NDPluginDriver::~NDPluginDriver()
     pPrevInputArray_ = pArray;
 }
 
+/** Method that is normally called at the end of the processCallbacks())
+  * method in derived classes.  
+  * \param[in] pArray  The NDArray from the callback.
+  * \param[in] copyArray This flag should be true if pArray is the original array passed to processCallbacks().
+  *            It must be false if the derived class if pArray is a new NDArray that processCallbacks() created
+  * \param[in] readAttributes This flag must be true if the derived class has not yet called readAttributes() for pArray.
+  *
+  * This method does NDArray callbacks to downstream plugins if NDArrayCallbacks is true and SortMode is Unsorted.
+  * If SortMode is sorted it inserts the NDArray into the std::multilist for callbacks in SortThread(). 
+  * It keeps track of DisorderedArrays and DroppedOutputArrays. 
+  * It caches the most recent NDArray in pArrays[0]. */ 
 asynStatus NDPluginDriver::endProcessCallbacks(NDArray *pArray, bool copyArray, bool readAttributes)
 {
     int arrayCallbacks;
@@ -547,6 +558,10 @@ asynStatus NDPluginDriver::connectToArrayPort(void)
     return(status);
 }   
 
+/** Method runs as a separate thread, periodically doing NDArray callbacks to downstream plugins.
+  * This thread is used when SortMode=1.
+  * This method should really be private, but it must be called from a 
+  * C-linkage callback function, so it must be public. */ 
 void NDPluginDriver::sortingTask()
 {
     double sortTime;
@@ -628,8 +643,8 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
     status = (asynStatus) setIntegerParam(addr, function, value);
     if (status != asynSuccess) goto done;
 
-    /* If blocking callbacks are being disabled but the callback thread has
-     * not been created yet, create it here. */
+    /* If blocking callbacks are being disabled but the callback threads have
+     * not been created yet, create them here. */
     if (function == NDPluginDriverBlockingCallbacks && !value && pThreads_.size() == 0) {
          createCallbackThreads();
      }
@@ -778,6 +793,7 @@ asynStatus NDPluginDriver::readInt32Array(asynUser *pasynUser, epicsInt32 *value
     return status;
 }
 
+/** Starts the plugin threads.  This method must be called after the derived class object is fully constructed. */ 
 asynStatus NDPluginDriver::start(void)
 {
     assert(!this->pluginStarted_); 
@@ -790,6 +806,8 @@ asynStatus NDPluginDriver::start(void)
     return startCallbackThreads();
 }
 
+/** Starts the plugin threads. 
+  * This method is called from NDPluginDriver::start and whenever the number of threads is changed. */ 
 asynStatus NDPluginDriver::startCallbackThreads(void)
 {
     asynStatus status = asynSuccess;
@@ -824,11 +842,14 @@ asynStatus NDPluginDriver::startCallbackThreads(void)
     return status;
 }
     
+/** Starts the thread that receives NDArrays from the epicsMessageQueue. */ 
 void NDPluginDriver::run()
 {
     this->processTask();
 }
 
+/** Creates the plugin threads.  
+  * This method is called when BlockingCallbacks is 0, and whenever QueueSize or NumThreads is changed. */ 
 asynStatus NDPluginDriver::createCallbackThreads()
 {
     assert(this->pThreads_.size() == 0);
@@ -880,6 +901,8 @@ asynStatus NDPluginDriver::createCallbackThreads()
     return status;
 }
 
+/** Deletes the plugin threads.  
+  * This method is called from the destructor and whenever QueueSize or NumThreads is changed. */ 
 asynStatus NDPluginDriver::deleteCallbackThreads()
 {
     ToThreadMessage_t toMsg = {ToThreadMessageExit, 0};
@@ -942,6 +965,8 @@ asynStatus NDPluginDriver::deleteCallbackThreads()
     return status;
 }
 
+/** Creates the sorting thread.  
+  * This method is called when SortMode is set to Sorted. */ 
 asynStatus NDPluginDriver::createSortingThread()
 {
     char taskName[256];
