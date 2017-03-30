@@ -314,7 +314,6 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
    * structures don't need to be protected.
    */
 
-  int use;
   int overlay;
   int itemp;
   NDArray *pOutput;
@@ -323,7 +322,7 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
   NDOverlay_t *pOverlay;
   bool arrayInfoChanged;
   int overlayUserLen = sizeof(*pOverlay) - sizeof(pOverlay->addressOffset);
-  //static const char* functionName = "processCallbacks";
+  static const char* functionName = "processCallbacks";
 
   /* Call the base class method */
   NDPluginDriver::beginProcessCallbacks(pArray);
@@ -338,16 +337,14 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
   setIntegerParam(NDPluginOverlayMaxSizeX, (int)arrayInfo.xSize);
   setIntegerParam(NDPluginOverlayMaxSizeY, (int)arrayInfo.ySize);
  
-  pOverlays.resize(this->maxOverlays_);
+  /* Copy the previous contents of each overlay */
+  pOverlays = this->prevOverlays_;
   
   /* Loop over the overlays in this driver */
   for (overlay=0; overlay<this->maxOverlays_; overlay++) {
     pOverlay = &pOverlays[overlay];
-    getIntegerParam(overlay, NDPluginOverlayUse, &use);
-    asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
-      "NDPluginOverlay::processCallbacks, overlay=%d, use=%d\n",
-      overlay, use);
-    if (!use) continue;
+    getIntegerParam(overlay, NDPluginOverlayUse, &pOverlay->use);
+    if (!pOverlay->use) continue;
      /* Need to fetch all of these parameters while we still have the mutex */
     getIntegerParam(overlay, NDPluginOverlayPositionX,  &pOverlay->PositionX);
     pOverlay->PositionX = MAX(pOverlay->PositionX, 0);
@@ -371,8 +368,8 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
     pOverlay->DisplayText[sizeof(pOverlay->DisplayText)-1] = 0;
     
     // Compare to see if any fields in the overlay have changed
-    pOverlay->changed = false;
-    this->prevOverlays_[overlay].changed = false;
+    pOverlay->changed = 0;
+    this->prevOverlays_[overlay].changed = 0;
     pOverlay->changed = (memcmp(&this->prevOverlays_[overlay], pOverlay, overlayUserLen) != 0);
     if (arrayInfoChanged) pOverlay->changed = true;
     /* If this is a text overlay with a non-blank time stamp format then it always needs to be updated */
@@ -386,7 +383,11 @@ void NDPluginOverlay::processCallbacks(NDArray *pArray)
   this->unlock();
   for (overlay=0; overlay<this->maxOverlays_; overlay++) {
     pOverlay = &pOverlays[overlay];
+    if (!pOverlay->use) continue;
     this->doOverlay(pOutput, pOverlay, &arrayInfo);
+    asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER, 
+      "%s::%s overlay %d, changed=%d, points=%d\n", 
+      driverName, functionName, overlay, pOverlay->changed, (int)pOverlay->addressOffset.size());
   }
   this->lock();
   this->prevOverlays_ = pOverlays;
@@ -574,3 +575,4 @@ extern "C" void NDOverlayRegister(void)
 extern "C" {
 epicsExportRegistrar(NDOverlayRegister);
 }
+
