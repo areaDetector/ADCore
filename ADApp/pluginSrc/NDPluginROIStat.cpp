@@ -279,6 +279,9 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
         functionName, status);
     }
 
+    /* We must enter the loop and exit with the mutex locked */
+    this->lock();
+
     if (TSAcquiring) {
       double *pData = timeSeries_ + (roi * MAX_TIME_SERIES_TYPES * numTSPoints_);
       pData[TSMinValue*numTSPoints_ + currentTSPoint_]  = pROI->min;
@@ -289,8 +292,6 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
       pData[TSTimestamp*numTSPoints_ + currentTSPoint_] = pArray->timeStamp;
     }
 
-    /* We must enter the loop and exit with the mutex locked */
-    this->lock();
     setDoubleParam(roi, NDPluginROIStatMinValue,    pROI->min);
     setDoubleParam(roi, NDPluginROIStatMaxValue,    pROI->max);
     setDoubleParam(roi, NDPluginROIStatMeanValue,   pROI->mean);
@@ -464,13 +465,13 @@ void NDPluginROIStat::doTimeSeriesCallbacks()
 NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blockingCallbacks,
                          const char *NDArrayPort, int NDArrayAddr, int maxROIs,
                          int maxBuffers, size_t maxMemory,
-                         int priority, int stackSize)
+                         int priority, int stackSize, int maxThreads)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
              NDArrayPort, NDArrayAddr, maxROIs, maxBuffers, maxMemory,
              asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
              asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
-             ASYN_MULTIDEVICE, 1, priority, stackSize, 1)
+             ASYN_MULTIDEVICE, 1, priority, stackSize, maxThreads)
 {
   const char *functionName = "NDPluginROIStat::NDPluginROIStat";
 
@@ -567,10 +568,10 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
 extern "C" int NDROIStatConfigure(const char *portName, int queueSize, int blockingCallbacks,
                                  const char *NDArrayPort, int NDArrayAddr, int maxROIs,
                                  int maxBuffers, size_t maxMemory,
-                                 int priority, int stackSize)
+                                 int priority, int stackSize, int maxThreads)
 {
     NDPluginROIStat *pPlugin = new NDPluginROIStat(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxROIs,
-                                                   maxBuffers, maxMemory, priority, stackSize);
+                                                   maxBuffers, maxMemory, priority, stackSize, maxThreads);
     return pPlugin->start();
 }
 
@@ -585,6 +586,7 @@ static const iocshArg initArg6 = { "maxBuffers",iocshArgInt};
 static const iocshArg initArg7 = { "maxMemory",iocshArgInt};
 static const iocshArg initArg8 = { "priority",iocshArgInt};
 static const iocshArg initArg9 = { "stackSize",iocshArgInt};
+static const iocshArg initArg10 = { "maxThreads",iocshArgInt};
 static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg1,
                                             &initArg2,
@@ -594,14 +596,15 @@ static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg6,
                                             &initArg7,
                                             &initArg8,
-                                            &initArg9};
-static const iocshFuncDef initFuncDef = {"NDROIStatConfigure",10,initArgs};
+                                            &initArg9,
+                                            &initArg10};
+static const iocshFuncDef initFuncDef = {"NDROIStatConfigure",11,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
     NDROIStatConfigure(args[0].sval, args[1].ival, args[2].ival,
                    args[3].sval, args[4].ival, args[5].ival,
                    args[6].ival, args[7].ival, args[8].ival,
-                   args[9].ival);
+                   args[9].ival, args[10].ival);
 }
 
 extern "C" void NDROIStatRegister(void)
