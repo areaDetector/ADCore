@@ -77,12 +77,12 @@ public class EPICS_NTNDA_Viewer implements PlugIn
 
     javax.swing.Timer timer;
 
-	public static PvaClient pva;
-	public PvaClientChannel mychannel;
-	public PVStructure read_request;
-	public PvaClientMonitor pvamon;
-	public PvaClientMonitorData easydata;
-	public Convert converter;
+    public static PvaClient pva;
+    public PvaClientChannel mychannel;
+    public PVStructure read_request;
+    public PvaClientMonitor pvamon;
+    public PvaClientMonitorData easydata;
+    public Convert converter;
 
             String channame;
 
@@ -231,7 +231,7 @@ public class EPICS_NTNDA_Viewer implements PlugIn
              
         pva=PvaClient.get();
         converter=ConvertFactory.getConvert();
-     	read_request = CreateRequest.create().createRequest("field()");
+         read_request = CreateRequest.create().createRequest("field()");
 
     }
    catch (Exception ex)
@@ -252,10 +252,10 @@ public class EPICS_NTNDA_Viewer implements PlugIn
        
             
          channame = PVPrefix +"Image";
-		 mychannel = pva.channel(channame);    
-		 pvamon=mychannel.createMonitor(read_request);
-    	pvamon.start();
-         easydata = pvamon.getData();		
+         mychannel = pva.channel(channame);    
+         pvamon=mychannel.createMonitor(read_request);
+        pvamon.start();
+         easydata = pvamon.getData();        
        checkConnections();
            logMessage("sucessfuylly conn channel/monitor " + channame, true,true);
         }
@@ -338,44 +338,33 @@ public class EPICS_NTNDA_Viewer implements PlugIn
             checkConnections();
             if (!isConnected) return;
             
-            easydata = pvamon.getData();		 		
-					
-			PVStructure pvs = easydata.getPVStructure();				
+            easydata = pvamon.getData();                 
+                    
+            PVStructure pvs = easydata.getPVStructure();                
 
-		//!! why does wrap return null? it should work?
-		NTNDArray myarray =NTNDArray.wrapUnsafe(pvs);
-		//The wrap unsafe leaves out most of the NTNDArray fields. but wrap() feils and returns null.
-		//	
-		
-		int uniqueid  =getUniqueId(myarray);
-		int ndims = getNumDims(myarray);
-		
-		// can bu size, binning, or whatever in dims
-		int dimsint[]=getDimsInfo(myarray, "size");
+            //!! why does wrap return null? it should work?
+            NTNDArray myarray =NTNDArray.wrapUnsafe(pvs);
+            //The wrap unsafe leaves out most of the NTNDArray fields. but wrap() feils and returns null.
+            //    
 
-            
-            
-         
-            
+            int uniqueid  =getUniqueId(myarray);
+            int ndims = getNumDims(myarray);
+
+            // can bu size, binning, or whatever in dims
+            int dimsint[]=getDimsInfo(myarray, "size");
+
             int nx = dimsint[0];
             int ny = dimsint[1];
             int nz = 1;
             if (ndims>=3)
                 nz = dimsint[2];
                 
-            
            // int cm = epicsGetInt(ch_colorMode);
-           int cm = 0;
            
-           		PVScalarArray imagedata = extractImageData( myarray);
-
-		
-		int arraylen = getImageLength(imagedata);
-
-           
-           
-           // DBRType dt = ch_image.getFieldType();
-            String dt =  getImageDataType( imagedata);
+           int cm  = getAttrValInt( myarray,"ColorMode","value");
+           PVScalarArray imagedata = extractImageData( myarray);
+           int arraylen = getImageLength(imagedata);
+           String dt =  getImageDataType( imagedata);
             
             if (nz == 0) nz = 1;  // 2-D images without color
             if (ny == 0) ny = 1;  // 1-D images which are OK, useful with dynamic profiler
@@ -476,9 +465,9 @@ public class EPICS_NTNDA_Viewer implements PlugIn
             if (colorMode == 0 || colorMode == 1)
             {
                 if (dataType.equals("byte[]") )
-                {			
+                {            
                     byte[] pixels= new byte[arraylen];
-	converter.toByteArray(imagedata, 0, arraylen, pixels, 0);
+    converter.toByteArray(imagedata, 0, arraylen, pixels, 0);
 
                     
                     img.getProcessor().setPixels(pixels);
@@ -486,20 +475,65 @@ public class EPICS_NTNDA_Viewer implements PlugIn
                 else if (dataType.equals("short[]") || dataType.equals("ubyte[]")) 
                 {
                     short[] pixels = new short[arraylen];
-		converter.toShortArray(imagedata, 0, arraylen, pixels, 0);
+        converter.toShortArray(imagedata, 0, arraylen, pixels, 0);
                     img.getProcessor().setPixels(pixels);
                 }
                 else if (dataType.equals("int[]") || dataType.equals("uint[]")|| dataType.equals("float[]")
                     || dataType.equals("double[]") ||  dataType.equals("ushort[]"))
                 {
                     float[] pixels =new float[arraylen];
-	 converter.toFloatArray(imagedata, 0, arraylen, pixels, 0);
+     converter.toFloatArray(imagedata, 0, arraylen, pixels, 0);
                     img.getProcessor().setPixels(pixels);
                 }
             }
             else if (colorMode >= 2 && colorMode <= 4)
             {
-        
+                int[] pixels = (int[])img.getProcessor().getPixels();
+               
+                //byte inpixels[] = epicsGetByteArray(ch_image, getsize);
+                 byte inpixels[]=new byte[getsize];
+                 
+                converter.toByteArray(imagedata, 0, getsize, inpixels, 0);
+                switch (colorMode)
+                {
+                    case 2:
+                        {
+                            int in = 0, out = 0;
+                            while (in < getsize)
+                            {
+                                pixels[out++] = (inpixels[in++] & 0xFF) << 16 | (inpixels[in++] & 0xFF) << 8 | (inpixels[in++] & 0xFF);
+                            }
+                        }
+                        break;
+                    case 3:
+                        {
+                            int nCols = imageSizeX, nRows = imageSizeZ, row, col;
+                            int redIn, greenIn, blueIn, out = 0;
+                            for (row = 0; row < nRows; row++)
+                            {
+                                redIn = row * nCols * 3;
+                                greenIn = redIn + nCols;
+                                blueIn = greenIn + nCols;
+                                for (col = 0; col < nCols; col++)
+                                {
+                                    pixels[out++] = (inpixels[redIn++] & 0xFF) << 16 | (inpixels[greenIn++] & 0xFF) << 8 | (inpixels[blueIn++] & 0xFF);
+                                }
+                            }
+                        }
+                        break;
+                    case 4:
+                        {
+                            int imageSize = imageSizeX * imageSizeY;
+                            int redIn = 0, greenIn = imageSize, blueIn = 2 * imageSize, out = 0;
+                            while (redIn < imageSize)
+                            {
+                                pixels[out++] = (inpixels[redIn++] & 0xFF) << 16 | (inpixels[greenIn++] & 0xFF) << 8 | (inpixels[blueIn++] & 0xFF);
+                            }
+                        }
+                        break;
+                }
+                img.getProcessor().setPixels(pixels);
+
             }
 
             if (isSaveToStack)
@@ -763,147 +797,270 @@ public class EPICS_NTNDA_Viewer implements PlugIn
             IJ.log("writeProperties:exception: " + ex.getMessage());
         }
     }
-    ///////////////////////////////
-    //////////////////////////////
-    ////////////////////////////////
-    /////////////////////////////
-    
+  
     /**
-	 * return num of dimensions in the NDArray
-	 * @param myarray
-	 * @return
-	 */
-	public int getNumDims(NTNDArray myarray)
-	{
-		int ndims=myarray.getDimension().getLength();		
-		return(ndims);
-	}
-	
-	
-	public void printMonDataStruct()
-	{
-
-		PVStructure pvs = easydata.getPVStructure();
-		String [] fnames = easydata.getStructure().getFieldNames();
-		
-		for (int m=0;m<fnames.length;m++)
-			System.out.println(fnames[m]);
-		
-	}
-	
-	public int getUniqueId(NTNDArray myarray)
-	{
-		int uniqueid  =myarray.getUniqueId().get();
-		return(uniqueid);
-	}
-	
-	public String getDimsString(NTNDArray myarray)
-	{
-		PVStructureArray pvdim = myarray.getDimension();
-		String dimstring =pvdim.toString();
-		return(dimstring);
-
-	}
-	
-	
-	public int[] getDimsInfo(NTNDArray myarray,String whichinfo)
-	{
-		
-				
-		int ndims = this.getNumDims(myarray);
-		int dimsint[] = new int[ndims];
-		PVStructureArray pvdim = myarray.getDimension();
-
-		StructureArrayData dimdata=new StructureArrayData();
-		pvdim.get(0,ndims,dimdata);
-		
-		for (int kk = 0;kk<ndims;kk++)
-		{
-			PVField[] dimfields = dimdata.data[kk].getPVFields();
-			for (int km = 0;km<dimfields.length;km++)
-			{
-				String dfname = dimfields[km].getField().getID();
-				String dfn2=dimfields[km].getFieldName();
-				//System.out.println(dfname + " "+dfn2);
-				if (dfn2.equals(whichinfo))
-				{
-					
-					dimsint[kk]=converter.toInt((PVScalar)dimfields[km]);
-				}
-			}
-		}
-		
-		//int nf = pvdim.getNumberFields();
-		
-		//String dimstring =pvdim.toString();
-		return(dimsint);
-	}
-
-	
-	String getImageDataType(PVScalarArray imagedata)
-	{
-
-		//So I can get the data. How do I know the Union is holdibng bytes[], floats[] or ints[]?
-		// Not sure how to ask NTNDArray the data type
-		//PVUnion pvu = myarray.getValue();
-		// this code works, but we shorten below...This is all introspective
-		//PVField has both data and introspection. 
-		//PVField pvuf =myarray.getValue().get();
-		
-		
-		
-		//pure; intruspection.
-		Field pvuff=imagedata.getField();
-		
-		//tells its a scalar array
-		Type pvufft = pvuff.getType();
-		//returns like "scalarArray"
-		String pvuffts = pvufft.toString();
-		//returns something like 'ushort[]'
-		String arraytype  =pvuff.getID();
-		return(arraytype);
-
-	}
-	
-	
-	public int getImageLength(PVScalarArray imgdata)
-	{
-		
-		// this code works, but we shorten below...This is all introspective
-		//PVField has both data and introspection. 
-		int arraylen  =imgdata.getLength();
-	
-		return(arraylen);
-		//So I can get the data. How do I know the Union is holdibng bytes[], floats[] or ints[]?
-		// Not sure how to ask NTNDArray the data type
-		//PVUnion pvu = myarray.getValue();
-		// this code works, but we shorten below...This is all introspective
-		//PVField has both data and introspection. 
-		//PVField pvuf = pvu.get();	
-			//PVScalarArray mydata = (PVScalarArray)pvuf;		
-			//int arraylen = mydata.getLength();
-		
-		
-
-		
-		
-		
-	}
-	
-	PVScalarArray extractImageData(NTNDArray myarray)
-	{
-
-		//So I can get the data. How do I know the Union is holdibng bytes[], floats[] or ints[]?
-		// Not sure how to ask NTNDArray the data type
-		PVUnion pvu = myarray.getValue();
-		// this code works, but we shorten below...This is all introspective
-		//PVField has both data and introspection. 
-		PVField pvuf = pvu.get();
-		return((PVScalarArray)pvuf);
-	}
-				
-	
+     * return num of dimensions in the NDArray
+     * @param myarray
+     * @return
+     */
+    public int getNumDims(NTNDArray myarray)
+    {
+        int ndims=myarray.getDimension().getLength();        
+        return(ndims);
+    }
     
+    
+    public void printMonDataStruct()
+    {
+
+        PVStructure pvs = easydata.getPVStructure();
+        String [] fnames = easydata.getStructure().getFieldNames();
+        
+        for (int m=0;m<fnames.length;m++)
+            System.out.println(fnames[m]);
+        
+    }
+    
+    public int getUniqueId(NTNDArray myarray)
+    {
+        int uniqueid  =myarray.getUniqueId().get();
+        return(uniqueid);
+    }
+    
+    public String getDimsString(NTNDArray myarray)
+    {
+        PVStructureArray pvdim = myarray.getDimension();
+        String dimstring =pvdim.toString();
+        return(dimstring);
+
+    }
+    
+    
+    public int[] getDimsInfo(NTNDArray myarray,String whichinfo)
+    {        
+        int ndims = this.getNumDims(myarray);
+        int dimsint[] = new int[ndims];
+        PVStructureArray pvdim = myarray.getDimension();
+
+        StructureArrayData dimdata=new StructureArrayData();
+        pvdim.get(0,ndims,dimdata);
+        
+        for (int kk = 0;kk<ndims;kk++)
+        {
+            PVField[] dimfields = dimdata.data[kk].getPVFields();
+            for (int km = 0;km<dimfields.length;km++)
+            {
+                String dfname = dimfields[km].getField().getID();
+                String dfn2=dimfields[km].getFieldName();
+                //System.out.println(dfname + " "+dfn2);
+                if (dfn2.equals(whichinfo))
+                {
+                    
+                    dimsint[kk]=converter.toInt((PVScalar)dimfields[km]);
+                }
+            }
+        }
+        
+        //int nf = pvdim.getNumberFields();
+        
+        //String dimstring =pvdim.toString();
+        return(dimsint);
+    }
+
+    
+    String getImageDataType(PVScalarArray imagedata)
+    {
+
+        //pure; intruspection.
+        Field pvuff=imagedata.getField();
+        
+        //tells its a scalar array
+        Type pvufft = pvuff.getType();
+        //returns like "scalarArray"
+        String pvuffts = pvufft.toString();
+        //returns something like 'ushort[]'
+        String arraytype  =pvuff.getID();
+        return(arraytype);
+
+    }
+    
+    
+    public int getImageLength(PVScalarArray imgdata)
+    {
+        
+        // this code works, but we shorten below...This is all introspective
+        //PVField has both data and introspection. 
+        int arraylen  =imgdata.getLength();
+    
+        return(arraylen);
+  
+    }
+    
+    PVScalarArray extractImageData(NTNDArray myarray)
+    {
+        //So I can get the data. How do I know the Union is holdibng bytes[], floats[] or ints[]?
+        // Not sure how to ask NTNDArray the data type
+        PVUnion pvu = myarray.getValue();
+        // this code works, but we shorten below...This is all introspective
+        //PVField has both data and introspection. 
+        PVField pvuf = pvu.get();
+        return((PVScalarArray)pvuf);
+    }
+                
+        
+    public int getNumAttributes(NTNDArray myarray)
+    {
+        int nattribs=myarray.getAttribute().getLength();
+        return(nattribs);
+        
+    }
+
+    public String getAttrType(NTNDArray myarray,String attrname,String attrfield) 
+    {
+        int nattr = this.getNumAttributes(myarray);
+        String attrval=new String("unknown");
+        PVStructureArray attr1 = myarray.getAttribute();
+        StructureArrayData attr2=new StructureArrayData();
+        attr1.get(0,nattr,attr2);
+        for (int kk = 0;kk<nattr;kk++)
+        {            
+            PVField[] attrfields = attr2.data[kk].getPVFields();
+            for (int km = 0;km<attrfields.length;km++)
+            {
+                String dfn2=attrfields[km].getFieldName();
+                if (dfn2.equals("name"))
+                {                    
+                    String aname = converter.toString(((PVString)attrfields[km]));                    
+                    if (aname.equals(attrname))
+                    {
+                        for (int mm = 0;mm<attrfields.length;mm++)
+                        {
+                            String dfn3=attrfields[mm].getFieldName();
+                            if (dfn3.equals(attrfield))
+                            {
+                                String t =  attrfields[mm].getField().getType().toString();
+                                
+                                if (t.equals("union"))
+                                {
+                                    PVUnion apvu = (PVUnion)attrfields[mm];
+                                    PVField apvuf = apvu.get();
+                                    String s1 = apvuf.getField().getID();                                    
+                                    return(s1);                                
+                                }
+
+                            }                                
+                        }
+                    }
+                    
+                }                                
+            }
+        }        
+        return(attrval);
+    }
+
+
+    public int getAttrValInt(NTNDArray myarray,String attrname,String attrfield) 
+    {
+        int nattr = this.getNumAttributes(myarray);
+        int attrval=0;
+        PVStructureArray attr1 = myarray.getAttribute();
+        StructureArrayData attr2=new StructureArrayData();
+        attr1.get(0,nattr,attr2);
+        for (int kk = 0;kk<nattr;kk++)
+        {            
+            PVField[] attrfields = attr2.data[kk].getPVFields();
+            for (int km = 0;km<attrfields.length;km++)
+            {
+                String dfn2=attrfields[km].getFieldName();
+                if (dfn2.equals("name"))
+                {                    
+                    String aname = converter.toString(((PVString)attrfields[km]));                    
+                    if (aname.equals(attrname))
+                    {
+                        for (int mm = 0;mm<attrfields.length;mm++)
+                        {
+                            String dfn3=attrfields[mm].getFieldName();
+                            if (dfn3.equals(attrfield))
+                            {
+                                String t =  attrfields[mm].getField().getType().toString();                                
+                                if (t.equals("union"))
+                                {
+                                    PVUnion apvu = (PVUnion)attrfields[mm];
+                                    PVField apvuf = apvu.get();
+                                    String s1 = apvuf.getField().getID();
+                                    
+                                    if (s1.equals("int"))
+                                    {
+                                        PVInt atri=(PVInt)apvuf;
+                                        attrval = atri.get();
+                                    }
+                                    else
+                                        System.out.println("Error- Wrong attr type");
+                                }
+                                return(attrval);
+                            }                                
+                        }
+                    }                    
+                }                                
+            }
+        }
+        return(attrval);
+    }
+
+    
+    public double getAttrValDouble(NTNDArray myarray,String attrname,String attrfield) 
+    {        
+        int nattr = this.getNumAttributes(myarray);
+        double attrval=0.0;        
+        PVStructureArray attr1 = myarray.getAttribute();
+        StructureArrayData attr2=new StructureArrayData();
+        attr1.get(0,nattr,attr2);
+        for (int kk = 0;kk<nattr;kk++)
+        {            
+            PVField[] attrfields = attr2.data[kk].getPVFields();
+            for (int km = 0;km<attrfields.length;km++)
+            {
+                String dfn2=attrfields[km].getFieldName();
+                if (dfn2.equals("name"))
+                {                    
+                    String aname = converter.toString(((PVString)attrfields[km]));                    
+                    if (aname.equals(attrname))
+                    {
+                        for (int mm = 0;mm<attrfields.length;mm++)
+                        {
+                            String dfn3=attrfields[mm].getFieldName();
+                            if (dfn3.equals(attrfield))
+                            {
+                                String t =  attrfields[mm].getField().getType().toString();                                
+                                if (t.equals("union"))
+                                {
+                                    PVUnion apvu = (PVUnion)attrfields[mm];
+                                    PVField apvuf = apvu.get();
+                                    String s1 = apvuf.getField().getID();
+                                    
+                                    if (s1.equals("double"))
+                                    {
+                                        PVDouble atri=(PVDouble)apvuf;
+                                        attrval = atri.get();
+                                    }
+                                    else
+                                        System.out.println("Error- Wrong attr type");
+                                
+                                }                                
+                                return(attrval);
+                            }                                
+                        }
+                    }                   
+                }                                
+            }
+        }
+        return(attrval);
+    }
+
+    
+    
+
+
 }
 
 
