@@ -19,7 +19,8 @@ typedef enum {
 
 /** Structure defining an overlay */
 typedef struct NDOverlay {
-    bool changed;
+    int changed;
+    int use;
     int PositionX;
     int PositionY;
     int SizeX;
