@@ -22,7 +22,8 @@ public:
                    int address,
                    size_t maxMemory,
                    int priority,
-                   int stackSize);
+                   int stackSize,
+                   int maxThreads);
   virtual ~FFTPluginWrapper ();
 };
 
