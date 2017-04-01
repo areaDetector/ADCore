@@ -29,8 +29,30 @@ R2-7 (April XXX, 2017)
   that can be used for the plugin is set in the constructor and thus in the IOC startup script.  The actual
   number of threads to use can be controlled via an EPICS PV at run time, up to the maximum value passed
   to the constructor.  Note that plugins need to be modified to be thread-safe for multiple threads running
-  in a single plugin object.  Currently the NDPluginStdArrays, NDPluginStats, and NDPluginTranform plugins
-  have had these changes.  More plugins will be changed.  However, not all plugins can be made thread safe,
+  in a single plugin object.  The following table describes the support for multiple threads in each plugin.
+  
+| Plugin               | Supports multiple threads | Comments                                                      |
+| ------               | ------------------------- | --------                                                      |
+| NDFile*              | No                        | File plugins are nearly always limited by the file I/O, not CPU |
+| NDPluginAttribute    | No                        | Plugin does not do any computation, no gain from multiple threads |
+| NDPluginCircularBuff | No                        | Plugin does not do any computation, no gain from multiple threads |
+| NDPluginColorConvert | Yes                       | Multiple threads supported and tested |
+| NDPluginFFT          | Yes                       | Multiple threads supported and tested |
+| NDPluginGather       | No                        | Plugin does not do any computation, no gain from multiple threads |
+| NDPluginOverlay      | Yes                       | Multiple threads supported and tested |
+| NDPluginProcess      | No                        | The recursive filter stores results in the object itself, hard to make thread safe |
+| NDPluginPva          | No                        | Plugin is very fast, probably not much gain from multiple threads |
+| NDPluginROI          | Yes                       | Multiple threads supported and tested |
+| NDPluginROIStat      | Yes                       | Multiple threads supported but not yet tested |
+| NDPluginScatter      | No                        | Plugin does not do any computation, no gain from multiple threads |
+| NDPluginStats        | Yes                       | Multiple threads supported and tested. Caution: the time series arrays may be out of order if using multiple threads |
+| NDPluginStdArrays    | Yes                       | Multiple threads supported and tested. Caution: the callbacks to the waveform records may be out of order if using multiple threads|
+| NDPluginTimeSeries   | No                        | Plugin does not do much computation, no gain from multiple threads |
+| NDPluginTransform    | Yes                       | Multiple threads supported and tested. |
+| NDPosPlugin          | No                        | Plugin does not do any computation, no gain from multiple threads |
+
+ 
+  However, not all plugins can be made thread safe,
   for example NDPluginProcess needs to store process results in the object itself to support the recursive filter
   processing, and this is intrinsically not thread-safe.
 * Added a new endProcessCallbacks method so derived classes do not need to each implement the logic to call 
@@ -49,9 +71,8 @@ R2-7 (April XXX, 2017)
   without requiring the underlying detector to collect another NDArray.  If the plugin is disabled then
   the NDArray is released and returned to the pool.
 
-### NDPluginScatter, NDPluginGather
-* Added new plugin NDPluginScatter.
-  This plugin is used to distribute (scatter) the processing of NDArrays to multiple downstream plugins.
+### NDPluginScatter
+* New plugin NDPluginScatter is used to distribute (scatter) the processing of NDArrays to multiple downstream plugins.
   It allows multiple intances of a plugin to process NDArrays in parallel, utilizing multiple cores 
   to increase throughput. It is commonly used together with NDPluginGather, which gathers the outputs from 
   multiple plugins back into a single stream. 
@@ -67,8 +88,8 @@ R2-7 (April XXX, 2017)
   to the round-robin schedule the load of dropped arrays will be uniform if all clients are executing at the same
   speed and if their queues are the same size.
 
-* Added new plugin NDPluginGather. 
-  This plugin is used to gather NDArrays from multiple upstream plugins and merge them into a single stream. 
+### NDPluginGather
+* New plugin NDPluginGather is used to gather NDArrays from multiple upstream plugins and merge them into a single stream. 
   When used together with NDPluginScatter it allows multiple intances of a plugin to process NDArrays
   in parallel, utilizing multiple cores to increase throughput.
   This plugin works differently from other plugins that receive callbacks from upstream plugins.
@@ -103,6 +124,23 @@ R2-7 (April XXX, 2017)
 
    Users are encouraged to switch to using pvAccess with this new plugin. 
 
+### All plugins
+* All plugins were modified to no longer count the number of parameters that they define, taking advantage of
+  this feature that was added to asynPortDriver in asyn R4-31.
+* All plugins were modified to call NDPluginDriver::beginProcessCallbacks() rather than 
+  NDPluginDriver::processCalbacks() at the beginning of processCallbacks() as described above.
+* Most plugins were modified to call NDPluginDriver::endProcessCallbacks() near the end of processCallbacks().
+  This takes care of doing the NDArray callbacks to downstream plugins, and sorting the output NDArrays if required.
+  It also handles the logic of caching the last NDArray in this->pArrays[0].  This significantly simplifies the code
+  in the derived plugin classes.
+* Previously all plugins were releasing the asynPortDriver lock when calling doCallbacksGenericPointer().
+  This was based on a very old observation of a deadlock problem if the the lock was not released.  Releasing
+  the lock causes serious problems with plugins running multiple threads, and probably was never needed.  Most
+  plugins no longer call doCallbacksGenericPointer() directly because it is now done in NDPluginDriver::endProcessCallbacks().
+  The lock is no longer released when calling doCallbacksGenericPointer().  The simDetector driver has also been modified
+  to no longer release the lock when calling plugins with doCallbacksGenericPointer(), and all other drivers should be
+  modified as well.  It is not really a problem with drivers however, since the code doing those callbacks is normally
+  only running in a single thread.
 
 ### Viewers/ImageJ/EPICS_AD_Viewer.java 
 * Previously this ImageJ plugin monitored the UniqueId_RBV PV in the NDPluginStdArrays plugin, 
@@ -115,6 +153,10 @@ R2-7 (April XXX, 2017)
   Note that ArrayCounter_RBV will also change if the user manually changes ArrayCounter, for example by
   setting it back to 0.  This will also cause ImageJ to display the image, when it would not have done 
   so previously.  This should not be a problem.
+
+###NDOverlayN.template
+* Removed PINI=YES from CenterX and CenterY records.  Only PositionX/Y should have PINI=YES, otherwise
+  the behavior depends on the order of execution with SizeX/Y.
 
 
 R2-6 (February 19, 2017)
