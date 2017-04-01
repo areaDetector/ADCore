@@ -42,6 +42,27 @@ void fillNDArrays(const std::vector<size_t>& dimensions,
   }
 }
 
+void fillNDArraysFromPool(const std::vector<size_t>& dimensions,
+                        NDDataType_t dataType,
+                        std::vector<NDArray*>& arrays,
+                        NDArrayPool *pNDArrayPool)
+{
+  std::vector<NDArray*>::iterator ait;
+  unsigned int array_num = 0;
+  size_t dims[ND_ARRAY_MAX_DIMS];
+
+  for (unsigned int i=0; i<dimensions.size(); i++) {
+    dims[i] = dimensions[i];
+  }
+  for (ait=arrays.begin(); ait != arrays.end(); ++ait) {
+    *ait = pNDArrayPool->alloc(dimensions.size(), dims, dataType, 0, 0);
+    NDArray* parr = *ait;
+    memset(parr->pData, array_num, parr->dataSize);
+    parr->uniqueId = array_num;
+  }
+}
+
+
 
 /** Append a unique code at the end of the string name
  * To be used to generate unique asyn port names. Currently only

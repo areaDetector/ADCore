@@ -82,6 +82,8 @@ typedef struct {
 } overlayTestCaseStr ;
 
 
+static NDArrayPool *arrayPool;
+
 static void appendTestCase(std::vector<overlayTestCaseStr> *pOut, overlayTempCaseStr *pIn)
 {
   overlayTestCaseStr tmp;
@@ -103,13 +105,12 @@ static void appendTestCase(std::vector<overlayTestCaseStr> *pOut, overlayTempCas
   tmp.colorMode  = pIn->colorMode;
 
   tmp.pArrays.resize(1);
-  fillNDArrays(tmp.arrayDims, NDFloat32, tmp.pArrays);
+  fillNDArraysFromPool(tmp.arrayDims, NDFloat32, tmp.pArrays, arrayPool);
   pOut->push_back(tmp);
 }
 
 struct OverlayPluginTestFixture
 {
-  NDArrayPool *arrayPool;
   boost::shared_ptr<asynPortDriver> driver;
   boost::shared_ptr<OverlayPluginWrapper> Overlay;
   boost::shared_ptr<asynGenericPointerClient> client;
