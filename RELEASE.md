@@ -25,11 +25,12 @@ R2-7 (April XXX, 2017)
 ### NDPluginDriver, NDPluginBase.template, NDPluginBase.adl
 * Added support for multiple threads doing the processCallbacks() in each plugin.  This can improve
   the performance of the plugin by a large factor.  Linear scaling with up to 5 threads (the largest
-  value tested) was observed for NDPluginTransform and NDPluginStats.  The maximum number of threads
-  that can be used for the plugin is set in the constructor and thus in the IOC startup script.  The actual
-  number of threads to use can be controlled via an EPICS PV at run time, up to the maximum value passed
-  to the constructor.  Note that plugins need to be modified to be thread-safe for multiple threads running
-  in a single plugin object.  The following table describes the support for multiple threads in each plugin.
+  value tested) was observed for most of the plugins that now support multiple threads.  
+  The maximum number of threads that can be used for the plugin is set in the constructor and thus in the 
+  IOC startup script.  The actual number of threads to use can be controlled via an EPICS PV at run time, 
+  up to the maximum value passed to the constructor.
+  Note that plugins need to be modified to be thread-safe for multiple threads running in a single plugin object.  
+  The following table describes the support for multiple threads in each plugin.
   
 | Plugin               | Supports multiple threads | Comments                                                      |
 | ------               | ------------------------- | --------                                                      |
@@ -45,8 +46,8 @@ R2-7 (April XXX, 2017)
 | NDPluginROI          | Yes                       | Multiple threads supported and tested |
 | NDPluginROIStat      | Yes                       | Multiple threads supported but not yet tested |
 | NDPluginScatter      | No                        | Plugin does not do any computation, no gain from multiple threads |
-| NDPluginStats        | Yes                       | Multiple threads supported and tested. Caution: the time series arrays may be out of order if using multiple threads |
-| NDPluginStdArrays    | Yes                       | Multiple threads supported and tested. Caution: the callbacks to the waveform records may be out of order if using multiple threads|
+| NDPluginStats        | Yes                       | Multiple threads supported and tested. Note: the time series arrays may be out of order if using multiple threads |
+| NDPluginStdArrays    | Yes                       | Multiple threads supported and tested. Note: the callbacks to the waveform records may be out of order if using multiple threads|
 | NDPluginTimeSeries   | No                        | Plugin does not do much computation, no gain from multiple threads |
 | NDPluginTransform    | Yes                       | Multiple threads supported and tested. |
 | NDPosPlugin          | No                        | Plugin does not do any computation, no gain from multiple threads |
