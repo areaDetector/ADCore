@@ -151,7 +151,7 @@ R2-7 (April XXX, 2017)
   setting it back to 0.  This will also cause ImageJ to display the image, when it would not have done 
   so previously.  This should not be a problem.
 
-###NDOverlayN.template
+### NDOverlayN.template
 * Removed PINI=YES from CenterX and CenterY records.  Only PositionX/Y should have PINI=YES, otherwise
   the behavior depends on the order of execution with SizeX/Y.
 
