@@ -100,6 +100,7 @@ R2-7 (April XXX, 2017)
    The required EPICS V4 jar files are included in Viewers/ImageJ/EPICS_areaDetector.  This entire directory 
    should be copied to the ImageJ/plugins folder, and then one time do ImageJ/Compile and run and select the
    file EPICS_NTNDA_Viewer.java.  
+
    Users are encouraged to switch to using pvAccess with this new plugin. 
 
 
