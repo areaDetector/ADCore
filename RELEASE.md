@@ -23,7 +23,7 @@ R2-7 (April XXX, 2017)
 ======================
 
 ### NDPluginDriver, NDPluginBase.template, NDPluginBase.adl
-* Added support for multiple threads doing the processCallbacks() in each plugin.  This can improve
+* Added support for multiple threads running the processCallbacks() function in a single plugin.  This can improve
   the performance of the plugin by a large factor.  Linear scaling with up to 5 threads (the largest
   value tested) was observed for most of the plugins that now support multiple threads.
   The maximum number of threads that can be used for the plugin is set in the constructor and thus in the 
