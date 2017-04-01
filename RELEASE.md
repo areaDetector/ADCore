@@ -33,7 +33,7 @@ R2-7 (April XXX, 2017)
   
 | Plugin               | Supports multiple threads | Comments                                                      |
 | ------               | ------------------------- | --------                                                      |
-| NDFile*              | No                        | File plugins are nearly always limited by the file I/O, not CPU |
+| NDPluginFile         | No                        | File plugins are nearly always limited by the file I/O, not CPU |
 | NDPluginAttribute    | No                        | Plugin does not do any computation, no gain from multiple threads |
 | NDPluginCircularBuff | No                        | Plugin does not do any computation, no gain from multiple threads |
 | NDPluginColorConvert | Yes                       | Multiple threads supported and tested |
@@ -51,10 +51,6 @@ R2-7 (April XXX, 2017)
 | NDPluginTransform    | Yes                       | Multiple threads supported and tested. |
 | NDPosPlugin          | No                        | Plugin does not do any computation, no gain from multiple threads |
 
- 
-  However, not all plugins can be made thread safe,
-  for example NDPluginProcess needs to store process results in the object itself to support the recursive filter
-  processing, and this is intrinsically not thread-safe.
 * Added a new endProcessCallbacks method so derived classes do not need to each implement the logic to call 
   downstream plugins.  This method supports optionally sorting the output callbacks by the NDArray::UniqueId
   value.  This is very useful when running multiple threads in the plugin, because these are likely to do
