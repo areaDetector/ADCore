@@ -30,7 +30,7 @@ R2-7 (April XXX, 2017)
   IOC startup script.  The actual number of threads to use can be controlled via an EPICS PV at run time, 
   up to the maximum value passed to the constructor.
   Note that plugins need to be modified to be thread-safe for multiple threads running in a single plugin object.
-  The following table describes the support for multiple threads in each plugin.
+  The following table describes the support for multiple threads in current plugins.
   
 | Plugin               | Supports multiple threads | Comments                                                      |
 | ------               | ------------------------- | --------                                                      |
