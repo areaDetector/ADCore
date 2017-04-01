@@ -19,7 +19,7 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
-R2-7 (March XXX, 2017)
+R2-7 (April XXX, 2017)
 ======================
 
 ### NDPluginDriver, NDPluginBase.template, NDPluginBase.adl
@@ -33,12 +33,16 @@ R2-7 (March XXX, 2017)
   have had these changes.  More plugins will be changed.  However, not all plugins can be made thread safe,
   for example NDPluginProcess needs to store process results in the object itself to support the recursive filter
   processing, and this is intrinsically not thread-safe.
-* Added a new doNDArrayCallbacks method so derived classes do not need to each implement the logic to call 
+* Added a new endProcessCallbacks method so derived classes do not need to each implement the logic to call 
   downstream plugins.  This method supports optionally sorting the output callbacks by the NDArray::UniqueId
   value.  This is very useful when running multiple threads in the plugin, because these are likely to do
   their output callbacks in the wrong order.  The base class will sort the output NDArrays to be in the correct
   order when possible.  The sorting capability is also useful for the new NDPluginGather plugin, even when it
   is running only a single thread.
+* Renamed NDPluginDriver::processCallbacks() to NDPluginDriver::beginProcessCallbacks(). This makes it clearer
+  that this method is intended to be called at the beginning of processCallbacks() in the derived class.
+  NDPluginDriver::processCallbacks() is now a pure virtual function, so it must be implemented in the derived
+  class.
 * Added new parameter NDPluginProcessPlugin and new bo record ProcessPlugin.  NDPluginDriver now stores
   the last NDArray it receives.  If the ProcessPlugin record is processed then the plugin will execute
   again with this last NDArray.  This allows modifying plugin behaviour and observing the results
@@ -47,7 +51,55 @@ R2-7 (March XXX, 2017)
 
 ### NDPluginScatter, NDPluginGather
 * Added new plugin NDPluginScatter.
-* Added new plugin NDPluginGather.
+  This plugin is used to distribute (scatter) the processing of NDArrays to multiple downstream plugins.
+  It allows multiple intances of a plugin to process NDArrays in parallel, utilizing multiple cores 
+  to increase throughput. It is commonly used together with NDPluginGather, which gathers the outputs from 
+  multiple plugins back into a single stream. 
+  This plugin works differently from other plugins that do callbacks to downstream plugins.
+  Other plugins pass each NDArray that they generate of all downstream plugins that have registered for callbacks.
+  NDPluginScatter does not do this, rather it passes each NDArray to only one downstream plugin.
+  The mechanism for chosing which plugin to pass the next NDArray to can be described as a modified round-robin.
+  The first NDArray is passed to the first registered callback client, the second NDArray to the second client, etc. 
+  After the last client the next NDArray goes to the first client, and so on. The modification to strict round-robin 
+  is that if client N input queue is full then an attempt is made to send the NDArray to client N+1,
+  and if this would fail to client N+2, etc. If no clients are able to accept the NDArray because their queues are 
+  full then the last client that is tried (N-1) will drop the NDArray. Because the "last client" rotates according 
+  to the round-robin schedule the load of dropped arrays will be uniform if all clients are executing at the same
+  speed and if their queues are the same size.
+
+* Added new plugin NDPluginGather. 
+  This plugin is used to gather NDArrays from multiple upstream plugins and merge them into a single stream. 
+  When used together with NDPluginScatter it allows multiple intances of a plugin to process NDArrays
+  in parallel, utilizing multiple cores to increase throughput.
+  This plugin works differently from other plugins that receive callbacks from upstream plugins.
+  Other plugins subscribe to NDArray callbacks from a single upstream plugin or driver. 
+  NDPluginGather allows subscribing to callbacks from any number of upstream plugins. 
+  It combines the NDArrays it receives into a single stream which it passes to all downstream plugins. 
+  The example commonPlugins.cmd and medm files in ADCore allow up to 8 upstream plugins, but this number can 
+  easily be changed by editing the startup script and operator display file.
+
+### Viewers/ImageJ/EPICS_NTNDA_Viewer.java 
+* This is a new plugin written by Tim Madden.  It is essentially identical to EPICS_AD_Viewer.java except
+  that it displays images from the NDPluginPva plugin, i.e. using pvAccess to transport the images rather
+  than NDPluginStdArrays which uses Channel Access.  
+  This has a number of advantages:
+    - The NDArray data is transmitted "atomically" over the network, rather than using separate PVs for the
+      image data and the metadata (image dimensions, color mode, etc.)
+    - When using Channel Access the data type of the waveform record is fixed at iocInit, and cannot be
+      changed at runtime.  This means, for example, that if the user might want to view both 8-bit images, 
+      16-bit images, and 64-bit double FFTs then the waveform record would need to be 64-bit double, which
+      adds a factor of 8 network overhead when viewing 8-bit images. pvAccess changes the data type of the NTNDArrays
+      dynamically at run-time, removing this restriction.
+    - Channel Access requires setting EPICS_CA_MAX_ARRAY_BYTES, which is a source of considered confusion and 
+      frustration for users.  pvAccess does not use EPICS_CA_MAX_ARRAY_BYTES, there is no restriction on
+      the size of the NTNDArrays.
+    - The performance using pvAccess is significantly better than using Channel Access.  NDPlugiPva is 5-10 times
+      faster than NDPluginStdArrays, and ImageJ can display 1.5-2 times more images/s with pvAccess than with
+      Channel Access.
+   The required EPICS V4 jar files are included in Viewers/ImageJ/EPICS_areaDetector.  This entire directory 
+   should be copied to the ImageJ/plugins folder, and then one time do ImageJ/Compile and run and select the
+   file EPICS_NTNDA_Viewer.java.  
+   Users are encouraged to switch to using pvAccess with this new plugin. 
 
 
 ### Viewers/ImageJ/EPICS_AD_Viewer.java 
