@@ -261,21 +261,24 @@ asynStatus NDPluginStats::doComputeCentroidT(NDArray *pArray, NDStats_t *pStats)
         pStats->sigmaY = sqrt(varY);
         if ((pStats->sigmaX != 0) && (pStats->sigmaY != 0)){
             pStats->sigmaXY = varXY / (pStats->sigmaX * pStats->sigmaY);
-            if (varX != 0) {
-                pStats->skewX = mu30  / (M00 * pow(varX, 3.0/2.0));
-                pStats->kurtosisX = (mu40 / (M00 * pow(varX, 2.0))) - 3.0;
-            }
-            if (varY != 0) {
-                pStats->skewY = mu03  / (M00 * pow(varY, 3.0/2.0));
-                pStats->kurtosisY = (mu04 / (M00 * pow(varY, 2.0))) - 3.0;            
-            }
         }
+        if (varX != 0) {
+            pStats->skewX = mu30  / (M00 * pow(varX, 3.0/2.0));
+            pStats->kurtosisX = (mu40 / (M00 * pow(varX, 2.0))) - 3.0;
+        }
+        if (varY != 0) {
+            pStats->skewY = mu03  / (M00 * pow(varY, 3.0/2.0));
+            pStats->kurtosisY = (mu04 / (M00 * pow(varY, 2.0))) - 3.0;            
+        }
+
         /* Calculate orientation and eccentricity */
         pStats->orientation = 0.5 * atan2((2.0 * varXY), (varX - varY));
         /* Orientation in degrees*/
         pStats->orientation  = pStats->orientation * 180 / M_PI;
-        pStats->eccentricity = ((mu20 - mu02) * (mu20 - mu02) - 4 * mu11 * mu11) /
-                             ((mu20 + mu02) * (mu20 + mu02));
+        if ((mu20 + mu02) != 0){
+            pStats->eccentricity = ((mu20 - mu02) * (mu20 - mu02) - 4 * mu11 * mu11) /
+                                 ((mu20 + mu02) * (mu20 + mu02));
+        }
     }
     return(asynSuccess);
 }

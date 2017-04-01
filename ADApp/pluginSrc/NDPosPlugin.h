@@ -61,8 +61,6 @@
 #define NDPOS_IDLE    0
 #define NDPOS_RUNNING 1
 
-#define MAX_POS_STRING_LEN 1000000
-
 class NDPosPlugin : public NDPluginDriver
 {
 
@@ -81,7 +79,6 @@ public:
   void processCallbacks(NDArray *pArray);
   asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
   asynStatus writeOctet(asynUser *pasynUser, const char *value, size_t nChars, size_t *nActual);
-  asynStatus loadFile();
 
 protected:
   // plugin parameters
