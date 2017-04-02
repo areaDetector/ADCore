@@ -33,7 +33,7 @@
 #define MIN(A,B) (A)<(B)?(A):(B)
 
 #define DEFAULT_NUM_TSPOINTS 2048
-  
+
 /**
  * Templated function to calculate statistics on different NDArray data types.
  * \param[in] NDArray The pointer to the NDArray object
@@ -205,13 +205,14 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
   //This function is called with the mutex already locked.  
   //It unlocks it during long calculations when private structures don't need to be protected.
   
-  int use = 0;
   int itemp = 0;
   int dim = 0;
   asynStatus status = asynSuccess;
   NDROI *pROI;
   int TSAcquiring;
   const char* functionName = "NDPluginROIStat::processCallbacks";
+  NDROI_t *pROIs = new NDROI[maxROIs_];
+  if(!pROIs) {cantProceed(functionName);}
 
   /* Call the base class method */
   NDPluginDriver::beginProcessCallbacks(pArray);
@@ -231,10 +232,9 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
 
   /* Loop over the ROIs in this driver */
   for (int roi=0; roi<maxROIs_; ++roi) {
-    
-    pROI = &pROIs_[roi];
-    getIntegerParam(roi, NDPluginROIStatUse, &use);
-    if (!use) {
+    pROI = &pROIs[roi];
+    getIntegerParam(roi, NDPluginROIStatUse, &pROI->use);
+    if (!pROI->use) {
       continue;
     }
 
@@ -266,22 +266,34 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
       setIntegerParam(roi, NDPluginROIStatDim1Min,  (int)pROI->offset[1]);
       setIntegerParam(roi, NDPluginROIStatDim1Size, (int)pROI->size[1]);
     }
+  }
         
-    /* This function is called with the lock taken, and it must be set when we exit.
-     * The following code can be exected without the mutex because we are not accessing elements of
-     * pPvt that other threads can access. */
-    this->unlock();
+  /* This function is called with the lock taken, and it must be set when we exit.
+   * The following code can be exected without the mutex because we are not accessing elements of
+   * pPvt that other threads can access. */
+  this->unlock();
     
+  for (int roi=0; roi<maxROIs_; ++roi) {
+    pROI = &pROIs[roi];
+    if (!pROI->use) {
+      continue;
+    }
     status = doComputeStatistics(pArray, pROI);
     if (status != asynSuccess) {
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
         "%s: doComputeStatistics failed. status=%d\n", 
         functionName, status);
     }
+  }
 
-    /* We must enter the loop and exit with the mutex locked */
-    this->lock();
+  /* We must enter the loop and exit with the mutex locked */
+  this->lock();
 
+  for (int roi=0; roi<maxROIs_; ++roi) {
+    pROI = &pROIs[roi];
+    if (!pROI->use) {
+      continue;
+    }
     if (TSAcquiring) {
       double *pData = timeSeries_ + (roi * MAX_TIME_SERIES_TYPES * numTSPoints_);
       pData[TSMinValue*numTSPoints_ + currentTSPoint_]  = pROI->min;
@@ -315,6 +327,7 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
 
   NDPluginDriver::endProcessCallbacks(pArray, true, true);
   callParamCallbacks();
+  delete pROIs;
 }
 
 /** Called when asyn clients call pasynInt32->write().
@@ -473,14 +486,12 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
              asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
              ASYN_MULTIDEVICE, 1, priority, stackSize, maxThreads)
 {
-  const char *functionName = "NDPluginROIStat::NDPluginROIStat";
+//  const char *functionName = "NDPluginROIStat::NDPluginROIStat";
 
   if (maxROIs < 1) {
     maxROIs = 1;
   }
   maxROIs_ = maxROIs;
-  pROIs_ = new NDROI[maxROIs];
-  if(!pROIs_) {cantProceed(functionName);}
   
   /* ROI general parameters */
   createParam(NDPluginROIStatFirstString,             asynParamInt32, &NDPluginROIStatFirst);
