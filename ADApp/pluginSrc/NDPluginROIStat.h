@@ -67,6 +67,7 @@ typedef enum {
 
 /** Structure defining a Region-Of-Interest and Stats */
 typedef struct NDROI {
+    int use;
     size_t offset[2];
     size_t size[2];
     size_t bgdWidth;
@@ -141,7 +142,6 @@ private:
     asynStatus clear(epicsUInt32 roi);
     void doTimeSeriesCallbacks();
 
-    NDROI_t *pROIs_;    /* Array of NDROI structures */
     int maxROIs_;
     int numTSPoints_;
     int currentTSPoint_;
