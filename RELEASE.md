@@ -44,7 +44,7 @@ R2-7 (April XXX, 2017)
 | NDPluginProcess      | No                        | The recursive filter stores results in the object itself, hard to make thread safe |
 | NDPluginPva          | No                        | Plugin is very fast, probably not much gain from multiple threads |
 | NDPluginROI          | Yes                       | Multiple threads supported and tested |
-| NDPluginROIStat      | Yes                       | Multiple threads supported and tested |
+| NDPluginROIStat      | Yes                       | Multiple threads supported and tested; TO FIX: time series goes too many points with multiple threads |
 | NDPluginScatter      | No                        | Plugin does not do any computation, no gain from multiple threads |
 | NDPluginStats        | Yes                       | Multiple threads supported and tested. Note: the time series arrays may be out of order if using multiple threads |
 | NDPluginStdArrays    | Yes                       | Multiple threads supported and tested. Note: the callbacks to the waveform records may be out of order if using multiple threads|
