@@ -1,0 +1,568 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>areaDetector Plugin NDPluginGather</title>
+  <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type" />
+</head>
+<body>
+  <div style="text-align: center">
+    <h1>
+      areaDetector Plugin NDPluginGather</h1>
+    <h2>
+      March 4, 2017</h2>
+    <h2>
+      Mark Rivers</h2>
+    <h2>
+      University of Chicago</h2>
+  </div>
+  <h2>
+    Contents</h2>
+  <ul>
+    <li><a href="#Overview">Overview</a></li>
+    <li><a href="#Configuration">Configuration</a></li>
+    <li><a href="#Screens">Screen shots</a></li>
+    <li><a href="#Example">Detailed example</a></li>
+  </ul>
+  <h2 id="Overview">
+    Overview
+  </h2>
+  <p>
+    This plugin is used to gather NDArrays from multiple upstream plugins and merge
+    them into a single stream. When used together with <a href="NDPluginScatter.html">
+      NDPluginScatter</a> it allows multiple intances of a plugin to process NDArrays
+    in parallel, utilizing multiple cores to increase throughput.
+  </p>
+  <p>
+    This plugin works differently from other plugins that receive callbacks from upstream
+    plugins. Other plugins subscribe to NDArray callbacks from a single upstream plugin
+    or driver. NDPluginGather allows subscribing to callbacks from any number of upstream
+    plugins. It combines the NDArrays it receives into a single stream which it passes
+    to all downstream plugins. The example commonPlugins.cmd and medm files in ADCore
+    allow up to 8 upstream plugins, but this number can easily be changed by editing
+    the startup script and operator display file.</p>
+  <p>
+    When using NDPluginGather together with NDPluginScatter it is likely that the NDArrays
+    will be received slightly out of order, i.e. NDArray::uniqueId fields will not be
+    monotonically increasing. This is because the upstream plugin threads are running
+    asynchronously and at slightly different speeds.&nbsp; As a consequence a file plugin
+    downstream of NDPluginGather would write NDArrays to the file in the "wrong" order.
+    NDPluginGather has an option to sort the NDArrays by uniqueId to attempt to output
+    them in the correct order. This sorting option is enabled by setting SortMode=Sorted,
+    and works using the following algorithm:</p>
+  <ul>
+    <li>An std::multiset object is created to store the NDArray pointers as they are received.
+      It also stores the time at which each NDArray was received. This multiset is automatically
+      sorted by the uniqueId of each NDArray.</li>
+    <li>A worker thread is created which processes at the time interval specified by SortTime.
+      This thread outputs the next array (NDArray[N]) in the multiset if any of the following
+      are true:
+      <ul>
+        <li>NDArray[N].uniqueId = NDArray[N-1].uniqueId. This allows for the case where multiple
+          upstream plugins are processing the same NDArray, i.e. they did not all come from
+          NDPluginScatter.</li>
+        <li>NDArray[N].uniqueId = NDArray[N-1].uniqueId + 1. This is the normal case.</li>
+        <li>NDArray[N] has been in the multiset for longer than SortTime. This will be the
+          case if the next array that should have been output has not arrived, perhaps because
+          it has been dropped by some upstream plugin and will never arrive.&nbsp; Increasing
+          the SortTime will allow longer for out of order arrays to arrive, at the expense
+          of more memory because the multiset will grow larger before outputting the arrays.</li>
+      </ul>
+    </li>
+  </ul>
+  <p>
+    When NDArrays are added to the multiset they have their reference count increased,
+    and so will still be consuming memory. The multiset is limited in size to the same
+    QueueSize that is specified for the normal plugin input queue. If the multiset would
+    grow larger than this because arrays are arriving faster than they are being removed
+    with the specified SortTime, then they will be dropped in the same manner as when
+    NDArrays are dropped from the normal input queue. Note that because NDArrays can
+    be stored in both the normal input queue and the multiset, NDPluginGather can consume
+    twice as much memory as other plugins with the same QueueSize.</p>
+  <p>
+    NDPluginGather inherits from NDPluginDriver. NDPluginGather does not do any modification
+    to the NDArrays that it receives except for possibly adding new NDAttributes if
+    an attribute file is specified. The <a href="areaDetectorDoxygenHTML/class_n_d_plugin_gather.html">
+      NDPluginGather class documentation</a> describes this class in detail.</p>
+  <p>
+    NDPluginGather.h defines the following parameters. It also implements all of the
+    standard plugin parameters from <a href="pluginDoc.html#NDPluginDriver">NDPluginDriver</a>.
+    It extends the standard NDPluginDriverArrayPort and NDPluginDriverArrayAddr parameters
+    by supporting more than one asyn address field for each, i.e. there can be multiple
+    NDArrayPort and NDArrayAddr records, each specifying a different upstream plugin.
+    There are 2 EPICS databases for the NDPluginGather plugin. NDGather.template provides
+    access to global parameters that are not specific to each input source. NDGatherN.template
+    provides access to the parameters for individual NDArray input source. Note that
+    to reduce the width of this table the parameter index variable names have been split
+    into 2 lines, but these are just a single name, for example <code>NDPluginGatherSortMode</code>.
+  </p>
+  <table border="1" cellpadding="2" cellspacing="2" style="text-align: left">
+    <tbody>
+      <tr>
+        <td align="center" colspan="7,">
+          <b>Parameter Definitions in NDPluginDriver.h and NDPluginGather.h and EPICS Record
+            Definitions in NDGather.template and NDGatherN.template</b> </td>
+      </tr>
+      <tr>
+        <th>
+          Parameter index variable</th>
+        <th>
+          asyn interface</th>
+        <th>
+          Access</th>
+        <th>
+          Description</th>
+        <th>
+          drvInfo string</th>
+        <th>
+          EPICS record name</th>
+        <th>
+          EPICS record type</th>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriver<br />
+          ArrayPort</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          asyn port name for NDArray driver that will make callbacks to this plugin. This
+          port can be changed at run time, connecting the plugin to a different NDArray driver.
+          There can be more than one such input port. The maximum is number is specified in
+          the NDGatherConfigure command in the startup script. </td>
+        <td>
+          NDARRAY_PORT</td>
+        <td>
+          $(P)$(R)NDArrayPort_[N]<br />
+          (P)$(R)NDArrayPort_[N]_RBV</td>
+        <td>
+          stringout<br />
+          stringin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginDriver<br />
+          ArrayAddr</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          asyn port address for NDArray driver that will make callbacks to this plugin. This
+          address can be changed at run time, connecting the plugin to a different address
+          in the NDArray driver. There can be more than one such input port. The maximum is
+          number is specified in the NDGatherConfigure command in the startup script.</td>
+        <td>
+          NDARRAY_ADDR</td>
+        <td>
+          $(P)$(R)NDArrayAddress_[N]<br />
+          $(P)$(R)NDArrayAddress_[N]_RBV</td>
+        <td>
+          longout<br />
+          longin</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginGather<br />
+          SortMode</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/w</td>
+        <td>
+          Selects whether the plugin outputs NDArrays in the order in which they arrive (Unsorted)
+          or sorted by UniqueId (Sorted).</td>
+        <td>
+          GATHER_SORT_MODE</td>
+        <td>
+          $(P)$(R)SortMode<br />
+          $(P)$(R)SortMode_RBV</td>
+        <td>
+          mbbo<br />
+          mbbi</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginGather<br />
+          SortTime</td>
+        <td>
+          asynFloat64</td>
+        <td>
+          r/w</td>
+        <td>
+          Sets the minimum time that the plugin will wait for preceeding arrays to arrive
+          before outputting array N when SortMode=Sorted.</td>
+        <td>
+          GATHER_SORT_TIME</td>
+        <td>
+          $(P)$(R)SortTime<br />
+          $(P)$(R)SortTime_RBV</td>
+        <td>
+          ao<br />
+          ai</td>
+      </tr>
+      <tr>
+        <td>
+          NDPluginGather<br />
+          ListFree</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The number of NDArrays remaining before the std::multiset will not be allowed to
+          grow larger and the plugin may begin to drop frames.</td>
+        <td>
+          GATHER_LIST_FREE</td>
+        <td>
+          $(P)$(R)ListFree_RBV</td>
+        <td>
+          longin</td>
+      </tr>
+    </tbody>
+  </table>
+  <h2 id="Configuration">
+    Configuration</h2>
+  <p>
+    The NDPluginGather plugin is created with the NDGatherConfigure command, either
+    from C/C++ or from the EPICS IOC shell.</p>
+  <pre>
+NDGatherConfigure (const char *portName, int queueSize, int blockingCallbacks, 
+                   maxPorts, size_t maxMemory, 
+                   int priority, int stackSize)
+  </pre>
+  <p>
+    For details on the meaning of the parameters to this function refer to the detailed
+    documentation on the NDGatherConfigure function in the <a href="areaDetectorDoxygenHTML/_n_d_plugin_gather_8cpp.html">
+      NDPluginGather.cpp documentation</a> and in the documentation for the constructor
+    for the <a href="areaDetectorDoxygenHTML/class_n_d_plugin_gather.html">NDPluginGather
+      class</a>.
+  </p>
+  <h2 id="Screens">
+    Screen shots</h2>
+  <p>
+    The following is the MEDM screen that provides control of the NDPluginGather plugin.
+  </p>
+  <div style="text-align: center">
+    <h3>
+      NDGather.adl</h3>
+    <p>
+      <img alt="NDGather.png" src="NDGather.png" /></p>
+  </div>
+  <h2 id="Example">
+    Detailed example</h2>
+  <p>
+    The following is a detailed example of using the NDPluginScatter and NDPluginGather
+    plugins. In this example the simDetector is generating 1024x1024 Float32 images
+    at about 470 frames/s. The simDetector output goes to the NDPluginScatter plugin.</p>
+  <p>
+    There are 5 NDPluginStats statistics plugins that all receive NDArrays from the
+    NDPluginScatter plugin. Each statistics plugin can only process about 100 frames/s
+    before it uses 100% of the CPU time on its core. Thus in order to be able to generate
+    statistics on all 470 frames/s it is necessary to run 5 statistics plugins in parallel.</p>
+  <p>
+    The NDPluginGather plugin is configured to get its input arrays from the 5 statistics
+    plugins. It is thus receiving about 470 frames/s. For this test the NDPluginGather
+    plugin was run in both Sorted and Unsorted modes. The SortTime was set to 0.1 second
+    which was found to be long enough to ensure that all of the arrays would arrive
+    in time to be correctly sorted. There should be 47 frames arriving in the 0.1 second
+    time interval between when the NDPluginGather plugin processes. The QueueSize was
+    set to 100 to provide a safety margin that prevented dropped arrays.</p>
+  <p>
+    The output of the NDPluginGather plugin was sent to the NDFileNetCDF plugin which
+    saved images to disk. For this test the simDetector was set to ImageMode=Multiple
+    with NumImages=1000 and the NDFileNetCDF plugin was set to StreamMode with NumCapture=1000.
+    Two files were saved, one with NDPluginGather set to Unsorted and the other with
+    NDPluginGather set to Sorted. The files were read into IDL and the value of UniqueId
+    for each array was printed to test that the sorting worked correctly.</p>
+  <p>
+    The following show the configuration of the simDetector driver. It is generating
+    1024x1024 Float32 frames at about 470 frames/s, which is nearly 2 GB/s. It is running
+    in LinearRamp mode.
+  </p>
+  <div style="text-align: center">
+    <p>
+      <img alt="scatterGatherExample_simDetector.png" src="scatterGatherExample_simDetector.png" /></p>
+    <p>
+      <img alt="scatterGatherExample_simDetectorSetup.png" src="scatterGatherExample_simDetectorSetup.png" /></p>
+  </div>
+  <p>
+    The following shows the setup of all of the plugins. Note that the NDScatter plugin
+    is running at the full frame rate of about 470 frames/s, while each of the 5 statistics
+    plugins is running at 1/5 of this speed, about 94 frames/s.</p>
+  <div style="text-align: center">
+    <p>
+      <img alt="scatterGatherExample_commonPlugins.png" src="scatterGatherExample_commonPlugins.png" /></p>
+  </div>
+  <p>
+    The following shows the setup of the NDPluginScatter plugin.</p>
+  <div style="text-align: center">
+    <p>
+      <img alt="scatterGatherExample_NDScatter.png" src="scatterGatherExample_NDScatter.png" /></p>
+  </div>
+  <p>
+    The following shows the setup of the first NDPluginStats plugin. All statistics
+    plugins were configured identically.</p>
+  <div style="text-align: center">
+    <p>
+      <img alt="scatterGatherExample_NDStats.png" src="scatterGatherExample_NDStats.png" /></p>
+  </div>
+  <p>
+    The following shows the setup of the NDPluginGather plugin. Note that it is getting
+    its input from the 5 statistics plugins.</p>
+  <div style="text-align: center">
+    <p>
+      <img alt="scatterGatherExample_NDGather.png" src="scatterGatherExample_NDGather.png" /></p>
+  </div>
+  <p>
+    The following shows the output of the Linux "top" command when the IOC was running
+    as shown above. The top program was running with the -H option which displays the
+    statistics for each thread, sorted by top CPU usage. Note that each of the 5 statistics
+    plugins is using nearly 90% of a core. The simDetector, NDPluginGather, and NDPluginScatter
+    are each using about 50% of a core, as is NDPluginOverlay. The NDGatherSorting task,
+    which outputs the sorted NDArrays, is only using about 2.3% of a core. The total
+    CPU usage on the machine is 34%, and this is a 20-core machine, so there about 7
+    cores being fully utilized.</p>
+  <div style="text-align: center">
+    <p>
+      <img alt="scatterGatherExample_top_threads.png" src="scatterGatherExample_top_threads.png" /></p>
+  </div>
+  <p>
+    The following shows the setup of the NDFileNetCDF plugin. It is getting its input
+    from the NDPluginGather plugin and is running in Stream mode, saving 1000 arrays.
+    Note that it is only able to save 140 frames/s, while it is receiving about 470
+    frames/s, so it needs a large input queue to avoid losing frames. The input queue
+    is currently set to 5000 frames, which is larger than needed to save only 1000 frames.
+  </p>
+  <div style="text-align: center">
+    <p>
+      <img alt="scatterGatherExample_NDFileNetCDF.png" src="scatterGatherExample_NDFileNetCDF.png" /></p>
+  </div>
+  <p>
+    The following shows the output when reading the netCDF file that was written when
+    NDPluginGather was set to SortMode=Unsorted.</p>
+  <p>
+    attr[0].pvalue is the value of the UniqueId attribute for all 1000 NDArrays. Note
+    that the arrays are not in the correct UniqueId order.
+  </p>
+  <pre>
+IDL> t = read_nd_netcdf('gather_test_sorted_001.nc', attr=attr) 
+IDL> u=*attr[0].pvalue
+IDL> print, u 
+     1070906     1070904     1070905     1070907     1070908     1070909     1070911     1070912     1070910     1070914
+     1070913     1070916     1070917     1070915     1070919     1070918     1070921     1070922     1070920     1070924
+     1070923     1070927     1070926     1070929     1070925     1070928     1070932     1070931     1070934     1070930
+     1070933     1070937     1070936     1070939     1070935     1070942     1070938     1070941     1070944     1070940
+     1070947     1070946     1070943     1070945     1070949     1070951     1070948     1070950     1070952     1070954
+     1070953     1070956     1070955     1070957     1070959     1070958     1070962     1070961     1070960     1070963
+     1070964     1070967     1070968     1070969     1070966     1070965     1070972     1070973     1070974     1070971
+     1070977     1070970     1070978     1070979     1070982     1070976     1070983     1070975     1070984     1070987
+     1070981     1070988     1070980     1070989     1070986     1070992     1070993     1070985     1070991     1070994
+     1070997     1070998     1070990     1070996     1071002     1070999     1071003     1070995     1071001     1071007
+     1071000     1071004     1071008     1071006     1071012     1071005     1071013     1071011     1071009     1071010
+     1071017     1071016     1071018     1071014     1071015     1071021     1071023     1071019     1071022     1071020
+     1071026     1071028     1071025     1071027     1071024     1071031     1071030     1071033     1071032     1071029
+     1071035     1071036     1071038     1071037     1071040     1071034     1071041     1071042     1071043     1071045
+     1071039     1071046     1071048     1071044     1071047     1071050     1071051     1071053     1071049     1071052
+     1071055     1071056     1071054     1071057     1071058     1071060     1071061     1071059     1071062     1071063
+     1071065     1071064     1071066     1071067     1071068     1071069     1071071     1071070     1071072     1071073
+     1071074     1071075     1071076     1071077     1071078     1071079     1071080     1071081     1071082     1071083
+     1071084     1071085     1071086     1071088     1071089     1071090     1071087     1071091     1071093     1071094
+     1071095     1071092     1071096     1071098     1071097     1071099     1071100     1071101     1071102     1071103
+     1071104     1071105     1071106     1071107     1071109     1071108     1071110     1071111     1071112     1071113
+     1071114     1071115     1071116     1071117     1071118     1071119     1071120     1071121     1071122     1071123
+     1071124     1071125     1071126     1071127     1071128     1071129     1071130     1071131     1071132     1071133
+     1071134     1071135     1071136     1071137     1071138     1071139     1071141     1071140     1071143     1071144
+     1071142     1071146     1071148     1071145     1071149     1071147     1071151     1071150     1071153     1071154
+     1071152     1071156     1071155     1071158     1071159     1071161     1071160     1071157     1071163     1071164
+     1071165     1071166     1071162     1071168     1071169     1071170     1071171     1071173     1071167     1071174
+     1071175     1071176     1071178     1071172     1071179     1071180     1071181     1071183     1071184     1071177
+     1071185     1071186     1071188     1071189     1071191     1071190     1071182     1071193     1071194     1071195
+     1071196     1071198     1071187     1071199     1071200     1071201     1071192     1071203     1071204     1071205
+     1071206     1071197     1071208     1071210     1071209     1071211     1071202     1071213     1071215     1071216
+     1071207     1071214     1071218     1071220     1071221     1071219     1071212     1071223     1071225     1071226
+     1071224     1071228     1071217     1071229     1071230     1071231     1071233     1071222     1071234     1071235
+     1071236     1071227     1071238     1071239     1071240     1071241     1071232     1071243     1071244     1071245
+     1071246     1071237     1071248     1071249     1071250     1071251     1071242     1071253     1071254     1071255
+     1071247     1071256     1071258     1071252     1071259     1071261     1071260     1071263     1071257     1071266
+     1071264     1071268     1071265     1071262     1071271     1071269     1071267     1071273     1071270     1071276
+     1071272     1071278     1071274     1071275     1071277     1071281     1071283     1071279     1071282     1071286
+     1071280     1071288     1071287     1071284     1071291     1071292     1071285     1071293     1071289     1071296
+     1071297     1071290     1071298     1071294     1071295     1071302     1071301     1071299     1071300     1071303
+     1071306     1071304     1071307     1071305     1071308     1071309     1071311     1071310     1071312     1071314
+     1071316     1071315     1071313     1071317     1071319     1071320     1071321     1071318     1071322     1071324
+     1071323     1071325     1071326     1071327     1071329     1071328     1071330     1071331     1071332     1071333
+     1071334     1071335     1071336     1071337     1071338     1071339     1071340     1071341     1071342     1071343
+     1071344     1071346     1071345     1071348     1071347     1071349     1071351     1071353     1071350     1071354
+     1071352     1071356     1071358     1071359     1071355     1071361     1071357     1071363     1071364     1071366
+     1071360     1071368     1071369     1071362     1071371     1071373     1071374     1071365     1071367     1071376
+     1071378     1071379     1071370     1071381     1071383     1071372     1071384     1071386     1071375     1071388
+     1071389     1071377     1071391     1071380     1071393     1071394     1071382     1071385     1071396     1071398
+     1071399     1071387     1071390     1071401     1071403     1071404     1071395     1071392     1071406     1071408
+     1071400     1071397     1071409     1071411     1071405     1071413     1071402     1071410     1071416     1071414
+     1071418     1071407     1071415     1071421     1071412     1071423     1071419     1071420     1071426     1071417
+     1071428     1071425     1071424     1071431     1071422     1071430     1071433     1071429     1071436     1071427
+     1071438     1071435     1071434     1071432     1071441     1071440     1071443     1071439     1071437     1071445
+     1071446     1071448     1071444     1071442     1071450     1071451     1071449     1071447     1071453     1071455
+     1071454     1071452     1071456     1071458     1071460     1071459     1071457     1071461     1071463     1071464
+     1071462     1071465     1071466     1071467     1071468     1071469     1071470     1071471     1071472     1071473
+     1071474     1071475     1071476     1071477     1071478     1071479     1071480     1071481     1071482     1071483
+     1071484     1071485     1071486     1071487     1071488     1071489     1071490     1071491     1071493     1071494
+     1071492     1071495     1071496     1071498     1071499     1071497     1071500     1071501     1071504     1071503
+     1071502     1071506     1071505     1071509     1071511     1071508     1071507     1071514     1071510     1071516
+     1071513     1071512     1071515     1071519     1071518     1071521     1071520     1071517     1071523     1071524
+     1071526     1071525     1071528     1071522     1071529     1071530     1071531     1071533     1071527     1071534
+     1071535     1071536     1071538     1071532     1071539     1071540     1071541     1071537     1071543     1071545
+     1071544     1071546     1071542     1071548     1071549     1071550     1071547     1071551     1071553     1071552
+     1071554     1071555     1071556     1071558     1071557     1071559     1071560     1071561     1071562     1071563
+     1071564     1071565     1071566     1071567     1071568     1071569     1071570     1071571     1071572     1071573
+     1071574     1071576     1071575     1071577     1071578     1071579     1071580     1071581     1071583     1071582
+     1071584     1071585     1071586     1071588     1071589     1071590     1071587     1071591     1071593     1071594
+     1071595     1071592     1071596     1071598     1071599     1071597     1071600     1071601     1071603     1071604
+     1071602     1071605     1071606     1071608     1071609     1071607     1071610     1071611     1071613     1071614
+     1071612     1071615     1071616     1071618     1071619     1071617     1071620     1071621     1071623     1071624
+     1071622     1071625     1071626     1071628     1071629     1071627     1071630     1071631     1071633     1071634
+     1071632     1071635     1071636     1071638     1071639     1071637     1071640     1071641     1071642     1071643
+     1071644     1071645     1071646     1071647     1071648     1071649     1071650     1071651     1071652     1071653
+     1071654     1071655     1071656     1071658     1071659     1071657     1071660     1071661     1071662     1071663
+     1071664     1071665     1071666     1071667     1071668     1071669     1071670     1071671     1071673     1071674
+     1071672     1071675     1071676     1071678     1071679     1071680     1071677     1071681     1071683     1071684
+     1071685     1071686     1071682     1071688     1071689     1071690     1071691     1071687     1071693     1071694
+     1071695     1071696     1071692     1071698     1071700     1071699     1071701     1071697     1071703     1071705
+     1071706     1071702     1071704     1071708     1071710     1071711     1071707     1071713     1071709     1071715
+     1071716     1071718     1071712     1071720     1071714     1071721     1071723     1071717     1071725     1071726
+     1071719     1071722     1071728     1071730     1071731     1071727     1071724     1071733     1071735     1071736
+     1071732     1071738     1071729     1071740     1071737     1071741     1071743     1071742     1071745     1071746
+     1071734     1071748     1071747     1071750     1071739     1071751     1071752     1071753     1071755     1071744
+     1071756     1071757     1071758     1071760     1071761     1071749     1071762     1071763     1071765     1071766
+     1071754     1071767     1071768     1071770     1071759     1071771     1071772     1071773     1071775     1071764
+     1071776     1071777     1071778     1071780     1071769     1071781     1071782     1071783     1071785     1071786
+     1071774     1071787     1071788     1071790     1071791     1071779     1071792     1071793     1071795     1071784
+     1071796     1071797     1071798     1071800     1071801     1071789     1071802     1071803     1071805     1071806
+     1071794     1071807     1071808     1071810     1071811     1071799     1071812     1071813     1071815     1071816
+     1071804     1071817     1071818     1071820     1071821     1071809     1071822     1071823     1071825     1071826
+     1071814     1071827     1071828     1071830     1071819     1071831     1071832     1071833     1071824     1071835
+     1071836     1071837     1071838     1071841     1071829     1071842     1071840     1071846     1071843     1071847
+     1071834     1071845     1071851     1071852     1071848     1071839     1071856     1071850     1071857     1071853
+     1071861     1071844     1071862     1071855     1071858     1071849     1071866     1071867     1071860     1071854
+     1071871     1071863     1071865     1071872     1071859     1071876     1071870     1071877     1071868     1071864
+     1071881     1071875     1071882     1071869     1071873     1071880     1071886     1071887     1071874     1071878
+     1071892     1071885     1071879     1071891     1071883     1071897     1071884     1071890     1071896     1071888
+     1071902     1071889     1071895     1071894     1071893     1071901     1071899     1071900     1071898     1071903
+</pre>
+  <p>
+    The following shows the output when reading the netCDF file that was written when
+    NDPluginGather was set to SortMode=Sorted.</p>
+  <p>
+    attr[0].pvalue is the value of the UniqueId attribute for all 1000 NDArrays. Note
+    that the arrays are now in the correct UniqueId order.
+  </p>
+  <pre>
+IDL> t = read_nd_netcdf('gather_test_sorted_001.nc', attr=attr)
+IDL> u=*attr[0].pvalue
+IDL> print, u
+     1071904     1071905     1071906     1071907     1071908     1071909     1071910     1071911     1071912     1071913
+     1071914     1071915     1071916     1071917     1071918     1071919     1071920     1071921     1071922     1071923
+     1071924     1071925     1071926     1071927     1071928     1071929     1071930     1071931     1071932     1071933
+     1071934     1071935     1071936     1071937     1071938     1071939     1071940     1071941     1071942     1071943
+     1071944     1071945     1071946     1071947     1071948     1071949     1071950     1071951     1071952     1071953
+     1071954     1071955     1071956     1071957     1071958     1071959     1071960     1071961     1071962     1071963
+     1071964     1071965     1071966     1071967     1071968     1071969     1071970     1071971     1071972     1071973
+     1071974     1071975     1071976     1071977     1071978     1071979     1071980     1071981     1071982     1071983
+     1071984     1071985     1071986     1071987     1071988     1071989     1071990     1071991     1071992     1071993
+     1071994     1071995     1071996     1071997     1071998     1071999     1072000     1072001     1072002     1072003
+     1072004     1072005     1072006     1072007     1072008     1072009     1072010     1072011     1072012     1072013
+     1072014     1072015     1072016     1072017     1072018     1072019     1072020     1072021     1072022     1072023
+     1072024     1072025     1072026     1072027     1072028     1072029     1072030     1072031     1072032     1072033
+     1072034     1072035     1072036     1072037     1072038     1072039     1072040     1072041     1072042     1072043
+     1072044     1072045     1072046     1072047     1072048     1072049     1072050     1072051     1072052     1072053
+     1072054     1072055     1072056     1072057     1072058     1072059     1072060     1072061     1072062     1072063
+     1072064     1072065     1072066     1072067     1072068     1072069     1072070     1072071     1072072     1072073
+     1072074     1072075     1072076     1072077     1072078     1072079     1072080     1072081     1072082     1072083
+     1072084     1072085     1072086     1072087     1072088     1072089     1072090     1072091     1072092     1072093
+     1072094     1072095     1072096     1072097     1072098     1072099     1072100     1072101     1072102     1072103
+     1072104     1072105     1072106     1072107     1072108     1072109     1072110     1072111     1072112     1072113
+     1072114     1072115     1072116     1072117     1072118     1072119     1072120     1072121     1072122     1072123
+     1072124     1072125     1072126     1072127     1072128     1072129     1072130     1072131     1072132     1072133
+     1072134     1072135     1072136     1072137     1072138     1072139     1072140     1072141     1072142     1072143
+     1072144     1072145     1072146     1072147     1072148     1072149     1072150     1072151     1072152     1072153
+     1072154     1072155     1072156     1072157     1072158     1072159     1072160     1072161     1072162     1072163
+     1072164     1072165     1072166     1072167     1072168     1072169     1072170     1072171     1072172     1072173
+     1072174     1072175     1072176     1072177     1072178     1072179     1072180     1072181     1072182     1072183
+     1072184     1072185     1072186     1072187     1072188     1072189     1072190     1072191     1072192     1072193
+     1072194     1072195     1072196     1072197     1072198     1072199     1072200     1072201     1072202     1072203
+     1072204     1072205     1072206     1072207     1072208     1072209     1072210     1072211     1072212     1072213
+     1072214     1072215     1072216     1072217     1072218     1072219     1072220     1072221     1072222     1072223
+     1072224     1072225     1072226     1072227     1072228     1072229     1072230     1072231     1072232     1072233
+     1072234     1072235     1072236     1072237     1072238     1072239     1072240     1072241     1072242     1072243
+     1072244     1072245     1072246     1072247     1072248     1072249     1072250     1072251     1072252     1072253
+     1072254     1072255     1072256     1072257     1072258     1072259     1072260     1072261     1072262     1072263
+     1072264     1072265     1072266     1072267     1072268     1072269     1072270     1072271     1072272     1072273
+     1072274     1072275     1072276     1072277     1072278     1072279     1072280     1072281     1072282     1072283
+     1072284     1072285     1072286     1072287     1072288     1072289     1072290     1072291     1072292     1072293
+     1072294     1072295     1072296     1072297     1072298     1072299     1072300     1072301     1072302     1072303
+     1072304     1072305     1072306     1072307     1072308     1072309     1072310     1072311     1072312     1072313
+     1072314     1072315     1072316     1072317     1072318     1072319     1072320     1072321     1072322     1072323
+     1072324     1072325     1072326     1072327     1072328     1072329     1072330     1072331     1072332     1072333
+     1072334     1072335     1072336     1072337     1072338     1072339     1072340     1072341     1072342     1072343
+     1072344     1072345     1072346     1072347     1072348     1072349     1072350     1072351     1072352     1072353
+     1072354     1072355     1072356     1072357     1072358     1072359     1072360     1072361     1072362     1072363
+     1072364     1072365     1072366     1072367     1072368     1072369     1072370     1072371     1072372     1072373
+     1072374     1072375     1072376     1072377     1072378     1072379     1072380     1072381     1072382     1072383
+     1072384     1072385     1072386     1072387     1072388     1072389     1072390     1072391     1072392     1072393
+     1072394     1072395     1072396     1072397     1072398     1072399     1072400     1072401     1072402     1072403
+     1072404     1072405     1072406     1072407     1072408     1072409     1072410     1072411     1072412     1072413
+     1072414     1072415     1072416     1072417     1072418     1072419     1072420     1072421     1072422     1072423
+     1072424     1072425     1072426     1072427     1072428     1072429     1072430     1072431     1072432     1072433
+     1072434     1072435     1072436     1072437     1072438     1072439     1072440     1072441     1072442     1072443
+     1072444     1072445     1072446     1072447     1072448     1072449     1072450     1072451     1072452     1072453
+     1072454     1072455     1072456     1072457     1072458     1072459     1072460     1072461     1072462     1072463
+     1072464     1072465     1072466     1072467     1072468     1072469     1072470     1072471     1072472     1072473
+     1072474     1072475     1072476     1072477     1072478     1072479     1072480     1072481     1072482     1072483
+     1072484     1072485     1072486     1072487     1072488     1072489     1072490     1072491     1072492     1072493
+     1072494     1072495     1072496     1072497     1072498     1072499     1072500     1072501     1072502     1072503
+     1072504     1072505     1072506     1072507     1072508     1072509     1072510     1072511     1072512     1072513
+     1072514     1072515     1072516     1072517     1072518     1072519     1072520     1072521     1072522     1072523
+     1072524     1072525     1072526     1072527     1072528     1072529     1072530     1072531     1072532     1072533
+     1072534     1072535     1072536     1072537     1072538     1072539     1072540     1072541     1072542     1072543
+     1072544     1072545     1072546     1072547     1072548     1072549     1072550     1072551     1072552     1072553
+     1072554     1072555     1072556     1072557     1072558     1072559     1072560     1072561     1072562     1072563
+     1072564     1072565     1072566     1072567     1072568     1072569     1072570     1072571     1072572     1072573
+     1072574     1072575     1072576     1072577     1072578     1072579     1072580     1072581     1072582     1072583
+     1072584     1072585     1072586     1072587     1072588     1072589     1072590     1072591     1072592     1072593
+     1072594     1072595     1072596     1072597     1072598     1072599     1072600     1072601     1072602     1072603
+     1072604     1072605     1072606     1072607     1072608     1072609     1072610     1072611     1072612     1072613
+     1072614     1072615     1072616     1072617     1072618     1072619     1072620     1072621     1072622     1072623
+     1072624     1072625     1072626     1072627     1072628     1072629     1072630     1072631     1072632     1072633
+     1072634     1072635     1072636     1072637     1072638     1072639     1072640     1072641     1072642     1072643
+     1072644     1072645     1072646     1072647     1072648     1072649     1072650     1072651     1072652     1072653
+     1072654     1072655     1072656     1072657     1072658     1072659     1072660     1072661     1072662     1072663
+     1072664     1072665     1072666     1072667     1072668     1072669     1072670     1072671     1072672     1072673
+     1072674     1072675     1072676     1072677     1072678     1072679     1072680     1072681     1072682     1072683
+     1072684     1072685     1072686     1072687     1072688     1072689     1072690     1072691     1072692     1072693
+     1072694     1072695     1072696     1072697     1072698     1072699     1072700     1072701     1072702     1072703
+     1072704     1072705     1072706     1072707     1072708     1072709     1072710     1072711     1072712     1072713
+     1072714     1072715     1072716     1072717     1072718     1072719     1072720     1072721     1072722     1072723
+     1072724     1072725     1072726     1072727     1072728     1072729     1072730     1072731     1072732     1072733
+     1072734     1072735     1072736     1072737     1072738     1072739     1072740     1072741     1072742     1072743
+     1072744     1072745     1072746     1072747     1072748     1072749     1072750     1072751     1072752     1072753
+     1072754     1072755     1072756     1072757     1072758     1072759     1072760     1072761     1072762     1072763
+     1072764     1072765     1072766     1072767     1072768     1072769     1072770     1072771     1072772     1072773
+     1072774     1072775     1072776     1072777     1072778     1072779     1072780     1072781     1072782     1072783
+     1072784     1072785     1072786     1072787     1072788     1072789     1072790     1072791     1072792     1072793
+     1072794     1072795     1072796     1072797     1072798     1072799     1072800     1072801     1072802     1072803
+     1072804     1072805     1072806     1072807     1072808     1072809     1072810     1072811     1072812     1072813
+     1072814     1072815     1072816     1072817     1072818     1072819     1072820     1072821     1072822     1072823
+     1072824     1072825     1072826     1072827     1072828     1072829     1072830     1072831     1072832     1072833
+     1072834     1072835     1072836     1072837     1072838     1072839     1072840     1072841     1072842     1072843
+     1072844     1072845     1072846     1072847     1072848     1072849     1072850     1072851     1072852     1072853
+     1072854     1072855     1072856     1072857     1072858     1072859     1072860     1072861     1072862     1072863
+     1072864     1072865     1072866     1072867     1072868     1072869     1072870     1072871     1072872     1072873
+     1072874     1072875     1072876     1072877     1072878     1072879     1072880     1072881     1072882     1072883
+     1072884     1072885     1072886     1072887     1072888     1072889     1072890     1072891     1072892     1072893
+     1072894     1072895     1072896     1072897     1072898     1072899     1072900     1072901     1072902     1072903
+</pre>
+</body>
+</html>

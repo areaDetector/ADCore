@@ -47,6 +47,7 @@ public:
 protected:
     virtual void processCallbacks(NDArray *pArray);
     virtual asynStatus connectToArrayPort(void);    
+    virtual asynStatus setArrayInterrupt(int connect);
 
 protected:
     int NDPluginDriverArrayPort;
@@ -63,7 +64,6 @@ protected:
     int NDPluginDriverMinCallbackTime;
 
 private:
-    virtual asynStatus setArrayInterrupt(int connect);
     void createCallbackThread();
     
     /* The asyn interfaces we access as a client */

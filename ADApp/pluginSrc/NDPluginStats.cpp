@@ -64,14 +64,14 @@ asynStatus NDPluginStats::doComputeHistogramT(NDArray *pArray)
         bin = (int)(((value - histMin) * scale) + 0.5);
         if ((bin < 0) || (value < histMin))
             this->histBelow++;
-        else if ((bin > this->histogramSize-1) || (value > histMax))
+        else if ((bin > (int)this->histogramSize-1) || (value > histMax))
             this->histAbove++;
         else 
             this->histogram[bin]++;
     }
 
     entropy = 0;
-    for (i=0; i<this->histogramSize; i++) {
+    for (i=0; (int)i<this->histogramSize; i++) {
         counts = this->histogram[i];
         if (counts <= 0) counts = 1;
         entropy += counts * log(counts);

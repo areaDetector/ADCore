@@ -101,7 +101,8 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
     double minCallbackTime, deltaTime;
     int status=0;
     int blockingCallbacks;
-    int arrayCounter, droppedArrays, queueSize, queueFree;
+    int droppedArrays, queueSize, queueFree;
+    bool ignoreQueueFull = false;
     static const char *functionName = "driverCallback";
 
     this->lock();
@@ -113,7 +114,10 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
     epicsTimeGetCurrent(&tNow);
     deltaTime = epicsTimeDiffInSeconds(&tNow, &this->lastProcessTime);
 
-    if ((minCallbackTime == 0.) || (deltaTime > minCallbackTime)) {  
+    if ((minCallbackTime == 0.) || (deltaTime > minCallbackTime)) {
+        if (pasynUser->auxStatus == asynOverflow) ignoreQueueFull = true;
+        pasynUser->auxStatus = asynSuccess;
+        
         /* Time to process the next array */
         
         /* The callbacks can operate in 2 modes: blocking or non-blocking.
@@ -138,13 +142,15 @@ void NDPluginDriver::driverCallback(asynUser *pasynUser, void *genericPointer)
             queueFree = queueSize - epicsMessageQueuePending(this->msgQId);
             setIntegerParam(NDPluginDriverQueueFree, queueFree);
             if (status) {
-                status |= getIntegerParam(NDArrayCounter, &arrayCounter);
-                status |= getIntegerParam(NDPluginDriverDroppedArrays, &droppedArrays);
-                asynPrint(pasynUser, ASYN_TRACE_FLOW, 
-                    "%s:%s message queue full, dropped array %d\n",
-                    driverName, functionName, arrayCounter);
-                droppedArrays++;
-                status |= setIntegerParam(NDPluginDriverDroppedArrays, droppedArrays);
+                pasynUser->auxStatus = asynOverflow;
+                if (!ignoreQueueFull) {
+                    status |= getIntegerParam(NDPluginDriverDroppedArrays, &droppedArrays);
+                    asynPrint(pasynUser, ASYN_TRACE_FLOW, 
+                        "%s:%s message queue full, dropped array uniqueId=%d\n",
+                        driverName, functionName, pArray->uniqueId);
+                    droppedArrays++;
+                    status |= setIntegerParam(NDPluginDriverDroppedArrays, droppedArrays);
+                }
                 /* This buffer needs to be released */
                 pArray->release();
             }
@@ -222,7 +228,7 @@ asynStatus NDPluginDriver::setArrayInterrupt(int enableCallbacks)
     asynStatus status = asynSuccess;
     static const char *functionName = "setArrayInterrupt";
     
-    if (enableCallbacks && !this->asynGenericPointerInterruptPvt) {
+    if (enableCallbacks && connectedToArrayPort && !this->asynGenericPointerInterruptPvt) {
         status = this->pasynGenericPointer->registerInterruptUser(
                     this->asynGenericPointerPvt, this->pasynUserGenericPointer,
                     ::driverCallback, this, &this->asynGenericPointerInterruptPvt);
@@ -233,7 +239,7 @@ asynStatus NDPluginDriver::setArrayInterrupt(int enableCallbacks)
             return(status);
         }
     } 
-    if (!enableCallbacks && this->asynGenericPointerInterruptPvt) {
+    if (!enableCallbacks && connectedToArrayPort && this->asynGenericPointerInterruptPvt) {
         if (this->asynGenericPointerInterruptPvt) {
             status = this->pasynGenericPointer->cancelInterruptUser(this->asynGenericPointerPvt, 
                             this->pasynUserGenericPointer, this->asynGenericPointerInterruptPvt);
@@ -315,7 +321,16 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
     asynStatus status = asynSuccess;
     static const char* functionName = "writeInt32";
 
+    /* If this parameter belongs to a base class call its method */
+    if (function < FIRST_NDPLUGIN_PARAM) {
+        return asynNDArrayDriver::writeInt32(pasynUser, value);
+    }
+
     status = getAddress(pasynUser, &addr); 
+    if (status != asynSuccess) goto done;
+
+    /* Set the parameter in the parameter library. */
+    status = (asynStatus) setIntegerParam(addr, function, value);
     if (status != asynSuccess) goto done;
 
     /* If blocking callbacks are being disabled but the callback thread has
@@ -337,40 +352,35 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
         }
     }
     
-    /* Set the parameter in the parameter library. */
-    status = (asynStatus) setIntegerParam(addr, function, value);
-    if (status != asynSuccess) goto done;
-
     if (function == NDPluginDriverEnableCallbacks) {
         if (value) {  
-            if (this->connectedToArrayPort) {
-                /* We need to register to be called with interrupts from the detector driver on 
-                 * the asynGenericPointer interface. Must do this with the lock released. */
-                this->unlock();
-                status = setArrayInterrupt(1);
-                this->lock();
-                if (status != asynSuccess) goto done;
-            }
+            /* We need to register to be called with interrupts from the detector driver on 
+             * the asynGenericPointer interface. Must do this with the lock released. */
+            this->unlock();
+            status = setArrayInterrupt(1);
+            this->lock();
+            if (status != asynSuccess) goto done;
         } else {
-            if (this->connectedToArrayPort) {
-                this->unlock();
-                status = setArrayInterrupt(0);
-                this->lock();
-                if (status != asynSuccess) goto done;
-            }
+            this->unlock();
+            status = setArrayInterrupt(0);
+            this->lock();
+            if (status != asynSuccess) goto done;
             // Release the input NDArray
             if (pInputArray_) {
                 pInputArray_->release();
                 pInputArray_ = 0;
             }
         }
+
     } else if (function == NDPluginDriverArrayAddr) {
         this->unlock();
         status = connectToArrayPort();
         this->lock();
         if (status != asynSuccess) goto done;
+
     } else if (function == NDPluginDriverQueueSize) {
         newQueueSize_ = value;
+
     } else if (function == NDPluginDriverProcessPlugin) {
         if (pInputArray_) {
             driverCallback(pasynUserSelf, pInputArray_);
@@ -381,10 +391,6 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
             status = asynError;
             goto done;
         }
-    } else {
-        /* If this parameter belongs to a base class call its method */
-        if (function < FIRST_NDPLUGIN_PARAM) 
-            status = asynNDArrayDriver::writeInt32(pasynUser, value);
     }
     
     done:
