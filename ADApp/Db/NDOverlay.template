@@ -10,13 +10,13 @@ include "NDPluginBase.template"
 record(longin, "$(P)$(R)MaxSizeX_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_SIZE_X")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))MAX_SIZE_X")
    field(SCAN, "I/O Intr")
 }
 
 record(longin, "$(P)$(R)MaxSizeY_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_SIZE_Y")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))MAX_SIZE_Y")
    field(SCAN, "I/O Intr")
 }

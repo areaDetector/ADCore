@@ -13,7 +13,7 @@ include "NDPluginBase.template"
 record(waveform, "$(P)$(R)Filename")
 {
     field(DTYP, "asynOctetWrite")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDPos_Filename")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))NDPos_Filename")
     field(FTVL, "CHAR")
     field(NELM, "1000000")
 }

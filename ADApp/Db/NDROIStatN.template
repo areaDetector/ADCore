@@ -27,7 +27,7 @@ record(bo, "$(P)$(R)Use")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_USE")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_USE")
    field(VAL,  "0")
    field(ZNAM, "No")
    field(ONAM, "Yes")
@@ -37,7 +37,7 @@ record(bo, "$(P)$(R)Use")
 record(bi, "$(P)$(R)Use_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_USE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_USE")
    field(ZNAM, "No")
    field(ONAM, "Yes")
    field(SCAN, "I/O Intr")
@@ -50,7 +50,7 @@ record(stringout, "$(P)$(R)Name")
 {
    field(PINI, "YES")
    field(DTYP, "asynOctetWrite")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_NAME")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_NAME")
    info(autosaveFields, "VAL")
 }
 
@@ -60,7 +60,7 @@ record(stringout, "$(P)$(R)Name")
 record(bo, "$(P)$(R)Reset")
 {
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_RESET")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_RESET")
 }
 
 ###################################################################
@@ -71,7 +71,7 @@ record(longout, "$(P)$(R)BgdWidth")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_BGD_WIDTH")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_BGD_WIDTH")
    field(VAL,  "0")
    info(autosaveFields, "VAL")
 }
@@ -79,7 +79,7 @@ record(longout, "$(P)$(R)BgdWidth")
 record(longin, "$(P)$(R)BgdWidth_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_BGD_WIDTH")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_BGD_WIDTH")
    field(SCAN, "I/O Intr")
    info(autosaveFields, "VAL")
 }
@@ -93,7 +93,7 @@ record(longout, "$(P)$(R)MinX")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_DIM0_MIN")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_DIM0_MIN")
    field(VAL,  "0")
    info(autosaveFields, "VAL")
 }
@@ -101,7 +101,7 @@ record(longout, "$(P)$(R)MinX")
 record(longin, "$(P)$(R)MinX_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_DIM0_MIN")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_DIM0_MIN")
    field(SCAN, "I/O Intr")
 }
 
@@ -109,7 +109,7 @@ record(longout, "$(P)$(R)MinY")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_DIM1_MIN")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_DIM1_MIN")
    field(VAL,  "0")
    info(autosaveFields, "VAL")
 }
@@ -117,7 +117,7 @@ record(longout, "$(P)$(R)MinY")
 record(longin, "$(P)$(R)MinY_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_DIM1_MIN")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_DIM1_MIN")
    field(SCAN, "I/O Intr")
 }
 
@@ -125,7 +125,7 @@ record(longout, "$(P)$(R)SizeX")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_DIM0_SIZE")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_DIM0_SIZE")
    field(VAL,  "1")
    info(autosaveFields, "VAL")
 }
@@ -133,7 +133,7 @@ record(longout, "$(P)$(R)SizeX")
 record(longin, "$(P)$(R)SizeX_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_DIM0_SIZE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_DIM0_SIZE")
    field(SCAN, "I/O Intr")
 }
 
@@ -141,7 +141,7 @@ record(longout, "$(P)$(R)SizeY")
 {
    field(PINI, "YES")
    field(DTYP, "asynInt32")
-   field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_DIM1_SIZE")
+   field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_DIM1_SIZE")
    field(VAL,  "1")
    info(autosaveFields, "VAL")
 }
@@ -149,21 +149,21 @@ record(longout, "$(P)$(R)SizeY")
 record(longin, "$(P)$(R)SizeY_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_DIM1_SIZE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_DIM1_SIZE")
    field(SCAN, "I/O Intr")
 }
 
 record(longin, "$(P)$(R)MaxSizeX_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_DIM0_MAX_SIZE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_DIM0_MAX_SIZE")
    field(SCAN, "I/O Intr")
 }
 
 record(longin, "$(P)$(R)MaxSizeY_RBV")
 {
    field(DTYP, "asynInt32")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_DIM1_MAX_SIZE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_DIM1_MAX_SIZE")
    field(SCAN, "I/O Intr")
 }
 
@@ -175,35 +175,35 @@ record(longin, "$(P)$(R)MaxSizeY_RBV")
 record(ai, "$(P)$(R)MinValue_RBV")
 {
    field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_MIN_VALUE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_MIN_VALUE")
    field(SCAN, "I/O Intr")
 }
 
 record(ai, "$(P)$(R)MaxValue_RBV")
 {
    field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_MAX_VALUE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_MAX_VALUE")
    field(SCAN, "I/O Intr")
 }
 
 record(ai, "$(P)$(R)MeanValue_RBV")
 {
    field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_MEAN_VALUE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_MEAN_VALUE")
    field(SCAN, "I/O Intr")
 }
 
 record(ai, "$(P)$(R)Total_RBV")
 {
    field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_TOTAL")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_TOTAL")
    field(SCAN, "I/O Intr")
 }
 
 record(ai, "$(P)$(R)Net_RBV")
 {
    field(DTYP, "asynFloat64")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_NET")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_NET")
    field(SCAN, "I/O Intr")
 }
 
@@ -215,7 +215,7 @@ record(ai, "$(P)$(R)Net_RBV")
 record(waveform, "$(P)$(R)TSMinValue")
 {
    field(DTYP, "asynFloat64ArrayIn")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_TS_MIN_VALUE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_TS_MIN_VALUE")
    field(NELM, "$(NCHANS)")
    field(FTVL, "DOUBLE")
    field(SCAN, "I/O Intr")
@@ -224,7 +224,7 @@ record(waveform, "$(P)$(R)TSMinValue")
 record(waveform, "$(P)$(R)TSMaxValue")
 {
    field(DTYP, "asynFloat64ArrayIn")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_TS_MAX_VALUE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_TS_MAX_VALUE")
    field(NELM, "$(NCHANS)")
    field(FTVL, "DOUBLE")
    field(SCAN, "I/O Intr")
@@ -233,7 +233,7 @@ record(waveform, "$(P)$(R)TSMaxValue")
 record(waveform, "$(P)$(R)TSMeanValue")
 {
    field(DTYP, "asynFloat64ArrayIn")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_TS_MEAN_VALUE")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_TS_MEAN_VALUE")
    field(NELM, "$(NCHANS)")
    field(FTVL, "DOUBLE")
    field(SCAN, "I/O Intr")
@@ -242,7 +242,7 @@ record(waveform, "$(P)$(R)TSMeanValue")
 record(waveform, "$(P)$(R)TSTotal")
 {
    field(DTYP, "asynFloat64ArrayIn")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_TS_TOTAL")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_TS_TOTAL")
    field(NELM, "$(NCHANS)")
    field(FTVL, "DOUBLE")
    field(SCAN, "I/O Intr")
@@ -251,7 +251,7 @@ record(waveform, "$(P)$(R)TSTotal")
 record(waveform, "$(P)$(R)TSNet")
 {
    field(DTYP, "asynFloat64ArrayIn")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_TS_NET")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_TS_NET")
    field(NELM, "$(NCHANS)")
    field(FTVL, "DOUBLE")
    field(SCAN, "I/O Intr")
@@ -260,7 +260,7 @@ record(waveform, "$(P)$(R)TSNet")
 record(waveform, "$(P)$(R)TSTimestamp")
 {
    field(DTYP, "asynFloat64ArrayIn")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ROISTAT_TS_TIMESTAMP")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))ROISTAT_TS_TIMESTAMP")
    field(NELM, "$(NCHANS)")
    field(FTVL, "DOUBLE")
    field(SCAN, "I/O Intr")

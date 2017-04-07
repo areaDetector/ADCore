@@ -34,7 +34,7 @@ record(stringout, "$(P)$(R)Name")
 record(waveform, "$(P)$(R)TimeSeries")
 {
    field(DTYP, "asynFloat64ArrayIn")
-   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))TS_TIME_SERIES")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))TS_TIME_SERIES")
    field(NELM, "$(NCHANS)")
    field(FTVL, "DOUBLE")
    field(SCAN, "I/O Intr")

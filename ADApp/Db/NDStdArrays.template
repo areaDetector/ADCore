@@ -12,7 +12,7 @@ include "NDPluginBase.template"
 record(waveform, "$(P)$(R)ArrayData")
 {
     field(DTYP, "asyn$(TYPE)ArrayIn")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))STD_ARRAY_DATA")
+    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))STD_ARRAY_DATA")
     field(FTVL, "$(FTVL)")
     field(NELM, "$(NELEMENTS)")
     field(SCAN, "I/O Intr")
