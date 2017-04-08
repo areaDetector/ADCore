@@ -110,7 +110,7 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
     //const char* functionName = "processCallbacks";
 
     /* Call the base class method */
-    NDPluginDriver::processCallbacks(pArray);
+    NDPluginDriver::beginProcessCallbacks(pArray);
     
     pArray->getInfo(&arrayInfo);
 
@@ -171,13 +171,9 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
             // Yes, so flush the ring first
 
             if (preBuffer_->size() > 0){
-              this->unlock();
               doCallbacksGenericPointer(preBuffer_->readFromStart(), NDArrayData, 0);
-              this->lock();
               while (preBuffer_->hasNext()) {
-                this->unlock();
                 doCallbacksGenericPointer(preBuffer_->readNext(), NDArrayData, 0);
-                this->lock();
               }
             }
           }
@@ -185,9 +181,7 @@ void NDPluginCircularBuff::processCallbacks(NDArray *pArray)
           currentPostCount++;
           setIntegerParam(NDCircBuffPostCount,  currentPostCount);
 
-          this->unlock();
           doCallbacksGenericPointer(pArrayCpy, NDArrayData, 0);
-          this->lock();
           if (pArrayCpy){
             pArrayCpy->release();
           }
@@ -390,10 +384,10 @@ NDPluginCircularBuff::NDPluginCircularBuff(const char *portName, int queueSize, 
                          int priority, int stackSize)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
-                   NDArrayPort, NDArrayAddr, 1, NUM_NDPLUGIN_CIRC_BUFF_PARAMS, maxBuffers, maxMemory,
+                   NDArrayPort, NDArrayAddr, 1, maxBuffers, maxMemory,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
-                   0, 1, priority, stackSize), pOldArray_(NULL)
+                   0, 1, priority, stackSize, 1), pOldArray_(NULL)
 {
     //const char *functionName = "NDPluginCircularBuff";
     preBuffer_ = NULL;

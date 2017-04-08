@@ -492,7 +492,7 @@ void NDPluginTransform::processCallbacks(NDArray *pArray){
   static const char* functionName = "processCallbacks";
 
   /* Call the base class method */
-  NDPluginDriver::processCallbacks(pArray);
+  NDPluginDriver::beginProcessCallbacks(pArray);
 
   /** Create a pointer to a structure of type NDArrayInfo_t and use it to get information about
     the input array.
@@ -503,18 +503,11 @@ void NDPluginTransform::processCallbacks(NDArray *pArray){
   this->userDims_[1] = arrayInfo.yDim;
   this->userDims_[2] = arrayInfo.colorDim;
 
-  /* Previous version of the array was held in memory.  Release it and reserve a new one. */
-  if (this->pArrays[0]) {
-    this->pArrays[0]->release();
-    this->pArrays[0] = NULL;
-  }
+  /* Copy the information from the current array */
+  transformedArray = this->pNDArrayPool->copy(pArray, NULL, 1);
 
   /* Release the lock; this is computationally intensive and does not access any shared data */
   this->unlock();
-  /* Copy the information from the current array */
-  this->pArrays[0] = this->pNDArrayPool->copy(pArray, NULL, 1);
-  transformedArray = this->pArrays[0];
-
   if ( pArray->ndims <=3 )
     this->transformImage(pArray, transformedArray, &arrayInfo);
   else {
@@ -523,8 +516,13 @@ void NDPluginTransform::processCallbacks(NDArray *pArray){
   }
   this->lock();
 
-  this->getAttributes(transformedArray->pAttributeList);
-  doCallbacksGenericPointer(transformedArray, NDArrayData,0);
+  // Set NDArraySizeX and NDArraySizeY appropriately
+  setIntegerParam(NDArraySizeX, transformedArray->dims[arrayInfo.xDim].size);
+  setIntegerParam(NDArraySizeY, transformedArray->dims[arrayInfo.yDim].size);
+  if (transformedArray->ndims < 3) setIntegerParam(NDArraySizeZ, 0);
+  else setIntegerParam(NDArraySizeZ, 3);
+
+  NDPluginDriver::endProcessCallbacks(transformedArray, false, true);
   callParamCallbacks();
 }
 
@@ -566,11 +564,6 @@ void NDPluginTransform::transformImage(NDArray *inArray, NDArray *outArray, NDAr
       transformNDArray<epicsFloat64>(inArray, outArray, transformType, colorMode, arrayInfo);
       break;
   }
-  // Set NDArraySizeX and NDArraySizeY appropriately
-  setIntegerParam(NDArraySizeX, outArray->dims[arrayInfo->xDim].size);
-  setIntegerParam(NDArraySizeY, outArray->dims[arrayInfo->yDim].size);
-  if (outArray->ndims < 3) setIntegerParam(NDArraySizeZ, 0);
-  else setIntegerParam(NDArraySizeZ, 3);
 
   return;
 }
@@ -589,21 +582,22 @@ void NDPluginTransform::transformImage(NDArray *inArray, NDArray *outArray, NDAr
   * \param[in] NDArrayPort Name of asyn port driver for initial source of NDArray callbacks.
   * \param[in] NDArrayAddr asyn port driver address for initial source of NDArray callbacks.
   * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is
-  *      allowed to allocate. Set this to -1 to allow an unlimited number of buffers.
+  *      allowed to allocate. Set this to 0 to allow an unlimited number of buffers.
   * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is
-  *      allowed to allocate. Set this to -1 to allow an unlimited amount of memory.
+  *      allowed to allocate. Set this to 0 to allow an unlimited amount of memory.
   * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  * \param[in] maxThreads The maximum number of threads this driver is allowed to use. If 0 then 1 will be used.
   */
 NDPluginTransform::NDPluginTransform(const char *portName, int queueSize, int blockingCallbacks,
              const char *NDArrayPort, int NDArrayAddr, int maxBuffers, size_t maxMemory,
-             int priority, int stackSize)
+             int priority, int stackSize, int maxThreads)
   /* Invoke the base class constructor */
   : NDPluginDriver(portName, queueSize, blockingCallbacks,
-                   NDArrayPort, NDArrayAddr, 1, NUM_TRANSFORM_PARAMS, maxBuffers, maxMemory,
+                   NDArrayPort, NDArrayAddr, 1, maxBuffers, maxMemory,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
                    asynInt32ArrayMask | asynFloat64ArrayMask | asynGenericPointerMask,
-                   ASYN_MULTIDEVICE, 1, priority, stackSize)
+                   ASYN_MULTIDEVICE, 1, priority, stackSize, maxThreads)
 {
   //static const char *functionName = "NDPluginTransform";
   int i;
@@ -630,10 +624,10 @@ NDPluginTransform::NDPluginTransform(const char *portName, int queueSize, int bl
 extern "C" int NDTransformConfigure(const char *portName, int queueSize, int blockingCallbacks,
                                     const char *NDArrayPort, int NDArrayAddr,
                                     int maxBuffers, size_t maxMemory,
-                                    int priority, int stackSize)
+                                    int priority, int stackSize, int maxThreads)
 {
   NDPluginTransform *pPlugin = new NDPluginTransform(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr,
-                                                      maxBuffers, maxMemory, priority, stackSize);
+                                                      maxBuffers, maxMemory, priority, stackSize, maxThreads);
   return pPlugin->start();
 }
 
@@ -647,6 +641,7 @@ static const iocshArg initArg5 = { "maxBuffers",iocshArgInt};
 static const iocshArg initArg6 = { "maxMemory",iocshArgInt};
 static const iocshArg initArg7 = { "priority",iocshArgInt};
 static const iocshArg initArg8 = { "stackSize",iocshArgInt};
+static const iocshArg initArg9 = { "# threads",iocshArgInt};
 static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg1,
                                             &initArg2,
@@ -655,13 +650,15 @@ static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg5,
                                             &initArg6,
                                             &initArg7,
-                                            &initArg8};
-static const iocshFuncDef initFuncDef = {"NDTransformConfigure",9,initArgs};
+                                            &initArg8,
+                                            &initArg9};
+static const iocshFuncDef initFuncDef = {"NDTransformConfigure",10,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
   NDTransformConfigure(args[0].sval, args[1].ival, args[2].ival,
                        args[3].sval, args[4].ival, args[5].ival,
-                       args[6].ival, args[7].ival, args[8].ival);
+                       args[6].ival, args[7].ival, args[8].ival,
+                       args[9].ival);
 }
 
 extern "C" void NDTransformRegister(void)

@@ -8,7 +8,7 @@
 #include "FFTPluginWrapper.h"
 
 FFTPluginWrapper::FFTPluginWrapper(const std::string& port, const std::string& detectorPort)
-  :  NDPluginFFT(port.c_str(), 50, 0, detectorPort.c_str(), 0, 0, 0, 0, 0),
+  :  NDPluginFFT(port.c_str(), 50, 0, detectorPort.c_str(), 0, 0, 0, 0, 0, 1),
      AsynPortClientContainer(port)
 {
 }
@@ -20,10 +20,11 @@ FFTPluginWrapper::FFTPluginWrapper(const std::string& port,
                                    int address,
                                    size_t maxMemory,
                                    int priority,
-                                   int stackSize)
+                                   int stackSize,
+                                   int maxThreads)
   :  NDPluginFFT(port.c_str(), queueSize, blocking,
                         detectorPort.c_str(), address,
-                        0, maxMemory, priority, stackSize),
+                        0, maxMemory, priority, stackSize, maxThreads),
      AsynPortClientContainer(port)
 {
 }

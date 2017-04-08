@@ -64,7 +64,7 @@ void NDPluginAttribute::processCallbacks(NDArray *pArray)
   static const char *functionName = "NDPluginAttribute::processCallbacks";
   
   /* Call the base class method */
-  NDPluginDriver::processCallbacks(pArray);
+  NDPluginDriver::beginProcessCallbacks(pArray);
   
   /* Get the attributes for this driver */
   pAttrList = pArray->pAttributeList;
@@ -233,10 +233,10 @@ NDPluginAttribute::NDPluginAttribute(const char *portName, int queueSize, int bl
                                      int priority, int stackSize)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
-                   NDArrayPort, NDArrayAddr, maxAttributes, NUM_NDPLUGIN_ATTR_PARAMS, maxBuffers, maxMemory,
+                   NDArrayPort, NDArrayAddr, maxAttributes, maxBuffers, maxMemory,
                    asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
                    asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
-                   ASYN_MULTIDEVICE, 1, priority, stackSize)
+                   ASYN_MULTIDEVICE, 1, priority, stackSize, 1)
 {
   int i;
   static const char *functionName = "NDPluginAttribute::NDPluginAttribute";
@@ -321,7 +321,8 @@ static void initCallFunc(const iocshArgBuf *args)
 {
   NDAttrConfigure(args[0].sval, args[1].ival, args[2].ival,
                   args[3].sval, args[4].ival, args[5].ival,
-                  args[6].ival, args[7].ival, args[8].ival, args[9].ival);
+                  args[6].ival, args[7].ival, args[8].ival, 
+                  args[9].ival);
 }
 
 extern "C" void NDAttrRegister(void)

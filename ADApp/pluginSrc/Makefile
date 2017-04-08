@@ -32,6 +32,10 @@ INC      += NDPluginFFT.h
 LIB_SRCS += NDPluginFFT.cpp
 LIB_SRCS += fft.c
 
+NDPluginSupport_DBD += NDPluginGather.dbd
+INC      += NDPluginGather.h
+LIB_SRCS += NDPluginGather.cpp
+
 NDPluginSupport_DBD += NDPluginOverlay.dbd
 INC      += NDPluginOverlay.h
 INC      += NDPluginOverlayTextFont.h
@@ -49,6 +53,10 @@ LIB_SRCS += NDPluginROI.cpp
 NDPluginSupport_DBD += NDPluginROIStat.dbd
 INC      += NDPluginROIStat.h
 LIB_SRCS += NDPluginROIStat.cpp
+
+NDPluginSupport_DBD += NDPluginScatter.dbd
+INC      += NDPluginScatter.h
+LIB_SRCS += NDPluginScatter.cpp
 
 NDPluginSupport_DBD += NDPluginStats.dbd
 INC      += NDPluginStats.h
@@ -151,6 +159,11 @@ endif
 
 NDPlugin_SYS_LIBS_WIN32 += ws2_32
 NDPlugin_SYS_LIBS_WIN32 += user32
+
+# This tests the problem with forward referencing class sortedListElement if it is
+# forwarded referenced in NDPluginDriver.h and defined in NDPluginDriver.cpp
+#LIB_SRCS += test_forward_reference.cpp
+
 
 # The following gets rid of the -fno-implicit-templates flag on vxWorks, 
 # so we get automatic template instantiation.

@@ -45,11 +45,12 @@ void NDPosPlugin::processCallbacks(NDArray *pArray)
   int expectedID = 0;
   int IDDifference = 0;
   epicsInt32 IDValue = 0;
+  NDArray *pArrayOut = NULL;
   char IDName[MAX_STRING_SIZE];
   static const char *functionName = "NDPosPlugin::processCallbacks";
 
   // Call the base class method
-  NDPluginDriver::processCallbacks(pArray);
+  NDPluginDriver::beginProcessCallbacks(pArray);
   getIntegerParam(NDPos_Running, &running);
   // We must maintain the size of the list ourselves, as calling
   // size() on the list has a complexity of O(n) which causes a problem
@@ -143,15 +144,10 @@ void NDPosPlugin::processCallbacks(NDArray *pArray)
 
       // Only perform the actual setting of positions if we aren't skipping
       if (skip == 0 && running == NDPOS_RUNNING){
-        // We always keep the last array so read() can use it.
-        // Release previous one. Reserve new one below during the copy.
-        if (this->pArrays[0]){
-          this->pArrays[0]->release();
-          this->pArrays[0] = NULL;
-        }
         // We must make a copy of the array as we are going to alter it
-        this->pArrays[0] = this->pNDArrayPool->copy(pArray, this->pArrays[0], 1);
-        if (this->pArrays[0]){
+        pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 1);
+        this->getAttributes(pArrayOut->pAttributeList);
+        if (pArrayOut){
           std::list<std::map<std::string, double> >::iterator it = positionArray.begin();
           std::advance(it, index);
           //std::map<std::string, double> pos = positionArray[index];
@@ -170,7 +166,7 @@ void NDPosPlugin::processCallbacks(NDArray *pArray)
             // Create the NDAttribute with the position data
             NDAttribute *pAtt = new NDAttribute(iter->first.c_str(), "Position of NDArray", NDAttrSourceDriver, driverName, NDAttrFloat64, &(iter->second));
             // Add the NDAttribute to the NDArray
-            this->pArrays[0]->pAttributeList->add(pAtt);
+            pArrayOut->pAttributeList->add(pAtt);
           }
           sspos << "]";
           setStringParam(NDPos_CurrentPos, sspos.str().c_str());
@@ -209,10 +205,8 @@ void NDPosPlugin::processCallbacks(NDArray *pArray)
       setIntegerParam(NDPos_Running, NDPOS_IDLE);
     }
     callParamCallbacks();
-    if (skip == 0 && running == NDPOS_RUNNING){
-      this->unlock();
-      doCallbacksGenericPointer(this->pArrays[0], NDArrayData, 0);
-      this->lock();
+    if (skip == 0 && running == NDPOS_RUNNING) {
+      NDPluginDriver::endProcessCallbacks(pArrayOut, false, false);
     }
   }
 }
@@ -379,7 +373,6 @@ NDPosPlugin::NDPosPlugin(const char *portName,
                    NDArrayPort,
                    NDArrayAddr,
                    1,
-                   NUM_NDPOS_PARAMS,
                    maxBuffers,
                    maxMemory,
                    asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
@@ -387,7 +380,8 @@ NDPosPlugin::NDPosPlugin(const char *portName,
                    ASYN_MULTIDEVICE,
                    1,
                    priority,
-                   stackSize)
+                   stackSize,
+                   1)
 {
   //static const char *functionName = "NDPluginAttribute::NDPluginAttribute";
 

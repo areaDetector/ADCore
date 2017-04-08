@@ -1,7 +1,7 @@
 
 file {
 	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/ADPlugins.adl"
-	version=030107
+	version=030109
 }
 display {
 	object {
@@ -158,30 +158,6 @@ text {
 	}
 	textix="ROI"
 }
-text {
-	object {
-		x=80
-		y=55
-		width=50
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Stats"
-}
-text {
-	object {
-		x=210
-		y=55
-		width=50
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Other"
-}
 "related display" {
 	object {
 		x=135
@@ -229,7 +205,70 @@ text {
 }
 "related display" {
 	object {
-		x=135
+		x=265
+		y=29
+		width=64
+		height=20
+	}
+	display[0] {
+		label="ROI #1"
+		name="NDROI.adl"
+		args="P=$(P), R=ROI1:"
+	}
+	display[1] {
+		label="ROI #2"
+		name="NDROI.adl"
+		args="P=$(P), R=ROI2:"
+	}
+	display[2] {
+		label="ROI #3"
+		name="NDROI.adl"
+		args="P=$(P), R=ROI3:"
+	}
+	display[3] {
+		label="ROI #4"
+		name="NDROI.adl"
+		args="P=$(P), R=ROI4:"
+	}
+	display[4] {
+		label="ROI 1-4 combined"
+		name="NDROI4.adl"
+		args="P=$(P), R1=ROI1:,R2=ROI2:, R3=ROI3:,R4=ROI4:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=10
+		y=29
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Common plugins"
+		name="commonPlugins.adl"
+		args="P=$(P)"
+	}
+	clr=14
+	bclr=51
+	label="-All"
+}
+text {
+	object {
+		x=10
+		y=55
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Stats"
+}
+"related display" {
+	object {
+		x=65
 		y=55
 		width=64
 		height=20
@@ -269,44 +308,9 @@ text {
 }
 "related display" {
 	object {
-		x=265
-		y=29
-		width=64
-		height=20
-	}
-	display[0] {
-		label="ROI #1"
-		name="NDROI.adl"
-		args="P=$(P), R=ROI1:"
-	}
-	display[1] {
-		label="ROI #2"
-		name="NDROI.adl"
-		args="P=$(P), R=ROI2:"
-	}
-	display[2] {
-		label="ROI #3"
-		name="NDROI.adl"
-		args="P=$(P), R=ROI3:"
-	}
-	display[3] {
-		label="ROI #4"
-		name="NDROI.adl"
-		args="P=$(P), R=ROI4:"
-	}
-	display[4] {
-		label="ROI 1-4 combined"
-		name="NDROI4.adl"
-		args="P=$(P), R1=ROI1:,R2=ROI2:, R3=ROI3:,R4=ROI4:"
-	}
-	clr=14
-	bclr=51
-}
-"related display" {
-	object {
-		x=265
+		x=177
 		y=55
-		width=64
+		width=80
 		height=20
 	}
 	display[0] {
@@ -370,19 +374,14 @@ text {
 		args="P=$(P), R=FFT1:"
 	}
 	display[12] {
-		label="Scan #1"
-		name="scan_more.adl"
-		args="P=$(P), S=scan1, N=1"
+		label="Scatter #1"
+		name="NDScatter.adl"
+		args="P=$(P), R=Scatter1:"
 	}
 	display[13] {
-		label="Acquire Sequence"
-		name="yySseq.adl"
-		args="P=$(P), S=AcquireSequence"
-	}
-	display[14] {
-		label="devIocStats"
-		name="ioc_stats_soft.adl"
-		args="ioc=$(P)"
+		label="Gather #1"
+		name="NDGather8.adl"
+		args="P=$(P), R=Gather1:"
 	}
 	display[15] {
 		label="Pva"
@@ -391,20 +390,31 @@ text {
 	}
 	clr=14
 	bclr=51
+	label="Other #1"
 }
 "related display" {
 	object {
-		x=10
-		y=29
-		width=64
+		x=264
+		y=55
+		width=80
 		height=20
 	}
 	display[0] {
-		label="Common plugins"
-		name="commonPlugins.adl"
-		args="P=$(P)"
+		label="Scan #1"
+		name="scan_more.adl"
+		args="P=$(P), S=scan1, N=1"
+	}
+	display[1] {
+		label="Acquire Sequence"
+		name="yySseq.adl"
+		args="P=$(P), S=AcquireSequence"
+	}
+	display[2] {
+		label="devIocStats"
+		name="ioc_stats_soft.adl"
+		args="ioc=$(P)"
 	}
 	clr=14
 	bclr=51
-	label="-All"
+	label="Other #2"
 }

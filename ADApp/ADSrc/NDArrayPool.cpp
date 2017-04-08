@@ -8,6 +8,7 @@
 
 #include <stdlib.h>
 
+#include <cantProceed.h>
 #include <epicsExport.h>
 
 #include "NDArray.h"
@@ -224,7 +225,13 @@ int NDArrayPool::reserve(NDArray *pArray)
          driverName, functionName, pArray->pNDArrayPool, this);
     return(ND_ERROR);
   }
+  //printf("NDArrayPool::reserve pArray=%p, count=%d\n", pArray, pArray->referenceCount);
   epicsMutexLock(listLock_);
+  // If the reference count is less than 1 then something is wrong, this NDArray has been released.
+  if (pArray->referenceCount < 1) {
+    cantProceed("%s:reserve ERROR, reference count = %d, should be >= 1, pArray=%p\n",
+           driverName, pArray->referenceCount, pArray);
+  }
   pArray->referenceCount++;
   epicsMutexUnlock(listLock_);
   return ND_SUCCESS;
@@ -248,6 +255,7 @@ int NDArrayPool::release(NDArray *pArray)
            driverName, functionName, pArray->pNDArrayPool, this);
     return(ND_ERROR);
   }
+  //printf("NDArrayPool::release pArray=%p, count=%d\n", pArray, pArray->referenceCount);
   epicsMutexLock(listLock_);
   pArray->referenceCount--;
   if (pArray->referenceCount == 0) {
@@ -256,7 +264,7 @@ int NDArrayPool::release(NDArray *pArray)
     numFree_++;
   }
   if (pArray->referenceCount < 0) {
-    printf("%s:release ERROR, reference count < 0 pArray=%p\n",
+    cantProceed("%s:release ERROR, reference count < 0 pArray=%p\n",
            driverName, pArray);
   }
   epicsMutexUnlock(listLock_);

@@ -100,13 +100,10 @@ protected:
   int NDPos_IDName;
   int NDPos_IDDifference;
   int NDPos_IDStart;
-  #define LAST_NDPOS_PARAM NDPos_IDStart
 
 private:
   // Plugin member variables
   std::list<std::map<std::string, double> > positionArray;
 };
-
-#define NUM_NDPOS_PARAMS ((int)(&LAST_NDPOS_PARAM - &FIRST_NDPOS_PARAM + 1))
 
 #endif /* NDPosPluginAPP_SRC_NDPOSPLUGIN_H_ */

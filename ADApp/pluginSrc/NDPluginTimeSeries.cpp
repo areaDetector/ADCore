@@ -59,10 +59,10 @@ NDPluginTimeSeries::NDPluginTimeSeries(const char *portName, int queueSize, int 
     /* Invoke the base class constructor 
      * Note: maxAddr is maxSignals+1 because we do callbacks on the 2-D array on address maxSignals */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
-             NDArrayPort, NDArrayAddr, maxSignals+1, NUM_NDPLUGIN_TIME_SERIES_PARAMS, maxBuffers, maxMemory,
+             NDArrayPort, NDArrayAddr, maxSignals+1, maxBuffers, maxMemory,
              asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
              asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
-             ASYN_MULTIDEVICE, 1, priority, stackSize),
+             ASYN_MULTIDEVICE, 1, priority, stackSize, 1),
     dataType_(NDFloat64), dataSize_(sizeof(epicsFloat64)), numTimePoints_(DEFAULT_NUM_TSPOINTS), currentTimePoint_(0),
     uniqueId_(0), numAverage_(1), timePerPoint_(0), signalData_(0), timeAxis_(0), timeStamp_(0), pTimeCircular_(0)
 {
@@ -363,9 +363,7 @@ asynStatus NDPluginTimeSeries::doTimeSeriesCallbacks()
     epicsTimeGetCurrent(&now);
     pArrayOut->timeStamp = now.secPastEpoch + now.nsec / 1.e9;
     pArrayOut->uniqueId = uniqueId_++;
-    this->unlock();
     doCallbacksGenericPointer(pArrayOut, NDArrayData, numSignals_);
-    this->lock();
     this->pArrays[0] = pArrayOut;
     // Now do NDArray callbacks on 1-D arrays for each signal
     numCopy = (int)pArrayOut->dims[0].size;
@@ -379,9 +377,7 @@ asynStatus NDPluginTimeSeries::doTimeSeriesCallbacks()
       pArray->epicsTS   = pArrayOut->epicsTS;
       pArray->timeStamp = pArrayOut->timeStamp;
       pArray->uniqueId  = pArrayOut->uniqueId;
-      this->unlock();
       doCallbacksGenericPointer(pArray, NDArrayData, signal);
-      this->lock();
       pArray->release();
     }
   }
@@ -401,7 +397,7 @@ void NDPluginTimeSeries::processCallbacks(NDArray *pArray)
   const char* functionName = "NDPluginTimeSeries::processCallbacks";
 
   /* Call the base class method */
-  NDPluginDriver::processCallbacks(pArray);
+  NDPluginDriver::beginProcessCallbacks(pArray);
 
   // This plugin only works with 1-D or 2-D arrays
   if ((pArray->ndims < 1) || (pArray->ndims > 2)) {

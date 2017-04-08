@@ -14,8 +14,8 @@
 class epicsShareClass NDPluginStdArrays : public NDPluginDriver {
 public:
     NDPluginStdArrays(const char *portName, int queueSize, int blockingCallbacks, 
-                      const char *NDArrayPort, int NDArrayAddr, size_t maxMemory,
-                      int priority, int stackSize);
+                      const char *NDArrayPort, int NDArrayAddr, int maxBuffers, size_t maxMemory,
+                      int priority, int stackSize, int maxThreads=1);
 
     /* These methods override the virtual methods in the base class */
     void processCallbacks(NDArray *pArray);
@@ -32,7 +32,6 @@ public:
 protected:
     int NDPluginStdArraysData;
     #define FIRST_NDPLUGIN_STDARRAYS_PARAM NDPluginStdArraysData
-    #define LAST_NDPLUGIN_STDARRAYS_PARAM NDPluginStdArraysData
 private:
     /* These methods are just for this class */
     template <typename epicsType> asynStatus readArray(asynUser *pasynUser, epicsType *value, 
@@ -43,6 +42,4 @@ private:
                                         
 };
 
-#define NUM_NDPLUGIN_STDARRAYS_PARAMS ((int)(&LAST_NDPLUGIN_STDARRAYS_PARAM - &FIRST_NDPLUGIN_STDARRAYS_PARAM + 1))
-    
 #endif

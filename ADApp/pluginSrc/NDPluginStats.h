@@ -5,20 +5,6 @@
 
 #include "NDPluginDriver.h"
 
-typedef struct NDStats {
-    size_t  nElements;
-    double  total;
-    double  net;
-    double  mean;
-    double  sigma;
-    double  min;
-    size_t  minX;
-    size_t  minY;    
-    double  max;
-    size_t  maxX;
-    size_t  maxY;
-} NDStats_t;
-
 typedef enum {
     profAverage,
     profThreshold,
@@ -60,6 +46,48 @@ typedef enum {
     TSStop,
     TSRead
 } NDStatsTSControl_t;
+
+typedef struct NDStats {
+    size_t  nElements;
+    double  total;
+    double  net;
+    double  mean;
+    double  sigma;
+    double  min;
+    size_t  minX;
+    size_t  minY;    
+    double  max;
+    size_t  maxX;
+    size_t  maxY;
+    double  centroidThreshold;
+    double  centroidTotal;
+    double  centroidX;
+    double  centroidY;
+    double  sigmaX;
+    double  sigmaY;
+    double  sigmaXY;
+    double  skewX;
+    double  skewY;
+    double  kurtosisX;
+    double  kurtosisY;
+    double  eccentricity;
+    double  orientation;
+    double  *profileX[MAX_PROFILE_TYPES];
+    double  *profileY[MAX_PROFILE_TYPES];
+    size_t profileSizeX;
+    size_t profileSizeY;
+    size_t cursorX;
+    size_t cursorY;
+    epicsInt32 *totalArray;
+    epicsInt32 *netArray;
+    int histSize;
+    double *histogram;
+    double histMin;
+    double histMax;
+    epicsInt32 histBelow;
+    epicsInt32 histAbove;
+    double histEntropy;
+} NDStats_t;
 
 /* Statistics */
 #define NDPluginStatsComputeStatisticsString  "COMPUTE_STATISTICS"  /* (asynInt32,        r/w) Compute statistics? */
@@ -160,7 +188,7 @@ public:
     NDPluginStats(const char *portName, int queueSize, int blockingCallbacks, 
                  const char *NDArrayPort, int NDArrayAddr,
                  int maxBuffers, size_t maxMemory,
-                 int priority, int stackSize);
+                 int priority, int stackSize, int maxThreads=1);
     /* These methods override the virtual methods in the base class */
     void processCallbacks(NDArray *pArray);
     asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
@@ -168,12 +196,12 @@ public:
     
     template <typename epicsType> void doComputeStatisticsT(NDArray *pArray, NDStats_t *pStats);
     int doComputeStatistics(NDArray *pArray, NDStats_t *pStats);
-    template <typename epicsType> asynStatus doComputeCentroidT(NDArray *pArray);
-    asynStatus doComputeCentroid(NDArray *pArray);
-    template <typename epicsType> asynStatus doComputeProfilesT(NDArray *pArray);
-    asynStatus doComputeProfiles(NDArray *pArray);
-    template <typename epicsType> asynStatus doComputeHistogramT(NDArray *pArray);
-    asynStatus doComputeHistogram(NDArray *pArray);
+    template <typename epicsType> asynStatus doComputeCentroidT(NDArray *pArray, NDStats_t *pStats);
+    asynStatus doComputeCentroid(NDArray *pArray, NDStats_t *pStats);
+    template <typename epicsType> asynStatus doComputeProfilesT(NDArray *pArray, NDStats_t *pStats);
+    asynStatus doComputeProfiles(NDArray *pArray, NDStats_t *pStats);
+    template <typename epicsType> asynStatus doComputeHistogramT(NDArray *pArray, NDStats_t *pStats);
+    asynStatus doComputeHistogram(NDArray *pArray, NDStats_t *pStats);
    
 protected:
     int NDPluginStatsComputeStatistics;
@@ -261,41 +289,9 @@ protected:
     int NDPluginStatsHistEntropy;
     int NDPluginStatsHistArray;
 
-    #define LAST_NDPLUGIN_STATS_PARAM NDPluginStatsHistArray
-                                
 private:
-    double  centroidThreshold;
-    double  centroidTotal;
-    double  centroidX;
-    double  centroidY;
-    double  sigmaX;
-    double  sigmaY;
-    double  sigmaXY;
-    double  skewX;
-    double  skewY;
-    double  kurtosisX;
-    double  kurtosisY;
-    double  eccentricity;
-    double  orientation;
-    double  *profileX[MAX_PROFILE_TYPES];
-    double  *profileY[MAX_PROFILE_TYPES];
     double  *timeSeries[MAX_TIME_SERIES_TYPES];
-    size_t profileSizeX;
-    size_t profileSizeY;
-    size_t cursorX;
-    size_t cursorY;
-    epicsInt32 *totalArray;
-    epicsInt32 *netArray;
-    size_t histogramSize;
-    size_t histSizeNew;
-    double *histogram;
-    double histMin;
-    double histMax;
-    epicsInt32 histBelow;
-    epicsInt32 histAbove;
-    double histEntropy;
     void doTimeSeriesCallbacks();
 };
-#define NUM_NDPLUGIN_STATS_PARAMS ((int)(&LAST_NDPLUGIN_STATS_PARAM - &FIRST_NDPLUGIN_STATS_PARAM + 1))
-    
+
 #endif

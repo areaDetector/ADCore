@@ -63,8 +63,6 @@ protected:
     int NDCircBuffSoftTrigger;
     int NDCircBuffTriggered;
 
-    #define LAST_NDPLUGIN_CIRC_BUFF_PARAM NDCircBuffTriggered
-                                
 private:
 
     asynStatus calculateTrigger(NDArray *pArray, int *trig);
@@ -76,7 +74,6 @@ private:
     char triggerCalcPostfix_[MAX_POSTFIX_SIZE];
     double triggerCalcArgs_[CALCPERFORM_NARGS];
 };
-#define NUM_NDPLUGIN_CIRC_BUFF_PARAMS ((int)(&LAST_NDPLUGIN_CIRC_BUFF_PARAM - &FIRST_NDPLUGIN_CIRC_BUFF_PARAM + 1))
     
 #endif
 

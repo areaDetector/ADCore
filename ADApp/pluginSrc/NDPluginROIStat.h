@@ -67,6 +67,7 @@ typedef enum {
 
 /** Structure defining a Region-Of-Interest and Stats */
 typedef struct NDROI {
+    int use;
     size_t offset[2];
     size_t size[2];
     size_t bgdWidth;
@@ -85,7 +86,7 @@ public:
     NDPluginROIStat(const char *portName, int queueSize, int blockingCallbacks, 
                  const char *NDArrayPort, int NDArrayAddr, int maxROIs, 
                  int maxBuffers, size_t maxMemory,
-                 int priority, int stackSize);
+                 int priority, int stackSize, int maxThreads);
     
     //These methods override the virtual methods in the base class
     void processCallbacks(NDArray *pArray);
@@ -133,7 +134,6 @@ protected:
     int NDPluginROIStatTSTimestamp;
     
     int NDPluginROIStatLast;
-    #define LAST_NDPLUGIN_ROISTAT_PARAM NDPluginROIStatLast
                                 
 private:
 
@@ -142,13 +142,10 @@ private:
     asynStatus clear(epicsUInt32 roi);
     void doTimeSeriesCallbacks();
 
-    NDROI_t *pROIs_;    /* Array of NDROI structures */
     int maxROIs_;
     int numTSPoints_;
     int currentTSPoint_;
     double  *timeSeries_;
 };
 
-#define NUM_NDPLUGIN_ROISTAT_PARAMS (int)(&LAST_NDPLUGIN_ROISTAT_PARAM - &FIRST_NDPLUGIN_ROISTAT_PARAM + 1)
-    
 #endif //NDPluginROIStat_H

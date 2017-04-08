@@ -125,7 +125,8 @@ struct ROIPluginTestFixture
                                                                       0,
                                                                       0,
                                                                       0,
-                                                                      2000000));
+                                                                      2000000,
+                                                                      1));
     // This is the mock downstream plugin
     downstream_plugin = new TestingPlugin(testport.c_str(), 0);
 
