@@ -266,6 +266,8 @@ record(busy, "$(P)$(R)Capture")
     field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))CAPTURE")
     field(ZNAM, "Done")
     field(ONAM, "Capture")
+    field(ZSV,  "NO_ALARM")
+    field(OSV,  "MINOR")
 }
 
 record(bi, "$(P)$(R)Capture_RBV")

@@ -76,8 +76,8 @@ record(bi, "$(P)$(R)EnableCallbacks_RBV")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ENABLE_CALLBACKS")
     field(ZNAM, "Disable")
     field(ONAM, "Enable")
-    field(ZSV,  "NO_ALARM")
-    field(OSV,  "MINOR")
+    field(ZSV,  "MINOR")
+    field(OSV,  "NO_ALARM")
     field(SCAN, "I/O Intr")
 }
 
@@ -144,6 +144,8 @@ record(bi, "$(P)$(R)BlockingCallbacks_RBV")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))BLOCKING_CALLBACKS")
     field(ZNAM, "No")
     field(ONAM, "Yes")
+    field(ZSV,  "NO_ALARM")
+    field(OSV,  "MINOR")
     field(SCAN, "I/O Intr")
 }
 
@@ -161,6 +163,9 @@ record(longin, "$(P)$(R)DroppedArrays_RBV")
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DROPPED_ARRAYS")
     field(SCAN, "I/O Intr")
+    field(HIGH, "1")
+    field(HSV,  "MINOR")
+    info( autosaveFields, "DESC LOLO LOW HIGH HIHI LLSV LSV HSV HHSV EGU" )
 }
 
 record(longout, "$(P)$(R)QueueSize")
