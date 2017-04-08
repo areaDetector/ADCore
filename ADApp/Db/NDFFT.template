@@ -81,8 +81,8 @@ record(bo, "$(P)$(R)FFTSuppressDC")
    field(PINI, "YES")
    field(DTYP, "asynInt32")
    field(OUT,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))FFT_SUPPRESS_DC")
-   field(ZNAM, "Disable")
-   field(ONAM, "Enable")
+   field(ZNAM, "Disabled")
+   field(ONAM, "Enabled")
    info(autosaveFields, "VAL")
 }
 
@@ -90,8 +90,8 @@ record(bi, "$(P)$(R)FFTSuppressDC_RBV")
 {
    field(DTYP, "asynInt32")
    field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))FFT_SUPPRESS_DC")
-   field(ZNAM, "Disable")
-   field(ONAM, "Enable")
+   field(ZNAM, "Disabled")
+   field(ONAM, "Enabled")
    field(SCAN, "I/O Intr")
 }
 
