@@ -3,11 +3,11 @@
 
 $(PROD_NAME)_DBD += base.dbd
 
-PROD_LIBS        += ADBase
-$(PROD_NAME)_DBD += ADSupport.dbd
-
 PROD_LIBS        += NDPlugin
 $(PROD_NAME)_DBD += NDPluginSupport.dbd
+
+PROD_LIBS        += ADBase
+$(PROD_NAME)_DBD += ADSupport.dbd
 
 $(PROD_NAME)_DBD += NDFileNull.dbd
 
