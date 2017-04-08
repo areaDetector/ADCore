@@ -168,7 +168,6 @@ protected:
     int NDPoolFreeBuffers;
     int NDPoolMaxMemory;
     int NDPoolUsedMemory;
-    #define LAST_NDARRAY_PARAM NDPoolUsedMemory
 
     NDArray **pArrays;             /**< An array of NDArray pointers used to store data in the driver */
     NDArrayPool *pNDArrayPool;     /**< An NDArrayPool object used to allocate and manipulate NDArray objects */
@@ -176,5 +175,4 @@ protected:
                                           *  attributes */
 };
 
-#define NUM_NDARRAY_PARAMS ((int)(&LAST_NDARRAY_PARAM - &FIRST_NDARRAY_PARAM + 1))
 #endif
