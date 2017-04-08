@@ -156,7 +156,7 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     setIntegerParam(NDPluginDriverDroppedOutputArrays, 0);
     setIntegerParam(NDPluginDriverQueueSize, queueSize);
     setIntegerParam(NDPluginDriverMaxThreads, maxThreads);
-    setIntegerParam(NDPluginDriverNumThreads, maxThreads);
+    setIntegerParam(NDPluginDriverNumThreads, 1);
     setIntegerParam(NDPluginDriverBlockingCallbacks, blockingCallbacks);
     
     /* Create the callback threads, unless blocking callbacks are disabled with
@@ -677,8 +677,8 @@ asynStatus NDPluginDriver::writeInt32(asynUser *pasynUser, epicsInt32 value)
 
     } else if ((function == NDPluginDriverQueueSize) ||
                (function == NDPluginDriverNumThreads)) {
-        deleteCallbackThreads();
-        createCallbackThreads();
+        if ((status = deleteCallbackThreads())) goto done;
+        if ((status = createCallbackThreads())) goto done;
 
     } else if ((function == NDPluginDriverSortMode) && 
                (value == 1)) {
@@ -861,13 +861,26 @@ asynStatus NDPluginDriver::createCallbackThreads()
     int maxThreads;
     int enableCallbacks;
     int i;
-    asynStatus status = asynSuccess;
+    int status = asynSuccess;
+    static const char *functionName = "createCallbackThreads";
 
     getIntegerParam(NDPluginDriverMaxThreads, &maxThreads);
     getIntegerParam(NDPluginDriverNumThreads, &numThreads);
     getIntegerParam(NDPluginDriverQueueSize, &queueSize);
-    if (numThreads > maxThreads) numThreads = maxThreads;
-    if (numThreads < 1) numThreads = 1;
+    if (numThreads > maxThreads) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+            "%s::%s error, numThreads=%d must be <= maxThreads=%d, setting to %d\n",
+            driverName, functionName, numThreads, maxThreads, maxThreads);
+        status = asynError;
+        numThreads = maxThreads;
+    }
+    if (numThreads < 1) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR, 
+            "%s::%s error, numThreads=%d must be >= 1, setting to 1\n",
+            driverName, functionName, numThreads);
+        status = asynError;
+        numThreads = 1;
+    }
     setIntegerParam(NDPluginDriverNumThreads, numThreads);
     numThreads_ = numThreads;
   
@@ -894,11 +907,11 @@ asynStatus NDPluginDriver::createCallbackThreads()
 
     /* If start() was already run, we also need to start the threads. */
     if (this->pluginStarted_) {
-        status = startCallbackThreads();
+        status |= startCallbackThreads();
     }
     getIntegerParam(NDPluginDriverEnableCallbacks, &enableCallbacks);
     if (enableCallbacks) this->setArrayInterrupt(1);
-    return status;
+    return (asynStatus) status;
 }
 
 /** Deletes the plugin threads.  
