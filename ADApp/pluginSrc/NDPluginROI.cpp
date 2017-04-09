@@ -144,7 +144,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
     }
 
     /* This function is called with the lock taken, and it must be set when we exit.
-     * The following code can be exected without the mutex because we are not accessing memory
+     * The following code can be executed without the mutex because we are not accessing memory
      * that other threads can access. */
     this->unlock();
 
@@ -274,14 +274,21 @@ asynStatus NDPluginROI::writeInt32(asynUser *pasynUser, epicsInt32 value)
     /* Do callbacks so higher layers see any changes */
     callParamCallbacks();
     
-    if (status) 
+    const char* paramName;
+    if (status) {
+        getParamName( function, &paramName );
         asynPrint(pasynUser, ASYN_TRACE_ERROR, 
-              "%s:%s: function=%d, value=%d\n", 
-              driverName, functionName, function, value);
-    else        
-        asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
-              "%s:%s: function=%d, value=%d\n", 
-              driverName, functionName, function, value);
+              "%s:%s: function=%d %s, value=%d\n", 
+              driverName, functionName, function, paramName, value);
+    }
+    else {
+        if ( pasynTrace->getTraceMask(pasynUser) & ASYN_TRACEIO_DRIVER ) {
+            getParamName( function, &paramName );
+            asynPrint(pasynUser, ASYN_TRACEIO_DRIVER, 
+                  "%s:%s: function=%d %s, paramvalue=%d\n", 
+                  driverName, functionName, function, paramName, value);
+        }
+    }
     return status;
 }
 
