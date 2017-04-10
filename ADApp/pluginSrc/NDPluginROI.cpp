@@ -150,7 +150,9 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
 
     /* Extract this ROI from the input array.  The convert() function allocates
      * a new array and it is reserved (reference count = 1) */
-    if (dataType == -1) dataType = (int)pArray->dataType;
+    if (dataType == -1) {
+        dataType     = (int)pArray->dataType;
+    }
     /* We treat the case of RGB1 data specially, so that NX and NY are the X and Y dimensions of the
      * image, not the first 2 dimensions.  This makes it much easier to switch back and forth between
      * RGB1 and mono mode when using an ROI. */
@@ -178,7 +180,7 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         for (i=0; i<scratchInfo.nElements; i++) pData[i] = pData[i]/scale;
         this->pNDArrayPool->convert(pScratch, &pOutput, (NDDataType_t)dataType);
         pScratch->release();
-    } 
+    }
     else {        
         this->pNDArrayPool->convert(pArray, &pOutput, (NDDataType_t)dataType, dims);
     }
@@ -223,6 +225,21 @@ void NDPluginROI::processCallbacks(NDArray *pArray)
         }
     }
     this->lock();
+ 
+    /* Calculate ROI bitsPerElement */
+    double  bitsPerPixel    =   arrayInfo.bitsPerElement;
+    size_t  binFactor = 1;
+    for ( size_t iDim=0; iDim < static_cast<unsigned>(pArray->ndims); iDim++ )
+        binFactor   *= dims[iDim].binning;
+    if ( binFactor != 1 )
+        bitsPerPixel    += log2( binFactor );
+    if ( enableScale && scale != 0 && scale != 1 )
+        bitsPerPixel    -= log2( scale );
+    /* Clip bitsPerElement to max for output dataType */
+    if( bitsPerPixel > GetNDDataTypeBits(pOutput->dataType) )
+        bitsPerPixel = GetNDDataTypeBits(pOutput->dataType);
+    /* Set the bits per pixel of the ROI output */
+    pOutput->bitsPerElement = lrint( bitsPerPixel );
 
     /* Set the image size of the ROI image data */
     setIntegerParam(NDArraySizeX, 0);

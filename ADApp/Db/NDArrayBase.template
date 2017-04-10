@@ -492,6 +492,13 @@ record(mbbi, "$(P)$(R)DataType_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(longin, "$(P)$(R)BitsPerPixel_RBV")
+{
+   field(DTYP, "asynInt32")
+   field(INP,  "@asyn($(PORT),$(ADDR=0),$(TIMEOUT=1))BITS_PER_PIXEL")
+   field(SCAN, "I/O Intr")
+}
+
 ###################################################################
 #  These records control the color mode                           #
 #  These choices must agree with NDColorMode_t in NDArray.h       # 

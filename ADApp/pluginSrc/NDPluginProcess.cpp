@@ -242,6 +242,19 @@ void NDPluginProcess::processCallbacks(NDArray *pArray)
       this->pNDArrayPool->convert(pScratch, &pArrayOut, (NDDataType_t)dataType);
     }
 
+    if (enableOffsetScale && (NULL != pArrayOut)) {
+        /* Update bitsPerElement */
+        int       bitsPerElement    =   arrayInfo.bitsPerElement;
+        bitsPerElement  += static_cast<int>( ceil( log2( scale ) ) );
+
+        /* Clip bitsPerElement to max for output dataType */
+        if( bitsPerElement > GetNDDataTypeBits(pArrayOut->dataType) )
+            bitsPerElement = GetNDDataTypeBits(pArrayOut->dataType);
+
+        /* Set the bits per pixel of the ROI output */
+        pArrayOut->bitsPerElement = bitsPerElement;
+    }
+
     if (autoOffsetScale && (NULL != pArrayOut)) {
         pArrayOut->getInfo(&arrayInfo);
         double maxScale = pow(2., arrayInfo.bytesPerElement*8) - 1;

@@ -49,6 +49,7 @@ typedef enum {
 #define NDNDimensionsString     "ARRAY_NDIMENSIONS" /**< (asynInt32,    r/o) Number of dimensions in array */
 #define NDDimensionsString      "ARRAY_DIMENSIONS"  /**< (asynInt32Array, r/o) Array dimensions */
 #define NDDataTypeString        "DATA_TYPE"         /**< (asynInt32,    r/w) Data type (NDDataType_t) */
+#define NDBitsPerPixelString    "BITS_PER_PIXEL"    /**< (asynInt32,    r/w) Number of bits per pixel */
 #define NDColorModeString       "COLOR_MODE"        /**< (asynInt32,    r/w) Color mode (NDColorMode_t) */
 #define NDUniqueIdString        "UNIQUE_ID"         /**< (asynInt32,    r/o) Unique ID number of array */
 #define NDTimeStampString       "TIME_STAMP"        /**< (asynFloat64,  r/o) Time stamp of array */
@@ -143,6 +144,7 @@ protected:
     int NDNDimensions;
     int NDDimensions;
     int NDDataType;
+    int NDBitsPerPixel;
     int NDColorMode;
     int NDUniqueId;
     int NDTimeStamp;
