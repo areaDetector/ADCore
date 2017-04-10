@@ -9,7 +9,7 @@
 #include <epicsString.h>
 #include <iostream>
 #include <stdlib.h>
-#include <math.h>
+#include <epicsMath.h>
 
 #define MAX_ATTRIBUTE_STRING_SIZE 256
 
@@ -358,7 +358,7 @@ asynStatus NDFileHDF5AttributeDataset::typeAsHdf()
     default:
       isUndefined_ = true;
       datatype_ = H5T_NATIVE_FLOAT;
-      *(epicsFloat32*)this->ptrFillValue_ = NAN;
+      *(epicsFloat32*)this->ptrFillValue_ = epicsNAN;
       break;
   }
   return status;
