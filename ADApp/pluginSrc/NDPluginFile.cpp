@@ -204,6 +204,11 @@ asynStatus NDPluginFile::writeFileBase()
         return(asynError);
     }
     
+    NDArray *pArrayOut = this->pArrays[0];
+    // Must increase reference count on this array because another thread might decrement the count on pArrays[0]
+    // when we have the mutex unlocked
+    pArrayOut->reserve();
+
     getIntegerParam(NDFileWriteMode, &fileWriteMode);    
     getIntegerParam(NDFileNumCapture, &numCapture);    
     getIntegerParam(NDFileNumCaptured, &numCaptured);
@@ -222,9 +227,8 @@ asynStatus NDPluginFile::writeFileBase()
             // Some file writing plugins (e.g. HDF5) use the value of NDFileNumCaptured 
             // even in single mode
             setIntegerParam(NDFileNumCaptured, 1);
-            status = this->openFileBase(NDFileModeWrite, this->pArrays[0]);
+            status = this->openFileBase(NDFileModeWrite, pArrayOut);
             if (status == asynSuccess) {
-                NDArray *pArrayOut = this->pArrays[0];
                 this->unlock();
                 epicsMutexLock(this->fileMutexId);
                 status = this->writeFile(pArrayOut);
@@ -259,7 +263,7 @@ asynStatus NDPluginFile::writeFileBase()
             setIntegerParam(NDWriteFile, 1);
             callParamCallbacks();
             if (this->supportsMultipleArrays)
-                status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, this->pArrays[0]);
+                status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, pArrayOut);
             if (status == asynSuccess) {
                 for (i=0; i<numCaptured; i++) {
                     pArray = this->pCapture[i];
@@ -300,16 +304,15 @@ asynStatus NDPluginFile::writeFileBase()
         case NDFileModeStream:
             doLazyOpen = this->lazyOpen && (numCaptured == 0);
             if (!this->supportsMultipleArrays || doLazyOpen)
-                status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, this->pArrays[0]);
+                status = this->openFileBase(NDFileModeWrite | NDFileModeMultiple, pArrayOut);
             else
                 this->attrFileNameCheck();
-            if (!this->isFrameValid(this->pArrays[0])) {
+            if (!this->isFrameValid(pArrayOut)) {
                 setIntegerParam(NDFileWriteStatus, NDFileWriteError);
                 setStringParam(NDFileWriteMessage, "Invalid frame. Ignoring.");
                 status = asynError;
             }
             if (status == asynSuccess) {
-                NDArray *pArrayOut = this->pArrays[0];
                 this->unlock();
                 epicsMutexLock(this->fileMutexId);
                 status = this->writeFile(pArrayOut);
@@ -346,7 +349,7 @@ asynStatus NDPluginFile::writeFileBase()
      */
     getIntegerParam(NDFileDeleteDriverFile, &deleteDriverFile);
     if ((status == asynSuccess) && deleteDriverFile) {
-        pAttribute = this->pArrays[0]->pAttributeList->find("DriverFileName");
+        pAttribute = pArrayOut->pAttributeList->find("DriverFileName");
         if (pAttribute) {
             status = pAttribute->getValue(NDAttrString, driverFileName, sizeof(driverFileName));
             if ((status == asynSuccess) && (strlen(driverFileName) > 0)) {
@@ -360,7 +363,10 @@ asynStatus NDPluginFile::writeFileBase()
         }
     }
 
-    return((asynStatus)status);
+    // Decrease reference count
+    pArrayOut->release();
+
+    return (asynStatus) status;
 }
 
 void NDPluginFile::freeCaptureBuffer(int numCapture)
