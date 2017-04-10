@@ -21,6 +21,16 @@ Release Notes
 =============
 R3-0 (April XXX, 2017)
 ======================
+### PVAttribute
+* Fixed a race condition that could result in PVAttributes not being connected to the channel.  This was most likely
+  to occur for local PVs in the areaDetector IOC where the connection callback would happen immediately, before the
+  code had been initialized to handle the callback.
+  
+### NDFileHDF5
+* Fixed a problem with PVAttributes that were not connected to a PV.  Previously this generated errors from the HDF5
+  library because an invalid datatype of -1 was used.  Now the data type for such disconnected attributes is set to
+  H5T_NATIVE_FLOAT and the fill value is set to NAN.  No data is written from such attributes to the file, so the
+  fill value is used.
 
 ### NDPluginDriver, NDPluginBase.template, NDPluginBase.adl
 * Added support for multiple threads running the processCallbacks() function in a single plugin.  This can improve
