@@ -61,6 +61,7 @@ private:
   hsize_t          *maxdims_;
   hsize_t          *virtualdims_;
   hsize_t          *elementSize_;
+  bool             isUndefined_;
   int              rank_;            // number of dimensions
   int              nextRecord_;
   int              extraDimensions_;
