@@ -796,8 +796,8 @@ void NDFileNexus::loadTemplateFile() {
   /* get the filename to be used for nexus template */
   getStringParam(addr, NDFileNexusTemplatePath, sizeof(template_path), template_path);
   getStringParam(addr, NDFileNexusTemplateFile, sizeof(template_file), template_file);
+  if (strlen(template_file) == 0) return;
   sprintf(fullFilename, "%s%s", template_path, template_file);
-  if (strlen(fullFilename) == 0) return;
 
   /* Load the Nexus template file */
   this->configDoc = xmlReadFile(fullFilename, NULL, 0);
