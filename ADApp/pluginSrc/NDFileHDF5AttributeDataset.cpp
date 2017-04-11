@@ -9,6 +9,7 @@
 #include <epicsString.h>
 #include <iostream>
 #include <stdlib.h>
+#include <epicsMath.h>
 
 #define MAX_ATTRIBUTE_STRING_SIZE 256
 
@@ -147,9 +148,10 @@ asynStatus NDFileHDF5AttributeDataset::writeAttributeDataset(hdf5::When_t whenTo
     // Select the hyperslab
     H5Sselect_hyperslab(filespace_, H5S_SELECT_SET, offset_, NULL, elementSize_, NULL);
 
-    // Write the data to the hyperslab.
-    H5Dwrite(dataset_, datatype_, memspace_, filespace_, H5P_DEFAULT, pDatavalue);
-
+    // Write the data to the hyperslab if data is defined
+    if (!isUndefined_) {
+       H5Dwrite(dataset_, datatype_, memspace_, filespace_, H5P_DEFAULT, pDatavalue);
+    }
 
     // Check if we are being asked to flush
     if (flush == 1){
@@ -313,6 +315,7 @@ asynStatus NDFileHDF5AttributeDataset::typeAsHdf()
   asynStatus status = asynSuccess;
   int fillvalue = 0;
 
+  isUndefined_ = false;
   switch (type_)
   {
     case NDAttrString:
@@ -353,7 +356,10 @@ asynStatus NDFileHDF5AttributeDataset::typeAsHdf()
       *(epicsFloat64*)this->ptrFillValue_ = (epicsFloat64)fillvalue;
       break;
     default:
-      datatype_ = -1;
+      isUndefined_ = true;
+      datatype_ = H5T_NATIVE_FLOAT;
+      *(epicsFloat32*)this->ptrFillValue_ = epicsNAN;
+      break;
   }
   return status;
 }
