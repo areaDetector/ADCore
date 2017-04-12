@@ -21,6 +21,14 @@ Release Notes
 =============
 R3-0 (April XXX, 2017)
 ======================
+### asynNDArrayDriver, NDFileNexus
+* Changed XML file parsing from using TinyXml to using libxml2.  TinyXml was originally used because libxml2 was not
+  available for vxWorks and Windows.  libxml2 was already used for NDFileHDF5 and NDPosPlugin, originally using pre-built
+  libraries for Windows in ADBinaires.  ADSupport now provides libxml2, so it is available for all platforms, and
+  there is no need to continue building and using TinyXml.  This change means that libxml2 is now required, and so
+  the build option WITH_XML2 is no longer used.  XML2_EXTERNAL is still used, depending on whether the version
+  in ADSupport or an external version of the library should be used.
+
 ### PVAttribute
 * Fixed a race condition that could result in PVAttributes not being connected to the channel.  This was most likely
   to occur for local PVs in the areaDetector IOC where the connection callback would happen immediately, before the
