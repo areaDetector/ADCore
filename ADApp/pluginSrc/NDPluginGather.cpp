@@ -11,6 +11,9 @@
 #include <stdio.h>
 
 #include <epicsTypes.h>
+#include <epicsMessageQueue.h>
+#include <epicsThread.h>
+#include <epicsTime.h>
 #include <iocsh.h>
 
 #include <asynDriver.h>

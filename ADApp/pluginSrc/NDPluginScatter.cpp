@@ -10,6 +10,9 @@
 #include <stdlib.h>
 
 #include <epicsTypes.h>
+#include <epicsMessageQueue.h>
+#include <epicsThread.h>
+#include <epicsTime.h>
 #include <iocsh.h>
 
 #include <asynDriver.h>
@@ -69,8 +72,6 @@ asynStatus NDPluginScatter::doNDArrayCallbacks(NDArray *pArray, int reason, int 
     //static const char *functionName = "doNDArrayCallbacks";
 
     pasynManager->interruptStart(this->asynStdInterfaces.genericPointerInterruptPvt, &pclientList);
-    /* If this is not a multi-device then address is -1, change to 0 */
-    if (addr == -1) addr = 0;
     numNodes = ellCount(pclientList);
     for (i=0; i<numNodes; i++) {
         if (nextClient_ > numNodes) nextClient_ = 1;
@@ -78,6 +79,8 @@ asynStatus NDPluginScatter::doNDArrayCallbacks(NDArray *pArray, int reason, int 
         nextClient_++;
         asynGenericPointerInterrupt *pInterrupt = (asynGenericPointerInterrupt *)pnode->drvPvt;
         pasynManager->getAddr(pInterrupt->pasynUser, &addr);
+        /* If this is not a multi-device then address is -1, change to 0 */
+        if (addr == -1) addr = 0;
         if ((pInterrupt->pasynUser->reason != reason) || (address != addr)) continue;
         /* Set pasynUser->auxStatus to asynOverflow.  
          * This is a flag that means return without generating an error if the queue is full.
