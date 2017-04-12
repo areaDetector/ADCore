@@ -200,7 +200,7 @@ int NDFileNexus::processNode(xmlNode *curNode, NDArray *pArray) {
   getIntegerParam(addr, NDFileNumCapture, &numCapture);
   this->unlock();
 
-  nodeValue = (const char *)curNode->content;
+  nodeValue = (const char *)curNode->name;
   asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
             "%s:%s  Value=%s Type=%d\n", driverName, functionName,
             curNode->content, curNode->type);
