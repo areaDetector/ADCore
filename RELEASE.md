@@ -130,7 +130,7 @@ R3-0 (April XXX, 2017)
 
 ### Viewers
 * The ADCore/Viewers directory containing the ImageJ and IDL viewers has been moved to its own 
-[ADViewers repository](https:://github.com/areaDetector/ADViewers).
+[ADViewers repository](https://github.com/areaDetector/ADViewers).
 * It now contains a new ImageJ EPICS_NTNDA_Viewer plugin written by Tim Madden.  
   It is essentially identical to EPICS_AD_Viewer.java except that it displays NTNDArrays from the NDPluginPva plugin, 
   i.e. using pvAccess to transport the images rather than NDPluginStdArrays which uses Channel Access.
