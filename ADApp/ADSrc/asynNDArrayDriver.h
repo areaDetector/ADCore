@@ -20,6 +20,13 @@ typedef enum {
     NDFileWriteError
 } NDFileWriteStatus_t;
 
+typedef enum {
+    NDAttributesOK,
+    NDAttributesFileNotFound,
+    NDAttributesSyntaxError,
+    NDAttributesMacroError
+} NDAttributesStatus_t;
+
 /** Strings defining parameters that affect the behaviour of the detector. 
   * These are the values passed to drvUserCreate. 
   * The driver will place in pasynUser->reason an integer to be used when the
@@ -79,7 +86,9 @@ typedef enum {
 #define NDFileCreateDirString   "CREATE_DIR"        /**< (asynInt32,    r/w) Create the target directory up to this depth */
 #define NDFileTempSuffixString  "FILE_TEMP_SUFFIX"  /**< (asynOctet,    r/w) Temporary filename suffix while writing data to file. The file will be renamed (suffix removed) upon closing the file. */
 
-#define NDAttributesFileString  "ND_ATTRIBUTES_FILE" /**< (asynOctet,    r/w) Attributes file name */
+#define NDAttributesFileString    "ND_ATTRIBUTES_FILE"   /**< (asynOctet,    r/w) Attributes file name */
+#define NDAttributesStatusString  "ND_ATTRIBUTES_STATUS" /**< (asynInt32,    r/o) Attributes status */
+#define NDAttributesMacrosString  "ND_ATTRIBUTES_MACROS" /**< (asynOctet,    r/w) Attributes macros string */
 
 /* The detector array data */
 #define NDArrayDataString       "ARRAY_DATA"        /**< (asynGenericPointer,   r/w) NDArray data */
@@ -161,6 +170,8 @@ protected:
     int NDFileCreateDir;
     int NDFileTempSuffix;
     int NDAttributesFile;
+    int NDAttributesStatus;
+    int NDAttributesMacros;
     int NDArrayData;
     int NDArrayCallbacks;
     int NDPoolMaxBuffers;

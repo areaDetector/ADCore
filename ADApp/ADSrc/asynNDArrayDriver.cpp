@@ -21,6 +21,8 @@
 
 #include <epicsString.h>
 #include <epicsMutex.h>
+#include <epicsMutex.h>
+#include <macLib.h>
 #include <cantProceed.h>
 
 #include <asynDriver.h>
@@ -307,6 +309,10 @@ asynStatus asynNDArrayDriver::readNDAttributesFile(const char *fileName)
     std::ostringstream buff;
     std::string buffer;
     std::ifstream infile;
+    std::string attributesMacros;
+    MAC_HANDLE *macHandle;
+    char **macPairs;
+    int status;
     static const char *functionName = "readNDAttributesFile";
     
     /* Clear any existing attributes */
@@ -316,12 +322,58 @@ asynStatus asynNDArrayDriver::readNDAttributesFile(const char *fileName)
     infile.open(fileName);
     if (infile.fail()) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-            "%s:%s: error opening file %s\n", 
+            "%s::%s error opening file %s\n", 
             driverName, functionName, fileName);
+        setIntegerParam(NDAttributesStatus, NDAttributesFileNotFound);
         return asynError;
     }
     buff << infile.rdbuf();
     buffer = buff.str();
+
+    // We now have file in memory.  Do macro substitution if required
+    getStringParam(NDAttributesMacros, attributesMacros);
+    if (attributesMacros.length() > 0) {
+        macCreateHandle(&macHandle, 0);
+        status = macParseDefns(macHandle, attributesMacros.c_str(), &macPairs);
+        if (status < 0) { 
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s::%s, error parsing macros\n", driverName, functionName);
+            setIntegerParam(NDAttributesStatus, NDAttributesMacroError);
+            macDeleteHandle(macHandle);
+            return asynError;
+        }
+        status = macInstallMacros(macHandle, macPairs);
+        if (status < 0) {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s::%s, error installed macros\n", driverName, functionName);
+            setIntegerParam(NDAttributesStatus, NDAttributesMacroError);
+            macDeleteHandle(macHandle);
+            return asynError;
+        }
+        // Create a temporary buffer 10 times larger than input buffer
+        int bufferSize = buffer.length() * 10;
+        char *tmpBuffer = (char *)malloc(bufferSize);
+        status = macExpandString(macHandle, buffer.c_str(), tmpBuffer, bufferSize);
+        if (status < 0) {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s::%s, error expanding macros\n", driverName, functionName);
+            setIntegerParam(NDAttributesStatus, NDAttributesMacroError);
+            macDeleteHandle(macHandle);
+            free(tmpBuffer);
+            return asynError;
+        }
+        if (status >= bufferSize) {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s::%s, error macro buffer too small\n", driverName, functionName);
+            setIntegerParam(NDAttributesStatus, NDAttributesMacroError);
+            macDeleteHandle(macHandle);
+            free(tmpBuffer);
+            return asynError;
+        }
+        buffer = tmpBuffer;
+        macDeleteHandle(macHandle);
+        free(tmpBuffer);
+    }
     doc = xmlReadMemory(buffer.c_str(), buffer.length(), "noname.xml", NULL, 0);
     if (doc == NULL) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
@@ -398,6 +450,7 @@ asynStatus asynNDArrayDriver::readNDAttributesFile(const char *fileName)
 #endif
         }
     }
+    setIntegerParam(NDAttributesStatus, NDAttributesOK);
     // Wait a short while for channel access callbacks on EPICS PVs
     epicsThreadSleep(0.5);
     // Get the initial values
@@ -668,6 +721,8 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     createParam(NDFileCreateDirString,        asynParamInt32,           &NDFileCreateDir);
     createParam(NDFileTempSuffixString,       asynParamOctet,           &NDFileTempSuffix);
     createParam(NDAttributesFileString,       asynParamOctet,           &NDAttributesFile);
+    createParam(NDAttributesStatusString,     asynParamInt32,           &NDAttributesStatus);
+    createParam(NDAttributesMacrosString,     asynParamOctet,           &NDAttributesMacros);
     createParam(NDArrayDataString,            asynParamGenericPointer,  &NDArrayData);
     createParam(NDArrayCallbacksString,       asynParamInt32,           &NDArrayCallbacks);
     createParam(NDPoolMaxBuffersString,       asynParamInt32,           &NDPoolMaxBuffers);
@@ -718,6 +773,9 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     setIntegerParam(NDFileNumCaptured, 0);
     setIntegerParam(NDFileCreateDir, 0);
     setStringParam (NDFileTempSuffix, "");
+    setStringParam (NDAttributesFile, "");
+    setIntegerParam(NDAttributesStatus, NDAttributesFileNotFound);
+    setStringParam (NDAttributesMacros, "");
 
     setIntegerParam(NDPoolMaxBuffers, this->pNDArrayPool->maxBuffers());
     setIntegerParam(NDPoolAllocBuffers, this->pNDArrayPool->numBuffers());
