@@ -126,7 +126,7 @@ public:
     virtual asynStatus checkPath();
     virtual asynStatus createFileName(int maxChars, char *fullFileName);
     virtual asynStatus createFileName(int maxChars, char *filePath, char *fileName);
-    virtual asynStatus readNDAttributesFile(const char *fileName);
+    virtual asynStatus readNDAttributesFile();
     virtual asynStatus getAttributes(NDAttributeList *pAttributeList);
 
 protected:
