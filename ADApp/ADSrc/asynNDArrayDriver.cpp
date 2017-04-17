@@ -301,7 +301,7 @@ asynStatus asynNDArrayDriver::createFileName(int maxChars, char *filePath, char 
   * <b>description</b> determines the description for this attribute.  It is not required, and the default is a NULL string.
   *
   */
-asynStatus asynNDArrayDriver::readNDAttributesFile(const char *fileName)
+asynStatus asynNDArrayDriver::readNDAttributesFile()
 {
     const char *pName, *pSource, *pAttrType, *pDescription=NULL;
     xmlDocPtr doc;
@@ -310,20 +310,24 @@ asynStatus asynNDArrayDriver::readNDAttributesFile(const char *fileName)
     std::string buffer;
     std::ifstream infile;
     std::string attributesMacros;
+    std::string fileName;
     MAC_HANDLE *macHandle;
     char **macPairs;
     int status;
     static const char *functionName = "readNDAttributesFile";
     
+    getStringParam(NDAttributesFile, fileName);
+    getStringParam(NDAttributesMacros, attributesMacros);
+
     /* Clear any existing attributes */
     this->pAttributeList->clear();
-    if (!fileName || (strlen(fileName) == 0)) return asynSuccess;
+    if (fileName.length() == 0) return asynSuccess;
 
-    infile.open(fileName);
+    infile.open(fileName.c_str());
     if (infile.fail()) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
             "%s::%s error opening file %s\n", 
-            driverName, functionName, fileName);
+            driverName, functionName, fileName.c_str());
         setIntegerParam(NDAttributesStatus, NDAttributesFileNotFound);
         return asynError;
     }
@@ -331,7 +335,6 @@ asynStatus asynNDArrayDriver::readNDAttributesFile(const char *fileName)
     buffer = buff.str();
 
     // We now have file in memory.  Do macro substitution if required
-    getStringParam(NDAttributesMacros, attributesMacros);
     if (attributesMacros.length() > 0) {
         macCreateHandle(&macHandle, 0);
         status = macParseDefns(macHandle, attributesMacros.c_str(), &macPairs);
@@ -354,7 +357,11 @@ asynStatus asynNDArrayDriver::readNDAttributesFile(const char *fileName)
         int bufferSize = buffer.length() * 10;
         char *tmpBuffer = (char *)malloc(bufferSize);
         status = macExpandString(macHandle, buffer.c_str(), tmpBuffer, bufferSize);
-        if (status < 0) {
+        // NOTE: There is a bug in macExpandString up to 3.14.12.6 and 3.15.5 so that it does not return <0
+        // if there is an undefined macro which is not the last macro in the string.
+        // We work around this by testing also if the returned string contains ",undefined)".  This is
+        // unlikely to occur otherwise.  Eventually we can remove this test.
+        if ((status < 0)  || strstr(tmpBuffer, ",undefined)")) {
             asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
                 "%s::%s, error expanding macros\n", driverName, functionName);
             setIntegerParam(NDAttributesStatus, NDAttributesMacroError);
@@ -498,8 +505,9 @@ asynStatus asynNDArrayDriver::writeOctet(asynUser *pasynUser, const char *value,
     /* Set the parameter in the parameter library. */
     status = (asynStatus)setStringParam(addr, function, (char *)value);
 
-    if (function == NDAttributesFile) {
-        this->readNDAttributesFile(value);
+    if ((function == NDAttributesFile) ||
+        (function == NDAttributesMacros)) {
+        this->readNDAttributesFile();
     } else if (function == NDFilePath) {
         status = this->checkPath();
         if (status == asynError) {
