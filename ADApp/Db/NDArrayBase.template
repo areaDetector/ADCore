@@ -651,16 +651,22 @@ record(waveform, "$(P)$(R)NDAttributesFile")
 #  This record defines the status of reading attributes file      # 
 ###################################################################
 
-record((mbbi, "$(P)$(R)NDAttributesStatus")
+record(mbbi, "$(P)$(R)NDAttributesStatus")
 {
     field(DTYP, "asynInt32")
     field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ND_ATTRIBUTES_STATUS")
     field(ZRVL, "0")
-    field(ZRST, "OK")
+    field(ZRST, "Attributes file OK")
+    field(ZRSV, "NO_ALARM")
     field(ONVL, "1")
     field(ONST, "File not found")
+    field(ONSV, "MINOR")
     field(TWVL, "2")
-    field(TWST, "Macro substitution error")
+    field(TWST, "Syntax error")
+    field(TWSV, "MAJOR")
+    field(THVL, "3")
+    field(THST, "Macro substitution error")
+    field(THSV, "MAJOR")
     field(SCAN, "I/O Intr")
 }
 
