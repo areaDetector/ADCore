@@ -303,7 +303,7 @@ asynStatus asynNDArrayDriver::createFileName(int maxChars, char *filePath, char 
   */
 asynStatus asynNDArrayDriver::readNDAttributesFile()
 {
-    const char *pName, *pSource, *pAttrType, *pDescription=NULL;
+    const char *pName, *pSource, *pAttrType, *pDescription;
     xmlDocPtr doc;
     xmlNode *Attr, *Attrs;
     std::ostringstream buff;
@@ -313,6 +313,8 @@ asynStatus asynNDArrayDriver::readNDAttributesFile()
     std::string fileName;
     MAC_HANDLE *macHandle;
     char **macPairs;
+    int bufferSize;
+    char *tmpBuffer = 0;
     int status;
     static const char *functionName = "readNDAttributesFile";
     
@@ -341,21 +343,17 @@ asynStatus asynNDArrayDriver::readNDAttributesFile()
         if (status < 0) { 
             asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
                 "%s::%s, error parsing macros\n", driverName, functionName);
-            setIntegerParam(NDAttributesStatus, NDAttributesMacroError);
-            macDeleteHandle(macHandle);
-            return asynError;
+            goto done_macros;
         }
         status = macInstallMacros(macHandle, macPairs);
         if (status < 0) {
             asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
                 "%s::%s, error installed macros\n", driverName, functionName);
-            setIntegerParam(NDAttributesStatus, NDAttributesMacroError);
-            macDeleteHandle(macHandle);
-            return asynError;
+            goto done_macros;
         }
         // Create a temporary buffer 10 times larger than input buffer
-        int bufferSize = buffer.length() * 10;
-        char *tmpBuffer = (char *)malloc(bufferSize);
+        bufferSize = buffer.length() * 10;
+        tmpBuffer = (char *)malloc(bufferSize);
         status = macExpandString(macHandle, buffer.c_str(), tmpBuffer, bufferSize);
         // NOTE: There is a bug in macExpandString up to 3.14.12.6 and 3.15.5 so that it does not return <0
         // if there is an undefined macro which is not the last macro in the string.
@@ -364,47 +362,51 @@ asynStatus asynNDArrayDriver::readNDAttributesFile()
         if ((status < 0)  || strstr(tmpBuffer, ",undefined)")) {
             asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
                 "%s::%s, error expanding macros\n", driverName, functionName);
-            setIntegerParam(NDAttributesStatus, NDAttributesMacroError);
-            macDeleteHandle(macHandle);
-            free(tmpBuffer);
-            return asynError;
+            goto done_macros;
         }
         if (status >= bufferSize) {
             asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
                 "%s::%s, error macro buffer too small\n", driverName, functionName);
-            setIntegerParam(NDAttributesStatus, NDAttributesMacroError);
-            macDeleteHandle(macHandle);
-            free(tmpBuffer);
-            return asynError;
+            goto done_macros;
         }
+done_macros:
         buffer = tmpBuffer;
         macDeleteHandle(macHandle);
         free(tmpBuffer);
+        if (status < 0) {
+            setIntegerParam(NDAttributesStatus, NDAttributesMacroError);
+            return asynError;
+        } 
     }
     doc = xmlReadMemory(buffer.c_str(), buffer.length(), "noname.xml", NULL, 0);
     if (doc == NULL) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-            "%s:%s: error creating doc\n", 
-            driverName, functionName);
+            "%s:%s: error creating doc\n", driverName, functionName);
         return asynError;
     }
+    // Assume failure
+    setIntegerParam(NDAttributesStatus, NDAttributesSyntaxError);
     Attrs = xmlDocGetRootElement(doc);
     if ((!xmlStrEqual(Attrs->name, (const xmlChar *)"Attributes"))) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-            "%s:%s: cannot find Attributes element\n", 
-            driverName, functionName);
+            "%s:%s: cannot find Attributes element\n", driverName, functionName);
         return asynError;
     }
     for (Attr = xmlFirstElementChild(Attrs); Attr; Attr = xmlNextElementSibling(Attr)) {
         pName = (const char *)xmlGetProp(Attr, (const xmlChar *)"name");
         if (!pName) {
             asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-                "%s:%s: name attribute not found\n", 
-                driverName, functionName);
+                "%s:%s: name attribute not found\n", driverName, functionName);
             return asynError;
         }
         pDescription = (const char *)xmlGetProp(Attr, (const xmlChar *)"description");
+        if (!pDescription) pDescription = "";
         pSource = (const char *)xmlGetProp(Attr, (const xmlChar *)"source");
+        if (!pSource) {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s:%s: source attribute not found for attribute %s\n", driverName, functionName, pName);
+            return asynError;
+        }
         pAttrType = (const char *)xmlGetProp(Attr, (const xmlChar *)"type");
         if (!pAttrType) pAttrType = NDAttribute::attrSourceString(NDAttrSourceEPICSPV);
         if (strcmp(pAttrType, NDAttribute::attrSourceString(NDAttrSourceEPICSPV)) == 0) {
@@ -422,9 +424,8 @@ asynStatus asynNDArrayDriver::readNDAttributesFile()
                 else if (!strcmp(pDBRType, "DBR_NATIVE")) dbrType = DBR_NATIVE;
                 else {
                     asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-                        "%s:%s: unknown dbrType = %s\n", 
-                        driverName, functionName, pDBRType);
-                    return asynError;
+                        "%s:%s: unknown dbrType = %s for attribute %s\n", driverName, functionName, pDBRType, pName);
+                   return asynError;
                 }
             }
             asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
@@ -455,6 +456,10 @@ asynStatus asynNDArrayDriver::readNDAttributesFile()
             functAttribute *pFunctAttribute = new functAttribute(pName, pDescription, pSource, pParam);
             this->pAttributeList->add(pFunctAttribute);
 #endif
+        } else {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s:%s: unknown attribute type = %s for attribute %s\n", driverName, functionName, pAttrType, pName);
+            return asynError;
         }
     }
     setIntegerParam(NDAttributesStatus, NDAttributesOK);
