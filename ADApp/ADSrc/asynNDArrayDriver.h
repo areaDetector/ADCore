@@ -23,7 +23,7 @@ typedef enum {
 typedef enum {
     NDAttributesOK,
     NDAttributesFileNotFound,
-    NDAttributesSyntaxError,
+    NDAttributesXMLSyntaxError,
     NDAttributesMacroError
 } NDAttributesStatus_t;
 

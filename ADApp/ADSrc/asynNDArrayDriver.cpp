@@ -379,7 +379,7 @@ done_macros:
         } 
     }
     // Assume failure
-    setIntegerParam(NDAttributesStatus, NDAttributesSyntaxError);
+    setIntegerParam(NDAttributesStatus, NDAttributesXMLSyntaxError);
     doc = xmlReadMemory(buffer.c_str(), buffer.length(), "noname.xml", NULL, 0);
     if (doc == NULL) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
