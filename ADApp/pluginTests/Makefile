@@ -52,7 +52,6 @@ ifeq ($(WITH_BOOST),YES)
   # Add tests for new plugins like this:
   #plugin-test_SRCS += test_<plugin name>.cpp
   
-  plugin-test_LIBS += ADTestUtility
   ifdef BOOST_LIB
     boost_unit_test_framework_DIR=$(BOOST_LIB)
     plugin-test_LIBS += boost_unit_test_framework
@@ -60,11 +59,18 @@ ifeq ($(WITH_BOOST),YES)
     plugin-test_SYS_LIBS += boost_unit_test_framework
   endif
 
+  # Link order matters when doing a static build
+  plugin-test_LIBS += ADTestUtility
+
   USR_INCLUDES += $(HDF5_INCLUDE)
   USR_INCLUDES += $(SZ_INCLUDE)
   USR_INCLUDES += $(XML2_INCLUDE)
   USR_INCLUDES += $(BOOST_INCLUDE)
 
+  ifeq ($(BOOST_USE_STATIC_LINK),YES)
+	USR_CXXFLAGS_Linux += -DBOOST_USE_STATIC_LINK
+	USR_CFLAGS_Linux += -DBOOST_USE_STATIC_LINK
+  endif
 endif
 
 ifeq ($(WITH_HDF5),YES)
