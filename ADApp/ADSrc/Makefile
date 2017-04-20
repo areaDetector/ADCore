@@ -65,6 +65,9 @@ else
     LIB_SYS_LIBS += xml2
   endif
 endif
+ifdef XML2_INCLUDE
+  USR_INCLUDES += $(XML2_INCLUDE)
+endif
 
 include $(TOP)/configure/RULES
 #----------------------------------------
