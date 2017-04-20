@@ -5,10 +5,10 @@ file {
 }
 display {
 	object {
-		x=144
-		y=51
+		x=99
+		y=243
 		width=380
-		height=580
+		height=555
 	}
 	clr=14
 	bclr=4
@@ -92,7 +92,7 @@ rectangle {
 		x=0
 		y=0
 		width=380
-		height=580
+		height=555
 	}
 	"basic attribute" {
 		clr=14
@@ -676,32 +676,6 @@ composite {
 }
 text {
 	object {
-		x=7
-		y=479
-		width=150
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Attributes file"
-	align="horiz. right"
-}
-text {
-	object {
-		x=7
-		y=504
-		width=150
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Array callbacks"
-	align="horiz. right"
-}
-text {
-	object {
 		x=67
 		y=429
 		width=90
@@ -727,141 +701,6 @@ text {
 	}
 	limits {
 	}
-}
-"text entry" {
-	object {
-		x=167
-		y=479
-		width=210
-		height=20
-	}
-	control {
-		chan="$(P)$(R)NDAttributesFile"
-		clr=14
-		bclr=51
-	}
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
-		x=57
-		y=454
-		width=100
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Time stamp"
-	align="horiz. right"
-}
-"text update" {
-	object {
-		x=167
-		y=455
-		width=150
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)TimeStamp_RBV"
-		clr=54
-		bclr=4
-	}
-	limits {
-	}
-}
-"related display" {
-	object {
-		x=167
-		y=554
-		width=100
-		height=20
-	}
-	display[0] {
-		label="NDPluginBase Full"
-		name="NDPluginBaseFull.adl"
-		args="P=$(P),R=$(R)"
-	}
-	display[1] {
-		label="asynRecord"
-		name="asynRecord.adl"
-		args="P=$(P),R=$(R)AsynIO"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=47
-		y=554
-		width=110
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="More"
-	align="horiz. right"
-}
-menu {
-	object {
-		x=167
-		y=504
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(R)ArrayCallbacks"
-		clr=14
-		bclr=51
-	}
-}
-"text update" {
-	object {
-		x=273
-		y=505
-		width=100
-		height=18
-	}
-	monitor {
-		chan="$(P)$(R)ArrayCallbacks_RBV"
-		clr=54
-		bclr=12
-	}
-	clrmod="alarm"
-	format="string"
-	limits {
-	}
-}
-text {
-	object {
-		x=20
-		y=529
-		width=140
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Process plugin"
-	align="horiz. right"
-}
-"message button" {
-	object {
-		x=167
-		y=529
-		width=100
-		height=20
-	}
-	control {
-		chan="$(P)$(R)ProcessPlugin"
-		clr=14
-		bclr=51
-	}
-	label="Process"
-	press_msg="1"
 }
 "message button" {
 	object {
@@ -947,4 +786,136 @@ composite {
 			}
 		}
 	}
+}
+"text update" {
+	object {
+		x=167
+		y=455
+		width=150
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)TimeStamp_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=57
+		y=454
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Time stamp"
+	align="horiz. right"
+}
+text {
+	object {
+		x=7
+		y=479
+		width=150
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Array callbacks"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=167
+		y=529
+		width=100
+		height=20
+	}
+	display[0] {
+		label="NDPluginBase Full"
+		name="NDPluginBaseFull.adl"
+		args="P=$(P),R=$(R)"
+	}
+	display[1] {
+		label="asynRecord"
+		name="asynRecord.adl"
+		args="P=$(P),R=$(R)AsynIO"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=47
+		y=529
+		width=110
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="More"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=167
+		y=479
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ArrayCallbacks"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=273
+		y=480
+		width=100
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)ArrayCallbacks_RBV"
+		clr=54
+		bclr=12
+	}
+	clrmod="alarm"
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=20
+		y=504
+		width=140
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Process plugin"
+	align="horiz. right"
+}
+"message button" {
+	object {
+		x=167
+		y=504
+		width=100
+		height=20
+	}
+	control {
+		chan="$(P)$(R)ProcessPlugin"
+		clr=14
+		bclr=51
+	}
+	label="Process"
+	press_msg="1"
 }
