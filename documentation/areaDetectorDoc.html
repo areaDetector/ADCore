@@ -16,9 +16,9 @@
     <h1>
       areaDetector: EPICS Area Detector Support</h1>
     <h2>
-      Release 2-7</h2>
+      Release 3-0</h2>
     <h2>
-      March XXX, 2017</h2>
+      May XXX, 2017</h2>
     <h2>
       Mark Rivers</h2>
     <h2>
@@ -206,10 +206,10 @@
       module that provides interthread messaging services, including queueing and callbacks.</li>
   </ol>
   <p>
-    In particular it should be possible to eliminate layers 4-6 in the architecture
-    shown in Figure 1. This means that it is not necessary to run an EPICS IOC or to
-    use EPICS Channel Access when using the drivers and plugins at Layers 2 and 3. This
-    is demonstrated in the simDetectorNoIOC application in ADExample.
+    In particular it is possible to eliminate layers 4-6 in the architecture shown in
+    Figure 1. This means that it is not necessary to run an EPICS IOC or to use EPICS
+    Channel Access when using the drivers and plugins at Layers 2 and 3. This is demonstrated
+    in the simDetectorNoIOC application in ADSimDetector and in the unit tests in ADCore/ADApp/pluginTests.
   </p>
   <p>
     The plugin architecture is very powerful, because new plugins can be written for
@@ -224,8 +224,8 @@
     at run-time from saving the entire image to saving a selected ROI, just by changing
     its input source. Plugins can be used to form an image processing pipeline, for
     example with a detector providing data to a color convert plugin, which feeds an
-    ROI plugin, which feeds a file saving plugin. Each plugin can run in its own thread,
-    and hence in its own core on a modern multi-core CPU.
+    ROI plugin, which feeds a file saving plugin. Each plugin can run in its own threads,
+    and hence in its own cores on a modern multi-core CPU.
   </p>
   <p>
     The use of plugins is optional, and it is only plugins that require the driver to
@@ -296,8 +296,8 @@
   <p>
     The NDAttribute is a class for linking metadata to an NDArray. An NDattribute has
     a name, description, data type, value, source type and source information. Attributes
-    are identified by their names, which are case-insensitive. There are methods to
-    set and get the information for an attribute.</p>
+    are identified by their names, which are case-sensitive. There are methods to set
+    and get the information for an attribute.</p>
   <p>
     It is useful to define some conventions for attribute names, so that plugins or
     data analysis programs can look for a specific attribute. The following are the
@@ -831,16 +831,53 @@
         <td>
           r/w</td>
         <td>
-          The name of an XML file defining the PVAttributes and paramAttributes to be added
-          to each NDArray by this driver or plugin. The format of the XML file is described
-          in the documentation for <a href="areaDetectorDoxygenHTML/classasyn_n_d_array_driver.html">
-            asynNDArrayDriver::readNDAttributesFile().</a></td>
+          The name of an XML file defining the NDAttributes to be added to each NDArray by
+          this driver or plugin. The format of the XML file is described in the documentation
+          for <a href="areaDetectorDoxygenHTML/classasyn_n_d_array_driver.html">asynNDArrayDriver::readNDAttributesFile().</a>
+        </td>
         <td>
           ND_ATTRIBUTES_FILE</td>
         <td>
           $(P)$(R)NDAttributesFile</td>
         <td>
           waveform</td>
+      </tr>
+      <tr>
+        <td>
+          NDAttributesMacros</td>
+        <td>
+          asynOctet</td>
+        <td>
+          r/w</td>
+        <td>
+          A macro definition string that can be used to do macro substitution in the XML file.
+          For example if this string is "CAMERA=13SIM1:cam1:,ID=ID13us:" then all $(CAMERA)
+          and $(ID) strings in the XML file will be replaced with 13SIM1:cam1: and ID13us:
+          respectively.</td>
+        <td>
+          ND_ATTRIBUTES_MACROS</td>
+        <td>
+          $(P)$(R)NDAttributesMacros</td>
+        <td>
+          waveform</td>
+      </tr>
+      <tr>
+        <td>
+          NDAttributesStatus</td>
+        <td>
+          asynInt32</td>
+        <td>
+          r/o</td>
+        <td>
+          The status of reading and parsing the XML attributes file. This is used to indicate
+          if the file cannot be found, if there is an XML syntax error, or if there is a macro
+          substitutions error.</td>
+        <td>
+          ND_ATTRIBUTES_STATUS</td>
+        <td>
+          $(P)$(R)NDAttributesStatus</td>
+        <td>
+          mbbi</td>
       </tr>
       <tr>
         <td align="center" colspan="7">
