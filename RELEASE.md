@@ -147,6 +147,9 @@ R3-0 (April XXX, 2017)
 * It now contains a new ImageJ EPICS_NTNDA_Viewer plugin written by Tim Madden.  
   It is essentially identical to EPICS_AD_Viewer.java except that it displays NTNDArrays from the NDPluginPva plugin, 
   i.e. using pvAccess to transport the images rather than NDPluginStdArrays which uses Channel Access.
+* EPICS_AD_Viewer.java has been changed to work with the new ProcessPlugin feature in NDPluginDriver by monitoring
+  ArrayCounter rather than UniqueId.
+  
 
 
 R2-6 (February 19, 2017)
