@@ -369,8 +369,8 @@ asynStatus asynNDArrayDriver::readNDAttributesFile()
                 "%s::%s, error macro buffer too small\n", driverName, functionName);
             goto done_macros;
         }
-done_macros:
         buffer = tmpBuffer;
+done_macros:
         macDeleteHandle(macHandle);
         free(tmpBuffer);
         if (status < 0) {
@@ -378,14 +378,14 @@ done_macros:
             return asynError;
         } 
     }
+    // Assume failure
+    setIntegerParam(NDAttributesStatus, NDAttributesSyntaxError);
     doc = xmlReadMemory(buffer.c_str(), buffer.length(), "noname.xml", NULL, 0);
     if (doc == NULL) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s: error creating doc\n", driverName, functionName);
         return asynError;
     }
-    // Assume failure
-    setIntegerParam(NDAttributesStatus, NDAttributesSyntaxError);
     Attrs = xmlDocGetRootElement(doc);
     if ((!xmlStrEqual(Attrs->name, (const xmlChar *)"Attributes"))) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
