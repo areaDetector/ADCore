@@ -27,7 +27,8 @@ R3-0 (April XXX, 2017)
   libraries for Windows in ADBinaires.  ADSupport now provides libxml2, so it is available for all platforms, and
   there is no need to continue building and using TinyXml.  This change means that libxml2 is now required, and so
   the build option WITH_XML2 is no longer used.  XML2_EXTERNAL is still used, depending on whether the version
-  in ADSupport or an external version of the library should be used.  
+  in ADSupport or an external version of the library should be used.  The TinyXml source code has been removed from
+  ADCore.
 * Added support for macro substitution in the XML files used to define NDAttributes.  There is a new NDAttributesMacros
   waveform record that contains the macro substitution strings, for example "CAMERA=13SIM1:cam1:,ID=ID34:".
 * Added a new NDAttributesStatus mbbi record that contains the status of reading the attributes XML file.
