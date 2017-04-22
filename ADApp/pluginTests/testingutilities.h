@@ -8,6 +8,11 @@
 #ifndef ADAPP_PLUGINTESTS_TESTINGUTILITIES_H_
 #define ADAPP_PLUGINTESTS_TESTINGUTILITIES_H_
 
+// Newer version of boost requires this:
+#if BOOST_VERSION > 105300
+#define BOOST_MESSAGE(msg) BOOST_TEST_MESSAGE(msg)
+#endif
+
 #include <deque>
 #include <string>
 #include <vector>
