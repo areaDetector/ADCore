@@ -27,8 +27,6 @@ INC += paramAttribute.h
 INC += functAttribute.h
 INC += asynNDArrayDriver.h
 INC += ADDriver.h
-INC += tinyxml.h
-INC += tinystr.h
 
 LIBRARY_IOC = ADBase
 LIB_SRCS += NDAttribute.cpp
@@ -47,7 +45,6 @@ else
   LIB_SRCS += myTimeStampSource.cpp
   LIB_SRCS += myAttributeFunctions.cpp
 endif
-LIB_SRCS += tinyxml.cpp tinystr.cpp tinyxmlparser.cpp tinyxmlerror.cpp
 
 LIB_LIBS += asyn
 ifeq ($(EPICS_LIBCOM_ONLY),YES)
