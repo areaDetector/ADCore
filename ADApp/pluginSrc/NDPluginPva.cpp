@@ -107,12 +107,7 @@ void NDPluginPva::processCallbacks(NDArray *pArray)
     callParamCallbacks();
 }
 
-/** Constructor for NDPluginPva; all parameters are simply passed to
-  * NDPluginDriver::NDPluginDriver.
-  * This plugin cannot block (ASYN_CANBLOCK=0) and is not multi-device
-  * (ASYN_MULTIDEVICE=0).
-  * It has 1 parameter (1)
-  * It allocates a maximum of 2 NDArray buffers for internal use.
+/** Constructor for NDPluginPva
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] queueSize The number of NDArrays that the input queue for this
   *            plugin can hold when NDPluginDriverBlockingCallbacks=0.
