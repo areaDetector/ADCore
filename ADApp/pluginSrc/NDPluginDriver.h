@@ -116,7 +116,6 @@ private:
     int numThreads_;
     bool pluginStarted_;
     bool firstOutputArray_;
-    int threadStackSize_;
     asynUser *pasynUserGenericPointer_;          /**< asynUser for connecting to NDArray driver */
     void *asynGenericPointerPvt_;                /**< Handle for connecting to NDArray driver */
     asynGenericPointer *pasynGenericPointer_;    /**< asyn interface for connecting to NDArray driver */

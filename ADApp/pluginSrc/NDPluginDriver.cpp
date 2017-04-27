@@ -79,7 +79,9 @@ static void sortingTaskC(void *drvPvt)
   * \param[in] asynFlags Flags when creating the asyn port driver; includes ASYN_CANBLOCK and ASYN_MULTIDEVICE.
   * \param[in] autoConnect The autoConnect flag for the asyn port driver.
   * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  *            This value should also be used for any other threads this object creates.
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  *            This value should also be used for any other threads this object creates.
   * \param[in] maxThreads The maximum number of threads this plugin is allowed to use.
   */
 NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blockingCallbacks, 
@@ -101,10 +103,6 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
 {
     asynUser *pasynUser;
     //static const char *functionName = "NDPluginDriver";
-    
-    /* We use the same stack size for our callback thread as for the port thread */
-    if (stackSize <= 0) stackSize = epicsThreadGetStackSize(epicsThreadStackMedium);
-    threadStackSize_ = stackSize;
     
     lock();
     
@@ -902,7 +900,7 @@ asynStatus NDPluginDriver::createCallbackThreads()
         /* Create the thread (but not start). */
         char taskName[256];
         epicsSnprintf(taskName, sizeof(taskName)-1, "%s_Plugin_%d", portName, i+1);
-        pThreads_[i] = new epicsThread(*this, taskName, this->threadStackSize_, epicsThreadPriorityMedium);
+        pThreads_[i] = new epicsThread(*this, taskName, this->threadStackSize_, this->threadPriority_);
     }
 
     /* If start() was already run, we also need to start the threads. */
@@ -991,8 +989,8 @@ asynStatus NDPluginDriver::createSortingThread()
     /* Create the thread that outputs sorted NDArrays */
     epicsSnprintf(taskName, sizeof(taskName)-1, "%s_Plugin_Sort", portName);
     sortingThreadId_ = epicsThreadCreate(taskName,
-                                         epicsThreadPriorityMedium,
-                                         epicsThreadGetStackSize(epicsThreadStackMedium),
+                                         this->threadPriority_,
+                                         this->threadStackSize_,
                                          (EPICSTHREADFUNC)sortingTaskC, this);
     if (sortingThreadId_ == 0) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
