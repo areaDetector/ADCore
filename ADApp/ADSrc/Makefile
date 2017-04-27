@@ -27,8 +27,6 @@ INC += paramAttribute.h
 INC += functAttribute.h
 INC += asynNDArrayDriver.h
 INC += ADDriver.h
-INC += tinyxml.h
-INC += tinystr.h
 
 LIBRARY_IOC = ADBase
 LIB_SRCS += NDAttribute.cpp
@@ -47,13 +45,25 @@ else
   LIB_SRCS += myTimeStampSource.cpp
   LIB_SRCS += myAttributeFunctions.cpp
 endif
-LIB_SRCS += tinyxml.cpp tinystr.cpp tinyxmlparser.cpp tinyxmlerror.cpp
 
 LIB_LIBS += asyn
 ifeq ($(EPICS_LIBCOM_ONLY),YES)
   LIB_LIBS += Com
 else
   LIB_LIBS += $(EPICS_BASE_IOC_LIBS)
+endif
+ifeq ($(XML2_EXTERNAL),NO)
+  LIB_LIBS += xml2
+else
+  ifdef XML2_LIB
+    xml2_DIR     = $(XML2_LIB)
+    LIB_LIBS     += xml2
+  else
+    LIB_SYS_LIBS += xml2
+  endif
+endif
+ifdef XML2_INCLUDE
+  USR_INCLUDES += $(XML2_INCLUDE)
 endif
 
 include $(TOP)/configure/RULES

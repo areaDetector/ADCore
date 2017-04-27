@@ -21,6 +21,20 @@ Release Notes
 =============
 R3-0 (April XXX, 2017)
 ======================
+### asynNDArrayDriver, NDFileNexus
+* Changed XML file parsing from using TinyXml to using libxml2.  TinyXml was originally used because libxml2 was not
+  available for vxWorks and Windows.  libxml2 was already used for NDFileHDF5 and NDPosPlugin, originally using pre-built
+  libraries for Windows in ADBinaires.  ADSupport now provides libxml2, so it is available for all platforms, and
+  there is no need to continue building and using TinyXml.  This change means that libxml2 is now required, and so
+  the build option WITH_XML2 is no longer used.  XML2_EXTERNAL is still used, depending on whether the version
+  in ADSupport or an external version of the library should be used.  The TinyXml source code has been removed from
+  ADCore.
+* Added support for macro substitution in the XML files used to define NDAttributes.  There is a new NDAttributesMacros
+  waveform record that contains the macro substitution strings, for example "CAMERA=13SIM1:cam1:,ID=ID34:".
+* Added a new NDAttributesStatus mbbi record that contains the status of reading the attributes XML file.
+  It is used to indicate whether the file cannot be found, if there is an XML syntax error, or if there is a
+  macro substitutions error.
+
 ### PVAttribute
 * Fixed a race condition that could result in PVAttributes not being connected to the channel.  This was most likely
   to occur for local PVs in the areaDetector IOC where the connection callback would happen immediately, before the
@@ -134,6 +148,9 @@ R3-0 (April XXX, 2017)
 * It now contains a new ImageJ EPICS_NTNDA_Viewer plugin written by Tim Madden.  
   It is essentially identical to EPICS_AD_Viewer.java except that it displays NTNDArrays from the NDPluginPva plugin, 
   i.e. using pvAccess to transport the images rather than NDPluginStdArrays which uses Channel Access.
+* EPICS_AD_Viewer.java has been changed to work with the new ProcessPlugin feature in NDPluginDriver by monitoring
+  ArrayCounter rather than UniqueId.
+  
 
 
 R2-6 (February 19, 2017)

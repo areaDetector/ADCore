@@ -3,11 +3,11 @@
 
 $(PROD_NAME)_DBD += base.dbd
 
-PROD_LIBS        += ADBase
-$(PROD_NAME)_DBD += ADSupport.dbd
-
 PROD_LIBS        += NDPlugin
 $(PROD_NAME)_DBD += NDPluginSupport.dbd
+
+PROD_LIBS        += ADBase
+$(PROD_NAME)_DBD += ADSupport.dbd
 
 $(PROD_NAME)_DBD += NDFileNull.dbd
 
@@ -64,16 +64,14 @@ ifeq ($(WITH_JPEG),YES)
   endif
 endif
 
-ifeq ($(WITH_XML2),YES)
-  ifeq ($(XML2_EXTERNAL),NO)
-    PROD_LIBS += xml2
+ifeq ($(XML2_EXTERNAL),NO)
+  PROD_LIBS += xml2
+else
+  ifdef XML2_LIB
+    xml2_DIR     = $(XML2_LIB)
+    PROD_LIBS     += xml2
   else
-    ifdef XML2_LIB
-      xml2_DIR     = $(XML2_LIB)
-      PROD_LIBS     += xml2
-    else
-      PROD_SYS_LIBS += xml2
-    endif
+    PROD_SYS_LIBS += xml2
   endif
 endif
 
