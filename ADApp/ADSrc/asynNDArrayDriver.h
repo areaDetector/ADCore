@@ -184,6 +184,9 @@ protected:
     NDArrayPool *pNDArrayPool;     /**< An NDArrayPool object used to allocate and manipulate NDArray objects */
     class NDAttributeList *pAttributeList;  /**< An NDAttributeList object used to obtain the current values of a set of
                                           *  attributes */
+    int threadStackSize_;
+    int threadPriority_;
+
 };
 
 #endif

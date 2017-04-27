@@ -676,7 +676,9 @@ void asynNDArrayDriver::report(FILE *fp, int details)
   * \param[in] asynFlags Flags when creating the asyn port driver; includes ASYN_CANBLOCK and ASYN_MULTIDEVICE.
   * \param[in] autoConnect The autoConnect flag for the asyn port driver.
   * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  *            This value should also be used for any other threads this object creates.
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  *            This value should also be used for any other threads this object creates.
   */
 
 asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numParams, int maxBuffers,
@@ -689,6 +691,13 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
       pNDArrayPool(NULL)
 {
     char versionString[20];
+
+    /* Save the stack size and priority for other threads that this object may create */
+    if (stackSize <= 0) stackSize = epicsThreadGetStackSize(epicsThreadStackMedium);
+    threadStackSize_ = stackSize;
+    if (priority <= 0) priority = epicsThreadPriorityMedium;
+    threadPriority_ = priority;
+
     this->pNDArrayPool = new NDArrayPool(maxBuffers, maxMemory);
 
     /* Allocate pArray pointer array */
