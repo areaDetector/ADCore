@@ -635,6 +635,20 @@ record(bi, "$(P)$(R)ArrayCallbacks_RBV")
 }
 
 ###################################################################
+#  This record contains macro definitions for the attributes      # 
+###################################################################
+
+record(waveform, "$(P)$(R)NDAttributesMacros")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ND_ATTRIBUTES_MACROS")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
+    info(autosaveFields, "VAL")
+}
+
+###################################################################
 #  This record is the name of a file defining attributes          # 
 ###################################################################
 
@@ -669,20 +683,6 @@ record(mbbi, "$(P)$(R)NDAttributesStatus")
     field(THST, "Macro substitution error")
     field(THSV, "MAJOR")
     field(SCAN, "I/O Intr")
-}
-
-###################################################################
-#  This record contains macro definitions for the attributes      # 
-###################################################################
-
-record(waveform, "$(P)$(R)NDAttributesMacros")
-{
-    field(PINI, "YES")
-    field(DTYP, "asynOctetWrite")
-    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ND_ATTRIBUTES_MACROS")
-    field(FTVL, "CHAR")
-    field(NELM, "256")
-    info(autosaveFields, "VAL")
 }
 
 ###################################################################
