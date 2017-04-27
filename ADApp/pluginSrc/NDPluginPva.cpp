@@ -108,6 +108,7 @@ void NDPluginPva::processCallbacks(NDArray *pArray)
 }
 
 /** Constructor for NDPluginPva
+  * This plugin cannot block (ASYN_CANBLOCK=0) and is not multi-device (ASYN_MULTIDEVICE=0).
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] queueSize The number of NDArrays that the input queue for this
   *            plugin can hold when NDPluginDriverBlockingCallbacks=0.
@@ -127,10 +128,10 @@ void NDPluginPva::processCallbacks(NDArray *pArray)
   *            allowed to allocate. Set this to 0 to allow an unlimited number of buffers.
   * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
   *            allowed to allocate. Set this to 0 to allow an unlimited amount of memory.
-  * \param[in] priority The thread priority for the asyn port driver thread if
-  *            ASYN_CANBLOCK is set in asynFlags.
-  * \param[in] stackSize The stack size for the asyn port driver thread if
-  *            ASYN_CANBLOCK is set in asynFlags.
+  * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  *            This value should also be used for any other threads this object creates.
+  * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  *            This value should also be used for any other threads this object creates.
   */
 NDPluginPva::NDPluginPva(const char *portName, int queueSize,
         int blockingCallbacks, const char *NDArrayPort, int NDArrayAddr,
