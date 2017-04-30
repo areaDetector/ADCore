@@ -5,30 +5,29 @@ Release checklist for ADCore
 - Make new version of areaDetector, change areaDetector-RXXX directory name, 
 and change version number in areaDetector/configure/EXAMPLE_RELEASE_PATHS.local*.
 
-- Make sure the epics_ad_display.sav file in /usr/local/idl_user/imaging is
-up-to-date
+- Update areaDetector/documentation/Doxyfile with the new areaDetector version
 
-- Run "update_files" from the Viewers/IDL directory
+- Run "make" in the areaDetector/documentation directory and fix any warnings for ADCore
 
 - Make sure that RELEASE.md and documentation/areaDetectorDoc.html have everything 
   for this release, including the date.
 
 - Check in everything to git repository
 
-- Make the git repository tag with "git tag RX-Y", "git push --tags"
-
 - Do "make clean uninstall", "make" on the following platforms:
   win32-x86:          rivers-mobile2
   win32-x86-static:   rivers-mobile2
   windows-x64:        rivers-mobile2
   windows-x64-static: rivers-mobile2
-  linux-x86:          corvette
+  linux-x86:          corvette (this also builds for vxWorks 6.9)
   linux-x86_64:       corvette
   linux-x86-rhel6:    gse-marccd2
   linux-x86_64-gcc42: gse-pilatus1
   Optional:
   darwin-x86:         chemmatmac1
 
-- Run "make" in the areaDetector/documentation directory
+- Run the unit tests in ADCore/ADApp/pluginTests
+
+- Make the git repository tag with "git tag RX-Y", "git push --tags"
 
 - Build any standalone versions required
