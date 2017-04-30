@@ -108,7 +108,7 @@ typedef enum {
   */
 class epicsShareFunc asynNDArrayDriver : public asynPortDriver {
 public:
-    asynNDArrayDriver(const char *portName, int maxAddr, int numParams, int maxBuffers, size_t maxMemory,
+    asynNDArrayDriver(const char *portName, int maxAddr, int maxBuffers, size_t maxMemory,
                       int interfaceMask, int interruptMask,
                       int asynFlags, int autoConnect, int priority, int stackSize);
     virtual ~asynNDArrayDriver();
