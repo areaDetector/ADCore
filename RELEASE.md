@@ -22,13 +22,10 @@ Release Notes
 R3-0 (May XXX, 2017)
 ======================
 ### TO DO
-* Remove NumParams from asynNDArrayDriver
 * Fix CARS software to use libxml2 rather than TinyXml.
-* Change version header file
+* Document incompatible changes in R3-0; NDPluginDriver, plugins that changed arguments (find which)
 * Add MAX_THREADS macro to EXAMPLE_commonPlugins.cmd?
 * Update EXAMPLE_commonPlugins.cmd to be like my commonPlugins.cmd
-* Change areaDetector/configure CONFIG files to remove WITH_XML2
-* Make areaDetector/configure EXAMPLE files match my files
 * Update INSTALL_GUIDE.md for changes and new location of Viewers directory
 
 ### asynNDArrayDriver, NDFileNexus
