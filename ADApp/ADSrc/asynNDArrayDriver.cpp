@@ -258,8 +258,6 @@ asynStatus asynNDArrayDriver::createFileName(int maxChars, char *filePath, char 
 }
 
 /** Create this driver's NDAttributeList (pAttributeList) by reading an XML file
-  * \param[in] fileName  The name of the XML file to read.
-  * 
   * This clears any existing attributes from this drivers' NDAttributeList and then creates a new list
   * based on the XML file.  These attributes can then be associated with an NDArray by calling asynNDArrayDriver::getAttributes()
   * passing it pNDArray->pAttributeList.
