@@ -19,8 +19,18 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
-R3-0 (April XXX, 2017)
+R3-0 (May XXX, 2017)
 ======================
+### TO DO
+* Remove NumParams from asynNDArrayDriver
+* Fix CARS software to use libxml2 rather than TinyXml.
+* Change version header file
+* Add MAX_THREADS macro to EXAMPLE_commonPlugins.cmd?
+* Update EXAMPLE_commonPlugins.cmd to be like my commonPlugins.cmd
+* Change areaDetector/configure CONFIG files to remove WITH_XML2
+* Make areaDetector/configure EXAMPLE files match my files
+* Update INSTALL_GUIDE.md for changes and new location of Viewers directory
+
 ### asynNDArrayDriver, NDFileNexus
 * Changed XML file parsing from using TinyXml to using libxml2.  TinyXml was originally used because libxml2 was not
   available for vxWorks and Windows.  libxml2 was already used for NDFileHDF5 and NDPosPlugin, originally using pre-built
@@ -38,7 +48,7 @@ R3-0 (April XXX, 2017)
 ### PVAttribute
 * Fixed a race condition that could result in PVAttributes not being connected to the channel.  This was most likely
   to occur for local PVs in the areaDetector IOC where the connection callback would happen immediately, before the
-  code had been initialized to handle the callback.
+  code had been initialized to handle the callback. The race condition was introduced in R2-6.
   
 ### NDFileHDF5
 * Fixed a problem with PVAttributes that were not connected to a PV.  Previously this generated errors from the HDF5
@@ -80,8 +90,8 @@ R3-0 (April XXX, 2017)
   downstream plugins.  This method supports optionally sorting the output callbacks by the NDArray::UniqueId
   value.  This is very useful when running multiple threads in the plugin, because these are likely to do
   their output callbacks in the wrong order.  The base class will sort the output NDArrays to be in the correct
-  order when possible.  The sorting capability is also useful for the new NDPluginGather plugin, even when it
-  is running only a single thread.
+  order when possible.  The sorting capability is also useful for the new NDPluginGather plugin, even though
+  it only uses a single thread.
 * Renamed NDPluginDriver::processCallbacks() to NDPluginDriver::beginProcessCallbacks(). This makes it clearer
   that this method is intended to be called at the beginning of processCallbacks() in the derived class.
   NDPluginDriver::processCallbacks() is now a pure virtual function, so it must be implemented in the derived
@@ -91,6 +101,9 @@ R3-0 (April XXX, 2017)
   again with this last NDArray.  This allows modifying plugin behaviour and observing the results
   without requiring the underlying detector to collect another NDArray.  If the plugin is disabled then
   the NDArray is released and returned to the pool.
+* Moved many of the less commonly used PVs from NDPluginBase.adl to new file NDPluginBaseFull.adl.  This reduces the screen
+  size for most plugin screens, and hides the more obscure PVs from the casual user.  The More related display widget in
+  NDPluginBase.adl can now load both the asynRecord.adl and the NDPluginBaseFull.adl screens.
 
 ### NDPluginScatter
 * New plugin NDPluginScatter is used to distribute (scatter) the processing of NDArrays to multiple downstream plugins.
@@ -100,7 +113,7 @@ R3-0 (April XXX, 2017)
   This plugin works differently from other plugins that do callbacks to downstream plugins.
   Other plugins pass each NDArray that they generate of all downstream plugins that have registered for callbacks.
   NDPluginScatter does not do this, rather it passes each NDArray to only one downstream plugin.
-  The mechanism for chosing which plugin to pass the next NDArray to can be described as a modified round-robin.
+  The algorithm for chosing which plugin to pass the next NDArray to can be described as a modified round-robin.
   The first NDArray is passed to the first registered callback client, the second NDArray to the second client, etc. 
   After the last client the next NDArray goes to the first client, and so on. The modification to strict round-robin 
   is that if client N input queue is full then an attempt is made to send the NDArray to client N+1,
@@ -145,7 +158,7 @@ R3-0 (April XXX, 2017)
 ### Viewers
 * The ADCore/Viewers directory containing the ImageJ and IDL viewers has been moved to its own 
 [ADViewers repository](https://github.com/areaDetector/ADViewers).
-* It now contains a new ImageJ EPICS_NTNDA_Viewer plugin written by Tim Madden.  
+* It now contains a new ImageJ EPICS_NTNDA_Viewer plugin written by Tim Madden and Marty Kraimer.  
   It is essentially identical to EPICS_AD_Viewer.java except that it displays NTNDArrays from the NDPluginPva plugin, 
   i.e. using pvAccess to transport the images rather than NDPluginStdArrays which uses Channel Access.
 * EPICS_AD_Viewer.java has been changed to work with the new ProcessPlugin feature in NDPluginDriver by monitoring
