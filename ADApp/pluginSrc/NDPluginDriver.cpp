@@ -89,7 +89,7 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
                                int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
                                int asynFlags, int autoConnect, int priority, int stackSize, int maxThreads)
 
-    : asynNDArrayDriver(portName, maxAddr, 0, maxBuffers, maxMemory,
+    : asynNDArrayDriver(portName, maxAddr, maxBuffers, maxMemory,
           interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynDrvUserMask,
           interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask,
           asynFlags, autoConnect, priority, stackSize),
