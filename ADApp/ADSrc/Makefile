@@ -66,6 +66,13 @@ ifdef XML2_INCLUDE
   USR_INCLUDES += $(XML2_INCLUDE)
 endif
 
+# Install commonDriverMakefile and commonLibraryMakefile in top-level cfg directory.
+# Drivers currently look in $(TOP)/ADApp for these files so we leave them there but 
+# need to install from this directory which requires using vpath.
+vpath common%Makefile $(ADCORE)/ADApp/
+CFG += commonLibraryMakefile
+CFG += commonDriverMakefile
+
 include $(TOP)/configure/RULES
 #----------------------------------------
 #  ADD RULES AFTER THIS LINE
