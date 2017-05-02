@@ -504,7 +504,9 @@ void NDPluginColorConvert::convertColor(NDArray *pArray)
     this->getAttributes(pArrayOut->pAttributeList);
     /* If we changed the color mode then set the attribute */
     if (changedColorMode) pArrayOut->pAttributeList->add("ColorMode", "Color Mode", NDAttrInt32, &colorModeOut);
-    this->pArrays[0] = pArrayOut;
+
+    // Do NDArray callbacks.  We don't need to copy the array or get the attributes
+    NDPluginDriver::endProcessCallbacks(pArrayOut, false, false);
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
               "%s:%s: pArray->colorMode=%d, colorModeOut=%d, pArrayOut=%p\n",
               driverName, functionName, colorMode, colorModeOut, pArrayOut);
@@ -526,18 +528,11 @@ void NDPluginColorConvert::processCallbacks(NDArray *pArray)
      * It is called with the mutex already locked.  It unlocks it during long calculations when private
      * structures don't need to be protected.
      */
-     
+    
     static const char* functionName = "processCallbacks";
          
     /* Call the base class method */
-    NDPluginDriver::processCallbacks(pArray);
-
-    /* We always keep the last array so read() can use it.  
-     * Release previous one. Reserve new one below. */
-    if (this->pArrays[0]) {
-        this->pArrays[0]->release();
-        this->pArrays[0] = NULL;
-    }
+    NDPluginDriver::beginProcessCallbacks(pArray);
 
     asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
               "%s:%s: dataType=%d\n",
@@ -574,10 +569,8 @@ void NDPluginColorConvert::processCallbacks(NDArray *pArray)
                       driverName, functionName, pArray->dataType);
             break;
     }
-    
+   
     callParamCallbacks();
-    /* Call any clients who have registered for NDArray callbacks */
-    doCallbacksGenericPointer(this->pArrays[0], NDArrayData, 0);
 }
 
 
@@ -594,22 +587,23 @@ void NDPluginColorConvert::processCallbacks(NDArray *pArray)
   * \param[in] NDArrayPort Name of asyn port driver for initial source of NDArray callbacks.
   * \param[in] NDArrayAddr asyn port driver address for initial source of NDArray callbacks.
   * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is 
-  *            allowed to allocate. Set this to -1 to allow an unlimited number of buffers.
+  *            allowed to allocate. Set this to 0 to allow an unlimited number of buffers.
   * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
-  *            allowed to allocate. Set this to -1 to allow an unlimited amount of memory.
+  *            allowed to allocate. Set this to 0 to allow an unlimited amount of memory.
   * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  * \param[in] maxThreads The maximum number of threads this driver is allowed to use. If 0 then 1 will be used.
   */
 NDPluginColorConvert::NDPluginColorConvert(const char *portName, int queueSize, int blockingCallbacks, 
                                            const char *NDArrayPort, int NDArrayAddr, 
                                            int maxBuffers, size_t maxMemory,
-                                           int priority, int stackSize)
+                                           int priority, int stackSize, int maxThreads)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks, 
-                   NDArrayPort, NDArrayAddr, 1, NUM_NDPLUGIN_COLOR_CONVERT_PARAMS, maxBuffers, maxMemory,
+                   NDArrayPort, NDArrayAddr, 1, maxBuffers, maxMemory,
                    asynGenericPointerMask, 
                    asynGenericPointerMask,
-                   0, 1, priority, stackSize)  /* Not ASYN_CANBLOCK or ASYN_MULTIDEVICE, do autoConnect */
+                   0, 1, priority, stackSize, maxThreads)  /* Not ASYN_CANBLOCK or ASYN_MULTIDEVICE, do autoConnect */
 {
     //static const char *functionName = "NDPluginColorConvert";
 
@@ -632,10 +626,10 @@ NDPluginColorConvert::NDPluginColorConvert(const char *portName, int queueSize, 
 extern "C" int NDColorConvertConfigure(const char *portName, int queueSize, int blockingCallbacks, 
                                           const char *NDArrayPort, int NDArrayAddr, 
                                           int maxBuffers, size_t maxMemory,
-                                          int priority, int stackSize)
+                                          int priority, int stackSize, int maxThreads)
 {
     NDPluginColorConvert *pPlugin = new NDPluginColorConvert(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, 
-                                                             maxBuffers, maxMemory, priority, stackSize);
+                                                             maxBuffers, maxMemory, priority, stackSize, maxThreads);
     return pPlugin->start();
 }
 
@@ -649,6 +643,7 @@ static const iocshArg initArg5 = { "maxBuffers",iocshArgInt};
 static const iocshArg initArg6 = { "maxMemory",iocshArgInt};
 static const iocshArg initArg7 = { "priority",iocshArgInt};
 static const iocshArg initArg8 = { "stackSize",iocshArgInt};
+static const iocshArg initArg9 = { "maxThreads",iocshArgInt};
 static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg1,
                                             &initArg2,
@@ -657,13 +652,15 @@ static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg5,
                                             &initArg6,
                                             &initArg7,
-                                            &initArg8};
-static const iocshFuncDef initFuncDef = {"NDColorConvertConfigure",9,initArgs};
+                                            &initArg8,
+                                            &initArg9};
+static const iocshFuncDef initFuncDef = {"NDColorConvertConfigure",10,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
     NDColorConvertConfigure(args[0].sval, args[1].ival, args[2].ival, 
                                args[3].sval, args[4].ival, args[5].ival, 
-                               args[6].ival, args[7].ival, args[8].ival);
+                               args[6].ival, args[7].ival, args[8].ival,
+                               args[9].ival);
 }
 
 extern "C" void NDColorConvertRegister(void)

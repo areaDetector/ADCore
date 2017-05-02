@@ -98,7 +98,7 @@ void NTNDArrayRecord::update(NDArray *pArray)
   */
 void NDPluginPva::processCallbacks(NDArray *pArray)
 {
-    NDPluginDriver::processCallbacks(pArray);   // Base class method
+    NDPluginDriver::beginProcessCallbacks(pArray);   // Base class method
 
     this->unlock();             // Function called with the lock taken
     m_record->update(pArray);
@@ -107,12 +107,8 @@ void NDPluginPva::processCallbacks(NDArray *pArray)
     callParamCallbacks();
 }
 
-/** Constructor for NDPluginPva; all parameters are simply passed to
-  * NDPluginDriver::NDPluginDriver.
-  * This plugin cannot block (ASYN_CANBLOCK=0) and is not multi-device
-  * (ASYN_MULTIDEVICE=0).
-  * It has 1 parameter (1)
-  * It allocates a maximum of 2 NDArray buffers for internal use.
+/** Constructor for NDPluginPva
+  * This plugin cannot block (ASYN_CANBLOCK=0) and is not multi-device (ASYN_MULTIDEVICE=0).
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] queueSize The number of NDArrays that the input queue for this
   *            plugin can hold when NDPluginDriverBlockingCallbacks=0.
@@ -128,21 +124,22 @@ void NDPluginPva::processCallbacks(NDArray *pArray)
   * \param[in] NDArrayAddr asyn port driver address for initial source of
   *            NDArray callbacks.
   * \param[in] pvName Name of the PV that will be served by the EPICSv4 server.
-  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for
-  *            this driver is allowed to allocate. Set this to -1 to allow an
-  *            unlimited amount of memory.
-  * \param[in] priority The thread priority for the asyn port driver thread if
-  *            ASYN_CANBLOCK is set in asynFlags.
-  * \param[in] stackSize The stack size for the asyn port driver thread if
-  *            ASYN_CANBLOCK is set in asynFlags.
+  * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is 
+  *            allowed to allocate. Set this to 0 to allow an unlimited number of buffers.
+  * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
+  *            allowed to allocate. Set this to 0 to allow an unlimited amount of memory.
+  * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  *            This value should also be used for any other threads this object creates.
+  * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  *            This value should also be used for any other threads this object creates.
   */
 NDPluginPva::NDPluginPva(const char *portName, int queueSize,
         int blockingCallbacks, const char *NDArrayPort, int NDArrayAddr,
-        const char *pvName, size_t maxMemory, int priority, int stackSize)
+        const char *pvName, int maxBuffers, size_t maxMemory, int priority, int stackSize)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
-            NDArrayPort, NDArrayAddr, 1, 1, 2, maxMemory, 0, 0,
-            0, 1, priority, stackSize),
+            NDArrayPort, NDArrayAddr, 1, maxBuffers, maxMemory, 0, 0,
+            0, 1, priority, stackSize, 1),
             m_record(NTNDArrayRecord::create(pvName))
 {
     createParam(NDPluginPvaPvNameString, asynParamOctet, &NDPluginPvaPvName);
@@ -169,10 +166,10 @@ NDPluginPva::NDPluginPva(const char *portName, int queueSize,
 /* Configuration routine.  Called directly, or from the iocsh function */
 extern "C" int NDPvaConfigure(const char *portName, int queueSize,
         int blockingCallbacks, const char *NDArrayPort, int NDArrayAddr,
-        const char *pvName, size_t maxMemory, int priority, int stackSize)
+        const char *pvName, int maxBuffers, size_t maxMemory, int priority, int stackSize)
 {
     NDPluginPva *pPlugin = new NDPluginPva(portName, queueSize, blockingCallbacks, NDArrayPort,
-                                           NDArrayAddr, pvName, maxMemory, priority, stackSize);
+                                           NDArrayAddr, pvName, maxBuffers, maxMemory, priority, stackSize);
     return pPlugin->start();
 }
 
@@ -183,9 +180,10 @@ static const iocshArg initArg2 = { "blocking callbacks",iocshArgInt};
 static const iocshArg initArg3 = { "NDArrayPort",iocshArgString};
 static const iocshArg initArg4 = { "NDArrayAddr",iocshArgInt};
 static const iocshArg initArg5 = { "pvName",iocshArgString};
-static const iocshArg initArg6 = { "maxMemory",iocshArgInt};
-static const iocshArg initArg7 = { "priority",iocshArgInt};
-static const iocshArg initArg8 = { "stack size",iocshArgInt};
+static const iocshArg initArg6 = { "maxBuffers",iocshArgInt};
+static const iocshArg initArg7 = { "maxMemory",iocshArgInt};
+static const iocshArg initArg8 = { "priority",iocshArgInt};
+static const iocshArg initArg9 = { "stack size",iocshArgInt};
 static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg1,
                                             &initArg2,
@@ -194,13 +192,15 @@ static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg5,
                                             &initArg6,
                                             &initArg7,
-                                            &initArg8,};
-static const iocshFuncDef initFuncDef = {"NDPvaConfigure",9,initArgs};
+                                            &initArg8,
+                                            &initArg9,};
+static const iocshFuncDef initFuncDef = {"NDPvaConfigure",10,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
-    NDPvaConfigure(args[0].sval, args[1].ival, args[2].ival, args[3].sval,
-            args[4].ival, args[5].sval, args[6].ival, args[7].ival,
-            args[8].ival);
+    NDPvaConfigure(args[0].sval, args[1].ival, args[2].ival, 
+                   args[3].sval, args[4].ival, args[5].sval, 
+                   args[6].ival, args[7].ival, args[8].ival,
+                   args[9].ival);
 }
 
 extern "C" void NDPvaRegister(void)

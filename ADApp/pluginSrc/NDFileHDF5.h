@@ -153,7 +153,6 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
     int NDFileHDF5_SWMRSupported;
     int NDFileHDF5_SWMRMode;
     int NDFileHDF5_SWMRRunning;
-    #define LAST_NDFILE_HDF5_PARAM NDFileHDF5_SWMRRunning
 
 #ifndef _UNITTEST_HDF5_
   private:
@@ -249,7 +248,6 @@ class epicsShareClass NDFileHDF5 : public NDPluginFile
 
     char *dimsreport;       /** < A string which contain a verbose report of all dimension sizes. The method getDimsReport fill in this */
 };
-#define NUM_NDFILE_HDF5_PARAMS ((int)(&LAST_NDFILE_HDF5_PARAM - &FIRST_NDFILE_HDF5_PARAM + 1))
 
 #endif
 

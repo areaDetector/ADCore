@@ -19,6 +19,150 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
+R3-0 (May XXX, 2017)
+======================
+### TO DO
+* Fix CARS software to use libxml2 rather than TinyXml.
+* Document incompatible changes in R3-0; NDPluginDriver, plugins that changed arguments (find which)
+* Add MAX_THREADS macro to EXAMPLE_commonPlugins.cmd?
+* Update EXAMPLE_commonPlugins.cmd to be like my commonPlugins.cmd
+* Update INSTALL_GUIDE.md for changes and new location of Viewers directory
+
+### asynNDArrayDriver, NDFileNexus
+* Changed XML file parsing from using TinyXml to using libxml2.  TinyXml was originally used because libxml2 was not
+  available for vxWorks and Windows.  libxml2 was already used for NDFileHDF5 and NDPosPlugin, originally using pre-built
+  libraries for Windows in ADBinaires.  ADSupport now provides libxml2, so it is available for all platforms, and
+  there is no need to continue building and using TinyXml.  This change means that libxml2 is now required, and so
+  the build option WITH_XML2 is no longer used.  XML2_EXTERNAL is still used, depending on whether the version
+  in ADSupport or an external version of the library should be used.  The TinyXml source code has been removed from
+  ADCore.
+* Added support for macro substitution in the XML files used to define NDAttributes.  There is a new NDAttributesMacros
+  waveform record that contains the macro substitution strings, for example "CAMERA=13SIM1:cam1:,ID=ID34:".
+* Added a new NDAttributesStatus mbbi record that contains the status of reading the attributes XML file.
+  It is used to indicate whether the file cannot be found, if there is an XML syntax error, or if there is a
+  macro substitutions error.
+
+### PVAttribute
+* Fixed a race condition that could result in PVAttributes not being connected to the channel.  This was most likely
+  to occur for local PVs in the areaDetector IOC where the connection callback would happen immediately, before the
+  code had been initialized to handle the callback. The race condition was introduced in R2-6.
+  
+### NDFileHDF5
+* Fixed a problem with PVAttributes that were not connected to a PV.  Previously this generated errors from the HDF5
+  library because an invalid datatype of -1 was used.  Now the data type for such disconnected attributes is set to
+  H5T_NATIVE_FLOAT and the fill value is set to NAN.  No data is written from such attributes to the file, so the
+  fill value is used.
+
+### NDPluginDriver, NDPluginBase.template, NDPluginBase.adl
+* Added support for multiple threads running the processCallbacks() function in a single plugin.  This can improve
+  the performance of the plugin by a large factor.  Linear scaling with up to 5 threads (the largest
+  value tested) was observed for most of the plugins that now support multiple threads.
+  The maximum number of threads that can be used for the plugin is set in the constructor and thus in the 
+  IOC startup script.  The actual number of threads to use can be controlled via an EPICS PV at run time, 
+  up to the maximum value passed to the constructor.
+  Note that plugins need to be modified to be thread-safe for multiple threads running in a single plugin object.
+  The following table describes the support for multiple threads in current plugins.
+  
+| Plugin               | Supports multiple threads | Comments                                                      |
+| ------               | ------------------------- | --------                                                      |
+| NDPluginFile         | No                        | File plugins are nearly always limited by the file I/O, not CPU |
+| NDPluginAttribute    | No                        | Plugin does not do any computation, no gain from multiple threads |
+| NDPluginCircularBuff | No                        | Plugin does not do any computation, no gain from multiple threads |
+| NDPluginColorConvert | Yes                       | Multiple threads supported and tested |
+| NDPluginFFT          | Yes                       | Multiple threads supported and tested |
+| NDPluginGather       | No                        | Plugin does not do any computation, no gain from multiple threads |
+| NDPluginOverlay      | Yes                       | Multiple threads supported and tested |
+| NDPluginProcess      | No                        | The recursive filter stores results in the object itself, hard to make thread safe |
+| NDPluginPva          | No                        | Plugin is very fast, probably not much gain from multiple threads |
+| NDPluginROI          | Yes                       | Multiple threads supported and tested |
+| NDPluginROIStat      | Yes                       | Multiple threads supported and tested; TO FIX: time series goes too many points with multiple threads |
+| NDPluginScatter      | No                        | Plugin does not do any computation, no gain from multiple threads |
+| NDPluginStats        | Yes                       | Multiple threads supported and tested. Note: the time series arrays may be out of order if using multiple threads |
+| NDPluginStdArrays    | Yes                       | Multiple threads supported and tested. Note: the callbacks to the waveform records may be out of order if using multiple threads|
+| NDPluginTimeSeries   | No                        | Plugin does not do much computation, no gain from multiple threads |
+| NDPluginTransform    | Yes                       | Multiple threads supported and tested. |
+| NDPosPlugin          | No                        | Plugin does not do any computation, no gain from multiple threads |
+
+* Added a new endProcessCallbacks method so derived classes do not need to each implement the logic to call 
+  downstream plugins.  This method supports optionally sorting the output callbacks by the NDArray::UniqueId
+  value.  This is very useful when running multiple threads in the plugin, because these are likely to do
+  their output callbacks in the wrong order.  The base class will sort the output NDArrays to be in the correct
+  order when possible.  The sorting capability is also useful for the new NDPluginGather plugin, even though
+  it only uses a single thread.
+* Renamed NDPluginDriver::processCallbacks() to NDPluginDriver::beginProcessCallbacks(). This makes it clearer
+  that this method is intended to be called at the beginning of processCallbacks() in the derived class.
+  NDPluginDriver::processCallbacks() is now a pure virtual function, so it must be implemented in the derived
+  class.
+* Added new parameter NDPluginProcessPlugin and new bo record ProcessPlugin.  NDPluginDriver now stores
+  the last NDArray it receives.  If the ProcessPlugin record is processed then the plugin will execute
+  again with this last NDArray.  This allows modifying plugin behaviour and observing the results
+  without requiring the underlying detector to collect another NDArray.  If the plugin is disabled then
+  the NDArray is released and returned to the pool.
+* Moved many of the less commonly used PVs from NDPluginBase.adl to new file NDPluginBaseFull.adl.  This reduces the screen
+  size for most plugin screens, and hides the more obscure PVs from the casual user.  The More related display widget in
+  NDPluginBase.adl can now load both the asynRecord.adl and the NDPluginBaseFull.adl screens.
+
+### NDPluginScatter
+* New plugin NDPluginScatter is used to distribute (scatter) the processing of NDArrays to multiple downstream plugins.
+  It allows multiple intances of a plugin to process NDArrays in parallel, utilizing multiple cores 
+  to increase throughput. It is commonly used together with NDPluginGather, which gathers the outputs from 
+  multiple plugins back into a single stream. 
+  This plugin works differently from other plugins that do callbacks to downstream plugins.
+  Other plugins pass each NDArray that they generate of all downstream plugins that have registered for callbacks.
+  NDPluginScatter does not do this, rather it passes each NDArray to only one downstream plugin.
+  The algorithm for chosing which plugin to pass the next NDArray to can be described as a modified round-robin.
+  The first NDArray is passed to the first registered callback client, the second NDArray to the second client, etc. 
+  After the last client the next NDArray goes to the first client, and so on. The modification to strict round-robin 
+  is that if client N input queue is full then an attempt is made to send the NDArray to client N+1,
+  and if this would fail to client N+2, etc. If no clients are able to accept the NDArray because their queues are 
+  full then the last client that is tried (N-1) will drop the NDArray. Because the "last client" rotates according 
+  to the round-robin schedule the load of dropped arrays will be uniform if all clients are executing at the same
+  speed and if their queues are the same size.
+
+### NDPluginGather
+* New plugin NDPluginGather is used to gather NDArrays from multiple upstream plugins and merge them into a single stream. 
+  When used together with NDPluginScatter it allows multiple intances of a plugin to process NDArrays
+  in parallel, utilizing multiple cores to increase throughput.
+  This plugin works differently from other plugins that receive callbacks from upstream plugins.
+  Other plugins subscribe to NDArray callbacks from a single upstream plugin or driver. 
+  NDPluginGather allows subscribing to callbacks from any number of upstream plugins. 
+  It combines the NDArrays it receives into a single stream which it passes to all downstream plugins. 
+  The example commonPlugins.cmd and medm files in ADCore allow up to 8 upstream plugins, but this number can 
+  easily be changed by editing the startup script and operator display file.
+
+### All plugins
+* All plugins were modified to no longer count the number of parameters that they define, taking advantage of
+  this feature that was added to asynPortDriver in asyn R4-31.
+* All plugins were modified to call NDPluginDriver::beginProcessCallbacks() rather than 
+  NDPluginDriver::processCalbacks() at the beginning of processCallbacks() as described above.
+* Most plugins were modified to call NDPluginDriver::endProcessCallbacks() near the end of processCallbacks().
+  This takes care of doing the NDArray callbacks to downstream plugins, and sorting the output NDArrays if required.
+  It also handles the logic of caching the last NDArray in this->pArrays[0].  This significantly simplifies the code
+  in the derived plugin classes.
+* Previously all plugins were releasing the asynPortDriver lock when calling doCallbacksGenericPointer().
+  This was based on a very old observation of a deadlock problem if the the lock was not released.  Releasing
+  the lock causes serious problems with plugins running multiple threads, and probably was never needed.  Most
+  plugins no longer call doCallbacksGenericPointer() directly because it is now done in NDPluginDriver::endProcessCallbacks().
+  The lock is no longer released when calling doCallbacksGenericPointer().  The simDetector driver has also been modified
+  to no longer release the lock when calling plugins with doCallbacksGenericPointer(), and all other drivers should be
+  modified as well.  It is not really a problem with drivers however, since the code doing those callbacks is normally
+  only running in a single thread.
+
+### NDOverlayN.template
+* Removed PINI=YES from CenterX and CenterY records.  Only PositionX/Y should have PINI=YES, otherwise
+  the behavior depends on the order of execution with SizeX/Y.
+
+### Viewers
+* The ADCore/Viewers directory containing the ImageJ and IDL viewers has been moved to its own 
+[ADViewers repository](https://github.com/areaDetector/ADViewers).
+* It now contains a new ImageJ EPICS_NTNDA_Viewer plugin written by Tim Madden and Marty Kraimer.  
+  It is essentially identical to EPICS_AD_Viewer.java except that it displays NTNDArrays from the NDPluginPva plugin, 
+  i.e. using pvAccess to transport the images rather than NDPluginStdArrays which uses Channel Access.
+* EPICS_AD_Viewer.java has been changed to work with the new ProcessPlugin feature in NDPluginDriver by monitoring
+  ArrayCounter rather than UniqueId.
+  
+
+
 R2-6 (February 19, 2017)
 ========================
 

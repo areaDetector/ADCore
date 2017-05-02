@@ -36,7 +36,6 @@ protected:
     #define FIRST_NDFILE_MAGICK_PARAM NDFileMagickQuality
     int NDFileMagickCompressType;
     int NDFileMagickBitDepth;
-    #define LAST_NDFILE_MAGICK_PARAM NDFileMagickBitDepth
 
 private:
     size_t sizeX;
@@ -48,5 +47,5 @@ private:
     Image image;
     char fileName[MAX_FILENAME_LEN];
 };
-#define NUM_NDFILE_MAGICK_PARAMS ((int)(&LAST_NDFILE_MAGICK_PARAM - &FIRST_NDFILE_MAGICK_PARAM + 1))
+
 #endif

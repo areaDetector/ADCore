@@ -80,9 +80,9 @@ NDFileNull::NDFileNull(const char *portName, int queueSize, int blockingCallback
      * This driver can block (because writing a file can be slow), and it is not multi-device.  
      * Set autoconnect to 1.  priority and stacksize can be 0, which will use defaults. */
     : NDPluginFile(portName, queueSize, blockingCallbacks,
-                   NDArrayPort, NDArrayAddr, 1, NUM_NDFILE_NULL_PARAMS,
+                   NDArrayPort, NDArrayAddr, 1,
                    2, 0, asynGenericPointerMask, asynGenericPointerMask, 
-                   ASYN_CANBLOCK, 1, priority, stackSize)
+                   ASYN_CANBLOCK, 1, priority, stackSize, 1)
 {
     //static const char *functionName = "NDFileNull";
 

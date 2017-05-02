@@ -43,7 +43,6 @@ public:
 protected:
     int NDFileJPEGQuality;
     #define FIRST_NDFILE_JPEG_PARAM NDFileJPEGQuality
-    #define LAST_NDFILE_JPEG_PARAM NDFileJPEGQuality
 
 private:
     struct jpeg_compress_struct jpegInfo;
@@ -53,6 +52,5 @@ private:
     JOCTET jpegBuffer[JPEG_BUF_SIZE];
     jpegDestMgr destMgr;
 };
-#define NUM_NDFILE_JPEG_PARAMS ((int)(&LAST_NDFILE_JPEG_PARAM - &FIRST_NDFILE_JPEG_PARAM + 1))
 
 #endif

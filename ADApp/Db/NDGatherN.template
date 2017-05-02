@@ -1,0 +1,44 @@
+#=================================================================#
+# Template file: NDGather.template
+# Database for NDPluginGather plugin
+# One instance of this is loaded for each array port source
+# Mark Rivers
+# February 26, 2017
+
+###################################################################
+#  These records control the connection of the server to          #
+#  an NDArray driver port and address                             #
+###################################################################
+# Array port name
+record(stringout, "$(P)$(R)NDArrayPort_$(N)")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynOctetWrite")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_PORT")
+    field(VAL,  "$(NDARRAY_PORT)")
+    info(autosaveFields, "VAL")
+}
+
+record(stringin, "$(P)$(R)NDArrayPort_$(N)_RBV")
+{
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_PORT")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)NDArrayAddress_$(N)")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_ADDR")
+    field(VAL,  "$(NDARRAY_ADDR=0)")
+    info(autosaveFields, "VAL")
+}
+
+record(longin, "$(P)$(R)NDArrayAddress_$(N)_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NDARRAY_ADDR")
+    field(SCAN, "I/O Intr")
+}
+

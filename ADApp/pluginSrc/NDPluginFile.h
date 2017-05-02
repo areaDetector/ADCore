@@ -28,9 +28,9 @@ typedef int NDFileOpenMode_t;
 class epicsShareClass NDPluginFile : public NDPluginDriver {
 public:
     NDPluginFile(const char *portName, int queueSize, int blockingCallbacks, 
-                 const char *NDArrayPort, int NDArrayAddr, int maxAddr, int numParams,
+                 const char *NDArrayPort, int NDArrayAddr, int maxAddr,
                  int maxBuffers, size_t maxMemory, int interfaceMask, int interruptMask,
-                 int asynFlags, int autoConnect, int priority, int stackSize);
+                 int asynFlags, int autoConnect, int priority, int stackSize, int maxThreads);
                  
     /* These methods override those in the base class */
     virtual void processCallbacks(NDArray *pArray);
@@ -72,7 +72,6 @@ private:
     asynStatus closeFileBase();
     asynStatus doCapture(int capture);
     void       freeCaptureBuffer(int numCapture);
-    void       doNDArrayCallbacks(NDArray *pArray);
     asynStatus attrFileCloseCheck();
     asynStatus attrFileNameCheck();
     asynStatus attrFileNameSet();
@@ -89,6 +88,4 @@ private:
                                       *  Used to check against changes in incoming frames dimensions or datatype */
 };
 
-#define NUM_NDPLUGIN_FILE_PARAMS 0
-    
 #endif

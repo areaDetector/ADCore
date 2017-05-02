@@ -39,7 +39,6 @@ protected:
     int NDPluginAttributeTSCurrentPoint;
     int NDPluginAttributeTSAcquiring;
     int NDPluginAttributeTSArrayValue;
-    #define LAST_NDPLUGIN_ATTR_PARAM NDPluginAttributeTSArrayValue
                                 
 private:
 
@@ -54,6 +53,5 @@ private:
     epicsFloat64 **pTSArray_;
 
 };
-#define NUM_NDPLUGIN_ATTR_PARAMS ((int)(&LAST_NDPLUGIN_ATTR_PARAM - &FIRST_NDPLUGIN_ATTR_PARAM + 1))
     
 #endif

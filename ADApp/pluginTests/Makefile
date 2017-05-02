@@ -24,9 +24,7 @@ ifeq ($(WITH_BOOST),YES)
     ADTestUtility_SRCS += HDF5PluginWrapper.cpp
     ADTestUtility_SRCS += HDF5FileReader.cpp
   endif
-  ifeq ($(WITH_XML2),YES)
-    ADTestUtility_SRCS += PosPluginWrapper.cpp
-  endif
+  ADTestUtility_SRCS += PosPluginWrapper.cpp
   ADTestUtility_SRCS += TimeSeriesPluginWrapper.cpp
   ADTestUtility_SRCS += FFTPluginWrapper.cpp
   ADTestUtility_SRCS += AttrPlotPluginWrapper.cpp
@@ -42,9 +40,7 @@ ifeq ($(WITH_BOOST),YES)
     plugin-test_SRCS += test_NDFileHDF5AttributeDataset.cpp
     plugin-test_SRCS += test_NDFileHDF5ExtraDimensions.cpp
   endif
-  ifeq ($(WITH_XML2),YES)
-    plugin-test_SRCS += test_NDPosPlugin.cpp
-  endif
+  plugin-test_SRCS += test_NDPosPlugin.cpp
   plugin-test_SRCS += test_NDPluginTimeSeries.cpp
   plugin-test_SRCS += test_NDPluginFFT.cpp
   plugin-test_SRCS += test_NDPluginAttrPlot.cpp
@@ -54,7 +50,6 @@ ifeq ($(WITH_BOOST),YES)
   # Add tests for new plugins like this:
   #plugin-test_SRCS += test_<plugin name>.cpp
   
-  plugin-test_LIBS += ADTestUtility
   ifdef BOOST_LIB
     boost_unit_test_framework_DIR=$(BOOST_LIB)
     plugin-test_LIBS += boost_unit_test_framework
@@ -62,11 +57,18 @@ ifeq ($(WITH_BOOST),YES)
     plugin-test_SYS_LIBS += boost_unit_test_framework
   endif
 
+  # Link order matters when doing a static build
+  plugin-test_LIBS += ADTestUtility
+
   USR_INCLUDES += $(HDF5_INCLUDE)
   USR_INCLUDES += $(SZ_INCLUDE)
   USR_INCLUDES += $(XML2_INCLUDE)
   USR_INCLUDES += $(BOOST_INCLUDE)
 
+  ifeq ($(BOOST_USE_STATIC_LINK),YES)
+	USR_CXXFLAGS_Linux += -DBOOST_USE_STATIC_LINK
+	USR_CFLAGS_Linux += -DBOOST_USE_STATIC_LINK
+  endif
 endif
 
 ifeq ($(WITH_HDF5),YES)

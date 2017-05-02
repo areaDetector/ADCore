@@ -27,8 +27,6 @@ INC += paramAttribute.h
 INC += functAttribute.h
 INC += asynNDArrayDriver.h
 INC += ADDriver.h
-INC += tinyxml.h
-INC += tinystr.h
 
 LIBRARY_IOC = ADBase
 LIB_SRCS += NDAttribute.cpp
@@ -47,7 +45,6 @@ else
   LIB_SRCS += myTimeStampSource.cpp
   LIB_SRCS += myAttributeFunctions.cpp
 endif
-LIB_SRCS += tinyxml.cpp tinystr.cpp tinyxmlparser.cpp tinyxmlerror.cpp
 
 LIB_LIBS += asyn
 ifeq ($(EPICS_LIBCOM_ONLY),YES)
@@ -55,6 +52,26 @@ ifeq ($(EPICS_LIBCOM_ONLY),YES)
 else
   LIB_LIBS += $(EPICS_BASE_IOC_LIBS)
 endif
+ifeq ($(XML2_EXTERNAL),NO)
+  LIB_LIBS += xml2
+else
+  ifdef XML2_LIB
+    xml2_DIR     = $(XML2_LIB)
+    LIB_LIBS     += xml2
+  else
+    LIB_SYS_LIBS += xml2
+  endif
+endif
+ifdef XML2_INCLUDE
+  USR_INCLUDES += $(XML2_INCLUDE)
+endif
+
+# Install commonDriverMakefile and commonLibraryMakefile in top-level cfg directory.
+# Drivers currently look in $(TOP)/ADApp for these files so we leave them there but 
+# need to install from this directory which requires using vpath.
+vpath common%Makefile $(ADCORE)/ADApp/
+CFG += commonLibraryMakefile
+CFG += commonDriverMakefile
 
 include $(TOP)/configure/RULES
 #----------------------------------------

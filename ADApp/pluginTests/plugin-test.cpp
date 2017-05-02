@@ -7,8 +7,9 @@
  *  Author: Ulrik Kofoed Pedersen, Diamond Light Source.
  *          20. March 2015
  */
-
+#ifndef BOOST_USE_STATIC_LINK
 #define BOOST_TEST_DYN_LINK
+#endif
 #define BOOST_TEST_MODULE "NDPlugin Tests"
 #include <boost/test/unit_test.hpp>
 

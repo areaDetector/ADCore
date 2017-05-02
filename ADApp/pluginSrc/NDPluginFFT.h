@@ -28,13 +28,30 @@
 #define FFTImaginaryString       "FFT_IMAGINARY"        /* (asynFloat64Array, r/o) Imaginary part of FFT */
 #define FFTAbsValueString        "FFT_ABS_VALUE"        /* (asynFloat64Array, r/o) Absolute value of FFT */
 
+typedef struct {
+  int rank;
+  int nTimeXIn;
+  int nTimeYIn;
+  int nTimeX;
+  int nTimeY;
+  int nFreqX;
+  int nFreqY;
+  int suppressDC;
+  int numAverage;
+  double *timeSeries;
+  double *FFTComplex;
+  double *FFTReal;
+  double *FFTImaginary;
+  double *FFTAbsValue;
+} fftPvt_t;
+
 /** Compute FFTs on signals */
 class epicsShareClass NDPluginFFT : public NDPluginDriver {
 public:
   NDPluginFFT(const char *portName, int queueSize, int blockingCallbacks, 
               const char *NDArrayPort, int NDArrayAddr, 
               int maxBuffers, size_t maxMemory,
-              int priority, int stackSize);
+              int priority, int stackSize, int maxThreads);
 
   //These methods override the virtual methods in the base class
   void processCallbacks(NDArray *pArray);
@@ -55,39 +72,28 @@ protected:
   int P_FFTReal;
   int P_FFTImaginary;
   int P_FFTAbsValue;
-  #define LAST_NDPLUGIN_FFT_PARAM P_FFTAbsValue
                                 
 private:
-  template <typename epicsType> void convertToDoubleT(NDArray *pArray);
-  void allocateArrays();
-  void createAxisArrays();
-  void computeFFT_1D();
-  void computeFFT_2D();
-  void doArrayCallbacks();
+  template <typename epicsType> void convertToDoubleT(NDArray *pArray, fftPvt_t *pPvt);
+  void allocateArrays(fftPvt_t *pPvt, bool sizeChanged);
+  void createAxisArrays(fftPvt_t *pPvt);
+  void computeFFT_1D(fftPvt_t *pPvt);
+  void computeFFT_2D(fftPvt_t *pPvt);
+  void doArrayCallbacks(fftPvt_t *pPvt);
   int nextPow2(int v);
 
-  int rank_;
+  int numAverage_;
   int uniqueId_;
   int nTimeXIn_;
   int nTimeYIn_;
-  int nTimeX_;
-  int nTimeY_;
+  // Note FFTAbsValue_ is guaranteed to be size nFreqX_ * nFreqY_
+  // These could change between when a thread began computing the FFT and when it does the callbacks
   int nFreqX_;
   int nFreqY_;
-  int suppressDC_;
-  int numAverage_;
-  double oldFraction_;
-  double newFraction_;
+  double *FFTAbsValue_;
   double timePerPoint_; /* Actual time between points in input arrays */
   double *timeAxis_;
   double *freqAxis_;
-  double *timeSeries_;
-  double *FFTComplex_;
-  double *FFTReal_;
-  double *FFTImaginary_;
-  double *FFTAbsValue_;
 };
-
-#define NUM_NDPLUGIN_FFT_PARAMS (int)(&LAST_NDPLUGIN_FFT_PARAM - &FIRST_NDPLUGIN_FFT_PARAM + 1)
     
 #endif //NDPluginFFT_H

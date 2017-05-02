@@ -19,7 +19,8 @@ typedef enum {
 
 /** Structure defining an overlay */
 typedef struct NDOverlay {
-    bool changed;
+    int changed;
+    int use;
     int PositionX;
     int PositionY;
     int SizeX;
@@ -65,15 +66,15 @@ public:
     NDPluginOverlay(const char *portName, int queueSize, int blockingCallbacks, 
                  const char *NDArrayPort, int NDArrayAddr, int maxOverlays, 
                  int maxBuffers, size_t maxMemory,
-                 int priority, int stackSize);
+                 int priority, int stackSize, int maxThreads);
     /* These methods override the virtual methods in the base class */
     void processCallbacks(NDArray *pArray);
     asynStatus writeInt32(asynUser *pasynUser, epicsInt32 value);
 
     /* These methods are new to this class */
-    template <typename epicsType> void doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay);
-    int doOverlay(NDArray *pArray, NDOverlay_t *pOverlay);
-    template <typename epicsType> void setPixel(epicsType *pValue, NDOverlay_t *pOverlay);
+    template <typename epicsType> void doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay, NDArrayInfo_t *pArrayInfo);
+    int doOverlay(NDArray *pArray, NDOverlay_t *pOverlay, NDArrayInfo_t *pArrayInfo);
+    template <typename epicsType> void setPixel(epicsType *pValue, NDOverlay_t *pOverlay, NDArrayInfo_t *pArrayInfo);
 
 protected:
     int NDPluginOverlayMaxSizeX;
@@ -97,15 +98,12 @@ protected:
     int NDPluginOverlayTimeStampFormat;
     int NDPluginOverlayFont;
     int NDPluginOverlayDisplayText;
-    #define LAST_NDPLUGIN_OVERLAY_PARAM NDPluginOverlayDisplayText
                                 
 private:
-    int maxOverlays;
-    NDArrayInfo arrayInfo;
-    NDOverlay_t *pOverlays;    /* Array of NDOverlay structures */
-    NDOverlay_t *pOverlay;
+    int maxOverlays_;
+    NDArrayInfo prevArrayInfo_;
+    std::vector<NDOverlay_t> prevOverlays_;    /* Vector of NDOverlay structures */
 
 };
-#define NUM_NDPLUGIN_OVERLAY_PARAMS ((int)(&LAST_NDPLUGIN_OVERLAY_PARAM - &FIRST_NDPLUGIN_OVERLAY_PARAM + 1))
     
 #endif

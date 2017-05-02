@@ -57,7 +57,7 @@ struct FFTPluginTestFixture
 
   FFTPluginTestFixture()
   {
-    arrayPool = new NDArrayPool(100, 0);
+    arrayPool = new NDArrayPool(250, 0);
 
     // Asyn manager doesn't like it if we try to reuse the same port name for multiple drivers
     // (even if only one is ever instantiated at once), so we change it slightly for each test case.
@@ -81,7 +81,8 @@ struct FFTPluginTestFixture
                                                                       0,
                                                                       0,
                                                                       0,
-                                                                      2000000));
+                                                                      0,
+                                                                      1));
     // This is the mock downstream plugin
     downstream_plugin = new TestingPlugin(testport.c_str(), 0);
 
@@ -97,19 +98,19 @@ struct FFTPluginTestFixture
     size_t tmpdims_1d[] = {20};
     dims_1d.assign(tmpdims_1d, tmpdims_1d + sizeof(tmpdims_1d)/sizeof(tmpdims_1d[0]));
     arrays_1d.resize(200); // We create 200 1D arrays
-    fillNDArrays(dims_1d, NDFloat32, arrays_1d); // Fill some NDArrays with unimportant data
+    fillNDArraysFromPool(dims_1d, NDFloat32, arrays_1d, arrayPool); // Fill some NDArrays with unimportant data
 
     // 2D: image of 20x40 pixels
     size_t tmpdims_2d[] = {20,40};
     dims_2d.assign(tmpdims_2d, tmpdims_2d + sizeof(tmpdims_2d)/sizeof(tmpdims_2d[0]));
     arrays_2d.resize(24);
-    fillNDArrays(dims_2d, NDFloat32, arrays_2d);
+    fillNDArraysFromPool(dims_2d, NDFloat32, arrays_2d, arrayPool);
 
     // 3D: four channels with 2D images of 5x6 pixel (like an RGB image)
     size_t tmpdims_3d[] = {4,5,6};
     dims_3d.assign(tmpdims_3d, tmpdims_3d + sizeof(tmpdims_3d)/sizeof(tmpdims_3d[0]));
     arrays_3d.resize(24);
-    fillNDArrays(dims_3d, NDFloat32, arrays_3d);
+    fillNDArraysFromPool(dims_3d, NDFloat32, arrays_3d, arrayPool);
 }
 
   ~FFTPluginTestFixture()

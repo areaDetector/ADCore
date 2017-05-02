@@ -14,9 +14,15 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sstream>
+#include <fstream>
+
+#include <libxml/parser.h>
 
 #include <epicsString.h>
 #include <epicsMutex.h>
+#include <epicsMutex.h>
+#include <macLib.h>
 #include <cantProceed.h>
 
 #include <asynDriver.h>
@@ -25,7 +31,6 @@
 #define epicsExportSharedSymbols
 #include <shareLib.h>
 #include "ADCoreVersion.h"
-#include "tinyxml.h"
 #include "PVAttribute.h"
 #include "paramAttribute.h"
 #include "functAttribute.h"
@@ -73,7 +78,7 @@ asynStatus asynNDArrayDriver::checkPath()
     
     getStringParam(NDFilePath, sizeof(filePath), filePath);
     len = strlen(filePath);
-    if (len == 0) return(asynSuccess);
+    if (len == 0) return asynSuccess;
     /* If the path contains a trailing '/' or '\' remove it, because Windows won't find
      * the directory if it has that trailing character */
     lastChar = filePath[len-1];
@@ -253,8 +258,6 @@ asynStatus asynNDArrayDriver::createFileName(int maxChars, char *filePath, char 
 }
 
 /** Create this driver's NDAttributeList (pAttributeList) by reading an XML file
-  * \param[in] fileName  The name of the XML file to read.
-  * 
   * This clears any existing attributes from this drivers' NDAttributeList and then creates a new list
   * based on the XML file.  These attributes can then be associated with an NDArray by calling asynNDArrayDriver::getAttributes()
   * passing it pNDArray->pAttributeList.
@@ -296,45 +299,116 @@ asynStatus asynNDArrayDriver::createFileName(int maxChars, char *filePath, char 
   * <b>description</b> determines the description for this attribute.  It is not required, and the default is a NULL string.
   *
   */
-asynStatus asynNDArrayDriver::readNDAttributesFile(const char *fileName)
+asynStatus asynNDArrayDriver::readNDAttributesFile()
 {
+    const char *pName, *pSource, *pAttrType, *pDescription;
+    xmlDocPtr doc;
+    xmlNode *Attr, *Attrs;
+    std::ostringstream buff;
+    std::string buffer;
+    std::ifstream infile;
+    std::string attributesMacros;
+    std::string fileName;
+    MAC_HANDLE *macHandle;
+    char **macPairs;
+    int bufferSize;
+    char *tmpBuffer = 0;
+    int status;
     static const char *functionName = "readNDAttributesFile";
     
-    const char *pName, *pSource, *pAttrType, *pDescription=NULL;
-    TiXmlDocument doc(fileName);
-    TiXmlElement *Attr, *Attrs;
-    
+    getStringParam(NDAttributesFile, fileName);
+    getStringParam(NDAttributesMacros, attributesMacros);
+
     /* Clear any existing attributes */
     this->pAttributeList->clear();
-    if (!fileName || (strlen(fileName) == 0)) return(asynSuccess);
+    if (fileName.length() == 0) return asynSuccess;
 
-    if (!doc.LoadFile()) {
+    infile.open(fileName.c_str());
+    if (infile.fail()) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-            "%s:%s: cannot open file %s error=%s\n", 
-            driverName, functionName, fileName, doc.ErrorDesc());
-        return(asynError);
+            "%s::%s error opening file %s\n", 
+            driverName, functionName, fileName.c_str());
+        setIntegerParam(NDAttributesStatus, NDAttributesFileNotFound);
+        return asynError;
     }
-    Attrs = doc.FirstChildElement( "Attributes" );
-    if (!Attrs) {
+    buff << infile.rdbuf();
+    buffer = buff.str();
+
+    // We now have file in memory.  Do macro substitution if required
+    if (attributesMacros.length() > 0) {
+        macCreateHandle(&macHandle, 0);
+        status = macParseDefns(macHandle, attributesMacros.c_str(), &macPairs);
+        if (status < 0) { 
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s::%s, error parsing macros\n", driverName, functionName);
+            goto done_macros;
+        }
+        status = macInstallMacros(macHandle, macPairs);
+        if (status < 0) {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s::%s, error installed macros\n", driverName, functionName);
+            goto done_macros;
+        }
+        // Create a temporary buffer 10 times larger than input buffer
+        bufferSize = buffer.length() * 10;
+        tmpBuffer = (char *)malloc(bufferSize);
+        status = macExpandString(macHandle, buffer.c_str(), tmpBuffer, bufferSize);
+        // NOTE: There is a bug in macExpandString up to 3.14.12.6 and 3.15.5 so that it does not return <0
+        // if there is an undefined macro which is not the last macro in the string.
+        // We work around this by testing also if the returned string contains ",undefined)".  This is
+        // unlikely to occur otherwise.  Eventually we can remove this test.
+        if ((status < 0)  || strstr(tmpBuffer, ",undefined)")) {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s::%s, error expanding macros\n", driverName, functionName);
+            goto done_macros;
+        }
+        if (status >= bufferSize) {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s::%s, error macro buffer too small\n", driverName, functionName);
+            goto done_macros;
+        }
+        buffer = tmpBuffer;
+done_macros:
+        macDeleteHandle(macHandle);
+        free(tmpBuffer);
+        if (status < 0) {
+            setIntegerParam(NDAttributesStatus, NDAttributesMacroError);
+            return asynError;
+        } 
+    }
+    // Assume failure
+    setIntegerParam(NDAttributesStatus, NDAttributesXMLSyntaxError);
+    doc = xmlReadMemory(buffer.c_str(), buffer.length(), "noname.xml", NULL, 0);
+    if (doc == NULL) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-            "%s:%s: cannot find Attributes element\n", 
-            driverName, functionName);
-        return(asynError);
+            "%s:%s: error creating doc\n", driverName, functionName);
+        return asynError;
     }
-    for (Attr = Attrs->FirstChildElement(); Attr; Attr = Attr->NextSiblingElement()) {
-        pName = Attr->Attribute("name");
+    Attrs = xmlDocGetRootElement(doc);
+    if ((!xmlStrEqual(Attrs->name, (const xmlChar *)"Attributes"))) {
+        asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+            "%s:%s: cannot find Attributes element\n", driverName, functionName);
+        return asynError;
+    }
+    for (Attr = xmlFirstElementChild(Attrs); Attr; Attr = xmlNextElementSibling(Attr)) {
+        pName = (const char *)xmlGetProp(Attr, (const xmlChar *)"name");
         if (!pName) {
             asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-                "%s:%s: name attribute not found\n", 
-                driverName, functionName);
-            return(asynError);
+                "%s:%s: name attribute not found\n", driverName, functionName);
+            return asynError;
         }
-        pDescription = Attr->Attribute("description");
-        pSource = Attr->Attribute("source");
-        pAttrType = Attr->Attribute("type");
+        pDescription = (const char *)xmlGetProp(Attr, (const xmlChar *)"description");
+        if (!pDescription) pDescription = "";
+        pSource = (const char *)xmlGetProp(Attr, (const xmlChar *)"source");
+        if (!pSource) {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s:%s: source attribute not found for attribute %s\n", driverName, functionName, pName);
+            return asynError;
+        }
+        pAttrType = (const char *)xmlGetProp(Attr, (const xmlChar *)"type");
         if (!pAttrType) pAttrType = NDAttribute::attrSourceString(NDAttrSourceEPICSPV);
         if (strcmp(pAttrType, NDAttribute::attrSourceString(NDAttrSourceEPICSPV)) == 0) {
-            const char *pDBRType = Attr->Attribute("dbrtype");
+            const char *pDBRType = (const char *)xmlGetProp(Attr, (const xmlChar *)"dbrtype");
             int dbrType = DBR_NATIVE;
             if (pDBRType) {
                 if      (!strcmp(pDBRType, "DBR_CHAR"))   dbrType = DBR_CHAR;
@@ -348,9 +422,8 @@ asynStatus asynNDArrayDriver::readNDAttributesFile(const char *fileName)
                 else if (!strcmp(pDBRType, "DBR_NATIVE")) dbrType = DBR_NATIVE;
                 else {
                     asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
-                        "%s:%s: unknown dbrType = %s\n", 
-                        driverName, functionName, pDBRType);
-                    return(asynError);
+                        "%s:%s: unknown dbrType = %s for attribute %s\n", driverName, functionName, pDBRType, pName);
+                   return asynError;
                 }
             }
             asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
@@ -361,9 +434,9 @@ asynStatus asynNDArrayDriver::readNDAttributesFile(const char *fileName)
             this->pAttributeList->add(pPVAttribute);
 #endif
         } else if (strcmp(pAttrType, NDAttribute::attrSourceString(NDAttrSourceParam)) == 0) {
-            const char *pDataType = Attr->Attribute("datatype");
+            const char *pDataType = (const char *)xmlGetProp(Attr, (const xmlChar *)"datatype");
             if (!pDataType) pDataType = "int";
-            const char *pAddr = Attr->Attribute("addr");
+            const char *pAddr = (const char *)xmlGetProp(Attr, (const xmlChar *)"addr");
             int addr=0;
             if (pAddr) addr = strtol(pAddr, NULL, 0);
             asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
@@ -372,7 +445,7 @@ asynStatus asynNDArrayDriver::readNDAttributesFile(const char *fileName)
             paramAttribute *pParamAttribute = new paramAttribute(pName, pDescription, pSource, addr, this, pDataType);
             this->pAttributeList->add(pParamAttribute);
         } else if (strcmp(pAttrType, NDAttribute::attrSourceString(NDAttrSourceFunct)) == 0) {
-            const char *pParam = Attr->Attribute("param");
+            const char *pParam = (const char *)xmlGetProp(Attr, (const xmlChar *)"param");
             if (!pParam) pParam = epicsStrDup("");
             asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
                 "%s:%s: Name=%s, function=%s, pParam=%s, pDescription=%s\n",
@@ -381,13 +454,18 @@ asynStatus asynNDArrayDriver::readNDAttributesFile(const char *fileName)
             functAttribute *pFunctAttribute = new functAttribute(pName, pDescription, pSource, pParam);
             this->pAttributeList->add(pFunctAttribute);
 #endif
+        } else {
+            asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
+                "%s:%s: unknown attribute type = %s for attribute %s\n", driverName, functionName, pAttrType, pName);
+            return asynError;
         }
     }
+    setIntegerParam(NDAttributesStatus, NDAttributesOK);
     // Wait a short while for channel access callbacks on EPICS PVs
     epicsThreadSleep(0.5);
     // Get the initial values
     this->pAttributeList->updateValues();
-    return(asynSuccess);
+    return asynSuccess;
 }
 
 
@@ -430,8 +508,9 @@ asynStatus asynNDArrayDriver::writeOctet(asynUser *pasynUser, const char *value,
     /* Set the parameter in the parameter library. */
     status = (asynStatus)setStringParam(addr, function, (char *)value);
 
-    if (function == NDAttributesFile) {
-        this->readNDAttributesFile(value);
+    if ((function == NDAttributesFile) ||
+        (function == NDAttributesMacros)) {
+        this->readNDAttributesFile();
     } else if (function == NDFilePath) {
         status = this->checkPath();
         if (status == asynError) {
@@ -579,13 +658,12 @@ void asynNDArrayDriver::report(FILE *fp, int details)
 
 
 /** This is the constructor for the asynNDArrayDriver class.
-  * portName, maxAddr, paramTableSize, interfaceMask, interruptMask, asynFlags, autoConnect, priority and stackSize
+  * portName, maxAddr, interfaceMask, interruptMask, asynFlags, autoConnect, priority and stackSize
   * are simply passed to asynPortDriver::asynPortDriver. 
   * asynNDArrayDriver creates an NDArrayPool object to allocate NDArray
   * objects. maxBuffers and maxMemory are passed to NDArrayPool::NDArrayPool.
   * \param[in] portName The name of the asyn port driver to be created.
   * \param[in] maxAddr The maximum  number of asyn addr addresses this driver supports. 1 is minimum.
-  * \param[in] numParams The number of parameters in the derived class.
   * \param[in] maxBuffers The maximum number of NDArray buffers that the NDArrayPool for this driver is 
   *            allowed to allocate. Set this to 0 to allow an unlimited number of buffers.
   * \param[in] maxMemory The maximum amount of memory that the NDArrayPool for this driver is 
@@ -595,19 +673,28 @@ void asynNDArrayDriver::report(FILE *fp, int details)
   * \param[in] asynFlags Flags when creating the asyn port driver; includes ASYN_CANBLOCK and ASYN_MULTIDEVICE.
   * \param[in] autoConnect The autoConnect flag for the asyn port driver.
   * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  *            This value should also be used for any other threads this object creates.
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  *            This value should also be used for any other threads this object creates.
   */
 
-asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numParams, int maxBuffers,
+asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int maxBuffers,
                                      size_t maxMemory, int interfaceMask, int interruptMask,
                                      int asynFlags, int autoConnect, int priority, int stackSize)
-    : asynPortDriver(portName, maxAddr, numParams+NUM_NDARRAY_PARAMS, 
+    : asynPortDriver(portName, maxAddr, 0, 
                      interfaceMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynGenericPointerMask | asynDrvUserMask, 
                      interruptMask | asynInt32Mask | asynFloat64Mask | asynOctetMask | asynInt32ArrayMask | asynGenericPointerMask,
                      asynFlags, autoConnect, priority, stackSize),
       pNDArrayPool(NULL)
 {
     char versionString[20];
+
+    /* Save the stack size and priority for other threads that this object may create */
+    if (stackSize <= 0) stackSize = epicsThreadGetStackSize(epicsThreadStackMedium);
+    threadStackSize_ = stackSize;
+    if (priority <= 0) priority = epicsThreadPriorityMedium;
+    threadPriority_ = priority;
+
     this->pNDArrayPool = new NDArrayPool(maxBuffers, maxMemory);
 
     /* Allocate pArray pointer array */
@@ -653,6 +740,8 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     createParam(NDFileCreateDirString,        asynParamInt32,           &NDFileCreateDir);
     createParam(NDFileTempSuffixString,       asynParamOctet,           &NDFileTempSuffix);
     createParam(NDAttributesFileString,       asynParamOctet,           &NDAttributesFile);
+    createParam(NDAttributesStatusString,     asynParamInt32,           &NDAttributesStatus);
+    createParam(NDAttributesMacrosString,     asynParamOctet,           &NDAttributesMacros);
     createParam(NDArrayDataString,            asynParamGenericPointer,  &NDArrayData);
     createParam(NDArrayCallbacksString,       asynParamInt32,           &NDArrayCallbacks);
     createParam(NDPoolMaxBuffersString,       asynParamInt32,           &NDPoolMaxBuffers);
@@ -679,7 +768,6 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     setIntegerParam(NDArraySizeZ,   0);
     setIntegerParam(NDArraySize,    0);
     setIntegerParam(NDNDimensions,  0);
-    setIntegerParam(NDDataType,     NDUInt8);
     setIntegerParam(NDColorMode,    NDColorModeMono);
     setIntegerParam(NDUniqueId,     0);
     setDoubleParam (NDTimeStamp,    0.);
@@ -703,6 +791,9 @@ asynNDArrayDriver::asynNDArrayDriver(const char *portName, int maxAddr, int numP
     setIntegerParam(NDFileNumCaptured, 0);
     setIntegerParam(NDFileCreateDir, 0);
     setStringParam (NDFileTempSuffix, "");
+    setStringParam (NDAttributesFile, "");
+    setIntegerParam(NDAttributesStatus, NDAttributesFileNotFound);
+    setStringParam (NDAttributesMacros, "");
 
     setIntegerParam(NDPoolMaxBuffers, this->pNDArrayPool->maxBuffers());
     setIntegerParam(NDPoolAllocBuffers, this->pNDArrayPool->numBuffers());

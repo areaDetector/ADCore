@@ -1,0 +1,29 @@
+#=================================================================#
+# Template file: NDScatter.template
+# Database for NDPluginScatter plugin
+# Mark Rivers
+# February 26, 2017
+
+include "NDPluginBase.template"
+
+###################################################################
+#  This record is for the scatter method                          #
+###################################################################
+record(mbbo, "$(P)$(R)ScatterMethod")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SCATTER_METHOD")
+    field(ZRST, "Round robin")
+    field(ZRVL, "0")
+    field(SCAN, "I/O Intr")
+}
+
+record(mbbi, "$(P)$(R)ScatterMethod_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SCATTER_METHOD")
+    field(ZRST, "Round robin")
+    field(ZRVL, "0")
+    field(SCAN, "I/O Intr")
+}

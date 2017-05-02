@@ -45,7 +45,7 @@ static asynUser *pasynUserSelf = NULL;
 PVAttribute::PVAttribute(const char *pName, const char *pDescription,
                          const char *pSource, chtype dbrType)
     : NDAttribute(pName, pDescription, NDAttrSourceEPICSPV, pSource, NDAttrUndefined, 0),
-    dbrType(dbrType), callbackString(0)
+    dbrType(dbrType), callbackString(0), connectedOnce(false)
 {
     static const char *functionName = "PVAttribute";
     
@@ -73,9 +73,6 @@ PVAttribute::PVAttribute(const char *pName, const char *pDescription,
     /* Set connection callback on this PV */
     SEVCHK(ca_create_channel(pSource, connectCallbackC, this, 10 ,&this->chanId),
            "ca_create_channel");
-
-    connectedOnce = false;
-
 }
 
 /** Copy constructor for an EPICS PV attribute

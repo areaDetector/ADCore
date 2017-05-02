@@ -465,6 +465,7 @@ record(mbbo, "$(P)$(R)DataType")
    field(SXVL, "6")
    field(SVST, "Float64")
    field(SVVL, "7")
+   field(VAL,  "$(DATATYPE=0)")
    info(autosaveFields, "VAL")
 }
 
@@ -634,7 +635,21 @@ record(bi, "$(P)$(R)ArrayCallbacks_RBV")
 }
 
 ###################################################################
-#  This record is the name of a file defining attributes        # 
+#  This record contains macro definitions for the attributes      # 
+###################################################################
+
+record(waveform, "$(P)$(R)NDAttributesMacros")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynOctetWrite")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ND_ATTRIBUTES_MACROS")
+    field(FTVL, "CHAR")
+    field(NELM, "256")
+    info(autosaveFields, "VAL")
+}
+
+###################################################################
+#  This record is the name of a file defining attributes          # 
 ###################################################################
 
 record(waveform, "$(P)$(R)NDAttributesFile")
@@ -645,6 +660,29 @@ record(waveform, "$(P)$(R)NDAttributesFile")
     field(FTVL, "CHAR")
     field(NELM, "256")
     info(autosaveFields, "VAL")
+}
+
+###################################################################
+#  This record defines the status of reading attributes file      # 
+###################################################################
+
+record(mbbi, "$(P)$(R)NDAttributesStatus")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))ND_ATTRIBUTES_STATUS")
+    field(ZRVL, "0")
+    field(ZRST, "Attributes file OK")
+    field(ZRSV, "NO_ALARM")
+    field(ONVL, "1")
+    field(ONST, "File not found")
+    field(ONSV, "MINOR")
+    field(TWVL, "2")
+    field(TWST, "XML syntax error")
+    field(TWSV, "MAJOR")
+    field(THVL, "3")
+    field(THST, "Macro substitution error")
+    field(THSV, "MAJOR")
+    field(SCAN, "I/O Intr")
 }
 
 ###################################################################

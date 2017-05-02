@@ -33,7 +33,7 @@
 #define MIN(A,B) (A)<(B)?(A):(B)
 
 #define DEFAULT_NUM_TSPOINTS 2048
-  
+
 /**
  * Templated function to calculate statistics on different NDArray data types.
  * \param[in] NDArray The pointer to the NDArray object
@@ -205,16 +205,17 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
   //This function is called with the mutex already locked.  
   //It unlocks it during long calculations when private structures don't need to be protected.
   
-  int use = 0;
   int itemp = 0;
   int dim = 0;
   asynStatus status = asynSuccess;
   NDROI *pROI;
   int TSAcquiring;
   const char* functionName = "NDPluginROIStat::processCallbacks";
+  NDROI_t *pROIs = new NDROI[maxROIs_];
+  if(!pROIs) {cantProceed(functionName);}
 
   /* Call the base class method */
-  NDPluginDriver::processCallbacks(pArray);
+  NDPluginDriver::beginProcessCallbacks(pArray);
 
   // This plugin only works with 1-D or 2-D arrays
   if ((pArray->ndims < 1) || (pArray->ndims > 2)) {
@@ -231,10 +232,9 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
 
   /* Loop over the ROIs in this driver */
   for (int roi=0; roi<maxROIs_; ++roi) {
-    
-    pROI = &pROIs_[roi];
-    getIntegerParam(roi, NDPluginROIStatUse, &use);
-    if (!use) {
+    pROI = &pROIs[roi];
+    getIntegerParam(roi, NDPluginROIStatUse, &pROI->use);
+    if (!pROI->use) {
       continue;
     }
 
@@ -266,19 +266,34 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
       setIntegerParam(roi, NDPluginROIStatDim1Min,  (int)pROI->offset[1]);
       setIntegerParam(roi, NDPluginROIStatDim1Size, (int)pROI->size[1]);
     }
+  }
         
-    /* This function is called with the lock taken, and it must be set when we exit.
-     * The following code can be exected without the mutex because we are not accessing elements of
-     * pPvt that other threads can access. */
-    this->unlock();
+  /* This function is called with the lock taken, and it must be set when we exit.
+   * The following code can be exected without the mutex because we are not accessing elements of
+   * pPvt that other threads can access. */
+  this->unlock();
     
+  for (int roi=0; roi<maxROIs_; ++roi) {
+    pROI = &pROIs[roi];
+    if (!pROI->use) {
+      continue;
+    }
     status = doComputeStatistics(pArray, pROI);
     if (status != asynSuccess) {
       asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
         "%s: doComputeStatistics failed. status=%d\n", 
         functionName, status);
     }
+  }
 
+  /* We must enter the loop and exit with the mutex locked */
+  this->lock();
+
+  for (int roi=0; roi<maxROIs_; ++roi) {
+    pROI = &pROIs[roi];
+    if (!pROI->use) {
+      continue;
+    }
     if (TSAcquiring) {
       double *pData = timeSeries_ + (roi * MAX_TIME_SERIES_TYPES * numTSPoints_);
       pData[TSMinValue*numTSPoints_ + currentTSPoint_]  = pROI->min;
@@ -289,8 +304,6 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
       pData[TSTimestamp*numTSPoints_ + currentTSPoint_] = pArray->timeStamp;
     }
 
-    /* We must enter the loop and exit with the mutex locked */
-    this->lock();
     setDoubleParam(roi, NDPluginROIStatMinValue,    pROI->min);
     setDoubleParam(roi, NDPluginROIStatMaxValue,    pROI->max);
     setDoubleParam(roi, NDPluginROIStatMeanValue,   pROI->mean);
@@ -312,24 +325,9 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
     }
   }
 
-  int arrayCallbacks = 0;
-  getIntegerParam(NDArrayCallbacks, &arrayCallbacks);
-  if (arrayCallbacks == 1) {
-    NDArray *pArrayOut = this->pNDArrayPool->copy(pArray, NULL, 1);
-    if (pArrayOut != NULL) {
-      this->getAttributes(pArrayOut->pAttributeList);
-      this->unlock();
-      doCallbacksGenericPointer(pArrayOut, NDArrayData, 0);
-      this->lock();
-      pArrayOut->release();
-    }
-    else {
-      asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR, 
-        "%s: Couldn't allocate output array. Callbacks failed.\n", 
-        functionName);
-    }
-  }
+  NDPluginDriver::endProcessCallbacks(pArray, true, true);
   callParamCallbacks();
+  delete pROIs;
 }
 
 /** Called when asyn clients call pasynInt32->write().
@@ -476,26 +474,25 @@ void NDPluginROIStat::doTimeSeriesCallbacks()
   *            allowed to allocate. Set this to -1 to allow an unlimited amount of memory.
   * \param[in] priority The thread priority for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
   * \param[in] stackSize The stack size for the asyn port driver thread if ASYN_CANBLOCK is set in asynFlags.
+  * \param[in] maxThreads The maximum number of threads this driver is allowed to use. If 0 then 1 will be used.
   */
 NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blockingCallbacks,
                          const char *NDArrayPort, int NDArrayAddr, int maxROIs,
                          int maxBuffers, size_t maxMemory,
-                         int priority, int stackSize)
+                         int priority, int stackSize, int maxThreads)
     /* Invoke the base class constructor */
     : NDPluginDriver(portName, queueSize, blockingCallbacks,
-             NDArrayPort, NDArrayAddr, maxROIs, NUM_NDPLUGIN_ROISTAT_PARAMS, maxBuffers, maxMemory,
+             NDArrayPort, NDArrayAddr, maxROIs, maxBuffers, maxMemory,
              asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
              asynInt32ArrayMask | asynFloat64Mask | asynFloat64ArrayMask | asynGenericPointerMask,
-             ASYN_MULTIDEVICE, 1, priority, stackSize)
+             ASYN_MULTIDEVICE, 1, priority, stackSize, maxThreads)
 {
-  const char *functionName = "NDPluginROIStat::NDPluginROIStat";
+//  const char *functionName = "NDPluginROIStat::NDPluginROIStat";
 
   if (maxROIs < 1) {
     maxROIs = 1;
   }
   maxROIs_ = maxROIs;
-  pROIs_ = new NDROI[maxROIs];
-  if(!pROIs_) {cantProceed(functionName);}
   
   /* ROI general parameters */
   createParam(NDPluginROIStatFirstString,             asynParamInt32, &NDPluginROIStatFirst);
@@ -583,10 +580,10 @@ NDPluginROIStat::NDPluginROIStat(const char *portName, int queueSize, int blocki
 extern "C" int NDROIStatConfigure(const char *portName, int queueSize, int blockingCallbacks,
                                  const char *NDArrayPort, int NDArrayAddr, int maxROIs,
                                  int maxBuffers, size_t maxMemory,
-                                 int priority, int stackSize)
+                                 int priority, int stackSize, int maxThreads)
 {
     NDPluginROIStat *pPlugin = new NDPluginROIStat(portName, queueSize, blockingCallbacks, NDArrayPort, NDArrayAddr, maxROIs,
-                                                   maxBuffers, maxMemory, priority, stackSize);
+                                                   maxBuffers, maxMemory, priority, stackSize, maxThreads);
     return pPlugin->start();
 }
 
@@ -601,6 +598,7 @@ static const iocshArg initArg6 = { "maxBuffers",iocshArgInt};
 static const iocshArg initArg7 = { "maxMemory",iocshArgInt};
 static const iocshArg initArg8 = { "priority",iocshArgInt};
 static const iocshArg initArg9 = { "stackSize",iocshArgInt};
+static const iocshArg initArg10 = { "maxThreads",iocshArgInt};
 static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg1,
                                             &initArg2,
@@ -610,14 +608,15 @@ static const iocshArg * const initArgs[] = {&initArg0,
                                             &initArg6,
                                             &initArg7,
                                             &initArg8,
-                                            &initArg9};
-static const iocshFuncDef initFuncDef = {"NDROIStatConfigure",10,initArgs};
+                                            &initArg9,
+                                            &initArg10};
+static const iocshFuncDef initFuncDef = {"NDROIStatConfigure",11,initArgs};
 static void initCallFunc(const iocshArgBuf *args)
 {
     NDROIStatConfigure(args[0].sval, args[1].ival, args[2].ival,
                    args[3].sval, args[4].ival, args[5].ival,
                    args[6].ival, args[7].ival, args[8].ival,
-                   args[9].ival);
+                   args[9].ival, args[10].ival);
 }
 
 extern "C" void NDROIStatRegister(void)

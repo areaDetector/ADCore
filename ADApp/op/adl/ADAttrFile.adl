@@ -1,14 +1,14 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-5/ADCore/ADApp/op/adl/ADAttrFile.adl"
-	version=030107
+	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/ADAttrFile.adl"
+	version=030109
 }
 display {
 	object {
-		x=4
-		y=30
+		x=214
+		y=81
 		width=350
-		height=60
+		height=110
 	}
 	clr=14
 	bclr=4
@@ -116,7 +116,7 @@ rectangle {
 		x=0
 		y=0
 		width=350
-		height=60
+		height=110
 	}
 	"basic attribute" {
 		clr=14
@@ -125,8 +125,8 @@ rectangle {
 }
 text {
 	object {
-		x=13
-		y=29
+		x=25
+		y=30
 		width=40
 		height=20
 	}
@@ -138,9 +138,9 @@ text {
 }
 "text entry" {
 	object {
-		x=58
-		y=30
-		width=280
+		x=71
+		y=31
+		width=275
 		height=20
 	}
 	control {
@@ -148,6 +148,65 @@ text {
 		clr=14
 		bclr=51
 	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=5
+		y=55
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Macros"
+	align="horiz. right"
+}
+"text entry" {
+	object {
+		x=70
+		y=56
+		width=275
+		height=20
+	}
+	control {
+		chan="$(P)$(R)NDAttributesMacros"
+		clr=14
+		bclr=51
+	}
+	format="string"
+	limits {
+	}
+}
+text {
+	object {
+		x=5
+		y=80
+		width=60
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Status"
+	align="horiz. right"
+}
+"text update" {
+	object {
+		x=70
+		y=81
+		width=275
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)NDAttributesStatus"
+		clr=14
+		bclr=2
+	}
+	clrmod="alarm"
 	format="string"
 	limits {
 	}

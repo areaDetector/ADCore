@@ -26,5 +26,5 @@ public:
     virtual asynStatus writeFile(NDArray *pArray);
     virtual asynStatus closeFile();
 };
-#define NUM_NDFILE_NULL_PARAMS 0
+
 #endif

@@ -17,7 +17,7 @@
 #include <epicsEvent.h>
 #include <epicsTime.h>
 #include <iocsh.h>
-#include <tinyxml.h>
+#include <libxml/parser.h>
 #include <napi.h>
 #include <string.h>
 
@@ -162,7 +162,7 @@ asynStatus NDFileNexus::closeFile() {
   return status;
 }
 
-int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
+int NDFileNexus::processNode(xmlNode *curNode, NDArray *pArray) {
   int status = 0;
   const char *nodeName;
   const char *nodeValue;
@@ -200,11 +200,11 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
   getIntegerParam(addr, NDFileNumCapture, &numCapture);
   this->unlock();
 
-  nodeValue = curNode->Value();
+  nodeValue = (const char *)curNode->name;
   asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
             "%s:%s  Value=%s Type=%d\n", driverName, functionName,
-            curNode->Value(), curNode->Type());
-  nodeType = curNode->ToElement()->Attribute("type");
+            curNode->content, curNode->type);
+  nodeType = (const char *)xmlGetProp(curNode, (const xmlChar *)"type");
   NXstatus stat;
   if (strcmp (nodeValue, "NXroot") == 0) {
     this->iterateNodes(curNode, pArray);
@@ -254,7 +254,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
            (strcmp (nodeValue, "NXsubentry") ==0) ||
            (strcmp (nodeValue, "NXxraylens") ==0) ||
            (nodeType && strcmp (nodeType, "UserGroup") == 0) ) {
-  nodeName = curNode->ToElement()->Attribute("name");
+  nodeName = (const char *)xmlGetProp(curNode, (const xmlChar *)"name");
   if (nodeName == NULL) {
     nodeName = nodeValue;
   }
@@ -274,8 +274,8 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
     }
   }
   else if (strcmp (nodeValue, "Attr") ==0) {
-    nodeName = curNode->ToElement()->Attribute("name");
-    nodeSource = curNode->ToElement()->Attribute("source");
+    nodeName = (const char *)xmlGetProp(curNode, (const xmlChar *)"name");
+    nodeSource = (const char *)xmlGetProp(curNode, (const xmlChar *)"source");
     if (nodeType && strcmp(nodeType, "ND_ATTR") == 0 ) {
       pAttr = this->pFileAttributes->find(nodeSource);
       if (pAttr != NULL ){
@@ -299,7 +299,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
     }
     else if (nodeType && strcmp(nodeType, "CONST") == 0 ) {
       this->findConstText( curNode, nodeText);
-      nodeOuttype = curNode->ToElement()->Attribute("outtype");
+      nodeOuttype = (const char *)xmlGetProp(curNode, (const xmlChar *)"outtype");
       if (nodeOuttype == NULL){
         nodeOuttype = "NX_CHAR";
       }
@@ -324,7 +324,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
   }
 
   else {
-    nodeSource = curNode->ToElement()->Attribute("source");
+    nodeSource = (const char *)xmlGetProp(curNode, (const xmlChar *)"source");
     if (nodeType && strcmp(nodeType, "ND_ATTR") == 0 ) {
       pAttr = this->pFileAttributes->find(nodeSource);
       if ( pAttr != NULL) {
@@ -426,7 +426,7 @@ int NDFileNexus::processNode(TiXmlNode *curNode, NDArray *pArray) {
     else if (nodeType && strcmp(nodeType, "CONST") == 0 ){
       this->findConstText( curNode, nodeText);
 
-      nodeOuttype = curNode->ToElement()->Attribute("outtype");
+      nodeOuttype = (const char *)xmlGetProp(curNode, (const xmlChar *)"outtype");
       if (nodeOuttype == NULL){
         nodeOuttype = "NX_CHAR";
       }
@@ -537,12 +537,11 @@ int NDFileNexus::processStreamData(NDArray *pArray) {
 
 }
 
-void NDFileNexus::iterateNodes(TiXmlNode *curNode, NDArray *pArray) {
-  TiXmlNode *childNode;
-  childNode=0;
+void NDFileNexus::iterateNodes(xmlNode *curNode, NDArray *pArray) {
+  xmlNode *childNode;
 
-  while ((childNode = curNode->IterateChildren(childNode))) {
-    if (childNode->Type() <2 ){
+  for(childNode = curNode->children; childNode; childNode = childNode->next) {
+    if (childNode->type <2 ){
       this->processNode(childNode, pArray);
     }
   }
@@ -605,19 +604,18 @@ void NDFileNexus::getAttrTypeNSize(NDAttribute *pAttr, int *retType, int *retSiz
   *retSize = wordSize;
 }
 
-void NDFileNexus::findConstText(TiXmlNode *curNode, char *outtext) {
-  TiXmlNode *childNode;
-  childNode = 0;
-  childNode = curNode->IterateChildren(childNode);
+void NDFileNexus::findConstText(xmlNode *curNode, char *outtext) {
+  xmlNode *childNode;
+  childNode = curNode->children;
   if (childNode == NULL) {
     sprintf(outtext, "%s", "");
     return;
   }
-  while ((childNode) && (childNode->Type() != 4)) {
-    childNode = curNode->IterateChildren(childNode);
+  while ((childNode) && (childNode->type != 4)) {
+    childNode = childNode->next;
   }
   if(childNode != NULL) {
-    sprintf(outtext, "%s", childNode->Value());
+    sprintf(outtext, "%s", childNode->content);
   }
   else {
     sprintf(outtext, "%s", "");
@@ -789,7 +787,6 @@ asynStatus NDFileNexus::writeOctet(asynUser *pasynUser, const char *value,
 }
 
 void NDFileNexus::loadTemplateFile() {
-  bool loadStatus;
   int addr = 0;
   char fullFilename[2*MAX_FILENAME_LEN] = "";
   char template_path[MAX_FILENAME_LEN] = "";
@@ -799,13 +796,13 @@ void NDFileNexus::loadTemplateFile() {
   /* get the filename to be used for nexus template */
   getStringParam(addr, NDFileNexusTemplatePath, sizeof(template_path), template_path);
   getStringParam(addr, NDFileNexusTemplateFile, sizeof(template_file), template_file);
+  if (strlen(template_file) == 0) return;
   sprintf(fullFilename, "%s%s", template_path, template_file);
-  if (strlen(fullFilename) == 0) return;
 
   /* Load the Nexus template file */
-  loadStatus = this->configDoc.LoadFile(fullFilename);
+  this->configDoc = xmlReadFile(fullFilename, NULL, 0);
 
-  if (loadStatus != true ){
+  if (this->configDoc == NULL){
     asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
               "%s:%s: Parameter file %s is invalid\n",
               driverName, functionName, fullFilename);
@@ -821,7 +818,7 @@ void NDFileNexus::loadTemplateFile() {
     callParamCallbacks(addr, addr);
   }
 
-  this->rootNode = this->configDoc.RootElement();
+  this->rootNode = xmlDocGetRootElement(this->configDoc);
 
 }
 
@@ -846,9 +843,9 @@ NDFileNexus::NDFileNexus(const char *portName, int queueSize, int blockingCallba
    * This driver can block (because writing a file can be slow), and it is not multi-device.
    * Set autoconnect to 1.  priority and stacksize can be 0, which will use defaults. */
   : NDPluginFile(portName, queueSize, blockingCallbacks,
-                 NDArrayPort, NDArrayAddr, 1, NUM_NDFILE_NEXUS_PARAMS,
+                 NDArrayPort, NDArrayAddr, 1,
                  2, 0, asynGenericPointerMask, asynGenericPointerMask,
-                 ASYN_CANBLOCK, 1, priority, stackSize)
+                 ASYN_CANBLOCK, 1, priority, stackSize, 1)
 {
   //static const char *functionName = "NDFileNexus";
   createParam(NDFileNexusTemplatePathString,  asynParamOctet, &NDFileNexusTemplatePath);

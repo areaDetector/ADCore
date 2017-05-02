@@ -114,6 +114,17 @@ record(ai, "$(P)$(R)ExecutionTime_RBV")
 }
 
 ###################################################################
+#  This record requests that the plugin execute again with the    #
+#  same NDArray                                                   #
+###################################################################
+record(bo, "$(P)$(R)ProcessPlugin")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))PROCESS_PLUGIN")
+    field(VAL,  "1")
+}
+
+###################################################################
 #  These records control whether callbacks block or not           #
 ###################################################################
 record(bo, "$(P)$(R)BlockingCallbacks")
@@ -212,6 +223,128 @@ record(calc, "$(P)$(R)QueueUse") {
     field(HSV,  "MINOR")
     field(HYST, "1")
 }
+
+record(longout, "$(P)$(R)NumThreads")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_THREADS")
+    field(VAL,  "1")
+    field(PINI, "YES")
+}
+
+record(longin, "$(P)$(R)NumThreads_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))NUM_THREADS")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)MaxThreads_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))MAX_THREADS")
+    field(SCAN, "I/O Intr")
+}
+
+###################################################################
+#  These records control output array sorting                     #
+###################################################################
+record(mbbo, "$(P)$(R)SortMode") {
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SORT_MODE")
+    field(ZRVL, "0")
+    field(ZRST, "Unsorted")
+    field(ONVL, "1")
+    field(ONST, "Sorted")
+}
+
+record(mbbi, "$(P)$(R)SortMode_RBV") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SORT_MODE")
+    field(ZRVL, "0")
+    field(ZRST, "Unsorted")
+    field(ONVL, "1")
+    field(ONST, "Sorted")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)SortTime") {
+    field(PINI, "YES")
+    field(DTYP, "asynFloat64")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SORT_TIME")
+    field(PREC, "3")
+    field(VAL, "0.1")
+}
+
+record(ai, "$(P)$(R)SortTime_RBV") {
+    field(DTYP, "asynFloat64")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SORT_TIME")
+    field(PREC, "3")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)SortSize")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SORT_SIZE")
+    field(VAL,  "20")
+    field(PINI, "YES")
+}
+
+record(longin, "$(P)$(R)SortSize_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SORT_SIZE")
+    field(FLNK, "$(P)$(R)SortFreeLow")
+    field(SCAN, "I/O Intr")
+}
+
+record(longin, "$(P)$(R)SortFree") {
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))SORT_FREE")
+    field(LLSV, "MAJOR")
+    field(LSV,  "MINOR")
+    field(LOLO, "0")
+    field(HYST, "1")
+    field(SCAN, "I/O Intr")
+}
+
+record(calcout, "$(P)$(R)SortFreeLow") {
+    field(CALC, "A*0.25")
+    field(INPA, "$(P)$(R)SortSize")
+    field(OUT,  "$(P)$(R)SortFree_RBV.LOW")
+}
+
+record(longout, "$(P)$(R)DroppedOutputArrays")
+{
+    field(PINI, "YES")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DROPPED_OUTPUT_ARRAYS")
+    field(VAL,  "0")
+}
+
+record(longin, "$(P)$(R)DroppedOutputArrays_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DROPPED_OUTPUT_ARRAYS")
+    field(SCAN, "I/O Intr")
+}
+
+record(longout, "$(P)$(R)DisorderedArrays")
+{
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DISORDERED_ARRAYS")
+    field(PINI, "YES")
+}
+
+record(longin, "$(P)$(R)DisorderedArrays_RBV")
+{
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))DISORDERED_ARRAYS")
+    field(SCAN, "I/O Intr")
+}
+
 
 
 ###################################################################
