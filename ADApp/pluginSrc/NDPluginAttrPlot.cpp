@@ -1,12 +1,16 @@
-#include "NDPluginAttrPlot.h"
-#include "CircularBuffer.h"
-
-#include <epicsExport.h>
-#include <iocsh.h>
-#include <initHooks.h>
-
 #include <cmath>
 #include <stdexcept>
+#include <string>
+#include <vector>
+
+#include <iocsh.h>
+#include <initHooks.h>
+#include <epicsMath.h>
+#include <epicsThread.h>
+
+#include <epicsExport.h>
+#include "NDPluginAttrPlot.h"
+#include "CircularBuffer.h"
 
 ExposeDataTask::ExposeDataTask(NDPluginAttrPlot& plugin)
     : plugin_(plugin),
@@ -20,7 +24,7 @@ void ExposeDataTask::start() {
 }
 
 void ExposeDataTask::run() {
-    while (not stop_) {
+    while (!stop_) {
         plugin_.lock();
         plugin_.callback_data();
         plugin_.unlock();
@@ -101,12 +105,12 @@ void NDPluginAttrPlot::callback_data() {
         int selected = data_selections_[i];
         if (selected == ND_ATTRPLOT_UID_INDEX) {
             n_copied = uids_.copy_to_array(tmp_arr, size);
-        } else if (selected >= 0 and
+        } else if (selected >= 0 &&
                 static_cast<unsigned>(selected) < data_.size()) {
             n_copied = data_[selected].copy_to_array(tmp_arr,
                     size);
         } else {
-            std::fill(tmp_arr, tmp_arr + size, NAN);
+            std::fill(tmp_arr, tmp_arr + size, epicsNAN);
             n_copied = size;
         }
         // To remove visual artifacts on EDM plots fill
@@ -123,12 +127,12 @@ void NDPluginAttrPlot::callback_data() {
 void NDPluginAttrPlot::processCallbacks(NDArray *pArray) {
     NDAttributeList attr_list;
 
-    NDPluginDriver::processCallbacks(pArray);
+    NDPluginDriver::beginProcessCallbacks(pArray);
     pArray->pAttributeList->copy(&attr_list);
 
     epicsInt32 uid;
     getIntegerParam(NDUniqueId, &uid);
-    if (uids_.size() != 0 and uid <= uids_.last()) {
+    if (uids_.size() != 0 && uid <= uids_.last()) {
         reset_data();
     }
 
@@ -149,7 +153,7 @@ void NDPluginAttrPlot::rebuild_attributes(NDAttributeList& attr_list) {
         int selection = data_selections_[i];
         if (selection == ND_ATTRPLOT_UID_INDEX) {
             selections[i] = ND_ATTRPLOT_UID_LABEL;
-        } else if (selection >= 0 and
+        } else if (selection >= 0 &&
                 static_cast<unsigned>(selection) < attributes_.size()) {
             selections[i] = attributes_[selection];
         }
@@ -157,18 +161,18 @@ void NDPluginAttrPlot::rebuild_attributes(NDAttributeList& attr_list) {
 
     attributes_.clear();
     for (NDAttribute * attr = attr_list.next(NULL);
-            attr != NULL and attributes_.size() <= n_attributes_;
+            attr != NULL && attributes_.size() <= n_attributes_;
             attr = attr_list.next(attr)) {
         std::string name(attr->getName());
         NDAttrDataType_t type = attr->getDataType();
         // This plugin only handles numeric types
-        if (type == NDAttrInt8 or
-                type == NDAttrUInt8 or
-                type == NDAttrInt16 or
-                type == NDAttrUInt16 or
-                type == NDAttrInt32 or
-                type == NDAttrUInt32 or
-                type == NDAttrFloat32 or
+        if (type == NDAttrInt8 ||
+                type == NDAttrUInt8 ||
+                type == NDAttrInt16 ||
+                type == NDAttrUInt16 ||
+                type == NDAttrInt32 ||
+                type == NDAttrUInt32 ||
+                type == NDAttrFloat32 ||
                 type == NDAttrFloat64)
         {
             attributes_.push_back(name);
@@ -223,7 +227,7 @@ void NDPluginAttrPlot::callback_selected() {
         std::string attr = ND_ATTRPLOT_NONE_LABEL;
         if (selected == ND_ATTRPLOT_UID_INDEX) {
             attr = ND_ATTRPLOT_UID_LABEL;
-        } else if (selected >= 0 and
+        } else if (selected >= 0 &&
                 static_cast<size_t>(selected) < attributes_.size()) {
             attr = attributes_[selected];
         } else {
@@ -237,8 +241,8 @@ void NDPluginAttrPlot::callback_selected() {
 
 asynStatus NDPluginAttrPlot::push_data(epicsInt32 uid, NDAttributeList& list) {
     size_t length = attributes_.size();
-    double new_values[length];
-    std::fill(new_values, new_values + length, NAN);
+    double *new_values = new double[length];
+    std::fill(new_values, new_values + length, epicsNAN);
 
     // Populate the new values with values from the attribute list
     for (NDAttribute * attr = list.next(NULL);
@@ -258,6 +262,7 @@ asynStatus NDPluginAttrPlot::push_data(epicsInt32 uid, NDAttributeList& list) {
         data_[i].push_back(new_values[i]);
     }
 
+    delete new_values;
     return asynSuccess;
 }
 
@@ -271,10 +276,10 @@ asynStatus NDPluginAttrPlot::writeInt32(asynUser * pasynUser, epicsInt32 value)
     }
 
     if (reason == NDAttrPlotDataSelect) {
-        if (addr < 0 or static_cast<unsigned>(addr) >= n_data_blocks_) {
+        if (addr < 0 || static_cast<unsigned>(addr) >= n_data_blocks_) {
             return asynError;
         }
-        if (value > 0 and static_cast<unsigned>(value) >= attributes_.size()) {
+        if (value > 0 && static_cast<unsigned>(value) >= attributes_.size()) {
             return asynError;
         }
         data_selections_[addr] = value;
