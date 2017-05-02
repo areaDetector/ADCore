@@ -71,15 +71,17 @@ ifeq ($(WITH_BOOST),YES)
   endif
 endif
 
-ifeq ($(WITH_HDF5),YES)
-  USR_INCLUDES += $(HDF5_INCLUDE)
-  PROD += test_SWMR_works
-  PROD += test_SWMR_fail
-  PROD += test_SWMR_fail_min
-  test_SWMR_works_SRCS += test_SWMR_works.c
-  test_SWMR_fail_SRCS  += test_SWMR_fail.c
-  test_SWMR_fail_min_SRCS  += test_SWMR_fail_min.c
-endif
+## hdf5-1.10.1 seems to have fixed these SWMR problems
+## We keep the test files but don't  build them for now
+#ifeq ($(WITH_HDF5),YES)
+#  USR_INCLUDES += $(HDF5_INCLUDE)
+#  PROD += test_SWMR_works
+#  PROD += test_SWMR_fail
+#  PROD += test_SWMR_fail_min
+#  test_SWMR_works_SRCS += test_SWMR_works.c
+#  test_SWMR_fail_SRCS  += test_SWMR_fail.c
+#  test_SWMR_fail_min_SRCS  += test_SWMR_fail_min.c
+#endif
 
 include $(TOP)/ADApp/commonDriverMakefile
 
