@@ -74,6 +74,10 @@ NDPluginSupport_DBD += NDPluginTransform.dbd
 INC      += NDPluginTransform.h
 LIB_SRCS += NDPluginTransform.cpp
 
+NDPluginSupport_DBD += NDPluginAttrPlot.dbd
+INC      += NDPluginAttrPlot.h CircularBuffer.h
+LIB_SRCS += NDPluginAttrPlot.cpp
+
 DBD      += NDPosPlugin.dbd
 INC      += NDPosPlugin.h
 INC      += NDPosPluginFileReader.h

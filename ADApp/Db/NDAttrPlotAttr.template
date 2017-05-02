@@ -1,0 +1,15 @@
+#=================================================================#
+# Template file: NDAttrPlotAttr.template
+# Macros:
+# % macro, P, Device prefix
+# % macro, R, Device suffix
+# % macro, PORT, Asyn port name
+# % macro, ATTR_IND, Attribute index
+
+record(stringin, "$(P)$(R)Attr$(ATTR_IND)") {
+    field(DESC, "Attribute $(ATTR_IND)")
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(ATTR_IND))AP_Attribute")
+    field(SCAN, "I/O Intr")
+}
+

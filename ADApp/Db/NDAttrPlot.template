@@ -1,0 +1,22 @@
+#=================================================================#
+# Template file: NDAttrPlot.template
+# Macros:
+# % macro, P, Device prefix
+# % macro, R, Device suffix
+# % macro, PORT, Asyn port name
+
+include "NDPluginBase.template"
+
+record(ai, "$(P)$(R)NPts") {
+    field(DESC, "Number of cached points")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),0)AP_NPts")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)Reset") {
+    field(DESC, "Resets the cached data")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),0)AP_Reset")
+}
+

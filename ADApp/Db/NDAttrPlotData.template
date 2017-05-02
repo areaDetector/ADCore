@@ -1,0 +1,39 @@
+#=================================================================#
+# Template file: NDAttrPlotData.template
+# Macros:
+# % macro, P, Device prefix
+# % macro, R, Device suffix
+# % macro, PORT, Asyn port name
+# % macro, AXIS, Axis name
+# % macro, DATA_IND, Data index
+# % macro, DATA_ADDR, Asyn address for this data array
+# % macro, N_CACHE, Size of the cache
+
+record(waveform, "$(P)$(R)$(AXIS):Data$(DATA_IND)") {
+    field(DESC, "Data for $(AXIS) $(DATA_IND)")
+    field(NELM, "$(N_CACHE)")
+    field(FTVL, "DOUBLE")
+    field(DTYP, "asynFloat64ArrayIn")
+    field(INP, "@asyn($(PORT),$(DATA_ADDR))AP_Data")
+    field(SCAN, "I/O Intr")
+}
+
+record(stringin, "$(P)$(R)$(AXIS):DataLabel$(DATA_IND)") {
+    field(DESC, "Label for $(AXIS) $(DATA_IND)")
+    field(DTYP, "asynOctetRead")
+    field(INP,  "@asyn($(PORT),$(DATA_ADDR))AP_DataLabel")
+    field(SCAN, "I/O Intr")
+}
+
+record(ao, "$(P)$(R)$(AXIS):DataSelect$(DATA_IND)") {
+    field(DESC, "Selected attribute $(AXIS) $(DATA_IND)")
+    field(DTYP, "asynInt32")
+    field(OUT,  "@asyn($(PORT),$(DATA_ADDR))AP_DataSelect")
+}
+
+record(ai, "$(P)$(R)$(AXIS):DataSelect$(DATA_IND)_RBV") {
+    field(DESC, "Selected attribute $(AXIS) $(DATA_IND)")
+    field(DTYP, "asynInt32")
+    field(INP,  "@asyn($(PORT),$(DATA_ADDR))AP_DataSelect")
+    field(SCAN, "I/O Intr")
+}

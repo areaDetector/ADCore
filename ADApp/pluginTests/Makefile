@@ -27,6 +27,7 @@ ifeq ($(WITH_BOOST),YES)
   ADTestUtility_SRCS += PosPluginWrapper.cpp
   ADTestUtility_SRCS += TimeSeriesPluginWrapper.cpp
   ADTestUtility_SRCS += FFTPluginWrapper.cpp
+  ADTestUtility_SRCS += AttrPlotPluginWrapper.cpp
   ADTestUtility_SRCS += ROIPluginWrapper.cpp
   ADTestUtility_SRCS += OverlayPluginWrapper.cpp
 
@@ -42,6 +43,7 @@ ifeq ($(WITH_BOOST),YES)
   plugin-test_SRCS += test_NDPosPlugin.cpp
   plugin-test_SRCS += test_NDPluginTimeSeries.cpp
   plugin-test_SRCS += test_NDPluginFFT.cpp
+  plugin-test_SRCS += test_NDPluginAttrPlot.cpp
   plugin-test_SRCS += test_NDPluginROI.cpp
   plugin-test_SRCS += test_NDPluginOverlay.cpp
 
