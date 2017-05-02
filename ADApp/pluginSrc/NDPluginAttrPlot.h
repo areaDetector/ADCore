@@ -147,6 +147,9 @@ protected:
     int NDAttrPlotAttribute;
     int NDAttrPlotReset;
     int NDAttrPlotNPts;
+#define NDATTRPLOT_LAST_PARAM NDAttrPlotNPts
+#define NUM_NDATTRPLOT_PARAMS (&NDATTRPLOT_LAST_PARAM - \
+                               &NDATTRPLOT_FIRST_PARAM + 1)
 
 private:
     /**
