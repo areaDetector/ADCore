@@ -42,10 +42,8 @@ NDPluginAttrPlot::NDPluginAttrPlot(const char * port, int n_attributes,
                 in_port,     // Source of NDArray callbacks - port
                 in_addr,     // Source of NDArray callbacks - address
                 std::max(n_attributes, n_data_blocks), // Max number of addresses
-                NUM_NDATTRPLOT_PARAMS, /* The number of parameters that
-                                        * the class supports */
-                -1,    // The maximum number of NDArray buffers (-1 = unlimited)
-                -1,    // The maximum amount of memory (-1 = unlimited)
+                0,    // The maximum number of NDArray buffers (0 = unlimited)
+                0,    // The maximum amount of memory (0 = unlimited)
                 asynFloat64ArrayMask | asynGenericPointerMask | asynInt32Mask |
                         asynFloat64Mask | asynOctetMask, /* Bit mask for asyn
                                     * interfaces that this driver supports */
@@ -55,7 +53,8 @@ NDPluginAttrPlot::NDPluginAttrPlot(const char * port, int n_attributes,
                 ASYN_MULTIDEVICE, // Flags when creating the asyn port driver
                 1,     // The autoConnect flag for the asyn port driver
                 priority, // The thread priority for the asyn port driver thread
-                stackSize // The stack size for the asyn port driver thread
+                stackSize, // The stack size for the asyn port driver thread
+                1          // The maximum number of threads that this plugin supports
             ),
       state_(NDAttrPlot_InitState),
       data_(),
@@ -123,7 +122,7 @@ void NDPluginAttrPlot::callback_data() {
 void NDPluginAttrPlot::processCallbacks(NDArray *pArray) {
     NDAttributeList attr_list;
 
-    NDPluginDriver::processCallbacks(pArray);
+    NDPluginDriver::beginProcessCallbacks(pArray);
     pArray->pAttributeList->copy(&attr_list);
 
     epicsInt32 uid;
