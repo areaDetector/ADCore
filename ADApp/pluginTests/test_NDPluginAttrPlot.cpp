@@ -134,8 +134,8 @@ struct AttrPlotPluginTestFixture
     std::string port;
 
     AttrPlotPluginTestFixture()
-        : port("TS"),
-          arrPool(new NDArrayPool(100,0))
+        : arrPool(new NDArrayPool(100,0)),
+          port("TS")
     {
 
         // Asyn manager doesn't like it if we try to reuse the same port name for multiple drivers
