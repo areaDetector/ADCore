@@ -35,7 +35,7 @@ typedef struct NDOverlay {
     char TimeStampFormat[64];
     int Font;
     char DisplayText[256];
-    std::vector<long> addressOffset;
+    std::vector<int> addressOffset;
 } NDOverlay_t;
 
 

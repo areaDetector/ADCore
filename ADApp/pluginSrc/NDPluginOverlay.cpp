@@ -74,7 +74,9 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay, NDArray
 {
   int xmin, xmax, ymin, ymax, xcent, ycent, xsize, ysize, ix, iy, ii, jj, ib;
   int xwide, ywide, xwidemax_line, xwidemin_line;
-  std::vector<long>::iterator it;
+  int xStride = (int)pArrayInfo->xStride;
+  int yStride = (int)pArrayInfo->yStride;
+  std::vector<int>::iterator it;
   int nSteps;
   double theta, thetaStep;
   int rowOffset;
@@ -90,35 +92,35 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay, NDArray
   //static const char *functionName = "doOverlayT";
 
   asynPrint(pasynUserSelf, ASYN_TRACEIO_DRIVER,
-    "NDPluginOverlay::DoOverlayT, shape=%d, Xpos=%ld, Ypos=%ld, Xsize=%ld, Ysize=%ld\n",
-    pOverlay->shape, (long)pOverlay->PositionX, (long)pOverlay->PositionY, 
-    (long)pOverlay->SizeX, (long)pOverlay->SizeY);
+    "NDPluginOverlay::DoOverlayT, shape=%d, Xpos=%d, Ypos=%d, Xsize=%d, Ysize=%d\n",
+    pOverlay->shape, (int)pOverlay->PositionX, (int)pOverlay->PositionY, 
+    (int)pOverlay->SizeX, (int)pOverlay->SizeY);
 
   if (pOverlay->changed) {
     pOverlay->addressOffset.clear();
 
     switch(pOverlay->shape) {
       case NDOverlayCross:
-        xcent = pOverlay->PositionX + pOverlay->SizeX/2. + 0.5;
-        ycent = pOverlay->PositionY + pOverlay->SizeY/2. + 0.5;
-        xmin = CLIPX(xcent - pOverlay->SizeX/2. + 0.5);
-        xmax = CLIPX(xcent + pOverlay->SizeX/2. + 0.5);
-        ymin = CLIPY(ycent - pOverlay->SizeY/2. + 0.5);
-        ymax = CLIPY(ycent + pOverlay->SizeY/2. + 0.5);
+        xcent = (int)(pOverlay->PositionX + pOverlay->SizeX/2. + 0.5);
+        ycent = (int)(pOverlay->PositionY + pOverlay->SizeY/2. + 0.5);
+        xmin = (int)CLIPX(xcent - pOverlay->SizeX/2. + 0.5);
+        xmax = (int)CLIPX(xcent + pOverlay->SizeX/2. + 0.5);
+        ymin = (int)CLIPY(ycent - pOverlay->SizeY/2. + 0.5);
+        ymax = (int)CLIPY(ycent + pOverlay->SizeY/2. + 0.5);
         xwide = pOverlay->WidthX / 2;
         ywide = pOverlay->WidthY / 2;
 
         for (iy=ymin; iy<=ymax; iy++) {
-          rowOffset = iy*pArrayInfo->yStride;
+          rowOffset = iy*yStride;
           if ((iy >= (ycent - ywide)) && (iy <= ycent + ywide)) {
             for (ix=xmin; ix<=xmax; ++ix) {
-              pOverlay->addressOffset.push_back(rowOffset + ix*pArrayInfo->xStride);
+              pOverlay->addressOffset.push_back(rowOffset + ix*xStride);
             }
           } else {
             xwidemin_line = xcent - xwide;
             xwidemax_line = xcent + xwide;
             for (int line=xwidemin_line; line<=xwidemax_line; ++line) {
-              pOverlay->addressOffset.push_back(rowOffset + line*pArrayInfo->xStride);
+              pOverlay->addressOffset.push_back(rowOffset + line*xStride);
             }
           }
         }
@@ -136,17 +138,17 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay, NDArray
 
         //For non-zero width, grow the rectangle towards the center.
         for (iy=ymin; iy<=ymax; iy++) {
-          rowOffset = iy*pArrayInfo->yStride;
+          rowOffset = iy*yStride;
           if (iy < (ymin + ywide)) {
-            for (ix=xmin; ix<=xmax; ix++) pOverlay->addressOffset.push_back(rowOffset + ix*pArrayInfo->xStride);
+            for (ix=xmin; ix<=xmax; ix++) pOverlay->addressOffset.push_back(rowOffset + ix*xStride);
           } else if (iy > (ymax - ywide)) {
-            for (ix=xmin; ix<=xmax; ix++) pOverlay->addressOffset.push_back(rowOffset + ix*pArrayInfo->xStride);
+            for (ix=xmin; ix<=xmax; ix++) pOverlay->addressOffset.push_back(rowOffset + ix*xStride);
           } else {
             for (int line=xmin; line<CLIPX(xmin+xwide); ++line) {
-              pOverlay->addressOffset.push_back(rowOffset + line*pArrayInfo->xStride);
+              pOverlay->addressOffset.push_back(rowOffset + line*xStride);
             }
             for (int line=CLIPX(xmax-xwide+1); line<=xmax; ++line) {
-              pOverlay->addressOffset.push_back(rowOffset + line*pArrayInfo->xStride);
+              pOverlay->addressOffset.push_back(rowOffset + line*xStride);
             }
           }
         }
@@ -157,12 +159,12 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay, NDArray
         ywide = pOverlay->WidthY;
         xwide = MIN(xwide, (int)pOverlay->SizeX-1);
         ywide = MIN(ywide, (int)pOverlay->SizeY-1);
-        xcent = pOverlay->PositionX + pOverlay->SizeX/2. + 0.5;
-        ycent = pOverlay->PositionY + pOverlay->SizeY/2. + 0.5;
+        xcent = (int)(pOverlay->PositionX + pOverlay->SizeX/2. + 0.5);
+        ycent = (int)(pOverlay->PositionY + pOverlay->SizeY/2. + 0.5);
         xsize = pOverlay->SizeX/2;
         ysize = pOverlay->SizeY/2;
-        xmax = pArrayInfo->xSize-1;
-        ymax = pArrayInfo->ySize-1;
+        xmax = (int)(pArrayInfo->xSize-1);
+        ymax = (int)(pArrayInfo->ySize-1);
 
         // Use the parametric equation for an ellipse.  
         // Only need to compute 0 to pi/2, other quadrants by symmetry
@@ -171,24 +173,24 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay, NDArray
         thetaStep = M_PI / 2. / nSteps;
         for (ii=0, theta=0.; ii<=nSteps; ii++, theta+=thetaStep) {
           for (jj=0; jj<xwide; jj++) {
-            ix = (xsize-jj) * cos(theta) + 0.5;
-            iy = (ysize-jj) * sin(theta) + 0.5;
+            ix = (int)((xsize-jj) * cos(theta) + 0.5);
+            iy = (int)((ysize-jj) * sin(theta) + 0.5);
             if (((ycent + iy - 1) >= 0) && ((ycent + iy) <= ymax)) {
-              rowOffset = (ycent + iy)*pArrayInfo->yStride;
+              rowOffset = (ycent + iy)*yStride;
               if (((xcent + ix) >= 0) && ((xcent + ix) <= xmax)) {
-                pOverlay->addressOffset.push_back(rowOffset + (xcent + ix)*pArrayInfo->xStride);
+                pOverlay->addressOffset.push_back(rowOffset + (xcent + ix)*xStride);
               }
               if (((xcent - ix) >= 0) && ((xcent - ix) <= xmax)) {
-                pOverlay->addressOffset.push_back(rowOffset + (xcent - ix)*pArrayInfo->xStride);
+                pOverlay->addressOffset.push_back(rowOffset + (xcent - ix)*xStride);
               }
             }
             if (((ycent - iy) >= 0) && ((ycent - iy) <= ymax)) {
-              rowOffset = (ycent - iy)*pArrayInfo->yStride; 
+              rowOffset = (ycent - iy)*yStride; 
               if (((xcent + ix) >= 0) && ((xcent + ix) <= xmax)) {
-                pOverlay->addressOffset.push_back(rowOffset + (xcent + ix)*pArrayInfo->xStride);
+                pOverlay->addressOffset.push_back(rowOffset + (xcent + ix)*xStride);
               }
               if (((xcent - ix) >= 0) && ((xcent - ix) <= xmax)) {
-                pOverlay->addressOffset.push_back(rowOffset + (xcent - ix)*pArrayInfo->xStride);
+                pOverlay->addressOffset.push_back(rowOffset + (xcent - ix)*xStride);
               }
             }
           }
@@ -228,7 +230,7 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay, NDArray
 
         // Loop over vertical lines
         for (jj=0, iy=ymin; iy<ymax; jj++, iy++) {
-          rowOffset = iy*pArrayInfo->yStride;
+          rowOffset = iy*yStride;
 
           // Loop over characters
           for (ii=0; cp[ii]!=0; ii++) {
@@ -247,7 +249,7 @@ void NDPluginOverlay::doOverlayT(NDArray *pArray, NDOverlay_t *pOverlay, NDArray
               if (ix >= xmax)
                 break;
               if (mask & bmc) {
-                pOverlay->addressOffset.push_back(rowOffset + ix*pArrayInfo->xStride);
+                pOverlay->addressOffset.push_back(rowOffset + ix*xStride);
               }
               mask >>= 1;
               if (!mask) {
