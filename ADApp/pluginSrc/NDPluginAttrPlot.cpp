@@ -118,7 +118,7 @@ void NDPluginAttrPlot::callback_data() {
         std::fill(tmp_arr + n_copied,
                 tmp_arr + cache_size,
                 *(tmp_arr + n_copied - 1));
-        doCallbacksFloat64Array(tmp_arr, cache_size, NDAttrPlotData, i);
+        doCallbacksFloat64Array(tmp_arr, cache_size, NDAttrPlotData, (int)i);
     }
 
     delete[] tmp_arr;
@@ -143,7 +143,7 @@ void NDPluginAttrPlot::processCallbacks(NDArray *pArray) {
 
     push_data(uid, attr_list);
 
-    setIntegerParam(NDAttrPlotNPts, uids_.size());
+    setIntegerParam(NDAttrPlotNPts, (int)uids_.size());
     callParamCallbacks();
 }
 
@@ -189,7 +189,7 @@ void NDPluginAttrPlot::rebuild_attributes(NDAttributeList& attr_list) {
                 std::find(attributes_.begin(), attributes_.end(),
                         selections[i]);
             if (attr_it != attributes_.end()) {
-                data_selections_[i] = attr_it - attributes_.begin();
+                data_selections_[i] = (int)(attr_it - attributes_.begin());
             } else {
                 data_selections_[i] = ND_ATTRPLOT_NONE_INDEX;
             }
@@ -211,8 +211,8 @@ void NDPluginAttrPlot::reset_data() {
 }
 
 void NDPluginAttrPlot::callback_attributes() {
-    for (size_t i = 0; i < n_attributes_; i++) {
-        if (i < attributes_.size()) {
+    for (int i = 0; i < (int)n_attributes_; i++) {
+        if (i < (int)attributes_.size()) {
             setStringParam(i, NDAttrPlotAttribute, attributes_[i].c_str());
         } else {
             setStringParam(i, NDAttrPlotAttribute, "");
@@ -222,7 +222,7 @@ void NDPluginAttrPlot::callback_attributes() {
 }
 
 void NDPluginAttrPlot::callback_selected() {
-    for (size_t i = 0; i < n_data_blocks_; i++) {
+    for (int i = 0; i < (int)n_data_blocks_; i++) {
         int selected = data_selections_[i];
         std::string attr = ND_ATTRPLOT_NONE_LABEL;
         if (selected == ND_ATTRPLOT_UID_INDEX) {
