@@ -253,7 +253,7 @@ asynStatus NDPosPlugin::writeInt32(asynUser *pasynUser, epicsInt32 value)
       setStringParam(NDPos_CurrentPos, "");
       // Clear out the position array
       positionArray.clear();
-      setIntegerParam(NDPos_CurrentQty, positionArray.size());
+      setIntegerParam(NDPos_CurrentQty, (int)positionArray.size());
     } else {
       // If this parameter belongs to a base class call its method
       if (function < FIRST_NDPOS_PARAM){
@@ -313,7 +313,7 @@ asynStatus NDPosPlugin::writeOctet(asynUser *pasynUser, const char *value, size_
       fr.loadXML(xml);
       std::vector<std::map<std::string, double> > positions = fr.readPositions();
       positionArray.insert(positionArray.end(), positions.begin(), positions.end());
-      setIntegerParam(NDPos_CurrentQty, positionArray.size());
+      setIntegerParam(NDPos_CurrentQty, (int)positionArray.size());
       callParamCallbacks();
     } else {
       setIntegerParam(NDPos_FileValid, 0);
