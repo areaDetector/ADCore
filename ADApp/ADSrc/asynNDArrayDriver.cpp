@@ -350,7 +350,7 @@ asynStatus asynNDArrayDriver::readNDAttributesFile()
             goto done_macros;
         }
         // Create a temporary buffer 10 times larger than input buffer
-        bufferSize = buffer.length() * 10;
+        bufferSize = (int)(buffer.length() * 10);
         tmpBuffer = (char *)malloc(bufferSize);
         status = macExpandString(macHandle, buffer.c_str(), tmpBuffer, bufferSize);
         // NOTE: There is a bug in macExpandString up to 3.14.12.6 and 3.15.5 so that it does not return <0
@@ -378,7 +378,7 @@ done_macros:
     }
     // Assume failure
     setIntegerParam(NDAttributesStatus, NDAttributesXMLSyntaxError);
-    doc = xmlReadMemory(buffer.c_str(), buffer.length(), "noname.xml", NULL, 0);
+    doc = xmlReadMemory(buffer.c_str(), (int)buffer.length(), "noname.xml", NULL, 0);
     if (doc == NULL) {
         asynPrint(pasynUserSelf, ASYN_TRACE_ERROR,
             "%s:%s: error creating doc\n", driverName, functionName);
