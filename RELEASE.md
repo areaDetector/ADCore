@@ -22,38 +22,25 @@ Release Notes
 R3-0 (May XXX, 2017)
 ======================
 ### TO DO
-* Fix CARS software to use libxml2 rather than TinyXml.
-* Document incompatible changes in R3-0; NDPluginDriver, plugins that changed arguments (find which)
+* Fix problem with Travis.  Base needs patch or building from source.
 * Add MAX_THREADS macro to EXAMPLE_commonPlugins.cmd?
 * Update EXAMPLE_commonPlugins.cmd to be like my commonPlugins.cmd
 * Update INSTALL_GUIDE.md for changes and new location of Viewers directory
 
-### asynNDArrayDriver, NDFileNexus
-* Changed XML file parsing from using TinyXml to using libxml2.  TinyXml was originally used because libxml2 was not
-  available for vxWorks and Windows.  libxml2 was already used for NDFileHDF5 and NDPosPlugin, originally using pre-built
-  libraries for Windows in ADBinaires.  ADSupport now provides libxml2, so it is available for all platforms, and
-  there is no need to continue building and using TinyXml.  This change means that libxml2 is now required, and so
-  the build option WITH_XML2 is no longer used.  XML2_EXTERNAL is still used, depending on whether the version
-  in ADSupport or an external version of the library should be used.  The TinyXml source code has been removed from
-  ADCore.
-* Added support for macro substitution in the XML files used to define NDAttributes.  There is a new NDAttributesMacros
-  waveform record that contains the macro substitution strings, for example "CAMERA=13SIM1:cam1:,ID=ID34:".
-* Added a new NDAttributesStatus mbbi record that contains the status of reading the attributes XML file.
-  It is used to indicate whether the file cannot be found, if there is an XML syntax error, or if there is a
-  macro substitutions error.
-
-### PVAttribute
-* Fixed a race condition that could result in PVAttributes not being connected to the channel.  This was most likely
-  to occur for local PVs in the areaDetector IOC where the connection callback would happen immediately, before the
-  code had been initialized to handle the callback. The race condition was introduced in R2-6.
-  
-### NDFileHDF5
-* Fixed a problem with PVAttributes that were not connected to a PV.  Previously this generated errors from the HDF5
-  library because an invalid datatype of -1 was used.  Now the data type for such disconnected attributes is set to
-  H5T_NATIVE_FLOAT and the fill value is set to NAN.  No data is written from such attributes to the file, so the
-  fill value is used.
-
-### NDPluginDriver, NDPluginBase.template, NDPluginBase.adl
+### Incompatible changes
+* This release is R3-0 rather than R2-7 because a few changes break backwards compatibility.
+  * The constructors for asynNDArray driver and NDPluginDriver no longer take a numParams argument.
+    This takes advantage of the fact that asynPortDriver no longer requires parameter counting as of R4-31.
+  * The constructor for NDPluginDriver now takes an additional maxThreads argument.
+  * NDPluginDriver::processCallbacks() has been renamed to NDPluginDriver::beginProcessCallbacks().
+  * These changes will require minor modifications to any user-written plugins and any drivers that are derived directly
+    from asynNDArrayDriver.  
+  * All of the plugins in ADCore, and other plugins in the areaDetector project
+    (ADPluginEdge, ffmpegServer, FastCCP, ADPCO, ADnED) have had these changes made.
+  * The constructors and iocsh configuration commands for NDPluginStdArrays and NDPluginPva have been changed 
+    to add the standard maxBuffers argument.  EXAMPLE_commonPlugins.cmd has had these changes made.
+    Local startup scripts may need modifications.
+### Multiple threads in single plugins (NDPluginDriver, NDPluginBase.template, NDPluginBase.adl, many plugins)
 * Added support for multiple threads running the processCallbacks() function in a single plugin.  This can improve
   the performance of the plugin by a large factor.  Linear scaling with up to 5 threads (the largest
   value tested) was observed for most of the plugins that now support multiple threads.
@@ -130,7 +117,32 @@ R3-0 (May XXX, 2017)
   The example commonPlugins.cmd and medm files in ADCore allow up to 8 upstream plugins, but this number can 
   easily be changed by editing the startup script and operator display file.
 
-### All plugins
+### asynNDArrayDriver, NDFileNexus
+* Changed XML file parsing from using TinyXml to using libxml2.  TinyXml was originally used because libxml2 was not
+  available for vxWorks and Windows.  libxml2 was already used for NDFileHDF5 and NDPosPlugin, originally using pre-built
+  libraries for Windows in ADBinaires.  ADSupport now provides libxml2, so it is available for all platforms, and
+  there is no need to continue building and using TinyXml.  This change means that libxml2 is now required, and so
+  the build option WITH_XML2 is no longer used.  XML2_EXTERNAL is still used, depending on whether the version
+  in ADSupport or an external version of the library should be used.  The TinyXml source code has been removed from
+  ADCore.
+* Added support for macro substitution in the XML files used to define NDAttributes.  There is a new NDAttributesMacros
+  waveform record that contains the macro substitution strings, for example "CAMERA=13SIM1:cam1:,ID=ID34:".
+* Added a new NDAttributesStatus mbbi record that contains the status of reading the attributes XML file.
+  It is used to indicate whether the file cannot be found, if there is an XML syntax error, or if there is a
+  macro substitutions error.
+
+### PVAttribute
+* Fixed a race condition that could result in PVAttributes not being connected to the channel.  This was most likely
+  to occur for local PVs in the areaDetector IOC where the connection callback would happen immediately, before the
+  code had been initialized to handle the callback. The race condition was introduced in R2-6.
+  
+### NDFileHDF5
+* Fixed a problem with PVAttributes that were not connected to a PV.  Previously this generated errors from the HDF5
+  library because an invalid datatype of -1 was used.  Now the data type for such disconnected attributes is set to
+  H5T_NATIVE_FLOAT and the fill value is set to NAN.  No data is written from such attributes to the file, so the
+  fill value is used.
+
+### Plugin internals
 * All plugins were modified to no longer count the number of parameters that they define, taking advantage of
   this feature that was added to asynPortDriver in asyn R4-31.
 * All plugins were modified to call NDPluginDriver::beginProcessCallbacks() rather than 
