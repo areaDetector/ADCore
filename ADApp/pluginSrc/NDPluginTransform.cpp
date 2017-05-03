@@ -517,8 +517,8 @@ void NDPluginTransform::processCallbacks(NDArray *pArray){
   this->lock();
 
   // Set NDArraySizeX and NDArraySizeY appropriately
-  setIntegerParam(NDArraySizeX, transformedArray->dims[arrayInfo.xDim].size);
-  setIntegerParam(NDArraySizeY, transformedArray->dims[arrayInfo.yDim].size);
+  setIntegerParam(NDArraySizeX, (int)transformedArray->dims[arrayInfo.xDim].size);
+  setIntegerParam(NDArraySizeY, (int)transformedArray->dims[arrayInfo.yDim].size);
   if (transformedArray->ndims < 3) setIntegerParam(NDArraySizeZ, 0);
   else setIntegerParam(NDArraySizeZ, 3);
 
