@@ -258,7 +258,7 @@ void NTNDArrayConverter::toDimensions (NDArray *dest)
     PVStructureArrayPtr src(m_array->getDimension());
     PVStructureArray::const_svector srcVec(src->view());
 
-    dest->ndims = srcVec.size();
+    dest->ndims = (int)srcVec.size();
 
     for(size_t i = 0; i < srcVec.size(); ++i)
     {
@@ -283,7 +283,7 @@ void NTNDArrayConverter::toTimeStamp (NDArray *dest)
     TimeStamp ts;
     pvSrc.get(ts);
 
-    dest->epicsTS.secPastEpoch = ts.getSecondsPastEpoch();
+    dest->epicsTS.secPastEpoch = (epicsUInt32)ts.getSecondsPastEpoch();
     dest->epicsTS.nsec = ts.getNanoseconds();
 }
 
@@ -425,9 +425,9 @@ void NTNDArrayConverter::fromDimensions (NDArray *src)
         if (!destVec[i] || !destVec[i].unique())
             destVec[i] = PVDC->createPVStructure(dimStructure);
 
-        destVec[i]->getSubField<PVInt>("size")->put(src->dims[i].size);
-        destVec[i]->getSubField<PVInt>("offset")->put(src->dims[i].offset);
-        destVec[i]->getSubField<PVInt>("fullSize")->put(src->dims[i].size);
+        destVec[i]->getSubField<PVInt>("size")->put((int)src->dims[i].size);
+        destVec[i]->getSubField<PVInt>("offset")->put((int)src->dims[i].offset);
+        destVec[i]->getSubField<PVInt>("fullSize")->put((int)src->dims[i].size);
         destVec[i]->getSubField<PVInt>("binning")->put(src->dims[i].binning);
         destVec[i]->getSubField<PVBoolean>("reverse")->put(src->dims[i].reverse);
     }
