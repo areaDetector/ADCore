@@ -3,12 +3,10 @@ language: cpp
 compiler: gcc
 
 env:
-  - EPICS_BASE=/usr/lib/epics EPICS_HOST_ARCH=linux-x86_64
+  - EPICS_HOST_ARCH=linux-x86_64
   
 before_install:
-  - sh ci/install-packages.sh     # Install debian packages like HDF5, boost, tiff, EPICS base
-  - sh ci/build-synapps-deps.sh   # Download and build EPICS modules like asyn, busy ...
-  - sh ci/configure.sh            # Prepare the configure/* files 
+   - bash ci/install-packages.sh     # Install all required packages (EPICS base, asyn, ADSupport, Debian packages)
   
 install: 
   - make
