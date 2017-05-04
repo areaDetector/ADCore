@@ -26,7 +26,9 @@ R3-0 (May XXX, 2017)
 * Add MAX_THREADS macro to EXAMPLE_commonPlugins.cmd?
 * Update EXAMPLE_commonPlugins.cmd to be like my commonPlugins.cmd
 * Update INSTALL_GUIDE.md for changes and new location of Viewers directory
-
+### Requirements
+* This release requires EPICS base 3.14.12.4 or higher because it uses the CFG rules which were fixed
+  in that release.
 ### Incompatible changes
 * This release is R3-0 rather than R2-7 because a few changes break backwards compatibility.
   * The constructors for asynNDArray driver and NDPluginDriver no longer take a numParams argument.
