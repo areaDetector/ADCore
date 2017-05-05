@@ -19,13 +19,8 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
-R3-0 (May XXX, 2017)
+R3-0 (May 5, 2017)
 ======================
-### TO DO
-* Fix problem with Travis.  Base needs patch or building from source.
-* Add MAX_THREADS macro to EXAMPLE_commonPlugins.cmd?
-* Update EXAMPLE_commonPlugins.cmd to be like my commonPlugins.cmd
-* Update INSTALL_GUIDE.md for changes and new location of Viewers directory
 ### Requirements
 * This release requires EPICS base 3.14.12.4 or higher because it uses the CFG rules which were fixed
   in that release.
@@ -33,6 +28,8 @@ R3-0 (May XXX, 2017)
 * This release is R3-0 rather than R2-7 because a few changes break backwards compatibility.
   * The constructors for asynNDArray driver and NDPluginDriver no longer take a numParams argument.
     This takes advantage of the fact that asynPortDriver no longer requires parameter counting as of R4-31.
+    The constructor for ADDriver has not been similarly changed because this would require changing all drivers,
+    and it was decided to wait until future changes require changing drivers before doing this.
   * The constructor for NDPluginDriver now takes an additional maxThreads argument.
   * NDPluginDriver::processCallbacks() has been renamed to NDPluginDriver::beginProcessCallbacks().
   * These changes will require minor modifications to any user-written plugins and any drivers that are derived directly
@@ -90,6 +87,8 @@ R3-0 (May XXX, 2017)
 * Moved many of the less commonly used PVs from NDPluginBase.adl to new file NDPluginBaseFull.adl.  This reduces the screen
   size for most plugin screens, and hides the more obscure PVs from the casual user.  The More related display widget in
   NDPluginBase.adl can now load both the asynRecord.adl and the NDPluginBaseFull.adl screens.
+* iocBoot/EXAMPLE_commonPlugins.cmd now accepts an optional MAX_THREADS environment variable.  This defines
+  the maximum number of threads to use for plugins that can run in multiple threads.  The default is 5.
 
 ### NDPluginScatter
 * New plugin NDPluginScatter is used to distribute (scatter) the processing of NDArrays to multiple downstream plugins.
@@ -118,6 +117,10 @@ R3-0 (May XXX, 2017)
   It combines the NDArrays it receives into a single stream which it passes to all downstream plugins. 
   The example commonPlugins.cmd and medm files in ADCore allow up to 8 upstream plugins, but this number can 
   easily be changed by editing the startup script and operator display file.
+
+### NDPluginAttrPlot
+ * New plugin that caches NDAttribute values for an acquisition and exposes values of the selected ones to the EPICS 
+   layer periodically.  Written by Blaz Kranjc from Cosylab.  No documentation yet, but it should be coming soon.
 
 ### asynNDArrayDriver, NDFileNexus
 * Changed XML file parsing from using TinyXml to using libxml2.  TinyXml was originally used because libxml2 was not
@@ -161,6 +164,11 @@ R3-0 (May XXX, 2017)
   to no longer release the lock when calling plugins with doCallbacksGenericPointer(), and all other drivers should be
   modified as well.  It is not really a problem with drivers however, since the code doing those callbacks is normally
   only running in a single thread.
+
+### commonLibraryMakefile, commonDriverMakefile
+* These files are now installed in the top-level $(ADCORE)/cfg directory.  External software that uses these files
+  (e.g. plugins and drivers not in ADCORE) should be changed to use this location rather than $(ADCORE)/ADApp/ since
+  the location of the files in the source tree could change in the future.
 
 ### NDOverlayN.template
 * Removed PINI=YES from CenterX and CenterY records.  Only PositionX/Y should have PINI=YES, otherwise
