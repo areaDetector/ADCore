@@ -61,7 +61,7 @@ R3-0 (May 5, 2017)
 | NDPluginProcess      | No                        | The recursive filter stores results in the object itself, hard to make thread safe |
 | NDPluginPva          | No                        | Plugin is very fast, probably not much gain from multiple threads |
 | NDPluginROI          | Yes                       | Multiple threads supported and tested |
-| NDPluginROIStat      | Yes                       | Multiple threads supported and tested; TO FIX: time series goes too many points with multiple threads |
+| NDPluginROIStat      | Yes                       | Multiple threads supported and tested. Note: the time series arrays may be out of order if using multiple threads |
 | NDPluginScatter      | No                        | Plugin does not do any computation, no gain from multiple threads |
 | NDPluginStats        | Yes                       | Multiple threads supported and tested. Note: the time series arrays may be out of order if using multiple threads |
 | NDPluginStdArrays    | Yes                       | Multiple threads supported and tested. Note: the callbacks to the waveform records may be out of order if using multiple threads|
@@ -115,7 +115,7 @@ R3-0 (May 5, 2017)
   Other plugins subscribe to NDArray callbacks from a single upstream plugin or driver. 
   NDPluginGather allows subscribing to callbacks from any number of upstream plugins. 
   It combines the NDArrays it receives into a single stream which it passes to all downstream plugins. 
-  The example commonPlugins.cmd and medm files in ADCore allow up to 8 upstream plugins, but this number can 
+  The EXAMPLE_commonPlugins.cmd and medm files in ADCore allow up to 8 upstream plugins, but this number can 
   easily be changed by editing the startup script and operator display file.
 
 ### NDPluginAttrPlot
@@ -125,7 +125,7 @@ R3-0 (May 5, 2017)
 ### asynNDArrayDriver, NDFileNexus
 * Changed XML file parsing from using TinyXml to using libxml2.  TinyXml was originally used because libxml2 was not
   available for vxWorks and Windows.  libxml2 was already used for NDFileHDF5 and NDPosPlugin, originally using pre-built
-  libraries for Windows in ADBinaires.  ADSupport now provides libxml2, so it is available for all platforms, and
+  libraries for Windows in ADBinaries.  ADSupport now provides libxml2, so it is available for all platforms, and
   there is no need to continue building and using TinyXml.  This change means that libxml2 is now required, and so
   the build option WITH_XML2 is no longer used.  XML2_EXTERNAL is still used, depending on whether the version
   in ADSupport or an external version of the library should be used.  The TinyXml source code has been removed from
@@ -167,7 +167,7 @@ R3-0 (May 5, 2017)
 
 ### commonLibraryMakefile, commonDriverMakefile
 * These files are now installed in the top-level $(ADCORE)/cfg directory.  External software that uses these files
-  (e.g. plugins and drivers not in ADCORE) should be changed to use this location rather than $(ADCORE)/ADApp/ since
+  (e.g. plugins and drivers not in ADCore) should be changed to use this location rather than $(ADCORE)/ADApp/ since
   the location of the files in the source tree could change in the future.
 
 ### NDOverlayN.template
