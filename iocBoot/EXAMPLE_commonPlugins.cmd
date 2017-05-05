@@ -1,4 +1,19 @@
-# Create a netCDF file saving plugin.
+# This is an example file for creating plugins
+# It uses the following environment variable macros
+# Many of the parameters defined in this file are also in commonPlugins_settings.req so if autosave is being
+# use the autosave value will replace the value passed to this file.
+
+# $(PREFIX)      Prefix for all records
+# $(PORT)        The port name for the detector.  In autosave.
+# $(QSIZE)       The queue size for all plugins.  In autosave.
+# $(XSIZE)       The maximum image width; used to set the maximum size for row profiles in the NDPluginStats plugin and 1-D FFT
+#                   profiles in NDPluginFFT.
+# $(YSIZE)       The maximum image height; used to set the maximum size for column profiles in the NDPluginStats plugin
+# $(NCHANS)      The maximum number of time series points in the NDPluginStats, NDPluginROIStats, and NDPluginAttribute plugins
+# $(CBUFFS)      The maximum number of frames buffered in the NDPluginCircularBuff plugin
+# $(MAX_THREADS) The maximum number of threads for plugins which can run in multiple threads. Defaults to 5.
+
+# Create a netCDF file saving plugin
 NDFileNetCDFConfigure("FileNetCDF1", $(QSIZE), 0, "$(PORT)", 0)
 dbLoadRecords("NDFileNetCDF.template","P=$(PREFIX),R=netCDF1:,PORT=FileNetCDF1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
 
@@ -19,21 +34,21 @@ NDFileHDF5Configure("FileHDF1", $(QSIZE), 0, "$(PORT)", 0)
 dbLoadRecords("NDFileHDF5.template",  "P=$(PREFIX),R=HDF1:,PORT=FileHDF1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
 
 # Create a Magick file saving plugin
-NDFileMagickConfigure("FileMagick1", $(QSIZE), 0, "$(PORT)", 0)
-dbLoadRecords("NDFileMagick.template","P=$(PREFIX),R=Magick1:,PORT=FileMagick1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
+#NDFileMagickConfigure("FileMagick1", $(QSIZE), 0, "$(PORT)", 0)
+#dbLoadRecords("NDFileMagick.template","P=$(PREFIX),R=Magick1:,PORT=FileMagick1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
 
 # Create 4 ROI plugins
-NDROIConfigure("ROI1", $(QSIZE), 0, "$(PORT)", 0, 0, 0)
+NDROIConfigure("ROI1", $(QSIZE), 0, "$(PORT)", 0, 0, 0, 0, 0, $(MAX_THREADS=5))
 dbLoadRecords("NDROI.template",       "P=$(PREFIX),R=ROI1:,  PORT=ROI1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
-NDROIConfigure("ROI2", $(QSIZE), 0, "$(PORT)", 0, 0, 0)
+NDROIConfigure("ROI2", $(QSIZE), 0, "$(PORT)", 0, 0, 0, 0, 0, $(MAX_THREADS=5))
 dbLoadRecords("NDROI.template",       "P=$(PREFIX),R=ROI2:,  PORT=ROI2,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
-NDROIConfigure("ROI3", $(QSIZE), 0, "$(PORT)", 0, 0, 0)
+NDROIConfigure("ROI3", $(QSIZE), 0, "$(PORT)", 0, 0, 0, 0, 0, $(MAX_THREADS=5))
 dbLoadRecords("NDROI.template",       "P=$(PREFIX),R=ROI3:,  PORT=ROI3,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
-NDROIConfigure("ROI4", $(QSIZE), 0, "$(PORT)", 0, 0, 0)
+NDROIConfigure("ROI4", $(QSIZE), 0, "$(PORT)", 0, 0, 0, 0, 0, $(MAX_THREADS=5))
 dbLoadRecords("NDROI.template",       "P=$(PREFIX),R=ROI4:,  PORT=ROI4,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
 
 # Create 8 ROIStat plugins
-NDROIStatConfigure("ROISTAT1", $(QSIZE), 0, "$(PORT)", 0, 8, 0, 0)
+NDROIStatConfigure("ROISTAT1", $(QSIZE), 0, "$(PORT)", 0, 8, 0, 0, 0, 0, $(MAX_THREADS=5))
 dbLoadRecords("NDROIStat.template",   "P=$(PREFIX),R=ROIStat1:  ,PORT=ROISTAT1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT),NCHANS=$(NCHANS)")
 dbLoadRecords("NDROIStatN.template",  "P=$(PREFIX),R=ROIStat1:1:,PORT=ROISTAT1,ADDR=0,TIMEOUT=1,NCHANS=$(NCHANS)")
 dbLoadRecords("NDROIStatN.template",  "P=$(PREFIX),R=ROIStat1:2:,PORT=ROISTAT1,ADDR=1,TIMEOUT=1,NCHANS=$(NCHANS)")
@@ -65,23 +80,23 @@ dbLoadRecords("NDGatherN.template",   "P=$(PREFIX),R=Gather1:, N=7, PORT=GATHER1
 dbLoadRecords("NDGatherN.template",   "P=$(PREFIX),R=Gather1:, N=8, PORT=GATHER1,ADDR=7,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
 
 # Create 5 statistics plugins
-NDStatsConfigure("STATS1", $(QSIZE), 0, "$(PORT)", 0, 0, 0)
+NDStatsConfigure("STATS1", $(QSIZE), 0, "$(PORT)", 0, 0, 0, 0, 0, $(MAX_THREADS=5))
 dbLoadRecords("NDStats.template",     "P=$(PREFIX),R=Stats1:,  PORT=STATS1,ADDR=0,TIMEOUT=1,HIST_SIZE=256,XSIZE=$(XSIZE),YSIZE=$(YSIZE),NCHANS=$(NCHANS),NDARRAY_PORT=$(PORT)")
-NDStatsConfigure("STATS2", $(QSIZE), 0, "ROI1", 0, 0, 0)
+NDStatsConfigure("STATS2", $(QSIZE), 0, "ROI1",    0, 0, 0, 0, 0, $(MAX_THREADS=5))
 dbLoadRecords("NDStats.template",     "P=$(PREFIX),R=Stats2:,  PORT=STATS2,ADDR=0,TIMEOUT=1,HIST_SIZE=256,XSIZE=$(XSIZE),YSIZE=$(YSIZE),NCHANS=$(NCHANS),NDARRAY_PORT=$(PORT)")
-NDStatsConfigure("STATS3", $(QSIZE), 0, "ROI2", 0, 0, 0)
+NDStatsConfigure("STATS3", $(QSIZE), 0, "ROI2",    0, 0, 0, 0, 0, $(MAX_THREADS=5))
 dbLoadRecords("NDStats.template",     "P=$(PREFIX),R=Stats3:,  PORT=STATS3,ADDR=0,TIMEOUT=1,HIST_SIZE=256,XSIZE=$(XSIZE),YSIZE=$(YSIZE),NCHANS=$(NCHANS),NDARRAY_PORT=$(PORT)")
-NDStatsConfigure("STATS4", $(QSIZE), 0, "ROI3", 0, 0, 0)
+NDStatsConfigure("STATS4", $(QSIZE), 0, "ROI3",    0, 0, 0, 0, 0, $(MAX_THREADS=5))
 dbLoadRecords("NDStats.template",     "P=$(PREFIX),R=Stats4:,  PORT=STATS4,ADDR=0,TIMEOUT=1,HIST_SIZE=256,XSIZE=$(XSIZE),YSIZE=$(YSIZE),NCHANS=$(NCHANS),NDARRAY_PORT=$(PORT)")
-NDStatsConfigure("STATS5", $(QSIZE), 0, "ROI4", 0, 0, 0)
+NDStatsConfigure("STATS5", $(QSIZE), 0, "ROI4",    0, 0, 0, 0, 0, $(MAX_THREADS=5))
 dbLoadRecords("NDStats.template",     "P=$(PREFIX),R=Stats5:,  PORT=STATS5,ADDR=0,TIMEOUT=1,HIST_SIZE=256,XSIZE=$(XSIZE),YSIZE=$(YSIZE),NCHANS=$(NCHANS),NDARRAY_PORT=$(PORT)")
 
 # Create a transform plugin
-NDTransformConfigure("TRANS1", $(QSIZE), 0, "$(PORT)", 0, 0, 0)
+NDTransformConfigure("TRANS1", $(QSIZE), 0, "$(PORT)", 0, 0, 0, 0, 0, $(MAX_THREADS=5))
 dbLoadRecords("NDTransform.template", "P=$(PREFIX),R=Trans1:,  PORT=TRANS1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
 
 # Create an overlay plugin with 8 overlays
-NDOverlayConfigure("OVER1", $(QSIZE), 0, "$(PORT)", 0, 8, 0, 0)
+NDOverlayConfigure("OVER1", $(QSIZE), 0, "$(PORT)", 0, 8, 0, 0, 0, 0, $(MAX_THREADS=5))
 dbLoadRecords("NDOverlay.template", "P=$(PREFIX),R=Over1:, PORT=OVER1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
 dbLoadRecords("NDOverlayN.template","P=$(PREFIX),R=Over1:1:,NAME=ROI1,   SHAPE=1,O=Over1:,XPOS=$(PREFIX)ROI1:MinX_RBV,YPOS=$(PREFIX)ROI1:MinY_RBV,XSIZE=$(PREFIX)ROI1:SizeX_RBV,YSIZE=$(PREFIX)ROI1:SizeY_RBV,PORT=OVER1,ADDR=0,TIMEOUT=1")
 dbLoadRecords("NDOverlayN.template","P=$(PREFIX),R=Over1:2:,NAME=ROI2,   SHAPE=1,O=Over1:,XPOS=$(PREFIX)ROI2:MinX_RBV,YPOS=$(PREFIX)ROI2:MinY_RBV,XSIZE=$(PREFIX)ROI2:SizeX_RBV,YSIZE=$(PREFIX)ROI2:SizeY_RBV,PORT=OVER1,ADDR=1,TIMEOUT=1")
@@ -93,9 +108,9 @@ dbLoadRecords("NDOverlayN.template","P=$(PREFIX),R=Over1:7:,NAME=Box1,   SHAPE=1
 dbLoadRecords("NDOverlayN.template","P=$(PREFIX),R=Over1:8:,NAME=Box2,   SHAPE=1,O=Over1:,XPOS=junk,                  YPOS=junk,                  XSIZE=junk,                   YSIZE=junk,                   PORT=OVER1,ADDR=7,TIMEOUT=1")
 
 # Create 2 color conversion plugins
-NDColorConvertConfigure("CC1", $(QSIZE), 0, "$(PORT)", 0, 0, 0)
+NDColorConvertConfigure("CC1", $(QSIZE), 0, "$(PORT)", 0, 0, 0, 0, 0, $(MAX_THREADS=5))
 dbLoadRecords("NDColorConvert.template", "P=$(PREFIX),R=CC1:,  PORT=CC1,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
-NDColorConvertConfigure("CC2", $(QSIZE), 0, "$(PORT)", 0, 0, 0)
+NDColorConvertConfigure("CC2", $(QSIZE), 0, "$(PORT)", 0, 0, 0, 0, 0, $(MAX_THREADS=5))
 dbLoadRecords("NDColorConvert.template", "P=$(PREFIX),R=CC2:,  PORT=CC2,ADDR=0,TIMEOUT=1,NDARRAY_PORT=$(PORT)")
 
 # Create a circular buffer plugin
@@ -113,6 +128,10 @@ dbLoadRecords("NDAttributeN.template", "P=$(PREFIX),R=Attr1:5:,  PORT=ATTR1,ADDR
 dbLoadRecords("NDAttributeN.template", "P=$(PREFIX),R=Attr1:6:,  PORT=ATTR1,ADDR=5,TIMEOUT=1,NCHANS=$(NCHANS)")
 dbLoadRecords("NDAttributeN.template", "P=$(PREFIX),R=Attr1:7:,  PORT=ATTR1,ADDR=6,TIMEOUT=1,NCHANS=$(NCHANS)")
 dbLoadRecords("NDAttributeN.template", "P=$(PREFIX),R=Attr1:8:,  PORT=ATTR1,ADDR=7,TIMEOUT=1,NCHANS=$(NCHANS)")
+
+# Create an FFT plugin
+NDFFTConfigure("FFT1", 3, 0, "$(PORT)", 0, 0, 0, 0, 0, 5)
+dbLoadRecords("NDFFT.template", "P=$(PREFIX), R=FFT1:, PORT=FFT1, ADDR=0, TIMEOUT=1, NDARRAY_PORT=$(PORT), NAME=FFT1, NCHANS=$(XSIZE)")
 
 set_requestfile_path("./")
 set_requestfile_path("$(ADCORE)/ADApp/Db")
