@@ -228,8 +228,6 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
   if (pArray->ndims > 0) setIntegerParam(NDArraySizeX, (int)pArray->dims[0].size);
   if (pArray->ndims > 1) setIntegerParam(NDArraySizeY, (int)pArray->dims[1].size);
 
-  getIntegerParam(NDPluginROIStatTSAcquiring,        &TSAcquiring);
-
   /* Loop over the ROIs in this driver */
   for (int roi=0; roi<maxROIs_; ++roi) {
     pROI = &pROIs[roi];
@@ -288,6 +286,8 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
 
   /* We must enter the loop and exit with the mutex locked */
   this->lock();
+
+  getIntegerParam(NDPluginROIStatTSAcquiring, &TSAcquiring);
 
   for (int roi=0; roi<maxROIs_; ++roi) {
     pROI = &pROIs[roi];
