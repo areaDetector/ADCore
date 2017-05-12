@@ -3,6 +3,7 @@
 
 #include "asynPortDriver.h"
 #include "NDArray.h"
+#include "ADCoreVersion.h"
 
 /** Maximum length of a filename or any of its components */
 #define MAX_FILENAME_LEN 256

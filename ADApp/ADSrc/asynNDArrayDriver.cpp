@@ -30,7 +30,6 @@
 
 #define epicsExportSharedSymbols
 #include <shareLib.h>
-#include "ADCoreVersion.h"
 #include "PVAttribute.h"
 #include "paramAttribute.h"
 #include "functAttribute.h"
