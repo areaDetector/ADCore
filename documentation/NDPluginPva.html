@@ -22,6 +22,7 @@
     <li><a href="#Overview">Overview</a></li>
     <li><a href="#Configuration">Configuration</a></li>
     <li><a href="#PVAServer">Starting the pvAccess server</a></li>
+    <li><a href="#Performance">Anecdotal performance numbers</a></li>
   </ul>
   <h2 id="Overview">
     Overview
@@ -101,7 +102,98 @@
   <h2 id="PVAServer">Starting the pvAccess server</h2>
   <p>
     In order to actually serve the EPICSv4 PV created by this plugin it is necessary to call 
-    <pre>startPVAServer</pre>. 
+    <code>startPVAServer</code>.
   </p>
+  <h2 id="Performance">Anedoctal Performance Numbers</h2>
+  <p>
+    A performance test was conducted at NSLS-II to evaluate the benefits of using NDPva instead of 
+    NDStdArrays to transport images for visualization purposes. Eight AVT cameras of four different
+    models were used:
+  </p>
+
+  <table  border="1" cellpadding="2" cellspacing="2" >
+    <tr>
+      <th> Model </th>
+      <th> Resolution </th>
+      <th> Frame Rate </th>
+    </tr>
+    <tr>
+      <td> Manta G125B (3 instances)</td>
+      <td> 1292x964x1 </td>
+      <td> 30 Hz </td>
+    </tr>
+    <tr>
+      <td> GT2450 (3 instances)</td>
+      <td> 2448x2050x1 </td>
+      <td> 15 Hz </td>
+    </tr>
+    <tr>
+      <td> GT3400C (1 instance)</td>
+      <td> 3384x2704x3  (binned to 1692x1352x3)</td>
+      <td> 17 Hz </td>
+    </tr>
+    <tr>
+      <td> Mako G131C (1 instance)</td>
+      <td> 1280x1024x3 </td>
+      <td> 28 Hz </td>
+    </tr>
+  </table>
+
+  <p>
+    All camera IOCs were concurrently running and acquiring on a HP ProLiant DL360 Gen9 server with 
+    32GB of memory and a 12-core Xeon E5-2620 @ 2.40 GHz CPU. No other resource intensive process was
+    running during the tests. This server was connected to a switch via a 10Gbps fiber link, as was the
+    client computer. All cameras were individually connected via 1Gbps copper links to the switch.
+
+    The client computer was a HP Z640 Workstation with 32GB of memory and 12-core Xeon E5-1650 @ 3.5GHz
+    CPU, running CS-Studio version 4.3.3.
+
+    Five tests were performed:
+    <ol>
+      <li><b>Baseline:</b> Cameras acquiring, no plugins enabled</li>
+      <li><b>NDPva, no CS-Studio:</b> Cameras acquiring, only NDPva enabled, images not being displayed 
+                                      in CS-Studio</li>
+      <li><b>NDPva + CS-Studio:</b> Cameras acquiring, only NDPva enabled, images being displayed 
+                                    in CS-Studio</li>
+      <li><b>NDStdArrays, no CS-Studio:</b> Cameras acquiring, only NDStdArrays enabled, images not 
+                                            being displayed in CS-Studio</li>
+      <li><b>NDStdArrays + CS-Studio:</b> Cameras acquiring, only NDStdArrays enabled, images being displayed 
+                                          in CS-Studio</li>
+
+    </ol>
+  </p>
+
+  <p>
+    The results of these tests are tabulated as follows:
+  </p>
+
+  <table border="1" cellpadding="2" cellspacing="2">
+    <tr>
+      <td align="center" colspan="6,">
+        <b>CPU Usage</b>
+      </td>
+    </tr>
+    <tr>
+      <th>Camera</th>
+      <th>Baseline</th>
+      <th>NDPva, no CS-Studio</th>
+      <th>NDPva + CS-Studio</th>
+      <th>NDStdArrays, no CS-Studio</th>
+      <th>NDStdArrays + CS-Studio</th>
+    </tr>
+    <tr><td> Cam 1: Manta G125B </td><td>10%</td><td>11%</td><td>13%</td><td>15%</td><td>35%</td></tr>
+    <tr><td> Cam 2: Manta G125B </td><td>10%</td><td>11%</td><td>13%</td><td>15%</td><td>35%</td></tr>
+    <tr><td> Cam 3: GT2450      </td><td>18%</td><td>18%</td><td>23%</td><td>30%</td><td>65%</td></tr>
+    <tr><td> Cam 4: Manta G125B </td><td>10%</td><td>11%</td><td>13%</td><td>15%</td><td>35%</td></tr>
+    <tr><td> Cam 5: GT2450      </td><td>18%</td><td>18%</td><td>23%</td><td>30%</td><td>65%</td></tr>
+    <tr><td> Cam 6: GT2450      </td><td>18%</td><td>18%</td><td>23%</td><td>30%</td><td>65%</td></tr>
+    <tr><td> Cam 7: GT3400C     </td><td>20%</td><td>25%</td><td>30%</td><td>40%</td><td>65%</td></tr>
+    <tr><td> Cam 8: Mako G131C  </td><td>19%</td><td>21%</td><td>28%</td><td>40%</td><td>65%</td></tr>
+  </table>
+
+  <p> And, in form of a graph: </p>
+  <div style="text-align: center; margin-top: 2em; margin-bottom: 2em">
+    <img alt="NDPva_Performance.png" src="NDPva_Performance.png" />
+  </div>
 </body>
 </html>
