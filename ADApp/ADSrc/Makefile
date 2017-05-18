@@ -52,18 +52,18 @@ ifeq ($(EPICS_LIBCOM_ONLY),YES)
 else
   LIB_LIBS += $(EPICS_BASE_IOC_LIBS)
 endif
-ifeq ($(XML2_EXTERNAL),NO)
+ifeq ($(XML2_EXTERNAL), NO)
   LIB_LIBS += xml2
 else
+  ifdef XML2_INCLUDE
+    USR_INCLUDES += -I$(XML2_INCLUDE)
+  endif
   ifdef XML2_LIB
     xml2_DIR     = $(XML2_LIB)
     LIB_LIBS     += xml2
   else
     LIB_SYS_LIBS += xml2
   endif
-endif
-ifdef XML2_INCLUDE
-  USR_INCLUDES += $(XML2_INCLUDE)
 endif
 
 # Install commonDriverMakefile and commonLibraryMakefile in top-level cfg directory.

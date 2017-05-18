@@ -64,14 +64,16 @@ ifeq ($(WITH_JPEG),YES)
   endif
 endif
 
-ifeq ($(XML2_EXTERNAL),NO)
-  PROD_LIBS += xml2
-else
-  ifdef XML2_LIB
-    xml2_DIR     = $(XML2_LIB)
-    PROD_LIBS     += xml2
+ifeq ($(WITH_XML2),YES)
+  ifeq ($(XML2_EXTERNAL),NO)
+    PROD_LIBS += xml2
   else
-    PROD_SYS_LIBS += xml2
+    ifdef XML2_LIB
+      xml2_DIR     = $(XML2_LIB)
+      PROD_LIBS     += xml2
+    else
+      PROD_SYS_LIBS += xml2
+    endif
   endif
 endif
 
@@ -138,18 +140,15 @@ endif
 
 # The following libraries are only needed for GraphicsMagick
 ifeq ($(WITH_GRAPHICSMAGICK), YES)
+  ifeq ($(GRAPHICSMAGICK_EXTERNAL),NO)
   $(PROD_NAME)_DBD += NDFileMagick.dbd
-  ifdef GRAPHICS_MAGICK_LIB
-    GraphicsMagick_DIR     = $(GRAPHICS_MAGICK_LIB)
-    GraphicsMagick++_DIR   = $(GRAPHICS_MAGICK_LIB)
-    GraphicsMagickWand_DIR = $(GRAPHICS_MAGICK_LIB)
-    PROD_LIBS               += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
+    PROD_LIBS               += Magick++ Magick coders jbig jp2 bzlib png webp lcms ttf wmf filters
   else
-    PROD_SYS_LIBS           += GraphicsMagick++ GraphicsMagickWand GraphicsMagick
+    PROD_SYS_LIBS           += Magick++ Magick coders jbig jp2 bzlib png webp lcms ttf wmf filters
+    PROD_SYS_LIBS_Linux    += gomp X11 png12 bz2 Xext freetype 
+    PROD_SYS_LIBS_Darwin   += png bz2
   endif
   # The following system libraries must be installed to use GraphicsMagick
-  PROD_SYS_LIBS_Linux    += gomp X11 png12 bz2 Xext freetype 
-  PROD_SYS_LIBS_Darwin   += png bz2
 endif
 
 
