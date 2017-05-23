@@ -283,7 +283,7 @@ asynStatus NDPluginDriver::endProcessCallbacks(NDArray *pArray, bool copyArray, 
         if (listSize >= sortSize) {
             int droppedOutputArrays;
             getIntegerParam(NDPluginDriverDroppedOutputArrays, &droppedOutputArrays);
-            asynPrint(pasynUserSelf, ASYN_TRACE_FLOW, 
+            asynPrint(pasynUserSelf, ASYN_TRACE_WARNING, 
                 "%s::%s std::multilist size exceeded, dropped array uniqueId=%d\n",
                 driverName, functionName, pArrayOut->uniqueId);
             droppedOutputArrays++;
@@ -305,6 +305,9 @@ asynStatus NDPluginDriver::endProcessCallbacks(NDArray *pArray, bool copyArray, 
             getIntegerParam(NDPluginDriverDisorderedArrays, &disorderedArrays);
             disorderedArrays++;
             setIntegerParam(NDPluginDriverDisorderedArrays, disorderedArrays);
+            asynPrint(pasynUserSelf, ASYN_TRACE_WARNING, 
+                "%s::%s disordered array found uniqueId=%d, prevUniqueId_=%d, orderOK=%d, disorderedArrays=%d\n",
+                driverName, functionName, pArrayOut->uniqueId, prevUniqueId_, orderOK, disorderedArrays);
         }
         firstOutputArray_ = false;
         prevUniqueId_ = pArrayOut->uniqueId;
@@ -596,15 +599,19 @@ void NDPluginDriver::sortingTask()
                 //this->unlock();
                 doCallbacksGenericPointer(pListElement->pArray_, NDArrayData, 0);
                 //this->lock();
-                prevUniqueId_ = pListElement->pArray_->uniqueId;
-                pListElement->pArray_->release();
-                sortedNDArrayList_.erase(pListElement);
                 if (!firstOutputArray_ && !orderOK) {
                     int disorderedArrays;
                     getIntegerParam(NDPluginDriverDisorderedArrays, &disorderedArrays);
                     disorderedArrays++;
                     setIntegerParam(NDPluginDriverDisorderedArrays, disorderedArrays);
+                    asynPrint(pasynUserSelf, ASYN_TRACE_WARNING, 
+                        "%s::%s disordered array found uniqueId=%d, prevUniqueId_=%d, orderOK=%d, disorderedArrays=%d\n",
+                        driverName, functionName, pListElement->pArray_->uniqueId, prevUniqueId_, 
+                        orderOK, disorderedArrays);
                 }
+                prevUniqueId_ = pListElement->pArray_->uniqueId;
+                pListElement->pArray_->release();
+                sortedNDArrayList_.erase(pListElement);
                 firstOutputArray_ = false;
             } else  {
                 break;
