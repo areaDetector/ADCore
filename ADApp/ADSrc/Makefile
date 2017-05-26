@@ -52,7 +52,7 @@ ifeq ($(EPICS_LIBCOM_ONLY),YES)
 else
   LIB_LIBS += $(EPICS_BASE_IOC_LIBS)
 endif
-ifeq ($(XML2_EXTERNAL), NO)
+ifeq ($(XML2_EXTERNAL),NO)
   LIB_LIBS += xml2
 else
   ifdef XML2_INCLUDE
