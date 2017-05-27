@@ -65,13 +65,18 @@ ifeq ($(WITH_BOOST),YES)
   # Link order matters when doing a static build
   plugin-test_LIBS += ADTestUtility
 
-  USR_INCLUDES += -I$(HDF5_INCLUDE)
-  USR_INCLUDES += -I$(SZ_INCLUDE)
-  ifeq ($(XML2_EXTERNAL), YES)
+  ifdef (HDF5_INCLUDE)
+    USR_INCLUDES += -I$(HDF5_INCLUDE)
+  endif
+  ifdef (SZ_INCLUDE)
+    USR_INCLUDES += -I$(SZ_INCLUDE)
+  endif
+  ifdef (XML2_INCLUDE)
     USR_INCLUDES += -I$(XML2_INCLUDE)
   endif
-  USR_INCLUDES += -I$(BOOST_INCLUDE)
-
+  ifdef (BOOST_INCLUDE)
+    USR_INCLUDES += -I$(BOOST_INCLUDE)
+  endif
   ifeq ($(BOOST_USE_STATIC_LINK),YES)
 	USR_CXXFLAGS_Linux += -DBOOST_USE_STATIC_LINK
 	USR_CFLAGS_Linux += -DBOOST_USE_STATIC_LINK
