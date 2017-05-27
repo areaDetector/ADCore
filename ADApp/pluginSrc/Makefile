@@ -101,9 +101,6 @@ ifeq ($(WITH_GRAPHICSMAGICK),YES)
 endif
 
 ifeq ($(WITH_HDF5),YES)
-  ifeq ($(SHARED_LIBRARIES), YES)
-     USR_CXXFLAGS_WIN32 += -DH5_BUILT_AS_DYNAMIC_LIB
-  endif
   DBD      += NDFileHDF5.dbd
   INC      += NDFileHDF5.h
   INC      += NDFileHDF5Dataset.h
@@ -158,7 +155,7 @@ endif
 ifdef SZIP_INCLUDE
   USR_INCLUDES += -I$(SZIP_INCLUDE)
 endif
-ifeq ($(XML2_EXTERNAL), YES)
+ifdef XML2_INCLUDE
   USR_INCLUDES += -I$(XML2_INCLUDE)
 endif
 
