@@ -140,20 +140,20 @@ endif
 ifeq ($(WITH_GRAPHICSMAGICK), YES)
   $(PROD_NAME)_DBD += NDFileMagick.dbd
   ifeq ($(GRAPHICSMAGICK_EXTERNAL),NO)
-    PROD_LIBS               += Magick++ Magick coders jbig jp2 bzlib png webp lcms ttf wmf filters
+    PROD_LIBS               += Magick++ coders Magick jbig jp2 bzlib png webp lcms ttf wmf filters
   else
     ifdef GRAPHICS_MAGICK_LIB
       GraphicsMagick_DIR     = $(GRAPHICS_MAGICK_LIB)
       GraphicsMagick++_DIR   = $(GRAPHICS_MAGICK_LIB)
       GraphicsMagickWand_DIR = $(GRAPHICS_MAGICK_LIB)
-      PROD_LIBS             += GraphicsMagick++ GraphicsMagick coders jbig jp2 bzlib png webp lcms ttf wmf filters
+      PROD_LIBS             += GraphicsMagick++ coders GraphicsMagick jbig jp2 bzlib png webp lcms ttf wmf filters
     else
-      PROD_SYS_LIBS         += GraphicsMagick++ GraphicsMagick coders jbig jp2 bzlib png webp lcms ttf wmf filters
+      PROD_SYS_LIBS         += GraphicsMagick++ coders GraphicsMagick jbig jp2 bzlib png webp lcms ttf wmf filters
     endif
-    # The following system libraries must be installed to use GraphicsMagick
-    PROD_SYS_LIBS_Linux    += gomp X11 png12 bz2 Xext freetype 
-    PROD_SYS_LIBS_Darwin   += png bz2
   endif
+  # The following system libraries must be installed to use GraphicsMagick
+  PROD_SYS_LIBS_Linux    += gomp X11 png12 bz2 Xext freetype 
+  PROD_SYS_LIBS_Darwin   += png bz2
 endif
 
 ifdef ADPLUGINEDGE

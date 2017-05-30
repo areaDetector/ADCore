@@ -123,20 +123,20 @@ endif
 # The following libraries are only needed for GraphicsMagick
 ifeq ($(WITH_GRAPHICSMAGICK), YES)
   ifeq ($(GRAPHICSMAGICK_EXTERNAL),NO)
-    LIB_LIBS               += Magick++ Magick coders jbig jp2 bzlib png webp lcms ttf wmf filters
+    LIB_LIBS               += Magick++ coders Magick jbig jp2 bzlib png webp lcms ttf wmf filters
   else
     ifdef GRAPHICS_MAGICK_LIB
       GraphicsMagick_DIR     = $(GRAPHICS_MAGICK_LIB)
       GraphicsMagick++_DIR   = $(GRAPHICS_MAGICK_LIB)
       GraphicsMagickWand_DIR = $(GRAPHICS_MAGICK_LIB)
-      LIB_LIBS             += GraphicsMagick++ GraphicsMagick coders jbig jp2 bzlib png webp lcms ttf wmf filters
+      LIB_LIBS             += GraphicsMagick++ coders GraphicsMagick big jp2 bzlib png webp lcms ttf wmf filters
     else
-      LIB_SYS_LIBS         += GraphicsMagick++ GraphicsMagick coders jbig jp2 bzlib png webp lcms ttf wmf filters
+      LIB_SYS_LIBS         += GraphicsMagick++ coders GraphicsMagick jbig jp2 bzlib png webp lcms ttf wmf filters
     endif
-    # The following system libraries must be installed to use GraphicsMagick
-    LIB_SYS_LIBS_Linux    += gomp X11 png12 bz2 Xext freetype 
-    LIB_SYS_LIBS_Darwin   += png bz2
   endif
+  # The following system libraries must be installed to use GraphicsMagick
+  LIB_SYS_LIBS_Linux    += gomp X11 png12 bz2 Xext freetype 
+  LIB_SYS_LIBS_Darwin   += png bz2
 endif
 
 ifeq ($(EPICS_LIBCOM_ONLY),YES)
