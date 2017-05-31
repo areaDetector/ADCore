@@ -92,6 +92,9 @@ INC      += NDFileNull.h
 LIB_SRCS += NDFileNull.cpp
 
 ifeq ($(WITH_GRAPHICSMAGICK),YES)
+  ifeq ($(GRAPHICSMAGICK_PREFIX_SYMBOLS),YES)
+    USR_CXXFLAGS += -DPREFIX_MAGICK_SYMBOLS
+  endif
   DBD      += NDFileMagick.dbd
   INC      += NDFileMagick.h
   LIB_SRCS += NDFileMagick.cpp
