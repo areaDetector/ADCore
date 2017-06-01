@@ -98,8 +98,8 @@ ifeq ($(WITH_GRAPHICSMAGICK),YES)
   DBD      += NDFileMagick.dbd
   INC      += NDFileMagick.h
   LIB_SRCS += NDFileMagick.cpp
-  ifdef GRAPHICS_MAGICK_INCLUDE
-    USR_INCLUDES += $(GRAPHICS_MAGICK_INCLUDE)
+  ifdef GRAPHICSMAGICK_INCLUDE
+    USR_INCLUDES += $(GRAPHICSMAGICK_INCLUDE)
   endif
 endif
 
