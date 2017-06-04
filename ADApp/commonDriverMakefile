@@ -148,11 +148,11 @@ ifeq ($(WITH_GRAPHICSMAGICK), YES)
       GraphicsMagickWand_DIR = $(GRAPHICS_MAGICK_LIB)
       PROD_LIBS             += GraphicsMagick++ coders GraphicsMagick jbig jp2 bzlib png webp lcms ttf wmf filters
     else
-      PROD_SYS_LIBS         += GraphicsMagick++ coders GraphicsMagick jbig jp2 bzlib png webp lcms ttf wmf filters
+      PROD_SYS_LIBS         += GraphicsMagick++ coders GraphicsMagick jbig bz2 png webp lcms ttf wmf filters
     endif
   endif
   # The following system libraries must be installed to use GraphicsMagick
-  PROD_SYS_LIBS_Linux    += gomp X11 png12 bz2 Xext freetype 
+  PROD_SYS_LIBS_Linux    += gomp X11 Xext freetype 
   PROD_SYS_LIBS_Darwin   += png bz2
 endif
 
