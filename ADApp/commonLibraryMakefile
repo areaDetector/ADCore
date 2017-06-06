@@ -24,6 +24,23 @@ ifeq ($(WITH_NETCDF),YES)
   endif
 endif
 
+ifeq ($(WITH_GRAPHICSMAGICK), YES)
+  ifeq ($(GRAPHICSMAGICK_EXTERNAL),NO)
+    LIB_LIBS               += Magick++ coders Magick jbig jp2 bzlib png webp lcms ttf wmf filters
+  else
+    ifdef GRAPHICS_MAGICK_LIB
+      GraphicsMagick_DIR     = $(GRAPHICS_MAGICK_LIB)
+      GraphicsMagick++_DIR   = $(GRAPHICS_MAGICK_LIB)
+      GraphicsMagickWand_DIR = $(GRAPHICS_MAGICK_LIB)
+      LIB_LIBS             += GraphicsMagick++ coders GraphicsMagick big jp2 bzlib png webp lcms ttf wmf filters
+    else
+      LIB_SYS_LIBS         += GraphicsMagick++ coders GraphicsMagick jbig bz2 png webp lcms ttf wmf filters
+    endif
+  endif
+  # The following system libraries must be installed to use GraphicsMagick
+  LIB_SYS_LIBS_Linux    += X11 Xext
+endif
+
 ifeq ($(WITH_TIFF),YES)
   ifeq ($(TIFF_EXTERNAL),NO)
     LIB_LIBS += tiff
@@ -118,24 +135,6 @@ ifeq ($(WITH_ZLIB),YES)
       LIB_SYS_LIBS += z
     endif
   endif
-endif
-
-# The following libraries are only needed for GraphicsMagick
-ifeq ($(WITH_GRAPHICSMAGICK), YES)
-  ifeq ($(GRAPHICSMAGICK_EXTERNAL),NO)
-    LIB_LIBS               += Magick++ coders Magick jbig jp2 bzlib png webp lcms ttf wmf filters
-  else
-    ifdef GRAPHICS_MAGICK_LIB
-      GraphicsMagick_DIR     = $(GRAPHICS_MAGICK_LIB)
-      GraphicsMagick++_DIR   = $(GRAPHICS_MAGICK_LIB)
-      GraphicsMagickWand_DIR = $(GRAPHICS_MAGICK_LIB)
-      LIB_LIBS             += GraphicsMagick++ coders GraphicsMagick big jp2 bzlib png webp lcms ttf wmf filters
-    else
-      LIB_SYS_LIBS         += GraphicsMagick++ coders GraphicsMagick jbig bz2 png webp lcms ttf wmf filters
-    endif
-  endif
-  # The following system libraries must be installed to use GraphicsMagick
-  LIB_SYS_LIBS_Linux    += X11 Xext
 endif
 
 ifeq ($(EPICS_LIBCOM_ONLY),YES)
