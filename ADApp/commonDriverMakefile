@@ -41,13 +41,13 @@ ifeq ($(WITH_GRAPHICSMAGICK), YES)
   ifeq ($(GRAPHICSMAGICK_EXTERNAL),NO)
     PROD_LIBS               += Magick++ coders Magick jbig jp2 bzlib png webp lcms ttf wmf filters
   else
-    ifdef GRAPHICS_MAGICK_LIB
-      GraphicsMagick_DIR     = $(GRAPHICS_MAGICK_LIB)
-      GraphicsMagick++_DIR   = $(GRAPHICS_MAGICK_LIB)
-      GraphicsMagickWand_DIR = $(GRAPHICS_MAGICK_LIB)
-      PROD_LIBS             += GraphicsMagick++ coders GraphicsMagick jbig jp2 bzlib png webp lcms ttf wmf filters
+    ifdef GRAPHICSMAGICK_LIB
+      GraphicsMagick_DIR     = $(GRAPHICSMAGICK_LIB)
+      GraphicsMagick++_DIR   = $(GRAPHICSMAGICK_LIB)
+      GraphicsMagickWand_DIR = $(GRAPHICSMAGICK_LIB)
+      PROD_LIBS             += GraphicsMagick++ GraphicsMagick
     else
-      PROD_SYS_LIBS         += GraphicsMagick++ coders GraphicsMagick jbig bz2 png webp lcms ttf wmf filters
+      PROD_SYS_LIBS         += GraphicsMagick++ GraphicsMagick
     endif
   endif
   # The following system libraries must be installed to use GraphicsMagick
