@@ -153,6 +153,7 @@ NDPluginDriver::NDPluginDriver(const char *portName, int queueSize, int blocking
     setIntegerParam(NDPluginDriverDroppedArrays, 0);
     setIntegerParam(NDPluginDriverDroppedOutputArrays, 0);
     setIntegerParam(NDPluginDriverQueueSize, queueSize);
+    setIntegerParam(NDPluginDriverQueueFree, queueSize);
     setIntegerParam(NDPluginDriverMaxThreads, maxThreads);
     setIntegerParam(NDPluginDriverNumThreads, 1);
     setIntegerParam(NDPluginDriverBlockingCallbacks, blockingCallbacks);
@@ -915,6 +916,7 @@ asynStatus NDPluginDriver::createCallbackThreads()
         status |= startCallbackThreads();
     }
     getIntegerParam(NDPluginDriverEnableCallbacks, &enableCallbacks);
+    setIntegerParam(NDPluginDriverQueueFree, queueSize);
     if (enableCallbacks) this->setArrayInterrupt(1);
     return (asynStatus) status;
 }
