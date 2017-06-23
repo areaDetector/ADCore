@@ -1,14 +1,14 @@
 
 file {
-	name="/home/epics/devel/areaDetector/ADCore/ADApp/op/adl/ADTop.adl"
-	version=030107
+	name="/home/epics/devel/areaDetector-3-0/ADCore/ADApp/op/adl/ADTop.adl"
+	version=030109
 }
 display {
 	object {
 		x=171
 		y=78
 		width=225
-		height=615
+		height=640
 	}
 	clr=14
 	bclr=4
@@ -466,399 +466,38 @@ text {
 	textix="ADC Simulator"
 	align="horiz. right"
 }
-"related display" {
-	object {
-		x=145
-		y=435
-		width=64
-		height=20
-	}
-	display[0] {
-		label="Prosilica #1 general"
-		name="ADBase.adl"
-		args="P=13PS1:, R=cam1:"
-	}
-	display[1] {
-		label="Prosilica #1 specific"
-		name="prosilica.adl"
-		args="P=13PS1:, R=cam1:"
-	}
-	display[2] {
-		label="Prosilica #2 general"
-		name="ADBase.adl"
-		args="P=13PS1:, R=cam2:"
-	}
-	display[3] {
-		label="Prosilica #2 specific"
-		name="prosilica.adl"
-		args="P=13PS1:, R=cam2:"
-	}
-	clr=14
-	bclr=51
-}
 text {
-	object {
-		x=50
-		y=435
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Prosilica"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
-		y=360
-		width=64
-		height=20
-	}
-	display[0] {
-		label="Pilatus #1 general"
-		name="ADBase.adl"
-		args="P=13PIL1:, R=cam1: "
-	}
-	display[1] {
-		label="Pilatus #1 specific"
-		name="pilatusDetector.adl"
-		args="P=13PIL1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=70
-		y=360
-		width=70
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Pilatus"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
-		y=385
-		width=64
-		height=20
-	}
-	display[0] {
-		label="Pixirad #1 general"
-		name="ADBase.adl"
-		args="P=13PR1:, R=cam1: "
-	}
-	display[1] {
-		label="Pixirad #1 specific"
-		name="pixirad.adl"
-		args="P=13PR1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=69
-		y=385
-		width=70
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Pixirad"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
-		y=410
-		width=64
-		height=20
-	}
-	display[0] {
-		label="Point Grey #1 general"
-		name="ADBase.adl"
-		args="P=13PG1:, R=cam1: "
-	}
-	display[1] {
-		label="Point Grey #1 specific"
-		name="pointGrey.adl"
-		args="P=13PG1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=39
-		y=410
-		width=100
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Point Grey"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
-		y=560
-		width=64
-		height=20
-	}
-	display[0] {
-		label="Simulator #1 General"
-		name="ADBase.adl"
-		args="P=13SIM1:, R=cam1:"
-	}
-	display[1] {
-		label="Simulator #1 Specific"
-		name="simDetector.adl"
-		args="P=13SIM1:, R=cam1:"
-	}
-	display[2] {
-		label="Simulator #2 General"
-		name="ADBase.adl"
-		args="P=13SIM1:, R=cam2:"
-	}
-	display[3] {
-		label="Simulator #2 Specific"
-		name="simDetector.adl"
-		args="P=13SIM1:, R=cam2:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=50
-		y=560
-		width=90
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Simulator"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
-		y=535
-		width=64
-		height=20
-	}
-	display[0] {
-		label="Roper #1 general"
-		name="ADBase.adl"
-		args="P=13ROPER1:, R=cam1: "
-	}
-	display[1] {
-		label="Roper #1 specific"
-		name="Roper.adl"
-		args="P=13ROPER1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=90
-		y=535
-		width=50
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="Roper"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
-		y=585
-		width=64
-		height=20
-	}
-	display[0] {
-		label="URL #1 general"
-		name="ADBase.adl"
-		args="P=13URL1:, R=cam1: "
-	}
-	display[1] {
-		label="URL #1 specific"
-		name="URLDriver.adl"
-		args="P=13URL1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=110
-		y=585
-		width=30
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="URL"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
-		y=510
-		width=64
-		height=20
-	}
-	display[0] {
-		label="PSL #1 general"
-		name="ADBase.adl"
-		args="P=13PSL1:, R=cam1: "
-	}
-	display[1] {
-		label="PSL #1 specific"
-		name="PSL.adl"
-		args="P=13PSL1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=109
-		y=510
-		width=30
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="PSL"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
-		y=485
-		width=64
-		height=20
-	}
-	display[0] {
-		label="PVCAM #1 general"
-		name="ADBase.adl"
-		args="P=13PVCAM1:, R=cam1: "
-	}
-	display[1] {
-		label="PVCAM #1 specific"
-		name="pvCam.adl"
-		args="P=13PVCAM1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=90
-		y=485
-		width=50
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="PVCAM"
-	align="horiz. right"
-}
-"related display" {
-	object {
-		x=145
-		y=460
-		width=64
-		height=20
-	}
-	display[0] {
-		label="PvaDriver #1 general"
-		name="ADBase.adl"
-		args="P=13PVA1:, R=cam1: "
-	}
-	display[1] {
-		label="PvaDriver #1 specific"
-		name="ADPvaDriver.adl"
-		args="P=13PVA1:, R=cam1:"
-	}
-	clr=14
-	bclr=51
-}
-text {
-	object {
-		x=90
-		y=460
-		width=50
-		height=20
-	}
-	"basic attribute" {
-		clr=14
-	}
-	textix="PvaDriver"
-	align="horiz. right"
-}
-composite {
 	object {
 		x=20
 		y=335
-		width=189
+		width=120
 		height=20
 	}
-	"composite name"=""
-	children {
-		text {
-			object {
-				x=20
-				y=335
-				width=120
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Perkin Elmer"
-			align="horiz. right"
-		}
-		"related display" {
-			object {
-				x=145
-				y=335
-				width=64
-				height=20
-			}
-			display[0] {
-				label="Perkin Elmer #1 general"
-				name="ADBase.adl"
-				args="P=13PE1:, R=cam1: "
-			}
-			display[1] {
-				label="Perkin Elmer #1 specific"
-				name="PerkinElmer.adl"
-				args="P=13PE1:, R=cam1:"
-			}
-			clr=14
-			bclr=51
-		}
+	"basic attribute" {
+		clr=14
 	}
+	textix="Perkin Elmer"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=335
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Perkin Elmer #1 general"
+		name="ADBase.adl"
+		args="P=13PE1:, R=cam1: "
+	}
+	display[1] {
+		label="Perkin Elmer #1 specific"
+		name="PerkinElmer.adl"
+		args="P=13PE1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
 }
 text {
 	object {
@@ -889,6 +528,389 @@ text {
 		label="NDStdArrays #1 specific"
 		name="NDDriverStdArrays.adl"
 		args="P=13NDSA1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+"related display" {
+	object {
+		x=145
+		y=460
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Prosilica #1 general"
+		name="ADBase.adl"
+		args="P=13PS1:, R=cam1:"
+	}
+	display[1] {
+		label="Prosilica #1 specific"
+		name="prosilica.adl"
+		args="P=13PS1:, R=cam1:"
+	}
+	display[2] {
+		label="Prosilica #2 general"
+		name="ADBase.adl"
+		args="P=13PS1:, R=cam2:"
+	}
+	display[3] {
+		label="Prosilica #2 specific"
+		name="prosilica.adl"
+		args="P=13PS1:, R=cam2:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=50
+		y=460
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Prosilica"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=385
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Pilatus #1 general"
+		name="ADBase.adl"
+		args="P=13PIL1:, R=cam1: "
+	}
+	display[1] {
+		label="Pilatus #1 specific"
+		name="pilatusDetector.adl"
+		args="P=13PIL1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=70
+		y=385
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Pilatus"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=410
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Pixirad #1 general"
+		name="ADBase.adl"
+		args="P=13PR1:, R=cam1: "
+	}
+	display[1] {
+		label="Pixirad #1 specific"
+		name="pixirad.adl"
+		args="P=13PR1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=69
+		y=410
+		width=70
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Pixirad"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=435
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Point Grey #1 general"
+		name="ADBase.adl"
+		args="P=13PG1:, R=cam1: "
+	}
+	display[1] {
+		label="Point Grey #1 specific"
+		name="pointGrey.adl"
+		args="P=13PG1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=39
+		y=435
+		width=100
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Point Grey"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=585
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Simulator #1 General"
+		name="ADBase.adl"
+		args="P=13SIM1:, R=cam1:"
+	}
+	display[1] {
+		label="Simulator #1 Specific"
+		name="simDetector.adl"
+		args="P=13SIM1:, R=cam1:"
+	}
+	display[2] {
+		label="Simulator #2 General"
+		name="ADBase.adl"
+		args="P=13SIM1:, R=cam2:"
+	}
+	display[3] {
+		label="Simulator #2 Specific"
+		name="simDetector.adl"
+		args="P=13SIM1:, R=cam2:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=50
+		y=585
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Simulator"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=560
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Roper #1 general"
+		name="ADBase.adl"
+		args="P=13ROPER1:, R=cam1: "
+	}
+	display[1] {
+		label="Roper #1 specific"
+		name="Roper.adl"
+		args="P=13ROPER1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=90
+		y=560
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Roper"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=610
+		width=64
+		height=20
+	}
+	display[0] {
+		label="URL #1 general"
+		name="ADBase.adl"
+		args="P=13URL1:, R=cam1: "
+	}
+	display[1] {
+		label="URL #1 specific"
+		name="URLDriver.adl"
+		args="P=13URL1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=110
+		y=610
+		width=30
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="URL"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=535
+		width=64
+		height=20
+	}
+	display[0] {
+		label="PSL #1 general"
+		name="ADBase.adl"
+		args="P=13PSL1:, R=cam1: "
+	}
+	display[1] {
+		label="PSL #1 specific"
+		name="PSL.adl"
+		args="P=13PSL1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=109
+		y=535
+		width=30
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="PSL"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=510
+		width=64
+		height=20
+	}
+	display[0] {
+		label="PVCAM #1 general"
+		name="ADBase.adl"
+		args="P=13PVCAM1:, R=cam1: "
+	}
+	display[1] {
+		label="PVCAM #1 specific"
+		name="pvCam.adl"
+		args="P=13PVCAM1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=90
+		y=510
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="PVCAM"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=485
+		width=64
+		height=20
+	}
+	display[0] {
+		label="PvaDriver #1 general"
+		name="ADBase.adl"
+		args="P=13PVA1:, R=cam1: "
+	}
+	display[1] {
+		label="PvaDriver #1 specific"
+		name="ADPvaDriver.adl"
+		args="P=13PVA1:, R=cam1:"
+	}
+	clr=14
+	bclr=51
+}
+text {
+	object {
+		x=90
+		y=485
+		width=50
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="PvaDriver"
+	align="horiz. right"
+}
+text {
+	object {
+		x=50
+		y=360
+		width=90
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Photon II"
+	align="horiz. right"
+}
+"related display" {
+	object {
+		x=145
+		y=360
+		width=64
+		height=20
+	}
+	display[0] {
+		label="Photon II #1 general"
+		name="ADBase.adl"
+		args="P=13PII_1:, R=cam1: "
+	}
+	display[1] {
+		label="Photon II #1 specific"
+		name="PhotonII.adl"
+		args="P=13PII_1:, R=cam1:"
 	}
 	clr=14
 	bclr=51
