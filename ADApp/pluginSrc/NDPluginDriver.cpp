@@ -515,11 +515,11 @@ asynStatus NDPluginDriver::connectToArrayPort(void)
     asynStatus status;
     asynInterface *pasynInterface;
     int enableCallbacks;
-    char arrayPort[20];
+    std::string arrayPort;
     int arrayAddr;
     static const char *functionName = "connectToArrayPort";
 
-    getStringParam(NDPluginDriverArrayPort, sizeof(arrayPort), arrayPort);
+    getStringParam(NDPluginDriverArrayPort, arrayPort);
     getIntegerParam(NDPluginDriverArrayAddr, &arrayAddr);
     getIntegerParam(NDPluginDriverEnableCallbacks, &enableCallbacks);
 
@@ -534,11 +534,11 @@ asynStatus NDPluginDriver::connectToArrayPort(void)
     this->connectedToArrayPort_ = false;
 
     /* Connect to the array port driver */
-    status = pasynManager->connectDevice(this->pasynUserGenericPointer_, arrayPort, arrayAddr);
+    status = pasynManager->connectDevice(this->pasynUserGenericPointer_, arrayPort.c_str(), arrayAddr);
     if (status != asynSuccess) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                   "%s::%s Error calling pasynManager->connectDevice to array port %s address %d, status=%d, error=%s\n",
-                  driverName, functionName, arrayPort, arrayAddr, status, this->pasynUserGenericPointer_->errorMessage);
+                  driverName, functionName, arrayPort.c_str(), arrayAddr, status, this->pasynUserGenericPointer_->errorMessage);
         return (status);
     }
 
@@ -547,7 +547,7 @@ asynStatus NDPluginDriver::connectToArrayPort(void)
     if (!pasynInterface) {
         asynPrint(this->pasynUserSelf, ASYN_TRACE_ERROR,
                   "%s::connectToPort ERROR: Can't find asynGenericPointer interface on array port %s address %d\n",
-                  driverName, arrayPort, arrayAddr);
+                  driverName, arrayPort.c_str(), arrayAddr);
         return(asynError);
     }
     pasynGenericPointer_ = (asynGenericPointer *)pasynInterface->pinterface;
