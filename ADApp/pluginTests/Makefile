@@ -68,8 +68,8 @@ ifeq ($(WITH_BOOST),YES)
   ifdef (HDF5_INCLUDE)
     USR_INCLUDES += -I$(HDF5_INCLUDE)
   endif
-  ifdef (SZ_INCLUDE)
-    USR_INCLUDES += -I$(SZ_INCLUDE)
+  ifdef (SZIP_INCLUDE)
+    USR_INCLUDES += -I$(SZIP_INCLUDE)
   endif
   ifdef (XML2_INCLUDE)
     USR_INCLUDES += -I$(XML2_INCLUDE)
