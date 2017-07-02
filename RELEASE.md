@@ -19,6 +19,29 @@ files respectively, in the configure/ directory of the appropriate release of th
 
 Release Notes
 =============
+R3-1 (July xxx, 2017)
+======================
+### commonDriverMakefile, commonLibraryMakefile.
+* Changes to work with GraphicsMagick both from ADSupport (GRAPHICSMAGICK_EXTERNAL=NO) and as a system library (GRAPHICSMAGIC_EXTERNAL=YES).
+### pluginSrc/Makefile, pluginTests/Makefile
+* Fixed some problems with XXX_INCLUDE definitions (XXX=HDF5, XML2, SZIP, GRAPHICSMAGICK, BOOST).
+### NDPluginDriver
+* Fixed limitation where the ArrayPort string was limited to 20 characters.  There is now no limit.
+* Fixed problem with the value of QueueFree at startup and when the queue size was changed.  The queue size logic was OK but
+  the displayed value of QueueFree was wrong.
+### ADTop.adl
+* Add PhotonII detector.
+### NDPluginAttrPlot
+* Added documentation.
+### NDPluginPva
+* Added performance measurements to documentation.
+### 
+### asynNDArrayDriver.h
+* Include ADCoreVersion.h from this file so drivers don't need to explicitly include it.
+
+  
+Release Notes
+=============
 R3-0 (May 5, 2017)
 ======================
 ### Requirements
