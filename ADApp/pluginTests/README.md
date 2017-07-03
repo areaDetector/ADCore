@@ -31,7 +31,7 @@ See available options with the --help flag.
 
 Can be run like this:
 
-    ./bin/linux-x86_64/plugin-test --log_level=test_suite
+    ../../bin/linux-x86_64/plugin-test --log_level=test_suite
     
 Which results in a trace like this (example with forced failure):
 
