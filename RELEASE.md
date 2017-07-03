@@ -23,8 +23,8 @@ Release Notes
 R3-1 (July 3, 2017)
 ======================
 ### GraphicsMagick
-* Changes to commonDriverMakefile and commonLibraryMakefilework so they work GraphicsMagick both from
-  the recently addition to ADSupport R1-3 (GRAPHICSMAGICK_EXTERNAL=NO) and as a
+* Changes to commonDriverMakefile and commonLibraryMakefile so they work GraphicsMagick both from
+  its recent addition to ADSupport R1-3 (GRAPHICSMAGICK_EXTERNAL=NO) and as a
   system library (GRAPHICSMAGIC_EXTERNAL=YES).
 * Added support for 32-bit images in NDFileMagick.
 * Improved the documentation for NDFileMagick.
