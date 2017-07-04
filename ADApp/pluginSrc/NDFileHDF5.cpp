@@ -41,7 +41,10 @@
 #define METADATA_NDIMS 1
 #define MAX_LAYOUT_LEN 1048576
 
-enum HDF5Compression_t {HDF5CompressNone=0, HDF5CompressNumBits, HDF5CompressSZip, HDF5CompressZlib};
+enum HDF5Compression_t {HDF5CompressNone=0, HDF5CompressNumBits, HDF5CompressSZip, HDF5CompressZlib, HDF5CompressLZF, HDF5CompressBSHUF};
+#define H5PY_FILTER_LZF 32000
+#define BSHUF_H5FILTER 32008
+#define BSHUF_H5_COMPRESS_LZ4 2
 
 #define DIMSREPORTSIZE 512
 #define DIMNAMESIZE 40
@@ -1758,6 +1761,12 @@ asynStatus NDFileHDF5::writeInt32(asynUser *pasynUser, epicsInt32 value)
       case HDF5CompressZlib:
         filterId = H5Z_FILTER_DEFLATE;
         break;
+      case HDF5CompressLZF:
+        filterId = H5PY_FILTER_LZF;
+        break;
+      case HDF5CompressBSHUF:
+        filterId = BSHUF_H5FILTER;
+        break;
       default:
         filterId = H5Z_FILTER_NONE;
         status = asynError;
@@ -2990,6 +2999,25 @@ asynStatus NDFileHDF5::configureCompression()
                 "%s::%s Setting zlib compression filter level=%d\n",
                 driverName, functionName, zLevel);
       H5Pset_deflate(this->cparms, zLevel);
+      break;
+    case HDF5CompressLZF:
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
+                "%s::%s Setting LZF compression filter\n",
+                driverName, functionName);
+      H5Pset_shuffle(this->cparms);
+      H5Pset_filter(this->cparms, H5PY_FILTER_LZF, H5Z_FLAG_OPTIONAL, 0, NULL);
+      break;
+    case HDF5CompressBSHUF:
+      {
+     /* (block size, compression) 
+      * block size 0 means automatic
+      * compression 2 means LZ4 */
+      unsigned int cds[2] = {0, BSHUF_H5_COMPRESS_LZ4};
+      asynPrint(this->pasynUserSelf, ASYN_TRACE_FLOW, 
+                "%s::%s Setting bitshuffle compression filter\n",
+                driverName, functionName);
+      H5Pset_filter(this->cparms, BSHUF_H5FILTER, H5Z_FLAG_OPTIONAL, 2, cds);
+      }
       break;
   }
   return status;
