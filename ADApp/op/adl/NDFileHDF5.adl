@@ -1,7 +1,7 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-6/ADCore/ADApp/op/adl/NDFileHDF5.adl"
-	version=030109
+	name="/home/scratch/areaDetector-git/ADCore/ADApp/op/adl/NDFileHDF5.adl"
+	version=030105
 }
 display {
 	object {
@@ -140,7 +140,7 @@ composite {
 rectangle {
 	object {
 		x=390
-		y=450
+		y=446
 		width=675
 		height=320
 	}
@@ -876,8 +876,8 @@ composite {
 }
 composite {
 	object {
-		x=800
-		y=595
+		x=823
+		y=586
 		width=155
 		height=20
 	}
@@ -885,8 +885,8 @@ composite {
 	children {
 		text {
 			object {
-				x=800
-				y=595
+				x=823
+				y=586
 				width=40
 				height=20
 			}
@@ -898,8 +898,8 @@ composite {
 		}
 		"related display" {
 			object {
-				x=845
-				y=595
+				x=868
+				y=586
 				width=110
 				height=20
 			}
@@ -1296,4 +1296,153 @@ composite {
 			}
 		}
 	}
+}
+rectangle {
+	object {
+		x=762
+		y=614
+		width=297
+		height=72
+	}
+	"basic attribute" {
+		clr=14
+		fill="outline"
+	}
+}
+text {
+	object {
+		x=767
+		y=663
+		width=90
+		height=18
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Level"
+	align="horiz. right"
+}
+text {
+	object {
+		x=767
+		y=641
+		width=90
+		height=18
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Compressor"
+	align="horiz. right"
+}
+text {
+	object {
+		x=767
+		y=619
+		width=90
+		height=18
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Shuffle"
+	align="horiz. right"
+}
+menu {
+	object {
+		x=862
+		y=641
+		width=95
+		height=20
+	}
+	control {
+		chan="$(P)$(R)BloscCompressor"
+		clr=14
+		bclr=51
+	}
+}
+"text entry" {
+	object {
+		x=862
+		y=663
+		width=95
+		height=20
+	}
+	control {
+		chan="$(P)$(R)BloscLevel"
+		clr=14
+		bclr=51
+	}
+	limits {
+	}
+}
+menu {
+	object {
+		x=862
+		y=619
+		width=95
+		height=20
+	}
+	control {
+		chan="$(P)$(R)BloscShuffle"
+		clr=14
+		bclr=51
+	}
+}
+"text update" {
+	object {
+		x=965
+		y=619
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)BloscShuffle_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=965
+		y=641
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)BloscCompressor_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+"text update" {
+	object {
+		x=965
+		y=663
+		width=90
+		height=18
+	}
+	monitor {
+		chan="$(P)$(R)BloscLevel_RBV"
+		clr=54
+		bclr=4
+	}
+	limits {
+	}
+}
+text {
+	object {
+		x=708
+		y=643
+		width=62
+		height=20
+	}
+	"basic attribute" {
+		clr=14
+	}
+	textix="Blosc"
 }
