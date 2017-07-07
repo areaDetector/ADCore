@@ -111,6 +111,19 @@ ifeq ($(WITH_HDF5),YES)
   endif
 endif
 
+ifeq ($(WITH_BLOSC),YES)
+  ifeq ($(BLOSC_EXTERNAL),NO)
+    LIB_LIBS += blosc
+  else
+    ifdef BLOSC_LIB
+      blosc_DIR     = $(BLOSC_LIB)
+      LIB_LIBS     += blosc
+    else
+      LIB_SYS_LIBS += blosc
+    endif
+  endif
+endif
+
 ifeq ($(WITH_SZIP),YES)
   ifeq ($(SZIP_EXTERNAL),NO)
     LIB_LIBS += szip
