@@ -327,7 +327,7 @@ void NDPluginROIStat::processCallbacks(NDArray *pArray)
 
   NDPluginDriver::endProcessCallbacks(pArray, true, true);
   callParamCallbacks();
-  delete pROIs;
+  delete[] pROIs;
 }
 
 /** Called when asyn clients call pasynInt32->write().
