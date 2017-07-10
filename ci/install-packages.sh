@@ -64,6 +64,9 @@ echo "WITH_SZIP = "      $WITH_SZIP          >> configure/CONFIG_SITE.linux-x86_
 echo "SZIP_EXTERNAL = "  $SZIP_EXTERNAL      >> configure/CONFIG_SITE.linux-x86_64.Common
 echo "WITH_ZLIB = "      $WITH_ZLIB          >> configure/CONFIG_SITE.linux-x86_64.Common
 echo "ZLIB_EXTERNAL = "  $ZLIB_EXTERNAL      >> configure/CONFIG_SITE.linux-x86_64.Common
+echo "HOST_OPT=NO"                           >> configure/CONFIG_SITE.linux-x86_64.Common 
+echo "USR_CXXFLAGS_Linux=--coverage"         >> configure/CONFIG_SITE.linux-x86_64.Common 
+echo "USR_LDFLAGS_Linux=--coverage"          >> configure/CONFIG_SITE.linux-x86_64.Common 
 
 echo "======= configure/RELEASE.local ========================================="
 cat configure/RELEASE.local
