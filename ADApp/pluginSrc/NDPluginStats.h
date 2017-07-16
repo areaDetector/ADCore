@@ -173,6 +173,7 @@ typedef struct NDStats {
 #define NDPluginStatsHistAboveString          "HIST_ABOVE"          /* (asynInt32,        r/o) Number of pixels above maximum */
 #define NDPluginStatsHistEntropyString        "HIST_ENTROPY"        /* (asynFloat64,      r/o) Image entropy calculcated from histogram */
 #define NDPluginStatsHistArrayString          "HIST_ARRAY"          /* (asynFloat64Array, r/o) Histogram array */
+#define NDPluginStatsHistXArrayString         "HIST_X_ARRAY"        /* (asynFloat64Array, r/o) Histogram X axis array */
 
 
 /* Arrays of total and net counts for MCA or waveform record */   
@@ -288,10 +289,12 @@ protected:
     int NDPluginStatsHistAbove;
     int NDPluginStatsHistEntropy;
     int NDPluginStatsHistArray;
+    int NDPluginStatsHistXArray;
 
 private:
     double  *timeSeries[MAX_TIME_SERIES_TYPES];
     void doTimeSeriesCallbacks();
+    asynStatus computeHistX();
 };
 
 #endif
