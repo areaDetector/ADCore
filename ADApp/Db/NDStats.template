@@ -919,6 +919,16 @@ record(waveform, "$(P)$(R)Histogram_RBV")
    field(SCAN, "I/O Intr")
 }
 
+record(waveform, "$(P)$(R)HistogramX_RBV")
+{
+   field(DTYP, "asynFloat64ArrayIn")
+   field(INP,  "@asyn($(PORT),$(ADDR),$(TIMEOUT))HIST_X_ARRAY")
+   field(FTVL, "DOUBLE")
+   field(NELM, "$(HIST_SIZE)")
+   field(SCAN, "I/O Intr")
+}
+
+
 ###################################################################
 #  These records set the HOPR and LOPR values for the cursor      #
 #  and size to the maximum for the input array                    #
