@@ -20,6 +20,22 @@ files respectively, in the configure/ directory of the appropriate release of th
 Release Notes
 =============
 
+R3-2 (July XXX, 2017)
+======================
+### NDPluginStats
+* Previously the X axis for the histogram plot was just the histogram bin number.
+  Added code to compute an array of intensity values and a new HistHistogramX_RBV waveform record which
+  contains the intensity values for the X axis of the histogram plot.
+  This uses a new NDPlotXY.adl medm screen which accepts both X and Y waveform records to plot.
+### NDFileHDF5
+* Added support for blosc compression library.  The compressors include blosclz, lz4, lz4hc, snappy, zlib, and zstd.
+  There is also support for ByteSuffle and BitShuffle.
+  ADSupport now contains the blosc library, so it is available for most architectures.  
+  The build flags WITH_BLOSC, BLOSC_EXTERNAL, and BLOSC_LIB have been added, similar to other optional libraries.
+  Thanks to Xiaoqiang Wang for this addition.
+* Changed all output records in NDFileHDF.template to have PINI=YES.  This is how other plugins all work.
+
+
 R3-1 (July 3, 2017)
 ======================
 ### GraphicsMagick
