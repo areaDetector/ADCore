@@ -607,8 +607,7 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
         setDoubleParam(NDPluginStatsTotal,       pStats->total);
         setDoubleParam(NDPluginStatsNet,         pStats->net);
         asynPrint(this->pasynUserSelf, ASYN_TRACEIO_DRIVER,
-            (char *)pArray->pData, arrayInfo.totalBytes,
-            "%s:%s min=%f, max=%f, mean=%f, total=%f, net=%f",
+            "%s:%s min=%f, max=%f, mean=%f, total=%f, net=%f\n",
             driverName, functionName, pStats->min, pStats->max, pStats->mean, pStats->total, pStats->net);
     } 
 
@@ -661,6 +660,26 @@ void NDPluginStats::processCallbacks(NDArray *pArray)
     callParamCallbacks();
 }
 
+asynStatus NDPluginStats::computeHistX()
+{
+    int histSize;
+    int i;
+    double scale, histMin, histMax, *histX;
+
+    getIntegerParam(NDPluginStatsHistSize, &histSize);
+    getDoubleParam(NDPluginStatsHistMin, &histMin);
+    getDoubleParam(NDPluginStatsHistMax, &histMax);
+    if (histSize < 1) histSize = 1;
+    histX = (double *)calloc(histSize, sizeof(double));
+    scale = (histMax - histMin) / histSize;
+    for (i=0; i<histSize; i++) {
+        histX[i] = histMin + i*scale;
+    }
+    doCallbacksFloat64Array(histX, histSize, NDPluginStatsHistXArray, 0);
+    free(histX);
+    return asynSuccess;
+}
+
 /** Called when asyn clients call pasynInt32->write().
   * This function performs actions for some parameters.
   * For all parameters it sets the value in the parameter library and calls any registered callbacks..
@@ -691,6 +710,8 @@ asynStatus NDPluginStats::writeInt32(asynUser *pasynUser, epicsInt32 value)
             free(this->timeSeries[i]);
             timeSeries[i] = (double *)calloc(value, sizeof(double));
         }
+    } else if (function == NDPluginStatsHistSize) {
+          status = computeHistX();
     } else if (function == NDPluginStatsTSControl) {
         switch (value) {
             case TSEraseStart:
@@ -757,6 +778,9 @@ asynStatus  NDPluginStats::writeFloat64(asynUser *pasynUser, epicsFloat64 value)
         if (computeCentroid && pPrevInputArray_) {
             processCallbacks(pPrevInputArray_);
         }
+    } else if ((function == NDPluginStatsHistMin)  ||
+               (function == NDPluginStatsHistMax)) {
+        status = computeHistX();
     } else {
         /* If this parameter belongs to a base class call its method */
         if (function < FIRST_NDPLUGIN_STATS_PARAM) status = NDPluginDriver::writeFloat64(pasynUser, value);
@@ -895,6 +919,7 @@ NDPluginStats::NDPluginStats(const char *portName, int queueSize, int blockingCa
     createParam(NDPluginStatsHistAboveString,         asynParamInt32,         &NDPluginStatsHistAbove);
     createParam(NDPluginStatsHistEntropyString,       asynParamFloat64,       &NDPluginStatsHistEntropy);
     createParam(NDPluginStatsHistArrayString,         asynParamFloat64Array,  &NDPluginStatsHistArray);
+    createParam(NDPluginStatsHistXArrayString,        asynParamFloat64Array,  &NDPluginStatsHistXArray);
 
     // If we uncomment the following line then we can't set numTSPoints from database at initialisation
     //setIntegerParam(NDPluginStatsTSNumPoints, numTSPoints);
