@@ -1,6 +1,6 @@
 
 file {
-	name="/home/epics/devel/areaDetector-2-6/ADCore/ADApp/op/adl/NDStats.adl"
+	name="/home/epics/devel/areaDetector-3-1/ADCore/ADApp/op/adl/NDStats.adl"
 	version=030109
 }
 display {
@@ -116,7 +116,7 @@ composite {
 		x=5
 		y=40
 		width=380
-		height=580
+		height=555
 	}
 	"composite name"=""
 	"composite file"="NDPluginBase.adl"
@@ -2178,44 +2178,6 @@ text {
 	label="Reset"
 	press_msg="1"
 }
-composite {
-	object {
-		x=900
-		y=449
-		width=111
-		height=20
-	}
-	"composite name"=""
-	children {
-		"related display" {
-			object {
-				x=951
-				y=449
-				width=60
-				height=20
-			}
-			display[0] {
-				label="netCDF file #1"
-				name="NDPlot.adl"
-				args="P=$(P),R=$(R),DATA=Histogram_RBV,TITLE=Histogram,XLABEL=Bin Number,YLABEL=Counts"
-			}
-			clr=14
-			bclr=51
-		}
-		text {
-			object {
-				x=900
-				y=449
-				width=40
-				height=20
-			}
-			"basic attribute" {
-				clr=14
-			}
-			textix="Plot"
-		}
-	}
-}
 "text update" {
 	object {
 		x=951
@@ -2299,4 +2261,42 @@ text {
 	}
 	textix="# below minimum"
 	align="horiz. right"
+}
+composite {
+	object {
+		x=900
+		y=449
+		width=111
+		height=20
+	}
+	"composite name"=""
+	children {
+		"related display" {
+			object {
+				x=951
+				y=449
+				width=60
+				height=20
+			}
+			display[0] {
+				label="Histogram plot"
+				name="NDPlotXY.adl"
+				args="P=$(P),R=$(R),XDATA=HistogramX_RBV,YDATA=Histogram_RBV,TITLE=Histogram,XLABEL=Intensity,YLABEL=Counts"
+			}
+			clr=14
+			bclr=51
+		}
+		text {
+			object {
+				x=900
+				y=449
+				width=40
+				height=20
+			}
+			"basic attribute" {
+				clr=14
+			}
+			textix="Plot"
+		}
+	}
 }
